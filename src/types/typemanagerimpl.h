@@ -119,7 +119,8 @@ public:
         const store::Item* nodeName,
         xqtref_t contentType,
         TypeConstants::quantifier_t quant,
-        bool nillable) const;
+        bool nillable,
+        bool schematest) const;
 
   xqtref_t create_type(
         const XQType& type,

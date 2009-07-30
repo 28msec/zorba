@@ -671,6 +671,7 @@ protected:
   bool                     theHaveEmptyValue;
   bool                     theHaveTypedValue;
   bool                     theHaveListValue;
+  bool                     theIsInSubstitutionGroup;
 
 public:
   UpdSetElementType(
@@ -681,13 +682,15 @@ public:
         bool           haveValue,
         bool           haveEmptyValue,
         bool           haveTypedValue,
-        bool           haveListValue)
+        bool           haveListValue,
+        bool           isInSubstitutionGroup)
     :
     UpdatePrimitive(pul, target),
     theHaveValue(haveValue),
     theHaveEmptyValue(haveEmptyValue),
     theHaveTypedValue(haveTypedValue),
-    theHaveListValue(haveListValue)
+    theHaveListValue(haveListValue),
+    theIsInSubstitutionGroup(isInSubstitutionGroup)
   {
     theTypeName.transfer(typeName);
     theTypedValue.transfer(typedValue);

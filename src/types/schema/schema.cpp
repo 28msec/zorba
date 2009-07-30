@@ -63,12 +63,11 @@ bool Schema::_isInitialized = false;
 
 #ifndef ZORBA_NO_XMLSCHEMA
 
-xqp_string transcode(const XMLCh* const str)
+static void transcode(const XMLCh* const str, xqpStringStore_t& res)
 {
-    char* trStr = XMLString::transcode(str);
-    xqp_string res (trStr);
-    XMLString::release(&trStr);
-    return res;
+  char* trStr = XMLString::transcode(str);
+  res = new xqpStringStore(trStr);
+  XMLString::release(&trStr);
 }
 
 
@@ -420,6 +419,51 @@ xqtref_t Schema::createXQTypeFromTypeName(
 
 
 /*******************************************************************************
+  Get the the head of the substitution group, if any, that a given globally
+  declared element belongs to.
+********************************************************************************/
+void Schema::getSubstitutionHeadForElement(
+    const store::Item* qname,
+    store::Item_t& result)
+{
+  TRACE(" element qname: " << qname->getLocalName()->c_str() << "@"
+        << qname->getNamespace()->c_str());
+
+  result = NULL;
+
+  if (_grammarPool == NULL)
+    return;
+
+  XMLChArray local(qname->getLocalName()->c_str());
+  XMLChArray uri(qname->getNamespace()->c_str());
+
+  bool xsModelWasChanged;
+  XSModel* model = _grammarPool->getXSModel(xsModelWasChanged);
+
+  XSElementDeclaration* decl = model->getElementDeclaration(local, uri);
+  
+  if (decl)
+  {
+    XSElementDeclaration* substHead = decl->getSubstitutionGroupAffiliation();
+
+    if (substHead)
+    {
+      const XMLCh* localName = substHead->getName();
+      const XMLCh* nsuri = substHead->getNamespace();
+
+      xqpStringStore_t lPrefix = new xqpStringStore("");
+      xqpStringStore_t lLocal;
+      transcode(localName, lLocal);
+      xqpStringStore_t lNamespace;
+      transcode(nsuri, lNamespace);
+
+      GENV_ITEMFACTORY->createQName(result, lNamespace, lPrefix, lLocal);      
+    }
+  }
+}
+
+
+/*******************************************************************************
   Get the type definition for a globally declared element
 ********************************************************************************/
 XSTypeDefinition* Schema::getTypeDefForElement(const store::Item* qname)
@@ -499,174 +543,175 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
 
     xqtref_t result;
 
-    if (xsTypeDef->getTypeCategory() == XSTypeDefinition::SIMPLE_TYPE)
-    {
-        // first check if it is a built-in type
-        const XMLCh* uri = xsTypeDef->getNamespace();
-        xqp_string strUri = transcode(uri);
+  if (xsTypeDef->getTypeCategory() == XSTypeDefinition::SIMPLE_TYPE)
+  {
+    // first check if it is a built-in type
+    const XMLCh* uri = xsTypeDef->getNamespace();
+    xqpStringStore_t strUri;
+    transcode(uri, strUri);
 
-    if ( XMLString::equals(strUri.c_str(), Schema::XSD_NAMESPACE) )
-        {
-            const XMLCh* local = xsTypeDef->getName();
-            // maybe there is a better way than comparing strings 
-            // but it seems Xerces doesn't have a code for built-in types
-            if ( XMLString::equals(SchemaSymbols::fgDT_STRING, local) )
-            {
-                result = GENV_TYPESYSTEM.STRING_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_INT, local) )
-            {
-                result = GENV_TYPESYSTEM.INT_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_BOOLEAN, local) )
-            {
-                result = GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_INTEGER, local) )
-            {
-                result = GENV_TYPESYSTEM.INTEGER_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_POSITIVEINTEGER, local) )
-            {
-                result = GENV_TYPESYSTEM.POSITIVE_INTEGER_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_NONPOSITIVEINTEGER, local) )
-            {
-                result = GENV_TYPESYSTEM.NON_POSITIVE_INTEGER_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_NEGATIVEINTEGER, local) )
-            {
-                result = GENV_TYPESYSTEM.NEGATIVE_INTEGER_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_NONNEGATIVEINTEGER, local) )
-            {
-                result = GENV_TYPESYSTEM.NON_NEGATIVE_INTEGER_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_UBYTE, local) )
-            {
-                result = GENV_TYPESYSTEM.UNSIGNED_BYTE_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_USHORT, local) )
-            {
-                result = GENV_TYPESYSTEM.UNSIGNED_SHORT_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_UINT, local) )
-            {
-                result = GENV_TYPESYSTEM.UNSIGNED_INT_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_ULONG, local) )
-            {
-                result = GENV_TYPESYSTEM.UNSIGNED_LONG_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_BYTE, local) )
-            {
-                result = GENV_TYPESYSTEM.BYTE_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_SHORT, local) )
-            {
-                result = GENV_TYPESYSTEM.SHORT_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_LONG, local) )
-            {
-                result = GENV_TYPESYSTEM.LONG_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_FLOAT, local) )
-            {
-                result = GENV_TYPESYSTEM.FLOAT_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_DOUBLE, local) )
-            {
-                result = GENV_TYPESYSTEM.DOUBLE_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_DECIMAL, local) )
-            {
-                result = GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_NORMALIZEDSTRING, local) )
-            {
-                result = GENV_TYPESYSTEM.NORMALIZED_STRING_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_TOKEN, local) )
-            {
-                result = GENV_TYPESYSTEM.TOKEN_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_NAME, local) )
-            {
-                result = GENV_TYPESYSTEM.NAME_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_NCNAME, local) )
-            {
-                result = GENV_TYPESYSTEM.NCNAME_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_DATETIME, local) )
-            {
-                result = GENV_TYPESYSTEM.DATETIME_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_DATE, local) )
-            {
-                result = GENV_TYPESYSTEM.DATE_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_TIME, local) )
-            {
-                result = GENV_TYPESYSTEM.TIME_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_YEAR, local) )
-            {
-                result = GENV_TYPESYSTEM.GYEAR_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_YEARMONTH, local) )
-            {
-                result = GENV_TYPESYSTEM.GYEAR_MONTH_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_MONTHDAY, local) )
-            {
-                result = GENV_TYPESYSTEM.GMONTH_DAY_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_DAY, local) )
-            {
-                result = GENV_TYPESYSTEM.GDAY_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_MONTH, local) )
-            {
-                result = GENV_TYPESYSTEM.GMONTH_DAY_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_DURATION, local) )
-            {
-                result = GENV_TYPESYSTEM.DURATION_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_ANYSIMPLETYPE, local) )
-            {
-                result = GENV_TYPESYSTEM.ANY_SIMPLE_TYPE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_BASE64BINARY, local) )
-            {
-                result = GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_HEXBINARY, local) )
-            {
-                result = GENV_TYPESYSTEM.HEXBINARY_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_ANYURI, local) )
-            {
-                result = GENV_TYPESYSTEM.ANY_URI_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgDT_QNAME, local) )
-            {
-                result = GENV_TYPESYSTEM.QNAME_TYPE_ONE;
-            }
-            else if ( XMLString::equals(SchemaSymbols::fgATTVAL_ID, local) )
-            {
-                result = GENV_TYPESYSTEM.ID_TYPE_ONE;
-            }
-            // SchemaSymbols::fgDT_NMTOKEN doesn't exist in Xerces
-            else if ( XMLString::equals(XMLChArray("NMTOKEN").get (), local) )
-            {
-                result = GENV_TYPESYSTEM.NMTOKEN_TYPE_ONE;
-            }
-            else if ( XMLString::equals(XMLChArray("IDREF").get (), local) )
-            {
-                result = GENV_TYPESYSTEM.IDREF_TYPE_ONE;
-            }
+    if ( XMLString::equals(strUri->c_str(), Schema::XSD_NAMESPACE) )
+    {
+      const XMLCh* local = xsTypeDef->getName();
+      // maybe there is a better way than comparing strings 
+      // but it seems Xerces doesn't have a code for built-in types
+      if ( XMLString::equals(SchemaSymbols::fgDT_STRING, local) )
+      {
+        result = GENV_TYPESYSTEM.STRING_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_INT, local) )
+      {
+        result = GENV_TYPESYSTEM.INT_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_BOOLEAN, local) )
+      {
+        result = GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_INTEGER, local) )
+      {
+        result = GENV_TYPESYSTEM.INTEGER_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_POSITIVEINTEGER, local) )
+      {
+        result = GENV_TYPESYSTEM.POSITIVE_INTEGER_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_NONPOSITIVEINTEGER, local) )
+      {
+        result = GENV_TYPESYSTEM.NON_POSITIVE_INTEGER_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_NEGATIVEINTEGER, local) )
+      {
+        result = GENV_TYPESYSTEM.NEGATIVE_INTEGER_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_NONNEGATIVEINTEGER, local) )
+      {
+        result = GENV_TYPESYSTEM.NON_NEGATIVE_INTEGER_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_UBYTE, local) )
+      {
+        result = GENV_TYPESYSTEM.UNSIGNED_BYTE_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_USHORT, local) )
+      {
+        result = GENV_TYPESYSTEM.UNSIGNED_SHORT_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_UINT, local) )
+      {
+        result = GENV_TYPESYSTEM.UNSIGNED_INT_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_ULONG, local) )
+      {
+        result = GENV_TYPESYSTEM.UNSIGNED_LONG_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_BYTE, local) )
+      {
+        result = GENV_TYPESYSTEM.BYTE_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_SHORT, local) )
+      {
+        result = GENV_TYPESYSTEM.SHORT_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_LONG, local) )
+      {
+        result = GENV_TYPESYSTEM.LONG_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_FLOAT, local) )
+      {
+        result = GENV_TYPESYSTEM.FLOAT_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_DOUBLE, local) )
+      {
+        result = GENV_TYPESYSTEM.DOUBLE_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_DECIMAL, local) )
+      {
+        result = GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_NORMALIZEDSTRING, local) )
+      {
+        result = GENV_TYPESYSTEM.NORMALIZED_STRING_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_TOKEN, local) )
+      {
+        result = GENV_TYPESYSTEM.TOKEN_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_NAME, local) )
+      {
+        result = GENV_TYPESYSTEM.NAME_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_NCNAME, local) )
+      {
+        result = GENV_TYPESYSTEM.NCNAME_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_DATETIME, local) )
+      {
+        result = GENV_TYPESYSTEM.DATETIME_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_DATE, local) )
+      {
+        result = GENV_TYPESYSTEM.DATE_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_TIME, local) )
+      {
+        result = GENV_TYPESYSTEM.TIME_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_YEAR, local) )
+      {
+        result = GENV_TYPESYSTEM.GYEAR_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_YEARMONTH, local) )
+      {
+        result = GENV_TYPESYSTEM.GYEAR_MONTH_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_MONTHDAY, local) )
+      {
+        result = GENV_TYPESYSTEM.GMONTH_DAY_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_DAY, local) )
+      {
+        result = GENV_TYPESYSTEM.GDAY_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_MONTH, local) )
+      {
+        result = GENV_TYPESYSTEM.GMONTH_DAY_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_DURATION, local) )
+      {
+        result = GENV_TYPESYSTEM.DURATION_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_ANYSIMPLETYPE, local) )
+      {
+        result = GENV_TYPESYSTEM.ANY_SIMPLE_TYPE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_BASE64BINARY, local) )
+      {
+        result = GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_HEXBINARY, local) )
+      {
+        result = GENV_TYPESYSTEM.HEXBINARY_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_ANYURI, local) )
+      {
+        result = GENV_TYPESYSTEM.ANY_URI_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgDT_QNAME, local) )
+      {
+        result = GENV_TYPESYSTEM.QNAME_TYPE_ONE;
+      }
+      else if ( XMLString::equals(SchemaSymbols::fgATTVAL_ID, local) )
+      {
+        result = GENV_TYPESYSTEM.ID_TYPE_ONE;
+      }
+      // SchemaSymbols::fgDT_NMTOKEN doesn't exist in Xerces
+      else if ( XMLString::equals(XMLChArray("NMTOKEN").get (), local) )
+      {
+        result = GENV_TYPESYSTEM.NMTOKEN_TYPE_ONE;
+      }
+      else if ( XMLString::equals(XMLChArray("IDREF").get (), local) )
+      {
+        result = GENV_TYPESYSTEM.IDREF_TYPE_ONE;
+      }
       else if ( XMLString::equals(XMLChArray("IDREFS").get (), local) )
       {
         store::Item_t qname;
@@ -674,15 +719,15 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
                                       XML_SCHEMA_NS,
                                       "XS",
                                       "IDREFS");
-
+        
         result = new UserDefinedXQType(typeManager,
                                        qname,
                                        NULL,
                                        TypeConstants::QUANT_ONE,
                                        GENV_TYPESYSTEM.IDREF_TYPE_ONE.getp());
       }
-            else if ( XMLString::equals(XMLChArray("ENTITY").get (), local) )
-            {
+      else if ( XMLString::equals(XMLChArray("ENTITY").get (), local) )
+      {
         store::Item_t qname;
         GENV_ITEMFACTORY->createQName(qname,
                                       XML_SCHEMA_NS,
@@ -694,51 +739,48 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
                                        NULL,
                                        TypeConstants::QUANT_ONE,
                                        GENV_TYPESYSTEM.ENTITY_TYPE_ONE.getp());
-            }
+      }
       else if ( XMLString::equals(XMLChArray("ENTITIES").get (), local) )
       {
         result = GENV_TYPESYSTEM.ENTITY_TYPE_PLUS;
       }
-            else if ( XMLString::equals(XMLChArray("NOTATION").get (), local) )
-            {
-                result = GENV_TYPESYSTEM.NOTATION_TYPE_ONE;
-            }
-            // YearMonthDuration and DayTimeDuration are not in schema spec
-            else
-            {
-                // type not covered  
-                //cout << "Assertion Error: Type unknown " << StrX(local).localForm() << "@" << Schema::XSD_NAMESPACE; cout.flush(); 
-                ZORBA_ASSERT(false);
-                result = NULL;
-            }
-        }
-        else
+      else if ( XMLString::equals(XMLChArray("NOTATION").get (), local) )
+      {
+        result = GENV_TYPESYSTEM.NOTATION_TYPE_ONE;
+      }
+      // YearMonthDuration and DayTimeDuration are not in schema spec
+      else
+      {
+        // type not covered  
+        //cout << "Assertion Error: Type unknown " << StrX(local).localForm() << "@" << Schema::XSD_NAMESPACE; cout.flush(); 
+        ZORBA_ASSERT(false);
+        result = NULL;
+      }
+    }
+    else
+    {
+      // must be a user defined simple type
+      XSSimpleTypeDefinition * xsSimpleTypeDef = (XSSimpleTypeDefinition *)xsTypeDef;
+      
+      xqpStringStore_t lPrefix = new xqpStringStore("");
+      xqpStringStore_t lLocal;
+      transcode(xsTypeDef->getName(), lLocal);
+      
+      store::Item_t qname;
+      GENV_ITEMFACTORY->createQName(qname, strUri, lPrefix, lLocal);
+      
+      
+      switch ( xsSimpleTypeDef->getVariety() )
+      {
+      case XSSimpleTypeDefinition::VARIETY_ATOMIC:
+      {
+        XSTypeDefinition* baseTypeDef = xsTypeDef->getBaseType();
+        if ( !baseTypeDef )
         {
-            // must be a user defined simple type
-            XSSimpleTypeDefinition * xsSimpleTypeDef = (XSSimpleTypeDefinition *)xsTypeDef;
-      
-            xqp_string lNamespace (strUri);
-            xqp_string lPrefix;
-            xqp_string lLocal = transcode(xsTypeDef->getName());
-      
-            store::Item_t qname;
-      GENV_ITEMFACTORY->createQName(qname,
-                                    lNamespace.getStore(),
-                                    lPrefix.getStore(),
-                                    lLocal.getStore());
-      
-      
-            switch ( xsSimpleTypeDef->getVariety() )
-            {
-            case XSSimpleTypeDefinition::VARIETY_ATOMIC:
-                {
-                    XSTypeDefinition* baseTypeDef = xsTypeDef->getBaseType();
-                    if ( !baseTypeDef )
-                    {
-                        //error allway must have a baseType
-                        ZORBA_ASSERT(false);             
-                        result = NULL;
-                    }
+          //error allway must have a baseType
+          ZORBA_ASSERT(false);             
+          result = NULL;
+        }
         
         xqtref_t baseXQType = createXQTypeFromTypeDefinition(typeManager, baseTypeDef);
         
@@ -747,20 +789,20 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
                                                          baseXQType,
                                                          TypeConstants::QUANT_ONE,
                                                          XQType::SIMPLE_CONTENT_KIND));
-          
-                    result = xqType;
-                }
-                break;
+        
+        result = xqType;
+      }
+      break;
       
-            case XSSimpleTypeDefinition::VARIETY_LIST:
-                {
-                    XSSimpleTypeDefinition * itemTypeDef = xsSimpleTypeDef->getItemType();
-                    if ( !itemTypeDef )
-                    {
-                        //error since VARIETY is LIST must have an itemType
-                        ZORBA_ASSERT(false);             
-                        result = NULL;
-                    }
+      case XSSimpleTypeDefinition::VARIETY_LIST:
+      {
+        XSSimpleTypeDefinition * itemTypeDef = xsSimpleTypeDef->getItemType();
+        if ( !itemTypeDef )
+        {
+          //error since VARIETY is LIST must have an itemType
+          ZORBA_ASSERT(false);             
+          result = NULL;
+        }
         xqtref_t itemXQType = createXQTypeFromTypeDefinition(typeManager, itemTypeDef);
         
         if ( itemXQType->type_kind() == XQType::USER_DEFINED_KIND )
@@ -783,15 +825,15 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
       }
       break;
       
-            case XSSimpleTypeDefinition::VARIETY_UNION:
-                {
-                    XSSimpleTypeDefinitionList * memberTypesDefList = xsSimpleTypeDef->getMemberTypes();
-                    if ( !memberTypesDefList )
-                    {
-                        //error since VARIETY is UNION must have a memberTypesDefList
-                        ZORBA_ASSERT(false);             
-                        result = NULL;
-                    }
+      case XSSimpleTypeDefinition::VARIETY_UNION:
+      {
+        XSSimpleTypeDefinitionList * memberTypesDefList = xsSimpleTypeDef->getMemberTypes();
+        if ( !memberTypesDefList )
+        {
+          //error since VARIETY is UNION must have a memberTypesDefList
+          ZORBA_ASSERT(false);             
+          result = NULL;
+        }
         
         //cout << " creating UDT Simple Union Type: " << qname->getLocalName()->c_str() <<  "@" << qname->getNamespace()->c_str() << " of: ";
         std::vector<xqtref_t> unionItemTypes;
@@ -823,51 +865,52 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
       }
       break;
       
-            case XSSimpleTypeDefinition::VARIETY_ABSENT:
-                // Xerces source says it must be anySimpleType
-                result = GENV_TYPESYSTEM.ANY_SIMPLE_TYPE;
-                break;
+      case XSSimpleTypeDefinition::VARIETY_ABSENT:
+        // Xerces source says it must be anySimpleType
+        result = GENV_TYPESYSTEM.ANY_SIMPLE_TYPE;
+        break;
         
-            default:
-                ZORBA_ASSERT(false);            
-            }
-
+      default:
+        ZORBA_ASSERT(false);            
+      }
+      
       checkForAnonymousTypesInType(typeManager, xsTypeDef);
 
-        } // end user defined simple types
-    }     // end simple types
-    else
-    {  
-        // is not a simple type 
-        // first check if it is a built-in type
-        const XMLCh* uri = xsTypeDef->getNamespace();
-        xqp_string strUri = transcode(uri);
+    } // end user defined simple types
+  }     // end simple types
+  else
+  {  
+    // is not a simple type 
+    // first check if it is a built-in type
+    const XMLCh* uri = xsTypeDef->getNamespace();
+    xqpStringStore_t strUri;
+    transcode(uri, strUri);
     
-        if ( XMLString::equals(strUri.c_str (), Schema::XSD_NAMESPACE) )
-        {
-            const XMLCh* local = xsTypeDef->getName();
-            // maybe there is a better way than comparing strings 
-            // but it seems Xerces doesn't have a code for built-in types
-            if ( XMLString::equals(XMLChArray("anyType").get(), local) )
-            {
-                result = GENV_TYPESYSTEM.ANY_TYPE;
-            }
-            else if ( XMLString::equals(XMLChArray("untyped").get(), local) )
-            {
-                result = GENV_TYPESYSTEM.UNTYPED_TYPE;
-            }            
-            else
-            {
-                // there are no other non simple known types in xsd namespace
-                ZORBA_ASSERT(false);
-            }
-        }
-        else
-        {
-            // user defined complex Type
-            XSTypeDefinition* baseTypeDef = xsTypeDef->getBaseType();
-            if ( !baseTypeDef )
-            {
+    if ( XMLString::equals(strUri->c_str (), Schema::XSD_NAMESPACE) )
+    {
+      const XMLCh* local = xsTypeDef->getName();
+      // maybe there is a better way than comparing strings 
+      // but it seems Xerces doesn't have a code for built-in types
+      if ( XMLString::equals(XMLChArray("anyType").get(), local) )
+      {
+        result = GENV_TYPESYSTEM.ANY_TYPE;
+      }
+      else if ( XMLString::equals(XMLChArray("untyped").get(), local) )
+      {
+        result = GENV_TYPESYSTEM.UNTYPED_TYPE;
+      }            
+      else
+      {
+        // there are no other non simple known types in xsd namespace
+        ZORBA_ASSERT(false);
+      }
+    }
+    else
+    {
+      // user defined complex Type
+      XSTypeDefinition* baseTypeDef = xsTypeDef->getBaseType();
+      if ( !baseTypeDef )
+      {
         //error allways must have a baseType
                 ZORBA_ASSERT(false);             
                 result = NULL;
@@ -875,57 +918,55 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
       
       xqtref_t baseXQType = createXQTypeFromTypeDefinition(typeManager, baseTypeDef);
       
-            xqp_string lNamespace (strUri);
-            xqp_string lPrefix;
-            xqp_string lLocal = transcode(xsTypeDef->getName());
+      xqpStringStore_t lPrefix = new xqpStringStore("");
+      xqpStringStore_t lLocal;
+      transcode(xsTypeDef->getName(), lLocal);
       
-            store::Item_t qname;
-      GENV_ITEMFACTORY->createQName(qname,
-                                    lNamespace.getStore(),
-                                    lPrefix.getStore(),
-                                    lLocal.getStore());
+      store::Item_t qname;
+      GENV_ITEMFACTORY->createQName(qname, strUri, lPrefix, lLocal);
       
       // get content type
       XSComplexTypeDefinition* xsComplexTypeDef =
         static_cast<XSComplexTypeDefinition*>(xsTypeDef);
 
-            XQType::content_kind_t contentType;
+      XQType::content_kind_t contentType;
       
-            switch(xsComplexTypeDef->getContentType())
-            {
-            case XSComplexTypeDefinition::CONTENTTYPE_MIXED:
-                contentType = XQType::MIXED_CONTENT_KIND;
-                break;
-            case XSComplexTypeDefinition::CONTENTTYPE_ELEMENT:
-                contentType = XQType::ELEMENT_ONLY_CONTENT_KIND;
-                break;
-            case XSComplexTypeDefinition::CONTENTTYPE_SIMPLE:
-                contentType = XQType::SIMPLE_CONTENT_KIND;
-                break;
-            case XSComplexTypeDefinition::CONTENTTYPE_EMPTY:
-                contentType = XQType::EMPTY_CONTENT_KIND;
-                break;
-            default:
-                ZORBA_ASSERT(false);
-            }
+      switch(xsComplexTypeDef->getContentType())
+      {
+      case XSComplexTypeDefinition::CONTENTTYPE_MIXED:
+        contentType = XQType::MIXED_CONTENT_KIND;
+        break;
+      case XSComplexTypeDefinition::CONTENTTYPE_ELEMENT:
+        contentType = XQType::ELEMENT_ONLY_CONTENT_KIND;
+        break;
+      case XSComplexTypeDefinition::CONTENTTYPE_SIMPLE:
+        contentType = XQType::SIMPLE_CONTENT_KIND;
+        break;
+      case XSComplexTypeDefinition::CONTENTTYPE_EMPTY:
+        contentType = XQType::EMPTY_CONTENT_KIND;
+        break;
+      default:
+        ZORBA_ASSERT(false);
+      }
       
       xqtref_t xqType = xqtref_t(new UserDefinedXQType(typeManager,
                                                        qname,
                                                        baseXQType,
                                                        TypeConstants::QUANT_ONE,
                                                        contentType));
-            result = xqType;
+      result = xqType;
 
       addTypeToCache(xqType);
 
       //check if it contains anonymous types (they are not available through xsModel API)
       // add them to the cache
       checkForAnonymousTypesInType(typeManager, xsTypeDef);
-        }
-    } 
+    }
+  } 
   
-    return result;
+  return result;
 }
+
 
 void Schema::checkForAnonymousTypesInType(const TypeManager* typeManager, XSTypeDefinition* xsTypeDef)
 {
@@ -983,70 +1024,72 @@ void Schema::checkForAnonymousTypesInParticle(const TypeManager* typeManager, XS
     }
 }
 
-void Schema::addAnonymousTypeToCache(const TypeManager* typeManager, XSTypeDefinition* xsTypeDef)
+
+void Schema::addAnonymousTypeToCache(
+    const TypeManager* typeManager,
+    XSTypeDefinition* xsTypeDef)
 {
-    if (!xsTypeDef->getAnonymous())
-        return;
+  if (!xsTypeDef->getAnonymous())
+    return;
 
-    XSTypeDefinition* baseTypeDef = xsTypeDef->getBaseType();
-    if (!baseTypeDef) {
-        //error allways must have a baseType
-        ZORBA_ASSERT(false);
-        return;
-    }
+  XSTypeDefinition* baseTypeDef = xsTypeDef->getBaseType();
+  if (!baseTypeDef) {
+    //error allways must have a baseType
+    ZORBA_ASSERT(false);
+    return;
+  }
 
-    xqtref_t baseXQType = createXQTypeFromTypeDefinition(typeManager, baseTypeDef);
+  xqtref_t baseXQType = createXQTypeFromTypeDefinition(typeManager, baseTypeDef);
 
-    const XMLCh* uri = xsTypeDef->getNamespace();
-    xqp_string strUri = transcode(uri);
-    xqp_string lNamespace(strUri);
-    xqp_string lPrefix;
-    xqp_string lLocal = transcode(xsTypeDef->getName());
-
-    store::Item_t qname;
-    GENV_ITEMFACTORY->createQName(qname,
-            lNamespace.getStore(),
-            lPrefix.getStore(),
-            lLocal.getStore());
-
-    if (xsTypeDef->getTypeCategory()!=XSTypeDefinition::COMPLEX_TYPE)
-        return;
-
-    // get content type
-    XSComplexTypeDefinition* xsComplexTypeDef =
+  const XMLCh* uri = xsTypeDef->getNamespace();
+  xqpStringStore_t strUri;
+  transcode(uri, strUri);
+  xqpStringStore_t lPrefix = new xqpStringStore("");
+  xqpStringStore_t lLocal;
+  transcode(xsTypeDef->getName(), lLocal);
+  
+  store::Item_t qname;
+  GENV_ITEMFACTORY->createQName(qname, strUri, lPrefix, lLocal);
+  
+  if (xsTypeDef->getTypeCategory()!=XSTypeDefinition::COMPLEX_TYPE)
+    return;
+  
+  // get content type
+  XSComplexTypeDefinition* xsComplexTypeDef =
             static_cast<XSComplexTypeDefinition*> (xsTypeDef);
-
-    XQType::content_kind_t contentType;
-
-    switch (xsComplexTypeDef->getContentType())
-    {
-        case XSComplexTypeDefinition::CONTENTTYPE_MIXED :
-            contentType = XQType::MIXED_CONTENT_KIND;
-            break;
-        case XSComplexTypeDefinition::CONTENTTYPE_ELEMENT :
-            contentType = XQType::ELEMENT_ONLY_CONTENT_KIND;
-            break;
-        case XSComplexTypeDefinition::CONTENTTYPE_SIMPLE :
-            contentType = XQType::SIMPLE_CONTENT_KIND;
-            break;
-        case XSComplexTypeDefinition::CONTENTTYPE_EMPTY :
-            contentType = XQType::EMPTY_CONTENT_KIND;
-            break;
-        default:
-            ZORBA_ASSERT(false);
-    }
-
-    xqtref_t xqType = xqtref_t(new UserDefinedXQType(typeManager,
-            qname,
-            baseXQType,
-            TypeConstants::QUANT_ONE,
-            contentType));
-
-    addTypeToCache(xqType);
-
-    // check f0r it's containing annonymous types
-    checkForAnonymousTypesInType(typeManager, xsComplexTypeDef);
+  
+  XQType::content_kind_t contentType;
+  
+  switch (xsComplexTypeDef->getContentType())
+  {
+  case XSComplexTypeDefinition::CONTENTTYPE_MIXED :
+    contentType = XQType::MIXED_CONTENT_KIND;
+    break;
+  case XSComplexTypeDefinition::CONTENTTYPE_ELEMENT :
+    contentType = XQType::ELEMENT_ONLY_CONTENT_KIND;
+    break;
+  case XSComplexTypeDefinition::CONTENTTYPE_SIMPLE :
+    contentType = XQType::SIMPLE_CONTENT_KIND;
+    break;
+  case XSComplexTypeDefinition::CONTENTTYPE_EMPTY :
+    contentType = XQType::EMPTY_CONTENT_KIND;
+    break;
+  default:
+    ZORBA_ASSERT(false);
+  }
+  
+  xqtref_t xqType = xqtref_t(new UserDefinedXQType(typeManager,
+                                                   qname,
+                                                   baseXQType,
+                                                   TypeConstants::QUANT_ONE,
+                                                   contentType));
+  
+  addTypeToCache(xqType);
+  
+  // check f0r it's containing annonymous types
+  checkForAnonymousTypesInType(typeManager, xsComplexTypeDef);
 }
+
 
 void Schema::addTypeToCache(xqtref_t itemXQType)
 {
@@ -1152,108 +1195,113 @@ bool Schema::parseUserAtomicTypes(
 {
   TRACE("parsing '" << textValue << "' to " << aTargetType->toString());
 
-    ZORBA_ASSERT( aTargetType->type_kind() == XQType::USER_DEFINED_KIND );
+  ZORBA_ASSERT( aTargetType->type_kind() == XQType::USER_DEFINED_KIND );
 
-    const UserDefinedXQType* udXQType = static_cast<const UserDefinedXQType*>(aTargetType.getp());
-    ZORBA_ASSERT( udXQType->isAtomic() );
-
+  const UserDefinedXQType* udXQType = static_cast<const UserDefinedXQType*>(aTargetType.getp());
+  ZORBA_ASSERT( udXQType->isAtomic() );
+    
   store::Item* typeQName = udXQType->get_qname();
 
 #ifndef ZORBA_NO_XMLSCHEMA
-    XMLChArray localPart (typeQName->getLocalName());
-    XMLChArray uriStr (typeQName->getNamespace());
+  XMLChArray localPart (typeQName->getLocalName());
+  XMLChArray uriStr (typeQName->getNamespace());
     
-    bool wasError = false;
+  bool wasError = false;
 
-    try 
-    {
-        // Create grammar resolver and string pool that we pass to the scanner
+  try 
+  {
+    // Create grammar resolver and string pool that we pass to the scanner
     std::auto_ptr<GrammarResolver> fGrammarResolver(new GrammarResolver(_grammarPool));
-        fGrammarResolver->useCachedGrammarInParse(true);
+    fGrammarResolver->useCachedGrammarInParse(true);
 
-        // retrieve Grammar for the uri
-        SchemaGrammar* sGrammar = (SchemaGrammar*) fGrammarResolver->getGrammar(uriStr);
-        if (sGrammar) 
-        {
-            DatatypeValidator* xsiTypeDV = fGrammarResolver->getDatatypeValidator(uriStr, localPart);
+    // retrieve Grammar for the uri
+    SchemaGrammar* sGrammar = (SchemaGrammar*) fGrammarResolver->getGrammar(uriStr);
+    if (sGrammar) 
+    {
+      DatatypeValidator* xsiTypeDV = fGrammarResolver->getDatatypeValidator(uriStr, localPart);
       
-            if (!xsiTypeDV) 
+      if (!xsiTypeDV) 
+      {
+        // when complex simple content type use the base type
+        // find the first basetype that has a DataTypeValidator
+        const UserDefinedXQType* tmpXQType = udXQType;
+        
+        while (xsiTypeDV==NULL && tmpXQType!=NULL)
+        {
+          xqtref_t baseXQType = tmpXQType->getBaseType();
+          if (baseXQType.getp())
+          {
+            store::Item_t baseTypeQName = baseXQType->get_qname();
+            XMLChArray baseLocalPart (baseTypeQName->getLocalName());
+            XMLChArray baseUriStr (baseTypeQName->getNamespace());
+            
+            xsiTypeDV = fGrammarResolver->getDatatypeValidator(baseUriStr, baseLocalPart);
+            
+            tmpXQType = NULL;
+            if (baseXQType->type_kind() == XQType::USER_DEFINED_KIND)
             {
-                // when complex simple content type use the base type
-                // find the first basetype that has a DataTypeValidator
-                const UserDefinedXQType* tmpXQType = udXQType;
-                
-                while (xsiTypeDV==NULL && tmpXQType!=NULL)
-                {
-                    xqtref_t baseXQType = tmpXQType->getBaseType();
-                    if (baseXQType.getp())
-                    {
-                        store::Item_t baseTypeQName = baseXQType->get_qname();
-                        XMLChArray baseLocalPart (baseTypeQName->getLocalName());
-                        XMLChArray baseUriStr (baseTypeQName->getNamespace());
-                        
-                        xsiTypeDV = fGrammarResolver->getDatatypeValidator(baseUriStr, baseLocalPart);
-
-                        tmpXQType = NULL;
-                        if (baseXQType->type_kind() == XQType::USER_DEFINED_KIND)
-                        {
-                            tmpXQType = static_cast<const UserDefinedXQType*>(baseXQType.getp());
-                        }
-                    }
-                }
+              tmpXQType = static_cast<const UserDefinedXQType*>(baseXQType.getp());
             }
+          }
+        }
+      }
 
-            if (!xsiTypeDV) 
-            {
+      if (!xsiTypeDV) 
+      {
         ZORBA_ERROR_DESC_OSS( FORG0001, "Type '" << TypeOps::toString (*aTargetType) << "' not found in current context.");
-                wasError = true;
-            }
+        wasError = true;
+      }
       
-            XMLChArray xchTextValue (textValue.getStore ());
-            xsiTypeDV->validate(xchTextValue.get ());
-        }
-        else
-        {
+      XMLChArray xchTextValue (textValue.getStore ());
+      xsiTypeDV->validate(xchTextValue.get ());
+    }
+    else
+    {
       ZORBA_ERROR_DESC_OSS( FORG0001, "Uri '" << typeQName->getNamespace()->str() << "' not found in current schema context.");
-          wasError = true;
+      wasError = true;
       
-        }
+    }
     
-        if (wasError)
-          return false;
-    }
-    catch (XMLException& idve)
-    {
-        ZORBA_ERROR_DESC_OSS( FORG0001, 
-            "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to '" << 
-            TypeOps::toString( *aTargetType ) << "' : " << transcode(idve.getMessage()));
-        return false;
-    }
-    catch(const OutOfMemoryException&) 
-    {
-        throw;
-    }
-    catch (const error::ZorbaError& e) {
-      throw e;
-    }
-    catch (...)
-    {
-        throw;
-    }
+    if (wasError)
+      return false;
+  }
+  catch (XMLException& idve)
+  {
+    xqpStringStore_t msg;
+    transcode(idve.getMessage(), msg);
+
+    ZORBA_ERROR_DESC_OSS(FORG0001, 
+                         "String '" << textValue.trim(" \n\r\t",4) <<
+                         "' cannot be cast to '" << 
+                         TypeOps::toString( *aTargetType ) << "' : "
+                         << msg->c_str());
+    return false;
+  }
+  catch(const OutOfMemoryException&) 
+  {
+    throw;
+  }
+  catch (const error::ZorbaError& e) {
+    throw e;
+  }
+  catch (...)
+  {
+    throw;
+  }
 #endif //ZORBA_NO_XMLSCHEMA
   
-    const XQType* baseType_ptr = udXQType->getBaseType().getp();
+  const XQType* baseType_ptr = udXQType->getBaseType().getp();
   
-    while ( baseType_ptr->type_kind() == XQType::USER_DEFINED_KIND )
-    {        
-        const UserDefinedXQType* udBaseType_ptr = static_cast<const UserDefinedXQType*>(baseType_ptr);
-        baseType_ptr = udBaseType_ptr->getBaseType().getp();
-    }
+  while ( baseType_ptr->type_kind() == XQType::USER_DEFINED_KIND )
+  {        
+    const UserDefinedXQType* udBaseType_ptr = static_cast<const UserDefinedXQType*>(baseType_ptr);
+    baseType_ptr = udBaseType_ptr->getBaseType().getp();
+  }
   
-    ZORBA_ASSERT( baseType_ptr->type_kind() == XQType::ATOMIC_TYPE_KIND );
+  ZORBA_ASSERT( baseType_ptr->type_kind() == XQType::ATOMIC_TYPE_KIND );
   
-    xqpStringStore_t textval = textValue.getStore();
-    return GenericCast::instance()->castToAtomic(result, textval, baseType_ptr);
+  xqpStringStore_t textval = textValue.getStore();
+  return GenericCast::instance()->castToAtomic(result, textval, baseType_ptr);
 }
 
 

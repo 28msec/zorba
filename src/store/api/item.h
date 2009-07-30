@@ -444,6 +444,12 @@ public:
    */
   virtual bool
   isIdRefs() const;
+
+  /** Accessor for element node
+   *  @return true if this element node belongs to a substition group
+   */
+  virtual bool
+  isInSubstitutionGroup() const;
   
   /** Accessor for element node
    *  @return  returns prefix namespace pairs

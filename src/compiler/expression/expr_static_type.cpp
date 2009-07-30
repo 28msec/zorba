@@ -171,6 +171,7 @@ static xqtref_t axist_step_type(
                                 nodename,                               \
                                 RTM.UNTYPED_ATOMIC_TYPE_ONE,            \
                                 TypeConstants::QUANT_STAR,              \
+                                false,                                  \
                                 false);                                 \
   }                                                                     \
   else if (untyped)                                                     \
@@ -179,6 +180,7 @@ static xqtref_t axist_step_type(
                                 nodename,                               \
                                 RTM.UNTYPED_TYPE,                       \
                                 TypeConstants::QUANT_STAR,              \
+                                false,                                  \
                                 false);                                 \
   }                                                                     \
   else                                                                  \
@@ -187,6 +189,7 @@ static xqtref_t axist_step_type(
                                 nodename,                               \
                                 RTM.ANY_TYPE,                           \
                                 TypeConstants::QUANT_STAR,              \
+                                false,                                  \
                                 false);                                 \
   }
 
@@ -206,6 +209,7 @@ static xqtref_t axist_step_type(
                                   nodename,                             \
                                   contentType,                          \
                                   TypeConstants::QUANT_QUESTION,        \
+                                  false,                                \
                                   false);                               \
     }                                                                   \
     else                                                                \
@@ -214,6 +218,7 @@ static xqtref_t axist_step_type(
                                   nodename,                             \
                                   contentType,                          \
                                   TypeConstants::QUANT_STAR,            \
+                                  false,                                \
                                   false);                               \
     }                                                                   \
   }                                                                     \
@@ -223,6 +228,7 @@ static xqtref_t axist_step_type(
                                 nodename,                               \
                                 RTM.ANY_TYPE,                           \
                                 TypeConstants::QUANT_QUESTION,          \
+                                false,                                  \
                                 false);                                 \
   }                                                                     \
   else                                                                  \
@@ -231,6 +237,7 @@ static xqtref_t axist_step_type(
                                 nodename,                               \
                                 RTM.ANY_TYPE,                           \
                                 TypeConstants::QUANT_STAR,              \
+                                false,                                  \
                                 false);                                 \
   }
 
@@ -642,6 +649,7 @@ xqtref_t elem_expr::return_type_impl (static_context *sctx)
                           NULL,
                           typeName,
                           TypeConstants::QUANT_ONE,
+                          false,
                           false);
 }
 
@@ -653,6 +661,7 @@ xqtref_t doc_expr::return_type_impl (static_context *sctx)
                           NULL,
                           theContent == NULL ? NULL : theContent->return_type(sctx),
                           TypeConstants::QUANT_ONE,
+                          false,
                           false);
 }
 
@@ -664,6 +673,7 @@ xqtref_t attr_expr::return_type_impl (static_context *sctx)
                           NULL,
                           theValueExpr == NULL ? NULL : theValueExpr->return_type(sctx),
                           TypeConstants::QUANT_ONE,
+                          false,
                           false);
 }
 
@@ -707,6 +717,7 @@ xqtref_t text_expr::return_type_impl (static_context *sctx)
                                                    NULL,
                                                    NULL,
                                                    q,
+                                                   false,
                                                    false);
 }
 

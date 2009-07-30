@@ -493,7 +493,9 @@ void PULImpl::addSetElementType(
   UpdatePrimitive* upd = new UpdSetElementType(this, target,
                                                typeName, value,
                                                haveValue, haveEmptyValue,
-                                               haveTypedValue, false);
+                                               haveTypedValue,
+                                               false,
+                                               isInSubstitutionGroup);
   theValidationList.push_back(upd);
 }
 
@@ -512,7 +514,9 @@ void PULImpl::addSetElementType(
   UpdatePrimitive* upd = new UpdSetElementType(this, target,
                                                typeName, typedValue,
                                                haveValue, haveEmptyValue,
-                                               haveTypedValue, true);
+                                               haveTypedValue,
+                                               true,
+                                               isInSubstitutionGroup);
   theValidationList.push_back(upd);
 }
 
@@ -1349,6 +1353,9 @@ void UpdSetElementType::apply()
   {
     target->resetHaveValue();
   }
+
+  if (theIsInSubstitutionGroup)
+    target->setInSubstGroup();
 }
 
 

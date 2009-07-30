@@ -206,7 +206,7 @@ RootTypeManager::RootTypeManager()
 #define ZXSE_PREFIX "zxse"
 
 #define XSQNDECL(var, local)  \
-  GENV.getStore().getItemFactory()->createQName(var, XS_URI, XS_PREFIX, local)
+  GENV.getStore().getItemFactory()->createQName(var, XS_URI, "", local)
 
   XSQNDECL(XS_ANY_ATOMIC_QNAME, "anyAtomicType");
   XSQNDECL(XS_STRING_QNAME, "string");
@@ -368,12 +368,14 @@ RootTypeManager::RootTypeManager()
                                       contentType,                      \
                                       TypeConstants::QUANT_ONE,         \
                                       false,                            \
+                                      false,                            \
                                       true);                            \
                                                                         \
   basename##_TYPE_QUESTION = new NodeXQType(this,                       \
                                            nodeTest,                    \
                                            contentType,                 \
                                            TypeConstants::QUANT_QUESTION, \
+                                           false,                       \
                                            false,                       \
                                            true);                       \
                                                                         \
@@ -382,12 +384,14 @@ RootTypeManager::RootTypeManager()
                                         contentType,                    \
                                         TypeConstants::QUANT_STAR,      \
                                         false,                          \
+                                        false,                          \
                                         true);                          \
                                                                         \
   basename##_TYPE_PLUS = new NodeXQType(this,                           \
                                         nodeTest,                       \
                                         contentType,                    \
                                         TypeConstants::QUANT_PLUS,      \
+                                        false,                          \
                                         false,                          \
                                         true)
 

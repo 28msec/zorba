@@ -384,6 +384,7 @@ private:
   rchandle<NodeTest> m_nodetest;
   xqtref_t           m_content_type;
   bool               m_nillable;
+  bool               m_schema_test;
 
  public:
   SERIALIZABLE_CLASS(NodeXQType)
@@ -402,6 +403,7 @@ public:
         xqtref_t content_type,
         TypeConstants::quantifier_t quantifier,
         bool nillable,
+        bool schematest,
         bool builtin = false);
 
   NodeXQType(
@@ -411,6 +413,7 @@ public:
         xqtref_t content_type,
         TypeConstants::quantifier_t quantifier,
         bool nillable,
+        bool schematest,
         bool builtin = false);
 
   NodeXQType(

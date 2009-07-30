@@ -924,9 +924,16 @@ bool BasicItemFactory::createElementNode(
     if (parent == NULL)
       xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
 
-    n = new ElementNode(xmlTree, pnode, pos, nodeName,
-                        typeName, haveTypedValue, haveEmptyValue,
-                        &localBindings, baseUri);
+    n = new ElementNode(xmlTree,
+                        pnode,
+                        pos,
+                        nodeName,
+                        typeName,
+                        haveTypedValue,
+                        haveEmptyValue,
+                        isInSubstitutionGroup,
+                        &localBindings,
+                        baseUri);
   }
   catch (...)
   {

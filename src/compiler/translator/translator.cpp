@@ -1506,7 +1506,8 @@ xqtref_t create_element_test(
                                  ename,
                                  contentType,
                                  TypeConstants::QUANT_ONE,
-                                 nillable);
+                                 nillable,
+                                 false);
 }
 
 
@@ -6124,6 +6125,7 @@ void end_visit (const DocumentTest& v, void* /*visit_state*/)
                                                NULL,
                                                elementOrSchemaTest,
                                                TypeConstants::QUANT_ONE,
+                                               false,
                                                false);
     tstack.push(docTest);
   }
@@ -6190,7 +6192,8 @@ void end_visit (const ElementTest& v, void* /*visit_state*/)
                                                 elemNameItem,
                                                 contentType,
                                                 TypeConstants::QUANT_ONE,
-                                                nillable);
+                                                nillable,
+                                                false);
     tstack.push(seqmatch);
   }
 }
@@ -6294,6 +6297,7 @@ void end_visit (const AttributeTest& v, void* /*visit_state*/)
                                                 attrNameItem.getp(),
                                                 contentType,
                                                 TypeConstants::QUANT_ONE,
+                                                false,
                                                 false);
 
     tstack.push(seqmatch);
@@ -6435,6 +6439,7 @@ void end_visit (const PITest& v, void* /*visit_state*/)
                                                     qname,
                                                     NULL,
                                                     TypeConstants::QUANT_ONE,
+                                                    false,
                                                     false);
       tstack.push (t);
     }

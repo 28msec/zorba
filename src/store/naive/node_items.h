@@ -328,18 +328,19 @@ class XmlNode : public store::Item
 public:
   enum NodeFlags
   {
-    NodeKindMask      =   7,
-    IsId              =   8,
-    IsIdRefs          =   16,
-    HaveTypedValue    =   32,   // for element nodes only
-    HaveEmptyValue    =   64,   // for element nodes only
-    IsTyped           =   128,  // for text nodes only
-    HaveListValue     =   256,  // for text and attribute nodes only
+    NodeKindMask      =   0x7,
+    IsId              =   0x8,
+    IsIdRefs          =   0x10,
+    HaveTypedValue    =   0x20,    // for element nodes only
+    HaveEmptyValue    =   0x40,    // for element nodes only
+    IsTyped           =   0x80,    // for text nodes only
+    HaveListValue     =   0x100,   // for text and attribute nodes only
 
-    HaveLocalBindings =   512,  // for element nodes only
-    HaveBaseUri       =   1024, // for element nodes only
-    IsBaseUri         =   2048, // for attribute nodes only
-    IsHidden          =   4096  // for attribute nodes only
+    HaveLocalBindings =   0x200,   // for element nodes only
+    HaveBaseUri       =   0x400,   // for element nodes only
+    IsBaseUri         =   0x800,   // for attribute nodes only
+    IsHidden          =   0x1000,  // for attribute nodes only
+    IsInSubstGroup    =   0x2000   // for element nodes only
   };
 
 protected:
@@ -648,6 +649,7 @@ public:
         store::Item_t&              typeName,
         bool                        haveTypedValue,
         bool                        haveEmptyValue,
+        bool                        isInSubstGroup,
         const store::NsBindings*    localBindings,
         xqpStringStore_t&           baseUri);
 
@@ -683,6 +685,8 @@ public:
         store::NsBindings& bindings,
         store::StoreConsts::NsScoping scope = store::StoreConsts::ALL_NAMESPACES) const;
 
+  bool isInSubstitutionGroup() const { return (theFlags & IsInSubstGroup) != 0; }
+
   xqp_string show() const;
 
   //
@@ -701,6 +705,9 @@ public:
   bool haveEmptyValue() const   { return (theFlags & HaveEmptyValue) != 0; }
 
   bool haveTypedTypedValue() const;
+
+  void setInSubstGroup()        { theFlags |= IsInSubstGroup; }
+  void resetInSubstGroup()      { theFlags &= ~IsInSubstGroup; }
 
   bool haveLocalBindings() const{ return (theFlags & HaveLocalBindings) != 0; }
 

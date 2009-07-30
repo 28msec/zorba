@@ -102,6 +102,10 @@ public:
         std::string& loaction,
         const QueryLoc& loc);
 
+  void getSubstitutionHeadForElement(
+        const store::Item* qname,
+        store::Item_t& result);
+
   void getTypeNameFromElementName(
         const store::Item* qname,
         store::Item_t& typeName);

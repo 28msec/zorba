@@ -173,12 +173,14 @@ NodeXQType::NodeXQType(
     xqtref_t contentType,
     TypeConstants::quantifier_t quantifier,
     bool nillable,
+    bool schematest,
     bool builtin)
   :
   XQType(manager, NODE_TYPE_KIND, quantifier, builtin),
   m_nodetest(nodetest),
   m_content_type(contentType),
-  m_nillable(nillable)
+  m_nillable(nillable),
+  m_schema_test(schematest)
 {
 }
 
@@ -190,12 +192,14 @@ NodeXQType::NodeXQType(
     xqtref_t contentType,
     TypeConstants::quantifier_t quantifier,
     bool nillable,
+    bool schematest,
     bool builtin)
   :
   XQType(manager, NODE_TYPE_KIND, quantifier, builtin),
   m_nodetest(new NodeTest(nodekind, nodename)),
   m_content_type(contentType),
-  m_nillable(nillable)
+  m_nillable(nillable),
+  m_schema_test(schematest)
 {
 }
 
@@ -207,7 +211,8 @@ NodeXQType::NodeXQType(
   XQType(source.m_manager, NODE_TYPE_KIND, quantifier, false),
   m_nodetest(source.m_nodetest),
   m_content_type(source.m_content_type),
-  m_nillable(source.m_nillable)
+  m_nillable(source.m_nillable),
+  m_schema_test(source.m_schema_test)
 {
 }
 

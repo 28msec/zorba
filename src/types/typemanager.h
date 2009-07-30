@@ -106,7 +106,8 @@ public:
         const store::Item* nodeName,
         xqtref_t contentType,
         TypeConstants::quantifier_t quantifier,
-        bool nillable) const = 0;
+        bool nillable,
+        bool schematype) const = 0;
 
   virtual xqtref_t create_type(
         const XQType& type,

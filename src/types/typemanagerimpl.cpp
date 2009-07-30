@@ -271,7 +271,8 @@ xqtref_t TypeManagerImpl::create_node_type(
     const store::Item* nodeName,
     xqtref_t contentType,
     TypeConstants::quantifier_t quantifier,
-    bool nillable) const
+    bool nillable,
+    bool schematest) const
 {
   RootTypeManager& RTM = GENV_TYPESYSTEM;
 
@@ -298,6 +299,7 @@ xqtref_t TypeManagerImpl::create_node_type(
                             NULL,
                             contentType,
                             quantifier,
+                            false,
                             false);
     }
   }
@@ -314,7 +316,8 @@ xqtref_t TypeManagerImpl::create_node_type(
                             nodeName,
                             contentType,
                             quantifier,
-                            nillable);
+                            nillable,
+                            schematest);
 
     }
     else if (nodeKind == store::StoreConsts::elementNode)
@@ -344,7 +347,8 @@ xqtref_t TypeManagerImpl::create_node_type(
                             nodeName,
                             RTM.STRING_TYPE_ONE,
                             quantifier,
-                            nillable);
+                            nillable,
+                            false);
     }
   }
 
@@ -493,23 +497,12 @@ xqtref_t TypeManagerImpl::create_value_type(const store::Item* item) const
     {
       xqtref_t contentType = create_named_type(item->getType(), quant);
 
-#ifndef ZORBA_NO_XMLSCHEMA
-      // TODO: remove this after create_named_type() can handle anonymous types.
-      if (contentType == NULL)
-      {
-        return (nodeKind == store::StoreConsts::elementNode ?
-                create_schema_element_type(item->getNodeName(), quant) :
-                create_schema_attribute_type(item->getNodeName(), quant));
-      }
-      else
-#endif
-      {
-        return create_node_type(nodeKind,
-                                item->getNodeName(),
-                                contentType,
-                                quant,
-                                false);
-      }
+      return create_node_type(nodeKind,
+                              item->getNodeName(),
+                              contentType,
+                              quant,
+                              false,
+                              false);
     }
     case store::StoreConsts::documentNode:
     {
@@ -539,6 +532,7 @@ xqtref_t TypeManagerImpl::create_value_type(const store::Item* item) const
                               NULL,
                               elemType,
                               quant,
+                              false,
                               false);
     }
     case store::StoreConsts::textNode:
@@ -551,6 +545,7 @@ xqtref_t TypeManagerImpl::create_value_type(const store::Item* item) const
                               item->getNodeName(),
                               GENV_TYPESYSTEM.STRING_TYPE_ONE,
                               quant,
+                              false,
                               false);
     }
     case store::StoreConsts::commentNode:
@@ -589,7 +584,8 @@ xqtref_t TypeManagerImpl::create_schema_element_type(
                           elemName,
                           contentType,
                           quant,
-                          false);
+                          false, // nillable
+                          true); // schematest
 }
 
 
@@ -614,12 +610,13 @@ xqtref_t TypeManagerImpl::create_schema_attribute_type(
     const store::Item* attrName,
     TypeConstants::quantifier_t quant) const
 {
-  xqtref_t contentType = m_schema->createXQTypeFromElementName(this, attrName, true);
+  xqtref_t contentType = m_schema->createXQTypeFromAttributeName(this, attrName);
 
   return create_node_type(store::StoreConsts::attributeNode,
                           attrName,
                           contentType,
                           quant,
+                          false,
                           false);
 }
 
@@ -781,6 +778,7 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
                             ename.getp(),
                             content_type,
                             q,
+                            false,
                             false);
   }
 
@@ -799,6 +797,7 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
                             aname.getp(),
                             content_type,
                             q,
+                            false,
                             false);
   }
 
@@ -811,6 +810,7 @@ xqtref_t TypeManagerImpl::create_type(const TypeIdentifier& ident) const
                             NULL,
                             content_type,
                             q,
+                            false,
                             false);
   }
 
