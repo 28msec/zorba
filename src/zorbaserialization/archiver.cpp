@@ -40,7 +40,8 @@ archive_field::archive_field(const char *type, bool is_simple, bool is_class,
 archive_field::~archive_field()
 {
   free(type);
-  free((void*)value);
+  if(value)
+    free((void*)value);
   archive_field *temp1;
   archive_field *temp2;
   temp1 = first_child;
