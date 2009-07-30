@@ -268,7 +268,7 @@ xqtref_t TypeManagerImpl::create_named_type(
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_node_type(
     store::StoreConsts::NodeKind nodeKind,
-    const store::Item* nodeName,
+    const store::Item_t& nodeName,
     xqtref_t contentType,
     TypeConstants::quantifier_t quantifier,
     bool nillable,
@@ -575,7 +575,7 @@ xqtref_t TypeManagerImpl::create_value_type(const store::Item* item) const
   with elemName in the in-scope schema declarations.
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_schema_element_type(
-    const store::Item* elemName,
+    const store::Item_t& elemName,
     TypeConstants::quantifier_t quant) const
 {
   xqtref_t contentType = m_schema->createXQTypeFromElementName(this, elemName, true);
@@ -607,7 +607,7 @@ void TypeManagerImpl::get_schema_element_typename(
   with attrName in the in-scope schema declarations.
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_schema_attribute_type(
-    const store::Item* attrName,
+    const store::Item_t& attrName,
     TypeConstants::quantifier_t quant) const
 {
   xqtref_t contentType = m_schema->createXQTypeFromAttributeName(this, attrName);

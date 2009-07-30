@@ -362,25 +362,30 @@ RootTypeManager::RootTypeManager()
   ITEM_TYPE_STAR = new ItemXQType(this, TypeConstants::QUANT_STAR, true);
   ITEM_TYPE_PLUS = new ItemXQType(this, TypeConstants::QUANT_PLUS, true);
   
-#define NODE_TYPE_DEFN(basename, nodeTest, contentType)                 \
+  store::Item_t nullNodeName;
+
+#define NODE_TYPE_DEFN(basename, nodeKind, contentType)                 \
   basename##_TYPE_ONE = new NodeXQType(this,                            \
-                                      nodeTest,                         \
-                                      contentType,                      \
-                                      TypeConstants::QUANT_ONE,         \
-                                      false,                            \
-                                      false,                            \
-                                      true);                            \
+                                       nodeKind,                        \
+                                       nullNodeName,                    \
+                                       contentType,                     \
+                                       TypeConstants::QUANT_ONE,        \
+                                       false,                           \
+                                       false,                           \
+                                       true);                           \
                                                                         \
   basename##_TYPE_QUESTION = new NodeXQType(this,                       \
-                                           nodeTest,                    \
-                                           contentType,                 \
-                                           TypeConstants::QUANT_QUESTION, \
-                                           false,                       \
-                                           false,                       \
-                                           true);                       \
+                                            nodeKind,                   \
+                                            nullNodeName,               \
+                                            contentType,                \
+                                            TypeConstants::QUANT_QUESTION, \
+                                            false,                      \
+                                            false,                      \
+                                            true);                      \
                                                                         \
   basename##_TYPE_STAR = new NodeXQType(this,                           \
-                                        nodeTest,                       \
+                                        nodeKind,                       \
+                                        nullNodeName,                   \
                                         contentType,                    \
                                         TypeConstants::QUANT_STAR,      \
                                         false,                          \
@@ -388,34 +393,35 @@ RootTypeManager::RootTypeManager()
                                         true);                          \
                                                                         \
   basename##_TYPE_PLUS = new NodeXQType(this,                           \
-                                        nodeTest,                       \
+                                        nodeKind,                       \
+                                        nullNodeName,                   \
                                         contentType,                    \
                                         TypeConstants::QUANT_PLUS,      \
                                         false,                          \
                                         false,                          \
                                         true)
 
-  NODE_TYPE_DEFN(ANY_NODE, NodeTest::ANY_NODE_TEST, ANY_TYPE);
+  NODE_TYPE_DEFN(ANY_NODE, store::StoreConsts::anyNode, ANY_TYPE);
 
-  NODE_TYPE_DEFN(ANY_NODE_UNTYPED, NodeTest::ANY_NODE_TEST, UNTYPED_TYPE);
+  NODE_TYPE_DEFN(ANY_NODE_UNTYPED, store::StoreConsts::anyNode, UNTYPED_TYPE);
 
-  NODE_TYPE_DEFN(DOCUMENT, NodeTest::DOCUMENT_TEST, ANY_TYPE);
+  NODE_TYPE_DEFN(DOCUMENT, store::StoreConsts::documentNode, ANY_TYPE);
 
-  NODE_TYPE_DEFN(DOCUMENT_UNTYPED, NodeTest::DOCUMENT_TEST, UNTYPED_TYPE);
+  NODE_TYPE_DEFN(DOCUMENT_UNTYPED, store::StoreConsts::documentNode, UNTYPED_TYPE);
 
-  NODE_TYPE_DEFN(ELEMENT, NodeTest::ELEMENT_TEST, ANY_TYPE);
+  NODE_TYPE_DEFN(ELEMENT, store::StoreConsts::elementNode, ANY_TYPE);
 
-  NODE_TYPE_DEFN(ELEMENT_UNTYPED, NodeTest::ELEMENT_TEST, UNTYPED_TYPE);
+  NODE_TYPE_DEFN(ELEMENT_UNTYPED, store::StoreConsts::elementNode, UNTYPED_TYPE);
 
-  NODE_TYPE_DEFN(ATTRIBUTE, NodeTest::ATTRIBUTE_TEST, ANY_SIMPLE_TYPE);
+  NODE_TYPE_DEFN(ATTRIBUTE, store::StoreConsts::attributeNode, ANY_SIMPLE_TYPE);
 
-  NODE_TYPE_DEFN(ATTRIBUTE_UNTYPED, NodeTest::ATTRIBUTE_TEST, UNTYPED_ATOMIC_TYPE_ONE);
+  NODE_TYPE_DEFN(ATTRIBUTE_UNTYPED, store::StoreConsts::attributeNode, UNTYPED_ATOMIC_TYPE_ONE);
 
-  NODE_TYPE_DEFN(TEXT, NodeTest::TEXT_TEST, UNTYPED_ATOMIC_TYPE_ONE);
+  NODE_TYPE_DEFN(TEXT, store::StoreConsts::textNode, UNTYPED_ATOMIC_TYPE_ONE);
 
-  NODE_TYPE_DEFN(PI, NodeTest::PI_TEST, STRING_TYPE_ONE);
+  NODE_TYPE_DEFN(PI, store::StoreConsts::piNode, STRING_TYPE_ONE);
 
-  NODE_TYPE_DEFN(COMMENT, NodeTest::COMMENT_TEST, STRING_TYPE_ONE);
+  NODE_TYPE_DEFN(COMMENT, store::StoreConsts::commentNode, STRING_TYPE_ONE);
 
 #undef NODE_TYPE_DEFN
 }

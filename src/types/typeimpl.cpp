@@ -76,6 +76,7 @@ const char* XQType::KIND_STRINGS[XQType::MAX_TYPE_KIND] =
   "NONE_KIND"
 };
 
+
 const char *AtomicXQType::ATOMIC_TYPE_CODE_STRINGS[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE] =
 {
   "xs:anyAtomicType",
@@ -125,6 +126,10 @@ const char *AtomicXQType::ATOMIC_TYPE_CODE_STRINGS[TypeConstants::ATOMIC_TYPE_CO
   "xs:NOTATION"
 };
 
+
+/*******************************************************************************
+
+********************************************************************************/
 std::ostream& XQType::serialize_ostream(std::ostream& os) const
 {
   return os << "[XQType " << KIND_STRINGS[type_kind()]
@@ -140,36 +145,56 @@ std::string XQType::toString() const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 std::ostream& AtomicXQType::serialize_ostream(std::ostream& os) const
 {
   return os << ATOMIC_TYPE_CODE_STRINGS[get_type_code()]
             << TypeOps::decode_quantifier (get_quantifier());
 }
 
+
 store::Item_t AtomicXQType::get_qname() const
 {
   return GENV_TYPESYSTEM.m_atomic_typecode_qname_map[m_type_code];
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 store::Item_t AnyXQType::get_qname() const
 {
   return GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 store::Item_t AnySimpleXQType::get_qname() const
 {
   return GENV_TYPESYSTEM.XS_ANY_SIMPLE_TYPE_QNAME;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 store::Item_t UntypedXQType::get_qname() const
 {
   return GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 NodeXQType::NodeXQType(
     const TypeManager* manager,
-    rchandle<NodeTest> nodetest,
+    store::StoreConsts::NodeKind nodeKind,
+    const store::Item_t& nodeName,
     xqtref_t contentType,
     TypeConstants::quantifier_t quantifier,
     bool nillable,
@@ -177,26 +202,8 @@ NodeXQType::NodeXQType(
     bool builtin)
   :
   XQType(manager, NODE_TYPE_KIND, quantifier, builtin),
-  m_nodetest(nodetest),
-  m_content_type(contentType),
-  m_nillable(nillable),
-  m_schema_test(schematest)
-{
-}
-
-
-NodeXQType::NodeXQType(
-    const TypeManager* manager,
-    store::StoreConsts::NodeKind nodekind,
-    const store::Item* nodename,
-    xqtref_t contentType,
-    TypeConstants::quantifier_t quantifier,
-    bool nillable,
-    bool schematest,
-    bool builtin)
-  :
-  XQType(manager, NODE_TYPE_KIND, quantifier, builtin),
-  m_nodetest(new NodeTest(nodekind, nodename)),
+  m_node_kind(nodeKind),
+  m_node_name(nodeName),
   m_content_type(contentType),
   m_nillable(nillable),
   m_schema_test(schematest)
@@ -209,7 +216,8 @@ NodeXQType::NodeXQType(
     TypeConstants::quantifier_t quantifier)
   :
   XQType(source.m_manager, NODE_TYPE_KIND, quantifier, false),
-  m_nodetest(source.m_nodetest),
+  m_node_kind(source.m_node_kind),
+  m_node_name(source.m_node_name),
   m_content_type(source.m_content_type),
   m_nillable(source.m_nillable),
   m_schema_test(source.m_schema_test)
@@ -223,26 +231,136 @@ bool NodeXQType::is_untyped() const
 }
 
 
+bool NodeXQType::is_equal(const NodeXQType& other) const
+{
+  if (m_node_kind != other.m_node_kind)
+    return false;
+
+  if (m_node_name != other.m_node_name)
+  {
+    if (m_node_name == NULL || other.m_node_name == NULL)
+      return false;
+
+    if (!m_node_name->equals(other.m_node_name))
+      return false;
+  }
+
+  xqtref_t c1 = get_content_type();
+  xqtref_t c2 = other.get_content_type();
+
+  if (c1 == c2)
+    return true;
+
+  if (c1 != NULL && c2 != NULL)
+    return TypeOps::is_equal(*c1, *c2);
+
+  if (c1 == NULL)
+    return (c2->type_kind() == XQType::ANY_TYPE_KIND);
+  else
+    return (c1->type_kind() == XQType::ANY_TYPE_KIND);
+
+  return false;
+}
+
+
+bool NodeXQType::is_subtype(const NodeXQType& supertype) const
+{
+  if (supertype.m_node_kind == store::StoreConsts::anyNode)
+    return true;
+
+  if (supertype.m_node_kind != m_node_kind)
+    return false;
+
+  if (supertype.m_node_name != NULL)
+  {
+    if (m_node_name == NULL)
+      return false;
+
+    if (!m_node_name->equals(supertype.m_node_name))
+    {
+      if (supertype.m_schema_test)
+      {
+        Schema* schema = supertype.m_manager->getSchema();
+        ZORBA_ASSERT(schema != NULL);
+
+        store::Item_t headName;
+        schema->getSubstitutionHeadForElement(m_node_name.getp(), headName);
+
+        while (headName != NULL)
+        {
+          if (headName->equals(supertype.m_node_name))
+          {
+            break;
+          }
+
+          schema->getSubstitutionHeadForElement(headName.getp(), headName);
+        }
+
+        if (headName == NULL)
+          return false;
+      }
+      else
+      {
+        return false;
+      }
+    }
+  }
+
+  if (m_content_type == supertype.m_content_type)
+    return true;
+
+  if (supertype.m_node_kind == store::StoreConsts::anyNode &&
+      supertype.m_content_type != NULL &&
+      supertype.m_content_type->type_kind() == XQType::UNTYPED_KIND)
+  {
+    return (m_content_type != NULL &&
+            m_content_type->type_kind() == XQType::UNTYPED_KIND);
+  }
+  
+  if (m_content_type != NULL && supertype.m_content_type != NULL)
+  {
+    return TypeOps::is_subtype(*m_content_type, *supertype.m_content_type);
+  }
+  else if (supertype.m_content_type == NULL)
+  {
+    return true;
+  }
+  else
+  {
+    return supertype.m_content_type->type_kind() == XQType::ANY_TYPE_KIND;
+  }
+
+  return false;
+}
+
+
 std::ostream& NodeXQType::serialize_ostream(std::ostream& os) const
 {
-  rchandle<NodeTest> node_test = get_nodetest ();
-  store::StoreConsts::NodeKind node_kind = node_test->get_node_kind();
-  xqtref_t content_type = get_content_type ();
-  rchandle<NodeNameTest> nametest = node_test->get_nametest();
-  os << "[NodeXQType " << store::StoreConsts::toString (node_kind)
-     << TypeOps::decode_quantifier (get_quantifier()) << " ";
-  if (nametest != NULL) {
-    os << "nametest=[uri: " << nametest->get_uri () << ", local: " << nametest->get_local () << "]";
+  store::StoreConsts::NodeKind node_kind = m_node_kind;
+  xqtref_t content_type = get_content_type();
+
+  os << "[NodeXQType " << store::StoreConsts::toString(node_kind)
+     << TypeOps::decode_quantifier(get_quantifier()) << " ";
+
+  if (m_node_name != NULL)
+  {
+    os << "nametest=[uri: " << m_node_name->getNamespace()->c_str()
+       << ", local: " << m_node_name->getLocalName()->c_str() << "]";
   }
+
   if (content_type != NULL)
   {
     os << " content=";
     os << content_type->toString ();
   }
+
   return os << "]";
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 UserDefinedXQType::UserDefinedXQType(
     const TypeManager *manager,
     store::Item_t qname,

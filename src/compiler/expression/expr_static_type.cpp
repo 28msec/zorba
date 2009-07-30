@@ -143,7 +143,7 @@ static xqtref_t axist_step_type(
 
   TypeConstants::quantifier_t inQuant = inputType->get_quantifier();
   store::StoreConsts::NodeKind inNodeKind = inputType->get_node_kind();
-  NodeNameTest* inNodeNameTest = inputType->get_node_name_test();
+  store::Item* inNodeName = inputType->get_node_name();
   xqtref_t inContentType = inputType->get_content_type();
 
   bool inUntyped = false;
@@ -369,8 +369,8 @@ self:
     }
 
     if (testNodeName != NULL &&
-        inNodeNameTest != NULL &&
-        !inNodeNameTest->matches(testNodeName))
+        inNodeName != NULL &&
+        !inNodeName->equals(testNodeName))
     {
       RAISE_XPST0005();
     }

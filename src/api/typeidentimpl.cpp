@@ -81,21 +81,35 @@ TypeIdentifier_t TypeIdentifier::createNamedType(const String& uri, const String
     return ti;
 }
 
-TypeIdentifier_t TypeIdentifier::createElementType(const String& uri, bool uriWildcard, const String& localName, bool localNameWildcard, TypeIdentifier_t contentType, IdentTypes::quantifier_t quantifier)
-{
-    TypeIdentifier_t ti(new TypeIdentifier());
-    ti->m_kind = IdentTypes::ELEMENT_TYPE;
-    ti->m_quantifier = quantifier;
-    ti->m_uri = uri;
-    ti->m_uriWildcard = uriWildcard;
-    ti->m_localName = localName;
-    ti->m_localNameWildcard = localNameWildcard;
-    ti->m_contentType = contentType;
 
-    return ti;
+TypeIdentifier_t TypeIdentifier::createElementType(
+    const String& uri,
+    bool uriWildcard,
+    const String& localName,
+    bool localNameWildcard,
+    TypeIdentifier_t contentType,
+    IdentTypes::quantifier_t quantifier)
+{
+  TypeIdentifier_t ti(new TypeIdentifier());
+  ti->m_kind = IdentTypes::ELEMENT_TYPE;
+  ti->m_quantifier = quantifier;
+  ti->m_uri = uri;
+  ti->m_uriWildcard = uriWildcard;
+  ti->m_localName = localName;
+  ti->m_localNameWildcard = localNameWildcard;
+  ti->m_contentType = contentType;
+
+  return ti;
 }
 
-TypeIdentifier_t TypeIdentifier::createAttributeType(const String& uri, bool uriWildcard, const String& localName, bool localNameWildcard, TypeIdentifier_t contentType, IdentTypes::quantifier_t quantifier)
+
+TypeIdentifier_t TypeIdentifier::createAttributeType(
+    const String& uri,
+    bool uriWildcard,
+    const String& localName,
+    bool localNameWildcard,
+    TypeIdentifier_t contentType,
+    IdentTypes::quantifier_t quantifier)
 {
     TypeIdentifier_t ti(new TypeIdentifier());
     ti->m_kind = IdentTypes::ATTRIBUTE_TYPE;
@@ -109,15 +123,19 @@ TypeIdentifier_t TypeIdentifier::createAttributeType(const String& uri, bool uri
     return ti;
 }
 
-TypeIdentifier_t TypeIdentifier::createDocumentType(TypeIdentifier_t contentType, IdentTypes::quantifier_t quantifier)
-{
-    TypeIdentifier_t ti(new TypeIdentifier());
-    ti->m_kind = IdentTypes::DOCUMENT_TYPE;
-    ti->m_quantifier = quantifier;
-    ti->m_contentType = contentType;
 
-    return ti;
+TypeIdentifier_t TypeIdentifier::createDocumentType(
+    TypeIdentifier_t contentType,
+    IdentTypes::quantifier_t quantifier)
+{
+  TypeIdentifier_t ti(new TypeIdentifier());
+  ti->m_kind = IdentTypes::DOCUMENT_TYPE;
+  ti->m_quantifier = quantifier;
+  ti->m_contentType = contentType;
+  
+  return ti;
 }
+
 
 TypeIdentifier_t TypeIdentifier::createPIType(IdentTypes::quantifier_t quantifier)
 {

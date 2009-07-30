@@ -147,24 +147,6 @@ TypeConstants::atomic_type_code_t TypeOps::get_atomic_type_code(const XQType& ty
 /*******************************************************************************
 
 ********************************************************************************/
-rchandle<NodeNameTest> TypeOps::get_nametest(const XQType& type)
-{
-  if (type.type_kind() == XQType::NODE_TYPE_KIND) 
-  {
-    const NodeXQType& n = static_cast<const NodeXQType&>(type);
-    const NodeTest* nt = n.get_nodetest();
-    if (nt) 
-    {
-      return rchandle<NodeNameTest>(nt->get_nametest());
-  }
-  }
-  return rchandle<NodeNameTest>(0);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 bool TypeOps::is_empty(const XQType& type) 
 {
   return type.type_kind() == XQType::EMPTY_KIND;
@@ -355,22 +337,7 @@ bool TypeOps::is_equal(const XQType& type1, const XQType& type2)
       const NodeXQType& n1 = static_cast<const NodeXQType&>(type1);
       const NodeXQType& n2 = static_cast<const NodeXQType&>(type2);
 
-      if (! (*n1.get_nodetest() == *n2.get_nodetest()))
-        return false;
-
-      xqtref_t c1 = n1.get_content_type();
-      xqtref_t c2 = n2.get_content_type();
-
-      if (c1 == c2)
-        return true;
-
-      if (c1 != NULL && c2 != NULL)
-        return is_equal(*c1, *c2);
-
-      if (c1 == NULL)
-        return (c2->type_kind() == XQType::ANY_TYPE_KIND);
-      else
-        return (c1->type_kind() == XQType::ANY_TYPE_KIND);
+      return n1.is_equal(n2);
     }
     case XQType::USER_DEFINED_KIND:
     {
@@ -440,28 +407,7 @@ bool TypeOps::is_subtype(const XQType& subtype, const XQType& supertype)
         const NodeXQType& n1 = static_cast<const NodeXQType&>(subtype);
         const NodeXQType& n2 = static_cast<const NodeXQType&>(supertype);
 
-        if (! n1.get_nodetest()->is_sub_nodetest_of(*n2.get_nodetest()))
-          return false;
-
-        xqtref_t c1 = n1.get_content_type();
-        xqtref_t c2 = n2.get_content_type();
-
-        if (c1 == c2)
-          return true;
-
-        if (n2.get_node_kind() == store::StoreConsts::anyNode &&
-            c2 != NULL &&
-            c2->type_kind() == XQType::UNTYPED_KIND)
-        {
-          return (c1 != NULL && c1->type_kind() == XQType::UNTYPED_KIND);
-      }
-
-        if (c1 != NULL && c2 != NULL)
-          return is_subtype(*c1, *c2);
-        else if (c2 == NULL)
-          return true;
-        else
-          return c2->type_kind() == XQType::ANY_TYPE_KIND;
+        return n1.is_subtype(n2);
       }
       case XQType::EMPTY_KIND:
       {
@@ -839,10 +785,14 @@ type_ident_ref_t TypeOps::get_type_identifier(const XQType& type)
   case XQType::NODE_TYPE_KIND:
   {
     const NodeXQType& nt = static_cast<const NodeXQType&>(type);
-    type_ident_ref_t content_type = nt.get_content_type() != NULL ? get_type_identifier(*nt.get_content_type()) : type_ident_ref_t();
-    const NodeTest* test = nt.get_nodetest();
-    const NodeNameTest* nametest = test->get_nametest();
-    switch(test->get_node_kind()) 
+
+    type_ident_ref_t content_type = (nt.get_content_type() != NULL ?
+                                     get_type_identifier(*nt.get_content_type()) :
+                                     type_ident_ref_t());
+
+    const store::Item* nodeName = nt.get_node_name();
+
+    switch(nt.get_node_kind()) 
     {
     case store::StoreConsts::anyNode:
       return TypeIdentifier::createAnyNodeType(q);
@@ -860,11 +810,29 @@ type_ident_ref_t TypeOps::get_type_identifier(const XQType& type)
       return TypeIdentifier::createDocumentType(content_type, q);
 
     case store::StoreConsts::elementNode:
-      return TypeIdentifier::createElementType(&*nametest->get_uri(), nametest->get_uri() == NULL, &*nametest->get_local(), nametest->get_local() == NULL, content_type, q);
-      
-    case store::StoreConsts::attributeNode:
-      return TypeIdentifier::createAttributeType(&*nametest->get_uri(), nametest->get_uri() == NULL, &*nametest->get_local(), nametest->get_local() == NULL, content_type, q);
+    {
+      String uri(nodeName->getNamespace());
+      String local(nodeName->getLocalName());
 
+      return TypeIdentifier::createElementType(uri,
+                                               nodeName == NULL,
+                                               local,
+                                               nodeName == NULL,
+                                               content_type,
+                                               q);
+    }  
+    case store::StoreConsts::attributeNode:
+    {
+      String uri(nodeName->getNamespace());
+      String local(nodeName->getLocalName());
+
+      return TypeIdentifier::createAttributeType(uri,
+                                                 nodeName == NULL,
+                                                 local,
+                                                 nodeName == NULL,
+                                                 content_type,
+                                                 q);
+    }
     default:
       // cannot happen
       ZORBA_ASSERT(false);

@@ -103,7 +103,7 @@ public:
 
   virtual xqtref_t create_node_type(
         store::StoreConsts::NodeKind nodeKind,
-        const store::Item* nodeName,
+        const store::Item_t& nodeName,
         xqtref_t contentType,
         TypeConstants::quantifier_t quantifier,
         bool nillable,
@@ -124,7 +124,7 @@ public:
 #ifndef ZORBA_NO_XMLSCHEMA
 
   virtual xqtref_t create_schema_element_type(
-        const store::Item* eName,
+        const store::Item_t& eName,
         TypeConstants::quantifier_t quant) const = 0;
 
   virtual void get_schema_element_typename(
@@ -132,7 +132,7 @@ public:
         store::Item_t& typeName) = 0;
 
   virtual xqtref_t create_schema_attribute_type(
-        const store::Item *aName,
+        const store::Item_t& aName,
         TypeConstants::quantifier_t quant) const = 0;
 
   virtual void get_schema_attribute_typename(

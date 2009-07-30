@@ -1473,44 +1473,6 @@ StaticContextConsts::xquery_version_t parse_xquery_version(const VersionDecl* vh
 
 
 
-
-/*******************************************************************************
-  Create a type representing an ElementTest, where:
-
-	ElementTest ::= "element" "(" (ElementNameOrWildcard ("," TypeName "?"?)?)? ")"
-********************************************************************************/
-xqtref_t create_element_test(
-    const QueryLoc& loc,
-    QName* elemName,
-    TypeName* typeName,
-    bool nillable)
-{
-  store::Item_t ename;
-  store::Item_t tname;
-  rchandle<NodeTest> nodeTest;
-  xqtref_t contentType;
-
-  if (elemName != NULL) 
-  {
-    ename = sctx_p->lookup_elem_qname(elemName->get_qname(), loc);
-  }
-  
-  if (typeName != NULL) 
-  {
-    tname = sctx_p->lookup_elem_qname(typeName->get_name()->get_qname(), loc);
-    
-    contentType = CTXTS->create_named_type(tname, TypeConstants::QUANT_ONE);
-  }
-  
-  return CTXTS->create_node_type(store::StoreConsts::elementNode,
-                                 ename,
-                                 contentType,
-                                 TypeConstants::QUANT_ONE,
-                                 nillable,
-                                 false);
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -5940,14 +5902,15 @@ void end_visit (const ItemType& v, void* /*visit_state*/) {
   NodeTest (NameTest | KindTest)
 
 ********************************************************************************/
-void *begin_visit (const NameTest& v) {
+void *begin_visit (const NameTest& v) 
+{
   TRACE_VISIT ();
   return no_state;
 }
 
 
-
-void end_visit (const NameTest& v, void* /*visit_state*/) {
+void end_visit (const NameTest& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
 
   expr *top = &*nodestack.top();
@@ -5955,18 +5918,22 @@ void end_visit (const NameTest& v, void* /*visit_state*/) {
   axis_step_expr *axisExpr = NULL;
   trycatch_expr *tce = NULL;
 
-  if ((axisExpr = dynamic_cast<axis_step_expr *>(top)) != NULL) {
+  if ((axisExpr = dynamic_cast<axis_step_expr *>(top)) != NULL) 
+  {
     // Construct name-test match expr
     rchandle<match_expr> matchExpr = new match_expr(cb->m_cur_sctx, loc);;
     matchExpr->setTestKind(match_name_test);
 
-    if (v.getQName() != NULL) {
+    if (v.getQName() != NULL) 
+    {
       string qname = v.getQName()->get_qname();
       store::Item_t qn_h = (axisExpr->getAxis () == axis_kind_attribute ?
                             sctx_p->lookup_qname("", qname, v.getQName()->get_location()) :
                             sctx_p->lookup_elem_qname(qname, v.getQName()->get_location()));
       matchExpr->setQName(qn_h);
-    } else {
+    }
+    else 
+    {
       rchandle<Wildcard> wildcard = v.getWildcard();
       ZORBA_ASSERT(wildcard != NULL);
 
@@ -6001,26 +5968,31 @@ void end_visit (const NameTest& v, void* /*visit_state*/) {
 
     // add the match expression
     axisExpr->setTest(matchExpr);
-  } else if ((tce = dynamic_cast<trycatch_expr *>(top)) != NULL) {
+  }
+  else if ((tce = dynamic_cast<trycatch_expr *>(top)) != NULL) 
+  {
     catch_clause *cc = &*(*tce)[0];
-    if (v.getQName() != NULL) {
+    if (v.getQName() != NULL) 
+    {
       string qname = v.getQName()->get_qname();
       store::Item_t qn_h = sctx_p->lookup_elem_qname (qname, loc);
       cc->add_nametest_h(new NodeNameTest(qn_h));
-    } else {
+    }
+    else
+    {
       rchandle<Wildcard> wildcard = v.getWildcard();
       ZORBA_ASSERT(wildcard != NULL);
 
       switch (wildcard->getKind())
       {
         case ParseConstants::wild_all:
-          cc->add_nametest_h(new NodeNameTest(xqpString("*").theStrStore, xqpString("*").theStrStore));
+          cc->add_nametest_h(new NodeNameTest(NULL, NULL));
           break;
         case ParseConstants::wild_elem:
-          cc->add_nametest_h(new NodeNameTest(xqpString("*").theStrStore, wildcard->getPrefix().theStrStore));
+          cc->add_nametest_h(new NodeNameTest(NULL, wildcard->getPrefix().theStrStore));
           break;
         case ParseConstants::wild_prefix:
-          cc->add_nametest_h(new NodeNameTest(wildcard->getLocalName().theStrStore, xqpString("*").theStrStore));
+          cc->add_nametest_h(new NodeNameTest(wildcard->getLocalName().theStrStore, NULL));
           break;
       }
     }

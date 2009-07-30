@@ -353,6 +353,7 @@ public:
     serialize_baseclass(ar, (XQType*)this);
     SERIALIZE_ENUM(TypeConstants::atomic_type_code_t, m_type_code);
   }
+
 public:
    AtomicXQType(
         const TypeManager *manager,
@@ -365,12 +366,13 @@ public:
    {
    }
 
-   TypeConstants::atomic_type_code_t get_type_code() const { return m_type_code; }
+  TypeConstants::atomic_type_code_t get_type_code() const { return m_type_code; }
 
-   content_kind_t content_kind() const { return SIMPLE_CONTENT_KIND; };
+  content_kind_t content_kind() const { return SIMPLE_CONTENT_KIND; };
 
   store::Item_t get_qname() const;
-   virtual std::ostream& serialize_ostream(std::ostream& os) const;
+
+  virtual std::ostream& serialize_ostream(std::ostream& os) const;
 };
 
 
@@ -381,37 +383,31 @@ public:
 class NodeXQType : public XQType
 {
 private:
-  rchandle<NodeTest> m_nodetest;
-  xqtref_t           m_content_type;
-  bool               m_nillable;
-  bool               m_schema_test;
+  store::StoreConsts::NodeKind  m_node_kind;
+  store::Item_t                 m_node_name;
+  xqtref_t                      m_content_type;
+  bool                          m_nillable;
+  bool                          m_schema_test;
 
- public:
+public:
   SERIALIZABLE_CLASS(NodeXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(NodeXQType, XQType)
   void serialize(::zorba::serialization::Archiver &ar)
   {
     serialize_baseclass(ar, (XQType*)this);
-    ar & m_nodetest;
+    SERIALIZE_ENUM(store::StoreConsts::NodeKind, m_node_kind);
+    ar & m_node_name;
     ar & m_content_type;
     ar & m_nillable;
-	ar & m_schema_test;
+    ar & m_schema_test;
   }
+
 public:
   NodeXQType(
         const TypeManager* manager,
-        rchandle<NodeTest> nodetest,
-        xqtref_t content_type,
-        TypeConstants::quantifier_t quantifier,
-        bool nillable,
-        bool schematest,
-        bool builtin = false);
-
-  NodeXQType(
-        const TypeManager* manager,
-        store::StoreConsts::NodeKind nodekind,
-        const store::Item* qname,
-        xqtref_t content_type,
+        store::StoreConsts::NodeKind nodeKind,
+        const store::Item_t& nodeName,
+        xqtref_t contentType,
         TypeConstants::quantifier_t quantifier,
         bool nillable,
         bool schematest,
@@ -421,22 +417,23 @@ public:
         const NodeXQType& source,
         TypeConstants::quantifier_t quantifier);
 
-  store::StoreConsts::NodeKind get_node_kind() const 
-  {
-    return m_nodetest->get_node_kind(); 
-  }
+  store::StoreConsts::NodeKind get_node_kind() const { return m_node_kind; }
 
-  NodeTest* get_nodetest() const { return m_nodetest.getp(); }
+  store::Item* get_node_name() const { return m_node_name.getp(); }
 
-  NodeNameTest* get_node_name_test() const { return m_nodetest->get_nametest(); }
+  bool is_schema_test() const { return m_schema_test; }
 
   xqtref_t get_content_type() const { return m_content_type; }
+
+  bool get_nillable() const { return m_nillable; }
 
   bool is_untyped() const;
 
   content_kind_t content_kind() const { return MIXED_CONTENT_KIND; };
 
-  bool get_nillable() const { return m_nillable; }
+  bool is_equal(const NodeXQType& supertype) const;
+
+  bool is_subtype(const NodeXQType& supertype) const;
 
   virtual std::ostream& serialize_ostream(std::ostream& os) const;
 };
