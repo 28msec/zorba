@@ -33,6 +33,7 @@
 #include <zorba/exception.h>
 #include <zorba/zorbastring.h>
 #include <zorba/util/file.h>
+#include <zorba/static_context_consts.h>
 
 #include <zorbautils/strutil.h>
 
@@ -85,23 +86,34 @@ set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicConte
 
   zorba::ItemFactory* lFactory = zorba::Zorba::getInstance(NULL)->getItemFactory();
 
-  if (!inlineFile) {
+  if (!inlineFile) 
+  {
     zorba::Item lItem = lFactory->createString(val);
 		if(name != ".")
 			dctx->setVariable (name, lItem);
 		else
 			dctx->setContextItem (lItem);
-  } else {
+  }
+  else
+  {
     std::ifstream* is = new std::ifstream(val.c_str ());
     
     if ( *is==NULL )
-        std::cout << "Error: Location not found: " << val.c_str() << std::endl;
+      std::cout << "Error: Location not found: " << val.c_str() << std::endl;
     
     assert (*is);
-	if(name != ".")
-		dctx->setVariableAsDocument (name, val.c_str(), std::auto_ptr<std::istream>(is));
-	else
-		dctx->setContextItemAsDocument (val.c_str(), std::auto_ptr<std::istream>(is));
+
+    if(name != ".")
+    {
+      dctx->setVariableAsDocument(name,
+                                  val.c_str(),
+                                  std::auto_ptr<std::istream>(is),
+                                  validate_lax);
+    }
+    else
+    {
+      dctx->setContextItemAsDocument (val.c_str(), std::auto_ptr<std::istream>(is));
+    }
   }
 }
 
@@ -202,9 +214,8 @@ main(int argc, char** argv)
             path.find("ValLax") != std::string::npos) 
           lContext->setBoundarySpacePolicy(preserve_space);
 
-      	zorba::String lProlog = zorba::String(
-          std::string("import schema 'http://www.w3.org/XML/1998/namespace';\n"));
-
+      	zorba::String lProlog = zorba::String(std::string("import schema 'http://www.w3.org/XML/1998/namespace';\n"));
+	
         lContext->loadProlog(lProlog, getCompilerHints());
       }
       
