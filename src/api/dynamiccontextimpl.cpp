@@ -228,8 +228,6 @@ DynamicContextImpl::setVariableAsDocument(
         ParseConstants::validation_mode_t mode = (aMode == validate_lax ?
                                                   ParseConstants::val_lax :
                                                   ParseConstants::val_strict);
-
-        QueryLoc loc;
         bool success = ValidateIterator::
                        effectiveValidationValue(validatedNode,
                                                 docItem,
