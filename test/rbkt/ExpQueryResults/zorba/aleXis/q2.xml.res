@@ -1,1 +1,1 @@
-xs:string
+string
