@@ -896,6 +896,7 @@ ElementNode::ElementNode(
     store::Item_t&           typeName,
     bool                     haveTypedValue,
     bool                     haveEmptyValue,
+    bool                     isInSubstGroup,
     const store::NsBindings* localBindings,
     xqpStringStore_t&           baseUri,
     bool doswap_nsbindings)
@@ -914,6 +915,9 @@ ElementNode::ElementNode(
     if (haveEmptyValue)
       setHaveEmptyValue();
   }
+
+  if(isInSubstGroup)
+    setInSubstGroup();
 
   if (localBindings)
   {
@@ -962,7 +966,8 @@ ElementNode::ElementNode(
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos 
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
-              << " name = " << *theName->getStringValue());
+              << " name = " << *theName->getStringValue()
+              << " type = " << *theTypeName->getStringValue());
 }
 
 
@@ -994,7 +999,9 @@ XmlNode* ElementNode::copyInternal(
 
   store::Item_t nodeName = theName;
   store::Item_t typeName;
-  bool haveValue, haveEmptyValue; 
+  bool haveValue;
+  bool haveEmptyValue;
+  bool inSubstGroup;
 
   NsBindingsContext* parentNsContext = NULL;
   if (parent && parent->getNodeKind() == store::StoreConsts::elementNode)
@@ -1009,12 +1016,14 @@ XmlNode* ElementNode::copyInternal(
     typeName = theTypeName;
     haveValue = this->haveValue();
     haveEmptyValue = this->haveEmptyValue();
+    inSubstGroup = this->isInSubstitutionGroup();
   }
   else
   {
     typeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED];
     haveValue = true;
     haveEmptyValue = false;
+    inSubstGroup = false;
   }
 
   xqpStringStore_t baseUri;
@@ -1027,7 +1036,7 @@ XmlNode* ElementNode::copyInternal(
     pos = (parent == rootParent ? pos : -1);
 
     copyNode = new ElementNode(tree, parent, pos, nodeName, typeName,
-                                   haveValue, haveEmptyValue,
+                                   haveValue, haveEmptyValue, inSubstGroup,
 								                   NULL, // local bindings 
                                    baseUri,
                                    false);
@@ -1092,8 +1101,8 @@ XmlNode* ElementNode::copyInternal(
     else // ! nsPreserve
     {
       if (copymode.theTypePreserve &&
-          (theTypeName == GET_STORE().theSchemaTypeNames[XS_QNAME] ||
-           theTypeName == GET_STORE().theSchemaTypeNames[XS_NOTATION]))
+          (theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_QNAME]) ||
+           theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_NOTATION])))
       {
         ZORBA_ERROR(XQTY0086);
       }
@@ -1459,7 +1468,7 @@ void ElementNode::getStringValue(std::string& buf) const
 ********************************************************************************/
 store::Item_t ElementNode::getNilled() const
 {
-  if (theTypeName == GET_STORE().theSchemaTypeNames[XS_UNTYPED])
+  if (theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED]))
     return new BooleanItemNaive(false);
 
   bool nilled = true;
@@ -2157,7 +2166,7 @@ XmlNode* AttributeNode::copyInternal(
     typeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
 
     if (!haveListValue() &&
-        theTypedValue->getType() == GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC])
+        theTypedValue->getType()->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC]))
     {
       typedValue = theTypedValue;
     }
@@ -2185,7 +2194,7 @@ XmlNode* AttributeNode::copyInternal(
   }
   catch (...)
   {
-    if (tree) delete tree;
+    delete tree;
     throw;
   }
   
@@ -2538,7 +2547,7 @@ XmlNode* TextNode::copyInternal(
   }
   catch (...)
   {
-    if (tree) delete tree;
+    delete tree;
     throw;
   }
 
@@ -2839,7 +2848,7 @@ XmlNode* PiNode::copyInternal(
   }
   catch (...)
   {
-    if (tree) delete tree;
+    delete tree;
     throw;
   }
 
@@ -2975,7 +2984,7 @@ XmlNode* CommentNode::copyInternal(
   }
   catch (...)
   {
-    if (tree) delete tree;
+    delete tree;
     throw;
   }
 

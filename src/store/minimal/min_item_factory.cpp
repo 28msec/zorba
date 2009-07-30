@@ -854,7 +854,7 @@ bool BasicItemFactory::createDocumentNode(
   }
   catch (...)
   {
-    if (xmlTree) delete xmlTree;
+    delete xmlTree;
     throw;
   }
 
@@ -908,7 +908,8 @@ bool BasicItemFactory::createElementNode(
     bool                        haveTypedValue,
     bool                        haveEmptyValue,
     const store::NsBindings&    localBindings,
-    xqpStringStore_t&           baseUri)
+    xqpStringStore_t&           baseUri,
+    bool                        isInSubstitutionGroup)
 {
   XmlTree* xmlTree = NULL;
   ElementNode* n = NULL;
@@ -924,13 +925,21 @@ bool BasicItemFactory::createElementNode(
     if (parent == NULL)
       xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
 
-    n = new ElementNode(xmlTree, pnode, pos, nodeName,
-                        typeName, haveTypedValue, haveEmptyValue,
-                        &localBindings, baseUri, false);
+    n = new ElementNode(xmlTree, 
+                        pnode, 
+                        pos, 
+                        nodeName,
+                        typeName, 
+                        haveTypedValue, 
+                        haveEmptyValue,
+                        isInSubstitutionGroup,
+                        &localBindings, 
+                        baseUri, 
+                        false);
   }
   catch (...)
   {
-    if (xmlTree) delete xmlTree;
+    delete xmlTree;
     throw;
   }
 
@@ -995,7 +1004,7 @@ bool BasicItemFactory::createAttributeNode(
   }
   catch (...)
   {
-    if (xmlTree) delete xmlTree;
+    delete xmlTree;
     throw;
   }
 
@@ -1057,7 +1066,7 @@ bool BasicItemFactory::createAttributeNode(
   }
   catch (...)
   {
-    if (xmlTree) delete xmlTree;
+    delete xmlTree;
     throw;
   }
 
@@ -1139,7 +1148,7 @@ bool BasicItemFactory::createTextNode(
   }
   catch (...)
   {
-    if (xmlTree) delete xmlTree;
+    delete xmlTree;
     throw;
   }
 
@@ -1223,7 +1232,7 @@ bool BasicItemFactory::createPiNode(
   }
   catch (...)
   {
-    if (xmlTree) delete xmlTree;
+    delete xmlTree;
     throw;
   }
 
@@ -1267,7 +1276,7 @@ bool BasicItemFactory::createCommentNode(
   }
   catch (...)
   {
-    if (xmlTree) delete xmlTree;
+    delete xmlTree;
     throw;
   }
 

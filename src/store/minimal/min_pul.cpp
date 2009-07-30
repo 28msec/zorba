@@ -485,12 +485,15 @@ void PULImpl::addSetElementType(
     store::Item_t&              value,
     bool                        haveValue,
     bool                        haveEmptyValue,
-    bool                        haveTypedValue)
+    bool                        haveTypedValue,
+    bool                        isInSubstitutionGroup)
 {
   UpdatePrimitive* upd = new UpdSetElementType(this, target,
                                                typeName, value,
                                                haveValue, haveEmptyValue,
-                                               haveTypedValue, false);
+                                               haveTypedValue,
+                                               false,
+                                               isInSubstitutionGroup);
   theValidationList.push_back(upd);
 }
 
@@ -501,14 +504,17 @@ void PULImpl::addSetElementType(
     std::vector<store::Item_t>& valueV,
     bool                        haveValue,
     bool                        haveEmptyValue,
-    bool                        haveTypedValue)
+    bool                        haveTypedValue,
+    bool                        isInSubstitutionGroup)
 {
   store::Item_t typedValue = new ItemVector(valueV);
 
   UpdatePrimitive* upd = new UpdSetElementType(this, target,
                                                typeName, typedValue,
                                                haveValue, haveEmptyValue,
-                                               haveTypedValue, true);
+                                               haveTypedValue,
+                                               true,
+                                               isInSubstitutionGroup);
   theValidationList.push_back(upd);
 }
 
@@ -1345,6 +1351,9 @@ void UpdSetElementType::apply()
   {
     target->resetHaveValue();
   }
+
+  if (theIsInSubstitutionGroup)
+    target->setInSubstGroup();
 }
 
 

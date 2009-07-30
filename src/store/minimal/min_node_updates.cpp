@@ -521,13 +521,13 @@ void XmlNode::removeType(UpdatePrimitive& upd)
     {
       ElementNode* n = reinterpret_cast<ElementNode*>(currNode);
 
-      if (n->theTypeName == GET_STORE().theSchemaTypeNames[XS_UNTYPED])
+      if (n->theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED]))
       {
         revalidationNode = currNode;
         break;
       }
 
-      if (n->theTypeName == GET_STORE().theSchemaTypeNames[XS_ANY])
+      if (n->theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_ANY]))
       {
         revalidationNode = currNode;
         break;
@@ -556,6 +556,7 @@ void XmlNode::removeType(UpdatePrimitive& upd)
       n->theTypeName = GET_STORE().theSchemaTypeNames[XS_ANY];
       n->setHaveValue();
       n->resetHaveEmptyValue();
+      n->resetInSubstGroup();
 
       revalidationNode = currNode;
     }
@@ -563,7 +564,7 @@ void XmlNode::removeType(UpdatePrimitive& upd)
     {
       AttributeNode* n = reinterpret_cast<AttributeNode*>(currNode);
 
-      if (n->theTypeName == GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC])
+      if (n->theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC]))
       {
         undoList.resize(++undoSize);
         undoList[undoSize - 1].transfer(tinfo);
@@ -1172,8 +1173,8 @@ void ElementNode::replaceName(UpdRenameElem& upd)
   theName.transfer(upd.theNewName);
 
   if (theParent &&
-      (theTypeName == GET_STORE().theSchemaTypeNames[XS_UNTYPED] ||
-       theTypeName == GET_STORE().theSchemaTypeNames[XS_ANY]))
+      (theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED]) ||
+       theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_ANY])))
   {
     // Even if "this" is untyped, we must call removeType() on the parent
     // because renaming of an elelemt may require revalidation of the ancestors.
@@ -1258,7 +1259,7 @@ void AttributeNode::replaceName(UpdRenameAttr& upd)
   upd.theOldName.transfer(theName);
   theName.transfer(upd.theNewName);
 
-  if (theTypeName == GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC])
+  if (theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC]))
   {
     // We must call removeType() even if "this" is untyped, because renaming
     // of an attribute may require revalidation of the ancestors.

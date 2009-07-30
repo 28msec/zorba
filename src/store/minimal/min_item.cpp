@@ -670,6 +670,12 @@ void Item::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
   return;
 }
 
+bool Item::isInSubstitutionGroup() const
+{
+  ZORBA_ERROR_PARAM_OSS(STR0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+                        __FUNCTION__, getType()->getStringValue());
+  return false;
+}
 
 xqpStringStore* Item::getUnparsedEntityPublicId() const
 {
