@@ -18,21 +18,26 @@
 #include <zorba/error.h>
 #include <zorba/stateless_function.h>
 #include <zorba/default_error_handler.h>
+#include <zorba/static_context_consts.h>
+#include <zorba/typeident.h>
 
 #include "zorbatypes/xqpstring.h"
+#include "zorbaerrors/error_manager.h"
+
 #include "api/unmarshaller.h"
+#include "api/zorbaimpl.h"
+#include "api/functionimpl.h"
+#include "api/xqueryimpl.h"
+
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
 #include "context/uri_resolver_wrapper.h"
+
 #include "system/globalenv.h"
-#include <zorba/typeident.h>
-#include "zorbaerrors/error_manager.h"
-#include "api/zorbaimpl.h"
+
 #include "types/casting.h"
 #include "types/typeops.h"
-#include "api/functionimpl.h"
 
-#include "api/xqueryimpl.h"
 #include "runtime/base/plan_iterator.h"
 
 namespace zorba {
@@ -479,6 +484,27 @@ StaticContextImpl::getBaseURI( ) const
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }
   return "";
+}
+
+
+validation_mode_t
+StaticContextImpl::getRevalidationMode()
+{
+  return validate_lax;
+}
+
+
+void
+StaticContextImpl::setRevalidationMode(validation_mode_t aMode)
+{
+  ZORBA_TRY
+    if (aMode == validate_skip)
+      theCtx->set_validation_mode(StaticContextConsts::skip_validation);
+    else if (aMode == validate_lax)
+      theCtx->set_validation_mode(StaticContextConsts::lax_validation);
+    else
+      theCtx->set_validation_mode(StaticContextConsts::strict_validation);
+  ZORBA_CATCH
 }
 
 

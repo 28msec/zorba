@@ -144,6 +144,12 @@ class StaticContextImpl : public StaticContext
   virtual String   
   getBaseURI( ) const;
 
+  virtual validation_mode_t
+  getRevalidationMode();
+
+  virtual void
+  setRevalidationMode(validation_mode_t aMode);
+
   virtual bool
   setRevalidationEnabled ( bool enabled );
 

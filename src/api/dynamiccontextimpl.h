@@ -79,7 +79,10 @@ public:
         const Item& aItem );
 
   virtual bool
-  setVariableAsDocument( const String& aQName, const String& xml_uri );
+  setVariableAsDocument(
+        const String& aQName,
+        const String& xml_uri,
+        validation_mode_t mode);
 
   virtual bool
   setVariable(
@@ -90,7 +93,8 @@ public:
   setVariableAsDocument(
         const String& aQName,
         const String& aDocURI,
-        std::auto_ptr<std::istream> aStream );
+        std::auto_ptr<std::istream> aStream,
+        validation_mode_t mode);
 
   virtual bool
   setContextItem ( const Item& aItem );
