@@ -395,6 +395,7 @@ private:
     ar & m_nodetest;
     ar & m_content_type;
     ar & m_nillable;
+	ar & m_schema_test;
   }
 public:
   NodeXQType(
