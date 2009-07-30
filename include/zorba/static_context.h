@@ -304,6 +304,19 @@ namespace zorba {
       virtual String   
       getBaseURI( ) const = 0;
 
+      /** \brief Get the revalidation mode.
+       *
+       * @return the revalidation mode.
+       */
+      virtual validation_mode_t
+      getRevalidationMode() = 0;
+
+      /** \brief Set the revalidation mode.
+       *
+       * @param aMode the revalidation mode.
+       */
+      virtual void
+      setRevalidationMode(validation_mode_t aMode) = 0;
 
       virtual bool
       setRevalidationEnabled ( bool enabled ) = 0;

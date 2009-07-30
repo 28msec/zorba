@@ -52,4 +52,9 @@ typedef enum { preserve_cons, strip_cons } construction_mode_t;
  */
 typedef enum { xquery_version_1_0 = 100, xquery_version_1_1 = 110 } xquery_version_t;
 
+/** \brief Revalidation mode as defined in
+ *         http://www.w3.org/TR/xquery-update-10/#id-revalidation-declaration
+ */
+typedef enum { validate_skip, validate_lax, validate_strict } validation_mode_t;
+
 #endif
