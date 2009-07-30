@@ -111,7 +111,8 @@ main(int argc, char** argv)
   if (engine == NULL) return 21;
 
   int i = 1;
-  for (;;) {
+  for (;;) 
+  {
     if (strcmp (argv [i], "--rbkt-src") == 0) {
       rbkt_src_dir = argv [i + 1];
       i += 2;
@@ -251,7 +252,7 @@ main(int argc, char** argv)
           lRefFileTmpString = lRefFileTmpString.erase(14, 8);
         else if (lQueryWithoutSuffix.find("XQuery") != std::string::npos)
           lRefFileTmpString = lRefFileTmpString.erase(14, 7);
-    }
+      }
   
       lRefFiles.push_back(zorba::file(rbkt_src_dir + "/ExpQueryResults/" +
                                       lRefFileTmpString + ".xml.res"));
@@ -282,27 +283,30 @@ main(int argc, char** argv)
       errors = analyzeError (lSpec, errHandler);
       if( errors == UNEXPECTED_ERROR )
         return 6;
-    std::cout << "testdriver: success" << std::endl;
-    return 0;
+      std::cout << "testdriver: success" << std::endl;
+      return 0;
     } 
     // no compilation errors
 
 #ifdef ZORBA_TEST_PLAN_SERIALIZATION
-    try{
-    std::string binary_path = lQueryFileString;
-    binary_path = binary_path.substr( 0, binary_path.rfind('.') );
-    binary_path += ".plan";
-    t0 = clock();
-    std::ofstream fbinary(binary_path.c_str(), std::ios_base::binary);
-    if(!lQuery->saveExecutionPlan(fbinary, ZORBA_USE_BINARY_ARCHIVE))
+    try
     {
-      printf("save execution plan FAILED\n");
-      return 0x0badc0de;
+      clock_t t0, t1;
+      std::string binary_path = lQueryFileString;
+      binary_path = binary_path.substr( 0, binary_path.rfind('.') );
+      binary_path += ".plan";
+      t0 = clock();
+      std::ofstream fbinary(binary_path.c_str(), std::ios_base::binary);
+      if(!lQuery->saveExecutionPlan(fbinary, ZORBA_USE_BINARY_ARCHIVE))
+      {
+        printf("save execution plan FAILED\n");
+        return 0x0badc0de;
+      }
+      fbinary.close();
+      t1 = clock();
+      printf("save execution plan in %f sec\n", (float)(t1-t0)/CLOCKS_PER_SEC);
     }
-    fbinary.close();
-    t1 = clock();
-    printf("save execution plan in %f sec\n", (float)(t1-t0)/CLOCKS_PER_SEC);
-    }catch(zorba::ZorbaException &err)
+    catch(zorba::ZorbaException &err)
     {
       std::cout << err << std::endl;
       return -1;
@@ -317,6 +321,7 @@ main(int argc, char** argv)
 #ifdef ZORBA_TEST_PLAN_SERIALIZATION
     try
     {
+      clock_t t0, t1;
       std::string binary_path = lQueryFileString;
       binary_path = binary_path.substr( 0, binary_path.rfind('.') );
       binary_path += ".plan";
@@ -338,110 +343,114 @@ main(int argc, char** argv)
       }
       t1 = clock();
       printf("load execution plan in %f sec\n", (float)(t1-t0)/CLOCKS_PER_SEC);
-    }catch(zorba::ZorbaException &err)
+    }
+    catch(zorba::ZorbaException &err)
     {
       std::cout << err << std::endl;
       return -1;
     }
 #endif
 
-      // Create dynamic context and set in it the external variables, the current
-      // date & time, and the timezone.
-      createDynamicContext(driverContext, lContext, lQuery);
+    // Create dynamic context and set in it the external variables, the current
+    // date & time, and the timezone.
+    createDynamicContext(driverContext, lContext, lQuery);
 
-      errors = -1;
-      {
-        { // serialize xml
-          std::ofstream lResFileStream(lResultFile.get_path().c_str());
-          assert (lResFileStream.good());
-          Zorba_SerializerOptions lSerOptions;
-          lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XML;
-          lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
-          lSerOptions.indent = ZORBA_INDENT_NO;
-
-          lQuery->serialize(lResFileStream, &lSerOptions);
-        }
+    errors = -1;
+    {
+      { // serialize xml
+        std::ofstream lResFileStream(lResultFile.get_path().c_str());
+        assert (lResFileStream.good());
+        Zorba_SerializerOptions lSerOptions;
+        lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XML;
+        lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+        lSerOptions.indent = ZORBA_INDENT_NO;
         
-        if (lSpec.errorsSize() == 0 && ! lRefFileExists )
-        {
-          std::cout << "No reference result and no expected errors." << std::endl;
-          return 3;
-        }
-
-        if (errHandler.errors())
-        {
-          errors = analyzeError (lSpec, errHandler);
-        }
-        else if ( lSpec.errorsSize() > 0 ) 
-        {
-          if ( ! lRefFileExists ) 
-          {
-            std::cout << "Expected error(s)";
-            for (std::vector<std::string>::const_iterator lIter = lSpec.errorsBegin();
-                lIter != lSpec.errorsEnd(); ++lIter)
-            {
-              std::cout << " " << *lIter;
-            }
-            if ( lResultFile.exists () && lResultFile.get_size () == 0)
-              std::cout << " but got empty result" << std::endl;
-            else {
-              std::cout << " but got result:" << std::endl;
-              zorba::printFile(std::cout, lResultFile.get_path());
-              std::cout << "=== end of result ===" << std::endl;
-            }
-            return 7;
-          }
-        }
+        lQuery->serialize(lResFileStream, &lSerOptions);
       }
-
-      if( errors == UNEXPECTED_ERROR)
+      
+      if (lSpec.errorsSize() == 0 && ! lRefFileExists )
       {
-        return 6;
+        std::cout << "No reference result and no expected errors." << std::endl;
+        return 3;
       }
-      else if( errors == -1 ) 
+      
+      if (errHandler.errors())
       {
-        std::cout << "Result:" << std::endl;
-        zorba::printFile(std::cout, lResultFile.get_path());
-        std::cout << "=== end of result ===" << std::endl;
-        std::cout.flush();
-        size_t i = 1;
-        for (std::vector<zorba::file>::const_iterator lIter = lRefFiles.begin();
-             lIter != lRefFiles.end(); ++lIter) 
-          {
-            int lLine, lCol, lPos; // where do the files differ
-            std::string lRefLine, lResultLine;
-          bool lRes = zorba::fileEquals(lIter->c_str(),
-                                        lResultFile.c_str(),
-                                        lLine, lCol, lPos,
-                                        lRefLine, lResultLine);
-          if (lRes) 
-          {
-            std::cout << "testdriver: success (non-canonical result # " << i 
-                      << " matches)" << std::endl;
-              return 0;
-            }
-
-          std::cout << "testdriver: non-canonical result for reference result # " 
-                    << i << " doesn't match." << std::endl;
-
-          int lCanonicalRes = zorba::canonicalizeAndCompare(lSpec.getComparisonMethod(),
-                                                            lIter->c_str(),
-                                                            lResultFile.c_str(),
-                                                            rbkt_bin_dir);
-          if (lCanonicalRes == 0) 
-          {
-            std::cout << "testdriver: success (canonical result # " << i  
-                      << " matches)" << std::endl;
-            return 0;
-          }
-          std::cout << "testdriver: canonical result for reference result # " << i 
-                    << " doesn't match." << std::endl;
-          ++i;
-        } // for 
-
-        std::cout << "testdriver: none of the reference results matched" << std::endl;
-        return 8;
+        errors = analyzeError (lSpec, errHandler);
       }
+      else if ( lSpec.errorsSize() > 0 ) 
+      {
+        if ( ! lRefFileExists ) 
+        {
+          std::cout << "Expected error(s)";
+          for (std::vector<std::string>::const_iterator lIter = lSpec.errorsBegin();
+               lIter != lSpec.errorsEnd(); ++lIter)
+          {
+            std::cout << " " << *lIter;
+          }
+          if ( lResultFile.exists () && lResultFile.get_size () == 0)
+          {
+            std::cout << " but got empty result" << std::endl;
+          }
+          else 
+          {
+            std::cout << " but got result:" << std::endl;
+            zorba::printFile(std::cout, lResultFile.get_path());
+            std::cout << "=== end of result ===" << std::endl;
+          }
+          return 7;
+        }
+      }
+    }
+
+    if( errors == UNEXPECTED_ERROR)
+    {
+      return 6;
+    }
+    else if( errors == -1 ) 
+    {
+      std::cout << "Result:" << std::endl;
+      zorba::printFile(std::cout, lResultFile.get_path());
+      std::cout << "=== end of result ===" << std::endl;
+      std::cout.flush();
+      size_t i = 1;
+      for (std::vector<zorba::file>::const_iterator lIter = lRefFiles.begin();
+           lIter != lRefFiles.end(); ++lIter) 
+      {
+        int lLine, lCol, lPos; // where do the files differ
+        std::string lRefLine, lResultLine;
+        bool lRes = zorba::fileEquals(lIter->c_str(),
+                                      lResultFile.c_str(),
+                                      lLine, lCol, lPos,
+                                      lRefLine, lResultLine);
+        if (lRes) 
+        {
+          std::cout << "testdriver: success (non-canonical result # " << i 
+                    << " matches)" << std::endl;
+          return 0;
+        }
+
+        std::cout << "testdriver: non-canonical result for reference result # " 
+                  << i << " doesn't match." << std::endl;
+
+        int lCanonicalRes = zorba::canonicalizeAndCompare(lSpec.getComparisonMethod(),
+                                                          lIter->c_str(),
+                                                          lResultFile.c_str(),
+                                                          rbkt_bin_dir);
+        if (lCanonicalRes == 0) 
+        {
+          std::cout << "testdriver: success (canonical result # " << i  
+                    << " matches)" << std::endl;
+          return 0;
+        }
+        std::cout << "testdriver: canonical result for reference result # " << i 
+                  << " doesn't match." << std::endl;
+        ++i;
+      } // for 
+      
+      std::cout << "testdriver: none of the reference results matched" << std::endl;
+      return 8;
+    }
   }
   std::cout << "testdriver: success" << std::endl;
   return 0;

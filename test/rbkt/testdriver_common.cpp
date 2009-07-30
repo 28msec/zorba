@@ -17,6 +17,7 @@
 
 #include <zorbatypes/URI.h>
 #include <zorbautils/strutil.h>
+#include <zorba/static_context_consts.h>
 
 #include "testdriverconfig.h"
 #include "testdriver_common.h"
@@ -322,7 +323,11 @@ void set_vars(
   std::vector<Specification::Variable>::const_iterator lIter;
   for (lIter = aSpec.variablesBegin(); lIter != aSpec.variablesEnd(); ++lIter)
   {
-    set_var((*lIter).theInline, (*lIter).theVarName, (*lIter).theVarValue, dctx, rbkt_src_dir);
+    set_var((*lIter).theInline,
+            (*lIter).theVarName,
+            (*lIter).theVarValue,
+            dctx,
+            rbkt_src_dir);
   }
 }
 
@@ -366,10 +371,18 @@ void set_var(
                 << name << "'" << std::endl;
       assert (false);
     }
+
 		if(name != ".")
-			dctx->setVariableAsDocument (name, val.c_str(), std::auto_ptr<std::istream>(is));
+    {
+			dctx->setVariableAsDocument(name,
+                                  val.c_str(),
+                                  std::auto_ptr<std::istream>(is),
+                                  validate_lax);
+    }
 		else
-			dctx->setContextItemAsDocument (val.c_str(), std::auto_ptr<std::istream>(is));
+    {
+			dctx->setContextItemAsDocument(val.c_str(), std::auto_ptr<std::istream>(is));
+    }
   }
 }
 
