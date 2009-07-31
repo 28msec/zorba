@@ -1389,7 +1389,10 @@ OpToIteratorState::reset(PlanState& planState) {
   theLastVal = xqp_integer::parseInt(0);
 }
 
-//15.5.2 fn:id
+
+/*******************************************************************************
+  15.5.2 fn:id
+********************************************************************************/
 void FnIdIteratorState::init(PlanState& planState)
 {
   DescendantAxisState::init(planState);
@@ -1521,158 +1524,191 @@ bool FnIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 }
   
 
-//15.5.3 fn:idref
-void
-FnIdRefIteratorState::init(PlanState& planState)
+/*******************************************************************************
+  15.5.3 fn:idref
+********************************************************************************/
+void FnIdRefIteratorState::init(PlanState& planState)
 {
-  PlanIteratorState::init(planState);
-  inNode = NULL;
-  inArg = NULL;
-  theIterator = NULL;
-  theTypedValueIter = NULL;
+  DescendantAxisState::init(planState);
+  theIsInitialized = false;
+  theAttrsIte = GENV_ITERATOR_FACTORY->createAttributesIterator();
+  assert(theIds.empty());
+  assert(theDocNode == NULL);
 }
 
-void
-FnIdRefIteratorState::reset(PlanState& planState)
+
+void FnIdRefIteratorState::reset(PlanState& planState)
 {
-  PlanIteratorState::reset(planState);
-  inNode = NULL;
-  inArg = NULL;
-  theIterator = NULL;
-  theTypedValueIter = NULL;
+  DescendantAxisState::reset(planState);
+  theIsInitialized = false;
+  theIds.clear();
+  theDocNode = NULL;
 }
 
-/**
- * 
- * @param planState 
- * @return 
- */
-bool
-FnIdRefIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+
+bool FnIdRefIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
-  store::Item_t     item;
+  store::Item_t     id;
+  store::Item*      child = NULL;
+  store::Item*      attr = NULL;
+  store::Item_t     tmp;
   store::Item_t     typedValue;
-  store::Iterator_t theAttributes;
-  store::Item_t     res;
-  bool              push;
-  xqp_string        strArg;
-  bool              tmp;
-  store::Item*      rootNode;
+  store::Iterator_t typedValueIte;
+
+  bool           isMatchingId;
+  ulong          i;
+
+  std::vector<xqpStringStore_t> idrefs;
 
   FnIdRefIteratorState* state;
   DEFAULT_STACK_INIT(FnIdRefIteratorState, state, planState);
 
-  if(consumeNext(state->inNode, theChildren[1], planState))
+  if (!state->theIsInitialized)
   {
-    rootNode = state->inNode.getp();
-    while (rootNode->getParent() != NULL)
-      rootNode = rootNode->getParent();
+    while (consumeNext(id, theChildren[0], planState))
+    {
+      state->theIds.push_back(id->getStringValue());
+    }
 
-    if (rootNode->getNodeKind() != store::StoreConsts::documentNode)
+    if(!consumeNext(state->theDocNode, theChildren[1], planState))
+    {
       ZORBA_ERROR_LOC_DESC(FODC0001, loc,
                            "No target document for fn:idref function");
+    }
 
-    state->inNode = rootNode;
-    state->theIterator = state->inNode->getChildren();
-
-    while (consumeNext(state->inArg, theChildren[0], planState))
+    while (state->theDocNode->getParent() != NULL)
     {
-      state->theIterator->open();
+      state->theDocNode = state->theDocNode->getParent();
+    }
 
-      while(state->theIterator->next(result))
+    if (state->theDocNode->getNodeKind() != store::StoreConsts::documentNode)
+    {
+      ZORBA_ERROR_LOC_DESC(FODC0001, loc,
+                           "No target document for fn:idref function");
+    }
+
+    state->push(state->theDocNode);
+
+    state->theIsInitialized = true;
+  }
+
+
+  while (true)
+  {
+    while ((child = state->top()->next()) == NULL)
+    {
+      state->pop();
+      if (state->empty())
+        break;
+    }
+
+    if (child == NULL)
+      break;
+
+    if (child->getNodeKind() != store::StoreConsts::elementNode)
+      continue;
+
+    tmp = child;
+    state->push(tmp);
+
+    if (child->isIdRefs())
+    {
+      isMatchingId = false;
+
+      child->getTypedValue(typedValue, typedValueIte);
+
+      for (i = 0; i < state->theIds.size(); ++i)
       {
-        if(result->getNodeKind() == store::StoreConsts::elementNode ||
-           result->getNodeKind() == store::StoreConsts::attributeNode)
+        if (typedValue != NULL)
         {
-          if(result->isIdRefs())
+          if (typedValue->getStringValue()->equals(state->theIds[i]))
           {
-            result->getTypedValue(typedValue, state->theTypedValueIter);
+            isMatchingId = true;
+            result = child;
+            STACK_PUSH(true, state);
+            break;
+          }
+        }
+        else if (typedValueIte != NULL)
+        {
+          typedValueIte->open();
 
-            if (state->theTypedValueIter == NULL && typedValue != NULL)
+          while(typedValueIte->next(typedValue))
+          {
+            if (typedValue->getStringValue()->equals(state->theIds[i]))
             {
-              strArg = state->inArg->getStringValue().getp();
-
-              try {
-                tmp = strArg.matches(item->getStringValue().getp()," ");
-              }
-              catch(zorbatypesException& ex){
-                ZORBA_ERROR_LOC(error::DecodeZorbatypesError(ex.ErrorCode()), loc);
-              }
-                
-              if(tmp)
-                STACK_PUSH(true, state );
-            }
-            else if (state->theTypedValueIter != NULL)
-            {
-              state->theTypedValueIter->open();
-    
-              while (true)
-              {
-                if (!state->theTypedValueIter->next(item))
-                  break;
-
-                strArg = state->inArg->getStringValue().getp();
-
-                try {
-                  tmp = strArg.matches(item->getStringValue().getp()," ");
-                }
-                catch(zorbatypesException& ex){
-                  ZORBA_ERROR_LOC(error::DecodeZorbatypesError(ex.ErrorCode()), loc);
-                }
-                
-                if(tmp)
-                  STACK_PUSH(true, state );
-              }
+              isMatchingId = true;
+              result = child;
+              break;
             }
           }
-          else
+
+          typedValueIte->close();
+
+          if (isMatchingId)
           {
-            push = false;
-            theAttributes = result->getAttributes();
-            theAttributes->open();
-            
-            while (!push)
-            {
-              if (!theAttributes->next(item))
-                break;
-    
-              if(item->isId())
-              {
-                item->getTypedValue(typedValue, state->theTypedValueIter);
-
-                if (state->theTypedValueIter == NULL && typedValue != NULL)
-                {
-                  strArg = state->inArg->getStringValue().getp();
-    
-                  if(strArg.matches(typedValue->getStringValue().getp()," "))
-                    push = true;
-                }
-                else if (state->theTypedValueIter != NULL)
-                {
-                  state->theTypedValueIter->open();
-    
-                  while (!push)
-                  {
-                    if (!state->theTypedValueIter->next(item))
-                      break;
-
-                    strArg = state->inArg->getStringValue().getp();
-    
-                    if(strArg.matches(item->getStringValue().getp()," "))
-                    {
-                      push = true;
-                      break;
-                    }
-                  }
-                }
-              }
-            }
-            if(push)
-              STACK_PUSH(true, state );
+            STACK_PUSH(true, state);
+            break;
           }
         }
       }
     }
+
+    tmp = state->topNode();
+    state->theAttrsIte->init(tmp);
+    state->theAttrsIte->open();
+
+    attr = state->theAttrsIte->next();
+
+    while (attr != NULL)
+    {
+      if (attr->isIdRefs())
+      {
+        isMatchingId = false;
+
+        attr->getTypedValue(typedValue, typedValueIte);
+
+        for (i = 0; i < state->theIds.size(); ++i)
+        {
+          if (typedValue != NULL)
+          {
+            if (typedValue->getStringValue()->equals(state->theIds[i]))
+            {
+              isMatchingId = true;
+              result = attr;
+              STACK_PUSH(true, state);
+              break;
+            }
+          }
+          else if (typedValueIte != NULL)
+          {
+            typedValueIte->open();
+
+            while(typedValueIte->next(typedValue))
+            {
+              if (typedValue->getStringValue()->equals(state->theIds[i]))
+              {
+                isMatchingId = true;
+                result = attr;
+                break;
+              }
+            }
+            
+            typedValueIte->close();
+
+            if (isMatchingId)
+            {
+              STACK_PUSH(true, state);
+              break;
+            }
+          }
+        }
+      }
+
+      attr = state->theAttrsIte->next();
+    }
+
+    state->theAttrsIte->close();
   }
 
   STACK_END (state);

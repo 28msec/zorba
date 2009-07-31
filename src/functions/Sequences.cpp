@@ -37,47 +37,106 @@ namespace zorba
 #define TSV_TRUE_P TSVAnnotationValue::TRUE_VAL.getp()
 
 
-  /*______________________________________________________________________
-    |  
-    | 15.1 General Functions and Operators on Sequences
-    |_______________________________________________________________________*/
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  15.1 General Functions and Operators on Sequences                          //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
 
-  //15.1.1 fn:boolean (effective boolean value)
-  //-----------------
+/*******************************************************************************
+  15.1.1 fn:boolean (effective boolean value)
+********************************************************************************/
 
 
-  //15.1.2 op:concatenate
-  //---------------------
-  class op_concatenate : public function {
-  public:
-    op_concatenate(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
-      return new FnConcatIterator(sctx, loc, argv, ann.is_updating());
+/*******************************************************************************
+  15.1.2  op:concatenate($seq1 as item()*, $seq2 as item()*) as item()*
+
+  Summary: Returns a sequence consisting of the items in $seq1 followed by the
+  items in $seq2. This function backs up the infix operator ",". If either
+  sequence is the empty sequence, the other operand is returned. 
+********************************************************************************/
+class op_concatenate : public function 
+{
+public:
+  op_concatenate(const signature& sig) : function (sig) {}
+
+  PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const 
+  {
+    return new FnConcatIterator(sctx, loc, argv, ann.is_updating());
+  }
+
+  xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
+
+  void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;
+};
+  
+
+xqtref_t op_concatenate::return_type (const std::vector<xqtref_t> &arg_types) const 
+{
+  int sz = arg_types.size ();
+  if (sz == 0)
+    return GENV_TYPESYSTEM.EMPTY_TYPE;
+  else {
+    xqtref_t t = arg_types [0];
+    TypeConstants::quantifier_t q = TypeConstants::QUANT_STAR;
+    for (int i = 1; i < sz; i++) {
+      t = TypeOps::union_type (*t, *arg_types [i]);
+      TypeConstants::quantifier_t pq = TypeOps::quantifier (*t);
+      if (pq == TypeConstants::QUANT_ONE || pq == TypeConstants::QUANT_PLUS)
+        q = TypeConstants::QUANT_PLUS;
     }
-    xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
-    void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;
-  };
+    return GENV_TYPESYSTEM.create_type_x_quant (*t, q);
+  }
+}
 
 
+void op_concatenate::compute_annotation (
+    AnnotationHolder *parent,
+    std::vector<AnnotationHolder *> &kids,
+    Annotation::key_t k) const 
+{
+  switch (k) {
+  case AnnotationKey::IGNORES_SORTED_NODES:
+  case AnnotationKey::IGNORES_DUP_NODES:
+    for (std::vector<AnnotationHolder *>::iterator i = kids.begin (); i < kids.end (); i++)
+      TSVAnnotationValue::update_annotation ((*i), k, parent->get_annotation (k));
+    break;
+  default: break;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
   //15.1.3 fn:index-of
   //------------------
 
   typedef function_impl<FnIndexOfIterator> fn_index_of;
 
 
+/*******************************************************************************
+
+********************************************************************************/
   //15.1.4 fn:empty
   //---------------
 
   typedef function_impl<FnEmptyIterator> fn_empty;
 
 
+/*******************************************************************************
+
+********************************************************************************/
   //15.1.5 fn:exists
   //----------------
 
   typedef function_impl<FnExistsIterator> fn_exists;
 
 
+/*******************************************************************************
+
+********************************************************************************/
   //15.1.6 fn:distinct-values
   //-------------------------
   class fn_distinct_values : public single_seq_function {
@@ -247,22 +306,28 @@ public:
   typedef function_impl<FnSumIterator> fn_sum;
 
 
-  /*______________________________________________________________________
-    |
-    | 15.5 Functions and Operators that Generate Sequences
-    |_______________________________________________________________________*/
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  15.5 Functions and Operators that Generate Sequences                       //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
-  //15.5.1 op:to
-  typedef function_impl<OpToIterator> op_to;
 
-  //15.5.2 fn:id
-  typedef function_impl<FnIdIterator> fn_id;
+//15.5.1 op:to
+typedef function_impl<OpToIterator> op_to;
 
-  //15.5.3 fn:idref
-  typedef function_impl<FnIdRefIterator> fn_id_ref;
 
-  //15.5.4 fn:doc
-  class fn_doc_func : public function {
+//15.5.2 fn:id
+typedef function_impl<FnIdIterator> fn_id;
+
+
+//15.5.3 fn:idref
+typedef function_impl<FnIdRefIterator> fn_id_ref;
+
+
+//15.5.4 fn:doc
+class fn_doc_func : public function 
+{
   public:
     fn_doc_func(const signature& sig) : function (sig) {}
     PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
@@ -272,15 +337,17 @@ public:
     bool requires_dyn_ctx () const { return true; }  // TODO: rename to unfoldable()
 
     ZORBA_NOT_PROPAGATES_I2O
-  };
+};
 
-  class fn_parse_func : public function {
+
+class fn_parse_func : public function 
+{
   public:
     fn_parse_func(const signature& sig) : function (sig) {}
     DEFAULT_CODEGEN (FnParseIterator)
     virtual bool isSource() const { return true; }
     bool requires_dyn_ctx () const { return true; }  // TODO: rename to unfoldable()
-  };
+};
 
 
   //15.5.5 fn:doc-available
@@ -297,49 +364,6 @@ public:
 |  
 | 15.1 General Functions and Operators on Sequences
 |_______________________________________________________________________*/
-
-
-//15.1.2 op:concatenate 
-/*_______________________________________________________________________
-|
-|	op:concatenate($seq1 as item()*, $seq2 as item()*) as item()*
-|
-|	Summary: Returns a sequence consisting of the items in $seq1 followed 
-|	by the items in $seq2. This function backs up the infix operator ",". 
-|	If either sequence is the empty sequence, the other operand is 
-|	returned. 
-|________________________________________________________________________*/
-
-
-xqtref_t op_concatenate::return_type (const std::vector<xqtref_t> &arg_types) const {
-  int sz = arg_types.size ();
-  if (sz == 0)
-    return GENV_TYPESYSTEM.EMPTY_TYPE;
-  else {
-    xqtref_t t = arg_types [0];
-    TypeConstants::quantifier_t q = TypeConstants::QUANT_STAR;
-    for (int i = 1; i < sz; i++) {
-      t = TypeOps::union_type (*t, *arg_types [i]);
-      TypeConstants::quantifier_t pq = TypeOps::quantifier (*t);
-      if (pq == TypeConstants::QUANT_ONE || pq == TypeConstants::QUANT_PLUS)
-        q = TypeConstants::QUANT_PLUS;
-    }
-    return GENV_TYPESYSTEM.create_type_x_quant (*t, q);
-  }
-}
-
-void op_concatenate::compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const {
-  switch (k) {
-  case AnnotationKey::IGNORES_SORTED_NODES:
-  case AnnotationKey::IGNORES_DUP_NODES:
-    for (std::vector<AnnotationHolder *>::iterator i = kids.begin (); i < kids.end (); i++)
-      TSVAnnotationValue::update_annotation ((*i), k, parent->get_annotation (k));
-    break;
-  default: break;
-  }
-}
-
-
 
 
 //15.1.10 fn:subsequence
@@ -428,13 +452,6 @@ PlanIter_t fn_except::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& l
   // TODO: use SortAntiJoinIterator when available (trac ticket 254)
   return new HashSemiJoinIterator(sctx, loc, argv, true);
 }
-
-
-/*______________________________________________________________________
-|
-| 15.4 Aggregate Functions
-|_______________________________________________________________________*/
-
 
 
 /*______________________________________________________________________

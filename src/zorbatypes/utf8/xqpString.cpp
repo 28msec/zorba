@@ -1421,52 +1421,63 @@ xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags)
 }
 
 
-  xqpString
-  xqpString::tokenize(xqpString pattern, xqpString flags, int32_t *start_pos, bool *hasmatched) const
+xqpString
+xqpString::tokenize(
+    xqpString pattern,
+    xqpString flags,
+    int32_t* start_pos,
+    bool* hasmatched) const
+{
+  int32_t pos = *start_pos;
+  UErrorCode status = U_ZERO_ERROR;
+  UnicodeString uspattern = getUnicodeString(pattern.getStore());
+  UnicodeString us = getUnicodeString(this->getStore());
+
+  RegexMatcher m (uspattern, us, parse_regex_flags (flags.c_str ()), status);
+  if (U_FAILURE(status)) 
   {
-    int32_t pos = *start_pos;
-    UErrorCode status = U_ZERO_ERROR;
-    UnicodeString uspattern = getUnicodeString (pattern.getStore()),
-    us = getUnicodeString (this->getStore());
-    RegexMatcher m (uspattern, us, parse_regex_flags (flags.c_str ()), status);
-    if (U_FAILURE(status)) {
-      throw zorbatypesException(pattern.c_str(), ZorbatypesError::FORX0002);
-      return "";
-    }
-    if(m.find(*start_pos, status)){
-      *hasmatched = true;
-      int32_t start = m.start (status), end = m.end (status);
-      *start_pos = end;
-      return substr (pos, start - pos);
-    } else {
-      *hasmatched = false;
-      *start_pos = length ();
-      return substr (pos, length ());
-    }
+    throw zorbatypesException(pattern.c_str(), ZorbatypesError::FORX0002);
+    return "";
   }
 
-  wchar_t * xqpString::getWCS(xqpString source) const
+  if(m.find(*start_pos, status))
   {
-    int32_t destCapacity =  source.length()*2 + 1;
-    wchar_t* destWCS;
-    destWCS = new wchar_t[destCapacity];
-    int32_t destLen;
-
-    UnicodeString unicodeStr = getUnicodeString(source.getStore());
-    int32_t srcLen = unicodeStr.length();
-    UChar* srcBuf = unicodeStr.getBuffer(srcLen);
-    UErrorCode status = U_ZERO_ERROR;
-
-    wchar_t* ret =  u_strToWCS(destWCS, destCapacity, &destLen, srcBuf, srcLen, &status);
-    unicodeStr.releaseBuffer (srcLen);
-
-    if(U_FAILURE(status))
-    {
-      assert(false);
-    }
-
-    return ret;
+    *hasmatched = true;
+    int32_t start = m.start (status), end = m.end (status);
+    *start_pos = end;
+    return substr (pos, start - pos);
   }
+  else
+  {
+    *hasmatched = false;
+    *start_pos = length ();
+    return substr (pos, length ());
+  }
+}
+
+
+wchar_t * xqpString::getWCS(xqpString source) const
+{
+  int32_t destCapacity =  source.length()*2 + 1;
+  wchar_t* destWCS;
+  destWCS = new wchar_t[destCapacity];
+  int32_t destLen;
+  
+  UnicodeString unicodeStr = getUnicodeString(source.getStore());
+  int32_t srcLen = unicodeStr.length();
+  UChar* srcBuf = unicodeStr.getBuffer(srcLen);
+  UErrorCode status = U_ZERO_ERROR;
+  
+  wchar_t* ret =  u_strToWCS(destWCS, destCapacity, &destLen, srcBuf, srcLen, &status);
+  unicodeStr.releaseBuffer (srcLen);
+  
+  if(U_FAILURE(status))
+  {
+    assert(false);
+  }
+  
+  return ret;
+}
 
 
 void xqpString::append_in_place(const char c)

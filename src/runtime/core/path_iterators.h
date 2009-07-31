@@ -461,6 +461,11 @@ public:
     return theTop == 0;
   }
 
+  store::Item* topNode() const
+  {
+    return theCurrentPath[theTop-1].first; 
+  }
+
   store::ChildrenIterator* top() const
   {
     return theCurrentPath[theTop-1].second; 

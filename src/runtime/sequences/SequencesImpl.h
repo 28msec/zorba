@@ -437,11 +437,17 @@ public:
 //15.4.5 fn:sum
 NARY_ITER(FnSumIterator);
 
-  /*______________________________________________________________________
-  |
-  | 15.5 Functions and Operators that Generate Sequences
-  |_______________________________________________________________________*/
 
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  15.5 Functions and Operators that Generate Sequences                       //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+
+********************************************************************************/
 //15.5.1 op:to
 class OpToIteratorState : public PlanIteratorState {
 public:
@@ -457,7 +463,9 @@ public:
 NARY_ITER_STATE(OpToIterator, OpToIteratorState);
 
 
-//15.5.2 fn:id
+/*******************************************************************************
+  15.5.2 fn:id
+********************************************************************************/
 class FnIdIteratorState : public DescendantAxisState
 {
 public:
@@ -474,14 +482,17 @@ public:
 NARY_ITER_STATE(FnIdIterator, FnIdIteratorState);
 
 
-//15.5.3 fn:idref
-class FnIdRefIteratorState : public PlanIteratorState 
+/*******************************************************************************
+  15.5.3 fn:idref
+********************************************************************************/
+class FnIdRefIteratorState : public DescendantAxisState
 {
 public:
-  store::Iterator_t theIterator;
-  store::Iterator_t theTypedValueIter;
-  store::Item_t     inNode;
-  store::Item_t     inArg;
+  bool                                theIsInitialized;
+  std::vector<xqpStringStore_t>       theIds;
+  store::Item_t                       theDocNode;
+
+  rchandle<store::AttributesIterator> theAttrsIte;
 
   void init(PlanState&);
   void reset(PlanState&);
@@ -490,8 +501,10 @@ public:
 
 NARY_ITER_STATE(FnIdRefIterator, FnIdRefIteratorState);
 
-//15.5.4 fn:doc
 
+/*******************************************************************************
+  15.5.4 fn:doc
+********************************************************************************/
 class FnDocIterator : public UnaryBaseIterator<FnDocIterator, PlanIteratorState>
 {
 public:
