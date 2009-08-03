@@ -1,0 +1,208 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1252">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 3.1  (Win32)">
+	<META NAME="AUTHOR" CONTENT="Daniel Turcanu">
+	<META NAME="CREATED" CONTENT="20090628;14473900">
+	<META NAME="CHANGEDBY" CONTENT="Daniel Turcanu">
+	<META NAME="CHANGED" CONTENT="20090628;18092200">
+	<STYLE TYPE="text/css">
+	<!--
+		@page { margin: 0.79in }
+		P { margin-bottom: 0.08in }
+		A:link { so-language: zxx }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-US" DIR="LTR">
+<P STYLE="margin-bottom: 0in"><FONT SIZE=5>Zorba plan serialization
+design document</FONT></P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in">Plan serializer is a part of Zorba
+XQuery processor which handles the serialization of the xquery code
+in compiled form. The purpose is to improve performance by
+eliminating the need to compile the xquery code each time it is used.
+Another benefit is being able to distribute proprietary xquery code
+in a non-open source way.</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in">Serializing the compiled xquery means
+actually serializing all the objects generated at compilation and
+some other information needed by those objects, to be able to obtain
+the same results at multiple executions given the same environment.
+The main object structure to be serialized are the plan iterators
+classes.</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in">The plan serializer is actually a C++
+class serializer adjusted for Zorba particular needs. This class
+serializer has been developed from scratch, being inspired at the
+beginning from boost serialization.</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in">The main points the plan serializer
+tries to solve are:</P>
+<OL>
+	<LI><P STYLE="margin-bottom: 0in">Serialization of data should be
+	easy to understand and maintain by people not involved in developing
+	the plan serializer. This is a critical point in ensuring the
+	stability of the code. The serialization is done through simple
+	instructions or macros, covering the general need and most of the
+	corner cases. There is also a possibility to write complicated code,
+	but keeping it simple is better.</P>
+	<LI><P STYLE="margin-bottom: 0in">Serialization of data should be
+	easy to check. Ensuring all the necessary data is serialized is a
+	critical point. This check cannot be done automatically in C++, so
+	it must be done in code review way. To satisfy this point, almost
+	all the serialize() functions are defined in header files inside the
+	classes, near the place where the class members are defined.</P>
+	<LI><P STYLE="margin-bottom: 0in">The serialization code should not
+	interfere with existing code. Changing the existing code has been
+	kept to minimum, most changes being adding missing member
+	initialization in class constructors.</P>
+	<LI><P STYLE="margin-bottom: 0in">Platform independent: the
+	serialized data  should be in a platform independent format. The
+	xquery serialized on Windows 32 bits can be loaded onto Linux 64
+	bits without problems.</P>
+	<LI><P STYLE="margin-bottom: 0in">Each class has its own version
+	history, independent of other classes. Every time the members of a
+	class are modified, the serialize() function needs to be modified
+	accordingly and the class version needs to be incremented. The new
+	class can or cannot accept older versions, this depends on how the
+	serialize() function is written and how the class version is
+	specified.</P>
+	<LI><P STYLE="margin-bottom: 0in">The binary archive has its own
+	version. This version increases when big changes are made in Zorba
+	or plan serialization engine. Older versions are not accepted.</P>
+	<LI><P STYLE="margin-bottom: 0in">Plan serialization should be fast
+	both for out and in serialization. And it is fast.</P>
+	<LI><P STYLE="margin-bottom: 0in">When serializing, care should be
+	taken when dealing with pointers to the same object. The Archiver
+	maintains a hashmap with pointers to all the objects being
+	serialized. Duplicate pointers are saved as reference only. There
+	are some cases that have not been dealt with, like pointers pointing
+	inside an array, but these can be workarounded.</P>
+	<LI><P STYLE="margin-bottom: 0in">Care should be taken with pointers
+	to hardcoded objects. Zorba pre-initializes its own set of objects
+	and those need not and cannot  be serialized. When loading a binary
+	xquery, all the links to hardcoded objects need to be properly
+	updated.</P>
+</OL>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in"><FONT SIZE=4 STYLE="font-size: 16pt">How
+to serialize classes</FONT></P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in">First of all, the serialized class
+should be derived from zorba::serialization::SerializeBaseClass
+class.</P>
+<P STYLE="margin-bottom: 0in">There are some macros and functions to
+be added inside the class in the header file and some macros to be
+added outside the class in the cpp file.</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in">//in the header file</P>
+<P STYLE="margin-bottom: 0in">class Example : public
+::zorba::serialization:SerializeBaseClass</P>
+<P STYLE="margin-bottom: 0in">{</P>
+<P STYLE="margin-bottom: 0in">   int m1;</P>
+<P STYLE="margin-bottom: 0in">public:</P>
+<P STYLE="margin-bottom: 0in">   <B>SERIALIZABLE_CLASS(Example)</B></P>
+<P STYLE="margin-bottom: 0in">  
+<B>SERIALIZABLE_CLASS_CONSTRUCTOR(Example)</B></P>
+<P STYLE="margin-bottom: 0in">   <B>void
+serialize(::zorba::serialization::Archiver &amp;ar)</B></P>
+<P STYLE="margin-bottom: 0in">   <B>{</B></P>
+<P STYLE="margin-bottom: 0in">       <B>ar &amp; m1;</B></P>
+<P STYLE="margin-bottom: 0in">   <B>}</B></P>
+<P STYLE="margin-bottom: 0in">};</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in">//in the cpp file</P>
+<P STYLE="margin-bottom: 0in; font-style: normal"><B>SERIALIZABLE_CLASS_VERSIONS(Example)</B></P>
+<P STYLE="margin-bottom: 0in; font-style: normal"><B>END_SERIALIZABLE_CLASS_VERSIONS(Example)</B></P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in">The operator &amp; is used for
+serializing both in and out and the same for serialize() function.
+You can check the direction of serialization by querying
+ar.is_serializing_out().</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in"><FONT SIZE=4 STYLE="font-size: 16pt">How
+serializing out works</FONT></P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in">The operator &amp; is actually a
+template implemented to serialize the SerializeBaseClass derived
+classes. This operator will serialize the name of the class and then
+call serialize() function for the parameter object, which will call
+operator &amp; for each of its members and so on. This template
+operator &amp; is defined in template_serializer.h .</P>
+<P STYLE="margin-bottom: 0in">There are also many operator &amp;
+defined for simple types, you can see them in class_serializer.h/cpp
+.</P>
+<P STYLE="margin-bottom: 0in">Some Zorba classes need special
+treatment during serialization, so they are serialized using special
+operator &amp;, defined in files zorba_class_serializer.h/cpp.</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in">The serialization is done into an
+Archiver object. This object must be created for each serialization
+process, so the serialization is thread safe. The out serialization
+is done in two steps: first, all the data is serialized in a special
+tree inside the Archiver object. Secondly, that tree is serialized
+into a stream, in xml or binary format.</P>
+<P STYLE="margin-bottom: 0in">The Archiver deals with all the
+duplicate pointer issues, by maintaining a hashmap with pointers and
+types of all serialized objects. It also deals with serializing
+pointers to polymorphic classes,so the user doesn't have to register
+them by hand like in boost serialization.</P>
+<P STYLE="margin-bottom: 0in">In order to ensure that all classes
+have a serialize() function, some checks are done in debug mode for
+the proper name of the class. This way, the serializer is sure to not
+call the base class serialize() function by mistake.</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in"><FONT SIZE=4 STYLE="font-size: 16pt">How
+serializing in works</FONT></P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in">Each serializable class has a class
+factory defined. This class factory is defined in the macro
+SERIALIZABLE_CLASS(class_name) in the header file. There is a global
+object for each class factory, so its constructor will be called at
+program startup. This constructor registers this class factory and
+associates it with the class name.</P>
+<P STYLE="margin-bottom: 0in">When serializing in, the Archiver reads
+the class name from binary format and tells the corresponding class
+factory to create the object. Then it calls the serialize() function
+onto the newly created object and so on.</P>
+<P STYLE="margin-bottom: 0in">When loading objects on stack (not
+pointers) the Archiver does not attempt to create the object and just
+calls its serialize() function.</P>
+<P STYLE="margin-bottom: 0in"><BR>
+</P>
+<P STYLE="margin-bottom: 0in">The objects must be loaded in the same
+order they were saved. There is an attempt to serialize optional
+fields, but this is not completed.</P>
+</BODY>
+</HTML>

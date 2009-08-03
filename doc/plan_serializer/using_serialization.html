@@ -1,0 +1,423 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=windows-1252">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 3.1  (Win32)">
+	<META NAME="AUTHOR" CONTENT="Daniel Turcanu">
+	<META NAME="CREATED" CONTENT="20090628;18151700">
+	<META NAME="CHANGEDBY" CONTENT="Daniel Turcanu">
+	<META NAME="CHANGED" CONTENT="20090628;20364600">
+</HEAD>
+<BODY LANG="en-US" DIR="LTR">
+<P><FONT SIZE=5>Using and maintaining Zorba plan serialization</FONT></P>
+<P><BR><BR>
+</P>
+<P>Each class to be serialized must have a serialize() function
+implemented along with other macros. This function receives an
+Archiver object which you can use to serialize the content of the
+class. The same serialize() function is called for both out and in
+serialization, so you don't have to worry about maintaining two
+separate functions.</P>
+<P>Inside the serialize() function you have to call operator &amp;
+for each member of the class (that you want serialized). The objects
+must be loaded in the same order they are saved. The Archiver does
+not save the name of the objects, only their types, so the order is
+important.</P>
+<P>Operator &amp; is predefined for almost all simple types. If you
+need to use it for a new type you can implement this operator
+yourself following the models from the file class_serializer.cpp.</P>
+<P>All classes to be serialized must be derived from
+zorba::serialization::SerializeBaseClass. Note that RCObject class is
+already derived from SerializeBaseClass.</P>
+<P>Also you have to call a set of macros in the header file and in
+cpp file where the class is defined.</P>
+<P>For example:</P>
+<P>//in header file</P>
+<P><B>#include &ldquo;zorbaserialization/serialization_engine.h&rdquo;</B></P>
+<P>class Example : <B>public
+::zorba::serialization::SerializeBaseClass</B></P>
+<P>{</P>
+<P>    int m1;</P>
+<P> public:</P>
+<P>     <B>SERIALIZABLE_CLASS(Example)</B></P>
+<P>     <B>SERIALIZABLE_CLASS_CONSTRUCTOR(Example)</B></P>
+<P>     <B>void serialize(::zorba::serialization::Archiver &amp;ar)</B></P>
+<P>     <B>{</B></P>
+<P>          <B>ar &amp; m1;</B></P>
+<P>     <B>}</B></P>
+<P>}</P>
+<P><BR><BR>
+</P>
+<P>//in cpp file</P>
+<P><B>SERIALIZABLE_CLASS_VERSIONS(Example)</B></P>
+<P><B>END_SERIALIZABLE_CLASS_VERSIONS(Example)</B></P>
+<P><BR><BR>
+</P>
+<P><BR><BR>
+</P>
+<P><BR><BR>
+</P>
+<P><BR><BR>
+</P>
+<P>The first macro defined in the class is
+SERIALIZABLE_CLASS(class_name) . This macro defines the class factory
+class and some various functions related to versioning. The name of
+the macro varies depending on the type of class:</P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=4 CELLSPACING=3 STYLE="page-break-inside: avoid">
+	<COL WIDTH=128*>
+	<COL WIDTH=128*>
+	<TR VALIGN=TOP>
+		<TD WIDTH=50%>
+			<P>SERIALIZABLE_CLASS(class_name)</P>
+		</TD>
+		<TD WIDTH=50%>
+			<P>For normal classes which can be instantiated</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=50%>
+			<P>SERIALIZABLE_ABSTRACT_CLASS(class_name)</P>
+		</TD>
+		<TD WIDTH=50%>
+			<P>For abstract classes, which cannot be instantiated. The class
+			factory is registered only to provide dynamic pointer casting.</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=50%>
+			<P>SERIALIZABLE_TEMPLATE_CLASS(class_name)</P>
+		</TD>
+		<TD WIDTH=50%>
+			<P>For template classes which can be instantiated after
+			specialization.</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=50%>
+			<P>SERIALIZABLE_TEMPLATE_ABSTRACT_CLASS(class_name)</P>
+		</TD>
+		<TD WIDTH=50%>
+			<P>For template abstract classes.</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=50%>
+			<P>SERIALIZABLE_CLASS_NO_FACTORY(class_name)</P>
+		</TD>
+		<TD WIDTH=50%>
+			<P>This can be used optionaly on classes which don't need class
+			factories for creating objects or casting pointers. I used it for
+			some base template classes, like Batcher, to avoid declaring the
+			cpp macros for each of its specializations.</P>
+		</TD>
+	</TR>
+</TABLE>
+<P><BR><BR>
+</P>
+<P><BR><BR>
+</P>
+<P><BR><BR>
+</P>
+<P><BR><BR>
+</P>
+<P>The second macro SERIALIZABLE_CLASS_CONSTRUCTOR(class_name)
+defines the special constructor related to serialization. This
+constructor is in the form</P>
+<P>Example(::zorba::serialization::Archiver &amp;ar) :
+::zorba::serialization::SerializeBaseClass() {}</P>
+<P>This constructor is called when the Archiver creates the objects
+when loading. This macro is only a helper, you can also declare this
+constructor by hand.</P>
+<P>There are some variations to this macro:</P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=4 CELLSPACING=3 STYLE="page-break-inside: avoid">
+	<COL WIDTH=128*>
+	<COL WIDTH=128*>
+	<TR VALIGN=TOP>
+		<TD WIDTH=50%>
+			<P>SERIALIZABLE_CLASS_CONSTRUCTOR(class_name)</P>
+		</TD>
+		<TD WIDTH=50%>
+			<P>For classes derived directly from SerializeBaseClass</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=50%>
+			<P>SERIALIZABLE_CLASS_CONSTRUCTOR2(class_name, base_class)</P>
+		</TD>
+		<TD WIDTH=50%>
+			<P>For classes derived from a single base class.</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=50%>
+			<P>SERIALIZABLE_CLASS_CONSTRUCTOR2T(class_name, base_class,
+			templ2)</P>
+		</TD>
+		<TD WIDTH=50%>
+			<P>For classed derived from a template base class.</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=50%>
+			<P>SERIALIZABLE_CLASS_CONSTRUCTOR3T(class_name, base_class,
+			templ2, templ3)</P>
+		</TD>
+		<TD WIDTH=50%>
+			<P>For classed derived from a template base class with two
+			parameters.</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=50%>
+			<P>SERIALIZABLE_CLASS_CONSTRUCTOR3(class_name, base_class1,
+			base_class2)</P>
+		</TD>
+		<TD WIDTH=50%>
+			<P>For classes derived from two normal base classes.</P>
+		</TD>
+	</TR>
+</TABLE>
+<P><BR><BR>
+</P>
+<P><BR><BR>
+</P>
+<P><BR><BR>
+</P>
+<P><BR><BR>
+</P>
+<P>Next, the serialize() function is defined. Note that this is not a
+virtual function. It is called by Archiver from inside the operator &amp;
+template specialized for this class.</P>
+<P>Inside serialize() function you can call various functions and
+macros:</P>
+<TABLE WIDTH=100% BORDER=1 CELLPADDING=4 CELLSPACING=3 STYLE="page-break-inside: avoid">
+	<COL WIDTH=128*>
+	<COL WIDTH=128*>
+	<TR VALIGN=TOP>
+		<TD WIDTH=50%>
+			<P>Operator &amp;</P>
+			<P>For example: 
+			</P>
+			<P>ar &amp; class_member_1;</P>
+			<P>ar &amp; class_member_2;</P>
+		</TD>
+		<TD WIDTH=50%>
+			<P>You can call this operator &amp; for almost every member of the
+			class.</P>
+			<P>This operator is used for both out and in serialization.</P>
+			<P>There are three types of implementations for operator &amp;:
+			one is the template, defined for serializing classes. Other is 
+			the implementation for simple types. The third one is the
+			implementation for Zorba special types. There are some Zorba types
+			that cannot be serialized in a normal way, so they had to be
+			processed in a special operator&amp;.</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=50%>
+			<P>::zorba::serialization::serialize_baseclass(ar,
+			(base_class*)this);</P>
+		</TD>
+		<TD WIDTH=50%>
+			<P>Call this function to serialize the content of each  base
+			class.</P>
+			<P>This function is a global template function, specialized for
+			every base class you need.</P>
+			<P>It will set the Archiver in a special mode and then call the
+			serialize function of the base class.</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=50%>
+			<P>SERIALIZE_ENUM(enum_type, obj)</P>
+		</TD>
+		<TD WIDTH=50%>
+			<P>Call this macro to serialize an enum object. The object will be
+			converted to &ldquo;int&rdquo; and then serialized.</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=50%>
+			<P>serialize_array(ar, unsigned char *obj, int len);</P>
+		</TD>
+		<TD WIDTH=50%>
+			<P>Call this function to serialize some binary data. The data is
+			converted first to text using base64 convertion.</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=50%>
+			<P>SERIALIZE_FUNCTION(f)</P>
+		</TD>
+		<TD WIDTH=50%>
+			<P>Call this macro to serialize function* objects. This macro will
+			serialize only objects of type user_function* and will ignore
+			others.</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=50%>
+			<P>SERIALIZE_TYPEMANAGER( type, obj )</P>
+		</TD>
+		<TD WIDTH=50%>
+			<P>Call this macro to serialize a TypeManager* or TypeManager
+			derived object. You have to specify the exact type as the first
+			parameter.</P>
+			<P>This macro will handle the special case of not serializing the
+			root type manager. When serializing back in, the pointer to the
+			local root type manager will be returned instead.</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=50%>
+			<P>SERIALIZE_TYPEMANAGER_RCHANDLE( type, obj )</P>
+		</TD>
+		<TD WIDTH=50%>
+			<P>Same as above, only now the type of the object is a rchandle to
+			a TypeManager or some derived class.</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=50%>
+			<P>ar.set_is_temp_field ( true )</P>
+			<P>ar.set_is_temp_field ( false )</P>
+		</TD>
+		<TD WIDTH=50%>
+			<P>Call Archiver's set_is_temp_field() to set it in a special mode
+			that tells it to not register the pointer of the upcomming object
+			into its internal pointer hashmap.</P>
+			<P>Sometimes there is a need to construct some temporary variables
+			inside serialize() function, and serialize those temporary
+			variables. You have to tell Archiver to not memorize the pointer
+			to that temporary variable, otherwise the pointer duplication
+			mechanism might be messed up.</P>
+			<P>After serializing the temporary variable you have to set the
+			temp mode to false.</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=50%>
+			<P>Bool ar.is_serializing_out()</P>
+		</TD>
+		<TD WIDTH=50%>
+			<P>Returns true if Archiver is used to serializing out. 
+			</P>
+			<P>For serializing in, the function returns false.</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=50%>
+			<P>Int ar.get_class_version()</P>
+		</TD>
+		<TD WIDTH=50%>
+			<P>Retrieve the version of the current class while loading it.</P>
+			<P>This function is meaningfull only when serializing in.</P>
+		</TD>
+	</TR>
+</TABLE>
+<P><BR><BR>
+</P>
+<P><BR><BR>
+</P>
+<P><BR><BR>
+</P>
+<P>In the cpp file you have to define the class versions:</P>
+<P><B>SERIALIZABLE_CLASS_VERSIONS(Example)</B></P>
+<P><B>CLASS_VERSION( 2, ZORBA_VERSION_0_9_5,  BACKWARD_COMPATIBLE, 
+&ldquo;added a new member m2 in class&rdquo;)</B></P>
+<P><B>CLASS_VERSION( 3, ZORBA_VERSION_0_9_6,  !BACKWARD_COMPATIBLE, 
+&ldquo;changed type of m1 and m2 from int to MAPM&rdquo;)</B></P>
+<P><B>END_SERIALIZABLE_CLASS_VERSIONS(Example)</B></P>
+<P><BR><BR>
+</P>
+<P>This set of macros specify that the latest Example class version
+is 3 and the current code is not backward compatible with previous
+versions. That is, if Archiver tries to load an Example object saved
+from previous version it will fail and will suggest to the user to
+use Zorba version 0.9.5 instead.</P>
+<P>When just declaring a serializable class you can declare only the
+macros SERIALIZABLE_CLASS_VERSIONS and
+END_SERIALIZABLE_CLASS_VERSIONS. A version 1 will be added by
+default, associating it with the current Zorba version. After
+changing the members of the class you have to add new versions and
+also new code into serialize() functions (supporting the old version
+or not, depending on your choice).</P>
+<P><BR><BR>
+</P>
+<P><BR><BR>
+</P>
+<P><BR><BR>
+</P>
+<P>Defining the versions for templates is more complicated. For
+example lets consider the template serializable_hashmap&lt;&gt;.</P>
+<P><B>SERIALIZABLE_TEMPLATE_VERSIONS(serializable_hashmap)</B></P>
+<P><B>CLASS_VERSION(..... &hellip;... ...)</B></P>
+<P><B>END_SERIALIZABLE_TEMPLATE_VERSIONS(serializable_hashmap)</B></P>
+<P><B>SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap,
+serializable_hashmap&lt;context::ctx_value_t&gt;, 1)</B></P>
+<P><B>SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap,
+serializable_hashmap&lt;xqp_string&gt;, 2)</B></P>
+<P><B>SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap,
+serializable_hashmap&lt;xqtref_t&gt;, 3)</B></P>
+<P><BR><BR>
+</P>
+<P>The CLASS_VERSION macros are defined once for all template. After
+that you have to declare SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS for
+each of the template specializations in the code. The first parameter
+is the name of the template. The second parameter is the name of the
+specialization. The third parameter is the index of the macro.</P>
+<P>This macro SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS also declares
+the global class factory object.</P>
+<P>If you don't need a class factory for this class, you can declare
+the macro SERIALIZABLE_CLASS_NO_FACTORY inside the template
+definition. Then you don't have to declare the macro
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS for each of the template
+specializations.</P>
+<P><BR><BR>
+</P>
+<P><BR><BR>
+</P>
+<P><BR><BR>
+</P>
+<P><FONT SIZE=4 STYLE="font-size: 16pt">How to serialize</FONT></P>
+<P><BR><BR>
+</P>
+<P>The Archiver class is an abstract class, so you have to create one
+of its specializations: MemArchiver, XmlArchiver or BinArchiver.</P>
+<P>MemArchiver is used for testing and it just serializes the data
+into the special Archiver tree.</P>
+<P>XmlArchiver serializes data into a stream in xml format. The
+result is quite large, but is human readable.</P>
+<P>BinArchiver serializes data into a stream in binary format. Very
+optimized but not human readable.</P>
+<P><BR><BR>
+</P>
+<P><B>Example ex1;</B></P>
+<P><B>std::ofstream     of(&ldquo;example.bin&rdquo;,
+std::ios_base::binary);</B></P>
+<P><B>BinArchiver    bin_ar_save(&amp;of);///create an archiver for
+saving</B></P>
+<P><B>bin_ar_save &amp; ex1;</B></P>
+<P><B>bin_ar_save.serialize_out();///only now the data is sent to
+file</B></P>
+<P><BR><BR>
+</P>
+<P>//....... then loading back</P>
+<P><B>Example ex2;</B></P>
+<P><B>std::ifstream if(&ldquo;example.bin&rdquo;,
+std::ios_base::binary);</B></P>
+<P><B>BinArchiver    bin_ar_load(&amp;if);//create an archiver for
+loading</B></P>
+<P><B>bin_ar_load &amp; ex2;</B></P>
+<P><B>bin_ar_load.finalize_input_serialization();///fix up all the
+duplicated pointers</B></P>
+<P>///...and that's it</P>
+<P><BR><BR>
+</P>
+<P><BR><BR>
+</P>
+<P><BR><BR>
+</P>
+</BODY>
+</HTML>
