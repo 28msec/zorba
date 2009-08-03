@@ -242,13 +242,13 @@ std::ostream& operator<< (std::ostream& os, const QueryException& aException)
             << ":"  << aException.getFileLineNumber() 
             << ". Query: <" << aException.getQueryURI()
             << ">, line " << aException.getLineBegin() 
-            << ", column " << aException.getColumnBegin() + 1
+            << ", column " << aException.getColumnBegin()
             << ": " 
             << (ZorbaException)aException;
 #else
   return os << "Query: <" << aException.getQueryURI()
             << ">, line " << aException.getLineBegin()
-            << ", column " << aException.getColumnBegin() + 1
+            << ", column " << aException.getColumnBegin()
             << ": "
             << (ZorbaException)aException; 
 #endif
