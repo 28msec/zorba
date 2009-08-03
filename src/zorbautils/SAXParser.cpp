@@ -100,6 +100,23 @@ void zorba::SAXParser::startElement( void * ctx, const xmlChar * localname, cons
 	}
 	store::Item_t typeName;
 	factory.createElementNode(result, parent, -1, nodeName, typeName, false, false, bindings, lParser.theBaseUri);
+  unsigned int index = 0;
+  for (int indexAttribute = 0;
+    indexAttribute < nb_attributes;
+    ++indexAttribute, index += 5) {
+      store::Item_t res;
+      store::Item_t anAttrName;
+      store::Item_t aTypedValue;
+      factory.createQName(
+        anAttrName,
+        reinterpret_cast<const char*>(attributes[index+2]),
+        reinterpret_cast<const char*>(attributes[index+1]),
+        reinterpret_cast<const char*>(attributes[index]));
+      std::string aValue(reinterpret_cast<const char*>(attributes[index+3]), reinterpret_cast<const char*>(attributes[index+4]));
+      xqpStringStore_t aValueStore = new xqpStringStore(aValue);
+      factory.createUntypedAtomic(aTypedValue, aValueStore);
+      factory.createAttributeNode(res, result.getp(), indexAttribute, anAttrName, typeName, aTypedValue);
+  }
 	lParser.theStack.push_back(result);
 }
 
