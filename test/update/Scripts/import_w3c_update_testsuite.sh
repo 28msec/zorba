@@ -1,24 +1,26 @@
 #!/bin/bash
 
-# HOWTO 
-# export update testsuite (http://dev.w3.org/2007/xquery-update-10-test-suite/)
+# # HOWTO 
+# #export update testsuite (http://dev.w3.org/2007/xquery-update-10-test-suite/)
 #   export CVSROOT=":pserver:anonymous@dev.w3.org:/sources/public"
 #   cvs login
-#   (Logging in to anonymous@dev.w3.org)
-#   CVS password: anonymous
+#   #(Logging in to anonymous@dev.w3.org)
+#   #CVS password: anonymous
 #   cvs export -DNOW 2007/xquery-update-10-test-suite/
-# mv xquery-update-10-test-suite/TestSources xquery-update-10-test-suite/Queries
-# delete all spec files if already generated once (optional)
+# #mv xquery-update-10-test-suite/TestSources xquery-update-10-test-suite/Queries
+# ln -s ../TestSources/ xquery-update-10-test-suite/Queries/TestSources 
+# #delete all spec files if already generated once (optional)
 #   find . -name "*.spec" -exec rm {} \;
 # ./import_w3c_update_testsuite.sh <testsuite-dir (xquery-update-10-test-suite)> <path to saxon*.jar (e.g. saxon9.jar)>
-# ln -s xquery-update-10-test-suite/Queries/ zorba/test/update/Queries/xquery_update_testsuite
+# ln -s xquery-update-10-test-suite/Queries/ zorba/test/update/Queries/w3c_update_testsuite
 # ln -s xquery-update-10-test-suite/ExpectedTestResults/ zorba/test/update/ExpectedTestResults/w3c_update_testsuite
+# cp zorba/test/update/xml.xsd xquery-update-10-test-suite/TestSources/
 # commit xquery-update-10-test-suite/Queries/ and xquery-update-10-test-suite/ExpectedTestResults/ to https://fifthelement.inf.ethz.ch/zorba-repos/xqueryw3ctests/w3c_update_testsuite/ 
 
 if test $# != 2 -o ! -d $1/Queries/XQuery/UpdatePrimitives/AttributeErrors
 then
- echo 'Arguments: xquery_update_testsuite saxon.jar'
- echo 'where zorba_repository is the top-level SVN working copy'
+ echo 'Arguments: xquery-update-10-testsuite saxon.jar'
+ echo 'where xquery-update-10-testsuite is the top-level SVN working copy'
  exit 1
 fi
 
@@ -27,7 +29,7 @@ SAXON_PATH=$2
 
 d0=`pwd`
 
-uq=`mktemp /tmp/rwts.XXXXXX`
+uq=`mktemp /tmp/rwts1.XXXXXX`
 cat >$uq <<"EOF"
 declare default element namespace "http://www.w3.org/2005/02/query-test-update";
 declare option saxon:output "omit-xml-declaration=yes";
@@ -43,8 +45,13 @@ java -cp $SAXON_PATH net.sf.saxon.Query \
 -o:$SUITE_SRC/Queries/TestSources/uri.txt \
 $uq
 
+echo "Adding xml.xsd entry to uri.txt ..."
+echo >> $SUITE_SRC/Queries/TestSources/uri.txt
+echo "http://www.w3.org/XML/1998/namespace=TestSources/xml.xsd" >> $SUITE_SRC/Queries/TestSources/uri.txt
+
+
 # XQUTSCatalog does not contain module tags
-#mq=`mktemp /tmp/rwts.XXXXXX`
+#mq=`mktemp /tmp/rwts2.XXXXXX`
 #cat >$mq <<"EOF"
 #declare default element namespace "http://www.w3.org/2005/02/query-test-update";
 #declare option saxon:output "omit-xml-declaration=yes";
@@ -58,7 +65,7 @@ $uq
 #$SRC/test/zorbatest/xquery -s XQTSCatalog.xml -o:$SRC/test/rbkt/Queries/module.txt $mq 
 
 
-q=`mktemp /tmp/rwts.XXXXXX`
+q=`mktemp /tmp/rwts3.XXXXXX`
 cat >$q <<"EOF"
 declare default element namespace "http://www.w3.org/2005/02/query-test-update";
 declare option saxon:output "omit-xml-declaration=yes";
@@ -98,27 +105,28 @@ use File::Copy;
 my $suite=shift;
 
 print "Creating spec files ...\n";
-while (<>) {
-chomp;
-if (m/^%uri /) {
-}
-elsif (m/^%src /) {
-}
-elsif (m/^case=/) {
-  my ($var, $name) = split /=/;
-  my $path = $suite . "Queries/XQuery/" . "$name.spec";
-  my $path_xqueryx =  $suite . "Queries/XQueryX/" . "$name.spec";
-  open (SPEC, ">>$path");
-  open (SPEC_XQUERYX, ">>$path_xqueryx");
-}
-elsif (m/^end/) {
-  close (SPEC);
-  close (SPEC_XQUERYX);
-}
-else {
-  print SPEC "$_\n"; 
-  print SPEC_XQUERYX "$_\n"; 
-}
+while (<>) 
+{
+  chomp;
+  if (m/^%uri /) {
+  }
+  elsif (m/^%src /) {
+  }
+  elsif (m/^case=/) {
+    my ($var, $name) = split(/=/);
+    my $path = $suite . "/Queries/XQuery/" . "$name.spec";
+    my $path_xqueryx =  $suite . "Queries/XQueryX/" . "$name.spec";
+    open (SPEC, ">$path");
+    open (SPEC_XQUERYX, ">$path_xqueryx");
+  }
+  elsif (m/^end/) {
+    close (SPEC);
+    close (SPEC_XQUERYX);
+  }
+  else {
+    print SPEC "$_\n"; 
+    print SPEC_XQUERYX "$_\n"; 
+  }
 }
 
 ' $SUITE_SRC
