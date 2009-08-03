@@ -9,7 +9,7 @@ Iterator tree for main query:
               <PromoteIterator type="xs:string">
                 <FnDataIterator>
                   <CtxVariableIterator>
-                    <SingletonIterator value="xs:string(input-context)"/>
+                    <SingletonIterator value="xs:string(1:input-context)"/>
                   </CtxVariableIterator>
                 </FnDataIterator>
               </PromoteIterator>
