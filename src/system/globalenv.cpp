@@ -202,25 +202,27 @@ void GlobalEnvironment::init(store::Store* store)
 
 extern zorba::serialization::ClassSerializer *zorba::serialization::g_class_serializer;
 
+// destroy all components that were initialized in init 
+// note: destruction must be done in reverse initialization order
 void GlobalEnvironment::destroy()
 {
+  zorba::serialization::g_class_serializer->destroyArchiverForHardcodedObjects();
+
   delete m_globalEnv->m_compilerSubSys;
   m_globalEnv->m_compilerSubSys = 0;
 
-  // terminate Xerces-C lib
-  Schema::terminate();
+#ifdef ZORBA_XQUERYX
+    //free libxml2 and libxslt
 
-  // we shutdown icu
-  // again it is important to mention this in the documentation
-  // we might disable this call because it only
-  // releases statically initialized memory and prevents
-  // valgrind from reporting those problems at the end
-  // see http://www.icu-project.org/apiref/icu4c/uclean_8h.html#93f27d0ddc7c196a1da864763f2d8920
-  m_globalEnv->cleanup_icu();
+  xsltCleanupGlobals();
+  xmlCleanupParser();
+  delete m_globalEnv->xqueryx_convertor;
+#endif
 
 #ifdef ZORBA_WITH_REST
   curl_global_cleanup();
 #endif
+
 
 #ifndef ZORBA_NO_BIGNUMBERS
   // release resources aquired by the mapm library
@@ -231,23 +233,26 @@ void GlobalEnvironment::destroy()
   m_globalEnv->m_mapm = 0;
 #endif
 
-#ifdef ZORBA_XQUERYX
-    //free libxml2 and libxslt
-
-  xsltCleanupGlobals();
-  xmlCleanupParser();
-  delete m_globalEnv->xqueryx_convertor;
-#endif
 
   RCHelper::removeReference (m_globalEnv->m_rootStaticContext);
   m_globalEnv->m_rootStaticContext = 0;
 
-  zorba::serialization::g_class_serializer->destroyArchiverForHardcodedObjects();
-
   m_globalEnv->m_store = NULL;
+
+  // we shutdown icu
+  // again it is important to mention this in the documentation
+  // we might disable this call because it only
+  // releases statically initialized memory and prevents
+  // valgrind from reporting those problems at the end
+  // see http://www.icu-project.org/apiref/icu4c/uclean_8h.html#93f27d0ddc7c196a1da864763f2d8920
+  m_globalEnv->cleanup_icu();
+
 
   delete m_globalEnv;
 	m_globalEnv = NULL;
+
+  // terminate Xerces-C lib
+  Schema::terminate();
 
 }
 
