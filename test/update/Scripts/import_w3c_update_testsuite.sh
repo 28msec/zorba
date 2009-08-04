@@ -15,7 +15,10 @@
 # ln -s xquery-update-10-test-suite/Queries/ zorba/test/update/Queries/w3c_update_testsuite
 # ln -s xquery-update-10-test-suite/ExpectedTestResults/ zorba/test/update/ExpectedTestResults/w3c_update_testsuite
 # cp zorba/test/update/xml.xsd xquery-update-10-test-suite/TestSources/
-# commit xquery-update-10-test-suite/Queries/ and xquery-update-10-test-suite/ExpectedTestResults/ to https://fifthelement.inf.ethz.ch/zorba-repos/xqueryw3ctests/w3c_update_testsuite/ 
+# ###commit xquery-update-10-test-suite/Queries/ and xquery-update-10-test-suite/ExpectedTestResults/ to https://fifthelement.inf.ethz.ch/zorba-repos/xqueryw3ctests/w3c_update_testsuite/ 
+# # zip it up
+# zip -y -r w3c_update_testsuite.zip  xquery-update-10-test-suite
+# zip -d w3c_update_testsuite.zip \*/CVS/\*
 
 if test $# != 2 -o ! -d $1/Queries/XQuery/UpdatePrimitives/AttributeErrors
 then
