@@ -366,7 +366,7 @@ bool CompareIterator::valueComparison(
     compValue = valueEqual(aItem0, aItem1, typemgr, timezone, aCollation);
 
     if (compValue >= 0)
-      return compValue;
+      return compValue != 0;
 
     break;
   }
@@ -517,7 +517,7 @@ bool CompareIterator::generalComparison(
     compValue = generalEqual(aItem0, aItem1, typemgr, timezone, aCollation);
 
     if (compValue >= 0)
-      return compValue;
+      return compValue != 0;
 
     break;
   }

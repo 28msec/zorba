@@ -79,7 +79,7 @@ static expr_t execute (
     }
     return NULL;
   }
-  catch (error::ZorbaError& e) 
+  catch (error::ZorbaError& /*e*/) 
   {
     node->put_annotation (AnnotationKey::UNFOLDABLE_OP, TSVAnnotationValue::TRUE_VAL);
     node->put_annotation (AnnotationKey::NONDISCARDABLE_EXPR, TSVAnnotationValue::TRUE_VAL);

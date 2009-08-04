@@ -133,7 +133,8 @@ public:
       return CompareIterator::valueEqual(t1, t2,
                                          theCompareParam->theTypeManager,
                                          theCompareParam->theTimezone,
-                                         theCompareParam->theCollator); 
+                                         theCompareParam->theCollator)
+	     != 0; 
     }
 
     uint32_t hash(const store::Item_t& t)

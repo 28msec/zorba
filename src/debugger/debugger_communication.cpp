@@ -78,10 +78,12 @@ zorba::AbstractCommandMessage* zorba::DebuggerCommunicator::handleTCPClient()
 			}
 			return NULL;
 		}
-	} catch ( std::exception &e ) {
 #ifndef NDEBUG
+	} catch ( std::exception &e ) {
 		synchronous_logger::clog << "[Server Thread] The connection with the client is closed\n";
 		synchronous_logger::clog <<  e.what() << "\n";
+#else
+	} catch ( std::exception &/*e*/ ) {
 #endif
 	} catch(...) {
 		synchronous_logger::clog << "[Server Thread] unknown exception\n";
