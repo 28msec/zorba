@@ -83,12 +83,14 @@ to be included at the beginning of a query. For example
 
 \code
   declare function mail(  $to       as xs:string
+                          $cc       as xs:string
+                          $bcc      as xs:string
                           $subject  as xs:string
                           $message  as xs:string)  as none
 \endcode
 
 Parameters: \n
-<b>$to</b> Receiver, or receivers of the email. The formatting of this string must comply with <a href="http://www.faqs.org/rfcs/rfc2822.html" target="_blank">RFC 2822</a>. \n
+<b>$to</b>, <b>$cc</b>, <b>$bcc</b> Receiver, or receivers of the email. The formatting of each of these strings must comply with <a href="http://www.faqs.org/rfcs/rfc2822.html" target="_blank">RFC 2822</a>. \n
 
 Examples: \n
 - user@example.com \n
@@ -103,7 +105,7 @@ Each line should be separated with a LF (\\n). Lines should not be larger than 7
 
 Error conditions:\n
 If the SMTP server was not set in the static context an error is raised API0038_SMTP_SEVER_ERROR_SET_OPTION (see \ref apendix_email).\n
-If the <b>$to</b> parameter was not set an error is raised API0039_TO_SET_OPTION (see \ref apendix_email).\n
+If the <b>$to</b>, <b>$cc</b>, <b>$bcc</b> parameters are all empty an error is raised API0039_RECIPIENT_SET_OPTION (see \ref apendix_email).\n
 If the email could not be sent for some reason an error is raised API0040_MAIL_NOT_SENT with the details of the failure (see \ref apendix_email).\n
 
 \subsection ex_mail Example:
@@ -116,13 +118,13 @@ If the email could not be sent for some reason an error is raised API0040_MAIL_N
   declare option op:SMTPUser "username";
   declare option op:SMTPPwd "password";
 
-  ze:mail('user@domain.com','this is a test email','it works!');
+  ze:mail('userTo@domain.com', 'userCC@domain.com', '', 'this is a test email','it works!');
 \endcode
 
 \section apendix_email Appendix A:  Error codes
 
   API0038_SMTP_SEVER_ERROR_SET_OPTION - is returned if the mail function was called prior to setting the SMTP server in the static context.\n
-  API0039_TO_SET_OPTION - is returned if the To: parameter was not set correctly.\n
+  API0039_RECIPIENT_SET_OPTION - is returned if To, CC and BCC are all empty: parameter was not set correctly.\n
   API0040_MAIL_NOT_SENT - is returned if the email could not be sent. \n
 
 \section apendix_naming Appendix B: SMTP server naming conventions

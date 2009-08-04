@@ -29,14 +29,17 @@ namespace zorba {
   {
     char line[MAILTMPLEN];
 
-    //Parse RFC 2822 address list
-    rfc822_parse_adrlist (&msg->to, (char*)to, NIL);
+    if( to ) {
+      //Parse RFC 2822 address list
+      rfc822_parse_adrlist (&msg->to, (char*)to, NIL);
+    }
 
-    if(msg->to)
-    {
+    if( cc ) {
       //Parse RFC 2822 address list
       rfc822_parse_adrlist (&msg->cc, (char*)cc, NIL);
+    }
 
+    if( bcc ) {
       //Parse RFC 2822 address list
       rfc822_parse_adrlist (&msg->bcc, (char*)bcc, NIL);
     }
@@ -98,9 +101,11 @@ namespace zorba {
 
     add_body(body, text, message);
 
-    if (msg->to) {
+    if ( msg->to ||
+         msg->cc ||
+         msg->bcc ) {
       out << "Sending..." << std::endl;
-      smtp_stream = smtp_open (hostlist,/*NIL*/1);
+      smtp_stream = smtp_open (hostlist,NIL);
       if (smtp_stream){
         sprintf (tmp,"MAIL");
         if (smtp_mail (smtp_stream,tmp,msg,body))

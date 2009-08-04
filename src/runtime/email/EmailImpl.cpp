@@ -31,8 +31,8 @@ END_SERIALIZABLE_CLASS_VERSIONS(ZorbaMailIterator)
 bool
 ZorbaMailIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t   itemTo, itemSubj, itemMsg;
-  bool            res = false, lSMTPServerFound = false;
+  store::Item_t   itemTo, itemCc, itemBcc, itemSubj, itemMsg;
+  bool            res = false, lSMTPServerFound = false, hasRecipient = false;
   xqp_string      SMTPServer, SMTPUser, SMTPPwd, diagnostics;
 
   PlanIteratorState *state;
@@ -46,15 +46,21 @@ ZorbaMailIterator::nextImpl(store::Item_t& result, PlanState& planState) const
        (lSMTPServerFound && SMTPServer.empty()) )
     ZORBA_ERROR_LOC(API0038_SMTP_SEVER_ERROR_SET_OPTION, loc);
   else if(consumeNext(itemTo, theChildren[0].getp(), planState ) &&
-          consumeNext(itemSubj, theChildren[1].getp(), planState) &&
-          consumeNext(itemMsg, theChildren[2].getp(), planState))
+          consumeNext(itemCc, theChildren[1].getp(), planState ) &&
+          consumeNext(itemBcc, theChildren[2].getp(), planState ) &&
+          consumeNext(itemSubj, theChildren[3].getp(), planState) &&
+          consumeNext(itemMsg, theChildren[4].getp(), planState))
       {
-        if(itemTo->getStringValue()->empty())
-          ZORBA_ERROR_LOC(API0039_TO_SET_OPTION, loc);
+        hasRecipient = (!itemTo->getStringValue()->empty() ||
+                        !itemCc->getStringValue()->empty() ||
+                        !itemBcc->getStringValue()->empty());
 
-        res = mail(itemTo->getStringValue()->c_str(),
-                   NULL, //CC
-                   NULL, //BCC
+        if( !hasRecipient )
+          ZORBA_ERROR_LOC(API0039_RECIPIENT_SET_OPTION, loc);
+
+        res = mail((!itemTo->getStringValue()->empty()?itemTo->getStringValue()->c_str():NULL),
+                   (!itemCc->getStringValue()->empty()?itemCc->getStringValue()->c_str():NULL),
+                   (!itemBcc->getStringValue()->empty()?itemBcc->getStringValue()->c_str():NULL),
                    itemSubj->getStringValue()->c_str(),
                    itemMsg->getStringValue()->c_str(),
                    SMTPServer.c_str(),

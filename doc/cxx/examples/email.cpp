@@ -32,7 +32,7 @@ email_example_1(Zorba* aZorba)
 {
   StaticContext_t lStaticContext = aZorba->createStaticContext();
 
-  XQuery_t lQuery = aZorba->compileQuery("import module namespace ze = 'http://www.zorba-xquery.com/zorba/email-functions'; declare namespace op = 'http://www.zorba-xquery.org/options'; declare option op:SMTPServer 'smtp.gmail.com:587/tls/novalidate-cert'; declare option op:SMTPUser 'username'; declare option op:SMTPPwd 'zorbaisgreat'; ze:mail('user@domain.com','this is a test email','it works!')",
+  XQuery_t lQuery = aZorba->compileQuery("import module namespace ze = 'http://www.zorba-xquery.com/zorba/email-functions'; declare namespace op = 'http://www.zorba-xquery.org/options'; declare option op:SMTPServer 'smtp.gmail.com:587/tls/novalidate-cert'; declare option op:SMTPUser 'username'; declare option op:SMTPPwd 'zorbaisgreat'; ze:mail('userTo@domain.com','','','this is a test email','it works!')",
           lStaticContext); 
 
   try {

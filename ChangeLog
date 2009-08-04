@@ -1,17 +1,17 @@
 Zorba - The XQuery Processor
 version 0.9.6 (comming)
-  * XQueryX execution
-  * Added converter functions to/from JSON and XML
-  * Added functions for sending emails
+  * XQueryX execution.
+  * Added converter functions to/from JSON or JsonML and XML.
+  * Added function for sending simple text emails.
   * Added a printPlan function to the XQuery class of the API.
-  * Added two plan printing function (printPlanAsXML and printPlanAsDOT) to the SWIG generated APIs
-	* Implemented 'declare option': options are set in the static context
-	* fn:trace can be disabled by setting the option QName("http://www.zorba-xquery.org/option", "trace")  to "disable"
-	* Changed the scripting syntax of the exit expression from 'exit with' to 'exit returning'. 
+  * Added two plan printing function (printPlanAsXML and printPlanAsDOT) to the SWIG generated APIs.
+	* Implemented 'declare option': options are set in the static context.
+	* fn:trace can be disabled by setting the option QName("http://www.zorba-xquery.org/option", "trace")  to "disable".
+	* Changed the scripting syntax of the exit expression from 'exit with' to 'exit returning'.
 		This is due to an ambiguity in the grammar (see http://www.w3.org/Bugs/Public/show_bug.cgi?id=6852 for more information).
-  * Added some accessor functions for node items to the Item class in the API (e.g. getChildren, getAttributes, or getNodeName)
-	* Made the util:tidy function to return a node instead of a string
-	* Added the module http://www.zorba-xquery.com/zorba/xqdoc-functions for generating xqdoc documentation
+  * Added some accessor functions for node items to the Item class in the API (e.g. getChildren, getAttributes, or getNodeName).
+	* Made the util:tidy function to return a node instead of a string.
+	* Added the module http://www.zorba-xquery.com/zorba/xqdoc-functions for generating xqdoc documentation.
 	* Added a UserException to the API which is raised if the user makes a call to the fn:error function.
 
 version 0.9.5 (2008.02.17)
