@@ -290,7 +290,10 @@ namespace zorba {
           arrIter = arr->begin();
           if((*arrIter)->getdatatype() == json::datatype::_string)
           {
-            xqpStringStore_t name = xqpString((*((*arrIter)->getstring())).c_str()).getStore();
+            std::wstring * wtmp = (*arrIter)->getstring();
+            std::string tmp = WStringToString(*wtmp);
+            delete wtmp;
+            xqpStringStore_t name = xqpString(tmp).getStore();
             create_Node_Helper(parent, baseUri, name, result);
             ++arrIter;
 
@@ -305,7 +308,10 @@ namespace zorba {
             for ( vectIter=vect->begin(); vectIter != vect->end(); ++vectIter )
             {
               xqpStringStore_t name = xqpString((*vectIter)->getname().c_str()).getStore();
-              xqpStringStore_t text = xqpString((*((*vectIter)->getstring())).c_str()).getStore();
+              std::wstring * wtmp = (*vectIter)->getstring();
+              std::string tmp = WStringToString(*wtmp);
+              delete wtmp;
+              xqpStringStore_t text = xqpString(tmp).getStore();
               create_Attribute_Helper(parent, name, text, NULL);
             }
           }
@@ -513,7 +519,10 @@ namespace zorba {
       arrIter = arr->begin();
       if((*arrIter)->getdatatype() == json::datatype::_string)
       {
-        xqpStringStore_t name = xqpString((*((*arrIter)->getstring())).c_str()).getStore();
+        std::wstring * wtmp = (*arrIter)->getstring();
+        std::string tmp = WStringToString(*wtmp);
+        delete wtmp;
+        xqpStringStore_t name = xqpString(tmp).getStore();
         create_Node_Helper(NULL, baseUri, name, &element);
 
         ++arrIter;
