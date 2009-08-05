@@ -11,7 +11,7 @@ jsonml:parse(('[ "ul",
                   ]', '["table",{"class":"maintable"},
                         ["tr",{"class":"odd"},
                         ["th",{},"Situation"],
-                        ["th","Result"], ],
+                        ["th","Result"]],
                         ["tr", {"class":"even"},
                         ["td",  ["a",  {"href":"driving.html", "title":"Driving"},"Driving"]],
-                        ["td", "Busy"], ], ]'))
+                        ["td", "Busy"] ] ]'))
