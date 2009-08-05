@@ -199,8 +199,11 @@ MESSAGE(STATUS "ZORBA_USE_SWIG:               " ${ZORBA_USE_SWIG})
 
 SET(ZORBA_USE_SEPARATE_WINCE_SVN OFF CACHE BOOL "Daniel's flag")
 
-SET(ZORBA_XQUERYX FALSE CACHE BOOL "Activate capability to compile XQueryX code (true or false)")
+SET(ZORBA_XQUERYX ON CACHE BOOL "Activate capability to compile XQueryX code (on/off)")
 MESSAGE(STATUS "ZORBA_XQUERYX:                " ${ZORBA_XQUERYX})
+
+SET(ZORBA_TEST_XQUERYX OFF CACHE BOOL "Test only xqueryx (.xqx) tests")
+MESSAGE(STATUS "ZORBA_TEST_XQUERYX:                " ${ZORBA_TEST_XQUERYX})
 
 # below we print some variables you might be interested in, when compiling
 

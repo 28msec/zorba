@@ -64,7 +64,7 @@ void slurp_file (
   if(sstr.find("$RBKT_SRC_DIR",0) != std::string::npos)
   {
     std::string rbkt_src_uri = zorba::URI::encode_file_URI (rbkt_src_dir)->str ();
-#ifdef ZORBA_XQUERYX
+#ifdef ZORBA_TEST_XQUERYX
     zorba::str_replace_all(rbkt_src_uri, "%3A", ":");
 #endif
     zorba::str_replace_all(sstr, "$RBKT_SRC_DIR", rbkt_src_uri);
