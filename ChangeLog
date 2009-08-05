@@ -1,8 +1,20 @@
 Zorba - The XQuery Processor
-version 0.9.6 (comming)
-  * XQueryX execution.
-  * Added converter functions to/from JSON or JsonML and XML.
-  * Added function for sending simple text emails.
+version 0.9.8 (coming)
+  * More XQuery Scripting Features
+		* default initialization for external variables
+		* block local variables
+  * XQuery 1.1
+		* Support for the "validation as TypeName" feature
+		* changed the try/catch syntax as specified in XQuery 1.1
+	* Examples for the Java API
+	* Function library
+  	* creating PDFs using XSL Formatting Objects (requires Java)
+		* util:parse function
+  	* converter functions to/from JSON or JsonML and XML
+  	* function for sending simple text emails
+  	* the util:tidy function returns a node instead of a string.
+  	* XQDoc module http://www.zorba-xquery.com/zorba/xqdoc-functions
+  * Added support for XQueryX and XQueryX Update
   * Added a printPlan function to the XQuery class of the API.
   * Added new option in the Zorba command line utility: compile-only, parse-only, lib-module, print-errors-as-xml.
   * Added two plan printing function (printPlanAsXML and printPlanAsDOT) to the SWIG generated APIs.
@@ -10,10 +22,10 @@ version 0.9.6 (comming)
   * fn:trace can be disabled by setting the option QName("http://www.zorba-xquery.org/option", "trace")  to "disable".
   * Changed the scripting syntax of the exit expression from 'exit with' to 'exit returning'.
   	This is due to an ambiguity in the grammar (see http://www.w3.org/Bugs/Public/show_bug.cgi?id=6852 for more information).
-  * Added some accessor functions for node items to the Item class in the API (e.g. getChildren, getAttributes, or getNodeName).
-  * Made the util:tidy function to return a node instead of a string.
-  * Added the module http://www.zorba-xquery.com/zorba/xqdoc-functions for generating xqdoc documentation.
+  * Added accessor functions for node items to the Item class in the API (i.e. getChildren, getAttributes, and getNodeName).
   * Added a UserException to the API which is raised if the user makes a call to the fn:error function.
+	* UTF8 support for the lexer
+	* bug fixes and performance improvements
 
 version 0.9.5 (2008.02.17)
   * Unified the Tidy and Rest API's
