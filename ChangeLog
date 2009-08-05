@@ -15,6 +15,7 @@ version 0.9.8 (coming)
   	* the util:tidy function returns a node instead of a string.
   	* XQDoc module http://www.zorba-xquery.com/zorba/xqdoc-functions
   * Added support for XQueryX and XQueryX Update
+	* Added compiled query persistence to the C++ API (XQuery::loadExecutionPlan() and XQuery::saveExecutionPlan())
   * Added a printPlan function to the XQuery class of the API.
   * Added new option in the Zorba command line utility: compile-only, parse-only, lib-module, print-errors-as-xml.
   * Added two plan printing function (printPlanAsXML and printPlanAsDOT) to the SWIG generated APIs.
