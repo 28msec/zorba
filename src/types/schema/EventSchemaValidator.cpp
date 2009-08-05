@@ -16,6 +16,9 @@
 #include <zorba/config.h>
 #ifndef ZORBA_NO_XMLSCHEMA
 
+#include "xercesIncludes.h"
+#include "types/schema/SchemaValidatorFilter.h"
+
 #include "system/globalenv.h"
 #include "types/schema/EventSchemaValidator.h"
 #include "types/schema/StrX.h"

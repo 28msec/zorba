@@ -19,11 +19,23 @@
 #include "common/common.h"
 #ifndef ZORBA_NO_XMLSCHEMA
 
-#include "xercesIncludes.h"
+#include <xercesc/framework/psvi/XSNamedMap.hpp>
+#include <xercesc/framework/psvi/XSModelGroup.hpp>
+#include <xercesc/framework/psvi/XSObject.hpp>
+#ifdef CYGWIN
+#undef WIN32
+#endif
 #include <string>
 
 
-XERCES_CPP_NAMESPACE_USE
+//XERCES_CPP_NAMESPACE_USE
+
+namespace XERCES_CPP_NAMESPACE {
+  class XMLGrammarPool;
+  class XSObject;
+  class XSTypeDefinition;
+  class XSComplexTypeDefinition;
+}
 
 namespace zorba
 {
@@ -34,18 +46,43 @@ class PrintSchema;
 class PrintSchema
 {
 public:
-    static void printInfo(bool excludeBuiltIn, XMLGrammarPool* grammarPool);
+    static void printInfo(bool excludeBuiltIn,
+                          XERCES_CPP_NAMESPACE::XMLGrammarPool* grammarPool);
 private:
-    static void printBasic(std::string pre, bool excludeBuiltIn, XSObject *xsObject, const char *type);
-    static void processElements(bool excludeBuiltIn, XSNamedMap<XSObject> *xsElements);
-    static void printCompositorTypeConnector(XSModelGroup::COMPOSITOR_TYPE type);
-    static std::string getCompositorTypeConnector(XSModelGroup::COMPOSITOR_TYPE type);
-    static void processParticle(std::string pre, bool excludeBuiltIn, XSParticle *xsParticle);
-    static void processTypeDefinitions(bool excludeBuiltIn, XSNamedMap<XSObject> *xsTypeDefs);
-    static void printTypeRef(std::string pre, bool excludeBuiltIn, XSTypeDefinition *xsTypeDef);
-    static void processTypeDefinition(std::string pre, bool excludeBuiltIn, XSTypeDefinition *xsTypeDef);
-    static void processSimpleTypeDefinition(std::string pre, bool excludeBuiltIn, XSSimpleTypeDefinition * xsSimpleTypeDef);
-    static void processComplexTypeDefinition(std::string pre, bool excludeBuiltIn, XSComplexTypeDefinition *xsComplexTypeDef);
+    static void printBasic(std::string pre,
+                           bool excludeBuiltIn,
+                           XERCES_CPP_NAMESPACE::XSObject *xsObject,
+                           const char *type);
+
+    static void processElements(bool excludeBuiltIn,
+                                XERCES_CPP_NAMESPACE::XSNamedMap<XERCES_CPP_NAMESPACE::XSObject> *xsElements);
+
+    static void printCompositorTypeConnector(XERCES_CPP_NAMESPACE::XSModelGroup::COMPOSITOR_TYPE type);
+
+    static std::string getCompositorTypeConnector(XERCES_CPP_NAMESPACE::XSModelGroup::COMPOSITOR_TYPE type);
+
+    static void processParticle(std::string pre,
+                                bool excludeBuiltIn,
+                                XERCES_CPP_NAMESPACE::XSParticle *xsParticle);
+
+    static void processTypeDefinitions(bool excludeBuiltIn,
+                                       XERCES_CPP_NAMESPACE::XSNamedMap<XERCES_CPP_NAMESPACE::XSObject> *xsTypeDefs);
+
+    static void printTypeRef(std::string pre,
+                             bool excludeBuiltIn,
+                             XERCES_CPP_NAMESPACE::XSTypeDefinition *xsTypeDef);
+
+    static void processTypeDefinition(std::string pre,
+                                      bool excludeBuiltIn,
+                                      XERCES_CPP_NAMESPACE::XSTypeDefinition *xsTypeDef);
+
+    static void processSimpleTypeDefinition(std::string pre,
+                                            bool excludeBuiltIn,
+                                            XERCES_CPP_NAMESPACE::XSSimpleTypeDefinition * xsSimpleTypeDef);
+
+    static void processComplexTypeDefinition(std::string pre,
+                                             bool excludeBuiltIn,
+                                             XERCES_CPP_NAMESPACE::XSComplexTypeDefinition *xsComplexTypeDef);
 };
 
 } // namespace xqp

@@ -21,7 +21,13 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "xercesIncludes.h"
+//#include "xercesIncludes.h"
+#include <xercesc/util/XercesDefs.hpp>
+//#include <xercesc/util/XMLChar.hpp>
+#include <xercesc/util/XMLString.hpp>
+#ifdef CYGWIN
+#undef WIN32
+#endif
 
 
 #if defined(XERCES_NEW_IOSTREAMS)
@@ -30,7 +36,10 @@
 #include <iostream.h>
 #endif
 
-XERCES_CPP_NAMESPACE_USE
+//XERCES_CPP_NAMESPACE_USE
+//namespace XERCES_CPP_NAMESPACE {
+//  class XMLCh;
+//}
 
 namespace zorba
 {
@@ -45,18 +54,18 @@ public :
   StrX(const XMLCh* const toTranscode, unsigned int length)
     : fLocalForm(0)
   {
-    XMLString::transcode(toTranscode, fLocalForm, length);
+    XERCES_CPP_NAMESPACE::XMLString::transcode(toTranscode, fLocalForm, length);
   }
 
   StrX(const XMLCh* const toTranscode)
   {
     // Call the private transcoding method
-    fLocalForm = XMLString::transcode(toTranscode);
+    fLocalForm = XERCES_CPP_NAMESPACE::XMLString::transcode(toTranscode);
   }
 
   ~StrX()
   {
-    XMLString::release(&fLocalForm);
+    XERCES_CPP_NAMESPACE::XMLString::release(&fLocalForm);
   }
 
   // -----------------------------------------------------------------------

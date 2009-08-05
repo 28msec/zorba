@@ -47,6 +47,9 @@
 #else
 #include <xercesc/internal/XMLGrammarPoolImpl.hpp>
 #endif
+#ifdef CYGWIN
+#undef WIN32
+#endif
 
 
 #include "zorbaerrors/Assert.h"

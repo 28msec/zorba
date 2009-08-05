@@ -10,12 +10,16 @@
 
 
 #include <xercesc/framework/XMLValidator.hpp>
-#include <xercesc/framework/XMLBuffer.hpp>
+//#include <xercesc/framework/XMLBuffer.hpp>
 #include <xercesc/util/ValueStackOf.hpp>
 #include <xercesc/validators/common/ContentSpecNode.hpp>
 #include <xercesc/validators/schema/SchemaGrammar.hpp>
 #include <xercesc/validators/schema/XSDErrorReporter.hpp>
+#ifdef CYGWIN
+#undef WIN32
+#endif
 
+// TODO remove
 using namespace XERCES_CPP_NAMESPACE;
 
 XERCES_CPP_NAMESPACE_BEGIN
@@ -23,6 +27,11 @@ XERCES_CPP_NAMESPACE_BEGIN
 class GrammarResolver;
 class DatatypeValidator;
 class SchemaElementDecl;
+class MemoryManager;
+class QName;
+class ComplexTypeInfo;
+class XercesGroupInfo;
+class ContentSpecNode;
 
 XERCES_CPP_NAMESPACE_END
 

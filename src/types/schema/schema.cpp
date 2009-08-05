@@ -15,6 +15,7 @@
  */
 #include <string>
 
+#include "xercesIncludes.h"
 #include "schema.h"
 #include "StrX.h"
 #include "LoadSchemaErrorHandler.h"
@@ -22,6 +23,7 @@
 #include "XercesParseUtils.h"
 
 #include <zorbatypes/xerces_xmlcharray.h>
+#include "compiler/parser/query_loc.h"
 
 #include "zorbamisc/ns_consts.h"
 #include "zorbaerrors/Assert.h"
@@ -1495,5 +1497,63 @@ bool Schema::isCastableUserUnionTypes(
 
     return false;
 }        
+
+void
+Schema::serialize(::zorba::serialization::Archiver &ar)
+{
+#ifndef ZORBA_NO_XMLSCHEMA
+   ar & _udTypesCache;
+
+   bool is_grammar_NULL = (_grammarPool == NULL);
+   ar.set_is_temp_field(true);
+   ar & is_grammar_NULL;
+   if(ar.is_serializing_out())
+   {
+     if(!is_grammar_NULL)
+     {
+       BinMemOutputStream    binmemoutputstream;
+       unsigned int  size = 0;
+       unsigned char *binchars = NULL;
+       try
+       {    
+         _grammarPool->serializeGrammars(&binmemoutputstream);
+         size = binmemoutputstream.getSize();
+         binchars = (unsigned char*)binmemoutputstream.getRawBuffer();
+       }
+       catch (...)
+       {
+       }
+
+       ar & size;
+       if(size)
+         serialize_array(ar, binchars, size);
+     }
+   }
+   else
+   {
+     if(!is_grammar_NULL)
+     {
+       unsigned int  size;
+       unsigned char *binchars;
+
+       ar & size;
+       if(size)
+       {
+         binchars = (unsigned char*)malloc(size+8);
+         serialize_array(ar, binchars, size);
+         BinMemInputStream   binmeminputstream((XMLByte*)binchars, size);
+         _grammarPool->deserializeGrammars(&binmeminputstream);
+
+         free(binchars);
+       }
+     }
+     else
+     {
+       _grammarPool = NULL;
+     }
+   }
+   ar.set_is_temp_field(false);
+#endif
+}
 } // namespace zorba
 

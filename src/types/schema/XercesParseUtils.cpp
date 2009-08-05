@@ -16,7 +16,12 @@
 #include "common/common.h"
 #ifndef ZORBA_NO_XMLSCHEMA
 
+#include "xercesIncludes.h"
+#include <xercesc/util/XMLString.hpp>
 #include "XercesParseUtils.h"
+#ifdef CYGWIN
+#undef WIN32
+#endif
 #include "StrX.h"
 #include "LoadSchemaErrorHandler.h"
 #include "PrintSchema.h"
@@ -32,6 +37,7 @@
 #include "zorbatypes/duration.h"
 
 using namespace std;
+XERCES_CPP_NAMESPACE_USE;
 
 namespace zorba
 {

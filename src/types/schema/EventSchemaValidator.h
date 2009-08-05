@@ -26,15 +26,24 @@
 #include "common/common.h"
 #ifndef ZORBA_NO_XMLSCHEMA
 
-#include "xercesIncludes.h"
-#include "types/schema/SchemaValidatorFilter.h"
-#include "types/schema/StrX.h"
+//#include "types/schema/SchemaValidatorFilter.h"
+//#include "xercesIncludes.h"
+//#include "types/schema/StrX.h"
 #include "types/schema/ValidationEventHandler.h"
-#include "store/api/item.h"
+//#include "store/api/item.h"
 #include "common/shared_types.h"
+
+namespace XERCES_CPP_NAMESPACE {
+  class GrammarResolver;
+  class XMLGrammarPool;
+}
 
 namespace zorba
 {
+
+  class TypeManager;
+  class SchemaValidatorFilter;
+
 
 class EventSchemaValidator
 {

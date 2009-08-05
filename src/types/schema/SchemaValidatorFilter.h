@@ -23,19 +23,26 @@
 
 #include <xercesc/framework/XMLDocumentHandler.hpp>
 #include <xercesc/framework/XMLErrorReporter.hpp>
-#include <xercesc/validators/schema/identity/IdentityConstraintHandler.hpp>
+//#include <xercesc/validators/schema/identity/IdentityConstraintHandler.hpp>
 #include <xercesc/internal/XMLScanner.hpp>
+#include <xercesc/validators/schema/SchemaElementDecl.hpp>
 #include <xercesc/util/RefHash3KeysIdPool.hpp>
 
-#include "types/schema/XercSchemaValidator.h"
+//#include "types/schema/XercSchemaValidator.h"
 
 //daniel: this is to make cygwin work; xerces defines WIN32 in case of cygwin, which is wrong
 #ifdef CYGWIN
 #undef WIN32
 #endif
 
-#include "common/shared_types.h"
-#include "types/schema/ValidationEventHandler.h"
+//#include "common/shared_types.h"
+//#include "types/schema/ValidationEventHandler.h"
+
+namespace XERCES_CPP_NAMESPACE {
+  class SchemaGrammar;
+  class IdentityConstraintHandler;
+  class GrammarResolver;
+}
 
 
 namespace zorba
@@ -43,6 +50,9 @@ namespace zorba
 
 class DynamicContext;
 class LocationInfo;
+class QueryLoc;
+class XercSchemaValidator;
+class ValidationEventHandler;
 
 /*******************************************************************************
   The SchemaValidatorFilter class implements a module that sits between an
@@ -77,9 +87,9 @@ class LocationInfo;
   XML document information up to the parser as it scans through the document.
 ********************************************************************************/
 class SchemaValidatorFilter : 
-    public XERCES_CPP_NAMESPACE_QUALIFIER XMLScanner,
-    private XERCES_CPP_NAMESPACE_QUALIFIER XMLDocumentHandler,
-    private XERCES_CPP_NAMESPACE_QUALIFIER XMLErrorReporter
+    public XERCES_CPP_NAMESPACE::XMLScanner,
+    private XERCES_CPP_NAMESPACE::XMLDocumentHandler,
+    private XERCES_CPP_NAMESPACE::XMLErrorReporter
 {
 public:
   static const XMLCh DT_UNTYPED[];
@@ -93,14 +103,14 @@ private:
   XMLCh        * _processorStipulatedTypeName;
   unsigned int   _processorStipulatedTypeUriId;
 
-  XERCES_CPP_NAMESPACE_QUALIFIER SchemaGrammar              * _fSchemaGrammar;
-  XERCES_CPP_NAMESPACE_QUALIFIER IdentityConstraintHandler  * _fICHandler;
+  XERCES_CPP_NAMESPACE::SchemaGrammar              * _fSchemaGrammar;
+  XERCES_CPP_NAMESPACE::IdentityConstraintHandler  * _fICHandler;
   XercSchemaValidator                                       * _fSchemaValidator;
 
-  XERCES_CPP_NAMESPACE_QUALIFIER RefHash3KeysIdPool<XERCES_CPP_NAMESPACE_QUALIFIER SchemaElementDecl>     
+  XERCES_CPP_NAMESPACE::RefHash3KeysIdPool<XERCES_CPP_NAMESPACE::SchemaElementDecl>     
                                                             * _fElemNonDeclPool;
 
-  XERCES_CPP_NAMESPACE_QUALIFIER ElemStack::StackElem       * _parentStack;
+  XERCES_CPP_NAMESPACE::ElemStack::StackElem       * _parentStack;
   unsigned int                                                _elemDepth;
 
   bool                                                        _elementToProcess;
@@ -128,7 +138,7 @@ public:
   SchemaValidatorFilter(
         bool strictValidation,
         ValidationEventHandler* eventBuffer,
-        GrammarResolver* grammarResolver,
+        XERCES_CPP_NAMESPACE::GrammarResolver* grammarResolver,
         XERCES_CPP_NAMESPACE_QUALIFIER MemoryManager* mm,
         const QueryLoc& loc);
 

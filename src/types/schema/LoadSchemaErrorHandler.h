@@ -19,14 +19,19 @@
 #include "common/common.h"
 #ifndef ZORBA_NO_XMLSCHEMA
 
-#include "xercesIncludes.h"
-#include <zorbaerrors/error_manager.h>
-#include "zorbaerrors/errors.h"
-#include <compiler/parser/query_loc.h>
+#include <xercesc/sax2/DefaultHandler.hpp>
+#ifdef CYGWIN
+#undef WIN32
+#endif
+//#include "xercesIncludes.h"
+//#include <zorbaerrors/error_manager.h>
+//#include "zorbaerrors/errors.h"
+//#include <compiler/parser/query_loc.h>
 
 
 namespace zorba
 {
+  class QueryLoc;
 
 class LoadSchemaErrorHandler : public XERCES_CPP_NAMESPACE::DefaultHandler
 {

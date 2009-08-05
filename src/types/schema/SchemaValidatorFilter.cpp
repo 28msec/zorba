@@ -20,6 +20,8 @@
 #include "types/schema/SchemaValidatorFilter.h"
 #include "types/schema/StrX.h"
 
+#include "types/schema/ValidationEventHandler.h"
+#include <xercesc/validators/schema/identity/IdentityConstraintHandler.hpp>
 #include <xercesc/internal/XMLReader.hpp>
 #include <xercesc/framework/MemBufInputSource.hpp>
 #include <xercesc/util/XMLUniDefs.hpp>

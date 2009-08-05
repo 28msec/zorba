@@ -18,12 +18,14 @@
 #ifndef ZORBA_NO_XMLSCHEMA
 
 #include "PrintSchema.h"
+#include "xercesIncludes.h"
 #include "StrX.h"
 #include "schema.h"
 #include "zorbatypes/xerces_xmlcharray.h"
 #include <iostream>
 #include "types/typeimpl.h"
 
+XERCES_CPP_NAMESPACE_USE
 using namespace std;
 
 namespace zorba

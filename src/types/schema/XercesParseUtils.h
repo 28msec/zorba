@@ -16,7 +16,6 @@
 #ifndef ZORBA_XERCESPATHUTILS_H_
 #define ZORBA_XERCESPATHUTILS_H_
 
-#include "xercesIncludes.h"
 
 #include <zorba/api_shared_types.h>
 #include <zorba/item.h>
