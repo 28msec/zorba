@@ -237,6 +237,13 @@ void dynamic_context::set_variable(
   v.type = dynamic_context::dctx_value_t::temp_seq_val;
   v.in_progress = false;
   v.val.temp_seq = seq.getp();
+  dctx_value_t v2;
+  // variables can be set multiple times
+  // we need to make sure to remove previously set temp sequences
+  if (map->get(key, v2)) {
+    if (v2.type == dynamic_context::dctx_value_t::temp_seq_val)
+      RCHelper::removeReference (v2.val.temp_seq);
+  }
   map->put (key, v);
 }
 
