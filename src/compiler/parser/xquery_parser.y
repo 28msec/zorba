@@ -1497,28 +1497,25 @@ VarNameAndType :
 VarDecl :
     DECLARE  VARIABLE  VarNameAndType GETS  ExprSingle
 		{
-      VarNameAndType *nt = dynamic_cast<VarNameAndType *> $3;
+      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($3));
 			$$ = new VarDecl(LOC (@$),
 								nt->name,
 								nt->type,
 								$5);
-      delete nt;
       dynamic_cast<VarDecl*>($$)->setComment(SYMTAB($1));
 		}
 	|	DECLARE  VARIABLE  VarNameAndType EXTERNAL
 		{
-      VarNameAndType *nt = dynamic_cast<VarNameAndType *> $3;
+      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($3));
 			$$ = new VarDecl(LOC (@$), nt->name, nt->type,
                        NULL, true);
-      delete nt;
       dynamic_cast<VarDecl*>($$)->setComment(SYMTAB($1));
 		}
 	|	DECLARE  VARIABLE  VarNameAndType EXTERNAL GETS ExprSingle
 		{
-      VarNameAndType *nt = dynamic_cast<VarNameAndType *> $3;
+      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($3));
 			$$ = new VarDecl(LOC (@$), nt->name, nt->type,
                        $6, true);
-      delete nt;
       dynamic_cast<VarDecl*>($$)->setComment(SYMTAB($1));
 		}
 	;
@@ -1678,10 +1675,10 @@ BlockDecls:
     BlockDecls BlockVarDeclList SEMI
     {
       VFO_DeclList *vfo = dynamic_cast<VFO_DeclList *> ($1);
-      VFO_DeclList *vfo2 = dynamic_cast<VFO_DeclList *> ($2);
+      std::auto_ptr<VFO_DeclList> vfo2(dynamic_cast<VFO_DeclList *> ($2));
       if ($1 == NULL)
         vfo = new VFO_DeclList (LOC (@$));
-      vfo->push_back (*vfo2);
+      vfo->push_back (*(vfo2.get()));
       $$ = vfo;
     }
   |
@@ -1708,18 +1705,17 @@ BlockVarDeclList:
 BlockVarDecl:
     VarNameAndType
     {
-      VarNameAndType *nt = dynamic_cast<VarNameAndType *> $1;
+      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($1));
       VarDecl *vd = new VarDecl(LOC (@$),
                        nt->name,
                        nt->type,
                        NULL);
       vd->set_global (false);
 			$$ = vd;
-      delete nt;
     }
   | VarNameAndType GETS ExprSingle
     {
-      VarNameAndType *nt = dynamic_cast<VarNameAndType *> $1;
+      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($1));
       VarDecl *vd = new VarDecl(LOC (@$),
                        nt->name,
                        nt->type,
