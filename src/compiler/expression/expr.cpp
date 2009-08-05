@@ -1756,14 +1756,14 @@ bool fo_expr::is_concatenation () const
 
 expr_t fo_expr::clone (substitution_t& subst) 
 {
-  fo_expr *fo = (is_concatenation() ?
+  std::auto_ptr<fo_expr> fo(is_concatenation() ?
                  create_seq(context, get_loc()) :
                  new fo_expr(context, get_loc(), get_func()));
 
   for (unsigned i = 0; i < argv.size (); i++)
     fo->add (argv [i]->clone (subst));
 
-  return fo;
+  return fo.release();
 }
 
 
