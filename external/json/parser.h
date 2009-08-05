@@ -74,7 +74,7 @@ namespace json{
 		bool allow_unquoted_names;
 		bool strictjson;
 		int fail();
-		std::wstring *printerrors();
+    std::wstring printerrors();
 		std::vector<error> errors;
 		parser(void);
 		

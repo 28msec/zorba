@@ -24,7 +24,8 @@
 #include "context/static_context.h"
 
 namespace zorba {
-  json::value* getValue(const char* aJSON, const unsigned int aLen);
+  json::value* getValue(const char* aJSON, const unsigned int aLen, xqp_string& error_log);
+  std::string  WStringToString(const std::wstring& s);
 
   bool create_Node_Helper(store::Item_t parent,
                           xqpStringStore_t baseUri,
@@ -68,7 +69,9 @@ namespace zorba {
                   store::Item_t& element, xqpStringStore_t baseUri,
                   xqp_string& error_log)
   {
-    std::auto_ptr<json::value> lValue(getValue(aJSON_string, aLength));
+    std::auto_ptr<json::value> lValue(getValue(aJSON_string, aLength, error_log));
+    if( !error_log.empty() )
+      return false;
 
     json::vector_list_t::iterator vectIter;
     json::vector_list_t *vect = lValue->getchildrenlist();
@@ -202,11 +205,13 @@ namespace zorba {
     return ret;
   }
 
-  json::value* getValue(const char* aJSON, const unsigned int aLen)
+  json::value* getValue(const char* aJSON, const unsigned int aLen, xqp_string& error_log)
   {
     json::parser lParser;
     json::value* lValue = lParser.parse(aJSON, aLen);
-    lParser.printerrors();
+    std::wstring s = lParser.printerrors();
+    std::string temp = WStringToString(s);
+    error_log = new xqpStringStore(temp);
     return lValue;
   }
 
@@ -239,7 +244,10 @@ namespace zorba {
               parse_Json_value(&*vectIter, *result, baseUri, &itemObj);
           break;
         default:
-          xqpStringStore_t val = xqpString((*((*value)->getstring())).c_str()).getStore();
+          std::wstring * wtmp = (*value)->getstring();
+          std::string temp = WStringToString(*wtmp);
+          delete wtmp;
+          xqpStringStore_t val = xqpString(temp).getStore();
           xqpStringStore_t type;
           if ((*value)->getdatatype() == json::datatype::_string)
             type = new xqpStringStore("string");
@@ -303,7 +311,10 @@ namespace zorba {
           }
           break;
         default:
-          xqpStringStore_t text = xqpString((*((*value)->getstring())).c_str()).getStore();
+          std::wstring * wtmp = (*value)->getstring();
+          std::string temp = WStringToString(*wtmp);
+          delete wtmp;
+          xqpStringStore_t text = xqpString(temp).getStore();
           if(text->byteCompare("null") != 0)
             GENV_ITEMFACTORY->createTextNode(text_value, parent, -1, text);
           break;
@@ -491,7 +502,9 @@ namespace zorba {
                      store::Item_t& element, xqpStringStore_t baseUri,
                      xqp_string& error_log)
   {
-    std::auto_ptr<json::value> lValue(getValue(aJSON_string, aLength));
+    std::auto_ptr<json::value> lValue(getValue(aJSON_string, aLength, error_log));
+    if( !error_log.empty() )
+      return false;
 
     json::array_list_t::iterator arrIter;
     json::array_list_t *arr = lValue->getarraylist();
@@ -540,5 +553,12 @@ namespace zorba {
     result = parse_Json_ML_child(element, json_string, error_log);
 
     return result;
+  }
+
+  std::string  WStringToString(const std::wstring& wstr)
+  {
+    std::string temp(wstr.length(), ' ');
+    std::copy(wstr.begin(), wstr.end(), temp.begin());
+    return temp;
   }
 } /*namespace Zorba */

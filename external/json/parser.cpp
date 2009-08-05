@@ -1,4 +1,6 @@
 #include "parser.h"
+#include <sstream>
+#include <iostream>
 
 using namespace json;
 
@@ -96,13 +98,14 @@ int parser::fail(){
 	return (int)errors.size();
 }
 
-std::wstring * parser::printerrors(){
+std::wstring parser::printerrors(){
 	std::vector<error>::iterator iter;
-	std::wstring *errstr=new std::wstring;
+  std::wostringstream q;
 	wchar_t lnum[50];
-	if (errors.size()==0){	return errstr;	}
-	for (iter=errors.begin();iter!=errors.end();++iter){
-		if (iter!=errors.begin())(*errstr)+=L"\n";
+	if ( errors.size() == 0 ){	return L""; }
+	for ( iter=errors.begin(); iter!=errors.end(); ++iter ){
+		if ( iter!=errors.begin() )
+      q << std::endl;
 		std::wstring tmperr=errstrings[(*iter)._errno];
 		tmperr+=L" on line ";
 		_itow((int)(*iter).row,lnum,10);
@@ -111,9 +114,11 @@ std::wstring * parser::printerrors(){
 		_itow((int)(*iter).column,lnum,10);
 		tmperr+=lnum;
 		tmperr+=L".";
-		(*errstr)+=tmperr;
+    q << tmperr;
 	}
-	return errstr;
+  std::wcout << q;
+  std::wstring wstr(q.str());
+  return wstr;
 }
 
 #include "readers.h"
@@ -273,7 +278,7 @@ void parser::readstring(value *val){
 void parser::readlit(value *val){
 
 	literals::literals destval;
-	wchar_t *deststr;
+	const wchar_t *deststr;
 	int destlen;
 	switch(curchar){
 	case 't':
