@@ -209,6 +209,24 @@ public:
   virtual xqpStringStore*
   getStringValueP() const;
 
+  /**
+   * Get the typed value of an item. If the item is an atomic item, its typed
+   * value is the item itself. If it is a node, its typed value is defined
+   * according to the XDM.
+   *
+   * @param val If the typed value consists of a single atomic value, it is 
+   *        returned in val. Otherwise, val is set to NULL.
+   * @param iter If the typed value is a sequence of atomic values, an iterator
+   *        is created to iterate over the values of the sequence. Otherwise,
+   *        iter is set to NULL.
+   */
+  virtual void
+  getTypedValue(Item_t& val, Iterator_t& iter) const;
+
+  /** Method to print to content of the Item
+   */
+  virtual xqp_string
+  show() const;
 
   /* -------------------  Methods for AtomicValues ------------------------------ */
 
@@ -485,14 +503,6 @@ public:
   virtual Item*
   getParent() const;
 
-  /** Accessor for document node, element node, attribute node, namespace node,
-   * processing instruction node, comment node, text node
-   *
-   * @return typedValue?
-   */
-  virtual void
-  getTypedValue(Item_t& val, Iterator_t& iter) const;
-
   /** Accessor for xs:qname, namespace node
    * @return namespace uri
    */
@@ -564,18 +574,11 @@ public:
    */
   virtual void finalizeNode();
 
-  /** Method to print to content of the Item
-   */
-  virtual xqp_string
-  show() const;
-
-  //virtual void
-  //serializeXML(serializer& ser, std::ostream& os) const;
-
   virtual void
   applyUpdates(std::set<zorba::store::Item*>& validationNodes);
 
   /* -------------------- Methods for tuples --------------------- */
+
   virtual const std::vector<zorba::store::TupleField>& getTupleFields() const;
 
   virtual int getTupleFieldCount() const;
@@ -583,6 +586,7 @@ public:
   virtual const TupleField& getTupleField(int index) const;
 
   /* -------------------- Methods for ErrorItem --------------------- */
+
   virtual error::ZorbaError* getError() const;
 }; 
 

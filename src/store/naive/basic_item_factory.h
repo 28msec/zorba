@@ -54,6 +54,11 @@ public:
 
   virtual ~BasicItemFactory();
 
+  bool createUserTypedAtomicItem(
+        store::Item_t& result,
+        store::Item_t& baseItem,
+        store::Item_t& typeName);
+
   bool createQName(
         store::Item_t&          result,
         const xqpStringStore_t& ns,
@@ -291,3 +296,9 @@ public:
 } // namespace zorba
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

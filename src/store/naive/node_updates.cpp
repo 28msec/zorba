@@ -291,9 +291,21 @@ void XmlNode::detach() throw()
 
     store::StoreConsts::NodeKind nodeKind = getNodeKind();
 
+    // ???? What we do here is not really thread-safe. For example, consider the
+    // following scenario: Let T1 be "this" thread and T2 be another thread that
+    // has an rchandle, rc2, on N. Right after T1 acquires the rclock on the old
+    // tree, T2 tries to make a copy of rc2; as a result, T2 will block on the
+    // old tree rclock. When T1 releases the old rclock, the old tree may be
+    // destroyed already, so T2 will be trying to acquire a deallocated lock. 
+    // Even if the old tree is there, T2 will increment the ref counter of the
+    // new tree while holding the lock of the old tree. In fact, the setTree()
+    // method istself is not safe (if T2 tries to copy rc2 after T1 has returned
+    // from setTree(), then things are ok).
     SYNC_CODE(oldTree->getRCLock().acquire());
+    SYNC_CODE(newTree->getRCLock().acquire());
 
     setTree(newTree);
+
     refcount += theRefCount;
 
     switch (nodeKind)
@@ -425,19 +437,6 @@ void XmlNode::detach() throw()
     }
     }
 
-    oldTree->getRefCount() -= refcount;
-    if (oldTree->getRefCount() == 0)
-    {
-      SYNC_CODE(oldTree->getRCLock().release());
-      oldTree->free();
-    }
-    else
-    {
-      SYNC_CODE(oldTree->getRCLock().release());
-    }
-
-    SYNC_CODE(newTree->getRCLock().acquire());
-
     newTree->getRefCount() += refcount;
     if (newTree->getRefCount() == 0)
     {
@@ -447,6 +446,17 @@ void XmlNode::detach() throw()
     else
     {
       SYNC_CODE(newTree->getRCLock().release());
+    }
+
+    oldTree->getRefCount() -= refcount;
+    if (oldTree->getRefCount() == 0)
+    {
+      SYNC_CODE(oldTree->getRCLock().release());
+      oldTree->free();
+    }
+    else
+    {
+      SYNC_CODE(oldTree->getRCLock().release());
     }
   }
   catch(...)

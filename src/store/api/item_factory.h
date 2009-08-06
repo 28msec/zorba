@@ -42,6 +42,14 @@ public:
 public:
 			
   /**
+   * Create an atomic item with a given user-defined data type.
+   */
+  virtual bool createUserTypedAtomicItem(
+        store::Item_t& result,
+        store::Item_t& baseItem,
+        store::Item_t& typeName) = 0;
+
+  /**
    * @param namespace namespace of the qname
    * @param prefix prefix of the qname
    * @param localName local name of the qname

@@ -61,7 +61,130 @@ public:
   bool isError() const  { return false; }
 
   virtual store::Item_t getAtomizationValue() const;
+
   virtual void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
+
+  virtual const store::Item* getBaseItem() const { return NULL; }
+};
+
+
+/*******************************************************************************
+  class UserTypedAtomicItem
+********************************************************************************/
+class UserTypedAtomicItemImpl : public AtomicItem
+{
+private:
+  store::Item_t theBaseItem;
+  store::Item_t theTypeName;
+
+public:
+  UserTypedAtomicItemImpl(
+        store::Item_t& baseItem,
+        store::Item_t& typeName)
+  {
+    theBaseItem.transfer(baseItem);
+    theTypeName.transfer(typeName);
+  }
+
+  const store::Item* getBaseItem() const { return theBaseItem; }
+
+  store::Item* getType() const { return theTypeName.getp(); }
+
+  uint32_t hash(long timezone = 0, const XQPCollator* collation = 0) const
+  {
+    return theBaseItem->hash(timezone, collation);
+  }
+
+  bool equals(
+        const store::Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const
+  {
+    return false;
+  }
+
+  long compare(
+        const store::Item* other,
+        long timezone = 0,
+        const XQPCollator* aCollation = 0) const
+  {
+    return 0;
+  }
+
+  store::Item_t getEBV() const { return theBaseItem->getEBV(); }
+
+  xqpStringStore_t getStringValue() const { return theBaseItem->getStringValue(); }
+
+  void getStringValue(xqpStringStore_t& strval) const 
+  {
+    theBaseItem->getStringValue(strval);
+  }
+
+  void getStringValue(std::string& buf) const { theBaseItem->getStringValue(buf); }
+
+  xqpStringStore* getString() const { return theBaseItem->getString(); }
+
+  xqp_base64Binary getBase64BinaryValue() const { return theBaseItem->getBase64BinaryValue(); }
+
+  xqp_hexBinary getHexBinaryValue() const { return theBaseItem->getHexBinaryValue(); }
+
+  bool getBooleanValue() const { return theBaseItem->getBooleanValue(); }
+
+  const xqp_double& getDoubleValue() const { return theBaseItem->getDoubleValue(); }
+
+  const xqp_float& getFloatValue() const { return theBaseItem->getFloatValue(); }
+
+  xqp_decimal getDecimalValue() const { return theBaseItem->getDecimalValue(); }
+
+  xqp_integer getIntegerValue() const { return theBaseItem->getIntegerValue(); }
+
+  xqp_uinteger getUnsignedIntegerValue() const { return theBaseItem->getUnsignedIntegerValue(); }
+
+  xqp_long getLongValue() const { return theBaseItem->getLongValue(); }
+
+  xqp_int getIntValue() const { return theBaseItem->getIntValue(); }
+
+  xqp_short getShortValue() const { return theBaseItem->getShortValue(); }
+
+  xqp_byte getByteValue() const { return theBaseItem->getByteValue(); }
+
+  xqp_ulong getUnsignedLongValue() const { return theBaseItem->getUnsignedLongValue(); }
+
+  xqp_uint getUnsignedIntValue() const { return theBaseItem->getUnsignedIntValue(); }
+
+  xqp_ushort getUnsignedShortValue() const { return theBaseItem->getUnsignedShortValue(); }
+
+  xqp_ubyte getUnsignedByteValue() const { return theBaseItem->getUnsignedByteValue(); }
+
+  bool isNaN() const { return theBaseItem->isNaN(); }
+
+  bool isPosOrNegInf() const { return theBaseItem->isPosOrNegInf(); }
+
+  const xqp_dateTime& getDateTimeValue() const { return theBaseItem->getDateTimeValue(); }
+
+  const xqp_date& getDateValue() const { return theBaseItem->getDateValue(); }
+
+  const xqp_time& getTimeValue() const { return theBaseItem->getTimeValue(); }
+
+  const xqp_gYearMonth& getGYearMonthValue() const { return theBaseItem->getGYearMonthValue(); }
+
+  const xqp_gYear& getGYearValue() const { return theBaseItem->getGYearValue(); }
+
+  const xqp_gMonth& getGMonthValue() const { return theBaseItem->getGMonthValue(); }
+
+  const xqp_gMonthDay& getGMonthDayValue() const { return theBaseItem->getGMonthDayValue(); }
+
+  const xqp_gDay& getGDayValue() const { return theBaseItem->getGDayValue(); }
+
+  const xqp_duration& getDurationValue() const { return theBaseItem->getDurationValue(); }
+
+  const xqp_dayTimeDuration& getDayTimeDurationValue() const { return theBaseItem->getDayTimeDurationValue(); }
+
+  const xqp_yearMonthDuration& getYearMonthDurationValue() const { return theBaseItem->getYearMonthDurationValue(); }
+
+  std::vector<xqp_string> getStringVectorValue() const { return theBaseItem->getStringVectorValue(); }
+
+  xqp_string show() const { return theBaseItem->show(); }
 };
 
 
