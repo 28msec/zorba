@@ -196,7 +196,7 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (theIsSimpleType) {
       state->reset(planState); 
       try {
-        valid = GenericCast::instance()->castToSimple(xqpString(lItem->getStringValue().getp()),
+        valid = GenericCast::instance()->castToSimple(lItem->getStringValue(),
             theCastType,
             state->theSimpleParseItems);
       } catch (error::ZorbaError &e) {
@@ -231,9 +231,9 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (theIsSimpleType) {
       state->reset(planState); 
       try {
-        GenericCast::instance()->castToSimple(xqpString(lItem->getStringValue().getp()),
-            theCastType,
-            state->theSimpleParseItems);
+        GenericCast::instance()->castToSimple(lItem->getStringValue(),
+                                              theCastType,
+                                              state->theSimpleParseItems);
       } catch (error::ZorbaError &e) {
         ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
       }
@@ -259,9 +259,9 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       if (theIsSimpleType) {
         state->reset(planState); 
         try {
-          GenericCast::instance()->castToSimple(xqpString(lItem->getStringValue().getp()),
-              theCastType,
-              state->theSimpleParseItems);
+          GenericCast::instance()->castToSimple(lItem->getStringValue(),
+                                                theCastType,
+                                                state->theSimpleParseItems);
         } catch (error::ZorbaError &e) {
           ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
         }

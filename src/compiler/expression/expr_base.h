@@ -121,7 +121,8 @@ private:
 /*******************************************************************************
   Base class for the expression tree node hierarchy
 ********************************************************************************/
-class expr : public SimpleRCObject, public AnnotationHolder {
+class expr : public AnnotationHolder 
+{
 public:
   typedef rchandle<expr> expr_t;
 
@@ -161,7 +162,7 @@ protected:
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR3(expr, SimpleRCObject, AnnotationHolder)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(expr, AnnotationHolder)
   void serialize(::zorba::serialization::Archiver &ar);
 
 public:

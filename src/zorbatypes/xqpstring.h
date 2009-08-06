@@ -95,7 +95,6 @@ public:
 
   xqpStringStore(const xqpStringStore& other) 
     :
-    ::zorba::serialization::SerializeBaseClass(), 
     RCObject(other),
     theString(other.theString)
   {

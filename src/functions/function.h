@@ -112,6 +112,7 @@ public:
     //serialize_baseclass(ar, (SimpleRCObject*)this);
     ar & sig;
   }
+
 public:
 	function(const signature& _sig) : sig(_sig) {}
 

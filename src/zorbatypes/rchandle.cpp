@@ -12,22 +12,33 @@ namespace zorba {
 
 #ifndef ZORBA_FOR_ONE_THREAD_ONLY
 
-#define     NR_RCLOCKS_IN_POOL      100
+#define     NR_RCLOCKS_IN_POOL  100
 
+
+/*******************************************************************************
+
+********************************************************************************/
 class SyncLock
 {
 protected:
+
 #ifdef ZORBA_HAVE_PTHREAD_H
 
 #if defined ZORBA_HAVE_PTHREAD_SPINLOCK
-  pthread_spinlock_t  theLock;
+  pthread_spinlock_t       theLock;
+
 #elif defined ZORBA_HAVE_PTHREAD_MUTEX
   mutable pthread_mutex_t  theLock;
+
 #else
   #error must have pthread mutex or phread spinlock
+
 #endif // ZORBA_HAVE_PTHREAD_SPINLOCK or ZORBA_HAVE_PTHREAD_MUTEX
+
 #elif defined WIN32 || defined WINCE
-  HANDLE    theLock;
+
+  HANDLE                   theLock;
+
 #endif
 
 public:
@@ -40,44 +51,6 @@ public:
   void release();
 };
 
-
-class RCLockPool
-{
-  SyncLock    *rclock_pool;
-  int               current_idx;
-public:
-  RCLockPool()
-  {
-    rclock_pool = new SyncLock[NR_RCLOCKS_IN_POOL];
-    current_idx = -1;
-  }
-  ~RCLockPool()
-  {
-    delete[] rclock_pool;
-  }
-
-  SyncLock  *getRCLockFromPool()
-  {
-    current_idx++;
-    current_idx %= NR_RCLOCKS_IN_POOL;
-    return &rclock_pool[current_idx];
-  }
-
-  static RCLockPool* getInstance();
-};
-
-RCLockPool  *g_rclock_pool = NULL;
-
-RCLockPool* RCLockPool::getInstance()
-{
-  if(!g_rclock_pool)
-    g_rclock_pool = new RCLockPool;
-  return g_rclock_pool;
-}
-
-/*******************************************************************************
-
-********************************************************************************/
 
 #ifdef ZORBA_HAVE_PTHREAD_H
 
@@ -170,7 +143,9 @@ void SyncLock::release()
 SyncLock::SyncLock()
 {
   theLock = ::CreateEvent(NULL, FALSE, TRUE, NULL);
-} 
+}
+
+
 SyncLock::~SyncLock()
 {
   ::CloseHandle(theLock);
@@ -189,16 +164,67 @@ void SyncLock::release()
 #endif // ZORBA_HAVE_PTHREAD_H or WIN32
 
 
+/*******************************************************************************
+
+********************************************************************************/
+class RCLockPool
+{
+  SyncLock    * rclock_pool;
+  int           current_idx;
+
+public:
+
+  RCLockPool()
+  {
+    rclock_pool = new SyncLock[NR_RCLOCKS_IN_POOL];
+    current_idx = -1;
+  }
+
+  ~RCLockPool()
+  {
+    delete[] rclock_pool;
+  }
+
+  SyncLock  *getRCLockFromPool()
+  {
+    current_idx++;
+    current_idx %= NR_RCLOCKS_IN_POOL;
+    return &rclock_pool[current_idx];
+  }
+
+  static RCLockPool* getInstance();
+};
+
+
+RCLockPool* g_rclock_pool = NULL;
+
+
+RCLockPool* RCLockPool::getInstance()
+{
+  if(!g_rclock_pool)
+    g_rclock_pool = new RCLockPool;
+
+  return g_rclock_pool;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+
 
 RCLock::RCLock()
 {
   rcp = RCLockPool::getInstance()->getRCLockFromPool();
 }
+
+
 void RCLock::acquire()
 {
   if(g_rclock_pool)
     rcp->acquire();
 }
+
 
 void RCLock::release()
 {
@@ -233,8 +259,9 @@ void RCLock::deletePool()
 
 ********************************************************************************/
  
-void RCObject::addReference(long* counter
-                  SYNC_PARAM2(RCLock* lock)) const
+void RCObject::addReference(
+    long* counter
+    SYNC_PARAM2(RCLock* lock)) const
 {
 #if defined WIN32 && !defined CYGWIN &&!defined ZORBA_FOR_ONE_THREAD_ONLY
   if(lock)
@@ -247,16 +274,23 @@ void RCObject::addReference(long* counter
     if (counter) ++(*counter);
     ++theRefCount;
   }
+
 #else
+
   SYNC_CODE(if (lock) lock->acquire());
+
   if (counter) ++(*counter);
   ++theRefCount;
+
   SYNC_CODE(if (lock) lock->release());
+
 #endif
 }
 
-void RCObject::removeReference (long* counter 
-                      SYNC_PARAM2(RCLock* lock))
+
+void RCObject::removeReference (
+    long* counter 
+    SYNC_PARAM2(RCLock* lock))
 {
 #if defined WIN32 && !defined CYGWIN &&!defined ZORBA_FOR_ONE_THREAD_ONLY
   if(lock)
@@ -293,8 +327,11 @@ void RCObject::removeReference (long* counter
       return; 
     }
   }
+
 #else
+
   SYNC_CODE(if (lock) lock->acquire());
+
   if (counter)
   {
     --theRefCount;
@@ -311,7 +348,9 @@ void RCObject::removeReference (long* counter
     free();
     return; 
   }
+
   SYNC_CODE(if (lock) lock->release());
+
 #endif
 }
 

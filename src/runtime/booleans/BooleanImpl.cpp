@@ -244,19 +244,28 @@ bool CompareIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
   
-  if (theIsGeneralComparison) {
-    if (consumeNext(lItem0, theChild0.getp(), planState)) {
-      if (consumeNext(tItem0, theChild0.getp(), planState)) {
+  if (theIsGeneralComparison) 
+  {
+    if (consumeNext(lItem0, theChild0.getp(), planState)) 
+    {
+      if (consumeNext(tItem0, theChild0.getp(), planState)) 
+      {
         seq0.push_back(lItem0);
         seq0.push_back(tItem0);
-      } else {
+      }
+      else
+      {
         c0Done = true;
-        if (consumeNext(lItem1, theChild1.getp(), planState)) {
-          if (consumeNext(tItem1, theChild1.getp(), planState)) {
+        if (consumeNext(lItem1, theChild1.getp(), planState)) 
+        {
+          if (consumeNext(tItem1, theChild1.getp(), planState)) 
+          {
             seq0.push_back(lItem0);
             seq1.push_back(lItem1);
             seq1.push_back(tItem1);
-          } else {
+          }
+          else
+          {
             c1Done = true;
             found = CompareIterator::generalComparison(loc,
                                                        lItem0, lItem1,
@@ -265,37 +274,47 @@ bool CompareIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
                                                        theTimezone, theCollation);
             done = true;
           }
-        } else {
+        }
+        else
+        {
           c1Done = true;
           found = false;
           done = true;
         }
       }
-    } else {
+    }
+    else
+    {
       c0Done = true;
       found = false;
       done = true;
     }
     
-    if (!done) {
+    if (!done) 
+    {
       store::Iterator_t lIter0;
       store::Iterator_t lIter1;
       tSeq0 = GENV_STORE.createTempSeq(seq0);
       tSeq1 = GENV_STORE.createTempSeq(seq1);
 
-      if (!c0Done) {
+      if (!c0Done) 
+      {
         lIter0 = new PlanIteratorWrapper ( theChild0, planState );
         tSeq0->append(lIter0, false);
       }
-      if (!c1Done) {
+
+      if (!c1Done) 
+      {
         lIter1 = new PlanIteratorWrapper ( theChild1, planState );
         tSeq1->append(lIter1, false);
       }
 
       int i0 = 1;
-      while(!found && tSeq0->containsItem(i0)) {
+      while(!found && tSeq0->containsItem(i0)) 
+      {
         int i1 = 1;
-        while(!found && tSeq1->containsItem(i1)) {
+        while(!found && tSeq1->containsItem(i1)) 
+        {
           store::Item_t item0;
           store::Item_t item1;
           tSeq0->getItem(i0, item0);
@@ -316,8 +335,10 @@ bool CompareIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
  
     STACK_PUSH ( GENV_ITEMFACTORY->createBoolean ( result, found ), state );
 
-  } else {  // value comparison
-
+  }
+  else
+  {
+    // value comparison
     if (consumeNext(lItem0, theChild0.getp(), planState) &&
         consumeNext(lItem1, theChild1.getp(), planState))
     {
@@ -413,8 +434,7 @@ bool CompareIterator::valueComparison(
     break;
   }
   default:
-  {
-    ZORBA_ASSERT(false);
+  {    ZORBA_ASSERT(false);
   }
   }
 

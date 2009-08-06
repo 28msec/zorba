@@ -610,8 +610,7 @@ void ValidateIterator::processTextValue (
 
       if ( udt.isList() || udt.isUnion() )
       {
-        xqp_string str(textValue);
-        typeManager->getSchema()->parseUserSimpleTypes(str, type, resultList);
+        typeManager->getSchema()->parseUserSimpleTypes(textValue, type, resultList);
       }
       else if (udt.isAtomic())
       {

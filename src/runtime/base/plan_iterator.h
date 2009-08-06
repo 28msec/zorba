@@ -274,22 +274,23 @@ public:
     //serialize_baseclass(ar, (SimpleRCObject*)this);
     ar & stateOffset;
     ar & loc;
-	ar & sctx;
+    ar & sctx;
   }
 
 public:
   PlanIterator(short aContext, const QueryLoc& aLoc) 
-    : stateOffset(0),
-      loc(aLoc),
-      sctx(aContext)
+    :
+    stateOffset(0),
+    loc(aLoc),
+    sctx(aContext)
   {}
   
   PlanIterator(const PlanIterator& it) 
-    : ::zorba::serialization::SerializeBaseClass(),
-      SimpleRCObject(it), 
-      stateOffset(0),
-      loc(it.loc),
-      sctx(it.sctx)
+    : 
+    SimpleRCObject(it), 
+    stateOffset(0),
+    loc(it.loc),
+    sctx(it.sctx)
   {}
 
   virtual ~PlanIterator() {}
@@ -406,6 +407,7 @@ public:
 
 extern const ::zorba::serialization::ClassVersion g_Batcher_class_versions[];
 extern const int g_Batcher_class_versions_count;
+
 /*******************************************************************************
   Class to implement batching
 ********************************************************************************/
@@ -413,12 +415,9 @@ template <class IterType>
 class Batcher: public PlanIterator
 {
 public:
-  Batcher(const Batcher<IterType>& b)  
-    : PlanIterator(b)
-  {}
-  Batcher(short sctx, const QueryLoc& loc) 
-    : PlanIterator(sctx, loc) 
-  {}
+  Batcher(const Batcher<IterType>& b)  : PlanIterator(b) {}
+
+  Batcher(short sctx, const QueryLoc& loc) : PlanIterator(sctx, loc) {}
 
   ~Batcher() {}
 
@@ -429,6 +428,7 @@ public:
   {
     serialize_baseclass(ar, (PlanIterator*)this);
   }
+
 public:
 
 #if ZORBA_BATCHING_TYPE == 1  
@@ -499,8 +499,6 @@ public:
   {
     return getStaticContext(planState)->get_collation_cache(); 
   }
-
-
 
 public:
   inline void nextImpl(store::Item_t& result, PlanState& planState) const;

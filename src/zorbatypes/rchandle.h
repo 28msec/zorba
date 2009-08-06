@@ -34,24 +34,28 @@ namespace zorba {
 
 #ifndef ZORBA_FOR_ONE_THREAD_ONLY
 
+class SyncLock;
+
+
 /*******************************************************************************
 
 ********************************************************************************/
-
-class SyncLock;
-
 class RCLock : public ::zorba::serialization::SerializeBaseClass
 {
-  SyncLock    *rcp;
+  SyncLock    * rcp;
+
 public:
   SERIALIZABLE_CLASS(RCLock)
   RCLock(::zorba::serialization::Archiver &) {RCLock();}
   void serialize(::zorba::serialization::Archiver &ar)
   {
   }
+
 public:
   RCLock();
+
   RCLock(const RCLock& ) : ::zorba::serialization::SerializeBaseClass() {RCLock();}
+
   virtual ~RCLock() {}
 
   void acquire();
@@ -80,15 +84,40 @@ public:
   reference count becomes 0.
 
 ********************************************************************************/
-class ZORBA_DLL_PUBLIC RCObject : virtual public ::zorba::serialization::SerializeBaseClass
+class ZORBA_DLL_PUBLIC RCObject : public ::zorba::serialization::SerializeBaseClass
 {
 protected:
   mutable long  theRefCount;
 
 public:
-  RCObject() : ::zorba::serialization::SerializeBaseClass(),  theRefCount(0) { }
+  SERIALIZABLE_ABSTRACT_CLASS(RCObject)
+  RCObject(::zorba::serialization::Archiver &ar)  
+    :
+    ::zorba::serialization::SerializeBaseClass(),
+    theRefCount(0)
+  {
+  }
 
-  RCObject(const RCObject&) : ::zorba::serialization::SerializeBaseClass(), theRefCount(0)  { }
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    if(!ar.is_serializing_out())
+      theRefCount = 0;
+  }
+
+public:
+  RCObject()
+    :
+    ::zorba::serialization::SerializeBaseClass(),
+    theRefCount(0)
+  {
+  }
+
+  RCObject(const RCObject&) 
+    :
+    ::zorba::serialization::SerializeBaseClass(),
+    theRefCount(0) 
+  {
+  }
 
   virtual ~RCObject() { }
 
@@ -109,20 +138,10 @@ public:
   void addReference(long* counter
                     SYNC_PARAM2(RCLock* lock)) const;
 
-  void removeReference (long* counter 
-                        SYNC_PARAM2(RCLock* lock));
+  void removeReference(long* counter 
+                       SYNC_PARAM2(RCLock* lock));
 
 	RCObject& operator=(const RCObject&) { return *this; }
-
-public:
-  SERIALIZABLE_ABSTRACT_CLASS(RCObject)
-  RCObject(::zorba::serialization::Archiver &ar)  : ::zorba::serialization::SerializeBaseClass(), theRefCount(0) {}
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    if(!ar.is_serializing_out())
-      theRefCount = 0;
-  }
-
 };
 
 
@@ -132,15 +151,6 @@ public:
 class ZORBA_DLL_PUBLIC SimpleRCObject : public RCObject
 {
 public:
-  SimpleRCObject() : RCObject() { }
-
-  SimpleRCObject(const SimpleRCObject& rhs) : ::zorba::serialization::SerializeBaseClass(), RCObject(rhs) { }
-
-  long* getSharedRefCounter() const  { return NULL; }  
-  SYNC_CODE(virtual RCLock* getRCLock() const { return NULL; })
-
-  SimpleRCObject& operator=(const SimpleRCObject&) { return *this; }
-public:
   SERIALIZABLE_ABSTRACT_CLASS(SimpleRCObject)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(SimpleRCObject, RCObject)
   void serialize(::zorba::serialization::Archiver &ar)
@@ -149,6 +159,16 @@ public:
       theRefCount = 0;
   }
 
+public:
+  SimpleRCObject() : RCObject() { }
+
+  SimpleRCObject(const SimpleRCObject& rhs) : RCObject(rhs) { }
+
+  long* getSharedRefCounter() const  { return NULL; } 
+
+  SYNC_CODE(virtual RCLock* getRCLock() const { return NULL; })
+
+  SimpleRCObject& operator=(const SimpleRCObject&) { return *this; }
 };
 
 /*******************************************************************************
@@ -226,19 +246,23 @@ public:
   bool operator<(const rchandle& h) const   { return p < h.p; }
 
 
-  template <class otherT> rchandle<otherT> cast() const {
+  template <class otherT> rchandle<otherT> cast() const 
+  {
     return rchandle<otherT> (static_cast<otherT *> (p));
   }
 
-  template <class otherT> rchandle<otherT> dyn_cast() const {
+  template <class otherT> rchandle<otherT> dyn_cast() const 
+  {
     return rchandle<otherT> (dynamic_cast<otherT *> (p));
   }  
 
-  template <class otherT> operator rchandle<otherT> () {
+  template <class otherT> operator rchandle<otherT> () 
+  {
     return cast<otherT> ();
   }
 
-  template <class otherT> operator const rchandle<otherT> () const {
+  template <class otherT> operator const rchandle<otherT> () const 
+  {
     return cast<otherT> ();
   }
 
@@ -266,11 +290,13 @@ public:
 		return *this;
   }
 
-  rchandle& operator=(rchandle const& rhs) {
+  rchandle& operator=(rchandle const& rhs) 
+  {
     return assign (rhs);
   }
 
-	template <class otherT> rchandle& operator=(rchandle<otherT> const& rhs) {
+	template <class otherT> rchandle& operator=(rchandle<otherT> const& rhs) 
+  {
     return assign (rhs);
 	}
 
@@ -316,6 +342,9 @@ public:
 };
 
 
+/*******************************************************************************
+
+********************************************************************************/
 template<class T> class const_rchandle : protected rchandle<T> 
 {
 public:
@@ -350,29 +379,9 @@ public:
 };
 
 
+/*******************************************************************************
 
-/*
-template<class T>
-class serializable_rchandle : public rchandle<T>, public ::zorba::serialization::SerializeBaseClass
-{
-public:
-  serializable_rchandle(T* realPtr = 0) : rchandle<T>(realPtr)
-  {
-  }
-
-  serializable_rchandle(rchandle const& rhs) : rchandle<T>(rhs)
-  {
-  }
-public:
-  SERIALIZABLE_CLASS_NO_FACTORY(serializable_rchandle)
-  SERIALIZABLE_CLASS_CONSTRUCTOR(serializable_rchandle)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    ar & p;
-  }
-};
-*/
-
+********************************************************************************/
 namespace RCHelper 
 {
   template<class T> 
@@ -406,3 +415,10 @@ namespace RCHelper
 } /* namespace zorba */
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
+

@@ -39,7 +39,7 @@ namespace zorba
   A non-template class used to store some data that is common to all axis
   iterators.
 ********************************************************************************/
-class AxisIteratorHelper : virtual public ::zorba::serialization::SerializeBaseClass
+class AxisIteratorHelper
 {
 protected:
   match_test_t                 theTestKind;
@@ -51,6 +51,7 @@ protected:
   bool                         theNilledAllowed;
 
 public:
+#if 0
   SERIALIZABLE_CLASS(AxisIteratorHelper)
   SERIALIZABLE_CLASS_CONSTRUCTOR(AxisIteratorHelper)
   void serialize(::zorba::serialization::Archiver &ar)
@@ -63,6 +64,8 @@ public:
     ar & theType;
     ar & theNilledAllowed;
   }
+#endif
+
 public:
   AxisIteratorHelper() 
     :
@@ -117,7 +120,26 @@ template <class AxisIter, class State>
 class AxisIterator : public UnaryBaseIterator<AxisIter, State>,
                      public AxisIteratorHelper
 {
-protected:
+public:
+  SERIALIZABLE_TEMPLATE_ABSTRACT_CLASS(AxisIterator)
+  AxisIterator(::zorba::serialization::Archiver &ar)
+    :
+    UnaryBaseIterator<AxisIter, State>(ar)
+    //AxisIteratorHelper(ar)
+  {
+  }
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (UnaryBaseIterator<AxisIter, State>*)this);
+    //serialize_baseclass(ar, (AxisIteratorHelper*)this);
+    SERIALIZE_ENUM(match_test_t, theTestKind);
+    SERIALIZE_ENUM(match_test_t, theDocTestKind);
+    SERIALIZE_ENUM(store::StoreConsts::NodeKind, theNodeKind);
+    ar & theQName;
+    SERIALIZE_ENUM(match_wild_t, theWildKind);
+    ar & theType;
+    ar & theNilledAllowed;
+  }
 
 public:
   AxisIterator(short sctx, const QueryLoc& loc, PlanIter_t input)
@@ -127,15 +149,6 @@ public:
   }
 
   virtual ~AxisIterator() {}
-public:
-  SERIALIZABLE_TEMPLATE_ABSTRACT_CLASS(AxisIterator)
-  AxisIterator(::zorba::serialization::Archiver &ar) :
-  UnaryBaseIterator<AxisIter, State>(ar), AxisIteratorHelper(ar) {}
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (UnaryBaseIterator<AxisIter, State>*)this);
-    serialize_baseclass(ar, (AxisIteratorHelper*)this);
-  }
 };
 
 
@@ -149,7 +162,6 @@ class SelfAxisState : public AxisState
 
 class SelfAxisIterator : public AxisIterator<SelfAxisIterator, SelfAxisState>
 {
-protected:
 public:
   SelfAxisIterator(short sctx, const QueryLoc& loc, PlanIter_t input)
     :
@@ -162,6 +174,7 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
+
 public:
   SERIALIZABLE_CLASS(SelfAxisIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(SelfAxisIterator, AxisIterator<SelfAxisIterator, SelfAxisState>)
@@ -190,8 +203,6 @@ public:
 class AttributeAxisIterator : public AxisIterator<AttributeAxisIterator,
                                                   AttributeAxisState>
 {
-protected:
-
 public:
   AttributeAxisIterator(short sctx, const QueryLoc& loc, PlanIter_t input)
     :
@@ -221,8 +232,8 @@ public:
 ********************************************************************************/
 class ParentAxisState : public AxisState
 {
-
 };
+
 
 class ParentAxisIterator : public AxisIterator<ParentAxisIterator, ParentAxisState>
 {
@@ -260,6 +271,7 @@ public:
   store::Item_t  theCurrentAnc;
 };
 
+
 class AncestorAxisIterator : public AxisIterator<AncestorAxisIterator, AncestorAxisState>
 {
 public:
@@ -294,10 +306,9 @@ public:
 };
 
 
-class AncestorSelfAxisIterator : public AxisIterator<AncestorSelfAxisIterator, AncestorSelfAxisState>
+class AncestorSelfAxisIterator : public AxisIterator<AncestorSelfAxisIterator,
+                                                     AncestorSelfAxisState>
 {
-protected:
-
 public:
   AncestorSelfAxisIterator(short sctx, const QueryLoc& loc, PlanIter_t input)
     :
@@ -310,6 +321,7 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor&) const;
+
 public:
   SERIALIZABLE_CLASS(AncestorSelfAxisIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(AncestorSelfAxisIterator, AxisIterator<AncestorSelfAxisIterator, AncestorSelfAxisState>)
@@ -376,8 +388,6 @@ public:
 
 class LSiblingAxisIterator : public AxisIterator<LSiblingAxisIterator, LSiblingAxisState>
 {
-protected:
-
 public:
   LSiblingAxisIterator(short sctx, const QueryLoc& loc, PlanIter_t input)
     :
@@ -550,6 +560,7 @@ public:
   void reset(PlanState&);
 };
 
+
 class PrecedingAxisIterator : public AxisIterator<PrecedingAxisIterator,
                                                   PrecedingAxisState>
 {
@@ -625,3 +636,10 @@ public:
 } /* namespace zorba */
 
 #endif  /* ZORBA_PATH_ITERATORS_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
+
