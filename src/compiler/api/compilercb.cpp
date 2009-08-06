@@ -64,6 +64,7 @@ END_SERIALIZABLE_CLASS_VERSIONS(CompilerCB::config)
 
   CompilerCB::CompilerCB(const CompilerCB& cb)
     :
+  zorba::serialization::SerializeBaseClass(cb),
   m_is_loadprolog(false),
   m_context_map(cb.m_context_map),
   m_sctx(NULL),

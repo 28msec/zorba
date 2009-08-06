@@ -213,7 +213,7 @@ public:
         store::Item_t&               value,
         bool                         haveValue,
         bool                         haveEmptyValue,
-        bool                         haveTypedVaule,
+        bool                         haveTypedValue,
         bool                         isInSubstitutionGroup);
 
   void addSetElementType(
