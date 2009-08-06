@@ -210,7 +210,8 @@ void add_multimap_value(
     const string &val) 
 {
   strset_t result;
-  if (! map.get (key, result)) {
+  if (! map.get (key, result)) 
+  {
     result = new RCSet<string> ();
     map.put (key, result);
   }
@@ -4195,6 +4196,28 @@ void end_visit (const QVarInDecl& v, void* /*visit_state*/)
   [66] TypeswitchExpr ::= "typeswitch" "(" Expr ")"
                           CaseClauseList
                           "default" ("$" VarName)? "return" ExprSingle
+
+  A typeswitch expr is translated into a flwor expr. For example, a typeswitch of
+  the following form:
+
+  typeswitch E
+  case $v1 as type1 return E1
+  ......
+  case $vn as typen return En
+  default return Ed
+
+  is translated into:
+
+  let $sv := E
+  return if (instance_of($sv, type1)) then
+           let $v1 := cast($sv, type1) return E1
+         else if (instance_of($sv, type2)) then
+           let $v2 := cast($sv, type2) return E2
+         ....
+         else if instance_of($sv, typen)) then
+           let $vn := cast($sv, typen) return En
+         else
+           return Ed
 ********************************************************************************/
 void *begin_visit (const TypeswitchExpr& v) 
 {
@@ -4202,14 +4225,13 @@ void *begin_visit (const TypeswitchExpr& v)
 
   varref_t sv = tempvar(v.get_switch_expr()->get_location(), var_expr::let_var);
 
-  expr_t defret;
-
   string defvar_name = v.get_default_varname();
   varref_t defvar;
+  expr_t defret;
 
   if (! defvar_name.empty ()) 
   {
-  push_scope();
+    push_scope();
     defvar = bind_var(v.get_default_clause()->get_location(),
                       defvar_name,
                       var_expr::let_var);
@@ -4225,7 +4247,7 @@ void *begin_visit (const TypeswitchExpr& v)
     
     // defret = [let $defvar := $sv return defret]
     defret = &*wrap_in_let_flwor(&*sv, defvar, defret);
-}
+  }
 
   const CaseClauseList* clauses = v.get_clause_list();
   for (vector<rchandle<CaseClause> >::const_reverse_iterator it = clauses->rbegin();
@@ -4234,26 +4256,29 @@ void *begin_visit (const TypeswitchExpr& v)
   {
     const CaseClause *e_p = &**it;
     const QueryLoc &loc = e_p->get_location ();
-    string name = e_p->get_varname ();
-    varref_t var;
 
-    if (! name.empty ()) 
+    string varname = e_p->get_varname ();
+    varref_t caseVar;
+
+    if (! varname.empty ()) 
     {
       push_scope ();
-      var = bind_var(loc, name, var_expr::let_var);
-  }
+      caseVar = bind_var(loc, varname, var_expr::let_var);
+    }
 
     e_p->accept (*this);
 
     xqtref_t type = pop_tstack ();
 
-    if (! name.empty ()) 
+    if (! varname.empty ()) 
     {
-  pop_scope();
-      expr_t lExpr = pop_nodestack();
+      pop_scope();
+      expr_t caseExpr = pop_nodestack();
+
+      // case_clause = [let $caseVar := cast($sv, caseType) return caseExpr]
       expr_t lFlwor = wrap_in_let_flwor(new cast_expr(cb->m_cur_sctx, loc, &*sv, type),
-                                        var,
-                                        lExpr);
+                                        caseVar,
+                                        caseExpr);
       nodestack.push (lFlwor);
     }
 
@@ -4277,7 +4302,7 @@ void *begin_visit (const TypeswitchExpr& v)
     ZORBA_ERROR_LOC(XUST0001, loc);
   }
 
-  expr_t lFlwor = wrap_in_let_flwor (se, sv, defret);
+  expr_t lFlwor = wrap_in_let_flwor(se, sv, defret);
 
   nodestack.push (lFlwor);
 
@@ -4295,6 +4320,9 @@ void end_visit (const TypeswitchExpr& v, void* /*visit_state*/)
 }
 
 
+/*******************************************************************************
+  CaseClauseList := CaseClause+
+********************************************************************************/
 void *begin_visit (const CaseClauseList& v) 
 {
   TRACE_VISIT ();
@@ -4305,12 +4333,16 @@ void *begin_visit (const CaseClauseList& v)
   return no_state;
 }
 
+
 void end_visit (const CaseClauseList& v, void* /*visit_state*/) 
 {
   TRACE_VISIT_OUT ();
 }
 
 
+/*******************************************************************************
+  [67] CaseClause ::= "case" ("$" VarName "as")? SequenceType "return" ExprSingle
+********************************************************************************/
 void *begin_visit (const CaseClause& v) 
 {
   TRACE_VISIT ();
@@ -4325,14 +4357,1964 @@ void end_visit (const CaseClause& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-
+  [68] IfExpr ::= "if" "(" Expr ")" "then" ExprSingle "else" ExprSingle
 ********************************************************************************/
-void *begin_visit (const ArgList& v) {
+void *begin_visit (const IfExpr& v) 
+{
   TRACE_VISIT ();
+  // nothing to do here
   return no_state;
+}
+
+void end_visit (const IfExpr& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+  expr_t e_h = pop_nodestack ();
+  expr_t t_h = pop_nodestack ();
+  expr_t c_h = pop_nodestack ();
+
+  if (c_h->is_updating()) {
+    ZORBA_ERROR_LOC(XUST0001, loc);
   }
 
-void end_visit (const ArgList& v, void* /*visit_state*/) {
+  update_type_anding(t_h->get_update_type(), 
+                     e_h->get_update_type(),
+                     loc);
+
+#ifdef ZORBA_DEBUGGER
+  if (cb->m_debugger != 0) {
+    c_h = new debugger_expr(cb->m_cur_sctx, c_h->get_loc(), c_h, theScopedVariables, thePrologVars);
+    t_h = new debugger_expr(cb->m_cur_sctx, t_h->get_loc(), t_h, theScopedVariables, thePrologVars);
+    e_h = new debugger_expr(cb->m_cur_sctx, e_h->get_loc(), e_h, theScopedVariables, thePrologVars);
+  }
+#endif
+
+  if_expr *lIfExpr = new if_expr(cb->m_cur_sctx, loc,c_h,t_h,e_h);
+  nodestack.push(lIfExpr);
+}
+
+
+/*******************************************************************************
+  [69] OrExpr ::= AndExpr ( "or" AndExpr )*
+********************************************************************************/
+void *begin_visit (const OrExpr& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const OrExpr& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+  rchandle<expr> e1_h = pop_nodestack();
+  rchandle<expr> e2_h = pop_nodestack();
+  fo_expr *fo_p = new fo_expr(cb->m_cur_sctx, loc, CACHED (op_or, LOOKUP_OPN ("or")));
+  fo_p->add(e2_h);
+  fo_p->add(e1_h);
+  nodestack.push (fo_p);
+}
+
+
+/*******************************************************************************
+  [70] AndExpr ::= ComparisonExpr ( "and" ComparisonExpr )*
+********************************************************************************/
+void *begin_visit (const AndExpr& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const AndExpr& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+  rchandle<expr> e1_h = pop_nodestack();
+  rchandle<expr> e2_h = pop_nodestack();
+  fo_expr *fo_h = new fo_expr(cb->m_cur_sctx, loc, LOOKUP_OPN ("and"));
+  fo_h->add(e2_h);
+  fo_h->add(e1_h);
+  nodestack.push (fo_h);
+}
+
+
+/*******************************************************************************
+  [71] ComparisonExpr ::= RangeExpr
+                          ((ValueComp | GeneralComp | NodeComp) RangeExpr)?
+
+  Note: For the full-text extension, the rule for ComparisonExpr is:
+
+  ComparisonExpr ::= FTContainsExpr
+                     ((ValueComp | GeneralComp | NodeComp) FTContainsExpr)?
+
+********************************************************************************/
+void *begin_visit (const ComparisonExpr& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const ComparisonExpr& v, void* /*visit_state*/) 
+{
+#define M( pc, op ) case ParseConstants::pc: f = LOOKUP_OP2 (op); break;
+
+  TRACE_VISIT_OUT ();
+
+  function *f = NULL;
+  if (v.get_gencomp()!=NULL) 
+  {
+    switch (v.get_gencomp()->get_type()) {
+    M (op_eq, "equal");
+    M (op_ne, "not-equal");
+    M (op_lt, "less");
+    M (op_le, "less-equal");
+    M (op_gt, "greater");
+    M (op_ge, "greater-equal");
+    }
+  }
+  else if (v.get_valcomp () != NULL) 
+  {
+    switch (v.get_valcomp()->get_type()) {
+    M (op_val_eq, "value-equal");
+    M (op_val_ne, "value-not-equal");
+    M (op_val_lt, "value-less");
+    M (op_val_le, "value-less-equal");
+    M (op_val_gt, "value-greater");
+    M (op_val_ge, "value-greater-equal");
+    }
+  }
+  else if (v.get_nodecomp()!=NULL) 
+  {
+    switch (v.get_nodecomp()->get_type()) {
+    M (op_is, "is-same-node");
+    M (op_precedes, "node-before");
+    M (op_follows, "node-after");
+    }
+  }
+
+  fo_expr *fo_p = new fo_expr(cb->m_cur_sctx, loc, f);
+
+  rchandle<expr> e1_h = pop_nodestack();
+  rchandle<expr> e2_h = pop_nodestack();;
+  fo_p->add(e2_h);
+  fo_p->add(e1_h);
+  nodestack.push(fo_p);
+
+#undef M
+}
+
+
+/*******************************************************************************
+  [83] GeneralComp ::= "=" | "!=" | "<" | "<=" | ">" | ">="
+********************************************************************************/
+void *begin_visit (const GeneralComp& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const GeneralComp& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+/*******************************************************************************
+  [84] ValueComp ::= "eq" | "ne" | "lt" | "le" | "gt" | "ge"
+********************************************************************************/
+void *begin_visit (const ValueComp& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const ValueComp& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+/*******************************************************************************
+  [85] NodeComp ::= "is" | "<<" | ">>"
+********************************************************************************/
+void *begin_visit (const NodeComp& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const NodeComp& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+/*******************************************************************************
+  [72] RangeExpr ::= AdditiveExpr ( "to" AdditiveExpr )?
+********************************************************************************/
+void *begin_visit (const RangeExpr& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const RangeExpr& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+  fo_expr *e = new fo_expr (cb->m_cur_sctx, loc, LOOKUP_OP2 ("to"));
+
+  rchandle<expr> e1_h = pop_nodestack ();
+  rchandle<expr> e2_h = pop_nodestack ();
+
+  e->add(e2_h);
+  e->add(e1_h);
+
+  nodestack.push(e);
+}
+
+
+/*******************************************************************************
+  [73] AdditiveExpr ::= MultiplicativeExpr ( ("+" | "-") MultiplicativeExpr )*
+********************************************************************************/
+void *begin_visit (const AdditiveExpr& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const AdditiveExpr& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+  rchandle<expr> e1_h = pop_nodestack();
+  rchandle<expr> e2_h = pop_nodestack();
+  function *func = NULL;
+  switch (v.get_add_op()) {
+  case ParseConstants::op_plus:
+    func = LOOKUP_OP2 ("add");
+    break;
+  case ParseConstants::op_minus:
+    func = LOOKUP_OP2 ("subtract");
+    break;
+  }
+  fo_expr *fo_h = new fo_expr(cb->m_cur_sctx, loc, func);
+  fo_h->add(e2_h);
+  fo_h->add(e1_h);
+  nodestack.push (fo_h);
+}
+
+
+/*******************************************************************************
+  [74] MultiplicativeExpr ::= UnionExpr (("*" | "div" | "idiv" | "mod") UnionExpr)*
+********************************************************************************/
+void *begin_visit (const MultiplicativeExpr& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const MultiplicativeExpr& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+  rchandle<expr> e1_h = pop_nodestack ();
+  rchandle<expr> e2_h = pop_nodestack ();
+  function *f = NULL;
+  switch (v.get_mult_op()) {
+  case ParseConstants::op_mul:
+    f = LOOKUP_OP2 ("multiply");
+    break;
+  case ParseConstants::op_div:
+    f = LOOKUP_OP2 ("divide");
+    break;
+  case ParseConstants::op_idiv:
+    f = LOOKUP_OP2 ("integer-divide");
+    break;
+  case ParseConstants::op_mod:
+    f = LOOKUP_OP2 ("mod");
+    break;
+  }
+  fo_expr *fo_h = new fo_expr(cb->m_cur_sctx, loc, f);
+  fo_h->add(e2_h);
+  fo_h->add(e1_h);
+  nodestack.push (fo_h);
+}
+
+
+/*******************************************************************************
+  [75] UnionExpr ::= IntersectExceptExpr (("union" | "|") IntersectExceptExpr)*
+********************************************************************************/
+void *begin_visit (const UnionExpr& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const UnionExpr& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+
+  rchandle<expr> e1_h = pop_nodestack ();
+  rchandle<expr> e2_h = pop_nodestack ();
+  fo_expr *fo_h = new fo_expr(cb->m_cur_sctx, loc, LOOKUP_OP2 ("union"));
+  fo_h->add(e2_h);
+  fo_h->add(e1_h);
+
+  nodestack.push(new fo_expr(cb->m_cur_sctx,
+                             loc,
+                             LOOKUP_OP1 ("sort-distinct-nodes-asc"),
+                             fo_h));
+}
+
+
+/*******************************************************************************
+  [76] IntersectExceptExpr ::= InstanceofExpr
+                               (("intersect" | "except") InstanceofExpr)*
+********************************************************************************/
+void *begin_visit (const IntersectExceptExpr& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const IntersectExceptExpr& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+
+  rchandle<expr> e1_h = pop_nodestack ();
+  rchandle<expr> e2_h = pop_nodestack ();
+  function *f = NULL;
+  switch (v.get_intex_op()) {
+  case ParseConstants::op_intersect:
+    f = LOOKUP_OP2 ("intersect");
+    break;
+  case ParseConstants::op_except:
+    f = LOOKUP_OP2 ("except");
+    break;
+  }
+
+  fo_expr *fo_h = new fo_expr(cb->m_cur_sctx, loc, f);
+
+  fo_h->add(e2_h);
+  fo_h->add(e1_h);
+
+  nodestack.push(new fo_expr(cb->m_cur_sctx,
+                             loc,
+                             LOOKUP_OP1 ("sort-distinct-nodes-asc"),
+                             fo_h));
+}
+
+
+/*******************************************************************************
+  [77] InstanceofExpr ::= TreatExpr ( "instance" "of" SequenceType )?
+********************************************************************************/
+void *begin_visit (const InstanceofExpr& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const InstanceofExpr& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+  nodestack.push(new instanceof_expr(cb->m_cur_sctx,
+                                     loc,
+                                     pop_nodestack(),
+                                     pop_tstack()));
+}
+
+
+/*******************************************************************************
+  [78] TreatExpr ::= CastableExpr ( "treat" "as" SequenceType )?
+********************************************************************************/
+void *begin_visit (const TreatExpr& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const TreatExpr& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT();
+
+  nodestack.push(new treat_expr(cb->m_cur_sctx,
+                                loc,
+                                pop_nodestack(),
+                                pop_tstack(),
+                                XPDY0050));
+}
+
+
+/*******************************************************************************
+  [79] CastableExpr ::= CastExpr ( "castable" "as" SingleType )?
+********************************************************************************/
+void *begin_visit (const CastableExpr& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const CastableExpr& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT ();
+
+  nodestack.push(create_cast_expr(loc, pop_nodestack(), pop_tstack(), false));
+}
+
+
+expr_t create_cast_expr (const QueryLoc& loc, expr_t node, xqtref_t type, bool isCast)
+{
+  if (TypeOps::is_equal(*type, *GENV_TYPESYSTEM.NOTATION_TYPE_ONE) ||
+      TypeOps::is_equal(*type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION) ||
+      TypeOps::is_equal(*type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE) ||
+      TypeOps::is_equal(*type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
+    ZORBA_ERROR_LOC(XPST0080, loc);
+
+  if (TypeOps::is_subtype(*type, *GENV_TYPESYSTEM.QNAME_TYPE_QUESTION)) 
+  {
+    const const_expr* ce = node.dyn_cast<const_expr> ().getp();
+
+    if (ce != NULL &&
+        TypeOps::is_equal(*CTXTS->create_value_type(ce->get_val()),
+                          *GENV_TYPESYSTEM.STRING_TYPE_ONE))
+    {
+      store::Item_t castLiteral;
+      try 
+      {
+        xqpStringStore_t strval = ce->get_val()->getStringValue();
+        GenericCast::instance()->castToQName(castLiteral, strval, ns_ctx);
+      }
+      catch (error::ZorbaError& e)
+      {
+        if (isCast) 
+        {
+          throw e;
+        }
+        else
+        {
+          if (e.theErrorCode == FORG0001)
+            ZORBA_ERROR_LOC(XPST0003, loc);
+          else
+            ZORBA_ERROR_LOC(XPST0081, loc);
+        }
+      }
+
+      assert (castLiteral != NULL || ! isCast);
+
+      if (isCast)
+        return new const_expr(cb->m_cur_sctx, loc, castLiteral);
+      else
+        return new const_expr(cb->m_cur_sctx, loc, castLiteral != NULL);
+    }
+    else
+    {
+      
+      xqtref_t qnameType = (type->get_quantifier() == TypeConstants::QUANT_ONE ?
+                            GENV_TYPESYSTEM.QNAME_TYPE_ONE :
+                            GENV_TYPESYSTEM.QNAME_TYPE_QUESTION);
+
+      // when casting to type T, where T is QName or subtype of, and the input
+      // is not a const expr, then the input MUST be of type T or subtype of.
+      if (isCast)
+        return new treat_expr(cb->m_cur_sctx, loc, node, qnameType, XPTY0004);
+      else
+        return new instanceof_expr(cb->m_cur_sctx, loc, node, qnameType);
+    }
+  }
+  else
+  {
+    if (isCast)
+      return new cast_expr(cb->m_cur_sctx, loc, node, type);
+    else
+      return new castable_expr(cb->m_cur_sctx, loc, node, type);
+  }
+}
+
+
+/*******************************************************************************
+  [80] CastExpr ::= UnaryExpr ( "cast" "as" SingleType )?
+********************************************************************************/
+void *begin_visit (const CastExpr& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const CastExpr& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+
+  nodestack.push(create_cast_expr(loc, pop_nodestack(), pop_tstack(), true));
+}
+
+
+/*******************************************************************************
+  [81] UnaryExpr ::= ("-" | "+")* ValueExpr
+********************************************************************************/
+void *begin_visit (const UnaryExpr& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const UnaryExpr& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+
+  rchandle<expr> e1_h = pop_nodestack ();
+  fo_expr *fo_p = new fo_expr(cb->m_cur_sctx, loc,
+                              v.get_signlist()->get_sign()
+                              ? LOOKUP_OP1 ("unary-plus")
+                              : LOOKUP_OP1 ("unary-minus"));
+  fo_p->add(e1_h);
+  nodestack.push(fo_p);
+}
+
+
+void *begin_visit (const SignList& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const SignList& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+/*******************************************************************************
+  [82] ValueExpr ::= ValidateExpr | PathExpr | ExtensionExpr
+********************************************************************************/
+
+
+/*******************************************************************************
+  [86] ValidateExpr ::= "validate" (ValidationMode | ("as" TypeName))? "{" Expr "}"
+  [87] ValidationMode ::= "lax" | "strict"
+********************************************************************************/
+void *begin_visit (const ValidateExpr& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const ValidateExpr& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+
+  store::Item_t qname;
+  if (v.get_type_name() != NULL)
+  {
+    xqp_string ns;
+    ns_ctx->findBinding(v.get_type_name()->get_prefix(), ns);
+
+    GENV_ITEMFACTORY->createQName(qname,
+                                  ns.c_str(),
+                                  v.get_type_name()->get_prefix().c_str(),
+                                  v.get_type_name()->get_localname().c_str());
+  }
+
+  nodestack.push(new validate_expr(cb->m_cur_sctx,
+                                   loc,
+                                   v.get_valmode(),
+                                   qname,
+                                   pop_nodestack(),
+                                   sctx_p->get_typemanager()));
+}
+
+
+/*******************************************************************************
+  [88] ExtensionExpr ::= PragmaList "{" Expr? "}"
+********************************************************************************/
+void *begin_visit (const ExtensionExpr& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const ExtensionExpr& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+  if (v.get_expr () == NULL)
+    ZORBA_ERROR_LOC( XQST0079, loc);
+}
+
+
+/*******************************************************************************
+  PragmaList ::= Pragma | PragmaList  Pragma
+********************************************************************************/
+void *begin_visit (const PragmaList& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const PragmaList& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+/*******************************************************************************
+  [89] Pragma ::= "(#" S? QName (S PragmaContents)? "#)"  // ws: explicitXQ
+  [90] PragmaContents ::= (Char* - (Char* '#)' Char*))
+********************************************************************************/
+void *begin_visit (const Pragma& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const Pragma& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+ // may raise XPST0081
+ sctx_p->lookup_ns (v.get_name ()->get_prefix (), loc);
+}
+
+
+/*******************************************************************************
+
+  Path Expressions
+
+  [91] PathExpr ::= ("/" RelativePathExpr?) |
+                    ("//" RelativePathExpr) |
+                     RelativePathExpr 	// gn: leading-lone-slashXQ
+
+  [92] RelativePathExpr ::= StepExpr (("/" | "//") StepExpr)*
+
+  [93] StepExpr ::= FilterExpr | AxisStep
+
+  [94] AxisStep ::= (ReverseStep | ForwardStep) PredicateList
+
+  [95] ForwardStep ::= (ForwardAxis NodeTest) | AbbrevForwardStep
+
+  [96] ForwardAxis ::= ("child" "::") |
+                       ("descendant" "::") |
+                       ("attribute" "::") |
+                       ("self" "::") |
+                       ("descendant-or-self" "::") |
+                       ("following-sibling" "::") |
+                       ("following" "::")
+
+  [97] AbbrevForwardStep ::= "@"? NodeTest
+
+  [98] ReverseStep ::= (ReverseAxis NodeTest) | AbbrevReverseStep
+
+  [99] ReverseAxis ::= ("parent" "::") |
+                       ("ancestor" "::") |
+                       ("preceding-sibling" "::") |
+                       ("preceding" "::") |
+                       ("ancestor-or-self" "::")
+
+  [100] AbbrevReverseStep ::= ".."
+
+  [101] NodeTest ::= KindTest | NameTest
+
+  [102] NameTest ::= QName | Wildcard
+
+  [103] Wildcard ::= "*" | (NCName ":" "*") | ("*" ":" NCName)
+
+  [104] FilterExpr ::= PrimaryExpr PredicateList
+
+  [105] PredicateList ::= Predicate*
+
+  [106] Predicate ::= "[" Expr "]"
+
+
+  The syntax tree for a generic PathExpr looks like this:
+
+       PathExpr
+           |
+         rpe1
+        /    \
+      step1  rpe2
+            /    \
+          step2  rpe3
+                /    \
+              step3  step4
+
+  In general, rpe-i says how step-i is connected with step-(i+1), i.e. with / or //.
+
+  The root PathExpr node says whether the path expr starts with a / or // or an
+  input step expr. In particular, the type of PathExpr can be one of the following:
+
+  1. path_leading_lone_slash (/)
+  2. path_leading_slash      (/...)
+  3. path_leading_slashslash (//...)
+  4. path_relative           (source_expr/...)
+
+  In case 1, the PathExpr node does not have any child node.
+
+  Cases 2 and 3 are treated as if the syntax tree was like this:
+
+       PathExpr
+           |
+         rpe0
+        /    \
+      step0  rpe1
+            /    \
+          step1  rpe2
+                /    \
+              step2  rpe3
+                    /    \
+                 step3  step4
+
+  where, the type of PathExpr is path_relative, rpe0 designates a "/", and
+  step0 is either
+  fn:root(./self::node()) in case 2, or 
+  fn:root(./self::node())/descendant-or-self::node() in case 3.
+
+  In general, a path expression is translated into a combination of relpath_exprs
+  and flwor_exprs. relpath_exprs are created to represent the portions of a path
+  expression whose steps consist of AxisSteps with no predicates. flwor_exprs 
+  are are created to represent steps that are FilterExprs or AxisSteps with
+  predicates.
+********************************************************************************/
+void *begin_visit (const PathExpr& v) 
+{
+  TRACE_VISIT();
+
+  const PathExpr& pe = v;
+
+  ParseConstants::pathtype_t pe_type = pe.get_type();
+
+  expr_t result;
+  rchandle<relpath_expr> path_expr = NULL;
+
+  // Put a NULL in the stack to mark the beginning of a PathExp tree.
+  nodestack.push(NULL);
+
+  // In cases 2, 3, and 4 create a new relpath_expr, which will be put to the nodestack.
+  if (pe_type != ParseConstants::path_leading_lone_slash) 
+  {
+    path_expr = new relpath_expr(cb->m_cur_sctx, loc);
+
+    result = path_expr.getp();
+  }
+
+  // If path expr starts with / or // (cases 1, 2, or 3), create an expr
+  // R = fn:root(./self::node()). 
+  //
+  // In case 1, just push R to the nodestack.
+  //
+  // In case 2, put relpath_expr(R) to the nodestact 
+  //
+  // In case 3, put relpath_expr(R, descendant-or-self::node()) to the nodestack
+  //
+  // In case 4, put relpath_expr() to the nodestack
+
+  if (pe_type != ParseConstants::path_relative)  
+  {
+    rchandle<relpath_expr> ctx_path_expr = new relpath_expr(cb->m_cur_sctx, loc);
+    ctx_path_expr->add_back(DOT_VAR);
+
+    rchandle<match_expr> me = new match_expr(cb->m_cur_sctx, loc);
+    me->setTestKind(match_anykind_test);
+    rchandle<axis_step_expr> ase = new axis_step_expr(cb->m_cur_sctx, loc);
+    ase->setAxis(axis_kind_self);
+    ase->setTest(me);
+
+    ctx_path_expr->add_back(&*ase);
+
+    rchandle<fo_expr> fo = new fo_expr(cb->m_cur_sctx, loc, LOOKUP_FN("fn", "root", 1));
+    fo->add(&*ctx_path_expr);
+
+    result = fo.getp();
+
+    if (path_expr != NULL) 
+    {
+      path_expr->add_back(&*fo);
+      result = path_expr.getp();
+    }
+
+    if (pe_type == ParseConstants::path_leading_slashslash) 
+    {
+      rchandle<axis_step_expr> ase = new axis_step_expr(cb->m_cur_sctx, loc);
+      rchandle<match_expr> me = new match_expr(cb->m_cur_sctx, loc);
+      me->setTestKind(match_anykind_test);
+      ase->setAxis(axis_kind_descendant_or_self);
+      ase->setTest(me);
+
+      path_expr->add_back(&*ase);
+    }
+  }
+
+  nodestack.push(result.getp());
+  return no_state;
+}
+
+
+/*******************************************************************************
+
+  [92] RelativePathExpr ::= StepExpr (("/" | "//") StepExpr)*
+
+  Note: If a RelativePathExpr consists of a single StepExpr, a RelativePathExpr
+  node is generated whose left child is a ContextItemExpr and its right child
+  is the StepExpr.
+
+********************************************************************************/
+void end_visit (const PathExpr& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+
+  expr_t arg2 = pop_nodestack();
+  expr_t arg1 = pop_nodestack();
+
+  ZORBA_ASSERT(arg1 == NULL);
+
+  nodestack.push(wrap_in_dos_and_dupelim(arg2, true));
+}
+
+
+void* begin_visit(const RelativePathExpr& v)
+{
+  TRACE_VISIT ();
+
+  const RelativePathExpr& rpe = v;
+  rchandle<exprnode> step = rpe.get_step_expr();
+  ZORBA_ASSERT(step != NULL);
+  AxisStep* axisStep = step.dyn_cast<AxisStep>();
+
+  // Let rpe be the i-th rpe in the Path Tree. Then i > 0, and pathExpr represents
+  // the translation of step-0/step-1/.../step-(i-1)/. 
+  expr_t e = pop_nodestack();
+  relpath_expr* pathExpr = e.dyn_cast<relpath_expr>();
+  ZORBA_ASSERT(pathExpr != NULL);
+
+  // If case 4 and i = 1, then there is no step0 and pathExpr is empty.
+  if (pathExpr->size() == 0) 
+  {
+    if (axisStep != NULL) 
+    {
+      pathExpr->add_back(DOT_VAR);
+
+      if (axisStep->get_predicate_list() == NULL) 
+      {
+        // The path expr is of the form "axis::test/....". We push 
+        // [ pathExpr(.) ] to the nodestack. 
+        nodestack.push(pathExpr);
+      }
+      else 
+      {
+        // The path expr is of the form "axis::test[pred]/....". We push
+        // [ for $$dot at $$pos in pathExpr(.) ]  to the nodestack.
+        rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(pathExpr, false);
+        nodestack.push(flworExpr.getp());
+      }
+    }
+    else 
+    {
+      // The path expr is of the form "source_expr/....". We push 
+      // pathExpr() to the nodestack. 
+      nodestack.push(pathExpr);
+    }
+  }
+
+  // Else if step-i is an axis step with no repdicates, just put pathExpr(...)
+  // back in the stack.
+  else if (axisStep != NULL && axisStep->get_predicate_list() == NULL) 
+  {
+    nodestack.push(pathExpr);
+  }
+
+  // Else, step-i is an axis step with predicates or a filter expr, and 
+  // is not the very 1st step in the path expr. In this case, pathExpr becomes
+  // the input to a new flwor expr that will compute, once for each node in
+  // pathExpr, the next step in the path. In particular, the following expr
+  // is pushed to the stack:
+  //
+  // [ for $$dot at $$pos in sort-distinct(pathExpr) ]
+  else 
+  {
+    expr_t inputExpr = wrap_in_dos_and_dupelim(pathExpr, false);
+    rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(inputExpr, false);
+    nodestack.push(flworExpr.getp());
+  }
+
+  return no_state;
+}
+
+
+void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
+{
+  const QueryLoc& loc = rpe.get_location();
+
+  // Let rpe be the i-th rpe in the Path Tree. This method is called after having
+  // translated step-i, but before starting the translation of rpe-(i+1).
+
+  // There were 2 exprs in the stack: stepExpr is the expr for step-i and curExpr
+  // is the expr we have constructed so far for the ancestors of rpe-i. CurExpr
+  // is either a path expr or a flwor expr.
+  expr_t stepExpr = pop_nodestack();
+  expr_t curExpr = pop_nodestack();
+  relpath_expr* pathExpr = curExpr.dyn_cast<relpath_expr>();
+  flwor_expr* flworExpr = curExpr.dyn_cast<flwor_expr>();
+
+  // If curExpr is a path expr, step-i was an axis step with no predicates, or
+  // the path expr is of the form "source_expr/...." and i = 1.
+  if (pathExpr != NULL) 
+  {
+    axis_step_expr* axisExpr = stepExpr.dyn_cast<axis_step_expr>();
+    ZORBA_ASSERT(axisExpr != NULL || pathExpr->size() == 0);
+
+    pathExpr->add_back(stepExpr);
+  }
+
+  // Else, step-i was not an axis step, or it contained predicates. In this
+  // case, translation of step-i resulted in a flwor expr that includes step-i
+  // and all the ancestors of rpe-i. We create a new path_expr and make the
+  // flwor expr its 1st step (i.e. flwor/.... or flwor/descendant-or-sef/...)
+  else 
+  {
+    ZORBA_ASSERT(flworExpr != NULL);
+
+    flworExpr->set_return_expr(stepExpr);
+    pop_scope();
+
+    pathExpr = new relpath_expr(cb->m_cur_sctx, loc);
+    pathExpr->add_back(flworExpr);
+  }
+
+  // Convert // to /descendant-or-self::node()/
+  if (rpe.get_step_type() == ParseConstants::st_slashslash)
+  {
+    rchandle<axis_step_expr> ase = new axis_step_expr(cb->m_cur_sctx, loc);
+    rchandle<match_expr> me = new match_expr(cb->m_cur_sctx, loc);
+    me->setTestKind(match_anykind_test);
+    ase->setAxis(axis_kind_descendant_or_self);
+    ase->setTest(me);
+    pathExpr->add_back(ase.getp());
+  }
+
+  rchandle<exprnode> child2 = rpe.get_relpath_expr();
+  ZORBA_ASSERT(child2 != NULL);
+  AxisStep* axisStep = child2.dyn_cast<AxisStep>();
+
+  // If the second child of rpe-i is another rpe or an axis step with no
+  // predicates, then we push the current path_expr to the stack.
+  if (child2.dyn_cast<RelativePathExpr>() != NULL ||
+      (axisStep != NULL && axisStep->get_predicate_list() == NULL))
+  {
+    nodestack.push(pathExpr);
+  }
+
+  // Else we have reached the last step of the Path Tree, and this step is a
+  // filter step or an axis step with predicates. In this case, pathExpr
+  // becomes the input to a new flwor expr that will compute, once for each
+  // node in pathExpr, the next step in the path. The flwor is pushed to the
+  // nodestack.
+  else 
+  {
+    expr_t inputSeqExpr = wrap_in_dos_and_dupelim(pathExpr, false);
+    rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(inputSeqExpr, false);
+    nodestack.push(flworExpr.getp());
+  }
+}
+
+
+void end_visit (const RelativePathExpr& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+
+  const RelativePathExpr& rpe = v;
+  rchandle<exprnode> child2 = rpe.get_relpath_expr();
+
+  // If rpe-i is not the bottom rpe in the Path Tree, there is nothing to be done.  
+  if (child2.dyn_cast<RelativePathExpr>() != NULL)
+    return;
+
+  // There were 2 exprs in the stack: stepExpr is the expr for step-(i+1) and 
+  // curExpr is the expr we have constructed so far for step-i and the ancestors
+  // of rpe-i. CurExpr is either a path expr or a flwor expr.
+  expr_t stepExpr = pop_nodestack();
+  expr_t curExpr = pop_nodestack();
+
+  relpath_expr* pathExpr = curExpr.dyn_cast<relpath_expr>();
+  flwor_expr* flworExpr = curExpr.dyn_cast<flwor_expr>();
+
+  // If curExpr is a path expr, step-(i+1) was an axis step with no predicates.
+  if (pathExpr != NULL) 
+  {
+    axis_step_expr* axisExpr = stepExpr.dyn_cast<axis_step_expr>();
+    ZORBA_ASSERT(axisExpr != NULL);
+
+    pathExpr->add_back(stepExpr);
+    nodestack.push(pathExpr);
+  }
+  else
+  {
+    ZORBA_ASSERT(flworExpr != NULL);
+    ZORBA_ASSERT(stepExpr != NULL);
+
+    flworExpr->set_return_expr(stepExpr);
+    pop_scope();
+
+    nodestack.push(flworExpr);
+  }
+}
+
+
+/*******************************************************************************
+  [93] StepExpr ::= FilterExpr | AxisStep
+********************************************************************************/
+
+
+/*******************************************************************************
+  [94] AxisStep ::= (ReverseStep | ForwardStep) PredicateList
+********************************************************************************/
+void* begin_visit(const AxisStep& v)
+{
+  TRACE_VISIT ();
+
+  rchandle<axis_step_expr> ase = new axis_step_expr(cb->m_cur_sctx, loc);
+  nodestack.push(ase.getp());
+  return no_state;
+}
+
+
+void post_axis_visit(const AxisStep& v, void* /*visit_state*/)
+{
+  // This method is called from AxisStep::accept() after the step itself is
+  // translated, but before the associated predicate list (if any) is translated.
+
+  PredicateList* pl = v.get_predicate_list().getp();
+
+  // Nothing to do if there are no predicates
+  if (pl == NULL || pl->size() == 0)
+    return;
+
+  const QueryLoc& loc = v.get_location();
+
+  expr_t e = pop_nodestack();
+  rchandle<axis_step_expr> axisExpr = e.dyn_cast<axis_step_expr>();
+  ZORBA_ASSERT(axisExpr != NULL);
+
+  e = pop_nodestack();
+  flwor_expr* flworExpr = e.dyn_cast<flwor_expr>();
+  ZORBA_ASSERT(flworExpr != NULL);
+
+  axis_kind_t axisKind = axisExpr->getAxis();
+
+  // For each item in the input seq compute the input seq for the preds (i.e.
+  // outer_dot/axisExpr). In particular, the following exprs are pushed to the
+  // nodestack:
+  //
+  // [ for $$dot at $$pos in sort-distinct(pathExpr-(i-1))
+  //   let $$predInput := $$dot/axis::test ]
+  //
+  // [ $$predInput ]
+  const for_clause* fcOuterDot = reinterpret_cast<const for_clause*>((*flworExpr)[0]);
+  rchandle<relpath_expr> predPathExpr = new relpath_expr(cb->m_cur_sctx, loc);
+  predPathExpr->add_back(fcOuterDot->get_var());
+  predPathExpr->add_back(axisExpr.getp());
+    
+  expr_t predInputExpr = predPathExpr;
+  
+  if (axisKind == axis_kind_ancestor ||
+      axisKind == axis_kind_ancestor_or_self ||
+      axisKind == axis_kind_preceding_sibling ||
+      axisKind == axis_kind_preceding)
+  {
+    predInputExpr = wrap_in_dos_and_dupelim(predInputExpr, false, true);
+  }
+
+  rchandle<let_clause> lcPredInput = wrap_in_letclause(predInputExpr.getp());
+
+  flworExpr->add_clause(lcPredInput);
+
+  nodestack.push(flworExpr);
+  nodestack.push(lcPredInput->get_var());
+}
+
+
+void end_visit (const AxisStep& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT();
+}
+
+
+/*******************************************************************************
+  [95] ForwardStep ::= (ForwardAxis NodeTest) | AbbrevForwardStep
+********************************************************************************/
+void *begin_visit (const ForwardStep& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+
+void end_visit (const ForwardStep& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+/*******************************************************************************
+  [97] AbbrevForwardStep ::= "@"? NodeTest
+********************************************************************************/
+void *begin_visit (const AbbrevForwardStep& v) 
+{
+  TRACE_VISIT ();
+
+  rchandle<axis_step_expr> ase = expect_axis_step_top ();
+
+  if (v.get_attr_bit()) {
+    ase->setAxis(axis_kind_attribute);
+  } else {
+    ase->setAxis(axis_kind_child);
+  }
+
+  return no_state;
+}
+
+
+void end_visit (const AbbrevForwardStep& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+/*******************************************************************************
+  [98] ReverseStep ::= (ReverseAxis NodeTest) | AbbrevReverseStep
+  [100] AbbrevReverseStep ::= ".."
+********************************************************************************/
+void *begin_visit (const ReverseStep& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+
+void end_visit (const ReverseStep& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void *begin_visit (const ForwardAxis& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+
+void end_visit (const ForwardAxis& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+
+  rchandle<axis_step_expr> ase = expect_axis_step_top ();
+
+  switch (v.get_axis())
+  {
+  case ParseConstants::axis_child:
+  {
+    ase->setAxis(axis_kind_child);
+    break;
+  }
+  case ParseConstants::axis_descendant:
+  {
+    ase->setAxis(axis_kind_descendant);
+    break;
+  }
+  case ParseConstants::axis_attribute:
+  {
+    ase->setAxis(axis_kind_attribute);
+    break;
+  }
+  case ParseConstants::axis_self:
+  {
+    ase->setAxis(axis_kind_self);
+    break;
+  }
+  case ParseConstants::axis_descendant_or_self:
+  {
+    ase->setAxis(axis_kind_descendant_or_self);
+    break;
+  }
+  case ParseConstants::axis_following_sibling:
+  {
+    ase->setAxis(axis_kind_following_sibling);
+    break;
+  }
+  case ParseConstants::axis_following:
+  {
+    ase->setAxis(axis_kind_following);
+    break;
+  }
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void *begin_visit (const ReverseAxis& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+
+void end_visit (const ReverseAxis& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+
+  rchandle<axis_step_expr> ase = expect_axis_step_top ();
+
+  switch (v.get_axis())
+  {
+  case ParseConstants::axis_parent:
+  {
+    ase->setAxis(axis_kind_parent);
+    break;
+  }
+  case ParseConstants::axis_ancestor:
+  {
+    ase->setAxis(axis_kind_ancestor);
+    break;
+  }
+  case ParseConstants::axis_preceding_sibling:
+  {
+    ase->setAxis(axis_kind_preceding_sibling);
+    break;
+  }
+  case ParseConstants::axis_preceding:
+  {
+    ase->setAxis(axis_kind_preceding);
+    break;
+  }
+  case ParseConstants::axis_ancestor_or_self:
+  {
+    ase->setAxis(axis_kind_ancestor_or_self);
+    break;
+  }
+  }
+}
+
+
+/*******************************************************************************
+  [101] NodeTest ::= KindTest | NameTest
+********************************************************************************/
+
+
+/*******************************************************************************
+  [102] NameTest ::= QName | Wildcard
+********************************************************************************/
+void *begin_visit (const NameTest& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+
+void end_visit (const NameTest& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+
+  expr* top = &*nodestack.top();
+
+  axis_step_expr* axisExpr = NULL;
+  trycatch_expr* tce = NULL;
+
+  if ((axisExpr = dynamic_cast<axis_step_expr *>(top)) != NULL) 
+  {
+    // Construct name-test match expr
+    rchandle<match_expr> matchExpr = new match_expr(cb->m_cur_sctx, loc);;
+    matchExpr->setTestKind(match_name_test);
+
+    if (v.getQName() != NULL) 
+    {
+      string qname = v.getQName()->get_qname();
+      store::Item_t qn_h = (axisExpr->getAxis () == axis_kind_attribute ?
+                            sctx_p->lookup_qname("", qname, v.getQName()->get_location()) :
+                            sctx_p->lookup_elem_qname(qname, v.getQName()->get_location()));
+      matchExpr->setQName(qn_h);
+    }
+    else 
+    {
+      rchandle<Wildcard> wildcard = v.getWildcard();
+      ZORBA_ASSERT(wildcard != NULL);
+
+      switch (wildcard->getKind())
+      {
+      case ParseConstants::wild_all:
+      {
+        matchExpr->setWildKind(match_all_wild);
+        break;
+      }
+      case ParseConstants::wild_elem:
+      {
+        matchExpr->setWildKind(match_name_wild);
+        matchExpr->setWildName(wildcard->getPrefix());
+
+        string qname = wildcard->getPrefix() + ":wildcard";
+
+        store::Item_t qn_h = (axisExpr->getAxis () == axis_kind_attribute ?
+                              sctx_p->lookup_qname("", qname, wildcard->get_location()) :
+                              sctx_p->lookup_elem_qname(qname, wildcard->get_location()));
+        matchExpr->setQName(qn_h);
+        break;
+      }
+      case ParseConstants::wild_prefix:
+      {
+        matchExpr->setWildKind(match_prefix_wild);
+        matchExpr->setWildName(wildcard->getLocalName());
+        break;
+      }
+      }
+    }
+
+    // add the match expression
+    axisExpr->setTest(matchExpr);
+  }
+  else if ((tce = dynamic_cast<trycatch_expr *>(top)) != NULL) 
+  {
+    catch_clause *cc = &*(*tce)[0];
+    if (v.getQName() != NULL) 
+    {
+      string qname = v.getQName()->get_qname();
+      store::Item_t qn_h = sctx_p->lookup_elem_qname (qname, loc);
+      cc->add_nametest_h(new NodeNameTest(qn_h));
+    }
+    else
+    {
+      rchandle<Wildcard> wildcard = v.getWildcard();
+      ZORBA_ASSERT(wildcard != NULL);
+
+      switch (wildcard->getKind())
+      {
+        case ParseConstants::wild_all:
+          cc->add_nametest_h(new NodeNameTest(NULL, NULL));
+          break;
+        case ParseConstants::wild_elem:
+          cc->add_nametest_h(new NodeNameTest(NULL, wildcard->getPrefix().theStrStore));
+          break;
+        case ParseConstants::wild_prefix:
+          cc->add_nametest_h(new NodeNameTest(wildcard->getLocalName().theStrStore, NULL));
+          break;
+      }
+    }
+  }
+  else
+  {
+    ZORBA_ASSERT(false);
+  }
+}
+
+
+/*******************************************************************************
+  [103] Wildcard ::= "*" | (NCName ":" "*") | ("*" ":" NCName)
+********************************************************************************/
+void *begin_visit (const Wildcard& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+
+void end_visit (const Wildcard& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+/*******************************************************************************
+  [104] FilterExpr ::= PrimaryExpr PredicateList
+********************************************************************************/
+void* begin_visit(const FilterExpr& v)
+{
+  TRACE_VISIT ();
+
+  return no_state;
+}
+
+
+void post_primary_visit(const FilterExpr& v, void* /*visit_state*/)
+{
+  // This method is called from FilterExpr::accept() after the primary expr is
+  // translated, but before the associated predicate list is translated.
+
+  if (!v.isPathStep())
+    return;
+
+  PredicateList* pl = v.get_pred_list().getp();
+
+  ZORBA_ASSERT(pl != NULL && pl->size() > 0);
+
+  expr_t primaryExpr = pop_nodestack();
+  expr_t e = pop_nodestack();
+  flwor_expr* flworExpr = e.dyn_cast<flwor_expr>();
+
+  if (flworExpr != NULL) 
+  {
+    // for each item in the input seq compute the input seq for the pred
+    // (= outer_dot/primaryExpr)
+    let_clause_t lcPredSeq = wrap_in_letclause(primaryExpr.getp());
+
+    flworExpr->add_clause(lcPredSeq);
+
+    nodestack.push(flworExpr);
+    nodestack.push(lcPredSeq->get_var());
+  }
+  else
+  {
+     relpath_expr* pathExpr = e.dyn_cast<relpath_expr>();
+     ZORBA_ASSERT(pathExpr != NULL && pathExpr->size() == 0);
+
+     nodestack.push(pathExpr);
+     nodestack.push(primaryExpr);
+  }
+}
+
+
+void end_visit (const FilterExpr& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT();
+}
+
+
+/*******************************************************************************
+  [105] PredicateList ::= Predicate*
+  [106] Predicate ::= "[" Expr "]"
+********************************************************************************/
+void *begin_visit (const PredicateList& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+
+void end_visit (const PredicateList& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+}
+
+
+void pre_predicate_visit(const PredicateList& v, void* /*visit_state*/)
+{
+  // This method is called from PredicateList::accept(), before calling accept()
+  // on each predicate in the list
+
+  // get the predicate input seq
+  expr_t inputSeqExpr = pop_nodestack();
+
+  rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(inputSeqExpr, true);
+
+  nodestack.push(flworExpr.getp());
+}
+
+
+void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
+{
+  // This method is called from PredicateList::accept(), after calling accept()
+  // on each predicate in the list
+
+  expr_t predExpr = pop_nodestack();
+
+  expr_t f = pop_nodestack();
+  flwor_expr* flworExpr = f.dyn_cast<flwor_expr>();
+  ZORBA_ASSERT(flworExpr != NULL);
+
+  const QueryLoc& loc = predExpr->get_loc();
+
+  let_clause_t lcPred = wrap_in_letclause(predExpr);
+  var_expr* predvar = lcPred->get_var();
+
+  flworExpr->add_clause(lcPred);
+
+  expr_t dotvar = DOT_VAR;
+
+  // Check if the pred expr returns a numeric result
+  rchandle<fo_expr> cond = new fo_expr(cb->m_cur_sctx, loc, CACHED(op_or, LOOKUP_OPN("or")));
+  cond->add(new instanceof_expr(cb->m_cur_sctx, loc, predvar, GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
+  cond->add(new instanceof_expr(cb->m_cur_sctx, loc, predvar, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+  cond = new fo_expr(cb->m_cur_sctx, loc, CACHED (op_or, LOOKUP_OPN ("or")), &*cond);
+  cond->add(new instanceof_expr(cb->m_cur_sctx, loc, predvar, GENV_TYPESYSTEM.FLOAT_TYPE_ONE));
+
+  // If so: return $dot if the value of the pred expr is equal to the value
+  // of $dot_pos var, otherwise return the empty seq.
+  rchandle<fo_expr> eq = new fo_expr(cb->m_cur_sctx, loc, LOOKUP_OP2("value-equal"));
+  eq->add(lookup_ctx_var(DOT_POS_VARNAME, loc).getp ());
+  eq->add(predvar);
+
+  expr_t thenExpr = new if_expr(cb->m_cur_sctx, loc, eq.getp(), dotvar, create_seq(loc));
+
+  // Else, return $dot if the the value of the pred expr is true, otherwise
+  // return the empty seq.
+  expr_t elseExpr = new if_expr(cb->m_cur_sctx, loc, predvar, dotvar, create_seq(loc));
+
+  expr_t ifExpr = new if_expr(cb->m_cur_sctx, loc, cond.getp(), thenExpr, elseExpr);
+
+  flworExpr->set_return_expr(ifExpr);
+
+  nodestack.push(flworExpr);
+
+  pop_scope();
+}
+
+
+/*******************************************************************************
+  [107] PrimaryExpr ::= Literal |
+                        VarRef |
+                        ParenthesizedExpr |
+                        ContextItemExpr |
+                        FunctionCall |
+                        OrderedExpr |
+                        UnorderedExpr |
+                        Constructor
+********************************************************************************/
+
+
+/*******************************************************************************
+  [108] Literal ::= NumericLiteral | StringLiteral
+********************************************************************************/
+
+
+/*******************************************************************************
+  [109] NumericLiteral ::= IntegerLiteral | DecimalLiteral | DoubleLiteral
+
+  [178] IntegerLiteral ::= Digits
+
+  [179] DecimalLiteral :: ("." Digits) | (Digits "." [0-9]*) 
+
+  [180] DoubleLiteral ::= (("." Digits) | (Digits ("." [0-9]*)?)) [eE] [+-]? Digits
+********************************************************************************/
+void *begin_visit (const NumericLiteral& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const NumericLiteral& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+  switch (v.get_type()) {
+  case ParseConstants::num_integer: {
+    nodestack.push(new const_expr(cb->m_cur_sctx, loc, v.get<xqp_integer>()));
+    break;
+  }
+  case ParseConstants::num_decimal: {
+    nodestack.push(new const_expr(cb->m_cur_sctx, loc, v.get<xqp_decimal>()));
+    break;
+  }
+  case ParseConstants::num_double: {
+    nodestack.push(new const_expr(cb->m_cur_sctx, loc, v.get<xqp_double>()));
+    break;
+  }
+  }
+}
+
+
+/*******************************************************************************
+  [181] StringLiteral ::= ('"' (PredefinedEntityRef |
+                                CharRef |
+                                EscapeQuot |
+                                [^"&])*
+                           '"') |
+                          ("'" (PredefinedEntityRef |
+                                CharRef |
+                                EscapeApos |
+                                [^'&])*
+                           "'")
+
+  [182] PredefinedEntityRef ::= "&" ("lt" | "gt" | "amp" | "quot" | "apos") ";"
+
+  [183] EscapeQuot ::= '""'
+
+  [184] EscapeApos ::= "''"
+
+  [190] CharRef ::= [http://www.w3.org/TR/REC-xml#NT-CharRef]
+********************************************************************************/
+void *begin_visit (const StringLiteral& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const StringLiteral& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+  nodestack.push(new const_expr(cb->m_cur_sctx, loc,v.get_strval()));
+}
+
+
+/*******************************************************************************
+  [110] VarRef ::= "$" VarName
+  [111] VarName ::= QName
+********************************************************************************/
+void *begin_visit (const VarRef& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const VarRef& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+
+  var_expr *ve = lookup_var (v.get_varname ());
+
+  if (ve == NULL)
+    ZORBA_ERROR_LOC_PARAM (XPST0008, loc, v.get_varname (), "");
+
+  if (ve->get_kind() == var_expr::prolog_var && ! prolog_vf_key.empty()) 
+  {
+    string key = "V" + static_context::qname_internal_key (ve->get_varname ());
+    add_multimap_value(thePrologDeps, prolog_vf_key, key);
+  }
+
+  nodestack.push(new wrapper_expr(cb->m_cur_sctx, v.get_location(), rchandle<expr>(ve)));
+}
+
+
+/*******************************************************************************
+  [112] ParenthesizedExpr ::= "(" Expr? ")"
+********************************************************************************/
+void *begin_visit (const ParenthesizedExpr& v) 
+{
+  TRACE_VISIT ();
+  nodestack.push(NULL);
+  return no_state;
+}
+
+void end_visit (const ParenthesizedExpr& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+
+  expr_t expr = pop_nodestack();
+
+  if (expr != NULL) 
+  {
+    pop_nodestack();
+    nodestack.push(expr);
+  }
+  else 
+  {
+    fo_expr* lSeq = create_seq (loc);
+    nodestack.push(lSeq);
+  }
+}
+
+
+/*******************************************************************************
+  [113] ContextItemExpr ::= "."
+********************************************************************************/
+void *begin_visit (const ContextItemExpr& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const ContextItemExpr& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+
+  var_expr* e = static_cast<var_expr *>(DOT_VAR);
+  e->set_loc(loc);
+  nodestack.push(e);
+}
+
+
+/*******************************************************************************
+  [114] OrderedExpr ::= "ordered" "{" Expr "}"
+********************************************************************************/
+void *begin_visit (const OrderedExpr& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const OrderedExpr& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+
+  nodestack.push(new order_expr(cb->m_cur_sctx,
+                                loc,
+                                order_expr::ordered,
+                                pop_nodestack()));
+}
+
+
+/*******************************************************************************
+  [115] UnorderedExpr ::= "unordered" "{" Expr "}"
+********************************************************************************/
+void *begin_visit (const UnorderedExpr& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const UnorderedExpr& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+
+  nodestack.push(new order_expr(cb->m_cur_sctx,
+                                loc,
+                                order_expr::unordered,
+                                pop_nodestack()));
+}
+
+
+/*******************************************************************************
+  [116] FunctionCall ::= QName "(" ArgList? ")"
+********************************************************************************/
+void *begin_visit (const FunctionCall& v) 
+{
+  TRACE_VISIT ();
+
+  rchandle<QName> qn_h = v.get_fname();
+  string prefix = qn_h->get_prefix();
+  string fname = qn_h->get_localname();
+
+  store::Item_t qname = sctx_p->lookup_fn_qname(prefix, fname, loc);
+  string key = "F" + static_context::qname_internal_key(qname);
+
+  if (! prolog_vf_key.empty())
+    add_multimap_value(thePrologDeps, prolog_vf_key, key);
+
+  nodestack.push(NULL);
+  return no_state;
+}
+
+void end_visit (const FunctionCall& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+
+  vector<expr_t> arguments;
+  while (true) 
+  {
+    expr_t e_h = pop_nodestack();
+    if (e_h == NULL)
+      break;
+    arguments.push_back(e_h);
+  }
+  int sz = arguments.size ();
+
+  rchandle<QName> qn_h = v.get_fname();
+  string prefix = qn_h->get_prefix();
+  string fname = qn_h->get_localname();
+
+  const xqpStringStore* fn_ns = sctx_p->lookup_fn_qname(prefix, fname, loc)->getNamespace();
+
+  if (fn_ns->byteEqual(XQUERY_FN_NS)) 
+  {
+    if (fname == "position" && sz == 0)  
+    {
+      nodestack.push(lookup_ctx_var(DOT_POS_VARNAME, loc).getp());
+      return;
+    }
+    else if (fname == "last" && sz == 0)
+    {
+      nodestack.push(lookup_ctx_var(LAST_IDX_VARNAME, loc).getp());
+      return;
+    }
+    else if (fname == "number") 
+    {
+      switch (sz) 
+      {
+      case 0:
+        arguments.push_back(DOT_VAR);
+        break;
+      case 1:
+        break;
+      default:
+        ZORBA_ERROR_LOC_PARAM( XPST0017, loc, "fn:number", sz );
+      }
+
+      varref_t tv = tempvar(loc, var_expr::let_var);
+
+      expr_t nan_expr = new const_expr (cb->m_cur_sctx, loc, xqp_double::nan());
+
+      expr_t ret = new if_expr (cb->m_cur_sctx,
+                                loc,
+                                new castable_expr(cb->m_cur_sctx, loc,
+                                                  &*tv,
+                                                  GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
+                                new cast_expr(cb->m_cur_sctx, loc,
+                                              &*tv,
+                                              GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
+                                nan_expr);
+
+      expr_t data_expr = wrap_in_atomization(arguments[0]);
+
+      nodestack.push(&*wrap_in_let_flwor(new treat_expr(cb->m_cur_sctx,
+                                                        loc,
+                                                        data_expr,
+                                                        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+                                                        XPTY0004),
+                                         tv,
+                                         ret));
+      return;
+    }
+    else if (sz == 0 && xquery_fns_def_dot.find(fname) != xquery_fns_def_dot.end()) 
+    {
+      arguments.push_back(DOT_VAR);
+    }
+    else if (fname == "static-base-uri") 
+    {
+      if (sz != 0)
+        ZORBA_ERROR_LOC_PARAM( XPST0017, loc, "fn:static-base-uri", sz );
+
+      xqp_string baseuri = sctx_p->final_baseuri ();
+      if (baseuri.empty ())
+        nodestack.push (create_seq (loc));
+      else
+        nodestack.push (new cast_expr (cb->m_cur_sctx, loc,
+                                       new const_expr (cb->m_cur_sctx, loc, baseuri),
+                                       GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
+      return;
+    }
+    else if (fname == "id")
+    {
+      if (sz == 1)
+        arguments.insert(arguments.begin(), DOT_VAR);
+
+      expr_t idsExpr = arguments[1];
+
+      rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(idsExpr, false);
+
+      for_clause* fc = reinterpret_cast<for_clause*>((*flworExpr.getp())[0]);
+      expr* flworVarExpr = fc->get_var();
+
+      rchandle<fo_expr> normExpr;
+      rchandle<fo_expr> tokenExpr;
+      rchandle<const_expr> constExpr = new const_expr(cb->m_cur_sctx, loc, xqpString(" " ));
+
+      normExpr = new fo_expr(cb->m_cur_sctx, loc, LOOKUP_FN("fn", "normalize-space", 1));
+      normExpr->add(flworVarExpr);
+      tokenExpr = new fo_expr(cb->m_cur_sctx, loc, LOOKUP_FN("fn", "tokenize", 2));
+      tokenExpr->add(normExpr.getp());
+      tokenExpr->add(constExpr.getp());
+
+      flworExpr->set_return_expr(tokenExpr.getp());
+
+      pop_scope();
+
+      arguments[1] = flworExpr;
+    }
+    else if (sz == 1 && (fname == "lang" || fname == "idref")) 
+    {
+      arguments.insert(arguments.begin(), DOT_VAR);
+    } 
+    else if (sz == 1 && fname == "resolve-uri") 
+    {
+      arguments.insert (arguments.begin (), new const_expr (cb->m_cur_sctx, loc, sctx_p->final_baseuri()));
+    }
+    else if (sz == 1 && fname == "parse") 
+    {
+      arguments.insert (arguments.begin (), new const_expr (cb->m_cur_sctx, loc, sctx_p->final_baseuri()));
+    }
+    else if (fname == "concat")
+    {
+      if (sz < 2)
+        ZORBA_ERROR_LOC_PARAM (XPST0017, loc, "concat", to_string (sz));
+    }
+    else if (fname == "doc")
+    {
+      if (sz > 0) {
+        expr_t  doc_uri = arguments[0];
+        //validate uri
+        if(doc_uri->get_expr_kind() == const_expr_kind)
+        {
+          const_expr  *const_uri = reinterpret_cast<const_expr*>(doc_uri.getp());
+          store::Item_t uri_value = const_uri->get_val();
+          xqpStringStore_t   uri_string = uri_value->getStringValue();
+          try{
+            xqpString   xqp_uri_string(uri_string);
+            //xqpString   xqp_base_uri("http://website/");
+            //URI   baseURI(xqp_base_uri, false);
+            if(uri_string->indexOf(":/") >= 0)
+            {
+              URI   docURI(xqp_uri_string, true);//with validate`
+            }
+          }
+          catch(error::ZorbaError &e)
+          {
+            ZORBA_ERROR_LOC_PARAM(FODC0005, loc, e.toString(), "");
+          }
+        }
+      }
+    }
+  }
+  else if (fn_ns->byteEqual(ZORBA_FN_NS)) 
+  {
+    if (fname == "inline-xml" && sz == 1) {
+      nodestack.push (new eval_expr(cb->m_cur_sctx, loc, create_cast_expr (loc, arguments [0], GENV_TYPESYSTEM.STRING_TYPE_ONE, true)));
+      return;
+    }
+  }
+
+  sz = arguments.size();  // recompute size
+
+  // try constructor functions
+  xqtref_t type = CTXTS->create_named_type(sctx_p->lookup_elem_qname(prefix, fname, loc),
+                                           TypeConstants::QUANT_QUESTION);
+
+  if (type != NULL) 
+  {
+    if (sz != 1
+        || TypeOps::is_equal (*type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION)
+        || TypeOps::is_equal (*type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
+      ZORBA_ERROR_LOC_PARAM( XPST0017,  loc, prefix + ":" + fname, sz);
+
+    nodestack.push (create_cast_expr (loc, arguments [0], type, true));
+  }
+  else 
+  {
+    function* f = LOOKUP_FN(prefix, fname, sz);
+    if (f == NULL)
+      ZORBA_ERROR_LOC_PARAM(XPST0017,
+                            loc,
+                            (prefix.empty () ? prefix : (prefix + ":")) + fname,
+                            to_string(sz));
+    
+    if (NULL != dynamic_cast<user_function *> (f)) 
+    {
+      // a udf function
+      if (! fn_decl_stack.empty()) 
+      {
+        user_function *udf = dynamic_cast<user_function *> (fn_decl_stack.back ());
+        ZORBA_ASSERT (udf != NULL);
+        udf->setLeaf(false);
+        // cout << "UDF " << udf->get_fname ()->getStringValue () << " non-leaf due to " << f->get_fname ()->getStringValue () << endl;
+      }
+    }
+
+    rchandle<fo_expr> fo_h = new fo_expr (cb->m_cur_sctx, loc, f);
+
+    // TODO this should be a const iterator
+    vector<expr_t>::reverse_iterator iter = arguments.rbegin();
+    for(; iter != arguments.rend(); ++iter)
+      fo_h->add(*iter);
+
+#ifdef ZORBA_DEBUGGER
+    if ( cb->m_debugger != 0 ) 
+    {
+      rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(cb->m_cur_sctx, loc, &*fo_h, theScopedVariables, thePrologVars);
+      nodestack.push(&*lDebuggerExpr);
+    }
+    else
+    {
+      nodestack.push(&*fo_h);
+    }
+#else
+    nodestack.push(&*fo_h);
+#endif
+  }
+}
+
+
+/*******************************************************************************
+  [116a] ArgList := ExprSingle ("," ExprSingle)*
+********************************************************************************/
+void *begin_visit (const ArgList& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const ArgList& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
 }
 
@@ -4341,57 +6323,41 @@ void end_visit (const ArgList& v, void* /*visit_state*/) {
 
   Node Construction
 
+  [117] Constructor ::= DirectConstructor | ComputedConstructor
+
+  [118] DirectConstructor ::= DirElemConstructor |
+                              DirCommentConstructor |
+                              DirPIConstructor
+
 ********************************************************************************/
 
-void *begin_visit (const DirCommentConstructor& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
 
-void end_visit (const DirCommentConstructor& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-
-  xqpString str = v.get_comment();
-  expr_t content = new const_expr (cb->m_cur_sctx, loc, str);
-  nodestack.push (new text_expr(cb->m_cur_sctx, loc,
-                                text_expr::comment_constructor,
-                                content));
-  }
-
-void *begin_visit (const DirPIConstructor& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const DirPIConstructor& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-  xqp_string target_str = v.get_pi_target ();
-  if (target_str.uppercase () == "XML")
-    ZORBA_ERROR_LOC ( XPST0003, loc);
-  expr_t
-    target = new const_expr (cb->m_cur_sctx, loc, target_str),
-    content = new const_expr (cb->m_cur_sctx, loc, v.get_pi_content ());
-  nodestack.push (new pi_expr (cb->m_cur_sctx, loc, target,  content));
-}
-
-
-void *begin_visit (const DirElemConstructor& v) {
+/*******************************************************************************
+  [119]  DirElemConstructor ::= "<" QName DirAttributeList?
+                                ("/>" |
+                                 (">" DirElemContentList? "</" QName S? ">")) 
+********************************************************************************/
+void *begin_visit (const DirElemConstructor& v) 
+{
   TRACE_VISIT();
   push_scope();
   push_elem_scope();
   return no_state;
 }
 
-void end_visit (const DirElemConstructor& v, void* /*visit_state*/) {
+void end_visit (const DirElemConstructor& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
 
   expr_t nameExpr;
   expr_t attrExpr;
   expr_t contentExpr;
 
-  rchandle<QName> end_tag = v.get_end_name(), start_tag = v.get_elem_name ();
+  rchandle<QName> end_tag = v.get_end_name();
+  rchandle<QName> start_tag = v.get_elem_name ();
+
   if (end_tag != NULL && start_tag->get_qname() != end_tag->get_qname ())
-    ZORBA_ERROR_LOC_DESC( XPST0003, loc, string ("Start tag ") + start_tag->get_qname () + " does not match end tag " + end_tag->get_qname());
+    ZORBA_ERROR_LOC_DESC(XPST0003, loc, string("Start tag ") + start_tag->get_qname() + " does not match end tag " + end_tag->get_qname());
 
   if (v.get_dir_content_list() != NULL)
     contentExpr = pop_nodestack();
@@ -4399,10 +6365,13 @@ void end_visit (const DirElemConstructor& v, void* /*visit_state*/) {
   if (v.get_attr_list() != NULL)
     attrExpr = pop_nodestack();
 
-  nameExpr = new const_expr(cb->m_cur_sctx, loc,
-                            sctx_p->lookup_elem_qname(v.get_elem_name()->get_qname(), loc));
+  nameExpr = new const_expr(cb->m_cur_sctx,
+                            loc,
+                            sctx_p->lookup_elem_qname(v.get_elem_name()->get_qname(),
+                                                      loc));
 
-  nodestack.push(new elem_expr(cb->m_cur_sctx, loc,
+  nodestack.push(new elem_expr(cb->m_cur_sctx,
+                               loc,
                                nameExpr,
                                attrExpr,
                                contentExpr,
@@ -4410,6 +6379,214 @@ void end_visit (const DirElemConstructor& v, void* /*visit_state*/) {
   pop_elem_scope();
   pop_scope();
 }
+
+
+/*******************************************************************************
+   [120] DirAttributeList ::= DirAttr | DirAttributeList  DirAttr
+********************************************************************************/
+void *begin_visit (const DirAttributeList& v) 
+{
+  TRACE_VISIT ();
+
+  nodestack.push(NULL);
+
+  // visit namespace declaratrion attributes first
+  for (int visitType = 0; visitType < 2; visitType++)
+  {
+    for (int i = 0; i < v.size (); i++) 
+    {
+      const DirAttr* attr = v[i];
+      const QName* qname = attr->get_name().getp();
+      bool isPrefix = qname->get_qname() == "xmlns" || qname->get_prefix() == "xmlns";
+
+      if ((isPrefix && visitType == 0) || (! isPrefix && visitType == 1))
+        attr->accept(*this);
+    }
+  }
+
+  unsigned long numAttrs = 0;
+  vector<rchandle<attr_expr> > attributes;
+  while(true) 
+  {
+    expr_t expr = pop_nodestack();
+    if (expr == NULL)
+      break;
+
+    attr_expr* attrExpr = expr.dyn_cast<attr_expr> ().getp();
+
+    for (unsigned long i = 0; i < numAttrs; i++) 
+    {
+      if (attributes[i]->getQName()->equals(attrExpr->getQName()))
+         ZORBA_ERROR_LOC( XQST0040, loc);
+    }
+
+    attributes.push_back(attrExpr);
+    numAttrs++;
+  }
+
+  if (attributes.size() == 1)
+  {
+    nodestack.push(attributes[0].getp());
+  }
+  else
+  {
+    fo_expr* expr_list = create_seq(loc);
+
+    for (vector<rchandle<attr_expr> >::reverse_iterator it = attributes.rbegin();
+         it != attributes.rend();
+         ++it)
+    {
+      expr_list->add((*it).cast<expr> ());
+    }
+
+    nodestack.push(expr_list);
+  }
+
+  return NULL;  // reject visitor -- everything done
+}
+
+void end_visit (const DirAttributeList& v, void* /*visit_state*/) 
+{
+  // begin_visit() rejects visitor
+  ZORBA_ASSERT (false);
+}
+
+
+/*******************************************************************************
+  [120a] DirAttr ::= (S (QName S? "=" S? DirAttributeValue)
+********************************************************************************/
+void *begin_visit (const DirAttr& v) 
+{
+  TRACE_VISIT ();
+  // boundary is needed because the value of an attribute might be empty
+  nodestack.push(NULL);
+  return no_state;
+}
+
+void end_visit (const DirAttr& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+
+  expr_t valueExpr = pop_nodestack();
+
+  if (valueExpr != NULL) 
+  {
+    // delete boundary
+    nodestack.pop();
+  }
+
+  QName* qname = v.get_name().getp();
+
+  if (qname->get_qname() == "xmlns" || qname->get_prefix() == "xmlns") 
+  {
+    xqpString prefix;
+
+    if (qname->get_qname() != "xmlns") 
+    {
+      prefix = qname->get_localname();
+      if (prefix == "xmlns")
+        ZORBA_ERROR_LOC (XQST0070, loc);
+    }
+    // else we have a defult-namespace declaration
+
+    const_expr* constValueExpr = valueExpr.dyn_cast<const_expr> ().getp();
+    if (constValueExpr != NULL) 
+    {
+      xqpString uri(constValueExpr->get_val()->getStringValue());
+
+      if ((prefix == "xml") != (uri == XML_NS))
+        ZORBA_ERROR_LOC (XQST0070, loc);
+
+      sctx_p->bind_ns(prefix, uri, XQST0071);
+      ns_ctx->bind_ns(prefix, uri);
+    }
+    else if (valueExpr == NULL)
+    {
+      if (prefix == "xml")
+        ZORBA_ERROR_LOC ( XQST0070, loc);
+
+      // unbind the prefix
+      sctx_p->bind_ns(prefix, "", XQST0071);
+      ns_ctx->bind_ns(prefix, "");
+    }
+    else
+    {
+      ZORBA_ERROR_LOC( XQST0022, loc);
+    }
+  }
+  else
+  {
+    expr_t nameExpr = new const_expr(cb->m_cur_sctx,
+                                     loc,
+                                     sctx_p->lookup_qname("",
+                                                          qname->get_qname(),
+                                                          qname->get_location()));
+
+    expr_t attrExpr = new attr_expr(cb->m_cur_sctx, loc, nameExpr, valueExpr);
+
+    nodestack.push(attrExpr);
+  }
+}
+
+
+/*******************************************************************************
+  [119a] DirElemContentList ::= DirElemContent |
+                                DirElemContentList DirElemContent
+********************************************************************************/
+void *begin_visit (const DirElemContentList& v) 
+{
+  TRACE_VISIT ();
+  nodestack.push(NULL);
+  return no_state;
+}
+
+void end_visit (const DirElemContentList& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+
+  rchandle<fo_expr> expr_list = create_seq (loc);
+  while (true) 
+  {
+    expr_t e_h = pop_nodestack();
+    if (e_h == NULL)
+      break;
+    expr_list->add(e_h);
+  }
+
+  if (expr_list->size() == 1)
+    nodestack.push(*expr_list->begin());
+  else 
+  {
+    nodestack.push(expr_list.getp ());
+  }
+}
+
+
+void *begin_visit (const DirElemContent& v) {
+  TRACE_VISIT ();
+
+  return no_state;
+}
+
+void end_visit (const DirElemContent& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+
+  if (v.get_direct_cons() != NULL) {
+    // nothing to be done, the content expression is already on the stack
+  }
+  else if (v.get_cdata() != NULL) {
+  }
+  else if (v.get_common_content() != NULL) {
+  } else {
+    if (!v.isStripped()) {
+      expr_t content = new const_expr (cb->m_cur_sctx, loc, v.get_elem_content());
+      nodestack.push (new text_expr(cb->m_cur_sctx, loc,
+                                    text_expr::text_constructor,
+                                    content));
+    }
+  }
+}
+
 
 /**
  * Inserts an entry in theIsWSBoundaryStack and thePossibleWSContentStack to save
@@ -4476,54 +6653,6 @@ void end_check_boundary_whitespace() {
   }
 }
 
-void *begin_visit (const DirElemContentList& v) {
-  TRACE_VISIT ();
-  nodestack.push(NULL);
-  return no_state;
-}
-
-void end_visit (const DirElemContentList& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-
-  rchandle<fo_expr> expr_list = create_seq (loc);
-  while (true) {
-    expr_t e_h = pop_nodestack();
-    if (e_h == NULL)
-      break;
-    expr_list->add(e_h);
-  }
-  if (expr_list->size() == 1)
-    nodestack.push(*expr_list->begin());
-  else {
-    nodestack.push(expr_list.getp ());
-  }
-}
-
-
-void *begin_visit (const DirElemContent& v) {
-  TRACE_VISIT ();
-
-  return no_state;
-}
-
-void end_visit (const DirElemContent& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-
-  if (v.get_direct_cons() != NULL) {
-    // nothing to be done, the content expression is already on the stack
-  }
-  else if (v.get_cdata() != NULL) {
-  }
-  else if (v.get_common_content() != NULL) {
-  } else {
-    if (!v.isStripped()) {
-      expr_t content = new const_expr (cb->m_cur_sctx, loc, v.get_elem_content());
-      nodestack.push (new text_expr(cb->m_cur_sctx, loc,
-                                    text_expr::text_constructor,
-                                    content));
-    }
-  }
-}
 
 
 void *begin_visit (const CDataSection& v) {
@@ -4538,117 +6667,9 @@ void end_visit (const CDataSection& v, void* /*visit_state*/) {
 }
 
 
-void *begin_visit (const DirAttributeList& v) {
-  TRACE_VISIT ();
-
-  nodestack.push(NULL);
-  // visit prefix attributes first
-  for (int visitType = 0; visitType < 2; visitType++)
-    for (int i = 0; i < v.size (); i++) {
-      const DirAttr *attr = v [i];
-      const QName* qname = attr->get_name().getp();
-      bool isPrefix = qname->get_qname() == "xmlns" || qname->get_prefix() == "xmlns";
-      if ((isPrefix && visitType == 0)
-          || (! isPrefix && visitType == 1))
-        attr->accept (*this);
-    }
-
-  unsigned long numAttrs = 0;
-  vector<rchandle<attr_expr> > attributes;
-  while(true) {
-    expr_t expr = pop_nodestack();
-    if (expr == NULL)
-      break;
-
-    attr_expr* attrExpr = expr.dyn_cast<attr_expr> ().getp();
-
-    for (unsigned long i = 0; i < numAttrs; i++) {
-      if (attributes[i]->getQName()->equals(attrExpr->getQName()))
-         ZORBA_ERROR_LOC( XQST0040, loc);
-    }
-
-    attributes.push_back(attrExpr);
-    numAttrs++;
-  }
-
-  if (attributes.size() == 1)
-    nodestack.push(attributes[0].getp());
-  else {
-    fo_expr* expr_list = create_seq(loc);
-
-    for (vector<rchandle<attr_expr> >::reverse_iterator it = attributes.rbegin();
-         it != attributes.rend();
-         ++it)
-    {
-      expr_list->add((*it).cast<expr> ());
-    }
-
-    nodestack.push(expr_list);
-      }
-
-  return NULL;  // reject visitor -- everything done
-    }
-
-void end_visit (const DirAttributeList& v, void* /*visit_state*/) {
-  // begin_visit() rejects visitor
-  ZORBA_ASSERT (false);
-  }
 
 
-void *begin_visit (const DirAttr& v) {
-  TRACE_VISIT ();
-  // boundary is needed because the value of an attribute might be empty
-  nodestack.push(NULL);
-  return no_state;
-}
 
-void end_visit (const DirAttr& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-
-  expr_t valueExpr = pop_nodestack();
-
-  if (valueExpr != NULL) {
-    // delete boundary
-    nodestack.pop();
-  }
-
-  QName* qname = v.get_name().getp();
-
-  if (qname->get_qname() == "xmlns" || qname->get_prefix() == "xmlns") {
-    xqpString prefix;
-
-    if (qname->get_qname() != "xmlns") {
-      prefix = qname->get_localname();
-      if (prefix == "xmlns")
-        ZORBA_ERROR_LOC (XQST0070, loc);
-    }
-    // else we have a defult-namespace declaration
-
-    const_expr* constValueExpr = valueExpr.dyn_cast<const_expr> ().getp();
-    if (constValueExpr != NULL) {
-      xqpString uri(constValueExpr->get_val()->getStringValue());
-
-      if ((prefix == "xml") != (uri == XML_NS))
-        ZORBA_ERROR_LOC (XQST0070, loc);
-      sctx_p->bind_ns(prefix, uri, XQST0071);
-      ns_ctx->bind_ns(prefix, uri);
-    } else if (valueExpr == NULL) {
-      if (prefix == "xml")
-        ZORBA_ERROR_LOC ( XQST0070, loc);
-
-      // unbind the prefix
-      sctx_p->bind_ns(prefix, "", XQST0071);
-      ns_ctx->bind_ns(prefix, "");
-    }
-  else
-      ZORBA_ERROR_LOC( XQST0022, loc);
-  } else {
-    expr_t nameExpr = new const_expr(cb->m_cur_sctx, loc,
-                                     sctx_p->lookup_qname("", qname->get_qname(), qname->get_location()));
-    expr_t attrExpr = new attr_expr(cb->m_cur_sctx, loc, nameExpr, valueExpr);
-    nodestack.push(attrExpr);
-  }
-}
 
 
 void *begin_visit (const DirAttributeValue& v) {
@@ -4808,6 +6829,40 @@ void end_visit (const CommonContent& v, void* /*visit_state*/) {
     break;
   }
   }
+}
+
+
+void *begin_visit (const DirCommentConstructor& v) 
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const DirCommentConstructor& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+
+  xqpString str = v.get_comment();
+  expr_t content = new const_expr (cb->m_cur_sctx, loc, str);
+  nodestack.push (new text_expr(cb->m_cur_sctx, loc,
+                                text_expr::comment_constructor,
+                                content));
+}
+
+void *begin_visit (const DirPIConstructor& v) {
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit (const DirPIConstructor& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+  xqp_string target_str = v.get_pi_target ();
+  if (target_str.uppercase () == "XML")
+    ZORBA_ERROR_LOC ( XPST0003, loc);
+  expr_t
+    target = new const_expr (cb->m_cur_sctx, loc, target_str),
+    content = new const_expr (cb->m_cur_sctx, loc, v.get_pi_content ());
+  nodestack.push (new pi_expr (cb->m_cur_sctx, loc, target,  content));
 }
 
 
@@ -5147,275 +7202,11 @@ void reorder_globals () {
 
 
 
-void *begin_visit (const FunctionCall& v) {
-  TRACE_VISIT ();
-  rchandle<QName> qn_h = v.get_fname();
-  string prefix = qn_h->get_prefix();
-  string fname = qn_h->get_localname();
-  store::Item_t qname = sctx_p->lookup_fn_qname(prefix, fname, loc);
-  string key = "F" + static_context::qname_internal_key (qname);
-  if (! prolog_vf_key.empty())
-    add_multimap_value (thePrologDeps, prolog_vf_key, key);
-  nodestack.push(NULL);
-  return no_state;
-}
-
-void end_visit (const FunctionCall& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-
-  vector<expr_t> arguments;
-  while (true) 
-  {
-    expr_t e_h = pop_nodestack();
-    if (e_h == NULL)
-      break;
-    arguments.push_back(e_h);
-  }
-  int sz = arguments.size ();
-
-  rchandle<QName> qn_h = v.get_fname();
-  string prefix = qn_h->get_prefix();
-  string fname = qn_h->get_localname();
-
-  const xqpStringStore *fn_ns = sctx_p->lookup_fn_qname(prefix, fname, loc)->getNamespace ();
-
-  if (fn_ns->byteEqual(XQUERY_FN_NS)) {
-    if (fname == "position" && sz == 0)  {
-      nodestack.push (lookup_ctx_var(DOT_POS_VARNAME, loc).getp());
-      return;
-    } else if (fname == "last" && sz == 0) {
-      nodestack.push(lookup_ctx_var(LAST_IDX_VARNAME, loc).getp());
-      return;
-    } else if (fname == "number") {
-      switch (sz) 
-      {
-      case 0:
-        arguments.push_back (DOT_VAR);
-        break;
-      case 1:
-        break;
-      default:
-        ZORBA_ERROR_LOC_PARAM( XPST0017, loc, "fn:number", sz );
-      }
-
-      varref_t tv = tempvar (loc, var_expr::let_var);
-
-      expr_t nan_expr = new const_expr (cb->m_cur_sctx, loc, xqp_double::nan ());
-
-      expr_t ret = new if_expr (cb->m_cur_sctx, loc,
-                                new castable_expr (cb->m_cur_sctx, loc,
-                                                   &*tv,
-                                                   GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
-                                new cast_expr (cb->m_cur_sctx, loc,
-                                               &*tv,
-                                               GENV_TYPESYSTEM.DOUBLE_TYPE_ONE),
-                                nan_expr);
-
-      expr_t data_expr = wrap_in_atomization (arguments [0]);
-
-      nodestack.push(&*wrap_in_let_flwor(new treat_expr(cb->m_cur_sctx, loc,
-                                                        data_expr,
-                                                        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-                                                        XPTY0004),
-                                         tv,
-                                         ret));
-      return;
-    }
-    else if (sz == 0 && xquery_fns_def_dot.find (fname) != xquery_fns_def_dot.end ()) {
-      arguments.push_back (DOT_VAR);
-    } else if (fname == "static-base-uri") {
-      if (sz != 0)
-        ZORBA_ERROR_LOC_PARAM( XPST0017, loc, "fn:static-base-uri", sz );
-
-      xqp_string baseuri = sctx_p->final_baseuri ();
-      if (baseuri.empty ())
-        nodestack.push (create_seq (loc));
-      else
-        nodestack.push (new cast_expr (cb->m_cur_sctx, loc,
-                                       new const_expr (cb->m_cur_sctx, loc, baseuri),
-                                       GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
-      return;
-    }
-    else if (fname == "id")
-    {
-      if (sz == 1)
-        arguments.insert(arguments.begin(), DOT_VAR);
-
-      expr_t idsExpr = arguments[1];
-
-      rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(idsExpr, false);
-
-      for_clause* fc = reinterpret_cast<for_clause*>((*flworExpr.getp())[0]);
-      expr* flworVarExpr = fc->get_var();
-
-      rchandle<fo_expr> normExpr;
-      rchandle<fo_expr> tokenExpr;
-      rchandle<const_expr> constExpr = new const_expr(cb->m_cur_sctx, loc, xqpString(" " ));
-
-      normExpr = new fo_expr(cb->m_cur_sctx, loc, LOOKUP_FN("fn", "normalize-space", 1));
-      normExpr->add(flworVarExpr);
-      tokenExpr = new fo_expr(cb->m_cur_sctx, loc, LOOKUP_FN("fn", "tokenize", 2));
-      tokenExpr->add(normExpr.getp());
-      tokenExpr->add(constExpr.getp());
-
-      flworExpr->set_return_expr(tokenExpr.getp());
-
-      pop_scope();
-
-      arguments[1] = flworExpr;
-    }
-    else if (sz == 1 && (fname == "lang" || fname == "idref")) 
-    {
-      arguments.insert(arguments.begin(), DOT_VAR);
-    } 
-    else if (sz == 1 && fname == "resolve-uri") {
-#if 0  // even if the base-uri is not declared in the prolog, we have a default
-      if (! hadBUriDecl)
-        ZORBA_ERROR (FONS0005);
-      else
-#endif
-        arguments.insert (arguments.begin (), new const_expr (cb->m_cur_sctx, loc, sctx_p->final_baseuri()));
-    } else if (sz == 1 && fname == "parse") {
-      arguments.insert (arguments.begin (), new const_expr (cb->m_cur_sctx, loc, sctx_p->final_baseuri()));
-    } else if (fname == "concat") {
-      if (sz < 2)
-        ZORBA_ERROR_LOC_PARAM (XPST0017, loc, "concat", to_string (sz));
-    } else if (fname == "doc") {
-      if (sz > 0) {
-        expr_t  doc_uri = arguments[0];
-        //validate uri
-        if(doc_uri->get_expr_kind() == const_expr_kind)
-        {
-          const_expr  *const_uri = reinterpret_cast<const_expr*>(doc_uri.getp());
-          store::Item_t uri_value = const_uri->get_val();
-          xqpStringStore_t   uri_string = uri_value->getStringValue();
-          try{
-            xqpString   xqp_uri_string(uri_string);
-            //xqpString   xqp_base_uri("http://website/");
-            //URI   baseURI(xqp_base_uri, false);
-            if(uri_string->indexOf(":/") >= 0)
-            {
-              URI   docURI(xqp_uri_string, true);//with validate`
-            }
-          }
-          catch(error::ZorbaError &e)
-          {
-            ZORBA_ERROR_LOC_PARAM(FODC0005, loc, e.toString(), "");
-          }
-        }
-      }
-    }
-  } else if (fn_ns->byteEqual(ZORBA_FN_NS)) {
-    if (fname == "inline-xml" && sz == 1) {
-      nodestack.push (new eval_expr(cb->m_cur_sctx, loc, create_cast_expr (loc, arguments [0], GENV_TYPESYSTEM.STRING_TYPE_ONE, true)));
-      return;
-    }
-  }
-
-  sz = arguments.size ();  // recompute size
-
-  // try constructor functions
-  xqtref_t type = CTXTS->create_named_type(sctx_p->lookup_elem_qname(prefix, fname, loc),
-                                           TypeConstants::QUANT_QUESTION);
-
-  if (type != NULL) 
-  {
-    if (sz != 1
-        || TypeOps::is_equal (*type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION)
-        || TypeOps::is_equal (*type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
-      ZORBA_ERROR_LOC_PARAM( XPST0017,  loc, prefix + ":" + fname, sz);
-
-    nodestack.push (create_cast_expr (loc, arguments [0], type, true));
-  }
-  else 
-  {  // a real function
-      function *f = LOOKUP_FN (prefix, fname, sz);
-      if (f == NULL)
-        ZORBA_ERROR_LOC_PARAM (XPST0017, loc, (prefix.empty () ? prefix : (prefix + ":")) + fname, to_string (sz));
-
-      if (NULL != dynamic_cast<user_function *> (f)) {
-        if (! fn_decl_stack.empty ()) {
-          user_function *udf = dynamic_cast<user_function *> (fn_decl_stack.back ());
-          ZORBA_ASSERT (udf != NULL);
-          udf->setLeaf (false);
-          // cout << "UDF " << udf->get_fname ()->getStringValue () << " non-leaf due to " << f->get_fname ()->getStringValue () << endl;
-        }
-      }
-
-      rchandle<fo_expr> fo_h = new fo_expr (cb->m_cur_sctx, loc, f);
-
-      // TODO this should be a const iterator
-      vector<expr_t>::reverse_iterator iter = arguments.rbegin();
-      for(; iter != arguments.rend(); ++iter)
-        fo_h->add(*iter);
-#ifdef ZORBA_DEBUGGER
-      if ( cb->m_debugger != 0 ) {
-        rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(cb->m_cur_sctx, loc, &*fo_h, theScopedVariables, thePrologVars);
-        nodestack.push(&*lDebuggerExpr);
-      } else {
-        nodestack.push(&*fo_h);
-      }
-#else
-      nodestack.push(&*fo_h);
-#endif
-  }
-}
-
 
 /*******************************************************************************
 
 
 ********************************************************************************/
-
-void *begin_visit (const GeneralComp& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const GeneralComp& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-
-void *begin_visit (const NodeComp& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const NodeComp& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-
-void *begin_visit (const Pragma& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const Pragma& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
- // may raise XPST0081
- sctx_p->lookup_ns (v.get_name ()->get_prefix (), loc);
-}
-
-void *begin_visit (const PragmaList& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const PragmaList& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-
-void *begin_visit (const SignList& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const SignList& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
 
 
 void *begin_visit (const SingleType& v) {
@@ -5438,377 +7229,6 @@ void *begin_visit (const TypeName& v) {
 
 void end_visit (const TypeName& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-}
-
-
-void *begin_visit (const ValueComp& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const ValueComp& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-
-void *begin_visit (const AdditiveExpr& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const AdditiveExpr& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-  rchandle<expr> e1_h = pop_nodestack();
-  rchandle<expr> e2_h = pop_nodestack();
-  function *func = NULL;
-  switch (v.get_add_op()) {
-  case ParseConstants::op_plus:
-    func = LOOKUP_OP2 ("add");
-    break;
-  case ParseConstants::op_minus:
-    func = LOOKUP_OP2 ("subtract");
-    break;
-  }
-  fo_expr *fo_h = new fo_expr(cb->m_cur_sctx, loc, func);
-  fo_h->add(e2_h);
-  fo_h->add(e1_h);
-  nodestack.push (fo_h);
-}
-
-
-void *begin_visit (const AndExpr& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const AndExpr& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-  rchandle<expr> e1_h = pop_nodestack();
-  rchandle<expr> e2_h = pop_nodestack();
-  fo_expr *fo_h = new fo_expr(cb->m_cur_sctx, loc, LOOKUP_OPN ("and"));
-  fo_h->add(e2_h);
-  fo_h->add(e1_h);
-  nodestack.push (fo_h);
-}
-
-
-/// Creates a cast_expr or castable_expr.
-expr_t create_cast_expr (const QueryLoc& loc, expr_t node, xqtref_t type, bool isCast) {
-  if (TypeOps::is_equal (*type, *GENV_TYPESYSTEM.NOTATION_TYPE_ONE)
-      || TypeOps::is_equal (*type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION)
-      || TypeOps::is_equal (*type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE)
-      || TypeOps::is_equal (*type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
-    ZORBA_ERROR_LOC (XPST0080, loc);
-
-  if (! TypeOps::is_equal (*type, *GENV_TYPESYSTEM.QNAME_TYPE_ONE)
-      && ! TypeOps::is_equal (*type, *GENV_TYPESYSTEM.QNAME_TYPE_QUESTION)) 
-  {
-    if (isCast)
-      return new cast_expr (cb->m_cur_sctx, loc, node, type);
-    else
-      return new castable_expr (cb->m_cur_sctx, loc, node, type);
-  }
-  else 
-  {  // a QName cast
-    const const_expr *ce = node.dyn_cast<const_expr> ().getp();
-    if (ce != NULL
-        && TypeOps::is_equal (*CTXTS->create_value_type (ce->get_val ()),
-                              *GENV_TYPESYSTEM.STRING_TYPE_ONE))
-    {
-      store::Item_t castLiteral;
-      try 
-      {
-        xqpStringStore_t strval = ce->get_val()->getStringValue();
-        GenericCast::instance()->castToQName(castLiteral, strval, ns_ctx);
-      }
-      catch (error::ZorbaError& e)
-      {
-        if (isCast) {
-          throw e;
-        } else {
-          if (e.theErrorCode == FORG0001)
-            ZORBA_ERROR_LOC(XPST0003, loc);
-          else
-            ZORBA_ERROR_LOC(XPST0081, loc);
-        }
-      }
-      assert (castLiteral != NULL || ! isCast);
-      if (isCast)
-        return new const_expr (cb->m_cur_sctx, loc, castLiteral);
-      else
-        return new const_expr (cb->m_cur_sctx, loc, castLiteral != NULL);
-    } else {
-      if (isCast)
-        return new treat_expr (cb->m_cur_sctx, loc, node, type, XPTY0004);
-      else
-        return new instanceof_expr (cb->m_cur_sctx, loc, node, type);
-    }
-  }
-}
-
-
-void *begin_visit (const CastExpr& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const CastExpr& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-  nodestack.push (create_cast_expr (loc, pop_nodestack (), pop_tstack (), true));
-}
-
-void *begin_visit (const CastableExpr& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const CastableExpr& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-  nodestack.push (create_cast_expr (loc, pop_nodestack (), pop_tstack (), false));
-}
-
-
-void *begin_visit (const ComparisonExpr& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const ComparisonExpr& v, void* /*visit_state*/) {
-#define M( pc, op ) case ParseConstants::pc: f = LOOKUP_OP2 (op); break;
-
-  TRACE_VISIT_OUT ();
-
-  function *f = NULL;
-  if (v.get_gencomp()!=NULL) {
-    switch (v.get_gencomp()->get_type()) {
-    M (op_eq, "equal");
-    M (op_ne, "not-equal");
-    M (op_lt, "less");
-    M (op_le, "less-equal");
-    M (op_gt, "greater");
-    M (op_ge, "greater-equal");
-    }
-  } else if (v.get_valcomp () != NULL) {
-    switch (v.get_valcomp()->get_type()) {
-    M (op_val_eq, "value-equal");
-    M (op_val_ne, "value-not-equal");
-    M (op_val_lt, "value-less");
-    M (op_val_le, "value-less-equal");
-    M (op_val_gt, "value-greater");
-    M (op_val_ge, "value-greater-equal");
-    }
-  } else if (v.get_nodecomp()!=NULL) {
-    switch (v.get_nodecomp()->get_type()) {
-    M (op_is, "is-same-node");
-    M (op_precedes, "node-before");
-    M (op_follows, "node-after");
-    }
-  }
-
-  fo_expr *fo_p = new fo_expr(cb->m_cur_sctx, loc, f);
-
-  rchandle<expr> e1_h = pop_nodestack();
-  rchandle<expr> e2_h = pop_nodestack();;
-  fo_p->add(e2_h);
-  fo_p->add(e1_h);
-  nodestack.push(fo_p);
-
-#undef M
-}
-
-
-
-void *begin_visit (const ContextItemExpr& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const ContextItemExpr& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-  var_expr *e = static_cast<var_expr *> (DOT_VAR);
-  e->set_loc(loc);
-  nodestack.push(e);
-}
-
-
-void *begin_visit (const ExtensionExpr& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const ExtensionExpr& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-  if (v.get_expr () == NULL)
-    ZORBA_ERROR_LOC( XQST0079, loc);
-}
-
-
-void *begin_visit (const IfExpr& v) {
-  TRACE_VISIT ();
-  // nothing to do here
-  return no_state;
-}
-
-void end_visit (const IfExpr& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-  expr_t e_h = pop_nodestack ();
-  expr_t t_h = pop_nodestack ();
-  expr_t c_h = pop_nodestack ();
-
-  if (c_h->is_updating()) {
-    ZORBA_ERROR_LOC(XUST0001, loc);
-  }
-
-  update_type_anding(t_h->get_update_type(), 
-                           e_h->get_update_type(),
-                           loc);
-
-#ifdef ZORBA_DEBUGGER
-  if (cb->m_debugger != 0) {
-    c_h = new debugger_expr(cb->m_cur_sctx, c_h->get_loc(), c_h, theScopedVariables, thePrologVars);
-    t_h = new debugger_expr(cb->m_cur_sctx, t_h->get_loc(), t_h, theScopedVariables, thePrologVars);
-    e_h = new debugger_expr(cb->m_cur_sctx, e_h->get_loc(), e_h, theScopedVariables, thePrologVars);
-  }
-#endif
-  if_expr *lIfExpr = new if_expr(cb->m_cur_sctx, loc,c_h,t_h,e_h);
-  nodestack.push(lIfExpr);
-}
-
-
-void *begin_visit (const InstanceofExpr& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const InstanceofExpr& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-  nodestack.push(new instanceof_expr(cb->m_cur_sctx, loc, pop_nodestack(), pop_tstack()));
-}
-
-
-void *begin_visit (const IntersectExceptExpr& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const IntersectExceptExpr& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-
-  rchandle<expr> e1_h = pop_nodestack ();
-  rchandle<expr> e2_h = pop_nodestack ();
-  function *f = NULL;
-  switch (v.get_intex_op()) {
-  case ParseConstants::op_intersect:
-    f = LOOKUP_OP2 ("intersect");
-    break;
-  case ParseConstants::op_except:
-    f = LOOKUP_OP2 ("except");
-    break;
-  }
-
-  fo_expr *fo_h = new fo_expr(cb->m_cur_sctx, loc, f);
-
-  fo_h->add(e2_h);
-  fo_h->add(e1_h);
-  nodestack.push(new fo_expr (cb->m_cur_sctx, loc, LOOKUP_OP1 ("sort-distinct-nodes-asc"), fo_h));
-}
-
-void *begin_visit (const MultiplicativeExpr& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const MultiplicativeExpr& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-  rchandle<expr> e1_h = pop_nodestack ();
-  rchandle<expr> e2_h = pop_nodestack ();
-  function *f = NULL;
-  switch (v.get_mult_op()) {
-  case ParseConstants::op_mul:
-    f = LOOKUP_OP2 ("multiply");
-    break;
-  case ParseConstants::op_div:
-    f = LOOKUP_OP2 ("divide");
-    break;
-  case ParseConstants::op_idiv:
-    f = LOOKUP_OP2 ("integer-divide");
-    break;
-  case ParseConstants::op_mod:
-    f = LOOKUP_OP2 ("mod");
-    break;
-  }
-  fo_expr *fo_h = new fo_expr(cb->m_cur_sctx, loc, f);
-  fo_h->add(e2_h);
-  fo_h->add(e1_h);
-  nodestack.push (fo_h);
-}
-
-void *begin_visit (const NumericLiteral& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const NumericLiteral& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-  switch (v.get_type()) {
-  case ParseConstants::num_integer: {
-    nodestack.push(new const_expr(cb->m_cur_sctx, loc, v.get<xqp_integer>()));
-    break;
-  }
-  case ParseConstants::num_decimal: {
-    nodestack.push(new const_expr(cb->m_cur_sctx, loc, v.get<xqp_decimal>()));
-    break;
-  }
-  case ParseConstants::num_double: {
-    nodestack.push(new const_expr(cb->m_cur_sctx, loc, v.get<xqp_double>()));
-    break;
-  }
-  }
-}
-
-void *begin_visit (const OrExpr& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const OrExpr& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-  rchandle<expr> e1_h = pop_nodestack();
-  rchandle<expr> e2_h = pop_nodestack();
-  fo_expr *fo_p = new fo_expr(cb->m_cur_sctx, loc, CACHED (op_or, LOOKUP_OPN ("or")));
-  fo_p->add(e2_h);
-  fo_p->add(e1_h);
-  nodestack.push (fo_p);
-}
-
-void *begin_visit (const OrderedExpr& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const OrderedExpr& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-  nodestack.push (new order_expr (cb->m_cur_sctx, loc, order_expr::ordered,
-                                  pop_nodestack ()));
-}
-
-
-void *begin_visit (const ParenthesizedExpr& v) {
-  TRACE_VISIT ();
-  nodestack.push(NULL);
-  return no_state;
-}
-
-void end_visit (const ParenthesizedExpr& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-  expr_t expr = pop_nodestack();
-  if (expr != NULL) {
-    pop_nodestack();
-    nodestack.push(expr);
-  } else {
-    fo_expr* lSeq = create_seq (loc);
-    nodestack.push(lSeq);
-  }
 }
 
 
@@ -5899,118 +7319,9 @@ void end_visit (const ItemType& v, void* /*visit_state*/) {
 
 /*******************************************************************************
 
-  NodeTest (NameTest | KindTest)
+   KindTest
 
 ********************************************************************************/
-void *begin_visit (const NameTest& v) 
-{
-  TRACE_VISIT ();
-  return no_state;
-}
-
-
-void end_visit (const NameTest& v, void* /*visit_state*/) 
-{
-  TRACE_VISIT_OUT ();
-
-  expr *top = &*nodestack.top();
-
-  axis_step_expr *axisExpr = NULL;
-  trycatch_expr *tce = NULL;
-
-  if ((axisExpr = dynamic_cast<axis_step_expr *>(top)) != NULL) 
-  {
-    // Construct name-test match expr
-    rchandle<match_expr> matchExpr = new match_expr(cb->m_cur_sctx, loc);;
-    matchExpr->setTestKind(match_name_test);
-
-    if (v.getQName() != NULL) 
-    {
-      string qname = v.getQName()->get_qname();
-      store::Item_t qn_h = (axisExpr->getAxis () == axis_kind_attribute ?
-                            sctx_p->lookup_qname("", qname, v.getQName()->get_location()) :
-                            sctx_p->lookup_elem_qname(qname, v.getQName()->get_location()));
-      matchExpr->setQName(qn_h);
-    }
-    else 
-    {
-      rchandle<Wildcard> wildcard = v.getWildcard();
-      ZORBA_ASSERT(wildcard != NULL);
-
-      switch (wildcard->getKind())
-      {
-      case ParseConstants::wild_all:
-      {
-        matchExpr->setWildKind(match_all_wild);
-        break;
-      }
-      case ParseConstants::wild_elem:
-      {
-        matchExpr->setWildKind(match_name_wild);
-        matchExpr->setWildName(wildcard->getPrefix());
-
-        string qname = wildcard->getPrefix() + ":wildcard";
-
-        store::Item_t qn_h = (axisExpr->getAxis () == axis_kind_attribute ?
-                              sctx_p->lookup_qname("", qname, wildcard->get_location()) :
-                              sctx_p->lookup_elem_qname(qname, wildcard->get_location()));
-        matchExpr->setQName(qn_h);
-        break;
-      }
-      case ParseConstants::wild_prefix:
-      {
-        matchExpr->setWildKind(match_prefix_wild);
-        matchExpr->setWildName(wildcard->getLocalName());
-        break;
-      }
-      }
-    }
-
-    // add the match expression
-    axisExpr->setTest(matchExpr);
-  }
-  else if ((tce = dynamic_cast<trycatch_expr *>(top)) != NULL) 
-  {
-    catch_clause *cc = &*(*tce)[0];
-    if (v.getQName() != NULL) 
-    {
-      string qname = v.getQName()->get_qname();
-      store::Item_t qn_h = sctx_p->lookup_elem_qname (qname, loc);
-      cc->add_nametest_h(new NodeNameTest(qn_h));
-    }
-    else
-    {
-      rchandle<Wildcard> wildcard = v.getWildcard();
-      ZORBA_ASSERT(wildcard != NULL);
-
-      switch (wildcard->getKind())
-      {
-        case ParseConstants::wild_all:
-          cc->add_nametest_h(new NodeNameTest(NULL, NULL));
-          break;
-        case ParseConstants::wild_elem:
-          cc->add_nametest_h(new NodeNameTest(NULL, wildcard->getPrefix().theStrStore));
-          break;
-        case ParseConstants::wild_prefix:
-          cc->add_nametest_h(new NodeNameTest(wildcard->getLocalName().theStrStore, NULL));
-          break;
-      }
-    }
-  } else {
-    ZORBA_ASSERT(false);
-  }
-}
-
-
-void *begin_visit (const Wildcard& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-
-void end_visit (const Wildcard& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
 
 
 void *begin_visit (const QName& v) {
@@ -6416,831 +7727,6 @@ void end_visit (const PITest& v, void* /*visit_state*/)
       tstack.push (t);
     }
   }
-}
-
-
-/*******************************************************************************
-
-  Path Expressions
-
-  The syntax tree for a generic PathExpr looks like this:
-
-       PathExpr
-           |
-         rpe1
-        /    \
-      step1  rpe2
-            /    \
-          step2  rpe3
-                /    \
-              step3  step4
-
-  In general, rpe-i says how step-i is connected with step-(i+1), i.e. with / or //.
-
-  The root PathExpr node says whether the path expr starts with a / or // or an
-  input step expr. In particular, the type of PathExpr can be one of the following:
-
-  1. path_leading_lone_slash (/)
-  2. path_leading_slash      (/...)
-  3. path_leading_slashslash (//...)
-  4. path_relative           (source_expr/...)
-
-  In case 1, the PathExpr does not have any child node.
-
-  Cases 2 and 3 are treated as if the syntax tree was like this:
-
-       PathExpr
-           |
-         rpe0
-        /    \
-      step0  rpe1
-            /    \
-          step1  rpe2
-                /    \
-              step2  rpe3
-                    /    \
-                 step3  step4
-
-  where, the type of PathExpr is path_relative, rpe0 designates a "/", and
-  step0 is either
-  fn:root(./self::node()) in case 2, or 
-  fn:root(./self::node())/descendant-or-self::node() in case 3.
-
-********************************************************************************/
-void *begin_visit (const PathExpr& v) 
-{
-  TRACE_VISIT();
-
-  const PathExpr& pe = v;
-
-  ParseConstants::pathtype_t pe_type = pe.get_type();
-
-  expr_t result;
-  rchandle<relpath_expr> path_expr = NULL;
-
-  // Put a NULL in the stack to mark the beginning of a PathExp tree.
-  nodestack.push(NULL);
-
-  // In cases 2, 3, and 4 create a new relpath_expr, which will be put to the nodestack.
-  if (pe_type != ParseConstants::path_leading_lone_slash) 
-  {
-    path_expr = new relpath_expr(cb->m_cur_sctx, loc);
-
-    result = path_expr.getp();
-  }
-
-  // If path expr starts with / or // (cases 1, 2, or 3), create an expr
-  // R = fn:root(./self::node()). 
-  //
-  // In case 1, just push R to the nodestack.
-  //
-  // In case 2, put relpath_expr(R) to the nodestact 
-  //
-  // In case 3, put relpath_expr(R, descendant-or-self::node()) to the nodestack
-  //
-  // In case 4, put relpath_expr() to the nodestack
-
-  if (pe_type != ParseConstants::path_relative)  
-  {
-    rchandle<relpath_expr> ctx_path_expr = new relpath_expr(cb->m_cur_sctx, loc);
-    ctx_path_expr->add_back(DOT_VAR);
-
-    rchandle<match_expr> me = new match_expr(cb->m_cur_sctx, loc);
-    me->setTestKind(match_anykind_test);
-    rchandle<axis_step_expr> ase = new axis_step_expr(cb->m_cur_sctx, loc);
-    ase->setAxis(axis_kind_self);
-    ase->setTest(me);
-
-    ctx_path_expr->add_back(&*ase);
-
-    rchandle<fo_expr> fo = new fo_expr(cb->m_cur_sctx, loc, LOOKUP_FN("fn", "root", 1));
-    fo->add(&*ctx_path_expr);
-
-    result = fo.getp();
-
-    if (path_expr != NULL) 
-    {
-      path_expr->add_back(&*fo);
-      result = path_expr.getp();
-    }
-
-    if (pe_type == ParseConstants::path_leading_slashslash) 
-    {
-      rchandle<axis_step_expr> ase = new axis_step_expr(cb->m_cur_sctx, loc);
-      rchandle<match_expr> me = new match_expr(cb->m_cur_sctx, loc);
-      me->setTestKind(match_anykind_test);
-      ase->setAxis(axis_kind_descendant_or_self);
-      ase->setTest(me);
-
-      path_expr->add_back(&*ase);
-    }
-  }
-
-  nodestack.push(result.getp());
-  return no_state;
-}
-
-
-void end_visit (const PathExpr& v, void* /*visit_state*/) 
-{
-  TRACE_VISIT_OUT ();
-
-  expr_t arg2 = pop_nodestack();
-  expr_t arg1 = pop_nodestack();
-
-  ZORBA_ASSERT(arg1 == NULL);
-
-  nodestack.push(wrap_in_dos_and_dupelim(arg2, true));
-}
-
-
-void* begin_visit(const RelativePathExpr& v)
-{
-  TRACE_VISIT ();
-
-  const RelativePathExpr& rpe = v;
-  rchandle<exprnode> step = rpe.get_step_expr();
-  ZORBA_ASSERT(step != NULL);
-  AxisStep* axisStep = step.dyn_cast<AxisStep>();
-
-  // Let rpe be the i-th rpe in the Path Tree. Then i > 0, and pathExpr represents
-  // the translation of step-0/step-1/.../step-(i-1)/. 
-  expr_t e = pop_nodestack();
-  relpath_expr* pathExpr = e.dyn_cast<relpath_expr>();
-  ZORBA_ASSERT(pathExpr != NULL);
-
-  // If case 4 and i = 1, then there is no step0 and pathExpr is empty.
-  if (pathExpr->size() == 0) 
-  {
-    if (axisStep != NULL) 
-    {
-      pathExpr->add_back(DOT_VAR);
-
-      if (axisStep->get_predicate_list() == NULL) 
-      {
-        // The path expr is of the form "axis::test/....". We push 
-        // [ pathExpr(.) ] to the nodestack. 
-        nodestack.push(pathExpr);
-      }
-      else 
-      {
-        // The path expr is of the form "axis::test[pred]/....". We push
-        // [ for $$dot at $$pos in pathExpr(.) ]  to the nodestack.
-        rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(pathExpr, false);
-        nodestack.push(flworExpr.getp());
-      }
-    }
-    else 
-    {
-      // The path expr is of the form "source_expr/....". We push 
-      // pathExpr() to the nodestack. 
-      nodestack.push(pathExpr);
-    }
-  }
-
-  // Else if step-i is an axis step with no repdicates, just put pathExpr(...)
-  // back in the stack.
-  else if (axisStep != NULL && axisStep->get_predicate_list() == NULL) 
-  {
-    nodestack.push(pathExpr);
-  }
-
-  // Else, step-i is an axis step with predicates or a filter expr, and 
-  // is not the very 1st step in the path expr. In this case, pathExpr becomes
-  // the input to a new flwor expr that will compute, once for each node in
-  // pathExpr, the next step in the path. In particular, the following expr
-  // is pushed to the stack:
-  //
-  // [ for $$dot at $$pos in sort-distinct(pathExpr) ]
-  else 
-  {
-    expr_t inputExpr = wrap_in_dos_and_dupelim(pathExpr, false);
-    rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(inputExpr, false);
-    nodestack.push(flworExpr.getp());
-  }
-
-  return no_state;
-}
-
-
-void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
-{
-  const QueryLoc& loc = rpe.get_location();
-
-  // Let rpe be the i-th rpe in the Path Tree. This method is called after having
-  // translated step-i, but before starting the translation of rpe-(i+1).
-
-  // There were 2 exprs in the stack: stepExpr is the expr for step-i and curExpr
-  // is the expr we have constructed so far for the ancestors of rpe-i. CurExpr
-  // is either a path expr or a flwor expr.
-  expr_t stepExpr = pop_nodestack();
-  expr_t curExpr = pop_nodestack();
-  relpath_expr* pathExpr = curExpr.dyn_cast<relpath_expr>();
-  flwor_expr* flworExpr = curExpr.dyn_cast<flwor_expr>();
-
-  // If curExpr is a path expr, step-i was an axis step with no predicates, or
-  // the path expr is of the form "source_expr/...." and i = 1.
-  if (pathExpr != NULL) 
-  {
-    axis_step_expr* axisExpr = stepExpr.dyn_cast<axis_step_expr>();
-    ZORBA_ASSERT(axisExpr != NULL || pathExpr->size() == 0);
-
-    pathExpr->add_back(stepExpr);
-  }
-
-  // Else, step-i was not an axis step, or it contained predicates. In this
-  // case, translation of step-i resulted in a flwor expr that includes step-i
-  // and all the ancestors of rpe-i. We create a new path_expr and make the
-  // flwor expr its 1st step (i.e. flwor/.... or flwor/descendant-or-sef/...)
-  else 
-  {
-    ZORBA_ASSERT(flworExpr != NULL);
-
-    flworExpr->set_return_expr(stepExpr);
-    pop_scope();
-
-    pathExpr = new relpath_expr(cb->m_cur_sctx, loc);
-    pathExpr->add_back(flworExpr);
-  }
-
-  // Convert // to /descendant-or-self::node()/
-  if (rpe.get_step_type() == ParseConstants::st_slashslash)
-  {
-    rchandle<axis_step_expr> ase = new axis_step_expr(cb->m_cur_sctx, loc);
-    rchandle<match_expr> me = new match_expr(cb->m_cur_sctx, loc);
-    me->setTestKind(match_anykind_test);
-    ase->setAxis(axis_kind_descendant_or_self);
-    ase->setTest(me);
-    pathExpr->add_back(ase.getp());
-  }
-
-  rchandle<exprnode> child2 = rpe.get_relpath_expr();
-  ZORBA_ASSERT(child2 != NULL);
-  AxisStep* axisStep = child2.dyn_cast<AxisStep>();
-
-  // If the second child of rpe-i is another rpe or an axis step with no
-  // predicates, then we push the current path_expr to the stack.
-  if (child2.dyn_cast<RelativePathExpr>() != NULL ||
-      (axisStep != NULL && axisStep->get_predicate_list() == NULL))
-  {
-    nodestack.push(pathExpr);
-  }
-
-  // Else we have reached the last step of the Path Tree, and this step is a
-  // filter step or an axis step with predicates. In this case, pathExpr
-  // becomes the input to a new flwor expr that will compute, once for each
-  // node in pathExpr, the next step in the path. The flwor is pushed to the
-  // nodestack.
-  else 
-  {
-    expr_t inputSeqExpr = wrap_in_dos_and_dupelim(pathExpr, false);
-    rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(inputSeqExpr, false);
-    nodestack.push(flworExpr.getp());
-  }
-}
-
-
-void end_visit (const RelativePathExpr& v, void* /*visit_state*/) 
-{
-  TRACE_VISIT_OUT ();
-
-  const RelativePathExpr& rpe = v;
-  rchandle<exprnode> child2 = rpe.get_relpath_expr();
-
-  // If rpe-i is not the bottom rpe in the Path Tree, there is nothing to be done.  
-  if (child2.dyn_cast<RelativePathExpr>() != NULL)
-    return;
-
-  // There were 2 exprs in the stack: stepExpr is the expr for step-(i+1) and 
-  // curExpr is the expr we have constructed so far for step-i and the ancestors
-  // of rpe-i. CurExpr is either a path expr or a flwor expr.
-  expr_t stepExpr = pop_nodestack();
-  expr_t curExpr = pop_nodestack();
-
-  relpath_expr* pathExpr = curExpr.dyn_cast<relpath_expr>();
-  flwor_expr* flworExpr = curExpr.dyn_cast<flwor_expr>();
-
-  // If curExpr is a path expr, step-(i+1) was an axis step with no predicates.
-  if (pathExpr != NULL) 
-  {
-    axis_step_expr* axisExpr = stepExpr.dyn_cast<axis_step_expr>();
-    ZORBA_ASSERT(axisExpr != NULL);
-
-    pathExpr->add_back(stepExpr);
-    nodestack.push(pathExpr);
-  }
-  else
-  {
-    ZORBA_ASSERT(flworExpr != NULL);
-    ZORBA_ASSERT(stepExpr != NULL);
-
-    flworExpr->set_return_expr(stepExpr);
-    pop_scope();
-
-    nodestack.push(flworExpr);
-  }
-}
-
-
-/*******************************************************************************
-
-  StepExpr ::= AxisStep  |  FilterExpr
-
-  AxisStep ::= (ForwardStep | ReverseStep)  PredicateList?
-
-  FilterExpr ::= PrimaryExpr  PredicateList?
-
-********************************************************************************/
-
-void* begin_visit(const FilterExpr& v)
-{
-  TRACE_VISIT ();
-
-  return no_state;
-}
-
-
-void post_primary_visit(const FilterExpr& v, void* /*visit_state*/)
-{
-  // This method is called from FilterExpr::accept() after the primary expr is
-  // translated, but before the associated predicate list is translated.
-
-  if (!v.isPathStep())
-    return;
-
-  PredicateList* pl = v.get_pred_list().getp();
-
-  ZORBA_ASSERT(pl != NULL && pl->size() > 0);
-
-  expr_t primaryExpr = pop_nodestack();
-  expr_t e = pop_nodestack();
-  flwor_expr* flworExpr = e.dyn_cast<flwor_expr>();
-
-  if (flworExpr != NULL) 
-  {
-    // for each item in the input seq compute the input seq for the pred
-    // (= outer_dot/primaryExpr)
-#if 0
-    const QueryLoc& loc = v.get_location();
-
-    const for_clause* fcOuterDot =
-      reinterpret_cast<const for_clause*>((*flworExpr)[0]);
-    if (primaryExpr->get_expr_kind() == axis_step_expr_kind) 
-    {
-      rchandle<relpath_expr> pathStepExpr = new relpath_expr(loc);
-      pathStepExpr->add_back(fcOuterDot->get_var());
-      pathStepExpr->add_back(primaryExpr.getp());
-      primaryExpr = pathStepExpr.getp();
-    }
-#endif
-
-    let_clause_t lcPredSeq = wrap_in_letclause(primaryExpr.getp());
-
-    flworExpr->add_clause(lcPredSeq);
-
-    nodestack.push(flworExpr);
-    nodestack.push(lcPredSeq->get_var());
-  }
-  else
-  {
-     relpath_expr* pathExpr = e.dyn_cast<relpath_expr>();
-     ZORBA_ASSERT(pathExpr != NULL && pathExpr->size() == 0);
-
-     nodestack.push(pathExpr);
-     nodestack.push(primaryExpr);
-  }
-}
-
-
-void end_visit (const FilterExpr& v, void* /*visit_state*/) 
-{
-  TRACE_VISIT_OUT();
-}
-
-
-void* begin_visit(const AxisStep& v)
-{
-  TRACE_VISIT ();
-
-  rchandle<axis_step_expr> ase = new axis_step_expr(cb->m_cur_sctx, loc);
-  nodestack.push(ase.getp());
-  return no_state;
-}
-
-
-void post_axis_visit(const AxisStep& v, void* /*visit_state*/)
-{
-  // This method is called from AxisStep::accept() after the step itself is
-  // translated, but before the associated predicate list (if any) is translated.
-
-  PredicateList* pl = v.get_predicate_list().getp();
-
-  // Nothing to do if there are no predicates
-  if (pl == NULL || pl->size() == 0)
-    return;
-
-  const QueryLoc& loc = v.get_location();
-
-  expr_t e = pop_nodestack();
-  rchandle<axis_step_expr> axisExpr = e.dyn_cast<axis_step_expr>();
-  ZORBA_ASSERT(axisExpr != NULL);
-
-  e = pop_nodestack();
-  flwor_expr* flworExpr = e.dyn_cast<flwor_expr>();
-  ZORBA_ASSERT(flworExpr != NULL);
-
-  axis_kind_t axisKind = axisExpr->getAxis();
-
-  // For each item in the input seq compute the input seq for the preds (i.e.
-  // outer_dot/axisExpr). In particular, the following exprs are pushed to the
-  // nodestack:
-  //
-  // [ for $$dot at $$pos in sort-distinct(pathExpr-(i-1))
-  //   let $$predInput := $$dot/axis::test ]
-  //
-  // [ $$predInput ]
-  const for_clause* fcOuterDot = reinterpret_cast<const for_clause*>((*flworExpr)[0]);
-  rchandle<relpath_expr> predPathExpr = new relpath_expr(cb->m_cur_sctx, loc);
-  predPathExpr->add_back(fcOuterDot->get_var());
-  predPathExpr->add_back(axisExpr.getp());
-    
-  expr_t predInputExpr = predPathExpr;
-  
-  if (axisKind == axis_kind_ancestor ||
-      axisKind == axis_kind_ancestor_or_self ||
-      axisKind == axis_kind_preceding_sibling ||
-      axisKind == axis_kind_preceding)
-  {
-    predInputExpr = wrap_in_dos_and_dupelim(predInputExpr, false, true);
-  }
-
-  rchandle<let_clause> lcPredInput = wrap_in_letclause(predInputExpr.getp());
-
-  flworExpr->add_clause(lcPredInput);
-
-  nodestack.push(flworExpr);
-  nodestack.push(lcPredInput->get_var());
-}
-
-
-void end_visit (const AxisStep& v, void* /*visit_state*/) 
-{
-  TRACE_VISIT_OUT();
-}
-
-
-void *begin_visit (const PredicateList& v) 
-{
-  TRACE_VISIT ();
-  return no_state;
-}
-
-
-void end_visit (const PredicateList& v, void* /*visit_state*/) 
-{
-  TRACE_VISIT_OUT ();
-}
-
-
-void pre_predicate_visit(const PredicateList& v, void* /*visit_state*/)
-{
-  // This method is called from PredicateList::accept(), before calling accept()
-  // on each predicate in the list
-
-  // get the predicate input seq
-  expr_t inputSeqExpr = pop_nodestack();
-
-  rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(inputSeqExpr, true);
-
-  nodestack.push(flworExpr.getp());
-}
-
-
-void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
-{
-  // This method is called from PredicateList::accept(), after calling accept()
-  // on each predicate in the list
-
-  expr_t predExpr = pop_nodestack();
-
-  expr_t f = pop_nodestack();
-  flwor_expr* flworExpr = f.dyn_cast<flwor_expr>();
-  ZORBA_ASSERT(flworExpr != NULL);
-
-  const QueryLoc& loc = predExpr->get_loc();
-
-  let_clause_t lcPred = wrap_in_letclause(predExpr);
-  var_expr* predvar = lcPred->get_var();
-
-  flworExpr->add_clause(lcPred);
-
-  expr_t dotvar = DOT_VAR;
-
-  // Check if the pred expr returns a numeric result
-  rchandle<fo_expr> cond = new fo_expr(cb->m_cur_sctx, loc, CACHED (op_or, LOOKUP_OPN ("or")));
-  cond->add(new instanceof_expr(cb->m_cur_sctx, loc, predvar, GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
-  cond->add(new instanceof_expr(cb->m_cur_sctx, loc, predvar, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
-  cond = new fo_expr(cb->m_cur_sctx, loc, CACHED (op_or, LOOKUP_OPN ("or")), &*cond);
-  cond->add(new instanceof_expr(cb->m_cur_sctx, loc, predvar, GENV_TYPESYSTEM.FLOAT_TYPE_ONE));
-
-  // If so: return $dot if the value of the pred expr is equal to the value
-  // of $dot_pos var, otherwise return the empty seq.
-  rchandle<fo_expr> eq = new fo_expr(cb->m_cur_sctx, loc, LOOKUP_OP2("value-equal"));
-  eq->add(lookup_ctx_var(DOT_POS_VARNAME, loc).getp ());
-  eq->add(predvar);
-
-  expr_t thenExpr = new if_expr(cb->m_cur_sctx, loc, eq.getp(), dotvar, create_seq(loc));
-
-  // Else, return $dot if the the value of the pred expr is true, otherwise
-  // return the empty seq.
-  expr_t elseExpr = new if_expr(cb->m_cur_sctx, loc, predvar, dotvar, create_seq(loc));
-
-  expr_t ifExpr = new if_expr(cb->m_cur_sctx, loc, cond.getp(), thenExpr, elseExpr);
-
-  flworExpr->set_return_expr(ifExpr);
-
-  nodestack.push(flworExpr);
-
-  pop_scope();
-}
-
-
-void *begin_visit (const ForwardStep& v) 
-{
-  TRACE_VISIT ();
-  return no_state;
-}
-
-
-void end_visit (const ForwardStep& v, void* /*visit_state*/) 
-{
-  TRACE_VISIT_OUT ();
-}
-
-
-void *begin_visit (const AbbrevForwardStep& v) 
-{
-  TRACE_VISIT ();
-
-  rchandle<axis_step_expr> ase = expect_axis_step_top ();
-
-  if (v.get_attr_bit()) {
-    ase->setAxis(axis_kind_attribute);
-  } else {
-    ase->setAxis(axis_kind_child);
-  }
-
-  return no_state;
-}
-
-
-void end_visit (const AbbrevForwardStep& v, void* /*visit_state*/) 
-{
-  TRACE_VISIT_OUT ();
-}
-
-
-void *begin_visit (const ForwardAxis& v) 
-{
-  TRACE_VISIT ();
-  return no_state;
-}
-
-
-void end_visit (const ForwardAxis& v, void* /*visit_state*/) 
-{
-  TRACE_VISIT_OUT ();
-
-  rchandle<axis_step_expr> ase = expect_axis_step_top ();
-
-  switch (v.get_axis())
-  {
-  case ParseConstants::axis_child:
-  {
-    ase->setAxis(axis_kind_child);
-    break;
-  }
-  case ParseConstants::axis_descendant:
-  {
-    ase->setAxis(axis_kind_descendant);
-    break;
-  }
-  case ParseConstants::axis_attribute:
-  {
-    ase->setAxis(axis_kind_attribute);
-    break;
-  }
-  case ParseConstants::axis_self:
-  {
-    ase->setAxis(axis_kind_self);
-    break;
-  }
-  case ParseConstants::axis_descendant_or_self:
-  {
-    ase->setAxis(axis_kind_descendant_or_self);
-    break;
-  }
-  case ParseConstants::axis_following_sibling:
-  {
-    ase->setAxis(axis_kind_following_sibling);
-    break;
-  }
-  case ParseConstants::axis_following:
-  {
-    ase->setAxis(axis_kind_following);
-    break;
-  }
-  }
-}
-
-
-void *begin_visit (const ReverseStep& v) 
-{
-  TRACE_VISIT ();
-  return no_state;
-}
-
-
-void end_visit (const ReverseStep& v, void* /*visit_state*/) 
-{
-  TRACE_VISIT_OUT ();
-}
-
-
-void *begin_visit (const ReverseAxis& v) 
-{
-  TRACE_VISIT ();
-  return no_state;
-}
-
-
-void end_visit (const ReverseAxis& v, void* /*visit_state*/) 
-{
-  TRACE_VISIT_OUT ();
-
-  rchandle<axis_step_expr> ase = expect_axis_step_top ();
-
-  switch (v.get_axis())
-  {
-  case ParseConstants::axis_parent:
-  {
-    ase->setAxis(axis_kind_parent);
-    break;
-  }
-  case ParseConstants::axis_ancestor:
-  {
-    ase->setAxis(axis_kind_ancestor);
-    break;
-  }
-  case ParseConstants::axis_preceding_sibling:
-  {
-    ase->setAxis(axis_kind_preceding_sibling);
-    break;
-  }
-  case ParseConstants::axis_preceding:
-  {
-    ase->setAxis(axis_kind_preceding);
-    break;
-  }
-  case ParseConstants::axis_ancestor_or_self:
-  {
-    ase->setAxis(axis_kind_ancestor_or_self);
-    break;
-  }
-  }
-}
-
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void *begin_visit (const RangeExpr& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const RangeExpr& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-  fo_expr *e = new fo_expr (cb->m_cur_sctx, loc, LOOKUP_OP2 ("to"));
-
-  rchandle<expr> e1_h = pop_nodestack ();
-  rchandle<expr> e2_h = pop_nodestack ();
-
-  e->add(e2_h);
-  e->add(e1_h);
-
-  nodestack.push(e);
-}
-
-
-void *begin_visit (const StringLiteral& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const StringLiteral& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-  nodestack.push(new const_expr(cb->m_cur_sctx, loc,v.get_strval()));
-}
-
-void *begin_visit (const TreatExpr& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const TreatExpr& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-  nodestack.push (new treat_expr (cb->m_cur_sctx, loc, pop_nodestack (), pop_tstack (), XPDY0050));
-}
-
-void *begin_visit (const UnaryExpr& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const UnaryExpr& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-
-  rchandle<expr> e1_h = pop_nodestack ();
-  fo_expr *fo_p = new fo_expr(cb->m_cur_sctx, loc,
-                              v.get_signlist()->get_sign()
-                              ? LOOKUP_OP1 ("unary-plus")
-                              : LOOKUP_OP1 ("unary-minus"));
-  fo_p->add(e1_h);
-  nodestack.push(fo_p);
-}
-
-void *begin_visit (const UnionExpr& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const UnionExpr& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-
-  rchandle<expr> e1_h = pop_nodestack ();
-  rchandle<expr> e2_h = pop_nodestack ();
-  fo_expr *fo_h = new fo_expr(cb->m_cur_sctx, loc, LOOKUP_OP2 ("union"));
-  fo_h->add(e2_h);
-  fo_h->add(e1_h);
-  nodestack.push(new fo_expr (cb->m_cur_sctx, loc, LOOKUP_OP1 ("sort-distinct-nodes-asc"), fo_h));
-}
-
-void *begin_visit (const UnorderedExpr& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const UnorderedExpr& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-  nodestack.push (new order_expr (cb->m_cur_sctx, loc, order_expr::unordered,
-                                  pop_nodestack ()));
-}
-
-void *begin_visit (const ValidateExpr& v) 
-{
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const ValidateExpr& v, void* /*visit_state*/) 
-{
-  TRACE_VISIT_OUT ();
-  store::Item_t qname;
-  if (v.get_type_name() != NULL)
-  {
-    xqp_string ns;
-    ns_ctx->findBinding(v.get_type_name()->get_prefix(), ns);
-    GENV_ITEMFACTORY->createQName(qname, ns.c_str(), v.get_type_name()->get_prefix().c_str(), v.get_type_name()->get_localname().c_str());
-  }
-
-  nodestack.push (new validate_expr (cb->m_cur_sctx, loc,
-                                     v.get_valmode(),
-                                     qname,
-                                     pop_nodestack(),
-                                     sctx_p->get_typemanager()));
-}
-
-void *begin_visit (const VarRef& v) {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const VarRef& v, void* /*visit_state*/) 
-{
-  TRACE_VISIT_OUT ();
-  var_expr *ve = lookup_var (v.get_varname ());
-  if (ve == NULL)
-    ZORBA_ERROR_LOC_PARAM (XPST0008, loc, v.get_varname (), "");
-
-  if (ve->get_kind() == var_expr::prolog_var && ! prolog_vf_key.empty()) 
-  {
-    string key = "V" + static_context::qname_internal_key (ve->get_varname ());
-    add_multimap_value (thePrologDeps, prolog_vf_key, key);
-  }
-
-  nodestack.push (new wrapper_expr (cb->m_cur_sctx, v.get_location (), rchandle<expr> (ve)));
 }
 
 
