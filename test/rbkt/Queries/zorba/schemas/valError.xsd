@@ -1,0 +1,9 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:oa="http://zorba-xquery.org/schemas/test/valError"
+  targetNamespace="http://zorba-xquery.org/schemas/test/valError"
+  elementFormDefault="qualified" >
+ 
+  <xs:element name="test" type="xs:string" />
+
+</xs:schema>
+

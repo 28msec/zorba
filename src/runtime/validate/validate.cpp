@@ -265,8 +265,8 @@ bool ValidateIterator::effectiveValidationValue (
     if ( validationMode == ParseConstants::val_typename )
     {
       //cout << "Validate type: " << typeName->getLocalName()->c_str() << " @ "
-      //     << typeName->getNamespace()->c_str() << "\n";
-      //cout.flush();
+      //     << typeName->getNamespace()->c_str() << "\n"; cout.flush();
+
       schemaValidator.startType(typeName);                
     }
     else
@@ -336,7 +336,8 @@ store::Item_t ValidateIterator::processElement(
   // of it's attributes, and an attribute node needs it's parent when created 
   // we need to go through the attributes twice: once for validation and once for creation
   validateAttributes(schemaValidator, element->getAttributes());
-        
+  schemaValidator.endAttrs();
+
   store::Item_t typeName = schemaValidator.getTypeQName();
 
   bool isSubstitutionGroup = false;
@@ -497,13 +498,15 @@ void ValidateIterator::processChildren(
         //xqType is NULL, create_type can't find it
         xqtref_t xqType = typeManager->create_type(*typeIdentifier);
 
-//        if ( typeQName.getp() && xqType.getp() )
-//        {
-//          /cout << "     - text: " << childStringValue << "  T: " << typeQName->getLocalName()->c_str() << "\n"; cout.flush();
-//          cout << "        xqT: " << xqType->toString() << "  content_kind: " << xqType->content_kind() << " tKind:" << xqType->type_kind() << " \n"; cout.flush();
-//        }
-//        else
-//          cout << "     - text2: " << childStringValue << "  tQN: " << typeQName.getp() << " xqT:" << xqType.getp() << "\n"; cout.flush();
+#if 0        
+        if ( typeQName.getp() && xqType.getp() )
+        {
+          cout << "     - text: " << childStringValue << "  T: " << typeQName->getLocalName()->c_str() << "\n"; cout.flush();
+          cout << "        xqT: " << xqType->toString() << "  content_kind: " << xqType->content_kind() << " tKind:" << xqType->type_kind() << " \n"; cout.flush();
+        }
+        else
+          cout << "     - text2: " << childStringValue << "  tQN: " << typeQName.getp() << " xqT:" << xqType.getp() << "\n"; cout.flush();
+#endif
         
         if ( xqType!=NULL && xqType->content_kind()==XQType::SIMPLE_CONTENT_KIND )
         {

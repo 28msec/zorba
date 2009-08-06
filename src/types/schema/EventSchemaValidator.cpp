@@ -125,9 +125,16 @@ void EventSchemaValidator::attr(store::Item_t attrName, xqpStringStore_t textVal
 }
 
 
+void EventSchemaValidator::endAttrs()
+{
+  //cout << "  sv   endAttrs \n";
+  _schemaValidatorFilter->endAttributesEvent();
+}
+
+
 void EventSchemaValidator::text(xqpStringStore_t textValue)
 {
-  //cout << "  sv   Text: " << textValue->c_str() << "\n";
+  cout << "  sv   Text: " << textValue->c_str() << "\n";
 
   XMLChArray value(textValue->c_str());
   _schemaValidatorFilter->textEvent(value);

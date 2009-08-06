@@ -180,6 +180,8 @@ public:
         const XMLCh *typeURI,
         const XMLCh *typeName);
 
+  virtual void endAttributesEvent();
+
   virtual void namespaceEvent(const XMLCh *prefix, const XMLCh *uri);
 
   virtual void startTypeEvent(const XMLCh *uri, const XMLCh *typeName);

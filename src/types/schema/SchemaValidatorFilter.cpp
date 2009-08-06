@@ -259,7 +259,15 @@ void SchemaValidatorFilter::processStartElement()
       if (currType)
         modelType = (SchemaElementDecl::ModelTypes)currType->getContentType();
       else // something must have gone wrong
+      {
+        if ( modelType && modelType==SchemaElementDecl::Simple )
+        {
+          // error an element inside a Simple modelType
+          fValidator->emitError(XMLValid::ElementNotDefined,
+                                _localname.getRawBuffer());
+        }
         modelType = SchemaElementDecl::Any;
+      }
     }
     else 
     {
@@ -818,6 +826,13 @@ void SchemaValidatorFilter::attributeEvent(
     _eventBuffer->attributeEvent(emptyToNull(prefix), emptyToNull(uri), localname, value,
                           emptyToNull(typeURI), typeName);
   }
+}
+
+
+void SchemaValidatorFilter::endAttributesEvent()
+{
+  if(_elementToProcess) processStartElement();
+  //_eventBuffer->endAttributesEvent();
 }
 
 

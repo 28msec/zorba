@@ -70,6 +70,7 @@ public:
 
   // Must be called only after all ns() have been send if any otherwise only after startElem()
   void attr(store::Item_t attrName, xqpStringStore_t textValue);
+  void endAttrs();
   void text(xqpStringStore_t textValue);
     
   // Must be called only after startElem()
