@@ -30,12 +30,16 @@ public:
       return false;
   }
 };
+
+
 class ClassFactoriesMap : public zorba::HashMap<const char *, class_deserializer  *, ClassFactoriesCompare>
 {
 public:
   ClassFactoriesMap(ulong sz = 1024) :
       zorba::HashMap<const char *, class_deserializer  *, ClassFactoriesCompare>(sz, false) {}
 };
+
+
 //////////////////////////////////////////////
 ///////////////////////////////////////////Global serialization Operators
 ClassSerializer::ClassSerializer() : class_names(1000), class_names_count(0)
@@ -62,6 +66,7 @@ ClassSerializer::~ClassSerializer()
   delete harcoded_objects_archive;
 }
 
+
 ClassSerializer* ClassSerializer::getInstance()
 {
   if(!g_class_serializer)
@@ -71,14 +76,11 @@ ClassSerializer* ClassSerializer::getInstance()
   }
   return g_class_serializer;
 }
-/*
-void ClassSerializer::deleteInstance()
-{
-  delete g_class_serializer;
-  g_class_serializer = NULL;
-}
-*/
-void ClassSerializer::register_class_factory(const char *class_name, class_deserializer *class_factory)
+
+
+void ClassSerializer::register_class_factory(
+    const char *class_name,
+    class_deserializer *class_factory)
 {
 /*+
 #ifndef NDEBUG
@@ -143,10 +145,12 @@ class_deserializer *ClassSerializer::get_class_factory(const char *classname)
   return cls_factory;
 }
 
+
 Archiver* ClassSerializer::getArchiverForHardcodedObjects()
 {
   return harcoded_objects_archive;
 }
+
 
 void ClassSerializer::destroyArchiverForHardcodedObjects()
 {
@@ -186,6 +190,7 @@ void operator&(Archiver &ar, int &obj)
     ar.register_reference(id, field_treat, &obj);
   }
 }
+
 
 void operator&(Archiver &ar, uint32_t &obj)
 {
