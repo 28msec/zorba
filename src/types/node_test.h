@@ -45,7 +45,7 @@ private:
 
 public:
   SERIALIZABLE_CLASS(NodeNameTest)
-  SERIALIZABLE_CLASS_CONSTRUCTOR(NodeNameTest)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(NodeNameTest, SimpleRCObject)
   void serialize(::zorba::serialization::Archiver &ar)
   {
     //serialize_baseclass(ar, (SimpleRCObject*)this);

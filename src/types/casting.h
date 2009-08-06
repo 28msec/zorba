@@ -81,7 +81,7 @@ public:
         namespace_context*   aNCtx = 0) const;
 
   bool castToSimple (
-        const xqpString aStr, 
+        const xqpStringStore_t& aStr, 
         const xqtref_t& aTargetType,
         std::vector<store::Item_t> &aResultList) const;
 

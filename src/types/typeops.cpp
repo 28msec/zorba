@@ -165,6 +165,27 @@ bool TypeOps::is_none(const XQType& type)
 /*******************************************************************************
 
 ********************************************************************************/
+bool TypeOps::is_atomic(const XQType& type)
+{
+  if (type.get_quantifier() == TypeConstants::QUANT_ONE)
+  {
+    if (type.type_kind() == XQType::ATOMIC_TYPE_KIND)
+    {
+      return true;
+    }
+    else if (type.type_kind() == XQType::USER_DEFINED_KIND)
+    {
+      return reinterpret_cast<const UserDefinedXQType&>(type).isAtomic();
+    }
+  }
+
+  return false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 bool TypeOps::is_builtin_atomic(const XQType& type)
 {
   return type.get_quantifier() == TypeConstants::QUANT_ONE &&

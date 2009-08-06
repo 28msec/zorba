@@ -150,46 +150,46 @@ public:
 
     // user defined simple types, i.e. Atomic, List or Union Types
   bool parseUserSimpleTypes(
-        const xqp_string textValue,
+        const xqpStringStore_t& textValue,
         const xqtref_t& aTargetType,
         std::vector<store::Item_t> &resultList);    
 
     // user defined atomic types
   bool parseUserAtomicTypes(
-        const xqp_string textValue,
+        const xqpStringStore_t& textValue,
         const xqtref_t& aTargetType, 
-        store::Item_t &result);    
+        store::Item_t& result);    
 
     // user defined list types
   bool parseUserListTypes(
-        const xqp_string textValue,
+        const xqpStringStore_t& textValue,
         const xqtref_t& aTargetType, 
         std::vector<store::Item_t>& resultList);    
 
     // user defined union types
   bool parseUserUnionTypes(
-        const xqp_string textValue,
+        const xqpStringStore_t& textValue,
         const xqtref_t& aTargetType, 
         std::vector<store::Item_t> &resultList);    
   
     // user defined simple types, i.e. Atomic, List or Union Types
   bool isCastableUserSimpleTypes(
-        const xqp_string textValue,
+        const xqpStringStore_t& textValue,
         const xqtref_t& aTargetType);
 
     // user defined atomic types
   bool isCastableUserAtomicTypes(
-        const xqp_string textValue,
+        const xqpStringStore_t& textValue,
         const xqtref_t& aTargetType);
 
     // user defined list types
   bool isCastableUserListTypes(
-        const xqp_string textValue,
+        const xqpStringStore_t& textValue,
         const xqtref_t& aTargetType);
 
     // user defined union types
   bool isCastableUserUnionTypes(
-        const xqp_string textValue,
+        const xqpStringStore_t& textValue,
         const xqtref_t& aTargetType);
 
 private:

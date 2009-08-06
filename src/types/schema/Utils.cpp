@@ -495,10 +495,7 @@ void processTextValue (
       const UserDefinedXQType udXQType = static_cast<const UserDefinedXQType&>(*type);
       if ( udXQType.isList() || udXQType.isUnion() )
       {
-        xqp_string str(textValue);
-        typeManager->getSchema()->
-          parseUserSimpleTypes(str, type, resultList);
-        
+        typeManager->getSchema()->parseUserSimpleTypes(textValue, type, resultList);
         return;
       }
       else if ( udXQType.isComplex() )

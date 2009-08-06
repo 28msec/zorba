@@ -115,6 +115,12 @@ public:
 
   /**
    * Returns true if the quantifier of the given sequence type is QUANT_ONE and
+   * its ItemType is an atomic type.
+   */
+  static bool is_atomic(const XQType& type);
+
+  /**
+   * Returns true if the quantifier of the given sequence type is QUANT_ONE and
    * its ItemType is a builtin atomic type.
    */
   static bool is_builtin_atomic(const XQType& type);

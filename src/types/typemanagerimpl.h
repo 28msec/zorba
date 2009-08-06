@@ -17,7 +17,7 @@
 #define ZORBA_TYPEMANAGERIMPL_H
 
 #include "types/typemanager.h"
-#include "types/schema/schema.h"
+//#include "types/schema/schema.h"
 #include "store/api/item.h"
 
 #include "system/globalenv.h"
@@ -25,7 +25,7 @@
 namespace zorba {
 
 class NodeTest;
-//class Schema;
+class Schema;
 
 
 class qname_hash_equals 
@@ -65,12 +65,8 @@ protected:
 public:
   SERIALIZABLE_CLASS(TypeManagerImpl)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(TypeManagerImpl, TypeManager)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (TypeManager*)this);
-    SERIALIZE_TYPEMANAGER(TypeManager, m_parent);
-	ar & m_schema;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
+
 public:
   TypeManagerImpl(TypeManager* parent)
     :

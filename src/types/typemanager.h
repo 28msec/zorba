@@ -59,6 +59,7 @@ public:
     //serialize_baseclass(ar, (SimpleRCObject*)this);
     ar & m_level;
   }
+
 public:
   TypeManager(int level) : m_level(level) { }
   

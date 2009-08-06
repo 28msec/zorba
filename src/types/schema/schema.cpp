@@ -15,13 +15,6 @@
  */
 #include <string>
 
-#include "xercesIncludes.h"
-#include "schema.h"
-#include "StrX.h"
-#include "LoadSchemaErrorHandler.h"
-#include "PrintSchema.h"
-#include "XercesParseUtils.h"
-
 #include <zorbatypes/xerces_xmlcharray.h>
 #include "compiler/parser/query_loc.h"
 
@@ -32,6 +25,12 @@
 #include "types/root_typemanager.h"
 #include "types/typeops.h"
 #include "types/casting.h"
+#include "types/schema/schema.h"
+#include "types/schema/StrX.h"
+#include "types/schema/LoadSchemaErrorHandler.h"
+#include "types/schema/PrintSchema.h"
+#include "types/schema/XercesParseUtils.h"
+#include "types/schema/xercesIncludes.h"
 
 #include "system/globalenv.h"
 
@@ -1118,71 +1117,71 @@ void Schema::addTypeToCache(xqtref_t itemXQType)
   The given type is assumed to be a simple type, i.e. Atomic, List or Union.
 ********************************************************************************/
 bool Schema::parseUserSimpleTypes(
-    const xqp_string textValue,
+    const xqpStringStore_t& textValue,
     const xqtref_t& aTargetType, 
     std::vector<store::Item_t> &resultList)
 {
-    //cout << "parseUserSimpleTypes: '" << textValue << "' to " <<  aTargetType->toString() << endl; cout.flush();
+  //cout << "parseUserSimpleTypes: '" << textValue << "' to " <<  aTargetType->toString() << endl; cout.flush();
 
-    if ( aTargetType->type_kind() != XQType::USER_DEFINED_KIND )
-    {
-        // must be a built in type
-        store::Item_t atomicResult;
-        xqpStringStore_t textval = textValue.getStore();
+  if ( aTargetType->type_kind() != XQType::USER_DEFINED_KIND )
+  {
+    // must be a built in type
+    store::Item_t atomicResult;
+    xqpStringStore_t textval = textValue;
     //todo add nsCtx
     bool res = GenericCast::instance()->castToAtomic(atomicResult, textval, aTargetType);
-        
+    
     if ( res == false )
     {
-            return false;
+      return false;
     }
-        else
-        {
-            resultList.push_back(atomicResult);
-            return true;
-        }
-    }
-
-    const UserDefinedXQType* udXQType = static_cast<const UserDefinedXQType*>(aTargetType.getp());
-
-    ZORBA_ASSERT( udXQType->isAtomic() || udXQType->isList() || udXQType->isUnion() );
-
-    bool hasResult = false;
-    
-    switch ( udXQType->getTypeCategory() )
+    else
     {
-    case UserDefinedXQType::ATOMIC_TYPE:
-        {
-            store::Item_t atomicResult;
-    hasResult = parseUserAtomicTypes(textValue, aTargetType, atomicResult);
-            
-            if ( !hasResult )
-                return false;
-            else
-            {
-                resultList.push_back(atomicResult);
-                return true;
-            }
-        }
-        break;
-  
-    case UserDefinedXQType::LIST_TYPE:
-  
-        return parseUserListTypes( textValue, aTargetType, resultList);
-        break;
-
-    case UserDefinedXQType::UNION_TYPE:
-  
-        return parseUserUnionTypes( textValue, aTargetType, resultList);
-        break;
-
-    case UserDefinedXQType::COMPLEX_TYPE:
-    default:
-        ZORBA_ASSERT( false);
-        break;
+      resultList.push_back(atomicResult);
+      return true;
     }
+  }
   
-    return false;
+  const UserDefinedXQType* udXQType = static_cast<const UserDefinedXQType*>(aTargetType.getp());
+  
+  ZORBA_ASSERT( udXQType->isAtomic() || udXQType->isList() || udXQType->isUnion() );
+  
+  bool hasResult = false;
+  
+  switch ( udXQType->getTypeCategory() )
+  {
+  case UserDefinedXQType::ATOMIC_TYPE:
+  {
+    store::Item_t atomicResult;
+    hasResult = parseUserAtomicTypes(textValue, aTargetType, atomicResult);
+    
+    if ( !hasResult )
+      return false;
+    else
+    {
+      resultList.push_back(atomicResult);
+      return true;
+    }
+  }
+  break;
+  
+  case UserDefinedXQType::LIST_TYPE:
+  
+    return parseUserListTypes(textValue, aTargetType, resultList);
+    break;
+
+  case UserDefinedXQType::UNION_TYPE:
+  
+    return parseUserUnionTypes(textValue, aTargetType, resultList);
+    break;
+
+  case UserDefinedXQType::COMPLEX_TYPE:
+  default:
+    ZORBA_ASSERT( false);
+    break;
+  }
+  
+  return false;
 }
 
 
@@ -1191,11 +1190,11 @@ bool Schema::parseUserSimpleTypes(
   The given type is assumed to be a user-defined atomic type.
 ********************************************************************************/
 bool Schema::parseUserAtomicTypes(
-    const xqp_string textValue,
+    const xqpStringStore_t& textValue,
     const xqtref_t& aTargetType, 
     store::Item_t &result)
 {
-  TRACE("parsing '" << textValue << "' to " << aTargetType->toString());
+  TRACE("parsing '" << *textValue << "' to " << aTargetType->toString());
 
   ZORBA_ASSERT( aTargetType->type_kind() == XQType::USER_DEFINED_KIND );
 
@@ -1254,7 +1253,7 @@ bool Schema::parseUserAtomicTypes(
         wasError = true;
       }
       
-      XMLChArray xchTextValue (textValue.getStore ());
+      XMLChArray xchTextValue (textValue);
       xsiTypeDV->validate(xchTextValue.get ());
     }
     else
@@ -1273,7 +1272,7 @@ bool Schema::parseUserAtomicTypes(
     transcode(idve.getMessage(), msg);
 
     ZORBA_ERROR_DESC_OSS(FORG0001, 
-                         "String '" << textValue.trim(" \n\r\t",4) <<
+                         "String '" << textValue->trim(" \n\r\t",4)->c_str() <<
                          "' cannot be cast to '" << 
                          TypeOps::toString( *aTargetType ) << "' : "
                          << msg->c_str());
@@ -1302,32 +1301,32 @@ bool Schema::parseUserAtomicTypes(
   
   ZORBA_ASSERT( baseType_ptr->type_kind() == XQType::ATOMIC_TYPE_KIND );
   
-  xqpStringStore_t textval = textValue.getStore();
+  xqpStringStore_t textval = textValue;
   return GenericCast::instance()->castToAtomic(result, textval, baseType_ptr);
 }
 
 
 void splitToAtomicTextValues(
-    const xqp_string& textValue,
+    const xqpStringStore_t& textValue,
     std::vector<xqp_string>& atomicTextValues)
 {   
-    xqp_string normalizedTextValue = textValue.normalizeSpace();
-    checked_vector<uint32_t> codes = normalizedTextValue.getCodepoints();
+  xqp_string normalizedTextValue(textValue->normalizeSpace());
+  checked_vector<uint32_t> codes = normalizedTextValue.getCodepoints();
 
-    xqpString::size_type start = 0;
-    xqpString::size_type i = 0;
+  xqpString::size_type start = 0;
+  xqpString::size_type i = 0;
 
   while (i < codes.size())
+  {
+    if ( xqpStringStore::is_whitespace(codes[i]) )
     {
-        if ( xqpStringStore::is_whitespace(codes[i]) )
-        {
       atomicTextValues.push_back(normalizedTextValue.substr(start, i - start));
       start = i+1;
-        }
-        i++;
     }
+    i++;
+  }
   
-    if ( start < (i-1) )
+  if ( start < (i-1) )
     atomicTextValues.push_back(normalizedTextValue.substr(start, i-start));    
 }
 
@@ -1335,38 +1334,40 @@ void splitToAtomicTextValues(
 
 // user list types
 bool Schema::parseUserListTypes(
-    const xqp_string textValue, 
+    const xqpStringStore_t& textValue, 
     const xqtref_t& aTargetType,
     std::vector<store::Item_t> &resultList)
 {
-    ZORBA_ASSERT( aTargetType->type_kind() == XQType::USER_DEFINED_KIND );
+  ZORBA_ASSERT( aTargetType->type_kind() == XQType::USER_DEFINED_KIND );
 
-    //cout << "parseUserListTypes: '" << textValue << "' to " << aTargetType->toString() << endl; cout.flush();
+  //cout << "parseUserListTypes: '" << textValue << "' to " << aTargetType->toString() << endl; cout.flush();
 
-    const UserDefinedXQType* udXQType = static_cast<const UserDefinedXQType*>(aTargetType.getp());
-    ZORBA_ASSERT( udXQType->isList() );
+  const UserDefinedXQType* udXQType = static_cast<const UserDefinedXQType*>(aTargetType.getp());
+  ZORBA_ASSERT( udXQType->isList() );
 
-    bool hasResult = true;
-    const XQType* listItemType = udXQType->getListItemType();
-    ZORBA_ASSERT( listItemType );
+  bool hasResult = true;
+  const XQType* listItemType = udXQType->getListItemType();
+  ZORBA_ASSERT( listItemType );
 
-    //split text into atoms
-    std::vector<xqp_string> atomicTextValues;
-    splitToAtomicTextValues(textValue, atomicTextValues);
+  //split text into atoms
+  std::vector<xqp_string> atomicTextValues;
+  splitToAtomicTextValues(textValue, atomicTextValues);
     
-    for ( unsigned int i = 0; i< atomicTextValues.size() ; i++)
-    {
-        TRACE("trying parsing '" << textValue << "' to " << listItemType->toString());
-        bool res = parseUserSimpleTypes(atomicTextValues[i], xqtref_t(listItemType), resultList);
-        hasResult = hasResult && res;
-    }
-
-    return hasResult;
+  for ( unsigned int i = 0; i < atomicTextValues.size() ; i++)
+  {
+    TRACE("trying parsing '" << *textValue << "' to " << listItemType->toString());
+    bool res = parseUserSimpleTypes(atomicTextValues[i].getStore(),
+                                    xqtref_t(listItemType),
+                                    resultList);
+    hasResult = hasResult && res;
+  }
+  
+  return hasResult;
 }
 
 // user union types
 bool Schema::parseUserUnionTypes(
-    const xqp_string textValue,
+    const xqpStringStore_t& textValue,
     const xqtref_t& aTargetType, 
     std::vector<store::Item_t> &resultList)
 {
@@ -1394,7 +1395,7 @@ bool Schema::parseUserUnionTypes(
 
 // user defined simple types, i.e. Atomic, List or Union Types
 bool Schema::isCastableUserSimpleTypes(
-    const xqp_string textValue,
+    const xqpStringStore_t& textValue,
     const xqtref_t& aTargetType)
 {
     //cout << "isCastableUserSimpleTypes: '" << textValue << "' to " << aTargetType->toString() << endl; cout.flush();
@@ -1403,7 +1404,7 @@ bool Schema::isCastableUserSimpleTypes(
     {
         // must be a built in type
         store::Item_t atomicResult;
-        xqpStringStore_t textval = textValue.getStore();
+        xqpStringStore_t textval = textValue;
         return GenericCast::instance()->isCastable(textval, aTargetType); //todo add nsCtx
     }
 
@@ -1439,44 +1440,45 @@ bool Schema::isCastableUserSimpleTypes(
 
 // user defined atomic types
 bool Schema::isCastableUserAtomicTypes(
-    const xqp_string textValue,
+    const xqpStringStore_t& textValue,
     const xqtref_t& aTargetType)
 {
     //cout << "isCastableUserAtomicTypes: '" << textValue << "' to " << aTargetType->toString() << endl; cout.flush();
-    xqpStringStore_t text = xqpStringStore_t(textValue.getStore());
+    xqpStringStore_t text = textValue;
     return GenericCast::instance()->isCastable( text, aTargetType.getp());
 }        
 
 // user defined list types
 bool Schema::isCastableUserListTypes(
-    const xqp_string textValue,
+    const xqpStringStore_t& textValue,
     const xqtref_t& aTargetType)
 {
-    //cout << "isCastableUserListTypes: '" << textValue << "' to " << aTargetType->toString() << endl; cout.flush();
-    ZORBA_ASSERT( aTargetType->type_kind() == XQType::USER_DEFINED_KIND );
+  //cout << "isCastableUserListTypes: '" << textValue << "' to " << aTargetType->toString() << endl; cout.flush();
+  ZORBA_ASSERT( aTargetType->type_kind() == XQType::USER_DEFINED_KIND );
+  
+  const UserDefinedXQType* udXQType = static_cast<const UserDefinedXQType*>(aTargetType.getp());
+  ZORBA_ASSERT( udXQType->isList() );
 
-    const UserDefinedXQType* udXQType = static_cast<const UserDefinedXQType*>(aTargetType.getp());
-    ZORBA_ASSERT( udXQType->isList() );
-
-    bool hasResult = true;
-    const XQType* listItemType = udXQType->getListItemType();
+  bool hasResult = true;
+  const XQType* listItemType = udXQType->getListItemType();
     
-    //split text into atoms
-    std::vector<xqp_string> atomicTextValues;
-    splitToAtomicTextValues(textValue, atomicTextValues);
+  //split text into atoms
+  std::vector<xqp_string> atomicTextValues;
+  splitToAtomicTextValues(textValue, atomicTextValues);
     
-    for ( unsigned int i = 0; i<atomicTextValues.size() ; i++ )
-    {
-        bool res = isCastableUserSimpleTypes(atomicTextValues[i], xqtref_t(listItemType));
-        hasResult = hasResult && res;
-    }
-
-    return hasResult;
-}        
+  for ( unsigned int i = 0; i<atomicTextValues.size() ; i++ )
+  {
+    bool res = isCastableUserSimpleTypes(atomicTextValues[i].getStore(), xqtref_t(listItemType));
+    hasResult = hasResult && res;
+  }
+  
+  return hasResult;
+} 
+       
 
 // user defined union types
 bool Schema::isCastableUserUnionTypes(
-    const xqp_string textValue,
+    const xqpStringStore_t& textValue,
     const xqtref_t& aTargetType)
 {
     //cout << "isCastableUserUnionTypes: '" << textValue << "' to " << aTargetType->toString() << endl; cout.flush();

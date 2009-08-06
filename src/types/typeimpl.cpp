@@ -15,11 +15,13 @@
  */
 #include <iostream>
 #include "system/globalenv.h"
+#include "zorbaerrors/Assert.h"
+
 #include "types/typeconstants.h"
 #include "types/typeimpl.h"
 #include "types/typeops.h"
 #include "types/root_typemanager.h"
-#include "zorbaerrors/Assert.h"
+#include "types/schema/schema.h"
 
 
 namespace zorba 
@@ -73,7 +75,8 @@ const char* XQType::KIND_STRINGS[XQType::MAX_TYPE_KIND] =
   "ANY_TYPE_KIND",
   "ANY_SIMPLE_TYPE_KIND",
   "UNTYPED_KIND",
-  "NONE_KIND"
+  "NONE_KIND",
+  "USER_DEFINED_KIND"
 };
 
 
