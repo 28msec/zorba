@@ -55,6 +55,8 @@ class CaseClauseList;
 class CaseClause;
 class CastExpr;
 class CastableExpr;
+class CatchExpr;
+class CatchListExpr;
 class CommentTest;
 class CommonContent;
 class CompAttrConstructor;
@@ -1319,13 +1321,6 @@ public:
                       OrExpr |
                       TryExpr |
 
-  ** updates
-                      InsertExpr |
-                      DeleteExpr |
-                      RenameExpr |
-                      ReplaceExpr |
-                      TransformExpr |
-
   ** scripting
                       ExitExpr |
                       WhileExpr |
@@ -1334,35 +1329,18 @@ public:
                       BlockExpr |
 
   ** eval
-                      EvalExpr
+                      EvalExpr |
 
   ** indexes
-                      IndexStatement
+                      IndexStatement |
+
+  ** updates
+                      InsertExpr |
+                      DeleteExpr |
+                      RenameExpr |
+                      ReplaceExpr |
+                      TransformExpr
 ********************************************************************************/
-
-
-/***************************************************************************//**
-  IndexStatement ::= [CREATE | BUILD | DROP] INDEX URI_LITERAL
-********************************************************************************/
-class IndexStatement : public exprnode 
-{
-  std::string uri;
-
-public:
-  typedef enum { create_stmt, build_stmt, drop_stmt } stmt_type;
-
-  stmt_type type;
-
-  IndexStatement (const QueryLoc& loc_, std::string uri_, stmt_type type_)
-    :
-    exprnode (loc_), uri (uri_), type (type_)
-  {
-  }
-
-  std::string get_uri () const { return uri; }
-
-  void accept(parsenode_visitor&) const;
-};
 
 
 /*******************************************************************************
@@ -2299,13 +2277,9 @@ public:
 
 
 /*******************************************************************************
-
+  [68] IfExpr ::= "if" "(" Expr ")" "then" ExprSingle "else" ExprSingle
 ********************************************************************************/
 class IfExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= IF_LPAR  Expr  RPAR  THEN  ExprSingle  ELSE  ExprSingle
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<exprnode> cond_expr_h;
@@ -2319,28 +2293,18 @@ public:
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
-public:
 	rchandle<exprnode> get_cond_expr() const { return cond_expr_h; }
 	rchandle<exprnode> get_then_expr() const { return then_expr_h; }
 	rchandle<exprnode> get_else_expr() const { return else_expr_h; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
 /*******************************************************************************
-
+  [69] OrExpr ::= AndExpr ( "or" AndExpr )*
 ********************************************************************************/
-// [46] OrExpr
-// -----------
 class OrExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= AndExpr
-|			|	OrExpr  OR  AndExpr
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<exprnode> or_expr_h;
@@ -2352,28 +2316,17 @@ public:
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
-
-public:
 	rchandle<exprnode> get_or_expr() const { return or_expr_h; }
 	rchandle<exprnode> get_and_expr() const { return and_expr_h; }
 
-public:
 	virtual	void accept(parsenode_visitor&) const;
-
 };
 
 
 /*******************************************************************************
-
+  [70] AndExpr ::= ComparisonExpr ( "and" ComparisonExpr )*
 ********************************************************************************/
-// [47] AndExpr
-// ------------
 class AndExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= ComparisonExpr
-|			|	AndExpr  AND  ComparisonExpr
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<exprnode> and_expr_h;
@@ -2385,30 +2338,24 @@ public:
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
-
-public:
 	rchandle<exprnode> get_and_expr() const { return and_expr_h; }
 	rchandle<exprnode> get_comp_expr() const { return comp_expr_h; }
 
-public:
 	virtual	void accept(parsenode_visitor&) const;
-
 };
 
 
 /*******************************************************************************
+  [71] ComparisonExpr ::= RangeExpr
+                          ((ValueComp | GeneralComp | NodeComp) RangeExpr)?
+
+  Note: For the full-text extension, the rule for ComparisonExpr is:
+
+  ComparisonExpr ::= FTContainsExpr
+                     ((ValueComp | GeneralComp | NodeComp) FTContainsExpr)?
 
 ********************************************************************************/
-// [48] ComparisonExpr
-// -------------------
 class ComparisonExpr : public exprnode
-/*______________________________________________________________________
-|
-|		::= FTContainsExpr
-|			| FTContainsExpr ValueComp FTContainsExpr
-|			| FTContainsExpr GeneralComp FTContainsExpr
-|			| FTContainsExpr NodeComp FTContainsExpr
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<exprnode> left_h;
@@ -2437,32 +2384,86 @@ public:
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
-
-public:
 	rchandle<exprnode> get_left() const { return left_h; }
 	rchandle<exprnode> get_right() const { return right_h; }
+
 	rchandle<ValueComp> get_valcomp() const { return valcomp_h; }
+
 	rchandle<GeneralComp> get_gencomp() const { return gencomp_h; }
+
 	rchandle<NodeComp> get_nodecomp() const { return nodecomp_h; }
 
-public:
 	virtual	void accept(parsenode_visitor&) const;
-
 };
 
 
 /*******************************************************************************
-
+  [83] GeneralComp ::= "=" | "!=" | "<" | "<=" | ">" | ">="
 ********************************************************************************/
-// [48a] FTContainsExpr
-// --------------------
+class GeneralComp : public parsenode
+{
+protected:
+	enum ParseConstants::gencomp_t type;
+
+public:
+	GeneralComp(
+		const QueryLoc&,
+		enum ParseConstants::gencomp_t);
+
+	GeneralComp();
+
+	enum ParseConstants::gencomp_t get_type() const { return type; }
+	
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  [84] ValueComp ::= "eq" | "ne" | "lt" | "le" | "gt" | "ge"
+********************************************************************************/
+class ValueComp : public parsenode
+{
+protected:
+	enum ParseConstants::valcomp_t type;
+
+public:
+	ValueComp(
+		const QueryLoc&,
+		enum ParseConstants::valcomp_t);
+
+	ValueComp();
+
+	enum ParseConstants::valcomp_t get_type() const { return type; }
+	
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  [85] NodeComp ::= "is" | "<<" | ">>"
+********************************************************************************/
+class NodeComp : public parsenode
+{
+protected:
+	enum ParseConstants::nodecomp_t type;
+
+public:
+	NodeComp(
+		const QueryLoc&,
+		enum ParseConstants::nodecomp_t);
+
+	NodeComp();
+
+	enum ParseConstants::nodecomp_t get_type() const { return type; }
+	
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  FTContainsExpr := RangeExpr (FTCONTAINS FTSelection FTIgnoreOption?)?
+********************************************************************************/
 class FTContainsExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= RangeExpr
-|			| RangeExpr  FTCONTAINS  FTSelection
-|			| RangeExpr  FTCONTAINS  FTSelection  FTIgnoreOption
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<exprnode> range_expr_h;
@@ -2476,27 +2477,18 @@ public:
 		rchandle<FTSelection>,
 		rchandle<FTIgnoreOption>);
 
-
-public:
 	rchandle<exprnode> get_range_expr() const { return range_expr_h; }
 	rchandle<FTSelection> get_ftselect() const { return ftselect_h; }
 	rchandle<FTIgnoreOption> get_ftignore() const { return ftignore_h; }
 
-public:
 	virtual	void accept(parsenode_visitor&) const;
-
 };
 
 
-
-// [49] RangeExpr
-// --------------
+/*******************************************************************************
+  [72] RangeExpr ::= AdditiveExpr ( "to" AdditiveExpr )?
+********************************************************************************/
 class RangeExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= AdditiveExpr
-|			|	AdditiveExpr  TO  AdditiveExpr
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<exprnode> from_expr_h;
@@ -2508,27 +2500,17 @@ public:
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
-
-public:
 	rchandle<exprnode> get_from_expr() const { return from_expr_h; }
 	rchandle<exprnode> get_to_expr() const { return to_expr_h; }
 
-public:
 	virtual	void accept(parsenode_visitor&) const;
-
 };
 
 
-
-// [50] AdditiveExpr
-// -----------------
+/*******************************************************************************
+  [73] AdditiveExpr ::= MultiplicativeExpr ( ("+" | "-") MultiplicativeExpr )*
+********************************************************************************/
 class AdditiveExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= MultiplicativeExpr
-|			|	AdditiveExpr  PLUS  MultiplicativeExpr
-|			|	AdditiveExpr  MINUS  MultiplicativeExpr
-|_______________________________________________________________________*/
 {
 protected:
   ParseConstants::add_op_t add_op;
@@ -2554,18 +2536,10 @@ public:
 };
 
 
-
-// [51] MultiplicativeExpr
-// -----------------------
+/*******************************************************************************
+  [74] MultiplicativeExpr ::= UnionExpr (("*" | "div" | "idiv" | "mod") UnionExpr)*
+********************************************************************************/
 class MultiplicativeExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= UnionExpr
-|			|	MultiplicativeExpr  STAR  UnionExpr
-|			|	MultiplicativeExpr  DIV  UnionExpr
-|			|	MultiplicativeExpr  IDIV  UnionExpr
-|			|	MultiplicativeExpr  MOD  UnionExpr
-|_______________________________________________________________________*/
 {
 protected:
   ParseConstants::mult_op_t mult_op;
@@ -2579,28 +2553,18 @@ public:
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
-
-public:
 	rchandle<exprnode> get_mult_expr() const { return mult_expr_h; }
 	rchandle<exprnode> get_union_expr() const { return union_expr_h; }
   ParseConstants::mult_op_t get_mult_op() const { return mult_op; }
 
-public:
 	virtual	void accept(parsenode_visitor&) const;
-
 };
 
 
-
-// [52] UnionExpr
-// --------------
+/*******************************************************************************
+  [75] UnionExpr ::= IntersectExceptExpr (("union" | "|") IntersectExceptExpr)*
+********************************************************************************/
 class UnionExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= IntersectExceptExpr
-|			|	UnionExpr  UNION  IntersectExceptExpr
-|			|	UnionExpr  VBAR  IntersectExceptExpr
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<exprnode> union_expr_h;
@@ -2612,27 +2576,18 @@ public:
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
-
-public:
 	rchandle<exprnode> union_expr() const { return union_expr_h; }
 	rchandle<exprnode> intex_expr() const { return intex_expr_h; }
 
-public:
 	virtual	void accept(parsenode_visitor&) const;
-
 };
 
 
-
-// [53] IntersectExceptExpr
-// ------------------------
+/*******************************************************************************
+  [76] IntersectExceptExpr ::= InstanceofExpr
+                               (("intersect" | "except") InstanceofExpr)*
+********************************************************************************/
 class IntersectExceptExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= InstanceofExpr
-|			|	IntersectExceptExpr  INTERSECT  InstanceofExpr
-|			|	IntersectExceptExpr  EXCEPT  InstanceofExpr
-|_______________________________________________________________________*/
 {
 protected:
 	enum ParseConstants::intex_op_t intex_op;
@@ -2646,27 +2601,18 @@ public:
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
-
-public:
 	rchandle<exprnode> get_intex_expr() const { return intex_expr_h; }
 	enum ParseConstants::intex_op_t get_intex_op() const { return intex_op; }
 	rchandle<exprnode> get_instof_expr() const { return instof_expr_h; }
 
-public:
 	virtual	void accept(parsenode_visitor&) const;
-
 };
 
 
-
-// [54] InstanceofExpr
-// -------------------
+/*******************************************************************************
+  [77] InstanceofExpr ::= TreatExpr ( "instance" "of" SequenceType )?
+********************************************************************************/
 class InstanceofExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= TreatExpr
-|			|	TreatExpr  INSTANCE_OF  SequenceType
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<exprnode> treat_expr_h;
@@ -2678,26 +2624,17 @@ public:
 		rchandle<exprnode>,
 		rchandle<SequenceType>);
 
-
-public:
 	rchandle<exprnode> get_treat_expr() const { return treat_expr_h; }
 	rchandle<SequenceType> get_seqtype() const { return seqtype_h; }
 
-public:
 	virtual	void accept(parsenode_visitor&) const;
-
 };
 
 
-
-// [55] TreatExpr
-// --------------
+/*******************************************************************************
+  [78] TreatExpr ::= CastableExpr ( "treat" "as" SequenceType )?
+********************************************************************************/
 class TreatExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= CastableExpr
-|			|	CastableExpr  TREAT_AS  SequenceType
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<exprnode> castable_expr_h;
@@ -2709,26 +2646,17 @@ public:
 		rchandle<exprnode>,
 		rchandle<SequenceType>);
 
-
-public:
 	rchandle<exprnode> get_castable_expr() const { return castable_expr_h; }
 	rchandle<SequenceType> get_seqtype() const { return seqtype_h; }
 
-public:
 	virtual	void accept(parsenode_visitor&) const;
-
 };
 
 
-
-// [56] CastableExpr
-// -----------------
+/*******************************************************************************
+  [79] CastableExpr ::= CastExpr ( "castable" "as" SingleType )?
+********************************************************************************/
 class CastableExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= CastExpr
-|			|	CastExpr  CASTABLE_AS  SingleType
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<exprnode> cast_expr_h;
@@ -2740,26 +2668,17 @@ public:
 		rchandle<exprnode>,
 		rchandle<SingleType>);
 
-
-public:
 	rchandle<exprnode> cast_expr() const { return cast_expr_h; }
 	rchandle<SingleType> singletype() const { return singletype_h; }
 
-public:
 	virtual	void accept(parsenode_visitor&) const;
-
 };
 
 
-
-// [57] CastExpr 	
-// -------------
+/*******************************************************************************
+  [80] CastExpr ::= UnaryExpr ( "cast" "as" SingleType )?
+********************************************************************************/
 class CastExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= UnaryExpr
-|			|	UnaryExpr  CAST_AS  SingleType
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<exprnode> unary_expr_h;
@@ -2771,26 +2690,17 @@ public:
 		rchandle<exprnode>,
 		rchandle<SingleType>);
 	
-
-public:
 	rchandle<exprnode> get_unary_expr() const { return unary_expr_h; }
 	rchandle<SingleType> get_singletype() const { return singletype_h; }
 
-public:
 	virtual	void accept(parsenode_visitor&) const;
-
 };
 
 
-
-// [58] UnaryExpr
-// --------------
+/*******************************************************************************
+  [81] UnaryExpr ::= SignList? ValueExpr
+********************************************************************************/
 class UnaryExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= ValueExpr
-|			|	SignList  ValueExpr
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<exprnode> value_expr_h;
@@ -2802,28 +2712,17 @@ public:
 		rchandle<SignList>,
 		rchandle<exprnode>);
 
-
-public:
 	rchandle<exprnode> get_value_expr() const { return value_expr_h; }
 	rchandle<SignList> get_signlist() const { return signlist_h; }
 
-public:
 	virtual	void accept(parsenode_visitor&) const;
-
 };
 
 
-
-// [58a] SignList
-// --------------
+/*******************************************************************************
+  SignList := ("-" | "+")+
+********************************************************************************/
 class SignList : public parsenode
-/*______________________________________________________________________
-|
-|	::= PLUS
-|			|	MINUS
-|			|	SignList  PLUS
-|			|	SignList  MINUS
-|_______________________________________________________________________*/
 {
 protected:
 	bool sign;
@@ -2833,121 +2732,23 @@ public:
 		const QueryLoc&,
 		bool _sign);
 
-
-public:
 	bool get_sign() const { return sign; }
 	void negate() { sign = !sign; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-// [59] ValueExpr
-/*______________________________________________________________________
-|	::= ValidateExpr
-|			|	PathExpr
-|			|	ExtensionExpr
-|_______________________________________________________________________*/
+/*******************************************************************************
+  [82] ValueExpr ::= ValidateExpr | PathExpr | ExtensionExpr
+********************************************************************************/
 
 
-
-// [60] GeneralComp
-// ----------------
-class GeneralComp : public parsenode
-/*______________________________________________________________________
-|
-|	::= EQUALS | NE | LT | LE | GT | GE
-|_______________________________________________________________________*/
-{
-protected:
-	enum ParseConstants::gencomp_t type;
-
-public:
-	GeneralComp(
-		const QueryLoc&,
-		enum ParseConstants::gencomp_t);
-
-	GeneralComp();
-
-
-public:
-	enum ParseConstants::gencomp_t get_type() const { return type; }
-	
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-
-// [61] ValueComp
-// --------------
-class ValueComp : public parsenode
-/*______________________________________________________________________
-|
-|	::= VAL_EQ | VAL_NE | VAL_LT | VAL_LE | VAL_GT | VAL_GE
-|_______________________________________________________________________*/
-{
-protected:
-	enum ParseConstants::valcomp_t type;
-
-public:
-	ValueComp(
-		const QueryLoc&,
-		enum ParseConstants::valcomp_t);
-
-	ValueComp();
-
-
-public:
-	enum ParseConstants::valcomp_t get_type() const { return type; }
-	
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-
-// [62] NodeComp
-// -------------
-class NodeComp : public parsenode
-/*______________________________________________________________________
-|
-|	::= IS | PRECEDES | FOLLOWS
-|_______________________________________________________________________*/
-{
-protected:
-	enum ParseConstants::nodecomp_t type;
-
-public:
-	NodeComp(
-		const QueryLoc&,
-		enum ParseConstants::nodecomp_t);
-
-	NodeComp();
-
-
-public:
-	enum ParseConstants::nodecomp_t get_type() const { return type; }
-	
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-
-// [63] ValidateExpr
-// -----------------
+/*******************************************************************************
+  [86] ValidateExpr ::= "validate" (ValidationMode | ("as" TypeName))? "{" Expr "}"
+  [87] ValidationMode ::= "lax" | "strict"
+********************************************************************************/
 class ValidateExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= VALIDATE_LBRACE  Expr  RBRACE
-|			|	VALIDATE_MODE  LBRACE  Expr  RBRACE
-|_______________________________________________________________________*/
 {
 protected:
 	enum ParseConstants::validation_mode_t valmode;
@@ -2965,27 +2766,18 @@ public:
     rchandle<QName> _valmode,
     rchandle<exprnode>);
 
-
-public:
 	rchandle<exprnode> get_expr() const { return expr_h; }
   rchandle<QName> get_type_name() const { return type_name; }
 	enum ParseConstants::validation_mode_t get_valmode() const { return valmode; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-
-// [64] ExtensionExpr
-// ------------------
+/*******************************************************************************
+  [88] ExtensionExpr ::= PragmaList "{" Expr? "}"
+********************************************************************************/
 class ExtensionExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= PragmaList  LBRACE  RBRACE
-|			|	PragmaList  LBRACE  Expr  RBRACE
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<PragmaList> pragma_list_h;
@@ -2997,25 +2789,17 @@ public:
 		rchandle<PragmaList>,
 		rchandle<exprnode>);
 
-
-public:
 	rchandle<PragmaList> get_pragma_list() const { return pragma_list_h; }
 	rchandle<exprnode> get_expr() const { return expr_h; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-
-// [64a] PragmaList
-// ----------------
+/*******************************************************************************
+  PragmaList ::= Pragma | PragmaList  Pragma
+********************************************************************************/
 class PragmaList : public parsenode
-/*______________________________________________________________________
-|
-|	::= Pragma | PragmaList  Pragma
-|_______________________________________________________________________*/
 {
 protected:
 	std::vector<rchandle<Pragma> > pragma_hv;
@@ -3023,24 +2807,18 @@ protected:
 public:
 	PragmaList(const QueryLoc&);
 
-public:
 	void push_back(rchandle<Pragma> pragma_h) { pragma_hv.push_back(pragma_h); }
 	rchandle<Pragma> operator[](int i) const { return pragma_hv[i]; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-
-// [65] Pragma
-// -----------
+/*******************************************************************************
+  [89] Pragma ::= "(#" S? QName (S PragmaContents)? "#)"  // ws: explicitXQ
+  [90] PragmaContents ::= (Char* - (Char* '#)' Char*))
+********************************************************************************/
 class Pragma : public parsenode
-/*______________________________________________________________________
-|
-|	::= PRAGMA_BEGIN  QNAME  PRAGMA_LITERAL  PRAGMA_END   ws:explicit
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<QName> name_h;
@@ -3052,50 +2830,58 @@ public:
 		rchandle<QName>,
 		std::string pragma_lit);
 
-
-public:
 	rchandle<QName> get_name() const { return name_h; }
 	std::string get_pragma_lit() const { return pragma_lit; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
-
-
-
-// [66] PragmaContents
-// -------------------
-/* folded into [65] */
-
 
 
 /*******************************************************************************
 
-  [68] PathExpr	::= LEADING_LONE_SLASH |
-                    SLASH  RelativePathExpr |
-                    SLASH_SLASH  RelativePathExpr |
-                    RelativePathExpr	 								 gn:leading-lone-slashXQ
+  [91] PathExpr ::= ("/" RelativePathExpr?) |
+                    ("//" RelativePathExpr) |
+                     RelativePathExpr 	// gn: leading-lone-slashXQ
 
-  Constraint: leading-lone-slash
+  [92] RelativePathExpr ::= StepExpr (("/" | "//") StepExpr)*
 
-  A single slash may appear either as a complete path expression or as the first
-  part of a path expression in which it is followed by a RelativePathExpr, which
-  can take the form of a NameTest ("*" or a QName). In contexts where operators
-  like "*", "union", etc., can occur, parsers may have difficulty distinguishing
-  operators from NameTests. For example, without lookahead the first part of the
-  expression "/ * 5", for example is easily taken to be a complete expression,
-  "/ *", which has a very different interpretation (the child nodes of "/").
+  [93] StepExpr ::= FilterExpr | AxisStep
 
-  To reduce the need for lookahead, therefore, if the token immediately following
-  a slash is "*" or a keyword, then the slash must be the beginning, but not the
-  entirety, of a PathExpr (and the following token must be a NameTest, not an
-  operator).
+  [94] AxisStep ::= (ReverseStep | ForwardStep) PredicateList
 
-  A single slash may be used as the left-hand argument of an operator by
-  parenthesizing it: (/) * 5. The expression 5 * /, on the other hand, is legal
-  without parentheses.
+  [95] ForwardStep ::= (ForwardAxis NodeTest) | AbbrevForwardStep
 
+  [96] ForwardAxis ::= ("child" "::") |
+                       ("descendant" "::") |
+                       ("attribute" "::") |
+                       ("self" "::") |
+                       ("descendant-or-self" "::") |
+                       ("following-sibling" "::") |
+                       ("following" "::")
+
+  [97] AbbrevForwardStep ::= "@"? NodeTest
+
+  [98] ReverseStep ::= (ReverseAxis NodeTest) | AbbrevReverseStep
+
+  [99] ReverseAxis ::= ("parent" "::") |
+                       ("ancestor" "::") |
+                       ("preceding-sibling" "::") |
+                       ("preceding" "::") |
+                       ("ancestor-or-self" "::")
+
+  [100] AbbrevReverseStep ::= ".."
+
+  [101] NodeTest ::= KindTest | NameTest
+
+  [102] NameTest ::= QName | Wildcard
+
+  [103] Wildcard ::= "*" | (NCName ":" "*") | ("*" ":" NCName)
+
+  [104] FilterExpr ::= PrimaryExpr PredicateList
+
+  [105] PredicateList ::= Predicate*
+
+  [106] Predicate ::= "[" Expr "]"
 ********************************************************************************/
 class PathExpr : public exprnode
 {
@@ -3109,25 +2895,21 @@ public:
 		enum ParseConstants::pathtype_t type,
 		rchandle<exprnode>);
 
-
-public:
 	enum ParseConstants::pathtype_t get_type() const { return type; }
+
 	rchandle<exprnode> get_relpath_expr() const { return relpath_expr_h; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
 /*******************************************************************************
 
-	[69] RelativePathExpr ::= StepExpr |
-                            StepExpr  SLASH  RelativePathExpr |
-                            StepExpr  SLASH_SLASH  RelativePathExpr
+  [92] RelativePathExpr ::= StepExpr (("/" | "//") StepExpr)*
 
-  Note: for the 1st alternative production, a RelativePathExpr node is generated
-  whose left child is a ContextItemExpr and its right child is the StepExpr.
+  Note: If a RelativePathExpr consists of a single StepExpr, a RelativePathExpr
+  node is generated whose left child is a ContextItemExpr and its right child
+  is the StepExpr.
 
 ********************************************************************************/
 class RelativePathExpr : public exprnode
@@ -3144,28 +2926,23 @@ public:
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
-public:
   enum ParseConstants::steptype_t get_step_type() const { return step_type; }	
+
   rchandle<exprnode> get_step_expr() const { return step_expr_h; }
+
   rchandle<exprnode> get_relpath_expr() const { return relpath_expr_h; }  
 
-public:
 	virtual	void accept(parsenode_visitor&) const;
-
 };
 
 
 /*******************************************************************************
-
-[70] StepExpr ::= AxisStep  |  FilterExpr
-
+  [93] StepExpr ::= FilterExpr | AxisStep
 ********************************************************************************/
 
 
 /*******************************************************************************
-
- [71] AxisStep ::= (ForwardStep | ReverseStep)  PredicateList?
-
+  [94] AxisStep ::= (ReverseStep | ForwardStep) PredicateList
 ********************************************************************************/
 class AxisStep : public exprnode
 {
@@ -3194,9 +2971,7 @@ public:
 
 
 /*******************************************************************************
-
-   [72] ForwardStep	::= ForwardAxis  NodeTest | AbbrevForwardStep
-
+  [95] ForwardStep ::= (ForwardAxis NodeTest) | AbbrevForwardStep
 ********************************************************************************/
 class ForwardStep : public parsenode
 {
@@ -3224,15 +2999,13 @@ public:
 
 
 /*******************************************************************************
-
-  [73] ForwardAxis ::= CHILD_AXIS	|
-                       DESCENDANT_AXIS |
-                       ATTRIBUTE_AXIS |
-                       SELF_AXIS |
-                       DESCENDANT_OR_SELF_AXIS |
-                       FOLLOWING_SIBLING_AXIS |
-                       FOLLOWING_AXIS
-
+  [96] ForwardAxis ::= ("child" "::") |
+                       ("descendant" "::") |
+                       ("attribute" "::") |
+                       ("self" "::") |
+                       ("descendant-or-self" "::") |
+                       ("following-sibling" "::") |
+                       ("following" "::")
 ********************************************************************************/
 class ForwardAxis : public parsenode
 {
@@ -3251,9 +3024,7 @@ public:
 
 
 /*******************************************************************************
-
-  [74] AbbrevForwardStep ::= NodeTest |	AT_SIGN  NodeTest
-
+  [97] AbbrevForwardStep ::= "@"? NodeTest
 ********************************************************************************/
 class AbbrevForwardStep : public parsenode
 {
@@ -3275,9 +3046,7 @@ public:
 
 
 /*******************************************************************************
-
-  [75] ReverseStep ::= ReverseAxis  NodeTest |	DOT_DOT
-
+  [98] ReverseStep ::= (ReverseAxis NodeTest) | AbbrevReverseStep
 ********************************************************************************/
 class ReverseStep : public parsenode
 {
@@ -3299,13 +3068,11 @@ public:
 
 
 /*******************************************************************************
-
- [76] ReverseAxis ::= PARENT_AXIS |
-                      ANCESTOR_AXIS |
-                      PRECEDING_SIBLING_AXIS |
-                      PRECEDING_AXIS |
-                      ANCESTOR_OR_SELF_AXIS
-
+  [99] ReverseAxis ::= ("parent" "::") |
+                       ("ancestor" "::") |
+                       ("preceding-sibling" "::") |
+                       ("preceding" "::") |
+                       ("ancestor-or-self" "::")
 ********************************************************************************/
 class ReverseAxis : public parsenode
 {
@@ -3317,35 +3084,26 @@ public:
 		const QueryLoc&,
 		enum ParseConstants::reverse_axis_t);
 
-
-public:
 	enum ParseConstants::reverse_axis_t get_axis() const { return axis; }
 
-public:
 	void accept(parsenode_visitor&) const;
 };
 
 
 /*******************************************************************************
-
-  [77] AbbrevReverseStep ::= folded into [75]
-
+  [100] AbbrevReverseStep ::= ".."  (folded into [98])
 ********************************************************************************/
 
 
 /*******************************************************************************
-
-  [78] NodeTest	::= KindTest | NameTest
-
+  [101] NodeTest ::= KindTest | NameTest
 ********************************************************************************/
 
 
 /*******************************************************************************
-
-  [79] NameTest	::= QNAME | Wildcard
+  [102] NameTest ::= QName | Wildcard
 
   qname_h and wild_h cannot both be non-NULL
-
 ********************************************************************************/
 class NameTest : public parsenode
 {
@@ -3358,24 +3116,18 @@ public:
 
 	NameTest(const QueryLoc& l, rchandle<Wildcard> w);
 
-
-public:
 	rchandle<QName> getQName() const { return theQName; }
+
   rchandle<Wildcard> getWildcard() const { return theWildcard; }
 
-public:
 	void accept(parsenode_visitor&) const;
 };
 
 
 /*******************************************************************************
-
-  [80] Wildcard	::= STAR |
-                    ELEM_WILDCARD |
-                    PREFIX_WILDCARD    ws:explicitXQ
+  [103] Wildcard ::= "*" | (NCName ":" "*") | ("*" ":" NCName)
 
   At least one of thePrefix and theLocalName will be the empty string.
-
 ********************************************************************************/
 class Wildcard : public parsenode
 {
@@ -3391,21 +3143,18 @@ public:
     const xqp_string& lname,
 		enum ParseConstants::wildcard_t type);
 
+	enum ParseConstants::wildcard_t getKind() const { return theKind; }
 
-public:
-	enum ParseConstants::wildcard_t getKind() const        { return theKind; }
-	const xqp_string& getPrefix() const    { return thePrefix; }
+	const xqp_string& getPrefix() const { return thePrefix; }
+
 	const xqp_string& getLocalName() const { return theLocalName; }
 
-public:
 	void accept(parsenode_visitor&) const;
 };
 
 
 /*******************************************************************************
-
-  [81] FilterExpr ::= PrimaryExpr  PredicateList?
-
+  [104] FilterExpr ::= PrimaryExpr PredicateList
 ********************************************************************************/
 class FilterExpr : public exprnode
 {
@@ -3420,29 +3169,22 @@ public:
 		rchandle<exprnode>,
 		rchandle<PredicateList>);
 
-
-public:
 	rchandle<exprnode> get_primary() const { return primary_h; }
+
 	rchandle<PredicateList> get_pred_list() const { return pred_list_h; }
 
   bool isPathStep() const { return theIsPathStep; }
-  void setIsPathStep()       { theIsPathStep = true; }
 
-public:
+  void setIsPathStep() { theIsPathStep = true; }
+
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-
-// [81] PredicateList
-// ------------------
+/*******************************************************************************
+  [105] PredicateList ::= Predicate*
+********************************************************************************/
 class PredicateList : public parsenode
-/*______________________________________________________________________
-|
-|	::= Predicate
-|			|	PredicateList  Predicate
-|_______________________________________________________________________*/
 {
 protected:
 	std::vector<rchandle<exprnode> > pred_hv;
@@ -3450,97 +3192,147 @@ protected:
 public:
 	PredicateList(const QueryLoc&);
 
-public:
 	void push_back(rchandle<exprnode> pred_h) { pred_hv.push_back(pred_h); }
+
 	rchandle<exprnode> operator[](int i) { return pred_hv[i]; }
+
   int size () const { return pred_hv.size (); }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-
-// [82] Predicate
-/*______________________________________________________________________
-|	::= LBRACK  Expr  RBRACK
-|_______________________________________________________________________*/
+/*******************************************************************************
+  [106] Predicate ::= "[" Expr "]"
+********************************************************************************/
 
 
-// [83] PrimaryExpr
-/*______________________________________________________________________
-|	::= Literal
-|			|	VarRef
-|			|	ParenthesizedExpr
-|			|	ContextItemExpr
-|			|	FunctionCall
-|			|	Constructor
-|			|	OrderedExpr
-|			|	UnorderedExpr
-|_______________________________________________________________________*/
+/*******************************************************************************
+  [107] PrimaryExpr ::= Literal |
+                        VarRef |
+                        ParenthesizedExpr |
+                        ContextItemExpr |
+                        FunctionCall |
+                        OrderedExpr |
+                        UnorderedExpr |
+                        Constructor
+********************************************************************************/
 
 
-// [84] Literal
-/*______________________________________________________________________
-|	::= NumericLiteral | StringLiteral
-|_______________________________________________________________________*/
+/*******************************************************************************
+  [108] Literal ::= NumericLiteral | StringLiteral
+********************************************************************************/
 
 
-// [85] NumericLiteral
-// -------------------
-class NumericLiteral : public exprnode
-/*______________________________________________________________________
-|
-|	::= INTEGER_LITERAL
-|			|	DECIMAL_LITERAL
-|			|	DOUBLE_LITERAL
-|_______________________________________________________________________*/
+/*******************************************************************************
+  [181] StringLiteral ::= ('"' (PredefinedEntityRef |
+                                CharRef |
+                                EscapeQuot |
+                                [^"&])*
+                           '"') |
+                          ("'" (PredefinedEntityRef |
+                                CharRef |
+                                EscapeApos |
+                                [^'&])*
+                           "'")
+
+  [182] PredefinedEntityRef ::= "&" ("lt" | "gt" | "amp" | "quot" | "apos") ";"
+
+  [183] EscapeQuot ::= '""'
+
+  [184] EscapeApos ::= "''"
+
+  [190] CharRef ::= [http://www.w3.org/TR/REC-xml#NT-CharRef]
+********************************************************************************/
+class StringLiteral : public exprnode
 {
+protected:
+  std::string strval;
+
 public:
+  StringLiteral(
+    const QueryLoc&,
+    std::string const&);
+
+  std::string get_strval() const { return strval; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  [109] NumericLiteral ::= IntegerLiteral | DecimalLiteral | DoubleLiteral
+
+  [178] IntegerLiteral ::= Digits
+
+  [179] DecimalLiteral :: ("." Digits) | (Digits "." [0-9]*) 
+
+  [180] DoubleLiteral ::= (("." Digits) | (Digits ("." [0-9]*)?)) [eE] [+-]? Digits
+********************************************************************************/
+class NumericLiteral : public exprnode
+{
+protected:
+  class ValueBase
+  {
+  public:
+    virtual ~ValueBase () {}
+
+    virtual std::string toString () const = 0;
+  };
+
+  template<typename T> class Value : public ValueBase 
+  {
+  public:
+    T data;
+
+    Value (const T& x) : data (x) {}
+
+    std::string toString () const { return to_string (data); }
+  };
 
 protected:
   enum ParseConstants::numeric_type_t type;
 
-  class ValueBase {
-  public:
-    virtual ~ValueBase () {}
-    virtual std::string toString () const = 0;
-  };
-  template<typename T> class Value : public ValueBase {
-  public:
-    T data;
-    Value (const T &x) : data (x) {}
-    std::string toString () const { return to_string (data); }
-  };
-  ValueBase *theValue;
+  ValueBase * theValue;
 
 protected:
-	NumericLiteral(const QueryLoc& loc_, ParseConstants::numeric_type_t type_, ValueBase *val)
-    : exprnode (loc_), type (type_), theValue (val) {}
+	NumericLiteral(
+        const QueryLoc& loc_,
+        ParseConstants::numeric_type_t type_,
+        ValueBase* val)
+    :
+    exprnode (loc_),
+    type (type_),
+    theValue (val)
+  {
+  }
 
 public:
   ~NumericLiteral () { delete theValue; }
-  template<typename T> static NumericLiteral *new_literal (const QueryLoc& loc_, ParseConstants::numeric_type_t type_, const T &x)
-  { return new NumericLiteral (loc_, type_, new Value<T> (x)); }
+
+  template<typename T> static NumericLiteral* new_literal(
+      const QueryLoc& loc_,
+      ParseConstants::numeric_type_t type_,
+      const T& x)
+  {
+    return new NumericLiteral(loc_, type_, new Value<T>(x));
+  }
+
   enum ParseConstants::numeric_type_t get_type() const { return type; }
+
   std::string toString () const { return theValue->toString (); }
-  template<typename T> T get () const { return static_cast<Value<T> *> (theValue)->data; }
 
-public:
+  template<typename T> T get() const { return static_cast<Value<T>*>(theValue)->data; }
+
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-
-// [86] VarRef
-// -----------
+/*******************************************************************************
+  [110] VarRef ::= "$" VarName
+  [111] VarName ::= QName
+********************************************************************************/
 class VarRef : public exprnode
-/*______________________________________________________________________
-|
-|	::= DOLLAR  VARNAME
-|_______________________________________________________________________*/
 {
 protected:
 	std::string varname;
@@ -3550,25 +3342,16 @@ public:
 		const QueryLoc&,
 		std::string varname);
 
-
-public:
 	std::string get_varname() const { return varname; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-
-// [87] ParenthesizedExpr
-// ----------------------
+/*******************************************************************************
+  [112] ParenthesizedExpr ::= "(" Expr? ")"
+********************************************************************************/
 class ParenthesizedExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= LPAR  RPAR
-|			|	LPAR  Expr  RPAR
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<exprnode> expr_h;
@@ -3578,46 +3361,33 @@ public:
 		const QueryLoc&,
 		rchandle<exprnode>);
 
-
-public:
 	rchandle<exprnode> get_expr() const { return expr_h; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };	
 
 
-
-// [88] ContextItemExpr
-// --------------------
+/*******************************************************************************
+  [113] ContextItemExpr ::= "."
+********************************************************************************/
 class ContextItemExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= DOT
-|_______________________________________________________________________*/
 {
 protected:
   bool placeholder;
   
 public:
   ContextItemExpr(const QueryLoc&, bool _placeholder = false);
-  bool is_placeholder() { return placeholder; };
 
-public:
+  bool is_placeholder() const { return placeholder; }
+
 	void accept(parsenode_visitor&) const;
-
 };	
 
 
-
-// [89] OrderedExpr
-// ----------------
+/*******************************************************************************
+  [114] OrderedExpr ::= "ordered" "{" Expr "}"
+********************************************************************************/
 class OrderedExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= ORDERED_LBRACE  Expr  RBRACE
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<exprnode> expr_h;
@@ -3627,24 +3397,16 @@ public:
 		const QueryLoc&,
 		rchandle<exprnode>);
 
-
-public:
 	rchandle<exprnode> get_expr() const { return expr_h; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-
-// [90] UnorderedExpr
-// ------------------
+/*******************************************************************************
+  [115] UnorderedExpr ::= "unordered" "{" Expr "}"
+********************************************************************************/
 class UnorderedExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= UNORDERED_LBRACE  Expr  RBRACE
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<exprnode> expr_h;
@@ -3654,26 +3416,16 @@ public:
 		const QueryLoc&,
 		rchandle<exprnode>);
 
-
-public:
 	rchandle<exprnode> get_expr() const { return expr_h; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-
-// [91] FunctionCall
-// -----------------
+/*******************************************************************************
+  [116] FunctionCall ::= QName "(" ArgList? ")"
+********************************************************************************/
 class FunctionCall : public exprnode
-/*______________________________________________________________________
-|
-|	::= QNAME  LPAR  ArgList  RPAR 	
-|																	gn:parensXQ
-|			 														gn:reserved-function-namesXQ
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<QName> fname_h;
@@ -3685,25 +3437,18 @@ public:
 		rchandle<QName>,
 		rchandle<ArgList>);
 
-
-public:
 	rchandle<QName> get_fname() const { return fname_h; }
+
 	rchandle<ArgList> get_arg_list() const { return arg_list_h; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-
-// [91a] ArgList
-// -------------
+/*******************************************************************************
+  [116a] ArgList := ExprSingle ("," ExprSingle)*
+********************************************************************************/
 class ArgList : public parsenode
-/*______________________________________________________________________
-|
-|	::= ExprSingle | ArgList  COMMA  ExprSingle
-|_______________________________________________________________________*/
 {
 protected:
 	std::vector<rchandle<exprnode> > arg_hv;
@@ -3711,34 +3456,105 @@ protected:
 public:
 	ArgList(const QueryLoc&);
 
-public:
 	void push_back(rchandle<exprnode> arg_h) { arg_hv.push_back(arg_h); }
+
 	rchandle<exprnode> operator[](int i) const { return arg_hv[i]; }
+
   int size () const { return arg_hv.size (); }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
 /*******************************************************************************
 
-  [92] Constructor ::= DirectConstructor |	ComputedConstructor
+  [117] Constructor ::= DirectConstructor | ComputedConstructor
 
-  [93] DirectConstructor ::= DirElemConstructor |
-                             DirCommentConstructor |
-                            DirPIConstructor
+  [118] DirectConstructor ::= DirElemConstructor |
+                              DirCommentConstructor |
+                              DirPIConstructor
 
+  [119]  DirElemConstructor ::= "<" QName DirAttributeList?
+                                ("/>" | (">" DirElemContentList? "</" QName S? ">")) 
+
+  [120] DirAttributeList ::= DirAttr | DirAttributeList DirAttr
+
+  [120a] DirAttr ::= (S (QName S? "=" S? DirAttributeValue)
+
+  [121] DirAttributeValue ::= '"' QuoteAttrContentList? '"' |
+                              "'" AposAttrContentList? "'"
+
+  [121a] QuoteAttrContentList ::= QuotAttrValueContent+
+
+  [121b] AposAttrContentList ::= AposAttrValueContent+
+
+  [122] QuotAttrValueContent ::= EscapeQuot | QuotAttrContentChar | CommonContent
+
+  [123] AposAttrValueContent ::= EscapeApos | AposAttrContentChar | CommonContent
+
+  [119a] DirElemContentList ::= DirElemContent+
+
+  [124] DirElemContent ::= DirectConstructor |
+                           CDataSection |
+                           CommonContent |
+                           ElementContentChar
+
+  [125] CommonContent ::= PredefinedEntityRef | CharRef | "{{" | "}}" | EnclosedExpr
+
+  [126] DirCommentConstructor ::= "<!--" DirCommentContents "-->"
+
+  [127] DirCommentContents ::= ((Char - '-') | ('-' (Char - '-')))*
+
+  [128] DirPIConstructor ::= "<?" PITarget (S DirPIContents)? "?>"
+
+  [129] DirPIContents ::= (Char* - (Char* '?>' Char*))
+
+  [130] CDataSection ::= "<![CDATA[" CDataSectionContents "]]>"
+
+  [131] CDataSectionContents ::= (Char* - (Char* ']]>' Char*))
+
+  [132] ComputedConstructor ::= CompDocConstructor |
+                                CompElemConstructor |
+                                CompAttrConstructor |
+                                CompNamespaceConstructor |
+                                CompTextConstructor |
+                                CompCommentConstructor |
+                                CompPIConstructor
+
+  [133] CompDocConstructor ::= "document" "{" Expr "}"
+
+  [134] CompElemConstructor ::= "element" (QName | ("{" Expr "}")) "{" ContentExpr? "}"
+
+  [135] ContentExpr ::= Expr
+
+  [136] CompAttrConstructor ::= "attribute" (QName | ("{" Expr "}")) "{" Expr? "}"
+
+  [137] CompNamespaceConstructor ::= "namespace" (Prefix | ("{" PrefixExpr "}"))
+                                     "{" URIExpr? "}"
+
+  [138] PrefixExpr ::= Expr
+
+  [139] URIExpr ::= Expr
+
+  [140] CompTextConstructor ::= "text" "{" Expr "}"
+
+  [141] CompCommentConstructor ::= "comment" "{" Expr "}"
+
+  [142] CompPIConstructor ::= "processing-instruction" (NCName | ("{" Expr "}"))
+                              "{" Expr? "}"
+
+  [183] EscapeQuot ::= '""'
+  [184] EscapeApos ::= "''"
+  [185] ElementContentChar ::= Char - [{}<&]
+  [186] QuotAttrContentChar ::= Char - ["{}<&]
+  [187] AposAttrContentChar ::= Char - ['{}<&]
 ********************************************************************************/
 
 
 /*******************************************************************************
-
-  [94] DirElemConstructor ::= LT QNAME DirAttributeList SGT  ws:explicitXQ
-                            | LT QNAME DirAttributeList GT DirElemContentList
-                              LTS QNAME GT               ws:explicitXQ,  gn:ltXQ
-
+  [119]  DirElemConstructor ::= "<" QName DirAttributeList
+                                ("/>" |
+                                 (">" DirElemContentList? "</" QName S? ">")) 
 ********************************************************************************/
 class DirElemConstructor : public exprnode
 {
@@ -3755,24 +3571,214 @@ public:
 		rchandle<DirAttributeList>,
 		rchandle<DirElemContentList>);
 
-
-public:
 	rchandle<QName> get_elem_name() const { return elem_name_h; }
+
 	rchandle<QName> get_end_name() const { return end_name_h; }
+
 	rchandle<DirAttributeList> get_attr_list() const { return attr_list_h; }
+
 	rchandle<DirElemContentList> get_dir_content_list() const { return dir_content_list_h; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
 /*******************************************************************************
+   [120] DirAttributeList ::= DirAttr | DirAttributeList  DirAttr
+********************************************************************************/
+class DirAttributeList : public parsenode
+{
+protected:
+	std::vector<rchandle<DirAttr> > theAttributes;
 
-  [94a] DirElemContentList ::= DirElemContent |
-                               DirElemContentList DirElemContent
+public:
+	DirAttributeList(const QueryLoc&);
 
+	void push_back(rchandle<DirAttr> attr) { theAttributes.push_back(attr); }
+
+	rchandle<DirAttr> operator[](int i) { return theAttributes[i]; }
+
+  const DirAttr *operator[] (int i) const { return theAttributes[i]; }
+
+  int size () const { return theAttributes.size (); }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  [120a] DirAttr ::= (S (QName S? "=" S? DirAttributeValue)
+********************************************************************************/
+class DirAttr : public parsenode
+{
+protected:
+	rchandle<QName>             theName;
+	rchandle<DirAttributeValue> theValue;
+	
+public:
+	DirAttr(
+        const QueryLoc&,
+        rchandle<QName>,
+        rchandle<DirAttributeValue>);
+
+
+public:
+	rchandle<QName> get_name() const { return theName; }
+	rchandle<DirAttributeValue> get_value() const { return theValue; }
+
+public:
+	void accept(parsenode_visitor&) const;
+};
+
+
+/******************************************************************************
+
+  [121] DirAttributeValue ::= '"' QuoteAttrContentList? '"' |
+                              "'" AposAttrContentList? "'"
+
+*******************************************************************************/
+class DirAttributeValue : public parsenode
+{
+protected:
+	rchandle<QuoteAttrContentList> quot_attr_content_h;
+	rchandle<AposAttrContentList> apos_attr_content_h;
+
+public:
+	DirAttributeValue(
+		const QueryLoc&,
+		rchandle<QuoteAttrContentList>);
+
+	DirAttributeValue(
+		const QueryLoc&,
+		rchandle<AposAttrContentList>);
+
+
+	rchandle<QuoteAttrContentList> get_quot_attr_content() const
+  {
+    return quot_attr_content_h;
+  }
+
+	rchandle<AposAttrContentList> get_apos_attr_content() const
+  {
+    return apos_attr_content_h;
+  }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/******************************************************************************
+  [121a] QuoteAttrContentList ::= QuotAttrValueContent+
+********************************************************************************/
+class QuoteAttrContentList : public parsenode
+{
+protected:
+	std::vector<rchandle<QuoteAttrValueContent> > quot_atval_content_hv;
+	
+public:
+	QuoteAttrContentList(const QueryLoc&);
+
+	void push_back(rchandle<QuoteAttrValueContent> quot_atval_content_h)
+  {
+    quot_atval_content_hv.push_back(quot_atval_content_h);
+  }
+
+	rchandle<QuoteAttrValueContent> operator[](int i) const
+  {
+    return quot_atval_content_hv[i];
+  }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  [121b] AposAttrContentList ::= AposAttrValueContent+
+********************************************************************************/
+class AposAttrContentList : public parsenode
+{
+protected:
+	std::vector<rchandle<AposAttrValueContent> > apos_atval_content_hv;
+	
+public:
+	AposAttrContentList(const QueryLoc&);
+
+	void push_back(rchandle<AposAttrValueContent> apos_atval_content_h)
+  {
+    apos_atval_content_hv.push_back(apos_atval_content_h); 
+  }
+
+	rchandle<AposAttrValueContent> operator[](int i) const
+  {
+    return apos_atval_content_hv[i]; 
+  }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  [122] QuotAttrValueContent ::= EscapeQuot | QuotAttrContentChar | CommonContent
+
+  [183] EscapeQuot ::= '""'
+
+  [186] QuotAttrContentChar ::= Char - ["{}<&]
+********************************************************************************/
+class QuoteAttrValueContent : public parsenode
+{
+protected:
+	std::string quot_atcontent;
+	rchandle<CommonContent> common_content_h;
+
+public:
+	QuoteAttrValueContent(
+		const QueryLoc&,
+		std::string quot_atcontent);
+
+	QuoteAttrValueContent(
+		const QueryLoc&,
+		rchandle<CommonContent>);
+
+	std::string get_quot_atcontent() const { return quot_atcontent; }
+
+	rchandle<CommonContent> get_common_content() const { return common_content_h; }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  [123] AposAttrValueContent ::= EscapeApos | AposAttrContentChar | CommonContent
+
+  [184] EscapeApos ::= "''"
+
+  [187] AposAttrContentChar ::= Char - ['{}<&]
+********************************************************************************/
+class AposAttrValueContent : public parsenode
+{
+protected:
+	std::string apos_atcontent;
+	rchandle<CommonContent> common_content_h;
+
+public:
+	AposAttrValueContent(
+		const QueryLoc&,
+		std::string apos_atcontent);
+
+	AposAttrValueContent(
+		const QueryLoc&,
+		rchandle<CommonContent>);
+
+	std::string get_apos_atcontent() const { return apos_atcontent; }
+
+	rchandle<CommonContent> get_common_content() const { return common_content_h; }
+
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  [119a] DirElemContentList ::= DirElemContent+
 ********************************************************************************/
 class DirElemContentList : public parsenode
 {
@@ -3782,25 +3788,27 @@ protected:
 public:
 	DirElemContentList(const QueryLoc&);
 
-public:
 	void push_back(rchandle<DirElemContent> dir_content_h)
-		{ dir_content_hv.push_back(dir_content_h); }
+  {
+    dir_content_hv.push_back(dir_content_h);
+  }
+
 	rchandle<DirElemContent> operator[](int i) const
-		{ return dir_content_hv[i]; }
+  {
+    return dir_content_hv[i];
+  }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-/*******************************************************************************
+/**************************a*****************************************************
+  [124] DirElemContent ::= DirectConstructor |
+                           CDataSection |
+                           CommonContent |
+                           ElementContentChar
 
-  [99] DirElemContent ::= DirectConstructor |
-                          ELEMENT_CONTENT |
-                          CDataSection |
-                          CommonContent
-
+  [185] ElementContentChar ::= Char - [{}<&]
 ********************************************************************************/
 class DirElemContent : public exprnode
 {
@@ -3828,32 +3836,28 @@ public:
 		const QueryLoc&,
 		rchandle<CommonContent>);
 
+	rchandle<exprnode> get_direct_cons() const { return direct_cons_h; }
 
-public:
-	rchandle<exprnode> get_direct_cons() const
-		{ return direct_cons_h; }
-	std::string get_elem_content() const
-		{ return elem_content; }
-	rchandle<CDataSection> get_cdata() const
-		{ return cdata_h; }
-	rchandle<CommonContent> get_common_content() const
-		{ return common_content_h; }
+	std::string get_elem_content() const { return elem_content; }
+
+	rchandle<CDataSection> get_cdata() const { return cdata_h; }
+
+	rchandle<CommonContent> get_common_content() const { return common_content_h; }
+
   bool isStripped() const { return theIsStripped; }
+
   void setIsStripped(bool aIsStripped) const { theIsStripped = aIsStripped; }
 
-public:
 	void accept(parsenode_visitor&) const;
 };
 
 
 /*******************************************************************************
-
-  [100] CommonContent ::= ENTITY_REF |
-                          CHAR_REF_LITERAL |
-                          DOUBLE_LBRACE |
-                          DOUBLE_RBRACE |
+  [125] CommonContent ::= PredefinedEntityRef |
+                          CharRef |
+                          "{{" |
+                          "}}" |
                           EnclosedExpr
-
 ********************************************************************************/
 class CommonContent : public exprnode
 {
@@ -3876,22 +3880,20 @@ public:
 		const QueryLoc&,
 		enum ParseConstants::common_content_t);
 
-
-public:
 	enum ParseConstants::common_content_t get_type() const { return type; }
+
 	const std::string& get_ref() const { return ref; }
+
 	rchandle<EnclosedExpr> get_expr() const { return expr_h; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
 /*******************************************************************************
+  [130] CDataSection ::= "<![CDATA[" CDataSectionContents "]]>"
 
-  [105] CDataSection ::= CDATA_BEGIN  CHAR_LITERAL  CDATA_END 	ws:explicitXQ
-
+  [131] CDataSectionContents ::= (Char* - (Char* ']]>' Char*))
 ********************************************************************************/
 class CDataSection : public exprnode
 {
@@ -3903,253 +3905,18 @@ public:
 		const QueryLoc&,
 		std::string cdata_content);
 
-
-public:
 	std::string get_cdata_content() const { return cdata_content; }
 
-public:
 	void accept(parsenode_visitor&) const;
 };
 
 
 /*******************************************************************************
+  [126] DirCommentConstructor ::= "<!--" DirCommentContents "-->"
 
- [106] CDataSectionContents  (lexical rule)
-
+  [127] DirCommentContents ::= ((Char - '-') | ('-' (Char - '-')))*
 ********************************************************************************/
-
-
-/*******************************************************************************
-
-   [97] DirAttributeList ::= DirAttr | DirAttributeList  DirAttr
-
-********************************************************************************/
-class DirAttributeList : public parsenode
-{
-protected:
-	std::vector<rchandle<DirAttr> > theAttributes;
-
-public:
-	DirAttributeList(const QueryLoc&);
-
-public:
-	void push_back(rchandle<DirAttr> attr)
-  {
-    theAttributes.push_back(attr);
-  }
-
-	rchandle<DirAttr> operator[](int i)
-  {
-    return theAttributes[i];
-  }
-  const DirAttr *operator[] (int i) const {
-    return theAttributes[i];
-  }
-  int size () const { return theAttributes.size (); }
-
-public:
-	void accept(parsenode_visitor&) const;
-};
-
-
-/*******************************************************************************
-
-  [97a] DirAttr ::= QNAME  EQUALS  DirAttributeValue 	 ws:explicitXQ
-
-********************************************************************************/
-class DirAttr : public parsenode
-{
-protected:
-	rchandle<QName>             theName;
-	rchandle<DirAttributeValue> theValue;
-	
-public:
-	DirAttr(
-        const QueryLoc&,
-        rchandle<QName>,
-        rchandle<DirAttributeValue>);
-
-
-public:
-	rchandle<QName> get_name() const { return theName; }
-	rchandle<DirAttributeValue> get_value() const { return theValue; }
-
-public:
-	void accept(parsenode_visitor&) const;
-};
-
-
-/******************************************************************************
-
-  [98] DirAttributeValue ::= QUOTE QuoteAttrContentList QUOTE |
-                             APOS AposAttrContentList APOS       ws:explicitXQ
-
-*******************************************************************************/
-class DirAttributeValue : public parsenode
-{
-protected:
-	rchandle<QuoteAttrContentList> quot_attr_content_h;
-	rchandle<AposAttrContentList> apos_attr_content_h;
-
-public:
-	DirAttributeValue(
-		const QueryLoc&,
-		rchandle<QuoteAttrContentList>);
-
-	DirAttributeValue(
-		const QueryLoc&,
-		rchandle<AposAttrContentList>);
-
-
-public:
-	rchandle<QuoteAttrContentList> get_quot_attr_content() const
-  {
-    return quot_attr_content_h;
-  }
-
-	rchandle<AposAttrContentList> get_apos_attr_content() const
-  {
-    return apos_attr_content_h;
-  }
-
-public:
-	void accept(parsenode_visitor&) const;
-};
-
-
-/******************************************************************************
-
-  [98a] QuoteAttrContentList ::= ESCAPE_QUOTE |
-                                 QuoteAttrValueContent |
-                                 QuoteAttrContentList  ESCAPE_QUOTE |
-                                 QuoteAttrContentList  QuoteAttrValueContent
-
-********************************************************************************/
-class QuoteAttrContentList : public parsenode
-{
-protected:
-	std::vector<rchandle<QuoteAttrValueContent> > quot_atval_content_hv;
-	
-public:
-	QuoteAttrContentList(const QueryLoc&);
-
-public:
-	void push_back(rchandle<QuoteAttrValueContent> quot_atval_content_h)
-  {
-    quot_atval_content_hv.push_back(quot_atval_content_h);
-  }
-
-	rchandle<QuoteAttrValueContent> operator[](int i) const
-  {
-    return quot_atval_content_hv[i];
-  }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-/*******************************************************************************
-
-  [98b] AposAttrContentList ::= ESCAPE_APOS |
-                                AposAttrValueContent |
-                                AposAttrContentList  ESCAPE_APOS |
-                                AposAttrContentList  AposAttrValueContent
-
-********************************************************************************/
-class AposAttrContentList : public parsenode
-{
-protected:
-	std::vector<rchandle<AposAttrValueContent> > apos_atval_content_hv;
-	
-public:
-	AposAttrContentList(const QueryLoc&);
-
-public:
-	void push_back(rchandle<AposAttrValueContent> apos_atval_content_h)
-		{ apos_atval_content_hv.push_back(apos_atval_content_h); }
-	rchandle<AposAttrValueContent> operator[](int i) const
-		{ return apos_atval_content_hv[i]; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-/*******************************************************************************
-
-  [99] QuotAttrValueContent ::= QUOTE_ATTR_CONTENT | CommonContent
-
-********************************************************************************/
-class QuoteAttrValueContent : public parsenode
-{
-protected:
-	std::string quot_atcontent;
-	rchandle<CommonContent> common_content_h;
-
-public:
-	QuoteAttrValueContent(
-		const QueryLoc&,
-		std::string quot_atcontent);
-
-	QuoteAttrValueContent(
-		const QueryLoc&,
-		rchandle<CommonContent>);
-
-
-public:
-	std::string get_quot_atcontent() const { return quot_atcontent; }
-	rchandle<CommonContent> get_common_content() const { return common_content_h; }
-
-public:
-	void accept(parsenode_visitor&) const;
-};
-
-
-/*******************************************************************************
-
-  [100] AposAttrValueContent ::= APOS_ATTR_CONTENT | CommonContent
-
-********************************************************************************/
-class AposAttrValueContent : public parsenode
-{
-protected:
-	std::string apos_atcontent;
-	rchandle<CommonContent> common_content_h;
-
-public:
-	AposAttrValueContent(
-		const QueryLoc&,
-		std::string apos_atcontent);
-
-	AposAttrValueContent(
-		const QueryLoc&,
-		rchandle<CommonContent>);
-
-
-public:
-	std::string get_apos_atcontent() const { return apos_atcontent; }
-	rchandle<CommonContent> get_common_content() const { return common_content_h; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-
-/*******************************************************************************
-
-********************************************************************************/
-// [101] DirCommentConstructor
-// ---------------------------
 class DirCommentConstructor : public exprnode
-/*______________________________________________________________________
-|
-|	::= COMMENT_BEGIN  EXPR_COMMENT_LITERAL  COMMENT_END 	 ws:explicitXQ
-|_______________________________________________________________________*/
 {
 protected:
 	std::string comment;
@@ -4159,33 +3926,18 @@ public:
 		const QueryLoc&,
 		std::string const& comment);
 
-
-public:
   std::string get_comment() const { return comment; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-
-// [102] DirCommentContents
-// ------------------------
-/* lexical rule */
-
-
 /*******************************************************************************
+  [128] DirPIConstructor ::= "<?" PITarget (S DirPIContents)? "?>"
 
+  [129] DirPIContents ::= (Char* - (Char* '?>' Char*))
 ********************************************************************************/
-// [103] DirPIConstructor
-// ----------------------
 class DirPIConstructor : public exprnode
-/*______________________________________________________________________
-|
-|	::= PI_BEGIN  PI_TARGET  PI_END    ws:explicitXQ
-|			|	PI_BEGIN  PI_TARGET  CHAR_LITERAL  PI_END	   ws:explicitXQ
-|_______________________________________________________________________*/
 {
 protected:
 	std::string pi_target;
@@ -4201,48 +3953,28 @@ public:
 		std::string const& pi_target,
 		std::string const& pi_content);
 
-
-public:
 	std::string get_pi_target() const { return pi_target; }
+
 	std::string get_pi_content() const { return pi_content; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-
-// [104] DirPIContents
-// -------------------
-/* lexical rule */
-
+/*******************************************************************************
+  [132] ComputedConstructor ::= CompDocConstructor |
+                                CompElemConstructor |
+                                CompAttrConstructor |
+                                CompTextConstructor |
+                                CompCommentConstructor |
+                                CompPIConstructor
+********************************************************************************/
 
 
 /*******************************************************************************
-
+  [133] CompDocConstructor ::= "document" "{" Expr "}"
 ********************************************************************************/
-// [107] ComputedConstructor
-// -------------------------
-/*______________________________________________________________________
-|
-|	::= CompDocConstructor
-|			|	CompElemConstructor
-|			|	CompAttrConstructor
-|			|	CompTextConstructor
-|			|	CompCommentConstructor
-|			|	CompPIConstructor
-|_______________________________________________________________________*/
-
-
-
-// [110] CompDocConstructor
-// ------------------------
 class CompDocConstructor : public exprnode
-/*______________________________________________________________________
-|
-|	::= DOCUMENT_LBRACE  Expr  RBRACE
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<exprnode> expr_h;
@@ -4252,25 +3984,16 @@ public:
 		const QueryLoc&,
 		rchandle<exprnode>);
 
-
-public:
 	rchandle<exprnode> get_expr() const { return expr_h; }
 
-public:
 	void accept(parsenode_visitor&) const;
 };
 
 
 /*******************************************************************************
+  [134] CompElemConstructor ::= "element" (QName | ("{" Expr "}")) "{" ContentExpr? "}"
 
-  [111] CompElemConstructor ::=
-                          ELEMENT_QNAME_LBRACE RBRACE |
-                          ELEMENT_QNAME_LBRACE ContentExp  RBRACE |
-                          ELEMENT_LBRACE Expr RBRACE LBRACE RBRACE |
-                          ELEMENT_LBRACE Expr RBRACE LBRACE ContentExpr RBRACE
-
-  [112] ContentExpr := Expr
-
+  [135] ContentExpr ::= Expr
 ********************************************************************************/
 class CompElemConstructor : public exprnode
 {
@@ -4284,23 +4007,16 @@ public:
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
-
-public:
 	rchandle<exprnode> get_qname_expr() const { return qname_expr_h; }
+
 	rchandle<exprnode> get_content_expr() const { return content_expr_h; }
 
-public:
 	void accept(parsenode_visitor&) const;
 };
 
 
 /*******************************************************************************
-
- [113] CompAttrConstructor ::= ATTRIBUTE QNAME LBRACE RBRACE |
-                               ATTRIBUTE QNAME LBRACE Expr RBRACE |
-                               ATTRIBUTE LBRACE Expr RBRACE LBRACE RBRACE |
-                               ATTRIBUTE LBRACE Expr RBRACE LBRACE Expr RBRACE
-
+ [136] CompAttrConstructor ::= "attribute" (QName | ("{" Expr "}")) "{" Expr? "}"
 ********************************************************************************/
 class CompAttrConstructor : public exprnode
 {
@@ -4314,25 +4030,19 @@ public:
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
-
-public:
 	rchandle<exprnode> get_qname_expr() const { return qname_expr_h; }
+
 	rchandle<exprnode> get_val_expr() const { return val_expr_h; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
 
-// [112] CompTextConstructor
-// -------------------------
+/*******************************************************************************
+  [140] CompTextConstructor ::= "text" "{" Expr "}"
+********************************************************************************/
 class CompTextConstructor : public exprnode
-/*______________________________________________________________________
-|
-|	::= TEXT_LBRACE  Expr  RBRACE
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<exprnode> text_expr_h;
@@ -4342,24 +4052,16 @@ public:
 		const QueryLoc&,
 		rchandle<exprnode> text_expr_h);
 
-
-public:
 	rchandle<exprnode> get_text_expr() const { return text_expr_h; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-
-// [113] CompCommentConstructor
-// ----------------------------
+/*******************************************************************************
+  [141] CompCommentConstructor ::= "comment" "{" Expr "}"
+********************************************************************************/
 class CompCommentConstructor : public exprnode
-/*______________________________________________________________________
-|
-|	::= COMMENT_LBRACE  Expr  RBRACE
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<exprnode> comment_expr_h;
@@ -4369,27 +4071,17 @@ public:
 		const QueryLoc&,
 		rchandle<exprnode>);
 
-
-public:
 	rchandle<exprnode> get_comment_expr() const { return comment_expr_h; }
 
-public:
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-
-// [114] CompPIConstructor
-// -----------------------
+/*******************************************************************************
+  [142] CompPIConstructor ::= "processing-instruction" (NCName | ("{" Expr "}"))
+                              "{" Expr? "}"
+********************************************************************************/
 class CompPIConstructor : public exprnode
-/*______________________________________________________________________
-|
-|	::= PROCESSING_INSTRUCTION  NCNAME  LBRACE  RBRACE
-|			|	PROCESSING_INSTRUCTION  NCNAME  LBRACE  Expr  RBRACE
-|			|	PROCESSING_INSTRUCTION  LBRACE  Expr  RBRACE LBRACE  RBRACE
-|			|	PROCESSING_INSTRUCTION  LBRACE  Expr  RBRACE LBRACE  Expr  RBRACE
-|_______________________________________________________________________*/
 {
 protected:
 	std::string target;
@@ -4407,159 +4099,30 @@ public:
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 
-
-public:
 	std::string get_target() const { return target; }
+
 	rchandle<exprnode> get_target_expr() const { return target_expr_h; }
+
 	rchandle<exprnode> get_content_expr() const { return content_expr_h; }
 
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-// [115] SingleType
-// ----------------
-class SingleType : public parsenode
-/*______________________________________________________________________
-|
-|	::= AtomicType | AtomicType  HOOK
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<AtomicType> atomic_type_h;
-	bool hook_b;
-
-public:
-	SingleType(
-		const QueryLoc&,
-		rchandle<AtomicType>,
-		bool hook_b);
-
-
-public:
-	rchandle<AtomicType> get_atomic_type() const { return atomic_type_h; }
-	bool get_hook_bit() const { return hook_b; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-/*******************************************************************************
-
-  [116] TypeDeclaration ::= AS  SequenceType
-
-********************************************************************************/
-
-
-/*******************************************************************************
-
-  [119] SequenceType ::= ItemType OccurrenceIndicator? | "empty-sequence" "(" ")"
-
-********************************************************************************/
-class SequenceType : public parsenode
-{
-protected:
-	rchandle<parsenode> itemtype_h;
-	rchandle<OccurrenceIndicator> occur_h;
-
-public:
-	SequenceType(
-		const QueryLoc&,
-		rchandle<parsenode>,
-		rchandle<OccurrenceIndicator>);
-
-
-public:
-	rchandle<parsenode> get_itemtype() const { return itemtype_h; }
-	rchandle<OccurrenceIndicator> get_occur() const { return occur_h; }
-	bool get_void_bit() const { return itemtype_h==NULL; }
-
-public:
 	void accept(parsenode_visitor&) const;
 };
 
 
 /*******************************************************************************
+  [143] SingleType ::= AtomicType "?"?
 
-  [120] OccurrenceIndicator ::= HOOK | STAR | PLUS   gn:occurrence-indicatorsXQ
+  [144] TypeDeclaration ::= "as" SequenceType
 
-********************************************************************************/
-class OccurrenceIndicator : public parsenode
-{
-protected:
-	enum ParseConstants::occurrence_t type;
+  [145] SequenceType ::= ("empty-sequence" "(" ")") | (ItemType OccurrenceIndicator?)
 
-public:
-	OccurrenceIndicator(
-		const QueryLoc&,
-		enum ParseConstants::occurrence_t);
+  [146] OccurrenceIndicator ::= "?" | "*" | "+"
 
+  [147] ItemType ::= KindTest | ("item" "(" ")") | AtomicType
 
-public:
-	enum ParseConstants::occurrence_t get_type() const { return type; }
+  [148] AtomicType ::= QName
 
-public:
-	void accept(parsenode_visitor&) const;
-};
-
-
-/*******************************************************************************
-
-  [121] ItemType ::= AtomicType | KindTest | ITEM_TEST
-
-********************************************************************************/
-class ItemType : public parsenode
-{
-protected:
-	bool item_test_b;
-
-public:
-	ItemType(
-		const QueryLoc&,
-		bool item_test_b);
-		
-	ItemType(const QueryLoc&);
-		
-
-public:
-	bool get_item_test_bit() const { return item_test_b; }
-
-public:
-	virtual	void accept(parsenode_visitor&) const;
-};
-
-
-/*******************************************************************************
-
-  [122] AtomicType ::= QNAME
-
-********************************************************************************/
-class AtomicType : public parsenode
-{
-protected:
-	rchandle<QName> qname_h;
-
-public:
-	AtomicType(
-		const QueryLoc&,
-		rchandle<QName>);
-		
-
-public:
-	rchandle<QName> get_qname() const { return qname_h; }
-
-public:
-	void accept(parsenode_visitor&) const;
-};
-
-
-/*******************************************************************************
-
-  [123] KindTest ::= DocumentTest |
+  [149] KindTest ::= DocumentTest |
                      ElementTest |
                      AttributeTest |
                      SchemaElementTest |
@@ -4569,631 +4132,465 @@ public:
                      TextTest |
                      AnyKindTest
 
+  [150] AnyKindTest ::= "node" "(" ")"
+
+  [151] DocumentTest ::= "document-node" "(" (ElementTest | SchemaElementTest)? ")"
+
+  [152] TextTest ::= "text" "(" ")"
+
+  [153] CommentTest ::= "comment" "(" ")"
+
+  [154] NamespaceNodeTest ::= "namespace-node" "(" ")"
+
+  [155] PITest ::= "processing-instruction" "(" (NCName | StringLiteral)? ")"
+
+  [156] AttributeTest ::= "attribute" "(" (AttribNameOrWildcard ("," TypeName)?)? ")"
+
+  [157] AttribNameOrWildcard ::= AttributeName | "*"
+
+  [158] SchemaAttributeTest ::= "schema-attribute" "(" AttributeDeclaration ")"
+
+  [159] AttributeDeclaration ::= AttributeName
+
+  [160] ElementTest ::= "element" "(" (ElementNameOrWildcard ("," TypeName "?"?)?)? ")"
+
+  [161] ElementNameOrWildcard ::= ElementName | "*"
+
+  [162] SchemaElementTest ::= "schema-element" "(" ElementDeclaration ")"
+
+  [163] ElementDeclaration ::= ElementName
+
+  [164] AttributeName ::= QName
+
+  [165] ElementName ::= QName
+
+  [166] TypeName ::= QName
+
+  [167] URILiteral ::= StringLiteral
+
+  [168] Prefix ::= NCName
 ********************************************************************************/
 
 
 /*******************************************************************************
+  [143] SingleType ::= AtomicType "?"?
+********************************************************************************/
+class SingleType : public parsenode
+{
+protected:
+  rchandle<AtomicType> atomic_type_h;
+  bool hook_b;
 
-  [124] AnyKindTest ::= NODE_LPAR  RPAR
+public:
+  SingleType(
+    const QueryLoc&,
+    rchandle<AtomicType>,
+    bool hook_b);
 
+  rchandle<AtomicType> get_atomic_type() const { return atomic_type_h; }
+
+  bool get_hook_bit() const { return hook_b; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  [144] TypeDeclaration ::= "as" SequenceType
+********************************************************************************/
+
+
+/*******************************************************************************
+  [145] SequenceType ::= ("empty-sequence" "(" ")") |
+                         (ItemType OccurrenceIndicator?)
+********************************************************************************/
+class SequenceType : public parsenode
+{
+protected:
+  rchandle<parsenode> itemtype_h;
+  rchandle<OccurrenceIndicator> occur_h;
+
+public:
+  SequenceType(
+    const QueryLoc&,
+    rchandle<parsenode>,
+    rchandle<OccurrenceIndicator>);
+
+  rchandle<parsenode> get_itemtype() const { return itemtype_h; }
+
+  rchandle<OccurrenceIndicator> get_occur() const { return occur_h; }
+
+  bool get_void_bit() const { return itemtype_h==NULL; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  [146] OccurrenceIndicator ::= "?" | "*" | "+"
+********************************************************************************/
+class OccurrenceIndicator : public parsenode
+{
+protected:
+  enum ParseConstants::occurrence_t type;
+
+public:
+  OccurrenceIndicator(
+    const QueryLoc&,
+    enum ParseConstants::occurrence_t);
+
+  enum ParseConstants::occurrence_t get_type() const { return type; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  [147] ItemType ::= KindTest | ("item" "(" ")") | AtomicType
+********************************************************************************/
+class ItemType : public parsenode
+{
+protected:
+  bool item_test_b;
+
+public:
+  ItemType(
+    const QueryLoc&,
+    bool item_test_b);
+    
+  ItemType(const QueryLoc&);
+    
+  bool get_item_test_bit() const { return item_test_b; }
+
+  virtual  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  [148] AtomicType ::= QName
+********************************************************************************/
+class AtomicType : public parsenode
+{
+protected:
+  rchandle<QName> qname_h;
+
+public:
+  AtomicType(
+    const QueryLoc&,
+    rchandle<QName>);
+    
+  rchandle<QName> get_qname() const { return qname_h; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  [149] KindTest ::= DocumentTest |
+                     ElementTest |
+                     AttributeTest |
+                     SchemaElementTest |
+                     SchemaAttributeTest |
+                     PITest |
+                     CommentTest |
+                     TextTest |
+                     AnyKindTest
+********************************************************************************/
+
+
+/*******************************************************************************
+  [150] AnyKindTest ::= "node" "(" ")"
 ********************************************************************************/
 class AnyKindTest : public parsenode
 {
 public:
-	AnyKindTest(const QueryLoc&);
+  AnyKindTest(const QueryLoc&);
 
-public:
-	void accept(parsenode_visitor&) const;
+  void accept(parsenode_visitor&) const;
 };
 
 
 /*******************************************************************************
-
-  [125] DocumentTest ::= "document-node" "(" (ElementTest | SchemaElementTest)? ")"
-
+  [151] DocumentTest ::= "document-node" "(" (ElementTest | SchemaElementTest)? ")"
 ********************************************************************************/
 class DocumentTest : public parsenode
 {
 protected:
-	rchandle<ElementTest> elem_test_h;
-	rchandle<SchemaElementTest> schema_elem_test_h;
+  rchandle<ElementTest> elem_test_h;
+  rchandle<SchemaElementTest> schema_elem_test_h;
 
 public:
-	DocumentTest(const QueryLoc&);
+  DocumentTest(const QueryLoc&);
 
   DocumentTest(const QueryLoc&, rchandle<ElementTest>);
-	
-	DocumentTest(const QueryLoc&, rchandle<SchemaElementTest>);
+  
+  DocumentTest(const QueryLoc&, rchandle<SchemaElementTest>);
 
-	rchandle<ElementTest> get_elem_test() const
+  rchandle<ElementTest> get_elem_test() const
   {
     return elem_test_h;
   }
 
-	rchandle<SchemaElementTest> get_schema_elem_test() const
+  rchandle<SchemaElementTest> get_schema_elem_test() const
   {
     return schema_elem_test_h;
   }
 
-	void accept(parsenode_visitor&) const;
+  void accept(parsenode_visitor&) const;
 };
 
 
 /*******************************************************************************
-
-  [126] TextTest ::= TEXT_LPAR  RPAR
-
+  [152] TextTest ::= "text" "(" ")"
 ********************************************************************************/
 class TextTest : public parsenode
 {
 public:
-	TextTest(const QueryLoc&);
+  TextTest(const QueryLoc&);
 
-public:
-	void accept(parsenode_visitor&) const;
+  void accept(parsenode_visitor&) const;
 };
 
 
-// [127] CommentTest
-// -----------------
+/*******************************************************************************
+  [153] CommentTest ::= "comment" "(" ")"
+********************************************************************************/
 class CommentTest : public parsenode
-/*______________________________________________________________________
-|
-|	::= COMMENT_LPAR  RPAR
-|_______________________________________________________________________*/
 {
 public:
-	CommentTest(const QueryLoc&);
+  CommentTest(const QueryLoc&);
 
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-// [128] PITest
-// ------------
+/*******************************************************************************
+  [155] PITest ::= "processing-instruction" "(" (NCName | StringLiteral)? ")"
+********************************************************************************/
 class PITest : public parsenode
-/*______________________________________________________________________
-|
-|	::= PI_LPAR  RPAR
-|			|	PI_LPAR  NCNAME  RPAR
-|			|	PI_LPAR  STRING_LITERAL  RPAR
-|_______________________________________________________________________*/
 {
 protected:
-	std::string target;
+  std::string target;
 
 public:
-	PITest(
-		const QueryLoc&,
-		std::string target);
+  PITest(
+    const QueryLoc&,
+    std::string target);
 
+  std::string get_target() const { return target; }
 
-public:
-	std::string get_target() const { return target; }
-
-public:
-	void accept(parsenode_visitor&) const;
+  void accept(parsenode_visitor&) const;
 };
 
 
 /******************************************************************************
+  [156] AttributeTest ::= "attribute" "(" (AttribNameOrWildcard ("," TypeName)?)? ")"
 
-  [129] AttributeTest ::= ATTRIBUTE_LPAR RPAR |
-                          ATTRIBUTE_LPAR AttribNameOrWildcard RPAR |
-                          ATTRIBUTE_LPAR AttribNameOrWildcard COMMA TypeName RPAR
-
+  [157] AttribNameOrWildcard ::= AttributeName | "*"
 ********************************************************************************/
 class AttributeTest : public parsenode
 {
 protected:
-	rchandle<QName> theAttrName;
-	rchandle<TypeName> theTypeName;
+  rchandle<QName> theAttrName;
+  rchandle<TypeName> theTypeName;
 
 public:
-	AttributeTest(
-		const QueryLoc&,
-		rchandle<QName>,
-		rchandle<TypeName>);
+  AttributeTest(
+    const QueryLoc&,
+    rchandle<QName>,
+    rchandle<TypeName>);
 
+  rchandle<QName> get_attr_name() const    { return theAttrName; }
 
-public:
-	rchandle<QName> get_attr_name() const    { return theAttrName; }
-	rchandle<TypeName> get_type_name() const { return theTypeName; }
-	bool is_wild() const                     { return theAttrName == NULL; }
+  rchandle<TypeName> get_type_name() const { return theTypeName; }
 
-public:
-	void accept(parsenode_visitor&) const;
-};
+  bool is_wild() const                     { return theAttrName == NULL; }
 
-
-
-// [129] SchemaAttributeTest
-// -------------------------
-class SchemaAttributeTest : public parsenode
-/*______________________________________________________________________
-|
-|	::= SCHEMA_ATTRIBUTE_LPAR  AttributeDeclaration  RPAR
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<QName> attr_h;
-
-public:
-	SchemaAttributeTest(
-		const QueryLoc&,
-		rchandle<QName>);
-
-
-public:
-	rchandle<QName> get_attr() const { return attr_h; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
 /*******************************************************************************
+  [158] SchemaAttributeTest ::= "schema-attribute" "(" AttributeDeclaration ")"
 
-  [132] ElementNameOrWildcard ::= ElementName | STAR (inlined production)
+  [159] AttributeDeclaration ::= AttributeName
+********************************************************************************/
+class SchemaAttributeTest : public parsenode
+{
+protected:
+  rchandle<QName> attr_h;
 
-  [133] ElementTest ::= ELEMENT_LPAR RPAR |
-                        ELEMENT_LPAR ElemNameOrWildcard RPAR |
-                        ELEMENT_LPAR ElemNameOrWildcard COMMA TypeName RPAR |
-                        ELEMENT_LPAR ElemNameOrWildcard COMMA TypeName HOOK RPAR
+public:
+  SchemaAttributeTest(
+    const QueryLoc&,
+    rchandle<QName>);
 
-  Note: theElementName will be NULL in the case of the 1st production or in
-  case of wildcard (*) in the other productions.
+  rchandle<QName> get_attr() const { return attr_h; }
 
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  [160] ElementTest ::= "element"
+                        "(" (ElementNameOrWildcard ("," TypeName "?"?)?)? ")"
+
+  [161] ElementNameOrWildcard ::= ElementName | "*"
 ********************************************************************************/
 class ElementTest : public parsenode
 {
 protected:
-	rchandle<QName>    theElementName;
-	rchandle<TypeName> theTypeName;
-	bool               theNilledAllowed;
+  rchandle<QName>    theElementName;
+  rchandle<TypeName> theTypeName;
+  bool               theNilledAllowed;
 
 public:
-	ElementTest(
-		const QueryLoc& l,
-		rchandle<QName> qn,
-		rchandle<TypeName> tn,
+  ElementTest(
+    const QueryLoc& l,
+    rchandle<QName> qn,
+    rchandle<TypeName> tn,
     bool na);
 
+  rchandle<QName> getElementName() const { return theElementName; }
 
-public:
-	rchandle<QName> getElementName() const { return theElementName; }
-	rchandle<TypeName> getTypeName() const { return theTypeName; }
-	bool isWildcard() const                { return theElementName == NULL; }
-	bool isNilledAllowed() const           { return theNilledAllowed; }
+  rchandle<TypeName> getTypeName() const { return theTypeName; }
 
-public:
-	void accept(parsenode_visitor&) const;
+  bool isWildcard() const                { return theElementName == NULL; }
+
+  bool isNilledAllowed() const           { return theNilledAllowed; }
+
+  void accept(parsenode_visitor&) const;
 };
-
-
-// [133] SchemaElementTest
-// -----------------------
-class SchemaElementTest : public parsenode
-/*______________________________________________________________________
-|
-|	::= SCHEMA_ELEMENT_LPAR  ElementDeclaration  RPAR
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<QName> elem_h;
-
-public:
-	SchemaElementTest(
-		const QueryLoc&,
-		rchandle<QName> _elem_h);
-
-
-public:
-	rchandle<QName> get_elem() const { return elem_h; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-
-/* inlined productions */
-/* ------------------- */
-// [128] AttribNameOrWildcard ::= AttributeName | STAR
-// [130] AttributeDeclaration ::= AttributeName
-// [134] ElementDeclaration ::= ElementName
-// [135] AttributeName ::= QNAME
-// [136] ElementName ::= QNAME
-
-
-
-// [137] TypeName
-// --------------
-class TypeName : public parsenode
-/*______________________________________________________________________
-|
-|	::=  QName  |  QName "?"
-|_______________________________________________________________________*/
-// [137] TypeName ::= QNAME
-{
-protected:
-	rchandle<QName> qname_h;
-	bool optional_b;
-
-public:
-	TypeName(
-		const QueryLoc&,
-		rchandle<QName>);
-
-	TypeName(
-		const QueryLoc&,
-		rchandle<QName>,
-		bool);
-
-
-public:
-	rchandle<QName> get_name() const { return qname_h; }
-	bool get_optional_bit() const { return optional_b; }
-	
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-/* lexical rules, see xquery.l */
-/* --------------------------- */
-// [138] IntegerLiteral
-// [139] DecimalLiteral
-// [140] DoubleLiteral
-// [141] URILiteral
-
-
-
-
-// [142] StringLiteral
-// -------------------
-class StringLiteral : public exprnode
-/*______________________________________________________________________
-|
-|	::= STRING_LITERAL
-|_______________________________________________________________________*/
-{
-protected:
-	std::string strval;
-
-public:
-	StringLiteral(
-		const QueryLoc&,
-		std::string const&);
-
-
-public:
-	std::string get_strval() const { return strval; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
 
 
 /*******************************************************************************
-  lexical rules, see xquery.l
+  [162] SchemaElementTest ::= "schema-element" "(" ElementDeclaration ")"
 
-  [143] PITarget
-  [144] VarName
-  [145] ValidationMode
-  [146] Digits
-  [147] PredefinedEntityRef
-  [148] CharRef
-  [149] EscapeQuot
-  [150] EscapeApos
-  [151] ElementContentChar
-  [152] QuotAttrContentChar
-  [153] AposAttrContentChar
-  [154] Comment
-  [155] CommentContents
-
-  [156] QName ::= QNAME
-
-  The "qname" data member is either (a) the empty string, or (b) a single NCName,
-  or (c) NCName1:NCName2. In cases (a) and (b), get_prefix() returns the empty
-  string, and get_localname() returns "qname".
-
+  [163] ElementDeclaration ::= ElementName
 ********************************************************************************/
-class QName : public exprnode
+class SchemaElementTest : public parsenode
 {
 protected:
-	std::string qname;
+  rchandle<QName> elem_h;
 
 public:
-	QName(const QueryLoc&, const std::string& qname);
+  SchemaElementTest(
+    const QueryLoc&,
+    rchandle<QName> _elem_h);
 
+  rchandle<QName> get_elem() const { return elem_h; }
 
-public:
-	std::string get_qname() const { return qname; }
-	std::string get_localname() const;
-	std::string get_prefix() const;
-
-public:
-	void accept(parsenode_visitor&) const;
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-// [157] NCName
-// [158] S  (WS)
-// [159] Char
-
-
-
-/*_______________________________________________________________________
- *                                                                       *
- *  Update productions                                                   *
- *  [http://www.w3.org/TR/xqupdate/]                                     *
- *                                                                       *
- *_______________________________________________________________________*/
-
-
-// [241]	RevalidationDecl
-// -----------------------
-class RevalidationDecl : public parsenode
-/*______________________________________________________________________
-|
-|	::= QNAME DECLARE_REVALIDATION_MODE
-|_______________________________________________________________________*/
+/*******************************************************************************
+  [166] TypeName ::= QName
+********************************************************************************/
+class TypeName : public parsenode
 {
 protected:
-  enum StaticContextConsts::validation_mode_t mode;
+  rchandle<QName> qname_h;
+  bool optional_b;
+
 public:
-	RevalidationDecl(const QueryLoc& loc,
-                   enum StaticContextConsts::validation_mode_t mode_)
-    : parsenode (loc), mode (mode_)
+  TypeName(
+    const QueryLoc&,
+    rchandle<QName>);
+
+  TypeName(
+    const QueryLoc&,
+    rchandle<QName>,
+    bool);
+
+  rchandle<QName> get_name() const { return qname_h; }
+
+  bool get_optional_bit() const { return optional_b; }
+  
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  [169] TryCatchExpr ::= TryClause CatchClauseList
+
+  [170] TryClause ::= "try" "{" TryTargetExpr "}"
+
+  [171] TryTargetExpr ::= Expr
+********************************************************************************/
+class TryExpr : public exprnode
+{
+protected:
+  rchandle<exprnode> theExprSingle;
+  rchandle<exprnode> theCatchListExpr;
+
+public:
+  TryExpr(
+    const QueryLoc& aQueryLoc,
+    rchandle<exprnode> aExprSingle,
+    rchandle<exprnode> aCatchListExpr)
+  : exprnode(aQueryLoc),
+    theExprSingle(aExprSingle),
+    theCatchListExpr(aCatchListExpr)
   {}
 
+  rchandle<exprnode> getExprSingle() const { return theExprSingle; }
 
-public:
-  enum StaticContextConsts::validation_mode_t get_mode () const { return mode; }
-	void accept(parsenode_visitor&) const;
+  rchandle<CatchListExpr> getCatchListExpr() const 
+  {
+    return theCatchListExpr.cast<CatchListExpr> ();
+  }
 
+  void accept(parsenode_visitor&) const;
 };
-
-
-
-// [242]	InsertExpr
-// ----------------
-class InsertExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= INSERT_NODE  ExprSingle  INTO  ExprSingle
-|			|	INSERT_NODE  ExprSingle  AS  FIRST_INTO  ExprSingle
-|			|	INSERT_NODE  ExprSingle  AS  LAST_INTO  ExprSingle
-|			| INSERT_NODE  ExprSingle  AFTER  ExprSingle
-|			| INSERT_NODE  ExprSingle  BEFORE  ExprSingle
-|	    | INSERT_NODES  ExprSingle  INTO  ExprSingle
-|			|	INSERT_NODES  ExprSingle  AS  FIRST_INTO  ExprSingle
-|			|	INSERT_NODES  ExprSingle  AS  LAST_INTO  ExprSingle
-|			| INSERT_NODES  ExprSingle  AFTER  ExprSingle
-|			| INSERT_NODES  ExprSingle  BEFORE  ExprSingle
-|_______________________________________________________________________*/
-{
-protected:
-  store::UpdateConsts::InsertType theInsertType;
-	rchandle<exprnode> theSourceExpr;
-	rchandle<exprnode> theTargetExpr;
-
-public:
-	InsertExpr(
-		const QueryLoc&,
-    store::UpdateConsts::InsertType,
-		rchandle<exprnode> aSourceExpr,
-		rchandle<exprnode> aTargetExpr);
-
-public:
-	rchandle<exprnode> getSourceExpr() const { return theSourceExpr; }
-	rchandle<exprnode> getTargetExpr() const { return theTargetExpr; }
-  store::UpdateConsts::InsertType getType() const { return theInsertType; }
-
-public:
-	void accept(parsenode_visitor&) const;
-};
-
-
-
-// [243] DeleteExpr
-// ----------------
-class DeleteExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= DO_DELETE  ExprSingle
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<exprnode> theTargetExpr;
-
-public:
-	DeleteExpr(
-		const QueryLoc&,
-		rchandle<exprnode>);
-
-public:
-	rchandle<exprnode>       getTargetExpr() const { return theTargetExpr; }
-
-public:
-	void accept(parsenode_visitor&) const;
-};
-
-
-
-// [244] ReplaceExpr
-// -----------------
-class ReplaceExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= DO_REPLACE  ExprSingle  WITH  ExprSingle
-|			| DO_REPLACE  VALUE_OF  ExprSingle  WITH  ExprSingle
-|_______________________________________________________________________*/
-{
-protected:
-  store::UpdateConsts::ReplaceType theReplaceType;
-	rchandle<exprnode> theTargetExpr;
-	rchandle<exprnode> theReplaceExpr;
-
-public:
-	ReplaceExpr(
-		const QueryLoc&,
-    store::UpdateConsts::ReplaceType aReplaceType,
-		rchandle<exprnode> aTargetExpr,
-		rchandle<exprnode> aReplaceExpr);
-
-
-public:
-  store::UpdateConsts::ReplaceType getType() const { return theReplaceType; }
-	rchandle<exprnode>        getTargetExpr() const  { return theTargetExpr; }
-	rchandle<exprnode>        getReplaceExpr() const  { return theReplaceExpr; }
-
-public:
-	void accept(parsenode_visitor&) const;
-};
-
-
-
-// [245] RenameExpr
-// ----------------
-class RenameExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= DO_RENAME  ExprSingle  AS  ExprSingle
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<exprnode> theTargetExpr;
-	rchandle<exprnode> theNameExpr;
-
-public:
-	RenameExpr(
-		const QueryLoc&,
-		rchandle<exprnode> aTargetExpr,
-		rchandle<exprnode> aName);
-
-
-public:
-	rchandle<exprnode> getTargetExpr() const { return theTargetExpr; }
-	rchandle<exprnode> getNameExpr() const { return theNameExpr; }
-
-public:
-	void accept(parsenode_visitor&) const;
-};
-
-
-
-// [246] SourceExpr
-// ----------------
-// folded
-
-// [247] TargetExpr
-// ----------------
-// folded
-
-// [248] NewNameExpr
-// -----------------
-// folded into [245] RenameExpr
 
 
 /*******************************************************************************
-  TransformExpr := "copy" "$" CopyVarList "modify" ExprSingle "return"  ExprSingle
-
-  CopyVarList := VarBinding |	CopyVarList "," "$"  VarBinding
-
-  VarBinding := VarName ":=" ExprSingle
+  CatchClauseList := CatchClause+
 ********************************************************************************/
-class TransformExpr : public exprnode
+class CatchListExpr : public exprnode
 {
 protected:
-	rchandle<CopyVarList> var_list;
-	rchandle<exprnode> source_expr;
-	rchandle<exprnode> target_expr;
+  std::vector<rchandle<CatchExpr> > theCatchExprs;
 
 public:
-	TransformExpr(
-		const QueryLoc& loc,
-		rchandle<CopyVarList> var_list,
-		rchandle<exprnode> source_expr,
-		rchandle<exprnode> target_expr);
+  CatchListExpr(const QueryLoc& aQueryLoc)
+  : exprnode(aQueryLoc)
+  {}
 
-
-	rchandle<CopyVarList> get_var_list() const { return var_list; }
-	rchandle<exprnode> get_source_expr() const { return source_expr; }
-	rchandle<exprnode> get_target_expr() const { return target_expr; }
-
-	void accept(parsenode_visitor&) const;
-};
-
-
-class CopyVarList : public exprnode
-{
-protected:
-	std::vector<rchandle<VarBinding> > var_bindings;
-	
-public:
-	CopyVarList(const QueryLoc& loc);
-
-	void push_back(rchandle<VarBinding> binding) 
+  void push_back(rchandle<CatchExpr> aCatchExpr)
   {
-    var_bindings.push_back(binding);
+    theCatchExprs.push_back(aCatchExpr);
   }
 
-	rchandle<VarBinding> operator[](int i) const 
+  rchandle<CatchExpr> operator[](int i) const
   {
-    return var_bindings[i];
+    return theCatchExprs[i];
   }
 
-  size_t size () const { return var_bindings.size (); }
-
-	void accept(parsenode_visitor&) const;
-};
-
-
-class VarBinding : public exprnode
-{
-protected:
-	std::string var_name;
-	rchandle<exprnode> expr;
-
-public:
-	VarBinding(
-		const QueryLoc& loc,
-		std::string varname,
-		rchandle<exprnode> expr);
-
-	const std::string& get_varname() const { return var_name; }
-	rchandle<exprnode> get_expr() const { return expr; }
-
-	void accept(parsenode_visitor&) const;
+  void accept(parsenode_visitor&) const;
 };
 
 
 
+/*******************************************************************************
+  [172] CatchClause ::= "catch" CatchErrorList CatchVars? "{" Expr "}"
 
-/*_______________________________________________________________________
- *                                                                       *
- *  Try-Catch productions                                                *
- *  []                                                                   *
- *                                                                       *
- *_______________________________________________________________________*/
+  [173] CatchErrorList ::= NameTest ("|" NameTest)*
+
+  [174] CatchVars ::= "(" CatchErrorCode ("," CatchErrorDesc ("," CatchErrorVal)?)? ")"
+
+  [175] CatchErrorCode ::= "$" VarName
+
+  [176] CatchErrorDesc ::= "$" VarName
+
+  [177] CatchErrorVal ::= "$" VarName
+********************************************************************************/
 class CatchExpr : public exprnode
-/*_______________________________________________________________________________
-|                                                                                *
-| ::= CATCH_LPAR NameTest (COMMA DOLLAR VARNAME)? RPAR LBRACE ExprSingle RBRACE  *
-|________________________________________________________________________________*/
 {
 public:
   typedef std::vector<rchandle<NameTest> > NameTestList;
+
 protected:
   NameTestList theNameTests;
   std::string theVarErrorCode;
@@ -5259,113 +4656,87 @@ public:
     theExprSingle(aExprSingle)
   {}
 
-public:
   const NameTestList &getNameTests() const { return theNameTests; }
+
   const std::string& getVarErrorCode() const { return theVarErrorCode; }
+
   const std::string& getVarErrorDescr() const { return theVarErrorDescr; }
+
   const std::string& getVarErrorVal() const { return theVarErrorVal; }
+
   rchandle<parsenode> getExprSingle() const { return theExprSingle; }
 
-public:
   void accept(parsenode_visitor&) const;
 };
 
 
-class CatchListExpr : public exprnode
-/*______________________________________________________________________
-|                                                                       *
-| ::=  CatchExpr*                                                       *
-|_______________________________________________________________________*/
+/*******************************************************************************
+  [191] QName ::= [http://www.w3.org/TR/REC-xml-names/#NT-QName]
+
+  The "qname" data member is either (a) the empty string, or (b) a single NCName,
+  or (c) NCName1:NCName2. In cases (a) and (b), get_prefix() returns the empty
+  string, and get_localname() returns "qname".
+
+********************************************************************************/
+class QName : public exprnode
 {
 protected:
-  std::vector<rchandle<CatchExpr> > theCatchExprs;
+  std::string qname;
 
 public:
-  CatchListExpr(const QueryLoc& aQueryLoc)
-  : exprnode(aQueryLoc)
-  {}
+  QName(const QueryLoc&, const std::string& qname);
 
-public:
-	void push_back(rchandle<CatchExpr> aCatchExpr)
-		{ theCatchExprs.push_back(aCatchExpr); }
+  std::string get_qname() const { return qname; }
 
-	rchandle<CatchExpr> operator[](int i) const
-		{ return theCatchExprs[i]; }
+  std::string get_localname() const;
 
-public:
+  std::string get_prefix() const;
+
   void accept(parsenode_visitor&) const;
 };
 
-class TryExpr : public exprnode
-/*______________________________________________________________________
-|                                                                       *
-| ::= TRY LBRACE ExprSingle RBRACE CatchListExpr                        *
-|_______________________________________________________________________*/
-{
-protected:
-  rchandle<exprnode> theExprSingle;
-  rchandle<exprnode> theCatchListExpr;
 
-public:
-  TryExpr(
-    const QueryLoc& aQueryLoc,
-    rchandle<exprnode> aExprSingle,
-    rchandle<exprnode> aCatchListExpr)
-  : exprnode(aQueryLoc),
-    theExprSingle(aExprSingle),
-    theCatchListExpr(aCatchListExpr)
-  {}
-
-public:
-  rchandle<exprnode> getExprSingle() const { return theExprSingle; }
-  rchandle<CatchListExpr> getCatchListExpr() const { return theCatchListExpr.cast<CatchListExpr> (); }
-
-public:
-  void accept(parsenode_visitor&) const;
-};
-
-// Eval productions
-
-class EvalExpr : public exprnode {
-protected:
-  rchandle <VarGetsDeclList> vgdl;
-  rchandle <exprnode> expr_h;
-
-public:
-  EvalExpr (const QueryLoc& loc_, rchandle <VarGetsDeclList> vgdl_, rchandle <parsenode> expr_)
-    : exprnode (loc_), vgdl (vgdl_), expr_h (expr_.dyn_cast<exprnode> ())
-  {}
-  
-  rchandle<VarGetsDeclList> get_vars () const { return vgdl; }
-  rchandle<exprnode> get_expr () const { return expr_h; }
-
-	void accept(parsenode_visitor&) const;
-};
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Scripting productions                                                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
 
+/*******************************************************************************
+
+********************************************************************************/
 class ExitExpr : public exprnode {
-	rchandle<exprnode> value_h;
+  rchandle<exprnode> value_h;
 public:
   ExitExpr (const QueryLoc& loc_, rchandle<exprnode> val_)
     : exprnode (loc_), value_h (val_)
   {}
   rchandle<exprnode> get_value () { return value_h; }
-	void accept(parsenode_visitor&) const;
+  void accept(parsenode_visitor&) const;
 };
 
+
+/*******************************************************************************
+
+********************************************************************************/
 class AssignExpr : public exprnode {
   std::string varname;
-	rchandle<exprnode> value_h;
+  rchandle<exprnode> value_h;
 
 public:
   AssignExpr (const QueryLoc& loc_, std::string varname_, rchandle<exprnode> val_)
     : exprnode (loc_), varname (varname_), value_h (val_)
   {}
-	const std::string& get_varname() const { return varname; }
+  const std::string& get_varname() const { return varname; }
   rchandle<exprnode> get_value () const { return value_h; }
-	void accept(parsenode_visitor&) const;
+  void accept(parsenode_visitor&) const;
 };
 
+
+/*******************************************************************************
+
+********************************************************************************/
 class FlowCtlStatement : public exprnode {
 public:
   enum action { BREAK, CONTINUE };
@@ -5378,9 +4749,13 @@ public:
     : exprnode (loc_), action (action_)
   {}
   enum action get_action () const { return action; }
-	void accept(parsenode_visitor&) const;
+  void accept(parsenode_visitor&) const;
 };
 
+
+/*******************************************************************************
+
+********************************************************************************/
 class WhileExpr : public exprnode {
   rchandle<exprnode> cond;
   rchandle<BlockBody> body;
@@ -5392,7 +4767,342 @@ public:
   rchandle<exprnode> get_cond () { return cond; }
   rchandle<BlockBody> get_body () { return body; }
 
-	void accept(parsenode_visitor&) const;
+  void accept(parsenode_visitor&) const;
+};
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Eval                                                                       //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+  Eval := "using" EvalVarDeclList? "eval" { ExprSingle }
+
+  EvalVarDeclList := EvalVarDecl+
+
+  EvalVarDecl := "$" VarName
+
+  Note: EvalVarDeclList is actually represented by a VarGetsDeclList parsenode
+        and EvalVarDecls are  represented by VarGetsDec parsenodes.
+********************************************************************************/
+class EvalExpr : public exprnode 
+{
+protected:
+  rchandle <VarGetsDeclList> vgdl;
+  rchandle <exprnode> expr_h;
+
+public:
+  EvalExpr(
+        const QueryLoc& loc_,
+        rchandle <VarGetsDeclList> vgdl_,
+        rchandle <parsenode> expr_)
+    : exprnode(loc_),
+      vgdl(vgdl_),
+      expr_h(expr_.dyn_cast<exprnode> ())
+  {}
+  
+  rchandle<VarGetsDeclList> get_vars () const { return vgdl; }
+
+  rchandle<exprnode> get_expr () const { return expr_h; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Index productions                                                          //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/***************************************************************************//**
+  IndexStatement ::= [CREATE | BUILD | DROP] INDEX URI_LITERAL
+********************************************************************************/
+class IndexStatement : public exprnode 
+{
+  std::string uri;
+
+public:
+  typedef enum { create_stmt, build_stmt, drop_stmt } stmt_type;
+
+  stmt_type type;
+
+  IndexStatement (const QueryLoc& loc_, std::string uri_, stmt_type type_)
+    :
+    exprnode (loc_), uri (uri_), type (type_)
+  {
+  }
+
+  std::string get_uri () const { return uri; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Update productions                                                         //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+
+********************************************************************************/
+// [241]  RevalidationDecl
+// -----------------------
+class RevalidationDecl : public parsenode
+/*______________________________________________________________________
+|
+|  ::= QNAME DECLARE_REVALIDATION_MODE
+|_______________________________________________________________________*/
+{
+protected:
+  enum StaticContextConsts::validation_mode_t mode;
+public:
+  RevalidationDecl(const QueryLoc& loc,
+                   enum StaticContextConsts::validation_mode_t mode_)
+    : parsenode (loc), mode (mode_)
+  {}
+
+
+public:
+  enum StaticContextConsts::validation_mode_t get_mode () const { return mode; }
+  void accept(parsenode_visitor&) const;
+
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+// [242]  InsertExpr
+// ----------------
+class InsertExpr : public exprnode
+/*______________________________________________________________________
+|
+|  ::= INSERT_NODE  ExprSingle  INTO  ExprSingle
+|      |  INSERT_NODE  ExprSingle  AS  FIRST_INTO  ExprSingle
+|      |  INSERT_NODE  ExprSingle  AS  LAST_INTO  ExprSingle
+|      | INSERT_NODE  ExprSingle  AFTER  ExprSingle
+|      | INSERT_NODE  ExprSingle  BEFORE  ExprSingle
+|      | INSERT_NODES  ExprSingle  INTO  ExprSingle
+|      |  INSERT_NODES  ExprSingle  AS  FIRST_INTO  ExprSingle
+|      |  INSERT_NODES  ExprSingle  AS  LAST_INTO  ExprSingle
+|      | INSERT_NODES  ExprSingle  AFTER  ExprSingle
+|      | INSERT_NODES  ExprSingle  BEFORE  ExprSingle
+|_______________________________________________________________________*/
+{
+protected:
+  store::UpdateConsts::InsertType theInsertType;
+  rchandle<exprnode> theSourceExpr;
+  rchandle<exprnode> theTargetExpr;
+
+public:
+  InsertExpr(
+    const QueryLoc&,
+    store::UpdateConsts::InsertType,
+    rchandle<exprnode> aSourceExpr,
+    rchandle<exprnode> aTargetExpr);
+
+public:
+  rchandle<exprnode> getSourceExpr() const { return theSourceExpr; }
+  rchandle<exprnode> getTargetExpr() const { return theTargetExpr; }
+  store::UpdateConsts::InsertType getType() const { return theInsertType; }
+
+public:
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+// [243] DeleteExpr
+// ----------------
+class DeleteExpr : public exprnode
+/*______________________________________________________________________
+|
+|  ::= DO_DELETE  ExprSingle
+|_______________________________________________________________________*/
+{
+protected:
+  rchandle<exprnode> theTargetExpr;
+
+public:
+  DeleteExpr(
+    const QueryLoc&,
+    rchandle<exprnode>);
+
+public:
+  rchandle<exprnode>       getTargetExpr() const { return theTargetExpr; }
+
+public:
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+// [244] ReplaceExpr
+// -----------------
+class ReplaceExpr : public exprnode
+/*______________________________________________________________________
+|
+|  ::= DO_REPLACE  ExprSingle  WITH  ExprSingle
+|      | DO_REPLACE  VALUE_OF  ExprSingle  WITH  ExprSingle
+|_______________________________________________________________________*/
+{
+protected:
+  store::UpdateConsts::ReplaceType theReplaceType;
+  rchandle<exprnode> theTargetExpr;
+  rchandle<exprnode> theReplaceExpr;
+
+public:
+  ReplaceExpr(
+    const QueryLoc&,
+    store::UpdateConsts::ReplaceType aReplaceType,
+    rchandle<exprnode> aTargetExpr,
+    rchandle<exprnode> aReplaceExpr);
+
+
+public:
+  store::UpdateConsts::ReplaceType getType() const { return theReplaceType; }
+  rchandle<exprnode>        getTargetExpr() const  { return theTargetExpr; }
+  rchandle<exprnode>        getReplaceExpr() const  { return theReplaceExpr; }
+
+public:
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+// [245] RenameExpr
+// ----------------
+class RenameExpr : public exprnode
+/*______________________________________________________________________
+|
+|  ::= DO_RENAME  ExprSingle  AS  ExprSingle
+|_______________________________________________________________________*/
+{
+protected:
+  rchandle<exprnode> theTargetExpr;
+  rchandle<exprnode> theNameExpr;
+
+public:
+  RenameExpr(
+    const QueryLoc&,
+    rchandle<exprnode> aTargetExpr,
+    rchandle<exprnode> aName);
+
+
+public:
+  rchandle<exprnode> getTargetExpr() const { return theTargetExpr; }
+  rchandle<exprnode> getNameExpr() const { return theNameExpr; }
+
+public:
+  void accept(parsenode_visitor&) const;
+};
+
+
+
+// [246] SourceExpr
+// ----------------
+// folded
+
+// [247] TargetExpr
+// ----------------
+// folded
+
+// [248] NewNameExpr
+// -----------------
+// folded into [245] RenameExpr
+
+
+/*******************************************************************************
+  TransformExpr := "copy" "$" CopyVarList "modify" ExprSingle "return"  ExprSingle
+
+  CopyVarList := VarBinding |  CopyVarList "," "$"  VarBinding
+
+  VarBinding := VarName ":=" ExprSingle
+********************************************************************************/
+class TransformExpr : public exprnode
+{
+protected:
+  rchandle<CopyVarList> var_list;
+  rchandle<exprnode> source_expr;
+  rchandle<exprnode> target_expr;
+
+public:
+  TransformExpr(
+    const QueryLoc& loc,
+    rchandle<CopyVarList> var_list,
+    rchandle<exprnode> source_expr,
+    rchandle<exprnode> target_expr);
+
+
+  rchandle<CopyVarList> get_var_list() const { return var_list; }
+  rchandle<exprnode> get_source_expr() const { return source_expr; }
+  rchandle<exprnode> get_target_expr() const { return target_expr; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class CopyVarList : public exprnode
+{
+protected:
+  std::vector<rchandle<VarBinding> > var_bindings;
+  
+public:
+  CopyVarList(const QueryLoc& loc);
+
+  void push_back(rchandle<VarBinding> binding) 
+  {
+    var_bindings.push_back(binding);
+  }
+
+  rchandle<VarBinding> operator[](int i) const 
+  {
+    return var_bindings[i];
+  }
+
+  size_t size () const { return var_bindings.size (); }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class VarBinding : public exprnode
+{
+protected:
+  std::string var_name;
+  rchandle<exprnode> expr;
+
+public:
+  VarBinding(
+    const QueryLoc& loc,
+    std::string varname,
+    rchandle<exprnode> expr);
+
+  const std::string& get_varname() const { return var_name; }
+  rchandle<exprnode> get_expr() const { return expr; }
+
+  void accept(parsenode_visitor&) const;
 };
 
 
@@ -5404,749 +5114,601 @@ public:
 /////////////////////////////////////////////////////////////////////////////////
 
 
-//[344] FTSelection
-//-----------------
 class FTSelection : public parsenode
 /*______________________________________________________________________
 |
-|	::=	FTOr
-|			|	FTOr  FTMatchOptionProximityList
-|			|	FTOr  WEIGHT  RangeExpr
-|			|	FTOr  FTMatchOptionProximityList  WEIGHT  RangeExpr
+|  ::=  FTOr
+|      |  FTOr  FTMatchOptionProximityList
+|      |  FTOr  WEIGHT  RangeExpr
+|      |  FTOr  FTMatchOptionProximityList  WEIGHT  RangeExpr
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<FTOr> ftor_h;
-	rchandle<FTMatchOptionProximityList> option_list_h;
-	rchandle<RangeExpr> weight_expr_h;
+  rchandle<FTOr> ftor_h;
+  rchandle<FTMatchOptionProximityList> option_list_h;
+  rchandle<RangeExpr> weight_expr_h;
 
 public:
-	FTSelection(
-		const QueryLoc&,
-		rchandle<FTOr>,
-		rchandle<FTMatchOptionProximityList>,
-		rchandle<RangeExpr>);
+  FTSelection(
+    const QueryLoc&,
+    rchandle<FTOr>,
+    rchandle<FTMatchOptionProximityList>,
+    rchandle<RangeExpr>);
 
+  rchandle<FTOr> get_ftor() const
+    { return ftor_h; }
 
-public:
-	rchandle<FTOr> get_ftor() const
-		{ return ftor_h; }
-	rchandle<FTMatchOptionProximityList> get_option_list() const
-		{ return option_list_h; }
-	rchandle<RangeExpr> get_weight_expr() const
-		{ return weight_expr_h; }
+  rchandle<FTMatchOptionProximityList> get_option_list() const
+    { return option_list_h; }
 
-public:
-	void accept(parsenode_visitor&) const;
+  rchandle<RangeExpr> get_weight_expr() const
+    { return weight_expr_h; }
 
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[344a] FTMatchOptionProximityList
-//---------------------------------
 class FTMatchOptionProximityList : public parsenode
 /*______________________________________________________________________
 |
-|	::=	FTMatchOptionProximity
-|			| FTMatchOptionProximityList  FTMatchOptionProximity
+|  ::=  FTMatchOptionProximity
+|      | FTMatchOptionProximityList  FTMatchOptionProximity
 |_______________________________________________________________________*/
 {
 protected:
-	std::vector<rchandle<FTMatchOptionProximity> > opt_prox_hv;
+  std::vector<rchandle<FTMatchOptionProximity> > opt_prox_hv;
 
 public:
-	FTMatchOptionProximityList(const QueryLoc&);
+  FTMatchOptionProximityList(const QueryLoc&);
 
-public:
-	void push_back(rchandle<FTMatchOptionProximity> opt_prox_h)
-		{ opt_prox_hv.push_back(opt_prox_h); }
-	rchandle<FTMatchOptionProximity> operator[](int i)
-		{ return opt_prox_hv[i]; }
+  void push_back(rchandle<FTMatchOptionProximity> opt_prox_h)
+    { opt_prox_hv.push_back(opt_prox_h); }
 
-public:
-	void accept(parsenode_visitor&) const;
+  rchandle<FTMatchOptionProximity> operator[](int i)
+    { return opt_prox_hv[i]; }
 
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[344b] FTMatchOptionProximity
-//-----------------------------
 class FTMatchOptionProximity : public parsenode
 /*______________________________________________________________________
 |
-|	::=	FTMatchOption | FTProximity
+|  ::=  FTMatchOption | FTProximity
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<FTMatchOption> opt_h;
-	rchandle<FTProximity> prox_h;
+  rchandle<FTMatchOption> opt_h;
+  rchandle<FTProximity> prox_h;
 
 public:
-	FTMatchOptionProximity(
-		rchandle<FTMatchOption>,
-		const QueryLoc&);
+  FTMatchOptionProximity(
+    rchandle<FTMatchOption>,
+    const QueryLoc&);
 
-	FTMatchOptionProximity(
-		rchandle<FTProximity>,
-		const QueryLoc&);
+  FTMatchOptionProximity(
+    rchandle<FTProximity>,
+    const QueryLoc&);
 
-	FTMatchOptionProximity(
-		const QueryLoc&);
+  FTMatchOptionProximity(
+    const QueryLoc&);
 
-
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[345]	FTOr
-//----------
 class FTOr : public parsenode
 /*______________________________________________________________________
 |
-|	::=	FTAnd
-|			|	FTOr  FTOR  FTAnd
+|  ::=  FTAnd
+|      |  FTOr  FTOR  FTAnd
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<FTOr> ftor_h;
-	rchandle<FTAnd> ftand_h;
+  rchandle<FTOr> ftor_h;
+  rchandle<FTAnd> ftand_h;
 
 public:
-	FTOr(
-		const QueryLoc&,
-		rchandle<FTOr>,
-		rchandle<FTAnd>);
+  FTOr(
+    const QueryLoc&,
+    rchandle<FTOr>,
+    rchandle<FTAnd>);
 
+  rchandle<FTOr> get_ftor() const { return ftor_h; }
+  rchandle<FTAnd> get_ftand() const { return ftand_h; }
 
-public:
-	rchandle<FTOr> get_ftor() const { return ftor_h; }
-	rchandle<FTAnd> get_ftand() const { return ftand_h; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[346]	FTAnd
-//-----------
 class FTAnd : public parsenode
 /*______________________________________________________________________
 |
-|	::=	FTMildnot
-|			|	FTAnd  FTAND  FTMildnot
+|  ::=  FTMildnot
+|      |  FTAnd  FTAND  FTMildnot
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<FTAnd> ftand_h;
-	rchandle<FTMildnot> ftmild_not_h;
+  rchandle<FTAnd> ftand_h;
+  rchandle<FTMildnot> ftmild_not_h;
 
 public:
-	FTAnd(
-		const QueryLoc&,
-		rchandle<FTAnd>,
-		rchandle<FTMildnot>);
-	
+  FTAnd(
+    const QueryLoc&,
+    rchandle<FTAnd>,
+    rchandle<FTMildnot>);
+  
+  rchandle<FTAnd> get_ftand() const { return ftand_h; }
+  rchandle<FTMildnot> get_ftmild_not() const { return ftmild_not_h; }
 
-public:
-	rchandle<FTAnd> get_ftand() const { return ftand_h; }
-	rchandle<FTMildnot> get_ftmild_not() const { return ftmild_not_h; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[347]	FTMildnot
-//---------------
 class FTMildnot : public parsenode
 /*______________________________________________________________________
 |
-|	::=	FTUnaryNot
-|			|	FTMildnot  FTNOT_IN  FTUnaryNot
+|  ::=  FTUnaryNot
+|      |  FTMildnot  FTNOT_IN  FTUnaryNot
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<FTMildnot> ftmild_not_h;
-	rchandle<FTUnaryNot> ftunary_not_h;
+  rchandle<FTMildnot> ftmild_not_h;
+  rchandle<FTUnaryNot> ftunary_not_h;
 
 public:
-	FTMildnot(
-		const QueryLoc&,
-		rchandle<FTMildnot>,
-		rchandle<FTUnaryNot>);
+  FTMildnot(
+    const QueryLoc&,
+    rchandle<FTMildnot>,
+    rchandle<FTUnaryNot>);
 
+  rchandle<FTMildnot> get_ftmild_not() const { return ftmild_not_h; }
+  rchandle<FTUnaryNot> get_ftunary_not() const { return ftunary_not_h; }
 
-public:
-	rchandle<FTMildnot> get_ftmild_not() const { return ftmild_not_h; }
-	rchandle<FTUnaryNot> get_ftunary_not() const { return ftunary_not_h; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[348]	FTUnaryNot
-//----------------
 class FTUnaryNot : public parsenode
 /*______________________________________________________________________
 |
-|	::=	FTWordsSelection
-|			|	FTNOT  FTWordsSelection
+|  ::=  FTWordsSelection
+|      |  FTNOT  FTWordsSelection
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<FTWordsSelection> words_selection_h;
-	bool not_b;
+  rchandle<FTWordsSelection> words_selection_h;
+  bool not_b;
 
 public:
-	FTUnaryNot(
-		const QueryLoc&,
-		rchandle<FTWordsSelection>,
-		bool not_b);
+  FTUnaryNot(
+    const QueryLoc&,
+    rchandle<FTWordsSelection>,
+    bool not_b);
 
+  rchandle<FTWordsSelection> get_words_selection() const
+    { return words_selection_h; }
 
-public:
-	rchandle<FTWordsSelection> get_words_selection() const
-		{ return words_selection_h; }
-	bool get_not_bit() const
-		{ return not_b; }
+  bool get_not_bit() const
+    { return not_b; }
 
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[349]	FTWordsSelection
-//----------------------
 class FTWordsSelection : public parsenode
 /*______________________________________________________________________
 |
-|	::=	FTWords
-|			|	FTWords FTTimes
-|			| LPAR  FTSelection  RPAR
+|  ::=  FTWords
+|      |  FTWords FTTimes
+|      | LPAR  FTSelection  RPAR
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<FTWords> words_h;
-	rchandle<FTTimes> times_h;
-	rchandle<FTSelection> selection_h;
+  rchandle<FTWords> words_h;
+  rchandle<FTTimes> times_h;
+  rchandle<FTSelection> selection_h;
 
 public:
-	FTWordsSelection(
-		const QueryLoc&,
-		rchandle<FTWords>,
-		rchandle<FTTimes>,
-		rchandle<FTSelection>);
+  FTWordsSelection(
+    const QueryLoc&,
+    rchandle<FTWords>,
+    rchandle<FTTimes>,
+    rchandle<FTSelection>);
 
+  rchandle<FTWords> get_words() const { return words_h; }
+  rchandle<FTTimes> get_times() const { return times_h; }
+  rchandle<FTSelection> get_selection() const { return selection_h; }
 
-public:
-	rchandle<FTWords> get_words() const { return words_h; }
-	rchandle<FTTimes> get_times() const { return times_h; }
-	rchandle<FTSelection> get_selection() const { return selection_h; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[350]	FTWords
-//-------------
 class FTWords : public parsenode
 /*______________________________________________________________________
 |
-|	::=	FTWordsValue
-|			|	FTWordsValue  FTAnyallOption
+|  ::=  FTWordsValue
+|      |  FTWordsValue  FTAnyallOption
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<FTWordsValue> words_val_h;
-	rchandle<FTAnyallOption> any_all_option_h;
+  rchandle<FTWordsValue> words_val_h;
+  rchandle<FTAnyallOption> any_all_option_h;
 
 public:
-	FTWords(
-		const QueryLoc&,
-		rchandle<FTWordsValue>,
-		rchandle<FTAnyallOption>);
+  FTWords(
+    const QueryLoc&,
+    rchandle<FTWordsValue>,
+    rchandle<FTAnyallOption>);
 
+  rchandle<FTWordsValue> get_words_val() const
+    { return words_val_h; }
 
-public:
-	rchandle<FTWordsValue> get_words_val() const
-		{ return words_val_h; }
-	rchandle<FTAnyallOption> get_any_all_option() const
-		{ return any_all_option_h; }
+  rchandle<FTAnyallOption> get_any_all_option() const
+    { return any_all_option_h; }
 
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[351]	FTWordsValue
-//------------------
 class FTWordsValue : public parsenode
 /*______________________________________________________________________
 |
-|	::=	Literal
-|			| LBRACE  Expr  RBRACE
+|  ::=  Literal
+|      | LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<StringLiteral> lit_h;
-	rchandle<exprnode> expr_h;
+  rchandle<StringLiteral> lit_h;
+  rchandle<exprnode> expr_h;
 
 public:
-	FTWordsValue(
-		const QueryLoc&,
-		rchandle<StringLiteral>,
-		rchandle<exprnode>);
+  FTWordsValue(
+    const QueryLoc&,
+    rchandle<StringLiteral>,
+    rchandle<exprnode>);
 
+  rchandle<StringLiteral> get_lit() const { return lit_h; }
+  rchandle<exprnode> get_expr() const { return expr_h; }
 
-public:
-	rchandle<StringLiteral> get_lit() const { return lit_h; }
-	rchandle<exprnode> get_expr() const { return expr_h; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[352]	FTProximity
-//-----------------
 class FTProximity : public parsenode
 /*______________________________________________________________________
 |
-|	::=	FTOrderedIndicator
-|			| FTWindow
-|			| FTDistance
-|			| FTScope
-|			| FTContent
+|  ::=  FTOrderedIndicator
+|      | FTWindow
+|      | FTDistance
+|      | FTScope
+|      | FTContent
 |_______________________________________________________________________*/
 {
 public:
-	FTProximity(const QueryLoc&);
+  FTProximity(const QueryLoc&);
 
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[353]	FTOrderedIndicator
-//------------------------
 class FTOrderedIndicator : public FTProximity
 /*______________________________________________________________________
 |
-|	::=	ORDERED
+|  ::=  ORDERED
 |_______________________________________________________________________*/
 {
 public:
-	FTOrderedIndicator(const QueryLoc&);
+  FTOrderedIndicator(const QueryLoc&);
 
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[354] FTMatchOption 	
-//-------------------
 class FTMatchOption : public parsenode
 /*______________________________________________________________________
 |
-|	::=	FTCaseOption
-|			| FTDiacriticsOption
-|			| FTStemOption
-|			| FTThesaurusOption
-|			| FTStopwordOption
-|			| FTLanguageOption
-|			| FTWildcardOption
+|  ::=  FTCaseOption
+|      | FTDiacriticsOption
+|      | FTStemOption
+|      | FTThesaurusOption
+|      | FTStopwordOption
+|      | FTLanguageOption
+|      | FTWildcardOption
 |_______________________________________________________________________*/
 {
 public:
-	FTMatchOption(const QueryLoc&);
+  FTMatchOption(const QueryLoc&);
 
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[355] FTCaseOption
-//------------------
 class FTCaseOption : public FTMatchOption
 /*______________________________________________________________________
 |
-|	::=	LOWERCASE
-|			| UPPERCASE
-|			| CASE_SENSITIVE
-|			| CASE_INSENSITIVE
+|  ::=  LOWERCASE
+|      | UPPERCASE
+|      | CASE_SENSITIVE
+|      | CASE_INSENSITIVE
 |_______________________________________________________________________*/
 {
 protected:
   ParseConstants::ft_case_mode_t mode;
 
 public:
-	FTCaseOption(
-		const QueryLoc&,
-		enum ParseConstants::ft_case_mode_t);
+  FTCaseOption(
+    const QueryLoc&,
+    enum ParseConstants::ft_case_mode_t);
 
+  enum ParseConstants::ft_case_mode_t get_mode() const { return mode; }
 
-public:
-	enum ParseConstants::ft_case_mode_t get_mode() const { return mode; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[356] FTDiacriticsOption
-//------------------------
 class FTDiacriticsOption : public FTMatchOption
 /*______________________________________________________________________
 |
-|	::=	WITH_DIACRITICS
-|			| WITHOUT_DIACRITICS
-|			| DIACRITICS_SENSITIVE
-|			| DIACRITICS_INSENSITIVE
+|  ::=  WITH_DIACRITICS
+|      | WITHOUT_DIACRITICS
+|      | DIACRITICS_SENSITIVE
+|      | DIACRITICS_INSENSITIVE
 |_______________________________________________________________________*/
 {
 protected:
   ParseConstants::ft_diacritics_mode_t mode;
 
 public:
-	FTDiacriticsOption(
-		const QueryLoc&,
-		ParseConstants::ft_diacritics_mode_t);
+  FTDiacriticsOption(
+    const QueryLoc&,
+    ParseConstants::ft_diacritics_mode_t);
 
+  enum ParseConstants::ft_diacritics_mode_t get_mode() const { return mode; }
 
-public:
-	enum ParseConstants::ft_diacritics_mode_t get_mode() const { return mode; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[357] FTStemOption
-//------------------
 class FTStemOption : public FTMatchOption
 /*______________________________________________________________________
 |
-|	::=	WITH_STEMMING
-|			| WITHOUT_STEMMING
+|  ::=  WITH_STEMMING
+|      | WITHOUT_STEMMING
 |_______________________________________________________________________*/
 {
 protected:
   ParseConstants::ft_stem_mode_t mode;
 
 public:
-	FTStemOption(
-		const QueryLoc&,
-		ParseConstants::ft_stem_mode_t);
+  FTStemOption(
+    const QueryLoc&,
+    ParseConstants::ft_stem_mode_t);
 
+  enum ParseConstants::ft_stem_mode_t get_mode() const { return mode; }
 
-public:
-	enum ParseConstants::ft_stem_mode_t get_mode() const { return mode; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[358] FTThesaurusOption
-//-----------------------
 class FTThesaurusOption : public FTMatchOption
 /*______________________________________________________________________
 |
-|	::=	WITH_THESAURUS  FTThesaurusID
-|			|	WITH_THESAURUS  DEFAULT
-|			| WITH_THESAURUS  LPAR  FTThesaurusList  RPAR
-|			| WITH_THESAURUS  LPAR  DEFAULT  RPAR
-|			| WITH_THESAURUS  LPAR  DEFAULT  COMMA  FTThesaurusList  RPAR
-|			| WITHOUT_THESAURUS
+|  ::=  WITH_THESAURUS  FTThesaurusID
+|      |  WITH_THESAURUS  DEFAULT
+|      | WITH_THESAURUS  LPAR  FTThesaurusList  RPAR
+|      | WITH_THESAURUS  LPAR  DEFAULT  RPAR
+|      | WITH_THESAURUS  LPAR  DEFAULT  COMMA  FTThesaurusList  RPAR
+|      | WITHOUT_THESAURUS
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<FTThesaurusID> thesaurusid_h;
-	rchandle<FTThesaurusList> thesaurus_list_h;
-	bool default_b;
-	bool without_b;
+  rchandle<FTThesaurusID> thesaurusid_h;
+  rchandle<FTThesaurusList> thesaurus_list_h;
+  bool default_b;
+  bool without_b;
 
 public:
-	FTThesaurusOption(
-		const QueryLoc&,
-		rchandle<FTThesaurusID>,
-		rchandle<FTThesaurusList>,
-		bool default_b,
-		bool without_b);
+  FTThesaurusOption(
+    const QueryLoc&,
+    rchandle<FTThesaurusID>,
+    rchandle<FTThesaurusList>,
+    bool default_b,
+    bool without_b);
 
+  rchandle<FTThesaurusID> get_thesaurusid() const
+    { return thesaurusid_h; }
 
-public:
-	rchandle<FTThesaurusID> get_thesaurusid() const
-		{ return thesaurusid_h; }
-	rchandle<FTThesaurusList> get_thesaurus_list() const
-		{ return thesaurus_list_h; }
+  rchandle<FTThesaurusList> get_thesaurus_list() const
+    { return thesaurus_list_h; }
 
-	bool get_default_bit() const { return default_b; }
-	bool get_without_bit() const { return without_b; }
+  bool get_default_bit() const { return default_b; }
 
-public:
+  bool get_without_bit() const { return without_b; }
 
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[358a] FTThesaurusList
-//----------------------
 class FTThesaurusList : public parsenode
 /*______________________________________________________________________
 |
-|	::=	FTThesaurusID
-|			| FTThesaurusList  COMMA  FTThesaurusID
+|  ::=  FTThesaurusID
+|      | FTThesaurusList  COMMA  FTThesaurusID
 |_______________________________________________________________________*/
 {
 protected:
-	std::vector<rchandle<FTThesaurusID> > thesaurus_hv;
+  std::vector<rchandle<FTThesaurusID> > thesaurus_hv;
 
 public:
-	FTThesaurusList(const QueryLoc&);
+  FTThesaurusList(const QueryLoc&);
 
-public:
-	void push_back(rchandle<FTThesaurusID> thesaurus_h)
-		{ thesaurus_hv.push_back(thesaurus_h); }
-	rchandle<FTThesaurusID> operator[](int i) const
-		{ return thesaurus_hv[i]; }
+  void push_back(rchandle<FTThesaurusID> thesaurus_h)
+    { thesaurus_hv.push_back(thesaurus_h); }
 
-public:
-	void accept(parsenode_visitor&) const;
+  rchandle<FTThesaurusID> operator[](int i) const
+    { return thesaurus_hv[i]; }
 
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[359] FTThesaurusID
-//-------------------
 class FTThesaurusID : public parsenode
 /*______________________________________________________________________
 |
-|	::=	AT  STRING_LITERAL
-|			|	AT  STRING_LITERAL  RELATIONSHIP  STRING_LITERAL
-|			|	AT  STRING_LITERAL  FTRange  LEVELS
-|			|	AT  STRING_LITERAL  RELATIONSHIP  STRING_LITERAL  FTRange  LEVELS
+|  ::=  AT  STRING_LITERAL
+|      |  AT  STRING_LITERAL  RELATIONSHIP  STRING_LITERAL
+|      |  AT  STRING_LITERAL  FTRange  LEVELS
+|      |  AT  STRING_LITERAL  RELATIONSHIP  STRING_LITERAL  FTRange  LEVELS
 |_______________________________________________________________________*/
 {
 protected:
-	std::string thesaurus_name;
-	std::string relationship_name;
-	rchandle<FTRange> levels_h;
+  std::string thesaurus_name;
+  std::string relationship_name;
+  rchandle<FTRange> levels_h;
 
 public:
-	FTThesaurusID(
-		const QueryLoc&,
-		std::string thesaurus_name,
-		std::string relationship_name,
-		rchandle<FTRange> levels_h);
-	
+  FTThesaurusID(
+    const QueryLoc&,
+    std::string thesaurus_name,
+    std::string relationship_name,
+    rchandle<FTRange> levels_h);
+  
+  std::string get_thesaurus_name() const { return thesaurus_name; }
+  std::string get_relationship_name() const { return relationship_name; }
+  rchandle<FTRange> get_levels() const { return levels_h; }
 
-public:
-	std::string get_thesaurus_name() const { return thesaurus_name; }
-	std::string get_relationship_name() const { return relationship_name; }
-	rchandle<FTRange> get_levels() const { return levels_h; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[360] FTStopwordOption
-//----------------------
 class FTStopwordOption : public FTMatchOption
 /*______________________________________________________________________
 |
-|	::=	WITH_STOP_WORDS  FTRefOrList
-|			|	WITH_STOP_WORDS  FTRefOrList  FTInclExclStringLiteralList
-|			| WITH_DEFAULT_STOP_WORDS
-|			| WITH_DEFAULT_STOP_WORDS  FTInclExclStringLiteralList
-|			| WITHOUT_STOP_WORDS
+|  ::=  WITH_STOP_WORDS  FTRefOrList
+|      |  WITH_STOP_WORDS  FTRefOrList  FTInclExclStringLiteralList
+|      | WITH_DEFAULT_STOP_WORDS
+|      | WITH_DEFAULT_STOP_WORDS  FTInclExclStringLiteralList
+|      | WITHOUT_STOP_WORDS
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<FTRefOrList> refor_list_h;
-	rchandle<FTInclExclStringLiteralList> incl_excl_list_h;
+  rchandle<FTRefOrList> refor_list_h;
+  rchandle<FTInclExclStringLiteralList> incl_excl_list_h;
   ParseConstants::stop_words_mode_t mode;
 
 public:
-	FTStopwordOption(
-		const QueryLoc&,
-		rchandle<FTRefOrList>,
-		rchandle<FTInclExclStringLiteralList>,
-	  ParseConstants::stop_words_mode_t);
+  FTStopwordOption(
+    const QueryLoc&,
+    rchandle<FTRefOrList>,
+    rchandle<FTInclExclStringLiteralList>,
+    ParseConstants::stop_words_mode_t);
 
+  rchandle<FTRefOrList> get_refor_list() const
+    { return refor_list_h; }
 
-public:
-	rchandle<FTRefOrList> get_refor_list() const
-		{ return refor_list_h; }
-	rchandle<FTInclExclStringLiteralList> get_incl_excl_list() const
-		{ return incl_excl_list_h; }
+  rchandle<FTInclExclStringLiteralList> get_incl_excl_list() const
+    { return incl_excl_list_h; }
+
   ParseConstants::stop_words_mode_t get_mode() const
-		{ return mode; }
+    { return mode; }
 
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[360a] FTInclExclStringLiteralList
-//----------------------------------
 class FTInclExclStringLiteralList : public parsenode
 /*______________________________________________________________________
 |
-|	::=	FTInclExclStringLiteral
-|			| FTInclExclStringLiteralList  FTInclExclStringLiteral
+|  ::=  FTInclExclStringLiteral
+|      | FTInclExclStringLiteralList  FTInclExclStringLiteral
 |_______________________________________________________________________*/
 {
 protected:
-	std::vector<rchandle<FTInclExclStringLiteral> > incl_excl_lit_hv;
+  std::vector<rchandle<FTInclExclStringLiteral> > incl_excl_lit_hv;
 
 public:
-	FTInclExclStringLiteralList(const QueryLoc&);
+  FTInclExclStringLiteralList(const QueryLoc&);
 
-public:
-	void push_back(rchandle<FTInclExclStringLiteral> incl_excl_lit_h)
-		{ incl_excl_lit_hv.push_back(incl_excl_lit_h); }
-	rchandle<FTInclExclStringLiteral> operator[](int i) const
-		{ return incl_excl_lit_hv[i]; }
+  void push_back(rchandle<FTInclExclStringLiteral> incl_excl_lit_h)
+    { incl_excl_lit_hv.push_back(incl_excl_lit_h); }
 
-public:
+  rchandle<FTInclExclStringLiteral> operator[](int i) const
+    { return incl_excl_lit_hv[i]; }
 
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[361] FTRefOrList
-//-----------------
 class FTRefOrList : public parsenode
 /*______________________________________________________________________
 |
-|	::=	AT  STRING_LITERAL
-|			| LPAR  FTStringLiteralList  RPAR
+|  ::=  AT  STRING_LITERAL
+|      | LPAR  FTStringLiteralList  RPAR
 |_______________________________________________________________________*/
 {
 protected:
-	std::string at_str;
-	rchandle<FTStringLiteralList> stringlit_list_h;
+  std::string at_str;
+  rchandle<FTStringLiteralList> stringlit_list_h;
 
 public:
-	FTRefOrList(
-		const QueryLoc&,
-		std::string at_str,
-		rchandle<FTStringLiteralList>);
+  FTRefOrList(
+    const QueryLoc&,
+    std::string at_str,
+    rchandle<FTStringLiteralList>);
 
 
-	std::string get_at_str() const
-		{ return at_str; }
-	rchandle<FTStringLiteralList> get_stringlit_list() const
-		{ return stringlit_list_h; }
+  std::string get_at_str() const { return at_str; }
 
-public:
-	void accept(parsenode_visitor&) const;
+  rchandle<FTStringLiteralList> get_stringlit_list() const { return stringlit_list_h; }
 
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[361a] FTStringLiteralList
-//--------------------------
 class FTStringLiteralList : public parsenode
 /*______________________________________________________________________
 |
-|	::=	STRING_LITERAL
-|			|	FTStringLiteralList  STRING_LITERAL
+|  ::=  STRING_LITERAL
+|      |  FTStringLiteralList  STRING_LITERAL
 |_______________________________________________________________________*/
 {
 protected:
-	std::vector<std::string> strlit_v;
+  std::vector<std::string> strlit_v;
 
 public:
-	FTStringLiteralList(const QueryLoc&);
+  FTStringLiteralList(const QueryLoc&);
 
-public:
-	void push_back(std::string strlit) { strlit_v.push_back(strlit); }
-	std::string operator[](int i) const { return strlit_v[i]; }
+  void push_back(std::string strlit) { strlit_v.push_back(strlit); }
 
-public:
-	void accept(parsenode_visitor&) const;
+  std::string operator[](int i) const { return strlit_v[i]; }
 
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[362] FTInclExclStringLiteral
-//-----------------------------
 class FTInclExclStringLiteral : public parsenode
 /*______________________________________________________________________
 |
-|	::=	UNION  FTRefOrList
-|			|	EXCEPT  FTRefOrList
+|  ::=  UNION  FTRefOrList
+|      |  EXCEPT  FTRefOrList
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<FTRefOrList> ref_or_list_h;
+  rchandle<FTRefOrList> ref_or_list_h;
   ParseConstants::intex_op_t mode;
 
 public:
-	FTInclExclStringLiteral(
-		const QueryLoc&,
-		rchandle<FTRefOrList>,
-		ParseConstants::intex_op_t);
+  FTInclExclStringLiteral(
+    const QueryLoc&,
+    rchandle<FTRefOrList>,
+    ParseConstants::intex_op_t);
 
+  rchandle<FTRefOrList> get_ref_or_list() const { return ref_or_list_h; }
 
-public:
-	rchandle<FTRefOrList> get_ref_or_list() const
-		{ return ref_or_list_h; }
-  ParseConstants::intex_op_t get_mode() const
-		{ return mode; }
+  ParseConstants::intex_op_t get_mode() const { return mode; }
 
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
@@ -6156,324 +5718,252 @@ public:
 class FTLanguageOption : public FTMatchOption
 /*______________________________________________________________________
 |
-|	::=	LANGUAGE  STRING_LITERAL
+|  ::=  LANGUAGE  STRING_LITERAL
 |_______________________________________________________________________*/
 {
 protected:
-	std::string lang;
+  std::string lang;
 
 public:
-	FTLanguageOption(
-		const QueryLoc&,
-		std::string lang);
+  FTLanguageOption(
+    const QueryLoc&,
+    std::string lang);
 
+  std::string get_lang() const { return lang; }
 
-public:
-	std::string get_lang() const { return lang; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[364] FTWildcardOption
-//----------------------
 class FTWildcardOption : public FTMatchOption
 /*______________________________________________________________________
 |
-|	::=	WITH_WILDCARDS
-|			| WITHOUT_WILDCARDS
+|  ::=  WITH_WILDCARDS
+|      | WITHOUT_WILDCARDS
 |_______________________________________________________________________*/
 {
 protected:
-	bool with_b;
+  bool with_b;
 
 public:
-	FTWildcardOption(
-		const QueryLoc&,
-		bool with_b);
+  FTWildcardOption(
+    const QueryLoc&,
+    bool with_b);
 
+  bool get_with_bit() const { return with_b; }
 
-public:
-	bool get_with_bit() const { return with_b; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[365]	FTContent
-//---------------
 class FTContent : public FTProximity
 /*______________________________________________________________________
 |
-|	::=	AT_START
-|			| AT_END
-|			| ENTIRE_CONTENT
+|  ::=  AT_START
+|      | AT_END
+|      | ENTIRE_CONTENT
 |_______________________________________________________________________*/
 {
 protected:
   ParseConstants::ft_content_mode_t mode;
 
 public:
-	FTContent(
-		const QueryLoc&,
-		enum ParseConstants::ft_content_mode_t);
+  FTContent(
+    const QueryLoc&,
+    enum ParseConstants::ft_content_mode_t);
 
+  enum ParseConstants::ft_content_mode_t get_mode() const { return mode; }
 
-public:
-	enum ParseConstants::ft_content_mode_t get_mode() const { return mode; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[366]	FTAnyallOption
-//--------------------
 class FTAnyallOption : public parsenode
 /*______________________________________________________________________
 |
-|	::=	ANY
-|			|	ANY_WORD
-|			| ALL
-|			| ALL_WORDS
-|			| PHRASE
+|  ::=  ANY
+|      |  ANY_WORD
+|      | ALL
+|      | ALL_WORDS
+|      | PHRASE
 |_______________________________________________________________________*/
 {
 protected:
-	enum ParseConstants::ft_anyall_option_t option;
+  enum ParseConstants::ft_anyall_option_t option;
 
 public:
-	FTAnyallOption(
-		const QueryLoc&,
-		enum ParseConstants::ft_anyall_option_t);
+  FTAnyallOption(
+    const QueryLoc&,
+    enum ParseConstants::ft_anyall_option_t);
 
+  enum ParseConstants::ft_anyall_option_t get_option() const { return option; }
 
-public:
-	enum ParseConstants::ft_anyall_option_t get_option() const { return option; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[367]	FTRange
-//-------------
 class FTRange : public parsenode
 /*______________________________________________________________________
 |
-|	::=	EXACTLY  UnionExpr
-|			| AT_LEAST  UnionExpr
-|			| AT_MOST  UnionExpr
-|			| FROM  UnionExpr  TO  UnionExpr
+|  ::=  EXACTLY  UnionExpr
+|      | AT_LEAST  UnionExpr
+|      | AT_MOST  UnionExpr
+|      | FROM  UnionExpr  TO  UnionExpr
 |_______________________________________________________________________*/
 {
 public:
-	enum ft_range_mode_t {
-		exactly,
-		at_least,
-		at_most,
-		from_to
-	};
+  enum ft_range_mode_t {
+    exactly,
+    at_least,
+    at_most,
+    from_to
+  };
 
 protected:
   ft_range_mode_t mode;
-	rchandle<exprnode> src_expr_h;
-	rchandle<exprnode> dst_expr_h;
+  rchandle<exprnode> src_expr_h;
+  rchandle<exprnode> dst_expr_h;
 
 public:
-	FTRange(
-		const QueryLoc&,
+  FTRange(
+    const QueryLoc&,
     ft_range_mode_t,
-		rchandle<exprnode> src_expr_h,
-		rchandle<exprnode> dst_expr_h = NULL);
+    rchandle<exprnode> src_expr_h,
+    rchandle<exprnode> dst_expr_h = NULL);
 
+  rchandle<UnionExpr> get_src_expr() const { return src_expr_h.cast<UnionExpr> (); }
 
-public:
-	rchandle<UnionExpr> get_src_expr() const { return src_expr_h.cast<UnionExpr> (); }
-	rchandle<UnionExpr> get_dst_expr() const { return dst_expr_h.cast<UnionExpr> (); }
+  rchandle<UnionExpr> get_dst_expr() const { return dst_expr_h.cast<UnionExpr> (); }
 
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[368]	FTDistance
-//----------------
 class FTDistance : public FTProximity
 /*______________________________________________________________________
 |
-|	::=	DISTANCE  FTRange  FTUnit
+|  ::=  DISTANCE  FTRange  FTUnit
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<FTRange> dist_h;
-	rchandle<FTUnit> unit_h;
+  rchandle<FTRange> dist_h;
+  rchandle<FTUnit> unit_h;
 
 public:
-	FTDistance(
-		const QueryLoc&,
-		rchandle<FTRange>,
-		rchandle<FTUnit>);
+  FTDistance(
+    const QueryLoc&,
+    rchandle<FTRange>,
+    rchandle<FTUnit>);
 
+  rchandle<FTRange> get_dist() const { return dist_h; }
+  rchandle<FTUnit> get_unit() const { return unit_h; }
 
-public:
-	rchandle<FTRange> get_dist() const { return dist_h; }
-	rchandle<FTUnit> get_unit() const { return unit_h; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[369]	FTWindow
-//--------------
 class FTWindow : public FTProximity
 /*______________________________________________________________________
 |
-|	::=	WINDOW  UnionExpr  FTUnit
+|  ::=  WINDOW  UnionExpr  FTUnit
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<UnionExpr> window_h;
-	rchandle<FTUnit> unit_h;
+  rchandle<UnionExpr> window_h;
+  rchandle<FTUnit> unit_h;
 
 public:
-	FTWindow(
-		const QueryLoc&,
-		rchandle<UnionExpr> window_h,
-		rchandle<FTUnit> unit_h);
+  FTWindow(
+    const QueryLoc&,
+    rchandle<UnionExpr> window_h,
+    rchandle<FTUnit> unit_h);
 
+  rchandle<UnionExpr> get_window() const { return window_h; }
 
-public:
-	rchandle<UnionExpr> get_window() const { return window_h; }
-	rchandle<FTUnit> get_unit() const { return unit_h; }
+  rchandle<FTUnit> get_unit() const { return unit_h; }
 
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[370]	FTTimes
-//-------------
 class FTTimes : public parsenode
 /*______________________________________________________________________
 |
-|	::=	OCCURS  FTRange  TIMES
+|  ::=  OCCURS  FTRange  TIMES
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<FTRange> range_h;
+  rchandle<FTRange> range_h;
 
 public:
-	FTTimes(
-		const QueryLoc&,
-		rchandle<FTRange>);
+  FTTimes(
+    const QueryLoc&,
+    rchandle<FTRange>);
 
+  rchandle<FTRange> get_range() const { return range_h; }
 
-public:
-	rchandle<FTRange> get_range() const { return range_h; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[371]	FTScope
-//-------------
 class FTScope : public FTProximity
 /*______________________________________________________________________
 |
-|	::=	SAME  FTBigUnit
-|			|	DIFFERENT  FTBigUnit
+|  ::=  SAME  FTBigUnit
+|      |  DIFFERENT  FTBigUnit
 |_______________________________________________________________________*/
 {
 protected:
   ParseConstants::ft_scope_t scope;
 
 public:
-	FTScope(
-		const QueryLoc&,
-		ParseConstants::ft_scope_t);
+  FTScope(
+    const QueryLoc&,
+    ParseConstants::ft_scope_t);
 
+  enum ParseConstants::ft_scope_t get_scope() const { return scope; }
 
-public:
-	enum ParseConstants::ft_scope_t get_scope() const { return scope; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[372]	FTUnit
-//------------
 class FTUnit : public parsenode
 /*______________________________________________________________________
 |
-|	::=	WORDS | SENTENCES | PARAGRAPH
+|  ::=  WORDS | SENTENCES | PARAGRAPH
 |_______________________________________________________________________*/
 {
 protected:
   ParseConstants::ft_unit_t unit;
 
 public:
-	FTUnit(
-		const QueryLoc&,
-		ParseConstants::ft_unit_t);
+  FTUnit(
+    const QueryLoc&,
+    ParseConstants::ft_unit_t);
 
+  enum ParseConstants::ft_unit_t get_unit() const { return unit; }
 
-public:
-	enum ParseConstants::ft_unit_t get_unit() const { return unit; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-
-//[373]	FTBigUnit
-//---------------
 class FTBigUnit : public parsenode
 /*______________________________________________________________________
 |
-|	::=	SENTENCE | PARAGRAPH
+|  ::=  SENTENCE | PARAGRAPH
 |_______________________________________________________________________*/
 {
 protected:
-	enum ParseConstants::ft_big_unit_t unit;
+  enum ParseConstants::ft_big_unit_t unit;
 
 public:
-	FTBigUnit(
-		const QueryLoc&,
-		enum ParseConstants::ft_big_unit_t);
+  FTBigUnit(
+    const QueryLoc&,
+    enum ParseConstants::ft_big_unit_t);
 
+  enum ParseConstants::ft_big_unit_t get_unit() const { return unit; }
 
-public:
-	enum ParseConstants::ft_big_unit_t get_unit() const { return unit; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
@@ -6481,44 +5971,36 @@ public:
 class FTOptionDecl : public parsenode
 {
 protected:
-	rchandle<parsenode> match_option_h;
+  rchandle<parsenode> match_option_h;
 
 public:
-	FTOptionDecl(
-		const QueryLoc&,
-		rchandle<parsenode>);
+  FTOptionDecl(
+    const QueryLoc&,
+    rchandle<parsenode>);
 
+  rchandle<parsenode> get_match_option() const { return match_option_h; }
 
-public:
-	rchandle<parsenode> get_match_option() const { return match_option_h; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
 class FTIgnoreOption : public parsenode
 {
 protected:
-	rchandle<UnionExpr> union_h;
+  rchandle<UnionExpr> union_h;
 
 public:
-	FTIgnoreOption(
-		const QueryLoc&,
-		rchandle<UnionExpr>);
+  FTIgnoreOption(
+    const QueryLoc&,
+    rchandle<UnionExpr>);
 
+  rchandle<UnionExpr> get_union() const { return union_h; }
 
-public:
-	rchandle<UnionExpr> get_union() const { return union_h; }
-
-public:
-	void accept(parsenode_visitor&) const;
-
+  void accept(parsenode_visitor&) const;
 };
 
 
-}	/* namespace zorba */
+}  /* namespace zorba */
 #endif	/*  ZORBA_PARSENODES_H */
 
 /*

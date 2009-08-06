@@ -1696,10 +1696,9 @@ CaseClauseList::CaseClauseList(
   const QueryLoc& loc_)
 :
   parsenode(loc_)
-{}
+{
+}
 
-
-//-CaseClauseList::
 
 void CaseClauseList::accept(parsenode_visitor& v) const
 {
@@ -1725,7 +1724,8 @@ CaseClause::CaseClause(
   varname(_varname),
   type_h(_type_h),
   val_h(_val_h)
-{}
+{
+}
 
 CaseClause::CaseClause(
   const QueryLoc& loc_,
@@ -1736,10 +1736,9 @@ CaseClause::CaseClause(
   varname(""),
   type_h(_type_h),
   val_h(_val_h)
-{}
+{
+}
 
-
-//-CaseClause::
 
 void CaseClause::accept(parsenode_visitor& v) const
 {
@@ -2410,6 +2409,8 @@ RelativePathExpr::RelativePathExpr(
     ContextItemExpr* dot = dynamic_cast<ContextItemExpr*>(rpep->step_expr_h.getp());
     if (dot != NULL)
     {
+      // step/  ./...  --> step/...
+      // step/  .//... --> step//... 
       relpath_expr_h = rpep->relpath_expr_h;
       if (!dot->is_placeholder())
         step_type = rpep->get_step_type();
