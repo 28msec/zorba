@@ -39,7 +39,7 @@ bool
 checkType(const Item& aItem, const String& aLocalname)
 {
   try {
-    return (aItem.getPrefix() == "xs" && 
+    return (aItem.getPrefix().length() == 0 && 
             aItem.getLocalName() == aLocalname && 
             aItem.getNamespace() == "http://www.w3.org/2001/XMLSchema");
   } catch (ZorbaException &e) {
