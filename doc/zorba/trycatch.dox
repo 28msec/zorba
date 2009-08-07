@@ -1,6 +1,6 @@
-/** \page trycatch Try-Catch - XQuery 1.1
+/** \page trycatch Try-Catch
 
-\section trycatch Try/Catch - XQuery 1.1
+\section trycatch Try/Catch
 Try/Catch has made it into the latest XQuery 1.1 working draft (3 December 2008), see http://www.w3.org/TR/xquery-11/#id-try-catch. 
 The Try/Catch expression provides the user with an error handling mechanism for dynamic and type errors raised during the evaluation of the query.
 This functionality is comparable to the Java or C++ Try/Catch mechanism which allows for catching arbitrary exceptions reported in the body of the Try/Catch expression.

@@ -1,13 +1,11 @@
-/** \page zorbascripting Scritping Extension
+/** \page zorbascripting XQuery Scripting Extension 1.0
 
 \section Conformance
 
 Zorba implements a subset of the <a href="http://www.w3.org/TR/xquery-sx-10/">XQuery Scripting Extension 1.0</a>,
-with some exceptions:
+with one exception:
 
 <ul>
-<li>There is no support for block variables or function-scoped variables</li>
-<li>AssignExpr is not implemented (<tt>set $var := ...</tt>)</li>
 <li>Pending update lists may be discarded if an operand is not evaluated at all
 due to lazy evaluation or optimizations</li>
 </ul>

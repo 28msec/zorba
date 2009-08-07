@@ -18,7 +18,7 @@
    <li> Try-Catch (as in the evolving W3C recommendation).
    <li> Eval Facility to dynamically evaluate a string and execute it as a query.
    <li> APIs in various programming languages (i.e. C++, C, Python, and Ruby).
-   <li> Basic schema validation (without post schema validation and substitution groups).
+   <li> Schema validation
   </ul>
 
  <ul>
@@ -26,18 +26,18 @@
    <ul>
      <li> \ref build
      <li> \ref installation
-     <li> Feature Description
-     <ul>
-       <li> \ref groupby
-       <li> \ref gflwor
-       <li> \ref trycatch
-       <li> \ref indexes
-       <li> \ref eval
-       <li> \ref zorbascripting
-       <li> \ref rest
-       <li> \ref fop
-       <li> Additional Function Libraries
+     <li> XQuery 1.1<br/>
        <ul>
+         <li> \ref groupby
+         <li> \ref gflwor
+         <li> \ref trycatch
+       </ul>
+     <li> \ref zorbascripting
+     <li> \ref eval
+     <li> \ref indexes
+     <li> Function Library
+       <ul>
+         <li> \ref rest
          <li> \ref deref
          <li> \ref zorba-math
          <li> \ref zorba-io
@@ -45,6 +45,7 @@
          <li> \ref collections
          <li> \ref email
          <li> \ref converters
+         <li> \ref fop
        </ul>
      </ul>
      <li> \ref commandline
