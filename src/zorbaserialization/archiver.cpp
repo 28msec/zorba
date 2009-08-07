@@ -107,6 +107,13 @@ Archiver::~Archiver()
   delete all_reference_list;
   delete simple_hashout_fields;
   delete hash_out_fields;
+
+  std::list<fwd_ref>::iterator    it;
+  for(it = fwd_reference_list.begin(); it != fwd_reference_list.end(); it++)
+  {
+    if((*it).class_name)
+      free((*it).class_name);
+  }
 }
 
 
