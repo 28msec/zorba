@@ -29,7 +29,6 @@ INCLUDE_DIRECTORIES(BEFORE ${CMAKE_SOURCE_DIR}/external)
 # Next, add the files to be compiled into the library
 #
 SET(ZORBA_SRCS)
-MESSAGE(STATUS "here")
 ADD_SRC_SUBFOLDER(ZORBA_SRCS api API_SRCS )
 
 FOREACH (SRCS ${API_BUILD_SRCS})
