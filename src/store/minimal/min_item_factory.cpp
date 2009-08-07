@@ -56,6 +56,15 @@ BasicItemFactory::~BasicItemFactory()
 }
 
 
+bool BasicItemFactory::createUserTypedAtomicItem(
+    store::Item_t& result,
+    store::Item_t& baseItem,
+    store::Item_t& typeName)
+{
+  result = new UserTypedAtomicItemImpl(baseItem, typeName);
+  return true;
+}
+
 bool BasicItemFactory::createQName(
     store::Item_t&          result,
     const xqpStringStore_t& ns,
