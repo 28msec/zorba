@@ -439,8 +439,8 @@ void operator&(Archiver &ar, float &obj)
 {
   if(ar.is_serializing_out())
   {
-    char  strtemp[30];
-    sprintf(strtemp, "%f", obj);
+    char  strtemp[100];
+    sprintf(strtemp, "%.7e", (double)obj);
 
     ar.add_simple_field("float", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
   }
@@ -459,7 +459,7 @@ void operator&(Archiver &ar, float &obj)
     if(!retval && ar.get_read_optional_field())
       return;
     ar.check_simple_field(retval, type, "float", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
-    sscanf(value.c_str(), "%f", &obj);
+    sscanf(value.c_str(), "%e", &obj);
 
     ar.register_reference(id, field_treat, &obj);
   }
@@ -469,8 +469,8 @@ void operator&(Archiver &ar, double &obj)
 {
   if(ar.is_serializing_out())
   {
-    char  strtemp[30];
-    sprintf(strtemp, "%lf", obj);
+    char  strtemp[100];
+    sprintf(strtemp, "%.16e", obj);
 
     ar.add_simple_field("double", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
   }
@@ -489,7 +489,7 @@ void operator&(Archiver &ar, double &obj)
     if(!retval && ar.get_read_optional_field())
       return;
     ar.check_simple_field(retval, type, "double", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
-    sscanf(value.c_str(), "%lf", &obj);
+    sscanf(value.c_str(), "%le", &obj);
 
     ar.register_reference(id, field_treat, &obj);
   }

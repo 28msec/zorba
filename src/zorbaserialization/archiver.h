@@ -152,6 +152,7 @@ protected:
 
   bool  read_optional;
   int   is_temp_field;
+  bool  is_temp_field_one_level;
   bool  internal_archive;
 
   std::vector<store::Item*>   registered_items;
@@ -295,6 +296,11 @@ public:
     assert(is_temp_field >= 0);
   }
   bool get_is_temp_field() { return (this->is_temp_field > 0); }
+  void set_is_temp_field_one_level(bool is_temp)
+  {
+    this->is_temp_field_one_level = is_temp;
+  }
+  bool get_is_temp_field_one_level() {return this->is_temp_field_one_level;} 
 
   int get_nr_ids();
 

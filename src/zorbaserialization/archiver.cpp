@@ -83,6 +83,7 @@ Archiver::Archiver(bool is_serializing_out, bool internal_archive)
   current_class_version = 0;
   read_optional = false;
   is_temp_field = 0;
+  is_temp_field_one_level = false;
   this->internal_archive = internal_archive;
 
   all_reference_list = NULL;//(??30000, 0.6f)//, hash_out_fields(20000, 0.6f)
@@ -148,7 +149,7 @@ bool Archiver::add_simple_field(const char *type,
 
 
   new_field = new archive_field(type, true, false, value, orig_ptr, 0, field_treat, ref_field ? ref_field->id : 0);
-  if(!ref_field && (field_treat != ARCHIVE_FIELD_IS_BASECLASS) && orig_ptr && !get_is_temp_field())
+  if(!ref_field && (field_treat != ARCHIVE_FIELD_IS_BASECLASS) && orig_ptr && !get_is_temp_field() && !get_is_temp_field_one_level())
   {
     SIMPLE_HASHOUT_FIELD  f(type, orig_ptr);
     simple_hashout_fields->insert(f, new_field);
@@ -167,6 +168,8 @@ bool Archiver::add_simple_field(const char *type,
   {
     exchange_fields(new_field, ref_field);
   }
+  if(get_is_temp_field_one_level())
+    set_is_temp_field_one_level(false);
   return ref_field != NULL;
 }
 
@@ -237,7 +240,7 @@ bool Archiver::add_compound_field(const char *type,
   }
 
   new_field = new archive_field(type, false, is_class, info, ptr, version, field_treat, ref_field ? ref_field->id : 0);
-  if(!ref_field && (field_treat != ARCHIVE_FIELD_IS_BASECLASS) && ptr && !get_is_temp_field())
+  if(!ref_field && (field_treat != ARCHIVE_FIELD_IS_BASECLASS) && ptr && !get_is_temp_field() && !get_is_temp_field_one_level())
   {
     if(!is_class)
     {
@@ -263,6 +266,8 @@ bool Archiver::add_compound_field(const char *type,
   {
     exchange_fields(new_field, ref_field);
   }
+  if(get_is_temp_field_one_level())
+    set_is_temp_field_one_level(false);
   return ref_field != NULL;
 }
 

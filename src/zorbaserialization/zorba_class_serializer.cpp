@@ -906,11 +906,16 @@ void operator&(Archiver &ar, store::Item* &obj)
         std::vector<store::Item_t>  childs;
         if(ar.is_serializing_out())
           iterator_to_vector(obj->getChildren(), childs);
+        ar.set_is_temp_field(false);
+        ar.set_is_temp_field_one_level(true);
         ar & childs;//should be automatically added to DocumentNode
+        ar.set_is_temp_field(true);
       }break;
       case store::StoreConsts::elementNode:
       {
+        ar.set_is_temp_field(false);
         SERIALIZE_FIELD(store::Item*, parent, getParent());
+        ar.set_is_temp_field(true);
         //pos = -1
         SERIALIZE_FIELD(store::Item_t, nodename, getNodeName());
         SERIALIZE_FIELD(store::Item_t, name_of_type, getType());
@@ -937,14 +942,20 @@ void operator&(Archiver &ar, store::Item* &obj)
         FINALIZE_SERIALIZE(createElementNode, (result, parent, -1, nodename, name_of_type, haveTypedValue, haveEmptyValue, ns_bindings, baseUri, isInSubstGroup));
         std::vector<store::Item_t>  attribs;
         iterator_to_vector(obj->getAttributes(), attribs);
+        ar.set_is_temp_field(false);
+        ar.set_is_temp_field_one_level(true);
         ar & attribs;
         std::vector<store::Item_t>  childs;
         iterator_to_vector(obj->getChildren(), childs);
+        ar.set_is_temp_field_one_level(true);
         ar & childs;
+        ar.set_is_temp_field(true);
       }break;
       case store::StoreConsts::attributeNode:
       {
+        ar.set_is_temp_field(false);
         SERIALIZE_FIELD(store::Item*, parent, getParent());
+        ar.set_is_temp_field(true);
         SERIALIZE_FIELD(store::Item_t, nodename, getNodeName());
         SERIALIZE_FIELD(store::Item_t, name_of_type, getType());
         store::Item_t val;
@@ -969,13 +980,17 @@ void operator&(Archiver &ar, store::Item* &obj)
       }break;
       case store::StoreConsts::textNode:
       {
-        SERIALIZE_FIELD(store::Item_t, parent, getParent());
+        ar.set_is_temp_field(false);
+        SERIALIZE_FIELD(store::Item*, parent, getParent());
+        ar.set_is_temp_field(true);
         SERIALIZE_FIELD(xqpStringStore_t, content, getStringValue());
         FINALIZE_SERIALIZE(createTextNode, (result, parent, -1, content));
       }break;
       case store::StoreConsts::piNode:
       {
-        SERIALIZE_FIELD(store::Item_t, parent, getParent());
+        ar.set_is_temp_field(false);
+        SERIALIZE_FIELD(store::Item*, parent, getParent());
+        ar.set_is_temp_field(true);
         SERIALIZE_FIELD(xqpStringStore_t, target, getTarget());
         SERIALIZE_FIELD(xqpStringStore_t, content, getStringValue());
         SERIALIZE_FIELD(xqpStringStore_t, baseUri, getBaseURI());
@@ -983,7 +998,9 @@ void operator&(Archiver &ar, store::Item* &obj)
       }break;
       case store::StoreConsts::commentNode:
       {
-        SERIALIZE_FIELD(store::Item_t, parent, getParent());
+        ar.set_is_temp_field(false);
+        SERIALIZE_FIELD(store::Item*, parent, getParent());
+        ar.set_is_temp_field(true);
         SERIALIZE_FIELD(xqpStringStore_t, content, getStringValue());
         FINALIZE_SERIALIZE(createCommentNode, (result, parent, -1, content));
       }break;
