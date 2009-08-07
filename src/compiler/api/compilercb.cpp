@@ -48,7 +48,7 @@ END_SERIALIZABLE_CLASS_VERSIONS(CompilerCB::config)
   DEF_PRINT_EXPR_TREE (optimization)
 
 
-  CompilerCB::CompilerCB(std::map<short, static_context_t>& sctx_map)
+CompilerCB::CompilerCB(std::map<short, static_context_t>& sctx_map)
   :
   m_is_loadprolog(false),
   m_context_map(&sctx_map),
@@ -62,8 +62,8 @@ END_SERIALIZABLE_CLASS_VERSIONS(CompilerCB::config)
 }
 
 
-  CompilerCB::CompilerCB(const CompilerCB& cb)
-    :
+CompilerCB::CompilerCB(const CompilerCB& cb)
+  :
   zorba::serialization::SerializeBaseClass(cb),
   m_is_loadprolog(false),
   m_context_map(cb.m_context_map),
@@ -76,43 +76,39 @@ END_SERIALIZABLE_CLASS_VERSIONS(CompilerCB::config)
 #endif
 {
 }
-/*
- CompilerCB::CompilerCB(::zorba::serialization::Archiver &ar)
-   :
-    ::zorba::serialization::SerializeBaseClass(),
-    m_context_map(ar.xquery_impl->theSctxMap) 
- {}
-*/
+
 
 CompilerCB::~CompilerCB() 
 {
 }
 
-  static_context*
-  CompilerCB::getStaticContext(short c)
-  {
-    std::map<short, static_context_t>::iterator lIter;
-    lIter = m_context_map->find(c);
-    assert(lIter != m_context_map->end());
-    return lIter->second.getp();
-  }
+  
+static_context*
+CompilerCB::getStaticContext(short c)
+{
+  std::map<short, static_context_t>::iterator lIter;
+  lIter = m_context_map->find(c);
+  assert(lIter != m_context_map->end());
+  return lIter->second.getp();
+}
 
-  CompilerCB::config::config ()
+
+CompilerCB::config::config ()
   :
   opt_level (O1),
   lib_module(false),
   parse_cb (NULL)
-  {
-    translate_cb = normalize_cb = optimize_cb = NULL;
-    // TODO: move these out
-    print_item_flow = Properties::instance()->printItemFlow();
-    if (Properties::instance()->printTranslated())
-      translate_cb = print_expr_tree_translation;
-    if (Properties::instance()->printNormalized())
-      normalize_cb = print_expr_tree_normalization;
-    if (Properties::instance()->printOptimized())
-      optimize_cb = print_expr_tree_optimization;
-    force_gflwor = Properties::instance()->forceGflwor();
-  }
-
+{
+  translate_cb = normalize_cb = optimize_cb = NULL;
+  // TODO: move these out
+  print_item_flow = Properties::instance()->printItemFlow();
+  if (Properties::instance()->printTranslated())
+    translate_cb = print_expr_tree_translation;
+  if (Properties::instance()->printNormalized())
+    normalize_cb = print_expr_tree_normalization;
+  if (Properties::instance()->printOptimized())
+    optimize_cb = print_expr_tree_optimization;
+  force_gflwor = Properties::instance()->forceGflwor();
+}
+  
 } /* namespace zorba */

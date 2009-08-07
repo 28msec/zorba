@@ -163,7 +163,7 @@ public:
   static long equal(
         const store::Item_t& aItem0,
         const store::Item_t& aItem1,
-        TypeManager* typemgr,
+        const TypeManager* typemgr,
         long timezone,
         XQPCollator* aCollation);
 
@@ -184,7 +184,7 @@ public:
   static long compare(
         const store::Item_t& aItem0,
         const store::Item_t& aItem1,
-        TypeManager* typemgr,
+        const TypeManager* typemgr,
         long timezone, 
         XQPCollator* aCollation);
 
@@ -203,7 +203,7 @@ public:
         store::Item_t& aItem0,
         store::Item_t& aItem1, 
         CompareConsts::CompareType aCompType,
-        TypeManager* typemgr,
+        const TypeManager* typemgr,
         long timezone,
         XQPCollator* aCollation);
 
@@ -218,7 +218,7 @@ public:
   static long valueEqual(
         store::Item_t& aItem0,
         store::Item_t& aItem1,
-        TypeManager* typemgr,
+        const TypeManager* typemgr,
         long timezone, 
         XQPCollator* aCollation);
       
@@ -236,7 +236,7 @@ public:
   static long valueCompare(
         store::Item_t& aItem0,
         store::Item_t& aItem1,
-        TypeManager* typemgr,
+        const TypeManager* typemgr,
         long timezone, 
         XQPCollator* aCollation);
 
@@ -255,7 +255,7 @@ public:
         store::Item_t& aItem0,
         store::Item_t& aItem_1,
         CompareConsts::CompareType aCompType,
-        TypeManager* typemgr,
+        const TypeManager* typemgr,
         long timezone,
         XQPCollator*   aCollation);
       
@@ -269,7 +269,7 @@ public:
   static long generalEqual(
         store::Item_t& aItem0,
         store::Item_t& aItem1,
-        TypeManager* typemgr,
+        const TypeManager* typemgr,
         long timezone,
         XQPCollator* aCollation);
       
@@ -284,25 +284,26 @@ public:
   static long generalCompare(
         store::Item_t& aItem0,
         store::Item_t& aItem1,
-        TypeManager* typemgr,
+        const TypeManager* typemgr,
         long timezone,
         XQPCollator* aCollation);
       
 private:
   static void valueCasting(
-        TypeManager* typemgr,
+        const TypeManager* typemgr,
         store::Item_t& aItem0,
         store::Item_t& aItem1,
         store::Item_t& castItem0,
         store::Item_t& castItem1);
 
   static void generalCasting(
-        TypeManager* typemgr,
+        const TypeManager* typemgr,
         store::Item_t& aItem0,
         store::Item_t& aItem1,
         store::Item_t& castItem0,
         store::Item_t& castItem1);
 };
+
 
 template <TypeConstants::atomic_type_code_t ATC>
 class TypedValueCompareIterator
@@ -322,13 +323,18 @@ public:
     ar & theTimezone;
     ar & theCollation;
   }
+
 public:
-  TypedValueCompareIterator (short sctx,
-                             const QueryLoc& loc,
-                             std::vector<PlanIter_t>& children,
-                             CompareConsts::CompareType aCompType)
-    : NaryBaseIterator<TypedValueCompareIterator<ATC>, PlanIteratorState> ( sctx, loc, children ), 
-      theCompType(aCompType), theTimezone (0), theCollation(NULL)
+  TypedValueCompareIterator(
+        short sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& children,
+        CompareConsts::CompareType aCompType)
+    :
+    NaryBaseIterator<TypedValueCompareIterator<ATC>, PlanIteratorState>(sctx, loc, children), 
+    theCompType(aCompType),
+    theTimezone (0),
+    theCollation(NULL)
   {}
 
   ~TypedValueCompareIterator () {}
@@ -337,6 +343,7 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
   void accept(PlanIterVisitor&) const;
 };
+
 
 /*******************************************************************************
   Node comparison iterators

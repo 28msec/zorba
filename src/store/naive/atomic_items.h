@@ -63,8 +63,6 @@ public:
   virtual store::Item_t getAtomizationValue() const;
 
   virtual void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
-
-  virtual const store::Item* getBaseItem() const { return NULL; }
 };
 
 
@@ -98,17 +96,23 @@ public:
   bool equals(
         const store::Item* other,
         long timezone = 0,
-        const XQPCollator* aCollation = 0) const
+        const XQPCollator* collation = 0) const
   {
-    return false;
+    if (other->getBaseItem() == NULL)
+      return theBaseItem->equals(other, timezone, collation);
+    else
+      return theBaseItem->equals(other->getBaseItem(), timezone, collation);
   }
 
   long compare(
         const store::Item* other,
         long timezone = 0,
-        const XQPCollator* aCollation = 0) const
+        const XQPCollator* collation = 0) const
   {
-    return 0;
+    if (other->getBaseItem() == NULL)
+      return theBaseItem->compare(other, timezone, collation);
+    else
+      return theBaseItem->compare(other->getBaseItem(), timezone, collation);
   }
 
   store::Item_t getEBV() const { return theBaseItem->getEBV(); }

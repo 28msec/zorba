@@ -698,7 +698,7 @@ TypeConstants::castable_t TypeOps::castability(const XQType& src, const XQType& 
     return RootTypeManager::ATOMIC_CAST_MATRIX[aSrc.get_type_code()][aTarget.get_type_code()];
   }
   // incorect should work for other than built-in types or at least rename it.
-  return TypeConstants::NOT_CASTABLE;
+  return TypeConstants::MAYBE_CASTABLE;
 }
 
 

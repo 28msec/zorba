@@ -72,20 +72,18 @@ public:
 class CastIteratorState : public PlanIteratorState
 {
 public:
-  std::vector<store::Item_t> theSimpleParseItems;
-  size_t theIndex;
-
   void init(PlanState&);
   void reset(PlanState&);
 };
 
+
 class CastIterator : public UnaryBaseIterator<CastIterator, CastIteratorState> 
 {
   friend class PrinterVisitor;
+
 private:
   xqtref_t                    theCastType;
   TypeConstants::quantifier_t theQuantifier;
-  bool                        theIsSimpleType;
 
 public:
   SERIALIZABLE_CLASS(CastIterator)
@@ -95,16 +93,18 @@ public:
     serialize_baseclass(ar, (UnaryBaseIterator<CastIterator, CastIteratorState>*)this);
     ar & theCastType;
     SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
-    ar & theIsSimpleType;
   }
+
 public:
   CastIterator(short sctx,
                const QueryLoc& loc,
                PlanIter_t& aChild,
                const xqtref_t& aCastType);
+
   ~CastIterator();
   
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
   virtual void accept(PlanIterVisitor&) const;
 };
 
@@ -114,7 +114,8 @@ public:
 
   http://www.w3.org/TR/xquery/#id-castable
 ********************************************************************************/
-class CastableIterator : public UnaryBaseIterator<CastableIterator, PlanIteratorState> {
+class CastableIterator : public UnaryBaseIterator<CastableIterator, PlanIteratorState> 
+{
   friend class PrinterVisitor;
 private:
   xqtref_t theCastType;

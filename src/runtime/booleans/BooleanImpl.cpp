@@ -374,7 +374,7 @@ bool CompareIterator::valueComparison(
     store::Item_t& aItem0,
     store::Item_t& aItem1, 
     CompareConsts::CompareType aCompType,
-    TypeManager* typemgr,
+    const TypeManager* typemgr,
     long timezone,
     XQPCollator* aCollation)
 {
@@ -446,7 +446,7 @@ bool CompareIterator::valueComparison(
 long CompareIterator::valueEqual(
     store::Item_t& aItem0,
     store::Item_t& aItem1,
-    TypeManager* typemgr,
+    const TypeManager* typemgr,
     long timezone, 
     XQPCollator* aCollation)
 {
@@ -459,7 +459,7 @@ long CompareIterator::valueEqual(
 long CompareIterator::valueCompare(
     store::Item_t& aItem0,
     store::Item_t& aItem1,
-    TypeManager* typemgr,
+    const TypeManager* typemgr,
     long timezone,
     XQPCollator* aCollation)
 {
@@ -470,7 +470,7 @@ long CompareIterator::valueCompare(
 
 
 void CompareIterator::valueCasting(
-    TypeManager* typemgr,
+    const TypeManager* tm,
     store::Item_t& aItem0,
     store::Item_t& aItem1,
     store::Item_t& castItem0,
@@ -478,39 +478,40 @@ void CompareIterator::valueCasting(
 {
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  xqtref_t type0 = typemgr->create_value_type(aItem0);
-  xqtref_t type1 = typemgr->create_value_type(aItem1);
+  xqtref_t type0 = tm->create_value_type(aItem0);
+  xqtref_t type1 = tm->create_value_type(aItem1);
 
   // all untyped Atomics to String
   if (TypeOps::is_subtype(*type0, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
   {
-    GenericCast::instance()->castToAtomic(castItem0, aItem0, &*rtm.STRING_TYPE_ONE);
+    GenericCast::castToAtomic(castItem0, aItem0, &*rtm.STRING_TYPE_ONE, *tm);
 
     if  (TypeOps::is_subtype(*type1, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
     {
-      GenericCast::instance()->castToAtomic(castItem1, aItem1, &*rtm.STRING_TYPE_ONE);
+      GenericCast::castToAtomic(castItem1, aItem1, &*rtm.STRING_TYPE_ONE, *tm);
     }
     else
     {
-      if (!GenericCast::instance()->promote(castItem1, aItem1, &*rtm.STRING_TYPE_ONE))
+      if (!GenericCast::promote(castItem1, aItem1, &*rtm.STRING_TYPE_ONE, *tm))
         castItem1.transfer(aItem1);
     }  
   }
   else if (TypeOps::is_subtype(*type1, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
   {
-    if (!GenericCast::instance()->promote(const_cast<store::Item_t&>(castItem0),
-                                          aItem0,
-                                          &*rtm.STRING_TYPE_ONE))
+    if (!GenericCast::promote(const_cast<store::Item_t&>(castItem0),
+                              aItem0,
+                              &*rtm.STRING_TYPE_ONE,
+                              *tm))
       castItem0.transfer(aItem0);
 
-    GenericCast::instance()->castToAtomic(castItem1, aItem1, &*rtm.STRING_TYPE_ONE);
+    GenericCast::castToAtomic(castItem1, aItem1, &*rtm.STRING_TYPE_ONE, *tm);
   }
   else
   {
-    if (!GenericCast::instance()->promote(castItem0, aItem0, &*type1))
+    if (!GenericCast::promote(castItem0, aItem0, &*type1, *tm))
       castItem0.transfer(aItem0);
 
-    if (!GenericCast::instance()->promote(castItem1, aItem1, &*type0))
+    if (!GenericCast::promote(castItem1, aItem1, &*type0, *tm))
       castItem1.transfer(aItem1);
   }
 }
@@ -524,7 +525,7 @@ bool CompareIterator::generalComparison(
     store::Item_t& aItem0,
     store::Item_t& aItem1, 
     CompareConsts::CompareType aCompType,
-    TypeManager* typemgr,
+    const TypeManager* typemgr,
     long timezone,
     XQPCollator* aCollation)
 {
@@ -600,7 +601,7 @@ bool CompareIterator::generalComparison(
 long CompareIterator::generalEqual(
     store::Item_t& aItem0,
     store::Item_t& aItem1,
-    TypeManager* typemgr,
+    const TypeManager* typemgr,
     long timezone, 
     XQPCollator*   aCollation)
 {
@@ -613,7 +614,7 @@ long CompareIterator::generalEqual(
 long CompareIterator::generalCompare(
     store::Item_t& aItem0,
     store::Item_t& aItem1, 
-    TypeManager* typemgr,
+    const TypeManager* typemgr,
     long timezone,
     XQPCollator* aCollation)
 {
@@ -624,71 +625,65 @@ long CompareIterator::generalCompare(
 
 
 void CompareIterator::generalCasting(
-    TypeManager* typemgr,
+    const TypeManager* tm,
     store::Item_t& aItem0,
     store::Item_t& aItem1,
     store::Item_t& castItem0,
     store::Item_t& castItem1)
 {
-  xqtref_t type0 = typemgr->create_value_type(aItem0);
-  xqtref_t type1 = typemgr->create_value_type(aItem1);
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
+  xqtref_t type0 = tm->create_value_type(aItem0);
+  xqtref_t type1 = tm->create_value_type(aItem1);
+
+  if (TypeOps::is_subtype(*type0, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
   {
     if (TypeOps::is_numeric(*type1))
     {
-      GenericCast::instance()->castToAtomic(castItem0, aItem0,
-                                            &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+      GenericCast::castToAtomic(castItem0, aItem0, &*rtm.DOUBLE_TYPE_ONE, *tm);
 
-      GenericCast::instance()->promote(castItem1, aItem1,
-                                       &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+      GenericCast::promote(castItem1, aItem1, &*rtm.DOUBLE_TYPE_ONE, *tm);
     }
-    else if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
+    else if (TypeOps::is_subtype(*type1, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
     {
-      GenericCast::instance()->castToAtomic(castItem0, aItem0,
-                                            &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
-      GenericCast::instance()->castToAtomic(castItem1, aItem1,
-                                            &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
+      GenericCast::castToAtomic(castItem0, aItem0, &*rtm.STRING_TYPE_ONE, *tm);
+      GenericCast::castToAtomic(castItem1, aItem1, &*rtm.STRING_TYPE_ONE, *tm);
     }
-    else if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.STRING_TYPE_ONE))
+    else if (TypeOps::is_subtype(*type1, *rtm.STRING_TYPE_ONE))
     {
-      GenericCast::instance()->castToAtomic(castItem0, aItem0,
-                                            &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
+      GenericCast::castToAtomic(castItem0, aItem0, &*rtm.STRING_TYPE_ONE, *tm);
       castItem1.transfer(aItem1);
     }
     else
     {
-      GenericCast::instance()->castToAtomic(castItem0, aItem0, &*type1);
+      GenericCast::castToAtomic(castItem0, aItem0, &*type1, *tm);
       castItem1.transfer(aItem1);
     }
   }
-  else if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
+  else if (TypeOps::is_subtype(*type1, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
   {
     if (TypeOps::is_numeric(*type0))
     {
-      GenericCast::instance()->castToAtomic(castItem1, aItem1,
-                                            &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
-      GenericCast::instance()->promote(castItem0, aItem0,
-                                       &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+      GenericCast::castToAtomic(castItem1, aItem1, &*rtm.DOUBLE_TYPE_ONE, *tm);
+      GenericCast::promote(castItem0, aItem0, &*rtm.DOUBLE_TYPE_ONE, *tm);
     }
-    else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.STRING_TYPE_ONE))
+    else if (TypeOps::is_subtype(*type0, *rtm.STRING_TYPE_ONE))
     {
-      GenericCast::instance()->castToAtomic(castItem1, aItem1,
-                                            &*GENV_TYPESYSTEM.STRING_TYPE_ONE);
+      GenericCast::castToAtomic(castItem1, aItem1, &*rtm.STRING_TYPE_ONE, *tm);
       castItem0.transfer(aItem0);
     }
     else
     {
-      GenericCast::instance()->castToAtomic(castItem1, aItem1, &*type0);
+      GenericCast::castToAtomic(castItem1, aItem1, &*type0, *tm);
       castItem0.transfer(aItem0);
     }
   }
   else
   {
-    if (!GenericCast::instance()->promote(castItem0, aItem0, &*type1))
+    if (!GenericCast::promote(castItem0, aItem0, &*type1, *tm))
       castItem0.transfer(aItem0);
 
-    if (!GenericCast::instance()->promote(castItem1, aItem1, &*type0))
+    if (!GenericCast::promote(castItem1, aItem1, &*type0, *tm))
       castItem1.transfer(aItem1);
   }  
 }
@@ -700,7 +695,7 @@ void CompareIterator::generalCasting(
 long CompareIterator::equal(
     const store::Item_t& aItem0,
     const store::Item_t& aItem1,
-    TypeManager* typemgr,
+    const TypeManager* typemgr,
     long timezone,
     XQPCollator* aCollation)
 {
@@ -757,7 +752,7 @@ long CompareIterator::equal(
 long CompareIterator::compare(
     const store::Item_t& aItem0,
     const store::Item_t& aItem1, 
-    TypeManager* typemgr,
+    const TypeManager* typemgr,
     long timezone,
     XQPCollator* aCollation)
 {

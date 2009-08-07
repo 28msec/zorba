@@ -618,35 +618,49 @@ static expr_t partial_eval_eq (RewriterContext& rCtx, fo_expr &fo)
   if (i == 2)
     return NULL;
   
+  TypeManager* tm = rCtx.getStaticContext()->get_typemanager();
+
   store::Item_t val = val_expr->get_val ();
-  if (TypeOps::is_subtype (*rCtx.getStaticContext()->get_typemanager()->create_named_type (val->getType ()), *GENV_TYPESYSTEM.INTEGER_TYPE_ONE)) 
+  if (TypeOps::is_subtype(*tm->create_named_type(val->getType()),
+                          *GENV_TYPESYSTEM.INTEGER_TYPE_ONE)) 
   {
-    xqp_integer ival = val->getIntegerValue ();
-    xqp_integer zero = xqp_integer::parseInt (0);
+    xqp_integer ival = val->getIntegerValue();
+    xqp_integer zero = xqp_integer::parseInt(0);
+
     if (ival < zero)
+    {
       return new const_expr (val_expr->get_cur_sctx(), LOC (val_expr), false);
+    }
     else if (ival == zero)
+    {
       return fix_annotations (new fo_expr (fo.get_cur_sctx(), fo.get_loc (),
                                            LOOKUP_FN ("fn", "empty", 1),
                                            (*count_expr) [0]));
+    }
     else if (ival == xqp_integer::parseInt (1))
+    {
       return fix_annotations (new fo_expr (fo.get_cur_sctx(), fo.get_loc (),
                                            LOOKUP_OP1 ("exactly-one-noraise"),
                                            (*count_expr) [0]));
-    else {
+    }
+    else 
+    {
       store::Item_t pVal;
-      GenericCast::instance ()->promote (pVal, val, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+      GenericCast::promote(pVal, val, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, *tm);
       expr_t dpos = new const_expr (val_expr->get_cur_sctx(), LOC (val_expr), pVal);
       expr_t subseq_expr = fix_annotations(
-                           new fo_expr (count_expr->get_cur_sctx(), LOC (count_expr),
-                                        LOOKUP_FN ("fn", "subsequence", 3),
-                                        (*count_expr) [0],
-                                        dpos,
-                                        new const_expr (val_expr->get_cur_sctx(), LOC (val_expr),
-                                                        xqp_double::parseInt (2))));
-      return fix_annotations (new fo_expr (fo.get_cur_sctx(), fo.get_loc (),
-                                           LOOKUP_OP1 ("exactly-one-noraise"),
-                                           subseq_expr));
+                           new fo_expr(count_expr->get_cur_sctx(),
+                                       LOC (count_expr),
+                                       LOOKUP_FN ("fn", "subsequence", 3),
+                                       (*count_expr) [0],
+                                       dpos,
+                                       new const_expr(val_expr->get_cur_sctx(),
+                                                      LOC(val_expr),
+                                                      xqp_double::parseInt (2))));
+      return fix_annotations(new fo_expr(fo.get_cur_sctx(),
+                                         fo.get_loc (),
+                                         LOOKUP_OP1 ("exactly-one-noraise"),
+                                         subseq_expr));
     }
   }
   

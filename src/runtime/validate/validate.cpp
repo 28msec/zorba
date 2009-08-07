@@ -617,16 +617,16 @@ void ValidateIterator::processTextValue (
       }
       else if (udt.isAtomic())
       {
-        bool res = GenericCast::instance()->
-                   castToAtomic(result, textValue, type.getp(), &nsCtx);
+        bool res = typeManager->getSchema()->parseUserAtomicTypes(textValue,
+                                                                  type.getp(),
+                                                                  result);
         ZORBA_ASSERT(res);
         resultList.push_back(result);
     }
     }
     else if (type->type_kind() == XQType::ATOMIC_TYPE_KIND)
     {
-      bool res = GenericCast::instance()->
-                 castToAtomic(result, textValue, type.getp(), &nsCtx);
+      bool res = GenericCast::castToAtomic(result, textValue, type.getp(), &nsCtx);
       ZORBA_ASSERT(res);
       resultList.push_back(result);
     }

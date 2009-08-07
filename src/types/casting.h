@@ -47,8 +47,8 @@ class GenericCast
                             const ErrorInfo& aErrorInfo
                         ); 
 private:
-  static const int theMapping[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE];
-  static const CastFunc theCastMatrix[23][23];
+  static const int          theMapping[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE];
+  static const CastFunc     theCastMatrix[23][23];
   static const DownCastFunc theDownCastMatrix[23];
 
   GenericCast() {}
@@ -64,46 +64,47 @@ public:
    * Executes the string casting of the passed string to an item of the passed
    * target type.
    */
-  bool castToAtomic (
+  static bool castToAtomic (
         store::Item_t& result,
         xqpStringStore_t& aStr, 
         const XQType* aTargetType,
-        namespace_context* aNCtx = 0) const;
+        namespace_context* aNCtx = 0);
   /**
    * Executes the casting of the passed item. If the passed item has the same
    * type or a subtype of the passed targetType, the passed item is directly
    * returned.
    */
-  bool castToAtomic (
-        store::Item_t&       result,
-        store::Item_t&       aItem, 
-        const XQType*        aTargetType, 
-        namespace_context*   aNCtx = 0) const;
+  static bool castToAtomic (
+        store::Item_t& result,
+        store::Item_t& aItem, 
+        const XQType* aTargetType,
+        const TypeManager& tm, 
+        namespace_context* aNCtx = 0);
 
-  bool castToSimple (
-        const xqpStringStore_t& aStr, 
+  static bool castToSimple (
+        xqpStringStore_t& aStr, 
         const xqtref_t& aTargetType,
-        std::vector<store::Item_t> &aResultList) const;
+        std::vector<store::Item_t>& aResultList);
 
   /**
    * Casts the passed string to xs:QName if possible.
    */
-  bool castToQName(
+  static bool castToQName(
         store::Item_t& result,
         xqpStringStore_t& aStr,
-        namespace_context* aNCtx = 0) const;
+        namespace_context* aNCtx = 0);
 
   bool castableToNCName(const xqpStringStore* str) const;
 
-  bool castableToNormalizedString(const xqpStringStore *str) const;
+  bool castableToNormalizedString(const xqpStringStore* str) const;
 
-  bool castableToToken(const xqpStringStore *str) const;
+  bool castableToToken(const xqpStringStore* str) const;
 
-  bool castableToLanguage(const xqpStringStore *str) const;
+  bool castableToLanguage(const xqpStringStore* str) const;
 
-  bool castableToNMToken(const xqpStringStore *str) const;
+  static bool castableToNMToken(const xqpStringStore* str);
 
-  bool castableToName(const xqpStringStore *str) const;
+  static bool castableToName(const xqpStringStore* str);
 
   /**
    * Checks if the passed item would be castable to the passed target type.
@@ -111,7 +112,10 @@ public:
    * @param aTargetType
    * @return true if castable, else false
    */
-  bool isCastable(const store::Item_t& aItem, const XQType* aTargetType) const; 
+  static bool isCastable(
+        const store::Item_t& aItem,
+        const XQType* aTargetType,
+        const TypeManager& tm); 
 
   /**
    * Checks if the passed string is castable to the passed target type.
@@ -119,7 +123,7 @@ public:
    * @param aTargetType
    * @return true if castable, else false
    */
-  bool isCastable(xqpStringStore_t& aStr, const XQType* aTargetType) const;
+  static bool isCastable(xqpStringStore_t& aStr, const XQType* aTargetType);
 
   /**
    * Promotes the passed item to the passed target type.
@@ -129,13 +133,12 @@ public:
    *         if the item type is a subtype of the target type, then
    *         the passed item is returned
    */
-  bool promote(
+  static bool promote(
         store::Item_t& result,
         store::Item_t& aItem,
-        const XQType*  aTargetType) const;
-
-  
-}; /* class GenericCast */
+        const XQType* aTargetType,
+        const TypeManager& tm);
+};
 
 } /* namespace zorba */
 

@@ -590,6 +590,7 @@ static bool refactor_index_pred(
     return false;
 
   static_context* sctx = rCtx.getStaticContext();
+  TypeManager* tm = sctx->get_typemanager();
 
   int i;
   for (i = 0; i < 2; i++) 
@@ -599,12 +600,13 @@ static bool refactor_index_pred(
         NULL != (pos_expr = (*fo)[1 - i].dyn_cast<const_expr>().getp())) 
     {
       store::Item_t val = pos_expr->get_val();
-      if (TypeOps::is_subtype(*sctx->get_typemanager()->create_named_type(val->getType()),
+
+      if (TypeOps::is_subtype(*tm->create_named_type(val->getType()),
                               *GENV_TYPESYSTEM.INTEGER_TYPE_ONE)
           && val->getIntegerValue() >= xqp_integer::parseInt(1)) 
       {
         store::Item_t pVal;
-        GenericCast::instance()->promote(pVal, val, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+        GenericCast::promote(pVal, val, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, *tm);
         pos_expr = new const_expr(pos_expr->get_cur_sctx(), LOC(pos_expr), pVal);
         return true;
       }

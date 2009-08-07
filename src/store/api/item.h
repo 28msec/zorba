@@ -231,6 +231,13 @@ public:
   /* -------------------  Methods for AtomicValues ------------------------------ */
 
   /**
+   * @return If this is an atomic item with a user-defined data type UT, return
+   *         the underlying atomic item that stores the actual value and whose
+   *         data type is a builtin atomic supertype of UT.
+   */
+  virtual const store::Item* getBaseItem() const;
+
+  /**
    *  getXValue functions:
    *  @return  value of type X
    *

@@ -152,7 +152,7 @@ XQueryImpl::close()
       delete theErrorHandler;
 
     if (theStaticContext)
-      RCHelper::removeReference (theStaticContext);
+      RCHelper::removeReference(theStaticContext);
 
     delete theDynamicContext;
 
@@ -193,7 +193,8 @@ XQueryImpl::clone() const
     
     // child static context
     lImpl->theStaticContext = theStaticContext->create_child_context();
-    RCHelper::addReference (lImpl->theStaticContext);
+    RCHelper::addReference(lImpl->theStaticContext);
+
     lImpl->theCompilerCB->m_sctx = lImpl->theStaticContext;
     lImpl->theCompilerCB->m_context_map = theCompilerCB->m_context_map;
 

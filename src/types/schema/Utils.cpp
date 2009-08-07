@@ -391,69 +391,71 @@ void processChildren(
     store::Iterator_t children,
     std::vector<store::Item_t>& typedValues)
 {
-    store::Item_t child;
-
-    store::Item_t typeName;
+  store::Item_t child;
+  
+  store::Item_t typeName;
     
-    while ( children->next(child) )
+  while ( children->next(child) )
+  {
+    if ( child->isNode() )
     {
-        if ( child->isNode() )
-        {
-            //cout << " vup  - processChildren: " << child->getType()->getLocalName()->c_str() << "\n"; cout.flush();
+      //cout << " vup  - processChildren: " << child->getType()->getLocalName()->c_str() << "\n"; cout.flush();
             
-            switch ( child->getNodeKind() )
-            { 
-            case store::StoreConsts::elementNode:                                     
-              processElement( pul, staticContext, typeManager, schemaValidator, child);
-              break;
+      switch ( child->getNodeKind() )
+      { 
+      case store::StoreConsts::elementNode:                                     
+        processElement( pul, staticContext, typeManager, schemaValidator, child);
+        break;
                 
-            case store::StoreConsts::attributeNode:
-              ZORBA_ASSERT(false);
-              break;
+      case store::StoreConsts::attributeNode:
+        ZORBA_ASSERT(false);
+        break;
+        
+      case store::StoreConsts::documentNode:
+        ZORBA_ASSERT(false);                    
+        break;
             
-            case store::StoreConsts::documentNode:
-              ZORBA_ASSERT(false);                    
-              break;
+      case store::StoreConsts::textNode:
+      {
+        //cout << " vup        - pC text: '" << child->getStringValue()->normalizeSpace()->str() << "'\n"; cout.flush();
+        xqpStringStore_t childStringValue;
+        child->getStringValue(childStringValue);
+        schemaValidator.text(childStringValue);
+        
+        store::Item_t typeQName = schemaValidator.getTypeQName();
+        
+        processTextValue(pul,
+                         typeManager,
+                         nsCtx,
+                         typeQName,
+                         childStringValue,
+                         child,
+                         typedValues );                        
+      }
+      break;
+      
+      case store::StoreConsts::piNode:
+        //cout << " vup        - pi: " << child->getStringValue() << "\n"; cout.flush();
+        // do nothing
+        break;
             
-            case store::StoreConsts::textNode:
-            {
-              //cout << " vup        - pC text: '" << child->getStringValue()->normalizeSpace()->str() << "'\n"; cout.flush();
-              xqpStringStore_t childStringValue = child->getStringValue();
-              schemaValidator.text(childStringValue);
-              
-              store::Item_t typeQName = schemaValidator.getTypeQName();
-                    
-              processTextValue(pul,
-                               typeManager,
-                               nsCtx,
-                               typeQName,
-                               childStringValue,
-                               child,
-                               typedValues );                        
-            }
-            break;
+      case store::StoreConsts::commentNode:
+        //cout << " vup        - comment: " << child->getStringValue() << "\n"; cout.flush();
+        // do nothing
+        break;
             
-            case store::StoreConsts::piNode:
-              //cout << " vup        - pi: " << child->getStringValue() << "\n"; cout.flush();
-              // do nothing
-              break;
-            
-            case store::StoreConsts::commentNode:
-              //cout << " vup        - comment: " << child->getStringValue() << "\n"; cout.flush();
-              // do nothing
-              break;
-            
-            case store::StoreConsts::anyNode:
-              //cout << " vup        - any: " << child->getStringValue() << "\n"; cout.flush();
-              ZORBA_ASSERT(false);                    
-              break;
+      case store::StoreConsts::anyNode:
+        //cout << " vup        - any: " << child->getStringValue() << "\n"; cout.flush();
+        ZORBA_ASSERT(false);                    
+        break;
                                 
-            default:
-              ZORBA_ASSERT(false);
-            }
-        }
+      default:
+        ZORBA_ASSERT(false);
+      }
     }
+  }
 }
+
 
 void processNamespaces ( EventSchemaValidator& schemaValidator, const store::Item *item)
 {
@@ -473,7 +475,7 @@ void processTextValue (
     store::Item_t typeQName,
     xqpStringStore_t& textValue, 
     store::Item_t& originalChild,
-    std::vector<store::Item_t> &resultList)
+    std::vector<store::Item_t>& resultList)
 {
   xqtref_t type = typeManager->create_named_atomic_type(typeQName,
                                                         TypeConstants::QUANT_ONE);
@@ -484,10 +486,10 @@ void processTextValue (
   // << "\n"; cout.flush();                    
             
   store::Item_t result;                    
-  if (type!=NULL)
+  if (type != NULL)
   {
-    if ( type->content_kind()==XQType::ELEMENT_ONLY_CONTENT_KIND || 
-         type->content_kind()==XQType::MIXED_CONTENT_KIND )
+    if ( type->content_kind() == XQType::ELEMENT_ONLY_CONTENT_KIND || 
+         type->content_kind() == XQType::MIXED_CONTENT_KIND )
       return;
     
     if ( type->type_kind() == XQType::USER_DEFINED_KIND )
@@ -508,7 +510,7 @@ void processTextValue (
       // else isAtomic
     }
     
-    bool isResult = GenericCast::instance()->castToAtomic(result, textValue, type.getp(), &nsCtx);
+    bool isResult = GenericCast::castToAtomic(result, textValue, type.getp(), &nsCtx);
     if ( isResult )
       resultList.push_back(result);
   }

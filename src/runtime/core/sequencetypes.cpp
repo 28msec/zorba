@@ -139,15 +139,12 @@ void
 CastIteratorState::init(PlanState& aPlanState)
 {
   PlanIteratorState::init(aPlanState);
-  theIndex = 0;
 }
 
 void
 CastIteratorState::reset(PlanState& aPlanState)
 {
   PlanIteratorState::reset(aPlanState);
-  theSimpleParseItems.clear();
-  theIndex = 0;
 }
 
 CastIterator::CastIterator(
@@ -159,16 +156,12 @@ CastIterator::CastIterator(
 {
   theCastType = TypeOps::prime_type (*aCastType);
   theQuantifier = TypeOps::quantifier(*aCastType);
-  if (aCastType->type_kind() == XQType::USER_DEFINED_KIND)
-  {
-    const UserDefinedXQType* lType = static_cast<const UserDefinedXQType*>(aCastType.getp());
-    theIsSimpleType = !lType->isComplex();
-  }
-  else
-    theIsSimpleType = false;
 }
 
-CastIterator::~CastIterator(){}
+
+CastIterator::~CastIterator()
+{
+}
 
 
 bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -176,39 +169,50 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::Item_t lItem;
   bool valid = false;
   
+  const TypeManager& tm = *getStaticContext(planState)->get_typemanager();
+
   CastIteratorState* state;
   DEFAULT_STACK_INIT(CastIteratorState, state, planState);
 
+  ZORBA_ASSERT(theQuantifier == TypeConstants::QUANT_ONE ||
+               theQuantifier == TypeConstants::QUANT_QUESTION);
+
   if (!consumeNext(lItem, theChild.getp(), planState))
   {
-    if (theQuantifier == TypeConstants::QUANT_PLUS ||
-        theQuantifier == TypeConstants::QUANT_ONE)
+    if (theQuantifier == TypeConstants::QUANT_ONE)
     {
-      ZORBA_ERROR_LOC_DESC( XPTY0004, loc, 
-        "Empty sequences cannot be cast to a type with quantifier ONE or PLUS."
+      ZORBA_ERROR_LOC_DESC(XPTY0004, loc, 
+                           "Empty sequences cannot be cast to a type with quantifier ONE."
       );
     }
   }
-  else if (theQuantifier == TypeConstants::QUANT_ONE ||
-          theQuantifier == TypeConstants::QUANT_QUESTION)
+  else
   {
-    //--
-    if (theIsSimpleType) {
-      state->reset(planState); 
-      try {
-        valid = GenericCast::instance()->castToSimple(lItem->getStringValue(),
-            theCastType,
-            state->theSimpleParseItems);
-      } catch (error::ZorbaError &e) {
+    if (theCastType->type_kind() == XQType::USER_DEFINED_KIND)
+    {
+      try
+      {
+        xqpStringStore_t strValue;
+        lItem->getStringValue(strValue);
+        valid = GenericCast::castToAtomic(result, strValue, theCastType);
+      }
+      catch (error::ZorbaError &e)
+      {
         ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
       }
     }
     else
-      try {
-        valid = GenericCast::instance()->castToAtomic(result, lItem, theCastType);
-      } catch (error::ZorbaError &e) {
+    {
+      try
+      {
+        valid = GenericCast::castToAtomic(result, lItem, theCastType, tm);
+      }
+      catch (error::ZorbaError &e) 
+      {
         ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
       }
+    }
+
     //--
     if (consumeNext(lItem, theChild.getp(), planState))
     {
@@ -216,75 +220,12 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                         "Sequence with more than one item cannot be cast to a type with quantifier ONE or QUESTION.");
     }
     
-    if (theIsSimpleType) {
-      while(state->theIndex < state->theSimpleParseItems.size()) {
-        result = state->theSimpleParseItems[state->theIndex++];
-        STACK_PUSH(true, state);
-      }
-    } 
-    else
-      STACK_PUSH(valid, state);
-  }
-  else
-  {
-    //--
-    if (theIsSimpleType) {
-      state->reset(planState); 
-      try {
-        GenericCast::instance()->castToSimple(lItem->getStringValue(),
-                                              theCastType,
-                                              state->theSimpleParseItems);
-      } catch (error::ZorbaError &e) {
-        ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
-      }
-      while(state->theIndex < state->theSimpleParseItems.size()) {
-        result = state->theSimpleParseItems[state->theIndex++];
-        STACK_PUSH(true, state);
-      }
-    }
-    else
-    {
-      try {
-        GenericCast::instance()->castToAtomic(result, lItem, theCastType);
-      } catch (error::ZorbaError &e) {
-        ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
-      }
-      STACK_PUSH(true, state);
-    }
-    //--
-
-    while (consumeNext(lItem, theChild.getp(), planState))
-    {
-      //--
-      if (theIsSimpleType) {
-        state->reset(planState); 
-        try {
-          GenericCast::instance()->castToSimple(lItem->getStringValue(),
-                                                theCastType,
-                                                state->theSimpleParseItems);
-        } catch (error::ZorbaError &e) {
-          ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
-        }
-        while(state->theIndex < state->theSimpleParseItems.size()) {
-          result = state->theSimpleParseItems[state->theIndex++];
-          STACK_PUSH(true, state);
-        }
-      }
-      else
-      {
-        try {
-          GenericCast::instance()->castToAtomic(result, lItem, theCastType);
-        } catch (error::ZorbaError &e) {
-          ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
-        }
-        STACK_PUSH(true, state);
-      }
-      //--
-    }
+    STACK_PUSH(valid, state);
   }
 
   STACK_END (state);
 }
+
 
 /*******************************************************************************
 
@@ -302,30 +243,51 @@ CastableIterator::CastableIterator(
   theQuantifier = TypeOps::quantifier(*aCastType);
 }
 
-CastableIterator::~CastableIterator(){}
+
+CastableIterator::~CastableIterator()
+{
+}
+
 
 bool CastableIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
   bool lBool;
   store::Item_t lItem;
 
+  const TypeManager& tm = *getStaticContext(planState)->get_typemanager();
+
   PlanIteratorState* lState;
   DEFAULT_STACK_INIT(PlanIteratorState, lState, planState);
-  if (!consumeNext(lItem, theChild.getp(), planState)) {
-    if (theQuantifier == TypeConstants::QUANT_PLUS || theQuantifier == TypeConstants::QUANT_ONE) {
+
+  if (!consumeNext(lItem, theChild.getp(), planState)) 
+  {
+    if (theQuantifier == TypeConstants::QUANT_PLUS ||
+        theQuantifier == TypeConstants::QUANT_ONE)
+    {
       lBool = false;
-    } else {
+    }
+    else
+    {
       lBool = true;
     }
-  } else {
-    lBool = GenericCast::instance()->isCastable(lItem, theCastType);
-    if (lBool) {
-      if (consumeNext(lItem, theChild.getp(), planState)) {
-        if (theQuantifier == TypeConstants::QUANT_ONE || theQuantifier == TypeConstants::QUANT_QUESTION) {
+  }
+  else
+  {
+    lBool = GenericCast::isCastable(lItem, theCastType, tm);
+    if (lBool) 
+    {
+      if (consumeNext(lItem, theChild.getp(), planState)) 
+      {
+        if (theQuantifier == TypeConstants::QUANT_ONE ||
+            theQuantifier == TypeConstants::QUANT_QUESTION) 
+        {
           lBool = false;
-        } else {
-          do {
-            lBool = GenericCast::instance()->isCastable(lItem, theCastType);
+        }
+        else
+        {
+          do
+          {
+            lBool = GenericCast::isCastable(lItem, theCastType, tm);
           } while (lBool && consumeNext(lItem, theChild.getp(), planState));
         }
       }
@@ -381,11 +343,12 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       "Type promotion not possible on sequence with more than one item");
     }
 
-    if (! GenericCast::instance()->promote(result, lItem, thePromoteType))
+    if (! GenericCast::promote(result, lItem, thePromoteType, *lState->tm))
     {
-      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-      "Type promotion not possible: " + lState->tm->create_value_type(lItem)->toString() +
-      " -> " + thePromoteType->toString() );
+      ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
+                               "Type promotion not possible: " 
+                               << lState->tm->create_value_type(lItem)->toString()
+                               << " -> " << thePromoteType->toString() );
     }
 
     STACK_PUSH(true, lState);
@@ -394,11 +357,12 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   {
     do 
     {
-      if (! GenericCast::instance()->promote(result, lItem, thePromoteType))
+      if (! GenericCast::promote(result, lItem, thePromoteType, *lState->tm))
       {
-        ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-        "Type promotion not possible: " + lState->tm->create_value_type(lItem)->toString() +
-        " -> " + thePromoteType->toString() );
+        ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
+                                 "Type promotion not possible: " 
+                                 << lState->tm->create_value_type(lItem)->toString()
+                                 << " -> " << thePromoteType->toString());
       }
       else
       {

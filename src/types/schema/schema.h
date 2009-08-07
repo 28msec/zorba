@@ -150,13 +150,13 @@ public:
 
     // user defined simple types, i.e. Atomic, List or Union Types
   bool parseUserSimpleTypes(
-        const xqpStringStore_t& textValue,
+        xqpStringStore_t& textValue,
         const xqtref_t& aTargetType,
         std::vector<store::Item_t> &resultList);    
 
     // user defined atomic types
   bool parseUserAtomicTypes(
-        const xqpStringStore_t& textValue,
+        xqpStringStore_t& textValue,
         const xqtref_t& aTargetType, 
         store::Item_t& result);    
 
@@ -168,7 +168,7 @@ public:
 
     // user defined union types
   bool parseUserUnionTypes(
-        const xqpStringStore_t& textValue,
+        xqpStringStore_t& textValue,
         const xqtref_t& aTargetType, 
         std::vector<store::Item_t> &resultList);    
   

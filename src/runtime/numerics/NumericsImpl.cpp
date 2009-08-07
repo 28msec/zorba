@@ -591,10 +591,12 @@ bool NumArithIterator<Operation>::computeAtomic(
   store::Item_t n0;
   store::Item_t n1;
 
+  const TypeManager& tm = *aContext->get_typemanager();
+
   try
   {
-    GenericCast::instance()->castToAtomic ( n0, item0, &*resultType);
-    GenericCast::instance()->castToAtomic ( n1, item1, &*resultType);
+    GenericCast::castToAtomic(n0, item0, &*resultType, tm);
+    GenericCast::castToAtomic(n1, item1, &*resultType, tm);
   }
   catch(error::ZorbaError& e)
   {
@@ -917,41 +919,47 @@ OpNumericUnaryIterator::~OpNumericUnaryIterator()
 }
 
 
-bool OpNumericUnaryIterator::nextImpl ( store::Item_t& result, PlanState& planState ) const
+bool OpNumericUnaryIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
   xqtref_t type;
 
+  const TypeManager& tm = *getStaticContext(planState)->get_typemanager();
+  const RootTypeManager& rtm = GENV_TYPESYSTEM;
+
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+
   if (consumeNext(item, theChild.getp(), planState ))
   {
     assert(item->isAtomic());
 
-    type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( item);
-    if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
+    type = tm.create_value_type(item);
+
+    if ( TypeOps::is_subtype(*type, *rtm.UNTYPED_ATOMIC_TYPE_ONE ) )
     {
-      GenericCast::instance()->castToAtomic ( item, item, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
-      type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( item);
+      GenericCast::castToAtomic(item, item, &*rtm.DOUBLE_TYPE_ONE, tm);
+      type = tm.create_value_type(item);
     }
     
     // TODO Optimizations (e.g. if item has already the correct type and value, it does not have to be created newly)
-    if ( TypeOps::is_subtype(*type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
-      GENV_ITEMFACTORY->createDouble(
-                                     result,
-                                     (thePlus ? item->getDoubleValue() : -item->getDoubleValue())
-                                     );
-    else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
+    if ( TypeOps::is_subtype(*type, *rtm.DOUBLE_TYPE_ONE))
+    {
+      GENV_ITEMFACTORY->createDouble(result, (thePlus ?
+                                              item->getDoubleValue() :
+                                              -item->getDoubleValue()));
+    }
+    else if ( TypeOps::is_subtype ( *type, *rtm.FLOAT_TYPE_ONE ) )
       GENV_ITEMFACTORY->createFloat(
                                     result,
                                     (thePlus ? item->getFloatValue() : -item->getFloatValue())
                                     );
-    else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ) )
+    else if ( TypeOps::is_subtype ( *type, *rtm.INTEGER_TYPE_ONE ) )
       GENV_ITEMFACTORY->createInteger(
                                       result,
                                       (thePlus ? item->getIntegerValue() : -item->getIntegerValue())
                                       );
-    else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
+    else if ( TypeOps::is_subtype ( *type, *rtm.DECIMAL_TYPE_ONE ) )
       GENV_ITEMFACTORY->createDecimal (
                                        result,
                                        (thePlus ? item->getDecimalValue() : -item->getDecimalValue())
@@ -993,44 +1001,51 @@ bool OpNumericUnaryIterator::nextImpl ( store::Item_t& result, PlanState& planSt
     store::Item_t item;
     xqtref_t type;
 
-    
+    const TypeManager& tm = *getStaticContext(planState)->get_typemanager();
+
+    const RootTypeManager& rtm = GENV_TYPESYSTEM;
+
     PlanIteratorState* state;
     DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+
     if (consumeNext(result, theChildren[0].getp(), planState ))
     {
       assert(result->isAtomic());
 
-      type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result);
-      if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
+      type = tm.create_value_type (result);
+      if ( TypeOps::is_subtype ( *type, *rtm.UNTYPED_ATOMIC_TYPE_ONE ) )
       {
-        GenericCast::instance()->castToAtomic ( result, result, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
-        type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result);
+        GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm);
+        type = tm.create_value_type (result);
       }
 
-      if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
-        if ( result->getDoubleValue().isPos() ) {
-          if ( !TypeOps::is_equal ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
+      if ( TypeOps::is_subtype ( *type, *rtm.DOUBLE_TYPE_ONE ) )
+      {
+        if ( result->getDoubleValue().isPos() ) 
+        {
+          if ( !TypeOps::is_equal ( *type, *rtm.DOUBLE_TYPE_ONE ) )
             GENV_ITEMFACTORY->createDouble (result, result->getDoubleValue() );
         }
         else
           GENV_ITEMFACTORY->createDouble (result, -result->getDoubleValue() );
-      else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
+      }
+      else if ( TypeOps::is_subtype ( *type, *rtm.FLOAT_TYPE_ONE ) )
         if ( result->getFloatValue().isPos() ) {
-          if ( !TypeOps::is_equal ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
+          if ( !TypeOps::is_equal ( *type, *rtm.FLOAT_TYPE_ONE ) )
             GENV_ITEMFACTORY->createFloat (result, result->getFloatValue() );
         }
         else
           GENV_ITEMFACTORY->createFloat (result, -result->getFloatValue() );
-      else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ) )
+      else if ( TypeOps::is_subtype ( *type, *rtm.INTEGER_TYPE_ONE ) )
         if ( result->getIntegerValue() >= xqp_decimal::zero() ) {
-          if ( !TypeOps::is_equal ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ) )
+          if ( !TypeOps::is_equal ( *type, *rtm.INTEGER_TYPE_ONE ) )
             GENV_ITEMFACTORY->createInteger (result, result->getIntegerValue() );
         }
         else
           GENV_ITEMFACTORY->createInteger (result, -result->getIntegerValue() );
-      else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
+      else if ( TypeOps::is_subtype ( *type, *rtm.DECIMAL_TYPE_ONE ) )
         if ( result->getDecimalValue() >= xqp_decimal::zero() ) {
-          if ( !TypeOps::is_equal ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
+          if ( !TypeOps::is_equal ( *type, *rtm.DECIMAL_TYPE_ONE ) )
             GENV_ITEMFACTORY->createDecimal (result, result->getDecimalValue() );
         }
         else
@@ -1054,234 +1069,252 @@ bool OpNumericUnaryIterator::nextImpl ( store::Item_t& result, PlanState& planSt
 
 // 6.4.2 fn:ceiling
 
-  bool FnCeilingIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-  {
-    store::Item_t item;
-    xqtref_t type;
+bool FnCeilingIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t item;
+  xqtref_t type;
     
-    PlanIteratorState* state;
-    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-    if (consumeNext(result, theChildren[0].getp(), planState ))
+  const TypeManager& tm = *getStaticContext(planState)->get_typemanager();
+  const RootTypeManager& rtm = GENV_TYPESYSTEM;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+
+  if (consumeNext(result, theChildren[0].getp(), planState ))
+  {
+    //get the value and the type of the item
+    assert(result->isAtomic());
+
+    type = tm.create_value_type(result);
+
+    //Parameters of type xs:untypedAtomic are always promoted to xs:double
+    if ( TypeOps::is_subtype(*type, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
     {
-      //get the value and the type of the item
-      assert(result->isAtomic());
-
-      type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( result);
-
-      //Parameters of type xs:untypedAtomic are always promoted to xs:double
-      if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
-      {
-        GenericCast::instance()->castToAtomic ( result, result, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
-        type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( result);
-      }
-
-      //item type is subtype of DOUBLE
-      if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
-        GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().ceil());
-        
-      //item type is subtype of FLOAT
-      else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
-        GENV_ITEMFACTORY->createFloat(result, result->getFloatValue().ceil());
-
-      //item type is subtype of INTEGER 
-      else if(TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ))
-      { /* do nothing */ }
-
-      //item type is subtype of DECIMAL
-      else if (TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
-        GENV_ITEMFACTORY->createDecimal(result, result->getDecimalValue().ceil());
-
-      else
-      {
-        ZORBA_ERROR_LOC_DESC( XPTY0004,
-            loc, "Wrong operand type for fn:ceiling.");
-      }
-
-      if ( consumeNext(item, theChildren[0].getp(), planState ))
-      {
-        ZORBA_ERROR_LOC_DESC( XPTY0004,
-            loc, "fn:ceiling has a sequence longer than one as an operand.");
-      }
-      STACK_PUSH ( true, state );
+      GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm);
+      type = tm.create_value_type(result);
     }
-    STACK_END (state);
+    
+    //item type is subtype of DOUBLE
+    if ( TypeOps::is_subtype(*type, *rtm.DOUBLE_TYPE_ONE))
+      GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().ceil());
+    
+    //item type is subtype of FLOAT
+    else if ( TypeOps::is_subtype ( *type, *rtm.FLOAT_TYPE_ONE ) )
+      GENV_ITEMFACTORY->createFloat(result, result->getFloatValue().ceil());
+    
+    //item type is subtype of INTEGER 
+    else if(TypeOps::is_subtype ( *type, *rtm.INTEGER_TYPE_ONE ))
+    { /* do nothing */ }
+    
+    //item type is subtype of DECIMAL
+    else if (TypeOps::is_subtype ( *type, *rtm.DECIMAL_TYPE_ONE ))
+      GENV_ITEMFACTORY->createDecimal(result, result->getDecimalValue().ceil());
+    
+    else
+    {
+      ZORBA_ERROR_LOC_DESC( XPTY0004,
+                            loc, "Wrong operand type for fn:ceiling.");
+    }
+    
+    if ( consumeNext(item, theChildren[0].getp(), planState ))
+    {
+      ZORBA_ERROR_LOC_DESC( XPTY0004,
+                            loc, "fn:ceiling has a sequence longer than one as an operand.");
+    }
+    STACK_PUSH ( true, state );
   }
+  STACK_END (state);
+}
+
   
 // 6.4.3 fn:floor
 
-  bool FnFloorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-  {
-    store::Item_t item;
-    xqtref_t type;
+bool FnFloorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t item;
+  xqtref_t type;
     
-    PlanIteratorState* state;
-    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-    if (consumeNext(result, theChildren[0].getp(), planState ))
+  const TypeManager& tm = *getStaticContext(planState)->get_typemanager();
+  const RootTypeManager& rtm = GENV_TYPESYSTEM;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+
+  if (consumeNext(result, theChildren[0].getp(), planState ))
+  {
+    //get the value and the type of the item
+    assert(result->isAtomic());
+    
+    type = tm.create_value_type(result);
+    
+    //Parameters of type xs:untypedAtomic are always promoted to xs:double
+    if ( TypeOps::is_subtype(*type, *rtm.UNTYPED_ATOMIC_TYPE_ONE ) )
     {
-      //get the value and the type of the item
-      assert(result->isAtomic());
-
-      type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result);
-
-      //Parameters of type xs:untypedAtomic are always promoted to xs:double
-      if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
-      {
-        GenericCast::instance()->castToAtomic ( result, result, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
-        type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type ( result);
-      }
-
-      //item type is subtype of DOUBLE
-      if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
-        GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().floor());
-        
-      //item type is subtype of FLOAT
-      else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
-        GENV_ITEMFACTORY->createFloat(result, result->getFloatValue().floor());
-
-      //item type is subtype of INTEGER 
-      else if(TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ))
-        { /* do nothing */ }
-
-      //item type is subtype of DECIMAL
-      else if (TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
-        GENV_ITEMFACTORY->createDecimal(result, result->getDecimalValue().floor());
-
-      else
-      {
-        ZORBA_ERROR_LOC_DESC( XPTY0004,
-            loc, "Wrong operand type for fn:floor.");
-      }
-
-      if ( consumeNext(item, theChildren[0].getp(), planState ) )
-      {
-        ZORBA_ERROR_LOC_DESC( XPTY0004,
-            loc, "fn:floor has a sequence longer than one as an operand.");
-      }
-      STACK_PUSH (true, state );
+      GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm);
+      type = tm.create_value_type(result);
     }
-    STACK_END (state);
+    
+    //item type is subtype of DOUBLE
+    if ( TypeOps::is_subtype ( *type, *rtm.DOUBLE_TYPE_ONE ) )
+      GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().floor());
+    
+    //item type is subtype of FLOAT
+    else if ( TypeOps::is_subtype ( *type, *rtm.FLOAT_TYPE_ONE ) )
+      GENV_ITEMFACTORY->createFloat(result, result->getFloatValue().floor());
+    
+    //item type is subtype of INTEGER 
+    else if(TypeOps::is_subtype ( *type, *rtm.INTEGER_TYPE_ONE ))
+    { /* do nothing */ }
+    
+    //item type is subtype of DECIMAL
+    else if (TypeOps::is_subtype ( *type, *rtm.DECIMAL_TYPE_ONE ))
+      GENV_ITEMFACTORY->createDecimal(result, result->getDecimalValue().floor());
+    
+    else
+    {
+      ZORBA_ERROR_LOC_DESC( XPTY0004,
+                            loc, "Wrong operand type for fn:floor.");
+    }
+    
+    if ( consumeNext(item, theChildren[0].getp(), planState ) )
+    {
+      ZORBA_ERROR_LOC_DESC( XPTY0004,
+                            loc, "fn:floor has a sequence longer than one as an operand.");
+    }
+    STACK_PUSH (true, state );
   }
-  
+  STACK_END (state);
+}
+
+
 // 6.4.4 fn:round
 
-  bool FnRoundIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-  {
-    store::Item_t item;
-    store::Item_t res;
-    xqtref_t type;
+bool FnRoundIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t item;
+  store::Item_t res;
+  xqtref_t type;
     
-    PlanIteratorState* state;
-    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-    if (consumeNext(result, theChildren[0].getp(), planState ))
+  const TypeManager& tm = *getStaticContext(planState)->get_typemanager();
+  const RootTypeManager& rtm = GENV_TYPESYSTEM;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+
+  if (consumeNext(result, theChildren[0].getp(), planState ))
+  {
+    //get the value and the type of the item
+    assert(result->isAtomic());
+    
+    type = tm.create_value_type(result);
+    
+    //Parameters of type xs:untypedAtomic are always promoted to xs:double
+    if ( TypeOps::is_subtype(*type, *rtm.UNTYPED_ATOMIC_TYPE_ONE ) )
     {
-      //get the value and the type of the item
-      assert(result->isAtomic());
-
-      type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result);
-
-      //Parameters of type xs:untypedAtomic are always promoted to xs:double
-      if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
-      {
-        GenericCast::instance()->castToAtomic ( result, result, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
-        type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result);
-      }
-
-      //item type is subtype of DOUBLE
-      if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
-        GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().round());
-        
-      //item type is subtype of FLOAT
-      else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
-        GENV_ITEMFACTORY->createFloat(result, result->getFloatValue().round());
-
-      //item type is subtype of INTEGER 
-      else if(TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ))
-        { /* do nothing */ }
-
-      //item type is subtype of DECIMAL
-      else if (TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
-        GENV_ITEMFACTORY->createDecimal(result, result->getDecimalValue().round());
-
-      else
-      {
-        ZORBA_ERROR_LOC_DESC( XPTY0004,
-            loc, "Wrong operand type for fn:round.");
-      }
-
-      if ( consumeNext(item, theChildren[0].getp(), planState ))
-      {
-        ZORBA_ERROR_LOC_DESC( XPTY0004,
-            loc, "fn:round has a sequence longer than one as an operator.");
-      }
-      STACK_PUSH (true, state );
+      GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm);
+      type = tm.create_value_type(result);
     }
-    STACK_END (state);
+    
+    //item type is subtype of DOUBLE
+    if ( TypeOps::is_subtype ( *type, *rtm.DOUBLE_TYPE_ONE ) )
+      GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().round());
+    
+    //item type is subtype of FLOAT
+    else if ( TypeOps::is_subtype ( *type, *rtm.FLOAT_TYPE_ONE ) )
+      GENV_ITEMFACTORY->createFloat(result, result->getFloatValue().round());
+    
+    //item type is subtype of INTEGER 
+    else if(TypeOps::is_subtype ( *type, *rtm.INTEGER_TYPE_ONE ))
+    { /* do nothing */ }
+    
+    //item type is subtype of DECIMAL
+    else if (TypeOps::is_subtype ( *type, *rtm.DECIMAL_TYPE_ONE ))
+      GENV_ITEMFACTORY->createDecimal(result, result->getDecimalValue().round());
+    
+    else
+    {
+      ZORBA_ERROR_LOC_DESC( XPTY0004,
+                            loc, "Wrong operand type for fn:round.");
+    }
+    
+    if ( consumeNext(item, theChildren[0].getp(), planState ))
+    {
+      ZORBA_ERROR_LOC_DESC( XPTY0004,
+                            loc, "fn:round has a sequence longer than one as an operator.");
+    }
+    STACK_PUSH (true, state );
   }
+  STACK_END (state);
+}
+
   
 // 6.4.5 fn:round-half-to-even
-  bool FnRoundHalfToEvenIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool FnRoundHalfToEvenIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t item;
+  store::Item_t itemPrec;
+  store::Item_t res;
+  xqtref_t type;
+  Integer precision = Integer::parseInt((int32_t)0);
+  
+  const TypeManager& tm = *getStaticContext(planState)->get_typemanager();
+  const RootTypeManager& rtm = GENV_TYPESYSTEM;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+  
+  if (consumeNext(result, theChildren [0].getp(), planState ))
   {
-    store::Item_t item;
-    store::Item_t itemPrec;
-    store::Item_t res;
-    xqtref_t type;
-    Integer precision = Integer::parseInt((int32_t)0);
-    
-    PlanIteratorState* state;
-    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-    
-    if (consumeNext(result, theChildren [0].getp(), planState ))
+    if (theChildren.size () == 2) 
     {
-      if (theChildren.size () == 2) 
-      {
-        consumeNext(itemPrec, theChildren[1].getp(), planState);
-        assert(itemPrec->isAtomic());
-
-        precision = itemPrec->getIntegerValue();
-      }
+      consumeNext(itemPrec, theChildren[1].getp(), planState);
+      assert(itemPrec->isAtomic());
       
-      //get the value and the type of the item
-      assert(result->isAtomic());
-
-      type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result);
-
-      //Parameters of type xs:untypedAtomic are always promoted to xs:double
-      if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
-      {
-        GenericCast::instance()->castToAtomic (result, result, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
-        type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result);
-      }
-
-      //item type is subtype of DOUBLE
-      if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
-        GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().roundHalfToEven(precision));
-        
-      //item type is subtype of FLOAT
-      else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
-        GENV_ITEMFACTORY->createFloat(result, result->getFloatValue().roundHalfToEven(precision));
-
-      //item type is subtype of INTEGER 
-      else if(TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ))
-      { /* do nothing */ }
-      //item type is subtype of DECIMAL
-      else if (TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
-        GENV_ITEMFACTORY->createDecimal(result, result->getDecimalValue().roundHalfToEven(precision));
-
-      else
-      {
-        ZORBA_ERROR_LOC_DESC( XPTY0004,
-            loc, "Wrong operand type for fn:round-half-to-even.");
-      }
-
-      if ( consumeNext(item, theChildren [0].getp(), planState ))
-      {
-        ZORBA_ERROR_LOC_DESC( XPTY0004,
-           loc, "fn:round-half-to-even has a sequence longer than one as an operand.");
-      }
-      STACK_PUSH ( true, state );
+      precision = itemPrec->getIntegerValue();
     }
-    STACK_END (state);
+    
+    //get the value and the type of the item
+    assert(result->isAtomic());
+    
+    type = tm.create_value_type (result);
+    
+    //Parameters of type xs:untypedAtomic are always promoted to xs:double
+    if ( TypeOps::is_subtype ( *type, *rtm.UNTYPED_ATOMIC_TYPE_ONE ) )
+    {
+      GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm);
+      type = tm.create_value_type (result);
+    }
+    
+    //item type is subtype of DOUBLE
+    if ( TypeOps::is_subtype ( *type, *rtm.DOUBLE_TYPE_ONE ) )
+      GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().roundHalfToEven(precision));
+    
+    //item type is subtype of FLOAT
+    else if ( TypeOps::is_subtype ( *type, *rtm.FLOAT_TYPE_ONE ) )
+      GENV_ITEMFACTORY->createFloat(result, result->getFloatValue().roundHalfToEven(precision));
+    
+    //item type is subtype of INTEGER 
+    else if(TypeOps::is_subtype ( *type, *rtm.INTEGER_TYPE_ONE ))
+    { /* do nothing */ }
+    //item type is subtype of DECIMAL
+    else if (TypeOps::is_subtype ( *type, *rtm.DECIMAL_TYPE_ONE ))
+      GENV_ITEMFACTORY->createDecimal(result, result->getDecimalValue().roundHalfToEven(precision));
+    
+    else
+    {
+      ZORBA_ERROR_LOC_DESC( XPTY0004,
+                            loc, "Wrong operand type for fn:round-half-to-even.");
+    }
+    
+    if ( consumeNext(item, theChildren [0].getp(), planState ))
+    {
+      ZORBA_ERROR_LOC_DESC( XPTY0004,
+                            loc, "fn:round-half-to-even has a sequence longer than one as an operand.");
+    }
+    STACK_PUSH ( true, state );
   }
+  STACK_END (state);
+}
 
 
 bool FnSQRTIterator::nextImpl (store::Item_t& result, PlanState& planState) const 
@@ -1289,6 +1322,9 @@ bool FnSQRTIterator::nextImpl (store::Item_t& result, PlanState& planState) cons
   store::Item_t item;
   xqtref_t type;
     
+  const TypeManager& tm = *getStaticContext(planState)->get_typemanager();
+  const RootTypeManager& rtm = GENV_TYPESYSTEM;
+
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
 
@@ -1298,22 +1334,22 @@ bool FnSQRTIterator::nextImpl (store::Item_t& result, PlanState& planState) cons
 
     //get the value and the type of the item
     
-    type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result);
+    type = tm.create_value_type (result);
 
     //Parameters of type xs:untypedAtomic are always promoted to xs:double
-    if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
+    if ( TypeOps::is_subtype(*type, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
     {
-      GenericCast::instance()->castToAtomic ( result, result, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
-      type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type (result);
+      GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm);
+      type = tm.create_value_type(result);
     }
 
-    if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
+    if ( TypeOps::is_subtype ( *type, *rtm.DOUBLE_TYPE_ONE ) )
       GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().sqrt());        
-    else if ( TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
+    else if ( TypeOps::is_subtype ( *type, *rtm.FLOAT_TYPE_ONE ) )
       GENV_ITEMFACTORY->createFloat(result, result->getFloatValue().sqrt());
-    else if(TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ))
+    else if(TypeOps::is_subtype ( *type, *rtm.INTEGER_TYPE_ONE ))
       GENV_ITEMFACTORY->createInteger(result, result->getIntegerValue().sqrt());
-    else if (TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
+    else if (TypeOps::is_subtype ( *type, *rtm.DECIMAL_TYPE_ONE ))
       GENV_ITEMFACTORY->createDecimal(result, result->getDecimalValue().sqrt());
     else
       ZORBA_ERROR_LOC_DESC( XPTY0004,
@@ -1331,82 +1367,88 @@ bool FnSQRTIterator::nextImpl (store::Item_t& result, PlanState& planState) cons
 }
 
 
-  bool FnExpIterator::nextImpl (store::Item_t& result, PlanState& planState) const
-  {
-    PlanIteratorState* state;
-    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-    if (consumeNext(result, theChildren[0].getp(), planState )) {
-      GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().exp());
-      STACK_PUSH (true, state);
-    }
-    STACK_END (state);
+bool FnExpIterator::nextImpl (store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+  if (consumeNext(result, theChildren[0].getp(), planState )) {
+    GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().exp());
+    STACK_PUSH (true, state);
   }
+  STACK_END (state);
+}
 
-  bool FnLogIterator::nextImpl (store::Item_t& result, PlanState& planState) const
-  {
-    PlanIteratorState* state;
-    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-    if (consumeNext(result, theChildren[0].getp(), planState )) {
-      GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().log());
-      STACK_PUSH (true, state);
-    }
-    STACK_END (state);
-  }
 
-  bool FnSinIterator::nextImpl (store::Item_t& result, PlanState& planState) const
-  {
-    PlanIteratorState* state;
-    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-    if (consumeNext(result, theChildren[0].getp(), planState )) {
-      GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().sin());
-      STACK_PUSH (true, state);
-    }
-    STACK_END (state);
+bool FnLogIterator::nextImpl (store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+  if (consumeNext(result, theChildren[0].getp(), planState )) {
+    GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().log());
+    STACK_PUSH (true, state);
   }
+  STACK_END (state);
+}
 
-  bool FnCosIterator::nextImpl (store::Item_t& result, PlanState& planState) const
-  {
-    PlanIteratorState* state;
-    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-    if (consumeNext(result, theChildren[0].getp(), planState )) {
-      GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().cos());
-      STACK_PUSH (true, state);
-    }
-    STACK_END (state);
-  }
 
-  bool FnTanIterator::nextImpl (store::Item_t& result, PlanState& planState) const
-  {
-    PlanIteratorState* state;
-    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-    if (consumeNext(result, theChildren[0].getp(), planState )) {
-      GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().tan());
-      STACK_PUSH (true, state);
-    }
-    STACK_END (state);
+bool FnSinIterator::nextImpl (store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+  if (consumeNext(result, theChildren[0].getp(), planState )) {
+    GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().sin());
+    STACK_PUSH (true, state);
   }
+  STACK_END (state);
+}
 
-  bool FnArcSinIterator::nextImpl (store::Item_t& result, PlanState& planState) const
-  {
-    PlanIteratorState* state;
-    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-    if (consumeNext(result, theChildren[0].getp(), planState )) {
-      GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().asin());
-      STACK_PUSH (true, state);
-    }
-    STACK_END (state);
-  }
 
-  bool FnArcCosIterator::nextImpl (store::Item_t& result, PlanState& planState) const
-  {
-    PlanIteratorState* state;
-    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-    if (consumeNext(result, theChildren[0].getp(), planState )) {
-      GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().acos());
-      STACK_PUSH (true, state);
-    }
-    STACK_END (state);
+bool FnCosIterator::nextImpl (store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+  if (consumeNext(result, theChildren[0].getp(), planState )) {
+    GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().cos());
+    STACK_PUSH (true, state);
   }
+  STACK_END (state);
+}
+
+
+bool FnTanIterator::nextImpl (store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+  if (consumeNext(result, theChildren[0].getp(), planState )) {
+    GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().tan());
+    STACK_PUSH (true, state);
+  }
+  STACK_END (state);
+}
+
+
+bool FnArcSinIterator::nextImpl (store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+  if (consumeNext(result, theChildren[0].getp(), planState )) {
+    GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().asin());
+    STACK_PUSH (true, state);
+  }
+  STACK_END (state);
+}
+
+
+bool FnArcCosIterator::nextImpl (store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+  if (consumeNext(result, theChildren[0].getp(), planState )) {
+    GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().acos());
+    STACK_PUSH (true, state);
+  }
+  STACK_END (state);
+}
 
   bool FnArcTanIterator::nextImpl (store::Item_t& result, PlanState& planState) const
   {
@@ -1572,6 +1614,7 @@ public:
   }
 };
 
+
 // returns an error if there are two or more instances of the given pattern in the string
 template <typename T>
 static void errorIfTwoOrMore(xqpStringStore& part, T sep, QueryLoc& loc)
@@ -1582,7 +1625,11 @@ static void errorIfTwoOrMore(xqpStringStore& part, T sep, QueryLoc& loc)
       ZORBA_ERROR_LOC(XTDE1310, loc);
 }
 
-static void parsePart(FormatNumberInfo& info, FormatNumberInfo::PartInfo& part, bool fractional = false)
+
+static void parsePart(
+    FormatNumberInfo& info,
+    FormatNumberInfo::PartInfo& part,
+    bool fractional = false)
 {
   xqpStringStore& str = *part.str;
   if (str.size() == 0)
@@ -1653,7 +1700,10 @@ static void parsePart(FormatNumberInfo& info, FormatNumberInfo::PartInfo& part, 
     part.maximum_size = digit_signs + zero_signs;
 }
 
-static void parseSubpicture(FormatNumberInfo::SubPictureInfo& sub_picture, FormatNumberInfo& info)
+
+static void parseSubpicture(
+    FormatNumberInfo::SubPictureInfo& sub_picture,
+    FormatNumberInfo& info)
 {
   int chars;
   xqpStringStore& str = *sub_picture.str;
@@ -1728,22 +1778,24 @@ static void parsePicture(xqpStringStore& picture, FormatNumberInfo& info)
 
 static bool isAllowedType(store::Item* type_qname)
 {
-  if (type_qname->equals(GENV_TYPESYSTEM.XS_FLOAT_QNAME)     
-    || type_qname->equals(GENV_TYPESYSTEM.XS_DOUBLE_QNAME)
-    || type_qname->equals(GENV_TYPESYSTEM.XS_DECIMAL_QNAME)
-    || type_qname->equals(GENV_TYPESYSTEM.XS_INTEGER_QNAME)
-    || type_qname->equals(GENV_TYPESYSTEM.XS_NON_POSITIVE_INTEGER_QNAME)
-    || type_qname->equals(GENV_TYPESYSTEM.XS_NEGATIVE_INTEGER_QNAME)
-    || type_qname->equals(GENV_TYPESYSTEM.XS_LONG_QNAME)
-    || type_qname->equals(GENV_TYPESYSTEM.XS_INT_QNAME)
-    || type_qname->equals(GENV_TYPESYSTEM.XS_SHORT_QNAME)
-    || type_qname->equals(GENV_TYPESYSTEM.XS_BYTE_QNAME)
-    || type_qname->equals(GENV_TYPESYSTEM.XS_NON_NEGATIVE_INTEGER_QNAME)
-    || type_qname->equals(GENV_TYPESYSTEM.XS_UNSIGNED_LONG_QNAME)
-    || type_qname->equals(GENV_TYPESYSTEM.XS_UNSIGNED_INT_QNAME)
-    || type_qname->equals(GENV_TYPESYSTEM.XS_UNSIGNED_SHORT_QNAME)
-    || type_qname->equals(GENV_TYPESYSTEM.XS_UNSIGNED_BYTE_QNAME)
-    || type_qname->equals(GENV_TYPESYSTEM.XS_POSITIVE_INTEGER_QNAME))
+  const RootTypeManager& rtm = GENV_TYPESYSTEM;
+
+  if (type_qname->equals(rtm.XS_FLOAT_QNAME)     
+    || type_qname->equals(rtm.XS_DOUBLE_QNAME)
+    || type_qname->equals(rtm.XS_DECIMAL_QNAME)
+    || type_qname->equals(rtm.XS_INTEGER_QNAME)
+    || type_qname->equals(rtm.XS_NON_POSITIVE_INTEGER_QNAME)
+    || type_qname->equals(rtm.XS_NEGATIVE_INTEGER_QNAME)
+    || type_qname->equals(rtm.XS_LONG_QNAME)
+    || type_qname->equals(rtm.XS_INT_QNAME)
+    || type_qname->equals(rtm.XS_SHORT_QNAME)
+    || type_qname->equals(rtm.XS_BYTE_QNAME)
+    || type_qname->equals(rtm.XS_NON_NEGATIVE_INTEGER_QNAME)
+    || type_qname->equals(rtm.XS_UNSIGNED_LONG_QNAME)
+    || type_qname->equals(rtm.XS_UNSIGNED_INT_QNAME)
+    || type_qname->equals(rtm.XS_UNSIGNED_SHORT_QNAME)
+    || type_qname->equals(rtm.XS_UNSIGNED_BYTE_QNAME)
+    || type_qname->equals(rtm.XS_POSITIVE_INTEGER_QNAME))
     return true;
   else
     return false;
@@ -1758,7 +1810,12 @@ static xqpStringStore_t createZeros(int n)
   return result;
 }
 
-static void formatGroupings(xqpStringStore_t& result, xqpStringStore_t& str, FormatNumberInfo::PartInfo& part, FormatNumberInfo& info)
+
+static void formatGroupings(
+    xqpStringStore_t& result,
+    xqpStringStore_t& str,
+    FormatNumberInfo::PartInfo& part,
+    FormatNumberInfo& info)
 {
   unsigned int grouping_index = 0;
   result = new xqpStringStore();
@@ -1800,8 +1857,15 @@ static void formatGroupings(xqpStringStore_t& result, xqpStringStore_t& str, For
   }
 }
 
-static void formatNumber(xqpStringStore& resultString, store::Item_t& number, FormatNumberInfo& info)
+
+static void formatNumber(
+    xqpStringStore& resultString,
+    store::Item_t& number,
+    FormatNumberInfo& info,
+    const TypeManager& tm)
 {
+  const RootTypeManager& rtm = GENV_TYPESYSTEM;
+
   if (number->isNaN())
   {
     resultString.append_in_place(info.NaN);
@@ -1812,8 +1876,10 @@ static void formatNumber(xqpStringStore& resultString, store::Item_t& number, Fo
   store::Item_t doubleItem;
   bool positive = true;
   FormatNumberInfo::SubPictureInfo& sub_picture = info.pos_subpicture;
+
   GENV_ITEMFACTORY->createDouble(zero, xqp_double::zero());
-  GenericCast::instance()->castToAtomic(doubleItem, number, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+
+  GenericCast::castToAtomic(doubleItem, number, &*rtm.DOUBLE_TYPE_ONE, tm);
 
   if (doubleItem->compare(zero) == -1)
   {
@@ -1875,13 +1941,17 @@ static void formatNumber(xqpStringStore& resultString, store::Item_t& number, Fo
   resultString.append_in_place(sub_picture.suffix);
 }
 
-bool FnFormatNumberIterator::nextImpl (store::Item_t& result, PlanState& planState) const
+
+bool FnFormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  PlanIteratorState* state;
   xqpStringStore_t resultString, pictureString;
   store::Item_t numberItem, pictureItem, formatName;
   FormatNumberInfo info;
   DecimalFormat_t df_t;
+
+  const TypeManager& tm = *getStaticContext(planState)->get_typemanager();
+
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
 
   if (planState.theCompilerCB->m_sctx->xquery_version() == StaticContextConsts::xquery_version_1_0)
@@ -1897,18 +1967,21 @@ bool FnFormatNumberIterator::nextImpl (store::Item_t& result, PlanState& planSta
     info.loc = loc;
     if (!isAllowedType(result->getType()))
       ZORBA_ERROR_LOC(XPTY0004, info.loc);
+
     consumeNext(pictureItem, theChildren[1].getp(), planState);
     
-    if (theChildren.size() >= 3 && consumeNext(formatName, theChildren[2].getp(), planState))
+    if (theChildren.size() >= 3 &&
+        consumeNext(formatName, theChildren[2].getp(), planState))
       df_t = planState.theCompilerCB->m_sctx->get_decimal_format(formatName);
     else
       df_t = planState.theCompilerCB->m_sctx->get_decimal_format(NULL);
+
     info.readFormat(df_t);
     
     pictureString = pictureItem->getStringValue();
     resultString = new xqpStringStore();
     parsePicture(*pictureString, info);
-    formatNumber(*resultString, result, info);
+    formatNumber(*resultString, result, info, tm);
     STACK_PUSH (GENV_ITEMFACTORY->createString(result, resultString), state);
   }
   STACK_END (state);

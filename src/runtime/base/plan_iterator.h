@@ -299,6 +299,19 @@ public:
 
   void setLocation (const QueryLoc &loc_) { loc = loc_; }
 
+  // get the static context for this iterator
+  static_context*
+  getStaticContext(PlanState& planState) const
+  {
+    return planState.theCompilerCB->getStaticContext(sctx);
+  }
+
+  CollationCache*
+  collationCache(PlanState& planState) 
+  {
+    return getStaticContext(planState)->get_collation_cache(); 
+  }
+
   /**
    * Return true if "this" may return a pending update list.
    */
@@ -415,13 +428,6 @@ template <class IterType>
 class Batcher: public PlanIterator
 {
 public:
-  Batcher(const Batcher<IterType>& b)  : PlanIterator(b) {}
-
-  Batcher(short sctx, const QueryLoc& loc) : PlanIterator(sctx, loc) {}
-
-  ~Batcher() {}
-
-public:
   SERIALIZABLE_CLASS_NO_FACTORY(Batcher)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(Batcher, PlanIterator)
   void serialize(::zorba::serialization::Archiver &ar)
@@ -430,6 +436,12 @@ public:
   }
 
 public:
+  Batcher(const Batcher<IterType>& b)  : PlanIterator(b) {}
+
+  Batcher(short sctx, const QueryLoc& loc) : PlanIterator(sctx, loc) {}
+
+  ~Batcher() {}
+
 
 #if ZORBA_BATCHING_TYPE == 1  
   void produceNext(PlanState& planState) const 
@@ -487,24 +499,12 @@ public:
 #endif
   }
 
-  // get the static context for this iterator
-  static_context*
-  getStaticContext(PlanState& planState) const
-  {
-    return planState.theCompilerCB->getStaticContext(sctx);
-  }
-
-  CollationCache*
-  collationCache(PlanState& planState) 
-  {
-    return getStaticContext(planState)->get_collation_cache(); 
-  }
-
-public:
   inline void nextImpl(store::Item_t& result, PlanState& planState) const;
 
   inline void openImpl(PlanState& planState, uint32_t& offset) const;
+
   inline void resetImpl(PlanState& planState) const;
+
   inline void closeImpl(PlanState& planState);
 };
 

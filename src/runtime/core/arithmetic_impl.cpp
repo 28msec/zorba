@@ -108,26 +108,26 @@ bool GenericArithIterator<Operation>::compute(
     store::Item_t& n0,
     store::Item_t& n1)
 {
+  const TypeManager& tm = *aContext->get_typemanager();
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
+
   assert(n0->isAtomic());
   assert(n1->isAtomic());
   store::Item_t an0 = n0->getAtomizationValue();
   store::Item_t an1 = n1->getAtomizationValue();
 
-  xqtref_t type0 = aContext->get_typemanager()->
-                   create_value_type (an0);
-
-  xqtref_t type1 = aContext->get_typemanager()->
-                   create_value_type (an1);
+  xqtref_t type0 = tm.create_value_type (an0);
+  xqtref_t type1 = tm.create_value_type (an1);
   
   if (TypeOps::is_numeric(*type0)
       &&
-      (TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE )
+      (TypeOps::is_subtype ( *type1, *rtm.YM_DURATION_TYPE_ONE )
       ||
-      TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE )))
+      TypeOps::is_subtype ( *type1, *rtm.DT_DURATION_TYPE_ONE )))
   {
-    GenericCast::instance()->castToAtomic(an0, an0, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+    GenericCast::castToAtomic(an0, an0, &*rtm.DOUBLE_TYPE_ONE, tm);
 
-    if (TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE ))
+    if (TypeOps::is_subtype ( *type1, *rtm.YM_DURATION_TYPE_ONE ))
     {
       return Operation::template
              compute<TypeConstants::XS_DOUBLE, TypeConstants::XS_YM_DURATION>
@@ -140,67 +140,67 @@ bool GenericArithIterator<Operation>::compute(
              (result, aRuntimeCB, aContext, &aLoc, an0, an1);
     }
   }
-  else if (TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE )
+  else if (TypeOps::is_subtype ( *type0, *rtm.DT_DURATION_TYPE_ONE )
            &&
-           TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.TIME_TYPE_ONE))
+           TypeOps::is_subtype(*type1, *rtm.TIME_TYPE_ONE))
   {
     return Operation::template
            compute<TypeConstants::XS_DURATION,TypeConstants::XS_TIME>
            (result, aRuntimeCB, aContext, &aLoc, an0, an1);
   }
-  else if (TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.YM_DURATION_TYPE_ONE ))
+  else if (TypeOps::is_subtype ( *type0, *rtm.YM_DURATION_TYPE_ONE ))
   {
     if(TypeOps::is_numeric(*type1))
     {
-      GenericCast::instance()->castToAtomic ( an1, an1, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
+      GenericCast::castToAtomic(an1, an1, &*rtm.DOUBLE_TYPE_ONE, tm);
       return Operation::template compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_DOUBLE> ( result, aRuntimeCB, aContext, &aLoc, an0, an1 );
     }
-    else if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE))
+    else if (TypeOps::is_subtype(*type1, *rtm.DATETIME_TYPE_ONE))
       return Operation::template compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATETIME> (result, aRuntimeCB, aContext, &aLoc, an0, an1);
-    else if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DATE_TYPE_ONE))
+    else if (TypeOps::is_subtype(*type1, *rtm.DATE_TYPE_ONE))
       return Operation::template compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATE> (result, aRuntimeCB, aContext, &aLoc, an0, an1);
     else if (TypeOps::is_equal(*type0, *type1))
       return Operation::template computeSingleType<TypeConstants::XS_YM_DURATION> ( result, aRuntimeCB, aContext, &aLoc, an0, an1 );
   }
-  else if (TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE ))
+  else if (TypeOps::is_subtype ( *type0, *rtm.DT_DURATION_TYPE_ONE ))
   {
     if(TypeOps::is_numeric(*type1))
     {
-      GenericCast::instance()->castToAtomic ( an1, an1, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
+      GenericCast::castToAtomic(an1, an1, &*rtm.DOUBLE_TYPE_ONE, tm);
       return Operation::template compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DOUBLE> ( result, aRuntimeCB, aContext, &aLoc, an0, an1 );
     }
-    else if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE))
+    else if (TypeOps::is_subtype(*type1, *rtm.DATETIME_TYPE_ONE))
       return Operation::template compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATETIME> (result, aRuntimeCB, aContext, &aLoc, an0, an1);
-    else if (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DATE_TYPE_ONE))
+    else if (TypeOps::is_subtype(*type1, *rtm.DATE_TYPE_ONE))
       return Operation::template compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATE> (result, aRuntimeCB, aContext, &aLoc, an0, an1);
     else if (TypeOps::is_equal(*type0, *type1))
       return Operation::template computeSingleType<TypeConstants::XS_DT_DURATION> ( result, aRuntimeCB, aContext, &aLoc, an0, an1 );
   }
-  else if(TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE ))
+  else if(TypeOps::is_subtype ( *type0, *rtm.DATETIME_TYPE_ONE ))
   {
-    if(TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE ))
+    if(TypeOps::is_subtype ( *type1, *rtm.DATETIME_TYPE_ONE ))
       return Operation::template compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DATETIME> (  result, aRuntimeCB, aContext, &aLoc, an0, an1 );
-    else if (TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE ))
+    else if (TypeOps::is_subtype ( *type1, *rtm.DURATION_TYPE_ONE ))
       return Operation::template compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION> (  result, aRuntimeCB, aContext, &aLoc, an0, an1 );
   }
-  else if(TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.DATE_TYPE_ONE ))
+  else if(TypeOps::is_subtype ( *type0, *rtm.DATE_TYPE_ONE ))
   {
-    if (TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.DATE_TYPE_ONE ))
+    if (TypeOps::is_subtype ( *type1, *rtm.DATE_TYPE_ONE ))
       return Operation::template compute<TypeConstants::XS_DATE,TypeConstants::XS_DATE> (  result, aRuntimeCB, aContext, &aLoc, an0, an1 );
-    else if (TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE ))
+    else if (TypeOps::is_subtype ( *type1, *rtm.DURATION_TYPE_ONE ))
       return Operation::template compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION> (  result, aRuntimeCB, aContext, &aLoc, an0, an1 );
   }
-  else if(TypeOps::is_subtype ( *type0, *GENV_TYPESYSTEM.TIME_TYPE_ONE ))
+  else if(TypeOps::is_subtype ( *type0, *rtm.TIME_TYPE_ONE ))
   {
-    if(TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.TIME_TYPE_ONE ))
+    if(TypeOps::is_subtype ( *type1, *rtm.TIME_TYPE_ONE ))
       return Operation::template compute<TypeConstants::XS_TIME,TypeConstants::XS_TIME> (  result, aRuntimeCB, aContext, &aLoc, an0, an1 );
-    else if (TypeOps::is_subtype ( *type1, *GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE))
+    else if (TypeOps::is_subtype ( *type1, *rtm.DT_DURATION_TYPE_ONE))
       return Operation::template compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION> (  result, aRuntimeCB, aContext, &aLoc, an0, an1 );
   }
   else if ((TypeOps::is_numeric(*type0)
-           || TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
+           || TypeOps::is_subtype(*type0, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
            && ( TypeOps::is_numeric(*type1)
-           || TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)))
+           || TypeOps::is_subtype(*type1, *rtm.UNTYPED_ATOMIC_TYPE_ONE)))
   {
     return NumArithIterator<Operation>::computeAtomic( result, aRuntimeCB, aContext, aLoc, an0, type0, an1, type1);
   }

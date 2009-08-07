@@ -32,6 +32,13 @@ namespace store
 {
 
 
+const Item*
+Item::getBaseItem() const
+{
+  return NULL;
+}
+
+
 Item*
 Item::getType( ) const
 {

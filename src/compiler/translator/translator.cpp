@@ -7279,17 +7279,20 @@ void *begin_visit (const OccurrenceIndicator& v) {
   return no_state;
 }
 
-void end_visit (const OccurrenceIndicator& v, void* /*visit_state*/) {
+void end_visit (const OccurrenceIndicator& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit (const AtomicType& v) {
+void *begin_visit (const AtomicType& v) 
+{
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit (const AtomicType& v, void* /*visit_state*/) {
+void end_visit (const AtomicType& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
   rchandle<QName> qname = v.get_qname ();
   xqtref_t t =

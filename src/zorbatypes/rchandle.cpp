@@ -12,7 +12,7 @@ namespace zorba {
 
 #ifndef ZORBA_FOR_ONE_THREAD_ONLY
 
-#define     NR_RCLOCKS_IN_POOL  100
+#define     NR_RCLOCKS_IN_POOL  1000
 
 
 /*******************************************************************************
