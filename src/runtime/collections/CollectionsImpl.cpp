@@ -1760,8 +1760,8 @@ store::Collection_t getCollection(
                                     resolve(resolvedURIItem, sctx);
   if (lCollection == NULL) 
   {
-    ZORBA_ERROR_LOC_PARAM(API0006_COLLECTION_NOT_FOUND, loc, strURI,
-                          "The requested collection could not be found.");
+    ZORBA_ERROR_LOC_PARAM_OSS(API0006_COLLECTION_NOT_FOUND, loc, strURI,
+                              "The requested collection with name " << strURI << " could not be found.");
   }
 
   return lCollection;
