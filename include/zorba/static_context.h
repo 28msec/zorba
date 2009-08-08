@@ -49,6 +49,18 @@ namespace zorba {
        */
       virtual ~StaticContext() {}
 
+      /** \brief Loads the declarations and definitions of a given XQuery prolog into
+       *         this static context.
+       *
+       * This function compiles the prolog passed as first parameter and loads
+       * all declarations and definitions into this static context.
+       * 
+       * The static context extended by this prolog can then be used for creating
+       * a compiling a new query.
+       *
+       * A StaticException is raised if the prolog could not be compiled or
+       * if the prolog does not contain valid declarations (e.g. duplicate declarations).
+       */
       virtual void
       loadProlog(const String&, const Zorba_CompilerHints_t &hints) = 0;
 
