@@ -223,7 +223,7 @@ class StaticContextImpl : public StaticContext
   getOption( const Item& aQName, String& aOptionValue) const;
 
   virtual void
-  declareOption( const Item& aQName, const String& aOptionValue) const;
+  declareOption( const Item& aQName, const String& aOptionValue);
 };
 
 } /* namespace zorba */

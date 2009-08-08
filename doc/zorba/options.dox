@@ -1,0 +1,46 @@
+/** \page options Using Option Declarations in Zorba
+
+\section option_introduction Introduction
+
+Option declarations provide a way to affect the behavior of a particular XQuery implementation. 
+Hence, the availability and semantics of particular options vary for different XQuery processor.
+However, the syntax for declaring options in the prolog of XQuery modules is designed so that all options can be parsed by all XQuery implementations.
+
+For example, an option to declare the SMTP password for sending emails, which is available in the Email module of Zorba, could be used as follows:
+
+\code
+  declare namespace op = "http://www.zorba-xquery.org/options";
+
+  declare option op:smtppwd "mypasswd";
+\endcode
+
+The option declaration consists of a QName (which must resolve to a namespace URI and loca name, using the statically known namespaces) and a string literal.
+
+\subsection options_zorba Options for Customizing Zorba
+The namespaces for options which are recognized by Zorba all start with the namespace URI <tt>http://www.zorba-xquery.org/options</tt>.
+Options which are not recognized by Zorba are ignored, i.e. no error will be raised.
+
+Currently, the following options are recognized:
+
+<ul>
+  <li> Options for configuring the SMTP module (see \ref email).
+  <li> Options for enabling and disabling the fn:trace function (see \ref trace).
+</ul>
+
+\subsection options_custom Options in Host Languages and External Functions
+
+Besides their use to affect the behavior of Zorba, options can also be used to affect the behavior of an application implemented in a host language (e.g. C or C++). 
+Moreover, options are a useful way to customize  the behavior of external functions.
+
+Therefore, options can be declared or retrieved in the static context. 
+For example, Zorba's C++ API provides the following two functions to retrieve the value of an option declared in a query and declare options to be used in a query, respectively.
+
+<ul>
+  <li> bool StaticContext::getOption( const Item& aQName, String& aOptionValue) const;
+  <li> void StaticContext::declareOption( const Item& aQName, const String& aOptionValue);
+</ul>
+
+In an external function, the static context of the particular module is also available.
+This way, the programmer of an external function can retrieve the value of an option and can customize the behavior of his function.
+
+*/

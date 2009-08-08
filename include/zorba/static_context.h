@@ -433,7 +433,7 @@ namespace zorba {
        * @param aOptionValue The value of the option to declare.
        */
       virtual void
-      declareOption( const Item& aQName, const String& aOptionValue) const = 0;
+      declareOption( const Item& aQName, const String& aOptionValue) = 0;
   };
 } /* namespace zorba */
 #endif

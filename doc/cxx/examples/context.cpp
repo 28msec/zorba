@@ -362,6 +362,43 @@ context_example_11(Zorba* aZorba)
 	return false;
 }
 
+bool
+context_example_12(Zorba* aZorba)
+{
+  std::ostringstream lTraceStream;
+
+  StaticContext_t lContext = aZorba->createStaticContext();
+
+  Item lTraceQName = aZorba->getItemFactory()->createQName("http://www.zorba-xquery.org/options", "trace");
+  lContext->declareOption(lTraceQName, "enable");
+  lContext->setTraceStream(lTraceStream);
+
+  try {
+    Zorba_CompilerHints_t hints;
+
+    XQuery_t aQuery = aZorba->compileQuery("fn:trace(1 to 3, 'foo')", lContext);
+
+    // execute the query
+    std::cout << aQuery << std::endl;
+
+    // check if the trace was successful
+    std::string lTraceString = lTraceStream.str();
+    if (lTraceString.compare("foo [0]: xs:integer(1)\n"
+          "foo [1]: xs:integer(2)\n"
+          "foo [2]: xs:integer(3)\n") != 0) {
+      return false;
+    }
+    std::cout << lTraceString << std::endl;
+    return true;
+
+  } catch (QueryException &e) {
+    std::cerr << e << std::endl;
+    return false;
+  }
+
+	return false;
+}
+
 int 
 context(int argc, char* argv[])
 {
@@ -370,60 +407,65 @@ context(int argc, char* argv[])
   Zorba* lZorba = Zorba::getInstance(lStore);
   bool res = false;
 
-    std::cout << "executing example 1" << std::endl;
-    res = context_example_1(lZorba);
-    if (!res) return 1; 
-    std::cout << std::endl;
+  std::cout << "executing example 1" << std::endl;
+  res = context_example_1(lZorba);
+  if (!res) return 1; 
+  std::cout << std::endl;
 
-    std::cout << "executing example 2" << std::endl;
-    res = context_example_2(lZorba);
-    if (!res) return 1; 
-    std::cout << std::endl;
+  std::cout << "executing example 2" << std::endl;
+  res = context_example_2(lZorba);
+  if (!res) return 1; 
+  std::cout << std::endl;
 
-    std::cout << "executing example 3" << std::endl;
-    res = context_example_3(lZorba);
-    if (!res) return 1; 
-    std::cout << std::endl;
+  std::cout << "executing example 3" << std::endl;
+  res = context_example_3(lZorba);
+  if (!res) return 1; 
+  std::cout << std::endl;
 
-    std::cout << "executing example 4" << std::endl;
-    res = context_example_4(lZorba);
-    if (!res) return 1; 
-    std::cout << std::endl;
+  std::cout << "executing example 4" << std::endl;
+  res = context_example_4(lZorba);
+  if (!res) return 1; 
+  std::cout << std::endl;
 
-    std::cout << "executing example 5" << std::endl;
-    res = context_example_5(lZorba);
-    if (!res) return 1; 
-    std::cout << std::endl;
+  std::cout << "executing example 5" << std::endl;
+  res = context_example_5(lZorba);
+  if (!res) return 1; 
+  std::cout << std::endl;
 
-    std::cout << "executing example 6" << std::endl;
-    res = context_example_6(lZorba);
-    if (!res) return 1; 
-    std::cout << std::endl;
+  std::cout << "executing example 6" << std::endl;
+  res = context_example_6(lZorba);
+  if (!res) return 1; 
+  std::cout << std::endl;
 
-    std::cout << "executing example 7" << std::endl;
-    res = context_example_7(lZorba);
-    if (!res) return 1; 
-    std::cout << std::endl;
+  std::cout << "executing example 7" << std::endl;
+  res = context_example_7(lZorba);
+  if (!res) return 1; 
+  std::cout << std::endl;
 
-    std::cout << "executing example_8" << std::endl;
-    res = context_example_8(lZorba);
-    if (!res) return 1; 
-    std::cout << std::endl;
+  std::cout << "executing example_8" << std::endl;
+  res = context_example_8(lZorba);
+  if (!res) return 1; 
+  std::cout << std::endl;
 
-    std::cout << "executing example_9" << std::endl;
-    res = context_example_9(lZorba);
-    if (!res) return 1; 
-    std::cout << std::endl;
+  std::cout << "executing example_9" << std::endl;
+  res = context_example_9(lZorba);
+  if (!res) return 1; 
+  std::cout << std::endl;
 
-    std::cout << "executing example_10" << std::endl;
-    res = context_example_10(lZorba);
-    if (!res) return 1; 
-    std::cout << std::endl;
+  std::cout << "executing example_10" << std::endl;
+  res = context_example_10(lZorba);
+  if (!res) return 1; 
+  std::cout << std::endl;
 
-    std::cout << "executing example_11" << std::endl;
-    res = context_example_11(lZorba);
-    if (!res) return 1; 
-    std::cout << std::endl;
+  std::cout << "executing example_11" << std::endl;
+  res = context_example_11(lZorba);
+  if (!res) return 1; 
+  std::cout << std::endl;
+
+  std::cout << "executing example_12" << std::endl;
+  res = context_example_12(lZorba);
+  if (!res) return 1; 
+  std::cout << std::endl;
 
   lZorba->shutdown();
   simplestore::SimpleStoreManager::shutdownStore(lStore);

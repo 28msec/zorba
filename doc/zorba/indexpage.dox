@@ -35,6 +35,8 @@
      <li> \ref zorbascripting
      <li> \ref eval
      <li> \ref indexes
+     <li> \ref options
+     <li> \ref trace
      <li> Function Library
        <ul>
          <li> \ref rest

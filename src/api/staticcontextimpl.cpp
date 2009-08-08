@@ -771,7 +771,7 @@ StaticContextImpl::getOption( const Item& aQName, String& aOptionValue ) const
 }
 
 void
-StaticContextImpl::declareOption( const Item& aQName, const String& aOptionValue) const
+StaticContextImpl::declareOption( const Item& aQName, const String& aOptionValue)
 {
   try {
     store::Item* lQName = Unmarshaller::getInternalItem(aQName);
