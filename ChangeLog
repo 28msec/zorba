@@ -5,7 +5,7 @@ version 0.9.8 (coming)
 		* block local variables
   * XQuery 1.1
 		* Support for the "validation as TypeName" feature
-		* changed the try/catch syntax as specified in XQuery 1.1
+		* changed the try/catch syntax as specified in XQuery 1.1 (except the try- and catch expressions are ExprSingle and not Expr).
 	* Examples for the Java API
 	* Function library
   	* creating PDFs using XSL Formatting Objects (requires Java)
@@ -14,6 +14,7 @@ version 0.9.8 (coming)
   	* function for sending simple text emails
   	* the util:tidy function returns a node instead of a string.
   	* XQDoc module http://www.zorba-xquery.com/zorba/xqdoc-functions
+	* Added a loadProlog function to the static context.
   * Added support for XQueryX and XQueryX Update
 	* Added compiled query persistence to the C++ API (XQuery::loadExecutionPlan() and XQuery::saveExecutionPlan())
   * Added a printPlan function to the XQuery class of the API.
