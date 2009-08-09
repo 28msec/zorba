@@ -1021,7 +1021,7 @@ bool OpNumericUnaryIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
       if ( TypeOps::is_subtype ( *type, *rtm.DOUBLE_TYPE_ONE ) )
       {
-        if ( result->getDoubleValue().isPos() ) 
+        if ( result->getDoubleValue().isPos() || result->getDoubleValue().isPosZero()  ) 
         {
           if ( !TypeOps::is_equal ( *type, *rtm.DOUBLE_TYPE_ONE ) )
             GENV_ITEMFACTORY->createDouble (result, result->getDoubleValue() );
@@ -1030,7 +1030,7 @@ bool OpNumericUnaryIterator::nextImpl(store::Item_t& result, PlanState& planStat
           GENV_ITEMFACTORY->createDouble (result, -result->getDoubleValue() );
       }
       else if ( TypeOps::is_subtype ( *type, *rtm.FLOAT_TYPE_ONE ) )
-        if ( result->getFloatValue().isPos() ) {
+        if ( result->getFloatValue().isPos() || result->getFloatValue().isPosZero() ) {
           if ( !TypeOps::is_equal ( *type, *rtm.FLOAT_TYPE_ONE ) )
             GENV_ITEMFACTORY->createFloat (result, result->getFloatValue() );
         }

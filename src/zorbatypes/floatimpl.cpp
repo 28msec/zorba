@@ -15,6 +15,7 @@
  */
 #include <limits>
 #include <string>
+#include <stdlib.h>
 
 #include "common/common.h"
 #include "zorbatypes/floatimpl.h"
@@ -349,23 +350,7 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
   }
   else 
   {
-    std::stringstream lStream;
-    lStream << aCharStar;
-    lStream >> aFloatImpl.theFloating;
-    if (lStream.fail()) {
-      // aCharStar is a number because of the check about => failing parsing means overflow
-      if (lIsNegative) {
-        aFloatImpl.theFloating = -std::numeric_limits<FloatType>::infinity();
-      }
-      else {
-        aFloatImpl.theFloating = std::numeric_limits<FloatType>::infinity();
-      }
-    }
-    else if (!lStream.eof()) {
-      // someting is broken because aStarChar must be a number
-       assert(false);
-      return false;
-    }
+    aFloatImpl.theFloating = (FloatType)atof(aCharStar);
 
     if (lGotSpace)
       delete [] aCharStar;
