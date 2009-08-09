@@ -634,10 +634,26 @@ void operator&(Archiver &ar, store::Item* &obj)
       }
       ar & is_qname;
       if(!is_qname)
+      {
         ar & type;//save qname of type
+        ///check for User Typed Atomic Item
+        store::Item*    baseItem;
+        if(ar.is_serializing_out())         
+          baseItem = (store::Item*)obj->getBaseItem();            
+        ar.set_is_temp_field(false);
+        ar & baseItem;
+        ar.set_is_temp_field(true);
+        if(baseItem)
+        {
+          store::Item_t baseItem_rc(baseItem);
+          FINALIZE_SERIALIZE(createUserTypedAtomicItem, (result, baseItem_rc, type));
+          goto EndAtomicItem;
+        }
+      }
       else if(!ar.is_serializing_out())
         GENV_ITEMFACTORY->createQName(type, "http://www.w3.org/2001/XMLSchema", "xs", "QName");
       
+
       if(!ar.is_serializing_out())
         name_of_type = type->getLocalName();
 
@@ -886,7 +902,11 @@ void operator&(Archiver &ar, store::Item* &obj)
         SERIALIZE_FIELD(bool, value, getBooleanValue());
         FINALIZE_SERIALIZE(createBoolean, (result, value));
       }
-
+      else
+      {
+        ZORBA_SER_ERROR_DESC_OSS(SRL0010_ITEM_TYPE_NOT_SERIALIZABLE, *name_of_type);
+      }
+EndAtomicItem:;
     }
     else if(is_node)
     {
