@@ -595,6 +595,10 @@ void Archiver::set_class_version(int new_class_version)
 
 void Archiver::root_tag_is_read()
 {
+  if(archive_version != ARCHIVER_LATEST_VERSION)
+  {
+    ZORBA_SER_ERROR_DESC_OSS(SRL0012_INCOMPATIBLE_ARCHIVE_VERSION, "Archive version is " << archive_version << " but expected " << ARCHIVER_LATEST_VERSION);
+  }
   all_reference_list = new hash32map<void*>(nr_ids*2, 0.6f);
 }
 
