@@ -296,9 +296,10 @@ Duration* Duration::operator-(const Duration& d) const
   return operator+(*temp);
 }
       
-Duration* Duration::operator*(const Double value) const
+Duration* Duration::operator*(const Double& value) const
 {
   Double result;
+  Double dSeconds;
   long seconds;
   long frac_seconds;
 
@@ -308,22 +309,24 @@ Duration* Duration::operator*(const Double value) const
     return NULL;
   }
   
-  Double tps = Double::parseFloatType(FRAC_SECONDS_UPPER_LIMIT);
+  Integer significants = Integer::parseInt(FRAC_SECONDS_UPPER_LIMIT);
 
   result = getTotalSeconds() * value;
-  result = (result * tps).round() / tps;
-  NumConversions::doubleToLong(result.floor(), seconds);
-  
-  result = (result - result.floor()) * tps;
+  result = result.round(significants);
+  dSeconds = result.round();
+  NumConversions::doubleToLong(dSeconds, seconds);
+
+  result = (result - dSeconds) * Double::parseInt(FRAC_SECONDS_UPPER_LIMIT);
   NumConversions::doubleToLong(result.round(), frac_seconds);
 
   Duration* d = new Duration(facet, seconds<0, 0, 0, 0, 0, 0, seconds, frac_seconds);
   return d;
 }
       
-Duration* Duration::operator/(const Double value) const
+Duration* Duration::operator/(const Double& value) const
 {
   Double result;
+  Double dSeconds;
   long seconds;
   long frac_seconds;
 
@@ -333,13 +336,14 @@ Duration* Duration::operator/(const Double value) const
     return NULL;
   }
   
-  Double tps = Double::parseFloatType(FRAC_SECONDS_UPPER_LIMIT);
+  Integer significants = Integer::parseInt(FRAC_SECONDS_UPPER_LIMIT);
   
   result = getTotalSeconds() / value;
-  result = (result * tps).round() / tps;
-  NumConversions::doubleToLong(result.floor(), seconds);
+  result = result.round(significants);
+  dSeconds = result.round();
+  NumConversions::doubleToLong(dSeconds, seconds);
 
-  result = (result - result.floor()) * tps;
+  result = (result - dSeconds) * Double::parseInt(FRAC_SECONDS_UPPER_LIMIT);
   NumConversions::doubleToLong(result.round(), frac_seconds);
 
   Duration* d = new Duration(facet, seconds<0, 0, 0, 0, 0, 0, seconds, frac_seconds);

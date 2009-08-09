@@ -77,7 +77,7 @@ public:
 #endif
 
 private:
-  static xqpString decimalToString(MAPM);
+  static xqpString decimalToString(MAPM, int precision=ZORBA_FLOAT_POINT_PRECISION);
 
 public:
   static Decimal& zero();

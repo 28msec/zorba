@@ -17,6 +17,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <limits>
+#include <string.h>
 
 #include <zorba/zorba.h>
 #include <simplestore/simplestore.h>
@@ -177,7 +178,8 @@ int itemfactory(int argc, char* argv[])
     lItem = lFactory->createDecimalFromDouble(12678967.32342);
     UNIT_ASSERT ( checkType(lItem.getType(), "decimal") );
     UNIT_ASSERT ( lItem.isAtomic() );
-    UNIT_ASSERT ( lItem.getStringValue() == "12678967.32342" );
+    // double to decimal cast implies a rounding error => prefix check only
+    UNIT_ASSERT ( strncmp(lItem.getStringValue().c_str(), "12678967.32342", 14) );
     UNIT_ASSERT ( lItem.getEBV().getBooleanValue() );
     UNIT_ASSERT ( !lItem.getAtomizationValue().isNull() );
 
@@ -327,7 +329,7 @@ int itemfactory(int argc, char* argv[])
     lItem = lFactory->createFloat(23.42f);
     UNIT_ASSERT ( checkType(lItem.getType(), "float") );
     UNIT_ASSERT ( lItem.isAtomic() );
-    UNIT_ASSERT ( lItem.getStringValue() == "23.4200000762939" );
+    UNIT_ASSERT ( lItem.getStringValue() == "23.42" );
     UNIT_ASSERT ( lItem.getEBV().getBooleanValue() );
     UNIT_ASSERT ( !lItem.getAtomizationValue().isNull() );
     CHECK_NOT_IMPLEMENTED(lItem, getBooleanValue() );

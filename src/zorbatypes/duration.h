@@ -117,10 +117,10 @@ public:
   operator-(const Duration& d) const;
       
   Duration*
-  operator*(const Double value) const;
+  operator*(const Double& value) const;
       
   Duration*
-  operator/(const Double value) const;
+  operator/(const Double& value) const;
       
   Decimal
   operator/(const Duration& d) const;

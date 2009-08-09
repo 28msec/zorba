@@ -166,7 +166,7 @@ if (dd == 0.0)                     /* special case for 0 exactly */
    M_set_to_zero(atmp);
 else
   {
-   sprintf(buf, "%.14E", dd);
+   sprintf(buf, "%.16E", dd);
    
    if ((cp = strstr(buf, "E")) == NULL)
      {

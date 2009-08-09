@@ -19,6 +19,18 @@
 #include "zorbatypes/numconversions.h"
 #include <stdlib.h>
 
+#ifndef ZORBA_NO_BIGNUMBERS
+#define IS_ZERO(mapm_obj)                 (mapm_obj.sign() == 0)
+#define IS_POSITIVE(mapm_obj)             (mapm_obj.sign() > 0)
+#define IS_POSITIVE_OR_ZERO(mapm_obj)     (mapm_obj.sign() >= 0)
+#define IS_NEGATIVE(mapm_obj)             (mapm_obj.sign() < 0)
+#else
+#define IS_ZERO(mapm_obj)                 (mapm_obj == 0)
+#define IS_POSITIVE(mapm_obj)             (mapm_obj > 0)
+#define IS_POSITIVE_OR_ZERO(mapm_obj)     (mapm_obj >= 0)
+#define IS_NEGATIVE(mapm_obj)             (mapm_obj < 0)
+#endif
+
 namespace zorba {
 SERIALIZABLE_CLASS_VERSIONS(Integer)
 END_SERIALIZABLE_CLASS_VERSIONS(Integer)
@@ -152,7 +164,8 @@ bool Integer::parseString(const char* aCharStar, Integer& aInteger)
 
 #ifdef ZORBA_NUMERIC_OPTIMIZATION
     hashed_integer = new Integer(aInteger);
-    parsed_integers.insert(aCharStar, hashed_integer);
+    const char  *dup_str = _strdup(aCharStar);
+    parsed_integers.insert(dup_str, hashed_integer);
 #endif
     return true;
   }
@@ -195,32 +208,22 @@ bool Integer::parseStringUnsigned(const char* aStarChar, Integer& aUInteger) {
 }
   
 bool Integer::parseDouble(const Double& aDouble, Integer& aInteger) {
-  switch(aDouble.theType) {
-  case FloatCommons::NORMAL:
-  case FloatCommons::NORMAL_NEG:
-  {
-    aInteger.theInteger = floatingToInteger(aDouble.theFloatImpl);
+  if (aDouble.isFinite()) {
+    aInteger.theInteger = floatingToInteger(aDouble.theFloating);
     return true;
   }
-    break;
-  default:
+  else {
     return false;
-    break;
   }
 }
 
 bool Integer::parseFloat(const Float& aFloat, Integer& aInteger) {
-  switch(aFloat.theType) {
-  case FloatCommons::NORMAL:
-  case FloatCommons::NORMAL_NEG:
-  {
-    aInteger.theInteger = floatingToInteger(aFloat.theFloatImpl);
+  if (aFloat.isFinite()) {
+    aInteger.theInteger = floatingToInteger(aFloat.theFloating);
     return true;
   }
-    break;
-  default:
+  else {
     return false;
-    break;
   }
 }
 
@@ -448,20 +451,7 @@ bool Integer::operator<=(const Decimal& aDecimal) const {
 }
 
 bool Integer::operator<=(const Double& aDouble) const {
-  switch(aDouble.theType) {
-  case FloatCommons::INF_POS:
-    return true;
-    break;
-  case FloatCommons::INF_NEG:
-    return false;
-    break;
-  case FloatCommons::NOT_A_NUM:
-    return false;
-    break;
-  default:
-    return theInteger <= aDouble.theFloatImpl;
-    break;
-  }
+    return theInteger <= aDouble.theFloating;
 }
 
 bool Integer::operator>(const Decimal& aDecimal) const {
@@ -473,20 +463,7 @@ bool Integer::operator>=(const Decimal& aDecimal) const {
 }
 
 bool Integer::operator>=(const Double& aDouble) const {
-  switch(aDouble.theType) {
-  case FloatCommons::INF_POS:
-    return false;
-    break;
-  case FloatCommons::INF_NEG:
-    return true;
-    break;
-  case FloatCommons::NOT_A_NUM:
-    return false;
-    break;
-  default:
-    return theInteger >= aDouble.theFloatImpl;
-    break;
-  }
+  return theInteger >= aDouble.theFloating;
 }
 
 xqpString Integer::toString() const {

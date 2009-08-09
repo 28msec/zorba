@@ -22,33 +22,11 @@
 #include "zorbatypes/decimal.h"
 #include "zorbatypes/numconversions.h"
 
-/*
-#if defined WIN32 || defined WIN_CE
-  #define   _fpclass   __fpclass
-#else
-//#define FP_NAN         0
-//#define FP_INFINITE    1
-//#define FP_ZERO        2
-//#define FP_SUBNORMAL   3
-//#define FP_NORMAL      4
+#define IS_ZERO(mapm_obj)                 (mapm_obj == 0)
+#define IS_POSITIVE(mapm_obj)             (mapm_obj > 0)
+#define IS_POSITIVE_OR_ZERO(mapm_obj)     (mapm_obj >= 0)
+#define IS_NEGATIVE(mapm_obj)             (mapm_obj < 0)
 
-#define _FPCLASS_SNAN      FP_NAN  // Signaling NaN
-#define _FPCLASS_QNAN      -1      // Quiet NaN
-#define _FPCLASS_NINF      FP_INFINITE // Negative infinity (-INF)
-_FPCLASS_NN:// Negative normalized non-zero
-    case _FPCLASS_ND:// Negative denormalized
-      return FloatCommons::NORMAL_NEG;
-    case _FPCLASS_NZ:// Negative zero (-0)
-    case _FPCLASS_PZ:// Positive 0 (+0)
-    case _FPCLASS_PD:// Positive denormalized
-    case _FPCLASS_PN:// Positive normalized non-zero
-      return FloatCommons::NORMAL;
-    case _FPCLASS_PINF:// Positive infinity (+INF)
-     return FloatCommons::INF_POS;
-#endif
-*/
-
-#ifdef ZORBA_NO_BIGNUMBERS
 float acosh( float z)
 {//formula from www.mathworks.com
   return ::log(z + ::sqrt(z*z-1));
@@ -67,13 +45,12 @@ double asinh( double z)
 }
 float atanh( float z)
 {//formula from www.mathworks.com
-  return 1.0/2*::log((1+z)/(1-z));
+  return (float)1.0/(2*(float)::log((1+z)/(1-z)));
 }
 double atanh( double z)
 {
-  return 1.0/2*::log((1+z)/(1-z));
+  return 1.0/(2*::log((1+z)/(1-z)));
 }
-#endif
 
 namespace zorba {
 
@@ -105,286 +82,36 @@ const xqpString& FloatCommons::get_NOT_A_NUM_STR()
 
 
 Double FloatCommons::parseFloat(const Float& aFloat) {
-  Double lDouble(aFloat.getType(), aFloat.getNumber());
+  Double lDouble(aFloat.getNumber());
   return lDouble;
 }
 
 Float FloatCommons::parseDouble(const Double& aDouble) {
-  Float lFloat(aDouble.getType(), aDouble.getNumber());
-  FloatImpl<float>::checkInfZeroPrecision(lFloat);
+  Float lFloat((float)aDouble.getNumber());
   return lFloat;
 }
 
-#ifndef ZORBA_NO_BIGNUMBERS
-
-MAPM   FloatImplTraits<double>::double_upper_limit("1.7976931348623157e+308");
-MAPM   FloatImplTraits<double>::double_lower_limit("2.2250738585072014e-308");
-MAPM   FloatImplTraits<double>::double_negative_upper_limit("-1.7976931348623157e+308");
-MAPM   FloatImplTraits<double>::double_negative_lower_limit("-2.2250738585072014e-308");
-
-bool FloatImplTraits<double>::isPosInf(const MAPM &aMAPM) {
-  if (IS_POSITIVE(aMAPM)) {
-    return aMAPM.exponent() > 308 || aMAPM > double_upper_limit;
-  } else {
-    return false;
-  }
-}
-
-bool FloatImplTraits<double>::isZero(const MAPM &aMAPM) { 
-  int lExp = aMAPM.exponent();
-  if(lExp < -308)
-    return true;
-  if(lExp == -308)
-  {
-    if(IS_POSITIVE_OR_ZERO(aMAPM))
-    {
-      if(aMAPM < double_lower_limit)
-        return true;
-}
-    else
-    {
-      if(aMAPM > double_negative_lower_limit)
-        return true;
-    }
-  }
-  return false;
-}
-
-bool FloatImplTraits<double>::isNegZero(const MAPM &aMAPM)
-{
-  return false;//cannot detect -0 in MAPM
-}
-
-bool FloatImplTraits<double>::isNegInf(const MAPM &aMAPM) { 
-  if (IS_NEGATIVE(aMAPM)) {
-    return aMAPM.exponent() > 308 || aMAPM < double_negative_upper_limit;
-  } else {
-    return false;
-  }
-}
-
-// FIXME this is not yet correct! Just a very simple temporary solution.
-void FloatImplTraits<double>::cutMantissa(MAPM &aMAPM) {
-//daniel  return Decimal::round(aMAPM, 16-aMAPM.exponent());
-  if(aMAPM.significant_digits() > 16)
-    aMAPM = aMAPM.round(16);
-}
-
-MAPM mapm_65535(65535);
-
-uint32_t FloatImplTraits<double>::hash(FloatCommons::NumType aType, const MAPM &aMAPM) {
-  if (aType == FloatCommons::INF_POS 
-   || aType == FloatCommons::INF_NEG
-   || aType == FloatCommons::NOT_A_NUM)
-  {
-    return 0;
-  }
-
-  Double lDouble(aType, aMAPM % mapm_65535);
-  if (lDouble < Double::zero())
-    lDouble = -lDouble;
-  Integer lInteger;
-  Integer::parseDouble(lDouble, lInteger);
-  uint32_t lHash;
-  NumConversions::integerToUInt(lInteger, lHash);
-  return lHash;
-}
-  
-//MAPM   FloatImplTraits<float>::float_zero(0);
-MAPM   FloatImplTraits<float>::float_upper_limit("3.4028235e+38");
-MAPM   FloatImplTraits<float>::float_negative_upper_limit("-3.4028235e+38");
-MAPM   FloatImplTraits<float>::float_lower_limit("1.1754944e-38");
-MAPM   FloatImplTraits<float>::float_negative_lower_limit("-1.1754944e-38");
-
-bool FloatImplTraits<float>::isPosInf(const MAPM &aMAPM) {
-  if (IS_POSITIVE(aMAPM)) {
-    return aMAPM.exponent() > 38 || aMAPM > float_upper_limit;
-  } else {
-    return false;
-  }
-}
-
-bool FloatImplTraits<float>::isZero(const MAPM &aMAPM) { 
-  int lExp = aMAPM.exponent();
-  if(lExp < -38)
-    return true;
-  if(lExp == -38)
-  {
-    if(IS_POSITIVE_OR_ZERO(aMAPM))
-    {
-      if(aMAPM < float_lower_limit)
-        return true;
-}
-    else if(aMAPM > float_negative_lower_limit)
-      return true;
-  }
-  return false;
-}
-
-bool FloatImplTraits<float>::isNegZero(const MAPM &aMAPM)
-{
-  return false;//cannot detect -0 in MAPM
-}
-
-bool FloatImplTraits<float>::isNegInf(const MAPM &aMAPM) { 
-  if (IS_NEGATIVE(aMAPM)) {
-    return aMAPM.exponent() > 38 || aMAPM < float_negative_upper_limit;
-  } else {
-    return false;
-  }
-}
-
-
-// FIXME this is not yet correct! Just a very simple temporary solution.
-void FloatImplTraits<float>::cutMantissa(MAPM &aMAPM) {
-//daniel  return Decimal::round(aMAPM, 7-aMAPM.exponent());
-  if(aMAPM.significant_digits() > 7)
-  {
-    aMAPM = aMAPM.round(7);
-}
-}
-
-
-uint32_t FloatImplTraits<float>::hash(FloatCommons::NumType aType, const MAPM &aMAPM) {
-  if (aType == FloatCommons::INF_POS 
-   || aType == FloatCommons::INF_NEG
-   || aType == FloatCommons::NOT_A_NUM)
-  {
-    return 0;
-  }
-
-  Float lFloat(aType, aMAPM % mapm_65535);
-  if (lFloat < Float::zero())
-    lFloat = -lFloat;
-  Integer lInteger;
-  Integer::parseFloat(lFloat, lInteger);
-  uint32_t lHash;
-  NumConversions::integerToUInt(lInteger, lHash);
-  return lHash;
-}
-
-#else
-
-template <typename FloatType>
-bool FloatImplTraits<FloatType>::isPosInf(FloatType aMAPM)
-{
-#if defined WIN32 || defined WIN_CE
-  int fclass;
-  fclass = _fpclass(aMAPM);
-  if(fclass == _FPCLASS_PINF)
-    return true;
-  else
-    return false;
-#else
-  if(!isfinite(aMAPM) && !isnan(aMAPM) && (aMAPM>0))
-    return true;
-  else
-    return false;
-#endif
-}
-
-
-template <typename FloatType>
-bool FloatImplTraits<FloatType>::isZero(FloatType aMAPM)
-{
-  if(aMAPM == 0)
-    return true;
-  else
-  return false;
-}
-
-bool FloatImplTraits<double>::isNegZero(double aMAPM)
-{
-  if(aMAPM == 0) 
-  {
-    unsigned char *byteaccess = &aMAPM;
-    if(byteaccess[0] || byteaccess[7])//test for little endian and big endian
-    return true;
-  else
-    return false;
-  }
-  else
-    return false;
-}
-
-bool FloatImplTraits<float>::isNegZero(float aMAPM)
-{
-  if(aMAPM == 0)
-  {
-    unsigned char *byteaccess = &aMAPM;
-    if(byteaccess[0] || byteaccess[3])//test for little endian and big endian
-    return true;
-  else
-    return false;
-}
-  else
-    return false;
-}
-
-
-template <typename FloatType>
-bool FloatImplTraits<FloatType>::isNegInf(FloatType aMAPM)
-{
-#if defined WIN32 || defined WIN_CE
-  int fclass;
-  fclass = _fpclass(aMAPM);
-  if(fclass == _FPCLASS_NINF)
-    return true;
-  else
-    return false;
-#else
-  if(!isfinite(aMAPM) && !isnan(aMAPM) && (aMAPM<0))
-    return true;
-  else
-    return false;
-#endif
-}
-
-
-template <typename FloatType>
-void FloatImplTraits<FloatType>::cutMantissa(FloatType aMAPM) 
-{
-  //return aMAPM;
-}
-
-
-template <typename FloatType>
-uint32_t FloatImplTraits<FloatType>::hash(FloatCommons::NumType aType, FloatType aMAPM)
-{
-  if (aType == FloatCommons::INF_POS 
-   || aType == FloatCommons::INF_NEG
-   || aType == FloatCommons::NOT_A_NUM)
-  {
-    return 0;
-  }
-
-  return ((uint32_t)aMAPM) % 65535;
-}
-
-#endif
-
-
 template <typename FloatType>
 FloatImpl<FloatType>& FloatImpl<FloatType>::zero() {
-  static FloatImpl<FloatType> lValue(FloatCommons::NORMAL, MAPM(0));
+  static FloatImpl<FloatType> lValue(0);
   return lValue;
 }
 
 template <typename FloatType>
 FloatImpl<FloatType>& FloatImpl<FloatType>::zero_neg() {
-  static FloatImpl<FloatType> lValue(FloatCommons::NORMAL_NEG, 0);
+  static FloatImpl<FloatType> lValue(-0.0);
   return lValue;
 }
 
 template <typename FloatType>
 FloatImpl<FloatType>& FloatImpl<FloatType>::one() {
-  static FloatImpl<FloatType> lValue(FloatCommons::NORMAL, 1);
+  static FloatImpl<FloatType> lValue(1);
   return lValue;
 }
 
 template <typename FloatType>
 FloatImpl<FloatType>& FloatImpl<FloatType>::one_neg() {
-  static FloatImpl<FloatType> lValue(FloatCommons::NORMAL, -1);
+  static FloatImpl<FloatType> lValue(-1);
   return lValue;
 }
 
@@ -392,7 +119,7 @@ FloatImpl<FloatType>& FloatImpl<FloatType>::one_neg() {
 template <typename FloatType>
 FloatImpl<FloatType>& FloatImpl<FloatType>::nan() 
 {
-  static FloatImpl<FloatType> lValue(FloatCommons::NOT_A_NUM, 0);
+  static FloatImpl<FloatType> lValue(::sqrt(-1.0f));
   return lValue;
 }
 
@@ -400,7 +127,7 @@ FloatImpl<FloatType>& FloatImpl<FloatType>::nan()
 template <typename FloatType>
 FloatImpl<FloatType>& FloatImpl<FloatType>::inf_pos() 
 {
-  static FloatImpl<FloatType> lValue(FloatCommons::INF_POS, 0);
+  static FloatImpl<FloatType> lValue(std::numeric_limits<FloatType>::infinity());
   return lValue;
 }
 
@@ -408,32 +135,13 @@ FloatImpl<FloatType>& FloatImpl<FloatType>::inf_pos()
 template <typename FloatType>
 FloatImpl<FloatType>& FloatImpl<FloatType>::inf_neg() 
 {
-  static FloatImpl<FloatType> lValue(FloatCommons::INF_NEG, 0);
+  static FloatImpl<FloatType> lValue(-std::numeric_limits<FloatType>::infinity());
   return lValue;
 }
 
 
 template <typename FloatType>
-void FloatImpl<FloatType>::checkInfZeroPrecision(FloatImpl& aFloatImpl) 
-{
-  if (aFloatImpl.theType == FloatCommons::NORMAL || aFloatImpl.theType == FloatCommons::NORMAL_NEG) {
-    FloatImplTraits<FloatType>::cutMantissa(aFloatImpl.theFloatImpl);
-    if (FloatImplTraits<FloatType>::isPosInf(aFloatImpl.theFloatImpl)) {
-      aFloatImpl.theType = FloatCommons::INF_POS;
-      aFloatImpl.theFloatImpl = 0;
-    } else if (FloatImplTraits<FloatType>::isNegInf(aFloatImpl.theFloatImpl)) {
-      aFloatImpl.theType = FloatCommons::INF_NEG;
-      aFloatImpl.theFloatImpl = 0;
-    } else if (FloatImplTraits<FloatType>::isZero(aFloatImpl.theFloatImpl)) {
-      aFloatImpl.theType = FloatCommons::NORMAL;
-      aFloatImpl.theFloatImpl = 0;
-    }
-  }
-}
-
-
-template <typename FloatType>
-FloatCommons::NumType FloatImpl<FloatType>::checkInfNaNNeg(const char* aCharStar) 
+bool FloatImpl<FloatType>::parseInfNaNString(const char* aCharStar, FloatImpl& aFloatImpl) 
 {
 #if defined (ZORBA_HAVE_STRCASECMP_FUNCTION) && (! defined (WIN32) )
     if (strcasecmp(aCharStar, "inf") == 0 || strcasecmp(aCharStar, "+inf") == 0 )
@@ -441,7 +149,9 @@ FloatCommons::NumType FloatImpl<FloatType>::checkInfNaNNeg(const char* aCharStar
     if (_stricmp(aCharStar, "inf") == 0 || _stricmp(aCharStar, "+inf") == 0 )
 #endif
     {
-      return FloatCommons::INF_POS;
+      
+      aFloatImpl.theFloating = FloatImpl<FloatType>::inf_pos().theFloating;
+      return true;
     }
 #if defined (ZORBA_HAVE_STRCASECMP_FUNCTION) && (! defined (WIN32) )
     else if (strcasecmp(aCharStar, "-inf") == 0 )
@@ -449,7 +159,8 @@ FloatCommons::NumType FloatImpl<FloatType>::checkInfNaNNeg(const char* aCharStar
     else if (_stricmp(aCharStar, "-inf") == 0 )
 #endif
     {
-      return FloatCommons::INF_NEG;
+      aFloatImpl.theFloating = FloatImpl<FloatType>::inf_neg().theFloating;
+      return true;
     }
 #if defined (ZORBA_HAVE_STRCASECMP_FUNCTION) && (! defined (WIN32) )
     else if (strcasecmp(aCharStar, "nan") == 0 )
@@ -457,79 +168,15 @@ FloatCommons::NumType FloatImpl<FloatType>::checkInfNaNNeg(const char* aCharStar
     else if (_stricmp(aCharStar, "nan") == 0 )
 #endif
     {
-      return FloatCommons::NOT_A_NUM;
+      aFloatImpl.theFloating = FloatImpl<FloatType>::nan().theFloating;
+      return true;
     }
-    else if (aCharStar[0] == '-') 
-    {
-      return FloatCommons::NORMAL_NEG;
-    }  
     else
     {
-      return FloatCommons::NORMAL;
+      return false;
     }
 }
 
-
-template <typename FloatType>
-FloatCommons::NumType FloatImpl<FloatType>::checkInfNaNNeg(FloatType aFloat) 
-{
-#ifndef ZORBA_NO_BIGNUMBERS
-  if (aFloat != aFloat) {
-    return FloatCommons::NOT_A_NUM;
-  } else if (aFloat == std::numeric_limits<FloatType>::infinity()) {
-    return FloatCommons::INF_POS;
-  } else if (aFloat == -std::numeric_limits<FloatType>::infinity()) {
-    return FloatCommons::INF_NEG;
-  } else if (aFloat < 0) {
-    return FloatCommons::NORMAL_NEG;
-  } else {
-    return FloatCommons::NORMAL;
-  }
-#else
-#if !defined WIN32 && !defined WIN_CE
-  if(finite(aFloat))
-  {
-    if(isNegZero(aFloat))
-      return FloatCommons::NORMAL_NEG;
-    if(aFloat >= 0)
-      return FloatCommons::NORMAL;
-    else
-      return FloatCommons::NORMAL_NEG;
-  }
-
-  if(isnan(aFloat))
-    return FloatCommons::NOT_A_NUM;
-
-  if(aFloat > 0)
-    return FloatCommons::INF_POS;
-  else
-    return FloatCommons::INF_NEG;
-#else
-  int fclass;
-  fclass = _fpclass(aFloat);
-  switch(fclass)
-  {
-    case _FPCLASS_SNAN:// Signaling NaN
-    case _FPCLASS_QNAN:// Quiet NaN
-      return FloatCommons::NOT_A_NUM;
-    case _FPCLASS_NINF:// Negative infinity ( –INF)
-      return FloatCommons::INF_NEG;
-    case _FPCLASS_NN:// Negative normalized non-zero
-    case _FPCLASS_ND:// Negative denormalized
-    case _FPCLASS_NZ:// Negative zero ( – 0)
-      return FloatCommons::NORMAL_NEG;
-    case _FPCLASS_PZ:// Positive 0 (+0)
-    case _FPCLASS_PD:// Positive denormalized
-    case _FPCLASS_PN:// Positive normalized non-zero
-      return FloatCommons::NORMAL;
-    case _FPCLASS_PINF:// Positive infinity (+INF)
-     return FloatCommons::INF_POS;
-    default:
-      return FloatCommons::NORMAL;
-  };
-#endif//WIN32
-#endif
-}
 
 #ifdef ZORBA_NUMERIC_OPTIMIZATION
 template<>  HashCharPtrObjPtrLimited<FloatImpl<float>>   FloatImpl<float>::parsed_floats;
@@ -544,8 +191,7 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
   if(parsed_floats.get(aCharStar, hashed_float))
   {
     //found in hash
-    aFloatImpl.theType = hashed_float->theType;
-    aFloatImpl.theFloatImpl = hashed_float->theFloatImpl;
+    aFloatImpl = *hashed_float;
     return true;
   }
 #endif
@@ -559,6 +205,8 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
   bool lStop = false;
   bool lIsNegative = false;
   bool lGotSpace = false;
+  int  signif_digits = 0;
+  int  trailing_zero = 0;
 
   char ch = *lCur;
 
@@ -638,6 +286,19 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
     case '8':
     case '9': 
     {
+      if(!lGotBase)
+      {
+        if(ch == '0')
+          trailing_zero++;
+        else
+        {
+          if(signif_digits)
+            signif_digits = signif_digits + 1 + trailing_zero;
+          else
+            signif_digits++;
+          trailing_zero = 0;
+        }
+      }
       lGotDigit = true;
       break;
     }
@@ -681,44 +342,43 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
     lCur++;
   }
 
-  FloatCommons::NumType lType;
-  //MAPM lNumber(0);
-
   if(!lGotDigit || lStop) 
   {
-    switch(lType = checkInfNaNNeg(aCharStar)) 
-    {
-    case FloatCommons::INF_NEG:
-    case FloatCommons::NOT_A_NUM:
-    case FloatCommons::INF_POS:
-      break;
-    default:
+    if (!parseInfNaNString(aCharStar, aFloatImpl)) 
       return false;
-      break;
-    }
   }
   else 
   {
-#ifndef ZORBA_NO_BIGNUMBERS
-     aFloatImpl.theFloatImpl = aCharStar;
-#else
-     aFloatImpl.theFloatImpl = atof(aCharStar);
-#endif
-    lType = (lIsNegative ? FloatCommons::NORMAL_NEG : FloatCommons::NORMAL);
+    std::stringstream lStream;
+    lStream << aCharStar;
+    lStream >> aFloatImpl.theFloating;
+    if (lStream.fail()) {
+      // aCharStar is a number because of the check about => failing parsing means overflow
+      if (lIsNegative) {
+        aFloatImpl.theFloating = -std::numeric_limits<FloatType>::infinity();
+      }
+      else {
+        aFloatImpl.theFloating = std::numeric_limits<FloatType>::infinity();
+      }
+    }
+    else if (!lStream.eof()) {
+      // someting is broken because aStarChar must be a number
+       assert(false);
+      return false;
+    }
 
     if (lGotSpace)
       delete [] aCharStar;
   }
 
-  aFloatImpl.theType = lType;
-  //aFloatImpl.theFloatImpl = lNumber;
+  if(signif_digits < max_precision())
+    aFloatImpl.precision = signif_digits;
 
-  checkInfZeroPrecision(aFloatImpl);
 
 #ifdef ZORBA_NUMERIC_OPTIMIZATION
-  //FloatImpl *hashed_float;
   hashed_float = new FloatImpl<FloatType>(aFloatImpl);
-  parsed_floats.insert(aCharStar, hashed_float);
+  const char  *dup_str = _strdup(aCharStar);
+  parsed_floats.insert(dup_str, hashed_float);
 #endif
   return true;
 }
@@ -726,34 +386,19 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
 
 template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::parseFloatType(FloatType aFloatImpl){
-  FloatImpl<FloatType> lFloating;
-  switch(lFloating.theType = checkInfNaNNeg(aFloatImpl)) {
-    case FloatCommons::INF_NEG:
-    case FloatCommons::NOT_A_NUM:
-    case FloatCommons::INF_POS:
-      lFloating.theFloatImpl = 0;
-      break;
-    case FloatCommons::NORMAL_NEG:
-    case FloatCommons::NORMAL:
-      lFloating.theFloatImpl = aFloatImpl;
-      break;
-  }
+  FloatImpl<FloatType> lFloating(aFloatImpl);
   return lFloating;
 }
 
 template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::parseInt(int32_t aInt) {
-  FloatImpl<FloatType> lFloating;
-  lFloating.theType = ( aInt < 0 ? FloatCommons::NORMAL_NEG : FloatCommons::NORMAL );
-  lFloating.theFloatImpl = aInt;
+  FloatImpl<FloatType> lFloating((FloatType)aInt);
   return lFloating;
 }
 
 template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::parseLong(long aLong) {
-  FloatImpl<FloatType> lFloating;
-  lFloating.theType = ( aLong < 0 ? FloatCommons::NORMAL_NEG : FloatCommons::NORMAL );
-  lFloating.theFloatImpl = aLong;
+  FloatImpl<FloatType> lFloating((FloatType)aLong);
   return lFloating;
 }
 
@@ -761,10 +406,8 @@ template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::parseDecimal(const Decimal& aDecimal)
 {
   FloatImpl<FloatType> lFloat;
-  lFloat.theFloatImpl = aDecimal.theDecimal; 
-  lFloat.theType 
-    = ( lFloat.theFloatImpl >= 0 ? FloatCommons::NORMAL : FloatCommons::NORMAL_NEG);
-  checkInfZeroPrecision(lFloat);
+  xqpString   decimal_string = aDecimal.toString();
+  parseString(decimal_string.c_str(), lFloat);
   return lFloat;
 }
 
@@ -772,368 +415,45 @@ template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::parseInteger(const Integer& aInteger)
 {
   FloatImpl<FloatType> lFloat;
-  lFloat.theFloatImpl = aInteger.theInteger; 
-  lFloat.theType 
-    = ( lFloat.theFloatImpl >= 0 ? FloatCommons::NORMAL : FloatCommons::NORMAL_NEG);
-  checkInfZeroPrecision(lFloat);
+  xqpString   integer_string = aInteger.toString();
+  parseString(integer_string.c_str(), lFloat);
   return lFloat;
 }
 
 template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::operator+(const FloatImpl& aFloatImpl) const{
-  FloatImpl lFloatImpl;
-  switch(theType) {
-  case FloatCommons::NOT_A_NUM:
-    lFloatImpl.theType = FloatCommons::NOT_A_NUM;    
-    break;
-  case FloatCommons::INF_NEG:
-    switch(aFloatImpl.theType) {
-    case FloatCommons::NOT_A_NUM:
-    case FloatCommons::INF_POS:
-      lFloatImpl.theType = FloatCommons::NOT_A_NUM;    
-      break;
-    case FloatCommons::INF_NEG:
-    case FloatCommons::NORMAL:
-    case FloatCommons::NORMAL_NEG:
-      lFloatImpl.theType = FloatCommons::INF_NEG;
-      break;
-    }
-    break;
-  case FloatCommons::INF_POS:
-    switch(aFloatImpl.theType) {
-    case FloatCommons::NOT_A_NUM:
-    case FloatCommons::INF_NEG:
-      lFloatImpl.theType = FloatCommons::NOT_A_NUM;    
-      break;
-    case FloatCommons::INF_POS:
-    case FloatCommons::NORMAL:
-    case FloatCommons::NORMAL_NEG:
-      lFloatImpl.theType = FloatCommons::INF_POS;
-      break;
-    }
-    break;
-  case FloatCommons::NORMAL:
-  case FloatCommons::NORMAL_NEG:
-    switch(aFloatImpl.theType) {
-    case FloatCommons::NOT_A_NUM:
-      lFloatImpl.theType = FloatCommons::NOT_A_NUM;    
-      break;
-    case FloatCommons::INF_NEG:
-      lFloatImpl.theType = FloatCommons::INF_NEG;
-      break;
-    case FloatCommons::INF_POS:
-      lFloatImpl.theType = FloatCommons::INF_POS;
-      break;
-    case FloatCommons::NORMAL:
-    case FloatCommons::NORMAL_NEG:
-      if (IS_ZERO(theFloatImpl) && IS_ZERO(aFloatImpl.theFloatImpl)) {
-        lFloatImpl.theFloatImpl = 0;
-        if (theType == aFloatImpl.theType) {
-          lFloatImpl.theType = theType;
-        } else {
-          lFloatImpl.theType = FloatCommons::NORMAL;
-        }
-      } else {
-        lFloatImpl.theFloatImpl = theFloatImpl + aFloatImpl.theFloatImpl;
-        if (IS_NEGATIVE(lFloatImpl.theFloatImpl)) {
-          lFloatImpl.theType = FloatCommons::NORMAL_NEG;
-        } else {
-          lFloatImpl.theType = FloatCommons::NORMAL;
-        }
-        checkInfZeroPrecision(lFloatImpl);
-      }
-      break;
-    }
-    break;
-  }
+  FloatImpl lFloatImpl(theFloating + aFloatImpl.theFloating);
   return lFloatImpl;
 }
 
 template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::operator-(const FloatImpl& aFloatImpl) const{
-  FloatImpl lFloatImpl;
-  switch(theType) {
-  case FloatCommons::NOT_A_NUM:
-    lFloatImpl.theType = FloatCommons::NOT_A_NUM;    
-    break;
-  case FloatCommons::INF_NEG:
-    switch(aFloatImpl.theType) {
-    case FloatCommons::NOT_A_NUM:
-    case FloatCommons::INF_NEG:
-      lFloatImpl.theType = FloatCommons::NOT_A_NUM;    
-      break;
-    case FloatCommons::INF_POS:
-    case FloatCommons::NORMAL:
-    case FloatCommons::NORMAL_NEG:
-      lFloatImpl.theType = FloatCommons::INF_NEG;
-      break;
-    }
-    break;
-  case FloatCommons::INF_POS:
-    switch(aFloatImpl.theType) {
-    case FloatCommons::NOT_A_NUM:
-    case FloatCommons::INF_POS:
-      lFloatImpl.theType = FloatCommons::NOT_A_NUM;    
-      break;
-    case FloatCommons::INF_NEG:
-    case FloatCommons::NORMAL:
-    case FloatCommons::NORMAL_NEG:
-      lFloatImpl.theType = FloatCommons::INF_POS;
-      break;
-    }
-    break;
-  case FloatCommons::NORMAL:
-  case FloatCommons::NORMAL_NEG:
-    switch(aFloatImpl.theType) {
-    case FloatCommons::NOT_A_NUM:
-      lFloatImpl.theType = FloatCommons::NOT_A_NUM;    
-      break;
-    case FloatCommons::INF_NEG:
-      lFloatImpl.theType = FloatCommons::INF_NEG;
-      break;
-    case FloatCommons::INF_POS:
-      lFloatImpl.theType = FloatCommons::INF_POS;
-      break;
-    case FloatCommons::NORMAL:
-    case FloatCommons::NORMAL_NEG:
-      if (IS_ZERO(theFloatImpl) && IS_ZERO(aFloatImpl.theFloatImpl)) {
-        lFloatImpl.theFloatImpl = 0;
-        if (theType == FloatCommons::NORMAL_NEG && aFloatImpl.theType == FloatCommons::NORMAL) {
-          lFloatImpl.theType = FloatCommons::NORMAL_NEG;
-        } else {
-          lFloatImpl.theType = FloatCommons::NORMAL;
-        }
-      } else {
-        lFloatImpl.theFloatImpl = theFloatImpl - aFloatImpl.theFloatImpl;
-        if (IS_NEGATIVE(lFloatImpl.theFloatImpl)) {
-          lFloatImpl.theType = FloatCommons::NORMAL_NEG;
-        } else {
-          lFloatImpl.theType = FloatCommons::NORMAL;
-        }
-        checkInfZeroPrecision(lFloatImpl);
-      }
-      break;
-    }
-    break;
-  }
+  FloatImpl lFloatImpl(theFloating - aFloatImpl.theFloating);
   return lFloatImpl;
 }
 
 template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::operator*(const FloatImpl& aFloatImpl) const{
-
-  FloatImpl lFloatImpl;
-  switch(theType) {
-  case FloatCommons::NOT_A_NUM:
-    lFloatImpl.theType = FloatCommons::NOT_A_NUM;    
-    break;
-  case FloatCommons::INF_NEG:
-    switch(aFloatImpl.theType) {
-    case FloatCommons::NOT_A_NUM:
-      lFloatImpl.theType = FloatCommons::NOT_A_NUM;    
-      break;
-    case FloatCommons::INF_NEG:
-    case FloatCommons::NORMAL_NEG:
-      lFloatImpl.theType = FloatCommons::INF_POS;
-      break;
-    case FloatCommons::INF_POS:
-    case FloatCommons::NORMAL:
-      lFloatImpl.theType = FloatCommons::INF_NEG;
-      break;
-    }
-    break;
-  case FloatCommons::INF_POS:
-    switch(aFloatImpl.theType) {
-    case FloatCommons::NOT_A_NUM:
-      lFloatImpl.theType = FloatCommons::NOT_A_NUM;    
-      break;
-    case FloatCommons::INF_POS:
-    case FloatCommons::NORMAL:
-      lFloatImpl.theType = FloatCommons::INF_POS;
-      break;
-    case FloatCommons::NORMAL_NEG:
-    case FloatCommons::INF_NEG:
-      lFloatImpl.theType = FloatCommons::INF_NEG;
-      break;
-    }
-    break;
-  case FloatCommons::NORMAL:
-  case FloatCommons::NORMAL_NEG:
-    switch(aFloatImpl.theType) {
-    case FloatCommons::NOT_A_NUM:
-      lFloatImpl.theType = FloatCommons::NOT_A_NUM;    
-      break;
-    case FloatCommons::INF_NEG:
-      lFloatImpl.theType = (isPos() ? FloatCommons::INF_NEG : FloatCommons::INF_POS);
-      break;
-    case FloatCommons::INF_POS:
-      lFloatImpl.theType = (isNeg() ? FloatCommons::INF_POS : FloatCommons::INF_NEG);
-      break;
-    case FloatCommons::NORMAL:
-    case FloatCommons::NORMAL_NEG:
-      if (IS_ZERO(theFloatImpl) || IS_ZERO(aFloatImpl.theFloatImpl)) {
-        lFloatImpl.theFloatImpl = 0;
-        if (theType == FloatCommons::NORMAL_NEG || aFloatImpl.theType == FloatCommons::NORMAL_NEG) {
-          lFloatImpl.theType = FloatCommons::NORMAL_NEG;
-        } else {
-          lFloatImpl.theType = FloatCommons::NORMAL;
-        }
-      } else {
-        lFloatImpl.theFloatImpl = theFloatImpl * aFloatImpl.theFloatImpl;
-        if (IS_NEGATIVE(lFloatImpl.theFloatImpl)) {
-          lFloatImpl.theType = FloatCommons::NORMAL_NEG;
-        } else {
-          lFloatImpl.theType = FloatCommons::NORMAL;
-        }
-        checkInfZeroPrecision(lFloatImpl);
-      }
-      break;
-    }
-    break;
-  }
+  FloatImpl lFloatImpl(theFloating * aFloatImpl.theFloating);
   return lFloatImpl;
 }
 
 template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::operator/(const FloatImpl& aFloatImpl) const{
-  FloatImpl lFloatImpl;
-  switch(theType) {
-  case FloatCommons::NOT_A_NUM:
-    lFloatImpl.theType = FloatCommons::NOT_A_NUM;    
-    break;
-  case FloatCommons::INF_NEG:
-    switch(aFloatImpl.theType) {
-    case FloatCommons::NOT_A_NUM:
-    case FloatCommons::INF_POS:
-    case FloatCommons::INF_NEG:
-      lFloatImpl.theType = FloatCommons::NOT_A_NUM;    
-      break;
-    case FloatCommons::NORMAL:
-      lFloatImpl.theType = FloatCommons::INF_NEG;
-      break;
-    case FloatCommons::NORMAL_NEG:
-      lFloatImpl.theType = FloatCommons::INF_POS;
-      break;
-    }
-    break;
-  case FloatCommons::INF_POS:
-    switch(aFloatImpl.theType) {
-    case FloatCommons::NOT_A_NUM:
-    case FloatCommons::INF_POS:
-    case FloatCommons::INF_NEG:
-      lFloatImpl.theType = FloatCommons::NOT_A_NUM;    
-      break;
-    case FloatCommons::NORMAL:
-      lFloatImpl.theType = FloatCommons::INF_POS;
-      break;
-    case FloatCommons::NORMAL_NEG:
-      lFloatImpl.theType = FloatCommons::INF_NEG;
-      break;
-    }
-    break;
-  case FloatCommons::NORMAL:
-  case FloatCommons::NORMAL_NEG:
-    switch(aFloatImpl.theType) {
-    case FloatCommons::NOT_A_NUM:
-      lFloatImpl.theType = FloatCommons::NOT_A_NUM;    
-      break;
-    case FloatCommons::INF_NEG:
-      lFloatImpl.theFloatImpl = 0;
-      lFloatImpl.theType = (isPos() ? FloatCommons::NORMAL_NEG : FloatCommons::NORMAL);
-      break;
-    case FloatCommons::INF_POS:
-      lFloatImpl.theFloatImpl = 0;
-      lFloatImpl.theType = (isNeg() ? FloatCommons::NORMAL_NEG : FloatCommons::NORMAL);
-      break;
-    case FloatCommons::NORMAL:
-    case FloatCommons::NORMAL_NEG:
-      if (aFloatImpl.isZero()) {
-        if (isZero()) {
-          lFloatImpl.theType = FloatCommons::NOT_A_NUM;
-        } else if ((isPos() && aFloatImpl.isNeg()) || (isNeg() && aFloatImpl.isPos())) {
-          lFloatImpl.theType = FloatCommons::INF_NEG;
-        } else {
-          lFloatImpl.theType = FloatCommons::INF_POS;
-        }
-      } else if (isZero()) {
-        lFloatImpl.theFloatImpl = 0;
-        if ((isPos() && aFloatImpl.isNeg()) || (isNeg() && aFloatImpl.isPos())) {
-          lFloatImpl.theType = FloatCommons::NORMAL_NEG;
-        } else {
-          lFloatImpl.theType = FloatCommons::NORMAL;
-        }
-      } else {
-        lFloatImpl.theFloatImpl = theFloatImpl / aFloatImpl.theFloatImpl;
-        if (IS_NEGATIVE(lFloatImpl.theFloatImpl)) {
-          lFloatImpl.theType = FloatCommons::NORMAL_NEG;
-        } else {
-          lFloatImpl.theType = FloatCommons::NORMAL;
-        }
-        checkInfZeroPrecision(lFloatImpl);
-      }
-      break;
-    }
-    break;
-  }
+  FloatImpl lFloatImpl(theFloating / aFloatImpl.theFloating);
   return lFloatImpl;
-}
+ }
 
 template <typename FloatType>
-FloatImpl<FloatType> FloatImpl<FloatType>::operator%(const FloatImpl& aFloatImpl) const
-{
-  FloatImpl lFloatImpl;
-  if (isNaN() || aFloatImpl.isNaN() || !isFinite() || aFloatImpl.isZero()) 
-  {
-    lFloatImpl.theType = FloatCommons::NOT_A_NUM;
-  }
-  else if (!aFloatImpl.isFinite() || isZero()) 
-  {
-    lFloatImpl = *this;
-  }
-  else 
-  {
-#ifndef ZORBA_NO_BIGNUMBERS
-    MAPM lRes = theFloatImpl % aFloatImpl.theFloatImpl;
-#else
-    MAPM lRes = fmod(theFloatImpl, aFloatImpl.theFloatImpl);
-#endif
-    if ( IS_ZERO(lRes) && isNeg()) {
-      lFloatImpl.theType = FloatCommons::NORMAL_NEG;
-      lFloatImpl.theFloatImpl = 0;
-    } else {
-      lFloatImpl.theFloatImpl = lRes;
-      if (IS_NEGATIVE(lRes)) {
-        lFloatImpl.theType = FloatCommons::NORMAL_NEG;
-      } else {
-        lFloatImpl.theType = FloatCommons::NORMAL;
-      }
-    }
-  }
+FloatImpl<FloatType> FloatImpl<FloatType>::operator%(const FloatImpl& aFloatImpl) const{
+  FloatImpl lFloatImpl(fmod(theFloating, aFloatImpl.theFloating));
   return lFloatImpl;
 }
 
 template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::operator-() const{
-  FloatImpl lFloatImpl;
-  switch(theType) {
-  case FloatCommons::NORMAL:
-    lFloatImpl.theType = FloatCommons::NORMAL_NEG;
-    lFloatImpl.theFloatImpl = -theFloatImpl;
-    break;
-  case FloatCommons::NORMAL_NEG:
-    lFloatImpl.theType = FloatCommons::NORMAL;
-    lFloatImpl.theFloatImpl = -theFloatImpl;
-    break;
-  case FloatCommons::NOT_A_NUM:
-    lFloatImpl.theType = FloatCommons::NOT_A_NUM;
-    break;
-  case FloatCommons::INF_POS:
-    lFloatImpl.theType = FloatCommons::INF_NEG;
-    break;
-  case FloatCommons::INF_NEG:
-    lFloatImpl.theType = FloatCommons::INF_POS;
-    break;
-  }
+  FloatImpl lFloatImpl(-theFloating);
+  lFloatImpl.precision = precision;
   return lFloatImpl;
 }
 
@@ -1141,22 +461,7 @@ FloatImpl<FloatType> FloatImpl<FloatType>::operator-() const{
 template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::floor() const 
 { 
-  FloatImpl lFloatImpl;
-
-  switch(theType) {
-  case FloatCommons::NORMAL_NEG:
-  case FloatCommons::NORMAL:
-#ifndef ZORBA_NO_BIGNUMBERS
-    lFloatImpl.theFloatImpl = theFloatImpl.floor();
-#else
-    lFloatImpl.theFloatImpl = ::floor(theFloatImpl);
-#endif
-  case FloatCommons::NOT_A_NUM:
-  case FloatCommons::INF_POS:
-  case FloatCommons::INF_NEG:
-    lFloatImpl.theType = theType;
-    break;
-  }
+  FloatImpl lFloatImpl(::floor(theFloating));
   return lFloatImpl;
 }
 
@@ -1164,23 +469,7 @@ FloatImpl<FloatType> FloatImpl<FloatType>::floor() const
 template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::ceil() const 
 { 
-  FloatImpl lFloatImpl;
-
-  switch(theType) 
-  {
-  case FloatCommons::NORMAL_NEG:
-  case FloatCommons::NORMAL:
-#ifndef ZORBA_NO_BIGNUMBERS
-    lFloatImpl.theFloatImpl = theFloatImpl.ceil();
-#else
-    lFloatImpl.theFloatImpl = ::ceil(theFloatImpl);
-#endif
-  case FloatCommons::NOT_A_NUM:
-  case FloatCommons::INF_POS:
-  case FloatCommons::INF_NEG:
-    lFloatImpl.theType = theType;
-    break;
-  }
+  FloatImpl lFloatImpl(::ceil(theFloating));
   return lFloatImpl;
 }
 
@@ -1192,20 +481,18 @@ FloatImpl<FloatType> FloatImpl<FloatType>::round() const{
 template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::round(Integer aPrecision) const{
   FloatImpl lFloatImpl;
-  switch(theType) {
-  case FloatCommons::NORMAL_NEG:
-  case FloatCommons::NORMAL:
-  {
-    lFloatImpl.theType = theType;
-    lFloatImpl.theFloatImpl = Decimal::round(theFloatImpl, aPrecision.theInteger);
-    checkInfZeroPrecision(lFloatImpl);
+  if (isFinite()) {
+#ifndef ZORBA_NO_BIGNUMBERS
+    MAPM mapmval = Decimal::round(theFloating, aPrecision.theInteger);
+    char  strval[200];
+    mapmval.toString(strval, ZORBA_FLOAT_POINT_PRECISION);
+    parseString(strval, lFloatImpl);
+#else
+    lFloatImpl.theFloating = Decimal::round(theFloating, aPrecision.theInteger);
+#endif
   }
-    break;
-  case FloatCommons::NOT_A_NUM:
-  case FloatCommons::INF_POS:
-  case FloatCommons::INF_NEG:
-    lFloatImpl.theType = theType;
-    break;
+  else {
+    lFloatImpl.theFloating = theFloating;
   }
   return lFloatImpl;
 }
@@ -1213,71 +500,116 @@ FloatImpl<FloatType> FloatImpl<FloatType>::round(Integer aPrecision) const{
 template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::roundHalfToEven(Integer aPrecision) const{
   FloatImpl lFloatImpl;
-  switch(theType) {
-  case FloatCommons::NORMAL_NEG:
-  case FloatCommons::NORMAL:
-  {
-    lFloatImpl.theType = theType;
-    lFloatImpl.theFloatImpl = Decimal::roundHalfToEven(theFloatImpl, aPrecision.theInteger);
-    checkInfZeroPrecision(lFloatImpl);
+  if (isFinite()) {
+#ifndef ZORBA_NO_BIGNUMBERS
+    MAPM mapmval = Decimal::roundHalfToEven(theFloating, aPrecision.theInteger);
+    char  strval[200];
+    mapmval.toString(strval, ZORBA_FLOAT_POINT_PRECISION);
+    parseString(strval, lFloatImpl);
+#else
+    lFloatImpl.theFloating = Decimal::roundHalfToEven(theFloating, aPrecision.theInteger);
+#endif
   }
-    break;
-  case FloatCommons::NOT_A_NUM:
-  case FloatCommons::INF_POS:
-  case FloatCommons::INF_NEG:
-    lFloatImpl.theType = theType;
-    break;
+  else {
+    lFloatImpl.theFloating = theFloating;
   }
   return lFloatImpl;
 }
 
 template <typename FloatType>
-bool FloatImpl<FloatType>::operator==(const FloatImpl& aFloatImpl) const{
-  switch(theType) {
-  case FloatCommons::NOT_A_NUM:
-    return false;
-  case FloatCommons::INF_POS:
-    switch(aFloatImpl.theType) {
-    case FloatCommons::NOT_A_NUM:
-    case FloatCommons::INF_NEG:
-    case FloatCommons::NORMAL_NEG:
-    case FloatCommons::NORMAL:
-      return false;
-    case FloatCommons::INF_POS:
+bool FloatImpl<FloatType>::isNaN() const
+{
+  return theFloating != theFloating;
+}
+
+template <typename FloatType>
+bool FloatImpl<FloatType>::isFinite() const
+{
+  return !isNaN() && !isPosInf() && !isNegInf();
+}
+
+
+template <typename FloatType>
+bool FloatImpl<FloatType>::isPosInf() const
+{
+  return theFloating == std::numeric_limits<FloatType>::infinity();
+}
+
+template <typename FloatType>
+bool FloatImpl<FloatType>::isNegInf() const
+{
+ if (theFloating == -std::numeric_limits<FloatType>::infinity())
+   return true;
+ else
+   return false;
+
+}
+
+template <typename FloatType>
+bool FloatImpl<FloatType>::isNeg() const
+{
+  return theFloating < 0;
+}
+
+template <typename FloatType>
+bool FloatImpl<FloatType>::isPos() const
+{
+  return theFloating > 0;
+}
+
+template <typename FloatType>
+bool FloatImpl<FloatType>::isZero() const
+{
+  return theFloating == 0;
+}
+
+template <typename FloatType>
+bool FloatImpl<FloatType>::isPosZero() const
+{
+  return theFloating == 0 && !isNegZero();
+}
+
+template <>
+bool FloatImpl<double>::isNegZero() const
+{
+  if(theFloating == 0) 
+  {
+    unsigned char *byteaccess = (unsigned char *)&theFloating;
+    if(byteaccess[0] || byteaccess[7])//test for little endian and big endian
       return true;
-    }
-  case FloatCommons::INF_NEG:
-    switch(aFloatImpl.theType) {
-    case FloatCommons::NOT_A_NUM:
-    case FloatCommons::INF_POS:
-    case FloatCommons::NORMAL_NEG:
-    case FloatCommons::NORMAL:
+    else
       return false;
-    case FloatCommons::INF_NEG:
-      return true;
-    }
-  case FloatCommons::NORMAL_NEG:
-    switch(aFloatImpl.theType) {
-    case FloatCommons::NOT_A_NUM:
-    case FloatCommons::INF_POS:
-    case FloatCommons::INF_NEG:
-      return false;
-    case FloatCommons::NORMAL_NEG:
-    case FloatCommons::NORMAL:
-      return theFloatImpl == aFloatImpl.theFloatImpl;
-    }
-  case FloatCommons::NORMAL:
-    switch(aFloatImpl.theType) {
-    case FloatCommons::NOT_A_NUM:
-    case FloatCommons::INF_POS:
-    case FloatCommons::INF_NEG:
-      return false;
-    case FloatCommons::NORMAL_NEG:
-    case FloatCommons::NORMAL:
-      return theFloatImpl == aFloatImpl.theFloatImpl;
-    }
   }
-  return false;
+  else
+    return false;
+}
+
+template <>
+bool FloatImpl<float>::isNegZero() const
+{
+  if(theFloating == 0)
+  {
+    unsigned char *byteaccess = (unsigned char *)&theFloating;
+    if(byteaccess[0] || byteaccess[3])//test for little endian and big endian
+      return true;
+    else
+      return false;
+}
+  else
+    return false;
+}
+
+template <typename FloatType>
+uint32_t FloatImpl<FloatType>::hash() const
+{
+  return ((uint32_t)theFloating) % 65535;
+}
+
+
+
+template <typename FloatType>
+bool FloatImpl<FloatType>::operator==(const FloatImpl& aFloatImpl) const{
+  return theFloating == aFloatImpl.theFloating;
 }
 
 
@@ -1286,26 +618,13 @@ FloatImpl<FloatType> FloatImpl<FloatType>::sqrt() const
 {
   if (*this < zero())
     return nan();
-#ifndef ZORBA_NO_BIGNUMBERS
-  return FloatImpl (getType (), theFloatImpl.sqrt());
-#else
-  return FloatImpl (getType (), ::sqrt(theFloatImpl));
-#endif
+  return FloatImpl (::sqrt(theFloating));
 }
 
-
-#ifndef ZORBA_NO_BIGNUMBERS
 #define PASSTHRU( fn )                                    \
   template <typename FloatType>                           \
   FloatImpl<FloatType> FloatImpl<FloatType>::fn() const   \
-  { return FloatImpl (getType (), theFloatImpl.fn ()); }
-#else
-
-#define PASSTHRU( fn )                                    \
-  template <typename FloatType>                           \
-  FloatImpl<FloatType> FloatImpl<FloatType>::fn() const   \
-{ return FloatImpl (getType (), ::fn(theFloatImpl)); }
-#endif
+{ return FloatImpl (::fn(theFloating)); }
 
 
 template <typename FloatType>
@@ -1313,11 +632,7 @@ FloatImpl<FloatType> FloatImpl<FloatType>::log() const
 {
   if (*this < zero())
     return nan();
-#ifndef ZORBA_NO_BIGNUMBERS
-  return FloatImpl (getType (), theFloatImpl.log());
-#else
-  return FloatImpl (getType (), ::log(theFloatImpl));
-#endif
+  return FloatImpl (::log(theFloating));
 }
 
 template <typename FloatType>
@@ -1325,11 +640,7 @@ FloatImpl<FloatType> FloatImpl<FloatType>::log10() const
 {
   if (*this < zero())
     return nan();
-#ifndef ZORBA_NO_BIGNUMBERS
-  return FloatImpl (getType (), theFloatImpl.log10());
-#else
-  return FloatImpl (getType (), ::log10(theFloatImpl));
-#endif
+  return FloatImpl (::log10(theFloating));
 }
 
 template <typename FloatType>
@@ -1337,11 +648,7 @@ FloatImpl<FloatType> FloatImpl<FloatType>::asin() const
 {
   if (*this < one_neg() || *this > one())
     return nan();
-#ifndef ZORBA_NO_BIGNUMBERS
-  return FloatImpl (getType (), theFloatImpl.asin());
-#else
-  return FloatImpl (getType (), ::asin(theFloatImpl));
-#endif
+  return FloatImpl (::asin(theFloating));
 }
 
 template <typename FloatType>
@@ -1349,11 +656,7 @@ FloatImpl<FloatType> FloatImpl<FloatType>::acos() const
 {
   if (*this < one_neg() || *this > one())
     return nan();
-#ifndef ZORBA_NO_BIGNUMBERS
-  return FloatImpl (getType (), theFloatImpl.acos());
-#else
-  return FloatImpl (getType (), ::acos(theFloatImpl));
-#endif
+  return FloatImpl (::acos(theFloating));
 }
 
 PASSTHRU (exp)
@@ -1370,52 +673,12 @@ PASSTHRU (atanh)
 
 template <typename FloatType>
 bool FloatImpl<FloatType>::operator!=(const FloatImpl& aFloatImpl) const{
-  if(isNaN() || aFloatImpl.isNaN())
-    return false;
-  else
-    return !(*this == aFloatImpl);
+  return !(*this == aFloatImpl);
 }
 
 template <typename FloatType>
 bool FloatImpl<FloatType>::operator<(const FloatImpl& aFloatImpl) const{
-  switch(theType) {
-  case FloatCommons::NOT_A_NUM:
-  case FloatCommons::INF_POS:
-    return false;
-  case FloatCommons::INF_NEG:
-    switch(aFloatImpl.theType) {
-    case FloatCommons::NOT_A_NUM:
-    case FloatCommons::INF_NEG:
-      return false;
-    case FloatCommons::INF_POS:
-    case FloatCommons::NORMAL_NEG:
-    case FloatCommons::NORMAL:
-      return true;
-    }
-  case FloatCommons::NORMAL_NEG:
-    switch(aFloatImpl.theType) {
-    case FloatCommons::NOT_A_NUM:
-    case FloatCommons::INF_NEG:
-      return false;
-    case FloatCommons::INF_POS:
-      return true;
-    case FloatCommons::NORMAL:
-    case FloatCommons::NORMAL_NEG:
-      return theFloatImpl < aFloatImpl.theFloatImpl;
-    }
-  case FloatCommons::NORMAL:
-    switch(aFloatImpl.theType) {
-    case FloatCommons::NOT_A_NUM:
-    case FloatCommons::INF_NEG:
-      return false;
-    case FloatCommons::INF_POS:
-      return true;
-    case FloatCommons::NORMAL_NEG:
-    case FloatCommons::NORMAL:
-      return theFloatImpl < aFloatImpl.theFloatImpl;
-    }
-  }
-  return false;
+  return theFloating < aFloatImpl.theFloating;
 } 
 
 template <typename FloatType>
@@ -1428,44 +691,7 @@ bool FloatImpl<FloatType>::operator<=(const FloatImpl& aFloatImpl) const{
 
 template <typename FloatType>
 bool FloatImpl<FloatType>::operator>(const FloatImpl& aFloatImpl) const{
-  switch(theType) {
-  case FloatCommons::NOT_A_NUM:
-  case FloatCommons::INF_NEG:
-    return false;
-  case FloatCommons::INF_POS:
-    switch(aFloatImpl.theType) {
-    case FloatCommons::NOT_A_NUM:
-    case FloatCommons::INF_POS:
-      return false;
-    case FloatCommons::INF_NEG:
-    case FloatCommons::NORMAL_NEG:
-    case FloatCommons::NORMAL:
-      return true;
-    }
-  case FloatCommons::NORMAL_NEG:
-    switch(aFloatImpl.theType) {
-    case FloatCommons::NOT_A_NUM:
-    case FloatCommons::INF_POS:
-      return false;
-    case FloatCommons::INF_NEG:
-      return true;
-    case FloatCommons::NORMAL:
-    case FloatCommons::NORMAL_NEG:
-      return theFloatImpl > aFloatImpl.theFloatImpl;
-    }
-  case FloatCommons::NORMAL:
-    switch(aFloatImpl.theType) {
-    case FloatCommons::NOT_A_NUM:
-    case FloatCommons::INF_POS:
-      return false;
-    case FloatCommons::INF_NEG:
-      return true;
-    case FloatCommons::NORMAL:
-    case FloatCommons::NORMAL_NEG:
-      return theFloatImpl > aFloatImpl.theFloatImpl;
-    }
-  }
-  return false;
+  return theFloating > aFloatImpl.theFloating;
 }
 
 template <typename FloatType>
@@ -1478,124 +704,71 @@ bool FloatImpl<FloatType>::operator>=(const FloatImpl& aFloatImpl) const{
 
 template <typename FloatType>
 xqpString FloatImpl<FloatType>::toIntegerString() const {
-  switch(theType) {
-    case FloatCommons::NOT_A_NUM:
-      return FloatCommons::get_NOT_A_NUM_STR();
-    case FloatCommons::INF_POS:
-      return FloatCommons::get_INF_POS_STR();
-    case FloatCommons::INF_NEG:
-      return FloatCommons::get_INF_NEG_STR();
-    case FloatCommons::NORMAL_NEG:
-      if (IS_ZERO(theFloatImpl))
-        return "-0";
-    default: 
-      break;
+  if (isNaN()) {
+    return FloatCommons::get_NOT_A_NUM_STR();
+  }
+  else if (isPosInf()) {
+    return FloatCommons::get_INF_POS_STR();
+  }
+  else if (isNegInf()) {
+    return FloatCommons::get_INF_NEG_STR();
+  }
+  else if (isPosZero()) {
+    return "0";
+  }
+  else if (isNegZero()) {
+    return "-0";
   }
 
-#ifndef ZORBA_NO_BIGNUMBERS
-  char lBuffer[1024];
-  theFloatImpl.toIntegerString(lBuffer);
-#else
   char lBuffer[174];
-  sprintf(lBuffer, "%d", (int)theFloatImpl);
-#endif
+  sprintf(lBuffer, "%d", (int)theFloating);
   xqpString lResult = lBuffer;
   return lResult;
 }
 
-#ifndef ZORBA_NO_BIGNUMBERS
+template<>
+int FloatImpl<float>::max_precision() 
+{
+  return 7;
+}
+template<>
+int FloatImpl<double>::max_precision() 
+{
+  return 16;
+}
+
 template <typename FloatType>
 xqpString FloatImpl<FloatType>::toString(bool no_scientific_format) const {
-  switch(theType) {
-    case FloatCommons::NOT_A_NUM:
-      return FloatCommons::get_NOT_A_NUM_STR();
-    case FloatCommons::INF_POS:
-      return FloatCommons::get_INF_POS_STR();
-    case FloatCommons::INF_NEG:
-      return FloatCommons::get_INF_NEG_STR();
-    case FloatCommons::NORMAL_NEG:
-      if (IS_ZERO(theFloatImpl))
-        return "-0";
-    default: 
-      break;
+  if (isNaN()) {
+    return FloatCommons::get_NOT_A_NUM_STR();
+  }
+  else if (isPosInf()) {
+    return FloatCommons::get_INF_POS_STR();
+  }
+  else if (isNegInf()) {
+    return FloatCommons::get_INF_NEG_STR();
+  }
+  else if (isPosZero()) {
+    return "0";
+  }
+  else if (isNegZero()) {
+    return "-0";
   }
 
-  if(FloatImplTraits<FloatType>::isZero(theFloatImpl))
-  {
-    if(FloatImplTraits<FloatType>::isNegZero(theFloatImpl))
-      return "-0";
-    else
-      return "0";
-  }
-  MAPM absVal = theFloatImpl.abs();
-  MAPM lower("0.000001"), upper("1000000");
-  if (no_scientific_format || (absVal < upper && absVal >= lower) || IS_ZERO(absVal)) {
-    return Decimal::decimalToString(theFloatImpl);
-  } else {
-    char lBuffer[1024];
-    theFloatImpl.toString(lBuffer, ZORBA_FLOAT_POINT_PRECISION);
-    std::string lResult = lBuffer;
-    size_t lE = lResult.find('E');
-    if (lE < lResult.size()) {
-      bool lPosExp = lResult[lE+1] == '+';
-      size_t lZeros = lE;
-      while(lResult[lZeros-1] == '0') {
-        --lZeros; 
-      }
-      if(lResult[lZeros-1] == '.') {
-        ++lZeros;
-      }
-      if (lE != lZeros && lPosExp) {
-        lResult = lResult.substr(0, lZeros) + "E" + lResult.substr(lE+2);
-      } else if (lPosExp) {
-        lResult = lResult.substr(0, lE+1) + lResult.substr(lE+2);
-      } else {
-        lResult = lResult.substr(0, lZeros) + lResult.substr(lE);
-      }
-    }
-    return lResult;
-  }
-}
-
-#else //ZORBA_NO_BIGNUMBERS
-void write_to_string(char *strout, double value)
-{
-  sprintf(strout, "%#1.16E", (double)value);
-}
-void write_to_string(char *strout, float value)
-{
-  sprintf(strout, "%#1.7E", (double)value);
-}
-template <typename FloatType>
-xqpString FloatImpl<FloatType>::toString(bool no_scientific_format) const {
-  switch(theType) {
-    case FloatCommons::NOT_A_NUM:
-      return FloatCommons::get_NOT_A_NUM_STR();
-    case FloatCommons::INF_POS:
-      return FloatCommons::get_INF_POS_STR();
-    case FloatCommons::INF_NEG:
-      return FloatCommons::get_INF_NEG_STR();
-    case FloatCommons::NORMAL_NEG:
-      if (theFloatImpl == 0)
-        return "-0";
-    default: 
-      break;
-  }
-
-  if(FloatImplTraits<FloatType>::isZero(theFloatImpl))
-  {
-    if(FloatImplTraits<FloatType>::isNegZero(theFloatImpl))
-      return "-0";
-    else
-      return "0";
-  }
-  MAPM absVal = fabs(theFloatImpl);
-  MAPM lower = 0.000001, upper = 1000000;
+  FloatType absVal = fabs(theFloating);
+  FloatType lower = 0.000001f, upper = 1000000.0f;
   if (no_scientific_format || (absVal < upper && absVal >= lower) || absVal == 0) {
-    return Decimal::decimalToString(theFloatImpl);
+    MAPM  decimal_mapm = theFloating;
+#ifndef ZORBA_NO_BIGNUMBERS
+    decimal_mapm = decimal_mapm.round(precision);
+#endif
+    return Decimal::decimalToString(decimal_mapm, max_precision());
   } else {
     char lBuffer[174];
-    write_to_string(lBuffer, theFloatImpl);
+    char strformat[10];
+    sprintf(strformat, "%%#1.%dE", precision);
+    sprintf(lBuffer, strformat, (double)theFloating);
+    //write_to_string(lBuffer, theFloating);
 
     char  *lE = strchr(lBuffer, 'E');
     char  *lZeros;
@@ -1635,14 +808,6 @@ xqpString FloatImpl<FloatType>::toString(bool no_scientific_format) const {
   }
 }
 
-#endif//ZORBA_NO_BIGNUMBERS
-
-template <typename FloatType>
-uint32_t FloatImpl<FloatType>::hash() const
-{
-  return FloatImplTraits<FloatType>::hash(theType, theFloatImpl);
-}
-
 template class FloatImpl<double>;
 template class FloatImpl<float>;
 
@@ -1651,8 +816,8 @@ std::ostream& operator<<(std::ostream& os, const Double& aDouble) {
   return os;
 }
 
-std::ostream& operator<<(std::ostream& os, const Float& aDouble) {
-  os << aDouble.toString();
+std::ostream& operator<<(std::ostream& os, const Float& aFloat) {
+  os << aFloat.toString();
   return os;
 }
 

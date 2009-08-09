@@ -13,10 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <limits>
 #include "common/common.h"
 #include "zorbatypes/decimal.h"
 #include "zorbatypes/integer.h"
 #include "zorbatypes/numconversions.h"
+
+#ifndef ZORBA_NO_BIGNUMBERS
+#define IS_ZERO(mapm_obj)                 (mapm_obj.sign() == 0)
+#define IS_POSITIVE(mapm_obj)             (mapm_obj.sign() > 0)
+#define IS_POSITIVE_OR_ZERO(mapm_obj)     (mapm_obj.sign() >= 0)
+#define IS_NEGATIVE(mapm_obj)             (mapm_obj.sign() < 0)
+#else
+#define IS_ZERO(mapm_obj)                 (mapm_obj == 0)
+#define IS_POSITIVE(mapm_obj)             (mapm_obj > 0)
+#define IS_POSITIVE_OR_ZERO(mapm_obj)     (mapm_obj >= 0)
+#define IS_NEGATIVE(mapm_obj)             (mapm_obj < 0)
+#endif
 
 namespace zorba {
 SERIALIZABLE_CLASS_VERSIONS(Decimal)
@@ -159,22 +172,24 @@ bool Decimal::parseString(const char* aCharStar, Decimal& aDecimal)
 
 #ifdef ZORBA_NUMERIC_OPTIMIZATION
     hashed_decimal = new Decimal(aDecimal);
-    parsed_decimals.insert(aCharStar, hashed_decimal);
+    const char  *dup_str = _strdup(aCharStar);
+    parsed_decimals.insert(dup_str, hashed_decimal);
 #endif
     return true;
   }
 }
 
 bool Decimal::parseNativeDouble(double aDouble, Decimal& aDecimal) {
-  switch(Double::checkInfNaNNeg(aDouble)) {
-  case FloatCommons::NORMAL:
-  case FloatCommons::NORMAL_NEG:
+  if (
+       aDouble == aDouble
+    && aDouble != std::numeric_limits<double>::infinity()
+    && aDouble != -std::numeric_limits<double>::infinity()
+  ) {
     aDecimal.theDecimal = aDouble;
     return true;
-    break;
-  default:
+  }
+  else {
     return false;
-    break;
   }
 }
 
@@ -245,30 +260,34 @@ Decimal Decimal::parseULongLong(unsigned long long aULong) {
 
 bool Decimal::parseFloat(const Float& aFloat, Decimal& aDecimal)
 {
-  if (!aFloat.isFinite() || aFloat.isNaN()) {
-    return false;
-  } else {
-    aDecimal.theDecimal = aFloat.theFloatImpl;
+  if (aFloat.isFinite()) {
+    aDecimal.theDecimal = aFloat.theFloating;
     return true;
+  } 
+  else {
+    return false;
   }
 }
 
 bool Decimal::parseDouble(const Double& aDouble, Decimal& aDecimal)
 {
-  if (!aDouble.isFinite() || aDouble.isNaN()) {
-    return false;
-  } else {
-    aDecimal.theDecimal = aDouble.theFloatImpl;
+  if (aDouble.isFinite()) {
+    aDecimal.theDecimal = aDouble.theFloating;
     return true;
+  }
+  else {
+    return false;
   }
 }
 
 #ifndef ZORBA_NO_BIGNUMBERS
 
+MAPM    mapm_0_5 = 0.5;
+
 MAPM Decimal::round(const MAPM &aValue, const MAPM &aPrecision) {
   MAPM aExp = MAPM(10).pow(aPrecision);
   MAPM aCur = aValue * aExp;
-  aCur += 0.5;
+  aCur += mapm_0_5;
   aCur = aCur.floor();
   aCur /= aExp;
   return aCur;
@@ -277,8 +296,9 @@ MAPM Decimal::round(const MAPM &aValue, const MAPM &aPrecision) {
 MAPM Decimal::roundHalfToEven(const MAPM &aValue, const MAPM &aPrecision) {
   MAPM aExp = MAPM(10).pow(aPrecision);
   MAPM aCur = aValue * aExp;
-  bool aHalfVal = ((aCur - 0.5) == aCur.floor());
-  aCur += 0.5;
+  bool aHalfVal;
+  aHalfVal = ((aCur - mapm_0_5) == aCur.floor());
+  aCur += mapm_0_5;
   aCur = aCur.floor();
   if (aHalfVal && aCur.is_odd()) {
     aCur -= 1;
@@ -315,6 +335,7 @@ MAPM Decimal::roundHalfToEven(MAPM aValue, int aPrecision)
     double  prec = pow((double)10, aPrecision);
     exp *= prec;
     bool  bHalfVal = false;
+
     if((exp-0.5) == ::floor(exp))
     {
       if(aPrecision == 0)
@@ -334,8 +355,10 @@ MAPM Decimal::roundHalfToEven(MAPM aValue, int aPrecision)
     {
       return (((long long)aValue)%2) ? ::ceil(aValue)*prec : ::floor(aValue)*prec;
     }
-    aValue += 0.5;
-    return ::floor(aValue)*prec;
+    aValue = ::floor(aValue+0.5);
+    if(bHalfVal && (((long long)aValue)%2))
+      aValue--;
+    return aValue;
   }
 }
 #endif
@@ -504,10 +527,10 @@ bool Decimal::operator>=(const Integer& aInteger) const {
   return theDecimal >= aInteger.theInteger;
 }
 
-xqpString Decimal::decimalToString(MAPM theValue) {
+xqpString Decimal::decimalToString(MAPM theValue, int precision) {
 #ifndef ZORBA_NO_BIGNUMBERS
   char lBuffer[1024];
-  theValue.toFixPtString(lBuffer, ZORBA_FLOAT_POINT_PRECISION);
+ theValue.toFixPtString(lBuffer, precision);
 #else
   char lBuffer[174];
   if(theValue == 0)
@@ -552,7 +575,7 @@ xqpString Decimal::toIntegerString() const {
   return lResult;
 }
 
-extern MAPM mapm_65535;
+MAPM mapm_65535(65535);
 uint32_t Decimal::hash() const
 {
 #ifndef ZORBA_NO_BIGNUMBERS
