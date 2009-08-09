@@ -30,6 +30,7 @@ public:
     typename HashMap<const char *, class_name*, CompareCharPtr>::iterator  it;
     for(it=HashMap<const char *, class_name*, CompareCharPtr>::begin(); it != HashMap<const char *, class_name*, CompareCharPtr>::end(); ++it)
     {
+      free((void*)(*it).first);
       delete (*it).second;
     }
   }
