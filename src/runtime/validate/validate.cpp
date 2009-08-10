@@ -336,7 +336,9 @@ store::Item_t ValidateIterator::processElement(
   // of it's attributes, and an attribute node needs it's parent when created 
   // we need to go through the attributes twice: once for validation and once for creation
   validateAttributes(schemaValidator, element->getAttributes());
-  schemaValidator.endAttrs();
+  
+  // not required since getTypeQName will trigger processElement in validator
+  //schemaValidator.endAttrs();
 
   store::Item_t typeName = schemaValidator.getTypeQName();
 

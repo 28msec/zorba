@@ -183,7 +183,7 @@ void SchemaValidatorFilter::startElementEvent(
     const XMLCh *uri,
     const XMLCh *localname)
 {
-  //std::cout << "   svf startElememntEvent: " << StrX(localname) << "  @ " << StrX(uri) << "\n";
+  //cout << "   svf startElememntEvent: " << StrX(localname) << "  @ " << StrX(uri) << "\n";
   if(_elementToProcess)
     processStartElement();
 
@@ -313,7 +313,7 @@ void SchemaValidatorFilter::processStartElement()
       SchemaElementDecl* substitutedElem = schemaElemDecl->getSubstitutionGroupElem();
       if (substitutedElem)
       {
-          //std::cout << "     svf substitutedElem: " << StrX(substitutedElem->getFullName()) << "\n";
+          //cout << "     svf substitutedElem: " << StrX(substitutedElem->getFullName()) << "\n";
           _substitutedElemName = substitutedElem->getBaseName();
           _substitutedElemUri  = (XMLCh*)fURIStringPool->getValueForId(substitutedElem->getURI());
       }
@@ -715,10 +715,12 @@ void SchemaValidatorFilter::endElementEvent(
     
 #if _XERCES_VERSION >= 30000
     XMLSize_t failingChildNo;
-    int res = fValidator->checkContent(topElem->fThisElement,
+    bool boolRes = fValidator->checkContent(topElem->fThisElement,
                                        topElem->fChildren,
                                        topElem->fChildCount,
                                        &failingChildNo);
+    int res = boolRes ? -1 /* means success */ : 0 /* means failure */;
+
 #else
     int res = fValidator->checkContent(topElem->fThisElement,
                                        topElem->fChildren,
@@ -822,7 +824,7 @@ void SchemaValidatorFilter::attributeEvent(
     }
     --_attrCount;  // remove att from the list but still needs to be reported
     
-    //std::cout << "   svf attrEvent: " << StrX(localname) << "  T: " << StrX(typeName) << "\n";
+    //cout << "   svf attrEvent: " << StrX(localname) << "  T: " << StrX(typeName) << "\n";
     _eventBuffer->attributeEvent(emptyToNull(prefix), emptyToNull(uri), localname, value,
                           emptyToNull(typeURI), typeName);
   }
@@ -998,7 +1000,7 @@ const XMLCh* SchemaValidatorFilter::getTypeName()
   
   if(fValidate) 
   {
-    //std::cout << "  - getTypeQName: _elemDepth: " << _elemDepth << "\n";
+    //cout << "  - getTypeQName: _elemDepth: " << _elemDepth << "\n";
     if (_processorStipulatedTypeName && _elemDepth == 0 )
     {
       typeName = _processorStipulatedTypeName;
@@ -1043,7 +1045,37 @@ unsigned int SchemaValidatorFilter::resolveQName(
   if(prefixColonPos == -1) 
   {
     bool unknown = false;
-    return fElemStack.mapPrefixToURI(XMLUni::fgZeroLenString, (ElemStack::MapModes) mode, unknown);
+    unsigned int uriId;
+
+#if _XERCES_VERSION < 30000
+    uriId = fElemStack.mapPrefixToURI(XMLUni::fgZeroLenString, 
+                                                   (ElemStack::MapModes) mode,
+                                                   unknown);
+#else
+    // there is a BUG in mapPrefixToURI in xerces 3.0.1+, using a workaround
+
+    //cout << "      resolveQName: uriId: " << uriId << "\n"; cout.flush(); 
+    ValueVectorOf<PrefMapElem*>* nsMap = fElemStack.getNamespaceMap();
+    //cout << "                    nsMap.size: " << nsMap->size() << "\n"; cout.flush(); 
+    for (uint i=0; i<nsMap->size(); i++)
+    {
+      PrefMapElem* item = nsMap->elementAt(i);
+      //cout << "                  nsMap " << i << ": " << item->fPrefId << " '" << 
+      //  StrX(fElemStack.getPrefixForId(item->fPrefId)) <<
+      //  "' -> " << item->fURIId << " '" << 
+      //  StrX(fURIStringPool->getValueForId(item->fURIId)) << "'\n"; cout.flush(); 
+      if ( XMLString::stringLen(fElemStack.getPrefixForId(item->fPrefId))==0 )
+      {
+        uriId = item->fURIId;
+        break;
+      }
+    }
+#endif // _XERCES_VERSION < 30000
+
+
+
+
+    return uriId;
   }
   else 
   {

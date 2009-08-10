@@ -29,7 +29,7 @@
 #include "types/root_typemanager.h"
 #include "PrintSchema.h"
 
-using namespace std;
+//using namespace std;
 using namespace XERCES_CPP_NAMESPACE;
 
 namespace zorba
@@ -134,7 +134,7 @@ void EventSchemaValidator::endAttrs()
 
 void EventSchemaValidator::text(xqpStringStore_t textValue)
 {
-  // cout << "  sv   Text: " << textValue->c_str() << "\n";
+  //cout << "  sv   Text: " << textValue->c_str() << "\n";
 
   XMLChArray value(textValue->c_str());
   _schemaValidatorFilter->textEvent(value);
