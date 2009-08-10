@@ -7,6 +7,8 @@
 #include "zorbaerrors/error_manager.h"
 #include "zorbautils/hashmap.h"
 
+#include "zorbatypes/floatimpl.h"
+
 namespace zorba{
   namespace serialization{
 
@@ -439,10 +441,12 @@ void operator&(Archiver &ar, float &obj)
 {
   if(ar.is_serializing_out())
   {
-    char  strtemp[100];
-    sprintf(strtemp, "%.7e", (double)obj);
+    //+char  strtemp[100];
+    //+sprintf(strtemp, "%.7e", (double)obj);
+    FloatImpl<float>    zorba_float(obj);
+    xqpString   float_str = zorba_float.toString();
 
-    ar.add_simple_field("float", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_field("float", float_str.c_str(), &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {
@@ -459,7 +463,10 @@ void operator&(Archiver &ar, float &obj)
     if(!retval && ar.get_read_optional_field())
       return;
     ar.check_simple_field(retval, type, "float", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
-    sscanf(value.c_str(), "%e", &obj);
+    //+sscanf(value.c_str(), "%e", &obj);
+    FloatImpl<float>  zorba_float;
+    FloatImpl<float>::parseString(value.c_str(), zorba_float);
+    obj = zorba_float.getNumber();
 
     ar.register_reference(id, field_treat, &obj);
   }
@@ -469,10 +476,12 @@ void operator&(Archiver &ar, double &obj)
 {
   if(ar.is_serializing_out())
   {
-    char  strtemp[100];
-    sprintf(strtemp, "%.16e", obj);
+    //+char  strtemp[100];
+    //+sprintf(strtemp, "%.16e", obj);
+    FloatImpl<double>    zorba_double(obj);
+    xqpString   double_str = zorba_double.toString();
 
-    ar.add_simple_field("double", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_field("double", double_str.c_str(), &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {
@@ -489,7 +498,10 @@ void operator&(Archiver &ar, double &obj)
     if(!retval && ar.get_read_optional_field())
       return;
     ar.check_simple_field(retval, type, "double", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
-    sscanf(value.c_str(), "%le", &obj);
+    //+sscanf(value.c_str(), "%le", &obj);
+    FloatImpl<double>  zorba_double;
+    FloatImpl<double>::parseString(value.c_str(), zorba_double);
+    obj = zorba_double.getNumber();
 
     ar.register_reference(id, field_treat, &obj);
   }
