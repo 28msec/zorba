@@ -539,7 +539,7 @@ DEF_ERR_CODE(SRL0010_ITEM_TYPE_NOT_SERIALIZABLE, SRL0010, "Plan serialization er
 
 DEF_ERR_CODE(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE, SRL0011, "Plan serialization error: Unrecognized input archive.")
 
-DEF_ERR_CODE(SRL0012_INCOMPATIBLE_ARCHIVE_VERSION, SRL0011, "Plan serialization error: Incompatible archive version:/s")
+DEF_ERR_CODE(SRL0012_INCOMPATIBLE_ARCHIVE_VERSION, SRL0012, "Plan serialization error: Incompatible archive version: /s")
 
 #undef DEF_ERR_CODE
 
