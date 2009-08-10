@@ -45,6 +45,7 @@ to be included at the beginning of a query. For example
 In order to use the functions that require Tidy you have to:\n
 - install Tidy either from <a href="http://tidy.sourceforge.net/#binaries" target="_blank">binaries</a> or <a href="http://tidy.sourceforge.net/#source" target="_blank">source code</a>.\n
 - rebuild Zorba with ZORBA_WITH_TIDY set to ON.\n
+- note that on Windows you have to set the paths to tidy/include and tidy.lib in cmake before compiling\n
 
 \subsection tidy 2.1.1 zorba-util:tidy
 
@@ -68,8 +69,7 @@ These options can be overwritten by passing different <b>$tidyOptions</b>
 
 \subsection ex_tidy Example:
 \code
-  import module namespace
-  fn-zorba-util="http://www.zorba-xquery.com/zorba/util-functions";
+  import module namespace fn-zorba-util="http://www.zorba-xquery.com/zorba/util-functions";
   fn:string(fn-zorba-util:tidy('<title>Foo</title><p>Foo!','"newline=CRLF","doctype=omit","force-output","bare=yes"'))
 \endcode
 
@@ -94,7 +94,7 @@ If Tidy lib is not able to transform the given string into a valid XHTML, an err
                         $tidyOptions as xs:string?) as document-node()?
 \endcode
 
-Summary: This function if very similar to the <tt>15.5.4 fn:doc</tt> from <a href="http://www.w3.org/TR/xquery-operators/#func-doc" target="_blank">XQuery 1.0 and XPath 2.0 Functions and Operators</a> function. The only difference is that prior to parsing  and inserting the document identified by <b>$uri</b> in the store, <tt>tdoc</tt> function transforms the document into a valid XHTML document with the help of Tidy lib.\n
+Summary: This function is very similar to the <tt>15.5.4 fn:doc</tt> from <a href="http://www.w3.org/TR/xquery-operators/#func-doc" target="_blank">XQuery 1.0 and XPath 2.0 Functions and Operators</a> function. The only difference is that prior to parsing  and inserting the document identified by <b>$uri</b> in the store, <tt>tdoc</tt> function transforms the document into a valid XHTML document with the help of Tidy lib.\n
 
 A complete set of options that can be set for a Tidy call can be found at <a href="http://tidy.sourceforge.net/docs/quickref.html" target="_blank">HTML Tidy Configuration Options</a> \n
 
@@ -108,8 +108,7 @@ These options can be overwritten by passing different <b>$tidyOptions</b>
 
 \subsection ex_tdoc Example:
 \code
-  import module namespace
-  fn-zorba-util="http://www.zorba-xquery.com/zorba/util-functions";
+  import module namespace  fn-zorba-util="http://www.zorba-xquery.com/zorba/util-functions";
   fn-zorba-util:tdoc('http://tidy.sourceforge.net/libintro.html','"newline=CRLF","doctype=omit","force-output","bare=yes"')
 \endcode
 
@@ -134,7 +133,7 @@ If Tidy lib is not able to transform the given string into a valid XHTML, an err
   declare function uuid() as xs:string
 \endcode
 
-Summary: This function does not generates a DCE 1.1 variant UUIDs.\n
+Summary: This function does not generate a DCE 1.1 variant UUIDs.\n
 However please take into account that the UUID contains the time (as the number of 100-nanosecond intervals since the adoption of the Gregorian calendar in the West) at which the UUID was generated (like DCE version 1 states).\n
 The UUID does not contain the MAC address of the machine used to generate it, and that is why the generated UUID's are not conformant to DCE version 1.\n
 
