@@ -31,15 +31,15 @@
 \section conv_intro 1 Introduction
 In the XQuery specification, XQuery is described as a language capable of expressing queries on XML data.
 This makes XQuery the perfect choice for a data processing language on the Web because XML is widely used there.
-However, there are also some other data formats presents on the Web.
+However, there are also some other data formats present on the Web.
 For example, <a href="http://www.json.org/" target="_blank">JSON</a> (JavaScript Object Notation) is the most common data format for applications which are written in JavaScript.
 
-Zorba implements a set of functions that opens XQuery developers the door to processing other data formats (like JSon)
+Zorba implements a set of functions that opens XQuery developers the door to processing other data formats (like JSon).
 In this document, we describe these functions in detail.
 
 
 \section conv_json 2 JSON
-JSon is a lightweight hierachical data-interchange format.
+JSon is a lightweight hierarchical data-interchange format.
 Like XML, it is easy for humans to read and write. Moreover, it is easy for machines to parse and generate.
 
 In order to process JSON with XQuery, Zorba implements a mapping between JSON and XML that was proposed by John Snelson in his article <a href="http://snelson.org.uk/archives/2008/02/parsing_json_in.php#more" target="_blank">Parsing JSON into XQuery</a>.
@@ -94,7 +94,7 @@ In the following, we describe those functions and give some examples.
 
 \subsection json_namespace 2.1 JSon Module Namespace
 
-The <em>parse</em> and <em>serialize</em> functions are available in the JSON module <tt>"http://www.zorba-xquery.com/zorba/json-functions"</tt>.
+The <em>parse</em> and <em>serialize</em> functions are available in the JSON module with URI <tt>"http://www.zorba-xquery.com/zorba/json-functions"</tt>.
 In order to use this functionality, you have to import this module in the prolog of your XQuery module as follows:
 
 \code
@@ -177,18 +177,22 @@ The function delaration is as follows:
   declare function zorba-json:serialize($xml as xs:element*) as xs:string*
 \endcode
 
-There are two error scenarios: (1) If the passed elements do not have a valid JSON structure, the API0061 error is raised, (2) if the passed parameter is not an element, the API0062 error is raised (also see \ref appendix_converters).
+There are two error scenarios: 
+\verbatim
+(1) If the passed elements do not have a valid JSON structure, the API0061 error is raised 
+(2) if the passed parameter is not an element, the API0062 error is raised (also see \ref appendix_converters).
+\endverbatim
 
 In the following, we demonstrate the use of the JSON serialize function.
 
 \include serialize2.xq
 
 \subsection json_in_serializer 2.3 The JSON Serialization Method
-The JSON serialization process is also implemented in the serializer component of Zorba.
+The JSON serialization process is also implemented in the serializer component of Zorba exposed through external C/C++ API.
 This is similar to using any of the serialization methods defined in the "XSLT 2.0 and XQuery 1.0 Serialization" specification at http://www.w3.org/TR/xslt-xquery-serialization/.
 This method can be triggered by the Zorba command line utility or by any of the Zorba programming APIs.
 
-In the following three examples, we use use the %Zorba command line utility to serialize the result of a query generate JSON by using the <em>--serialization-parameter,-z</em> option.
+In the following three examples, we use the %Zorba command line utility to serialize the result of a query and generate JSON by using the <em>--serialization-parameter,-z</em> option.
 
 In contrast to the serialize function described above, the JSON serializer has to be passed a single element node adhering to the structure presented above (see \ref conv_json).
 This is because a valid JSON document is required to have a single root object.
@@ -228,7 +232,7 @@ zorba -q "(<json type='object'><pair name='firstName' type='string'>John</pair><
 \section conv_json_ml 3 JsonML
 <a href="http://jsonml.org" target="_blank">JsonML</a> (JSON Markup Language) is an application of the <a href="http://www.json.org/" target="_blank">JSON</a> (JavaScript Object Notation) format.
 The purpose of JsonML is to provide a compact format for transporting XML-based markup as JSON.
-In contrast to the JSON mapping depicted above (see \ref conv_json), JsonML allows a losslessly conversion back and forth.
+In contrast to the JSON mapping depicted above (see \ref conv_json), JsonML allows a lossless conversion back and forth.
 
 Zorba implements the JsonML structure defined at http://www.ibm.com/developerworks/library/x-jsonml/#N10138.
 Analogoulsy to the JSON conversion, this functionality is implemented in a parse and serialize function, respectively.
@@ -238,7 +242,7 @@ More details about <a href="http://jsonml.org" target="_blank">JsonML</a> can be
 
 \subsection json_ml_namespace 3.1 JsonML Module Namespace
 
-The <em>parse</em> and <em>serialize</em> functions are available in the JsonML mold <tt>"http://www.zorba-xquery.com/zorba/json-ml-functions"</tt>.
+The <em>parse</em> and <em>serialize</em> functions are available in the JsonML module with URI <tt>"http://www.zorba-xquery.com/zorba/json-ml-functions"</tt>.
 
 \code
   import module namespace zorba-json-ml = "http://www.zorba-xquery.com/zorba/json-ml-functions";
@@ -246,16 +250,16 @@ The <em>parse</em> and <em>serialize</em> functions are available in the JsonML 
 
 \subsection json_ml_signatures 3.2 JsonML Functions
 
-\subsection json_ml_parse 3.2.1 Parising JsonML into the XQuery Data Model (XDM) 
+\subsection json_ml_parse 3.2.1 Parsing JsonML into the XQuery Data Model (XDM) 
 
-The parse function can be used to parse a sequence of valid JSON strings to XDM elements.
+The parse function can be used to parse a sequence of valid JsonML strings to XDM elements.
 It is declared as follows
 
 \code
   declare function zorba-json-ml:parse($text as xs:string*) as xs:element*
 \endcode
 
-The API0063 error is raised if one of the strings that are passed as parameters are not valid Json (also see \ref appendix_converters).
+The API0063 error is raised if one of the strings that are passed as parameters are not valid JsonML (also see \ref appendix_converters).
 
 
 \subsection ex_json_ml_parse Example:
