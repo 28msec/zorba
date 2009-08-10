@@ -104,7 +104,7 @@ External dependency: libxml2
 Default ON
 External dependency: curl
 
-The name of the option is misleading. It actually activates the access to the internet through CURL library.
+This option activates the access to the internet through CURL library, either downloading documents from http:// or accessing webservices through REST.
 
 \subsection ZORBA_WITH_SSL ZORBA_WITH_SSL
 Default ON
