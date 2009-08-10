@@ -58,12 +58,6 @@ private:
   FloatType             theFloating;
   unsigned short        precision;
 
-    FloatImpl(FloatType aFloating) 
-    :
-    theFloating(aFloating)
-  {
-    precision = max_precision();
-  }
 
 
 public:
@@ -80,6 +74,12 @@ public:
 #endif
 public:
   FloatImpl() : theFloating(0) { precision = max_precision();}
+  FloatImpl(FloatType aFloating) 
+    :
+    theFloating(aFloating)
+  {
+    precision = max_precision();
+  }
 
   FloatImpl(const FloatImpl& aFloatImpl)
     :
