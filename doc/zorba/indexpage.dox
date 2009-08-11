@@ -37,6 +37,7 @@
      <li> \ref indexes
      <li> \ref options
      <li> \ref trace
+     <li> \ref xqdoc
      <li> Function Library
        <ul>
          <li> \ref rest
