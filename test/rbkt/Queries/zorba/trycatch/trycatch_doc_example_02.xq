@@ -1,4 +1,5 @@
 (: try-catch with multiple catch clauses showing catch clause precedence :)
+
 try {
     3 + 2 > "30"
 } catch err:XQDY0004 {

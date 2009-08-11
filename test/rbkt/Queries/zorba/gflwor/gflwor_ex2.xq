@@ -1,3 +1,5 @@
+(: Calculate Order Price :)
+
 declare variable $sales_ctx external;
 declare variable $products_ctx external;
 

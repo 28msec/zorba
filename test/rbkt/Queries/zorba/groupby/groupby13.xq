@@ -1,3 +1,5 @@
+(:  Simple Group By example 1 :)
+
 declare variable $sales-records external;
 <sales-qty-by-product>{
   for $sales in doc($sales-records)/*/record

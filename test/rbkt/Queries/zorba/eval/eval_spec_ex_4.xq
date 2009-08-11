@@ -1,3 +1,5 @@
+(: Namespaces :)
+
 declare namespace ns1 = "myns";
 declare variable $ns1:x := 1;
 declare variable $ns1:y := 40;

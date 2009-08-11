@@ -1,7 +1,31 @@
 												/** \page build Build Instructions
 
-\section requirements Requirements
+  <ul>
+    <li> Table of Contents
+    <ul>
+      <li> \ref requirements
+      <ul>
+        <li> \ref buildsystem
+        <li> \ref compilers
+        <li> \ref packages
+        <li> \ref buildingzorba
+        <li> \ref buildoptions
+      </ul>
+      <li> \ref mac
+      <ul>
+        <li> \ref universal
+        <li> \ref mac_installer
+      </ul>
+      <li> \ref windows
+      <ul>
+        <li> \ref nmake
+        <li> \ref visualstudio
+        <li> \ref https_support
+      </ul>
+    </ul>
+ </ul>
 
+\section requirements Requirements
 
 \subsection buildsystem Build System
 

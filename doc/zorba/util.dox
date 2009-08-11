@@ -45,7 +45,7 @@ to be included at the beginning of a query. For example
 In order to use the functions that require Tidy you have to:\n
 - install Tidy either from <a href="http://tidy.sourceforge.net/#binaries" target="_blank">binaries</a> or <a href="http://tidy.sourceforge.net/#source" target="_blank">source code</a>.\n
 - rebuild Zorba with ZORBA_WITH_TIDY set to ON.\n
-- note that on Windows you have to set the paths to tidy/include and tidy.lib in cmake before compiling\n
+- note that on Windows you have to set the paths to tidy/include and tidy.lib in cmake before compiling \n
 
 \subsection tidy 2.1.1 zorba-util:tidy
 

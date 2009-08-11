@@ -1,3 +1,5 @@
+(: Invalid (Using with equal QNames)  :)
+
 declare namespace ns1 = "myns";
 declare namespace ns2 = "myns";
 let $ns1:x := 3 return

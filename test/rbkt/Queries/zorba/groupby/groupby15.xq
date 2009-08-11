@@ -1,3 +1,5 @@
+(:  Group By two Vars  :)
+
 declare variable $sales-records external;
 declare variable $stores external;
 declare variable $products external;

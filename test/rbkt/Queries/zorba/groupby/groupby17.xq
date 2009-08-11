@@ -1,3 +1,5 @@
+(: Ordering among/within Groups :)
+
 declare variable $sales-records external;
 <result>{
   for $sales in doc($sales-records)/*/record
@@ -10,5 +12,5 @@ declare variable $sales-records external;
       order by xs:int($s/qty) descending
       return
         <product name = "{$s/product-name}" qty = "{$s/qty}"/>
-    }</store> 
+    }</store>
 }</result>

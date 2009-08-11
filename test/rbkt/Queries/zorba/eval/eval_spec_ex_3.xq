@@ -1,3 +1,5 @@
+(: Global Var and Function Access :)
+
 declare variable $g := 11;
 declare function local:f1 ($a) { $g + $a };
 

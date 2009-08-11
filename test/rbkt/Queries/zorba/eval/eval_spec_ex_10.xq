@@ -1,3 +1,5 @@
+(: Var Access over User def Function :)
+
 declare variable $x := 20;
 
 declare function local:f () { $x };

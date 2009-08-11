@@ -78,9 +78,12 @@ By default Zorba will download https files without checking the SSL certificate.
 
 \subsection ZORBA_WITH_EMAIL ZORBA_WITH_EMAIL
 Default OFF
-External dependency: c-client library
+External dependency: C-Client library
 
-..to be completed
+If C-Client was installed from sources be sure to pass the location hints when reconfiguring Zorba:
+assuming the C-Client sources are under /home/user/imap-2007e,
+you should configure Zorba with -DCCLIENT_INCLUDE_DIRS=/home/user/imap-2007e -DCCLIENT_LIBRARY_DIRS=/home/user/imap-2007e/c-client
+After that the ZORBA_WITH_EMAIL flag should be automatically set to ON.
 
 \subsection ZORBA_WITH_FILE_ACCESS ZORBA_WITH_FILE_ACCESS
 Default ON

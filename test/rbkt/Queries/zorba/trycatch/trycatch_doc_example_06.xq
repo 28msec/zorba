@@ -1,3 +1,5 @@
+(: Catching Everything :)
+
 let $x := 1 div 0
 return
   try { 

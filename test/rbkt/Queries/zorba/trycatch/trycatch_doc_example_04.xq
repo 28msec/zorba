@@ -1,4 +1,5 @@
 (: Nested try-catch with the use of the error object :)
+
 try {
     for $x in (1, 2, 3, "4", 5)
     return
