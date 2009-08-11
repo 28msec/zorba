@@ -35,6 +35,11 @@ TimeZone::TimeZone(short hours) : Duration(DAYTIMEDURATION_FACET)
   data[HOUR_DATA] = abs<long>(hours);
 }
 
+void TimeZone::serialize(::zorba::serialization::Archiver &ar)
+{
+  serialize_baseclass(ar, (Duration*)this);
+  ar & timezone_not_set;
+}
 
 int TimeZone::parseTimeZone(const xqpString& s, TimeZone& tz)
 {

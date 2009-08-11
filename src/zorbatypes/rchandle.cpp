@@ -212,12 +212,19 @@ RCLockPool* RCLockPool::getInstance()
 
 ********************************************************************************/
 
+RCLock::RCLock(::zorba::serialization::Archiver &) 
+{RCLock();}
 
 RCLock::RCLock()
 {
   rcp = RCLockPool::getInstance()->getRCLockFromPool();
 }
 
+RCLock::RCLock(const RCLock& ) 
+: ::zorba::serialization::SerializeBaseClass() 
+{RCLock();}
+
+RCLock::~RCLock() {}
 
 void RCLock::acquire()
 {

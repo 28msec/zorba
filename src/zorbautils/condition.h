@@ -79,9 +79,9 @@ class  Condition
   Mutex          & theMutex;
 
  public:
-  Condition(Mutex& m) : theMutex(m) {}
+  Condition(Mutex& m);
 
-  ~Condition() {}
+  ~Condition();
 
   void wait() {}
   void signal() {}

@@ -24,7 +24,6 @@ SAXON=`dirname $0`/zorbatest/xquery
 test -f $SAXON || { echo 'xquery script not present'; echo 'run setup_framework in test/zorbatest'; exit 1; }
 
 q=`mktemp /tmp/ctr.XXXXXX`
-q=`cygpath -d "$q"`
 
 cat > $q <<"EOF"
 declare default element namespace "http://www.w3.org/1999/xhtml";

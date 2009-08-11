@@ -69,15 +69,7 @@ protected:
   std::vector<LockRequest>  theHolders;
 
 public:
-  Lock()
-    :
-    theCondition(theMutex),
-    theMode(NOLOCK),
-    theHaveUpgradeReq(false),
-    theNumWaiters(0)
-  {
-  }
-
+  Lock();
   ~Lock();
 
   void rlock();

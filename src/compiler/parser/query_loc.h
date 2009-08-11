@@ -54,18 +54,8 @@ private:
 public:
   SERIALIZABLE_CLASS(QueryLoc)
   SERIALIZABLE_CLASS_CONSTRUCTOR(QueryLoc)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    ar & theFilenameBegin;
-    ar & theLineBegin;
-    ar & theColumnBegin;
-    ar & theFilenameEnd;
-    ar & theLineEnd;
-    ar & theColumnEnd;
-//#ifdef ZORBA_DEBUGGER
-//    SERIALIZE_OPTIONAL_FIELD(theFunctionName)
-//#endif
-  }
+  void serialize(::zorba::serialization::Archiver &ar);
+
 public:
   QueryLoc();
   QueryLoc(const QueryLoc& aQueryLoc);

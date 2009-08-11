@@ -46,7 +46,7 @@ class RCLock : public ::zorba::serialization::SerializeBaseClass
 
 public:
   SERIALIZABLE_CLASS(RCLock)
-  RCLock(::zorba::serialization::Archiver &) {RCLock();}
+  RCLock(::zorba::serialization::Archiver &);
   void serialize(::zorba::serialization::Archiver &ar)
   {
   }
@@ -54,9 +54,9 @@ public:
 public:
   RCLock();
 
-  RCLock(const RCLock& ) : ::zorba::serialization::SerializeBaseClass() {RCLock();}
+  RCLock(const RCLock& );
 
-  virtual ~RCLock() {}
+  virtual ~RCLock();
 
   void acquire();
 

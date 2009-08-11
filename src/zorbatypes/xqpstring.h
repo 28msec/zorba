@@ -52,12 +52,9 @@ protected:
 
 public:
   SERIALIZABLE_CLASS(xqpStringStore)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(xqpStringStore, RCObject)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    //::zorba::serialization::serialize_baseclass(ar, (RCObject*)this);
-    ar & theString;
-  }
+  xqpStringStore(::zorba::serialization::Archiver &ar);
+
+  void serialize(::zorba::serialization::Archiver &ar);
 
 public:
   static bool
@@ -91,7 +88,7 @@ public:
 
   xqpStringStore(const char* start, long len) : theString(start, len) {}
 
-  xqpStringStore(const std::string& other) : theString(other) {}
+  xqpStringStore(const std::string& other);
 
   xqpStringStore(const xqpStringStore& other) 
     :
@@ -99,6 +96,8 @@ public:
     theString(other.theString)
   {
   }
+
+  ~xqpStringStore();
 
   SYNC_CODE(virtual RCLock* getRCLock() const { return &theRCLock; })
 
@@ -305,10 +304,7 @@ public:
   SERIALIZABLE_CLASS(xqpString)
   //xqpString(::zorba::serialization::Archiver &ar) : theStrStore(ar) {}
   SERIALIZABLE_CLASS_CONSTRUCTOR(xqpString)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    ar & theStrStore;
-  }
+  void serialize(::zorba::serialization::Archiver &ar);
 
 public:
   //constructor/destructor

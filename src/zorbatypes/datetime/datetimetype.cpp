@@ -1176,6 +1176,18 @@ void DateTime::setFacet(FACET_TYPE a_facet)
   adjustToFacet();
 }
 
+void DateTime::serialize(serialization::Archiver& ar)
+{
+  SERIALIZE_ENUM(FACET_TYPE, facet);
+  ar & data[0];
+  ar & data[1];
+  ar & data[2];
+  ar & data[3];
+  ar & data[4];
+  ar & data[5];
+  ar & data[6];
+  ar & the_time_zone;
+}
 
 void DateTime::adjustToFacet()
 {

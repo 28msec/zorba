@@ -41,6 +41,18 @@ END_SERIALIZABLE_CLASS_VERSIONS(xqpStringStore)
 SERIALIZABLE_CLASS_VERSIONS(xqpString)
 END_SERIALIZABLE_CLASS_VERSIONS(xqpString)
 
+xqpStringStore::xqpStringStore(serialization::Archiver &ar)
+: RCObject(ar) {}
+
+xqpStringStore::xqpStringStore(const std::string& other) : theString(other) {}
+
+xqpStringStore::~xqpStringStore() {}
+
+void xqpStringStore::serialize(serialization::Archiver &ar)
+{
+  ar & theString;
+}
+
 /*******************************************************************************
   whitespace = " \t\r\n" meaning (#x20) (#x9) (#xD) (#xA)
 ********************************************************************************/
@@ -1079,6 +1091,10 @@ std::ostream& operator<<(std::ostream& os, const xqpStringStore& src)
   return os;
 }
 
+  void xqpString::serialize(serialization::Archiver &ar)
+  {
+    ar & theStrStore;
+  }
 
   xqpString::xqpString()
   {

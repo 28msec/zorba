@@ -30,6 +30,14 @@ namespace zorba {
 /*******************************************************************************
 
 ********************************************************************************/
+Lock::Lock()
+  :
+  theCondition(theMutex),
+  theMode(NOLOCK),
+  theHaveUpgradeReq(false),
+  theNumWaiters(0)
+{}
+
 Lock::~Lock()
 {
   assert(theMode == NOLOCK);

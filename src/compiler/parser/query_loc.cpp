@@ -46,6 +46,19 @@ QueryLoc::QueryLoc(const QueryLoc& aQueryLoc)
 #endif
 {}
 
+void QueryLoc::serialize(::zorba::serialization::Archiver &ar)
+{
+  ar & theFilenameBegin;
+  ar & theLineBegin;
+  ar & theColumnBegin;
+  ar & theFilenameEnd;
+  ar & theLineEnd;
+  ar & theColumnEnd;
+//#ifdef ZORBA_DEBUGGER
+//    SERIALIZE_OPTIONAL_FIELD(theFunctionName)
+//#endif
+}
+
 std::ostream& operator<< (std::ostream& aOstr, const QueryLoc& aQueryLoc) {
   if ( !aQueryLoc.getFilenameBegin().empty() ) {
     std::string lStr = aQueryLoc.getFilenameBegin();

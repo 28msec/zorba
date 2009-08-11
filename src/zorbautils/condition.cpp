@@ -178,6 +178,11 @@ void Condition::broadcast()
   //ZORBA_FATAL(!ret, "Failed to brodcast condition variable. Error code = " << GetLastError());
 }
 
+#else
+
+Condition::Condition(Mutex& m) : theMutex(m) {}
+Condition::~Condition() {}
+
 #endif // ZORBA_HAVE_PTHREAD_H
 
 }
