@@ -24,6 +24,7 @@
 
 \section intro_mail 1 Introduction
 This document defines functions used to send emails.
+Currently, Zorba provides functions for sending email without attachments.
 
 \section configuring_mail 2 Configuring
 Zorba provides email support through the C-Client library part of <a href="http://www.washington.edu/imap/" target="_blank">UW IMAP toolkit</a>. \n
@@ -51,7 +52,7 @@ declare option op:SMTPPwd "password";
 
 These is the meaning of each parameter: \n
 
-<b>SMTP server</b> \n
+<b>SMTPServer</b> \n
 The SMTP server has to be specified as a string in the following form: \n
 <i> remote_system_name [":" port] [flags] </i> \n
 a complete list of usage see \ref apendix_naming
@@ -60,14 +61,14 @@ For example: \n
 - smtp.gmail.com:587/tls/novalidate-cert \n
 - [209.85.129.111]:587/tls/novalidate-cert \n
 
-<b>SMTP username</b> \n
-This is the remote username used to authenticate to the SMTP server. \n
+<b>SMTPUser</b> \n
+The remote username used to authenticate to the SMTP server. \n
 
 Note: \n
 If you have specified a username in the SMTP server through <b>/user=</b> it will be overwritten by the one defined as SMTP username.
 
-<b>SMTP password</b> \n
-This is the remote username password used to authenticate to the SMTP server. \n
+<b>SMTPPwd</b> \n
+The remote username password used to authenticate to the SMTP server. \n
 
 \section signatures_mail 3 Function Signatures and Descriptions
 

@@ -16,6 +16,9 @@
             <li> \ref getfunctions_tidy
           </ul> 
         <li> \ref postfunctions
+        <li> \ref putfunctions
+        <li> \ref headfunctions
+        <li> \ref deletefunctions>
         <li> \ref parameterdesc
         <ul>
           <li> \ref resturl
@@ -28,6 +31,9 @@
         <ul>
           <li> \ref restgetexamples
           <li> \ref restpostexamples
+          <!--li> \ref restputexamples
+          <li> \ref restheadexamples
+          <li> \ref restdeleteexamples-->
         </ul>
       </ul>
     </ul>
@@ -41,8 +47,7 @@ to be included at the beginning of a query. For example
   import module namespace zorba-rest = "http://www.zorba-xquery.com/zorba/rest-functions";
 \endcode
 
-Currently, Zorba provides function to setup HTTP GET, PUT and POST requests. We'll add additional functions for
-HEAD and DELETE  with a later release.
+Currently, Zorba provides function to setup HTTP GET, POST, PUT, HEAD and DELETE requests. We'll add additional functions with a later release.
 Moreover, all of the functions will be declared nondeterministic (as in the upcoming XQuery 1.1. specification) and 
 sequential (as in the upcoming XQuery Scripting specification).
 
@@ -73,6 +78,7 @@ The following section defines the various REST XQuery functions (and their param
 
 \subsection getfunctions_tidy 3.1.1 GetTidy Functions
 
+Tidy functions allow parsing HTML imput that is not valid XML.
 In order to use the functions that require Tidy you have to:\n
 - install Tidy either from <a href="http://tidy.sourceforge.net/#binaries" target="_blank">binaries</a> or <a href="http://tidy.sourceforge.net/#source" target="_blank">source code</a>.\n
 - rebuild Zorba with ZORBA_WITH_TIDY set to ON.\n
@@ -109,7 +115,19 @@ Note: you can set a boolean parameter to true by either of the following methods
 - passing the option name and the value (like <i>bare</i> in the above example) \n
 
 
-\subsection postfunctions 3.2 PUT Functions
+\subsection postfunctions 3.2 POST Functions
+
+\code
+ declare nondeterministic sequential function zorba-rest:post( url as xs:string)                         as element(zorba-rest:result);
+ declare nondeterministic sequential function zorba-rest:post( url as xs:string,
+                                                               payload as element(zorba-rest:payload))   as element(zorba-rest:result);
+ declare nondeterministic sequential function zorba-rest:post( url as xs:string,
+                                                               payload as element(zorba-rest:payload),
+                                                               headers as element(zorba-rest:headers)*)  as element(zorba-rest:result);
+\endcode
+
+
+\subsection putfunctions 3.3 PUT Functions
 
 \code
  declare nondeterministic sequential function zorba-rest:put( url as xs:string)                         as element(zorba-rest:result);
@@ -121,8 +139,32 @@ Note: you can set a boolean parameter to true by either of the following methods
 \endcode
 
 
+\subsection headfunctions 3.4 HEAD Functions
 
-\subsection parameterdesc 3.3 Parameter Descriptions
+\code
+ declare nondeterministic sequential function zorba-rest:head( url as xs:string)                         as element(zorba-rest:result);
+ declare nondeterministic sequential function zorba-rest:head( url as xs:string,
+                                                               payload as element(zorba-rest:payload))   as element(zorba-rest:result);
+ declare nondeterministic sequential function zorba-rest:head( url as xs:string,
+                                                               payload as element(zorba-rest:payload),
+                                                               headers as element(zorba-rest:headers)*)  as element(zorba-rest:result);
+\endcode
+
+
+\subsection deletefunctions 3.5 DELETE Functions
+
+\code
+ declare nondeterministic sequential function zorba-rest:delete( url as xs:string)                         as element(zorba-rest:result);
+ declare nondeterministic sequential function zorba-rest:delete( url as xs:string,
+                                                                 payload as element(zorba-rest:payload))   as element(zorba-rest:result);
+ declare nondeterministic sequential function zorba-rest:delete( url as xs:string,
+                                                                 payload as element(zorba-rest:payload),
+                                                                 headers as element(zorba-rest:headers)*)  as element(zorba-rest:result);
+\endcode
+
+
+
+\subsection parameterdesc 3.6 Parameter Descriptions
 
 \subsubsection resturl 3.3.1 URL
 The URL as an xs:string. This can be either a HTTP or a HTTPS URL optionally containing additional parameters.
