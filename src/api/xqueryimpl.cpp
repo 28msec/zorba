@@ -955,31 +955,17 @@ extern zorba::serialization::ClassSerializer  *zorba::serialization::g_class_ser
 bool XQueryImpl::saveExecutionPlan(std::ostream &os, Zorba_binary_plan_format_t archive_format)
 {
   ZORBA_TRY
-  //debug
-  clock_t t1t0 = zorba::serialization::g_class_serializer->get_registration_time();
-  printf("registration time %f\n", (float)t1t0/CLOCKS_PER_SEC);
-  //end debug
-  clock_t t0, t1, t2;
-  t0 = clock();
   if(archive_format == ZORBA_USE_XML_ARCHIVE)
   {
     zorba::serialization::XmlArchiver   xmlar(&os);
     serialize(xmlar);
-    t1 = clock();
-    printf("plan serialization to archiver %f sec \n", (float)(t1-t0)/CLOCKS_PER_SEC);
     xmlar.serialize_out();
-    t2 = clock();
-    printf("plan serialization to xml %f sec \n", (float)(t2-t1)/CLOCKS_PER_SEC);
   }
   else//ZORBA_USE_BINARY_ARCHIVE
   {
     zorba::serialization::BinArchiver   bin_ar(&os);
     serialize(bin_ar);
-    t1 = clock();
-    printf("plan serialization to archiver %f sec \n", (float)(t1-t0)/CLOCKS_PER_SEC);
     bin_ar.serialize_out();
-    t2 = clock();
-    printf("plan serialization to binary %f sec \n", (float)(t2-t1)/CLOCKS_PER_SEC);
   }
   return true;
   ZORBA_CATCH
