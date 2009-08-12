@@ -123,7 +123,7 @@ Lib tidy is used to transform html docs into xml docs before loading into Zorba 
 If you don't need this feature or cannot set up tidy library, then you can disable this feature.
 
 \subsection ZORBA_XQUERYX ZORBA_XQUERYX
-Default ON
+Default OFF
 External dependency: libxml2, libxslt
 
 You can activate XQueryX support by this option. After that you can compile and run XQueryX code through the normal api,
