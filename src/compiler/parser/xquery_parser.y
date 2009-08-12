@@ -1852,6 +1852,14 @@ FunctionDecl4 :
 								ParseConstants::fn_sequential);
       delete $3;
     }
+    | FUNCTION QNAME FunctionSig EXTERNAL
+    {
+			$$ = new FunctionDecl(LOC (@$),
+								static_cast<QName*>($2),
+                &* $3->param, &* $3->ret,
+								NULL,
+								ParseConstants::fn_extern_sequential);
+    }
   ;
 
 // [27] ParamList
