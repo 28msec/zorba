@@ -1682,9 +1682,9 @@ bool begin_visit (treat_expr& v) {
 
 void end_visit (treat_expr& v) {
   CODEGEN_TRACE_OUT("");
-  vector<PlanIter_t> argv;
-  argv.push_back (pop_itstack ());
-  push_itstack (new TreatIterator (sctx, qloc, argv, v.get_target_type (), v.get_check_prime (), v.get_err ()));
+  PlanIter_t arg;
+  arg = pop_itstack();
+  push_itstack(new TreatIterator(sctx, qloc, arg, v.get_target_type(), v.get_check_prime(), v.get_err()));
 }
 
 bool begin_visit (castable_expr& v) {
