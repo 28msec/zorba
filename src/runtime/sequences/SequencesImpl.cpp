@@ -1127,7 +1127,7 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       // Must check all items in case FORG0006 is needed
       GenericArithIterator<AddOperation>::compute(lSumItem,
                                                   planState.theRuntimeCB,
-                                                  getStaticContext(planState),
+                                                  &tm,
                                                   loc,
                                                   lSumItem,
                                                   lRunningItem);
@@ -1139,7 +1139,7 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     GENV_ITEMFACTORY->createInteger(countItem, Integer::parseInt (lCount));
     GenericArithIterator<DivideOperation>::compute(result,
                                                    planState.theRuntimeCB,
-                                                   getStaticContext(planState),
+                                                   &tm,
                                                    loc,
                                                    lSumItem,
                                                    countItem);
@@ -1343,11 +1343,11 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
          (TypeOps::is_subtype(*lResultType, *rtm.DT_DURATION_TYPE_ONE) &&
           TypeOps::is_subtype(*lRunningType, *rtm.DT_DURATION_TYPE_ONE)))
         GenericArithIterator<AddOperation>::compute(result,
-            planState.theRuntimeCB,
-            getStaticContext(planState),
-            loc,
-            result,
-            lRunningItem);
+                                                    planState.theRuntimeCB,
+                                                    &tm,
+                                                    loc,
+                                                    result,
+                                                    lRunningItem);
       else
         ZORBA_ERROR_LOC_DESC( FORG0006, loc, "Sum is not possible with parameters of type " + TypeOps::toString (*lResultType) + " and " + TypeOps::toString (*lRunningType) );
     }

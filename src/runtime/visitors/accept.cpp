@@ -135,6 +135,7 @@ namespace zorba {
   UNARY_ACCEPT(NameCastIterator);
   UNARY_ACCEPT(CastableIterator);
   UNARY_ACCEPT(PromoteIterator);
+  UNARY_ACCEPT(TreatIterator);
   UNARY_ACCEPT(PrefixFromQNameIterator);
   UNARY_ACCEPT(LocalNameFromQNameIterator);
   UNARY_ACCEPT(NamespaceUriFromQNameIterator);

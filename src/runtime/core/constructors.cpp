@@ -216,7 +216,7 @@ void ElementIterator::openImpl(PlanState& planState, uint32_t& offset)
                                                       offset);
 
   StateTraitsImpl<ElementIteratorState>::initState(planState, this->stateOffset);
-  ElementIteratorState* state = StateTraitsImpl<ElementIteratorState>::getState(planState, this->stateOffset); \
+  ElementIteratorState* state = StateTraitsImpl<ElementIteratorState>::getState(planState, this->stateOffset);
 
   if (theQNameIter != 0)
     theQNameIter->open(planState, offset);

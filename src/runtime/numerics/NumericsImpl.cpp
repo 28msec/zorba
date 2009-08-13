@@ -123,419 +123,33 @@ END_SERIALIZABLE_CLASS_VERSIONS(FnFormatNumberIterator)
 
 
 
+/*******************************************************************************
 
-/* begin class AddOperations */
-template<>
-bool AddOperation::compute<TypeConstants::XS_DOUBLE, TypeConstants::XS_DOUBLE>(
-    store::Item_t& result,
-    RuntimeCB* /* aRuntimeCB */,
-    static_context* /* aContext */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1 )
-{
-  return GENV_ITEMFACTORY->
-         createDouble(result, i0->getDoubleValue() + i1->getDoubleValue());
+********************************************************************************/
+
+template< class Operations>
+NumArithIterator<Operations>::NumArithIterator(
+    short sctx,
+    const QueryLoc& loc,
+    PlanIter_t& iter0,
+    PlanIter_t& iter1)
+  :
+  BinaryBaseIterator<NumArithIterator<Operations>, PlanIteratorState >(sctx, loc, iter0, iter1)
+{ 
 }
-
-
-template<>
-bool AddOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>(
-    store::Item_t& result,
-    RuntimeCB* /* aRuntimeCB */,
-    static_context* /* aContext */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1 )
-{
-  return GENV_ITEMFACTORY->
-         createFloat(result, i0->getFloatValue() + i1->getFloatValue());
-}
-
-
-template<>
-bool AddOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL>(
-    store::Item_t& result,
-    RuntimeCB* /* aRuntimeCB */,
-    static_context* /* aContext */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1 )
-{
-  return GENV_ITEMFACTORY->
-         createDecimal(result,  i0->getDecimalValue() + i1->getDecimalValue());
-}
-
-
-template<>
-bool AddOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER>(
-    store::Item_t& result,
-    RuntimeCB* /* aRuntimeCB */,
-    static_context* /* aContext */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1 )
-{
-  return GENV_ITEMFACTORY->
-         createInteger(result, i0->getIntegerValue() + i1->getIntegerValue());
-}
-/* end class AddOperations */
-
-
-  /* start class SubtractOperations */
-  template<>
-  bool SubtractOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE> 
-  ( store::Item_t& result,
-    RuntimeCB* /* aRuntimeCB */,
-    static_context* /* aContext */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1 )
-  {
-    return GENV_ITEMFACTORY->createDouble (result,  i0->getDoubleValue() - i1->getDoubleValue() );
-  }
-
-  template<>
-  bool SubtractOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT> 
-  ( store::Item_t& result,
-    RuntimeCB* /* aRuntimeCB */,
-    static_context* /* aContext */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1 )
-  {
-    return GENV_ITEMFACTORY->createFloat (result,  i0->getFloatValue() - i1->getFloatValue() );
-  }
-
-  template<>
-  bool SubtractOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL> 
-  ( store::Item_t& result,
-    RuntimeCB* /* aRuntimeCB */,
-    static_context* /* aContext */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1 )
-  {
-    return GENV_ITEMFACTORY->createDecimal (result,  i0->getDecimalValue() - i1->getDecimalValue() );
-  }
-
-  template<>
-  bool SubtractOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER> 
-  ( store::Item_t& result,
-    RuntimeCB* /* aRuntimeCB */,
-    static_context* /* aContext */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1 )
-  {
-    return GENV_ITEMFACTORY->createInteger (result,  i0->getIntegerValue() - i1->getIntegerValue() );
-  }
-  /* end class SubtractOperations */
-
-
-
-  /* start class MultiplyOperations */
-  template<>
-  bool MultiplyOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE> 
-  ( store::Item_t& result,
-    RuntimeCB* /* aRuntimeCB */,
-    static_context* /* aContext */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1 )
-  {
-    return GENV_ITEMFACTORY->createDouble (result,  i0->getDoubleValue() * i1->getDoubleValue() );
-  }
-
-  template<>
-  bool MultiplyOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT> 
-  ( store::Item_t& result,
-    RuntimeCB* /* aRuntimeCB */,
-    static_context* /* aContext */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1 )
-  {
-    return GENV_ITEMFACTORY->createFloat (result,  i0->getFloatValue() * i1->getFloatValue() );
-  }
-
-  template<>
-  bool MultiplyOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL> 
-  ( store::Item_t& result,
-    RuntimeCB* /* aRuntimeCB */,
-    static_context* /* aContext */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1 )
-  {
-    return GENV_ITEMFACTORY->createDecimal (result,  i0->getDecimalValue() * i1->getDecimalValue() );
-  }
-
-  template<>
-  bool MultiplyOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER> 
-  ( store::Item_t& result,
-    RuntimeCB* /* aRuntimeCB */,
-    static_context* /* aContext */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1 )
-  {
-    return GENV_ITEMFACTORY->createInteger (result,  i0->getIntegerValue() * i1->getIntegerValue() );
-  }
-  /* end class MultiplyOperations */
-
-  /* start class DivideOperations */
-  template<>
-  bool DivideOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE> 
-  ( store::Item_t& result,
-    RuntimeCB* /* aRuntimeCB */,
-    static_context* /* aContext */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1 )
-  {
-    return GENV_ITEMFACTORY->createDouble (result,  i0->getDoubleValue() / i1->getDoubleValue() );
-  }
-
-  template<>
-  bool DivideOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT> 
-  ( store::Item_t& result,
-    RuntimeCB* /* aRuntimeCB */,
-    static_context* /* aContext */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1 )
-  {
-    return GENV_ITEMFACTORY->createFloat (result,  i0->getFloatValue() / i1->getFloatValue() );
-  }
-
-  template<>
-  bool DivideOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL> 
-  ( store::Item_t& result,
-    RuntimeCB* /*aRuntimeCB*/,
-    static_context* /* aContext */,
-    const QueryLoc* loc,
-    const store::Item* i0,
-    const store::Item* i1 )
-  {
-    xqp_decimal ld0 = i0->getDecimalValue();
-    xqp_decimal ld1 = i1->getDecimalValue();
-    if ( ld1 == Integer::parseInt(0) )
-    {
-      ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
-    }
-    return GENV_ITEMFACTORY->createDecimal (result,  ld0 / ld1 );
-  }
-
-  template<>
-  bool DivideOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER> 
-  ( store::Item_t& result,
-    RuntimeCB* /* aRuntimeCB */,
-    static_context* /* aContext */,
-    const QueryLoc* loc,
-    const store::Item* i0,
-    const store::Item* i1 )
-  {
-    xqp_decimal ll0 = Decimal::parseInteger(i0->getIntegerValue());
-    xqp_decimal ll1 = Decimal::parseInteger(i1->getIntegerValue());
-    if ( ll1 == Integer::parseInt(0) )
-    {
-      ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
-    }
-    return GENV_ITEMFACTORY->createDecimal (result,  ll0 / ll1 );
-  }
-  /* end class DivideOperations */
-
-  /* start class IntegerDivideOperations */
-  template<>
-  bool IntegerDivideOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE> 
-  ( store::Item_t& result,
-    RuntimeCB* /* aRuntimeCB */,
-    static_context* /* aContext */,
-    const QueryLoc* loc,
-    const store::Item* i0,
-    const store::Item* i1 )
-  {
-    if (i0->isNaN() || i1->isNaN()) {
-      ZORBA_ERROR_LOC_DESC( FOAR0002, *loc, "Division with doubles must not be done with NaNs");
-    }
-    if (i0->isPosOrNegInf()) {
-      ZORBA_ERROR_LOC_DESC( FOAR0002, *loc, "Division must not be done with a +-INF dividend");
-    }
-    if (i0->isPosOrNegInf()) {
-      // idiv with +-INF divisor has 0 as result
-      return GENV_ITEMFACTORY->createInteger(result, Integer::parseInt((int32_t)0));
-    }
-
-    xqp_double d0 = i0->getDoubleValue();
-    xqp_double d1 = i1->getDoubleValue();
-    if ( d1 == Double::parseInt(0) )
-    {
-      ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
-    }
-
-    xqp_integer lInteger;
-    bool lBool = Integer::parseDouble( d0 / d1, lInteger);
-    ZORBA_ASSERT(lBool);
-    return GENV_ITEMFACTORY->createInteger (result,  lInteger );
-  }
-
-  template<>
-  bool IntegerDivideOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT> 
-  ( store::Item_t& result,
-    RuntimeCB* /* aRuntimeCB */,
-    static_context* /* aContext */,
-    const QueryLoc* loc,
-    const store::Item* i0,
-    const store::Item* i1 )
-  {
-    if (i0->isNaN() || i1->isNaN() ) {
-      ZORBA_ERROR_LOC_DESC( FOAR0002, *loc, "Integer Division with floats must not be done with NaNs");
-    }
-    if (i0->isPosOrNegInf()) {
-      ZORBA_ERROR_LOC_DESC( FOAR0002, *loc, "Integer division must not be done with a +-INF dividend");
-    }
-    if (i0->isPosOrNegInf()) {
-      // idiv with +-INF divisor has 0 as result
-      return GENV_ITEMFACTORY->createInteger(result, Integer::parseInt((int32_t)0));
-    }
-
-    xqp_float f0 = i0->getFloatValue();
-    xqp_float f1 = i1->getFloatValue();
-    if ( f1 == xqp_float::parseInt(0) )
-    {
-      ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
-    }
-    xqp_integer lInteger;
-    bool lBool = Integer::parseFloat( f0 / f1, lInteger);
-    ZORBA_ASSERT(lBool);
-    return GENV_ITEMFACTORY->createInteger (result,  lInteger );
-  }
-
-  template<>
-  bool IntegerDivideOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL> 
-  ( store::Item_t& result,
-    RuntimeCB* /* aRuntimeCB */,
-    static_context* /* aContext */,
-    const QueryLoc* loc,
-    const store::Item* i0,
-    const store::Item* i1 )
-  {
-    xqp_decimal ld0 = i0->getDecimalValue();
-    xqp_decimal ld1 = i1->getDecimalValue();
-    if ( ld1 == Decimal::parseInt(0) )
-    {
-      ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
-    }
-    return GENV_ITEMFACTORY->createInteger (result, 
-               Integer::parseDecimal ( ld0 / ld1 )
-           );
-  }
-
-  template<>
-  bool IntegerDivideOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER> 
-  ( store::Item_t& result,
-    RuntimeCB* /* aRuntimeCB */,
-    static_context* /* aContext */,
-    const QueryLoc* loc,
-    const store::Item* i0,
-    const store::Item* i1 )
-  {
-    xqp_integer ll0 = i0->getIntegerValue();
-    xqp_integer ll1 = i1->getIntegerValue();
-    if ( ll1 == Integer::parseInt(0) )
-    {
-      ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
-    }
-    return GENV_ITEMFACTORY->createInteger (result, 
-               ll0 / ll1
-           );
-  }
-  /* end class IntegerDivideOperations */
-
-  /* start class ModOperations */
-  template<>
-  bool ModOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE> 
-  ( store::Item_t& result,
-    RuntimeCB* /* aRuntimeCB */,
-    static_context* /* aContext */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1 )
-  {
-    return GENV_ITEMFACTORY->createDouble (result,  i0->getDoubleValue() % i1->getDoubleValue() );
-  }
-
-  template<>
-  bool ModOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT> 
-  ( store::Item_t& result,
-    RuntimeCB* /* aRuntimeCB */,
-    static_context* /* aContext */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1 )
-  {
-    return GENV_ITEMFACTORY->createFloat (result,  i0->getFloatValue() % i1->getFloatValue() );
-  }
-
-  template<>
-  bool ModOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL> 
-  ( store::Item_t& result,
-    RuntimeCB* /* aRuntimeCB */,
-    static_context* /* aContext */,
-    const QueryLoc* loc,
-    const store::Item* i0,
-    const store::Item* i1 )
-  {
-    xqp_decimal ld0 = i0->getDecimalValue();
-    xqp_decimal ld1 = i1->getDecimalValue();
-    if ( ld1 == Decimal::parseInt(0) )
-    {
-      ZORBA_ERROR_LOC_DESC( FOAR0001,
-         *loc, "Modulo by zero (decimals)");
-    }
-    return GENV_ITEMFACTORY->createDecimal (result,  ld0 % ld1  );
-  }
-
-
-template<>
-bool ModOperation::compute<TypeConstants::XS_INTEGER, TypeConstants::XS_INTEGER>(
-    store::Item_t& result,
-    RuntimeCB* /* aRuntimeCB */,
-    static_context* /* aContext */,
-    const QueryLoc* loc,
-    const store::Item* i0,
-    const store::Item* i1 )
-{
-  xqp_integer ll0 = i0->getIntegerValue();
-  xqp_integer ll1 = i1->getIntegerValue();
-  if ( ll1 == Integer::parseInt(0) )
-  {
-    ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Modulo by zero (decimals)");
-  }
-  return GENV_ITEMFACTORY->createInteger (result,  ll0 % ll1 );
-}
-/* end class ModOperations */
-
-  
-/* begin class NumArithIterator */
-  template< class Operations>
-  NumArithIterator<Operations>::NumArithIterator
-  ( short sctx, const QueryLoc& loc, PlanIter_t& iter0, PlanIter_t& iter1 )
-      :
-      BinaryBaseIterator<NumArithIterator<Operations>, PlanIteratorState > ( sctx, loc, iter0, iter1 )
-  { }
 
 
 template < class Operation >
-bool NumArithIterator<Operation>::nextImpl (
+bool NumArithIterator<Operation>::nextImpl(
     store::Item_t& result,
-    PlanState& planState ) const
+    PlanState& planState) const
 {
   bool res;
   store::Item_t n0;
   store::Item_t n1;
   
+  const TypeManager* tm = this->getStaticContext(planState)->get_typemanager();
+
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
 
@@ -543,24 +157,25 @@ bool NumArithIterator<Operation>::nextImpl (
   {
     if (consumeNext( n1, this->theChild1.getp(), planState ))
     {
-      res = compute(result, planState.theRuntimeCB, this->getStaticContext(planState), this->loc, n0, n1);
+      res = compute(result, planState.theRuntimeCB, tm, this->loc, n0, n1);
       
       if (consumeNext(n0, this->theChild0.getp(), planState) ||
           consumeNext(n1, this->theChild1.getp(), planState))
         ZORBA_ERROR_DESC(XPTY0004,
                          "Arithmetic operation has a sequence longer than one as an operand.");
-      STACK_PUSH ( res, state );
+      STACK_PUSH(res, state);
     }
   }
-  STACK_END (state);
+
+  STACK_END(state);
 }
 
 
 template < class Operation >
 bool NumArithIterator<Operation>::compute(
     store::Item_t& result,
-    RuntimeCB* aRuntimeCB,
-    static_context* aContext,
+    RuntimeCB* rcb,
+    const TypeManager* tm,
     const QueryLoc& aLoc, 
     store::Item_t& n0,
     store::Item_t& n1)
@@ -568,18 +183,18 @@ bool NumArithIterator<Operation>::compute(
   assert(n0->isAtomic());
   assert(n1->isAtomic());
 
-  xqtref_t type0 = aContext->get_typemanager()->create_value_type(n0);
-  xqtref_t type1 = aContext->get_typemanager()->create_value_type(n1);
+  xqtref_t type0 = tm->create_value_type(n0);
+  xqtref_t type1 = tm->create_value_type(n1);
 
-  return computeAtomic(result, aRuntimeCB, aContext, aLoc, n0, type0, n1, type1);
+  return computeAtomic(result, rcb, tm, aLoc, n0, type0, n1, type1);
 }
 
   
 template < class Operation >
 bool NumArithIterator<Operation>::computeAtomic(
     store::Item_t& result,
-    RuntimeCB* aRuntimeCB,
-    static_context* aContext,
+    RuntimeCB* rcb,
+    const TypeManager* tm,
     const QueryLoc& aLoc,
     store::Item_t& item0,
     xqtref_t type0,
@@ -587,40 +202,70 @@ bool NumArithIterator<Operation>::computeAtomic(
     xqtref_t type1)
 {
   bool res;
-  xqtref_t resultType = TypeOps::arithmetic_type ( *type0, *type1 );
   store::Item_t n0;
   store::Item_t n1;
 
-  const TypeManager& tm = *aContext->get_typemanager();
+  xqtref_t resultType = TypeOps::arithmetic_type(*type0, *type1);
 
   try
   {
-    GenericCast::castToAtomic(n0, item0, &*resultType, tm);
-    GenericCast::castToAtomic(n1, item1, &*resultType, tm);
+    switch (TypeOps::get_atomic_type_code(*resultType))
+    {
+    case TypeConstants::XS_DOUBLE:
+    {
+      GenericCast::castToAtomic(n0, item0, &*resultType, *tm);
+      GenericCast::castToAtomic(n1, item1, &*resultType, *tm);
+
+      res = Operation::template
+            computeSingleType<TypeConstants::XS_DOUBLE>
+            (result, rcb, tm, &aLoc, n0, n1 );
+      break;
+    }
+    case TypeConstants::XS_FLOAT:
+    {
+      GenericCast::castToAtomic(n0, item0, &*resultType, *tm);
+      GenericCast::castToAtomic(n1, item1, &*resultType, *tm);
+
+      res = Operation::template 
+            computeSingleType<TypeConstants::XS_FLOAT>
+            (result, rcb, tm, &aLoc,n0, n1);
+      break;
+    }
+    case TypeConstants::XS_DECIMAL:
+    {
+      GenericCast::castToAtomic(n0, item0, &*resultType, *tm);
+      GenericCast::castToAtomic(n1, item1, &*resultType, *tm);
+
+      res = Operation::template
+            computeSingleType<TypeConstants::XS_DECIMAL>
+            (result, rcb, tm, &aLoc,n0, n1);
+      break;
+    }
+    case TypeConstants::XS_INTEGER:
+    {
+      GenericCast::castToAtomic(n0, item0, &*resultType, *tm);
+      GenericCast::castToAtomic(n1, item1, &*resultType, *tm);
+
+      res = Operation::template 
+            computeSingleType<TypeConstants::XS_INTEGER>
+            (result, rcb, tm, &aLoc,n0, n1 );
+      break;
+    }
+    default:
+    {
+      ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, aLoc,
+                               "Numeric operation not defined between the given types ("
+                               << type0->toString() << " and "
+                               << type1->toString() << ").");
+    }
+    }
   }
   catch(error::ZorbaError& e)
   {
-    // rethrow but with location
+    // rethrow casting errors but with location
     ZORBA_ERROR_LOC_DESC(e.theErrorCode , aLoc, e.theDescription);
   }
 
-  switch ( TypeOps::get_atomic_type_code ( *resultType ) )
-  {
-  case TypeConstants::XS_DOUBLE:
-    res = Operation::template computeSingleType<TypeConstants::XS_DOUBLE> (result, aRuntimeCB, aContext, &aLoc, n0, n1 );
-    break;
-  case TypeConstants::XS_FLOAT:
-    res = Operation::template computeSingleType<TypeConstants::XS_FLOAT> ( result, aRuntimeCB, aContext, &aLoc,n0, n1 );
-    break;
-  case TypeConstants::XS_DECIMAL:
-    res = Operation::template computeSingleType<TypeConstants::XS_DECIMAL> ( result, aRuntimeCB, aContext, &aLoc,n0, n1 );
-    break;
-  case TypeConstants::XS_INTEGER:
-    res = Operation::template computeSingleType<TypeConstants::XS_INTEGER> ( result, aRuntimeCB, aContext, &aLoc,n0, n1 );
-    break;
-  default:
-    ZORBA_ASSERT(false);
-  }
   return res;
 }
 
@@ -639,23 +284,29 @@ void NumArithIterator<Operation>::accept(PlanIterVisitor& v) const
 }
 
 
-/* instantiate NumArithIterator for all types */
+// instantiate NumArithIterator for all kinds of arithmetic operators
 template class NumArithIterator<AddOperation>;
 template class NumArithIterator<SubtractOperation>;
 template class NumArithIterator<MultiplyOperation>;
 template class NumArithIterator<DivideOperation>;
 template class NumArithIterator<IntegerDivideOperation>;
 template class NumArithIterator<ModOperation>;
-/* end class NumArithIterator */
 
 
-  /* begin class SpecificNumArithIterator */
-  template< class Operations, TypeConstants::atomic_type_code_t Type >
-  SpecificNumArithIterator<Operations, Type>::SpecificNumArithIterator
-  ( short sctx, const QueryLoc& loc, PlanIter_t& iter0, PlanIter_t& iter1 )
-      :
-      BinaryBaseIterator<SpecificNumArithIterator<Operations, Type>, PlanIteratorState > ( sctx, loc, iter0, iter1 )
-  { }
+/*******************************************************************************
+
+********************************************************************************/
+
+template< class Operations, TypeConstants::atomic_type_code_t Type >
+SpecificNumArithIterator<Operations, Type>::SpecificNumArithIterator(
+    short sctx,
+    const QueryLoc& loc,
+    PlanIter_t& iter0,
+    PlanIter_t& iter1)
+  :
+  BinaryBaseIterator<SpecificNumArithIterator<Operations, Type>, PlanIteratorState >(sctx, loc, iter0, iter1)
+{ 
+}
 
 
 template < class Operation, TypeConstants::atomic_type_code_t Type >
@@ -667,6 +318,8 @@ bool SpecificNumArithIterator<Operation, Type>::nextImpl (
   store::Item_t n0;
   store::Item_t n1;
   
+  const TypeManager* tm = this->getStaticContext(planState)->get_typemanager();
+
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
 
@@ -674,7 +327,7 @@ bool SpecificNumArithIterator<Operation, Type>::nextImpl (
   {
     if (consumeNext( n1, this->theChild1.getp(), planState ))
     {
-      res = compute(result, planState.theRuntimeCB, this->getStaticContext(planState), this->loc, n0.getp(), n1.getp());
+      res = compute(result, planState.theRuntimeCB, tm, this->loc, n0.getp(), n1.getp());
       
       if (consumeNext(n0, this->theChild0.getp(), planState) ||
           consumeNext(n1, this->theChild1.getp(), planState))
@@ -690,8 +343,8 @@ bool SpecificNumArithIterator<Operation, Type>::nextImpl (
 template < class Operation, TypeConstants::atomic_type_code_t Type >
 bool SpecificNumArithIterator<Operation, Type>::compute(
     store::Item_t& result,
-    RuntimeCB* aRuntimeCB,
-    static_context* aContext,
+    RuntimeCB* rcb,
+    const TypeManager* tm,
     const QueryLoc& aLoc, 
     store::Item *n0,
     store::Item *n1)
@@ -699,7 +352,7 @@ bool SpecificNumArithIterator<Operation, Type>::compute(
   assert(n0->isAtomic());
   assert(n1->isAtomic());
 
-  return Operation::template computeSingleType<Type> (result, aRuntimeCB, aContext, &aLoc, n0, n1 );
+  return Operation::template computeSingleType<Type>(result, rcb, tm, &aLoc, n0, n1 );
 }
 
   
@@ -737,144 +390,7 @@ template class SpecificNumArithIterator<ModOperation, TypeConstants::XS_FLOAT>;
 template class SpecificNumArithIterator<ModOperation, TypeConstants::XS_DECIMAL>;
 template class SpecificNumArithIterator<ModOperation, TypeConstants::XS_INTEGER>;
 
-  /*______________________________________________________________________
-  |
-  | 6.2.1 op:numeric-add
-  | op:numeric-add($arg1 as numeric, $arg2 as numeric) as numeric
-  |
-  | Summary: Backs up the "+" operator and returns the arithmetic sum of
-  | its operands: ($arg1 + $arg2).
-  |
-  | Note:
-  | For xs:float or xs:double values, if one of the operands is a zero or
-  | a finite number and the other is INF or -INF, INF or -INF is returned.
-  | If both operands are INF, INF is returned. If both operands are -INF,
-  | -INF is returned. If one of the operands is INF and the other is -INF,
-  | NaN is returned.
-  |_______________________________________________________________________*/
 
-
-  /*______________________________________________________________________
-  |
-  | 6.2.2 op:numeric-subtract
-  | op:numeric-subtract($arg1 as numeric, $arg2 as numeric) as numeric
-  |
-  | Summary: Backs up the "-" operator and returns the arithmetic
-  | difference of its operands: ($arg1 - $arg2).
-  |
-  | Note:
-  | For xs:float or xs:double values, if one of the operands is a zero or
-  | a finite number and the other is INF or -INF, an infinity of the
-  | appropriate sign is returned. If both operands are INF or -INF, NaN is
-  | returned. If one of the operands is INF and the other is -INF, an
-  | infinity of the appropriate sign is returned.
-  |_______________________________________________________________________*/
-
-
-  /*______________________________________________________________________
-  |
-  | 6.2.3 op:numeric-multiply
-  | op:numeric-multiply($arg1 as numeric, $arg2 as numeric) as numeric
-  |
-  | Summary: Backs up the "*" operator and returns the arithmetic product
-  | of its operands: ($arg1 * $arg2).
-  |
-  | Note:
-  | For xs:float or xs:double values, if one of the operands is a zero and
-  | the other is an infinity, NaN is returned. If one of the operands is a
-  | non-zero number and the other is an infinity, an infinity with the
-  | appropriate sign is returned.
-  |_______________________________________________________________________*/
-
-
-  /*______________________________________________________________________
-  |
-  | 6.2.4 op:numeric-divide
-  | op:numeric-divide($arg1 as numeric, $arg2 as numeric) as numeric
-  |
-  | Summary: Backs up the "div" operator and returns the arithmetic
-  | quotient of its operands: ($arg1 div $arg2).
-  |
-  | As a special case, if the types of both $arg1 and $arg2 are
-  | xs:integer, then the return type is xs:decimal.
-  |
-  | Notes:
-  | For xs:decimal and xs:integer operands, if the divisor is (positive or
-  | negative) zero, an error is raised [err:FOAR0001]. For xs:float and
-  | xs:double operands, floating point division is performed as specified
-  | in [IEEE 754-1985].
-  |
-  | For xs:float or xs:double values, a positive number divided by
-  | positive zero returns INF. A negative number divided by positive zero
-  | returns -INF. Division by negative zero returns -INF and INF,
-  | respectively. Positive or negative zero divided by positive or
-  | negative zero returns NaN. Also, INF or -INF divided by INF or -INF
-  | returns NaN.
-  |_______________________________________________________________________*/
-
-
-  /*______________________________________________________________________
-  |
-  | 6.2.5 op:numeric-integer-divide
-  | op:numeric-integer-divide($arg1 as numeric, $arg2 as numeric) as xs:integer
-  |
-  | Summary: This function backs up the "idiv" operator and performs an
-  | integer division: that is, it divides the first argument by the
-  | second, and returns the integer obtained by truncating the fractional
-  | part of the result. The division is performed so that the sign of the
-  | fractional part is the same as the sign of the dividend.
-  |
-  | If the dividend, $arg1, is not evenly divided by the divisor, $arg2,
-  | then the quotient is the xs:integer value obtained, ignoring
-  | (truncating) any remainder that results from the division (that is, no
-  | rounding is performed). Thus, the semantics " $a idiv $b " are
-  | equivalent to " ($a div $b) cast as xs:integer " except for error
-  | situations.
-  |
-  | If the divisor is (positive or negative) zero, then an error is raised
-  | [err:FOAR0001]. If either operand is NaN or if $arg1 is INF or -INF
-  | then an error is raised [err:FOAR0002].
-  |
-  | Note:
-  | The semantics of this function are different from integer division as
-  | defined in programming languages such as Java and C++.
-  |_______________________________________________________________________*/
-
-
-  /*______________________________________________________________________
-  |
-  | 6.2.6 op:numeric-mod
-  | op:numeric-mod($arg1 as numeric, $arg2 as numeric) as numeric
-  |
-  | Summary: Backs up the "mod" operator. Informally, this function
-  | returns the remainder resulting from dividing $arg1, the dividend, by
-  | $arg2, the divisor. The operation a mod b for operands that are
-  | xs:integer or xs:decimal, or types derived from them, produces a
-  | result such that (a idiv b)*b+(a mod b) is equal to a and the
-  | magnitude of the result is always less than the magnitude of b. This
-  | identity holds even in the special case that the dividend is the
-  | negative integer of largest possible magnitude for its type and the
-  | divisor is -1 (the remainder is 0). It follows from this rule that the
-  | sign of the result is the sign of the dividend.
-  |
-  | For xs:integer and xs:decimal operands, if $arg2 is zero, then an
-  | error is raised [err:FOAR0001].
-  |
-  | For xs:float and xs:double operands the following rules apply:
-  |   * If either operand is NaN, the result is NaN.
-  |   * If the dividend is positive or negative infinity, or the divisor
-  |     is positive or negative zero (0), or both, the result is NaN.
-  |   * If the dividend is finite and the divisor is an infinity, the
-  |     result equals the dividend.
-  |   * If the dividend is positive or negative zero and the divisor is
-  |     finite, the result is the same as the dividend.
-  |   * In the remaining cases, where neither positive or negative
-  |     infinity, nor positive or negative zero, nor NaN is involved, the
-  |     result obeys (a idiv b)*b+(a mod b) = a. Division is truncating
-  |     division, analogous to integer division, not [IEEE 754-1985] rounding
-  |     division i.e. additional digits are truncated, not rounded to the
-  |     required precision.
-  |_______________________________________________________________________*/
 
   /*______________________________________________________________________
   |
@@ -909,7 +425,8 @@ OpNumericUnaryIterator::OpNumericUnaryIterator (
      PlanIter_t& theChild,
      bool aPlus )
   :
-  UnaryBaseIterator<OpNumericUnaryIterator, PlanIteratorState> ( sctx, loc, theChild ), thePlus ( aPlus )
+  UnaryBaseIterator<OpNumericUnaryIterator, PlanIteratorState>(sctx, loc, theChild),
+  thePlus(aPlus)
 {
 }
 
