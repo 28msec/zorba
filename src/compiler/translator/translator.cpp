@@ -2337,7 +2337,8 @@ void *begin_visit (const VFO_DeclList& v)
     switch(func_decl->get_type()) 
     {
     case ParseConstants::fn_extern_update:
-    case ParseConstants::fn_extern: 
+    case ParseConstants::fn_extern:
+    case ParseConstants::fn_extern_sequential:
     {
       StatelessExternalFunction* ef =
       sctx_p->lookup_stateless_external_function(func_decl->get_name()->get_prefix(),
@@ -2719,6 +2720,7 @@ void end_visit (const FunctionDecl& v, void* /*visit_state*/)
     break;
   }
   case ParseConstants::fn_extern:
+  case ParseConstants::fn_extern_sequential:
   {
       break;
   }
