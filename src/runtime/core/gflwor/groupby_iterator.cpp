@@ -69,9 +69,9 @@ void GroupByState::init (
     static_context* sctx,
     std::vector<GroupingSpec>* groupingSpecs) 
 {
-  PlanIteratorState::init ( aState );
+  PlanIteratorState::init(aState);
 
-  GroupTupleCmp cmp(aState.theRuntimeCB, sctx, groupingSpecs);
+  GroupTupleCmp cmp(aState.theRuntimeCB, sctx->get_typemanager(), groupingSpecs);
   theGroupMap = new GroupHashMap(cmp, 1024, false);
 }
 

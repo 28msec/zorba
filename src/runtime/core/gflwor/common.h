@@ -209,7 +209,7 @@ private:
 public:
   GroupTupleCmp() : theGroupingSpecs(0), theTypeManager(0), theTimezone(0) {}
 
-  GroupTupleCmp(RuntimeCB* rcb, static_context* sctx, std::vector<GroupingSpec>* groupSpecs);
+  GroupTupleCmp(RuntimeCB* rcb, TypeManager* tm, std::vector<GroupingSpec>* groupSpecs);
 
   uint32_t hash(GroupTuple* t) const;
 

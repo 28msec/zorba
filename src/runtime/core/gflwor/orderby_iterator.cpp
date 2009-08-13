@@ -291,7 +291,6 @@ void OrderByIterator::closeImpl(PlanState& planState)
 bool OrderByIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
   OrderByState* iterState;
-
   DEFAULT_STACK_INIT(OrderByState, iterState, planState);
 
   while (consumeNext(result, theTupleIter, planState)) 
@@ -300,7 +299,9 @@ bool OrderByIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   }
 
   {
-  SortTupleCmp cmp(planState.theRuntimeCB, getStaticContext(planState), &theOrderSpecs);
+  SortTupleCmp cmp(planState.theRuntimeCB,
+                   getStaticContext(planState)->get_typemanager(),
+                   &theOrderSpecs);
 
   if (theStable)
   {

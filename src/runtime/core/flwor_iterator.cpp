@@ -439,6 +439,7 @@ void GroupByClause::close(PlanState& planState)
 
 FlworState::FlworState() 
   :
+  theTypeMgr(NULL),
   theNumTuples(0),
   theCurTuplePos(0),
   theGroupMap(0)
@@ -463,7 +464,7 @@ FlworState::~FlworState()
   Init the state for a certain nb of variables but not the ordering
   @nb_variables  Number of FOR and LET clauses
 ********************************************************************************/
-void FlworState::init(PlanState& planState, static_context* sctx, size_t numVars)
+void FlworState::init(PlanState& planState, size_t numVars)
 {
   PlanIteratorState::init(planState);
 
@@ -485,16 +486,18 @@ void FlworState::init(PlanState& planState, static_context* sctx, size_t numVars
 ********************************************************************************/
 void FlworState::init(
     PlanState& planState,
-    static_context* sctx,
+    TypeManager* tm,
     size_t numVars,
     std::vector<OrderSpec>* orderSpecs,
     std::vector<GroupingSpec>* groupingSpecs)
 {
-  init(planState, sctx, numVars);
-  
+  init(planState, numVars);
+ 
+  theTypeMgr = tm;
+
   if(groupingSpecs != 0)
   {
-    GroupTupleCmp cmp(planState.theRuntimeCB, sctx, groupingSpecs);
+    GroupTupleCmp cmp(planState.theRuntimeCB, tm, groupingSpecs);
     theGroupMap = new GroupHashMap(cmp, 1024, false);
   }
 }
@@ -698,7 +701,7 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
               startTime = (double)stime.tv_sec+(1.e-6)*stime.tv_usec;
 #endif
               SortTupleCmp cmp(planState.theRuntimeCB,
-                               getStaticContext(planState),
+                               iterState->theTypeMgr,
                                &theOrderByClause->theOrderSpecs);
 
               if (theOrderByClause->theStable)
@@ -1198,25 +1201,32 @@ void FLWORIterator::openImpl(PlanState& planState, uint32_t& offset)
 
   FlworState* iterState = StateTraitsImpl<FlworState>::getState(planState,
                                                                  this->stateOffset);
-  if(doGroupBy)
+  static_context* sctxp;
+
+  if (doGroupBy || doOrderBy)
   {
-    iterState->init(planState,
-                    getStaticContext(planState),
-                    theNumBindings,
-                    (doOrderBy ? &theOrderByClause->theOrderSpecs : NULL),
-                    &theGroupByClause->theGroupingSpecs); 
-  }
-  else if (doOrderBy) 
-  {
-    iterState->init(planState,
-                    getStaticContext(planState),
-                    theNumBindings,
-                    &theOrderByClause->theOrderSpecs,
-                    0);
+    sctxp = getStaticContext(planState);
+
+    if (doGroupBy)
+    {
+      iterState->init(planState,
+                      sctxp->get_typemanager(),
+                      theNumBindings,
+                      (doOrderBy ? &theOrderByClause->theOrderSpecs : NULL),
+                      &theGroupByClause->theGroupingSpecs); 
+    }
+    else if (doOrderBy) 
+    {
+      iterState->init(planState,
+                      sctxp->get_typemanager(),
+                      theNumBindings,
+                      &theOrderByClause->theOrderSpecs,
+                      0);
+    }
   }
   else 
   {
-    iterState->init(planState, getStaticContext(planState), theNumBindings);
+    iterState->init(planState, theNumBindings);
   }
 
   // some variables must have been bound
@@ -1235,10 +1245,10 @@ void FLWORIterator::openImpl(PlanState& planState, uint32_t& offset)
     theWhereClause->open(planState, offset);
   
   if (doGroupBy)
-    theGroupByClause->open(getStaticContext(planState), planState, offset);
+    theGroupByClause->open(sctxp, planState, offset);
   
   if (doOrderBy)
-    theOrderByClause->open(getStaticContext(planState), planState, offset);
+    theOrderByClause->open(sctxp, planState, offset);
 }
 
 

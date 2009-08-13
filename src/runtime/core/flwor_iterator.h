@@ -260,6 +260,8 @@ public:
   typedef std::vector<store::Iterator_t> DataTable;
 
 protected:
+  TypeManager                 * theTypeMgr;
+
   checked_vector<uint32_t>      theVarBindingState;
           
   SortTable                     theSortTable;
@@ -277,11 +279,11 @@ public:
 
   ~FlworState();
 
-  void init(PlanState& state, static_context* sctx, size_t numVars);
+  void init(PlanState& state, size_t numVars);
           
   void init(
         PlanState& state,
-        static_context* sctx,
+        TypeManager* tm,
         size_t numVars,
         std::vector<OrderSpec>* orderSpecs,
         std::vector<GroupingSpec>* groupingSpecs);
@@ -321,12 +323,12 @@ private:
   bool                      doGroupBy;
   PlanIter_t                theReturnClause; 
   bool                      theIsUpdating;
-  /*const */int                 theNumBindings; //Number of FORs and LETs (overall) 
+  /*const */int             theNumBindings; //Number of FORs and LETs (overall) 
          
 public:
   SERIALIZABLE_CLASS(FLWORIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(FLWORIterator, Batcher<FLWORIterator>)
-  //FLWORIterator() {}
+
   void serialize(::zorba::serialization::Archiver &ar)
   {
     serialize_baseclass(ar, (Batcher<FLWORIterator>*)this);
