@@ -44,7 +44,9 @@ END_SERIALIZABLE_CLASS_VERSIONS(GroupByIterator)
 /////////////////////////////////////////////////////////////////////////////////
 
 
-GroupByState::GroupByState() : theGroupMap ( 0 )
+GroupByState::GroupByState() 
+  :
+  theGroupMap ( 0 )
 {
 }
 
@@ -66,12 +68,12 @@ GroupByState::~GroupByState()
 
 void GroupByState::init (
     PlanState& aState,
-    static_context* sctx,
+    const TypeManager* tm,
     std::vector<GroupingSpec>* groupingSpecs) 
 {
   PlanIteratorState::init(aState);
 
-  GroupTupleCmp cmp(aState.theRuntimeCB, sctx->get_typemanager(), groupingSpecs);
+  GroupTupleCmp cmp(aState.theRuntimeCB, tm, groupingSpecs);
   theGroupMap = new GroupHashMap(cmp, 1024, false);
 }
 
@@ -289,7 +291,9 @@ void GroupByIterator::openImpl ( PlanState& planState, uint32_t& aOffset )
   GroupByState* state = StateTraitsImpl<GroupByState>::getState(planState,
                                                                 this->stateOffset);
       
-  state->init(planState, getStaticContext(planState), &theGroupingSpecs); 
+  static_context* sctx = getStaticContext(planState);
+
+  state->init(planState, sctx->get_typemanager(), &theGroupingSpecs); 
       
   theTupleIter->open(planState, aOffset);
 
@@ -301,12 +305,12 @@ void GroupByIterator::openImpl ( PlanState& planState, uint32_t& aOffset )
 
     if (iter->theCollation.size() != 0) 
     {
-      iter->theCollator = getStaticContext(planState)->get_collation_cache()->
+      iter->theCollator = sctx->get_collation_cache()->
                           getCollator(iter->theCollation);
     }
     else
     {
-      iter->theCollator = getStaticContext(planState)->get_collation_cache()->
+      iter->theCollator = sctx->get_collation_cache()->
                           getDefaultCollator();
     }
   }

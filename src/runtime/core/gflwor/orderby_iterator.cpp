@@ -112,6 +112,7 @@ void OrderSpec::close(PlanState& aPlanState) const
 
 OrderByState::OrderByState() 
   :
+  theTypeMgr(NULL),
   theNumTuples(0),
   theCurTuplePos(0)
 {
@@ -124,10 +125,14 @@ OrderByState::~OrderByState()
 }
 
 
-void OrderByState::init(PlanState& planState, std::vector<OrderSpec>* orderSpecs) 
+void OrderByState::init(
+    PlanState& planState,
+    const TypeManager* tm,
+    std::vector<OrderSpec>* orderSpecs) 
 {
   PlanIteratorState::init(planState);
 
+  theTypeMgr = tm;
   theNumTuples = 0;
   theCurTuplePos = 0;
 }
@@ -241,6 +246,9 @@ void OrderByIterator::openImpl(PlanState& planState, uint32_t& aOffset)
 
   OrderByState* iterState = StateTraitsImpl<OrderByState>::getState(planState,
                                                                     this->stateOffset);
+
+  static_context* sctx = getStaticContext(planState);
+
   // Do a manual pass to set the Collator
   ulong numSpecs = theOrderSpecs.size();
   for (ulong i = 0; i < numSpecs; ++i)
@@ -249,12 +257,12 @@ void OrderByIterator::openImpl(PlanState& planState, uint32_t& aOffset)
 
     if (! theOrderSpecs[i].theCollation.empty())
     {
-      theOrderSpecs[i].theCollator = getStaticContext(planState)->get_collation_cache()->
+      theOrderSpecs[i].theCollator = sctx->get_collation_cache()->
                                      getCollator(theOrderSpecs[i].theCollation);
     }
   }
   
-  iterState->init(planState, &theOrderSpecs);
+  iterState->init(planState, sctx->get_typemanager(), &theOrderSpecs);
   
   theTupleIter->open(planState, aOffset);
 
@@ -299,9 +307,7 @@ bool OrderByIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   }
 
   {
-  SortTupleCmp cmp(planState.theRuntimeCB,
-                   getStaticContext(planState)->get_typemanager(),
-                   &theOrderSpecs);
+  SortTupleCmp cmp(planState.theRuntimeCB, iterState->theTypeMgr, &theOrderSpecs);
 
   if (theStable)
   {

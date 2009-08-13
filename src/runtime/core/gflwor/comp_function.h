@@ -35,15 +35,18 @@ class SortTupleCmp
 {
 private:
   const std::vector<OrderSpec> * theOrderSpecs;
-  TypeManager                  * theTypeManager;
+  const TypeManager            * theTypeManager;
   long                           theTimezone;
 
 public:
   SortTupleCmp() : theOrderSpecs(0), theTypeManager(0), theTimezone(0) {}
 
-  SortTupleCmp(RuntimeCB* rcb, TypeManager* tm, const std::vector<OrderSpec>* orderSpecs)
-  :
-  theOrderSpecs(orderSpecs) 
+  SortTupleCmp(
+        RuntimeCB* rcb,
+        const TypeManager* tm,
+        const std::vector<OrderSpec>* orderSpecs)
+    :
+    theOrderSpecs(orderSpecs) 
   {
     theTypeManager = tm;
     theTimezone = rcb->theDynamicContext->get_implicit_timezone();

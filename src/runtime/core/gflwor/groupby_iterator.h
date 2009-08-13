@@ -35,6 +35,7 @@ class GroupByIterator;
 class GroupByState : public PlanIteratorState 
 {
   friend class GroupByIterator;
+
 protected:
   GroupHashMap           * theGroupMap;
   GroupHashMap::iterator   theGroupMapIter;
@@ -44,8 +45,12 @@ public:
 
   ~GroupByState();
 
-  void init(PlanState& aState, static_context* sctx, std::vector<GroupingSpec>* groupingSpecs);
-  void reset(PlanState& state );
+  void init(
+        PlanState& aState,
+        const TypeManager* tm,
+        std::vector<GroupingSpec>* groupingSpecs);
+
+  void reset(PlanState& state);
 };
 
 
@@ -67,12 +72,12 @@ public:
     ar & theOuterVars;
   }
 public:
-  GroupByIterator (
+  GroupByIterator(
         short sctx,
         const QueryLoc& loc,
         PlanIter_t aTupleIterator,
         std::vector<GroupingSpec> aGroupingSpecs,
-        std::vector<GroupingOuterVar> aOuterVars );
+        std::vector<GroupingOuterVar> aOuterVars);
 
   ~GroupByIterator();
 
@@ -84,7 +89,7 @@ public:
   virtual uint32_t getStateSize() const;
   virtual uint32_t getStateSizeOfSubtree() const;
 
-  virtual void accept ( PlanIterVisitor& ) const;
+  virtual void accept(PlanIterVisitor&) const;
 
 private:
   void matVarsAndGroupBy (

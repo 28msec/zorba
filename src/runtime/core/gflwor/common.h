@@ -203,13 +203,16 @@ class GroupTupleCmp
 {
 private:
   std::vector<GroupingSpec> * theGroupingSpecs;
-  TypeManager               * theTypeManager;
+  const TypeManager         * theTypeManager;
   long                        theTimezone;
 
 public:
   GroupTupleCmp() : theGroupingSpecs(0), theTypeManager(0), theTimezone(0) {}
 
-  GroupTupleCmp(RuntimeCB* rcb, TypeManager* tm, std::vector<GroupingSpec>* groupSpecs);
+  GroupTupleCmp(
+        RuntimeCB* rcb,
+        const TypeManager* tm,
+        std::vector<GroupingSpec>* groupSpecs);
 
   uint32_t hash(GroupTuple* t) const;
 

@@ -151,7 +151,7 @@ void GroupingOuterVar::close ( PlanState& planState )
 
 GroupTupleCmp::GroupTupleCmp(
     RuntimeCB* rcb,
-    TypeManager* tm,
+    const TypeManager* tm,
     std::vector<GroupingSpec>* groupingSpecs) 
   :
   theGroupingSpecs(groupingSpecs),
