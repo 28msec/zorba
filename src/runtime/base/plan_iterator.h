@@ -263,8 +263,8 @@ public:
   uint32_t getStateOffset() const { return stateOffset; }
   
 public:
-  QueryLoc  loc;
-  short     sctx;
+  QueryLoc          loc;
+  short             sctx;
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(PlanIterator)
@@ -297,7 +297,7 @@ public:
 
 public:
 
-  void setLocation (const QueryLoc &loc_) { loc = loc_; }
+  void setLocation (const QueryLoc& loc_) { loc = loc_; }
 
   // get the static context for this iterator
   static_context*

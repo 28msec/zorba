@@ -90,7 +90,7 @@ BinaryBaseIterator<IterType, StateType>::openImpl (
     PlanState& planState,
     uint32_t& offset )
 {
-  StateTraitsImpl <StateType>::createState(planState, this->stateOffset, offset);
+  StateTraitsImpl<StateType>::createState(planState, this->stateOffset, offset);
   StateTraitsImpl<StateType>::initState(planState, this->stateOffset);
 
   theChild0->open(planState, offset);
@@ -132,4 +132,12 @@ BinaryBaseIterator<IterType, StateType>::getStateSizeOfSubtree() const
 } /* namespace zorba */
 
 #endif /* ZORBA_BINARYBASE_H */
+
 /* vim:set ts=2 sw=2: */
+
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
