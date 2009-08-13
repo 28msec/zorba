@@ -21,51 +21,51 @@
 
 namespace zorba {
 
-  class PlanState;
+class PlanState;
 
-  /*******************************************************************************
-    Wrapper used to drive the evaluation of an iterator (sub)tree.
+/*******************************************************************************
+  Wrapper used to drive the evaluation of an iterator (sub)tree.
 
-    The wrapper wraps the root iterator of the (sub)tree. It is responsible
-    for allocating and deallocating the plan state that is shared by all
-    iterators in the (sub)tree. In general, it hides internal functionality
-    like separation of code and execution, or garabage collection, and it
-    provides a simple interface that the application can use.
-   ********************************************************************************/
-  class PlanWrapper : public store::Iterator
-  {
-    protected:
-      PlanIter_t         theIterator;
-      PlanState        * theStateBlock;
-      dynamic_context  * theDynamicContext;
+  The wrapper wraps the root iterator of the (sub)tree. It is responsible
+  for allocating and deallocating the plan state that is shared by all
+  iterators in the (sub)tree. In general, it hides internal functionality
+  like separation of code and execution, or garabage collection, and it
+  provides a simple interface that the application can use.
+********************************************************************************/
+class PlanWrapper : public store::Iterator
+{
+protected:
+  PlanIter_t         theIterator;
+  PlanState        * theStateBlock;
+  dynamic_context  * theDynamicContext;
 #ifndef NDEBUG
-      bool		           theIsOpened;
+  bool		           theIsOpened;
 #endif
 
-    public:
-      PlanWrapper(const PlanIter_t& iter, CompilerCB*, dynamic_context* aDynamicContext, uint32_t aStackDepth = 0);
+public:
+  PlanWrapper(const PlanIter_t& iter, CompilerCB*, dynamic_context* aDynamicContext, uint32_t aStackDepth = 0);
 
-      virtual ~PlanWrapper();
+  virtual ~PlanWrapper();
 
-      virtual void 
-      open();
+  virtual void 
+  open();
 
-      virtual bool
-      next(store::Item_t&);
+  virtual bool
+  next(store::Item_t&);
 
-      virtual void 
-      reset();
+  virtual void 
+  reset();
 
-      virtual void
-      close() throw ();
+  virtual void
+  close() throw ();
 
-      virtual void checkDepth (const QueryLoc &loc);
+  virtual void checkDepth (const QueryLoc &loc);
 
-      virtual bool
-      isUpdating() const;
+  virtual bool
+  isUpdating() const;
 
-      const RuntimeCB *getRuntimeCB () const;
-  };
+  const RuntimeCB *getRuntimeCB () const;
+};
 
 } /* namespace zorba */
 #endif
