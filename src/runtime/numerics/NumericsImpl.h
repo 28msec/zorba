@@ -33,11 +33,18 @@ namespace zorba
   defined in runtime/core/arithmetic_impl.h). 
 
   The iterator can handle operands with any valid combination of numeric and/or
-  untypedAtomic data types. 
+  untypedAtomic data types.
 ********************************************************************************/
+class NumArithIteratorState : public PlanIteratorState
+{
+public:
+  const TypeManager * tm;
+};
+
+
 template < class Operation >
 class NumArithIterator : public BinaryBaseIterator<NumArithIterator<Operation>,
-                                                   PlanIteratorState>
+                                                   NumArithIteratorState>
 {
 public:
   static bool
@@ -63,7 +70,9 @@ public:
 public:
   NumArithIterator(short sctx, const QueryLoc&, PlanIter_t&, PlanIter_t&);
 
-  virtual ~NumArithIterator(){}
+  virtual ~NumArithIterator() {}
+
+  void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState&) const;
       
@@ -71,7 +80,7 @@ public:
 
 public:
   SERIALIZABLE_TEMPLATE_CLASS(NumArithIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(NumArithIterator, BinaryBaseIterator<NumArithIterator<Operation>,PlanIteratorState>)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(NumArithIterator, BinaryBaseIterator<NumArithIterator<Operation>, NumArithIteratorState>)
   void serialize(::zorba::serialization::Archiver &ar)
   {
     serialize_baseclass(ar, (BinaryBaseIterator<NumArithIterator<Operation>,PlanIteratorState>*)this);

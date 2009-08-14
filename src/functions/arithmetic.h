@@ -20,31 +20,13 @@
 #include "common/shared_types.h"
 #include "functions/function.h"
 
-namespace zorba {
-
-  class binary_arith_func : public function {
-  public:
-    binary_arith_func (const signature &sig) : function (sig) {}
-    virtual bool isArithmeticFunction() const { return true; }
-    virtual const char *op_name () const = 0;
-    static xqtref_t atomic_return_type (const std::vector<xqtref_t> &arg_types);
-    xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
-
-    const function *specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const;
-    virtual bool specializable() const { return true; }
-  };
-
-  // 6.2.2 op:numeric-subtract
-  // -------------------------
-  class op_subtract : public binary_arith_func {
-  public:
-    op_subtract(const signature& sig) : binary_arith_func (sig) {}
-    const char *op_name () const { return "subtract"; }
-    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+namespace zorba 
+{
 
 
-  void populateContext_Arithmetics(static_context *sctx);
+void populateContext_Arithmetics(static_context* sctx);
+
+
 } // namespace zorba
 
 #endif

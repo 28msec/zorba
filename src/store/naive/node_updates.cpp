@@ -260,10 +260,8 @@ void XmlNode::attach(
   }
   }
 
-  SYNC_CODE(oldTree->getRCLock().acquire());
   ulong refcount = oldTree->getRefCount();
   oldTree->getRefCount() = 0;
-  SYNC_CODE(oldTree->getRCLock().release());
   oldTree->free();
 
   SYNC_CODE(newTree->getRCLock().acquire());

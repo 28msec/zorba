@@ -22,8 +22,9 @@
 
 #include "compiler/parser/parse_constants.h"
 #include "common/shared_types.h"
+
 #include "runtime/base/unarybase.h"
-#include "runtime/booleans/compare_types.h"
+
 #include "types/schema/EventSchemaValidator.h"
 #include "zorbatypes/xqpstring.h"
 

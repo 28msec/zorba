@@ -705,59 +705,77 @@ TypeConstants::castable_t TypeOps::castability(const XQType& src, const XQType& 
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t TypeOps::arithmetic_type_exact(const XQType& type1, const XQType& type2)
+xqtref_t TypeOps::arithmetic_type(
+    const XQType& type1,
+    const XQType& type2,
+    bool division)
 {
-  CACHE_ROOT_TS (genv_ts);
-  if (TypeOps::is_subtype(type1, *genv_ts.UNTYPED_ATOMIC_TYPE_ONE)
-    || TypeOps::is_subtype(type2, *genv_ts.UNTYPED_ATOMIC_TYPE_ONE)) {
-    return genv_ts.DOUBLE_TYPE_ONE;
+  if (is_empty(type1))
+    return &type1;
+
+  if (is_empty(type2))
+    return &type2;
+
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
+
+  xqtref_t resultType;
+  TypeConstants::quantifier_t resultQuant = TypeConstants::QUANT_ONE;
+
+  TypeConstants::quantifier_t quant1 = type1.get_quantifier();
+  TypeConstants::quantifier_t quant2 = type2.get_quantifier();
+
+  if (quant1 == TypeConstants::QUANT_QUESTION ||
+      quant1 == TypeConstants::QUANT_STAR ||
+      quant2 == TypeConstants::QUANT_QUESTION ||
+      quant2 == TypeConstants::QUANT_STAR)
+  {
+    resultQuant = TypeConstants::QUANT_QUESTION;
+  }
+
+  if (division &&
+      TypeOps::is_subtype(type1, *rtm.INTEGER_TYPE_STAR) &&
+      TypeOps::is_subtype(type2, *rtm.INTEGER_TYPE_STAR))
+  {
+    return (resultQuant == TypeConstants::QUANT_ONE ?
+            rtm.DECIMAL_TYPE_ONE : rtm.DECIMAL_TYPE_QUESTION); 
+  }
+
+  if (TypeOps::is_subtype(type1, *rtm.UNTYPED_ATOMIC_TYPE_STAR) ||
+      TypeOps::is_subtype(type2, *rtm.UNTYPED_ATOMIC_TYPE_STAR)) 
+  {
+    return (resultQuant == TypeConstants::QUANT_ONE ?
+            rtm.DOUBLE_TYPE_ONE : rtm.DOUBLE_TYPE_QUESTION);
   }
  
-  if (TypeOps::is_subtype(type1, *genv_ts.DOUBLE_TYPE_ONE)
-    || TypeOps::is_subtype(type2, *genv_ts.DOUBLE_TYPE_ONE)) {
-    return genv_ts.DOUBLE_TYPE_ONE;
+  if (TypeOps::is_subtype(type1, *rtm.DOUBLE_TYPE_STAR) ||
+      TypeOps::is_subtype(type2, *rtm.DOUBLE_TYPE_STAR)) 
+  {
+    return (resultQuant == TypeConstants::QUANT_ONE ?
+            rtm.DOUBLE_TYPE_ONE : rtm.DOUBLE_TYPE_QUESTION);
   }
  
-  if (TypeOps::is_subtype(type1, *genv_ts.FLOAT_TYPE_ONE)
-    || TypeOps::is_subtype(type2, *genv_ts.FLOAT_TYPE_ONE)) {
-    return genv_ts.FLOAT_TYPE_ONE;
+  if (TypeOps::is_subtype(type1, *rtm.FLOAT_TYPE_STAR) ||
+      TypeOps::is_subtype(type2, *rtm.FLOAT_TYPE_STAR)) 
+  {
+    return (resultQuant == TypeConstants::QUANT_ONE ?
+            rtm.FLOAT_TYPE_ONE : rtm.FLOAT_TYPE_QUESTION);
   }
 
-  if (TypeOps::is_subtype(type1, *genv_ts.INTEGER_TYPE_ONE)
-    && TypeOps::is_subtype(type2, *genv_ts.INTEGER_TYPE_ONE)) {
-    return genv_ts.INTEGER_TYPE_ONE;
+  if (TypeOps::is_subtype(type1, *rtm.INTEGER_TYPE_STAR) &&
+      TypeOps::is_subtype(type2, *rtm.INTEGER_TYPE_STAR)) 
+  {
+    return (resultQuant == TypeConstants::QUANT_ONE ?
+            rtm.INTEGER_TYPE_ONE : rtm.INTEGER_TYPE_QUESTION);
   }
 
-  if (TypeOps::is_subtype(type1, *genv_ts.DECIMAL_TYPE_ONE)
-    && TypeOps::is_subtype(type2, *genv_ts.DECIMAL_TYPE_ONE)) {
-    return genv_ts.DECIMAL_TYPE_ONE;
+  if (TypeOps::is_subtype(type1, *rtm.DECIMAL_TYPE_STAR) &&
+      TypeOps::is_subtype(type2, *rtm.DECIMAL_TYPE_STAR)) 
+  {
+    return (resultQuant == TypeConstants::QUANT_ONE ?
+            rtm.DECIMAL_TYPE_ONE : rtm.DECIMAL_TYPE_QUESTION); 
   }
 
-  return NULL;
-}
-
-xqtref_t TypeOps::arithmetic_type_static(const XQType& type1, const XQType& type2)
-{
-  xqtref_t pt1 = TypeOps::prime_type(type1);
-  xqtref_t pt2 = TypeOps::prime_type(type2);
-
-  xqtref_t aType = arithmetic_type_exact(*pt1, *pt2);
-  if (aType == NULL) {
-    return NULL;
-  }
-  TypeConstants::quantifier_t iquant =
-    RootTypeManager::QUANT_UNION_MATRIX[type1.get_quantifier()][type2.get_quantifier()];
-  return aType->get_manager()->create_type(*aType, iquant);
-}
-
-xqtref_t TypeOps::arithmetic_type(const XQType& type1, const XQType& type2)
-{
-  CACHE_ROOT_TS (genv_ts);
-  xqtref_t aType = arithmetic_type_static(type1, type2);
-  if (aType == NULL) {
-    return genv_ts.INTEGER_TYPE_ONE;
-  }
-  return aType;
+  return rtm.ANY_ATOMIC_TYPE_QUESTION;
 }
 
 

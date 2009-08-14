@@ -550,13 +550,15 @@ ostream& match_expr::put(ostream& os) const
 }
 
 
-ostream& const_expr::put( ostream& os) const
+ostream& const_expr::put(ostream& os) const
 {
-  os << INDENT << "const_expr" << expr_addr (this) << " " << GENV_TYPESYSTEM.create_value_type (get_val ())->toString () << " [ ";
-  os << val->getStringValue();
-  os << " ]\n"; UNDENT;
+  os << INDENT << "const_expr" << expr_addr(this) << " "
+     << get_val()->getType()->getStringValue()->c_str()
+     << " [ " << val->getStringValue() << " ]\n";
+  UNDENT;
   return os;
 }
+
 
 ostream& order_expr::put( ostream& os) const
 {

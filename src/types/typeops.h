@@ -205,19 +205,12 @@ public:
   static xqtref_t intersect_type(const XQType& type1, const XQType& type2);
 
   /*
-   * Returns the type to be used for arithmetic ops.
+   * Returns the type to be used for numeric arithmetic ops.
    */
-  static xqtref_t arithmetic_type_exact(const XQType& type1, const XQType& type2);
-
-  /*
-   * Returns the type to be used for arithmetic ops.
-   */
-  static xqtref_t arithmetic_type_static(const XQType& type1, const XQType& type2);
-
-  /*
-   * Returns the type to be used for arithmetic ops.
-   */
-  static xqtref_t arithmetic_type(const XQType& type1, const XQType& type2);
+  static xqtref_t arithmetic_type(
+        const XQType& type1,
+        const XQType& type2,
+        bool division);
 
   /*
    * Returns a type identifier that represents the given type.

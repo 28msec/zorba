@@ -37,7 +37,6 @@
 #include "runtime/api/runtimecb.h"
 #include "runtime/core/arithmetic_impl.h"
 #include "runtime/util/iterator_impl.h"
-#include "runtime/booleans/compare_types.h"
 #include "runtime/util/handle_hashset_item_value.h"
 
 #include "system/globalenv.h"

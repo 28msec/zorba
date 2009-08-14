@@ -48,9 +48,6 @@ ZorbaImpl::~ZorbaImpl()
   shutdown();
   delete ::zorba::serialization::g_class_serializer;
   ::zorba::serialization::g_class_serializer = NULL;
-#ifndef ZORBA_FOR_ONE_THREAD_ONLY
-  RCLock::deletePool();
-#endif
 }
 
 

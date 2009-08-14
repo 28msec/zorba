@@ -134,8 +134,21 @@ NumArithIterator<Operations>::NumArithIterator(
     PlanIter_t& iter0,
     PlanIter_t& iter1)
   :
-  BinaryBaseIterator<NumArithIterator<Operations>, PlanIteratorState >(sctx, loc, iter0, iter1)
+  BinaryBaseIterator<NumArithIterator<Operations>, NumArithIteratorState >(sctx, loc, iter0, iter1)
 { 
+}
+
+
+template < class Operation >
+void NumArithIterator<Operation>::openImpl(PlanState& planState, uint32_t& offset)
+{
+  BinaryBaseIterator<NumArithIterator<Operation>, NumArithIteratorState >::
+  openImpl(planState, offset);
+
+  NumArithIteratorState* state = StateTraitsImpl<NumArithIteratorState>::
+  getState(planState, this->stateOffset);
+
+  state->tm = this->getStaticContext(planState)->get_typemanager();
 }
 
 
@@ -148,16 +161,14 @@ bool NumArithIterator<Operation>::nextImpl(
   store::Item_t n0;
   store::Item_t n1;
   
-  const TypeManager* tm = this->getStaticContext(planState)->get_typemanager();
+  NumArithIteratorState* state;
+  DEFAULT_STACK_INIT(NumArithIteratorState, state, planState);
 
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-
-  if (consumeNext( n0, this->theChild0.getp(), planState ))
+  if (consumeNext(n0, this->theChild0.getp(), planState))
   {
-    if (consumeNext( n1, this->theChild1.getp(), planState ))
+    if (consumeNext(n1, this->theChild1.getp(), planState))
     {
-      res = compute(result, planState.theRuntimeCB, tm, this->loc, n0, n1);
+      res = compute(result, planState.theRuntimeCB, state->tm, this->loc, n0, n1);
       
       if (consumeNext(n0, this->theChild0.getp(), planState) ||
           consumeNext(n1, this->theChild1.getp(), planState))
@@ -205,7 +216,9 @@ bool NumArithIterator<Operation>::computeAtomic(
   store::Item_t n0;
   store::Item_t n1;
 
-  xqtref_t resultType = TypeOps::arithmetic_type(*type0, *type1);
+  bool isDivision = Operation::getOperationKind() == ArithmeticConsts::DIVISION;
+
+  xqtref_t resultType = TypeOps::arithmetic_type(*type0, *type1, isDivision);
 
   try
   {

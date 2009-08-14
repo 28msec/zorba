@@ -18,7 +18,6 @@
 #include "functions/Boolean.h"
 #include "functions/function_impl.h"
 
-#include "runtime/booleans/compare_types.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/core/item_iterator.h"
 
@@ -198,7 +197,7 @@ xqtref_t ValueOpComparison::return_type (const std::vector<xqtref_t> &arg_types)
 
 
 /*******************************************************************************
-  Specific instances of GenericOpComparison.
+  Specific instances of GeneralOpComparison.
 ********************************************************************************/
 
 template<enum CompareConsts::CompareType CC>
@@ -372,7 +371,9 @@ DECL_ALL_SPECIFIC_GENERAL_OPS(LESS_EQUAL, less_equal, "less-equal");
 
   /* end class fn_boolean */
 
-void populateContext_Comparison(static_context *sctx) {
+
+void populateContext_Comparison(static_context *sctx) 
+{
 // Generic Comparison;
 DECL(sctx, op_equal,
      (createQName(XQUERY_OP_NS,"fn", ":equal"),

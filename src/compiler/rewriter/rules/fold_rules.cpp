@@ -13,6 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include "zorbaerrors/errors.h"
+#include "zorbaerrors/error_messages.h"
+
+#include "system/globalenv.h"
+
 #include "context/static_context.h"
 
 #include "compiler/rewriter/rules/ruleset.h"
@@ -24,17 +30,11 @@
 #include "types/typeops.h"
 #include "types/casting.h"
 
-#include "system/globalenv.h"
-
-#include "runtime/util/plan_wrapper_holder.h"
-
 #include "functions/function.h"
 #include "functions/Misc.h"
 #include "functions/Boolean.h"
-#include "functions/arithmetic.h"
 
-#include "zorbaerrors/error_messages.h"
-#include "zorbaerrors/errors.h"
+#include "runtime/util/plan_wrapper_holder.h"
 
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
@@ -333,22 +333,23 @@ RULE_REWRITE_POST(MarkUnfoldableExprs)
 }
 
 
-static bool maybe_needs_implicit_timezone (const fo_expr *fo, static_context *sctx) 
+static bool maybe_needs_implicit_timezone(const fo_expr *fo, static_context *sctx) 
 {
   const function *f = fo->get_func ();
   xqtref_t type0 = (fo->size() > 0 ? (*fo)[0]->return_type (sctx) : NULL);
   xqtref_t type1 = (fo->size() > 1 ? (*fo)[1]->return_type (sctx) : NULL);
 
-  return ( ((f->isComparisonFunction() || dynamic_cast<const op_subtract *> (f) != NULL)
-            &&
-            (TypeOps::maybe_date_time (*type0) || TypeOps::maybe_date_time (*type1)))
-           || ((f == LOOKUP_FN ("fn", "distinct-values", 1) ||
-                f == LOOKUP_FN ("fn", "distinct-values", 2) ||
-                f == LOOKUP_FN ("fn", "min", 1) ||
-                f == LOOKUP_FN ("fn", "min", 2) ||
-                f == LOOKUP_FN ("fn", "max", 1) ||
-                f == LOOKUP_FN ("fn", "max", 2))
-               && TypeOps::maybe_date_time(*TypeOps::prime_type(*type0))) );
+  return ( ((f->isComparisonFunction() ||
+             f->arithmetic_kind() == ArithmeticConsts::SUBTRACTION) &&
+            (TypeOps::maybe_date_time(*type0) || TypeOps::maybe_date_time(*type1)))
+           ||
+           ((f == LOOKUP_FN ("fn", "distinct-values", 1) ||
+             f == LOOKUP_FN ("fn", "distinct-values", 2) ||
+             f == LOOKUP_FN ("fn", "min", 1) ||
+             f == LOOKUP_FN ("fn", "min", 2) ||
+             f == LOOKUP_FN ("fn", "max", 1) ||
+             f == LOOKUP_FN ("fn", "max", 2))
+            && TypeOps::maybe_date_time(*TypeOps::prime_type(*type0))) );
 }
 
 

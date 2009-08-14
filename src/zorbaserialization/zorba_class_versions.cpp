@@ -47,10 +47,6 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap_entry, serializable
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap_entry, serializable_hashmap<xqp_string>::entry, 2)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap_entry, serializable_hashmap<xqtref_t>::entry, 3)
 
-#ifndef ZORBA_FOR_ONE_THREAD_ONLY
-SERIALIZABLE_CLASS_VERSIONS(RCLock)
-END_SERIALIZABLE_CLASS_VERSIONS(RCLock)
-#endif
 
 /*SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(Batcher, Batcher<ElementIterator>)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(Batcher, Batcher<FLWORIterator>)

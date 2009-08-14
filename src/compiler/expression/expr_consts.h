@@ -69,6 +69,38 @@ enum expr_update_t
 };
 
 
+class CompareConsts 
+{
+public:
+  enum CompareType
+  {
+    UNKNOWN,
+    VALUE_EQUAL, GENERAL_EQUAL, NODE_EQUAL,
+    VALUE_NOT_EQUAL, GENERAL_NOT_EQUAL, NODE_NOT_EQUAL,
+    VALUE_LESS, GENERAL_LESS,
+    VALUE_LESS_EQUAL, GENERAL_LESS_EQUAL,
+    VALUE_GREATER, GENERAL_GREATER,
+    VALUE_GREATER_EQUAL, GENERAL_GREATER_EQUAL
+  };
+};
+
+
+class ArithmeticConsts 
+{
+public:
+  enum OperationKind
+  {
+    UNKNOWN,
+    ADDITION,
+    SUBTRACTION,
+    MULTIPLICATION,
+    DIVISION,
+    INTEGER_DIVISION,
+    MODULO
+  };
+};
+
+
 }; // namespace zorba
 
 

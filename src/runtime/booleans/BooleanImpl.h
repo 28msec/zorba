@@ -22,13 +22,13 @@
 #include "runtime/base/unarybase.h"
 #include "runtime/base/binarybase.h"
 #include "runtime/base/narybase.h"
-#include "runtime/booleans/compare_types.h"
+
 
 namespace zorba
 {
 
-  class RuntimeCB; // TODO we should have a shared_runtime_types.h
-  class GenericCast;
+class RuntimeCB; // TODO we should have a shared_runtime_types.h
+class GenericCast;
 
 
 /*******************************************************************************

@@ -39,11 +39,18 @@ public:
 };
 
 
-/** 
- * Operations for Add
- */
+/******************************************************************************* 
+  Class that implements addition between 2 items. The class has a compute()
+  method for each combination of valid data types for the 2 input items.
+********************************************************************************/
 class AddOperation
 {
+public:
+  static ArithmeticConsts::OperationKind getOperationKind() 
+  {
+    return ArithmeticConsts::ADDITION;
+  }
+
 public:
   template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
   static bool compute(
@@ -72,144 +79,187 @@ public:
 };
 
 
-/** 
- * Operations for Subtract
- */
+/******************************************************************************* 
+  Class that implements subtraction between 2 items. The class has a compute()
+  method for each combination of valid data types for the 2 input items.
+********************************************************************************/
 class SubtractOperation
 {
 public:
+  static ArithmeticConsts::OperationKind getOperationKind() 
+  {
+    return ArithmeticConsts::SUBTRACTION;
+  }
+
+public:
   template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-  static bool compute(store::Item_t& result,
-                      RuntimeCB* rcb,
-                      const TypeManager* tm,
-                      const QueryLoc* loc,
-                      const store::Item*,
-                      const store::Item*)
+  static bool compute(
+        store::Item_t& result,
+        RuntimeCB* rcb,
+        const TypeManager* tm,
+        const QueryLoc* loc,
+        const store::Item*,
+        const store::Item*)
   {
     ArithOperationsCommons::createError(rcb, tm, "sub", loc, ATC0, ATC1);
     return 0;
   }
 
   template<TypeConstants::atomic_type_code_t ATC>
-  static bool computeSingleType(store::Item_t& result,
-                                RuntimeCB* rcb,
-                                const TypeManager* tm,
-                                const QueryLoc* loc,
-                                const store::Item* i0,
-                                const store::Item* i1) 
+  static bool computeSingleType(
+        store::Item_t& result,
+        RuntimeCB* rcb,
+        const TypeManager* tm,
+        const QueryLoc* loc,
+        const store::Item* i0,
+        const store::Item* i1) 
   {
     return SubtractOperation::compute<ATC,ATC>(result, rcb, tm, loc, i0, i1);
   }
 };
 
 
-/** 
- * Operations for Multiply
- */
+/******************************************************************************* 
+  Class that implements multiplication between 2 items. The class has a compute()
+  method for each combination of valid data types for the 2 input items.
+********************************************************************************/
 class MultiplyOperation
 {
 public:
+  static ArithmeticConsts::OperationKind getOperationKind() 
+  {
+    return ArithmeticConsts::MULTIPLICATION;
+  }
+
+public:
   template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-  static bool compute(store::Item_t& result,
-                      RuntimeCB* rcb,
-                      const TypeManager* tm,
-                      const QueryLoc* loc,
-                      const store::Item*,
-                      const store::Item*)
+  static bool compute(
+        store::Item_t& result,
+        RuntimeCB* rcb,
+        const TypeManager* tm,
+        const QueryLoc* loc,
+        const store::Item*,
+        const store::Item*)
   {
     ArithOperationsCommons::createError(rcb, tm, "mul", loc, ATC0, ATC1);
     return 0;
   }
 
   template<TypeConstants::atomic_type_code_t ATC>
-  static bool computeSingleType(store::Item_t& result,
-      RuntimeCB* rcb,
-      const TypeManager* tm,
-      const QueryLoc* loc,
-      const store::Item* i0,
-      const store::Item* i1) 
+  static bool computeSingleType(
+        store::Item_t& result,
+        RuntimeCB* rcb,
+        const TypeManager* tm,
+        const QueryLoc* loc,
+        const store::Item* i0,
+        const store::Item* i1) 
   {
     return MultiplyOperation::compute<ATC,ATC>(result, rcb, tm, loc, i0, i1);
   }
 };
 
 
-/**
- * Operations for Division
- */
+/******************************************************************************* 
+  Class that implements division between 2 items. The class has a compute()
+  method for each combination of valid data types for the 2 input items.
+********************************************************************************/
 class DivideOperation
 {
 public:
+  static ArithmeticConsts::OperationKind getOperationKind() 
+  {
+    return ArithmeticConsts::DIVISION;
+  }
+
+public:
   template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-  static bool compute(store::Item_t& result,
-      RuntimeCB* rcb,
-      const TypeManager* tm,
-      const QueryLoc* loc,
-      const store::Item*,
-      const store::Item*)
+  static bool compute(
+        store::Item_t& result,
+        RuntimeCB* rcb,
+        const TypeManager* tm,
+        const QueryLoc* loc,
+        const store::Item*,
+        const store::Item*)
   {
     ArithOperationsCommons::createError(rcb, tm, "div", loc, ATC0, ATC1);
     return 0;
   }
 
   template<TypeConstants::atomic_type_code_t ATC>
-  static bool computeSingleType(store::Item_t& result,
-      RuntimeCB* rcb,
-      const TypeManager* tm,
-      const QueryLoc* loc,
-      const store::Item* i0,
-      const store::Item* i1) 
+  static bool computeSingleType(
+        store::Item_t& result,
+        RuntimeCB* rcb,
+        const TypeManager* tm,
+        const QueryLoc* loc,
+        const store::Item* i0,
+        const store::Item* i1) 
   {
     return DivideOperation::compute<ATC,ATC>(result, rcb, tm, loc, i0, i1);
   }
 };
 
 
-/**
- * Operations for Integer Division
- */
+/******************************************************************************* 
+  Class that implements integer division between 2 items. The class has a compute()
+  method for each combination of valid data types for the 2 input items.
+********************************************************************************/
 class IntegerDivideOperation
 {
 public:
+  static ArithmeticConsts::OperationKind getOperationKind() 
+  {
+    return ArithmeticConsts::INTEGER_DIVISION;
+  }
+
+public:
   template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
-  static bool compute(store::Item_t& result,
-      RuntimeCB* rcb,
-      const TypeManager* tm,
-      const QueryLoc* loc,
-      const store::Item*,
-      const store::Item*)
+  static bool compute(
+        store::Item_t& result,
+        RuntimeCB* rcb,
+        const TypeManager* tm,
+        const QueryLoc* loc,
+        const store::Item*,
+        const store::Item*)
   {
     ArithOperationsCommons::createError(rcb, tm, "int-div", loc, ATC0, ATC1);
     return 0;
   }
 
   template<TypeConstants::atomic_type_code_t ATC>
-  static bool computeSingleType(store::Item_t& result,
-      RuntimeCB* rcb,
-      const TypeManager* tm,
-      const QueryLoc* loc,
-      const store::Item* i0,
-      const store::Item* i1) 
+  static bool computeSingleType(
+        store::Item_t& result,
+        RuntimeCB* rcb,
+        const TypeManager* tm,
+        const QueryLoc* loc,
+        const store::Item* i0,
+        const store::Item* i1) 
   {
     return IntegerDivideOperation::compute<ATC,ATC>(result, rcb, tm, loc, i0, i1);
   }
 };
 
 
-/**
- * Operations for Mod
- */
+/******************************************************************************* 
+  Class that implements modulo between 2 items. The class has a compute()
+  method for each combination of valid data types for the 2 input items.
+********************************************************************************/
 class ModOperation
 {
 public:
+  static ArithmeticConsts::OperationKind getOperationKind() 
+  {
+    return ArithmeticConsts::MODULO;
+  }
+
+public:
   template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
   static bool compute(
-      store::Item_t& result,
-      RuntimeCB* rcb,
-      const TypeManager* tm,
-      const QueryLoc* loc,
-      const store::Item*,
-      const store::Item*)
+        store::Item_t& result,
+        RuntimeCB* rcb,
+        const TypeManager* tm,
+        const QueryLoc* loc,
+        const store::Item*,
+        const store::Item*)
   {
     ArithOperationsCommons::createError(rcb, tm, "mod", loc, ATC0, ATC1);
     return 0;
@@ -217,12 +267,12 @@ public:
 
   template<TypeConstants::atomic_type_code_t ATC>
   static bool computeSingleType(
-      store::Item_t& result,
-      RuntimeCB* rcb,
-      const TypeManager* tm,
-      const QueryLoc* loc,
-      const store::Item* i0,
-      const store::Item* i1) 
+        store::Item_t& result,
+        RuntimeCB* rcb,
+        const TypeManager* tm,
+        const QueryLoc* loc,
+        const store::Item* i0,
+        const store::Item* i1) 
   {
     return ModOperation::compute<ATC,ATC>(result, rcb, tm, loc, i0, i1);
   }
@@ -230,9 +280,13 @@ public:
 
 
 
-/**
- * Generic Template Class
- */
+/*******************************************************************************
+  Template iterator for arithmetic operations (+, -, *, div, idiv, and mod)
+  The class that implements the specific operation is passed as the template
+  parameter.
+
+  The iterator can handle operands with any valid combination of data types. 
+********************************************************************************/
 class GenericArithIteratorState : public PlanIteratorState
 {
 public:

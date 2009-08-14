@@ -1,18 +1,3 @@
-/*
- * Copyright 2006-2008 The FLWOR Foundation.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 #include "zorbatypes/rchandle.h"
 #include <sstream>
@@ -24,247 +9,6 @@
 #include "zorbautils/fatal.h"
 
 namespace zorba {
-
-#ifndef ZORBA_FOR_ONE_THREAD_ONLY
-
-#define     NR_RCLOCKS_IN_POOL  1000
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class SyncLock
-{
-protected:
-
-#ifdef ZORBA_HAVE_PTHREAD_H
-
-#if defined ZORBA_HAVE_PTHREAD_SPINLOCK
-  pthread_spinlock_t       theLock;
-
-#elif defined ZORBA_HAVE_PTHREAD_MUTEX
-  mutable pthread_mutex_t  theLock;
-
-#else
-  #error must have pthread mutex or phread spinlock
-
-#endif // ZORBA_HAVE_PTHREAD_SPINLOCK or ZORBA_HAVE_PTHREAD_MUTEX
-
-#elif defined WIN32 || defined WINCE
-
-  HANDLE                   theLock;
-
-#endif
-
-public:
-  SyncLock();
-
-  ~SyncLock();
-
-  void acquire();
-
-  void release();
-};
-
-
-#ifdef ZORBA_HAVE_PTHREAD_H
-
-#if defined ZORBA_HAVE_PTHREAD_SPINLOCK
-SyncLock::SyncLock()
-{
-  if (0 != pthread_spin_init(&theLock, PTHREAD_PROCESS_PRIVATE))
-  {
-    std::cerr << "Failed to initialize spinlock" << std::endl; 
-    abort();
-  }
-} 
-
-SyncLock::~SyncLock()
-{
-  if (0 != pthread_spin_destroy(&theLock))
-  {
-    std::cerr << "Failed to destroy spinlock" << std::endl; 
-    abort();
-  }
-
-} 
-
-void SyncLock::acquire()
-{
-  if (0 != pthread_spin_lock(&theLock))
-  {
-    std::cerr << "Failed to acquire spinlock" << std::endl; 
-    abort();
-  }
-}
-
-void SyncLock::release()
-{
-  if (0 != pthread_spin_unlock(&theLock))
-  {
-    std::cerr << "Failed to release spinlock" << std::endl; 
-    abort();
-  }
-}
-
-#elif defined ZORBA_HAVE_PTHREAD_MUTEX
-
-SyncLock::SyncLock()
-{
-  pthread_mutexattr_t attr;
-  pthread_mutexattr_init(&attr);
-  pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_ERRORCHECK | PTHREAD_PROCESS_PRIVATE);
-  if (0 != pthread_mutex_init(&theLock, &attr))
-  {
-    std::cerr << "Failed to initialize SyncLock" << std::endl; 
-    abort();
-  }
-  pthread_mutexattr_destroy(&attr);
-} 
-
-SyncLock::~SyncLock()
-{
-  if (0 != pthread_mutex_destroy(&theLock))
-  {
-    std::cerr << "Failed to destroy SyncLock" << std::endl; 
-    abort();
-  }
-} 
-
-void SyncLock::acquire()
-{
-  if (0 != pthread_mutex_lock(&theLock))
-  {
-    std::cerr << "Failed to acquire SyncLock" << std::endl; 
-    abort();
-  }
-
-}
-
-void SyncLock::release()
-{
-  if (0 != pthread_mutex_unlock(&theLock))
-  {
-    std::cerr << "Failed to release SyncLock" << std::endl; 
-    abort();
-  }
-}
-
-
-#endif // ZORBA_HAVE_PTHREAD_SPINLOCK or ZORBA_HAVE_PTHREAD_MUTEX
-
-#elif defined WIN32 || defined WINCE
-
-SyncLock::SyncLock()
-{
-  theLock = ::CreateEvent(NULL, FALSE, TRUE, NULL);
-}
-
-
-SyncLock::~SyncLock()
-{
-  ::CloseHandle(theLock);
-} 
-
-void SyncLock::acquire()
-{
-  ::WaitForSingleObject(theLock, INFINITE);
-}
-
-void SyncLock::release()
-{
-  ::SetEvent(theLock);
-}
-
-#endif // ZORBA_HAVE_PTHREAD_H or WIN32
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class RCLockPool
-{
-  SyncLock    * rclock_pool;
-  int           current_idx;
-
-public:
-
-  RCLockPool()
-  {
-    rclock_pool = new SyncLock[NR_RCLOCKS_IN_POOL];
-    current_idx = -1;
-  }
-
-  ~RCLockPool()
-  {
-    delete[] rclock_pool;
-  }
-
-  SyncLock  *getRCLockFromPool()
-  {
-    current_idx++;
-    current_idx %= NR_RCLOCKS_IN_POOL;
-    return &rclock_pool[current_idx];
-  }
-
-  static RCLockPool* getInstance();
-};
-
-
-RCLockPool* g_rclock_pool = NULL;
-
-
-RCLockPool* RCLockPool::getInstance()
-{
-  if(!g_rclock_pool)
-    g_rclock_pool = new RCLockPool;
-
-  return g_rclock_pool;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-
-RCLock::RCLock(::zorba::serialization::Archiver &) 
-{RCLock();}
-
-RCLock::RCLock()
-{
-  rcp = RCLockPool::getInstance()->getRCLockFromPool();
-}
-
-RCLock::RCLock(const RCLock& ) 
-: ::zorba::serialization::SerializeBaseClass() 
-{RCLock();}
-
-RCLock::~RCLock() {}
-
-void RCLock::acquire()
-{
-  if(g_rclock_pool)
-    rcp->acquire();
-}
-
-
-void RCLock::release()
-{
-  if(g_rclock_pool)
-    rcp->release();
-}
-
-void RCLock::deletePool()
-{
-  delete g_rclock_pool;
-  g_rclock_pool = NULL;
-}
-
-
-
-#else // ZORBA_FOR_ONE_THREAD_ONLY
-
-#endif
 
 
 /*******************************************************************************
@@ -282,18 +26,18 @@ void RCLock::deletePool()
 ********************************************************************************/
  
 void RCObject::addReference(
-    long* counter
+    long* sharedCounter
     SYNC_PARAM2(RCLock* lock)) const
 {
 #if defined WIN32 && !defined CYGWIN &&!defined ZORBA_FOR_ONE_THREAD_ONLY
   if(lock)
   {
-    if (counter) InterlockedIncrement(counter);
+    if (sharedCounter) InterlockedIncrement(sharedCounter);
     InterlockedIncrement(&theRefCount);
   }
   else
   {
-    if (counter) ++(*counter);
+    if (sharedCounter) ++(*sharedCounter);
     ++theRefCount;
   }
 
@@ -301,7 +45,7 @@ void RCObject::addReference(
 
   SYNC_CODE(if (lock) lock->acquire());
 
-  if (counter) ++(*counter);
+  if (sharedCounter) ++(*sharedCounter);
   ++theRefCount;
 
   SYNC_CODE(if (lock) lock->release());
@@ -311,16 +55,16 @@ void RCObject::addReference(
 
 
 void RCObject::removeReference (
-    long* counter 
+    long* sharedCounter 
     SYNC_PARAM2(RCLock* lock))
 {
 #if defined WIN32 && !defined CYGWIN &&!defined ZORBA_FOR_ONE_THREAD_ONLY
   if(lock)
   {
-    if (counter)
+    if (sharedCounter)
     {
       InterlockedDecrement(&theRefCount);
-      if (!InterlockedDecrement(counter))
+      if (!InterlockedDecrement(sharedCounter))
       {
         free();
         return;
@@ -334,10 +78,10 @@ void RCObject::removeReference (
   }
   else
   {
-    if (counter)
+    if (sharedCounter)
     {
       --theRefCount;
-      if (--(*counter) == 0)
+      if (--(*sharedCounter) == 0)
       {
         free();
         return;
@@ -354,10 +98,10 @@ void RCObject::removeReference (
 
   SYNC_CODE(if (lock) lock->acquire());
 
-  if (counter)
+  if (sharedCounter)
   {
     --theRefCount;
-    if (--(*counter) == 0)
+    if (--(*sharedCounter) == 0)
     {
       SYNC_CODE(if (lock) lock->release());
       free();

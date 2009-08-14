@@ -25,7 +25,6 @@
 #include "compiler/api/compilercb.h"
 #include "runtime/core/var_iterators.h"
 
-#include "runtime/booleans/compare_types.h"
 
 namespace zorba {
 
@@ -155,7 +154,7 @@ public:
 
   virtual const function* specialize(
         static_context *sctx,
-	const std::vector<xqtref_t>& argTypes) const
+        const std::vector<xqtref_t>& argTypes) const
   {
     return NULL;
   }
@@ -163,8 +162,16 @@ public:
   virtual bool specializable() const { return false; }
 
   virtual bool isArithmeticFunction() const { return false; }
+
+  virtual ArithmeticConsts::OperationKind arithmetic_kind() const 
+  {
+    return ArithmeticConsts::UNKNOWN;
+  }
+
   virtual bool isComparisonFunction() const { return false; }
+
   virtual bool isValueComparisonFunction() const { return false; }
+
   virtual bool isGeneralComparisonFunction() const { return false; }
 
   virtual CompareConsts::CompareType comparison_kind() const 
@@ -178,7 +185,7 @@ public:
         short sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder &ann) const = 0;
+        AnnotationHolder& ann) const = 0;
 };
 
 
@@ -249,13 +256,14 @@ public:
     ar & m_param_iters;
     ar & m_state_size;
   }
+
 public:
   user_function(
         const QueryLoc& loc,
-                const signature& _sig,
-                expr_t expr_body, 
-                ParseConstants::function_type_t,
-                bool deterministic_);
+        const signature& _sig,
+        expr_t expr_body, 
+        ParseConstants::function_type_t,
+        bool deterministic_);
 
   virtual ~user_function();
 
@@ -299,10 +307,10 @@ public:
 ********************************************************************************/
 class external_function : public function 
 {
-  public:
+public:
   external_function(const signature& sig) : function(sig) { }
 
-    virtual ~external_function() { }
+  virtual ~external_function() { }
 };
 
 

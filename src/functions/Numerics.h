@@ -37,7 +37,9 @@ public:
                       short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
 };
 
+
 void populateContext_Numerics(static_context *sctx);
+
 void populateContext_Math (static_context *sctx);
 
 }	/* namespace zorba */

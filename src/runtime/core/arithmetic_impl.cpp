@@ -1158,9 +1158,8 @@ bool ModOperation::compute<TypeConstants::XS_INTEGER, TypeConstants::XS_INTEGER>
 
 
 /*******************************************************************************
-  instantiate GenericArithIterator for all types
+  instantiate GenericArithIterator for all kinds of arithmetic operators
 ********************************************************************************/
-
 template class GenericArithIterator<AddOperation>;
 template class GenericArithIterator<SubtractOperation>;
 template class GenericArithIterator<MultiplyOperation>;

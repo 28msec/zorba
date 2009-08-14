@@ -19,13 +19,14 @@
 #include <vector>
 #include "common/shared_types.h"
 #include "functions/function.h"
-#include "runtime/booleans/compare_types.h"
+
 #include "runtime/booleans/BooleanImpl.h"
 
 namespace zorba {
 
 
-class GenericOpComparison : public function {
+class GenericOpComparison : public function 
+{
 public:
   GenericOpComparison (const signature &sig) : function (sig) {}
 
@@ -33,16 +34,26 @@ public:
 
   virtual const char* comparison_name () const { return ""; }
 
-  void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;
+  void compute_annotation(
+        AnnotationHolder *parent,
+        std::vector<AnnotationHolder *> &kids,
+        Annotation::key_t k) const;
 
-  virtual function *toValueComp (static_context *) const { return NULL; }
+  virtual function* toValueComp(static_context *) const { return NULL; }
 
-  const function *specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const;
-  
   virtual bool specializable() const { return true; }
 
-  virtual PlanIter_t codegen (CompilerCB* cb,
-                      short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
+  const function* specialize(
+        static_context* sctx,
+        const std::vector<xqtref_t>& argTypes) const;
+
+  virtual PlanIter_t codegen(
+        CompilerCB* cb,
+        short sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        AnnotationHolder &ann) const 
+  {
     return createIterator (sctx, loc, argv);
   }
 
@@ -51,25 +62,27 @@ protected:
 };
 
 
-class ValueOpComparison : public GenericOpComparison {
+class ValueOpComparison : public GenericOpComparison 
+{
 public:
-  ValueOpComparison (const signature &sig) : GenericOpComparison (sig) {}
+  ValueOpComparison(const signature& sig) : GenericOpComparison (sig) {}
 
   virtual bool isValueComparisonFunction() const { return true; }
 
-  xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
+  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
 
-  virtual bool specializable() const { return true; }
-
-  const function *specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const;
+  const function* specialize(
+        static_context* sctx,
+        const std::vector<xqtref_t>& argTypes) const;
 };
 
 
-class GeneralOpComparison : public GenericOpComparison {
+class GeneralOpComparison : public GenericOpComparison 
+{
 public:
-  GeneralOpComparison (const signature &sig) : GenericOpComparison (sig) {}
+  GeneralOpComparison(const signature &sig) : GenericOpComparison (sig) {}
 
-  bool isGeneralComparisonFunction () const { return true; }
+  bool isGeneralComparisonFunction() const { return true; }
 };
 
 
