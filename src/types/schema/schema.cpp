@@ -1304,11 +1304,14 @@ bool Schema::parseUserAtomicTypes(
     baseType = udt->getBaseType().getp();
   }
   
-#if 1
-  return GenericCast::castToAtomic(result, textValue, baseType);
-#else
   store::Item_t baseItem;
-#endif
+  if (GenericCast::castToAtomic(baseItem, textValue, baseType))
+  {
+    store::Item_t tTypeQName = udXQType->get_qname(); 
+    return GENV_ITEMFACTORY->createUserTypedAtomicItem(result, baseItem, tTypeQName);
+  }
+  else
+    return false;
 }
 
 
