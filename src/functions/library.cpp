@@ -734,6 +734,11 @@ DECL(sctx, zorba_encode_base64,
         GENV_TYPESYSTEM.STRING_TYPE_ONE,
         GENV_TYPESYSTEM.STRING_TYPE_ONE,
         GENV_TYPESYSTEM.NONE_TYPE));
+
+  DECL(sctx, zorba_mail,
+       (createQName(ZORBA_EMAIL_FN_NS, "fn-zorba-email", "mail"),
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+        GENV_TYPESYSTEM.NONE_TYPE));
 #endif
 
 // end util functions

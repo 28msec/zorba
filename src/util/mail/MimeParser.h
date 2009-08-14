@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_UTIL_UW_IMAP_H
-#define ZORBA_UTIL_UW_IMAP_H
+#ifndef ZORBA_UTIL_MIME_PARSER_H
+#define ZORBA_UTIL_MIME_PARSER_H
 
 #include "zorbatypes/representations.h"
 
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 
+#include "util/mail/MimeHandler.h"
+
 namespace zorba {
 
-  /* smtp_send -- send SMTP email */
-  bool mail(const char* to, const char* cc, const char* bcc,
-            const char* subject, const char* message,
-            const char* SMTPServer, const char* SMTPUser, const char* SMTPPwd,
-            xqp_string& diagnostics);
+  class MimeParser {
+    protected:
+      MimeHandler* theHandler;
+    public:
+      MimeParser(MimeHandler* aHandler) : theHandler(aHandler) {};
+      bool parse(const store::Item&  aMimeItem);
+  };
 
-  bool mail(store::Item_t itemMessage,
-            const char* SMTPServer, const char* SMTPUser, const char* SMTPPwd,
-            xqp_string& diagnostics);
+}/*namespace Zorba */
 
-}/*namespace zorba*/
-
-#endif /* ZORBA_UTIL_UW_IMAP_H */
+#endif /* ZORBA_UTIL_MIME_PARSER_H */

@@ -23,9 +23,19 @@ namespace zorba
             const char* subject, const char* message,
             const char* SMTPServer, const char* SMTPUser, const char* SMTPPwd,
             xqp_string& diagnostics)
-{
-  ZORBA_ERROR_PARAM(  XQP0004_SYSTEM_NOT_SUPPORTED, "MAIL" , "");
+  {
+    ZORBA_ERROR_PARAM(  XQP0004_SYSTEM_NOT_SUPPORTED, "MAIL" , "");
 
-  return 0;
-}
+    return 0;
+  }
+
+  bool mail(store::Item_t itemEnvelope, store::Item_t itemBody,
+            const char* SMTPServer, const char* SMTPUser, const char* SMTPPwd,
+            xqp_string& diagnostics)
+  {
+    ZORBA_ERROR_PARAM(  XQP0004_SYSTEM_NOT_SUPPORTED, "MAIL" , "");
+
+    return 0;
+  }
+
 } // namespace zorba

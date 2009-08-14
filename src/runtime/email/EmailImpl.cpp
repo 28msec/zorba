@@ -31,7 +31,7 @@ END_SERIALIZABLE_CLASS_VERSIONS(ZorbaMailIterator)
 bool
 ZorbaMailIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t   itemTo, itemCc, itemBcc, itemSubj, itemMsg;
+  store::Item_t   itemTo, itemCc, itemBcc, itemSubj, itemMsg, itemMessage;
   bool            res = false, lSMTPServerFound = false, hasRecipient = false;
   xqp_string      SMTPServer, SMTPUser, SMTPPwd, diagnostics;
 
@@ -45,7 +45,9 @@ ZorbaMailIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if( !lSMTPServerFound ||
        (lSMTPServerFound && SMTPServer.empty()) )
     ZORBA_ERROR_LOC(API0038_SMTP_SEVER_ERROR_SET_OPTION, loc);
-  else if(consumeNext(itemTo, theChildren[0].getp(), planState ) &&
+  else if ( theChildren.size() == 5 )
+  {
+    if(consumeNext(itemTo, theChildren[0].getp(), planState ) &&
           consumeNext(itemCc, theChildren[1].getp(), planState ) &&
           consumeNext(itemBcc, theChildren[2].getp(), planState ) &&
           consumeNext(itemSubj, theChildren[3].getp(), planState) &&
@@ -71,6 +73,21 @@ ZorbaMailIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         if( !res )
           ZORBA_ERROR_LOC_PARAM(API0040_MAIL_NOT_SENT, loc, diagnostics.c_str() , "");
       }
+  }
+  else if ( theChildren.size() == 1 )
+  {
+    if( consumeNext(itemMessage, theChildren[0].getp(), planState ) )
+    {
+      res = mail( itemMessage,
+                  SMTPServer.c_str(),
+                  SMTPUser.c_str(),
+                  SMTPPwd.c_str(),
+                  diagnostics);
+
+      if( !res )
+        ZORBA_ERROR_LOC_PARAM(API0040_MAIL_NOT_SENT, loc, diagnostics.c_str() , "");
+    }
+  }
 
   STACK_END (state);
 }
