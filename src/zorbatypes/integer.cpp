@@ -61,7 +61,7 @@ bool Integer::parseString(const char* aCharStar, Integer& aInteger)
   bool lGotSign = false;
   bool lStop = false;
   bool lGotDigit = false;
-  bool lGotSpace = false;
+  bool new_aCharStar = false;
 
   char ch = *lCur;
 
@@ -133,6 +133,7 @@ bool Integer::parseString(const char* aCharStar, Integer& aInteger)
         strncpy(copy, aCharStar, len);
         copy[len-1] = 0;
         aCharStar = copy;
+        new_aCharStar = true;
         lCur--;
       }
 
@@ -149,6 +150,8 @@ bool Integer::parseString(const char* aCharStar, Integer& aInteger)
 
   if (lStop || !lGotDigit) 
   {
+    if(new_aCharStar)
+      delete[] aCharStar;
     return false;
   } 
   else 
@@ -159,14 +162,13 @@ bool Integer::parseString(const char* aCharStar, Integer& aInteger)
     aInteger.theInteger = atoi(aCharStar);
 #endif
 
-    if (lGotSpace)
-      delete [] aCharStar;
-
 #ifdef ZORBA_NUMERIC_OPTIMIZATION
     hashed_integer = new Integer(aInteger);
     const char  *dup_str = _strdup(aCharStar);
     parsed_integers.insert(dup_str, hashed_integer);
 #endif
+    if(new_aCharStar)
+      delete[] aCharStar;
     return true;
   }
 }

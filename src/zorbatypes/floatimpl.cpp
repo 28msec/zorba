@@ -208,6 +208,7 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
   bool lGotSpace = false;
   int  signif_digits = 0;
   int  trailing_zero = 0;
+  bool new_aCharStar = false;
 
   char ch = *lCur;
 
@@ -329,6 +330,7 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
         strncpy(copy, aCharStar, len);
         copy[len-1] = 0;
         aCharStar = copy;
+        new_aCharStar = true;
         lCur--;
       }
 
@@ -346,7 +348,11 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
   if(!lGotDigit || lStop) 
   {
     if (!parseInfNaNString(aCharStar, aFloatImpl)) 
+    {
+      if(new_aCharStar)
+        delete[] aCharStar;
       return false;
+    }
   }
   else 
   {
@@ -365,6 +371,8 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
   const char  *dup_str = _strdup(aCharStar);
   parsed_floats.insert(dup_str, hashed_float);
 #endif
+  if(new_aCharStar)
+    delete[] aCharStar;
   return true;
 }
 

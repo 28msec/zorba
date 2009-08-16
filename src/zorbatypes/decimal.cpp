@@ -62,7 +62,7 @@ bool Decimal::parseString(const char* aCharStar, Decimal& aDecimal)
   bool lGotSign = false;
   bool lStop = false;
   bool lGotDigit = false;
-  bool lGotSpace = false;
+  bool new_aCharStar = false;
 
   char ch = *lCur;
 
@@ -139,6 +139,7 @@ bool Decimal::parseString(const char* aCharStar, Decimal& aDecimal)
         strncpy(copy, aCharStar, len);
         copy[len-1] = 0;
         aCharStar = copy;
+        new_aCharStar = true;
         lCur--;
       }
       
@@ -155,6 +156,8 @@ bool Decimal::parseString(const char* aCharStar, Decimal& aDecimal)
 
   if (lStop || !lGotDigit) 
   {
+    if(new_aCharStar)
+      delete[] aCharStar;
     return false;
   }
   else
@@ -167,14 +170,13 @@ bool Decimal::parseString(const char* aCharStar, Decimal& aDecimal)
       aDecimal.theDecimal = 0;
 #endif
 
-    if (lGotSpace)
-      delete [] aCharStar;
-
 #ifdef ZORBA_NUMERIC_OPTIMIZATION
     hashed_decimal = new Decimal(aDecimal);
     const char  *dup_str = _strdup(aCharStar);
     parsed_decimals.insert(dup_str, hashed_decimal);
 #endif
+    if(new_aCharStar)
+      delete[] aCharStar;
     return true;
   }
 }
