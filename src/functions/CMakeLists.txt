@@ -24,6 +24,7 @@ SET(FUNCTIONS_SRCS
     external_function_adapters.cpp
     VarDecl.cpp
     function.cpp
+    single_seq_func.cpp
     library.cpp
     Misc.cpp
     Nodes.cpp

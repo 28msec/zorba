@@ -187,13 +187,27 @@ void op_concatenate::compute_annotation (
   };
 
 
-  /*______________________________________________________________________
-    |  
-    | 15.2 Functions That Test the Cardinality of Sequences
-    |_______________________________________________________________________*/
+/*******************************************************************************
+  15.2 Functions That Test the Cardinality of Sequences
+********************************************************************************/
 
-  //15.2.1 fn:zero-or-one
-  typedef function_impl<FnZeroOrOneIterator> fn_zero_or_one;
+//15.2.1 fn:zero-or-one
+class fn_zero_or_one : public function
+{
+public:
+  fn_zero_or_one(const signature& sig) : function(sig) { }
+
+  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const
+  {
+    xqtref_t srcType = arg_types[0];
+
+    return srcType->get_manager()->
+           create_type(*TypeOps::prime_type(*srcType), TypeConstants::QUANT_QUESTION);
+  }
+
+  DEFAULT_CODEGEN (FnZeroOrOneIterator)
+};
+
 
   //15.2.2 fn:one-or-more
   class fn_one_or_more : public single_seq_function {
@@ -606,27 +620,6 @@ void fn_unordered::compute_annotation (AnnotationHolder *parent, std::vector<Ann
   }
 }
 
-xqtref_t single_seq_function::return_type (const std::vector<xqtref_t> &arg_types) const { return arg_types [src]; }
-
-void single_seq_function::compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const {
-  switch (k) {
-  case AnnotationKey::IGNORES_SORTED_NODES:
-  case AnnotationKey::IGNORES_DUP_NODES:
-    TSVAnnotationValue::update_annotation (kids [src], k, parent->get_annotation (k));
-    break;
-  case AnnotationKey::PRODUCES_DISTINCT_NODES:
-  case AnnotationKey::PRODUCES_SORTED_NODES:
-    parent->put_annotation (k, kids [src]->get_annotation (k));
-    break;
-  default: break;
-  }
-}
-
-xqtref_t single_seq_opt_function::return_type (const std::vector<xqtref_t> &arg_types) const {
-  xqtref_t inType = arg_types[src];
-  xqtref_t outType = inType->get_manager()->create_type_x_quant(*inType, TypeConstants::QUANT_QUESTION);
-  return outType;
-}
 
 
 void populateContext_Sequences(static_context *sctx) {
