@@ -68,11 +68,11 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
   m_is_loadprolog(false),
   m_context_map(cb.m_context_map),
   m_sctx(NULL),
-  m_cur_sctx(m_cur_sctx),
-    m_error_manager(cb.m_error_manager),
-    m_config(cb.m_config)
+  m_cur_sctx(cb.m_cur_sctx),
+  m_error_manager(cb.m_error_manager),
+  m_config(cb.m_config)
 #ifdef ZORBA_DEBUGGER
-    ,m_debugger(cb.m_debugger)
+  ,m_debugger(cb.m_debugger)
 #endif
 {
 }
