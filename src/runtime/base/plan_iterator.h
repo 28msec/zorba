@@ -276,6 +276,7 @@ public:
     ar & stateOffset;
     ar & loc;
     ar & sctx;
+	ar & theSctx;
   }
 
 public:
