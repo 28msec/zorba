@@ -173,6 +173,7 @@ public:
   void acquire() { }
 
   void release() { }
+};
 
 #else
 
