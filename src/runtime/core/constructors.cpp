@@ -72,16 +72,16 @@ void DocumentIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
   UnaryBaseIterator<DocumentIterator, PlanIteratorState>::openImpl(planState, offset);
 
-  static_context* sctx = getStaticContext(planState);
+  theSctx = planState.theCompilerCB->getStaticContext(sctx);
 
   theTypePreserve =
-    (sctx->construction_mode() == StaticContextConsts::cons_preserve ? true : false);
+    (theSctx->construction_mode() == StaticContextConsts::cons_preserve ? true : false);
 
   theNsPreserve =
-    (sctx->preserve_mode() == StaticContextConsts::preserve_ns ? true : false);
+    (theSctx->preserve_mode() == StaticContextConsts::preserve_ns ? true : false);
 
   theNsInherit = 
-    (sctx->inherit_mode() == StaticContextConsts::inherit_ns ? true : false);
+    (theSctx->inherit_mode() == StaticContextConsts::inherit_ns ? true : false);
 }
 
 
@@ -90,7 +90,7 @@ bool DocumentIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   // Note: baseUri has to be rchandle because if createDocumentNode throws
   // an exception, we don't know if the exception was thrown before or after
   // the ownership of the uri was transfered to the doc node.
-  xqpStringStore_t baseUri = getStaticContext(planState)->final_baseuri().getStore();
+  xqpStringStore_t baseUri = theSctx->final_baseuri().getStore();
   xqpStringStore_t docUri;
 
   std::stack<store::Item*>& path = planState.theRuntimeCB->theNodeConstuctionPath;
@@ -173,19 +173,17 @@ bool DocumentContentIterator::nextImpl(store::Item_t& result, PlanState& planSta
 /*******************************************************************************
 
 ********************************************************************************/
-void
-ElementIteratorState::init(PlanState&)
+void ElementIteratorState::init(PlanState&)
 {
-  sctx = 0;
   baseUri = 0;
 }
 
-void
-ElementIteratorState::reset(PlanState&)
+
+void ElementIteratorState::reset(PlanState&)
 {
-  sctx = 0;
   baseUri = 0;
 }
+
 
 ElementIterator::ElementIterator (
     short               sctx,
@@ -216,7 +214,6 @@ void ElementIterator::openImpl(PlanState& planState, uint32_t& offset)
                                                       offset);
 
   StateTraitsImpl<ElementIteratorState>::initState(planState, this->stateOffset);
-  ElementIteratorState* state = StateTraitsImpl<ElementIteratorState>::getState(planState, this->stateOffset);
 
   if (theQNameIter != 0)
     theQNameIter->open(planState, offset);
@@ -230,16 +227,16 @@ void ElementIterator::openImpl(PlanState& planState, uint32_t& offset)
   if (theNamespacesIter != 0)
     theNamespacesIter->open(planState, offset);
 
-  state->sctx = getStaticContext(planState);
+  theSctx = planState.theCompilerCB->getStaticContext(sctx);
 
   theTypePreserve =
-    (state->sctx->construction_mode() == StaticContextConsts::cons_preserve ? true : false);
+    (theSctx->construction_mode() == StaticContextConsts::cons_preserve ? true : false);
 
   theNsPreserve =
-    (state->sctx->preserve_mode() == StaticContextConsts::preserve_ns ? true : false);
+    (theSctx->preserve_mode() == StaticContextConsts::preserve_ns ? true : false);
 
   theNsInherit = 
-    (state->sctx->inherit_mode() == StaticContextConsts::inherit_ns ? true : false);
+    (theSctx->inherit_mode() == StaticContextConsts::inherit_ns ? true : false);
 }
 
 
@@ -289,7 +286,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     // uris that may appear in the children. If theAttributesIter does produce
     // an explicit base-uri attribute, then the base-uri added here will be
     // replaced with the explicit one.
-    state->baseUri = state->sctx->final_baseuri().getStore();
+    state->baseUri = theSctx->final_baseuri().getStore();
     if (state->baseUri->empty())
       ZORBA_ERROR_LOC(XPST0001, loc);
   }

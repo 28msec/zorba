@@ -84,21 +84,8 @@ GenericArithIterator<Operations>::GenericArithIterator(
     PlanIter_t& iter0,
     PlanIter_t& iter1)
     :
-    BinaryBaseIterator<GenericArithIterator<Operations>, GenericArithIteratorState >(sctx, loc, iter0, iter1)
+    BinaryBaseIterator<GenericArithIterator<Operations>, PlanIteratorState >(sctx, loc, iter0, iter1)
 { 
-}
-
-
-template < class Operation >
-void GenericArithIterator<Operation>::openImpl(PlanState& planState, uint32_t& offset)
-{
-  BinaryBaseIterator<GenericArithIterator<Operation>, GenericArithIteratorState >::
-  openImpl(planState, offset);
-
-  GenericArithIteratorState* state = StateTraitsImpl<GenericArithIteratorState>::
-  getState(planState, this->stateOffset);
-
-  state->tm = this->getStaticContext(planState)->get_typemanager();
 }
 
 
@@ -108,15 +95,20 @@ bool GenericArithIterator<Operation>::nextImpl(store::Item_t& result, PlanState&
   store::Item_t n0;
   store::Item_t n1;
   bool status;
-
-  GenericArithIteratorState* state;
-  DEFAULT_STACK_INIT(GenericArithIteratorState, state, planState);
+  
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(n0, this->theChild0.getp(), planState))
   {
     if (consumeNext(n1, this->theChild1.getp(), planState))
     {
-      status = compute(result, planState.theRuntimeCB, state->tm, this->loc, n0, n1);
+      status = compute(result,
+                       planState.theRuntimeCB,
+                       this->theSctx->get_typemanager(),
+                       this->loc,
+                       n0,
+                       n1);
     
       if (consumeNext(n0, this->theChild0.getp(), planState) ||
           consumeNext(n1, this->theChild1.getp(), planState))
@@ -310,64 +302,8 @@ void GenericArithIterator<Operation>::accept(PlanIterVisitor& v) const
 
 
 /*******************************************************************************
-  AddOperation
+  AddOperation 
 ********************************************************************************/
-
-template<>
-bool AddOperation::compute<TypeConstants::XS_DOUBLE, TypeConstants::XS_DOUBLE>(
-    store::Item_t& result,
-    RuntimeCB* /* rcb */,
-    const TypeManager* /* tm */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1 )
-{
-  return GENV_ITEMFACTORY->
-         createDouble(result, i0->getDoubleValue() + i1->getDoubleValue());
-}
-
-
-template<>
-bool AddOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>(
-    store::Item_t& result,
-    RuntimeCB* /* rcb */,
-    const TypeManager* /* tm */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1 )
-{
-  return GENV_ITEMFACTORY->
-         createFloat(result, i0->getFloatValue() + i1->getFloatValue());
-}
-
-
-template<>
-bool AddOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL>(
-    store::Item_t& result,
-    RuntimeCB* /* rcb */,
-    const TypeManager* /* tm */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1 )
-{
-  return GENV_ITEMFACTORY->
-         createDecimal(result,  i0->getDecimalValue() + i1->getDecimalValue());
-}
-
-
-template<>
-bool AddOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER>(
-    store::Item_t& result,
-    RuntimeCB* /* rcb */,
-    const TypeManager* /* tm */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1 )
-{
-  return GENV_ITEMFACTORY->
-         createInteger(result, i0->getIntegerValue() + i1->getIntegerValue());
-}
-
 
 template<>
 bool AddOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_YM_DURATION>
@@ -398,13 +334,13 @@ bool AddOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DT_DU
 
 
 template<>
-bool AddOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION>
-( store::Item_t& result,
-  RuntimeCB* rcb,
-  const TypeManager* tm,
-  const QueryLoc* loc,
-  const store::Item* i0,
-  const store::Item* i1 )
+bool AddOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION>(
+    store::Item_t& result,
+    RuntimeCB* rcb,
+    const TypeManager* tm,
+    const QueryLoc* loc,
+    const store::Item* i0,
+    const store::Item* i1)
 {
   std::auto_ptr<xqp_dateTime> d(i0->getDateTimeValue().addDuration(i1->getDurationValue()));
   return GENV_ITEMFACTORY->createDateTime(result, d.get());
@@ -412,13 +348,13 @@ bool AddOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION
 
 
 template<>
-bool AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATETIME>
-( store::Item_t& result,
-  RuntimeCB* rcb,
-  const TypeManager* tm,
-  const QueryLoc* loc,
-  const store::Item* i0,
-  const store::Item* i1 )
+bool AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATETIME>(
+    store::Item_t& result,
+    RuntimeCB* rcb,
+    const TypeManager* tm,
+    const QueryLoc* loc,
+    const store::Item* i0,
+    const store::Item* i1)
 {
   std::auto_ptr<xqp_dateTime> d(i1->getDateTimeValue().addDuration(i0->getDurationValue()));
   return GENV_ITEMFACTORY->createDateTime(result, d.get());
@@ -432,9 +368,9 @@ bool AddOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION>
   const TypeManager* tm,
   const QueryLoc* loc,
   const store::Item* i0,
-  const store::Item* i1 )
+  const store::Item* i1)
 {
-  std::auto_ptr<xqp_date> d = std::auto_ptr<xqp_date>(i0->getDateValue().addDuration(i1->getDurationValue()));
+  std::auto_ptr<xqp_date> d(i0->getDateValue().addDuration(i1->getDurationValue()));
   return GENV_ITEMFACTORY->createDate(result, d.get());
 }
 
@@ -448,7 +384,7 @@ bool AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATE>
   const store::Item* i0,
   const store::Item* i1 )
 {
-  std::auto_ptr<xqp_date> d = std::auto_ptr<xqp_date>(i1->getDateValue().addDuration(i0->getDurationValue()));
+  std::auto_ptr<xqp_date> d(i1->getDateValue().addDuration(i0->getDurationValue()));
   return GENV_ITEMFACTORY->createDate (result, d.get());
 }
 
@@ -462,7 +398,7 @@ bool AddOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION>
   const store::Item* i0,
   const store::Item* i1 )
 {
-  std::auto_ptr<xqp_time> t = std::auto_ptr<xqp_time>(i0->getTimeValue().addDuration(i1->getDurationValue()));
+  std::auto_ptr<xqp_time> t(i0->getTimeValue().addDuration(i1->getDurationValue()));
   return GENV_ITEMFACTORY->createTime (result, t.get());
 }
 
@@ -484,62 +420,6 @@ bool AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_TIME>
 /*******************************************************************************
   SubtractOperation
 ********************************************************************************/
-
-template<>
-bool SubtractOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE>(
-    store::Item_t& result,
-    RuntimeCB* /* rcb */,
-    const TypeManager* /* tm */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1)
-{
-  return GENV_ITEMFACTORY->
-         createDouble(result, i0->getDoubleValue() - i1->getDoubleValue());
-}
-
-
-template<>
-bool SubtractOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>(
-    store::Item_t& result,
-    RuntimeCB* /* rcb */,
-    const TypeManager* /* tm */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1 )
-{
-  return GENV_ITEMFACTORY->
-         createFloat(result, i0->getFloatValue() - i1->getFloatValue());
-}
-
-
-template<>
-bool SubtractOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL>(
-    store::Item_t& result,
-    RuntimeCB* /* rcb */,
-    const TypeManager* /* tm */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1 )
-{
-  return GENV_ITEMFACTORY->
-         createDecimal(result, i0->getDecimalValue() - i1->getDecimalValue());
-}
-
-
-template<>
-bool SubtractOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER>(
-    store::Item_t& result,
-    RuntimeCB* /* rcb */,
-    const TypeManager* /* tm */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1 )
-{
-  return GENV_ITEMFACTORY->
-         createInteger(result, i0->getIntegerValue() - i1->getIntegerValue());
-}
-
 
 template<>
 bool SubtractOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_YM_DURATION>(
@@ -689,62 +569,6 @@ bool SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_TIME>(
 ********************************************************************************/
 
 template<>
-bool MultiplyOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE>(
-    store::Item_t& result,
-    RuntimeCB* /* rcb */,
-    const TypeManager* /* tm */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1 )
-{
-  return GENV_ITEMFACTORY->
-         createDouble(result, i0->getDoubleValue() * i1->getDoubleValue());
-}
-
-
-template<>
-bool MultiplyOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>(
-    store::Item_t& result,
-    RuntimeCB* /* rcb */,
-    const TypeManager* /* tm */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1)
-{
-  return GENV_ITEMFACTORY->
-         createFloat(result,  i0->getFloatValue() * i1->getFloatValue());
-}
-
-
-template<>
-bool MultiplyOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL>(
-    store::Item_t& result,
-    RuntimeCB* /* rcb */,
-    const TypeManager* /* tm */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1)
-{
-  return GENV_ITEMFACTORY->
-         createDecimal(result,  i0->getDecimalValue() * i1->getDecimalValue());
-}
-
-
-template<>
-bool MultiplyOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER>(
-    store::Item_t& result,
-    RuntimeCB* /* rcb */,
-    const TypeManager* /* tm */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1)
-{
-  return GENV_ITEMFACTORY->
-         createInteger(result,  i0->getIntegerValue() * i1->getIntegerValue());
-}
-
-
-template<>
 bool MultiplyOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_DOUBLE>(
     store::Item_t& result,
     RuntimeCB* rcb,
@@ -817,72 +641,6 @@ bool MultiplyOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DT_DU
 /*******************************************************************************
   DivideOperation
 ********************************************************************************/
-
-template<>
-bool DivideOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE>(
-    store::Item_t& result,
-    RuntimeCB* /* rcb */,
-    const TypeManager* /* tm */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1)
-{
-  return GENV_ITEMFACTORY->
-         createDouble(result, i0->getDoubleValue() / i1->getDoubleValue());
-}
-
-
-template<>
-bool DivideOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>(
-    store::Item_t& result,
-    RuntimeCB* /* rcb */,
-    const TypeManager* /* tm */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1)
-{
-  return GENV_ITEMFACTORY->
-         createFloat(result, i0->getFloatValue() / i1->getFloatValue());
-}
-
-
-template<>
-bool DivideOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL>(
-    store::Item_t& result,
-    RuntimeCB* /*rcb*/,
-    const TypeManager* /* tm */,
-    const QueryLoc* loc,
-    const store::Item* i0,
-    const store::Item* i1)
-{
-  xqp_decimal ld0 = i0->getDecimalValue();
-  xqp_decimal ld1 = i1->getDecimalValue();
-  if ( ld1 == Integer::parseInt(0) )
-  {
-    ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
-  }
-  return GENV_ITEMFACTORY->createDecimal (result,  ld0 / ld1 );
-}
-
-
-template<>
-bool DivideOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER>(
-    store::Item_t& result,
-    RuntimeCB* /* rcb */,
-    const TypeManager* /* tm */,
-    const QueryLoc* loc,
-    const store::Item* i0,
-    const store::Item* i1 )
-{
-  xqp_decimal ll0 = Decimal::parseInteger(i0->getIntegerValue());
-  xqp_decimal ll1 = Decimal::parseInteger(i1->getIntegerValue());
-  if ( ll1 == Integer::parseInt(0) )
-  {
-    ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
-  }
-  return GENV_ITEMFACTORY->createDecimal (result,  ll0 / ll1 );
-}
-
 
 template<>
 bool DivideOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_DOUBLE>(
@@ -962,197 +720,6 @@ bool DivideOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DT
   xqp_decimal d = i0->getDayTimeDurationValue() / i1->getDayTimeDurationValue();
 
   return GENV_ITEMFACTORY->createDecimal(result, d);
-}
-
-
-/*******************************************************************************
-  IntegerDivideOperation
-********************************************************************************/
-
-template<>
-bool IntegerDivideOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE>(
-    store::Item_t& result,
-    RuntimeCB* /* rcb */,
-    const TypeManager* /* tm */,
-    const QueryLoc* loc,
-    const store::Item* i0,
-    const store::Item* i1 )
-{
-  if (i0->isNaN() || i1->isNaN()) {
-    ZORBA_ERROR_LOC_DESC( FOAR0002, *loc, "Division with doubles must not be done with NaNs");
-  }
-  if (i0->isPosOrNegInf()) {
-    ZORBA_ERROR_LOC_DESC( FOAR0002, *loc, "Division must not be done with a +-INF dividend");
-  }
-
-  if (i0->isPosOrNegInf()) {
-    // idiv with +-INF divisor has 0 as result
-    return GENV_ITEMFACTORY->createInteger(result, Integer::parseInt((int32_t)0));
-  }
-  
-  xqp_double d0 = i0->getDoubleValue();
-  xqp_double d1 = i1->getDoubleValue();
-
-  if ( d1 == Double::parseInt(0) )
-  {
-    ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
-  }
-
-  xqp_integer lInteger;
-  bool lBool = Integer::parseDouble( d0 / d1, lInteger);
-  ZORBA_ASSERT(lBool);
-
-  return GENV_ITEMFACTORY->createInteger (result,  lInteger );
-}
-
-
-template<>
-bool IntegerDivideOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>(
-    store::Item_t& result,
-    RuntimeCB* /* rcb */,
-    const TypeManager* /* tm */,
-    const QueryLoc* loc,
-    const store::Item* i0,
-    const store::Item* i1)
-{
-  if (i0->isNaN() || i1->isNaN()) 
-  {
-    ZORBA_ERROR_LOC_DESC(FOAR0002, *loc,
-                          "Integer Division with floats must not be done with NaNs");
-  }
-  if (i0->isPosOrNegInf()) 
-  {
-    ZORBA_ERROR_LOC_DESC(FOAR0002, *loc,
-                         "Integer division must not be done with a +-INF dividend");
-  }
-  if (i0->isPosOrNegInf()) 
-  {
-    // idiv with +-INF divisor has 0 as result
-    return GENV_ITEMFACTORY->createInteger(result, Integer::parseInt((int32_t)0));
-  }
-
-  xqp_float f0 = i0->getFloatValue();
-  xqp_float f1 = i1->getFloatValue();
-  if ( f1 == xqp_float::parseInt(0) )
-  {
-    ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
-  }
-  xqp_integer lInteger;
-  bool lBool = Integer::parseFloat( f0 / f1, lInteger);
-  ZORBA_ASSERT(lBool);
-
-  return GENV_ITEMFACTORY->createInteger(result, lInteger);
-}
-
-
-template<>
-bool IntegerDivideOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL>(
-    store::Item_t& result,
-    RuntimeCB* /* rcb */,
-    const TypeManager* /* tm */,
-    const QueryLoc* loc,
-    const store::Item* i0,
-    const store::Item* i1 )
-{
-  xqp_decimal ld0 = i0->getDecimalValue();
-  xqp_decimal ld1 = i1->getDecimalValue();
-
-  if ( ld1 == Decimal::parseInt(0) )
-  {
-    ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
-  }
-  return GENV_ITEMFACTORY->createInteger(result, Integer::parseDecimal(ld0 / ld1));
-}
-
-
-template<>
-bool IntegerDivideOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER>(
-    store::Item_t& result,
-    RuntimeCB* /* rcb */,
-    const TypeManager* /* tm */,
-    const QueryLoc* loc,
-    const store::Item* i0,
-    const store::Item* i1 )
-{
-  xqp_integer ll0 = i0->getIntegerValue();
-  xqp_integer ll1 = i1->getIntegerValue();
-
-  if ( ll1 == Integer::parseInt(0) )
-  {
-    ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
-  }
-  return GENV_ITEMFACTORY->createInteger (result, ll0 / ll1);
-}
-
-
-/*******************************************************************************
-  ModOperation
-********************************************************************************/
-template<>
-bool ModOperation::compute<TypeConstants::XS_DOUBLE, TypeConstants::XS_DOUBLE>(
-    store::Item_t& result,
-    RuntimeCB* /* rcb */,
-    const TypeManager* /* tm */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1)
-{
-  return GENV_ITEMFACTORY->
-         createDouble(result, i0->getDoubleValue() % i1->getDoubleValue());
-}
-
-
-template<>
-bool ModOperation::compute<TypeConstants::XS_FLOAT, TypeConstants::XS_FLOAT>(
-    store::Item_t& result,
-    RuntimeCB* /* rcb */,
-    const TypeManager* /* tm */,
-    const QueryLoc*,
-    const store::Item* i0,
-    const store::Item* i1)
-{
-  return GENV_ITEMFACTORY->
-         createFloat(result, i0->getFloatValue() % i1->getFloatValue());
-}
-
-
-template<>
-bool ModOperation::compute<TypeConstants::XS_DECIMAL, TypeConstants::XS_DECIMAL>(
-    store::Item_t& result,
-    RuntimeCB* /* rcb */,
-    const TypeManager* /* tm */,
-    const QueryLoc* loc,
-    const store::Item* i0,
-    const store::Item* i1)
-{
-  xqp_decimal ld0 = i0->getDecimalValue();
-  xqp_decimal ld1 = i1->getDecimalValue();
-
-  if ( ld1 == Decimal::parseInt(0) )
-  {
-    ZORBA_ERROR_LOC_DESC(FOAR0001, *loc, "Modulo by zero (decimals)");
-  }
-  return GENV_ITEMFACTORY->createDecimal(result,  ld0 % ld1);
-}
-
-
-template<>
-bool ModOperation::compute<TypeConstants::XS_INTEGER, TypeConstants::XS_INTEGER>(
-    store::Item_t& result,
-    RuntimeCB* /* rcb */,
-    const TypeManager* /* tm */,
-    const QueryLoc* loc,
-    const store::Item* i0,
-    const store::Item* i1)
-{
-  xqp_integer ll0 = i0->getIntegerValue();
-  xqp_integer ll1 = i1->getIntegerValue();
-
-  if ( ll1 == Integer::parseInt(0) )
-  {
-    ZORBA_ERROR_LOC_DESC(FOAR0001, *loc, "Modulo by zero (decimals)");
-  }
-  return GENV_ITEMFACTORY->createInteger(result, ll0 % ll1);
 }
 
 

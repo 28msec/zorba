@@ -263,8 +263,9 @@ public:
   uint32_t getStateOffset() const { return stateOffset; }
   
 public:
-  QueryLoc          loc;
-  short             sctx;
+  QueryLoc           loc;
+  short              sctx;
+  static_context   * theSctx;
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(PlanIterator)
@@ -282,7 +283,8 @@ public:
     :
     stateOffset(0),
     loc(aLoc),
-    sctx(aContext)
+    sctx(aContext),
+    theSctx(NULL)
   {}
   
   PlanIterator(const PlanIterator& it) 
@@ -290,7 +292,8 @@ public:
     SimpleRCObject(it), 
     stateOffset(0),
     loc(it.loc),
-    sctx(it.sctx)
+    sctx(it.sctx),
+    theSctx(it.theSctx)
   {}
 
   virtual ~PlanIterator() {}
@@ -303,7 +306,9 @@ public:
   static_context*
   getStaticContext(PlanState& planState) const
   {
-    return planState.theCompilerCB->getStaticContext(sctx);
+    assert(theSctx != NULL);
+    return theSctx;
+    //return planState.theCompilerCB->getStaticContext(sctx);
   }
 
   CollationCache*

@@ -85,8 +85,8 @@ ResolveQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   xqpStringStore_t resPre;
   xqpStringStore_t resLocal;
   int32_t index = -1;
-  std::vector<std::pair<xqp_string, xqp_string> > NamespaceBindings;
-  std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator iter;
+  std::vector<std::pair<xqpStringStore_t, xqpStringStore_t> > NamespaceBindings;
+  std::vector<std::pair<xqpStringStore_t, xqpStringStore_t> > ::const_iterator iter;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -112,14 +112,15 @@ ResolveQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         ZORBA_ERROR_LOC (FOCA0002, loc);
     }
       
-      if (consumeNext(itemElem, theChild1, planState )) {
+      if (consumeNext(itemElem, theChild1, planState )) 
+      {
         itemElem->getNamespaceBindings(NamespaceBindings);
         for (iter = NamespaceBindings.begin();
              iter != NamespaceBindings.end();
              ++iter)
           {
-          if ((*iter).first.getStore()->byteEqual(*resPre)) {
-            resNs = (*iter).second.getStore();
+          if ((*iter).first->byteEqual(*resPre)) {
+            resNs = (*iter).second;
             break;
           }
           }
@@ -372,17 +373,17 @@ NamespaceUriForPrefixIterator::nextImpl(store::Item_t& result, PlanState& planSt
 {
   store::Item_t itemPrefix, itemElem;
   xqpStringStore_t resNs;
-  std::vector<std::pair<xqp_string, xqp_string> > NamespaceBindings;
-  std::vector<std::pair<xqp_string, xqp_string> > ::const_iterator iter;
+  std::vector<std::pair<xqpStringStore_t, xqpStringStore_t> > NamespaceBindings;
+  std::vector<std::pair<xqpStringStore_t, xqpStringStore_t> > ::const_iterator iter;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (!consumeNext(itemPrefix, theChildren[0].getp(), planState ))
-    resNs = getStaticContext(planState)->default_elem_type_ns().getStore();
+    resNs = theSctx->default_elem_type_ns().getStore();
   else {
     if (!consumeNext(itemElem, theChildren[1].getp(), planState ))
-      resNs = getStaticContext(planState)->default_elem_type_ns().getStore();
+      resNs = theSctx->default_elem_type_ns().getStore();
     else {
       itemElem->getNamespaceBindings(NamespaceBindings);
       for (
@@ -391,8 +392,8 @@ NamespaceUriForPrefixIterator::nextImpl(store::Item_t& result, PlanState& planSt
             ++iter
           )
       {
-        if( (*iter).first.getStore()->byteEqual(*itemPrefix->getStringValue()->trim())) {
-          resNs = (*iter).second.getStore();
+        if( (*iter).first->byteEqual(*itemPrefix->getStringValue()->trim())) {
+          resNs = (*iter).second;
           break;
         }
       }
@@ -434,7 +435,7 @@ InScopePrefixesIterator::nextImpl(store::Item_t& result, PlanState& planState) c
     itemElem->getNamespaceBindings(state->theBindings);
     while (state->theCurrentPos < state->theBindings.size())
     {
-      ncname = state->theBindings[state->theCurrentPos].first.getStore();
+      ncname = state->theBindings[state->theCurrentPos].first;
       STACK_PUSH(GENV_ITEMFACTORY->createNCName(result, ncname), state);
       state->theCurrentPos++;
     }

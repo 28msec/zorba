@@ -43,6 +43,7 @@ public:
     SERIALIZE_ENUM(store::UpdateConsts::InsertType, theType);
     ar & theDoCopy;
   }
+
 public:
   InsertIterator ( 
     short sctx,
@@ -54,6 +55,13 @@ public:
   virtual ~InsertIterator() {}
 
   virtual bool isUpdating() const { return true; }
+
+  void openImpl(PlanState& planState, uint32_t& offset)
+  {
+    BinaryBaseIterator<InsertIterator, PlanIteratorState>::openImpl(planState, offset); 
+    theSctx = planState.theCompilerCB->getStaticContext(sctx);
+  }
+
   bool nextImpl(store::Item_t&, PlanState&) const;
 
   virtual void accept(PlanIterVisitor&) const;
@@ -71,8 +79,11 @@ class DeleteIterator : public UnaryBaseIterator<DeleteIterator, PlanIteratorStat
   virtual ~DeleteIterator() {}
 
   virtual bool isUpdating() const { return true; }
+
   bool nextImpl(store::Item_t&, PlanState&) const;
+
   virtual void accept(PlanIterVisitor&) const;
+
 public:
   SERIALIZABLE_CLASS(DeleteIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(DeleteIterator, UnaryBaseIterator<DeleteIterator, PlanIteratorState>)
@@ -101,6 +112,7 @@ public:
     SERIALIZE_ENUM(store::UpdateConsts::ReplaceType, theType);
     ar & theDoCopy;
   }
+
 public:
   ReplaceIterator (
     short sctx,
@@ -112,7 +124,17 @@ public:
   virtual ~ReplaceIterator() {}
 
   virtual bool isUpdating() const { return true; }
+
+  void openImpl(PlanState& planState, uint32_t& offset)
+  {
+    BinaryBaseIterator<ReplaceIterator, PlanIteratorState>::
+    openImpl(planState, offset); 
+
+    theSctx = planState.theCompilerCB->getStaticContext(sctx);
+  }
+
   bool nextImpl(store::Item_t&, PlanState&) const;
+
   virtual void accept(PlanIterVisitor&) const;
 };
 
@@ -132,8 +154,11 @@ public:
   virtual ~RenameIterator() {}
 
   virtual bool isUpdating() const { return true; }
+
   bool nextImpl(store::Item_t&, PlanState&) const;
+
   virtual void accept(PlanIterVisitor&) const;
+
 public:
   SERIALIZABLE_CLASS(RenameIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(RenameIterator, BinaryBaseIterator<RenameIterator, PlanIteratorState>)
@@ -219,3 +244,9 @@ public:
 } // namespace zorba
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

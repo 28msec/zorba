@@ -125,7 +125,7 @@ bool FnResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState)
     else {
       try {
         if (theChildren.size() == 1) { // use base-uri from static context
-          strBase = getStaticContext(planState)->baseuri().getStore();
+          strBase = theSctx->baseuri().getStore();
           if (strBase->empty()) {
             ZORBA_ERROR_LOC_DESC(FONS0005, loc, "base-uri is not initialized in the static context");
           }

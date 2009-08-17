@@ -170,7 +170,7 @@ FnDefaultCollationIterator::nextImpl(store::Item_t& result, PlanState& planState
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  strColUri = getStaticContext(planState)->default_collation_uri().getStore();
+  strColUri = theSctx->default_collation_uri().getStore();
 
   STACK_PUSH(GENV_ITEMFACTORY->createString(result, strColUri), state );
 

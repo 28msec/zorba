@@ -120,7 +120,6 @@ public:
 class ElementIteratorState : public PlanIteratorState 
 {
 public:
-  static_context*  sctx;
   xqpStringStore_t baseUri;
 
   void init(PlanState&);

@@ -460,6 +460,9 @@ uint32_t WindowIterator::getStateSizeOfSubtree() const
 void WindowIterator::openImpl ( PlanState& aPlanState, uint32_t& aOffset )
 {
   StateTraitsImpl<WindowState>::createState ( aPlanState, this->stateOffset, aOffset );
+
+  theSctx = aPlanState.theCompilerCB->getStaticContext(sctx);
+
   theTupleIter->open ( aPlanState, aOffset );
   theInputIter->open ( aPlanState, aOffset );
   theStartClause.open ( aPlanState, aOffset );

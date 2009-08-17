@@ -113,7 +113,8 @@ public:
  |	The result sequence is in ascending numeric order.
  |________________________________________________________________________*/
 
-class FnIndexOfIteratorState : public PlanIteratorState {
+class FnIndexOfIteratorState : public PlanIteratorState 
+{
 public:  
   uint32_t theCurrentPos; // the current position in the sequence
   store::Item_t   theSearchItem; // the item to search for
@@ -124,7 +125,39 @@ public:
   
 };
 
-NARY_ITER_STATE(FnIndexOfIterator, FnIndexOfIteratorState);
+class FnIndexOfIterator : public NaryBaseIterator<FnIndexOfIterator,
+                                                  FnIndexOfIteratorState>
+{
+public:
+  SERIALIZABLE_CLASS(FnIndexOfIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnIndexOfIterator, NaryBaseIterator<FnIndexOfIterator, FnIndexOfIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<FnIndexOfIterator, FnIndexOfIteratorState>*)this);
+  }
+
+public:
+  FnIndexOfIterator(
+        short sctx,
+        const QueryLoc& loc, 
+        std::vector<PlanIter_t>& args) 
+    :
+    NaryBaseIterator<FnIndexOfIterator, FnIndexOfIteratorState>(sctx, loc, args)
+  {
+  }
+
+  void openImpl(PlanState& planState, uint32_t& offset)
+  {
+    NaryBaseIterator<FnIndexOfIterator, FnIndexOfIteratorState>::
+    openImpl(planState, offset);
+    
+    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+  }
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const; 
+};
+
+
 
 //15.1.4 fn:empty
 /*
@@ -141,8 +174,10 @@ NARY_ITER(FnEmptyIterator);
  */
 NARY_ITER(FnExistsIterator);
 
+
 //15.1.6 fn:distinct-values
-class FnDistinctValuesIteratorState : public PlanIteratorState {
+class FnDistinctValuesIteratorState : public PlanIteratorState 
+{
 public:  
   bool theHasNaN;
   std::auto_ptr<ItemValueCollHandleHashSet> theAlreadySeenMap;
@@ -154,6 +189,7 @@ public:
   void reset(PlanState&);
 };
   
+
 class FnDistinctValuesIterator : public NaryBaseIterator<FnDistinctValuesIterator, 
                                                          FnDistinctValuesIteratorState>
 {
@@ -165,11 +201,18 @@ public:
  
   ~FnDistinctValuesIterator();
 
-  bool
-  nextImpl(store::Item_t& result, PlanState& planState) const;
+  void openImpl(PlanState& planState, uint32_t& offset)
+  {
+    NaryBaseIterator<FnDistinctValuesIterator, FnDistinctValuesIteratorState>::
+    openImpl(planState, offset);
+    
+    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+  }
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
  
-  virtual void 
-  accept(PlanIterVisitor&) const;
+  virtual void accept(PlanIterVisitor&) const;
+
 public:
   SERIALIZABLE_CLASS(FnDistinctValuesIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnDistinctValuesIterator, NaryBaseIterator<FnDistinctValuesIterator, FnDistinctValuesIteratorState >)
@@ -197,10 +240,12 @@ public:
 
 NARY_ITER_STATE(FnInsertBeforeIterator, FnInsertBeforeIteratorState);
 
+
 //15.1.8 fn:remove
 // Returns a new sequence constructed from the value of aTarget with the item at the position specified by the 
 // value of aPosition removed.
-class FnRemoveIteratorState : public PlanIteratorState {
+class FnRemoveIteratorState : public PlanIteratorState 
+{
 public:  
   xqp_integer theCurrentPos; // the current position in the sequence
   xqp_integer thePosition; // the position to delete
@@ -210,7 +255,39 @@ public:
   void reset(PlanState&);
 };
 
-NARY_ITER_STATE(FnRemoveIterator, FnRemoveIteratorState);
+
+class FnRemoveIterator : public NaryBaseIterator<FnRemoveIterator,
+                                                 FnRemoveIteratorState>
+{
+public:
+  SERIALIZABLE_CLASS(FnRemoveIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnRemoveIterator, NaryBaseIterator<FnRemoveIterator, FnRemoveIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<FnRemoveIterator, FnRemoveIteratorState>*)this);
+  }
+
+public:
+  FnRemoveIterator(
+        short sctx,
+        const QueryLoc& loc, 
+        std::vector<PlanIter_t>& args) 
+    :
+    NaryBaseIterator<FnRemoveIterator, FnRemoveIteratorState>(sctx, loc, args)
+  {
+  }
+
+  void openImpl(PlanState& planState, uint32_t& offset)
+  {
+    NaryBaseIterator<FnRemoveIterator, FnRemoveIteratorState>::
+    openImpl(planState, offset);
+    
+    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+  }
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const; 
+};
+
 
 
 //15.1.9 fn:reverse
@@ -297,8 +374,39 @@ public:
   |_______________________________________________________________________*/
 
 //15.3.1 fn:deep-equal
+class FnDeepEqualIterator : public NaryBaseIterator<FnDeepEqualIterator,
+                                                     PlanIteratorState>
+{
+public:
+  SERIALIZABLE_CLASS(FnDeepEqualIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnDeepEqualIterator, NaryBaseIterator<FnDeepEqualIterator, PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<FnDeepEqualIterator, PlanIteratorState >*)this);
+  }
 
-NARY_ITER (FnDeepEqualIterator);
+public:
+  FnDeepEqualIterator(
+        short sctx,
+        const QueryLoc& loc, 
+        std::vector<PlanIter_t>& args) 
+    :
+    NaryBaseIterator<FnDeepEqualIterator, PlanIteratorState>(sctx, loc, args)
+  {
+  }
+
+  void openImpl(PlanState& planState, uint32_t& offset)
+  {
+    NaryBaseIterator<FnDeepEqualIterator, PlanIteratorState>::
+    openImpl(planState, offset);
+    
+    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+  }
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const; 
+};
+
+
 
 //15.3.2 op:union
 // implemented using concat and sort
@@ -401,11 +509,44 @@ public:
 //15.4.1 fn:count
 NARY_ITER(FnCountIterator);
 
+
 //15.4.2 fn:avg
-NARY_ITER(FnAvgIterator);
+class FnAvgIterator : public NaryBaseIterator<FnAvgIterator,
+                                                     PlanIteratorState>
+{
+public:
+  SERIALIZABLE_CLASS(FnAvgIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnAvgIterator, NaryBaseIterator<FnAvgIterator, PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<FnAvgIterator, PlanIteratorState >*)this);
+  }
+
+public:
+  FnAvgIterator(
+        short sctx,
+        const QueryLoc& loc, 
+        std::vector<PlanIter_t>& args) 
+    :
+    NaryBaseIterator<FnAvgIterator, PlanIteratorState>(sctx, loc, args)
+  {
+  }
+
+  void openImpl(PlanState& planState, uint32_t& offset)
+  {
+    NaryBaseIterator<FnAvgIterator, PlanIteratorState>::
+    openImpl(planState, offset);
+    
+    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+  }
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const; 
+};
+
 
 //15.4.3 fn:max & 15.4.4 fn:min
-class FnMinMaxIterator : public NaryBaseIterator<FnMinMaxIterator, PlanIteratorState> {
+class FnMinMaxIterator : public NaryBaseIterator<FnMinMaxIterator, PlanIteratorState> 
+{
 public:
   enum Type {
     MIN = 0,
@@ -425,16 +566,59 @@ public:
     SERIALIZE_ENUM(Type, theType);
     SERIALIZE_ENUM(CompareConsts::CompareType, theCompareType);
   }
+
 public:
-    FnMinMaxIterator(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, Type aType);
-    bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-    virtual void accept(PlanIterVisitor& v) const;
-    Type getType() const { return theType; }
+  FnMinMaxIterator(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, Type aType);
+
+  void openImpl(PlanState& planState, uint32_t& offset)
+  {
+    NaryBaseIterator<FnMinMaxIterator, PlanIteratorState>::
+    openImpl(planState, offset);
+    
+    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+  }
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+  virtual void accept(PlanIterVisitor& v) const;
+
+  Type getType() const { return theType; }
 };
 
 
 //15.4.5 fn:sum
-NARY_ITER(FnSumIterator);
+class FnSumIterator : public NaryBaseIterator<FnSumIterator,
+                                              PlanIteratorState>
+{
+public:
+  SERIALIZABLE_CLASS(FnSumIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnSumIterator, NaryBaseIterator<FnSumIterator, PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<FnSumIterator, PlanIteratorState >*)this);
+  }
+
+public:
+  FnSumIterator(
+        short sctx,
+        const QueryLoc& loc, 
+        std::vector<PlanIter_t>& args) 
+    :
+    NaryBaseIterator<FnSumIterator, PlanIteratorState>(sctx, loc, args)
+  {
+  }
+
+  void openImpl(PlanState& planState, uint32_t& offset)
+  {
+    NaryBaseIterator<FnSumIterator, PlanIteratorState>::
+    openImpl(planState, offset);
+    
+    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+  }
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const; 
+};
+
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -510,9 +694,18 @@ public:
   FnDocIterator(short sctx, const QueryLoc& loc, PlanIter_t& arg);
   virtual ~FnDocIterator();
 
+  void openImpl(PlanState& planState, uint32_t& offset)
+  {
+    UnaryBaseIterator<FnDocIterator, PlanIteratorState>::
+    openImpl(planState, offset);
+    
+    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+  }
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
+
 public:
   SERIALIZABLE_CLASS(FnDocIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnDocIterator, UnaryBaseIterator<FnDocIterator, PlanIteratorState>)
@@ -524,7 +717,39 @@ public:
 
 
 //15.5.5 fn:doc-available
-NARY_ITER(FnDocAvailableIterator);
+class FnDocAvailableIterator : public NaryBaseIterator<FnDocAvailableIterator,
+                                              PlanIteratorState>
+{
+public:
+  SERIALIZABLE_CLASS(FnDocAvailableIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnDocAvailableIterator, NaryBaseIterator<FnDocAvailableIterator, PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<FnDocAvailableIterator, PlanIteratorState >*)this);
+  }
+
+public:
+  FnDocAvailableIterator(
+        short sctx,
+        const QueryLoc& loc, 
+        std::vector<PlanIter_t>& args) 
+    :
+    NaryBaseIterator<FnDocAvailableIterator, PlanIteratorState>(sctx, loc, args)
+  {
+  }
+
+  void openImpl(PlanState& planState, uint32_t& offset)
+  {
+    NaryBaseIterator<FnDocAvailableIterator, PlanIteratorState>::
+    openImpl(planState, offset);
+    
+    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+  }
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const; 
+};
+
+
 
 NARY_ITER(FnParseIterator);
 

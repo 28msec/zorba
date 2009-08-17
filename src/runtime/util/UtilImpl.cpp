@@ -106,7 +106,7 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   // resolve the uri in the surrounding static context and use
   // the URI resolver to retrieve the module
-  lSctx = getStaticContext(planState);
+  lSctx = theSctx;
   lURI = lSctx->resolve_relative_uri(lItem->getStringValueP(), xqp_string()).getStore();
   if (!GENV_ITEMFACTORY->createAnyURI(lURIItem, lURI))
       ZORBA_ERROR_LOC_DESC_OSS(XQST0046, loc, "URI is not valid " << lURI);
@@ -256,17 +256,17 @@ ZorbaTDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       STACK_PUSH(true, state);
     } else {
       try {
-        resolvedURIString = getStaticContext(planState)->resolve_relative_uri(uriString, xqp_string(), false).getStore();
+        resolvedURIString = theSctx->resolve_relative_uri(uriString, xqp_string(), false).getStore();
         GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
       } catch (error::ZorbaError& e) {
         ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
       }
       try {
-        result = getStaticContext(planState)->get_document_uri_resolver()->resolve(resolvedURIItem,
-                                                                        getStaticContext(planState),
-                                                                        false,
-                                                                        true,
-                                                                        (theChildren.size() > 1 ? itemOpt : NULL));
+        result = theSctx->get_document_uri_resolver()->resolve(resolvedURIItem,
+                                                               theSctx,
+                                                               false,
+                                                               true,
+                                                               (theChildren.size() > 1 ? itemOpt : NULL));
       } catch (error::ZorbaError& e) {
         ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
       }

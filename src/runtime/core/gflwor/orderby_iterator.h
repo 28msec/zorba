@@ -157,8 +157,6 @@ public:
   typedef std::vector<StreamTuple> DataTable;
 
 protected:
-  const TypeManager * theTypeMgr;
-
   SortTable           theSortTable;
   DataTable           theDataTable;
   ulong               theNumTuples;
@@ -169,10 +167,7 @@ public:
 
   ~OrderByState();
 
-  void init(
-        PlanState& planState,
-        const TypeManager* tm,
-        std::vector<OrderSpec>* orderSpecs);
+  void init(PlanState& planState, std::vector<OrderSpec>* orderSpecs);
 
   void reset(PlanState&);
 

@@ -173,9 +173,8 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
     try 
     {
       tt = lURI->getStringValue();
-      resolvedURIString = getStaticContext(planState)->
-                          resolve_relative_uri(lURI->getStringValueP(),
-                                               xqp_string()).getStore();
+      resolvedURIString = theSctx->resolve_relative_uri(lURI->getStringValueP(),
+                                                        xqp_string()).getStore();
 
       GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
     }
@@ -194,8 +193,8 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
                            "Default collection is undefined in the dynamic context.");
   }
 
-  coll =  getStaticContext(planState)->get_collection_uri_resolver()->
-          resolve(resolvedURIItem, getStaticContext(planState));
+  coll =  theSctx->get_collection_uri_resolver()->
+          resolve(resolvedURIItem, theSctx);
 
   if (coll == 0) 
   {
@@ -256,9 +255,8 @@ ZorbaCollectionExistsIterator::nextImpl(store::Item_t& result, PlanState& planSt
 
   try
   {
-    resolvedURIString = getStaticContext(planState)->
-                        resolve_relative_uri(item->getStringValueP(),
-                                              xqp_string()).getStore();
+    resolvedURIString = theSctx->resolve_relative_uri(item->getStringValueP(),
+                                                      xqp_string()).getStore();
 
     GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
   }
@@ -270,8 +268,8 @@ ZorbaCollectionExistsIterator::nextImpl(store::Item_t& result, PlanState& planSt
                           "URI literal empty or is not in the lexical space of xs:anyURI" );
   }
 
-  lCollection = getStaticContext(planState)->get_collection_uri_resolver()->
-                resolve(resolvedURIItem, getStaticContext(planState));
+  lCollection = theSctx->get_collection_uri_resolver()->
+                resolve(resolvedURIItem, theSctx);
   res = (lCollection != NULL);
 
   GENV_ITEMFACTORY->createBoolean(result, res);
@@ -313,9 +311,8 @@ ZorbaImportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   {
     try
     {
-      resolvedURIString = getStaticContext(planState)->
-                          resolve_relative_uri(uriItem->getStringValueP(),
-                               xqp_string()).getStore();
+      resolvedURIString = theSctx->resolve_relative_uri(uriItem->getStringValueP(),
+                                                        xqp_string()).getStore();
 
       GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
     }
@@ -327,8 +324,8 @@ ZorbaImportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
     try 
     {
-    theColl = getStaticContext(planState)->get_collection_uri_resolver()->
-        resolve(resolvedURIItem, getStaticContext(planState));
+      theColl = theSctx->get_collection_uri_resolver()->
+                resolve(resolvedURIItem, theSctx);
 
     if (theColl == NULL)
     {
@@ -338,8 +335,8 @@ ZorbaImportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
         if (node == NULL) 
       {
-          node = getStaticContext(planState)->get_document_uri_resolver()->
-                 resolve(resolvedURIItem, getStaticContext(planState), false, false);
+          node = theSctx->get_document_uri_resolver()->
+                 resolve(resolvedURIItem, theSctx, false, false);
           
           theColl->addNode(node, 1);
       }
@@ -436,9 +433,8 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
 
     catalogUriString = catalogURI.toString().getStore();
 
-    catalogResolvedUriString = getStaticContext(planState)->
-                               resolve_relative_uri(catalogUriString.getp(),
-                                               xqp_string()).getStore();
+    catalogResolvedUriString = theSctx->resolve_relative_uri(catalogUriString.getp(),
+                                                             xqp_string()).getStore();
 
     GENV_ITEMFACTORY->createAnyURI(catalogResolvedUriItem, catalogResolvedUriString);
     }
@@ -454,9 +450,9 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
 
     if (catalogRootNode == NULL) 
     {
-      catalogRootNode = getStaticContext(planState)->get_document_uri_resolver()->
+      catalogRootNode = theSctx->get_document_uri_resolver()->
                         resolve(catalogResolvedUriItem,
-                                getStaticContext(planState),
+                                theSctx,
                                 false,
                                 false);
     }
@@ -511,8 +507,8 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
 
               try 
               {
-              theColl = getStaticContext(planState)->get_collection_uri_resolver()->
-                        resolve(docResolvedUriItem, getStaticContext(planState));
+              theColl = theSctx->get_collection_uri_resolver()->
+                        resolve(docResolvedUriItem, theSctx);
 
               if (theColl == NULL) 
               {
@@ -522,11 +518,8 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
 
                 if (docRootNode == NULL) 
                 {
-                  docRootNode = getStaticContext(planState)->get_document_uri_resolver()->
-                                resolve(docResolvedUriItem,
-                                        getStaticContext(planState),
-                                        false,
-                                        false);
+                  docRootNode = theSctx->get_document_uri_resolver()->
+                                resolve(docResolvedUriItem, theSctx, false, false);
           
                   theColl->addNode(docRootNode, 1);
               }
@@ -686,16 +679,15 @@ bool ZorbaCreateCollectionIterator::nextImpl(
                          "The empty-sequence is not allowed as first argument to create-collection");
   }
 
-  resolvedUriString = getStaticContext(aPlanState)->
-                      resolve_relative_uri(uriItem->getStringValueP(),
-                                           xqp_string()).getStore();
+  resolvedUriString = theSctx->resolve_relative_uri(uriItem->getStringValueP(),
+                                                    xqp_string()).getStore();
 
   GENV_ITEMFACTORY->createAnyURI(resolvedUriItem, resolvedUriString);
 
   // check if the collection already exists
   try
   {
-    coll = getCollection(getStaticContext(aPlanState), resolvedUriString, loc);
+    coll = getCollection(theSctx, resolvedUriString, loc);
   }
   catch (error::ZorbaError&)
   {
@@ -711,24 +703,21 @@ bool ZorbaCreateCollectionIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addCreateCollection(getStaticContext(aPlanState), resolvedUriString);
+  pul->addCreateCollection(theSctx, resolvedUriString);
 
   // also add some optional nodes to the collection
   if(theChildren.size() == 2) 
   {
-    static_context* sctx;
     store::CopyMode lCopyMode;
     bool typePreserve;
     bool nsPreserve;
     bool nsInherit;
     
-    sctx = getStaticContext(aPlanState);
-
-    typePreserve = (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
+    typePreserve = (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
                     true : false);
-    nsPreserve = (sctx->preserve_mode() == StaticContextConsts::preserve_ns ?
+    nsPreserve = (theSctx->preserve_mode() == StaticContextConsts::preserve_ns ?
                   true : false);
-    nsInherit = (sctx->inherit_mode() == StaticContextConsts::inherit_ns ?
+    nsInherit = (theSctx->inherit_mode() == StaticContextConsts::inherit_ns ?
                  true : false);
 
     lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
@@ -737,7 +726,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
     {
       copyNode = node->copy(NULL, NULL, lCopyMode);
 
-      pul->addInsertIntoCollection(getStaticContext(aPlanState),
+      pul->addInsertIntoCollection(theSctx,
                                    resolvedUriItem,
                                    copyNode);
   }
@@ -785,12 +774,12 @@ ZorbaDeleteCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanS
       ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
   }
 
-  coll = getCollection(getStaticContext(aPlanState), item->getStringValueP(), loc);
+  coll = getCollection(theSctx, item->getStringValueP(), loc);
 
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
   item = coll->getUri();
-  pul->addDeleteCollection(getStaticContext(aPlanState), item);
+  pul->addDeleteCollection(theSctx, item);
 
   if(setDefCollNull)
     aPlanState.theRuntimeCB->theDynamicContext->set_default_collection(NULL);
@@ -823,7 +812,7 @@ bool ZorbaDeleteAllCollectionsIterator::nextImpl(
   for ((uriItState = GENV_STORE.listCollectionUris())->open ();
         uriItState->next(uriItem);) 
   {
-    pul->addDeleteCollection(getStaticContext(planState), uriItem);
+    pul->addDeleteCollection(theSctx, uriItem);
   }
 
   uriItState->close();
@@ -862,7 +851,6 @@ ZorbaInsertNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planSta
   std::vector<store::Item_t> nodes;
   std::auto_ptr<store::PUL>  pul;
 
-  static_context* sctx;
   store::CopyMode lCopyMode;
   bool typePreserve;
   bool nsPreserve;
@@ -871,13 +859,11 @@ ZorbaInsertNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planSta
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  sctx = getStaticContext(planState);
-
-  typePreserve = (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
+  typePreserve = (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
                   true : false);
-  nsPreserve = (sctx->preserve_mode() == StaticContextConsts::preserve_ns ?
+  nsPreserve = (theSctx->preserve_mode() == StaticContextConsts::preserve_ns ?
                 true : false);
-  nsInherit = (sctx->inherit_mode() == StaticContextConsts::inherit_ns ?
+  nsInherit = (theSctx->inherit_mode() == StaticContextConsts::inherit_ns ?
                true : false);
 
   lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
@@ -892,7 +878,7 @@ ZorbaInsertNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planSta
       "Default collection undefined in the dynamic context.");
   }
 
-  coll = getCollection(getStaticContext(planState), uriItem->getStringValueP(), loc);
+  coll = getCollection(theSctx, uriItem->getStringValueP(), loc);
   uriItem = coll->getUri();
 
   while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState))
@@ -904,7 +890,7 @@ ZorbaInsertNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planSta
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addInsertFirstIntoCollection(getStaticContext(planState), uriItem, nodes);
+  pul->addInsertFirstIntoCollection(theSctx, uriItem, nodes);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-1]->reset(planState);
@@ -945,7 +931,6 @@ ZorbaInsertNodeLastIterator::nextImpl(store::Item_t& result, PlanState& planStat
   std::vector<store::Item_t> nodes;
   std::auto_ptr<store::PUL>  pul;
 
-  static_context* sctx;
   store::CopyMode lCopyMode;
   bool typePreserve;
   bool nsPreserve;
@@ -954,13 +939,11 @@ ZorbaInsertNodeLastIterator::nextImpl(store::Item_t& result, PlanState& planStat
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  sctx = getStaticContext(planState);
-
-  typePreserve = (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
+  typePreserve = (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
                   true : false);
-  nsPreserve = (sctx->preserve_mode() == StaticContextConsts::preserve_ns ?
+  nsPreserve = (theSctx->preserve_mode() == StaticContextConsts::preserve_ns ?
                 true : false);
-  nsInherit = (sctx->inherit_mode() == StaticContextConsts::inherit_ns ?
+  nsInherit = (theSctx->inherit_mode() == StaticContextConsts::inherit_ns ?
                true : false);
 
   lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
@@ -975,7 +958,7 @@ ZorbaInsertNodeLastIterator::nextImpl(store::Item_t& result, PlanState& planStat
       "Default collection undefined in the dynamic context.");
   }
 
-  coll = getCollection(getStaticContext(planState), uriItem->getStringValueP(), loc);
+  coll = getCollection(theSctx, uriItem->getStringValueP(), loc);
   uriItem = coll->getUri();
 
   while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState))
@@ -987,7 +970,7 @@ ZorbaInsertNodeLastIterator::nextImpl(store::Item_t& result, PlanState& planStat
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addInsertLastIntoCollection(getStaticContext(planState), uriItem, nodes);
+  pul->addInsertLastIntoCollection(theSctx, uriItem, nodes);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-1]->reset(planState);
@@ -1038,7 +1021,6 @@ ZorbaInsertNodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& planSt
   std::vector<store::Item_t> nodes;
   std::auto_ptr<store::PUL>  pul;
 
-  static_context* sctx;
   store::CopyMode lCopyMode;
   bool typePreserve;
   bool nsPreserve;
@@ -1047,13 +1029,11 @@ ZorbaInsertNodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& planSt
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  sctx = getStaticContext(planState);
-
-  typePreserve = (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
+  typePreserve = (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
                   true : false);
-  nsPreserve = (sctx->preserve_mode() == StaticContextConsts::preserve_ns ?
+  nsPreserve = (theSctx->preserve_mode() == StaticContextConsts::preserve_ns ?
                 true : false);
-  nsInherit = (sctx->inherit_mode() == StaticContextConsts::inherit_ns ?
+  nsInherit = (theSctx->inherit_mode() == StaticContextConsts::inherit_ns ?
                true : false);
 
   lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
@@ -1068,7 +1048,7 @@ ZorbaInsertNodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& planSt
       "Default collection undefined in the dynamic context.");
   }
 
-  coll = getCollection(getStaticContext(planState), itemUri->getStringValueP(), loc);
+  coll = getCollection(theSctx, itemUri->getStringValueP(), loc);
   itemUri = coll->getUri();
 
   if(!consumeNext(targetNode, theChildren[theChildren.size()-2].getp(), planState)) 
@@ -1100,7 +1080,7 @@ ZorbaInsertNodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& planSt
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addInsertBeforeIntoCollection(getStaticContext(planState),
+  pul->addInsertBeforeIntoCollection(theSctx,
                                      itemUri,
                                      targetNode,
                                      nodes);
@@ -1149,7 +1129,6 @@ ZorbaInsertNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planSta
   std::vector<store::Item_t> nodes;
   std::auto_ptr<store::PUL>  pul;
 
-  static_context* sctx;
   store::CopyMode lCopyMode;
   bool typePreserve;
   bool nsPreserve;
@@ -1158,13 +1137,11 @@ ZorbaInsertNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planSta
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  sctx = getStaticContext(planState);
-
-  typePreserve = (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
+  typePreserve = (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
                   true : false);
-  nsPreserve = (sctx->preserve_mode() == StaticContextConsts::preserve_ns ?
+  nsPreserve = (theSctx->preserve_mode() == StaticContextConsts::preserve_ns ?
                 true : false);
-  nsInherit = (sctx->inherit_mode() == StaticContextConsts::inherit_ns ?
+  nsInherit = (theSctx->inherit_mode() == StaticContextConsts::inherit_ns ?
                true : false);
 
   lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
@@ -1179,7 +1156,7 @@ ZorbaInsertNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planSta
       "Default collection undefined in the dynamic context.");
   }
 
-  coll = getCollection(getStaticContext(planState), itemUri->getStringValueP(), loc);
+  coll = getCollection(theSctx, itemUri->getStringValueP(), loc);
   itemUri = coll->getUri();
 
   if(!consumeNext(targetNode, theChildren[theChildren.size()-2].getp(), planState)) 
@@ -1210,7 +1187,7 @@ ZorbaInsertNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planSta
     nodes.push_back(copyNode);
   }
 
-  pul->addInsertAfterIntoCollection(getStaticContext(planState),
+  pul->addInsertAfterIntoCollection(theSctx,
                                     itemUri,
                                     targetNode,
                                     nodes);
@@ -1260,7 +1237,6 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
   std::auto_ptr<store::PUL>  pul;
   xqp_uint                   pos;
 
-  static_context* sctx;
   store::CopyMode lCopyMode;
   bool typePreserve;
   bool nsPreserve;
@@ -1269,13 +1245,11 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  sctx = getStaticContext(planState);
-
-  typePreserve = (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
+  typePreserve = (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
                   true : false);
-  nsPreserve = (sctx->preserve_mode() == StaticContextConsts::preserve_ns ?
+  nsPreserve = (theSctx->preserve_mode() == StaticContextConsts::preserve_ns ?
                 true : false);
-  nsInherit = (sctx->inherit_mode() == StaticContextConsts::inherit_ns ?
+  nsInherit = (theSctx->inherit_mode() == StaticContextConsts::inherit_ns ?
                true : false);
 
   lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
@@ -1290,7 +1264,7 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
       "Default collection undefined in the dynamic context.");
   }
 
-  coll = getCollection(getStaticContext(planState), itemUri->getStringValueP(), loc);
+  coll = getCollection(theSctx, itemUri->getStringValueP(), loc);
   itemUri = coll->getUri();
 
   if(!consumeNext(itemPos, theChildren[theChildren.size()-2].getp(), planState)) 
@@ -1323,7 +1297,7 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
     nodes.push_back(copyNode);
   }
 
-  pul->addInsertAtIntoCollection(getStaticContext(planState),
+  pul->addInsertAtIntoCollection(theSctx,
                                  itemUri,
                                  pos,
                                  nodes);
@@ -1381,7 +1355,7 @@ ZorbaRemoveNodeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
       "Default collection undefined in the dynamic context.");
   }
 
-  coll = getCollection(getStaticContext(planState), uriItem->getStringValueP(), loc);
+  coll = getCollection(theSctx, uriItem->getStringValueP(), loc);
   uriItem = coll->getUri();
 
   while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState)) 
@@ -1397,7 +1371,7 @@ ZorbaRemoveNodeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addRemoveFromCollection(getStaticContext(planState), uriItem, nodes);
+  pul->addRemoveFromCollection(theSctx, uriItem, nodes);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-1]->reset(planState);
@@ -1452,7 +1426,7 @@ bool ZorbaRemoveNodeAtIterator::nextImpl(
       "Default collection undefined in the dynamic context.");
   }
 
-  coll = getCollection(getStaticContext(planState), uriItem->getStringValueP(), loc);
+  coll = getCollection(theSctx, uriItem->getStringValueP(), loc);
   uriItem = coll->getUri();
 
   if(!consumeNext(posItem, theChildren[theChildren.size()-1].getp(), planState)) 
@@ -1484,7 +1458,7 @@ bool ZorbaRemoveNodeAtIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addRemoveAtFromCollection(getStaticContext(planState), uriItem, lpos);
+  pul->addRemoveAtFromCollection(theSctx, uriItem, lpos);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-1]->reset(planState);
@@ -1527,7 +1501,7 @@ ZorbaNodeCountIterator::nextImpl(store::Item_t& result, PlanState& planState) co
       ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
   }
 
-  theColl = getCollection(getStaticContext(planState), itemUri->getStringValue(), loc);
+  theColl = getCollection(theSctx, itemUri->getStringValue(), loc);
 
   STACK_PUSH(GENV_ITEMFACTORY->createInteger(
             result,
@@ -1573,7 +1547,7 @@ ZorbaNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
   }
 
-  theColl = getCollection(getStaticContext(planState), item->getStringValue(), loc);
+  theColl = getCollection(theSctx, item->getStringValue(), loc);
 
   if (consumeNext(item, theChildren[theChildren.size()-1].getp(), planState))
   {
@@ -1626,7 +1600,7 @@ ZorbaIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
   }
 
-  theColl = getCollection(getStaticContext(planState), item->getStringValue(), loc);
+  theColl = getCollection(theSctx, item->getStringValue(), loc);
 
   if (consumeNext(item, theChildren[theChildren.size()-1].getp(), planState))
   {
@@ -1694,7 +1668,7 @@ bool ZorbaExportXmlIterator::nextImpl(
   if(!consumeNext(uriItem, theChildren[0].getp(), planState))
     ZORBA_ASSERT(false);
 
-  coll = getCollection(getStaticContext(planState), uriItem->getStringValue(), loc);
+  coll = getCollection(theSctx, uriItem->getStringValue(), loc);
 
   if(theChildren.size() == 2)
   {

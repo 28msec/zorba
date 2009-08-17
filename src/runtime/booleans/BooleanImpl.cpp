@@ -228,9 +228,10 @@ void CompareIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
   BinaryBaseIterator<CompareIterator, PlanIteratorState>::openImpl(planState, offset);
 
-  theTypeManager = getStaticContext(planState)->get_typemanager();
+  theSctx = planState.theCompilerCB->getStaticContext(sctx);
+  theTypeManager = theSctx->get_typemanager();
   theTimezone = planState.theRuntimeCB->theDynamicContext->get_implicit_timezone();
-  theCollation = getStaticContext(planState)->get_collation_cache()->getDefaultCollator();
+  theCollation = theSctx->get_collation_cache()->getDefaultCollator();
 }
 
 
@@ -800,9 +801,12 @@ void TypedValueCompareIterator<ATC>::openImpl(PlanState& planState, uint32_t& of
 {
   NaryBaseIterator<TypedValueCompareIterator, PlanIteratorState>::openImpl(planState, offset);
 
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
   theTimezone = planState.theRuntimeCB->theDynamicContext->get_implicit_timezone();
-  theCollation = TypedValueCompareIterator<ATC>::getStaticContext(planState)->get_collation_cache()->getDefaultCollator();
+  theCollation = this->theSctx->
+                 get_collation_cache()->getDefaultCollator();
 }
+
 
 template<TypeConstants::atomic_type_code_t ATC>
 void TypedValueCompareIterator<ATC>::accept(PlanIterVisitor& v) const
@@ -812,6 +816,7 @@ void TypedValueCompareIterator<ATC>::accept(PlanIterVisitor& v) const
   this->theChildren [1]->accept(v); 
   v.endVisit(*this); 
 }
+
 
 template<TypeConstants::atomic_type_code_t ATC>
 bool TypedValueCompareIterator<ATC>::nextImpl(store::Item_t& result, PlanState& planState) const

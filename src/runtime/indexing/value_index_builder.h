@@ -36,6 +36,14 @@ public:
 
   virtual ~CreateValueIndex() { }
 
+  void openImpl(PlanState& planState, uint32_t& offset)
+  {
+    UnaryBaseIterator<CreateValueIndex, PlanIteratorState>::
+    openImpl(planState, offset); 
+
+    theSctx = planState.theCompilerCB->getStaticContext(sctx);
+  }
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   virtual void accept(PlanIterVisitor& v) const;

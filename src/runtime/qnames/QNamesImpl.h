@@ -187,7 +187,7 @@ public:
 /*
  * 11.2.5 fn:namespace-uri-for-prefix
  * --------------------*/
-NARY_ITER (NamespaceUriForPrefixIterator);
+NARY_ITER_SCTX (NamespaceUriForPrefixIterator);
 
 /*
  * 11.2.6 fn:in-scope-prefixes
@@ -198,7 +198,7 @@ class InScopePrefixesState : public PlanIteratorState
   friend class InScopePrefixesIterator;
 
 private:
-  std::vector<std::pair<xqpString, xqpString> > theBindings;
+  std::vector<std::pair<xqpStringStore_t, xqpStringStore_t> > theBindings;
   unsigned long theCurrentPos;
 
 public:

@@ -227,7 +227,7 @@ FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::Item_t lCollationItem;
   xqtref_t      lCollationItemType;
   store::Item_t searchItem;
-  TypeManager* typemgr = getStaticContext(planState)->get_typemanager();
+  TypeManager* typemgr = theSctx->get_typemanager();
   long timezone = 0;
 
   FnIndexOfIteratorState* state;
@@ -240,7 +240,7 @@ FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   }
 
   if ( theChildren.size() == 3 )
-    state->theCollator = getCollator(planState.theRuntimeCB, getStaticContext(planState), loc,
+    state->theCollator = getCollator(planState.theRuntimeCB, theSctx, loc,
                                      planState, theChildren[2].getp());
 
   while ( consumeNext(lSequenceItem, theChildren[0].getp(), planState))
@@ -361,19 +361,23 @@ FnDistinctValuesIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   FnDistinctValuesIteratorState* state;
   DEFAULT_STACK_INIT(FnDistinctValuesIteratorState, state, planState);
 
-  if (theChildren.size() == 2) {
-    lCollator = getCollator(planState.theRuntimeCB, getStaticContext(planState), loc,
+  if (theChildren.size() == 2) 
+  {
+    lCollator = getCollator(planState.theRuntimeCB, theSctx, loc,
                             planState, theChildren[1].getp());
 
-    theValueCompare = new ValueCompareParam(planState.theRuntimeCB, getStaticContext(planState));
+    theValueCompare = new ValueCompareParam(planState.theRuntimeCB, theSctx);
     theValueCompare->theCollator = lCollator;
-  } else {
-    theValueCompare = new ValueCompareParam(planState.theRuntimeCB, getStaticContext(planState));
+  }
+  else
+  {
+    theValueCompare = new ValueCompareParam(planState.theRuntimeCB, theSctx);
   }
   // theValueCompare managed by state->theAlreadySeenMap
   state->theAlreadySeenMap.reset (new ItemValueCollHandleHashSet (theValueCompare));
 
-  while (consumeNext(result, theChildren[0].getp(), planState)) {
+  while (consumeNext(result, theChildren[0].getp(), planState)) 
+  {
     if (result->isNaN ()) {
       if (! state->theHasNaN) {
         state->theHasNaN = true;
@@ -501,7 +505,7 @@ FnRemoveIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   state->thePosition = lPositionItem->getIntegerValue();
 
   if ( theChildren.size() == 3 )
-    state->theCollator = getCollator(planState.theRuntimeCB, getStaticContext(planState), loc,
+    state->theCollator = getCollator(planState.theRuntimeCB, theSctx, loc,
                                      planState, theChildren[2].getp());
 
   while (consumeNext(result, theChildren[0].getp(), planState))
@@ -890,7 +894,7 @@ FnDeepEqualIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if ( theChildren.size() == 3 )
   {
-    collator = getCollator(planState.theRuntimeCB, getStaticContext(planState), loc,
+    collator = getCollator(planState.theRuntimeCB, theSctx, loc,
                            planState, theChildren[2].getp());
   }
 
@@ -907,7 +911,7 @@ FnDeepEqualIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       break;
     }
 
-    equal = equal && DeepEqual(getStaticContext(planState), arg1, arg2, collator, planState.theRuntimeCB);
+    equal = equal && DeepEqual(theSctx, arg1, arg2, collator, planState.theRuntimeCB);
   }
   
   STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, equal), state);
@@ -1053,7 +1057,7 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   int lCount = 0;
   bool lHitNumeric = false, lHitYearMonth = false, lHitDayTime = false;
 
-  const TypeManager& tm = *getStaticContext(planState)->get_typemanager();
+  const TypeManager& tm = *theSctx->get_typemanager();
   const RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   xqtref_t lUntypedAtomic     = rtm.UNTYPED_ATOMIC_TYPE_ONE; 
@@ -1169,7 +1173,7 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::Item_t lRunningItem = NULL;
   xqtref_t lMaxType;
 
-  const TypeManager& tm = *getStaticContext(planState)->get_typemanager();
+  const TypeManager& tm = *theSctx->get_typemanager();
   const RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   long timezone = planState.theRuntimeCB->theDynamicContext->get_implicit_timezone();
@@ -1183,10 +1187,10 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (theChildren.size() == 2)
-    lCollator = getCollator(planState.theRuntimeCB, getStaticContext(planState), loc,
+    lCollator = getCollator(planState.theRuntimeCB, theSctx, loc,
                             planState, theChildren[1].getp());
   else
-    lCollator = getStaticContext(planState)->get_collation_cache()->getDefaultCollator();
+    lCollator = theSctx->get_collation_cache()->getDefaultCollator();
 
   if (consumeNext(lRunningItem, theChildren[0].getp(), planState))
   {
@@ -1297,7 +1301,7 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::Item_t lRunningItem;
   xqtref_t      lResultType, lRunningType;
 
-  const TypeManager& tm = *getStaticContext(planState)->get_typemanager();
+  const TypeManager& tm = *theSctx->get_typemanager();
   const RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   PlanIteratorState* state;
@@ -1834,7 +1838,7 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       try 
       {
-        resolvedURIString = getStaticContext(planState)->resolve_relative_uri(uriString, xqp_string(), false).getStore();
+        resolvedURIString = theSctx->resolve_relative_uri(uriString, xqp_string(), false).getStore();
         GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
       }
       catch (error::ZorbaError& e) 
@@ -1847,10 +1851,10 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         zorba::DateTime::getLocalTime(t0);
         zorbatm::get_timeinfo (t0user);
 
-        result = getStaticContext(planState)->get_document_uri_resolver()->resolve(resolvedURIItem, 
-                                                                        getStaticContext(planState),
-                                                                        false,
-                                                                        false);
+        result = theSctx->get_document_uri_resolver()->resolve(resolvedURIItem, 
+                                                               theSctx,
+                                                               false,
+                                                               false);
         fillTime(t0, t0user, runtimeCB);
       } 
       catch (error::ZorbaError& e) 
@@ -1900,22 +1904,29 @@ bool FnDocAvailableIterator::nextImpl(store::Item_t& result, PlanState& planStat
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(uriItem, theChildren[0].getp(), planState)) {
-
-    try {
-      doc = getStaticContext(planState)->get_document_uri_resolver()->resolve( uriItem,
-                                                                    getStaticContext(planState),
-                                                                    false,
-                                                                    false);
-    } catch (error::ZorbaError& e) {
-      if (e.theErrorCode == FODC0005) {
+  if (consumeNext(uriItem, theChildren[0].getp(), planState)) 
+  {
+    try 
+    {
+      doc = theSctx->get_document_uri_resolver()->resolve(uriItem,
+                                                          theSctx,
+                                                          false,
+                                                          false);
+    }
+    catch (error::ZorbaError& e) 
+    {
+      if (e.theErrorCode == FODC0005) 
+      {
         ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
       }
       // other errors fall through and make the function return false
     }
     STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, doc != NULL), state);
   }
+
   STACK_END (state);
 }
+
+
 } /* namespace zorba */
 /* vim:set ts=2 sw=2: */

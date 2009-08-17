@@ -112,7 +112,6 @@ void OrderSpec::close(PlanState& aPlanState) const
 
 OrderByState::OrderByState() 
   :
-  theTypeMgr(NULL),
   theNumTuples(0),
   theCurTuplePos(0)
 {
@@ -125,14 +124,10 @@ OrderByState::~OrderByState()
 }
 
 
-void OrderByState::init(
-    PlanState& planState,
-    const TypeManager* tm,
-    std::vector<OrderSpec>* orderSpecs) 
+void OrderByState::init(PlanState& planState, std::vector<OrderSpec>* orderSpecs) 
 {
   PlanIteratorState::init(planState);
 
-  theTypeMgr = tm;
   theNumTuples = 0;
   theCurTuplePos = 0;
 }
@@ -247,7 +242,7 @@ void OrderByIterator::openImpl(PlanState& planState, uint32_t& aOffset)
   OrderByState* iterState = StateTraitsImpl<OrderByState>::getState(planState,
                                                                     this->stateOffset);
 
-  static_context* sctx = getStaticContext(planState);
+  theSctx = planState.theCompilerCB->getStaticContext(sctx);
 
   // Do a manual pass to set the Collator
   ulong numSpecs = theOrderSpecs.size();
@@ -257,12 +252,12 @@ void OrderByIterator::openImpl(PlanState& planState, uint32_t& aOffset)
 
     if (! theOrderSpecs[i].theCollation.empty())
     {
-      theOrderSpecs[i].theCollator = sctx->get_collation_cache()->
+      theOrderSpecs[i].theCollator = theSctx->get_collation_cache()->
                                      getCollator(theOrderSpecs[i].theCollation);
     }
   }
   
-  iterState->init(planState, sctx->get_typemanager(), &theOrderSpecs);
+  iterState->init(planState, &theOrderSpecs);
   
   theTupleIter->open(planState, aOffset);
 
@@ -307,20 +302,20 @@ bool OrderByIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   }
 
   {
-  SortTupleCmp cmp(planState.theRuntimeCB, iterState->theTypeMgr, &theOrderSpecs);
+    SortTupleCmp cmp(planState.theRuntimeCB, theSctx->get_typemanager(), &theOrderSpecs);
 
-  if (theStable)
-  {
-    std::stable_sort(iterState->theSortTable.begin(),
-                     iterState->theSortTable.end(),
-                     cmp);
-  }
-  else
-  {
-    std::sort(iterState->theSortTable.begin(),
-              iterState->theSortTable.end(),
+    if (theStable)
+    {
+      std::stable_sort(iterState->theSortTable.begin(),
+                       iterState->theSortTable.end(),
+                       cmp);
+    }
+    else
+    {
+      std::sort(iterState->theSortTable.begin(),
+                iterState->theSortTable.end(),
               cmp);
-  }
+    }
   }
 
   iterState->theCurTuplePos = 0;

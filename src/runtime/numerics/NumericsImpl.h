@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_NUMERICS_IMPL_H
-#define ZORBA_NUMERICS_IMPL_H
+#ifndef ZORBA_RUNTIME_NUMERICS_IMPL_H
+#define ZORBA_RUNTIME_NUMERICS_IMPL_H
 
 #include "common/shared_types.h"
 #include "runtime/base/noarybase.h" // TODO remove after iterator refactoring
@@ -24,7 +24,9 @@
 
 namespace zorba
 {
-  class RuntimeCB;
+
+class RuntimeCB;
+
 
 /*******************************************************************************
   Template iterator for arithmetic operations (+, -, *, div, idiv, and mod)
@@ -35,16 +37,9 @@ namespace zorba
   The iterator can handle operands with any valid combination of numeric and/or
   untypedAtomic data types.
 ********************************************************************************/
-class NumArithIteratorState : public PlanIteratorState
-{
-public:
-  const TypeManager * tm;
-};
-
-
 template < class Operation >
 class NumArithIterator : public BinaryBaseIterator<NumArithIterator<Operation>,
-                                                   NumArithIteratorState>
+                                                   PlanIteratorState>
 {
 public:
   static bool
@@ -72,7 +67,13 @@ public:
 
   virtual ~NumArithIterator() {}
 
-  void openImpl(PlanState& planState, uint32_t& offset);
+  void openImpl(PlanState& planState, uint32_t& offset)
+  {
+    BinaryBaseIterator<NumArithIterator<Operation>, PlanIteratorState>::
+    openImpl(planState, offset);
+    
+    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+  }
 
   bool nextImpl(store::Item_t& result, PlanState&) const;
       
@@ -80,7 +81,7 @@ public:
 
 public:
   SERIALIZABLE_TEMPLATE_CLASS(NumArithIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(NumArithIterator, BinaryBaseIterator<NumArithIterator<Operation>, NumArithIteratorState>)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(NumArithIterator, BinaryBaseIterator<NumArithIterator<Operation>, PlanIteratorState>)
   void serialize(::zorba::serialization::Archiver &ar)
   {
     serialize_baseclass(ar, (BinaryBaseIterator<NumArithIterator<Operation>,PlanIteratorState>*)this);
@@ -113,6 +114,14 @@ public:
 
   virtual ~SpecificNumArithIterator() {}
 
+  void openImpl(PlanState& planState, uint32_t& offset)
+  {
+    BinaryBaseIterator<SpecificNumArithIterator<Operation, Type>, PlanIteratorState>::
+    openImpl(planState, offset);
+    
+    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+  }
+
   bool nextImpl(store::Item_t& result, PlanState&) const;
       
   virtual void accept(PlanIterVisitor&) const;
@@ -127,12 +136,10 @@ public:
 };
 
 
-
-// 6.2.7 op:numeric-unary-plus
-// ---------------------------
-
-// 6.2.8 op:numeric-unary-minus
-// ----------------------------
+/*******************************************************************************
+  6.2.7 op:numeric-unary-plus
+  6.2.8 op:numeric-unary-minus
+********************************************************************************/
 class OpNumericUnaryIterator : public UnaryBaseIterator<OpNumericUnaryIterator,
                                                         PlanIteratorState>
 {
@@ -153,67 +160,65 @@ public:
 
   virtual ~OpNumericUnaryIterator();
   
+  void openImpl(PlanState& planState, uint32_t& offset)
+  {
+    UnaryBaseIterator<OpNumericUnaryIterator, PlanIteratorState>::
+    openImpl(planState, offset);
+    
+    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+  }
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
   
   virtual void accept(PlanIterVisitor&) const;
 };
 
 
+/*******************************************************************************
+  6.4 Functions on Numeric Values
 
-  /*______________________________________________________________________
-  |
-  | 6.3 Comparison Operators on Numeric Values
-  |_______________________________________________________________________*/
+  6.4.1 fn:abs
+  6.4.2 fn:ceiling
+  6.4.3 fn:floor
+  6.4.4 fn:round
+  6.4.5 fn:round-half-to-even
+********************************************************************************/
 
-// 6.3.1 op:numeric-equal
-// -------------------------
+NARY_ITER_SCTX (FnAbsIterator);
 
+NARY_ITER_SCTX (FnCeilingIterator);
 
-// 6.3.2 op:numeric-less-than
-// 6.3.3 op:numeric-greater-than
-
-
-  /*______________________________________________________________________
-  |
-  | 6.4 Functions on Numeric Values
-  |_______________________________________________________________________*/
-
-// 6.4.1 fn:abs
-  NARY_ITER(FnAbsIterator);
-
-// 6.4.2 fn:ceiling
-  NARY_ITER(FnCeilingIterator);
-
-// 6.4.3 fn:floor
-  NARY_ITER(FnFloorIterator);
+NARY_ITER_SCTX (FnFloorIterator);
   
-// 6.4.4 fn:round   
-  NARY_ITER(FnRoundIterator);
+NARY_ITER_SCTX (FnRoundIterator);
   
-// 6.4.5 fn:round-half-to-even
-  NARY_ITER(FnRoundHalfToEvenIterator);
+NARY_ITER_SCTX (FnRoundHalfToEvenIterator);
 
 
+/*******************************************************************************
+  Helper Iterator to produce a defined amount of integer items
+********************************************************************************/
 class ZorNumGenState : public PlanIteratorState
 {
 private:
   int32_t curNumber;
+
 public:
   void init(PlanState&);
+
   void reset(PlanState&);
   
   int32_t getCurNumber();
+
   void setCurNumber(int32_t);
 };
   
 
-/**
- * Helper Iterator to produce a defined amount of integer items
- */
 class ZorNumGen : public NoaryBaseIterator<ZorNumGen, ZorNumGenState> 
 {
 public:
   ZorNumGen ( short sctx, const QueryLoc& loc);
+
   ~ZorNumGen();
   
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
@@ -228,9 +233,11 @@ public:
   }
 };
   
-  
-NARY_ITER (FnSQRTIterator);
 
+/*******************************************************************************
+  Math functions
+********************************************************************************/
+NARY_ITER_SCTX (FnSQRTIterator);
 NARY_ITER (FnExpIterator);
 NARY_ITER (FnLogIterator);
 NARY_ITER (FnSinIterator);
@@ -241,32 +248,45 @@ NARY_ITER (FnArcCosIterator);
 NARY_ITER (FnArcTanIterator);
 
 
-/*______________________________________________________________________
-|
-| XQuery 1.1 functions
-|_______________________________________________________________________*/
-class FnFormatNumberIterator: public NaryBaseIterator<FnFormatNumberIterator, PlanIteratorState >
+/*******************************************************************************
+  XQuery 1.1 functions
+********************************************************************************/
+class FnFormatNumberIterator: public NaryBaseIterator<FnFormatNumberIterator,
+                                                      PlanIteratorState >
 {
 public:
-  FnFormatNumberIterator( short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
+  FnFormatNumberIterator(
+        short sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& aChildren)
     :
     NaryBaseIterator<FnFormatNumberIterator, PlanIteratorState >(sctx, loc, aChildren)
   {}
 
 public:
+
+  void openImpl(PlanState& planState, uint32_t& offset)
+  {
+    NaryBaseIterator<FnFormatNumberIterator, PlanIteratorState>::
+    openImpl(planState, offset);
+    
+    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+  }
+
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-  public:
-    SERIALIZABLE_CLASS(FnFormatNumberIterator)
-    SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnFormatNumberIterator, NaryBaseIterator<FnFormatNumberIterator, PlanIteratorState > )
-    void serialize(::zorba::serialization::Archiver &ar)
-    {
-      serialize_baseclass(ar, (NaryBaseIterator<FnFormatNumberIterator, PlanIteratorState > *)this);
-    }
+
+public:
+  SERIALIZABLE_CLASS(FnFormatNumberIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnFormatNumberIterator, NaryBaseIterator<FnFormatNumberIterator, PlanIteratorState > )
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<FnFormatNumberIterator, PlanIteratorState > *)this);
+  }
 };
 
 
-} /* namespace zorba */
-#endif  /* ZORBA_NUMERICS_H */
+}
+#endif
 
 /*
  * Local variables:

@@ -35,7 +35,7 @@ class FnTraceIteratorState : public PlanIteratorState {
     void reset(PlanState&);
 };
 
-NARY_ITER_STATE(FnTraceIterator, FnTraceIteratorState);
+NARY_ITER_STATE_SCTX(FnTraceIterator, FnTraceIteratorState);
 
 } /* namespace zorba */
 

@@ -291,9 +291,9 @@ void GroupByIterator::openImpl ( PlanState& planState, uint32_t& aOffset )
   GroupByState* state = StateTraitsImpl<GroupByState>::getState(planState,
                                                                 this->stateOffset);
       
-  static_context* sctx = getStaticContext(planState);
+  theSctx = planState.theCompilerCB->getStaticContext(sctx);
 
-  state->init(planState, sctx->get_typemanager(), &theGroupingSpecs); 
+  state->init(planState, theSctx->get_typemanager(), &theGroupingSpecs); 
       
   theTupleIter->open(planState, aOffset);
 
@@ -305,12 +305,12 @@ void GroupByIterator::openImpl ( PlanState& planState, uint32_t& aOffset )
 
     if (iter->theCollation.size() != 0) 
     {
-      iter->theCollator = sctx->get_collation_cache()->
+      iter->theCollator = theSctx->get_collation_cache()->
                           getCollator(iter->theCollation);
     }
     else
     {
-      iter->theCollator = sctx->get_collation_cache()->
+      iter->theCollator = theSctx->get_collation_cache()->
                           getDefaultCollator();
     }
   }

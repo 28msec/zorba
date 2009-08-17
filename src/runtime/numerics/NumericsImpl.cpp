@@ -122,9 +122,444 @@ SERIALIZABLE_CLASS_VERSIONS(FnFormatNumberIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(FnFormatNumberIterator)
 
 
+/*******************************************************************************
+  AddOperation (see runtime/core/arithmetic_impl.h/cpp)
+********************************************************************************/
+template<>
+bool AddOperation::compute<TypeConstants::XS_DOUBLE, TypeConstants::XS_DOUBLE>(
+    store::Item_t& result,
+    RuntimeCB* /* rcb */,
+    const TypeManager* /* tm */,
+    const QueryLoc*,
+    const store::Item* i0,
+    const store::Item* i1 )
+{
+  return GENV_ITEMFACTORY->
+         createDouble(result, i0->getDoubleValue() + i1->getDoubleValue());
+}
+
+
+template<>
+bool AddOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>(
+    store::Item_t& result,
+    RuntimeCB* /* rcb */,
+    const TypeManager* /* tm */,
+    const QueryLoc*,
+    const store::Item* i0,
+    const store::Item* i1 )
+{
+  return GENV_ITEMFACTORY->
+         createFloat(result, i0->getFloatValue() + i1->getFloatValue());
+}
+
+
+template<>
+bool AddOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL>(
+    store::Item_t& result,
+    RuntimeCB* /* rcb */,
+    const TypeManager* /* tm */,
+    const QueryLoc*,
+    const store::Item* i0,
+    const store::Item* i1 )
+{
+  return GENV_ITEMFACTORY->
+         createDecimal(result,  i0->getDecimalValue() + i1->getDecimalValue());
+}
+
+
+template<>
+bool AddOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER>(
+    store::Item_t& result,
+    RuntimeCB* /* rcb */,
+    const TypeManager* /* tm */,
+    const QueryLoc*,
+    const store::Item* i0,
+    const store::Item* i1)
+{
+  return GENV_ITEMFACTORY->
+         createInteger(result, i0->getIntegerValue() + i1->getIntegerValue());
+}
+
 
 /*******************************************************************************
+  SubtractOperation (see runtime/core/arithmetic_impl.h/cpp)
+********************************************************************************/
+template<>
+bool SubtractOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE>(
+    store::Item_t& result,
+    RuntimeCB* /* rcb */,
+    const TypeManager* /* tm */,
+    const QueryLoc*,
+    const store::Item* i0,
+    const store::Item* i1)
+{
+  return GENV_ITEMFACTORY->
+         createDouble(result, i0->getDoubleValue() - i1->getDoubleValue());
+}
 
+
+template<>
+bool SubtractOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>(
+    store::Item_t& result,
+    RuntimeCB* /* rcb */,
+    const TypeManager* /* tm */,
+    const QueryLoc*,
+    const store::Item* i0,
+    const store::Item* i1 )
+{
+  return GENV_ITEMFACTORY->
+         createFloat(result, i0->getFloatValue() - i1->getFloatValue());
+}
+
+
+template<>
+bool SubtractOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL>(
+    store::Item_t& result,
+    RuntimeCB* /* rcb */,
+    const TypeManager* /* tm */,
+    const QueryLoc*,
+    const store::Item* i0,
+    const store::Item* i1 )
+{
+  return GENV_ITEMFACTORY->
+         createDecimal(result, i0->getDecimalValue() - i1->getDecimalValue());
+}
+
+
+template<>
+bool SubtractOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER>(
+    store::Item_t& result,
+    RuntimeCB* /* rcb */,
+    const TypeManager* /* tm */,
+    const QueryLoc*,
+    const store::Item* i0,
+    const store::Item* i1 )
+{
+  return GENV_ITEMFACTORY->
+         createInteger(result, i0->getIntegerValue() - i1->getIntegerValue());
+}
+
+
+/*******************************************************************************
+  MultiplyOperation (see runtime/core/arithmetic_impl.h/cpp)
+********************************************************************************/
+template<>
+bool MultiplyOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE>(
+    store::Item_t& result,
+    RuntimeCB* /* rcb */,
+    const TypeManager* /* tm */,
+    const QueryLoc*,
+    const store::Item* i0,
+    const store::Item* i1 )
+{
+  return GENV_ITEMFACTORY->
+         createDouble(result, i0->getDoubleValue() * i1->getDoubleValue());
+}
+
+
+template<>
+bool MultiplyOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>(
+    store::Item_t& result,
+    RuntimeCB* /* rcb */,
+    const TypeManager* /* tm */,
+    const QueryLoc*,
+    const store::Item* i0,
+    const store::Item* i1)
+{
+  return GENV_ITEMFACTORY->
+         createFloat(result,  i0->getFloatValue() * i1->getFloatValue());
+}
+
+
+template<>
+bool MultiplyOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL>(
+    store::Item_t& result,
+    RuntimeCB* /* rcb */,
+    const TypeManager* /* tm */,
+    const QueryLoc*,
+    const store::Item* i0,
+    const store::Item* i1)
+{
+  return GENV_ITEMFACTORY->
+         createDecimal(result,  i0->getDecimalValue() * i1->getDecimalValue());
+}
+
+
+template<>
+bool MultiplyOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER>(
+    store::Item_t& result,
+    RuntimeCB* /* rcb */,
+    const TypeManager* /* tm */,
+    const QueryLoc*,
+    const store::Item* i0,
+    const store::Item* i1)
+{
+  return GENV_ITEMFACTORY->
+         createInteger(result,  i0->getIntegerValue() * i1->getIntegerValue());
+}
+
+
+/*******************************************************************************
+  DivideOperation (see runtime/core/arithmetic_impl.h/cpp)
+********************************************************************************/
+template<>
+bool DivideOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE>(
+    store::Item_t& result,
+    RuntimeCB* /* rcb */,
+    const TypeManager* /* tm */,
+    const QueryLoc*,
+    const store::Item* i0,
+    const store::Item* i1)
+{
+  return GENV_ITEMFACTORY->
+         createDouble(result, i0->getDoubleValue() / i1->getDoubleValue());
+}
+
+
+template<>
+bool DivideOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>(
+    store::Item_t& result,
+    RuntimeCB* /* rcb */,
+    const TypeManager* /* tm */,
+    const QueryLoc*,
+    const store::Item* i0,
+    const store::Item* i1)
+{
+  return GENV_ITEMFACTORY->
+         createFloat(result, i0->getFloatValue() / i1->getFloatValue());
+}
+
+
+template<>
+bool DivideOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL>(
+    store::Item_t& result,
+    RuntimeCB* /*rcb*/,
+    const TypeManager* /* tm */,
+    const QueryLoc* loc,
+    const store::Item* i0,
+    const store::Item* i1)
+{
+  xqp_decimal ld0 = i0->getDecimalValue();
+  xqp_decimal ld1 = i1->getDecimalValue();
+  if ( ld1 == Integer::parseInt(0) )
+  {
+    ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
+  }
+  return GENV_ITEMFACTORY->createDecimal (result,  ld0 / ld1 );
+}
+
+
+template<>
+bool DivideOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER>(
+    store::Item_t& result,
+    RuntimeCB* /* rcb */,
+    const TypeManager* /* tm */,
+    const QueryLoc* loc,
+    const store::Item* i0,
+    const store::Item* i1 )
+{
+  xqp_decimal ll0 = Decimal::parseInteger(i0->getIntegerValue());
+  xqp_decimal ll1 = Decimal::parseInteger(i1->getIntegerValue());
+  if ( ll1 == Integer::parseInt(0) )
+  {
+    ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
+  }
+  return GENV_ITEMFACTORY->createDecimal (result,  ll0 / ll1 );
+}
+
+
+/*******************************************************************************
+  IntegerDivideOperation (see runtime/core/arithmetic_impl.h/cpp)
+********************************************************************************/
+template<>
+bool IntegerDivideOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE>(
+    store::Item_t& result,
+    RuntimeCB* /* rcb */,
+    const TypeManager* /* tm */,
+    const QueryLoc* loc,
+    const store::Item* i0,
+    const store::Item* i1 )
+{
+  if (i0->isNaN() || i1->isNaN()) {
+    ZORBA_ERROR_LOC_DESC( FOAR0002, *loc, "Division with doubles must not be done with NaNs");
+  }
+  if (i0->isPosOrNegInf()) {
+    ZORBA_ERROR_LOC_DESC( FOAR0002, *loc, "Division must not be done with a +-INF dividend");
+  }
+
+  if (i0->isPosOrNegInf()) {
+    // idiv with +-INF divisor has 0 as result
+    return GENV_ITEMFACTORY->createInteger(result, Integer::parseInt((int32_t)0));
+  }
+  
+  xqp_double d0 = i0->getDoubleValue();
+  xqp_double d1 = i1->getDoubleValue();
+
+  if ( d1 == Double::parseInt(0) )
+  {
+    ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
+  }
+
+  xqp_integer lInteger;
+  bool lBool = Integer::parseDouble( d0 / d1, lInteger);
+  ZORBA_ASSERT(lBool);
+
+  return GENV_ITEMFACTORY->createInteger (result,  lInteger );
+}
+
+
+template<>
+bool IntegerDivideOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>(
+    store::Item_t& result,
+    RuntimeCB* /* rcb */,
+    const TypeManager* /* tm */,
+    const QueryLoc* loc,
+    const store::Item* i0,
+    const store::Item* i1)
+{
+  if (i0->isNaN() || i1->isNaN()) 
+  {
+    ZORBA_ERROR_LOC_DESC(FOAR0002, *loc,
+                          "Integer Division with floats must not be done with NaNs");
+  }
+  if (i0->isPosOrNegInf()) 
+  {
+    ZORBA_ERROR_LOC_DESC(FOAR0002, *loc,
+                         "Integer division must not be done with a +-INF dividend");
+  }
+  if (i0->isPosOrNegInf()) 
+  {
+    // idiv with +-INF divisor has 0 as result
+    return GENV_ITEMFACTORY->createInteger(result, Integer::parseInt((int32_t)0));
+  }
+
+  xqp_float f0 = i0->getFloatValue();
+  xqp_float f1 = i1->getFloatValue();
+  if ( f1 == xqp_float::parseInt(0) )
+  {
+    ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
+  }
+  xqp_integer lInteger;
+  bool lBool = Integer::parseFloat( f0 / f1, lInteger);
+  ZORBA_ASSERT(lBool);
+
+  return GENV_ITEMFACTORY->createInteger(result, lInteger);
+}
+
+
+template<>
+bool IntegerDivideOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL>(
+    store::Item_t& result,
+    RuntimeCB* /* rcb */,
+    const TypeManager* /* tm */,
+    const QueryLoc* loc,
+    const store::Item* i0,
+    const store::Item* i1 )
+{
+  xqp_decimal ld0 = i0->getDecimalValue();
+  xqp_decimal ld1 = i1->getDecimalValue();
+
+  if ( ld1 == Decimal::parseInt(0) )
+  {
+    ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
+  }
+  return GENV_ITEMFACTORY->createInteger(result, Integer::parseDecimal(ld0 / ld1));
+}
+
+
+template<>
+bool IntegerDivideOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER>(
+    store::Item_t& result,
+    RuntimeCB* /* rcb */,
+    const TypeManager* /* tm */,
+    const QueryLoc* loc,
+    const store::Item* i0,
+    const store::Item* i1 )
+{
+  xqp_integer ll0 = i0->getIntegerValue();
+  xqp_integer ll1 = i1->getIntegerValue();
+
+  if ( ll1 == Integer::parseInt(0) )
+  {
+    ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
+  }
+  return GENV_ITEMFACTORY->createInteger (result, ll0 / ll1);
+}
+
+
+/*******************************************************************************
+  ModOperation (see runtime/core/arithmetic_impl.h/cpp)
+********************************************************************************/
+template<>
+bool ModOperation::compute<TypeConstants::XS_DOUBLE, TypeConstants::XS_DOUBLE>(
+    store::Item_t& result,
+    RuntimeCB* /* rcb */,
+    const TypeManager* /* tm */,
+    const QueryLoc*,
+    const store::Item* i0,
+    const store::Item* i1)
+{
+  return GENV_ITEMFACTORY->
+         createDouble(result, i0->getDoubleValue() % i1->getDoubleValue());
+}
+
+
+template<>
+bool ModOperation::compute<TypeConstants::XS_FLOAT, TypeConstants::XS_FLOAT>(
+    store::Item_t& result,
+    RuntimeCB* /* rcb */,
+    const TypeManager* /* tm */,
+    const QueryLoc*,
+    const store::Item* i0,
+    const store::Item* i1)
+{
+  return GENV_ITEMFACTORY->
+         createFloat(result, i0->getFloatValue() % i1->getFloatValue());
+}
+
+
+template<>
+bool ModOperation::compute<TypeConstants::XS_DECIMAL, TypeConstants::XS_DECIMAL>(
+    store::Item_t& result,
+    RuntimeCB* /* rcb */,
+    const TypeManager* /* tm */,
+    const QueryLoc* loc,
+    const store::Item* i0,
+    const store::Item* i1)
+{
+  xqp_decimal ld0 = i0->getDecimalValue();
+  xqp_decimal ld1 = i1->getDecimalValue();
+
+  if ( ld1 == Decimal::parseInt(0) )
+  {
+    ZORBA_ERROR_LOC_DESC(FOAR0001, *loc, "Modulo by zero (decimals)");
+  }
+  return GENV_ITEMFACTORY->createDecimal(result,  ld0 % ld1);
+}
+
+
+template<>
+bool ModOperation::compute<TypeConstants::XS_INTEGER, TypeConstants::XS_INTEGER>(
+    store::Item_t& result,
+    RuntimeCB* /* rcb */,
+    const TypeManager* /* tm */,
+    const QueryLoc* loc,
+    const store::Item* i0,
+    const store::Item* i1)
+{
+  xqp_integer ll0 = i0->getIntegerValue();
+  xqp_integer ll1 = i1->getIntegerValue();
+
+  if ( ll1 == Integer::parseInt(0) )
+  {
+    ZORBA_ERROR_LOC_DESC(FOAR0001, *loc, "Modulo by zero (decimals)");
+  }
+  return GENV_ITEMFACTORY->createInteger(result, ll0 % ll1);
+}
+
+
+/*******************************************************************************
+  NumArithIterator<Operation>
 ********************************************************************************/
 
 template< class Operations>
@@ -134,21 +569,8 @@ NumArithIterator<Operations>::NumArithIterator(
     PlanIter_t& iter0,
     PlanIter_t& iter1)
   :
-  BinaryBaseIterator<NumArithIterator<Operations>, NumArithIteratorState >(sctx, loc, iter0, iter1)
+  BinaryBaseIterator<NumArithIterator<Operations>, PlanIteratorState >(sctx, loc, iter0, iter1)
 { 
-}
-
-
-template < class Operation >
-void NumArithIterator<Operation>::openImpl(PlanState& planState, uint32_t& offset)
-{
-  BinaryBaseIterator<NumArithIterator<Operation>, NumArithIteratorState >::
-  openImpl(planState, offset);
-
-  NumArithIteratorState* state = StateTraitsImpl<NumArithIteratorState>::
-  getState(planState, this->stateOffset);
-
-  state->tm = this->getStaticContext(planState)->get_typemanager();
 }
 
 
@@ -161,14 +583,19 @@ bool NumArithIterator<Operation>::nextImpl(
   store::Item_t n0;
   store::Item_t n1;
   
-  NumArithIteratorState* state;
-  DEFAULT_STACK_INIT(NumArithIteratorState, state, planState);
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(n0, this->theChild0.getp(), planState))
   {
     if (consumeNext(n1, this->theChild1.getp(), planState))
     {
-      res = compute(result, planState.theRuntimeCB, state->tm, this->loc, n0, n1);
+      res = compute(result,
+                    planState.theRuntimeCB,
+                    this->theSctx->get_typemanager(),
+                    this->loc,
+                    n0,
+                    n1);
       
       if (consumeNext(n0, this->theChild0.getp(), planState) ||
           consumeNext(n1, this->theChild1.getp(), planState))
@@ -241,7 +668,7 @@ bool NumArithIterator<Operation>::computeAtomic(
 
       res = Operation::template 
             computeSingleType<TypeConstants::XS_FLOAT>
-            (result, rcb, tm, &aLoc,n0, n1);
+            (result, rcb, tm, &aLoc, n0, n1);
       break;
     }
     case TypeConstants::XS_DECIMAL:
@@ -259,9 +686,9 @@ bool NumArithIterator<Operation>::computeAtomic(
       GenericCast::castToAtomic(n0, item0, &*resultType, *tm);
       GenericCast::castToAtomic(n1, item1, &*resultType, *tm);
 
-      res = Operation::template 
+       res = Operation::template 
             computeSingleType<TypeConstants::XS_INTEGER>
-            (result, rcb, tm, &aLoc,n0, n1 );
+            (result, rcb, tm, &aLoc, n0, n1 );
       break;
     }
     default:
@@ -331,16 +758,19 @@ bool SpecificNumArithIterator<Operation, Type>::nextImpl (
   store::Item_t n0;
   store::Item_t n1;
   
-  const TypeManager* tm = this->getStaticContext(planState)->get_typemanager();
-
   PlanIteratorState* state;
-  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext( n0, this->theChild0.getp(), planState ))
   {
     if (consumeNext( n1, this->theChild1.getp(), planState ))
     {
-      res = compute(result, planState.theRuntimeCB, tm, this->loc, n0.getp(), n1.getp());
+      res = compute(result,
+                    planState.theRuntimeCB,
+                    this->theSctx->get_typemanager(),
+                    this->loc,
+                    n0.getp(),
+                    n1.getp());
       
       if (consumeNext(n0, this->theChild0.getp(), planState) ||
           consumeNext(n1, this->theChild1.getp(), planState))
@@ -404,34 +834,9 @@ template class SpecificNumArithIterator<ModOperation, TypeConstants::XS_DECIMAL>
 template class SpecificNumArithIterator<ModOperation, TypeConstants::XS_INTEGER>;
 
 
+/*******************************************************************************
 
-  /*______________________________________________________________________
-  |
-  | 6.2.7 op:numeric-unary-plus
-  | op:numeric-unary-plus($arg as numeric) as numeric
-  |
-  | Summary: Backs up the unary "+" operator and returns its operand with
-  | the sign unchanged: (+ $arg). Semantically, this operation performs no
-  | operation.
-  |_______________________________________________________________________*/
-
-
-
-
-/*______________________________________________________________________
-  |
-  | 6.2.8 op:numeric-unary-minus
-  | op:numeric-unary-minus($arg as numeric) as numeric
-  |
-  | Summary: Backs up the unary "-" operator and returns its operand with
-  | the sign reversed: (- $arg). If $arg is positive, its negative is
-  | returned; if it is negative, its positive is returned.
-  |
-  | For xs:integer and xs:decimal arguments, 0 and 0.0 return 0 and 0.0,
-  | respectively. For xs:float and xs:double arguments, NaN returns NaN,
-  | 0.0E0 returns -0.0E0 and vice versa. INF returns -INF. -INF returns
-  | INF.
-  |_______________________________________________________________________*/
+********************************************************************************/
 OpNumericUnaryIterator::OpNumericUnaryIterator (
      short sctx,
      const QueryLoc& loc,
@@ -454,46 +859,50 @@ bool OpNumericUnaryIterator::nextImpl(store::Item_t& result, PlanState& planStat
   store::Item_t item;
   xqtref_t type;
 
-  const TypeManager& tm = *getStaticContext(planState)->get_typemanager();
   const RootTypeManager& rtm = GENV_TYPESYSTEM;
+  const TypeManager* tm = theSctx->get_typemanager();
 
   PlanIteratorState* state;
-  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(item, theChild.getp(), planState ))
   {
     assert(item->isAtomic());
 
-    type = tm.create_value_type(item);
+    type = tm->create_value_type(item);
 
     if ( TypeOps::is_subtype(*type, *rtm.UNTYPED_ATOMIC_TYPE_ONE ) )
     {
-      GenericCast::castToAtomic(item, item, &*rtm.DOUBLE_TYPE_ONE, tm);
-      type = tm.create_value_type(item);
+      GenericCast::castToAtomic(item, item, &*rtm.DOUBLE_TYPE_ONE, *tm);
+      type = rtm.DOUBLE_TYPE_ONE;
     }
     
-    // TODO Optimizations (e.g. if item has already the correct type and value, it does not have to be created newly)
-    if ( TypeOps::is_subtype(*type, *rtm.DOUBLE_TYPE_ONE))
+    // TODO Optimizations (e.g. if item has already the correct type and value,
+    // it does not have to be created newly)
+    if (TypeOps::is_subtype(*type, *rtm.DOUBLE_TYPE_ONE))
     {
-      GENV_ITEMFACTORY->createDouble(result, (thePlus ?
-                                              item->getDoubleValue() :
-                                              -item->getDoubleValue()));
+      GENV_ITEMFACTORY->
+      createDouble(result,
+                   (thePlus ? item->getDoubleValue() : -item->getDoubleValue()));
     }
     else if ( TypeOps::is_subtype ( *type, *rtm.FLOAT_TYPE_ONE ) )
-      GENV_ITEMFACTORY->createFloat(
-                                    result,
-                                    (thePlus ? item->getFloatValue() : -item->getFloatValue())
-                                    );
+    {
+      GENV_ITEMFACTORY->
+      createFloat(result,
+                  (thePlus ? item->getFloatValue() : -item->getFloatValue()));
+    }
     else if ( TypeOps::is_subtype ( *type, *rtm.INTEGER_TYPE_ONE ) )
-      GENV_ITEMFACTORY->createInteger(
-                                      result,
-                                      (thePlus ? item->getIntegerValue() : -item->getIntegerValue())
-                                      );
+    {
+      GENV_ITEMFACTORY->
+      createInteger(result,
+                    (thePlus ? item->getIntegerValue() : -item->getIntegerValue()));
+    }
     else if ( TypeOps::is_subtype ( *type, *rtm.DECIMAL_TYPE_ONE ) )
-      GENV_ITEMFACTORY->createDecimal (
-                                       result,
-                                       (thePlus ? item->getDecimalValue() : -item->getDecimalValue())
-                                       );
+    {
+      GENV_ITEMFACTORY->
+      createDecimal(result,
+                   (thePlus ? item->getDecimalValue() : -item->getDecimalValue()));
+    }
     else
     {
       ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
@@ -510,101 +919,89 @@ bool OpNumericUnaryIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
 
 
-  /*______________________________________________________________________
-  |
-  | 6.3 Comparison Operators on Numeric Values
-  |_______________________________________________________________________*/
+/*******************************************************************************
 
-// 6.3.1 op:numeric-equal
+********************************************************************************/
+bool FnAbsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t item;
+  xqtref_t type;
 
+  const TypeManager& tm = *theSctx->get_typemanager();
 
+  const RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  /*______________________________________________________________________
-  |
-  | 6.4 Functions on Numeric Values
-  |_______________________________________________________________________*/
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
 
-// 6.4.1 fn:abs
-
-  bool FnAbsIterator::nextImpl ( store::Item_t& result, PlanState& planState ) const
+  if (consumeNext(result, theChildren[0].getp(), planState ))
   {
-    store::Item_t item;
-    xqtref_t type;
+    assert(result->isAtomic());
 
-    const TypeManager& tm = *getStaticContext(planState)->get_typemanager();
-
-    const RootTypeManager& rtm = GENV_TYPESYSTEM;
-
-    PlanIteratorState* state;
-    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-
-    if (consumeNext(result, theChildren[0].getp(), planState ))
+    type = tm.create_value_type(result);
+    if ( TypeOps::is_subtype(*type, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
     {
-      assert(result->isAtomic());
-
-      type = tm.create_value_type (result);
-      if ( TypeOps::is_subtype ( *type, *rtm.UNTYPED_ATOMIC_TYPE_ONE ) )
-      {
-        GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm);
-        type = tm.create_value_type (result);
-      }
-
-      if ( TypeOps::is_subtype ( *type, *rtm.DOUBLE_TYPE_ONE ) )
-      {
-        if ( result->getDoubleValue().isPos() || result->getDoubleValue().isPosZero()  ) 
-        {
-          if ( !TypeOps::is_equal ( *type, *rtm.DOUBLE_TYPE_ONE ) )
-            GENV_ITEMFACTORY->createDouble (result, result->getDoubleValue() );
-        }
-        else
-          GENV_ITEMFACTORY->createDouble (result, -result->getDoubleValue() );
-      }
-      else if ( TypeOps::is_subtype ( *type, *rtm.FLOAT_TYPE_ONE ) )
-        if ( result->getFloatValue().isPos() || result->getFloatValue().isPosZero() ) {
-          if ( !TypeOps::is_equal ( *type, *rtm.FLOAT_TYPE_ONE ) )
-            GENV_ITEMFACTORY->createFloat (result, result->getFloatValue() );
-        }
-        else
-          GENV_ITEMFACTORY->createFloat (result, -result->getFloatValue() );
-      else if ( TypeOps::is_subtype ( *type, *rtm.INTEGER_TYPE_ONE ) )
-        if ( result->getIntegerValue() >= xqp_decimal::zero() ) {
-          if ( !TypeOps::is_equal ( *type, *rtm.INTEGER_TYPE_ONE ) )
-            GENV_ITEMFACTORY->createInteger (result, result->getIntegerValue() );
-        }
-        else
-          GENV_ITEMFACTORY->createInteger (result, -result->getIntegerValue() );
-      else if ( TypeOps::is_subtype ( *type, *rtm.DECIMAL_TYPE_ONE ) )
-        if ( result->getDecimalValue() >= xqp_decimal::zero() ) {
-          if ( !TypeOps::is_equal ( *type, *rtm.DECIMAL_TYPE_ONE ) )
-            GENV_ITEMFACTORY->createDecimal (result, result->getDecimalValue() );
-        }
-        else
-          GENV_ITEMFACTORY->createDecimal (result, -result->getDecimalValue() );
-      else
-      {
-        ZORBA_ERROR_LOC_DESC( XPTY0004,
-            loc, "Wrong operand type for fn:abs.");
-      }
-
-      if ( consumeNext(item, theChildren[0].getp(), planState ))
-      {
-        ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-                             "fn:abs has a sequence longer than one as an operand.");
-      }
-      STACK_PUSH ( true, state );
+      GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm);
+      type = tm.create_value_type(result);
     }
-    STACK_END (state);
+
+    if ( TypeOps::is_subtype ( *type, *rtm.DOUBLE_TYPE_ONE ) )
+    {
+      if ( result->getDoubleValue().isPos() || result->getDoubleValue().isPosZero()  ) 
+      {
+        if ( !TypeOps::is_equal ( *type, *rtm.DOUBLE_TYPE_ONE ) )
+          GENV_ITEMFACTORY->createDouble (result, result->getDoubleValue() );
+      }
+      else
+        GENV_ITEMFACTORY->createDouble (result, -result->getDoubleValue() );
+    }
+    else if ( TypeOps::is_subtype ( *type, *rtm.FLOAT_TYPE_ONE ) )
+      if ( result->getFloatValue().isPos() || result->getFloatValue().isPosZero() ) {
+        if ( !TypeOps::is_equal ( *type, *rtm.FLOAT_TYPE_ONE ) )
+          GENV_ITEMFACTORY->createFloat (result, result->getFloatValue() );
+      }
+      else
+        GENV_ITEMFACTORY->createFloat (result, -result->getFloatValue() );
+    else if ( TypeOps::is_subtype ( *type, *rtm.INTEGER_TYPE_ONE ) )
+      if ( result->getIntegerValue() >= xqp_decimal::zero() ) {
+        if ( !TypeOps::is_equal ( *type, *rtm.INTEGER_TYPE_ONE ) )
+          GENV_ITEMFACTORY->createInteger (result, result->getIntegerValue() );
+      }
+      else
+        GENV_ITEMFACTORY->createInteger (result, -result->getIntegerValue() );
+    else if ( TypeOps::is_subtype ( *type, *rtm.DECIMAL_TYPE_ONE ) )
+      if ( result->getDecimalValue() >= xqp_decimal::zero() ) {
+        if ( !TypeOps::is_equal ( *type, *rtm.DECIMAL_TYPE_ONE ) )
+          GENV_ITEMFACTORY->createDecimal (result, result->getDecimalValue() );
+      }
+      else
+        GENV_ITEMFACTORY->createDecimal (result, -result->getDecimalValue() );
+    else
+    {
+      ZORBA_ERROR_LOC_DESC( XPTY0004,
+                            loc, "Wrong operand type for fn:abs.");
+    }
+    
+    if ( consumeNext(item, theChildren[0].getp(), planState ))
+    {
+      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
+                           "fn:abs has a sequence longer than one as an operand.");
+    }
+    STACK_PUSH ( true, state );
   }
+  STACK_END (state);
+}
 
 
-// 6.4.2 fn:ceiling
-
+/*******************************************************************************
+  6.4.2 fn:ceiling
+********************************************************************************/
 bool FnCeilingIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
   xqtref_t type;
     
-  const TypeManager& tm = *getStaticContext(planState)->get_typemanager();
+  const TypeManager& tm = *theSctx->get_typemanager();
   const RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   PlanIteratorState* state;
@@ -656,15 +1053,16 @@ bool FnCeilingIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   STACK_END (state);
 }
 
-  
-// 6.4.3 fn:floor
 
+/*******************************************************************************
+  6.4.3 fn:floor
+********************************************************************************/
 bool FnFloorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
   xqtref_t type;
     
-  const TypeManager& tm = *getStaticContext(planState)->get_typemanager();
+  const TypeManager& tm = *theSctx->get_typemanager();
   const RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   PlanIteratorState* state;
@@ -717,15 +1115,16 @@ bool FnFloorIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 }
 
 
-// 6.4.4 fn:round
-
+/*******************************************************************************
+  6.4.4 fn:round
+********************************************************************************/
 bool FnRoundIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
   store::Item_t res;
   xqtref_t type;
     
-  const TypeManager& tm = *getStaticContext(planState)->get_typemanager();
+  const TypeManager& tm = *theSctx->get_typemanager();
   const RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   PlanIteratorState* state;
@@ -777,8 +1176,10 @@ bool FnRoundIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   STACK_END (state);
 }
 
-  
-// 6.4.5 fn:round-half-to-even
+
+/*******************************************************************************
+  6.4.5 fn:round-half-to-even
+********************************************************************************/
 bool FnRoundHalfToEvenIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
@@ -787,7 +1188,7 @@ bool FnRoundHalfToEvenIterator::nextImpl(store::Item_t& result, PlanState& planS
   xqtref_t type;
   Integer precision = Integer::parseInt((int32_t)0);
   
-  const TypeManager& tm = *getStaticContext(planState)->get_typemanager();
+  const TypeManager& tm = *theSctx->get_typemanager();
   const RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   PlanIteratorState* state;
@@ -847,12 +1248,15 @@ bool FnRoundHalfToEvenIterator::nextImpl(store::Item_t& result, PlanState& planS
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool FnSQRTIterator::nextImpl (store::Item_t& result, PlanState& planState) const 
 {
   store::Item_t item;
   xqtref_t type;
     
-  const TypeManager& tm = *getStaticContext(planState)->get_typemanager();
+  const TypeManager& tm = *theSctx->get_typemanager();
   const RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   PlanIteratorState* state;
@@ -863,7 +1267,6 @@ bool FnSQRTIterator::nextImpl (store::Item_t& result, PlanState& planState) cons
     assert(result->isAtomic());
 
     //get the value and the type of the item
-    
     type = tm.create_value_type (result);
 
     //Parameters of type xs:untypedAtomic are always promoted to xs:double
@@ -874,13 +1277,17 @@ bool FnSQRTIterator::nextImpl (store::Item_t& result, PlanState& planState) cons
     }
 
     if ( TypeOps::is_subtype ( *type, *rtm.DOUBLE_TYPE_ONE ) )
-      GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().sqrt());        
+      GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().sqrt());
+     
     else if ( TypeOps::is_subtype ( *type, *rtm.FLOAT_TYPE_ONE ) )
       GENV_ITEMFACTORY->createFloat(result, result->getFloatValue().sqrt());
+
     else if(TypeOps::is_subtype ( *type, *rtm.INTEGER_TYPE_ONE ))
       GENV_ITEMFACTORY->createInteger(result, result->getIntegerValue().sqrt());
+
     else if (TypeOps::is_subtype ( *type, *rtm.DECIMAL_TYPE_ONE ))
       GENV_ITEMFACTORY->createDecimal(result, result->getDecimalValue().sqrt());
+
     else
       ZORBA_ERROR_LOC_DESC( XPTY0004,
                             loc, "Wrong operand type for fn:sqrt.");
@@ -897,11 +1304,16 @@ bool FnSQRTIterator::nextImpl (store::Item_t& result, PlanState& planState) cons
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool FnExpIterator::nextImpl (store::Item_t& result, PlanState& planState) const
 {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-  if (consumeNext(result, theChildren[0].getp(), planState )) {
+
+  if (consumeNext(result, theChildren[0].getp(), planState )) 
+  {
     GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().exp());
     STACK_PUSH (true, state);
   }
@@ -909,11 +1321,16 @@ bool FnExpIterator::nextImpl (store::Item_t& result, PlanState& planState) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool FnLogIterator::nextImpl (store::Item_t& result, PlanState& planState) const
 {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-  if (consumeNext(result, theChildren[0].getp(), planState )) {
+
+  if (consumeNext(result, theChildren[0].getp(), planState )) 
+  {
     GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().log());
     STACK_PUSH (true, state);
   }
@@ -921,11 +1338,16 @@ bool FnLogIterator::nextImpl (store::Item_t& result, PlanState& planState) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool FnSinIterator::nextImpl (store::Item_t& result, PlanState& planState) const
 {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-  if (consumeNext(result, theChildren[0].getp(), planState )) {
+
+  if (consumeNext(result, theChildren[0].getp(), planState )) 
+  {
     GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().sin());
     STACK_PUSH (true, state);
   }
@@ -933,11 +1355,16 @@ bool FnSinIterator::nextImpl (store::Item_t& result, PlanState& planState) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool FnCosIterator::nextImpl (store::Item_t& result, PlanState& planState) const
 {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-  if (consumeNext(result, theChildren[0].getp(), planState )) {
+
+  if (consumeNext(result, theChildren[0].getp(), planState )) 
+  {
     GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().cos());
     STACK_PUSH (true, state);
   }
@@ -945,11 +1372,16 @@ bool FnCosIterator::nextImpl (store::Item_t& result, PlanState& planState) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool FnTanIterator::nextImpl (store::Item_t& result, PlanState& planState) const
 {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-  if (consumeNext(result, theChildren[0].getp(), planState )) {
+
+  if (consumeNext(result, theChildren[0].getp(), planState )) 
+  {
     GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().tan());
     STACK_PUSH (true, state);
   }
@@ -957,11 +1389,16 @@ bool FnTanIterator::nextImpl (store::Item_t& result, PlanState& planState) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool FnArcSinIterator::nextImpl (store::Item_t& result, PlanState& planState) const
 {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-  if (consumeNext(result, theChildren[0].getp(), planState )) {
+
+  if (consumeNext(result, theChildren[0].getp(), planState )) 
+  {
     GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().asin());
     STACK_PUSH (true, state);
   }
@@ -969,82 +1406,102 @@ bool FnArcSinIterator::nextImpl (store::Item_t& result, PlanState& planState) co
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool FnArcCosIterator::nextImpl (store::Item_t& result, PlanState& planState) const
 {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-  if (consumeNext(result, theChildren[0].getp(), planState )) {
+
+  if (consumeNext(result, theChildren[0].getp(), planState )) 
+  {
     GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().acos());
     STACK_PUSH (true, state);
   }
   STACK_END (state);
 }
 
-  bool FnArcTanIterator::nextImpl (store::Item_t& result, PlanState& planState) const
+
+/*******************************************************************************
+
+********************************************************************************/
+bool FnArcTanIterator::nextImpl (store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+
+  if (consumeNext(result, theChildren[0].getp(), planState )) 
   {
-    PlanIteratorState* state;
-    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-    if (consumeNext(result, theChildren[0].getp(), planState )) {
-      GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().atan());
-      STACK_PUSH (true, state);
-    }
-    STACK_END (state);
+    GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().atan());
+    STACK_PUSH (true, state);
   }
+  STACK_END (state);
+}
 
-  ZorNumGen::ZorNumGen ( short sctx, const QueryLoc& loc ) 
-    : NoaryBaseIterator<ZorNumGen, ZorNumGenState>(sctx, loc) {}
 
-  ZorNumGen::~ZorNumGen() {}
+/*******************************************************************************
 
-  bool
-  ZorNumGen::nextImpl ( store::Item_t& result, PlanState& planState ) const
+********************************************************************************/
+ZorNumGen::ZorNumGen ( short sctx, const QueryLoc& loc ) 
+  :
+  NoaryBaseIterator<ZorNumGen, ZorNumGenState>(sctx, loc) 
+{
+}
+
+
+ZorNumGen::~ZorNumGen() 
+{
+}
+
+
+bool
+ZorNumGen::nextImpl ( store::Item_t& result, PlanState& planState ) const
+{
+  ZorNumGenState* state;
+  DEFAULT_STACK_INIT ( ZorNumGenState, state, planState );
+  
+  while ( state->getCurNumber() < 100 )
   {
-    ZorNumGenState* state;
-    DEFAULT_STACK_INIT ( ZorNumGenState, state, planState );
-
-    while ( state->getCurNumber() < 100 )
-    {
-      STACK_PUSH (
-          GENV_ITEMFACTORY->createInteger (result, Integer::parseInt(state->getCurNumber()) ),
-          state );
-      state->setCurNumber ( state->getCurNumber() + 1 );
-    }
-    STACK_END (state);
+    STACK_PUSH (
+                GENV_ITEMFACTORY->createInteger (result, Integer::parseInt(state->getCurNumber()) ),
+                state );
+    state->setCurNumber ( state->getCurNumber() + 1 );
   }
+  STACK_END (state);
+}
 
 
-  void
-  ZorNumGenState::init(PlanState& planState)
-  {
-    PlanIteratorState::init(planState);
-    this->curNumber = 0;
-  }
+void
+ZorNumGenState::init(PlanState& planState)
+{
+  PlanIteratorState::init(planState);
+  this->curNumber = 0;
+}
 
-  void
-  ZorNumGenState::reset(PlanState& planState)
-  {
-    PlanIteratorState::reset(planState);
-    this->curNumber = 0;
-  }
+void
+ZorNumGenState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  this->curNumber = 0;
+}
 
-  int32_t
-  ZorNumGenState::getCurNumber()
-  {
-    return this->curNumber;
-  }
+int32_t
+ZorNumGenState::getCurNumber()
+{
+  return this->curNumber;
+}
 
-  void
-  ZorNumGenState::setCurNumber ( int32_t value )
-  {
-    this->curNumber = value;
-  }
-
-/*______________________________________________________________________
-|
-| XQuery 1.1 functions
-|_______________________________________________________________________*/
+void
+ZorNumGenState::setCurNumber ( int32_t value )
+{
+  this->curNumber = value;
+}
 
 
+/*******************************************************************************
+
+********************************************************************************/
 static const char* decimal_separator_param = "decimal-separator";
 static const char* grouping_separator_param = "grouping-separator";
 static const char* infinity_param = "infinity";
@@ -1392,7 +1849,7 @@ static void formatNumber(
     xqpStringStore& resultString,
     store::Item_t& number,
     FormatNumberInfo& info,
-    const TypeManager& tm)
+    const TypeManager* tm)
 {
   const RootTypeManager& rtm = GENV_TYPESYSTEM;
 
@@ -1409,7 +1866,7 @@ static void formatNumber(
 
   GENV_ITEMFACTORY->createDouble(zero, xqp_double::zero());
 
-  GenericCast::castToAtomic(doubleItem, number, &*rtm.DOUBLE_TYPE_ONE, tm);
+  GenericCast::castToAtomic(doubleItem, number, &*rtm.DOUBLE_TYPE_ONE, *tm);
 
   if (doubleItem->compare(zero) == -1)
   {
@@ -1479,8 +1936,6 @@ bool FnFormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planStat
   FormatNumberInfo info;
   DecimalFormat_t df_t;
 
-  const TypeManager& tm = *getStaticContext(planState)->get_typemanager();
-
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
 
@@ -1511,7 +1966,8 @@ bool FnFormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planStat
     pictureString = pictureItem->getStringValue();
     resultString = new xqpStringStore();
     parsePicture(*pictureString, info);
-    formatNumber(*resultString, result, info, tm);
+    formatNumber(*resultString, result, info, theSctx->get_typemanager());
+
     STACK_PUSH (GENV_ITEMFACTORY->createString(result, resultString), state);
   }
   STACK_END (state);

@@ -260,8 +260,6 @@ public:
   typedef std::vector<store::Iterator_t> DataTable;
 
 protected:
-  TypeManager                 * theTypeMgr;
-
   checked_vector<uint32_t>      theVarBindingState;
           
   SortTable                     theSortTable;

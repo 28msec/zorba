@@ -20,29 +20,39 @@
 #include "runtime/base/narybase.h"
 
 namespace zorba {
-  //Json
-  class FnJsonParseIteratorState : public PlanIteratorState {
-    public:
-      xqp_string theBaseUri;
 
-      void init(PlanState&);
-      void reset(PlanState&);
-  };
-  NARY_ITER_STATE (ZorbaJsonParseIterator, FnJsonParseIteratorState);
+//Json
+class FnJsonParseIteratorState : public PlanIteratorState \
+{
+ public:
+  xqp_string theBaseUri;
+  
+  void init(PlanState&);
+  void reset(PlanState&);
+};
 
-  NARY_ITER (ZorbaJsonSerializeIterator);
+NARY_ITER_STATE_SCTX(ZorbaJsonParseIterator, FnJsonParseIteratorState);
 
-  //JsonML
-  class FnJsonMLParseIteratorState : public PlanIteratorState {
-    public:
-      xqp_string theBaseUri;
 
-      void init(PlanState&);
-      void reset(PlanState&);
-  };
-  NARY_ITER_STATE (ZorbaJsonMLParseIterator, FnJsonMLParseIteratorState);
+NARY_ITER (ZorbaJsonSerializeIterator);
 
-  NARY_ITER (ZorbaJsonMLSerializeIterator);
+
+//JsonML
+class FnJsonMLParseIteratorState : public PlanIteratorState 
+{
+ public:
+  xqp_string theBaseUri;
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+
+NARY_ITER_STATE_SCTX (ZorbaJsonMLParseIterator, FnJsonMLParseIteratorState);
+
+NARY_ITER (ZorbaJsonMLSerializeIterator);
+
+
 }/*namespace zorba*/
 
 #endif /* ZORBA_RUNTIME_CONVERTORS_IMPL_H */

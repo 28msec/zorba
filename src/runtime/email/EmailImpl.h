@@ -19,9 +19,12 @@
 
 #include "runtime/base/narybase.h"
 
-namespace zorba {
+namespace zorba 
+{
 
-  NARY_ITER (ZorbaMailIterator);
+NARY_ITER_SCTX (ZorbaMailIterator);
+
+
 }/*namespace zorba*/
 
 #endif /* ZORBA_RUNTIME_EMAIL_IMPL_H */

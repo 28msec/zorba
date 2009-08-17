@@ -27,16 +27,6 @@ namespace zorba
 {
 
 /*******************************************************************************
-   All type-related iterators have the same kind of state.
-********************************************************************************/
-class CommonTypeIteratorState : public PlanIteratorState
-{
-public: 
-  TypeManager* tm;
-};
-
-
-/*******************************************************************************
   Implement 3.12.1: Instance Of
 
   The boolean operator instance of returns true if the value of its first 
@@ -44,7 +34,7 @@ public:
   for SequenceType matching; otherwise it returns false.
 ********************************************************************************/
 class InstanceOfIterator : public UnaryBaseIterator<InstanceOfIterator,
-                                                    CommonTypeIteratorState>
+                                                    PlanIteratorState>
 {
 private:
   xqtref_t theSequenceType;
@@ -53,10 +43,10 @@ public:
   SERIALIZABLE_CLASS(InstanceOfIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(InstanceOfIterator,
                                    UnaryBaseIterator<InstanceOfIterator,
-                                                     CommonTypeIteratorState>)
+                                                     PlanIteratorState>)
   void serialize(::zorba::serialization::Archiver &ar)
   {
-    serialize_baseclass(ar, (UnaryBaseIterator<InstanceOfIterator, CommonTypeIteratorState>*)this);
+    serialize_baseclass(ar, (UnaryBaseIterator<InstanceOfIterator, PlanIteratorState>*)this);
     ar & theSequenceType;
   }
 
@@ -69,7 +59,13 @@ public:
  
   ~InstanceOfIterator();
   
-  void openImpl(PlanState& planState, uint32_t& offset);
+  void openImpl(PlanState& planState, uint32_t& offset)
+  {
+    UnaryBaseIterator<InstanceOfIterator, PlanIteratorState>::
+    openImpl(planState, offset);
+    
+    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+  }
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
@@ -82,7 +78,7 @@ public:
 
   http://www.w3.org/TR/xquery/#id-cast
 ********************************************************************************/
-class CastIterator : public UnaryBaseIterator<CastIterator, CommonTypeIteratorState> 
+class CastIterator : public UnaryBaseIterator<CastIterator, PlanIteratorState> 
 {
   friend class PrinterVisitor;
 
@@ -94,10 +90,10 @@ public:
   SERIALIZABLE_CLASS(CastIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(CastIterator,
                                    UnaryBaseIterator<CastIterator,
-                                                     CommonTypeIteratorState>)
+                                                     PlanIteratorState>)
   void serialize(::zorba::serialization::Archiver &ar)
   {
-    serialize_baseclass(ar, (UnaryBaseIterator<CastIterator, CommonTypeIteratorState>*)this);
+    serialize_baseclass(ar, (UnaryBaseIterator<CastIterator, PlanIteratorState>*)this);
     ar & theCastType;
     SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
   }
@@ -110,7 +106,13 @@ public:
 
   ~CastIterator();
   
-  void openImpl(PlanState& planState, uint32_t& offset);
+  void openImpl(PlanState& planState, uint32_t& offset)
+  {
+    UnaryBaseIterator<CastIterator, PlanIteratorState>::
+    openImpl(planState, offset);
+    
+    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+  }
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 
@@ -124,7 +126,7 @@ public:
   http://www.w3.org/TR/xquery/#id-castable
 ********************************************************************************/
 class CastableIterator : public UnaryBaseIterator<CastableIterator,
-                                                  CommonTypeIteratorState> 
+                                                  PlanIteratorState> 
 {
   friend class PrinterVisitor;
 
@@ -135,10 +137,10 @@ private:
 public:
   SERIALIZABLE_CLASS(CastableIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(CastableIterator,
-                                   UnaryBaseIterator<CastableIterator, CommonTypeIteratorState>)
+                                   UnaryBaseIterator<CastableIterator, PlanIteratorState>)
   void serialize(::zorba::serialization::Archiver &ar)
   {
-    serialize_baseclass(ar, (UnaryBaseIterator<CastableIterator, CommonTypeIteratorState>*)this);
+    serialize_baseclass(ar, (UnaryBaseIterator<CastableIterator, PlanIteratorState>*)this);
     ar & theCastType;
     SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
   }
@@ -152,7 +154,13 @@ public:
 
   virtual ~CastableIterator();
 
-  void openImpl(PlanState& planState, uint32_t& offset);
+  void openImpl(PlanState& planState, uint32_t& offset)
+  {
+    UnaryBaseIterator<CastableIterator, PlanIteratorState>::
+    openImpl(planState, offset);
+    
+    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+  }
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 
@@ -166,7 +174,7 @@ public:
   subtype of the target type, then no promotion is done (it's a noop).
 ********************************************************************************/
 class PromoteIterator : public UnaryBaseIterator<PromoteIterator,
-                                                 CommonTypeIteratorState> 
+                                                 PlanIteratorState> 
 {
   friend class PrinterVisitor;
 
@@ -178,10 +186,10 @@ public:
   SERIALIZABLE_CLASS(PromoteIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(PromoteIterator,
                                    UnaryBaseIterator<PromoteIterator,
-                                                     CommonTypeIteratorState>)
+                                                     PlanIteratorState>)
   void serialize(::zorba::serialization::Archiver &ar)
   {
-    serialize_baseclass(ar, (UnaryBaseIterator<PromoteIterator, CommonTypeIteratorState>*)this);
+    serialize_baseclass(ar, (UnaryBaseIterator<PromoteIterator, PlanIteratorState>*)this);
     ar & thePromoteType;
     SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
   }
@@ -191,7 +199,13 @@ public:
 
   virtual ~PromoteIterator();
 
-  void openImpl(PlanState& planState, uint32_t& offset);
+  void openImpl(PlanState& planState, uint32_t& offset)
+  {
+    UnaryBaseIterator<PromoteIterator, PlanIteratorState>::
+    openImpl(planState, offset);
+    
+    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+  }
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 
@@ -204,7 +218,7 @@ public:
   an error is thrown.
 ********************************************************************************/
 class TreatIterator : public UnaryBaseIterator<TreatIterator,
-                                               CommonTypeIteratorState> 
+                                               PlanIteratorState> 
 {
   friend class PrinterVisitor;
 
@@ -218,10 +232,10 @@ public:
   SERIALIZABLE_CLASS(TreatIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(TreatIterator,
                                    UnaryBaseIterator<TreatIterator,
-                                                     CommonTypeIteratorState>)
+                                                     PlanIteratorState>)
   void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (UnaryBaseIterator<TreatIterator, CommonTypeIteratorState>*)this);
+    serialize_baseclass(ar, (UnaryBaseIterator<TreatIterator, PlanIteratorState>*)this);
     ar & theTreatType;
     SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
     ar & check_prime;
@@ -236,9 +250,15 @@ public:
         const xqtref_t& aTreatType,
         bool check_prime,
         XQUERY_ERROR);
-  
-  void openImpl(PlanState& planState, uint32_t& offset);
 
+  void openImpl(PlanState& planState, uint32_t& offset)
+  {
+    UnaryBaseIterator<TreatIterator, PlanIteratorState>::
+    openImpl(planState, offset);
+    
+    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+  }
+  
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 
   void accept(PlanIterVisitor&) const;

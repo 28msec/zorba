@@ -52,7 +52,7 @@ FnTraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         "An empty sequence is not allowed as as second argument to fn:trace");
   }
 
-  state->theOS = getStaticContext(planState)->get_trace_stream();
+  state->theOS = theSctx->get_trace_stream();
 
   while (consumeNext(result, theChildren[0], planState)) {
     (*state->theOS) << state->theTagItem->getStringValue() 

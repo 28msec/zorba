@@ -74,8 +74,7 @@ InsertIterator::InsertIterator (
 }
 
 
-bool
-InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
+bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 {
   store::StoreConsts::NodeKind targetKind;
   bool elemParent;
@@ -90,7 +89,6 @@ InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   std::auto_ptr<store::PUL> pul;
   store::Item_t temp;
 
-  static_context* sctx;
   store::CopyMode lCopyMode;
   bool typePreserve;
   bool nsPreserve;
@@ -99,13 +97,11 @@ InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
-  sctx = getStaticContext(aPlanState);
-
-  typePreserve = (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
+  typePreserve = (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
                   true : false);
-  nsPreserve = (sctx->preserve_mode() == StaticContextConsts::preserve_ns ?
+  nsPreserve = (theSctx->preserve_mode() == StaticContextConsts::preserve_ns ?
                 true : false);
-  nsInherit = (sctx->inherit_mode() == StaticContextConsts::inherit_ns ?
+  nsInherit = (theSctx->inherit_mode() == StaticContextConsts::inherit_ns ?
                true : false);
 
   lCopyMode.set(theDoCopy, typePreserve, nsPreserve, nsInherit);
@@ -339,7 +335,6 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   ulong lNumNodes = 0;
   std::auto_ptr<store::PUL> lPul;
 
-  static_context* sctx;
   store::CopyMode lCopyMode;
   bool typePreserve;
   bool nsPreserve;
@@ -348,13 +343,11 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   PlanIteratorState* lState;
   DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
   
-  sctx = getStaticContext(aPlanState);
-
-  typePreserve = (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
+  typePreserve = (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
                   true : false);
-  nsPreserve = (sctx->preserve_mode() == StaticContextConsts::preserve_ns ?
+  nsPreserve = (theSctx->preserve_mode() == StaticContextConsts::preserve_ns ?
                 true : false);
-  nsInherit = (sctx->inherit_mode() == StaticContextConsts::inherit_ns ?
+  nsInherit = (theSctx->inherit_mode() == StaticContextConsts::inherit_ns ?
                true : false);
 
   lCopyMode.set(theDoCopy, typePreserve, nsPreserve, nsInherit);
@@ -611,7 +604,6 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   store::Item_t temp;
   store::Item_t lItem;
   store::Item_t lCopyNode;
-  static_context* sctx;
   store::CopyMode lCopyMode;
   bool typePreserve;
   bool nsPreserve;
@@ -620,13 +612,11 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   PlanIteratorState* aState;
   DEFAULT_STACK_INIT(PlanIteratorState, aState, aPlanState);
 
-  sctx = getStaticContext(aPlanState);
-
-  typePreserve = (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
+  typePreserve = (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
                   true : false);
-  nsPreserve = (sctx->preserve_mode() == StaticContextConsts::preserve_ns ?
+  nsPreserve = (theSctx->preserve_mode() == StaticContextConsts::preserve_ns ?
                 true : false);
-  nsInherit = (sctx->inherit_mode() == StaticContextConsts::inherit_ns ?
+  nsInherit = (theSctx->inherit_mode() == StaticContextConsts::inherit_ns ?
                true : false);
 
   lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
@@ -682,7 +672,7 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
       validationPul = GENV_ITEMFACTORY->createPendingUpdateList();
 
 #ifndef ZORBA_NO_XMLSCHEMA
-      validateAfterUpdate(validationNodes, validationPul, sctx, loc);
+      validateAfterUpdate(validationNodes, validationPul, theSctx, loc);
 #endif
       validationPul->applyUpdates(validationNodes);
     }
@@ -702,6 +692,8 @@ void
 TransformIterator::openImpl ( PlanState& planState, uint32_t& offset ) 
 {
   StateTraitsImpl<PlanIteratorState>::createState(planState, this->stateOffset, offset);
+
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
 
   CopyClause::iter_t lIter = theCopyClauses.begin();
   CopyClause::iter_t lEnd = theCopyClauses.end();

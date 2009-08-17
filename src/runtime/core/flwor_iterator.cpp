@@ -439,7 +439,6 @@ void GroupByClause::close(PlanState& planState)
 
 FlworState::FlworState() 
   :
-  theTypeMgr(NULL),
   theNumTuples(0),
   theCurTuplePos(0),
   theGroupMap(0)
@@ -493,8 +492,6 @@ void FlworState::init(
 {
   init(planState, numVars);
  
-  theTypeMgr = tm;
-
   if(groupingSpecs != 0)
   {
     GroupTupleCmp cmp(planState.theRuntimeCB, tm, groupingSpecs);
@@ -701,7 +698,7 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
               startTime = (double)stime.tv_sec+(1.e-6)*stime.tv_usec;
 #endif
               SortTupleCmp cmp(planState.theRuntimeCB,
-                               iterState->theTypeMgr,
+                               theSctx->get_typemanager(),
                                &theOrderByClause->theOrderSpecs);
 
               if (theOrderByClause->theStable)
@@ -1201,16 +1198,14 @@ void FLWORIterator::openImpl(PlanState& planState, uint32_t& offset)
 
   FlworState* iterState = StateTraitsImpl<FlworState>::getState(planState,
                                                                  this->stateOffset);
-  static_context* sctxp;
+  theSctx = planState.theCompilerCB->getStaticContext(sctx);
 
   if (doGroupBy || doOrderBy)
   {
-    sctxp = getStaticContext(planState);
-
     if (doGroupBy)
     {
       iterState->init(planState,
-                      sctxp->get_typemanager(),
+                      theSctx->get_typemanager(),
                       theNumBindings,
                       (doOrderBy ? &theOrderByClause->theOrderSpecs : NULL),
                       &theGroupByClause->theGroupingSpecs); 
@@ -1218,7 +1213,7 @@ void FLWORIterator::openImpl(PlanState& planState, uint32_t& offset)
     else if (doOrderBy) 
     {
       iterState->init(planState,
-                      sctxp->get_typemanager(),
+                      theSctx->get_typemanager(),
                       theNumBindings,
                       &theOrderByClause->theOrderSpecs,
                       0);
@@ -1245,10 +1240,10 @@ void FLWORIterator::openImpl(PlanState& planState, uint32_t& offset)
     theWhereClause->open(planState, offset);
   
   if (doGroupBy)
-    theGroupByClause->open(sctxp, planState, offset);
+    theGroupByClause->open(theSctx, planState, offset);
   
   if (doOrderBy)
-    theOrderByClause->open(sctxp, planState, offset);
+    theOrderByClause->open(theSctx, planState, offset);
 }
 
 

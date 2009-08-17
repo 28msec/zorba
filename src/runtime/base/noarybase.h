@@ -71,6 +71,8 @@ NoaryBaseIterator<IterType, StateType>::openImpl ( PlanState& planState, uint32_
 {
   StateTraitsImpl<StateType>::createState(planState, this->stateOffset, offset);
   StateTraitsImpl<StateType>::initState(planState, this->stateOffset);
+
+  // this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
 }
 
 
@@ -95,3 +97,8 @@ NoaryBaseIterator<IterType, StateType>::closeImpl(PlanState& planState)
 
 #endif /* ZORBA_NOARYBASE_H */
 
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

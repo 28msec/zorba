@@ -51,10 +51,13 @@ bool NodeDistinctIterator::nextImpl(store::Item_t& result, PlanState& planState)
   return state->theStoreIterator->next(result);
 }
 
+
 void NodeDistinctIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
   this->stateOffset = offset;
   offset += getStateSize();
+
+  theSctx = planState.theCompilerCB->getStaticContext(sctx);
 
   NodeDistinctState* state = new (planState.theBlock + stateOffset) NodeDistinctState;
 
@@ -101,6 +104,8 @@ void NodeSortState::reset(PlanState& planState)
 void NodeSortIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
   StateTraitsImpl<NodeSortState>::createState(planState, this->stateOffset, offset);
+
+  theSctx = planState.theCompilerCB->getStaticContext(sctx);
 
   theChild->open(planState, offset);
   store::Iterator_t input = new PlanIteratorWrapper(theChild, planState);

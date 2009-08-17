@@ -82,7 +82,11 @@ TryCatchIteratorState::reset(PlanState& planState) {
 
 }
 
-TryCatchIterator::CatchClause::~CatchClause() {}
+
+TryCatchIterator::CatchClause::~CatchClause() 
+{
+}
+
 
 TryCatchIterator::TryCatchIterator(short sctx,
                                    const QueryLoc& loc,
@@ -90,12 +94,16 @@ TryCatchIterator::TryCatchIterator(short sctx,
                                    std::vector<CatchClause>& aCatchClauses)
   : UnaryBaseIterator<TryCatchIterator, TryCatchIteratorState> (sctx, loc, aBlock),
     theCatchClauses(aCatchClauses)
-{ }
+{ 
+}
 
-TryCatchIterator::~TryCatchIterator() {}
 
-void
-TryCatchIterator::openImpl(PlanState& planState, uint32_t& offset)
+TryCatchIterator::~TryCatchIterator() 
+{
+}
+
+
+void TryCatchIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
   StateTraitsImpl<TryCatchIteratorState>::createState(planState,
                                                       this->stateOffset,
@@ -103,6 +111,8 @@ TryCatchIterator::openImpl(PlanState& planState, uint32_t& offset)
 
   StateTraitsImpl<TryCatchIteratorState>::initState(planState, this->stateOffset);
   
+  theSctx = planState.theCompilerCB->getStaticContext(sctx);
+
   theChild->open(planState, offset);
 
   std::vector<TryCatchIterator::CatchClause>::const_iterator lIter = theCatchClauses.begin();

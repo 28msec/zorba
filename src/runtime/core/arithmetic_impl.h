@@ -42,6 +42,7 @@ public:
 /******************************************************************************* 
   Class that implements addition between 2 items. The class has a compute()
   method for each combination of valid data types for the 2 input items.
+  Note: the compute() methods for the numeric types are in NumericImpl.cpp
 ********************************************************************************/
 class AddOperation
 {
@@ -51,7 +52,6 @@ public:
     return ArithmeticConsts::ADDITION;
   }
 
-public:
   template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
   static bool compute(
         store::Item_t& result,
@@ -82,6 +82,7 @@ public:
 /******************************************************************************* 
   Class that implements subtraction between 2 items. The class has a compute()
   method for each combination of valid data types for the 2 input items.
+  Note: the compute() methods for the numeric types are in NumericImpl.cpp
 ********************************************************************************/
 class SubtractOperation
 {
@@ -122,6 +123,7 @@ public:
 /******************************************************************************* 
   Class that implements multiplication between 2 items. The class has a compute()
   method for each combination of valid data types for the 2 input items.
+  Note: the compute() methods for the numeric types are in NumericImpl.cpp
 ********************************************************************************/
 class MultiplyOperation
 {
@@ -162,6 +164,7 @@ public:
 /******************************************************************************* 
   Class that implements division between 2 items. The class has a compute()
   method for each combination of valid data types for the 2 input items.
+  Note: the compute() methods for the numeric types are in NumericImpl.cpp
 ********************************************************************************/
 class DivideOperation
 {
@@ -287,16 +290,9 @@ public:
 
   The iterator can handle operands with any valid combination of data types. 
 ********************************************************************************/
-class GenericArithIteratorState : public PlanIteratorState
-{
-public:
-  const TypeManager * tm;
-};
-
-
 template < class Operation >
 class GenericArithIterator : public BinaryBaseIterator<GenericArithIterator<Operation>,
-                                                       GenericArithIteratorState>
+                                                       PlanIteratorState>
 {
 public:
   static bool compute(
@@ -312,7 +308,13 @@ public:
 
   virtual ~GenericArithIterator() {}
 
-  void openImpl(PlanState& planState, uint32_t& offset);
+  void openImpl(PlanState& planState, uint32_t& offset)
+  {
+    BinaryBaseIterator<GenericArithIterator, PlanIteratorState>::
+    openImpl(planState, offset);
+    
+    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+  }
 
   bool nextImpl(store::Item_t& result, PlanState&) const;
     
@@ -320,10 +322,10 @@ public:
 
 public:
   SERIALIZABLE_TEMPLATE_CLASS(GenericArithIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(GenericArithIterator, BinaryBaseIterator<GenericArithIterator<Operation>, GenericArithIteratorState>)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(GenericArithIterator, BinaryBaseIterator<GenericArithIterator<Operation>, PlanIteratorState>)
   void serialize(::zorba::serialization::Archiver &ar)
   {
-    serialize_baseclass(ar, (BinaryBaseIterator<GenericArithIterator<Operation>, GenericArithIteratorState>*)this);
+    serialize_baseclass(ar, (BinaryBaseIterator<GenericArithIterator<Operation>, PlanIteratorState>*)this);
   }
 };
 

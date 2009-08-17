@@ -38,9 +38,9 @@ ZorbaMailIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  lSMTPServerFound = getStaticContext(planState)->lookup_option("http://www.zorba-xquery.org/options", "SMTPServer", SMTPServer);
-  getStaticContext(planState)->lookup_option("http://www.zorba-xquery.org/options", "SMTPUser", SMTPUser);
-  getStaticContext(planState)->lookup_option("http://www.zorba-xquery.org/options", "SMTPPwd", SMTPPwd);
+  lSMTPServerFound = theSctx->lookup_option("http://www.zorba-xquery.org/options", "SMTPServer", SMTPServer);
+  theSctx->lookup_option("http://www.zorba-xquery.org/options", "SMTPUser", SMTPUser);
+  theSctx->lookup_option("http://www.zorba-xquery.org/options", "SMTPPwd", SMTPPwd);
 
   if( !lSMTPServerFound ||
        (lSMTPServerFound && SMTPServer.empty()) )

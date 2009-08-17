@@ -85,16 +85,29 @@ public:
  *
  ****************************************************************************/
 
-class ZorbaRestGetIterator : public NaryBaseIterator<ZorbaRestGetIterator, ZorbaRestGetIteratorState > 
+class ZorbaRestGetIterator : public NaryBaseIterator<ZorbaRestGetIterator,
+                                                     ZorbaRestGetIteratorState > 
 {
 public:                                                                  
-  ZorbaRestGetIterator( short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, bool tidy = false)
-    : NaryBaseIterator<ZorbaRestGetIterator, ZorbaRestGetIteratorState >(sctx, loc, aChildren),
-      isGetTidy(tidy)
+  ZorbaRestGetIterator(
+        short sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& aChildren,
+        bool tidy = false)
+    :
+    NaryBaseIterator<ZorbaRestGetIterator, ZorbaRestGetIteratorState >(sctx, loc, aChildren),
+    isGetTidy(tidy)
   { } 
 
-  bool
-  nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+  void openImpl(PlanState& planState, uint32_t& offset)
+  {
+    NaryBaseIterator<ZorbaRestGetIterator, ZorbaRestGetIteratorState>::
+    openImpl(planState, offset); 
+
+    theSctx = planState.theCompilerCB->getStaticContext(sctx);
+  }
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
                                                                          
   virtual void 
   accept(PlanIterVisitor& v) const
@@ -132,8 +145,15 @@ public:
     : NaryBaseIterator<ZorbaRestPostIterator, ZorbaRestGetIteratorState >(sctx, loc, aChildren)
   { }
 
-  bool
-  nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+  void openImpl(PlanState& planState, uint32_t& offset)
+  {
+    NaryBaseIterator<ZorbaRestPostIterator, ZorbaRestGetIteratorState>::
+    openImpl(planState, offset); 
+
+    theSctx = planState.theCompilerCB->getStaticContext(sctx);
+  }
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 
   virtual void
       accept(PlanIterVisitor& v) const
@@ -168,6 +188,14 @@ public:
     : NaryBaseIterator<ZorbaRestPutIterator, ZorbaRestGetIteratorState >(sctx, loc, aChildren)
   { }
 
+  void openImpl(PlanState& planState, uint32_t& offset)
+  {
+    NaryBaseIterator<ZorbaRestPutIterator, ZorbaRestGetIteratorState>::
+    openImpl(planState, offset); 
+
+    theSctx = planState.theCompilerCB->getStaticContext(sctx);
+  }
+
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 
   virtual void accept(PlanIterVisitor& v) const
@@ -180,6 +208,7 @@ public:
     }
     v.endVisit(*this);
   }
+
 public:
   SERIALIZABLE_CLASS(ZorbaRestPutIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaRestPutIterator, NaryBaseIterator<ZorbaRestPutIterator, ZorbaRestGetIteratorState >)
@@ -201,6 +230,14 @@ public:
   ZorbaRestDeleteIterator( short sctx,const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
     : NaryBaseIterator<ZorbaRestDeleteIterator, ZorbaRestGetIteratorState >(sctx, loc, aChildren)
   { }
+
+  void openImpl(PlanState& planState, uint32_t& offset)
+  {
+    NaryBaseIterator<ZorbaRestDeleteIterator, ZorbaRestGetIteratorState>::
+    openImpl(planState, offset); 
+
+    theSctx = planState.theCompilerCB->getStaticContext(sctx);
+  }
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 
@@ -235,6 +272,14 @@ public:
   ZorbaRestHeadIterator( short sctx,const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
     : NaryBaseIterator<ZorbaRestHeadIterator, ZorbaRestGetIteratorState >(sctx, loc, aChildren)
   { }
+
+  void openImpl(PlanState& planState, uint32_t& offset)
+  {
+    NaryBaseIterator<ZorbaRestHeadIterator, ZorbaRestGetIteratorState>::
+    openImpl(planState, offset); 
+
+    theSctx = planState.theCompilerCB->getStaticContext(sctx);
+  }
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 
