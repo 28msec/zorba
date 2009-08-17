@@ -593,8 +593,8 @@ void FastXmlLoader::startElement(
         xqpStringStore_t pooledNs;
         store.getNamespacePool().insertc(nsuri, pooledNs);
 
-        bindings[i].first = prefix;
-        bindings[i].second = pooledNs.getp();
+        bindings[i].first = new xqpStringStore(prefix);
+        bindings[i].second = pooledNs;
 
         LOADER_TRACE1("namespace decl: [" << prefix  << ":" << nsuri << "]");
       }

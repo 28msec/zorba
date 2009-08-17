@@ -34,39 +34,49 @@ class namespace_context;
 
 typedef rchandle<namespace_context> NamespaceContext_t;
 
-class namespace_context : public SimpleRCObject {
-  public:
-    typedef std::vector<std::pair<xqp_string, xqp_string> > bindings_t;
 
-    namespace_context(static_context *sctx)
-      : m_sctx(sctx) { }
-    namespace_context(static_context *sctx, store::NsBindings& bindings);
-    namespace_context(rchandle<namespace_context> parent)
-      :  m_sctx(parent->m_sctx),
-	 m_parent(parent)
-  { }
+class namespace_context : public SimpleRCObject 
+{
+public:
+  typedef std::vector<std::pair<xqpStringStore_t, xqpStringStore_t> > bindings_t;
 
-    rchandle<namespace_context> get_parent() const { return m_parent; }
-    static_context *get_context() const { return m_sctx; }
+private:
+  static_context              * m_sctx;
+  rchandle<namespace_context>   m_parent;
+  bindings_t                    m_bindings;
 
-    void bind_ns(xqp_string prefix, xqp_string ns);
-    const bindings_t& get_bindings() const { return m_bindings; }
-    bool findBinding(xqp_string aPrefix, xqp_string &aNamespace);
+public:
+  SERIALIZABLE_CLASS(namespace_context)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(namespace_context, SimpleRCObject)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    //serialize_baseclass(ar, (SimpleRCObject*)this);
+    ar & m_sctx;
+    ar & m_parent;
+    ar & m_bindings;
+  }
 
-  private:
-    static_context *m_sctx;
-    rchandle<namespace_context> m_parent;
-    bindings_t m_bindings;
-  public:
-    SERIALIZABLE_CLASS(namespace_context)
-    SERIALIZABLE_CLASS_CONSTRUCTOR2(namespace_context, SimpleRCObject)
-    void serialize(::zorba::serialization::Archiver &ar)
-    {
-      //serialize_baseclass(ar, (SimpleRCObject*)this);
-      ar & m_sctx;
-      ar & m_parent;
-      ar & m_bindings;
-    }
+public:
+  namespace_context(static_context* sctx) : m_sctx(sctx) { }
+
+  namespace_context(static_context* sctx, store::NsBindings& bindings);
+
+  namespace_context(rchandle<namespace_context> parent)
+    :
+    m_sctx(parent->m_sctx),
+    m_parent(parent)
+  { 
+  }
+  
+  rchandle<namespace_context> get_parent() const { return m_parent; }
+
+  static_context* get_context() const { return m_sctx; }
+  
+  void bind_ns(xqpStringStore_t& prefix, xqpStringStore_t& ns);
+
+  const bindings_t& get_bindings() const { return m_bindings; }
+
+  bool findBinding(const xqpStringStore_t& aPrefix, xqpStringStore_t& aNamespace);
 };
 
 }

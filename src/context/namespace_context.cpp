@@ -25,41 +25,53 @@ END_SERIALIZABLE_CLASS_VERSIONS(namespace_context)
 
 
 namespace_context::namespace_context(static_context *sctx, store::NsBindings& bindings)
-      : m_sctx(sctx)
+  :
+  m_sctx(sctx)
 {
-    for (unsigned long i = 0; i < bindings.size(); i++)
-    {
-        bind_ns( bindings[i].first.getStore(), bindings[i].second.getStore() );
-    }    
+  for (unsigned long i = 0; i < bindings.size(); i++)
+  {
+    bind_ns(bindings[i].first, bindings[i].second);
+  }    
 }
-      
-void namespace_context::bind_ns(xqp_string prefix, xqp_string ns)
+  
+    
+void namespace_context::bind_ns(xqpStringStore_t& prefix, xqpStringStore_t& ns)
 {
-  m_bindings.push_back(std::pair<xqp_string, xqp_string>(prefix, ns));
+  m_bindings.push_back(std::pair<xqpStringStore_t, xqpStringStore_t>(prefix, ns));
 }
 
-bool namespace_context::findBinding(xqp_string aPrefix, xqp_string &aNamespace)
+
+bool namespace_context::findBinding(
+    const xqpStringStore_t& aPrefix,
+    xqpStringStore_t& aNamespace)
 {
   bindings_t::const_iterator lIter = m_bindings.begin();
   bindings_t::const_iterator lEnd = m_bindings.end();
   for (; lIter != lEnd ; ++lIter)
   {
-    if ( (*lIter).first == aPrefix)
+    if ( (*lIter).first->byteEqual(*aPrefix.getp()))
     {
-      if ((*lIter).second == "")
+      if ((*lIter).second->empty())
       {
         // namespace is undeclared
+        aNamespace = new xqpStringStore("");
         return false;
       }
       aNamespace = (*lIter).second;
       return true;
     }
   }
+
   if (m_parent != 0)
   {
     return m_parent->findBinding(aPrefix, aNamespace);
-  } else {
-    return m_sctx->lookup_elem_ns(aPrefix, aNamespace);
+  }
+  else
+  {
+    xqpString ns;
+    bool found = m_sctx->lookup_elem_ns(aPrefix.getp(), ns);
+    aNamespace = ns.getStore();
+    return found;
   }
 }
 

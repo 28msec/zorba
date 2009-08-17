@@ -124,14 +124,10 @@ class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseC
   public:
     SERIALIZABLE_CLASS(PlanProxy)
     SERIALIZABLE_CLASS_CONSTRUCTOR2(PlanProxy, RCObject)
-    void serialize(::zorba::serialization::Archiver &ar)
-    {
-      //serialize_baseclass(ar, (RCObject*)this);
-      ar & theRootIter;
-    }
+    void serialize(::zorba::serialization::Archiver& ar);
+
   public:
-    long*
-    getSharedRefCounter() const { return NULL; }  
+    long* getSharedRefCounter() const { return NULL; }  
 
     SYNC_CODE(virtual RCLock* getRCLock() const { return &theRCLock; })
 
@@ -177,7 +173,6 @@ class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseC
   double                           theDocLoadingUserTime;
   long                             theDocLoadingTime;
 
- public:
 public:
   SERIALIZABLE_CLASS(XQueryImpl)
   SERIALIZABLE_CLASS_CONSTRUCTOR(XQueryImpl)
@@ -216,6 +211,7 @@ public:
 #endif
     }
   }
+
 public:
   virtual ~XQueryImpl();
 

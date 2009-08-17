@@ -21,12 +21,12 @@
 #include "zorbautils/mutex.h"
 
 #include "common/shared_types.h"
-#include "api/xqueryimpl.h"
 
 
 namespace zorba {
 
 class ErrorHandler;
+class XQueryImpl;
 
 
 /*******************************************************************************

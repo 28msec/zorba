@@ -393,8 +393,8 @@ void SimpleXmlLoader::startElement(
       if (prefix == NULL)
         prefix = "";
 
-      bindings[i].first = prefix;
-      bindings[i].second = nsuri;
+      bindings[i].first = new xqpStringStore(prefix);
+      bindings[i].second = new xqpStringStore(nsuri);
     
       LOADER_TRACE1("namespace decl: [" << prefix  << ":" << nsuri << "]");
     }

@@ -16,6 +16,7 @@
 IF (NOT ZORBA_NO_XMLSCHEMA)
     SET(SCHEMA_SRCS
         schema.cpp
+        validate.cpp
         LoadSchemaErrorHandler.cpp
         PrintSchema.cpp
         EventSchemaValidator.cpp

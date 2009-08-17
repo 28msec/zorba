@@ -32,7 +32,7 @@ class CopyMode;
 class PUL;
 class TupleField;
 
-typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
+typedef std::vector<std::pair<xqpStringStore_t, xqpStringStore_t> > NsBindings;
 
 class ItemFactory
 {

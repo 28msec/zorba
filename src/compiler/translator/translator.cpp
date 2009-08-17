@@ -34,14 +34,14 @@
 #include "types/typemanagerimpl.h"
 #include "types/schema/schema.h"
 
-#include "compiler/translator/translator.h"
-#include "compiler/api/compilercb.h"
-
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
 #include "context/namespace_context.h"
 #include "context/internal_uri_resolvers.h"
 #include "context/standard_uri_resolvers.h"
+
+#include "compiler/translator/translator.h"
+#include "compiler/api/compilercb.h"
 #include "compiler/expression/expr.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parser/parse_constants.h"
@@ -51,9 +51,9 @@
 #include "compiler/rewriter/framework/rewriter.h"
 #include "compiler/api/compiler_api.h"
 #include "compiler/parser/util.h"
+#include "compiler/indexing/index_tools.h"
 
 #include "indexing/value_index.h"
-#include "compiler/indexing/index_tools.h"
 
 #include "system/globalenv.h"
 
@@ -1768,11 +1768,16 @@ void *begin_visit (const DecimalFormatNode& v)
   if (!v.is_default)
   {
     string::size_type pos = v.format_name.find(":");
-    string prefix = v.format_name.substr(0, pos == string::npos ? 0 : pos);
+
+    xqpStringStore_t prefix =
+    new xqpStringStore(v.format_name.substr(0, pos == string::npos ? 0 : pos));
+
     string name = v.format_name.substr(pos == string::npos ? 0 : pos+1);
-    xqp_string ns;
+
+    xqpStringStore_t ns;
     ns_ctx->findBinding(prefix, ns);
-    GENV_ITEMFACTORY->createQName(qname, ns.c_str(), prefix.c_str(), name.c_str());
+
+    GENV_ITEMFACTORY->createQName(qname, ns->c_str(), prefix->c_str(), name.c_str());
   }
   
   DecimalFormat_t df = new DecimalFormat(v.is_default, qname, v.param_list);
@@ -4903,12 +4908,13 @@ void end_visit (const ValidateExpr& v, void* /*visit_state*/)
   store::Item_t qname;
   if (v.get_type_name() != NULL)
   {
-    xqp_string ns;
-    ns_ctx->findBinding(v.get_type_name()->get_prefix(), ns);
+    xqpStringStore_t prefix = new xqpStringStore(v.get_type_name()->get_prefix());
+    xqpStringStore_t ns;
+    ns_ctx->findBinding(prefix, ns);
 
     GENV_ITEMFACTORY->createQName(qname,
-                                  ns.c_str(),
-                                  v.get_type_name()->get_prefix().c_str(),
+                                  ns->c_str(),
+                                  prefix->c_str(),
                                   v.get_type_name()->get_localname().c_str());
   }
 
@@ -6481,35 +6487,40 @@ void end_visit (const DirAttr& v, void* /*visit_state*/)
 
   if (qname->get_qname() == "xmlns" || qname->get_prefix() == "xmlns") 
   {
-    xqpString prefix;
+    xqpStringStore_t prefix;
 
     if (qname->get_qname() != "xmlns") 
     {
-      prefix = qname->get_localname();
-      if (prefix == "xmlns")
+      prefix = new xqpStringStore(qname->get_localname());
+      if (prefix->byteEqual("xmlns"))
         ZORBA_ERROR_LOC (XQST0070, loc);
     }
-    // else we have a defult-namespace declaration
+    else
+    {
+      // else we have a defult-namespace declaration
+      prefix = new xqpStringStore("");
+    }
 
     const_expr* constValueExpr = valueExpr.dyn_cast<const_expr> ().getp();
     if (constValueExpr != NULL) 
     {
-      xqpString uri(constValueExpr->get_val()->getStringValue());
+      xqpStringStore_t uri = constValueExpr->get_val()->getStringValue();
 
-      if ((prefix == "xml") != (uri == XML_NS))
+      if (prefix->byteEqual("xml") && !uri->byteEqual(XML_NS))
         ZORBA_ERROR_LOC (XQST0070, loc);
 
-      sctx_p->bind_ns(prefix, uri, XQST0071);
+      sctx_p->bind_ns(prefix.getp(), uri.getp(), XQST0071);
       ns_ctx->bind_ns(prefix, uri);
     }
     else if (valueExpr == NULL)
     {
-      if (prefix == "xml")
-        ZORBA_ERROR_LOC ( XQST0070, loc);
+      if (prefix->byteEqual("xml"))
+        ZORBA_ERROR_LOC(XQST0070, loc);
 
       // unbind the prefix
-      sctx_p->bind_ns(prefix, "", XQST0071);
-      ns_ctx->bind_ns(prefix, "");
+      xqpStringStore_t uri = new xqpStringStore("");
+      sctx_p->bind_ns(prefix.getp(), "", XQST0071);
+      ns_ctx->bind_ns(prefix, uri);
     }
     else
     {

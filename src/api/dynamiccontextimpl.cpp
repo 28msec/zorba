@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "api/dynamiccontextimpl.h"
-
 #include <zorba/default_error_handler.h>
 #include <zorba/zorba.h>
 
@@ -27,15 +25,18 @@
 #include "types/typeops.h"
 #include "types/typemanager.h"
 #include "types/root_typemanager.h"
-#include "runtime/base/plan_iterator.h"
+#include "types/schema/validate.h"
+
 #include "api/unmarshaller.h"
 #include "api/zorbaimpl.h"
+#include "api/xqueryimpl.h"
 #include "api/resultiteratorimpl.h"
 #include "api/resultiteratorchainer.h"
+#include "api/dynamiccontextimpl.h"
 
 #include "runtime/api/plan_wrapper.h"
+#include "runtime/base/plan_iterator.h"
 #include "runtime/util/item_iterator.h"
-#include "runtime/validate/validate.h"
 
 #include "store/api/item.h"
 #include "store/api/store.h"
@@ -166,14 +167,13 @@ DynamicContextImpl::setVariableAsDocument(
                                                   ParseConstants::val_lax :
                                                   ParseConstants::val_strict);
 
-        bool success = ValidateIterator::
-                       effectiveValidationValue(validatedNode,
-                                                docItem,
-                                                typeName,
-                                                tm,
-                                                mode,
-                                                theStaticContext,
-                                                loc);
+        bool success = Validator::effectiveValidationValue(validatedNode,
+                                                           docItem,
+                                                           typeName,
+                                                           tm,
+                                                           mode,
+                                                           theStaticContext,
+                                                           loc);
         ZORBA_ASSERT(success);
       
         if (docItem != validatedNode)
@@ -228,14 +228,13 @@ DynamicContextImpl::setVariableAsDocument(
         ParseConstants::validation_mode_t mode = (aMode == validate_lax ?
                                                   ParseConstants::val_lax :
                                                   ParseConstants::val_strict);
-        bool success = ValidateIterator::
-                       effectiveValidationValue(validatedNode,
-                                                docItem,
-                                                typeName,
-                                                tm,
-                                                mode,
-                                                theStaticContext,
-                                                loc);
+        bool success = Validator::effectiveValidationValue(validatedNode,
+                                                           docItem,
+                                                           typeName,
+                                                           tm,
+                                                           mode,
+                                                           theStaticContext,
+                                                           loc);
         ZORBA_ASSERT(success);
       
         if (docItem != validatedNode)

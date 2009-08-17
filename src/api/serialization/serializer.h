@@ -23,7 +23,6 @@
 #include "zorbatypes/representations.h"
 #include "zorbatypes/transcoder.h"
 #include "common/shared_types.h"
-#include "api/sax2impl.h"
 
 namespace zorba
 {
@@ -35,7 +34,7 @@ namespace store
 }
 
 
-typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
+typedef std::vector<std::pair<xqpStringStore_t, xqpStringStore_t> > NsBindings;
 
 class serializer : public SimpleRCObject
 {
@@ -82,7 +81,7 @@ public:
    * @param parameter_name The name of the parameter to be set.
    * @param value The value of the parameter.
    */
-  void set_parameter(xqp_string parameter_name, xqp_string value);
+  void set_parameter(const char* parameter_name, const char* value);
 
 protected:
 
@@ -111,30 +110,32 @@ protected:
 
   // Serialization parameters
   short int byte_order_mark;         // "yes" or "no", implemented
-  xqp_string cdata_section_elements; // list of expanded QNames, delimited by spaces or semicolons, implemented
-  xqp_string doctype_system;         // string, implemented
-  xqp_string doctype_public;         // string, implemented
+  xqpStringStore_t cdata_section_elements; // list of expanded QNames, delimited by
+                                     // spaces or semicolons, implemented
+  xqpStringStore_t doctype_system;   // string, implemented
+  xqpStringStore_t doctype_public;   // string, implemented
   int encoding;                      // UTF-8 and UTF-16 supported, add others?
   short int escape_uri_attributes;   // TODO: yes/no requires unicode normalization
   short int include_content_type;    // yes/no, implemented
-  xqp_string media_type;             // string, implemented
-  short int method;                  // an expanded QName: "xml", "html", "xhtml", "text", "json" and "jsonml"  are handled
-  xqp_string normalization_form;     // TODO:   requires unicode normalization
+  xqpStringStore_t media_type;             // string, implemented
+  short int method;                  // an expanded QName: "xml", "html", "xhtml",
+                                     // "text", "json" and "jsonml"  are handled
+  xqpStringStore_t normalization_form; // TODO:   requires unicode normalization
   short int omit_xml_declaration;    // "yes" or "no", implemented
   short int standalone;              // implemented, TODO: add some validity checks
   short int undeclare_prefixes;      // "yes" or "no", implemented
   void* use_character_maps;          // TODO: list of pairs
-  xqp_string version;                // "1.1"
+  xqpStringStore_t version;          // "1.1"
   short int indent;                  // "yes" or "no", implemented
 
-  bool version_has_default_value;    // Used during validation to set version to "4.0" when
-                                     // output method is "html"
+  bool version_has_default_value;    // Used during validation to set version to
+                                     // "4.0" when output method is "html"
 
   rchandle<emitter>    e;
   rchandle<transcoder> tr;
   
-  std::vector<xqp_string> cdata_section_elements_tokens;  // Used to hold the QNames of the cdata section elements after
-                                     // they have been tokenized
+  // Used to hold the QNames of the cdata section elements after they have been tokenized
+  std::vector<xqpStringStore_t> cdata_section_elements_tokens;
 
   static const char	END_OF_LINE;
 
@@ -177,15 +178,13 @@ protected:
 	   * default emitter, it is intended to be defined by the XML, HTML and XHTML 
 	   * serializers.
      */
-	  virtual void emit_doctype(const xqpString& elementName);
+	  virtual void emit_doctype(const xqpStringStore* elementName);
     
     /**
      *  The root function that performs the serialization
      *  of a normalized sequence.
      */
-    virtual void emit_node(
-        const store::Item* item,
-        int depth);
+    virtual void emit_node(const store::Item* item,int depth);
     
     /**
      *  Serializes the given string, performing character expansion
@@ -193,16 +192,14 @@ protected:
      */   
     virtual void emit_expanded_string(const xqpStringStore* str, bool emit_attribute_value);
     
-    
     /**
-     *  Serializes a given text node. Also performs the processing of cdata-section-elements 
-     *  parameter, if set.
+     *  Serializes a given text node. Also performs the processing of
+     *  cdata-section-elements parameter, if set.
      */
-    virtual void emit_text(const store::Item* item);
+    virtual void emit_text_node(const store::Item* item);
     
     /**
-     *  Serializes the children of the given node, without
-     *  the node itself.
+     *  Serializes the children of the given node, without the node itself.
      * 
      *  @return  returns 1 if the functions has closed parent's tag with ">"
      */ 
@@ -236,9 +233,10 @@ protected:
     virtual ~emitter();
   
   protected:
-    bool haveBinding(std::pair<xqpString,xqpString>& nsBinding) const;
-    bool havePrefix(const xqpString& pre) const;
-    std::string expand_string(const xqpStringStore * str, bool emit_attribute_value );
+    bool haveBinding(std::pair<xqpStringStore_t, xqpStringStore_t>& nsBinding) const;
+    bool havePrefix(const xqpStringStore* pre) const;
+
+    std::string expand_string(const xqpStringStore* str, bool emit_attribute_value );
 
     store::ChildrenIterator* getChildIter();
     void releaseChildIter(store::ChildrenIterator* iter);
@@ -246,22 +244,23 @@ protected:
     store::AttributesIterator* getAttrIter();
     void releaseAttrIter(store::AttributesIterator* iter);
 
-    serializer* ser;
-    transcoder& tr;
-    std::vector<NsBindings> bindings;
+  protected:
+    serializer                          * ser;
+    transcoder                          & tr;
+    std::vector<NsBindings>               theBindings;
 
     enum ItemState 
     {
       INVALID_ITEM,   
       PREVIOUS_ITEM_WAS_TEXT,      
       PREVIOUS_ITEM_WAS_NODE
-    } previous_item;
+    }                                     previous_item;
 
     std::vector<store::ChildrenIterator*> theChildIters;
-    ulong theFirstFreeChildIter;
+    ulong                                 theFirstFreeChildIter;
+    store::AttributesIterator           * theAttrIter;
 
-    store::AttributesIterator* theAttrIter;
-    bool isFirstElementNode;
+    bool                                  isFirstElementNode;
   };
 
   
@@ -275,8 +274,9 @@ protected:
   {
   public:
     xml_emitter(serializer* the_serializer, transcoder& the_transcoder);
+
     virtual void emit_declaration();    
-    virtual void emit_doctype(const zorba::xqpString& elementName);
+    virtual void emit_doctype(const xqpStringStore* elementName);
   };
 
 
@@ -293,7 +293,7 @@ protected:
     
     virtual void emit_declaration();
     virtual void emit_declaration_end();
-    virtual void emit_doctype(const zorba::xqpString& elementName);
+    virtual void emit_doctype(const xqpStringStore* elementName);
     virtual void emit_node(const store::Item* item, int depth);
   };
 
@@ -373,11 +373,13 @@ protected:
     SAX2_ContentHandler * theSAX2ContentHandler;
     SAX2_LexicalHandler * theSAX2LexicalHandler;
 
-    std::vector< xqpString > theNameSpaces;
+    std::vector<xqpStringStore_t> theNameSpaces;
 
   public:
-    sax2_emitter( serializer * the_serializer, transcoder & the_transcoder,
-                  SAX2_ContentHandler * aSAX2ContentHandler );
+    sax2_emitter(
+        serializer* the_serializer,
+        transcoder& the_transcoder,
+        SAX2_ContentHandler* aSAX2ContentHandler);
 
     void emit_startPrefixMapping( const store::Item * item, NsBindings & nsBindings );
 
@@ -387,9 +389,7 @@ protected:
 
     virtual void emit_declaration_end();
 
-    virtual void emit_node(
-        const store::Item* item,
-        int depth);
+    virtual void emit_node(const store::Item* item, int depth);
    
     void emit_node(store::Item* item);
 
@@ -412,3 +412,9 @@ protected:
 } // namespace zorba
 
 #endif // #ifdef ZORBA_SERIALIZER_H
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

@@ -77,9 +77,16 @@ void zorba::SAXParser::endDocument( void * ctx )
 	lParser.theSucceeded = true;
 }
 
-void zorba::SAXParser::startElement( void * ctx, const xmlChar * localname, const xmlChar * prefix, const xmlChar * URI, 
-									int nb_namespaces, const xmlChar ** namespaces, int nb_attributes, int nb_defaulted, 
-									const xmlChar ** attributes )
+void zorba::SAXParser::startElement(
+    void * ctx,
+    const xmlChar * localname,
+    const xmlChar * prefix,
+    const xmlChar * URI, 
+    int nb_namespaces,
+    const xmlChar ** namespaces,
+    int nb_attributes,
+    int nb_defaulted, 
+    const xmlChar ** attributes )
 {
 	SAXParser& lParser = *(static_cast<SAXParser*>(ctx));
   if (lParser.theStack.size() > 1) {
@@ -93,10 +100,15 @@ void zorba::SAXParser::startElement( void * ctx, const xmlChar * localname, cons
 	factory.createQName(nodeName, reinterpret_cast<const char*>(URI), reinterpret_cast<const char*>(prefix), 
 		reinterpret_cast<const char*>(localname));
 	store::NsBindings bindings;
-	for (int i = 0 ; i < nb_namespaces; i++) {
-		xqpString pre(reinterpret_cast<const char*>(namespaces[i]));
-		xqpString uri(reinterpret_cast<const char*>(namespaces[++i]));
-		bindings.push_back(std::pair<xqpString, xqpString>(pre, uri));
+	for (int i = 0 ; i < nb_namespaces; i++) 
+  {
+		xqpStringStore_t pre =
+    new xqpStringStore(reinterpret_cast<const char*>(namespaces[i]));
+
+		xqpStringStore_t uri =
+    new xqpStringStore(reinterpret_cast<const char*>(namespaces[++i]));
+
+		bindings.push_back(std::pair<xqpStringStore_t, xqpStringStore_t>(pre, uri));
 	}
 	store::Item_t typeName;
 	factory.createElementNode(result, parent, -1, nodeName, typeName, false, false, bindings, lParser.theBaseUri);

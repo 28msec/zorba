@@ -213,6 +213,9 @@ public:
   substr(std::string::size_type index, std::string::size_type length) const;
 
   xqpStringStore_t
+  substr(xqpStringStore::distance_type index) const;
+
+  xqpStringStore_t
   reverse() const;
 
   xqpStringStore_t

@@ -76,6 +76,12 @@ SERIALIZABLE_CLASS_VERSIONS(XQueryImpl)
 END_SERIALIZABLE_CLASS_VERSIONS(XQueryImpl)
 
 
+void XQueryImpl::PlanProxy::serialize(::zorba::serialization::Archiver &ar)
+{
+  ar & theRootIter;
+}
+
+
 
 XQueryImpl::PlanProxy::PlanProxy(PlanIter_t& root)
   :
@@ -802,16 +808,16 @@ XQueryImpl::setSerializationParameters(
   }
 
   if (opt->media_type != "")
-    ser->set_parameter("media-type", xqpString(opt->media_type.c_str()));
+    ser->set_parameter("media-type", opt->media_type.c_str());
 
   if (opt->doctype_system != "")
-    ser->set_parameter("doctype-system", xqpString(opt->doctype_system.c_str()));
+    ser->set_parameter("doctype-system", opt->doctype_system.c_str());
 
   if (opt->doctype_public != "")
-    ser->set_parameter("doctype-public", xqpString(opt->doctype_public.c_str()));
+    ser->set_parameter("doctype-public", opt->doctype_public.c_str());
   
   if (opt->cdata_section_elements != "")
-    ser->set_parameter("cdata-section-elements", xqpString(opt->cdata_section_elements.c_str()));
+    ser->set_parameter("cdata-section-elements", opt->cdata_section_elements.c_str());
 }
 
 

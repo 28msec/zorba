@@ -543,6 +543,7 @@ void xqpStringStore::append_in_place(const std::string &str)
   theString.append(str);
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -552,6 +553,29 @@ xqpStringStore_t xqpStringStore::substr(
 {
   return new xqpStringStore(theString.substr(index, length));
 }
+
+
+/*******************************************************************************
+  Returns a substring of the currents string starting at index and continues 
+  until the NULL termination. Doesn't use ICU4C.
+********************************************************************************/
+xqpStringStore_t xqpStringStore::substr(xqpStringStore::distance_type index) const
+{
+  if (index >= (int32_t)size())
+  {
+    index = size();
+  }
+  else if (index < 0)
+  {
+    return new xqpStringStore(theString);
+  }
+  
+  const char * d = c_str();
+  advance(d, index, d + size());
+  
+  return new xqpStringStore(d);
+}
+
 
 /*******************************************************************************
 
@@ -1272,29 +1296,30 @@ std::ostream& operator<<(std::ostream& os, const xqpStringStore& src)
 
 
 xqpString xqpString::substr(xqpStringStore::distance_type index) const
+{
+  if(index >= (int32_t)length())
   {
-    if(index >= (int32_t)length())
-    {
-      index = length();
-    }
-    else if(index < 0)
-    {
-      xqpString ret(theStrStore->theString);
-      return ret;
-    }
-
-    const char * d = theStrStore->c_str();
-    advance(d, index, d+length());
-
-    xqpString ret(d);
-
+    index = length();
+  }
+  else if(index < 0)
+  {
+    xqpString ret(theStrStore->theString);
     return ret;
   }
+  
+  const char * d = theStrStore->c_str();
+  advance(d, index, d+length());
+  
+  xqpString ret(d);
 
-  const char* xqpString::c_str() const
-  {
-    return theStrStore->c_str();
-  }
+  return ret;
+}
+
+
+const char* xqpString::c_str() const
+{
+  return theStrStore->c_str();
+}
   
 
 xqpString xqpString::normalize(xqpString normMode)
@@ -1303,92 +1328,93 @@ xqpString xqpString::normalize(xqpString normMode)
 }
 
 
-  std::map<uint32_t,uint32_t> xqpString::createMapArray(xqpString mapString, xqpString transString) const
-  {
-    uint16_t      mapLen    = mapString.length();
-    uint16_t      transLen  = transString.length();
-    const char*   mapPtr    = mapString.theStrStore->c_str();
-    const char*   transPtr  = transString.theStrStore->c_str();
-    uint32_t      tmp0, tmp1;
-    
-    std::map<uint32_t,uint32_t> mapArray;
-    std::map<uint32_t,uint32_t>::iterator it;
-    
-    if(mapLen >0)
-    {
-      while((mapLen > 0) && (transLen > 0))
-      {
-        tmp0 = UTF8Decode(mapPtr);
-        tmp1 = UTF8Decode(transPtr);
-        mapArray.insert(std::pair<uint32_t,uint32_t>(tmp0, tmp1));
-        --mapLen;
-        --transLen;
-      }
-      
-      while(mapLen > 0)
-      {
-        tmp0 = UTF8Decode(mapPtr);
-        mapArray.insert(std::pair<uint32_t,uint32_t>(tmp0, 0xFFFFFFFF)); //0xFFFFFFFF = unsigned long_MAX
-        --mapLen;
-      }
-    }
-    return mapArray;
-  }
+std::map<uint32_t,uint32_t> xqpString::createMapArray(xqpString mapString, xqpString transString) const
+{
+  uint16_t      mapLen    = mapString.length();
+  uint16_t      transLen  = transString.length();
+  const char*   mapPtr    = mapString.theStrStore->c_str();
+  const char*   transPtr  = transString.theStrStore->c_str();
+  uint32_t      tmp0, tmp1;
   
-  xqpString xqpString::translate(xqpString mapString, xqpString transString) const
+  std::map<uint32_t,uint32_t> mapArray;
+  std::map<uint32_t,uint32_t>::iterator it;
+  
+  if(mapLen >0)
   {
-    std::map<uint32_t,uint32_t>           myMap;
-    std::map<uint32_t,uint32_t>::iterator it;
-
-    //create the map
-    myMap = createMapArray(mapString, transString);
-
-    //create the new xqpStringStore
-    std::string tmp = "";
-    uint32_t len = length();
-    const char* c = c_str();
-    uint32_t cp, i;
-    char seq[5];
-
-    for(i=0; i<len; ++i)
+    while((mapLen > 0) && (transLen > 0))
     {
-      cp = UTF8Decode(c);
-
-      it= myMap.find(cp);
-      if( it != myMap.end() )
-      {
-        cp = (*it).second;
-      }
-
-      if(cp != 0xFFFFFFFF) //0xFFFFFFFF = unsigned long_MAX
-      {
-        memset(seq, 0, sizeof(seq));
-        UTF8Encode(cp, seq);
-        tmp += seq;
-      }
+      tmp0 = UTF8Decode(mapPtr);
+      tmp1 = UTF8Decode(transPtr);
+      mapArray.insert(std::pair<uint32_t,uint32_t>(tmp0, tmp1));
+      --mapLen;
+      --transLen;
     }
-    tmp += "\0";
-
-    xqpString res(tmp.c_str());
-    return res;
-  }
-
-
-  uint32_t parse_regex_flags (const char *flag_cstr) {
-    uint32_t flags = 0;
-    for (const char *p = flag_cstr; *p != '\0'; p++) {
-      switch (*p) {
-      case 'i': flags |= UREGEX_CASE_INSENSITIVE; break;
-      case 's': flags |= UREGEX_DOTALL; break;
-      case 'm': flags |= UREGEX_MULTILINE; break;
-      case 'x': flags |= UREGEX_COMMENTS; break;
-      default:
-        throw zorbatypesException(flag_cstr, ZorbatypesError::FORX0001);
-        break;
-      }
+    
+    while(mapLen > 0)
+    {
+      tmp0 = UTF8Decode(mapPtr);
+      mapArray.insert(std::pair<uint32_t,uint32_t>(tmp0, 0xFFFFFFFF)); //0xFFFFFFFF = unsigned long_MAX
+      --mapLen;
     }
-    return flags;
   }
+  return mapArray;
+}
+  
+
+xqpString xqpString::translate(xqpString mapString, xqpString transString) const
+{
+  std::map<uint32_t,uint32_t>           myMap;
+  std::map<uint32_t,uint32_t>::iterator it;
+
+  //create the map
+  myMap = createMapArray(mapString, transString);
+
+  //create the new xqpStringStore
+  std::string tmp = "";
+  uint32_t len = length();
+  const char* c = c_str();
+  uint32_t cp, i;
+  char seq[5];
+
+  for(i=0; i<len; ++i)
+  {
+    cp = UTF8Decode(c);
+    
+    it= myMap.find(cp);
+    if( it != myMap.end() )
+    {
+      cp = (*it).second;
+    }
+    
+    if(cp != 0xFFFFFFFF) //0xFFFFFFFF = unsigned long_MAX
+    {
+      memset(seq, 0, sizeof(seq));
+      UTF8Encode(cp, seq);
+      tmp += seq;
+    }
+  }
+  tmp += "\0";
+  
+  xqpString res(tmp.c_str());
+  return res;
+}
+
+
+uint32_t parse_regex_flags (const char *flag_cstr) {
+  uint32_t flags = 0;
+  for (const char *p = flag_cstr; *p != '\0'; p++) {
+    switch (*p) {
+    case 'i': flags |= UREGEX_CASE_INSENSITIVE; break;
+    case 's': flags |= UREGEX_DOTALL; break;
+    case 'm': flags |= UREGEX_MULTILINE; break;
+    case 'x': flags |= UREGEX_COMMENTS; break;
+    default:
+      throw zorbatypesException(flag_cstr, ZorbatypesError::FORX0001);
+      break;
+    }
+  }
+  return flags;
+}
 
   bool
   xqpString::matches(const xqpString& pattern, xqpString flags) const

@@ -335,38 +335,44 @@ inline bool str_aURI(store::Item_t& result, const store::Item* aItem, xqpStringS
 
 inline bool str_QN(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-  xqpString str(doTrim(strval));
-  int32_t idx = str.theStrStore->indexOf(":");
-  int32_t lidx = str.theStrStore->lastIndexOf(":");
+  xqpStringStore_t str = doTrim(strval);
+  int32_t idx = str->indexOf(":");
+  int32_t lidx = str->lastIndexOf(":");
   if (idx != lidx)
     throwError(FORG0001, aErrorInfo);
 
-  xqpString lUri, lPrefix;
+  xqpStringStore_t lUri;
+  xqpStringStore_t lPrefix;
   
   if (idx < 0)
   {
-    lPrefix = "";
+    lPrefix = new xqpStringStore("");
     if (nsCtx)
       nsCtx->findBinding(lPrefix, lUri);
   }
   else 
   {
-    lPrefix = str.substr(0, idx);
-    if (!GenericCast::instance()->castableToNCName(lPrefix.getStore()))
+    lPrefix = str->substr(0, idx);
+
+    if (!GenericCast::instance()->castableToNCName(lPrefix))
       throwError(FORG0001, aErrorInfo);
+
     if (nsCtx && !nsCtx->findBinding(lPrefix, lUri))
       throwError(FONS0004, aErrorInfo);
   }
 
-  xqpString lLocal = str.substr(idx + 1);
+  xqpStringStore_t lLocal = str->substr(idx + 1);
 
-  if (!GenericCast::instance()->castableToNCName(lLocal.getStore()))
+  if (!GenericCast::instance()->castableToNCName(lLocal))
     throwError(FORG0001, aErrorInfo);
 
+  if (lUri == NULL)
+    lUri = new xqpStringStore("");
 
-  return aFactory->createQName(result, &*lUri.theStrStore, 
-                               &*lPrefix.theStrStore, 
-                               &*lLocal.theStrStore);
+  return aFactory->createQName(result,
+                               lUri, 
+                               lPrefix, 
+                               lLocal);
 }
 
 

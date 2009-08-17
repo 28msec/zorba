@@ -41,7 +41,8 @@ class serializer;
 namespace store
 {
 
-typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
+typedef std::vector<std::pair<xqpStringStore_t, xqpStringStore_t> > NsBindings;
+
 typedef StoreConsts::NodeKind NodeKind;
 
 class TupleField;

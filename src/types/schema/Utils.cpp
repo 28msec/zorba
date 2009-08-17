@@ -459,14 +459,15 @@ void processChildren(
 
 void processNamespaces ( EventSchemaValidator& schemaValidator, const store::Item *item)
 {
-    store::NsBindings bindings;
-    item->getNamespaceBindings(bindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);
+  store::NsBindings bindings;
+  item->getNamespaceBindings(bindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);
 
-    for (unsigned long i = 0; i < bindings.size(); i++)
-    {
-        schemaValidator.ns( bindings[i].first.getStore(), bindings[i].second.getStore() );
-    }
+  for (unsigned long i = 0; i < bindings.size(); i++)
+  {
+    schemaValidator.ns(bindings[i].first, bindings[i].second);
+  }
 }
+
 
 void processTextValue (
     store::Item_t& pul,

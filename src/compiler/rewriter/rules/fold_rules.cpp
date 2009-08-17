@@ -374,7 +374,8 @@ RULE_REWRITE_PRE(FoldConst)
   {
     vector<store::Item_t> result;
     expr_t folded = execute (rCtx.getCompilerCB(), node, result);
-    if (folded == NULL) {
+    if (folded == NULL) 
+    {
       ZORBA_ASSERT (result.size () <= 1);
       folded = (result.size () == 1 ?
                 ((expr *) (new const_expr (node->get_cur_sctx(), LOC (node), result [0]))) :
