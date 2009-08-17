@@ -1516,9 +1516,9 @@ bool FnIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       {
         if (child->getStringValue()->equals(state->theIds[i]))
         {
-          isMatchingId = true;
           result = child;
           STACK_PUSH(true, state);
+          isMatchingId = true;
           break;
         }
       }
@@ -1539,9 +1539,9 @@ bool FnIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           {
             if (attr->getStringValue()->equals(state->theIds[i]))
             {
-              isMatchingId = true;
               result = child;
               STACK_PUSH(true, state);
+              isMatchingId = true;
               break;
             }
           }
@@ -1660,9 +1660,9 @@ bool FnIdRefIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         {
           if (typedValue->getStringValue()->equals(state->theIds[i]))
           {
-            isMatchingId = true;
             result = child;
             STACK_PUSH(true, state);
+            isMatchingId = true;
             break;
           }
         }
@@ -1711,9 +1711,9 @@ bool FnIdRefIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
           {
             if (typedValue->getStringValue()->equals(state->theIds[i]))
             {
-              isMatchingId = true;
               result = attr;
               STACK_PUSH(true, state);
+              isMatchingId = true;
               break;
             }
           }
