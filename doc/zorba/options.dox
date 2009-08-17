@@ -14,7 +14,7 @@ For example, an option to declare the SMTP password for sending emails, which is
   declare option op:smtppwd "mypasswd";
 \endcode
 
-The option declaration consists of a QName (which must resolve to a namespace URI and loca name, using the statically known namespaces) and a string literal.
+The option declaration consists of a QName (which must resolve to a namespace URI and local name, using the statically known namespaces) and a string literal.
 
 \subsection options_zorba Options for Customizing Zorba
 The namespaces for options which are recognized by Zorba all start with the namespace URI <tt>http://www.zorba-xquery.org/options</tt>.
