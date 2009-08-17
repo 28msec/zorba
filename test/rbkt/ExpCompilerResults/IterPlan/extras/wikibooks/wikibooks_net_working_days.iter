@@ -103,7 +103,7 @@ Iterator tree for main query:
                   </LetVariable>
                   <LetVariable name="dow" materialize="true">
                     <PromoteIterator type="xs:integer">
-                      <GenericArithIterator_ModOperation>
+                      <NumArithIterator_ModOperation>
                         <CastIterator type="xs:integer">
                           <GenericArithIterator_DivideOperation>
                             <GenericArithIterator_SubtractOperation>
@@ -116,7 +116,7 @@ Iterator tree for main query:
                           </GenericArithIterator_DivideOperation>
                         </CastIterator>
                         <SingletonIterator value="xs:integer(7)"/>
-                      </GenericArithIterator_ModOperation>
+                      </NumArithIterator_ModOperation>
                     </PromoteIterator>
                   </LetVariable>
                   <ReturnClause>
@@ -126,10 +126,10 @@ Iterator tree for main query:
                         <EnclosedIterator attr_cont="false">
                           <IfThenElseIterator>
                             <FnBooleanIterator>
-                              <GenericArithIterator_ModOperation>
+                              <NumArithIterator_ModOperation>
                                 <ForVarIterator varname="i"/>
                                 <SingletonIterator value="xs:integer(2)"/>
-                              </GenericArithIterator_ModOperation>
+                              </NumArithIterator_ModOperation>
                             </FnBooleanIterator>
                             <AttributeIterator>
                               <UnhoistIterator>
