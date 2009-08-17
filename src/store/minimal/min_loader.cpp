@@ -546,7 +546,7 @@ bool XmlLoader::read_attributes(store::NsBindings *nsbindings,//ElementNode *ele
         namespacePool.insertc(temp_buff.c_str(), pooledNs);
         //elemNode->addLocalBinding(g_empty_string.getStore(), 
         //                          pooledNs.getp());
-        nsbindings->push_back(std::pair<xqpString, xqpString>(g_empty_string.getStore(), pooledNs.getp()));
+        nsbindings->push_back(std::pair<xqpStringStore_t, xqpStringStore_t>(g_empty_string.getStore(), pooledNs));
       }
     }
     //else if((attr.name.prefix != NULL) && attr.name.prefix->byteEqual("xmlns"))
@@ -573,7 +573,7 @@ bool XmlLoader::read_attributes(store::NsBindings *nsbindings,//ElementNode *ele
         namespacePool.insertc(temp_buff.c_str(), pooledNs);
        // elemNode->addLocalBinding(new xqpStringStore(attr.name.localname),
        //                           pooledNs.getp());
-        nsbindings->push_back(std::pair<xqpString, xqpString>(new xqpStringStore(attr.name.localname), pooledNs.getp()));
+        nsbindings->push_back(std::pair<xqpStringStore_t, xqpStringStore_t>(new xqpStringStore(attr.name.localname), pooledNs));
       }
     }
 #if 0

@@ -70,8 +70,8 @@ xqpStringStore* NsBindingsContext::findBinding(const xqpStringStore* prefix) con
 	store::NsBindings::const_iterator	nsit;
 	for(nsit = bindings.begin(); nsit != bindings.end(); nsit++)
 	{
-      if ((*nsit).first.getStore()->byteEqual(*prefix))
-        return (*nsit).second.getStore();
+      if ((*nsit).first->byteEqual(*prefix))
+        return (*nsit).second.getp();
 	}
     currentContext = currentContext->getParent();
   }
@@ -88,17 +88,17 @@ void NsBindingsContext::addBinding(
   ulong numBindings = theBindings.size();
   for (ulong i = 0; i < numBindings; i++)
   {
-    if (theBindings[i].first.getStore()->byteEqual(*prefix))
+    if (theBindings[i].first->byteEqual(*prefix))
     {
-      if(!theBindings[i].second.getStore()->byteEqual(*ns))
+      if(!theBindings[i].second->byteEqual(*ns))
       {
-        ZORBA_FATAL(theBindings[i].second.getStore()->byteEqual(*ns), "");
+        ZORBA_FATAL(theBindings[i].second->byteEqual(*ns), "");
       }
       return;
     }
   }
 
-  theBindings.push_back(std::pair<xqpString, xqpString>(prefix, ns));
+  theBindings.push_back(std::pair<xqpStringStore_t, xqpStringStore_t>(prefix, ns));
 }
 
 void NsBindingsContext::removeBinding(
@@ -109,9 +109,9 @@ void NsBindingsContext::removeBinding(
 
   for (ulong i = 0; i < numBindings; i++)
   {
-    if (theBindings[i].first.getStore()->byteEqual(*prefix))
+    if (theBindings[i].first->byteEqual(*prefix))
     {
-      ZORBA_FATAL(theBindings[i].second.getStore()->byteEqual(*ns), "");
+      ZORBA_FATAL(theBindings[i].second->byteEqual(*ns), "");
 
       theBindings.erase(theBindings.begin() + i);
       return;

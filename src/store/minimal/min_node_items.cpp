@@ -1575,7 +1575,7 @@ void ElementNode::getNamespaceBindings(
         ulong j;
         for (j = 0; j < currSize; j++)
         {
-          if (bindings[j].first.byteEqual(parentBindings[i].first))
+          if (bindings[j].first->byteEqual(*parentBindings[i].first.getp()))
             break;
         }
 
