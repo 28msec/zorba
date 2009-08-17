@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 #include <typeinfo>
-#include "compiler/normalizer/normalizer.h"
-#include "context/static_context.h"
-#include "compiler/expression/expr.h"
-#include "functions/signature.h"
+#include <iostream>
+
 #include "types/root_typemanager.h"
 #include "types/typeops.h"
 #include "system/globalenv.h"
-#include <iostream>
+
+#include "context/static_context.h"
+
+#include "compiler/normalizer/normalizer.h"
+#include "compiler/expression/expr.h"
+#include "compiler/api/compilercb.h"
+#include "compiler/expression/expr_visitor.h"
+
+#include "functions/signature.h"
 
 namespace zorba {
 
