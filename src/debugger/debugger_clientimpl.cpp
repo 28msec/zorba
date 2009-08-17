@@ -214,10 +214,11 @@ ReplyMessage *ZorbaDebuggerClientImpl::send( AbstractCommandMessage * aMessage )
     //send the command
     theRequestSocket->send( lMessage.get(), length );
     //check the reply
-    AbstractMessage* lMsg = MessageFactory::buildMessage( theRequestSocket.get() );
-	std::auto_ptr<ReplyMessage> lReplyMessage(dynamic_cast< ReplyMessage * >( lMsg ));
+    std::auto_ptr<AbstractMessage> lMsg(MessageFactory::buildMessage( theRequestSocket.get() ));
+	  std::auto_ptr<ReplyMessage> lReplyMessage(dynamic_cast< ReplyMessage * >( lMsg.get() ));
     if ( lReplyMessage.get() )
     {
+      lMsg.release();
       return lReplyMessage.release();
     } else {
     //TODO: print the error message.
@@ -409,9 +410,10 @@ std::list<Variable> ZorbaDebuggerClientImpl::getAllVariables(bool data) const
   std::list<Variable> lVariables;
   VariableMessage lMessage(data);
   std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
-  VariableReply *lVariableReply = dynamic_cast<VariableReply *>( lReply.get() );
-  if ( lVariableReply )
+  std::auto_ptr<VariableReply> lVariableReply(dynamic_cast<VariableReply *>( lReply.get() ));
+  if ( lVariableReply.get() )
   {
+    lReply.release();
     std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > > variables = 
       lVariableReply->getVariables();
     std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > >::iterator it;

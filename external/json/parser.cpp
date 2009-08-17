@@ -1,6 +1,7 @@
 #include "parser.h"
 #include <sstream>
 #include <iostream>
+#include <memory>
 
 using namespace json;
 
@@ -313,9 +314,10 @@ void parser::readlit(value *val){
 void parser::readarray(value *val){
 	val->setarray();
 	while (!si.eof){
-		value *tmpval=readvalue();
+    std::auto_ptr<value> tmpval(readvalue());
 		if (tmpval->getdatatype()!=datatype::_undefined){
-			val->addarrayvalue(tmpval);
+			val->addarrayvalue(tmpval.get());
+      tmpval.release();
 		}else{
 			adderror(6);
 		}

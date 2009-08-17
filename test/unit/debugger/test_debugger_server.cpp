@@ -80,6 +80,7 @@ namespace zorba {
     if (evt != DebuggerTestHandler::SUSPENDED) {
       return -1;
     }
+    std::cout << "Starting reading variables";
     std::list<Variable> vars = client.getAllVariables(true);
     for (std::list<Variable>::const_iterator it = vars.begin(); it != vars.end(); it++) {
       Variable v = *it;
