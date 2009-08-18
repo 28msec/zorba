@@ -7,5 +7,5 @@ declare sequential function local:remove-date($xqdoc)
   exit returning $xqdoc;
 };
 
-let $xqdoc := validate { xqdoc-mod:xqdoc("gdata.xqlib") }
+let $xqdoc as document-node (schema-element(xqdoc:xqdoc)) := validate lax { xqdoc-mod:xqdoc("gdata.xqlib") }
 return local:remove-date($xqdoc)

@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "compiler/parsetree/parsenode_print_xqdoc_visitor.h"
+
 #include <ostream>
 #include <stack>
 
-#include "compiler/parser/xqdoc_comment.h"
-#include "compiler/parsetree/parsenode_print_xqdoc_visitor.h"
+#include "compiler/parsetree/parsenode_print_xquery_visitor.h"
 #include "compiler/parsetree/parsenode_visitor.h"
+
+#include "compiler/parser/xqdoc_comment.h"
 #include "types/typemanager.h"
 
 using namespace std;
@@ -81,12 +84,15 @@ private:
       for(lIt = lAnnotations.begin(); lIt != lAnnotations.end(); ++lIt)
       {
         const XQDocAnnotation lAnnotation = *lIt;
-        if(lAnnotation.getType() != TYPE_UNKNOWN)
+        string lNamespace = "xqdoc";
+        if(lAnnotation.getType() == TYPE_UNKNOWN)
         {
-          INDENT(os);
-          os << "<xqdoc:" << lAnnotation.getName() << "><![CDATA[" << lAnnotation.getValue();
-          os << "]]></xqdoc:" << lAnnotation.getName() << '>';  NL(os);
+          lNamespace = "zorbadoc";
         }
+        INDENT(os);
+        os << "<" << lNamespace << ":" << lAnnotation.getName() << "><![CDATA[" << lAnnotation.getValue();
+        os << "]]></" << lNamespace << ":" << lAnnotation.getName() << '>';  NL(os);
+
       }
       
       if(aComment->hasVersion())
@@ -141,15 +147,15 @@ ParseNodePrintXQDocVisitor(ostream &aStream, const string& aFileName)
 void print(const parsenode* p, const store::Item_t& aDateTime)
 {
     string lContent;
-    os << "<?xml version='1.0' ?>" << std::endl;
-    os << "<xqdoc:xqdoc xmlns:xqdoc='http://www.xqdoc.org/1.0'>" << std::endl;
+    os << "<?xml version='1.0' ?>" << endl;
+    os << "<xqdoc:xqdoc xmlns:xqdoc='http://www.xqdoc.org/1.0' xmlns:zorbadoc='http://www.zorba-xquery.com/zorba/doc'>" << endl;
     INDENT_INC; INDENT(os);
-    os << "<xqdoc:control>" << std::endl;
+    os << "<xqdoc:control>" << endl;
     INDENT_INC;
-    INDENT(os); os << "<xqdoc:date>" << aDateTime->getStringValue() << "</xqdoc:date>" << std::endl;
-    INDENT(os); os << "<xqdoc:version>1.0</xqdoc:version>" << std::endl;
+    INDENT(os); os << "<xqdoc:date>" << aDateTime->getStringValue() << "</xqdoc:date>" << endl;
+    INDENT(os); os << "<xqdoc:version>1.0</xqdoc:version>" << endl;
     INDENT_DEC; INDENT(os);
-    os << "</xqdoc:control>" << std::endl;
+    os << "</xqdoc:control>" << endl;
     p->accept(*this);
     lContent = theImports.str();
     if(!lContent.empty())
@@ -242,10 +248,11 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/) {
   print_comment(theFunctions, n.getComment());
   INDENT(theFunctions);
   theFunctions << "<xqdoc:name>" << n.get_name()->get_localname() << "</xqdoc:name>" << endl;
-  /*INDENT(theFunctions);
+  INDENT(theFunctions);
   switch(n.get_type())
   {
     case ParseConstants::fn_read:
+      theFunctions << "<zorbadoc:read />";
       break;
     case ParseConstants::fn_update:
       theFunctions << "<zorbadoc:updating />";
@@ -263,25 +270,52 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/) {
     case ParseConstants::fn_extern_sequential:
       theFunctions << "<zorbadoc:sequential />";
       theFunctions << "<zorbadoc:external />";
-  }*/
-  theFunctions << "<xqdoc:signature>"; 
-  theFunctions << " " << n.get_name()->get_qname() << "(";
-  rchandle<ParamList> paramList = n.get_paramlist();
-  if(paramList)
-  {
-    for(vector<rchandle<Param> >::const_iterator it=paramList->begin();
-        it!=paramList->end(); ++it)
-    {
-      const Param *p = (*it).getp ();
-      if(it != paramList->begin())
-      {
-        theFunctions << ", ";
-      }
-      theFunctions << "$" << p->get_name();
-    }
   }
-  theFunctions << ") ";
-  theFunctions << "</xqdoc:signature>" << endl;
+  theFunctions << endl; 
+  INDENT(theFunctions); 
+  theFunctions << "<xqdoc:signature><![CDATA["; 
+  FunctionDecl lFunctionDeclClone(n.get_location(), n.get_name(), n.get_paramlist(), n.get_return_type(), 0, n.get_type());
+  FunctionIndex lIndex = print_parsetree_xquery(theFunctions, &lFunctionDeclClone);
+  theFunctions << "]]></xqdoc:signature>" << endl;
+  
+  INDENT(theFunctions);
+  if(n.get_paramlist())
+  {
+    theFunctions << "<zorbadoc:parameters>" << endl;
+    INDENT_INC;
+    const rchandle<ParamList> lParamList = n.get_paramlist();
+    for (vector<rchandle<Param> >::const_iterator it = lParamList->begin();
+            it != lParamList->end(); ++it)
+    {
+      //const Param* lParam = &**it;
+      const string lFnName = lIndex[n.get_name()->get_qname()].top();
+      lIndex[n.get_name()->get_qname()].pop();
+      size_t lStart = lFnName.find(' ');
+      if(lStart != string::npos)
+      {
+        INDENT(theFunctions);
+        const char lOccurence = lFnName.at(lFnName.length()-1);
+        string lType = lFnName.substr(lStart+4);
+        theFunctions << "<zorbadoc:parameter name='" << lFnName.substr(0, lStart) << "' ";//type='"<< lFnName.substr(lStart+4) << "' />" << endl;
+        if(lOccurence == '*' || lOccurence == '?' || lOccurence == '+')
+        {
+          theFunctions << "type='" << lType.substr(0, lType.length()-1) << "' occurrence='" << lOccurence << "' "; 
+        } else {
+          theFunctions << "type='" << lType << "' "; 
+        }
+        theFunctions << "/>" << endl;;
+      } else {
+        INDENT(theFunctions);
+        theFunctions << "<zorbadoc:parameter name='" << lFnName << "' />";
+      }
+    }
+    INDENT_DEC;
+    INDENT(theFunctions);
+    theFunctions << "</zorbadoc:parameters>" << endl;;
+  } else {
+    theFunctions << "<zorbadoc:parameters />" << endl;
+  }
+
   INDENT_DEC;
   INDENT_DEC;
   INDENT(theFunctions);

@@ -14,5 +14,6 @@
 SET(PARSETREE_SRCS
     parsenode_print_xml_visitor.cpp 
     parsenode_print_xqdoc_visitor.cpp 
+    parsenode_print_xquery_visitor.cpp
     parsenodes.cpp)
     

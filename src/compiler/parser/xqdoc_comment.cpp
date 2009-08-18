@@ -87,7 +87,7 @@ XQDocComment* XQDocComment::parseAnnotation(const std::string& aLine)
   {
     theVersion = lValue;
   } else if("return" == lName) {
-    theReturn = lName;
+    theReturn = lValue;
   } else if("deprecated" == lName) {
     theDeprecated = true;
     theDeprecatedComment = lValue;
