@@ -42,12 +42,9 @@ ZorbaImpl::ZorbaImpl() : theIsInitialized(false)
 }
 
 
-extern ::zorba::serialization::ClassSerializer *::zorba::serialization::g_class_serializer;
 ZorbaImpl::~ZorbaImpl() 
 {
   shutdown();
-  delete ::zorba::serialization::g_class_serializer;
-  ::zorba::serialization::g_class_serializer = NULL;
 }
 
 

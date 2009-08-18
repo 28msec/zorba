@@ -200,13 +200,11 @@ void GlobalEnvironment::init(store::Store* store)
 
 }
 
-extern zorba::serialization::ClassSerializer *zorba::serialization::g_class_serializer;
-
 // destroy all components that were initialized in init 
 // note: destruction must be done in reverse initialization order
 void GlobalEnvironment::destroy()
 {
-  zorba::serialization::g_class_serializer->destroyArchiverForHardcodedObjects();
+  serialization::ClassSerializer::getInstance()->destroyArchiverForHardcodedObjects();
 
   delete m_globalEnv->m_compilerSubSys;
   m_globalEnv->m_compilerSubSys = 0;

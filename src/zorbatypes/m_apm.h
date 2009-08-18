@@ -617,6 +617,20 @@ public:
 	MAPM div(const MAPM &denom) const {return integer_divide(denom);}
 	MAPM rem(const MAPM &denom) const {MAPM ret,ignored;
 		integer_div_rem(denom,ignored,ret);return ret;}
+
+  static MAPM&
+  get65535()
+  {
+    static MAPM lInstance(65535);
+    return lInstance;
+  }
+
+  static MAPM&
+  get0_5()
+  {
+    static MAPM lInstance(0.5);
+    return lInstance;
+  }
 };
 
 /* math.h-style functions: */

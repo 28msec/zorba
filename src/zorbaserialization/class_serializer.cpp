@@ -27,9 +27,6 @@
 namespace zorba{
   namespace serialization{
 
-//rchandle<RCClassSerializer>  g_rc_class_serializer;
-ClassSerializer *g_class_serializer = NULL;
-
 class ClassFactoriesCompare
 {
 public: 
@@ -86,12 +83,8 @@ ClassSerializer::~ClassSerializer()
 
 ClassSerializer* ClassSerializer::getInstance()
 {
-  if(!g_class_serializer)
-  {
-    g_class_serializer = new ClassSerializer();
-    //g_class_serializer = (ClassSerializer*)(g_rc_class_serializer.getp());
-  }
-  return g_class_serializer;
+  static ClassSerializer theInstance;
+  return &theInstance;
 }
 
 

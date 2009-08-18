@@ -481,12 +481,10 @@ xqpString Integer::toString() const {
 #endif
 }
 
-extern MAPM mapm_65535;
-
 uint32_t Integer::hash() const
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-  Integer lInteger(theInteger % mapm_65535);
+  Integer lInteger(theInteger % MAPM::get65535());
   if (lInteger < Integer::zero())
     lInteger = -lInteger;
   uint32_t lHash;

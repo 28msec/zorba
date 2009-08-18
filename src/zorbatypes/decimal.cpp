@@ -283,13 +283,10 @@ bool Decimal::parseDouble(const Double& aDouble, Decimal& aDecimal)
 }
 
 #ifndef ZORBA_NO_BIGNUMBERS
-
-MAPM    mapm_0_5 = 0.5;
-
 MAPM Decimal::round(const MAPM &aValue, const MAPM &aPrecision) {
   MAPM aExp = MAPM(10).pow(aPrecision);
   MAPM aCur = aValue * aExp;
-  aCur += mapm_0_5;
+  aCur += MAPM::get0_5();
   aCur = aCur.floor();
   aCur /= aExp;
   return aCur;
@@ -299,8 +296,8 @@ MAPM Decimal::roundHalfToEven(const MAPM &aValue, const MAPM &aPrecision) {
   MAPM aExp = MAPM(10).pow(aPrecision);
   MAPM aCur = aValue * aExp;
   bool aHalfVal;
-  aHalfVal = ((aCur - mapm_0_5) == aCur.floor());
-  aCur += mapm_0_5;
+  aHalfVal = ((aCur - MAPM::get0_5()) == aCur.floor());
+  aCur += MAPM::get0_5();
   aCur = aCur.floor();
   if (aHalfVal && aCur.is_odd()) {
     aCur -= 1;

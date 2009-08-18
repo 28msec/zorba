@@ -539,7 +539,7 @@ void operator&(Archiver &ar, T *&obj)
     if(field_treat == ARCHIVE_FIELD_IS_PTR)
     {
       class_deserializer  *cls_factory;
-      cls_factory = g_class_serializer->get_class_factory(type);
+      cls_factory = ClassSerializer::getInstance()->get_class_factory(type);
       if(cls_factory == NULL)
       {
          ZORBA_SER_ERROR_DESC_OSS(SRL0003_UNRECOGNIZED_CLASS_FIELD, type);

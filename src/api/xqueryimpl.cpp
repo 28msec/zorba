@@ -957,7 +957,6 @@ std::ostream& operator<< (std::ostream& os, XQuery* aQuery)
   return os;
 }
 
-extern zorba::serialization::ClassSerializer  *zorba::serialization::g_class_serializer;
 bool XQueryImpl::saveExecutionPlan(std::ostream &os, Zorba_binary_plan_format_t archive_format)
 {
   ZORBA_TRY
