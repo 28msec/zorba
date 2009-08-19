@@ -42,20 +42,27 @@
 #include "indexing/value_index.h"
 
 using namespace std;
-namespace zorba {
+
+namespace zorba 
+{
 
 bool dynamic_context::static_init = false;
 
 
-string dynamic_context::var_key (const void *var) 
+std::string dynamic_context::var_key(const void* var) 
 {
-  if (var == NULL) return "";
+  if (var == NULL)
+    return "";
+
   const var_expr *ve = static_cast<const var_expr *> (var);
-  return xqpString::concat(/*to_string(var)*/to_string(ve->get_unique_id()), ":", ve->get_varname ()->getStringValue ());
+
+  return xqpString::concat(to_string(ve->get_unique_id()), ":", ve->get_varname()->getStringValue());
 }
 
 
-xqp_string dynamic_context::expand_varname(static_context	*sctx, xqp_string qname)
+xqp_string dynamic_context::expand_varname(
+    static_context* sctx,
+    xqpString& qname)
 {
   if(!sctx) 
   {
@@ -63,8 +70,9 @@ xqp_string dynamic_context::expand_varname(static_context	*sctx, xqp_string qnam
     ZORBA_ERROR_PARAM( XPST0001, "entire static context", "");
     return (const char*)NULL;
   }
-  void *var = static_cast<void *> (sctx->lookup_var (qname));
-  return var_key (var);
+
+  void* var = static_cast<void *> (sctx->lookup_var(qname));
+  return var_key(var);
 }
 
 
@@ -76,9 +84,10 @@ void dynamic_context::init()
 }
 
 
-dynamic_context::dynamic_context(dynamic_context *parent)
+dynamic_context::dynamic_context(dynamic_context* parent)
 {
   this->parent = parent;
+
   if(!parent)
   {
 #if defined (WIN32)
@@ -101,8 +110,14 @@ dynamic_context::dynamic_context(dynamic_context *parent)
       set_implicit_timezone( -timebuffer.timezone * 60 + lSummerTimeShift );//in seconds
     }
 
-    GENV_ITEMFACTORY->createDateTime(current_date_time_item, gmtm.tm_year + 1900, gmtm.tm_mon + 1, gmtm.tm_mday, 
-		  gmtm.tm_hour, gmtm.tm_min, gmtm.tm_sec + timebuffer.millitm/1000.0, implicit_timezone/3600);
+    GENV_ITEMFACTORY->createDateTime(current_date_time_item,
+                                     gmtm.tm_year + 1900,
+                                     gmtm.tm_mon + 1,
+                                     gmtm.tm_mday, 
+                                     gmtm.tm_hour,
+                                     gmtm.tm_min,
+                                     gmtm.tm_sec + timebuffer.millitm/1000.0,
+                                     implicit_timezone/3600);
 
 #if WIN32
     time_t t0;
@@ -129,26 +144,12 @@ dynamic_context::dynamic_context(dynamic_context *parent)
 	}
 }
 
-void dynamic_context::destroy_dctx_value (const dctx_value_t* val) {
-  switch (val->type) {
-  case dynamic_context::dctx_value_t::no_val:
-    break;
-  case dynamic_context::dctx_value_t::var_iterator_val:
-    RCHelper::removeReference (val->val.var_iterator);
-    break;
-  case dynamic_context::dctx_value_t::temp_seq_val:
-    RCHelper::removeReference (val->val.temp_seq);
-    break;
-  default:
-    ZORBA_ASSERT (false);
-  }
-}
 
 dynamic_context::~dynamic_context()
 {
 	///free the pointers from ctx_value_t from keymap
-	checked_vector<hashmap<dctx_value_t>::entry>::const_iterator it;
-	const char		*keybuff;//[50];
+	checked_vector<hashmap<dctx_value_t>::entry>::iterator it;
+	const char* keybuff;;
 
 	for(it = keymap.begin(); it != keymap.end(); it++)
 	{
@@ -156,144 +157,9 @@ dynamic_context::~dynamic_context()
 		keybuff = (*it).key.c_str();
 		if(strncmp(keybuff, "var:", 4) == 0)
 		{
-			destroy_dctx_value (&(*it).val);
+			destroy_dctx_value(&(*it).val);
 		}
 	}
-}
-
-
-void dynamic_context::set_context_item(
-    const store::Item_t& context_item,
-    unsigned long position)
-{
-	this->ctxt_item = context_item;
-	this->ctxt_position = position;
-}
-
-store::Item_t dynamic_context::context_item() const 
-{
-	return ctxt_item;
-}
-
-unsigned long dynamic_context::context_position()
-{
-	return ctxt_position;
-}
-
-xqtref_t dynamic_context::context_item_type() const
-{
-	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
-
-void dynamic_context::set_context_item_type(xqtref_t v)
-{
-}
-
-void	dynamic_context::set_current_date_time( const store::Item_t& aDateTimeItem )
-{
-  this->current_date_time_item = aDateTimeItem;
-}
-
-store::Item_t	dynamic_context::get_current_date_time()
-{
-	return current_date_time_item;
-}
-
-store::Item_t dynamic_context::get_current_time_millis()
-{
-    return current_time_millis;
-}
-
-void  dynamic_context::set_implicit_timezone(int tzone_seconds)
-{
-	this->implicit_timezone = tzone_seconds;
-}
-
-int  dynamic_context::get_implicit_timezone()
-{
-  return implicit_timezone;
-}
-
-/*
-var_name is expanded name localname:nsURI
-constructed by static_context::qname_internal_key( .. )
-*/
-void dynamic_context::set_variable(
-    const std::string& var_name,
-    store::Iterator_t var_iterator)
-{
-  if (var_name.empty()) return;
-
-  dctx_value_t v;
-  string key = "var:" + var_name;
-  hashmap<dctx_value_t> *map;
-  if (! context_value (key, v, &map))
-    ZORBA_ASSERT (false);
-
-  var_iterator->open ();
-  store::TempSeq_t seq = GENV_STORE.createTempSeq (var_iterator.getp());
-  var_iterator->close ();
-  RCHelper::addReference (seq);
-  v.type = dynamic_context::dctx_value_t::temp_seq_val;
-  v.in_progress = false;
-  v.val.temp_seq = seq.getp();
-  dctx_value_t v2;
-  // variables can be set multiple times
-  // we need to make sure to remove previously set temp sequences
-  if (map->get(key, v2)) {
-    if (v2.type == dynamic_context::dctx_value_t::temp_seq_val)
-      RCHelper::removeReference (v2.val.temp_seq);
-  }
-  map->put (key, v);
-}
-
-
-void dynamic_context::declare_variable(const std::string& var_name)
-{
-  if (var_name.empty()) return;
-
-  dctx_value_t v;
-  string key = "var:" + var_name;
-  if (keymap.get (key, v))
-    destroy_dctx_value (&v);
-
-  v.type = dynamic_context::dctx_value_t::no_val;
-  v.in_progress = true;
-  keymap.put (key, v);
-}
-
-
-void dynamic_context::add_variable(
-    const std::string& varname,
-    store::Iterator_t var_iterator) 
-{
-  declare_variable (varname);
-  set_variable (varname, var_iterator);
-}
-
-
-store::Iterator_t	dynamic_context::get_variable(const store::Item_t& varname) 
-{
-	return lookup_var_iter("var:" + varname->getStringValue()->str());
-}
-
-
-store::Iterator_t dynamic_context::lookup_var_iter(const std::string& key) 
-{ 
-  dctx_value_t val = {dctx_value_t::no_val, false, {0} };
-
-  if(!keymap.get(key, val))
-	{
-    if(parent)
-      return parent->lookup_var_iter(key);
-    else
-      return NULL;///variable not found
-	}
-  if (val.in_progress)
-    ZORBA_ERROR (XQST0054);
-
-  assert (val.type == dynamic_context::dctx_value_t::temp_seq_val);
-  return val.val.temp_seq->getIterator ();
 }
 
 
@@ -309,18 +175,253 @@ void dynamic_context::set_default_collection(const store::Item_t& default_collec
 }
 
 
+void dynamic_context::set_implicit_timezone(int tzone_seconds)
+{
+	this->implicit_timezone = tzone_seconds;
+}
+
+
+int dynamic_context::get_implicit_timezone()
+{
+  return implicit_timezone;
+}
+
+
+void	dynamic_context::set_current_date_time( const store::Item_t& aDateTimeItem )
+{
+  this->current_date_time_item = aDateTimeItem;
+}
+
+
+store::Item_t	dynamic_context::get_current_date_time()
+{
+	return current_date_time_item;
+}
+
+
+store::Item_t dynamic_context::get_current_time_millis()
+{
+    return current_time_millis;
+}
+
+
+void dynamic_context::set_context_item(
+    const store::Item_t& context_item,
+    unsigned long position)
+{
+	this->ctxt_item = context_item;
+	this->ctxt_position = position;
+}
+
+
+store::Item_t dynamic_context::context_item() const 
+{
+	return ctxt_item;
+}
+
+
+unsigned long dynamic_context::context_position()
+{
+	return ctxt_position;
+}
+
+
+xqtref_t dynamic_context::context_item_type() const
+{
+	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+}
+
+
+void dynamic_context::set_context_item_type(xqtref_t v)
+{
+}
+
+
+void dynamic_context::declare_variable(const std::string& var_name)
+{
+  if (var_name.empty()) return;
+
+  dctx_value_t v;
+  string key = "var:" + var_name;
+  if (keymap.get (key, v))
+    destroy_dctx_value (&v);
+
+  v.type = dynamic_context::dctx_value_t::no_val;
+  v.in_progress = true;
+  v.val.var_item = NULL;
+  keymap.put(key, v);
+}
+
+
+/*
+  var_name is expanded name localname:nsURI
+  constructed by static_context::qname_internal_key( .. )
+*/
+void dynamic_context::set_variable(
+    const std::string& var_name,
+    store::Iterator_t& var_iterator)
+{
+  if (var_name.empty()) return;
+
+  string key = "var:" + var_name;
+  dctx_value_t v;
+  hashmap<dctx_value_t>* map;
+  if (! context_value(key, v, &map))
+    ZORBA_ASSERT (false);
+
+  var_iterator->open();
+  store::TempSeq_t seq = GENV_STORE.createTempSeq(var_iterator.getp());
+  var_iterator->close();
+
+  // variables can be set multiple times, so we need to make sure to remove
+  // previously set temp sequences
+  if (v.type == dynamic_context::dctx_value_t::var_item_val)
+  {
+    assert(v.val.var_item != NULL);
+    RCHelper::removeReference(v.val.var_item);
+  }
+  else if (v.type == dynamic_context::dctx_value_t::var_temp_seq_val)
+  {
+    assert(v.val.var_temp_seq != NULL);
+    RCHelper::removeReference(v.val.var_temp_seq);
+  }
+
+  v.type = dynamic_context::dctx_value_t::var_temp_seq_val;
+  v.in_progress = false;
+  v.val.var_temp_seq = seq.release();
+
+  map->put(key, v);
+}
+
+
+void dynamic_context::set_variable(
+    const std::string& var_name,
+    store::Item_t& var_item)
+{
+  if (var_name.empty()) return;
+
+  string key = "var:" + var_name;
+  dctx_value_t v;
+  hashmap<dctx_value_t>* map;
+  if (! context_value(key, v, &map))
+    ZORBA_ASSERT (false);
+
+  // variables can be set multiple times, so we need to make sure to remove
+  // previously set temp sequences
+  if (v.type == dynamic_context::dctx_value_t::var_item_val)
+  {
+    assert(v.val.var_item != NULL);
+    RCHelper::removeReference(v.val.var_item);
+  }
+  else if (v.type == dynamic_context::dctx_value_t::var_temp_seq_val)
+  {
+    assert(v.val.var_temp_seq != NULL);
+    RCHelper::removeReference(v.val.var_temp_seq);
+  }
+
+  v.type = dynamic_context::dctx_value_t::var_item_val;
+  v.in_progress = false;
+  v.val.var_item = var_item.release();
+
+  map->put(key, v);
+}
+
+
+void dynamic_context::add_variable(
+    const std::string& varname,
+    store::Iterator_t& var_iterator) 
+{
+  declare_variable(varname);
+  set_variable(varname, var_iterator);
+}
+
+
+void dynamic_context::add_variable(
+    const std::string& varname,
+    store::Item_t& var_item) 
+{
+  declare_variable(varname);
+  set_variable(varname, var_item);
+}
+
+
+bool dynamic_context::get_variable(
+    const store::Item_t& varname,
+    store::Item_t& var_item,
+    store::Iterator_t& var_iter)
+{
+  var_item = NULL;
+  var_iter = NULL;
+	return lookup_var_value("var:" + varname->getStringValue()->str(),
+                          var_item,
+                          var_iter);
+}
+
+
+bool dynamic_context::lookup_var_value(
+    const std::string& key,
+    store::Item_t& var_item,
+    store::Iterator_t& var_iter)
+{ 
+  dctx_value_t val;
+
+  if(!keymap.get(key, val))
+	{
+    if(parent)
+      return parent->lookup_var_value(key, var_item, var_iter);
+    else
+      return false; // variable not found
+	}
+
+  if (val.in_progress)
+    ZORBA_ERROR (XQST0054);
+
+  if (val.type == dynamic_context::dctx_value_t::var_item_val)
+    var_item = val.val.var_item;
+  else
+    var_iter = val.val.var_temp_seq->getIterator();
+
+  return true;
+}
+
+
+void dynamic_context::destroy_dctx_value(dctx_value_t* val) 
+{
+  switch (val->type) 
+  {
+  case dynamic_context::dctx_value_t::no_val:
+    break;
+  case dynamic_context::dctx_value_t::var_item_val:
+    RCHelper::removeReference(val->val.var_item);
+    val->val.var_item = NULL;
+    break;
+  case dynamic_context::dctx_value_t::var_temp_seq_val:
+    RCHelper::removeReference(val->val.var_temp_seq);
+    val->val.var_temp_seq = NULL;
+    break;
+  default:
+    ZORBA_ASSERT (false);
+  }
+
+  val->type = dynamic_context::dctx_value_t::no_val;
+}
+
+
 void dynamic_context::bind_index(
     const std::string& indexUri,
     store::Index* index)
 {
-  if (val_idx_ins_session_map.find(indexUri) != val_idx_ins_session_map.end()) {
+  if (val_idx_ins_session_map.find(indexUri) != val_idx_ins_session_map.end()) 
+  {
     ZORBA_ERROR_PARAM(XQP0034_INDEX_ALREADY_EXISTS, indexUri.c_str(), "");
   }
+
   std::pair<store::Index_t, ValueIndexInsertSession_t> v;
   v.first = index;
   v.second = NULL;
   val_idx_ins_session_map[indexUri] = v;
 }
+
 
 void dynamic_context::unbind_index(
     const std::string& indexUri)

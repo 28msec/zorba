@@ -83,7 +83,6 @@ bool CtxVarDeclIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t varName;
-  xqpStringStore dot (".");
   store::Item_t item;
 
   PlanIteratorState* state;
@@ -91,7 +90,7 @@ bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
   CONSUME(varName, 0);
 
-	if(varName->getStringValue()->equals(&dot)) 
+	if(varName->getStringValue()->byteEqual(".")) 
   {
     if (! CONSUME (item, 1))
 			ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "context item must be a single item");
@@ -101,11 +100,22 @@ bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState)
     if (CONSUME (item, 1))
       ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "context item must be a single item");
   }
-  else 
+  else if (theSingleItem)
   {
+    if (! CONSUME (item, 1))
+			ZORBA_ERROR_LOC_DESC(XPTY0004, loc, "variable value must be a single item");
+
     planState.theRuntimeCB->theDynamicContext->
-    set_variable(varName->getStringValue()->str(),
-                 new PlanIteratorWrapper(theChildren[1], planState));
+    set_variable(varName->getStringValue()->str(), item);
+
+    if (CONSUME (item, 1))
+      ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "variable value must be a single item");
+  }
+  else
+  {
+    store::Iterator_t planIter = new PlanIteratorWrapper(theChildren[1], planState);
+    planState.theRuntimeCB->theDynamicContext->
+    set_variable(varName->getStringValue()->str(), planIter);
   }
 
   STACK_END (state);
@@ -120,8 +130,9 @@ bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
 bool CtxVarExistsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  xqpStringStore dot (".");
   store::Item_t varName;
+  store::Item_t varItem;
+  store::Iterator_t varIter;
   dynamic_context* dctx = planState.theRuntimeCB->theDynamicContext;
 
   PlanIteratorState* state;
@@ -129,7 +140,7 @@ bool CtxVarExistsIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
   CONSUME(varName, 0);
 
-	if(varName->getStringValue()->equals(&dot)) 
+	if(varName->getStringValue()->byteEqual(".")) 
   {
     STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, dctx->context_item() != NULL),
                state);
@@ -137,7 +148,9 @@ bool CtxVarExistsIterator::nextImpl(store::Item_t& result, PlanState& planState)
   else
   {
     STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result,
-                                               dctx->get_variable(varName) != NULL),
+                                               dctx->get_variable(varName,
+                                                                  varItem,
+                                                                  varIter)),
                state);
   }
   STACK_END (state);
@@ -153,7 +166,6 @@ bool CtxVarExistsIterator::nextImpl(store::Item_t& result, PlanState& planState)
 bool CtxVariableIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t varName;
-  xqpStringStore dot (".");
   
   CtxVariableIteratorState* state;
   DEFAULT_STACK_INIT(CtxVariableIteratorState, state, planState);
@@ -161,7 +173,7 @@ bool CtxVariableIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   CONSUME (varName, 0);
 
   // looking for context item?
-	if(varName->getStringValue()->equals(&dot)) 
+	if(varName->getStringValue()->byteEqual(".")) 
   {  
     result = planState.theRuntimeCB->theDynamicContext->context_item();
 		if(result == NULL)
@@ -171,21 +183,27 @@ bool CtxVariableIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 	}
   else
   {
-    state->theIter = planState.theRuntimeCB->theDynamicContext->
-                     get_variable(varName);
+    planState.theRuntimeCB->theDynamicContext->
+    get_variable(varName, result, state->theIter);
 
-    if (state->theIter == NULL) 
+    if (result != NULL)
+    {
+      STACK_PUSH(true, state);
+    }
+    else if (state->theIter != NULL) 
+    {
+      state->theIter->open();
+
+      while (state->theIter->next(result))
+        STACK_PUSH(true, state);
+
+      state->theIter->close();
+    }
+    else
     {
       std::string var_key = xqp_string (varName->getStringValue ());
 			ZORBA_ERROR_LOC_PARAM( XPDY0002, loc, var_key.substr (var_key.find (":") + 1), "");
     }
-
-    state->theIter->open();
-
-    while (state->theIter->next(result))
-			STACK_PUSH (true, state);
-
-    state->theIter->close();
 	}
 
   STACK_END (state);

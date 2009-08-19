@@ -24,21 +24,28 @@
 
 namespace zorba {
 
-class Unmarshaller {
-  public:
-      static store::Item*        getInternalItem(const Item& aItem)       { return aItem.m_item;     }
+class Unmarshaller 
+{
+public:
+  static store::Item* getInternalItem(const Item& aItem) { return aItem.m_item; }
 
-      static xqpStringStore*     getInternalString(const String& aString) { return aString.m_string; }
+  static xqpStringStore* getInternalString(const String& aString) { return aString.m_string; }
 
-      static static_context*     getInternalStaticContext(const StaticContext_t& aContext);
+  static static_context* getInternalStaticContext(const StaticContext_t& aContext);
 
-      static dynamic_context*    getInternalDynamicContext(const DynamicContext* aContext);
+  static dynamic_context* getInternalDynamicContext(const DynamicContext* aContext);
 
-      static PlanWrapper_t       getInternalPlan(const ResultIterator* aResultIter);
+  static PlanWrapper_t getInternalPlan(const ResultIterator* aResultIter);
 
-      static store::Collection_t getInternalCollection(const Collection_t& aCollection);
+  static store::Collection_t getInternalCollection(const Collection_t& aCollection);
 };
 
 }
 
 #endif /* ZORBA_UNMARSHALLER_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

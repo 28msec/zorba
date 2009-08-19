@@ -429,7 +429,7 @@ public:
 		return *this;
   }
 
-  T* transfer()
+  T* release()
   {
     T* tmp = p;
     p = NULL;

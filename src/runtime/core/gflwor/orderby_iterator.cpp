@@ -364,7 +364,7 @@ void OrderByIterator::materializeResultForSort(
     store::Item_t sortKeyItem;
     if (consumeNext(sortKeyItem, theOrderSpecs[i].theDomainIter, planState)) 
     {
-      sortKey[i] = sortKeyItem.transfer();
+      sortKey[i] = sortKeyItem.release();
 
       store::Item_t temp;
       if (consumeNext(temp, theOrderSpecs[i].theDomainIter, planState)) 

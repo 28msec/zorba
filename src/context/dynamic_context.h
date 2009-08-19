@@ -27,81 +27,70 @@
 namespace zorba {
 
 
+/*******************************************************************************
+  The dynamic context stores the following info:
+
+  - The current date and time, i.e the date and time when the dynamic context
+    was created. 
+  - The current time in mili-secs.
+  - The local timezone (obtained from the machine where zorba is running)
+  - The default collection uri (the one to use when fn:collection is invoked
+    with no argument)
+  - The context item for the whole query, if any.
+  - The position of the context item, if any.
+  - A hasmap mapping the name of each prolog or block-local variable to its
+    current value, which is either a single item or a temp sequence.
+  - A map mapping the uri of each index to the store object representing the
+    index (store::Index_t)
+********************************************************************************/
 class dynamic_context
 {
 protected:
-
-  typedef std::map<std::string, std::pair<store::Index_t, ValueIndexInsertSession_t > > IndexMap;
 
   struct dctx_value_t 
   {
     typedef enum 
     {
       no_val,
-      var_iterator_val,
-      temp_seq_val,
-      val_idx_ins_session_val 
+      var_item_val,
+      var_temp_seq_val,
     } val_type_t;
-
-    val_type_t type;
-    bool       in_progress;
 
     union
     {
-      store::Iterator* var_iterator;
-      store::TempSeq*  temp_seq;
-    }          val;
+      store::Item*     var_item;
+      store::TempSeq*  var_temp_seq;
+    }           val;
+
+    val_type_t  type;
+    bool        in_progress;
   };
+
+  typedef hashmap<dctx_value_t> ValueMap;
+
+  typedef std::map<std::string, std::pair<store::Index_t, ValueIndexInsertSession_t > > IndexMap;
 
 protected:
   static bool static_init;
 
-  dynamic_context       * parent;
+  dynamic_context    * parent;
 
-  hashmap<dctx_value_t>   keymap;
-  store::Item_t           current_date_time_item;
-  store::Item_t           current_time_millis;
-  int                     implicit_timezone;
-  store::Item_t           default_collection_uri;  //default URI for fn:collection()
+  store::Item_t        current_date_time_item;
+  store::Item_t        current_time_millis;
+  int                  implicit_timezone;
+  store::Item_t        default_collection_uri;
 
-  store::Item_t           ctxt_item;
-  unsigned long           ctxt_position;
+  store::Item_t        ctxt_item;
+  unsigned long        ctxt_position;
   //+context size is determined by fn:last() at runtime
 
-  IndexMap                val_idx_ins_session_map;
-
-protected:
-  bool lookup_once(const std::string& key, dctx_value_t &val) const 
-  {
-    return keymap.get (key, val); 
-  }
-
-  bool context_value(const std::string& key, dctx_value_t &val) const 
-  {
-    if (lookup_once (key, val)) {
-      return true;
-    }
-    return parent == NULL ? false : parent->context_value (key, val);
-  }
-
-  bool context_value(const std::string& key, dctx_value_t &val, hashmap<dctx_value_t> **map) 
-  {
-    if (lookup_once (key, val)) {
-      if (map != NULL) *map = &keymap;
-      return true;
-    }
-    return parent == NULL ? false : parent->context_value (key, val, map);
-  }
-
-
-  store::Iterator_t lookup_var_iter (const std::string& key);
-
-  void destroy_dctx_value (const dctx_value_t *);
+  ValueMap             keymap;
+  IndexMap             val_idx_ins_session_map;
 
 public:
-  static std::string var_key (const void *var);
+  static std::string var_key(const void* var);
 
-  static xqp_string expand_varname(static_context* sctx, xqp_string qname);
+  static xqp_string expand_varname(static_context* sctx, xqpString& qname);
 
   static void init();
 
@@ -110,30 +99,47 @@ public:
 
   ~dynamic_context();
 
+  store::Item_t get_default_collection();
+
+  void set_default_collection(const store::Item_t& default_collection_uri);
+
+  void set_current_date_time( const store::Item_t& );
+
+  store::Item_t get_current_date_time();
+
+  store::Item_t get_current_time_millis();
+
+  void set_implicit_timezone( int tzone_seconds );
+
+  int get_implicit_timezone();
+
   store::Item_t context_item() const;
+
   unsigned long context_position();
 
   xqtref_t context_item_type() const;
+
   void set_context_item_type(xqtref_t );
 
   void set_context_item(const store::Item_t&, unsigned long position);
 
-  void set_current_date_time( const store::Item_t& );
-  store::Item_t get_current_date_time();
-  store::Item_t get_current_time_millis();
-
-  void set_implicit_timezone( int tzone_seconds );
-  int get_implicit_timezone();
-
   void declare_variable(const std::string& varname);
-  void set_variable(const std::string& varname, store::Iterator_t var_iterator);
-  void add_variable(const std::string& varname, store::Iterator_t var_iterator);
-  store::Iterator_t get_variable(const store::Item_t& varname);
 
-  store::Item_t get_default_collection();
-  void set_default_collection(const store::Item_t& default_collection_uri);
+  void set_variable(const std::string& varname, store::Item_t& var_item);
+
+  void set_variable(const std::string& varname, store::Iterator_t& var_iterator);
+
+  void add_variable(const std::string& varname, store::Item_t& var_item);
+
+  void add_variable(const std::string& varname, store::Iterator_t& var_iterator);
+
+  bool get_variable(
+        const store::Item_t& varname,
+        store::Item_t& var_item,
+        store::Iterator_t& var_iter);
 
   void bind_index(const std::string& indexUri, store::Index* index);
+
   void unbind_index(const std::string& indexUri);
 
   store::Index* lookup_index(const std::string& indexUri) const;
@@ -141,6 +147,38 @@ public:
   ValueIndexInsertSession* get_index_insert_session(const std::string& indexUri) const;
 
   void set_index_insert_session(const std::string& indexUri, ValueIndexInsertSession* v);
+
+protected:
+  bool lookup_once(const std::string& key, dctx_value_t& val) const 
+  {
+    return keymap.get(key, val); 
+  }
+
+  bool context_value(const std::string& key, dctx_value_t& val) const 
+  {
+    if (lookup_once(key, val)) 
+    {
+      return true;
+    }
+    return parent == NULL ? false : parent->context_value(key, val);
+  }
+
+  bool context_value(const std::string& key, dctx_value_t& val, ValueMap **map) 
+  {
+    if (lookup_once (key, val)) 
+    {
+      if (map != NULL) *map = &keymap;
+      return true;
+    }
+    return parent == NULL ? false : parent->context_value(key, val, map);
+  }
+
+  void destroy_dctx_value(dctx_value_t *);
+
+  bool lookup_var_value(
+        const std::string& key,
+        store::Item_t& var_item,
+        store::Iterator_t& var_iter);
 };
 
 

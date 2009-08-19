@@ -46,9 +46,34 @@ NARY_ITER(CtxVarDeclIterator);
   between the varName (".") and the actual context item returned by the initExpr.
   For a regular prolog var, the iterator creates a binding in the dynamic ctx
   between the varName and an iterator plan that computes the initExpr. 
-  
 ********************************************************************************/
-NARY_ITER(CtxVarAssignIterator);
+class CtxVarAssignIterator : public NaryBaseIterator<CtxVarAssignIterator,
+                                                     PlanIteratorState>
+{
+private:
+  bool theSingleItem;
+
+public:
+  SERIALIZABLE_CLASS(CtxVarAssignIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(CtxVarAssignIterator, NaryBaseIterator<CtxVarAssignIterator, PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<CtxVarAssignIterator, PlanIteratorState>*)this);
+    ar & theSingleItem;
+  }
+
+public:
+  CtxVarAssignIterator(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& args) 
+    :
+    NaryBaseIterator<CtxVarAssignIterator, PlanIteratorState>(sctx, loc, args),
+    theSingleItem(false)
+  {
+  }
+
+  void setSingleItem() { theSingleItem = true; }
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+};
 
 
 /*******************************************************************************

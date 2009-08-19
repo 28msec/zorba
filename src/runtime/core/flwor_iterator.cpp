@@ -980,7 +980,7 @@ void FLWORIterator::materializeResultForSort(
     store::Item_t sortKeyItem;
     if (consumeNext(sortKeyItem, orderSpecs[i].theDomainIter, planState))
     {
-      sortKey[i] = sortKeyItem.transfer();
+      sortKey[i] = sortKeyItem.release();
 
       store::Item_t temp;
       if (consumeNext(temp, orderSpecs[i].theDomainIter, planState))

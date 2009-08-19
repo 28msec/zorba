@@ -15,9 +15,14 @@
  */
 
 #include "system/globalenv.h"
+
 #include "functions/VarDecl.h"
+
+#include "compiler/expression/expr.h"
+
 #include "runtime/core/var_iterators.h"
 #include "runtime/core/item_iterator.h"
+
 #include "store/api/iterator.h"
 
 namespace zorba
@@ -33,14 +38,26 @@ PlanIter_t ctx_variable::codegen (
   return new CtxVariableIterator(sctx, loc, argv);
 }
 
-PlanIter_t ctx_var_assign::codegen (
-    CompilerCB* /*cb*/,
+
+PlanIter_t ctx_var_assign::codegen(
+    CompilerCB* cb,
     short sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
-    AnnotationHolder &ann ) const
+    AnnotationHolder& ann) const
 {
-  return new CtxVarAssignIterator(sctx, loc, argv);
+  CtxVarAssignIterator* iter = new CtxVarAssignIterator(sctx, loc, argv);
+
+  static_context* sctxp = cb->getStaticContext(sctx);
+
+  const fo_expr& expr = reinterpret_cast<const fo_expr&>(ann);
+
+  xqtref_t exprType = (expr[1])->return_type(sctxp);
+
+  if (exprType->get_quantifier() == TypeConstants::QUANT_ONE)
+    iter->setSingleItem();
+
+  return iter;
 }
 
 

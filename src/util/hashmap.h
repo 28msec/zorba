@@ -221,8 +221,8 @@ public: // housekeeping
   void displayEntries() const;
 
 public: // iterator interface
-  typename checked_vector<entry>::const_iterator begin() { return v.begin(); }
-  typename checked_vector<entry>::const_iterator end() { return v.end(); }
+  typename checked_vector<entry>::iterator begin() { return v.begin(); }
+  typename checked_vector<entry>::iterator end() { return v.end(); }
   typename checked_vector<entry>::const_iterator begin() const { return v.begin(); }
   typename checked_vector<entry>::const_iterator end() const { return v.end(); }
 

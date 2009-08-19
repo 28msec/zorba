@@ -1623,7 +1623,8 @@ bool begin_visit (fo_expr& v) {
 }
 
 
-void end_visit (fo_expr& v) {
+void end_visit (fo_expr& v) 
+{
   CODEGEN_TRACE_OUT("");
 
   const function* func = v.get_func();
@@ -1634,19 +1635,23 @@ void end_visit (fo_expr& v) {
 
   const QueryLoc& loc = qloc;
 
-  if (func->validate_args (argv)) {
+  if (func->validate_args (argv)) 
+  {
     PlanIter_t iter = func->codegen (ccb, sctx, loc, argv, v);
     ZORBA_ASSERT(iter != NULL);
     push_itstack(iter);
 
-    if (is_enclosed_expr(&v)) {
+    if (is_enclosed_expr(&v)) 
+    {
       expr *e = pop_stack(theConstructorsStack);
       ZORBA_ASSERT(e == &v);
 
       if (!theAttrContentStack.empty() && theAttrContentStack.top() == true)
         dynamic_cast<EnclosedIterator*>(iter.getp())->setAttrContent();
     }
-  } else {
+  }
+  else
+  {
     ZORBA_ERROR_LOC_PARAM(XPST0017, loc,
                           func->get_signature().get_name()->getStringValue(),
                           argv.size());

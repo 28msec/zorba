@@ -147,7 +147,7 @@ public:
       theContent.text->removeReference(NULL
                                        SYNC_PARAM2(theContent.text->getRCLock()));
 
-    theContent.text = text.transfer();
+    theContent.text = text.release();
   }
 
   void setText(xqpStringStore* text)
@@ -192,7 +192,7 @@ public:
                                 NULL
                                 SYNC_PARAM2(theContent.value->getRCLock()));
 
-    theContent.value = val.transfer();
+    theContent.value = val.release();
   }
 
   void setValue(store::Item* val)

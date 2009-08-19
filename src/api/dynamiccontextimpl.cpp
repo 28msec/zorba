@@ -87,13 +87,10 @@ DynamicContextImpl::setVariable(
     ZorbaImpl::checkItem(lItem);
     xqpString lString (Unmarshaller::getInternalString(aQName));
 
-    // create an item iterator to store in the dyn context
-    ItemIterator_t lIterator = new ItemIterator(lItem);
-
     xqpString lExpandedName = theCtx->expand_varname(theStaticContext, lString);
 
     // add it to the internal context
-    theCtx->add_variable(lExpandedName, &*lIterator);
+    theCtx->add_variable(lExpandedName, lItem);
 
     return true;
   }
@@ -118,9 +115,10 @@ DynamicContextImpl::setVariable(
         
     store::Iterator_t lRes = new store::ResultIteratorChainer(lIter);
 
-    xqpString lExpandedName = theCtx->expand_varname(theStaticContext, Unmarshaller::getInternalString(aQName));
+    xqpString lString (Unmarshaller::getInternalString(aQName));
+    xqpString lExpandedName = theCtx->expand_varname(theStaticContext, lString);
 
-    theCtx->add_variable(lExpandedName, &*lRes);
+    theCtx->add_variable(lExpandedName, lRes);
 
     return true;
   }

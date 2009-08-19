@@ -204,7 +204,7 @@ bool StoreNodeSortIterator::next(store::Item_t& result)
 
       ZORBA_ASSERT(contextNode->isNode());
 
-      theNodes.push_back(reinterpret_cast<XmlNode*>(contextNode.transfer()));
+      theNodes.push_back(reinterpret_cast<XmlNode*>(contextNode.release()));
     }
 
     ComparisonFunction cmp(theAscending);
@@ -317,7 +317,7 @@ bool StoreNodeSortOrAtomicIterator::next(store::Item_t& result)
         theNodeMode = true;
       }
 
-      theNodes.push_back(reinterpret_cast<XmlNode*>(result.transfer()));
+      theNodes.push_back(reinterpret_cast<XmlNode*>(result.release()));
     }
 
     ComparisonFunction cmp;
