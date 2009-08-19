@@ -1,0 +1,11 @@
+<xs:schema targetNamespace="http://www.28msec.com/schema.xsd"
+           xmlns = "http://www.28msec.com/schema.xsd"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+
+<xs:simpleType name="ContentID">
+<xs:restriction base="xs:string">
+</xs:restriction>
+</xs:simpleType>
+
+</xs:schema>
