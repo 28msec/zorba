@@ -2011,9 +2011,16 @@ void axis_step_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER();
 }
 
-bool axis_step_expr::is_reverse_axis (axis_kind_t k) {
-  return k == axis_kind_ancestor || k == axis_kind_ancestor_or_self || k == axis_kind_parent;
+
+bool axis_step_expr::is_reverse_axis(axis_kind_t k) 
+{
+  return (k == axis_kind_ancestor ||
+          k == axis_kind_ancestor_or_self ||
+          k == axis_kind_parent ||
+          k == axis_kind_preceding ||
+          k == axis_kind_preceding_sibling);
 }
+
 
 /*******************************************************************************
 
