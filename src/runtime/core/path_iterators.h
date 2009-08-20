@@ -51,22 +51,6 @@ protected:
   bool                         theNilledAllowed;
 
 public:
-#if 0
-  SERIALIZABLE_CLASS(AxisIteratorHelper)
-  SERIALIZABLE_CLASS_CONSTRUCTOR(AxisIteratorHelper)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    SERIALIZE_ENUM(match_test_t, theTestKind);
-    SERIALIZE_ENUM(match_test_t, theDocTestKind);
-    SERIALIZE_ENUM(store::StoreConsts::NodeKind, theNodeKind);
-    ar & theQName;
-    SERIALIZE_ENUM(match_wild_t, theWildKind);
-    ar & theType;
-    ar & theNilledAllowed;
-  }
-#endif
-
-public:
   AxisIteratorHelper() 
     :
     theTestKind(match_anykind_test),
@@ -461,9 +445,11 @@ public:
 
 public:
   DescendantAxisState();
+
   ~DescendantAxisState();
 
   void init(PlanState&);
+
   void reset(PlanState&);
 
   bool empty() const
