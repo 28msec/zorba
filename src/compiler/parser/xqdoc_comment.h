@@ -73,7 +73,6 @@ class XQDocComment
   friend class XQDocumentable;
 
   private:
-    enum ParsingState { DESCRIPTION, ANNOTATION };
     std::stringstream theDescription;
     std::list<XQDocAnnotation> theAnnotations;
     std::string theVersion;

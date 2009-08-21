@@ -39,7 +39,7 @@ string trim(const string& aString)
 
 XQDocComment::XQDocComment(const string& aComment): theDeprecated(false)
 { 
-  ParsingState lState = DESCRIPTION;
+  bool descriptionState = true;
   string lLine;
   istringstream lComment;
   lComment.str(aComment);
@@ -54,16 +54,11 @@ XQDocComment::XQDocComment(const string& aComment): theDeprecated(false)
       lLine = lLine.substr(1);
     }
 
-    if(lState == DESCRIPTION)
+    if(descriptionState && !isAnAnnotationLine(lLine))
     {
-      if(isAnAnnotationLine(lLine))
-      {
-        lState = ANNOTATION;
-        parseAnnotation(trim(lLine).substr(1));
-      } else {
         appendDescription(lLine);
-      }
     } else if(isAnAnnotationLine(lLine)) {
+        descriptionState = false;
         parseAnnotation(trim(lLine).substr(1));
     }
 
