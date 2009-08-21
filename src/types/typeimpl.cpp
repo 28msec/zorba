@@ -27,6 +27,16 @@
 namespace zorba 
 {
 
+//#define DO_TRACE
+
+#ifdef DO_TRACE
+#define TRACE(msg)                                                            \
+  {std::cout << __FUNCTION__ << ": " << msg << std::endl; std::cout.flush(); }
+#else
+#define TRACE(msg)
+#endif
+
+
 SERIALIZABLE_CLASS_VERSIONS(XQType)
 END_SERIALIZABLE_CLASS_VERSIONS(XQType)
 
@@ -56,14 +66,6 @@ END_SERIALIZABLE_CLASS_VERSIONS(NoneXQType)
 
 SERIALIZABLE_CLASS_VERSIONS(UserDefinedXQType)
 END_SERIALIZABLE_CLASS_VERSIONS(UserDefinedXQType)
-
-
-#if 0
-static void foo()
-{
-  std::cout << "..." << std::endl;
-}
-#endif
 
 
 const char* XQType::KIND_STRINGS[XQType::MAX_TYPE_KIND] =
@@ -133,18 +135,34 @@ const char *AtomicXQType::ATOMIC_TYPE_CODE_STRINGS[TypeConstants::ATOMIC_TYPE_CO
 /*******************************************************************************
 
 ********************************************************************************/
-std::ostream& XQType::serialize_ostream(std::ostream& os) const
+std::string XQType::contentKindStr(content_kind_t contentKind)
 {
-  return os << "[XQType " << KIND_STRINGS[type_kind()]
-            << TypeOps::decode_quantifier(get_quantifier()) << "]";
+  switch(contentKind)
+  {
+  case MIXED_CONTENT_KIND:
+    return "mixedContent";
+  case ELEMENT_ONLY_CONTENT_KIND:
+    return "elementOnlyContent";
+  case SIMPLE_CONTENT_KIND:
+    return "simpleContent";
+  case EMPTY_CONTENT_KIND:
+    return "emptyContent";
+  default:
+    return "unknownContent";
+  }
 }
-
 
 std::string XQType::toString() const
 {
   std::ostringstream os;
   serialize_ostream(os);
   return os.str();
+}
+
+std::ostream& XQType::serialize_ostream(std::ostream& os) const
+{
+  return os << "[XQType " << KIND_STRINGS[type_kind()]
+            << TypeOps::decode_quantifier(get_quantifier()) << "]";
 }
 
 
@@ -364,57 +382,26 @@ std::ostream& NodeXQType::serialize_ostream(std::ostream& os) const
 /*******************************************************************************
 
 ********************************************************************************/
+// constructor for Atomic and Complex types
 UserDefinedXQType::UserDefinedXQType(
     const TypeManager *manager,
     store::Item_t qname,
     xqtref_t baseType,
     TypeConstants::quantifier_t quantifier,
+    type_category_t typeCategory,
     content_kind_t contentKind)
   :
   XQType(manager, USER_DEFINED_KIND, quantifier, false),
   m_qname(qname),
   m_baseType(baseType),
+  m_typeCategory(typeCategory),
   m_contentKind(contentKind)
 {
   ZORBA_ASSERT(baseType!=NULL);
 
-  switch (baseType.getp()->type_kind())
-  {
-  case USER_DEFINED_KIND:
-  {
-    const UserDefinedXQType& udBaseType = static_cast<const UserDefinedXQType&>(*baseType);
-    m_typeCategory = udBaseType.getTypeCategory();
-    switch (m_typeCategory)
-    {
-    case ATOMIC_TYPE:
-    case COMPLEX_TYPE:
-    break;
-      
-    case LIST_TYPE:
-      m_listItemType = udBaseType.getListItemType();
-      break;
-      
-    case UNION_TYPE:
-      m_unionItemTypes = udBaseType.getUnionItemTypes();
-      break;
-      
-    default:
-      ZORBA_ASSERT(false);
-  }
-    
-
-    break;
-  }
-  case ATOMIC_TYPE_KIND:
-  {
-    m_typeCategory = ATOMIC_TYPE;
-    break;
-  }
-  default:
-  {
-    m_typeCategory = COMPLEX_TYPE;            
-  }        
-  }        
+  TRACE("UserDefinedXQType c2: " << m_qname->getLocalName()->str() << "@"
+        << m_qname->getNamespace()->str() << " " << typeCategoryStr(m_typeCategory)
+        << " " << contentKindStr(m_contentKind));
 }
 
  
@@ -509,6 +496,22 @@ bool UserDefinedXQType::isSubTypeOf(const XQType& supertype) const
   return false;
 }
 
+std::string UserDefinedXQType::typeCategoryStr(type_category_t typeCategory)
+{
+  switch(typeCategory)
+  {
+  case UserDefinedXQType::ATOMIC_TYPE:
+    return "atomic";
+  case UserDefinedXQType::COMPLEX_TYPE:
+    return "complex";
+  case UserDefinedXQType::LIST_TYPE:
+    return "list";
+  case UserDefinedXQType::UNION_TYPE:
+    return "union";
+  default:
+    return "unknownTypeCategory";
+  }
+}
 
 std::ostream& UserDefinedXQType::serialize_ostream(std::ostream& os) const
 {
@@ -536,6 +539,8 @@ std::ostream& UserDefinedXQType::serialize_ostream(std::ostream& os) const
     ZORBA_ASSERT(false);
   }
   
+  info << " " << contentKindStr(m_contentKind);
+
   return os << "[UserDefinedXQType " << " "
             << TypeOps::decode_quantifier (get_quantifier()) << " "
             << m_qname->getLocalName()->str() << "@"

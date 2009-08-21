@@ -710,6 +710,7 @@ xqtref_t TypeManagerImpl::create_type(
                                           udt.get_qname(),
                                           udt.getBaseType(),
                                           quantifier,
+                                          udt.getTypeCategory(),
                                           udt.content_kind()));
   }
   default:

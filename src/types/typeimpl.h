@@ -308,6 +308,9 @@ public:
   virtual store::Item_t get_qname() const { return NULL; }
 
   bool get_isBuiltin() const { return theIsBuiltin; }
+
+  static std::string contentKindStr(XQType::content_kind_t contentKind);
+
   virtual std::ostream& serialize_ostream(std::ostream& os) const;
 
   virtual std::string toString() const;
@@ -599,7 +602,7 @@ public:
 class UserDefinedXQType : public XQType
 {
 public:
-  enum TYPE_CATEGORY
+  enum type_category_t
   {
     ATOMIC_TYPE,  // atomic types: ex: int, date, token, string
     LIST_TYPE,    // list of simple types: ex: list of int: "1 2 33"
@@ -613,12 +616,12 @@ public:
 private:
   store::Item_t           m_qname;
   xqtref_t                m_baseType;
-  TYPE_CATEGORY           m_typeCategory;
+  type_category_t           m_typeCategory;
   content_kind_t          m_contentKind;
   std::vector<xqtref_t>   m_unionItemTypes;
   xqtref_t                m_listItemType;
 
- public:
+public:
   SERIALIZABLE_CLASS(UserDefinedXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(UserDefinedXQType, XQType)
   void serialize(::zorba::serialization::Archiver &ar)
@@ -626,17 +629,20 @@ private:
     serialize_baseclass(ar, (XQType*)this);
     ar & m_qname;
     ar & m_baseType;
-    SERIALIZE_ENUM(TYPE_CATEGORY, m_typeCategory);
+    SERIALIZE_ENUM(type_category_t, m_typeCategory);
     SERIALIZE_ENUM(content_kind_t, m_contentKind);
     ar & m_listItemType;
     ar & m_unionItemTypes;
   }
+
 public:
+  // constructor for Atomic and Complex types
   UserDefinedXQType(
         const TypeManager *manager,
         store::Item_t qname,
         xqtref_t baseType,
         TypeConstants::quantifier_t quantifier, 
+        type_category_t typeCategory,
         content_kind_t contentKind);
 
   // Constructor for List types 
@@ -665,7 +671,7 @@ public:
   bool isList()                   const { return m_typeCategory == LIST_TYPE;    }
   bool isUnion()                  const { return m_typeCategory == UNION_TYPE;   }
   bool isComplex()                const { return m_typeCategory == COMPLEX_TYPE; }
-  TYPE_CATEGORY getTypeCategory() const { return m_typeCategory; }
+  type_category_t getTypeCategory() const { return m_typeCategory; }
 
   xqtref_t getBaseType() const { return m_baseType; }
 
@@ -676,6 +682,8 @@ public:
   bool isSuperTypeOf(const XQType& subType) const;
 
   bool isSubTypeOf(const XQType& superType) const;
+
+  static std::string typeCategoryStr(type_category_t typeCategory);
 
   virtual std::ostream& serialize_ostream(std::ostream& os) const;
 };

@@ -264,9 +264,34 @@ void PrintSchema::processComplexTypeDefinition(std::string pre, bool excludeBuil
     std::cout << StrX(xsBaseTypeDef->getName()) << "\n";
   }
   
-  std::cout << pre << "Content Model:\n";
   XSComplexTypeDefinition::CONTENT_TYPE contentType =
     xsComplexTypeDef->getContentType();
+
+  std::string contentModelType;
+  switch (contentType)
+  {
+  case XSComplexTypeDefinition::CONTENTTYPE_ELEMENT:
+    contentModelType = "elements";
+    break;
+
+  case XSComplexTypeDefinition::CONTENTTYPE_MIXED:
+    contentModelType = "mixed";
+    break;
+
+  case XSComplexTypeDefinition::CONTENTTYPE_SIMPLE:
+    contentModelType = "simple";
+    break;
+
+  case XSComplexTypeDefinition::CONTENTTYPE_EMPTY:
+    contentModelType = "empty";
+    break;
+
+  default:
+    contentModelType = "unknown";
+  }
+
+  std::cout << pre << "Content Model: " << contentModelType << "\n";
+
   if (contentType == XSComplexTypeDefinition::CONTENTTYPE_ELEMENT
       || contentType == XSComplexTypeDefinition::CONTENTTYPE_MIXED)
   {

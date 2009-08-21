@@ -1,1 +1,1 @@
-true decimal
+moneyType true decimal

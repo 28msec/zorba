@@ -48,6 +48,7 @@
 #include "zorbaerrors/error_messages.h"
 #include "zorbaerrors/errors.h"
 
+//using namespace std;
 
 namespace zorba
 {
@@ -102,7 +103,9 @@ bool Validator::effectiveValidationValue(
 
   if ( !schema )
   {
-    //cout << "No schema: isNode() " << sourceNode->isNode() << "  nodeKind: " << sourceNode->getNodeKind() << endl;
+    //cout << "No schema: isNode() " << sourceNode->isNode() << "  nodeKind: " << 
+    // sourceNode->getNodeKind() << endl;
+    
     // no schema available - items remain the same
     result = sourceNode;
     return true;
@@ -141,7 +144,8 @@ bool Validator::effectiveValidationValue(
       {
         if ( child->isNode() && child->getNodeKind()==store::StoreConsts::elementNode )
         {
-           typeManager->getSchema()->createXQTypeFromElementName(typeManager, child->getNodeName(), false);
+           typeManager->getSchema()->
+             createXQTypeFromElementName(typeManager, child->getNodeName(), false);
            break;
         }
       }
@@ -190,7 +194,8 @@ bool Validator::effectiveValidationValue(
       schemaValidator.startDoc();                    
 
       // ask for the type of the root element to populate the cache with anonymous types
-      typeManager->getSchema()->createXQTypeFromElementName(typeManager, sourceNode->getNodeName(), false);
+      typeManager->getSchema()->
+        createXQTypeFromElementName(typeManager, sourceNode->getNodeName(), false);
     }
 
     store::Item_t newElem = processElement(sctx,
@@ -331,7 +336,9 @@ void Validator::processAttributes(
                                   att->_localName);
           
     std::string typePrefix;
-    if ( std::strcmp(Schema::XSD_NAMESPACE, att->_typeURI->c_str())==0) // hack around typeManager bug for comparing QNames
+
+    // hack around typeManager bug for comparing QNames
+    if ( std::strcmp(Schema::XSD_NAMESPACE, att->_typeURI->c_str())==0) 
       typePrefix = "xs";
     else
       typePrefix = "";
@@ -412,18 +419,24 @@ void Validator::processChildren(
                         
         store::Item_t validatedTextNode;
                         
-        TypeIdentifier_t typeIdentifier = TypeIdentifier::createNamedType(typeQName->getNamespace(), typeQName->getLocalName() );
+        TypeIdentifier_t typeIdentifier = 
+          TypeIdentifier::createNamedType(typeQName->getNamespace(), 
+                                          typeQName->getLocalName() );
+        
         //xqType is NULL, create_type can't find it
         xqtref_t xqType = typeManager->create_type(*typeIdentifier);
 
-#if 0        
+#if 0
         if ( typeQName.getp() && xqType.getp() )
         {
-          cout << "     - text: " << childStringValue << "  T: " << typeQName->getLocalName()->c_str() << "\n"; cout.flush();
-          cout << "        xqT: " << xqType->toString() << "  content_kind: " << xqType->content_kind() << " tKind:" << xqType->type_kind() << " \n"; cout.flush();
+          cout << "     - text: " << childStringValue << "  T: " << 
+            typeQName->getLocalName()->c_str() << "\n"; cout.flush();
+          cout << "        xqT: " << xqType->toString() << "  content_kind: " << 
+            xqType->content_kind() << " tKind:" << xqType->type_kind() << " \n"; cout.flush();
         }
         else
-          cout << "     - text2: " << childStringValue << "  tQN: " << typeQName.getp() << " xqT:" << xqType.getp() << "\n"; cout.flush();
+          cout << "     - text2: " << childStringValue << "  tQN: " << typeQName.getp() << 
+            " xqT:" << xqType.getp() << "\n"; cout.flush();
 #endif
         
         if ( xqType!=NULL && xqType->content_kind()==XQType::SIMPLE_CONTENT_KIND )
@@ -460,7 +473,8 @@ void Validator::processChildren(
         xqpStringStore_t piTarget = child->getTarget();
         xqpStringStore_t childStringValue = child->getStringValue();
         xqpStringStore_t childBaseUri = child->getBaseURI();
-        GENV_ITEMFACTORY->createPiNode(piNode, parent, -1, piTarget, childStringValue, childBaseUri);                    
+        GENV_ITEMFACTORY->createPiNode(piNode, parent, -1, piTarget, childStringValue, 
+                                       childBaseUri);                    
       }
       break;
       
@@ -512,11 +526,10 @@ void Validator::processTextValue (
 {
   xqtref_t type = typeManager->
                   create_named_type(typeQName.getp(), TypeConstants::QUANT_ONE);
-//  cout << "     - processTextValue: " << typeQName->getPrefix()->str()
-//       << ":" << typeQName->getLocalName()->str() << "@"
-//       << typeQName->getNamespace()->str() ; cout.flush();
-//  cout << " type: " << ( type==NULL ? "NULL" : type->toString() ) << "\n";
-//  cout.flush();
+  //cout << "     - processTextValue: " << typeQName->getPrefix()->str()
+  //     << ":" << typeQName->getLocalName()->str() << "@"
+  //     << typeQName->getNamespace()->str() ; cout.flush();
+  //cout << " type: " << (type==NULL ? "NULL" : type->toString()) << "\n"; cout.flush();
   
   // TODO: we probably need the ns bindings from the static context
   // surrounding the original validate_expr, not planState.sctx()
@@ -528,7 +541,7 @@ void Validator::processTextValue (
     if ( type->type_kind() == XQType::USER_DEFINED_KIND )
     {
       const UserDefinedXQType udt = static_cast<const UserDefinedXQType&>(*type);
-
+      
       if ( udt.isList() || udt.isUnion() )
       {
         typeManager->getSchema()->parseUserSimpleTypes(textValue, type, resultList);
@@ -540,7 +553,17 @@ void Validator::processTextValue (
                                                                   result);
         ZORBA_ASSERT(res);
         resultList.push_back(result);
-    }
+      }
+      else if (udt.isComplex() && udt.content_kind()==XQType::SIMPLE_CONTENT_KIND )
+      {
+        // if complex type with simple content parse text by the base type which has to be simple
+        xqtref_t baseType = udt.getBaseType();
+        bool res = GenericCast::castToSimple(textValue, baseType.getp(), resultList);          
+
+        // if this assert fails it means the validator and zorba casting code 
+        // don't follow the same rules
+        ZORBA_ASSERT(res);
+      }
     }
     else if (type->type_kind() == XQType::ATOMIC_TYPE_KIND)
     {
