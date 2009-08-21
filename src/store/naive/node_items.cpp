@@ -863,6 +863,7 @@ ElementNode::ElementNode(
   theName.transfer(nodeName);
   theTypeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED];
   setHaveValue();
+  resetRecursive();
 
   if (numBindings > 0)
   {
@@ -915,6 +916,8 @@ ElementNode::ElementNode(
     if (isInSubstGroup)
       setInSubstGroup();
 
+    resetRecursive();
+
     if (localBindings)
     {
       if (!localBindings->empty())
@@ -938,10 +941,27 @@ ElementNode::ElementNode(
       addBaseUriProperty(baseUri, dummy);
     }
 
-    // Do this here (at the end of the try stmt), so that we don't have to undo
-    // it inside the catch stmt.
+    // Connect this new node to its parent. Do this here (at the end of the try
+    // stmt), so that we don't have to undo it inside the catch stmt.
     if (parent)
+    {
       parent->children().insert(this, pos);
+
+      XmlNode* ancestor = parent;
+
+      while (ancestor != NULL &&
+             ancestor->getNodeKind() == store::StoreConsts::elementNode)
+      {
+        ElementNode* elemAncestor = reinterpret_cast<ElementNode*>(ancestor);
+        if (elemAncestor->theName->equals(theName))
+        {
+          elemAncestor->setRecursive();
+          break;
+        }
+
+        ancestor = ancestor->theParent;
+      }
+    }
   }
   catch (...)
   {

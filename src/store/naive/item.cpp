@@ -582,6 +582,12 @@ void Item::markValidated()
 }
 
 
+bool Item::isRecursive() const
+{
+  return true;
+}
+
+
 xqpStringStore* Item::getDocumentURI() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,

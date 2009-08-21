@@ -501,6 +501,8 @@ void FastXmlLoader::startElement(
   FastXmlLoader& loader = *(static_cast<FastXmlLoader *>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
   QNamePool& qnpool = store.getQNamePool();
+  zorba::Stack<XmlNode*>& nodeStack = loader.theNodeStack;
+  zorba::Stack<ElementNode*>& pathStack = loader.thePathStack;
 
   try
   {
@@ -516,7 +518,7 @@ void FastXmlLoader::startElement(
     ElementNode* elemNode = new ElementNode(nodeName,
                                             numBindings,
                                             numAttributes);
-    if (loader.theNodeStack.empty())
+    if (nodeStack.empty())
       loader.setRoot(elemNode);
 
 #ifdef DATAGUIDE
@@ -568,8 +570,20 @@ void FastXmlLoader::startElement(
     }
 #endif
 
-    loader.theNodeStack.push((XmlNode*)elemNode);
-    loader.theNodeStack.push(NULL);
+    // Check for recursiveness, i.e., whether this node is a descendant of
+    // another noide with the same name
+    for (long i = pathStack.size() - 1; i > 0; --i)
+    {
+      if (pathStack[i]->theName->equals(elemNode->theName))
+      {
+        pathStack[i]->setRecursive();
+        break;
+      }
+    }
+
+    nodeStack.push((XmlNode*)elemNode);
+    nodeStack.push(NULL);
+    pathStack.push(elemNode);
 
     // Assign the current node id to this node, and compute the next node id.
     elemNode->setId(loader.theTree, &loader.theOrdPath);
@@ -679,6 +693,7 @@ void  FastXmlLoader::endElement(
   FastXmlLoader& loader = *(static_cast<FastXmlLoader *>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
+  zorba::Stack<ElementNode*>& pathStack = loader.thePathStack;
   zorba::Stack<XmlNode*>& nodeStack = loader.theNodeStack;
   ulong stackSize = nodeStack.size();
   ulong firstChildPos;
@@ -748,6 +763,7 @@ void  FastXmlLoader::endElement(
     children.resize(numActualChildren);
 
     nodeStack.pop(numChildren+1);
+    pathStack.pop();
 
     if (elemNode->getNsContext() != NULL)
     {

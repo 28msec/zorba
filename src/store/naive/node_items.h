@@ -340,7 +340,9 @@ public:
     HaveBaseUri       =   0x400,   // for element nodes only
     IsBaseUri         =   0x800,   // for attribute nodes only
     IsHidden          =   0x1000,  // for attribute nodes only
-    IsInSubstGroup    =   0x2000   // for element nodes only
+    IsInSubstGroup    =   0x2000,  // for element nodes only
+
+    IsRecursive       =   0x4000   // for element nodes only
   };
 
 protected:
@@ -708,6 +710,10 @@ public:
 
   void setInSubstGroup()        { theFlags |= IsInSubstGroup; }
   void resetInSubstGroup()      { theFlags &= ~IsInSubstGroup; }
+
+  bool isRecursive() const      { return (theFlags & IsRecursive) != 0; }
+  void setRecursive()           { theFlags |= IsRecursive; }
+  void resetRecursive()         { theFlags &= ~IsRecursive; }
 
   bool haveLocalBindings() const{ return (theFlags & HaveLocalBindings) != 0; }
 

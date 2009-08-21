@@ -65,6 +65,8 @@ public:
   virtual ~ChildrenIterator() {}
 
   virtual void init(Item_t& parent) = 0;
+
+  virtual void init(const Item* parent) = 0;
   
   virtual void open() = 0;
 
@@ -95,6 +97,8 @@ public:
   virtual ~AttributesIterator() { }
 
   virtual void init(Item_t& parent) = 0;
+
+  virtual void init(const Item* parent) = 0;
 
   virtual void open() = 0;
 

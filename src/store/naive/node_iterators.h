@@ -62,7 +62,7 @@ public:
   }
 
 
-  void init(XmlNode* parent)
+  void init(const store::Item* parent)
   {
     theParentNode = parent;
     theNumChildren = theParentNode->numChildren();
@@ -125,10 +125,10 @@ public:
     theCurrentPos = 0;
   }
 
-  void init(const ElementNode* parent)
+  void init(const store::Item* parent)
   {
     theParentNode = parent;
-    theNumAttributes = parent->numAttributes();
+    theNumAttributes = theParentNode->numAttributes();
     theCurrentPos = 0;
   }
 

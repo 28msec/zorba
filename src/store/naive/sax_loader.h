@@ -44,6 +44,8 @@ namespace store
 namespace simplestore 
 {
 
+class ElementNode;
+
 
 /*******************************************************************************
 
@@ -205,6 +207,7 @@ protected:
   OrdPathStack                     theOrdPath;
 
   XmlNode                        * theRootNode;
+  zorba::Stack<ElementNode*>       thePathStack;
   zorba::Stack<XmlNode*>           theNodeStack;
   std::stack<NsBindingsContext*>   theBindingsStack;
 

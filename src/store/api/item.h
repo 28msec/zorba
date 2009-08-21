@@ -434,6 +434,18 @@ public:
   virtual void
   markValidated();
 
+  /**
+   *  @return True if this is an element node with name N and it has at least one
+   *          descendant whose name is also N.
+   *
+   * Note: This function is used purely for enabling certain optimizations in the
+   *       query processor. As a result, it is not necessary that a store actually
+   *       provides info about the recursivity of a node; such a store should
+   *       provide a dummy implementation of this method that simply returns true.
+   */
+  virtual bool
+  isRecursive() const;
+
   /** Accessor for document node
    *  @return  uri?
    */
