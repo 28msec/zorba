@@ -201,9 +201,6 @@ class NsBindingsContext;
 class FastXmlLoader : public XmlLoader
 {
 protected:
-  static const ulong               theElementChunckSize = 200;
-      
-protected:
   XmlTree                        * theTree;
   OrdPathStack                     theOrdPath;
 

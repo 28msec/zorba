@@ -397,40 +397,46 @@ void FastXmlLoader::endDocument(void * ctx)
   FastXmlLoader& loader = *(static_cast<FastXmlLoader *>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
+  zorba::Stack<XmlNode*>& nodeStack = loader.theNodeStack;
+  ulong stackSize = nodeStack.size();
+  ulong firstChildPos;
+  ulong numChildren;
+  ulong numActualChildren;
+  ulong i;
+  DocumentNode* docNode;
+  XmlNode* currChild;
+
   try
   {
     // This check is required because it is possible (in case of mal-formed doc)
     // that libXml calls endDocument() without having called startDocument().
-    if (loader.theNodeStack.size() == 0 )
+    if (stackSize == 0 )
       return;
   
-    std::vector<XmlNode*> revChildNodes;
+    // Find the position of the 1st child of this doc node in the node stack
+    firstChildPos = stackSize - 1;
+    while (nodeStack[firstChildPos] != NULL)
+      --firstChildPos;
 
-    XmlNode* childNode = loader.theNodeStack.top();
-
-    while (childNode != NULL)
-    {
-      revChildNodes.push_back(childNode);
-      loader.theNodeStack.pop();
-      childNode = loader.theNodeStack.top();
-    }
-    loader.theNodeStack.pop();
-
-    DocumentNode* docNode = dynamic_cast<DocumentNode*>(loader.theNodeStack.top());
+    // Find the doc node in the stack
+    docNode = dynamic_cast<DocumentNode*>(nodeStack[firstChildPos-1]);
     ZORBA_ASSERT(docNode != NULL);
 
+    // For each child, make this doc node its parent.
     NodeVector& children = docNode->children();
-    children.resize(revChildNodes.size());
+    numChildren = nodeStack.size() - firstChildPos - 1;
+    children.resize(numChildren);
 
-    std::vector<XmlNode*>::const_reverse_iterator it;
-    ulong i = 0;
-    for (it = revChildNodes.rbegin();
-         it != (std::vector<XmlNode*>::const_reverse_iterator)revChildNodes.rend();
-         it++, i++)
+    numActualChildren = 0;
+    for (i = firstChildPos + 1; i < stackSize; ++i)
     {
-      children.set(*it, i, false);
-      (*it)->setParent(docNode);
+      currChild = nodeStack[i];
+      children.set(currChild, numActualChildren);
+      currChild->setParent(docNode);
+      ++numActualChildren;
     }
+
+    nodeStack.pop(numChildren+1);
 
 #ifdef DATAGUIDE
     if (loader.theBuildDataGuide)
@@ -627,22 +633,12 @@ void FastXmlLoader::startElement(
         attrNode->setId(loader.theTree, &loader.theOrdPath);
         attrNode->theTypedValue.transfer(typedValue);
 
-        attrNodes.set(attrNode, i, false);
+        attrNodes.set(attrNode, i);
 
         loader.theOrdPath.nextChild();
 
         SYNC_CODE(attrNode->theRCLockPtr = &loader.theTree->getRCLock();)
-#if 0
-        if (strcmp(lname, "schemaLocation") == 0 &&
-            uri != NULL &&
-            strcmp(uri, "http://www.w3.org/2001/XMLSchema-instance") == 0)
-        {
-          xqpStringStore* value = attrNode->theTypedValue->getStringValue().getp();
-          std::string::size_type pos = value->indexOf(" ");
-          xqpStringStore_t schemaUri = value->substr(0, pos);
-          loader.theTree->setSchemaUri(schemaUri);
-        }
-#endif
+
         LOADER_TRACE2("Attribute: node = " << attrNode << " name [" 
                       << (prefix != NULL ? prefix : "") << ":" << lname << " (" 
                       << (uri != NULL ? uri : "NULL") << ")]" << " value = " 
@@ -683,38 +679,25 @@ void  FastXmlLoader::endElement(
   FastXmlLoader& loader = *(static_cast<FastXmlLoader *>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
+  zorba::Stack<XmlNode*>& nodeStack = loader.theNodeStack;
+  ulong stackSize = nodeStack.size();
+  ulong firstChildPos;
+  ulong numChildren;
+  ulong numActualChildren;
+  ulong i;
+  ElementNode* elemNode;
+  XmlNode* prevChild = NULL;
+  XmlNode* currChild;
+
   try
   {
-    // Collect the children of this element node from the node stack
-    std::vector<XmlNode*> revChildNodes;
+    // Find the position of the 1st child of this element node in the node stack
+    firstChildPos = stackSize - 1;
+    while (nodeStack[firstChildPos] != NULL)
+      --firstChildPos;
 
-    XmlNode* prevChild = NULL;
-    XmlNode* currChild = loader.theNodeStack.top();
-    while (currChild != NULL)
-    {
-      if (currChild->getNodeKind() == store::StoreConsts::textNode &&
-          prevChild != NULL &&
-          prevChild->getNodeKind() == store::StoreConsts::textNode)
-      {
-        TextNode* textSibling = reinterpret_cast<TextNode*>(prevChild);
-        TextNode* textChild = reinterpret_cast<TextNode*>(currChild);
-        xqpStringStore_t content2 = textChild->getText()->append(textSibling->getText());
-        textSibling->setText(content2);
-        delete currChild;
-      }
-      else
-      {
-        revChildNodes.push_back(currChild);
-        prevChild = currChild;
-      }
-
-      loader.theNodeStack.pop();
-      currChild = loader.theNodeStack.top();
-    }
-    loader.theNodeStack.pop();
-
-    // The element node is now at the top of the stack
-    ElementNode* elemNode = dynamic_cast<ElementNode*>(loader.theNodeStack.top());
+    // Find the element node in the stack
+    elemNode = dynamic_cast<ElementNode*>(nodeStack[firstChildPos-1]);
     ZORBA_ASSERT(elemNode != NULL);
 
     LOADER_TRACE2("End Element: node = " << elemNode << " name ["
@@ -722,32 +705,49 @@ void  FastXmlLoader::endElement(
                   << " (" << (uri != NULL ? uri : (xmlChar*)"NULL") << ")]");
 
     // For each child, make this element node its parent and fix its namespace
-    // bindings context. Note: the children were popped from the stack in reverse
-    // order, so we copy them into the element node in the correct order.
+    // bindings context.
     NodeVector& children = elemNode->children();
-    children.resize(revChildNodes.size());
+    numChildren = nodeStack.size() - firstChildPos - 1;
+    children.resize(numChildren);
 
-    std::vector<XmlNode*>::const_reverse_iterator it;
-    ulong i = 0;
-    for (it = revChildNodes.rbegin();
-         it != (std::vector<XmlNode*>::const_reverse_iterator)revChildNodes.rend();
-         it++, i++)
+    numActualChildren = 0;
+    for (i = firstChildPos + 1; i < stackSize; ++i)
     {
-      currChild = *it;
+      currChild = nodeStack[i];
 
-      children.set(currChild, i, false);
-      currChild->setParent(elemNode);
-
-      if (currChild->getNodeKind() == store::StoreConsts::elementNode)
+      if (currChild->getNodeKind() == store::StoreConsts::textNode &&
+          prevChild != NULL &&
+          prevChild->getNodeKind() == store::StoreConsts::textNode)
       {
-        if (!loader.theBindingsStack.empty())
-          reinterpret_cast<ElementNode*>(currChild)->
-          setNsContext(loader.theBindingsStack.top());
-        else
-          reinterpret_cast<ElementNode*>(currChild)->
-          setNsContext(NULL);
+        TextNode* textSibling = reinterpret_cast<TextNode*>(prevChild);
+        TextNode* textChild = reinterpret_cast<TextNode*>(currChild);
+        xqpStringStore_t content2 = textSibling->getText()->append(textChild->getText());
+        textSibling->setText(content2);
+        delete currChild;
+      }
+      else
+      {
+        children.set(currChild, numActualChildren);
+        currChild->setParent(elemNode);
+
+        if (currChild->getNodeKind() == store::StoreConsts::elementNode)
+        {
+          if (!loader.theBindingsStack.empty())
+            reinterpret_cast<ElementNode*>(currChild)->
+              setNsContext(loader.theBindingsStack.top());
+          else
+            reinterpret_cast<ElementNode*>(currChild)->
+              setNsContext(NULL);
+        }
+
+        prevChild = currChild;
+        ++numActualChildren;
       }
     }
+
+    children.resize(numActualChildren);
+
+    nodeStack.pop(numChildren+1);
 
     if (elemNode->getNsContext() != NULL)
     {

@@ -56,7 +56,7 @@ public:
 
   ulong find(XmlNode* n);
 
-  void set(XmlNode* n, ulong pos, bool ) { theNodes[pos] = n; }
+  void set(XmlNode* n, ulong pos) { theNodes[pos] = n; }
 
   void push_back(XmlNode* n)  { theNodes.push_back(n); }
 
