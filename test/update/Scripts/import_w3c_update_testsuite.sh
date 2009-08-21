@@ -14,7 +14,6 @@
 # ./import_w3c_update_testsuite.sh <testsuite-dir (xquery-update-10-test-suite)> <path to saxon*.jar (e.g. saxon9.jar)>
 # ln -s xquery-update-10-test-suite/Queries/ zorba/test/update/Queries/w3c_update_testsuite
 # ln -s xquery-update-10-test-suite/ExpectedTestResults/ zorba/test/update/ExpectedTestResults/w3c_update_testsuite
-# cp zorba/test/update/xml.xsd xquery-update-10-test-suite/TestSources/
 # ###commit xquery-update-10-test-suite/Queries/ and xquery-update-10-test-suite/ExpectedTestResults/ to https://fifthelement.inf.ethz.ch/zorba-repos/xqueryw3ctests/w3c_update_testsuite/ 
 # # zip it up
 # zip -y -r w3c_update_testsuite.zip  xquery-update-10-test-suite
@@ -51,7 +50,7 @@ $uq
 echo "Adding xml.xsd entry to uri.txt ..."
 echo >> $SUITE_SRC/Queries/TestSources/uri.txt
 echo "http://www.w3.org/XML/1998/namespace=TestSources/xml.xsd" >> $SUITE_SRC/Queries/TestSources/uri.txt
-
+cp zorba/test/update/xml.xsd xquery-update-10-test-suite/TestSources/
 
 # XQUTSCatalog does not contain module tags
 #mq=`mktemp /tmp/rwts2.XXXXXX`
