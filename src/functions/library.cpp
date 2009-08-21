@@ -367,6 +367,14 @@ DECL(sctx, rest_post,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
+// zorba-rest:postTidy with an URI, a payload, custom headers and tidy options
+DECL(sctx, rest_post_tidy,
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "postTidy"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE, //$tidyOptions
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 // zorba-rest:put with an URI
 DECL(sctx, rest_put,

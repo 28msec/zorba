@@ -141,8 +141,9 @@ public:
 class ZorbaRestPostIterator : public NaryBaseIterator<ZorbaRestPostIterator, ZorbaRestGetIteratorState >
 {
 public:
-  ZorbaRestPostIterator( short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator<ZorbaRestPostIterator, ZorbaRestGetIteratorState >(sctx, loc, aChildren)
+  ZorbaRestPostIterator( short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, bool tidy = false)
+    : NaryBaseIterator<ZorbaRestPostIterator, ZorbaRestGetIteratorState >(sctx, loc, aChildren),
+      isPostTidy(tidy)
   { }
 
   void openImpl(PlanState& planState, uint32_t& offset)
@@ -166,12 +167,15 @@ public:
     }
     v.endVisit(*this);
   }
+private:
+  bool isPostTidy;
 public:
   SERIALIZABLE_CLASS(ZorbaRestPostIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaRestPostIterator, NaryBaseIterator<ZorbaRestPostIterator, ZorbaRestGetIteratorState >)
   void serialize(::zorba::serialization::Archiver &ar)
   {
     serialize_baseclass(ar, (NaryBaseIterator<ZorbaRestPostIterator, ZorbaRestGetIteratorState >*)this);
+    ar & isPostTidy;	
   }
 };
 

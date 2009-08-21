@@ -947,12 +947,13 @@ bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
 bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lUri, payload_data, headers;
+  store::Item_t lUri, payload_data, headers, tidyUserOpt;;
   xqpString Uri;
   curl_httppost *first = NULL, *last = NULL;
   curl_slist *headers_list = NULL;
   std::auto_ptr<char> buffer;
   int code;
+  unsigned int index = 1;
   bool single_payload = false;
   PAYLOAD_TYPE payload_type = PAYLOAD_TYPE_MULTIPART_FORMDATA;
   xqpString constructedURL;
@@ -968,10 +969,19 @@ bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState
   }
   Uri = lUri->getStringValue()->str();
 
-  if (theChildren.size() > 1)
+#ifdef ZORBA_WITH_TIDY
+  if(isPostTidy)
+  {
+    index = 2;
+    if(theChildren.size() > 1)
+      CONSUME(tidyUserOpt, 1);
+  }
+#endif
+  
+  if (theChildren.size() > index)
   {
     store::Item_t payload_data;
-    int status = CONSUME(payload_data, 1);
+    int status = CONSUME(payload_data, index);
 
     if (status)
     {
@@ -982,7 +992,7 @@ bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState
       else
       {
         payload_type = processPayload(payload_data, &first, &last, constructedURL);
-        while (CONSUME(payload_data, 1))
+        while (CONSUME(payload_data, index))
           payload_type = processPayload(payload_data, &first, &last, constructedURL);
       }
     }
@@ -991,8 +1001,8 @@ bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState
   if (single_payload == false)
     curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPPOST, first);
 
-  if (theChildren.size() > 2)
-    while (CONSUME(headers, 2))
+  if (theChildren.size() > (index+1))
+    while (CONSUME(headers, (index+1)))
       processHeader(headers, &headers_list);
   
   if (payload_type == PAYLOAD_TYPE_URLENCODED)
@@ -1023,7 +1033,7 @@ bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState
       code,
       *state->headers,
       state->theStreamBuffer.getp(),
-      NULL);
+      (tidyUserOpt!=NULL)?tidyUserOpt->getStringValue()->c_str():NULL);
   
   curl_formfree(first);
   curl_slist_free_all(headers_list);

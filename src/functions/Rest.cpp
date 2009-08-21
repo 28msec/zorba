@@ -47,7 +47,7 @@ rest_post::rest_post(const signature& sig)
 PlanIter_t
 rest_post::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
 {
-  return new ZorbaRestPostIterator(sctx, loc, argv);
+  return new ZorbaRestPostIterator(sctx, loc, argv, false);
 }
 
 xqtref_t
@@ -56,6 +56,21 @@ rest_post::return_type (const std::vector<xqtref_t> &arg_types) const
   return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
+rest_post_tidy::rest_post_tidy(const signature& sig)
+  : function(sig)
+{}
+ 
+PlanIter_t
+rest_post_tidy::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+{
+  return new ZorbaRestPostIterator(sctx, loc, argv, true);
+}
+
+xqtref_t
+rest_post_tidy::return_type (const std::vector<xqtref_t> &arg_types) const
+{
+  return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+}
 
 rest_put::rest_put(const signature& sig) : function(sig)
 {

@@ -16,6 +16,9 @@
             <li> \ref getfunctions_tidy
           </ul> 
         <li> \ref postfunctions
+          <ul>
+            <li> \ref postfunctions_tidy
+          </ul> 
         <li> \ref putfunctions
         <li> \ref headfunctions
         <li> \ref deletefunctions>
@@ -126,6 +129,14 @@ Note: you can set a boolean parameter to true by either of the following methods
                                                                headers as element(zorba-rest:headers)*)  as element(zorba-rest:result);
 \endcode
 
+\subsection postfunctions_tidy 3.2.1 PostTidy Functions
+
+\code
+ declare nondeterministic sequential function zorba-rest:postTidy( url as xs:string,
+                                                                  $tidyOptions as xs:string
+                                                                  payload as element(zorba-rest:payload),
+                                                                  headers as element(zorba-rest:headers)*)  as element(zorba-rest:result);
+\endcode
 
 \subsection putfunctions 3.3 PUT Functions
 
