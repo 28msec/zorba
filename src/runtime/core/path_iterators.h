@@ -441,7 +441,7 @@ class DescendantAxisState : public AxisState
 {
 public:
   ulong theTop;
-  std::vector<std::pair<store::Item*, store::ChildrenIterator*> > theCurrentPath;
+  std::vector<std::pair<const store::Item*, store::ChildrenIterator*> > theCurrentPath;
 
 public:
   DescendantAxisState();
@@ -457,7 +457,7 @@ public:
     return theTop == 0;
   }
 
-  store::Item* topNode() const
+  const store::Item* topNode() const
   {
     return theCurrentPath[theTop-1].first; 
   }
@@ -473,7 +473,7 @@ public:
     theTop--;
   }
 
-  void push(store::Item_t& node);
+  void push(const store::Item* node);
 };
 
 

@@ -113,6 +113,7 @@ static inline bool isElementOrDocumentNode(const store::Item* node)
           kind == store::StoreConsts::documentNode);
 }
 
+
 bool AxisIteratorHelper::nameOrKindTest(
     const store::Item* node,
     PlanState& planState) const
@@ -340,16 +341,14 @@ AttributeAxisState::~AttributeAxisState()
 }
 
 
-void
-AttributeAxisState::init(PlanState& planState)
+void AttributeAxisState::init(PlanState& planState)
 {
   AxisState::init(planState);
   theAttributes = GENV_ITERATOR_FACTORY->createAttributesIterator();
 }
 
 
-void
-AttributeAxisState::reset(PlanState& planState)
+void AttributeAxisState::reset(PlanState& planState)
 {
   AxisState::reset(planState);
   if (theAttributes != NULL)
@@ -516,15 +515,13 @@ RSiblingAxisState::~RSiblingAxisState()
 }
 
 
-void
-RSiblingAxisState::init(PlanState& planState)
+void RSiblingAxisState::init(PlanState& planState)
 {
   AxisState::init(planState);
 }
 
 
-void
-RSiblingAxisState::reset(PlanState& planState)
+void RSiblingAxisState::reset(PlanState& planState)
 {
   AxisState::reset(planState);
   if (theChildren != NULL)
@@ -593,15 +590,13 @@ LSiblingAxisState::~LSiblingAxisState()
 }
 
 
-void
-LSiblingAxisState::init(PlanState& planState)
+void LSiblingAxisState::init(PlanState& planState)
 {
   AxisState::init(planState);
 }
 
 
-void
-LSiblingAxisState::reset(PlanState& planState)
+void LSiblingAxisState::reset(PlanState& planState)
 {
   AxisState::reset(planState);
   if (theChildren != NULL)
@@ -627,7 +622,7 @@ bool LSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
       {
         ZORBA_ERROR_LOC_DESC(  XPTY0020, loc, "The context item of an axis step is not a node");
       }
-    }//daniel: maybe we should allow attribute nodes if kind test permits
+    }
     while (state->theContextNode->getNodeKind() == store::StoreConsts::attributeNode);
 
     parent = state->theContextNode->getParent();
@@ -664,8 +659,7 @@ ChildAxisState::~ChildAxisState()
 }
 
 
-void
-ChildAxisState::init(PlanState& planState)
+void ChildAxisState::init(PlanState& planState)
 {
   AxisState::init(planState);
   theChildren = GENV_ITERATOR_FACTORY->createChildrenIterator();
@@ -682,7 +676,7 @@ void ChildAxisState::reset(PlanState& planState)
 
 bool ChildAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item* child;
+  const store::Item* child;
 
   ChildAxisState* state;
   DEFAULT_STACK_INIT(ChildAxisState, state, planState);
@@ -739,35 +733,32 @@ DescendantAxisState::~DescendantAxisState()
 }
 
 
-void
-DescendantAxisState::init(PlanState& planState)
+void DescendantAxisState::init(PlanState& planState)
 {
   AxisState::init(planState);
 }
 
 
-void
-DescendantAxisState::reset(PlanState& planState)
+void DescendantAxisState::reset(PlanState& planState)
 {
   AxisState::reset(planState);
   theTop = 0;
 }
 
 
-void DescendantAxisState::push(store::Item_t& node)
+void DescendantAxisState::push(const store::Item* node)
 {
   if (theTop < theCurrentPath.size())
   {
-    theCurrentPath[theTop].first = node.getp();
+    theCurrentPath[theTop].first = node;
     theCurrentPath[theTop].second->init(node);
   }
   else
   {
     store::ChildrenIterator* ite = GENV_ITERATOR_FACTORY->createChildrenIterator();
-    store::Item* node1 = node.getp();
     ite->init(node);
-    theCurrentPath.push_back(std::pair<store::Item*, store::ChildrenIterator*>
-                             (node1, ite));
+    theCurrentPath.push_back(std::pair<const store::Item*, store::ChildrenIterator*>
+                             (node, ite));
   }
 
   theTop++;
@@ -776,8 +767,8 @@ void DescendantAxisState::push(store::Item_t& node)
 
 bool DescendantAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item* child;
-  store::Item_t tmp;
+  const store::Item* child = NULL;
+
   DescendantAxisState* state;
   DEFAULT_STACK_INIT(DescendantAxisState, state, planState);
 
@@ -807,27 +798,32 @@ bool DescendantAxisIterator::nextImpl(store::Item_t& result, PlanState& planStat
       // at the top of the path stack. If N has no children or all of its
       // children have been processed already, N is removed from the stack
       // and the process is repeated.
-
-      while ((child = state->top()->next()) == NULL)
+      while (!state->empty() && (child = state->top()->next()) == NULL)
       {
         state->pop();
-        if (state->empty())
-          break;
       }
 
       if (child == NULL)
         break;
 
-      if (child->getNodeKind() == store::StoreConsts::elementNode)
-      {
-        tmp = child;
-        state->push(tmp);
-      }
-
       if (nameOrKindTest(child, planState))
       {
         result = child;
+
+        if (child->getNodeKind() == store::StoreConsts::elementNode &&
+            (child->isRecursive() || 
+             theTestKind == match_anykind_test ||
+             (theTestKind == match_elem_test && theQName == NULL) ||
+             (theTestKind == match_name_test && theWildKind != match_no_wild)))
+        {
+          state->push(child);
+        }
+
         STACK_PUSH(true, state);
+      }
+      else if (child->getNodeKind() == store::StoreConsts::elementNode)
+      {
+        state->push(child);
       }
     }
   }
@@ -843,9 +839,10 @@ bool DescendantSelfAxisIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  store::Item_t desc;
+  const store::Item* child;
+  store::StoreConsts::NodeKind childKind;
+
   DescendantAxisState* state;
-  bool first = false;
   DEFAULT_STACK_INIT(DescendantAxisState, state, planState);
 
   while (true)
@@ -862,37 +859,47 @@ bool DescendantSelfAxisIterator::nextImpl(
       }
     }
     while ((theTestKind == match_name_test || theTestKind == match_no_test) &&
-           !isElementOrDocumentNode(state->theContextNode.getp()));//for name test, check for principal node type
+           !isElementOrDocumentNode(state->theContextNode.getp()));
 
-    result = state->theContextNode;
-    first = true;
+    child = state->theContextNode.getp();
 
-    while(first || !state->empty()) 
+    while (child != NULL)
     {
-      first = false;
-      if (isElementOrDocumentNode(result))
-      {
-        desc = result;
-        state->push(desc);
-      }
+      childKind = child->getNodeKind();
 
-      if (nameOrKindTest(result, planState))
+      if (nameOrKindTest(child, planState))
       {
+        result = child;
+
+        if ((childKind == store::StoreConsts::elementNode ||
+             (childKind == store::StoreConsts::documentNode &&
+              theTestKind == match_anykind_test)) &&
+            (child->isRecursive() || 
+             theTestKind == match_anykind_test ||
+             (theTestKind == match_elem_test && theQName == NULL) ||
+             (theTestKind == match_name_test && theWildKind != match_no_wild)))
+        {
+          state->push(child);
+        }
+
         STACK_PUSH(true, state);
       }
+      else if ((childKind == store::StoreConsts::elementNode ||
+                childKind == store::StoreConsts::documentNode) &&
+               theTestKind != match_doc_test)
+      {
+        state->push(child);
+      }
 
-      if(state->empty())
-        break;
+      child = NULL;
 
       // The next descendant is the next child of the node N that is currently
       // at the top of the path stack. If N has no children or all of its
       // children have been processed already, N is removed from the stack
       // and the process is repeated.
-      while ((result = state->top()->next()) == NULL)
+      while (!state->empty() && (child = state->top()->next()) == NULL)
       {
         state->pop();
-        if (state->empty())
-          break;
       }
     }
   }
@@ -922,15 +929,13 @@ PrecedingAxisState::~PrecedingAxisState()
 }
 
 
-void
-PrecedingAxisState::init(PlanState& planState)
+void PrecedingAxisState::init(PlanState& planState)
 {
   AxisState::init(planState);
 }
 
 
-void
-PrecedingAxisState::reset(PlanState& planState)
+void PrecedingAxisState::reset(PlanState& planState)
 {
   AxisState::reset(planState);
   while (!theCurrentPath.empty())
@@ -944,9 +949,6 @@ PrecedingAxisState::reset(PlanState& planState)
 }
 
 
-/*******************************************************************************
-
-********************************************************************************/
 bool PrecedingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t ancestor;
@@ -1043,15 +1045,13 @@ FollowingAxisState::~FollowingAxisState()
 }
 
 
-void
-FollowingAxisState::init(PlanState& planState)
+void FollowingAxisState::init(PlanState& planState)
 {
   AxisState::init(planState);
 }
 
 
-void
-FollowingAxisState::reset(PlanState& planState)
+void FollowingAxisState::reset(PlanState& planState)
 {
   AxisState::reset(planState);
   while (!theCurrentPath.empty())
