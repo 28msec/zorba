@@ -35,7 +35,7 @@ public:
   Stack(ulong initSize = 0) : theTop(0)
   {
     if (initSize > 0)
-      theStack.resize(initSize);
+      theStack.reserve(initSize);
   }
 
   ~Stack() { }
@@ -68,11 +68,11 @@ public:
     return theStack[theTop-1];
   }
 
-  void pop()
+  void pop(ulong num = 1)
   {
     assert(!empty());
-    theTop--;
-    theStack[theTop].~T();
+    theTop -= num;
+    theStack.resize(theTop);
   }
 
   void push(const T& val)
