@@ -20,6 +20,10 @@
 
 #include "zorbautils/runnable.h"
 
+#ifdef WIN32
+#define sleep(n) Sleep(100*n)
+#endif // WIN32
+
 class MyThread : public zorba::Runnable {
 
   public:
@@ -40,7 +44,7 @@ class MyThread : public zorba::Runnable {
 }; 
 
 int
-runnable(int argc, char** argv)
+runnable(int argc, char* argv[])
 {
   {
     MyThread lThread1;
