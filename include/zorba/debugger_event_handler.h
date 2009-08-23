@@ -40,7 +40,7 @@ namespace zorba{
     public:
 
       virtual
-      ~DebuggerEventHandler(){}
+      ~DebuggerEventHandler();
       
       /** \brief Signal the query status as being started.
        *

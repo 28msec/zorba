@@ -305,7 +305,6 @@ namespace zorba
     class WindowIterator;
   }
 
-  class FnDebugIterator;
   class ZorbaDebugIterator;
 
 #ifdef ZORBA_WITH_REST
@@ -906,7 +905,6 @@ public:
 
     PLAN_ITER_VISITOR(ZorbaTimestampIterator);
 
-    PLAN_ITER_VISITOR ( FnDebugIterator );
     PLAN_ITER_VISITOR ( ZorbaDebugIterator );
 
 #ifdef ZORBA_WITH_REST

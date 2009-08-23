@@ -67,7 +67,6 @@
 #include "functions/function.h"
 
 #include <zorba/zorba.h>
-#include "runtime/debug/zorba_debugger_iterators.h"
 #include "runtime/debug/zorba_debug_iterator.h"
 #include "debugger/zorba_debugger_commons.h"
 

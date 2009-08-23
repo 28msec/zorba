@@ -22,26 +22,25 @@ namespace zorba{
 
   class ZORBA_DLL_PUBLIC DefaultDebuggerEventHandler: public DebuggerEventHandler
   {
-
     public:
 
-      virtual ~DefaultDebuggerEventHandler(){}
+      virtual ~DefaultDebuggerEventHandler();
 
-      void started(){}
+      void started();
 
-      void idle(){}
+      void idle();
 
-      void suspended( QueryLocation & aLocation, SuspendedBy aCause ){}
+      void suspended( QueryLocation & aLocation, SuspendedBy aCause );
 
-      void resumed(){}
+      void resumed();
 
-      void terminated(){}
+      void terminated();
 
       virtual void
-      evaluated(String &anExpr, std::list<std::pair<String, String> > &aValuesAndTypes){}
+      evaluated(String &anExpr, std::list<std::pair<String, String> > &aValuesAndTypes);
   
       virtual void
-      evaluated(String &anExpr, String &anError){}
+      evaluated(String &anExpr, String &anError);
   };
 }//end of namespace
 #endif

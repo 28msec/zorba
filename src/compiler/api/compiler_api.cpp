@@ -46,7 +46,6 @@
 #include "runtime/visitors/printervisitor.h"
 #include "runtime/visitors/iterprinter.h"
 
-#include "debugger/debugger_server.h"
 #include "compiler/dewey/dewey.h"
 #ifdef ZORBA_XQUERYX
 #include "compiler/xqueryx/xqueryx_to_xquery.h"

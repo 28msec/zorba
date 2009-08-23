@@ -39,6 +39,8 @@ SET(API_SRCS
     external_function_data.cpp
     iteratorimpl.cpp
     vectoriterator.cpp
+    debugger_event_handlerimpl.cpp
+    default_debugger_event_handlerimpl.cpp
     )
 
 SET(API_BUILD_SRCS
