@@ -29,22 +29,18 @@
 
 #include <zorba/zorba.h>
 #ifndef ZORBA_MINIMAL_STORE
-#include <simplestore/simplestore.h>
+#  include <simplestore/simplestore.h>
 #else
-#include "store/minimal/min_store.h"
+#  include "store/minimal/min_store.h"
 #endif
 
 #ifdef ZORBA_DEBUGGER
-#include <csignal>
-#include <zorba/debugger_client.h>
-#include "debugger_handler.h"
-#ifdef ZORBA_HAVE_PTHREAD_H
-#include <pthread.h>
-#define ZORBA_THREAD_RETURN void *
-#else
-#define ZORBA_THREAD_RETURN DWORD WINAPI
+#  include <zorba/debugger_client.h>
+#  include "debugger_server_runnable.h"
+#  include "debugger_handler.h"
 #endif
-#endif
+
+#include "error_printer.h"
 
 // For setting the base URI from the current directory
 #include <zorba/util/path.h>
@@ -67,7 +63,7 @@
 #define ZORBACMD_LOAD_SYSTEM_PROPERTIES 1
 
 #if ZORBACMD_LOAD_SYSTEM_PROPERTIES
-#include "util/properties.h"
+#  include "util/properties.h"
 #endif
 
 using namespace zorba;
@@ -76,11 +72,6 @@ namespace zorbatm = zorba::time;
 const char *copyright_str =
   "Copyright 2006-2009 The FLWOR Foundation.\n"
   "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>";
-
-std::ostream&
-printErrorInfo( zorba::QueryException& qe,
-                std::ostream& os,
-                const ZorbaCMDProperties& aProperties);
 
 bool
 populateStaticContext(
@@ -219,30 +210,6 @@ std::string parseFileURI (bool asPath, const std::string &str)
     return "";
 #endif
 }
-
-
-#ifdef ZORBA_DEBUGGER
-struct server_args
-{
-  zorba::XQuery_t theQuery;
-  unsigned short theRequestPort;
-  unsigned short theEventPort;
-};
-
-ZORBA_THREAD_RETURN server(void* args)
-{
-  server_args* lArgs = (server_args*)args;
-  XQuery_t lQuery = lArgs->theQuery;
-  unsigned short requests = lArgs->theRequestPort;
-  unsigned short events = lArgs->theEventPort;
-  lQuery->debug(requests, events);
-  //lQuery->close();
-#ifndef NDEBUG
-  std::clog << "Quit server thread\n";
-#endif
-  return 0;
-}
-#endif
 
 
 std::vector<std::string>
@@ -520,7 +487,7 @@ int executeQueryWithTiming(
 
       timing.stopTimer(TimingInfo::COMP_TIMER, i);
     } catch (zorba::QueryException& qe) {
-      printErrorInfo(qe, std::cerr, properties);
+      ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), properties.indent());
       return 5;
     }
 
@@ -535,7 +502,7 @@ int executeQueryWithTiming(
         return 4;
       }
     } catch (zorba::QueryException& qe) {
-      printErrorInfo(qe, std::cerr, properties);
+      ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), properties.indent());
       return 5;
     } catch (zorba::ZorbaException& ze) {
       std::cerr << ze << std::endl;
@@ -569,7 +536,7 @@ int executeQueryWithTiming(
         timing.loadClock += query->getDocLoadingUserTime();
       }
     } catch (zorba::QueryException& qe) {
-      printErrorInfo(qe, std::cerr, properties);
+      ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), properties.indent());
       return 5;
     } catch (zorba::ZorbaException& ze) {
       std::cerr << ze << std::endl;
@@ -621,7 +588,7 @@ int executeQuery(
   try {
     query->compile(qfile, staticContext, lHints);
   } catch (zorba::QueryException& qe) {
-    printErrorInfo(qe, std::cerr, properties);
+    ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), properties.indent());
     return 5;
   } catch (zorba::ZorbaException& ze) {
     std::cerr << ze << std::endl;
@@ -639,7 +606,7 @@ int executeQuery(
       return 4;
     }
   } catch (zorba::QueryException& qe) {
-    printErrorInfo(qe, std::cerr, properties);
+    ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), properties.indent());
     return 5;
   } catch (zorba::ZorbaException& ze) {
     std::cerr << ze << std::endl;
@@ -667,7 +634,7 @@ int executeQuery(
       }
     }
   } catch (zorba::QueryException& qe) {
-    printErrorInfo(qe, std::cerr, properties);
+    ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), properties.indent());
     return 5;
   } catch (zorba::ZorbaException& ze) {
     std::cerr << ze << std::endl;
@@ -676,40 +643,6 @@ int executeQuery(
   }
 
   return 0;
-}
-
-
-std::ostream&
-printErrorInfo( zorba::QueryException& qe,
-                std::ostream& os,
-                const ZorbaCMDProperties& aProperties)
-{
-  bool indent = aProperties.indent();
-  if( !aProperties.printErrorsAsXml() ) {
-    os << qe << " ";
-    if( aProperties.indent() ) { os << std::endl; };
-  }
-  else {
-    os << "<errors>";
-    if( indent ) os << std::endl << "  ";
-    //code
-    os << "<error code='" << qe.getErrorCodeAsString(qe.getErrorCode()) << "'>";
-    if( indent ) os << std::endl << "    ";
-    //location
-    os << "<location module='" << qe.getQueryURI();
-    os << "' lineStart='" << qe.getLineBegin();
-    os << "' columnStart='" << qe.getColumnBegin();
-    os << "' lineEnd='" << qe.getLineBegin();
-    os << "' columnEnd='" << qe.getColumnBegin() << "' />";
-    if( indent ) os << std::endl << "    ";
-    //description
-    os << "<description>" << qe.getDescription().formatAsXML() << "</description>";
-    if( indent ) os << std::endl << "  ";
-    os << "</error>";
-    if( indent ) os << std::endl;
-    os << "</errors>";
-  }
-  return os;
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -772,6 +705,7 @@ int _tmain(int argc, _TCHAR* argv[])
 #endif
 
   zorba::Zorba* lZorbaInstance = zorba::Zorba::getInstance(store);
+
 {
   timing.stopTimer(TimingInfo::INIT_TIMER, 2);
 
@@ -859,7 +793,6 @@ int _tmain(int argc, _TCHAR* argv[])
     if (lProperties.parseOnly()) {
       try {
         zorba::XQuery_t lQuery = lZorbaInstance->createQuery();
-
         if (asFile)
           lQuery->setFileName(path.get_path());
           lQuery->parse (*qfile);
@@ -879,7 +812,7 @@ int _tmain(int argc, _TCHAR* argv[])
           qfile->clear();
           qfile->seekg(0); // go back to the beginning
         } catch (zorba::QueryException& qe) {
-          printErrorInfo(qe, std::cerr, lProperties);
+          ErrorPrinter::print(qe, std::cerr, lProperties.printErrorsAsXml(), lProperties.indent());
           return 6;
         }
       }
@@ -908,7 +841,7 @@ int _tmain(int argc, _TCHAR* argv[])
           qfile->clear();
           qfile->seekg(0); // go back to the beginning
         } catch (zorba::QueryException& qe) {
-          printErrorInfo(qe, std::cerr, lProperties);
+          ErrorPrinter::print(qe, std::cerr, lProperties.printErrorsAsXml(), lProperties.indent());
           return 6;
         }
       }
@@ -931,14 +864,18 @@ int _tmain(int argc, _TCHAR* argv[])
     }
 #ifdef ZORBA_DEBUGGER
     else if (debug) {
-      //
-      // Debug the query
-      //
-      if(fname.empty() && !compileOnly)
+
+      if (compileOnly) {
+        std::cerr << "cannot debug a query if the compileOnly option is specified" << std::endl;
+        return 7;
+      }
+
+      if(fname.empty())
       {
         std::cerr << "Cannot debug inline queries." << std::endl;
-        return 0;  // TODO: be able to debug inline query.
+        return 0;
       }
+
       std::auto_ptr<std::istream> lXQ(new std::ifstream(path.c_str()));
       std::string lFileName(path.get_path ());
       
@@ -958,82 +895,65 @@ int _tmain(int argc, _TCHAR* argv[])
           lProperties.printHelp(std::cout);
           return 0;
         }
+        std::auto_ptr<zorba::DebuggerServerRunnable> lServer;
+        std::auto_ptr<ZorbaDebuggerClient>           lClient;
+        std::auto_ptr<DebuggerHandler>               lHandler;
+
+        if (lProperties.debugServer()) {
+          lServer.reset(new zorba::DebuggerServerRunnable(lQuery,
+                                                          *lOutputStream,                                                          
+                                                          lProperties.getRequestPort(),
+                                                          lProperties.getEventPort()));
+          if (!lProperties.hasNoLogo())
+            std::cout << "Zorba XQuery debugger server.\n" << copyright_str << std::endl;
+          lServer->start();
+        }
+        
+        if (lProperties.debugClient()) {
+          if (!lProperties.hasNoLogo() )
+            std::cout << "Zorba XQuery debugger client.\n" << copyright_str << std::endl;
+          
+          // Try to connect 3 times on the server thread
+          for ( unsigned int i = 0; i < 3; i++ ) {
+            try {
+              // wait 1 second before trying to reconnect
+              sleep(1);
+              lClient.reset(ZorbaDebuggerClient::createClient(lProperties.getRequestPort(), lProperties.getEventPort()));
+              lHandler.reset(new DebuggerHandler(lZorbaInstance, lClient.get(), lFileName));
+              lClient->registerEventHandler( lHandler.get() );
+              break;
+            } catch( std::exception &e ) {
+              if ( i < 2 ){ continue; }
+              std::cerr << "Could not start the debugger client: {" << e.what() << "}" << std::endl;
+            }
+            return 1;
+          }
+        }
+
+        // important to destroy the client first
+        // and before joining the server
+        lClient.reset(0);
+        lHandler.reset(0);
+
+        if (lProperties.debugServer()) {
+          lServer->join();
+          lServer.reset(0);
+        }
 
       } catch (zorba::QueryException& qe) {
-        printErrorInfo(qe, std::cerr, lProperties);
+        ErrorPrinter::print(qe, std::cerr, lProperties.printErrorsAsXml(), lProperties.indent());
         return 5;
       } catch (zorba::ZorbaException& ze) {
         std::cerr << ze << std::endl;
         return 6;
       }
-
-      if( !compileOnly ) {
-      // Debugger server arguments
-      std::auto_ptr<server_args> lArgs(new server_args());
-      lArgs->theRequestPort = lProperties.getRequestPort();
-      lArgs->theEventPort = lProperties.getEventPort();
-      lArgs->theQuery = lQuery;
-      
-      // debug server
-      
-      if ( lProperties.debugServer() ) {
-        if (!lProperties.hasNoLogo() )
-          std::cout << "Zorba XQuery debugger server.\n" << copyright_str << std::endl;
-        server((void *)lArgs.get());
-        return 0;  
-      } else if (lProperties.debugClient()) {
-        if (!lProperties.hasNoLogo() )
-          std::cout << "Zorba XQuery debugger client.\n" << copyright_str << std::endl;
-        // start the server thread
-#ifdef ZORBA_HAVE_PTHREAD_H
-        pthread_t lServerThread;
-        if ( pthread_create( &lServerThread, 0, server, lArgs.get() ) != 0 )
-#else
-          HANDLE lServerThread;
-        if ( ( lServerThread = CreateThread( 0, 0, server, lArgs.get(), 0, 0 ) ) == 0 )
-#endif
-        {
-          std::cerr << "Couldn't start the server thread." << std::endl;
-          return 7;
-        }
-        
-        // Try to connect 3 times on the server thread
-        for ( unsigned int i = 0; i < 3; i++ ) {
-          try {
-            // wait 1 second before trying to reconnect
-            sleep(1);
-            std::auto_ptr<ZorbaDebuggerClient> debuggerClient(ZorbaDebuggerClient::createClient(lProperties.getRequestPort(),
-                                                                                                lProperties.getEventPort()));
-            DebuggerHandler lEventHandler(lZorbaInstance, debuggerClient.get(), lFileName);
-            debuggerClient->registerEventHandler( &lEventHandler );
-
-            // wait for the server thread to terminate
-            // this happens if 
-            // (1) query execution finished (in the server thread) or 
-            // (2) the client explicitly terminates the query
-#ifdef ZORBA_HAVE_PTHREAD_H
-            pthread_join( lServerThread, 0);
-#else
-            WaitForSingleObject( lServerThread, INFINITE );
-#endif
-            lQuery->close();
-            break;
-          } catch( std::exception &e ) {
-            if ( i < 2 ){ continue; }
-            std::cerr << "Could not start the debugger client: {" << e.what() << "}" << std::endl;
-          }
-          return 1;
-        }
-      }
-      } //compileOnly
-    } // debugger
+    } // else if (debug) 
 #endif
 
     queryNo++;
   } // for each query
-
-  }
   return 0;
+}
 }
 
 /* vim:set ts=2 sw=2: */

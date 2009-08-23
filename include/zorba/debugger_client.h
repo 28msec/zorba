@@ -172,7 +172,7 @@ namespace zorba{
        createClient(std::string aServerAddress, unsigned short aRequestPortno = 8000, unsigned short aEventPortno = 9000 );
 
 
-/** \brief Register a debuggere vent handler to which runtime events on the remote 
+      /** \brief Register a debugger event handler to which runtime events on the remote 
        * debugger server are reported.
        *
        * @param aDebuggerEventHandler DebuggerEventHandler Handler for runtime events comming

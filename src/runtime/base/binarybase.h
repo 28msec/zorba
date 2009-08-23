@@ -93,8 +93,6 @@ BinaryBaseIterator<IterType, StateType>::openImpl (
   StateTraitsImpl<StateType>::createState(planState, this->stateOffset, offset);
   StateTraitsImpl<StateType>::initState(planState, this->stateOffset);
 
-  // this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-
   theChild0->open(planState, offset);
   theChild1->open(planState, offset);
 }

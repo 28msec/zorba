@@ -97,9 +97,16 @@ std::ostream& operator<< (std::ostream& aOstr, const QueryLoc& aQueryLoc) {
  {
     QueryLoc loc; 
     if ( (*obj)["fileName"] != 0 )
-    {
-      std::wstring *lFileName = (*obj)["fileName"]->getstring(L"", true);
-      std::string filename( lFileName->begin()+1, lFileName->end()-1 );
+    {                                                                                                                                    
+      std::wstring *lFileName = (*obj)["fileName"]->getstring(L"", true);                                                                
+      std::string filename( lFileName->begin()+1, lFileName->end()-1 );                                                                  
+      std::string::iterator it;
+      for (it = filename.begin(); it != filename.end(); it++) {                                                                          
+        if (*it == '\\') {                                                                                                               
+          filename.erase(it);
+          ++it;                                                                                                                          
+        }
+      } 
       loc.setFilenameBegin( &filename );
       delete lFileName;
     }

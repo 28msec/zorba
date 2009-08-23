@@ -33,6 +33,8 @@ namespace zorba {
 
 #ifdef ZORBA_DEBUGGER
 class ZorbaDebugger;
+class ZorbaDebuggerRuntime;
+class ZorbaDebuggerCommons;
 #endif
 class DynamicContextImpl;
 class StaticContextImpl;
@@ -205,10 +207,6 @@ public:
       theIsClosed = false;
 
       theCompilerCB->m_error_manager = theErrorManager;
-
-#ifdef ZORBA_DEBUGGER
-      theDebugger = NULL;
-#endif
     }
   }
 
@@ -315,13 +313,14 @@ protected:
   CompilerCB::config_t
   getCompilerConfig(const Zorba_CompilerHints_t&);
 
-  void
+  static void
   setSerializationParameters(serializer*, const Zorba_SerializerOptions_t*);
 
   PlanWrapper_t
   generateWrapper();
 
   friend class ZorbaDebugger;
+  friend class ZorbaDebuggerRuntime;
   // special serialize and applyUpdate function that is used by debugger 
   // and by the public serialize and applyUpdate functions, respectively.
   // they are passed an opened PlanWrapper
@@ -356,7 +355,7 @@ protected:
 
 #ifdef ZORBA_DEBUGGER
  private:
-  ZorbaDebugger *theDebugger;
+  bool theIsDebugMode;
   std::string theProfileName;
  
  protected:

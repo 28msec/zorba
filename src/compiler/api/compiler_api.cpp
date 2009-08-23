@@ -196,35 +196,6 @@ XQueryCompiler::normalize(parsenode_t aParsenode)
     ZORBA_ERROR( API0002_COMPILE_FAILED);
     return NULL;
   }
-#ifdef ZORBA_DEBUGGER
-  if(theCompilerCB->m_debugger != 0)
-  {
-    ZorbaDebugger* lDebugger = theCompilerCB->m_debugger;
-    lDebugger->theClassification = classify(*aParsenode);
-    std::list<parsenode_t> lModules = lDebugger->getModules();
-    std::list<parsenode_t>::iterator it;
-    for(it=lModules.begin(); it!=lModules.end(); ++it)
-    {
-      Classification_t lClassification = classify(**it);
-      lDebugger->theClassification.insert(lClassification.begin(), lClassification.end());
-    }
-
-#if 0
-    Classification_t lClassification = theCompilerCB->m_debugger->theClassification;
-    Classification_t::iterator lIter;
-    for(lIter=lClassification.begin(); lIter!=lClassification.end(); ++lIter)
-    {
-      std::stack<unsigned int> s(lIter->second);
-      while(!s.empty())
-      {
-        std::cerr << s.top();
-        s.pop();
-      }
-      std::cerr << ' ' << lIter->first << ' ' << lIter->first.getFunctionName() << std::endl;
-    }
-#endif
-  }
-#endif
   RewriterContext rCtx(theCompilerCB, lExpr);
   GENV_COMPILERSUBSYS.getPhase1Rewriter()->rewrite(rCtx);
   lExpr = rCtx.getRoot();

@@ -30,36 +30,36 @@ namespace zorba {
 
 class DebuggerTestClient {
 public:
-	typedef struct {
-		XQuery* xquery;
-		std::ostream* stream;
-	} ArgStruct;
-public:
-	DebuggerTestClient(std::string filename, std::string query);
+	DebuggerTestClient(int aRequestPort, int aEventPort, std::iostream& aQuery);
 	virtual ~DebuggerTestClient();
 
 public:
-	void run();
-  void terminate();
-	DebuggerTestHandler::DebugEvent getNextEvent();
-	std::string getQueryResult() const;
-  QueryLocation_t addBreakpoint(std::string nspace, unsigned int lNumber);
-  std::list<Variable> getAllVariables(bool data);
+	void
+  run();
+
+  void
+  terminate();
+
+  void
+  resume();
+
+	DebuggerTestHandler::DebugEvent
+  getNextEvent();
+
+  QueryLocation_t
+  addBreakpoint(std::string fileName, unsigned int aNumber);
+
+  QueryLocation_t
+  getLocation() const;
 
 private:
-	zorba::Zorba* m_zorbaInstance;
-	zorba::XQuery_t m_xquery;
+  int m_request_port;
+  int m_event_port;
+
 	zorba::ZorbaDebuggerClient* m_client;
 	DebuggerTestHandler* m_handler;
-	std::string m_queryResult;
-	std::ostringstream m_resultStream;
-#ifdef ZORBA_HAVE_PTHREAD_H
-	pthread_t theServerThread;
-#else
-	HANDLE theServerThread;
-#endif
+  std::iostream& m_query;
 
-  ArgStruct  theArguments;
 };
 
 }

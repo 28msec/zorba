@@ -27,26 +27,32 @@
 
 namespace zorba {
 
-DebuggerTestHandler::DebuggerTestHandler( zorba::Zorba* zorba, zorba::ZorbaDebuggerClient* client, std::string fileName )
-: m_client(client), m_fileName(fileName), m_zorba(zorba)
+DebuggerTestHandler::DebuggerTestHandler( zorba::ZorbaDebuggerClient* client )
+  : m_client(client)
 {
 }
 
 DebuggerTestHandler::DebugEvent DebuggerTestHandler::getNextEvent()
 {
-	SYNC_CODE(AutoLock lock(m_lock, Lock::WRITE);)
 	synchronous_logger::cout << "getNextEvent()\n";
+
+  if (m_client->isQueryTerminated()) {
+		synchronous_logger::cout << "Query is terminated\n";
+		return TERMINATED;
+  }
+
 	while (m_client->isQueryRunning()) {
 		sleep(1);
 	}
+
 	if (m_client->isQueryTerminated()) {
-		std::cout << "Query is terminated" << std::endl;
+		synchronous_logger::cout << "Query is terminated\n";
 		return TERMINATED;
 	} else if (m_client->isQuerySuspended()) {
-		std::cout << "Query is suspended" << std::endl;
+		synchronous_logger::cout << "Query is suspended\n";
 		return SUSPENDED;
 	} else {
-		std::cout << "Query is idle" << std::endl;
+		synchronous_logger::cout << "Query is idle\n";
 		return IDLE;
 	}
 }

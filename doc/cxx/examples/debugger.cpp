@@ -85,8 +85,7 @@ ZORBA_THREAD_RETURN runClient( void* )
   ZorbaDebuggerClient * lClient = ZorbaDebuggerClient::createClient( 8000, 9000 );
   lClient->registerEventHandler( &lEventHandler );
   lClient->run();
-  sleep(1);
-  lClient->terminate();
+  sleep(1); // make sure the query terminates
   delete lClient;
   return 0;
 }
@@ -99,20 +98,6 @@ bool debugger_example_1(Zorba *aZorba)
   lQuery->debug();
   lQuery->close();
   return true;
-}
-
-bool debugger_example_3(Zorba *aZorba)
-{
-  try
-  {
-    XQuery_t lQuery = aZorba->createQuery();
-    lQuery->compile("1+2");
-    lQuery->debug();
-    lQuery->close();
-  } catch( ZorbaException & ) {
-    return true;
-  }
-  return false;
 }
 
 int debugger( int argc, char *argv[] )
@@ -135,17 +120,10 @@ int debugger( int argc, char *argv[] )
     std::cout << "executing example 1" << std::endl;
     res = debugger_example_1(lZorba);
 #ifdef ZORBA_HAVE_PTHREAD_H
-    pthread_cancel( lThread );
+    pthread_join( lThread, 0 );
 #else
-    CloseHandle( lThread );;
+    WaitForSingleObject( lThread, INFINITE );
 #endif
-    if ( !res ) return 1;
-    std::cout << std::endl;
-  }
-
-  {
-    std::cout << "executing example 3" << std::endl;
-    res = debugger_example_3(lZorba);
     if ( !res ) return 1;
     std::cout << std::endl;
   }

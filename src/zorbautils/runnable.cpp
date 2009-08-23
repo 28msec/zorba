@@ -1,118 +1,156 @@
-/*
- * Copyright 2006-2008 The FLWOR Foundation.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 #include "runnable.h"
 
-#ifndef ZORBA_FOR_ONE_THREAD_ONLY
+#include <iostream>
+#include <cassert>
 
 #ifdef ZORBA_HAVE_PTHREAD_H
-#include <pthread.h>
-#define ZORBA_THREAD_RETURN void *
+#    include <pthread.h>
+#    define ZORBA_THREAD_RETURN void *
 #else
-#include <Windows.h>
-#define ZORBA_THREAD_RETURN DWORD WINAPI
+#    include <Windows.h>
+#    define ZORBA_THREAD_RETURN DWORD WINAPI
 #endif
-
 
 zorba::Runnable::~Runnable()
 {
 }
 
-zorba::Runnable::Runnable() : theStatus(IDLE), finishCalled(false)
+zorba::Runnable::Runnable()
+  : theStatus(IDLE),
+    theFinishCalled(false),
+    theMutex(),
+    theCondition(theMutex)
 {
 }
 
 void zorba::Runnable::start()
 {
+    theStatus = RUNNING;
 #ifdef WIN32
-  theThread = CreateThread(NULL, 0, &startImpl, (void *) this, 0, &theThreadId);
+    theThread = CreateThread(NULL, 0, &startImpl, (void *) this, 0, &theThreadId);
 #else
-  // TODO handle errors (i.e. return value)
-  pthread_create(&theThread, NULL, &startImpl, (void *) this);
+    if (pthread_create(&theThread, NULL, &startImpl, (void *) this))
+        assert(false);
 #endif
-  theStatus = RUNNING;
 }
 
 void zorba::Runnable::terminate()
 {
-  AutoLock(theThreadLock, Lock::WRITE);
+  theMutex.lock();
+
+  if (theStatus == SUSPENDED) {
 #ifdef WIN32
-  TerminateThread(theThread, 0);
+    TerminateThread(theThread, 0);
 #else
-  pthread_mutex_lock( &theMutex );
-  pthread_exit(0);
-  pthread_mutex_unlock( &theMutex );
+    pthread_cancel(theThread);
+    theCondition.signal();
 #endif
+  } else if (theStatus == TERMINATED) {
+    theMutex.unlock();
+    return;
+  } else {
+    assert(theStatus == IDLE);
+  }
+
+  theMutex.unlock();
+  join();
   finishImpl();
+
 }
 
 void zorba::Runnable::suspend()
 {
 #ifdef WIN32
+  theStatus = SUSPENDED;
   SuspendThread(theThread);
 #else
-  pthread_mutex_lock( &theMutex );
-  pthread_cond_wait( &theCV, &theMutex ); 
-  pthread_mutex_unlock( &theMutex );
-#endif
+  theMutex.lock();
+  pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+  pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+
+  pthread_cleanup_push(mutexCleanupHandler, &theMutex);
+
   theStatus = SUSPENDED;
+  theCondition.wait();
+
+  theStatus = RUNNING;
+  pthread_testcancel();
+
+  pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+  pthread_cleanup_pop(1);
+
+#endif
 }
+
+#ifdef ZORBA_HAVE_PTHREAD_H
+void
+zorba::Runnable::mutexCleanupHandler(void* param)
+{
+  Mutex* lMutex = static_cast<Mutex*>(param);
+  lMutex->unlock();
+}
+#endif
 
 void zorba::Runnable::resume()
 {
+  theMutex.lock();
+
 #ifdef WIN32
   ResumeThread(theThread);
 #else
-  pthread_mutex_lock( &theMutex );
-  pthread_cond_signal( &theCV );
-  pthread_mutex_unlock( &theMutex );
+
+  assert (theStatus == SUSPENDED);
+
+  theCondition.signal();
 #endif
   theStatus = RUNNING;
+  theMutex.unlock();
 }
 
 void zorba::Runnable::join()
 {
-#ifdef ZORBA_HAVE_PTHREAD_H
-  pthread_join( theThread, 0 );
-#else
+  theMutex.lock();
+  if (theStatus == TERMINATED || theStatus == IDLE) {
+    theMutex.unlock();
+    return;
+  }
+  theMutex.unlock();
+#ifdef WIN32
   WaitForSingleObject( theThread, INFINITE );
+#else
+  if (pthread_join( theThread, 0 ))
+    assert(false);
 #endif
-  finishImpl();
+  theStatus = TERMINATED;
 }
 
-zorba::Runnable::ThreadState zorba::Runnable::status()
+ZORBA_THREAD_RETURN
+zorba::Runnable::startImpl( void* params )
 {
-  return theStatus;
-}
-
-ZORBA_THREAD_RETURN zorba::Runnable::startImpl( void* params )
-{
+  // run the users function in the thread
   Runnable* r = static_cast<Runnable*>(params);
   r->run();
+
+  // finish if the thread reaches the end
+  // of the control flow
   r->finishImpl();
   return NULL;
 }
+
+// called if the user's thread reaches the end of the control flow
+// or terminate is requested
 void zorba::Runnable::finishImpl()
 {
-  AutoLock l(theThreadLock, Lock::WRITE);
-  if (finishCalled) {
-    return;
-  }
-  theStatus = TERMINATED;
-  finish();
-  finishCalled = true;
-}
+#ifndef NDEBUG
+  theMutex.lock();
+  assert (!theFinishCalled);
+  theMutex.unlock();
+#endif
 
-#endif//#ifndef ZORBA_FOR_ONE_THREAD_ONLY
+  finish();
+
+  theMutex.lock();
+  theFinishCalled = true;
+  theStatus = TERMINATED;
+  theMutex.unlock();
+}

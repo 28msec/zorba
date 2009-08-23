@@ -637,19 +637,11 @@ xqtref_t pop_tstack()
 ********************************************************************************/
 void push_scope() 
 {
-#ifdef ZORBA_DEBUGGER
-  if (cb->m_debugger) 
-  {
-    // TODO can be removed
-    theScopes.push_back( theScopedVariables.size() );
-  }
-#endif
-
   // create a new static context for the new scope
   sctx_p = sctx_p->create_child_context(); 
  
 #ifdef ZORBA_DEBUGGER
-  if (cb->m_debugger) 
+  if (cb->theDebuggerCommons != NULL) 
   {
     // in debug mode, we remember all static contexts
     // this allows the debugger to introspect (during runtime)
@@ -678,17 +670,7 @@ void push_scope()
 void pop_scope()
 {
 #ifdef ZORBA_DEBUGGER
-  // TODO can be removed
-  if (cb->m_debugger) 
-  {
-    theScopedVariables.erase(theScopedVariables.begin()+theScopes.back(),
-        theScopedVariables.end() );
-    theScopes.pop_back();
-  }
-#endif
-
-#ifdef ZORBA_DEBUGGER
-  if (cb->m_debugger) 
+  if (cb->theDebuggerCommons != NULL) 
   {
     cb->m_cur_sctx = sctxstack.top();
     sctx_p = (*cb->m_context_map)[cb->m_cur_sctx];
@@ -2056,12 +2038,12 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
   string pfx = v.get_prefix ();
   string target_ns = v.get_uri ();
 
-#ifdef ZORBA_DEBUGGER
-  if(cb->m_debugger != 0)
-  {
-    cb->m_debugger->theImports.insert(make_pair<string, string>(target_ns, pfx)); 
-  }
-#endif
+//#ifdef ZORBA_DEBUGGER
+//  if(cb->m_debugger != 0)
+//  {
+//    cb->m_debugger->theImports.insert(make_pair<string, string>(target_ns, pfx)); 
+//  }
+//#endif
 
   // The namespace prefix specified in a module import must not be xml or xmlns
   // [err:XQST0070]
@@ -2166,12 +2148,12 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
       xqpStringStore lFileUri;
       auto_ptr<istream> modfile(lModuleResolver->resolve(aturiitem, sctx_p, &lFileUri));
 
-#ifdef ZORBA_DEBUGGER
-      if(cb->m_debugger != 0) 
-      {
-        cb->m_debugger->theModuleFileMappings.insert(std::pair<std::string, std::string>(aturiitem->getStringValue()->c_str(), lFileUri.c_str()));
-      }
-#endif
+//#ifdef ZORBA_DEBUGGER
+//      if(cb->m_debugger != 0) 
+//      {
+//        cb->m_debugger->theModuleFileMappings.insert(std::pair<std::string, std::string>(aturiitem->getStringValue()->c_str(), lFileUri.c_str()));
+//      }
+//#endif
 
       if (modfile.get () == NULL || ! *modfile) 
       {
@@ -2210,12 +2192,12 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
       XQueryCompiler xqc (&mod_ccb);
       xqpString lFileName(aturiitem->getStringValue());
       rchandle<parsenode> ast = xqc.parse (*modfile, lFileName);
-#ifdef ZORBA_DEBUGGER
-      if(cb->m_debugger != 0)
-      {
-        cb->m_debugger->addModule(ast);
-      }
-#endif
+//#ifdef ZORBA_DEBUGGER
+//      if(cb->m_debugger != 0)
+//      {
+//        cb->m_debugger->addModule(ast);
+//      }
+//#endif
       // Get the target namespace that appears in the module declaration
       // of the imported module and check that this ns is the same as the
       // target ns in the module import statement.
@@ -2789,13 +2771,6 @@ void end_visit (const Param& v, void* /*visit_state*/)
   varref_t arg_var = create_var (loc, qname, var_expr::arg_var);
   varref_t subst_var = bind_var (loc, qname, var_expr::let_var);
 
-#ifdef ZORBA_DEBUGGER
-  if (cb->m_debugger != 0)
-{
-    theScopedVariables.push_back(subst_var);
-  }
-#endif
-
   flwor->add_clause(wrap_in_letclause(&*arg_var, subst_var));
 
   if (v.get_typedecl () != NULL)  
@@ -3152,13 +3127,12 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
   expr_t retExpr = pop_nodestack();
   
 #ifdef ZORBA_DEBUGGER
-  if ( cb->m_debugger != 0) 
+  if ( cb->theDebuggerCommons != NULL) 
   {
     const QueryLoc& return_location = v.get_return_location(); 
     rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(cb->m_cur_sctx,
                                                               return_location,
                                                               retExpr,
-                                                              theScopedVariables,
                                                               thePrologVars);
    retExpr = lDebuggerExpr;
   }
@@ -3216,23 +3190,23 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
       for (int j = 0; j < numVars; j++) 
       {
         expr_t domainExpr = domainExprs[j];
-#ifdef ZORBA_DEBUGGER
-        if(cb->m_debugger != 0)
-        {
-          push_scope();
-          for(int k = numVars; k > j; k--)
-          {
-            theScopedVariables.push_back(varExprs[k-1]);
-          }
-
-          domainExpr = new debugger_expr(cb->m_cur_sctx, domainExprs[j]->get_loc(),
-                                         domainExpr,
-                                         theScopedVariables,
-                                         thePrologVars,
-                                         true);
-          pop_scope();
-        }
-#endif
+//#ifdef ZORBA_DEBUGGER
+//        if(cb->m_debugger != 0)
+//        {
+//          push_scope();
+//          for(int k = numVars; k > j; k--)
+//          {
+//            theScopedVariables.push_back(varExprs[k-1]);
+//          }
+//
+//          domainExpr = new debugger_expr(cb->m_cur_sctx, domainExprs[j]->get_loc(),
+//                                         domainExpr,
+//                                         theScopedVariables,
+//                                         thePrologVars,
+//                                         true);
+//          pop_scope();
+//        }
+//#endif
         for_clause* eflc = new for_clause(cb->m_cur_sctx, c.get_location(),
                                           varExprs[j],
                                           domainExpr,
@@ -3241,18 +3215,18 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
 
         eclauses.push_back(eflc);
 
-#ifdef ZORBA_DEBUGGER
-        if(cb->m_debugger != 0)
-        {
-          theScopedVariables.push_back(varExprs[j]);
-          if(posVarExprs[j] != 0)
-          {
-            theScopedVariables.push_back(posVarExprs[j]);
-          }
-          eflc->set_bound_variables(theScopedVariables);
-          eflc->set_global_variables(thePrologVars);
-        }
-#endif
+//#ifdef ZORBA_DEBUGGER
+//        if(cb->m_debugger != 0)
+//        {
+//          theScopedVariables.push_back(varExprs[j]);
+//          if(posVarExprs[j] != 0)
+//          {
+//            theScopedVariables.push_back(posVarExprs[j]);
+//          }
+//          eflc->set_bound_variables(theScopedVariables);
+//          eflc->set_global_variables(thePrologVars);
+//        }
+//#endif
       }
     }
 
@@ -3282,21 +3256,21 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
       for (int j = 0; j < numVars; j++)
       {
         expr_t domainExpr = domainExprs[j];
-#ifdef ZORBA_DEBUGGER
-        if(cb->m_debugger != 0)
-        {
-          push_scope();
-          for(int k = numVars; k-1 > j; k--)
-          {
-            theScopedVariables.push_back(varExprs[k-1]);
-          }
-          domainExpr = new debugger_expr(cb->m_cur_sctx, domainExprs[j]->get_loc(),
-                                         domainExpr,
-                                         theScopedVariables,
-                                         thePrologVars);
-          pop_scope();
-        }
-#endif
+//#ifdef ZORBA_DEBUGGER
+//        if(cb->m_debugger != 0)
+//        {
+//          push_scope();
+//          for(int k = numVars; k-1 > j; k--)
+//          {
+//            theScopedVariables.push_back(varExprs[k-1]);
+//          }
+//          domainExpr = new debugger_expr(cb->m_cur_sctx, domainExprs[j]->get_loc(),
+//                                         domainExpr,
+//                                         theScopedVariables,
+//                                         thePrologVars);
+//          pop_scope();
+//        }
+//#endif
         let_clause* eflc = new let_clause(cb->m_cur_sctx, c.get_location(),
                                           varExprs[j],
                                           domainExpr);
@@ -4389,10 +4363,10 @@ void end_visit (const IfExpr& v, void* /*visit_state*/)
                      loc);
 
 #ifdef ZORBA_DEBUGGER
-  if (cb->m_debugger != 0) {
-    c_h = new debugger_expr(cb->m_cur_sctx, c_h->get_loc(), c_h, theScopedVariables, thePrologVars);
-    t_h = new debugger_expr(cb->m_cur_sctx, t_h->get_loc(), t_h, theScopedVariables, thePrologVars);
-    e_h = new debugger_expr(cb->m_cur_sctx, e_h->get_loc(), e_h, theScopedVariables, thePrologVars);
+  if (cb->theDebuggerCommons != 0) {
+    c_h = new debugger_expr(cb->m_cur_sctx, c_h->get_loc(), c_h, thePrologVars);
+    t_h = new debugger_expr(cb->m_cur_sctx, t_h->get_loc(), t_h, thePrologVars);
+    e_h = new debugger_expr(cb->m_cur_sctx, e_h->get_loc(), e_h, thePrologVars);
   }
 #endif
 
@@ -6295,19 +6269,19 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/)
     for(; iter != arguments.rend(); ++iter)
       fo_h->add(*iter);
 
-#ifdef ZORBA_DEBUGGER
-    if ( cb->m_debugger != 0 ) 
-    {
-      rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(cb->m_cur_sctx, loc, &*fo_h, theScopedVariables, thePrologVars);
-      nodestack.push(&*lDebuggerExpr);
-    }
-    else
-    {
-      nodestack.push(&*fo_h);
-    }
-#else
+//#ifdef ZORBA_DEBUGGER
+//    if ( cb->m_debugger != 0 ) 
+//    {
+//      rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(cb->m_cur_sctx, loc, &*fo_h, theScopedVariables, thePrologVars);
+//      nodestack.push(&*lDebuggerExpr);
+//    }
+//    else
+//    {
+//      nodestack.push(&*fo_h);
+//    }
+//#else
     nodestack.push(&*fo_h);
-#endif
+//#endif
   }
 }
 
@@ -8009,31 +7983,13 @@ void *begin_visit (const CatchExpr& v) {
   if (v.getVarErrorCode() != "") {
     varref_t ev = bind_var(loc, v.getVarErrorCode(), var_expr::catch_var, GENV_TYPESYSTEM.QNAME_TYPE_QUESTION);
     cc->set_errorcode_var_h(ev);
-#ifdef ZORBA_DEBUGGER
-        if(cb->m_debugger != 0)
-        {
-          theScopedVariables.push_back(ev);
-        }
-#endif
 
   if (v.getVarErrorDescr() != "") {
       varref_t dv = bind_var(loc, v.getVarErrorDescr(), var_expr::catch_var, GENV_TYPESYSTEM.STRING_TYPE_QUESTION);
       cc->set_errordesc_var_h(dv);
-#ifdef ZORBA_DEBUGGER
-        if(cb->m_debugger != 0)
-        {
-          theScopedVariables.push_back(dv);
-        }
-#endif
       if (v.getVarErrorVal() != "") {
         varref_t vv = bind_var(loc, v.getVarErrorVal(), var_expr::catch_var, GENV_TYPESYSTEM.ITEM_TYPE_QUESTION);
         cc->set_errorobj_var_h(vv);
-#ifdef ZORBA_DEBUGGER
-        if(cb->m_debugger != 0)
-        {
-          theScopedVariables.push_back(vv);
-        }
-#endif
       }
     }
   }

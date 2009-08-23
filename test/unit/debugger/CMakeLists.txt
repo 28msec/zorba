@@ -19,8 +19,10 @@ CREATE_TEST_SOURCELIST(DebuggerTests
     test_debugger_endianness.cpp
     test_debugger_server.cpp
 )
+
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/bin)
  
-ADD_EXECUTABLE(DebuggerTests ${DebuggerTests} DebuggerTestClient.cpp DebuggerTestHandler.cpp)
+ADD_EXECUTABLE(DebuggerTests ${DebuggerTests} DebuggerTestClient.cpp DebuggerTestHandler.cpp ${CMAKE_SOURCE_DIR}/bin/debugger_server_runnable.cpp ${CMAKE_SOURCE_DIR}/bin/error_printer.cpp)
 TARGET_LINK_LIBRARIES(DebuggerTests zorba_simplestore)
 
 IF (ZORBA_BUILD_STATIC_LIBRARY)

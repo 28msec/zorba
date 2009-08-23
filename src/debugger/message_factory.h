@@ -141,7 +141,10 @@ class MessageFactory
       try
       {
         //read the packet length and write it into lLength
-        aSocket->recv( lBody.get(), MESSAGE_SIZE );
+        if (aSocket->recv( lBody.get(), MESSAGE_SIZE ) == 0) {
+          return 0;
+        }
+
         if(!checkMessage(lBody.get()))
         {
           return new ReplyMessage(0, DEBUGGER_ERROR_INVALID_MESSAGE_FORMAT);
@@ -157,7 +160,7 @@ class MessageFactory
         length -= MESSAGE_HEADER_SIZE;
         //allocate memory for the whole packet
         ZorbaArrayAutoPointer<Byte> lPacket(new Byte[ length + MESSAGE_SIZE + 1 ]);
-	memset( lPacket.get(), '\0', length+MESSAGE_HEADER_SIZE+1 );
+        memset( lPacket.get(), '\0', length+MESSAGE_HEADER_SIZE+1 );
         memcpy( lPacket.get(), lBody.get(), MESSAGE_SIZE );
         //read the command packet
         if(length+MESSAGE_HEADER_SIZE > MESSAGE_SIZE)

@@ -45,6 +45,8 @@
 #include "context/dynamic_context.h"
 
 #include "types/schema/Utils.h"
+#include "types/typemanagerimpl.h"
+#include "types/root_typemanager.h"
 
 #include "runtime/base/plan_iterator.h"  // maybe we can separate the batcher from the plan iterator
 #include "runtime/api/plan_wrapper.h"
@@ -64,7 +66,8 @@
 #include "zorbaserialization/class_serializer.h"
 
 #ifdef ZORBA_DEBUGGER
-#include "debugger/debugger_server.h"
+#include "debugger/zorba_debugger_server.h"
+#include "debugger/zorba_debugger_commons.h"
 #endif
 
 namespace zorba {
@@ -103,7 +106,7 @@ XQueryImpl::XQueryImpl()
   theDocLoadingUserTime(0.0),
   theDocLoadingTime(0)
 #ifdef ZORBA_DEBUGGER
-  , theDebugger(0)
+  , theIsDebugMode(false)
   , theProfileName("xquery_profile.out")
 #endif
 { 
@@ -144,10 +147,6 @@ XQueryImpl::close()
     if (!theResultIterators.empty())
       ZORBA_ERROR(API0026_CANNOT_CLOSE_QUERY_WITH_ITERATORS);
 
-#ifdef ZORBA_DEBUGGER
-    delete theDebugger;
-#endif
-
     thePlan = 0;
 
     theSctxMap.clear();
@@ -166,6 +165,7 @@ XQueryImpl::close()
 
     delete theStaticContextWrapper;
 
+    delete theCompilerCB->theDebuggerCommons;
     delete theCompilerCB;
 
     theIsClosed = true;
@@ -573,10 +573,12 @@ void XQueryImpl::doCompile(
   XQueryCompiler lCompiler(theCompilerCB);
 
 #ifdef ZORBA_DEBUGGER
-  theCompilerCB->m_debugger = theDebugger;
+  //theCompilerCB->m_debugger = theDebugger;
   //if the debug mode is set, we force the gflwor, we set the query input stream
-  if ( theCompilerCB->m_debugger != 0 ){
+  if ( theIsDebugMode){
     theCompilerCB->m_config.force_gflwor = true;
+    theCompilerCB->theDebuggerCommons = new ZorbaDebuggerCommons();
+    theCompilerCB->m_config.opt_level = CompilerCB::config_t::O0;
   }
 #endif
   // let's compile
@@ -870,17 +872,12 @@ void XQueryImpl::setDebugMode( bool aDebugMode )
 {
   //check if the query is not compiled already
   checkNotCompiled();
-  if ( aDebugMode && theDebugger == 0 )
-  {
-    theDebugger = new ZorbaDebugger(); 
-  } else if ( ! aDebugMode ) {
-    delete theDebugger;
-  }
+  theIsDebugMode = aDebugMode;
 }
 
 bool XQueryImpl::isDebugMode() const
 {
-  return ( theDebugger != 0 );
+  return theIsDebugMode;
 }
 
 void XQueryImpl::setProfileName(std::string aProfileName)
@@ -915,13 +912,17 @@ void XQueryImpl::debug(std::ostream& aOutStream,
                         const Zorba_SerializerOptions_t* aSerOptions,
                         unsigned short aCommandPort, unsigned short anEventPort)
 {
+  SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
   ZORBA_TRY
     //check if the query is compiled and not closed
     checkCompiled();
     checkNotClosed();
     //check if the debug mode is enabled
     checkIsDebugMode();
-    theDebugger->start( this, aOutStream, aSerOptions, aCommandPort, anEventPort );
+    ZorbaDebuggerServer aDebuggerServer(this, aSerOptions, 
+                                        aOutStream, aCommandPort,
+                                        anEventPort);
+    aDebuggerServer.run();
   ZORBA_CATCH
 }
 

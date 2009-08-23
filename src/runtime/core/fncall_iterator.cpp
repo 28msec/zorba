@@ -153,6 +153,8 @@ void UDFunctionCallIterator::resetImpl(PlanState& planState) const
   state->resetChildIters();
 }
 
+#undef ZORBA_DEBUGGER
+
 bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   UDFunctionCallIteratorState *state;

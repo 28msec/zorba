@@ -458,13 +458,10 @@ namespace zorba{
     assert(theStatus != QUERY_IDLE && theStatus != QUERY_TERMINATED);
     list< pair<xqpString, xqpString> > lValuesAndTypes;
 
-    CompilerCB  ccb(*thePlanState->theCompilerCB);
-    ccb.m_sctx = thePlanState->theCompilerCB->m_sctx->create_child_context ();
-    (*ccb.m_context_map)[ccb.m_cur_sctx] = ccb.m_sctx; 
-
+    auto_ptr< CompilerCB > ccb(new CompilerCB(*thePlanState->theCompilerCB));
     auto_ptr< dynamic_context > dctx(new dynamic_context(thePlanState->dctx()));
     xqpString lExpr = anExpr.replace("&quot;", "\"", "");
-    auto_ptr<PlanWrapperHolder> eval_plan = compileEvalPlan(theLocation, &ccb, dctx.get(), lExpr, *thePlanState);
+    auto_ptr<PlanWrapperHolder> eval_plan = compileEvalPlan(theLocation, ccb.get(), dctx.get(), lExpr, *thePlanState);
     PlanWrapper* lIterator = eval_plan->get();
     assert(lIterator != 0);
 
@@ -539,7 +536,7 @@ namespace zorba{
 		//set up eval state's ccb
     ccb->m_sctx = ccb->m_sctx->create_child_context();
 		(*ccb->m_context_map)[ccb->m_context_map->size()+1] = ccb->m_sctx;
-		ccb->m_debugger = 0;
+		//ccb->m_debugger = 0;
 
 		//set up import list
 		xqpString lExpr;

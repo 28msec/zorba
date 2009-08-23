@@ -77,11 +77,25 @@ ZorbaDebuggerClientImpl::~ZorbaDebuggerClientImpl()
   delete theEventListener;
 }
 
+ExecutionStatus
+ZorbaDebuggerClientImpl::getExecutionStatus() const
+{
+  AutoLock lLock(theExecutionStatusLock, Lock::READ);
+  return theExecutionStatus;
+}
+
+void
+ZorbaDebuggerClientImpl::setExecutionStatus(const ExecutionStatus& e)
+{
+  AutoLock lLock(theExecutionStatusLock, Lock::WRITE);
+  theExecutionStatus = e;
+}
+
 ZorbaDebuggerClient* ZorbaDebuggerClientImpl::registerEventHandler( DebuggerEventHandler * anEventHandler )
 {
   theEventHandler = anEventHandler;
   //Special case for event handler initialization
-  if ( theEventHandler != 0 && theExecutionStatus == QUERY_IDLE )
+  if ( theEventHandler != 0 && getExecutionStatus() == QUERY_IDLE )
   {
     theEventHandler->idle();
   }
@@ -116,14 +130,14 @@ ZORBA_THREAD_RETURN listenEvents( void * aClient )
   try
   {
     std::auto_ptr<TCPSocket> lSocket( lClient->theEventServerSocket->accept() );
-    while( lClient->theExecutionStatus != QUERY_TERMINATED )
+    while( lClient->getExecutionStatus() != QUERY_TERMINATED )
     {
       std::auto_ptr<AbstractMessage> lMessage(MessageFactory::buildMessage( lSocket.get() ));
       SuspendedEvent  *lSuspendedMsg;
       EvaluatedEvent  *lEvaluatedEvent;
       if ( ( lSuspendedMsg = dynamic_cast< SuspendedEvent * > ( lMessage.get() ) ) )
       {
-        lClient->theExecutionStatus = QUERY_SUSPENDED;
+        lClient->setExecutionStatus(QUERY_SUSPENDED);
         lClient->theRemoteLocation  = lSuspendedMsg->getLocation();
         if ( lClient->theEventHandler )
         {
@@ -131,27 +145,29 @@ ZORBA_THREAD_RETURN listenEvents( void * aClient )
           lClient->theEventHandler->suspended( loc, (SuspendedBy)lSuspendedMsg->getCause() );
         }
       } else if ( dynamic_cast< StartedEvent * > ( lMessage.get() ) ) {
-        lClient->theExecutionStatus = QUERY_RUNNING;
+        lClient->setExecutionStatus(QUERY_RUNNING);
         if ( lClient->theEventHandler )
         {
           lClient->theEventHandler->started();
         }
       } else if ( dynamic_cast< ResumedEvent * > ( lMessage.get() ) ) {
-        lClient->theExecutionStatus = QUERY_RUNNING;
+        lClient->setExecutionStatus(QUERY_RUNNING);
         if ( lClient->theEventHandler )
         {
           lClient->theEventHandler->resumed();
         }
       } else if ( dynamic_cast< TerminatedEvent * > ( lMessage.get() ) ) {
-        if( lClient->theExecutionStatus != QUERY_IDLE )
+        if( lClient->getExecutionStatus() != QUERY_IDLE )
         {
-          lClient->theExecutionStatus = QUERY_TERMINATED;
+          lClient->setExecutionStatus(QUERY_TERMINATED);
           if ( lClient->theEventHandler )
           {
             lClient->theEventHandler->terminated();
           }
-          lClient->theRequestSocket->send("quit", 5);
+          // Why was that here? Did XQDT need this?
+          //lClient->theRequestSocket->send("quit", 5);
         }
+        break;
       } else if ( (lEvaluatedEvent = dynamic_cast< EvaluatedEvent * >( lMessage.get() ))) {
         if ( lClient->theEventHandler )
         {
@@ -180,7 +196,6 @@ ZORBA_THREAD_RETURN listenEvents( void * aClient )
   } catch(std::exception&) {
     //do nothing...
   }
-  synchronous_logger::clog << "Quit listenEventsThread\n";
   return 0;
 }
 
@@ -214,16 +229,12 @@ ReplyMessage *ZorbaDebuggerClientImpl::send( AbstractCommandMessage * aMessage )
     //send the command
     theRequestSocket->send( lMessage.get(), length );
     //check the reply
-    std::auto_ptr<AbstractMessage> lMsg(MessageFactory::buildMessage( theRequestSocket.get() ));
-	  std::auto_ptr<ReplyMessage> lReplyMessage(dynamic_cast< ReplyMessage * >( lMsg.get() ));
+    AbstractMessage* lMsg = MessageFactory::buildMessage( theRequestSocket.get() );
+    std::auto_ptr<ReplyMessage> lReplyMessage(dynamic_cast< ReplyMessage * >( lMsg ));
     if ( lReplyMessage.get() )
     {
-      lMsg.release();
       return lReplyMessage.release();
-    } else {
-    //TODO: print the error message.
-      synchronous_logger::cerr << "Internal error occured\n";
-    }
+    } 
   } catch( DebuggerSocketException &e ) {
     synchronous_logger::cerr << "Request client:" << e.what() << "\n";
   }
@@ -410,10 +421,9 @@ std::list<Variable> ZorbaDebuggerClientImpl::getAllVariables(bool data) const
   std::list<Variable> lVariables;
   VariableMessage lMessage(data);
   std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
-  std::auto_ptr<VariableReply> lVariableReply(dynamic_cast<VariableReply *>( lReply.get() ));
-  if ( lVariableReply.get() )
+  VariableReply *lVariableReply = dynamic_cast<VariableReply *>( lReply.get() );
+  if ( lVariableReply )
   {
-    lReply.release();
     std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > > variables = 
       lVariableReply->getVariables();
     std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpString> > >::iterator it;

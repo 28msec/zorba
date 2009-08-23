@@ -56,7 +56,7 @@ CompilerCB::CompilerCB(std::map<short, static_context_t>& sctx_map)
     m_cur_sctx(0),
   m_error_manager(0)
 #ifdef ZORBA_DEBUGGER
- ,m_debugger(0)
+ ,theDebuggerCommons(0)
 #endif
 {
 }
@@ -72,7 +72,7 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
   m_error_manager(cb.m_error_manager),
   m_config(cb.m_config)
 #ifdef ZORBA_DEBUGGER
-  ,m_debugger(cb.m_debugger)
+    , theDebuggerCommons(cb.theDebuggerCommons)
 #endif
 {
 }

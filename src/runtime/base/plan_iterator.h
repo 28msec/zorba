@@ -78,6 +78,10 @@ namespace zorba
 class RuntimeCB;
 class PlanIterVisitor;
 
+#ifdef ZORBA_DEBUGGER
+class ZorbaDebuggerCommons;
+#endif //ZORBA_DEBUGGER
+
 /*******************************************************************************
   Class to represent state that is shared by all plan iterators. 
 
@@ -105,6 +109,10 @@ public:
   CompilerCB*  theCompilerCB; 
 
   RuntimeCB*   theRuntimeCB;
+
+#ifdef ZORBA_DEBUGGER
+  ZorbaDebuggerCommons* theDebuggerCommons;
+#endif
 
   dynamic_context*
   dctx();
@@ -265,7 +273,7 @@ public:
 public:
   QueryLoc           loc;
   short              sctx;
-  static_context   * theSctx;
+  mutable static_context   * theSctx;
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(PlanIterator)
@@ -307,9 +315,10 @@ public:
   static_context*
   getStaticContext(PlanState& planState) const
   {
-    assert(theSctx != NULL);
+    if (!theSctx)
+     theSctx = planState.theCompilerCB->getStaticContext(sctx);
+    assert(theSctx);
     return theSctx;
-    //return planState.theCompilerCB->getStaticContext(sctx);
   }
 
   CollationCache*

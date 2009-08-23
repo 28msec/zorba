@@ -69,6 +69,8 @@
 #ifdef ZORBA_DEBUGGER
 #include <zorba/zorba.h>
 #include "runtime/debug/zorba_debugger_iterators.h"
+#include "runtime/debug/zorba_debug_iterator.h"
+#include "debugger/zorba_debugger_commons.h"
 #endif
 
 #include "types/typeops.h"
@@ -226,6 +228,10 @@ protected:
 
   CompilerCB                           * ccb;
 
+#ifdef ZORBA_DEBUGGER
+  std::stack<ZorbaDebugIterator*>                     theDebuggerStack;
+#endif //ZORBA_DEBUGGER
+
 #define LOOKUP_OP1( local ) (ccb->m_sctx->lookup_builtin_fn (":" local, 1))
 
 public:
@@ -293,6 +299,8 @@ void end_visit (expr& v) {
 #ifdef ZORBA_DEBUGGER
 bool begin_visit (debugger_expr& v) {
   CODEGEN_TRACE_IN("");
+  std::vector<PlanIter_t> aTmpVec;
+  theDebuggerStack.push(new ZorbaDebugIterator(sctx, qloc, aTmpVec));
   return true;
 }
 
@@ -318,7 +326,18 @@ void end_visit (debugger_expr& v) {
   }
   argv.push_back (pop_itstack ());
   reverse (argv.begin (), argv.end ());
-  push_itstack(new FnDebugIterator(this->ccb->m_debugger, 
+  auto_ptr<ZorbaDebugIterator> aDebugIterator(theDebuggerStack.top());
+  theDebuggerStack.pop();
+  aDebugIterator->setChildren(argv);
+  if (!theDebuggerStack.empty()) {
+    theDebuggerStack.top()->addChild(aDebugIterator.get());
+    aDebugIterator->setParent(theDebuggerStack.top());
+  }
+  DebugLocation_t lLocation;
+  lLocation.theLineNumber = qloc.getLineno();
+  lLocation.theFileName = qloc.getFilename();
+  ccb->theDebuggerCommons->addDebugLocation(lLocation, aDebugIterator.get());
+  /*push_itstack(new FnDebugIterator(this->ccb->m_debugger, 
                                    sctx,
                                    qloc,
                                    varnames,
@@ -326,7 +345,8 @@ void end_visit (debugger_expr& v) {
                                    vartypes,
                                    globals,
                                    argv,
-                                   v.isForExpr()));
+                                   v.isForExpr()));*/
+  push_itstack(aDebugIterator.release());
 }
 #endif
 
@@ -869,52 +889,52 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 
     if (! fc->is_outer()) 
     {
-#ifdef ZORBA_DEBUGGER
-      if(ccb->m_debugger != 0)
-      {
-        checked_vector<PlanIter_t> argv;
-        checked_vector<store::Item_t> varnames;
-        checked_vector<string> var_keys;
-        checked_vector<global_binding> globals;
-        checked_vector<xqtref_t> vartypes;
-   
-        checked_vector<bound_var> lVars = fc->get_bound_variables();
-        checked_vector<bound_var>::iterator lIter;
-   
-        for ( lIter = lVars.begin(); lIter != lVars.end(); ++lIter )
-        {
-          varnames.push_back (lIter->varname);
-          var_keys.push_back (lIter->var_key);
-          vartypes.push_back (lIter->type);
-          //lIter->var->accept(*this);
-          //argv.push_back(pop_itstack());
-        }
-        reverse(argv.begin(), argv.end());
-        list<global_binding> lGlobals = fc->get_global_variables();
-        list<global_binding>::iterator it;
-        for ( it = lGlobals.begin(); it != lGlobals.end(); ++it )
-        {
-          globals.push_back( *it );
-        }
-        argv.push_back(new flwor::ForIterator(var->get_cur_sctx(),
-                                              var->get_loc (),
-                                              var->get_varname(),
-                                              PREV_ITER,
-                                              domainIter,
-                                              varRefs,
-                                              *posVarRefs));
-        reverse (argv.begin (), argv.end ());
-        return new FnDebugIterator(ccb->m_debugger,
-                                   var->get_cur_sctx(),
-                								   var->get_loc(),
-                                   varnames,
-                                   var_keys,
-                                   vartypes,
-                                   globals,
-                                   argv,
-                                   true);
-      }
-#endif
+//#ifdef ZORBA_DEBUGGER
+//      if(ccb->m_debugger != 0)
+//      {
+//        checked_vector<PlanIter_t> argv;
+//        checked_vector<store::Item_t> varnames;
+//        checked_vector<string> var_keys;
+//        checked_vector<global_binding> globals;
+//        checked_vector<xqtref_t> vartypes;
+//   
+//        checked_vector<bound_var> lVars = fc->get_bound_variables();
+//        checked_vector<bound_var>::iterator lIter;
+//   
+//        for ( lIter = lVars.begin(); lIter != lVars.end(); ++lIter )
+//        {
+//          varnames.push_back (lIter->varname);
+//          var_keys.push_back (lIter->var_key);
+//          vartypes.push_back (lIter->type);
+//          //lIter->var->accept(*this);
+//          //argv.push_back(pop_itstack());
+//        }
+//        reverse(argv.begin(), argv.end());
+//        list<global_binding> lGlobals = fc->get_global_variables();
+//        list<global_binding>::iterator it;
+//        for ( it = lGlobals.begin(); it != lGlobals.end(); ++it )
+//        {
+//          globals.push_back( *it );
+//        }
+//        argv.push_back(new flwor::ForIterator(var->get_cur_sctx(),
+//                                              var->get_loc (),
+//                                              var->get_varname(),
+//                                              PREV_ITER,
+//                                              domainIter,
+//                                              varRefs,
+//                                              *posVarRefs));
+//        reverse (argv.begin (), argv.end ());
+//        return new FnDebugIterator(ccb->m_debugger,
+//                                   var->get_cur_sctx(),
+//                								   var->get_loc(),
+//                                   varnames,
+//                                   var_keys,
+//                                   vartypes,
+//                                   globals,
+//                                   argv,
+//                                   true);
+//      }
+//#endif
       return new flwor::ForIterator(var->get_cur_sctx(),
                                     var->get_loc(),
                                     var->get_varname(),

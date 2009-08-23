@@ -19,6 +19,7 @@ CREATE_TEST_SOURCELIST(UnitTests
   itemfactory.cpp
   uri.cpp
   multiple_runs.cpp
+  runnable.cpp
 )
 # ELSE(WIN32)
 #  CREATE_TEST_SOURCELIST(UnitTests

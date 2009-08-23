@@ -28,6 +28,7 @@
 #include "json/parser.h"
 #include "json/value.h"
 
+#include "zorbautils/lock.h"
 #include "debugger/utils.h"
 
 using namespace std;
@@ -206,8 +207,6 @@ bool ReplyMessage::isOk() const
   return getErrorCode() == DEBUGGER_NO_ERROR;
 }
 
-unsigned long AbstractCommandMessage::theLastId = 0;
-
 /**
  * Compute and assemble a packet implementing the debugger protocol
  * @param id (4 bytes): The packet id
@@ -216,8 +215,19 @@ unsigned long AbstractCommandMessage::theLastId = 0;
  * @param command (1 byte)
  * @param data (variable)
  */
+unsigned long
+AbstractCommandMessage::getNextId()
+{
+  // needs to be synchronized if server
+  // and client run in the same process
+  static Lock theLock;
+  AutoLock lLock(theLock, Lock::WRITE);
+  static unsigned long theLastId = 0;
+  return ++theLastId;
+}
+
 AbstractCommandMessage::AbstractCommandMessage( const CommandSet aCommandSet, const Command aCommand, const Flags flags )
-: AbstractMessage( ++theLastId, flags ), theReply(0)
+: AbstractMessage( getNextId(), flags ), theReply(0)
 {
   theCommandContent = new CommandContent();
   setCommandSet( aCommandSet );

@@ -132,31 +132,24 @@ namespace zorba {
 		return false;
   }
 
-
-void FnDebugIterator::openImpl(PlanState& planState, uint32_t& offset )
-{
-  NaryBaseIterator<FnDebugIterator, PlanIteratorState>::openImpl(planState, offset);
-  theDebugger = planState.theCompilerCB->m_debugger;
-}
-
-
-void FnDebugIterator::accept( PlanIterVisitor& v ) const
-{
-  v.beginVisit(*this);
-  std::vector<PlanIter_t>::const_iterator iter =  theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd =  theChildren.end();
-  for ( ; iter != lEnd; ++iter ) {
-    ( *iter )->accept ( v );
+  void FnDebugIterator::openImpl(PlanState& planState, uint32_t& offset )
+  {
+    NaryBaseIterator<FnDebugIterator, PlanIteratorState>::openImpl(planState, offset);
+    //theDebugger = planState.theCompilerCB->m_debugger;
   }
-  v.endVisit(*this);
-}
-  
 
-bool FnDebugIterator::isUpdating() const 
-{
-  return theChildren[0]->isUpdating();
-}
+  void FnDebugIterator::accept( PlanIterVisitor& v ) const
+  {
+    v.beginVisit(*this);
+    std::vector<PlanIter_t>::const_iterator iter =  theChildren.begin();
+    std::vector<PlanIter_t>::const_iterator lEnd =  theChildren.end();
+    for ( ; iter != lEnd; ++iter ) {
+      ( *iter )->accept ( v );
+    }
+    v.endVisit(*this);
+  }
 
+  bool FnDebugIterator::isUpdating() const { return theChildren[0]->isUpdating(); }
 
 	void FnDebugIterator::updateInfos(const QueryLoc& loc, PlanState& planState, checked_vector<store::Item_t> varnames,
                                   checked_vector<std::string> var_keys, checked_vector<xqtref_t> vartypes,

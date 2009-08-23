@@ -297,8 +297,9 @@ class ZORBA_DLL_PUBLIC ReplyMessage: public AbstractMessage
 class ZORBA_DLL_PUBLIC AbstractCommandMessage: public AbstractMessage
 {
   private:
-    static unsigned long theLastId;
     ReplyMessage *theReply;
+
+    static unsigned long getNextId();
   
   protected:
 
@@ -316,6 +317,7 @@ class ZORBA_DLL_PUBLIC AbstractCommandMessage: public AbstractMessage
 
     bool isValidMessage() const;
 
+  public:
     bool isExecutionCommand() const;
 
     bool isBreakpointsCommand() const;
@@ -325,8 +327,6 @@ class ZORBA_DLL_PUBLIC AbstractCommandMessage: public AbstractMessage
     bool isStaticCommand() const;
 
     bool isDynamicCommand() const;
-
-  public:
 
     /**
      * Compute and assemble a packet implementing the debugger protocol

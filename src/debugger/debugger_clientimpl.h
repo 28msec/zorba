@@ -25,6 +25,7 @@
 #include <zorba/debugger_client.h>
 
 #include "zorbautils/thread.h"
+#include "zorbautils/lock.h"
 
 #include "zorbatypes/xqpstring.h"
 
@@ -102,6 +103,12 @@ namespace zorba{
     
       StackFrame_t getStack() const;
 
+      ExecutionStatus
+      getExecutionStatus() const;
+
+      void
+      setExecutionStatus(const ExecutionStatus& e);
+
     protected:
       static unsigned int theLastId;
 
@@ -109,11 +116,13 @@ namespace zorba{
 
       QueryLoc theRemoteLocation;
 
-	  std::auto_ptr<TCPSocket> theRequestSocket;
-      
-	  std::auto_ptr<TCPServerSocket> theEventServerSocket;
+	    std::auto_ptr<TCPSocket> theRequestSocket;
+        
+	    std::auto_ptr<TCPServerSocket> theEventServerSocket;
 
       ExecutionStatus theExecutionStatus; 
+
+      mutable Lock    theExecutionStatusLock;
 
       Thread *theEventListener;
 

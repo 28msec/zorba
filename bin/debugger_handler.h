@@ -56,51 +56,51 @@ class DebuggerHandler: public DefaultDebuggerEventHandler
     std::string getExpression(const std::vector<std::string>& args) const;
 
     //Add a breakpoint
-    void addBreakpoint(const std::vector<std::string>& args) const;
+    bool addBreakpoint(const std::vector<std::string>& args) const;
 
     //Add a watchpoint
-    void addWatchpoint(const std::vector<std::string>& args) const;
+    bool addWatchpoint(const std::vector<std::string>& args) const;
    
     //Resume the query execution
-    void resume() const;
+    bool resume() const;
 
     //Run the query
-    void run() const;
+    bool run() const;
 
-	// Terminate the query
-	void terminateQuery() const;
+    // Terminate the query
+    bool terminateQuery() const;
 
     //Display the query execution status
-    void status() const;
+    bool status() const;
 
     //List module source code
-    void list(const std::vector<std::string>& args) const;
+    bool list(const std::vector<std::string>& args) const;
 
     //List a query file
-    void list(const zorba::String& aNamespace) const;
+    bool list(const zorba::String& aNamespace) const;
 
     //List a query file and highlight the current location
-    void list(const zorba::QueryLocation& aLocation) const;
+    bool list(const zorba::QueryLocation& aLocation) const;
 
     //Clear a breakpoint
-    void clear(const std::vector<std::string>& args);
+    bool clear(const std::vector<std::string>& args);
 
     //Execution steps
-    void stepIn() const;
-    void stepOut() const;
-    void stepOver() const;
+    bool stepIn() const;
+    bool stepOut() const;
+    bool stepOver() const;
 
     //List all scoped variables
-    void variables() const;
+    bool variables() const;
 
     //Evaluate an expression
-    void eval(const std::vector<std::string>& args);
+    bool eval(const std::vector<std::string>& args);
 
     //Print the stack frame
-    void where() const;
+    bool where() const;
 
     //Display the help
-    void help() const;
+    bool help() const;
 
     //Deals with the input stream
     void handle();

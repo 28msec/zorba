@@ -284,5 +284,9 @@ std::ostream& operator<< (std::ostream& os, const SystemException& aException)
   return  os << (ZorbaException)aException;
 }
 
+std::ostream& operator<< (std::ostream& os, const UserException& aException)
+{
+  return  os << (QueryException)aException;
+}
 
 } /* namespace zorba */

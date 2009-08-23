@@ -36,6 +36,8 @@
 
 #include <errno.h>
 
+#include "zorbautils/lock.h"
+
 using namespace std;
 
 #ifdef WIN32
@@ -46,15 +48,21 @@ namespace zorba{
 // Function to fill in address structure given an address and port
 static void fillAddr(const string &address, unsigned short port, 
                      sockaddr_in &addr) {
+  // we have to lock calls to gethostbyname because
+  // it's not thread-safe
+  static zorba::Lock theLock;
   memset(&addr, 0, sizeof(addr));  // Zero out address structure
   addr.sin_family = AF_INET;       // Internet address
 
+  theLock.rlock();
   hostent *host;  // Resolve name
   if ((host = gethostbyname(address.c_str())) == NULL) {
     // strerror() will not work for gethostbyname() and hstrerror() 
     // is supposedly obsolete
+    theLock.unlock();
     throw DebuggerSocketException("Failed to resolve name (gethostbyname())");
   }
+  theLock.unlock();
   addr.sin_addr.s_addr = *((unsigned long *) host->h_addr_list[0]);
 
   addr.sin_port = htons(port);     // Assign port in network byte order

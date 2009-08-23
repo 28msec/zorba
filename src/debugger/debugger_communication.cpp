@@ -1,18 +1,3 @@
-/*
- * Copyright 2006-2008 The FLWOR Foundation.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 #include "debugger_communication.h"
 #include "synchronous_logger.h"
 #include "utils.h"
@@ -68,31 +53,39 @@ zorba::AbstractCommandMessage* zorba::DebuggerCommunicator::handleTCPClient()
 {
 	ZorbaArrayAutoPointer<Byte> lByteMessage;
 	std::auto_ptr<AbstractMessage> lMessage;
-	ReplyMessage* lReplyMessage;
+	//ReplyMessage* lReplyMessage;
 	try
 	{
 		lMessage.reset(MessageFactory::buildMessage( m_commandSocket ));
+    if (lMessage.get() == 0) {
+		  synchronous_logger::clog << "[Server Thread] The connection with the client is closed\n";
+      return NULL;
+    }
+
 		AbstractCommandMessage* lCommandMessage = dynamic_cast< AbstractCommandMessage * >(lMessage.get());
-		if ( lCommandMessage )
-		{
+    assert(lCommandMessage);
+//  if ( lCommandMessage )
+//	{
 			lMessage.release();
 			return lCommandMessage;
-		} else {
-#ifndef NDEBUG
-			synchronous_logger::clog << "[Server Thread] Received something wrong\n";
-#endif
-			//If something goes wrong, buildMessage() receive a Reply Message containing the error description
-			//Send it back to the client right away
-			lReplyMessage = dynamic_cast<ReplyMessage *>(lMessage.get());
-			if( lReplyMessage != 0 ){
-	      Length length;
-				lByteMessage.reset(lReplyMessage->serialize( length ));
-				m_commandSocket->send( lByteMessage.get(), length );
-			} else {
-				synchronous_logger::cerr << "[Server Thread] Internal error occured. Couldn't send the error message.\n";
-			}
-			return NULL;
-		}
+    // the following happened if the client sent a quit message
+    // see debugger_clientimpl.cpp:168
+//  } else {
+//#ifndef NDEBUG
+//			synchronous_logger::clog << "[Server Thread] Received something wrong\n";
+//#endif
+//			//If something goes wrong, buildMessage() receive a Reply Message containing the error description
+//			//Send it back to the client right away
+//			lReplyMessage = dynamic_cast<ReplyMessage *>(lMessage.get());
+//			if( lReplyMessage != 0 ){
+//	      Length length;
+//				lByteMessage.reset(lReplyMessage->serialize( length ));
+//				m_commandSocket->send( lByteMessage.get(), length );
+//			} else {
+//				synchronous_logger::cerr << "[Server Thread] Internal error occured. Couldn't send the error message.\n";
+//			}
+//			return NULL;
+//		}
 #ifndef NDEBUG
 	} catch ( std::exception &e ) {
 		synchronous_logger::clog << "[Server Thread] The connection with the client is closed\n";

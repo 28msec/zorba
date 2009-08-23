@@ -20,6 +20,7 @@ SET(API_SRCS
     xqueryimpl.cpp
     sax2impl.cpp
     default_error_handler.cpp
+    printer_error_handler.cpp
     exception.cpp
     staticcontextimpl.cpp
     dynamiccontextimpl.cpp

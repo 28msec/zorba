@@ -28,7 +28,7 @@ namespace zorba {
 
 class DebuggerTestHandler : public zorba::DefaultDebuggerEventHandler {
 public:
-	DebuggerTestHandler(zorba::Zorba* zorba, zorba::ZorbaDebuggerClient* client, std::string fileName);
+	DebuggerTestHandler(zorba::ZorbaDebuggerClient* client);
   virtual ~DebuggerTestHandler();
 
 public:
@@ -43,9 +43,6 @@ public:
 
 private:
 	zorba::ZorbaDebuggerClient* m_client;
-	std::string m_fileName;
-	zorba::Zorba* m_zorba;
-	SYNC_CODE(zorba::Lock m_lock;)
 };
 
 }

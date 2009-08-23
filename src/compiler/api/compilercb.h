@@ -28,7 +28,7 @@
 namespace zorba {
 
 #ifdef ZORBA_DEBUGGER
-class ZorbaDebugger;
+class ZorbaDebuggerCommons;
 #endif
 class static_context;
 
@@ -112,7 +112,7 @@ class ZORBA_DLL_PUBLIC CompilerCB : public zorba::serialization::SerializeBaseCl
   error::ErrorManager*               m_error_manager;
   config_t                           m_config;
 #ifdef ZORBA_DEBUGGER
-  ZorbaDebugger*                     m_debugger;
+  ZorbaDebuggerCommons*              theDebuggerCommons;
 #endif
 
 public:
@@ -141,9 +141,6 @@ public:
     if(!ar.is_serializing_out())
     {
       m_error_manager = NULL;//don't serialize this
-#ifdef ZORBA_DEBUGGER
-      m_debugger = NULL;
-#endif
     }
     ar & m_config;
   }

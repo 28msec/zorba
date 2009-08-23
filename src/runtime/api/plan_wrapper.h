@@ -22,6 +22,8 @@
 namespace zorba {
 
 class PlanState;
+class ZorbaDebuggerCommons;
+class ZorbaDebuggerRuntime;
 
 /*******************************************************************************
   Wrapper used to drive the evaluation of an iterator (sub)tree.
@@ -34,6 +36,9 @@ class PlanState;
 ********************************************************************************/
 class PlanWrapper : public store::Iterator
 {
+#ifdef ZORBA_DEBUGGER
+    friend class ZorbaDebuggerRuntime;
+#endif //ZORBA_DEBUGGER
 protected:
   PlanIter_t         theIterator;
   PlanState        * theStateBlock;

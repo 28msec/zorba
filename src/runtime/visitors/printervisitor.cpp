@@ -52,6 +52,10 @@
 #include "runtime/strings/StringsImpl.h"
 #include "runtime/dateTime/DurationsDatesTimes.h"
 #include "runtime/fncontext/FnContextImpl.h"
+#ifdef ZORBA_DEBUGGER
+#include "runtime/debug/debug_iterators.h"
+#include "runtime/debug/zorba_debug_iterator.h"
+#endif // ZORBA_DEBUGGER
 #include "runtime/debug/debug_iterators.h"
 #include "runtime/collections/CollectionsImpl.h"
 #include "runtime/util/UtilImpl.h"
@@ -1433,6 +1437,7 @@ void endVisitFlworReturn(const PlanIterator& /*a*/)
 
 #ifdef ZORBA_DEBUGGER
   PRINTER_VISITOR_DEFINITION(FnDebugIterator);
+  PRINTER_VISITOR_DEFINITION(ZorbaDebugIterator);
 #endif
 
 #ifdef ZORBA_WITH_REST
