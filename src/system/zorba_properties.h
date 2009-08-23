@@ -274,11 +274,9 @@ public:
         theTraceCodegen = true;
       }
 #endif
-#ifdef ZORBA_DEBUGGER
       else if (strcmp (*argv, "--debug") == 0) {
         theDebug = true;
       }
-#endif
       else if (strcmp (*argv, "--compile-only") == 0) {
         theCompileOnly = true;
       }
@@ -354,9 +352,7 @@ public:
 "--trace-translator, -l\ntrace the translator\n\n"
 "--trace-codegen, -c\ntrace the codegenerator\n\n"
 #endif
-#ifdef ZORBA_DEBUGGER
 "--debug\ncompile the query in debug mode\n\n"
-#endif
 "--compile-only\nonly compile (don't execute)\n\n"
 "--tz\nimplicit time zone (in minutes)\n\n"
 "--external-var, -x\nexternal variables (e.g. -x x=file1.xml -x y:=strValue)\n\n"

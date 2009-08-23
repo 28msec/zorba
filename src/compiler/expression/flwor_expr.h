@@ -48,8 +48,6 @@ typedef rchandle<group_clause> group_clause_t;
 typedef rchandle<flwor_expr> flwor_expr_t;
 
 
-#ifdef ZORBA_DEBUGGER
-
 /***************************************************************************//**
 
 ********************************************************************************/
@@ -66,7 +64,6 @@ public:
 
   bound_var(var_expr* ve, varref_t var, expr_t val_);
 };
-#endif
 
 
 /***************************************************************************//**
@@ -93,11 +90,9 @@ protected:
   QueryLoc                  theLocation;
 
   ClauseKind                theKind;
-  
-#ifdef ZORBA_DEBUGGER
+
   std::list<global_binding> theGlobals;
   checked_vector<bound_var> theBoundVariables;
-#endif
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(flwor_clause)
@@ -124,7 +119,6 @@ public:
 
   virtual flwor_clause_t clone(expr::substitution_t& substitution) = 0;
 
-#ifdef ZORBA_DEBUGGER
   void set_bound_variables(checked_vector<varref_t> &aScopedVariables );
   
   checked_vector<bound_var> get_bound_variables() const
@@ -141,7 +135,6 @@ public:
   {
     return theGlobals;
   }
-#endif
 };
 
 

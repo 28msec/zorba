@@ -66,12 +66,10 @@
 
 #include "functions/function.h"
 
-#ifdef ZORBA_DEBUGGER
 #include <zorba/zorba.h>
 #include "runtime/debug/zorba_debugger_iterators.h"
 #include "runtime/debug/zorba_debug_iterator.h"
 #include "debugger/zorba_debugger_commons.h"
-#endif
 
 #include "types/typeops.h"
 
@@ -228,9 +226,7 @@ protected:
 
   CompilerCB                           * ccb;
 
-#ifdef ZORBA_DEBUGGER
   std::stack<ZorbaDebugIterator*>                     theDebuggerStack;
-#endif //ZORBA_DEBUGGER
 
 #define LOOKUP_OP1( local ) (ccb->m_sctx->lookup_builtin_fn (":" local, 1))
 
@@ -296,7 +292,6 @@ void end_visit (expr& v) {
   CODEGEN_TRACE_OUT("");
 }
 
-#ifdef ZORBA_DEBUGGER
 bool begin_visit (debugger_expr& v) {
   CODEGEN_TRACE_IN("");
   std::vector<PlanIter_t> aTmpVec;
@@ -348,7 +343,6 @@ void end_visit (debugger_expr& v) {
                                    v.isForExpr()));*/
   push_itstack(aDebugIterator.release());
 }
-#endif
 
 bool begin_visit (wrapper_expr& v) {
   CODEGEN_TRACE_IN("");

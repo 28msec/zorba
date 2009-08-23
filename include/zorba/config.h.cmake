@@ -21,7 +21,6 @@
 /* Zorba Configuration */
 
 /* general zorba configuration parameters */
-#cmakedefine ZORBA_DEBUGGER 1
 #ifndef WIN32
 #cmakedefine WIN32
 #endif

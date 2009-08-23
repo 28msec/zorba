@@ -20,9 +20,7 @@
 
 #include "zorbatypes/xqpstring.h"
 
-#ifdef ZORBA_DEBUGGER
 #include "json/value.h"
-#endif
 
 namespace zorba {
 
@@ -47,9 +45,7 @@ private:
   xqpString    theFilenameEnd;
   unsigned int theLineEnd;
   unsigned int theColumnEnd;
-#ifdef ZORBA_DEBUGGER
   std::string theFunctionName;
-#endif
 
 public:
   SERIALIZABLE_CLASS(QueryLoc)
@@ -75,7 +71,6 @@ public:
   void setFilenameEnd   ( std::string* aFilenameEnd )   { theFilenameEnd = *aFilenameEnd; }
   void setLineEnd       ( unsigned int aLineEnd )       { theLineEnd = aLineEnd; }
   void setColumnEnd     ( unsigned int aColumnEnd )     { theColumnEnd = aColumnEnd; }
-#ifdef ZORBA_DEBUGGER
   xqpString getFilename() const { return getFilenameBegin(); }
   unsigned int getLineno() const { return getLineBegin(); }
  
@@ -101,7 +96,6 @@ public:
   {
     return theLineBegin < loc.getLineBegin();
   }
-#endif
 };
 
 std::ostream& operator<< (std::ostream& aOstr, const QueryLoc& aQueryLoc);

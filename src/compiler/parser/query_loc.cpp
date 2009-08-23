@@ -40,10 +40,8 @@ QueryLoc::QueryLoc(const QueryLoc& aQueryLoc)
    theColumnBegin (aQueryLoc.theColumnBegin),
    theFilenameEnd (aQueryLoc.theFilenameEnd),
    theLineEnd (aQueryLoc.theLineEnd),
-   theColumnEnd (aQueryLoc.theColumnEnd)
-#ifdef ZORBA_DEBUGGER
-  ,theFunctionName(aQueryLoc.theFunctionName)
-#endif
+   theColumnEnd (aQueryLoc.theColumnEnd),
+   theFunctionName(aQueryLoc.theFunctionName)
 {}
 
 void QueryLoc::serialize(::zorba::serialization::Archiver &ar)
@@ -68,7 +66,6 @@ std::ostream& operator<< (std::ostream& aOstr, const QueryLoc& aQueryLoc) {
   return aOstr;
 }
 
-#ifdef ZORBA_DEBUGGER
  xqpString QueryLoc::toJSON() const
  {
   std::stringstream lJSONString;
@@ -157,5 +154,4 @@ std::ostream& operator<< (std::ostream& aOstr, const QueryLoc& aQueryLoc) {
            theColumnBegin==loc.getColumnBegin() && theColumnEnd==loc.getColumnEnd() &&
            theLineBegin==loc.getLineBegin() && theLineEnd==loc.getLineEnd();
   }
-#endif
 } // namespace zorba

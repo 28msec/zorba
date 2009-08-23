@@ -38,9 +38,7 @@
 
 #include "api/unmarshaller.h"
 
-#ifdef ZORBA_DEBUGGER
-#include "debugger/debugger_server.h"
-#endif
+#include "debugger/zorba_debugger_commons.h"
 
 namespace zorba {
 
@@ -153,25 +151,19 @@ void UDFunctionCallIterator::resetImpl(PlanState& planState) const
   state->resetChildIters();
 }
 
-#undef ZORBA_DEBUGGER
-
 bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   UDFunctionCallIteratorState *state;
   bool success;
-#ifdef ZORBA_DEBUGGER
-  ZorbaDebugger* lDebugger = planState.theCompilerCB->m_debugger;
+  ZorbaDebuggerCommons* lDebugger = planState.theCompilerCB->theDebuggerCommons;
   std::stringstream name;
-#endif
 
   DEFAULT_STACK_INIT(UDFunctionCallIteratorState, state, planState);
 
-#ifdef ZORBA_DEBUGGER
   if(lDebugger != 0)
   {
     name << theUDF->get_fname()->getStringValue() << '(';
   }
-#endif
   {
     // Bind the args.
     state->openPlan();
@@ -184,7 +176,6 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
         state->theChildIterators.push_back(new PlanIteratorWrapper(theChildren[i], planState));
         state->theChildIterators.back()->open();
         ref->bind(state->theChildIterators.back(), *state->theFnBodyStateBlock);
-#ifdef ZORBA_DEBUGGER
         if(lDebugger != 0)
         {
           store::Iterator_t it = state->theChildIterators.back();
@@ -205,19 +196,16 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
           }
           it->reset();
         }
-#endif
       }
     }
   }
-#ifdef ZORBA_DEBUGGER
   if(lDebugger != 0)
   {
     name << ')';
     //lDebugger->theLastKnownStack = lDebugger->theStack;
-    lDebugger->pushStack(std::make_pair<std::string, const QueryLoc>(name.str(), loc)); 
-    lDebugger->isFunctionExecution = true;
+    //lDebugger->pushStack(std::make_pair<std::string, const QueryLoc>(name.str(), loc)); 
+    //lDebugger->isFunctionExecution = true;
   }
-#endif
   
   for (;;) {
     try {
@@ -236,13 +224,11 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
     while (state->exitValue->next (result))
       STACK_PUSH(true, state);
 
-#ifdef ZORBA_DEBUGGER
   if(lDebugger != 0)
   {
     //lDebugger->theLastKnownStack = lDebugger->theStack;
-    lDebugger->popStack();
+    //lDebugger->popStack();
   }
-#endif
   STACK_END (state);
 }
 

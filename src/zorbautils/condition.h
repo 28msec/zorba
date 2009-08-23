@@ -20,7 +20,6 @@
 #include <zorba/config.h>
 #include "zorbamisc/config/platform.h"
 
-#ifndef ZORBA_FOR_ONE_THREAD_ONLY
 #ifdef ZORBA_HAVE_PTHREAD_H
 #include <pthread.h>
 #endif
@@ -91,8 +90,6 @@ class  Condition
 #endif // ZORBA_HAVE_PTHREAD_H
 
 }
-
-#endif // ZORBA_FOR_ONE_THREAD_ONLY
 
 #endif
 

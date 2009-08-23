@@ -27,9 +27,7 @@
 
 namespace zorba {
 
-#ifdef ZORBA_DEBUGGER
 class ZorbaDebuggerCommons;
-#endif
 class static_context;
 
 // exported for unit testing only
@@ -111,9 +109,7 @@ class ZORBA_DLL_PUBLIC CompilerCB : public zorba::serialization::SerializeBaseCl
 
   error::ErrorManager*               m_error_manager;
   config_t                           m_config;
-#ifdef ZORBA_DEBUGGER
   ZorbaDebuggerCommons*              theDebuggerCommons;
-#endif
 
 public:
   CompilerCB(std::map<short, static_context_t>&);

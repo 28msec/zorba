@@ -93,9 +93,7 @@ public:
 
 DEF_VISIT_METHODS (expr)
 
-#ifdef ZORBA_DEBUGGER
 DEF_VISIT_METHODS (debugger_expr)
-#endif
 
 DEF_VISIT_METHODS (wrapper_expr)
 

@@ -33,10 +33,8 @@ public:
 protected:
   ExternalVars_t theExternalVars;
 
-#ifdef ZORBA_DEBUGGER
   unsigned int theRequestPort;
   unsigned int theEventPort;
-#endif
 
 public:
   ExternalVars_t::const_iterator
@@ -54,7 +52,6 @@ public:
   std::vector<std::pair<std::string,std::string> > 
   getSerializerParameters() const;
   
-#ifdef ZORBA_DEBUGGER
   bool hasNoSyntaxHighlighting(){ return theNoColors; }
 
   bool isDebugClient(){ return theDebugClient; }
@@ -67,7 +64,6 @@ public:
 
   unsigned int getEventPort(){ return theEventPort; }
 
-#endif
   std::string check_args ();
 
   void printHelp(std::ostream& os) const {

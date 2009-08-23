@@ -374,7 +374,6 @@ namespace zorba {
                         ModuleURIResolver* aModuleUriResolver = NULL,
                         std::ostream*      theTraceStream = NULL) = 0;
 
-#ifdef ZORBA_DEBUGGER
       /** \brief Enable/disable debug mode on the query
        *
        */
@@ -436,7 +435,6 @@ namespace zorba {
       debug(std::ostream& aOutStream,
             const Zorba_SerializerOptions_t* aSerOptions = NULL,
             unsigned short aCommandPort = 8000, unsigned short anEventPort = 9000) = 0;
-#endif
   };
 
   // xml serialization of the query (equiv to calling serialize(os) 

@@ -34,11 +34,9 @@
 #  include "store/minimal/min_store.h"
 #endif
 
-#ifdef ZORBA_DEBUGGER
-#  include <zorba/debugger_client.h>
-#  include "debugger_server_runnable.h"
-#  include "debugger_handler.h"
-#endif
+#include <zorba/debugger_client.h>
+#include "debugger_server_runnable.h"
+#include "debugger_handler.h"
 
 #include "error_printer.h"
 
@@ -862,7 +860,6 @@ int _tmain(int argc, _TCHAR* argv[])
       if (status != 0)
         return status;
     }
-#ifdef ZORBA_DEBUGGER
     else if (debug) {
 
       if (compileOnly) {
@@ -948,7 +945,6 @@ int _tmain(int argc, _TCHAR* argv[])
         return 6;
       }
     } // else if (debug) 
-#endif
 
     queryNo++;
   } // for each query

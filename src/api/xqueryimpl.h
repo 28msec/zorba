@@ -31,11 +31,9 @@
 
 namespace zorba {
 
-#ifdef ZORBA_DEBUGGER
 class ZorbaDebugger;
 class ZorbaDebuggerRuntime;
 class ZorbaDebuggerCommons;
-#endif
 class DynamicContextImpl;
 class StaticContextImpl;
 class ResultIteratorImpl;
@@ -353,7 +351,6 @@ protected:
   void
   checkNotCompiled() const;
 
-#ifdef ZORBA_DEBUGGER
  private:
   bool theIsDebugMode;
   std::string theProfileName;
@@ -382,7 +379,6 @@ protected:
   debug(std::ostream& aOutStream,
         const Zorba_SerializerOptions_t* aSerOptions,
         unsigned short aCommandPort, unsigned short anEventPort);
-#endif
 }; /* class XQueryImpl */
 
 

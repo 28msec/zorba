@@ -65,10 +65,8 @@
 #include "zorbaserialization/bin_archiver.h"
 #include "zorbaserialization/class_serializer.h"
 
-#ifdef ZORBA_DEBUGGER
 #include "debugger/zorba_debugger_server.h"
 #include "debugger/zorba_debugger_commons.h"
-#endif
 
 namespace zorba {
 
@@ -104,11 +102,9 @@ XQueryImpl::XQueryImpl()
   theSAX2Handler(0),
   theIsClosed(false),
   theDocLoadingUserTime(0.0),
-  theDocLoadingTime(0)
-#ifdef ZORBA_DEBUGGER
-  , theIsDebugMode(false)
-  , theProfileName("xquery_profile.out")
-#endif
+  theDocLoadingTime(0),
+  theIsDebugMode(false),
+  theProfileName("xquery_profile.out")
 { 
   theCompilerCB = new CompilerCB(theSctxMap);
 
@@ -572,7 +568,6 @@ void XQueryImpl::doCompile(
 
   XQueryCompiler lCompiler(theCompilerCB);
 
-#ifdef ZORBA_DEBUGGER
   //theCompilerCB->m_debugger = theDebugger;
   //if the debug mode is set, we force the gflwor, we set the query input stream
   if ( theIsDebugMode){
@@ -580,7 +575,6 @@ void XQueryImpl::doCompile(
     theCompilerCB->theDebuggerCommons = new ZorbaDebuggerCommons();
     theCompilerCB->m_config.opt_level = CompilerCB::config_t::O0;
   }
-#endif
   // let's compile
   PlanIter_t planRoot = lCompiler.compile(aQuery, theFileName); 
 
@@ -865,9 +859,6 @@ XQueryImpl::getDocLoadingTime() const
   return theDocLoadingTime;
 }
 
-
-
-#ifdef ZORBA_DEBUGGER
 void XQueryImpl::setDebugMode( bool aDebugMode )
 {
   //check if the query is not compiled already
@@ -925,8 +916,6 @@ void XQueryImpl::debug(std::ostream& aOutStream,
     aDebuggerServer.run();
   ZORBA_CATCH
 }
-
-#endif
 
 void
 XQueryImpl::printPlan( std::ostream& aStream, bool aDotFormat ) const

@@ -21,9 +21,6 @@
 #include "zorbautils/lock.h"
 
 
-#ifndef ZORBA_FOR_ONE_THREAD_ONLY
-
-
 namespace zorba { 
 
 
@@ -294,5 +291,3 @@ void Lock::unlock()
 }
 
 }
-
-#endif // ZORBA_FOR_ONE_THREAD_ONLY

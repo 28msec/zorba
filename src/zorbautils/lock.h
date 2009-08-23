@@ -21,7 +21,7 @@
 
 #include "zorbamisc/config/platform.h"
 
-#ifndef ZORBA_FOR_ONE_THREAD_ONLY
+
 
 #include "zorbautils/thread.h"
 #include "zorbautils/mutex.h"
@@ -108,8 +108,6 @@ public:
 
 
 }
-
-#endif // ZORBA_FOR_ONE_THREAD_ONLY
 
 #endif
 

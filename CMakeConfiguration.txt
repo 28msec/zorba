@@ -48,10 +48,6 @@ ENDIF (ZORBA_MINIMAL_STORE)
 
 MESSAGE(STATUS "ZORBA_STORE_DIRS " ${ZORBA_STORE_DIRS})
 
-#Build with Zorba debugger
-SET(ZORBA_DEBUGGER ON CACHE BOOL "Compile zorba with debugger support")
-MESSAGE(STATUS "Build with Zorba debugger " ${ZORBA_DEBUGGER})
-
 # how should batching in the runtime system be done
 SET(ZORBA_BATCHING_TYPE 0 CACHE STRING 
     "0 = NO_BATCHING, 1 = SIMPLE_BATCHING, 2 = SUPER_BATCHING") 

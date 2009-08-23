@@ -329,14 +329,12 @@ public:
   eval_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
 };
 
-#ifdef ZORBA_DEBUGGER
 class debugger_expr_iterator_data: public expr_iterator_data {
 public:
   checked_vector<eval_expr::eval_var>::iterator var_iter;
   
   debugger_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
 };
-#endif
 
 class sequential_expr_iterator_data : public expr_iterator_data {
 public:
@@ -398,9 +396,7 @@ expr_iterator::~expr_iterator ()
   }
 
 DEF_ACCEPT (expr)
-#ifdef ZORBA_DEBUGGER
 DEF_ACCEPT (debugger_expr)
-#endif
 DEF_ACCEPT (wrapper_expr)
 DEF_ACCEPT (sequential_expr)
 DEF_ACCEPT (var_expr)
@@ -613,8 +609,6 @@ expr_t expr::clone(substitution_t& subst) {
   return NULL; // Make the compiler happy
 }
 
-
-#ifdef ZORBA_DEBUGGER
   expr_iterator_data *debugger_expr::make_iter() {
     return new debugger_expr_iterator_data(this);
   }
@@ -625,7 +619,7 @@ expr_t expr::clone(substitution_t& subst) {
     ITER_FOR_EACH (var_iter, vars.begin (), vars.end (), vv.var_iter->val);
     END_EXPR_ITER ();
   }  
-#endif
+
 
   void wrapper_expr::next_iter (expr_iterator_data& v) {
     BEGIN_EXPR_ITER ();
@@ -790,8 +784,6 @@ expr::expr_t var_expr::clone(expr::substitution_t& subst)
   return i->second->clone(subst);
 }
 
-#ifdef ZORBA_DEBUGGER
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -826,7 +818,6 @@ void flwor_clause::set_bound_variables(checked_vector<varref_t>& aScopedVariable
     }
   } 
 }
-#endif
 
 
 /*******************************************************************************

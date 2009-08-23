@@ -25,8 +25,6 @@
 
 namespace zorba { 
 
-#ifndef ZORBA_FOR_ONE_THREAD_ONLY
-
 
 /*******************************************************************************
 
@@ -83,8 +81,6 @@ public:
       theMutex->unlock();
   }
 };
-
-#endif // ZORBA_FOR_ONE_THREAD_ONLY
 
 
 } // namespace zorba

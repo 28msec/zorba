@@ -65,9 +65,7 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
-#ifdef ZORBA_DEBUGGER
 #include "debugger/debugger_server.h"
-#endif
 
 using namespace std;
 
@@ -456,11 +454,9 @@ protected:
   list<string>                         prolog_var_decls;
   list<function *>                     prolog_fn_decls;
 
-#ifdef ZORBA_DEBUGGER
   stack<short>                         sctxstack;
   checked_vector<unsigned int>         theScopes;
   checked_vector<varref_t>             theScopedVariables;
-#endif
 
   int                                  tempvar_counter;
 
@@ -640,7 +636,6 @@ void push_scope()
   // create a new static context for the new scope
   sctx_p = sctx_p->create_child_context(); 
  
-#ifdef ZORBA_DEBUGGER
   if (cb->theDebuggerCommons != NULL) 
   {
     // in debug mode, we remember all static contexts
@@ -651,7 +646,6 @@ void push_scope()
     (*cb->m_context_map)[cb->m_cur_sctx] = sctx_p; 
   }
   else
-#endif
   {
     // in non-debug mode, we need to make sure that the scoped
     // contexts are kept around for the compilation of this module.
@@ -669,7 +663,6 @@ void push_scope()
 ********************************************************************************/
 void pop_scope()
 {
-#ifdef ZORBA_DEBUGGER
   if (cb->theDebuggerCommons != NULL) 
   {
     cb->m_cur_sctx = sctxstack.top();
@@ -677,7 +670,6 @@ void pop_scope()
     sctxstack.pop();
   }
   else
-#endif
   {
     // pop one scope, howerver the static context is kept around in the m_sctx_list
     static_context *parent = (static_context *) sctx_p->get_parent ();
@@ -2478,9 +2470,7 @@ void end_visit (const VarDecl& v, void* /*visit_state*/)
     if (export_sctx != NULL)
       bind_var(ve, export_sctx);
 
-#ifdef ZORBA_DEBUGGER
     theScopedVariables.push_back( ve );
-#endif
 
     expr_t val = (v.get_initexpr () == NULL ? expr_t(NULL) : pop_nodestack());
 
@@ -3126,7 +3116,6 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
   //
   expr_t retExpr = pop_nodestack();
   
-#ifdef ZORBA_DEBUGGER
   if ( cb->theDebuggerCommons != NULL) 
   {
     const QueryLoc& return_location = v.get_return_location(); 
@@ -3136,7 +3125,6 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
                                                               thePrologVars);
    retExpr = lDebuggerExpr;
   }
-#endif
 
   flwor->set_return_expr(retExpr);
 
@@ -3574,19 +3562,13 @@ void end_visit (const VarInDecl& v, void* /*visit_state*/)
       ZORBA_ERROR_LOC (XQST0089, loc);
 
     bind_var_and_push(pv->get_location (), pvar_qname, var_expr::pos_var);
-
-#ifdef ZORBA_DEBUGGER
     theScopedVariables.push_back(nodestack.top().dyn_cast<var_expr>());
-#endif
   }
 
   xqtref_t type = v.get_typedecl () == NULL ? NULL : pop_tstack ();
 
   bind_var_and_push(loc, var_qname, var_expr::for_var, type);
-
-#ifdef ZORBA_DEBUGGER
   theScopedVariables.push_back(nodestack.top().dyn_cast<var_expr>());
-#endif
 }
 
 
@@ -3660,9 +3642,7 @@ void end_visit (const VarGetsDecl& v, void* /*visit_state*/)
   else
     nodestack.push(&*create_var (loc, v.get_varname(), var_expr::let_var, type));
 
-#ifdef ZORBA_DEBUGGER
   theScopedVariables.push_back(nodestack.top().dyn_cast<var_expr>());
-#endif
 }
 
 
@@ -4362,13 +4342,11 @@ void end_visit (const IfExpr& v, void* /*visit_state*/)
                      e_h->get_update_type(),
                      loc);
 
-#ifdef ZORBA_DEBUGGER
   if (cb->theDebuggerCommons != 0) {
     c_h = new debugger_expr(cb->m_cur_sctx, c_h->get_loc(), c_h, thePrologVars);
     t_h = new debugger_expr(cb->m_cur_sctx, t_h->get_loc(), t_h, thePrologVars);
     e_h = new debugger_expr(cb->m_cur_sctx, e_h->get_loc(), e_h, thePrologVars);
   }
-#endif
 
   if_expr *lIfExpr = new if_expr(cb->m_cur_sctx, loc,c_h,t_h,e_h);
   nodestack.push(lIfExpr);

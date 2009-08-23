@@ -17,9 +17,6 @@
 #include "zorbautils/fatal.h"
 #include "zorbautils/mutex.h"
 
-
-#ifndef ZORBA_FOR_ONE_THREAD_ONLY
-
 namespace zorba { 
 
 
@@ -81,5 +78,3 @@ void Mutex::unlock()
 
 
 } // namespace zorba
-
-#endif

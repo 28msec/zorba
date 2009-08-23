@@ -36,9 +36,7 @@ class ZorbaDebuggerRuntime;
 ********************************************************************************/
 class PlanWrapper : public store::Iterator
 {
-#ifdef ZORBA_DEBUGGER
     friend class ZorbaDebuggerRuntime;
-#endif //ZORBA_DEBUGGER
 protected:
   PlanIter_t         theIterator;
   PlanState        * theStateBlock;

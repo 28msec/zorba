@@ -26,9 +26,8 @@ SET (API_EXAMPLES
   datamanager.cpp
   uri_resolvers.cpp)
 
-IF (ZORBA_DEBUGGER)
-  SET(API_EXAMPLES ${API_EXAMPLES} debugger.cpp)
-ENDIF (ZORBA_DEBUGGER)
+SET(API_EXAMPLES ${API_EXAMPLES} debugger.cpp)
+
 
 IF(WIN32 AND ZORBA_MSDOM_STORE)
 	LIST(APPEND API_EXAMPLES		msdom.cpp)

@@ -50,9 +50,7 @@ public:
   std::string    theQueryFileName; // the name of the file where the error occured
   std::string    theFileName; // source file
   int            theLineNumber; // line number in the source file
-#ifdef ZORBA_DEBUGGER
   bool           theDebug;
-#endif
 
 public:
   SERIALIZABLE_CLASS(ZorbaError)
@@ -69,10 +67,8 @@ public:
     ar & theQueryFileName; // the name of the file where the error occured
     ar & theFileName; // source file
     ar & theLineNumber; // line number in the source file
-#ifdef ZORBA_DEBUGGER
     if(!ar.is_serializing_out())
       theDebug = false;
-#endif
   }
 public:
   static std::string

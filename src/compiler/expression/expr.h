@@ -321,7 +321,6 @@ public:
   std::ostream& put(std::ostream&) const;
 };
 
-#ifdef ZORBA_DEBUGGER
 //debugger expression
 class debugger_expr: public eval_expr
 {
@@ -375,7 +374,6 @@ private:
     }
   }
 };
-#endif  // ZORBA_DEBUGGER
 
 
 /***************************************************************************//**

@@ -14,7 +14,6 @@
 
 SET(DEBUGGER_SRCS
     debugger_client.cpp
-    debugger_server.cpp
     debugger_communication.cpp
     debugger_clientimpl.cpp
     debugger_helper_functions.cpp

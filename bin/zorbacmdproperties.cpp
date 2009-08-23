@@ -62,7 +62,6 @@ std::string ZorbaCMDProperties::check_args () {
     theExternalVars.push_back(lExternalVariable);
   }
 
-#ifdef ZORBA_DEBUGGER
   if ( theDebugServer || theDebugClient ) {
     std::string::size_type lSemi = theDebugPorts.find(":");
     if (lSemi == std::string::npos)
@@ -70,7 +69,6 @@ std::string ZorbaCMDProperties::check_args () {
     theRequestPort = atoi( theDebugPorts.substr(0, lSemi).c_str() );
     theEventPort = atoi( theDebugPorts.substr( lSemi + 1, theDebugPorts.length() ).c_str() );
   }
-#endif
   return "";
 }
 

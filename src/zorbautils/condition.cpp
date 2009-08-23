@@ -19,8 +19,6 @@
 #include "zorbautils/condition.h"
 #include <cassert>
 
-#ifndef ZORBA_FOR_ONE_THREAD_ONLY
-
 namespace zorba { 
 
 #ifdef ZORBA_HAVE_PTHREAD_H
@@ -186,6 +184,3 @@ Condition::~Condition() {}
 #endif // ZORBA_HAVE_PTHREAD_H
 
 }
-
-
-#endif // ZORBA_FOR_ONE_THREAD_ONLY

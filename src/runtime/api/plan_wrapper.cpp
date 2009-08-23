@@ -53,9 +53,7 @@ PlanWrapper::PlanWrapper(
   // for the moment, let's keep the runtime cb here
   theStateBlock->theRuntimeCB = new RuntimeCB();
   theStateBlock->theRuntimeCB->theDynamicContext = aDynamicContext;
-#ifdef ZORBA_DEBUGGER
     theStateBlock->theDebuggerCommons = aCompilerCB->theDebuggerCommons;
-#endif //ZORBA_DEBUGGER
 }
 
 

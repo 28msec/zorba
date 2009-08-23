@@ -78,9 +78,7 @@ namespace zorba
 class RuntimeCB;
 class PlanIterVisitor;
 
-#ifdef ZORBA_DEBUGGER
 class ZorbaDebuggerCommons;
-#endif //ZORBA_DEBUGGER
 
 /*******************************************************************************
   Class to represent state that is shared by all plan iterators. 
@@ -110,9 +108,7 @@ public:
 
   RuntimeCB*   theRuntimeCB;
 
-#ifdef ZORBA_DEBUGGER
   ZorbaDebuggerCommons* theDebuggerCommons;
-#endif
 
   dynamic_context*
   dctx();

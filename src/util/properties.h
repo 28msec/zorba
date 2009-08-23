@@ -75,11 +75,9 @@ namespace zorba {
         int sz = getPositionalArgs ().size ();
         return ((inlineQuery () && sz == 0) || (! inlineQuery () && sz == 1));
       }
-#ifdef ZORBA_DEBUGGER
       void setDebugMode(bool mode){
         theDebug = mode;
       }
-#endif
       std::ostream &debug_out () { return *debug_stream; }
   }; /* class Properties */
 } /* namespace zorba */

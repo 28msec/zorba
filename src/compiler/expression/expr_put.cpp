@@ -78,14 +78,12 @@ static inline string expr_addr (const void *e) {
   }
 }
 
-#ifdef ZORBA_DEBUGGER
 std::ostream& debugger_expr::put(std::ostream& os) const
 {
   BEGIN_EXPR (debugger_expr);
   expr_h->put(os);
   CLOSE_EXPR;
 }
-#endif
 
 std::ostream& wrapper_expr::put(std::ostream& os) const
 {

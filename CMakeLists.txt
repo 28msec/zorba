@@ -291,9 +291,9 @@ SET(requiredlibs ${requiredlibs} json)
 #
 # Debugger
 #
-IF(ZORBA_DEBUGGER AND WIN32)
+IF(WIN32)
   SET(requiredlibs ${requiredlibs} wsock32)
-ENDIF(ZORBA_DEBUGGER AND WIN32)
+ENDIF(WIN32)
 
 ###############################################################################
 # Debian package dependencies

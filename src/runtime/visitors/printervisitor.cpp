@@ -52,10 +52,8 @@
 #include "runtime/strings/StringsImpl.h"
 #include "runtime/dateTime/DurationsDatesTimes.h"
 #include "runtime/fncontext/FnContextImpl.h"
-#ifdef ZORBA_DEBUGGER
 #include "runtime/debug/debug_iterators.h"
 #include "runtime/debug/zorba_debug_iterator.h"
-#endif // ZORBA_DEBUGGER
 #include "runtime/debug/debug_iterators.h"
 #include "runtime/collections/CollectionsImpl.h"
 #include "runtime/util/UtilImpl.h"
@@ -72,9 +70,7 @@
 #ifdef ZORBA_WITH_EMAIL
 #include "runtime/email/EmailImpl.h"
 #endif
-#ifdef ZORBA_DEBUGGER
 #include "runtime/debug/zorba_debugger_iterators.h"
-#endif
 #include "types/root_typemanager.h"
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/update/update.h"
@@ -1435,10 +1431,8 @@ void endVisitFlworReturn(const PlanIterator& /*a*/)
 
   PRINTER_VISITOR_DEFINITION(ZorbaTimestampIterator);
 
-#ifdef ZORBA_DEBUGGER
   PRINTER_VISITOR_DEFINITION(FnDebugIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaDebugIterator);
-#endif
 
 #ifdef ZORBA_WITH_REST
   PRINTER_VISITOR_DEFINITION(ZorbaRestGetIterator);
