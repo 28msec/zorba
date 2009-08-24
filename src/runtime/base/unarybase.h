@@ -121,3 +121,8 @@ UnaryBaseIterator<IterType, StateType>::getStateSizeOfSubtree() const
 
 #endif /* ZORBA_UNARYBASE_H */
 
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

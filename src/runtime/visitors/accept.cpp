@@ -112,14 +112,18 @@ namespace zorba {
   UNARY_ACCEPT(SelfAxisIterator);
   UNARY_ACCEPT(AttributeAxisIterator);
   UNARY_ACCEPT(ParentAxisIterator);
-  UNARY_ACCEPT(AncestorAxisIterator);
-  UNARY_ACCEPT(AncestorSelfAxisIterator);
-  UNARY_ACCEPT(RSiblingAxisIterator);
-  UNARY_ACCEPT(LSiblingAxisIterator);
+  UNARY_ACCEPT(AncestorAxisIter);
+  UNARY_ACCEPT(AncestorReverseAxisIter);
+  UNARY_ACCEPT(AncestorSelfAxisIter);
+  UNARY_ACCEPT(AncestorSelfReverseAxisIter);
+  UNARY_ACCEPT(RSiblingAxisIter);
+  UNARY_ACCEPT(LSiblingAxisIter);
+  UNARY_ACCEPT(LSiblingReverseAxisIter);
   UNARY_ACCEPT(ChildAxisIterator);
   UNARY_ACCEPT(DescendantAxisIterator);
   UNARY_ACCEPT(DescendantSelfAxisIterator);
   UNARY_ACCEPT(PrecedingAxisIterator);
+  UNARY_ACCEPT(PrecedingReverseAxisIter);
   UNARY_ACCEPT(FollowingAxisIterator);
   UNARY_ACCEPT(FnBooleanIterator);
 #ifndef ZORBA_NO_XMLSCHEMA

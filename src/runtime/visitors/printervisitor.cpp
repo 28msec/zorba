@@ -311,13 +311,19 @@ void endVisit ( const NodeSortIterator& )
 
   PRINTER_VISITOR_AXIS_DEFINITION (ParentAxisIterator)
 
-  PRINTER_VISITOR_AXIS_DEFINITION (AncestorAxisIterator)
+  PRINTER_VISITOR_AXIS_DEFINITION (AncestorAxisIter)
 
-  PRINTER_VISITOR_AXIS_DEFINITION (AncestorSelfAxisIterator)
+  PRINTER_VISITOR_AXIS_DEFINITION (AncestorReverseAxisIter)
 
-  PRINTER_VISITOR_AXIS_DEFINITION (RSiblingAxisIterator)
+  PRINTER_VISITOR_AXIS_DEFINITION (AncestorSelfAxisIter)
 
-  PRINTER_VISITOR_AXIS_DEFINITION (LSiblingAxisIterator)
+  PRINTER_VISITOR_AXIS_DEFINITION (AncestorSelfReverseAxisIter)
+
+  PRINTER_VISITOR_AXIS_DEFINITION (RSiblingAxisIter)
+
+  PRINTER_VISITOR_AXIS_DEFINITION (LSiblingAxisIter)
+
+  PRINTER_VISITOR_AXIS_DEFINITION (LSiblingReverseAxisIter)
 
   PRINTER_VISITOR_AXIS_DEFINITION (ChildAxisIterator)
 
@@ -326,6 +332,8 @@ void endVisit ( const NodeSortIterator& )
   PRINTER_VISITOR_AXIS_DEFINITION (DescendantSelfAxisIterator)
 
   PRINTER_VISITOR_AXIS_DEFINITION (PrecedingAxisIterator)
+
+  PRINTER_VISITOR_AXIS_DEFINITION (PrecedingReverseAxisIter)
 
   PRINTER_VISITOR_AXIS_DEFINITION (FollowingAxisIterator)
 

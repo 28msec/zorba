@@ -43,15 +43,19 @@ END_SERIALIZABLE_TEMPLATE_VERSIONS(AxisIterator)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<SelfAxisIterator, SelfAxisState>, 1)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<AttributeAxisIterator, AttributeAxisState>, 2)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<ParentAxisIterator, ParentAxisState>, 3)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<AncestorAxisIterator, AncestorAxisState>, 4)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<AncestorSelfAxisIterator, AncestorSelfAxisState>, 5)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<RSiblingAxisIterator, RSiblingAxisState>, 6)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<LSiblingAxisIterator, LSiblingAxisState>, 7)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<ChildAxisIterator, ChildAxisState>, 8)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<DescendantAxisIterator,DescendantAxisState>, 9)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<DescendantSelfAxisIterator,DescendantAxisState>, 10)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<PrecedingAxisIterator, PrecedingAxisState>, 11)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<FollowingAxisIterator,FollowingAxisState>, 12)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<AncestorAxisIter, AncestorAxisState>, 4)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<AncestorReverseAxisIter, AncestorReverseAxisState>, 5)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<AncestorSelfAxisIter, AncestorAxisState>, 6)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<AncestorSelfReverseAxisIter, AncestorReverseAxisState>, 7)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<RSiblingAxisIter, RSiblingAxisState>, 8)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<LSiblingAxisIter, LSiblingAxisState>, 9)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<LSiblingReverseAxisIter, LSiblingReverseAxisState>, 10)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<ChildAxisIterator, ChildAxisState>, 11)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<DescendantAxisIterator,DescendantAxisState>, 12)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<DescendantSelfAxisIterator,DescendantAxisState>, 13)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<PrecedingAxisIterator, PrecedingAxisState>, 14)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<PrecedingReverseAxisIter, PrecedingReverseAxisState>, 15)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<FollowingAxisIterator,FollowingAxisState>, 16)
 
 SERIALIZABLE_CLASS_VERSIONS(SelfAxisIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(SelfAxisIterator)
@@ -62,17 +66,26 @@ END_SERIALIZABLE_CLASS_VERSIONS(AttributeAxisIterator)
 SERIALIZABLE_CLASS_VERSIONS(ParentAxisIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(ParentAxisIterator)
 
-SERIALIZABLE_CLASS_VERSIONS(AncestorAxisIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(AncestorAxisIterator)
+SERIALIZABLE_CLASS_VERSIONS(AncestorAxisIter)
+END_SERIALIZABLE_CLASS_VERSIONS(AncestorAxisIter)
 
-SERIALIZABLE_CLASS_VERSIONS(AncestorSelfAxisIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(AncestorSelfAxisIterator)
+SERIALIZABLE_CLASS_VERSIONS(AncestorReverseAxisIter)
+END_SERIALIZABLE_CLASS_VERSIONS(AncestorReverseAxisIter)
 
-SERIALIZABLE_CLASS_VERSIONS(RSiblingAxisIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(RSiblingAxisIterator)
+SERIALIZABLE_CLASS_VERSIONS(AncestorSelfAxisIter)
+END_SERIALIZABLE_CLASS_VERSIONS(AncestorSelfAxisIter)
 
-SERIALIZABLE_CLASS_VERSIONS(LSiblingAxisIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(LSiblingAxisIterator)
+SERIALIZABLE_CLASS_VERSIONS(AncestorSelfReverseAxisIter)
+END_SERIALIZABLE_CLASS_VERSIONS(AncestorSelfReverseAxisIter)
+
+SERIALIZABLE_CLASS_VERSIONS(RSiblingAxisIter)
+END_SERIALIZABLE_CLASS_VERSIONS(RSiblingAxisIter)
+
+SERIALIZABLE_CLASS_VERSIONS(LSiblingAxisIter)
+END_SERIALIZABLE_CLASS_VERSIONS(LSiblingAxisIter)
+
+SERIALIZABLE_CLASS_VERSIONS(LSiblingReverseAxisIter)
+END_SERIALIZABLE_CLASS_VERSIONS(LSiblingReverseAxisIter)
 
 SERIALIZABLE_CLASS_VERSIONS(ChildAxisIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(ChildAxisIterator)
@@ -85,6 +98,9 @@ END_SERIALIZABLE_CLASS_VERSIONS(DescendantSelfAxisIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(PrecedingAxisIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(PrecedingAxisIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(PrecedingReverseAxisIter)
+END_SERIALIZABLE_CLASS_VERSIONS(PrecedingReverseAxisIter)
 
 SERIALIZABLE_CLASS_VERSIONS(FollowingAxisIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(FollowingAxisIterator)
@@ -431,8 +447,10 @@ bool ParentAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 /*******************************************************************************
 
 ********************************************************************************/
-bool AncestorAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool AncestorAxisIter::nextImpl(store::Item_t& result, PlanState& planState) const
 {
+  store::Item* ancestor;
+
   AncestorAxisState* state;
   DEFAULT_STACK_INIT(AncestorAxisState, state, planState);
 
@@ -447,17 +465,70 @@ bool AncestorAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
                            "The context item of an axis step is not a node");
     }
 
-    state->theCurrentAnc = state->theContextNode->getParent();
+    ancestor = state->theContextNode->getParent();
 
-    while (state->theCurrentAnc != NULL)
+    while (ancestor != NULL)
     {
-      if (nameOrKindTest(state->theCurrentAnc, planState))
+      if (nameOrKindTest(ancestor, planState))
       {
-        result = state->theCurrentAnc;
-        STACK_PUSH(true, state);
+        state->theAncestors.push_back(ancestor);
       }
+      ancestor = ancestor->getParent();
+    }
 
-      state->theCurrentAnc = state->theCurrentAnc->getParent();
+    state->theCurrentAncPos = state->theAncestors.size() - 1;
+
+    while (state->theCurrentAncPos >= 0)
+    {
+      result = state->theAncestors[state->theCurrentAncPos--];
+      STACK_PUSH(true, state);
+    }
+    
+    state->theAncestors.clear();
+  }
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool AncestorReverseAxisIter::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::Item* ancestor;
+
+  AncestorReverseAxisState* state;
+  DEFAULT_STACK_INIT(AncestorReverseAxisState, state, planState);
+
+  while (true)
+  {
+    if (!consumeNext(state->theContextNode, theChild.getp(), planState))
+      return false;
+
+    if (!state->theContextNode->isNode())
+    {
+      ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
+                           "The context item of an axis step is not a node");
+    }
+
+    ancestor = state->theContextNode->getParent();
+
+    while (ancestor != NULL)
+    {
+      if (nameOrKindTest(ancestor, planState))
+      {
+        result = ancestor;
+        state->theCurrentAnc = ancestor;
+        STACK_PUSH(true, state);
+        ancestor = state->theCurrentAnc->getParent();
+      }
+      else
+      {
+        ancestor = ancestor->getParent();
+      }
     }
   }
 
@@ -468,10 +539,61 @@ bool AncestorAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
 /*******************************************************************************
 
 ********************************************************************************/
-bool AncestorSelfAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool AncestorSelfAxisIter::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
-  AncestorSelfAxisState* state;
-  DEFAULT_STACK_INIT(AncestorSelfAxisState, state, planState);
+  store::Item* ancestor;
+
+  AncestorAxisState* state;
+  DEFAULT_STACK_INIT(AncestorAxisState, state, planState);
+
+  while (true)
+  {
+    if (!consumeNext(state->theContextNode, theChild.getp(), planState))
+      return false;
+
+    if (!state->theContextNode->isNode())
+    {
+      ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
+                           "The context item of an axis step is not a node");
+    }
+
+    ancestor = state->theContextNode.getp();
+
+    while (ancestor != NULL)
+    {
+      if (nameOrKindTest(ancestor, planState))
+      {
+        state->theAncestors.push_back(ancestor);
+      }
+      ancestor = ancestor->getParent();
+    }
+
+    state->theCurrentAncPos = state->theAncestors.size() - 1;
+
+    while (state->theCurrentAncPos >= 0)
+    {
+      result = state->theAncestors[state->theCurrentAncPos--];
+      STACK_PUSH(true, state);
+    }
+    
+    state->theAncestors.clear();
+  }
+
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool AncestorSelfReverseAxisIter::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  AncestorReverseAxisState* state;
+  DEFAULT_STACK_INIT(AncestorReverseAxisState, state, planState);
 
   while (true)
   {
@@ -493,46 +615,39 @@ bool AncestorSelfAxisIterator::nextImpl(store::Item_t& result, PlanState& planSt
         result = state->theCurrentAnc;
         STACK_PUSH(true, state);
       }
-
+      
       state->theCurrentAnc = state->theCurrentAnc->getParent();
     }
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-RSiblingAxisState::RSiblingAxisState()
-{
-}
-
-
-RSiblingAxisState::~RSiblingAxisState()
-{
-}
-
-
 void RSiblingAxisState::init(PlanState& planState)
 {
   AxisState::init(planState);
+
+  theChildren = GENV_ITERATOR_FACTORY->createChildrenIterator();
 }
 
 
 void RSiblingAxisState::reset(PlanState& planState)
 {
   AxisState::reset(planState);
+
   if (theChildren != NULL)
     theChildren->reset(); 
 }
 
 
-bool RSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool RSiblingAxisIter::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t parent;
-  store::Item_t child;
+  const store::Item* parent;
+  const store::Item* child;
 
   RSiblingAxisState* state;
   DEFAULT_STACK_INIT(RSiblingAxisState, state, planState);
@@ -549,7 +664,7 @@ bool RSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
         ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
                              "The context item of an axis step is not a node");
       }
-    }//daniel: maybe we should allow attribute nodes if kind test permits
+    }
     while (state->theContextNode->getNodeKind() == store::StoreConsts::attributeNode);
 
     parent = state->theContextNode->getParent();
@@ -557,15 +672,20 @@ bool RSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
     if (parent == NULL)
       continue;
 
-    state->theChildren = parent->getChildren();
+    state->theChildren->init(parent);
     state->theChildren->open();
 
-    while (state->theChildren->next(child) && child != state->theContextNode) ;
-
-    while (state->theChildren->next(result))
+    while ((child = state->theChildren->next()) != NULL &&
+           child != state->theContextNode)
     {
-      if (nameOrKindTest(result, planState))
+      ;
+    }
+
+    while ((child = state->theChildren->next()) != NULL)
+    {
+      if (nameOrKindTest(child, planState))
       {
+        result = child;
         STACK_PUSH(true, state);
       }
     }
@@ -580,33 +700,27 @@ bool RSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
 /*******************************************************************************
 
 ********************************************************************************/
-LSiblingAxisState::LSiblingAxisState()
-{
-}
-
-
-LSiblingAxisState::~LSiblingAxisState()
-{
-}
-
-
 void LSiblingAxisState::init(PlanState& planState)
 {
   AxisState::init(planState);
+
+  theChildren = GENV_ITERATOR_FACTORY->createChildrenIterator();
 }
 
 
 void LSiblingAxisState::reset(PlanState& planState)
 {
   AxisState::reset(planState);
+
   if (theChildren != NULL)
-    theChildren->reset(); 
+    theChildren->reset();
 }
 
 
-bool LSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool LSiblingAxisIter::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t parent;
+  const store::Item* parent;
+  const store::Item* sibling;
 
   LSiblingAxisState* state;
   DEFAULT_STACK_INIT(LSiblingAxisState, state, planState);
@@ -620,7 +734,8 @@ bool LSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
       if (!state->theContextNode->isNode())
       {
-        ZORBA_ERROR_LOC_DESC(  XPTY0020, loc, "The context item of an axis step is not a node");
+        ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
+                             "The context item of an axis step is not a node");
       }
     }
     while (state->theContextNode->getNodeKind() == store::StoreConsts::attributeNode);
@@ -630,20 +745,100 @@ bool LSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
     if (parent == NULL)
       continue;
 
-    state->theChildren = parent->getChildren();
+    state->theChildren->init(parent);
     state->theChildren->open();
 
-    while (state->theChildren->next(result) && result != state->theContextNode)
+    while ((sibling = state->theChildren->next()) != NULL &&
+           sibling != state->theContextNode.getp())
     {
-      if (nameOrKindTest(result, planState))
+      if (nameOrKindTest(sibling, planState))
       {
+        result = sibling;
         STACK_PUSH(true, state);
       }
     }
+    
+    state->theChildren->close();
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void LSiblingReverseAxisState::init(PlanState& planState)
+{
+  AxisState::init(planState);
+
+  theChildren = GENV_ITERATOR_FACTORY->createChildrenReverseIterator();
+}
+
+
+void LSiblingReverseAxisState::reset(PlanState& planState)
+{
+  AxisState::reset(planState);
+
+  if (theChildren != NULL)
+    theChildren->reset();
+}
+
+
+bool LSiblingReverseAxisIter::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  const store::Item* parent;
+  const store::Item* sibling;
+
+  LSiblingReverseAxisState* state;
+  DEFAULT_STACK_INIT(LSiblingReverseAxisState, state, planState);
+
+  while (true)
+  {
+    do
+    {
+      if (!consumeNext(state->theContextNode, theChild.getp(), planState))
+        return false;
+
+      if (!state->theContextNode->isNode())
+      {
+        ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
+                             "The context item of an axis step is not a node");
+      }
+    }
+    while (state->theContextNode->getNodeKind() == store::StoreConsts::attributeNode);
+
+    parent = state->theContextNode->getParent();
+
+    if (parent == NULL)
+      continue;
+
+    state->theChildren->init(parent);
+    state->theChildren->open();
+
+    while ((sibling = state->theChildren->next()) != NULL &&
+           sibling != state->theContextNode.getp())
+    {
+      ;
+    }
+
+    while ((sibling = state->theChildren->next()) != NULL)
+    {
+      if (nameOrKindTest(sibling, planState))
+      {
+        result = sibling;
+        STACK_PUSH(true, state);
+      }
+    }
+    
+    state->theChildren->close();
+  }
+
+  STACK_END(state);
+}
+
 
 /*******************************************************************************
 
@@ -742,6 +937,12 @@ void DescendantAxisState::init(PlanState& planState)
 void DescendantAxisState::reset(PlanState& planState)
 {
   AxisState::reset(planState);
+
+  for (ulong i = 0; i < theTop; ++i)
+  {
+    theCurrentPath[i].second->close();
+  }
+
   theTop = 0;
 }
 
@@ -911,11 +1112,6 @@ bool DescendantSelfAxisIterator::nextImpl(
 /*******************************************************************************
 
 ********************************************************************************/
-PrecedingAxisState::PrecedingAxisState()
-{
-}
-
-
 PrecedingAxisState::~PrecedingAxisState()
 {
   while (!theCurrentPath.empty())
@@ -964,7 +1160,8 @@ bool PrecedingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
 
     if (!state->theContextNode->isNode())
     {
-      ZORBA_ERROR_LOC_DESC(XPTY0020, loc, "The context item of an axis step is not a node");
+      ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
+                           "The context item of an axis step is not a node");
     }
 
     // Collect the context node and its ancestors
@@ -1027,11 +1224,218 @@ bool PrecedingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
 /*******************************************************************************
 
 ********************************************************************************/
-FollowingAxisState::FollowingAxisState()
+PrecedingReverseAxisState::PrecedingReverseAxisState() 
+  :
+  theAncestorChild(NULL),
+  theTop(0)
 {
+  theAncestor.first = NULL;
+  theAncestor.second = NULL;
 }
 
 
+PrecedingReverseAxisState::~PrecedingReverseAxisState()
+{
+  if (theAncestor.second != NULL)
+    delete theAncestor.second;
+
+  ulong len = theCurrentPath.size();
+  for (ulong i = 0; i < len; ++i)
+  {
+    delete theCurrentPath[i].second;
+  }
+}
+
+
+void PrecedingReverseAxisState::init(PlanState& planState)
+{
+  AxisState::init(planState);
+
+  if (theAncestor.second == NULL)
+    theAncestor.second = GENV_ITERATOR_FACTORY->createChildrenReverseIterator();
+}
+
+
+void PrecedingReverseAxisState::reset(PlanState& planState)
+{
+  AxisState::reset(planState);
+
+  for (ulong i = 0; i < theTop; ++i)
+  {
+    theCurrentPath[i].second->close();
+  }
+
+  theTop = 0;
+
+  if (theAncestor.second != NULL)
+    theAncestor.second->close();
+
+  theAncestorChild = NULL;
+}
+
+
+void PrecedingReverseAxisState::push(const store::Item* node)
+{
+  if (theTop < theCurrentPath.size())
+  {
+    theCurrentPath[theTop].first = node;
+    theCurrentPath[theTop].second->init(node);
+  }
+  else
+  {
+    store::ChildrenReverseIterator* ite =
+    GENV_ITERATOR_FACTORY->createChildrenReverseIterator();
+
+    ite->init(node);
+
+    theCurrentPath.push_back(std::pair<const store::Item*,
+                             store::ChildrenReverseIterator*>(node, ite));
+  }
+
+  theTop++;
+}
+
+
+bool PrecedingReverseAxisIter::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  const store::Item* child;
+  const store::Item* desc;
+
+  PrecedingReverseAxisState* state;
+  DEFAULT_STACK_INIT(PrecedingReverseAxisState, state, planState);
+
+  while (theTestKind != match_doc_test)
+  {
+    if (!consumeNext(state->theContextNode, theChild.getp(), planState))
+      break;
+
+    if (!state->theContextNode->isNode())
+    {
+      ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
+                           "The context item of an axis step is not a node");
+    }
+
+    state->theAncestorChild = state->theContextNode.getp();
+    state->theAncestor.first = state->theAncestorChild->getParent();
+
+    // For each ancestor A of the current context node N ...
+    while (state->theAncestor.first != NULL)
+    {
+      state->theAncestor.second->init(state->theAncestor.first);
+
+      // Find the 1st child C of A such that C is to the left of the previous
+      // ancestor (i.e. C is the left sibling of the previous ancestor).
+      while ((child = state->theAncestor.second->next()) != NULL &&
+             child != state->theAncestorChild)
+      {
+        ;
+      }
+
+      // For each child C of A such that C is to the left of the previous
+      // ancestor, do a reverse traversal of the subtree T rooted at C.
+      while ((child = state->theAncestor.second->next()) != NULL)
+      {
+        if (child->getNodeKind() != store::StoreConsts::elementNode)
+        {
+          if (nameOrKindTest(child, planState))
+          {
+            result = child;
+            STACK_PUSH(true, state);
+          }
+
+          continue;
+        }
+
+        if (nameOrKindTest(child, planState))
+        {
+          if (child->isRecursive() || 
+              theTestKind == match_anykind_test ||
+              (theTestKind == match_elem_test && theQName == NULL) ||
+              (theTestKind == match_name_test && theWildKind != match_no_wild))
+          {
+            state->push(child);
+          }
+          else
+          {
+            result = child;
+            STACK_PUSH(true, state);
+
+            continue;
+          }
+        }
+        else
+        {
+          state->push(child);
+        }
+
+        // Do the reverse traversal
+        do
+        {
+          // Traversed all the subtrees of the node D that is at the top of
+          // theCurrentPath.
+          while ((desc = state->top()->next()) != NULL)
+          {
+            if (desc->getNodeKind() == store::StoreConsts::elementNode)
+            {
+              if (nameOrKindTest(desc, planState))
+              {
+                if (desc->isRecursive() || 
+                    theTestKind == match_anykind_test ||
+                    (theTestKind == match_elem_test && theQName == NULL) ||
+                    (theTestKind == match_name_test && theWildKind != match_no_wild))
+                {
+                  state->push(desc); // recursive traversal
+                }
+                else
+                {
+                  result = desc;
+                  STACK_PUSH(true, state);
+                }
+              }
+              else
+              {
+                state->push(desc); // recursive traversal
+              }
+            }
+            else
+            {
+              if (nameOrKindTest(desc, planState))
+              {
+                result = desc;
+                STACK_PUSH(true, state);
+              }
+            }
+          }
+
+          // We have traversed all the subtrees of the node D that is at the
+          // top of theCurrentPath. Return D to the caller, if it satifies the
+          // node test, and then pop D from theCurrentPath.
+          if (nameOrKindTest(state->topNode(), planState))
+          {
+            result = state->topNode();
+            STACK_PUSH(true, state);
+          }
+
+          state->pop();
+        }
+        while (!state->empty());
+      } // for each child C of current ancestor
+
+      // Go to the next ancestor up the ancestor path
+      state->theAncestorChild = state->theAncestor.first;
+      state->theAncestor.first = state->theAncestorChild->getParent();
+    }
+  }
+
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 FollowingAxisState::~FollowingAxisState()
 {
   while (!theCurrentPath.empty())
@@ -1066,7 +1470,9 @@ void FollowingAxisState::reset(PlanState& planState)
 }
 
 
-bool FollowingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool FollowingAxisIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t ancestor;
   store::Iterator_t children;
@@ -1081,7 +1487,8 @@ bool FollowingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
 
     if (!state->theContextNode->isNode())
     {
-      ZORBA_ERROR_LOC_DESC(  XPTY0020, loc,  "The context item of an axis step is not a node"); 
+      ZORBA_ERROR_LOC_DESC(XPTY0020, loc,
+                           "The context item of an axis step is not a node"); 
     }
 
     // Collect the context node and its ancestors
