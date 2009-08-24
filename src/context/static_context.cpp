@@ -1149,18 +1149,20 @@ static_context::get_trace_stream() const
   return parent == NULL ? &std::cerr : dynamic_cast<static_context*>(parent)->get_trace_stream();
 }
 
-std::vector<std::string> static_context::getVariables() const
+void
+static_context::getVariables(std::vector<std::string>& aResult) const
 {
-  std::vector<std::string> lResult;
+  if (parent)
+    static_cast<static_context*>(parent)->getVariables(aResult);
+
   std::vector<zorba::serializable_hashmap<ctx_value_t>::entry>::const_iterator it;
   for (it = keymap.begin(); it != keymap.end(); it++) {
     const std::string& lKey = (*it).key;
     if (lKey.find("var:") == 0) {
-      lResult.push_back("local");
-      lResult.push_back(lKey.substr(4, lKey.size() - 5));
+      aResult.push_back("local");
+      aResult.push_back(lKey.substr(4, lKey.size() - 5));
     }
   }
-  return lResult;
 }
 
 } /* namespace zorba */

@@ -234,7 +234,8 @@ zorba::ReplyMessage* zorba::ZorbaDebuggerRuntime::getAllVariables()
   ZorbaDebuggerCommons* lCommons = 
     theWrapper->theStateBlock->theDebuggerCommons;
   static_context* lContext = lCommons->getCurrentStaticContext();
-  std::vector<std::string> lVariables = lContext->getVariables();
+  std::vector<std::string> lVariables;
+  lContext->getVariables(lVariables);
   std::auto_ptr<VariableReply> lReply(
     new VariableReply(theCurrentMessage->getId(), DEBUGGER_NO_ERROR));
   std::vector<std::string>::iterator lIter;

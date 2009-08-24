@@ -464,8 +464,8 @@ public:
   std::ostream*
   get_trace_stream() const;
 
-  std::vector<std::string>
-  getVariables() const;
+  void 
+  getVariables(std::vector<std::string>&) const;
 
 protected:
   static_context();

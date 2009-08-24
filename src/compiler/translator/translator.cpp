@@ -456,7 +456,6 @@ protected:
 
   stack<short>                         sctxstack;
   checked_vector<unsigned int>         theScopes;
-  checked_vector<varref_t>             theScopedVariables;
 
   int                                  tempvar_counter;
 
@@ -2470,8 +2469,6 @@ void end_visit (const VarDecl& v, void* /*visit_state*/)
     if (export_sctx != NULL)
       bind_var(ve, export_sctx);
 
-    theScopedVariables.push_back( ve );
-
     expr_t val = (v.get_initexpr () == NULL ? expr_t(NULL) : pop_nodestack());
 
     thePrologVars.push_back(global_binding(ve, val, v.is_extern()));
@@ -3178,23 +3175,6 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
       for (int j = 0; j < numVars; j++) 
       {
         expr_t domainExpr = domainExprs[j];
-//#ifdef ZORBA_DEBUGGER
-//        if(cb->m_debugger != 0)
-//        {
-//          push_scope();
-//          for(int k = numVars; k > j; k--)
-//          {
-//            theScopedVariables.push_back(varExprs[k-1]);
-//          }
-//
-//          domainExpr = new debugger_expr(cb->m_cur_sctx, domainExprs[j]->get_loc(),
-//                                         domainExpr,
-//                                         theScopedVariables,
-//                                         thePrologVars,
-//                                         true);
-//          pop_scope();
-//        }
-//#endif
         for_clause* eflc = new for_clause(cb->m_cur_sctx, c.get_location(),
                                           varExprs[j],
                                           domainExpr,
@@ -3203,18 +3183,6 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
 
         eclauses.push_back(eflc);
 
-//#ifdef ZORBA_DEBUGGER
-//        if(cb->m_debugger != 0)
-//        {
-//          theScopedVariables.push_back(varExprs[j]);
-//          if(posVarExprs[j] != 0)
-//          {
-//            theScopedVariables.push_back(posVarExprs[j]);
-//          }
-//          eflc->set_bound_variables(theScopedVariables);
-//          eflc->set_global_variables(thePrologVars);
-//        }
-//#endif
       }
     }
 
@@ -3244,21 +3212,6 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
       for (int j = 0; j < numVars; j++)
       {
         expr_t domainExpr = domainExprs[j];
-//#ifdef ZORBA_DEBUGGER
-//        if(cb->m_debugger != 0)
-//        {
-//          push_scope();
-//          for(int k = numVars; k-1 > j; k--)
-//          {
-//            theScopedVariables.push_back(varExprs[k-1]);
-//          }
-//          domainExpr = new debugger_expr(cb->m_cur_sctx, domainExprs[j]->get_loc(),
-//                                         domainExpr,
-//                                         theScopedVariables,
-//                                         thePrologVars);
-//          pop_scope();
-//        }
-//#endif
         let_clause* eflc = new let_clause(cb->m_cur_sctx, c.get_location(),
                                           varExprs[j],
                                           domainExpr);
@@ -3562,13 +3515,11 @@ void end_visit (const VarInDecl& v, void* /*visit_state*/)
       ZORBA_ERROR_LOC (XQST0089, loc);
 
     bind_var_and_push(pv->get_location (), pvar_qname, var_expr::pos_var);
-    theScopedVariables.push_back(nodestack.top().dyn_cast<var_expr>());
   }
 
   xqtref_t type = v.get_typedecl () == NULL ? NULL : pop_tstack ();
 
   bind_var_and_push(loc, var_qname, var_expr::for_var, type);
-  theScopedVariables.push_back(nodestack.top().dyn_cast<var_expr>());
 }
 
 
@@ -3642,7 +3593,6 @@ void end_visit (const VarGetsDecl& v, void* /*visit_state*/)
   else
     nodestack.push(&*create_var (loc, v.get_varname(), var_expr::let_var, type));
 
-  theScopedVariables.push_back(nodestack.top().dyn_cast<var_expr>());
 }
 
 
@@ -6273,19 +6223,7 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/)
     for(; iter != arguments.rend(); ++iter)
       fo_h->add(*iter);
 
-//#ifdef ZORBA_DEBUGGER
-//    if ( cb->m_debugger != 0 ) 
-//    {
-//      rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(cb->m_cur_sctx, loc, &*fo_h, theScopedVariables, thePrologVars);
-//      nodestack.push(&*lDebuggerExpr);
-//    }
-//    else
-//    {
-//      nodestack.push(&*fo_h);
-//    }
-//#else
     nodestack.push(&*fo_h);
-//#endif
   }
 }
 
