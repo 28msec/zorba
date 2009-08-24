@@ -23,7 +23,7 @@ if(CPACK_GENERATOR MATCHES "NSIS")
   SET(CPACK_PACKAGE_EXECUTABLES "zorba" "Zorba Command Line Client" )
 
   SET(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\zoba.exe")
-  SET(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} Zorba XQuery Processor")
+  SET(CPACK_NSIS_DISPLAY_NAME "Zorba XQuery Processor ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
   SET(CPACK_NSIS_HELP_LINK "http:\\\\http://www.zorba-xquery.org/")
   SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\http://www.zorba-xquery.org/")
   SET(CPACK_NSIS_CONTACT "info@flworfound.org")
