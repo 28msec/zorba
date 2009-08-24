@@ -15,9 +15,9 @@
 IF(ZORBA_WITH_EMAIL)
 
   SET(MAIL_SRCS
-    uw-imap.cpp
-    MimeParser.cpp
-    MimeHandler.cpp)
+    uw-imap.cpp)
+#MimeParser.cpp
+#MimeHandler.cpp)
 
 ELSE(ZORBA_WITH_EMAIL)
 
