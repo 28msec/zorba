@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Project name
-# bla
 PROJECT(zorba)
 ENABLE_TESTING()
 INCLUDE(CTest)
@@ -328,7 +326,6 @@ INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_BINARY_DIR}/include)
 SET(ZORBA_MAJOR_NUMBER "0")
 SET(ZORBA_MINOR_NUMBER "9")
 SET(ZORBA_PATCH_NUMBER "6")
-SET(ZORBA_SVN_NUMER)
 
 CONFIGURE_FILE ( "${CMAKE_SOURCE_DIR}/zorba.spec.in"
                  "${CMAKE_BINARY_DIR}/zorba.spec" @ONLY )

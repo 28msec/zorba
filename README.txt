@@ -64,7 +64,7 @@
   --------
 
   o If you want to be informed about new code releases, bug fixes
-  and general news and information about the Zorba XQuery engine
+  and general news and information about the Zorba XQuery Processor
   subscribe to the Zorba Users mailing list as described under
   <zorba-users@lists.sourceforge.net>
 
