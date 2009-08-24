@@ -533,14 +533,14 @@ void processHeader(store::Item_t& headers, curl_slist** headers_list)
   {
     it = headers->getChildren();
     it->open();
-    while (it->next(child))
+    while (it->next(child) && child)
       processHeader(child, headers_list);
     return;
   }
 
   it = headers->getAttributes();
   it->open();
-  while (it->next(child))
+  while (it->next(child) && child)
   {
     if (xqpString("name") == child->getNodeName()->getLocalName())
       name = child;
@@ -584,7 +584,7 @@ static void getSerializedChildren(store::Item_t node, xqpString& children_string
   
   it = node->getChildren();
   it->open();
-  while (it->next(child))
+  while (it->next(child) && child)
   {
     if (child->getNodeKind() == store::StoreConsts::textNode)
     {
@@ -620,9 +620,9 @@ static xqpString buildKeyValuePair(Item_t& payload_data)
 
   it = payload_data->getAttributes();
   it->open();
-  while (it->next(child))
+  while (it->next(child) && child)
   {
-    if (xqpString("name") == child->getNodeName()->getLocalName())
+    if ((xqpString("name") == child->getNodeName()->getLocalName()))
       name = child;
   }
 
@@ -638,7 +638,7 @@ static xqpString buildKeyValuePair(Item_t& payload_data)
   it = payload_data->getChildren();
   it->open();
   it->next(child);
-  if (child->getNodeKind() == store::StoreConsts::textNode)
+  if (child && (child->getNodeKind() == store::StoreConsts::textNode))
     result += "=" + xqpString(child->getStringValue()->encodeForUri());
 
   return result;
@@ -655,7 +655,7 @@ static xqpString buildChildrenURL(Item_t& payload_data)
   it = payload_data->getChildren();
   it->open();
   while (it->next(child))
-    if (child->getNodeKind() == store::StoreConsts::elementNode)
+    if (child && (child->getNodeKind() == store::StoreConsts::elementNode))
     {
       if (result.bytes() > 0)
         result += "&";
@@ -684,7 +684,7 @@ static PAYLOAD_TYPE processPayload(Item_t& payload_data, struct curl_httppost** 
 
   it = payload_data->getAttributes();
   it->open();
-  while (it->next(child))
+  while (it->next(child) && child)
   {
     if (xqpString("name") == child->getNodeName()->getLocalName())
       name = child;
@@ -709,7 +709,7 @@ static PAYLOAD_TYPE processPayload(Item_t& payload_data, struct curl_httppost** 
     {
       it = payload_data->getChildren();
       it->open();
-      while (it->next(child))
+      while (it->next(child) && child)
         if (child->getNodeKind() == store::StoreConsts::elementNode)
           processPayload(child, first, last, constructedURL);
       return PAYLOAD_TYPE_MULTIPART_FORMDATA;
@@ -775,7 +775,7 @@ static bool processSinglePayload(Item_t& payload_data, CURL* EasyHandle, curl_sl
 
   it = payload_data->getAttributes();
   it->open();
-  while (it->next(child))
+  while (it->next(child) && child)
   {
     if (xqpString("name") == child->getNodeName()->getLocalName())
       name = child;
