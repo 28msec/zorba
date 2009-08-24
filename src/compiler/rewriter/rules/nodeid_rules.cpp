@@ -193,6 +193,9 @@ static bool analyze_let_vars_consumer_props (flwor_expr* flwor)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 static void mark_casts(
     cast_or_castable_base_expr *node,
     expr_t input,
@@ -241,6 +244,9 @@ static void mark_casts(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 RULE_REWRITE_PRE(MarkConsumerNodeProps)
 {
   switch (node->get_expr_kind ()) 
@@ -393,6 +399,9 @@ RULE_REWRITE_POST(MarkConsumerNodeProps)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 RULE_REWRITE_PRE(MarkProducerNodeProps)
 {
   if (rCtx.getRoot().getp() == node) {
@@ -409,6 +418,9 @@ RULE_REWRITE_POST(MarkProducerNodeProps)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 RULE_REWRITE_PRE(EliminateNodeOps)
 {
   static_context *sctx = rCtx.getStaticContext ();

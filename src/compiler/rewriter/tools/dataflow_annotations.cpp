@@ -33,6 +33,10 @@ namespace zorba {
 
 #define LOOKUP_FN( pfx, local, arity ) (m_ctx->lookup_fn (pfx, local, arity))
 
+
+/*******************************************************************************
+
+********************************************************************************/
 void DataflowAnnotationsComputer::compute(expr *e)
 {
   switch(e->get_expr_kind()) 
@@ -148,6 +152,9 @@ void DataflowAnnotationsComputer::compute(expr *e)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void DataflowAnnotationsComputer::default_walk(expr *e)
 {
   expr_iterator i = e->expr_begin();
@@ -161,11 +168,11 @@ void DataflowAnnotationsComputer::default_walk(expr *e)
   }
 }
 
-/**
- * Checks if the expression has a return type with a quantifier of
- * ONE or QUESTION. If so, the expression cannot have dup nodes
- * or nodes out of sorted order.
- */
+
+/*******************************************************************************
+  Checks if the expression has a return type with a quantifier of ONE or QUESTION.
+  If so, the expression cannot have dup nodes or nodes out of sorted order.
+********************************************************************************/
 bool DataflowAnnotationsComputer::generic_compute(expr *e)
 {
   xqtref_t rt = e->return_type(m_ctx);
@@ -179,12 +186,19 @@ bool DataflowAnnotationsComputer::generic_compute(expr *e)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void DataflowAnnotationsComputer::compute_sequential_expr(sequential_expr *e)
 {
   default_walk(e);
   generic_compute(e);
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 void DataflowAnnotationsComputer::compute_wrapper_expr(wrapper_expr *e)
 {
   default_walk(e);
@@ -192,6 +206,10 @@ void DataflowAnnotationsComputer::compute_wrapper_expr(wrapper_expr *e)
   PROPOGATE_DISTINCT_NODES(e->get_expr().getp(), e);
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 void DataflowAnnotationsComputer::compute_constructor_expr(constructor_expr *e)
 {
   default_walk(e);
@@ -371,50 +389,96 @@ void DataflowAnnotationsComputer::compute_extension_expr(extension_expr *e)
   }
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 void DataflowAnnotationsComputer::compute_relpath_expr(relpath_expr *e)
 {
   default_walk(e);
-  if (!generic_compute(e)) {
-    int sz = e->size();
-    bool non_single_fwd_axis = false;
-    bool reverse_axis = false;
-    for(int i = 1; i < sz; ++i) {
-      axis_step_expr *ase = dynamic_cast<axis_step_expr *>((*e)[i].getp());
-      if (ase == NULL) {
-        return;
-      }
-      reverse_axis = reverse_axis || ase->is_reverse_axis();
-      non_single_fwd_axis = non_single_fwd_axis || ((ase->getAxis() != axis_kind_child) && (ase->getAxis() != axis_kind_attribute));
+
+  if (!generic_compute(e)) 
+  {
+    ulong num_steps = e->size();
+    bool only_child_axes = true;
+    ulong num_desc_axes = 0;
+    ulong num_following_axes = 0;
+    bool reverse_axes = false;
+
+    for(ulong i = 1; i < num_steps; ++i) 
+    {
+      axis_step_expr* ase = dynamic_cast<axis_step_expr *>((*e)[i].getp());
+      assert(ase != NULL);
+
+      reverse_axes = reverse_axes || ase->is_reverse_axis();
+
+      axis_kind_t axis = ase->getAxis();
+
+      if (axis == axis_kind_descendant || axis == axis_kind_descendant_or_self)
+        num_desc_axes++;
+
+      if (axis == axis_kind_following || axis == axis_kind_following_sibling)
+        num_following_axes++;
+
+      if (axis != axis_kind_child && axis != axis_kind_attribute)
+        only_child_axes = false;
     }
-    if (!non_single_fwd_axis) {
-      Annotation::value_ref_t sortedAnnot = (*e)[0]->get_annotation(AnnotationKey::PRODUCES_SORTED_NODES);
-      if (sortedAnnot != NULL) {
+
+    if (only_child_axes) 
+    {
+      Annotation::value_ref_t sortedAnnot =
+      (*e)[0]->get_annotation(AnnotationKey::PRODUCES_SORTED_NODES);
+
+      if (sortedAnnot != NULL) 
+      {
         e->put_annotation(AnnotationKey::PRODUCES_SORTED_NODES, sortedAnnot);
       }
-      Annotation::value_ref_t distinctAnnot = (*e)[0]->get_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES);
-      if (distinctAnnot != NULL) {
+
+      Annotation::value_ref_t distinctAnnot =
+      (*e)[0]->get_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES);
+
+      if (distinctAnnot != NULL) 
+      {
         e->put_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES, distinctAnnot);
       }
-    } else {
+    }
+    else
+    {
       xqtref_t crt = (*e)[0]->return_type(m_ctx);
-      if (TypeOps::type_max_cnt(*crt) <= 1) {
+
+      if (TypeOps::type_max_cnt(*crt) <= 1) 
+      {
         bool sorted = false;
         bool distinct = false;
-        if (sz == 2) {
+        if (num_steps == 2) 
+        {
           distinct = true;
-          sorted = !reverse_axis;
-        } else {
-          if (!non_single_fwd_axis) {
-            sorted = true;
+          sorted = true;
+        }
+        else if (only_child_axes)
+        {
+          sorted = true;
+          distinct = true;
+        }
+        else
+        {
+          if (reverse_axes == false &&
+              num_desc_axes <= 1 &&
+              num_following_axes == 0) 
+          {
             distinct = true;
           }
         }
-        e->put_annotation(AnnotationKey::PRODUCES_SORTED_NODES, TSVAnnotationValue::from_bool(sorted));
-        e->put_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES, TSVAnnotationValue::from_bool(distinct));
+
+        e->put_annotation(AnnotationKey::PRODUCES_SORTED_NODES,
+                          TSVAnnotationValue::from_bool(sorted));
+        e->put_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES,
+                          TSVAnnotationValue::from_bool(distinct));
       }
     }
   }
 }
+
 
 void DataflowAnnotationsComputer::compute_axis_step_expr(axis_step_expr *e)
 {
@@ -422,6 +486,7 @@ void DataflowAnnotationsComputer::compute_axis_step_expr(axis_step_expr *e)
   if (!generic_compute(e)) {
   }
 }
+
 
 void DataflowAnnotationsComputer::compute_match_expr(match_expr *e)
 {

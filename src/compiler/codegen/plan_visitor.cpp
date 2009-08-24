@@ -1948,17 +1948,17 @@ bool begin_visit (axis_step_expr& v) {
   }
   case axis_kind_ancestor:
   {
-    axisIte = new AncestorAxisIterator(sctx, qloc, input);
+    axisIte = new AncestorAxisIter(sctx, qloc, input);
     break;
   }
   case axis_kind_ancestor_or_self:
   {
-    axisIte = new AncestorSelfAxisIterator(sctx, qloc, input);
+    axisIte = new AncestorSelfAxisIter(sctx, qloc, input);
     break;
   }
   case axis_kind_following_sibling:
   {
-    axisIte = new RSiblingAxisIterator(sctx, qloc, input);
+    axisIte = new RSiblingAxisIter(sctx, qloc, input);
     break;
   }
   case axis_kind_following:
@@ -1968,7 +1968,7 @@ bool begin_visit (axis_step_expr& v) {
   }
   case axis_kind_preceding_sibling:
   {
-    axisIte = new LSiblingAxisIterator(sctx, qloc, input);
+    axisIte = new LSiblingAxisIter(sctx, qloc, input);
     break;
   }
   case axis_kind_preceding:
