@@ -229,7 +229,6 @@ public:
       else if (strcmp (*argv, "--no-serializer") == 0) {
         theNoSerializer = true;
       }
-#ifdef ZORBA_DEBUGGER
       else if (strcmp (*argv, "--debug-ports") == 0 || strncmp (*argv, "-p", 2) == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
@@ -247,7 +246,6 @@ public:
       else if (strcmp (*argv, "--no-logo") == 0) {
         theNoLogo = true;
       }
-#endif
       else if (strcmp (*argv, "--") == 0) {
         copy_args (++argv);
         break;
@@ -289,13 +287,11 @@ public:
 "--parse-only\nStop after parsing the query.\n\n"
 "--compile-only\nOnly compile (don't execute)\n\n"
 "--no-serializer\nDo not serialize (discard) result.\n\n"
-#ifdef ZORBA_DEBUGGER
 "--debug-ports, -p\nSpecify the ports for zorba debugger. The format is requestPort:eventPort.\n\n"
 "--debug-client, -c\nLaunch the debugger command line client.\n\n"
 "--debug-server, -s\nLaunch queries on the debugger server.\n\n"
 "--no-colors\nUse no colors in the debugger client.\n\n"
 "--no-logo\nPrint no logo when starting the debugger client or server.\n\n"
-#endif
 ;
   }
 
