@@ -25,6 +25,7 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <vector>
 
 namespace zorba {
 
@@ -51,6 +52,8 @@ public:
 
   QueryLocation_t
   getLocation() const;
+
+  std::vector<std::string> getVariableNames();
 
 private:
   int m_request_port;

@@ -87,4 +87,15 @@ namespace zorba {
   {
     m_client->terminate();
   }
+
+  std::vector<std::string> DebuggerTestClient::getVariableNames()
+  {
+    std::vector<std::string> lResult;
+    std::list<Variable> lVars = m_client->getAllVariables();
+    std::list<Variable>::iterator lIter;
+    for (lIter = lVars.begin(); lIter != lVars.end(); lIter++) {
+      lResult.push_back(lIter->getName().c_str());
+    }
+    return lResult;
+  }
 }

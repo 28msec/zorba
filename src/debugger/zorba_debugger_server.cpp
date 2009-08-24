@@ -39,16 +39,12 @@ ZorbaDebuggerServer::run()
          theRuntime->start();
        } else {
          bool lTerminate = theRuntime->processMessage(lMessage.get());
-         std::cout << "processed message" << std::endl;
          if (lTerminate) {
-           std::cout << "terminating runtime" << std::endl;
            theRuntime->terminate();
-           std::cout << "terminated runtime" << std::endl;
            break;
          }
       } 
       theCommunicator->sendReplyMessage(lMessage.get());
-      std::cout << "sent reply" << std::endl;
     } // if (lMessage.get() != NULL)
   } // while
   theRuntime->join();

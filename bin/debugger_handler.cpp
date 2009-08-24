@@ -499,7 +499,6 @@ namespace zorba{
 
 	void DebuggerHandler::started()
 	{
-		synchronous_logger::cerr << "Execute the query...\n"; 
 	}
 
 	void DebuggerHandler::idle()

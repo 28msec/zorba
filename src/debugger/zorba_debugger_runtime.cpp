@@ -104,6 +104,7 @@ void zorba::ZorbaDebuggerRuntime::runQuery()
       theOStream << "Query doesn't have a result because it is an updating query.";
     } else {
       serializer lSerializer(theQuery->theErrorManager);
+      lSerializer.set_parameter("omit-xml-declaration", "yes");
       XQueryImpl::setSerializationParameters(&lSerializer, theSerializerOptions);
       
       lSerializer.serialize(&*theWrapper, theOStream);
