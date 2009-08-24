@@ -418,6 +418,7 @@ void processChildren(
       case store::StoreConsts::textNode:
       {
         //cout << " vup        - pC text: '" << child->getStringValue()->normalizeSpace()->str() << "'\n"; cout.flush();
+
         xqpStringStore_t childStringValue;
         child->getStringValue(childStringValue);
         schemaValidator.text(childStringValue);
@@ -480,6 +481,7 @@ void processTextValue (
 {
   xqtref_t type = typeManager->create_named_atomic_type(typeQName,
                                                         TypeConstants::QUANT_ONE);
+  //cout << " vup        - processTextValue: '" << textValue->c_str() << "'\n";
   //cout << " vup        - processTextValue: " << typeQName->getPrefix()->str()
   // << ":" << typeQName->getLocalName()->str() << "@" 
   // << typeQName->getNamespace()->str() ; cout.flush();
@@ -488,11 +490,7 @@ void processTextValue (
             
   store::Item_t result;                    
   if (type != NULL)
-  {
-    if ( type->content_kind() == XQType::ELEMENT_ONLY_CONTENT_KIND || 
-         type->content_kind() == XQType::MIXED_CONTENT_KIND )
-      return;
-    
+  {  
     if ( type->type_kind() == XQType::USER_DEFINED_KIND )
     {
       const UserDefinedXQType udXQType = static_cast<const UserDefinedXQType&>(*type);
@@ -502,11 +500,20 @@ void processTextValue (
         return;
       }
       else if ( udXQType.isComplex() )
-      {   // text in mixed content, 
-        //  - if invalid there will be a validation exception thrown
+      { // text in mixed content, 
+        //  - if invalid there will be a validation exception thrown before this code
         //  - if xmlspace or mixed content it's fine to have the same node               
-        //resultList.push_back(originalChild);                
-        return;
+
+        if ( udXQType.content_kind()==XQType::SIMPLE_CONTENT_KIND )
+        {
+          typeManager->getSchema()->parseUserSimpleTypes(textValue, type, resultList);
+          return;          
+        }
+        else
+        {
+          resultList.push_back(originalChild);                
+          return;
+        }
       }
       // else isAtomic
     }

@@ -616,7 +616,7 @@ public:
 private:
   store::Item_t           m_qname;
   xqtref_t                m_baseType;
-  type_category_t           m_typeCategory;
+  type_category_t         m_typeCategory;
   content_kind_t          m_contentKind;
   std::vector<xqtref_t>   m_unionItemTypes;
   xqtref_t                m_listItemType;
