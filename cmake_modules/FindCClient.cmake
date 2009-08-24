@@ -39,11 +39,11 @@ if(CCLIENT_INCLUDE AND CCLIENT_LIBRARY)
 
   # Do not treat the operator name keywords and, bitand, bitor, compl, not, or and xor
   # as synonyms as keywords. Needed in order to include C-CLIENT library
-  IF (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_GNUCC)
+  IF (CMAKE_COMPILER_IS_GNUCXX)
     IF(NOT CMAKE_CXX_FLAGS MATCHES "-fno-operator-names")
-      LIST(APPEND CMAKE_CXX_FLAGS "-fno-operator-names")
+      SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-operator-names")
     ENDIF(NOT CMAKE_CXX_FLAGS MATCHES "-fno-operator-names")
-  ENDIF (CMAKE_COMPILER_IS_GNUCXX OR CMAKE_COMPILER_IS_GNUCC)
+  ENDIF (CMAKE_COMPILER_IS_GNUCXX)
 
 else(CCLIENT_INCLUDE AND CCLIENT_LIBRARY)
   set(CCLIENT_FOUND 0)
