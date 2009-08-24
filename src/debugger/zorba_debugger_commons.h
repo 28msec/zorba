@@ -4,29 +4,25 @@
 #include <map>
 #include <string>
 
+#include "compiler/parser/query_loc.h"
+
 namespace zorba {
+  class dynamic_context;
+  class static_context;
   class ZorbaDebuggerRuntime;
   class ZorbaDebugIterator;
+  class TranslatorImpl;
   struct DebugLocation;
   typedef struct DebugLocation DebugLocation_t;
   struct DebugLocation {
     std::string theFileName;
     unsigned long theLineNumber;
+    QueryLoc theQueryLocation;
     bool operator()(const DebugLocation_t& aLocation1, const DebugLocation_t& aLocation2) const;
   };
   class ZorbaDebuggerCommons {
+    friend class TranslatorImpl;
   public: // Commands
-    //************************************
-    // Method:    addDebugLocation
-    // FullName:  zorba::ZorbaDebuggerCommons::addDebugLocation
-    // Access:    public 
-    // Returns:   void
-    // Qualifier: Inserts a breakable location into the map of debug
-    //            iterators
-    // Parameter: DebugLocation_t aLocation
-    // Parameter: ZorbaDebugIterator * anIterator
-    //************************************
-    void addDebugLocation(const DebugLocation_t& aLocation, ZorbaDebugIterator* anIterator);
     //************************************
     // Method:    setRuntime
     // FullName:  zorba::ZorbaDebuggerCommons::setRuntime
@@ -36,16 +32,23 @@ namespace zorba {
     // Parameter: ZorbaDebuggerRuntime * aRuntime
     //************************************
     void setRuntime(ZorbaDebuggerRuntime* aRuntime);
-  public: //Queries
     //************************************
-    // Method:    findDebugIterator
-    // FullName:  zorba::ZorbaDebuggerCommons::findDebugIterator
+    // Method:    setCurrentDynamicContext
+    // FullName:  zorba::ZorbaDebuggerCommons::setCurrentDynamicContext
     // Access:    public 
-    // Returns:   ZorbaDebugIterator*
-    // Qualifier: const
-    // Parameter: const DebugLocation_t & aLocation
+    // Returns:   void
+    // Qualifier:
+    // Parameter: dynamic_context * aDynamicContext
     //************************************
-    ZorbaDebugIterator* findDebugIterator(const DebugLocation_t& aLocation) const;
+    void setCurrentDynamicContext(dynamic_context* aDynamicContext);
+    void setCurrentStaticContext(static_context* aStaticContext);
+  public: //Queries
+    /**
+    * Adds a breakpoint and then sets theLocation from aLocation
+    * to the QueryLoc object, where it has to break.
+    * @return true, if a breakable expression was found - false otherwise
+    */
+    bool addBreakpoint(DebugLocation_t& aLocation);
     //************************************
     // Method:    getRuntime
     // FullName:  zorba::ZorbaDebuggerCommons::getRuntime
@@ -54,9 +57,32 @@ namespace zorba {
     // Qualifier:
     //************************************
     ZorbaDebuggerRuntime* getRuntime();
+    //************************************
+    // Method:    getCurrentDynamicContext
+    // FullName:  zorba::ZorbaDebuggerCommons::getCurrentDynamicContext
+    // Access:    public 
+    // Returns:   dynamic_context*
+    // Qualifier: const
+    //************************************
+    dynamic_context* getCurrentDynamicContext() const;
+    //************************************
+    // Method:    getCurrentStaticContext
+    // FullName:  zorba::ZorbaDebuggerCommons::getCurrentStaticContext
+    // Access:    public 
+    // Returns:   static_context*
+    // Qualifier: const
+    //************************************
+    static_context* getCurrentStaticContext() const;
+    /**
+    * Returns true, if a breakpoint is set to the given location - false 
+    * otherwise.
+    */
+    bool hasToBreakAt(const QueryLoc& aLocation) const;
   private:
-    std::map<DebugLocation_t, ZorbaDebugIterator*, DebugLocation> theLocationMap;
-    ZorbaDebuggerRuntime*                                         theRuntime;
+    std::map<DebugLocation_t, bool, DebugLocation> theLocationMap;
+    ZorbaDebuggerRuntime*                          theRuntime;
+    static_context*                                theCurrentStaticContext;
+    dynamic_context*                               theCurrentDynamicContext;
   };
 }
 

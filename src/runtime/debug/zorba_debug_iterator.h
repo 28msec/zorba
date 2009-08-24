@@ -5,6 +5,7 @@
 #include "runtime/base/narybase.h"
 
 #include <vector>
+#include <map>
 
 namespace zorba {
   class ZorbaDebugIterator : public NaryBaseIterator<ZorbaDebugIterator, PlanIteratorState>
@@ -20,13 +21,9 @@ namespace zorba {
     void addChild(ZorbaDebugIterator* child);
     void setParent(ZorbaDebugIterator* parent);
     QueryLoc getQueryLocation() const;
-  public: // Debugger commands
-    void setBreakpoint();
-    void deleteBreakpoint();
   private:
     std::vector<ZorbaDebugIterator*>  theDebuggerChildren;
     ZorbaDebugIterator*               theDebuggerParent;
-    bool                              theHasToBreak;
   };
 }
 

@@ -464,7 +464,7 @@ public:
   std::ostream*
   get_trace_stream() const;
 
-  std::map<std::string, ctx_value_t>
+  std::vector<std::string>
   getVariables() const;
 
 protected:

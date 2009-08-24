@@ -330,7 +330,6 @@ void end_visit (debugger_expr& v) {
   DebugLocation_t lLocation;
   lLocation.theLineNumber = qloc.getLineno();
   lLocation.theFileName = qloc.getFilename();
-  ccb->theDebuggerCommons->addDebugLocation(lLocation, aDebugIterator.get());
   /*push_itstack(new FnDebugIterator(this->ccb->m_debugger, 
                                    sctx,
                                    qloc,

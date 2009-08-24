@@ -19,6 +19,7 @@ namespace zorba {
   class AbstractCommandMessage;
   class DebuggerCommunicator;
   class ZorbaDebugIterator;
+  class ReplyMessage;
 
   class ZorbaDebuggerRuntime : public Runnable {
   public: // Creation and destruction
@@ -104,8 +105,8 @@ namespace zorba {
     //************************************
     bool execCommands();
     //************************************
-    // Method:    execBreakpoints
-    // FullName:  zorba::ZorbaDebuggerRuntime::execBreakpoints
+    // Method:    breakpointCommand
+    // FullName:  zorba::ZorbaDebuggerRuntime::breakpointCommand
     // Access:    private 
     // Returns:   void
     // Qualifier: This executes a command from the BREAKPOINTS
@@ -113,7 +114,15 @@ namespace zorba {
     //            from another method then runQuery because of 
     //            Locking!
     //************************************
-    void execBreakpoints();
+    void breakpointCommands();
+    //************************************
+    // Method:    dynamicCommands
+    // FullName:  zorba::ZorbaDebuggerRuntime::dynamicCommands
+    // Access:    private 
+    // Returns:   void
+    // Qualifier:
+    //************************************
+    void dynamicCommands();
     //************************************
     // Method:    addBreakpoint
     // FullName:  zorba::ZorbaDebuggerRuntime::addBreakpoint
@@ -123,6 +132,14 @@ namespace zorba {
     // Parameter: const QueryLoc & aLocation
     //************************************
     QueryLoc addBreakpoint(const QueryLoc& aLocation);
+    //************************************
+    // Method:    getAllVariables
+    // FullName:  zorba::ZorbaDebuggerRuntime::getAllVariables
+    // Access:    private 
+    // Returns:   ReplyMessage*
+    // Qualifier:
+    //************************************
+    ReplyMessage* getAllVariables();
     void runQuery();
     void resumeQuery();
     void terminateRuntime();

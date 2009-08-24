@@ -156,7 +156,8 @@ std::string XQType::toString() const
 {
   std::ostringstream os;
   serialize_ostream(os);
-  return os.str();
+  std::string lResult = os.str();
+  return lResult;
 }
 
 std::ostream& XQType::serialize_ostream(std::ostream& os) const

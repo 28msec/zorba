@@ -65,6 +65,8 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
+#include "debugger/zorba_debugger_commons.h"
+
 using namespace std;
 
 namespace zorba {
@@ -4341,9 +4343,35 @@ void end_visit (const IfExpr& v, void* /*visit_state*/)
                      loc);
 
   if (cb->theDebuggerCommons != 0) {
+    // In this expression branch, we create the debugger expressions.
+    // Furthermore, we create an entry for all expressions in the map
+    // of breakable expressions. This is done here, in order to be able,
+    // to set breakpoints of expressions which are not translated at the
+    // beginning (e.g. inside functions).
+    DebugLocation_t lLocation1;
+    DebugLocation_t lLocation2;
+    DebugLocation_t lLocation3;
+
     c_h = new debugger_expr(cb->m_cur_sctx, c_h->get_loc(), c_h, thePrologVars);
+    lLocation1.theFileName = c_h->get_loc().getFilename();
+    lLocation1.theLineNumber = c_h->get_loc().getLineno();
+    lLocation1.theQueryLocation = c_h->get_loc();
+    cb->theDebuggerCommons->theLocationMap.insert(
+      std::pair<DebugLocation_t, bool>(lLocation1, false));
+
     t_h = new debugger_expr(cb->m_cur_sctx, t_h->get_loc(), t_h, thePrologVars);
+    lLocation2.theFileName = t_h->get_loc().getFilename();
+    lLocation2.theLineNumber = t_h->get_loc().getLineno();
+    lLocation2.theQueryLocation = t_h->get_loc();
+    cb->theDebuggerCommons->theLocationMap.insert(
+      std::pair<DebugLocation_t, bool>(lLocation1, false));
+
     e_h = new debugger_expr(cb->m_cur_sctx, e_h->get_loc(), e_h, thePrologVars);
+    lLocation3.theFileName = e_h->get_loc().getFilename();
+    lLocation3.theLineNumber = e_h->get_loc().getLineno();
+    lLocation3.theQueryLocation = e_h->get_loc();
+    cb->theDebuggerCommons->theLocationMap.insert(
+      std::pair<DebugLocation_t, bool>(lLocation1, false));
   }
 
   if_expr *lIfExpr = new if_expr(cb->m_cur_sctx, loc,c_h,t_h,e_h);

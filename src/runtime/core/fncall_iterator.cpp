@@ -118,6 +118,7 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   block->theRuntimeCB = new RuntimeCB (*planState.theRuntimeCB);
   block->theRuntimeCB->theDynamicContext = new dynamic_context (block->theRuntimeCB->theDynamicContext);
   block->theCompilerCB = planState.theCompilerCB;
+  block->theDebuggerCommons = planState.theDebuggerCommons;
 
   block->checkDepth (loc);
   state->theFnBodyStateBlock = block.release();

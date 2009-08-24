@@ -8,19 +8,20 @@ using namespace zorba;
 
 zorba::ZorbaDebugIterator::ZorbaDebugIterator( short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildvector )
 :
-NaryBaseIterator<ZorbaDebugIterator, PlanIteratorState>(sctx, loc, aChildvector), theHasToBreak(false)
+NaryBaseIterator<ZorbaDebugIterator, PlanIteratorState>(sctx, loc, aChildvector)
 {
 }
 
 bool zorba::ZorbaDebugIterator::nextImpl( store::Item_t& result, PlanState& planState ) const
 {
-  std::map<std::string, static_context::ctx_value_t> lVars = getStaticContext(planState)->getVariables();
   PlanIteratorState* lState;
   try {
     DEFAULT_STACK_INIT(PlanIteratorState, lState, planState);
     while (consumeNext(result, theChildren[0], planState)) {
-      if (theHasToBreak) {
+      if (planState.theDebuggerCommons->hasToBreakAt(loc)) {
         try {
+          planState.theDebuggerCommons->setCurrentStaticContext(getStaticContext(planState));
+          planState.theDebuggerCommons->setCurrentDynamicContext(planState.dctx());
           planState.theDebuggerCommons->getRuntime()->suspendRuntime(loc, CAUSE_BREAKPOINT);
         } catch (...) {
           throw;
@@ -74,14 +75,4 @@ void zorba::ZorbaDebugIterator::setParent( ZorbaDebugIterator* parent )
 zorba::QueryLoc zorba::ZorbaDebugIterator::getQueryLocation() const
 {
   return loc;
-}
-
-void zorba::ZorbaDebugIterator::setBreakpoint()
-{
-  theHasToBreak = true;
-}
-
-void zorba::ZorbaDebugIterator::deleteBreakpoint()
-{
-  theHasToBreak = false;
 }

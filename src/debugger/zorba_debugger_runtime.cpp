@@ -1,6 +1,7 @@
 #include "zorba_debugger_runtime.h"
 
 #include <memory>
+#include <vector>
 
 #include "store/api/store.h"
 #include "api/zorbaimpl.h"
@@ -69,7 +70,10 @@ bool zorba::ZorbaDebuggerRuntime::processMessage( AbstractCommandMessage* messag
     }
     break;
   case BREAKPOINTS:
-    execBreakpoints();
+    breakpointCommands();
+    break;
+  case DYNAMIC:
+    dynamicCommands();
     break;
   default:
     throw InvalidCommandException("Internal Error: Command set not implemented");
@@ -132,7 +136,7 @@ zorba::ZorbaDebuggerRuntime::execCommands()
   return false;
 }
 
-void zorba::ZorbaDebuggerRuntime::execBreakpoints()
+void zorba::ZorbaDebuggerRuntime::breakpointCommands()
 {
   switch (theCurrentMessage->getCommand())
   {
@@ -155,6 +159,22 @@ void zorba::ZorbaDebuggerRuntime::execBreakpoints()
   }
 }
 
+void zorba::ZorbaDebuggerRuntime::dynamicCommands()
+{
+  if (theExecStatus != QUERY_SUSPENDED) {
+    std::auto_ptr<ReplyMessage> lReply(
+      new ReplyMessage(theCurrentMessage->getId(), 
+      DEBUGGER_ERROR_INVALID_COMMAND));
+    theCurrentMessage->setReplyMessage(lReply.release());
+  }
+  switch (theCurrentMessage->getCommand())
+  {
+  case VARIABLES:
+    theCurrentMessage->setReplyMessage(getAllVariables());
+    break;
+  }
+}
+
 void zorba::ZorbaDebuggerRuntime::setQueryRunning()
 {
   AutoLock lLock(theLock, Lock::WRITE);
@@ -168,13 +188,10 @@ zorba::QueryLoc zorba::ZorbaDebuggerRuntime::addBreakpoint( const QueryLoc& aLoc
   DebugLocation_t lLocation;
   lLocation.theFileName = aLocation.getFilename().c_str();
   lLocation.theLineNumber = aLocation.getLineno();
-  ZorbaDebugIterator* lIterator = theWrapper->theStateBlock->theDebuggerCommons->findDebugIterator(lLocation);
-  if (lIterator == NULL) {
-    return QueryLoc();
+  if (theWrapper->theStateBlock->theDebuggerCommons->addBreakpoint(lLocation)){
+    return lLocation.theQueryLocation;
   }
-  theBreakpoints.insert(lIterator);
-  lIterator->setBreakpoint();
-  return lIterator->getQueryLocation();
+  return QueryLoc();
 }
 
 void zorba::ZorbaDebuggerRuntime::suspendRuntime( QueryLoc aLocation, SuspensionCause aCause )
@@ -208,4 +225,21 @@ void zorba::ZorbaDebuggerRuntime::terminateRuntime()
   TerminateMessage* lMessage = dynamic_cast<TerminateMessage*>(theCurrentMessage);
   assert(lMessage);
 #endif
+}
+
+zorba::ReplyMessage* zorba::ZorbaDebuggerRuntime::getAllVariables()
+{
+  ZorbaDebuggerCommons* lCommons = 
+    theWrapper->theStateBlock->theDebuggerCommons;
+  static_context* lContext = lCommons->getCurrentStaticContext();
+  std::vector<std::string> lVariables = lContext->getVariables();
+  std::auto_ptr<VariableReply> lReply(
+    new VariableReply(theCurrentMessage->getId(), DEBUGGER_NO_ERROR));
+  std::vector<std::string>::iterator lIter;
+  for (lIter = lVariables.begin(); lIter != lVariables.end(); lIter++) {
+    if (*lIter == "local") {
+      lReply->addLocal(*(++lIter), "");
+    }
+  }
+  return lReply.release();
 }
