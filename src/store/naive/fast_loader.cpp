@@ -410,7 +410,7 @@ void FastXmlLoader::endDocument(void * ctx)
   {
     // This check is required because it is possible (in case of mal-formed doc)
     // that libXml calls endDocument() without having called startDocument().
-    if (stackSize == 0 )
+    if (stackSize == 0)
       return;
   
     // Find the position of the 1st child of this doc node in the node stack
@@ -572,7 +572,7 @@ void FastXmlLoader::startElement(
 
     // Check for recursiveness, i.e., whether this node is a descendant of
     // another noide with the same name
-    for (long i = pathStack.size() - 1; i > 0; --i)
+    for (long i = pathStack.size() - 1; i >= 0; --i)
     {
       if (pathStack[i]->theName->equals(elemNode->theName))
       {

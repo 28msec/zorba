@@ -36,6 +36,15 @@ store::ChildrenIterator* SimpleIteratorFactory::createChildrenIterator()
 /*******************************************************************************
 
 ********************************************************************************/
+store::ChildrenReverseIterator* SimpleIteratorFactory::createChildrenReverseIterator()
+{
+  return static_cast<store::ChildrenReverseIterator*>(new ChildrenReverseIteratorImpl());
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 store::AttributesIterator* SimpleIteratorFactory::createAttributesIterator()
 {
   return new AttributesIteratorImpl();

@@ -44,7 +44,30 @@ bool ChildrenIteratorImpl::next(store::Item_t& result)
 
   result = theParentNode->getChild(theCurrentPos);
 
-  theCurrentPos++;
+  ++theCurrentPos;
+
+  return true;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  class ChildrenReverseIterator                                              //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+bool ChildrenReverseIteratorImpl::next(store::Item_t& result)
+{
+  if (theCurrentPos < 0) 
+  {
+    result = NULL;
+    return false;
+  }
+
+  result = theParentNode->getChild(theCurrentPos);
+
+  --theCurrentPos;
 
   return true;
 }

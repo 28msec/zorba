@@ -79,21 +79,73 @@ public:
   }
 
 
-  void open()
+  void open() { theCurrentPos = 0; }
+
+  void reset() { theCurrentPos = 0; }
+
+  void close() { theParentNode = NULL; }
+
+  bool next(store::Item_t& result);
+};
+
+
+/*******************************************************************************
+  This iterator is used to iterate over the children of a document or element
+  node in reverse document order. It implements the interface of a generic
+  iterator, but also offers the following additional methods:
+ 
+  - An init method that takes as input a document or element node and
+    initializes the iterator so that it will start returning the children of
+    this node.
+  - A next method that returns pointers to the children instead of rchandles.
+    These pointers should not be used beyond the lifetime of the ChildrenIterator
+    object. 
+ 
+  theParentNode : The element or doc node whose children are being retrieved.
+  theCurrentPos : The next child to be retrieved.
+  theNumChildren: The number of children.
+********************************************************************************/
+class ChildrenReverseIteratorImpl : public store::ChildrenReverseIterator
+{
+protected:
+  rchandle<InternalNode>  theParentNode;
+
+  ulong                   theNumChildren;
+  long                    theCurrentPos;
+
+public:
+ ChildrenReverseIteratorImpl() : theNumChildren(0), theCurrentPos(0) { }
+
+  void init(store::Item_t& parent)
   {
-    theCurrentPos = 0;
+    theParentNode.transfer(parent);
+    theNumChildren = theParentNode->numChildren();
+    theCurrentPos = theNumChildren - 1;
   }
 
-  void reset()
+
+  void init(const store::Item* parent)
   {
-    theCurrentPos = 0;
+    theParentNode = parent;
+    theNumChildren = theParentNode->numChildren();
+    theCurrentPos = theNumChildren - 1;
   }
 
-  void close()
+
+  store::Item* next()
   {
-    theCurrentPos = 0;
-    theParentNode = NULL;
+    if (theCurrentPos < 0) 
+      return NULL;
+
+    return theParentNode->getChild(theCurrentPos--);
   }
+
+
+  void open() { theCurrentPos = theNumChildren - 1; }
+
+  void reset() { theCurrentPos = theNumChildren - 1; }
+
+  void close() { theParentNode = NULL; }
 
   bool next(store::Item_t& result);
 };
@@ -156,21 +208,11 @@ public:
   }
 
 
-  void open()
-  {
-    theCurrentPos = 0;
-  }
+  void open() { theCurrentPos = 0; }
 
-  void reset()
-  {
-    theCurrentPos = 0;
-  }
+  void reset() { theCurrentPos = 0; }
 
-  void close()
-  {
-    theCurrentPos = 0;
-    theParentNode = NULL;
-  }
+  void close() { theParentNode = NULL; }
 
   bool next(store::Item_t& result);
 };

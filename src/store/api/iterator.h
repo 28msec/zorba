@@ -49,8 +49,8 @@ class Iterator : virtual public SimpleRCObject
 
 /**
  * This iterator is used to iterate over the children of a document or element
- * node. It implements the interface of a generic iterator, but also offers the
- * following additional methods:
+ * node in document order. It implements the interface of a generic iterator, 
+ * but also offers the following additional methods:
  *
  * - An init method that takes as input a document or element node and
  *   initializes the iterator so that it will start returning the children of
@@ -63,6 +63,39 @@ class ChildrenIterator : public Iterator
 {
 public:
   virtual ~ChildrenIterator() {}
+
+  virtual void init(Item_t& parent) = 0;
+
+  virtual void init(const Item* parent) = 0;
+  
+  virtual void open() = 0;
+
+  virtual Item* next() = 0;
+  
+  virtual bool next(Item_t& result) = 0;
+  
+  virtual void reset() = 0;
+  
+  virtual void close() = 0;
+};
+
+
+/**
+ * This iterator is used to iterate over the children of a document or element
+ * node in reverse document order. It implements the interface of a generic
+ * iterator, but also offers the following additional methods:
+ *
+ * - An init method that takes as input a document or element node and
+ *   initializes the iterator so that it will start returning the children of
+ *   this node.
+ * - A next method that returns pointers to the children instead of rchandles.
+ *   These pointers should not be used beyond the lifetime of the ChildrenIterator
+ *   object. 
+ */
+class ChildrenReverseIterator : public Iterator
+{
+public:
+  virtual ~ChildrenReverseIterator() {}
 
   virtual void init(Item_t& parent) = 0;
 

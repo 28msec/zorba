@@ -33,6 +33,8 @@ public:
 
   store::ChildrenIterator* createChildrenIterator();
 
+  store::ChildrenReverseIterator* createChildrenReverseIterator();
+
   store::AttributesIterator* createAttributesIterator();
 
   store::IndexProbeIterator* createIndexProbeIterator(const store::Index_t& index);

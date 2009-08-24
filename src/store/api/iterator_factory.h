@@ -33,10 +33,17 @@ public:
 
   /**
    * Create an iterator to iterate over the children of a document or element
-   * node.
+   * node in document order.
    */
   virtual ChildrenIterator*
   createChildrenIterator() = 0;
+
+  /**
+   * Create an iterator to iterate over the children of a document or element
+   * node in reverse document order.
+   */
+  virtual ChildrenReverseIterator*
+  createChildrenReverseIterator() = 0;
 
   /**
    * Create an iterator to iterate over the attributes of an element node.
