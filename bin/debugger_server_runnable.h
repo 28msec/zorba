@@ -1,13 +1,13 @@
 #ifndef ZORBA_DEBUGGER_SERVER_RUNNABLE
 #define ZORBA_DEBUGGER_SERVER_RUNNABLE
 
+#include <iostream>
+
 #include "zorba/config.h"
 #include "zorba/api_shared_types.h"
 #include "zorbautils/runnable.h"
 
 namespace zorba {
-
-
 
 class DebuggerServerRunnable : public Runnable {
 
