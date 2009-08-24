@@ -239,8 +239,16 @@ namespace zorba{
 	//List all scoped variables
 	bool DebuggerHandler::variables() const
 	{
-		assert(theClient != 0);
-		std::list<Variable> global = theClient->getGlobalVariables();
+    assert(theClient != 0);
+    std::list<Variable> global;
+    std::list<Variable> locals;
+    try {
+       global = theClient->getGlobalVariables();
+       locals = theClient->getLocalVariables();
+    } catch (std::exception& ex) {
+      std::cerr << ex.what() << std::endl;
+      return false;
+    }
 		std::list<Variable>::iterator it;
 		synchronous_logger::cerr << "Global variables:\n";
 		for(it = global.begin(); it != global.end(); it++)
@@ -248,7 +256,6 @@ namespace zorba{
 			synchronous_logger::cerr << "$" << it->getName() << " " << it->getType() << "\n";
 		}
 		synchronous_logger::cerr << "\n" << "Local variables:" << "\n";
-		std::list<Variable> locals = theClient->getLocalVariables();
 		for(it = locals.begin(); it!=locals.end(); it++)
 		{
 			synchronous_logger::cerr << "$" << it->getName() << " " << it->getType() << "\n";

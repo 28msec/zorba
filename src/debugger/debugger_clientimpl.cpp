@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include <memory>
+#include <exception>
 
 #include <zorba/api_shared_types.h>
 #include <zorba/debugger_exception.h>
@@ -473,6 +474,9 @@ std::list<Variable> ZorbaDebuggerClientImpl::getLocalVariables(bool data) const
 std::list<Variable> ZorbaDebuggerClientImpl::getGlobalVariables(bool data) const
 {
   std::list<Variable> lVariables;
+  if (theExecutionStatus != QUERY_SUSPENDED) {
+    throw std::exception("Query not suspended");
+  }
   VariableMessage lMessage(data);
   std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
   VariableReply *lVariableReply = dynamic_cast<VariableReply *>( lReply.get() );

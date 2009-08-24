@@ -167,6 +167,7 @@ void zorba::ZorbaDebuggerRuntime::dynamicCommands()
       new ReplyMessage(theCurrentMessage->getId(), 
       DEBUGGER_ERROR_INVALID_COMMAND));
     theCurrentMessage->setReplyMessage(lReply.release());
+    return;
   }
   switch (theCurrentMessage->getCommand())
   {
