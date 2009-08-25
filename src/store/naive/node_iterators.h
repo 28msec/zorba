@@ -34,7 +34,9 @@ namespace zorba { namespace simplestore {
  
   - An init method that takes as input a document or element node and
     initializes the iterator so that it will start returning the children of
-    this node.
+    this node. The method also takes an optional child parameter; if a child
+    is given, the iterator will position itself on that child, so that the next
+    next() call will return the right sibling of that child.
   - A next method that returns pointers to the children instead of rchandles.
     These pointers should not be used beyond the lifetime of the ChildrenIterator
     object. 
@@ -49,24 +51,45 @@ protected:
   rchandle<InternalNode>  theParentNode;
 
   ulong                   theNumChildren;
+  ulong                   theInitPos;
   ulong                   theCurrentPos;
 
 public:
- ChildrenIteratorImpl() : theNumChildren(0), theCurrentPos(0) { }
+  ChildrenIteratorImpl() : theNumChildren(0), theInitPos(0), theCurrentPos(0) { }
 
-  void init(store::Item_t& parent)
+  void init(store::Item_t& parent, const store::Item* child = NULL)
   {
     theParentNode.transfer(parent);
     theNumChildren = theParentNode->numChildren();
-    theCurrentPos = 0;
+    theInitPos = 0;
+
+    if (child != NULL && theNumChildren > 0)
+    {
+      assert(child->getParent() == theParentNode);
+
+      while (theParentNode->getChild(theInitPos++) != child)
+      {
+        ;
+      }
+    }
   }
 
 
-  void init(const store::Item* parent)
+  void init(const store::Item* parent, const store::Item* child = NULL)
   {
     theParentNode = parent;
     theNumChildren = theParentNode->numChildren();
-    theCurrentPos = 0;
+    theInitPos = 0;
+
+    if (child != NULL && theNumChildren > 0)
+    {
+      assert(child->getParent() == theParentNode);
+
+      while (theParentNode->getChild(theInitPos++) != child)
+      {
+        ;
+      }
+    }
   }
 
 
@@ -79,11 +102,11 @@ public:
   }
 
 
-  void open() { theCurrentPos = 0; }
+  void open() { theCurrentPos = theInitPos; }
 
-  void reset() { theCurrentPos = 0; }
+  void reset() { theCurrentPos = theInitPos; }
 
-  void close() { theParentNode = NULL; }
+  void close() { theCurrentPos = theNumChildren; theParentNode = NULL; }
 
   bool next(store::Item_t& result);
 };
@@ -96,7 +119,9 @@ public:
  
   - An init method that takes as input a document or element node and
     initializes the iterator so that it will start returning the children of
-    this node.
+    this node. The method also takes an optional child parameter; if a child
+    is given, the iterator will position itself on that child, so that the next
+    next() call will return the left sibling of that child.
   - A next method that returns pointers to the children instead of rchandles.
     These pointers should not be used beyond the lifetime of the ChildrenIterator
     object. 
@@ -111,24 +136,51 @@ protected:
   rchandle<InternalNode>  theParentNode;
 
   ulong                   theNumChildren;
+  long                    theInitPos;
   long                    theCurrentPos;
 
 public:
- ChildrenReverseIteratorImpl() : theNumChildren(0), theCurrentPos(0) { }
+  ChildrenReverseIteratorImpl() 
+    :
+    theNumChildren(0),
+    theInitPos(-1),
+    theCurrentPos(-1)
+  {
+  }
 
-  void init(store::Item_t& parent)
+  void init(store::Item_t& parent, const store::Item* child = NULL)
   {
     theParentNode.transfer(parent);
     theNumChildren = theParentNode->numChildren();
-    theCurrentPos = theNumChildren - 1;
+    theInitPos = theNumChildren - 1;
+
+    if (child != NULL && theNumChildren > 0)
+    {
+      assert(child->getParent() == theParentNode);
+
+      while (theParentNode->getChild(theInitPos--) != child)
+      {
+        ;
+      }
+    }
   }
 
 
-  void init(const store::Item* parent)
+  void init(const store::Item* parent, const store::Item* child = NULL)
   {
     theParentNode = parent;
     theNumChildren = theParentNode->numChildren();
-    theCurrentPos = theNumChildren - 1;
+    theInitPos = theNumChildren - 1;
+
+    if (child != NULL && theNumChildren > 0)
+    {
+      assert(child->getParent() == theParentNode);
+
+      while (theParentNode->getChild(theInitPos--) != child)
+      {
+        ;
+      }
+    }
   }
 
 
@@ -141,11 +193,11 @@ public:
   }
 
 
-  void open() { theCurrentPos = theNumChildren - 1; }
+  void open() { theCurrentPos = theInitPos; }
 
-  void reset() { theCurrentPos = theNumChildren - 1; }
+  void reset() { theCurrentPos = theInitPos; }
 
-  void close() { theParentNode = NULL; }
+  void close() { theCurrentPos = -1; theParentNode = NULL; }
 
   bool next(store::Item_t& result);
 };
@@ -383,3 +435,10 @@ public:
 } // namespace zorba
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
+

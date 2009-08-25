@@ -54,7 +54,9 @@ class Iterator : virtual public SimpleRCObject
  *
  * - An init method that takes as input a document or element node and
  *   initializes the iterator so that it will start returning the children of
- *   this node.
+ *   this node. The method also takes an optional child parameter; if a child
+ *   is given, the iterator will position itself on that child, so that the next
+ *   next() call will return the right sibling of that child.
  * - A next method that returns pointers to the children instead of rchandles.
  *   These pointers should not be used beyond the lifetime of the ChildrenIterator
  *   object. 
@@ -64,9 +66,9 @@ class ChildrenIterator : public Iterator
 public:
   virtual ~ChildrenIterator() {}
 
-  virtual void init(Item_t& parent) = 0;
+  virtual void init(Item_t& parent, const Item* child = NULL) = 0;
 
-  virtual void init(const Item* parent) = 0;
+  virtual void init(const Item* parent, const Item* child = NULL) = 0;
   
   virtual void open() = 0;
 
@@ -87,7 +89,9 @@ public:
  *
  * - An init method that takes as input a document or element node and
  *   initializes the iterator so that it will start returning the children of
- *   this node.
+ *   this node. The method also takes an optional child parameter; if a child
+ *   is given, the iterator will position itself on that child, so that the next
+ *   next() call will return the left sibling of that child.
  * - A next method that returns pointers to the children instead of rchandles.
  *   These pointers should not be used beyond the lifetime of the ChildrenIterator
  *   object. 
@@ -97,9 +101,9 @@ class ChildrenReverseIterator : public Iterator
 public:
   virtual ~ChildrenReverseIterator() {}
 
-  virtual void init(Item_t& parent) = 0;
+  virtual void init(Item_t& parent, const Item* child = NULL) = 0;
 
-  virtual void init(const Item* parent) = 0;
+  virtual void init(const Item* parent, const Item* child = NULL) = 0;
   
   virtual void open() = 0;
 

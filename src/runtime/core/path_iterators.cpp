@@ -43,18 +43,18 @@ END_SERIALIZABLE_TEMPLATE_VERSIONS(AxisIterator)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<SelfAxisIterator, SelfAxisState>, 1)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<AttributeAxisIterator, AttributeAxisState>, 2)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<ParentAxisIterator, ParentAxisState>, 3)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<AncestorAxisIter, AncestorAxisState>, 4)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<AncestorReverseAxisIter, AncestorReverseAxisState>, 5)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<AncestorSelfAxisIter, AncestorAxisState>, 6)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<AncestorSelfReverseAxisIter, AncestorReverseAxisState>, 7)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<RSiblingAxisIter, RSiblingAxisState>, 8)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<LSiblingAxisIter, LSiblingAxisState>, 9)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<LSiblingReverseAxisIter, LSiblingReverseAxisState>, 10)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<AncestorAxisIterator, AncestorAxisState>, 4)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<AncestorReverseAxisIterator, AncestorReverseAxisState>, 5)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<AncestorSelfAxisIterator, AncestorAxisState>, 6)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<AncestorSelfReverseAxisIterator, AncestorReverseAxisState>, 7)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<RSiblingAxisIterator, RSiblingAxisState>, 8)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<LSiblingAxisIterator, LSiblingAxisState>, 9)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<LSiblingReverseAxisIterator, LSiblingReverseAxisState>, 10)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<ChildAxisIterator, ChildAxisState>, 11)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<DescendantAxisIterator,DescendantAxisState>, 12)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<DescendantSelfAxisIterator,DescendantAxisState>, 13)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<PrecedingAxisIterator, PrecedingAxisState>, 14)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<PrecedingReverseAxisIter, PrecedingReverseAxisState>, 15)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<PrecedingReverseAxisIterator, PrecedingReverseAxisState>, 15)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(AxisIterator, AxisIterator<FollowingAxisIterator,FollowingAxisState>, 16)
 
 SERIALIZABLE_CLASS_VERSIONS(SelfAxisIterator)
@@ -66,26 +66,26 @@ END_SERIALIZABLE_CLASS_VERSIONS(AttributeAxisIterator)
 SERIALIZABLE_CLASS_VERSIONS(ParentAxisIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(ParentAxisIterator)
 
-SERIALIZABLE_CLASS_VERSIONS(AncestorAxisIter)
-END_SERIALIZABLE_CLASS_VERSIONS(AncestorAxisIter)
+SERIALIZABLE_CLASS_VERSIONS(AncestorAxisIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(AncestorAxisIterator)
 
-SERIALIZABLE_CLASS_VERSIONS(AncestorReverseAxisIter)
-END_SERIALIZABLE_CLASS_VERSIONS(AncestorReverseAxisIter)
+SERIALIZABLE_CLASS_VERSIONS(AncestorReverseAxisIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(AncestorReverseAxisIterator)
 
-SERIALIZABLE_CLASS_VERSIONS(AncestorSelfAxisIter)
-END_SERIALIZABLE_CLASS_VERSIONS(AncestorSelfAxisIter)
+SERIALIZABLE_CLASS_VERSIONS(AncestorSelfAxisIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(AncestorSelfAxisIterator)
 
-SERIALIZABLE_CLASS_VERSIONS(AncestorSelfReverseAxisIter)
-END_SERIALIZABLE_CLASS_VERSIONS(AncestorSelfReverseAxisIter)
+SERIALIZABLE_CLASS_VERSIONS(AncestorSelfReverseAxisIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(AncestorSelfReverseAxisIterator)
 
-SERIALIZABLE_CLASS_VERSIONS(RSiblingAxisIter)
-END_SERIALIZABLE_CLASS_VERSIONS(RSiblingAxisIter)
+SERIALIZABLE_CLASS_VERSIONS(RSiblingAxisIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(RSiblingAxisIterator)
 
-SERIALIZABLE_CLASS_VERSIONS(LSiblingAxisIter)
-END_SERIALIZABLE_CLASS_VERSIONS(LSiblingAxisIter)
+SERIALIZABLE_CLASS_VERSIONS(LSiblingAxisIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(LSiblingAxisIterator)
 
-SERIALIZABLE_CLASS_VERSIONS(LSiblingReverseAxisIter)
-END_SERIALIZABLE_CLASS_VERSIONS(LSiblingReverseAxisIter)
+SERIALIZABLE_CLASS_VERSIONS(LSiblingReverseAxisIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(LSiblingReverseAxisIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(ChildAxisIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(ChildAxisIterator)
@@ -99,8 +99,8 @@ END_SERIALIZABLE_CLASS_VERSIONS(DescendantSelfAxisIterator)
 SERIALIZABLE_CLASS_VERSIONS(PrecedingAxisIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(PrecedingAxisIterator)
 
-SERIALIZABLE_CLASS_VERSIONS(PrecedingReverseAxisIter)
-END_SERIALIZABLE_CLASS_VERSIONS(PrecedingReverseAxisIter)
+SERIALIZABLE_CLASS_VERSIONS(PrecedingReverseAxisIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(PrecedingReverseAxisIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(FollowingAxisIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(FollowingAxisIterator)
@@ -347,16 +347,6 @@ bool SelfAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 /*******************************************************************************
 
 ********************************************************************************/
-AttributeAxisState::AttributeAxisState()
-{
-}
-
-
-AttributeAxisState::~AttributeAxisState()
-{
-}
-
-
 void AttributeAxisState::init(PlanState& planState)
 {
   AxisState::init(planState);
@@ -447,7 +437,7 @@ bool ParentAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 /*******************************************************************************
 
 ********************************************************************************/
-bool AncestorAxisIter::nextImpl(store::Item_t& result, PlanState& planState) const
+bool AncestorAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item* ancestor;
 
@@ -494,7 +484,7 @@ bool AncestorAxisIter::nextImpl(store::Item_t& result, PlanState& planState) con
 /*******************************************************************************
 
 ********************************************************************************/
-bool AncestorReverseAxisIter::nextImpl(
+bool AncestorReverseAxisIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -539,7 +529,7 @@ bool AncestorReverseAxisIter::nextImpl(
 /*******************************************************************************
 
 ********************************************************************************/
-bool AncestorSelfAxisIter::nextImpl(
+bool AncestorSelfAxisIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -588,7 +578,7 @@ bool AncestorSelfAxisIter::nextImpl(
 /*******************************************************************************
 
 ********************************************************************************/
-bool AncestorSelfReverseAxisIter::nextImpl(
+bool AncestorSelfReverseAxisIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -627,7 +617,7 @@ bool AncestorSelfReverseAxisIter::nextImpl(
 /*******************************************************************************
 
 ********************************************************************************/
-void RSiblingAxisState::init(PlanState& planState)
+void SiblingAxisState::init(PlanState& planState)
 {
   AxisState::init(planState);
 
@@ -635,7 +625,7 @@ void RSiblingAxisState::init(PlanState& planState)
 }
 
 
-void RSiblingAxisState::reset(PlanState& planState)
+void SiblingAxisState::reset(PlanState& planState)
 {
   AxisState::reset(planState);
 
@@ -644,13 +634,13 @@ void RSiblingAxisState::reset(PlanState& planState)
 }
 
 
-bool RSiblingAxisIter::nextImpl(store::Item_t& result, PlanState& planState) const
+bool RSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   const store::Item* parent;
   const store::Item* child;
 
-  RSiblingAxisState* state;
-  DEFAULT_STACK_INIT(RSiblingAxisState, state, planState);
+  SiblingAxisState* state;
+  DEFAULT_STACK_INIT(SiblingAxisState, state, planState);
 
   while (true)
   {
@@ -672,14 +662,8 @@ bool RSiblingAxisIter::nextImpl(store::Item_t& result, PlanState& planState) con
     if (parent == NULL)
       continue;
 
-    state->theChildren->init(parent);
+    state->theChildren->init(parent, state->theContextNode.getp());
     state->theChildren->open();
-
-    while ((child = state->theChildren->next()) != NULL &&
-           child != state->theContextNode)
-    {
-      ;
-    }
 
     while ((child = state->theChildren->next()) != NULL)
     {
@@ -700,30 +684,13 @@ bool RSiblingAxisIter::nextImpl(store::Item_t& result, PlanState& planState) con
 /*******************************************************************************
 
 ********************************************************************************/
-void LSiblingAxisState::init(PlanState& planState)
-{
-  AxisState::init(planState);
-
-  theChildren = GENV_ITERATOR_FACTORY->createChildrenIterator();
-}
-
-
-void LSiblingAxisState::reset(PlanState& planState)
-{
-  AxisState::reset(planState);
-
-  if (theChildren != NULL)
-    theChildren->reset();
-}
-
-
-bool LSiblingAxisIter::nextImpl(store::Item_t& result, PlanState& planState) const
+bool LSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   const store::Item* parent;
   const store::Item* sibling;
 
-  LSiblingAxisState* state;
-  DEFAULT_STACK_INIT(LSiblingAxisState, state, planState);
+  SiblingAxisState* state;
+  DEFAULT_STACK_INIT(SiblingAxisState, state, planState);
 
   while (true)
   {
@@ -785,7 +752,7 @@ void LSiblingReverseAxisState::reset(PlanState& planState)
 }
 
 
-bool LSiblingReverseAxisIter::nextImpl(
+bool LSiblingReverseAxisIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -815,14 +782,8 @@ bool LSiblingReverseAxisIter::nextImpl(
     if (parent == NULL)
       continue;
 
-    state->theChildren->init(parent);
+    state->theChildren->init(parent, state->theContextNode.getp());
     state->theChildren->open();
-
-    while ((sibling = state->theChildren->next()) != NULL &&
-           sibling != state->theContextNode.getp())
-    {
-      ;
-    }
 
     while ((sibling = state->theChildren->next()) != NULL)
     {
@@ -843,20 +804,10 @@ bool LSiblingReverseAxisIter::nextImpl(
 /*******************************************************************************
 
 ********************************************************************************/
-
-ChildAxisState::ChildAxisState() 
-{
-}
-
-
-ChildAxisState::~ChildAxisState() 
-{
-}
-
-
 void ChildAxisState::init(PlanState& planState)
 {
   AxisState::init(planState);
+
   theChildren = GENV_ITERATOR_FACTORY->createChildrenIterator();
 }
 
@@ -864,6 +815,7 @@ void ChildAxisState::init(PlanState& planState)
 void ChildAxisState::reset(PlanState& planState)
 {
   AxisState::reset(planState);
+
   if (theChildren != NULL)
     theChildren->reset(); 
 }
@@ -913,15 +865,10 @@ bool ChildAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 /*******************************************************************************
 
 ********************************************************************************/
-DescendantAxisState::DescendantAxisState() : theTop(0)
-{
-}
-
-
 DescendantAxisState::~DescendantAxisState()
 {
   ulong len = theCurrentPath.size();
-  for (ulong i = 0; i < len; i++)
+  for (ulong i = 0; i < len; ++i)
   {
     delete theCurrentPath[i].second;
   }
@@ -953,27 +900,28 @@ void DescendantAxisState::push(const store::Item* node)
   {
     theCurrentPath[theTop].first = node;
     theCurrentPath[theTop].second->init(node);
+    theCurrentPath[theTop].second->open();
   }
   else
   {
     store::ChildrenIterator* ite = GENV_ITERATOR_FACTORY->createChildrenIterator();
     ite->init(node);
-    theCurrentPath.push_back(std::pair<const store::Item*, store::ChildrenIterator*>
-                             (node, ite));
+    ite->open();
+    theCurrentPath.push_back(PathPair(node, ite));
   }
 
-  theTop++;
+  ++theTop;
 }
 
 
 bool DescendantAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  const store::Item* child = NULL;
+  const store::Item* desc = NULL;
 
   DescendantAxisState* state;
   DEFAULT_STACK_INIT(DescendantAxisState, state, planState);
 
-  while (true)
+  while (theTestKind != match_doc_test)
   {
     do
     {
@@ -993,38 +941,37 @@ bool DescendantAxisIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
     state->push(state->theContextNode);
     
-    while(true) 
+    desc = state->top()->next();
+
+    while (desc != NULL) 
     {
-      // The next descendant is the next child of the node N that is currently
-      // at the top of the path stack. If N has no children or all of its
-      // children have been processed already, N is removed from the stack
-      // and the process is repeated.
-      while (!state->empty() && (child = state->top()->next()) == NULL)
+      if (nameOrKindTest(desc, planState))
       {
-        state->pop();
-      }
+        result = desc;
 
-      if (child == NULL)
-        break;
-
-      if (nameOrKindTest(child, planState))
-      {
-        result = child;
-
-        if (child->getNodeKind() == store::StoreConsts::elementNode &&
-            (child->isRecursive() || 
+        if (desc->getNodeKind() == store::StoreConsts::elementNode &&
+            (desc->isRecursive() || 
              theTestKind == match_anykind_test ||
              (theTestKind == match_elem_test && theQName == NULL) ||
              (theTestKind == match_name_test && theWildKind != match_no_wild)))
         {
-          state->push(child);
+          state->push(desc);
         }
 
         STACK_PUSH(true, state);
       }
-      else if (child->getNodeKind() == store::StoreConsts::elementNode)
+      else if (desc->getNodeKind() == store::StoreConsts::elementNode)
       {
-        state->push(child);
+        state->push(desc);
+      }
+
+      // The next descendant is the next child of the node N that is currently
+      // at the top of the path stack. If N has no children or all of its
+      // children have been processed already, N is removed from the stack
+      // and the process is repeated.
+      while (!state->empty() && (desc = state->top()->next()) == NULL)
+      {
+        state->pop();
       }
     }
   }
@@ -1040,8 +987,8 @@ bool DescendantSelfAxisIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  const store::Item* child;
-  store::StoreConsts::NodeKind childKind;
+  const store::Item* desc;
+  store::StoreConsts::NodeKind descKind;
 
   DescendantAxisState* state;
   DEFAULT_STACK_INIT(DescendantAxisState, state, planState);
@@ -1062,43 +1009,43 @@ bool DescendantSelfAxisIterator::nextImpl(
     while ((theTestKind == match_name_test || theTestKind == match_no_test) &&
            !isElementOrDocumentNode(state->theContextNode.getp()));
 
-    child = state->theContextNode.getp();
+    desc = state->theContextNode.getp();
 
-    while (child != NULL)
+    while (desc != NULL)
     {
-      childKind = child->getNodeKind();
+      descKind = desc->getNodeKind();
 
-      if (nameOrKindTest(child, planState))
+      if (nameOrKindTest(desc, planState))
       {
-        result = child;
+        result = desc;
 
-        if ((childKind == store::StoreConsts::elementNode ||
-             (childKind == store::StoreConsts::documentNode &&
+        if ((descKind == store::StoreConsts::elementNode ||
+             (descKind == store::StoreConsts::documentNode &&
               theTestKind == match_anykind_test)) &&
-            (child->isRecursive() || 
+            (desc->isRecursive() || 
              theTestKind == match_anykind_test ||
              (theTestKind == match_elem_test && theQName == NULL) ||
              (theTestKind == match_name_test && theWildKind != match_no_wild)))
         {
-          state->push(child);
+          state->push(desc);
         }
 
         STACK_PUSH(true, state);
       }
-      else if ((childKind == store::StoreConsts::elementNode ||
-                childKind == store::StoreConsts::documentNode) &&
+      else if ((descKind == store::StoreConsts::elementNode ||
+                descKind == store::StoreConsts::documentNode) &&
                theTestKind != match_doc_test)
       {
-        state->push(child);
+        state->push(desc);
       }
 
-      child = NULL;
+      desc = NULL;
 
       // The next descendant is the next child of the node N that is currently
       // at the top of the path stack. If N has no children or all of its
       // children have been processed already, N is removed from the stack
       // and the process is repeated.
-      while (!state->empty() && (child = state->top()->next()) == NULL)
+      while (!state->empty() && (desc = state->top()->next()) == NULL)
       {
         state->pop();
       }
@@ -1112,48 +1059,33 @@ bool DescendantSelfAxisIterator::nextImpl(
 /*******************************************************************************
 
 ********************************************************************************/
-PrecedingAxisState::~PrecedingAxisState()
-{
-  while (!theCurrentPath.empty())
-  {
-    theCurrentPath.pop();
-  }
-  while (!theAncestorPath.empty())
-  {
-    theAncestorPath.pop();
-  }
-}
-
-
 void PrecedingAxisState::init(PlanState& planState)
 {
-  AxisState::init(planState);
+  DescendantAxisState::init(planState);
+
+  theAncestorChildren = GENV_ITERATOR_FACTORY->createChildrenIterator();
 }
 
 
 void PrecedingAxisState::reset(PlanState& planState)
 {
-  AxisState::reset(planState);
-  while (!theCurrentPath.empty())
-  {
-    theCurrentPath.pop();
-  }
-  while (!theAncestorPath.empty())
-  {
-    theAncestorPath.pop();
-  }
+  DescendantAxisState::reset(planState);
+
+  theAncestorPath.clear();
+  theAncestorChildren->close();
 }
 
 
 bool PrecedingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t ancestor;
-  store::Iterator_t children;
+  store::Item* ancestor;
+  const store::Item* child;
+  const store::Item* desc;
 
   PrecedingAxisState* state;
   DEFAULT_STACK_INIT(PrecedingAxisState, state, planState);
 
-  while (true)
+  while (theTestKind != match_doc_test)
   {
     if (!consumeNext(state->theContextNode, theChild.getp(), planState))
       break;
@@ -1165,55 +1097,101 @@ bool PrecedingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
     }
 
     // Collect the context node and its ancestors
-    ancestor = state->theContextNode;
+    ancestor = state->theContextNode.getp();
 
     while (ancestor != NULL)
     {
-      state->theAncestorPath.push(ancestor);
+      state->theAncestorPath.push_back(ancestor);
       ancestor = ancestor->getParent();
     }
 
-    // For each ancestor N (starting from the top) return its descendants,
-    // up to the point where the next ancestor M is reached (M is a child
-    // of N). Then repeat the process with the subtree rooted at M. 
+    // For each ancestor A of the current context node N and for each child C
+    // of A such as C is to the left of the next ancestor AC in the ancestor
+    // path (note: AC is a child of A), traverse the subtree rooted at C. 
     while (state->theAncestorPath.size() > 1)
     {
-      ancestor = state->theAncestorPath.top();
+      // Get the next ancestor A in the ancestors path and open an iterator
+      // over its children. 
+      ancestor = state->theAncestorPath.back();
+      state->theAncestorPath.pop_back();
 
-      state->theAncestorPath.pop();
+      state->theAncestorChildren->init(ancestor);
+      state->theAncestorChildren->open();
 
-      children = ancestor->getChildren();
-      children->open();
-
-      state->theCurrentPath.push(std::pair<store::Item_t, store::Iterator_t>(ancestor, children));
-    
-      if (!children->next(result))
-        result = NULL;
-
-      while (result != state->theAncestorPath.top())
+      // For each child C of A such that C is to the left of AC ...
+      while ((child = state->theAncestorChildren->next()) != NULL &&
+             child != state->theAncestorPath.back())
       {
-        if (result->getNodeKind() == store::StoreConsts::elementNode)
+        // Special case: C is not element node, so there is no tree to travesre.
+        if (child->getNodeKind() != store::StoreConsts::elementNode)
         {
-          store::Iterator_t children = result->getChildren();
-          children->open();
-          state->theCurrentPath.push(std::pair<store::Item_t, store::Iterator_t>
-                                    (result, children));
+          if (nameOrKindTest(child, planState))
+          {
+            result = child;
+            STACK_PUSH(true, state);
+          }
+          
+          continue;
         }
 
-        if (nameOrKindTest(result, planState))
+        // C is an element node; traverse its subtree, unless we can skip it
+        // based on the non-recursiveness of C and the node test associated 
+        // with this axis step.
+        if (nameOrKindTest(child, planState))
         {
-          STACK_PUSH(true, state);
-          result = NULL;
+          if (child->isRecursive() || 
+              theTestKind == match_anykind_test ||
+              (theTestKind == match_elem_test && theQName == NULL) ||
+              (theTestKind == match_name_test && theWildKind != match_no_wild))
+          {
+            state->push(child);
+          }
+          else
+          {
+            result = child;
+            STACK_PUSH(true, state);
+
+            continue;
+          }
+        }
+        else
+        {
+          state->push(child);
         }
 
-        while (!checked_top (state->theCurrentPath).second->next(result))
+        // Do the descendant traversal
+        desc = child;
+
+        while (desc != NULL)
         {
-          result = NULL;
-          checked_pop(state->theCurrentPath);
-          if (state->theCurrentPath.empty())
-            break;
+          if (nameOrKindTest(desc, planState))
+          {
+            result = desc;
+
+            if (desc->getNodeKind() == store::StoreConsts::elementNode &&
+                (desc->isRecursive() || 
+                 theTestKind == match_anykind_test ||
+                 (theTestKind == match_elem_test && theQName == NULL) ||
+                 (theTestKind == match_name_test && theWildKind != match_no_wild)))
+            {
+              state->push(desc);
+            }
+            
+            STACK_PUSH(true, state);
+          }
+          else if (desc->getNodeKind() == store::StoreConsts::elementNode)
+          {
+            state->push(desc);
+          }
+
+          while (!state->empty() && (desc = state->top()->next()) == NULL)
+          {
+            state->pop();
+          }
         }
       }
+
+      state->theAncestorChildren->close();
     }
   }
 
@@ -1280,6 +1258,7 @@ void PrecedingReverseAxisState::push(const store::Item* node)
   {
     theCurrentPath[theTop].first = node;
     theCurrentPath[theTop].second->init(node);
+    theCurrentPath[theTop].second->open();
   }
   else
   {
@@ -1287,6 +1266,7 @@ void PrecedingReverseAxisState::push(const store::Item* node)
     GENV_ITERATOR_FACTORY->createChildrenReverseIterator();
 
     ite->init(node);
+    ite->open();
 
     theCurrentPath.push_back(std::pair<const store::Item*,
                              store::ChildrenReverseIterator*>(node, ite));
@@ -1296,7 +1276,7 @@ void PrecedingReverseAxisState::push(const store::Item* node)
 }
 
 
-bool PrecedingReverseAxisIter::nextImpl(
+bool PrecedingReverseAxisIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
@@ -1320,7 +1300,7 @@ bool PrecedingReverseAxisIter::nextImpl(
     state->theAncestorChild = state->theContextNode.getp();
     state->theAncestor.first = state->theAncestorChild->getParent();
 
-    // For each ancestor A of the current context node N ...
+    // For each ancestor A of the current context node N (starting with N's parent)
     while (state->theAncestor.first != NULL)
     {
       state->theAncestor.second->init(state->theAncestor.first);
@@ -1436,37 +1416,20 @@ bool PrecedingReverseAxisIter::nextImpl(
 /*******************************************************************************
 
 ********************************************************************************/
-FollowingAxisState::~FollowingAxisState()
-{
-  while (!theCurrentPath.empty())
-  {
-    theCurrentPath.pop();
-  }
-  while (!theAncestorPath.empty())
-  {
-    theAncestorPath.pop();
-  }
-}
-
-
 void FollowingAxisState::init(PlanState& planState)
 {
-  AxisState::init(planState);
+  DescendantAxisState::init(planState);
+
+  theAncestorChildren = GENV_ITERATOR_FACTORY->createChildrenIterator();
 }
 
 
 void FollowingAxisState::reset(PlanState& planState)
 {
-  AxisState::reset(planState);
-  while (!theCurrentPath.empty())
-  {
-    theCurrentPath.pop();
-  }
-  while (!theAncestorPath.empty())
-  {
-    theAncestorPath.pop();
-  }
-  theContextNode = NULL;
+  DescendantAxisState::reset(planState);
+
+  theAncestorPath.clear();
+  theAncestorChildren->close();
 }
 
 
@@ -1474,13 +1437,14 @@ bool FollowingAxisIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  store::Item_t ancestor;
-  store::Iterator_t children;
+  store::Item* ancestor;
+  const store::Item* child;
+  const store::Item* desc;
 
   FollowingAxisState* state;
   DEFAULT_STACK_INIT(FollowingAxisState, state, planState);
 
-  while (true)
+  while (theTestKind != match_doc_test)
   {
     if (!consumeNext(state->theContextNode, theChild.getp(), planState))
       break;
@@ -1492,66 +1456,101 @@ bool FollowingAxisIterator::nextImpl(
     }
 
     // Collect the context node and its ancestors
-    ancestor = state->theContextNode;
+    ancestor = state->theContextNode.getp();
 
     while (ancestor != NULL)
     {
-      state->theAncestorPath.push(ancestor);
+      state->theAncestorPath.push_back(ancestor);
       ancestor = ancestor->getParent();
     }
 
-    // For each ancestor N (starting from the top) return its descendants,
-    // starting from the rsibling of next ancestor M (M is a child of N).
-    // Then repeat the process with the subtree rooted at M. 
+    // For each ancestor A of the current context node N and for each child C
+    // of A such as C is to the right of the next ancestor AC in the ancestor
+    // path (note: AC is a child of A), traverse the subtree rooted at C. 
     while (state->theAncestorPath.size() > 1)
     {
-      ancestor = state->theAncestorPath.top();
+      // Get the next ancestor A in the ancestors path and open an iterator
+      // over its children, placing the iterator to the right of the next
+      // ancestor AC in the ancestor path.
+      ancestor = state->theAncestorPath.back();
+      state->theAncestorPath.pop_back();
 
-      state->theAncestorPath.pop();
+      state->theAncestorChildren->init(ancestor, state->theAncestorPath.back());
+      state->theAncestorChildren->open();
 
-      children = ancestor->getChildren();
-      children->open();
-
-      state->theCurrentPath.push(std::pair<store::Item_t, store::Iterator_t>(ancestor, children));
-
-      do
+      // For each child C of A such that C is to the right of AC ...
+      while ((child = state->theAncestorChildren->next()) != NULL)
       {
-        children->next(result);
-      }
-      while (result != state->theAncestorPath.top());
-
-      if (!children->next(result)) {
-        result = NULL;
-      }
-
-      while (result != NULL)
-      {
-        if (result->getNodeKind() == store::StoreConsts::elementNode)
+        // Special case: C is not element node, so there is no tree to travesre.
+        if (child->getNodeKind() != store::StoreConsts::elementNode)
         {
-          store::Iterator_t children = result->getChildren();
-          children->open();
-          state->theCurrentPath.push(std::pair<store::Item_t, store::Iterator_t>
-                                    (result, children));
+          if (nameOrKindTest(child, planState))
+          {
+            result = child;
+            STACK_PUSH(true, state);
+          }
+          
+          continue;
         }
 
-        if (nameOrKindTest(result, planState))
+        // C is an element node; traverse its subtree, unless we can skip it
+        // based on the non-recursiveness of C and the node test associated 
+        // with this axis step.
+        if (nameOrKindTest(child, planState))
         {
-          STACK_PUSH(true, state);
+          if (child->isRecursive() || 
+              theTestKind == match_anykind_test ||
+              (theTestKind == match_elem_test && theQName == NULL) ||
+              (theTestKind == match_name_test && theWildKind != match_no_wild))
+          {
+            state->push(child);
+          }
+          else
+          {
+            result = child;
+            STACK_PUSH(true, state);
+
+            continue;
+          }
+        }
+        else
+        {
+          state->push(child);
         }
 
-        if (!checked_top (state->theCurrentPath).second->next(result))
-          result = NULL;
+        // Do the descendant traversal
+        desc = child;
 
-        while (result == NULL)
+        while (desc != NULL)
         {
-          checked_pop (state->theCurrentPath);
-          if (state->theCurrentPath.empty())
-            break;
+          if (nameOrKindTest(desc, planState))
+          {
+            result = desc;
 
-          if (!state->theCurrentPath.top().second->next(result))
-            result = NULL;
+            if (desc->getNodeKind() == store::StoreConsts::elementNode &&
+                (desc->isRecursive() || 
+                 theTestKind == match_anykind_test ||
+                 (theTestKind == match_elem_test && theQName == NULL) ||
+                 (theTestKind == match_name_test && theWildKind != match_no_wild)))
+            {
+              state->push(desc);
+            }
+            
+            STACK_PUSH(true, state);
+          }
+          else if (desc->getNodeKind() == store::StoreConsts::elementNode)
+          {
+            state->push(desc);
+          }
+
+          while (!state->empty() && (desc = state->top()->next()) == NULL)
+          {
+            state->pop();
+          }
         }
       }
+
+      state->theAncestorChildren->close();
     }
   }
 

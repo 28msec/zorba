@@ -51,8 +51,15 @@ public:
   void resetImpl(PlanState& planState) const;
   void closeImpl(PlanState& planState);
 
-  virtual uint32_t getStateSize() const { return StateTraitsImpl<StateType>::getStateSize(); }
-  virtual uint32_t getStateSizeOfSubtree() const;
+  virtual uint32_t getStateSize() const 
+  {
+    return StateTraitsImpl<StateType>::getStateSize(); 
+  }
+
+  virtual uint32_t getStateSizeOfSubtree() const
+  {
+    return theChild->getStateSizeOfSubtree() + getStateSize();
+  }
 };
 
 
@@ -101,20 +108,13 @@ UnaryBaseIterator<IterType, StateType>::resetImpl(PlanState& planState) const
 
 template <class IterType, class StateType>
 void
-  UnaryBaseIterator<IterType, StateType>::closeImpl(PlanState& planState)
+UnaryBaseIterator<IterType, StateType>::closeImpl(PlanState& planState)
 {
   theChild->close( planState );
 
   StateTraitsImpl<StateType>::destroyState(planState, this->stateOffset);
 }
 
-
-template <class IterType, class StateType>
-uint32_t
-UnaryBaseIterator<IterType, StateType>::getStateSizeOfSubtree() const
-{
-  return theChild->getStateSizeOfSubtree() + getStateSize();
-}
 
 
 }; /* namespace zorba*/

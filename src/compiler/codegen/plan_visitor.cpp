@@ -1948,17 +1948,17 @@ bool begin_visit (axis_step_expr& v) {
   }
   case axis_kind_ancestor:
   {
-    axisIte = new AncestorAxisIter(sctx, qloc, input);
+    axisIte = new AncestorAxisIterator(sctx, qloc, input);
     break;
   }
   case axis_kind_ancestor_or_self:
   {
-    axisIte = new AncestorSelfAxisIter(sctx, qloc, input);
+    axisIte = new AncestorSelfAxisIterator(sctx, qloc, input);
     break;
   }
   case axis_kind_following_sibling:
   {
-    axisIte = new RSiblingAxisIter(sctx, qloc, input);
+    axisIte = new RSiblingAxisIterator(sctx, qloc, input);
     break;
   }
   case axis_kind_following:
@@ -1968,7 +1968,7 @@ bool begin_visit (axis_step_expr& v) {
   }
   case axis_kind_preceding_sibling:
   {
-    axisIte = new LSiblingAxisIter(sctx, qloc, input);
+    axisIte = new LSiblingAxisIterator(sctx, qloc, input);
     break;
   }
   case axis_kind_preceding:
@@ -1984,7 +1984,9 @@ bool begin_visit (axis_step_expr& v) {
         v.getTest()->getTestKind() == match_anykind_test)
     {
       axisIte = new AttributeAxisIterator(sctx, qloc, input);
-    } else {
+    }
+    else
+    {
       axisIte = new EmptyIterator(sctx, qloc);
       result = false;
     }

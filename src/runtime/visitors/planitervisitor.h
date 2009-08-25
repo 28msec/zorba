@@ -68,18 +68,18 @@ namespace zorba
   class SelfAxisIterator;
   class AttributeAxisIterator;
   class ParentAxisIterator;
-  class AncestorAxisIter;
-  class AncestorReverseAxisIter;
-  class AncestorSelfAxisIter;
-  class AncestorSelfReverseAxisIter;
-  class RSiblingAxisIter;
-  class LSiblingAxisIter;
-  class LSiblingReverseAxisIter;
+  class AncestorAxisIterator;
+  class AncestorReverseAxisIterator;
+  class AncestorSelfAxisIterator;
+  class AncestorSelfReverseAxisIterator;
+  class RSiblingAxisIterator;
+  class LSiblingAxisIterator;
+  class LSiblingReverseAxisIterator;
   class ChildAxisIterator;
   class DescendantAxisIterator;
   class DescendantSelfAxisIterator;
   class PrecedingAxisIterator;
-  class PrecedingReverseAxisIter;
+  class PrecedingReverseAxisIterator;
   class FollowingAxisIterator;
   class PathIterator;
   class InstanceOfIterator;
@@ -423,19 +423,19 @@ public:
        
   PLAN_ITER_VISITOR (ParentAxisIterator);
        
-  PLAN_ITER_VISITOR (AncestorAxisIter);
+  PLAN_ITER_VISITOR (AncestorAxisIterator);
 
-  PLAN_ITER_VISITOR (AncestorReverseAxisIter);
+  PLAN_ITER_VISITOR (AncestorReverseAxisIterator);
        
-  PLAN_ITER_VISITOR (AncestorSelfAxisIter);
+  PLAN_ITER_VISITOR (AncestorSelfAxisIterator);
        
-  PLAN_ITER_VISITOR (AncestorSelfReverseAxisIter);
+  PLAN_ITER_VISITOR (AncestorSelfReverseAxisIterator);
 
-  PLAN_ITER_VISITOR (RSiblingAxisIter);
+  PLAN_ITER_VISITOR (RSiblingAxisIterator);
        
-  PLAN_ITER_VISITOR (LSiblingAxisIter);
+  PLAN_ITER_VISITOR (LSiblingAxisIterator);
 
-  PLAN_ITER_VISITOR (LSiblingReverseAxisIter);
+  PLAN_ITER_VISITOR (LSiblingReverseAxisIterator);
 
   PLAN_ITER_VISITOR (ChildAxisIterator);
        
@@ -445,7 +445,7 @@ public:
        
   PLAN_ITER_VISITOR (PrecedingAxisIterator);
 
-  PLAN_ITER_VISITOR (PrecedingReverseAxisIter);
+  PLAN_ITER_VISITOR (PrecedingReverseAxisIterator);
        
   PLAN_ITER_VISITOR (FollowingAxisIterator);
 
