@@ -16,10 +16,14 @@
 
 #include <iostream>
 #include <cassert>
+#include <map>
+#include <cstdlib>
+
 #include <zorba/zorba.h>
 #include <zorba/debugger_client.h>
 #include <zorba/debugger_default_event_handler.h>
 #include <simplestore/simplestore.h>
+
 #ifdef WIN32
 #include <windows.h>
 #define sleep(s) Sleep(s*1000)
@@ -32,6 +36,40 @@
 #endif
 
 using namespace zorba;
+
+unsigned int getSeed()
+{
+#ifdef WIN32
+  return GetTickCount();
+#else
+  struct timeval tv;
+  gettimeofday(&tv, NULL);
+  unsigned long long sec = tv.tv_sec;
+  unsigned long long usec = tv.tv_usec;
+  unsigned long long value = 1000000*sec + usec;
+
+  return (unsigned int)(value & UINT_MAX);
+#endif
+}
+
+std::pair<short, short> getRandomPorts() 
+{
+  srand(getSeed());
+  int lPort1 = rand();
+  lPort1 = lPort1 < 1026 ? lPort1 + 1026 : lPort1;
+  int lPort2 = rand();
+  lPort2 = lPort2 < 1026 ? lPort2 + 1026 : lPort2;
+
+  while (lPort1 > 65535) {
+    lPort1 -= 1000;
+  }
+  while (lPort2 > 65535) {
+    lPort2 -= 1000;
+  }
+  return std::pair<short, short>(static_cast<short>(lPort1), static_cast<short>(lPort2));
+}
+
+static std::pair<short, short> thePorts;
 
 class MyDebuggerEventHandler: public DefaultDebuggerEventHandler
 {
@@ -82,7 +120,8 @@ ZORBA_THREAD_RETURN runClient( void* )
 {
   sleep(1);
   MyDebuggerEventHandler lEventHandler;
-  ZorbaDebuggerClient * lClient = ZorbaDebuggerClient::createClient( 8000, 9000 );
+  ZorbaDebuggerClient * lClient = ZorbaDebuggerClient::createClient(
+    thePorts.first, thePorts.second);
   lClient->registerEventHandler( &lEventHandler );
   lClient->run();
   sleep(1); // make sure the query terminates
@@ -95,13 +134,14 @@ bool debugger_example_1(Zorba *aZorba)
   XQuery_t lQuery = aZorba->createQuery();
   lQuery->setDebugMode(true);
   lQuery->compile("for $i in ( 1 to 10 ) return $i");
-  lQuery->debug();
+  lQuery->debug(thePorts.first, thePorts.second);
   lQuery->close();
   return true;
 }
 
 int debugger( int argc, char *argv[] )
 {
+  thePorts = getRandomPorts();
   simplestore::SimpleStore *lStore = simplestore::SimpleStoreManager::getStore();
   Zorba *lZorba = Zorba::getInstance( lStore );
   bool res = false;

@@ -34,7 +34,7 @@ namespace zorba {
   DebuggerTestClient::DebuggerTestClient(int aRequestPort, int aEventPort, std::iostream& aQuery)
     : m_request_port(aRequestPort),
       m_event_port(aEventPort),
-      m_client(ZorbaDebuggerClient::createClient(8000, 9000)),
+      m_client(ZorbaDebuggerClient::createClient(aRequestPort, aEventPort)),
       m_handler(new DebuggerTestHandler(m_client)),
       m_query(aQuery)
 	{

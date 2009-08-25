@@ -22,14 +22,52 @@
 
 #include <string>
 #include <iostream>
+#include <map>
+#include <cstdlib>
 
 #ifdef WIN32
+#include <Windows.h>
 #define sleep(n) Sleep(1000*n)
+#else
+#include <sys/time.h>
+#include <limits.h>
 #endif
 
 using namespace zorba;
 
 namespace zorba {
+
+  unsigned int getSeed()
+  {
+#ifdef WIN32
+    return GetTickCount();
+#else
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    unsigned long long sec = tv.tv_sec;
+    unsigned long long usec = tv.tv_usec;
+    unsigned long long value = 1000000*sec + usec;
+
+    return (unsigned int)(value & UINT_MAX);
+#endif
+  }
+
+  std::pair<short, short> getRandomPorts() 
+  {
+    srand(getSeed());
+    int lPort1 = rand();
+    lPort1 = lPort1 < 1026 ? lPort1 + 1026 : lPort1;
+    int lPort2 = rand();
+    lPort2 = lPort2 < 1026 ? lPort2 + 1026 : lPort2;
+
+    while (lPort1 > 65535) {
+      lPort1 -= 1000;
+    }
+    while (lPort2 > 65535) {
+      lPort2 -= 1000;
+    }
+    return std::pair<short, short>(static_cast<short>(lPort1), static_cast<short>(lPort2));
+  }
 
   XQuery_t createDebuggableQuery(Zorba* aZorba, std::iostream& os) {
     XQuery_t lQuery = aZorba->createQuery();
@@ -52,13 +90,14 @@ namespace zorba {
     std::ostringstream lRes;
     XQuery_t lQuery = createDebuggableQuery(lZorba, qs);
 
-    DebuggerServerRunnable lServer(lQuery, lRes, 8000, 9000);
+    std::pair<short, short> lPorts = getRandomPorts();
+    DebuggerServerRunnable lServer(lQuery, lRes, lPorts.first, lPorts.second);
     lServer.start();
 
     sleep(1);
 
     {
-      DebuggerTestClient client(8000, 9000, qs);
+      DebuggerTestClient client(lPorts.first, lPorts.second, qs);
       client.run();
 
       DebuggerTestHandler::DebugEvent evt = client.getNextEvent();
@@ -93,13 +132,14 @@ namespace zorba {
     std::ostringstream lRes;
     XQuery_t lQuery = createDebuggableQuery(lZorba, qs);
 
-    DebuggerServerRunnable lServer(lQuery, lRes, 8000, 9000);
+    std::pair<short, short> lPorts = getRandomPorts();
+    DebuggerServerRunnable lServer(lQuery, lRes, lPorts.first, lPorts.second);
     lServer.start();
 
     sleep(1);
 
     {
-      DebuggerTestClient client(8000, 9000, qs);
+      DebuggerTestClient client(lPorts.first, lPorts.second, qs);
 
       QueryLocation_t loc = client.addBreakpoint("test.xq", 1);
       if (loc == NULL) {
@@ -137,13 +177,14 @@ namespace zorba {
     std::ostringstream lRes;
     XQuery_t lQuery = createDebuggableQuery(lZorba, qs);
 
-    DebuggerServerRunnable lServer(lQuery, lRes, 8000, 9000);
+    std::pair<short, short> lPorts = getRandomPorts();
+    DebuggerServerRunnable lServer(lQuery, lRes, lPorts.first, lPorts.second);
     lServer.start();
 
     sleep(1);
 
     {
-      DebuggerTestClient client(8000, 9000, qs);
+      DebuggerTestClient client(lPorts.first, lPorts.second, qs);
 
       QueryLocation_t loc = client.addBreakpoint("test.xq", 1);
       if (loc == NULL) {
@@ -188,13 +229,14 @@ namespace zorba {
     std::ostringstream lRes;
     XQuery_t lQuery = createDebuggableQuery(aZorba, qs);
 
-    DebuggerServerRunnable lServer(lQuery, lRes, 8000, 9000);
+    std::pair<short, short> lPorts = getRandomPorts();
+    DebuggerServerRunnable lServer(lQuery, lRes, lPorts.first, lPorts.second);
     lServer.start();
 
     sleep(1);
 
     {
-      DebuggerTestClient client(8000, 9000, qs);
+      DebuggerTestClient client(lPorts.first, lPorts.second, qs);
 
       QueryLocation_t loc = client.addBreakpoint("test.xq", 4);
       if (loc == NULL) {
