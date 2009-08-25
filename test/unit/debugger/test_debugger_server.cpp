@@ -214,8 +214,15 @@ namespace zorba {
       }
 
       std::vector<std::string> lVars = client.getVariableNames();
-      if (lVars[0] != "x") {
+      for (std::vector<std::string>::const_iterator lIter = lVars.begin();
+           lIter != lVars.end(); ++lIter) {
+        std::cout << "received var " << *lIter << std::endl;
+      }
+
+      if (lVars.size() != 2 && lVars[0] != "$$dot" && lVars[1] != "x") {
         std::cerr << "vars did not return correct variables" << std::endl;
+        client.terminate();
+        lServer.join();
         return 3;
       }
 
