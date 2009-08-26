@@ -8,24 +8,33 @@ using namespace zorba;
 
 zorba::ZorbaDebugIterator::ZorbaDebugIterator( short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildvector )
 :
-NaryBaseIterator<ZorbaDebugIterator, PlanIteratorState>(sctx, loc, aChildvector)
+NaryBaseIterator<ZorbaDebugIterator, PlanIteratorState>(sctx, loc, aChildvector), theDebuggerParent(0)
 {
 }
 
 bool zorba::ZorbaDebugIterator::nextImpl( store::Item_t& result, PlanState& planState ) const
 {
+  SuspensionCause lCause = 0;
   PlanIteratorState* lState;
+  ZorbaDebuggerCommons* lCommons;
   try {
     DEFAULT_STACK_INIT(PlanIteratorState, lState, planState);
     while (consumeNext(result, theChildren[0], planState)) {
-      if (planState.theDebuggerCommons->hasToBreakAt(loc)) {
-        try {
-          planState.theDebuggerCommons->setCurrentStaticContext(getStaticContext(planState));
-          planState.theDebuggerCommons->setCurrentDynamicContext(planState.dctx());
-          planState.theDebuggerCommons->getRuntime()->suspendRuntime(loc, CAUSE_BREAKPOINT);
-        } catch (...) {
-          throw;
-        }
+      lCommons = planState.theDebuggerCommons;
+      if (lCommons->hasToBreakAt(loc) ||
+        lCommons->hasToBreakAt(this) ||
+        lCommons->hasToBrak(&lCause)) {
+          try {
+            lCause = lCause == 0 ? CAUSE_BREAKPOINT : lCause;
+            lCommons->setCurrentIterator(this);
+            lCommons->setCurrentStaticContext(getStaticContext(planState));
+            lCommons->setCurrentDynamicContext(planState.dctx());
+            lCommons->setBreak(false);
+            lCommons->getRuntime()->suspendRuntime(loc, lCause);
+            lCause = 0;
+          } catch (...) {
+            throw;
+          }
       }
       STACK_PUSH(true, lState);
     }
@@ -64,15 +73,52 @@ void zorba::ZorbaDebugIterator::setChildren( std::vector<PlanIter_t>& args )
 
 void zorba::ZorbaDebugIterator::addChild( ZorbaDebugIterator* child )
 {
+  //Preconditions
+  ZORBA_ASSERT(child != NULL);
+
   theDebuggerChildren.push_back(child);
+
+  //Postconditions
+  ZORBA_ASSERT(theDebuggerChildren.back() == child);
 }
 
 void zorba::ZorbaDebugIterator::setParent( ZorbaDebugIterator* parent )
 {
   theDebuggerParent = parent;
+
+  //Postconditions
+  ZORBA_ASSERT(getParent() == parent);
 }
 
 zorba::QueryLoc zorba::ZorbaDebugIterator::getQueryLocation() const
 {
   return loc;
+}
+
+const ZorbaDebugIterator* zorba::ZorbaDebugIterator::getParent() const
+{
+  return theDebuggerParent;
+}
+
+const ZorbaDebugIterator* zorba::ZorbaDebugIterator::getOverIterator() const
+{
+  if (theDebuggerParent == NULL) {
+    return NULL;
+  }
+  if (theDebuggerParent->theDebuggerChildren.back() == this) {
+    return NULL;
+  }
+  std::vector<ZorbaDebugIterator*>::const_iterator lIter;
+  const std::vector<ZorbaDebugIterator*> lSilblings =
+    theDebuggerParent->theDebuggerParent->theDebuggerChildren;
+  for (lIter = lSilblings.begin(); lIter != lSilblings.end(); lIter++) {
+    if (*lIter == this) {
+      ++lIter;
+      return *lIter;
+    }
+  }
+
+  //Should be never reached.
+  ZORBA_ASSERT(false);
+  return NULL;
 }

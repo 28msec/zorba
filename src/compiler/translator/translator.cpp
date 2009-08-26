@@ -1115,6 +1115,24 @@ rchandle<flwor_expr> wrap_expr_in_flwor(expr* inputExpr, bool withContextSize)
   return flworExpr;
 }
 
+void wrap_in_debugger_expr (expr_t& aExpr) {
+  if (cb->theDebuggerCommons != NULL) {
+    // In this expression branch, we create the debugger expressions.
+    // Furthermore, we create an entry for all expressions in the map
+    // of breakable expressions. This is done here, in order to be able,
+    // to set breakpoints of expressions which are not translated at the
+    // beginning (e.g. inside functions).
+    DebugLocation_t lLocation;
+    aExpr = new debugger_expr(cb->m_cur_sctx, aExpr->get_loc(), aExpr, thePrologVars);
+    lLocation.theFileName = aExpr->get_loc().getFilename();
+    lLocation.theLineNumber = aExpr->get_loc().getLineno();
+    lLocation.theQueryLocation = aExpr->get_loc();
+    cb->theDebuggerCommons->theLocationMap.insert(
+      std::pair<DebugLocation_t, bool>(lLocation, false));
+    return;
+  }
+}
+
 
 /*******************************************************************************
   Collect the var_eprs for all variables that (a) are defined by some clause
@@ -3113,15 +3131,7 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
   //
   expr_t retExpr = pop_nodestack();
   
-  if ( cb->theDebuggerCommons != NULL) 
-  {
-    const QueryLoc& return_location = v.get_return_location(); 
-    rchandle<debugger_expr> lDebuggerExpr = new debugger_expr(cb->m_cur_sctx,
-                                                              return_location,
-                                                              retExpr,
-                                                              thePrologVars);
-   retExpr = lDebuggerExpr;
-  }
+  wrap_in_debugger_expr(retExpr);
 
   flwor->set_return_expr(retExpr);
 
@@ -3175,6 +3185,7 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
       for (int j = 0; j < numVars; j++) 
       {
         expr_t domainExpr = domainExprs[j];
+        wrap_in_debugger_expr(domainExpr);
         for_clause* eflc = new for_clause(cb->m_cur_sctx, c.get_location(),
                                           varExprs[j],
                                           domainExpr,
@@ -3212,6 +3223,7 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
       for (int j = 0; j < numVars; j++)
       {
         expr_t domainExpr = domainExprs[j];
+        wrap_in_debugger_expr(domainExpr);
         let_clause* eflc = new let_clause(cb->m_cur_sctx, c.get_location(),
                                           varExprs[j],
                                           domainExpr);
@@ -3284,6 +3296,7 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
     else if (typeid (c) == typeid (WhereClause)) 
     {
       expr_t whereExpr = pop_nodestack();
+      wrap_in_debugger_expr(whereExpr);
       if (whereExpr->is_updating())
         ZORBA_ERROR_LOC(XUST0001, loc);
 
@@ -4292,37 +4305,9 @@ void end_visit (const IfExpr& v, void* /*visit_state*/)
                      e_h->get_update_type(),
                      loc);
 
-  if (cb->theDebuggerCommons != 0) {
-    // In this expression branch, we create the debugger expressions.
-    // Furthermore, we create an entry for all expressions in the map
-    // of breakable expressions. This is done here, in order to be able,
-    // to set breakpoints of expressions which are not translated at the
-    // beginning (e.g. inside functions).
-    DebugLocation_t lLocation1;
-    DebugLocation_t lLocation2;
-    DebugLocation_t lLocation3;
-
-    c_h = new debugger_expr(cb->m_cur_sctx, c_h->get_loc(), c_h, thePrologVars);
-    lLocation1.theFileName = c_h->get_loc().getFilename();
-    lLocation1.theLineNumber = c_h->get_loc().getLineno();
-    lLocation1.theQueryLocation = c_h->get_loc();
-    cb->theDebuggerCommons->theLocationMap.insert(
-      std::pair<DebugLocation_t, bool>(lLocation1, false));
-
-    t_h = new debugger_expr(cb->m_cur_sctx, t_h->get_loc(), t_h, thePrologVars);
-    lLocation2.theFileName = t_h->get_loc().getFilename();
-    lLocation2.theLineNumber = t_h->get_loc().getLineno();
-    lLocation2.theQueryLocation = t_h->get_loc();
-    cb->theDebuggerCommons->theLocationMap.insert(
-      std::pair<DebugLocation_t, bool>(lLocation1, false));
-
-    e_h = new debugger_expr(cb->m_cur_sctx, e_h->get_loc(), e_h, thePrologVars);
-    lLocation3.theFileName = e_h->get_loc().getFilename();
-    lLocation3.theLineNumber = e_h->get_loc().getLineno();
-    lLocation3.theQueryLocation = e_h->get_loc();
-    cb->theDebuggerCommons->theLocationMap.insert(
-      std::pair<DebugLocation_t, bool>(lLocation1, false));
-  }
+  wrap_in_debugger_expr(e_h);
+  wrap_in_debugger_expr(t_h);
+  wrap_in_debugger_expr(c_h);
 
   if_expr *lIfExpr = new if_expr(cb->m_cur_sctx, loc,c_h,t_h,e_h);
   nodestack.push(lIfExpr);

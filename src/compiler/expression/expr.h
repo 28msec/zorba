@@ -328,18 +328,18 @@ public:
   expr_kind_t get_expr_kind () const { return debugger_expr_kind; }
 
 private:
-    std::list<global_binding> theGlobals;
-    bool theForExpr;
-    
+  std::list<global_binding> theGlobals;
+  bool theForExpr;
+
 public:
-    debugger_expr(short sctx, const QueryLoc& loc, expr_t aChild, std::list<global_binding> aGlobals ):
-      eval_expr(sctx, loc, aChild ), theGlobals( aGlobals ){}
-    
+  debugger_expr(short sctx, const QueryLoc& loc, expr_t aChild, std::list<global_binding> aGlobals )
+    : eval_expr(sctx, loc, aChild ), theGlobals( aGlobals ){}
+
   debugger_expr( short sctx, const QueryLoc& loc, expr_t aChild,
-                 checked_vector<varref_t> aScopedVariables,
-                 std::list<global_binding> aGlobals,
-                 bool aForExpr = false):
-    eval_expr(sctx, loc, aChild ), theGlobals( aGlobals ), theForExpr(aForExpr)
+    checked_vector<varref_t> aScopedVariables,
+    std::list<global_binding> aGlobals,
+    bool aForExpr = false):
+  eval_expr(sctx, loc, aChild ), theGlobals( aGlobals ), theForExpr(aForExpr)
   {
     store_local_variables( aScopedVariables );
   }

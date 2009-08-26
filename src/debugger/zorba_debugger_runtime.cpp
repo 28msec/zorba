@@ -131,6 +131,9 @@ zorba::ZorbaDebuggerRuntime::execCommands()
   case TERMINATE:
     terminateRuntime();
     return true;
+  case STEP:
+    step();
+    break;
   default:
     assert(false);
   }
@@ -213,6 +216,11 @@ void zorba::ZorbaDebuggerRuntime::resumeQuery()
   ResumeMessage* lMessage = dynamic_cast<ResumeMessage*>(theCurrentMessage);
   assert(lMessage);
 #endif
+  resumeRuntime();
+}
+
+void zorba::ZorbaDebuggerRuntime::resumeRuntime()
+{
   theExecStatus = QUERY_RESUMED;
   resume();
   ResumedEvent lEvent;
@@ -245,4 +253,32 @@ zorba::ReplyMessage* zorba::ZorbaDebuggerRuntime::getAllVariables()
     }
   }
   return lReply.release();
+}
+
+void zorba::ZorbaDebuggerRuntime::step()
+{
+#ifndef NDEBUG
+  // Check preconditions
+  ZORBA_ASSERT(dynamic_cast<StepMessage*>(theCurrentMessage) != NULL);
+#endif // NDEBUG
+  StepMessage* lMessage = static_cast<StepMessage*>(theCurrentMessage);
+  StepCommand lCommand = lMessage->getStepKind();
+  ZorbaDebuggerCommons* lCommons = theWrapper->theStateBlock->theDebuggerCommons;
+
+  switch (lCommand)
+  {
+  case STEP_INTO:
+    // Resume and then suspend as soon as the next iterator is reached.
+    lCommons->setBreak(true, CAUSE_STEP);
+    resumeRuntime();
+    break;
+  case STEP_OUT:
+    lCommons->makeStepOut();
+    resumeRuntime();
+    break;
+  case STEP_OVER:
+    lCommons->makeStepOver();
+    resumeRuntime();
+    break;
+  }
 }

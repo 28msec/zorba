@@ -42,6 +42,7 @@ namespace zorba {
 class namespace_node;
 class user_function;
 class TypeManager;
+typedef rchandle<var_expr> var_expr_t;
 
 /*******************************************************************************
   XQuery 1.0 context
@@ -464,8 +465,40 @@ public:
   std::ostream*
   get_trace_stream() const;
 
-  void 
-  getVariables(std::vector<std::string>&) const;
+  /**
+  * @brief This method gets all variable names from this static context
+  * and its parents.
+  *
+  * This method gets all variables in the scope of this static context.
+  * Therefore it gets recursively all variables names from its parent,
+  * adds them to aVariableList and then adds the variables saved in the
+  * asked static context to aVariableList.
+  *
+  * @sa getVariables::getVariables(std::vector<var_expr_t>& aVarialeList)
+  * @param aVariableList a vector of strings, where the variable names
+  *  are put into.
+  * @post aVariableList contains all variable names reachable from the
+  *  scope from the current static context.
+  */
+  void
+  getVariables(std::vector<std::string>& aVarialeList) const;
+
+  /**
+  * @brief This method gets all variable expressions from this static
+  * context and its parents.
+  *
+  * This method gets all variables in the scope of this static context.
+  * Therefore it gets recursively all variables expressions from its parent,
+  * adds them to aVariableList and then adds the variables saved in the
+  * asked static context to aVariableList.
+  *
+  * @sa getVariables::getVariables(std::vector<std::string>& aVarialeList)
+  * @param aVariableList a vector of variable expressions, where the
+  *  variable names are put into.
+  * @post aVariableList contains all variable expressions reachable from the
+  *  scope from the current static context.
+  */
+  void getVariables(std::vector<var_expr_t>& aVarialeList) const;
 
 protected:
   static_context();

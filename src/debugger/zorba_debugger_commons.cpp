@@ -1,5 +1,18 @@
 #include "zorba_debugger_commons.h"
 
+#include "zorbaerrors/Assert.h"
+#include "runtime/debug/zorba_debug_iterator.h"
+
+zorba::ZorbaDebuggerCommons::ZorbaDebuggerCommons()
+:
+theBreak(false), theCause(0)
+{
+}
+
+zorba::ZorbaDebuggerCommons::~ZorbaDebuggerCommons()
+{
+}
+
 void zorba::ZorbaDebuggerCommons::setRuntime( ZorbaDebuggerRuntime* aRuntime )
 {
   theRuntime = aRuntime;
@@ -48,11 +61,92 @@ bool zorba::ZorbaDebuggerCommons::hasToBreakAt( const QueryLoc& aLocation ) cons
   lLocation.theFileName = aLocation.getFilename();
   lLocation.theLineNumber = aLocation.getLineno();
   std::map<DebugLocation_t, bool, DebugLocation>::const_iterator lIter;
-  for (lIter = theLocationMap.find(lLocation); lIter != theLocationMap.end(); lIter++) {
-    if (lIter->second)
-      return true;
+  lIter = theLocationMap.find(lLocation);
+  if (lIter->second) {
+    return true;
   }
   return false;
+}
+
+bool zorba::ZorbaDebuggerCommons::hasToBreakAt( const ZorbaDebugIterator* aIter )
+{
+  //Preconditions
+  ZORBA_ASSERT(aIter != NULL);
+
+  std::list<const ZorbaDebugIterator*>::iterator lIter;
+  for (lIter = theBreakIterators.begin();
+    lIter != theBreakIterators.end();
+    lIter++) {
+      if (*lIter == aIter) {
+        theBreakIterators.erase(lIter);
+        return true;
+      }
+  }
+  return false;
+}
+
+bool zorba::ZorbaDebuggerCommons::hasToBrak(SuspensionCause* aCause) const
+{
+  //This is not a precondition, because the client does not hava another
+  //way to check it, then calling this function. But if theCause is 0, this
+  // is clearly a bug.
+  ZORBA_ASSERT(theBreak ? theCause != NULL : true);
+
+  // Check preconditions
+  ZORBA_ASSERT(*aCause == 0);
+
+  *aCause = theCause;
+
+  // Check postconditions
+  ZORBA_ASSERT(theCause == *aCause);
+
+  return theBreak;
+}
+
+void zorba::ZorbaDebuggerCommons::setBreak( bool lBreak, SuspensionCause aCause )
+{
+#ifndef NDEBUG
+  //Check preconditions
+  ZORBA_ASSERT(lBreak ? aCause != 0 : true);
+#endif // NDEBUG
+  theBreak = lBreak;
+  theCause = aCause;
+#ifndef NDEBUG
+  // Check post conditions
+  ZORBA_ASSERT(theBreak == lBreak);
+  ZORBA_ASSERT(theCause == aCause);
+#endif //NDEBUG
+}
+
+void zorba::ZorbaDebuggerCommons::setCurrentIterator( const ZorbaDebugIterator* aIterator )
+{
+  theCurrentIterator = aIterator;
+  //Test postconditions
+  ZORBA_ASSERT(aIterator == theCurrentIterator);
+}
+
+const zorba::ZorbaDebugIterator* zorba::ZorbaDebuggerCommons::getCurrentIterator()
+{
+  return theCurrentIterator;
+}
+
+void zorba::ZorbaDebuggerCommons::makeStepOut()
+{
+  const ZorbaDebugIterator* lIter = theCurrentIterator->getParent();
+  if (lIter != NULL) {
+    theBreakIterators.push_back(lIter);
+  }
+}
+
+void zorba::ZorbaDebuggerCommons::makeStepOver()
+{
+  //Preconditions
+  ZORBA_ASSERT(theCurrentIterator != NULL);
+
+  const ZorbaDebugIterator* lIter = theCurrentIterator->getOverIterator();
+  if (lIter != NULL) {
+    theBreakIterators.push_back(lIter);
+  }
 }
 
 bool zorba::DebugLocation::operator()( const DebugLocation_t& aLocation1, const DebugLocation_t& aLocation2 ) const

@@ -142,7 +142,17 @@ namespace zorba {
     ReplyMessage* getAllVariables();
     void runQuery();
     void resumeQuery();
+    void resumeRuntime();
     void terminateRuntime();
+
+    /**
+    * @brief Executes a step command on the runtime.
+    *
+    * @pre dynamic_cast<StepMessage*>(theCurrentMessage) != NULL
+    * @post Sets a breakpoint accoring to the step kind and resumes the
+    *  runtime.
+    */
+    void step();
   private:
     enum NextCommand {
       None,

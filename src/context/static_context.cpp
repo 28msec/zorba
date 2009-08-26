@@ -1165,5 +1165,20 @@ static_context::getVariables(std::vector<std::string>& aResult) const
   }
 }
 
+void
+static_context::getVariables(std::vector<var_expr_t>& aResult) const
+{
+  if (parent)
+    static_cast<static_context*>(parent)->getVariables(aResult);
+
+  std::vector<zorba::serializable_hashmap<ctx_value_t>::entry>::const_iterator it;
+  for (it = keymap.begin(); it != keymap.end(); it++) {
+    const std::string& lKey = (*it).key;
+    if (lKey.find("var:") == 0) {
+      aResult.push_back(static_cast<var_expr*>((*it).val.exprValue));
+    }
+  }
+}
+
 } /* namespace zorba */
 
