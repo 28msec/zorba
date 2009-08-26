@@ -204,6 +204,8 @@ private:
         const TypeManager* typeManager,
         XERCES_CPP_NAMESPACE::XSTypeDefinition* xsTypeDef);
 
+  void checkForAnonymousTypes(const TypeManager* typeManager);
+
   void checkForAnonymousTypesInType(const TypeManager* typeManager,
                                     XERCES_CPP_NAMESPACE::XSTypeDefinition* typeDef);
   void checkForAnonymousTypesInParticle(const TypeManager* typeManager,

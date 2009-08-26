@@ -19,14 +19,18 @@
 #include "common/common.h"
 #ifndef ZORBA_NO_XMLSCHEMA
 
-#include <xercesc/framework/psvi/XSModel.hpp>
-#include <xercesc/framework/psvi/XSElementDeclaration.hpp>
 #include <xercesc/framework/psvi/XSAttributeDeclaration.hpp>
+#include <xercesc/framework/psvi/XSAttributeGroupDefinition.hpp>
+#include <xercesc/framework/psvi/XSAttributeUse.hpp>
 #include <xercesc/framework/psvi/XSTypeDefinition.hpp>
-#include <xercesc/framework/psvi/XSSimpleTypeDefinition.hpp>
 #include <xercesc/framework/psvi/XSComplexTypeDefinition.hpp>
+#include <xercesc/framework/psvi/XSConstants.hpp>
+#include <xercesc/framework/psvi/XSElementDeclaration.hpp>
 #include <xercesc/framework/psvi/XSParticle.hpp>
+#include <xercesc/framework/psvi/XSModel.hpp>
 #include <xercesc/framework/psvi/XSModelGroup.hpp>
+#include <xercesc/framework/psvi/XSModelGroupDefinition.hpp>
+#include <xercesc/framework/psvi/XSSimpleTypeDefinition.hpp>
 #include <xercesc/framework/psvi/XSValue.hpp>
 
 #include <xercesc/framework/URLInputSource.hpp>

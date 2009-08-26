@@ -30,11 +30,11 @@
 #include "types/schema/LoadSchemaErrorHandler.h"
 #include "types/schema/PrintSchema.h"
 #include "types/schema/XercesParseUtils.h"
+#include "system/globalenv.h"
+#include "store/api/item_factory.h"
+
 #include "types/schema/xercesIncludes.h"
 
-#include "system/globalenv.h"
-
-#include "store/api/item_factory.h"
 
 //using namespace std;
 
@@ -359,7 +359,8 @@ xqtref_t Schema::createXQTypeFromElementName(
 
 
 /*******************************************************************************
-
+  Returns an XQType for a global schema attribute definition if defined, 
+  otherwise NULL
 ********************************************************************************/
 xqtref_t Schema::createXQTypeFromAttributeName(
     const TypeManager* typeManager,
@@ -415,8 +416,17 @@ xqtref_t Schema::createXQTypeFromTypeName(
   
   if ( typeDef == NULL )
   {
-    // BUG cezar: I need to go through all the top level type and element definitions and 
+    // Go through all the top level type and element definitions and 
     // add annonymous types to the cache ( maybe stop whenever it's found - a small optimization )
+    // this is required only when the multiple queries are executed in the same run
+    // with the current API, but with empty schema context
+
+    TRACE("lookingFor: key:'" << key);
+    checkForAnonymousTypes(typeManager);
+    
+    if( _udTypesCache->get(key, res) )
+      return res;
+
 
     res = NULL;
     TRACE("No type definition for " << local << "@" << uri);
@@ -995,6 +1005,59 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
   return result;
 }
 
+void Schema::checkForAnonymousTypes(const TypeManager* typeManager)
+{
+  if (_grammarPool == NULL)
+    return;
+
+  bool xsModelWasChanged;
+  XSModel* model = _grammarPool->getXSModel(xsModelWasChanged);
+
+  XSNamedMap<XSObject> * typeDefs = model->getComponents(XSConstants::TYPE_DEFINITION);
+  for( uint i = 0; i<typeDefs->getLength(); i++)
+  {
+    XSTypeDefinition* typeDef = (XSTypeDefinition*)(typeDefs->item(i));
+    checkForAnonymousTypesInType(typeManager, typeDef);
+  }
+
+  XSNamedMap<XSObject> * elemDefs = model->getComponents(XSConstants::ELEMENT_DECLARATION);
+  for( uint i = 0; i<elemDefs->getLength(); i++)
+  {
+    XSElementDeclaration* elemDecl = (XSElementDeclaration*)(elemDefs->item(i));
+    checkForAnonymousTypesInType(typeManager, elemDecl->getTypeDefinition());
+  }
+
+  XSNamedMap<XSObject> * attrDefs = model->getComponents(XSConstants::ATTRIBUTE_DECLARATION);
+  for( uint i = 0; i<attrDefs->getLength(); i++)
+  {
+    XSAttributeDeclaration* attrDecl = (XSAttributeDeclaration*)(attrDefs->item(i));
+    checkForAnonymousTypesInType(typeManager, attrDecl->getTypeDefinition());
+  }
+
+  XSNamedMap<XSObject> * attrGroupDefs = model->getComponents(XSConstants::ATTRIBUTE_GROUP_DEFINITION);
+  for( uint i = 0; i<attrGroupDefs->getLength(); i++)
+  {
+    XSAttributeGroupDefinition* attrGroupDef = (XSAttributeGroupDefinition*)(attrGroupDefs->item(i));
+    XSAttributeUseList* xsAttributeUseList = attrGroupDef->getAttributeUses();
+    for (unsigned i = 0; i < xsAttributeUseList->size(); i++)
+    {
+      XSAttributeDeclaration* attrDecl = xsAttributeUseList->elementAt(i)->getAttrDeclaration();
+      checkForAnonymousTypesInType(typeManager, attrDecl->getTypeDefinition());
+    }
+  }
+
+  XSNamedMap<XSObject> * modelGroupDefs = model->getComponents(XSConstants::MODEL_GROUP_DEFINITION);
+  for( uint i = 0; i<modelGroupDefs->getLength(); i++)
+  {
+    XSModelGroupDefinition* modelGroupDef = (XSModelGroupDefinition*)modelGroupDefs->item(i);
+    XSModelGroup *xsModelGroup = modelGroupDef->getModelGroup();
+    XSParticleList *xsParticleList = xsModelGroup->getParticles();
+    for (unsigned i = 0; i < xsParticleList->size(); i++)
+    {
+      checkForAnonymousTypesInParticle(typeManager, xsParticleList->elementAt(i));
+    }
+  }
+}
 
 void Schema::checkForAnonymousTypesInType(const TypeManager* typeManager, 
                                           XSTypeDefinition* xsTypeDef)
