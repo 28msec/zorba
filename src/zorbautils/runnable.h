@@ -64,6 +64,14 @@ public:
 
     ThreadState status() const { return theStatus; }
 
+    /**
+    * Resets the Thread, so that it can be started again.
+    *
+    * @pre theStatus == TERMINATED || theStatus == IDLE
+    * @post theStatus == IDLE
+    */
+    virtual void reset();
+
 protected: // To be implemented by the user
     
     virtual void run() = 0;

@@ -38,6 +38,13 @@ zorba::Runnable::Runnable()
 {
 }
 
+void zorba::Runnable::reset()
+{
+  theFinishCalled = false;
+  theStatus = IDLE;
+}
+
+
 void zorba::Runnable::start()
 {
     theStatus = RUNNING;

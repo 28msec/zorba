@@ -71,6 +71,8 @@ namespace zorba {
     //            resumedEvent was sent to the client.
     //************************************
     void setQueryRunning();
+    void setNotSendTerminateEvent();
+    void resetRuntime();
   public: // Queries to the runtime
     //************************************
     // Method:    getExecutionStatus
@@ -169,6 +171,7 @@ namespace zorba {
     mutable Lock                      theLock;
     AbstractCommandMessage*           theCurrentMessage;
     std::set<ZorbaDebugIterator*>     theBreakpoints;
+    bool                              theNotSendTerminateEvent;
   };
 }
 

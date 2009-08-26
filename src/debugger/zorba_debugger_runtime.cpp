@@ -30,7 +30,8 @@ zorba::ZorbaDebuggerRuntime::ZorbaDebuggerRuntime(XQueryImpl* xqueryImpl,
     theCommunicator(communicator),
     theWrapper(theQuery->generateWrapper()),
     theExecStatus(QUERY_IDLE),
-    theCurrentMessage(0)
+    theCurrentMessage(0),
+    theNotSendTerminateEvent(false)
 {
 }
 
@@ -54,8 +55,18 @@ zorba::ZorbaDebuggerRuntime::run()
 void zorba::ZorbaDebuggerRuntime::finish()
 {
   theWrapper->close();
-  TerminatedEvent lEvent;
-  theCommunicator->sendEvent(&lEvent);
+  if (!theNotSendTerminateEvent) {
+    TerminatedEvent lEvent;
+    theCommunicator->sendEvent(&lEvent);
+  }
+}
+
+void zorba::ZorbaDebuggerRuntime::resetRuntime()
+{
+  theWrapper = theQuery->generateWrapper();
+  theExecStatus = QUERY_IDLE;
+  theNotSendTerminateEvent = false;
+  reset();
 }
 
 bool zorba::ZorbaDebuggerRuntime::processMessage( AbstractCommandMessage* message )
@@ -281,4 +292,9 @@ void zorba::ZorbaDebuggerRuntime::step()
     resumeRuntime();
     break;
   }
+}
+
+void zorba::ZorbaDebuggerRuntime::setNotSendTerminateEvent()
+{
+  theNotSendTerminateEvent = true;
 }

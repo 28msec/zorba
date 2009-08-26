@@ -36,6 +36,13 @@ ZorbaDebuggerServer::run()
     std::auto_ptr<AbstractCommandMessage> lMessage(theCommunicator->handleTCPClient());
     if (lMessage.get() != NULL) {
        if (lMessage->isExecutionCommand() && lMessage->getCommand() == RUN) {
+         if (theRuntime->getExecutionStatus() == QUERY_SUSPENDED) {
+           theRuntime->setNotSendTerminateEvent();
+           theRuntime->terminate();
+           theRuntime->join();
+           theRuntime->resetRuntime();
+
+         }
          theRuntime->start();
        } else {
          bool lTerminate = theRuntime->processMessage(lMessage.get());

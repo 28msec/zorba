@@ -268,7 +268,10 @@ namespace zorba {
         return 3;
       }
 
-      client.resume();
+      while (evt != DebuggerTestHandler::TERMINATED) {
+        client.resume();
+        evt = client.getNextEvent();
+      }
     }
     lServer.join();
     return 0;
