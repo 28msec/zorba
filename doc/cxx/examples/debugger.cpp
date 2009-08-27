@@ -32,6 +32,8 @@
 #ifdef WIN32
 #include <windows.h>
 #define sleep(s) Sleep(s*1000)
+#else
+#include <limits.h>
 #endif
 #ifdef ZORBA_HAVE_PTHREAD_H
 #include <pthread.h>
