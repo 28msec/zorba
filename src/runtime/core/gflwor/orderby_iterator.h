@@ -67,6 +67,7 @@ public:
 
   bool                   theEmptyLeast;
   bool                   theDescending;
+  bool                   theNativeCompare;
   std::string            theCollation;
   XQPCollator          * theCollator;
 
@@ -78,18 +79,22 @@ public:
     ar & theDomainIter;
     ar & theEmptyLeast;
     ar & theDescending;
+    ar & theNativeCompare;
     ar & theCollation;
     ar & theCollator;
   }
-  virtual ~OrderSpec() {}
+
 public:
-  OrderSpec() : theCollator(NULL) {}
+  OrderSpec() : theNativeCompare(false), theCollator(NULL) {}
 
   OrderSpec(
         PlanIter_t domainIter,
         bool emptyLeast,
         bool descending,
+        bool nativeCompare,
         const std::string& collation);
+
+  ~OrderSpec() {}
 
   void accept(PlanIterVisitor&) const;
 

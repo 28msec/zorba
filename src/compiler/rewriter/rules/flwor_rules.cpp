@@ -508,6 +508,9 @@ static bool var_in_try_block_or_in_loop(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 RULE_REWRITE_PRE(RefactorPredFLWOR) 
 {
   flwor_expr* flwor = dynamic_cast<flwor_expr *>(node);
@@ -560,9 +563,6 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
 }
 
 
-/*******************************************************************************
-
-********************************************************************************/
 RULE_REWRITE_POST(RefactorPredFLWOR) 
 {
   return NULL;

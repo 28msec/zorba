@@ -19,11 +19,13 @@
 
 #include "system/globalenv.h"
 
+#include "compiler/api/compilercb.h"
+
+#include "runtime/core/path_iterators.h"
+
 #include "store/api/item.h"
 #include "store/api/iterator.h"
 #include "store/api/iterator_factory.h"
-
-#include "runtime/core/path_iterators.h"
 
 
 #define MYTRACE(msg) \
@@ -1184,6 +1186,8 @@ bool PrecedingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
             state->push(desc);
           }
 
+          desc = NULL;
+
           while (!state->empty() && (desc = state->top()->next()) == NULL)
           {
             state->pop();
@@ -1542,6 +1546,8 @@ bool FollowingAxisIterator::nextImpl(
           {
             state->push(desc);
           }
+
+          desc = NULL;
 
           while (!state->empty() && (desc = state->top()->next()) == NULL)
           {

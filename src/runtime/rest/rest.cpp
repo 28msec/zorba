@@ -21,6 +21,8 @@
 
 #include "api/serialization/serializer.h"
 
+#include "compiler/api/compilercb.h"
+
 #include "runtime/util/iterator_impl.h"
 #include "runtime/api/runtimecb.h"
 #include "runtime/api/plan_wrapper.h"
@@ -876,6 +878,16 @@ static xqpString processGetPayload(Item_t& payload_data, xqpString& Uri)
   return Uri;
 }
 
+
+void ZorbaRestGetIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<ZorbaRestGetIterator, ZorbaRestGetIteratorState>::
+  openImpl(planState, offset); 
+
+  theSctx = planState.theCompilerCB->getStaticContext(sctx);
+}
+
+
 bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item, lUri, payload_data, headers, tidyUserOpt;
@@ -944,6 +956,16 @@ bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState)
   STACK_PUSH(true, state);
   STACK_END (state);
 }
+
+
+void ZorbaRestPostIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<ZorbaRestPostIterator, ZorbaRestGetIteratorState>::
+  openImpl(planState, offset); 
+
+  theSctx = planState.theCompilerCB->getStaticContext(sctx);
+}
+
 
 bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -1042,6 +1064,16 @@ bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState
   STACK_END (state);
 }
 
+
+void ZorbaRestPutIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<ZorbaRestPutIterator, ZorbaRestGetIteratorState>::
+  openImpl(planState, offset); 
+
+  theSctx = planState.theCompilerCB->getStaticContext(sctx);
+}
+
+
 bool ZorbaRestPutIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t lUri, payload_data, headers;
@@ -1125,6 +1157,16 @@ bool ZorbaRestPutIterator::nextImpl(store::Item_t& result, PlanState& planState)
   STACK_END (state);
 }
 
+
+void ZorbaRestDeleteIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<ZorbaRestDeleteIterator, ZorbaRestGetIteratorState>::
+  openImpl(planState, offset); 
+
+  theSctx = planState.theCompilerCB->getStaticContext(sctx);
+}
+
+
 bool ZorbaRestDeleteIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t lUri, payload_data, headers;
@@ -1183,6 +1225,16 @@ bool ZorbaRestDeleteIterator::nextImpl(store::Item_t& result, PlanState& planSta
   STACK_PUSH(true, state);
   STACK_END (state);
 }
+
+
+void ZorbaRestHeadIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<ZorbaRestHeadIterator, ZorbaRestGetIteratorState>::
+  openImpl(planState, offset); 
+
+  theSctx = planState.theCompilerCB->getStaticContext(sctx);
+}
+
 
 bool ZorbaRestHeadIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {

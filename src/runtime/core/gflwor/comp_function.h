@@ -16,6 +16,8 @@
 #ifndef ZORBA_RUNTIME_GFLWOR_COMP_FUNCTION
 #define ZORBA_RUNTIME_GFLWOR_COMP_FUNCTION
 
+#include "context/dynamic_context.h"
+
 #include "runtime/core/gflwor/common.h"
 #include "runtime/api/runtimecb.h"
 #include "runtime/booleans/BooleanImpl.h"
@@ -74,6 +76,7 @@ public:
                          *t2iter,
                          orderSpecIter->theDescending,
                          orderSpecIter->theEmptyLeast,
+                         orderSpecIter->theNativeCompare,
                          orderSpecIter->theCollator);
       if (cmp == 1)
       {
@@ -103,6 +106,7 @@ public:
         store::Item* item2,
         bool desc,
         bool emptyLeast,
+        bool nativeCompare,
         XQPCollator* collator) const
   {
     if (empty_item(item1))
@@ -118,18 +122,25 @@ public:
     }
     else
     {
+      long result;
+
       // danm: both valueCompare (x, NaN) and valueCompare (NaN, x) return 2.
       // That's why empty_item is needed.
-#if 1
-      store::Item_t ls1(item1);
-      store::Item_t ls2(item2);
-      long result = CompareIterator::valueCompare(ls1 , ls2,
-                                                  theTypeManager,
-                                                  theTimezone,
-                                                  collator);
-#else
-      long result = item1->compare(item2, theTimezone, collator);
-#endif
+      if (nativeCompare)
+      {
+        result = item1->compare(item2, theTimezone, collator);
+      }
+      else
+      {
+        store::Item_t ls1(item1);
+        store::Item_t ls2(item2);
+        result = CompareIterator::valueCompare(ls1,
+                                               ls2,
+                                               theTypeManager,
+                                               theTimezone,
+                                               collator);
+      }
+
       if (result > 1 || result < -1) 
       {
         ZORBA_ERROR_DESC( XPTY0004, "Non-comparable types found while sorting" );

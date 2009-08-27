@@ -18,7 +18,8 @@
 
 #include "zorbatypes/rchandle.h"
 
-namespace zorba {
+namespace zorba 
+{
   /* numerics */
   template <class Object> class FloatImpl;
   class Integer;
@@ -37,3 +38,9 @@ namespace zorba {
   typedef rchandle<xqpStringStore> xqpStringStore_t;
 };
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

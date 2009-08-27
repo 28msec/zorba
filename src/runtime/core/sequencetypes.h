@@ -59,13 +59,7 @@ public:
  
   ~InstanceOfIterator();
   
-  void openImpl(PlanState& planState, uint32_t& offset)
-  {
-    UnaryBaseIterator<InstanceOfIterator, PlanIteratorState>::
-    openImpl(planState, offset);
-    
-    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-  }
+  void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
@@ -106,13 +100,7 @@ public:
 
   ~CastIterator();
   
-  void openImpl(PlanState& planState, uint32_t& offset)
-  {
-    UnaryBaseIterator<CastIterator, PlanIteratorState>::
-    openImpl(planState, offset);
-    
-    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-  }
+  void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 
@@ -154,13 +142,7 @@ public:
 
   virtual ~CastableIterator();
 
-  void openImpl(PlanState& planState, uint32_t& offset)
-  {
-    UnaryBaseIterator<CastableIterator, PlanIteratorState>::
-    openImpl(planState, offset);
-    
-    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-  }
+  void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 
@@ -199,13 +181,7 @@ public:
 
   virtual ~PromoteIterator();
 
-  void openImpl(PlanState& planState, uint32_t& offset)
-  {
-    UnaryBaseIterator<PromoteIterator, PlanIteratorState>::
-    openImpl(planState, offset);
-    
-    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-  }
+  void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 
@@ -251,13 +227,7 @@ public:
         bool check_prime,
         XQUERY_ERROR);
 
-  void openImpl(PlanState& planState, uint32_t& offset)
-  {
-    UnaryBaseIterator<TreatIterator, PlanIteratorState>::
-    openImpl(planState, offset);
-    
-    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-  }
+  void openImpl(PlanState& planState, uint32_t& offset);
   
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 
@@ -278,7 +248,7 @@ NARY_ITER_STATE(EitherNodesOrAtomicsIterator, EitherNodesOrAtomicsIteratorState)
 
 
 } /* namespace zorba */
-#endif  /* ZORBA_SEQUENCETYPES_H */
+#endif
   
 /*
  * Local variables:

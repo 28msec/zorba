@@ -13,8 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "compiler/api/compilercb.h"
+
 #include "runtime/indexing/value_index_builder.h"
+
 #include "store/api/store.h"
+
 #include "system/globalenv.h"
 
 namespace zorba {

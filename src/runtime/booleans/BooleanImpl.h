@@ -16,9 +16,12 @@
 #ifndef ZORBA_BOOLEAN_IMPL_H
 #define ZORBA_BOOLEAN_IMPL_H
 
-#include "zorbatypes/xqpstring.h"
-
 #include "common/shared_types.h"
+
+//#include "zorbatypes/xqpstring.h"
+
+#include "compiler/expression/expr_consts.h"
+
 #include "runtime/base/unarybase.h"
 #include "runtime/base/binarybase.h"
 #include "runtime/base/narybase.h"
@@ -122,17 +125,24 @@ private:
   XQPCollator               * theCollation;
 
 public:
-  SERIALIZABLE_CLASS(CompareIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(CompareIterator, BinaryBaseIterator<CompareIterator, PlanIteratorState>)
+  SERIALIZABLE_CLASS(CompareIterator);
+
+  CompareIterator(::zorba::serialization::Archiver& ar)
+    :
+    BinaryBaseIterator<CompareIterator, PlanIteratorState>(ar),
+    theTypeManager(NULL),
+    theTimezone(0),
+    theCollation(NULL)
+  {
+  }
+
   void serialize(::zorba::serialization::Archiver &ar)
   {
     serialize_baseclass(ar, (BinaryBaseIterator<CompareIterator, PlanIteratorState>*)this);
     SERIALIZE_ENUM(CompareConsts::CompareType, theCompType)
     ar & theIsGeneralComparison;
-    SERIALIZE_TYPEMANAGER(TypeManager, theTypeManager)
-    ar & theTimezone;
-    ar & theCollation;
   }
+
 public:
   CompareIterator (
         short sctx,

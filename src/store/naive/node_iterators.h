@@ -16,9 +16,10 @@
 #ifndef ZORBA_SIMPLE_STORE_NODE_ITERATORS
 #define ZORBA_SIMPLE_STORE_NODE_ITERATORS
 
-#include "store/api/iterator.h"
-#include "store/util/hashset_item_handle.h"
+#include "zorbautils/hashfun.h"
+#include "zorbautils/hashset.h"
 
+#include "store/api/iterator.h"
 #include "store/naive/shared_types.h"
 #include "store/naive/node_items.h"
 #include "store/naive/ordpath.h"
@@ -271,6 +272,53 @@ public:
 
 
 /*******************************************************************************
+  A hash-based set container of item pointers, where equality is based on
+  object identity (i.e. pointer equality) rather than object value.
+
+  It is used by the NodeDistinctIterator below. 
+
+  NOTE: Although the set uses raw item pointers instead of rchandles, reference
+        counting is still done, but done manually (see insert and clear methods)
+********************************************************************************/
+class ItemPointerHashSet
+{
+public:
+
+  class CompareFunction
+  {
+  public:
+    static bool equal(const store::Item* t1, const store::Item* t2)
+    {
+      return t1 == t2;
+    }
+
+    static uint32_t hash(const store::Item* t)
+    {
+      return hashfun::h32((void*)(&t), sizeof(void*), FNV_32_INIT);
+    }
+  };
+
+private:
+  HashSet<store::Item*, CompareFunction>  theSet;
+
+public:
+  ItemPointerHashSet(ulong size, bool sync) : theSet(size, sync) { }
+
+  void clear();
+
+  bool find(store::Item* const key) 
+  {
+    return theSet.find(key); 
+  }
+
+  bool insert(store::Item* key) 
+  {
+    return theSet.insert(key); 
+  }
+};
+
+
+/*******************************************************************************
   This iterator is used to eliminated duplicate nodes in the multiset of nodes
   produced by another iterator.
 
@@ -282,8 +330,8 @@ public:
 class StoreNodeDistinctIterator : public store::Iterator
 {
 protected:
-  store::Iterator_t         theInput;
-  store::ItemHandleHashSet  theNodeSet;
+  store::Iterator_t   theInput;
+  ItemPointerHashSet  theNodeSet;
 
 public:
   StoreNodeDistinctIterator(store::Iterator* input) 

@@ -762,3 +762,9 @@ const double HashMap<T, V, C>::DEFAULT_LOAD_FACTOR = 0.6;
 } // namespace zorba
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

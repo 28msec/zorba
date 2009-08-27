@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 #include "compiler/api/compiler_api.h"
+#include "compiler/api/compilercb.h"
 
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
@@ -73,6 +74,16 @@ END_SERIALIZABLE_CLASS_VERSIONS(ZorbaTimestampIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(XQDocIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(XQDocIterator)
+
+
+void XQDocIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<XQDocIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
 
 bool
 XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -227,6 +238,16 @@ ZorbaTidyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   STACK_END (state);
 }
+
+
+void ZorbaTDocIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<ZorbaTDocIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
 
 bool
 ZorbaTDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const

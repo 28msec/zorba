@@ -13,18 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "runtime/core/trycatch.h"
-
 #include "zorbaerrors/errors.h"
 #include "zorbaerrors/Assert.h"
 #include "errors/user_error.h"
 
+#include "compiler/api/compilercb.h"
+
+#include "runtime/core/trycatch.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/visitors/planitervisitor.h"
 #include "runtime/core/var_iterators.h"
 #include "runtime/util/item_iterator.h"
+
 #include "store/api/store.h"
 #include "store/api/temp_seq.h"
+
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
 #include "types/node_test.h"

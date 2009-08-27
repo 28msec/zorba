@@ -89,13 +89,7 @@ public:
         store::Item_t a_typeName,
         ParseConstants::validation_mode_t a_validationMode);
 
-  void openImpl(PlanState& planState, uint32_t& offset)
-  {
-    UnaryBaseIterator<ValidateIterator, PlanIteratorState>::
-    openImpl(planState, offset);
-    
-    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-  }
+  void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 

@@ -51,13 +51,7 @@ public:
   {
   }
 
-  void openImpl(PlanState& planState, uint32_t& offset)
-  {
-    NaryBaseIterator<FnResolveUriIterator, PlanIteratorState>::
-    openImpl(planState, offset);
-    
-    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-  }
+  void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const; 
 };

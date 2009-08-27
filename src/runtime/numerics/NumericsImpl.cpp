@@ -15,25 +15,33 @@
  */
 #include <vector>
 
-#include "store/api/item.h"
+#include "common/shared_types.h"
+
+#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/error_manager.h"
+#include "zorbatypes/zorbatypes_decl.h"
+#include "zorbatypes/xqpstring.h"
 
 #include "system/globalenv.h"
-#include "zorbaerrors/Assert.h"
 
 #include "util/tracer.h"
+
 #include "types/casting.h"
-#include "zorbaerrors/error_manager.h"
+#include "types/typeconstants.h"
+#include "types/typeops.h"
+
+#include "context/static_context.h"
+
+#include "compiler/api/compilercb.h"
+
 #include "runtime/numerics/NumericsImpl.h"
 #include "runtime/visitors/planitervisitor.h"
 #include "runtime/core/arithmetic_impl.h"
 #include "runtime/api/runtimecb.h"
-#include "types/typeconstants.h"
-#include "types/typeops.h"
+
 #include "store/api/item_factory.h"
-#include "context/static_context.h"
-#include "common/shared_types.h"
-#include "zorbatypes/zorbatypes_decl.h"
-#include "zorbatypes/xqpstring.h"
+#include "store/api/item.h"
+
 
 namespace zorba
 {
@@ -922,6 +930,15 @@ bool OpNumericUnaryIterator::nextImpl(store::Item_t& result, PlanState& planStat
 /*******************************************************************************
 
 ********************************************************************************/
+void FnAbsIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<FnAbsIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
+
 bool FnAbsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
@@ -996,6 +1013,16 @@ bool FnAbsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 /*******************************************************************************
   6.4.2 fn:ceiling
 ********************************************************************************/
+
+void FnCeilingIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<FnCeilingIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
+
 bool FnCeilingIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
@@ -1057,6 +1084,15 @@ bool FnCeilingIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 /*******************************************************************************
   6.4.3 fn:floor
 ********************************************************************************/
+void FnFloorIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<FnFloorIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
+
 bool FnFloorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
@@ -1118,6 +1154,15 @@ bool FnFloorIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 /*******************************************************************************
   6.4.4 fn:round
 ********************************************************************************/
+void FnRoundIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<FnRoundIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
+
 bool FnRoundIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
@@ -1180,6 +1225,15 @@ bool FnRoundIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 /*******************************************************************************
   6.4.5 fn:round-half-to-even
 ********************************************************************************/
+void FnRoundHalfToEvenIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<FnRoundHalfToEvenIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
+
 bool FnRoundHalfToEvenIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
@@ -1251,6 +1305,15 @@ bool FnRoundHalfToEvenIterator::nextImpl(store::Item_t& result, PlanState& planS
 /*******************************************************************************
 
 ********************************************************************************/
+void FnSQRTIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<FnSQRTIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
+
 bool FnSQRTIterator::nextImpl (store::Item_t& result, PlanState& planState) const 
 {
   store::Item_t item;

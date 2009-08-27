@@ -25,7 +25,7 @@
 #include "zorbamisc/ns_consts.h"
 #include "store/api/item.h"
 
-#include "zorbaserialization/serialization_engine.h"
+#include "zorbaserialization/class_serializer.h"
 
 namespace zorba {
 
@@ -48,13 +48,7 @@ private:
 public:
   SERIALIZABLE_CLASS(namespace_context)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(namespace_context, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    //serialize_baseclass(ar, (SimpleRCObject*)this);
-    ar & m_sctx;
-    ar & m_parent;
-    ar & m_bindings;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   namespace_context(static_context* sctx) : m_sctx(sctx) { }

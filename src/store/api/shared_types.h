@@ -86,3 +86,9 @@ class XmlDataManager_Impl;
 }
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

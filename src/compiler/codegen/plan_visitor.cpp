@@ -66,7 +66,6 @@
 
 #include "functions/function.h"
 
-#include <zorba/zorba.h>
 #include "runtime/debug/zorba_debug_iterator.h"
 #include "debugger/zorba_debugger_commons.h"
 
@@ -820,6 +819,28 @@ struct wincond_var_iters
 };
 
 
+bool nativeColumnSort(expr* colExpr)
+{ 
+  static_context* sctx = ccb->m_sctx;
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
+
+  xqtref_t colType = colExpr->return_type(sctx);
+
+  if (TypeOps::is_subtype(*colType, *rtm.STRING_TYPE_STAR) ||
+      TypeOps::is_subtype(*colType, *rtm.DOUBLE_TYPE_STAR) ||
+      TypeOps::is_subtype(*colType, *rtm.FLOAT_TYPE_STAR) ||
+      TypeOps::is_subtype(*colType, *rtm.LONG_TYPE_STAR) ||
+      TypeOps::is_subtype(*colType, *rtm.UNSIGNED_LONG_TYPE_STAR) ||
+      TypeOps::is_equal(*TypeOps::prime_type(*colType), *rtm.DECIMAL_TYPE_ONE) ||
+      TypeOps::is_equal(*TypeOps::prime_type(*colType), *rtm.INTEGER_TYPE_ONE) ||
+      TypeOps::is_subtype(*colType, *rtm.DATE_TYPE_STAR) ||
+      TypeOps::is_subtype(*colType, *rtm.TIME_TYPE_STAR) ||
+      TypeOps::is_subtype(*colType, *rtm.DATETIME_TYPE_STAR))
+    return true;
+
+  return false;
+}
+
 
 PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause) 
 {
@@ -881,52 +902,6 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 
     if (! fc->is_outer()) 
     {
-//#ifdef ZORBA_DEBUGGER
-//      if(ccb->m_debugger != 0)
-//      {
-//        checked_vector<PlanIter_t> argv;
-//        checked_vector<store::Item_t> varnames;
-//        checked_vector<string> var_keys;
-//        checked_vector<global_binding> globals;
-//        checked_vector<xqtref_t> vartypes;
-//   
-//        checked_vector<bound_var> lVars = fc->get_bound_variables();
-//        checked_vector<bound_var>::iterator lIter;
-//   
-//        for ( lIter = lVars.begin(); lIter != lVars.end(); ++lIter )
-//        {
-//          varnames.push_back (lIter->varname);
-//          var_keys.push_back (lIter->var_key);
-//          vartypes.push_back (lIter->type);
-//          //lIter->var->accept(*this);
-//          //argv.push_back(pop_itstack());
-//        }
-//        reverse(argv.begin(), argv.end());
-//        list<global_binding> lGlobals = fc->get_global_variables();
-//        list<global_binding>::iterator it;
-//        for ( it = lGlobals.begin(); it != lGlobals.end(); ++it )
-//        {
-//          globals.push_back( *it );
-//        }
-//        argv.push_back(new flwor::ForIterator(var->get_cur_sctx(),
-//                                              var->get_loc (),
-//                                              var->get_varname(),
-//                                              PREV_ITER,
-//                                              domainIter,
-//                                              varRefs,
-//                                              *posVarRefs));
-//        reverse (argv.begin (), argv.end ());
-//        return new FnDebugIterator(ccb->m_debugger,
-//                                   var->get_cur_sctx(),
-//                								   var->get_loc(),
-//                                   varnames,
-//                                   var_keys,
-//                                   vartypes,
-//                                   globals,
-//                                   argv,
-//                                   true);
-//      }
-//#endif
       return new flwor::ForIterator(var->get_cur_sctx(),
                                     var->get_loc(),
                                     var->get_varname(),
@@ -1104,6 +1079,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
       orderSpecs[i] = flwor::OrderSpec(pop_itstack(), 
                                        emptyLeast,
                                        descending,
+                                       nativeColumnSort(obc->get_column_expr(i)),
                                        modifiers[i].theCollation);
     }
 
@@ -1186,6 +1162,7 @@ void flwor_codegen(const flwor_expr& flworExpr)
         orderSpecs[i] = flwor::OrderSpec(pop_itstack(),
                                          emptyLeast,
                                          descending,
+                                         nativeColumnSort(obc->get_column_expr(i)),
                                          modifiers[i].theCollation);
       }
 

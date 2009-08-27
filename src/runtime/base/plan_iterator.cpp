@@ -13,10 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "context/static_context.h"
+
+#include "compiler/api/compilercb.h"
+
 #include "runtime/base/plan_iterator.h"
 #include "runtime/api/runtimecb.h"
-#include "compiler/api/compilercb.h"
-#include "context/static_context.h"
+
 
 namespace zorba
 {
@@ -39,6 +42,7 @@ END_SERIALIZABLE_TEMPLATE_VERSIONS(UnaryBaseIterator)
 SERIALIZABLE_CLASS_VERSIONS(PlanIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(PlanIterator)
 
+
 /*******************************************************************************
   class PlanState
 ********************************************************************************/
@@ -52,12 +56,7 @@ PlanState::PlanState(uint32_t blockSize, uint32_t aStackDepth)
 }
 
 
-//static_context*
-//PlanState::sctx() { return theCompilerCB->m_sctx; }
-
-
-dynamic_context*
-PlanState::dctx() 
+dynamic_context* PlanState::dctx() 
 {
   return theRuntimeCB->theDynamicContext; 
 }
@@ -74,5 +73,49 @@ PlanState::~PlanState()
 {
   delete[] theBlock; theBlock = 0;
 }
+
+
+/*******************************************************************************
+  class PlanIterator
+********************************************************************************/
+
+static_context* PlanIterator::getStaticContext(PlanState& planState) const
+{
+  if (!theSctx)
+    theSctx = planState.theCompilerCB->getStaticContext(sctx);
+
+  assert(theSctx);
+  return theSctx;
+}
+
+
+CollationCache* PlanIterator::collationCache(PlanState& planState) 
+{
+  return getStaticContext(planState)->get_collation_cache(); 
+}
+
+
+#ifndef NDEBUG
+
+bool PlanIterator::consumeNext(
+    store::Item_t& result, 
+    const PlanIterator* subIter,
+    PlanState& planState)
+{
+  bool status = subIter->produceNext(result, planState);
+
+  if (planState.theCompilerCB->m_config.print_item_flow) 
+  {
+    std::cout << "next (" << subIter << " = " << typeid (*subIter).name()
+              << ") -> " 
+              << ((status && result != NULL) ? result->show () : xqp_string("null"))
+              << std::endl;
+  }
+  return status;
+}
+
+#endif
+
+
 
 }

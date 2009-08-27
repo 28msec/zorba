@@ -13,13 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include "system/globalenv.h"
+
+#include "compiler/api/compilercb.h"
+
 #include "runtime/core/gflwor/window_iterator.h"
 #include "runtime/core/gflwor/common.h"
-
 #include "runtime/core/var_iterators.h"
 #include "runtime/visitors/planitervisitor.h"
+
 #include "store/api/store.h"
-#include "system/globalenv.h"
 #include "store/api/item_factory.h"
 
 using namespace zorba;

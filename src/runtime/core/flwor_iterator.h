@@ -167,10 +167,11 @@ public:
     ar & theOrderSpecs;
     ar & theStable;
   }
-  virtual ~OrderByClause() {}
-public:
 
+public:
   OrderByClause(const std::vector<OrderSpec>& orderSpecs, bool stable);
+
+  ~OrderByClause() {}
 
   void accept(PlanIterVisitor& v) const;
 
@@ -215,11 +216,13 @@ public:
     ar & theGroupingSpecs;
     ar & theOuterVars;
   }
-  virtual ~GroupByClause() {}
+
 public:
   GroupByClause(
         std::vector<GroupingSpec> aGroupingSpecs, 
         std::vector<GroupingOuterVar> aOuterVars);
+
+  ~GroupByClause() {}
 
   void accept(PlanIterVisitor& v) const;
 

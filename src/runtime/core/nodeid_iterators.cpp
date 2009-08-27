@@ -13,11 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "store/api/store.h"
-#include "store/api/item.h"
 #include "system/globalenv.h"
+
+#include "compiler/api/compilercb.h"
+
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/api/plan_iterator_wrapper.h"
+
+#include "store/api/store.h"
+#include "store/api/item.h"
 
 namespace zorba 
 {

@@ -13,6 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "zorbaerrors/error_manager.h"
+
+#include "zorbatypes/collation_manager.h"
+#include "zorbatypes/duration.h"
+#include "zorbatypes/datetime.h"
+
+#include "system/globalenv.h"
+
+#include "types/casting.h"
+#include "types/typeops.h"
+
+#include "context/dynamic_context.h"
+#include "context/static_context.h"
+#include "context/collation_cache.h"
+
+#include "compiler/api/compilercb.h"
 
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/api/runtimecb.h"
@@ -20,24 +36,9 @@
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/util/iterator_impl.h"
 
-#include "system/globalenv.h"
-
-#include "types/casting.h"
-#include "types/typeops.h"
-
 #include "store/api/temp_seq.h"
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
-
-#include "context/dynamic_context.h"
-#include "context/static_context.h"
-#include "context/collation_cache.h"
-
-#include "zorbaerrors/error_manager.h"
-
-#include "zorbatypes/collation_manager.h"
-#include "zorbatypes/duration.h"
-#include "zorbatypes/datetime.h"
 
 
 namespace zorba {
@@ -201,9 +202,13 @@ CompareIterator::CompareIterator(
      CompareConsts::CompareType aCompType)
   :
   BinaryBaseIterator<CompareIterator, PlanIteratorState> ( sctx, loc, aChild0, aChild1 ), 
-  theCompType(aCompType)
+  theCompType(aCompType),
+  theTypeManager(NULL),
+  theTimezone(0),
+  theCollation(NULL)
 {
-  switch(theCompType) {
+  switch(theCompType) 
+  {
   case CompareConsts::GENERAL_EQUAL:
   case CompareConsts::GENERAL_NOT_EQUAL:
   case CompareConsts::GENERAL_LESS:
@@ -216,10 +221,6 @@ CompareIterator::CompareIterator(
     theIsGeneralComparison = false;
     break;
   }
-
-  theTypeManager = NULL;
-  theCollation = NULL;
-  theTimezone = 0;
 }
 
   

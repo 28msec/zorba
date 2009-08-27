@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef XQP_PLAN_WRAPPER_H
-#define XQP_PLAN_WRAPPER_H
+#ifndef ZORBA_RUNTIME_API_PLAN_WRAPPER
+#define ZORBA_RUNTIME_API_PLAN_WRAPPER
 
 #include "common/shared_types.h"
+
 #include "store/api/iterator.h"
 
-namespace zorba {
+
+namespace zorba 
+{
 
 class PlanState;
 class ZorbaDebuggerCommons;
@@ -36,7 +39,8 @@ class ZorbaDebuggerRuntime;
 ********************************************************************************/
 class PlanWrapper : public store::Iterator
 {
-    friend class ZorbaDebuggerRuntime;
+  friend class ZorbaDebuggerRuntime;
+
 protected:
   PlanIter_t         theIterator;
   PlanState        * theStateBlock;
@@ -46,7 +50,11 @@ protected:
 #endif
 
 public:
-  PlanWrapper(const PlanIter_t& iter, CompilerCB*, dynamic_context* aDynamicContext, uint32_t aStackDepth = 0);
+  PlanWrapper(
+        const PlanIter_t& iter,
+        CompilerCB*,
+        dynamic_context* aDynamicContext,
+        uint32_t aStackDepth = 0);
 
   virtual ~PlanWrapper();
 
@@ -62,12 +70,12 @@ public:
   virtual void
   close() throw ();
 
-  virtual void checkDepth (const QueryLoc &loc);
+  virtual void checkDepth(const QueryLoc &loc);
 
   virtual bool
   isUpdating() const;
 
-  const RuntimeCB *getRuntimeCB () const;
+  const RuntimeCB* getRuntimeCB() const;
 };
 
 } /* namespace zorba */

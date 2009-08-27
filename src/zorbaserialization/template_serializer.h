@@ -17,16 +17,19 @@
 #ifndef TEMPLATE_SERIALIZATION_OPERATORS
 #define TEMPLATE_SERIALIZATION_OPERATORS
 
-#include "zorbaserialization/class_serializer.h"
-#include "zorbaserialization/archiver.h"
-//#include "zorbaerrors/error_manager.h"
 #include <list>
 #include <vector>
 #include <map>
 #include <sstream>
 
-namespace zorba{
-  namespace serialization{
+#include "zorbaserialization/class_serializer.h"
+#include "zorbaserialization/archiver.h"
+
+
+namespace zorba
+{
+namespace serialization
+{
 /////////////////////////////templates
 
 #define ZORBA_SER_ERROR_DESC_OSS(code, desc)                            \
@@ -34,7 +37,7 @@ namespace zorba{
   {                                                                     \
     std::ostringstream lOStringStream;                                  \
     lOStringStream << desc;                                             \
-    ::zorba::serialization::report_error(code, lOStringStream.str(),                            \
+    ::zorba::serialization::report_error(code, lOStringStream.str(),    \
                  __FILE__, __LINE__);                                   \
   }while(0);
 
@@ -472,8 +475,12 @@ void operator&(Archiver &ar, T *&obj)
     //sprintf(strtemp, "%d", 0);
     bool is_ref;
     
-    is_ref = ar.add_compound_field(ar.is_serialize_base_class() ? obj->T::get_class_name_str() : obj->get_class_name_str(), 
-                                    ar.is_serialize_base_class() ? T::class_versions[T::class_versions_count-1].class_version : obj->get_classversion(obj->get_version_count()-1).class_version , 
+    is_ref = ar.add_compound_field((ar.is_serialize_base_class() ?
+                                    obj->T::get_class_name_str() :
+                                    obj->get_class_name_str()), 
+                                   (ar.is_serialize_base_class() ?
+                                    T::class_versions[T::class_versions_count-1].class_version :
+                                    obj->get_classversion(obj->get_version_count()-1).class_version), 
                                     FIELD_IS_CLASS, "0",//strtemp, 
                                     (SerializeBaseClass*)obj, 
                                     ar.is_serialize_base_class() ? ARCHIVE_FIELD_IS_BASECLASS : ARCHIVE_FIELD_IS_PTR);

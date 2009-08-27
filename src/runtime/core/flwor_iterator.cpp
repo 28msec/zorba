@@ -17,18 +17,11 @@
 #include "zorbaerrors/Assert.h"
 #include "zorbaerrors/error_manager.h"
 
-#include "context/collation_cache.h"
-#include "types/root_typemanager.h"
-#include "types/typeops.h"
-
-#include "compiler/expression/expr.h"
+#include "compiler/api/compilercb.h"
 
 #include "runtime/core/flwor_iterator.h"
-#include "runtime/core/var_iterators.h"
 #include "runtime/core/gflwor/comp_function.h"
 #include "runtime/api/runtimecb.h"
-#include "runtime/booleans/BooleanImpl.h"
-#include "runtime/visitors/planitervisitor.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 
 #include "system/globalenv.h"
@@ -878,7 +871,7 @@ bool FLWORIterator::bindVariable(
     std::vector<LetVarIter_t>::const_iterator end = lForLetClause.theLetVarRefs.end();
 
     // Depending on the query, we might need to materialize the LET-Binding
-    if ( lForLetClause.theMaterialize )
+    if (lForLetClause.theMaterialize)
     {
       store::TempSeq_t tmpSeq = GENV_STORE.createTempSeq(iterWrapper, false, true);
 

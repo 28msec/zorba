@@ -253,6 +253,7 @@ protected:
   GuideNode               * theDataGuideRootNode;
 
   bool                      theIsValidated;
+  bool                      theIsRecursive;
 
 public:
   XmlTree(XmlNode* root, ulong id);
@@ -289,6 +290,10 @@ public:
   bool isValidated() const { return theIsValidated; }
 
   void markValidated() { theIsValidated = true; }
+
+  void setRecursive() { theIsRecursive = true; }
+
+  bool isRecursive() const { return theIsRecursive; }
 
   GuideNode* getDataGuide() const { return theDataGuideRootNode; }
 
@@ -599,6 +604,8 @@ public:
 
   store::Item* getNodeName() const { return NULL; }
 
+  bool isRecursive() const { return getTree()->isRecursive(); }
+
   xqp_string show() const;
 
   //
@@ -712,10 +719,18 @@ public:
   void resetInSubstGroup()      { theFlags &= ~IsInSubstGroup; }
 
   bool isRecursive() const      { return (theFlags & IsRecursive) != 0; }
-  void setRecursive()           { theFlags |= IsRecursive; }
   void resetRecursive()         { theFlags &= ~IsRecursive; }
 
-  bool haveLocalBindings() const{ return (theFlags & HaveLocalBindings) != 0; }
+  void setRecursive()           
+  {
+    theFlags |= IsRecursive;
+    getTree()->setRecursive(); 
+  }
+
+  bool haveLocalBindings() const
+  {
+    return (theFlags & HaveLocalBindings) != 0;
+  }
 
   void finalizeNode()
   {

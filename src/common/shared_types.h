@@ -18,6 +18,8 @@
 
 #include "zorbamisc/config/platform.h"
 
+#include "zorbatypes/rchandle.h"
+
 #include "store/api/shared_types.h"
 
 namespace zorba 
@@ -68,7 +70,8 @@ class ValueIndexInsertSession;
 class parsenode; class exprnode;
 
 // Expression nodes
-class expr; class var_expr;
+class expr; 
+class var_expr;
 
 class ItemVariableIterator;
 typedef rchandle<ItemVariableIterator> ItemVariableIterator_t;
@@ -142,3 +145,9 @@ class InternalModuleURIResolver;
 
 #endif /* ZORBA_SHARED_TYPES_H */
 /* vim:set ts=2 sw=2: */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

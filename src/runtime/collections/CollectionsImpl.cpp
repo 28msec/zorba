@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <fstream>
 
 #include "zorbaerrors/Assert.h"
 #include "zorbaerrors/error_messages.h"
@@ -21,26 +22,25 @@
 #include "zorbatypes/URI.h"
 #include "zorbatypes/numconversions.h"
 
+#include "api/collectionimpl.h"
+#include "api/serialization/serializer.h"
+
+#include "system/globalenv.h"
+
+#include "context/dynamic_context.h"
+#include "context/internal_uri_resolvers.h"
+
+#include "compiler/api/compilercb.h"
+
+#include "runtime/api/runtimecb.h"
+#include "runtime/collections/CollectionsImpl.h"
+
+#include "store/api/pul.h"
+#include "store/api/copymode.h"
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
 #include "store/api/collection.h"
 
-#include "api/collectionimpl.h"
-
-#include "system/globalenv.h"
-
-#include "runtime/api/runtimecb.h"
-
-#include "context/dynamic_context.h"
-#include "context/internal_uri_resolvers.h"
-#include "store/api/pul.h"
-
-#include "CollectionsImpl.h"
-
-#include "api/serialization/serializer.h"
-#include "store/api/copymode.h"
-
-#include <fstream>
 
 namespace zorba {
 
@@ -107,6 +107,24 @@ SERIALIZABLE_CLASS_VERSIONS(FnCollectionIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(FnCollectionIterator)
 
 
+#define NARY_ITER_SCTX_OPEN(iterName)                                         \
+void iterName::openImpl(PlanState& planState, uint32_t& offset)               \
+{                                                                             \
+  NaryBaseIterator<iterName, PlanIteratorState>::openImpl(planState, offset); \
+                                                                              \
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);      \
+}
+
+
+#define NARY_ITER_STATE_SCTX_OPEN(iterName, stateName)                   \
+void iterName::openImpl(PlanState& planState, uint32_t& offset)          \
+{                                                                        \
+  NaryBaseIterator<iterName, stateName>::openImpl(planState, offset);    \
+                                                                         \
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx); \
+}   
+
+
 /*******************************************************************************
   fn:collection() as node()*
   fn:collection($uri as xs:string?) as node()*
@@ -156,6 +174,9 @@ void FnCollectionIteratorState::reset(PlanState& planState)
     theIterator = NULL;
   }
 }
+
+
+NARY_ITER_STATE_SCTX_OPEN(FnCollectionIterator, FnCollectionIteratorState)
 
 
 bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -232,6 +253,10 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
     is not defined in the dynamic context, FODC0002 is raised
   - XQST0046: could not resolve uri or given uri is not a valid uri
 ********************************************************************************/
+
+NARY_ITER_SCTX_OPEN(ZorbaCollectionExistsIterator)
+
+
 bool
 ZorbaCollectionExistsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -280,6 +305,315 @@ ZorbaCollectionExistsIterator::nextImpl(store::Item_t& result, PlanState& planSt
 
 
 /*******************************************************************************
+  declare sequential function nodes-count() as xs:integer?
+
+  declare sequential function nodes-count(xs:string?) as xs:integer?
+
+  The function returns the number of nodes in the given collection.
+
+  Error conditions:
+  - If the collection URI is empty and the default collection
+    is not defined in the dynamic context, FODC0002 is raised
+  - If the specified collection does not exist, an error is raised
+    (API0006_COLLECTION_NOT_FOUND - collection does not exist).
+********************************************************************************/
+
+NARY_ITER_SCTX_OPEN(ZorbaNodeCountIterator)
+
+
+bool
+ZorbaNodeCountIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Collection_t theColl;
+  store::Item_t       itemUri;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if((theChildren.size()==0) ||
+      ((theChildren.size()==1) &&
+      !consumeNext(itemUri, theChildren[0].getp(), planState)))
+  {
+    itemUri = planState.theRuntimeCB->theDynamicContext->get_default_collection();
+    if(NULL == itemUri)
+      ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
+  }
+
+  theColl = getCollection(theSctx, itemUri->getStringValue(), loc);
+
+  STACK_PUSH(GENV_ITEMFACTORY->createInteger(
+            result,
+            Integer::parseInt(theColl.getp()->size())), state);
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+  declare sequential function node-at($position as xs:integer) as node()?
+
+  declare sequential function node-at($uri      as xs:string?,
+                                      $position as xs:integer) as node()?
+
+  The function will return the node positioned at $position in the given collection.
+
+  Error conditions:
+  - If the collection URI is empty and the default collection
+    is not defined in the dynamic context, FODC0002 is raised
+  - If the specified collection does not exist, an error is raised
+    (API0006_COLLECTION_NOT_FOUND - collection does not exist).
+  - If the collection has fewer nodes than $position + 1 an error is raised
+    (API0030_NO_NODE_AT_GIVEN_POSITION - there is no node at the given position,
+    the collection has fewer nodes). 
+********************************************************************************/
+
+NARY_ITER_SCTX_OPEN(ZorbaNodeAtIterator)
+
+
+bool
+ZorbaNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Collection_t theColl;
+  store::Item_t       item;
+  uint32_t            lpos;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if((theChildren.size()==1) ||
+      ((theChildren.size()==2) &&
+      !consumeNext(item, theChildren[0].getp(), planState)))
+  {
+    item = planState.theRuntimeCB->theDynamicContext->get_default_collection();
+    if(NULL == item)
+      ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
+  }
+
+  theColl = getCollection(theSctx, item->getStringValue(), loc);
+
+  if (consumeNext(item, theChildren[theChildren.size()-1].getp(), planState))
+  {
+    if(item->getIntegerValue() >= Integer::zero())
+    {
+      NumConversions::strToUInt(item->getIntegerValue().toString(),lpos);
+      result = theColl->nodeAt(lpos);
+      STACK_PUSH(true, state);
+    }
+  }
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+  declare function index-of($target as node()) as xs:integer
+
+  declare function index-of($uri as xs:string?,
+                            $target as node()) as xs:integer
+
+  The function will return the index of the  $target node within the collection
+  identified by $uri.
+
+  Error condition:
+  - If the collection URI is empty and the default collection
+    is not defined in the dynamic context, FODC0002 is raised
+  - If the specified collection does not exist, an error is raised
+    (API0006_COLLECTION_NOT_FOUND - collection does not exist).
+  - If the node does not belong to the given collection, an error is raised
+    (API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION - the node does not belong
+    to the given collection).
+********************************************************************************/
+
+NARY_ITER_SCTX_OPEN(ZorbaIndexOfIterator)
+
+
+bool
+ZorbaIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Collection_t theColl;
+  store::Item_t       item;
+  int                 pos = 1;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if((theChildren.size()==1) ||
+      ((theChildren.size()==2) &&
+      !consumeNext(item, theChildren[0].getp(), planState)))
+  {
+    item = planState.theRuntimeCB->theDynamicContext->get_default_collection();
+    if(NULL == item)
+      ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
+  }
+
+  theColl = getCollection(theSctx, item->getStringValue(), loc);
+
+  if (consumeNext(item, theChildren[theChildren.size()-1].getp(), planState))
+  {
+    pos = theColl->indexOf(item);
+
+    if( -1 == pos)
+      ZORBA_ERROR_LOC_DESC (API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION,
+                            loc,
+                            "The node does not belong to collection.");
+
+    STACK_PUSH(GENV_ITEMFACTORY->createInteger(
+              result,
+              Integer::parseInt(pos)), state);
+  }
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+  declare updating function
+  export-xml($uri as xs:string) as none
+
+  declare updating function
+  export-xml($uri as xs:string, $targeturi as xs:string) as none
+
+  Saves the given collection to the target URI as an XML file. Intended
+  supported targets (protocols) are: "file:///path/file.xml" : (e.g.
+  "file://c:/path/folder/file.xml") - saves the collection to a file, in the
+  serialized form. "http://www.example.com/path/file.xml" - saves the
+  collection to a remote location, via the HTTP PUT request (to be implemented
+  by the REST library).
+
+  If the protocol is omitted in the URI, "file://" is assumed.
+
+  The first function will use the collection's URI (the $uri parameter) as the
+  target URI.
+
+  The collection will be exported only if it can be serialized correctly - i.e.
+  it is a well-formed XML document. In all other cases an error will be returned
+  (API0035_COLLECTION_CANNOT_BE_SERIALIZED - the collection cannot be serialized).
+
+********************************************************************************/
+
+NARY_ITER_SCTX_OPEN(ZorbaExportXmlIterator)
+
+
+bool ZorbaExportXmlIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& planState) const
+{
+  store::Collection_t coll;
+  store::Item_t       uriItem;
+  store::Item_t       targetUriItem;
+  URI                 targetURI;
+  store::Item_t       node;
+  store::Iterator_t   collIterator;
+  std::ostringstream  ss;
+  std::ostream*       lOutputStream;
+  std::auto_ptr<std::ostream> lFileStream;
+
+  error::ErrorManager lErrorManager;
+  serializer          ser(&lErrorManager);
+  ser.set_parameter("omit-xml-declaration", "yes");
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if(!consumeNext(uriItem, theChildren[0].getp(), planState))
+    ZORBA_ASSERT(false);
+
+  coll = getCollection(theSctx, uriItem->getStringValue(), loc);
+
+  if(theChildren.size() == 2)
+  {
+    if (!consumeNext(targetUriItem, theChildren[1].getp(), planState))
+      ZORBA_ASSERT(false);
+
+    targetURI = URI(targetUriItem->getStringValue().getp());
+    }
+    else
+    {
+    targetURI = URI(coll->getUri()->getStringValue()->c_str());
+    }
+
+  if(targetURI.get_scheme() != xqpString("file") && !targetURI.get_scheme().empty())
+    {
+    ZORBA_ERROR_LOC_DESC(FOER0000, loc,
+                            "ZorbaExportXmlIterator implemented only for 'file' scheme.");
+    }
+
+  lFileStream.reset(new std::ofstream(targetURI.get_path().c_str()));
+  lOutputStream = lFileStream.get();
+    if ( !lOutputStream->good() )
+  {
+    ZORBA_ERROR_LOC_DESC_OSS(API0033_FILE_OR_FOLDER_DOES_NOT_EXIST, loc,
+    "File or folder does not exist: " << targetURI.get_path().c_str());
+  }
+
+  collIterator = coll->getIterator(true);
+
+    collIterator->open();
+
+  while (collIterator->next(node))
+    ser.serialize(node, ss);
+  
+    collIterator->close();
+
+    *lOutputStream << ss.str() << std::endl;
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+  declare function list-collections() as xs:anyURI*
+
+  The function will return a sequence of URIs of all currently known collections.
+********************************************************************************/
+ZorbaListCollectionsState::~ZorbaListCollectionsState()
+{
+  if ( uriItState != NULL ) {
+    uriItState->close();
+    uriItState = NULL;
+  }
+}
+
+
+void ZorbaListCollectionsState::init(PlanState& planState)
+{
+  PlanIteratorState::init(planState);
+  uriItState = NULL;
+}
+
+
+void ZorbaListCollectionsState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  if ( uriItState != NULL ) {
+    uriItState->close();
+    uriItState = NULL;
+  }
+}
+
+
+bool
+ZorbaListCollectionsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  ZorbaListCollectionsState * state;
+  store::Item_t               uriItem;
+
+  DEFAULT_STACK_INIT(ZorbaListCollectionsState, state, planState);
+
+  for ((state->uriItState = GENV_STORE.listCollectionUris())->open ();
+       state->uriItState->next(uriItem); ) 
+  {
+    result = uriItem;
+    STACK_PUSH( true, state);
+  }
+
+  state->uriItState->close();
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
   declare function import-xml($uri as xs:anyURI) as none
 
   This function will create a new collection and import a given XML document
@@ -294,6 +628,10 @@ ZorbaCollectionExistsIterator::nextImpl(store::Item_t& result, PlanState& planSt
   - If the XML file cannot be opened, an error is raised 
     (API0034_FILE_OR_FOLDER_CANNOT_BE_OPENED - a file or folder cannot be opened).
 ********************************************************************************/
+
+NARY_ITER_SCTX_OPEN(ZorbaImportXmlIterator)
+
+
 bool
 ZorbaImportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -395,6 +733,9 @@ ZorbaImportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
     (API0034_FILE_OR_FOLDER_CANNOT_BE_OPENED - a file or folder cannot be opened)
 
 ********************************************************************************/
+
+NARY_ITER_SCTX_OPEN(ZorbaImportCatalogIterator)
+
 bool
 ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -567,6 +908,7 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
     be opened, an error is raised (API0034_FILE_OR_FOLDER_CANNOT_BE_OPENED -
     a file or folder cannot be opened)
 ********************************************************************************/
+
 bool
 ZorbaImportFolderIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -588,59 +930,6 @@ ZorbaImportFolderIterator::nextImpl(store::Item_t& result, PlanState& planState)
 }
 
 
-
-/*******************************************************************************
-  declare function list-collections() as xs:anyURI*
-
-  The function will return a sequence of URIs of all currently known collections.
-********************************************************************************/
-ZorbaListCollectionsState::~ZorbaListCollectionsState()
-{
-  if ( uriItState != NULL ) {
-    uriItState->close();
-    uriItState = NULL;
-  }
-}
-
-
-void ZorbaListCollectionsState::init(PlanState& planState)
-{
-  PlanIteratorState::init(planState);
-  uriItState = NULL;
-}
-
-
-void ZorbaListCollectionsState::reset(PlanState& planState)
-{
-  PlanIteratorState::reset(planState);
-  if ( uriItState != NULL ) {
-    uriItState->close();
-    uriItState = NULL;
-  }
-}
-
-
-bool
-ZorbaListCollectionsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  ZorbaListCollectionsState * state;
-  store::Item_t               uriItem;
-
-  DEFAULT_STACK_INIT(ZorbaListCollectionsState, state, planState);
-
-  for ((state->uriItState = GENV_STORE.listCollectionUris())->open ();
-       state->uriItState->next(uriItem); ) 
-  {
-    result = uriItem;
-    STACK_PUSH( true, state);
-  }
-
-  state->uriItState->close();
-
-  STACK_END (state);
-}
-
-
 /*******************************************************************************
   declare sequential function
   create-collection($uri as xs:anyURI) as none
@@ -656,6 +945,10 @@ ZorbaListCollectionsIterator::nextImpl(store::Item_t& result, PlanState& planSta
      (API0005_COLLECTION_ALREADY_EXISTS - collection already exists).
   - XQP0000_DYNAMIC_RUNTIME_ERROR if the argument is the empty sequence
 ********************************************************************************/
+
+NARY_ITER_SCTX_OPEN(ZorbaCreateCollectionIterator)
+
+
 bool ZorbaCreateCollectionIterator::nextImpl(
     store::Item_t& result,
     PlanState& aPlanState) const
@@ -752,6 +1045,10 @@ bool ZorbaCreateCollectionIterator::nextImpl(
   - If the collection does not exist, an error is raised.
     (API0006_COLLECTION_NOT_FOUND - collection does not exist).
 ********************************************************************************/
+
+NARY_ITER_SCTX_OPEN(ZorbaDeleteCollectionIterator)
+
+
 bool
 ZorbaDeleteCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 {
@@ -796,6 +1093,10 @@ ZorbaDeleteCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanS
 
   The function will delete all existing collections.
 ********************************************************************************/
+
+NARY_ITER_SCTX_OPEN(ZorbaDeleteAllCollectionsIterator)
+
+
 bool ZorbaDeleteAllCollectionsIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
@@ -841,6 +1142,10 @@ bool ZorbaDeleteAllCollectionsIterator::nextImpl(
   - If the specified collection does not exist, an error is raised
     (API0006_COLLECTION_NOT_FOUND - collection does not exist).
 ********************************************************************************/
+
+NARY_ITER_SCTX_OPEN(ZorbaInsertNodeFirstIterator)
+
+
 bool
 ZorbaInsertNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -921,6 +1226,10 @@ ZorbaInsertNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planSta
   - If the node is already in the collection, an error is raised
     (API0031_NODE_ALREADY_IN_COLLECTION) 
 ********************************************************************************/
+
+NARY_ITER_SCTX_OPEN(ZorbaInsertNodeLastIterator)
+
+
 bool
 ZorbaInsertNodeLastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -1010,6 +1319,10 @@ ZorbaInsertNodeLastIterator::nextImpl(store::Item_t& result, PlanState& planStat
   - If any of the new nodes is already part of the collection an error is
     raised (API0031_NODE_ALREADY_IN_COLLECTION).
 ********************************************************************************/
+
+NARY_ITER_SCTX_OPEN(ZorbaInsertNodeBeforeIterator)
+
+
 bool
 ZorbaInsertNodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -1117,6 +1430,10 @@ Error conditions:
   - If the collection URI is empty and the default collection
     is not defined in the dynamic context, FODC0002 is raised
 ********************************************************************************/
+
+NARY_ITER_SCTX_OPEN(ZorbaInsertNodeAfterIterator)
+
+
 bool
 ZorbaInsertNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -1226,6 +1543,10 @@ ZorbaInsertNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planSta
   - If the node is already part of the collection an error is raised
     (API0031_NODE_ALREADY_IN_COLLECTION).
 ********************************************************************************/
+
+NARY_ITER_SCTX_OPEN(ZorbaInsertNodeAtIterator)
+
+
 bool
 ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -1333,6 +1654,10 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
     an error is raised (API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION - the node
     does not belong to the given collection). 
 ********************************************************************************/
+
+NARY_ITER_SCTX_OPEN(ZorbaRemoveNodeIterator)
+
+
 bool
 ZorbaRemoveNodeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -1402,6 +1727,10 @@ ZorbaRemoveNodeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
     and an error is raised (API0030_NO_NODE_AT_GIVEN_POSITION - there is no
     node at the given position, the collection has fewer nodes). 
 ********************************************************************************/
+
+NARY_ITER_SCTX_OPEN(ZorbaRemoveNodeAtIterator)
+
+
 bool ZorbaRemoveNodeAtIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
@@ -1470,245 +1799,6 @@ bool ZorbaRemoveNodeAtIterator::nextImpl(
 }
 
 
-/*******************************************************************************
-  declare sequential function nodes-count() as xs:integer?
-
-  declare sequential function nodes-count(xs:string?) as xs:integer?
-
-  The function returns the number of nodes in the given collection.
-
-  Error conditions:
-  - If the collection URI is empty and the default collection
-    is not defined in the dynamic context, FODC0002 is raised
-  - If the specified collection does not exist, an error is raised
-    (API0006_COLLECTION_NOT_FOUND - collection does not exist).
-********************************************************************************/
-bool
-ZorbaNodeCountIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Collection_t theColl;
-  store::Item_t       itemUri;
-
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  if((theChildren.size()==0) ||
-      ((theChildren.size()==1) &&
-      !consumeNext(itemUri, theChildren[0].getp(), planState)))
-  {
-    itemUri = planState.theRuntimeCB->theDynamicContext->get_default_collection();
-    if(NULL == itemUri)
-      ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
-  }
-
-  theColl = getCollection(theSctx, itemUri->getStringValue(), loc);
-
-  STACK_PUSH(GENV_ITEMFACTORY->createInteger(
-            result,
-            Integer::parseInt(theColl.getp()->size())), state);
-
-  STACK_END (state);
-}
-
-
-/*******************************************************************************
-  declare sequential function node-at($position as xs:integer) as node()?
-
-  declare sequential function node-at($uri      as xs:string?,
-                                      $position as xs:integer) as node()?
-
-  The function will return the node positioned at $position in the given collection.
-
-  Error conditions:
-  - If the collection URI is empty and the default collection
-    is not defined in the dynamic context, FODC0002 is raised
-  - If the specified collection does not exist, an error is raised
-    (API0006_COLLECTION_NOT_FOUND - collection does not exist).
-  - If the collection has fewer nodes than $position + 1 an error is raised
-    (API0030_NO_NODE_AT_GIVEN_POSITION - there is no node at the given position,
-    the collection has fewer nodes). 
-********************************************************************************/
-bool
-ZorbaNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Collection_t theColl;
-  store::Item_t       item;
-  uint32_t            lpos;
-
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  if((theChildren.size()==1) ||
-      ((theChildren.size()==2) &&
-      !consumeNext(item, theChildren[0].getp(), planState)))
-  {
-    item = planState.theRuntimeCB->theDynamicContext->get_default_collection();
-    if(NULL == item)
-      ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
-  }
-
-  theColl = getCollection(theSctx, item->getStringValue(), loc);
-
-  if (consumeNext(item, theChildren[theChildren.size()-1].getp(), planState))
-  {
-    if(item->getIntegerValue() >= Integer::zero())
-    {
-      NumConversions::strToUInt(item->getIntegerValue().toString(),lpos);
-      result = theColl->nodeAt(lpos);
-      STACK_PUSH(true, state);
-    }
-  }
-
-  STACK_END (state);
-}
-
-
-/*******************************************************************************
-  declare function index-of($target as node()) as xs:integer
-
-  declare function index-of($uri as xs:string?,
-                            $target as node()) as xs:integer
-
-  The function will return the index of the  $target node within the collection
-  identified by $uri.
-
-  Error condition:
-  - If the collection URI is empty and the default collection
-    is not defined in the dynamic context, FODC0002 is raised
-  - If the specified collection does not exist, an error is raised
-    (API0006_COLLECTION_NOT_FOUND - collection does not exist).
-  - If the node does not belong to the given collection, an error is raised
-    (API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION - the node does not belong
-    to the given collection).
-********************************************************************************/
-bool
-ZorbaIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Collection_t theColl;
-  store::Item_t       item;
-  int                 pos = 1;
-
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  if((theChildren.size()==1) ||
-      ((theChildren.size()==2) &&
-      !consumeNext(item, theChildren[0].getp(), planState)))
-  {
-    item = planState.theRuntimeCB->theDynamicContext->get_default_collection();
-    if(NULL == item)
-      ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Default collection undefined in the dynamic context.");
-  }
-
-  theColl = getCollection(theSctx, item->getStringValue(), loc);
-
-  if (consumeNext(item, theChildren[theChildren.size()-1].getp(), planState))
-  {
-    pos = theColl->indexOf(item);
-
-    if( -1 == pos)
-      ZORBA_ERROR_LOC_DESC (API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION,
-                            loc,
-                            "The node does not belong to collection.");
-
-    STACK_PUSH(GENV_ITEMFACTORY->createInteger(
-              result,
-              Integer::parseInt(pos)), state);
-  }
-
-  STACK_END (state);
-}
-
-
-/*******************************************************************************
-  declare updating function
-  export-xml($uri as xs:string) as none
-
-  declare updating function
-  export-xml($uri as xs:string, $targeturi as xs:string) as none
-
-  Saves the given collection to the target URI as an XML file. Intended
-  supported targets (protocols) are: "file:///path/file.xml" : (e.g.
-  "file://c:/path/folder/file.xml") - saves the collection to a file, in the
-  serialized form. "http://www.example.com/path/file.xml" - saves the
-  collection to a remote location, via the HTTP PUT request (to be implemented
-  by the REST library).
-
-  If the protocol is omitted in the URI, "file://" is assumed.
-
-  The first function will use the collection's URI (the $uri parameter) as the
-  target URI.
-
-  The collection will be exported only if it can be serialized correctly - i.e.
-  it is a well-formed XML document. In all other cases an error will be returned
-  (API0035_COLLECTION_CANNOT_BE_SERIALIZED - the collection cannot be serialized).
-
-********************************************************************************/
-bool ZorbaExportXmlIterator::nextImpl(
-    store::Item_t& result, 
-    PlanState& planState) const
-{
-  store::Collection_t coll;
-  store::Item_t       uriItem;
-  store::Item_t       targetUriItem;
-  URI                 targetURI;
-  store::Item_t       node;
-  store::Iterator_t   collIterator;
-  std::ostringstream  ss;
-  std::ostream*       lOutputStream;
-  std::auto_ptr<std::ostream> lFileStream;
-
-  error::ErrorManager lErrorManager;
-  serializer          ser(&lErrorManager);
-  ser.set_parameter("omit-xml-declaration", "yes");
-
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  if(!consumeNext(uriItem, theChildren[0].getp(), planState))
-    ZORBA_ASSERT(false);
-
-  coll = getCollection(theSctx, uriItem->getStringValue(), loc);
-
-  if(theChildren.size() == 2)
-  {
-    if (!consumeNext(targetUriItem, theChildren[1].getp(), planState))
-      ZORBA_ASSERT(false);
-
-    targetURI = URI(targetUriItem->getStringValue().getp());
-    }
-    else
-    {
-    targetURI = URI(coll->getUri()->getStringValue()->c_str());
-    }
-
-  if(targetURI.get_scheme() != xqpString("file") && !targetURI.get_scheme().empty())
-    {
-    ZORBA_ERROR_LOC_DESC(FOER0000, loc,
-                            "ZorbaExportXmlIterator implemented only for 'file' scheme.");
-    }
-
-  lFileStream.reset(new std::ofstream(targetURI.get_path().c_str()));
-  lOutputStream = lFileStream.get();
-    if ( !lOutputStream->good() )
-  {
-    ZORBA_ERROR_LOC_DESC_OSS(API0033_FILE_OR_FOLDER_DOES_NOT_EXIST, loc,
-    "File or folder does not exist: " << targetURI.get_path().c_str());
-  }
-
-  collIterator = coll->getIterator(true);
-
-    collIterator->open();
-
-  while (collIterator->next(node))
-    ser.serialize(node, ss);
-  
-    collIterator->close();
-
-    *lOutputStream << ss.str() << std::endl;
-
-  STACK_END (state);
-}
 
 
 store::Collection_t getCollection(

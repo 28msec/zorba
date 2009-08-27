@@ -19,7 +19,9 @@
 #include <istream>
 #include <memory>
 #include <streambuf>
+
 #include "common/shared_types.h"
+
 #include "runtime/base/narybase.h"
 
 namespace zorba {
@@ -99,13 +101,7 @@ public:
     isGetTidy(tidy)
   { } 
 
-  void openImpl(PlanState& planState, uint32_t& offset)
-  {
-    NaryBaseIterator<ZorbaRestGetIterator, ZorbaRestGetIteratorState>::
-    openImpl(planState, offset); 
-
-    theSctx = planState.theCompilerCB->getStaticContext(sctx);
-  }
+  void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
                                                                          
@@ -146,13 +142,7 @@ public:
       isPostTidy(tidy)
   { }
 
-  void openImpl(PlanState& planState, uint32_t& offset)
-  {
-    NaryBaseIterator<ZorbaRestPostIterator, ZorbaRestGetIteratorState>::
-    openImpl(planState, offset); 
-
-    theSctx = planState.theCompilerCB->getStaticContext(sctx);
-  }
+  void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 
@@ -192,13 +182,7 @@ public:
     : NaryBaseIterator<ZorbaRestPutIterator, ZorbaRestGetIteratorState >(sctx, loc, aChildren)
   { }
 
-  void openImpl(PlanState& planState, uint32_t& offset)
-  {
-    NaryBaseIterator<ZorbaRestPutIterator, ZorbaRestGetIteratorState>::
-    openImpl(planState, offset); 
-
-    theSctx = planState.theCompilerCB->getStaticContext(sctx);
-  }
+  void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 
@@ -235,13 +219,7 @@ public:
     : NaryBaseIterator<ZorbaRestDeleteIterator, ZorbaRestGetIteratorState >(sctx, loc, aChildren)
   { }
 
-  void openImpl(PlanState& planState, uint32_t& offset)
-  {
-    NaryBaseIterator<ZorbaRestDeleteIterator, ZorbaRestGetIteratorState>::
-    openImpl(planState, offset); 
-
-    theSctx = planState.theCompilerCB->getStaticContext(sctx);
-  }
+  void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 
@@ -277,13 +255,7 @@ public:
     : NaryBaseIterator<ZorbaRestHeadIterator, ZorbaRestGetIteratorState >(sctx, loc, aChildren)
   { }
 
-  void openImpl(PlanState& planState, uint32_t& offset)
-  {
-    NaryBaseIterator<ZorbaRestHeadIterator, ZorbaRestGetIteratorState>::
-    openImpl(planState, offset); 
-
-    theSctx = planState.theCompilerCB->getStaticContext(sctx);
-  }
+  void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 

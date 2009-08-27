@@ -146,13 +146,7 @@ public:
   {
   }
 
-  void openImpl(PlanState& planState, uint32_t& offset)
-  {
-    NaryBaseIterator<FnIndexOfIterator, FnIndexOfIteratorState>::
-    openImpl(planState, offset);
-    
-    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-  }
+  void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const; 
 };
@@ -195,19 +189,14 @@ class FnDistinctValuesIterator : public NaryBaseIterator<FnDistinctValuesIterato
 {
 
 public:
-  FnDistinctValuesIterator(short sctx,
-                           const QueryLoc& loc,
-                           std::vector<PlanIter_t>& args);
+  FnDistinctValuesIterator(
+        short sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& args);
  
   ~FnDistinctValuesIterator();
 
-  void openImpl(PlanState& planState, uint32_t& offset)
-  {
-    NaryBaseIterator<FnDistinctValuesIterator, FnDistinctValuesIteratorState>::
-    openImpl(planState, offset);
-    
-    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-  }
+  void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
  
@@ -277,13 +266,7 @@ public:
   {
   }
 
-  void openImpl(PlanState& planState, uint32_t& offset)
-  {
-    NaryBaseIterator<FnRemoveIterator, FnRemoveIteratorState>::
-    openImpl(planState, offset);
-    
-    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-  }
+  void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const; 
 };
@@ -395,13 +378,7 @@ public:
   {
   }
 
-  void openImpl(PlanState& planState, uint32_t& offset)
-  {
-    NaryBaseIterator<FnDeepEqualIterator, PlanIteratorState>::
-    openImpl(planState, offset);
-    
-    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-  }
+  void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const; 
 };
@@ -532,13 +509,7 @@ public:
   {
   }
 
-  void openImpl(PlanState& planState, uint32_t& offset)
-  {
-    NaryBaseIterator<FnAvgIterator, PlanIteratorState>::
-    openImpl(planState, offset);
-    
-    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-  }
+  void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const; 
 };
@@ -570,13 +541,7 @@ public:
 public:
   FnMinMaxIterator(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, Type aType);
 
-  void openImpl(PlanState& planState, uint32_t& offset)
-  {
-    NaryBaseIterator<FnMinMaxIterator, PlanIteratorState>::
-    openImpl(planState, offset);
-    
-    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-  }
+  void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 
@@ -608,13 +573,7 @@ public:
   {
   }
 
-  void openImpl(PlanState& planState, uint32_t& offset)
-  {
-    NaryBaseIterator<FnSumIterator, PlanIteratorState>::
-    openImpl(planState, offset);
-    
-    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-  }
+  void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const; 
 };
@@ -694,13 +653,7 @@ public:
   FnDocIterator(short sctx, const QueryLoc& loc, PlanIter_t& arg);
   virtual ~FnDocIterator();
 
-  void openImpl(PlanState& planState, uint32_t& offset)
-  {
-    UnaryBaseIterator<FnDocIterator, PlanIteratorState>::
-    openImpl(planState, offset);
-    
-    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-  }
+  void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
   
@@ -718,7 +671,7 @@ public:
 
 //15.5.5 fn:doc-available
 class FnDocAvailableIterator : public NaryBaseIterator<FnDocAvailableIterator,
-                                              PlanIteratorState>
+                                                       PlanIteratorState>
 {
 public:
   SERIALIZABLE_CLASS(FnDocAvailableIterator)
@@ -738,13 +691,7 @@ public:
   {
   }
 
-  void openImpl(PlanState& planState, uint32_t& offset)
-  {
-    NaryBaseIterator<FnDocAvailableIterator, PlanIteratorState>::
-    openImpl(planState, offset);
-    
-    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-  }
+  void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const; 
 };
@@ -754,18 +701,11 @@ public:
 NARY_ITER(FnParseIterator);
 
 
-//15.5.6 fn:collection
-
-
-  /*______________________________________________________________________
-  |
-  | Extensions
-  |_______________________________________________________________________*/
-
-
 } /* namespace zorba */
-#endif /* ZORBA_SEQUENCES_H */
+#endif 
+
 /* vim:set ts=2 sw=2: */
+
 /*
  * Local variables:
  * mode: c++

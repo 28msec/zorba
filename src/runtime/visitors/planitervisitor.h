@@ -20,8 +20,8 @@
 
 #include "common/common.h"
 
-#include "zorbatypes/rchandle.h"
 #include "zorbatypes/zorbatypes_decl.h"
+
 #include "types/typeconstants.h"
 
 namespace zorba

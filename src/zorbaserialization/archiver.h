@@ -17,9 +17,10 @@
 #ifndef ZORBA_BINARY_SERIALIZATION_ARCHIVER
 #define ZORBA_BINARY_SERIALIZATION_ARCHIVER
 
-#include "zorbaserialization/class_serializer.h"
 #include "util/hashmap32.h"
 #include "zorbautils/hashmap.h"
+
+#include "zorbaserialization/class_serializer.h"
 
 namespace zorba{
 namespace store{

@@ -17,11 +17,14 @@
 #include "zorbautils/fatal.h"
 #include "zorbaerrors/Assert.h"
 #include "zorbaerrors/error_manager.h"
+#include "zorbautils/checked_vector.h"
 
 #include "system/globalenv.h"
 
 #include "context/collation_cache.h"
 #include "context/dynamic_context.h"
+
+#include "compiler/api/compilercb.h"
 
 #include "runtime/api/runtimecb.h"
 #include "runtime/visitors/planitervisitor.h"
@@ -29,8 +32,6 @@
 #include "runtime/core/gflwor/orderby_iterator.h"
 #include "runtime/core/gflwor/common.h"
 #include "runtime/core/gflwor/comp_function.h"
-
-#include "zorbautils/checked_vector.h"
 
 #include <vector>
 #include <algorithm>
@@ -60,11 +61,13 @@ OrderSpec::OrderSpec (
     PlanIter_t domainIter,
     bool emptyLeast,
     bool descending,
+    bool nativeCompare,
     const std::string& collation)
   :
   theDomainIter(domainIter),
   theEmptyLeast(emptyLeast),
   theDescending(descending),
+  theNativeCompare(nativeCompare),
   theCollation(collation),
   theCollator(0)
 {

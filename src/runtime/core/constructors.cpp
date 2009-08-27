@@ -17,17 +17,23 @@
 #include "zorbautils/fatal.h"
 #include "zorbaerrors/Assert.h"
 #include "zorbaerrors/error_manager.h"
+
 #include "system/globalenv.h"
+
 #include "types/root_typemanager.h"
 #include "types/casting.h"
 #include "types/typeops.h"
+
 #include "context/static_context.h"
 #include "context/namespace_context.h"
+
+#include "compiler/api/compilercb.h"
 
 #include "runtime/api/runtimecb.h"
 #include "runtime/core/constructors.h"
 #include "runtime/visitors/planitervisitor.h"
 #include "runtime/api/plan_iterator_wrapper.h"
+
 #include "store/api/temp_seq.h"
 #include "store/api/item_factory.h"
 #include "store/api/copymode.h"

@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-#include "store/api/item_factory.h"
+#include "system/globalenv.h"
+
+#include "util/converters/json_converter.h"
+
+#include "compiler/api/compilercb.h"
 
 #include "runtime/convertors/ConvertorsImpl.h"
 #include "runtime/api/runtimecb.h"
 
-#include "system/globalenv.h"
+#include "store/api/item_factory.h"
 
-#include "util/converters/json_converter.h"
 
 namespace zorba {
 //Json
@@ -36,6 +39,16 @@ END_SERIALIZABLE_CLASS_VERSIONS(ZorbaJsonMLParseIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(ZorbaJsonMLSerializeIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(ZorbaJsonMLSerializeIterator)
+
+
+void ZorbaJsonParseIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<ZorbaJsonParseIterator, FnJsonParseIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
 
 bool
 ZorbaJsonParseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -122,6 +135,15 @@ ZorbaJsonSerializeIterator::nextImpl(store::Item_t& result, PlanState& planState
 }
 
 //JsonML
+void ZorbaJsonMLParseIterator::openImpl(PlanState& planState, uint32_t& offset)
+{  
+  NaryBaseIterator<ZorbaJsonMLParseIterator, FnJsonMLParseIteratorState>::
+  openImpl(planState, offset);
+
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+} 
+
+
 bool
 ZorbaJsonMLParseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {

@@ -17,17 +17,21 @@
 #define ZORBA_NARY_ITERATOR
 
 #include <vector>
+
 #include "common/shared_types.h"
+
 #include "runtime/base/plan_iterator.h"
 #include "runtime/visitors/planitervisitor.h"
 
 namespace zorba
 {
 
-  class PlanIterVisitor;
+class PlanIterVisitor;
 
 extern const ::zorba::serialization::ClassVersion g_NaryBaseIterator_class_versions[];
 extern const int g_NaryBaseIterator_class_versions_count;
+
+
 /*******************************************************************************
   Superclass for all iterators which have n child iterators 
 ********************************************************************************/
@@ -208,12 +212,7 @@ class iterName : public NaryBaseIterator<iterName, stateName >          \
     serialize_baseclass(ar, (NaryBaseIterator<iterName, stateName >*)this); \
   }                                                                     \
  public:                                                                \
-  void openImpl(PlanState& planState, uint32_t& offset)                 \
-  {                                                                     \
-    NaryBaseIterator<iterName, stateName>::openImpl(planState, offset); \
-                                                                        \
-    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx); \
-  }                                                                     \
+  void openImpl(PlanState& planState, uint32_t& offset);                \
                                                                         \
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;    \
 };
@@ -260,12 +259,7 @@ class iterName : public NaryBaseIterator<iterName, stateName >          \
  public:                                                                \
   bool isUpdating() const { return true; }                              \
                                                                         \
-  void openImpl(PlanState& planState, uint32_t& offset)                 \
-  {                                                                     \
-    NaryBaseIterator<iterName, stateName>::openImpl(planState, offset); \
-                                                                        \
-    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx); \
-  }                                                                     \
+  void openImpl(PlanState& planState, uint32_t& offset);                \
                                                                         \
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;    \
 };

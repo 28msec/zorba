@@ -117,6 +117,24 @@ bool AttributesIteratorImpl::next(store::Item_t& result)
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+void ItemPointerHashSet::clear() 
+{
+  HashSet<store::Item*, ItemPointerHashSet::CompareFunction>::iterator ite;
+  HashSet<store::Item*, ItemPointerHashSet::CompareFunction>::iterator end;
+
+  ite = theSet.begin();
+  end = theSet.end();
+
+  for (; ite != end; ++ite)
+  {
+    store::Item* n = (*ite).first;
+    n->removeReference(n->getSharedRefCounter() SYNC_PARAM2(n->getRCLock()));
+  }
+
+  theSet.clear(); 
+}
+
+
 void StoreNodeDistinctIterator::open()
 {
 }
@@ -129,10 +147,14 @@ bool StoreNodeDistinctIterator::next(store::Item_t& result)
     if (!theInput->next(result))
       return false;
 
-    ZORBA_ASSERT(result->isNode());
+    assert(result->isNode());
 
-    if (theNodeSet.insert(result))
+    if (theNodeSet.insert(result.getp()))
+    {
+      result->addReference(result->getSharedRefCounter() 
+                           SYNC_PARAM2(result->getRCLock()));
       return true;
+    }
   }
 }
 

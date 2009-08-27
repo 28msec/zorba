@@ -17,13 +17,17 @@
 #define ZORBA_PLAN_ITERATOR_H
 
 #include <typeinfo>
-#include "zorbaerrors/Assert.h"
-#include "store/api/item.h"
+
 #include "common/shared_types.h"
-#include "compiler/api/compilercb.h"
+
+#include "zorbaerrors/Assert.h"
+
 #include "compiler/parser/query_loc.h"
 
-#include "zorbaserialization/serialization_engine.h"
+#include "zorbaserialization/class_serializer.h"
+
+#include "store/api/item.h"
+
 
 // Info: Forcing inlining a function in g++:
 // store::Item_t next() __attribute__((always_inline)) {...}
@@ -261,26 +265,28 @@ class PlanIterator : public SimpleRCObject
   friend class PlanIterWrapper;
 
 protected:
-  uint32_t      stateOffset;
+  uint32_t                   stateOffset;
 
 public:
-  uint32_t getStateOffset() const { return stateOffset; }
-  
-public:
-  QueryLoc           loc;
-  short              sctx;
-  mutable static_context   * theSctx;
+  QueryLoc                   loc;
+  short                      sctx;
+  mutable static_context   * theSctx; // no need to serialize this
 
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(PlanIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(PlanIterator, SimpleRCObject)
+  SERIALIZABLE_ABSTRACT_CLASS(PlanIterator);
+
+  PlanIterator(zorba::serialization::Archiver& ar)
+    :
+    SimpleRCObject(ar),
+    theSctx(NULL)
+  {}
+
   void serialize(::zorba::serialization::Archiver &ar)
   {
     //serialize_baseclass(ar, (SimpleRCObject*)this);
     ar & stateOffset;
     ar & loc;
     ar & sctx;
-	ar & theSctx;
   }
 
 public:
@@ -307,21 +313,14 @@ public:
 
   void setLocation (const QueryLoc& loc_) { loc = loc_; }
 
-  // get the static context for this iterator
-  static_context*
-  getStaticContext(PlanState& planState) const
-  {
-    if (!theSctx)
-     theSctx = planState.theCompilerCB->getStaticContext(sctx);
-    assert(theSctx);
-    return theSctx;
-  }
+  uint32_t getStateOffset() const { return stateOffset; }
 
-  CollationCache*
-  collationCache(PlanState& planState) 
-  {
-    return getStaticContext(planState)->get_collation_cache(); 
-  }
+  /**
+   * get the static context for this iterator
+   */
+  static_context* getStaticContext(PlanState& planState) const;
+
+  CollationCache* collationCache(PlanState& planState);
 
   /**
    * Return true if "this" may return a pending update list.
@@ -386,13 +385,18 @@ public:
   virtual uint32_t getStateSizeOfSubtree() const = 0;
 
 #if ZORBA_BATCHING_TYPE == 1  
-  static
-  store::Item_t consumeNext(store::Item_t& result, const PlanIterator* subIter, PlanState& planState)
+
+  static store::Item_t consumeNext(
+        store::Item_t& result,
+        const PlanIterator* subIter,
+        PlanState& planState)
   {
     try
     {
       // use the producer's (subIter) planstate to access it's batch
-      PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, subIter->getStateOffset());
+      PlanIteratorState* lState = 
+      StateTraitsImpl<PlanIteratorState>::getState(planState, subIter->getStateOffset());
+
       if ( lState->theCurrItem == ZORBA_BATCHING_BATCHSIZE )
       {
         subIter->produceNext(planState);
@@ -410,22 +414,25 @@ public:
     }
     return lState->theBatch[lState->theCurrItem++];
   }
-#else
-  static
-  bool consumeNext(store::Item_t& result, const PlanIterator* subIter, PlanState& planState)
-  {
+
+#else // ZORBA_BATCHING_TYPE
+
 #ifndef NDEBUG
-    bool status = subIter->produceNext(result, planState);
-    if (planState.theCompilerCB->m_config.print_item_flow) {
-      std::cout << "next (" << subIter << " = " << typeid (*subIter).name()
-                << ") -> " << ((status && result != NULL) ? result->show () : xqp_string ("null")) << std::endl;
-    }
-    return status;
+  static bool consumeNext(
+        store::Item_t& result, 
+        const PlanIterator* subIter,
+        PlanState& planState);
 #else
+  static bool consumeNext(
+        store::Item_t& result, 
+        const PlanIterator* subIter,
+        PlanState& planState)
+  {
     return subIter->produceNext(result, planState);
-#endif
   }
 #endif
+
+#endif // ZORBA_BATCHING_TYPE
 };
 
 

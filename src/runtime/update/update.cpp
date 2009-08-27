@@ -23,6 +23,8 @@
 
 #include "context/static_context.h"
 
+#include "compiler/api/compilercb.h"
+
 #include "runtime/api/runtimecb.h"
 #include "runtime/update/update.h"
 #include "runtime/api/plan_iterator_wrapper.h"
@@ -71,6 +73,15 @@ InsertIterator::InsertIterator (
   theType(aType),
   theDoCopy(true)
 { 
+}
+
+
+void InsertIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  BinaryBaseIterator<InsertIterator, PlanIteratorState>::
+  openImpl(planState, offset); 
+
+  theSctx = planState.theCompilerCB->getStaticContext(sctx);
 }
 
 
@@ -318,6 +329,15 @@ ReplaceIterator::ReplaceIterator (
   theType(aType),
   theDoCopy(true)
 { 
+}
+
+
+void ReplaceIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  BinaryBaseIterator<ReplaceIterator, PlanIteratorState>::
+  openImpl(planState, offset); 
+
+  theSctx = planState.theCompilerCB->getStaticContext(sctx);
 }
 
 

@@ -13,14 +13,15 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-#include "runtime/validate/validate.h"
-
 #include "system/globalenv.h"
 
 #include "types/schema/schema.h"
 #include "types/schema/validate.h"
 
+#include "compiler/api/compilercb.h"
+
 #include "runtime/api/runtimecb.h"
+#include "runtime/validate/validate.h"
 
 #include "store/api/item.h"
 
@@ -51,6 +52,15 @@ ValidateIterator::ValidateIterator(
   _typemgr (typeMgr),
   _typeName(typeName)
 {
+}
+
+
+void ValidateIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  UnaryBaseIterator<ValidateIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
 }
 
 

@@ -253,8 +253,8 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
   {
   case fo_expr_kind: 
   {
-    fo_expr *fo = static_cast<fo_expr *>(node);
-    const function *f = fo->get_func ();
+    fo_expr* fo = static_cast<fo_expr *>(node);
+    const function* f = fo->get_func ();
 
     if (f == LOOKUP_FN("fn", "empty", 1)
         || f == LOOKUP_FN("fn", "exists", 1)
@@ -265,20 +265,21 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
         || f == LOOKUP_FN ("fn", "boolean", 1))
     {
       expr_t arg = (*fo)[0];
-      TSVAnnotationValue::update_annotation (arg,
-                                             AnnotationKey::IGNORES_SORTED_NODES,
-                                             TSVAnnotationValue::TRUE_VAL);
-      TSVAnnotationValue::update_annotation (arg,
-                                             AnnotationKey::IGNORES_DUP_NODES,
-                                             TSVAnnotationValue::TRUE_VAL);
+      TSVAnnotationValue::update_annotation(arg,
+                                            AnnotationKey::IGNORES_SORTED_NODES,
+                                            TSVAnnotationValue::TRUE_VAL);
+      TSVAnnotationValue::update_annotation(arg,
+                                            AnnotationKey::IGNORES_DUP_NODES,
+                                            TSVAnnotationValue::TRUE_VAL);
     }
-    else if (f == LOOKUP_FN ("fn", "unordered", 1)
-             || f == LOOKUP_FN ("fn", "count", 1)
-             || f == LOOKUP_FN ("fn", "sum", 1)
-             || f == LOOKUP_FN ("fn", "sum", 2)
-             || f == LOOKUP_FN ("fn", "avg", 1)
-             || f == LOOKUP_FN ("fn", "exactly-one", 1)
-             || f == LOOKUP_OP1 ("exactly-one-noraise"))
+    else if (f == LOOKUP_FN ("fn", "unordered", 1) ||
+             f == LOOKUP_FN ("fn", "count", 1) ||
+             f == LOOKUP_FN ("fn", "sum", 1) ||
+             f == LOOKUP_FN ("fn", "sum", 2) ||
+             f == LOOKUP_FN ("fn", "avg", 1) ||
+             f == LOOKUP_FN ("fn", "exactly-one", 1) || 
+             f == LOOKUP_FN ("fn", "zero-or-one", 1) || 
+             f == LOOKUP_OP1 ("exactly-one-noraise"))
     {
       expr_t arg = (*fo)[0];
       TSVAnnotationValue::update_annotation(arg,

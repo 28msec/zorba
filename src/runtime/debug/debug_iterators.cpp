@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 #include <iostream>
+
 #include "zorbaerrors/error_manager.h"
+
+#include "compiler/api/compilercb.h"
+
 #include "runtime/debug/debug_iterators.h"
+
 #include "store/api/item.h"
 
 namespace zorba {
@@ -40,6 +45,16 @@ FnTraceIteratorState::reset(PlanState& planState)
   theTagItem = NULL;
   theIndex = 0;
 }
+
+
+void FnTraceIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<FnTraceIterator, FnTraceIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
 
 bool
 FnTraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const

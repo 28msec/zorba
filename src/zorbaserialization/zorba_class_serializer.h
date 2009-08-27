@@ -17,15 +17,16 @@
 #ifndef ZORBA_SPECIFIC_CLASS_SERIALIZATION
 #define ZORBA_SPECIFIC_CLASS_SERIALIZATION
 
+#include "zorbatypes/rchandle.h"
+#include "zorbatypes/m_apm.h"
+#include "zorbautils/checked_vector.h"
+
 #include "zorbaserialization/class_serializer.h"
 #include "zorbaserialization/archiver.h"
-//#include "zorbaerrors/error_manager.h"
 
-#include "zorbatypes/rchandle.h"
-#include "zorbautils/checked_vector.h"
 #include "store/api/shared_types.h"
-#include "zorbatypes/m_apm.h"
-//#include "context/context.h"
+
+
 #include <map>
 
 namespace zorba{

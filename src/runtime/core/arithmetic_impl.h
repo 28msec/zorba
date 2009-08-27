@@ -17,7 +17,11 @@
 #define ZORBA_ARITHMETIC_IMPL_H
 
 #include "common/shared_types.h"
+
 #include "types/typeconstants.h"
+
+#include "compiler/expression/expr_consts.h"
+
 #include "runtime/base/binarybase.h" 
 
 namespace zorba {
@@ -308,13 +312,7 @@ public:
 
   virtual ~GenericArithIterator() {}
 
-  void openImpl(PlanState& planState, uint32_t& offset)
-  {
-    BinaryBaseIterator<GenericArithIterator, PlanIteratorState>::
-    openImpl(planState, offset);
-    
-    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-  }
+  void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState&) const;
     

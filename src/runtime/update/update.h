@@ -17,10 +17,11 @@
 #define ZORBA_RUNTIME_UPDATE_H
 
 #include <vector>
+
 #include "runtime/base/binarybase.h"
 #include "runtime/base/unarybase.h"
+
 #include "store/api/update_consts.h"
-#include "store/api/copymode.h"
 
 
 namespace zorba {
@@ -56,11 +57,7 @@ public:
 
   virtual bool isUpdating() const { return true; }
 
-  void openImpl(PlanState& planState, uint32_t& offset)
-  {
-    BinaryBaseIterator<InsertIterator, PlanIteratorState>::openImpl(planState, offset); 
-    theSctx = planState.theCompilerCB->getStaticContext(sctx);
-  }
+  void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t&, PlanState&) const;
 
@@ -125,13 +122,7 @@ public:
 
   virtual bool isUpdating() const { return true; }
 
-  void openImpl(PlanState& planState, uint32_t& offset)
-  {
-    BinaryBaseIterator<ReplaceIterator, PlanIteratorState>::
-    openImpl(planState, offset); 
-
-    theSctx = planState.theCompilerCB->getStaticContext(sctx);
-  }
+  void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t&, PlanState&) const;
 

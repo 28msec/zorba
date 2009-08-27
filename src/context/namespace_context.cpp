@@ -33,6 +33,15 @@ namespace_context::namespace_context(static_context *sctx, store::NsBindings& bi
     bind_ns(bindings[i].first, bindings[i].second);
   }    
 }
+
+
+void namespace_context::serialize(::zorba::serialization::Archiver &ar)
+{
+  //serialize_baseclass(ar, (SimpleRCObject*)this);
+  ar & m_sctx;
+  ar & m_parent;
+  ar & m_bindings;
+}
   
     
 void namespace_context::bind_ns(xqpStringStore_t& prefix, xqpStringStore_t& ns)

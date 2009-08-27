@@ -57,36 +57,36 @@
 #include "context/static_context.h"
 #include "context/namespace_context.h"
 
-#define NOARY_ACCEPT(type) \
+#define NOARY_ACCEPT(type)                      \
   void type::accept(PlanIterVisitor& v) const { \
-    v.beginVisit(*this); \
-    v.endVisit(*this); \
+    v.beginVisit(*this);                        \
+    v.endVisit(*this);                          \
   }
   
-#define UNARY_ACCEPT(type) \
+#define UNARY_ACCEPT(type)                      \
   void type::accept(PlanIterVisitor& v) const { \
-    v.beginVisit(*this); \
-    theChild->accept(v); \
-    v.endVisit(*this); \
+    v.beginVisit(*this);                        \
+    theChild->accept(v);                        \
+    v.endVisit(*this);                          \
   }
   
-#define BINARY_ACCEPT(type) \
+#define BINARY_ACCEPT(type)                     \
   void type::accept(PlanIterVisitor& v) const { \
-    v.beginVisit(*this); \
-    theChild0->accept(v); \
-    theChild1->accept(v); \
-    v.endVisit(*this); \
+    v.beginVisit(*this);                        \
+    theChild0->accept(v);                       \
+    theChild1->accept(v);                       \
+    v.endVisit(*this);                          \
   }
   
-#define NARY_ACCEPT(type) \
-  void type::accept(PlanIterVisitor& v) const { \
-    v.beginVisit(*this); \
+#define NARY_ACCEPT(type)                                               \
+  void type::accept(PlanIterVisitor& v) const {                         \
+    v.beginVisit(*this);                                                \
     std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin(); \
-    std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end(); \
-    for ( ; lIter != lEnd; ++lIter ) { \
-      ( *lIter )->accept ( v ); \
-    } \
-    v.endVisit(*this); \
+    std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();   \
+    for ( ; lIter != lEnd; ++lIter ) {                                  \
+      ( *lIter )->accept ( v );                                         \
+    }                                                                   \
+    v.endVisit(*this);                                                  \
   }
     
     

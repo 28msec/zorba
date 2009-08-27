@@ -15,6 +15,9 @@
  */
 #include <iostream>
 
+#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/error_messages.h"
+
 #include "zorbatypes/zorbatypesError.h"
 #include "zorbatypes/numconversions.h"
 #include "zorbatypes/utf8.h"
@@ -26,14 +29,13 @@
 
 #include "system/globalenv.h"
 
+#include "compiler/api/compilercb.h"
+
 #include "runtime/strings/StringsImpl.h"
 #include "runtime/api/runtimecb.h"
 
-#include "zorbaerrors/Assert.h"
 
 #include "context/collation_cache.h"
-
-#include "zorbaerrors/error_messages.h"
 
 
 using namespace std;
@@ -263,6 +265,15 @@ StringToCodepointsState::getVectSize()
   *            $collation  as xs:string) as xs:integer?
   *_______________________________________________________________________*/
 /* begin class CompareStrIterator */
+void CompareStrIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<CompareStrIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
+
 bool
 CompareStrIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t n0;
@@ -922,6 +933,15 @@ EscapeHtmlUriIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   *             $collation  as xs:string) as xs:boolean
   *_______________________________________________________________________*/
 /* begin class ContainsIterator */
+void ContainsIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<ContainsIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
+
 bool
 ContainsIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t item0;
@@ -1005,6 +1025,15 @@ ContainsIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   *               $collation  as xs:string) as xs:boolean
   *_______________________________________________________________________*/
 /*begin class StartsWithIterator*/
+void StartsWithIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<StartsWithIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
+
 bool
 StartsWithIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t item0;
@@ -1087,6 +1116,15 @@ StartsWithIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
   *             $collation  as xs:string)   as xs:boolean
   *_______________________________________________________________________*/
 /*begin class EndsWithIterator*/
+void EndsWithIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<EndsWithIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
+
 bool
 EndsWithIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t item0;
@@ -1169,6 +1207,15 @@ EndsWithIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   *                     $collation  as xs:string)   as xs:string
   *_______________________________________________________________________*/
 /*begin class SubstringBeforeIterator*/
+void SubstringBeforeIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<SubstringBeforeIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
+
 bool
 SubstringBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t item0;
@@ -1256,6 +1303,16 @@ SubstringBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   *                   $collation  as xs:string)   as xs:string
   *_______________________________________________________________________*/
 /*begin class SubstringAfterIterator*/
+
+void SubstringAfterIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<SubstringAfterIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
+
 bool
 SubstringAfterIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t item0;

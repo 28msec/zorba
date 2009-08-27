@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "runtime/api/plan_wrapper.h"
-
-#include "runtime/base/plan_iterator.h"
-#include "runtime/api/runtimecb.h"
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
+
+#include "compiler/api/compilercb.h"
+
+#include "runtime/api/plan_wrapper.h"
+#include "runtime/api/runtimecb.h"
+#include "runtime/base/plan_iterator.h"
+
 
 namespace zorba {
 

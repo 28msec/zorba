@@ -31,9 +31,9 @@
 #include <zorbatypes/floatimpl.h>
 #include "util/time.h"
 
+#include "compiler/api/compilercb.h"
+
 #include "runtime/sequences/SequencesImpl.h"
-#include "runtime/booleans/BooleanImpl.h"
-#include "runtime/numerics/NumericsImpl.h"
 #include "runtime/api/runtimecb.h"
 #include "runtime/core/arithmetic_impl.h"
 #include "runtime/util/iterator_impl.h"
@@ -220,6 +220,15 @@ FnConcatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
 
 //15.1.3 fn:index-of
+void FnIndexOfIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<FnIndexOfIterator, FnIndexOfIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
+
 bool 
 FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
@@ -347,6 +356,15 @@ FnDistinctValuesIterator::FnDistinctValuesIterator(short sctx, const QueryLoc& l
 
 FnDistinctValuesIterator::~FnDistinctValuesIterator()
 {
+}
+
+
+void FnDistinctValuesIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<FnDistinctValuesIterator, FnDistinctValuesIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
 }
 
 
@@ -487,6 +505,15 @@ FnInsertBeforeIteratorState::reset(PlanState& planState) {
 
 
 //15.1.8 fn:remove
+void FnRemoveIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<FnRemoveIterator, FnRemoveIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
+
 bool 
 FnRemoveIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t lSequenceItem;
@@ -882,6 +909,16 @@ bool DeepEqual(
   }
 }
 
+
+void FnDeepEqualIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<FnDeepEqualIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
+
 bool 
 FnDeepEqualIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -1047,7 +1084,17 @@ FnCountIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   STACK_END (state);
 }
 
+
 //15.4.2 fn:avg
+void FnAvgIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<FnAvgIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
+
 bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
   store::Item_t lSumItem;
@@ -1164,6 +1211,15 @@ FnMinMaxIterator::FnMinMaxIterator
        ? CompareConsts::VALUE_LESS 
        : CompareConsts::VALUE_GREATER)) 
 { 
+}
+
+
+void FnMinMaxIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<FnMinMaxIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
 }
 
 
@@ -1296,6 +1352,15 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
 
 //15.4.5 fn:sum
+void FnSumIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<FnSumIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
+
 bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
   store::Item_t lRunningItem;
@@ -1804,6 +1869,15 @@ static void fillTime (
 }
 
 
+void FnDocIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  UnaryBaseIterator<FnDocIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
+
 bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t     uriItem;
@@ -1896,6 +1970,15 @@ bool FnParseIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 |
 |   fn:doc-available($uri as xs:string?) as xs:boolean
 |_______________________________________________________________________*/
+void FnDocAvailableIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<FnDocAvailableIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
+
 bool FnDocAvailableIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t    doc;

@@ -13,14 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "runtime/core/sequencetypes.h"
-#include "runtime/util/iterator_impl.h"
-#include "system/globalenv.h"
+
 #include "zorbaerrors/error_manager.h"
+
+#include "system/globalenv.h"
+
 #include "types/casting.h"
 #include "types/typeops.h"
+
+#include "compiler/api/compilercb.h"
+
+#include "runtime/core/sequencetypes.h"
+#include "runtime/util/iterator_impl.h"
+
 #include "store/api/item_factory.h"
-#include "context/static_context.h"
+
 
 using namespace std;
 
@@ -62,6 +69,15 @@ InstanceOfIterator::InstanceOfIterator(
 
 InstanceOfIterator::~InstanceOfIterator() 
 {
+}
+
+
+void InstanceOfIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  UnaryBaseIterator<InstanceOfIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
 }
 
 
@@ -154,6 +170,15 @@ CastIterator::~CastIterator()
 }
 
 
+void CastIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  UnaryBaseIterator<CastIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
+
 bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t lItem;
@@ -239,6 +264,15 @@ CastableIterator::~CastableIterator()
 }
 
 
+void CastableIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  UnaryBaseIterator<CastableIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
+
 bool CastableIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
   bool lBool;
@@ -308,6 +342,15 @@ PromoteIterator::PromoteIterator(
 
 PromoteIterator::~PromoteIterator()
 {
+}
+
+
+void PromoteIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  UnaryBaseIterator<PromoteIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
 }
 
 
@@ -390,6 +433,15 @@ TreatIterator::TreatIterator(
 {
   theTreatType = TypeOps::prime_type(*aTreatType);
   theQuantifier = TypeOps::quantifier(*aTreatType);
+}
+
+
+void TreatIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  UnaryBaseIterator<TreatIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
 }
 
 

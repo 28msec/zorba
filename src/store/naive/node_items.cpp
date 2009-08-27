@@ -53,7 +53,8 @@ XmlTree::XmlTree(XmlNode* root, ulong id)
   theCollection(NULL),
   theRootNode(root),
   theDataGuideRootNode(NULL),
-  theIsValidated(false)
+  theIsValidated(false),
+  theIsRecursive(false)
 {
 }
 

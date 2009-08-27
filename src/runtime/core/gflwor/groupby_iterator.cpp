@@ -18,6 +18,8 @@
 #include "zorbaerrors/Assert.h"
 #include "zorbaerrors/error_manager.h"
 
+#include "compiler/api/compilercb.h"
+
 #include "runtime/api/runtimecb.h"
 #include "runtime/visitors/planitervisitor.h"
 #include "runtime/core/gflwor/groupby_iterator.h"

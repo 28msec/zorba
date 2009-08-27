@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 #include "store/api/item.h"
+
+#include "compiler/api/compilercb.h"
+
 #include "runtime/qnames/QNamesImpl.h"
 #include "runtime/api/runtimecb.h"
 #include "system/globalenv.h"
@@ -367,7 +370,15 @@ NamespaceUriFromQNameIterator::nextImpl(store::Item_t& result, PlanState& planSt
  *Prefixes are equal only if their Unicode code points match exactly.
  *_______________________________________________________________________*/
 
- /* begin class NamespaceUriForPrefixlIterator */
+void NamespaceUriForPrefixIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<NamespaceUriForPrefixIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
+
 bool
 NamespaceUriForPrefixIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {

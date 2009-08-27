@@ -24,14 +24,15 @@
 
 #include "system/globalenv.h"
 
-#include "compiler/parser/query_loc.h"
-
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
 
 #include "types/root_typemanager.h"
 #include "types/typeops.h"
 #include "types/casting.h"
+
+#include "compiler/parser/query_loc.h"
+#include "compiler/api/compilercb.h"
 
 #include "runtime/core/arithmetic_impl.h"
 #include "runtime/numerics/NumericsImpl.h"
@@ -86,6 +87,15 @@ GenericArithIterator<Operations>::GenericArithIterator(
     :
     BinaryBaseIterator<GenericArithIterator<Operations>, PlanIteratorState >(sctx, loc, iter0, iter1)
 { 
+}
+
+template < class Operation >
+void GenericArithIterator<Operation>::openImpl(PlanState& planState, uint32_t& offset)
+{
+  BinaryBaseIterator<GenericArithIterator<Operation>, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
 }
 
 

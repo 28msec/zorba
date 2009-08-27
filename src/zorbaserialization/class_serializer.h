@@ -24,11 +24,12 @@
 #include <iostream>
 #include <typeinfo>
 #include <string.h>
+#include <time.h>
 
 #include <zorba/error.h>
+
 #include "zorbamisc/config/platform.h"
-#include <time.h>
-//#include "util/hashmap.h"
+
 
 namespace zorba
 {

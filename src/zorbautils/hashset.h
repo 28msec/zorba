@@ -41,6 +41,8 @@ class HashSet : public HashMap<T, DummyHashValue, C>
 {
 public:
 
+typedef typename HashMap<T, DummyHashValue, C>::iterator iterator;
+
 
 HashSet(const C& compFunction, ulong size, bool sync, bool useTransfer = false)
   :
@@ -49,9 +51,9 @@ HashSet(const C& compFunction, ulong size, bool sync, bool useTransfer = false)
 }
 
 
-HashSet(ulong size, bool sync, bool useTransfer = false)
+HashSet(ulong size, bool sync)
   :
-  HashMap<T, DummyHashValue, C>(size, sync, useTransfer) 
+  HashMap<T, DummyHashValue, C>(size, sync, false) 
 {
 }
 
@@ -97,9 +99,11 @@ bool insert(T& item)
 
   if (!found)
   {
+    /*
     if (this->theUseTransfer)
       entry->theItem.transfer(item);
     else
+    */
       entry->theItem = item;
   }
 
@@ -124,9 +128,11 @@ bool insert(T& item, T& outItem)
   entry = hashInsert(item, hash(item), found);
   if (!found)
   {
+    /*
     if (this->theUseTransfer)
       entry->theItem.transfer(item);
     else
+    */
       entry->theItem = item;
 
     outItem = entry->theItem;
@@ -185,3 +191,10 @@ bool remove(const T& item)
 } // namespace zorba
 
 #endif
+
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

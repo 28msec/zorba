@@ -16,6 +16,9 @@
 #include <memory>
 
 #include "system/globalenv.h"
+
+#include "compiler/api/compilercb.h"
+
 #include "runtime/context/ContextImpl.h"
 #include "store/api/item_factory.h"
 #include "runtime/api/runtimecb.h"
@@ -161,7 +164,15 @@ FnImplicitTimezoneIterator::nextImpl(store::Item_t& result, PlanState& planState
  * fn:default-collation() as xs:string
  *_______________________________________________________________________*/
 
-/*begin class FnDefaultCollationIterator */
+void FnDefaultCollationIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<FnDefaultCollationIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
+
 bool
 FnDefaultCollationIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {

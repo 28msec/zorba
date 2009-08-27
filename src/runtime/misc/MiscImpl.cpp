@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "compiler/api/compilercb.h"
+
 #include "runtime/misc/MiscImpl.h"
 #include "runtime/api/runtimecb.h"
 #include "runtime/util/iterator_impl.h"
@@ -98,6 +100,15 @@ bool FnErrorIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
 // 8.1 fn:resolve-uri
 //---------------------
+void FnResolveUriIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<FnResolveUriIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
+
 bool FnResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;

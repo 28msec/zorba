@@ -338,6 +338,8 @@ RULE_REWRITE_POST(SpecializeOperations)
 {
   const Properties& props = *Properties::instance();
 
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
+
   if (node->get_expr_kind() == fo_expr_kind) 
   {
     fo_expr* fo = static_cast<fo_expr *>(node);
@@ -384,14 +386,17 @@ RULE_REWRITE_POST(SpecializeOperations)
         }
         else if (fn->isValueComparisonFunction()) 
         {
-          xqtref_t string_type = GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
+          xqtref_t string_type = rtm.STRING_TYPE_QUESTION;
           bool string_cmp = true;
           expr_t nargs [2];
           for (int i = 0; i < 2; i++) 
           {
-            if (TypeOps::is_subtype(*t[i], *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_QUESTION)) {
+            if (TypeOps::is_subtype(*t[i], *rtm.UNTYPED_ATOMIC_TYPE_QUESTION)) 
+            {
               nargs [i] = new cast_expr (arg[i]->get_cur_sctx(), arg [i]->get_loc (), arg [i], string_type);
-            } else if (! TypeOps::is_subtype (*t [i], *string_type)) {
+            }
+            else if (! TypeOps::is_subtype (*t [i], *string_type)) 
+            {
               string_cmp = false;
               break;
             }
@@ -415,8 +420,8 @@ RULE_REWRITE_POST(SpecializeOperations)
           {
             xqtref_t aType = specialize_numeric (fo, rCtx.getStaticContext());
             if (aType != NULL) {
-              if (TypeOps::is_equal (*TypeOps::prime_type (*aType), *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE)
-                  && TypeOps::is_subtype (*t [0], *GENV_TYPESYSTEM.INTEGER_TYPE_ONE))
+              if (TypeOps::is_equal (*TypeOps::prime_type (*aType), *rtm.DECIMAL_TYPE_ONE)
+                  && TypeOps::is_subtype (*t [0], *rtm.INTEGER_TYPE_ONE))
               {
                 expr_t tmp = (*fo) [0];
                 (*fo) [0] = (*fo) [1];
@@ -430,13 +435,55 @@ RULE_REWRITE_POST(SpecializeOperations)
       }
     }
   }
+  else if (node->get_expr_kind() == flwor_expr_kind ||
+           node->get_expr_kind() == gflwor_expr_kind)
+  {
+    static_context* sctx = rCtx.getStaticContext();
+
+    flwor_expr* flworExpr = reinterpret_cast<flwor_expr*>(node);
+
+    bool modified = false;
+
+    ulong numClauses = flworExpr->num_clauses();
+    for (ulong i = 0; i < numClauses; ++i)
+    {
+      if ((*flworExpr)[i]->get_kind() == flwor_clause::order_clause)
+      {
+        orderby_clause* obc = reinterpret_cast<orderby_clause*>((*flworExpr)[i]);
+
+        ulong numColumns = obc->num_columns();
+        for (ulong j = 0; j < numColumns; ++j)
+        {
+          expr* colExpr = obc->get_column_expr(j);
+          xqtref_t colType = colExpr->return_type(sctx);
+
+          if (TypeOps::is_subtype(*colType, *rtm.UNTYPED_ATOMIC_TYPE_STAR))
+          {
+            expr_t castExpr = new cast_expr(colExpr->get_cur_sctx(),
+                                            colExpr->get_loc(),
+                                            colExpr,
+                                            rtm.STRING_TYPE_QUESTION);
+
+            obc->set_column_expr(j, castExpr);
+            modified = true;
+          }
+        }
+      }
+    }
+
+    if (modified)
+      return node;
+  }
 
   return NULL;
 }
 
 
-static expr_t wrap_in_num_promotion (expr_t arg, xqtref_t oldt, xqtref_t t) {
-  if (TypeOps::is_subtype(*oldt, *t)) return NULL;
+static expr_t wrap_in_num_promotion (expr_t arg, xqtref_t oldt, xqtref_t t) 
+{
+  if (TypeOps::is_subtype(*oldt, *t))
+    return NULL;
+
   if (arg->get_expr_kind () == promote_expr_kind
       && TypeOps::type_max_cnt (*t) <= 1)
   {
