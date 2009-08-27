@@ -17,6 +17,9 @@
 #include "store/api/item_factory.h"
 
 #include "runtime/email/EmailImpl.h"
+
+#include "compiler/api/compilercb.h"
+
 #include "runtime/api/runtimecb.h"
 
 #include "context/static_context.h"
@@ -90,6 +93,14 @@ ZorbaMailIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   }
 
   STACK_END (state);
+}
+
+void ZorbaMailIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<ZorbaMailIterator, PlanIteratorState>::
+      openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
 }
 
 } /* namespace zorba */
