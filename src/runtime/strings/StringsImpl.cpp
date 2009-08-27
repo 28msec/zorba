@@ -574,9 +574,7 @@ SubstringIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     } // non empty string arg
   } // non NULL string arg
 
-  if (resStr != NULL && !resStr->empty())
-    resStr = resStr->formatAsXML();
-  else
+  if (resStr == NULL)
     resStr = new xqpStringStore("");
 
   STACK_PUSH( GENV_ITEMFACTORY->createString(result, resStr), state );
