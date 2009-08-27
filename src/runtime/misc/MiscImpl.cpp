@@ -13,23 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "zorbaerrors/error_manager.h"
+#include "errors/user_error.h"
+#include "zorbatypes/URI.h"
+
+#include "api/serialization/serializer.h"
+
+#include "system/globalenv.h"
+
+#include "types/schema/Utils.h"
+
 #include "compiler/api/compilercb.h"
 
 #include "runtime/misc/MiscImpl.h"
 #include "runtime/api/runtimecb.h"
 #include "runtime/util/iterator_impl.h"
 
-#include "zorbaerrors/error_manager.h"
-#include "errors/user_error.h"
-
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
 #include "store/api/pul.h"
 
-#include "system/globalenv.h"
-#include "zorbatypes/URI.h"
 #include "context/static_context.h"
-#include "api/serialization/serializer.h"
+
 
 #include <iostream>
 
@@ -133,27 +138,44 @@ bool FnResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState)
     if (resolvedURI.is_absolute()) {
       strResult = strRelative;
     }
-    else {
-      try {
-        if (theChildren.size() == 1) { // use base-uri from static context
+    else 
+    {
+      try 
+      {
+        if (theChildren.size() == 1) 
+        {
+          // use base-uri from static context
           strBase = theSctx->baseuri().getStore();
-          if (strBase->empty()) {
-            ZORBA_ERROR_LOC_DESC(FONS0005, loc, "base-uri is not initialized in the static context");
+          if (strBase->empty()) 
+          {
+            ZORBA_ERROR_LOC_DESC(FONS0005, loc,
+                                 "base-uri is not initialized in the static context");
           }
-        } else if (consumeNext(item, theChildren[1], planState )) { // two parameters => get baseuri from the second argument
+        }
+        else if (consumeNext(item, theChildren[1], planState )) 
+        {
+          // two parameters => get baseuri from the second argument
           strBase = item->getStringValue();
-        } else {
+        } 
+        else
+        {
           ZORBA_ERROR_LOC_DESC(FORG0009, loc, "Can't treat empty-sequence as base-uri");
         }
         baseURI = URI(&*strBase, true);
-      } catch (error::ZorbaError& e) {
-        ZORBA_ERROR_LOC_DESC(FORG0002, loc, "String {" + strBase->str() +  "} is not a valid URI: " + e.theDescription);
+      } 
+      catch (error::ZorbaError& e) 
+      {
+        ZORBA_ERROR_LOC_DESC(FORG0002, loc,
+                             "String {" + strBase->str() +  "} is not a valid URI: " + e.theDescription);
       }
 
-      try {
+      try 
+      {
         resolvedURI = URI(baseURI, &*strRelative, true); // resolve with baseURI or return strRelative if it's a valid absolute URI
         strResult = resolvedURI.toString().getStore();
-      } catch (error::ZorbaError& e) {
+      }
+      catch (error::ZorbaError& e) 
+      {
         ZORBA_ERROR_LOC_DESC(FORG0002, loc, e.theDescription);
       }
     }
@@ -164,20 +186,33 @@ bool FnResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState)
 }
 
 
-bool SequentialIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
-  PlanIteratorState *state;
+bool SequentialIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+{
   rchandle<store::PUL> lPul;
+
+  PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  for (unsigned i = 0; i < theChildren.size () - 1; i++) 
+  for (unsigned i = 0; i < theChildren.size() - 1; i++) 
   {
     while (CONSUME (result, i))
     {
-      if (theChildren [i]->isUpdating ())
+      if (theChildren[i]->isUpdating())
       {
         std::set<zorba::store::Item*> validationNodes;
 
         static_cast<store::PUL *> (result.getp ())->applyUpdates(validationNodes);
+
+        store::Item_t validationPul = GENV_ITEMFACTORY->createPendingUpdateList();
+
+#ifndef ZORBA_NO_XMLSCHEMA
+        QueryLoc& loc = theChildren[i]->loc;
+        validateAfterUpdate(validationNodes,
+                            validationPul,
+                            getStaticContext(planState),
+                            loc);
+#endif
+        validationPul->applyUpdates(validationNodes);
       }
     }
   }
