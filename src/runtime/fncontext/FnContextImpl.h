@@ -33,11 +33,14 @@ public:
   PlanWrapperHolder eval_plan;
   std::auto_ptr<CompilerCB> ccb;
   std::auto_ptr<dynamic_context> dctx;
+
+  ~EvalIteratorState();
 };
 
 
 class EvalIterator : public NaryBaseIterator<EvalIterator, EvalIteratorState> 
 {
+protected:
   checked_vector<store::Item_t> varnames;
   checked_vector<std::string> var_keys;  
   checked_vector<xqtref_t> vartypes;
@@ -53,6 +56,13 @@ public:
     ar & vartypes;
   }
 public:
+  EvalIterator(short sctx,
+               const QueryLoc& loc,
+               std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator<EvalIterator, EvalIteratorState> (sctx, loc, aChildren)
+  {
+  }
+
   EvalIterator(short sctx,
                const QueryLoc& loc,
                checked_vector<store::Item_t> varnames_,

@@ -1115,21 +1115,43 @@ rchandle<flwor_expr> wrap_expr_in_flwor(expr* inputExpr, bool withContextSize)
   return flworExpr;
 }
 
+/*******************************************************************************
+   In this expression branch, we create the debugger expressions.
+   Furthermore, we create an entry for all expressions in the map
+   of breakable expressions. This is done here, in order to be able,
+   to set breakpoints of expressions which are not translated at the
+   beginning (e.g. inside functions).
+********************************************************************************/
 void wrap_in_debugger_expr (expr_t& aExpr) {
   if (cb->theDebuggerCommons != NULL) {
-    // In this expression branch, we create the debugger expressions.
-    // Furthermore, we create an entry for all expressions in the map
-    // of breakable expressions. This is done here, in order to be able,
-    // to set breakpoints of expressions which are not translated at the
-    // beginning (e.g. inside functions).
     DebugLocation_t lLocation;
-    aExpr = new debugger_expr(cb->m_cur_sctx, aExpr->get_loc(), aExpr, thePrologVars);
+    std::auto_ptr<debugger_expr> lExpr(new debugger_expr(cb->m_cur_sctx,
+                                                         aExpr->get_loc(), 
+                                                         aExpr, thePrologVars));
+
     lLocation.theFileName = aExpr->get_loc().getFilename();
     lLocation.theLineNumber = aExpr->get_loc().getLineno();
     lLocation.theQueryLocation = aExpr->get_loc();
     cb->theDebuggerCommons->theLocationMap.insert(
       std::pair<DebugLocation_t, bool>(lLocation, false));
-    return;
+
+    // retrieve all variables that are in the current scope
+    typedef std::vector<var_expr_t> VarExprVector;
+    VarExprVector lAllInScopeVars;
+    sctx_p->getVariables(lAllInScopeVars);
+
+    // for each var, create a eval_var and add it to
+    // the debugger expression
+    for (VarExprVector::iterator lIter = lAllInScopeVars.begin();
+         lIter != lAllInScopeVars.end(); ++lIter) {
+      varref_t ve(new var_expr(*(*lIter).dyn_cast<var_expr>()));
+      ve->set_kind(var_expr::eval_var);
+
+     lExpr->add_var(eval_expr::eval_var(&*ve, NULL));
+
+    }
+
+    aExpr = lExpr.release();
   }
 }
 
@@ -2047,13 +2069,6 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
   string pfx = v.get_prefix ();
   string target_ns = v.get_uri ();
 
-//#ifdef ZORBA_DEBUGGER
-//  if(cb->m_debugger != 0)
-//  {
-//    cb->m_debugger->theImports.insert(make_pair<string, string>(target_ns, pfx)); 
-//  }
-//#endif
-
   // The namespace prefix specified in a module import must not be xml or xmlns
   // [err:XQST0070]
   if (pfx == "xml" || pfx == "xmlns")
@@ -2157,13 +2172,6 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
       xqpStringStore lFileUri;
       auto_ptr<istream> modfile(lModuleResolver->resolve(aturiitem, sctx_p, &lFileUri));
 
-//#ifdef ZORBA_DEBUGGER
-//      if(cb->m_debugger != 0) 
-//      {
-//        cb->m_debugger->theModuleFileMappings.insert(std::pair<std::string, std::string>(aturiitem->getStringValue()->c_str(), lFileUri.c_str()));
-//      }
-//#endif
-
       if (modfile.get () == NULL || ! *modfile) 
       {
         ZORBA_ERROR_LOC_PARAM (XQST0059, loc, resolveduri, target_ns);
@@ -2201,12 +2209,7 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
       XQueryCompiler xqc (&mod_ccb);
       xqpString lFileName(aturiitem->getStringValue());
       rchandle<parsenode> ast = xqc.parse (*modfile, lFileName);
-//#ifdef ZORBA_DEBUGGER
-//      if(cb->m_debugger != 0)
-//      {
-//        cb->m_debugger->addModule(ast);
-//      }
-//#endif
+
       // Get the target namespace that appears in the module declaration
       // of the imported module and check that this ns is the same as the
       // target ns in the module import statement.

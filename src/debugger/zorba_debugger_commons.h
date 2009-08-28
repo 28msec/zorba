@@ -63,7 +63,7 @@ namespace zorba {
     /**
     * @brief Sets the theBreak variable.
     *
-    * @see ZorbaDebuggerCommons::hasToBrak for a description why this is
+    * @see ZorbaDebuggerCommons::hasToBreak for a description why this is
     *  needed.
     *
     * @pre lBreak implies aCause != 0
@@ -146,7 +146,7 @@ namespace zorba {
     * @post *aCause == theCause
     * @post Result == theBreak
     */
-    bool hasToBrak(SuspensionCause* aCause) const;
+    bool hasToBreak(SuspensionCause* aCause) const;
 
     /**
     * @brief Gets the current debugger iterator.

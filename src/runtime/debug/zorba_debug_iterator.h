@@ -3,19 +3,38 @@
 
 #include "common/shared_types.h"
 #include "runtime/base/narybase.h"
+#include "runtime/util/plan_wrapper_holder.h"
 
 #include <vector>
 #include <map>
 
 namespace zorba {
-  class ZorbaDebugIterator : public NaryBaseIterator<ZorbaDebugIterator, PlanIteratorState>
+
+  class ZorbaDebugIteratorState : public PlanIteratorState
   {
+  public:
+    PlanWrapperHolder eval_plan;
+    std::auto_ptr<CompilerCB> ccb;
+    std::auto_ptr<dynamic_context> dctx;
+  };
+
+  class ZorbaDebugIterator : public NaryBaseIterator<ZorbaDebugIterator,
+                                                     ZorbaDebugIteratorState>
+  {
+
+  protected:
+    checked_vector<store::Item_t> varnames;
+    checked_vector<std::string> var_keys;  
+    checked_vector<xqtref_t> vartypes;
+
   public: // Constructor
-    ZorbaDebugIterator ( short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildVector );
+    ZorbaDebugIterator ( short aSctx,
+                         const QueryLoc& aLocation,
+                         std::vector<PlanIter_t>& aChildren);
+
   public:
     void accept(PlanIterVisitor& v) const;
     bool nextImpl( store::Item_t& result, PlanState& planState ) const;
-    void openImpl(PlanState& planState, uint32_t& offset );
     bool isUpdating() const;
   public: // Setters
     /**
@@ -43,6 +62,10 @@ namespace zorba {
     */
     void addChild(ZorbaDebugIterator* child);
     void setChildren(std::vector<PlanIter_t>& args);
+
+    void setVariables(checked_vector<store::Item_t>& aVarNames,
+                      checked_vector<std::string>&   aVarKeys,
+                      checked_vector<xqtref_t>&      aVarTypes);
   public: // Getters
     /**
     * @brief Returns the parent of the current debugger iterator.

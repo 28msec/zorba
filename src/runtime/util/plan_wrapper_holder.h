@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef ZORBA_RUNTIME_UTIL_PLAN_WRAPPER_HOLDER_H
+#define ZORBA_RUNTIME_UTIL_PLAN_WRAPPER_HOLDER_H
 #include <memory>
 
 #include "runtime/api/plan_wrapper.h"
@@ -46,6 +48,7 @@ public:
 
 }
 
+#endif
 /*
  * Local variables:
  * mode: c++

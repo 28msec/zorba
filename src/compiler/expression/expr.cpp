@@ -1600,11 +1600,11 @@ void eval_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER ();
 }
 
-  eval_expr::eval_var::eval_var (var_expr *ve, expr_t val_)
-    : varname (ve->get_varname ()),
-      var_key (dynamic_context::var_key (ve)), type(ve->get_type()), val (val_)
-  {
-  }
+eval_expr::eval_var::eval_var (var_expr *ve, expr_t val_)
+  : varname (ve->get_varname ()),
+    var_key (dynamic_context::var_key (ve)), type(ve->get_type()), val (val_)
+{
+}
 
 cast_or_castable_base_expr::cast_or_castable_base_expr(short sctx,
                                                        const QueryLoc& loc,

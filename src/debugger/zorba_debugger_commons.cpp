@@ -86,12 +86,12 @@ bool zorba::ZorbaDebuggerCommons::hasToBreakAt( const ZorbaDebugIterator* aIter 
   return false;
 }
 
-bool zorba::ZorbaDebuggerCommons::hasToBrak(SuspensionCause* aCause) const
+bool zorba::ZorbaDebuggerCommons::hasToBreak(SuspensionCause* aCause) const
 {
   //This is not a precondition, because the client does not hava another
   //way to check it, then calling this function. But if theCause is 0, this
   // is clearly a bug.
-  ZORBA_ASSERT(theBreak ? theCause != NULL : true);
+  ZORBA_ASSERT(theBreak ? theCause != 0 : true);
 
   // Check preconditions
   ZORBA_ASSERT(*aCause == 0);

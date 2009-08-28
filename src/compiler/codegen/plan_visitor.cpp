@@ -224,7 +224,7 @@ protected:
 
   CompilerCB                           * ccb;
 
-  std::stack<ZorbaDebugIterator*>                     theDebuggerStack;
+  std::stack<ZorbaDebugIterator*>        theDebuggerStack;
 
 #define LOOKUP_OP1( local ) (ccb->m_sctx->lookup_builtin_fn (":" local, 1))
 
@@ -292,6 +292,10 @@ void end_visit (expr& v) {
 
 bool begin_visit (debugger_expr& v) {
   CODEGEN_TRACE_IN("");
+
+  // already create the debugger iterator here
+  // because it's used for connecting all debugger
+  // iterators in the tree (see end_visit below)
   std::vector<PlanIter_t> aTmpVec;
   theDebuggerStack.push(new ZorbaDebugIterator(sctx, qloc, aTmpVec));
   return true;
@@ -299,45 +303,32 @@ bool begin_visit (debugger_expr& v) {
 
 void end_visit (debugger_expr& v) {
   CODEGEN_TRACE_OUT(""); 
-  checked_vector<PlanIter_t> argv;
   checked_vector<store::Item_t> varnames;
   checked_vector<string> var_keys;
-  checked_vector<global_binding> globals;
   checked_vector<xqtref_t> vartypes;
   for (unsigned i = 0; i < v.var_count (); i++) 
   {
     varnames.push_back (v.var_at (i).varname);
     var_keys.push_back (v.var_at (i).var_key);
     vartypes.push_back (v.var_at (i).type);
-    argv.push_back (pop_itstack ());
   }
-  list<global_binding> lGlobals = v.getGlobals();
-  list<global_binding>::iterator it;
-  for ( it = lGlobals.begin(); it != lGlobals.end(); ++it )
-  {
-    globals.push_back( *it );
-  }
-  argv.push_back (pop_itstack ());
-  reverse (argv.begin (), argv.end ());
-  auto_ptr<ZorbaDebugIterator> aDebugIterator(theDebuggerStack.top());
+
+  // get the debugger iterator from the debugger stack
+  std::auto_ptr<ZorbaDebugIterator> aDebugIterator(theDebuggerStack.top());
   theDebuggerStack.pop();
+
+  // set the child of the debugger iterator
+  std::vector<PlanIter_t> argv;
+  argv.push_back(pop_itstack ());
   aDebugIterator->setChildren(argv);
+
+  aDebugIterator->setVariables(varnames, var_keys, vartypes);
+
+  // link all debugger iterators in the tree
   if (!theDebuggerStack.empty()) {
     theDebuggerStack.top()->addChild(aDebugIterator.get());
     aDebugIterator->setParent(theDebuggerStack.top());
   }
-  DebugLocation_t lLocation;
-  lLocation.theLineNumber = qloc.getLineno();
-  lLocation.theFileName = qloc.getFilename();
-  /*push_itstack(new FnDebugIterator(this->ccb->m_debugger, 
-                                   sctx,
-                                   qloc,
-                                   varnames,
-                                   var_keys,
-                                   vartypes,
-                                   globals,
-                                   argv,
-                                   v.isForExpr()));*/
   push_itstack(aDebugIterator.release());
 }
 
