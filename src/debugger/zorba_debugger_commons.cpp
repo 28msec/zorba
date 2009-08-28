@@ -60,6 +60,7 @@ bool zorba::ZorbaDebuggerCommons::hasToBreakAt( const QueryLoc& aLocation ) cons
   DebugLocation_t lLocation;
   lLocation.theFileName = aLocation.getFilename();
   lLocation.theLineNumber = aLocation.getLineno();
+  lLocation.theQueryLocation = aLocation;
   std::map<DebugLocation_t, bool, DebugLocation>::const_iterator lIter;
   lIter = theLocationMap.find(lLocation);
   if (lIter->second) {
@@ -154,6 +155,19 @@ bool zorba::DebugLocation::operator()( const DebugLocation_t& aLocation1, const 
   int c;
   if ((c = aLocation1.theFileName.compare(aLocation2.theFileName)) != 0) {
     return c < 0;
+  }
+  if (aLocation1.theLineNumber == aLocation2.theLineNumber) {
+    if (aLocation1.theQueryLocation.getLineBegin() == 0 ||
+      aLocation2.theQueryLocation.getLineBegin() == 0) {
+        return false;
+    }
+    if (aLocation1.theQueryLocation.getLineBegin() == 
+      aLocation2.theQueryLocation.getLineBegin()) {
+        return aLocation1.theQueryLocation.getLineEnd() <
+          aLocation2.theQueryLocation.getLineEnd();
+    }
+    return aLocation1.theQueryLocation.getLineBegin() <
+      aLocation2.theQueryLocation.getLineBegin();
   }
   return aLocation1.theLineNumber < aLocation2.theLineNumber;
 }
