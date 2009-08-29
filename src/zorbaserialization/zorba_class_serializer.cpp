@@ -15,16 +15,22 @@
  */
 
 #include "zorbaserialization/serialization_engine.h"
+
 #include "types/typeimpl.h"
 #include "types/root_typemanager.h"
+
 #include "system/globalenv.h"
+
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "store/api/tuples.h"
+
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/collation_manager.h"
+
 #include "functions/function.h"
-//#include "context/context.h"
+
+#include "context/context.h"
 
 #include <zorba/store_consts.h>
 

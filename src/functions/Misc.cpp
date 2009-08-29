@@ -15,6 +15,10 @@
  */
 #include "functions/Misc.h"
 
+#include "context/static_context.h"
+
+#include "compiler/api/compilercb.h"
+
 #include "runtime/debug/debug_iterators.h"
 #include "runtime/misc/MiscImpl.h"
 
@@ -22,11 +26,12 @@ using namespace std;
 
 namespace zorba {
 
-PlanIter_t fn_trace_func::codegen (CompilerCB* cb,
-                                   short sctx,
-                                   const QueryLoc& loc,
-                                   std::vector<PlanIter_t>& argv,
-                                   AnnotationHolder &ann) const
+PlanIter_t fn_trace_func::codegen(
+    CompilerCB* cb,
+    short sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    AnnotationHolder &ann) const
 {
   // tracing can be disabled  using declare option exq:trace "disable";
   static_context* lContext = cb->getStaticContext(sctx);

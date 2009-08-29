@@ -19,8 +19,8 @@
 
 #include "types/schema/SchemaValidatorFilter.h"
 #include "types/schema/StrX.h"
-
 #include "types/schema/ValidationEventHandler.h"
+
 #include <xercesc/validators/schema/identity/IdentityConstraintHandler.hpp>
 #include <xercesc/internal/XMLReader.hpp>
 #include <xercesc/framework/MemBufInputSource.hpp>
@@ -34,13 +34,16 @@
 
 #include <iostream>
 
-#include "runtime/accessors/AccessorsImpl.h"
-#include "zorbaerrors/error_messages.h"
 #include "zorbaerrors/errors.h"
+#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/error_manager.h"
 #include "zorbatypes/xerces_xmlcharray.h"
+
 #include "types/schema/XercSchemaValidator.h"
 
-//using namespace std;
+#include "compiler/parser/query_loc.h"
+
+
 XERCES_CPP_NAMESPACE_USE;
 
 namespace zorba {

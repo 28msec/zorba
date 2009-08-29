@@ -18,7 +18,6 @@
 
 #include "common/shared_types.h"
 #include "functions/function.h"
-#include "runtime/base/plan_iterator.h"
 
 #include <vector>
 

@@ -17,8 +17,8 @@
 #include "compiler/api/compilercb.h"
 #include "compiler/expression/expr_base.h"
 
-#include "runtime/base/plan_iterator.h"  // maybe we can separate the batcher from the plan iterator
 #include "runtime/api/plan_wrapper.h"
+
 #include "api/xqueryimpl.h"
 
 #include "context/static_context.h"
@@ -74,11 +74,32 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
 }
 
 
+CompilerCB::CompilerCB(::zorba::serialization::Archiver& ar)
+  :
+  ::zorba::serialization::SerializeBaseClass()
+{
+}
+
 CompilerCB::~CompilerCB() 
 {
 }
 
-  
+
+void CompilerCB::serialize(::zorba::serialization::Archiver &ar)
+{
+  ar & m_is_loadprolog;
+  ar & m_cur_sctx;
+  ar & m_context_map;
+  ar & m_sctx;
+  ar & m_sctx_list;
+  if(!ar.is_serializing_out())
+  {
+    m_error_manager = NULL;//don't serialize this
+  }
+  ar & m_config;
+}
+
+
 static_context*
 CompilerCB::getStaticContext(short c)
 {

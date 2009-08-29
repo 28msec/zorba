@@ -18,15 +18,19 @@
 #include <sstream>
 #include <memory>
 #include <zorba/zorba.h>
+
 #include "capi/query.h"
 #include "capi/item.h"
 #include "capi/item_factory.h"
 #include "capi/static_context.h"
 #include "capi/data_manager.h"
 #include "capi/capi_util.h"
+
 #include "api/staticcontextimpl.h"
 #include "api/xqueryimpl.h"
-#include "runtime/base/plan_iterator.h"
+
+#include "context/static_context.h"
+
 
 using namespace zorba;
 

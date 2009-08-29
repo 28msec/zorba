@@ -17,10 +17,11 @@
 #define ZORBA_BOOLEAN_H
 
 #include <vector>
+
 #include "common/shared_types.h"
+
 #include "functions/function.h"
 
-#include "runtime/booleans/BooleanImpl.h"
 
 namespace zorba {
 
@@ -52,13 +53,13 @@ public:
         short sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder &ann) const 
-  {
-    return createIterator (sctx, loc, argv);
-  }
+        AnnotationHolder &ann) const;
 
 protected:
-  virtual PlanIter_t createIterator( short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& ) const = 0;
+  virtual PlanIter_t createIterator(
+        short sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& ) const = 0;
 };
 
 
@@ -88,8 +89,9 @@ public:
 
 
 void populateContext_Boolean(static_context *sctx);
+
 void populateContext_Comparison(static_context *sctx);
-  
+
 }
 
 #endif

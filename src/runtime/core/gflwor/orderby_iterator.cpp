@@ -23,6 +23,7 @@
 
 #include "context/collation_cache.h"
 #include "context/dynamic_context.h"
+#include "context/static_context.h"
 
 #include "compiler/api/compilercb.h"
 

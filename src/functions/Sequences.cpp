@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 #include "functions/Sequences.h"
+#include "functions/function_impl.h"
+#include "functions/nodeid_internal.h"
+
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/core/sequencetypes.h"
 #include "runtime/core/nodeid_iterators.h"
+
 #include "context/static_context.h"
-#include "util/tracer.h"
+
 #include "system/globalenv.h"
+
 #include "compiler/semantic_annotations/annotation_keys.h"
 #include "compiler/semantic_annotations/tsv_annotation.h"
+
 #include "types/typeops.h"
 
-#include "store/api/iterator.h"
 
 using namespace std;
 
@@ -167,31 +172,42 @@ void op_concatenate::compute_annotation (
   };
 
 
-  //15.1.9 fn:reverse
-  //-----------------
-  class fn_reverse : public single_seq_function {
-  public:
-    fn_reverse(const signature& sig) : single_seq_function (sig) {}
-    DEFAULT_CODEGEN (FnReverseIterator)
-    ZORBA_NOT_PRODUCES_SORTED
-  };
+//15.1.9 fn:reverse
+//-----------------
+class fn_reverse : public single_seq_function 
+{
+public:
+  fn_reverse(const signature& sig) : single_seq_function (sig) {}
+
+  DEFAULT_CODEGEN (FnReverseIterator)
+
+  ZORBA_NOT_PRODUCES_SORTED
+};
 
 
-  //15.1.10 fn:subsequence
-  //----------------------
-  class fn_subsequence : public single_seq_opt_function {
-  public:
-    fn_subsequence(const signature&sig) : single_seq_opt_function (sig) {}
-    DEFAULT_CODEGEN (FnSubsequenceIterator);
-    void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;
-  };
+//15.1.10 fn:subsequence
+//----------------------
+class fn_subsequence : public single_seq_opt_function 
+{
+public:
+  fn_subsequence(const signature&sig) : single_seq_opt_function (sig) {}
+
+  COMPUTE_ANNOTATION_DECL();
+
+  DEFAULT_CODEGEN(FnSubsequenceIterator);
+};
+  
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  15.2 Functions That Test the Cardinality of Sequences                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
 
 /*******************************************************************************
-  15.2 Functions That Test the Cardinality of Sequences
+  15.2.1 fn:zero-or-one
 ********************************************************************************/
-
-//15.2.1 fn:zero-or-one
 class fn_zero_or_one : public function
 {
 public:
@@ -205,49 +221,127 @@ public:
            create_type(*TypeOps::prime_type(*srcType), TypeConstants::QUANT_QUESTION);
   }
 
-  DEFAULT_CODEGEN (FnZeroOrOneIterator)
+  CODEGEN_DECL();
 };
 
 
-  //15.2.2 fn:one-or-more
-  class fn_one_or_more : public single_seq_function {
-  public:
-    fn_one_or_more (const signature& sig)
-      : single_seq_function (sig)
-    {}
-    DEFAULT_CODEGEN (FnOneOrMoreIterator)
-  };
+PlanIter_t fn_zero_or_one::codegen(
+    CompilerCB* /*cb*/, 
+    short sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    AnnotationHolder& ann) const
+{
+  bool doDistinct = false;
 
-  //15.2.3 fn:exactly-one
-  class fn_exactly_one_noraise : public function {
-  public:
-    fn_exactly_one_noraise(const signature& sig) : function (sig), raise_err (false) {}
-    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-    xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
+  expr& arg = static_cast<expr&>(ann);
+  
+  if (arg.get_expr_kind() == relpath_expr_kind)
+  {
+    // If this function is over a path expr, then the duplicate elimination
+    // that would normally be done by the path expr is pulled up into the
+    // corresponding runtime iterators.
+    doDistinct = true;
+  }
 
-  protected:
-    bool raise_err;
-  };
-
-  class fn_exactly_one : public fn_exactly_one_noraise {
-  public:
-    fn_exactly_one (const signature& sig) : fn_exactly_one_noraise (sig)
-    { raise_err = true; }
-  };
-
-  //15.3.1 fn:deep-equal
-  class fn_deep_equal : public function {
-  public:
-    fn_deep_equal(const signature& sig) : function (sig) {}
-    DEFAULT_CODEGEN (FnDeepEqualIterator)
-    ZORBA_NOT_PROPAGATES_I2O
-  };
+  return new FnZeroOrOneIterator(sctx, loc, argv, doDistinct);
+}
 
 
-  /*______________________________________________________________________
-    |
-    | 15.3 Equals, Union, Intersection and Except
-    |_______________________________________________________________________*/
+/*******************************************************************************
+  15.2.2 fn:one-or-more
+********************************************************************************/
+class fn_one_or_more : public single_seq_function 
+{
+public:
+  fn_one_or_more (const signature& sig) : single_seq_function (sig) {}
+
+  DEFAULT_CODEGEN (FnOneOrMoreIterator)
+};
+
+
+/*******************************************************************************
+  15.2.3 fn:exactly-one
+********************************************************************************/
+class fn_exactly_one_noraise : public function 
+{
+protected:
+  bool theRaiseError;
+
+public:
+  fn_exactly_one_noraise(const signature& sig) 
+    :
+    function(sig),
+    theRaiseError(false)
+  {}
+
+  xqtref_t return_type (const std::vector<xqtref_t>& arg_types) const;
+
+  CODEGEN_DECL();
+};
+
+
+class fn_exactly_one : public fn_exactly_one_noraise 
+{
+public:
+  fn_exactly_one (const signature& sig) : fn_exactly_one_noraise(sig)
+  {
+    theRaiseError = true; 
+  }
+};
+
+
+xqtref_t fn_exactly_one_noraise::return_type(
+    const std::vector<xqtref_t>& arg_types) const 
+{
+  if (theRaiseError)
+    return TypeOps::prime_type(*arg_types[0]);
+  else
+    return function::return_type(arg_types);
+}
+
+
+PlanIter_t fn_exactly_one_noraise::codegen(
+    CompilerCB* /*cb*/,
+    short sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    AnnotationHolder& ann) const
+{
+  bool doDistinct = false;
+
+  expr& arg = static_cast<expr&>(ann);
+  
+  if (arg.get_expr_kind() == relpath_expr_kind)
+  {
+    // If this function is over a path expr, then the duplicate elimination
+    // that would normally be done by the path expr is pulled up into the
+    // corresponding runtime iterators.
+    doDistinct = true;
+  }
+
+  return new FnExactlyOneIterator(sctx, loc, argv, theRaiseError, doDistinct);
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  15.3 Equals, Union, Intersection and Except                                //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+//15.3.1 fn:deep-equal
+class fn_deep_equal : public function 
+{
+public:
+  fn_deep_equal(const signature& sig) : function (sig) {}
+
+  DEFAULT_CODEGEN (FnDeepEqualIterator)
+
+  ZORBA_NOT_PROPAGATES_I2O
+};
+
 
 class fn_union : public function 
 {
@@ -393,29 +487,6 @@ void fn_subsequence::compute_annotation (AnnotationHolder *parent, std::vector<A
   }
 }
 
-
-
-//15.1.11 fn:unordered
-//--------------------
-
-
-/*______________________________________________________________________
-|  
-| 15.2 Functions That Test the Cardinality of Sequences
-|_______________________________________________________________________*/
-
-//15.2.3 fn:exactly-one
-PlanIter_t fn_exactly_one_noraise::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new FnExactlyOneIterator(sctx, loc, argv, raise_err);
-}
-
-xqtref_t fn_exactly_one_noraise::return_type (const std::vector<xqtref_t> &arg_types) const {
-  if (raise_err)
-    return TypeOps::prime_type(*arg_types[0]);
-  else
-    return function::return_type (arg_types);
-}
 
 
 /*______________________________________________________________________

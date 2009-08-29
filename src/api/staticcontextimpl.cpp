@@ -38,7 +38,6 @@
 #include "types/casting.h"
 #include "types/typeops.h"
 
-#include "runtime/base/plan_iterator.h"
 
 namespace zorba {
 

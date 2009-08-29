@@ -18,12 +18,11 @@
 
 #include "functions/VarDecl.h"
 
+#include "compiler/api/compilercb.h"
 #include "compiler/expression/expr.h"
 
 #include "runtime/core/var_iterators.h"
-#include "runtime/core/item_iterator.h"
 
-#include "store/api/iterator.h"
 
 namespace zorba
 {

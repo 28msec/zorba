@@ -30,9 +30,11 @@
 #include "zorbaerrors/errors.h"
 #include "errors/user_error.h"
 #include "zorbaerrors/error_manager.h"
+
 #include "system/globalenv.h"
+
 #include "context/static_context.h"
-#include "runtime/base/plan_iterator.h"
+
 
 namespace zorba {
 

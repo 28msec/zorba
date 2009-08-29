@@ -24,6 +24,8 @@
 #include "system/globalenv.h"
 
 #include "types/casting.h"
+
+#include "context/static_context.h"
 #include "context/dynamic_context.h"
 
 #include "compiler/api/compilercb.h"

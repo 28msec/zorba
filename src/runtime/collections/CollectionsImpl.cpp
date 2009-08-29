@@ -22,11 +22,11 @@
 #include "zorbatypes/URI.h"
 #include "zorbatypes/numconversions.h"
 
-#include "api/collectionimpl.h"
 #include "api/serialization/serializer.h"
 
 #include "system/globalenv.h"
 
+#include "context/static_context.h"
 #include "context/dynamic_context.h"
 #include "context/internal_uri_resolvers.h"
 

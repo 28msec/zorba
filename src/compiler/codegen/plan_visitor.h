@@ -17,14 +17,17 @@
 #define ZORBA_PLAN_VISITOR_H
 
 #include <vector>
-#include "compiler/expression/expr_base.h"
-#include "runtime/core/item_iterator.h"
+
 #include "common/shared_types.h"
 
-namespace zorba {
-  template <class T> class hash64map;
+namespace zorba 
+{
 
-  PlanIter_t codegen (
+class expr;
+class CompilerCB;
+template <class T> class hash64map;
+
+PlanIter_t codegen (
         const char *descr,
         expr *root,
         CompilerCB *ccb,

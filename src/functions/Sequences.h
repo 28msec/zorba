@@ -13,23 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_SEQUENCES_H
-#define ZORBA_SEQUENCES_H
-
-#include <vector>
+#ifndef ZORBA_FUNCTIONS_SEQUENCES_H
+#define ZORBA_FUNCTIONS_SEQUENCES_H
 
 #include "common/shared_types.h"
 
-#include "functions/function_impl.h"
-#include "functions/nodeid_internal.h"
+namespace zorba 
+{
 
-#include "runtime/sequences/SequencesImpl.h"
+void populateContext_Sequences (static_context* sctx);
 
-namespace zorba {
+}
 
-  void populateContext_Sequences (static_context *sctx);
-
-} /* namespace zorba */
 #endif /* ZORBA_SEQUENCES_H */
 
 /*

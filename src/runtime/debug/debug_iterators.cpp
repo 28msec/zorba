@@ -17,6 +17,8 @@
 
 #include "zorbaerrors/error_manager.h"
 
+#include "context/static_context.h"
+
 #include "compiler/api/compilercb.h"
 
 #include "runtime/debug/debug_iterators.h"

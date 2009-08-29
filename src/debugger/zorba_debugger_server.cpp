@@ -1,3 +1,5 @@
+#include "context/static_context.h"
+
 #include "zorba_debugger_server.h"
 
 #include "debugger/debugger_communication.h"

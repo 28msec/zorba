@@ -18,6 +18,8 @@
 
 #include "util/converters/json_converter.h"
 
+#include "context/static_context.h"
+
 #include "compiler/api/compilercb.h"
 
 #include "runtime/convertors/ConvertorsImpl.h"

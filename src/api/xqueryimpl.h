@@ -31,6 +31,7 @@
 
 namespace zorba {
 
+class RCObject;
 class ZorbaDebugger;
 class ZorbaDebuggerRuntime;
 class ZorbaDebuggerCommons;
@@ -117,7 +118,7 @@ class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseC
   class PlanProxy : public RCObject
   {
   public:
-    PlanIter_t                theRootIter;
+    rchandle<RCObject>        theRootIter;
 
     SYNC_CODE(mutable RCLock  theRCLock;)
 

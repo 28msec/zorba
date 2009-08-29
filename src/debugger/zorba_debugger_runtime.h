@@ -1,11 +1,15 @@
 #ifndef ZORBA_DEBUGGER_RUNTIME
 #define ZORBA_DEBUGGER_RUNTIME
 
+#include "common/shared_types.h"
+
 #include "zorbautils/runnable.h"
-#include "runtime/api/plan_wrapper.h"
+
 #include "zorbatypes/rchandle.h"
 #include "zorbautils/lock.h"
-#include "runtime/base/plan_iterator.h"
+
+#include "compiler/parser/query_loc.h"
+
 #include "debugger/debugger_common.h"
 
 #include <ostream>

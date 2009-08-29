@@ -17,10 +17,10 @@
 #define ZORBA_COLLECTION_H
 
 #include "common/shared_types.h"
+
 #include "functions/function.h"
 #include "functions/function_impl.h"
 
-#include "runtime/collections/CollectionsImpl.h"
 
 namespace zorba 
 {
@@ -32,7 +32,12 @@ public:
 
   bool requires_dyn_ctx() const { return true; }
 
-  DEFAULT_CODEGEN (FnCollectionIterator)
+  PlanIter_t codegen(
+        CompilerCB* cb,
+        short sctx, 
+        const QueryLoc& loc, 
+        std::vector<PlanIter_t>& argv, 
+        AnnotationHolder &ann) const;
 };
 
 

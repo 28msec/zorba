@@ -21,6 +21,8 @@
 #include "types/casting.h"
 #include "types/typeops.h"
 
+#include "context/static_context.h"
+
 #include "compiler/api/compilercb.h"
 
 #include "runtime/core/sequencetypes.h"

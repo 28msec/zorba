@@ -17,13 +17,15 @@
 #define ZORBA_FUNCTION_H
 
 #include <vector>
+
 #include "common/shared_types.h"
+
 #include "functions/signature.h"
+
+#include "compiler/parser/parse_constants.h"
 #include "compiler/parser/query_loc.h"
 #include "compiler/semantic_annotations/annotation_holder.h"
 #include "compiler/expression/expr_consts.h"
-#include "compiler/api/compilercb.h"
-#include "runtime/core/var_iterators.h"
 
 
 namespace zorba {
@@ -239,23 +241,10 @@ private:
 
 public:
   SERIALIZABLE_CLASS(user_function)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(user_function, function)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    if(ar.is_serializing_out())
-      get_plan(ar.compiler_cb);
-    serialize_baseclass(ar, (function*)this);
-    ar & m_loc;
-    //m_expr_body
-    //m_args
-    SERIALIZE_ENUM(expr_update_t, theUpdateType);
-	  ar & sequential;
-    ar & deterministic;
-	  ar & leaf;
-    ar & m_plan;
-    ar & m_param_iters;
-    ar & m_state_size;
-  }
+
+  user_function(::zorba::serialization::Archiver& ar);
+
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   user_function(

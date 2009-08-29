@@ -15,6 +15,8 @@
  */
 #include <iostream>
 
+#include "common/common.h"
+
 #include "zorbaerrors/Assert.h"
 #include "zorbaerrors/error_messages.h"
 
@@ -22,20 +24,18 @@
 #include "zorbatypes/numconversions.h"
 #include "zorbatypes/utf8.h"
 
-#include "common/common.h"
-
-#include "store/api/item.h"
-#include "store/api/item_factory.h"
-
 #include "system/globalenv.h"
+
+#include "context/static_context.h"
+#include "context/collation_cache.h"
 
 #include "compiler/api/compilercb.h"
 
 #include "runtime/strings/StringsImpl.h"
 #include "runtime/api/runtimecb.h"
 
-
-#include "context/collation_cache.h"
+#include "store/api/item.h"
+#include "store/api/item_factory.h"
 
 
 using namespace std;

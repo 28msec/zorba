@@ -27,18 +27,15 @@
 
 #include "context/dynamic_context.h"
 
+#include "compiler/api/compilercb.h"
+
 #include "runtime/core/var_iterators.h"
 #include "runtime/misc/MiscImpl.h"  // for ExitException
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/api/runtimecb.h"
 
-#include "context/dynamic_context.h"
-
-#include "functions/function.h"
-
 #include "api/unmarshaller.h"
 
-#include "debugger/zorba_debugger_commons.h"
 
 namespace zorba {
 

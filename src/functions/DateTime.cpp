@@ -14,53 +14,62 @@
  * limitations under the License.
  */
 
+#include "system/globalenv.h"
+
 #include "functions/DateTime.h"
 #include "functions/function_impl.h"
 
-#include "system/globalenv.h"
+#include "compiler/api/compilercb.h"
+
 #include "runtime/dateTime/DurationsDatesTimes.h"
 #include "runtime/numerics/NumericsImpl.h"
 
 namespace zorba
 {
 
-  class fn_datetime_ctor : public function
-  {
-  public:
-    fn_datetime_ctor(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
-
-  /*______________________________________________________________________
-   *
-   * 10.5 Component Extraction Functions on Durations, Dates and Times
-   *_______________________________________________________________________*/
+class fn_datetime_ctor : public function
+{
+public:
+  fn_datetime_ctor(const signature& sig) : function (sig) {}
+  
+  PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
 
 
-  /*
-   * 10.5.1 fn:years-from-duration
-   * --------------------*/
-  typedef function_impl<FnYearsFromDurationIterator> fn_years_from_duration;
+/*______________________________________________________________________
+ *
+ * 10.5 Component Extraction Functions on Durations, Dates and Times
+ *_______________________________________________________________________*/
 
-  /*
-   * 10.5.2 fn:months-from-duration
-   * --------------------*/
-  typedef function_impl<FnMonthsFromDurationIterator> fn_months_from_duration;
 
-  /*
-   * 10.5.3 fn:days-from-duration
-   * --------------------*/
-  typedef function_impl<FnDaysFromDurationIterator> fn_days_from_duration;
+/*
+ * 10.5.1 fn:years-from-duration
+ * --------------------*/
+typedef function_impl<FnYearsFromDurationIterator> fn_years_from_duration;
 
-  /*
-   * 10.5.4 fn:hours-from-duration
-   * --------------------*/
-  typedef function_impl<FnHoursFromDurationIterator> fn_hours_from_duration;
 
-  /*
-   * 10.5.5 fn:minutes-from-duration
-   * --------------------*/
-  typedef function_impl<FnMinutesFromDurationIterator> fn_minutes_from_duration;
+/*
+ * 10.5.2 fn:months-from-duration
+ * --------------------*/
+typedef function_impl<FnMonthsFromDurationIterator> fn_months_from_duration;
+
+
+/*
+ * 10.5.3 fn:days-from-duration
+ * --------------------*/
+typedef function_impl<FnDaysFromDurationIterator> fn_days_from_duration;
+
+
+/*
+ * 10.5.4 fn:hours-from-duration
+ * --------------------*/
+typedef function_impl<FnHoursFromDurationIterator> fn_hours_from_duration;
+
+
+/*
+ * 10.5.5 fn:minutes-from-duration
+ * --------------------*/
+typedef function_impl<FnMinutesFromDurationIterator> fn_minutes_from_duration;
 
   /*
    * 10.5.6 fn:seconds-from-duration
@@ -142,45 +151,52 @@ namespace zorba
    * --------------------*/
   typedef function_impl<FnTimezoneFromTimeIterator> fn_timezone_from_time;
 
-  /*
-   * 10.6.1 op:add-yearMonthDurations
-   *-----------------------*/
-  class op_ym_durations_add : public function
-  {
-  public:
-    op_ym_durations_add(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
 
-  /*
-   * 10.6.2 op:subtract-yearMonthDurations
-   *-----------------------*/
-  class op_ym_durations_subtract : public function
-  {
-  public:
-    op_ym_durations_subtract(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+/*
+ * 10.6.1 op:add-yearMonthDurations
+ *-----------------------*/
+class op_ym_durations_add : public function
+{
+public:
+  op_ym_durations_add(const signature& sig) : function (sig) {}
+  
+  PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
 
-  /*
-   * 10.6.3 op:multiply-yearMonthDuration
-   *-----------------------*/
-  class op_ym_durations_multiply : public function
-  {
-  public:
-    op_ym_durations_multiply(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
 
-  /*
-   * 10.6.4 op:divide-yearMonthDuration
-   *-----------------------*/
-  class op_ym_durations_divide : public function
-  {
-  public:
-    op_ym_durations_divide(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+/*
+ * 10.6.2 op:subtract-yearMonthDurations
+ *-----------------------*/
+class op_ym_durations_subtract : public function
+{
+public:
+  op_ym_durations_subtract(const signature& sig) : function (sig) {}
+  PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
+  
+
+/*
+ * 10.6.3 op:multiply-yearMonthDuration
+ *-----------------------*/
+class op_ym_durations_multiply : public function
+{
+public:
+  op_ym_durations_multiply(const signature& sig) : function (sig) {}
+
+  PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
+
+
+/*
+ * 10.6.4 op:divide-yearMonthDuration
+ *-----------------------*/
+class op_ym_durations_divide : public function
+{
+public:
+  op_ym_durations_divide(const signature& sig) : function (sig) {}
+  
+  PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+};
 
   /*
    * 10.6.5 op:divide-yearMonthDuration-by-yearMonthDuration

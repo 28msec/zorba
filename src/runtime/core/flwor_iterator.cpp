@@ -17,6 +17,8 @@
 #include "zorbaerrors/Assert.h"
 #include "zorbaerrors/error_manager.h"
 
+#include "context/static_context.h"
+
 #include "compiler/api/compilercb.h"
 
 #include "runtime/core/flwor_iterator.h"

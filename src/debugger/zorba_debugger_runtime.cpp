@@ -4,9 +4,15 @@
 #include <vector>
 
 #include "store/api/store.h"
+
 #include "api/zorbaimpl.h"
 #include "api/xqueryimpl.h"
+
+#include "context/static_context.h"
+
+#include "runtime/api/plan_wrapper.h"
 #include "runtime/debug/zorba_debug_iterator.h"
+
 #include "zorba/exception.h"
 #include "zorba/printer_error_handler.h"
 

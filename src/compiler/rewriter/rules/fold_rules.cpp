@@ -32,9 +32,9 @@
 
 #include "functions/function.h"
 #include "functions/Misc.h"
-#include "functions/Boolean.h"
 
 #include "runtime/util/plan_wrapper_holder.h"
+#include "runtime/base/plan_iterator.h"
 
 #include "store/api/store.h"
 #include "store/api/item_factory.h"

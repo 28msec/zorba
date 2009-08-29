@@ -13,29 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "context/static_context.h"
-#include "compiler/rewriter/rules/ruleset.h"
-#include "compiler/rewriter/tools/expr_tools.h"
-#include "compiler/expression/expr.h"
-#include "compiler/codegen/plan_visitor.h"
-#include "types/root_typemanager.h"
-#include "types/typeops.h"
-#include "types/casting.h"
 #include "system/globalenv.h"
 
-#include "runtime/util/plan_wrapper_holder.h"
+#include "context/static_context.h"
 
-#include "functions/function.h"
-#include "functions/Misc.h"
-#include "functions/Boolean.h"
-#include "functions/arithmetic.h"
+#include "compiler/rewriter/rules/ruleset.h"
+#include "compiler/expression/expr.h"
 
-#include "zorbaerrors/error_messages.h"
-#include "zorbaerrors/errors.h"
+#include "types/typeops.h"
 
 using namespace std;
 
-namespace zorba {
+namespace zorba 
+{
+
+#define LOOKUP_FN( pfx, local, arity ) \
+(GENV.getRootStaticContext ().lookup_fn (pfx, local, arity))
+
 
 static expr_t get_constant_if_typequant_one(static_context *sctx, expr_t e);
 

@@ -95,10 +95,10 @@ function::AnnotationProperty_t function::producesNodeIdSorted() const
 ********************************************************************************/
 user_function::user_function(
     const QueryLoc& loc, 
-                             const signature& _sig, 
-                             expr_t expr_body, 
-                             enum ParseConstants::function_type_t ftype,
-                             bool deterministic_)
+    const signature& _sig, 
+    expr_t expr_body, 
+    enum ParseConstants::function_type_t ftype,
+    bool deterministic_)
   :
   function(_sig), 
   m_loc(loc), 
@@ -112,9 +112,33 @@ user_function::user_function(
 }
 
 
+user_function::user_function(::zorba::serialization::Archiver& ar)
+  :
+  function(ar)
+{
+}
+
+
 user_function::~user_function()
 {
 }
+
+
+void user_function::serialize(::zorba::serialization::Archiver& ar)
+{
+  if(ar.is_serializing_out())
+    get_plan(ar.compiler_cb);
+  serialize_baseclass(ar, (function*)this);
+  ar & m_loc;
+  SERIALIZE_ENUM(expr_update_t, theUpdateType);
+  ar & sequential;
+  ar & deterministic;
+  ar & leaf;
+  ar & m_plan;
+  ar & m_param_iters;
+  ar & m_state_size;
+}
+
 
 const QueryLoc& user_function::get_location() const
 {

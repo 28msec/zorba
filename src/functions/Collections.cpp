@@ -18,8 +18,22 @@
 
 #include "functions/Collections.h"
 
+#include "runtime/collections/CollectionsImpl.h"
+
+
 namespace zorba 
 {
+
+PlanIter_t fn_collection::codegen(
+    CompilerCB* cb,
+    short sctx, 
+    const QueryLoc& loc, 
+    std::vector<PlanIter_t>& argv, 
+    AnnotationHolder &ann) const
+{
+  return new FnCollectionIterator(sctx, loc, argv);
+}
+
 
 PlanIter_t
 zorba_collection_exists::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const

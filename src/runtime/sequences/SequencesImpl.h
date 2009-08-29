@@ -306,49 +306,75 @@ NARY_ITER_STATE(FnSubsequenceIterator, FnSubsequenceIteratorState);
   |_______________________________________________________________________*/
 
 //15.2.1 fn:zero-or-one
-NARY_ITER(FnZeroOrOneIterator);
+class FnZeroOrOneIterator : public NaryBaseIterator<FnZeroOrOneIterator,
+                                                    PlanIteratorState>
+{
+protected:
+  bool theDoDistinct;
+
+public:
+  SERIALIZABLE_CLASS(FnZeroOrOneIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnZeroOrOneIterator,
+                                   NaryBaseIterator<FnZeroOrOneIterator,
+                                                    PlanIteratorState >)
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<FnZeroOrOneIterator,
+                                              PlanIteratorState >*)this);
+    ar & theDoDistinct;
+  }
+
+public:
+  FnZeroOrOneIterator(
+        short sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& args,
+        bool doDistinct = false)
+    :
+    NaryBaseIterator<FnZeroOrOneIterator, PlanIteratorState>(sctx, loc, args),
+    theDoDistinct(doDistinct)
+  {}
+ 
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+};
+
 
 //15.2.2 fn:one-or-more
 NARY_ITER(FnOneOrMoreIterator);
 
+
 //15.2.3 fn:exactly-one
-class FnExactlyOneIterator
-  : public NaryBaseIterator<FnExactlyOneIterator, PlanIteratorState>
+class FnExactlyOneIterator : public NaryBaseIterator<FnExactlyOneIterator,
+                                                     PlanIteratorState>
 {
-
-public:
-  FnExactlyOneIterator(short sctx,
-                       const QueryLoc& loc,
-                       std::vector<PlanIter_t>& args,
-                       bool raise_err_ = true)
-    : NaryBaseIterator<FnExactlyOneIterator, PlanIteratorState> (sctx, loc, args), raise_err (raise_err_)
-  {}
- 
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
- 
-  virtual void accept(PlanIterVisitor& v) const
-  {
-    v.beginVisit(*this);
-    std::vector<PlanIter_t>::const_iterator iter =  theChildren.begin();
-    std::vector<PlanIter_t>::const_iterator lEnd =  theChildren.end();
-    for ( ; iter != lEnd; ++iter ) {
-      ( *iter )->accept ( v );
-    }
-    v.endVisit(*this);
-  }
-
 protected:
-  bool raise_err;
+  bool theDoDistinct;
+  bool theRaiseError;
+
 public:
   SERIALIZABLE_CLASS(FnExactlyOneIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnExactlyOneIterator, NaryBaseIterator<FnExactlyOneIterator, PlanIteratorState >)
   void serialize(::zorba::serialization::Archiver &ar)
   {
     serialize_baseclass(ar, (NaryBaseIterator<FnExactlyOneIterator, PlanIteratorState >*)this);
-    ar & raise_err;
+    ar & theDoDistinct;
+    ar & theRaiseError;
   }
 
-
+public:
+  FnExactlyOneIterator(
+        short sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& args,
+        bool raiseError = true,
+        bool doDistinct = false)
+    :
+    NaryBaseIterator<FnExactlyOneIterator, PlanIteratorState>(sctx, loc, args),
+    theDoDistinct(doDistinct),
+    theRaiseError(raiseError)
+  {}
+ 
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
   /*______________________________________________________________________

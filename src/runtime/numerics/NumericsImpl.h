@@ -17,6 +17,7 @@
 #define ZORBA_RUNTIME_NUMERICS_IMPL_H
 
 #include "common/shared_types.h"
+
 #include "runtime/base/noarybase.h" // TODO remove after iterator refactoring
 #include "runtime/base/unarybase.h" // TODO remove after iterator refactoring
 #include "runtime/base/binarybase.h" // TODO remove after iterator refactoring
@@ -67,13 +68,7 @@ public:
 
   virtual ~NumArithIterator() {}
 
-  void openImpl(PlanState& planState, uint32_t& offset)
-  {
-    BinaryBaseIterator<NumArithIterator<Operation>, PlanIteratorState>::
-    openImpl(planState, offset);
-    
-    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-  }
+  void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState&) const;
       
@@ -114,13 +109,7 @@ public:
 
   virtual ~SpecificNumArithIterator() {}
 
-  void openImpl(PlanState& planState, uint32_t& offset)
-  {
-    BinaryBaseIterator<SpecificNumArithIterator<Operation, Type>, PlanIteratorState>::
-    openImpl(planState, offset);
-    
-    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-  }
+  void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState&) const;
       
@@ -160,13 +149,7 @@ public:
 
   virtual ~OpNumericUnaryIterator();
   
-  void openImpl(PlanState& planState, uint32_t& offset)
-  {
-    UnaryBaseIterator<OpNumericUnaryIterator, PlanIteratorState>::
-    openImpl(planState, offset);
-    
-    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-  }
+  void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
   
@@ -265,13 +248,7 @@ public:
 
 public:
 
-  void openImpl(PlanState& planState, uint32_t& offset)
-  {
-    NaryBaseIterator<FnFormatNumberIterator, PlanIteratorState>::
-    openImpl(planState, offset);
-    
-    this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-  }
+  void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 

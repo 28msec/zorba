@@ -673,37 +673,58 @@ FnSubsequenceIteratorState::reset(PlanState& planState)
 //15.1.11 fn:unordered
 
 
-/*______________________________________________________________________
-|  
-| 15.2 Functions That Test the Cardinality of Sequences
-|_______________________________________________________________________*/
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  15.2 Functions That Test the Cardinality of Sequences                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
-//15.2.1 fn:zero-or-one
+
+/*******************************************************************************
+  15.2.1 fn:zero-or-one
+********************************************************************************/
 bool 
-FnZeroOrOneIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
-  store::Item_t lFirstSequenceItem;
-  store::Item_t lNextSequenceItem;
+FnZeroOrOneIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+{
+  store::Item_t lNextItem;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(result, theChildren[0].getp(), planState))
   {
-    if (consumeNext(lNextSequenceItem, theChildren[0].getp(), planState))
+    while (consumeNext(lNextItem, theChildren[0].getp(), planState))
     {
-      ZORBA_ERROR_LOC_DESC( FORG0003, 
-        loc,  "fn:zero-or-one called with a sequence containing more than one item.");
+      if (theDoDistinct)
+      {
+        if (!lNextItem->equals(result))
+        {
+          ZORBA_ERROR_LOC_DESC_OSS(FORG0003, loc,
+                                   "fn:zero-or-one called with a sequence"
+                                   << " containing more than one item.");
+        }
+      }
+      else
+      {
+        ZORBA_ERROR_LOC_DESC_OSS(FORG0003, loc,
+                                 "fn:zero-or-one called with a sequence"
+                                 << " containing more than one item.");
+      }
     }
+
     STACK_PUSH(true, state);
   }
-  STACK_END (state);
+
+  STACK_END(state);
 }
 
 
-
-//15.2.2 fn:one-or-more
+/*******************************************************************************
+  15.2.2 fn:one-or-more
+********************************************************************************/
 bool 
-FnOneOrMoreIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
+FnOneOrMoreIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+{
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
@@ -720,7 +741,10 @@ FnOneOrMoreIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 
-//15.2.3 fn:exactly-one
+
+/*******************************************************************************
+  15.2.3 fn:exactly-one
+********************************************************************************/
 bool 
 FnExactlyOneIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
@@ -732,22 +756,35 @@ FnExactlyOneIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if ((firstPresent = consumeNext(result, theChildren[0].getp(), planState)))
-    nextPresent = consumeNext(lNextItem, theChildren[0].getp(), planState);
+  {
+    while(consumeNext(lNextItem, theChildren[0].getp(), planState))
+    {
+      if (!theDoDistinct || !lNextItem->equals(result))
+      {
+        nextPresent = true;
+        theChildren[0]->reset(planState);
+        break;
+      }
+    }
+  }
 
   if (firstPresent && !nextPresent) 
   {
-    if (!raise_err) {
-      GENV_ITEMFACTORY->createBoolean (result, true);
+    if (!theRaiseError)
+    {
+      GENV_ITEMFACTORY->createBoolean(result, true);
     }
   }
   else 
   {
-    if (raise_err)
-      ZORBA_ERROR_LOC_DESC( FORG0005,
-                            loc, "fn:exactly-one called with a sequence containing zero or more than one item.");
+    if (theRaiseError)
+      ZORBA_ERROR_LOC_DESC_OSS(FORG0005, loc,
+                               "fn:exactly-one called with a sequence"
+                               << " containing zero or more than one item.");
     else
-      GENV_ITEMFACTORY->createBoolean (result, false );
+      GENV_ITEMFACTORY->createBoolean(result, false);
   }
+
   STACK_PUSH(true, state);
 
   STACK_END (state);
@@ -1060,16 +1097,20 @@ done:
   STACK_END (state);
 }
 
-/*______________________________________________________________________
-|
-| 15.4 Aggregate Functions
-|_______________________________________________________________________*/
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+// 15.4 Aggregate Functions                                                    //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 
 //15.4.1 fn:count
 bool 
-FnCountIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
+FnCountIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+{
   store::Item_t lSequenceItem;
-  xqp_integer lCount = Integer::parseInt(0);
+  ulong lCount = 0;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -1079,7 +1120,8 @@ FnCountIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
     ++lCount;
   }
 
-  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, lCount), state);
+  STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, Integer::parseULong(lCount)),
+             state);
 
   STACK_END (state);
 }
@@ -1201,15 +1243,19 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 
+
 //15.4.3 fn:max & 15.4.4 fn:min
-FnMinMaxIterator::FnMinMaxIterator
-  (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, Type aType)
-  : NaryBaseIterator<FnMinMaxIterator, PlanIteratorState>(sctx, loc, aChildren), 
-    theType(aType),
-    theCompareType(
-       (aType == MIN 
-       ? CompareConsts::VALUE_LESS 
-       : CompareConsts::VALUE_GREATER)) 
+FnMinMaxIterator::FnMinMaxIterator(
+    short sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& aChildren,
+    Type aType)
+  :
+  NaryBaseIterator<FnMinMaxIterator, PlanIteratorState>(sctx, loc, aChildren), 
+  theType(aType),
+  theCompareType((aType == MIN ?
+                  CompareConsts::VALUE_LESS :
+                  CompareConsts::VALUE_GREATER)) 
 { 
 }
 

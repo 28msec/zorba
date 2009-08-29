@@ -40,16 +40,15 @@
 #include "compiler/rewriter/framework/rewriter.h"
 #include "compiler/codegen/plan_visitor.h"
 #include "compiler/parsetree/parsenode_print_xml_visitor.h"
-
-#include "runtime/api/plan_wrapper.h"
 #include "compiler/parsetree/parsenode_print_xqdoc_visitor.h"
-#include "runtime/visitors/printervisitor.h"
-#include "runtime/visitors/iterprinter.h"
-
 #include "compiler/dewey/dewey.h"
 #ifdef ZORBA_XQUERYX
 #include "compiler/xqueryx/xqueryx_to_xquery.h"
 #endif
+
+#include "runtime/base/plan_iterator.h"
+#include "runtime/visitors/printervisitor.h"
+#include "runtime/visitors/iterprinter.h"
 
 
 namespace zorba 

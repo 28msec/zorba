@@ -65,6 +65,17 @@ const function *GenericOpComparison::specialize(static_context *sctx, const std:
 }
   
 
+PlanIter_t GenericOpComparison::codegen(
+        CompilerCB* cb,
+        short sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        AnnotationHolder &ann) const 
+{
+  return createIterator (sctx, loc, argv);
+}
+
+
 /*******************************************************************************
 
   Specific instances of ValueOpComparison. Specialization is based on both the

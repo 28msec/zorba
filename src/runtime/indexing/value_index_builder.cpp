@@ -38,6 +38,16 @@ END_SERIALIZABLE_CLASS_VERSIONS(ValueIndexInsertSessionCloser)
 SERIALIZABLE_CLASS_VERSIONS(ValueIndexBuilder)
 END_SERIALIZABLE_CLASS_VERSIONS(ValueIndexBuilder)
 
+
+void CreateValueIndex::openImpl(PlanState& planState, uint32_t& offset)
+{
+  UnaryBaseIterator<CreateValueIndex, PlanIteratorState>::
+  openImpl(planState, offset); 
+
+  theSctx = planState.theCompilerCB->getStaticContext(sctx);
+}
+
+
 bool CreateValueIndex::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   bool status;

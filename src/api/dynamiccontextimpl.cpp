@@ -34,8 +34,6 @@
 #include "api/resultiteratorchainer.h"
 #include "api/dynamiccontextimpl.h"
 
-#include "runtime/api/plan_wrapper.h"
-#include "runtime/base/plan_iterator.h"
 #include "runtime/util/item_iterator.h"
 
 #include "store/api/item.h"

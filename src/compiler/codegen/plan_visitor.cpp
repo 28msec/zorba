@@ -18,19 +18,20 @@
 #include <vector>
 #include <stack>
 
+#include "zorbaerrors/Assert.h"
+
 #include "util/properties.h"
 #include "util/tracer.h"
 #include "util/stl_extra.h"
 #include "util/hashmap32.h"
 
+#include "system/globalenv.h"
+
+#include "compiler/api/compilercb.h"
 #include "compiler/codegen/plan_visitor.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/expr_visitor.h"
 #include "compiler/parser/parse_constants.h"
-
-#include "system/globalenv.h"
-
-#include "zorbaerrors/Assert.h"
 
 #include "context/namespace_context.h"
 #include "context/static_context.h"

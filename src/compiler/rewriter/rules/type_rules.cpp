@@ -22,7 +22,6 @@
 #include "types/typeops.h"
 
 #include "functions/function.h"
-#include "functions/Boolean.h"
 
 #include "system/globalenv.h"
 

@@ -48,6 +48,19 @@
   } while(0)
 
 
+#define COMPUTE_ANNOTATION_DECL()                              \
+void compute_annotation(AnnotationHolder* parent,              \
+                        std::vector<AnnotationHolder *> &kids, \
+                        Annotation::key_t k) const;
+
+#define CODEGEN_DECL()                                    \
+PlanIter_t codegen(CompilerCB* cb,                        \
+                   short sctx,                            \
+                   const QueryLoc& loc,                   \
+                   std::vector<PlanIter_t>& argv,         \
+                   AnnotationHolder& ann) const;          \
+
+
 #define DEFAULT_CODEGEN(Iter)                             \
 PlanIter_t codegen(CompilerCB* /* cb */,                  \
                    short sctx,                            \

@@ -31,7 +31,10 @@
 #include "zorbaerrors/errors.h"
 #include "zorbaerrors/error_manager.h"
 
+#include "util/properties.h"
+
 #include "system/globalenv.h"
+
 #include "api/staticcontextimpl.h"
 #include "api/dynamiccontextimpl.h"
 #include "api/resultiteratorimpl.h"
@@ -39,8 +42,6 @@
 #include "api/serialization/serializer.h"
 #include "api/zorbaimpl.h"
 
-#include "compiler/api/compiler_api.h"
-#include "compiler/api/compilercb.h"
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
 
@@ -48,13 +49,14 @@
 #include "types/typemanagerimpl.h"
 #include "types/root_typemanager.h"
 
+#include "compiler/api/compiler_api.h"
+#include "compiler/api/compilercb.h"
+
 #include "runtime/base/plan_iterator.h"  // maybe we can separate the batcher from the plan iterator
 #include "runtime/api/plan_wrapper.h"
 #include "runtime/api/runtimecb.h"
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/visitors/printervisitor.h"
-
-#include "util/properties.h"
 
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
@@ -86,7 +88,7 @@ void XQueryImpl::PlanProxy::serialize(::zorba::serialization::Archiver &ar)
 
 XQueryImpl::PlanProxy::PlanProxy(PlanIter_t& root)
   :
-  theRootIter(root)
+  theRootIter(root.getp())
 {
 }
 
@@ -321,7 +323,7 @@ XQueryImpl::isUpdateQuery() const
   ZORBA_TRY
     checkNotClosed();
     checkCompiled();
-    return thePlan->theRootIter->isUpdating();
+    return static_cast<PlanIterator*>(thePlan->theRootIter.getp())->isUpdating();
   ZORBA_CATCH
   return false;
 }
@@ -722,9 +724,10 @@ XQueryImpl::removeResultIterator(const ResultIterator* iter)
 PlanWrapper_t
 XQueryImpl::generateWrapper()
 {
-  PlanWrapper_t lPlan(new PlanWrapper(thePlan->theRootIter,
-                                      theCompilerCB,
-                                      theDynamicContext));
+  PlanWrapper_t lPlan = 
+  new PlanWrapper(static_cast<PlanIterator*>(thePlan->theRootIter.getp()),
+                  theCompilerCB,
+                  theDynamicContext);
   return lPlan;
 }
 
@@ -928,7 +931,8 @@ XQueryImpl::printPlan( std::ostream& aStream, bool aDotFormat ) const
       lPrinter.reset(new DOTIterPrinter(aStream));
     else
       lPrinter.reset(new XMLIterPrinter(aStream));
-    print_iter_plan(*(lPrinter.get()), thePlan->theRootIter.getp());
+    print_iter_plan(*(lPrinter.get()),
+                    static_cast<PlanIterator*>(thePlan->theRootIter.getp()));
   ZORBA_CATCH
 }
 

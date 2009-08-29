@@ -583,6 +583,16 @@ NumArithIterator<Operations>::NumArithIterator(
 
 
 template < class Operation >
+void NumArithIterator<Operation>::openImpl(PlanState& planState, uint32_t& offset)
+{
+  BinaryBaseIterator<NumArithIterator<Operation>, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
+
+template < class Operation >
 bool NumArithIterator<Operation>::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
@@ -758,9 +768,21 @@ SpecificNumArithIterator<Operations, Type>::SpecificNumArithIterator(
 
 
 template < class Operation, TypeConstants::atomic_type_code_t Type >
-bool SpecificNumArithIterator<Operation, Type>::nextImpl (
+void SpecificNumArithIterator<Operation, Type>::openImpl(
+    PlanState& planState,
+    uint32_t& offset)
+{
+  BinaryBaseIterator<SpecificNumArithIterator<Operation, Type>, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
+
+template < class Operation, TypeConstants::atomic_type_code_t Type >
+bool SpecificNumArithIterator<Operation, Type>::nextImpl(
     store::Item_t& result,
-    PlanState& planState ) const
+    PlanState& planState) const
 {
   bool res;
   store::Item_t n0;
@@ -859,6 +881,15 @@ OpNumericUnaryIterator::OpNumericUnaryIterator (
 
 OpNumericUnaryIterator::~OpNumericUnaryIterator()
 {
+}
+
+
+void OpNumericUnaryIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  UnaryBaseIterator<OpNumericUnaryIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
 }
 
 
@@ -1989,6 +2020,15 @@ static void formatNumber(
     resultString.append_in_place(fractional_part_result);
   }
   resultString.append_in_place(sub_picture.suffix);
+}
+
+
+void FnFormatNumberIterator::openImpl(PlanState& planState, uint32_t& offset)
+{
+  NaryBaseIterator<FnFormatNumberIterator, PlanIteratorState>::
+  openImpl(planState, offset);
+    
+  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
 }
 
 

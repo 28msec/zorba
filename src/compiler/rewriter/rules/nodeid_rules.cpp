@@ -272,13 +272,36 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
                                             AnnotationKey::IGNORES_DUP_NODES,
                                             TSVAnnotationValue::TRUE_VAL);
     }
+    else if (f == LOOKUP_FN ("fn", "zero-or-one", 1) ||
+             f == LOOKUP_FN ("fn", "exactly-one", 1))
+    {
+      expr_t arg = (*fo)[0];
+
+      TSVAnnotationValue::update_annotation(arg,
+                                            AnnotationKey::IGNORES_SORTED_NODES,
+                                            TSVAnnotationValue::TRUE_VAL);
+
+      if (arg->get_expr_kind() == relpath_expr_kind)
+      {
+        // If these functions are over a path expr, then the duplicate
+        // elimination that would normally be done by the path expr is
+        // pulled up into the corresponding runtime iterators.
+        TSVAnnotationValue::update_annotation(arg,
+                                              AnnotationKey::IGNORES_DUP_NODES,
+                                              TSVAnnotationValue::TRUE_VAL);
+      }
+      else
+      {
+        TSVAnnotationValue::update_annotation(arg,
+                                              AnnotationKey::IGNORES_DUP_NODES,
+                                              TSVAnnotationValue::FALSE_VAL);
+      }
+    }
     else if (f == LOOKUP_FN ("fn", "unordered", 1) ||
              f == LOOKUP_FN ("fn", "count", 1) ||
              f == LOOKUP_FN ("fn", "sum", 1) ||
              f == LOOKUP_FN ("fn", "sum", 2) ||
              f == LOOKUP_FN ("fn", "avg", 1) ||
-             f == LOOKUP_FN ("fn", "exactly-one", 1) || 
-             f == LOOKUP_FN ("fn", "zero-or-one", 1) || 
              f == LOOKUP_OP1 ("exactly-one-noraise"))
     {
       expr_t arg = (*fo)[0];

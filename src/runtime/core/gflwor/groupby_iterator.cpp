@@ -18,6 +18,8 @@
 #include "zorbaerrors/Assert.h"
 #include "zorbaerrors/error_manager.h"
 
+#include "context/static_context.h"
+
 #include "compiler/api/compilercb.h"
 
 #include "runtime/api/runtimecb.h"

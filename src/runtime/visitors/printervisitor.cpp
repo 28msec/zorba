@@ -70,15 +70,23 @@
 #ifdef ZORBA_WITH_EMAIL
 #include "runtime/email/EmailImpl.h"
 #endif
-#include "types/root_typemanager.h"
+
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/update/update.h"
 #include "runtime/misc/MiscImpl.h"
 #include "runtime/nodes/NodesImpl.h"
+
 #include "store/api/iterator.h"
+
 #include "util/properties.h"
 
+#include "types/root_typemanager.h"
 #include "types/typeops.h"
+
+#include "context/static_context.h"
+
+#include "compiler/api/compilercb.h"
+
 
 namespace zorba {
 
