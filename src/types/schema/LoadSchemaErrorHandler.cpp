@@ -33,8 +33,8 @@ namespace zorba
 
 LoadSchemaErrorHandler::LoadSchemaErrorHandler(const QueryLoc& loc) 
   :
-  _loc(loc),
-  _sawErrors(false)
+  theQueryLoc(loc),
+  theSawErrors(false)
 {
 }
 
@@ -49,22 +49,22 @@ LoadSchemaErrorHandler::~LoadSchemaErrorHandler()
 // ---------------------------------------------------------------------------
 void LoadSchemaErrorHandler::error(const XERCES_CPP_NAMESPACE::SAXParseException& e)
 {
-  _sawErrors = true;
+  theSawErrors = true;
   std::ostringstream os;
   os << "Error in schema " << StrX(e.getSystemId()) << ", line " << e.getLineNumber() 
      << ", column " << e.getColumnNumber() << "." << std::endl
      << StrX(e.getMessage());
-  ZORBA_ERROR_LOC_DESC( XQST0059, _loc, os.str());
+  ZORBA_ERROR_LOC_DESC( XQST0059, theQueryLoc, os.str());
 }
 
 void LoadSchemaErrorHandler::fatalError(const XERCES_CPP_NAMESPACE::SAXParseException& e)
 {
-  _sawErrors = true;
+  theSawErrors = true;
   std::ostringstream os;
   os << "Error in schema " << StrX(e.getSystemId()) << ", line " << e.getLineNumber() 
      << ", column " << e.getColumnNumber() << "." << std::endl
      << StrX(e.getMessage());
-  ZORBA_ERROR_LOC_DESC( XQST0059, _loc, os.str());
+  ZORBA_ERROR_LOC_DESC( XQST0059, theQueryLoc, os.str());
 }
 
 void LoadSchemaErrorHandler::warning(const XERCES_CPP_NAMESPACE::SAXParseException& e)
@@ -80,7 +80,7 @@ void LoadSchemaErrorHandler::warning(const XERCES_CPP_NAMESPACE::SAXParseExcepti
 
 void LoadSchemaErrorHandler::resetErrors()
 {
-  _sawErrors = false;
+  theSawErrors = false;
 }
 
 } // namspace xqp

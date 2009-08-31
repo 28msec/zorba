@@ -19,7 +19,6 @@
 
 
 #include <xercesc/framework/XMLValidator.hpp>
-//#include <xercesc/framework/XMLBuffer.hpp>
 #include <xercesc/util/ValueStackOf.hpp>
 #include <xercesc/validators/common/ContentSpecNode.hpp>
 #include <xercesc/validators/schema/SchemaGrammar.hpp>
@@ -31,7 +30,8 @@
 // TODO remove
 using namespace XERCES_CPP_NAMESPACE;
 
-XERCES_CPP_NAMESPACE_BEGIN
+namespace XERCES_CPP_NAMESPACE
+{
 
 class GrammarResolver;
 class DatatypeValidator;
@@ -42,7 +42,8 @@ class ComplexTypeInfo;
 class XercesGroupInfo;
 class ContentSpecNode;
 
-XERCES_CPP_NAMESPACE_END
+}
+
 
 namespace zorba
 {

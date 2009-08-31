@@ -31,7 +31,6 @@
 #include "types/typeimpl.h"
 #include "zorbaerrors/error_manager.h"
 #include <zorbatypes/numconversions.h>
-//#include "util/XmlWhitespace.h"
 #include "system/globalenv.h"
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/duration.h"
@@ -95,7 +94,8 @@ bool XercesParseUtils::parseXSInteger(
   else
   {
     ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue->str() + "' cannot be cast to integer");
+                      "String '" + textValue->str() +
+                      "' cannot be cast to integer");
     return false;
   }
 }
@@ -124,7 +124,8 @@ bool XercesParseUtils::parseXSPositiveInteger(
   else
   {
     ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue->str() + "' cannot be cast to positiveInteger");
+                      "String '" + textValue->str() +
+                      "' cannot be cast to positiveInteger");
     return false;
   }
 }
@@ -153,7 +154,8 @@ bool XercesParseUtils::parseXSNonPositiveInteger(
   else
   {
     ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue->str() + "' cannot be cast to nonPositiveInteger");
+                      "String '" + textValue->str() +
+                      "' cannot be cast to nonPositiveInteger");
     return false;
   }
 }
@@ -182,7 +184,8 @@ bool XercesParseUtils::parseXSNegativeInteger(
   else
   {
     ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue->str() + "' cannot be cast to negativeInteger");
+                      "String '" + textValue->str() +
+                      "' cannot be cast to negativeInteger");
     return false;
   }
 }
@@ -210,7 +213,8 @@ bool XercesParseUtils::parseXSNonNegativeInteger(
   else
   {
     ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue->str() + "' cannot be cast to nonNegativeInteger");
+                      "String '" + textValue->str() +
+                      "' cannot be cast to nonNegativeInteger");
     return false;
   }
 }
@@ -238,7 +242,8 @@ bool XercesParseUtils::parseXSUnsignedByte(
   else
   {
     ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue->str() + "' cannot be cast to unsignedByte");
+                      "String '" + textValue->str() +
+                      "' cannot be cast to unsignedByte");
     return false;
   }
 }
@@ -266,7 +271,8 @@ bool XercesParseUtils::parseXSUnsignedShort(
   else
   {
     ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue->str() + "' cannot be cast to unignedShort");
+                      "String '" + textValue->str() +
+                      "' cannot be cast to unignedShort");
     return false;
   }
 }
@@ -294,7 +300,8 @@ bool XercesParseUtils::parseXSUnsignedInt(
   else
   {
     ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue->str() + "' cannot be cast to unsignedInt");
+                      "String '" + textValue->str() +
+                      "' cannot be cast to unsignedInt");
     return false;
   }
 }
@@ -321,7 +328,8 @@ bool XercesParseUtils::parseXSUnsignedLong(
   else
   {
     ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue->str() + "' cannot be cast to unsignedLong");
+                      "String '" + textValue->str() +
+                      "' cannot be cast to unsignedLong");
     return false;
   }
 }
@@ -539,7 +547,8 @@ bool XercesParseUtils::parseXSDecimal(
   else
   {
     ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue->str() + "' cannot be cast to decimal");
+                      "String '" + textValue->str() +
+                      "' cannot be cast to decimal");
     return false;
   }
 }
@@ -553,28 +562,6 @@ bool XercesParseUtils::parseXSString(
   xqpStringStore_t textValue2 = textValue->normalizeSpace();
   store::ItemFactory* factory = GENV_ITEMFACTORY;
   return factory->createString(result, textValue2);
-
-  //XMLCh* content = XMLString::transcode(textValue.c_str());    
-  //XSValue::DataType datatype = XSValue::dt_string;
-  //XSValue::Status status = XSValue::st_Init;;
-
- //   XSValue* xsval = XSValue::getActualValue(content, datatype, status);
-  //XMLString::release(&content);
-
-  //if ( status==XSValue::st_NoActVal )
-  //{
-  //  delete xsval;
-
-  //  store::ItemFactory* factory = GENV_ITEMFACTORY;
-  //  return factory->createString(result, textValue.getStore());
-  //}
-  //else
-  //{
-  //  delete xsval;
-  //  ZORBA_ERROR_DESC( FORG0001, 
-  //    "String '" + textValue.trim(" \n\r\t",4) + "' cannot be cast to string");
-  //  return false;
-  //}
 }
 
 bool XercesParseUtils::parseXSNormalizedString(
@@ -615,7 +602,8 @@ bool XercesParseUtils::parseXSToken(
   else
   {
     ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue->str() + "' cannot be cast to NMToken");
+                      "String '" + textValue->str() +
+                      "' cannot be cast to NMToken");
     return false;
   }
 }
@@ -643,7 +631,8 @@ bool XercesParseUtils::parseXSNMToken(
   else
   {
     ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue->str() + "' cannot be cast to NMToken");
+                      "String '" + textValue->str() +
+                      "' cannot be cast to NMToken");
     return false;
   }
 }
@@ -671,7 +660,8 @@ bool XercesParseUtils::parseXSName(
   else
   {
     ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue->str() + "' cannot be cast to Name");
+                      "String '" + textValue->str() +
+                      "' cannot be cast to Name");
     return false;
   }
 }
@@ -699,7 +689,8 @@ bool XercesParseUtils::parseXSNCName(
   else
   {
     ZORBA_ERROR_DESC( FORG0001, 
-                      "String '" + textValue->str() + "' cannot be cast to NCName");
+                      "String '" + textValue->str() +
+                      "' cannot be cast to NCName");
     return false;
   }
 }
@@ -852,7 +843,9 @@ bool XercesParseUtils::parseXSDateTime(
     //return factory->createDateTime(result, year, month, day, hour, minute, sec);
     xqp_dateTime dt;
     xqpStringStore_t textValue2 = textValue->normalizeSpace();
-    if (0 == DateTime::parseDateTime(textValue2.getp(), dt))  // Warning: parsing code is not using Xerces
+
+    // Warning: parsing code is not using Xerces
+    if (0 == DateTime::parseDateTime(textValue2.getp(), dt))  
     {
       return factory->createDateTime(result, &dt);
     }
@@ -893,7 +886,9 @@ bool XercesParseUtils::parseXSDate(
     //return factory->createDate(result, tValue);
     xqp_date d;
     xqpStringStore_t textValue2 = textValue->normalizeSpace();
-    if (0 == DateTime::parseDate(textValue2.getp(), d))  // Warning: parsing code is not using Xerces
+
+    // Warning: parsing code is not using Xerces
+    if (0 == DateTime::parseDate(textValue2.getp(), d))  
     {
       return factory->createDate(result, &d);
     }
@@ -939,7 +934,9 @@ bool XercesParseUtils::parseXSTime(
     //return factory->createTime(result, tValue);
     xqp_time t;
     xqpStringStore_t textValue2 = textValue->normalizeSpace();
-    if (0 == DateTime::parseTime(textValue2.getp(), t))  // Warning: parsing code is not using Xerces
+
+    // Warning: parsing code is not using Xerces
+    if (0 == DateTime::parseTime(textValue2.getp(), t))
     {
       return factory->createTime(result, &t);
     }
@@ -975,7 +972,9 @@ bool XercesParseUtils::parseXSGYearMonth(
     xqp_gYearMonth tValue;
     
     xqpStringStore_t textValue2 = textValue->normalizeSpace();
-    if (DateTime::parseGYearMonth(textValue2.getp(), tValue)) // Warning: parsing code is not using Xerces
+
+    // Warning: parsing code is not using Xerces
+    if (DateTime::parseGYearMonth(textValue2.getp(), tValue))
     {
       return factory->createGYearMonth(result, &tValue);
     }
@@ -1011,7 +1010,8 @@ bool XercesParseUtils::parseXSGYear(
     
     xqpStringStore_t textValue2 = textValue->normalizeSpace();
 
-    if (DateTime::parseGYear(textValue2.getp(), tValue))    // Warning: parsing code is not using Xerces
+    // Warning: parsing code is not using Xerces
+    if (DateTime::parseGYear(textValue2.getp(), tValue))
     {
       return factory->createGYear(result, &tValue);
     }
@@ -1046,7 +1046,9 @@ bool XercesParseUtils::parseXSGMonthDay(
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     xqp_gMonthDay tValue;
     xqpStringStore_t textValue2 = textValue->normalizeSpace();
-    if (DateTime::parseGMonthDay(textValue2.getp(), tValue))    // Warning: parsing code is not using Xerces
+
+    // Warning: parsing code is not using Xerces
+    if (DateTime::parseGMonthDay(textValue2.getp(), tValue))
     {
       return factory->createGMonthDay(result, &tValue);
     }
@@ -1080,7 +1082,9 @@ bool XercesParseUtils::parseXSGDay(
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     xqp_gDay tValue;
     xqpStringStore_t textValue2 = textValue->normalizeSpace();
-    if (DateTime::parseGDay(textValue2.getp(), tValue))   // Warning: parsing code is not using Xerces
+
+    // Warning: parsing code is not using Xerces
+    if (DateTime::parseGDay(textValue2.getp(), tValue))
     {
       return factory->createGDay(result, &tValue);
     }
@@ -1114,7 +1118,9 @@ bool XercesParseUtils::parseXSGMonth(
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     xqp_gMonth tValue;
     xqpStringStore_t textValue2 = textValue->normalizeSpace();
-    if (DateTime::parseGMonth(textValue2.getp(), tValue))   // Warning: parsing code is not using Xerces
+
+    // Warning: parsing code is not using Xerces
+    if (DateTime::parseGMonth(textValue2.getp(), tValue))
     {
       return factory->createGMonth(result, &tValue);
     }
@@ -1154,7 +1160,9 @@ bool XercesParseUtils::parseXSDuration(
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     Duration tValue;
     xqpStringStore_t textValue2 = textValue->normalizeSpace();
-    if (0 == Duration::parseDuration(textValue2.getp(), tValue))    // Warning: parsing code is not using Xerces
+
+    // Warning: parsing code is not using Xerces
+    if (0 == Duration::parseDuration(textValue2.getp(), tValue))
       return factory->createDuration(result, &tValue);
   }
 

@@ -21,9 +21,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-//#include "xercesIncludes.h"
 #include <xercesc/util/XercesDefs.hpp>
-//#include <xercesc/util/XMLChar.hpp>
 #include <xercesc/util/XMLString.hpp>
 #ifdef CYGWIN
 #undef WIN32
@@ -36,10 +34,7 @@
 #include <iostream.h>
 #endif
 
-//XERCES_CPP_NAMESPACE_USE
-//namespace XERCES_CPP_NAMESPACE {
-//  class XMLCh;
-//}
+
 
 namespace zorba
 {
@@ -52,20 +47,20 @@ class StrX
 {
 public :
   StrX(const XMLCh* const toTranscode, unsigned int length)
-    : fLocalForm(0)
+    : theLocalForm(0)
   {
-    XERCES_CPP_NAMESPACE::XMLString::transcode(toTranscode, fLocalForm, length);
+    XERCES_CPP_NAMESPACE::XMLString::transcode(toTranscode, theLocalForm, length);
   }
 
   StrX(const XMLCh* const toTranscode)
   {
     // Call the private transcoding method
-    fLocalForm = XERCES_CPP_NAMESPACE::XMLString::transcode(toTranscode);
+    theLocalForm = XERCES_CPP_NAMESPACE::XMLString::transcode(toTranscode);
   }
 
   ~StrX()
   {
-    XERCES_CPP_NAMESPACE::XMLString::release(&fLocalForm);
+    XERCES_CPP_NAMESPACE::XMLString::release(&theLocalForm);
   }
 
   // -----------------------------------------------------------------------
@@ -73,12 +68,12 @@ public :
   // -----------------------------------------------------------------------
   const char* localForm() const
   {
-    return fLocalForm;
+    return theLocalForm;
   }
   
   const char *localFormOrDefault (const char *def) 
   {
-    return (fLocalForm == NULL ? def : fLocalForm);
+    return (theLocalForm == NULL ? def : theLocalForm);
   }
 
 private :
@@ -88,11 +83,12 @@ private :
   //  fLocalForm
   //      This is the local code page form of the string.
   // -----------------------------------------------------------------------
-  char* fLocalForm;
+  char* theLocalForm;
 };
 
 
-inline XERCES_STD_QUALIFIER ostream& operator<<(XERCES_STD_QUALIFIER ostream& target, const StrX& toDump)
+inline XERCES_STD_QUALIFIER ostream& operator<<(
+    XERCES_STD_QUALIFIER ostream& target, const StrX& toDump)
 {
   target << (toDump.localForm()==NULL ? "NULL" : toDump.localForm() );
   return target;

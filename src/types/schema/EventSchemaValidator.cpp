@@ -41,23 +41,23 @@ EventSchemaValidator::EventSchemaValidator(
     bool isLax,
     const QueryLoc& loc)
   :
-  _typeManager(typeManager),
-  _validationEventHandler()
+  theTypeManager(typeManager),
+  theValidationEventHandler()
 {
   XERCES_CPP_NAMESPACE::MemoryManager* memoryManager =
   XERCES_CPP_NAMESPACE::XMLPlatformUtils::fgMemoryManager;
 
-  _grammarResolver = new (memoryManager)
+  theGrammarResolver = new (memoryManager)
                      XERCES_CPP_NAMESPACE::GrammarResolver(grammarPool, memoryManager);
-  _grammarResolver->useCachedGrammarInParse(true);
+  theGrammarResolver->useCachedGrammarInParse(true);
 
 #if 0 // enable this to debug registered user defined schema types
   PrintSchema::printInfo(true, grammarPool);
 #endif 
 
-  _schemaValidatorFilter = new SchemaValidatorFilter(!isLax,
-                                                     &_validationEventHandler,
-                                                     _grammarResolver,
+  theSchemaValidatorFilter = new SchemaValidatorFilter(!isLax,
+                                                     &theValidationEventHandler,
+                                                     theGrammarResolver,
                                                      memoryManager,
                                                      loc);
 }
@@ -65,8 +65,8 @@ EventSchemaValidator::EventSchemaValidator(
 
 EventSchemaValidator::~EventSchemaValidator()
 {
-  delete _schemaValidatorFilter;
-  delete _grammarResolver;
+  delete theSchemaValidatorFilter;
+  delete theGrammarResolver;
 }
 
 
@@ -74,7 +74,7 @@ void EventSchemaValidator::startDoc()
 {
   //cout << "   SDoc \n";
 
-  _schemaValidatorFilter->startDocumentEvent(NULL, NULL);
+  theSchemaValidatorFilter->startDocumentEvent(NULL, NULL);
 }
 
 
@@ -82,7 +82,7 @@ void EventSchemaValidator::endDoc()
 {
   //cout << "   EDoc \n";
     
-  _schemaValidatorFilter->endDocumentEvent();
+  theSchemaValidatorFilter->endDocumentEvent();
 }
 
 
@@ -93,7 +93,7 @@ void EventSchemaValidator::startElem(store::Item_t elemName)
   XMLChArray prefix(elemName->getPrefix()->c_str()); 
   XMLChArray uri(elemName->getNamespace()->c_str());
   XMLChArray localname(elemName->getLocalName()->c_str()); 
-  _schemaValidatorFilter->startElementEvent(prefix, uri, localname);
+  theSchemaValidatorFilter->startElementEvent(prefix, uri, localname);
 }
 
 
@@ -106,7 +106,7 @@ void EventSchemaValidator::endElem(store::Item_t elemName)
   XMLChArray localname(elemName->getLocalName()->c_str()); 
   XMLCh *typeURI = NULL;
   XMLCh *typeName = NULL;
-  _schemaValidatorFilter->endElementEvent(prefix, uri, localname, typeURI, typeName);
+  theSchemaValidatorFilter->endElementEvent(prefix, uri, localname, typeURI, typeName);
 }
 
 
@@ -121,14 +121,14 @@ void EventSchemaValidator::attr(store::Item_t attrName, xqpStringStore_t textVal
   XMLChArray value(textValue->c_str());
   XMLCh *typeURI = NULL; 
   XMLCh *typeName = NULL;
-  _schemaValidatorFilter->attributeEvent(prefix, uri, localname, value, typeURI, typeName);
+  theSchemaValidatorFilter->attributeEvent(prefix, uri, localname, value, typeURI, typeName);
 }
 
 
 void EventSchemaValidator::endAttrs()
 {
   //cout << "  sv   endAttrs \n";
-  _schemaValidatorFilter->endAttributesEvent();
+  theSchemaValidatorFilter->endAttributesEvent();
 }
 
 
@@ -137,7 +137,7 @@ void EventSchemaValidator::text(xqpStringStore_t textValue)
   //cout << "  sv   Text: " << textValue->c_str() << "\n";
 
   XMLChArray value(textValue->c_str());
-  _schemaValidatorFilter->textEvent(value);
+  theSchemaValidatorFilter->textEvent(value);
   //_validationEventHandler.resetAttList();
 }
 
@@ -148,14 +148,14 @@ void EventSchemaValidator::ns(xqpStringStore_t prefix, xqpStringStore_t uri)
 
   XMLChArray prefixVal(prefix->c_str());
   XMLChArray uriVal(uri->c_str());
-  _schemaValidatorFilter->namespaceEvent(prefixVal, uriVal);
+  theSchemaValidatorFilter->namespaceEvent(prefixVal, uriVal);
 }
 
 
 store::Item_t EventSchemaValidator::getTypeQName()
 {
-  StrX typeName(_schemaValidatorFilter->getTypeName());
-  StrX typeUri(_schemaValidatorFilter->getTypeUri());
+  StrX typeName(theSchemaValidatorFilter->getTypeName());
+  StrX typeUri(theSchemaValidatorFilter->getTypeUri());
 
   //cout << "  - getTypeQName: " << typeName << "@" << typeUri <<" ";
 
@@ -174,8 +174,8 @@ store::Item_t EventSchemaValidator::getTypeQName()
 
 xqtref_t EventSchemaValidator::getType()
 {
-  StrX typeName(_schemaValidatorFilter->getTypeName());
-  StrX typeUri(_schemaValidatorFilter->getTypeUri());
+  StrX typeName(theSchemaValidatorFilter->getTypeName());
+  StrX typeUri(theSchemaValidatorFilter->getTypeUri());
 
   //cout << "  - getType: " << typeName << "@" << typeUri <<"\n";
     
@@ -185,17 +185,17 @@ xqtref_t EventSchemaValidator::getType()
                                 "", 
                                 typeName.localFormOrDefault ("untyped"));
   
-  xqtref_t type = _typeManager->create_named_type(typeQName);
+  xqtref_t type = theTypeManager->create_named_type(typeQName);
   return type;
 }
 
 
 store::Item_t EventSchemaValidator::getSubstitutedElemQName()
 {
-  if (_schemaValidatorFilter->getSubstitutedElemName())
+  if (theSchemaValidatorFilter->getSubstitutedElemName())
   {
-    StrX substElemName(_schemaValidatorFilter->getSubstitutedElemName());
-    StrX substElemUri (_schemaValidatorFilter->getSubstitutedElemUri ());
+    StrX substElemName(theSchemaValidatorFilter->getSubstitutedElemName());
+    StrX substElemUri (theSchemaValidatorFilter->getSubstitutedElemUri ());
         
     //cout << "  - getSubstitutedElemQName: " << substElemName << "@" << substElemUri <<" ";
         
@@ -223,7 +223,7 @@ void EventSchemaValidator::startType(store::Item_t typeQName)
   //cout << "   SType: " << typeQName->getLocalName()->c_str() << " @ "
   //     << typeQName->getNamespace()->c_str() << "\n";
 
-  _schemaValidatorFilter->startTypeEvent(uri, localname);
+  theSchemaValidatorFilter->startTypeEvent(uri, localname);
 }
 
 
@@ -231,7 +231,7 @@ void EventSchemaValidator::endType()
 {
   //cout << "   EType \n";
     
-  _schemaValidatorFilter->endTypeEvent();
+  theSchemaValidatorFilter->endTypeEvent();
 }
 
 }  // namespace zorba

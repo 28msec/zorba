@@ -327,27 +327,27 @@ void Validator::processAttributes(
   for( curAtt = attList->begin(); curAtt != attList->end(); ++curAtt )
   {
     AttributeValidationInfo* att = *curAtt;
-    //cout << " v    proccessATT2: " << att->_localName << " T: " << att->_typeName << "\n";
+    //cout << " v    proccessATT2: " << att->theLocalName << " T: " << att->theTypeName << "\n";
     
     store::Item_t attQName;
     GENV_ITEMFACTORY->createQName(attQName,
-                                  att->_uri,
-                                  att->_prefix,
-                                  att->_localName);
+                                  att->theUri,
+                                  att->thePrefix,
+                                  att->theLocalName);
           
     std::string typePrefix;
 
     // hack around typeManager bug for comparing QNames
-    if ( std::strcmp(Schema::XSD_NAMESPACE, att->_typeURI->c_str())==0) 
+    if ( std::strcmp(Schema::XSD_NAMESPACE, att->theTypeURI->c_str())==0)
       typePrefix = "xs";
     else
       typePrefix = "";
     
     store::Item_t typeQName;
     GENV_ITEMFACTORY->createQName(typeQName,
-                                  att->_typeURI,
+                                  att->theTypeURI,
                                   new xqpStringStore(typePrefix),
-                                  att->_typeName);
+                                  att->theTypeName);
 
     store::NsBindings bindings;
     parent->getNamespaceBindings(bindings);
@@ -357,7 +357,7 @@ void Validator::processAttributes(
                      typeManager,
                      bindings,
                      typeQName,
-                     att->_value,
+                     att->theValue,
                      typedValues);
     
     store::Item_t validatedAttNode;

@@ -23,27 +23,19 @@
 #undef WIN32
 #endif
 
-//#include "xercesIncludes.h"
-//#include "XercesParseUtils.h"
 
 #include <zorba/api_shared_types.h>
 #include "common/shared_types.h"
 
 #include "zorbatypes/representations.h" 
-//#include "zorbatypes/xqpstring.h"
 
 
-//#include "zorbatypes/xqpstring.h"
 #define ZORBA_HASHMAP_WITH_SERIALIZATION
 #include "util/hashmap.h"
 #undef ZORBA_HASHMAP_WITH_SERIALIZATION
 
-//#include "types/typeconstants.h"
-//#include "types/schema/EventSchemaValidator.h"
-
 #include "zorbaserialization/serialization_engine.h"
 
-//#include "store/api/item.h"
 
 namespace XERCES_CPP_NAMESPACE {
   class InputSource;
@@ -88,11 +80,11 @@ public:
     static const char* XSD_NAMESPACE;
 
 private:
-  static bool                            _isInitialized;
+  static bool                            theIsInitialized;
 
 #ifndef ZORBA_NO_XMLSCHEMA
-  XERCES_CPP_NAMESPACE::XMLGrammarPool * _grammarPool;
-  serializable_hashmap<xqtref_t>       * _udTypesCache;
+  XERCES_CPP_NAMESPACE::XMLGrammarPool * theGrammarPool;
+  serializable_hashmap<xqtref_t>       * theUdTypesCache;
 #endif
 
 public:
@@ -111,7 +103,7 @@ public:
 
   XERCES_CPP_NAMESPACE::XMLGrammarPool* getGrammarPool() const 
   {
-    return _grammarPool;
+    return theGrammarPool;
   }
 
   void registerXSD(
@@ -145,8 +137,6 @@ public:
         const store::Item* qname);
 
 #endif
-
-//  store::Item_t parseAtomicValue(xqtref_t type, xqp_string textValue);    
 
     // user defined simple types, i.e. Atomic, List or Union Types
   bool parseUserSimpleTypes(
@@ -203,6 +193,10 @@ private:
   xqtref_t createXQTypeFromTypeDefinition(
         const TypeManager* typeManager,
         XERCES_CPP_NAMESPACE::XSTypeDefinition* xsTypeDef);
+
+  xqtref_t createXQTypeFromTypeDefForBuiltinTypes(
+        const TypeManager* typeManager,
+    xqpStringStore_t strUri, const XMLCh* local);
 
   void checkForAnonymousTypes(const TypeManager* typeManager);
 

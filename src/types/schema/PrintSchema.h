@@ -28,9 +28,8 @@
 #include <string>
 
 
-//XERCES_CPP_NAMESPACE_USE
-
-namespace XERCES_CPP_NAMESPACE {
+namespace XERCES_CPP_NAMESPACE
+{
   class XMLGrammarPool;
   class XSObject;
   class XSTypeDefinition;

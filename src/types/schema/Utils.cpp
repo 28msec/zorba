@@ -313,27 +313,27 @@ void processAttributes(
   for( curAtt = attList->begin() ; curAtt != attList->end(); ++curAtt )
   {
     AttributeValidationInfo* att = *curAtt;
-    //cout << " vup        - processATT2: " << att->_localName << " T: " << att->_typeName << "\n";
+    //cout << " vup        - processATT2: " << att->theLocalName << " T: " << att->theTypeName << "\n";
             
     store::Item_t attQName;
-    GENV_ITEMFACTORY->createQName(attQName, att->_uri, att->_prefix, att->_localName);
+    GENV_ITEMFACTORY->createQName(attQName, att->theUri, att->thePrefix, att->theLocalName);
         
     store::Item_t attrib = findAttributeItem(parent, attQName);
         
     std::string typePrefix;
-    if ( std::strcmp(Schema::XSD_NAMESPACE, att->_typeURI->c_str() )==0 ) // hack around typeManager bug for comparing QNames
+    if ( std::strcmp(Schema::XSD_NAMESPACE, att->theTypeURI->c_str() )==0 ) // hack around typeManager bug for comparing QNames
       typePrefix = "xs";
     else
       typePrefix = "";
         
     store::Item_t typeQName;
     GENV_ITEMFACTORY->createQName(typeQName,
-                                  att->_typeURI,
+                                  att->theTypeURI,
                                   new xqpStringStore(typePrefix),
-                                  att->_typeName);
+                                  att->theTypeName);
 
     std::vector<store::Item_t> typedValues;        
-    processTextValue(pul, typeManager, nsCtx, typeQName, att->_value, attrib, typedValues);
+    processTextValue(pul, typeManager, nsCtx, typeQName, att->theValue, attrib, typedValues);
         
     if ( attrib==NULL )
     {

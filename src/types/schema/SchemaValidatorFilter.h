@@ -23,22 +23,19 @@
 
 #include <xercesc/framework/XMLDocumentHandler.hpp>
 #include <xercesc/framework/XMLErrorReporter.hpp>
-//#include <xercesc/validators/schema/identity/IdentityConstraintHandler.hpp>
 #include <xercesc/internal/XMLScanner.hpp>
 #include <xercesc/validators/schema/SchemaElementDecl.hpp>
 #include <xercesc/util/RefHash3KeysIdPool.hpp>
 
-//#include "types/schema/XercSchemaValidator.h"
 
 //daniel: this is to make cygwin work; xerces defines WIN32 in case of cygwin, which is wrong
 #ifdef CYGWIN
 #undef WIN32
 #endif
 
-//#include "common/shared_types.h"
-//#include "types/schema/ValidationEventHandler.h"
 
-namespace XERCES_CPP_NAMESPACE {
+namespace XERCES_CPP_NAMESPACE
+{
   class SchemaGrammar;
   class IdentityConstraintHandler;
   class GrammarResolver;
@@ -96,43 +93,44 @@ public:
   static const XMLCh DT_UNTYPED_ATOMIC[];
 
 private:
-  const QueryLoc                                            & _loc;
+  const QueryLoc                              & theLoc;
 
-  bool                                                        _strictValidation;
+  bool                                          theStrictValidation;
 
-  XMLCh        * _processorStipulatedTypeName;
-  unsigned int   _processorStipulatedTypeUriId;
+  XMLCh                                       * theProcessorStipulatedTypeName;
+  unsigned int                                  theProcessorStipulatedTypeUriId;
 
-  XERCES_CPP_NAMESPACE::SchemaGrammar              * _fSchemaGrammar;
-  XERCES_CPP_NAMESPACE::IdentityConstraintHandler  * _fICHandler;
-  XercSchemaValidator                                       * _fSchemaValidator;
+  XERCES_CPP_NAMESPACE::SchemaGrammar         * theSchemaGrammar;
+  XERCES_CPP_NAMESPACE::
+    IdentityConstraintHandler                 * theICHandler;
+  XercSchemaValidator                         * theSchemaValidator;
 
-  XERCES_CPP_NAMESPACE::RefHash3KeysIdPool<XERCES_CPP_NAMESPACE::SchemaElementDecl>     
-                                                            * _fElemNonDeclPool;
+  XERCES_CPP_NAMESPACE::RefHash3KeysIdPool
+    <XERCES_CPP_NAMESPACE::SchemaElementDecl> * theElemNonDeclPool;
 
-  XERCES_CPP_NAMESPACE::ElemStack::StackElem       * _parentStack;
-  unsigned int                                                _elemDepth;
+  XERCES_CPP_NAMESPACE::ElemStack::StackElem  * theParentStack;
+  unsigned int                                  theElemDepth;
 
-  bool                                                        _elementToProcess;
+  bool                                          theElementToProcess;
 
-  XERCES_CPP_NAMESPACE_QUALIFIER XMLBuffer                    _prefix;
-  XERCES_CPP_NAMESPACE_QUALIFIER XMLBuffer                    _uri;
-  XERCES_CPP_NAMESPACE_QUALIFIER XMLBuffer                    _localname;
+  XERCES_CPP_NAMESPACE_QUALIFIER XMLBuffer      thePrefix;
+  XERCES_CPP_NAMESPACE_QUALIFIER XMLBuffer      theUri;
+  XERCES_CPP_NAMESPACE_QUALIFIER XMLBuffer      theLocalname;
 
-  XERCES_CPP_NAMESPACE_QUALIFIER XMLBuffer                    _fContent;
+  XERCES_CPP_NAMESPACE_QUALIFIER XMLBuffer      theContent;
 
-  const XMLCh                                               * _xsiType;
+  const XMLCh                                 * theXsiType;
 
-  unsigned int                                                _attrCount;
+  unsigned int                                  theAttrCount;
 
-  ValidationEventHandler                                    * _eventBuffer;
+  ValidationEventHandler                      * theEventBuffer;
 
-  bool                                                        _errorOccurred;
+  bool                                          theErrorOccurred;
 
   // After an element is processed will contain the name of the substituted element 
   // if current is a substitution element, otherwise NULL
-  XMLCh*                                                      _substitutedElemName;
-  XMLCh*                                                      _substitutedElemUri;
+  XMLCh*                                        theSubstitutedElemName;
+  XMLCh*                                        theSubstitutedElemUri;
 
 public:
   SchemaValidatorFilter(
@@ -192,10 +190,10 @@ public:
   virtual const XMLCh* getTypeUri();
   
   virtual const XMLCh* getSubstitutedElemName()
-  {   return _substitutedElemName; }
+  {   return theSubstitutedElemName; }
 
   virtual const XMLCh* getSubstitutedElemUri()
-  {   return _substitutedElemUri;  }
+  {   return theSubstitutedElemUri;  }
 
 
 private:

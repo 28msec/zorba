@@ -33,7 +33,8 @@ namespace zorba
 
 void PrintSchema::printInfo(bool excludeBuiltIn, XMLGrammarPool* grammarPool)
 {
-  std::cout << "********** Printing out information from Schema **********" << "\n\n";
+  std::cout << "********** Printing out information from Schema **********" <<
+      "\n\n";
 
   bool modelHasChanged;
   XSModel *xsModel = grammarPool->getXSModel(modelHasChanged);
@@ -65,11 +66,11 @@ void PrintSchema::printInfo(bool excludeBuiltIn, XMLGrammarPool* grammarPool)
                                 << std::endl;
       
       processElements(excludeBuiltIn,
-                      xsModel->getComponentsByNamespace(XSConstants::ELEMENT_DECLARATION,
-                                                        nameSpace));
+          xsModel->getComponentsByNamespace(XSConstants::ELEMENT_DECLARATION,
+                                            nameSpace));
       processTypeDefinitions(excludeBuiltIn, 
-                             xsModel->getComponentsByNamespace(XSConstants::TYPE_DEFINITION,
-                                                               nameSpace));
+          xsModel->getComponentsByNamespace(XSConstants::TYPE_DEFINITION,
+                                            nameSpace));
     }
   }
   else
@@ -79,7 +80,8 @@ void PrintSchema::printInfo(bool excludeBuiltIn, XMLGrammarPool* grammarPool)
 }
 
 
-void PrintSchema::printBasic(std::string pre, bool excludeBuiltIn, XSObject *xsObject, const char *type)
+void PrintSchema::printBasic(std::string pre, bool excludeBuiltIn,
+    XSObject *xsObject, const char *type)
 {
     std::cout << pre << type << std::endl;
     std::cout << pre << "Name:           ";
@@ -93,16 +95,19 @@ void PrintSchema::printBasic(std::string pre, bool excludeBuiltIn, XSObject *xsO
 }
 
 
-void PrintSchema::processElements(bool excludeBuiltIn, XSNamedMap<XSObject> *xsElements)
+void PrintSchema::processElements(bool excludeBuiltIn,
+    XSNamedMap<XSObject> *xsElements)
 {
   if (!xsElements || xsElements->getLength() == 0)
   {
     std::cout << "no elements\n\n" << std::endl;
     return;
   }
+
   for (unsigned i=0; i < xsElements->getLength(); i++)
   {
-    XSElementDeclaration *xsElement = (XSElementDeclaration *)xsElements->item(i);
+    XSElementDeclaration *xsElement =
+        (XSElementDeclaration *)xsElements->item(i);
     printBasic("", excludeBuiltIn, xsElement, "Element");
     
     // Content Model
@@ -118,8 +123,8 @@ void PrintSchema::processElements(bool excludeBuiltIn, XSNamedMap<XSObject> *xsE
 }
 
 
-void PrintSchema::processSimpleTypeDefinition(std::string pre, bool excludeBuiltIn,
-        XSSimpleTypeDefinition * xsSimpleTypeDef)
+void PrintSchema::processSimpleTypeDefinition(std::string pre,
+    bool excludeBuiltIn, XSSimpleTypeDefinition * xsSimpleTypeDef)
 {
   XSTypeDefinition *xsBaseTypeDef = xsSimpleTypeDef->getBaseType();
   std::cout << pre << "Base:\t\t\t";
@@ -131,11 +136,18 @@ void PrintSchema::processSimpleTypeDefinition(std::string pre, bool excludeBuilt
     std::cout << pre << "Facets:\n";
     
     if (facets & XSSimpleTypeDefinition::FACET_LENGTH)
-      std::cout << pre << "\tLength:\t\t" << StrX(xsSimpleTypeDef->getLexicalFacetValue(XSSimpleTypeDefinition::FACET_LENGTH)) << std::endl;
+      std::cout << pre << "\tLength:\t\t" << StrX(xsSimpleTypeDef->
+          getLexicalFacetValue(XSSimpleTypeDefinition::FACET_LENGTH)) <<
+          std::endl;
     if (facets & XSSimpleTypeDefinition::FACET_MINLENGTH)
-      std::cout << pre << "\tMinLength:\t" << StrX(xsSimpleTypeDef->getLexicalFacetValue(XSSimpleTypeDefinition::FACET_MINLENGTH)) << std::endl;
+      std::cout << pre << "\tMinLength:\t" << StrX(xsSimpleTypeDef->
+          getLexicalFacetValue(XSSimpleTypeDefinition::FACET_MINLENGTH)) <<
+          std::endl;
     if (facets & XSSimpleTypeDefinition::FACET_MAXLENGTH)
-      std::cout << pre << "\tMaxLength:\t" << StrX(xsSimpleTypeDef->getLexicalFacetValue(XSSimpleTypeDefinition::FACET_MAXLENGTH)) << std::endl;
+      std::cout << pre << "\tMaxLength:\t" << StrX(xsSimpleTypeDef->
+          getLexicalFacetValue(XSSimpleTypeDefinition::FACET_MAXLENGTH)) <<
+          std::endl;
+
     if (facets & XSSimpleTypeDefinition::FACET_PATTERN)
     {
       StringList *lexicalPatterns = xsSimpleTypeDef->getLexicalPattern();
@@ -150,19 +162,34 @@ void PrintSchema::processSimpleTypeDefinition(std::string pre, bool excludeBuilt
       }
     }
     if (facets & XSSimpleTypeDefinition::FACET_WHITESPACE)
-      std::cout << pre << "\tWhitespace:\t\t" << StrX(xsSimpleTypeDef->getLexicalFacetValue(XSSimpleTypeDefinition::FACET_WHITESPACE)) << std::endl;
+      std::cout << pre << "\tWhitespace:\t\t" << StrX(xsSimpleTypeDef->
+          getLexicalFacetValue(XSSimpleTypeDefinition::FACET_WHITESPACE)) <<
+          std::endl;
     if (facets & XSSimpleTypeDefinition::FACET_MAXINCLUSIVE)
-      std::cout << pre << "\tMaxInclusive:\t" << StrX(xsSimpleTypeDef->getLexicalFacetValue(XSSimpleTypeDefinition::FACET_MAXINCLUSIVE)) << std::endl;
+      std::cout << pre << "\tMaxInclusive:\t" << StrX(xsSimpleTypeDef->
+          getLexicalFacetValue(XSSimpleTypeDefinition::FACET_MAXINCLUSIVE)) <<
+          std::endl;
     if (facets & XSSimpleTypeDefinition::FACET_MAXEXCLUSIVE)
-      std::cout << pre << "\tMaxExclusive:\t" << StrX(xsSimpleTypeDef->getLexicalFacetValue(XSSimpleTypeDefinition::FACET_MAXEXCLUSIVE)) << std::endl;
+      std::cout << pre << "\tMaxExclusive:\t" << StrX(xsSimpleTypeDef->
+          getLexicalFacetValue(XSSimpleTypeDefinition::FACET_MAXEXCLUSIVE)) <<
+          std::endl;
     if (facets & XSSimpleTypeDefinition::FACET_MINEXCLUSIVE)
-      std::cout << pre << "\tMinExclusive:\t" << StrX(xsSimpleTypeDef->getLexicalFacetValue(XSSimpleTypeDefinition::FACET_MINEXCLUSIVE)) << std::endl;
+      std::cout << pre << "\tMinExclusive:\t" << StrX(xsSimpleTypeDef->
+          getLexicalFacetValue(XSSimpleTypeDefinition::FACET_MINEXCLUSIVE)) <<
+          std::endl;
     if (facets & XSSimpleTypeDefinition::FACET_MININCLUSIVE)
-      std::cout << pre << "\tMinInclusive:\t" << StrX(xsSimpleTypeDef->getLexicalFacetValue(XSSimpleTypeDefinition::FACET_MININCLUSIVE)) << std::endl;
+      std::cout << pre << "\tMinInclusive:\t" << StrX(xsSimpleTypeDef->
+          getLexicalFacetValue(XSSimpleTypeDefinition::FACET_MININCLUSIVE)) <<
+          std::endl;
     if (facets & XSSimpleTypeDefinition::FACET_TOTALDIGITS)
-      std::cout << pre << "\tTotalDigits:\t" << StrX(xsSimpleTypeDef->getLexicalFacetValue(XSSimpleTypeDefinition::FACET_TOTALDIGITS)) << std::endl;
+      std::cout << pre << "\tTotalDigits:\t" << StrX(xsSimpleTypeDef->
+          getLexicalFacetValue(XSSimpleTypeDefinition::FACET_TOTALDIGITS)) <<
+          std::endl;
     if (facets & XSSimpleTypeDefinition::FACET_FRACTIONDIGITS)
-      std::cout << pre << "\tFractionDigits:\t" << StrX(xsSimpleTypeDef->getLexicalFacetValue(XSSimpleTypeDefinition::FACET_FRACTIONDIGITS)) << std::endl;
+      std::cout << pre << "\tFractionDigits:\t" << StrX(xsSimpleTypeDef->
+          getLexicalFacetValue(XSSimpleTypeDefinition::FACET_FRACTIONDIGITS)) <<
+          std::endl;
+
     if (facets & XSSimpleTypeDefinition::FACET_ENUMERATION)
     {
       StringList *lexicalEnums = xsSimpleTypeDef->getLexicalEnumeration();
@@ -211,7 +238,8 @@ std::string PrintSchema::getCompositorTypeConnector(XSModelGroup::COMPOSITOR_TYP
   }
 }
 
-void PrintSchema::processParticle(std::string pre, bool excludeBuiltIn, XSParticle *xsParticle)
+void PrintSchema::processParticle(std::string pre, bool excludeBuiltIn,
+    XSParticle *xsParticle)
 {
   if (!xsParticle)
   {
@@ -254,8 +282,8 @@ void PrintSchema::processParticle(std::string pre, bool excludeBuiltIn, XSPartic
 }
 
   
-void PrintSchema::processComplexTypeDefinition(std::string pre, bool excludeBuiltIn,
-        XSComplexTypeDefinition *xsComplexTypeDef)
+void PrintSchema::processComplexTypeDefinition(std::string pre,
+    bool excludeBuiltIn, XSComplexTypeDefinition *xsComplexTypeDef)
 {
   XSTypeDefinition *xsBaseTypeDef = xsComplexTypeDef->getBaseType();
   if (xsBaseTypeDef)
@@ -315,7 +343,8 @@ void PrintSchema::processTypeDefinitions(bool excludeBuiltIn,
   }
 }
 
-void PrintSchema::printTypeRef(std::string pre, bool excludeBuiltIn, XSTypeDefinition *xsTypeDef)
+void PrintSchema::printTypeRef(std::string pre, bool excludeBuiltIn,
+    XSTypeDefinition *xsTypeDef)
 {
     if ( xsTypeDef->getAnonymous() )
     {
@@ -336,7 +365,8 @@ void PrintSchema::printTypeRef(std::string pre, bool excludeBuiltIn, XSTypeDefin
     std::cout << std::endl;
 }
 
-void PrintSchema::processTypeDefinition(std::string pre, bool excludeBuiltIn, XSTypeDefinition *xsTypeDef)
+void PrintSchema::processTypeDefinition(std::string pre, bool excludeBuiltIn,
+    XSTypeDefinition *xsTypeDef)
 {
     printBasic(pre, excludeBuiltIn, xsTypeDef, "Type Definition");
 

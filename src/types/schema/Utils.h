@@ -18,13 +18,7 @@
 
 #include <set>
 
-//#include "xercesIncludes.h"
-//#include "types/schema/SchemaValidatorFilter.h"
-//#include "types/schema/StrX.h"
-//#include "types/schema/ValidationEventHandler.h"
-//#include "store/api/item.h"
 #include "common/shared_types.h"
-//#include "types/root_typemanager.h"
 
 namespace zorba
 {

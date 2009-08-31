@@ -23,10 +23,7 @@
 #ifdef CYGWIN
 #undef WIN32
 #endif
-//#include "xercesIncludes.h"
-//#include <zorbaerrors/error_manager.h>
-//#include "zorbaerrors/errors.h"
-//#include <compiler/parser/query_loc.h>
+
 
 
 namespace zorba
@@ -42,7 +39,7 @@ public:
 
   bool getSawErrors() const
   {
-    return _sawErrors;
+    return theSawErrors;
   }
   
   void warning(const XERCES_CPP_NAMESPACE::SAXParseException& exc);
@@ -51,8 +48,8 @@ public:
   void resetErrors();
   
 private:
-  const QueryLoc& _loc;
-  bool            _sawErrors;
+  const QueryLoc& theQueryLoc;
+  bool            theSawErrors;
 };
 
 } // namespace xqp

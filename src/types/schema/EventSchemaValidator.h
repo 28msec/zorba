@@ -26,11 +26,8 @@
 #include "common/common.h"
 #ifndef ZORBA_NO_XMLSCHEMA
 
-//#include "types/schema/SchemaValidatorFilter.h"
-//#include "xercesIncludes.h"
-//#include "types/schema/StrX.h"
+
 #include "types/schema/ValidationEventHandler.h"
-//#include "store/api/item.h"
 #include "common/shared_types.h"
 
 namespace XERCES_CPP_NAMESPACE {
@@ -48,10 +45,10 @@ namespace zorba
 class EventSchemaValidator
 {
 private:
-  TypeManager                            * _typeManager;
-  SchemaValidatorFilter                  * _schemaValidatorFilter;
-  XERCES_CPP_NAMESPACE::GrammarResolver  * _grammarResolver;
-  ValidationEventHandler                   _validationEventHandler;
+  TypeManager                            * theTypeManager;
+  SchemaValidatorFilter                  * theSchemaValidatorFilter;
+  XERCES_CPP_NAMESPACE::GrammarResolver  * theGrammarResolver;
+  ValidationEventHandler                   theValidationEventHandler;
     
 public:
   EventSchemaValidator(
@@ -84,13 +81,13 @@ public:
   // Must be called only after all attr() have been sent and after getTypeQName() has been called
   std::list<AttributeValidationInfo*>* getAttributeList()
   {
-    return _validationEventHandler.getAttributeList();
+    return theValidationEventHandler.getAttributeList();
   }
     
   // Must be called only after text() has been called
   TextValidationInfo* getTextInfo()
   {
-    return _validationEventHandler.getTextInfo();
+    return theValidationEventHandler.getTextInfo();
   }
 
   // for validating content of a schema type

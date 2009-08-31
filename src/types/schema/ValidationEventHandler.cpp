@@ -46,12 +46,12 @@ AttributeValidationInfo::AttributeValidationInfo(
   //          << StrX(localName) << "@" << StrX(uri) << " = " << StrX(value)
   //          << "  T: " << StrX(typeName) << "@" << StrX(typeURI) << "\n";
 
-  _prefix    = new xqpStringStore(prefix == NULL ? "" : StrX(prefix).localForm());
-  _uri       = new xqpStringStore(uri == NULL ? "" : StrX(uri).localForm());
-  _localName = new xqpStringStore(localName == NULL ? "" : StrX(localName).localForm());
-  _value     = new xqpStringStore(StrX(value).localForm());
-  _typeURI   = new xqpStringStore(StrX(typeURI).localFormOrDefault(Schema::XSD_NAMESPACE));
-  _typeName  = new xqpStringStore(StrX(typeName).localFormOrDefault("untypedAtomic"));
+  thePrefix    = new xqpStringStore(prefix == NULL ? "" : StrX(prefix).localForm());
+  theUri       = new xqpStringStore(uri == NULL ? "" : StrX(uri).localForm());
+  theLocalName = new xqpStringStore(localName == NULL ? "" : StrX(localName).localForm());
+  theValue     = new xqpStringStore(StrX(value).localForm());
+  theTypeURI   = new xqpStringStore(StrX(typeURI).localFormOrDefault(Schema::XSD_NAMESPACE));
+  theTypeName  = new xqpStringStore(StrX(typeName).localFormOrDefault("untypedAtomic"));
 }
 
 
