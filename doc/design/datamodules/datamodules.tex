@@ -1,0 +1,149 @@
+\documentclass[]{article}
+
+% Use utf-8 encoding for foreign characters
+% \usepackage[utf8]{inputenc}
+
+% Setup for fullpage use
+\usepackage{fullpage}
+\usepackage{ebnf}
+
+% Surround parts of graphics with box
+\usepackage{boxedminipage}
+
+% Package for including code in the document
+\usepackage{listings}
+
+% If you want to generate a toc for each chapter (use with book)
+\usepackage{minitoc}
+
+% This is now the recommended way for checking for PDFLaTeX:
+\usepackage{ifpdf}
+
+\ifpdf
+\usepackage[pdftex]{graphicx}
+\else
+\usepackage{graphicx}
+\fi
+\title{Data Modules: Design and Implementation}
+\author{  }
+
+\date{\today}
+
+\begin{document}
+
+\ifpdf
+\DeclareGraphicsExtensions{.pdf, .jpg, .tif}
+\else
+\DeclareGraphicsExtensions{.eps, .jpg}
+\fi
+
+\maketitle
+
+
+%%\begin{abstract}
+%%TODO
+%%\end{abstract}
+
+\section{Introduction}
+TODO 
+
+
+\section{Extensions to XQuery 1.1}
+Data access is wrapped into special \textit{Library Modules}. These are declared as \textit{Data Modules}:
+
+\vspace{0.25cm}
+\begin{tabular}{l c p{12cm}}
+{\tt LibraryModule}  & ::= & {\tt ( ModuleDecl | DataModuleDecl ) Prolog} \\
+{\tt DataModuleDecl} & ::= & {\tt "datamodule" "namespace" NCName "=" URILiteral\ Separator}
+\end{tabular}
+
+\vspace{0.5cm}
+\noindent
+Withing a \textit{Data Module}, the \textit{Prolog} can be extended by the \textit{Data Module} components \textit{Collection Declaration}, \textit{Index Declaration} and \textit{Integrity Constraint Declaration}:
+\par
+\vspace{0.25cm}
+\begin{tabular}{l c p{12cm}}
+{\tt Prolog}           & ::= & {\tt "((DefaultNamespaceDecl\ |\ Setter\ |\ NamespaceDecl\ |\ Import)\ Separator)*\ DataModuleProlog ((VarDecl\ |\ ContextItemDecl\ |\ FunctionDecl\ |\ OptionDecl)\ Separator)*} \\
+{\tt DataModuleProlog} & ::= & {\tt "((CollectionDecl|IndexDecl|ICDecl) Separator)*} 
+\end{tabular}
+
+\subsection{Collection Declaration}
+\begin{tabular}{l c p{12cm}}
+{\tt CollectionDecl} & ::= & {\tt "declare" "collection" URILiteral ("as" KindTest)?}
+\end{tabular}
+
+\vspace{0.5cm}
+\noindent
+[Definition: A collection declaration adds a pair $\left\langle  URILiteral\footnote{Could this also be a QName?}, SequenceType \right\rangle$ to the set of statically known collections. The SequenceType is a sequence of items with the defined KindTest\footnote{Is "as" missleading? It is used for SequenceType in the rest of the spec}. If no KindTest is defined, the default is node().]
+
+\paragraph{Errors}
+\begin{itemize}
+  \item \textbf{err:TBD}: It is a static error if multiple collection declarations specify the same URI.
+  \item \textbf{err:TBD}: It is a static error if the collection declaration URI is a zero-length string.
+  \item \textbf{err:TBD}: It is a static error if a collection declaration is in a module other than DataModule.
+\end{itemize}
+
+\paragraph{TODOs}
+\begin{itemize}
+  \item Maybe, we have to change the semantics of statically known collections, such that it can be determined if a collection is available (needed for index declaration and integrity constraints).
+\end{itemize}
+
+\paragraph{Discussion URILiteral vs. QName}
+\begin{itemize}
+  \item QName avoids the declaration of the same collection in two different modules.
+  \item URILiteral is conformant with the rest of the spec and allows to use the statically known collections from the static context.
+  \item QName allows variable-like access (no fn:collection?)
+  \item QName allows to determine statically if a collection is declared.
+\end{itemize}
+
+\subsection{Index Declaration}
+\begin{tabular}{l c p{12cm}}
+{\tt IndexDecl}   & ::= & {\tt "declare" ("unique")? ("btree" | "hash")? URILiteral "on" ExprSingle "by" "(" ( IndexColumn ( "," IndexColumn )* ) ")"} \\
+{\tt IndexColumn} & ::= & {\tt ExprSingle (TypeDeclaration) ("collation" URILiteral)}
+\end{tabular}
+
+
+\subsection{Integrity Constraint Declaration}
+\begin{tabular}{l c p{12cm}}
+{\tt ICDecl}               & ::= & {\tt "declare" ("unchecked")? "integrity" "constraint" URILiteral (ICCollection | ICNode | ICForeignKey)} \\
+{\tt ICCollection}         & ::= & {\tt "on" "collection" URILiteral (ICCollSequence|ICCollNode)} \\
+{\tt ICCollSequence}       & ::= & {\tt "\$" QName "check" (ICCollSequenceEBV|ICCollSequenceUnique)} \\
+{\tt ICCollSequenceEBV}    & ::= & {\tt  ExprSingle} \\
+{\tt ICCollSequenceUnique} & ::= & {\tt "unique" "keys" "(" Expr ")"} \\
+{\tt ICCollNode}           & ::= & {\tt "on" "node" "\$" QName "of" "type" KindTest "check" ExprSingle} \\
+{\tt ICForeignKey}         & ::= & {\tt "foreign" "key" ICForeignKeySource ICForeignKeyTarget} \\
+{\tt ICForeignKeySource}   & ::= & {\tt "from" ICForeignKeyValues} \\
+{\tt ICForeignKeyTarget}   & ::= & {\tt "to" ICForeignKeyValues} \\
+{\tt ICForeignKeyValues}   & ::= & {\tt "collection" URILiteral "node" "\$" QName "keys" "(" Expr ")"} 
+\end{tabular}
+
+
+%%\section{Implementation in Zorba}
+%%\paragraph{Stuff to delete}
+%%\begin{itemize}
+%%  \item delete collection and create collection
+%%\end{itemize}
+%%
+%%\subsection{Parser}
+%%\begin{itemize}
+%%  \item extending parser/scanner to parse library module and declare collection
+%%\end{itemize}
+%%
+%%\subsection{Translator}
+%%\begin{itemize}
+%%  \item collection declaration and functions to update collections are only usable in data modules => must be checked
+%%  \item 
+%%\end{itemize}
+%%
+%%\subsection{Context}
+%%\begin{itemize}
+%%  \item implementation of collection access similar to variable access (maybe)
+%%  \item lazy creation of collection before they are accessed the first time
+%%\end{itemize}
+%%
+%%\subsection{Runtime}
+%%\begin{itemize}
+%%  \item adopt functions to update collections (maybe) 
+%%\end{itemize}
+
+\end{document}
