@@ -73,7 +73,7 @@ Withing a \textit{Data Module}, the \textit{Prolog} can be extended by the \text
 
 \vspace{0.5cm}
 \noindent
-[Definition: A collection declaration adds a pair $\left\langle  URILiteral\footnote{Could this also be a QName?}, SequenceType \right\rangle$ to the set of statically known collections. The SequenceType is a sequence of items with the defined KindTest\footnote{Is "as" missleading? It is used for SequenceType in the rest of the spec}. If no KindTest is defined, the default is node().]
+[Definition: A collection declaration adds a pair $\left\langle  URILiteral, SequenceType \right\rangle$ to the set of statically known collections. The SequenceType is a sequence of items with the defined KindTest\footnote{Is "as" missleading? It is used for SequenceType in the rest of the spec}. If no KindTest is defined, the default is node().]
 
 \paragraph{Errors}
 \begin{itemize}
@@ -87,17 +87,9 @@ Withing a \textit{Data Module}, the \textit{Prolog} can be extended by the \text
   \item Maybe, we have to change the semantics of statically known collections, such that it can be determined if a collection is available (needed for index declaration and integrity constraints).
 \end{itemize}
 
-\paragraph{Discussion URILiteral vs. QName}
-\begin{itemize}
-  \item QName avoids the declaration of the same collection in two different modules.
-  \item URILiteral is conformant with the rest of the spec and allows to use the statically known collections from the static context.
-  \item QName allows variable-like access (no fn:collection?)
-  \item QName allows to determine statically if a collection is declared.
-\end{itemize}
-
 \subsection{Index Declaration}
 \begin{tabular}{l c p{12cm}}
-{\tt IndexDecl}   & ::= & {\tt "declare" ("unique")? ("btree" | "hash")? URILiteral "on" ExprSingle "by" "(" ( IndexColumn ( "," IndexColumn )* ) ")"} \\
+{\tt IndexDecl}   & ::= & {\tt "declare" ("unique")? ("ordered" | "unordered")? "index" URILiteral "on" ExprSingle "by" "(" ( IndexColumn ( "," IndexColumn )* ) ")"} \\
 {\tt IndexColumn} & ::= & {\tt ExprSingle (TypeDeclaration) ("collation" URILiteral)}
 \end{tabular}
 
