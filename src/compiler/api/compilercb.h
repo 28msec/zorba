@@ -23,7 +23,7 @@
 
 #include "common/shared_types.h"
 
-//#include "context/static_context.h"
+#include "context/static_context.h"
 
 #include "zorbaserialization/serialization_engine.h"
 
