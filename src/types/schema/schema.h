@@ -18,11 +18,12 @@
 
 #include "common/common.h"
 
+#ifndef ZORBA_NO_XMLSCHEMA
 #include <xercesc/sax/EntityResolver.hpp>
 #ifdef CYGWIN
 #undef WIN32
 #endif
-
+#endif // ZORBA_NO_XMLSCHEMA 
 
 #include <zorba/api_shared_types.h>
 #include "common/shared_types.h"
@@ -47,8 +48,8 @@ namespace XERCES_CPP_NAMESPACE {
 namespace zorba
 {
 
-#ifndef ZORBA_NO_XMLSCHEMA
 
+#ifndef ZORBA_NO_XMLSCHEMA
 /*******************************************************************************
 
 ********************************************************************************/
@@ -67,8 +68,8 @@ public:
         const XMLCh* const publicId,
         const XMLCh* const systemId);
 };        
+#endif // ZORBA_NO_XMLSCHEMA
 
-#endif
 
 
 /*******************************************************************************
@@ -85,7 +86,7 @@ private:
 #ifndef ZORBA_NO_XMLSCHEMA
   XERCES_CPP_NAMESPACE::XMLGrammarPool * theGrammarPool;
   serializable_hashmap<xqtref_t>       * theUdTypesCache;
-#endif
+#endif // ZORBA_NO_XMLSCHEMA
 
 public:
     static void initialize();
@@ -98,6 +99,7 @@ public:
     virtual ~Schema();
 
     void printXSDInfo(bool excludeBuiltIn = true);
+
 
 #ifndef ZORBA_NO_XMLSCHEMA
 
@@ -136,7 +138,7 @@ public:
         const TypeManager* manager,
         const store::Item* qname);
 
-#endif
+#endif // ZORBA_NO_XMLSCHEMA
 
     // user defined simple types, i.e. Atomic, List or Union Types
   bool parseUserSimpleTypes(
@@ -185,7 +187,6 @@ public:
 private:
 
 #ifndef ZORBA_NO_XMLSCHEMA
-
   XERCES_CPP_NAMESPACE::XSTypeDefinition* getTypeDefForElement(const store::Item* qname);
 
   XERCES_CPP_NAMESPACE::XSTypeDefinition* getTypeDefForAttribute(const store::Item* qname);
@@ -207,11 +208,15 @@ private:
   void addAnonymousTypeToCache(const TypeManager* typeManager,
                                XERCES_CPP_NAMESPACE::XSTypeDefinition* typeDef);
   void addTypeToCache(xqtref_t itemXQType);
+#endif // ZORBA_NO_XMLSCHEMA
 
-#endif
+
 public:
+
   SERIALIZABLE_CLASS(Schema)
+
   Schema(::zorba::serialization::Archiver &ar);
+
   void serialize(::zorba::serialization::Archiver &ar);
 };
 

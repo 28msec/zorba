@@ -306,6 +306,8 @@ bool NodeXQType::is_subtype(const NodeXQType& supertype) const
         ZORBA_ASSERT(schema != NULL);
 
         store::Item_t headName;
+
+#ifndef ZORBA_NO_XMLSCHEMA
         schema->getSubstitutionHeadForElement(m_node_name.getp(), headName);
 
         while (headName != NULL)
@@ -317,6 +319,7 @@ bool NodeXQType::is_subtype(const NodeXQType& supertype) const
 
           schema->getSubstitutionHeadForElement(headName.getp(), headName);
         }
+#endif // ZORBA_NO_XMLSCHEMA
 
         if (headName == NULL)
           return false;
