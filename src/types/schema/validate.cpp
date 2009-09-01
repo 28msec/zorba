@@ -429,13 +429,13 @@ void Validator::processChildren(
 #if 0
         if ( typeQName.getp() && xqType.getp() )
         {
-          cout << "     - text: " << childStringValue << "  T: " << 
+          cout << "     - text: '" << childStringValue << "' T: " << 
             typeQName->getLocalName()->c_str() << "\n"; cout.flush();
           cout << "        xqT: " << xqType->toString() << "  content_kind: " << 
             xqType->content_kind() << " tKind:" << xqType->type_kind() << " \n"; cout.flush();
         }
         else
-          cout << "     - text2: " << childStringValue << "  tQN: " << typeQName.getp() << 
+          cout << "     - text2: '" << childStringValue << "' tQN: " << typeQName.getp() << 
             " xqT:" << xqType.getp() << "\n"; cout.flush();
 #endif
         
@@ -456,8 +456,11 @@ void Validator::processChildren(
           else
             GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent, typedValues);
         }
-        else if ( xqType!=NULL && xqType->content_kind()==XQType::MIXED_CONTENT_KIND )
+        else /*if ( xqType!=NULL && 
+                  (xqType->content_kind()==XQType::MIXED_CONTENT_KIND || 
+                  xqType->content_kind()==XQType::ELEMENT_ONLY_CONTENT_KIND ))*/
         {
+          // if text not valid the schemaValidator should have already thrown an error
           GENV_ITEMFACTORY->createTextNode(validatedTextNode,
                                            parent,
                                            childIndex,
