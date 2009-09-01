@@ -21,7 +21,7 @@
 
 #include "system/globalenv.h"
 
-#include "types/schema/Utils.h"
+#include "types/schema/revalidateUtils.h"
 
 #include "compiler/api/compilercb.h"
 

@@ -1057,7 +1057,7 @@ void Schema::checkForAnonymousTypes(const TypeManager* typeManager)
     XSElementDeclaration* elemDecl = (XSElementDeclaration*)(elemDefs->item(i));
     checkForAnonymousTypesInType(typeManager, elemDecl->getTypeDefinition());
   }
-
+  
   XSNamedMap<XSObject> * attrDefs =
       model->getComponents(XSConstants::ATTRIBUTE_DECLARATION);
   for( uint i = 0; i<attrDefs->getLength(); i++)
@@ -1074,14 +1074,17 @@ void Schema::checkForAnonymousTypes(const TypeManager* typeManager)
     XSAttributeGroupDefinition* attrGroupDef =
         (XSAttributeGroupDefinition*)(attrGroupDefs->item(i));
     XSAttributeUseList* xsAttributeUseList = attrGroupDef->getAttributeUses();
-    for (unsigned i = 0; i < xsAttributeUseList->size(); i++)
+    if (xsAttributeUseList)
     {
-      XSAttributeDeclaration* attrDecl = xsAttributeUseList->elementAt(i)->
+      for (unsigned i = 0; i < xsAttributeUseList->size(); i++)
+      {
+        XSAttributeDeclaration* attrDecl = xsAttributeUseList->elementAt(i)->
           getAttrDeclaration();
-      checkForAnonymousTypesInType(typeManager, attrDecl->getTypeDefinition());
+        checkForAnonymousTypesInType(typeManager, attrDecl->getTypeDefinition());
+      }
     }
   }
-
+  
   XSNamedMap<XSObject> * modelGroupDefs =
       model->getComponents(XSConstants::MODEL_GROUP_DEFINITION);
   for( uint i = 0; i<modelGroupDefs->getLength(); i++)
@@ -1090,10 +1093,13 @@ void Schema::checkForAnonymousTypes(const TypeManager* typeManager)
         (XSModelGroupDefinition*)modelGroupDefs->item(i);
     XSModelGroup *xsModelGroup = modelGroupDef->getModelGroup();
     XSParticleList *xsParticleList = xsModelGroup->getParticles();
-    for (unsigned i = 0; i < xsParticleList->size(); i++)
+    if (xsParticleList)
     {
-      checkForAnonymousTypesInParticle(typeManager,
-          xsParticleList->elementAt(i));
+      for (unsigned i = 0; i < xsParticleList->size(); i++)
+      {
+        checkForAnonymousTypesInParticle(typeManager,
+                                         xsParticleList->elementAt(i));
+      }
     }
   }
 }

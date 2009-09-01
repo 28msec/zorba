@@ -45,7 +45,7 @@
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
 
-#include "types/schema/Utils.h"
+#include "types/schema/revalidateUtils.h"
 #include "types/typemanagerimpl.h"
 #include "types/root_typemanager.h"
 

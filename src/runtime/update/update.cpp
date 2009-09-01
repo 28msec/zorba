@@ -19,7 +19,7 @@
 #include "system/globalenv.h"
 
 #include "types/root_typemanager.h"
-#include "types/schema/Utils.h"
+#include "types/schema/revalidateUtils.h"
 
 #include "context/static_context.h"
 

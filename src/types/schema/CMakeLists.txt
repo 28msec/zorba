@@ -23,7 +23,7 @@ IF (NOT ZORBA_NO_XMLSCHEMA)
         SchemaValidatorFilter.cpp
         StrX.cpp
         ValidationEventHandler.cpp
-        Utils.cpp
+        revalidateUtils.cpp
         XercesParseUtils.cpp
         XercSchemaValidator.cpp
         )
