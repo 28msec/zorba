@@ -71,8 +71,8 @@ xqtref_t expr::return_type_impl(static_context *sctx)
 
 xqtref_t const_expr::return_type_impl(static_context *sctx)
 {
-  xqtref_t type = sctx->get_typemanager()->
-    create_named_type(val->getType(), TypeConstants::QUANT_ONE);
+  xqtref_t type = sctx->get_typemanager()->create_value_type(val.getp());
+
   return type;
 }
 
