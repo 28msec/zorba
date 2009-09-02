@@ -481,14 +481,14 @@ protected:
 
   set<string>                          xquery_fns_def_dot;
 
-  const function                     * op_concatenate;
-  const function                     * op_enclosed_expr;
-  const function                     * op_or;
-  const function                     * fn_data;
-  const function                     * ctx_decl; 
-  const function                     * ctx_set;
-  const function                     * ctx_get;
-  const function                     * ctx_exists;
+  function                           * op_concatenate;
+  function                           * op_enclosed_expr;
+  function                           * op_or;
+  function                           * fn_data;
+  function                           * ctx_decl; 
+  function                           * ctx_set;
+  function                           * ctx_get;
+  function                           * ctx_exists;
   
 
 TranslatorImpl(
@@ -7947,7 +7947,7 @@ void end_visit (const AssignExpr& v, void* visit_state)
   TRACE_VISIT_OUT ();
 
   // TODO: add treat_expr to check var type
-  const function *ctx_set = LOOKUP_OP2 ("ctxvar-assign");
+  function* ctx_set = LOOKUP_OP2 ("ctxvar-assign");
   varref_t ve = lookup_ctx_var (v.get_varname (), loc);
   if (ve->get_kind() != var_expr::local_var && ve->get_kind() != var_expr::prolog_var)
     ZORBA_ERROR_LOC (XPST0003, loc);
