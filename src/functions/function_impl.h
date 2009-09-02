@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_FUNCTION_IMPL_H
-#define ZORBA_FUNCTION_IMPL_H
+#ifndef ZORBA_FUNCTIONS_FUNCTION_IMPL_H
+#define ZORBA_FUNCTIONS_FUNCTION_IMPL_H
 
 #include "system/globalenv.h"
 
@@ -25,17 +25,20 @@
 
 #include "context/static_context.h"
 
+#ifndef NDEBUG
+
 #include "util/properties.h"
 
-#define ITEM_FACTORY (*(GENV.getStore().getItemFactory()))
-
-#ifndef NDEBUG
 #define DEBUG_FN_DECL( fname, cnt )                                     \
   if (Properties::instance ()->dumpLib ())                              \
     std::cout << "Bound function " << fname->getStringValue () << "/" << cnt << std::endl;
+
 #else
+
 #define DEBUG_FN_DECL( fname, cnt ) (void) 0
+
 #endif
+
 
 #define DECL(sctx, type, sig)                                           \
   do {                                                                  \
@@ -50,20 +53,27 @@
 
 #define COMPUTE_ANNOTATION_DECL()                              \
 void compute_annotation(AnnotationHolder* parent,              \
-                        std::vector<AnnotationHolder *> &kids, \
+                        std::vector<AnnotationHolder *>& kids, \
                         Annotation::key_t k) const;
 
 #define CODEGEN_DECL()                                    \
 PlanIter_t codegen(CompilerCB* cb,                        \
-                   short sctx,                            \
+                   static_context* sctx,                  \
                    const QueryLoc& loc,                   \
                    std::vector<PlanIter_t>& argv,         \
                    AnnotationHolder& ann) const;          \
 
+#define CODEGEN_DEF(class)                                \
+PlanIter_t class::codegen(CompilerCB* aCb,                \
+                          static_context* aSctx,          \
+                          const QueryLoc& aLoc,           \
+                          std::vector<PlanIter_t>& aArgs, \
+                          AnnotationHolder& aAnn) const
 
-#define DEFAULT_CODEGEN(Iter)                             \
+
+#define DEFAULT_NARY_CODEGEN(Iter)                        \
 PlanIter_t codegen(CompilerCB* /* cb */,                  \
-                   short sctx,                            \
+                   static_context* sctx,                  \
                    const QueryLoc& loc,                   \
                    std::vector<PlanIter_t>& argv,         \
                    AnnotationHolder &/*ann*/) const       \
@@ -72,14 +82,36 @@ PlanIter_t codegen(CompilerCB* /* cb */,                  \
 }
 
 
-#define DEFAULT_CODEGEN_BINARY(Iter)                      \
+#define DEFAULT_BINARY_CODEGEN(Iter)                      \
 PlanIter_t codegen(CompilerCB* /* cb */,                  \
-                   short sctx,                            \
+                   static_context* sctx,                  \
                    const QueryLoc& loc,                   \
                    std::vector<PlanIter_t>& argv,         \
                    AnnotationHolder &/*ann*/) const       \
 {                                                         \
   return new Iter (sctx, loc, argv[0], argv[1]);          \
+}
+
+
+#define DEFAULT_UNARY_CODEGEN(Iter)                       \
+PlanIter_t codegen(CompilerCB* /* cb */,                  \
+                   static_context* sctx,                  \
+                   const QueryLoc& loc,                   \
+                   std::vector<PlanIter_t>& argv,         \
+                   AnnotationHolder &/*ann*/) const       \
+{                                                         \
+  return new Iter (sctx, loc, argv[0]);                   \
+}
+
+
+#define DEFAULT_NOARY_CODEGEN(Iter)                       \
+PlanIter_t codegen(CompilerCB* /* cb */,                  \
+                   static_context* sctx,                  \
+                   const QueryLoc& loc,                   \
+                   std::vector<PlanIter_t>& argv,         \
+                   AnnotationHolder &/*ann*/) const       \
+{                                                         \
+  return new Iter (sctx, loc);                            \
 }
 
 
@@ -91,7 +123,7 @@ static inline store::Item_t createQName(
     const char *local)
 {
   store::Item_t res;
-  ITEM_FACTORY.createQName(res, ns, pre, local);
+  GENV_ITEMFACTORY->createQName(res, ns, pre, local);
   return res;
 }
 
@@ -101,7 +133,7 @@ template <class Iter> class function_impl : public function
 public:
   function_impl ( const signature& sig) : function (sig) {}
 
-  DEFAULT_CODEGEN (Iter)
+  DEFAULT_NARY_CODEGEN (Iter)
 };
 
 

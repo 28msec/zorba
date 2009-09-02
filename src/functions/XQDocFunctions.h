@@ -13,24 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef XQDOC_FUNCTIONS_H
-#define XQDOC_FUNCTIONS_H
+#ifndef ZORBA_FUNCTIONS_XQDOC_FUNCTIONS_H
+#define ZORBA_FUNCTIONS_XQDOC_FUNCTIONS_H
 
 #include "common/shared_types.h"
-#include "functions/function.h"
 
-namespace zorba {
 
-class XQDocFunction: public function
+namespace zorba 
 {
-  public:
-    XQDocFunction(const signature& sig): function(sig){}
 
-    PlanIter_t codegen (CompilerCB* cb,
-                        short sctx,
-                        const QueryLoc& loc,
-                        std::vector<PlanIter_t>& argv,
-                        AnnotationHolder &ann) const;
-};
-}//end of namespace
+void populateContext_XQDOC(static_context* sctx);
+
+}
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

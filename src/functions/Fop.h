@@ -13,25 +13,32 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-#ifndef FOP_H
-#define FOP_H
+#ifndef ZORBA_FUNCTIONS_FOP_H
+#define ZORBA_FUNCTIONS_FOP_H
 
 #include "common/shared_types.h"
-#include "functions/function.h"
 
-#include <vector>
+namespace zorba 
+{
 
-namespace zorba {
-	class zorba_fop : public function {
-	public:
-		zorba_fop(const signature& sig) : function(sig) {}
+#ifndef ZORBA_WITH_FOP
 
-		PlanIter_t codegen (CompilerCB* cb,
-                        short sctx,
-      const QueryLoc& loc,
-			std::vector<PlanIter_t>& argv,
-			AnnotationHolder& ann) const;
-	};
+void populateContext_FOP(static_context* sctx)
+{
+}
+
+#else
+
+void populateContext_FOP(static_context* sctx);
+
+#endif
+
 }
 
 #endif // FOP_H
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

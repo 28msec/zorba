@@ -16,15 +16,12 @@
 #ifndef ZORBA_FUNCTIONS_DATETIME_H
 #define ZORBA_FUNCTIONS_DATETIME_H
 
-#include <vector>
-
 #include "common/shared_types.h"
-
 
 namespace zorba
 {
 
-  void populateContext_Datetime(static_context *sctx);
+void populateContext_Datetime(static_context* sctx);
 
 } // namespace zorba
 

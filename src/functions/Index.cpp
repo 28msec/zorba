@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 #include "functions/Index.h"
+#include "functions/function_impl.h"
+
 #include "runtime/indexing/value_index_builder.h"
 #include "runtime/indexing/value_index_probe.h"
 
@@ -22,132 +24,180 @@ namespace zorba
 {
 
 
-zop_createindex::zop_createindex(const signature& sig)
-  :
-  function(sig) 
-{ 
-}
+/******************************************************************************
 
-
-PlanIter_t zop_createindex::codegen(CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+********************************************************************************/
+class zop_createindex : public function 
 {
-  return new CreateValueIndex(sctx, loc, argv[0]);
-}
+public:
+  zop_createindex(const signature& sig) : function(sig) { }
+
+  virtual bool requires_dyn_ctx () const { return true; }
+
+  DEFAULT_UNARY_CODEGEN(CreateValueIndex);
+};
 
 
-zop_dropindex::zop_dropindex(const signature& sig)
-  :
-  function(sig) 
+/******************************************************************************
+
+********************************************************************************/
+class zop_dropindex : public function 
 {
-}
+public:
+  zop_dropindex(const signature& sig) : function(sig) { }
+
+  virtual bool requires_dyn_ctx () const { return true; }
+
+  DEFAULT_UNARY_CODEGEN(DropValueIndex);
+};
 
 
-PlanIter_t zop_dropindex::codegen(CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+/*******************************************************************************
+
+********************************************************************************/
+class zop_buildindex : public function 
 {
-  return new DropValueIndex(sctx, loc, argv[0]);
-}
+public:
+  zop_buildindex(const signature& sig) : function(sig) { }
+
+  virtual bool requires_dyn_ctx () const { return true; }
+
+  PlanIter_t codegen(
+        CompilerCB* /*cb*/,
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        AnnotationHolder& ann) const
+  {
+    ZORBA_ASSERT(false);
+  }
+};
 
 
-zop_buildindex::zop_buildindex(const signature& sig)
-  :
-  function(sig) 
-{ 
-}
+/*******************************************************************************
 
-
-PlanIter_t zop_buildindex::codegen(CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+********************************************************************************/
+class zop_index_session_opener : public function 
 {
-  ZORBA_ASSERT(false);
-}
+public:
+  zop_index_session_opener(const signature& sig) : function(sig) { }
+
+  virtual bool requires_dyn_ctx () const { return true; }
+
+  DEFAULT_UNARY_CODEGEN(ValueIndexInsertSessionOpener);
+};
 
 
-zop_probeindexpoint::zop_probeindexpoint(const signature& sig)
-  :
-  function(sig) 
+/*******************************************************************************
+
+********************************************************************************/
+class zop_index_session_closer : public function 
 {
-}
+public:
+  zop_index_session_closer(const signature& sig) : function(sig) { }
+
+  virtual bool requires_dyn_ctx () const { return true; }
+
+  DEFAULT_UNARY_CODEGEN(ValueIndexInsertSessionCloser);
+};
 
 
-PlanIter_t zop_probeindexpoint::codegen(
-    CompilerCB* /*cb*/,
-    short sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    AnnotationHolder &ann) const
+/*******************************************************************************
+
+********************************************************************************/
+class zop_index_builder : public function 
 {
-  return new ValueIndexPointProbe(sctx, loc, argv);
-}
+public:
+  zop_index_builder(const signature& sig) : function(sig) { }
+
+  virtual bool requires_dyn_ctx () const { return true; }
+
+  DEFAULT_NARY_CODEGEN(ValueIndexBuilder);
+};
 
 
-zop_probeindexrange::zop_probeindexrange(const signature& sig)
-  : 
-  function(sig) 
+/***************************************************************************//**
+  item* probe-index-point(uriExpr     as xs:uri,
+                          column1Expr as anyAtomic?,
+                          ...,
+                          columnNExpr as anyAtomic?)
+********************************************************************************/
+class zop_probeindexpoint : public function 
 {
-}
+public:
+  zop_probeindexpoint(const signature& sig) : function(sig) { }
+
+  virtual bool requires_dyn_ctx () const { return true; }
+
+  DEFAULT_NARY_CODEGEN(ValueIndexPointProbe);
+};
 
 
-PlanIter_t zop_probeindexrange::codegen(
-    CompilerCB* /*cb*/,
-    short sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    AnnotationHolder &ann) const
+/*******************************************************************************
+  item* probe-index-range(uriExpr                  as xs:uri,
+                          range1LowerBoundExpr     as anyAtomic?,
+                          range1UpperBoundExpr     as anyAtomic?,
+                          range1HaveLowerBound     as anyAtomic?,
+                          range1HaveupperBound     as anyAtomic?,
+                          range1LowerBoundIncluded as anyAtomic?,
+                          range1upperBoundIncluded as anyAtomic?,
+                          ....,
+                          rangeNLowerBoundExpr     as anyAtomic?,
+                          rangeNUpperBoundExpr     as anyAtomic?,
+                          rangeNHaveLowerBound     as anyAtomic?,
+                          rangeNHaveupperBound     as anyAtomic?,
+                          rangeNLowerBoundIncluded as anyAtomic?,
+                          rangeNupperBoundIncluded as anyAtomic?,
+********************************************************************************/
+class zop_probeindexrange : public function 
 {
-  return new ValueIndexRangeProbe(sctx, loc, argv);
-}
+public:
+  zop_probeindexrange(const signature& sig) : function(sig) { }
+
+  virtual bool requires_dyn_ctx () const { return true; }
+
+  DEFAULT_NARY_CODEGEN(ValueIndexRangeProbe);
+};
 
 
-zop_index_session_opener::zop_index_session_opener(const signature& sig)
-  :
-  function(sig) 
+
+void populateContext_Index(static_context* sctx)
 {
-}
-
-
-PlanIter_t zop_index_session_opener::codegen(
-    CompilerCB* /*cb*/,
-    short sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    AnnotationHolder &ann) const
-{
-  return new ValueIndexInsertSessionOpener(sctx, loc, argv[0]);
-}
-
-
-zop_index_session_closer::zop_index_session_closer(const signature& sig)
-  :
-  function(sig) 
-{
-}
-
-
-PlanIter_t zop_index_session_closer::codegen(
-    CompilerCB* /*cb*/,
-    short sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    AnnotationHolder &ann) const
-{
-  return new ValueIndexInsertSessionCloser(sctx, loc, argv[0]);
-}
-
-
-zop_index_builder::zop_index_builder(const signature& sig)
-  :
-  function(sig) 
-{
-}
-
-
-PlanIter_t zop_index_builder::codegen(
-    CompilerCB* /*cb*/,
-    short sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    AnnotationHolder &ann) const
-{
-  return new ValueIndexBuilder(sctx, loc, argv);
+DECL(sctx, zop_createindex,
+     (createQName(ZORBA_OPEXTENSIONS_NS,"op-extensions", "create-index"),
+      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_ONE));
+DECL(sctx, zop_dropindex,
+     (createQName(ZORBA_OPEXTENSIONS_NS,"op-extensions", "drop-index"),
+      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_ONE));
+DECL(sctx, zop_buildindex,
+     (createQName(ZORBA_OPEXTENSIONS_NS,"op-extensions", "build-index"),
+      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_ONE));
+DECL(sctx, zop_probeindexpoint,
+     (createQName(ZORBA_OPEXTENSIONS_NS,"op-extensions", "probe-index-point"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      true,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+DECL(sctx, zop_probeindexrange,
+     (createQName(ZORBA_OPEXTENSIONS_NS,"op-extensions", "probe-index-range"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+      true,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+DECL(sctx, zop_index_session_opener,
+     (createQName(XQUERY_FN_NS,"fn", ":index-session-opener"),
+      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_ONE));
+DECL(sctx, zop_index_session_closer,
+     (createQName(XQUERY_FN_NS,"fn", ":index-session-closer"),
+      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_QUESTION));
+DECL(sctx, zop_index_builder,
+     (createQName(XQUERY_FN_NS,"fn", ":index-builder"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      true,
+      GENV_TYPESYSTEM.ITEM_TYPE_QUESTION));
 }
 
 

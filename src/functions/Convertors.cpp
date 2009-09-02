@@ -14,34 +14,74 @@
  * limitations under the License.
  */
 #include "functions/Convertors.h"
+#include "functions/function_impl.h"
 
 #include "runtime/convertors/ConvertorsImpl.h"
 
-namespace zorba {
-//Json
-PlanIter_t
-zorba_json_parse::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+namespace zorba 
 {
-  return new ZorbaJsonParseIterator(sctx, loc, argv);
-}
 
-PlanIter_t
-zorba_json_serialize::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+//Json
+class zorba_json_parse : public function
 {
-  return new ZorbaJsonSerializeIterator(sctx, loc, argv);
-}
+public:
+  zorba_json_parse(const signature& sig): function(sig){}
+
+  DEFAULT_NARY_CODEGEN(ZorbaJsonParseIterator);
+};
+
+
+class zorba_json_serialize : public function
+{
+public:
+  zorba_json_serialize(const signature& sig): function(sig){}
+
+  DEFAULT_NARY_CODEGEN(ZorbaJsonSerializeIterator);
+};
+
 
 //Json ML
-PlanIter_t
-zorba_json_ml_parse::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+class zorba_json_ml_parse : public function
 {
-  return new ZorbaJsonMLParseIterator(sctx, loc, argv);
+public:
+  zorba_json_ml_parse(const signature& sig): function(sig){}
+
+  DEFAULT_NARY_CODEGEN(ZorbaJsonMLParseIterator);
+};
+
+
+class zorba_json_ml_serialize : public function
+{
+public:
+  zorba_json_ml_serialize(const signature& sig): function(sig){}
+
+  DEFAULT_NARY_CODEGEN(ZorbaJsonMLSerializeIterator);
+};
+
+
+void populateContext_JSON(static_context* sctx)
+{
+  DECL(sctx, zorba_json_parse,
+       (createQName(ZORBA_JSON_FN_NS, "fn-zorba-json", "parse"),
+        GENV_TYPESYSTEM.STRING_TYPE_STAR,
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
+
+  DECL(sctx, zorba_json_serialize,
+       (createQName(ZORBA_JSON_FN_NS, "fn-zorba-json", "serialize"),
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+        GENV_TYPESYSTEM.STRING_TYPE_STAR));
+
+  DECL(sctx, zorba_json_ml_parse,
+       (createQName(ZORBA_JSON_ML_FN_NS, "fn-zorba-json-ml", "parse"),
+        GENV_TYPESYSTEM.STRING_TYPE_STAR,
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
+
+  DECL(sctx, zorba_json_ml_serialize,
+       (createQName(ZORBA_JSON_ML_FN_NS, "fn-zorba-json-ml", "serialize"),
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+        GENV_TYPESYSTEM.STRING_TYPE_STAR));
 }
 
-PlanIter_t
-zorba_json_ml_serialize::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new ZorbaJsonMLSerializeIterator(sctx, loc, argv);
-}
+
 }
 /* vim:set ts=2 sw=2: */

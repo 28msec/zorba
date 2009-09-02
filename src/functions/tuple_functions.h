@@ -13,30 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_TUPLE_FUNCTIONS_H
-#define ZORBA_TUPLE_FUNCTIONS_H
+#ifndef ZORBA_FUNCTIONS_TUPLE_FUNCTIONS_H
+#define ZORBA_FUNCTIONS_TUPLE_FUNCTIONS_H
 
-#include <vector>
 #include "common/shared_types.h"
-#include "functions/function.h"
 
-namespace zorba {
 
-class zop_createtuple : public function {
-  public:
-    zop_createtuple(const signature&);
-    PlanIter_t codegen (CompilerCB* cb,
-                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-};
+namespace zorba 
+{
 
-class zop_gettuplefield : public function {
-  public:
-    zop_gettuplefield(const signature&);
-    PlanIter_t codegen (CompilerCB* cb,
-                        short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-};
+void populateContext_Tuples(static_context* sctx);
 
 }
 
 #endif /* ZORBA_TUPLE_FUNCTIONS_H */
 /* vim:set ts=2 sw=2: */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

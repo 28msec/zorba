@@ -14,17 +14,40 @@
  * limitations under the License.
  */
 #include "functions/Email.h"
+#include "functions/function_impl.h"
 
 #include "runtime/email/EmailImpl.h"
 
-using namespace std;
 
-namespace zorba {
-
-PlanIter_t
-zorba_mail::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+namespace zorba 
 {
-  return new ZorbaMailIterator(sctx, loc, argv);
+
+class zorba_mail : public function
+{
+public:
+  zorba_mail(const signature& sig): function(sig){}
+
+  DEFAULT_NARY_CODEGEN(ZorbaMailIterator);
+};
+
+
+void populateContext_Email(static_context* sctx)
+{
+#ifdef ZORBA_WITH_EMAIL
+  DECL(sctx, zorba_mail,
+       (createQName(ZORBA_EMAIL_FN_NS, "fn-zorba-email", "mail"),
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.NONE_TYPE));
+
+  DECL(sctx, zorba_mail,
+       (createQName(ZORBA_EMAIL_FN_NS, "fn-zorba-email", "mail"),
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+        GENV_TYPESYSTEM.NONE_TYPE));
+#endif
 }
 
 }

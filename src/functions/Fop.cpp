@@ -14,9 +14,31 @@
 * limitations under the License.
 */
 #include "functions/Fop.h"
+#include "functions/function_impl.h"
+
 #include "runtime/fop/FopImpl.h"
 
-zorba::PlanIter_t zorba::zorba_fop::codegen(CompilerCB* /*cb*/, short sctx,  const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder& ann ) const
+namespace zorba 
 {
-	return new ZorbaFopIterator(sctx, loc, argv);
+
+class zorba_fop : public function 
+{
+public:
+  zorba_fop(const signature& sig) : function(sig) {}
+
+  DEFAULT_NARY_CODEGEN(ZorbaFopIterator);
+};
+
+
+void populateContext_FOP(static_context* sctx)
+{
+#ifdef ZORBA_WITH_FOP
+DECL(sctx, zorba_fop,
+	 (createQName(ZORBA_FOP_FN_NS, "fn-zorba-fop", "zorba-fop"),
+	 GENV_TYPESYSTEM.ITEM_TYPE_ONE,
+	 GENV_TYPESYSTEM.ITEM_TYPE_ONE));
+#endif
+}
+
+
 }

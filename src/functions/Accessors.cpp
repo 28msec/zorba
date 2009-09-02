@@ -13,26 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <vector>
+
 #include "system/globalenv.h"
-#include "functions/Accessors.h"
-#include "runtime/accessors/AccessorsImpl.h"
+
 #include "types/typeops.h"
+
+#include "functions/function_impl.h"
+#include "functions/Accessors.h"
+#include "functions/single_seq_func.h"
+
+#include "runtime/accessors/AccessorsImpl.h"
 #include "runtime/core/var_iterators.h"
 
 using namespace std;
 
-namespace zorba {
-
-PlanIter_t
-fn_data_func::codegen(
-    CompilerCB* /* cb */,
-    short sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    AnnotationHolder &ann ) const
+namespace zorba 
 {
-  return new FnDataIterator ( sctx, loc, argv[0] );
-}
+
+
+/*******************************************************************************
+  
+********************************************************************************/
+class fn_data_func : public single_seq_function
+{
+public:
+  fn_data_func(const signature& sig) : single_seq_function (sig) {}    
+
+  xqtref_t return_type(const std::vector<xqtref_t> &arg_types) const;
+
+  DEFAULT_UNARY_CODEGEN(FnDataIterator);
+};
 
 
 xqtref_t fn_data_func::return_type (const std::vector<xqtref_t> &arg_types) const 
@@ -77,60 +88,85 @@ xqtref_t fn_data_func::return_type (const std::vector<xqtref_t> &arg_types) cons
   return RTM.create_builtin_atomic_type(TypeConstants::XS_ANY_ATOMIC, q);
 }
 
-/*******************************************************************************
-  
-********************************************************************************/
-
-PlanIter_t fn_root_func::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new FnRootIterator(sctx, loc, argv);
-}
-
 
 /*******************************************************************************
   
 ********************************************************************************/
-
-PlanIter_t fn_nodename_func::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+class fn_root_func : public function
 {
-  return new FnNodeNameIterator(sctx, loc, argv);
-}
+public:
+  fn_root_func(const signature& s) : function (s) {}
+
+  DEFAULT_NARY_CODEGEN(FnRootIterator);
+};
+
+
+/*******************************************************************************
+  
+********************************************************************************/
+class fn_nodename_func : public function
+{
+public:
+  fn_nodename_func(const signature& s) : function (s) {}
+
+  DEFAULT_NARY_CODEGEN(FnNodeNameIterator);
+};
 
 
 /*******************************************************************************
   2.2 fn:nilled
 ********************************************************************************/
-
-PlanIter_t fn_nilled_func::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+class fn_nilled_func : public function
 {
-  return new FnNilledIterator(sctx, loc, argv);
-}
+public:
+  fn_nilled_func(const signature& s) : function (s) {}
+
+  DEFAULT_NARY_CODEGEN(FnNilledIterator);
+};
 
 
 /*******************************************************************************
   2.5 fn:base-uri
 ********************************************************************************/
-PlanIter_t fn_base_uri_func::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+class fn_base_uri_func : public function
 {
-  return new FnBaseUriIterator(sctx, loc, argv);
-}
+public:
+  fn_base_uri_func(const signature& s) : function (s) {}
+
+  DEFAULT_NARY_CODEGEN(FnBaseUriIterator);
+};
 
 
 /*******************************************************************************
   2.6 fn:document-uri
 ********************************************************************************/
-PlanIter_t fn_document_uri_func::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+class fn_document_uri_func : public function
 {
-  return new FnDocumentUriIterator(sctx, loc, argv);
-}
+public:
+  fn_document_uri_func(const signature& s) : function (s) {}
 
+  DEFAULT_NARY_CODEGEN(FnDocumentUriIterator);
+};
 
 
 /*******************************************************************************
   
 ********************************************************************************/
+class fn_name_func : public function
+{
+public:
+  fn_name_func(const signature& s) : function (s) {}
 
-PlanIter_t fn_name_func::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+  CODEGEN_DECL();
+};
+
+
+PlanIter_t fn_name_func::codegen(
+    CompilerCB* /*cb*/,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    AnnotationHolder& ann) const
 {
   PlanIter_t nnIter = new FnNodeNameIterator(sctx, loc, argv);
   std::vector<PlanIter_t> lVec;
@@ -138,9 +174,63 @@ PlanIter_t fn_name_func::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc
   return new FnStringIterator(sctx, loc, lVec, true);
 }
 
-PlanIter_t fn_string_func::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+
+/*******************************************************************************
+  
+********************************************************************************/
+class fn_string_func : public function
 {
-  return new FnStringIterator(sctx, loc, argv, true);
+public:
+  fn_string_func(const signature& s) : function (s) {}
+
+  PlanIter_t codegen(
+        CompilerCB* /*cb*/,
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        AnnotationHolder& ann) const
+  {
+    return new FnStringIterator(sctx, loc, argv, true);
+  }
+};
+
+
+/*******************************************************************************
+  
+********************************************************************************/
+void populateContext_Accesors(static_context* sctx)
+{
+DECL(sctx, fn_data_func,
+     (createQName (XQUERY_FN_NS, "fn", "data"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR, GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR));
+
+DECL(sctx, fn_root_func,
+     (createQName(XQUERY_FN_NS, "fn", "root"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION));
+
+DECL(sctx, fn_nodename_func,
+     (createQName(XQUERY_FN_NS, "fn", "node-name"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, GENV_TYPESYSTEM.QNAME_TYPE_QUESTION));
+
+DECL(sctx, fn_nilled_func,
+     (createQName(XQUERY_FN_NS, "fn", "nilled"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
+
+DECL(sctx, fn_base_uri_func,
+     (createQName(XQUERY_FN_NS, "fn", "base-uri"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
+
+DECL(sctx, fn_document_uri_func,
+     (createQName(XQUERY_FN_NS, "fn", "document-uri"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
+
+DECL(sctx, fn_name_func,
+     (createQName(XQUERY_FN_NS, "fn", "name"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, GENV_TYPESYSTEM.STRING_TYPE_ONE));
+
+DECL(sctx, fn_string_func,
+     (createQName(XQUERY_FN_NS, "fn", "string"),
+      GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, GENV_TYPESYSTEM.STRING_TYPE_ONE));
 }
 
 

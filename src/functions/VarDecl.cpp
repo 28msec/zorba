@@ -17,6 +17,7 @@
 #include "system/globalenv.h"
 
 #include "functions/VarDecl.h"
+#include "functions/function_impl.h"
 
 #include "compiler/api/compilercb.h"
 #include "compiler/expression/expr.h"
@@ -27,31 +28,58 @@
 namespace zorba
 {
 
-PlanIter_t ctx_variable::codegen (
-    CompilerCB* /*cb*/,
-    short sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    AnnotationHolder &ann ) const
+/*******************************************************************************
+  ctxvar-declare(varName)
+
+  This internal function is used to declare block-local and prolog variables
+  (including the context item, if it is declared in the prolog), except for
+  external vars without an initalizing expr. During runtime, the function
+  registers the varName into the dynamic context.
+********************************************************************************/
+class ctx_var_declare : public function
 {
-  return new CtxVariableIterator(sctx, loc, argv);
-}
+public:
+  ctx_var_declare(const signature& sig) : function (sig) {}
+
+  bool requires_dyn_ctx() const { return true; }
+
+  DEFAULT_NARY_CODEGEN(CtxVarDeclIterator);
+};
+
+
+/*******************************************************************************
+  ctxvar-assign(varName, initExpr)
+
+  This internal function is used to initialize prolog variables that do have an
+  initializing expr, or to assign a value to a prolog or block-local var. For
+  the context item var, the function creates, during runtime, a binding in the
+  dynamic ctx between the varName (".") and the actual context item. Otherwise,
+  the function creates a binding in the dynamic ctx between the varName and an
+  iterator plan that computes the initExpr. 
+********************************************************************************/
+class ctx_var_assign : public function
+{
+public:
+  ctx_var_assign(const signature& sig) : function (sig) {}
+
+  bool requires_dyn_ctx() const { return true; }
+
+  CODEGEN_DECL();
+};
 
 
 PlanIter_t ctx_var_assign::codegen(
     CompilerCB* cb,
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
     AnnotationHolder& ann) const
 {
   CtxVarAssignIterator* iter = new CtxVarAssignIterator(sctx, loc, argv);
 
-  static_context* sctxp = cb->getStaticContext(sctx);
-
   const fo_expr& expr = reinterpret_cast<const fo_expr&>(ann);
 
-  xqtref_t exprType = (expr[1])->return_type(sctxp);
+  xqtref_t exprType = (expr[1])->return_type(sctx);
 
   if (exprType->get_quantifier() == TypeConstants::QUANT_ONE)
     iter->setSingleItem();
@@ -60,25 +88,63 @@ PlanIter_t ctx_var_assign::codegen(
 }
 
 
-PlanIter_t ctx_var_declare::codegen (
-    CompilerCB* /*cb*/,
-    short sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    AnnotationHolder &ann ) const
+/*******************************************************************************
+  ctxvar-exists(varName)
+
+  This internal function is used to check if a prolog of block-local variable
+  has been declared. During runtime, it checks if an entry exists for variable
+  in the dynamic ctx.
+********************************************************************************/
+class ctx_var_exists : public function
 {
-  return new CtxVarDeclIterator(sctx, loc, argv);
-}
+public:
+  ctx_var_exists(const signature& sig) : function (sig) {}
+
+  bool requires_dyn_ctx() const { return true; }
+
+  DEFAULT_NARY_CODEGEN(CtxVarExistsIterator);
+};
 
 
-PlanIter_t ctx_var_exists::codegen (
-    CompilerCB* /*cb*/,
-    short sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    AnnotationHolder &ann ) const
+/*******************************************************************************
+  ctxvariable(varName)
+
+  This internal function is used to represent references to prolog or block-local
+  variables. During runtime, it retrieves from the dymanic context the iterator
+  (or single item) that is associated with varName and returns, one-at-a-time,
+  the items produced by that iterator.
+********************************************************************************/ 
+class ctx_variable : public function
 {
-  return new CtxVarExistsIterator(sctx, loc, argv);
+public:
+  ctx_variable(const signature& sig) : function (sig) {}
+
+  bool requires_dyn_ctx() const { return true; }
+
+  DEFAULT_NARY_CODEGEN(CtxVariableIterator);
+};
+
+
+void populateContext_VarDecl(static_context* sctx)
+{
+DECL(sctx, ctx_variable,
+     (createQName(XQUERY_FN_NS,"fn", ":ctxvariable"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+DECL(sctx, ctx_var_declare,
+     (createQName(XQUERY_FN_NS,"fn", ":ctxvar-declare"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.EMPTY_TYPE));
+DECL(sctx, ctx_var_assign,
+     (createQName(XQUERY_FN_NS,"fn", ":ctxvar-assign"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.EMPTY_TYPE));
+DECL(sctx, ctx_var_exists,
+     (createQName(XQUERY_FN_NS,"fn", ":ctxvar-exists"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 }
+
 
 }

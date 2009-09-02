@@ -14,86 +14,105 @@
  * limitations under the License.
  */
 #include "system/globalenv.h"
+
 #include "functions/ContextFunctions.h"
+#include "functions/function_impl.h"
+
 #include "runtime/context/ContextImpl.h"
 
-using namespace std;
 
 namespace zorba
 {
-/*______________________________________________________________________
- *
- * 16 Context Functions
- *_______________________________________________________________________*/
 
-/*
- * 16.3 fn:current-dateTime
- *-----------------------*/
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+// 16 Context Functions                                                        //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
 
-
-PlanIter_t
-fn_current_dateTime::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+// 16.3 fn:current-dateTime
+class fn_current_dateTime : public function
 {
-  return new FnCurrentDateTimeIterator(sctx, loc, argv);
-}
+public:
+  fn_current_dateTime(const signature& sig) : function (sig) {}
+     
+  bool requires_dyn_ctx () const { return true; }
+
+  DEFAULT_NARY_CODEGEN(FnCurrentDateTimeIterator);
+};
 
 
-
-/*
- * 16.4 fn:current-date
- *-----------------------*/
-
-
-
-PlanIter_t
-fn_current_date::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+// 16.4 fn:current-date
+class fn_current_date : public function
 {
-  return new FnCurrentDateIterator(sctx, loc, argv);
-}
+public:
+  fn_current_date(const signature& sig) : function (sig) {}
+  
+  bool requires_dyn_ctx () const { return true; }
+
+  DEFAULT_NARY_CODEGEN(FnCurrentDateIterator);
+};
 
 
-
-/*
- * 16.5 fn:current-time
- *-----------------------*/
-
-
-
-PlanIter_t
-fn_current_time::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+// 16.5 fn:current-time
+class fn_current_time : public function
 {
-  return new FnCurrentTimeIterator(sctx, loc, argv);
-}
+public:
+  fn_current_time(const signature& sig) : function (sig) {}
+  
+  bool requires_dyn_ctx () const { return true; }
+
+  DEFAULT_NARY_CODEGEN(FnCurrentTimeIterator);
+};
 
 
-
-/*
- * 16.6 fn:implicit-timezone
- *-----------------------*/
-
-
-
-PlanIter_t
-fn_implicit_timezone::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+// 16.6 fn:implicit-timezone
+class fn_implicit_timezone : public function
 {
-  return new FnImplicitTimezoneIterator(sctx, loc, argv);
-}
+public:
+  fn_implicit_timezone(const signature& sig) : function (sig) {}
+     
+  bool requires_dyn_ctx () const { return true; }
+
+  DEFAULT_NARY_CODEGEN(FnImplicitTimezoneIterator);
+};
 
 
-
-/*
- * 16.7 fn:default-collation
- *-----------------------*/
-
-
-
-PlanIter_t
-fn_default_collation::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+// 16.7 fn:default-collation
+class fn_default_collation : public function
 {
-  return new FnDefaultCollationIterator(sctx, loc, argv);
-}
+public:
+  fn_default_collation(const signature& sig) : function (sig) {}
+  
+  bool requires_dyn_ctx () const { return true; }
 
+  DEFAULT_NARY_CODEGEN(FnDefaultCollationIterator);
+};
+
+
+void populateContext_Context(static_context* sctx)
+{
+DECL(sctx, fn_current_dateTime,
+     (createQName(XQUERY_FN_NS,"fn","current-dateTime"),
+      GENV_TYPESYSTEM.DATETIME_TYPE_ONE));
+
+DECL(sctx, fn_current_date,
+     (createQName(XQUERY_FN_NS,"fn","current-date"),
+      GENV_TYPESYSTEM.DATE_TYPE_ONE));
+
+DECL(sctx, fn_current_time,
+     (createQName(XQUERY_FN_NS,"fn","current-time"),
+      GENV_TYPESYSTEM.TIME_TYPE_ONE));
+
+DECL(sctx, fn_implicit_timezone,
+     (createQName(XQUERY_FN_NS,"fn","implicit-timezone"),
+      GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE));
+
+DECL(sctx, fn_default_collation,
+     (createQName(XQUERY_FN_NS,"fn","default-collation"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE));
+}
 
 
 } /* namespace zorba */

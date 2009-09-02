@@ -13,37 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_NUMERICS_H
-#define ZORBA_NUMERICS_H
+#ifndef ZORBA_FUNCTIONS_NUMERICS_H
+#define ZORBA_FUNCTIONS_NUMERICS_H
 
-#include <vector>
 #include "common/shared_types.h"
-#include "functions/function.h"
 
-namespace zorba {
-
-//class zorba;
-
-// Zorba specific functions:
-
-/**
- * Function to produce a fixed amount of integer for testing purposes.
- */
-class zor_numgen : public function
+namespace zorba 
 {
-public:
-	zor_numgen(const signature& sig) : function (sig) {}
-	PlanIter_t codegen ( CompilerCB* cb,
-                      short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-};
 
+void populateContext_Numerics(static_context* sctx);
 
-void populateContext_Numerics(static_context *sctx);
+void populateContext_Math (static_context* sctx);
 
-void populateContext_Math (static_context *sctx);
-
-}	/* namespace zorba */
-#endif	/* ZORBA_NUMERICS_H */
+}
+#endif
 
 /*
  * Local variables:

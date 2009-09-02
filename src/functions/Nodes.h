@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_NODES_H
-#define ZORBA_NODES_H
+#ifndef ZORBA_FUNCTIONS_NODES_H
+#define ZORBA_FUNCTIONS_NODES_H
 
-#include <vector>
 #include "common/shared_types.h"
-#include "functions/function.h"
 
-namespace zorba {
+namespace zorba 
+{
 
-void populateContext_Nodes(static_context *sctx);
+void populateContext_Nodes(static_context* sctx);
 
 }
 

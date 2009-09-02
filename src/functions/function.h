@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_FUNCTION_H
-#define ZORBA_FUNCTION_H
+#ifndef ZORBA_FUNCTIONS_FUNCTION_H
+#define ZORBA_FUNCTIONS_FUNCTION_H
 
 #include <vector>
 
@@ -37,27 +37,29 @@ class CompilerCB;
 typedef rchandle<var_expr> var_expr_t;
 
 #define ZORBA_PRESERVES_SORTED \
-  function::AnnotationProperty_t producesNodeIdSorted() const { return PRESERVE; }
+  function::AnnotationValue producesNodeIdSorted() const { return PRESERVE; }
 
 #define ZORBA_PRESERVES_DISTINCT \
-  function::AnnotationProperty_t producesDuplicates() const { return PRESERVE; }
+  function::AnnotationValue producesDuplicates() const { return PRESERVE; }
 
 #define ZORBA_NOT_PRODUCES_SORTED \
-  function::AnnotationProperty_t producesNodeIdSorted() const { return NO; }
+  function::AnnotationValue producesNodeIdSorted() const { return NO; }
 
 #define ZORBA_NOT_PRODUCES_DISTINCT \
-  function::AnnotationProperty_t producesDuplicates() const { return NO; }
+  function::AnnotationValue producesDuplicates() const { return NO; }
 
 #define ZORBA_PRODUCES_SORTED \
-  function::AnnotationProperty_t producesNodeIdSorted() const { return YES; }
+  function::AnnotationValue producesNodeIdSorted() const { return YES; }
 
 #define ZORBA_PRODUCES_DISTINCT \
-  function::AnnotationProperty_t producesDuplicates() const { return YES; }
+  function::AnnotationValue producesDuplicates() const { return YES; }
 
 #define ZORBA_NOT_PROPAGATES_I2O \
   bool propagatesInputToOutput(uint32_t aProducer) const { return false; }
+
 #define ZORBA_PROPAGATES_I2O \
   bool propagatesInputToOutput(uint32_t aProducer) const { return true; }
+
 #define ZORBA_PROPAGATES_ONE_I2O( n ) \
   bool propagatesInputToOutput(uint32_t aProducer) const { return n == aProducer; }
 
@@ -96,26 +98,33 @@ public:
 class function : public SimpleRCObject 
 {
 public:
-  typedef enum {
+  typedef enum 
+  {
     NO = 0,
     YES,
     PRESERVE
-  } AnnotationProperty_t;
+  } AnnotationValue;
+
+  typedef enum
+  {
+    DoDistinct = 1 // Used by fn:zore-or-one and fn:exaclty-one 
+  }
+  AnnotationFlags;
 
 protected:
-	signature sig;
+	signature    sig;
+  uint32_t     theFlags;
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(function)
   SERIALIZABLE_CLASS_CONSTRUCTOR3(function, SimpleRCObject, sig)
-  void serialize(::zorba::serialization::Archiver &ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
-    //serialize_baseclass(ar, (SimpleRCObject*)this);
     ar & sig;
   }
 
 public:
-	function(const signature& _sig) : sig(_sig) {}
+	function(const signature& _sig) : sig(_sig), theFlags(0) {}
 
 	virtual ~function() {}
 
@@ -126,36 +135,26 @@ public:
 
   const signature& get_signature() const { return sig; }
 
-  int  get_arity() const { return sig.arg_count(); }
+  int get_arity() const { return sig.arg_count(); }
 
-  virtual xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
+  virtual xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
 
-  virtual bool requires_dyn_ctx () const { return false; }
-
-  virtual void compute_annotation (
-        AnnotationHolder *,
-	std::vector<AnnotationHolder *> &,
-	Annotation::key_t) const;
-
-	// runtime arg validation
 	virtual bool validate_args(std::vector<PlanIter_t>& argv) const;
 
-  // Annotation calculator functions
+  virtual bool requires_dyn_ctx() const { return false; }
+
   virtual bool isSource() const { return false; }
 
   virtual bool isPureFunction() const { return true; }
 
   virtual expr_update_t getUpdateType () const { return SIMPLE_EXPR; }
+
   bool isUpdating () const { return getUpdateType () == UPDATE_EXPR; }
-
-  virtual AnnotationProperty_t producesDuplicates() const;
-
-  virtual AnnotationProperty_t producesNodeIdSorted() const;
 
   virtual bool propagatesInputToOutput(uint32_t aProducer) const { return true; }
 
-  virtual const function* specialize(
-        static_context *sctx,
+  virtual function* specialize(
+        static_context* sctx,
         const std::vector<xqtref_t>& argTypes) const
   {
     return NULL;
@@ -181,10 +180,30 @@ public:
     return CompareConsts::UNKNOWN;
   }
 
-  // codegen: functor specification
-  virtual PlanIter_t codegen (
-        CompilerCB* cb, 
-        short sctx,
+  virtual bool isFnError() const { return false; }
+
+  virtual bool isNodeSortFunction() const { return false; }
+
+  virtual bool isNodeDistinctFunction() const { return false; }
+
+  bool testFlag(AnnotationFlags flag) const { return (theFlags & flag) != 0; }
+
+  void setFlag(AnnotationFlags flag) { theFlags |= flag; }
+
+  void resetFlag(AnnotationFlags flag) { theFlags &= ~flag; }
+
+  virtual AnnotationValue producesDuplicates() const;
+
+  virtual AnnotationValue producesNodeIdSorted() const;
+
+  virtual void compute_annotation (
+        AnnotationHolder *,
+        std::vector<AnnotationHolder *> &,
+        Annotation::key_t) const;
+
+  virtual PlanIter_t codegen(
+        CompilerCB* cb,
+        static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
         AnnotationHolder& ann) const = 0;
@@ -249,10 +268,10 @@ public:
 public:
   user_function(
         const QueryLoc& loc,
-        const signature& _sig,
+        const signature& sig,
         expr_t expr_body, 
         ParseConstants::function_type_t,
-        bool deterministic_);
+        bool deterministic);
 
   virtual ~user_function();
 
@@ -282,12 +301,12 @@ public:
   
   virtual std::vector<LetVarIter_t>& get_param_iters() const;
 
-  virtual PlanIter_t codegen(
+  PlanIter_t codegen(
         CompilerCB* cb,
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder &ann) const;
+        AnnotationHolder& ann) const; 
 };
 
 
@@ -304,7 +323,7 @@ public:
 
 
 } /* namespace zorba */
-#endif  /* ZORBA_FUNCTION_H */
+#endif
 /* vim:set ts=2 sw=2: */
 
 /*

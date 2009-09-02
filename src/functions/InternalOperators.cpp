@@ -14,16 +14,24 @@
  * limitations under the License.
  */
 #include "functions/InternalOperators.h"
+#include "functions/function_impl.h"
+
 #include "runtime/core/internal_operators.h"
-#include "runtime/indexing/value_index_builder.h"
-#include "runtime/indexing/value_index_probe.h"
 
-namespace zorba {
-
-
-zop_hoist::zop_hoist(const signature& sig) : function(sig) 
+namespace zorba 
 {
-}
+
+
+class zop_hoist : public function 
+{
+public:
+  zop_hoist(const signature& sig) : function(sig) {}
+
+  xqtref_t return_type (const std::vector<xqtref_t>& arg_types) const;
+
+  DEFAULT_NARY_CODEGEN(HoistIterator);
+};
+
 
 xqtref_t zop_hoist::return_type(const std::vector<xqtref_t>& arg_types) const
 {
@@ -31,15 +39,15 @@ xqtref_t zop_hoist::return_type(const std::vector<xqtref_t>& arg_types) const
 }
 
 
-PlanIter_t zop_hoist::codegen(CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+class zop_unhoist : public function 
 {
-  return new HoistIterator(sctx, loc, argv);
-}
+public:
+  zop_unhoist(const signature& sig) : function(sig) {}
 
+  xqtref_t return_type (const std::vector<xqtref_t>& arg_types) const;
 
-zop_unhoist::zop_unhoist(const signature& sig) : function(sig) 
-{
-}
+  DEFAULT_NARY_CODEGEN(UnhoistIterator);
+};
 
 
 xqtref_t zop_unhoist::return_type(const std::vector<xqtref_t>& arg_types) const
@@ -48,9 +56,17 @@ xqtref_t zop_unhoist::return_type(const std::vector<xqtref_t>& arg_types) const
 }
 
 
-PlanIter_t zop_unhoist::codegen(CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+void populateContext_Hoisting(static_context* sctx)
 {
-  return new UnhoistIterator(sctx, loc, argv);
+  DECL(sctx, zop_hoist,
+       (createQName(XQUERY_FN_NS,"fn", ":hoist"),
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+  DECL(sctx, zop_unhoist,
+       (createQName(XQUERY_FN_NS,"fn", ":unhoist"),
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 }
 
 

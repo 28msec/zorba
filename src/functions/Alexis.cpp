@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <vector>
+
+#include "functions/function_impl.h"
 #include "functions/Alexis.h"
 
 #include "runtime/util/UtilImpl.h"
@@ -20,61 +23,137 @@
 
 using namespace std;
 
-namespace zorba {
-
-PlanIter_t zorba_decode_base64::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+namespace zorba 
 {
-  return new ZorbaBase64DecodeIterator ( sctx, loc, argv );
-}
+
+typedef function_impl<ZorbaBase64DecodeIterator> zorba_decode_base64;
 
 
-PlanIter_t zorba_encode_base64::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new ZorbaBase64EncodeIterator ( sctx, loc, argv );
-}
+typedef function_impl<ZorbaBase64EncodeIterator> zorba_encode_base64;
 
 
-PlanIter_t
-zorba_schema_type::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new ZorbaSchemaTypeIterator(sctx, loc, argv);
-}
+typedef function_impl<ZorbaSchemaTypeIterator> zorba_schema_type;
+
 
 #ifdef ZORBA_WITH_TIDY
-  PlanIter_t
-  zorba_tidy::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-  {
-    return new ZorbaTidyIterator(sctx, loc, argv);
-  }
 
-  PlanIter_t
-  zorba_tdoc::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-  {
-    return new ZorbaTDocIterator(sctx, loc, argv);
-  }
-#endif  /* ZORBA_WITH_TIDY */
+typedef function_impl<ZorbaTidyIterator> zorba_tidy;
 
-PlanIter_t
-zorba_random::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+
+typedef function_impl<ZorbaTDocIterator> zorba_tdoc;
+
+#endif/* ZORBA_WITH_TIDY */
+
+
+class zorba_random : public function
 {
-  return new ZorbaRandomIterator(sctx, loc, argv);
+public:
+  zorba_random(const signature& sig): function(sig){}
+    
+  bool isPureFunction () const { return false; }
+
+  DEFAULT_NARY_CODEGEN(ZorbaRandomIterator);
+};
+
+
+class zorba_uuid : public function
+{
+public:
+  zorba_uuid(const signature& sig): function(sig){}
+    
+  bool isPureFunction () const { return false; }
+
+  DEFAULT_NARY_CODEGEN(ZorbaUUIDIterator);
+};
+
+
+class zorba_timestamp : public function
+{
+public:
+  zorba_timestamp(const signature& sig) : function(sig) {}
+
+  bool requires_dyn_ctx () const { return true; }
+
+  DEFAULT_NARY_CODEGEN(ZorbaTimestampIterator);
+};
+
+
+class zorba_serialize_to_string : public function 
+{
+public:
+  zorba_serialize_to_string(const signature& sig) : function(sig) {}
+    
+  bool isPureFunction () const { return false; }
+
+  DEFAULT_NARY_CODEGEN(FnPrintIterator);
+};
+
+
+
+void populateContext_Alexis(static_context* sctx)
+{
+DECL(sctx, zorba_decode_base64,
+     (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "base64Decode"),
+      GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE));
+
+DECL(sctx, zorba_encode_base64,
+     (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "base64Encode"),
+      GENV_TYPESYSTEM.ITEM_TYPE_ONE,
+      GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE));
+
+DECL(sctx, zorba_schema_type,
+     (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "schema-type"),
+      GENV_TYPESYSTEM.ITEM_TYPE_ONE,
+      GENV_TYPESYSTEM.QNAME_TYPE_ONE));
+
+#ifdef ZORBA_WITH_TIDY
+  DECL(sctx, zorba_tidy,
+       (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "tidy"),
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.ITEM_TYPE_ONE));
+
+  DECL(sctx, zorba_tidy,
+       (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "tidy"),
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+        GENV_TYPESYSTEM.ITEM_TYPE_ONE));
+
+  DECL(sctx, zorba_tdoc,
+       (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "tdoc"),
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+        GENV_TYPESYSTEM.DOCUMENT_TYPE_QUESTION));
+
+  DECL(sctx, zorba_tdoc,
+       (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "tdoc"),
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+        GENV_TYPESYSTEM.DOCUMENT_TYPE_QUESTION));
+#endif
+
+  DECL(sctx, zorba_random,
+       (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "random"),
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
+
+  DECL(sctx, zorba_random,
+       (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "random"),
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
+
+  DECL(sctx, zorba_uuid,
+       (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "uuid"),
+        GENV_TYPESYSTEM.STRING_TYPE_ONE));
+
+  DECL(sctx, zorba_timestamp,
+       (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "timestamp"),
+        GENV_TYPESYSTEM.LONG_TYPE_ONE));
+
+  DECL (sctx, zorba_serialize_to_string,
+        (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "serialize-to-string"),
+         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+         GENV_TYPESYSTEM.STRING_TYPE_ONE));
 }
 
-PlanIter_t
-zorba_uuid::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new ZorbaUUIDIterator(sctx, loc, argv);
-}
 
-PlanIter_t
-zorba_timestamp::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new ZorbaTimestampIterator(sctx, loc, argv);
-}
-
-zorba::PlanIter_t zorba_serialize_to_string::codegen(CompilerCB* /*cb*/, short sctx,  const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
-{
-	return new FnPrintIterator(sctx, loc, argv, false);
-}
 }
 /* vim:set ts=2 sw=2: */

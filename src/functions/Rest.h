@@ -13,92 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_REST_H
-#define ZORBA_REST_H
+#ifndef ZORBA_FUNCTIONS_REST_H
+#define ZORBA_FUNCTIONS_REST_H
 
-#include <vector>
 #include "common/shared_types.h"
-#include "functions/function.h"
 
-namespace zorba {
-
-class rest_get : public function
+namespace zorba 
 {
-public:
-  rest_get(const signature&);
 
-  PlanIter_t codegen (CompilerCB* cb,
-                      short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  bool isPureFunction () const { return false; }
-};
+#ifndef ZORBA_WITH_REST
 
-class rest_get_tidy : public function
+void populateContext_Rest(static_context* sctx)
 {
-public:
-  rest_get_tidy(const signature&);
+}
 
-  PlanIter_t codegen (CompilerCB* cb,
-                      short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  bool isPureFunction () const { return false; }
-};
+#else
 
-class rest_post : public function
-{
-public:
-  rest_post(const signature&);
+void populateContext_Rest(static_context* sctx);
 
-  PlanIter_t codegen (CompilerCB* cb,
-                      short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
-  bool isPureFunction () const { return false; }
-};
+#endif
 
-class rest_post_tidy : public function
-{
-public:
-  rest_post_tidy(const signature&);
-
-  PlanIter_t codegen (CompilerCB* cb,
-                      short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
-  bool isPureFunction () const { return false; }
-};
-
-class rest_put : public function
-{
-public:
-  rest_put(const signature&);
-
-  PlanIter_t codegen (CompilerCB* cb,
-                      short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
-  bool isPureFunction () const { return false; }
-};
-
-class rest_delete : public function
-{
-public:
-  rest_delete(const signature&);
-
-  PlanIter_t codegen (CompilerCB* cb,
-                      short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
-  bool isPureFunction () const { return false; }
-};
-
-class rest_head : public function
-{
-public:
-  rest_head(const signature&);
-
-  PlanIter_t codegen (CompilerCB* cb,
-                      short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
-  bool isPureFunction () const { return false; }
-};
-
-
-} /* namespace zorba */
+}
 
 #endif
 

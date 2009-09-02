@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_ARITHMETIC_H
-#define ZORBA_ARITHMETIC_H
+#ifndef ZORBA_FUNCTIONS_ARITHMETIC
+#define ZORBA_FUNCTIONS_ARITHMETIC
 
-#include <vector>
 #include "common/shared_types.h"
-#include "functions/function.h"
 
 namespace zorba 
 {

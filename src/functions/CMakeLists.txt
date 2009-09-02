@@ -36,7 +36,8 @@ SET(FUNCTIONS_SRCS
     tuple_functions.cpp
     XQDocFunctions.cpp
     InternalOperators.cpp
-    Index.cpp)
+    Index.cpp
+    nodeid_internal.cpp)
 
 IF (ZORBA_WITH_REST)
   SET(FUNCTIONS_SRCS ${FUNCTIONS_SRCS} Rest.cpp)

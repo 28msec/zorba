@@ -21,11 +21,11 @@
 namespace zorba 
 {
 
-void populateContext_Sequences (static_context* sctx);
+void populateContext_Sequences(static_context* sctx);
 
 }
 
-#endif /* ZORBA_SEQUENCES_H */
+#endif
 
 /*
  * Local variables:

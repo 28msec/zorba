@@ -17,150 +17,16 @@
 #define ZORBA_FUNCTIONS_INDEX
 
 #include "common/shared_types.h"
-#include "functions/function.h"
+
 
 namespace zorba 
 {
 
-/******************************************************************************
-
-********************************************************************************/
-class zop_createindex : public function 
-{
-public:
-  zop_createindex(const signature&);
-
-  PlanIter_t codegen(CompilerCB* cb,
-                      short sctx, const QueryLoc&, std::vector<PlanIter_t>&, AnnotationHolder&) const;
-
-  virtual bool requires_dyn_ctx () const { return true; }
-};
-
-
-/******************************************************************************
-
-********************************************************************************/
-class zop_dropindex : public function 
-{
-public:
-  zop_dropindex(const signature&);
-
-  PlanIter_t codegen(CompilerCB* cb,
-                      short sctx, const QueryLoc&, std::vector<PlanIter_t>&, AnnotationHolder&) const;
-
-  virtual bool requires_dyn_ctx () const { return true; }
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class zop_buildindex : public function 
-{
-public:
-  zop_buildindex(const signature&);
-
-  PlanIter_t codegen(CompilerCB* cb,
-                      short sctx, const QueryLoc&, std::vector<PlanIter_t>&, AnnotationHolder&) const;
-
-  virtual bool requires_dyn_ctx () const { return true; }
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class zop_index_session_opener : public function 
-{
-public:
-  zop_index_session_opener(const signature&);
-
-  PlanIter_t codegen(CompilerCB* cb,
-                      short sctx, const QueryLoc&, std::vector<PlanIter_t>&, AnnotationHolder&) const;
-
-  virtual bool requires_dyn_ctx () const { return true; }
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class zop_index_session_closer : public function 
-{
-public:
-  zop_index_session_closer(const signature&);
-
-  PlanIter_t codegen(CompilerCB* cb,
-                      short sctx, const QueryLoc&, std::vector<PlanIter_t>&, AnnotationHolder&) const;
-
-  virtual bool requires_dyn_ctx () const { return true; }
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class zop_index_builder : public function 
-{
-public:
-  zop_index_builder(const signature&);
-
-  PlanIter_t codegen (CompilerCB* cb,
-                      short sctx, const QueryLoc&, std::vector<PlanIter_t>&, AnnotationHolder&) const;
-
-  virtual bool requires_dyn_ctx () const { return true; }
-};
-
-
-/***************************************************************************//**
-  item* probe-index-point(uriExpr     as xs:uri,
-                          column1Expr as anyAtomic?,
-                          ...,
-                          columnNExpr as anyAtomic?)
-********************************************************************************/
-class zop_probeindexpoint : public function 
-{
-public:
-  zop_probeindexpoint(const signature&);
-
-  PlanIter_t codegen(CompilerCB* cb,
-                      short sctx, const QueryLoc&, std::vector<PlanIter_t>&, AnnotationHolder&) const;
-
-  virtual bool requires_dyn_ctx () const { return true; }
-};
-
-
-/*******************************************************************************
-  item* probe-index-range(uriExpr                  as xs:uri,
-                          range1LowerBoundExpr     as anyAtomic?,
-                          range1UpperBoundExpr     as anyAtomic?,
-                          range1HaveLowerBound     as anyAtomic?,
-                          range1HaveupperBound     as anyAtomic?,
-                          range1LowerBoundIncluded as anyAtomic?,
-                          range1upperBoundIncluded as anyAtomic?,
-                          ....,
-                          rangeNLowerBoundExpr     as anyAtomic?,
-                          rangeNUpperBoundExpr     as anyAtomic?,
-                          rangeNHaveLowerBound     as anyAtomic?,
-                          rangeNHaveupperBound     as anyAtomic?,
-                          rangeNLowerBoundIncluded as anyAtomic?,
-                          rangeNupperBoundIncluded as anyAtomic?,
-********************************************************************************/
-class zop_probeindexrange : public function 
-{
-public:
-  zop_probeindexrange(const signature&);
-
-  PlanIter_t codegen(CompilerCB* cb,
-                      short sctx, const QueryLoc&, std::vector<PlanIter_t>&, AnnotationHolder&) const;
-
-  virtual bool requires_dyn_ctx () const { return true; }
-};
-
+void populateContext_Index(static_context* sctx);
 
 }
 
-#endif /* ZORBA_INTERNAL_OPERATORS_H */
+#endif
 /* vim:set ts=2 sw=2: */
 
 /*

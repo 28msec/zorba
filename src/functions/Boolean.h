@@ -23,70 +23,8 @@
 #include "functions/function.h"
 
 
-namespace zorba {
-
-
-class GenericOpComparison : public function 
+namespace zorba 
 {
-public:
-  GenericOpComparison (const signature &sig) : function (sig) {}
-
-  bool isComparisonFunction () const { return true; }
-
-  virtual const char* comparison_name () const { return ""; }
-
-  void compute_annotation(
-        AnnotationHolder *parent,
-        std::vector<AnnotationHolder *> &kids,
-        Annotation::key_t k) const;
-
-  virtual function* toValueComp(static_context *) const { return NULL; }
-
-  virtual bool specializable() const { return true; }
-
-  const function* specialize(
-        static_context* sctx,
-        const std::vector<xqtref_t>& argTypes) const;
-
-  virtual PlanIter_t codegen(
-        CompilerCB* cb,
-        short sctx,
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& argv,
-        AnnotationHolder &ann) const;
-
-protected:
-  virtual PlanIter_t createIterator(
-        short sctx,
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& ) const = 0;
-};
-
-
-class ValueOpComparison : public GenericOpComparison 
-{
-public:
-  ValueOpComparison(const signature& sig) : GenericOpComparison (sig) {}
-
-  virtual bool isValueComparisonFunction() const { return true; }
-
-  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
-
-  const function* specialize(
-        static_context* sctx,
-        const std::vector<xqtref_t>& argTypes) const;
-};
-
-
-class GeneralOpComparison : public GenericOpComparison 
-{
-public:
-  GeneralOpComparison(const signature &sig) : GenericOpComparison (sig) {}
-
-  bool isGeneralComparisonFunction() const { return true; }
-};
-
-
 
 void populateContext_Boolean(static_context *sctx);
 

@@ -15,6 +15,7 @@
  */
 
 #include "system/globalenv.h"
+
 #include "compiler/expression/expr.h"
 #include "compiler/codegen/plan_visitor.h"
 #include "compiler/semantic_annotations/tsv_annotation.h"
@@ -23,7 +24,7 @@
 #include "runtime/core/fncall_iterator.h"
 #include "runtime/core/var_iterators.h"
 
-#include "functions/function.h"
+#include "functions/function_impl.h"
 
 #include "util/hashmap32.h"
 
@@ -72,7 +73,7 @@ void function::compute_annotation (
 }
 
 
-function::AnnotationProperty_t function::producesDuplicates() const 
+function::AnnotationValue function::producesDuplicates() const 
 {
   xqtref_t rt = sig.return_type ();
   if (TypeOps::type_max_cnt (*rt) <= 1 || TypeOps::is_builtin_simple (*rt))
@@ -81,7 +82,7 @@ function::AnnotationProperty_t function::producesDuplicates() const
 }
 
 
-function::AnnotationProperty_t function::producesNodeIdSorted() const 
+function::AnnotationValue function::producesNodeIdSorted() const 
 {
   xqtref_t rt = sig.return_type ();
   if (TypeOps::type_max_cnt (*rt) <= 1 || TypeOps::is_builtin_simple (*rt))
@@ -223,15 +224,11 @@ PlanIter_t user_function::get_plan(CompilerCB *ccb) const
 }
 
 
-PlanIter_t user_function::codegen (
-    CompilerCB* cb,
-    short sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    AnnotationHolder &ann) const
+CODEGEN_DEF(user_function)
 {
-  return new UDFunctionCallIterator(sctx, loc, argv, this);
+  return new UDFunctionCallIterator(aSctx, aLoc, aArgs, this);
 }
+
 
 }
 

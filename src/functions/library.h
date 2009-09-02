@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_LIBRARY_H
-#define ZORBA_LIBRARY_H
+#ifndef ZORBA_FUNCTION_LIBRARY_H
+#define ZORBA_FUNCTION_LIBRARY_H
 
 
-#include "common/shared_types.h"
-
-namespace zorba {
+namespace zorba 
+{
 
 class static_context;
 
@@ -28,21 +27,13 @@ class BuiltinFunctionLibrary
 private:
   friend class GlobalEnvironment;
 
-  static void populateContext(static_context *sctx);
-
-  static void populateContext_Accesors(static_context *sctx);
-  static void populateContext_Error(static_context *sctx);
-  static void populateContext_AnyURI(static_context *sctx);
-  static void populateContext_Context(static_context *sctx);
-  static void populateContext_QNames(static_context *sctx);
-  static void populateContext_Constructors(static_context *sctx);
-  static void populateContext_Debug(static_context *sctx);
-  static void populateContext_Zorba(static_context *sctx);
-  static void populateContext_ZorbaExtensions(static_context *sctx);
+  static void populateContext(static_context* sctx);
 };
 
-} /* namespace zorba */
-#endif /* ZORBA_LIBRARY_H */
+
+}
+
+#endif
 
 /*
  * Local variables:

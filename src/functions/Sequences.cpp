@@ -15,11 +15,9 @@
  */
 #include "functions/Sequences.h"
 #include "functions/function_impl.h"
-#include "functions/nodeid_internal.h"
+#include "functions/single_seq_func.h"
 
 #include "runtime/sequences/SequencesImpl.h"
-#include "runtime/core/sequencetypes.h"
-#include "runtime/core/nodeid_iterators.h"
 
 #include "context/static_context.h"
 
@@ -66,18 +64,27 @@ class op_concatenate : public function
 public:
   op_concatenate(const signature& sig) : function (sig) {}
 
-  PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const 
+  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
+
+  void compute_annotation(
+        AnnotationHolder* parent,
+        std::vector<AnnotationHolder *>& kids,
+        Annotation::key_t k) const;
+
+  PlanIter_t codegen(
+        CompilerCB* /*cb*/,
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        AnnotationHolder &ann) const 
   {
     return new FnConcatIterator(sctx, loc, argv, ann.is_updating());
   }
 
-  xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
-
-  void compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const;
 };
   
 
-xqtref_t op_concatenate::return_type (const std::vector<xqtref_t> &arg_types) const 
+xqtref_t op_concatenate::return_type(const std::vector<xqtref_t>& arg_types) const 
 {
   int sz = arg_types.size ();
   if (sz == 0)
@@ -113,80 +120,81 @@ void op_concatenate::compute_annotation (
 
 
 /*******************************************************************************
-
+  15.1.3 fn:index-of
 ********************************************************************************/
-  //15.1.3 fn:index-of
-  //------------------
-
-  typedef function_impl<FnIndexOfIterator> fn_index_of;
+typedef function_impl<FnIndexOfIterator> fn_index_of;
 
 
 /*******************************************************************************
-
+  15.1.4 fn:empty
 ********************************************************************************/
-  //15.1.4 fn:empty
-  //---------------
-
-  typedef function_impl<FnEmptyIterator> fn_empty;
+typedef function_impl<FnEmptyIterator> fn_empty;
 
 
 /*******************************************************************************
-
+  15.1.5 fn:exists
 ********************************************************************************/
-  //15.1.5 fn:exists
-  //----------------
-
-  typedef function_impl<FnExistsIterator> fn_exists;
+typedef function_impl<FnExistsIterator> fn_exists;
 
 
 /*******************************************************************************
-
+  15.1.6 fn:distinct-values
 ********************************************************************************/
-  //15.1.6 fn:distinct-values
-  //-------------------------
-  class fn_distinct_values : public single_seq_function {
-  public:
-    fn_distinct_values(const signature& sig) : single_seq_function (sig) {}
-    DEFAULT_CODEGEN (FnDistinctValuesIterator)
-    ZORBA_PRODUCES_SORTED
-    ZORBA_PRODUCES_DISTINCT
-  };
+class fn_distinct_values : public single_seq_function 
+{
+public:
+  fn_distinct_values(const signature& sig) : single_seq_function (sig) {}
+
+  ZORBA_PRODUCES_SORTED;
+  ZORBA_PRODUCES_DISTINCT;
+
+  DEFAULT_NARY_CODEGEN(FnDistinctValuesIterator);
+};
 
 
-  //15.1.7 fn:insert-before
-  //-----------------------
-  class fn_insert_before : public function {
-  public:
-    fn_insert_before(const signature& sig) : function (sig) {}
-    DEFAULT_CODEGEN (FnInsertBeforeIterator)
-    bool propagatesInputToOutput(uint32_t aProducer) const { return 1 != aProducer; }
-  };
+/*******************************************************************************
+  15.1.7 fn:insert-before
+********************************************************************************/
+class fn_insert_before : public function 
+{
+public:
+  fn_insert_before(const signature& sig) : function (sig) {}
+
+  bool propagatesInputToOutput(uint32_t aProducer) const { return 1 != aProducer; }
+
+  DEFAULT_NARY_CODEGEN(FnInsertBeforeIterator);
+};
 
 
-  //15.1.8 fn:remove
-  //----------------
-  class fn_remove : public single_seq_opt_function {
-  public:
-    fn_remove(const signature& sig) : single_seq_opt_function (sig) {}
-    DEFAULT_CODEGEN (FnRemoveIterator)
-  };
+/*******************************************************************************
+  15.1.8 fn:remove
+********************************************************************************/
+class fn_remove : public single_seq_opt_function 
+{
+public:
+  fn_remove(const signature& sig) : single_seq_opt_function (sig) {}
+
+  DEFAULT_NARY_CODEGEN(FnRemoveIterator);
+};
 
 
-//15.1.9 fn:reverse
-//-----------------
+/*******************************************************************************
+  15.1.9 fn:reverse
+********************************************************************************/
 class fn_reverse : public single_seq_function 
 {
 public:
   fn_reverse(const signature& sig) : single_seq_function (sig) {}
 
-  DEFAULT_CODEGEN (FnReverseIterator)
+  ZORBA_NOT_PRODUCES_SORTED;
 
-  ZORBA_NOT_PRODUCES_SORTED
+  DEFAULT_NARY_CODEGEN(FnReverseIterator);
 };
 
 
-//15.1.10 fn:subsequence
-//----------------------
+/*******************************************************************************
+  15.1.10 fn:subsequence
+********************************************************************************/
 class fn_subsequence : public single_seq_opt_function 
 {
 public:
@@ -194,9 +202,24 @@ public:
 
   COMPUTE_ANNOTATION_DECL();
 
-  DEFAULT_CODEGEN(FnSubsequenceIterator);
+  DEFAULT_NARY_CODEGEN(FnSubsequenceIterator);
 };
   
+
+void fn_subsequence::compute_annotation(
+    AnnotationHolder* parent,
+    std::vector<AnnotationHolder *>& kids,
+    Annotation::key_t k) const 
+{
+  switch (k) {
+  case AnnotationKey::IGNORES_SORTED_NODES:
+  case AnnotationKey::IGNORES_DUP_NODES:
+    // don't use single_seq_fun default propagation rule
+    return;
+  default: single_seq_opt_function::compute_annotation (parent, kids, k);
+  }
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -225,26 +248,9 @@ public:
 };
 
 
-PlanIter_t fn_zero_or_one::codegen(
-    CompilerCB* /*cb*/, 
-    short sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    AnnotationHolder& ann) const
+CODEGEN_DEF(fn_zero_or_one)
 {
-  bool doDistinct = false;
-
-  expr& arg = static_cast<expr&>(ann);
-  
-  if (arg.get_expr_kind() == relpath_expr_kind)
-  {
-    // If this function is over a path expr, then the duplicate elimination
-    // that would normally be done by the path expr is pulled up into the
-    // corresponding runtime iterators.
-    doDistinct = true;
-  }
-
-  return new FnZeroOrOneIterator(sctx, loc, argv, doDistinct);
+  return new FnZeroOrOneIterator(aSctx, aLoc, aArgs, testFlag(DoDistinct));
 }
 
 
@@ -256,7 +262,7 @@ class fn_one_or_more : public single_seq_function
 public:
   fn_one_or_more (const signature& sig) : single_seq_function (sig) {}
 
-  DEFAULT_CODEGEN (FnOneOrMoreIterator)
+  DEFAULT_NARY_CODEGEN(FnOneOrMoreIterator)
 };
 
 
@@ -275,7 +281,7 @@ public:
     theRaiseError(false)
   {}
 
-  xqtref_t return_type (const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
 
   CODEGEN_DECL();
 };
@@ -284,7 +290,7 @@ public:
 class fn_exactly_one : public fn_exactly_one_noraise 
 {
 public:
-  fn_exactly_one (const signature& sig) : fn_exactly_one_noraise(sig)
+  fn_exactly_one(const signature& sig) : fn_exactly_one_noraise(sig)
   {
     theRaiseError = true; 
   }
@@ -301,26 +307,13 @@ xqtref_t fn_exactly_one_noraise::return_type(
 }
 
 
-PlanIter_t fn_exactly_one_noraise::codegen(
-    CompilerCB* /*cb*/,
-    short sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    AnnotationHolder& ann) const
+CODEGEN_DEF(fn_exactly_one_noraise)
 {
-  bool doDistinct = false;
-
-  expr& arg = static_cast<expr&>(ann);
-  
-  if (arg.get_expr_kind() == relpath_expr_kind)
-  {
-    // If this function is over a path expr, then the duplicate elimination
-    // that would normally be done by the path expr is pulled up into the
-    // corresponding runtime iterators.
-    doDistinct = true;
-  }
-
-  return new FnExactlyOneIterator(sctx, loc, argv, theRaiseError, doDistinct);
+  return new FnExactlyOneIterator(aSctx,
+                                  aLoc,
+                                  aArgs,
+                                  theRaiseError,
+                                  testFlag(DoDistinct));
 }
 
 
@@ -331,189 +324,71 @@ PlanIter_t fn_exactly_one_noraise::codegen(
 /////////////////////////////////////////////////////////////////////////////////
 
 
-//15.3.1 fn:deep-equal
+/*******************************************************************************
+  15.3.1 fn:deep-equal
+********************************************************************************/
 class fn_deep_equal : public function 
 {
 public:
   fn_deep_equal(const signature& sig) : function (sig) {}
 
-  DEFAULT_CODEGEN (FnDeepEqualIterator)
+  ZORBA_NOT_PROPAGATES_I2O;
 
-  ZORBA_NOT_PROPAGATES_I2O
+  DEFAULT_NARY_CODEGEN(FnDeepEqualIterator);
 };
 
 
+/*******************************************************************************
+  fn:union is implemented as fn:concat wrapped in a sort-distinct-nodes-asc.
+********************************************************************************/
 class fn_union : public function 
 {
 public:
   fn_union(const signature& sig) : function (sig) {}
 
-  PlanIter_t codegen(CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  ZORBA_PRODUCES_SORTED;
+  ZORBA_PRODUCES_DISTINCT;
 
-  ZORBA_PRODUCES_SORTED
-  ZORBA_PRODUCES_DISTINCT
+  PlanIter_t codegen(
+        CompilerCB* /*cb*/,
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        AnnotationHolder &ann) const
+  {
+    return new FnConcatIterator(sctx, loc, argv, false);
+  }
 };
 
 
+/*******************************************************************************
+  For intersect and except, it's always more efficient to sort the output
+  and use hash-join than to sort the inputs and use mergesort-join. Only if
+  the inputs happen to be sorted for a different reason will we use mergesort:
+  for $x in path/expr1 for $y in path/expr2 return ($x, $y, ($x intersect $y))
+
+  For now, codegen doesn't know whether the inputs are sorted or not.
+  TODO: annotate expressions with USE_HASH / USE_MERGESORT properties
+  during optimization.
+********************************************************************************/
 class fn_intersect : public function 
 {
 public:
   fn_intersect(const signature& sig) : function (sig) {}
 
-  PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  ZORBA_PRODUCES_SORTED;
+  ZORBA_PRODUCES_DISTINCT;
 
-  ZORBA_PRODUCES_SORTED
-  ZORBA_PRODUCES_DISTINCT
+  CODEGEN_DECL();
 };
 
 
-class fn_except: public function 
-{
-public:
-  fn_except(const signature& sig) : function (sig) {}
-
-  PlanIter_t codegen(CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-
-  ZORBA_PRODUCES_SORTED
-  ZORBA_PRODUCES_DISTINCT
-};
-  
-  /*______________________________________________________________________
-    |
-    | 15.4 Aggregate Functions
-    |_______________________________________________________________________*/
-
-  //15.4.1 fn:count
-  typedef function_impl<FnCountIterator> fn_count;
-
-  //15.4.2 fn:avg
-  typedef function_impl<FnAvgIterator> fn_avg;
-
-  //15.4.3 fn:max
-  class fn_max : public function {
-  public:
-    fn_max(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
-      return new FnMinMaxIterator(sctx, loc, argv, FnMinMaxIterator::MAX);
-    }
-    ZORBA_PROPAGATES_ONE_I2O (0)
-  };
-
-  //15.4.4 fn:min
-  //-------------
-  class fn_min : public function {
-  public:
-    fn_min(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
-      return new FnMinMaxIterator(sctx, loc, argv, FnMinMaxIterator::MIN);
-    }
-    ZORBA_PROPAGATES_ONE_I2O (0)
-  };
-
-  //15.4.5 fn:sum
-  typedef function_impl<FnSumIterator> fn_sum;
-
-
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  15.5 Functions and Operators that Generate Sequences                       //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
-
-//15.5.1 op:to
-typedef function_impl<OpToIterator> op_to;
-
-
-//15.5.2 fn:id
-typedef function_impl<FnIdIterator> fn_id;
-
-
-//15.5.3 fn:idref
-typedef function_impl<FnIdRefIterator> fn_id_ref;
-
-
-//15.5.4 fn:doc
-class fn_doc_func : public function 
-{
-  public:
-    fn_doc_func(const signature& sig) : function (sig) {}
-    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
-      return new FnDocIterator(sctx, loc, argv[0]);
-    }
-    virtual bool isSource() const { return true; }
-    bool requires_dyn_ctx () const { return true; }  // TODO: rename to unfoldable()
-
-    ZORBA_NOT_PROPAGATES_I2O
-};
-
-
-class fn_parse_func : public function 
-{
-  public:
-    fn_parse_func(const signature& sig) : function (sig) {}
-    DEFAULT_CODEGEN (FnParseIterator)
-    virtual bool isSource() const { return true; }
-    bool requires_dyn_ctx () const { return true; }  // TODO: rename to unfoldable()
-};
-
-
-  //15.5.5 fn:doc-available
-  class fn_doc_available_func : public function {
-  public:
-    fn_doc_available_func(const signature& sig) : function (sig) {}
-    DEFAULT_CODEGEN (FnDocAvailableIterator)
-    ZORBA_NOT_PROPAGATES_I2O
-  };
-
-
-
-/*______________________________________________________________________
-|  
-| 15.1 General Functions and Operators on Sequences
-|_______________________________________________________________________*/
-
-
-//15.1.10 fn:subsequence
-//----------------------
-
-void fn_subsequence::compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const {
-  switch (k) {
-  case AnnotationKey::IGNORES_SORTED_NODES:
-  case AnnotationKey::IGNORES_DUP_NODES:
-    // don't use single_seq_fun default propagation rule
-    return;
-  default: single_seq_opt_function::compute_annotation (parent, kids, k);
-  }
-}
-
-
-
-/*______________________________________________________________________
-|
-| 15.3 Equals, Union, Intersection and Except
-|_______________________________________________________________________*/
-
-
-//15.3.2 op:union
-//ordered
-PlanIter_t fn_union::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new FnConcatIterator(sctx, loc, argv, false);
-}
-
-
-// For intersect and except, it's always more efficient to sort the output
-// and use hash-join than to sort the inputs and use mergesort-join. Only if
-// the inputs happen to be sorted for a different reason will we use mergesort:
-// for $x in path/expr1 for $y in path/expr2 return ($x, $y, ($x intersect $y))
-//
-// For now, codegen doesn't know whether the inputs are sorted or not.
-// TODO: annotate expressions with USE_HASH / USE_MERGESORT properties
-// during optimization.
-
-//15.3.3 op:intersect
-PlanIter_t fn_intersect::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+PlanIter_t fn_intersect::codegen(
+    CompilerCB* /*cb*/,
+    static_context* sctx,
+    const QueryLoc& loc, 
+    std::vector<PlanIter_t>& argv,
+    AnnotationHolder &ann) const
 {
 #if 0  // we can't access PRODUCES_* from the inputs, must rethink
   bool distinct = ann.get_annotation (AnnotationKey::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VAL;
@@ -530,431 +405,373 @@ PlanIter_t fn_intersect::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc
 }
 
 
+/*******************************************************************************
 
-//15.3.4 op:except
-PlanIter_t fn_except::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+********************************************************************************/
+class fn_except: public function 
 {
-  // TODO: use SortAntiJoinIterator when available (trac ticket 254)
-  return new HashSemiJoinIterator(sctx, loc, argv, true);
-}
+public:
+  fn_except(const signature& sig) : function (sig) {}
 
-
-/*______________________________________________________________________
-|
-| 15.5 Functions and Operators that Generate Sequences
-|_______________________________________________________________________*/
-
-
-//15.5.6 fn:collection
-
-
-// internal functions
-
-#define A_SORT ((a) [0])
-#define A_ATOMICS ((a) [1])
-#define A_DISTINCT ((a) [2])
-#define A_ASCENDING ((a) [3])
-
-
-void op_node_sort_distinct::compute_annotation(
-    AnnotationHolder* parent,
-    std::vector<AnnotationHolder *>& kids,
-    Annotation::key_t k) const 
-{
-  const bool*a  = action ();
-
-  switch (k) 
+  ZORBA_PRODUCES_SORTED;
+  ZORBA_PRODUCES_DISTINCT;
+  
+  PlanIter_t codegen(
+        CompilerCB* /*cb*/,
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        AnnotationHolder& ann) const
   {
-  case AnnotationKey::IGNORES_SORTED_NODES:
-  case AnnotationKey::IGNORES_DUP_NODES: 
+    // TODO: use SortAntiJoinIterator when available (trac ticket 254)
+    return new HashSemiJoinIterator(sctx, loc, argv, true);
+  }
+};
+  
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  15.4 Aggregate Functions                                                   //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+  15.4.1 fn:count
+********************************************************************************/
+typedef function_impl<FnCountIterator> fn_count;
+
+
+/*******************************************************************************
+  15.4.2 fn:avg
+********************************************************************************/
+typedef function_impl<FnAvgIterator> fn_avg;
+
+
+/*******************************************************************************
+  15.4.3 fn:max
+********************************************************************************/
+class fn_max : public function 
+{
+public:
+  fn_max(const signature& sig) : function (sig) {}
+
+  ZORBA_PROPAGATES_ONE_I2O(0);
+
+  PlanIter_t codegen(
+        CompilerCB* /*cb*/,
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        AnnotationHolder& ann) const 
   {
-    bool ignores = 
-    (parent->get_annotation(k).getp() == TSV_TRUE_P ||
-     (k == AnnotationKey::IGNORES_SORTED_NODES ? A_SORT : A_DISTINCT));
-
-    TSVAnnotationValue::update_annotation(kids[src],
-                                          k,
-                                          TSVAnnotationValue::from_bool(ignores));
-    break;
+    return new FnMinMaxIterator(sctx, loc, argv, FnMinMaxIterator::MAX);
   }
+};
 
-  case AnnotationKey::PRODUCES_SORTED_NODES:
-  case AnnotationKey::PRODUCES_DISTINCT_NODES: 
+
+/*******************************************************************************
+  15.4.4 fn:min
+********************************************************************************/
+class fn_min : public function 
+{
+public:
+  fn_min(const signature& sig) : function (sig) {}
+
+  ZORBA_PROPAGATES_ONE_I2O(0);
+
+  PlanIter_t codegen(
+        CompilerCB* /*cb*/,
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        AnnotationHolder& ann) const 
   {
-    bool produces =
-    (kids [0]->get_annotation(k).getp() == TSV_TRUE_P ||
-     (k == AnnotationKey::PRODUCES_SORTED_NODES ? A_SORT : A_DISTINCT));
-
-    parent->put_annotation(k, TSVAnnotationValue::from_bool(produces));
-    break;
+    return new FnMinMaxIterator(sctx, loc, argv, FnMinMaxIterator::MIN);
   }
-
-  default: break;
-  }
-}
+};
 
 
-PlanIter_t op_node_sort_distinct::codegen(
-    CompilerCB* /*cb*/,
-    short sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    AnnotationHolder& ann) const 
+/*******************************************************************************
+  15.4.5 fn:sum
+********************************************************************************/
+typedef function_impl<FnSumIterator> fn_sum;
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  15.5 Functions and Operators that Generate Sequences                       //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+  15.5.1 op:to
+********************************************************************************/
+typedef function_impl<OpToIterator> op_to;
+
+
+/*******************************************************************************
+  15.5.2 fn:id
+********************************************************************************/
+typedef function_impl<FnIdIterator> fn_id;
+
+
+/*******************************************************************************
+  15.5.3 fn:idref
+********************************************************************************/
+typedef function_impl<FnIdRefIterator> fn_id_ref;
+
+
+/*******************************************************************************
+  15.5.4 fn:doc
+********************************************************************************/
+class fn_doc_func : public function 
 {
-  const bool* a = action();
-  bool distinct = A_DISTINCT;
-  if (! A_SORT)
-    return distinct ? new NodeDistinctIterator (sctx, loc, argv [0], A_ATOMICS)
-      : (A_ATOMICS ? new EitherNodesOrAtomicsIterator (sctx, loc, argv) : argv [0]);
-  else
-    return new NodeSortIterator(sctx, loc, argv [0], A_ASCENDING, distinct, A_ATOMICS);
-}
+public:
+  fn_doc_func(const signature& sig) : function (sig) {}
+
+  virtual bool isSource() const { return true; }
+
+  bool requires_dyn_ctx () const { return true; }  // TODO: rename to unfoldable()
+
+  ZORBA_NOT_PROPAGATES_I2O;
+
+  DEFAULT_NARY_CODEGEN(FnDocIterator);
+};
 
 
-const function* op_node_sort_distinct::op_for_action(
-    const static_context* sctx,
-    const bool* a,
-    const AnnotationHolder* parent,
-    const AnnotationHolder* child,
-    nodes_or_atomics_t noa) 
+/*******************************************************************************
+
+********************************************************************************/
+class fn_parse_func : public function 
 {
-#define LOOKUP_OP1(local) (sctx->lookup_builtin_fn((xqp_string(":") + local).c_str(), 1))
+public:
+  fn_parse_func(const signature& sig) : function (sig) {}
 
-  Annotation::key_t ignoresSortedNodes = AnnotationKey::IGNORES_SORTED_NODES;
-  Annotation::key_t producesSortedNodes = AnnotationKey::PRODUCES_SORTED_NODES;
-  Annotation::key_t ignoresDupNodes = AnnotationKey::IGNORES_DUP_NODES;
-  Annotation::key_t producesDistinctNodes = AnnotationKey::PRODUCES_DISTINCT_NODES;
+  virtual bool isSource() const { return true; }
 
-  bool distinct = (A_DISTINCT  &&
-                   (parent == NULL ||
-                    parent->get_annotation(ignoresDupNodes) != TSV_TRUE) &&
-                   (child == NULL ||
-                    child->get_annotation(producesDistinctNodes) != TSV_TRUE));
+  bool requires_dyn_ctx () const { return true; }  // TODO: rename to unfoldable()
 
-  if (A_ATOMICS && noa == ATOMICS)
-    return NULL;
+  DEFAULT_NARY_CODEGEN(FnParseIterator);
+};
 
-  bool atomics = A_ATOMICS && noa == MIXED;
 
-#if 0
-  cout << "op_for_action parent " << parent << " child " << child
-       << " A_SORT " << A_SORT << " parent_ignores_sorted "
-       << (parent != NULL && parent->get_annotation(AnnotationKey::IGNORES_SORTED_NODES) == TSV_TRUE)
-       << " child_prod_sorted " << (child != NULL && child->get_annotation(AnnotationKey::PRODUCES_SORTED_NODES) == TSV_TRUE) << endl;
-#endif
-
-  if (! A_SORT ||
-      (parent != NULL &&
-       parent->get_annotation(ignoresSortedNodes).getp() == TSV_TRUE_P) ||
-      (child != NULL &&
-       child->get_annotation(producesSortedNodes).getp() == TSV_TRUE_P &&
-       A_ASCENDING))
-  {
-    return (distinct ?
-            LOOKUP_OP1 ("distinct-nodes" + (atomics ? "-or-atomics" : ""))
-            :
-            (atomics ? LOOKUP_OP1 ("either-nodes-or-atomics") : NULL));
-  }
-
-  xqp_string part1 = xqpString::concat("sort-", (distinct ? "distinct-" : ""), "nodes-");
-  xqp_string part2 = xqpString::concat( A_ASCENDING ? "asc" : "desc", (atomics ? "-or-atomics" : ""));
-
-  return LOOKUP_OP1 (part1 + part2);
-
-#undef LOOKUP_OP1
-}
-
-const function *op_node_sort_distinct::min_action(
-    const static_context *sctx,
-    const AnnotationHolder *self,
-    const AnnotationHolder *child,
-    nodes_or_atomics_t noa) const 
+/*******************************************************************************
+  15.5.5 fn:doc-available
+********************************************************************************/
+class fn_doc_available_func : public function 
 {
-  return op_for_action (sctx, action(), self, child, noa);
-}
+public:
+  fn_doc_available_func(const signature& sig) : function (sig) {}
+
+  ZORBA_NOT_PROPAGATES_I2O;
+
+  DEFAULT_NARY_CODEGEN(FnDocAvailableIterator);
+};
 
 
-PlanIter_t fn_unordered::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &) const
+/*******************************************************************************
+
+********************************************************************************/
+void populateContext_Sequences(static_context* sctx) 
 {
-  return argv [0];
-}
+  DECL(sctx, fn_doc_func,
+       (createQName(XQUERY_FN_NS,"fn","doc"),
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+        GENV_TYPESYSTEM.DOCUMENT_UNTYPED_TYPE_QUESTION));
+  
+  DECL(sctx, fn_doc_available_func,
+       (createQName(XQUERY_FN_NS,"fn","doc-available"),
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-void fn_unordered::compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const {
-  switch (k) {
-  case AnnotationKey::IGNORES_SORTED_NODES:
-    TSVAnnotationValue::update_annotation (kids [src], k, TSVAnnotationValue::TRUE_VAL);
-    break;
-  case AnnotationKey::IGNORES_DUP_NODES:
-    TSVAnnotationValue::update_annotation (kids [src], k, parent->get_annotation (k));
-    break;
-  default: break;
-  }
-}
+  DECL(sctx, fn_parse_func,
+       (createQName(ZORBA_ALEXIS_FN_NS,"fn-zorba-util","parse"),
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE));
 
+  DECL(sctx, op_concatenate,
+       (createQName(XQUERY_FN_NS,"fn",":concatenate"),
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+        true,
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
+  DECL(sctx, fn_exists,
+       (createQName(XQUERY_FN_NS,"fn","exists"),
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-void populateContext_Sequences(static_context *sctx) {
-// Sequences
-DECL(sctx, fn_doc_func,
-     (createQName(XQUERY_FN_NS,"fn","doc"),
-      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
-      GENV_TYPESYSTEM.DOCUMENT_UNTYPED_TYPE_QUESTION));
+  DECL(sctx, fn_empty,
+       (createQName(XQUERY_FN_NS,"fn","empty"),
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-DECL(sctx, fn_doc_available_func,
-     (createQName(XQUERY_FN_NS,"fn","doc-available"),
-      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+  DECL(sctx, fn_index_of,
+       (createQName(XQUERY_FN_NS,"fn","index-of"),
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
+        GENV_TYPESYSTEM.INTEGER_TYPE_STAR));
 
-DECL(sctx, fn_parse_func,
-     (createQName(ZORBA_ALEXIS_FN_NS,"fn-zorba-util","parse"),
-      GENV_TYPESYSTEM.STRING_TYPE_ONE,
-      GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE));
+  DECL(sctx, fn_index_of,
+       (createQName(XQUERY_FN_NS,"fn","index-of"),
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.INTEGER_TYPE_STAR));
 
-DECL(sctx, op_concatenate,
-     (createQName(XQUERY_FN_NS,"fn",":concatenate"),
-      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-      true,
-      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+  DECL(sctx, fn_remove,
+       (createQName(XQUERY_FN_NS,"fn","remove"),
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
-DECL(sctx, fn_exists,
-    (createQName(XQUERY_FN_NS,"fn","exists"),
-    GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-    GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+  DECL(sctx, fn_reverse,
+       (createQName(XQUERY_FN_NS,"fn","reverse"),
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
-DECL(sctx, fn_empty,
-    (createQName(XQUERY_FN_NS,"fn","empty"),
-    GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-    GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+  DECL(sctx, fn_distinct_values,
+       (createQName(XQUERY_FN_NS,"fn","distinct-values"),
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR));
 
-DECL(sctx, fn_index_of,
-    (createQName(XQUERY_FN_NS,"fn","index-of"),
-    GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
-    GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
-    GENV_TYPESYSTEM.INTEGER_TYPE_STAR));
+  DECL(sctx, fn_distinct_values,
+       (createQName(XQUERY_FN_NS,"fn","distinct-values"),
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR));
 
-DECL(sctx, fn_index_of,
-    (createQName(XQUERY_FN_NS,"fn","index-of"),
-    GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
-    GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
-    GENV_TYPESYSTEM.STRING_TYPE_ONE,
-    GENV_TYPESYSTEM.INTEGER_TYPE_STAR));
+  DECL(sctx, fn_insert_before,
+       (createQName(XQUERY_FN_NS,"fn","insert-before"),
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE,    
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
-DECL(sctx, fn_remove,
-    (createQName(XQUERY_FN_NS,"fn","remove"),
-    GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-    GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
-    GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+  DECL(sctx, fn_subsequence,
+       (createQName(XQUERY_FN_NS,"fn","subsequence"),
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,    
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
-DECL(sctx, fn_reverse,
-    (createQName(XQUERY_FN_NS,"fn","reverse"),
-    GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-    GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+  DECL(sctx, fn_subsequence,
+       (createQName(XQUERY_FN_NS,"fn","subsequence"),
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
-DECL(sctx, fn_distinct_values,
-    (createQName(XQUERY_FN_NS,"fn","distinct-values"),
-    GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
-    GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR));
+  DECL(sctx, fn_zero_or_one,
+       (createQName(XQUERY_FN_NS,"fn","zero-or-one"),
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.ITEM_TYPE_QUESTION));
+  
+  DECL(sctx, fn_one_or_more,
+       (createQName(XQUERY_FN_NS,"fn","one-or-more"),
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.ITEM_TYPE_PLUS));
+  
+  DECL(sctx, fn_exactly_one,
+       (createQName(XQUERY_FN_NS,"fn","exactly-one"),
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.ITEM_TYPE_ONE));
 
-DECL(sctx, fn_distinct_values,
-    (createQName(XQUERY_FN_NS,"fn","distinct-values"),
-    GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
-    GENV_TYPESYSTEM.STRING_TYPE_ONE,
-    GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR));
+  DECL(sctx, fn_exactly_one_noraise,
+       (createQName(XQUERY_FN_NS,"fn",":exactly-one-noraise"),
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-DECL(sctx, fn_insert_before,
-    (createQName(XQUERY_FN_NS,"fn","insert-before"),
-    GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-    GENV_TYPESYSTEM.INTEGER_TYPE_ONE,    
-    GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-    GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+  DECL(sctx, fn_count,
+       (createQName(XQUERY_FN_NS,"fn","count"),
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
 
-DECL(sctx, fn_subsequence,
-    (createQName(XQUERY_FN_NS,"fn","subsequence"),
-    GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-    GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,    
-    GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+  DECL(sctx, fn_avg,
+       (createQName(XQUERY_FN_NS,"fn","avg"),
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
-DECL(sctx, fn_subsequence,
-    (createQName(XQUERY_FN_NS,"fn","subsequence"),
-    GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-    GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-    GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-    GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+  DECL(sctx, fn_max,
+       (createQName(XQUERY_FN_NS,"fn","max"),
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+  
+  DECL(sctx, fn_max,
+       (createQName(XQUERY_FN_NS,"fn","max"),
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
-DECL(sctx, fn_zero_or_one,
-    (createQName(XQUERY_FN_NS,"fn","zero-or-one"),
-    GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
-    GENV_TYPESYSTEM.ITEM_TYPE_QUESTION));
+  DECL(sctx, fn_min,
+       (createQName(XQUERY_FN_NS,"fn","min"),
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
-DECL(sctx, fn_one_or_more,
-    (createQName(XQUERY_FN_NS,"fn","one-or-more"),
-    GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
-    GENV_TYPESYSTEM.ITEM_TYPE_PLUS));
+  DECL(sctx, fn_min,
+       (createQName(XQUERY_FN_NS,"fn","min"),
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
-DECL(sctx, fn_exactly_one,
-    (createQName(XQUERY_FN_NS,"fn","exactly-one"),
-    GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
-    GENV_TYPESYSTEM.ITEM_TYPE_ONE));
+  DECL(sctx, fn_sum,
+       (createQName(XQUERY_FN_NS,"fn","sum"),
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
-DECL(sctx, fn_exactly_one_noraise,
-    (createQName(XQUERY_FN_NS,"fn",":exactly-one-noraise"),
-    GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
-    GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+  DECL(sctx, fn_sum,
+       (createQName(XQUERY_FN_NS,"fn","sum"),
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
-DECL(sctx, fn_count,
-    (createQName(XQUERY_FN_NS,"fn","count"),
-    GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
-    GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
+  DECL(sctx, op_to,
+       (createQName(XQUERY_FN_NS,"fn",":to"),
+        GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.INTEGER_TYPE_STAR));
 
-DECL(sctx, fn_avg,
-    (createQName(XQUERY_FN_NS,"fn","avg"),
-    GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
-    GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+  DECL(sctx, fn_id,
+       (createQName(XQUERY_FN_NS,"fn","id"),
+        GENV_TYPESYSTEM.STRING_TYPE_STAR,
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR)
+       );
 
-DECL(sctx, fn_max,
-    (createQName(XQUERY_FN_NS,"fn","max"),
-    GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
-    GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
-
-DECL(sctx, fn_max,
-    (createQName(XQUERY_FN_NS,"fn","max"),
-    GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
-    GENV_TYPESYSTEM.STRING_TYPE_ONE,
-    GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
-
-DECL(sctx, fn_min,
-    (createQName(XQUERY_FN_NS,"fn","min"),
-    GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
-    GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
-
-DECL(sctx, fn_min,
-    (createQName(XQUERY_FN_NS,"fn","min"),
-    GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
-    GENV_TYPESYSTEM.STRING_TYPE_ONE, 
-    GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
-
-DECL(sctx, fn_sum,
-    (createQName(XQUERY_FN_NS,"fn","sum"),
-    GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
-    GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
-
-DECL(sctx, fn_sum,
-    (createQName(XQUERY_FN_NS,"fn","sum"),
-    GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
-    GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, 
-    GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
-
-DECL(sctx, op_to,
-    (createQName(XQUERY_FN_NS,"fn",":to"),
-    GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION, 
-    GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION, 
-    GENV_TYPESYSTEM.INTEGER_TYPE_STAR));
-
-DECL(sctx, fn_id,
-     (createQName(XQUERY_FN_NS,"fn","id"),
-      GENV_TYPESYSTEM.STRING_TYPE_STAR,
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR)
-    );
-
-DECL(sctx, fn_id_ref,
-     (createQName(XQUERY_FN_NS,"fn","idref"),
-      GENV_TYPESYSTEM.STRING_TYPE_STAR,
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
-
-DECL(sctx, fn_unordered,
-  (createQName(XQUERY_FN_NS,"fn","unordered"),
-  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-  GENV_TYPESYSTEM.ITEM_TYPE_STAR));
-
-DECL(sctx, op_either_nodes_or_atomics,
-  (createQName(XQUERY_FN_NS,"fn",":either-nodes-or-atomics"),
-  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-  GENV_TYPESYSTEM.ITEM_TYPE_STAR));
-
-DECL(sctx, op_distinct_nodes,
-  (createQName(XQUERY_FN_NS,"fn",":distinct-nodes"),
-  GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
-  GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
-
-DECL(sctx, op_distinct_nodes_or_atomics,
-  (createQName(XQUERY_FN_NS,"fn",":distinct-nodes-or-atomics"),
-  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-  GENV_TYPESYSTEM.ITEM_TYPE_STAR));
-
-DECL(sctx, op_sort_nodes_ascending,
-  (createQName(XQUERY_FN_NS,"fn",":sort-nodes-asc"),
-  GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
-  GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
-
-DECL(sctx, op_sort_nodes_asc_or_atomics,
-  (createQName(XQUERY_FN_NS,"fn",":sort-nodes-asc-or-atomics"),
-  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-  GENV_TYPESYSTEM.ITEM_TYPE_STAR));
-
-DECL(sctx, op_sort_nodes_descending,
-  (createQName(XQUERY_FN_NS,"fn",":sort-nodes-desc"),
-  GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
-  GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
-
-DECL(sctx, op_sort_nodes_desc_or_atomics,
-  (createQName(XQUERY_FN_NS,"fn",":sort-nodes-desc-or-atomics"),
-  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-  GENV_TYPESYSTEM.ITEM_TYPE_STAR));
-
-DECL(sctx, op_sort_distinct_nodes_ascending,
-  (createQName(XQUERY_FN_NS,"fn",":sort-distinct-nodes-asc"),
-  GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
-  GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
-
-DECL(sctx, op_sort_distinct_nodes_asc_or_atomics,
-  (createQName(XQUERY_FN_NS,"fn",":sort-distinct-nodes-asc-or-atomics"),
-  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-  GENV_TYPESYSTEM.ITEM_TYPE_STAR));
-
-DECL(sctx, op_sort_distinct_nodes_descending,
-  (createQName(XQUERY_FN_NS,"fn",":sort-distinct-nodes-desc"),
-  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-  GENV_TYPESYSTEM.ITEM_TYPE_STAR));
-
-// TODO: separate function
-DECL(sctx, op_sort_distinct_nodes_descending,
-  (createQName(XQUERY_FN_NS,"fn",":sort-distinct-nodes-desc-or-atomics"),
-  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-  GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+  DECL(sctx, fn_id_ref,
+       (createQName(XQUERY_FN_NS,"fn","idref"),
+        GENV_TYPESYSTEM.STRING_TYPE_STAR,
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
   DECL(sctx, fn_union,
-  (createQName(XQUERY_FN_NS,"fn",":union"),
-   GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
-   GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
-
-  DECL(sctx, fn_intersect,
-  (createQName(XQUERY_FN_NS,"fn",":intersect"),
-   GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
-   GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
-
-  DECL(sctx, fn_except,
-  (createQName(XQUERY_FN_NS,"fn",":except"),
-   GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
-   GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
+       (createQName(XQUERY_FN_NS,"fn",":union"),
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
   
-DECL(sctx, fn_deep_equal,
-  (createQName(XQUERY_FN_NS, "fn", "deep-equal"),
-  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-  GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+  DECL(sctx, fn_intersect,
+       (createQName(XQUERY_FN_NS,"fn",":intersect"),
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
+  
+  DECL(sctx, fn_except,
+       (createQName(XQUERY_FN_NS,"fn",":except"),
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
+  
+  DECL(sctx, fn_deep_equal,
+       (createQName(XQUERY_FN_NS, "fn", "deep-equal"),
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-DECL(sctx, fn_deep_equal,
-  (createQName(XQUERY_FN_NS, "fn", "deep-equal"),
-  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-  GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-  GENV_TYPESYSTEM.STRING_TYPE_ONE,
-  GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
-
-
-// end Sequences
-
+  DECL(sctx, fn_deep_equal,
+       (createQName(XQUERY_FN_NS, "fn", "deep-equal"),
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 }
 
 } /* namespace zorba */

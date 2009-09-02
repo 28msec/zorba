@@ -13,43 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_INTERNAL_OPERATORS_H
-#define ZORBA_INTERNAL_OPERATORS_H
+#ifndef ZORBA_FUNCTIONS_HOISTING
+#define ZORBA_FUNCTIONS_HOISTING
 
-#include <vector>
 #include "common/shared_types.h"
-#include "functions/function.h"
+
 
 namespace zorba 
 {
 
-class zop_hoist : public function 
-{
-public:
-  zop_hoist(const signature&);
-
-  xqtref_t return_type (const std::vector<xqtref_t>& arg_types) const;
-
-  PlanIter_t codegen (CompilerCB* cb,
-                      short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-};
-
-
-class zop_unhoist : public function 
-{
-public:
-  zop_unhoist(const signature&);
-
-  xqtref_t return_type (const std::vector<xqtref_t>& arg_types) const;
-
-  PlanIter_t codegen(CompilerCB* cb,
-                      short sctx, const QueryLoc&, std::vector<PlanIter_t>&, AnnotationHolder&) const;
-};
-
+void populateContext_Hoisting(static_context* sctx);
 
 }
 
-#endif /* ZORBA_INTERNAL_OPERATORS_H */
+#endif
 /* vim:set ts=2 sw=2: */
 
 /*

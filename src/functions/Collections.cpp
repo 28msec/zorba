@@ -16,6 +16,7 @@
 
 #include "system/globalenv.h"
 
+#include "functions/function_impl.h"
 #include "functions/Collections.h"
 
 #include "runtime/collections/CollectionsImpl.h"
@@ -24,130 +25,435 @@
 namespace zorba 
 {
 
-PlanIter_t fn_collection::codegen(
-    CompilerCB* cb,
-    short sctx, 
-    const QueryLoc& loc, 
-    std::vector<PlanIter_t>& argv, 
-    AnnotationHolder &ann) const
+
+class fn_collection : public function 
 {
-  return new FnCollectionIterator(sctx, loc, argv);
-}
+public:
+  fn_collection(const signature & sig) : function (sig) {}
+
+  bool requires_dyn_ctx() const { return true; }
+
+  DEFAULT_NARY_CODEGEN(FnCollectionIterator);
+};
 
 
-PlanIter_t
-zorba_collection_exists::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+class zorba_collection_exists : public function
 {
-  return new ZorbaCollectionExistsIterator(sctx, loc, argv);
-}
+public:
+  zorba_collection_exists(const signature& sig): function(sig){}
+
+  bool requires_dyn_ctx() const { return true; }
+
+  DEFAULT_NARY_CODEGEN(ZorbaCollectionExistsIterator);
+};
 
 
-PlanIter_t
-zorba_import_xml::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+class zorba_import_xml : public function
 {
-  return new ZorbaImportXmlIterator(sctx, loc, argv);
-}
+public:
+  zorba_import_xml(const signature& sig): function(sig){}
+  
+  bool requires_dyn_ctx () const { return true; }
 
-PlanIter_t
-zorba_import_catalog::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new ZorbaImportCatalogIterator(sctx, loc, argv);
-}
+  DEFAULT_NARY_CODEGEN(ZorbaImportXmlIterator);
+};
 
-PlanIter_t
-zorba_import_folder::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new ZorbaImportFolderIterator(sctx, loc, argv);
-}
 
-PlanIter_t
-zorba_list_collections::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+class zorba_import_catalog : public function
 {
-  return new ZorbaListCollectionsIterator(sctx, loc, argv);
-}
+public:
+  zorba_import_catalog(const signature& sig): function(sig){}
 
-PlanIter_t
-zorba_create_collection::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new ZorbaCreateCollectionIterator(sctx, loc, argv);
-}
+  bool requires_dyn_ctx () const { return true; }
 
-PlanIter_t
-zorba_delete_collection::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new ZorbaDeleteCollectionIterator(sctx, loc, argv);
-}
+  DEFAULT_NARY_CODEGEN(ZorbaImportCatalogIterator);
+};
 
-PlanIter_t
-zorba_delete_all_collections::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new ZorbaDeleteAllCollectionsIterator(sctx, loc, argv);
-}
 
-PlanIter_t
-zorba_insert_nodes_first::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+class zorba_import_folder : public function
 {
-  return new ZorbaInsertNodeFirstIterator(sctx, loc, argv);
-}
+public:
+  zorba_import_folder(const signature& sig): function(sig){}
 
-PlanIter_t
-zorba_insert_nodes_last::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new ZorbaInsertNodeLastIterator(sctx, loc, argv);
-}
+  bool requires_dyn_ctx () const { return true; }
 
-PlanIter_t
-zorba_insert_nodes_before::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new ZorbaInsertNodeBeforeIterator(sctx, loc, argv);
-}
+  DEFAULT_NARY_CODEGEN(ZorbaImportFolderIterator);
+};
 
-PlanIter_t
-zorba_insert_nodes_after::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new ZorbaInsertNodeAfterIterator(sctx, loc, argv);
-}
 
-PlanIter_t
-zorba_insert_nodes_at::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+class zorba_list_collections : public function
 {
-  return new ZorbaInsertNodeAtIterator(sctx, loc, argv);
-}
+public:
+  zorba_list_collections(const signature& sig): function(sig){}
 
-PlanIter_t
-zorba_remove_nodes::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new ZorbaRemoveNodeIterator(sctx, loc, argv);
-}
+  bool requires_dyn_ctx () const { return true; }
 
-PlanIter_t
-zorba_remove_node_at::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new ZorbaRemoveNodeAtIterator(sctx, loc, argv);
-}
+  DEFAULT_NARY_CODEGEN(ZorbaListCollectionsIterator);
+};
 
-PlanIter_t
-zorba_nodes_count::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new ZorbaNodeCountIterator(sctx, loc, argv);
-}
 
-PlanIter_t
-zorba_node_at::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+class zorba_create_collection : public function
 {
-  return new ZorbaNodeAtIterator(sctx, loc, argv);
-}
+public:
+  zorba_create_collection(const signature& sig): function(sig){}
 
-PlanIter_t
-zorba_index_of::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new ZorbaIndexOfIterator(sctx, loc, argv);
-}
+  bool requires_dyn_ctx () const { return true; }
 
-PlanIter_t
-zorba_export_xml::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+  expr_update_t getUpdateType() const { return UPDATE_EXPR; }
+
+  DEFAULT_NARY_CODEGEN(ZorbaCreateCollectionIterator);
+};
+
+
+class zorba_delete_collection : public function
 {
-  return new ZorbaExportXmlIterator(sctx, loc, argv);
+public:
+  zorba_delete_collection(const signature& sig): function(sig){}
+
+  bool requires_dyn_ctx () const { return true; }
+
+  expr_update_t getUpdateType() const { return UPDATE_EXPR; }
+
+  DEFAULT_NARY_CODEGEN(ZorbaDeleteCollectionIterator);
+};
+
+
+class zorba_delete_all_collections : public function
+{
+public:
+  zorba_delete_all_collections(const signature& sig): function(sig){}
+
+  bool requires_dyn_ctx () const { return true; }
+
+  expr_update_t getUpdateType() const { return UPDATE_EXPR; }
+
+  DEFAULT_NARY_CODEGEN(ZorbaDeleteAllCollectionsIterator);
+};
+
+
+class zorba_insert_nodes_first : public function
+{
+public:
+  zorba_insert_nodes_first(const signature& sig): function(sig){}
+
+  bool requires_dyn_ctx () const { return true; }
+
+  expr_update_t getUpdateType() const { return UPDATE_EXPR; }
+
+  DEFAULT_NARY_CODEGEN(ZorbaInsertNodeFirstIterator);
+};
+
+
+class zorba_insert_nodes_last : public function
+{
+public:
+  zorba_insert_nodes_last(const signature& sig): function(sig){}
+
+  bool requires_dyn_ctx () const { return true; }
+
+  expr_update_t getUpdateType() const { return UPDATE_EXPR; }
+
+  DEFAULT_NARY_CODEGEN(ZorbaInsertNodeLastIterator);
+};
+
+
+class zorba_insert_nodes_before : public function
+{
+public:
+  zorba_insert_nodes_before(const signature& sig): function(sig){}
+
+  bool requires_dyn_ctx () const { return true; }
+
+  expr_update_t getUpdateType() const { return UPDATE_EXPR; }
+
+  DEFAULT_NARY_CODEGEN(ZorbaInsertNodeBeforeIterator);
+};
+
+
+class zorba_insert_nodes_after : public function
+{
+public:
+  zorba_insert_nodes_after(const signature& sig): function(sig){}
+
+  bool requires_dyn_ctx () const { return true; }
+
+  expr_update_t getUpdateType() const { return UPDATE_EXPR; }
+
+  DEFAULT_NARY_CODEGEN(ZorbaInsertNodeAfterIterator);
+};
+
+
+class zorba_insert_nodes_at : public function
+{
+public:
+  zorba_insert_nodes_at(const signature& sig): function(sig){}
+
+  bool requires_dyn_ctx () const { return true; }
+
+  expr_update_t getUpdateType() const { return UPDATE_EXPR; }
+
+  DEFAULT_NARY_CODEGEN(ZorbaInsertNodeAtIterator);
+};
+
+
+class zorba_remove_nodes : public function
+{
+public:
+  zorba_remove_nodes(const signature& sig): function(sig){}
+
+  bool requires_dyn_ctx () const { return true; }
+
+  expr_update_t getUpdateType() const { return UPDATE_EXPR; }
+
+  DEFAULT_NARY_CODEGEN(ZorbaRemoveNodeIterator);
+};
+
+
+class zorba_remove_node_at : public function
+{
+public:
+  zorba_remove_node_at(const signature& sig): function(sig){}
+
+  bool requires_dyn_ctx () const { return true; }
+
+  expr_update_t getUpdateType() const { return UPDATE_EXPR; }
+
+  DEFAULT_NARY_CODEGEN(ZorbaRemoveNodeAtIterator);
+};
+
+
+class zorba_nodes_count : public function
+{
+public:
+  zorba_nodes_count(const signature& sig): function(sig){}
+
+  bool requires_dyn_ctx () const { return true; }
+
+  DEFAULT_NARY_CODEGEN(ZorbaNodeCountIterator);
+};
+
+
+class zorba_node_at : public function
+{
+public:
+  zorba_node_at(const signature& sig): function(sig){}
+
+  bool requires_dyn_ctx() const { return true; }
+
+  DEFAULT_NARY_CODEGEN(ZorbaNodeAtIterator);
+};
+
+
+class zorba_index_of : public function
+{
+public:
+  zorba_index_of(const signature& sig): function(sig){}
+
+  bool requires_dyn_ctx () const { return true; }
+
+  DEFAULT_NARY_CODEGEN(ZorbaIndexOfIterator);
+};
+
+
+class zorba_export_xml : public function
+{
+public:
+  zorba_export_xml(const signature& sig): function(sig){}
+
+  bool requires_dyn_ctx () const { return true; }
+
+  DEFAULT_NARY_CODEGEN(ZorbaExportXmlIterator);
+};
+
+
+void populateContext_Collections(static_context* sctx)
+{
+
+DECL(sctx, fn_collection,
+     (createQName(XQUERY_FN_NS, "fn", "collection"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
+
+DECL(sctx, fn_collection,
+     (createQName(XQUERY_FN_NS, "fn", "collection"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
+
+DECL(sctx, zorba_collection_exists,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "collection-exists"),
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+
+DECL(sctx, zorba_collection_exists,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "collection-exists"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+
+DECL(sctx, zorba_import_xml,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "import-xml"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_import_catalog,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "import-catalog"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_import_folder,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "import-folder"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_list_collections,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "list-collections"),
+      GENV_TYPESYSTEM.ANY_URI_TYPE_STAR));
+
+DECL(sctx, zorba_create_collection,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "create-collection"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_create_collection,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "create-collection"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_delete_collection,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "delete-collection"),
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_delete_collection,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "delete-collection"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_delete_all_collections,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "delete-all-collections"),
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_insert_nodes_first,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "insert-nodes-first"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_insert_nodes_first,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "insert-nodes-first"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_insert_nodes_last,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "insert-nodes-last"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_insert_nodes_last,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "insert-nodes-last"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_insert_nodes_before,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "insert-nodes-before"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_insert_nodes_before,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "insert-nodes-before"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_insert_nodes_after,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "insert-nodes-after"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_insert_nodes_after,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "insert-nodes-after"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_insert_nodes_at,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "insert-nodes-at"),
+      GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_insert_nodes_at,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "insert-nodes-at"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_remove_nodes,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "remove-nodes"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_remove_nodes,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "remove-nodes"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_remove_node_at,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "remove-node-at"),
+      GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_remove_node_at,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "remove-node-at"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_nodes_count,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "nodes-count"),
+      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
+
+DECL(sctx, zorba_nodes_count,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "nodes-count"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
+
+DECL(sctx, zorba_node_at,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "node-at"),
+      GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION));
+
+DECL(sctx, zorba_node_at,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "node-at"),
+     GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+     GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
+     GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION));
+
+DECL(sctx, zorba_index_of,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "index-of"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
+
+DECL(sctx, zorba_index_of,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "index-of"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
+
+DECL(sctx, zorba_export_xml,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "export-xml"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.NONE_TYPE));
+
+DECL(sctx, zorba_export_xml,
+     (createQName(ZORBA_COLLECTION_FN_NS, "fn-zorba-collection", "export-xml"),
+     GENV_TYPESYSTEM.STRING_TYPE_ONE,
+     GENV_TYPESYSTEM.STRING_TYPE_ONE,
+     GENV_TYPESYSTEM.NONE_TYPE));
 }
 
 } /* namespace zorba */

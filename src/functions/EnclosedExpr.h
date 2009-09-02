@@ -13,27 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_CONSTRUCTOR_H
-#define ZORBA_CONSTRUCTOR_H
+#ifndef ZORBA_FUNCTIONS_CONSTRUCTOR_H
+#define ZORBA_FUNCTIONS_CONSTRUCTOR_H
 
 #include "common/shared_types.h"
-#include "functions/function.h"
 
-namespace zorba {
- 
-class op_enclosed_expr : public function 
+namespace zorba 
 {
-public:
-  op_enclosed_expr(const signature& sig) : function (sig) {}
 
-  xqtref_t return_type(const std::vector<xqtref_t> &arg_types) const;
-
-  PlanIter_t codegen(CompilerCB* cb,
-        short sctx, 
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& argv,
-        AnnotationHolder &ann) const;
-};
+void populateContext_Constructors(static_context* sctx);
   
 }
 

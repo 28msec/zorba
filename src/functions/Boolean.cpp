@@ -34,8 +34,50 @@ namespace zorba
 /*******************************************************************************
   class GenericOpComparison
 ********************************************************************************/
+class GenericOpComparison : public function 
+{
+public:
+  GenericOpComparison(const signature &sig) : function (sig) {}
 
-void GenericOpComparison::compute_annotation (AnnotationHolder *parent, std::vector<AnnotationHolder *> &kids, Annotation::key_t k) const
+  bool isComparisonFunction () const { return true; }
+
+  virtual const char* comparison_name () const { return ""; }
+
+  void compute_annotation(
+        AnnotationHolder *parent,
+        std::vector<AnnotationHolder *> &kids,
+        Annotation::key_t k) const;
+
+  virtual function* toValueComp(static_context *) const { return NULL; }
+
+  virtual bool specializable() const { return true; }
+
+  function* specialize(
+        static_context* sctx,
+        const std::vector<xqtref_t>& argTypes) const;
+
+  virtual PlanIter_t codegen(
+        CompilerCB* cb,
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        AnnotationHolder &ann) const
+  {
+    return createIterator (sctx, loc, argv);
+  }
+
+protected:
+  virtual PlanIter_t createIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& ) const = 0;
+};
+
+
+void GenericOpComparison::compute_annotation(
+    AnnotationHolder *parent,
+    std::vector<AnnotationHolder *> &kids,
+    Annotation::key_t k) const
 {
   switch (k) {
   case AnnotationKey::IGNORES_SORTED_NODES:
@@ -48,7 +90,10 @@ void GenericOpComparison::compute_annotation (AnnotationHolder *parent, std::vec
 }
   
   
-const function *GenericOpComparison::specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const {
+function* GenericOpComparison::specialize(
+    static_context *sctx,
+    const std::vector<xqtref_t>& argTypes) const 
+{
   xqtref_t t0 = argTypes[0];
   xqtref_t t1 = argTypes[1];
 
@@ -65,16 +110,89 @@ const function *GenericOpComparison::specialize(static_context *sctx, const std:
 }
   
 
-PlanIter_t GenericOpComparison::codegen(
-        CompilerCB* cb,
-        short sctx,
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& argv,
-        AnnotationHolder &ann) const 
+/*******************************************************************************
+  class ValueOpComparison
+********************************************************************************/
+class ValueOpComparison : public GenericOpComparison 
 {
-  return createIterator (sctx, loc, argv);
-}
+public:
+  ValueOpComparison(const signature& sig) : GenericOpComparison (sig) {}
 
+  virtual bool isValueComparisonFunction() const { return true; }
+
+  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
+
+  function* specialize(
+        static_context* sctx,
+        const std::vector<xqtref_t>& argTypes) const;
+};
+
+
+xqtref_t ValueOpComparison::return_type(const std::vector<xqtref_t>& arg_types) const
+{
+  xqtref_t empty = GENV_TYPESYSTEM.EMPTY_TYPE;
+  TypeConstants::quantifier_t quant = TypeConstants::QUANT_ONE;
+  for (int i = 0; i < 2; i++) 
+  {
+    if (TypeOps::is_equal (*empty, *arg_types [i]))
+      return empty;
+    TypeConstants::quantifier_t aq = TypeOps::quantifier(*arg_types[i]);
+    if (aq == TypeConstants::QUANT_QUESTION || aq == TypeConstants::QUANT_STAR) {
+      quant = TypeConstants::QUANT_QUESTION;
+    }
+  }
+
+  return (quant == TypeConstants::QUANT_QUESTION ?
+          GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION : 
+          GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE);
+}
+  
+
+function* ValueOpComparison::specialize(
+    static_context *sctx,
+    const std::vector<xqtref_t>& argTypes) const 
+{
+  xqtref_t t0 = argTypes[0];
+  xqtref_t t1 = argTypes[1];
+
+  if (TypeOps::is_builtin_simple(*t0) && TypeOps::is_builtin_simple (*t1)) 
+  {
+    TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
+    TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
+
+    if (tc0 == tc1) 
+    {
+      std::ostringstream oss;
+      oss << ":value-" << comparison_name () << "-";
+      switch(tc0) {
+      case TypeConstants::XS_DOUBLE:
+        oss << "double";
+        return sctx->lookup_builtin_fn (oss.str (), 2);
+        
+      case TypeConstants::XS_DECIMAL:
+        oss << "decimal";
+        return sctx->lookup_builtin_fn (oss.str (), 2);
+        
+      case TypeConstants::XS_FLOAT:
+        oss << "float";
+        return sctx->lookup_builtin_fn (oss.str (), 2);
+        
+      case TypeConstants::XS_INTEGER:
+        oss << "integer";
+        return sctx->lookup_builtin_fn (oss.str (), 2);
+        
+      case TypeConstants::XS_STRING:
+        oss << "string";
+        return sctx->lookup_builtin_fn (oss.str (), 2);
+        
+      default:
+        return NULL;
+      }
+    }
+  }
+  return NULL;
+}
+  
 
 /*******************************************************************************
 
@@ -91,11 +209,16 @@ PlanIter_t GenericOpComparison::codegen(
 ********************************************************************************/
 
 template<enum CompareConsts::CompareType CC>
-class SpecificValueComparison : public ValueOpComparison {
+class SpecificValueComparison : public ValueOpComparison 
+{
 public:
   SpecificValueComparison (const signature &sig) : ValueOpComparison (sig) {}
 
-  virtual PlanIter_t createIterator(short sctx,  const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const {
+  virtual PlanIter_t createIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv ) const 
+  {
     return new CompareIterator (sctx, loc, argv[0], argv[1], CC);
   }
 };
@@ -108,7 +231,11 @@ public:
 
   virtual bool specializable() const { return false; }
 
-  PlanIter_t createIterator (short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv) const {
+  PlanIter_t createIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv) const 
+  {
     return new TypedValueCompareIterator<t> (sctx, loc, argv, CC);
   }
 };
@@ -152,59 +279,18 @@ DECL_ALL_SPECIFIC_OPS (LESS_EQUAL, less_equal, "less-equal");
 #undef DECL_SPECIFIC_OP
 
 
-const function *ValueOpComparison::specialize(static_context *sctx, const std::vector<xqtref_t>& argTypes) const {
-  xqtref_t t0 = argTypes[0];
-  xqtref_t t1 = argTypes[1];
-  if (TypeOps::is_builtin_simple(*t0) && TypeOps::is_builtin_simple (*t1)) {
-    TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
-    TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
-    if (tc0 == tc1) {
-      std::ostringstream oss;
-      oss << ":value-" << comparison_name () << "-";
-      switch(tc0) {
-      case TypeConstants::XS_DOUBLE:
-        oss << "double";
-        return sctx->lookup_builtin_fn (oss.str (), 2);
-        
-      case TypeConstants::XS_DECIMAL:
-        oss << "decimal";
-        return sctx->lookup_builtin_fn (oss.str (), 2);
-        
-      case TypeConstants::XS_FLOAT:
-        oss << "float";
-        return sctx->lookup_builtin_fn (oss.str (), 2);
-        
-      case TypeConstants::XS_INTEGER:
-        oss << "integer";
-        return sctx->lookup_builtin_fn (oss.str (), 2);
-        
-      case TypeConstants::XS_STRING:
-        oss << "string";
-        return sctx->lookup_builtin_fn (oss.str (), 2);
-        
-      default:
-        return NULL;
-      }
-    }
-  }
-  return NULL;
-}
-  
-  
-xqtref_t ValueOpComparison::return_type (const std::vector<xqtref_t> &arg_types) const {
-  xqtref_t empty = GENV_TYPESYSTEM.EMPTY_TYPE;
-  TypeConstants::quantifier_t quant = TypeConstants::QUANT_ONE;
-  for (int i = 0; i < 2; i++) {
-    if (TypeOps::is_equal (*empty, *arg_types [i]))
-      return empty;
-    TypeConstants::quantifier_t aq = TypeOps::quantifier(*arg_types[i]);
-    if (aq == TypeConstants::QUANT_QUESTION || aq == TypeConstants::QUANT_STAR) {
-      quant = TypeConstants::QUANT_QUESTION;
-    }
-  }
-  return quant == TypeConstants::QUANT_QUESTION ? GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION : GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
-}
-  
+
+/*******************************************************************************
+  class GeneralOpComparison
+********************************************************************************/
+class GeneralOpComparison : public GenericOpComparison 
+{
+public:
+  GeneralOpComparison(const signature &sig) : GenericOpComparison (sig) {}
+
+  bool isGeneralComparisonFunction() const { return true; }
+};
+
 
 
 /*******************************************************************************
@@ -212,15 +298,21 @@ xqtref_t ValueOpComparison::return_type (const std::vector<xqtref_t> &arg_types)
 ********************************************************************************/
 
 template<enum CompareConsts::CompareType CC>
-class SpecificGeneralComparison : public GeneralOpComparison {
+class SpecificGeneralComparison : public GeneralOpComparison 
+{
 public:
   SpecificGeneralComparison (const signature &sig) : GeneralOpComparison (sig) {}
 
-  virtual PlanIter_t createIterator(short sctx,  const QueryLoc& loc, std::vector<PlanIter_t>& argv ) const {
+  virtual PlanIter_t createIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv ) const 
+  {
     return new CompareIterator (sctx, loc, argv[0], argv[1], CC);
   }
 
-  function *toValueComp (static_context *sctx) const {
+  function* toValueComp(static_context *sctx) const 
+  {
     std::string name = get_fname ()->getLocalName ()->str ();
     return sctx->lookup_builtin_fn (name.substr (0, 1) + "value-" + name.substr (1), 2);
   }
@@ -251,139 +343,162 @@ DECL_ALL_SPECIFIC_GENERAL_OPS(GREATER_EQUAL, greater_equal, "greater-equal");
 DECL_ALL_SPECIFIC_GENERAL_OPS(LESS_EQUAL, less_equal, "less-equal");
  
 
-  /*-------------------------- Node Comparison ---------------------------------------*/
+/*******************************************************************************
+  Node Comparison
+********************************************************************************/
 
-  class op_is_same_node : public function {
-  public:
-    op_is_same_node( const signature &sig) : function(sig) {}
-    DEFAULT_CODEGEN (OpIsSameNodeIterator)
-  };
+class op_is_same_node : public function 
+{
+public:
+  op_is_same_node( const signature &sig) : function(sig) {}
+
+  DEFAULT_NARY_CODEGEN (OpIsSameNodeIterator)
+};
   
-  class op_node_before : public function {
-  public:
-    op_node_before( const signature &sig) : function(sig) {}
-    DEFAULT_CODEGEN (OpNodeBeforeIterator)
-  };
+
+class op_node_before : public function 
+{
+public:
+  op_node_before( const signature &sig) : function(sig) {}
+
+  DEFAULT_NARY_CODEGEN (OpNodeBeforeIterator)
+};
   
-  class op_node_after : public function {
-  public:
-    op_node_after( const signature &sig) : function(sig) {}
-    DEFAULT_CODEGEN (OpNodeAfterIterator)
-  };
-  
-  /*-------------------------- Logical Expressions -----------------------------------*/
-  class op_and : public function {
-  public:
-    op_and (const signature &sig) : function (sig) {}
-    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
-  
-  class op_or : public function {
-  public:
-    op_or (const signature &sig) : function (sig) {}
-    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+
+class op_node_after : public function 
+{
+public:
+  op_node_after( const signature &sig) : function(sig) {}
+
+  DEFAULT_NARY_CODEGEN (OpNodeAfterIterator)
+};
 
 
-  // 9 Functions and Operators on Boolean Values
-  // 9.1.1 fn:true
-  class fn_true : public function {
-  public:
-    fn_true (const signature &sig) : function (sig) {}
-    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  }; /* class fn_true */
-  
-  // 9.1.2 fn:false
-  class fn_false : public function {
-  public:
-    fn_false (const signature &sig) : function (sig) {}
-    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  }; /* class fn_false */
-  
-  // 9.3.1 fn:not
-  class fn_not : public function {
-  public:
-    fn_not (const signature &sig) : function (sig) {}
-    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  };
+/*******************************************************************************
+  Logic Operators (and/or)
+********************************************************************************/
 
-  // 15 Functions and Operators on Sequences
-  // 15.1.1 fn:boolean
-  class fn_boolean : public function {
-    public:
-    fn_boolean (const signature &sig) : function (sig) {}
-      PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
-  }; /* class fn_false */
+class op_and : public function 
+{
+public:
+  op_and (const signature &sig) : function (sig) {}
 
-
-
-
-  
-  /* start class op_and */
-  PlanIter_t
-  op_and::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+  PlanIter_t codegen(
+        CompilerCB* /*cb*/,
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        AnnotationHolder &ann) const
   {
-    return new LogicIterator ( sctx, loc, argv[0], argv[1], LogicIterator::AND );
+    return new LogicIterator(sctx, loc, argv[0], argv[1], LogicIterator::AND);
   }
-
-
-  /* end class op_and */
+};
   
-  /*start class op_or */
-  PlanIter_t
-  op_or::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+
+class op_or : public function 
+{
+public:
+  op_or (const signature &sig) : function (sig) {}
+
+  PlanIter_t codegen(
+        CompilerCB* /*cb*/,
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        AnnotationHolder &ann) const
   {
-    return new LogicIterator ( sctx, loc, argv[0], argv[1], LogicIterator::OR );
+    return new LogicIterator(sctx, loc, argv[0], argv[1], LogicIterator::OR);
   }
+};
+  
 
+/*******************************************************************************
+  9 Functions and Operators on Boolean Values
 
-  /* end class op_or */
+  9.1.1 fn:true
+  9.1.2 fn:false
+  9.3.1 fn:not
+********************************************************************************/
 
-  /* start class fn_true */
-  PlanIter_t
-  fn_true::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+class fn_true : public function 
+{
+public:
+  fn_true (const signature &sig) : function (sig) {}
+
+  PlanIter_t codegen(
+        CompilerCB* /*cb*/,
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        AnnotationHolder& ann) const
   {
     store::Item_t res;
     GENV_ITEMFACTORY->createBoolean(res, true);
     return new SingletonIterator ( sctx, loc, res );
   }
-
-
-  /* end class fn_true */
+};
   
-  /* start class fn_false */
-  PlanIter_t
-  fn_false::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+
+
+class fn_false : public function 
+{
+public:
+  fn_false (const signature &sig) : function (sig) {}
+
+  PlanIter_t codegen(
+        CompilerCB* /*cb*/,
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        AnnotationHolder& ann) const
   {
     store::Item_t res;
     GENV_ITEMFACTORY->createBoolean(res, false);
     return new SingletonIterator ( sctx, loc, res);
   }
-
-
-  /* end class fn_false */
+};
   
-  /* begin class fn_not */
-  PlanIter_t
-  fn_not::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+
+class fn_not : public function 
+{
+public:
+  fn_not (const signature &sig) : function (sig) {}
+
+  PlanIter_t codegen(
+        CompilerCB* /*cb*/,
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        AnnotationHolder& ann) const
   {
     return new FnBooleanIterator(sctx, loc, argv[0], true );
   }
 
+};
 
-  /* end class fn_not */
 
-  /* start class fn_boolean */
-  PlanIter_t
-  fn_boolean::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann ) const
+/*******************************************************************************
+  fn:boolean
+********************************************************************************/
+class fn_boolean : public function 
+{
+public:
+  fn_boolean(const signature &sig) : function (sig) {}
+
+  PlanIter_t codegen(
+        CompilerCB* /*cb*/,
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        AnnotationHolder& ann) const
   {
     return new FnBooleanIterator ( sctx, loc, argv[0] );
   }
+};
 
-  /* end class fn_boolean */
 
 
-void populateContext_Comparison(static_context *sctx) 
+void populateContext_Comparison(static_context* sctx) 
 {
 // Generic Comparison;
 DECL(sctx, op_equal,
@@ -480,7 +595,9 @@ DECL(sctx, op_node_after,
 
 }
 
-void populateContext_Boolean(static_context *sctx) {
+
+void populateContext_Boolean(static_context* sctx) 
+{
 // start Boolean
 DECL(sctx, fn_true,
      (createQName(XQUERY_FN_NS,"fn","true"),

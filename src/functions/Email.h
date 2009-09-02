@@ -16,26 +16,27 @@
 #ifndef ZORBA_FUNCTIONS_EMAIL_H
 #define ZORBA_FUNCTIONS_EMAIL_H
 
-#include <vector>
 #include "common/shared_types.h"
-#include "functions/function.h"
 
-namespace zorba {
 
-  class zorba_mail : public function
-  {
-    public:
-      zorba_mail(const signature& sig): function(sig){}
+namespace zorba 
+{
 
-      PlanIter_t codegen (CompilerCB* cb,
-                          short sctx,
-                          const QueryLoc& loc,
-                          std::vector<PlanIter_t>& argv,
-                          AnnotationHolder &ann) const;
-  };
+#ifndef ZORBA_WITH_EMAIL
+
+void populateContext_Email(static_context* sctx)
+{
 }
 
-#endif /* ZORBA_FUNCTIONS_EMAIL_H */
+#else
+
+void populateContext_Email(static_context* sctx);
+
+#endif
+
+}
+
+#endif 
 
 /* vim:set ts=2 sw=2: */
 /*

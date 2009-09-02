@@ -14,106 +14,293 @@
  * limitations under the License.
  */
 #include "functions/Rest.h"
+#include "functions/function_impl.h"
+
 #include "system/globalenv.h"
 
 #include "runtime/rest/rest.h"
 
 namespace zorba {
 
-rest_get::rest_get(const signature& sig)
- : function(sig)
-{}
-
-PlanIter_t
-rest_get::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+class rest_get : public function
 {
-  return new ZorbaRestGetIterator(sctx, loc, argv, false);
+public:
+  rest_get(const signature& sig) : function(sig) {}
+
+  bool isPureFunction () const { return false; }
+
+  PlanIter_t codegen(
+        CompilerCB* /*cb*/,
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        AnnotationHolder& ann) const
+  {
+    return new ZorbaRestGetIterator(sctx, loc, argv, false);
+  }
+};
+
+
+class rest_get_tidy : public function
+{
+public:
+  rest_get_tidy(const signature& sig) : function(sig) {}
+
+  bool isPureFunction () const { return false; }
+
+  PlanIter_t codegen(
+        CompilerCB* /*cb*/,
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        AnnotationHolder& ann) const
+  {
+    return new ZorbaRestGetIterator(sctx, loc, argv, true);
+  }
+};
+
+
+class rest_post : public function
+{
+public:
+  rest_post(const signature& sig) : function(sig) {}
+
+  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const
+  {
+    return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+  }
+
+  bool isPureFunction () const { return false; }
+
+  PlanIter_t codegen(
+        CompilerCB* /*cb*/,
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        AnnotationHolder& ann) const
+  {
+    return new ZorbaRestPostIterator(sctx, loc, argv, false);
+  }
+};
+
+
+class rest_post_tidy : public function
+{
+public:
+  rest_post_tidy(const signature& sig) : function(sig) {}
+
+  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const
+  {
+    return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+  }
+
+  bool isPureFunction () const { return false; }
+
+  PlanIter_t codegen(
+        CompilerCB* /*cb*/,
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        AnnotationHolder& ann) const
+  {
+    return new ZorbaRestPostIterator(sctx, loc, argv, true);
+  }
+};
+
+
+class rest_put : public function
+{
+public:
+  rest_put(const signature& sig) : function(sig) {}
+
+  xqtref_t return_type (const std::vector<xqtref_t>& arg_types) const
+  {
+    return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+  }
+
+  bool isPureFunction () const { return false; }
+
+  DEFAULT_NARY_CODEGEN(ZorbaRestPutIterator);
+};
+
+
+class rest_delete : public function
+{
+public:
+  rest_delete(const signature& sig) : function(sig) {}
+
+  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const
+  {
+    return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+  }
+
+  bool isPureFunction () const { return false; }
+
+  DEFAULT_NARY_CODEGEN(ZorbaRestDeleteIterator);
+};
+
+
+class rest_head : public function
+{
+public:
+  rest_head(const signature& sig) : function(sig) {}
+
+  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const
+  {
+    return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+  }
+
+  bool isPureFunction () const { return false; }
+
+  DEFAULT_NARY_CODEGEN(ZorbaRestHeadIterator);
+};
+
+
+
+void populateContext_Rest(static_context* sctx)
+{
+// zorba-rest:get with an URI
+DECL(sctx, rest_get,
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "get"),
+     GENV_TYPESYSTEM.STRING_TYPE_ONE,
+     GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+// zorba-rest:get with an URI and a payload
+DECL(sctx, rest_get,
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "get"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+// zorba-rest:get with an URI, a payload and custom headers
+DECL(sctx, rest_get,
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "get"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+#ifdef ZORBA_WITH_TIDY
+// zorba-rest:get with an URI
+DECL(sctx, rest_get_tidy,
+      (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "getTidy"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE, //$tidyOptions
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+// zorba-rest:get with an URI and a payload
+DECL(sctx, rest_get_tidy,
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "getTidy"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE, //$tidyOptions
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+// zorba-rest:get with an URI, a payload and custom headers
+DECL(sctx, rest_get_tidy,
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "getTidy"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE, //$tidyOptions
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+#endif
+
+// zorba-rest:post with an URI
+DECL(sctx, rest_post,
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "post"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+// zorba-rest:post with an URI and a payload
+DECL(sctx, rest_post,
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "post"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+// zorba-rest:post with an URI, a payload and custom headers
+DECL(sctx, rest_post,
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "post"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+// zorba-rest:postTidy with an URI, a payload, custom headers and tidy options
+DECL(sctx, rest_post_tidy,
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "postTidy"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE, //$tidyOptions
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+// zorba-rest:put with an URI
+DECL(sctx, rest_put,
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "put"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+// zorba-rest:put with an URI and a payload
+DECL(sctx, rest_put,
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "put"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+// zorba-rest:put with an URI, a payload and custom headers
+DECL(sctx, rest_put,
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "put"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+      
+      
+// zorba-rest:delete with an URI
+DECL(sctx, rest_delete,
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "delete"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+// zorba-rest:delete with an URI and a payload
+DECL(sctx, rest_delete,
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "delete"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+// zorba-rest:delete with an URI, a payload and custom headers
+DECL(sctx, rest_delete,
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "delete"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+
+// zorba-rest:head with an URI
+DECL(sctx, rest_head,
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "head"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+// zorba-rest:head with an URI and a payload
+DECL(sctx, rest_head,
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "head"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+// zorba-rest:head with an URI, a payload and custom headers
+DECL(sctx, rest_head,
+     (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "head"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 }
 
-rest_get_tidy::rest_get_tidy(const signature& sig)
-  : function(sig)
-{}
-
-PlanIter_t
-rest_get_tidy::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new ZorbaRestGetIterator(sctx, loc, argv, true);
-}
-
-rest_post::rest_post(const signature& sig)
-  : function(sig)
-{}
-
-PlanIter_t
-rest_post::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new ZorbaRestPostIterator(sctx, loc, argv, false);
-}
-
-xqtref_t
-rest_post::return_type (const std::vector<xqtref_t> &arg_types) const
-{
-  return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
-
-rest_post_tidy::rest_post_tidy(const signature& sig)
-  : function(sig)
-{}
- 
-PlanIter_t
-rest_post_tidy::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new ZorbaRestPostIterator(sctx, loc, argv, true);
-}
-
-xqtref_t
-rest_post_tidy::return_type (const std::vector<xqtref_t> &arg_types) const
-{
-  return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
-
-rest_put::rest_put(const signature& sig) : function(sig)
-{
-}
-
-PlanIter_t rest_put::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new ZorbaRestPutIterator(sctx, loc, argv);
-}
-
-xqtref_t rest_put::return_type (const std::vector<xqtref_t> &arg_types) const
-{
-  return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
-
-
-rest_delete::rest_delete(const signature& sig) : function(sig)
-{
-}
-
-PlanIter_t rest_delete::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new ZorbaRestDeleteIterator(sctx, loc, argv);
-}
-
-xqtref_t rest_delete::return_type (const std::vector<xqtref_t> &arg_types) const
-{
-  return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
-
-
-rest_head::rest_head(const signature& sig) : function(sig)
-{
-}
-
-PlanIter_t rest_head::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new ZorbaRestHeadIterator(sctx, loc, argv);
-}
-
-xqtref_t rest_head::return_type (const std::vector<xqtref_t> &arg_types) const
-{
-  return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
 
 } /* namespace zorba */

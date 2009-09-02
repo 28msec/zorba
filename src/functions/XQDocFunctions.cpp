@@ -15,15 +15,28 @@
  */
 
 #include "functions/XQDocFunctions.h"
+#include "functions/function_impl.h"
 
 #include "runtime/util/UtilImpl.h"
 
-using namespace std;
-
-namespace zorba {
-
-PlanIter_t XQDocFunction::codegen(CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, vector<PlanIter_t>& argv, AnnotationHolder& ann) const
+namespace zorba 
 {
-  return new XQDocIterator(sctx, loc, argv);
+
+class XQDocFunction: public function
+{
+public:
+  XQDocFunction(const signature& sig): function(sig){}
+
+  DEFAULT_NARY_CODEGEN(XQDocIterator);
+};
+
+
+void populateContext_XQDOC(static_context* sctx)
+{
+  DECL(sctx, XQDocFunction,
+       (createQName(ZORBA_XQDOC_FN_NS, "xqdoc", "xqdoc"),
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 }
-}//end of namespace
+
+
+}

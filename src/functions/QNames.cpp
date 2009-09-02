@@ -14,127 +14,158 @@
  * limitations under the License.
  */
 #include "system/globalenv.h"
+
 #include "functions/QNames.h"
+#include "functions/function_impl.h"
+
 #include "runtime/qnames/QNamesImpl.h"
+
 #include "types/node_test.h"
 
- namespace zorba {
+namespace zorba 
+{
+
+
 /*
  * 11.1.1 fn:resolve-QName
- * --------------------*/
-/*begin class fn_resolve_qname*/
-
-
-PlanIter_t
-    fn_resolve_qname::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+ *-----------------------*/
+class fn_resolve_qname : public function
 {
-  return new ResolveQNameIterator(sctx, loc, argv[0], argv[1]);
-}
+public:
+  fn_resolve_qname(const signature& sig) : function (sig) {}
+  
+  DEFAULT_BINARY_CODEGEN(ResolveQNameIterator);
+};
+  
 
-
-/*end class fn_resolve_qname*/
-
- /*
+/*
  * 11.1.2 fn:QName
- * --------------------*/
-/*begin class fn_qname*/
-
-
-PlanIter_t
-    fn_qname::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+ *-----------------------*/
+class fn_qname : public function
 {
-  return new QNameIterator(sctx, loc, argv[0], argv[1]);
-}
+public:
+  fn_qname(const signature& sig) : function (sig) {}
 
+  DEFAULT_BINARY_CODEGEN(QNameIterator);
+};
 
-/*end class fn_qname*/
-
- /*
+  
+/*
  * 11.2.1 op:QName-equal
- * --------------------*/
-/*begin class op_qname_equal*/
-
-
-PlanIter_t
-    op_qname_equal::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+ *-----------------------*/
+class op_qname_equal: public function
 {
-  return new QNameEqualIterator(sctx, loc, argv[0], argv[1]);
-}
+public:
+  op_qname_equal(const signature& sig) : function (sig) {}
+
+  DEFAULT_BINARY_CODEGEN(QNameEqualIterator);
+};
 
 
-/*end class op_qname_equal*/
-
- /*
+/*
  * 11.2.2 fn:prefix-from-QName
- * --------------------*/
-/*begin class fn_prefix_from_qname*/
-
-
-PlanIter_t
-    fn_prefix_from_qname::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+ *-----------------------*/
+class fn_prefix_from_qname: public function
 {
-  return new PrefixFromQNameIterator(sctx, loc, argv[0]);
-}
+public:
+  fn_prefix_from_qname(const signature& sig) : function (sig) {}
 
-
-/*end class fn_prefix_from_qname*/
+  DEFAULT_UNARY_CODEGEN(PrefixFromQNameIterator);
+};
 
 /*
  * 11.2.3 fn:local-name-from-QName
- * --------------------*/
-/*begin class fn_local_name_from_qname*/
-
-
-PlanIter_t
-    fn_local_name_from_qname::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+ *-----------------------*/
+class fn_local_name_from_qname: public function
 {
-  return new LocalNameFromQNameIterator(sctx, loc, argv[0]);
-}
+public:
+  fn_local_name_from_qname(const signature& sig) : function (sig) {}
 
+  DEFAULT_UNARY_CODEGEN(LocalNameFromQNameIterator);
+};
 
-/*end class fn_local_name_from_qname*/
 
 /*
  * 11.2.4 fn:namespace-uri-from-QName
- * --------------------*/
-/*begin class fn_namespace_uri_from_qname*/
-
-
-PlanIter_t
-    fn_namespace_uri_from_qname::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+ *-----------------------*/
+class fn_namespace_uri_from_qname: public function
 {
-  return new NamespaceUriFromQNameIterator(sctx, loc, argv[0]);
-}
+public:
+  fn_namespace_uri_from_qname(const signature& sig) : function (sig) {}
 
+  DEFAULT_UNARY_CODEGEN(NamespaceUriFromQNameIterator);
+};
 
-/*end class fn_namespace_uri_from_qname*/
 
 /*
  * 11.2.5 fn:namespace-uri-for-prefix
- * --------------------*/
-/*begin class fn_namespace_uri_for_prefix*/
-
-
-PlanIter_t
-    fn_namespace_uri_for_prefix::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+ *-----------------------*/
+class fn_namespace_uri_for_prefix: public function
 {
-  return new NamespaceUriForPrefixIterator(sctx, loc, argv);
-}
+public:
+  fn_namespace_uri_for_prefix(const signature& sig) : function (sig) {}
+  
+  DEFAULT_NARY_CODEGEN(NamespaceUriForPrefixIterator);
+};
 
-
-/*end class fn_namespace_uri_for_prefix*/
 
 /*
  * 11.2.6 fn:in-scope-prefixes
- * --------------------*/
-/*begin class fn_in_scope_prefixes*/
-
-
-PlanIter_t
-    fn_in_scope_prefixes::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+ *-----------------------*/
+class fn_in_scope_prefixes: public function
 {
-  return new InScopePrefixesIterator(sctx, loc, argv[0]);
+public:
+  fn_in_scope_prefixes(const signature& sig) : function (sig) {}
+
+  DEFAULT_UNARY_CODEGEN(InScopePrefixesIterator);
+};
+
+
+void populateContext_QNames(static_context* sctx)
+{
+  DECL(sctx, fn_resolve_qname,
+       (createQName(XQUERY_FN_NS, "fn",  "resolve-QName"),
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+        GENV_TYPESYSTEM.QNAME_TYPE_QUESTION));
+      
+  DECL(sctx, fn_qname,
+       (createQName(XQUERY_FN_NS, "fn", "QName"),
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE));
+
+  DECL(sctx, op_qname_equal,
+       (createQName(XQUERY_FN_NS,"fn","QName-equal"),
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+
+  DECL(sctx, fn_prefix_from_qname,
+       (createQName(XQUERY_FN_NS,"fn","prefix-from-QName"),
+        GENV_TYPESYSTEM.QNAME_TYPE_QUESTION,
+        GENV_TYPESYSTEM.NCNAME_TYPE_QUESTION));
+
+  DECL(sctx, fn_local_name_from_qname,
+       (createQName(XQUERY_FN_NS,"fn","local-name-from-QName"),
+        GENV_TYPESYSTEM.QNAME_TYPE_QUESTION,
+        GENV_TYPESYSTEM.NCNAME_TYPE_QUESTION));
+  
+  DECL(sctx, fn_namespace_uri_from_qname,
+       (createQName(XQUERY_FN_NS,"fn","namespace-uri-from-QName"),
+        GENV_TYPESYSTEM.QNAME_TYPE_QUESTION,
+        GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
+
+  DECL(sctx, fn_namespace_uri_for_prefix,
+       (createQName(XQUERY_FN_NS,"fn","namespace-uri-for-prefix"),
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+        GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
+
+  DECL(sctx, fn_in_scope_prefixes,
+       (createQName(XQUERY_FN_NS,"fn","in-scope-prefixes"),
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+        GENV_TYPESYSTEM.STRING_TYPE_STAR));
 }
 
-/*end class fn_in_scope_prefixes*/
- }/*namespace zorba*/
+}

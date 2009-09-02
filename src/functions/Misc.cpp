@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 #include "functions/Misc.h"
+#include "functions/function_impl.h"
 
 #include "context/static_context.h"
 
@@ -26,60 +27,156 @@ using namespace std;
 
 namespace zorba {
 
-PlanIter_t fn_trace_func::codegen(
-    CompilerCB* cb,
-    short sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    AnnotationHolder &ann) const
-{
-  // tracing can be disabled  using declare option exq:trace "disable";
-  static_context* lContext = cb->getStaticContext(sctx);
-  xqp_string lOption;
-  bool       lOptionFound = lContext->lookup_option("http://www.zorba-xquery.org/options",
-                                                    "trace", lOption);
-  if (!lOptionFound || (lOptionFound && lOption != "disable")) {
-    return new FnTraceIterator ( sctx, loc, argv );
-  } else {
-    return argv[0];
-  }
-}
-
-
 
 /*******************************************************************************
   3 The Error Function
 ********************************************************************************/
-
-PlanIter_t fn_error::codegen (CompilerCB* /*cb*/,
-                              short sctx,
-                              const QueryLoc& loc,
-                              std::vector<PlanIter_t>& argv,
-                              AnnotationHolder &ann) const
+class fn_error : public function 
 {
-  return new FnErrorIterator(sctx, loc, argv);
-}
+public:
+  fn_error(const signature& sig) : function (sig) {}
+
+  bool isFnError() const { return true; }
+
+  virtual expr_update_t getUpdateType() const { return VACUOUS_EXPR; }
+
+  DEFAULT_NARY_CODEGEN(FnErrorIterator);
+};
 
 
 /*******************************************************************************
   8.1 fn:resolve-uri
 ********************************************************************************/
-
-PlanIter_t fn_resolve_uri::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+class fn_resolve_uri : public function 
 {
-  return new FnResolveUriIterator ( sctx, loc, argv );
+public:
+  fn_resolve_uri(const signature& sig) : function (sig) {}
+
+  DEFAULT_NARY_CODEGEN(FnResolveUriIterator);
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class fn_trace_func : public function 
+{
+public:
+  fn_trace_func(const signature& sig) : function (sig) {}    
+
+  CODEGEN_DECL();
+};
+
+
+PlanIter_t fn_trace_func::codegen(
+    CompilerCB* cb,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    AnnotationHolder &ann) const
+{
+  // tracing can be disabled  using declare option exq:trace "disable";
+  xqp_string lOption;
+  bool lOptionFound = sctx->lookup_option("http://www.zorba-xquery.org/options",
+                                          "trace",
+                                          lOption);
+
+  if (!lOptionFound || (lOptionFound && lOption != "disable")) 
+  {
+    return new FnTraceIterator ( sctx, loc, argv );
+  }
+  else
+  {
+    return argv[0];
+  }
 }
 
-PlanIter_t fn_read_string::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+
+/*******************************************************************************
+
+********************************************************************************/
+class fn_read_string : public function 
 {
-  return new FnReadStringIterator (sctx, loc, argv);
+public:
+  fn_read_string(const signature& sig) : function (sig) {}
+
+  bool requires_dyn_ctx () const { return true; }
+
+  DEFAULT_NARY_CODEGEN(FnReadStringIterator);
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class fn_print : public function 
+{
+public:
+  fn_print(const signature& sig) : function (sig) {}
+
+  bool requires_dyn_ctx () const { return true; }
+
+  DEFAULT_NARY_CODEGEN(FnPrintIterator);
+};
+
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void populateContext_Error(static_context* sctx)
+{
+  DECL(sctx, fn_error,
+       (createQName(XQUERY_FN_NS, "fn", "error"),
+        GENV_TYPESYSTEM.NONE_TYPE));
+
+  DECL(sctx, fn_error,
+       (createQName(XQUERY_FN_NS, "fn", "error"),
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+        GENV_TYPESYSTEM.NONE_TYPE));
+
+  DECL(sctx, fn_error,
+       (createQName(XQUERY_FN_NS, "fn", "error"),
+        GENV_TYPESYSTEM.QNAME_TYPE_QUESTION,
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.NONE_TYPE));
+
+  DECL(sctx, fn_error,
+       (createQName(XQUERY_FN_NS, "fn", "error"),
+        GENV_TYPESYSTEM.QNAME_TYPE_QUESTION,
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR ,
+        GENV_TYPESYSTEM.NONE_TYPE));
 }
 
-PlanIter_t fn_print::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+
+void populateContext_AnyURI(static_context* sctx)
 {
-  return new FnPrintIterator (sctx, loc, argv);
+  DECL(sctx, fn_resolve_uri,
+       (createQName(XQUERY_FN_NS, "fn", "resolve-uri"),
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
 }
 
+
+void populateContext_Debug(static_context* sctx)
+{
+  DECL(sctx, fn_trace_func,
+       (createQName(XQUERY_FN_NS,"fn","trace"),
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+  DECL(sctx, fn_read_string,
+       (createQName (ZORBA_FN_NS, "fn-zorba", "read-line"),
+        GENV_TYPESYSTEM.STRING_TYPE_ONE));
+  
+  DECL(sctx, fn_print,
+       (createQName (ZORBA_FN_NS, "fn-zorba", "print"),
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+        GENV_TYPESYSTEM.NONE_TYPE));
+}
 
 }
 /* vim:set ts=2 sw=2: */

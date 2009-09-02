@@ -14,31 +14,27 @@
  * limitations under the License.
  */
 #include <vector>
-
-#include "system/globalenv.h"
-
-#include "context/namespace_context.h"
+#include <sstream>
 
 #include "types/typeops.h"
 
 #include "functions/Numerics.h"
-#include "functions/arithmetic.h"
 #include "functions/function_impl.h"
 
 #include "compiler/expression/expr_consts.h"
 
 #include "runtime/numerics/NumericsImpl.h"
-#include "runtime/booleans/BooleanImpl.h"
+#include "runtime/core/arithmetic_impl.h"
 
-using namespace std;
 
-namespace zorba {
+namespace zorba 
+{
 
 
 #define CODEGEN_SPECIFIC_NUMERIC(op, t)                                    \
 PlanIter_t codegen(                                                        \
     CompilerCB*,                                                           \
-    short sctx,                                                            \
+    static_context* sctx,                                                  \
     const QueryLoc& loc,                                                   \
     std::vector<PlanIter_t>& argv,                                         \
     AnnotationHolder&) const                                               \
@@ -49,14 +45,14 @@ PlanIter_t codegen(                                                        \
 
 
 
-static const function* specialize_numeric(
+static function* specialize_numeric(
     static_context* sctx,
     const std::vector<xqtref_t>& argTypes,
     const char* op) 
 {
   xqtref_t t0 = argTypes[0];
   xqtref_t t1 = argTypes[1];
-  ostringstream oss;
+  std::ostringstream oss;
 
   oss << ":" "numeric-" << op << "-";
 
@@ -131,7 +127,7 @@ public:
 
   virtual bool specializable() const { return true; }
 
-  const function* specialize(
+  function* specialize(
         static_context* sctx,
         const std::vector<xqtref_t>& argTypes) const 
   {
@@ -167,7 +163,7 @@ public:
     return ArithmeticConsts::ADDITION;
   }
 
-  DEFAULT_CODEGEN_BINARY(NumArithIterator<AddOperation>);
+  DEFAULT_BINARY_CODEGEN(NumArithIterator<AddOperation>);
 };
 
 
@@ -219,7 +215,7 @@ public:
     return ArithmeticConsts::SUBTRACTION;
   }
 
-  DEFAULT_CODEGEN_BINARY(NumArithIterator<SubtractOperation>);
+  DEFAULT_BINARY_CODEGEN(NumArithIterator<SubtractOperation>);
 };
 
 
@@ -270,7 +266,7 @@ public:
     return ArithmeticConsts::MULTIPLICATION;
   }
 
-  DEFAULT_CODEGEN_BINARY(NumArithIterator<MultiplyOperation>);
+  DEFAULT_BINARY_CODEGEN(NumArithIterator<MultiplyOperation>);
 };
 
 
@@ -330,7 +326,7 @@ public:
     return ArithmeticConsts::DIVISION;
   }
 
-  DEFAULT_CODEGEN_BINARY(NumArithIterator<DivideOperation>);
+  DEFAULT_BINARY_CODEGEN(NumArithIterator<DivideOperation>);
 };
 
 
@@ -391,7 +387,7 @@ public:
     return ArithmeticConsts::INTEGER_DIVISION;
   }
 
-  DEFAULT_CODEGEN_BINARY(NumArithIterator<IntegerDivideOperation>);
+  DEFAULT_BINARY_CODEGEN(NumArithIterator<IntegerDivideOperation>);
 };
 
 
@@ -440,7 +436,7 @@ public:
     return ArithmeticConsts::MODULO;
   }
 
-  DEFAULT_CODEGEN_BINARY(NumArithIterator<ModOperation>);
+  DEFAULT_BINARY_CODEGEN(NumArithIterator<ModOperation>);
 };
 
 
@@ -453,28 +449,73 @@ class single_numeric_func : public function
 public:
   single_numeric_func (const signature &sig) : function (sig) {}
 
-  virtual xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
+  virtual xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const
+  {
+    return arg_types [0];
+  }
 
   virtual bool isArithmeticFunction() const { return true; }
 };
 
 
-// 6.2.7 op:numeric-unary-plus
+/*******************************************************************************
+  6.2.7 op:numeric-unary-plus
+ 
+  op:numeric-unary-plus($arg as numeric) as numeric
+
+  Summary: Backs up the unary "+" operator and returns its operand with the
+  sign unchanged: (+ $arg). Semantically, this operation performs no operation.
+********************************************************************************/
 class op_numeric_unary_plus : public single_numeric_func
 {
 public:
-  op_numeric_unary_plus(const signature&);
-  PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  op_numeric_unary_plus(const signature& sig) : single_numeric_func(sig) {}
+
+  CODEGEN_DECL();
 };
 
 
-// 6.2.8 op:numeric-unary-minus
+PlanIter_t op_numeric_unary_plus::codegen(
+    CompilerCB* /*cb*/,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    AnnotationHolder& ann) const
+{
+  return new OpNumericUnaryIterator(sctx, loc, argv[0], true);
+}
+
+
+/*******************************************************************************
+  6.2.8 op:numeric-unary-minus
+ 
+  op:numeric-unary-minus($arg as numeric) as numeric
+
+  Summary: Backs up the unary "-" operator and returns its operand with the
+  sign reverse: (- $arg). 
+
+  For xs:integer and xs:decimal arguments, 0 and 0.0 return 0 and 0.0, 
+  respectively. For xs:float and xs:double arguments, NaN returns NaN, 
+  0.0E0 returns -0.0E0 and vice versa. INF returns -INF. -INF returns INF.
+********************************************************************************/
 class op_numeric_unary_minus : public single_numeric_func
 {
 public:
-  op_numeric_unary_minus(const signature&);
-  PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  op_numeric_unary_minus(const signature& sig) : single_numeric_func(sig) {}
+
+  CODEGEN_DECL();
 };
+
+
+PlanIter_t op_numeric_unary_minus::codegen(
+    CompilerCB* /*cb*/,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    AnnotationHolder& ann) const
+{
+  return new OpNumericUnaryIterator(sctx, loc, argv[0], false);
+}
 
 
 /*______________________________________________________________________
@@ -486,219 +527,83 @@ public:
 class fn_abs : public single_numeric_func 
 {
 public:
-  fn_abs(const signature&);
-  PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+  fn_abs(const signature& sig) : single_numeric_func(sig) { }
+
+  DEFAULT_NARY_CODEGEN(FnAbsIterator);
 };
+
 
 // 6.4.2 fn:ceiling
 class fn_ceiling : public single_numeric_func
 {
-  public:
-    fn_ceiling(const signature&);
-    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+public:
+  fn_ceiling(const signature& sig) : single_numeric_func(sig) { }
+
+  DEFAULT_NARY_CODEGEN(FnCeilingIterator);
 };
+
 
 // 6.4.3 fn:floor
 class fn_floor : public single_numeric_func
 {
-  public:
-    fn_floor(const signature&);
-    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+public:
+  fn_floor(const signature& sig) : single_numeric_func(sig) { }
+
+  DEFAULT_NARY_CODEGEN(FnFloorIterator);
 };
+
 
 // 6.4.4 fn:round
 class fn_round : public single_numeric_func
 {
-  public:
-    fn_round(const signature&);
-    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+public:
+  fn_round(const signature& sig) : single_numeric_func(sig) { }
+
+  DEFAULT_NARY_CODEGEN(FnRoundIterator);
 };
+
 
 // 6.4.5 fn:round-half-to-even
 class fn_round_half_to_even : public single_numeric_func
 {
-  public:
-    fn_round_half_to_even(const signature&);
-    PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const;
+public:
+  fn_round_half_to_even(const signature& sig) : single_numeric_func(sig) { }
+
+  DEFAULT_NARY_CODEGEN(FnRoundHalfToEvenIterator);
 };
 
 
-xqtref_t single_numeric_func::return_type (const std::vector<xqtref_t> &arg_types) const {
-  return arg_types [0];
-}
-
-
-/*______________________________________________________________________
- *  |  
- *  -| 6.2.7 op:numeric-unary-plus
- *  -| op:numeric-unary-plus($arg as numeric) as numeric
- *  -| 
- *  -| Summary: Backs up the unary "+" operator and returns its operand with 
- *  -| the sign unchanged: (+ $arg). Semantically, this operation performs no 
- *  -| operation.
- *  -|_______________________________________________________________________*/
-
-op_numeric_unary_plus::op_numeric_unary_plus(
-  const signature& sig)
-:
-  single_numeric_func(sig)
-{
-}
-
-PlanIter_t op_numeric_unary_plus::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new OpNumericUnaryIterator(sctx, loc, argv[0], true);
-}
-
-
-/*______________________________________________________________________
-|  
-| 6.2.8 op:numeric-unary-minus
-| op:numeric-unary-minus($arg as numeric) as numeric
-| 
-| Summary: Backs up the unary "-" operator and returns its operand with 
-| the sign reversed: (- $arg). If $arg is positive, its negative is 
-| returned; if it is negative, its positive is returned.
-| 
-| For xs:integer and xs:decimal arguments, 0 and 0.0 return 0 and 0.0, 
-| respectively. For xs:float and xs:double arguments, NaN returns NaN, 
-| 0.0E0 returns -0.0E0 and vice versa. INF returns -INF. -INF returns 
-| INF.
-|_______________________________________________________________________*/
-
-op_numeric_unary_minus::op_numeric_unary_minus(
-  const signature& sig)
-:
-  single_numeric_func(sig)
-{
-}
-
-PlanIter_t op_numeric_unary_minus::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new OpNumericUnaryIterator(sctx, loc, argv[0], false);
-}
-
-
-
-  
-/*______________________________________________________________________
-|  
-| 6.3 Comparison Operators on Numeric Values
-|_______________________________________________________________________*/
-
-// 6.3.1 op:numeric-equal
-// 6.3.2 op:numeric-less-than
-// 6.3.3 op:numeric-greater-than
-
-
-/*______________________________________________________________________
-|  
-| 6.4 Functions on Numeric Values
-|_______________________________________________________________________*/
-
-// 6.4.1 fn:abs
-fn_abs::fn_abs(const signature& sig)
-:
-  single_numeric_func(sig)
-{     
-}
-
-PlanIter_t fn_abs::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new FnAbsIterator(sctx, loc, argv);
-}
-
-
-
-// 6.4.2 fn:ceiling
-fn_ceiling::fn_ceiling(const signature& sig)
-:
-single_numeric_func(sig)
-{}
-
-PlanIter_t fn_ceiling::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new FnCeilingIterator(sctx, loc, argv);
-}
-
-
-
-// 6.4.3 fn:floor
-fn_floor::fn_floor(const signature& sig)
-:
-single_numeric_func(sig)
-{}
-
-PlanIter_t fn_floor::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new FnFloorIterator(sctx, loc, argv);
-}
-
-
-// 6.4.4 fn:round
-fn_round::fn_round(const signature& sig)
-:
-single_numeric_func(sig)
-{}
-
-PlanIter_t fn_round::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new FnRoundIterator(sctx, loc, argv);
-}
-
-
-
-// 6.4.5 fn:round-half-to-even
-fn_round_half_to_even::fn_round_half_to_even(const signature& sig)
-:
-single_numeric_func(sig)
-{}
-
-PlanIter_t
-fn_round_half_to_even::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new FnRoundHalfToEvenIterator(sctx, loc, argv);
-}
-
-
-
-PlanIter_t zor_numgen::codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-{
-  return new ZorNumGen(sctx, loc);
-}
-
-class fn_sqrt : public single_numeric_func
+/*******************************************************************************
+  Function to produce a fixed amount of integer for testing purposes.
+********************************************************************************/
+class zor_numgen : public function
 {
 public:
-  fn_sqrt(const signature& sig) : single_numeric_func (sig) {}
-  PlanIter_t codegen (CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const {
-    return new FnSQRTIterator(sctx, loc, argv);
-  }
+	zor_numgen(const signature& sig) : function (sig) {}
+
+  DEFAULT_NOARY_CODEGEN(ZorNumGen);
 };
 
-/*______________________________________________________________________
-|
-| XQuery 1.1 functions
-|_______________________________________________________________________*/
+
+/*******************************************************************************
+  XQuery 1.1 functions
+********************************************************************************/
 
 class fn_format_number_2 : public function
 {
 public:
   fn_format_number_2(const signature& sig) : function(sig) {};
-  PlanIter_t codegen(CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-  {
-    return new FnFormatNumberIterator(sctx, loc, argv);
-  }
+
+  DEFAULT_NARY_CODEGEN(FnFormatNumberIterator);
 };
+
 
 class fn_format_number_3 : public function
 {
 public:
   fn_format_number_3(const signature& sig) : function(sig) {};
-  PlanIter_t codegen(CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
-  {
-    return new FnFormatNumberIterator(sctx, loc, argv);
-  }
+
+  DEFAULT_NARY_CODEGEN(FnFormatNumberIterator);
 };
 
 
@@ -706,6 +611,16 @@ public:
 /*******************************************************************************
   Math functions
 ********************************************************************************/
+
+class fn_sqrt : public single_numeric_func
+{
+public:
+  fn_sqrt(const signature& sig) : single_numeric_func (sig) {}
+
+  DEFAULT_NARY_CODEGEN(FnSQRTIterator);
+};
+
+
 #define DECL_DOUBLE_MATH_FUN( name, iter )                                    \
 class fn_##name : public function_impl<Fn##iter##Iterator>                    \
 {                                                                             \
@@ -848,6 +763,10 @@ void populateContext_Numerics(static_context *sctx)
         GENV_TYPESYSTEM.STRING_TYPE_ONE,
         GENV_TYPESYSTEM.STRING_TYPE_ONE,
         GENV_TYPESYSTEM.STRING_TYPE_ONE));
+
+  DECL(sctx, zor_numgen,
+       (createQName(XQUERY_FN_NS,"fn", "zorba:numgen"),
+        GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
 }
 
   

@@ -14,12 +14,25 @@
  * limitations under the License.
  */
 #include "system/globalenv.h"
+
 #include "functions/EnclosedExpr.h"
-#include "runtime/core/item_iterator.h"
+#include "functions/function_impl.h"
+
 #include "runtime/core/constructors.h"
 
 namespace zorba
 {
+
+
+class op_enclosed_expr : public function 
+{
+public:
+  op_enclosed_expr(const signature& sig) : function (sig) {}
+
+  xqtref_t return_type(const std::vector<xqtref_t> &arg_types) const;
+
+  DEFAULT_UNARY_CODEGEN(EnclosedIterator);
+};
 
 
 xqtref_t op_enclosed_expr::return_type(const std::vector<xqtref_t>& arg_types) const
@@ -33,15 +46,13 @@ xqtref_t op_enclosed_expr::return_type(const std::vector<xqtref_t>& arg_types) c
 }
 
 
-PlanIter_t op_enclosed_expr::codegen(
-    CompilerCB* /*cb*/,
-    short sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    AnnotationHolder& ann) const
+void populateContext_Constructors(static_context* sctx)
 {
-  return new EnclosedIterator ( sctx, loc, argv[0] );
+DECL(sctx, op_enclosed_expr,
+     (createQName(XQUERY_OP_NS,"fn", ":enclosed-expr"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 }
-  
-  
+
+
 }

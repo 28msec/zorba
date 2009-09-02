@@ -23,9 +23,9 @@
 
 #include "store/api/iterator.h"
 
-using namespace std;
 
-namespace zorba {
+namespace zorba 
+{
 
 
 class node_reference : public function
@@ -33,7 +33,7 @@ class node_reference : public function
 public:
   node_reference(const signature &sig) : function (sig) {} 
 
-  DEFAULT_CODEGEN (NodeReferenceIterator)
+  DEFAULT_NARY_CODEGEN (NodeReferenceIterator)
 };
 
 
@@ -42,7 +42,7 @@ class node_by_reference : public function
 public:
   node_by_reference(const signature &sig) : function (sig) {}    
 
-  DEFAULT_CODEGEN (NodeByReferenceIterator)
+  DEFAULT_NARY_CODEGEN (NodeByReferenceIterator)
 };
 
 
@@ -51,7 +51,7 @@ class fn_local_name : public function
 public:
   fn_local_name(const signature &sig) : function (sig) {}
 
-  DEFAULT_CODEGEN (FnLocalNameIterator)
+  DEFAULT_NARY_CODEGEN (FnLocalNameIterator)
 };
 
 
@@ -60,7 +60,7 @@ class fn_namespace_uri : public function
 public:
   fn_namespace_uri(const signature &sig) : function (sig) {}
 
-  DEFAULT_CODEGEN (FnNamespaceUriIterator)
+  DEFAULT_NARY_CODEGEN (FnNamespaceUriIterator)
 };
   
 
@@ -69,11 +69,11 @@ class fn_lang : public function
 public:
   fn_lang(const signature &sig) : function (sig) {}
 
-  DEFAULT_CODEGEN (FnLangIterator)
+  DEFAULT_NARY_CODEGEN (FnLangIterator)
 };
   
 
-void populateContext_Nodes(static_context *sctx)
+void populateContext_Nodes(static_context* sctx)
 {
 //begin functions on nodes
 DECL(sctx, fn_local_name,

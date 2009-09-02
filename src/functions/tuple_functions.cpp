@@ -14,24 +14,44 @@
  * limitations under the License.
  */
 #include "functions/tuple_functions.h"
+#include "functions/function_impl.h"
+
 #include "runtime/core/tuple_iterators.h"
 
-namespace zorba {
-
-zop_createtuple::zop_createtuple(const signature& sig)
-  : function(sig) { }
-
-PlanIter_t zop_createtuple::codegen(CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+namespace zorba 
 {
-  return new CreateTupleIterator(sctx, loc, argv);
-}
 
-zop_gettuplefield::zop_gettuplefield(const signature& sig)
-  : function(sig) { }
-
-PlanIter_t zop_gettuplefield::codegen(CompilerCB* /*cb*/, short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& argv, AnnotationHolder &ann) const
+class zop_createtuple : public function 
 {
-  return new GetTupleFieldIterator(sctx, loc, argv);
+public:
+  zop_createtuple(const signature& sig) : function(sig) { }
+
+  DEFAULT_NARY_CODEGEN(CreateTupleIterator);
+};
+
+
+class zop_gettuplefield : public function 
+{
+public:
+  zop_gettuplefield(const signature& sig) : function(sig) { }
+
+  DEFAULT_NARY_CODEGEN(GetTupleFieldIterator);
+};
+
+
+void populateContext_Tuples(static_context* sctx)
+{
+  DECL(sctx, zop_createtuple,
+       (createQName(ZORBA_OPEXTENSIONS_NS,"op-extensions", "create-tuple"),
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+        true,
+        GENV_TYPESYSTEM.ITEM_TYPE_ONE));
+
+  DECL(sctx, zop_gettuplefield,
+       (createQName(ZORBA_OPEXTENSIONS_NS,"op-extensions", "get-tuple-field"),
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 }
 
 }

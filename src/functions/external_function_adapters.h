@@ -18,7 +18,9 @@
 
 #include <vector>
 #include <zorba/external_function.h>
+
 #include "common/shared_types.h"
+
 #include "functions/function.h"
 
 namespace zorba {
@@ -41,12 +43,12 @@ public:
 
   virtual bool isPureFunction() const { return m_function->isPureFunction(); }
 
-  virtual PlanIter_t codegen (
-        CompilerCB* cb,
-        short sctx,
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& argv,
-        AnnotationHolder &ann) const;
+  PlanIter_t codegen(
+    CompilerCB* /*cb*/,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    AnnotationHolder& ann) const;
 };
 
 

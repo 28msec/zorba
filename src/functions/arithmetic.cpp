@@ -16,12 +16,13 @@
 #include <vector>
 
 #include "system/globalenv.h"
+
 #include "functions/arithmetic.h"
 #include "functions/function_impl.h"
-#include "runtime/core/arithmetic_impl.h"
-#include "types/typeops.h"
 
-using namespace std;
+#include "runtime/core/arithmetic_impl.h"
+
+#include "types/typeops.h"
 
 namespace zorba {
 
@@ -54,7 +55,7 @@ public:
   
   virtual bool specializable() const { return true; }
 
-  const function* specialize(
+  function* specialize(
         static_context* sctx,
         const std::vector<xqtref_t>& argTypes) const;
 };
@@ -85,7 +86,7 @@ xqtref_t binary_arith_func::return_type(const std::vector<xqtref_t>& arg_types) 
 }
 
 
-const function* binary_arith_func::specialize(
+function* binary_arith_func::specialize(
     static_context* sctx,
     const std::vector<xqtref_t>& argTypes) const 
 {
@@ -94,8 +95,8 @@ const function* binary_arith_func::specialize(
     
   if (TypeOps::is_numeric(*t0) && TypeOps::is_numeric(*t1)) 
   {
-    const function* f1;
-    const function* f2;
+    function* f1;
+    function* f2;
     f1 = sctx->lookup_builtin_fn(std::string(":numeric-") + op_name(), 2);
     f2 = f1->specialize(sctx, argTypes);
 
@@ -121,7 +122,7 @@ public:
     return ArithmeticConsts::ADDITION;
   }
 
-  DEFAULT_CODEGEN_BINARY(GenericArithIterator<AddOperation>)
+  DEFAULT_BINARY_CODEGEN(GenericArithIterator<AddOperation>)
 };
   
 
@@ -140,7 +141,7 @@ public:
     return ArithmeticConsts::SUBTRACTION;
   }
 
-  DEFAULT_CODEGEN_BINARY(GenericArithIterator<SubtractOperation>);
+  DEFAULT_BINARY_CODEGEN(GenericArithIterator<SubtractOperation>);
 };
   
 
@@ -159,7 +160,7 @@ public:
     return ArithmeticConsts::MULTIPLICATION;
   }
 
-  DEFAULT_CODEGEN_BINARY(GenericArithIterator<MultiplyOperation>);
+  DEFAULT_BINARY_CODEGEN(GenericArithIterator<MultiplyOperation>);
 };
 
 
@@ -178,7 +179,7 @@ public:
     return ArithmeticConsts::DIVISION;
   }
 
-  DEFAULT_CODEGEN_BINARY(GenericArithIterator<DivideOperation>);
+  DEFAULT_BINARY_CODEGEN(GenericArithIterator<DivideOperation>);
 };
 
 
@@ -197,7 +198,7 @@ public:
     return ArithmeticConsts::INTEGER_DIVISION;
   }
 
-  DEFAULT_CODEGEN_BINARY(GenericArithIterator<IntegerDivideOperation>)
+  DEFAULT_BINARY_CODEGEN(GenericArithIterator<IntegerDivideOperation>)
 };
 
 
@@ -216,7 +217,7 @@ public:
     return ArithmeticConsts::MODULO;
   }
 
-  DEFAULT_CODEGEN_BINARY(GenericArithIterator<ModOperation>)
+  DEFAULT_BINARY_CODEGEN(GenericArithIterator<ModOperation>)
 };
 
 

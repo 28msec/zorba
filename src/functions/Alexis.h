@@ -13,129 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_FUNCTIONS_ALEXIS_H
-#define ZORBA_FUNCTIONS_ALEXIS_H
+#ifndef ZORBA_FUNCTIONS_ALEXIS
+#define ZORBA_FUNCTIONS_ALEXIS
 
-#include <vector>
 #include "common/shared_types.h"
-#include "functions/function.h"
 
-namespace zorba {
+namespace zorba 
+{
 
-  class zorba_decode_base64 : public function {
-  public:
-    zorba_decode_base64(const signature& sig) : function (sig) {}
+void populateContext_Alexis(static_context* sctx);
 
-    PlanIter_t codegen (CompilerCB* cb,
-                        short sctx,
-                        const QueryLoc& loc,
-                        std::vector<PlanIter_t>& argv,
-                        AnnotationHolder &ann) const;
-  };
-
-  class zorba_encode_base64 : public function {
-  public:
-    zorba_encode_base64(const signature& sig) : function (sig) {}
-
-    PlanIter_t codegen (CompilerCB* cb,
-                        short sctx,
-                        const QueryLoc& loc,
-                        std::vector<PlanIter_t>& argv,
-                        AnnotationHolder &ann) const;
-  };
-
-  class zorba_schema_type : public function
-  {
-  public:
-    zorba_schema_type(const signature& sig): function(sig){}
-
-    PlanIter_t codegen (CompilerCB* cb,
-                        short sctx,
-                        const QueryLoc& loc,
-                        std::vector<PlanIter_t>& argv,
-                        AnnotationHolder &ann) const;
-  };
-
-#ifdef ZORBA_WITH_TIDY
-  class zorba_tidy : public function
-  {
-  public:
-    zorba_tidy(const signature& sig): function(sig){}
-    
-    PlanIter_t codegen (CompilerCB* cb,
-                        short sctx,
-                        const QueryLoc& loc,
-                        std::vector<PlanIter_t>& argv,
-                        AnnotationHolder &ann) const;
-  };
-
-  class zorba_tdoc : public function
-  {
-  public:
-    zorba_tdoc(const signature& sig): function(sig){}
-    bool requires_dyn_ctx () const { return true; }  // TODO: rename to unfoldable()
-    PlanIter_t codegen (CompilerCB* cb,
-                        short sctx,
-                        const QueryLoc& loc,
-                        std::vector<PlanIter_t>& argv,
-                        AnnotationHolder &ann) const;
-  };
-#endif/* ZORBA_WITH_TIDY */
-
-  class zorba_random : public function
-  {
-  public:
-    zorba_random(const signature& sig): function(sig){}
-    
-    PlanIter_t codegen (CompilerCB* cb,
-                        short sctx,
-                        const QueryLoc& loc,
-                        std::vector<PlanIter_t>& argv,
-                        AnnotationHolder &ann) const;
-    bool isPureFunction () const { return false; }
-  };
-
-  class zorba_uuid : public function
-  {
-  public:
-    zorba_uuid(const signature& sig): function(sig){}
-    
-    PlanIter_t codegen (CompilerCB* cb,
-                        short sctx,
-                        const QueryLoc& loc,
-                        std::vector<PlanIter_t>& argv,
-                        AnnotationHolder &ann) const;
-    bool isPureFunction () const { return false; }
-  };
-
-  class zorba_timestamp : public function
-  {
-    public:
-      zorba_timestamp(const signature& sig) : function(sig) {}
-
-      PlanIter_t codegen (CompilerCB* cb,
-                          short sctx,
-                          const QueryLoc& loc,
-                          std::vector<PlanIter_t>& argv,
-                          AnnotationHolder & ann) const;
-
-      bool requires_dyn_ctx () const { return true; }
-  };
-
-  class zorba_serialize_to_string : public function {
-  public:
-    zorba_serialize_to_string(const signature& sig) : function(sig) {}
-    
-    PlanIter_t codegen (CompilerCB* cb,
-                        short sctx,
-                        const QueryLoc& loc,
-                        std::vector<PlanIter_t>& argv,
-                        AnnotationHolder &ann) const;
-    bool isPureFunction () const { return false; }
-  };
 }
 
-#endif /* ZORBA_FUNCTIONS_ALEXIS_H */
+#endif
 
 /* vim:set ts=2 sw=2: */
 /*
