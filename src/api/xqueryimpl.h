@@ -118,7 +118,7 @@ class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseC
   class PlanProxy : public RCObject
   {
   public:
-    rchandle<RCObject>        theRootIter;
+    rchandle<SimpleRCObject>  theRootIter;
 
     SYNC_CODE(mutable RCLock  theRCLock;)
 
