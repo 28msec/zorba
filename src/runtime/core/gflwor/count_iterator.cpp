@@ -37,15 +37,15 @@ END_SERIALIZABLE_CLASS_VERSIONS(CountIterator)
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-void
-CountState::init ( PlanState& planState ) {
+void CountState::init ( PlanState& planState ) 
+{
   PlanIteratorState::init ( planState );
   theCount=0;
 }
 
 
-void
-CountState::reset ( PlanState& planState ) {
+void CountState::reset ( PlanState& planState ) 
+{
   PlanIteratorState::reset ( planState );
   theCount=0;
 }
@@ -60,7 +60,7 @@ CountState::reset ( PlanState& planState ) {
 // theChild0 --> TupleIterator
 // theChild1 --> InputIterator
 CountIterator::CountIterator (
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     const store::Item_t& aVarName,
     PlanIter_t aTupleIterator,
@@ -80,21 +80,26 @@ CountIterator::~CountIterator()
 
 bool CountIterator::nextImpl ( store::Item_t& aResult, PlanState& aPlanState ) const 
 {
-      CountState* lState;
-      store::Item_t lItem;
+  CountState* lState;
+  store::Item_t lItem;
 
-      DEFAULT_STACK_INIT ( CountState, lState, aPlanState );
-      while ( consumeNext ( aResult, theChild, aPlanState ) ) {
-        {
-          store::Item_t lCountItem;
-          GENV_ITEMFACTORY->createInteger ( lCountItem, Integer::parseInt ( lState->incCount() ) );
-          bindVariables ( lCountItem, theCountVars, aPlanState );
-        }
-        STACK_PUSH ( true, lState );
-      }
-      STACK_PUSH ( false, lState );
-      STACK_END ( lState );
+  DEFAULT_STACK_INIT ( CountState, lState, aPlanState );
+  while ( consumeNext ( aResult, theChild, aPlanState ) ) 
+  {
+    {
+      store::Item_t lCountItem;
+      GENV_ITEMFACTORY->createInteger ( lCountItem, Integer::parseInt ( lState->incCount() ) );
+      bindVariables ( lCountItem, theCountVars, aPlanState );
     }
+    STACK_PUSH ( true, lState );
+  }
+  STACK_PUSH ( false, lState );
+  STACK_END ( lState );
+}
 
-  } //Namespace flwor
+
+UNARY_ACCEPT(CountIterator);
+
+
+} //Namespace flwor
 }//Namespace zorba

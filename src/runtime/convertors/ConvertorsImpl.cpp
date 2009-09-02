@@ -24,6 +24,7 @@
 
 #include "runtime/convertors/ConvertorsImpl.h"
 #include "runtime/api/runtimecb.h"
+#include "runtime/visitors/planitervisitor.h"
 
 #include "store/api/item_factory.h"
 
@@ -43,13 +44,14 @@ SERIALIZABLE_CLASS_VERSIONS(ZorbaJsonMLSerializeIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(ZorbaJsonMLSerializeIterator)
 
 
-void ZorbaJsonParseIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<ZorbaJsonParseIterator, FnJsonParseIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-}
+NARY_ACCEPT (ZorbaJsonParseIterator);
+
+NARY_ACCEPT (ZorbaJsonSerializeIterator);
+
+NARY_ACCEPT (ZorbaJsonMLParseIterator);
+
+NARY_ACCEPT (ZorbaJsonMLSerializeIterator);
+
 
 
 bool
@@ -137,15 +139,6 @@ ZorbaJsonSerializeIterator::nextImpl(store::Item_t& result, PlanState& planState
 }
 
 //JsonML
-void ZorbaJsonMLParseIterator::openImpl(PlanState& planState, uint32_t& offset)
-{  
-  NaryBaseIterator<ZorbaJsonMLParseIterator, FnJsonMLParseIteratorState>::
-  openImpl(planState, offset);
-
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-} 
-
-
 bool
 ZorbaJsonMLParseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {

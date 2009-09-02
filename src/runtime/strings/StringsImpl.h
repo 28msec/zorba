@@ -75,7 +75,7 @@ NARY_ITER_STATE (StringToCodepointsIterator, StringToCodepointsState);
  * 7.3.2 fn:compare
  * --------------------*/
 /* begin class CompareStrIterator */
-NARY_ITER_SCTX (CompareStrIterator);
+NARY_ITER(CompareStrIterator);
 /* end class CompareStrIterator */
 
 /*
@@ -184,35 +184,35 @@ NARY_ITER (EscapeHtmlUriIterator);
  * 7.5.1 fn:contains
  * -------------------- */
 /*begin class ContainsIterator*/
-NARY_ITER_SCTX (ContainsIterator);
+NARY_ITER(ContainsIterator);
 /*end class ContainsIterator*/
 
  /*
  * 7.5.2 fn:starts-with
  * -------------------- */
 /*begin class StartsWithIterator*/
-NARY_ITER_SCTX (StartsWithIterator);
+NARY_ITER(StartsWithIterator);
 /*end class StartsWithIterator*/
 
  /*
  * 7.5.3 fn:ends-with
  * -------------------- */
 /*begin class EndsWithIterator*/
-NARY_ITER_SCTX (EndsWithIterator);
+NARY_ITER(EndsWithIterator);
 /*end class EndsWithIterator*/
 
  /*
  * 7.5.4 fn:substring-before
  * -------------------- */
 /*begin class SubstringBeforeIterator*/
-NARY_ITER_SCTX (SubstringBeforeIterator);
+NARY_ITER(SubstringBeforeIterator);
 /*end class SubstringBeforeIterator*/
 
  /*
  * 7.5.5 fn:substring-after
  * -------------------- */
 /*begin class SubstringAfterIterator*/
-NARY_ITER_SCTX (SubstringAfterIterator);
+NARY_ITER(SubstringAfterIterator);
 /*end class SubstringAfterIterator*/
 
 // 7.6.2 fn:matches

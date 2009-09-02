@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_NODEID_ITERATORS_H
-#define ZORBA_NODEID_ITERATORS_H
+#ifndef ZORBA_RUNTIME_NODEID_ITERATORS
+#define ZORBA_RUNTIME_NODEID_ITERATORS
 
 #include "common/shared_types.h"
+
 #include "runtime/base/unarybase.h"
 
 namespace zorba 
 {
 
 /*******************************************************************************
-
+  Preserves the order of input nodes
 ********************************************************************************/
 class NodeDistinctState : public PlanIteratorState
 {
@@ -34,52 +35,51 @@ public:
   void reset(PlanState&);
 };
 
-// Preserves the order of input nodes
-class NodeDistinctIterator : public UnaryBaseIterator<NodeDistinctIterator, NodeDistinctState>
+
+class NodeDistinctIterator : public UnaryBaseIterator<NodeDistinctIterator,
+                                                      NodeDistinctState>
 {
 private:
   bool theAcceptAtomics;
 
 public:
-  SERIALIZABLE_CLASS(NodeDistinctIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(NodeDistinctIterator, UnaryBaseIterator<NodeDistinctIterator, NodeDistinctState>)
+  SERIALIZABLE_CLASS(NodeDistinctIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  NodeDistinctIterator,
+  UnaryBaseIterator<NodeDistinctIterator, NodeDistinctState>);
+
   void serialize(::zorba::serialization::Archiver &ar)
   {
-    serialize_baseclass(ar, (UnaryBaseIterator<NodeDistinctIterator, NodeDistinctState>*)this);
+    serialize_baseclass(ar,
+    (UnaryBaseIterator<NodeDistinctIterator, NodeDistinctState>*)this);
+
     ar & theAcceptAtomics;
   }
-protected:
 
 public:
   NodeDistinctIterator(
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc,
         PlanIter_t input,
         bool aAcceptAtomics = false)
     :
-    UnaryBaseIterator<NodeDistinctIterator, NodeDistinctState>(sctx, loc, input), theAcceptAtomics(aAcceptAtomics)
+    UnaryBaseIterator<NodeDistinctIterator, NodeDistinctState>(sctx, loc, input), 
+    theAcceptAtomics(aAcceptAtomics)
   {
   }
 
   ~NodeDistinctIterator() { }
 
-  void openImpl(PlanState& planState, uint32_t& offset);
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
-  void resetImpl(PlanState& planState) const;
-  void closeImpl(PlanState& planState);
+  void accept(PlanIterVisitor& v) const;
 
-  virtual void accept(PlanIterVisitor&) const;
+  void openImpl(PlanState& planState, uint32_t& offset);
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
-/*******************************************************************************
-
-********************************************************************************/
-#if 0
-NARY_ITER_STATE (NodeUniqIterator, NodeUniqIteratorState);
-#endif
 
 /*******************************************************************************
-
 
 ********************************************************************************/
 class NodeSortState : public PlanIteratorState
@@ -90,6 +90,7 @@ public:
   void reset(PlanState&);
 };
 
+
 class NodeSortIterator : public UnaryBaseIterator<NodeSortIterator, NodeSortState>
 {
 protected:
@@ -98,18 +99,23 @@ protected:
   bool  theAcceptAtomics;
 
 public:
-  SERIALIZABLE_CLASS(NodeSortIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(NodeSortIterator, UnaryBaseIterator<NodeSortIterator, NodeSortState>)
-  void serialize(::zorba::serialization::Archiver &ar)
+  SERIALIZABLE_CLASS(NodeSortIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  NodeSortIterator,
+  UnaryBaseIterator<NodeSortIterator, NodeSortState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (UnaryBaseIterator<NodeSortIterator, NodeSortState>*)this);
     ar & theAscendant;
     ar & theDistinct;
     ar & theAcceptAtomics;
   }
+
 public:
   NodeSortIterator(
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc,
         PlanIter_t input,
         bool ascendant,
@@ -129,14 +135,19 @@ public:
 
   bool getAscending() const { return theAscendant; }
 
-  void openImpl(PlanState& planState, uint32_t& offset);
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
-  void resetImpl(PlanState& planState) const;
-  void closeImpl(PlanState& planState);
+  void accept(PlanIterVisitor& v) const;
 
-  virtual void accept(PlanIterVisitor&) const;
+  void openImpl(PlanState& planState, uint32_t& offset);
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
 }
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

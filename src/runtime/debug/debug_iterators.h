@@ -19,25 +19,35 @@
 #include "zorbatypes/xqpstring.h"
 
 #include "common/shared_types.h"
+
 #include "runtime/base/narybase.h"
 
 namespace zorba {
 
 
-class FnTraceIteratorState : public PlanIteratorState {
-  public:
-    store::Item_t theTagItem;
-    xqpString     theTag;
-    uint32_t      theIndex;
-    std::ostream* theOS;
+class FnTraceIteratorState : public PlanIteratorState 
+{
+public:
+  store::Item_t theTagItem;
+  xqpString     theTag;
+  uint32_t      theIndex;
+  std::ostream* theOS;
 
-    void init(PlanState&);
-    void reset(PlanState&);
+  void init(PlanState&);
+  void reset(PlanState&);
 };
 
-NARY_ITER_STATE_SCTX(FnTraceIterator, FnTraceIteratorState);
 
-} /* namespace zorba */
+NARY_ITER_STATE(FnTraceIterator, FnTraceIteratorState);
 
-#endif /* ZORBA_DEBUG_ITERATORS_H */
+
+} 
+
+#endif
 /* vim:set ts=2 sw=2: */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

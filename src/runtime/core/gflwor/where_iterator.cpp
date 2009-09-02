@@ -13,54 +13,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include "system/globalenv.h"
+
 #include "runtime/core/gflwor/where_iterator.h"
 #include "runtime/core/gflwor/common.h"
-
-#include "runtime/core/var_iterators.h"
 #include "runtime/visitors/planitervisitor.h"
-#include "store/api/store.h"
-#include "system/globalenv.h"
-#include "store/api/item_factory.h"
 
-using namespace zorba;
 
 namespace zorba 
 {
 namespace flwor 
 {
+
 SERIALIZABLE_CLASS_VERSIONS(WhereIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(WhereIterator)
 
-    /////////////////////////////////////////////////////////////////////////////////
-    //                                                                             //
-    //  WhereIterator                                                                //
-    //                                                                             //
-    /////////////////////////////////////////////////////////////////////////////////
 
-    // theChild0 --> TupleIterator
-    // theChild1 --> InputIterator
-    WhereIterator::WhereIterator ( short sctx,
-                              const QueryLoc& loc,
-                               PlanIter_t aTupleIterator,
-                               PlanIter_t aWhereClause ) :
-        BinaryBaseIterator<WhereIterator, PlanIteratorState> ( sctx, loc, aTupleIterator, aWhereClause ) {
-    }
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  WhereIterator                                                              //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
-    WhereIterator::~WhereIterator() {}
+// theChild0 --> TupleIterator
+// theChild1 --> InputIterator
+bool WhereIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const 
+{
+  PlanIteratorState* lState;
+  store::Item_t lItem;
 
-    bool WhereIterator::nextImpl ( store::Item_t& aResult, PlanState& aPlanState ) const {
-      PlanIteratorState* lState;
-      store::Item_t lItem;
+  DEFAULT_STACK_INIT ( PlanIteratorState, lState, aPlanState );
 
-      DEFAULT_STACK_INIT ( PlanIteratorState, lState, aPlanState );
-      while ( consumeNext ( aResult, theChild0, aPlanState ) ) {
-        if(evalToBool(theChild1, aPlanState)){
-          STACK_PUSH ( true, lState );
-        }        
-      }
-      STACK_PUSH ( false, lState );
-      STACK_END ( lState );
-    }
+  while ( consumeNext ( aResult, theChild0, aPlanState ) ) 
+  {
+    if(evalToBool(theChild1, aPlanState)){
+      STACK_PUSH ( true, lState );
+    }        
+  }
 
-  } //Namespace flwor
+  STACK_PUSH ( false, lState );
+  STACK_END ( lState );
+}
+  
+
+BINARY_ACCEPT(WhereIterator);
+
+
+} //Namespace flwor
 }//Namespace zorba

@@ -30,6 +30,7 @@ class HoistIteratorState : public PlanIteratorState {
 };
 
 NARY_ITER_STATE(HoistIterator, HoistIteratorState);
+
 NARY_ITER(UnhoistIterator);
 
 }

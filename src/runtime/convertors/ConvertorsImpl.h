@@ -22,7 +22,7 @@
 namespace zorba {
 
 //Json
-class FnJsonParseIteratorState : public PlanIteratorState \
+class FnJsonParseIteratorState : public PlanIteratorState
 {
  public:
   xqp_string theBaseUri;
@@ -31,7 +31,7 @@ class FnJsonParseIteratorState : public PlanIteratorState \
   void reset(PlanState&);
 };
 
-NARY_ITER_STATE_SCTX(ZorbaJsonParseIterator, FnJsonParseIteratorState);
+NARY_ITER_STATE(ZorbaJsonParseIterator, FnJsonParseIteratorState);
 
 
 NARY_ITER (ZorbaJsonSerializeIterator);
@@ -48,7 +48,7 @@ class FnJsonMLParseIteratorState : public PlanIteratorState
 };
 
 
-NARY_ITER_STATE_SCTX (ZorbaJsonMLParseIterator, FnJsonMLParseIteratorState);
+NARY_ITER_STATE(ZorbaJsonMLParseIterator, FnJsonMLParseIteratorState);
 
 NARY_ITER (ZorbaJsonMLSerializeIterator);
 

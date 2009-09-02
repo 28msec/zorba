@@ -20,15 +20,18 @@
 
 #include "runtime/base/plan_iterator.h"
 
+
 namespace zorba
 {
 
 extern const ::zorba::serialization::ClassVersion g_UnaryBaseIterator_class_versions[];
 extern const int g_UnaryBaseIterator_class_versions_count;
-/**
- * Superclass for all iterators which have one child iterator
- * and no additional state variables.
- */
+
+
+/*******************************************************************************
+  Superclass for all iterators which have one child iterator and no additional
+  data members.
+********************************************************************************/
 template <class IterType, class StateType>
 class UnaryBaseIterator : public Batcher<IterType>
 {
@@ -38,19 +41,24 @@ protected:
 public:
   SERIALIZABLE_CLASS_NO_FACTORY(UnaryBaseIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(UnaryBaseIterator, Batcher<IterType>)
-  void serialize(::zorba::serialization::Archiver &ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (Batcher<IterType>*)this);
     ar & theChild;
   }
+
 public:
-  UnaryBaseIterator ( short sctx, const QueryLoc& loc, PlanIter_t& arg );
+  UnaryBaseIterator(static_context* sctx, const QueryLoc& loc, PlanIter_t& child)
+    :
+    Batcher<IterType>(sctx, loc),
+    theChild(child)
+  {
+#ifndef NDEBUG
+    assert(theChild != 0);
+#endif
+  }
 
-  virtual ~UnaryBaseIterator();
-
-  void openImpl(PlanState& planState, uint32_t& offset);
-  void resetImpl(PlanState& planState) const;
-  void closeImpl(PlanState& planState);
+  virtual ~UnaryBaseIterator() {}
 
   virtual uint32_t getStateSize() const 
   {
@@ -61,27 +69,13 @@ public:
   {
     return theChild->getStateSizeOfSubtree() + getStateSize();
   }
+
+  void openImpl(PlanState& planState, uint32_t& offset);
+
+  void resetImpl(PlanState& planState) const;
+
+  void closeImpl(PlanState& planState);
 };
-
-
-template <class IterType, class StateType>
-UnaryBaseIterator<IterType, StateType>::UnaryBaseIterator(
-    short sctx,
-    const QueryLoc& loc,
-    PlanIter_t& aChild)
-  :
-  Batcher<IterType> ( sctx, loc ), theChild ( aChild )
-{
-#ifndef NDEBUG
-  assert(theChild != 0);
-#endif
-}
-
-
-template <class IterType, class StateType>
-UnaryBaseIterator<IterType, StateType>::~UnaryBaseIterator()
-{
-}
 
 
 template <class IterType, class StateType>
@@ -90,8 +84,8 @@ UnaryBaseIterator<IterType, StateType>::openImpl(
     PlanState& planState,
     uint32_t& offset)
 {
-  StateTraitsImpl<StateType>::createState(planState, this->stateOffset, offset);
-  StateTraitsImpl<StateType>::initState(planState, this->stateOffset);
+  StateTraitsImpl<StateType>::createState(planState, this->theStateOffset, offset);
+  StateTraitsImpl<StateType>::initState(planState, this->theStateOffset);
 
   theChild->open(planState, offset);
 }
@@ -101,9 +95,9 @@ template <class IterType, class StateType>
 void
 UnaryBaseIterator<IterType, StateType>::resetImpl(PlanState& planState) const
 {
-  StateTraitsImpl<StateType>::reset(planState, this->stateOffset);
+  StateTraitsImpl<StateType>::reset(planState, this->theStateOffset);
     
-  theChild->reset( planState ); 
+  theChild->reset(planState); 
 }
 
 
@@ -111,10 +105,88 @@ template <class IterType, class StateType>
 void
 UnaryBaseIterator<IterType, StateType>::closeImpl(PlanState& planState)
 {
-  theChild->close( planState );
+  theChild->close(planState);
 
-  StateTraitsImpl<StateType>::destroyState(planState, this->stateOffset);
+  StateTraitsImpl<StateType>::destroyState(planState, this->theStateOffset);
 }
+
+
+#define UNARY_ACCEPT(IterType)                      \
+void IterType::accept(PlanIterVisitor& v) const     \
+{                                                   \
+  v.beginVisit(*this);                              \
+  theChild->accept(v);                              \
+  v.endVisit(*this);                                \
+}
+
+
+/*******************************************************************************
+  Macro for defining iterators with N children and their own additional state
+********************************************************************************/
+
+#define UNARY_ITER_STATE(iterName, stateName)                           \
+class iterName : public UnaryBaseIterator<iterName, stateName>          \
+{                                                                       \
+public:                                                                 \
+  SERIALIZABLE_CLASS(iterName);                                         \
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(iterName, UnaryBaseIterator<iterName, stateName>); \
+  void serialize(::zorba::serialization::Archiver& ar)                  \
+  {                                                                     \
+    serialize_baseclass(ar, (UnaryBaseIterator<iterName, stateName>*)this); \
+  }                                                                     \
+                                                                        \
+public:                                                                 \
+  iterName(                                                             \
+        static_context* sctx,                                           \
+        const QueryLoc& loc,                                            \
+        PlanIter_t& aChild)                                             \
+    :                                                                   \
+    UnaryBaseIterator<iterName, stateName>(sctx, loc, aChild)           \
+  { }                                                                   \
+                                                                        \
+  void accept(PlanIterVisitor& v) const;                                \
+                                                                        \
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;    \
+};
+
+
+#define UNARY_UPDATE_ITER_STATE(iterName, stateName)                    \
+class iterName : public UnaryBaseIterator<iterName, stateName>          \
+{                                                                       \
+public:                                                                 \
+  SERIALIZABLE_CLASS(iterName);                                         \
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(iterName, UnaryBaseIterator<iterName, stateName>) \
+  void serialize(::zorba::serialization::Archiver& ar)                  \
+  {                                                                     \
+    serialize_baseclass(ar, (UnaryBaseIterator<iterName, stateName>*)this); \
+  }                                                                     \
+                                                                        \
+public:                                                                 \
+  iterName(                                                             \
+        static_context* sctx,                                           \
+        const QueryLoc& loc,                                            \
+        PlanIter_t& aChild)                                             \
+    :                                                                   \
+    UnaryBaseIterator<iterName, stateName>(sctx, loc, aChild)           \
+  { }                                                                   \
+                                                                        \
+  bool isUpdating() const { return true; }                              \
+                                                                        \
+  void accept(PlanIterVisitor& v) const;                                \
+                                                                        \
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;    \
+};
+
+
+/*******************************************************************************
+  Macro for defining iterators with N children and no additional state
+********************************************************************************/
+
+#define UNARY_ITER(name) \
+UNARY_ITER_STATE(name, PlanIteratorState) 
+
+#define UNARY_UPDATE_ITER(name) \
+UNARY_UPDATE_ITER_STATE(name, PlanIteratorState) 
 
 
 

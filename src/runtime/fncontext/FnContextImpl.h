@@ -46,8 +46,12 @@ protected:
   checked_vector<xqtref_t> vartypes;
 
 public:
-  SERIALIZABLE_CLASS(EvalIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(EvalIterator, NaryBaseIterator<EvalIterator, EvalIteratorState>)
+  SERIALIZABLE_CLASS(EvalIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  EvalIterator,
+  NaryBaseIterator<EvalIterator, EvalIteratorState>);
+
   void serialize(::zorba::serialization::Archiver &ar)
   {
     serialize_baseclass(ar, (NaryBaseIterator<EvalIterator, EvalIteratorState>*)this);
@@ -55,20 +59,24 @@ public:
     ar & var_keys;
     ar & vartypes;
   }
+
 public:
-  EvalIterator(short sctx,
-               const QueryLoc& loc,
-               std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator<EvalIterator, EvalIteratorState> (sctx, loc, aChildren)
+  EvalIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& aChildren)
+    :
+    NaryBaseIterator<EvalIterator, EvalIteratorState> (sctx, loc, aChildren)
   {
   }
 
-  EvalIterator(short sctx,
-               const QueryLoc& loc,
-               checked_vector<store::Item_t> varnames_,
-               checked_vector<std::string> var_keys_,
-               checked_vector<xqtref_t> vartypes_,
-               std::vector<PlanIter_t>& aChildren)
+  EvalIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        checked_vector<store::Item_t> varnames_,
+        checked_vector<std::string> var_keys_,
+        checked_vector<xqtref_t> vartypes_,
+        std::vector<PlanIter_t>& aChildren)
     :
     NaryBaseIterator<EvalIterator, EvalIteratorState> (sctx, loc, aChildren),
     varnames (varnames_),
@@ -76,6 +84,8 @@ public:
     vartypes (vartypes_)
   {
   }
+
+  void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 

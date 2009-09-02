@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_MISC_IMPL_H
-#define ZORBA_MISC_IMPL_H
+#ifndef ZORBA_RUNTIME_MISC_IMPL_H
+#define ZORBA_RUNTIME_MISC_IMPL_H
  
 #include "common/shared_types.h"
 
 #include "runtime/base/narybase.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 
-#include "zorbaerrors/errors.h"
 
 namespace zorba {
 
@@ -30,31 +29,7 @@ NARY_ITER(FnErrorIterator);
 
 
 // 8.1 fn:resolve-uri
-class FnResolveUriIterator : public NaryBaseIterator<FnResolveUriIterator,
-                                                     PlanIteratorState>
-{
-public:
-  SERIALIZABLE_CLASS(FnResolveUriIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnResolveUriIterator, NaryBaseIterator<FnResolveUriIterator, PlanIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (NaryBaseIterator<FnResolveUriIterator, PlanIteratorState >*)this);
-  }
-
-public:
-  FnResolveUriIterator(
-        short sctx,
-        const QueryLoc& loc, 
-        std::vector<PlanIter_t>& args) 
-    :
-    NaryBaseIterator<FnResolveUriIterator, PlanIteratorState>(sctx, loc, args)
-  {
-  }
-
-  void openImpl(PlanState& planState, uint32_t& offset);
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const; 
-};
+NARY_ITER(FnResolveUriIterator);
 
 
 class SequentialIterator : public NaryBaseIterator<SequentialIterator, PlanIteratorState >
@@ -63,21 +38,36 @@ private:
   bool theUpdating;
 
 public:
-  SERIALIZABLE_CLASS(SequentialIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SequentialIterator, NaryBaseIterator<SequentialIterator, PlanIteratorState >)
+  SERIALIZABLE_CLASS(SequentialIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  SequentialIterator,
+  NaryBaseIterator<SequentialIterator, PlanIteratorState >);
+
   void serialize(::zorba::serialization::Archiver &ar)
   {
-    serialize_baseclass(ar, (NaryBaseIterator<SequentialIterator, PlanIteratorState >*)this);
+    serialize_baseclass(ar,
+    (NaryBaseIterator<SequentialIterator, PlanIteratorState >*)this);
+
     ar & theUpdating;
   }
 
 public:
-  SequentialIterator(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, bool aUpdating) 
-  : NaryBaseIterator<SequentialIterator, PlanIteratorState>(sctx, loc, aChildren), theUpdating(aUpdating)
+  SequentialIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& aChildren,
+        bool aUpdating) 
+    :
+    NaryBaseIterator<SequentialIterator, PlanIteratorState>(sctx, loc, aChildren),
+    theUpdating(aUpdating)
   {}
 
-public:
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const; 
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
   bool isUpdating() const { return theUpdating; }
 };
 
@@ -111,25 +101,42 @@ private:
   enum action act;
 
 public:
-  SERIALIZABLE_CLASS(FlowCtlIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FlowCtlIterator, NaryBaseIterator<FlowCtlIterator, PlanIteratorState >)
+  SERIALIZABLE_CLASS(FlowCtlIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  FlowCtlIterator,
+  NaryBaseIterator<FlowCtlIterator, PlanIteratorState >);
+
   void serialize(::zorba::serialization::Archiver &ar)
   {
-    serialize_baseclass(ar, (NaryBaseIterator<FlowCtlIterator, PlanIteratorState >*)this);
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FlowCtlIterator, PlanIteratorState >*)this);
+
     SERIALIZE_ENUM(enum action, act);
   }
 
 public:
-  FlowCtlIterator(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, enum action act_)
-    : NaryBaseIterator<FlowCtlIterator, PlanIteratorState>(sctx, loc, aChildren), act (act_)
+  FlowCtlIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& aChildren,
+        enum action act_)
+    :
+    NaryBaseIterator<FlowCtlIterator, PlanIteratorState>(sctx, loc, aChildren),
+    act (act_)
   {}
+
+  void accept(PlanIterVisitor& v) const;
+
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const; 
 };
 
 
 NARY_ITER (LoopIterator);
 
+
 NARY_ITER (FnReadStringIterator);
+
 
 class FnPrintIterator : public NaryBaseIterator<FnPrintIterator, PlanIteratorState>
 {
@@ -137,17 +144,23 @@ private:
 	bool m_printToConsole;
 
 public:
-  SERIALIZABLE_CLASS(FnPrintIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnPrintIterator, NaryBaseIterator<FnPrintIterator, PlanIteratorState >)
-  void serialize(::zorba::serialization::Archiver &ar)
+  SERIALIZABLE_CLASS(FnPrintIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  FnPrintIterator,
+  NaryBaseIterator<FnPrintIterator, PlanIteratorState >);
+
+  void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (NaryBaseIterator<FnPrintIterator, PlanIteratorState >*)this);
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnPrintIterator, PlanIteratorState >*)this);
+
     ar & m_printToConsole;
   }
 
 public:
 	FnPrintIterator(
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& aChildren,
         bool printToConsole = true)
@@ -156,6 +169,8 @@ public:
     m_printToConsole(printToConsole)
   {
   }
+
+  void accept(PlanIterVisitor& v) const;
 
 	bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };

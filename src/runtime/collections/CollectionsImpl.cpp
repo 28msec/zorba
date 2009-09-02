@@ -34,6 +34,7 @@
 
 #include "runtime/api/runtimecb.h"
 #include "runtime/collections/CollectionsImpl.h"
+#include "runtime/visitors/planitervisitor.h"
 
 #include "store/api/pul.h"
 #include "store/api/copymode.h"
@@ -107,22 +108,46 @@ SERIALIZABLE_CLASS_VERSIONS(FnCollectionIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(FnCollectionIterator)
 
 
-#define NARY_ITER_SCTX_OPEN(iterName)                                         \
-void iterName::openImpl(PlanState& planState, uint32_t& offset)               \
-{                                                                             \
-  NaryBaseIterator<iterName, PlanIteratorState>::openImpl(planState, offset); \
-                                                                              \
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);      \
-}
+NARY_ACCEPT(FnCollectionIterator);
 
+NARY_ACCEPT(ZorbaCollectionExistsIterator);
 
-#define NARY_ITER_STATE_SCTX_OPEN(iterName, stateName)                   \
-void iterName::openImpl(PlanState& planState, uint32_t& offset)          \
-{                                                                        \
-  NaryBaseIterator<iterName, stateName>::openImpl(planState, offset);    \
-                                                                         \
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx); \
-}   
+NARY_ACCEPT(ZorbaNodeCountIterator);
+
+NARY_ACCEPT(ZorbaNodeAtIterator);
+
+NARY_ACCEPT(ZorbaIndexOfIterator);
+
+NARY_ACCEPT(ZorbaExportXmlIterator);
+
+NARY_ACCEPT(ZorbaListCollectionsIterator);
+
+NARY_ACCEPT(ZorbaImportXmlIterator);
+
+NARY_ACCEPT(ZorbaImportCatalogIterator);
+
+NARY_ACCEPT (ZorbaImportFolderIterator);
+
+NARY_ACCEPT(ZorbaCreateCollectionIterator);
+
+NARY_ACCEPT(ZorbaDeleteCollectionIterator);
+
+NARY_ACCEPT(ZorbaDeleteAllCollectionsIterator);
+
+NARY_ACCEPT(ZorbaInsertNodeFirstIterator);
+
+NARY_ACCEPT(ZorbaInsertNodeLastIterator);
+
+NARY_ACCEPT(ZorbaInsertNodeBeforeIterator);
+
+NARY_ACCEPT(ZorbaInsertNodeAfterIterator);
+
+NARY_ACCEPT(ZorbaInsertNodeAtIterator);
+
+NARY_ACCEPT(ZorbaRemoveNodeIterator);
+
+NARY_ACCEPT(ZorbaRemoveNodeAtIterator);
+
 
 
 /*******************************************************************************
@@ -174,9 +199,6 @@ void FnCollectionIteratorState::reset(PlanState& planState)
     theIterator = NULL;
   }
 }
-
-
-NARY_ITER_STATE_SCTX_OPEN(FnCollectionIterator, FnCollectionIteratorState)
 
 
 bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -254,9 +276,6 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
   - XQST0046: could not resolve uri or given uri is not a valid uri
 ********************************************************************************/
 
-NARY_ITER_SCTX_OPEN(ZorbaCollectionExistsIterator)
-
-
 bool
 ZorbaCollectionExistsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -318,9 +337,6 @@ ZorbaCollectionExistsIterator::nextImpl(store::Item_t& result, PlanState& planSt
     (API0006_COLLECTION_NOT_FOUND - collection does not exist).
 ********************************************************************************/
 
-NARY_ITER_SCTX_OPEN(ZorbaNodeCountIterator)
-
-
 bool
 ZorbaNodeCountIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -366,9 +382,6 @@ ZorbaNodeCountIterator::nextImpl(store::Item_t& result, PlanState& planState) co
     (API0030_NO_NODE_AT_GIVEN_POSITION - there is no node at the given position,
     the collection has fewer nodes). 
 ********************************************************************************/
-
-NARY_ITER_SCTX_OPEN(ZorbaNodeAtIterator)
-
 
 bool
 ZorbaNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -423,9 +436,6 @@ ZorbaNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     (API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION - the node does not belong
     to the given collection).
 ********************************************************************************/
-
-NARY_ITER_SCTX_OPEN(ZorbaIndexOfIterator)
-
 
 bool
 ZorbaIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -490,10 +500,6 @@ ZorbaIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   (API0035_COLLECTION_CANNOT_BE_SERIALIZED - the collection cannot be serialized).
 
 ********************************************************************************/
-
-NARY_ITER_SCTX_OPEN(ZorbaExportXmlIterator)
-
-
 bool ZorbaExportXmlIterator::nextImpl(
     store::Item_t& result, 
     PlanState& planState) const
@@ -628,10 +634,6 @@ ZorbaListCollectionsIterator::nextImpl(store::Item_t& result, PlanState& planSta
   - If the XML file cannot be opened, an error is raised 
     (API0034_FILE_OR_FOLDER_CANNOT_BE_OPENED - a file or folder cannot be opened).
 ********************************************************************************/
-
-NARY_ITER_SCTX_OPEN(ZorbaImportXmlIterator)
-
-
 bool
 ZorbaImportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -733,9 +735,6 @@ ZorbaImportXmlIterator::nextImpl(store::Item_t& result, PlanState& planState) co
     (API0034_FILE_OR_FOLDER_CANNOT_BE_OPENED - a file or folder cannot be opened)
 
 ********************************************************************************/
-
-NARY_ITER_SCTX_OPEN(ZorbaImportCatalogIterator)
-
 bool
 ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -945,10 +944,6 @@ ZorbaImportFolderIterator::nextImpl(store::Item_t& result, PlanState& planState)
      (API0005_COLLECTION_ALREADY_EXISTS - collection already exists).
   - XQP0000_DYNAMIC_RUNTIME_ERROR if the argument is the empty sequence
 ********************************************************************************/
-
-NARY_ITER_SCTX_OPEN(ZorbaCreateCollectionIterator)
-
-
 bool ZorbaCreateCollectionIterator::nextImpl(
     store::Item_t& result,
     PlanState& aPlanState) const
@@ -1045,10 +1040,6 @@ bool ZorbaCreateCollectionIterator::nextImpl(
   - If the collection does not exist, an error is raised.
     (API0006_COLLECTION_NOT_FOUND - collection does not exist).
 ********************************************************************************/
-
-NARY_ITER_SCTX_OPEN(ZorbaDeleteCollectionIterator)
-
-
 bool
 ZorbaDeleteCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 {
@@ -1093,10 +1084,6 @@ ZorbaDeleteCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanS
 
   The function will delete all existing collections.
 ********************************************************************************/
-
-NARY_ITER_SCTX_OPEN(ZorbaDeleteAllCollectionsIterator)
-
-
 bool ZorbaDeleteAllCollectionsIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
@@ -1142,10 +1129,6 @@ bool ZorbaDeleteAllCollectionsIterator::nextImpl(
   - If the specified collection does not exist, an error is raised
     (API0006_COLLECTION_NOT_FOUND - collection does not exist).
 ********************************************************************************/
-
-NARY_ITER_SCTX_OPEN(ZorbaInsertNodeFirstIterator)
-
-
 bool
 ZorbaInsertNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -1226,10 +1209,6 @@ ZorbaInsertNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planSta
   - If the node is already in the collection, an error is raised
     (API0031_NODE_ALREADY_IN_COLLECTION) 
 ********************************************************************************/
-
-NARY_ITER_SCTX_OPEN(ZorbaInsertNodeLastIterator)
-
-
 bool
 ZorbaInsertNodeLastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -1319,10 +1298,6 @@ ZorbaInsertNodeLastIterator::nextImpl(store::Item_t& result, PlanState& planStat
   - If any of the new nodes is already part of the collection an error is
     raised (API0031_NODE_ALREADY_IN_COLLECTION).
 ********************************************************************************/
-
-NARY_ITER_SCTX_OPEN(ZorbaInsertNodeBeforeIterator)
-
-
 bool
 ZorbaInsertNodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -1430,10 +1405,6 @@ Error conditions:
   - If the collection URI is empty and the default collection
     is not defined in the dynamic context, FODC0002 is raised
 ********************************************************************************/
-
-NARY_ITER_SCTX_OPEN(ZorbaInsertNodeAfterIterator)
-
-
 bool
 ZorbaInsertNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -1543,10 +1514,6 @@ ZorbaInsertNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planSta
   - If the node is already part of the collection an error is raised
     (API0031_NODE_ALREADY_IN_COLLECTION).
 ********************************************************************************/
-
-NARY_ITER_SCTX_OPEN(ZorbaInsertNodeAtIterator)
-
-
 bool
 ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -1654,10 +1621,6 @@ ZorbaInsertNodeAtIterator::nextImpl(store::Item_t& result, PlanState& planState)
     an error is raised (API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION - the node
     does not belong to the given collection). 
 ********************************************************************************/
-
-NARY_ITER_SCTX_OPEN(ZorbaRemoveNodeIterator)
-
-
 bool
 ZorbaRemoveNodeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -1727,10 +1690,6 @@ ZorbaRemoveNodeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
     and an error is raised (API0030_NO_NODE_AT_GIVEN_POSITION - there is no
     node at the given position, the collection has fewer nodes). 
 ********************************************************************************/
-
-NARY_ITER_SCTX_OPEN(ZorbaRemoveNodeAtIterator)
-
-
 bool ZorbaRemoveNodeAtIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const

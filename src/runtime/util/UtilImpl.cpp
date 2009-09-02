@@ -26,6 +26,7 @@
 
 #include "runtime/util/UtilImpl.h"
 #include "runtime/api/runtimecb.h"
+#include "runtime/visitors/planitervisitor.h"
 
 #include "context/static_context.h"
 #include "context/internal_uri_resolvers.h"
@@ -76,13 +77,25 @@ SERIALIZABLE_CLASS_VERSIONS(XQDocIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(XQDocIterator)
 
 
-void XQDocIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<XQDocIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-}
+NARY_ACCEPT (ZorbaSchemaTypeIterator);
+
+NARY_ACCEPT (ZorbaBase64DecodeIterator);
+
+NARY_ACCEPT (ZorbaBase64EncodeIterator);
+
+NARY_ACCEPT(XQDocIterator);
+
+#ifdef ZORBA_WITH_TIDY
+NARY_ACCEPT(ZorbaTidyIterator);
+
+NARY_ACCEPT(ZorbaTDocIterator);
+#endif  /* ZORBA_WITH_TIDY */
+
+NARY_ACCEPT (ZorbaRandomIterator);
+
+NARY_ACCEPT (ZorbaUUIDIterator);
+
+NARY_ACCEPT (ZorbaTimestampIterator);
 
 
 bool
@@ -239,14 +252,6 @@ ZorbaTidyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 
-
-void ZorbaTDocIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<ZorbaTDocIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-}
 
 
 bool

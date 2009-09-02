@@ -23,7 +23,7 @@
 #include "runtime/core/var_iterators.h"
 #include "runtime/core/constructors.h"
 #include "runtime/core/path_iterators.h"
-#include "runtime/core/path.h"
+//#include "runtime/core/path.h"
 #include "runtime/core/fncall_iterator.h"
 #include "runtime/qnames/QNamesImpl.h"
 #include "runtime/core/sequencetypes.h"
@@ -293,29 +293,38 @@ void endVisit ( const NodeSortIterator& )
   thePrinter.endEndVisit();                    
 }
 
-  void beginVisit ( const PathIterator& a ) {
-    thePrinter.startBeginVisit("PathIterator", ++theId);
-    printCommons( &a, theId );
-    thePrinter.endBeginVisit(theId);
-  }
 
-  void endVisit(const PathIterator& /*a*/) {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
+#if 0
+void beginVisit ( const PathIterator& a ) 
+{
+  thePrinter.startBeginVisit("PathIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit(theId);
+}
 
-  void beginVisit ( const SelfAxisIterator& a ) {
-    thePrinter.startBeginVisit("SelfAxisIteratorator", ++theId);
-    printCommons( &a, theId );
-    printNameOrKindTest(&a);
-    thePrinter.endBeginVisit(theId);
-  }
-  void endVisit(const SelfAxisIterator& /*a*/) {
-    thePrinter.startEndVisit();
-    thePrinter.endEndVisit();
-  }
+void endVisit(const PathIterator& /*a*/) 
+{
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+#endif
 
-  PRINTER_VISITOR_AXIS_DEFINITION (AttributeAxisIterator)
+void beginVisit ( const SelfAxisIterator& a ) 
+{
+  thePrinter.startBeginVisit("SelfAxisIteratorator", ++theId);
+  printCommons( &a, theId );
+  printNameOrKindTest(&a);
+  thePrinter.endBeginVisit(theId);
+}
+
+void endVisit(const SelfAxisIterator& /*a*/) 
+{
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+
+PRINTER_VISITOR_AXIS_DEFINITION (AttributeAxisIterator)
 
   PRINTER_VISITOR_AXIS_DEFINITION (ParentAxisIterator)
 

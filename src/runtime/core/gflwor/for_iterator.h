@@ -16,7 +16,8 @@
 #ifndef ZORBA_RUNTIME_GFLWOR_FOR_ITERATOR
 #define ZORBA_RUNTIME_GFLWOR_FOR_ITERATOR
 
-#include "zorbautils/checked_vector.h"
+#include <vector>
+
 #include "runtime/base/binarybase.h"
 
 
@@ -67,20 +68,25 @@ private:
   std::vector<ForVarIter_t> theVarRefs;
   std::vector<ForVarIter_t> thePosVarRefs;
 
- public:
-    SERIALIZABLE_CLASS(ForIterator)
-    SERIALIZABLE_CLASS_CONSTRUCTOR2T(ForIterator, BinaryBaseIterator<ForIterator, ForState>)
-    void serialize(::zorba::serialization::Archiver &ar)
-    {
-      serialize_baseclass(ar, (BinaryBaseIterator<ForIterator, ForState>*)this);
-      ar & theVarName;
-      ar & theHasPosVars;
-      ar & theVarRefs;
-      ar & thePosVarRefs;
+public:
+  SERIALIZABLE_CLASS(ForIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  ForIterator,
+  BinaryBaseIterator<ForIterator, ForState>);
+
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (BinaryBaseIterator<ForIterator, ForState>*)this);
+    ar & theVarName;
+    ar & theHasPosVars;
+    ar & theVarRefs;
+    ar & thePosVarRefs;
 	}
- public:
+
+public:
   ForIterator(
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc,
         const store::Item_t& varName,
         PlanIter_t tupleIter,
@@ -88,7 +94,7 @@ private:
         const std::vector<PlanIter_t>& varRefs);
 
   ForIterator(
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc,
         const store::Item_t& varName,
         PlanIter_t tupleIter,
@@ -100,9 +106,9 @@ private:
   
   store::Item* getVarName() const { return theVarName.getp(); }
 
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  void accept(PlanIterVisitor& v) const;
 
-  virtual void accept(PlanIterVisitor& v) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
 

@@ -16,7 +16,8 @@
 #ifndef ZORBA_RUNTIME_FLWOR_LET_ITERATOR
 #define ZORBA_RUNTIME_FLWOR_LET_ITERATOR
 
-#include "zorbautils/checked_vector.h"
+#include <vector>
+
 #include "runtime/base/binarybase.h"
 
 namespace zorba 
@@ -32,8 +33,25 @@ private:
   bool theNeedsMat;
   
 public:
+  SERIALIZABLE_CLASS(LetIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  LetIterator,
+  BinaryBaseIterator<LetIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (BinaryBaseIterator<LetIterator, PlanIteratorState>*)this);
+
+    ar & theVarName;
+    ar & theLetVars;
+    ar & theNeedsMat;
+  }
+
+public:
   LetIterator ( 
-        short sctx,
+        static_context* sctx,
         const QueryLoc& aLoc,  
         store::Item_t aVarName, 
         PlanIter_t aTupleIter, 
@@ -42,23 +60,12 @@ public:
         bool aNeedsMaterialization);
 
   ~LetIterator();
-        
-      public:
-        SERIALIZABLE_CLASS(LetIterator)
-        SERIALIZABLE_CLASS_CONSTRUCTOR2T(LetIterator, BinaryBaseIterator<LetIterator, PlanIteratorState>)
-        void serialize(::zorba::serialization::Archiver &ar)
-        {
-          serialize_baseclass(ar, (BinaryBaseIterator<LetIterator, PlanIteratorState>*)this);
-          ar & theVarName;
-          ar & theLetVars;
-          ar & theNeedsMat;
-        }
-      public:
+
   store::Item* getVarName() const { return theVarName.getp(); }
 
-  bool nextImpl ( store::Item_t& result, PlanState& planState ) const;
+  void accept(PlanIterVisitor& v) const;
 
-  virtual void accept ( PlanIterVisitor& ) const;
+  bool nextImpl ( store::Item_t& result, PlanState& planState ) const;
 };
 
 }

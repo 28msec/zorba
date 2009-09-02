@@ -23,6 +23,7 @@
 #include "runtime/api/runtimecb.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/util/iterator_impl.h"
+#include "runtime/visitors/planitervisitor.h"
 
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
@@ -121,6 +122,9 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   STACK_END (state);
 }
+
+
+NARY_ACCEPT(EvalIterator);
 
 
 }

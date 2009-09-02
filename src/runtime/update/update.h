@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_RUNTIME_UPDATE_H
-#define ZORBA_RUNTIME_UPDATE_H
+#ifndef ZORBA_RUNTIME_UPDATE
+#define ZORBA_RUNTIME_UPDATE
 
 #include <vector>
 
@@ -36,128 +36,93 @@ private:
   bool                            theDoCopy;
 
 public:
-  SERIALIZABLE_CLASS(InsertIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(InsertIterator, BinaryBaseIterator<InsertIterator, PlanIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
+  SERIALIZABLE_CLASS(InsertIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  InsertIterator, 
+  BinaryBaseIterator<InsertIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (BinaryBaseIterator<InsertIterator, PlanIteratorState>*)this);
+    serialize_baseclass(ar,
+    (BinaryBaseIterator<InsertIterator, PlanIteratorState>*)this);
+
     SERIALIZE_ENUM(store::UpdateConsts::InsertType, theType);
     ar & theDoCopy;
   }
 
 public:
   InsertIterator ( 
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc, 
     store::UpdateConsts::InsertType aType,
     PlanIter_t source, 
     PlanIter_t target); 
 
-  virtual ~InsertIterator() {}
+  ~InsertIterator() {}
 
-  virtual bool isUpdating() const { return true; }
+  bool isUpdating() const { return true; }
 
-  void openImpl(PlanState& planState, uint32_t& offset);
+  void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t&, PlanState&) const;
-
-  virtual void accept(PlanIterVisitor&) const;
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class DeleteIterator : public UnaryBaseIterator<DeleteIterator, PlanIteratorState>
-{
- public:
-  DeleteIterator(short sctx, const QueryLoc& aLoc, PlanIter_t target);
-
-  virtual ~DeleteIterator() {}
-
-  virtual bool isUpdating() const { return true; }
-
-  bool nextImpl(store::Item_t&, PlanState&) const;
-
-  virtual void accept(PlanIterVisitor&) const;
-
-public:
-  SERIALIZABLE_CLASS(DeleteIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(DeleteIterator, UnaryBaseIterator<DeleteIterator, PlanIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (UnaryBaseIterator<DeleteIterator, PlanIteratorState>*)this);
-  }
-};
+UNARY_UPDATE_ITER(DeleteIterator);
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class ReplaceIterator : public BinaryBaseIterator<ReplaceIterator, PlanIteratorState>
+class ReplaceIterator : public BinaryBaseIterator<ReplaceIterator,
+                                                  PlanIteratorState>
 {
 private:
   store::UpdateConsts::ReplaceType theType;
   bool                             theDoCopy;
 
 public:
-  SERIALIZABLE_CLASS(ReplaceIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ReplaceIterator, BinaryBaseIterator<ReplaceIterator, PlanIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
+  SERIALIZABLE_CLASS(ReplaceIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  ReplaceIterator,
+  BinaryBaseIterator<ReplaceIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (BinaryBaseIterator<ReplaceIterator, PlanIteratorState>*)this);
+    serialize_baseclass(ar,
+    (BinaryBaseIterator<ReplaceIterator, PlanIteratorState>*)this);
+
     SERIALIZE_ENUM(store::UpdateConsts::ReplaceType, theType);
     ar & theDoCopy;
   }
 
 public:
-  ReplaceIterator (
-    short sctx,
+  ReplaceIterator(
+    static_context* sctx,
     const QueryLoc& aLoc,
     store::UpdateConsts::ReplaceType aType,
     PlanIter_t target,
     PlanIter_t source);
 
-  virtual ~ReplaceIterator() {}
+  ~ReplaceIterator() {}
 
-  virtual bool isUpdating() const { return true; }
+  bool isUpdating() const { return true; }
 
-  void openImpl(PlanState& planState, uint32_t& offset);
+  void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t&, PlanState&) const;
-
-  virtual void accept(PlanIterVisitor&) const;
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class RenameIterator : public BinaryBaseIterator<RenameIterator, PlanIteratorState>
-{
-public:
-  RenameIterator (
-    short sctx,
-    const QueryLoc& aLoc,
-    PlanIter_t target,
-    PlanIter_t name);
-
-  virtual ~RenameIterator() {}
-
-  virtual bool isUpdating() const { return true; }
-
-  bool nextImpl(store::Item_t&, PlanState&) const;
-
-  virtual void accept(PlanIterVisitor&) const;
-
-public:
-  SERIALIZABLE_CLASS(RenameIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(RenameIterator, BinaryBaseIterator<RenameIterator, PlanIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (BinaryBaseIterator<RenameIterator, PlanIteratorState>*)this);
-  }
-};
+BINARY_UPDATE_ITER(RenameIterator);
 
 
 /*******************************************************************************
@@ -174,23 +139,28 @@ class CopyClause : public ::zorba::serialization::SerializeBaseClass
   PlanIter_t                theInput;
 
 public:
-  SERIALIZABLE_CLASS(CopyClause)
-  SERIALIZABLE_CLASS_CONSTRUCTOR(CopyClause)
-  CopyClause() {}
+  SERIALIZABLE_CLASS(CopyClause);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR(CopyClause);
+
   void serialize(::zorba::serialization::Archiver &ar)
   {
     ar & theCopyVars;
     ar & theInput;
   }
-  virtual ~CopyClause() {}
+
 public:
+  CopyClause() {}
+
   CopyClause(
-    std::vector<ForVarIter_t>& aCopyVars,
-    PlanIter_t                 aInput)
-  :
+        std::vector<ForVarIter_t>& aCopyVars,
+        PlanIter_t                 aInput)
+    :
     theCopyVars(aCopyVars),
     theInput(aInput)
   {}
+
+  ~CopyClause() {}
 };
 
 
@@ -211,25 +181,30 @@ public:
     ar & theModifyIter;
     ar & theReturnIter;
   }
+
 public:
   TransformIterator (
-    short sctx,
+    static_context* sctx,
     const QueryLoc& aLoc,
     std::vector<CopyClause>& aCopyClauses,
     PlanIter_t aModifyIter,
     PlanIter_t aReturnIter);
 
-  virtual ~TransformIterator();
+  ~TransformIterator();
+
+  uint32_t getStateSize() const { return sizeof(PlanIteratorState); }
+
+  uint32_t getStateSizeOfSubtree() const;
+      
+  void accept(PlanIterVisitor&) const;
 
   void openImpl(PlanState& planState, uint32_t& offset);
+
   bool nextImpl(store::Item_t&, PlanState& planState) const;
+
   void resetImpl(PlanState& planState) const;
+
   void closeImpl(PlanState& planState) const;
-      
-  virtual uint32_t getStateSize() const { return sizeof(PlanIteratorState); }
-  virtual uint32_t getStateSizeOfSubtree() const;
-      
-  virtual void accept(PlanIterVisitor&) const;
 };
 
 } // namespace zorba

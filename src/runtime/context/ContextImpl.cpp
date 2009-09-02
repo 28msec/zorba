@@ -20,11 +20,16 @@
 #include "compiler/api/compilercb.h"
 
 #include "runtime/context/ContextImpl.h"
-#include "store/api/item_factory.h"
 #include "runtime/api/runtimecb.h"
+#include "runtime/visitors/planitervisitor.h"
+
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
+
 #include "zorbatypes/datetime.h"
+
+#include "store/api/item_factory.h"
+
 
 namespace zorba
 {
@@ -42,6 +47,18 @@ END_SERIALIZABLE_CLASS_VERSIONS(FnImplicitTimezoneIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(FnDefaultCollationIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(FnDefaultCollationIterator)
+
+
+NARY_ACCEPT(FnCurrentDateTimeIterator);
+
+NARY_ACCEPT(FnCurrentDateIterator);
+
+NARY_ACCEPT(FnCurrentTimeIterator);
+
+NARY_ACCEPT(FnImplicitTimezoneIterator);
+
+NARY_ACCEPT(FnDefaultCollationIterator);
+
 
 /**
  *______________________________________________________________________
@@ -154,7 +171,7 @@ FnImplicitTimezoneIterator::nextImpl(store::Item_t& result, PlanState& planState
 
   STACK_END (state);
 }
-/*end class FnImplicitTimezoneIterator */
+
 
 /**
  *______________________________________________________________________
@@ -163,15 +180,6 @@ FnImplicitTimezoneIterator::nextImpl(store::Item_t& result, PlanState& planState
  *
  * fn:default-collation() as xs:string
  *_______________________________________________________________________*/
-
-void FnDefaultCollationIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<FnDefaultCollationIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-}
-
 
 bool
 FnDefaultCollationIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -187,5 +195,6 @@ FnDefaultCollationIterator::nextImpl(store::Item_t& result, PlanState& planState
 
   STACK_END (state);
 }
-/*end class FnDefaultCollationIterator */
+
+
 }/* namespace zorba */

@@ -29,20 +29,21 @@ namespace flwor
 class CountState : public PlanIteratorState 
 {
 private:
-        int theCount;
+  int theCount;
   
 public:
-        void init ( PlanState& );
-        void reset ( PlanState& );
-        inline int incCount() {return ++theCount;}
+  void init ( PlanState& );
+  void reset ( PlanState& );
+  inline int incCount() {return ++theCount;}
 };
   
 
 class CountIterator : public UnaryBaseIterator<CountIterator, CountState> 
 {
 private:
-        store::Item_t theVarName;
-        std::vector<ForVarIter_t> theCountVars;
+  store::Item_t theVarName;
+  std::vector<ForVarIter_t> theCountVars;
+
 public:
   SERIALIZABLE_CLASS(CountIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(CountIterator, UnaryBaseIterator<CountIterator, CountState>)
@@ -55,24 +56,24 @@ public:
 
 public:
   CountIterator (
-        short sctx,
+        static_context* sctx,
         const QueryLoc& aLoc,
-                      const store::Item_t& aVarName,
-                      PlanIter_t aTupleIterator,
+        const store::Item_t& aVarName,
+        PlanIter_t aTupleIterator,
         const std::vector<PlanIter_t>& aCountVars );
   
-        ~CountIterator();
+  ~CountIterator();
   
-public:
-        bool nextImpl ( store::Item_t& result, PlanState& planState ) const;
-        virtual void accept ( PlanIterVisitor& ) const;
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl ( store::Item_t& result, PlanState& planState ) const;
 };
 
 }
 }
 
 
-#endif  /* ZORBA_RUNTIME_GFLWOR_COUNT_ITERATOR */
+#endif 
 /*
  * Local variables:
  * mode: c++

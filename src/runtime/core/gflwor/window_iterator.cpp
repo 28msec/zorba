@@ -413,7 +413,7 @@ void WindowState::tupleReset ( )
 const uint32_t WindowIterator::MAX_HISTORY = 2147483647; //TODO should be set platform dependent, but somebody hat comment out everything in platform.h!
 
 WindowIterator::WindowIterator (
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     WindowType windowType,
     PlanIter_t tupleIter,
@@ -463,9 +463,7 @@ uint32_t WindowIterator::getStateSizeOfSubtree() const
 
 void WindowIterator::openImpl ( PlanState& aPlanState, uint32_t& aOffset )
 {
-  StateTraitsImpl<WindowState>::createState ( aPlanState, this->stateOffset, aOffset );
-
-  theSctx = aPlanState.theCompilerCB->getStaticContext(sctx);
+  StateTraitsImpl<WindowState>::createState ( aPlanState, theStateOffset, aOffset );
 
   theTupleIter->open ( aPlanState, aOffset );
   theInputIter->open ( aPlanState, aOffset );
@@ -476,7 +474,7 @@ void WindowIterator::openImpl ( PlanState& aPlanState, uint32_t& aOffset )
 
 void WindowIterator::resetImpl ( PlanState& aPlanState ) const
 {
-  WindowState* lState = StateTraitsImpl<WindowState>::getState ( aPlanState, this->stateOffset );
+  WindowState* lState = StateTraitsImpl<WindowState>::getState(aPlanState, theStateOffset );
   lState->reset ( aPlanState );
 
   theTupleIter->reset ( aPlanState );
@@ -492,7 +490,7 @@ void WindowIterator::closeImpl ( PlanState& aPlanState )
   theInputIter->close ( aPlanState );
   theStartClause.close ( aPlanState );
   theEndClause.close ( aPlanState );
-  StateTraitsImpl<WindowState>::destroyState ( aPlanState, this->stateOffset );
+  StateTraitsImpl<WindowState>::destroyState ( aPlanState, theStateOffset );
 }
 
 

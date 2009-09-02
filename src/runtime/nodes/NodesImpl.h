@@ -38,6 +38,5 @@ NARY_ITER(FnNamespaceUriIterator);
 NARY_ITER(FnLangIterator);
 
 
-// NARY_ITER(FnCollectionIterator);
 } /* namespace zorba */
 #endif /* ZORBA_NODES_IMPL_H */

@@ -415,7 +415,7 @@ public:
   
   PLAN_ITER_VISITOR (NodeSortIterator);
 
-  PLAN_ITER_VISITOR (PathIterator);
+  //PLAN_ITER_VISITOR (PathIterator);
 
   PLAN_ITER_VISITOR (SelfAxisIterator);
        

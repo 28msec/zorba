@@ -38,6 +38,7 @@
 #include "runtime/core/arithmetic_impl.h"
 #include "runtime/util/iterator_impl.h"
 #include "runtime/util/handle_hashset_item_value.h"
+#include "runtime/visitors/planitervisitor.h"
 
 #include "system/globalenv.h"
 
@@ -137,10 +138,57 @@ SERIALIZABLE_CLASS_VERSIONS(FnParseIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(FnParseIterator)
 
 
-/*______________________________________________________________________
-|  
-| 15.1 General Functions and Operators on Sequences
-|_______________________________________________________________________*/
+NARY_ACCEPT(FnConcatIterator);
+
+NARY_ACCEPT(FnIndexOfIterator);
+
+NARY_ACCEPT(FnEmptyIterator);
+
+NARY_ACCEPT(FnExistsIterator);
+
+NARY_ACCEPT(FnDistinctValuesIterator);
+
+NARY_ACCEPT(FnInsertBeforeIterator);
+
+NARY_ACCEPT(FnRemoveIterator);
+
+NARY_ACCEPT(FnReverseIterator);
+
+NARY_ACCEPT(FnSubsequenceIterator);
+
+NARY_ACCEPT(FnZeroOrOneIterator);
+
+NARY_ACCEPT(FnOneOrMoreIterator);
+
+NARY_ACCEPT(FnExactlyOneIterator);
+
+NARY_ACCEPT(FnDeepEqualIterator);
+
+NARY_ACCEPT(HashSemiJoinIterator);
+
+NARY_ACCEPT(SortSemiJoinIterator);
+
+NARY_ACCEPT(FnCountIterator);
+
+NARY_ACCEPT(FnAvgIterator);
+
+NARY_ACCEPT(FnMinMaxIterator);
+
+NARY_ACCEPT(FnSumIterator);
+
+NARY_ACCEPT(OpToIterator);
+
+NARY_ACCEPT(FnIdIterator);
+
+NARY_ACCEPT(FnIdRefIterator);
+
+NARY_ACCEPT(FnDocIterator);
+
+NARY_ACCEPT(FnDocAvailableIterator);
+
+NARY_ACCEPT(FnParseIterator);
+
+
 
 static XQPCollator*
 getCollator(
@@ -154,19 +202,29 @@ getCollator(
   store::Item_t temp;
 
   if (!PlanIterator::consumeNext(lCollationItem, iter, planState))
-      ZORBA_ERROR_LOC_DESC(XPTY0004, loc, "An empty sequence is not allowed as collation parameter");
+      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
+                           "An empty sequence is not allowed as collation parameter");
 
   if (PlanIterator::consumeNext(temp, iter, planState))
-      ZORBA_ERROR_LOC_DESC(XPTY0004, loc, "A sequence of more then one item is not allowed as collation parameter");
+      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
+                           "A sequence of more then one item is not allowed as collation parameter");
     
-  xqtref_t lCollationItemType = sctx->get_typemanager()->create_value_type (lCollationItem);
+  xqtref_t lCollationItemType = sctx->get_typemanager()->create_value_type(lCollationItem);
 
   return sctx->get_collation_cache()->getCollator(lCollationItem->getStringValue()->str());
 }
 
 
-//15.1.2 op:concatenate 
-//---------------------
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  15.1 General Functions and Operators on Sequences                          //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+  15.1.2 op:concatenate
+********************************************************************************/
 void
 FnConcatIteratorState::init(PlanState& planState) 
 {
@@ -219,16 +277,9 @@ FnConcatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 }
 
 
-//15.1.3 fn:index-of
-void FnIndexOfIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<FnIndexOfIterator, FnIndexOfIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-}
-
-
+/*******************************************************************************
+  15.1.3 fn:index-of
+********************************************************************************/
 bool 
 FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
@@ -293,11 +344,9 @@ FnIndexOfIteratorState::reset(PlanState& planState) {
 }
 
 
-//15.1.4 fn:empty
-/*
- * If the value of $arg is the empty sequence, the function returns true; 
- * otherwise, the function returns false.
- */
+/*******************************************************************************
+  15.1.4 fn:empty
+********************************************************************************/
 bool 
 FnEmptyIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t lSequenceItem;
@@ -317,11 +366,10 @@ FnEmptyIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   STACK_END (state);
 }
 
-//15.1.5 fn:exists
-/*
- * If the value of $arg is not the empty sequence, the function returns true; 
- * otherwise, the function returns false.
- */
+
+/*******************************************************************************
+  15.1.5 fn:exists
+********************************************************************************/
 bool 
 FnExistsIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t lSequenceItem;
@@ -342,29 +390,36 @@ FnExistsIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
 }
 
 
-//15.1.6 fn:distinct-values
-/**
- * Returns the sequence that results from removing from arg all but one of a set of
- * values that are eq to one other. 
- * The order in which the sequence of values is returned is ·implementation dependent·.
- * Here, we return the first item that is not a duplicate and throw away the remaining ones
- */
-FnDistinctValuesIterator::FnDistinctValuesIterator(short sctx, const QueryLoc& loc,
-                                                   vector<PlanIter_t>& args)
- : NaryBaseIterator<FnDistinctValuesIterator, FnDistinctValuesIteratorState> ( sctx, loc, args )
-{ }
-
-FnDistinctValuesIterator::~FnDistinctValuesIterator()
+/*******************************************************************************
+  15.1.6 fn:distinct-values
+********************************************************************************/
+FnDistinctValuesIteratorState::FnDistinctValuesIteratorState()
+  :
+  theHasNaN (false),
+  theAlreadySeenMap(0)
 {
 }
 
 
-void FnDistinctValuesIterator::openImpl(PlanState& planState, uint32_t& offset)
+FnDistinctValuesIteratorState::~FnDistinctValuesIteratorState()
 {
-  NaryBaseIterator<FnDistinctValuesIterator, FnDistinctValuesIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+}
+
+
+void
+FnDistinctValuesIteratorState::init(PlanState& planState) 
+{
+  PlanIteratorState::init(planState);
+}
+
+
+void
+FnDistinctValuesIteratorState::reset(PlanState& planState) 
+{
+  PlanIteratorState::reset(planState);
+  theHasNaN = false;
+  if (theAlreadySeenMap.get () != NULL)
+    theAlreadySeenMap->clear();
 }
 
 
@@ -412,39 +467,32 @@ FnDistinctValuesIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 }
 
 
-FnDistinctValuesIteratorState::FnDistinctValuesIteratorState()
-  :
-  theHasNaN (false),
-  theAlreadySeenMap(0)
+/*******************************************************************************
+  15.1.7 fn:insert-before
+********************************************************************************/
+void
+FnInsertBeforeIteratorState::init(PlanState& planState) 
 {
-}
-
-
-FnDistinctValuesIteratorState::~FnDistinctValuesIteratorState() 
-{
+ PlanIteratorState::init(planState);
+ theCurrentPos = xqp_integer::parseInt(0);
+ thePosition = xqp_integer::parseInt(0);
+ theTargetItem = NULL;
 }
 
 
 void
-FnDistinctValuesIteratorState::init(PlanState& planState) 
+FnInsertBeforeIteratorState::reset(PlanState& planState) 
 {
-  PlanIteratorState::init(planState);
+ PlanIteratorState::reset(planState);
+ theCurrentPos = xqp_integer::parseInt(0);
+ thePosition = xqp_integer::parseInt(0); 
+ theTargetItem = NULL;
 }
 
 
-void
-FnDistinctValuesIteratorState::reset(PlanState& planState) 
-{
-  PlanIteratorState::reset(planState);
-  theHasNaN = false;
-  if (theAlreadySeenMap.get () != NULL)
-    theAlreadySeenMap->clear();
-}
-
-
-//15.1.7 fn:insert-before
 bool 
-FnInsertBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
+FnInsertBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+{
  store::Item_t lInsertItem;
  store::Item_t lPositionItem;
  
@@ -487,35 +535,32 @@ FnInsertBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   STACK_END (state);
 }
 
+
+/*******************************************************************************
+  15.1.8 fn:remove
+********************************************************************************/
 void
-FnInsertBeforeIteratorState::init(PlanState& planState) {
- PlanIteratorState::init(planState);
- theCurrentPos = xqp_integer::parseInt(0);
- thePosition = xqp_integer::parseInt(0);
- theTargetItem = NULL;
-}
-
-void
-FnInsertBeforeIteratorState::reset(PlanState& planState) {
- PlanIteratorState::reset(planState);
- theCurrentPos = xqp_integer::parseInt(0);
- thePosition = xqp_integer::parseInt(0); 
- theTargetItem = NULL;
-}
-
-
-//15.1.8 fn:remove
-void FnRemoveIterator::openImpl(PlanState& planState, uint32_t& offset)
+FnRemoveIteratorState::init(PlanState& planState) 
 {
-  NaryBaseIterator<FnRemoveIterator, FnRemoveIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+  PlanIteratorState::init(planState);
+  theCurrentPos = xqp_integer::parseInt(0);
+  thePosition   = xqp_integer::parseInt(0);
+  theCollator = 0;
+}
+
+void
+FnRemoveIteratorState::reset(PlanState& planState) 
+{
+  PlanIteratorState::reset(planState);
+  theCurrentPos = xqp_integer::parseInt(0);
+  thePosition = xqp_integer::parseInt(0);
+  theCollator = 0;
 }
 
 
 bool 
-FnRemoveIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
+FnRemoveIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+{
   store::Item_t lSequenceItem;
   store::Item_t lPositionItem;
   store::Item_t lCollationItem;
@@ -549,25 +594,24 @@ FnRemoveIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   STACK_END (state);
 }
 
-void
-FnRemoveIteratorState::init(PlanState& planState) 
+
+/*******************************************************************************
+  15.1.9 fn:reverse
+********************************************************************************/
+void FnReverseIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
-  theCurrentPos = xqp_integer::parseInt(0);
-  thePosition   = xqp_integer::parseInt(0);
-  theCollator = 0;
 }
 
-void
-FnRemoveIteratorState::reset(PlanState& planState) {
+
+void FnReverseIteratorState::reset(PlanState& planState)
+{
   PlanIteratorState::reset(planState);
-  theCurrentPos = xqp_integer::parseInt(0);
-  thePosition = xqp_integer::parseInt(0);
-  theCollator = 0;
+  while (!theStack.empty())
+    theStack.pop();
 }
 
 
-//15.1.9 fn:reverse
 bool FnReverseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t iVal;
@@ -588,19 +632,23 @@ bool FnReverseIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   STACK_END (state);
 }
 
-void FnReverseIteratorState::init(PlanState& planState)
+
+/*******************************************************************************
+  15.1.10 fn:subsequence
+********************************************************************************/
+void FnSubsequenceIteratorState::init(PlanState& planState) 
 {
-  PlanIteratorState::init(planState);
+ PlanIteratorState::init(planState);
 }
 
-void FnReverseIteratorState::reset(PlanState& planState)
+
+void FnSubsequenceIteratorState::reset(PlanState& planState) 
 {
-  PlanIteratorState::reset(planState);
-  while (!theStack.empty())
-    theStack.pop();
+ PlanIteratorState::reset(planState);
 }
 
-//15.1.10 fn:subsequence
+
+
 bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
   store::Item_t startPosItem;
@@ -657,20 +705,6 @@ done:
   STACK_END (state);
 }
 
-void
-FnSubsequenceIteratorState::init(PlanState& planState) 
-{
- PlanIteratorState::init(planState);
-}
-
-void
-FnSubsequenceIteratorState::reset(PlanState& planState) 
-{
- PlanIteratorState::reset(planState);
-}
-
-
-//15.1.11 fn:unordered
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -791,12 +825,16 @@ FnExactlyOneIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 }
 
 
-/*______________________________________________________________________
-|
-| 15.3 Equals, Union, Intersection and Except
-|_______________________________________________________________________*/
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  15.3 Deepe Equal, Union, Intersection, and Except                          //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
-//15.3.1 fn:deep-equal
+
+/*******************************************************************************
+  15.3.1 fn:deep-equal
+********************************************************************************/
 bool DeepEqual(
     static_context* sctx,
     store::Item_t& item1,
@@ -947,15 +985,6 @@ bool DeepEqual(
 }
 
 
-void FnDeepEqualIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<FnDeepEqualIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-}
-
-
 bool 
 FnDeepEqualIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -993,43 +1022,59 @@ FnDeepEqualIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 
-//15.3.2 op:union
-// see header file
 
-//15.3.3 op:intersect
-//15.3.4 op:except
-HashSemiJoinIteratorState::HashSemiJoinIteratorState() {
+/*******************************************************************************
+
+  15.3.3 op:intersect : implemented by the HashSemiJoinIterator below
+
+  15.3.4 op:except : implemented by the HashSemiJoinIterator below
+
+  Hashing semi/anti join iterator.
+ 
+  First producer goes in the result if a match in the second producer is 
+  found/not found. The order of the first producer is retained. No duplicate
+  elimination is performed.
+********************************************************************************/
+HashSemiJoinIteratorState::HashSemiJoinIteratorState() 
+{
   theRightInput = new store::NodeHashSet();
 }
 
-HashSemiJoinIteratorState::~HashSemiJoinIteratorState() {
+
+HashSemiJoinIteratorState::~HashSemiJoinIteratorState() 
+{
   delete theRightInput;
   theRightInput = 0;
 }
 
 void
-HashSemiJoinIteratorState::init(PlanState& planState) {
+HashSemiJoinIteratorState::init(PlanState& planState) 
+{
   PlanIteratorState::init(planState);
 }
 
 void
-HashSemiJoinIteratorState::reset(PlanState& planState) {
+HashSemiJoinIteratorState::reset(PlanState& planState) 
+{
   PlanIteratorState::reset(planState);
 }
 
-HashSemiJoinIterator::HashSemiJoinIterator(short sctx,
-                                   const QueryLoc& loc,
-                                   std::vector<PlanIter_t>& args,
-                                   bool antijoin)
- : NaryBaseIterator<HashSemiJoinIterator, HashSemiJoinIteratorState> ( sctx, loc, args ),
-   theAntijoin(antijoin)
+
+HashSemiJoinIterator::HashSemiJoinIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& args,
+    bool antijoin)
+ :
+  NaryBaseIterator<HashSemiJoinIterator, HashSemiJoinIteratorState>(sctx, loc, args),
+  theAntijoin(antijoin)
 {
 }
 
-HashSemiJoinIterator::~HashSemiJoinIterator() {}
 
 bool 
-HashSemiJoinIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
+HashSemiJoinIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+{
   store::Item_t lItem;
   bool not_found;
 
@@ -1037,12 +1082,13 @@ HashSemiJoinIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   DEFAULT_STACK_INIT(HashSemiJoinIteratorState, state, planState);
 
   // eat the complete right-hand side and hash it
-  while ( consumeNext(lItem, theChildren[1].getp(), planState)) {
+  while ( consumeNext(lItem, theChildren[1].getp(), planState)) 
+  {
     state->theRightInput->insert(lItem);
   }
   
-
-  while (consumeNext(result, theChildren[0].getp(), planState)) {
+  while (consumeNext(result, theChildren[0].getp(), planState)) 
+  {
     not_found = ! state->theRightInput->find(result);
     if (not_found == theAntijoin)
       STACK_PUSH(true, state);
@@ -1051,18 +1097,13 @@ HashSemiJoinIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   STACK_END (state);
 }
 
-// sort-merge semi-join
-SortSemiJoinIterator::SortSemiJoinIterator(short sctx,
-                                   const QueryLoc& loc,
-                                   std::vector<PlanIter_t>& args)
- : NaryBaseIterator<SortSemiJoinIterator, PlanIteratorState> ( sctx, loc, args )
-{
-}
 
-SortSemiJoinIterator::~SortSemiJoinIterator() {}
-
+/*******************************************************************************
+  Sortmerge based semijoin iterator.
+********************************************************************************/
 bool 
-SortSemiJoinIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
+SortSemiJoinIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+{
   store::Item_t item [2];
   short order;
   int i;
@@ -1105,7 +1146,9 @@ done:
 /////////////////////////////////////////////////////////////////////////////////
 
 
-//15.4.1 fn:count
+/*******************************************************************************
+  15.4.1 fn:count
+********************************************************************************/
 bool 
 FnCountIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
@@ -1127,16 +1170,9 @@ FnCountIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 }
 
 
-//15.4.2 fn:avg
-void FnAvgIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<FnAvgIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-}
-
-
+/*******************************************************************************
+  15.4.2 fn:avg
+********************************************************************************/
 bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
   store::Item_t lSumItem;
@@ -1244,9 +1280,12 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 }
 
 
-//15.4.3 fn:max & 15.4.4 fn:min
+/*******************************************************************************
+  15.4.3 fn:max
+  15.4.4 fn:min
+********************************************************************************/
 FnMinMaxIterator::FnMinMaxIterator(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& aChildren,
     Type aType)
@@ -1257,15 +1296,6 @@ FnMinMaxIterator::FnMinMaxIterator(
                   CompareConsts::VALUE_LESS :
                   CompareConsts::VALUE_GREATER)) 
 { 
-}
-
-
-void FnMinMaxIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<FnMinMaxIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
 }
 
 
@@ -1397,16 +1427,9 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 }
 
 
-//15.4.5 fn:sum
-void FnSumIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<FnSumIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-}
-
-
+/*******************************************************************************
+  15.4.5 fn:sum
+********************************************************************************/
 bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
   store::Item_t lRunningItem;
@@ -1484,12 +1507,36 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 }
 
 
-/*______________________________________________________________________
-|
-| 15.5 Functions and Operators that Generate Sequences
-|_______________________________________________________________________*/
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  15.5 Functions and Operators that Generate Sequences                       //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
-//15.5.1 op:to
+
+/*******************************************************************************
+  15.5.1 op:to
+********************************************************************************/
+void
+OpToIteratorState::init(PlanState& planState) 
+{
+  PlanIteratorState::init(planState);
+  theCurInt = xqp_integer::parseInt(0);
+  theFirstVal = xqp_integer::parseInt(0);
+  theLastVal = xqp_integer::parseInt(0);
+}
+
+
+void
+OpToIteratorState::reset(PlanState& planState) 
+{
+  PlanIteratorState::reset(planState);
+  theCurInt = xqp_integer::parseInt(0);
+  theFirstVal = xqp_integer::parseInt(0);
+  theLastVal = xqp_integer::parseInt(0);
+}
+
+
 bool 
 OpToIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t lItem;
@@ -1519,22 +1566,6 @@ OpToIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   }
 
   STACK_END (state);
-}
-
-void
-OpToIteratorState::init(PlanState& planState) {
-  PlanIteratorState::init(planState);
-  theCurInt = xqp_integer::parseInt(0);
-  theFirstVal = xqp_integer::parseInt(0);
-  theLastVal = xqp_integer::parseInt(0);
-}
-
-void
-OpToIteratorState::reset(PlanState& planState) {
-  PlanIteratorState::reset(planState);
-  theCurInt = xqp_integer::parseInt(0);
-  theFirstVal = xqp_integer::parseInt(0);
-  theLastVal = xqp_integer::parseInt(0);
 }
 
 
@@ -1863,37 +1894,9 @@ bool FnIdRefIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 }
 
 
-/*______________________________________________________________________
-| 15.5.4 fn:doc
-|
-|   fn:doc($uri as xs:string?) as document-node()?
-| 
-| Summary: Retrieves a document using an xs:anyURI, which may include a 
-| fragment identifier, supplied as an xs:string. If $uri is not a valid 
-| xs:anyURI, an error is raised [err:FODC0005]. If it is a relative URI 
-| Reference, it is resolved relative to the value of the base URI 
-| property from the static context. The resulting absolute URI Reference 
-| is promoted to an xs:string. If the Available documents discussed in 
-| Section 2.1.2 Dynamic ContextXP provides a mapping from this string to 
-| a document node, the function returns that document node. If the 
-| Available documents maps the string to an empty sequence, then the 
-| function returns an empty sequence. If the Available documents 
-| provides no mapping for the string, an error is raised [err:FODC0005]. 
-| 
-| If $uri is the empty sequence, the result is an empty sequence.
-|_______________________________________________________________________*/
-
-FnDocIterator::FnDocIterator( short sctx, const QueryLoc& loc, PlanIter_t& arg)
-  :
-  UnaryBaseIterator<FnDocIterator, PlanIteratorState> ( sctx, loc, arg )
-{
-}
-
-
-FnDocIterator::~FnDocIterator()
-{
-}
-
+/*******************************************************************************
+  15.5.4 fn:doc
+********************************************************************************/
 static void fillTime (
     const zorba::DateTime& t0,
     const zorbatm::timeinfo& t0user,
@@ -1915,15 +1918,6 @@ static void fillTime (
 }
 
 
-void FnDocIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  UnaryBaseIterator<FnDocIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-}
-
-
 bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t     uriItem;
@@ -1938,7 +1932,8 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   runtimeCB = planState.theRuntimeCB;
-  if (consumeNext(uriItem, theChild.getp(), planState)) {
+
+  if (consumeNext(uriItem, theChildren[0].getp(), planState)) {
 
     uriString = uriItem->getStringValueP();
 
@@ -1989,42 +1984,10 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 
-bool FnParseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Store& lStore = GENV.getStore();
-  xqpString         docString;
-  xqpStringStore_t  tmpString(new xqpStringStore(""));
-  std::auto_ptr<std::istringstream> iss;
 
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-  consumeNext (result, theChildren [0].getp (), planState);
-  docString = result->getStringValueP ();
-  iss.reset (new std::istringstream (docString.c_str()));
-  try {
-    result = lStore.loadDocument(tmpString, *iss, false);
-  } catch (error::ZorbaError& e) {
-    ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
-  }
-  STACK_PUSH(true, state);
-  STACK_END (state);
-
-}
-
-/*______________________________________________________________________
-| 15.5.5 fn:doc-available
-|
-|   fn:doc-available($uri as xs:string?) as xs:boolean
-|_______________________________________________________________________*/
-void FnDocAvailableIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<FnDocAvailableIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-}
-
-
+/*******************************************************************************
+  15.5.5 fn:doc-available
+********************************************************************************/
 bool FnDocAvailableIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t    doc;
@@ -2055,6 +2018,32 @@ bool FnDocAvailableIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
   STACK_END (state);
 }
+
+
+/*******************************************************************************
+  Zorba-defined parse function
+********************************************************************************/
+bool FnParseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Store& lStore = GENV.getStore();
+  xqpString         docString;
+  xqpStringStore_t  tmpString(new xqpStringStore(""));
+  std::auto_ptr<std::istringstream> iss;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  consumeNext (result, theChildren [0].getp (), planState);
+  docString = result->getStringValueP ();
+  iss.reset (new std::istringstream (docString.c_str()));
+  try {
+    result = lStore.loadDocument(tmpString, *iss, false);
+  } catch (error::ZorbaError& e) {
+    ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+  }
+  STACK_PUSH(true, state);
+  STACK_END (state);
+}
+
 
 
 } /* namespace zorba */

@@ -36,8 +36,8 @@
 
 #include "runtime/core/arithmetic_impl.h"
 #include "runtime/numerics/NumericsImpl.h"
-#include "runtime/dateTime/DurationsDatesTimes.h"
 #include "runtime/api/runtimecb.h"
+#include "runtime/visitors/planitervisitor.h"
 
 #include "store/api/item_factory.h"
 
@@ -80,7 +80,7 @@ void ArithOperationsCommons::createError(
 
 template< class Operations>
 GenericArithIterator<Operations>::GenericArithIterator(
-    short sctx, 
+    static_context* sctx, 
     const QueryLoc& loc,
     PlanIter_t& iter0,
     PlanIter_t& iter1)
@@ -89,18 +89,11 @@ GenericArithIterator<Operations>::GenericArithIterator(
 { 
 }
 
-template < class Operation >
-void GenericArithIterator<Operation>::openImpl(PlanState& planState, uint32_t& offset)
-{
-  BinaryBaseIterator<GenericArithIterator<Operation>, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-}
-
 
 template < class Operation >
-bool GenericArithIterator<Operation>::nextImpl(store::Item_t& result, PlanState& planState) const
+bool GenericArithIterator<Operation>::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t n0;
   store::Item_t n1;
@@ -132,6 +125,18 @@ bool GenericArithIterator<Operation>::nextImpl(store::Item_t& result, PlanState&
   }
 
   STACK_END (state);
+}
+
+
+template <class Operation>
+void GenericArithIterator<Operation>::accept(PlanIterVisitor& v) const 
+{
+  v.beginVisit(*this);
+
+  this->theChild0->accept(v);
+  this->theChild1->accept(v);
+
+  v.endVisit(*this);
 }
 
 
@@ -294,20 +299,6 @@ bool GenericArithIterator<Operation>::compute(
                        + type0->toString() + " and " + type1->toString() + ").");
   
   return 0;
-}
-
-
-/**
- * Information: It is not possible to move this function to
- * runtime/visitors/accept.cpp!
- */
-template < class Operation >
-void GenericArithIterator<Operation>::accept(PlanIterVisitor& v) const 
-{ 
-  v.beginVisit(*this); 
-  this->theChild0->accept(v); 
-  this->theChild1->accept(v); 
-  v.endVisit(*this); 
 }
 
 

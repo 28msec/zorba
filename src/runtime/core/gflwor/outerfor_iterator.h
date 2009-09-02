@@ -16,7 +16,8 @@
 #ifndef ZORBA_RUNTIME_GFLWOR_OUTER_FOR_ITERATOR
 #define ZORBA_RUNTIME_GFLWOR_OUTER_FOR_ITERATOR
 
-#include "zorbautils/checked_vector.h"
+#include <vector>
+
 #include "runtime/base/binarybase.h"
 
 
@@ -29,32 +30,39 @@ namespace flwor
 class OuterForIterator : public BinaryBaseIterator<OuterForIterator, PlanIteratorState> 
 {
 private:
-        store::Item_t theVarName;
-        std::vector<ForVarIter_t> theOuterForVars;
-      public:
-        SERIALIZABLE_CLASS(OuterForIterator)
-        SERIALIZABLE_CLASS_CONSTRUCTOR2T(OuterForIterator, BinaryBaseIterator<OuterForIterator, PlanIteratorState>)
-        void serialize(::zorba::serialization::Archiver &ar)
-        {
-          serialize_baseclass(ar, (BinaryBaseIterator<OuterForIterator, PlanIteratorState>*)this);
-          ar & theVarName;
-          ar & theOuterForVars;
-        }
+  store::Item_t theVarName;
+  std::vector<ForVarIter_t> theOuterForVars;
+
+public:
+  SERIALIZABLE_CLASS(OuterForIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  OuterForIterator, 
+  BinaryBaseIterator<OuterForIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (BinaryBaseIterator<OuterForIterator, PlanIteratorState>*)this);
+
+    ar & theVarName;
+    ar & theOuterForVars;
+  }
 
 public:
   OuterForIterator(
-        short sctx,
+        static_context* sctx,
         const QueryLoc& aLoc,
-                     const store::Item_t& aVarName,
-                     PlanIter_t aTupleIterator,
-                     PlanIter_t aInput,
+        const store::Item_t& aVarName,
+        PlanIter_t aTupleIterator,
+        PlanIter_t aInput,
         const std::vector<PlanIter_t>& aOuterForVars);
   
-        ~OuterForIterator();
+  ~OuterForIterator();
 
-public:
-        bool nextImpl (store::Item_t& result, PlanState& planState) const;
-        virtual void accept (PlanIterVisitor&) const;
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl (store::Item_t& result, PlanState& planState) const;
 };
 
 }

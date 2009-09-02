@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_RUNTIME_REST_H
-#define ZORBA_RUNTIME_REST_H
+#ifndef ZORBA_RUNTIME_REST
+#define ZORBA_RUNTIME_REST
 
 #include <istream>
 #include <memory>
@@ -70,6 +70,7 @@ class ZorbaRestGetIteratorState : public PlanIteratorState
 {
 public:
   ZorbaRestGetIteratorState();
+
   ~ZorbaRestGetIteratorState();
 
   void init(PlanState&);
@@ -81,6 +82,7 @@ public:
   std::auto_ptr<std::vector<std::string> > headers;
 };
 
+
 /****************************************************************************
  *
  * rest-get Iterator 
@@ -90,43 +92,37 @@ public:
 class ZorbaRestGetIterator : public NaryBaseIterator<ZorbaRestGetIterator,
                                                      ZorbaRestGetIteratorState > 
 {
-public:                                                                  
+private:
+  bool isGetTidy;
+
+public:
+  SERIALIZABLE_CLASS(ZorbaRestGetIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaRestGetIterator,
+                                   NaryBaseIterator<ZorbaRestGetIterator,
+                                                    ZorbaRestGetIteratorState>)
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<ZorbaRestGetIterator,
+                                              ZorbaRestGetIteratorState >*)this);
+    ar & isGetTidy;
+  }
+
+public:
   ZorbaRestGetIterator(
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& aChildren,
         bool tidy = false)
     :
-    NaryBaseIterator<ZorbaRestGetIterator, ZorbaRestGetIteratorState >(sctx, loc, aChildren),
+    NaryBaseIterator<ZorbaRestGetIterator, ZorbaRestGetIteratorState>(sctx, loc, aChildren),
     isGetTidy(tidy)
   { } 
 
-  void openImpl(PlanState& planState, uint32_t& offset);
+  void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-                                                                         
-  virtual void 
-  accept(PlanIterVisitor& v) const
-  {
-    v.beginVisit(*this);
-    std::vector<PlanIter_t>::const_iterator iter =  theChildren.begin();
-    std::vector<PlanIter_t>::const_iterator lEnd =  theChildren.end();
-    for ( ; iter != lEnd; ++iter ) {
-      ( *iter )->accept ( v );
-    }
-    v.endVisit(*this);
-  }
-private:
-  bool isGetTidy;
-public:
-  SERIALIZABLE_CLASS(ZorbaRestGetIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaRestGetIterator, NaryBaseIterator<ZorbaRestGetIterator, ZorbaRestGetIteratorState >)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (NaryBaseIterator<ZorbaRestGetIterator, ZorbaRestGetIteratorState >*)this);
-    ar & isGetTidy;
-  }
 };
+
 
 /****************************************************************************
  *
@@ -134,31 +130,12 @@ public:
  *
  ****************************************************************************/
 
-class ZorbaRestPostIterator : public NaryBaseIterator<ZorbaRestPostIterator, ZorbaRestGetIteratorState >
+class ZorbaRestPostIterator : public NaryBaseIterator<ZorbaRestPostIterator,
+                                                      ZorbaRestGetIteratorState >
 {
-public:
-  ZorbaRestPostIterator( short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, bool tidy = false)
-    : NaryBaseIterator<ZorbaRestPostIterator, ZorbaRestGetIteratorState >(sctx, loc, aChildren),
-      isPostTidy(tidy)
-  { }
-
-  void openImpl(PlanState& planState, uint32_t& offset);
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-
-  virtual void
-      accept(PlanIterVisitor& v) const
-  {
-    v.beginVisit(*this);
-    std::vector<PlanIter_t>::const_iterator iter =  theChildren.begin();
-    std::vector<PlanIter_t>::const_iterator lEnd =  theChildren.end();
-    for ( ; iter != lEnd; ++iter ) {
-      ( *iter )->accept ( v );
-    }
-    v.endVisit(*this);
-  }
 private:
   bool isPostTidy;
+
 public:
   SERIALIZABLE_CLASS(ZorbaRestPostIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaRestPostIterator, NaryBaseIterator<ZorbaRestPostIterator, ZorbaRestGetIteratorState >)
@@ -167,7 +144,23 @@ public:
     serialize_baseclass(ar, (NaryBaseIterator<ZorbaRestPostIterator, ZorbaRestGetIteratorState >*)this);
     ar & isPostTidy;	
   }
+
+public:
+  ZorbaRestPostIterator(
+        static_context* sctx, 
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& aChildren,
+        bool tidy = false)
+    :
+    NaryBaseIterator<ZorbaRestPostIterator, ZorbaRestGetIteratorState>(sctx, loc, aChildren),
+    isPostTidy(tidy)
+  { }
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
+
 
 /****************************************************************************
  *
@@ -175,36 +168,8 @@ public:
  *
  ****************************************************************************/
 
-class ZorbaRestPutIterator : public NaryBaseIterator<ZorbaRestPutIterator, ZorbaRestGetIteratorState >
-{
-public:
-  ZorbaRestPutIterator( short sctx,const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator<ZorbaRestPutIterator, ZorbaRestGetIteratorState >(sctx, loc, aChildren)
-  { }
+NARY_ITER_STATE(ZorbaRestPutIterator, ZorbaRestGetIteratorState);
 
-  void openImpl(PlanState& planState, uint32_t& offset);
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-
-  virtual void accept(PlanIterVisitor& v) const
-  {
-    v.beginVisit(*this);
-    std::vector<PlanIter_t>::const_iterator iter =  theChildren.begin();
-    std::vector<PlanIter_t>::const_iterator lEnd =  theChildren.end();
-    for ( ; iter != lEnd; ++iter ) {
-      ( *iter )->accept ( v );
-    }
-    v.endVisit(*this);
-  }
-
-public:
-  SERIALIZABLE_CLASS(ZorbaRestPutIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaRestPutIterator, NaryBaseIterator<ZorbaRestPutIterator, ZorbaRestGetIteratorState >)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (NaryBaseIterator<ZorbaRestPutIterator, ZorbaRestGetIteratorState >*)this);
-  }
-};
 
 /****************************************************************************
  *
@@ -212,35 +177,8 @@ public:
  *
  ****************************************************************************/
 
-class ZorbaRestDeleteIterator : public NaryBaseIterator<ZorbaRestDeleteIterator, ZorbaRestGetIteratorState >
-{
-public:
-  ZorbaRestDeleteIterator( short sctx,const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator<ZorbaRestDeleteIterator, ZorbaRestGetIteratorState >(sctx, loc, aChildren)
-  { }
+NARY_ITER_STATE(ZorbaRestDeleteIterator, ZorbaRestGetIteratorState);
 
-  void openImpl(PlanState& planState, uint32_t& offset);
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-
-  virtual void accept(PlanIterVisitor& v) const
-  {
-    v.beginVisit(*this);
-    std::vector<PlanIter_t>::const_iterator iter =  theChildren.begin();
-    std::vector<PlanIter_t>::const_iterator lEnd =  theChildren.end();
-    for ( ; iter != lEnd; ++iter ) {
-      ( *iter )->accept ( v );
-    }
-    v.endVisit(*this);
-  }
-public:
-  SERIALIZABLE_CLASS(ZorbaRestDeleteIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaRestDeleteIterator, NaryBaseIterator<ZorbaRestDeleteIterator, ZorbaRestGetIteratorState >)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (NaryBaseIterator<ZorbaRestDeleteIterator, ZorbaRestGetIteratorState >*)this);
-  }
-};
 
 /****************************************************************************
  *
@@ -248,37 +186,15 @@ public:
  *
  ****************************************************************************/
 
-class ZorbaRestHeadIterator : public NaryBaseIterator<ZorbaRestHeadIterator, ZorbaRestGetIteratorState >
-{
-public:
-  ZorbaRestHeadIterator( short sctx,const QueryLoc& loc, std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator<ZorbaRestHeadIterator, ZorbaRestGetIteratorState >(sctx, loc, aChildren)
-  { }
-
-  void openImpl(PlanState& planState, uint32_t& offset);
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-
-  virtual void accept(PlanIterVisitor& v) const
-  {
-    v.beginVisit(*this);
-    std::vector<PlanIter_t>::const_iterator iter =  theChildren.begin();
-    std::vector<PlanIter_t>::const_iterator lEnd =  theChildren.end();
-    for ( ; iter != lEnd; ++iter ) {
-      ( *iter )->accept ( v );
-    }
-    v.endVisit(*this);
-  }
-public:
-  SERIALIZABLE_CLASS(ZorbaRestHeadIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaRestHeadIterator, NaryBaseIterator<ZorbaRestHeadIterator, ZorbaRestGetIteratorState >)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (NaryBaseIterator<ZorbaRestHeadIterator, ZorbaRestGetIteratorState >*)this);
-  }
-};
+NARY_ITER_STATE(ZorbaRestHeadIterator, ZorbaRestGetIteratorState);
 
 
 } /* namespace zorba */
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

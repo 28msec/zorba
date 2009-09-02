@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "compiler/api/compilercb.h"
+#include "system/globalenv.h"
+
+#include "indexing/value_index.h"
 
 #include "runtime/indexing/value_index_builder.h"
+#include "runtime/visitors/planitervisitor.h"
 
 #include "store/api/store.h"
-
-#include "system/globalenv.h"
 
 namespace zorba {
 
@@ -39,15 +40,9 @@ SERIALIZABLE_CLASS_VERSIONS(ValueIndexBuilder)
 END_SERIALIZABLE_CLASS_VERSIONS(ValueIndexBuilder)
 
 
-void CreateValueIndex::openImpl(PlanState& planState, uint32_t& offset)
-{
-  UnaryBaseIterator<CreateValueIndex, PlanIteratorState>::
-  openImpl(planState, offset); 
+/***************************************************************************//**
 
-  theSctx = planState.theCompilerCB->getStaticContext(sctx);
-}
-
-
+********************************************************************************/
 bool CreateValueIndex::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   bool status;
@@ -90,6 +85,12 @@ bool CreateValueIndex::nextImpl(store::Item_t& result, PlanState& planState) con
 }
 
 
+UNARY_ACCEPT(CreateValueIndex);
+
+
+/***************************************************************************//**
+
+********************************************************************************/
 bool DropValueIndex::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   bool status;
@@ -109,6 +110,12 @@ bool DropValueIndex::nextImpl(store::Item_t& result, PlanState& planState) const
 }
 
 
+UNARY_ACCEPT(DropValueIndex);
+
+
+/***************************************************************************//**
+
+********************************************************************************/
 bool ValueIndexInsertSessionOpener::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   bool status;
@@ -135,6 +142,12 @@ bool ValueIndexInsertSessionOpener::nextImpl(store::Item_t& result, PlanState& p
 }
 
 
+UNARY_ACCEPT(ValueIndexInsertSessionOpener);
+
+
+/***************************************************************************//**
+
+********************************************************************************/
 bool ValueIndexInsertSessionCloser::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   bool status;
@@ -152,6 +165,12 @@ bool ValueIndexInsertSessionCloser::nextImpl(store::Item_t& result, PlanState& p
 }
 
 
+UNARY_ACCEPT(ValueIndexInsertSessionCloser);
+
+
+/***************************************************************************//**
+
+********************************************************************************/
 void ValueIndexBuilderState::init(PlanState& state)
 {
   PlanIteratorState::init(state);
@@ -192,6 +211,10 @@ bool ValueIndexBuilder::nextImpl(store::Item_t& result, PlanState& planState) co
 
   STACK_END (state);
 }
+
+
+NARY_ACCEPT(ValueIndexBuilder);
+
 
 }
 /* vim:set ts=2 sw=2: */

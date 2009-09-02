@@ -327,8 +327,9 @@ private:
   /*const */int             theNumBindings; //Number of FORs and LETs (overall) 
          
 public:
-  SERIALIZABLE_CLASS(FLWORIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(FLWORIterator, Batcher<FLWORIterator>)
+  SERIALIZABLE_CLASS(FLWORIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(FLWORIterator, Batcher<FLWORIterator>);
 
   void serialize(::zorba::serialization::Archiver &ar)
   {
@@ -345,7 +346,7 @@ public:
   }
 public:
   FLWORIterator(
-        short                       sctx,
+        static_context*             sctx,
         const QueryLoc&             loc,
         std::vector<ForLetClause>&  forLetClauses,
         PlanIter_t&                 whereClause,

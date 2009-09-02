@@ -79,19 +79,17 @@ PlanState::~PlanState()
   class PlanIterator
 ********************************************************************************/
 
-static_context* PlanIterator::getStaticContext(PlanState& planState) const
+void PlanIterator::serialize(::zorba::serialization::Archiver &ar)
 {
-  if (!theSctx)
-    theSctx = planState.theCompilerCB->getStaticContext(sctx);
-
-  assert(theSctx);
-  return theSctx;
+  ar & theStateOffset;
+  ar & loc;
+  ar & theSctx;
 }
 
 
 CollationCache* PlanIterator::collationCache(PlanState& planState) 
 {
-  return getStaticContext(planState)->get_collation_cache(); 
+  return theSctx->get_collation_cache(); 
 }
 
 
@@ -99,23 +97,22 @@ CollationCache* PlanIterator::collationCache(PlanState& planState)
 
 bool PlanIterator::consumeNext(
     store::Item_t& result, 
-    const PlanIterator* subIter,
+    const PlanIterator* iter,
     PlanState& planState)
 {
-  bool status = subIter->produceNext(result, planState);
+  bool status = iter->produceNext(result, planState);
 
   if (planState.theCompilerCB->m_config.print_item_flow) 
   {
-    std::cout << "next (" << subIter << " = " << typeid (*subIter).name()
+    std::cout << "next (" << iter << " = " << typeid (*iter).name()
               << ") -> " 
-              << ((status && result != NULL) ? result->show () : xqp_string("null"))
+              << ((status && result != NULL) ? result->show() : xqp_string("null"))
               << std::endl;
   }
   return status;
 }
 
 #endif
-
 
 
 }

@@ -16,9 +16,13 @@
 #include "store/api/store.h"
 #include "store/api/iterator.h"
 #include "store/api/item_factory.h"
+
 #include "system/globalenv.h"
+
 #include "runtime/core/internal_operators.h"
 #include "runtime/api/plan_iterator_wrapper.h"
+#include "runtime/visitors/planitervisitor.h"
+
 #include "zorbaerrors/errors.h"
 
 namespace zorba {
@@ -67,6 +71,10 @@ HoistIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END(state);
 }
 
+
+NARY_ACCEPT(HoistIterator);
+
+
 bool
 UnhoistIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -84,6 +92,10 @@ UnhoistIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   }
   STACK_END(state);
 }
+
+
+NARY_ACCEPT(UnhoistIterator);
+
 
 }
 

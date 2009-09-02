@@ -17,71 +17,56 @@
 #define ZORBA_ITEM_ITERATOR_H
 
 #include "common/shared_types.h"
+
 #include "runtime/base/noarybase.h"
 
 namespace zorba {
 
 class SingletonIterator;
+
 typedef rchandle<SingletonIterator> singleton_t;
 
 
 /*******************************************************************************
-
    Class represents an empty sequence.
-
 ********************************************************************************/
-class EmptyIterator : public NoaryBaseIterator<EmptyIterator, PlanIteratorState>
-{
-public:
-  EmptyIterator(short sctx, const QueryLoc& loc)
-     : NoaryBaseIterator<EmptyIterator, PlanIteratorState>(sctx, loc) {}
+NOARY_ITER(EmptyIterator); 
 
-  virtual ~EmptyIterator() {}
-  
-public:
-  bool nextImpl(store::Item_t& result, PlanState& planState) const { return false; }
-
-  virtual void accept(PlanIterVisitor&) const;
-public:
-  SERIALIZABLE_CLASS(EmptyIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(EmptyIterator, NoaryBaseIterator<EmptyIterator, PlanIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (NoaryBaseIterator<EmptyIterator, PlanIteratorState>*)this);
-  }
-};
 
 /*******************************************************************************
-
   Literals
-
 ********************************************************************************/
-class SingletonIterator : public NoaryBaseIterator<SingletonIterator, PlanIteratorState>
+class SingletonIterator : public NoaryBaseIterator<SingletonIterator,
+                                                   PlanIteratorState>
 {
 protected:
   store::Item_t theValue;
 
 public:
   SERIALIZABLE_CLASS(SingletonIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SingletonIterator, NoaryBaseIterator<SingletonIterator, PlanIteratorState>)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SingletonIterator,
+                                   NoaryBaseIterator<SingletonIterator,
+                                                     PlanIteratorState>)
   void serialize(::zorba::serialization::Archiver &ar)
   {
-    serialize_baseclass(ar, (NoaryBaseIterator<SingletonIterator, PlanIteratorState>*)this);
+    serialize_baseclass(ar, (NoaryBaseIterator<SingletonIterator,
+                                               PlanIteratorState>*)this);
     ar & theValue;
   }
+
 public:
-  SingletonIterator(short sctx, const QueryLoc& loc, store::Item_t value)
-    : NoaryBaseIterator<SingletonIterator, PlanIteratorState>(sctx, loc),
+  SingletonIterator(static_context* sctx, const QueryLoc& loc, store::Item_t value)
+    :
+    NoaryBaseIterator<SingletonIterator, PlanIteratorState>(sctx, loc),
     theValue(value) {}
 
   virtual ~SingletonIterator() {}
   
-public:
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
-
   const store::Item_t& getValue() const { return theValue; }
-  
-  virtual void accept(PlanIterVisitor&) const;
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
 
@@ -94,6 +79,7 @@ class IfThenElseIteratorState : public PlanIteratorState
 public:
   bool theThenUsed;
 };
+
 
 class IfThenElseIterator : public Batcher<IfThenElseIterator>
 {
@@ -129,7 +115,7 @@ public:
    *                              boolean value function
    */
   IfThenElseIterator(
-        short sctx, 
+        static_context* sctx, 
         const QueryLoc& loc,
         PlanIter_t& aCondIter,
         PlanIter_t& aThenIter,
@@ -138,20 +124,25 @@ public:
         bool aIsBooleanIter = false);
 
   virtual bool isUpdating() const { return theIsUpdating; }
-  void openImpl(PlanState& planState, uint32_t& offset);
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
-  void resetImpl(PlanState& planState) const;
-  void closeImpl(PlanState& planState) const;
-  
+
   virtual uint32_t getStateSize() const { return sizeof(IfThenElseIteratorState); }
+
   virtual uint32_t getStateSizeOfSubtree() const;
       
   virtual void accept(PlanIterVisitor&) const;
+
+  void openImpl(PlanState& planState, uint32_t& offset);
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+
+  void resetImpl(PlanState& planState) const;
+
+  void closeImpl(PlanState& planState) const;
 };
 
 
 } /* namespace zorba */
-#endif  /* ZORBA_ITEM_ITERATOR_H */
+#endif
 
 /*
  * Local variables:

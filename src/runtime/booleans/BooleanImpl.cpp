@@ -16,7 +16,6 @@
 #include "zorbaerrors/error_manager.h"
 
 #include "zorbatypes/collation_manager.h"
-#include "zorbatypes/duration.h"
 #include "zorbatypes/datetime.h"
 
 #include "system/globalenv.h"
@@ -30,9 +29,9 @@
 
 #include "compiler/api/compilercb.h"
 
+#include "runtime/visitors/planitervisitor.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/api/runtimecb.h"
-#include "runtime/accessors//AccessorsImpl.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/util/iterator_impl.h"
 
@@ -70,15 +69,12 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCom
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<TypeConstants::XS_INTEGER>, 4)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(TypedValueCompareIterator, TypedValueCompareIterator<TypeConstants::XS_STRING>, 5)
 
-/*______________________________________________________________________
 
- 15.1.1 fn:boolean
- fn:boolean($arg as item()*) as xs:boolean
-
- Computes the effective boolean value of the sequence $arg.
-_______________________________________________________________________*/
+/*******************************************************************************
+  15.1.1 fn:boolean
+********************************************************************************/
 FnBooleanIterator::FnBooleanIterator(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     PlanIter_t& aIter,
     bool aNegate)
@@ -143,6 +139,8 @@ bool FnBooleanIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 }
 
 
+UNARY_ACCEPT(FnBooleanIterator);
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -152,7 +150,7 @@ bool FnBooleanIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
 
 LogicIterator::LogicIterator (
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     PlanIter_t theChild0,
     PlanIter_t theChild1,
@@ -186,6 +184,8 @@ LogicIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 }
 
 
+BINARY_ACCEPT(LogicIterator);
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -195,7 +195,7 @@ LogicIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
 
 CompareIterator::CompareIterator(
-     short sctx,
+     static_context* sctx,
      const QueryLoc& loc,
      PlanIter_t aChild0,
      PlanIter_t aChild1,
@@ -224,12 +224,13 @@ CompareIterator::CompareIterator(
 }
 
   
+BINARY_ACCEPT(CompareIterator);
+
 
 void CompareIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
   BinaryBaseIterator<CompareIterator, PlanIteratorState>::openImpl(planState, offset);
 
-  theSctx = planState.theCompilerCB->getStaticContext(sctx);
   theTypeManager = theSctx->get_typemanager();
   theTimezone = planState.theRuntimeCB->theDynamicContext->get_implicit_timezone();
   theCollation = theSctx->get_collation_cache()->getDefaultCollator();
@@ -795,27 +796,37 @@ long CompareIterator::compare(
 }
 
 
-// TypedValueCompareIterator
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  TypedValueCompareIterator                                                  //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
-template<TypeConstants::atomic_type_code_t ATC>
-void TypedValueCompareIterator<ATC>::openImpl(PlanState& planState, uint32_t& offset)
+
+template <TypeConstants::atomic_type_code_t ATC>
+void TypedValueCompareIterator<ATC>::accept(PlanIterVisitor& v) const  
 {
-  NaryBaseIterator<TypedValueCompareIterator, PlanIteratorState>::openImpl(planState, offset);
+  v.beginVisit(*this);
 
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-  theTimezone = planState.theRuntimeCB->theDynamicContext->get_implicit_timezone();
-  theCollation = this->theSctx->
-                 get_collation_cache()->getDefaultCollator();
+  std::vector<PlanIter_t>::const_iterator iter =  this->theChildren.begin(); 
+  std::vector<PlanIter_t>::const_iterator lEnd =  this->theChildren.end();   
+  for ( ; iter != lEnd; ++iter ) 
+  {                                     
+    (*iter)->accept(v);               
+  }                 
+                                                   
+  v.endVisit(*this);
 }
 
 
 template<TypeConstants::atomic_type_code_t ATC>
-void TypedValueCompareIterator<ATC>::accept(PlanIterVisitor& v) const
+void TypedValueCompareIterator<ATC>::openImpl(PlanState& planState, uint32_t& offset)
 {
-  v.beginVisit(*this); 
-  this->theChildren [0]->accept(v); 
-  this->theChildren [1]->accept(v); 
-  v.endVisit(*this); 
+  NaryBaseIterator<TypedValueCompareIterator, PlanIteratorState>
+  ::openImpl(planState, offset);
+
+  theTimezone = planState.theRuntimeCB->theDynamicContext->get_implicit_timezone();
+  theCollation = this->theSctx->get_collation_cache()->getDefaultCollator();
 }
 
 
@@ -873,6 +884,7 @@ bool TypedValueCompareIterator<ATC>::nextImpl(store::Item_t& result, PlanState& 
   STACK_END (state);
 }
 
+
 template class TypedValueCompareIterator<TypeConstants::XS_DOUBLE>;
 template class TypedValueCompareIterator<TypeConstants::XS_FLOAT>;
 template class TypedValueCompareIterator<TypeConstants::XS_DECIMAL>;
@@ -882,11 +894,14 @@ template class TypedValueCompareIterator<TypeConstants::XS_STRING>;
   
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  IsSameNodeIterator                                                         //
+//  Node Ordering Iterators                                                    //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool
 OpIsSameNodeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 { 
@@ -910,6 +925,12 @@ OpIsSameNodeIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 }
 
 
+NARY_ACCEPT(OpIsSameNodeIterator);
+
+
+/*******************************************************************************
+
+********************************************************************************/
 bool
 OpNodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 { 
@@ -932,6 +953,12 @@ OpNodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 }
 
 
+NARY_ACCEPT(OpNodeBeforeIterator);
+
+
+/*******************************************************************************
+
+********************************************************************************/
 bool
 OpNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 { 
@@ -953,6 +980,8 @@ OpNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (aState);
 }
 
+
+NARY_ACCEPT(OpNodeAfterIterator);
 
 
 }

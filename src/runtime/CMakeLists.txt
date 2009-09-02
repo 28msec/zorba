@@ -28,7 +28,6 @@ SET(RUNTIME_SRCS
     core/item_iterator.cpp
     core/nodeid_iterators.cpp
     core/path_iterators.cpp
-    core/path.cpp
     core/sequencetypes.cpp
     core/trycatch.cpp
     core/var_iterators.cpp
@@ -55,7 +54,6 @@ SET(RUNTIME_SRCS
     qnames/QNamesImpl.cpp
     sequences/SequencesImpl.cpp
     strings/StringsImpl.cpp
-    visitors/accept.cpp
     visitors/iterprinter.cpp
     visitors/printervisitor.cpp
     update/update.cpp

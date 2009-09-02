@@ -25,11 +25,11 @@ namespace zorba {
   NARY_ITER (ZorbaBase64DecodeIterator);
   NARY_ITER (ZorbaBase64EncodeIterator);
 
-  NARY_ITER_SCTX (XQDocIterator);
+  NARY_ITER(XQDocIterator);
 
 #ifdef ZORBA_WITH_TIDY
-  NARY_ITER (ZorbaTidyIterator);
-  NARY_ITER_SCTX (ZorbaTDocIterator);
+  NARY_ITER(ZorbaTidyIterator);
+  NARY_ITER(ZorbaTDocIterator);
 #endif  /* ZORBA_WITH_TIDY */
 
   NARY_ITER (ZorbaRandomIterator);

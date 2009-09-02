@@ -119,6 +119,7 @@ public:
         const uint32_t aPosition ) const;
 };
 
+
 class StartClause : public ::zorba::serialization::SerializeBaseClass
 {
   friend class WindowIterator;
@@ -135,6 +136,7 @@ public:
     ar & theStartClauseIter;
     ar & theWindowVars;
   }
+
 public:
   StartClause(PlanIter_t aStartClauseIter, WindowVars& aWindowVars);
 
@@ -151,6 +153,7 @@ protected:
   void bindIntern ( PlanState& aPlanState, const store::TempSeq_t& aInputSeq, const uint32_t aPosition ) const;
   void bindExtern(PlanState& aPlanState, const store::TempSeq_t& aInputSeq, const uint32_t aPosition) const;
 };
+
 
 class EndClause : public ::zorba::serialization::SerializeBaseClass
 {
@@ -171,6 +174,7 @@ public:
     ar & theOnlyEnd;
     ar & theHasEndClause;
   }
+
 public:
   /**
    * If the EndClause is missing in the case of a tumbling window, this constructor should be used
@@ -192,6 +196,7 @@ protected:
   void bindIntern ( PlanState& aPlanState, const store::TempSeq_t& aInputSeq, const uint32_t aPosition ) const;
   void bindExtern(PlanState& aPlanState, const store::TempSeq_t& aInputSeq, const uint32_t aPosition) const;
 };
+
 
 class WindowDef{
 public:
@@ -247,9 +252,13 @@ private:
   uint32_t theMaxNeededHistory;
 
 public:
-  SERIALIZABLE_CLASS(WindowIterator)
-  WindowIterator(::zorba::serialization::Archiver &ar) 
-  : Batcher<WindowIterator>(ar), theStartClause(ar) {}
+  SERIALIZABLE_CLASS(WindowIterator);
+
+  WindowIterator(::zorba::serialization::Archiver& ar) 
+    :
+    Batcher<WindowIterator>(ar), theStartClause(ar) 
+  {}
+
   void serialize(::zorba::serialization::Archiver &ar)
   {
     serialize_baseclass(ar, (Batcher<WindowIterator>*)this);
@@ -263,6 +272,7 @@ public:
     ar & theLazyEval;
     ar & theMaxNeededHistory;
   }
+
 public:
 
   /**
@@ -285,7 +295,7 @@ public:
    *
          */
   WindowIterator (
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc,
         WindowType windowType,
         PlanIter_t tupleIter,

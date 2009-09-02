@@ -23,6 +23,7 @@
 #include "runtime/context/ContextImpl.h"
 #include "runtime/api/runtimecb.h"
 #include "runtime/util/iterator_impl.h"
+#include "runtime/visitors/planitervisitor.h"
 
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
@@ -50,6 +51,18 @@ END_SERIALIZABLE_CLASS_VERSIONS(FnNamespaceUriIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(FnLangIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(FnLangIterator)
+
+
+NARY_ACCEPT(NodeReferenceIterator);
+
+NARY_ACCEPT(NodeByReferenceIterator);
+
+NARY_ACCEPT(FnLocalNameIterator);
+
+NARY_ACCEPT(FnNamespaceUriIterator);
+
+NARY_ACCEPT(FnLangIterator);
+
 
 bool NodeReferenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {

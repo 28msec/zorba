@@ -19,20 +19,19 @@
 
 #include "context/static_context.h"
 
-#include "compiler/api/compilercb.h"
-
 #include "runtime/debug/debug_iterators.h"
+#include "runtime/visitors/planitervisitor.h"
 
 #include "store/api/item.h"
 
-namespace zorba {
+namespace zorba 
+{
 
 SERIALIZABLE_CLASS_VERSIONS(FnTraceIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(FnTraceIterator)
 
 
-void 
-FnTraceIteratorState::init(PlanState& planState)
+void FnTraceIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
   theTagItem = NULL;
@@ -40,21 +39,11 @@ FnTraceIteratorState::init(PlanState& planState)
   theOS = 0;
 }
 
-void 
-FnTraceIteratorState::reset(PlanState& planState)
+void FnTraceIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   theTagItem = NULL;
   theIndex = 0;
-}
-
-
-void FnTraceIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<FnTraceIterator, FnTraceIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
 }
 
 
@@ -71,7 +60,8 @@ FnTraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   state->theOS = theSctx->get_trace_stream();
 
-  while (consumeNext(result, theChildren[0], planState)) {
+  while (consumeNext(result, theChildren[0], planState)) 
+  {
     (*state->theOS) << state->theTagItem->getStringValue() 
       << " [" << state->theIndex << "]: "
       << result->show()
@@ -85,6 +75,10 @@ FnTraceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 
-} /* namespace zorba */
+
+NARY_ACCEPT(FnTraceIterator);
+
+
+}
 
 /* vim:set ts=2 sw=2: */

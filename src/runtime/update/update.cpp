@@ -15,7 +15,9 @@
  */
 
 #include "zorbautils/fatal.h"
+
 #include "common/shared_types.h"
+
 #include "system/globalenv.h"
 
 #include "types/root_typemanager.h"
@@ -23,19 +25,16 @@
 
 #include "context/static_context.h"
 
-#include "compiler/api/compilercb.h"
-
-#include "runtime/api/runtimecb.h"
 #include "runtime/update/update.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/core/var_iterators.h"
+#include "runtime/visitors/planitervisitor.h"
 
 #include "store/api/pul.h"
 #include "store/api/update_consts.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
-#include "store/api/temp_seq.h"
 #include "store/api/copymode.h"
 
 
@@ -63,7 +62,7 @@ END_SERIALIZABLE_CLASS_VERSIONS(TransformIterator)
 
 ********************************************************************************/
 InsertIterator::InsertIterator (
-    short                           sctx,
+    static_context*                 sctx,
     const QueryLoc&                 aLoc,
     store::UpdateConsts::InsertType aType,
     PlanIter_t                      source,
@@ -73,15 +72,6 @@ InsertIterator::InsertIterator (
   theType(aType),
   theDoCopy(true)
 { 
-}
-
-
-void InsertIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  BinaryBaseIterator<InsertIterator, PlanIteratorState>::
-  openImpl(planState, offset); 
-
-  theSctx = planState.theCompilerCB->getStaticContext(sctx);
 }
 
 
@@ -280,16 +270,12 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
 }
 
 
+BINARY_ACCEPT(InsertIterator);
+
+
 /*******************************************************************************
 
 ********************************************************************************/
-DeleteIterator::DeleteIterator(short sctx, const QueryLoc& aLoc, PlanIter_t target)
-  :
-  UnaryBaseIterator<DeleteIterator, PlanIteratorState>(sctx, aLoc, target)
-{ 
-}
-
-
 bool
 DeleteIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 { 
@@ -315,11 +301,14 @@ DeleteIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 }
 
 
+UNARY_ACCEPT(DeleteIterator);
+
+
 /*******************************************************************************
 
 ********************************************************************************/
 ReplaceIterator::ReplaceIterator (
-    short sctx,
+    static_context* sctx,
     const QueryLoc& aLoc,
     store::UpdateConsts::ReplaceType aType,
     PlanIter_t target,
@@ -329,15 +318,6 @@ ReplaceIterator::ReplaceIterator (
   theType(aType),
   theDoCopy(true)
 { 
-}
-
-
-void ReplaceIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  BinaryBaseIterator<ReplaceIterator, PlanIteratorState>::
-  openImpl(planState, offset); 
-
-  theSctx = planState.theCompilerCB->getStaticContext(sctx);
 }
 
 
@@ -530,20 +510,12 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 }
 
 
+BINARY_ACCEPT(ReplaceIterator);
+
+
 /*******************************************************************************
 
 ********************************************************************************/
-RenameIterator::RenameIterator (
-    short sctx,
-    const QueryLoc& aLoc,
-    PlanIter_t target,
-    PlanIter_t name)
-  :
-  BinaryBaseIterator<RenameIterator, PlanIteratorState>(sctx, aLoc, target, name)
-{ 
-}
-
-
 bool
 RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 {
@@ -591,11 +563,14 @@ RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 }
 
 
+BINARY_ACCEPT(RenameIterator);
+
+
 /*******************************************************************************
 
 ********************************************************************************/
 TransformIterator::TransformIterator(
-  short sctx,
+  static_context* sctx,
   const QueryLoc& aLoc,
   std::vector<CopyClause>& aCopyClauses,
   PlanIter_t aModifyIter,
@@ -611,6 +586,36 @@ TransformIterator::TransformIterator(
 
 TransformIterator::~TransformIterator()
 {
+}
+
+
+uint32_t 
+TransformIterator::getStateSizeOfSubtree() const 
+{
+  uint32_t lSize = getStateSize();
+  CopyClause::const_iter_t lIter = theCopyClauses.begin();
+  CopyClause::const_iter_t lEnd = theCopyClauses.end();
+  for ( ; lIter != lEnd ; ++lIter )
+  {
+    lSize += lIter->theInput->getStateSizeOfSubtree();
+  }
+  lSize += theModifyIter->getStateSizeOfSubtree();
+  lSize += theReturnIter->getStateSizeOfSubtree();
+  return lSize;
+}
+
+
+void TransformIterator::accept(PlanIterVisitor &v) const 
+{
+  v.beginVisit(*this);
+  CopyClause::const_iter_t lIter = theCopyClauses.begin();
+  CopyClause::const_iter_t lEnd = theCopyClauses.end();
+  for ( ; lIter != lEnd; ++lIter ) {
+    lIter->theInput->accept ( v );
+  } 
+  theModifyIter->accept(v);
+  theReturnIter->accept(v);
+  v.endVisit(*this);
 }
 
 
@@ -711,9 +716,7 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 void 
 TransformIterator::openImpl ( PlanState& planState, uint32_t& offset ) 
 {
-  StateTraitsImpl<PlanIteratorState>::createState(planState, this->stateOffset, offset);
-
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
+  StateTraitsImpl<PlanIteratorState>::createState(planState, theStateOffset, offset);
 
   CopyClause::iter_t lIter = theCopyClauses.begin();
   CopyClause::iter_t lEnd = theCopyClauses.end();
@@ -729,7 +732,7 @@ TransformIterator::openImpl ( PlanState& planState, uint32_t& offset )
 void 
 TransformIterator::resetImpl ( PlanState& planState ) const
 {
-  StateTraitsImpl<PlanIteratorState>::reset(planState, this->stateOffset);
+  StateTraitsImpl<PlanIteratorState>::reset(planState, theStateOffset);
   
   CopyClause::const_iter_t lIter = theCopyClauses.begin();
   CopyClause::const_iter_t lEnd = theCopyClauses.end();
@@ -754,22 +757,8 @@ TransformIterator::closeImpl ( PlanState& planState ) const
   theModifyIter->close( planState );
   theReturnIter->close( planState );
 
-  StateTraitsImpl<PlanIteratorState>::destroyState(planState, this->stateOffset);
+  StateTraitsImpl<PlanIteratorState>::destroyState(planState, theStateOffset);
 }
 
 
-uint32_t 
-TransformIterator::getStateSizeOfSubtree() const 
-{
-  uint32_t lSize = getStateSize();
-  CopyClause::const_iter_t lIter = theCopyClauses.begin();
-  CopyClause::const_iter_t lEnd = theCopyClauses.end();
-  for ( ; lIter != lEnd ; ++lIter )
-  {
-    lSize += lIter->theInput->getStateSizeOfSubtree();
-  }
-  lSize += theModifyIter->getStateSizeOfSubtree();
-  lSize += theReturnIter->getStateSizeOfSubtree();
-  return lSize;
-}
 } // namespace zorba

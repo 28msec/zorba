@@ -23,7 +23,6 @@
 #include "runtime/base/plan_iterator.h"
 #include "runtime/core/gflwor/common.h"
 
-#include "store/api/temp_seq.h" //FIXME not sure why this is needed here
 
 namespace zorba 
 {
@@ -214,7 +213,7 @@ public:
   }
 public:
   OrderByIterator(
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc,
         bool stable,
         std::vector<OrderSpec>& orderSpecs,

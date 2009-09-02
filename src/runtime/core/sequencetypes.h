@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_SEQUENCETYPES_H
-#define ZORBA_SEQUENCETYPES_H
+#ifndef ZORBA_RUNTIME_SEQUENCETYPES
+#define ZORBA_RUNTIME_SEQUENCETYPES
 
-#include "zorbaerrors/errors.h"
 #include "common/shared_types.h"
+
 #include "runtime/base/unarybase.h"
 #include "runtime/base/narybase.h"
-#include "runtime/util/iterator_impl.h"
+
 #include "types/typeconstants.h"
 
 namespace zorba 
@@ -40,30 +40,32 @@ private:
   xqtref_t theSequenceType;
 
 public:
-  SERIALIZABLE_CLASS(InstanceOfIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(InstanceOfIterator,
-                                   UnaryBaseIterator<InstanceOfIterator,
-                                                     PlanIteratorState>)
+  SERIALIZABLE_CLASS(InstanceOfIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  InstanceOfIterator,
+  UnaryBaseIterator<InstanceOfIterator, PlanIteratorState>);
+
   void serialize(::zorba::serialization::Archiver &ar)
   {
-    serialize_baseclass(ar, (UnaryBaseIterator<InstanceOfIterator, PlanIteratorState>*)this);
+    serialize_baseclass(ar,
+    (UnaryBaseIterator<InstanceOfIterator, PlanIteratorState>*)this);
+
     ar & theSequenceType;
   }
 
 public:
   InstanceOfIterator(
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc, 
         PlanIter_t& aTreatExpr, 
         xqtref_t aSequenceType);
  
   ~InstanceOfIterator();
+
+  void accept(PlanIterVisitor& v) const;
   
-  void openImpl(PlanState& planState, uint32_t& offset);
-
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
-
-  virtual void accept(PlanIterVisitor&) const;
 };
 
 
@@ -81,10 +83,12 @@ private:
   TypeConstants::quantifier_t theQuantifier;
 
 public:
-  SERIALIZABLE_CLASS(CastIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(CastIterator,
-                                   UnaryBaseIterator<CastIterator,
-                                                     PlanIteratorState>)
+  SERIALIZABLE_CLASS(CastIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  CastIterator,
+  UnaryBaseIterator<CastIterator, PlanIteratorState>);
+
   void serialize(::zorba::serialization::Archiver &ar)
   {
     serialize_baseclass(ar, (UnaryBaseIterator<CastIterator, PlanIteratorState>*)this);
@@ -93,18 +97,17 @@ public:
   }
 
 public:
-  CastIterator(short sctx,
-               const QueryLoc& loc,
-               PlanIter_t& aChild,
-               const xqtref_t& aCastType);
-
-  ~CastIterator();
+  CastIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        PlanIter_t& aChild,
+        const xqtref_t& aCastType);
   
-  void openImpl(PlanState& planState, uint32_t& offset);
+  ~CastIterator();
 
+  void accept(PlanIterVisitor& v) const;
+  
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-
-  virtual void accept(PlanIterVisitor&) const;
 };
 
 
@@ -123,30 +126,33 @@ private:
   TypeConstants::quantifier_t theQuantifier;
 
 public:
-  SERIALIZABLE_CLASS(CastableIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(CastableIterator,
-                                   UnaryBaseIterator<CastableIterator, PlanIteratorState>)
+  SERIALIZABLE_CLASS(CastableIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  CastableIterator,
+  UnaryBaseIterator<CastableIterator, PlanIteratorState>);
+
   void serialize(::zorba::serialization::Archiver &ar)
   {
-    serialize_baseclass(ar, (UnaryBaseIterator<CastableIterator, PlanIteratorState>*)this);
+    serialize_baseclass(ar,
+    (UnaryBaseIterator<CastableIterator, PlanIteratorState>*)this);
+
     ar & theCastType;
     SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
   }
 
 public:
   CastableIterator(
-        short sctx,
+        static_context* sctx,
         const QueryLoc& aLoc,
         PlanIter_t& aChild,
         const xqtref_t& aCastType);
 
-  virtual ~CastableIterator();
+  ~CastableIterator();
 
-  void openImpl(PlanState& planState, uint32_t& offset);
+  void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-
-  virtual void accept(PlanIterVisitor&) const;
 };
 
 
@@ -165,27 +171,33 @@ private:
   TypeConstants::quantifier_t theQuantifier;
 
 public:
-  SERIALIZABLE_CLASS(PromoteIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(PromoteIterator,
-                                   UnaryBaseIterator<PromoteIterator,
-                                                     PlanIteratorState>)
+  SERIALIZABLE_CLASS(PromoteIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  PromoteIterator,
+  UnaryBaseIterator<PromoteIterator, PlanIteratorState>);
+
   void serialize(::zorba::serialization::Archiver &ar)
   {
-    serialize_baseclass(ar, (UnaryBaseIterator<PromoteIterator, PlanIteratorState>*)this);
+    serialize_baseclass(ar,
+    (UnaryBaseIterator<PromoteIterator, PlanIteratorState>*)this);
+
     ar & thePromoteType;
     SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
   }
 
 public:
-  PromoteIterator(short sctx, const QueryLoc&, PlanIter_t&, const xqtref_t& aPromoteType);
+  PromoteIterator(
+        static_context* sctx,
+        const QueryLoc&,
+        PlanIter_t&,
+        const xqtref_t& aPromoteType);
 
-  virtual ~PromoteIterator();
+  ~PromoteIterator();
 
-  void openImpl(PlanState& planState, uint32_t& offset);
+  void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-
-  void accept(PlanIterVisitor&) const;
 };
 
 
@@ -205,13 +217,17 @@ private:
   XQUERY_ERROR theErrorCode;
 
 public:
-  SERIALIZABLE_CLASS(TreatIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(TreatIterator,
-                                   UnaryBaseIterator<TreatIterator,
-                                                     PlanIteratorState>)
+  SERIALIZABLE_CLASS(TreatIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  TreatIterator,
+  UnaryBaseIterator<TreatIterator, PlanIteratorState>);
+
   void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (UnaryBaseIterator<TreatIterator, PlanIteratorState>*)this);
+    serialize_baseclass(ar,
+    (UnaryBaseIterator<TreatIterator, PlanIteratorState>*)this);
+
     ar & theTreatType;
     SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
     ar & check_prime;
@@ -220,18 +236,16 @@ public:
 
 public:
   TreatIterator(
-        short sctx,
+        static_context* sctx,
         const QueryLoc&,
         PlanIter_t& aChild,
         const xqtref_t& aTreatType,
         bool check_prime,
         XQUERY_ERROR);
 
-  void openImpl(PlanState& planState, uint32_t& offset);
-  
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+  void accept(PlanIterVisitor& v) const;
 
-  void accept(PlanIterVisitor&) const;
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
 

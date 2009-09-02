@@ -19,8 +19,11 @@
 #include "store/api/tuples.h"
 #include "zorbatypes/numconversions.h"
 #include "system/globalenv.h"
+
 #include "runtime/core/tuple_iterators.h"
 #include "runtime/api/plan_iterator_wrapper.h"
+#include "runtime/visitors/planitervisitor.h"
+
 
 namespace zorba {
 
@@ -72,6 +75,10 @@ CreateTupleIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END(state);
 }
 
+
+NARY_ACCEPT(CreateTupleIterator);
+
+
 GetTupleFieldIteratorState::GetTupleFieldIteratorState() { }
 GetTupleFieldIteratorState::~GetTupleFieldIteratorState() { }
 
@@ -115,6 +122,9 @@ GetTupleFieldIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 
   STACK_END(state);
 }
+
+
+NARY_ACCEPT(GetTupleFieldIterator);
 
 }
 

@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_PATH_ITERATORS_H
-#define ZORBA_PATH_ITERATORS_H
+#ifndef ZORBA_RUNTIME_PATH_ITERATORS
+#define ZORBA_RUNTIME_PATH_ITERATORS
 
 #include <stack>
 #include <zorba/store_consts.h>
 
 #include "zorbautils/fatal.h"
+
 #include "common/shared_types.h"
+
 #include "context/static_context.h"
+
 #include "compiler/expression/expr_consts.h"
-#include "types/typeimpl.h"
-#include "types/typeops.h"
-#include "types/typemanager.h"
 
 #include "runtime/base/unarybase.h"
 
@@ -33,6 +33,14 @@
 
 namespace zorba 
 {
+
+namespace store
+{
+  class ChildrenIterator;
+  class ChildrenReverseIterator;
+  class AttributesIterator;
+}
+
 
 /*******************************************************************************
   A non-template class used to store some data that is common to all axis
@@ -107,12 +115,14 @@ class AxisIterator : public UnaryBaseIterator<AxisIter, State>,
 {
 public:
   SERIALIZABLE_TEMPLATE_ABSTRACT_CLASS(AxisIterator)
-  AxisIterator(::zorba::serialization::Archiver &ar)
+
+  AxisIterator(::zorba::serialization::Archiver& ar)
     :
     UnaryBaseIterator<AxisIter, State>(ar)
   {
   }
-  void serialize(::zorba::serialization::Archiver &ar)
+
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (UnaryBaseIterator<AxisIter, State>*)this);
     SERIALIZE_ENUM(match_test_t, theTestKind);
@@ -125,7 +135,7 @@ public:
   }
 
 public:
-  AxisIterator(short sctx, const QueryLoc& loc, PlanIter_t input)
+  AxisIterator(static_context* sctx, const QueryLoc& loc, PlanIter_t input)
     :
     UnaryBaseIterator<AxisIter, State>(sctx, loc, input)
   {
@@ -146,15 +156,19 @@ class SelfAxisState : public AxisState
 class SelfAxisIterator : public AxisIterator<SelfAxisIterator, SelfAxisState>
 {
 public:
-  SERIALIZABLE_CLASS(SelfAxisIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SelfAxisIterator, AxisIterator<SelfAxisIterator, SelfAxisState>)
+  SERIALIZABLE_CLASS(SelfAxisIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  SelfAxisIterator,
+  AxisIterator<SelfAxisIterator, SelfAxisState>);
+
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (AxisIterator<SelfAxisIterator, SelfAxisState>*)this);
   }
 
 public:
-  SelfAxisIterator(short sctx, const QueryLoc& loc, PlanIter_t input)
+  SelfAxisIterator(static_context* sctx, const QueryLoc& loc, PlanIter_t input)
     :
     AxisIterator<SelfAxisIterator, SelfAxisState>(sctx, loc, input)
   {
@@ -162,9 +176,9 @@ public:
 
   ~SelfAxisIterator() {}
 
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  void accept(PlanIterVisitor& v) const;
 
-  virtual void accept(PlanIterVisitor&) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
 
@@ -187,19 +201,23 @@ public:
 
 
 class AttributeAxisIterator : public AxisIterator<AttributeAxisIterator,
-                                              AttributeAxisState>
+                                                  AttributeAxisState>
 {
 public:
-  SERIALIZABLE_CLASS(AttributeAxisIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(AttributeAxisIterator,
-                                   AxisIterator<AttributeAxisIterator, AttributeAxisState>)
+  SERIALIZABLE_CLASS(AttributeAxisIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  AttributeAxisIterator,
+  AxisIterator<AttributeAxisIterator, AttributeAxisState>);
+
   void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (AxisIterator<AttributeAxisIterator, AttributeAxisState>*)this);
+    serialize_baseclass(ar, (AxisIterator<AttributeAxisIterator,
+                                          AttributeAxisState>*)this);
   }
 
 public:
-  AttributeAxisIterator(short sctx, const QueryLoc& loc, PlanIter_t input)
+  AttributeAxisIterator(static_context* sctx, const QueryLoc& loc, PlanIter_t input)
     :
     AxisIterator<AttributeAxisIterator, AttributeAxisState>(sctx, loc, input)
   {
@@ -207,11 +225,9 @@ public:
 
   ~AttributeAxisIterator() {}
 
+  void accept(PlanIterVisitor& v) const;
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
-
-  uint32_t getStateSize() const { return sizeof(AttributeAxisState); }
-
-  virtual void accept(PlanIterVisitor&) const;
 };
 
 
@@ -226,16 +242,19 @@ class ParentAxisState : public AxisState
 class ParentAxisIterator : public AxisIterator<ParentAxisIterator, ParentAxisState>
 {
 public:
-  SERIALIZABLE_CLASS(ParentAxisIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ParentAxisIterator,
-                                   AxisIterator<ParentAxisIterator, ParentAxisState>)
+  SERIALIZABLE_CLASS(ParentAxisIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  ParentAxisIterator,
+  AxisIterator<ParentAxisIterator, ParentAxisState>);
+
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (AxisIterator<ParentAxisIterator, ParentAxisState>*)this);
   }
 
 public:
-  ParentAxisIterator(short sctx, const QueryLoc& loc, PlanIter_t input)
+  ParentAxisIterator(static_context* sctx, const QueryLoc& loc, PlanIter_t input)
     :
     AxisIterator<ParentAxisIterator, ParentAxisState>(sctx, loc, input)
   {
@@ -243,9 +262,9 @@ public:
 
   ~ParentAxisIterator() {}
 
+  void accept(PlanIterVisitor& v) const;
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
- 
-  virtual void accept(PlanIterVisitor&) const;
 };
 
 
@@ -263,16 +282,20 @@ public:
 class AncestorAxisIterator : public AxisIterator<AncestorAxisIterator, AncestorAxisState>
 {
 public:
-  SERIALIZABLE_CLASS(AncestorAxisIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(AncestorAxisIterator,
-                                   AxisIterator<AncestorAxisIterator, AncestorAxisState>)
+  SERIALIZABLE_CLASS(AncestorAxisIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  AncestorAxisIterator,
+  AxisIterator<AncestorAxisIterator, AncestorAxisState>);
+
   void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (AxisIterator<AncestorAxisIterator, AncestorAxisState>*)this);
+    serialize_baseclass(ar,
+    (AxisIterator<AncestorAxisIterator, AncestorAxisState>*)this);
   }
 
 public:
-  AncestorAxisIterator(short sctx, const QueryLoc& loc, PlanIter_t input)
+  AncestorAxisIterator(static_context* sctx, const QueryLoc& loc, PlanIter_t input)
     :
     AxisIterator<AncestorAxisIterator, AncestorAxisState>(sctx, loc, input)
   {
@@ -280,9 +303,9 @@ public:
 
   ~AncestorAxisIterator() {}
 
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  void accept(PlanIterVisitor& v) const;
 
-  void accept(PlanIterVisitor&) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
 
@@ -300,18 +323,20 @@ class AncestorReverseAxisIterator : public AxisIterator<AncestorReverseAxisItera
                                                         AncestorReverseAxisState>
 {
 public:
-  SERIALIZABLE_CLASS(AncestorReverseAxisIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(AncestorReverseAxisIterator,
-                                   AxisIterator<AncestorReverseAxisIterator,
-                                                AncestorReverseAxisState>)
+  SERIALIZABLE_CLASS(AncestorReverseAxisIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  AncestorReverseAxisIterator,
+  AxisIterator<AncestorReverseAxisIterator, AncestorReverseAxisState>);
+
   void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (AxisIterator<AncestorReverseAxisIterator,
-                             AncestorReverseAxisState>*)this);
+    serialize_baseclass(ar,
+    (AxisIterator<AncestorReverseAxisIterator, AncestorReverseAxisState>*)this);
   }
 
 public:
-  AncestorReverseAxisIterator(short sctx, const QueryLoc& loc, PlanIter_t input)
+  AncestorReverseAxisIterator(static_context* sctx, const QueryLoc& loc, PlanIter_t input)
     :
     AxisIterator<AncestorReverseAxisIterator, AncestorReverseAxisState>(sctx, loc, input)
   {
@@ -319,9 +344,9 @@ public:
 
   ~AncestorReverseAxisIterator() {}
 
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  void accept(PlanIterVisitor& v) const;
 
-  void accept(PlanIterVisitor&) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
 
@@ -332,18 +357,20 @@ class AncestorSelfAxisIterator : public AxisIterator<AncestorSelfAxisIterator,
                                                      AncestorAxisState>
 {
 public:
-  SERIALIZABLE_CLASS(AncestorSelfAxisIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(AncestorSelfAxisIterator,
-                                   AxisIterator<AncestorSelfAxisIterator,
-                                   AncestorAxisState>)
+  SERIALIZABLE_CLASS(AncestorSelfAxisIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  AncestorSelfAxisIterator,
+  AxisIterator<AncestorSelfAxisIterator, AncestorAxisState>);
+
   void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (AxisIterator<AncestorSelfAxisIterator,
-                                          AncestorAxisState>*)this);
+    serialize_baseclass(ar,
+    (AxisIterator<AncestorSelfAxisIterator, AncestorAxisState>*)this);
   }
 
 public:
-  AncestorSelfAxisIterator(short sctx, const QueryLoc& loc, PlanIter_t input)
+  AncestorSelfAxisIterator(static_context* sctx, const QueryLoc& loc, PlanIter_t input)
     :
     AxisIterator<AncestorSelfAxisIterator, AncestorAxisState>(sctx, loc, input)
   {
@@ -351,9 +378,9 @@ public:
 
   ~AncestorSelfAxisIterator() {}
 
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  void accept(PlanIterVisitor& v) const;
 
-  void accept(PlanIterVisitor&) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
 
@@ -364,18 +391,23 @@ class AncestorSelfReverseAxisIterator : public AxisIterator<AncestorSelfReverseA
                                                             AncestorReverseAxisState>
 {
 public:
-  SERIALIZABLE_CLASS(AncestorSelfReverseAxisIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(AncestorSelfReverseAxisIterator,
-                                   AxisIterator<AncestorSelfReverseAxisIterator,
-                                                AncestorReverseAxisState>)
+  SERIALIZABLE_CLASS(AncestorSelfReverseAxisIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  AncestorSelfReverseAxisIterator,
+  AxisIterator<AncestorSelfReverseAxisIterator, AncestorReverseAxisState>);
+
   void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (AxisIterator<AncestorSelfReverseAxisIterator,
-                                          AncestorReverseAxisState>*)this);
+    serialize_baseclass(ar,
+    (AxisIterator<AncestorSelfReverseAxisIterator, AncestorReverseAxisState>*)this);
   }
 
 public:
-  AncestorSelfReverseAxisIterator(short sctx, const QueryLoc& loc, PlanIter_t input)
+  AncestorSelfReverseAxisIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        PlanIter_t input)
     :
     AxisIterator<AncestorSelfReverseAxisIterator, AncestorReverseAxisState>(sctx, loc, input)
   {
@@ -383,9 +415,9 @@ public:
 
   ~AncestorSelfReverseAxisIterator() {}
 
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  void accept(PlanIterVisitor& v) const;
 
-  void accept(PlanIterVisitor&) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
 
@@ -412,18 +444,23 @@ class RSiblingAxisIterator : public AxisIterator<RSiblingAxisIterator,
                                                  SiblingAxisState>
 {
 public:
-  SERIALIZABLE_CLASS(RSiblingAxisIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(RSiblingAxisIterator, 
-                                   AxisIterator<RSiblingAxisIterator,
-                                                SiblingAxisState>)
+  SERIALIZABLE_CLASS(RSiblingAxisIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  RSiblingAxisIterator, 
+  AxisIterator<RSiblingAxisIterator, SiblingAxisState>);
+
   void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (AxisIterator<RSiblingAxisIterator,
-                                          SiblingAxisState>*)this);
+    serialize_baseclass(ar,
+    (AxisIterator<RSiblingAxisIterator, SiblingAxisState>*)this);
   }
 
 public:
-  RSiblingAxisIterator(short sctx, const QueryLoc& loc, PlanIter_t input)
+  RSiblingAxisIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        PlanIter_t input)
     :
     AxisIterator<RSiblingAxisIterator, SiblingAxisState>(sctx, loc, input)
   {
@@ -431,9 +468,9 @@ public:
 
   ~RSiblingAxisIterator() {}
 
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  void accept(PlanIterVisitor& v) const;
 
-  void accept(PlanIterVisitor&) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
 
@@ -444,18 +481,23 @@ class LSiblingAxisIterator : public AxisIterator<LSiblingAxisIterator,
                                                  SiblingAxisState>
 {
 public:
-  SERIALIZABLE_CLASS(LSiblingAxisIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(LSiblingAxisIterator,
-                                   AxisIterator<LSiblingAxisIterator,
-                                                SiblingAxisState>)
+  SERIALIZABLE_CLASS(LSiblingAxisIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  LSiblingAxisIterator,
+  AxisIterator<LSiblingAxisIterator, SiblingAxisState>);
+
   void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (AxisIterator<LSiblingAxisIterator,
-                                          SiblingAxisState>*)this);
+    serialize_baseclass(ar, 
+    (AxisIterator<LSiblingAxisIterator, SiblingAxisState>*)this);
   }
 
 public:
-  LSiblingAxisIterator(short sctx, const QueryLoc& loc, PlanIter_t input)
+  LSiblingAxisIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        PlanIter_t input)
     :
     AxisIterator<LSiblingAxisIterator, SiblingAxisState>(sctx, loc, input)
   {
@@ -463,9 +505,9 @@ public:
 
   ~LSiblingAxisIterator() {}
 
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  void accept(PlanIterVisitor& v) const;
 
-  void accept(PlanIterVisitor&) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
 
@@ -492,18 +534,23 @@ class LSiblingReverseAxisIterator : public AxisIterator<LSiblingReverseAxisItera
                                                         LSiblingReverseAxisState>
 {
 public:
-  SERIALIZABLE_CLASS(LSiblingReverseAxisIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(LSiblingReverseAxisIterator,
-                                   AxisIterator<LSiblingReverseAxisIterator,
-                                                LSiblingReverseAxisState>)
+  SERIALIZABLE_CLASS(LSiblingReverseAxisIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  LSiblingReverseAxisIterator,
+  AxisIterator<LSiblingReverseAxisIterator, LSiblingReverseAxisState>);
+
   void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (AxisIterator<LSiblingReverseAxisIterator,
-                                          LSiblingReverseAxisState>*)this);
+    serialize_baseclass(ar,
+    (AxisIterator<LSiblingReverseAxisIterator, LSiblingReverseAxisState>*)this);
   }
 
 public:
-  LSiblingReverseAxisIterator(short sctx, const QueryLoc& loc, PlanIter_t input)
+  LSiblingReverseAxisIterator(
+        static_context* sctx, 
+        const QueryLoc& loc,
+        PlanIter_t input)
     :
     AxisIterator<LSiblingReverseAxisIterator, LSiblingReverseAxisState>(sctx, loc, input)
   {
@@ -511,9 +558,9 @@ public:
 
   ~LSiblingReverseAxisIterator() {}
 
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  void accept(PlanIterVisitor& v) const;
 
-  void accept(PlanIterVisitor&) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
 
@@ -538,16 +585,19 @@ public:
 class ChildAxisIterator : public AxisIterator<ChildAxisIterator, ChildAxisState>
 {
 public:
-  SERIALIZABLE_CLASS(ChildAxisIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ChildAxisIterator,
-                                   AxisIterator<ChildAxisIterator, ChildAxisState>)
+  SERIALIZABLE_CLASS(ChildAxisIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  ChildAxisIterator,
+  AxisIterator<ChildAxisIterator, ChildAxisState>);
+
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (AxisIterator<ChildAxisIterator, ChildAxisState>*)this);
   }
 
 public:
-  ChildAxisIterator(short sctx, const QueryLoc& loc, PlanIter_t input)
+  ChildAxisIterator(static_context* sctx, const QueryLoc& loc, PlanIter_t input)
     :
     AxisIterator<ChildAxisIterator, ChildAxisState>(sctx, loc, input)
   {
@@ -555,9 +605,9 @@ public:
 
   ~ChildAxisIterator() {}
 
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  void accept(PlanIterVisitor& v) const;
 
-  void accept(PlanIterVisitor&) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
 
@@ -611,18 +661,23 @@ class DescendantAxisIterator : public AxisIterator<DescendantAxisIterator,
                                                    DescendantAxisState>
 {
 public:
-  SERIALIZABLE_CLASS(DescendantAxisIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(DescendantAxisIterator,
-                                   AxisIterator<DescendantAxisIterator,
-                                                DescendantAxisState>)
+  SERIALIZABLE_CLASS(DescendantAxisIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  DescendantAxisIterator,
+  AxisIterator<DescendantAxisIterator, DescendantAxisState>);
+
   void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (AxisIterator<DescendantAxisIterator,
-                                          DescendantAxisState>*)this);
+    serialize_baseclass(ar, 
+    (AxisIterator<DescendantAxisIterator, DescendantAxisState>*)this);
   }
 
 public:
-  DescendantAxisIterator(short sctx, const QueryLoc& loc, PlanIter_t input)
+  DescendantAxisIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        PlanIter_t input)
     :
     AxisIterator<DescendantAxisIterator, DescendantAxisState>(sctx, loc, input)
   {
@@ -630,9 +685,9 @@ public:
 
   ~DescendantAxisIterator() {}
 
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  void accept(PlanIterVisitor& v) const;
 
-  void accept(PlanIterVisitor&) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
 
@@ -644,17 +699,22 @@ class DescendantSelfAxisIterator : public AxisIterator<DescendantSelfAxisIterato
 {
 public:
   SERIALIZABLE_CLASS(DescendantSelfAxisIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(DescendantSelfAxisIterator,
-                                   AxisIterator<DescendantSelfAxisIterator,
-                                                DescendantAxisState>)
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  DescendantSelfAxisIterator,
+  AxisIterator<DescendantSelfAxisIterator, DescendantAxisState>)
+
   void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (AxisIterator<DescendantSelfAxisIterator,
-                                          DescendantAxisState>*)this);
+    serialize_baseclass(ar, 
+    (AxisIterator<DescendantSelfAxisIterator, DescendantAxisState>*)this);
   }
 
 public:
-  DescendantSelfAxisIterator(short sctx, const QueryLoc& loc, PlanIter_t input)
+  DescendantSelfAxisIterator(
+        static_context* sctx, 
+        const QueryLoc& loc,
+        PlanIter_t input)
     :
     AxisIterator<DescendantSelfAxisIterator, DescendantAxisState>(sctx, loc, input)
   {
@@ -662,9 +722,9 @@ public:
 
   ~DescendantSelfAxisIterator() {}
 
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  void accept(PlanIterVisitor& v) const;
 
-  void accept(PlanIterVisitor&) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
 
@@ -692,18 +752,20 @@ class PrecedingAxisIterator : public AxisIterator<PrecedingAxisIterator,
                                                   PrecedingAxisState>
 {
 public:
-  SERIALIZABLE_CLASS(PrecedingAxisIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(PrecedingAxisIterator,
-                                   AxisIterator<PrecedingAxisIterator,
-                                                PrecedingAxisState>)
+  SERIALIZABLE_CLASS(PrecedingAxisIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  PrecedingAxisIterator,
+  AxisIterator<PrecedingAxisIterator, PrecedingAxisState>);
+
   void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (AxisIterator<PrecedingAxisIterator,
-                                          PrecedingAxisState>*)this);
+    serialize_baseclass(ar, 
+    (AxisIterator<PrecedingAxisIterator, PrecedingAxisState>*)this);
   }
 
 public:
-  PrecedingAxisIterator(short sctx, const QueryLoc& loc, PlanIter_t input)
+  PrecedingAxisIterator(static_context* sctx, const QueryLoc& loc, PlanIter_t input)
     :
     AxisIterator<PrecedingAxisIterator, PrecedingAxisState>(sctx, loc, input)
   {
@@ -711,9 +773,9 @@ public:
 
   ~PrecedingAxisIterator() {}
 
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  void accept(PlanIterVisitor& v) const;
 
-  void accept(PlanIterVisitor&) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
 
@@ -781,18 +843,23 @@ class PrecedingReverseAxisIterator : public AxisIterator<PrecedingReverseAxisIte
                                                          PrecedingReverseAxisState>
 {
 public:
-  SERIALIZABLE_CLASS(PrecedingReverseAxisIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(PrecedingReverseAxisIterator,
-                                   AxisIterator<PrecedingReverseAxisIterator,
-                                                PrecedingReverseAxisState>)
+  SERIALIZABLE_CLASS(PrecedingReverseAxisIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  PrecedingReverseAxisIterator,
+  AxisIterator<PrecedingReverseAxisIterator, PrecedingReverseAxisState>);
+
   void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (AxisIterator<PrecedingReverseAxisIterator,
-                                          PrecedingReverseAxisState>*)this);
+    serialize_baseclass(ar, 
+    (AxisIterator<PrecedingReverseAxisIterator, PrecedingReverseAxisState>*)this);
   }
 
 public:
-  PrecedingReverseAxisIterator(short sctx, const QueryLoc& loc, PlanIter_t input)
+  PrecedingReverseAxisIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        PlanIter_t input)
     :
     AxisIterator<PrecedingReverseAxisIterator, PrecedingReverseAxisState>(sctx, loc, input)
   {
@@ -800,9 +867,9 @@ public:
 
   ~PrecedingReverseAxisIterator() {}
 
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  void accept(PlanIterVisitor& v) const;
 
-  void accept(PlanIterVisitor&) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
 
@@ -830,18 +897,23 @@ class FollowingAxisIterator : public AxisIterator<FollowingAxisIterator,
                                                   FollowingAxisState>
 {
 public:
-  SERIALIZABLE_CLASS(FollowingAxisIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FollowingAxisIterator,
-                                   AxisIterator<FollowingAxisIterator,
-                                                FollowingAxisState>)
+  SERIALIZABLE_CLASS(FollowingAxisIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  FollowingAxisIterator,
+  AxisIterator<FollowingAxisIterator, FollowingAxisState>);
+
   void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (AxisIterator<FollowingAxisIterator,
-                                          FollowingAxisState>*)this);
+    serialize_baseclass(ar, 
+    (AxisIterator<FollowingAxisIterator, FollowingAxisState>*)this);
   }
 
 public:
-  FollowingAxisIterator(short sctx, const QueryLoc& loc, PlanIter_t input)
+  FollowingAxisIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        PlanIter_t input)
     :
     AxisIterator<FollowingAxisIterator, FollowingAxisState>(sctx, loc, input)
   {
@@ -849,9 +921,9 @@ public:
 
   ~FollowingAxisIterator() {}
 
+  void accept(PlanIterVisitor& v) const;
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
-  
-  void accept(PlanIterVisitor&) const;
 };
 
 

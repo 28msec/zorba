@@ -13,42 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "runtime/rest/rest.h"
-
-#include <curl/curl.h>
-#include <curl/types.h>
-#include <curl/easy.h>
-
-#include "api/serialization/serializer.h"
-
-#include "compiler/api/compilercb.h"
-
-#include "runtime/util/iterator_impl.h"
-#include "runtime/api/runtimecb.h"
-#include "runtime/api/plan_wrapper.h"
-#include "runtime/api/plan_iterator_wrapper.h"
-
-#include "store/api/iterator.h"
-#include "store/api/item_factory.h"
-#include "store/api/store.h"
-#include "store/api/copymode.h"
-#include "types/root_typemanager.h"
-#include "context/static_context.h"
-#include "context/namespace_context.h"
-
-#include "zorbatypes/numconversions.h"
-#include "zorbatypes/datetime/parse.h"
-#include "util/web/web.h"
-
-#include "system/globalenv.h"
-#include "zorbaerrors/error_manager.h"
-
 #include <iostream>
 #include <fstream>
 #include <istream>
 #include <sstream>
 
+#include <curl/curl.h>
+#include <curl/types.h>
+#include <curl/easy.h>
+
+#include "zorbaerrors/error_manager.h"
+
+#include "zorbatypes/datetime/parse.h"
 #include "util/web/web.h"
+
+#include "system/globalenv.h"
+
+#include "api/serialization/serializer.h"
+
+#include "context/static_context.h"
+#include "context/namespace_context.h"
+
+#include "runtime/rest/rest.h"
+#include "runtime/util/iterator_impl.h"
+#include "runtime/api/runtimecb.h"
+#include "runtime/api/plan_wrapper.h"
+#include "runtime/api/plan_iterator_wrapper.h"
+#include "runtime/visitors/planitervisitor.h"
+
+#include "store/api/iterator.h"
+#include "store/api/item_factory.h"
+#include "store/api/store.h"
+#include "store/api/copymode.h"
+
 using namespace std;
 
 
@@ -72,6 +69,8 @@ END_SERIALIZABLE_CLASS_VERSIONS(ZorbaRestDeleteIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(ZorbaRestHeadIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(ZorbaRestHeadIterator)
+
+
 
 /****************************************************************************
  *
@@ -879,15 +878,6 @@ static xqpString processGetPayload(Item_t& payload_data, xqpString& Uri)
 }
 
 
-void ZorbaRestGetIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<ZorbaRestGetIterator, ZorbaRestGetIteratorState>::
-  openImpl(planState, offset); 
-
-  theSctx = planState.theCompilerCB->getStaticContext(sctx);
-}
-
-
 bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item, lUri, payload_data, headers, tidyUserOpt;
@@ -958,13 +948,7 @@ bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState)
 }
 
 
-void ZorbaRestPostIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<ZorbaRestPostIterator, ZorbaRestGetIteratorState>::
-  openImpl(planState, offset); 
-
-  theSctx = planState.theCompilerCB->getStaticContext(sctx);
-}
+NARY_ACCEPT(ZorbaRestGetIterator);
 
 
 bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -1065,13 +1049,7 @@ bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState
 }
 
 
-void ZorbaRestPutIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<ZorbaRestPutIterator, ZorbaRestGetIteratorState>::
-  openImpl(planState, offset); 
-
-  theSctx = planState.theCompilerCB->getStaticContext(sctx);
-}
+NARY_ACCEPT(ZorbaRestPostIterator);
 
 
 bool ZorbaRestPutIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -1158,13 +1136,7 @@ bool ZorbaRestPutIterator::nextImpl(store::Item_t& result, PlanState& planState)
 }
 
 
-void ZorbaRestDeleteIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<ZorbaRestDeleteIterator, ZorbaRestGetIteratorState>::
-  openImpl(planState, offset); 
-
-  theSctx = planState.theCompilerCB->getStaticContext(sctx);
-}
+NARY_ACCEPT(ZorbaRestPutIterator);
 
 
 bool ZorbaRestDeleteIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -1227,13 +1199,7 @@ bool ZorbaRestDeleteIterator::nextImpl(store::Item_t& result, PlanState& planSta
 }
 
 
-void ZorbaRestHeadIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<ZorbaRestHeadIterator, ZorbaRestGetIteratorState>::
-  openImpl(planState, offset); 
-
-  theSctx = planState.theCompilerCB->getStaticContext(sctx);
-}
+NARY_ACCEPT(ZorbaRestDeleteIterator);
 
 
 bool ZorbaRestHeadIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -1294,5 +1260,10 @@ bool ZorbaRestHeadIterator::nextImpl(store::Item_t& result, PlanState& planState
   STACK_PUSH(true, state);
   STACK_END (state);
 }
+
+
+NARY_ACCEPT(ZorbaRestHeadIterator);
+
+
 
 } /* namespace zorba */

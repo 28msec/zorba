@@ -22,10 +22,8 @@
 
 #include "runtime/api/runtimecb.h"
 #include "runtime/validate/validate.h"
+#include "runtime/visitors/planitervisitor.h"
 
-#include "store/api/item.h"
-
-#include "context/dynamic_context.h"
 #include "context/static_context.h"
 
 #include "zorbaerrors/error_messages.h"
@@ -40,27 +38,18 @@ END_SERIALIZABLE_CLASS_VERSIONS(ValidateIterator)
 
 
 ValidateIterator::ValidateIterator(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     PlanIter_t& aIter,
-    TypeManager *typeMgr,
-	store::Item_t typeName,
-	ParseConstants::validation_mode_t validationMode)
+    TypeManager* typeMgr,
+    store::Item_t typeName,
+    ParseConstants::validation_mode_t validationMode)
   :
   UnaryBaseIterator<ValidateIterator, PlanIteratorState>( sctx, loc, aIter ),
   _validationMode(validationMode),
   _typemgr (typeMgr),
   _typeName(typeName)
 {
-}
-
-
-void ValidateIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  UnaryBaseIterator<ValidateIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
 }
 
 
@@ -101,6 +90,9 @@ bool ValidateIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 
   STACK_END (aState);
 }
+
+
+UNARY_ACCEPT(ValidateIterator);
 
 
 }

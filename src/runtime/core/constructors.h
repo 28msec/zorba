@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_CONSTRUCTORS_H
-#define ZORBA_CONSTRUCTORS_H
+#ifndef ZORBA_RUNTIME_CONSTRUCTORS
+#define ZORBA_RUNTIME_CONSTRUCTORS
 
 #include <vector>
-#include "zorbatypes/xqpstring.h"
 
 #include "common/shared_types.h"
-#include "runtime/base/unarybase.h"
-#include "runtime/base/binarybase.h"
-#include "runtime/base/narybase.h"
-#include "runtime/base/noarybase.h"
-#include "store/api/iterator.h"
 
 #include "context/namespace_context.h"
+
+#include "runtime/base/unarybase.h"
+#include "runtime/base/binarybase.h"
+#include "runtime/base/noarybase.h"
+
+#include "store/api/iterator.h"
+
 
 namespace zorba {
 
@@ -47,25 +48,33 @@ private:
   bool      theNsInherit;
 
 public:
-  SERIALIZABLE_CLASS(DocumentIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(DocumentIterator, UnaryBaseIterator<DocumentIterator, PlanIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
+  SERIALIZABLE_CLASS(DocumentIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  DocumentIterator,
+  UnaryBaseIterator<DocumentIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (UnaryBaseIterator<DocumentIterator, PlanIteratorState>*)this);
+    serialize_baseclass(ar, 
+    (UnaryBaseIterator<DocumentIterator, PlanIteratorState>*)this);
+
     ar & theTypePreserve;
     ar & theNsPreserve;
     ar & theNsInherit;
   }
+
 public:
-  DocumentIterator(short sctx, const QueryLoc& loc, PlanIter_t& aChild)
+  DocumentIterator(static_context* sctx, const QueryLoc& loc, PlanIter_t& aChild)
     :
     UnaryBaseIterator<DocumentIterator, PlanIteratorState>(sctx, loc, aChild)
   {}
 
-  void openImpl(PlanState& planState, uint32_t& offset);
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  void accept(PlanIterVisitor& v) const;
 
-  void accept(PlanIterVisitor&) const;
+  void openImpl(PlanState& planState, uint32_t& offset);
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
 
@@ -77,26 +86,7 @@ public:
   theChild:      Iter that produces the content of the document element
 
 *********************************************************************************/
-class DocumentContentIterator : public UnaryBaseIterator<DocumentContentIterator,
-                                                         PlanIteratorState> 
-{
-public:
-  SERIALIZABLE_CLASS(DocumentContentIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(DocumentContentIterator, UnaryBaseIterator<DocumentContentIterator, PlanIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (UnaryBaseIterator<DocumentContentIterator, PlanIteratorState>*)this);
-  }
-public:
-  DocumentContentIterator(short sctx, const QueryLoc& loc, PlanIter_t& aContent)
-    :
-    UnaryBaseIterator<DocumentContentIterator, PlanIteratorState>(sctx, loc, aContent)
-  {}
-
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
-
-  void accept(PlanIterVisitor&) const;
-};
+UNARY_ITER(DocumentContentIterator);
 
 
 
@@ -126,6 +116,7 @@ public:
   void reset(PlanState&);
 };
 
+
 class ElementIterator : public NoaryBaseIterator<ElementIterator, ElementIteratorState>
 {
   typedef std::vector<std::pair<xqpString, xqpString> > NsBindings;
@@ -145,11 +136,16 @@ private:
   bool                theNsInherit;
 
 public:
-  SERIALIZABLE_CLASS(ElementIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ElementIterator, NoaryBaseIterator<ElementIterator, ElementIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
+  SERIALIZABLE_CLASS(ElementIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  ElementIterator,
+  NoaryBaseIterator<ElementIterator, ElementIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (NoaryBaseIterator<ElementIterator, ElementIteratorState>*)this);
+    serialize_baseclass(ar, (NoaryBaseIterator<ElementIterator,
+                                               ElementIteratorState>*)this);
     ar & theQNameIter;
     ar & theAttributesIter;
     ar & theChildrenIter;
@@ -160,9 +156,10 @@ public:
     ar & theNsPreserve;
     ar & theNsInherit;
   }
+
 public:
   ElementIterator (
-      short               sctx,
+      static_context*     sctx,
       const QueryLoc&     loc,
       PlanIter_t&         aQNameIter,
       PlanIter_t&         aAttrs,
@@ -170,14 +167,17 @@ public:
       namespace_context*  localBindings,
       bool                isRoot);
 
-  void openImpl(PlanState& planState, uint32_t& offset);
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
-  void resetImpl(PlanState& planState) const;
-  void closeImpl(PlanState& planState);
-
   uint32_t getStateSizeOfSubtree() const;
   
   void accept(PlanIterVisitor&) const;
+
+  void openImpl(PlanState& planState, uint32_t& offset);
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+
+  void resetImpl(PlanState& planState) const;
+
+  void closeImpl(PlanState& planState);
 };
   
 
@@ -193,117 +193,31 @@ private:
   bool       theIsRoot;
 
 public:
-  SERIALIZABLE_CLASS(AttributeIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(AttributeIterator, BinaryBaseIterator<AttributeIterator, PlanIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
+  SERIALIZABLE_CLASS(AttributeIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  AttributeIterator,
+  BinaryBaseIterator<AttributeIterator,PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (BinaryBaseIterator<AttributeIterator, PlanIteratorState>*)this);
+    serialize_baseclass(ar,
+    (BinaryBaseIterator<AttributeIterator,PlanIteratorState>*)this);
+
     ar & theIsRoot;
   }
+
 public:
   AttributeIterator(
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc,
         PlanIter_t& aQNameIter,
         PlanIter_t& aValueIter,
         bool isRoot);
 
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
-  
-  virtual void accept(PlanIterVisitor&) const;
-};
-
-
-/*******************************************************************************
-  NameCast Iterator casts QNames of computed elements that are not known
-  till execution time.
-********************************************************************************/
-class NameCastIterator : public UnaryBaseIterator<NameCastIterator, PlanIteratorState>
-{
-  friend class PrinterVisitor;
-private:
-  NamespaceContext_t theNCtx;
-
-public:
-  SERIALIZABLE_CLASS(NameCastIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(NameCastIterator, UnaryBaseIterator<NameCastIterator, PlanIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (UnaryBaseIterator<NameCastIterator, PlanIteratorState>*)this);
-    ar & theNCtx;
-  }
-public:
-  NameCastIterator(short sctx, const QueryLoc& loc, PlanIter_t& aChild, NamespaceContext_t aNCtx);
-
-  virtual ~NameCastIterator();
+  void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
-  virtual void accept(PlanIterVisitor&) const;
-};
-
-/*******************************************************************************
-
-  CommentIterator constructs a comment element.
-
-  theExpressionIter : The iterator that produces the content of the comment. It
-                      could be a simple text iterator, or a full expression.
-
-********************************************************************************/
-class CommentIterator : public UnaryBaseIterator<CommentIterator, PlanIteratorState>
-{
-protected:
-  bool       theIsRoot;
-
-public:
-  SERIALIZABLE_CLASS(CommentIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(CommentIterator, UnaryBaseIterator<CommentIterator, PlanIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (UnaryBaseIterator<CommentIterator, PlanIteratorState>*)this);
-    ar & theIsRoot;
-  }
-public:
-  CommentIterator(
-        short sctx,
-        const QueryLoc& loc, 
-        PlanIter_t& aComment,
-        bool isRoot);
-
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
-  
-  virtual void accept(PlanIterVisitor&) const;
-};
-
-
-/*******************************************************************************
-
-  PiIterator constructs a PI element.
-
-********************************************************************************/
-class PiIterator : public BinaryBaseIterator<PiIterator, PlanIteratorState>
-{
-protected:
-  bool       theIsRoot;
-
-public:
-  SERIALIZABLE_CLASS(PiIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(PiIterator, BinaryBaseIterator<PiIterator, PlanIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (BinaryBaseIterator<PiIterator, PlanIteratorState>*)this);
-    ar & theIsRoot;
-  }
-public:
-  PiIterator(
-        short sctx,
-        const QueryLoc& loc, 
-        PlanIter_t& aTarget,
-        PlanIter_t& aContent,
-        bool isRoot);
-
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
-  
-  virtual void accept(PlanIterVisitor&) const;
 };
 
 
@@ -321,18 +235,110 @@ protected:
   bool       theIsRoot;
 
 public:
-  SERIALIZABLE_CLASS(TextIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(TextIterator, UnaryBaseIterator<TextIterator, PlanIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
+  SERIALIZABLE_CLASS(TextIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  TextIterator,
+  UnaryBaseIterator<TextIterator,PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (UnaryBaseIterator<TextIterator, PlanIteratorState>*)this);
+    serialize_baseclass(ar,
+    (UnaryBaseIterator<TextIterator, PlanIteratorState>*)this);
+
     ar & theIsRoot;
   }
+
 public:
-  TextIterator( short sctx, const QueryLoc& loc, PlanIter_t& aChild, bool isRoot);
+  TextIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        PlanIter_t& aChild,
+        bool isRoot);
+
+  void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
-  virtual void accept(PlanIterVisitor&) const;
+};
+
+
+/*******************************************************************************
+
+  CommentIterator constructs a comment element.
+
+  theExpressionIter : The iterator that produces the content of the comment. It
+                      could be a simple text iterator, or a full expression.
+
+********************************************************************************/
+class CommentIterator : public UnaryBaseIterator<CommentIterator, PlanIteratorState>
+{
+protected:
+  bool       theIsRoot;
+
+public:
+  SERIALIZABLE_CLASS(CommentIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  CommentIterator,
+  UnaryBaseIterator<CommentIterator,PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar, 
+    (UnaryBaseIterator<CommentIterator, PlanIteratorState>*)this);
+
+    ar & theIsRoot;
+  }
+
+public:
+  CommentIterator(
+        static_context* sctx,
+        const QueryLoc& loc, 
+        PlanIter_t& aComment,
+        bool isRoot);
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+};
+
+
+/*******************************************************************************
+
+  PiIterator constructs a PI element.
+
+********************************************************************************/
+class PiIterator : public BinaryBaseIterator<PiIterator, PlanIteratorState>
+{
+protected:
+  bool       theIsRoot;
+
+public:
+  SERIALIZABLE_CLASS(PiIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  PiIterator,
+  BinaryBaseIterator<PiIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (BinaryBaseIterator<PiIterator, PlanIteratorState>*)this);
+
+    ar & theIsRoot;
+  }
+
+public:
+  PiIterator(
+        static_context* sctx,
+        const QueryLoc& loc, 
+        PlanIter_t& aTarget,
+        PlanIter_t& aContent,
+        bool isRoot);
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
 
@@ -363,29 +369,80 @@ private:
   bool theAttrContent;
   
 public:
-  SERIALIZABLE_CLASS(EnclosedIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(EnclosedIterator, UnaryBaseIterator<EnclosedIterator, EnclosedIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
+  SERIALIZABLE_CLASS(EnclosedIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  EnclosedIterator,
+  UnaryBaseIterator<EnclosedIterator, EnclosedIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (UnaryBaseIterator<EnclosedIterator, EnclosedIteratorState>*)this);
+    serialize_baseclass(ar,
+    (UnaryBaseIterator<EnclosedIterator, EnclosedIteratorState>*)this);
+
     ar & theAttrContent;
   }
+
 public:
   EnclosedIterator(
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc,
         PlanIter_t& childIter);
 
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
-  
-  virtual void accept(PlanIterVisitor&) const;
-
   bool getAttrContent() const;
+
   void setAttrContent();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
-} /* namespace zorba */
-#endif  /* ZORBA_CONSTRUCTORS_H */
+
+/*******************************************************************************
+  NameCast Iterator casts QNames of computed elements that are not known
+  till execution time.
+********************************************************************************/
+class NameCastIterator : public UnaryBaseIterator<NameCastIterator,
+                                                  PlanIteratorState>
+{
+  friend class PrinterVisitor;
+private:
+  NamespaceContext_t theNCtx;
+
+public:
+  SERIALIZABLE_CLASS(NameCastIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  NameCastIterator,
+  UnaryBaseIterator<NameCastIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (UnaryBaseIterator<NameCastIterator, PlanIteratorState>*)this);
+
+    ar & theNCtx;
+  }
+
+public:
+  NameCastIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        PlanIter_t& aChild,
+        NamespaceContext_t aNCtx);
+
+  virtual ~NameCastIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+};
+
+
+}
+
+#endif
 
 /*
  * Local variables:

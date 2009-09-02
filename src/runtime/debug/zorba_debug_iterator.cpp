@@ -1,21 +1,26 @@
-#include "zorba_debug_iterator.h"
 
 #include "compiler/api/compilercb.h"
+
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
+
 #include "debugger/zorba_debugger_runtime.h"
 #include "debugger/zorba_debugger_commons.h"
 
-#include "runtime/fncontext/FnContextImpl.h"
+#include "runtime/debug/zorba_debug_iterator.h"
+#include "runtime/visitors/planitervisitor.h"
+
 
 namespace zorba {
 
-ZorbaDebugIterator::ZorbaDebugIterator( short sctx,
-                                        const QueryLoc& loc,
-                                        std::vector<PlanIter_t>& aChildvector )
-  : NaryBaseIterator<ZorbaDebugIterator,
-                     ZorbaDebugIteratorState> (sctx, loc, aChildvector),
-    theDebuggerParent(0)
+ZorbaDebugIterator::ZorbaDebugIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& aChildvector )
+  : 
+  NaryBaseIterator<ZorbaDebugIterator,
+                   ZorbaDebugIteratorState> (sctx, loc, aChildvector),
+  theDebuggerParent(0)
 {
 }
 
@@ -102,16 +107,9 @@ zorba::ZorbaDebugIterator::nextImpl( store::Item_t& result, PlanState& planState
   STACK_END(lState);
 }
 
-void ZorbaDebugIterator::accept( PlanIterVisitor& v ) const
-{
-  v.beginVisit(*this);
-  std::vector<PlanIter_t>::const_iterator iter =  theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd =  theChildren.end();
-  for ( ; iter != lEnd; ++iter ) {
-    ( *iter )->accept ( v );
-  }
-  v.endVisit(*this);
-}
+
+NARY_ACCEPT(ZorbaDebugIterator);
+
 
 bool ZorbaDebugIterator::isUpdating() const
 {

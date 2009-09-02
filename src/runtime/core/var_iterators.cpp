@@ -25,6 +25,7 @@
 #include "runtime/base/noarybase.h"
 #include "runtime/core/var_iterators.h"
 #include "runtime/util/iterator_impl.h"
+#include "runtime/visitors/planitervisitor.h"
 
 #include "store/api/iterator.h"
 #include "store/api/item.h"
@@ -72,6 +73,9 @@ bool CtxVarDeclIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
   STACK_END (state);
 }
+
+
+NARY_ACCEPT(CtxVarDeclIterator);
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -122,6 +126,9 @@ bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState)
 }
 
 
+NARY_ACCEPT(CtxVarAssignIterator);
+
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  Prolog Var Existence Check                                                 //
@@ -155,6 +162,9 @@ bool CtxVarExistsIterator::nextImpl(store::Item_t& result, PlanState& planState)
   }
   STACK_END (state);
 }
+
+
+NARY_ACCEPT(CtxVarExistsIterator);
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -210,6 +220,10 @@ bool CtxVariableIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 }
 
 
+NARY_ACCEPT(CtxVariableIterator);
+
+
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  ForVarIterator                                                             //
@@ -218,13 +232,22 @@ bool CtxVariableIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
 
 ForVarIterator::ForVarIterator(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     const store::Item_t& name)
   : 
   NoaryBaseIterator<ForVarIterator, ForVarState >(sctx, loc), 
   theVarName(name)
 {
+}
+
+
+void ForVarIterator::bind(store::Item* value, PlanState& planState)
+{
+  ForVarState* state;
+  state = StateTraitsImpl<ForVarState>::getState(planState, theStateOffset);
+
+  state->theValue = value;
 }
 
 
@@ -240,19 +263,8 @@ bool ForVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 }
 
 
-void ForVarIterator::bind(store::Item* value, PlanState& planState)
-{
-  ForVarState* state;
-  state = StateTraitsImpl<ForVarState>::getState(planState, this->stateOffset);
+NOARY_ACCEPT(ForVarIterator);
 
-  state->theValue = value;
-}
-
-
-void ForVarIterator::foo()
-{
-  std::cout << "DESTRUCTOR" << std::endl;
-}
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -282,7 +294,7 @@ void LetVarState::reset(PlanState& planState)
 
 
 LetVarIterator::LetVarIterator(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     const store::Item_t& name)
   :
@@ -292,22 +304,26 @@ LetVarIterator::LetVarIterator(
 }
 
 
+void LetVarIterator::bind(store::Iterator_t& it, PlanState& planState)
+{
+  LetVarState* state;
+  state = StateTraitsImpl<LetVarState>::getState(planState, theStateOffset);
+
+  state->theSourceIter = it;
+}
+
+
 bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   LetVarState* state;
-  state = StateTraitsImpl<LetVarState>::getState(planState, this->stateOffset);
+  state = StateTraitsImpl<LetVarState>::getState(planState, theStateOffset);
 
   ZORBA_ASSERT (state->theSourceIter != NULL);
   return state->theSourceIter->next(result);
 }
 
 
-void LetVarIterator::bind(store::Iterator_t it, PlanState& planState)
-{
-  LetVarState* state;
-  state = StateTraitsImpl<LetVarState>::getState(planState, this->stateOffset);
+NOARY_ACCEPT(LetVarIterator);
 
-  state->theSourceIter = it;
-}
 
 } /* namespace zorba */

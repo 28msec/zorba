@@ -22,7 +22,7 @@
 namespace zorba 
 {
 
-NARY_ITER_SCTX (ZorbaMailIterator);
+NARY_ITER (ZorbaMailIterator);
 
 
 }/*namespace zorba*/

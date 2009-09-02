@@ -32,18 +32,29 @@
 
 namespace zorba
 {
+
+namespace store 
+{
+  class NodeHashSet;
+}
+
 class ItemValueCollHandleHashSet;
 class ValueCollCompareParam;
 
-  /*______________________________________________________________________
-  |
-  | 15.1 General Functions and Operators on Sequences
-  |_______________________________________________________________________*/
 
-//15.1.1 fn:boolean
-// see BooleanImpl.h
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  15.1 General Functions and Operators on Sequences                          //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
-//15.1.2 op:concatenate
+
+// 15.1.1 fn:boolean : see BooleanImpl.h
+
+
+/*******************************************************************************
+  15.1.2 op:concatenate
+********************************************************************************/
 class FnConcatIteratorState : public  PlanIteratorState 
 {
 public:
@@ -61,15 +72,26 @@ protected:
   bool  theIsUpdating;
 
 public:
-  SERIALIZABLE_CLASS(FnConcatIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnConcatIterator, NaryBaseIterator<FnConcatIterator, FnConcatIteratorState >)
-  void serialize(::zorba::serialization::Archiver &ar)
+  SERIALIZABLE_CLASS(FnConcatIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  FnConcatIterator, 
+  NaryBaseIterator<FnConcatIterator, FnConcatIteratorState >);
+
+  void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (NaryBaseIterator<FnConcatIterator, FnConcatIteratorState >*)this);
+    serialize_baseclass(ar, 
+    (NaryBaseIterator<FnConcatIterator, FnConcatIteratorState >*)this);
+
     ar & theIsUpdating;
   }
+
 public:
-  FnConcatIterator(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, bool aIsUpdating)
+  FnConcatIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& aChildren,
+        bool aIsUpdating)
     :
     NaryBaseIterator<FnConcatIterator, FnConcatIteratorState>(sctx, loc, aChildren),
     theIsUpdating(aIsUpdating)
@@ -78,41 +100,43 @@ public:
   virtual ~FnConcatIterator() { }                                               
 
   virtual bool isUpdating() const { return theIsUpdating; }
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 
-  virtual void accept(PlanIterVisitor& v) const;
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
 
-//15.1.3 fn:index-of
-/*_______________________________________________________________________
- |
- |	fn:index-of($seqParam as xs:anyAtomicType*,
- |							$srchParam as xs:anyAtomicType) as xs:integer*
- |	fn:index-of($seqParam as xs:anyAtomicType*,
- |							$srchParam as xs:anyAtomicType,
- |							$collation as xs:string) as xs:integer*
- |	
- |	Summary: Returns a sequence of positive integers giving the positions 
- |	within the sequence $seqParam of items that are equal to $srchParam. 
- |	
- |	The collation used by the invocation of this function is determined 
- |	according to the rules in 7.3.1 Collations. The collation is used when 
- |	string comparison is required. 
- |
- |	The items in the sequence $seqParam are compared with $srchParam under 
- |	the rules for the 'eq' operator. Values that cannot be compared, i.e. 
- |	the 'eq' operator is not defined for their types, are considered to be 
- |	distinct. If an item compares equal, then the position of that item in 
- |	the sequence $seqParam is included in the result. 
- |
- |	If the value of $seqParam is the empty sequence, or if no item in 
- |	$seqParam matches $srchParam, then the empty sequence is returned. 
- |
- |	The first item in a sequence is at position 1, not position 0.
- |	The result sequence is in ascending numeric order.
- |________________________________________________________________________*/
 
+/*******************************************************************************
+  15.1.3 fn:index-of
+
+ fn:index-of($seqParam as xs:anyAtomicType*,
+             $srchParam as xs:anyAtomicType) as xs:integer*
+
+ fn:index-of($seqParam as xs:anyAtomicType*,
+             $srchParam as xs:anyAtomicType,
+             $collation as xs:string) as xs:integer*
+ 	
+ Summary: Returns a sequence of positive integers giving the positions 
+ within the sequence $seqParam of items that are equal to $srchParam. 
+ 
+ The collation used by the invocation of this function is determined 
+ according to the rules in 7.3.1 Collations. The collation is used when 
+ string comparison is required. 
+ 
+  The items in the sequence $seqParam are compared with $srchParam under 
+ 	the rules for the 'eq' operator. Values that cannot be compared, i.e. 
+ 	the 'eq' operator is not defined for their types, are considered to be 
+ 	distinct. If an item compares equal, then the position of that item in 
+ 	the sequence $seqParam is included in the result. 
+ 
+ 	If the value of $seqParam is the empty sequence, or if no item in 
+ 	$seqParam matches $srchParam, then the empty sequence is returned. 
+ 
+ 	The first item in a sequence is at position 1, not position 0.
+ 	The result sequence is in ascending numeric order.
+********************************************************************************/
 class FnIndexOfIteratorState : public PlanIteratorState 
 {
 public:  
@@ -125,51 +149,37 @@ public:
   
 };
 
-class FnIndexOfIterator : public NaryBaseIterator<FnIndexOfIterator,
-                                                  FnIndexOfIteratorState>
-{
-public:
-  SERIALIZABLE_CLASS(FnIndexOfIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnIndexOfIterator, NaryBaseIterator<FnIndexOfIterator, FnIndexOfIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (NaryBaseIterator<FnIndexOfIterator, FnIndexOfIteratorState>*)this);
-  }
 
-public:
-  FnIndexOfIterator(
-        short sctx,
-        const QueryLoc& loc, 
-        std::vector<PlanIter_t>& args) 
-    :
-    NaryBaseIterator<FnIndexOfIterator, FnIndexOfIteratorState>(sctx, loc, args)
-  {
-  }
-
-  void openImpl(PlanState& planState, uint32_t& offset);
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const; 
-};
+NARY_ITER_STATE(FnIndexOfIterator, FnIndexOfIteratorState);
 
 
 
-//15.1.4 fn:empty
-/*
- * If the value of $arg is the empty sequence, the function returns true; 
- * otherwise, the function returns false.
- */
+/*******************************************************************************
+  15.1.4 fn:empty
+
+  If the value of $arg is the empty sequence, the function returns true; 
+  otherwise, the function returns false.
+********************************************************************************/
 NARY_ITER(FnEmptyIterator);
 
 
-//15.1.5 fn:exists
-/*
- * If the value of $arg is not the empty sequence, the function returns true; 
- * otherwise, the function returns false.
- */
+/*******************************************************************************
+  15.1.5 fn:exists
+
+  If the value of $arg is not the empty sequence, the function returns true; 
+  otherwise, the function returns false.
+********************************************************************************/
 NARY_ITER(FnExistsIterator);
 
 
-//15.1.6 fn:distinct-values
+/*******************************************************************************
+  15.1.6 fn:distinct-values
+
+  Returns the sequence that results from removing from arg all but one of a 
+  set of values that are eq to one other. The order in which the sequence of
+  values is returned is implementation dependent. Here, we return the first
+  item that is not a duplicate and throw away the remaining ones.
+********************************************************************************/
 class FnDistinctValuesIteratorState : public PlanIteratorState 
 {
 public:  
@@ -177,6 +187,7 @@ public:
   std::auto_ptr<ItemValueCollHandleHashSet> theAlreadySeenMap;
 
   FnDistinctValuesIteratorState();
+
   ~FnDistinctValuesIteratorState();
 
   void init(PlanState&);
@@ -184,44 +195,22 @@ public:
 };
   
 
-class FnDistinctValuesIterator : public NaryBaseIterator<FnDistinctValuesIterator, 
-                                                         FnDistinctValuesIteratorState>
-{
-
-public:
-  FnDistinctValuesIterator(
-        short sctx,
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& args);
- 
-  ~FnDistinctValuesIterator();
-
-  void openImpl(PlanState& planState, uint32_t& offset);
-
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
- 
-  virtual void accept(PlanIterVisitor&) const;
-
-public:
-  SERIALIZABLE_CLASS(FnDistinctValuesIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnDistinctValuesIterator, NaryBaseIterator<FnDistinctValuesIterator, FnDistinctValuesIteratorState >)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (NaryBaseIterator<FnDistinctValuesIterator, FnDistinctValuesIteratorState >*)this);
-  }
-
-};
+NARY_ITER_STATE(FnDistinctValuesIterator, FnDistinctValuesIteratorState);
 
 
+/*******************************************************************************
+  15.1.7 fn:insert-before
 
-//15.1.7 fn:insert-before
-// Returns a new sequence constructed from the value of the first parameter with the value of third parameter inserted 
-// at the position specified by the value of the second parameter. 
-class FnInsertBeforeIteratorState : public PlanIteratorState { 
+  Returns a new sequence constructed from the value of the first parameter with
+  the value of third parameter inserted at the position specified by the value
+  of the second parameter. 
+********************************************************************************/ 
+class FnInsertBeforeIteratorState : public PlanIteratorState 
+{ 
 public:  
-  xqp_integer theCurrentPos; // the current position in the sequence
-  xqp_integer thePosition;
-  store::Item_t      theTargetItem;
+  xqp_integer    theCurrentPos; // the current position in the sequence
+  xqp_integer    thePosition;
+  store::Item_t  theTargetItem;
 
   void init(PlanState&);
   void reset(PlanState&);
@@ -230,7 +219,9 @@ public:
 NARY_ITER_STATE(FnInsertBeforeIterator, FnInsertBeforeIteratorState);
 
 
-//15.1.8 fn:remove
+/*******************************************************************************
+  15.1.8 fn:remove
+********************************************************************************/
 // Returns a new sequence constructed from the value of aTarget with the item at the position specified by the 
 // value of aPosition removed.
 class FnRemoveIteratorState : public PlanIteratorState 
@@ -245,67 +236,61 @@ public:
 };
 
 
-class FnRemoveIterator : public NaryBaseIterator<FnRemoveIterator,
-                                                 FnRemoveIteratorState>
+NARY_ITER_STATE(FnRemoveIterator, FnRemoveIteratorState);
+
+
+/*******************************************************************************
+  15.1.9 fn:reverse
+********************************************************************************/
+class FnReverseIteratorState : public PlanIteratorState 
 {
 public:
-  SERIALIZABLE_CLASS(FnRemoveIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnRemoveIterator, NaryBaseIterator<FnRemoveIterator, FnRemoveIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (NaryBaseIterator<FnRemoveIterator, FnRemoveIteratorState>*)this);
-  }
+  std::stack<store::Item_t> theStack;
 
-public:
-  FnRemoveIterator(
-        short sctx,
-        const QueryLoc& loc, 
-        std::vector<PlanIter_t>& args) 
-    :
-    NaryBaseIterator<FnRemoveIterator, FnRemoveIteratorState>(sctx, loc, args)
-  {
-  }
-
-  void openImpl(PlanState& planState, uint32_t& offset);
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const; 
+  void init(PlanState&);
+  void reset(PlanState&);
 };
 
-
-
-//15.1.9 fn:reverse
-class FnReverseIteratorState : public PlanIteratorState {
-  public:
-    std::stack<store::Item_t> theStack;
-
-    void init(PlanState&);
-    void reset(PlanState&);
-};
 
 NARY_ITER_STATE(FnReverseIterator, FnReverseIteratorState);
 
-//15.1.10 fn:subsequence
-// Returns the contiguous sequence of items in the value of $sourceSeq beginning at the position indicated by the value 
-// of $startingLoc and continuing for the number of items indicated by the value of $length.
-class FnSubsequenceIteratorState : public PlanIteratorState {
+
+/*******************************************************************************
+  15.1.10 fn:subsequence
+
+  Returns the contiguous sequence of items in the value of $sourceSeq beginning
+  at the position indicated by the value of $startingLoc and continuing for the
+  number of items indicated by the value of $length.
+********************************************************************************/
+class FnSubsequenceIteratorState : public PlanIteratorState 
+{
 public:
   xqp_integer theRemaining;
 
   void init(PlanState&);
   void reset(PlanState&);  
 };
+
+
 NARY_ITER_STATE(FnSubsequenceIterator, FnSubsequenceIteratorState);
 
-//15.1.11 fn:unordered
-// no need to implement an operator for his
+
+/*******************************************************************************
+  15.1.11 fn:unordered
+  no need to implement an operator for his
+********************************************************************************/
 
 
-  /*______________________________________________________________________
-  |
-  | 15.2 Functions That Test the Cardinality of Sequences
-  |_______________________________________________________________________*/
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  15.2 Functions That Test the Cardinality of Sequences                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
-//15.2.1 fn:zero-or-one
+
+/*******************************************************************************
+  15.2.1 fn:zero-or-one
+********************************************************************************/
 class FnZeroOrOneIterator : public NaryBaseIterator<FnZeroOrOneIterator,
                                                     PlanIteratorState>
 {
@@ -326,7 +311,7 @@ public:
 
 public:
   FnZeroOrOneIterator(
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& args,
         bool doDistinct = false)
@@ -335,15 +320,21 @@ public:
     theDoDistinct(doDistinct)
   {}
  
+  void accept(PlanIterVisitor& v) const;
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
 
-//15.2.2 fn:one-or-more
+/*******************************************************************************
+  15.2.2 fn:one-or-more
+********************************************************************************/
 NARY_ITER(FnOneOrMoreIterator);
 
 
-//15.2.3 fn:exactly-one
+/*******************************************************************************
+  15.2.3 fn:exactly-one
+********************************************************************************/
 class FnExactlyOneIterator : public NaryBaseIterator<FnExactlyOneIterator,
                                                      PlanIteratorState>
 {
@@ -353,17 +344,20 @@ protected:
 
 public:
   SERIALIZABLE_CLASS(FnExactlyOneIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnExactlyOneIterator, NaryBaseIterator<FnExactlyOneIterator, PlanIteratorState >)
-  void serialize(::zorba::serialization::Archiver &ar)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnExactlyOneIterator,
+                                   NaryBaseIterator<FnExactlyOneIterator,
+                                                    PlanIteratorState >)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (NaryBaseIterator<FnExactlyOneIterator, PlanIteratorState >*)this);
+    serialize_baseclass(ar, (NaryBaseIterator<FnExactlyOneIterator,
+                                              PlanIteratorState >*)this);
     ar & theDoDistinct;
     ar & theRaiseError;
   }
 
 public:
   FnExactlyOneIterator(
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& args,
         bool raiseError = true,
@@ -374,29 +368,39 @@ public:
     theRaiseError(raiseError)
   {}
  
+  void accept(PlanIterVisitor& v) const;
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
-  /*______________________________________________________________________
-  |
-  | 15.3 Equals, Union, Intersection and Except
-  |_______________________________________________________________________*/
 
-//15.3.1 fn:deep-equal
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  15.3 Deep Equal, Union, Intersection, and Except                           //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+  15.3.1 fn:deep-equal
+********************************************************************************/
 class FnDeepEqualIterator : public NaryBaseIterator<FnDeepEqualIterator,
-                                                     PlanIteratorState>
+                                                    PlanIteratorState>
 {
 public:
   SERIALIZABLE_CLASS(FnDeepEqualIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnDeepEqualIterator, NaryBaseIterator<FnDeepEqualIterator, PlanIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnDeepEqualIterator,
+                                   NaryBaseIterator<FnDeepEqualIterator,
+                                                    PlanIteratorState>)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (NaryBaseIterator<FnDeepEqualIterator, PlanIteratorState >*)this);
+    serialize_baseclass(ar, (NaryBaseIterator<FnDeepEqualIterator,
+                                              PlanIteratorState >*)this);
   }
 
 public:
   FnDeepEqualIterator(
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc, 
         std::vector<PlanIter_t>& args) 
     :
@@ -404,144 +408,117 @@ public:
   {
   }
 
-  void openImpl(PlanState& planState, uint32_t& offset);
+  void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const; 
 };
 
 
 
-//15.3.2 op:union
-// implemented using concat and sort
+/*******************************************************************************
+  15.3.2 op:union : implemented using concat and sort
+********************************************************************************/
 
-//15.3.3 op:intersect
-//15.3.4 op:except
 
-namespace store {
-    class NodeHashSet;
-}
+/*******************************************************************************
 
-/**
- * Hashing semi(anti)join iterator.
- *
- * First producer goes in the result if a match in the second producer is found/not found.
- * The order of the first producer is retained.
- * No duplicate elimination is performed.
- */
-class HashSemiJoinIteratorState : public PlanIteratorState {
+  15.3.3 op:intersect : implemented by the HashSemiJoinIterator below
+
+  15.3.4 op:except : implemented by the HashSemiJoinIterator below
+
+  Hashing semi/anti join iterator.
+ 
+  First producer goes in the result if a match in the second producer is 
+  found/not found. The order of the first producer is retained. No duplicate
+  elimination is performed.
+********************************************************************************/
+class HashSemiJoinIteratorState : public PlanIteratorState 
+{
 public:
   store::NodeHashSet* theRightInput;
 
   HashSemiJoinIteratorState();
+
   ~HashSemiJoinIteratorState();
 
   void init(PlanState&);
+
   void reset(PlanState&);
 };
 
 
 class HashSemiJoinIterator: public NaryBaseIterator<HashSemiJoinIterator, 
-                                                HashSemiJoinIteratorState>
+                                                    HashSemiJoinIteratorState>
 {
-
-public:
-  HashSemiJoinIterator(short sctx, const QueryLoc& loc,
-                   std::vector<PlanIter_t>& args,
-                   bool antijoin = false);
- 
-  ~HashSemiJoinIterator();
-
-  bool
-  nextImpl(store::Item_t& result, PlanState& planState) const;
- 
-  virtual void 
-  accept(PlanIterVisitor&) const;
-
 protected:
   bool theAntijoin;
+
 public:
-  SERIALIZABLE_CLASS(HashSemiJoinIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(HashSemiJoinIterator, NaryBaseIterator<HashSemiJoinIterator, HashSemiJoinIteratorState >)
-  void serialize(::zorba::serialization::Archiver &ar)
+  SERIALIZABLE_CLASS(HashSemiJoinIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  HashSemiJoinIterator,
+  NaryBaseIterator<HashSemiJoinIterator, HashSemiJoinIteratorState >);
+
+  void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (NaryBaseIterator<HashSemiJoinIterator, HashSemiJoinIteratorState >*)this);
+    serialize_baseclass(ar,
+    (NaryBaseIterator<HashSemiJoinIterator, HashSemiJoinIteratorState >*)this);
+
     ar & theAntijoin;
   }
 
+public:
+  HashSemiJoinIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& args,
+        bool antijoin = false);
+ 
+  ~HashSemiJoinIterator() {}
 
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
-/**
- * Sortmerge based semijoin iterator.
- *
- * First producer goes in the result if a match in the second producer is found.
- * Precondition: both inputs must be sorted.
- * Postcondition: the order of the first producer is retained.
- * If either of the inputs is guaranteed to contain no duplicates,
- * then the output will be duplicate-free. Otherwise the output
- * may contain duplicates.
- */
-class SortSemiJoinIterator : public NaryBaseIterator<SortSemiJoinIterator, 
-                                                     PlanIteratorState>
-{
 
-public:
-  SortSemiJoinIterator(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& args);
+/*******************************************************************************
+  Sortmerge based semijoin iterator.
  
-  ~SortSemiJoinIterator();
+  First producer goes in the result if a match in the second producer is found.
+  Precondition: both inputs must be sorted.
+  Postcondition: the order of the first producer is retained.
 
-  bool
-  nextImpl(store::Item_t& result, PlanState& planState) const;
- 
-  virtual void 
-  accept(PlanIterVisitor&) const;
-public:
-  SERIALIZABLE_CLASS(SortSemiJoinIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SortSemiJoinIterator, NaryBaseIterator<SortSemiJoinIterator, PlanIteratorState >)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (NaryBaseIterator<SortSemiJoinIterator, PlanIteratorState >*)this);
-  }
-};
+  If either of the inputs is guaranteed to contain no duplicates, then the
+  output will be duplicate-free. Otherwise the output may contain duplicates.
+********************************************************************************/
+NARY_ITER(SortSemiJoinIterator);
 
-  /*______________________________________________________________________
-  |
-  | 15.4 Aggregate Functions
-  |_______________________________________________________________________*/
 
-//15.4.1 fn:count
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+// 15.4 Aggregate Functions                                                    //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+  15.4.1 fn:count
+********************************************************************************/
 NARY_ITER(FnCountIterator);
 
 
-//15.4.2 fn:avg
-class FnAvgIterator : public NaryBaseIterator<FnAvgIterator,
-                                                     PlanIteratorState>
-{
-public:
-  SERIALIZABLE_CLASS(FnAvgIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnAvgIterator, NaryBaseIterator<FnAvgIterator, PlanIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (NaryBaseIterator<FnAvgIterator, PlanIteratorState >*)this);
-  }
-
-public:
-  FnAvgIterator(
-        short sctx,
-        const QueryLoc& loc, 
-        std::vector<PlanIter_t>& args) 
-    :
-    NaryBaseIterator<FnAvgIterator, PlanIteratorState>(sctx, loc, args)
-  {
-  }
-
-  void openImpl(PlanState& planState, uint32_t& offset);
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const; 
-};
+/*******************************************************************************
+  15.4.2 fn:avg
+********************************************************************************/
+NARY_ITER(FnAvgIterator);
 
 
-//15.4.3 fn:max & 15.4.4 fn:min
+/*******************************************************************************
+  15.4.3 fn:max
+  15.4.4 fn:min
+********************************************************************************/
 class FnMinMaxIterator : public NaryBaseIterator<FnMinMaxIterator, PlanIteratorState> 
 {
 public:
@@ -551,59 +528,44 @@ public:
   };
 
 private:
-  Type theType;
+  Type                       theType;
   CompareConsts::CompareType theCompareType;
 
 public:
-  SERIALIZABLE_CLASS(FnMinMaxIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnMinMaxIterator, NaryBaseIterator<FnMinMaxIterator, PlanIteratorState >)
-  void serialize(::zorba::serialization::Archiver &ar)
+  SERIALIZABLE_CLASS(FnMinMaxIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  FnMinMaxIterator,
+  NaryBaseIterator<FnMinMaxIterator, PlanIteratorState >);
+
+  void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (NaryBaseIterator<FnMinMaxIterator, PlanIteratorState >*)this);
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnMinMaxIterator, PlanIteratorState >*)this);
+
     SERIALIZE_ENUM(Type, theType);
     SERIALIZE_ENUM(CompareConsts::CompareType, theCompareType);
   }
 
 public:
-  FnMinMaxIterator(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& aChildren, Type aType);
-
-  void openImpl(PlanState& planState, uint32_t& offset);
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-
-  virtual void accept(PlanIterVisitor& v) const;
+  FnMinMaxIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& aChildren, 
+        Type aType);
 
   Type getType() const { return theType; }
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
 
-//15.4.5 fn:sum
-class FnSumIterator : public NaryBaseIterator<FnSumIterator,
-                                              PlanIteratorState>
-{
-public:
-  SERIALIZABLE_CLASS(FnSumIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnSumIterator, NaryBaseIterator<FnSumIterator, PlanIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (NaryBaseIterator<FnSumIterator, PlanIteratorState >*)this);
-  }
-
-public:
-  FnSumIterator(
-        short sctx,
-        const QueryLoc& loc, 
-        std::vector<PlanIter_t>& args) 
-    :
-    NaryBaseIterator<FnSumIterator, PlanIteratorState>(sctx, loc, args)
-  {
-  }
-
-  void openImpl(PlanState& planState, uint32_t& offset);
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const; 
-};
-
+/*******************************************************************************
+  15.4.5 fn:sum
+********************************************************************************/
+NARY_ITER(FnSumIterator);
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -614,10 +576,10 @@ public:
 
 
 /*******************************************************************************
-
+  15.5.1 op:to
 ********************************************************************************/
-//15.5.1 op:to
-class OpToIteratorState : public PlanIteratorState {
+class OpToIteratorState : public PlanIteratorState 
+{
 public:
   xqp_integer theCurInt;
   xqp_integer theFirstVal;
@@ -647,6 +609,7 @@ public:
   void reset(PlanState&);
 };
 
+
 NARY_ITER_STATE(FnIdIterator, FnIdIteratorState);
 
 
@@ -672,58 +635,35 @@ NARY_ITER_STATE(FnIdRefIterator, FnIdRefIteratorState);
 
 /*******************************************************************************
   15.5.4 fn:doc
+
+   fn:doc($uri as xs:string?) as document-node()?
+ 
+  Summary: Retrieves a document using an xs:anyURI, which may include a 
+  fragment identifier, supplied as an xs:string. If $uri is not a valid 
+  xs:anyURI, an error is raised [err:FODC0005]. If it is a relative URI 
+  Reference, it is resolved relative to the value of the base URI 
+  property from the static context. The resulting absolute URI Reference 
+  is promoted to an xs:string. If the Available documents discussed in 
+  Section 2.1.2 Dynamic ContextXP provides a mapping from this string to 
+  a document node, the function returns that document node. If the 
+  Available documents maps the string to an empty sequence, then the 
+  function returns an empty sequence. If the Available documents 
+  provides no mapping for the string, an error is raised [err:FODC0005]. 
+ 
+  If $uri is the empty sequence, the result is an empty sequence.
 ********************************************************************************/
-class FnDocIterator : public UnaryBaseIterator<FnDocIterator, PlanIteratorState>
-{
-public:
-  FnDocIterator(short sctx, const QueryLoc& loc, PlanIter_t& arg);
-  virtual ~FnDocIterator();
-
-  void openImpl(PlanState& planState, uint32_t& offset);
-
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
-  
-  virtual void accept(PlanIterVisitor&) const;
-
-public:
-  SERIALIZABLE_CLASS(FnDocIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnDocIterator, UnaryBaseIterator<FnDocIterator, PlanIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (UnaryBaseIterator<FnDocIterator, PlanIteratorState>*)this);
-  }
-};
+NARY_ITER(FnDocIterator);
 
 
-//15.5.5 fn:doc-available
-class FnDocAvailableIterator : public NaryBaseIterator<FnDocAvailableIterator,
-                                                       PlanIteratorState>
-{
-public:
-  SERIALIZABLE_CLASS(FnDocAvailableIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnDocAvailableIterator, NaryBaseIterator<FnDocAvailableIterator, PlanIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (NaryBaseIterator<FnDocAvailableIterator, PlanIteratorState >*)this);
-  }
-
-public:
-  FnDocAvailableIterator(
-        short sctx,
-        const QueryLoc& loc, 
-        std::vector<PlanIter_t>& args) 
-    :
-    NaryBaseIterator<FnDocAvailableIterator, PlanIteratorState>(sctx, loc, args)
-  {
-  }
-
-  void openImpl(PlanState& planState, uint32_t& offset);
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const; 
-};
+/*******************************************************************************
+  15.5.5 fn:doc-available
+********************************************************************************/
+NARY_ITER(FnDocAvailableIterator);
 
 
-
+/*******************************************************************************
+  Zorba-defined parse function
+********************************************************************************/
 NARY_ITER(FnParseIterator);
 
 

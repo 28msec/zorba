@@ -50,7 +50,7 @@ namespace zorba
  /*
   * 16.7 fn:default-collation
   *-----------------------*/
-  NARY_ITER_SCTX (FnDefaultCollationIterator);
+  NARY_ITER(FnDefaultCollationIterator);
 
 } /* namespace zorba */
 #endif /*ZORBA_CONTEXT_IMPL_H*/

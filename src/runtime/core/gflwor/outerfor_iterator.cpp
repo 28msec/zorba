@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "system/globalenv.h"
+
 #include "runtime/core/gflwor/outerfor_iterator.h"
 #include "runtime/core/gflwor/common.h"
 
 #include "runtime/core/var_iterators.h"
 #include "runtime/visitors/planitervisitor.h"
+
 #include "store/api/store.h"
-#include "system/globalenv.h"
 #include "store/api/item_factory.h"
 
 using namespace zorba;
@@ -35,7 +37,7 @@ END_SERIALIZABLE_CLASS_VERSIONS(OuterForIterator)
 // theChild1 --> InputIterator
 
 OuterForIterator::OuterForIterator (
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     const store::Item_t& aVarName,
     PlanIter_t aTupleIterator,
@@ -57,16 +59,24 @@ OuterForIterator::~OuterForIterator()
 bool OuterForIterator::nextImpl (store::Item_t& aResult, PlanState& aPlanState) const 
 {
   store::Item_t lItem;
+
   PlanIteratorState* lState;
   DEFAULT_STACK_INIT (PlanIteratorState, lState, aPlanState);
-  while (consumeNext (aResult, theChild0, aPlanState)) {
+
+  while (consumeNext (aResult, theChild0, aPlanState)) 
+  {
     //using a if, to avoid an additional state
-    if(consumeNext (lItem, theChild1, aPlanState)){
-      do{
+    if(consumeNext (lItem, theChild1, aPlanState))
+    {
+      do
+      {
         bindVariables (lItem, theOuterForVars, aPlanState);
         STACK_PUSH (true, lState);
-      } while (consumeNext (lItem, theChild1, aPlanState));
-    }else{
+      }
+      while (consumeNext (lItem, theChild1, aPlanState));
+    }
+    else
+    {
       bindVariables (lItem, theOuterForVars, aPlanState);
       STACK_PUSH (true, lState);
     }
@@ -75,6 +85,10 @@ bool OuterForIterator::nextImpl (store::Item_t& aResult, PlanState& aPlanState) 
   STACK_PUSH (false, lState);
   STACK_END (lState);
 }
+
+
+BINARY_ACCEPT(OuterForIterator);
+
   
 } //Namespace flwor
 }//Namespace zorba

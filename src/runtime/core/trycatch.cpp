@@ -91,12 +91,14 @@ TryCatchIterator::CatchClause::~CatchClause()
 }
 
 
-TryCatchIterator::TryCatchIterator(short sctx,
-                                   const QueryLoc& loc,
-                                   PlanIter_t& aBlock,
-                                   std::vector<CatchClause>& aCatchClauses)
-  : UnaryBaseIterator<TryCatchIterator, TryCatchIteratorState> (sctx, loc, aBlock),
-    theCatchClauses(aCatchClauses)
+TryCatchIterator::TryCatchIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    PlanIter_t& aBlock,
+    std::vector<CatchClause>& aCatchClauses)
+  : 
+  UnaryBaseIterator<TryCatchIterator, TryCatchIteratorState> (sctx, loc, aBlock),
+  theCatchClauses(aCatchClauses)
 { 
 }
 
@@ -109,13 +111,11 @@ TryCatchIterator::~TryCatchIterator()
 void TryCatchIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
   StateTraitsImpl<TryCatchIteratorState>::createState(planState,
-                                                      this->stateOffset,
+                                                      theStateOffset,
                                                       offset);
 
-  StateTraitsImpl<TryCatchIteratorState>::initState(planState, this->stateOffset);
+  StateTraitsImpl<TryCatchIteratorState>::initState(planState, theStateOffset);
   
-  theSctx = planState.theCompilerCB->getStaticContext(sctx);
-
   theChild->open(planState, offset);
 
   std::vector<TryCatchIterator::CatchClause>::const_iterator lIter = theCatchClauses.begin();
@@ -141,6 +141,7 @@ TryCatchIterator::getStateSizeOfSubtree() const
 
   return size; 
 }
+
 
 // check if/which catch matches and bind the state's catch iterator to the matching catch clause
 bool
@@ -176,7 +177,7 @@ TryCatchIterator::bindErrorVars(
     PlanState& planState) const
 {
   TryCatchIteratorState* state =
-    StateTraitsImpl<TryCatchIteratorState>::getState(planState, this->stateOffset);
+    StateTraitsImpl<TryCatchIteratorState>::getState(planState, theStateOffset);
 
   // bind the error code (always)
   store::Item_t lErrorCodeItem;
@@ -271,7 +272,7 @@ TryCatchIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 void 
 TryCatchIterator::resetImpl(PlanState& planState) const
 {
-  StateTraitsImpl<TryCatchIteratorState>::reset(planState, this->stateOffset);
+  StateTraitsImpl<TryCatchIteratorState>::reset(planState, theStateOffset);
 
   theChild->reset(planState);
   
@@ -296,7 +297,7 @@ TryCatchIterator::closeImpl(PlanState& planState)
     ( *lIter ).catch_expr->close(planState);
   } 
 
-  StateTraitsImpl<TryCatchIteratorState>::destroyState(planState, this->stateOffset);
+  StateTraitsImpl<TryCatchIteratorState>::destroyState(planState, theStateOffset);
 }
 
 void TryCatchIterator::accept(PlanIterVisitor &v) const {

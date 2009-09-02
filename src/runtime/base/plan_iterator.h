@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_PLAN_ITERATOR_H
-#define ZORBA_PLAN_ITERATOR_H
+#ifndef ZORBA_RUNTIME_PLAN_ITERATOR
+#define ZORBA_RUNTIME_PLAN_ITERATOR
 
-#include <typeinfo>
+//#include <typeinfo>
 
 #include "common/shared_types.h"
 
@@ -26,7 +26,9 @@
 
 #include "zorbaserialization/class_serializer.h"
 
+#if ZORBA_BATCHING_TYPE == 1
 #include "store/api/item.h"
+#endif
 
 
 // Info: Forcing inlining a function in g++:
@@ -34,45 +36,56 @@
 
 /*******************************************************************************
 
-  Consts and macros to automate Duff's Device and separation of code and state. 
+  Macros to automate Duff's Device and separation of code and state. 
 
-  DEFUALT_STACK_INIT : Initializes the state object of the current iterator
-                       (which always includes the Duff's Device) and returns
-                       a pointer to that state in the state block.
-  STACK_PUSH         : Returns the passed item and saves the current position
-                       in the file into the duffs line so that when the nextImpl
-                       method of the iterator is called again, execution will
-                       start right after the STACK_PUSH macro.
-  STACK_END          : Ends the execution of the nextImpl method
+  These macros are used in the nextImpl() method of each iterator. In general,
+  the nextImpl() method will be called multiple times, and during each invocation,
+  its behaviour depends on the current state of the iterator (which includes
+  info about what the previous invocation(s) did). The Duff's device is a
+  techique by which the point where each invocation exited from is remembered,
+  and during the next invocation, execution of the method resumes at that point.
+  In general, this simplifies the implementation of the method. 
 
+  DEFUALT_STACK_INIT : Gets a pointer to the iterator's state in the state block
+                       and "starts" the duff's device.
+  STACK_PUSH         : Causes the nextImpl() method to return with the given
+                       status and saves the current line in the source file 
+                       into the duffs line so that when the nextImpl method
+                       is called again, execution will start right after the
+                       STACK_PUSH macro.
+  STACK_END          : Causes the nextImpl() method to return with false,
+                       indicating that there are no more results to produce.
+                       It also saves the current line in the source file into 
+                       the duffs line so that if the nextImpl method is called
+                       again, an exception will be raised.
 ********************************************************************************/
 
-#define DEFAULT_STACK_INIT(stateType, stateObject, planState )  \
-  stateObject = StateTraitsImpl<stateType>::getState(planState, this->stateOffset); \
-  switch (stateObject->getDuffsLine())                          \
-  {                                                             \
+#define DEFAULT_STACK_INIT(stateType, stateObject, planState)           \
+  stateObject = StateTraitsImpl<stateType>::getState(planState, this->theStateOffset); \
+  switch (stateObject->getDuffsLine())                                  \
+  {                                                                     \
   case PlanIteratorState::DUFFS_ALLOCATE_RESOURCES:
 
-#define STACK_PUSH(status, stateObject)                        \
-   do                                                          \
-   {                                                           \
-     stateObject->setDuffsLine(__LINE__);                      \
-     return status;                                            \
-     case __LINE__: ;                                          \
+#define STACK_PUSH(status, stateObject)                                 \
+  do                                                                    \
+  {                                                                     \
+    stateObject->setDuffsLine(__LINE__);                                \
+    return status;                                                      \
+  case __LINE__: ;                                                      \
    } while (0)
 
-#define STACK_END( stateObject )                               \
-  do {                                                         \
-    stateObject->setDuffsLine(__LINE__);                       \
-    return false;                                              \
-  case __LINE__:                                               \
-    stateObject->setDuffsLine(__LINE__ + 1);                   \
-  case __LINE__ + 1:                                           \
-    ZORBA_ASSERT (false && "nextImpl() called past iterator end");   \
-    return false;                                              \
-  default:                                                     \
-    return false;                                              \
-  } while (0);                                                 \
+#define STACK_END( stateObject)                                         \
+  do {                                                                  \
+    stateObject->setDuffsLine(__LINE__);                                \
+    return false;                                                       \
+  case __LINE__:                                                        \
+    stateObject->setDuffsLine(__LINE__ + 1);                            \
+  case __LINE__ + 1:                                                    \
+    ZORBA_ASSERT (false && "nextImpl() called past iterator end");      \
+    return false;                                                       \
+  default:                                                              \
+    return false;                                                       \
+  } while (0);                                                          \
   }
 
 
@@ -92,44 +105,43 @@ class ZorbaDebuggerCommons;
   theBlockSize    : Size (in bytes) of the block.
   theRuntimeCB    : A runtime control block which contains all the information
                     required during query processing. Specifically, it contains
-                    the static and dynamic context. Additionally, at a later time,
-                    it might contain some kind of memory manager or other infrastructure
+                    the dynamic context. Additionally, at a later time, it might
+                    contain some kind of memory manager or other infrastructure
                     that is needed.
 ********************************************************************************/
 class PlanState
 {
 public:
-  int8_t*      theBlock;
+  int8_t               * theBlock;
 
-  uint32_t     theBlockSize;
+  uint32_t               theBlockSize;
 
-  uint32_t     theStackDepth;
+  uint32_t               theStackDepth;
   
-  // TODO this guy should become const because nothing can change anymore during runtime
-  //      we need to make all accessor in the control block and static context (see also shortcut below)
-  //      const before doing that
-  CompilerCB*  theCompilerCB; 
+  // TODO this guy should become const because nothing can change anymore during
+  // runtime. We need to make all accessor in the control block and static context
+  // (see also shortcut below) const before doing that
+  CompilerCB           * theCompilerCB; 
 
-  RuntimeCB*   theRuntimeCB;
+  RuntimeCB            * theRuntimeCB;
 
-  ZorbaDebuggerCommons* theDebuggerCommons;
-
-  dynamic_context*
-  dctx();
+  ZorbaDebuggerCommons * theDebuggerCommons;
 
 public:
   PlanState(uint32_t blockSize, uint32_t aStackDepth = 0);
 
   ~PlanState();
 
-  void checkDepth (const QueryLoc &loc);
+  void checkDepth(const QueryLoc &loc);
 
-  const RuntimeCB *getRuntimeCB () const { return theRuntimeCB; }
+  const RuntimeCB* getRuntimeCB() const { return theRuntimeCB; }
+
+  dynamic_context* dctx();
 };
 
 
 /*******************************************************************************
-  Root object of all iterator state objects
+  Base class for all iterator state objects.
 ********************************************************************************/
 class PlanIteratorState
 {
@@ -137,7 +149,7 @@ public:
   static const uint32_t DUFFS_ALLOCATE_RESOURCES = 0;
 
 private:
-  uint32_t theDuffsLine;
+  uint32_t         theDuffsLine;
 
 public:
 #if ZORBA_BATCHING_TYPE == 1
@@ -151,27 +163,32 @@ public:
 
 public:
   PlanIteratorState() 
-    : theDuffsLine(DUFFS_ALLOCATE_RESOURCES)
+    :
+    theDuffsLine(DUFFS_ALLOCATE_RESOURCES)
 #if ZORBA_BATCHING_TYPE == 1
-      , theCurrItem(ZORBA_BATCHING_BATCHSIZE)
+    , theCurrItem(ZORBA_BATCHING_BATCHSIZE)
 #endif
 #ifndef NDEBUG
-      , theIsOpened(false)
+    , theIsOpened(false)
 #endif
   {}
 
   ~PlanIteratorState() {}
 
+  void setDuffsLine(uint32_t aVal) { theDuffsLine = aVal; }
+
+  uint32_t getDuffsLine() const { return theDuffsLine; }
+
   /** 
-   * Initialize the current state object.
-   * The base class initializes information used for the duffs device.
+   * Initialize the current state object. 
    *
-   * To store information for new iterators, it might be necessary to derive
-   * from this class. All initialization of such information should be done in
-   * this function. If resources are requested during initialization, they must
-   * be released in the destructor.
+   * This method is invoked be the openImpl() method of the associated iterator
+   * to initialize the state info needed by the iterator. All initialization of
+   * such info should be done in this function. If resources are acquired during
+   * initialization, they must be released in the destructor.
    *
-   * Classes that inherit from PlanIteratorState must call the init function of 
+   * Classes that inherit from PlanIteratorState must reimplement this method.
+   * Each subclass implementation of this method must call the init() method of
    * their parent class explicitly in order to guarantee proper initialization.
    */
   void init(PlanState&) 
@@ -185,14 +202,14 @@ public:
   /** 
    * Reset the current state object.
    *
-   * Reset() is invoked by the resetImpl() method of the associated iterator.
-   * Reset() sets the duffs line so that when the nextImpl() method of the
-   * iterator is called again after a resetImpl(), no resources will be
-   * allocated again (i.e. the init() method of the state obj will not be
-   * called).
+   * This method is invoked by the resetImpl() method of the associated iterator.
+   * It resets the state info so that when the nextImpl() method of the iterator
+   * is called again after a resetImpl(), it will behave as if it is called for
+   * the first time.
    *
-   * Classes that inherit from PlanIteratorState must call the reset function 
-   * of their parent class explicitly in order to guarantee a proper reset.
+   * Classes that inherit from PlanIteratorState must reimplement this method.
+   * Each subclass implementation of this method must call the reset() method 
+   * of their parent class explicitly in order to guarantee proper reset.
    */
   void reset(PlanState&) 
   { 
@@ -204,12 +221,12 @@ public:
     theBatch[0] = NULL; 
 #endif
   }
-  
-  void setDuffsLine(uint32_t aVal) { theDuffsLine = aVal; }
-  uint32_t getDuffsLine() const    { return theDuffsLine; }
 };
 
 
+/*******************************************************************************
+
+********************************************************************************/
 template <class T>
 class StateTraitsImpl
 {
@@ -265,12 +282,11 @@ class PlanIterator : public SimpleRCObject
   friend class PlanIterWrapper;
 
 protected:
-  uint32_t                   stateOffset;
+  uint32_t           theStateOffset;
 
 public:
-  QueryLoc                   loc;
-  short                      sctx;
-  mutable static_context   * theSctx; // no need to serialize this
+  QueryLoc           loc;
+  static_context   * theSctx; // no need to serialize this
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(PlanIterator);
@@ -279,46 +295,35 @@ public:
     :
     SimpleRCObject(ar),
     theSctx(NULL)
-  {}
-
-  void serialize(::zorba::serialization::Archiver &ar)
   {
-    //serialize_baseclass(ar, (SimpleRCObject*)this);
-    ar & stateOffset;
-    ar & loc;
-    ar & sctx;
   }
 
+  void serialize(::zorba::serialization::Archiver &ar);
+
 public:
-  PlanIterator(short aContext, const QueryLoc& aLoc) 
+  PlanIterator(static_context* aContext, const QueryLoc& aLoc) 
     :
-    stateOffset(0),
+    theStateOffset(0),
     loc(aLoc),
-    sctx(aContext),
-    theSctx(NULL)
-  {}
+    theSctx(aContext)
+  {
+  }
   
   PlanIterator(const PlanIterator& it) 
     : 
     SimpleRCObject(it), 
-    stateOffset(0),
+    theStateOffset(0),
     loc(it.loc),
-    sctx(it.sctx),
     theSctx(it.theSctx)
   {}
 
   virtual ~PlanIterator() {}
 
-public:
-
   void setLocation (const QueryLoc& loc_) { loc = loc_; }
 
-  uint32_t getStateOffset() const { return stateOffset; }
+  uint32_t getStateOffset() const { return theStateOffset; }
 
-  /**
-   * get the static context for this iterator
-   */
-  static_context* getStaticContext(PlanState& planState) const;
+  static_context* getStaticContext(PlanState& planState) const { return theSctx; }
 
   CollationCache* collationCache(PlanState& planState);
 
@@ -334,26 +339,22 @@ public:
    */
   virtual void accept(PlanIterVisitor&) const = 0;
 
+  /** 
+   * Returns the size of the state which must be saved for the current iterator
+   * on the state block
+   */
+  virtual uint32_t getStateSize() const = 0;
+  
   /**
-   * Begin the execution of the iterator
-   * Initializes information required for the plan state
-   * and constructs the state object.
+   * Returns the size of the state for this iterator and all its sub-iterators.
+   */
+  virtual uint32_t getStateSizeOfSubtree() const = 0;
+
+  /**
+   * Begin the execution of the iterator. Initializes information required for
+   * the plan state and constructs the state object.
    */
   virtual void open(PlanState& planState, uint32_t& offset) = 0;
-  
-  /** 
-   * Produces an output item of the iterator. Implicitly, the first call 
-   * of 'producNext' initializes the iterator and allocates resources 
-   * (main memory, file descriptors, etc.). 
-   *
-   * @param stateBLock
-   */
-#if ZORBA_BATCHING_TYPE == 1
-  virtual void produceNext(PlanState& planState) const = 0;
-#else
-  virtual bool produceNext(store::Item_t& handle, PlanState& planState) const = 0;
-#endif
-
 
   /** 
    * Restarts the iterator so that the next 'produceNext' call will start 
@@ -364,42 +365,46 @@ public:
   virtual void reset(PlanState& planState) const = 0;
 
   /** 
-   * Finish the execution of the iterator.
-   * Releases all resources and destroy the according plan state
-   * objects
-   * Make sure that no exception is throw when destroying the states.
-   * Otherwise we will have a lot of memory leaks.
+   * Finish the execution of the iterator. Releases all resources and destroys
+   * the according plan state* objects. Make sure that no exception is throw
+   * when destroying the states. Otherwise we will have a lot of memory leaks.
    *
    * @param planState
    */
   virtual void close(PlanState& planState) throw() = 0;
-
-  /** Returns the size of the state which must be saved for the current iterator
-    * on the state block
-    */
-  virtual uint32_t getStateSize() const = 0;
   
-  /** Returns the size of the state for the current iterator 
-    * and all its sub-iterators.
-    */
-  virtual uint32_t getStateSizeOfSubtree() const = 0;
 
-#if ZORBA_BATCHING_TYPE == 1  
+#if ZORBA_BATCHING_TYPE == 1
 
+  /** 
+   * Produce the next batch of items and place them in the batch buffer.
+   * Implicitly, the first call  of producNext() initializes the iterator and
+   * allocates resources (main memory, file descriptors, etc.). 
+   *
+   * @param stateBLock
+   */
+  virtual void produceNext(PlanState& planState) const = 0;
+
+  /**
+   * Static Method: Retreives the next item from the batch buffer of the given
+   * iterator and returns it to the caller. If all the items from the iterator's
+   * batch buffer have been consumed already, then it makes the iterator produce
+   * its next batch of results and retrieves the 1st item from this new batch.  
+   */
   static store::Item_t consumeNext(
         store::Item_t& result,
-        const PlanIterator* subIter,
+        const PlanIterator* iter,
         PlanState& planState)
   {
     try
     {
-      // use the producer's (subIter) planstate to access it's batch
+      // use the given iterator's planstate to access it's batch
       PlanIteratorState* lState = 
-      StateTraitsImpl<PlanIteratorState>::getState(planState, subIter->getStateOffset());
+      StateTraitsImpl<PlanIteratorState>::getState(planState, iter->getStateOffset());
 
       if ( lState->theCurrItem == ZORBA_BATCHING_BATCHSIZE )
       {
-        subIter->produceNext(planState);
+        iter->produceNext(planState);
         lState->theCurrItem = 0;
       }
     }
@@ -412,23 +417,38 @@ public:
         throw(e);
       }
     }
+
     return lState->theBatch[lState->theCurrItem++];
   }
 
+
 #else // ZORBA_BATCHING_TYPE
 
+  /** 
+   * Produce the next item and return it to the caller. Implicitly, the first
+   * call of 'producNext' initializes the iterator and allocates resources 
+   * (main memory, file descriptors, etc.). 
+   *
+   * @param stateBLock
+   */
+  virtual bool produceNext(store::Item_t& handle, PlanState& planState) const = 0;
+
+  /**
+   * Static Method: Makes the given iterator produce its next result and returns
+   * that result to the caller.  
+   */
 #ifndef NDEBUG
   static bool consumeNext(
         store::Item_t& result, 
-        const PlanIterator* subIter,
+        const PlanIterator* iter,
         PlanState& planState);
 #else
   static bool consumeNext(
         store::Item_t& result, 
-        const PlanIterator* subIter,
+        const PlanIterator* iter,
         PlanState& planState)
   {
-    return subIter->produceNext(result, planState);
+    return iter->produceNext(result, planState);
   }
 #endif
 
@@ -439,6 +459,7 @@ public:
 extern const ::zorba::serialization::ClassVersion g_Batcher_class_versions[];
 extern const int g_Batcher_class_versions_count;
 
+
 /*******************************************************************************
   Class to implement batching
 ********************************************************************************/
@@ -448,7 +469,7 @@ class Batcher: public PlanIterator
 public:
   SERIALIZABLE_CLASS_NO_FACTORY(Batcher)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(Batcher, PlanIterator)
-  void serialize(::zorba::serialization::Archiver &ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (PlanIterator*)this);
   }
@@ -456,42 +477,52 @@ public:
 public:
   Batcher(const Batcher<IterType>& b)  : PlanIterator(b) {}
 
-  Batcher(short sctx, const QueryLoc& loc) : PlanIterator(sctx, loc) {}
+  Batcher(static_context* sctx, const QueryLoc& loc) : PlanIterator(sctx, loc) {}
 
   ~Batcher() {}
 
 
 #if ZORBA_BATCHING_TYPE == 1  
+
   void produceNext(PlanState& planState) const 
   {
-    PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, stateOffset);
+    PlanIteratorState* lState =
+    StateTraitsImpl<PlanIteratorState>::getState(planState, stateOffset);
 #ifndef NDEBUG
-    ZORBA_ASSERT(lState->theIsOpened); // open must hve been called before
+    ZORBA_ASSERT(lState->theIsOpened); 
 #endif
+    bool more;
     uint32_t i = 0;
     do
     {
-      static_cast<const IterType*>(this)->nextImpl(lState->theBatch[i], planState);
-    } while ( lState->theBatch[i] != NULL && ++i < ZORBA_BATCHING_BATCHSIZE ); 
-    // note the pre-increment in the second operand above
+      // In general, to compute this iterator's next result, nextImpl() will
+      // call consumeNext() on one or more of this iterator's child iterators.
+      more = static_cast<const IterType*>(this)->nextImpl(lState->theBatch[i], planState);
+    }
+    while ( more && ++i < ZORBA_BATCHING_BATCHSIZE ); 
   }
+
 #else
+
   bool produceNext(store::Item_t& result, PlanState& planState) const
   {
 #ifndef NDEBUG
-    PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, stateOffset);
-    ZORBA_ASSERT(lState->theIsOpened); // open must have been called before
+    PlanIteratorState* lState =
+    StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
+    ZORBA_ASSERT(lState->theIsOpened); 
 #endif
     return static_cast<const IterType*>(this)->nextImpl(result, planState);
   }
-#endif
+
+#endif // ZORBA_BATCHING_TYPE
 
   void open(PlanState& planState, uint32_t& offset)
   {
     static_cast<IterType*>(this)->openImpl(planState, offset);
 #ifndef NDEBUG
-    // do it after openImpl because the state is created there
-    PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, stateOffset);
+    // do this after openImpl because the state is created there
+    PlanIteratorState* lState =
+    StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
     ZORBA_ASSERT( ! lState->theIsOpened ); // don't call open twice
     lState->theIsOpened = true;
 #endif
@@ -500,8 +531,9 @@ public:
   void reset(PlanState& planState) const
   {
 #ifndef NDEBUG
-    PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, stateOffset);
-    ZORBA_ASSERT( lState->theIsOpened ); // must be open
+    PlanIteratorState* lState = 
+    StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
+    ZORBA_ASSERT( lState->theIsOpened ); 
 #endif
     static_cast<const IterType*>(this)->resetImpl(planState);
   }
@@ -509,15 +541,16 @@ public:
   void close(PlanState& planState) throw()
   {
 #ifndef NDEBUG
-    PlanIteratorState* lState = StateTraitsImpl<PlanIteratorState>::getState(planState, stateOffset);
-#endif
+    PlanIteratorState* lState = 
+    StateTraitsImpl<PlanIteratorState>::getState(planState, theStateOffset);
     static_cast<IterType*>(this)->closeImpl(planState);
-#ifndef NDEBUG
     lState->theIsOpened = false;
+#else
+    static_cast<IterType*>(this)->closeImpl(planState);
 #endif
   }
 
-  inline void nextImpl(store::Item_t& result, PlanState& planState) const;
+  inline bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
   inline void openImpl(PlanState& planState, uint32_t& offset) const;
 
@@ -525,6 +558,7 @@ public:
 
   inline void closeImpl(PlanState& planState);
 };
+
 
 } /* namespace zorba */
 

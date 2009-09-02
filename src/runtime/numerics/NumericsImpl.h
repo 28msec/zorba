@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_RUNTIME_NUMERICS_IMPL_H
-#define ZORBA_RUNTIME_NUMERICS_IMPL_H
+#ifndef ZORBA_RUNTIME_NUMERICS
+#define ZORBA_RUNTIME_NUMERICS
 
 #include "common/shared_types.h"
 
@@ -64,22 +64,25 @@ public:
         xqtref_t type1);
 
 public:
-  NumArithIterator(short sctx, const QueryLoc&, PlanIter_t&, PlanIter_t&);
+  NumArithIterator(static_context* sctx, const QueryLoc&, PlanIter_t&, PlanIter_t&);
 
   virtual ~NumArithIterator() {}
 
-  void openImpl(PlanState& planState, uint32_t& offset);
+  void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState&) const;
       
-  virtual void accept(PlanIterVisitor&) const;
-
 public:
-  SERIALIZABLE_TEMPLATE_CLASS(NumArithIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(NumArithIterator, BinaryBaseIterator<NumArithIterator<Operation>, PlanIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
+  SERIALIZABLE_TEMPLATE_CLASS(NumArithIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  NumArithIterator,
+  BinaryBaseIterator<NumArithIterator<Operation>, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (BinaryBaseIterator<NumArithIterator<Operation>,PlanIteratorState>*)this);
+    serialize_baseclass(ar,
+    (BinaryBaseIterator<NumArithIterator<Operation>,PlanIteratorState>*)this);
   }
 };
 
@@ -105,22 +108,29 @@ public:
         store::Item *item1);
 
 public:
-  SpecificNumArithIterator(short sctx, const QueryLoc&, PlanIter_t&, PlanIter_t&);
+  SpecificNumArithIterator(
+        static_context* sctx,
+        const QueryLoc&,
+        PlanIter_t&,
+        PlanIter_t&);
 
   virtual ~SpecificNumArithIterator() {}
 
-  void openImpl(PlanState& planState, uint32_t& offset);
+  void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState&) const;
       
-  virtual void accept(PlanIterVisitor&) const;
-
 public:
-  SERIALIZABLE_TEMPLATE_CLASS(SpecificNumArithIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR3T(SpecificNumArithIterator, BinaryBaseIterator<SpecificNumArithIterator<Operation, Type>, PlanIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
+  SERIALIZABLE_TEMPLATE_CLASS(SpecificNumArithIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR3T(
+  SpecificNumArithIterator,
+  BinaryBaseIterator<SpecificNumArithIterator<Operation, Type>, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (BinaryBaseIterator<SpecificNumArithIterator<Operation, Type>, PlanIteratorState>*)this);
+    serialize_baseclass(ar,
+    (BinaryBaseIterator<SpecificNumArithIterator<Operation, Type>, PlanIteratorState>*)this);
   }
 };
 
@@ -136,24 +146,32 @@ private:
   bool thePlus;
 
 public:
-  SERIALIZABLE_CLASS(OpNumericUnaryIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(OpNumericUnaryIterator, UnaryBaseIterator<OpNumericUnaryIterator, PlanIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
+  SERIALIZABLE_CLASS(OpNumericUnaryIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  OpNumericUnaryIterator,
+  UnaryBaseIterator<OpNumericUnaryIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (UnaryBaseIterator<OpNumericUnaryIterator, PlanIteratorState>*)this);
+    serialize_baseclass(ar, 
+    (UnaryBaseIterator<OpNumericUnaryIterator, PlanIteratorState>*)this);
+
     ar & thePlus;
   }
 
 public:
-  OpNumericUnaryIterator(short sctx, const QueryLoc&, PlanIter_t& aChild, bool aPlus);
+  OpNumericUnaryIterator(
+        static_context* sctx,
+        const QueryLoc&,
+        PlanIter_t& aChild,
+        bool aPlus);
 
   virtual ~OpNumericUnaryIterator();
   
-  void openImpl(PlanState& planState, uint32_t& offset);
+  void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
-  
-  virtual void accept(PlanIterVisitor&) const;
 };
 
 
@@ -167,15 +185,15 @@ public:
   6.4.5 fn:round-half-to-even
 ********************************************************************************/
 
-NARY_ITER_SCTX (FnAbsIterator);
+NARY_ITER (FnAbsIterator);
 
-NARY_ITER_SCTX (FnCeilingIterator);
+NARY_ITER (FnCeilingIterator);
 
-NARY_ITER_SCTX (FnFloorIterator);
+NARY_ITER (FnFloorIterator);
   
-NARY_ITER_SCTX (FnRoundIterator);
+NARY_ITER (FnRoundIterator);
   
-NARY_ITER_SCTX (FnRoundHalfToEvenIterator);
+NARY_ITER (FnRoundHalfToEvenIterator);
 
 
 /*******************************************************************************
@@ -197,30 +215,13 @@ public:
 };
   
 
-class ZorNumGen : public NoaryBaseIterator<ZorNumGen, ZorNumGenState> 
-{
-public:
-  ZorNumGen ( short sctx, const QueryLoc& loc);
-
-  ~ZorNumGen();
-  
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
-  
-  virtual void accept(PlanIterVisitor&) const;
-public:
-  SERIALIZABLE_CLASS(ZorNumGen)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorNumGen, NoaryBaseIterator<ZorNumGen, ZorNumGenState> )
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (NoaryBaseIterator<ZorNumGen, ZorNumGenState> *)this);
-  }
-};
-  
+NOARY_ITER_STATE(ZorNumGen, ZorNumGenState);
+ 
 
 /*******************************************************************************
   Math functions
 ********************************************************************************/
-NARY_ITER_SCTX (FnSQRTIterator);
+NARY_ITER (FnSQRTIterator);
 NARY_ITER (FnExpIterator);
 NARY_ITER (FnLogIterator);
 NARY_ITER (FnSinIterator);
@@ -234,32 +235,7 @@ NARY_ITER (FnArcTanIterator);
 /*******************************************************************************
   XQuery 1.1 functions
 ********************************************************************************/
-class FnFormatNumberIterator: public NaryBaseIterator<FnFormatNumberIterator,
-                                                      PlanIteratorState >
-{
-public:
-  FnFormatNumberIterator(
-        short sctx,
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& aChildren)
-    :
-    NaryBaseIterator<FnFormatNumberIterator, PlanIteratorState >(sctx, loc, aChildren)
-  {}
-
-public:
-
-  void openImpl(PlanState& planState, uint32_t& offset);
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-
-public:
-  SERIALIZABLE_CLASS(FnFormatNumberIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnFormatNumberIterator, NaryBaseIterator<FnFormatNumberIterator, PlanIteratorState > )
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (NaryBaseIterator<FnFormatNumberIterator, PlanIteratorState > *)this);
-  }
-};
+NARY_ITER(FnFormatNumberIterator);
 
 
 }

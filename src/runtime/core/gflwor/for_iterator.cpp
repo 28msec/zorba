@@ -15,14 +15,9 @@
  */
 #include "runtime/core/gflwor/for_iterator.h"
 #include "runtime/core/gflwor/common.h"
-#include "runtime/core/var_iterators.h"
 #include "runtime/visitors/planitervisitor.h"
 
-#include "store/api/store.h"
-#include "system/globalenv.h"
 #include "store/api/item_factory.h"
-
-using namespace zorba;
 
 namespace zorba 
 {
@@ -58,7 +53,7 @@ void ForState::reset(PlanState& planState)
 
 
 ForIterator::ForIterator (
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     const store::Item_t& varName,
     PlanIter_t tupleIter,
@@ -74,7 +69,7 @@ ForIterator::ForIterator (
 
 
 ForIterator::ForIterator (
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     const store::Item_t& varName,
     PlanIter_t tupleIter,

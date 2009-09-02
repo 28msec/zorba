@@ -33,21 +33,23 @@ namespace zorba
 {
 namespace flwor 
 {
+
 SERIALIZABLE_CLASS_VERSIONS(TupleSourceIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(TupleSourceIterator)
-    TupleSourceIterator::TupleSourceIterator ( short sctx, const QueryLoc& aLoc ) :
-        NoaryBaseIterator<TupleSourceIterator, PlanIteratorState> ( sctx, aLoc ) {}
 
-    TupleSourceIterator::~TupleSourceIterator() {}
 
-    bool TupleSourceIterator::nextImpl ( store::Item_t& aResult, PlanState& aPlanState ) const {
-      PlanIteratorState* lState;
-      store::Item_t lTuple;
-      DEFAULT_STACK_INIT ( PlanIteratorState, lState, aPlanState );
-      STACK_PUSH ( true, lState );
-      STACK_PUSH ( false, lState );
-      STACK_END ( lState );
-    }
+bool TupleSourceIterator::nextImpl ( store::Item_t& aResult, PlanState& aPlanState ) const {
+  PlanIteratorState* lState;
+  store::Item_t lTuple;
+  DEFAULT_STACK_INIT ( PlanIteratorState, lState, aPlanState );
+  STACK_PUSH ( true, lState );
+  STACK_PUSH ( false, lState );
+  STACK_END ( lState );
+}
 
-  } //Namespace flwor
+
+NOARY_ACCEPT(TupleSourceIterator);
+
+
+} //Namespace flwor
 }//Namespace zorba

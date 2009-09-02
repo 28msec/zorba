@@ -28,6 +28,7 @@
 #include "runtime/misc/MiscImpl.h"
 #include "runtime/api/runtimecb.h"
 #include "runtime/util/iterator_impl.h"
+#include "runtime/visitors/planitervisitor.h"
 
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
@@ -61,6 +62,23 @@ END_SERIALIZABLE_CLASS_VERSIONS(FnReadStringIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(FnPrintIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(FnPrintIterator)
+
+
+NARY_ACCEPT(FnErrorIterator);
+
+NARY_ACCEPT(FnResolveUriIterator);
+
+NARY_ACCEPT(SequentialIterator);
+
+NARY_ACCEPT(FlowCtlIterator);
+
+NARY_ACCEPT (LoopIterator);
+
+NARY_ACCEPT (FnReadStringIterator);
+
+NARY_ACCEPT(FnPrintIterator);
+
+
 
 // 3 The Error Function
 //---------------------
@@ -105,15 +123,6 @@ bool FnErrorIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
 // 8.1 fn:resolve-uri
 //---------------------
-void FnResolveUriIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<FnResolveUriIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-}
-
-
 bool FnResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;

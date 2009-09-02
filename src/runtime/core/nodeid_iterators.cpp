@@ -17,8 +17,9 @@
 
 #include "compiler/api/compilercb.h"
 
-#include "runtime/core/nodeid_iterators.h"
 #include "runtime/api/plan_iterator_wrapper.h"
+#include "runtime/core/nodeid_iterators.h"
+#include "runtime/visitors/planitervisitor.h"
 
 #include "store/api/store.h"
 #include "store/api/item.h"
@@ -34,60 +35,45 @@ END_SERIALIZABLE_CLASS_VERSIONS(NodeSortIterator)
 /*******************************************************************************
 
 ********************************************************************************/
-void
-NodeDistinctState::init(PlanState& planState)
+void NodeDistinctState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
 }
 
-void
-NodeDistinctState::reset(PlanState& planState)
+
+void NodeDistinctState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   theStoreIterator->reset();
 }
 
-bool NodeDistinctIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  NodeDistinctState* state;
-  state = StateTraitsImpl<NodeDistinctState>::getState(planState, this->stateOffset);
-
-  return state->theStoreIterator->next(result);
-}
-
 
 void NodeDistinctIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
-  this->stateOffset = offset;
-  offset += getStateSize();
+  UnaryBaseIterator<NodeDistinctIterator, NodeDistinctState>::
+  openImpl(planState, offset);
 
-  theSctx = planState.theCompilerCB->getStaticContext(sctx);
-
-  NodeDistinctState* state = new (planState.theBlock + stateOffset) NodeDistinctState;
+  NodeDistinctState* state;
+  state = StateTraitsImpl<NodeDistinctState>::getState(planState, theStateOffset);
 
   store::Iterator_t input = new PlanIteratorWrapper(theChild, planState);
 
   state->theStoreIterator = GENV.getStore().distinctNodes(input, theAcceptAtomics);
   state->theStoreIterator->open();
-  theChild->open(planState, offset);
 }
 
 
-void NodeDistinctIterator::resetImpl(PlanState& planState) const
+bool NodeDistinctIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  StateTraitsImpl<NodeDistinctState>::reset(planState, this->stateOffset);
+  NodeDistinctState* state;
+  state = StateTraitsImpl<NodeDistinctState>::getState(planState, theStateOffset);
 
-  theChild->reset(planState);
+  return state->theStoreIterator->next(result);
 }
 
 
-void NodeDistinctIterator::closeImpl(PlanState& planState)
-{
-  theChild->close(planState);
-  // Question: do we need to call state->theStoreIterator->close() ?
+UNARY_ACCEPT(NodeDistinctIterator);
 
-  StateTraitsImpl<NodeDistinctState>::destroyState(planState, this->stateOffset);
-}
 
 /*******************************************************************************
 
@@ -107,15 +93,13 @@ void NodeSortState::reset(PlanState& planState)
 
 void NodeSortIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
-  StateTraitsImpl<NodeSortState>::createState(planState, this->stateOffset, offset);
+  UnaryBaseIterator<NodeSortIterator, NodeSortState>::
+  openImpl(planState, offset);
 
-  theSctx = planState.theCompilerCB->getStaticContext(sctx);
-
-  theChild->open(planState, offset);
   store::Iterator_t input = new PlanIteratorWrapper(theChild, planState);
 
   NodeSortState* state;
-  state = StateTraitsImpl<NodeSortState>::getState(planState, this->stateOffset);
+  state = StateTraitsImpl<NodeSortState>::getState(planState, theStateOffset);
 
   state->theStoreIterator = GENV.getStore().sortNodes(input,
                                                       theAscendant,
@@ -128,26 +112,13 @@ void NodeSortIterator::openImpl(PlanState& planState, uint32_t& offset)
 bool NodeSortIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   NodeSortState* state;
-  state = StateTraitsImpl<NodeSortState>::getState(planState, this->stateOffset);
+  state = StateTraitsImpl<NodeSortState>::getState(planState, theStateOffset);
 
   return state->theStoreIterator->next(result);
 }
 
 
-void NodeSortIterator::resetImpl(PlanState& planState) const
-{
-  StateTraitsImpl<NodeSortState>::reset(planState, this->stateOffset);
+UNARY_ACCEPT(NodeSortIterator);
 
-
-  theChild->reset(planState);
-}
-
-
-void NodeSortIterator::closeImpl(PlanState& planState)
-{
-  theChild->close(planState);
-  
-  StateTraitsImpl<NodeSortState>::destroyState(planState, this->stateOffset);
-}
 
 }

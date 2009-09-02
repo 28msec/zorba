@@ -82,20 +82,18 @@ public:
 
 public:
   ValidateIterator (
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc,
         PlanIter_t& aIter,
         TypeManager* tm,
         store::Item_t a_typeName,
         ParseConstants::validation_mode_t a_validationMode);
 
-  void openImpl(PlanState& planState, uint32_t& offset);
+  ~ValidateIterator() {};
+
+  void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
-
-  virtual void accept(PlanIterVisitor&) const;
-
-  ~ValidateIterator () {};
 };
 
 

@@ -23,10 +23,9 @@
 
 #include "context/static_context.h"
 
-#include "compiler/api/compilercb.h"
-
 #include "runtime/core/sequencetypes.h"
 #include "runtime/util/iterator_impl.h"
+#include "runtime/visitors/planitervisitor.h"
 
 #include "store/api/item_factory.h"
 
@@ -58,7 +57,7 @@ END_SERIALIZABLE_CLASS_VERSIONS(EitherNodesOrAtomicsIterator)
 ********************************************************************************/
 
 InstanceOfIterator::InstanceOfIterator(
-   short sctx,
+   static_context* sctx,
    const QueryLoc& loc,
    PlanIter_t& aTreatExpr,
    xqtref_t aSequenceType)
@@ -71,15 +70,6 @@ InstanceOfIterator::InstanceOfIterator(
 
 InstanceOfIterator::~InstanceOfIterator() 
 {
-}
-
-
-void InstanceOfIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  UnaryBaseIterator<InstanceOfIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
 }
 
 
@@ -150,13 +140,15 @@ bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 }
 
   
+UNARY_ACCEPT(InstanceOfIterator);
+
 
 /*******************************************************************************
 
 ********************************************************************************/
 
 CastIterator::CastIterator(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     PlanIter_t& aChild,
     const xqtref_t& aCastType)
@@ -169,15 +161,6 @@ CastIterator::CastIterator(
 
 CastIterator::~CastIterator()
 {
-}
-
-
-void CastIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  UnaryBaseIterator<CastIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
 }
 
 
@@ -244,12 +227,15 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 }
 
 
+UNARY_ACCEPT(CastIterator);
+
+
 /*******************************************************************************
 
 ********************************************************************************/
 
 CastableIterator::CastableIterator(
-  short sctx,
+  static_context* sctx,
   const QueryLoc& aLoc,
   PlanIter_t& aChild,
   const xqtref_t& aCastType)
@@ -263,15 +249,6 @@ CastableIterator::CastableIterator(
 
 CastableIterator::~CastableIterator()
 {
-}
-
-
-void CastableIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  UnaryBaseIterator<CastableIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
 }
 
 
@@ -325,12 +302,15 @@ bool CastableIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 }
 
 
+UNARY_ACCEPT(CastableIterator);
+
+
 /*******************************************************************************
 
 ********************************************************************************/
 
 PromoteIterator::PromoteIterator(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& aLoc,
     PlanIter_t& aChild,
     const xqtref_t& aPromoteType)
@@ -344,15 +324,6 @@ PromoteIterator::PromoteIterator(
 
 PromoteIterator::~PromoteIterator()
 {
-}
-
-
-void PromoteIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  UnaryBaseIterator<PromoteIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
 }
 
 
@@ -417,12 +388,15 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 }
 
 
+UNARY_ACCEPT(PromoteIterator);
+
+
 /*******************************************************************************
 
 ********************************************************************************/
 
 TreatIterator::TreatIterator(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& aLoc,
     PlanIter_t& aChild,
     const xqtref_t& aTreatType,
@@ -435,15 +409,6 @@ TreatIterator::TreatIterator(
 {
   theTreatType = TypeOps::prime_type(*aTreatType);
   theQuantifier = TypeOps::quantifier(*aTreatType);
-}
-
-
-void TreatIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  UnaryBaseIterator<TreatIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
 }
 
 
@@ -508,6 +473,9 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 }
 
 
+UNARY_ACCEPT(TreatIterator);
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -515,7 +483,7 @@ bool EitherNodesOrAtomicsIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const 
 {
-  EitherNodesOrAtomicsIteratorState *lState;
+  EitherNodesOrAtomicsIteratorState* lState;
   DEFAULT_STACK_INIT(EitherNodesOrAtomicsIteratorState, lState, planState);
 
   if (CONSUME (result, 0)) 
@@ -533,6 +501,9 @@ bool EitherNodesOrAtomicsIterator::nextImpl(
   
   STACK_END (lState);
 }
+
+
+NARY_ACCEPT(EitherNodesOrAtomicsIterator);
 
 
 } /* namespace zorba */

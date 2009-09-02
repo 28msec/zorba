@@ -17,6 +17,7 @@
 #define ZORBA_RUNTIME_GFLWOR_WHERE_ITERATOR
 
 #include "zorbautils/checked_vector.h"
+
 #include "runtime/base/binarybase.h"
 
 
@@ -26,30 +27,13 @@ namespace zorba
 namespace flwor 
 {
 
-    class WhereIterator : public BinaryBaseIterator<WhereIterator, PlanIteratorState> {
-      public:
-        WhereIterator ( short sctx,
-                      const QueryLoc& aLoc,
-                      PlanIter_t aTupleIterator,
-                      PlanIter_t aWhereClause);
-        ~WhereIterator();
+BINARY_ITER(WhereIterator);
 
-      public:
-        bool nextImpl ( store::Item_t& result, PlanState& planState ) const;
-        virtual void accept ( PlanIterVisitor& ) const;
-      public:
-        SERIALIZABLE_CLASS(WhereIterator)
-        SERIALIZABLE_CLASS_CONSTRUCTOR2T(WhereIterator, BinaryBaseIterator<WhereIterator, PlanIteratorState>)
-        void serialize(::zorba::serialization::Archiver &ar)
-        {
-          serialize_baseclass(ar, (BinaryBaseIterator<WhereIterator, PlanIteratorState>*)this);
-        }
-    };
-  }
+}
 }
 
 
-#endif  /* ZORBA_RUNTIME_GFLWOR_WHERE_ITERATOR */
+#endif 
 /*
  * Local variables:
  * mode: c++

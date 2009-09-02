@@ -43,29 +43,14 @@ public:
 };
 
 
-class ValueIndexPointProbe : public NaryBaseIterator<ValueIndexPointProbe,
-                                                     ValueIndexPointProbeState> 
+NARY_ITER_STATE(ValueIndexPointProbe, ValueIndexPointProbeState);
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+class ValueIndexRangeProbeState : public PlanIteratorState 
 {
-public:
-  ValueIndexPointProbe( short sctx, const QueryLoc& loc, std::vector<PlanIter_t> aChildren)
-    :
-    NaryBaseIterator<ValueIndexPointProbe, ValueIndexPointProbeState>(sctx, loc, aChildren) { }
-
-  virtual ~ValueIndexPointProbe() { }
-
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
-
-  virtual void accept(PlanIterVisitor& v) const;
-public:
-  SERIALIZABLE_CLASS(ValueIndexPointProbe)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ValueIndexPointProbe, NaryBaseIterator<ValueIndexPointProbe, ValueIndexPointProbeState> )
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (NaryBaseIterator<ValueIndexPointProbe, ValueIndexPointProbeState> *)this);
-  }
-};
-
-class ValueIndexRangeProbeState : public PlanIteratorState {
   public:
     xqpStringStore_t theUri;
     store::Index *theIndex;
@@ -75,24 +60,9 @@ class ValueIndexRangeProbeState : public PlanIteratorState {
     void reset(PlanState&);
 };
 
-class ValueIndexRangeProbe : public NaryBaseIterator<ValueIndexRangeProbe, ValueIndexRangeProbeState> {
-  public:
-    ValueIndexRangeProbe( short sctx, const QueryLoc& loc, std::vector<PlanIter_t> aChildren)
-      : NaryBaseIterator<ValueIndexRangeProbe, ValueIndexRangeProbeState>(sctx, loc, aChildren) { }
 
-    virtual ~ValueIndexRangeProbe() { }
+NARY_ITER_STATE(ValueIndexRangeProbe, ValueIndexRangeProbeState);
 
-    bool nextImpl(store::Item_t& result, PlanState& planState) const;
-
-    virtual void accept(PlanIterVisitor& v) const;
-public:
-  SERIALIZABLE_CLASS(ValueIndexRangeProbe)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ValueIndexRangeProbe, NaryBaseIterator<ValueIndexRangeProbe, ValueIndexRangeProbeState> )
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (NaryBaseIterator<ValueIndexRangeProbe, ValueIndexRangeProbeState> *)this);
-  }
-};
 
 }
 

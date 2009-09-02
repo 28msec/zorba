@@ -109,7 +109,7 @@ void GroupByState::reset ( PlanState& aPlanState )
 
 ********************************************************************************/
 GroupByIterator::GroupByIterator (
-    short sctx,
+    static_context* sctx,
     const QueryLoc& aLoc,
     PlanIter_t aTupleIterator,
     std::vector<GroupingSpec> aGroupingSpecs,
@@ -290,13 +290,11 @@ void GroupByIterator::bindGroupBy (
 ********************************************************************************/
 void GroupByIterator::openImpl ( PlanState& planState, uint32_t& aOffset ) 
 {
-  StateTraitsImpl <GroupByState>::createState(planState, this->stateOffset, aOffset);
+  StateTraitsImpl <GroupByState>::createState(planState, theStateOffset, aOffset);
 
   GroupByState* state = StateTraitsImpl<GroupByState>::getState(planState,
-                                                                this->stateOffset);
+                                                                theStateOffset);
       
-  theSctx = planState.theCompilerCB->getStaticContext(sctx);
-
   state->init(planState, theSctx->get_typemanager(), &theGroupingSpecs); 
       
   theTupleIter->open(planState, aOffset);
@@ -349,7 +347,7 @@ void GroupByIterator::resetImpl ( PlanState& planState ) const
 
   theTupleIter->reset ( planState );
   
-  StateTraitsImpl<GroupByState>::reset ( planState, this->stateOffset );
+  StateTraitsImpl<GroupByState>::reset ( planState, theStateOffset );
 }
 
 
@@ -374,7 +372,7 @@ void GroupByIterator::closeImpl ( PlanState& planState )
 
   theTupleIter->close ( planState );
   
-  StateTraitsImpl<GroupByState>::destroyState ( planState, this->stateOffset );
+  StateTraitsImpl<GroupByState>::destroyState ( planState, theStateOffset );
 }
 
 

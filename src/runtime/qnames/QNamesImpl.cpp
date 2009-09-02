@@ -13,18 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "store/api/item.h"
+#include "system/globalenv.h"
+
+#include "context/static_context.h"
+
+#include "types/typemanager.h"
+#include "types/casting.h"
 
 #include "compiler/api/compilercb.h"
 
 #include "runtime/qnames/QNamesImpl.h"
 #include "runtime/api/runtimecb.h"
-#include "system/globalenv.h"
-#include "context/static_context.h"
+#include "runtime/visitors/planitervisitor.h"
+
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
-#include "types/typemanager.h"
-#include "types/casting.h"
+#include "store/api/item.h"
+
 
 namespace zorba {
 SERIALIZABLE_CLASS_VERSIONS(ResolveQNameIterator)
@@ -76,8 +81,6 @@ END_SERIALIZABLE_CLASS_VERSIONS(InScopePrefixesIterator)
  *The prefix (or absence of a prefix) in the supplied $qname argument is retained
  *in the returned expanded-QName
  *_______________________________________________________________________*/
-
- /* begin class ResolveQNameIterator */
 bool
 ResolveQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -137,7 +140,10 @@ ResolveQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   }
   STACK_END (state);
 }
-/* end class ResolveQNameIterator */
+
+
+BINARY_ACCEPT(ResolveQNameIterator);
+
 
 /**
  *______________________________________________________________________
@@ -157,8 +163,6 @@ ResolveQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
  *Note that unlike xs:QName this function does not require a xs:string literal as
  *the argument.
  *_______________________________________________________________________*/
-
- /* begin class QNameIterator */
 bool
 QNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -205,7 +209,11 @@ QNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_PUSH(true, state );
   STACK_END (state);
 }
-/* end class QNameIterator */
+
+
+BINARY_ACCEPT(QNameIterator);
+
+
 /**
  *______________________________________________________________________
  *
@@ -221,8 +229,6 @@ QNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
  *both present and identical based on the Unicode code point collation. The prefix
  *parts of $arg1 and $arg2, if any, are ignored.
  *_______________________________________________________________________*/
-
- /* begin class QNameEqualIterator */
 bool
 QNameEqualIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -255,7 +261,9 @@ QNameEqualIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   }
   STACK_END (state);
 }
-/* end class QNameEqualIterator */
+
+
+BINARY_ACCEPT(QNameEqualIterator);
 
 
 /**
@@ -268,8 +276,6 @@ QNameEqualIterator::nextImpl(store::Item_t& result, PlanState& planState) const
  *Summary: Returns an xs:NCName representing the prefix of $arg. The empty sequence
  *is returned if $arg is the empty sequence or if the value of $arg contains no prefix.
  *_______________________________________________________________________*/
-
- /* begin class PrefixFromQNameIterator */
 bool
 PrefixFromQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -291,7 +297,10 @@ PrefixFromQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   }
   STACK_END (state);
 }
-/* end class PrefixFromQNameIterator */
+
+
+UNARY_ACCEPT(PrefixFromQNameIterator);
+
 
 /**
  *______________________________________________________________________
@@ -303,8 +312,6 @@ PrefixFromQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) c
  *Summary: Returns an xs:NCName representing the local part of $arg.
  *If $arg is the empty sequence, returns the empty sequence.
  *_______________________________________________________________________*/
-
- /* begin class LocalNameFromQNameIterator */
 bool
 LocalNameFromQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
@@ -320,7 +327,10 @@ LocalNameFromQNameIterator::nextImpl(store::Item_t& result, PlanState& planState
   }
   STACK_END (state);
 }
-/* end class LocalNameFromQNameIterator */
+
+
+UNARY_ACCEPT(LocalNameFromQNameIterator);
+
 
 /**
  *______________________________________________________________________
@@ -333,8 +343,6 @@ LocalNameFromQNameIterator::nextImpl(store::Item_t& result, PlanState& planState
  *If $arg is the empty sequence, the empty sequence is returned.
  *If $arg is in no namespace, the zero-length string is returned.
  *_______________________________________________________________________*/
-
- /* begin class NamespaceUriFromQNameIterator */
 bool
 NamespaceUriFromQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
@@ -351,7 +359,10 @@ NamespaceUriFromQNameIterator::nextImpl(store::Item_t& result, PlanState& planSt
   }
   STACK_END (state);
 }
-/* end class NamespaceUriFromQNameIterator */
+
+
+UNARY_ACCEPT(NamespaceUriFromQNameIterator);
+
 
 /**
  *______________________________________________________________________
@@ -369,15 +380,6 @@ NamespaceUriFromQNameIterator::nextImpl(store::Item_t& result, PlanState& planSt
  *default (unnamed) namespace. Otherwise, it returns the empty sequence.
  *Prefixes are equal only if their Unicode code points match exactly.
  *_______________________________________________________________________*/
-
-void NamespaceUriForPrefixIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<NamespaceUriForPrefixIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-}
-
 
 bool
 NamespaceUriForPrefixIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -416,7 +418,10 @@ NamespaceUriForPrefixIterator::nextImpl(store::Item_t& result, PlanState& planSt
 
   STACK_END (state);
 }
-/* end class NamespaceUriForPrefixlIterator */
+
+
+NARY_ACCEPT(NamespaceUriForPrefixIterator);
+
 
 /**
  *______________________________________________________________________
@@ -429,6 +434,21 @@ NamespaceUriForPrefixIterator::nextImpl(store::Item_t& result, PlanState& planSt
  *For namespaces that have a prefix, it returns the prefix as an xs:NCName.
  *For the default namespace, which has no prefix, it returns the zero-length string.
  *_______________________________________________________________________*/
+void InScopePrefixesState::init(PlanState& planState)
+{
+  PlanIteratorState::init(planState);
+  theBindings.clear();
+  theCurrentPos = 0;
+}
+
+
+void InScopePrefixesState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  theBindings.clear();
+  theCurrentPos = 0;
+}
+
 
 bool
 InScopePrefixesIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -456,22 +476,7 @@ InScopePrefixesIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 }
 
 
-void
-InScopePrefixesState::init(PlanState& planState)
-{
-  PlanIteratorState::init(planState);
-  theBindings.clear();
-  theCurrentPos = 0;
-}
-
-
-void
-InScopePrefixesState::reset(PlanState& planState)
-{
-  PlanIteratorState::reset(planState);
-  theBindings.clear();
-  theCurrentPos = 0;
-}
+UNARY_ACCEPT(InScopePrefixesIterator);
 
 
 } /* namespace zorba */

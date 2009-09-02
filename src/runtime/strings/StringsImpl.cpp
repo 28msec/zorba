@@ -33,6 +33,7 @@
 
 #include "runtime/strings/StringsImpl.h"
 #include "runtime/api/runtimecb.h"
+#include "runtime/visitors/planitervisitor.h"
 
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
@@ -113,6 +114,56 @@ END_SERIALIZABLE_CLASS_VERSIONS(FnReplaceIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(FnTokenizeIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(FnTokenizeIterator)
+
+
+NARY_ACCEPT (CodepointsToStringIterator);
+
+NARY_ACCEPT (StringToCodepointsIterator);
+
+NARY_ACCEPT(CompareStrIterator);
+
+NARY_ACCEPT (CodepointEqualIterator);
+
+NARY_ACCEPT (ConcatStrIterator);
+
+NARY_ACCEPT (StringJoinIterator);
+
+NARY_ACCEPT (SubstringIterator);
+
+NARY_ACCEPT (StringLengthIterator);
+
+NARY_ACCEPT (NormalizeSpaceIterator);
+
+NARY_ACCEPT (NormalizeUnicodeIterator);
+
+NARY_ACCEPT (UpperCaseIterator);
+
+NARY_ACCEPT (LowerCaseIterator);
+
+NARY_ACCEPT (TranslateIterator);
+
+NARY_ACCEPT (EncodeForUriIterator);
+
+NARY_ACCEPT (IriToUriIterator);
+
+NARY_ACCEPT (EscapeHtmlUriIterator);
+
+NARY_ACCEPT(ContainsIterator);
+
+NARY_ACCEPT(StartsWithIterator);
+
+NARY_ACCEPT(EndsWithIterator);
+
+NARY_ACCEPT(SubstringBeforeIterator);
+
+NARY_ACCEPT(SubstringAfterIterator);
+
+NARY_ACCEPT(FnMatchesIterator);
+
+NARY_ACCEPT(FnReplaceIterator);
+
+NARY_ACCEPT(FnTokenizeIterator);
+
 
 /**
   *______________________________________________________________________
@@ -264,16 +315,6 @@ StringToCodepointsState::getVectSize()
   *            $comparand2 as xs:string?,
   *            $collation  as xs:string) as xs:integer?
   *_______________________________________________________________________*/
-/* begin class CompareStrIterator */
-void CompareStrIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<CompareStrIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-}
-
-
 bool
 CompareStrIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t n0;
@@ -930,16 +971,6 @@ EscapeHtmlUriIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   *             $arg2       as xs:string?,
   *             $collation  as xs:string) as xs:boolean
   *_______________________________________________________________________*/
-/* begin class ContainsIterator */
-void ContainsIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<ContainsIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-}
-
-
 bool
 ContainsIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t item0;
@@ -1022,16 +1053,6 @@ ContainsIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   *               $arg2       as xs:string?,
   *               $collation  as xs:string) as xs:boolean
   *_______________________________________________________________________*/
-/*begin class StartsWithIterator*/
-void StartsWithIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<StartsWithIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-}
-
-
 bool
 StartsWithIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t item0;
@@ -1113,16 +1134,6 @@ StartsWithIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
   *             $arg2       as xs:string?,
   *             $collation  as xs:string)   as xs:boolean
   *_______________________________________________________________________*/
-/*begin class EndsWithIterator*/
-void EndsWithIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<EndsWithIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-}
-
-
 bool
 EndsWithIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t item0;
@@ -1204,16 +1215,6 @@ EndsWithIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   *                     $arg2       as xs:string?,
   *                     $collation  as xs:string)   as xs:string
   *_______________________________________________________________________*/
-/*begin class SubstringBeforeIterator*/
-void SubstringBeforeIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<SubstringBeforeIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-}
-
-
 bool
 SubstringBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t item0;
@@ -1300,17 +1301,6 @@ SubstringBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   *                   $arg2       as xs:string?,
   *                   $collation  as xs:string)   as xs:string
   *_______________________________________________________________________*/
-/*begin class SubstringAfterIterator*/
-
-void SubstringAfterIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<SubstringAfterIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-}
-
-
 bool
 SubstringAfterIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   store::Item_t item0;

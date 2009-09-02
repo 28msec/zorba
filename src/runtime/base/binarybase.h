@@ -13,21 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_BINARYBASE_H
-#define ZORBA_BINARYBASE_H
+#ifndef ZORBA_RUNTIME_BINARYBASE_H
+#define ZORBA_RUNTIME_BINARYBASE_H
 
 #include "common/shared_types.h"
 
 #include "runtime/base/plan_iterator.h"
 
+
 namespace zorba
 {
 extern const ::zorba::serialization::ClassVersion g_BinaryBaseIterator_class_versions[];
 extern const int g_BinaryBaseIterator_class_versions_count;
-/**
- * Superclass for all iterators which have two child iterators 
- * and no additional state variables.
- */
+
+/*******************************************************************************
+  Superclass for all iterators which have 2 child iterators and no additional
+  data members. 
+********************************************************************************/
 template <class IterType, class StateType>
 class BinaryBaseIterator : public Batcher<IterType>
 {
@@ -38,61 +40,60 @@ protected:
 public:
   SERIALIZABLE_CLASS_NO_FACTORY(BinaryBaseIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(BinaryBaseIterator, Batcher<IterType>)
-  void serialize(::zorba::serialization::Archiver &ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (Batcher<IterType>*)this);
     ar & theChild0;
     ar & theChild1;
   }
+
 public:
-  BinaryBaseIterator ( short sctx, const QueryLoc& loc, PlanIter_t& arg0, PlanIter_t& arg1 );
+  BinaryBaseIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        PlanIter_t& child0, 
+        PlanIter_t& child1)
+    :
+    Batcher<IterType>(sctx, loc),
+    theChild0(child0),
+    theChild1(child1)
+  {
+#ifndef NDEBUG
+    assert(child0 != 0);
+    assert(child1 != 0);
+#endif
+  }
 
-  virtual ~BinaryBaseIterator();
-
-  void openImpl(PlanState& planState, uint32_t& offset);
-  void resetImpl(PlanState& planState ) const;
-  void closeImpl(PlanState& planState );
+  virtual ~BinaryBaseIterator() {}
 
   virtual uint32_t getStateSize() const 
   {
     return StateTraitsImpl<StateType>::getStateSize(); 
   }
 
-  virtual uint32_t getStateSizeOfSubtree() const;
+  virtual uint32_t getStateSizeOfSubtree() const
+  {
+    return theChild0->getStateSizeOfSubtree() +
+           theChild1->getStateSizeOfSubtree() +
+           this->getStateSize();
+  }
+
+  void openImpl(PlanState& planState, uint32_t& offset);
+
+  void resetImpl(PlanState& planState) const;
+
+  void closeImpl(PlanState& planState);
 };
-
-
-
-template <class IterType, class StateType>
-BinaryBaseIterator<IterType, StateType>::BinaryBaseIterator (
-    short sctx,
-    const QueryLoc& loc,
-    PlanIter_t& aChild0,
-    PlanIter_t& aChild1 )
-  :
-  Batcher<IterType> ( sctx, loc ), theChild0 ( aChild0 ), theChild1 ( aChild1 )
-{
-#ifndef NDEBUG
-  assert(aChild0 != 0);
-  assert(aChild1 != 0);
-#endif
-}
-
-
-template <class IterType, class StateType>
-BinaryBaseIterator<IterType, StateType>::~BinaryBaseIterator()
-{
-}
 
 
 template <class IterType, class StateType>
 void
-BinaryBaseIterator<IterType, StateType>::openImpl (
+BinaryBaseIterator<IterType, StateType>::openImpl(
     PlanState& planState,
-    uint32_t& offset )
+    uint32_t& offset)
 {
-  StateTraitsImpl<StateType>::createState(planState, this->stateOffset, offset);
-  StateTraitsImpl<StateType>::initState(planState, this->stateOffset);
+  StateTraitsImpl<StateType>::createState(planState, this->theStateOffset, offset);
+  StateTraitsImpl<StateType>::initState(planState, this->theStateOffset);
 
   theChild0->open(planState, offset);
   theChild1->open(planState, offset);
@@ -101,33 +102,112 @@ BinaryBaseIterator<IterType, StateType>::openImpl (
 
 template <class IterType, class StateType>
 void
-BinaryBaseIterator<IterType, StateType>::resetImpl ( PlanState& planState ) const
+BinaryBaseIterator<IterType, StateType>::resetImpl(PlanState& planState) const
 {
-  StateTraitsImpl<StateType>::reset(planState, this->stateOffset);
+  StateTraitsImpl<StateType>::reset(planState, this->theStateOffset);
 
-  theChild0->reset( planState );
-  theChild1->reset( planState );
+  theChild0->reset(planState);
+  theChild1->reset(planState);
 }
 
 
 template <class IterType, class StateType>
 void
-BinaryBaseIterator<IterType, StateType>::closeImpl ( PlanState& planState )
+BinaryBaseIterator<IterType, StateType>::closeImpl(PlanState& planState)
 {
-  theChild0->close( planState );
-  theChild1->close( planState );
+  theChild0->close(planState);
+  theChild1->close(planState);
 
-  StateTraitsImpl<StateType>::destroyState(planState, this->stateOffset);
+  StateTraitsImpl<StateType>::destroyState(planState, this->theStateOffset);
 }
 
 
-template <class IterType, class StateType>
-uint32_t
-BinaryBaseIterator<IterType, StateType>::getStateSizeOfSubtree() const
-{
-  return theChild0->getStateSizeOfSubtree() + theChild1->getStateSizeOfSubtree()
-       + this->getStateSize();
+#define BINARY_ACCEPT(IterType)                 \
+void IterType::accept(PlanIterVisitor& v) const \
+{                                               \
+  v.beginVisit(*this);                          \
+  theChild0->accept(v);                         \
+  theChild1->accept(v);                         \
+  v.endVisit(*this);                            \
 }
+
+
+/*******************************************************************************
+  Macro for defining iterators with N children and their own additional state
+********************************************************************************/
+
+#define BINARY_ITER_STATE(iterName, stateName)                          \
+class iterName : public BinaryBaseIterator<iterName, stateName>         \
+{                                                                       \
+public:                                                                 \
+  SERIALIZABLE_CLASS(iterName);                                         \
+                                                                        \
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(                                     \
+  iterName, BinaryBaseIterator<iterName, stateName>);                   \
+                                                                        \
+  void serialize(::zorba::serialization::Archiver& ar)                  \
+  {                                                                     \
+    serialize_baseclass(ar, (BinaryBaseIterator<iterName, stateName>*)this); \
+  }                                                                     \
+                                                                        \
+public:                                                                 \
+  iterName(                                                             \
+        static_context* sctx,                                           \
+        const QueryLoc& loc,                                            \
+        PlanIter_t& child1,                                             \
+        PlanIter_t& child2)                                             \
+    :                                                                   \
+    BinaryBaseIterator<iterName, stateName>(sctx, loc, child1, child2)  \
+  { }                                                                   \
+                                                                        \
+  void accept(PlanIterVisitor& v) const;                                \
+                                                                        \
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;    \
+};
+
+
+#define BINARY_UPDATE_ITER_STATE(iterName, stateName)                   \
+class iterName : public BinaryBaseIterator<iterName, stateName>         \
+{                                                                       \
+public:                                                                 \
+  SERIALIZABLE_CLASS(iterName);                                         \
+                                                                        \
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(                                     \
+  iterName, BinaryBaseIterator<iterName, stateName>);                   \
+                                                                        \
+  void serialize(::zorba::serialization::Archiver& ar)                  \
+  {                                                                     \
+    serialize_baseclass(ar, (BinaryBaseIterator<iterName, stateName>*)this); \
+  }                                                                     \
+                                                                        \
+public:                                                                 \
+  iterName(                                                             \
+        static_context* sctx,                                           \
+        const QueryLoc& loc,                                            \
+        PlanIter_t& child1,                                             \
+        PlanIter_t& child2)                                             \
+    :                                                                   \
+    BinaryBaseIterator<iterName, stateName>(sctx, loc, child1, child2)  \
+  { }                                                                   \
+                                                                        \
+  bool isUpdating() const { return true; }                              \
+                                                                        \
+  void accept(PlanIterVisitor& v) const;                                \
+                                                                        \
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;    \
+};
+
+
+/*******************************************************************************
+  Macro for defining iterators with 2 children and no additional state
+********************************************************************************/
+
+#define BINARY_ITER(name) \
+BINARY_ITER_STATE(name, PlanIteratorState) 
+
+#define BINARY_UPDATE_ITER(name) \
+BINARY_UPDATE_ITER_STATE(name, PlanIteratorState) 
+
 
 
 } /* namespace zorba */

@@ -16,9 +16,6 @@
 #ifndef ZORBA_RUNTIME_GFLWOR_TUPLESTREAM_ITERATOR
 #define ZORBA_RUNTIME_GFLWOR_TUPLESTREAM_ITERATOR
 
-#include "zorbautils/checked_vector.h"
-
-#include "runtime/base/plan_iterator.h"
 #include "runtime/base/binarybase.h"
 
 
@@ -29,42 +26,51 @@ namespace store { class PUL; }
 namespace flwor 
 {
 
-    class TupleStreamIterator : public BinaryBaseIterator<TupleStreamIterator, PlanIteratorState> {
-      private:
-        //theChild0 == TupleClause
-        //theChild1 == ReturnClause
-        bool        theIsUpdating;
+class TupleStreamIterator : public BinaryBaseIterator<TupleStreamIterator,
+                                                      PlanIteratorState> 
+{
+private:
+  //theChild0 == TupleClause
+  //theChild1 == ReturnClause
+  bool        theIsUpdating;
         
-      public:
-        SERIALIZABLE_CLASS(TupleStreamIterator)
-        SERIALIZABLE_CLASS_CONSTRUCTOR2T(TupleStreamIterator, BinaryBaseIterator<TupleStreamIterator, PlanIteratorState>)
-        void serialize(::zorba::serialization::Archiver &ar)
-        {
-          serialize_baseclass(ar, (BinaryBaseIterator<TupleStreamIterator, PlanIteratorState>*)this);
-          ar & theIsUpdating;
-        }
-      public:
-        TupleStreamIterator (
-          short                       sctx,
-          const QueryLoc&             aLoc,
-          PlanIter_t                  aTupleClause,
-          PlanIter_t                  aReturnClause,
-          bool                        aIsUpdating );
+public:
+  SERIALIZABLE_CLASS(TupleStreamIterator);
 
-        ~TupleStreamIterator();
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  TupleStreamIterator,
+  BinaryBaseIterator<TupleStreamIterator, PlanIteratorState>);
 
-        virtual bool isUpdating() const { return theIsUpdating; }
-        bool nextImpl ( store::Item_t& result, PlanState& planState ) const;
-        virtual void accept(PlanIterVisitor&) const;     
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (BinaryBaseIterator<TupleStreamIterator, PlanIteratorState>*)this);
+
+    ar & theIsUpdating;
+  }
+
+public:
+  TupleStreamIterator (
+        static_context*  sctx,
+        const QueryLoc&  aLoc,
+        PlanIter_t       aTupleClause,
+        PlanIter_t       aReturnClause,
+        bool             aIsUpdating );
+  
+  ~TupleStreamIterator();
+  
+  virtual bool isUpdating() const { return theIsUpdating; }
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl ( store::Item_t& result, PlanState& planState ) const;
+};
 
 
-    };
 
-
-
-  }/* namespace gflwor */
+}/* namespace gflwor */
 } /* namespace zorba */
-#endif  /* ZORBA_RUNTIME_GFLWOR_TUPLESTREAM_ITERATOR */
+#endif
 
 
 /*

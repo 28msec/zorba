@@ -73,7 +73,7 @@ public:
   }
 public:
   GroupByIterator(
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc,
         PlanIter_t aTupleIterator,
         std::vector<GroupingSpec> aGroupingSpecs,

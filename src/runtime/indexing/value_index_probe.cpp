@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 #include "system/globalenv.h"
+
 #include "runtime/indexing/value_index_probe.h"
+#include "runtime/visitors/planitervisitor.h"
+
 
 namespace zorba {
 
@@ -23,6 +26,12 @@ END_SERIALIZABLE_CLASS_VERSIONS(ValueIndexPointProbe)
 
 SERIALIZABLE_CLASS_VERSIONS(ValueIndexRangeProbe)
 END_SERIALIZABLE_CLASS_VERSIONS(ValueIndexRangeProbe)
+
+
+NARY_ACCEPT(ValueIndexPointProbe);
+
+NARY_ACCEPT(ValueIndexRangeProbe);
+
 
 void ValueIndexPointProbeState::init(PlanState& state)
 {

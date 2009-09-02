@@ -169,7 +169,7 @@ void OrderByState::clearSortTable()
 
 
 OrderByIterator::OrderByIterator (
-    short sctx,
+    static_context* sctx,
     const QueryLoc& aLoc,
     bool stable,
     std::vector<OrderSpec>& orderSpecs,
@@ -241,12 +241,10 @@ void OrderByIterator::accept(PlanIterVisitor& v) const
 
 void OrderByIterator::openImpl(PlanState& planState, uint32_t& aOffset) 
 {
-  StateTraitsImpl<OrderByState>::createState(planState, this->stateOffset, aOffset);
+  StateTraitsImpl<OrderByState>::createState(planState, theStateOffset, aOffset);
 
   OrderByState* iterState = StateTraitsImpl<OrderByState>::getState(planState,
-                                                                    this->stateOffset);
-
-  theSctx = planState.theCompilerCB->getStaticContext(sctx);
+                                                                    theStateOffset);
 
   // Do a manual pass to set the Collator
   ulong numSpecs = theOrderSpecs.size();
@@ -273,7 +271,7 @@ void OrderByIterator::openImpl(PlanState& planState, uint32_t& aOffset)
 void OrderByIterator::resetImpl(PlanState& planState) const 
 {
   OrderByState* iterState = StateTraitsImpl<OrderByState>::getState(planState,
-                                                                    this->stateOffset);
+                                                                    theStateOffset);
   iterState->reset(planState);
   
   theTupleIter->reset(planState);
@@ -290,7 +288,7 @@ void OrderByIterator::closeImpl(PlanState& planState)
   closeVectorPtr<ForVarIter_t>(theInputForVars, planState);
   closeVectorPtr<LetVarIter_t>(theInputLetVars, planState);
 
-  StateTraitsImpl<OrderByState>::destroyState(planState, this->stateOffset);
+  StateTraitsImpl<OrderByState>::destroyState(planState, theStateOffset);
 }
   
   

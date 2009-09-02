@@ -22,31 +22,18 @@ namespace zorba
 {
 namespace flwor 
 {
-    /**
-     * The TupleSourceIterator initializes a TupleStream. This iterator is always the first iterator. 
-     * 
-     */
-    class TupleSourceIterator : public NoaryBaseIterator<TupleSourceIterator, PlanIteratorState> {
-      public:
-        TupleSourceIterator ( short sctx, const QueryLoc& loc);
-        ~TupleSourceIterator();
 
-      public:
-        bool nextImpl ( store::Item_t& result, PlanState& planState ) const;
-        virtual void accept ( PlanIterVisitor& ) const;
-      public:
-        SERIALIZABLE_CLASS(TupleSourceIterator)
-        SERIALIZABLE_CLASS_CONSTRUCTOR2T(TupleSourceIterator, NoaryBaseIterator<TupleSourceIterator, PlanIteratorState>)
-        void serialize(::zorba::serialization::Archiver &ar)
-        {
-          serialize_baseclass(ar, (NoaryBaseIterator<TupleSourceIterator, PlanIteratorState>*)this);
-        }
-    };
-  }
+/**
+ * The TupleSourceIterator initializes a TupleStream. This iterator is always the first iterator. 
+ * 
+ */
+NOARY_ITER(TupleSourceIterator);
+
+
+}
 }
 
-
-#endif  /* ZORBA_RUNTIME_FLWOR_TUPLESTREAM_ITERATOR */
+#endif 
 
 /*
  * Local variables:

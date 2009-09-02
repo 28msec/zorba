@@ -25,6 +25,7 @@
 #include "runtime/core/gflwor/comp_function.h"
 #include "runtime/api/runtimecb.h"
 #include "runtime/api/plan_iterator_wrapper.h"
+#include "runtime/visitors/planitervisitor.h"
 
 #include "system/globalenv.h"
 
@@ -573,7 +574,7 @@ void FlworState::clearGroupMap()
 
 ********************************************************************************/
 FLWORIterator::FLWORIterator(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     std::vector<ForLetClause>& aForLetClauses,
     PlanIter_t& aWhereClause,
@@ -1189,12 +1190,10 @@ void FLWORIterator::bindGroupBy(
 ********************************************************************************/
 void FLWORIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
-  StateTraitsImpl<FlworState>::createState(planState, this->stateOffset, offset);
+  StateTraitsImpl<FlworState>::createState(planState, theStateOffset, offset);
 
   FlworState* iterState = StateTraitsImpl<FlworState>::getState(planState,
-                                                                 this->stateOffset);
-  theSctx = planState.theCompilerCB->getStaticContext(sctx);
-
+                                                                theStateOffset);
   if (doGroupBy || doOrderBy)
   {
     if (doGroupBy)
@@ -1265,7 +1264,7 @@ void FLWORIterator::resetImpl(PlanState& planState) const
     iter->theInput->reset(planState);
   }
 
-  StateTraitsImpl<FlworState>::reset(planState, this->stateOffset);
+  StateTraitsImpl<FlworState>::reset(planState, theStateOffset);
 }
 
 
@@ -1292,7 +1291,7 @@ void FLWORIterator::closeImpl(PlanState& planState)
     iter->theInput->close(planState);
   }
   
-  StateTraitsImpl<FlworState>::destroyState(planState, this->stateOffset);
+  StateTraitsImpl<FlworState>::destroyState(planState, theStateOffset);
 }
 
 

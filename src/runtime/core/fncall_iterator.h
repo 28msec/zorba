@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_FNCALL_ITERATOR_H
-#define ZORBA_FNCALL_ITERATOR_H
+#ifndef ZORBA_RUNTIME_FNCALL_ITERATOR
+#define ZORBA_RUNTIME_FNCALL_ITERATOR
 
 #include <zorba/api_shared_types.h>
+
 #include "common/shared_types.h"
+
 #include "runtime/base/narybase.h"
-#include <functions/function.h>
-#include <vector>
+
 
 namespace zorba {
 
@@ -35,11 +36,15 @@ class UDFunctionCallIteratorState : public PlanIteratorState
   store::Iterator_t               exitValue;
 
   UDFunctionCallIteratorState();
+
   ~UDFunctionCallIteratorState();
 
   void openPlan();
+
   void closePlan();
+
   void resetPlan();
+
   void resetChildIters();
 };
 
@@ -51,33 +56,38 @@ protected:
   user_function* theUDF;
 
 public:
-  SERIALIZABLE_CLASS(UDFunctionCallIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(UDFunctionCallIterator, NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>*)this);
-    ar & theUDF;
-  }
+  SERIALIZABLE_CLASS(UDFunctionCallIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  UDFunctionCallIterator,
+  NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar);
+
 public:
   UDFunctionCallIterator(
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc, 
         std::vector<PlanIter_t>& args, 
-        const user_function *aUDF)
+        const user_function* aUDF)
     :
     NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>(sctx, loc, args), 
     theUDF((user_function*)aUDF)
   {}
 
-  virtual ~UDFunctionCallIterator() {}
+  ~UDFunctionCallIterator() {}
     
   bool isUpdating() const;
-  void openImpl(PlanState& planState, uint32_t& offset);
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
-  void resetImpl(PlanState& planState) const;
-  void closeImpl(PlanState& planState);
 
-  virtual void accept(PlanIterVisitor& v) const;
+  void accept(PlanIterVisitor& v) const;
+
+  void openImpl(PlanState& planState, uint32_t& offset);
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+
+  void resetImpl(PlanState& planState) const;
+
+  void closeImpl(PlanState& planState);
 };
 
 
@@ -98,9 +108,27 @@ class StatelessExtFunctionCallIterator :
                    public NaryBaseIterator<StatelessExtFunctionCallIterator,
                                            StatelessExtFunctionCallIteratorState>
 {
- public:
+protected:
+  const StatelessExternalFunction *m_function;
+  bool theIsUpdating;
+
+public:
+  SERIALIZABLE_CLASS(StatelessExtFunctionCallIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  StatelessExtFunctionCallIterator, 
+  NaryBaseIterator<StatelessExtFunctionCallIterator,
+                   StatelessExtFunctionCallIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    ZORBA_SER_ERROR_DESC_OSS(SRL0009_CLASS_NOT_SERIALIZABLE,
+                             "StatelessExtFunctionCallIterator");
+  }
+
+public:
   StatelessExtFunctionCallIterator(
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& args,
         const StatelessExternalFunction *function,
@@ -108,24 +136,15 @@ class StatelessExtFunctionCallIterator :
 
   virtual ~StatelessExtFunctionCallIterator() { }
 
+  virtual bool isUpdating() const { return theIsUpdating; }
+
+  void accept(PlanIterVisitor& v) const;
+
   void openImpl(PlanState& planState, uint32_t& offset);
 
-  virtual bool isUpdating() const { return theIsUpdating; }
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
+
   void closeImpl(PlanState& planState);
-
-  virtual void accept(PlanIterVisitor& v) const;
-
- protected:
-  const StatelessExternalFunction *m_function;
-  bool theIsUpdating;
-public:
-  SERIALIZABLE_CLASS(StatelessExtFunctionCallIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(StatelessExtFunctionCallIterator, NaryBaseIterator<StatelessExtFunctionCallIterator, StatelessExtFunctionCallIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    ZORBA_SER_ERROR_DESC_OSS(SRL0009_CLASS_NOT_SERIALIZABLE, "StatelessExtFunctionCallIterator");
-  }
 };
 
 }

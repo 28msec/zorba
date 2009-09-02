@@ -33,6 +33,7 @@
 #include "runtime/dateTime/DurationsDatesTimes.h"
 #include "runtime/core/arithmetic_impl.h"
 #include "runtime/api/runtimecb.h"
+#include "runtime/visitors/planitervisitor.h"
 
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
@@ -122,6 +123,58 @@ SERIALIZABLE_CLASS_VERSIONS(FnAdjustToTimeZoneIterator_2)
 END_SERIALIZABLE_CLASS_VERSIONS(FnAdjustToTimeZoneIterator_2)
 
 
+BINARY_ACCEPT(FnDateTimeConstructorIterator);
+
+NARY_ACCEPT(FnYearsFromDurationIterator);
+
+NARY_ACCEPT(FnMonthsFromDurationIterator);
+
+NARY_ACCEPT(FnDaysFromDurationIterator);
+
+NARY_ACCEPT(FnHoursFromDurationIterator);
+
+NARY_ACCEPT(FnMinutesFromDurationIterator);
+
+NARY_ACCEPT(FnSecondsFromDurationIterator);
+
+NARY_ACCEPT(FnYearFromDatetimeIterator);
+
+NARY_ACCEPT(FnMonthFromDatetimeIterator);
+
+NARY_ACCEPT(FnDayFromDatetimeIterator);
+
+NARY_ACCEPT(FnHoursFromDatetimeIterator);
+
+NARY_ACCEPT(FnMinutesFromDatetimeIterator);
+
+NARY_ACCEPT(FnSecondsFromDatetimeIterator);
+
+NARY_ACCEPT(FnTimezoneFromDatetimeIterator);
+
+NARY_ACCEPT(FnYearFromDateIterator);
+
+NARY_ACCEPT(FnMonthFromDateIterator);
+
+NARY_ACCEPT(FnDayFromDateIterator);
+
+NARY_ACCEPT(FnTimezoneFromDateIterator);
+
+NARY_ACCEPT(FnHoursFromTimeIterator);
+
+NARY_ACCEPT(FnMinutesFromTimeIterator);
+
+NARY_ACCEPT(FnSecondsFromTimeIterator);
+
+NARY_ACCEPT(FnTimezoneFromTimeIterator);
+
+NARY_ACCEPT(FnFormatDateTimeIterator);
+
+UNARY_ACCEPT(FnAdjustToTimeZoneIterator_1);
+
+BINARY_ACCEPT(FnAdjustToTimeZoneIterator_2);
+
+
+
 bool FnDateTimeConstructorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item0;
@@ -138,6 +191,7 @@ bool FnDateTimeConstructorIterator::nextImpl(store::Item_t& result, PlanState& p
   STACK_END (state);
 }
 
+
 /**
  *______________________________________________________________________
  *
@@ -145,8 +199,6 @@ bool FnDateTimeConstructorIterator::nextImpl(store::Item_t& result, PlanState& p
  *
  * fn:years-from-duration($arg as xs:duration?) as xs:integer?
  *_______________________________________________________________________*/
-
-/*begin class FnYearsFromDurationIterator */
 bool
 FnYearsFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -168,7 +220,7 @@ FnYearsFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planStat
   }
   STACK_END (state);
 }
-/*end class FnYearsFromDurationIterator */
+
 
 /**
  *______________________________________________________________________
@@ -177,8 +229,6 @@ FnYearsFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planStat
  *
  * fn:months-from-duration($arg as xs:duration?) as xs:integer?
  *_______________________________________________________________________*/
-
-/*begin class FnMonthsFromDurationIterator */
 bool
 FnMonthsFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -198,7 +248,7 @@ FnMonthsFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planSta
   }
   STACK_END (state);
 }
-/*end class FnMonthsFromDurationIterator */
+
 
 /**
  *______________________________________________________________________
@@ -207,8 +257,6 @@ FnMonthsFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planSta
  *
  * fn:days-from-duration($arg as xs:duration?) as xs:integer?
  *_______________________________________________________________________*/
-
-/*begin class FnDaysFromDurationIterator */
 bool
 FnDaysFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -228,7 +276,7 @@ FnDaysFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState
   }
   STACK_END (state);
 }
-/*end class FnDaysFromDurationIterator */
+
 
 /**
  *______________________________________________________________________
@@ -237,8 +285,6 @@ FnDaysFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState
  *
  * fn:hours-from-duration($arg as xs:duration?) as xs:integer?
  *_______________________________________________________________________*/
-
-/*begin class FnHoursFromDurationIterator */
 bool
 FnHoursFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -258,7 +304,7 @@ FnHoursFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planStat
   }
   STACK_END (state);
 }
-/*end class FnHoursFromDurationIterator */
+
 
 /**
  *______________________________________________________________________
@@ -267,8 +313,6 @@ FnHoursFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planStat
  *
  * fn:minutes-from-duration($arg as xs:duration?) as xs:integer?
  *_______________________________________________________________________*/
-
-/*begin class FnMinutesFromDurationIterator */
 bool
 FnMinutesFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -288,7 +332,7 @@ FnMinutesFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planSt
   }
   STACK_END (state);
 }
-/*end class FnMinutesFromDurationIterator */
+
 
 /**
  *______________________________________________________________________
@@ -297,8 +341,6 @@ FnMinutesFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planSt
  *
  * fn:seconds-from-duration($arg as xs:duration?) as xs:decimal?
  *_______________________________________________________________________*/
-
-/*begin class FnSecondsFromDurationIterator */
 bool
 FnSecondsFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -318,7 +360,7 @@ FnSecondsFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planSt
   }
   STACK_END (state);
 }
-/*end class FnSecondsFromDurationIterator */
+
 
 /**
  *______________________________________________________________________
@@ -327,8 +369,6 @@ FnSecondsFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planSt
  *
  * fn:year-from-dateTime($arg as xs:dateTime?) as xs:integer?
  *_______________________________________________________________________*/
-
-/*begin class FnYearFromDatetimeIterator */
 bool
 FnYearFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -347,7 +387,7 @@ FnYearFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState
   }
   STACK_END (state);
 }
-/*end class FnYearFromDatetimeIterator */
+
 
 /**
  *______________________________________________________________________
@@ -356,8 +396,6 @@ FnYearFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState
  *
  * fn:month-from-dateTime($arg as xs:dateTime?) as xs:integer?
  *_______________________________________________________________________*/
-
-/*begin class FnMonthFromDatetimeIterator */
 bool
 FnMonthFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -377,7 +415,7 @@ FnMonthFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planStat
   }
   STACK_END (state);
 }
-/*end class FnMonthFromDatetimeIterator */
+
 
 /**
  *______________________________________________________________________
@@ -386,8 +424,6 @@ FnMonthFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planStat
  *
  * fn:day-from-dateTime($arg as xs:dateTime?) as xs:integer?
  *_______________________________________________________________________*/
-
-/*begin class FnDayFromDatetimeIterator */
 bool
 FnDayFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -407,7 +443,7 @@ FnDayFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState)
   }
   STACK_END (state);
 }
-/*end class FnDayFromDatetimeIterator */
+
 
 /**
  *______________________________________________________________________
@@ -416,8 +452,6 @@ FnDayFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState)
  *
  * fn:hours-from-dateTime($arg as xs:dateTime?) as xs:integer?
  *_______________________________________________________________________*/
-
-/*begin class FnHoursFromDatetimeIterator */
 bool
 FnHoursFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -437,7 +471,7 @@ FnHoursFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planStat
   }
   STACK_END (state);
 }
-/*end class FnHoursFromDatetimeIterator */
+
 
 /**
  *______________________________________________________________________
@@ -446,8 +480,6 @@ FnHoursFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planStat
  *
  * fn:minutes-from-dateTime($arg as xs:dateTime?) as xs:integer?
  *_______________________________________________________________________*/
-
-/*begin class FnMinutesFromDatetimeIterator */
 bool
 FnMinutesFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -467,7 +499,7 @@ FnMinutesFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planSt
   }
   STACK_END (state);
 }
-/*end class FnMinutesFromDatetimeIterator */
+
 
 /**
  *______________________________________________________________________
@@ -476,8 +508,6 @@ FnMinutesFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planSt
  *
  * fn:seconds-from-dateTime($arg as xs:dateTime?) as xs:decimal?
  *_______________________________________________________________________*/
-
-/*begin class FnSecondsFromDatetimeIterator */
 bool
 FnSecondsFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -497,7 +527,7 @@ FnSecondsFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planSt
   }
   STACK_END (state);
 }
-/*end class FnSecondsFromDatetimeIterator */
+
 
 /**
  *______________________________________________________________________
@@ -506,8 +536,6 @@ FnSecondsFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planSt
  *
  * fn:timezone-from-dateTime($arg as xs:dateTime?) as xs:dayTimeDuration?
  *_______________________________________________________________________*/
-
-/*begin class FnTimezoneFromDatetimeIterator */
 bool
 FnTimezoneFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -525,7 +553,7 @@ FnTimezoneFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planS
   }
   STACK_END (state);
 }
-/*end class FnTimezoneFromDatetimeIterator */
+
 
 /**
  *______________________________________________________________________
@@ -534,8 +562,6 @@ FnTimezoneFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planS
  *
  * fn:year-from-date($arg as xs:date?) as xs:integer?
  *_______________________________________________________________________*/
-
-/*begin class FnYearFromDateIterator */
 bool
 FnYearFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -555,7 +581,7 @@ FnYearFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   }
   STACK_END (state);
 }
-/*end class FnYearFromDateIterator */
+
 
 /**
  *______________________________________________________________________
@@ -564,8 +590,6 @@ FnYearFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) co
  *
  * fn:month-from-date($arg as xs:date?) as xs:integer?
  *_______________________________________________________________________*/
-
-/*begin class FnMonthFromDateIterator */
 bool
 FnMonthFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -585,7 +609,7 @@ FnMonthFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   }
   STACK_END (state);
 }
-/*end class FnMonthFromDateIterator */
+
 
 /**
  *______________________________________________________________________
@@ -594,8 +618,6 @@ FnMonthFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) c
  *
  * fn:day-from-date($arg as xs:date?) as xs:integer?
  *_______________________________________________________________________*/
-
-/*begin class FnDayFromDateIterator */
 bool
 FnDayFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -615,7 +637,7 @@ FnDayFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   }
   STACK_END (state);
 }
-/*end class FnDayFromDateIterator */
+
 
 /**
  *______________________________________________________________________
@@ -624,8 +646,6 @@ FnDayFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) con
  *
  * fn:timezone-from-date($arg as xs:date?) as xs:dayTimeDuration?
  *_______________________________________________________________________*/
-
-/*begin class FnTimezoneFromDateIterator */
 bool
 FnTimezoneFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -643,7 +663,7 @@ FnTimezoneFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState
   }
   STACK_END (state);
 }
-/*end class FnTimezoneFromDateIterator */
+
 
 /**
  *______________________________________________________________________
@@ -652,8 +672,6 @@ FnTimezoneFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState
  *
  * fn:hours-from-time($arg as xs:time?) as xs:integer?
  *_______________________________________________________________________*/
-
-/*begin class FnHoursFromTimeIterator */
 bool
 FnHoursFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -673,7 +691,7 @@ FnHoursFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   }
   STACK_END (state);
 }
-/*end class FnHoursFromTimeIterator */
+
 
 /**
  *______________________________________________________________________
@@ -682,8 +700,6 @@ FnHoursFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
  *
  * fn:minutes-from-time($arg as xs:time?) as xs:integer?
  *_______________________________________________________________________*/
-
-/*begin class FnMinutesFromTimeIterator */
 bool
 FnMinutesFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -703,7 +719,7 @@ FnMinutesFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState)
   }
   STACK_END (state);
 }
-/*end class FnMinutesFromTimeIterator */
+
 
 
 /**
@@ -713,8 +729,6 @@ FnMinutesFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState)
  *
  * fn:seconds-from-time($arg as xs:time?) as xs:decimal?
  *_______________________________________________________________________*/
-
-/*begin class FnSecondsFromTimeIterator */
 bool
 FnSecondsFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -734,8 +748,6 @@ FnSecondsFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState)
   }
   STACK_END (state);
 }
-/*end class FnSecondsFromTimeIterator */
-
 
 
 /**
@@ -745,8 +757,6 @@ FnSecondsFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState)
  *
  * fn:timezone-from-time($arg as xs:time?) as xs:dayTimeDuration?
  *_______________________________________________________________________*/
-
-/*begin class FnTimezoneFromTimeIterator */
 bool
 FnTimezoneFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -765,7 +775,7 @@ FnTimezoneFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState
   }
   STACK_END (state);
 }
-/*end class FnTimezoneFromTimeIterator */
+
 
 /**
  *______________________________________________________________________
@@ -894,6 +904,7 @@ FnAdjustToTimeZoneIterator_1::nextImpl(store::Item_t& result, PlanState& planSta
   STACK_END (state);
 }
 
+
 bool
 FnAdjustToTimeZoneIterator_2::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -923,6 +934,7 @@ FnAdjustToTimeZoneIterator_2::nextImpl(store::Item_t& result, PlanState& planSta
      
   STACK_END (state);
 }
+
 
 /**
  *______________________________________________________________________
@@ -986,7 +998,11 @@ static void format_number(xqpStringStore_t& str, long number, Modifier& modifier
   str->append_in_place(temp);
 }
 
-static void format_string_width(xqpStringStore_t& destination, xqpStringStore_t& source, Modifier& modifier)
+
+static void format_string_width(
+    xqpStringStore_t& destination,
+    xqpStringStore_t& source, 
+    Modifier& modifier)
 {
   xqpStringStore temp = *source;
   while (modifier.max_width_modifier > 0 && temp.bytes() < (unsigned int)modifier.max_width_modifier)
@@ -994,7 +1010,11 @@ static void format_string_width(xqpStringStore_t& destination, xqpStringStore_t&
   destination->append_in_place(temp.c_str());
 }
 
-static bool format_string(xqpStringStore_t& destination, xqpStringStore& source, Modifier& modifier)
+
+static bool format_string(
+    xqpStringStore_t& destination,
+    xqpStringStore& source,
+    Modifier& modifier)
 {
   xqpString temp;
   if (modifier.presentation_modifier->bytes() == 0 || modifier.presentation_modifier->byteEqual("n"))
@@ -1013,19 +1033,32 @@ static bool format_string(xqpStringStore_t& destination, xqpStringStore& source,
   return true;
 }
 
-static bool format_string(xqpStringStore_t& destination, const char* source, Modifier& modifier)
+
+static bool format_string(
+    xqpStringStore_t& destination,
+    const char* source,
+    Modifier& modifier)
 {
   xqpStringStore temp(source);
   return format_string(destination, temp, modifier);
 }
 
-static void format_component(xqpStringStore_t& destination, long number, xqpStringStore& source, Modifier& modifier)
+
+static void format_component(
+    xqpStringStore_t& destination,
+    long number,
+    xqpStringStore& source,
+    Modifier& modifier)
 {
   if (!format_string(destination, source, modifier))
     format_number(destination, number, modifier);
 }
 
-static void output_month(xqpStringStore_t& destination, long number, Modifier& modifier)
+
+static void output_month(
+    xqpStringStore_t& destination,
+    long number,
+    Modifier& modifier)
 {
   static const char* month[12]  = { "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"};
   xqpString temp(month[number-1]);
@@ -1035,7 +1068,11 @@ static void output_month(xqpStringStore_t& destination, long number, Modifier& m
   format_component(destination, number, *temp.theStrStore, modifier);
 }
 
-static void output_day_of_week(xqpStringStore_t& destination, long number, Modifier& modifier)
+
+static void output_day_of_week(
+    xqpStringStore_t& destination,
+    long number,
+    Modifier& modifier)
 {
   static const char* day[7]  = { "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"};
   xqpString temp(day[number]);
@@ -1045,7 +1082,11 @@ static void output_day_of_week(xqpStringStore_t& destination, long number, Modif
   format_component(destination, number, *temp.theStrStore, modifier);
 }
 
-static void parse_presentation_modifier(xqpStringStore_t& str, unsigned int& position, xqpStringStore_t& result)
+
+static void parse_presentation_modifier(
+    xqpStringStore_t& str,
+    unsigned int& position,
+    xqpStringStore_t& result)
 {
   result = new xqpStringStore("");
   
@@ -1090,7 +1131,11 @@ static void parse_presentation_modifier(xqpStringStore_t& str, unsigned int& pos
   result = modifier.theStrStore;
 }
 
-static void parse_second_modifier(xqpStringStore_t& str, unsigned int& position, xqpStringStore_t& result)
+
+static void parse_second_modifier(
+    xqpStringStore_t& str, 
+    unsigned int& position,
+    xqpStringStore_t& result)
 {
   result = new xqpStringStore("");
   
@@ -1106,12 +1151,17 @@ static void parse_second_modifier(xqpStringStore_t& str, unsigned int& position,
     position--;
 }
 
+
 // for min_width and max_width 
 // -3 means an error in the picture
 // -2 means width modifiers are not specified
 // -1 means '*'
 // >=0 means explicitly specified width 
-static void parse_width_modifier(xqpStringStore_t& str, unsigned int& position, int& min_width, int& max_width)
+static void parse_width_modifier(
+    xqpStringStore_t& str, 
+    unsigned int& position,
+    int& min_width,
+    int& max_width)
 {
   min_width = -2;
   max_width = -2;
@@ -1152,6 +1202,7 @@ static void parse_width_modifier(xqpStringStore_t& str, unsigned int& position, 
       min_width = -3;
   }
 }
+
 
 static int get_data_type(char component)
 {
@@ -1196,7 +1247,7 @@ static int get_data_type(char component)
   }
 }
 
-/*begin class FnFormatDateTimeIterator */
+
 bool
 FnFormatDateTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -1352,6 +1403,6 @@ FnFormatDateTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
   STACK_END (state);
 }
-/*end class FnFormatDateTimeIterator */
+
 
 }

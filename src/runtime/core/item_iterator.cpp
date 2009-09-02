@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "runtime/core/item_iterator.h"
 #include "zorbaerrors/Assert.h"
-#include "store/api/temp_seq.h"
+
+#include "runtime/core/item_iterator.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/visitors/planitervisitor.h"
+
+#include "store/api/item.h"
+
 
 using namespace std;
 namespace zorba
@@ -32,8 +35,22 @@ SERIALIZABLE_CLASS_VERSIONS(IfThenElseIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(IfThenElseIterator)
 
 
-/* start class SingletonIterator */
-bool SingletonIterator::nextImpl ( store::Item_t& result, PlanState& planState ) const
+/*******************************************************************************
+
+********************************************************************************/
+bool EmptyIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+{
+  return false;
+}
+
+
+NOARY_ACCEPT(EmptyIterator);
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool SingletonIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
@@ -43,9 +60,14 @@ bool SingletonIterator::nextImpl ( store::Item_t& result, PlanState& planState )
 }
 
 
-/* start class IfThenElseIterator */
+NOARY_ACCEPT(SingletonIterator);
+
+
+/*******************************************************************************
+
+********************************************************************************/
 IfThenElseIterator::IfThenElseIterator(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     PlanIter_t& aCondIter,
     PlanIter_t& aThenIter,
@@ -62,7 +84,17 @@ IfThenElseIterator::IfThenElseIterator(
 { }
 
 
-bool IfThenElseIterator::nextImpl ( store::Item_t& result, PlanState& planState ) const
+void IfThenElseIterator::accept(PlanIterVisitor& v) const 
+{
+  v.beginVisit(*this);
+  theCondIter->accept ( v );
+  theThenIter->accept ( v );
+  theElseIter->accept ( v );
+  v.endVisit(*this);
+}
+
+
+bool IfThenElseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   IfThenElseIteratorState* state;
   DEFAULT_STACK_INIT ( IfThenElseIteratorState, state, planState );
@@ -87,8 +119,10 @@ bool IfThenElseIterator::nextImpl ( store::Item_t& result, PlanState& planState 
   STACK_END (state);
 }
 
-void IfThenElseIterator::openImpl ( PlanState& planState, uint32_t& offset ) {
-  StateTraitsImpl<IfThenElseIteratorState>::createState(planState, this->stateOffset, offset);
+
+void IfThenElseIterator::openImpl ( PlanState& planState, uint32_t& offset ) 
+{
+  StateTraitsImpl<IfThenElseIteratorState>::createState(planState, theStateOffset, offset);
 
   theCondIter->open( planState, offset );
   theThenIter->open( planState , offset);
@@ -97,7 +131,7 @@ void IfThenElseIterator::openImpl ( PlanState& planState, uint32_t& offset ) {
 
 void IfThenElseIterator::resetImpl ( PlanState& planState ) const
 {
-  StateTraitsImpl<IfThenElseIteratorState>::reset(planState, this->stateOffset);
+  StateTraitsImpl<IfThenElseIteratorState>::reset(planState, theStateOffset);
   
   theCondIter->reset( planState );
   theThenIter->reset( planState );
@@ -110,7 +144,7 @@ void IfThenElseIterator::closeImpl ( PlanState& planState ) const
   theThenIter->close( planState );
   theElseIter->close( planState );
 
-  StateTraitsImpl<IfThenElseIteratorState>::destroyState(planState, this->stateOffset);
+  StateTraitsImpl<IfThenElseIteratorState>::destroyState(planState, theStateOffset);
 }
 
 uint32_t IfThenElseIterator::getStateSizeOfSubtree() const {

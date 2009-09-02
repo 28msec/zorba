@@ -19,9 +19,12 @@
 
 #include "system/globalenv.h"
 
+#include "types/typeops.h"
+
 #include "compiler/api/compilercb.h"
 
 #include "runtime/core/path_iterators.h"
+#include "runtime/visitors/planitervisitor.h"
 
 #include "store/api/item.h"
 #include "store/api/iterator.h"
@@ -320,14 +323,13 @@ doctest2:
 
 
 
-
 /*******************************************************************************
 
 ********************************************************************************/
 bool SelfAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   SelfAxisState* state;
-  state = StateTraitsImpl<SelfAxisState>::getState(planState, this->stateOffset);
+  state = StateTraitsImpl<SelfAxisState>::getState(planState, theStateOffset);
 
   do
   {
@@ -344,6 +346,9 @@ bool SelfAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 
   return true;
 }
+
+
+UNARY_ACCEPT(SelfAxisIterator);
 
 
 /*******************************************************************************
@@ -405,6 +410,9 @@ bool AttributeAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
 }
 
 
+UNARY_ACCEPT(AttributeAxisIterator);
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -434,6 +442,9 @@ bool ParentAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
   STACK_END (state);
 }
+
+
+UNARY_ACCEPT(ParentAxisIterator);
 
 
 /*******************************************************************************
@@ -483,6 +494,9 @@ bool AncestorAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
 }
 
 
+UNARY_ACCEPT(AncestorAxisIterator);
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -526,6 +540,9 @@ bool AncestorReverseAxisIterator::nextImpl(
 
   STACK_END (state);
 }
+
+
+UNARY_ACCEPT(AncestorReverseAxisIterator);
 
 
 /*******************************************************************************
@@ -577,6 +594,9 @@ bool AncestorSelfAxisIterator::nextImpl(
 }
 
 
+UNARY_ACCEPT(AncestorSelfAxisIterator);
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -614,6 +634,9 @@ bool AncestorSelfReverseAxisIterator::nextImpl(
 
   STACK_END(state);
 }
+
+
+UNARY_ACCEPT(AncestorSelfReverseAxisIterator);
 
 
 /*******************************************************************************
@@ -683,6 +706,9 @@ bool RSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
 }
 
 
+UNARY_ACCEPT(RSiblingAxisIterator);
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -732,6 +758,9 @@ bool LSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
   STACK_END(state);
 }
+
+
+UNARY_ACCEPT(LSiblingAxisIterator);
 
 
 /*******************************************************************************
@@ -803,6 +832,9 @@ bool LSiblingReverseAxisIterator::nextImpl(
 }
 
 
+UNARY_ACCEPT(LSiblingReverseAxisIterator);
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -862,6 +894,9 @@ bool ChildAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
   STACK_END (state);
 }
+
+
+UNARY_ACCEPT(ChildAxisIterator);
 
 
 /*******************************************************************************
@@ -982,6 +1017,9 @@ bool DescendantAxisIterator::nextImpl(store::Item_t& result, PlanState& planStat
 }
 
 
+UNARY_ACCEPT(DescendantAxisIterator);
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1056,6 +1094,9 @@ bool DescendantSelfAxisIterator::nextImpl(
 
   STACK_END (state);
 }
+
+
+UNARY_ACCEPT(DescendantSelfAxisIterator);
 
 
 /*******************************************************************************
@@ -1201,6 +1242,9 @@ bool PrecedingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
 
   STACK_END (state);
 }
+
+
+UNARY_ACCEPT(PrecedingAxisIterator);
 
 
 /*******************************************************************************
@@ -1417,6 +1461,10 @@ bool PrecedingReverseAxisIterator::nextImpl(
 }
 
 
+UNARY_ACCEPT(PrecedingReverseAxisIterator);
+
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1562,6 +1610,9 @@ bool FollowingAxisIterator::nextImpl(
 
   STACK_END (state);
 }
+
+
+UNARY_ACCEPT(FollowingAxisIterator);
 
 
 };

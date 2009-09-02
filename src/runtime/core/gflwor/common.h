@@ -17,6 +17,7 @@
 #define ZORBA_RUNTIME_GFLWOR_COMMON
 
 #include "zorba/api_shared_types.h"
+
 #include "zorbautils/checked_vector.h"
 #include "zorbautils/hashmap.h"
 

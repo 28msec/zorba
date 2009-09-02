@@ -130,6 +130,37 @@ SERIALIZABLE_CLASS_VERSIONS(FnFormatNumberIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(FnFormatNumberIterator)
 
 
+NARY_ACCEPT (FnAbsIterator);
+
+NARY_ACCEPT (FnCeilingIterator);
+
+NARY_ACCEPT (FnFloorIterator);
+  
+NARY_ACCEPT (FnRoundIterator);
+  
+NARY_ACCEPT (FnRoundHalfToEvenIterator);
+
+NARY_ACCEPT (FnSQRTIterator);
+
+NARY_ACCEPT (FnExpIterator);
+
+NARY_ACCEPT (FnLogIterator);
+
+NARY_ACCEPT (FnSinIterator);
+
+NARY_ACCEPT (FnCosIterator);
+
+NARY_ACCEPT (FnTanIterator);
+
+NARY_ACCEPT (FnArcSinIterator);
+
+NARY_ACCEPT (FnArcCosIterator);
+
+NARY_ACCEPT (FnArcTanIterator);
+
+NARY_ACCEPT (FnFormatNumberIterator);
+
+
 /*******************************************************************************
   AddOperation (see runtime/core/arithmetic_impl.h/cpp)
 ********************************************************************************/
@@ -389,10 +420,12 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_
     const store::Item* i1 )
 {
   if (i0->isNaN() || i1->isNaN()) {
-    ZORBA_ERROR_LOC_DESC( FOAR0002, *loc, "Division with doubles must not be done with NaNs");
+    ZORBA_ERROR_LOC_DESC( FOAR0002, *loc,
+                          "Division with doubles must not be done with NaNs");
   }
   if (i0->isPosOrNegInf()) {
-    ZORBA_ERROR_LOC_DESC( FOAR0002, *loc, "Division must not be done with a +-INF dividend");
+    ZORBA_ERROR_LOC_DESC( FOAR0002, *loc,
+                          "Division must not be done with a +-INF dividend");
   }
 
   if (i0->isPosOrNegInf()) {
@@ -572,23 +605,13 @@ bool ModOperation::compute<TypeConstants::XS_INTEGER, TypeConstants::XS_INTEGER>
 
 template< class Operations>
 NumArithIterator<Operations>::NumArithIterator(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     PlanIter_t& iter0,
     PlanIter_t& iter1)
   :
   BinaryBaseIterator<NumArithIterator<Operations>, PlanIteratorState >(sctx, loc, iter0, iter1)
 { 
-}
-
-
-template < class Operation >
-void NumArithIterator<Operation>::openImpl(PlanState& planState, uint32_t& offset)
-{
-  BinaryBaseIterator<NumArithIterator<Operation>, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
 }
 
 
@@ -625,6 +648,19 @@ bool NumArithIterator<Operation>::nextImpl(
 
   STACK_END(state);
 }
+
+
+template <class Operation>
+void NumArithIterator<Operation>::accept(PlanIterVisitor& v) const 
+{
+  v.beginVisit(*this);
+
+  this->theChild0->accept(v);
+  this->theChild1->accept(v);
+
+  v.endVisit(*this);
+}
+
 
 
 template < class Operation >
@@ -728,20 +764,6 @@ bool NumArithIterator<Operation>::computeAtomic(
 }
 
   
-/**
- * Information: It is not possible to move this function to
- * runtime/visitors/accept.cpp!
- */
-template < class Operation >
-void NumArithIterator<Operation>::accept(PlanIterVisitor& v) const 
-{ 
-  v.beginVisit(*this); 
-  this->theChild0->accept(v); 
-  this->theChild1->accept(v); 
-  v.endVisit(*this); 
-}
-
-
 // instantiate NumArithIterator for all kinds of arithmetic operators
 template class NumArithIterator<AddOperation>;
 template class NumArithIterator<SubtractOperation>;
@@ -757,25 +779,13 @@ template class NumArithIterator<ModOperation>;
 
 template< class Operations, TypeConstants::atomic_type_code_t Type >
 SpecificNumArithIterator<Operations, Type>::SpecificNumArithIterator(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     PlanIter_t& iter0,
     PlanIter_t& iter1)
   :
   BinaryBaseIterator<SpecificNumArithIterator<Operations, Type>, PlanIteratorState >(sctx, loc, iter0, iter1)
 { 
-}
-
-
-template < class Operation, TypeConstants::atomic_type_code_t Type >
-void SpecificNumArithIterator<Operation, Type>::openImpl(
-    PlanState& planState,
-    uint32_t& offset)
-{
-  BinaryBaseIterator<SpecificNumArithIterator<Operation, Type>, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
 }
 
 
@@ -814,6 +824,19 @@ bool SpecificNumArithIterator<Operation, Type>::nextImpl(
 
 
 template < class Operation, TypeConstants::atomic_type_code_t Type >
+void SpecificNumArithIterator<Operation, Type>::accept(PlanIterVisitor& v) const 
+{
+  v.beginVisit(*this);
+
+  this->theChild0->accept(v);
+  this->theChild1->accept(v);
+
+  v.endVisit(*this);
+}
+
+
+
+template < class Operation, TypeConstants::atomic_type_code_t Type >
 bool SpecificNumArithIterator<Operation, Type>::compute(
     store::Item_t& result,
     RuntimeCB* rcb,
@@ -829,19 +852,6 @@ bool SpecificNumArithIterator<Operation, Type>::compute(
 }
 
   
-/**
- * Information: It is not possible to move this function to
- * runtime/visitors/accept.cpp!
- */
-template < class Operation, TypeConstants::atomic_type_code_t Type >
-void SpecificNumArithIterator<Operation, Type>::accept(PlanIterVisitor& v) const 
-{ 
-  v.beginVisit(*this); 
-  this->theChild0->accept(v); 
-  this->theChild1->accept(v); 
-  v.endVisit(*this); 
-}
-
 template class SpecificNumArithIterator<AddOperation, TypeConstants::XS_DOUBLE>;
 template class SpecificNumArithIterator<AddOperation, TypeConstants::XS_FLOAT>;
 template class SpecificNumArithIterator<AddOperation, TypeConstants::XS_DECIMAL>;
@@ -868,7 +878,7 @@ template class SpecificNumArithIterator<ModOperation, TypeConstants::XS_INTEGER>
 
 ********************************************************************************/
 OpNumericUnaryIterator::OpNumericUnaryIterator (
-     short sctx,
+     static_context* sctx,
      const QueryLoc& loc,
      PlanIter_t& theChild,
      bool aPlus )
@@ -881,15 +891,6 @@ OpNumericUnaryIterator::OpNumericUnaryIterator (
 
 OpNumericUnaryIterator::~OpNumericUnaryIterator()
 {
-}
-
-
-void OpNumericUnaryIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  UnaryBaseIterator<OpNumericUnaryIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
 }
 
 
@@ -957,19 +958,12 @@ bool OpNumericUnaryIterator::nextImpl(store::Item_t& result, PlanState& planStat
 }
 
 
+UNARY_ACCEPT(OpNumericUnaryIterator);
+
 
 /*******************************************************************************
 
 ********************************************************************************/
-void FnAbsIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<FnAbsIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-}
-
-
 bool FnAbsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
@@ -1044,16 +1038,6 @@ bool FnAbsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 /*******************************************************************************
   6.4.2 fn:ceiling
 ********************************************************************************/
-
-void FnCeilingIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<FnCeilingIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-}
-
-
 bool FnCeilingIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
@@ -1115,15 +1099,6 @@ bool FnCeilingIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 /*******************************************************************************
   6.4.3 fn:floor
 ********************************************************************************/
-void FnFloorIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<FnFloorIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-}
-
-
 bool FnFloorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
@@ -1185,15 +1160,6 @@ bool FnFloorIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 /*******************************************************************************
   6.4.4 fn:round
 ********************************************************************************/
-void FnRoundIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<FnRoundIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-}
-
-
 bool FnRoundIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
@@ -1256,15 +1222,6 @@ bool FnRoundIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 /*******************************************************************************
   6.4.5 fn:round-half-to-even
 ********************************************************************************/
-void FnRoundHalfToEvenIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<FnRoundHalfToEvenIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-}
-
-
 bool FnRoundHalfToEvenIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
@@ -1336,15 +1293,6 @@ bool FnRoundHalfToEvenIterator::nextImpl(store::Item_t& result, PlanState& planS
 /*******************************************************************************
 
 ********************************************************************************/
-void FnSQRTIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<FnSQRTIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
-}
-
-
 bool FnSQRTIterator::nextImpl (store::Item_t& result, PlanState& planState) const 
 {
   store::Item_t item;
@@ -1537,15 +1485,29 @@ bool FnArcTanIterator::nextImpl (store::Item_t& result, PlanState& planState) co
 /*******************************************************************************
 
 ********************************************************************************/
-ZorNumGen::ZorNumGen ( short sctx, const QueryLoc& loc ) 
-  :
-  NoaryBaseIterator<ZorNumGen, ZorNumGenState>(sctx, loc) 
+void ZorNumGenState::init(PlanState& planState)
 {
+  PlanIteratorState::init(planState);
+  this->curNumber = 0;
 }
 
 
-ZorNumGen::~ZorNumGen() 
+void ZorNumGenState::reset(PlanState& planState)
 {
+  PlanIteratorState::reset(planState);
+  this->curNumber = 0;
+}
+
+
+int32_t ZorNumGenState::getCurNumber()
+{
+  return this->curNumber;
+}
+
+
+void ZorNumGenState::setCurNumber ( int32_t value )
+{
+  this->curNumber = value;
 }
 
 
@@ -1566,31 +1528,7 @@ ZorNumGen::nextImpl ( store::Item_t& result, PlanState& planState ) const
 }
 
 
-void
-ZorNumGenState::init(PlanState& planState)
-{
-  PlanIteratorState::init(planState);
-  this->curNumber = 0;
-}
-
-void
-ZorNumGenState::reset(PlanState& planState)
-{
-  PlanIteratorState::reset(planState);
-  this->curNumber = 0;
-}
-
-int32_t
-ZorNumGenState::getCurNumber()
-{
-  return this->curNumber;
-}
-
-void
-ZorNumGenState::setCurNumber ( int32_t value )
-{
-  this->curNumber = value;
-}
+NOARY_ACCEPT(ZorNumGen);
 
 
 /*******************************************************************************
@@ -2020,15 +1958,6 @@ static void formatNumber(
     resultString.append_in_place(fractional_part_result);
   }
   resultString.append_in_place(sub_picture.suffix);
-}
-
-
-void FnFormatNumberIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<FnFormatNumberIterator, PlanIteratorState>::
-  openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
 }
 
 

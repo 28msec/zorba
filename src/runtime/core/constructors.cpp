@@ -78,8 +78,6 @@ void DocumentIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
   UnaryBaseIterator<DocumentIterator, PlanIteratorState>::openImpl(planState, offset);
 
-  theSctx = planState.theCompilerCB->getStaticContext(sctx);
-
   theTypePreserve =
     (theSctx->construction_mode() == StaticContextConsts::cons_preserve ? true : false);
 
@@ -149,6 +147,9 @@ bool DocumentIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 }
 
 
+UNARY_ACCEPT(DocumentIterator);
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -176,6 +177,9 @@ bool DocumentContentIterator::nextImpl(store::Item_t& result, PlanState& planSta
 }
 
 
+UNARY_ACCEPT(DocumentContentIterator);
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -192,7 +196,7 @@ void ElementIteratorState::reset(PlanState&)
 
 
 ElementIterator::ElementIterator (
-    short               sctx,
+    static_context*     sctx,
     const QueryLoc&     loc,
     PlanIter_t&         qnameIter,
     PlanIter_t&         attrsIter,
@@ -213,13 +217,53 @@ ElementIterator::ElementIterator (
 }
 
 
+uint32_t ElementIterator::getStateSizeOfSubtree() const
+{
+  int32_t size = 0;
+
+  if (theQNameIter != 0)
+    size += theQNameIter->getStateSizeOfSubtree();
+  
+  if (theChildrenIter != 0)
+    size += theChildrenIter->getStateSizeOfSubtree();
+
+  if (theAttributesIter != 0)
+    size += theAttributesIter->getStateSizeOfSubtree();
+
+  if (theNamespacesIter != 0)
+    size += theNamespacesIter->getStateSizeOfSubtree();
+
+  return getStateSize() + size;
+}
+
+
+void ElementIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  if (theQNameIter != 0)
+    theQNameIter->accept(v);
+    
+  if (theAttributesIter != 0)
+    theAttributesIter->accept(v);
+
+  if (theChildrenIter != 0)
+    theChildrenIter->accept(v);
+    
+  if (theNamespacesIter != 0)
+    theNamespacesIter->accept(v);
+    
+  v.endVisit(*this);
+}
+
+
 void ElementIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
   StateTraitsImpl<ElementIteratorState>::createState(planState,
-                                                      this->stateOffset,
-                                                      offset);
+                                                     theStateOffset,
+                                                     offset);
 
-  StateTraitsImpl<ElementIteratorState>::initState(planState, this->stateOffset);
+  StateTraitsImpl<ElementIteratorState>::initState(planState, theStateOffset);
 
   if (theQNameIter != 0)
     theQNameIter->open(planState, offset);
@@ -232,8 +276,6 @@ void ElementIterator::openImpl(PlanState& planState, uint32_t& offset)
 
   if (theNamespacesIter != 0)
     theNamespacesIter->open(planState, offset);
-
-  theSctx = planState.theCompilerCB->getStaticContext(sctx);
 
   theTypePreserve =
     (theSctx->construction_mode() == StaticContextConsts::cons_preserve ? true : false);
@@ -393,7 +435,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
 void ElementIterator::resetImpl(PlanState& planState) const
 {
-  StateTraitsImpl<PlanIteratorState>::reset(planState, this->stateOffset);
+  StateTraitsImpl<PlanIteratorState>::reset(planState, this->theStateOffset);
 
   if (theQNameIter != 0)
     theQNameIter->reset(planState);
@@ -418,41 +460,20 @@ void ElementIterator::closeImpl(PlanState& planState)
   if (theChildrenIter != 0)
     theChildrenIter->close(planState);
 
-  if (theAttributesIter != 0)
-    theAttributesIter->close(planState);
+  if (theAttributesIter != 0)    theAttributesIter->close(planState);
 
   if (theNamespacesIter != 0)
     theNamespacesIter->close(planState);
 
-  StateTraitsImpl<ElementIteratorState>::destroyState(planState, this->stateOffset);
+  StateTraitsImpl<ElementIteratorState>::destroyState(planState, theStateOffset);
 }
-
   
-uint32_t ElementIterator::getStateSizeOfSubtree() const
-{
-  int32_t size = 0;
-
-  if (theQNameIter != 0)
-    size += theQNameIter->getStateSizeOfSubtree();
-  
-  if (theChildrenIter != 0)
-    size += theChildrenIter->getStateSizeOfSubtree();
-
-  if (theAttributesIter != 0)
-    size += theAttributesIter->getStateSizeOfSubtree();
-
-  if (theNamespacesIter != 0)
-    size += theNamespacesIter->getStateSizeOfSubtree();
-
-  return getStateSize() + size;
-}
-
 
 /*******************************************************************************
 
 ********************************************************************************/
 AttributeIterator::AttributeIterator(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     PlanIter_t&  aQNameIter,
     PlanIter_t&  aValueIter,
@@ -536,11 +557,14 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 }
 
 
+BINARY_ACCEPT(AttributeIterator);
+
+
 /*******************************************************************************
 
 ********************************************************************************/
 TextIterator::TextIterator(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     PlanIter_t&     aChild,
     bool            isRoot) 
@@ -599,11 +623,14 @@ bool TextIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 }
 
 
+UNARY_ACCEPT(TextIterator);
+
+
 /*******************************************************************************
 
 ********************************************************************************/
 PiIterator::PiIterator (
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     PlanIter_t&     aTarget,
     PlanIter_t&     aContent,
@@ -685,11 +712,14 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 }
 
 
+BINARY_ACCEPT(PiIterator);
+
+
 /********************************************************************************
 
 ********************************************************************************/
 CommentIterator::CommentIterator(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     PlanIter_t&     aComment,
     bool            isRoot)
@@ -744,6 +774,9 @@ bool CommentIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 }
 
 
+UNARY_ACCEPT(CommentIterator);
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -789,7 +822,7 @@ EnclosedIteratorState::~EnclosedIteratorState()
 
 
 EnclosedIterator::EnclosedIterator (
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     PlanIter_t& childIter)
   :
@@ -950,11 +983,14 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 }
 
 
+UNARY_ACCEPT(EnclosedIterator);
+
+
 /*******************************************************************************
 
 ********************************************************************************/
 NameCastIterator::NameCastIterator(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     PlanIter_t& aChild,
     NamespaceContext_t aNCtx)
@@ -1024,5 +1060,9 @@ bool NameCastIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   STACK_PUSH(valid, state);
   STACK_END(state);
 }
+
+
+UNARY_ACCEPT(NameCastIterator);
+
 
 }

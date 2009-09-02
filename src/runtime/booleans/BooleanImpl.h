@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_BOOLEAN_IMPL_H
-#define ZORBA_BOOLEAN_IMPL_H
+#ifndef ZORBA_RUNTIME_BOOLEAN
+#define ZORBA_RUNTIME_BOOLEAN
 
 #include "common/shared_types.h"
 
-//#include "zorbatypes/xqpstring.h"
+#include "types/typeconstants.h"
 
 #include "compiler/expression/expr_consts.h"
 
@@ -46,16 +46,32 @@ private:
   bool theNegate;
 
 public:
-  SERIALIZABLE_CLASS(FnBooleanIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnBooleanIterator, UnaryBaseIterator<FnBooleanIterator, PlanIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
+  SERIALIZABLE_CLASS(FnBooleanIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  FnBooleanIterator, 
+  UnaryBaseIterator<FnBooleanIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (UnaryBaseIterator<FnBooleanIterator, PlanIteratorState>*)this);
+    serialize_baseclass(ar, 
+    (UnaryBaseIterator<FnBooleanIterator, PlanIteratorState>*)this);
+
     ar & theNegate;
   }
-public:
-  FnBooleanIterator ( short sctx, const QueryLoc& loc, PlanIter_t& aIter, bool aNegate = false );
 
+public:
+  FnBooleanIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        PlanIter_t& aIter,
+        bool aNegate = false );
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+
+public:
   /**
    * Static function which computes the effective boolean value of a passed iterator.
    *
@@ -70,10 +86,6 @@ public:
         PlanState& planState,
         const PlanIterator* ,
         bool negate = false);
-
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
-  
-  virtual void accept(PlanIterVisitor&) const;
 };
 
 
@@ -91,24 +103,29 @@ private:
   LogicType theLogicType;
       
 public:
-  SERIALIZABLE_CLASS(LogicIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(LogicIterator, BinaryBaseIterator<LogicIterator, PlanIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
+  SERIALIZABLE_CLASS(LogicIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  LogicIterator,
+  BinaryBaseIterator<LogicIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (BinaryBaseIterator<LogicIterator, PlanIteratorState>*)this);
     SERIALIZE_ENUM(LogicType, theLogicType)
   }
+
 public:
   LogicIterator(
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc,
         PlanIter_t aChild0,
         PlanIter_t aChild1,
         LogicType aLogicType);
 
+  void accept(PlanIterVisitor& v) const;
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
-  
-  virtual void accept(PlanIterVisitor&) const;
 };
 
 
@@ -136,28 +153,29 @@ public:
   {
   }
 
-  void serialize(::zorba::serialization::Archiver &ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (BinaryBaseIterator<CompareIterator, PlanIteratorState>*)this);
+    serialize_baseclass(ar, 
+    (BinaryBaseIterator<CompareIterator, PlanIteratorState>*)this);
+
     SERIALIZE_ENUM(CompareConsts::CompareType, theCompType)
     ar & theIsGeneralComparison;
   }
 
 public:
   CompareIterator (
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc,
         PlanIter_t theChild0,
         PlanIter_t theChild1,
         CompareConsts::CompareType aCompType);
 
+  void accept(PlanIterVisitor& v) const;
+
   void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
       
-  virtual void accept(PlanIterVisitor&) const;
-    
-
   /**
    * Checks if the two passed items contain the same value (without castings
    * and promotions which are used in general and value comparison).
@@ -315,20 +333,29 @@ private:
 };
 
 
+/*******************************************************************************
+
+********************************************************************************/
 template <TypeConstants::atomic_type_code_t ATC>
-class TypedValueCompareIterator
-  : public NaryBaseIterator<TypedValueCompareIterator<ATC>, PlanIteratorState>
+class TypedValueCompareIterator : public NaryBaseIterator<TypedValueCompareIterator<ATC>,
+                                                          PlanIteratorState>
 {
   CompareConsts::CompareType  theCompType;
   long                        theTimezone;
   XQPCollator               * theCollation;
 
 public:
-  SERIALIZABLE_TEMPLATE_CLASS(TypedValueCompareIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(TypedValueCompareIterator, NaryBaseIterator<TypedValueCompareIterator<ATC>, PlanIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
+  SERIALIZABLE_TEMPLATE_CLASS(TypedValueCompareIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  TypedValueCompareIterator,
+  NaryBaseIterator<TypedValueCompareIterator<ATC>, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (NaryBaseIterator<TypedValueCompareIterator<ATC>, PlanIteratorState>*)this);
+    serialize_baseclass(ar,
+    (NaryBaseIterator<TypedValueCompareIterator<ATC>, PlanIteratorState>*)this);
+
     SERIALIZE_ENUM(CompareConsts::CompareType, theCompType);
     ar & theTimezone;
     ar & theCollation;
@@ -336,7 +363,7 @@ public:
 
 public:
   TypedValueCompareIterator(
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& children,
         CompareConsts::CompareType aCompType)
@@ -349,9 +376,11 @@ public:
 
   ~TypedValueCompareIterator () {}
 
+  void accept(PlanIterVisitor& v) const;
+
   void openImpl(PlanState& planState, uint32_t& offset);
+
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
-  void accept(PlanIterVisitor&) const;
 };
 
 

@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_ARITHMETIC_IMPL_H
-#define ZORBA_ARITHMETIC_IMPL_H
+#ifndef ZORBA_RUNTIME_ARITHMETIC
+#define ZORBA_RUNTIME_ARITHMETIC
 
 #include "common/shared_types.h"
 
@@ -308,23 +308,30 @@ public:
         store::Item_t& n1);
 
 public:
-  GenericArithIterator(short sctx, const QueryLoc&, PlanIter_t&, PlanIter_t&);
+  SERIALIZABLE_TEMPLATE_CLASS(GenericArithIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  GenericArithIterator,
+  BinaryBaseIterator<GenericArithIterator<Operation>, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, 
+    (BinaryBaseIterator<GenericArithIterator<Operation>, PlanIteratorState>*)this);
+  }
+
+public:
+  GenericArithIterator(
+        static_context* sctx,
+        const QueryLoc&,
+        PlanIter_t&,
+        PlanIter_t&);
 
   virtual ~GenericArithIterator() {}
 
-  void openImpl(PlanState& planState, uint32_t& offset);
+  void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState&) const;
-    
-  virtual void accept(PlanIterVisitor&) const;
-
-public:
-  SERIALIZABLE_TEMPLATE_CLASS(GenericArithIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(GenericArithIterator, BinaryBaseIterator<GenericArithIterator<Operation>, PlanIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (BinaryBaseIterator<GenericArithIterator<Operation>, PlanIteratorState>*)this);
-  }
 };
 
 }

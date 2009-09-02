@@ -16,14 +16,11 @@
 #ifndef ZORBA_RUNTIME_VAR_ITERATORS
 #define ZORBA_RUNTIME_VAR_ITERATORS
 
-#include "zorbatypes/xqpstring.h"
-
 #include "common/shared_types.h"
 
 #include "runtime/base/noarybase.h" 
 #include "runtime/base/narybase.h"
 
-#include "store/api/iterator.h"
 
 namespace zorba
 {
@@ -54,16 +51,25 @@ private:
   bool theSingleItem;
 
 public:
-  SERIALIZABLE_CLASS(CtxVarAssignIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(CtxVarAssignIterator, NaryBaseIterator<CtxVarAssignIterator, PlanIteratorState>)
-  void serialize(::zorba::serialization::Archiver &ar)
+  SERIALIZABLE_CLASS(CtxVarAssignIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  CtxVarAssignIterator,
+  NaryBaseIterator<CtxVarAssignIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, (NaryBaseIterator<CtxVarAssignIterator, PlanIteratorState>*)this);
+    serialize_baseclass(ar, 
+    (NaryBaseIterator<CtxVarAssignIterator, PlanIteratorState>*)this);
+
     ar & theSingleItem;
   }
 
 public:
-  CtxVarAssignIterator(short sctx, const QueryLoc& loc, std::vector<PlanIter_t>& args) 
+  CtxVarAssignIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& args) 
     :
     NaryBaseIterator<CtxVarAssignIterator, PlanIteratorState>(sctx, loc, args),
     theSingleItem(false)
@@ -71,6 +77,8 @@ public:
   }
 
   void setSingleItem() { theSingleItem = true; }
+
+  void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
@@ -146,27 +154,33 @@ protected:
   store::Item_t  theVarName;
   
 public:
-  SERIALIZABLE_CLASS(ForVarIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ForVarIterator, NoaryBaseIterator<ForVarIterator, ForVarState>)
-  void serialize(::zorba::serialization::Archiver &ar)
+  SERIALIZABLE_CLASS(ForVarIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  ForVarIterator, 
+  NoaryBaseIterator<ForVarIterator, ForVarState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (NoaryBaseIterator<ForVarIterator, ForVarState>*)this);
     ar & theVarName;
   }
+
 public:
-  ForVarIterator(short sctx, const QueryLoc& loc, const store::Item_t& name);
+  ForVarIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        const store::Item_t& name);
 
   ~ForVarIterator() { }
   
   store::Item* getVarName() const { return theVarName.getp(); }
 
-  void accept(PlanIterVisitor&) const;
+  void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
-  void bind(store::Item *value, PlanState& planState);
-
-  void foo();
+  void bind(store::Item* value, PlanState& planState);
 };
 
 
@@ -200,25 +214,33 @@ private:
   store::Item_t  theVarName;
   
 public:
-  SERIALIZABLE_CLASS(LetVarIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(LetVarIterator, NoaryBaseIterator<LetVarIterator, LetVarState>)
-  void serialize(::zorba::serialization::Archiver &ar)
+  SERIALIZABLE_CLASS(LetVarIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  LetVarIterator, 
+  NoaryBaseIterator<LetVarIterator, LetVarState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (NoaryBaseIterator<LetVarIterator, LetVarState>*)this);
     ar & theVarName;
   }
+
 public:
-  LetVarIterator(short sctx, const QueryLoc& loc, const store::Item_t& name);
+  LetVarIterator(
+        static_context* sctx,
+        const QueryLoc& loc, 
+        const store::Item_t& name);
 
   ~LetVarIterator() {}
   
   store::Item* getVarName() const { return theVarName.getp(); }
 
-  void accept(PlanIterVisitor&) const;
+  void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
-  void bind(store::Iterator_t it, PlanState& planState);
+  void bind(store::Iterator_t& it, PlanState& planState);
 };
 
 
