@@ -99,7 +99,7 @@ public:
 
   ~xqpStringStore();
 
-  SYNC_CODE(virtual RCLock* getRCLock() const { return &theRCLock; })
+  SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
   const std::string& str() const { return theString; }
 

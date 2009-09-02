@@ -203,7 +203,8 @@ protected:
   mutable long  theRefCount;
 
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(RCObject)
+  SERIALIZABLE_ABSTRACT_CLASS(RCObject);
+
   RCObject(::zorba::serialization::Archiver& ar)  
     :
     ::zorba::serialization::SerializeBaseClass(),
@@ -240,7 +241,7 @@ public:
 
   long* getSharedRefCounter() const { return NULL; } 
  
-  SYNC_CODE(virtual RCLock* getRCLock() const { ZORBA_FATAL(0, ""); return NULL; })
+  SYNC_CODE(RCLock* getRCLock() const { ZORBA_FATAL(0, ""); return NULL; })
 
   void addReference(long* sharedCounter SYNC_PARAM2(RCLock* lock)) const;
 
@@ -271,10 +272,11 @@ public:
 
   long* getSharedRefCounter() const  { return NULL; } 
 
-  SYNC_CODE(virtual RCLock* getRCLock() const { return NULL; })
+  SYNC_CODE(RCLock* getRCLock() const { return NULL; })
 
   SimpleRCObject& operator=(const SimpleRCObject&) { return *this; }
 };
+
 
 /*******************************************************************************
 
@@ -287,17 +289,17 @@ public:
 template<class T> class rchandle
 {
 protected:
-  T  *p;
+  T  * p;
 
+protected:
   void init()
   {
     if (p == 0) return;
-    p->addReference(p->getSharedRefCounter()
-                    SYNC_PARAM2(p->getRCLock()));
+    p->addReference(p->getSharedRefCounter() SYNC_PARAM2(p->getRCLock()));
   }
 
 
-  template <class otherT> rchandle& assign (const rchandle<otherT>& rhs)
+  template <class otherT> rchandle& assign(const rchandle<otherT>& rhs)
   {
 		if (p != rhs.getp())
     {
@@ -320,13 +322,10 @@ public:
     init();
   }
 
-  rchandle(::zorba::serialization::Archiver &ar) {}
-
   ~rchandle()
   {
     if (p)
-      p->removeReference(p->getSharedRefCounter()
-                          SYNC_PARAM2(p->getRCLock()));
+      p->removeReference(p->getSharedRefCounter() SYNC_PARAM2(p->getRCLock()));
     p = 0;
   }
 
