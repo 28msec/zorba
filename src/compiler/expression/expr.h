@@ -916,7 +916,7 @@ public:
   expr_kind_t get_expr_kind () const { return fo_expr_kind; }
 protected:
   checked_vector<expr_t>   argv;
-  const function         * func;
+  function               * func;
 
 public:
   SERIALIZABLE_CLASS(fo_expr)
@@ -924,37 +924,50 @@ public:
   void serialize(::zorba::serialization::Archiver &ar);
 
 public:
-  fo_expr (short sctx, const QueryLoc& loc, const function *f)
-   : expr(sctx, loc), func (f)  { assert (f != NULL); }
+  fo_expr (short sctx, const QueryLoc& loc, function* f)
+    :
+    expr(sctx, loc),
+    func (f)
+  {
+    assert (f != NULL);
+  }
 
-  fo_expr (short sctx, const QueryLoc& loc, const function *f, expr_t arg)
-   : expr(sctx, loc), func (f)
+  fo_expr (short sctx, const QueryLoc& loc, function* f, expr_t arg)
+    :
+    expr(sctx, loc),
+    func (f)
   {
     assert (f != NULL);
     add (arg);
   }
 
-  fo_expr (short sctx, const QueryLoc& loc, const function *f, expr_t arg1, expr_t arg2)
-   : expr(sctx, loc), func (f)
+  fo_expr (short sctx, const QueryLoc& loc, function* f, expr_t arg1, expr_t arg2)
+    :
+    expr(sctx, loc),
+    func (f)
   {
     assert (f != NULL);
     add (arg1); add (arg2);
   }
 
-  fo_expr (short sctx, const QueryLoc& loc, const function *f, expr_t arg1, expr_t arg2, expr_t arg3)
+  fo_expr (short sctx, const QueryLoc& loc, function* f, expr_t arg1, expr_t arg2, expr_t arg3)
    : expr(sctx, loc), func (f)
   {
     assert (f != NULL);
     add (arg1); add (arg2); add (arg3);
   }
 
-  fo_expr (short sctx, const QueryLoc& loc, const function *f, const std::vector<expr_t>& args)
-   : expr(sctx, loc), argv(args), func(f)
+  fo_expr (short sctx, const QueryLoc& loc, function* f, const std::vector<expr_t>& args)
+    :
+    expr(sctx, loc),
+    argv(args),
+    func(f)
   {
     assert (f != NULL);
   }
 
-  static fo_expr *create_seq (short sctx, const QueryLoc &);
+  static fo_expr* create_seq (short sctx, const QueryLoc &);
+
   bool is_concatenation () const;
 
   bool cache_compliant () { return true; }
@@ -978,24 +991,35 @@ public:
   uint32_t size() const { return argv.size(); }
 
   expr_t& operator[](int i) { invalidate (); return argv[i]; }
+
   const expr_t& operator[](int i) const { return argv[i]; }
 
   std::vector<expr_t>::const_iterator begin() const { return argv.begin(); }
   std::vector<expr_t>::const_iterator end() const { return argv.end(); }
+
   std::vector<expr_t>::iterator begin() { invalidate (); return argv.begin(); }
   std::vector<expr_t>::iterator end() { invalidate (); return argv.end(); }
 
   const function* get_func() const { return func; }
-  void set_func (const function *f) { invalidate (); func = f; }
-  const signature &get_signature () const;
+
+  function* get_func() { invalidate(); return func; }
+
+  void set_func(function* f) { invalidate(); func = f; }
+
+  const signature& get_signature () const;
+
   store::Item_t get_fname () const;
 
   void next_iter (expr_iterator_data&);
+
   void accept (expr_visitor&);
+
   std::ostream& put(std::ostream&) const;
 
   virtual xqtref_t return_type_impl(static_context *sctx);
+
   void compute_upd_seq_kind () const;
+
   virtual expr_t clone(substitution_t &s);
 };
 
