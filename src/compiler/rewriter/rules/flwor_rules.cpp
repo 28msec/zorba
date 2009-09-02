@@ -48,18 +48,20 @@ static bool refactor_index_pred(RewriterContext&, const expr*, var_expr*&, rchan
 class SubstVars : public RewriteRule 
 {
 protected:
-  var_expr   * var;
-  expr       * subst;
-  std::string m_ruleName;
+  var_expr   * theVarExpr;
+  expr       * theSubstExpr;
+  std::string  theRuleName;
 
 public:
-  SubstVars(var_expr *var_, expr *subst_) 
+  SubstVars(var_expr* var, expr* subst) 
     :
-    var (var_), subst (subst_), m_ruleName("SubstVars") 
+    theVarExpr(var),
+    theSubstExpr(subst),
+    theRuleName("SubstVars") 
   {
   }
 
-  const std::string& getRuleName() const { return m_ruleName; }
+  const std::string& getRuleName() const { return theRuleName; }
 
   expr_t rewritePre(expr *node, RewriterContext& rCtx);
   expr_t rewritePost(expr *node, RewriterContext& rCtx);
@@ -68,7 +70,7 @@ public:
 
 RULE_REWRITE_PRE(SubstVars) 
 {
-  return (node == var) ? subst : NULL;
+  return (node == theVarExpr) ? theSubstExpr : NULL;
 }
   
 
@@ -81,11 +83,14 @@ RULE_REWRITE_POST(SubstVars)
 /*******************************************************************************
   Replace all references to var "var" inside the expr "root" with expr "subst"
 ********************************************************************************/
-expr_t subst_vars (RewriterContext rCtx0, expr_t root, var_expr* var, expr* subst) 
+expr_t subst_vars(RewriterContext rCtx0, expr_t root, var_expr* var, expr* subst) 
 {
   RewriterContext rCtx (rCtx0.getCompilerCB (), root);
+
   auto_ptr<Rewriter> rw(new SingletonRuleMajorDriverBase(rule_ptr_t(new SubstVars(var, subst))));
+
   rw->rewrite(rCtx);
+
 #if 0  // debug substitutions
   cout << "After subst " << var << ":" << endl; rCtx.getRoot()->put (cout) << endl;
 #endif
@@ -540,17 +545,19 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
     return flwor;
   }
   
-  // 'for $x at $p where $p = ... return ...'
+  // 'for $x at $p in E where $p = const ... return ...'
   if (whereExpr != NULL &&
       refactor_index_pred(rCtx, whereExpr, pvar, pos) &&
       count_variable_uses(flwor, pvar, 2) <= 1) 
   {
-    rchandle<fo_expr> result = new fo_expr (whereExpr->get_cur_sctx(), LOC(whereExpr),
+    rchandle<fo_expr> result = new fo_expr (whereExpr->get_cur_sctx(),
+                                            LOC(whereExpr),
                                             LOOKUP_FN("fn", "subsequence", 3),
                                             pvar->get_for_clause()->get_expr(),
                                             &*pos,
-                                            new const_expr(pos->get_cur_sctx(), LOC(pos),
-                                                            xqp_double::parseInt(1)));
+                                            new const_expr(pos->get_cur_sctx(),
+                                                           LOC(pos),
+                                                           xqp_double::parseInt(1)));
     fix_annotations(&*result);
     for_clause* clause = pvar->get_for_clause();
     clause->set_expr(&*result);
@@ -570,8 +577,8 @@ RULE_REWRITE_POST(RefactorPredFLWOR)
 
 
 /*******************************************************************************
-  Checks whether "cond" has the form '$pos_var = ($idx)'
-  where $idx would be a proper sequence position.
+  Checks whether "cond" has the form '$pos_var = const', where const is an
+  integer literal that is >= 1.
 ********************************************************************************/
 static bool refactor_index_pred(
     RewriterContext& rCtx,

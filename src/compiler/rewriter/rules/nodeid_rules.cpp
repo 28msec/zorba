@@ -249,12 +249,12 @@ static void mark_casts(
 ********************************************************************************/
 RULE_REWRITE_PRE(MarkConsumerNodeProps)
 {
-  switch (node->get_expr_kind ()) 
+  switch (node->get_expr_kind()) 
   {
   case fo_expr_kind: 
   {
     fo_expr* fo = static_cast<fo_expr *>(node);
-    const function* f = fo->get_func ();
+    function* f = fo->get_func();
 
     if (f == LOOKUP_FN("fn", "empty", 1)
         || f == LOOKUP_FN("fn", "exists", 1)
@@ -275,27 +275,31 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
     else if (f == LOOKUP_FN ("fn", "zero-or-one", 1) ||
              f == LOOKUP_FN ("fn", "exactly-one", 1))
     {
+      // If these functions are over a duplicate elimination function, the 
+      // duplicate elimination is pulled up into the runtime iterators for
+      // fn:zero-or-one or fn:exactly-one.
+      bool ignoresDups = false;
       expr_t arg = (*fo)[0];
+
+      if (arg->get_expr_kind() == fo_expr_kind)
+      {
+        fo_expr* fo = static_cast<fo_expr *>(arg.getp());
+        function* argFunc = fo->get_func();
+
+        if (argFunc->isNodeDistinctFunction())
+        {
+          ignoresDups = true;
+          f->setFlag(function::DoDistinct);
+         }
+      }
+
+      TSVAnnotationValue::update_annotation(arg,
+                                            AnnotationKey::IGNORES_DUP_NODES,
+                                            TSVAnnotationValue::from_bool(ignoresDups));
 
       TSVAnnotationValue::update_annotation(arg,
                                             AnnotationKey::IGNORES_SORTED_NODES,
                                             TSVAnnotationValue::TRUE_VAL);
-
-      if (arg->get_expr_kind() == relpath_expr_kind)
-      {
-        // If these functions are over a path expr, then the duplicate
-        // elimination that would normally be done by the path expr is
-        // pulled up into the corresponding runtime iterators.
-        TSVAnnotationValue::update_annotation(arg,
-                                              AnnotationKey::IGNORES_DUP_NODES,
-                                              TSVAnnotationValue::TRUE_VAL);
-      }
-      else
-      {
-        TSVAnnotationValue::update_annotation(arg,
-                                              AnnotationKey::IGNORES_DUP_NODES,
-                                              TSVAnnotationValue::FALSE_VAL);
-      }
     }
     else if (f == LOOKUP_FN ("fn", "unordered", 1) ||
              f == LOOKUP_FN ("fn", "count", 1) ||
@@ -461,10 +465,10 @@ RULE_REWRITE_PRE(EliminateNodeOps)
     const op_node_sort_distinct* nsdf = dynamic_cast<const op_node_sort_distinct *> (f);
     if (nsdf != NULL) 
     {
-      const function *fmin = nsdf->min_action(sctx,
-                                              node,
-                                              (*fo)[0],
-                                              nodes_or_atomics((*fo)[0]->return_type(sctx)));
+      function *fmin = nsdf->min_action(sctx,
+                                        node,
+                                        (*fo)[0],
+                                        nodes_or_atomics((*fo)[0]->return_type(sctx)));
       if (fmin != NULL) 
       {
         fo->set_func(fmin);

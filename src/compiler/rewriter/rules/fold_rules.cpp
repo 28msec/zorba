@@ -31,7 +31,6 @@
 #include "types/casting.h"
 
 #include "functions/function.h"
-#include "functions/Misc.h"
 
 #include "runtime/util/plan_wrapper_holder.h"
 #include "runtime/base/plan_iterator.h"
@@ -291,10 +290,12 @@ RULE_REWRITE_POST(MarkUnfoldableExprs)
     // Do not fold functions that always require access to the dynamic context,
     // or may need to access the implicit timezone (which is also in the dynamic
     // constext). 
-    if (f->requires_dyn_ctx () || dynamic_cast<const fn_error *> (f) != NULL
-        || maybe_needs_implicit_timezone (fo, rCtx.getStaticContext ())
-        || !f->isPureFunction())
+    if (f->requires_dyn_ctx () ||
+        f->isFnError() ||
+        maybe_needs_implicit_timezone(fo, rCtx.getStaticContext()) ||
+        !f->isPureFunction())
       node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
+
     break;
   }
       
@@ -441,8 +442,7 @@ RULE_REWRITE_POST(MarkImpureExprs)
     fo_expr *fo = static_cast<fo_expr *> (node);
     const function *f = fo->get_func ();
 
-    if (f == LOOKUP_OP2 ("ctxvar-assign") ||
-        dynamic_cast<const fn_error *> (f) != NULL)
+    if (f == LOOKUP_OP2("ctxvar-assign") || f->isFnError())
       node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
 
     break;

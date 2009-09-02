@@ -300,7 +300,7 @@ static xqtref_t specialize_numeric(fo_expr *fo, static_context *sctx)
   argTypes.push_back(aType);
   argTypes.push_back(aType);
   
-  const function* replacement = fn->specialize(sctx, argTypes);
+  function* replacement = fn->specialize(sctx, argTypes);
   if (replacement != NULL) 
   {
     fo->set_func(replacement);
@@ -313,7 +313,8 @@ static xqtref_t specialize_numeric(fo_expr *fo, static_context *sctx)
 }
 
 
-static const function *flip_value_cmp (std::string fname) {
+static function* flip_value_cmp (std::string fname) 
+{
   size_t pos = fname.rfind ('-');
   std::string n = fname.substr (0, pos), n1;
 
@@ -376,8 +377,7 @@ RULE_REWRITE_POST(SpecializeOperations)
           std::vector<xqtref_t> argTypes;
           argTypes.push_back(t [0]);
           argTypes.push_back(t [1]);
-          const function *replacement =
-            fn->specialize(rCtx.getStaticContext(), argTypes);
+          function *replacement = fn->specialize(rCtx.getStaticContext(), argTypes);
           if (replacement != NULL) {
             fo->set_func(replacement);
             return node;
@@ -408,8 +408,7 @@ RULE_REWRITE_POST(SpecializeOperations)
             std::vector<xqtref_t> argTypes;
             argTypes.push_back(string_type);
             argTypes.push_back(string_type);
-            const function *replacement =
-              fn->specialize(rCtx.getStaticContext(), argTypes);
+            function *replacement = fn->specialize(rCtx.getStaticContext(), argTypes);
             if (replacement != NULL) {
               fo->set_func(replacement);
               return node;
@@ -425,7 +424,7 @@ RULE_REWRITE_POST(SpecializeOperations)
                 expr_t tmp = (*fo) [0];
                 (*fo) [0] = (*fo) [1];
                 (*fo) [1] = tmp;
-                fo->set_func (flip_value_cmp (fo->get_fname ()->getLocalName ()->str ()));
+                fo->set_func(flip_value_cmp(fo->get_fname()->getLocalName()->str()));
               }
               return node;
             }
