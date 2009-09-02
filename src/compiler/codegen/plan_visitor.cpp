@@ -37,13 +37,15 @@
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
 
+#include "runtime/visitors/printervisitor.h"
+#include "runtime/visitors/iterprinter.h"
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/core/sequencetypes.h"
 #include "runtime/core/item_iterator.h"
 #include "runtime/core/var_iterators.h"
 #include "runtime/core/constructors.h"
 #include "runtime/core/path_iterators.h"
-#include "runtime/core/path.h"
+//#include "runtime/core/path.h"
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/core/flwor_iterator.h"
 #include "runtime/core/trycatch.h"
@@ -62,8 +64,6 @@
 #include "runtime/fncontext/FnContextImpl.h"
 #include "runtime/misc/MiscImpl.h"
 #include "runtime/update/update.h"
-#include "runtime/visitors/printervisitor.h"
-#include "runtime/visitors/iterprinter.h"
 
 #include "functions/function.h"
 
@@ -80,7 +80,7 @@
 
 #define QLOCDECL const QueryLoc &qloc = v.get_loc(); (void) qloc
 
-#define SCTXDECL short sctx = v.get_cur_sctx(); (void) sctx
+#define SCTXDECL static_context* sctx = get_sctx(v.get_cur_sctx()); (void)sctx;
 
 #ifndef NDEBUG
 
@@ -121,6 +121,7 @@ typedef rchandle<LetVarIterator> LetVarIter_t;
 
 
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
+
 
 template <typename T> T pop_stack (stack<T> &stk) 
 {
@@ -207,10 +208,10 @@ typedef rchandle<FlworClauseVarMap> FlworClauseVarMap_t;
 class plan_visitor : public expr_visitor
 {
 protected:
-  static vector<PlanIter_t> no_var_iters;
+  static vector<PlanIter_t>              no_var_iters;
 
 protected:
-  uint32_t depth;
+  uint32_t                               depth;
   
   stack<PlanIter_t>                      itstack;
 
@@ -225,6 +226,9 @@ protected:
 
   CompilerCB                           * ccb;
 
+  short                                  theLastSctxId;
+  static_context                       * theLastSctx;
+
   std::stack<ZorbaDebugIterator*>        theDebuggerStack;
 
 #define LOOKUP_OP1( local ) (ccb->m_sctx->lookup_builtin_fn (":" local, 1))
@@ -233,9 +237,11 @@ public:
 
 plan_visitor(CompilerCB *ccb_, hash64map<vector<LetVarIter_t> *> *arg_var_map = NULL)
   :
-  depth (0),
+  depth(0),
   arg_var_iter_map(arg_var_map),
-  ccb (ccb_)
+  ccb(ccb_),
+  theLastSctxId(-1),
+  theLastSctx(NULL)
 {
 }
 
@@ -268,6 +274,18 @@ void print_stack()
     XMLIterPrinter vp (cout);
     print_iter_plan (vp, peek_stack(itstack));
   }
+}
+
+
+static_context* get_sctx(short sctx)
+{
+  if (sctx != theLastSctxId)
+  {
+    theLastSctxId = sctx;
+    theLastSctx = ccb->getStaticContext(sctx);
+  }
+
+  return theLastSctx;
 }
 
 
@@ -389,7 +407,9 @@ PlanIter_t base_var_codegen(
   bool bound = varMap.get((uint64_t) &var, varRefs);
   ZORBA_ASSERT(bound);
 
-  Iter* iter = new Iter(var.get_cur_sctx(), var.get_loc(), var.get_varname());
+  Iter* iter = new Iter(get_sctx(var.get_cur_sctx()),
+                        var.get_loc(),
+                        var.get_varname());
 
   varRefs->push_back(iter);
 
@@ -402,11 +422,15 @@ PlanIter_t create_var_iter(const var_expr& var, bool forvar)
   PlanIter_t iter;
   if (forvar)
   {
-    iter = new ForVarIterator(var.get_cur_sctx(), var.get_loc(), var.get_varname());
+    iter = new ForVarIterator(get_sctx(var.get_cur_sctx()),
+                              var.get_loc(),
+                              var.get_varname());
   }
   else
   {
-    iter = new LetVarIterator(var.get_cur_sctx(), var.get_loc(), var.get_varname());
+    iter = new LetVarIterator(get_sctx(var.get_cur_sctx()),
+                              var.get_loc(),
+                              var.get_varname());
   }
   return iter;
 }
@@ -415,7 +439,7 @@ PlanIter_t create_var_iter(const var_expr& var, bool forvar)
 void general_var_codegen (const var_expr& var)
 {
   const QueryLoc& qloc = var.get_loc();
-  short sctx = var.get_cur_sctx();
+  static_context* sctx = get_sctx(var.get_cur_sctx());
 
   bool isForVar = false;
 
@@ -539,10 +563,10 @@ void general_var_codegen (const var_expr& var)
     }
     else 
     {
-      expr_t lookup_expr = new fo_expr(sctx,
+      expr_t lookup_expr = new fo_expr(var.get_cur_sctx(),
                                        qloc,
                                        LOOKUP_OP1 ("ctxvariable"),
-                                       new const_expr(sctx,
+                                       new const_expr(var.get_cur_sctx(),
                                                       qloc,
                                                       dynamic_context::var_key(&var)));
       lookup_expr->accept (*this);
@@ -813,7 +837,7 @@ struct wincond_var_iters
 
 bool nativeColumnSort(expr* colExpr)
 { 
-  static_context* sctx = ccb->m_sctx;
+  static_context* sctx = get_sctx(colExpr->get_cur_sctx());
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   xqtref_t colType = colExpr->return_type(sctx);
@@ -840,9 +864,11 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 
   const QueryLoc& qloc = flworExpr.get_loc();
 
+  static_context* sctx = get_sctx(flworExpr.get_cur_sctx());
+
   if (currentClause < 0)
   {
-    return new flwor::TupleSourceIterator(flworExpr.get_cur_sctx(), qloc);
+    return new flwor::TupleSourceIterator(sctx, qloc);
   }
 
   const flwor_clause& c = *(flworExpr[currentClause]);
@@ -866,7 +892,8 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
   if (c.get_kind() == flwor_clause::where_clause) 
   {
     PlanIter_t where = pop_itstack();
-    return new flwor::WhereIterator(flworExpr.get_cur_sctx(), c.get_loc(), PREV_ITER, where);
+    PlanIter_t input = PREV_ITER;
+    return new flwor::WhereIterator(sctx, c.get_loc(), input, where);
   }
 
   //
@@ -894,7 +921,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 
     if (! fc->is_outer()) 
     {
-      return new flwor::ForIterator(var->get_cur_sctx(),
+      return new flwor::ForIterator(sctx,
                                     var->get_loc(),
                                     var->get_varname(),
                                     PREV_ITER,
@@ -906,7 +933,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
     {
       ZORBA_ASSERT(fc->get_pos_var() == NULL);
 
-      return new flwor::OuterForIterator(var->get_cur_sctx(),
+      return new flwor::OuterForIterator(sctx,
                                          var->get_loc(),
                                          var->get_varname(),
                                          PREV_ITER,
@@ -930,7 +957,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 
     vector<PlanIter_t>& varRefs = clauseVarMap->theVarRebinds[0]->theOutputVarRefs;
 
-    return new flwor::LetIterator(var->get_cur_sctx(),
+    return new flwor::LetIterator(sctx,
                                   var->get_loc(),
                                   var->get_varname(),
                                   PREV_ITER,
@@ -980,7 +1007,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
       start_clause.reset(new flwor::StartClause(pop_itstack(), wvars));
     }
 
-    return new flwor::WindowIterator(var->get_cur_sctx(),
+    return new flwor::WindowIterator(sctx,
                                      var->get_loc(),
                                      wc->get_winkind() == window_clause::tumbling_window ? flwor::WindowIterator::TUMBLING : flwor::WindowIterator::SLIDING,
                                      PREV_ITER,
@@ -1002,7 +1029,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 
     vector<PlanIter_t>& var_iters = clauseVarMap->theVarRebinds[0]->theOutputVarRefs;
 
-    return new flwor::CountIterator(var->get_cur_sctx(),
+    return new flwor::CountIterator(sctx,
                                     var->get_loc(),
                                     var->get_varname(),
                                     PREV_ITER,
@@ -1075,7 +1102,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
                                        modifiers[i].theCollation);
     }
 
-    return new flwor::OrderByIterator(flworExpr.get_cur_sctx(),
+    return new flwor::OrderByIterator(sctx,
                                       c.get_loc(),
                                       obc->is_stable(),
                                       orderSpecs,
@@ -1096,7 +1123,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 
     generate_groupby(clauseVarMap, gspecs, gouters);
 
-    return new flwor::GroupByIterator(flworExpr.get_cur_sctx(), c.get_loc(), PREV_ITER, gspecs, gouters);
+    return new flwor::GroupByIterator(sctx, c.get_loc(), PREV_ITER, gspecs, gouters);
   }
 
   ZORBA_ASSERT (false);
@@ -1247,7 +1274,7 @@ void flwor_codegen(const flwor_expr& flworExpr)
 
   std::reverse(forletClauses.begin(), forletClauses.end());
 
-  flworIter = new flwor::FLWORIterator(flworExpr.get_cur_sctx(),
+  flworIter = new flwor::FLWORIterator(get_sctx(flworExpr.get_cur_sctx()),
                                        flworExpr.get_loc(),
                                        forletClauses,
                                        whereIter,
@@ -1405,11 +1432,12 @@ void end_visit (if_expr& v) {
 }
 
 
-bool begin_visit (insert_expr& v) {
+bool begin_visit (insert_expr& v) 
+{
   CODEGEN_TRACE_IN("");
 
   expr_t targetExpr = v.getTargetExpr();
-  xqtref_t targetType = targetExpr->return_type(ccb->m_sctx);
+  xqtref_t targetType = targetExpr->return_type(sctx);
 
   if (TypeOps::is_equal(*targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
     ZORBA_ERROR_LOC(XUDY0027, qloc);
@@ -1448,7 +1476,7 @@ bool begin_visit (replace_expr& v)
   CODEGEN_TRACE_IN("");
 
   expr_t targetExpr = v.getTargetExpr();
-  xqtref_t targetType = targetExpr->return_type(ccb->m_sctx);
+  xqtref_t targetType = targetExpr->return_type(sctx);
 
   if (TypeOps::is_equal(*targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
     ZORBA_ERROR_LOC(XUDY0027, qloc);
@@ -1474,7 +1502,7 @@ bool begin_visit (rename_expr& v)
   CODEGEN_TRACE_IN("");
 
   expr_t targetExpr = v.getTargetExpr();
-  xqtref_t targetType = targetExpr->return_type(ccb->m_sctx);
+  xqtref_t targetType = targetExpr->return_type(sctx);
 
   if (TypeOps::is_equal(*targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
     ZORBA_ERROR_LOC(XUDY0027, qloc);
@@ -1502,7 +1530,7 @@ bool begin_visit (transform_expr& v)
   {
     rchandle<var_expr> var = (*lIter)->getVar();
     expr_t sourceExpr = (*lIter)->getExpr();
-    xqtref_t sourceType = sourceExpr->return_type(ccb->m_sctx);
+    xqtref_t sourceType = sourceExpr->return_type(sctx);
 
     if (TypeOps::is_subtype(*sourceType, *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE))
       ZORBA_ERROR_LOC(XUTY0013, qloc);
@@ -1618,7 +1646,7 @@ void end_visit (fo_expr& v)
 
   if (func->validate_args (argv)) 
   {
-    PlanIter_t iter = func->codegen (ccb, sctx, loc, argv, v);
+    PlanIter_t iter = func->codegen(ccb, sctx, loc, argv, v);
     ZORBA_ASSERT(iter != NULL);
     push_itstack(iter);
 
@@ -1695,11 +1723,12 @@ void end_visit (cast_expr& v) {
   push_itstack(new CastIterator(sctx, qloc, lChild, v.get_target_type()));
 }
 
-bool begin_visit (name_cast_expr& v) {
+bool begin_visit (name_cast_expr& v) 
+{
   CODEGEN_TRACE_IN("");
 
   expr_t targetExpr = v.get_input();
-  xqtref_t targetType = targetExpr->return_type(ccb->m_sctx);
+  xqtref_t targetType = targetExpr->return_type(sctx);
 
   if (TypeOps::is_subtype(*GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE, *targetType) ||
       TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE) ||
@@ -1781,7 +1810,8 @@ void end_visit (relpath_expr& v) {
 /*******************************************************************************
 
 ********************************************************************************/
-bool begin_visit (axis_step_expr& v) {
+bool begin_visit (axis_step_expr& v) 
+{
   CODEGEN_TRACE_IN("");
 
   store::ItemFactory& factory = *(GENV.getStore().getItemFactory());
@@ -1829,7 +1859,7 @@ bool begin_visit (axis_step_expr& v) {
     prd->setQName(testExpr->getQName());
     store::Item *typeName = testExpr->getTypeName();
     if (typeName != NULL) {
-      prd->setType(ccb->m_sctx->get_typemanager()->create_named_type(typeName));
+      prd->setType(sctx->get_typemanager()->create_named_type(typeName));
     }
     prd->setNilledAllowed(testExpr->getNilledAllowed());
   }
@@ -2025,7 +2055,7 @@ bool begin_visit (match_expr& v)
     axisItep->setQName(v.getQName());
     store::Item *typeName = v.getTypeName();
     if (typeName != NULL) {
-      axisItep->setType(ccb->m_sctx->get_typemanager()->create_named_type(typeName));
+      axisItep->setType(sctx->get_typemanager()->create_named_type(typeName));
     }
     axisItep->setNilledAllowed(v.getNilledAllowed());
   }
