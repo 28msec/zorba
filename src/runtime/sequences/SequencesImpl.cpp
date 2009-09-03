@@ -1594,8 +1594,8 @@ void FnIdIteratorState::reset(PlanState& planState)
 bool FnIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
   store::Item_t  id;
-  store::Item*   child;
-  store::Item*   attr;
+  store::Item*   child = 0;
+  store::Item*   attr = 0;
   store::Item_t  tmp;
   bool           isMatchingId;
   ulong i;

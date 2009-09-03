@@ -27,6 +27,11 @@
 #include <xercesc/validators/schema/SchemaElementDecl.hpp>
 #include <xercesc/util/RefHash3KeysIdPool.hpp>
 
+#if (XERCES_VERSION_MAJOR < 3)
+#  define XERCESC_XMLSize_t unsigned int
+#else
+#  define XERCESC_XMLSize_t XMLSize_t
+#endif
 
 //daniel: this is to make cygwin work; xerces defines WIN32 in case of cygwin, which is wrong
 #ifdef CYGWIN
@@ -276,7 +281,7 @@ private:
         const unsigned int urlId,
         const XMLCh* const elemPrefix,
         const XERCES_CPP_NAMESPACE_QUALIFIER RefVectorOf<XERCES_CPP_NAMESPACE_QUALIFIER XMLAttr>& attrList,
-        const XMLSize_t attrCount,
+        const XERCESC_XMLSize_t attrCount,
         const bool isEmpty,
         const bool isRoot) 
   {
@@ -292,12 +297,12 @@ private:
 
   virtual void docCharacters(
         const XMLCh* const chars,
-        const XMLSize_t length,
+        const XERCESC_XMLSize_t length,
         const bool cdataSection);
 
   virtual void ignorableWhitespace(
         const XMLCh* const chars,
-        const XMLSize_t length,
+        const XERCESC_XMLSize_t length,
         const bool cdataSection)
   {
   }
@@ -379,6 +384,7 @@ private:
 
 
 #endif // ZORBA_NO_XMLSCHEMA
+#undef XERCESC_XMLSize_t
 #endif
 
 /*

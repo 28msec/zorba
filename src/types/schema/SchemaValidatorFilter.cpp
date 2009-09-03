@@ -44,6 +44,11 @@
 
 #include "compiler/parser/query_loc.h"
 
+#if (XERCES_VERSION_MAJOR < 3)
+# define XERCESC_XMLSize_t unsigned int
+#else
+# define XERCESC_XMLSize_t XMLSize_t
+#endif
 
 XERCES_CPP_NAMESPACE_USE;
 
@@ -1084,6 +1089,7 @@ unsigned int SchemaValidatorFilter::resolveQName(
     unsigned int uriId;
 
 #if _XERCES_VERSION < 30000
+    bool unknown = false;
     uriId = fElemStack.mapPrefixToURI(XMLUni::fgZeroLenString, 
                                       (ElemStack::MapModes) mode,
                                       unknown);
@@ -1469,7 +1475,7 @@ XMLElementDecl *SchemaValidatorFilter::createElementDecl(
 
 void SchemaValidatorFilter::docCharacters(
     const XMLCh* const chars, 
-    const XMLSize_t length,
+    const XERCESC_XMLSize_t length,
     const bool cdataSection)
 {
   // The XercSchemaValidator calls this method to report default element values
