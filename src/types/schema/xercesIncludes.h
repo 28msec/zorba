@@ -19,6 +19,7 @@
 #include "common/common.h"
 #ifndef ZORBA_NO_XMLSCHEMA
 
+#include <xercesc/util/XercesVersion.hpp>
 #include <xercesc/framework/psvi/XSAttributeDeclaration.hpp>
 #include <xercesc/framework/psvi/XSAttributeGroupDefinition.hpp>
 #include <xercesc/framework/psvi/XSAttributeUse.hpp>
@@ -35,7 +36,12 @@
 
 #include <xercesc/framework/URLInputSource.hpp>
 
-#include <xercesc/internal/XMLGrammarPoolImpl.hpp>
+#if (XERCES_VERSION_MAJOR < 3)
+#  include <xercesc/internal/XMLGrammarPoolImpl.hpp>
+#else
+#  include <xercesc/framework/XMLGrammarPoolImpl.hpp>
+#endif
+
 #include <xercesc/internal/BinMemOutputStream.hpp>
 #include <xercesc/util/BinMemInputStream.hpp>
 

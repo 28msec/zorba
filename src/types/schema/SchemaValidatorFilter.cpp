@@ -1081,7 +1081,6 @@ unsigned int SchemaValidatorFilter::resolveQName(
 
   if(prefixColonPos == -1) 
   {
-    bool unknown = false;
     unsigned int uriId;
 
 #if _XERCES_VERSION < 30000
@@ -1470,7 +1469,7 @@ XMLElementDecl *SchemaValidatorFilter::createElementDecl(
 
 void SchemaValidatorFilter::docCharacters(
     const XMLCh* const chars, 
-    const unsigned int length,
+    const XMLSize_t length,
     const bool cdataSection)
 {
   // The XercSchemaValidator calls this method to report default element values

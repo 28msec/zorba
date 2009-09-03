@@ -101,7 +101,7 @@ class RCLock
 
 public:
 
-RCLock::RCLock()
+RCLock()
 {
   pthread_mutexattr_t attr;
   pthread_mutexattr_init(&attr);
@@ -115,7 +115,7 @@ RCLock::RCLock()
 } 
 
 
-RCLock::RCLock(const RCLock&)
+RCLock(const RCLock&)
 {
   pthread_mutexattr_t attr;
   pthread_mutexattr_init(&attr);
@@ -129,7 +129,7 @@ RCLock::RCLock(const RCLock&)
 } 
 
 
-RCLock::~RCLock()
+~RCLock()
 {
   if (0 != pthread_mutex_destroy(&theLock))
   {
@@ -138,7 +138,7 @@ RCLock::~RCLock()
   }
 } 
 
-void RCLock::acquire()
+void acquire()
 {
   if (0 != pthread_mutex_lock(&theLock))
   {
@@ -148,7 +148,7 @@ void RCLock::acquire()
 
 }
 
-void RCLock::release()
+void release()
 {
   if (0 != pthread_mutex_unlock(&theLock))
   {

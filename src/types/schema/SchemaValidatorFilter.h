@@ -276,7 +276,7 @@ private:
         const unsigned int urlId,
         const XMLCh* const elemPrefix,
         const XERCES_CPP_NAMESPACE_QUALIFIER RefVectorOf<XERCES_CPP_NAMESPACE_QUALIFIER XMLAttr>& attrList,
-        const unsigned int attrCount,
+        const XMLSize_t attrCount,
         const bool isEmpty,
         const bool isRoot) 
   {
@@ -292,12 +292,12 @@ private:
 
   virtual void docCharacters(
         const XMLCh* const chars,
-        const unsigned int length,
+        const XMLSize_t length,
         const bool cdataSection);
 
   virtual void ignorableWhitespace(
         const XMLCh* const chars,
-        const unsigned int length,
+        const XMLSize_t length,
         const bool cdataSection)
   {
   }
