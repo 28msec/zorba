@@ -26,10 +26,14 @@
 
 #include "util/mail/uw-imap.h"
 
+#include "runtime/visitors/planitervisitor.h"
+
 namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(ZorbaMailIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(ZorbaMailIterator)
+
+NARY_ACCEPT(ZorbaMailIterator);
 
 bool
 ZorbaMailIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -93,14 +97,6 @@ ZorbaMailIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   }
 
   STACK_END (state);
-}
-
-void ZorbaMailIterator::openImpl(PlanState& planState, uint32_t& offset)
-{
-  NaryBaseIterator<ZorbaMailIterator, PlanIteratorState>::
-      openImpl(planState, offset);
-    
-  this->theSctx = planState.theCompilerCB->getStaticContext(this->sctx);
 }
 
 } /* namespace zorba */
