@@ -422,7 +422,7 @@ public:
 
   store::Item* copy(
         store::Item*           parent,
-        long                  pos,
+        long                   pos,
         const store::CopyMode& copymode) const;
 
   virtual store::Item_t getNilled() const { return 0; }

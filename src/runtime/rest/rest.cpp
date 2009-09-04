@@ -355,7 +355,7 @@ int processReply(const QueryLoc& aLoc,
       doc_type = 3;
     else if (content_type.indexOf("+xml") > -1)
       doc_type = 3;
-    else if (content_type == "text/html")
+    else if (content_type.indexOf("text/html") == 0)
       doc_type = 4;
     else if (content_type.indexOf("text/") == 0)
       doc_type = 2;
@@ -953,7 +953,7 @@ NARY_ACCEPT(ZorbaRestGetIterator);
 
 bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t lUri, payload_data, headers, tidyUserOpt;;
+  store::Item_t lUri, payload_data, headers, tidyUserOpt;
   xqpString Uri;
   curl_httppost *first = NULL, *last = NULL;
   curl_slist *headers_list = NULL;
@@ -1024,11 +1024,11 @@ bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState
   //tested with https://www.npr.org/rss/rss.php?id=1001
   //about using ssl certs in curl: http://curl.haxx.se/docs/sslcerts.html
 #else
-  #if defined WIN32
+#  if defined WIN32
   //set the root CA certificates file path
   if(GENV.g_curl_root_CA_certificates_path[0])
     curl_easy_setopt(state->EasyHandle, CURLOPT_CAINFO, GENV.g_curl_root_CA_certificates_path);
-  #endif
+#  endif
 #endif
   code = state->theStreamBuffer->multi_perform();
   processReply(loc,
@@ -1111,11 +1111,11 @@ bool ZorbaRestPutIterator::nextImpl(store::Item_t& result, PlanState& planState)
   //tested with https://www.npr.org/rss/rss.php?id=1001
   //about using ssl certs in curl: http://curl.haxx.se/docs/sslcerts.html
 #else
-  #if defined WIN32
+#  if defined WIN32
   //set the root CA certificates file path
   if(GENV.g_curl_root_CA_certificates_path[0])
     curl_easy_setopt(state->EasyHandle, CURLOPT_CAINFO, GENV.g_curl_root_CA_certificates_path);
-  #endif
+#  endif
 #endif
   code = state->theStreamBuffer->multi_perform();
   processReply(loc,
