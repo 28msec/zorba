@@ -931,7 +931,7 @@ public:
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const
   {
-    return theValue;
+    return static_cast<uint32_t>(theValue);
   }
 
   bool equals(
@@ -1163,7 +1163,7 @@ class UnsignedLongItemNaive : public AtomicItem
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const
   {
-    return theValue;
+    return static_cast<uint32_t>(theValue);
   }
 
   bool equals(
