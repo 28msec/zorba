@@ -57,6 +57,8 @@ protected:
   xqtref_t                     theType;
   bool                         theNilledAllowed;
 
+  long                         theTargetPos;
+ 
 public:
   AxisIteratorHelper() 
     :
@@ -66,19 +68,30 @@ public:
     theQName(NULL),
     theWildKind(match_no_wild),
     theType(NULL),
-    theNilledAllowed(false)
+    theNilledAllowed(false),
+    theTargetPos(-2)
   {
   }
 
   virtual ~AxisIteratorHelper() {}
 
   void setTestKind(match_test_t k)                 { theTestKind = k; }
+
   void setDocTestKind(match_test_t k)              { theDocTestKind = k; }
+
   void setNodeKind(store::StoreConsts::NodeKind k) { theNodeKind = k; }
+
   void setQName(const store::Item_t& qn)           { theQName = qn; }
+
   void setWildKind(match_wild_t k)                 { theWildKind = k; }
+
   void setType(const xqtref_t& t)                  { theType = t; }
+
   void setNilledAllowed(bool v)                    { theNilledAllowed = v; }
+
+  void setTargetPos(long pos) { theTargetPos = pos; }
+
+  long getTargetPos() const { return theTargetPos; }
 
   const match_test_t& getTestKind() const { return theTestKind; }
 
@@ -102,10 +115,18 @@ class AxisState : public PlanIteratorState
 public:
   store::Item_t  theContextNode;   
 
-public:
-  void init(PlanState& planState) { PlanIteratorState::init( planState ); }
+  long           theCurrentPos;
 
-  void reset(PlanState& planState) { PlanIteratorState::reset( planState ); }
+public:
+  void init(PlanState& planState) 
+  {
+    PlanIteratorState::init(planState);
+  }
+
+  void reset(PlanState& planState) 
+  {
+    PlanIteratorState::reset(planState);
+  }
 };
 
 
@@ -132,6 +153,7 @@ public:
     SERIALIZE_ENUM(match_wild_t, theWildKind);
     ar & theType;
     ar & theNilledAllowed;
+    ar & theTargetPos;
   }
 
 public:
@@ -637,6 +659,16 @@ public:
     return theTop == 0;
   }
 
+  void clear()
+  {
+    for (ulong i = 0; i < theTop; ++i)
+    {
+      theCurrentPath[i].second->close();
+    }
+
+    theTop = 0;
+  }
+
   const store::Item* topNode() const
   {
     return theCurrentPath[theTop-1].first; 
@@ -741,6 +773,12 @@ public:
   PrecedingAxisState() {}
 
   ~PrecedingAxisState() {}
+
+  void clear()
+  {
+    DescendantAxisState::clear();
+    theAncestorPath.clear();
+  }
 
   void init(PlanState&);
 
@@ -886,6 +924,12 @@ public:
   FollowingAxisState() : DescendantAxisState() {}
 
   ~FollowingAxisState() {}
+
+  void clear()
+  {
+    DescendantAxisState::clear();
+    theAncestorPath.clear();
+  }
 
   void init(PlanState&);
 
