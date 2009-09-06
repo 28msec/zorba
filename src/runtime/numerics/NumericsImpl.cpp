@@ -790,6 +790,18 @@ SpecificNumArithIterator<Operations, Type>::SpecificNumArithIterator(
 
 
 template < class Operation, TypeConstants::atomic_type_code_t Type >
+void SpecificNumArithIterator<Operation, Type>::accept(PlanIterVisitor& v) const 
+{
+  v.beginVisit(*this);
+
+  this->theChild0->accept(v);
+  this->theChild1->accept(v);
+
+  v.endVisit(*this);
+}
+
+
+template < class Operation, TypeConstants::atomic_type_code_t Type >
 bool SpecificNumArithIterator<Operation, Type>::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
@@ -821,19 +833,6 @@ bool SpecificNumArithIterator<Operation, Type>::nextImpl(
   }
   STACK_END (state);
 }
-
-
-template < class Operation, TypeConstants::atomic_type_code_t Type >
-void SpecificNumArithIterator<Operation, Type>::accept(PlanIterVisitor& v) const 
-{
-  v.beginVisit(*this);
-
-  this->theChild0->accept(v);
-  this->theChild1->accept(v);
-
-  v.endVisit(*this);
-}
-
 
 
 template < class Operation, TypeConstants::atomic_type_code_t Type >
@@ -1204,14 +1203,13 @@ bool FnRoundIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     
     else
     {
-      ZORBA_ERROR_LOC_DESC( XPTY0004,
-                            loc, "Wrong operand type for fn:round.");
+      ZORBA_ERROR_LOC_DESC(XPTY0004, loc, "Wrong operand type for fn:round.");
     }
     
     if ( consumeNext(item, theChildren[0].getp(), planState ))
     {
-      ZORBA_ERROR_LOC_DESC( XPTY0004,
-                            loc, "fn:round has a sequence longer than one as an operator.");
+      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
+                           "fn:round has a sequence longer than one as an operator.");
     }
     STACK_PUSH (true, state );
   }
