@@ -4942,7 +4942,9 @@ void end_visit (const Pragma& v, void* /*visit_state*/)
   [106] Predicate ::= "[" Expr "]"
 
 
-  The syntax tree for a generic PathExpr looks like this:
+  If a path expr is actually a standalone filter expr, then no PathExpr parsenode
+  (and parse subtree) is generated. Otherwise, the syntax tree for a generic
+  PathExpr looks like this:
 
        PathExpr
            |
@@ -4990,6 +4992,45 @@ void end_visit (const Pragma& v, void* /*visit_state*/)
   expression whose steps consist of AxisSteps with no predicates. flwor_exprs 
   are are created to represent steps that are FilterExprs or AxisSteps with
   predicates.
+
+  For example, the expr:
+
+  sourceExpr/a/b/c[predExpr]/d
+
+  is translated into:
+
+  (
+  for $dot1 in sourceExpr/a/b
+  let $temp := $dot1/c
+  return for $dot2 at $pos in $temp
+         return if (predExpr instance of numeric)
+                then if ($pos eq predExpr) then $dot2 else ()
+                else if (predExpr) then $dot2 else ()
+  )/d
+
+
+  If predExpr is a numeric constant, then during optimization the above flwor
+  will go through the following rewrites:
+
+  for $dot1 in sourceExpr/a/b
+  let $temp := $dot1/c
+  return for $dot2 at $pos in $temp
+         return if ($pos eq predExpr) then $dot2 else ()
+
+  for $dot1 in sourceExpr/a/b
+  let $temp := $dot1/c
+  return for $dot2 at $pos in $temp
+         where ($pos eq predExpr)
+         return $dot2
+
+  for $dot1 in sourceExpr/a/b
+  let $temp := $dot1/c
+  return for $dot2 in subsequence($temp, predExpr, 1)
+         return $dot2
+
+  for $dot1 in sourceExpr/a/b
+  return for $dot2 in subsequence($dot1/c, predExpr, 1)
+         return $dot2
 ********************************************************************************/
 void *begin_visit (const PathExpr& v) 
 {
@@ -5065,15 +5106,6 @@ void *begin_visit (const PathExpr& v)
 }
 
 
-/*******************************************************************************
-
-  [92] RelativePathExpr ::= StepExpr (("/" | "//") StepExpr)*
-
-  Note: If a RelativePathExpr consists of a single StepExpr, a RelativePathExpr
-  node is generated whose left child is a ContextItemExpr and its right child
-  is the StepExpr.
-
-********************************************************************************/
 void end_visit (const PathExpr& v, void* /*visit_state*/) 
 {
   TRACE_VISIT_OUT ();
@@ -5083,15 +5115,26 @@ void end_visit (const PathExpr& v, void* /*visit_state*/)
 
   ZORBA_ASSERT(arg1 == NULL);
 
+  // wrap in atomics_or_node_distinc_sort_asc
   nodestack.push(wrap_in_dos_and_dupelim(arg2, true));
 }
 
 
+/*******************************************************************************
+
+  [92] RelativePathExpr ::= StepExpr (("/" | "//") StepExpr)*
+
+  Note: If a RelativePathExpr consists of a single StepExpr, a RelativePathExpr
+  node is generated whose left child is a ContextItemExpr and its right child
+  is the StepExpr.
+
+********************************************************************************/
 void* begin_visit(const RelativePathExpr& v)
 {
   TRACE_VISIT ();
 
   const RelativePathExpr& rpe = v;
+
   rchandle<exprnode> step = rpe.get_step_expr();
   ZORBA_ASSERT(step != NULL);
   AxisStep* axisStep = step.dyn_cast<AxisStep>();
@@ -5105,28 +5148,27 @@ void* begin_visit(const RelativePathExpr& v)
   // If case 4 and i = 1, then there is no step0 and pathExpr is empty.
   if (pathExpr->size() == 0) 
   {
+    // If the path expr is of the form "axis::test/...." or "axis::test[pred]/...."
     if (axisStep != NULL) 
     {
       pathExpr->add_back(DOT_VAR);
 
       if (axisStep->get_predicate_list() == NULL) 
       {
-        // The path expr is of the form "axis::test/....". We push 
-        // [ pathExpr(.) ] to the nodestack. 
+        // "axis::test/...." ==> push [ pathExpr(.) ] to the nodestack. 
         nodestack.push(pathExpr);
       }
       else 
       {
-        // The path expr is of the form "axis::test[pred]/....". We push
-        // [ for $$dot at $$pos in pathExpr(.) ]  to the nodestack.
+        // "axis::test[pred]/...." ==> push [ for $$dot at $$pos in pathExpr(.) ]
+        // to the nodestack.
         rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(pathExpr, false);
         nodestack.push(flworExpr.getp());
       }
     }
+    // "source_expr/...." ==> push pathExpr() to the nodestack. 
     else 
     {
-      // The path expr is of the form "source_expr/....". We push 
-      // pathExpr() to the nodestack. 
       nodestack.push(pathExpr);
     }
   }
@@ -5144,7 +5186,7 @@ void* begin_visit(const RelativePathExpr& v)
   // pathExpr, the next step in the path. In particular, the following expr
   // is pushed to the stack:
   //
-  // [ for $$dot at $$pos in sort-distinct(pathExpr) ]
+  // [ for $$dot at $$pos in node_distinc_sort_asc(pathExpr) ]
   else 
   {
     expr_t inputExpr = wrap_in_dos_and_dupelim(pathExpr, false);
@@ -5309,21 +5351,33 @@ void post_axis_visit(const AxisStep& v, void* /*visit_state*/)
   expr_t e = pop_nodestack();
   rchandle<axis_step_expr> axisExpr = e.dyn_cast<axis_step_expr>();
   ZORBA_ASSERT(axisExpr != NULL);
+  axis_kind_t axisKind = axisExpr->getAxis();
 
   e = pop_nodestack();
   flwor_expr* flworExpr = e.dyn_cast<flwor_expr>();
   ZORBA_ASSERT(flworExpr != NULL);
 
-  axis_kind_t axisKind = axisExpr->getAxis();
-
-  // For each item in the input seq compute the input seq for the preds (i.e.
-  // outer_dot/axisExpr). In particular, the following exprs are pushed to the
-  // nodestack:
+  // The flworExpr was created in begin_visit(const RelativePathExpr& v), and
+  // it is of the form: 
   //
-  // [ for $$dot at $$pos in sort-distinct(pathExpr-(i-1))
+  // [ for $$dot at $$pos in node_distinc_sort_asc(pathExpr-(i-1)) ]
+  //
+  // Here, we add a let clause to the flworExpr:
+  // 
+  // If the axis is a forward one:
+  //
+  // [ for $$dot at $$pos in node_distinc_sort_asc(pathExpr-(i-1)) 
   //   let $$predInput := $$dot/axis::test ]
   //
-  // [ $$predInput ]
+  // Else, if it is a reverse axis:
+  //
+  // [ for $$dot at $$pos in node_distinc_sort_asc(pathExpr-(i-1)) 
+  //   let $$predInput := node_distinct_sort_desc($$dot/axis::test) ]
+  //
+  // The $$predInput var will compute and store for each $$dot, the input seq for
+  // the preds the follow the axis step.
+  //
+  // The flworExpr as well as the $$predInput varExpr are pushed to the nodestack.
   const for_clause* fcOuterDot = reinterpret_cast<const for_clause*>((*flworExpr)[0]);
   rchandle<relpath_expr> predPathExpr = new relpath_expr(cb->m_cur_sctx, loc);
   predPathExpr->add_back(fcOuterDot->get_var());
@@ -5656,8 +5710,10 @@ void* begin_visit(const FilterExpr& v)
 void post_primary_visit(const FilterExpr& v, void* /*visit_state*/)
 {
   // This method is called from FilterExpr::accept() after the primary expr is
-  // translated, but before the associated predicate list is translated.
+  // translated, but before the associated predicate list, if any, is translated.
 
+  // Nothing to do if this is a standalone filter expr (i.e., it does not appear
+  // as a step of a path expr).  
   if (!v.isPathStep())
     return;
 
@@ -5669,6 +5725,7 @@ void post_primary_visit(const FilterExpr& v, void* /*visit_state*/)
   expr_t e = pop_nodestack();
   flwor_expr* flworExpr = e.dyn_cast<flwor_expr>();
 
+  // If this filter expr is not the 1st step of a path expr, ...
   if (flworExpr != NULL) 
   {
     // for each item in the input seq compute the input seq for the pred
@@ -5680,6 +5737,9 @@ void post_primary_visit(const FilterExpr& v, void* /*visit_state*/)
     nodestack.push(flworExpr);
     nodestack.push(lcPredSeq->get_var());
   }
+
+  // Else, this filter expr is the very first step (i.e., the source expr) of
+  // a path expr.
   else
   {
      relpath_expr* pathExpr = e.dyn_cast<relpath_expr>();
@@ -5722,6 +5782,9 @@ void pre_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   // get the predicate input seq
   expr_t inputSeqExpr = pop_nodestack();
 
+  //  let $$temp := predInputSeq
+  //  let $$last-idx := count($$temp)
+  //  for $$dot at $$pos in $$temp
   rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(inputSeqExpr, true);
 
   nodestack.push(flworExpr.getp());
@@ -5772,7 +5835,7 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   flworExpr->set_return_expr(ifExpr);
 
   nodestack.push(flworExpr);
-
+  
   pop_scope();
 }
 
