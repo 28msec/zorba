@@ -670,6 +670,7 @@ public:
     serialize_baseclass(ar, (flwor_clause*)this);
     ar & theWhereExpr;
   }
+
 public:
   where_clause(short sctx, const QueryLoc& loc, expr_t where) 
     :
@@ -717,6 +718,7 @@ public:
     ar & theClauses;
     ar & theReturnExpr;
   }
+
 public:
   flwor_expr(short sctx, const QueryLoc& loc, bool general) 
     :
@@ -724,7 +726,8 @@ public:
     theIsGeneral(general)
   {}
 
-  expr_kind_t get_expr_kind() const {
+  expr_kind_t get_expr_kind() const 
+  {
     return (theIsGeneral ? gflwor_expr_kind : flwor_expr_kind);
   }
 
