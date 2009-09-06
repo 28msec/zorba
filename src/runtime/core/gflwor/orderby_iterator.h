@@ -47,17 +47,21 @@ class OrderValue;
 
   - Data Members:
 
-  theInput      : The iterator computing the value of this orderby column for
-                  each binding of the in-scope variables.
-  theEmptyLeast : Whether the empty seq should be considered the smallest or
-                  the largest value.
-  theDescending : Whether to order in descending order or not.
-  theCollation  : The collation to use when comparing values of this orderby
-                  column (if the values are of type xs:string or subtype).
-  theCollator   : Pointer to the collator obj corresponding to theCollation.
-                  The pointer is assigned by the OrderByClause::open() method.
-                  Note: no need to delete theCollator in ~OrderSpec() because
-                  the obj is managed by the collation cache.
+  theInput         : The iterator computing the value of this orderby column for
+                     each binding of the in-scope variables.
+  theEmptyLeast    : Whether the empty seq should be considered the smallest or
+                     the largest value.
+  theDescending    : Whether to order in descending order or not.
+  theNativeCompare : If true, then every pair of values in this orderby column
+                     have data types such that the values can be compared using
+                     the Item::equal() method (instead of the more expensive
+                     CompareIterator::valueCompare() method).
+  theCollation     : The collation to use when comparing values of this orderby
+                     column (if the values are of type xs:string or subtype).
+  theCollator      : Pointer to the collator obj corresponding to theCollation.
+                     The pointer is assigned by the OrderByClause::open() method.
+                     Note: no need to delete theCollator in ~OrderSpec() because
+                     the obj is managed by the collation cache.
 ********************************************************************************/
 class OrderSpec : public ::zorba::serialization::SerializeBaseClass
 {
