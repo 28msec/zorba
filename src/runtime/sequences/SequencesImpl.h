@@ -567,6 +567,15 @@ public:
 ********************************************************************************/
 NARY_ITER(FnSumIterator);
 
+NARY_ITER(FnSumDoubleIterator);
+
+NARY_ITER(FnSumFloatIterator);
+
+NARY_ITER(FnSumDecimalIterator);
+
+NARY_ITER(FnSumIntegerIterator);
+
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //

@@ -119,6 +119,18 @@ END_SERIALIZABLE_CLASS_VERSIONS(FnMinMaxIterator)
 SERIALIZABLE_CLASS_VERSIONS(FnSumIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(FnSumIterator)
 
+SERIALIZABLE_CLASS_VERSIONS(FnSumDoubleIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnSumDoubleIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(FnSumFloatIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnSumFloatIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(FnSumDecimalIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnSumDecimalIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(FnSumIntegerIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnSumIntegerIterator)
+
 SERIALIZABLE_CLASS_VERSIONS(OpToIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(OpToIterator)
 
@@ -175,6 +187,14 @@ NARY_ACCEPT(FnAvgIterator);
 NARY_ACCEPT(FnMinMaxIterator);
 
 NARY_ACCEPT(FnSumIterator);
+
+NARY_ACCEPT(FnSumDoubleIterator);
+
+NARY_ACCEPT(FnSumFloatIterator);
+
+NARY_ACCEPT(FnSumDecimalIterator);
+
+NARY_ACCEPT(FnSumIntegerIterator);
 
 NARY_ACCEPT(OpToIterator);
 
@@ -1428,12 +1448,13 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
 
 /*******************************************************************************
-  15.4.5 fn:sum
+  15.4.5 fn:sum - Generic
 ********************************************************************************/
 bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
   store::Item_t lRunningItem;
-  xqtref_t      lResultType, lRunningType;
+  xqtref_t      lResultType;
+  xqtref_t      lRunningType;
 
   const TypeManager& tm = *theSctx->get_typemanager();
   const RootTypeManager& rtm = GENV_TYPESYSTEM;
@@ -1473,24 +1494,32 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         break;
       }
 
-      if((TypeOps::is_numeric(*lResultType) &&
-          TypeOps::is_numeric(*lRunningType)) ||
+      if((TypeOps::is_numeric(*lResultType) && TypeOps::is_numeric(*lRunningType)) ||
          (TypeOps::is_subtype(*lResultType, *rtm.YM_DURATION_TYPE_ONE) &&
           TypeOps::is_subtype(*lRunningType, *rtm.YM_DURATION_TYPE_ONE)) ||
          (TypeOps::is_subtype(*lResultType, *rtm.DT_DURATION_TYPE_ONE) &&
           TypeOps::is_subtype(*lRunningType, *rtm.DT_DURATION_TYPE_ONE)))
+      {
         GenericArithIterator<AddOperation>::compute(result,
                                                     planState.theRuntimeCB,
                                                     &tm,
                                                     loc,
                                                     result,
                                                     lRunningItem);
+      }
       else
-        ZORBA_ERROR_LOC_DESC( FORG0006, loc, "Sum is not possible with parameters of type " + TypeOps::toString (*lResultType) + " and " + TypeOps::toString (*lRunningType) );
+      {
+        ZORBA_ERROR_LOC_DESC_OSS(FORG0006, loc,
+                                 "Sum is not possible with parameters of type "
+                                 << TypeOps::toString(*lResultType) << " and "
+                                 << TypeOps::toString(*lRunningType) );
+      }
     }
 
     STACK_PUSH(true, state);
-  } else {
+  }
+  else
+  {
     if (theChildren.size() == 2)
     {
       if (consumeNext(result, theChildren[1].getp(), planState))
@@ -1498,13 +1527,216 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         STACK_PUSH(true, state);
       }
       // return the empty sequence otherwise
-    } else {
-      STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, Integer::parseInt((int32_t)0)), state);
+    }
+    else
+    {
+      STACK_PUSH(GENV_ITEMFACTORY->createInteger(result,
+                                                 Integer::parseInt((int32_t)0)),
+                 state);
     }
   }
 
   STACK_END (state);
 }
+
+
+
+/*******************************************************************************
+  15.4.5 fn:sum - Double
+********************************************************************************/
+bool FnSumDoubleIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const 
+{
+  xqp_double sum;
+  store::Item_t item;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if (consumeNext(item, theChildren[0].getp(), planState)) 
+  {
+    sum = item->getDoubleValue();
+
+    while (consumeNext(item, theChildren[0].getp(), planState)) 
+    {
+      if (item->isNaN()) 
+      {
+        result = item;
+        break;
+      }
+
+      sum += item->getDoubleValue();
+    }
+
+    GENV_ITEMFACTORY->createDouble(result, sum);
+
+    STACK_PUSH(true, state);
+  }
+  else if (theChildren.size() == 2)
+  {
+    if (consumeNext(result, theChildren[1].getp(), planState))
+    {
+      STACK_PUSH(true, state);
+    }
+  }
+  else
+  {
+    GENV_ITEMFACTORY->createInteger(result, Integer::parseInt((int32_t)0));
+    STACK_PUSH(true, state);
+  }
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+  15.4.5 fn:sum - Float
+********************************************************************************/
+bool FnSumFloatIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const 
+{
+  xqp_float sum;
+  store::Item_t item;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if (consumeNext(item, theChildren[0].getp(), planState)) 
+  {
+    sum = item->getFloatValue();
+
+    while (consumeNext(item, theChildren[0].getp(), planState)) 
+    {
+      if (item->isNaN()) 
+      {
+        result = item;
+        break;
+      }
+
+      sum += item->getFloatValue();
+    }
+
+    GENV_ITEMFACTORY->createFloat(result, sum);
+
+    STACK_PUSH(true, state);
+  }
+  else if (theChildren.size() == 2)
+  {
+    if (consumeNext(result, theChildren[1].getp(), planState))
+    {
+      STACK_PUSH(true, state);
+    }
+  }
+  else
+  {
+    GENV_ITEMFACTORY->createInteger(result, Integer::parseInt((int32_t)0));
+    STACK_PUSH(true, state);
+  }
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+  15.4.5 fn:sum - Decimal
+********************************************************************************/
+bool FnSumDecimalIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const 
+{
+  xqp_decimal sum;
+  store::Item_t item;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if (consumeNext(item, theChildren[0].getp(), planState)) 
+  {
+    sum = item->getDecimalValue();
+
+    while (consumeNext(item, theChildren[0].getp(), planState)) 
+    {
+      if (item->isNaN()) 
+      {
+        result = item;
+        break;
+      }
+
+      sum += item->getDecimalValue();
+    }
+
+    GENV_ITEMFACTORY->createDecimal(result, sum);
+
+    STACK_PUSH(true, state);
+  }
+  else if (theChildren.size() == 2)
+  {
+    if (consumeNext(result, theChildren[1].getp(), planState))
+    {
+      STACK_PUSH(true, state);
+    }
+  }
+  else
+  {
+    GENV_ITEMFACTORY->createInteger(result, Integer::parseInt((int32_t)0));
+    STACK_PUSH(true, state);
+  }
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+  15.4.5 fn:sum - Integer
+********************************************************************************/
+bool FnSumIntegerIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const 
+{
+  xqp_integer sum;
+  store::Item_t item;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if (consumeNext(item, theChildren[0].getp(), planState)) 
+  {
+    sum = item->getIntegerValue();
+
+    while (consumeNext(item, theChildren[0].getp(), planState)) 
+    {
+      if (item->isNaN()) 
+      {
+        result = item;
+        break;
+      }
+
+      sum += item->getIntegerValue();
+    }
+
+    GENV_ITEMFACTORY->createInteger(result, sum);
+
+    STACK_PUSH(true, state);
+  }
+  else if (theChildren.size() == 2)
+  {
+    if (consumeNext(result, theChildren[1].getp(), planState))
+    {
+      STACK_PUSH(true, state);
+    }
+  }
+  else
+  {
+    GENV_ITEMFACTORY->createInteger(result, Integer::parseInt((int32_t)0));
+    STACK_PUSH(true, state);
+  }
+
+  STACK_END (state);
+}
+
+
 
 
 /////////////////////////////////////////////////////////////////////////////////
