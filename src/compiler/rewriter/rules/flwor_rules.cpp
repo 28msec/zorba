@@ -13,11 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include "functions/function.h"
+
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/rewriter/framework/rule_driver.h"
 #include "compiler/expression/expr.h"
-#include "context/static_context.h"
 #include "compiler/rewriter/tools/expr_tools.h"
+
+#include "context/static_context.h"
+
 #include "types/typeops.h"
 #include "types/casting.h"
 
@@ -545,15 +550,19 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
     return flwor;
   }
   
-  // 'for $x at $p in E where $p = const ... return ...'
+  // '... for $x at $p in E ... where $p = const ... return ...' -->
+  // '... for $x in fn:subsequence(E, const, 1) ... return ...
   if (whereExpr != NULL &&
       refactor_index_pred(rCtx, whereExpr, pvar, pos) &&
       count_variable_uses(flwor, pvar, 2) <= 1) 
   {
+    function* subseq = LOOKUP_FN("fn", "subsequence", 3);
+    expr* domainExpr = pvar->get_for_clause()->get_expr();
+
     rchandle<fo_expr> result = new fo_expr (whereExpr->get_cur_sctx(),
                                             LOC(whereExpr),
-                                            LOOKUP_FN("fn", "subsequence", 3),
-                                            pvar->get_for_clause()->get_expr(),
+                                            subseq,
+                                            domainExpr,
                                             &*pos,
                                             new const_expr(pos->get_cur_sctx(),
                                                            LOC(pos),
@@ -563,6 +572,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
     clause->set_expr(&*result);
     clause->set_pos_var(NULL);
     flwor->remove_where_clause();
+
     return flwor;
   }
 

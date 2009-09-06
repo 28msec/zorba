@@ -289,7 +289,7 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
         if (argFunc->isNodeDistinctFunction())
         {
           ignoresDups = true;
-          f->setFlag(function::DoDistinct);
+          f->setFlag(FunctionConsts::DoDistinct);
          }
       }
 

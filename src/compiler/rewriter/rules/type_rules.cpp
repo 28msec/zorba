@@ -340,6 +340,8 @@ RULE_REWRITE_POST(SpecializeOperations)
 
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
+  static_context* sctx = rCtx.getStaticContext();
+
   if (node->get_expr_kind() == fo_expr_kind) 
   {
     fo_expr* fo = static_cast<fo_expr *>(node);
@@ -348,26 +350,51 @@ RULE_REWRITE_POST(SpecializeOperations)
     if (! fn->specializable ())
       return NULL;
 
-    if (fo->size() == 2) 
+    if (fn->getKind() == FunctionConsts::FN_SUM)
+    {
+      const expr_t& argExpr = (*fo)[0];
+      xqtref_t argType = argExpr->return_type(sctx);
+      std::vector<xqtref_t> argTypes;  
+      argTypes.push_back(argType);
+
+      function* replacement = fn->specialize(sctx, argTypes);
+      if (replacement != NULL)
+      {
+        fo->set_func(replacement);
+
+        if (TypeOps::is_subtype(*argType, *rtm.UNTYPED_ATOMIC_TYPE_STAR))
+        {
+          expr_t promoteExpr = new promote_expr(argExpr->get_cur_sctx(),
+                                                argExpr->get_loc(),
+                                                argExpr,
+                                                rtm.DOUBLE_TYPE_STAR);
+          
+          (*fo)[0] = promoteExpr;
+        }
+
+        return node;
+      }
+    }
+    else if (fo->size() == 2) 
     {
       expr_t arg [2];
       arg [0] = (*fo)[0];
       arg [1] = (*fo)[1];
 
-      xqtref_t t [2];
-      t [0] = arg [0]->return_type(rCtx.getStaticContext());
-      t [1] = arg [1]->return_type(rCtx.getStaticContext());
+      xqtref_t t[2];
+      t[0] = arg[0]->return_type(sctx);
+      t[1] = arg[1]->return_type(sctx);
 
       if (TypeOps::type_max_cnt(*t[0]) > 1 || TypeOps::type_max_cnt(*t[1]) > 1)
         return NULL;
 
-      if (props.specializeNum () && fn->isArithmeticFunction()) 
+      if (props.specializeNum() && fn->isArithmeticFunction()) 
       {
         if (! TypeOps::is_numeric_or_untyped(*t [0]) ||
             ! TypeOps::is_numeric_or_untyped (*t [1]))
           return NULL;
 
-        if (specialize_numeric(fo, rCtx.getStaticContext()) != NULL)
+        if (specialize_numeric(fo, sctx) != NULL)
           return node;
       }
       else if (props.specializeCmp() && fn->isComparisonFunction()) 
@@ -377,7 +404,7 @@ RULE_REWRITE_POST(SpecializeOperations)
           std::vector<xqtref_t> argTypes;
           argTypes.push_back(t [0]);
           argTypes.push_back(t [1]);
-          function *replacement = fn->specialize(rCtx.getStaticContext(), argTypes);
+          function* replacement = fn->specialize(sctx, argTypes);
           if (replacement != NULL) {
             fo->set_func(replacement);
             return node;

@@ -421,7 +421,18 @@ void DataflowAnnotationsComputer::compute_relpath_expr(relpath_expr *e)
         num_following_axes++;
 
       if (axis != axis_kind_child && axis != axis_kind_attribute)
-        only_child_axes = false;
+      {
+        if (only_child_axes && i == num_steps - 1 && num_desc_axes == 1)
+        {
+          // no sort/distinct needed if path expr consists of a number of child
+          // axes and a single descendant axis as the last step in the path.
+          ;
+        }
+        else
+        {
+          only_child_axes = false;
+        }
+      }
     }
 
     if (only_child_axes) 
