@@ -17,7 +17,11 @@
 #include "functions/function_impl.h"
 #include "functions/single_seq_func.h"
 
+#include "compiler/expression/expr.h"
+
 #include "runtime/sequences/SequencesImpl.h"
+#include "runtime/core/path_iterators.h"
+#include "runtime/core/item_iterator.h"
 
 #include "context/static_context.h"
 
@@ -198,11 +202,11 @@ public:
 class fn_subsequence : public single_seq_opt_function 
 {
 public:
-  fn_subsequence(const signature&sig) : single_seq_opt_function (sig) {}
+  fn_subsequence(const signature& sig) : single_seq_opt_function (sig) {}
 
   COMPUTE_ANNOTATION_DECL();
 
-  DEFAULT_NARY_CODEGEN(FnSubsequenceIterator);
+  CODEGEN_DECL();
 };
   
 
@@ -218,6 +222,45 @@ void fn_subsequence::compute_annotation(
     return;
   default: single_seq_opt_function::compute_annotation (parent, kids, k);
   }
+}
+
+
+CODEGEN_DEF(fn_subsequence)
+{
+  fo_expr& subseqExpr = static_cast<fo_expr&>(aAnn);
+
+  const relpath_expr* pathExpr = 
+  dynamic_cast<const relpath_expr*>(subseqExpr[0].getp());
+
+  const const_expr* posExpr =
+  dynamic_cast<const const_expr*>(subseqExpr[1].getp());
+
+  const const_expr* lenExpr = NULL;
+  if (subseqExpr.size() > 2)
+    lenExpr = dynamic_cast<const const_expr*>(subseqExpr[2].getp());
+
+  if (posExpr != NULL && lenExpr != NULL && pathExpr != NULL)
+  {
+    xqp_double pos1 = posExpr->get_val()->getDoubleValue().round();
+    long pos2 = static_cast<long>(pos1.getNumber());
+
+    xqp_double len1 = lenExpr->get_val()->getDoubleValue().round();
+    long len2 = static_cast<long>(pos1.getNumber());
+
+    ulong numSteps = pathExpr->numSteps();
+
+    if (pos2 > 0 && len2 == 1 && numSteps == 2)
+    {
+      AxisIteratorHelper* input = dynamic_cast<AxisIteratorHelper*>(aArgs[0].getp());
+      assert(input != NULL);
+      
+      input->setTargetPos(pos2-1);
+      
+      return aArgs[0];
+    }
+  }
+
+  return new FnSubsequenceIterator(aSctx, aLoc, aArgs);
 }
 
 
@@ -250,7 +293,10 @@ public:
 
 CODEGEN_DEF(fn_zero_or_one)
 {
-  return new FnZeroOrOneIterator(aSctx, aLoc, aArgs, testFlag(DoDistinct));
+  return new FnZeroOrOneIterator(aSctx,
+                                 aLoc,
+                                 aArgs,
+                                 testFlag(FunctionConsts::DoDistinct));
 }
 
 
@@ -313,7 +359,7 @@ CODEGEN_DEF(fn_exactly_one_noraise)
                                   aLoc,
                                   aArgs,
                                   theRaiseError,
-                                  testFlag(DoDistinct));
+                                  testFlag(FunctionConsts::DoDistinct));
 }
 
 
@@ -481,22 +527,77 @@ public:
 
   ZORBA_PROPAGATES_ONE_I2O(0);
 
-  PlanIter_t codegen(
-        CompilerCB* /*cb*/,
-        static_context* sctx,
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const 
-  {
-    return new FnMinMaxIterator(sctx, loc, argv, FnMinMaxIterator::MIN);
-  }
+  CODEGEN_DECL();
 };
+
+
+CODEGEN_DEF(fn_min)
+{
+  return new FnMinMaxIterator(aSctx, aLoc, aArgs, FnMinMaxIterator::MIN);
+}
+
 
 
 /*******************************************************************************
   15.4.5 fn:sum
 ********************************************************************************/
-typedef function_impl<FnSumIterator> fn_sum;
+class fn_sum : public function 
+{
+public:
+  fn_sum(const signature& sig) : function(sig, FunctionConsts::FN_SUM) {}
+
+  bool specializable() const { return true; }
+
+  function* specialize(
+        static_context* sctx,
+        const std::vector<xqtref_t>& argTypes) const;
+
+  DEFAULT_NARY_CODEGEN(FnSumIterator);
+};
+
+
+function* fn_sum::specialize(
+   static_context* sctx,
+   const std::vector<xqtref_t>& argTypes) const
+{
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
+
+  xqtref_t argType = argTypes[0];
+
+  if (TypeOps::is_subtype(*argType, *rtm.UNTYPED_ATOMIC_TYPE_STAR))
+  {
+    return sctx->lookup_builtin_fn("sum_double", get_arity());
+  }
+  else if (TypeOps::is_subtype(*argType, *rtm.DOUBLE_TYPE_STAR))
+  {
+    return sctx->lookup_builtin_fn("sum_double", get_arity());
+  }
+  else if (TypeOps::is_subtype(*argType, *rtm.FLOAT_TYPE_STAR))
+  {
+    return sctx->lookup_builtin_fn("sum_foat", get_arity());
+  }
+  else if (TypeOps::is_subtype(*argType, *rtm.INTEGER_TYPE_STAR))
+  {
+    return sctx->lookup_builtin_fn("sum_integer", get_arity());
+  }
+  else if (TypeOps::is_subtype(*argType, *rtm.DECIMAL_TYPE_STAR))
+  {
+    return sctx->lookup_builtin_fn("sum_decimal", get_arity());
+  }
+  else
+  {
+    return NULL;
+  }
+}
+
+
+typedef function_impl<FnSumDoubleIterator> fn_sum_double;
+
+typedef function_impl<FnSumDoubleIterator> fn_sum_float;
+
+typedef function_impl<FnSumDoubleIterator> fn_sum_decimal;
+
+typedef function_impl<FnSumDoubleIterator> fn_sum_integer;
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -723,6 +824,50 @@ void populateContext_Sequences(static_context* sctx)
   DECL(sctx, fn_sum,
        (createQName(XQUERY_FN_NS,"fn","sum"),
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+  DECL(sctx, fn_sum_double,
+       (createQName(XQUERY_FN_NS,"fn","sum_double"),
+        GENV_TYPESYSTEM.DOUBLE_TYPE_STAR, 
+        GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION));
+
+  DECL(sctx, fn_sum_double,
+       (createQName(XQUERY_FN_NS,"fn","sum_double"),
+        GENV_TYPESYSTEM.DOUBLE_TYPE_STAR, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+  DECL(sctx, fn_sum_float,
+       (createQName(XQUERY_FN_NS,"fn","sum_float"),
+        GENV_TYPESYSTEM.FLOAT_TYPE_STAR, 
+        GENV_TYPESYSTEM.FLOAT_TYPE_QUESTION));
+
+  DECL(sctx, fn_sum_float,
+       (createQName(XQUERY_FN_NS,"fn","sum_float"),
+        GENV_TYPESYSTEM.FLOAT_TYPE_STAR, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+  DECL(sctx, fn_sum_decimal,
+       (createQName(XQUERY_FN_NS,"fn","sum_decimal"),
+        GENV_TYPESYSTEM.DECIMAL_TYPE_STAR, 
+        GENV_TYPESYSTEM.DECIMAL_TYPE_QUESTION));
+
+  DECL(sctx, fn_sum_decimal,
+       (createQName(XQUERY_FN_NS,"fn","sum_decimal"),
+        GENV_TYPESYSTEM.DECIMAL_TYPE_STAR, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, 
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+  DECL(sctx, fn_sum_integer,
+       (createQName(XQUERY_FN_NS,"fn","sum_integer"),
+        GENV_TYPESYSTEM.INTEGER_TYPE_STAR, 
+        GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
+
+  DECL(sctx, fn_sum_integer,
+       (createQName(XQUERY_FN_NS,"fn","sum_integer"),
+        GENV_TYPESYSTEM.INTEGER_TYPE_STAR, 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION, 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 

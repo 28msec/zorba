@@ -20,6 +20,7 @@
 
 #include "common/shared_types.h"
 
+#include "functions/function_consts.h"
 #include "functions/signature.h"
 
 #include "compiler/parser/parse_constants.h"
@@ -36,32 +37,50 @@ class CompilerCB;
 
 typedef rchandle<var_expr> var_expr_t;
 
-#define ZORBA_PRESERVES_SORTED \
-  function::AnnotationValue producesNodeIdSorted() const { return PRESERVE; }
+#define ZORBA_PRESERVES_SORTED                               \
+FunctionConsts::AnnotationValue producesNodeIdSorted() const \
+{                                                            \
+  return FunctionConsts::PRESERVE;                           \
+}
 
-#define ZORBA_PRESERVES_DISTINCT \
-  function::AnnotationValue producesDuplicates() const { return PRESERVE; }
+#define ZORBA_PRESERVES_DISTINCT                             \
+FunctionConsts::AnnotationValue producesDuplicates() const   \
+{                                                            \
+  return FunctionConsts::PRESERVE;                           \
+}
 
-#define ZORBA_NOT_PRODUCES_SORTED \
-  function::AnnotationValue producesNodeIdSorted() const { return NO; }
+#define ZORBA_NOT_PRODUCES_SORTED                            \
+FunctionConsts::AnnotationValue producesNodeIdSorted() const \
+{                                                            \
+  return FunctionConsts::NO;                                 \
+}
 
-#define ZORBA_NOT_PRODUCES_DISTINCT \
-  function::AnnotationValue producesDuplicates() const { return NO; }
+#define ZORBA_NOT_PRODUCES_DISTINCT                         \
+FunctionConsts::AnnotationValue producesDuplicates() const  \
+{                                                           \
+  return FunctionConsts::NO;                                \
+}
 
-#define ZORBA_PRODUCES_SORTED \
-  function::AnnotationValue producesNodeIdSorted() const { return YES; }
+#define ZORBA_PRODUCES_SORTED                                \
+FunctionConsts::AnnotationValue producesNodeIdSorted() const \
+{                                                            \
+  return FunctionConsts::YES;                                \
+}
 
-#define ZORBA_PRODUCES_DISTINCT \
-  function::AnnotationValue producesDuplicates() const { return YES; }
+#define ZORBA_PRODUCES_DISTINCT                              \
+FunctionConsts::AnnotationValue producesDuplicates() const   \
+{                                                            \
+  return FunctionConsts::YES;                                \
+}
 
 #define ZORBA_NOT_PROPAGATES_I2O \
-  bool propagatesInputToOutput(uint32_t aProducer) const { return false; }
+bool propagatesInputToOutput(uint32_t aProducer) const { return false; }
 
 #define ZORBA_PROPAGATES_I2O \
-  bool propagatesInputToOutput(uint32_t aProducer) const { return true; }
+bool propagatesInputToOutput(uint32_t aProducer) const { return true; }
 
 #define ZORBA_PROPAGATES_ONE_I2O( n ) \
-  bool propagatesInputToOutput(uint32_t aProducer) const { return n == aProducer; }
+bool propagatesInputToOutput(uint32_t aProducer) const { return n == aProducer; }
 
 
 /*******************************************************************************
@@ -97,23 +116,10 @@ public:
 ********************************************************************************/
 class function : public SimpleRCObject 
 {
-public:
-  typedef enum 
-  {
-    NO = 0,
-    YES,
-    PRESERVE
-  } AnnotationValue;
-
-  typedef enum
-  {
-    DoDistinct = 1 // Used by fn:zore-or-one and fn:exaclty-one 
-  }
-  AnnotationFlags;
-
 protected:
-	signature    sig;
-  uint32_t     theFlags;
+	signature                    sig;
+  FunctionConsts::FunctionKind theKind;
+  uint32_t                     theFlags;
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(function)
@@ -121,12 +127,28 @@ public:
   void serialize(::zorba::serialization::Archiver& ar)
   {
     ar & sig;
+    SERIALIZE_ENUM(FunctionConsts::FunctionKind, theKind);
+    ar & theFlags;
   }
 
 public:
-	function(const signature& _sig) : sig(_sig), theFlags(0) {}
+	function(const signature& _sig) 
+    :
+    sig(_sig),
+    theKind(FunctionConsts::FN_UNKNOWN),
+    theFlags(0)
+  {}
+
+	function(const signature& _sig, FunctionConsts::FunctionKind kind) 
+    :
+    sig(_sig),
+    theKind(kind),
+    theFlags(0)
+  {}
 
 	virtual ~function() {}
+
+  FunctionConsts::FunctionKind getKind() const { return theKind; }
 
 	// XQuery signature (name+arity)
 	const store::Item_t& get_fname() const { return sig.get_name(); }
@@ -186,15 +208,24 @@ public:
 
   virtual bool isNodeDistinctFunction() const { return false; }
 
-  bool testFlag(AnnotationFlags flag) const { return (theFlags & flag) != 0; }
+  bool testFlag(FunctionConsts::AnnotationFlags flag) const 
+  {
+    return (theFlags & flag) != 0;
+  }
 
-  void setFlag(AnnotationFlags flag) { theFlags |= flag; }
+  void setFlag(FunctionConsts::AnnotationFlags flag) 
+  {
+    theFlags |= flag;
+  }
 
-  void resetFlag(AnnotationFlags flag) { theFlags &= ~flag; }
+  void resetFlag(FunctionConsts::AnnotationFlags flag)
+  {
+    theFlags &= ~flag;
+  }
 
-  virtual AnnotationValue producesDuplicates() const;
+  virtual FunctionConsts::AnnotationValue producesDuplicates() const;
 
-  virtual AnnotationValue producesNodeIdSorted() const;
+  virtual FunctionConsts::AnnotationValue producesNodeIdSorted() const;
 
   virtual void compute_annotation (
         AnnotationHolder *,

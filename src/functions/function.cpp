@@ -73,21 +73,21 @@ void function::compute_annotation (
 }
 
 
-function::AnnotationValue function::producesDuplicates() const 
+FunctionConsts::AnnotationValue function::producesDuplicates() const 
 {
   xqtref_t rt = sig.return_type ();
   if (TypeOps::type_max_cnt (*rt) <= 1 || TypeOps::is_builtin_simple (*rt))
-    return NO;
-  return YES;
+    return FunctionConsts::NO;
+  return FunctionConsts::YES;
 }
 
 
-function::AnnotationValue function::producesNodeIdSorted() const 
+FunctionConsts::AnnotationValue function::producesNodeIdSorted() const 
 {
   xqtref_t rt = sig.return_type ();
   if (TypeOps::type_max_cnt (*rt) <= 1 || TypeOps::is_builtin_simple (*rt))
-    return YES;
-  return NO;
+    return FunctionConsts::YES;
+  return FunctionConsts::NO;
 }
 
 
