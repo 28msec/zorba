@@ -290,3 +290,9 @@ public:
 
 } /* namespace zorba */
 #endif /* ZORBA_PARSENODE_VISITOR_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
