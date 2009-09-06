@@ -254,9 +254,8 @@ CODEGEN_DEF(fn_subsequence)
       AxisIteratorHelper* input = dynamic_cast<AxisIteratorHelper*>(aArgs[0].getp());
       assert(input != NULL);
       
-      input->setTargetPos(pos2-1);
-      
-      return aArgs[0];
+      if (input->setTargetPos(pos2-1))
+        return aArgs[0];
     }
   }
 

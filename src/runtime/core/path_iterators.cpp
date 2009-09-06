@@ -154,6 +154,22 @@ static inline bool isElementOrDocumentNode(const store::Item* node)
 }
 
 
+bool AxisIteratorHelper::setTargetPos(long pos) 
+{
+  assert(pos == -2 || pos >= 0);
+
+  if (theTargetPos == -2)
+  {
+    theTargetPos = pos; 
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+
 bool AxisIteratorHelper::nameOrKindTest(
     const store::Item* node,
     PlanState& planState) const
@@ -425,17 +441,11 @@ bool AttributeAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
     {
       if (nameOrKindTest(attr, planState))
       {
-        if (theTargetPos == -2)
-        {
-          result = attr;
-          STACK_PUSH(true, state);
-        }
-        else if (state->theCurrentPos++ == theTargetPos)
-        {
-          result = attr;
-          STACK_PUSH(true, state);
+        result = attr;
+        STACK_PUSH(true, state);
+
+        if (theTargetPos >= 0 && state->theCurrentPos++ == theTargetPos)
           break;
-        }
       }
     }
 
@@ -563,17 +573,11 @@ bool AncestorReverseAxisIterator::nextImpl(
       {
         state->theCurrentAnc = ancestor;
 
-        if (theTargetPos == -2)
-        {
-          result = ancestor;
-          STACK_PUSH(true, state);
-        }
-        else if (state->theCurrentPos++ == theTargetPos)
-        {
-          result = ancestor;
-          STACK_PUSH(true, state);
+        result = ancestor;
+        STACK_PUSH(true, state);
+
+        if (theTargetPos >= 0 && state->theCurrentPos++ == theTargetPos)
           break;
-        }
 
         ancestor = state->theCurrentAnc->getParent();
       }
@@ -669,17 +673,11 @@ bool AncestorSelfReverseAxisIterator::nextImpl(
     {
       if (nameOrKindTest(state->theCurrentAnc, planState))
       {
-        if (theTargetPos == -2)
-        {
-          result = state->theCurrentAnc;
-          STACK_PUSH(true, state);
-        }
-        else if (state->theCurrentPos++ == theTargetPos)
-        {
-          result = state->theCurrentAnc;
-          STACK_PUSH(true, state);
+        result = state->theCurrentAnc;
+        STACK_PUSH(true, state);
+
+        if (theTargetPos >= 0 && state->theCurrentPos++ == theTargetPos)
           break;
-        }
       }
       
       state->theCurrentAnc = state->theCurrentAnc->getParent();
@@ -748,18 +746,11 @@ bool RSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
     {
       if (nameOrKindTest(sibling, planState))
       {
-        if (theTargetPos == -2)
-        {
-          result = sibling;
-          STACK_PUSH(true, state);
-        }
-        else if (state->theCurrentPos++ == theTargetPos)
-        {
-          result = sibling;
-          STACK_PUSH(true, state);
-          break;
-        }
+        result = sibling;
+        STACK_PUSH(true, state);
 
+        if (theTargetPos >= 0 && state->theCurrentPos++ == theTargetPos)
+          break;
       }
     }
 
@@ -811,17 +802,11 @@ bool LSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
     {
       if (nameOrKindTest(sibling, planState))
       {
-        if (theTargetPos == -2)
-        {
-          result = sibling;
-          STACK_PUSH(true, state);
-        }
-        else if (state->theCurrentPos++ == theTargetPos)
-        {
-          result = sibling;
-          STACK_PUSH(true, state);
+        result = sibling;
+        STACK_PUSH(true, state);
+
+        if (theTargetPos >= 0 && state->theCurrentPos++ == theTargetPos)
           break;
-        }
       }
     }
     
@@ -891,17 +876,11 @@ bool LSiblingReverseAxisIterator::nextImpl(
     {
       if (nameOrKindTest(sibling, planState))
       {
-        if (theTargetPos == -2)
-        {
-          result = sibling;
-          STACK_PUSH(true, state);
-        }
-        else if (state->theCurrentPos++ == theTargetPos)
-        {
-          result = sibling;
-          STACK_PUSH(true, state);
+        result = sibling;
+        STACK_PUSH(true, state);
+
+        if (theTargetPos >= 0 && state->theCurrentPos++ == theTargetPos)
           break;
-        }
       }
     }
     
@@ -962,17 +941,11 @@ bool ChildAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) co
     {
       if (nameOrKindTest(child, planState)) 
       {
-        if (theTargetPos == -2)
-        {
-          result = child;
-          STACK_PUSH(true, state);
-        }
-        else if (state->theCurrentPos++ == theTargetPos)
-        {
-          result = child;
-          STACK_PUSH(true, state);
+        result = child;
+        STACK_PUSH(true, state);
+
+        if (theTargetPos >= 0 && state->theCurrentPos++ == theTargetPos)
           break;
-        }
       }
     }
 

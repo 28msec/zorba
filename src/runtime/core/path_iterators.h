@@ -75,21 +75,21 @@ public:
 
   virtual ~AxisIteratorHelper() {}
 
-  void setTestKind(match_test_t k)                 { theTestKind = k; }
+  void setTestKind(match_test_t k) { theTestKind = k; }
 
-  void setDocTestKind(match_test_t k)              { theDocTestKind = k; }
+  void setDocTestKind(match_test_t k) { theDocTestKind = k; }
 
   void setNodeKind(store::StoreConsts::NodeKind k) { theNodeKind = k; }
 
-  void setQName(const store::Item_t& qn)           { theQName = qn; }
+  void setQName(const store::Item_t& qn) { theQName = qn; }
 
-  void setWildKind(match_wild_t k)                 { theWildKind = k; }
+  void setWildKind(match_wild_t k) { theWildKind = k; }
 
-  void setType(const xqtref_t& t)                  { theType = t; }
+  void setType(const xqtref_t& t) { theType = t; }
 
-  void setNilledAllowed(bool v)                    { theNilledAllowed = v; }
+  void setNilledAllowed(bool v) { theNilledAllowed = v; }
 
-  void setTargetPos(long pos) { theTargetPos = pos; }
+  bool setTargetPos(long pos);
 
   long getTargetPos() const { return theTargetPos; }
 
