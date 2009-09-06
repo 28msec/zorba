@@ -18,7 +18,7 @@
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/api/compilercb.h"
 
-#include "runtime/fncontext/FnContextImpl.h"
+#include "runtime/eval/FnContextImpl.h"
 #include "runtime/core/item_iterator.h"
 #include "runtime/api/runtimecb.h"
 #include "runtime/api/plan_iterator_wrapper.h"

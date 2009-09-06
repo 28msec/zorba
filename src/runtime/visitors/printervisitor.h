@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_PRINTERVISITOR_H
-#define ZORBA_PRINTERVISITOR_H
+#ifndef ZORBA_RUNTIME_PRINTERVISITOR_H
+#define ZORBA_RUNTIME_PRINTERVISITOR_H
 
 #include "runtime/visitors/planitervisitor.h"
 

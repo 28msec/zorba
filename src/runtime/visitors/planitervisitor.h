@@ -149,6 +149,10 @@ namespace zorba
   class FnAvgIterator;
   class FnMinMaxIterator;
   class FnSumIterator;
+  class FnSumDoubleIterator;
+  class FnSumFloatIterator;
+  class FnSumDecimalIterator;
+  class FnSumIntegerIterator;
   class FnDocIterator;
   class FnDocAvailableIterator;
   class FnParseIterator;
@@ -601,6 +605,14 @@ public:
   PLAN_ITER_VISITOR (FnMinMaxIterator);
 
   PLAN_ITER_VISITOR (FnSumIterator);
+
+  PLAN_ITER_VISITOR (FnSumDoubleIterator);
+
+  PLAN_ITER_VISITOR (FnSumFloatIterator);
+
+  PLAN_ITER_VISITOR (FnSumDecimalIterator);
+
+  PLAN_ITER_VISITOR (FnSumIntegerIterator);
 
   PLAN_ITER_VISITOR (FnDocIterator);
 

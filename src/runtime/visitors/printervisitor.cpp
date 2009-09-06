@@ -17,6 +17,8 @@
 
 #include "common/common.h"
 
+#include "zorbautils/strutil.h"
+
 #include "runtime/visitors/printervisitor.h"
 #include "runtime/context/ContextImpl.h"
 #include "runtime/core/item_iterator.h"
@@ -51,7 +53,7 @@
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/strings/StringsImpl.h"
 #include "runtime/dateTime/DurationsDatesTimes.h"
-#include "runtime/fncontext/FnContextImpl.h"
+#include "runtime/eval/FnContextImpl.h"
 #include "runtime/debug/debug_iterators.h"
 #include "runtime/debug/zorba_debug_iterator.h"
 #include "runtime/debug/debug_iterators.h"
@@ -163,30 +165,35 @@ void printCommons(const PlanIterator* aIter, int theId)
   }
 }
 
-  void printNameOrKindTest(const AxisIteratorHelper* a) 
+
+void printNameOrKindTest(const AxisIteratorHelper* a) 
+{
+  thePrinter.addAttribute("test kind", toString(a->getTestKind()));
+    
+  if (a->getDocTestKind() != match_no_test)
+    thePrinter.addAttribute("doc_test_kind", toString(a->getDocTestKind()));
+
+  if (a->getQName() != 0)
+    thePrinter.addAttribute("qname", a->getQName()->show());
+  else
+    thePrinter.addAttribute("qname","*");
+
+  if (a->getType() != 0)
+    thePrinter.addAttribute("typename", a->getType()->toString());
+  else
+    thePrinter.addAttribute("typename","*");
+
   {
-    thePrinter.addAttribute("test kind", toString(a->getTestKind()));
-
-    if (a->getDocTestKind() != match_no_test)
-      thePrinter.addAttribute("doc_test_kind", toString(a->getDocTestKind()));
-
-    if (a->getQName() != 0)
-      thePrinter.addAttribute("qname", a->getQName()->show());
-    else
-      thePrinter.addAttribute("qname","*");
-
-    if (a->getType() != 0)
-      thePrinter.addAttribute("typename", a->getType()->toString());
-    else
-      thePrinter.addAttribute("typename","*");
-
-    {
-      std::stringstream lStream;
-      lStream << a->nilledAllowed();
-      thePrinter.addAttribute("nill allowed", lStream.str());
-    }
+    std::stringstream lStream;
+    lStream << a->nilledAllowed();
+    thePrinter.addAttribute("nill allowed", lStream.str());
   }
+
+  if (a->getTargetPos() >= 0)
+    thePrinter.addAttribute("target_position", to_string(a->getTargetPos()));
+}
   
+
   PRINTER_VISITOR_DEFINITION(NodeReferenceIterator)
 
   PRINTER_VISITOR_DEFINITION(NodeByReferenceIterator)
@@ -792,6 +799,14 @@ TYPED_VAL_CMP (STRING)
   }
 
   PRINTER_VISITOR_DEFINITION (FnSumIterator)
+
+  PRINTER_VISITOR_DEFINITION (FnSumDoubleIterator)
+
+  PRINTER_VISITOR_DEFINITION (FnSumFloatIterator)
+
+  PRINTER_VISITOR_DEFINITION (FnSumDecimalIterator)
+
+  PRINTER_VISITOR_DEFINITION (FnSumIntegerIterator)
 
   PRINTER_VISITOR_DEFINITION (FnDocIterator)
 

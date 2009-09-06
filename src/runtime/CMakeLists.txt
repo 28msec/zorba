@@ -47,7 +47,7 @@ SET(RUNTIME_SRCS
     dateTime/DurationsDatesTimes.cpp
     debug/debug_iterators.cpp
     debug/zorba_debug_iterator.cpp
-    fncontext/FnContextImpl.cpp
+    eval/FnContextImpl.cpp
     indexing/value_index_builder.cpp
     indexing/value_index_probe.cpp
     numerics/NumericsImpl.cpp
