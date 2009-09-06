@@ -61,7 +61,7 @@
 #include "runtime/core/gflwor/tuplesource_iterator.h"
 #include "runtime/core/gflwor/orderby_iterator.h"
 #include "runtime/validate/validate.h"
-#include "runtime/fncontext/FnContextImpl.h"
+#include "runtime/eval/FnContextImpl.h"
 #include "runtime/misc/MiscImpl.h"
 #include "runtime/update/update.h"
 
