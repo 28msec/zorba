@@ -1177,23 +1177,27 @@ class relpath_expr : public expr
 {
 protected:
   std::vector<expr_t> theSteps;
+  long                theTargetPos;
 
 public:
   SERIALIZABLE_CLASS(relpath_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(relpath_expr, expr)
-  void serialize(::zorba::serialization::Archiver &ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (expr*)this);
     ar & theSteps;
+    ar & theTargetPos;
   }
 public:
-  relpath_expr(short sctx, const QueryLoc&);
+  relpath_expr(short sctx, const QueryLoc& loc);
 
   expr_kind_t get_expr_kind () const { return relpath_expr_kind; }
 
-	size_t size() const        { return theSteps.size(); }
+	size_t size() const          { return theSteps.size(); }
 	void add_back(expr_t step)   { theSteps.push_back(step); }
   void erase(ulong i)          { theSteps.erase(theSteps.begin() + i); }
+
+  ulong numSteps() const       { return theSteps.size(); }
 
 	expr_t& operator[](int n)    { return theSteps[n]; }
 
@@ -1201,6 +1205,10 @@ public:
   std::vector<expr_t>::const_iterator end()   const { return theSteps.end(); }
   std::vector<expr_t>::iterator begin() { return theSteps.begin(); }
   std::vector<expr_t>::iterator end()   { return theSteps.end(); }
+
+  void setTargetPosition(long pos) { theTargetPos = pos; }
+
+  long getTargetPosition() const { return theTargetPos; }
 
   expr_iterator_data *make_iter ();
   void next_iter (expr_iterator_data&);
