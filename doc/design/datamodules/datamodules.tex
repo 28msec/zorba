@@ -73,7 +73,7 @@ Withing a \textit{Data Module}, the \textit{Prolog} can be extended by the \text
 
 \vspace{0.5cm}
 \noindent
-[Definition: A collection declaration adds a pair $\left\langle  URILiteral, SequenceType \right\rangle$ to the set of statically known collections. The SequenceType is a sequence of items with the defined KindTest\footnote{Is "as" missleading? It is used for SequenceType in the rest of the spec}. If no KindTest is defined, the default is node().]
+[Definition: A collection declaration adds a pair $\left\langle  URILiteral, SequenceType \right\rangle$ to the set of statically known collections. The SequenceType is a sequence of items with the defined KindTest. If no KindTest is defined, the default is node().]
 
 \paragraph{Errors}
 \begin{itemize}
@@ -106,8 +106,31 @@ TODO
 \paragraph{Examples}
 TODO
 
-\subsubsection{Index Access}
-TODO
+\subsubsection{Index Point Probe}
+\begin{verbatim}
+declare function op-extensions:probe-index-point(
+                   $uri as xs:anyURI, 
+                   $col1 as xs:anyAtomicType?, ...) as node()*
+\end{verbatim}
+
+\noindent
+The function takes as many arguments as key columns in the index being probed, after the URI. The result is the sequence of nodes that were inserted into the index with the given key values.
+
+\subsubsection{Index Range Probe}
+\begin{verbatim}
+declare function op-extensions:probe-index-range(
+                   $uri as xs:anyURI,
+                   $col1_left as xs:anyAtomicType?,
+                   $col1_right as xs:anyAtomicType?,
+                   $col1_have_left as xs:boolean,
+                   $col1_have_right as xs:boolean,
+                   $col1_incl_left as xs:boolean,
+                   $col1_incl_right as xs:boolean, ...) as node()*
+\end{verbatim}
+
+\noindent
+The function takes six times as many arguments as key columns in the index being probed, after the URI. The result is the sequence of nodes that were inserted into the index with keys that fall in the given range. The col\_have arguments indicate if the corresponding bounds of the range are bounded or unbounded. The col\_incl arguments indicate if the corresponding bounds of the range are included. If a particular col\_have is false, the corresponding col\_incl must be false.
+
 
 \subsection{Integrity Constraint}
 \subsubsection{Integrity Constraint Declaration}
