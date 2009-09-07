@@ -62,13 +62,13 @@ Withing a \textit{Data Module}, the \textit{Prolog} can be extended by the \text
 \par
 \vspace{0.25cm}
 \begin{tabular}{l c p{12cm}}
-{\tt Prolog}           & ::= & {\tt "((DefaultNamespaceDecl\ |\ Setter\ |\ NamespaceDecl\ |\ Import)\ Separator)*\ DataModuleProlog ((VarDecl\ |\ ContextItemDecl\ |\ FunctionDecl\ |\ OptionDecl)\ Separator)*} \\
+{\tt Prolog}           & ::= & {\tt "((DefaultNamespaceDecl | Setter | NamespaceDecl | Import) Separator)* DataModuleProlog ((VarDecl | ContextItemDecl | FunctionDecl | OptionDecl) Separator)*} \\
 {\tt DataModuleProlog} & ::= & {\tt "((CollectionDecl|IndexDecl|ICDecl) Separator)*} 
 \end{tabular}
 
 \subsection{Collection Declaration}
 \begin{tabular}{l c p{12cm}}
-{\tt CollectionDecl} & ::= & {\tt "declare" "collection" URILiteral ("as" KindTest)?}
+{\tt CollectionDecl} & ::= & {\tt "declare" ("append-only")? ("read-only")? ("persistent")? ("versioned")? "collection" URILiteral ("item-type" KindTest)? ((":=" ExprSingle) | "external")?}
 \end{tabular}
 
 \vspace{0.5cm}
@@ -82,19 +82,35 @@ Withing a \textit{Data Module}, the \textit{Prolog} can be extended by the \text
   \item \textbf{err:TBD}: It is a static error if a collection declaration is in a module other than DataModule.
 \end{itemize}
 
-\paragraph{TODOs}
+\paragraph{Remarks}
 \begin{itemize}
-  \item Maybe, we have to change the semantics of statically known collections, such that it can be determined if a collection is available (needed for index declaration and integrity constraints).
+  \item As in XQuery 1.1, collection must not be registered in the static context as long as they are not typed. Collections are registered in the dynamic context.
 \end{itemize}
 
-\subsection{Index Declaration}
+\paragraph{Examples}
+TODO
+
+\subsection{Index}
+\subsubsection{Index Declaration}
 \begin{tabular}{l c p{12cm}}
 {\tt IndexDecl}   & ::= & {\tt "declare" ("unique")? ("ordered" | "unordered")? "index" URILiteral "on" ExprSingle "by" "(" ( IndexColumn ( "," IndexColumn )* ) ")"} \\
 {\tt IndexColumn} & ::= & {\tt ExprSingle (TypeDeclaration) ("collation" URILiteral)}
 \end{tabular}
 
+\paragraph{Errors}
+\begin{itemize}
+  \item \textbf{err:TBD}: It is a static error if any expression used in an index declaration has dependencies to the dynamic context.
+  \item \textbf{err:TBD}: It is a static error if an index is dependent on non-existing collections (forward references are not allowed).
+\end{itemize}
 
-\subsection{Integrity Constraint Declaration}
+\paragraph{Examples}
+TODO
+
+\subsubsection{Index Access}
+TODO
+
+\subsection{Integrity Constraint}
+\subsubsection{Integrity Constraint Declaration}
 \begin{tabular}{l c p{12cm}}
 {\tt ICDecl}               & ::= & {\tt "declare" ("unchecked")? "integrity" "constraint" URILiteral (ICCollection | ICNode | ICForeignKey)} \\
 {\tt ICCollection}         & ::= & {\tt "on" "collection" URILiteral (ICCollSequence|ICCollNode)} \\
@@ -108,8 +124,31 @@ Withing a \textit{Data Module}, the \textit{Prolog} can be extended by the \text
 {\tt ICForeignKeyValues}   & ::= & {\tt "collection" URILiteral "node" "\$" QName "keys" "(" Expr ")"} 
 \end{tabular}
 
+\paragraph{Errors}
+\begin{itemize}
+  \item \textbf{err:TBD}: It is a static error if any expression used in an integrity constraint declaration has dependencies to the dynamic context.
+  \item \textbf{err:TBD}: It is a static error if an integrity contraint is dependent on non-existing collections (forward references are not allowed).
+\end{itemize}
 
-%%\section{Implementation in Zorba}
+\paragraph{Examples}
+TODO
+
+\subsection{Data Module Declaration}
+\begin{tabular}{l c p{12cm}}
+{\tt ModuleImport} & ::= & {\tt "import" ("module" | "datamodule") ("namespace" NCName "=")? URILiteral ("at" URILiteral ("," URILiteral)*)? }
+\end{tabular}
+
+\vspace{0.5cm}
+\noindent
+[Definition: A data module import imports all collections, indexes and integrity contraints defined into the dynamic context.]
+
+\paragraph{Errors}
+\begin{itemize}
+  \item \textbf{err:TBD}: It is a static error if a non-data module has side-effects on collections.
+\end{itemize}
+
+\section{Implementation in Zorba}
+TODO
 %%\paragraph{Stuff to delete}
 %%\begin{itemize}
 %%  \item delete collection and create collection
