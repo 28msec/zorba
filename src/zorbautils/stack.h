@@ -38,7 +38,7 @@ public:
       theStack.reserve(initSize);
   }
 
-  ~Stack() { }
+  ~Stack() { clear(); }
 
   bool empty() const
   {
@@ -72,7 +72,7 @@ public:
   {
     assert(!empty());
     theTop -= num;
-    theStack.resize(theTop);
+    //theStack.resize(theTop);
   }
 
   void push(const T& val)
