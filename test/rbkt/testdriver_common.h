@@ -99,7 +99,18 @@ private:
   void registerError(const zorba::ZorbaException& e)
   {
     m_errors.push_back(zorba::ZorbaException::getErrorCodeAsString(e.getErrorCode()).c_str());
-    m_desc.push_back(e.getDescription());
+    char  strdescr[1000];
+    if(dynamic_cast<const zorba::QueryException*>(&e))
+    {
+      const zorba::QueryException    *qe = dynamic_cast<const zorba::QueryException*>(&e);
+      sprintf(strdescr, "%s [line %d][column %d][file %s]", e.getDescription().c_str(), 
+                                                            qe->getLineBegin(), 
+                                                            qe->getColumnBegin(),
+                                                            qe->getQueryURI().c_str());
+    }
+    else
+      sprintf(strdescr, "%s", e.getDescription().c_str());
+    m_desc.push_back(strdescr);
   }
 };
 
