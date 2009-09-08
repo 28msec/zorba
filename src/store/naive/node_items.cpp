@@ -146,10 +146,12 @@ XmlNode::XmlNode(
 /*******************************************************************************
 
 ********************************************************************************/
-XmlNode::~XmlNode()
+#ifndef NDEBUG
+XmlNode::~XmlNode() 
 {
-  ZORBA_ASSERT(theRefCount == 0);
+  NODE_TRACE1("Deleted " << store::StoreConsts::toString(getNodeKind()) << this);
 }
+#endif
 
 
 /*******************************************************************************
@@ -474,8 +476,6 @@ long XmlNode::disconnect() throw()
 ********************************************************************************/
 void XmlNode::destroy() throw()
 {
-  ZORBA_FATAL(theRefCount == 0, "");
-
   try
   {
     disconnect();
@@ -491,8 +491,6 @@ void XmlNode::destroy() throw()
 
 void XmlNode::destroyInternal() throw()
 {
-  ZORBA_FATAL(theRefCount == 0, "");
-
   if (getNodeKind() == store::StoreConsts::elementNode)
   {
     ElementNode* elemNode = reinterpret_cast<ElementNode*>(this);
@@ -502,20 +500,12 @@ void XmlNode::destroyInternal() throw()
 
     for (ulong i = 0; i < numChildren; i++)
     {
-      XmlNode* child = elemNode->getChild(i);
-      if (child->theParent == this)
-      {
-        child->destroyInternal();
-      }
+      elemNode->getChild(i)->destroyInternal();
     }
     
     for (ulong i = 0; i < numAttrs; i++)
     {
-      XmlNode* attr = elemNode->getAttr(i);
-      if (attr->theParent == this)
-      {
-        attr->destroyInternal();
-      }
+      elemNode->getAttr(i)->destroyInternal();
     }
   }
   else if (getNodeKind() == store::StoreConsts::documentNode)
@@ -533,7 +523,6 @@ void XmlNode::destroyInternal() throw()
       }
     }
   }
-
 
   delete this;
 }
@@ -662,15 +651,6 @@ DocumentNode::DocumentNode(
   NODE_TRACE1("{\nConstructing doc node " << this << " tree = "
               << getTree()->getId() << ":" << getTree()
               << " doc uri = " << (docUri != 0 ? docUri->c_str() : "NULL"));
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-DocumentNode::~DocumentNode()
-{
-  NODE_TRACE1("Deleted doc node " << this);
 }
 
 
@@ -862,7 +842,6 @@ ElementNode::ElementNode(
   InternalNode(store::StoreConsts::elementNode)
 {
   theName.transfer(nodeName);
-  theTypeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED];
   setHaveValue();
   resetRecursive();
 
@@ -993,17 +972,6 @@ ElementNode::ElementNode(
 /*******************************************************************************
 
 ********************************************************************************/
-ElementNode::~ElementNode()
-{
-  NODE_TRACE1("Deleted elem node " << this);
-  //NODE_TRACE3("nscontext " << theNsContext.getp() << ", "
-  //            << (theNsContext != NULL ? theNsContext->getRefCount() : -1));
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 XmlNode* ElementNode::copyInternal(
     InternalNode*          rootParent,
     InternalNode*          parent,
@@ -1039,7 +1007,7 @@ XmlNode* ElementNode::copyInternal(
   }
   else
   {
-    typeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED];
+    typeName = NULL;
     haveValue = true;
     haveEmptyValue = false;
     inSubstGroup = false;
@@ -1119,6 +1087,7 @@ XmlNode* ElementNode::copyInternal(
     else // ! nsPreserve
     {
       if (copymode.theTypePreserve &&
+          theTypeName != NULL &&
           (theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_QNAME]) ||
            theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_NOTATION])))
       {
@@ -1267,6 +1236,17 @@ XmlNode* ElementNode::copyInternal(
               << " pos = " << pos << " copy mode = " << copymode.toString());
 
   return copyNode;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+store::Item* ElementNode::getType() const
+{
+  return (theTypeName != NULL ?
+          theTypeName.getp() :
+          GET_STORE().theSchemaTypeNames[XS_UNTYPED].getp()); 
 }
 
 
@@ -1433,7 +1413,8 @@ void ElementNode::getStringValue(std::string& buf) const
 ********************************************************************************/
 store::Item_t ElementNode::getNilled() const
 {
-  if (theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED]))
+  if (theTypeName == NULL ||
+      theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED]))
     return new BooleanItemNaive(false);
 
   bool nilled = true;
@@ -1958,12 +1939,11 @@ xqp_string ElementNode::show() const
 /*******************************************************************************
   Node constructor used by FastXmlLoader only.
 ********************************************************************************/
-AttributeNode::AttributeNode(store::Item_t& attrName, store::Item_t& typeName)
+AttributeNode::AttributeNode(store::Item_t& attrName)
   :
   XmlNode(store::StoreConsts::attributeNode)
 {
   theName.transfer(attrName);
-  theTypeName.transfer(typeName);
 
   QNameItemImpl* qn = reinterpret_cast<QNameItemImpl*>(theName.getp());
 
@@ -2087,15 +2067,6 @@ AttributeNode::AttributeNode(
 /*******************************************************************************
 
 ********************************************************************************/
-AttributeNode::~AttributeNode()
-{
-  NODE_TRACE1("Deleted attr node " << this);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 XmlNode* AttributeNode::copyInternal(
     InternalNode*          rootParent,
     InternalNode*          parent,
@@ -2105,6 +2076,8 @@ XmlNode* AttributeNode::copyInternal(
 {
   assert(parent != NULL || rootParent == NULL);
   ZORBA_FATAL(!isHidden(), "");
+
+  SimpleStore& store = GET_STORE();
 
   XmlTree* tree = NULL;
   AttributeNode* copyNode = NULL;
@@ -2125,10 +2098,10 @@ XmlNode* AttributeNode::copyInternal(
   {
     isListValue = false;
 
-    typeName = GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC];
+    typeName = NULL;
 
     if (!haveListValue() &&
-        theTypedValue->getType()->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC]))
+        theTypedValue->getType()->equals(store.theSchemaTypeNames[XS_UNTYPED_ATOMIC]))
     {
       typedValue = theTypedValue;
     }
@@ -2142,7 +2115,7 @@ XmlNode* AttributeNode::copyInternal(
   try
   {
     if (parent == NULL)
-      tree = new XmlTree(NULL, GET_STORE().getTreeId());
+      tree = new XmlTree(NULL, store.getTreeId());
     
     else if (parent == rootParent)
       reinterpret_cast<ElementNode*>(parent)->checkUniqueAttr(nodeName);
@@ -2166,6 +2139,17 @@ XmlNode* AttributeNode::copyInternal(
               << " copy mode = " << copymode.toString());
 
   return copyNode;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+store::Item* AttributeNode::getType() const
+{
+  return (theTypeName != NULL ?
+          theTypeName.getp() :
+          GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC].getp()); 
 }
 
 
@@ -2401,23 +2385,6 @@ TextNode::TextNode(
               << std::hex << (parent ? (ulong)parent : 0) 
               << " ordpath = " << theOrdPath.show() << " content = "
               << getValue()->getStringValue()->c_str());
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-TextNode::~TextNode()
-{
-  if (isTyped())
-  {
-    theContent.setValue(NULL);
-  }
-  else
-  {
-    theContent.setText(NULL);
-  }
-  NODE_TRACE1("Deleted text node " << this);
 }
 
 
@@ -2776,15 +2743,6 @@ PiNode::PiNode(
 /*******************************************************************************
 
 ********************************************************************************/
-PiNode::~PiNode()
-{
-  NODE_TRACE1("Deleted pi node " << this);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 XmlNode* PiNode::copyInternal(
     InternalNode*          rootParent,
     InternalNode*          parent,
@@ -2909,15 +2867,6 @@ CommentNode::CommentNode(
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show() << " content = "
               << theContent->c_str());
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-CommentNode::~CommentNode()
-{
-  NODE_TRACE1("Deleted comment node " << this);
 }
 
 

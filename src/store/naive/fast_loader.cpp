@@ -75,7 +75,8 @@ FastXmlLoader::FastXmlLoader(
   :
   XmlLoader(factory, errorManager, dataguide),
   theTree(NULL),
-  theRootNode(NULL)
+  theRootNode(NULL),
+  theNodeStack(2048)
 {
   theOrdPath.init();
 
@@ -244,7 +245,7 @@ store::Item_t FastXmlLoader::loadXml(
 
   try
   {
-    long numChars = readPacket(stream, theBuffer, 4096);
+    long numChars = readPacket(stream, theBuffer, INPUT_CHUNK_SIZE);
 
     if (numChars < 0)
     {
@@ -273,7 +274,7 @@ store::Item_t FastXmlLoader::loadXml(
 			return NULL;
     }
 
-    while ((numChars = readPacket(stream, theBuffer, 4096)) > 0)
+    while ((numChars = readPacket(stream, theBuffer, INPUT_CHUNK_SIZE)) > 0)
     {
       xmlParseChunk(ctxt, theBuffer, numChars, 0);
 
@@ -637,12 +638,11 @@ void FastXmlLoader::startElement(
         const char* valueEnd = reinterpret_cast<const char*>(attributes[index+4]);
 
         store::Item_t qname = qnpool.insert(uri, prefix, lname);
-        store::Item_t typeName = store.theSchemaTypeNames[XS_UNTYPED_ATOMIC];
 
         xqpStringStore_t value = new xqpStringStore(valueBegin, valueEnd);
         store::Item_t typedValue = new UntypedAtomicItemImpl(value);
 
-        AttributeNode* attrNode = new AttributeNode(qname, typeName);
+        AttributeNode* attrNode = new AttributeNode(qname);
         attrNode->theParent = elemNode;
         attrNode->setId(loader.theTree, &loader.theOrdPath);
         attrNode->theTypedValue.transfer(typedValue);
@@ -712,8 +712,12 @@ void  FastXmlLoader::endElement(
       --firstChildPos;
 
     // Find the element node in the stack
+#ifndef NDEBUG
     elemNode = dynamic_cast<ElementNode*>(nodeStack[firstChildPos-1]);
     ZORBA_ASSERT(elemNode != NULL);
+#else
+    elemNode = static_cast<ElementNode*>(nodeStack[firstChildPos-1]);
+#endif
 
     LOADER_TRACE2("End Element: node = " << elemNode << " name ["
                   << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << localName
@@ -745,14 +749,11 @@ void  FastXmlLoader::endElement(
         children.set(currChild, numActualChildren);
         currChild->setParent(elemNode);
 
-        if (currChild->getNodeKind() == store::StoreConsts::elementNode)
+        if (currChild->getNodeKind() == store::StoreConsts::elementNode &&
+            !loader.theBindingsStack.empty())
         {
-          if (!loader.theBindingsStack.empty())
-            reinterpret_cast<ElementNode*>(currChild)->
-              setNsContext(loader.theBindingsStack.top());
-          else
-            reinterpret_cast<ElementNode*>(currChild)->
-              setNsContext(NULL);
+          reinterpret_cast<ElementNode*>(currChild)->
+          setNsContext(loader.theBindingsStack.top());
         }
 
         prevChild = currChild;

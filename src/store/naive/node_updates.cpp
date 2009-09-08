@@ -546,7 +546,8 @@ void XmlNode::removeType(UpdatePrimitive& upd)
     {
       ElementNode* n = reinterpret_cast<ElementNode*>(currNode);
 
-      if (n->theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED]))
+      if (n->theTypeName == NULL ||
+          n->theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED]))
       {
         revalidationNode = currNode;
         break;
@@ -589,7 +590,8 @@ void XmlNode::removeType(UpdatePrimitive& upd)
     {
       AttributeNode* n = reinterpret_cast<AttributeNode*>(currNode);
 
-      if (n->theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC]))
+      if (n->theTypeName == NULL ||
+          n->theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC]))
       {
         undoList.resize(++undoSize);
         undoList[undoSize - 1].transfer(tinfo);
@@ -1198,7 +1200,8 @@ void ElementNode::replaceName(UpdRenameElem& upd)
   theName.transfer(upd.theNewName);
 
   if (theParent &&
-      (theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED]) ||
+      (theTypeName == NULL ||
+       theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED]) ||
        theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_ANY])))
   {
     // Even if "this" is untyped, we must call removeType() on the parent
@@ -1284,7 +1287,8 @@ void AttributeNode::replaceName(UpdRenameAttr& upd)
   upd.theOldName.transfer(theName);
   theName.transfer(upd.theNewName);
 
-  if (theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC]))
+  if (theTypeName == NULL ||
+      theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC]))
   {
     // We must call removeType() even if "this" is untyped, because renaming
     // of an attribute may require revalidation of the ancestors.

@@ -1323,7 +1323,8 @@ void UpdSetElementType::apply()
 {
   ElementNode* target = ELEM_NODE(theTarget);
 
-  ZORBA_FATAL((target->theTypeName == GET_STORE().theSchemaTypeNames[XS_ANY] ||
+  ZORBA_FATAL((target->theTypeName == NULL ||
+               target->theTypeName == GET_STORE().theSchemaTypeNames[XS_ANY] ||
                target->theTypeName == GET_STORE().theSchemaTypeNames[XS_UNTYPED]), "");
 
   target->theTypeName.transfer(theTypeName);

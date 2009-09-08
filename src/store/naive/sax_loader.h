@@ -66,9 +66,12 @@ class ElementNode;
 class XmlLoader
 {
 protected:
+  static const ulong INPUT_CHUNK_SIZE = 8192;
+
+protected:
   xmlSAXHandler                    theSaxHandler;
 
-  char                             theBuffer[4096];
+  char                             theBuffer[INPUT_CHUNK_SIZE];
 
   store::ItemFactory             * theFactory;
 
@@ -207,8 +210,8 @@ protected:
   OrdPathStack                     theOrdPath;
 
   XmlNode                        * theRootNode;
-  zorba::Stack<ElementNode*>       thePathStack;
   zorba::Stack<XmlNode*>           theNodeStack;
+  zorba::Stack<ElementNode*>       thePathStack;
   std::stack<NsBindingsContext*>   theBindingsStack;
 
 #ifdef DATAGUIDE
@@ -287,3 +290,8 @@ public:
 #endif /* ZORBA_SIMPLE_LOADER_H */
 
 
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

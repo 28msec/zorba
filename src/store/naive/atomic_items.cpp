@@ -106,8 +106,8 @@ QNameItemImpl::~QNameItemImpl()
     }
     else
     {
-    unsetNormalized();
-  }
+      unsetNormalized();
+    }
   }
 }
 

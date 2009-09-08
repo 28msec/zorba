@@ -377,8 +377,6 @@ QNameItemImpl* QNamePool::cacheInsert(QNameItemImpl*& normVictim)
 ********************************************************************************/
 void QNamePool::cachePin(QNameItemImpl* qn)
 {
-  ZORBA_FATAL(qn != NULL, "");
-
   if (qn->isInCache() && (qn->theNextFree != 0 || qn->thePrevFree != 0))
   {
     if (qn->theNextFree != 0)

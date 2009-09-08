@@ -371,7 +371,11 @@ public:
         long                         pos,
         store::StoreConsts::NodeKind nodeKind);
 
+#ifndef NDEBUG
   virtual ~XmlNode();
+#else
+  virtual ~XmlNode() {}
+#endif
 
   void free() { if (getTree() != NULL) getTree()->free(); }
 
@@ -452,7 +456,8 @@ public:
   void setCollection(SimpleCollection* coll) { getTree()->setCollection(coll); }
 
   const OrdPath& getOrdPath() const { return theOrdPath; }
-  OrdPath& getOrdPath()             { return theOrdPath; }
+
+  OrdPath& getOrdPath() { return theOrdPath; }
 
   void setId(XmlTree* tree, const OrdPathStack* op);
 
@@ -583,8 +588,6 @@ public:
         const xqpStringStore_t& baseUri,
         const xqpStringStore_t& docUri);
 
-  virtual ~DocumentNode();
-
   //
   // Item methods
   //
@@ -662,15 +665,13 @@ public:
         const store::NsBindings*    localBindings,
         xqpStringStore_t&           baseUri);
 
-  virtual ~ElementNode();
-
   //
   // Item methods
   //
 
   store::Item* getNodeName() const { return theName.getp(); }
 
-  store::Item* getType() const { return theTypeName.getp(); }
+  store::Item* getType() const;
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
@@ -818,9 +819,7 @@ protected:
   store::Item_t   theTypedValue;
 
 public:
-  AttributeNode(
-        store::Item_t&  attrName,
-        store::Item_t&  typeName);
+  AttributeNode(store::Item_t&  attrName);
 
   AttributeNode(
         XmlTree*                    tree,
@@ -832,15 +831,13 @@ public:
         bool                        isListValue,
         bool                        hidden);
 
-  virtual ~AttributeNode();
-
   //
   // Item methods
   //
 
   store::Item* getNodeName() const { return theName.getp(); }
 
-  store::Item* getType() const     { return theTypeName.getp(); }
+  store::Item* getType() const;
 
   void setTypedValue(store::Item_t& val);
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
@@ -930,7 +927,17 @@ public:
         store::Item_t&    content,
         bool              isListValue);
 
-  virtual ~TextNode();
+  ~TextNode()
+  {
+    if (isTyped())
+    {
+      theContent.setValue(NULL);
+    }
+    else
+    {
+      theContent.setText(NULL);
+    }
+  }
 
   //
   // Item methods
@@ -1013,8 +1020,6 @@ public:
         xqpStringStore_t& target,
         xqpStringStore_t& content);
 
-  ~PiNode();
-
   XmlNode* copyInternal(
         InternalNode*          rootParent,
         InternalNode*          parent,
@@ -1064,8 +1069,6 @@ public:
         InternalNode*     parent,
         long              pos,
         xqpStringStore_t& content);
-
-  ~CommentNode();
 
   XmlNode* copyInternal(
         InternalNode*          rootParent,
