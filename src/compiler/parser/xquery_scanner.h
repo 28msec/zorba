@@ -29,6 +29,10 @@
     )
 #endif
 
+#ifndef YY_USER_ACTION
+#define YY_USER_ACTION    YY_USER_ACTION_func(yylloc);
+#endif
+
 #ifndef __FLEX_LEXER_H
 # undef yyFlexLexer
 # define yyFlexLexer ZorbaFlexLexer
@@ -74,6 +78,8 @@ public:
   void set_yy_flex_debug(bool aBool);
 
   int interpretAsLessThan();
+
+  void YY_USER_ACTION_func(zorba::xquery_parser::location_type* yylloc);
 };
 
 } 
