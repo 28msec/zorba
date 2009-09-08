@@ -87,8 +87,17 @@ Withing a \textit{Data Module}, the \textit{Prolog} can be extended by the \text
   \item As in XQuery 1.1, collection must not be registered in the static context as long as they are not typed. Collections are registered in the dynamic context.
 \end{itemize}
 
-\paragraph{Examples}
-TODO
+\paragraph{Example}
+\begin{verbatim}
+import schema namespace sc="http://www.zorba-xquery.com/schemas/collection";
+declare persistent collection "http://www.zorba-xquery.com/collection" 
+  item-type element() 
+  := (<el id="1">a</el>,<el id="2">b</el>,<el id="3">c</el>);
+declare read-only collection "http://www.zorba-xquery.com/collection" 
+  item-type schema-element(sc:element) external;
+
+fn:collection("http://www.zorba-xquery.com/collection")
+\end{verbatim}
 
 \subsection{Index}
 \subsubsection{Index Declaration}
@@ -103,8 +112,12 @@ TODO
   \item \textbf{err:TBD}: It is a static error if an index is dependent on non-existing collections (forward references are not allowed).
 \end{itemize}
 
-\paragraph{Examples}
-TODO
+\paragraph{Example}
+\begin{verbatim}
+declare ordered index "http://www.zorba-xquery.com/collection/index" 
+  on fn:collection("http://www.zorba-xquery.com/collection") by data(./@id);
+()
+\end{verbatim}
 
 \subsubsection{Index Point Probe}
 \begin{verbatim}
@@ -115,6 +128,11 @@ declare function op-extensions:probe-index-point(
 
 \noindent
 The function takes as many arguments as key columns in the index being probed, after the URI. The result is the sequence of nodes that were inserted into the index with the given key values.
+
+\paragraph{Example}
+\begin{verbatim}
+op-extensions:probe-index-point("http://www.zorba-xquery.com/collection/index", 2)
+\end{verbatim}
 
 \subsubsection{Index Range Probe}
 \begin{verbatim}
@@ -131,6 +149,24 @@ declare function op-extensions:probe-index-range(
 \noindent
 The function takes six times as many arguments as key columns in the index being probed, after the URI. The result is the sequence of nodes that were inserted into the index with keys that fall in the given range. The col\_have arguments indicate if the corresponding bounds of the range are bounded or unbounded. The col\_incl arguments indicate if the corresponding bounds of the range are included. If a particular col\_have is false, the corresponding col\_incl must be false.
 
+
+\paragraph{Example}
+\begin{verbatim}
+op-extensions:probe-index-point("http://www.zorba-xquery.com/collection/index", 2)
+op-extensions:probe-index-range(
+                "http://www.zorba-xquery.com/collection/index",
+                2,
+                (),
+                true(),
+                false(),
+                true(),
+                false())
+\end{verbatim}
+
+\paragraph{Question}
+\begin{itemize}
+\item Why can't an empty border indicate 'unbounded'? Why is an additional parameter necessary?
+\end{itemize}
 
 \subsection{Integrity Constraint}
 \subsubsection{Integrity Constraint Declaration}
@@ -154,7 +190,9 @@ The function takes six times as many arguments as key columns in the index being
 \end{itemize}
 
 \paragraph{Examples}
-TODO
+\begin{verbatim}
+declare integrity constraint "http://www.zorba-xquery.org/collection/ic" on collection "http://www.zorba-xquery.org/collection" unique keys ( data(.) );
+\end{verbatim}
 
 \subsection{Data Module Declaration}
 \begin{tabular}{l c p{12cm}}
