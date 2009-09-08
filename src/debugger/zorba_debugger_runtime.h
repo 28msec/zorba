@@ -146,6 +146,7 @@ namespace zorba {
     // Qualifier:
     //************************************
     ReplyMessage* getAllVariables();
+    void evalCommand();
     void runQuery();
     void resumeQuery();
     void resumeRuntime();

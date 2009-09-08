@@ -1,5 +1,7 @@
 #include "zorba_debugger_commons.h"
 
+#include "compiler/api/compilercb.h"
+#include "context/dynamic_context.h"
 #include "zorbaerrors/Assert.h"
 #include "runtime/debug/zorba_debug_iterator.h"
 
@@ -149,6 +151,28 @@ void zorba::ZorbaDebuggerCommons::makeStepOver()
     theBreakIterators.push_back(lIter);
   }
 }
+
+void zorba::ZorbaDebuggerCommons::setPlanState( PlanState* aPlanState )
+{
+  thePlanState = aPlanState;
+  //Check postconditions
+  ZORBA_ASSERT(thePlanState == aPlanState);
+}
+
+void zorba::ZorbaDebuggerCommons::setDebugIteratorState( ZorbaDebugIteratorState* aState )
+{
+  theDebugIteratorState = aState;
+  //Check postconditions
+  ZORBA_ASSERT(theDebugIteratorState == aState);
+}
+
+std::list<std::pair<zorba::xqpString, zorba::xqpString> > 
+  zorba::ZorbaDebuggerCommons::eval(const xqpString& aExpr)
+{
+  return theCurrentIterator->eval(aExpr.c_str(),
+    *thePlanState,
+    theDebugIteratorState);
+  }
 
 bool zorba::DebugLocation::operator()( const DebugLocation_t& aLocation1, const DebugLocation_t& aLocation2 ) const
 {

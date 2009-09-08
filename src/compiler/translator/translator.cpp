@@ -1142,12 +1142,22 @@ void wrap_in_debugger_expr (expr_t& aExpr) {
 
     // for each var, create a eval_var and add it to
     // the debugger expression
-    for (VarExprVector::iterator lIter = lAllInScopeVars.begin();
+    for (VarExprVector::iterator lIter = lAllInScopeVars.begin() + 1;
          lIter != lAllInScopeVars.end(); ++lIter) {
-      varref_t ve(new var_expr(*(*lIter).dyn_cast<var_expr>()));
+      store::Item_t lVarname = (*lIter)->get_varname();
+      varref_t ve = create_var(lLocation.theQueryLocation,
+        lVarname, var_expr::eval_var, NULL).dyn_cast<var_expr> ();
+      var_expr *lVe = lookup_var(ve->get_varname());
+      expr_t val = new wrapper_expr(cb->m_cur_sctx, lLocation.theQueryLocation,
+        rchandle<expr>(lVe));
+      lExpr->add_var(eval_expr::eval_var(&*ve, val));
+      /*varref_t ve((*lIter).dyn_cast<var_expr>());
+      var_expr *lVe = lookup_var(ve->get_varname());
       ve->set_kind(var_expr::eval_var);
+      expr_t val = new 
+        wrapper_expr(cb->m_cur_sctx, aExpr->get_loc(), rchandle<expr>(lVe));
 
-     lExpr->add_var(eval_expr::eval_var(&*ve, NULL));
+     lExpr->add_var(eval_expr::eval_var(&*ve, val));*/
 
     }
 

@@ -35,7 +35,6 @@ class ZORBA_DLL_PUBLIC Runnable
 
 protected:
     Runnable();
-    virtual ~Runnable();
 
 public:
     enum ThreadState {
@@ -44,6 +43,9 @@ public:
       SUSPENDED,
       IDLE
     };
+
+public:
+  virtual ~Runnable();
 
 public:
     void
@@ -72,6 +74,16 @@ public:
     */
     virtual void reset();
 
+    /**
+    * @brief Indicates if the object should be deleted after run.
+    *
+    * When the run methods finished, it checks if it has to delete
+    * the object. With this method, this deletion status can be set.
+    *
+    * @post theDeleteAfterRun == aDeleteAfterRun
+    */
+    void setDeleteAfterRun(bool aDeleteAfterRun);
+
 protected: // To be implemented by the user
     
     virtual void run() = 0;
@@ -90,6 +102,8 @@ private:
     Mutex             theMutex;
 
     Condition         theCondition;
+
+    bool theDeleteAfterRun;
 
 #ifdef ZORBA_HAVE_PTHREAD_H
     pthread_t         theThread;

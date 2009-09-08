@@ -1,3 +1,4 @@
+#include "runtime/debug/zorba_debug_iterator.h"
 
 #include "compiler/api/compilercb.h"
 
@@ -7,8 +8,10 @@
 #include "debugger/zorba_debugger_runtime.h"
 #include "debugger/zorba_debugger_commons.h"
 
-#include "runtime/debug/zorba_debug_iterator.h"
 #include "runtime/visitors/planitervisitor.h"
+#include "runtime/eval/FnContextImpl.h"
+#include "runtime/core/item_iterator.h"
+#include "runtime/api/plan_iterator_wrapper.h"
 
 
 namespace zorba {
@@ -44,9 +47,6 @@ zorba::ZorbaDebugIterator::nextImpl( store::Item_t& result, PlanState& planState
   ZorbaDebuggerCommons* lCommons  = planState.theDebuggerCommons;
 
   PlanWrapper_t   lWrapper = 0;
-  checked_vector<store::Item_t>::const_iterator lIter;
-  store::Iterator_t lVarIter;
-  store::Item_t     lVarItem;
 
   ZorbaDebugIteratorState* lState = 0;
   DEFAULT_STACK_INIT(ZorbaDebugIteratorState, lState, planState);
@@ -59,40 +59,14 @@ zorba::ZorbaDebugIterator::nextImpl( store::Item_t& result, PlanState& planState
         lCommons->hasToBreak(&lCause)) {
         try {
           lCause = lCause == 0 ? CAUSE_BREAKPOINT : lCause;
-
-#if 0
-          lState->ccb.reset (new CompilerCB (*planState.theCompilerCB));
-          lState->ccb->m_sctx = planState.theCompilerCB->m_sctx->create_child_context ();
-          (*lState->ccb->m_context_map)[lState->ccb->m_cur_sctx] = lState->ccb->m_sctx; 
-
-          lState->dctx.reset (new dynamic_context (planState.dctx ()));
-          
-          lState->eval_plan.reset ( new PlanWrapper ( 
-                                      EvalIterator::compile (lState->ccb.get (),
-                                                             "$param",
-                                                             varnames,
-                                                             vartypes),
-                                                   lState->ccb.get (),
-                                                   lState->dctx.get (),
-                                                   planState.theStackDepth + 1));
-          lState->eval_plan->checkDepth (loc);
-
-          for (lIter = varnames.begin(); lIter != varnames.end(); ++lIter) {
-            planState.dctx()->get_variable(*lIter, lVarItem, lVarIter);
-            lState->dctx->add_variable(dynamic_context::var_key(lState->ccb->m_sctx->lookup_var(*lIter)), lVarIter);
-          }
-
-          while (lState->eval_plan->next (result)) {
-            std::cout << "blub " << result->getStringValue() << std::endl;
-          }
-#endif
-
           
           // tell everybody that we are the iterator who suspended
           lCommons->setCurrentIterator(this);
           lCommons->setCurrentStaticContext(getStaticContext(planState));
           lCommons->setCurrentDynamicContext(planState.dctx());
           lCommons->setBreak(false);
+          lCommons->setPlanState(&planState);
+          lCommons->setDebugIteratorState(lState);
 
           // suspend
           lCommons->getRuntime()->suspendRuntime(loc, lCause);
@@ -174,4 +148,71 @@ const ZorbaDebugIterator* ZorbaDebugIterator::getOverIterator() const
   return NULL;
 }
 
-} /* namespace zorba */
+class DebugVarIterator : public store::Iterator {
+public:
+  DebugVarIterator(store::Item_t aItem)
+    : theItem(aItem), theFinished(false)
+  {
+  }
+
+  void open(){}
+  void reset(){ theFinished = false; }
+  void close(){}
+
+  bool next(store::Item_t& result)
+  {
+    if (theFinished)
+      return false;
+    result = theItem;
+    theFinished = true;
+    return theFinished;
+  }
+
+private:
+  store::Item_t theItem;
+  bool theFinished;
+};
+
+std::list<std::pair<xqpString, xqpString> > ZorbaDebugIterator::eval(
+  std::string aExpression, 
+  PlanState& aPlanState, 
+  ZorbaDebugIteratorState* aState) const
+{
+  aState->ccb.reset (new CompilerCB (*aPlanState.theCompilerCB));
+  aState->ccb->m_sctx = aPlanState.theCompilerCB->m_sctx->create_child_context ();
+  (*aState->ccb->m_context_map)[aState->ccb->m_cur_sctx] = aState->ccb->m_sctx; 
+  checked_vector<store::Item_t>::const_iterator lIter;
+  aState->dctx.reset (new dynamic_context (aPlanState.dctx ()));
+
+  aState->eval_plan.reset ( new PlanWrapper ( 
+    EvalIterator::compile (aState->ccb.get (),
+    aExpression,
+    varnames,
+    vartypes),
+    aState->ccb.get (),
+    aState->dctx.get (),
+    aPlanState.theStackDepth + 1));
+  aState->eval_plan->checkDepth (loc);
+
+  for (unsigned i = 0; i < theChildren.size () - 1; i++) {
+    store::Iterator_t lIter = 
+      new PlanIteratorWrapper (theChildren [i + 1], aPlanState);
+    // TODO: is saving an open iterator efficient?
+    // Then again if we close theChildren [1] here,
+    // we won't be able to re-open it later via the PlanIteratorWrapper
+    aState->dctx->add_variable (dynamic_context::var_key (
+      aState->ccb->m_sctx->lookup_var (varnames [i])), lIter);
+  }
+
+  std::list<std::pair<xqpString, xqpString> > lResult;
+  store::Item_t result;
+  while (aState->eval_plan->next (result)) {
+    lResult.push_back(
+      std::pair<xqpString, xqpString>(xqpString(result->getStringValue().getp()),
+        xqpString(result->getType()->getStringValue().getp())));
+  }
+  return lResult;
+} 
+
+
+}/* namespace zorba */

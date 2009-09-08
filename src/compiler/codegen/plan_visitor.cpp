@@ -325,11 +325,13 @@ void end_visit (debugger_expr& v) {
   checked_vector<store::Item_t> varnames;
   checked_vector<string> var_keys;
   checked_vector<xqtref_t> vartypes;
+  std::vector<PlanIter_t> argv;
   for (unsigned i = 0; i < v.var_count (); i++) 
   {
     varnames.push_back (v.var_at (i).varname);
     var_keys.push_back (v.var_at (i).var_key);
     vartypes.push_back (v.var_at (i).type);
+    argv.push_back (pop_itstack());
   }
 
   // get the debugger iterator from the debugger stack
@@ -337,8 +339,8 @@ void end_visit (debugger_expr& v) {
   theDebuggerStack.pop();
 
   // set the child of the debugger iterator
-  std::vector<PlanIter_t> argv;
   argv.push_back(pop_itstack ());
+  reverse (argv.begin (), argv.end ());
   aDebugIterator->setChildren(argv);
 
   aDebugIterator->setVariables(varnames, var_keys, vartypes);

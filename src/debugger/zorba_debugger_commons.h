@@ -14,6 +14,8 @@ namespace zorba {
   class ZorbaDebuggerRuntime;
   class ZorbaDebugIterator;
   class TranslatorImpl;
+  class PlanState;
+  class ZorbaDebugIteratorState;
   struct DebugLocation;
   typedef struct DebugLocation DebugLocation_t;
   struct DebugLocation {
@@ -80,6 +82,24 @@ namespace zorba {
     * @post aIterator == theCurrentIterator
     */
     void setCurrentIterator(const ZorbaDebugIterator* aIterator);
+    /**
+    * @brief Sets the current planstate.
+    *
+    * When the debugger suspends, it saves the planstate in the commons.
+    *
+    * @param aPlanState a pointer to the current plan state.
+    * @post thePlanState == aPlanState
+    */
+    void setPlanState(PlanState* aPlanState);
+    /**
+    * @brief Sets the current debugger state.
+    *
+    * When the debugger suspends, it saves its state.
+    *
+    * @param aState a pointer to the current debugger state.
+    * @post aState == theDebugIteratorState
+    */
+    void setDebugIteratorState(ZorbaDebugIteratorState* aState);
   public: //Queries
     /**
     * Adds a breakpoint and then sets theLocation from aLocation
@@ -164,11 +184,19 @@ namespace zorba {
     void makeStepOut();
 
     /**
-    * @ brief Sets a setpoint according to the step over rules.
+    * @brief Sets a setpoint according to the step over rules.
     *
     * @pre theCurrentIterator != NULL
     */
     void makeStepOver();
+
+    /**
+    * @brief Evaluates aExpr and returns the result.
+    *
+    * @returns the result of the expression in the current context.
+    */
+    std::list<std::pair<zorba::xqpString, zorba::xqpString> > 
+      eval(const xqpString& aExpr);
   private:
     std::map<DebugLocation_t, bool, DebugLocation> theLocationMap;
     ZorbaDebuggerRuntime*                          theRuntime;
@@ -181,6 +209,8 @@ namespace zorba {
     * @brief The list of step expressions.
     */
     std::list<const ZorbaDebugIterator*>           theBreakIterators;
+    PlanState*                                     thePlanState;
+    ZorbaDebugIteratorState*                       theDebugIteratorState;
   };
 }
 

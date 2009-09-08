@@ -18,6 +18,8 @@
 #include <iostream>
 #include <cassert>
 
+#include "zorbaerrors/Assert.h"
+
 #ifdef ZORBA_HAVE_PTHREAD_H
 #    include <pthread.h>
 #    define ZORBA_THREAD_RETURN void *
@@ -34,7 +36,8 @@ zorba::Runnable::Runnable()
   : theStatus(IDLE),
     theFinishCalled(false),
     theMutex(),
-    theCondition(theMutex)
+    theCondition(theMutex),
+    theDeleteAfterRun(false)
 {
 }
 
@@ -175,4 +178,15 @@ void zorba::Runnable::finishImpl()
   theFinishCalled = true;
   theStatus = TERMINATED;
   theMutex.unlock();
+  if (theDeleteAfterRun) {
+    delete this;
+  }
+}
+
+void zorba::Runnable::setDeleteAfterRun( bool aDeleteAfterRun )
+{
+  theDeleteAfterRun = aDeleteAfterRun;
+
+  // Check postconditions
+  ZORBA_ASSERT(theDeleteAfterRun == aDeleteAfterRun);
 }

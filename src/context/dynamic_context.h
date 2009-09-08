@@ -45,6 +45,7 @@ namespace zorba {
 ********************************************************************************/
 class dynamic_context
 {
+  friend class ZorbaDebugIterator;
 protected:
 
   struct dctx_value_t 

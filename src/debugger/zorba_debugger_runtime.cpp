@@ -26,10 +26,64 @@
 #define sleep(s) Sleep(s*1000)
 #endif
 
-zorba::ZorbaDebuggerRuntime::ZorbaDebuggerRuntime(XQueryImpl* xqueryImpl,
-                                                  std::ostream& oStream,
-                                                  const Zorba_SerializerOptions_t*  serializerOptions,
-                                                  DebuggerCommunicator* communicator)
+namespace zorba {
+  class EvalCommand : public Runnable
+  {
+  public:
+    EvalCommand(ZorbaDebuggerCommons* aCommons, 
+      DebuggerCommunicator* aCommunicator,
+      const xqpString& aEvalString)
+      : 
+    theCommons(aCommons), 
+    theCommunicator(aCommunicator),
+    theEvalString(aEvalString)
+    {}
+
+    virtual ~EvalCommand() {}
+
+    /**
+    * @brief runs the evaluation command in the current scope.
+    *
+    * Runs theEvalString in. This method is supposed to run in its own thread
+    * and it will send an evaluation event back to the client after finishing.
+    *
+    * @pre theCommons != NULL
+    * @pre theCommunicator != NULL
+    */
+    virtual void run()
+    {
+      // Check preconditions
+      ZORBA_ASSERT(theCommons != NULL);
+      ZORBA_ASSERT(theCommunicator != NULL);
+
+      std::auto_ptr<EvaluatedEvent> lEvent(
+        new EvaluatedEvent(theEvalString, theCommons->eval(theEvalString)));
+      theCommunicator->sendEvent(lEvent.get());
+    }
+
+    /**
+    * @brief Adds the current thread to theEvalThreads.
+    *
+    * The finish method adds the current thread to theEvalThreads so that it
+    * will get deleted by the runtime.
+    */
+    virtual void finish()
+    {
+    }
+
+  private:
+    ZorbaDebuggerCommons*   theCommons;
+    DebuggerCommunicator*   theCommunicator;
+    xqpString               theEvalString;
+  };
+}
+
+
+zorba::ZorbaDebuggerRuntime::ZorbaDebuggerRuntime(
+  XQueryImpl* xqueryImpl,
+  std::ostream& oStream,
+  const Zorba_SerializerOptions_t*  serializerOptions,
+  DebuggerCommunicator* communicator)
   : theQuery(xqueryImpl),
     theOStream(oStream),
     theSerializerOptions(serializerOptions),
@@ -75,10 +129,11 @@ void zorba::ZorbaDebuggerRuntime::resetRuntime()
   reset();
 }
 
-bool zorba::ZorbaDebuggerRuntime::processMessage( AbstractCommandMessage* message )
+bool zorba::ZorbaDebuggerRuntime::processMessage(AbstractCommandMessage* message)
 {
   AutoLock lLock(theLock, Lock::WRITE);
   theCurrentMessage = message;
+
   switch (theCurrentMessage->getCommandSet())
   {
   case EXECUTION:
@@ -194,6 +249,9 @@ void zorba::ZorbaDebuggerRuntime::dynamicCommands()
   case VARIABLES:
     theCurrentMessage->setReplyMessage(getAllVariables());
     break;
+  case EVAL:
+    evalCommand();
+    break;
   }
 }
 
@@ -303,4 +361,17 @@ void zorba::ZorbaDebuggerRuntime::step()
 void zorba::ZorbaDebuggerRuntime::setNotSendTerminateEvent()
 {
   theNotSendTerminateEvent = true;
+}
+
+void zorba::ZorbaDebuggerRuntime::evalCommand()
+{
+  ZORBA_ASSERT(dynamic_cast<EvalMessage*>(theCurrentMessage));
+  xqpString lExpr = static_cast<EvalMessage*>(theCurrentMessage)->getExpr();
+  // This command will care itself about garbage collection - so don't delete
+  // it in this method!
+  EvalCommand* lCommand = new EvalCommand(
+    theWrapper->theStateBlock->theDebuggerCommons,
+    theCommunicator, lExpr.c_str());
+  lCommand->setDeleteAfterRun(true);
+  lCommand->start();
 }

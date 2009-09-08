@@ -18,7 +18,6 @@ public:
   std::auto_ptr<CompilerCB> ccb;
   std::auto_ptr<dynamic_context> dctx;
 };
-
   
 class ZorbaDebugIterator : public NaryBaseIterator<ZorbaDebugIterator,
                                                    ZorbaDebugIteratorState>
@@ -92,6 +91,12 @@ public: // Getters
    */
   const ZorbaDebugIterator* getOverIterator() const;
   QueryLoc getQueryLocation() const;
+
+public: // Commands
+  std::list<std::pair<xqpString, xqpString> > eval(
+    std::string aExpression, 
+    PlanState& aPlanState,
+    ZorbaDebugIteratorState* aState) const;
 };
 
 
