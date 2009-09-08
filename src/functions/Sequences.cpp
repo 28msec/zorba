@@ -592,11 +592,11 @@ function* fn_sum::specialize(
 
 typedef function_impl<FnSumDoubleIterator> fn_sum_double;
 
-typedef function_impl<FnSumDoubleIterator> fn_sum_float;
+typedef function_impl<FnSumFloatIterator> fn_sum_float;
 
-typedef function_impl<FnSumDoubleIterator> fn_sum_decimal;
+typedef function_impl<FnSumDecimalIterator> fn_sum_decimal;
 
-typedef function_impl<FnSumDoubleIterator> fn_sum_integer;
+typedef function_impl<FnSumIntegerIterator> fn_sum_integer;
 
 
 /////////////////////////////////////////////////////////////////////////////////
