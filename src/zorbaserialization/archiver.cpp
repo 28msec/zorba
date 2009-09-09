@@ -584,9 +584,27 @@ void Archiver::finalize_input_serialization()
          ZORBA_ERROR_DESC_OSS(SRL0003_UNRECOGNIZED_CLASS_FIELD, (*it).class_name);
       }
       cls_factory->cast_ptr((SerializeBaseClass*)ptr, (*it).ptr);
-      RCObject *rcobj = dynamic_cast<RCObject*>((SerializeBaseClass*)ptr);
-      if(rcobj)
-        RCHelper::addReference(rcobj);//this can lead to memory leaks
+
+      SimpleRCObject* rcobj1;
+      store::Item* rcobj2;
+      xqpStringStore* rcobj3;
+
+      if((rcobj1 = dynamic_cast<SimpleRCObject*>((SerializeBaseClass*)ptr)) != NULL)
+      {
+        RCHelper::addReference(rcobj1); //this can lead to memory leaks
+      }
+      else if ((rcobj2 = dynamic_cast<store::Item*>((SerializeBaseClass*)ptr)) != NULL)
+      {
+        RCHelper::addReference(rcobj2); //this can lead to memory leaks
+      }
+      else if ((rcobj3 = dynamic_cast<xqpStringStore*>((SerializeBaseClass*)ptr)) != NULL)
+      {
+        RCHelper::addReference(rcobj3); //this can lead to memory leaks
+      }
+      else
+      {
+        ZORBA_FATAL(0, (*it).class_name);
+      }
     }
   }
 
