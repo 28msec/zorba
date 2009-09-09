@@ -52,7 +52,7 @@ public:
   AtomicItem() : store::Item() { SYNC_CODE(theRCLockPtr = &theRCLock;) }
 #endif
 
-  virtual ~AtomicItem() {}
+  ~AtomicItem() {}
 
   bool isNode() const   { return false; }
   bool isAtomic() const { return true; }
@@ -60,9 +60,9 @@ public:
   bool isTuple() const  { return false; }
   bool isError() const  { return false; }
 
-  virtual store::Item_t getAtomizationValue() const;
+  store::Item_t getAtomizationValue() const;
 
-  virtual void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
+  void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 };
 
 
