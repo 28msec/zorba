@@ -111,16 +111,16 @@ public:
   } config_t;
 
 public:  
-  bool                               m_is_loadprolog;
-  std::map<short, static_context_t> *m_context_map;
+  bool                                m_is_loadprolog;
+  std::map<short, static_context_t> * m_context_map;
   
-  static_context_t                   m_sctx;
-  short                              m_cur_sctx;
-  std::vector<static_context_t>      m_sctx_list;
+  static_context_t                    m_sctx;
+  short                               m_cur_sctx;
+  std::vector<static_context_t>       m_sctx_list;
 
-  error::ErrorManager*               m_error_manager;
-  config_t                           m_config;
-  ZorbaDebuggerCommons*              theDebuggerCommons;
+  error::ErrorManager               * m_error_manager;
+  config_t                            m_config;
+  ZorbaDebuggerCommons              * theDebuggerCommons;
 
 public:
   SERIALIZABLE_CLASS(CompilerCB);
@@ -138,8 +138,7 @@ public:
 
   void setLoadPrologQuery() { m_is_loadprolog = true; }
 
-  static_context*
-  getStaticContext(short c);
+  static_context* getStaticContext(short c);
 };
 
 

@@ -43,9 +43,10 @@ END_SERIALIZABLE_CLASS_VERSIONS(CompilerCB::config)
     e->put (os) << std::endl;                                           \
   }
 
-  DEF_PRINT_EXPR_TREE (translation)
-  DEF_PRINT_EXPR_TREE (normalization)
-  DEF_PRINT_EXPR_TREE (optimization)
+
+DEF_PRINT_EXPR_TREE (translation);
+DEF_PRINT_EXPR_TREE (normalization);
+DEF_PRINT_EXPR_TREE (optimization);
 
 
 CompilerCB::CompilerCB(std::map<short, static_context_t>& sctx_map)
@@ -53,7 +54,7 @@ CompilerCB::CompilerCB(std::map<short, static_context_t>& sctx_map)
   m_is_loadprolog(false),
   m_context_map(&sctx_map),
   m_sctx(0),
-    m_cur_sctx(0),
+  m_cur_sctx(0),
   m_error_manager(0),
   theDebuggerCommons(0)
 {
@@ -76,7 +77,8 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
 
 CompilerCB::CompilerCB(::zorba::serialization::Archiver& ar)
   :
-  ::zorba::serialization::SerializeBaseClass()
+  ::zorba::serialization::SerializeBaseClass(),
+  theDebuggerCommons(NULL)
 {
 }
 
@@ -85,7 +87,7 @@ CompilerCB::~CompilerCB()
 }
 
 
-void CompilerCB::serialize(::zorba::serialization::Archiver &ar)
+void CompilerCB::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & m_is_loadprolog;
   ar & m_cur_sctx;
@@ -98,6 +100,7 @@ void CompilerCB::serialize(::zorba::serialization::Archiver &ar)
     theDebuggerCommons = NULL;
   }
   ar & m_config;
+  //ar & theDebuggerCommons;
 }
 
 

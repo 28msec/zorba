@@ -604,7 +604,7 @@ xqtref_t relpath_expr::return_type_impl(static_context* sctx)
   if (TypeOps::is_empty (*sourceType) || TypeOps::is_none (*sourceType))
     return sourceType;
 
-  if (sourceType->type_kind() != XQType::NODE_TYPE_KIND)
+  if (TypeOps::is_subtype(*sourceType, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR))
   {
     ZORBA_ERROR_LOC(XPTY0020, get_loc());
     return GENV_TYPESYSTEM.NONE_TYPE;
@@ -803,7 +803,15 @@ xqtref_t var_expr::return_type_impl(static_context* sctx)
       theKind == win_var || theKind == copy_var) 
   {
     domainExpr = get_domain_expr();
-    assert(domainExpr != NULL);
+
+    // domainExpr may be NULL if this method is called during translation,
+    // when the varExpr is not yet connected with its domainExpr.
+    if (domainExpr == NULL)
+    {
+      return (theKind == for_var ? 
+              GENV_TYPESYSTEM.ITEM_TYPE_QUESTION :
+              GENV_TYPESYSTEM.ITEM_TYPE_STAR);
+    }
 
     type1 = domainExpr->return_type(sctx);
 

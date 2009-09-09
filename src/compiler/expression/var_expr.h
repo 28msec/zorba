@@ -95,15 +95,16 @@ public:
   };
 
 protected:
+  static int var_expr_count;
+
   var_kind       theKind;
   store::Item_t  theName;
   xqtref_t       theDeclaredType;
 
-  static int var_expr_count;
   flwor_clause * theFlworClause;
   copy_clause  * theCopyClause;
 
-  int   unique_id;
+  int            unique_id;
 
 public:
   SERIALIZABLE_CLASS(var_expr)
@@ -139,6 +140,8 @@ public:
   forletwin_clause* get_forletwin_clause() const;
 
   for_clause* get_for_clause() const;
+
+  copy_clause* get_copy_clause() const { return theCopyClause; }
 
   void set_copy_clause(copy_clause* c) { theCopyClause = c; }
 
