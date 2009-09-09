@@ -14,6 +14,12 @@
  * limitations under the License.
  */
 
+import org.zorba.Zorba;
+import org.zorba.XQuery;
+import org.zorba.ResultIterator;
+import org.zorba.Item;
+import org.zorba.XmlDataManager;
+import org.zorba.InMemoryStore;
 
 
 public class Test_Zorba 

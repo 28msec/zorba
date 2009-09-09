@@ -1,9 +1,20 @@
 #!/bin/sh
-export LD_LIBRARY_PATH=@Java_Load_Path@
+JAVA_LOAD_PATH=@Java_Load_Path@
+export LD_LIBRARY_PATH=$JAVA_LOAD_PATH
 # The following for Mac OS X
-export DYLD_LIBRARY_PATH=@Java_Load_Path@
-export CLASSPATH=".:@Java_Load_Path@"
-/usr/bin/javac $LD_LIBRARY_PATH/*.java
-/usr/bin/javac *.java
-/usr/bin/java $1
+export DYLD_LIBRARY_PATH=$JAVA_LOAD_PATH
+export CLASSPATH="build:$JAVA_LOAD_PATH"
+
+#rm -R build
+mkdir build
+
+echo "\njava_test.sh: Compile Zorba API ..."
+/usr/bin/javac  -d build $JAVA_LOAD_PATH/*.java
+
+echo "\njava_test.sh: Compile Test_Zorba ..."
+/usr/bin/javac -cp build -d build *.java
+
+echo "\njava_test.sh: Java Execute Test_Zorba ..."
+/usr/bin/java -cp build $1
+
 

@@ -20,24 +20,25 @@ STRING ( COMPARE NOTEQUAL ${JAVA_INCLUDE_PATH} "JAVA_INCLUDE_PATH-NOTFOUND" JNI_
 
 
 IF ( JNI_FOUND )
-include (CMakeJavaInformation )
-MESSAGE(STATUS "Generating Java API")
+  include (CMakeJavaInformation )
+  MESSAGE(STATUS "Generating Java API")
 
-EXECUTE_PROCESS ( COMMAND ${JAVA_RUNTIME} -version OUTPUT_VARIABLE JAVA_VERSION )
-MESSAGE(STATUS "JNI found at ${JNI_INCLUDE_PATH}" )
+  EXECUTE_PROCESS ( COMMAND ${JAVA_RUNTIME} -version OUTPUT_VARIABLE JAVA_VERSION )
+  MESSAGE(STATUS "JNI found at ${JNI_INCLUDE_PATH}" )
 
-SET_SOURCE_FILES_PROPERTIES(zorba_api.i PROPERTIES CPLUSPLUS ON)
-INCLUDE_DIRECTORIES ( ${JAVA_INCLUDE_PATH} )
+  SET_SOURCE_FILES_PROPERTIES(zorba_api.i PROPERTIES CPLUSPLUS ON)
+  INCLUDE_DIRECTORIES ( ${JAVA_INCLUDE_PATH} )
 
-# Apple put jni_md.h at same level as jni.h
-IF ( NOT APPLE )
-# Following for jni_md.h
-INCLUDE_DIRECTORIES ( ${JAVA_INCLUDE_PATH2} )
-ENDIF ( NOT APPLE )
+  # Apple put jni_md.h at same level as jni.h
+  IF ( NOT APPLE )
+    # Following for jni_md.h
+    INCLUDE_DIRECTORIES ( ${JAVA_INCLUDE_PATH2} )
+  ENDIF ( NOT APPLE )
 
-SET( CMAKE_SWIG_FLAGS -package org.zorba)
+  SET( CMAKE_SWIG_FLAGS -package org.zorba)
+  #SET( CMAKE_SWIG_OUTDIR ${RUNTIME_OUTPUT_DIRECTORY}/org/zorba )
 
-SWIG_ADD_MODULE ( libzorba_api java zorba_api.i)
+  SWIG_ADD_MODULE ( libzorba_api java zorba_api.i)
   SWIG_LINK_LIBRARIES(libzorba_api zorba_simplestore ${JAVA_LIBRARY})
   IF ( APPLE )
     set_target_properties( libzorba_api PROPERTIES SUFFIX .jnilib )
@@ -45,20 +46,20 @@ SWIG_ADD_MODULE ( libzorba_api java zorba_api.i)
 
 
 
-IF (${CMAKE_INSTALL_PREFIX} EQUAL "/usr/local")
-  SET (JAVA_SITEARCH_DIR "/usr/share/java")
-ELSE (${CMAKE_INSTALL_PREFIX} EQUAL "/usr/local")
-  SET (JAVA_SITEARCH_DIR ${CMAKE_INSTALL_PREFIX}/share/java)
-ENDIF (${CMAKE_INSTALL_PREFIX} EQUAL "/usr/local")
+  IF (${CMAKE_INSTALL_PREFIX} EQUAL "/usr/local")
+    SET (JAVA_SITEARCH_DIR "/usr/share/java")
+  ELSE (${CMAKE_INSTALL_PREFIX} EQUAL "/usr/local")
+    SET (JAVA_SITEARCH_DIR ${CMAKE_INSTALL_PREFIX}/share/java)
+  ENDIF (${CMAKE_INSTALL_PREFIX} EQUAL "/usr/local")
 
-MESSAGE(STATUS "Java module install path: " ${JAVA_SITEARCH_DIR})
-
-IF ( APPLE )
-  INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libzorba_api.jnilib DESTINATION ${JAVA_SITEARCH_DIR})
-ELSE ( APPLE )
-  INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libzorba_api.so DESTINATION ${JAVA_SITEARCH_DIR})
-ENDIF ( APPLE )
+  MESSAGE(STATUS "Java module install path: " ${JAVA_SITEARCH_DIR})
+  
+  IF ( APPLE )
+    INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libzorba_api.jnilib DESTINATION ${JAVA_SITEARCH_DIR})
+  ELSE ( APPLE )
+    INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libzorba_api.so DESTINATION ${JAVA_SITEARCH_DIR})
+  ENDIF ( APPLE )
 
 ELSE ( JNI_FOUND )
-    MESSAGE ( STATUS "Not generating JAVA API because jni headers not found")
+  MESSAGE ( STATUS "Not generating JAVA API because jni headers not found")
 ENDIF ( JNI_FOUND )
