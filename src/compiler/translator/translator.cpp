@@ -2730,7 +2730,7 @@ void end_visit (const FunctionDecl& v, void* /*visit_state*/)
                         *&(udf->get_signature().return_type()));
 
     if (theCCB->m_config.opt_level == CompilerCB::config_t::O1) 
-{
+    {
       RewriterContext rCtx(theCCB, body);
       GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
       body = rCtx.getRoot();
@@ -5103,7 +5103,14 @@ void *begin_visit (const PathExpr& v)
   if (pe_type != ParseConstants::path_relative)  
   {
     rchandle<relpath_expr> ctx_path_expr = new relpath_expr(theCCB->m_cur_sctx, loc);
-    ctx_path_expr->add_back(DOT_VAR);
+
+    expr_t sourceExpr = new treat_expr(theCCB->m_cur_sctx,
+                                       loc,
+                                       DOT_VAR,
+                                       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+                                       XPTY0020);
+
+    ctx_path_expr->add_back(sourceExpr);
 
     rchandle<match_expr> me = new match_expr(theCCB->m_cur_sctx, loc);
     me->setTestKind(match_anykind_test);
@@ -5156,6 +5163,7 @@ void end_visit (const PathExpr& v, void* /*visit_state*/)
 
   ZORBA_ASSERT(arg1 == NULL);
 
+#if 0
   NodeSortInfo& nodeSortInfo = theNodeSortStack.top();
 
   if (!nodeSortInfo.theSingleInput ||
@@ -5176,6 +5184,10 @@ void end_visit (const PathExpr& v, void* /*visit_state*/)
 
     nodestack.push(checkExpr);
   }
+#else
+  // wrap in atomics_or_node_distinc_sort_asc
+  nodestack.push(wrap_in_dos_and_dupelim(arg2, true));
+#endif
 
   theNodeSortStack.pop();
 }
@@ -5281,11 +5293,13 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
     axis_step_expr* axisExpr = stepExpr.dyn_cast<axis_step_expr>();
     ZORBA_ASSERT(axisExpr != NULL || pathExpr->size() == 0);
 
+#if 0
     if (pathExpr->size() == 0 && 
         TypeOps::type_max_cnt(*stepExpr->return_type(sctx_p)) > 1)
     {
       theNodeSortStack.top().theSingleInput = false;
     }
+#endif
 
     pathExpr->add_back(stepExpr);
   }

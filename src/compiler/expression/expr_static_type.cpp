@@ -604,7 +604,7 @@ xqtref_t relpath_expr::return_type_impl(static_context* sctx)
   if (TypeOps::is_empty (*sourceType) || TypeOps::is_none (*sourceType))
     return sourceType;
 
-  if (TypeOps::is_subtype(*sourceType, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR))
+  if (!TypeOps::is_subtype(*sourceType, *GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR))
   {
     ZORBA_ERROR_LOC(XPTY0020, get_loc());
     return GENV_TYPESYSTEM.NONE_TYPE;
