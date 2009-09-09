@@ -95,6 +95,7 @@ void CompilerCB::serialize(::zorba::serialization::Archiver &ar)
   if(!ar.is_serializing_out())
   {
     m_error_manager = NULL;//don't serialize this
+    theDebuggerCommons = NULL;
   }
   ar & m_config;
 }
