@@ -455,6 +455,7 @@ void expr::serialize(::zorba::serialization::Archiver &ar)
 {
   //serialize_baseclass(ar, (SimpleRCObject*)this);
   serialize_baseclass(ar, (AnnotationHolder*)this);
+  ar & context;
   ar & loc;
   ar & cache.type.valid;
   ar & cache.type.t;
