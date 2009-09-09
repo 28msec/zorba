@@ -56,7 +56,7 @@
 #include "runtime/eval/FnContextImpl.h"
 #include "runtime/debug/debug_iterators.h"
 #include "runtime/debug/zorba_debug_iterator.h"
-#include "runtime/debug/debug_iterators.h"
+#include "debugger/zorba_debugger_commons.h"
 #include "runtime/collections/CollectionsImpl.h"
 #include "runtime/util/UtilImpl.h"
 #include "runtime/convertors/ConvertorsImpl.h"
@@ -1471,6 +1471,7 @@ void endVisitFlworReturn(const PlanIterator& /*a*/)
   PRINTER_VISITOR_DEFINITION(ZorbaTimestampIterator);
 
   PRINTER_VISITOR_DEFINITION(ZorbaDebugIterator);
+  PRINTER_VISITOR_DEFINITION(DebuggerSingletonIterator);
 
 #ifdef ZORBA_WITH_REST
   PRINTER_VISITOR_DEFINITION(ZorbaRestGetIterator);

@@ -5,6 +5,7 @@
 #include <string>
 
 #include "compiler/parser/query_loc.h"
+#include "runtime/core/item_iterator.h"
 
 #include "debugger/debugger_common.h"
 
@@ -22,8 +23,42 @@ namespace zorba {
     std::string theFileName;
     unsigned long theLineNumber;
     QueryLoc theQueryLocation;
-    bool operator()(const DebugLocation_t& aLocation1, const DebugLocation_t& aLocation2) const;
+    bool operator()(const DebugLocation_t& aLocation1,
+      const DebugLocation_t& aLocation2) const;
   };
+
+  /**
+  * @brief This class is used for the eval command.
+  *
+  * This class is just a SingeltonIterator, which gives the client
+  * the possibility to reset the stored item.
+  */
+  class DebuggerSingletonIterator : 
+    public NoaryBaseIterator<DebuggerSingletonIterator,PlanIteratorState>
+  {
+  public: //Constructor and Destructor
+    /**
+    * @brief The default constructor only takes the static context.
+    */
+    DebuggerSingletonIterator(static_context* sctx,
+      QueryLoc loc,
+      store::Item_t* aValue);
+
+    virtual ~DebuggerSingletonIterator() {}
+
+  public: //Implementation
+
+    void accept(PlanIterVisitor& v) const;
+
+    bool nextImpl(store::Item_t& result, PlanState& planState) const;
+
+    void setValue(store::Item_t* aValue);
+    store::Item* getValue() const;
+
+  protected:
+    store::Item_t* theValue;
+  };
+
   /**
   * @brief A class used as common shared object between the debugger runtime
   *  and the debug iterators.
@@ -40,7 +75,7 @@ namespace zorba {
     *
     * Initializes the internally used variables.
     */
-    ZorbaDebuggerCommons();
+    ZorbaDebuggerCommons(static_context* sctx);
     virtual ~ZorbaDebuggerCommons();
   public: // Commands
     //************************************
@@ -82,6 +117,7 @@ namespace zorba {
     * @post aIterator == theCurrentIterator
     */
     void setCurrentIterator(const ZorbaDebugIterator* aIterator);
+
     /**
     * @brief Sets the current planstate.
     *
@@ -91,6 +127,7 @@ namespace zorba {
     * @post thePlanState == aPlanState
     */
     void setPlanState(PlanState* aPlanState);
+
     /**
     * @brief Sets the current debugger state.
     *
@@ -100,6 +137,31 @@ namespace zorba {
     * @post aState == theDebugIteratorState
     */
     void setDebugIteratorState(ZorbaDebugIteratorState* aState);
+
+    /**
+    * @brief Sets a setpoint according to the step out rules.
+    *
+    * This method sets a breakpoint according to the rules according to
+    * the step out rules.
+    *
+    * @pre theCurrentIterator != NULL
+    */
+    void makeStepOut();
+
+    /**
+    * @brief Sets a setpoint according to the step over rules.
+    *
+    * @pre theCurrentIterator != NULL
+    */
+    void makeStepOver();
+
+    /**
+    * @brief Evaluates aExpr and returns the result.
+    *
+    * @returns the result of the expression in the current context.
+    */
+    std::list<std::pair<zorba::xqpString, zorba::xqpString> > 
+      eval(const xqpString& aExpr);
   public: //Queries
     /**
     * Adds a breakpoint and then sets theLocation from aLocation
@@ -174,29 +236,11 @@ namespace zorba {
     const ZorbaDebugIterator* getCurrentIterator();
 
     /**
-    * @brief Sets a setpoint according to the step out rules.
-    *
-    * This method sets a breakpoint according to the rules according to
-    * the step out rules.
-    *
-    * @pre theCurrentIterator != NULL
+    * @brief Gets the item, which is used for all eval iterators of the debug
+    * iterators.
     */
-    void makeStepOut();
+    store::Item_t* getEvalItem();
 
-    /**
-    * @brief Sets a setpoint according to the step over rules.
-    *
-    * @pre theCurrentIterator != NULL
-    */
-    void makeStepOver();
-
-    /**
-    * @brief Evaluates aExpr and returns the result.
-    *
-    * @returns the result of the expression in the current context.
-    */
-    std::list<std::pair<zorba::xqpString, zorba::xqpString> > 
-      eval(const xqpString& aExpr);
   private:
     std::map<DebugLocation_t, bool, DebugLocation> theLocationMap;
     ZorbaDebuggerRuntime*                          theRuntime;
@@ -211,6 +255,8 @@ namespace zorba {
     std::list<const ZorbaDebugIterator*>           theBreakIterators;
     PlanState*                                     thePlanState;
     ZorbaDebugIteratorState*                       theDebugIteratorState;
+    store::Item_t                                  theEvalItem;
+    bool                                           theExecEval;
   };
 }
 

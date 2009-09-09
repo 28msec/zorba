@@ -574,7 +574,8 @@ void XQueryImpl::doCompile(
   //if the debug mode is set, we force the gflwor, we set the query input stream
   if ( theIsDebugMode){
     theCompilerCB->m_config.force_gflwor = true;
-    theCompilerCB->theDebuggerCommons = new ZorbaDebuggerCommons();
+    theCompilerCB->theDebuggerCommons =
+      new ZorbaDebuggerCommons(theCompilerCB->m_sctx);
     theCompilerCB->m_config.opt_level = CompilerCB::config_t::O0;
   }
   // let's compile

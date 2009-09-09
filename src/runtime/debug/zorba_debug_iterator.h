@@ -93,10 +93,7 @@ public: // Getters
   QueryLoc getQueryLocation() const;
 
 public: // Commands
-  std::list<std::pair<xqpString, xqpString> > eval(
-    std::string aExpression, 
-    PlanState& aPlanState,
-    ZorbaDebugIteratorState* aState) const;
+  std::list<std::pair<xqpString, xqpString> > eval(PlanState& aPlanState) const;
 };
 
 

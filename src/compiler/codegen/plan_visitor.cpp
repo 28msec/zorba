@@ -325,14 +325,20 @@ void end_visit (debugger_expr& v) {
   checked_vector<store::Item_t> varnames;
   checked_vector<string> var_keys;
   checked_vector<xqtref_t> vartypes;
+  std::vector<PlanIter_t> argvEvalIter;
   std::vector<PlanIter_t> argv;
   for (unsigned i = 0; i < v.var_count (); i++) 
   {
     varnames.push_back (v.var_at (i).varname);
     var_keys.push_back (v.var_at (i).var_key);
     vartypes.push_back (v.var_at (i).type);
-    argv.push_back (pop_itstack());
+    argvEvalIter.push_back (pop_itstack());
   }
+
+  //create the eval iterator children
+  argvEvalIter.push_back(new DebuggerSingletonIterator(sctx,
+    qloc, ccb->theDebuggerCommons->getEvalItem()));
+  reverse (argvEvalIter.begin (), argvEvalIter.end ());
 
   // get the debugger iterator from the debugger stack
   std::auto_ptr<ZorbaDebugIterator> aDebugIterator(theDebuggerStack.top());
@@ -340,7 +346,8 @@ void end_visit (debugger_expr& v) {
 
   // set the child of the debugger iterator
   argv.push_back(pop_itstack ());
-  reverse (argv.begin (), argv.end ());
+  argv.push_back(new EvalIterator(sctx, qloc, varnames, var_keys, 
+    vartypes, argvEvalIter));
   aDebugIterator->setChildren(argv);
 
   aDebugIterator->setVariables(varnames, var_keys, vartypes);

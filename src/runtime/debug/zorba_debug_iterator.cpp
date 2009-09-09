@@ -147,72 +147,86 @@ const ZorbaDebugIterator* ZorbaDebugIterator::getOverIterator() const
   ZORBA_ASSERT(false);
   return NULL;
 }
-
-class DebugVarIterator : public store::Iterator {
-public:
-  DebugVarIterator(store::Item_t aItem)
-    : theItem(aItem), theFinished(false)
-  {
-  }
-
-  void open(){}
-  void reset(){ theFinished = false; }
-  void close(){}
-
-  bool next(store::Item_t& result)
-  {
-    if (theFinished)
-      return false;
-    result = theItem;
-    theFinished = true;
-    return theFinished;
-  }
-
-private:
-  store::Item_t theItem;
-  bool theFinished;
-};
+//
+//class DebugVarIterator : public store::Iterator {
+//public:
+//  DebugVarIterator(store::Item_t aItem)
+//    : theItem(aItem), theFinished(false)
+//  {
+//  }
+//
+//  void open(){}
+//  void reset(){ theFinished = false; }
+//  void close(){}
+//
+//  bool next(store::Item_t& result)
+//  {
+//    if (theFinished)
+//      return false;
+//    result = theItem;
+//    theFinished = true;
+//    return theFinished;
+//  }
+//
+//private:
+//  store::Item_t theItem;
+//  bool theFinished;
+//};
 
 std::list<std::pair<xqpString, xqpString> > ZorbaDebugIterator::eval(
-  std::string aExpression, 
-  PlanState& aPlanState, 
-  ZorbaDebugIteratorState* aState) const
+  PlanState& aPlanState) const
 {
-  aState->ccb.reset (new CompilerCB (*aPlanState.theCompilerCB));
-  aState->ccb->m_sctx = aPlanState.theCompilerCB->m_sctx->create_child_context ();
-  (*aState->ccb->m_context_map)[aState->ccb->m_cur_sctx] = aState->ccb->m_sctx; 
-  checked_vector<store::Item_t>::const_iterator lIter;
-  aState->dctx.reset (new dynamic_context (aPlanState.dctx ()));
-
-  aState->eval_plan.reset ( new PlanWrapper ( 
-    EvalIterator::compile (aState->ccb.get (),
-    aExpression,
-    varnames,
-    vartypes),
-    aState->ccb.get (),
-    aState->dctx.get (),
-    aPlanState.theStackDepth + 1));
-  aState->eval_plan->checkDepth (loc);
-
-  for (unsigned i = 0; i < theChildren.size () - 1; i++) {
-    store::Iterator_t lIter = 
-      new PlanIteratorWrapper (theChildren [i + 1], aPlanState);
-    // TODO: is saving an open iterator efficient?
-    // Then again if we close theChildren [1] here,
-    // we won't be able to re-open it later via the PlanIteratorWrapper
-    aState->dctx->add_variable (dynamic_context::var_key (
-      aState->ccb->m_sctx->lookup_var (varnames [i])), lIter);
-  }
-
+  theChildren[1]->reset(aPlanState);
   std::list<std::pair<xqpString, xqpString> > lResult;
-  store::Item_t result;
-  while (aState->eval_plan->next (result)) {
+  store::Item_t lRes;
+  while (consumeNext(lRes, theChildren[1], aPlanState)) {
     lResult.push_back(
-      std::pair<xqpString, xqpString>(xqpString(result->getStringValue().getp()),
-        xqpString(result->getType()->getStringValue().getp())));
+      std::pair<xqpString, xqpString>(xqpString(lRes->getStringValue().getp()),
+      xqpString(lRes->getType()->getStringValue().getp())));
   }
   return lResult;
-} 
+}
+
+//std::list<std::pair<xqpString, xqpString> > ZorbaDebugIterator::eval(
+//  std::string aExpression, 
+//  PlanState& aPlanState, 
+//  ZorbaDebugIteratorState* aState) const
+//{
+//  aState->ccb.reset (new CompilerCB (*aPlanState.theCompilerCB));
+//  aState->ccb->m_sctx = aPlanState.theCompilerCB->m_sctx->create_child_context ();
+//  (*aState->ccb->m_context_map)[aState->ccb->m_cur_sctx] = aState->ccb->m_sctx; 
+//  checked_vector<store::Item_t>::const_iterator lIter;
+//  aState->dctx.reset (new dynamic_context (aPlanState.dctx ()));
+//
+//  aState->eval_plan.reset ( new PlanWrapper ( 
+//    EvalIterator::compile (aState->ccb.get (),
+//    aExpression,
+//    varnames,
+//    vartypes),
+//    aState->ccb.get (),
+//    aState->dctx.get (),
+//    aPlanState.theStackDepth + 1));
+//  aState->eval_plan->checkDepth (loc);
+//
+//  for (unsigned i = 0; i < theChildren.size () - 1; i++) {
+//    store::Iterator_t lIter = 
+//      new PlanIteratorWrapper (theChildren [i + 1], aPlanState);
+//    // TODO: is saving an open iterator efficient?
+//    // Then again if we close theChildren [1] here,
+//    // we won't be able to re-open it later via the PlanIteratorWrapper
+//    aState->dctx->add_variable (dynamic_context::var_key (
+//      aState->ccb->m_sctx->lookup_var (varnames [i])), lIter);
+//  }
+//
+//  std::list<std::pair<xqpString, xqpString> > lResult;
+//  store::Item_t result;
+//  while (aState->eval_plan->next (result)) {
+//    lResult.push_back(
+//      std::pair<xqpString, xqpString>(xqpString(result->getStringValue().getp()),
+//        xqpString(result->getType()->getStringValue().getp())));
+//  }
+//  return lResult;
+//} 
 
 
 }/* namespace zorba */

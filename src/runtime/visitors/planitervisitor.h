@@ -314,6 +314,7 @@ namespace zorba
   }
 
   class ZorbaDebugIterator;
+  class DebuggerSingletonIterator;
 
 #ifdef ZORBA_WITH_REST
   class ZorbaRestGetIterator;
@@ -930,6 +931,7 @@ public:
     PLAN_ITER_VISITOR(ZorbaTimestampIterator);
 
     PLAN_ITER_VISITOR ( ZorbaDebugIterator );
+    PLAN_ITER_VISITOR ( DebuggerSingletonIterator );
 
 #ifdef ZORBA_WITH_REST
     PLAN_ITER_VISITOR(ZorbaRestGetIterator);
