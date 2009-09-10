@@ -499,6 +499,7 @@ EXCLUDE_PATTERNS       = */.svn \
 # the \include command).
 
 EXAMPLE_PATH           = @CMAKE_SOURCE_DIR@/test/rbkt/Queries/zorba \
+                         @CMAKE_SOURCE_DIR@/test/rbkt/ExpQueryResults/zorba \
                          @CMAKE_SOURCE_DIR@/test/rbkt/Queries/zorba/collections \
                          @CMAKE_SOURCE_DIR@/test/rbkt/Queries/zorba/collections/chained_test_collection_011 \
                          @CMAKE_SOURCE_DIR@/test/update/Queries \
@@ -517,6 +518,7 @@ EXAMPLE_PATTERNS       = *.cpp \
                          *.cxq \
                          *.xqlib \
                          *.xml \
+                         *.xml.res \
                          INSTALL DEPENDENCIES CHANGELOG LICENSE LGPL
 
 # If the EXAMPLE_RECURSIVE tag is set to YES then subdirectories will be 

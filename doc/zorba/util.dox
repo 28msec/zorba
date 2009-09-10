@@ -20,6 +20,7 @@
       <li> \ref uuid
       <li> \ref random
     </ul>
+    <li> \ref parse_util
     <li> \ref serialize_util
     <ul>
       <li> \ref serialize_to_string
@@ -161,15 +162,48 @@ If the seed is not passed as an argument the same number will be generated every
     return zu:random()
 \endcode
 
-\section serialize_util 3 Functions for serialization
-
-\subsection serialize_to_string 3.1 zorba-util:serialize-to-string
-This functions takes a sequence of nodes, serializes them into strings and returns the concatenation of all strings.
+\section parse_util 3 Function for parsing XML
 
 \code
-  import module namespace zu = "http://www.zorba-xquery.com/zorba/util-functions";
-  fn:concat("test", zu:serialize-to-xml(<a><b>textnode</b></a>))
+  declare function parse($doc xs:string) as document-node()?
 \endcode
+
+Summary: Loads the document given as string into the store
+
+Error scenarios:
+\verbatim
+If the passed string does not have a valid XML structure, the STR0008
+error is raised
+\endverbatim
+
+In the following, we demonstrate the use of the parse function.
+
+\include util_parse2.xq
+
+The following query:
+
+\include util_parse1.xq
+
+will raise [STR0008] Loader parsing error: Namespace prefix system on order
+is not defined
+
+\section serialize_util 4 Function for serialization
+
+\code
+  declare function serialize-to-string($doc as item()*) as xs:string
+\endcode
+
+Summary: This functions takes a sequence of nodes, serializes them into strings
+and returns the concatenation of all strings. \n
+The serialization is done with "omit-xml-declaration" parameter set to true
+
+In the following, we demonstrate the use of the serialize-to-string function.
+
+\include util_serialize_to_string1.xq
+
+will output:
+
+\include util_serialize_to_string1.xml.res
 
 \section apendix_util Appendix A:  Error codes
 
