@@ -82,10 +82,17 @@ class zorba_serialize_to_string : public function
 {
 public:
   zorba_serialize_to_string(const signature& sig) : function(sig) {}
-    
+
   bool isPureFunction () const { return false; }
 
-  DEFAULT_NARY_CODEGEN(FnPrintIterator);
+  PlanIter_t codegen(CompilerCB*,
+                     static_context* sctx,
+                     const QueryLoc& loc,
+                     std::vector<PlanIter_t>& argv,
+                     AnnotationHolder &) const
+  {
+    return new FnPrintIterator (sctx, loc, argv, false);
+  }
 };
 
 
