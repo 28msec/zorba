@@ -756,9 +756,11 @@ Byte * EvaluatedEvent::serialize( Length &aLength ) const
 
 xqpString EvaluatedEvent::getData() const
 {
+  xqpString lExpr = theExpr;
+  lExpr = lExpr.replace("\"", "&quot;", "");
   std::stringstream lJSONString;
   lJSONString << "{";
-  lJSONString << "\"expr\":\"" << theExpr << "\",";
+  lJSONString << "\"expr\":\"" << lExpr << "\",";
   lJSONString << "\"results\":[";
   list<pair<xqpString, xqpString> >::const_iterator it = theValuesAndTypes.begin();
   for(; it != theValuesAndTypes.end(); it++ )
@@ -798,6 +800,7 @@ EvalMessage::EvalMessage( Byte * aMessage, const unsigned int aLength ):
     std::string lString( lWString->begin()+1, lWString->end()-1 );
     delete lWString;
     theExpr = lString;
+    theExpr = theExpr.replace("&quot;", "\"", "");
   } else {
     throw MessageFormatException("Invalid JSON format for SuspendedEvent message.");
   }
@@ -808,9 +811,11 @@ EvalMessage::~EvalMessage(){}
 
 xqpString EvalMessage::getData() const
 {
+  xqpString lExpr = theExpr;
+  lExpr = lExpr.replace("\"", "&quot;", "");
   std::stringstream lJSONString;
   lJSONString << "{";
-  lJSONString << "\"expr\":\"" << theExpr << "\"";
+  lJSONString << "\"expr\":\"" << lExpr << "\"";
   lJSONString << "}";
   xqpString lReturnString( lJSONString.str() );
   return lReturnString;

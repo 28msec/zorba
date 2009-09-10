@@ -15,6 +15,7 @@
 
 #include "zorba/exception.h"
 #include "zorba/printer_error_handler.h"
+#include "zorbaerrors/errors.h"
 
 #include "debugger/debugger_protocol.h"
 #include "debugger/synchronous_logger.h"
@@ -55,9 +56,15 @@ namespace zorba {
       // Check preconditions
       ZORBA_ASSERT(theCommons != NULL);
       ZORBA_ASSERT(theCommunicator != NULL);
+      std::auto_ptr<EvaluatedEvent> lEvent;
 
-      std::auto_ptr<EvaluatedEvent> lEvent(
-        new EvaluatedEvent(theEvalString, theCommons->eval(theEvalString)));
+      try {
+        lEvent.reset(
+          new EvaluatedEvent(theEvalString, theCommons->eval(theEvalString)));
+      } catch (error::ZorbaError& lError) {
+        lEvent.reset(
+          new EvaluatedEvent(theEvalString, lError.toString()));
+      }
       theCommunicator->sendEvent(lEvent.get());
     }
 
