@@ -279,19 +279,19 @@ bool FnPrintIterator::nextImpl (store::Item_t& result, PlanState& planState) con
         lSerializer->set_parameter("omit-xml-declaration", "yes");
       }
 
-	  if (m_printToConsole) {
-		  lSerializer->serialize(item.getp(), std::cout);
-	  } else {
-		  lSerializer->serialize(item.getp(), os);
-	  }
+      if (m_printToConsole) {
+        lSerializer->serialize(item.getp(), std::cout);
+      } else {
+        lSerializer->serialize(item.getp(), os);
+      }
     }
     else
     {
-	  if (m_printToConsole) {
-        std::cout << item->getStringValue ();
-	  } else {
-	    os << item->getStringValue();
-	  }
+      if (m_printToConsole) {
+          std::cout << item->getStringValue ();
+      } else {
+        os << item->getStringValue();
+      }
     }
   }
   if (!m_printToConsole) {
