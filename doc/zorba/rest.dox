@@ -254,111 +254,23 @@ The payload, however, will be returned too, if available.
 \subsection restgetexamples 3.4.1 REST GET Examples
 
 \subsubsection restexample2 Example 1
-
-\code
-(: Simple GET example :)
-import module namespace zorba-rest = "http://www.zorba-xquery.com/zorba/rest-functions";
-
-zorba-rest:get("http://www.google.com/")
-\endcode
+\include rest_get1.xq
 
 \subsubsection restexample3 Example 2
-
-\code
-(: Invoke Google search for the "zorba xquery" term :)
-
-import module namespace zorba-rest = "http://www.zorba-xquery.com/zorba/rest-functions";
-
-zorba-rest:get("http://www.google.com/search",
-               <payload>
-                <part name="q">zorba xquery</part>
-               </payload>)
-\endcode
+\include rest_get_tidy1.xq
 
 \subsubsection restexample4 Example 3
-
-\code
-(: Invoke zorba-rest:get and pass a value for the Referer header :)
-
-import module namespace zorba-rest = "http://www.zorba-xquery.com/zorba/rest-functions";
-
-zorba-rest:get("http://www.google.com/", 
-               (),
-               <headers>
-                <header name="Referer">http://www.yahoo.com/</header>
-               </headers>)
-\endcode
+\include rest_get_tidy2.xq
 
 \subsubsection restexample5 Example 4
-
-\code
-(: Complex GET example with parameters and headers :)
-
-import module namespace zorba-rest = "http://www.zorba-xquery.com/zorba/rest-functions";
-
-zorba-rest:get("http://www.example.com/path",
-               <payload>
-                 <part name="parameter1">value1</part>
-                 <part name="parameter2">value2</part>
-               </payload>,
-               <headers>
-                 <header name="Referer">http://www.example2.com/path2</header>
-                 <header name="User_agent">ZorbaREST</header>
-               </headers>)
-\endcode
-
+\include rest_get_tidy3.xq
 
 \subsection restpostexamples 3.4.2 REST POST Examples
 
 \subsubsection restpostexample1 Example 1
+\include rest_put_tidy1.xq
 
-\code
-(: Example of zorba-rest:post with string parameters :)
-
-import module namespace zorba-rest = "http://www.zorba-xquery.com/zorba/rest-functions";
-
-zorba-rest:post("http://www.example.com/path",
-                <payload content-type="multipart/form-data">
-                  <part name="parameter1">value1</part>
-                  <part name="parameter2">value2</part>
-                </payload>)
-\endcode
-
-\subsubsection restpostexample2 Example 2
-
-\code
-(: Example of zorba-rest:post with string parameters and custom headers :)
-
-import module namespace zorba-rest = "http://www.zorba-xquery.com/zorba/rest-functions";
-
-zorba-rest:post("http://www.example.com/path",
-                <payload content-type="multipart/form-data">
-                  <part name="parameter1">value1</part>
-                  <part name="parameter2">value2</part>
-                </payload>,
-                <headers>
-                  <header name="custom">custom header value</header>
-                 </headers>)
-\endcode
-
-\subsubsection restpostexample3 Example 3
-
-\code
-(: Example of zorba-rest:post with XML parts and strings as parameters :)
-
-import module namespace zorba-rest = "http://www.zorba-xquery.com/zorba/rest-functions";
-
-zorba-rest:post("http://www.example.com/path",
-                <payload content-type="multipart/form-data">
-                  <part name="parameter1">value1</part>
-                  <part name="parameter2">
-                    <data attr="value">
-                      <a>text</a>
-                      <b>text2</b>
-                    </data>
-                  </part>
-                </payload>)
-\endcode
-
+More examples with the Rest functions can be found on the <a
+href="http://try.zorba-xquery.org/" target="_blank">Try Zorba site</a>.
 
 */

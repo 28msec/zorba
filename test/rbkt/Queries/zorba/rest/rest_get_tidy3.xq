@@ -1,3 +1,5 @@
+(: rest-getTidy example using payload, headers and Tidy options :)
+
 import module namespace zorba-rest = "http://www.zorba-xquery.com/zorba/rest-functions"; 
 
 let $tmp := zorba-rest:getTidy("http://www.google.com/search",
