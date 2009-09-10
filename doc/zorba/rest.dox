@@ -32,6 +32,7 @@
         </ul>
         <li> \ref restexamples
         <ul>
+          <li> \ref tryzorba_rest_examples
           <li> \ref restgetexamples
           <li> \ref restpostexamples
           <!--li> \ref restputexamples
@@ -251,7 +252,11 @@ The payload, however, will be returned too, if available.
 
 \section restexamples 3.4 REST Examples
 
-\subsection restgetexamples 3.4.1 REST GET Examples
+\subsection tryzorba_rest_examples 3.4.1 Rest examples on Try Zorba site
+Please check out the examples with the Rest functions from <a
+href="http://try.zorba-xquery.org/" target="_blank">Try Zorba site</a>.
+
+\subsection restgetexamples 3.4.2 REST GET Examples
 
 \subsubsection restexample2 Example 1
 \include rest_get1.xq
@@ -269,8 +274,5 @@ The payload, however, will be returned too, if available.
 
 \subsubsection restpostexample1 Example 1
 \include rest_put_tidy1.xq
-
-More examples with the Rest functions can be found on the <a
-href="http://try.zorba-xquery.org/" target="_blank">Try Zorba site</a>.
 
 */
