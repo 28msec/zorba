@@ -201,10 +201,6 @@ In the following, we demonstrate the use of the serialize-to-string function.
 
 \include util_serialize_to_string1.xq
 
-will output:
-
-\include util_serialize_to_string1.xml.res
-
 \section apendix_util Appendix A:  Error codes
 
   XQP0029_TIDY_ERROR - Error in Tidy library - is returned in case Tidy lib is not able to transform the given string into a valid XHTML.\n
