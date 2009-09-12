@@ -50,8 +50,8 @@ xqtref_t fn_data_func::return_type (const std::vector<xqtref_t> &arg_types) cons
 {
   RootTypeManager& RTM = GENV_TYPESYSTEM;
 
-  if (TypeOps::is_subtype (*arg_types [0], *RTM.ANY_ATOMIC_TYPE_STAR))
-    return arg_types [0];  // includes () case
+  if (TypeOps::is_subtype(*arg_types[0], *RTM.ANY_ATOMIC_TYPE_STAR))
+    return arg_types[0];  // includes () case
 
   TypeConstants::quantifier_t q = TypeOps::quantifier (*arg_types [0]);
 
@@ -81,6 +81,8 @@ xqtref_t fn_data_func::return_type (const std::vector<xqtref_t> &arg_types) cons
       {
         if (TypeOps::is_equal(*cType, *RTM.UNTYPED_TYPE))
           return RTM.create_builtin_atomic_type(TypeConstants::XS_UNTYPED_ATOMIC, q);
+        else if (TypeOps::is_subtype(*cType, *RTM.ANY_ATOMIC_TYPE_STAR))
+          return RTM.create_type(*cType, q);
       }
     }
   }
