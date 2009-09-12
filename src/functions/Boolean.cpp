@@ -79,16 +79,17 @@ void GenericOpComparison::compute_annotation(
     std::vector<AnnotationHolder *> &kids,
     Annotation::key_t k) const
 {
-  switch (k) {
+  switch (k) 
+  {
   case AnnotationKey::IGNORES_SORTED_NODES:
   case AnnotationKey::IGNORES_DUP_NODES:
-    for (std::vector<AnnotationHolder *>::iterator i = kids.begin (); i < kids.end (); i++)
+    for (std::vector<AnnotationHolder *>::iterator i = kids.begin(); i < kids.end(); i++)
       TSVAnnotationValue::update_annotation ((*i), k, TSVAnnotationValue::TRUE_VAL);
     break;
   default: break;
   }
 }
-  
+
   
 function* GenericOpComparison::specialize(
     static_context *sctx,
@@ -97,16 +98,19 @@ function* GenericOpComparison::specialize(
   xqtref_t t0 = argTypes[0];
   xqtref_t t1 = argTypes[1];
 
-  if (! (TypeOps::is_builtin_atomic (*t0) && TypeOps::is_builtin_atomic (*t1)))
+  if (! (TypeOps::is_builtin_atomic(*t0) && TypeOps::is_builtin_atomic(*t1)))
     return NULL;
     
   TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
   TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
-  if (tc0 == TypeConstants::XS_UNTYPED_ATOMIC || tc1 == TypeConstants::XS_UNTYPED_ATOMIC
-      || tc0 == TypeConstants::XS_ANY_ATOMIC || tc1 == TypeConstants::XS_ANY_ATOMIC)
+
+  if (tc0 == TypeConstants::XS_UNTYPED_ATOMIC ||
+      tc1 == TypeConstants::XS_UNTYPED_ATOMIC ||
+      tc0 == TypeConstants::XS_ANY_ATOMIC ||
+      tc1 == TypeConstants::XS_ANY_ATOMIC)
     return NULL;
   
-  return toValueComp (sctx);
+  return toValueComp(sctx);
 }
   
 
@@ -164,7 +168,8 @@ function* ValueOpComparison::specialize(
     {
       std::ostringstream oss;
       oss << ":value-" << comparison_name () << "-";
-      switch(tc0) {
+      switch(tc0) 
+      {
       case TypeConstants::XS_DOUBLE:
         oss << "double";
         return sctx->lookup_builtin_fn (oss.str (), 2);
@@ -203,8 +208,9 @@ function* ValueOpComparison::specialize(
 
   class op_value_greater : SpecificValueComparison<CompareConsts::GREATER>
 
-  typedef TypedValueComparison<CompareConsts::GREATER, TypeConstants::XS_DOUBLE>
-          op_value_greater_double
+  class op_value_greater_double : TypedValueComparison<CompareConsts::GREATER,
+                                                       TypeConstants::XS_DOUBLE>
+          
 
 ********************************************************************************/
 
@@ -225,7 +231,8 @@ public:
 
 
 template<enum CompareConsts::CompareType CC, TypeConstants::atomic_type_code_t t>
-class TypedValueComparison : public SpecificValueComparison<CC> {
+class TypedValueComparison : public SpecificValueComparison<CC> 
+{
 public:
   TypedValueComparison (const signature &sig) : SpecificValueComparison<CC> (sig) {}
 
@@ -241,39 +248,55 @@ public:
 };
 
 
-#define DECL_SPECIFIC_OP( cc, op, t, xqt )                              \
-  typedef TypedValueComparison <CompareConsts::VALUE_##cc, TypeConstants::XS_##xqt> \
-  op_value_##op##_##t
-
-#define DECL_ALL_SPECIFIC_OPS( cc, op, name )                           \
-  class op_value_##op                                                   \
-  : public SpecificValueComparison<CompareConsts::VALUE_##cc>           \
+#define DECL_SPECIFIC_TYPED_OP( cc, op, t, xqt )                        \
+class op_value_##op##_##t :                                             \
+public TypedValueComparison<CompareConsts::VALUE_##cc,                  \
+                            TypeConstants::XS_##xqt>                    \
+{                                                                       \
+public:                                                                 \
+  op_value_##op##_##t (const signature &sig)                            \
+    :                                                                   \
+    TypedValueComparison<CompareConsts::VALUE_##cc,                     \
+                         TypeConstants::XS_##xqt>(sig)                  \
+  {}                                                                    \
+                                                                        \
+  CompareConsts::CompareType comparison_kind() const                    \
   {                                                                     \
-  public:                                                               \
-    op_value_##op (const signature &sig)                                \
+    return CompareConsts::VALUE_##cc;                                   \
+  }                                                                     \
+};
+
+
+#define DECL_SPECIFIC_OPS( cc, op, name )                               \
+class op_value_##op :                                                   \
+public SpecificValueComparison<CompareConsts::VALUE_##cc>               \
+{                                                                       \
+public:                                                                 \
+  op_value_##op (const signature &sig)                                  \
     : SpecificValueComparison<CompareConsts::VALUE_##cc> (sig)          \
-    {}                                                                  \
+  {}                                                                    \
                                                                         \
-    const char *comparison_name () const { return name; }               \
+  const char *comparison_name () const { return name; }                 \
                                                                         \
-    CompareConsts::CompareType comparison_kind() const                  \
-    {                                                                   \
-      return CompareConsts::VALUE_##cc;                                 \
-    }                                                                   \
-  };                                                                    \
+  CompareConsts::CompareType comparison_kind() const                    \
+  {                                                                     \
+    return CompareConsts::VALUE_##cc;                                   \
+  }                                                                     \
+};                                                                      \
                                                                         \
-  DECL_SPECIFIC_OP (cc, op, double, DOUBLE);                            \
-  DECL_SPECIFIC_OP (cc, op, decimal, DECIMAL);                          \
-  DECL_SPECIFIC_OP (cc, op, float, FLOAT);                              \
-  DECL_SPECIFIC_OP (cc, op, integer, INTEGER);                          \
-  DECL_SPECIFIC_OP (cc, op, string, STRING)
+DECL_SPECIFIC_TYPED_OP (cc, op, double, DOUBLE);                        \
+DECL_SPECIFIC_TYPED_OP (cc, op, decimal, DECIMAL);                      \
+DECL_SPECIFIC_TYPED_OP (cc, op, float, FLOAT);                          \
+DECL_SPECIFIC_TYPED_OP (cc, op, integer, INTEGER);                      \
+DECL_SPECIFIC_TYPED_OP (cc, op, string, STRING)
   
-DECL_ALL_SPECIFIC_OPS (EQUAL, equal, "equal");
-DECL_ALL_SPECIFIC_OPS (NOT_EQUAL, not_equal, "not-equal");
-DECL_ALL_SPECIFIC_OPS (GREATER, greater, "greater");
-DECL_ALL_SPECIFIC_OPS (LESS, less, "less");
-DECL_ALL_SPECIFIC_OPS (GREATER_EQUAL, greater_equal, "greater-equal");
-DECL_ALL_SPECIFIC_OPS (LESS_EQUAL, less_equal, "less-equal");
+
+DECL_SPECIFIC_OPS (EQUAL, equal, "equal");
+DECL_SPECIFIC_OPS (NOT_EQUAL, not_equal, "not-equal");
+DECL_SPECIFIC_OPS (GREATER, greater, "greater");
+DECL_SPECIFIC_OPS (LESS, less, "less");
+DECL_SPECIFIC_OPS (GREATER_EQUAL, greater_equal, "greater-equal");
+DECL_SPECIFIC_OPS (LESS_EQUAL, less_equal, "less-equal");
 
 #undef DECL_ALL_SPECIFIC_OPS
 #undef DECL_SPECIFIC_OP
@@ -319,21 +342,21 @@ public:
 };
 
 
-#define DECL_ALL_SPECIFIC_GENERAL_OPS( cc, op, name )                           \
-  class op_##op : public SpecificGeneralComparison<CompareConsts::GENERAL_##cc> \
-  {                                                                             \
-  public:                                                                       \
-    op_##op (const signature &sig)                                              \
-      : SpecificGeneralComparison<CompareConsts::GENERAL_##cc> (sig)            \
-    {}                                                                          \
-                                                                                \
-    const char* comparison_name () const { return name; }                       \
-                                                                                \
-    CompareConsts::CompareType comparison_kind() const                          \
-    {                                                                           \
-      return CompareConsts::GENERAL_##cc;                                       \
-    }                                                                           \
-  };
+#define DECL_ALL_SPECIFIC_GENERAL_OPS( cc, op, name )                   \
+class op_##op : public SpecificGeneralComparison<CompareConsts::GENERAL_##cc> \
+{                                                                       \
+public:                                                                 \
+  op_##op (const signature &sig)                                        \
+    : SpecificGeneralComparison<CompareConsts::GENERAL_##cc> (sig)      \
+  {}                                                                    \
+                                                                        \
+  const char* comparison_name () const { return name; }                 \
+                                                                        \
+  CompareConsts::CompareType comparison_kind() const                    \
+  {                                                                     \
+    return CompareConsts::GENERAL_##cc;                                 \
+  }                                                                     \
+};
 
 DECL_ALL_SPECIFIC_GENERAL_OPS(EQUAL, equal, "equal");
 DECL_ALL_SPECIFIC_GENERAL_OPS(NOT_EQUAL, not_equal, "not-equal");
@@ -500,7 +523,7 @@ public:
 
 void populateContext_Comparison(static_context* sctx) 
 {
-// Generic Comparison;
+// General Comparison;
 DECL(sctx, op_equal,
      (createQName(XQUERY_OP_NS,"fn", ":equal"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
