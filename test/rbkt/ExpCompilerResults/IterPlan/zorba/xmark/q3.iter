@@ -1,0 +1,127 @@
+Iterator tree for main query:
+<flwor::FLWORIterator>
+  <ForVariable name="b">
+    <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,open_auction)" typename="*" nill allowed="0">
+      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,open_auctions)" typename="*" nill allowed="0">
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
+          <FnDocIterator>
+            <PromoteIterator type="xs:string">
+              <FnDataIterator>
+                <CtxVariableIterator>
+                  <SingletonIterator value="xs:string(1:input-context)"/>
+                </CtxVariableIterator>
+              </FnDataIterator>
+            </PromoteIterator>
+          </FnDocIterator>
+        </ChildAxisIterator>
+      </ChildAxisIterator>
+    </ChildAxisIterator>
+  </ForVariable>
+  <WhereClause>
+    <CompareIterator>
+      <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+        <PromoteIterator type="xs:double">
+          <FnDataIterator>
+            <FnZeroOrOneIterator>
+              <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,increase)" typename="*" nill allowed="0">
+                  <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bidder)" typename="*" nill allowed="0" target_position="0">
+                    <ForVarIterator varname="b"/>
+                  </ChildAxisIterator>
+                </ChildAxisIterator>
+              </ChildAxisIterator>
+            </FnZeroOrOneIterator>
+          </FnDataIterator>
+        </PromoteIterator>
+        <SingletonIterator value="xs:double(2)"/>
+      </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+      <FnDataIterator>
+        <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,increase)" typename="*" nill allowed="0">
+            <flwor::FLWORIterator>
+              <LetVariable name="$$temp5" materialize="true">
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bidder)" typename="*" nill allowed="0">
+                  <ForVarIterator varname="b"/>
+                </ChildAxisIterator>
+              </LetVariable>
+              <LetVariable name="$$last-idx" materialize="true">
+                <FnCountIterator>
+                  <LetVarIterator varname="$$temp5"/>
+                </FnCountIterator>
+              </LetVariable>
+              <ForVariable name="$$dot">
+                <LetVarIterator varname="$$temp5"/>
+              </ForVariable>
+              <WhereClause>
+                <TypedValueCompareIterator_INTEGER>
+                  <ForVarIterator varname="$$pos"/>
+                  <LetVarIterator varname="$$last-idx"/>
+                </TypedValueCompareIterator_INTEGER>
+              </WhereClause>
+              <ReturnClause>
+                <ForVarIterator varname="$$dot"/>
+              </ReturnClause>
+            </flwor::FLWORIterator>
+          </ChildAxisIterator>
+        </ChildAxisIterator>
+      </FnDataIterator>
+    </CompareIterator>
+  </WhereClause>
+  <ReturnClause>
+    <ElementIterator>
+      <SingletonIterator value="xs:QName(,,increase)"/>
+      <FnConcatIterator>
+        <AttributeIterator>
+          <SingletonIterator value="xs:QName(,,first)"/>
+          <EnclosedIterator attr_cont="true">
+            <FnDataIterator>
+              <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,increase)" typename="*" nill allowed="0">
+                  <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bidder)" typename="*" nill allowed="0" target_position="0">
+                    <ForVarIterator varname="b"/>
+                  </ChildAxisIterator>
+                </ChildAxisIterator>
+              </ChildAxisIterator>
+            </FnDataIterator>
+          </EnclosedIterator>
+        </AttributeIterator>
+        <AttributeIterator>
+          <SingletonIterator value="xs:QName(,,last)"/>
+          <EnclosedIterator attr_cont="true">
+            <FnDataIterator>
+              <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,increase)" typename="*" nill allowed="0">
+                  <flwor::FLWORIterator>
+                    <LetVariable name="$$temp11" materialize="true">
+                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bidder)" typename="*" nill allowed="0">
+                        <ForVarIterator varname="b"/>
+                      </ChildAxisIterator>
+                    </LetVariable>
+                    <LetVariable name="$$last-idx" materialize="true">
+                      <FnCountIterator>
+                        <LetVarIterator varname="$$temp11"/>
+                      </FnCountIterator>
+                    </LetVariable>
+                    <ForVariable name="$$dot">
+                      <LetVarIterator varname="$$temp11"/>
+                    </ForVariable>
+                    <WhereClause>
+                      <TypedValueCompareIterator_INTEGER>
+                        <ForVarIterator varname="$$pos"/>
+                        <LetVarIterator varname="$$last-idx"/>
+                      </TypedValueCompareIterator_INTEGER>
+                    </WhereClause>
+                    <ReturnClause>
+                      <ForVarIterator varname="$$dot"/>
+                    </ReturnClause>
+                  </flwor::FLWORIterator>
+                </ChildAxisIterator>
+              </ChildAxisIterator>
+            </FnDataIterator>
+          </EnclosedIterator>
+        </AttributeIterator>
+      </FnConcatIterator>
+    </ElementIterator>
+  </ReturnClause>
+</flwor::FLWORIterator>
+

@@ -122,28 +122,26 @@ Iterator tree for main query:
                   <SingletonIterator value="xs:QName(,,count)"/>
                   <EnclosedIterator attr_cont="true">
                     <FnCountIterator>
-                      <NodeDistinctIterator>
-                        <flwor::FLWORIterator>
-                          <ForVariable name="$$dot">
+                      <flwor::FLWORIterator>
+                        <ForVariable name="$$dot">
+                          <UnhoistIterator>
                             <UnhoistIterator>
-                              <UnhoistIterator>
-                                <LetVarIterator varname="$$opt_temp_0"/>
-                              </UnhoistIterator>
+                              <LetVarIterator varname="$$opt_temp_0"/>
                             </UnhoistIterator>
-                          </ForVariable>
-                          <WhereClause>
-                            <CompareIterator>
-                              <FnDataIterator>
-                                <ForVarIterator varname="$$dot"/>
-                              </FnDataIterator>
-                              <ForVarIterator varname="term"/>
-                            </CompareIterator>
-                          </WhereClause>
-                          <ReturnClause>
-                            <ForVarIterator varname="$$dot"/>
-                          </ReturnClause>
-                        </flwor::FLWORIterator>
-                      </NodeDistinctIterator>
+                          </UnhoistIterator>
+                        </ForVariable>
+                        <WhereClause>
+                          <CompareIterator>
+                            <FnDataIterator>
+                              <ForVarIterator varname="$$dot"/>
+                            </FnDataIterator>
+                            <ForVarIterator varname="term"/>
+                          </CompareIterator>
+                        </WhereClause>
+                        <ReturnClause>
+                          <SingletonIterator value="xs:boolean(true)"/>
+                        </ReturnClause>
+                      </flwor::FLWORIterator>
                     </FnCountIterator>
                   </EnclosedIterator>
                 </AttributeIterator>

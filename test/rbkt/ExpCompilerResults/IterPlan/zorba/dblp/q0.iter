@@ -88,37 +88,35 @@ Iterator tree for main query:
                       <SingletonIterator value="xs:QName(,,paper)"/>
                       <EnclosedIterator attr_cont="false">
                         <FnCountIterator>
-                          <NodeDistinctIterator>
-                            <flwor::FLWORIterator>
-                              <ForVariable name="$$dot">
-                                <UnhoistIterator>
-                                  <LetVarIterator varname="$$opt_temp_0"/>
-                                </UnhoistIterator>
-                              </ForVariable>
-                              <ReturnClause>
-                                <flwor::FLWORIterator>
-                                  <ForVariable name="$$dot">
-                                    <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,inproceedings)" typename="*" nill allowed="0">
-                                      <ForVarIterator varname="$$dot"/>
-                                    </ChildAxisIterator>
-                                  </ForVariable>
-                                  <WhereClause>
-                                    <CompareIterator>
-                                      <FnDataIterator>
-                                        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,booktitle)" typename="*" nill allowed="0">
-                                          <ForVarIterator varname="$$dot"/>
-                                        </ChildAxisIterator>
-                                      </FnDataIterator>
-                                      <ForVarIterator varname="conference"/>
-                                    </CompareIterator>
-                                  </WhereClause>
-                                  <ReturnClause>
+                          <flwor::FLWORIterator>
+                            <ForVariable name="$$dot">
+                              <UnhoistIterator>
+                                <LetVarIterator varname="$$opt_temp_0"/>
+                              </UnhoistIterator>
+                            </ForVariable>
+                            <ReturnClause>
+                              <flwor::FLWORIterator>
+                                <ForVariable name="$$dot">
+                                  <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,inproceedings)" typename="*" nill allowed="0">
                                     <ForVarIterator varname="$$dot"/>
-                                  </ReturnClause>
-                                </flwor::FLWORIterator>
-                              </ReturnClause>
-                            </flwor::FLWORIterator>
-                          </NodeDistinctIterator>
+                                  </ChildAxisIterator>
+                                </ForVariable>
+                                <WhereClause>
+                                  <CompareIterator>
+                                    <FnDataIterator>
+                                      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,booktitle)" typename="*" nill allowed="0">
+                                        <ForVarIterator varname="$$dot"/>
+                                      </ChildAxisIterator>
+                                    </FnDataIterator>
+                                    <ForVarIterator varname="conference"/>
+                                  </CompareIterator>
+                                </WhereClause>
+                                <ReturnClause>
+                                  <ForVarIterator varname="$$dot"/>
+                                </ReturnClause>
+                              </flwor::FLWORIterator>
+                            </ReturnClause>
+                          </flwor::FLWORIterator>
                         </FnCountIterator>
                       </EnclosedIterator>
                     </ElementIterator>
@@ -128,39 +126,37 @@ Iterator tree for main query:
                         <FnCountIterator>
                           <FnDistinctValuesIterator>
                             <FnDataIterator>
-                              <NodeDistinctIterator>
-                                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,author)" typename="*" nill allowed="0">
-                                  <flwor::FLWORIterator>
-                                    <ForVariable name="$$dot">
-                                      <UnhoistIterator>
-                                        <LetVarIterator varname="$$opt_temp_1"/>
-                                      </UnhoistIterator>
-                                    </ForVariable>
-                                    <ReturnClause>
-                                      <flwor::FLWORIterator>
-                                        <ForVariable name="$$dot">
-                                          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,inproceedings)" typename="*" nill allowed="0">
-                                            <ForVarIterator varname="$$dot"/>
-                                          </ChildAxisIterator>
-                                        </ForVariable>
-                                        <WhereClause>
-                                          <CompareIterator>
-                                            <FnDataIterator>
-                                              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,booktitle)" typename="*" nill allowed="0">
-                                                <ForVarIterator varname="$$dot"/>
-                                              </ChildAxisIterator>
-                                            </FnDataIterator>
-                                            <ForVarIterator varname="conference"/>
-                                          </CompareIterator>
-                                        </WhereClause>
-                                        <ReturnClause>
+                              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,author)" typename="*" nill allowed="0">
+                                <flwor::FLWORIterator>
+                                  <ForVariable name="$$dot">
+                                    <UnhoistIterator>
+                                      <LetVarIterator varname="$$opt_temp_1"/>
+                                    </UnhoistIterator>
+                                  </ForVariable>
+                                  <ReturnClause>
+                                    <flwor::FLWORIterator>
+                                      <ForVariable name="$$dot">
+                                        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,inproceedings)" typename="*" nill allowed="0">
                                           <ForVarIterator varname="$$dot"/>
-                                        </ReturnClause>
-                                      </flwor::FLWORIterator>
-                                    </ReturnClause>
-                                  </flwor::FLWORIterator>
-                                </ChildAxisIterator>
-                              </NodeDistinctIterator>
+                                        </ChildAxisIterator>
+                                      </ForVariable>
+                                      <WhereClause>
+                                        <CompareIterator>
+                                          <FnDataIterator>
+                                            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,booktitle)" typename="*" nill allowed="0">
+                                              <ForVarIterator varname="$$dot"/>
+                                            </ChildAxisIterator>
+                                          </FnDataIterator>
+                                          <ForVarIterator varname="conference"/>
+                                        </CompareIterator>
+                                      </WhereClause>
+                                      <ReturnClause>
+                                        <ForVarIterator varname="$$dot"/>
+                                      </ReturnClause>
+                                    </flwor::FLWORIterator>
+                                  </ReturnClause>
+                                </flwor::FLWORIterator>
+                              </ChildAxisIterator>
                             </FnDataIterator>
                           </FnDistinctValuesIterator>
                         </FnCountIterator>

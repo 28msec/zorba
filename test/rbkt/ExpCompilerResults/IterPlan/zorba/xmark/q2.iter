@@ -1,0 +1,35 @@
+Iterator tree for main query:
+<flwor::FLWORIterator>
+  <ForVariable name="b">
+    <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,open_auction)" typename="*" nill allowed="0">
+      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,open_auctions)" typename="*" nill allowed="0">
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
+          <FnDocIterator>
+            <PromoteIterator type="xs:string">
+              <FnDataIterator>
+                <CtxVariableIterator>
+                  <SingletonIterator value="xs:string(1:input-context)"/>
+                </CtxVariableIterator>
+              </FnDataIterator>
+            </PromoteIterator>
+          </FnDocIterator>
+        </ChildAxisIterator>
+      </ChildAxisIterator>
+    </ChildAxisIterator>
+  </ForVariable>
+  <ReturnClause>
+    <ElementIterator>
+      <SingletonIterator value="xs:QName(,,increase)"/>
+      <EnclosedIterator attr_cont="false">
+        <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,increase)" typename="*" nill allowed="0">
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,bidder)" typename="*" nill allowed="0" target_position="0">
+              <ForVarIterator varname="b"/>
+            </ChildAxisIterator>
+          </ChildAxisIterator>
+        </ChildAxisIterator>
+      </EnclosedIterator>
+    </ElementIterator>
+  </ReturnClause>
+</flwor::FLWORIterator>
+
