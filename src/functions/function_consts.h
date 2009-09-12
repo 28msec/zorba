@@ -27,6 +27,7 @@ public:
   typedef enum
   {
     FN_UNKNOWN,
+    FN_COLLECTION,
     FN_SUM
   }
   FunctionKind;
