@@ -287,7 +287,9 @@ xqtref_t TypeManagerImpl::create_node_type(
 {
   RootTypeManager& RTM = GENV_TYPESYSTEM;
 
-  bool untyped = (contentType == RTM.UNTYPED_TYPE);
+  bool untyped = (contentType == RTM.UNTYPED_TYPE || 
+                  (nodeKind == store::StoreConsts::attributeNode &&
+                   contentType == RTM.UNTYPED_ATOMIC_TYPE_ONE));
 
   if (contentType == NULL)
     contentType = RTM.ANY_TYPE;
@@ -316,7 +318,6 @@ xqtref_t TypeManagerImpl::create_node_type(
   }
 
   case store::StoreConsts::elementNode:
-  case store::StoreConsts::attributeNode:
   {
     if (nodeName != NULL || 
         nillable ||
@@ -329,11 +330,25 @@ xqtref_t TypeManagerImpl::create_node_type(
                             quantifier,
                             nillable,
                             schematest);
-
     }
-    else if (nodeKind == store::StoreConsts::elementNode)
+    else
     {
       return create_builtin_node_type(nodeKind, quantifier, untyped);
+    }
+  }
+  case store::StoreConsts::attributeNode:
+  {
+    if (nodeName != NULL || 
+        (contentType != RTM.UNTYPED_ATOMIC_TYPE_ONE &&
+         contentType != RTM.ANY_SIMPLE_TYPE))
+    {
+      return new NodeXQType(this,
+                            nodeKind,
+                            nodeName,
+                            contentType,
+                            quantifier,
+                            false,
+                            schematest);
     }
     else
     {
