@@ -1972,19 +1972,25 @@ public:
     ar & theModifyExpr;
     ar & theReturnExpr;
   }
+
 public:
 	transform_expr(
     short sctx,
 		const QueryLoc&,
 		expr_t aModifyExpr,
 		expr_t aReturnExpr);
+
   expr_kind_t get_expr_kind () const { return transform_expr_kind; }
 
-public:
 	expr_t getModifyExpr() const { return theModifyExpr; }
 	expr_t getReturnExpr() const { return theReturnExpr; }
 
-public:
+  void setModifyExpr(expr* e) { theModifyExpr = e; }
+  void setReturnExpr(expr* e) { theReturnExpr = e; }
+
+	void add_back(rchandle<copy_clause> aCopyClause)
+  { theCopyClauses.push_back(aCopyClause); }
+
 	void add_front(rchandle<copy_clause> aCopyClause)
   { theCopyClauses.insert(theCopyClauses.begin(), aCopyClause); }
 
