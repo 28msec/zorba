@@ -138,10 +138,10 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   // where clause.
   expr* whereExpr;
   if ((whereExpr = flwor.get_where()) != NULL && 
-      flwor.get_annotation(AnnotationKey::NONDISCARDABLE_EXPR) != TSVAnnotationValue::TRUE_VAL) 
+      flwor.get_annotation(Annotations::NONDISCARDABLE_EXPR) != TSVAnnotationValue::TRUE_VAL) 
   {
     const var_ptr_set& whereVars = get_varset_annotation(whereExpr,
-                                                         AnnotationKey::FREE_VARS);
+                                                         Annotations::FREE_VARS);
     var_ptr_set diff;
     set_intersection(myVars.varset.begin(), myVars.varset.end(),
                      whereVars.begin(), whereVars.end(),
@@ -236,7 +236,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
           }
           else // uses == 0 
           {  
-            if (domainExpr->get_annotation(AnnotationKey::NONDISCARDABLE_EXPR) !=
+            if (domainExpr->get_annotation(Annotations::NONDISCARDABLE_EXPR) !=
                 TSVAnnotationValue::TRUE_VAL)
             {
               MODIFY(flwor.remove_clause(i));

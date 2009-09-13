@@ -15,8 +15,15 @@
  */
 #include <vector>
 #include <utility>
+
+
+#include "functions/function.h"
+
 #include "compiler/indexing/index_tools.h"
+#include "compiler/expression/expr.h"
+
 #include "system/globalenv.h"
+
 #include "store/api/item_factory.h"
 
 namespace zorba {
@@ -36,26 +43,31 @@ static bool isConstant(expr *e)
   return true;
 }
 
-static bool isHoistableCollection(expr *e, static_context *sCtx)
+
+static bool isHoistableCollection(expr* e)
 {
-  if (e->get_expr_kind() != fo_expr_kind) {
+  if (e->get_expr_kind() != fo_expr_kind) 
     return false;
-  }
-  fo_expr *fo = static_cast<fo_expr *>(e);
-  if (fo->get_func() != LOOKUP_FN("fn", "collection", 1)) {
+
+  fo_expr* fo = static_cast<fo_expr *>(e);
+
+  if (fo->get_func()->getKind() != FunctionConsts::FN_COLLECTION ||
+      fo->size() != 1) 
     return false;
-  }
-  expr *arg = (*fo)[0].getp();
+
+  expr* arg = (*fo)[0].getp();
   return isConstant(arg);
 }
 
-static xqpStringStore *getCollectionName(expr *e)
+
+static xqpStringStore* getCollectionName(expr *e)
 {
   fo_expr *fo = static_cast<fo_expr *>(e);
   const_expr *arg = static_cast<const_expr *>((*fo)[0].getp());
   store::Item *val = arg->get_val();
   return val->getStringValueP();
 }
+
 
 typedef std::vector<std::pair<expr_t, expr_t> > hoisted_collections_t;
 
@@ -73,19 +85,21 @@ static rchandle<var_expr> createTempLetVar(short sctx, const QueryLoc& loc, int 
 
 static expr_t hoistCollectionSources(
     expr_t e,
-    static_context *sCtx,
     hoisted_collections_t& h,
     int& count)
 {
-  if (isHoistableCollection(e.getp(), sCtx)) {
+  if (isHoistableCollection(e.getp())) 
+  {
     rchandle<var_expr> var(createTempLetVar(e->get_cur_sctx(), e->get_loc(), count));
     std::pair<expr_t, expr_t> p(var.getp(), e);
     h.push_back(p);
     return new wrapper_expr(e->get_cur_sctx(), e->get_loc(), var.getp());
   }
+
   expr_iterator i = e->expr_begin();
-  while(!i.done()) {
-    *i = hoistCollectionSources(*i, sCtx, h, count);
+  while(!i.done()) 
+  {
+    *i = hoistCollectionSources(*i, h, count);
     ++i;
   }
   return e;
@@ -145,7 +159,7 @@ void IndexTools::inferIndexCreators(ValueIndex *vi)
   expr_t ne = de->clone();
   hoisted_collections_t h;
   int count = 0;
-  expr_t he = hoistCollectionSources(ne, vi->getStaticContext(), h, count);
+  expr_t he = hoistCollectionSources(ne, h, count);
   if (h.size() > 1) {
     return;
   }

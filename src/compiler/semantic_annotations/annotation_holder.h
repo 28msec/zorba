@@ -18,6 +18,7 @@
 
 #include <map>
 #include "compiler/semantic_annotations/annotations.h"
+#include "compiler/semantic_annotations/annotation_keys.h"
 #include "compiler/expression/expr_consts.h"
 
 namespace zorba {
@@ -25,14 +26,14 @@ namespace zorba {
 class AnnotationHolder : public SimpleRCObject
 {
 protected:
-  typedef std::map<Annotation::key_t, Annotation::value_ref_t> annotations_t;
+  typedef std::map<Annotations::Key, Annotation::value_ref_t> annotations_t;
 
   annotations_t m_annotations;
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(AnnotationHolder)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(AnnotationHolder, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver &ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
 	  //ar & m_annotations;
   }
@@ -42,11 +43,11 @@ public:
 
   virtual ~AnnotationHolder() {}
 
-  void put_annotation(Annotation::key_t key, Annotation::value_ref_t annot);
+  void put_annotation(Annotations::Key key, Annotation::value_ref_t annot);
 
-  const Annotation::value_ref_t get_annotation(Annotation::key_t key) const;
+  const Annotation::value_ref_t get_annotation(Annotations::Key key) const;
 
-  void remove_annotation(Annotation::key_t key);
+  void remove_annotation(Annotations::Key key);
 
   virtual bool is_updating() const = 0;
 };

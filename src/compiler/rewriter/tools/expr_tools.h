@@ -72,7 +72,7 @@ public:
 };
   
 
-const var_ptr_set& get_varset_annotation(const expr *e, Annotation::key_t k);
+const var_ptr_set& get_varset_annotation(const expr *e, Annotations::Key k);
 
 int count_variable_uses(expr *root, var_expr *var, int limit);
 
@@ -94,22 +94,25 @@ inline expr_t fix_annotations (expr_t new_expr, expr *old_expr = NULL)
     }
   }
   
-  for (Annotation::key_t k = 0; k < AnnotationKey::MAX_ANNOTATION; k++) 
+  for (int k = 0; k < Annotations::MAX_ANNOTATION; ++k) 
   {
-    if (k == AnnotationKey::FREE_VARS) 
+    if (k == Annotations::FREE_VARS)
     {
-      const var_ptr_set& old_set = get_varset_annotation(old_expr, AnnotationKey::FREE_VARS);
-      const var_ptr_set& new_set = get_varset_annotation(old_expr, AnnotationKey::FREE_VARS);
+      const var_ptr_set& old_set = get_varset_annotation(old_expr, Annotations::FREE_VARS);
+      const var_ptr_set& new_set = get_varset_annotation(old_expr, Annotations::FREE_VARS);
       var_ptr_set s;
       std::set_union(old_set.begin(), old_set.end(), new_set.begin(), new_set.end(), inserter(s, s.begin()));
-      new_expr->put_annotation(k, Annotation::value_ref_t(new VarSetAnnVal(s)));
+
+      new_expr->put_annotation(static_cast<Annotations::Key>(k),
+                               Annotation::value_ref_t(new VarSetAnnVal(s)));
     }
-    else if (k != AnnotationKey::CONCAT_EXPR)
+    else if (k != Annotations::CONCAT_EXPR)
     {
-      Annotation::value_ref_t v = old_expr->get_annotation (k);
+      Annotation::value_ref_t v = 
+      old_expr->get_annotation(static_cast<Annotations::Key>(k));
       
       if (v != NULL)
-        new_expr->put_annotation (k, v);
+        new_expr->put_annotation(static_cast<Annotations::Key>(k), v);
     }
   }
   

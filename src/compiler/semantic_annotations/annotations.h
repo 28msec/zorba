@@ -22,13 +22,14 @@ namespace zorba {
 
 class AnnotationValue;
 
-namespace Annotation {
-  typedef int key_t;
-
+namespace Annotation 
+{
   typedef rchandle<AnnotationValue> value_ref_t;
 };
 
-class AnnotationValue : public SimpleRCObject {
+
+class AnnotationValue : public SimpleRCObject 
+{
 public:
   virtual ~AnnotationValue() {}
   virtual bool equals (const AnnotationValue &other) { 
@@ -36,7 +37,9 @@ public:
   }
 };
 
-class IntAnnotationValue : public AnnotationValue {
+
+class IntAnnotationValue : public AnnotationValue 
+{
 public:
   int n;
   

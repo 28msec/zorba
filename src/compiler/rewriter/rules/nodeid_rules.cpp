@@ -55,10 +55,10 @@ static op_node_sort_distinct::nodes_or_atomics_t nodes_or_atomics (xqtref_t type
 
 static void propagate_down_nodeid_props(expr *src, expr *target) 
 {
-  Annotation::key_t k;
-  k = AnnotationKey::IGNORES_SORTED_NODES;
+  Annotations::Key k;
+  k = Annotations::IGNORES_SORTED_NODES;
   TSVAnnotationValue::update_annotation (target, k, src->get_annotation (k));
-  k = AnnotationKey::IGNORES_DUP_NODES;
+  k = Annotations::IGNORES_DUP_NODES;
   TSVAnnotationValue::update_annotation (target, k, src->get_annotation (k));
 }
 
@@ -70,7 +70,7 @@ static void propagate_down_nodeid_props(expr *src, expr *target)
 ********************************************************************************/
 static void mark_for_vars_ignoring_sort(flwor_expr* flwor) 
 {
-  Annotation::key_t k = AnnotationKey::IGNORES_SORTED_NODES;
+  Annotations::Key k = Annotations::IGNORES_SORTED_NODES;
 
   Annotation::value_ref_t v = flwor->get_annotation(k);
 
@@ -120,9 +120,9 @@ static void init_let_vars_consumer_props (flwor_expr* flwor)
 
     for (int j = 0; j < 2; j++) 
     {
-      Annotation::key_t k = (j == 0 ?
-                             AnnotationKey::IGNORES_SORTED_NODES :
-                             AnnotationKey::IGNORES_DUP_NODES);
+      Annotations::Key k = (j == 0 ?
+                             Annotations::IGNORES_SORTED_NODES :
+                             Annotations::IGNORES_DUP_NODES);
 
       Annotation::value_ref_t v = var->get_annotation(k);
 
@@ -136,7 +136,7 @@ static void init_let_vars_consumer_props (flwor_expr* flwor)
     }
 
     if (todo != 0)
-      var->put_annotation(AnnotationKey::LET_VAR_NODEID_ANALYSIS,
+      var->put_annotation(Annotations::LET_VAR_NODEID_ANALYSIS,
                            Annotation::value_ref_t(new IntAnnotationValue(todo)));
   }
 }
@@ -150,7 +150,7 @@ static bool analyze_let_vars_consumer_props (flwor_expr* flwor)
 {
   bool modified = false;
 
-  Annotation::key_t analysisKey = AnnotationKey::LET_VAR_NODEID_ANALYSIS;
+  Annotations::Key analysisKey = Annotations::LET_VAR_NODEID_ANALYSIS;
 
   for (flwor_expr::clause_list_t::const_iterator it = flwor->clause_begin();
        it != flwor->clause_end();
@@ -167,9 +167,9 @@ static bool analyze_let_vars_consumer_props (flwor_expr* flwor)
 
     for (int j = 0; j < 2; j++) 
     {
-      Annotation::key_t k = (j == 0 ?
-                             AnnotationKey::IGNORES_SORTED_NODES :
-                             AnnotationKey::IGNORES_DUP_NODES);
+      Annotations::Key k = (j == 0 ?
+                             Annotations::IGNORES_SORTED_NODES :
+                             Annotations::IGNORES_DUP_NODES);
       
       Annotation::value_ref_t analysisVal = var->get_annotation(analysisKey);
 
@@ -205,10 +205,10 @@ static void mark_casts(
   if (TypeOps::is_empty (*target)) 
   {
     TSVAnnotationValue::update_annotation (input,
-                                           AnnotationKey::IGNORES_SORTED_NODES,
+                                           Annotations::IGNORES_SORTED_NODES,
                                            TSVAnnotationValue::TRUE_VAL);
     TSVAnnotationValue::update_annotation (input,
-                                           AnnotationKey::IGNORES_DUP_NODES,
+                                           Annotations::IGNORES_DUP_NODES,
                                            TSVAnnotationValue::TRUE_VAL);
     return;
   }
@@ -222,14 +222,14 @@ static void mark_casts(
       q == TypeConstants::QUANT_QUESTION) 
   {
     TSVAnnotationValue::update_annotation (input,
-                                           AnnotationKey::IGNORES_SORTED_NODES,
+                                           Annotations::IGNORES_SORTED_NODES,
                                            TSVAnnotationValue::TRUE_VAL);
   }
   else if (is_cast) 
   {
     TSVAnnotationValue::update_annotation (input,
-                                           AnnotationKey::IGNORES_SORTED_NODES,
-                                           TSVAnnotationValue::from_bool(node->get_annotation(AnnotationKey::IGNORES_DUP_NODES).getp() == TSVAnnotationValue::TRUE_VAL.getp()));
+                                           Annotations::IGNORES_SORTED_NODES,
+                                           TSVAnnotationValue::from_bool(node->get_annotation(Annotations::IGNORES_DUP_NODES).getp() == TSVAnnotationValue::TRUE_VAL.getp()));
   }
 
   bool ignores_dups =
@@ -237,9 +237,9 @@ static void mark_casts(
     || (q == TypeConstants::QUANT_PLUS
         && TypeOps::type_min_cnt (*input->return_type (sctx)) >= 1);
   if (is_cast)
-    ignores_dups = ignores_dups && node->get_annotation (AnnotationKey::IGNORES_DUP_NODES).getp() == TSVAnnotationValue::TRUE_VAL.getp();
+    ignores_dups = ignores_dups && node->get_annotation (Annotations::IGNORES_DUP_NODES).getp() == TSVAnnotationValue::TRUE_VAL.getp();
   TSVAnnotationValue::update_annotation (input,
-                                         AnnotationKey::IGNORES_DUP_NODES,
+                                         Annotations::IGNORES_DUP_NODES,
                                          TSVAnnotationValue::from_bool (ignores_dups));
 }
 
@@ -266,10 +266,10 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
     {
       expr_t arg = (*fo)[0];
       TSVAnnotationValue::update_annotation(arg,
-                                            AnnotationKey::IGNORES_SORTED_NODES,
+                                            Annotations::IGNORES_SORTED_NODES,
                                             TSVAnnotationValue::TRUE_VAL);
       TSVAnnotationValue::update_annotation(arg,
-                                            AnnotationKey::IGNORES_DUP_NODES,
+                                            Annotations::IGNORES_DUP_NODES,
                                             TSVAnnotationValue::TRUE_VAL);
     }
     else if (f == LOOKUP_FN ("fn", "zero-or-one", 1) ||
@@ -294,11 +294,11 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
       }
 
       TSVAnnotationValue::update_annotation(arg,
-                                            AnnotationKey::IGNORES_DUP_NODES,
+                                            Annotations::IGNORES_DUP_NODES,
                                             TSVAnnotationValue::from_bool(ignoresDups));
 
       TSVAnnotationValue::update_annotation(arg,
-                                            AnnotationKey::IGNORES_SORTED_NODES,
+                                            Annotations::IGNORES_SORTED_NODES,
                                             TSVAnnotationValue::TRUE_VAL);
     }
     else if (f == LOOKUP_FN ("fn", "unordered", 1) ||
@@ -310,10 +310,10 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
     {
       expr_t arg = (*fo)[0];
       TSVAnnotationValue::update_annotation(arg,
-                                            AnnotationKey::IGNORES_SORTED_NODES,
+                                            Annotations::IGNORES_SORTED_NODES,
                                             TSVAnnotationValue::TRUE_VAL);
       TSVAnnotationValue::update_annotation(arg,
-                                            AnnotationKey::IGNORES_DUP_NODES,
+                                            Annotations::IGNORES_DUP_NODES,
                                             TSVAnnotationValue::FALSE_VAL);
     }
     else if (f == LOOKUP_OP2 ("union")
@@ -329,10 +329,10 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
       {
         expr_t arg = (*fo) [i];
         TSVAnnotationValue::update_annotation (arg,
-                                               AnnotationKey::IGNORES_SORTED_NODES,
+                                               Annotations::IGNORES_SORTED_NODES,
                                                TSVAnnotationValue::TRUE_VAL);
         TSVAnnotationValue::update_annotation (arg,
-                                               AnnotationKey::IGNORES_DUP_NODES,
+                                               Annotations::IGNORES_DUP_NODES,
                                                TSVAnnotationValue::TRUE_VAL);
       }
     }
@@ -341,8 +341,8 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
       vector <AnnotationHolder *> anns;
       exprs_to_holders (fo->begin (), fo->end (), anns);
 
-      f->compute_annotation (node, anns, AnnotationKey::IGNORES_DUP_NODES);
-      f->compute_annotation (node, anns, AnnotationKey::IGNORES_SORTED_NODES);
+      f->compute_annotation (node, anns, Annotations::IGNORES_DUP_NODES);
+      f->compute_annotation (node, anns, Annotations::IGNORES_SORTED_NODES);
     }
     break;
   }
@@ -368,10 +368,10 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
   {
     expr_t arg = (*static_cast<relpath_expr *> (node)) [0];
     TSVAnnotationValue::update_annotation (arg,
-                                           AnnotationKey::IGNORES_SORTED_NODES,
+                                           Annotations::IGNORES_SORTED_NODES,
                                            TSVAnnotationValue::TRUE_VAL);
     TSVAnnotationValue::update_annotation (arg,
-                                           AnnotationKey::IGNORES_DUP_NODES,
+                                           Annotations::IGNORES_DUP_NODES,
                                            TSVAnnotationValue::TRUE_VAL);
     break;
   }
@@ -398,10 +398,10 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
     for(expr_iterator i = node->expr_begin(); !i.done(); ++i) 
     {
       TSVAnnotationValue::update_annotation (*i,
-                                             AnnotationKey::IGNORES_SORTED_NODES,
+                                             Annotations::IGNORES_SORTED_NODES,
                                              TSVAnnotationValue::FALSE_VAL);
       TSVAnnotationValue::update_annotation (*i,
-                                             AnnotationKey::IGNORES_DUP_NODES,
+                                             Annotations::IGNORES_DUP_NODES,
                                              TSVAnnotationValue::FALSE_VAL);
     }
   }

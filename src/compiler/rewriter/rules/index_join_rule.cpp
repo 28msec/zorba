@@ -258,7 +258,7 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
 ********************************************************************************/
 static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 {
-  std::cout << "!!!!! Found Join Index Predicate !!!!!" << std::endl << std::endl;
+  //std::cout << "!!!!! Found Join Index Predicate !!!!!" << std::endl << std::endl;
 
   const QueryLoc& loc = predInfo.thePredicate->get_loc();
   short sctx = predInfo.thePredicate->get_cur_sctx();
@@ -278,7 +278,7 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 
   xqpString uri("tempIndex" + os.str());
 
-  ValueIndex_t idx = new ValueIndex(rCtx.m_sctx, uri.getStore());
+  ValueIndex_t idx = new ValueIndex(sctx, loc, uri.getStore());
 
   idx->setDomainExpression(domainExpr);
 

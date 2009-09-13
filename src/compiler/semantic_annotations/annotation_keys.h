@@ -16,12 +16,15 @@
 #ifndef ZORBA_ANNOTATION_KEYS_H
 #define ZORBA_ANNOTATION_KEYS_H
 
-namespace zorba {
+namespace zorba 
+{
 
-namespace AnnotationKey {
+namespace Annotations
+{
 
-enum {
-  IGNORES_SORTED_NODES,
+typedef enum 
+{
+  IGNORES_SORTED_NODES = 0,
   IGNORES_DUP_NODES,
   PRODUCES_SORTED_NODES,
   PRODUCES_DISTINCT_NODES,
@@ -37,9 +40,10 @@ enum {
   CONCAT_EXPR,  // for fo_expr (op:concatenate)
   
   MAX_ANNOTATION
-};
+} Key;
 
 }
+
 
 }
 

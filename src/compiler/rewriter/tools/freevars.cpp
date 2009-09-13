@@ -23,7 +23,7 @@ namespace zorba {
 var_ptr_set no_free_vars;
 
 
-const var_ptr_set &get_varset_annotation (const expr *e, Annotation::key_t k) 
+const var_ptr_set &get_varset_annotation (const expr *e, Annotations::Key k) 
 {
   assert (e != NULL);
   Annotation::value_ref_t ann = e->get_annotation (k);

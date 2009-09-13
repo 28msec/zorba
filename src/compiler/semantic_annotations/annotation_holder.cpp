@@ -17,12 +17,16 @@
 
 namespace zorba {
 
-void AnnotationHolder::put_annotation(Annotation::key_t key, Annotation::value_ref_t value)
+void AnnotationHolder::put_annotation(
+    Annotations::Key key,
+    Annotation::value_ref_t value)
 {
   m_annotations[key] = value;
 }
 
-const Annotation::value_ref_t AnnotationHolder::get_annotation(Annotation::key_t key) const
+
+const Annotation::value_ref_t AnnotationHolder::get_annotation(
+    Annotations::Key key) const
 {
   annotations_t::const_iterator i = m_annotations.find(key);
   if (i == m_annotations.end()) {
@@ -31,7 +35,8 @@ const Annotation::value_ref_t AnnotationHolder::get_annotation(Annotation::key_t
   return i->second;
 }
 
-void AnnotationHolder::remove_annotation(Annotation::key_t key)
+
+void AnnotationHolder::remove_annotation(Annotations::Key key)
 {
   annotations_t::iterator i = m_annotations.find(key);
   if (i != m_annotations.end()) {

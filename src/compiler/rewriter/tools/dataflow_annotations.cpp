@@ -23,13 +23,13 @@
 
 namespace zorba {
 
-#define SORTED_NODES(e) e->put_annotation(AnnotationKey::PRODUCES_SORTED_NODES, TSVAnnotationValue::TRUE_VAL)
+#define SORTED_NODES(e) e->put_annotation(Annotations::PRODUCES_SORTED_NODES, TSVAnnotationValue::TRUE_VAL)
 
-#define DISTINCT_NODES(e) e->put_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES, TSVAnnotationValue::TRUE_VAL)
+#define DISTINCT_NODES(e) e->put_annotation(Annotations::PRODUCES_DISTINCT_NODES, TSVAnnotationValue::TRUE_VAL)
 
-#define PROPOGATE_SORTED_NODES(src, tgt) tgt->put_annotation(AnnotationKey::PRODUCES_SORTED_NODES, src->get_annotation(AnnotationKey::PRODUCES_SORTED_NODES))
+#define PROPOGATE_SORTED_NODES(src, tgt) tgt->put_annotation(Annotations::PRODUCES_SORTED_NODES, src->get_annotation(Annotations::PRODUCES_SORTED_NODES))
 
-#define PROPOGATE_DISTINCT_NODES(src, tgt) tgt->put_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES, src->get_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES))
+#define PROPOGATE_DISTINCT_NODES(src, tgt) tgt->put_annotation(Annotations::PRODUCES_DISTINCT_NODES, src->get_annotation(Annotations::PRODUCES_DISTINCT_NODES))
 
 #define LOOKUP_FN( pfx, local, arity ) (m_ctx->lookup_fn (pfx, local, arity))
 
@@ -291,10 +291,10 @@ void DataflowAnnotationsComputer::compute_fo_expr(fo_expr *e)
       Annotation::value_ref_t sortedAnnot = TSVAnnotationValue::TRUE_VAL;
       for(uint32_t i = 0; i < nArgs; ++i) {
         if (f->propagatesInputToOutput(i)) {
-          sortedAnnot = TSVAnnotationValue::and3(sortedAnnot, (*e)[i]->get_annotation(AnnotationKey::PRODUCES_SORTED_NODES));
+          sortedAnnot = TSVAnnotationValue::and3(sortedAnnot, (*e)[i]->get_annotation(Annotations::PRODUCES_SORTED_NODES));
         }
       }
-      e->put_annotation(AnnotationKey::PRODUCES_SORTED_NODES, sortedAnnot);
+      e->put_annotation(Annotations::PRODUCES_SORTED_NODES, sortedAnnot);
     }
     function::AnnotationProperty_t duplicates = f->producesDuplicates();
     if (duplicates == function::NO) {
@@ -305,10 +305,10 @@ void DataflowAnnotationsComputer::compute_fo_expr(fo_expr *e)
       Annotation::value_ref_t distinctAnnot = TSVAnnotationValue::TRUE_VAL;
       for(uint32_t i = 0; i < nArgs; ++i) {
         if (f->propagatesInputToOutput(i)) {
-          distinctAnnot = TSVAnnotationValue::and3(distinctAnnot, (*e)[i]->get_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES));
+          distinctAnnot = TSVAnnotationValue::and3(distinctAnnot, (*e)[i]->get_annotation(Annotations::PRODUCES_DISTINCT_NODES));
         }
       }
-      e->put_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES, distinctAnnot);
+      e->put_annotation(Annotations::PRODUCES_DISTINCT_NODES, distinctAnnot);
     }
 #else
     if (f == LOOKUP_FN("fn", "doc", 1)) {
@@ -438,19 +438,19 @@ void DataflowAnnotationsComputer::compute_relpath_expr(relpath_expr *e)
     if (only_child_axes) 
     {
       Annotation::value_ref_t sortedAnnot =
-      (*e)[0]->get_annotation(AnnotationKey::PRODUCES_SORTED_NODES);
+      (*e)[0]->get_annotation(Annotations::PRODUCES_SORTED_NODES);
 
       if (sortedAnnot != NULL) 
       {
-        e->put_annotation(AnnotationKey::PRODUCES_SORTED_NODES, sortedAnnot);
+        e->put_annotation(Annotations::PRODUCES_SORTED_NODES, sortedAnnot);
       }
 
       Annotation::value_ref_t distinctAnnot =
-      (*e)[0]->get_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES);
+      (*e)[0]->get_annotation(Annotations::PRODUCES_DISTINCT_NODES);
 
       if (distinctAnnot != NULL) 
       {
-        e->put_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES, distinctAnnot);
+        e->put_annotation(Annotations::PRODUCES_DISTINCT_NODES, distinctAnnot);
       }
     }
     else
@@ -481,9 +481,9 @@ void DataflowAnnotationsComputer::compute_relpath_expr(relpath_expr *e)
           }
         }
 
-        e->put_annotation(AnnotationKey::PRODUCES_SORTED_NODES,
+        e->put_annotation(Annotations::PRODUCES_SORTED_NODES,
                           TSVAnnotationValue::from_bool(sorted));
-        e->put_annotation(AnnotationKey::PRODUCES_DISTINCT_NODES,
+        e->put_annotation(Annotations::PRODUCES_DISTINCT_NODES,
                           TSVAnnotationValue::from_bool(distinct));
       }
     }

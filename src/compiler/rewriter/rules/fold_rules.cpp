@@ -80,8 +80,8 @@ static expr_t execute (
   }
   catch (error::ZorbaError& /*e*/) 
   {
-    node->put_annotation (AnnotationKey::UNFOLDABLE_OP, TSVAnnotationValue::TRUE_VAL);
-    node->put_annotation (AnnotationKey::NONDISCARDABLE_EXPR, TSVAnnotationValue::TRUE_VAL);
+    node->put_annotation (Annotations::UNFOLDABLE_OP, TSVAnnotationValue::TRUE_VAL);
+    node->put_annotation (Annotations::NONDISCARDABLE_EXPR, TSVAnnotationValue::TRUE_VAL);
     return node;
     // TODO:
     // we had to disable folding of errors because the FnErrorIterator
@@ -107,7 +107,7 @@ static expr_t execute (
   If any of the subexprs of the given expr E has the given annotation k, then
   set the k annotation on E as well. 
 ********************************************************************************/
-void propagate_any_child_up (expr *node, Annotation::key_t k) 
+void propagate_any_child_up (expr *node, Annotations::Key k) 
 {
   for(expr_iterator i = node->expr_begin(); ! i.done(); ++i) {
     if ((*i)->get_annotation (k).getp() == TSVAnnotationValue::TRUE_VAL.getp()) {
@@ -143,7 +143,7 @@ RULE_REWRITE_POST(MarkFreeVars)
     for(expr_iterator i = node->expr_begin(); ! i.done(); ++i) 
     {
       expr *e = *i;
-      const var_ptr_set &kfv = get_varset_annotation (e, AnnotationKey::FREE_VARS);
+      const var_ptr_set &kfv = get_varset_annotation (e, Annotations::FREE_VARS);
       copy (kfv.begin(), kfv.end(), inserter(freevars->varset, freevars->varset.begin()));
     }
 
@@ -216,7 +216,7 @@ RULE_REWRITE_POST(MarkFreeVars)
     }
   }
 
-  node->put_annotation (AnnotationKey::FREE_VARS, new_ann);
+  node->put_annotation (Annotations::FREE_VARS, new_ann);
   return NULL;
 }
 
@@ -253,7 +253,7 @@ RULE_REWRITE_PRE(MarkExpensiveOps)
 
 RULE_REWRITE_POST(MarkExpensiveOps) 
 {
-  Annotation::key_t k = AnnotationKey::EXPENSIVE_OP;
+  Annotations::Key k = Annotations::EXPENSIVE_OP;
   switch (node->get_expr_kind ()) {
   case flwor_expr_kind:
   case gflwor_expr_kind:
@@ -279,7 +279,7 @@ RULE_REWRITE_PRE(MarkUnfoldableExprs)
 
 RULE_REWRITE_POST(MarkUnfoldableExprs) 
 {
-  Annotation::key_t k = AnnotationKey::UNFOLDABLE_OP;
+  Annotations::Key k = Annotations::UNFOLDABLE_OP;
   switch (node->get_expr_kind ()) 
   {
   case fo_expr_kind: 
@@ -301,8 +301,8 @@ RULE_REWRITE_POST(MarkUnfoldableExprs)
       
   case var_expr_kind:
   {
-    var_expr::var_kind k = static_cast<var_expr *> (node)->get_kind();
-    if (k == var_expr::prolog_var || k == var_expr::local_var)
+    var_expr::var_kind varKind = static_cast<var_expr *> (node)->get_kind();
+    if (varKind == var_expr::prolog_var || varKind == var_expr::local_var)
       node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
     break;
   }
@@ -367,11 +367,11 @@ RULE_REWRITE_PRE(FoldConst)
   
   if (standalone_expr (node) &&
       ! already_folded (node, rCtx) &&
-      get_varset_annotation (node, AnnotationKey::FREE_VARS).empty () &&
-      node->get_annotation (AnnotationKey::UNFOLDABLE_OP) != TSVAnnotationValue::TRUE_VAL &&
+      get_varset_annotation (node, Annotations::FREE_VARS).empty () &&
+      node->get_annotation (Annotations::UNFOLDABLE_OP) != TSVAnnotationValue::TRUE_VAL &&
       TypeOps::type_max_cnt (*rtype) <= 1 &&
       (fold_expensive_ops ||
-       node->get_annotation (AnnotationKey::EXPENSIVE_OP) != TSVAnnotationValue::TRUE_VAL))
+       node->get_annotation (Annotations::EXPENSIVE_OP) != TSVAnnotationValue::TRUE_VAL))
   {
     vector<store::Item_t> result;
     expr_t folded = execute (rCtx.getCompilerCB(), node, result);
@@ -433,7 +433,7 @@ RULE_REWRITE_POST(MarkImpureExprs)
   // TODO: constructors cannot be cloned; but currently we never clone anyway.
   // TODO: propagate non-discardable prop for FLWOR vars (see nodeid_rules.cpp)
 
-  Annotation::key_t k = AnnotationKey::NONDISCARDABLE_EXPR;
+  Annotations::Key k = Annotations::NONDISCARDABLE_EXPR;
   switch (node->get_expr_kind ()) 
   {
   // TODO: update exprs probably non-discardable as well
@@ -497,7 +497,7 @@ RULE_REWRITE_PRE(PartialEval)
   if ((cbe = dynamic_cast<castable_base_expr *>(node)) != NULL) 
   {
     expr_t arg = cbe->get_input();
-    if (arg->get_annotation (AnnotationKey::NONDISCARDABLE_EXPR).getp() == TSVAnnotationValue::TRUE_VAL.getp())
+    if (arg->get_annotation (Annotations::NONDISCARDABLE_EXPR).getp() == TSVAnnotationValue::TRUE_VAL.getp())
       return NULL;
 
     xqtref_t arg_type = arg->return_type(rCtx.getStaticContext());
@@ -553,7 +553,7 @@ static expr_t partial_eval_fo (RewriterContext& rCtx, fo_expr *fo)
 
   else if (f == LOOKUP_FN ("fn", "count", 1)) {
     expr_t arg = (*fo) [0];
-    if (arg->get_annotation (AnnotationKey::NONDISCARDABLE_EXPR) != TSVAnnotationValue::TRUE_VAL) {
+    if (arg->get_annotation (Annotations::NONDISCARDABLE_EXPR) != TSVAnnotationValue::TRUE_VAL) {
       int type_cnt = TypeOps::type_cnt (*arg->return_type (rCtx.getStaticContext()));
       if (type_cnt != -1)
         return new const_expr (fo->get_cur_sctx(), fo->get_loc (), Integer::parseInt (type_cnt));

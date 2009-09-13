@@ -36,6 +36,7 @@
 #include "context/namespace_context.h"
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
+#include "context/dynamic_context.h"
 
 #include "runtime/visitors/printervisitor.h"
 #include "runtime/visitors/iterprinter.h"

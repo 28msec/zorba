@@ -419,9 +419,12 @@ RULE_REWRITE_POST(SpecializeOperations)
           {
             if (TypeOps::is_subtype(*t[i], *rtm.UNTYPED_ATOMIC_TYPE_QUESTION)) 
             {
-              nargs [i] = new cast_expr (arg[i]->get_cur_sctx(), arg [i]->get_loc (), arg [i], string_type);
+              nargs [i] = new cast_expr(arg[i]->get_cur_sctx(),
+                                        arg[i]->get_loc(),
+                                        arg[i],
+                                        string_type);
             }
-            else if (! TypeOps::is_subtype (*t [i], *string_type)) 
+            else if (! TypeOps::is_subtype(*t[i], *string_type)) 
             {
               string_cmp = false;
               break;

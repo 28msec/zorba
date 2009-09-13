@@ -18,22 +18,27 @@
 
 namespace zorba {
 
-class TSVAnnotationValue : public AnnotationValue {
-  public:
-    static Annotation::value_ref_t TRUE_VAL;
-    static Annotation::value_ref_t FALSE_VAL;
-    static Annotation::value_ref_t MAYBE_VAL;
+class TSVAnnotationValue : public AnnotationValue 
+{
+public:
+  static Annotation::value_ref_t TRUE_VAL;
+  static Annotation::value_ref_t FALSE_VAL;
+  static Annotation::value_ref_t MAYBE_VAL;
 
-    typedef enum {
-      TSV_TRUE,
-      TSV_FALSE,
-      TSV_MAYBE
-    } tsv_t;
+  typedef enum {
+    TSV_TRUE,
+    TSV_FALSE,
+    TSV_MAYBE
+  } tsv_t;
 
-    tsv_t getValue() const { return m_value; }
+  tsv_t getValue() const { return m_value; }
 
   // pessimistic
-  static void update_annotation (AnnotationHolder *e, Annotation::key_t k, Annotation::value_ref_t v) {
+  static void update_annotation(
+        AnnotationHolder *e,
+        Annotations::Key k,
+        Annotation::value_ref_t v) 
+  {
     Annotation::value_ref_t oldv = e->get_annotation (k);
     if (oldv.getp() == FALSE_VAL.getp())
       v = FALSE_VAL;
@@ -43,11 +48,14 @@ class TSVAnnotationValue : public AnnotationValue {
     e->put_annotation (k, v);
   }
 
-  static Annotation::value_ref_t from_bool (bool x) {
+  static Annotation::value_ref_t from_bool (bool x) 
+  {
     return x ? TRUE_VAL : FALSE_VAL;
   }
 
-  static Annotation::value_ref_t and3(Annotation::value_ref_t v1, Annotation::value_ref_t v2)
+  static Annotation::value_ref_t and3(
+        Annotation::value_ref_t v1,
+        Annotation::value_ref_t v2)
   {
     if (v1.getp() == FALSE_VAL.getp() || v2.getp() == FALSE_VAL.getp()) {
       return FALSE_VAL;
@@ -58,7 +66,9 @@ class TSVAnnotationValue : public AnnotationValue {
     return TRUE_VAL;
   }
 
-  static Annotation::value_ref_t or3(Annotation::value_ref_t v1, Annotation::value_ref_t v2)
+  static Annotation::value_ref_t or3(
+        Annotation::value_ref_t v1,
+        Annotation::value_ref_t v2)
   {
     if (v1.getp() == TRUE_VAL.getp() || v2.getp() == TRUE_VAL.getp()) {
       return TRUE_VAL;
@@ -69,14 +79,13 @@ class TSVAnnotationValue : public AnnotationValue {
     return FALSE_VAL;
   }
 
-  private:
-    TSVAnnotationValue(tsv_t value)
-      : m_value(value) { }
+private:
+  TSVAnnotationValue(tsv_t value) : m_value(value) { }
 
-    // Dummy to make the compiler happy
-    friend class Foo;
-
-    tsv_t m_value;
+  // Dummy to make the compiler happy
+  friend class Foo;
+  
+  tsv_t m_value;
 };
 
 }
