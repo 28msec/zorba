@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_FLWOR_EXPR_H
-#define ZORBA_FLWOR_EXPR_H
+#ifndef ZORBA_COMPILER_FLWOR_EXPR_H
+#define ZORBA_COMPILER_FLWOR_EXPR_H
 
 #include "common/shared_types.h"
 
 #include "compiler/expression/expr_base.h"
 #include "compiler/expression/var_expr.h"
 
-#include "context/dynamic_context.h"
 
 namespace zorba 
 {
@@ -51,28 +50,10 @@ typedef rchandle<flwor_expr> flwor_expr_t;
 /***************************************************************************//**
 
 ********************************************************************************/
-class bound_var
-{
-public:
-  store::Item_t varname;
-  std::string var_key;
-  xqtref_t type;
-  expr_t val;
-  varref_t var;
-
-  bound_var() {};
-
-  bound_var(var_expr* ve, varref_t var, expr_t val_);
-};
-
-
-/***************************************************************************//**
-
-********************************************************************************/
 class flwor_clause : public SimpleRCObject 
 {
 public:
-  typedef std::vector<std::pair<expr_t, varref_t> > rebind_list_t;
+  typedef std::vector<std::pair<expr_t, var_expr_t> > rebind_list_t;
 
   typedef enum
   {
@@ -91,9 +72,6 @@ protected:
 
   ClauseKind                theKind;
 
-  std::list<global_binding> theGlobals;
-  checked_vector<bound_var> theBoundVariables;
-
 public:
   SERIALIZABLE_ABSTRACT_CLASS(flwor_clause)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(flwor_clause, SimpleRCObject)
@@ -101,9 +79,10 @@ public:
   {
     //serialize_baseclass(ar, (SimpleRCObject*)this);
     ar & theContext;
-	ar & theLocation;
+    ar & theLocation;
     SERIALIZE_ENUM(ClauseKind, theKind);
   }
+
 public:
   flwor_clause (short sctx, const QueryLoc& loc, ClauseKind kind) 
     :
@@ -118,23 +97,6 @@ public:
   ClauseKind get_kind() const { return theKind; }
 
   virtual flwor_clause_t clone(expr::substitution_t& substitution) = 0;
-
-  void set_bound_variables(checked_vector<varref_t> &aScopedVariables );
-  
-  checked_vector<bound_var> get_bound_variables() const
-  {
-    return theBoundVariables;
-  }
-    
-  void set_global_variables( std::list<global_binding> &aGlobals )
-  {
-    theGlobals = aGlobals;
-  }
-
-  std::list<global_binding> get_global_variables() const
-  {
-    return theGlobals;
-  }
 };
 
 
@@ -169,8 +131,8 @@ class forletwin_clause : public flwor_clause
   friend class flwor_expr;
 
 protected:
-  varref_t   theVarExpr;
-  expr_t     theDomainExpr;
+  var_expr_t   theVarExpr;
+  expr_t       theDomainExpr;
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(forletwin_clause)
@@ -181,12 +143,13 @@ public:
     ar & theVarExpr;
     ar & theDomainExpr;
   }
+
 public:
   forletwin_clause(
         short sctx,
         const QueryLoc& loc,
         ClauseKind kind,
-        varref_t varExpr,
+        var_expr_t varExpr,
         expr_t domainExpr);
 
   ~forletwin_clause();
@@ -197,7 +160,7 @@ public:
 
   var_expr* get_var() const { return theVarExpr.getp(); }
 
-  void set_var(varref_t v) 
+  void set_var(var_expr_t v) 
   { 
     theVarExpr = v;
     if (theVarExpr != NULL)
@@ -218,9 +181,9 @@ class for_clause : public forletwin_clause
   friend class flwor_expr;
 
 protected:
-  varref_t              thePosVarExpr;
-  varref_t              theScoreVarExpr;
-  bool                  theIsOuter;
+  var_expr_t    thePosVarExpr;
+  var_expr_t    theScoreVarExpr;
+  bool          theIsOuter;
 
 public:
   SERIALIZABLE_CLASS(for_clause)
@@ -236,10 +199,10 @@ public:
   for_clause(
         short sctx,
         const QueryLoc& loc,
-        varref_t varExpr,
+        var_expr_t varExpr,
         expr_t domainExpr,
-        varref_t posVarExpr = NULL,
-        varref_t scoreVarExpr = NULL,
+        var_expr_t posVarExpr = NULL,
+        var_expr_t scoreVarExpr = NULL,
         bool isOuter = false);
 
   ~for_clause();
@@ -253,14 +216,14 @@ public:
 
   var_expr* get_score_var() const { return theScoreVarExpr.getp(); }
 
-  void set_pos_var(varref_t v) 
+  void set_pos_var(var_expr_t v) 
   {
     thePosVarExpr = v;
     if (thePosVarExpr != NULL)
       thePosVarExpr->set_flwor_clause(this);
   }
 
-  void set_score_var(varref_t v) 
+  void set_score_var(var_expr_t v) 
   {
     theScoreVarExpr = v;
     if (theScoreVarExpr != NULL)
@@ -281,7 +244,7 @@ class let_clause : public forletwin_clause
   friend class flwor_expr;
 
 protected:
-  varref_t  theScoreVarExpr;
+  var_expr_t  theScoreVarExpr;
 
 public:
   SERIALIZABLE_CLASS(let_clause)
@@ -295,16 +258,16 @@ public:
   let_clause(
         short sctx,
         const QueryLoc& loc,
-        varref_t varExpr,
+        var_expr_t varExpr,
         expr_t domainExpr,
-        varref_t scoreVarExpr = NULL);
+        var_expr_t scoreVarExpr = NULL);
 
   ~let_clause();
 
 public:
   var_expr* get_score_var() const { return theScoreVarExpr.getp(); }
 
-  void set_score_var(varref_t v) 
+  void set_score_var(var_expr_t v) 
   {
     theScoreVarExpr = v;
     if (theScoreVarExpr != NULL)
@@ -342,15 +305,16 @@ public:
     ar & theWinStartCond;
     ar & theWinStopCond;
   }
+
 public:
   window_clause(
         short sctx,
         const QueryLoc& loc,
         window_t winKind,
-        varref_t varExpr,
+        var_expr_t varExpr,
         expr_t domainExpr,
-        flwor_wincond_t winStart = NULL,
-        flwor_wincond_t winStop = NULL);
+        flwor_wincond_t winStart,
+        flwor_wincond_t winStop);
 
   ~window_clause();
 
@@ -360,6 +324,10 @@ public:
   flwor_wincond* get_win_start() const { return theWinStartCond.getp(); }
 
   flwor_wincond* get_win_stop() const { return theWinStopCond.getp(); }
+
+  void set_win_start(flwor_wincond* cond);
+
+  void set_win_stop(flwor_wincond* cond);
 
   flwor_clause_t clone(expr::substitution_t& substitution);
 
@@ -404,10 +372,10 @@ class flwor_wincond : public SimpleRCObject
 public:
   struct vars 
   {
-    varref_t posvar;
-    varref_t curr;
-    varref_t prev;
-    varref_t next;
+    var_expr_t posvar;
+    var_expr_t curr;
+    var_expr_t prev;
+    var_expr_t next;
 
     void set_flwor_clause(flwor_clause* c);
 
@@ -496,29 +464,31 @@ public:
     ar & theNonGroupVars;
     ar & theCollations;
   }
+
 public:
   group_clause(
         short sctx,
         const QueryLoc& loc,
         const rebind_list_t& gvars,
         rebind_list_t ngvars,
-        const std::vector<std::string>& collations)
-    :
-    flwor_clause(sctx, loc, flwor_clause::group_clause),
-    theGroupVars(gvars),
-    theNonGroupVars(ngvars),
-    theCollations(collations)
-  {
-  }
+        const std::vector<std::string>& collations);
 
   ~group_clause();
 
   const std::vector<std::string>& get_collations() const { return theCollations; }
 
+  ulong getNumGroupingVars() const { return theGroupVars.size(); }
+
+  ulong getNumNonGroupingVars() const { return theNonGroupVars.size(); }
+
   const rebind_list_t& get_grouping_vars() const { return theGroupVars; }
 
   const rebind_list_t& get_nongrouping_vars() const { return theNonGroupVars; }
   
+  expr* get_input_for_group_var(const var_expr* var);
+
+  expr* get_input_for_nongroup_var(const var_expr* var);
+
   flwor_clause_t clone(expr::substitution_t& substitution);
 
   std::ostream& put(std::ostream&) const;
@@ -627,7 +597,7 @@ public:
 class count_clause : public flwor_clause 
 {
 protected:
-  varref_t theVarExpr;
+  var_expr_t theVarExpr;
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(count_clause)
@@ -638,7 +608,7 @@ public:
     ar & theVarExpr;
   }
 public:
-  count_clause(short sctx, const QueryLoc& loc, varref_t var) 
+  count_clause(short sctx, const QueryLoc& loc, var_expr_t var) 
     :
     flwor_clause(sctx, loc, flwor_clause::count_clause),
     theVarExpr(var)
