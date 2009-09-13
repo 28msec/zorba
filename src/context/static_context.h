@@ -35,14 +35,13 @@
 #include "common/shared_types.h"
 #include "context/internal_uri_resolvers.h"
 
-#include "compiler/expression/var_expr.h"
 
 namespace zorba {
 
 class namespace_node;
 class user_function;
 class TypeManager;
-typedef rchandle<var_expr> var_expr_t;
+
 
 /*******************************************************************************
   XQuery 1.0 context
@@ -80,30 +79,12 @@ protected:
   CollationCache*                theCollationCache;
 
 public:
-  SERIALIZABLE_CLASS(static_context)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(static_context, context)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (context*)this);
-    SERIALIZE_TYPEMANAGER_RCHANDLE(TypeManager, typemgr);
-    //+ar & theDocResolver;
-    //+ar & theColResolver;
-    //+ar & theSchemaResolver;
-    //+ar & theModuleResolver;
-    if(!ar.is_serializing_out())
-    {
-      theDocResolver = NULL;
-      theColResolver = NULL;
-      theSchemaResolver = NULL;
-      theModuleResolver = NULL;//user has to set up again the uri resolvers after reloading the plan
-      theTraceStream = &std::cerr;
-    }
-   //+ar & theGlobalVars;
-	  //+ar & theDecimalFormats;
-    ar & theCollationCache;
-  }
+  SERIALIZABLE_CLASS(static_context);
+  static_context(::zorba::serialization::Archiver &ar);
+  void serialize(::zorba::serialization::Archiver &ar);
+
 public:
-  virtual ~static_context();
+  ~static_context();
 
   static_context* create_child_context() { return new static_context(this); }
 
@@ -124,9 +105,9 @@ public:
 
   DecimalFormat_t get_decimal_format(const store::Item_t qname);
 
-  expr_t get_query_expr() const { return theQueryExpr; }
+  expr_t get_query_expr() const;
 
-  void set_query_expr(expr_t expr) { theQueryExpr = expr; }
+  void set_query_expr(expr_t expr);
 
   StaticContextConsts::xquery_version_t xquery_version() const;
 	StaticContextConsts::xpath1_0compatib_mode_t xpath1_0compatib_mode() const;

@@ -33,16 +33,16 @@ xqtref_t single_seq_function::return_type(const std::vector<xqtref_t>& arg_types
 void single_seq_function::compute_annotation(
     AnnotationHolder* parent,
     std::vector<AnnotationHolder *>& kids,
-    Annotation::key_t k) const 
+    Annotations::Key k) const 
 {
   switch (k) 
   {
-  case AnnotationKey::IGNORES_SORTED_NODES:
-  case AnnotationKey::IGNORES_DUP_NODES:
+  case Annotations::IGNORES_SORTED_NODES:
+  case Annotations::IGNORES_DUP_NODES:
     TSVAnnotationValue::update_annotation(kids[src], k, parent->get_annotation(k));
     break;
-  case AnnotationKey::PRODUCES_DISTINCT_NODES:
-  case AnnotationKey::PRODUCES_SORTED_NODES:
+  case Annotations::PRODUCES_DISTINCT_NODES:
+  case Annotations::PRODUCES_SORTED_NODES:
     parent->put_annotation (k, kids[src]->get_annotation(k));
     break;
   default: break;

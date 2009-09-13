@@ -15,6 +15,8 @@
 */
 #include "validate.h"
 
+#include "zorbaerrors/errors.h"
+#include "zorbaerrors/error_messages.h"
 
 #include "system/globalenv.h"
 
@@ -34,21 +36,18 @@
 
 #endif
 
+#include "compiler/parser/query_loc.h"
+
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "store/api/copymode.h"
 #include "store/api/store.h"
-//#include "store/api/temp_seq.h"
 
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
 #include "context/collation_cache.h"
 #include "context/namespace_context.h"
 
-#include "zorbaerrors/error_messages.h"
-#include "zorbaerrors/errors.h"
-
-//using namespace std;
 
 namespace zorba
 {

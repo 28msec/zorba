@@ -34,6 +34,8 @@
 #include "api/resultiteratorchainer.h"
 #include "api/dynamiccontextimpl.h"
 
+#include "compiler/parser/query_loc.h"
+
 #include "runtime/util/item_iterator.h"
 
 #include "store/api/item.h"

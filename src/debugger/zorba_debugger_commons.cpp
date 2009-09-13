@@ -1,10 +1,15 @@
+
+#include "system/globalenv.h"
+
 #include "zorba_debugger_commons.h"
 
 #include "compiler/api/compilercb.h"
 #include "context/dynamic_context.h"
 #include "zorbaerrors/Assert.h"
+
 #include "runtime/debug/zorba_debug_iterator.h"
 #include "runtime/visitors/planitervisitor.h"
+
 #include "store/api/item_factory.h"
 
 zorba::ZorbaDebuggerCommons::ZorbaDebuggerCommons(zorba::static_context* sctx)

@@ -15,6 +15,11 @@
  */
 #include "system/globalenv.h"
 
+#include "types/typeimpl.h"
+
+#include "context/static_context.h"
+#include "context/dynamic_context.h"
+
 #include "indexing/value_index.h"
 
 #include "runtime/indexing/value_index_builder.h"

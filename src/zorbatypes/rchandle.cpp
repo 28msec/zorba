@@ -15,15 +15,10 @@
  */
 
 #include "zorbatypes/rchandle.h"
-#include <sstream>
-#include <iostream>
-#include <cstdlib>
 
-#include <zorba/config.h>
-#include "common/common.h"
-#include "zorbautils/fatal.h"
 
-namespace zorba {
+namespace zorba 
+{
 
 
 /*******************************************************************************
@@ -39,10 +34,7 @@ namespace zorba {
   reference count becomes 0.
 
 ********************************************************************************/
- 
-void RCObject::addReference(
-    long* sharedCounter
-    SYNC_PARAM2(RCLock* lock)) const
+void RCObject::addReference(long* sharedCounter SYNC_PARAM2(RCLock* lock)) const
 {
 #if defined WIN32 && !defined CYGWIN &&!defined ZORBA_FOR_ONE_THREAD_ONLY
   if(lock)
@@ -55,23 +47,21 @@ void RCObject::addReference(
     if (sharedCounter) ++(*sharedCounter);
     ++theRefCount;
   }
-
+  
 #else
 
   SYNC_CODE(if (lock) lock->acquire());
-
+  
   if (sharedCounter) ++(*sharedCounter);
   ++theRefCount;
-
+  
   SYNC_CODE(if (lock) lock->release());
-
+  
 #endif
 }
-
-
-void RCObject::removeReference (
-    long* sharedCounter 
-    SYNC_PARAM2(RCLock* lock))
+  
+ 
+void RCObject::removeReference(long* sharedCounter SYNC_PARAM2(RCLock* lock))
 {
 #if defined WIN32 && !defined CYGWIN &&!defined ZORBA_FOR_ONE_THREAD_ONLY
   if(lock)
@@ -108,11 +98,11 @@ void RCObject::removeReference (
       return; 
     }
   }
-
+  
 #else
-
+  
   SYNC_CODE(if (lock) lock->acquire());
-
+  
   if (sharedCounter)
   {
     --theRefCount;
@@ -129,12 +119,11 @@ void RCObject::removeReference (
     free();
     return; 
   }
-
+  
   SYNC_CODE(if (lock) lock->release());
-
+  
 #endif
 }
-
 
 
 } /* namespace zorba */

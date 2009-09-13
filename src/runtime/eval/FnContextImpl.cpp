@@ -45,8 +45,27 @@ namespace zorba
 SERIALIZABLE_CLASS_VERSIONS(EvalIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(EvalIterator)
 
+
 EvalIteratorState::~EvalIteratorState()
-{}
+{
+}
+
+
+EvalIterator::EvalIterator(::zorba::serialization::Archiver &ar)
+  :
+  NaryBaseIterator<EvalIterator, EvalIteratorState>(ar)
+{
+}
+
+
+void EvalIterator::serialize(::zorba::serialization::Archiver &ar)
+{
+  serialize_baseclass(ar, (NaryBaseIterator<EvalIterator, EvalIteratorState>*)this);
+  ar & varnames;
+  ar & var_keys;
+  ar & vartypes;
+}
+
 
 PlanIter_t EvalIterator::compile(
     CompilerCB *ccb,

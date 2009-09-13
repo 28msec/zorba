@@ -72,13 +72,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ValidateIterator,
   UnaryBaseIterator<ValidateIterator, PlanIteratorState>)
 
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (UnaryBaseIterator<ValidateIterator, PlanIteratorState>*)this);
-    SERIALIZE_ENUM(enum ParseConstants::validation_mode_t, _validationMode);
-    SERIALIZE_TYPEMANAGER_RCHANDLE(TypeManager, _typemgr);
-    ar & _typeName;
-  }
+  void serialize(::zorba::serialization::Archiver &ar);
 
 public:
   ValidateIterator (

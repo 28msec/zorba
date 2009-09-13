@@ -20,6 +20,7 @@
 #include "system/globalenv.h"
 
 #include "types/typeops.h"
+#include "types/typeimpl.h"
 
 #include "compiler/api/compilercb.h"
 

@@ -59,11 +59,12 @@ bool function::validate_args(std::vector<PlanIter_t>& argv) const
 void function::compute_annotation (
     AnnotationHolder *,
     std::vector<AnnotationHolder *> &kids,
-    Annotation::key_t k) const 
+    Annotations::Key k) const 
 {
-  switch (k) {
-  case AnnotationKey::IGNORES_SORTED_NODES:
-  case AnnotationKey::IGNORES_DUP_NODES:
+  switch (k) 
+  {
+  case Annotations::IGNORES_SORTED_NODES:
+  case Annotations::IGNORES_DUP_NODES:
     for (unsigned src = 0; src < kids.size (); src++)
       if (kids [src] != NULL)
         TSVAnnotationValue::update_annotation (kids [src], k, TSVAnnotationValue::MAYBE_VAL);
@@ -175,7 +176,7 @@ bool user_function::requires_dyn_ctx () const
 {
   // All undeclared functions unfoldable. TODO: better analysis
   return (m_expr_body == NULL ||
-          m_expr_body->get_annotation (AnnotationKey::UNFOLDABLE_OP).getp() == TSVAnnotationValue::TRUE_VAL.getp());
+          m_expr_body->get_annotation(Annotations::UNFOLDABLE_OP).getp() == TSVAnnotationValue::TRUE_VAL.getp());
 }
 
 

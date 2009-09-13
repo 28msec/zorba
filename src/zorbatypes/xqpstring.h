@@ -47,11 +47,11 @@ public:
 protected:
   SYNC_CODE(mutable RCLock  theRCLock;)
 
-protected:
-  std::string  theString;
+  std::string               theString;
 
 public:
-  SERIALIZABLE_CLASS(xqpStringStore)
+  SERIALIZABLE_CLASS(xqpStringStore);
+
   xqpStringStore(::zorba::serialization::Archiver &ar);
 
   void serialize(::zorba::serialization::Archiver &ar);
@@ -100,6 +100,8 @@ public:
   ~xqpStringStore();
 
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
+
+  long* getSharedRefCounter() const { return NULL; } 
 
   const std::string& str() const { return theString; }
 

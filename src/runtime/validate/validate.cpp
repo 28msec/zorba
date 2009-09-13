@@ -37,6 +37,15 @@ SERIALIZABLE_CLASS_VERSIONS(ValidateIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(ValidateIterator)
 
 
+void ValidateIterator::serialize(::zorba::serialization::Archiver &ar)
+{
+  serialize_baseclass(ar, (UnaryBaseIterator<ValidateIterator, PlanIteratorState>*)this);
+  SERIALIZE_ENUM(enum ParseConstants::validation_mode_t, _validationMode);
+  SERIALIZE_TYPEMANAGER_RCHANDLE(TypeManager, _typemgr);
+  ar & _typeName;
+}
+
+
 ValidateIterator::ValidateIterator(
     static_context* sctx,
     const QueryLoc& loc,

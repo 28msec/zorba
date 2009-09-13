@@ -54,7 +54,7 @@
 #define COMPUTE_ANNOTATION_DECL()                              \
 void compute_annotation(AnnotationHolder* parent,              \
                         std::vector<AnnotationHolder *>& kids, \
-                        Annotation::key_t k) const;
+                        Annotations::Key k) const;
 
 #define CODEGEN_DECL()                                    \
 PlanIter_t codegen(CompilerCB* cb,                        \

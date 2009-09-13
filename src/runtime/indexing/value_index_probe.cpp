@@ -15,6 +15,8 @@
  */
 #include "system/globalenv.h"
 
+#include "context/dynamic_context.h"
+
 #include "runtime/indexing/value_index_probe.h"
 #include "runtime/visitors/planitervisitor.h"
 

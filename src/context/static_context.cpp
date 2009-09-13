@@ -28,6 +28,7 @@
 
 
 #include "compiler/expression/expr_base.h"
+#include "compiler/expression/var_expr.h"
 
 #include "zorbautils/strutil.h"
 #include "zorbatypes/collation_manager.h"
@@ -253,6 +254,13 @@ static_context::static_context (static_context *_parent)
 }
 
 
+static_context::static_context(::zorba::serialization::Archiver &ar)
+  :
+  context(ar)
+{
+}
+
+
 static_context::~static_context()
 {
   //debug
@@ -297,6 +305,32 @@ static_context::~static_context()
     RCHelper::removeReference (parent);
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
+void static_context::serialize(::zorba::serialization::Archiver &ar)
+{
+  serialize_baseclass(ar, (context*)this);
+  SERIALIZE_TYPEMANAGER_RCHANDLE(TypeManager, typemgr);
+  //+ar & theDocResolver;
+  //+ar & theColResolver;
+  //+ar & theSchemaResolver;
+  //+ar & theModuleResolver;
+  if(!ar.is_serializing_out())
+  {
+    theDocResolver = NULL;
+    theColResolver = NULL;
+    theSchemaResolver = NULL;
+    theModuleResolver = NULL;//user has to set up again the uri resolvers after reloading the plan
+    theTraceStream = &std::cerr;
+  }
+  //+ar & theGlobalVars;
+  //+ar & theDecimalFormats;
+  ar & theCollationCache;
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -304,6 +338,22 @@ void static_context::set_typemanager(rchandle<TypeManager> typemgr_)
 {
   typemgr = typemgr_;
 }
+
+
+/*******************************************************************************
+
+********************************************************************************/
+expr_t static_context::get_query_expr() const 
+{
+  return theQueryExpr;
+}
+
+
+void static_context::set_query_expr(expr_t expr) 
+{
+  theQueryExpr = expr;
+}
+
 
 /*******************************************************************************
 
@@ -313,9 +363,12 @@ void static_context::add_decimal_format(const DecimalFormat_t& decimalFormat)
   theDecimalFormats.push_back(decimalFormat);
 }
 
+
 DecimalFormat_t static_context::get_decimal_format(const store::Item_t qname)
 {  
-  for (std::vector<DecimalFormat_t>::iterator it = theDecimalFormats.begin(); it != theDecimalFormats.end(); it++)
+  for (std::vector<DecimalFormat_t>::iterator it = theDecimalFormats.begin();
+       it != theDecimalFormats.end();
+       it++)
   {
     if ((qname.isNull() && (*it)->isDefaultFormat())
         ||

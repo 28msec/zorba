@@ -235,19 +235,19 @@ public:
 
   virtual ~RCObject() { }
 
+	RCObject& operator=(const RCObject&) { return *this; }
+
   virtual void free() { delete this; }
 
   long getRefCount() const { return theRefCount; }
 
-  long* getSharedRefCounter() const { return NULL; } 
+  long* getSharedRefCounter() const { ZORBA_FATAL(0, ""); return NULL; } 
  
-  SYNC_CODE(RCLock* getRCLock() const { ZORBA_FATAL(0, ""); return NULL; })
+  SYNC_CODE(RCLock* getRCLock() const { ZORBA_FATAL(0, ""); return NULL; });
 
   void addReference(long* sharedCounter SYNC_PARAM2(RCLock* lock)) const;
 
-  void removeReference(long* shareCounter SYNC_PARAM2(RCLock* lock));
-
-	RCObject& operator=(const RCObject&) { return *this; }
+  void removeReference(long* sharedCounter SYNC_PARAM2(RCLock* lock));
 };
 
 
@@ -270,12 +270,15 @@ public:
 
   SimpleRCObject(const SimpleRCObject& rhs) : RCObject(rhs) { }
 
+  void free() { delete this; }
+
   long* getSharedRefCounter() const  { return NULL; } 
 
   SYNC_CODE(RCLock* getRCLock() const { return NULL; })
 
   SimpleRCObject& operator=(const SimpleRCObject&) { return *this; }
 };
+
 
 
 /*******************************************************************************
@@ -483,6 +486,7 @@ public:
 };
 
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -505,15 +509,16 @@ namespace RCHelper
   template<class T> 
   static void addReference(rchandle<T> &t) throw()
   {
-    addReference (t.getp ());
+    addReference(t.getp());
   }
   
   template<class T> 
   static void removeReference(rchandle<T> &t) throw()
   {
-    removeReference (t.getp ());
+    removeReference(t.getp());
   }
 };
+
 
 
 } /* namespace zorba */

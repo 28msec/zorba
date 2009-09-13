@@ -49,10 +49,10 @@ function* op_node_sort_distinct::op_for_action(
 {
 #define LOOKUP_OP1(local) (sctx->lookup_builtin_fn((xqp_string(":") + local).c_str(), 1))
 
-  Annotation::key_t ignoresSortedNodes = AnnotationKey::IGNORES_SORTED_NODES;
-  Annotation::key_t producesSortedNodes = AnnotationKey::PRODUCES_SORTED_NODES;
-  Annotation::key_t ignoresDupNodes = AnnotationKey::IGNORES_DUP_NODES;
-  Annotation::key_t producesDistinctNodes = AnnotationKey::PRODUCES_DISTINCT_NODES;
+  Annotations::Key ignoresSortedNodes = Annotations::IGNORES_SORTED_NODES;
+  Annotations::Key producesSortedNodes = Annotations::PRODUCES_SORTED_NODES;
+  Annotations::Key ignoresDupNodes = Annotations::IGNORES_DUP_NODES;
+  Annotations::Key producesDistinctNodes = Annotations::PRODUCES_DISTINCT_NODES;
 
   bool distinct = (A_DISTINCT &&
                    (parent == NULL ||
@@ -69,10 +69,10 @@ function* op_node_sort_distinct::op_for_action(
   cout << "op_for_action parent " << parent << " child " << child
        << " A_SORT " << A_SORT << " parent_ignores_sorted "
        << (parent != NULL && 
-           parent->get_annotation(AnnotationKey::IGNORES_SORTED_NODES) == TSV_TRUE)
+           parent->get_annotation(Annotations::IGNORES_SORTED_NODES) == TSV_TRUE)
        << " child_prod_sorted "
        << (child != NULL &&
-           child->get_annotation(AnnotationKey::PRODUCES_SORTED_NODES) == TSV_TRUE)
+           child->get_annotation(Annotations::PRODUCES_SORTED_NODES) == TSV_TRUE)
        << endl;
 #endif
 
@@ -121,18 +121,18 @@ function* op_node_sort_distinct::min_action(
 void op_node_sort_distinct::compute_annotation(
     AnnotationHolder* parent,
     std::vector<AnnotationHolder *>& kids,
-    Annotation::key_t k) const 
+    Annotations::Key k) const 
 {
   const bool* a  = action();
 
   switch (k) 
   {
-  case AnnotationKey::IGNORES_SORTED_NODES:
-  case AnnotationKey::IGNORES_DUP_NODES: 
+  case Annotations::IGNORES_SORTED_NODES:
+  case Annotations::IGNORES_DUP_NODES: 
   {
     bool ignores = 
     (parent->get_annotation(k).getp() == TSV_TRUE_P ||
-     (k == AnnotationKey::IGNORES_SORTED_NODES ? A_SORT : A_DISTINCT));
+     (k == Annotations::IGNORES_SORTED_NODES ? A_SORT : A_DISTINCT));
 
     TSVAnnotationValue::update_annotation(kids[src],
                                           k,
@@ -140,12 +140,12 @@ void op_node_sort_distinct::compute_annotation(
     break;
   }
 
-  case AnnotationKey::PRODUCES_SORTED_NODES:
-  case AnnotationKey::PRODUCES_DISTINCT_NODES: 
+  case Annotations::PRODUCES_SORTED_NODES:
+  case Annotations::PRODUCES_DISTINCT_NODES: 
   {
     bool produces =
     (kids[0]->get_annotation(k).getp() == TSV_TRUE_P ||
-     (k == AnnotationKey::PRODUCES_SORTED_NODES ? A_SORT : A_DISTINCT));
+     (k == Annotations::PRODUCES_SORTED_NODES ? A_SORT : A_DISTINCT));
 
     parent->put_annotation(k, TSVAnnotationValue::from_bool(produces));
     break;
@@ -391,14 +391,14 @@ public:
 void fn_unordered::compute_annotation(
     AnnotationHolder* parent,
     std::vector<AnnotationHolder *>& kids,
-    Annotation::key_t k) const 
+    Annotations::Key k) const 
 {
   switch (k)
   {
-  case AnnotationKey::IGNORES_SORTED_NODES:
+  case Annotations::IGNORES_SORTED_NODES:
     TSVAnnotationValue::update_annotation (kids [src], k, TSVAnnotationValue::TRUE_VAL);
     break;
-  case AnnotationKey::IGNORES_DUP_NODES:
+  case Annotations::IGNORES_DUP_NODES:
     TSVAnnotationValue::update_annotation (kids [src], k, parent->get_annotation (k));
     break;
   default:

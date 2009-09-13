@@ -28,8 +28,9 @@ protected:
   SYNC_CODE(mutable RCLock theRCLock;)
 
 public:
-  SYNC_CODE(virtual RCLock* getRCLock() const { return &theRCLock; })
+  SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
+  long* getSharedRefCounter() const { return NULL; } 
 
 public:
   virtual ~Collection() {}

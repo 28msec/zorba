@@ -44,7 +44,7 @@ public:
   void compute_annotation(
         AnnotationHolder* parent,
         std::vector<AnnotationHolder *>& kids,
-        Annotation::key_t k) const;
+        Annotations::Key k) const;
 
   ZORBA_PROPAGATES_ONE_I2O (src);
   ZORBA_PRESERVES_SORTED

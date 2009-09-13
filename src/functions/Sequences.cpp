@@ -70,10 +70,7 @@ public:
 
   xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
 
-  void compute_annotation(
-        AnnotationHolder* parent,
-        std::vector<AnnotationHolder *>& kids,
-        Annotation::key_t k) const;
+  COMPUTE_ANNOTATION_DECL();
 
   PlanIter_t codegen(
         CompilerCB* /*cb*/,
@@ -110,11 +107,11 @@ xqtref_t op_concatenate::return_type(const std::vector<xqtref_t>& arg_types) con
 void op_concatenate::compute_annotation (
     AnnotationHolder *parent,
     std::vector<AnnotationHolder *> &kids,
-    Annotation::key_t k) const 
+    Annotations::Key k) const 
 {
   switch (k) {
-  case AnnotationKey::IGNORES_SORTED_NODES:
-  case AnnotationKey::IGNORES_DUP_NODES:
+  case Annotations::IGNORES_SORTED_NODES:
+  case Annotations::IGNORES_DUP_NODES:
     for (std::vector<AnnotationHolder *>::iterator i = kids.begin (); i < kids.end (); i++)
       TSVAnnotationValue::update_annotation ((*i), k, parent->get_annotation (k));
     break;
@@ -213,11 +210,11 @@ public:
 void fn_subsequence::compute_annotation(
     AnnotationHolder* parent,
     std::vector<AnnotationHolder *>& kids,
-    Annotation::key_t k) const 
+    Annotations::Key k) const 
 {
   switch (k) {
-  case AnnotationKey::IGNORES_SORTED_NODES:
-  case AnnotationKey::IGNORES_DUP_NODES:
+  case Annotations::IGNORES_SORTED_NODES:
+  case Annotations::IGNORES_DUP_NODES:
     // don't use single_seq_fun default propagation rule
     return;
   default: single_seq_opt_function::compute_annotation (parent, kids, k);
@@ -436,8 +433,8 @@ PlanIter_t fn_intersect::codegen(
     AnnotationHolder &ann) const
 {
 #if 0  // we can't access PRODUCES_* from the inputs, must rethink
-  bool distinct = ann.get_annotation (AnnotationKey::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VAL;
-  bool sort = ann.get_annotation (AnnotationKey::IGNORES_SORTED_NODES) != TSVAnnotationValue::TRUE_VAL;
+  bool distinct = ann.get_annotation (Annotations::IGNORES_DUP_NODES) != TSVAnnotationValue::TRUE_VAL;
+  bool sort = ann.get_annotation (Annotations::IGNORES_SORTED_NODES) != TSVAnnotationValue::TRUE_VAL;
 
   std::vector<PlanIter_t> inputs;
   for (std::vector<PlanIter_t>::iterator i = argv.begin ();

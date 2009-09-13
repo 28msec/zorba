@@ -25,7 +25,7 @@
 
 #include "compiler/parser/parse_constants.h"
 #include "compiler/parser/query_loc.h"
-#include "compiler/semantic_annotations/annotation_holder.h"
+#include "compiler/semantic_annotations/annotation_keys.h"
 #include "compiler/expression/expr_consts.h"
 
 
@@ -34,8 +34,8 @@ namespace zorba {
 
 class fo_expr;
 class CompilerCB;
+class AnnotationHolder;
 
-typedef rchandle<var_expr> var_expr_t;
 
 #define ZORBA_PRESERVES_SORTED                               \
 FunctionConsts::AnnotationValue producesNodeIdSorted() const \
@@ -230,7 +230,7 @@ public:
   virtual void compute_annotation (
         AnnotationHolder *,
         std::vector<AnnotationHolder *> &,
-        Annotation::key_t) const;
+        Annotations::Key) const;
 
   virtual PlanIter_t codegen(
         CompilerCB* cb,

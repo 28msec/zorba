@@ -48,17 +48,9 @@ protected:
 public:
   SERIALIZABLE_CLASS(EvalIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
-  EvalIterator,
-  NaryBaseIterator<EvalIterator, EvalIteratorState>);
+  EvalIterator(::zorba::serialization::Archiver &ar);
 
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (NaryBaseIterator<EvalIterator, EvalIteratorState>*)this);
-    ar & varnames;
-    ar & var_keys;
-    ar & vartypes;
-  }
+  void serialize(::zorba::serialization::Archiver &ar);
 
 public:
   EvalIterator(

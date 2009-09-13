@@ -1,5 +1,7 @@
 #include "runtime/debug/zorba_debug_iterator.h"
 
+#include "types/typeimpl.h"
+
 #include "compiler/api/compilercb.h"
 
 #include "context/dynamic_context.h"

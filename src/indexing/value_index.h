@@ -16,15 +16,15 @@
 #ifndef ZORBA_VALUE_INDEX_H
 #define ZORBA_VALUE_INDEX_H
 
+#include <vector>
+
 #include "common/shared_types.h"
-#include "zorbatypes/rchandle.h"
-#include "compiler/expression/expr.h"
-#include "compiler/expression/var_expr.h"
+
+//#include "compiler/expression/expr.h"
 #include "store/api/index.h"
 
-namespace zorba {
-
-typedef rchandle<var_expr> var_expr_t;
+namespace zorba 
+{
 
 class ValueIndexInsertSession;
 
@@ -74,52 +74,27 @@ public:
   } index_method_t;
 
 private:
-  static_context      * m_static_context;
-  xqpStringStore_t      m_index_uri;
-  bool                  m_unique;
-  bool                  m_temp;
-  index_method_t        m_method;
-  expr_t                m_domain_expr;
-  var_expr_t            m_domain_var;
-  var_expr_t            m_domain_pos_var;
-  std::vector<expr_t>   m_index_field_exprs;
-  std::vector<xqtref_t> m_index_field_types;
+  xqpStringStore_t         m_index_uri;
+  bool                     m_unique;
+  bool                     m_temp;
+  index_method_t           m_method;
+
+  for_clause_t             m_domain_clause;
+  std::vector<expr_t>      m_index_field_exprs;
+  std::vector<xqtref_t>    m_index_field_types;
   std::vector<std::string> m_index_field_collations;
+
   std::vector<store::PatternIECreatorPair> m_creatorPatterns;
 
 public:
   SERIALIZABLE_CLASS(ValueIndex)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ValueIndex, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    //serialize_baseclass(ar, (SimpleRCObject*)this);
-    ar & m_static_context;
-    ar & m_index_uri;
-    ar & m_unique;
-    ar & m_temp;
-    SERIALIZE_ENUM(index_method_t, m_method);
-    ar & m_domain_expr;
-    ar & m_domain_var;
-    ar & m_domain_pos_var;
-    ar & m_index_field_exprs;
-    ar & m_index_field_types;
-    ar & m_index_field_collations;
-    ar & m_creatorPatterns;
-  }
+  ValueIndex(::zorba::serialization::Archiver& ar);
+  void serialize(::zorba::serialization::Archiver& ar);
+
 public:
-  ValueIndex(static_context* sCtx, xqpStringStore_t indexUri)
-    :
-    m_static_context(sCtx),
-    m_index_uri(indexUri),
-    m_unique(false),
-    m_temp(false),
-    m_method(HASH)
-  { 
-  }
+  ValueIndex(short sctx, const QueryLoc& loc, const xqpStringStore_t& indexUri);
 
   ~ValueIndex();
-
-  static_context *getStaticContext() const { return m_static_context; }
 
   xqpStringStore_t getIndexUri() const { return m_index_uri; }
 
@@ -132,41 +107,20 @@ public:
   index_method_t getMethod() const { return m_method; }
   void setMethod(index_method_t method) { m_method = method; }
 
-  expr_t getDomainExpression() const { return m_domain_expr; }
-  void setDomainExpression(expr_t domainExpr) { m_domain_expr = domainExpr; }
+  expr_t getDomainExpression() const;
+  void setDomainExpression(expr_t domainExpr);
 
-  var_expr_t getDomainVariable() const { return m_domain_var; }
-  void setDomainVariable(var_expr_t domainVar) { m_domain_var = domainVar; }
+  var_expr_t getDomainVariable() const;
+  void setDomainVariable(var_expr_t domainVar);
 
-  var_expr_t getDomainPositionVariable() const 
-  {
-    return m_domain_pos_var;
-  }
+  var_expr_t getDomainPositionVariable() const;
+  void setDomainPositionVariable(var_expr_t domainPosVar);
 
-  void setDomainPositionVariable(var_expr_t domainPosVar) 
-  {
-    m_domain_pos_var = domainPosVar;
-  }
+  const std::vector<expr_t>& getIndexFieldExpressions() const;
+  void setIndexFieldExpressions(const std::vector<expr_t>& indexFieldExprs);
 
-  const std::vector<expr_t>& getIndexFieldExpressions() const 
-  {
-    return m_index_field_exprs; 
-  }
-
-  void setIndexFieldExpressions(const std::vector<expr_t>& indexFieldExprs) 
-  {
-    m_index_field_exprs = indexFieldExprs;
-  }
-
-  const std::vector<xqtref_t>& getIndexFieldTypes() const 
-  {
-    return m_index_field_types; 
-  }
-
-  void setIndexFieldTypes(const std::vector<xqtref_t>& indexFieldTypes) 
-  {
-    m_index_field_types = indexFieldTypes;
-  }
+  const std::vector<xqtref_t>& getIndexFieldTypes() const;
+  void setIndexFieldTypes(const std::vector<xqtref_t>& indexFieldTypes);
 
   const std::vector<std::string>& getIndexFieldCollations() const 
   {

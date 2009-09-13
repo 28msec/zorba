@@ -43,11 +43,6 @@ public:
 
   virtual const char* comparison_name () const { return ""; }
 
-  void compute_annotation(
-        AnnotationHolder *parent,
-        std::vector<AnnotationHolder *> &kids,
-        Annotation::key_t k) const;
-
   virtual function* toValueComp(static_context *) const { return NULL; }
 
   virtual bool specializable() const { return true; }
@@ -55,6 +50,8 @@ public:
   function* specialize(
         static_context* sctx,
         const std::vector<xqtref_t>& argTypes) const;
+
+  COMPUTE_ANNOTATION_DECL();
 
   virtual PlanIter_t codegen(
         CompilerCB* cb,
@@ -77,12 +74,12 @@ protected:
 void GenericOpComparison::compute_annotation(
     AnnotationHolder *parent,
     std::vector<AnnotationHolder *> &kids,
-    Annotation::key_t k) const
+    Annotations::Key k) const
 {
   switch (k) 
   {
-  case AnnotationKey::IGNORES_SORTED_NODES:
-  case AnnotationKey::IGNORES_DUP_NODES:
+  case Annotations::IGNORES_SORTED_NODES:
+  case Annotations::IGNORES_DUP_NODES:
     for (std::vector<AnnotationHolder *>::iterator i = kids.begin(); i < kids.end(); i++)
       TSVAnnotationValue::update_annotation ((*i), k, TSVAnnotationValue::TRUE_VAL);
     break;

@@ -62,6 +62,8 @@ protected:
 public:
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
+  long* getSharedRefCounter() const { return NULL; } 
+
 public:
 
   virtual ~Index() {}

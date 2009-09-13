@@ -40,13 +40,14 @@ namespace types
 class TypeManager;
 class XQType;
 class NodeNameTest;
+typedef const_rchandle<XQType> xqtref_t;
+typedef rchandle<NodeNameTest> NodeNameTest_t;
 
 class CollationCache;
 class XQPCollator;
 
 class QueryLoc;
 
-class namespace_context;
 class function;
 class user_function;
 class ItemIterator;
@@ -60,35 +61,52 @@ class RewriterContext;
 class context;
 class static_context;
 class dynamic_context;
+class namespace_context;
+typedef rchandle<static_context> static_context_t;
 
+/* runtime */
+class RuntimeCB;
 class PlanWrapper;
 class PlanIterator;
 class PlanState;
+class ForVarIterator;
+class LetVarIterator;
+
+typedef rchandle<PlanIterator> PlanIter_t;
+typedef rchandle<PlanWrapper> PlanWrapper_t;
+typedef rchandle<ItemIterator> ItemIterator_t;
+typedef rchandle<ForVarIterator> ForVarIter_t;
+typedef rchandle<LetVarIterator> LetVarIter_t;
+
 class ValueIndexInsertSession;
+typedef rchandle<ValueIndexInsertSession> ValueIndexInsertSession_t;
+
 
 // Parsenodes
-class parsenode; class exprnode;
+class parsenode; 
+class exprnode;
+typedef rchandle<parsenode> parsenode_t;
 
 // Expression nodes
 class expr; 
 class var_expr;
+class flwor_clause;
+class forletwin_clause;
+class for_clause;
+class let_clause;
+typedef rchandle<expr> expr_t;
+typedef rchandle<var_expr> var_expr_t;
+typedef rchandle<flwor_clause> flwor_clause_t;
+typedef rchandle<for_clause> for_clause_t;
+typedef rchandle<let_clause> let_clause_t;
 
 class ItemVariableIterator;
 typedef rchandle<ItemVariableIterator> ItemVariableIterator_t;
 
-typedef rchandle<parsenode> parsenode_t;
-typedef rchandle<expr> expr_t;
-typedef const_rchandle<XQType> xqtref_t;
 typedef rchandle<namespace_context> NamespaceContext_t;
-typedef rchandle<PlanIterator> PlanIter_t;
 
-typedef rchandle<NodeNameTest> NodeNameTest_t;
-typedef rchandle<static_context> static_context_t;
 typedef rchandle<CompilerCB> CompilerCB_t;
-typedef rchandle<PlanWrapper> PlanWrapper_t;
-typedef rchandle<PlanIterator> PlanIterator_t;
-typedef rchandle<ItemIterator> ItemIterator_t;
-typedef rchandle<ValueIndexInsertSession> ValueIndexInsertSession_t;
+
 
 /* datetime stuff */
 class DateTime;
@@ -123,14 +141,6 @@ class Integer;
 /* numerics */
 typedef FloatImpl<double> Double;
 typedef FloatImpl<float>  Float;
-
-/* runtime */
-class RuntimeCB;
-class ForVarIterator;
-typedef rchandle<ForVarIterator> ForVarIter_t;
-
-class LetVarIterator;
-typedef rchandle<LetVarIterator> LetVarIter_t;
 
 /* api */
 class serializer;
