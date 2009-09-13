@@ -1073,14 +1073,18 @@ void FLWORExpr::compute_general ()
 ********************************************************************************/
 void WindowClause::accept(parsenode_visitor& v) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
+
+  ACCEPT(var->get_initexpr());
+
+  v.intermediate_visit(*this, visitor_state);
 
   for (int i = 0; i < 2; i++)
-    ACCEPT (conditions [i]);
+    ACCEPT(conditions [i]);
 
-  ACCEPT (var);
+  ACCEPT(var);
 
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -1089,10 +1093,10 @@ void WindowClause::accept(parsenode_visitor& v) const
 ********************************************************************************/
 void WindowVarDecl::accept(parsenode_visitor& v) const 
 {
-  BEGIN_VISITOR ();
-  ACCEPT (typedecl_h);
-  ACCEPT (get_initexpr ());
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  ACCEPT(typedecl_h);
+  // The domain expr has been translated already. 
+  END_VISITOR();
 }
 
 
@@ -1103,10 +1107,10 @@ void WindowVarDecl::accept(parsenode_visitor& v) const
 ********************************************************************************/
 void FLWORWinCond::accept(parsenode_visitor& v) const
 {
-  BEGIN_VISITOR ();
-  ACCEPT (get_winvars ());
-  ACCEPT (get_val ());
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  ACCEPT(get_winvars());
+  ACCEPT(get_val());
+  END_VISITOR();
 }
 
 
