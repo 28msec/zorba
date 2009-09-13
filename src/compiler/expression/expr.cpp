@@ -742,9 +742,23 @@ expr* var_expr::get_domain_expr() const
 {
   if (theFlworClause)
   {
-    if (theKind == for_var || theKind == let_var || theKind == win_var)
+    if (theKind == for_var ||
+        theKind == let_var ||
+        theKind == win_var ||
+        theKind == wincond_in_var ||
+        theKind == wincond_out_var)
     {
       return reinterpret_cast<forletwin_clause*>(theFlworClause)->get_expr();
+    }
+    else if (theKind == groupby_var)
+    {
+      return reinterpret_cast<group_clause*>(theFlworClause)->
+             get_input_for_group_var(this);
+    }
+    else if (theKind == non_groupby_var)
+    {
+      return reinterpret_cast<group_clause*>(theFlworClause)->
+             get_input_for_nongroup_var(this);
     }
   }
   else if (theCopyClause)
@@ -785,41 +799,6 @@ expr::expr_t var_expr::clone(expr::substitution_t& subst)
   return i->second->clone(subst);
 }
 
-/*******************************************************************************
-
-********************************************************************************/
-bound_var::bound_var(var_expr* ve, varref_t var, expr_t val_)
-  :
-  varname(ve->get_varname()),
-  var_key(dynamic_context::var_key (ve)),
-  type(ve->get_type()),
-  val(val_),
-  var(var)
-{
-}
-
-
-/******************************************************************************
-
-********************************************************************************/
-void flwor_clause::set_bound_variables(checked_vector<varref_t>& aScopedVariables)
-{
-  std::set<store::Item_t> lQNames;
-  checked_vector<varref_t>::reverse_iterator it;
-  for ( it = aScopedVariables.rbegin(); it != aScopedVariables.rend(); ++it )
-  {
-    if ( lQNames.find( (*it)->get_varname() ) == lQNames.end() )
-    {
-      lQNames.insert( (*it)->get_varname() );
-      varref_t lValue = (*it);
-      //var_expr_t lVariable( new var_expr( lValue->get_loc(), var_expr::eval_var, lValue->get_varname() ) );
-      //lVariable->set_type( lValue->get_type() );
-      //theBoundVariables.push_back(bound_var(&*lVariable, lVariable, lValue.getp()));
-      theBoundVariables.push_back(bound_var(&*lValue, lValue, lValue.getp()));
-    }
-  } 
-}
-
 
 /*******************************************************************************
 
@@ -840,7 +819,8 @@ forletwin_clause::forletwin_clause(
 }
 
 
-forletwin_clause::~forletwin_clause() {
+forletwin_clause::~forletwin_clause() 
+{
   if (theVarExpr != NULL)
     theVarExpr->set_flwor_clause(NULL);
 }
@@ -871,7 +851,8 @@ for_clause::for_clause(
 }
 
 
-for_clause::~for_clause() {
+for_clause::~for_clause() 
+{
   if (thePosVarExpr != NULL)
     thePosVarExpr->set_flwor_clause(NULL);
 
@@ -880,7 +861,8 @@ for_clause::~for_clause() {
 }
 
 
-flwor_clause_t for_clause::clone(expr::substitution_t& subst) {
+flwor_clause_t for_clause::clone(expr::substitution_t& subst) 
+{
   expr_t domainCopy = theDomainExpr->clone(subst);
 
   varref_t varCopy(new var_expr(*theVarExpr));
@@ -936,7 +918,8 @@ let_clause::~let_clause() {
 }
 
 
-flwor_clause_t let_clause::clone(expr::substitution_t& subst) {
+flwor_clause_t let_clause::clone(expr::substitution_t& subst) 
+{
   expr_t domainCopy = theDomainExpr->clone(subst);
 
   varref_t varCopy(new var_expr(*theVarExpr));
@@ -979,7 +962,8 @@ window_clause::window_clause(
 }
 
 
-window_clause::~window_clause() {
+window_clause::~window_clause() 
+{
   if (theWinStartCond != NULL)
     theWinStartCond->set_flwor_clause(NULL);
 
@@ -988,7 +972,24 @@ window_clause::~window_clause() {
 }
 
 
-flwor_clause_t window_clause::clone(expr::substitution_t& subst) {
+void window_clause::set_win_start(flwor_wincond* cond)
+{
+  theWinStartCond = cond;
+  if (theWinStartCond != NULL)
+    theWinStartCond->set_flwor_clause(this);
+}
+
+
+void window_clause::set_win_stop(flwor_wincond* cond)
+{
+  theWinStopCond = cond;
+  if (theWinStopCond != NULL)
+    theWinStopCond->set_flwor_clause(this);
+}
+
+
+flwor_clause_t window_clause::clone(expr::substitution_t& subst) 
+{
   expr_t domainCopy = theDomainExpr->clone(subst);
 
   varref_t varCopy(new var_expr(*theVarExpr));
@@ -1016,7 +1017,8 @@ flwor_clause_t window_clause::clone(expr::substitution_t& subst) {
 /*******************************************************************************
 
 ********************************************************************************/
-void flwor_wincond::vars::set_flwor_clause(flwor_clause* c) {
+void flwor_wincond::vars::set_flwor_clause(flwor_clause* c) 
+{
   if (posvar != NULL) posvar->set_flwor_clause(c);
   if (curr != NULL) curr->set_flwor_clause(c);
   if (prev != NULL) prev->set_flwor_clause(c);
@@ -1054,13 +1056,15 @@ void flwor_wincond::vars::clone(
 }
 
 
-void flwor_wincond::set_flwor_clause(flwor_clause* c) {
+void flwor_wincond::set_flwor_clause(flwor_clause* c) 
+{
   theInputVars.set_flwor_clause(c);
   theOutputVars.set_flwor_clause(c);
 }
 
 
-flwor_wincond_t flwor_wincond::clone(expr::substitution_t& subst) {
+flwor_wincond_t flwor_wincond::clone(expr::substitution_t& subst) 
+{
   flwor_wincond::vars cloneInVars;
   flwor_wincond::vars cloneOutVars;
 
@@ -1076,7 +1080,31 @@ flwor_wincond_t flwor_wincond::clone(expr::substitution_t& subst) {
 /*******************************************************************************
 
 ********************************************************************************/
-group_clause::~group_clause() {
+group_clause::group_clause(
+     short sctx,
+     const QueryLoc& loc,
+     const rebind_list_t& gvars,
+     rebind_list_t ngvars,
+     const std::vector<std::string>& collations)
+  :
+  flwor_clause(sctx, loc, flwor_clause::group_clause),
+  theGroupVars(gvars),
+  theNonGroupVars(ngvars),
+  theCollations(collations)
+{
+  ulong numGVars = theGroupVars.size();
+  ulong numNGVars = theNonGroupVars.size();
+  
+  for (ulong i = 0; i < numGVars; ++i)
+    theGroupVars[i].second->set_flwor_clause(this);
+
+  for (ulong i = 0; i < numNGVars; ++i)
+    theNonGroupVars[i].second->set_flwor_clause(this);
+}
+
+
+group_clause::~group_clause() 
+{
   ulong numGVars = theGroupVars.size();
   ulong numNGVars = theNonGroupVars.size();
   
@@ -1088,20 +1116,49 @@ group_clause::~group_clause() {
 }
 
 
-flwor_clause_t group_clause::clone(expr::substitution_t& subst) {
+expr* group_clause::get_input_for_group_var(const var_expr* var)
+{
+  ulong numVars = theGroupVars.size();
+  for (ulong i = 0; i < numVars; ++i)
+  {
+    if (theGroupVars[i].second.getp() == var)
+      return theGroupVars[i].first.getp();
+  }
+
+  return NULL;
+}
+
+
+expr* group_clause::get_input_for_nongroup_var(const var_expr* var)
+{
+  ulong numVars = theNonGroupVars.size();
+  for (ulong i = 0; i < numVars; ++i)
+  {
+    if (theNonGroupVars[i].second.getp() == var)
+      return theNonGroupVars[i].first.getp();
+  }
+
+  return NULL;
+}
+
+
+flwor_clause_t group_clause::clone(expr::substitution_t& subst) 
+{
   ulong numGroupVars = theGroupVars.size();
   ulong numNonGroupVars = theNonGroupVars.size();
 
   rebind_list_t cloneGroupVars(numGroupVars);
   rebind_list_t cloneNonGroupVars(numNonGroupVars);
 
-  for (ulong i = 0; i < numGroupVars; ++i) {
+  for (ulong i = 0; i < numGroupVars; ++i) 
+  {
     cloneGroupVars[i].first = theGroupVars[i].first->clone(subst);
     cloneGroupVars[i].second = new var_expr(*theGroupVars[i].second);
     subst[theGroupVars[i].second.getp()] = cloneGroupVars[i].second.getp();
   }
 
-  for (ulong i = 0; i < numNonGroupVars; ++i) {
+  for (ulong i = 0; i < numNonGroupVars; ++i) 
+  {
     cloneNonGroupVars[i].first = theNonGroupVars[i].first->clone(subst);
     cloneNonGroupVars[i].second = new var_expr(*theNonGroupVars[i].second);
     subst[theNonGroupVars[i].second.getp()] = cloneNonGroupVars[i].second.getp();
@@ -1114,7 +1171,8 @@ flwor_clause_t group_clause::clone(expr::substitution_t& subst) {
 /*******************************************************************************
 
 ********************************************************************************/
-flwor_clause_t orderby_clause::clone(expr::substitution_t& subst) {
+flwor_clause_t orderby_clause::clone(expr::substitution_t& subst) 
+{
   ulong numColumns = num_columns();
 
   std::vector<expr_t> cloneExprs(numColumns);
@@ -1124,7 +1182,11 @@ flwor_clause_t orderby_clause::clone(expr::substitution_t& subst) {
     cloneExprs[i] = theOrderingExprs[i]->clone(subst);
   }
 
-  return new orderby_clause(theContext, get_loc(), theStableOrder, theModifiers, cloneExprs);
+  return new orderby_clause(theContext,
+                            get_loc(),
+                            theStableOrder,
+                            theModifiers,
+                            cloneExprs);
 }
 
 
@@ -1736,13 +1798,13 @@ store::Item_t fo_expr::get_fname () const
 fo_expr *fo_expr::create_seq(short sctx, const QueryLoc &loc) 
 {
   auto_ptr<fo_expr> fo (new fo_expr (sctx, loc, GENV.getRootStaticContext ().lookup_builtin_fn (":" "concatenate", VARIADIC_SIG_SIZE)));
-  fo->put_annotation (AnnotationKey::CONCAT_EXPR, TSVAnnotationValue::TRUE_VAL);
+  fo->put_annotation (Annotations::CONCAT_EXPR, TSVAnnotationValue::TRUE_VAL);
   return fo.release ();
 }
 
 bool fo_expr::is_concatenation () const 
 {
-  return get_annotation(AnnotationKey::CONCAT_EXPR).getp() == TSVAnnotationValue::TRUE_VAL.getp ();
+  return get_annotation(Annotations::CONCAT_EXPR).getp() == TSVAnnotationValue::TRUE_VAL.getp ();
 }
 
 
