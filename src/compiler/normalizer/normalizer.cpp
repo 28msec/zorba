@@ -329,11 +329,13 @@ void end_visit (relpath_expr&)
 
 bool begin_visit (relpath_expr& node)
 {
+#if 0
   if (node.size() > 0) {
     expr_t ie = node[0];
     expr_t pe = new treat_expr(m_cb->m_cur_sctx, ie->get_loc(), ie, GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, XPTY0019);
     node[0] = pe;
   }
+#endif
   return true;
 }
 
