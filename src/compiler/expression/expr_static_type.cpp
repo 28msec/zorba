@@ -28,14 +28,17 @@
 #include "util/properties.h"
 
 using namespace std;
-namespace zorba {
+
+namespace zorba 
+{
 
 #define DEBUG_RT(e, t) t
 
 #ifndef DEBUG_RT
 #define DEBUG_RT(e, t) print_expr_and_type(e, t)
 
-static xqtref_t print_expr_and_type(expr *e, xqtref_t t) {
+static xqtref_t print_expr_and_type(expr *e, xqtref_t t) 
+{
   if (Properties::instance()->printStaticTypes ()) {
     std::cout << "Return type for " << e << ":\n";
     e->put(std::cout);
@@ -45,6 +48,14 @@ static xqtref_t print_expr_and_type(expr *e, xqtref_t t) {
 }
 
 #endif
+
+static xqtref_t create_axis_step_type(
+    TypeManager* tm,
+    store::StoreConsts::NodeKind nodekind,
+    const store::Item_t& nodename,
+    TypeConstants::quantifier_t quant,
+    bool untyped);
+
 
 xqtref_t expr::return_type(static_context *sctx) 
 {
@@ -88,7 +99,7 @@ xqtref_t fo_expr::return_type_impl(static_context *sctx)
 
 xqtref_t sequential_expr::return_type_impl(static_context *sctx)
 {
-  return sequence [sequence.size () - 1]->return_type (sctx);
+  return sequence[sequence.size() - 1]->return_type(sctx);
 }
 
 
@@ -102,22 +113,27 @@ xqtref_t flwor_expr::return_type_impl(static_context *sctx)
 
 xqtref_t if_expr::return_type_impl (static_context *sctx) 
 {
-  return TypeOps::union_type (*then_expr_h->return_type (sctx), *else_expr_h->return_type (sctx));
+  return TypeOps::union_type(*then_expr_h->return_type (sctx),
+                             *else_expr_h->return_type (sctx));
 }
 
 
 xqtref_t treat_expr::return_type_impl (static_context *sctx) 
 {
-  xqtref_t input_type = get_input ()->return_type (sctx);
-  xqtref_t input_ptype = TypeOps::prime_type (*input_type),
-    target_ptype = TypeOps::prime_type (*target_type);
-  if (TypeOps::is_subtype (*input_ptype, *target_ptype)) {
-    TypeConstants::quantifier_t q =
-      TypeOps::intersect_quant (TypeOps::quantifier (*input_type),
-                                TypeOps::quantifier (*target_type));
-    return sctx->get_typemanager ()->create_type_x_quant (*input_ptype, q);
+  xqtref_t input_type = get_input()->return_type (sctx);
+  xqtref_t input_ptype = TypeOps::prime_type(*input_type);
+  xqtref_t target_ptype = TypeOps::prime_type (*target_type);
+
+  TypeConstants::quantifier_t q =
+    TypeOps::intersect_quant(TypeOps::quantifier(*input_type),
+                             TypeOps::quantifier(*target_type));
+
+  if (TypeOps::is_subtype(*input_ptype, *target_ptype)) 
+  {
+    return sctx->get_typemanager()->create_type(*input_ptype, q);
   }
-  return target_type;
+
+  return sctx->get_typemanager()->create_type(*target_ptype, q);
 }
 
 
@@ -194,54 +210,6 @@ static xqtref_t axist_step_type(
   }
 
 
-#define returnType(nodekind, nodename, quant, untyped)                  \
-  if (untyped)                                                          \
-  {                                                                     \
-    xqtref_t contentType;                                               \
-    if (nodekind == store::StoreConsts::attributeNode)                  \
-      contentType = RTM.UNTYPED_ATOMIC_TYPE_ONE;                        \
-    else                                                                \
-      contentType = RTM.UNTYPED_TYPE;                                   \
-                                                                        \
-    if (TypeOps::is_sub_quant(quant, TypeConstants::QUANT_QUESTION))    \
-    {                                                                   \
-      return tm->create_node_type(nodekind,                             \
-                                  nodename,                             \
-                                  contentType,                          \
-                                  TypeConstants::QUANT_QUESTION,        \
-                                  false,                                \
-                                  false);                               \
-    }                                                                   \
-    else                                                                \
-    {                                                                   \
-      return tm->create_node_type(nodekind,                             \
-                                  nodename,                             \
-                                  contentType,                          \
-                                  TypeConstants::QUANT_STAR,            \
-                                  false,                                \
-                                  false);                               \
-    }                                                                   \
-  }                                                                     \
-  else if (TypeOps::is_sub_quant(quant, TypeConstants::QUANT_QUESTION)) \
-  {                                                                     \
-    return tm->create_node_type(nodekind,                               \
-                                nodename,                               \
-                                RTM.ANY_TYPE,                           \
-                                TypeConstants::QUANT_QUESTION,          \
-                                false,                                  \
-                                false);                                 \
-  }                                                                     \
-  else                                                                  \
-  {                                                                     \
-    return tm->create_node_type(nodekind,                               \
-                                nodename,                               \
-                                RTM.ANY_TYPE,                           \
-                                TypeConstants::QUANT_STAR,              \
-                                false,                                  \
-                                false);                                 \
-  }
-
-
 #define RAISE_XPST0005()                            \
   {                                                 \
     ZORBA_ERROR_LOC(XPST0005, loc);                 \
@@ -295,7 +263,7 @@ static xqtref_t axist_step_type(
       RAISE_XPST0005();
     }
 
-    returnType(testNodeKind, testNodeName, inQuant, false);
+    return create_axis_step_type(tm, testNodeKind, testNodeName, inQuant, false);
 
     break;
   }
@@ -322,7 +290,7 @@ static xqtref_t axist_step_type(
     }
     else if (testNodeKind == store::StoreConsts::documentNode)
     {
-      returnType(testNodeKind, testNodeName, inQuant, false);
+      return create_axis_step_type(tm, testNodeKind, testNodeName, inQuant, false);
     }
     else
     {
@@ -341,7 +309,7 @@ static xqtref_t axist_step_type(
     }
     else if (testNodeKind == store::StoreConsts::documentNode)
     {
-      returnType(testNodeKind, testNodeName, inQuant, false);
+      return create_axis_step_type(tm, testNodeKind, testNodeName, inQuant, false);
     }
     else if (testNodeKind == store::StoreConsts::anyNode)
     {
@@ -380,12 +348,12 @@ self:
     case store::StoreConsts::documentNode:
     case store::StoreConsts::elementNode:
     case store::StoreConsts::attributeNode:
-      returnType(inNodeKind, testNodeName, inQuant, inUntyped);
+      return create_axis_step_type(tm, inNodeKind, testNodeName, inQuant, inUntyped);
 
     case store::StoreConsts::textNode:
     case store::StoreConsts::piNode:
     case store::StoreConsts::commentNode:
-      returnType(inNodeKind, testNodeName, inQuant, false);
+      return create_axis_step_type(tm, inNodeKind, testNodeName, inQuant, false);
 
     case store::StoreConsts::anyNode:
     {
@@ -395,12 +363,12 @@ self:
       case store::StoreConsts::documentNode:
       case store::StoreConsts::elementNode:
       case store::StoreConsts::attributeNode:
-        returnType(testNodeKind, testNodeName, inQuant, inUntyped);
+        return create_axis_step_type(tm, testNodeKind, testNodeName, inQuant, inUntyped);
 
       case store::StoreConsts::textNode:
       case store::StoreConsts::piNode:
       case store::StoreConsts::commentNode:
-        returnType(testNodeKind, testNodeName, inQuant, false);
+        return create_axis_step_type(tm, testNodeKind, testNodeName, inQuant, false);
 
       default:
         ZORBA_ASSERT(false);
@@ -523,7 +491,11 @@ self:
     if ((testKind == match_name_test && wildKind == match_no_wild) ||
         testKind == match_xs_attr_test)
     {
-      returnType(store::StoreConsts::attributeNode, testNodeName, inQuant, inUntyped);
+      return create_axis_step_type(tm,
+                                   store::StoreConsts::attributeNode,
+                                   testNodeName,
+                                   inQuant,
+                                   inUntyped);
     }
     else
     {
@@ -591,6 +563,63 @@ self:
 }
 
 
+static xqtref_t create_axis_step_type(
+    TypeManager* tm,
+    store::StoreConsts::NodeKind nodekind,
+    const store::Item_t& nodename,
+    TypeConstants::quantifier_t quant,
+    bool untyped)
+{
+  RootTypeManager& RTM = GENV_TYPESYSTEM;
+
+  if (untyped) 
+  {
+    xqtref_t contentType; 
+    if (nodekind == store::StoreConsts::attributeNode)
+      contentType = RTM.UNTYPED_ATOMIC_TYPE_ONE;
+    else
+      contentType = RTM.UNTYPED_TYPE;
+
+    if (TypeOps::is_sub_quant(quant, TypeConstants::QUANT_QUESTION))
+    {
+      return tm->create_node_type(nodekind,
+                                  nodename,
+                                  contentType,
+                                  TypeConstants::QUANT_QUESTION,
+                                  false,
+                                  false);
+    }
+    else
+    {
+      return tm->create_node_type(nodekind,
+                                  nodename,
+                                  contentType,
+                                  TypeConstants::QUANT_STAR,
+                                  false,
+                                  false);
+    }
+  }
+  else if (TypeOps::is_sub_quant(quant, TypeConstants::QUANT_QUESTION))
+  {
+    return tm->create_node_type(nodekind,
+                                nodename,
+                                RTM.ANY_TYPE,
+                                TypeConstants::QUANT_QUESTION,
+                                false,
+                                false);
+  }
+  else
+  {
+    return tm->create_node_type(nodekind,
+                                nodename,
+                                RTM.ANY_TYPE,
+                                TypeConstants::QUANT_STAR,
+                                false,
+                                false);
+  }
+}
+
+
 xqtref_t relpath_expr::return_type_impl(static_context* sctx) 
 {
   if (size() == 0)
@@ -604,7 +633,7 @@ xqtref_t relpath_expr::return_type_impl(static_context* sctx)
   if (TypeOps::is_empty (*sourceType) || TypeOps::is_none (*sourceType))
     return sourceType;
 
-  if (!TypeOps::is_subtype(*sourceType, *GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR))
+  if (sourceType->type_kind() != XQType::NODE_TYPE_KIND)
   {
     ZORBA_ERROR_LOC(XPTY0020, get_loc());
     return GENV_TYPESYSTEM.NONE_TYPE;
@@ -796,42 +825,62 @@ xqtref_t wrapper_expr::return_type_impl(static_context *sctx)
 
 xqtref_t var_expr::return_type_impl(static_context* sctx) 
 {
-  xqtref_t type1 = NULL;
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
+
+  xqtref_t derivedType;
   expr* domainExpr;
 
-  if (theKind == for_var || theKind == let_var ||
-      theKind == win_var || theKind == copy_var) 
+  // The translator has already set theDeclaredType of pos_vars, count_vars,
+  // wincond_out_pos_vars, and wincond_in_pos_vars to xs:positiveInteger.
+  if (theKind == pos_var ||
+      theKind == wincond_out_pos_var ||
+      theKind == wincond_in_pos_var)
+  {
+    return theDeclaredType;
+  }
+  else if (theKind == for_var ||
+           theKind == let_var ||
+           theKind == win_var || 
+           theKind == wincond_in_var ||
+           theKind == wincond_out_var ||
+           theKind == groupby_var ||
+           theKind == non_groupby_var ||
+           theKind == copy_var) 
   {
     domainExpr = get_domain_expr();
+    ZORBA_ASSERT(domainExpr != NULL);
 
-    // domainExpr may be NULL if this method is called during translation,
-    // when the varExpr is not yet connected with its domainExpr.
-    if (domainExpr == NULL)
-    {
-      return (theKind == for_var ? 
-              GENV_TYPESYSTEM.ITEM_TYPE_QUESTION :
-              GENV_TYPESYSTEM.ITEM_TYPE_STAR);
-    }
-
-    type1 = domainExpr->return_type(sctx);
+    xqtref_t domainType = domainExpr->return_type(sctx);
 
     if (theKind == for_var) 
     {
-      type1 = TypeOps::prime_type(*type1);
+      derivedType = TypeOps::prime_type(*domainType);
+    }
+    else if (theKind == wincond_in_var || theKind == wincond_out_var)
+    {
+      // TODO: we can be a little more specific here: if the quantifier of the
+      // domain type is PLUS or ONE, then the quantifier of the "current" cond
+      // var is ONE.
+      derivedType = rtm.create_type(*domainType, TypeConstants::QUANT_QUESTION);
+    }
+    else if (theKind == non_groupby_var)
+    {
+      derivedType = rtm.create_type(*domainType, TypeConstants::QUANT_STAR);
+    }
+    else
+    {
+      derivedType = domainType;
     }
   }
 
-  // The translator has already set the type of pos_vars, count_vars,
-  // wincond_out_pos_vars, and wincond_in_pos_vars to xs:positiveInteger.
-
-  if (type1 == NULL) 
+  if (derivedType == NULL) 
   {
-    return theDeclaredType == NULL ? GENV_TYPESYSTEM.ITEM_TYPE_STAR : theDeclaredType;
+    return (theDeclaredType == NULL ? rtm.ITEM_TYPE_STAR : theDeclaredType);
   }
 
   return (theDeclaredType == NULL ?
-          type1 :
-          TypeOps::intersect_type(*type1, *theDeclaredType));
+          derivedType :
+          TypeOps::intersect_type(*derivedType, *theDeclaredType));
 }
 
 
