@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_VAR_EXPR_H
-#define ZORBA_VAR_EXPR_H
+#ifndef ZORBA_COMPILER_VAR_EXPR_H
+#define ZORBA_COMPILER_VAR_EXPR_H
 
 #include "compiler/expression/expr_base.h"
 //#include "compiler/expression/flwor_expr.h"
@@ -29,6 +29,8 @@ class copy_clause;
 class var_expr;
 
 typedef rchandle<var_expr> varref_t;
+typedef rchandle<var_expr> var_expr_t;
+
 
 /******************************************************************************
 
@@ -103,7 +105,7 @@ protected:
 
   flwor_clause * theFlworClause;
   copy_clause  * theCopyClause;
-
+  
   int            unique_id;
 
 public:
