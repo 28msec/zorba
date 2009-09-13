@@ -69,6 +69,8 @@
 
 using namespace std;
 
+#define NODE_SORT_OPT
+
 namespace zorba {
 
 class ModulesInfo;
@@ -476,13 +478,14 @@ protected:
   list<function *>                     prolog_fn_decls;
 
   stack<short>                         sctxstack;
-  checked_vector<unsigned int>         theScopes;
 
   int                                  tempvar_counter;
 
   stack<expr_t>                        nodestack;
 
   stack<xqtref_t>                      tstack; 
+
+  std::vector<flwor_clause_t>          theFlworClausesStack;
 
   stack<NodeSortInfo>                  theNodeSortStack;
 
@@ -903,12 +906,12 @@ void bind_udf(
     int nargs,
     static_context *sctx,
     const QueryLoc& loc) 
-  {
+{
   if (! sctx->bind_fn (qname, f, nargs))
     ZORBA_ERROR_LOC_PARAM(XQST0034, loc,
                           qname->getStringValue(),
                           loc.getFilenameBegin());
-      }
+}
   
 
 /*******************************************************************************
@@ -919,15 +922,15 @@ void bind_udf(
   such a binding exists already in any of these sctxs.
 ********************************************************************************/
 void bind_udf (store::Item_t qname, function *f, int nargs, const QueryLoc& loc) 
-  {
+{
   bind_udf (qname, f, nargs, sctx_p, loc);
   bind_udf (qname, f, nargs, minfo->globals.get (), loc);
 
   if (export_sctx != NULL) 
-    {
+  {
     bind_udf (qname, f, nargs, export_sctx, loc);
-    }
-    }
+  }
+}
   
 
 /*******************************************************************************
@@ -948,7 +951,7 @@ expr_t wrap_in_atomization (expr_t e)
                       e->get_loc (),
                       CACHED (fn_data, LOOKUP_FN ("fn", "data", 1)),
                       e);
-    }
+}
 
 
 /*******************************************************************************
@@ -1138,14 +1141,16 @@ rchandle<flwor_expr> wrap_expr_in_flwor(expr* inputExpr, bool withContextSize)
   return flworExpr;
 }
 
+
 /*******************************************************************************
-   In this expression branch, we create the debugger expressions.
-   Furthermore, we create an entry for all expressions in the map
-   of breakable expressions. This is done here, in order to be able,
-   to set breakpoints of expressions which are not translated at the
-   beginning (e.g. inside functions).
+  In this expression branch, we create the debugger expressions.
+  Furthermore, we create an entry for all expressions in the map
+  of breakable expressions. This is done here, in order to be able,
+  to set breakpoints of expressions which are not translated at the
+  beginning (e.g. inside functions).
 ********************************************************************************/
-void wrap_in_debugger_expr (expr_t& aExpr) {
+void wrap_in_debugger_expr (expr_t& aExpr) 
+{
   if (theCCB->theDebuggerCommons != NULL) {
     DebugLocation_t lLocation;
     std::auto_ptr<debugger_expr> lExpr(new debugger_expr(theCCB->m_cur_sctx,
@@ -1305,7 +1310,7 @@ expr_t wrap_in_globalvar_assign(expr_t e)
       i != thePrologVars.end();
       i++)
   {
-     declare_var(*i, minfo->init_exprs);
+    declare_var(*i, minfo->init_exprs);
   }
 
   expr_t preloadedInitExpr = static_cast<static_context*>(sctx_p->get_parent())->
@@ -1323,8 +1328,8 @@ expr_t wrap_in_globalvar_assign(expr_t e)
   }
   else
   {
-  return e;
-}
+    return e;
+  }
 }
 
 
@@ -2359,7 +2364,7 @@ void *begin_visit (const VFO_DeclList& v)
       // In a module, all exports must be inside the target ns
       if (! theModuleNamespace.empty () && ns != theModuleNamespace)
         ZORBA_ERROR_LOC (XQST0048, loc);
-}
+    }
 
     // Create the function object.
     signature sig(qname, arg_types, return_type);
@@ -2383,7 +2388,7 @@ void *begin_visit (const VFO_DeclList& v)
                               loc,
                               qname->getNamespace()->str(),
                               qname->getLocalName()->str());
-}
+      }
 
       ZORBA_ASSERT(ef != NULL);
 
@@ -2391,7 +2396,7 @@ void *begin_visit (const VFO_DeclList& v)
 
       f = new stateless_external_function_adapter(sig, ef, updating);
       break;
-}
+    }
     case ParseConstants::fn_sequential:
     case ParseConstants::fn_update:
     case ParseConstants::fn_read: 
@@ -2411,7 +2416,7 @@ void *begin_visit (const VFO_DeclList& v)
     // in the current sctx of this module and, if this is a lib module, in its
     // export sctx as well.
     bind_udf(qname, f, nargs, loc);
-}
+  }
 
   return no_state;
 }
@@ -2480,7 +2485,7 @@ void *begin_visit (const VarDecl& v)
 
     // TODO: local vars too
     prolog_vf_key = string("V") + key;
-}
+  }
 
   return no_state;
 }
@@ -2523,20 +2528,20 @@ void end_visit (const VarDecl& v, void* /*visit_state*/)
     if (export_sctx != NULL)
       bind_var(ve, export_sctx);
 
-    expr_t val = (v.get_initexpr () == NULL ? expr_t(NULL) : pop_nodestack());
+    expr_t initExpr = (v.get_initexpr () == NULL ? expr_t(NULL) : pop_nodestack());
 
-    thePrologVars.push_back(global_binding(ve, val, v.is_extern()));
-}
+    thePrologVars.push_back(global_binding(ve, initExpr, v.is_extern()));
+  }
   else
   {
     ve = bind_var(loc, varname, var_expr::local_var, type);
 
-    expr_t val = (v.get_initexpr () == NULL ? expr_t(NULL) : pop_nodestack());
+    expr_t initExpr = (v.get_initexpr() == NULL ? expr_t(NULL) : pop_nodestack());
 
     nodestack.push(ve.cast<expr>());
-    nodestack.push(val);
+    nodestack.push(initExpr);
   }
-  }
+}
 
 
 /*******************************************************************************
@@ -2572,7 +2577,7 @@ void end_visit (const CtxItemDecl& v, void* /*visit_state*/)
     global_binding b (var, ctx_item_default, true);
 
     declare_var(b, minfo->init_exprs);
-}
+  }
 }
 
 
@@ -2605,7 +2610,7 @@ void end_visit (const CtxItemDecl& v, void* /*visit_state*/)
         data member stores the var declarations.
 ********************************************************************************/
 void *begin_visit (const FunctionDecl& v) 
-    {
+{
   TRACE_VISIT ();
 
   push_scope ();
@@ -2679,7 +2684,7 @@ void end_visit (const FunctionDecl& v, void* /*visit_state*/)
       ZORBA_ERROR_LOC(XUST0028, loc);
 
     // Fall through the fn_read case.
-    }
+  }
   case ParseConstants::fn_sequential:
   case ParseConstants::fn_read:
   {
@@ -2699,13 +2704,13 @@ void end_visit (const FunctionDecl& v, void* /*visit_state*/)
     {
       ZORBA_ERROR_LOC_DESC (XPTY0004, loc,
                             "A sequential function cannot have a body that returns a pending update list");
-}
+    }
 
     if (lFuncType == ParseConstants::fn_read) 
     {
       if (body->is_updating())
         ZORBA_ERROR_LOC(XUST0001, loc);
-}
+    }
     else if (lFuncType == ParseConstants::fn_update) 
     {
       if (! body->is_updating_or_vacuous ())
@@ -2758,7 +2763,7 @@ void end_visit (const FunctionDecl& v, void* /*visit_state*/)
       ZORBA_ERROR_LOC(XUST0028, loc);
 
     break;
-}
+  }
   default:
   {
     ZORBA_ASSERT(0);
@@ -2837,7 +2842,7 @@ void *begin_visit (const IndexDecl& v)
   TRACE_VISIT ();
 
   xqpStringStore_t uri(new xqpStringStore(v.get_uri()));
-  ValueIndex_t vi = new ValueIndex(sctx_p, uri);
+  ValueIndex_t vi = new ValueIndex(theCCB->m_cur_sctx, v.get_location(), uri);
   indexstack.push(vi);
 
   return no_state;
@@ -2897,10 +2902,10 @@ void *begin_visit (const IndexFieldList& v)
                                                        DOT_POS_VARNAME,
                                                        var_expr::pos_var));
   return no_state;
-    }
+}
 
 void end_visit (const IndexFieldList& v, void* /*visit_state*/) 
-  {
+{
   std::vector<expr_t> iCols;
   std::vector<xqtref_t> iColTypes;
   std::vector<std::string> iColCollations;
@@ -2926,7 +2931,7 @@ void end_visit (const IndexFieldList& v, void* /*visit_state*/)
   pop_scope();
 
   TRACE_VISIT_OUT ();
-  }
+}
 
 
 /***************************************************************************//**
@@ -3145,6 +3150,9 @@ void end_visit (const Expr& v, void* /*visit_state*/)
 void *begin_visit (const FLWORExpr& v) 
 {
   TRACE_VISIT ();
+
+  theFlworClausesStack.push_back(NULL);
+
   return no_state;
 }
 
@@ -3156,329 +3164,70 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
   if (xquery_version <= StaticContextConsts::xquery_version_1_0 && v.is_non_10())
     ZORBA_ERROR_LOC (XPST0003, loc);
 
-  const FLWORClauseList& clauses = *v.get_clause_list();
-
-  vector <rchandle<flwor_clause> > eclauses;
-
   rchandle<flwor_expr> flwor = new flwor_expr(theCCB->m_cur_sctx, loc, v.is_general());
 
-  //
-  // Process return clause
-  //
   expr_t retExpr = pop_nodestack();
   
   wrap_in_debugger_expr(retExpr);
 
   flwor->set_return_expr(retExpr);
 
-  for (int i = clauses.size() - 1; i >= 0; i--) 
+  ulong curClausePos = theFlworClausesStack.size() - 1;
+  while(theFlworClausesStack[curClausePos] != NULL)
   {
-    const FLWORClause& c = *clauses[i];
+    flwor_clause* curClause = theFlworClausesStack[curClausePos];
 
-    vector<rchandle<var_expr> > varExprs;
-    vector<rchandle<var_expr> > posVarExprs; // mirrors varExprs vector
-    vector<rchandle<expr> > domainExprs;     // mirrors varExprs vector
-
-    //
-    // Process FOR clause
-    //
-    if (typeid(c) == typeid(ForClause)) 
+    switch (curClause->get_kind())
     {
-      const ForClause& flc = *static_cast<const ForClause *> (&c);
-      if (xquery_version <= StaticContextConsts::xquery_version_1_0 && flc.is_outer())
-        ZORBA_ERROR_LOC(XPST0003, loc);
-
-      int numVars = flc.get_decl_count();
-      VarInDeclList* decl_list = &*flc.get_vardecl_list();
-
-      for (int j = numVars - 1; j >= 0; --j) 
-      {
-        var_expr_t ve;
-        ve = pop_nodestack_var();
-        ve->set_kind(var_expr::for_var);
-        varExprs.push_back(ve);
-
-        if ((*decl_list)[j]->get_posvar() == NULL)
-        {
-          posVarExprs.push_back(NULL);
-        }
-        else 
-        {
-          var_expr_t pve = pop_nodestack_var();
-          pve->set_kind(var_expr::pos_var);
-          posVarExprs.push_back(pve);
-        }
-
-        expr_t domainExpr = pop_nodestack();
-        if (domainExpr->is_updating())
-          ZORBA_ERROR_LOC(XUST0001, loc);
-
-        domainExprs.push_back(domainExpr);
-
-        pop_scope();
-      }
-
-      for (int j = 0; j < numVars; j++) 
-      {
-        expr_t domainExpr = domainExprs[j];
-        wrap_in_debugger_expr(domainExpr);
-        for_clause* eflc = new for_clause(theCCB->m_cur_sctx, c.get_location(),
-                                          varExprs[j],
-                                          domainExpr,
-                                          posVarExprs[j]);
-        eflc->set_outer(flc.is_outer());
-
-        eclauses.push_back(eflc);
-
-      }
-    }
-
-    //
-    // Process LET clause
-    //
-    else if (typeid (c) == typeid (LetClause)) 
+    case flwor_clause::for_clause:
+    case flwor_clause::let_clause:
     {
-      const LetClause& flc = *static_cast<const LetClause *> (&c);
-      int numVars = flc.get_decl_count();
-
-      for (int j = 0; j < numVars; j++) 
-      {
-        var_expr_t ve = pop_nodestack_var();
-        ve->set_kind(var_expr::let_var);
-        varExprs.push_back(ve);
-
-        expr_t domainExpr = pop_nodestack();
-        if (domainExpr->is_updating())
-          ZORBA_ERROR_LOC(XUST0001, loc);
-
-        domainExprs.push_back(domainExpr);
-
-        pop_scope();
-      }
-
-      for (int j = 0; j < numVars; j++)
-      {
-        expr_t domainExpr = domainExprs[j];
-        wrap_in_debugger_expr(domainExpr);
-        let_clause* eflc = new let_clause(theCCB->m_cur_sctx, c.get_location(),
-                                          varExprs[j],
-                                          domainExpr);
-        eclauses.push_back(eflc);
-      }
-    }
-
-    //
-    // Process WINDOW clause
-    //
-    else if (typeid (c) == typeid (WindowClause)) 
-    {
-      pop_scope();  // var decl + output window condition vars
       pop_scope();
-
-      const WindowClause& wc = *static_cast<const WindowClause *>(&c);
-
-      window_clause::window_t winKind =
-         (wc.get_wintype() == WindowClause::tumbling_window ?
-          window_clause::tumbling_window :
-          window_clause::sliding_window);
-      
-      flwor_wincond_t econds[2];
-      flwor_wincond::vars outputCondVarExprs[2];
-      flwor_wincond::vars inputCondVarExprs[2];
-
-      for (int i = 1; i >= 0; i--) 
-      {
-        rchandle<FLWORWinCond> cond = wc[i];
-        if (cond != NULL) 
-        {
-          rchandle<WindowVars> vars = cond->get_winvars();
-          pop_wincond_vars(vars, outputCondVarExprs[i]);
-        }
-      }
-
-      varref_t windowVarExpr = pop_nodestack_var();
-
-      expr_t windowDomainExpr = pop_nodestack();
-
-      for (int i = 1; i >= 0; i--) 
-      {
-        rchandle<FLWORWinCond> cond = wc[i];
-        if (cond != NULL) 
-        {
-          expr_t condExpr = pop_nodestack();
-
-          rchandle<WindowVars> vars = cond->get_winvars();
-          pop_wincond_vars(vars, inputCondVarExprs[i]);
-
-          econds[i] = new flwor_wincond(cond->is_only(),
-                                        inputCondVarExprs[i],
-                                        outputCondVarExprs[i],
-                                        condExpr);
-        }
-      }
-
-      window_clause* flwc = new window_clause(theCCB->m_cur_sctx, c.get_location(),
-                                              winKind,
-                                              windowVarExpr,
-                                              windowDomainExpr,
-                                              econds[0],
-                                              econds[1]);
-      eclauses.push_back(flwc);
+      break;
     }
-
-    //
-    // Process WHERE clause
-    //
-    else if (typeid (c) == typeid (WhereClause)) 
+    case flwor_clause::window_clause:
     {
-      expr_t whereExpr = pop_nodestack();
-      wrap_in_debugger_expr(whereExpr);
-      if (whereExpr->is_updating())
-        ZORBA_ERROR_LOC(XUST0001, loc);
-
-      eclauses.push_back(new where_clause(theCCB->m_cur_sctx, c.get_location(), whereExpr));
+      // window var + output window condition vars
+      pop_scope();
+      pop_scope();
+      break;
     }
-
-    //
-    // Process GROUPBY clause
-    //
-    else if (typeid (c) == typeid (GroupByClause))
+    case flwor_clause::group_clause:
     {
-      const GroupByClause* groupByClause = static_cast<const GroupByClause *>(&c);
-      const GroupSpecList& groupSpecs = *groupByClause->get_spec_list();
-      size_t numGroupSpecs = groupSpecs.size();
+      group_clause* gc = static_cast<group_clause*>(curClause);
 
-      vector<string> collations;
-      group_clause::rebind_list_t grouping_rebind;
-      group_clause::rebind_list_t nongrouping_rebind;
-      varref_t input_var;
-      varref_t output_var;
+      ulong numGVars = gc->getNumGroupingVars();
+      ulong numNGVars = gc->getNumNonGroupingVars();
 
-      for (int i = numGroupSpecs - 1; i >= 0; i--) 
-      {
-        const GroupSpec& groupSpec = *groupSpecs[i];
-
-        output_var = pop_nodestack_var();
-        input_var = pop_nodestack_var();
-
-        if (groupSpec.group_coll_spec() != NULL)
-          collations.push_back(groupSpec.group_coll_spec()->get_uri());
-        else
-          collations.push_back ("");
-
-        wrapper_expr_t input_wrapper;
-        input_wrapper = new wrapper_expr(theCCB->m_cur_sctx, c.get_location(),
-                                         static_cast<expr*>(input_var.getp()));
-
-        grouping_rebind.push_back(pair<wrapper_expr_t, varref_t>(input_wrapper,
-                                                                 output_var));
-
+      for (ulong i = 0; i < numGVars; ++i)
         pop_scope();
-      }
-      
-      reverse(collations.begin(), collations.end());
-      reverse(grouping_rebind.begin(), grouping_rebind.end());
 
-      while (NULL != (output_var = pop_nodestack_var())) 
-      {
-        input_var = pop_nodestack_var();
-
-        wrapper_expr_t input_wrapper;
-        input_wrapper = new wrapper_expr(theCCB->m_cur_sctx, c.get_location(),
-                                         static_cast<expr*>(input_var.getp()));
-
-        nongrouping_rebind.push_back(pair<wrapper_expr_t, varref_t>(input_wrapper,
-                                                                    output_var));
-
+      for (ulong i = 0; i < numNGVars; ++i)
         pop_scope();
-      }
-      
-      eclauses.push_back(new group_clause(theCCB->m_cur_sctx, c.get_location(),
-                                          grouping_rebind,
-                                          nongrouping_rebind,
-                                          collations));
-    }
 
-    //
-    // Process ORDERBY clause
-    //
-    else if (typeid (c) == typeid (OrderByClause)) 
+      break;
+    }
+    case flwor_clause::order_clause:
+    case flwor_clause::where_clause:
+    case flwor_clause::count_clause:
     {
-      const OrderByClause& orderByClause = static_cast<const OrderByClause&>(c);
-      const OrderSpecList& orderSpecs = *orderByClause.get_spec_list();
-      unsigned numOrderSpecs = orderSpecs.size();
-
-      std::vector<order_modifier> modifiers(numOrderSpecs);
-      std::vector<expr_t> orderExprs(numOrderSpecs);
-
-      for (int i = numOrderSpecs - 1; i >= 0; --i) 
-      {
-        OrderSpec* spec = orderSpecs[i];
-        OrderModifier* mod = spec->get_modifier();
-
-        ParseConstants::dir_spec_t dirSpec = ParseConstants::dir_ascending;
-        if (mod && mod->get_dir_spec() != NULL)
-          dirSpec = mod->get_dir_spec()->get_dir_spec();
-
-        StaticContextConsts::order_empty_mode_t emptySpec = sctx_p->order_empty_mode();
-        if (mod && mod->get_empty_spec() != NULL)
-          emptySpec = mod->get_empty_spec()->get_empty_order_spec();
-
-        string collation = sctx_p->default_collation_uri();
-        if (mod && mod->get_collation_spec() != NULL)
-          collation = mod->get_collation_spec()->get_uri();
-        if (! sctx_p->has_collation_uri(collation))
-          ZORBA_ERROR_LOC(XQST0076, loc);
-
-        expr_t orderExpr = pop_nodestack();
-        if (orderExpr->is_updating())
-          ZORBA_ERROR_LOC(XUST0001, loc);
-
-        modifiers[i] = order_modifier(dirSpec, emptySpec, collation);
-        orderExprs[i] = orderExpr;
-      }
-
-      rchandle<orderby_clause> obgc = new orderby_clause(theCCB->m_cur_sctx, c.get_location(),
-                                                         orderByClause.get_stable_bit(),
-                                                         modifiers,
-                                                         orderExprs);
-      eclauses.push_back(obgc.cast<flwor_clause>());
+      break;
+    }
+    default:
+      ZORBA_ASSERT(false);
     }
 
-    //
-    // Process COUNT clause
-    //
-    else if (typeid (c) == typeid (CountClause)) 
-    {
-      eclauses.push_back(new count_clause(theCCB->m_cur_sctx,
-                                          c.get_location(), 
-                                          pop_nodestack_var()));
-    }
+    --curClausePos;
   }
 
-  for (int i = eclauses.size() - 1; i >= 0; --i)
-    flwor->add_clause(eclauses[i]);
+  ulong numClauses = theFlworClausesStack.size();
+
+  for (ulong i = curClausePos + 1; i < numClauses; ++i)
+    flwor->add_clause(theFlworClausesStack[i]);
+
+  theFlworClausesStack.resize(curClausePos);
 
   nodestack.push(&*flwor);
-}
-
-
-void pop_wincond_vars(rchandle<WindowVars> node, flwor_wincond::vars& vars) 
-{
-  if (node != NULL) 
-  {
-    if (! node->get_next().empty())
-      vars.next = pop_nodestack_var();
-
-    if (! node->get_prev().empty())
-      vars.prev = pop_nodestack_var();
-
-    if (! node->get_curr().empty())
-      vars.curr = pop_nodestack_var();
-
-    if (node->get_posvar() != NULL)
-      vars.posvar = pop_nodestack_var();
-  }
 }
 
 
@@ -3512,6 +3261,15 @@ void end_visit (const FLWORClauseList& v, void* /*visit_state*/)
 void *begin_visit (const ForClause& v) 
 {
   TRACE_VISIT ();
+
+  if (v.is_outer())
+  {
+    if (xquery_version <= StaticContextConsts::xquery_version_1_0)
+      ZORBA_ERROR_LOC(XPST0003, loc);
+
+    theFlworClausesStack.push_back(NULL);
+  }
+
   return no_state;
 }
 
@@ -3519,6 +3277,18 @@ void *begin_visit (const ForClause& v)
 void end_visit (const ForClause& v, void* /*visit_state*/) 
 {
   TRACE_VISIT_OUT ();
+
+  if (v.is_outer())
+  {
+    ulong curClause = theFlworClausesStack.size() - 1;
+    while(theFlworClausesStack[curClause] != NULL)
+    {
+      static_cast<for_clause*>(theFlworClausesStack[curClause].getp())->set_outer(true);
+      --curClause;
+    }
+
+    theFlworClausesStack.erase(theFlworClausesStack.begin() + curClause);
+  }
 }
 
 
@@ -3553,22 +3323,38 @@ void end_visit (const VarInDecl& v, void* /*visit_state*/)
   push_scope();
 
   xqp_string varname = v.get_varname();
-  store::Item_t var_qname = sctx_p->lookup_var_qname(varname, loc);
+  store::Item_t varQName = sctx_p->lookup_var_qname(varname, loc);
+
+  xqtref_t type = (v.get_typedecl() == NULL ? NULL : pop_tstack());
+
+  var_expr_t varExpr = bind_var(loc, varQName, var_expr::for_var, type);
+  var_expr_t posVarExpr;
 
   const PositionalVar* pv = v.get_posvar();
   if (pv != NULL) 
   {
     xqp_string pvarname = pv->get_varname();
-    store::Item_t pvar_qname = sctx_p->lookup_var_qname(pvarname, loc);
-    if (pvar_qname->equals(var_qname.getp()))
+    store::Item_t pvarQName = sctx_p->lookup_var_qname(pvarname, loc);
+    if (pvarQName->equals(varQName.getp()))
       ZORBA_ERROR_LOC (XQST0089, loc);
 
-    bind_var_and_push(pv->get_location (), pvar_qname, var_expr::pos_var);
+    posVarExpr = bind_var(pv->get_location(), pvarQName, var_expr::pos_var);
   }
 
-  xqtref_t type = v.get_typedecl () == NULL ? NULL : pop_tstack ();
+  expr_t domainExpr = pop_nodestack();
 
-  bind_var_and_push(loc, var_qname, var_expr::for_var, type);
+  if (domainExpr->is_updating())
+    ZORBA_ERROR_LOC(XUST0001, loc);
+
+  wrap_in_debugger_expr(domainExpr);
+
+  for_clause* fc = new for_clause(theCCB->m_cur_sctx,
+                                  v.get_location(),
+                                  varExpr,
+                                  domainExpr,
+                                  posVarExpr);
+
+  theFlworClausesStack.push_back(fc);
 }
 
 
@@ -3635,13 +3421,29 @@ void end_visit (const VarGetsDecl& v, void* /*visit_state*/)
 
   push_scope();
 
-  xqtref_t type = v.get_typedecl() == NULL ? NULL : pop_tstack ();
+  xqtref_t type = (v.get_typedecl() == NULL ? NULL : pop_tstack());
 
   if (v.get_kind() == VarGetsDecl::let_var)
-    bind_var_and_push(loc, v.get_varname(), var_expr::let_var, type);
-  else
-    nodestack.push(&*create_var (loc, v.get_varname(), var_expr::let_var, type));
+  {
+    var_expr_t varExpr = bind_var(loc, v.get_varname(), var_expr::let_var, type);
+    expr_t domainExpr = pop_nodestack();
 
+    if (domainExpr->is_updating())
+      ZORBA_ERROR_LOC(XUST0001, loc);
+
+    wrap_in_debugger_expr(domainExpr);
+
+    let_clause* clause = new let_clause(theCCB->m_cur_sctx,
+                                        v.get_location(),
+                                        varExpr,
+                                        domainExpr);
+
+    theFlworClausesStack.push_back(clause);
+  }
+  else
+  {
+    nodestack.push(&*create_var(loc, v.get_varname(), var_expr::let_var, type));
+  }
 }
 
 
@@ -3654,8 +3456,8 @@ void end_visit (const VarGetsDecl& v, void* /*visit_state*/)
   SlidingWindowClause ::= "sliding" "window" WindowVarDecl
                           WindowStartCondition WindowEndCondition
 
-  Note: The accept() method of WindowClause translates the window conditions
-        first and then it translates the condition variable.
+  Note: The accept() method of WindowClause translates the window domain expr
+  first, then the conditions, and finally the window variable.
 ********************************************************************************/
 void *begin_visit(const WindowClause& v) 
 {
@@ -3664,24 +3466,58 @@ void *begin_visit(const WindowClause& v)
   if (xquery_version <= StaticContextConsts::xquery_version_1_0)
     ZORBA_ERROR_LOC (XPST0003, loc);
 
+  return no_state;
+}
+
+
+void intermediate_visit(const WindowClause& v, void* /*visit_state*/)
+{
+  // This method is called after translating the window domain expr, but before
+  // translating the window conditions and the window var.
+
+  // Pop the window the domain expr.
+  expr_t windowDomainExpr = pop_nodestack();
+
+  window_clause::window_t winKind = (v.get_wintype() == WindowClause::tumbling_window ?
+                                     window_clause::tumbling_window :
+                                     window_clause::sliding_window);
+
+  window_clause* clause = new window_clause(theCCB->m_cur_sctx,
+                                            v.get_location(),
+                                            winKind,
+                                            NULL,
+                                            windowDomainExpr,
+                                            NULL,
+                                            NULL);
+
+  theFlworClausesStack.push_back(clause);
+
   // Create scope for the input window-condition vars. These vars are visible
   // inside the WindowStartCondition and WindowEndCondition only, so the scope
   // created here will be destroyed as soon as we start processing the 
   // WindowVarDecl (see below).
   push_scope();
-
-  return no_state;
 }
+
 
 void end_visit(const WindowClause& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
-  // Create scope for the output window-condition vars. 
+  window_clause* windowClause = dynamic_cast<window_clause*>(
+                                theFlworClausesStack.back().getp());
+  assert(windowClause != NULL);
+
+  // Pop the window var and associate it with this window clause
+  var_expr_t windowVarExpr = pop_nodestack_var();
+  windowVarExpr->set_flwor_clause(windowClause);
+
+  // Create scope for the output window-condition vars. These vars are visible
+  // outside the window clause only.
   push_scope();
 
-  // Create var_exprs for output window-condition vars and push them to the
-  // nodestack.
+  // Create var_exprs for output window-condition vars, associate them with this
+  // window clause, and push them to the nodestack.
   rchandle<FLWORWinCond> cond;
   for (int i = 0; i < 2; i++)
   {
@@ -3689,8 +3525,117 @@ void end_visit(const WindowClause& v, void* /*visit_state*/)
     {
       rchandle<WindowVars> vars = cond->get_winvars();
       if (vars != NULL)
-        bind_winvars(*vars, false);
+        bind_wincond_vars(*vars, windowClause, false);
     }
+  }
+
+  // Collect the output window-condition vars from the nodestack and store
+  // them in a flwor_wincond::vars obj.
+  flwor_wincond::vars outputCondVarExprs[2];
+
+  for (int i = 1; i >= 0; i--) 
+  {
+    rchandle<FLWORWinCond> cond = v[i];
+    if (cond != NULL) 
+    {
+      rchandle<WindowVars> vars = cond->get_winvars();
+      pop_wincond_vars(vars, outputCondVarExprs[i]);
+    }
+  }
+
+  // Collect the input window-condition vars from the nodestack and store
+  // them in a flwor_wincond::vars obj. Also pop the condition expr and
+  // create a flwor_wincond obj for each condition.
+  flwor_wincond::vars inputCondVarExprs[2];
+  flwor_wincond_t conds[2];
+
+  for (int i = 1; i >= 0; i--) 
+  {
+    rchandle<FLWORWinCond> cond = v[i];
+    if (cond != NULL) 
+    {
+      expr_t condExpr = pop_nodestack();
+      
+      rchandle<WindowVars> vars = cond->get_winvars();
+      pop_wincond_vars(vars, inputCondVarExprs[i]);
+      
+      conds[i] = new flwor_wincond(cond->is_only(),
+                                   inputCondVarExprs[i],
+                                   outputCondVarExprs[i],
+                                   condExpr);
+    }
+  }
+
+  windowClause->set_var(windowVarExpr);
+  windowClause->set_win_start(conds[0]);
+  windowClause->set_win_stop(conds[1]);
+}
+
+
+
+void bind_wincond_vars(const WindowVars& v, flwor_clause* windowClause, bool input) 
+{
+  const QueryLoc& loc = v.get_location();
+
+  enum var_expr::var_kind varKind = (input ?
+                                     var_expr::wincond_in_var :
+                                     var_expr::wincond_out_var);
+
+  enum var_expr::var_kind pvarKind = (input ?
+                                      var_expr::wincond_in_pos_var :
+                                      var_expr::wincond_out_pos_var);
+
+  var_expr_t posVarExpr;
+  var_expr_t curVarExpr;
+  var_expr_t nextVarExpr;
+  var_expr_t prevVarExpr;
+
+  rchandle<PositionalVar> pv = v.get_posvar();
+  if (pv != NULL)
+  {
+    posVarExpr = bind_var(pv->get_location(), pv->get_varname(), pvarKind);
+    posVarExpr->set_flwor_clause(windowClause);
+    nodestack.push(posVarExpr);
+  }
+
+  if (! v.get_curr().empty())
+  {
+    curVarExpr = bind_var(loc, v.get_curr(), varKind);
+    curVarExpr->set_flwor_clause(windowClause);
+    nodestack.push(curVarExpr);
+  }
+
+  if (! v.get_prev().empty())
+  {
+    prevVarExpr = bind_var(loc, v.get_prev(), varKind);
+    prevVarExpr->set_flwor_clause(windowClause);
+    nodestack.push(prevVarExpr);
+  }
+
+  if (! v.get_next().empty())
+  {
+    nextVarExpr = bind_var(loc, v.get_next(), varKind);
+    nextVarExpr->set_flwor_clause(windowClause);
+    nodestack.push(nextVarExpr);
+  }
+}
+
+
+void pop_wincond_vars(rchandle<WindowVars> node, flwor_wincond::vars& vars) 
+{
+  if (node != NULL) 
+  {
+    if (! node->get_next().empty())
+      vars.next = pop_nodestack_var();
+
+    if (! node->get_prev().empty())
+      vars.prev = pop_nodestack_var();
+
+    if (! node->get_curr().empty())
+      vars.curr = pop_nodestack_var();
+
+    if (node->get_posvar() != NULL)
+      vars.posvar = pop_nodestack_var();
   }
 }
 
@@ -3712,9 +3657,10 @@ void end_visit (const WindowVarDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  xqtref_t type = v.get_typedecl () == NULL ? NULL : pop_tstack ();
-
+  // Create scope for the window var
   push_scope();
+
+  xqtref_t type = (v.get_typedecl() == NULL ? NULL : pop_tstack());
 
   bind_var_and_push(loc, v.get_varname(), var_expr::win_var, type);
 }
@@ -3753,57 +3699,21 @@ void end_visit(const WindowVars& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  // Create var_exprs for input window-condition vars and push them to the
-  // nodestack.
-  bind_winvars(v, true);
-}
+  // Create var_exprs for the input window-condition vars, associate them with
+  // the current window clause, and push them to the nodestack.
 
-
-void bind_winvars(const WindowVars& v, bool input) 
-{
-  const QueryLoc& loc = v.get_location();
-
-  enum var_expr::var_kind varKind = (input ?
-                                     var_expr::wincond_in_var :
-                                     var_expr::wincond_out_var);
-
-  enum var_expr::var_kind pvarKind = (input ?
-                                      var_expr::wincond_in_pos_var :
-                                      var_expr::wincond_out_pos_var);
-
-  rchandle<PositionalVar> pv = v.get_posvar();
-  if (pv != NULL)
-  {
-    bind_var_and_push(pv->get_location(), pv->get_varname(), pvarKind);
-  }
-
-  if (! v.get_curr().empty())
-    bind_var_and_push(loc, v.get_curr(), varKind);
-
-  if (! v.get_prev().empty())
-    bind_var_and_push(loc, v.get_prev(), varKind);
-
-  if (! v.get_next().empty())
-    bind_var_and_push(loc, v.get_next(), varKind);
+  flwor_clause* windowClause = theFlworClausesStack.back();
+  bind_wincond_vars(v, windowClause, true);
 }
 
 
 
 /*******************************************************************************
   GroupByClause ::= "group" "by" GroupingSpecList
-
-  On return from the end_visit() method, the nodestack contains a pair of 
-  var_exprs for each var X defined by any clauses appearing before this
-  GroupByClause. The first var_expr in the pair corresponds to the input-stream
-  var X, and the second var_expr corresponds to the associated output-stream
-  var. The pairs for the grouping vars appear first (i.e., at the top of the
-  odestack), followed by the pairs for the non-grouping vars.
 ********************************************************************************/
 void *begin_visit(const GroupByClause& v) 
 {
   TRACE_VISIT ();
-
-  nodestack.push(NULL);
 
   const FLWORExpr& flwor = *v.get_flwor ();
   const FLWORClauseList& clauses = *flwor.get_clause_list ();
@@ -3814,27 +3724,31 @@ void *begin_visit(const GroupByClause& v)
 
   // Collect the var_exprs for all the vars that have been defined by all
   // clauses before this GroupByClause.
-  collect_flwor_vars (flwor, all_vars, &*clauses [0], &v, false);
+  collect_flwor_vars (flwor, all_vars, &*clauses[0], &v, false);
 
   // Collect the var_exprs for all the grouping vars specified in this GroupByClause.
   GroupSpecList* lList = v.get_spec_list();
   for (size_t i = 0; i < lList->size(); ++i) 
   {
-    GroupSpec* lSpec = (*lList)[i];
-    string varname = lSpec->get_var_name();
-    const var_expr *ve = lookup_var(varname);
+    GroupSpec* spec = (*lList)[i];
+    string varname = spec->get_var_name();
+    const var_expr* ve = lookup_var(varname);
     if (ve == NULL)
       ZORBA_ERROR_LOC_PARAM( XPST0008, loc, varname, "");
+
     group_vars.insert(ve);
   }
 
   // The non-grouping vars are the vars in the difference of the 2 sets above.
-  set_difference (all_vars.begin(), all_vars.end(),
-                  group_vars.begin(), group_vars.end(),
-                  inserter(non_group_vars, non_group_vars.begin()));
+  set_difference(all_vars.begin(), all_vars.end(),
+                 group_vars.begin(), group_vars.end(),
+                 inserter(non_group_vars, non_group_vars.begin()));
 
   // For each var_expr X that does not appear in the group-by clause, create
   // a new var_exp ngX and push ngX and X in the node stack.
+
+  nodestack.push(NULL);
+
   for (set<const var_expr *>::iterator i = non_group_vars.begin();
        i != non_group_vars.end();
        ++i)
@@ -3852,7 +3766,67 @@ void *begin_visit(const GroupByClause& v)
 
 void end_visit (const GroupByClause& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
+
+  // At this point, the nodestack contains a pair of var_exprs for each var X
+  // defined by any clauses appearing before this GroupByClause. The first
+  // var_expr in the pair corresponds to the input-stream var X, and the second
+  // var_expr corresponds to the associated output-stream var. The pairs for
+  // the grouping vars appear first (i.e., at the top of the odestack), followed
+  // by the pairs for the non-grouping vars.
+
+  const GroupSpecList& groupSpecs = *v.get_spec_list();
+  size_t numGroupSpecs = groupSpecs.size();
+
+  vector<string> collations;
+  group_clause::rebind_list_t grouping_rebind;
+  group_clause::rebind_list_t nongrouping_rebind;
+  varref_t input_var;
+  varref_t output_var;
+
+  for (int i = numGroupSpecs - 1; i >= 0; i--) 
+  {
+    const GroupSpec& groupSpec = *groupSpecs[i];
+
+    output_var = pop_nodestack_var();
+    input_var = pop_nodestack_var();
+
+    if (groupSpec.group_coll_spec() != NULL)
+      collations.push_back(groupSpec.group_coll_spec()->get_uri());
+    else
+      collations.push_back ("");
+
+    wrapper_expr_t input_wrapper;
+    input_wrapper = new wrapper_expr(theCCB->m_cur_sctx,
+                                     v.get_location(),
+                                     static_cast<expr*>(input_var.getp()));
+
+    grouping_rebind.push_back(pair<wrapper_expr_t, var_expr_t>(input_wrapper,
+                                                               output_var));
+  }
+
+  reverse(collations.begin(), collations.end());
+  reverse(grouping_rebind.begin(), grouping_rebind.end());
+
+  while (NULL != (output_var = pop_nodestack_var())) 
+  {
+    input_var = pop_nodestack_var();
+
+    wrapper_expr_t input_wrapper;
+    input_wrapper = new wrapper_expr(theCCB->m_cur_sctx,
+                                     v.get_location(),
+                                     static_cast<expr*>(input_var.getp()));
+
+    nongrouping_rebind.push_back(pair<wrapper_expr_t, var_expr_t>(input_wrapper,
+                                                                  output_var));
+  }
+
+  group_clause* clause = new group_clause(theCCB->m_cur_sctx,
+                                          v.get_location(),
+                                          grouping_rebind,
+                                          nongrouping_rebind,
+                                          collations);
+  theFlworClausesStack.push_back(clause);
 }
 
 
@@ -3882,12 +3856,13 @@ void *begin_visit(const GroupSpec& v)
   if (e == NULL)
     ZORBA_ERROR_LOC_PARAM(XPST0008, loc, v.get_var_name(), "");
 
-  push_scope();
-
   // Create a new var_expr gX, corresponding to the input-stream var X that 
   // is referenced by this group spec. gX represents X in the output stream.
   // Push the var_exprs for both X and gX into the nodestack.
+  push_scope();
+
   nodestack.push(rchandle<expr>(e));
+
   bind_var_and_push(loc, v.get_var_name(), var_expr::groupby_var);
 
   return no_state;
@@ -3927,6 +3902,46 @@ void *begin_visit(const OrderByClause& v)
 void end_visit(const OrderByClause& v, void* /*visit_state*/) 
 {
   TRACE_VISIT_OUT();
+
+  const OrderSpecList& orderSpecs = *v.get_spec_list();
+  unsigned numOrderSpecs = orderSpecs.size();
+
+  std::vector<order_modifier> modifiers(numOrderSpecs);
+  std::vector<expr_t> orderExprs(numOrderSpecs);
+
+  for (int i = numOrderSpecs - 1; i >= 0; --i) 
+  {
+    OrderSpec* spec = orderSpecs[i];
+    OrderModifier* mod = spec->get_modifier();
+
+    ParseConstants::dir_spec_t dirSpec = ParseConstants::dir_ascending;
+    if (mod && mod->get_dir_spec() != NULL)
+      dirSpec = mod->get_dir_spec()->get_dir_spec();
+
+    StaticContextConsts::order_empty_mode_t emptySpec = sctx_p->order_empty_mode();
+    if (mod && mod->get_empty_spec() != NULL)
+      emptySpec = mod->get_empty_spec()->get_empty_order_spec();
+
+    string collation = sctx_p->default_collation_uri();
+    if (mod && mod->get_collation_spec() != NULL)
+      collation = mod->get_collation_spec()->get_uri();
+    if (! sctx_p->has_collation_uri(collation))
+      ZORBA_ERROR_LOC(XQST0076, loc);
+
+    expr_t orderExpr = pop_nodestack();
+    if (orderExpr->is_updating())
+      ZORBA_ERROR_LOC(XUST0001, loc);
+
+    modifiers[i] = order_modifier(dirSpec, emptySpec, collation);
+    orderExprs[i] = orderExpr;
+  }
+
+  orderby_clause* clause = new orderby_clause(theCCB->m_cur_sctx,
+                                              v.get_location(),
+                                              v.get_stable_bit(),
+                                              modifiers,
+                                              orderExprs);
+  theFlworClausesStack.push_back(clause);
 }
 
 
@@ -4026,6 +4041,19 @@ void *begin_visit (const WhereClause& v)
 void end_visit (const WhereClause& v, void* /*visit_state*/) 
 {
   TRACE_VISIT_OUT ();
+
+  expr_t whereExpr = pop_nodestack();
+
+  if (whereExpr->is_updating())
+    ZORBA_ERROR_LOC(XUST0001, loc);
+
+  wrap_in_debugger_expr(whereExpr);
+
+  where_clause* clause = new where_clause(theCCB->m_cur_sctx,
+                                          v.get_location(),
+                                          whereExpr);
+
+  theFlworClausesStack.push_back(clause);
 }
 
 
@@ -4045,7 +4073,14 @@ void *begin_visit (const CountClause& v)
 void end_visit (const CountClause& v, void* /*visit_state*/) 
 {
   TRACE_VISIT_OUT ();
-  bind_var_and_push (loc, v.get_varname (), var_expr::count_var, NULL);
+
+  var_expr_t varExpr = bind_var(loc, v.get_varname(), var_expr::count_var, NULL);
+
+  count_clause* clause = new count_clause(theCCB->m_cur_sctx,
+                                          v.get_location(), 
+                                          varExpr);
+
+  theFlworClausesStack.push_back(clause);
 }
 
 
@@ -4067,7 +4102,14 @@ void end_visit (const CountClause& v, void* /*visit_state*/)
 ********************************************************************************/
 void *begin_visit (const QuantifiedExpr& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
+
+  rchandle<flwor_expr> flwor(new flwor_expr(theCCB->m_cur_sctx, loc, false));
+
+  flwor->set_return_expr(new const_expr(theCCB->m_cur_sctx, loc, true));
+
+  nodestack.push(flwor);
+
   return no_state;
 }
 
@@ -4076,42 +4118,35 @@ void end_visit (const QuantifiedExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  rchandle<flwor_expr> flwor(new flwor_expr(theCCB->m_cur_sctx, loc, false));
-
-  flwor->set_return_expr(new const_expr(theCCB->m_cur_sctx, loc, true));
-
-  rchandle<expr> sat = pop_nodestack();
+  rchandle<expr> testExpr = pop_nodestack();
 
   if (v.get_qmode() == ParseConstants::quant_every) 
   {
     rchandle<fo_expr> uw = new fo_expr(theCCB->m_cur_sctx,
                                        v.get_expr()->get_location(),
                                        LOOKUP_FN("fn", "not", 1));
-    uw->add(sat);
-    sat = uw.getp();
+    uw->add(testExpr);
+    testExpr = uw.getp();
   }
-
-  vector<expr_t> vars_vals(2 * v.get_decl_list()->size());
-
-  generate(vars_vals.rbegin(), vars_vals.rend(), stack_to_generator(nodestack));
 
   for (int i = 0; i < v.get_decl_list()->size(); ++i) 
   {
     pop_scope();
-    varref_t ve = vars_vals[2 * i + 1].cast<var_expr>();
-    expr_t domainExpr = vars_vals[2 * i];
-    flwor->add_clause(wrap_in_forclause (domainExpr, ve, NULL));
-}
+  }
 
-  flwor->add_where(sat);
+  flwor_expr_t flworExpr = dynamic_cast<flwor_expr*>(pop_nodestack().getp());
+  ZORBA_ASSERT(flworExpr != NULL);
+
+  flworExpr->add_where(testExpr);
 
   rchandle<fo_expr> quant = new fo_expr(theCCB->m_cur_sctx,
                                         loc,
                                         v.get_qmode() == ParseConstants::quant_every ?
                                         LOOKUP_FN("fn", "empty", 1) :
                                         LOOKUP_FN("fn", "exists", 1));
-  quant->add (&*flwor);
-  nodestack.push (&*quant);
+  quant->add(&*flworExpr);
+
+  nodestack.push(&*quant);
 }
 
 
@@ -4143,13 +4178,19 @@ void end_visit (const QVarInDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
-  push_scope ();
+  push_scope();
   xqtref_t type;
-  if (v.get_typedecl () != NULL)
-    type = pop_tstack ();
+  if (v.get_typedecl() != NULL)
+    type = pop_tstack();
 
-  bind_var_and_push (loc, v.get_name (), var_expr::for_var, type);
-  }
+  expr_t domainExpr = pop_nodestack();
+  var_expr_t varExpr = bind_var(loc, v.get_name(), var_expr::for_var, type);
+
+  flwor_expr* flworExpr = dynamic_cast<flwor_expr*>(nodestack.top().getp());
+  ZORBA_ASSERT(flworExpr != NULL);
+
+  flworExpr->add_clause(wrap_in_forclause(domainExpr, varExpr, NULL));
+}
 
 
 /*******************************************************************************
@@ -5163,7 +5204,7 @@ void end_visit (const PathExpr& v, void* /*visit_state*/)
 
   ZORBA_ASSERT(arg1 == NULL);
 
-#if 0
+#ifdef NODE_SORT_OPT
   NodeSortInfo& nodeSortInfo = theNodeSortStack.top();
 
   if (!nodeSortInfo.theSingleInput ||
@@ -5222,18 +5263,24 @@ void* begin_visit(const RelativePathExpr& v)
   if (pathExpr->size() == 0) 
   {
     // If the path expr is of the form "axis::test/...." or "axis::test[pred]/...."
+    // then the input expr to the this path expr is "treat . as node()"
     if (axisStep != NULL) 
     {
-      pathExpr->add_back(DOT_VAR);
+      expr_t sourceExpr = new treat_expr(theCCB->m_cur_sctx,
+                                         loc,
+                                         DOT_VAR,
+                                         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+                                         XPTY0020);
+      pathExpr->add_back(sourceExpr);
 
       if (axisStep->get_predicate_list() == NULL) 
       {
-        // "axis::test/...." ==> push [ pathExpr(.) ] to the nodestack. 
+        // "axis::test/...." ==> push [ pathExpr(sourceExpr) ] to the nodestack. 
         nodestack.push(pathExpr);
       }
       else 
       {
-        // "axis::test[pred]/...." ==> push [ for $$dot at $$pos in pathExpr(.) ]
+        // "axis::test[pred]/...." ==> push [ for $dot at $pos in pathExpr(sourceExpr.) ]
         // to the nodestack.
         rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(pathExpr, false);
         nodestack.push(flworExpr.getp());
@@ -5293,15 +5340,27 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
     axis_step_expr* axisExpr = stepExpr.dyn_cast<axis_step_expr>();
     ZORBA_ASSERT(axisExpr != NULL || pathExpr->size() == 0);
 
-#if 0
-    if (pathExpr->size() == 0 && 
-        TypeOps::type_max_cnt(*stepExpr->return_type(sctx_p)) > 1)
+#ifdef NODE_SORT_OPT
+    if (pathExpr->size() == 0) 
     {
-      theNodeSortStack.top().theSingleInput = false;
-    }
-#endif
+      expr_t sourceExpr = new treat_expr(theCCB->m_cur_sctx,
+                                         stepExpr->get_loc(),
+                                         stepExpr,
+                                         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+                                         XPTY0019);
 
+      if (TypeOps::type_max_cnt(*sourceExpr->return_type(sctx_p)) > 1)
+        theNodeSortStack.top().theSingleInput = false;
+
+      pathExpr->add_back(sourceExpr);
+    }
+    else
+    {
+      pathExpr->add_back(stepExpr);
+    }
+#else
     pathExpr->add_back(stepExpr);
+#endif
   }
 
   // Else, step-i was not an axis step, or it contained predicates. In this
@@ -7909,6 +7968,13 @@ void end_visit (const RevalidationDecl& v, void* /*visit_state*/) {
 void *begin_visit (const TransformExpr& v) 
 {
   TRACE_VISIT ();
+
+  transform_expr* transformExpr = new transform_expr(theCCB->m_cur_sctx,
+                                                     loc,
+                                                     NULL,
+                                                     NULL);
+  nodestack.push(transformExpr);
+
   return no_state;
 }
 
@@ -7916,40 +7982,31 @@ void end_visit (const TransformExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
-  expr_t lReturn = pop_nodestack();
-  if (lReturn->is_updating()) 
+  expr_t returnExpr = pop_nodestack();
+  if (returnExpr->is_updating()) 
   {
     ZORBA_ERROR_LOC(XUST0001, loc);
   }
 
-  expr_t lModify = pop_nodestack();
-  if (! lModify->is_updating_or_vacuous ()) 
+  expr_t modifyExpr = pop_nodestack();
+  if (! modifyExpr->is_updating_or_vacuous()) 
   {
     ZORBA_ERROR_LOC(XUST0002, loc);
   }
 
-  std::auto_ptr<transform_expr> lTransform(new transform_expr(theCCB->m_cur_sctx, loc, lModify, lReturn));
+  transform_expr* transformExpr = dynamic_cast<transform_expr*>(nodestack.top().getp());
+  assert(transformExpr != NULL);
+
+  transformExpr->setModifyExpr(modifyExpr);
+  transformExpr->setReturnExpr(returnExpr);
 
   const size_t lSize = v.get_var_list()->size();
   for (size_t i = 0; i < lSize; ++i)
   {
-    expr_t lExpr = pop_nodestack();
-    if (lExpr->is_updating()) 
-    {
-      ZORBA_ERROR_LOC(XUST0001, loc);
-    }
-
-    varref_t lVarExpr = pop_nodestack_var ();
-    lVarExpr->set_kind(var_expr::copy_var);
-
-    copy_clause* copyClause = new copy_clause(lVarExpr, lExpr);
-    lTransform->add_front(copyClause);
-
     pop_scope();
   }
-
-  nodestack.push(lTransform.release());
 }
+
 
 void *begin_visit (const CopyVarList& v) 
 {
@@ -7962,17 +8019,35 @@ void end_visit (const CopyVarList& v, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
 }
 
+
 void *begin_visit (const VarBinding& v) 
 {
-  TRACE_VISIT ();
-  push_scope ();
-  bind_var_and_push (loc, v.get_varname (), var_expr::copy_var);
+  TRACE_VISIT();
+
+  push_scope();
+  bind_var_and_push(loc, v.get_varname(), var_expr::copy_var);
+
   return no_state;
 }
 
 void end_visit (const VarBinding& v, void*) 
 {
   TRACE_VISIT_OUT ();
+
+  expr_t sourceExpr = pop_nodestack();
+  if (sourceExpr->is_updating()) 
+  {
+    ZORBA_ERROR_LOC(XUST0001, loc);
+  }
+
+  var_expr_t varExpr = pop_nodestack_var();
+
+  transform_expr* transformExpr = dynamic_cast<transform_expr*>(nodestack.top().getp());
+  assert(transformExpr != NULL);
+
+  copy_clause* copyClause = new copy_clause(varExpr, sourceExpr);
+
+  transformExpr->add_back(copyClause);
 }
 
 
