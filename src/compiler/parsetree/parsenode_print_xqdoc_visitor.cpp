@@ -28,18 +28,6 @@ using namespace std;
 
 namespace zorba {
 
-#ifndef NDEBUG
-#define INDENT(os)  os << std::string(theIndent, ' ')
-#define INDENT_INC  theIndent += 2
-#define INDENT_DEC  theIndent -= 2
-#define NL(os) os << std::endl
-#else
-#define INDENT(os)
-#define INDENT_INC
-#define INDENT_DEC
-#define NL(os)
-#endif
-
 class ParseNodePrintXQDocVisitor : public parsenode_visitor {
 
 private:
@@ -74,12 +62,12 @@ private:
     if(!aComment->getDescription().empty() || lAnnotations.begin()!=lAnnotations.end() ||
         aComment->hasVersion() || aComment->hasReturn() || aComment->isDeprecated())
     {
-      os << "<xqdoc:comment>" << endl;
-      INDENT_INC; INDENT(os);
+      os << "<xqdoc:comment>" ;
+       
       if(!aComment->getDescription().empty())
       {
         os << "<xqdoc:description><![CDATA[" << aComment->getDescription();
-        os << "]]></xqdoc:description>" << endl;
+        os << "]]></xqdoc:description>" ;
       }
       for(lIt = lAnnotations.begin(); lIt != lAnnotations.end(); ++lIt)
       {
@@ -89,40 +77,40 @@ private:
         {
           lNamespace = "zorbadoc";
         }
-        INDENT(os);
+        
         os << "<" << lNamespace << ":" << lAnnotation.getName() << "><![CDATA[" << lAnnotation.getValue();
-        os << "]]></" << lNamespace << ":" << lAnnotation.getName() << '>';  NL(os);
+        os << "]]></" << lNamespace << ":" << lAnnotation.getName() << '>';  
 
       }
       
       if(aComment->hasVersion())
       {
-        INDENT(os);
+        
         os << "<xqdoc:version>" << aComment->getVersion() << "</xqdoc:version>";
-        NL(os);
+        
       }
     
       if(aComment->hasReturn())
       {
-        INDENT(os);
+        
         os << "<xqdoc:return>" << aComment->getReturn() << "</xqdoc:return>";
-        NL(os);
+        
       }
     
       if(aComment->isDeprecated())
       {
-        INDENT(os);
+        
         os << "<xqdoc:deprecated";
         if(aComment->getDeprecatedComment().empty())
         {
-          os << " />"; NL(os);
+          os << " />"; 
         } else {
-          os << ">" << aComment->getDeprecatedComment() << "</xqdoc:deprecated>"; NL(os);
+          os << ">" << aComment->getDeprecatedComment() << "</xqdoc:deprecated>"; 
         }
       }
-      INDENT_DEC;
-      INDENT(os);
-      os << "</xqdoc:comment>"; NL(os);
+      
+      
+      os << "</xqdoc:comment>"; 
    }
   }
 
@@ -147,46 +135,46 @@ ParseNodePrintXQDocVisitor(ostream &aStream, const string& aFileName)
 void print(const parsenode* p, const store::Item_t& aDateTime)
 {
     string lContent;
-    os << "<?xml version='1.0' ?>" << endl;
-    os << "<xqdoc:xqdoc xmlns:xqdoc='http://www.xqdoc.org/1.0' xmlns:zorbadoc='http://www.zorba-xquery.com/zorba/doc'>" << endl;
-    INDENT_INC; INDENT(os);
-    os << "<xqdoc:control>" << endl;
-    INDENT_INC;
-    INDENT(os); os << "<xqdoc:date>" << aDateTime->getStringValue() << "</xqdoc:date>" << endl;
-    INDENT(os); os << "<xqdoc:version>1.0</xqdoc:version>" << endl;
-    INDENT_DEC; INDENT(os);
-    os << "</xqdoc:control>" << endl;
+    os << "<?xml version='1.0' ?>" ;
+    os << "<xqdoc:xqdoc xmlns:xqdoc='http://www.xqdoc.org/1.0' xmlns:zorbadoc='http://www.zorba-xquery.com/zorba/doc'>" ;
+     
+    os << "<xqdoc:control>" ;
+    
+     os << "<xqdoc:date>" << aDateTime->getStringValue() << "</xqdoc:date>" ;
+     os << "<xqdoc:version>1.0</xqdoc:version>" ;
+     
+    os << "</xqdoc:control>" ;
     p->accept(*this);
     lContent = theImports.str();
     if(!lContent.empty())
     { 
-      INDENT(os);
-      os << "<xqdoc:imports>" << std::endl;
+      
+      os << "<xqdoc:imports>" ;
       os << lContent;
-      INDENT(os);
-      os << "</xqdoc:imports>" << std::endl;
+      
+      os << "</xqdoc:imports>" ;
     }
     lContent = theVariables.str();
     if(!lContent.empty())
     {
-      INDENT(os);
-      os << "<xqdoc:variables>" << std::endl;
-      INDENT(os);
+      
+      os << "<xqdoc:variables>" ;
+      
       os << lContent;
-      INDENT(os);
-      os << "</xqdoc:variables>" << std::endl;
+      
+      os << "</xqdoc:variables>" ;
     }
     lContent = theFunctions.str();
     if(!lContent.empty())
     {
-      INDENT(os);
-      os << "<xqdoc:functions>" << std::endl;
-      INDENT(os);
+      
+      os << "<xqdoc:functions>" ;
+      
       os << lContent;
-      INDENT(os);
-      os << "</xqdoc:functions>" << std::endl;
+      
+      os << "</xqdoc:functions>" ;
     }
-    os << "</xqdoc:xqdoc>" << std::endl;
+    os << "</xqdoc:xqdoc>" ;
 }
 
 #define IDS \
@@ -214,41 +202,34 @@ XQDOC_NO_BEGIN_END_TAG (GeneralComp)
 XQDOC_NO_BEGIN_END_TAG (MainModule)
 
 void* begin_visit(const ModuleDecl& /*n*/) {
-  INDENT(os);
-  INDENT_INC;
+  
+  
   os << "<xqdoc:module type='library'>";
-  INDENT_INC; NL(os);
+   
   return no_state;
 }
 
 void end_visit(const ModuleDecl& n, void* /*visit_state*/) {
-  INDENT(os);
-  os << "<xqdoc:uri>" << n.get_target_namespace() << "</xqdoc:uri>" << endl;
-  INDENT(os);
-  os << "<xqdoc:name>" << theFileName << "</xqdoc:name>" << endl;
-  INDENT(os);
+  
+  os << "<xqdoc:uri>" << n.get_target_namespace() << "</xqdoc:uri>";
+  
+  os << "<xqdoc:name>" << theFileName << "</xqdoc:name>";
+  
   print_comment(os, n.getComment());
-  INDENT_DEC;
-  INDENT_DEC;
-  INDENT(os);
-  os << "</xqdoc:module>" << endl;
+  
+  
+  
+  os << "</xqdoc:module>" ;
 }
 
 void* begin_visit(const FunctionDecl& /*n*/) {
-  INDENT_INC;
-  INDENT(theFunctions);
-  INDENT_INC;
   theFunctions << "<xqdoc:function>";
-  NL(theFunctions);
   return no_state;
 }
 
 void end_visit(const FunctionDecl& n, void* /*visit_state*/) {
-  INDENT(theFunctions);
   print_comment(theFunctions, n.getComment());
-  INDENT(theFunctions);
-  theFunctions << "<xqdoc:name>" << n.get_name()->get_localname() << "</xqdoc:name>" << endl;
-  INDENT(theFunctions);
+  theFunctions << "<xqdoc:name>" << n.get_name()->get_localname() << "</xqdoc:name>";
   switch(n.get_type())
   {
     case ParseConstants::fn_read:
@@ -271,18 +252,16 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/) {
       theFunctions << "<zorbadoc:sequential />";
       theFunctions << "<zorbadoc:external />";
   }
-  theFunctions << endl; 
-  INDENT(theFunctions); 
+  theFunctions ; 
   theFunctions << "<xqdoc:signature><![CDATA["; 
   FunctionDecl lFunctionDeclClone(n.get_location(), n.get_name(), n.get_paramlist(), n.get_return_type(), 0, n.get_type());
   FunctionIndex lIndex = print_parsetree_xquery(theFunctions, &lFunctionDeclClone);
-  theFunctions << "]]></xqdoc:signature>" << endl;
+  theFunctions << "]]></xqdoc:signature>" ;
   
-  INDENT(theFunctions);
   if(n.get_paramlist())
   {
-    theFunctions << "<zorbadoc:parameters>" << endl;
-    INDENT_INC;
+    theFunctions << "<zorbadoc:parameters>" ;
+    
     const rchandle<ParamList> lParamList = n.get_paramlist();
     for (vector<rchandle<Param> >::const_iterator it = lParamList->begin();
             it != lParamList->end(); ++it)
@@ -293,74 +272,53 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/) {
       size_t lStart = lFnName.find(' ');
       if(lStart != string::npos)
       {
-        INDENT(theFunctions);
         const char lOccurence = lFnName.at(lFnName.length()-1);
         string lType = lFnName.substr(lStart+4);
-        theFunctions << "<zorbadoc:parameter name='" << lFnName.substr(0, lStart) << "' ";//type='"<< lFnName.substr(lStart+4) << "' />" << endl;
+        theFunctions << "<zorbadoc:parameter name='" << lFnName.substr(0, lStart) << "' ";//type='"<< lFnName.substr(lStart+4) << "' />" ;
         if(lOccurence == '*' || lOccurence == '?' || lOccurence == '+')
         {
           theFunctions << "type='" << lType.substr(0, lType.length()-1) << "' occurrence='" << lOccurence << "' "; 
         } else {
           theFunctions << "type='" << lType << "' "; 
         }
-        theFunctions << "/>" << endl;;
+        theFunctions << "/>" ;;
       } else {
-        INDENT(theFunctions);
         theFunctions << "<zorbadoc:parameter name='" << lFnName << "' />";
       }
     }
-    INDENT_DEC;
-    INDENT(theFunctions);
-    theFunctions << "</zorbadoc:parameters>" << endl;;
+    
+    theFunctions << "</zorbadoc:parameters>" ;;
   } else {
-    theFunctions << "<zorbadoc:parameters />" << endl;
+    theFunctions << "<zorbadoc:parameters />" ;
   }
 
-  INDENT_DEC;
-  INDENT_DEC;
-  INDENT(theFunctions);
-  theFunctions << "</xqdoc:function>" << endl;
+  theFunctions << "</xqdoc:function>" ;
 }
 
 void* begin_visit(const VarDecl&) {
-  INDENT_INC;
-  INDENT(theVariables);
-  INDENT_INC;
   theVariables << "<xqdoc:variable>";
-  NL(theVariables);
   return no_state;
 }
 
 void end_visit(const VarDecl& n, void*) {
-  INDENT(theVariables);
-  theVariables << "<xqdoc:uri>" << getLocalName(n.get_varname()) << "</xqdoc:uri>" << endl;
-  INDENT(theVariables);
+  theVariables << "<xqdoc:uri>" << getLocalName(n.get_varname()) << "</xqdoc:uri>" ;
   print_comment(theVariables, n.getComment());
-  INDENT_DEC;
-  INDENT_DEC;
-  INDENT(theVariables);
-  theVariables << "</xqdoc:variable>" << endl;
+  
+  theVariables << "</xqdoc:variable>" ;
 }
 
 
 void* begin_visit(const ModuleImport&) {
-  INDENT_INC;
-  INDENT(theImports);
-  INDENT_INC;
+  
   theImports << "<xqdoc:import>";
-  NL(theImports);
   return no_state;
 }
 
 void end_visit(const ModuleImport& n, void*) {
-  INDENT(theImports);
-  theImports << "<xqdoc:uri>" << n.get_uri() << "</xqdoc:uri>" << endl;
-  INDENT(theImports);
+  theImports << "<xqdoc:uri>" << n.get_uri() << "</xqdoc:uri>";
   print_comment(theImports, n.getComment());
-  INDENT_DEC;
-  INDENT_DEC;
-  INDENT(theImports);
-  theImports << "</xqdoc:import>" << endl;
+  
+  theImports << "</xqdoc:import>";
 }
 
 XQDOC_NO_BEGIN_END_TAG (SequenceType)
