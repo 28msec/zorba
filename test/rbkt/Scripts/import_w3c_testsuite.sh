@@ -1,15 +1,33 @@
 #!/bin/bash
 
 WORK=/tmp
-test "$1" = "--workdir" && { WORK="$2"; shift; shift; }
+while [ $# -gt 1 ]
+do
+  # --workdir to specify a working directory to download/unzip XQTS
+  test "$1" = "--workdir" && { WORK="$2"; shift; shift; }
+
+  # --builddir to specify Zorba build directory (default: srcdir/build)
+  test "$1" = "--builddir" && { BUILD="$2"; shift; shift; }
+done
 
 SRC="$1"
+if [ -z "$BUILD" ]; then
+  BUILD="$SRC/build"
+fi
 
 if test ! -d "$SRC/test/zorbatest"; then
- echo "Invalid zorba repository $SRC"
- echo 'Arguments: zorba_repository'
- echo 'where zorba_repository is the top-level SVN working copy'
- exit 1
+  echo "Invalid zorba repository $SRC"
+  echo 'Arguments: zorba_repository'
+  echo 'where zorba_repository is the top-level SVN working copy'
+  exit 1
+fi
+
+if test ! -d "$BUILD"; then
+  echo "Invalid build directory $BUILD"
+  echo "Be sure to finish building Zorba before running this script"
+  echo "If your build directory is not $SRC/build then run with args:"
+  echo "   --builddir /path/to/builddir"
+  exit 1
 fi
 
 ZIP=/tmp/XQTS_1_0_2.zip
@@ -39,19 +57,17 @@ mkdir -p "$SRC/test/rbkt/Queries/w3c_testsuite/TestSources/"
 q=`mktemp $WORK/rwts.XXXXXX`
 cat >$q <<"EOF"
 declare default element namespace "http://www.w3.org/2005/02/query-test-XQTSCatalog";
-declare option saxon:output "omit-xml-declaration=yes";
 string-join (
-  for $sch in //schema 
+  for $sch in //schema
   return concat ($sch/@uri, "=", $sch/@FileName), "
 ")
 EOF
 echo 'Processing URI of catalog (schemas)...'
-$SRC/test/zorbatest/xquery -s XQTSCatalog.xml -o:$SRC/test/rbkt/Queries/w3c_testsuite/TestSources/uri.txt $q
+$BUILD/bin/zorba --context-item XQTSCatalog.xml --omit-xml-declaration -o $SRC/test/rbkt/Queries/w3c_testsuite/TestSources/uri.txt --as-files --query $q
 
 
 cat >$q <<"EOF"
 declare default element namespace "http://www.w3.org/2005/02/query-test-XQTSCatalog";
-declare option saxon:output "omit-xml-declaration=yes";
 string-join (distinct-values (
   for $mod in //sources/module
   for $tmod in //test-case/module [text () = $mod/@ID]
@@ -60,22 +76,21 @@ string-join (distinct-values (
 ")
 EOF
 echo 'Processing URI of catalog (modules)...'
-$SRC/test/zorbatest/xquery -s XQTSCatalog.xml -o:$SRC/test/rbkt/Queries/w3c_testsuite/TestSources/module.txt $q 
+$BUILD/bin/zorba --context-item XQTSCatalog.xml --omit-xml-declaration -o $SRC/test/rbkt/Queries/w3c_testsuite/TestSources/module.txt --as-files --query $q
+
 
 cat >$q <<"EOF"
 declare default element namespace "http://www.w3.org/2005/02/query-test-XQTSCatalog";
-declare option saxon:output "omit-xml-declaration=yes";
 for $t in //collection
 return concat ($t/@ID, "=", string-join( for $x in $t/input-document return fn:concat( "$RBKT_SRC_DIR/Queries/w3c_testsuite/TestSources/", $x, ".xml"), ";" ), "
 ")
 EOF
 echo 'Processing URI of catalog (collections)...'
-$SRC/test/zorbatest/xquery -s XQTSCatalog.xml -o:$SRC/test/rbkt/Queries/w3c_testsuite/TestSources/collection.txt $q
+$BUILD/bin/zorba --context-item XQTSCatalog.xml --omit-xml-declaration -o $SRC/test/rbkt/Queries/w3c_testsuite/TestSources/collection.txt --as-files --query $q
 
 
 cat >$q <<"EOF"
 declare default element namespace "http://www.w3.org/2005/02/query-test-XQTSCatalog";
-declare option saxon:output "omit-xml-declaration=yes";
 string-join ((
 for $sch in //schema return concat ("%uri ", $sch/@uri, " ", $sch/@FileName), 
 for $src in //source return concat ("%src ", $src/@ID, " ", $src/@FileName),
@@ -111,7 +126,7 @@ string-join ($tc/expected-error/text(), ";")
 EOF
 
 echo 'Processing catalog...'
-$SRC/test/zorbatest/xquery -s XQTSCatalog.xml $q | tee /tmp/xq-res.txt | perl -e '
+$BUILD/bin/zorba --context-item XQTSCatalog.xml --omit-xml-declaration --as-files --query $q | tee /tmp/xq-res.txt | perl -e '
 use strict;
 use File::Copy;
 
@@ -269,3 +284,5 @@ echo "Cleaning up work directory...$d0 $d"
 cd "$d0"; rm -rf "$d"
 
 echo Done.
+
+echo "Now re-run cmake in your build directory to add W3C tests to CTest."
