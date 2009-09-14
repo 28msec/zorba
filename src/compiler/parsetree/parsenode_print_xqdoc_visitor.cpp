@@ -252,7 +252,6 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/) {
       theFunctions << "<zorbadoc:sequential />";
       theFunctions << "<zorbadoc:external />";
   }
-  theFunctions ; 
   theFunctions << "<xqdoc:signature><![CDATA["; 
   FunctionDecl lFunctionDeclClone(n.get_location(), n.get_name(), n.get_paramlist(), n.get_return_type(), 0, n.get_type());
   FunctionIndex lIndex = print_parsetree_xquery(theFunctions, &lFunctionDeclClone);
