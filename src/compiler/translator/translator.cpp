@@ -3595,28 +3595,28 @@ void bind_wincond_vars(const WindowVars& v, flwor_clause* windowClause, bool inp
   {
     posVarExpr = bind_var(pv->get_location(), pv->get_varname(), pvarKind);
     posVarExpr->set_flwor_clause(windowClause);
-    nodestack.push(posVarExpr);
+    nodestack.push(posVarExpr.getp());
   }
 
   if (! v.get_curr().empty())
   {
     curVarExpr = bind_var(loc, v.get_curr(), varKind);
     curVarExpr->set_flwor_clause(windowClause);
-    nodestack.push(curVarExpr);
+    nodestack.push(curVarExpr.getp());
   }
 
   if (! v.get_prev().empty())
   {
     prevVarExpr = bind_var(loc, v.get_prev(), varKind);
     prevVarExpr->set_flwor_clause(windowClause);
-    nodestack.push(prevVarExpr);
+    nodestack.push(prevVarExpr.getp());
   }
 
   if (! v.get_next().empty())
   {
     nextVarExpr = bind_var(loc, v.get_next(), varKind);
     nextVarExpr->set_flwor_clause(windowClause);
-    nodestack.push(nextVarExpr);
+    nodestack.push(nextVarExpr.getp());
   }
 }
 
@@ -4108,7 +4108,7 @@ void *begin_visit (const QuantifiedExpr& v)
 
   flwor->set_return_expr(new const_expr(theCCB->m_cur_sctx, loc, true));
 
-  nodestack.push(flwor);
+  nodestack.push(flwor.getp());
 
   return no_state;
 }
@@ -5223,7 +5223,7 @@ void end_visit (const PathExpr& v, void* /*visit_state*/)
 
     checkExpr->add(arg2);
 
-    nodestack.push(checkExpr);
+    nodestack.push(checkExpr.getp());
   }
 #else
   // wrap in atomics_or_node_distinc_sort_asc
