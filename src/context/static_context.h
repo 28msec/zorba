@@ -28,6 +28,7 @@
 #include "context/static_context_consts.h"
 #include "context/decimal_format.h"
 #include "context/collation_cache.h"
+#include "compiler/expression/expr.h"
 
 #include "types/typemanager.h"
 #include "zorbaerrors/Assert.h"
