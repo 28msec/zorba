@@ -476,7 +476,11 @@ namespace zorba{
       theClient->suspend();
     } else {
       theClient->terminate();
+#ifdef WIN32
+      cin.setstate(ios_base::eofbit);
+#else
       close(0);
+#endif
       theInterrupt = true;
     }
   }
