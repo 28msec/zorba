@@ -167,6 +167,45 @@ namespace zorba {
 
   } // int test_terminate
 
+  int test_terminate_immediately(Zorba* lZorba) {
+
+    std::stringstream qs;
+    qs << "declare variable $local:foo := 2;" << std::endl;
+
+    qs << "declare function local:test($param) {" << std::endl;
+    qs << "  let $x := 1" << std::endl;
+    qs << "    return" << std::endl;
+    qs << "    if (fn:true()) then" << std::endl;
+    qs << "      $x + $param" << std::endl;
+    qs << "    else using $x,$param eval {\"$x+$param\"}" << std::endl;
+    qs << "};" << std::endl;
+
+    qs << "if (fn:true()) then" << std::endl;
+    qs << "local:test(15)" << std::endl;
+    qs << "else 0" << std::endl;
+
+    std::ostringstream lRes;
+    XQuery_t lQuery = createDebuggableQuery(lZorba, qs);
+
+    std::pair<short, short> lPorts = getRandomPorts();
+    DebuggerServerRunnable lServer(lQuery, lRes, lPorts.first, lPorts.second);
+    lServer.start();
+
+    sleep(1);
+
+    {
+      DebuggerTestClient client(lPorts.first, lPorts.second, qs);
+
+      client.terminate();
+    }
+
+    lServer.join();
+
+    return 0;
+
+  } // int test_terminate_immediately
+
+
 	int test_resume(Zorba* lZorba) {
 
     std::stringstream qs;
@@ -292,6 +331,12 @@ int test_debugger_server (int argc, char* argv[]) {
 
   std::cout << "executing test_terminate" << std::endl;
   if (zorba::test_terminate(lZorba) != 0) {
+    return 1;
+  }
+  std::cout << std::endl;
+
+  std::cout << "executing test_terminate_immediately" << std::endl;
+  if (zorba::test_terminate_immediately(lZorba) != 0) {
     return 1;
   }
   std::cout << std::endl;
