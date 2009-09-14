@@ -27,6 +27,7 @@
 #include "compiler/parser/query_loc.h"
 #include "compiler/semantic_annotations/annotation_keys.h"
 #include "compiler/expression/expr_consts.h"
+#include "compiler/expression/expr.h"
 
 
 namespace zorba {
