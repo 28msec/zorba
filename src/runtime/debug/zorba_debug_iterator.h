@@ -11,16 +11,8 @@
 
 namespace zorba {
 
-class ZorbaDebugIteratorState : public PlanIteratorState
-{
-public:
-  PlanWrapperHolder eval_plan;
-  std::auto_ptr<CompilerCB> ccb;
-  std::auto_ptr<dynamic_context> dctx;
-};
-  
 class ZorbaDebugIterator : public NaryBaseIterator<ZorbaDebugIterator,
-                                                   ZorbaDebugIteratorState>
+                                                   PlanIteratorState>
 {
 protected:
   checked_vector<store::Item_t> varnames;

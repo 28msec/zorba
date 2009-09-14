@@ -98,7 +98,8 @@ zorba::ZorbaDebuggerRuntime::ZorbaDebuggerRuntime(
     theWrapper(theQuery->generateWrapper()),
     theExecStatus(QUERY_IDLE),
     theCurrentMessage(0),
-    theNotSendTerminateEvent(false)
+    theNotSendTerminateEvent(false),
+    thePlanIsOpen(false)
 {
 }
 
@@ -112,6 +113,7 @@ void
 zorba::ZorbaDebuggerRuntime::run()
 {
   theWrapper->open();
+  thePlanIsOpen = true;
 
   StartedEvent lStarted;
   theCommunicator->sendEvent(&lStarted);
@@ -121,7 +123,9 @@ zorba::ZorbaDebuggerRuntime::run()
 
 void zorba::ZorbaDebuggerRuntime::finish()
 {
-  theWrapper->close();
+  if (thePlanIsOpen) {
+    theWrapper->close();
+  }
   if (!theNotSendTerminateEvent) {
     TerminatedEvent lEvent;
     theCommunicator->sendEvent(&lEvent);
@@ -131,6 +135,7 @@ void zorba::ZorbaDebuggerRuntime::finish()
 void zorba::ZorbaDebuggerRuntime::resetRuntime()
 {
   theWrapper = theQuery->generateWrapper();
+  thePlanIsOpen = false;
   theExecStatus = QUERY_IDLE;
   theNotSendTerminateEvent = false;
   reset();

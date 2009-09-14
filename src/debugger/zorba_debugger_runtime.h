@@ -177,6 +177,7 @@ namespace zorba {
     AbstractCommandMessage*           theCurrentMessage;
     std::set<ZorbaDebugIterator*>     theBreakpoints;
     bool                              theNotSendTerminateEvent;
+    bool                              thePlanIsOpen;
   };
 }
 
