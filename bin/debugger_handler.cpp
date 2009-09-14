@@ -35,6 +35,36 @@
 
 using namespace std;
 
+namespace zorba {
+namespace suspendimpl {
+  class Suspend {
+    public:
+      static void setHandler(DebuggerHandler* aHandler) {
+        theHandler = aHandler;
+      }
+      static DebuggerHandler* getHandler() {
+        return theHandler;
+      }
+
+    private:
+      static DebuggerHandler* theHandler;
+  };
+  DebuggerHandler* Suspend::theHandler = 0;
+}
+}
+
+static void exec_suspend() {
+  zorba::DebuggerHandler* aHandler = zorba::suspendimpl::Suspend::getHandler();
+  aHandler->suspend();
+}
+
+extern "C" {
+  void handle_signal(int signum) {
+    signal(SIGINT, handle_signal);
+    exec_suspend();
+  }
+}
+
 static void printSchnitzel() {
 	zorba::synchronous_logger::cout << "         ___________\n";
 	zorba::synchronous_logger::cout << "        /  .        \\\n";
@@ -52,7 +82,11 @@ static void printSchnitzel() {
 namespace zorba{
 
 	DebuggerHandler::DebuggerHandler(Zorba* aZorba, ZorbaDebuggerClient* aClient, std::string aFileName):
-	theZorba(aZorba), theClient(aClient), theFileName(aFileName){}
+	theZorba(aZorba), theClient(aClient), theFileName(aFileName), theInterrupt(false)
+  {
+    suspendimpl::Suspend::setHandler(this);
+    signal(SIGINT, handle_signal);
+  }
 
 	DebuggerHandler::~DebuggerHandler(){ /*we don't have the ownership on the client */ }
 
@@ -437,10 +471,20 @@ namespace zorba{
     return true;
 	}
 
+  void DebuggerHandler::suspend() {
+    if (theClient->isQueryRunning()) {
+      theClient->suspend();
+    } else {
+      theClient->terminate();
+      close(0);
+      theInterrupt = true;
+    }
+  }
+
 	void DebuggerHandler::handle()
 	{
     while (true) {
-		  if(cin.good())
+		  if(!theInterrupt)
 		  {
 		  	synchronous_logger::cerr << "(xqdb) ";
 		  	string lLine;
@@ -498,8 +542,8 @@ namespace zorba{
 		  	}
 		  } else {
         // cin not good
-        // how can this happen?
-        assert(false);
+        // happens if user presses CTRL-C
+        return;
       }
     } // while(true)
 	}

@@ -49,6 +49,8 @@ class DebuggerHandler: public DefaultDebuggerEventHandler
     //the filename of the main query
     std::string theFileName;
 
+    bool theInterrupt;
+
     //Split a string into an array using space as delimiter
     std::vector<std::string> getArgs(const std::string& str) const;
     
@@ -107,11 +109,20 @@ class DebuggerHandler: public DefaultDebuggerEventHandler
 
     //Resolve the namespace
     std::istream* resolve(const String& aNamespace) const;
-  
+
   public:
     DebuggerHandler(Zorba* aZorba, ZorbaDebuggerClient* aClient, std::string aFileName);
     
     virtual ~DebuggerHandler();
+
+    /**
+    * @brief Sends a suspend request to the server
+    *
+    * This function is public, so that it can be used by the signal
+    * handler.
+    */
+    void suspend();
+  
  
     void started();
 
