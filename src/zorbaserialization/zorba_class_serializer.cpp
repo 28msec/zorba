@@ -1094,8 +1094,10 @@ EndAtomicItem:;
           ZORBA_SER_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
         }
       }
+      else if(!ar.get_is_temp_field() && !ar.get_is_temp_field_one_level())
+        ar.register_delay_reference((void**)&obj, FIELD_IS_CLASS, "store::Item*", referencing);
       else
-        ar.register_delay_reference((void**)&obj, FIELD_IS_CLASS, "store::Item*", referencing);//should be unreachable
+        obj = NULL;
     }
   }
 
