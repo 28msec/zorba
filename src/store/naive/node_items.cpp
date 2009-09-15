@@ -61,7 +61,7 @@ XmlTree::XmlTree(XmlNode* root, ulong id)
 
 void XmlTree::setCollection(SimpleCollection* coll) 
 {
-  ZORBA_ASSERT(theCollection == NULL);
+  ZORBA_ASSERT(coll == NULL || theCollection == NULL);
 
   theCollection = coll; 
 }

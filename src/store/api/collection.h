@@ -48,8 +48,10 @@ public:
   virtual unsigned long size() const = 0;
 
   /**
-   * Reads the whole Collection from beginning to end; it is allowed to have
-   * several concurrent iterators on the same Collection.
+   * Get an iterator to iterate over the nodes of the collection.
+   *
+   * It is allowed to have several concurrent iterators on the same Collection,
+   * but each iterator should be used by a single thread only.
    * 
    * @param idsNeeded whether the returned items contain ids, e.g. for sorting
    * @return Iterator which iterates over the complete Collection
@@ -62,91 +64,92 @@ public:
 
   /**
    * Loads and inserts into the collection an xml document or fragment given
-   * as text via an input stream. Note that the collection is ordered.
+   * as text via an input stream. 
    *
    * @param stream The stream providing the data to insert (e.g. from a file).
-   * @param position The position where the data will be inserted.
-   * By default the data will be appended at the end.
+   * @param position The position where the node will be inserted at. Positions
+   * are numbered starting from 1. If a non-positive position is given, the
+   * document will be appended at the end.
    * @return The root node of the xml document or fragment.
    */
   virtual Item_t loadDocument(std::istream& stream, long position = -1) = 0;
 
   /**
    * Loads and inserts into the collection an xml document or fragment given
-   * as text via an input stream.
-   * The document is lazy loaded. The stream will be freed by Zorba when finished.
+   * as text via an input stream. The document is lazy loaded. The stream 
+   * will be freed by Zorba when finished.
    *
    * @param stream The stream providing the data to insert (e.g. from a file). 
-   * Is allocated by user and freed by Zorba
-   * @param position The position where the data will be inserted.
-   * By default the data will be appended at the end.
+   * Is allocated by user and freed by Zorba.
+   * @param position The position where the node will be inserted at. Positions
+   * are numbered starting from 1. If a non-positive position is given, the
+   * document will be appended at the end.
    * @return The root node of the xml document or fragment.
    */
   virtual Item_t loadDocument(std::istream* stream, long position = -1) = 0;
 
   /**
-   * Inserts a given node to the collection.
+   * Inserts a given node to the collection. The node must be the root of an
+   * xml tree (i.e., it must not have a parent).
    *
-   * @param node The node to insert
-   * @param copyMode copy behavior
-   * @param position The position where the data will be inserted.
-   * By default the data will be appended at the end.
-   *
+   * @param node The node to insert.
+   * @param position The position where the node will be inserted at. Positions
+   * are numbered starting from 1. If a non-positive position is given, the
+   * node will be appended at the end.
    */
-  virtual void addNode(const Item* node, long position = -1) = 0;
+  virtual void addNode(Item* node, long position = -1) = 0;
 
   /**
-   * Adds a given node to the Collection before or after the targetNode.
-   * 
-   * @param aNode the Node Item to add.
-   * @param copyMode copy behavior
-   * @param aTargetNode the aNode will be added before the aTargetNode.
-   * @param sOrder if true the aNode will be inserted before the aTarget.
-   * Otherwise aNode will be inserted after aTarget.
-   * @return true if the Node Item was added to the Collection, false otherwise.
+   * Adds a given node to the Collection before or after the targetNode. The
+   * new node must be the root of an xml tree (i.e., it must not have a parent).
    *
+   * @param aNode The node to insert.
+   * @param aTargetNode The node will be added before or after the target node.
+   * @param before If true, the aNode will be inserted before the target node.
+   * Otherwise it will be inserted after the target node.
    */
   virtual void
-  addNode(const Item* aNode, const Item* aTargetNode, bool before) = 0;
+  addNode(Item* aNode, const Item* aTargetNode, bool before) = 0;
 
   /**
    * Removes a node from the collection.
    *
-   * @param node to be removed
-   *
+   * @param node to be removed.
+   * @return True if the node was in the collection, false otherwise.
    */
-  virtual void removeNode(const Item* node) = 0;
+  virtual bool removeNode(Item* node) = 0;
 
   /**
-   * Removes a node from the collection from the given position.
+   * Removes the node at the given position from the collection.
    *
-   * @param position the position of the Node that will be removed from collection.
-   * By default the last Node will be removed from collection.
-   *
+   * @param position The position of the node that will be removed. Positions
+   * are numbered starting from 1. If a non-positive position is given, the
+   * last node is removed. If the position is past the end of the collection,
+   * no node is removed.
+   * @return True if a node was removed, i.e. if the position was not past the
+   * end of the collection; false otherwise.
    */
-  virtual void removeNode(long position = -1) = 0;
+  virtual bool removeNode(long position = -1) = 0;
 
   /**
-   * Get the node at the given position in the collection as a Node Item.
+   * Get the node at the given position in the collection.
    * 
-   * @param aPosition the position of the Node in the collection.
-   * @return the Node Item at the given position.
-   *
+   * @param aPosition The position of the node in the collection. 
+   * @return The node at the given position, or NULL if the position is <= 0
+   * or > than the number of nodes in the collection.
    */
   virtual Item_t
   nodeAt(long aPosition) = 0;
 
   /**
-   * Get the position of the Node Item within the collection.
+   * Get the position of a given node within the collection.
    *
-   * @param aNode the Node Item at the given position.
-   * @return the position of the Node in the collection,
-   * -1 if the node is not part of the collection.
-   *
+   * @param aNode The node whose position we are looking for.
+   * @return The position of the node in the collection, or -1 if the node is
+   * not part of the collection.
    */
   virtual long
   indexOf(const Item* aNode) = 0;
-
 };
 
 } // namespace store

@@ -81,27 +81,24 @@ public:
         long position = -1);
 
   void addNode(
-        const store::Item* node,
+        store::Item* node,
         long position = -1);
 
   void addNode(
-        const store::Item* node,
+        store::Item* node,
         const store::Item* aTargetNode,
         bool before);
 
-  void addNodes(
-        store::Iterator* nodes, 
-        long position = -1);
+  bool removeNode(store::Item* node);
 
-  void removeNode(const store::Item* node);
-  void removeNode(long position = -1);
+  bool removeNode(long position = -1);
 
   store::Item_t nodeAt(long position);
+
   long indexOf(const store::Item* node);
 
 protected:
-  int
-  nodePositionInCollection(store::Item* newNode);
+  int nodePositionInCollection(const store::Item* newNode);
 };
 
 } // namespace store
