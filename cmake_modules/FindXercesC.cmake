@@ -62,7 +62,10 @@ IF(XERCESC_FOUND)
     MESSAGE(STATUS "       Version: ${XERCESC_VERSION}")
   ENDIF(NOT XERCESC_FIND_QUIETLY)
 ELSE(XERCESC_FOUND)
-  MESSAGE(FATAL_ERROR "Could not find Xerces-C")
+  MESSAGE(FATAL_ERROR "Could not find Xerces-C !"
+	"   \nOnly 2.8.0, 3.0.1 and newer versions are supported"
+	"   \nor"
+	"   \nUse -DZORBA_NO_XMLSCHEMA for building without schema support.")
 ENDIF(XERCESC_FOUND)
 
 
