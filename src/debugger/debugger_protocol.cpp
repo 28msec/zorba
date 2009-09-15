@@ -1309,5 +1309,181 @@ void VariableReply::addLocal( xqpString aVariable, xqpString aType, std::list<st
   theLocalData.push_back(val);
   setLength( MESSAGE_SIZE + getData().length() );
 }
+
+/**
+* List command
+*/
+ListCommand::ListCommand( Byte * aMessage, const unsigned int aLength ) :
+AbstractCommandMessage(aMessage, aLength)
+{
+  std::auto_ptr<json::value> lValue(getValue(aMessage, aLength));
+  json::value* lFilename = getValue(lValue.get(), "filename");
+  if (lFilename != 0)
+  {
+    std::wstring* lWString = lFilename->getstring(L"", true);
+    std::string lString( lWString->begin()+1, lWString->end()-1 );
+    delete lWString;
+    theFilename = lString;
+  } else {
+    throw MessageFormatException("Invalid JSON format for SuspendedEvent message.");
+  }
+  json::value* lFirstline = getValue(lValue.get(), "firstline");
+  if (lFirstline != 0)
+  {
+    std::wstring* lWString = lFirstline->getstring(L"", true);
+    std::string lString( lWString->begin()+1, lWString->end()-1 );
+    delete lWString;
+    std::istringstream lStream(lString);
+    lStream >> theFirstLine;
+  } else {
+    throw MessageFormatException("Invalid JSON format for SuspendedEvent message.");
+  }
+  json::value* lLastline = getValue(lValue.get(), "lastline");
+  if (lLastline != 0)
+  {
+    std::wstring* lWString = lLastline->getstring(L"", true);
+    std::string lString( lWString->begin()+1, lWString->end()-1 );
+    delete lWString;
+    std::istringstream lStream(lString);
+    lStream >> theLastLine;
+  } else {
+    throw MessageFormatException("Invalid JSON format for SuspendedEvent message.");
+  }
+}
+
+ListCommand::ListCommand(std::string aFilename,
+                         unsigned long aFirstline,
+                         unsigned long aLastline) :
+AbstractCommandMessage(STATIC, LIST)
+{
+  unsigned int l = MESSAGE_SIZE + getData().length();
+  setLength(l);
+  checkIntegrity();
+}
+
+ListCommand::~ListCommand()
+{
+}
+
+Byte* ListCommand::serialize( Length& aLength ) const
+{
+  ZorbaArrayAutoPointer<Byte> lHeader(
+    AbstractCommandMessage::serialize(aLength));
+  std::string lJSONString = getData();
+  Byte* lMsg = new Byte[getLength() + 1];
+  memset(lMsg, '0', getLength() + 1);
+  memcpy( lMsg, lHeader.get(), MESSAGE_SIZE );
+  const char * s = lJSONString.c_str();
+  unsigned int l = lJSONString.length();
+  memcpy( lMsg + MESSAGE_SIZE, s, l );
+  aLength = getLength();
+  return lMsg;
+}
+
+std::string ListCommand::getData() const
+{
+  std::stringstream lStream;
+  lStream << "{" << std::endl;
+  lStream << "\"filename\":\"" << theFilename << "\",";
+  lStream << "\"firstline\":\"" << theFirstLine << "\",";
+  lStream << "\"lastline\":\"" << theLastLine << "\"";
+  lStream << "}";
+  return lStream.str();
+}
+
+std::string ListCommand::getFilename() const
+{
+  return theFilename;
+}
+
+unsigned long ListCommand::getFirstline() const
+{
+  return theFirstLine;
+}
+
+unsigned long ListCommand::getLastline() const
+{
+  return theLastLine;
+}
+
+ListReply::ListReply( const Id aId, const ErrorCode aErrorCode ) :
+ReplyMessage(aId, aErrorCode)
+{
+  setFlags(REPLY_LIST_FLAG);
+  unsigned int l = MESSAGE_SIZE + getData().length();
+  setLength(l);
+  checkIntegrity();
+}
+
+ListReply::ListReply( Byte* aMessage, const unsigned int aLength ) :
+ReplyMessage(aMessage, aLength)
+{
+  setFlags(REPLY_LIST_FLAG);
+  std::auto_ptr<json::value> lValue(getValue(aMessage, aLength));
+  json::value* lCode = getValue(lValue.get(), "code");
+  if (lCode == 0) {
+    throw MessageFormatException("Invalid JSON format for List reply message.");
+  }
+  std::auto_ptr<std::wstring> lWString(lCode->getstring(L"", true));
+  std::string lString( lWString->begin()+1, lWString->end()-1 );
+
+  std::string::size_type lBegin = 0;
+  std::string::size_type lPos = lString.find("\\\"");
+  while (lPos != std::string::npos) {
+    theString += lString.substr(lBegin, lPos) + "\"";
+    lBegin = lPos + 2;
+    lPos = lString.find("\\\"", lBegin);
+  }
+}
+
+ListReply::~ListReply() {}
+
+Byte* ListReply::serialize( Length &aLength ) const
+{
+  ZorbaArrayAutoPointer<Byte> lHeader(ReplyMessage::serialize( aLength ));
+  xqpString lJSONString = getData();
+  const char * s = lJSONString.c_str();
+  unsigned int l = lJSONString.length();
+  Byte * lMsg = new Byte[ MESSAGE_SIZE + l + 1 ];
+  memset(lMsg, '0', MESSAGE_SIZE + l + 1);
+  memcpy( lMsg, lHeader.get(), MESSAGE_SIZE );
+  memcpy( lMsg + MESSAGE_SIZE, s, l );
+  aLength = getLength();
+  return lMsg; 
+}
+
+std::string ListReply::getData() const
+{
+  std::stringstream lJSONString;
+  std::string lTmp;  
+  std::string::iterator lIter;
+  for (lIter = lTmp.begin(); lIter != lTmp.end(); lIter++) {
+    if (*lIter == '"') {
+      lTmp += "\\\"";
+    } else {
+      lTmp += *lIter;
+    }
+  }
+
+  lJSONString << "{\"code\":\"" << lTmp<< "\"}";
+  return lJSONString.str();
+}
+
+ReplyMessage * ListReply::getReplyMessage()
+{
+  ReplyMessage * lReply =  new ReplyMessage( getId(), DEBUGGER_NO_ERROR );
+  lReply->setData( getData() );
+  return lReply;
+}
+
+std::string ListReply::getString() const
+{
+  return theString;
+}
+
+void ListReply::setString( std::string aString )
+{
+  theString = aString;
+}
 }//end of namespace
 

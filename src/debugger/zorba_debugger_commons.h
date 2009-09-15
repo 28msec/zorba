@@ -98,6 +98,10 @@ namespace zorba {
     void setCurrentDynamicContext(dynamic_context* aDynamicContext);
     void setCurrentStaticContext(static_context* aStaticContext);
     /**
+    * @brief Adds a mapping from a uri to a filename.
+    */
+    void addModuleUriMapping(std::string aUri, std::string aFileUri);
+    /**
     * @brief Sets the theBreak variable.
     *
     * @see ZorbaDebuggerCommons::hasToBreak for a description why this is
@@ -243,6 +247,7 @@ namespace zorba {
 
   private:
     std::map<DebugLocation_t, bool, DebugLocation> theLocationMap;
+    std::map<std::string, std::string >            theUriFileMappingMap;
     ZorbaDebuggerRuntime*                          theRuntime;
     static_context*                                theCurrentStaticContext;
     dynamic_context*                               theCurrentDynamicContext;

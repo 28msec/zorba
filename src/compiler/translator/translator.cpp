@@ -2273,6 +2273,14 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
       // Register the mapping between the current location uri and the
       // target namespace.
       minfo->mod_ns_map.put(resolveduri->str(), imported_ns);
+
+      // If we compile in debug mode, we add the namespace uri into a map, that
+      // allows the debugger to set breakpoints at a namespace uri and line
+      // number
+      if (theCCB->theDebuggerCommons) {
+        theCCB->theDebuggerCommons->addModuleUriMapping(imported_ns,
+          lFileUri.c_str());
+      }
     }
 
     // Merge the exported sctx of the imported module into the sctx of the

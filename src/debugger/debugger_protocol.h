@@ -54,6 +54,7 @@ const Flags REPLY_FLAG          = 0x80;
 const Flags REPLY_VARIABLE_FLAG = 0xf0;
 const Flags REPLY_SET_FLAG      = 0xf1;
 const Flags REPLY_FRAME_FLAG    = 0xf2;
+const Flags REPLY_LIST_FLAG     = 0xf3;
 
 /* CommandSet */
 const CommandSet EXECUTION    = 0xf1;
@@ -84,6 +85,7 @@ const Command EVALUATED  = 0x05;
 const Command OPTIONS  = 0x01;
 const Command DEFAULTS = 0x02;
 const Command SETS     = 0x03;
+const Command LIST     = 0x04;
 
 /* Dynamic Commands */
 const Command DATA        = 0x01;
@@ -625,6 +627,27 @@ class ZORBA_DLL_PUBLIC EvalMessage: public AbstractCommandMessage
     xqpString getExpr() const;
 };
 
+class ZORBA_DLL_PUBLIC ListCommand : public AbstractCommandMessage
+{
+protected:
+  std::string theFilename;
+  unsigned long theFirstLine;
+  unsigned long theLastLine;
+  std::string getData() const;
+
+public:
+  ListCommand(Byte * aMessage, const unsigned int aLength);
+  ListCommand(std::string aFilename, unsigned long aFirstline,
+    unsigned long aLastline);
+  virtual ~ListCommand();
+
+  virtual Byte* serialize(Length& aLength) const;
+
+  std::string getFilename() const;
+  unsigned long getFirstline() const;
+  unsigned long getLastline() const;
+};
+
 class ZORBA_DLL_PUBLIC FrameMessage: public AbstractCommandMessage
 {
   public:
@@ -676,6 +699,23 @@ class ZORBA_DLL_PUBLIC VariableMessage: public AbstractCommandMessage
 
   protected:
     bool theDataFlag;
+};
+
+class ZORBA_DLL_PUBLIC ListReply : public ReplyMessage
+{
+protected:
+  std::string theString;
+  std::string getData() const;
+
+public:
+  ListReply(const Id aId, const ErrorCode aErrorCode);
+  ListReply(Byte* aMessage, const unsigned int aLength);
+  virtual ~ListReply();
+
+  virtual Byte* serialize(Length &aLength) const;
+  virtual ReplyMessage * getReplyMessage();
+  std::string getString() const;
+  void setString(std::string aString);
 };
 
 /**

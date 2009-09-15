@@ -58,6 +58,13 @@ zorba::static_context* zorba::ZorbaDebuggerCommons::getCurrentStaticContext() co
 
 bool zorba::ZorbaDebuggerCommons::addBreakpoint( DebugLocation_t& aLocation )
 {
+  // First we check, if the filename is a module namespace
+  std::map<std::string, std::string>::iterator lMapIter;
+  lMapIter = theUriFileMappingMap.find(aLocation.theFileName);
+  if (lMapIter != theUriFileMappingMap.end()) {
+    aLocation.theFileName = lMapIter->second;
+  }
+
   std::map<DebugLocation_t, bool, DebugLocation>::iterator lIter;
   lIter = theLocationMap.find(aLocation);
   // if the location could not be found, try it again with the encoded file uri.
@@ -223,6 +230,15 @@ zorba::ZorbaDebuggerCommons::eval(const xqpString& aExpr)
 zorba::store::Item_t* zorba::ZorbaDebuggerCommons::getEvalItem()
 {
   return &theEvalItem;
+}
+
+void zorba::ZorbaDebuggerCommons::addModuleUriMapping( std::string aUri, 
+                                                      std::string aFileUri )
+{
+  ZORBA_ASSERT(theUriFileMappingMap.find(aUri) == theUriFileMappingMap.end());
+  theUriFileMappingMap.insert(
+    std::pair<std::string, std::string>(aUri, aFileUri));
+  ZORBA_ASSERT(theUriFileMappingMap.find(aUri) != theUriFileMappingMap.end());
 }
 
 bool zorba::DebugLocation::operator()( const DebugLocation_t& aLocation1, const DebugLocation_t& aLocation2 ) const
