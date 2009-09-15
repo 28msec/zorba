@@ -420,7 +420,7 @@ public:
   hadOrdModeDecl       : Set to true if prolog has doc order decl. Used to
                          check that such a decl does not appear more than once.
 
-  xquery_fns_def_dot   : Set of the names of all build-in functions accepting
+  xquery_fns_def_dot   : Set of the names of all built-in functions accepting
                          "." as their default arg. TODO: should be static
 
   theIsWSBoundaryStack : Saves true if the previous DirElemContent is a boundary
@@ -1198,7 +1198,7 @@ void wrap_in_debugger_expr (expr_t& aExpr)
 
 
 /*******************************************************************************
-  Collect the var_eprs for all variables that (a) are defined by some clause
+  Collect the var_exprs for all variables that (a) are defined by some clause
   in a given range of clauses, and (b) are in-scope when this method is called. 
 ********************************************************************************/
 void collect_flwor_vars (

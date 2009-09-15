@@ -666,7 +666,6 @@ VarDecl::VarDecl(
   ext(external),
   global(true)
 {
-  ZORBA_ASSERT (ext || init_expr != NULL);
 }
 
 
