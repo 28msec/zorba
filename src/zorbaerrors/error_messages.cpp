@@ -173,6 +173,8 @@ DEF_ERR_CODE(API0030_NO_NODE_AT_GIVEN_POSITION, API0030, "There is no node at th
 
 DEF_ERR_CODE(API0031_NODE_ALREADY_IN_COLLECTION, API0031, "Node is already part of the collection {/s}.");
 
+DEF_ERR_CODE(API0032_NON_ROOT_NODE_IN_COLLECTION, API0032, "Node cannot be added to collection {/s} because it is a non-root node.");
+
 DEF_ERR_CODE(API0033_FILE_OR_FOLDER_DOES_NOT_EXIST, API0033, "File or folder {/s} does not exist.");
 
 DEF_ERR_CODE(API0034_FILE_OR_FOLDER_CANNOT_BE_OPENED, API0034, "File or folder {/s} could not be opened.");
