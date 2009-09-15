@@ -777,15 +777,15 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
                                                              xqp_string()).getStore();
 
     GENV_ITEMFACTORY->createAnyURI(catalogResolvedUriItem, catalogResolvedUriString);
-    }
-    catch (error::ZorbaError& e) 
-    {
-      ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
-    }
+  }
+  catch (error::ZorbaError& e) 
+  {
+    ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
+  }
 
   // Load the catalog document, if it has not been loaded before
-    try 
-    {
+  try 
+  {
     catalogRootNode = GENV_STORE.getDocument(catalogResolvedUriString);
 
     if (catalogRootNode == NULL) 
@@ -797,10 +797,10 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
                                 false);
     }
   }
-    catch (error::ZorbaError& e) 
-    {
-      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
-    }
+  catch (error::ZorbaError& e) 
+  {
+    ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+  }
 
   // Navigate the catalog doc to extract the uri of each data doc and then, if
   // the data doc is not loaded already, create a collection for it, load the
@@ -831,7 +831,7 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
             {
               if (catalogAttr->getStringValue()->indexOf("/") == -1)
                 docURI = URI(catalogURI, catalogAttr->getStringValue().getp());
-            else
+              else
                 docURI = URI(catalogAttr->getStringValue().getp());
 
               docUriString = docURI.toString().getStore();
@@ -845,15 +845,15 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
               ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
             }
 
-              try 
-              {
+            try 
+            {
               theColl = theSctx->get_collection_uri_resolver()->
                         resolve(docResolvedUriItem, theSctx);
 
               if (theColl == NULL) 
               {
                 theColl = GENV_STORE.createCollection(docResolvedUriString);
-
+                
                 docRootNode = GENV_STORE.getDocument(docResolvedUriString);
 
                 if (docRootNode == NULL) 
@@ -862,26 +862,26 @@ ZorbaImportCatalogIterator::nextImpl(store::Item_t& result, PlanState& planState
                                 resolve(docResolvedUriItem, theSctx, false, false);
           
                   theColl->addNode(docRootNode, 1);
-              }
+                }
                 else
-              {
+                {
                   store::CopyMode lCopyMode;
                   copyNode = docRootNode->copy(NULL, NULL, lCopyMode);
                   theColl->addNode(copyNode, 1);
-              }
+                }
               }
             }
-              catch (error::ZorbaError& e) 
-              {
-                ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
-              }
+            catch (error::ZorbaError& e) 
+            {
+              ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
             }
           }
-        attributesIte->close();
         }
+        attributesIte->close();
       }
-    childrenIte->close();
     }
+    childrenIte->close();
+  }
 
   STACK_END (state);
 }
