@@ -32,6 +32,71 @@ namespace store
 class IndexSpecification;
 class IndexKeyCompareFunction;
 class IndexColumnRange;
+class IndexEntryCreator;
+
+
+typedef rchandle<IndexEntryCreator> IndexEntryCreator_t;
+
+
+typedef std::pair<xqpStringStore_t, IndexEntryCreator_t> PatternIECreatorPair;
+
+
+/***************************************************************************//**
+  Specification for creating a value index.
+
+  theKeyTypes     : The data types of the key columns. Each type must be atomic,
+                    and for sorted indices, it must have an ordering.
+  theValueType    : The data type of the items associated with the keys.
+  theCollations   : The names of the collations to use when comparing the string
+                    columns of two keys. The size of this vector is the same as
+                    that of theKeyTypes; if a type of a key column is not string, 
+                    the associated entry in theCollations is simply ignored.   
+  theTimezone     : The timezone is needed to compare date/time key values.
+  theIsUnique     : Whether the index is unique, i.e., there is exactly one
+                    value associated with each key.
+  theIsSorted     : Whether the index is sorted by its key values or not.
+  theIsTemp       : Whether the index is temporary or not.
+  theIsThreadSafe : Whether the index can be shared among multiple threads or not
+  theIECreators   : A vector of pattern-creator pairs that the store can use to
+                    compute index entries.
+********************************************************************************/
+class IndexSpecification
+{
+public:
+  std::vector<store::Item_t>                theKeyTypes;
+  store::Item_t                             theValueType;
+  std::vector<std::string>                  theCollations;
+  long                                      theTimezone;
+  bool                                      theIsUnique;
+  bool                                      theIsSorted;
+  bool                                      theIsTemp;
+  bool                                      theIsThreadSafe;
+  std::vector<PatternIECreatorPair>         theIECreators;
+
+public:
+  IndexSpecification(ulong numColumns)
+    :
+    theKeyTypes(numColumns),
+    theCollations(numColumns),
+    theTimezone(0),
+    theIsUnique(false),
+    theIsSorted(false),
+    theIsTemp(false),
+    theIsThreadSafe(false)
+  {
+  }
+
+  void clear()
+  {
+    theKeyTypes.clear();
+    theValueType = NULL;
+    theCollations.clear();
+    theTimezone = 0;
+    theIsUnique = theIsSorted = theIsTemp = theIsThreadSafe = false;
+    theIECreators.clear();
+  }
+};
+
 
 
 /***************************************************************************//**
@@ -45,7 +110,7 @@ class IndexColumnRange;
   any given index, its keys are unique. Each such index key is associated with
   a set of items, which is refered to as the "value set" of the key. Value sets
   can shrink or grow over time independently from each other. It is possible for
-  an item to appear in the value set of multiple keys keys. It is also possible
+  an item to appear in the value set of multiple keys. It is also possible
   for the same item to appear multiple times in the same value set (so,
   technically, value sets are actually multisets).
 
@@ -138,6 +203,7 @@ public:
   virtual bool probe(const IndexKey& key, Item_t& result) = 0;
 };
 
+
 /***************************************************************************//**
   Class IndexKey represents an index key as a vector of item handles. 
 ********************************************************************************/
@@ -147,86 +213,6 @@ public:
   IndexKey(ulong size = 0) : ItemVector(size) {}
 };
 
-
-/*****************************************************************************
- Class IndexEntryCreator is used to compute (key, domain_expr) pairs for a
- given node that has a certain relationship to the domain expression.
- *****************************************************************************/
-class IndexEntryCreator : public SimpleRCObject
-{
-public:
-  typedef std::pair<store::IndexKey, store::Item_t> IndexEntry;
-
-  virtual ~IndexEntryCreator() { }
-
-  /**
-   * Generate index entries for the given item.
-   */
-  virtual void appendIndexEntries(store::Item_t& item, std::vector<IndexEntry>& entries) = 0;
-};
-
-
-typedef rchandle<IndexEntryCreator> IndexEntryCreator_t;
-
-
-typedef std::pair<xqpStringStore_t, store::IndexEntryCreator_t> PatternIECreatorPair;
-
-
-/***************************************************************************//**
-  Specification for creating a value index.
-
-  theKeyTypes     : The data types of the key columns. Each type must be atomic,
-                    and for sorted indices, it must have an ordering.
-  theValueType    : The data type of the items associated with the keys.
-  theCollations   : The names of the collations to use when comparing the string
-                    columns of two keys. The size of this vector is the same as
-                    that of theKeyTypes; if a type of a key column is not string, 
-                    the associated entry in theCollations is simply ignored.   
-  theTimezone     : The timezone is needed to compare date/time key values.
-  theIsUnique     : Whether the index is unique, i.e., there is exactly one
-                    value associated with each key.
-  theIsSorted     : Whether the index is sorted by its key values or not.
-  theIsTemp       : Whether the index is temporary or not.
-  theIsThreadSafe : Whether the index can be shared among multiple threads or not
-  theIECreators   : A vector of pattern-creator pairs that the store can use to
-                    compute index entries.
-********************************************************************************/
-class IndexSpecification
-{
-public:
-  std::vector<store::Item_t>                theKeyTypes;
-  store::Item_t                             theValueType;
-  std::vector<std::string>                  theCollations;
-  long                                      theTimezone;
-  bool                                      theIsUnique;
-  bool                                      theIsSorted;
-  bool                                      theIsTemp;
-  bool                                      theIsThreadSafe;
-  std::vector<PatternIECreatorPair>         theIECreators;
-
-public:
-  IndexSpecification(ulong numColumns)
-    :
-    theKeyTypes(numColumns),
-    theCollations(numColumns),
-    theTimezone(0),
-    theIsUnique(false),
-    theIsSorted(false),
-    theIsTemp(false),
-    theIsThreadSafe(false)
-  {
-  }
-
-  void clear()
-  {
-    theKeyTypes.clear();
-    theValueType = NULL;
-    theCollations.clear();
-    theTimezone = 0;
-    theIsUnique = theIsSorted = theIsTemp = theIsThreadSafe = false;
-    theIECreators.clear();
-  }
-};
 
 /***************************************************************************//**
   Class IndexEntryReceiver is used to perform index bulk load. It allows an
@@ -266,6 +252,27 @@ public:
    */
   virtual void abort() = 0;
 };
+
+
+/*******************************************************************************
+ Class IndexEntryCreator is used to compute (key, domain_expr) pairs for a
+ given node that has a certain relationship to the domain expression.
+********************************************************************************/
+class IndexEntryCreator : public SimpleRCObject
+{
+public:
+  typedef std::pair<store::IndexKey, store::Item_t> IndexEntry;
+
+  virtual ~IndexEntryCreator() { }
+
+  /**
+   * Generate index entries for the given item.
+   */
+  virtual void appendIndexEntries(
+        store::Item_t& item,
+        std::vector<IndexEntry>& entries) = 0;
+};
+
 
 /***************************************************************************//**
 

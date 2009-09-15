@@ -203,10 +203,10 @@ bool ValueIndexBuilder::nextImpl(store::Item_t& result, PlanState& planState) co
 
   if (state->theSession == NULL) 
   {
-    store::Item_t iName;
-    consumeNext(iName, theChildren[0], planState);
+    consumeNext(state->theIndexUri, theChildren[0], planState);
+
     state->theSession = planState.dctx()->
-                        get_index_insert_session(iName->getStringValueP()->str());
+    get_index_insert_session(state->theIndexUri->getStringValueP()->str());
   }
 
   consumeNext(dValue, theChildren[1], planState);
@@ -214,7 +214,32 @@ bool ValueIndexBuilder::nextImpl(store::Item_t& result, PlanState& planState) co
   for(unsigned int i = 2; i < theChildren.size(); ++i) 
   {
     store::Item_t cValue;
-    key.push_back(consumeNext(cValue, theChildren[i], planState) ? cValue : NULL);
+    if (consumeNext(cValue, theChildren[i], planState))
+    {
+      key.push_back(cValue);
+
+      if (!cValue->isAtomic())
+      {
+        ZORBA_ERROR_LOC_DESC_OSS(XQP0036_NON_ATOMIC_INDEX_KEY, loc,
+                                 "A key for index " 
+                                 << state->theIndexUri->getStringValueP()->str() 
+                                 << "has a non atomic value at position "
+                                 << i-2 << ".");
+      }
+
+      if (consumeNext(cValue, theChildren[i], planState))
+      {
+        ZORBA_ERROR_LOC_DESC_OSS(XQP0035_MULTI_VALUED_INDEX_KEY, loc,
+                                 "A key for index " 
+                                 << state->theIndexUri->getStringValueP()->str() 
+                                 << "has multiple values at position "
+                                 << i-2 << ".");
+      }
+    }
+    else
+    {
+      key.push_back(NULL);
+    }
   }
 
   state->theSession->getBulkInsertSession()->receive(key, dValue);

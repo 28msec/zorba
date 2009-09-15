@@ -61,6 +61,7 @@ class ValueIndexBuilderState : public PlanIteratorState
 {
 public:
   ValueIndexInsertSession_t theSession;
+  store::Item_t             theIndexUri;
 
   void init(PlanState&);
   void reset(PlanState&);
