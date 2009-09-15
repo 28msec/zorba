@@ -1,0 +1,12 @@
+module namespace evaltest = "www.zorba-xquery.com/Test/eval";
+
+declare function evaltest:test1($x)
+{
+  <result>$x</result>
+};
+
+declare function evaltest:test2($x)
+{
+  using $x eval { "evaltest:test1($x)" }
+};
+

@@ -108,7 +108,7 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   // set up eval state's ccb
   state->ccb.reset (new CompilerCB (*planState.theCompilerCB));
-  state->ccb->m_sctx = planState.theCompilerCB->m_sctx->create_child_context ();
+  state->ccb->m_sctx = getStaticContext(planState)->create_child_context();
   (*state->ccb->m_context_map)[state->ccb->m_cur_sctx] = state->ccb->m_sctx; 
   CONSUME (item, 0);
 

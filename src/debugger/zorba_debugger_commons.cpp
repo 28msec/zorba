@@ -12,6 +12,8 @@
 
 #include "store/api/item_factory.h"
 
+#include "zorbatypes/URI.h"
+
 zorba::ZorbaDebuggerCommons::ZorbaDebuggerCommons(zorba::static_context* sctx)
 :
 theBreak(false),
@@ -58,6 +60,11 @@ bool zorba::ZorbaDebuggerCommons::addBreakpoint( DebugLocation_t& aLocation )
 {
   std::map<DebugLocation_t, bool, DebugLocation>::iterator lIter;
   lIter = theLocationMap.find(aLocation);
+  // if the location could not be found, try it again with the encoded file uri.
+  if (lIter == theLocationMap.end()) {
+    aLocation.theFileName = URI::encode_file_URI(aLocation.theFileName)->str();
+    lIter = theLocationMap.find(aLocation);
+  }
   if (lIter != theLocationMap.end()) {
     aLocation.theQueryLocation = lIter->first.theQueryLocation;
     lIter->second = true;

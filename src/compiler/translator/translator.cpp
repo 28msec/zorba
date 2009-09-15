@@ -1170,9 +1170,12 @@ void wrap_in_debugger_expr (expr_t& aExpr)
 
     // for each var, create a eval_var and add it to
     // the debugger expression
-    for (VarExprVector::iterator lIter = lAllInScopeVars.begin() + 1;
+    for (VarExprVector::iterator lIter = lAllInScopeVars.begin();
          lIter != lAllInScopeVars.end(); ++lIter) {
       store::Item_t lVarname = (*lIter)->get_varname();
+      if (std::string(lVarname->getStringValue()->c_str()) == "$$dot") {
+        continue;
+      }
       varref_t ve = create_var(lLocation.theQueryLocation,
         lVarname, var_expr::eval_var, NULL).dyn_cast<var_expr> ();
       var_expr *lVe = lookup_var(ve->get_varname());
