@@ -254,21 +254,20 @@ ELSE (ICU_FOUND AND ICU_I18N_FOUND AND ICU_DATA_FOUND)
   MESSAGE(FATAL_ERROR "The ICU library is required in order to build Zorba.")
 ENDIF (ICU_FOUND AND ICU_I18N_FOUND AND ICU_DATA_FOUND)       
 
-IF (NOT ZORBA_NO_XMLSCHEMA)
-  #
-  # Xerces-C
-  #
-  INCLUDE(${CMAKE_MODULE_PATH}/FindXercesC.cmake)
 
-  IF (XERCESC_FOUND)
+#
+# Xerces-C
+#
+INCLUDE(${CMAKE_MODULE_PATH}/FindXercesC.cmake)
 
-    MESSAGE(STATUS "Found Xerces library -- " ${XERCES_LIBRARY})    
-    INCLUDE_DIRECTORIES(${XERCESC_INCLUDE})
-    
-    SET(requiredlibs ${requiredlibs} ${XERCESC_LIBRARY})
-    
-  ENDIF (XERCESC_FOUND)
-ENDIF (NOT ZORBA_NO_XMLSCHEMA)
+IF (XERCESC_FOUND)
+
+  MESSAGE(STATUS "Found Xerces library -- " ${XERCES_LIBRARY})    
+  INCLUDE_DIRECTORIES(${XERCESC_INCLUDE})
+  
+  SET(requiredlibs ${requiredlibs} ${XERCESC_LIBRARY})
+  
+ENDIF (XERCESC_FOUND)
 
 LIST(APPEND requiredlibs ${requiredlibs-store})
 
