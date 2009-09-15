@@ -23,6 +23,12 @@ namespace zorba {
 
 class CollectionImpl : public Collection
 {
+ protected:
+  friend class Unmarshaller;
+
+  store::Collection_t   theCollection;
+  ErrorHandler        * theErrorHandler;
+
  public:
   CollectionImpl(const store::Collection_t& aCollection, ErrorHandler* aErrorHandler);
 
@@ -35,13 +41,19 @@ class CollectionImpl : public Collection
   size() const;
 
   bool
-  addNode(const Item& aNode, long aPosition = -1);
+  addDocument(std::istream& lInStream, long aPosition = -1);
 
   bool
-  addNode(const Item& aNode, const Item& aTargetNode, bool aOrder);
+  addNode(Item& aNode, long aPosition = -1);
 
   bool
-  deleteNode(const Item& aNode);
+  addNode(Item& aNode, const Item& aTargetNode, bool before);
+
+  bool
+  addNodes(const ResultIterator* aResultIterator);
+
+  bool
+  deleteNode(Item& aNode);
 
   bool
   deleteNode(long aPosition = -1);
@@ -51,21 +63,14 @@ class CollectionImpl : public Collection
 
   long
   indexOf(const Item& aNode);
-
-  bool
-  addNodes(const ResultIterator* aResultIterator);
-
-  bool
-  addDocument(std::istream& lInStream, long aPosition = -1);
-
- protected:
-  friend class Unmarshaller;
-
-  store::Collection_t   theCollection;
-  ErrorHandler        * theErrorHandler;
-
-  }; /* class CollectionImpl */
+};
 
 } /* namespace zorba */
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

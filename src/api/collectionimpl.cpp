@@ -72,13 +72,27 @@ CollectionImpl::size() const
 
 
 bool
-CollectionImpl::addNode(const Item& aNode, long aPosition)
+CollectionImpl::addDocument(std::istream& lInStream, long aPosition)
+{
+  ZORBA_TRY
+
+    theCollection->loadDocument(lInStream, aPosition);
+    return true;
+
+  ZORBA_CATCH
+  return false;
+}
+
+
+bool
+CollectionImpl::addNode(Item& aNode, long aPosition)
 {
   ZORBA_TRY
 
     store::Item* lItem = Unmarshaller::getInternalItem(aNode);
 
-    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
+    // Get the store lock to protect the node. 
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
     store::CopyMode lCopyMode;
     store::Item* lCopy = lItem->copy(0, 0, lCopyMode);
@@ -93,14 +107,15 @@ CollectionImpl::addNode(const Item& aNode, long aPosition)
 
 
 bool
-CollectionImpl::addNode(const Item& aNode, const Item& aTargetNode, bool before)
+CollectionImpl::addNode(Item& aNode, const Item& aTargetNode, bool before)
 {
   ZORBA_TRY
 
     store::Item* lItem = Unmarshaller::getInternalItem(aNode);
     store::Item* targetItem = Unmarshaller::getInternalItem(aTargetNode);
 
-    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
+    // Get the store lock to protect the node. 
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
     store::CopyMode lCopyMode;
     store::Item* lCopy = lItem->copy(0, 0, lCopyMode);
@@ -121,14 +136,16 @@ CollectionImpl::addNodes(const ResultIterator* aResultIterator)
 
     PlanWrapper_t lPlan = Unmarshaller::getInternalPlan(aResultIterator);
 
-    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
+    // Get the store lock to protect the nodes. Note: the result iterator
+    // also holds the store lock in R mode.
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
     store::CopyMode lCopyMode;
     store::Item_t node;
     while (lPlan->next(node))
     {
       store::Item* lCopy = node->copy(0, 0, lCopyMode);
-      addNode(lCopy);
+      theCollection->addNode(lCopy, -1);
     }
 
     return true;
@@ -139,26 +156,18 @@ CollectionImpl::addNodes(const ResultIterator* aResultIterator)
 
 
 bool
-CollectionImpl::addDocument(std::istream& lInStream, long aPosition)
+CollectionImpl::deleteNode(Item& aNode)
 {
   ZORBA_TRY
-    theCollection->loadDocument(lInStream, aPosition);
-    return true;
-  ZORBA_CATCH
-  return false;
-}
 
-
-bool
-CollectionImpl::deleteNode(const Item& aNode)
-{
-  ZORBA_TRY
     store::Item* lItem = Unmarshaller::getInternalItem(aNode);
 
+    // Make sure nobody else is accessing the node to delete. 
+    // Not sure if we really need this ????? 
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
 
-    theCollection->removeNode(lItem);
-    return true;
+    return theCollection->removeNode(lItem);
+
   ZORBA_CATCH
   return false;
 }
@@ -168,8 +177,13 @@ bool
 CollectionImpl::deleteNode(long aPosition)
 {
   ZORBA_TRY
-    theCollection->removeNode(aPosition);
-    return true;
+
+    // Make sure nobody else is accessing the node to delete. 
+    // Not sure if we really need this ????? 
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
+
+    return theCollection->removeNode(aPosition);
+
   ZORBA_CATCH
   return false;
 }
@@ -179,10 +193,13 @@ Item
 CollectionImpl::nodeAt(long aPosition)
 {
   ZORBA_TRY
+
     return theCollection->nodeAt(aPosition).getp();
+
   ZORBA_CATCH
   return Item();
 }
+
 
 long
 CollectionImpl::indexOf(const Item& aNode)
@@ -190,10 +207,9 @@ CollectionImpl::indexOf(const Item& aNode)
   ZORBA_TRY
     store::Item* lItem = Unmarshaller::getInternalItem(aNode);
 
-    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
-
     theCollection->indexOf(lItem);
     return true;
+
   ZORBA_CATCH
   return false;
 }
