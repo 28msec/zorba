@@ -62,14 +62,28 @@ bool zorba::ZorbaDebuggerCommons::addBreakpoint( DebugLocation_t& aLocation )
   lIter = theLocationMap.find(aLocation);
   // if the location could not be found, try it again with the encoded file uri.
   if (lIter == theLocationMap.end()) {
+    std::string lTmp = aLocation.theFileName;
     aLocation.theFileName = URI::encode_file_URI(aLocation.theFileName)->str();
     lIter = theLocationMap.find(aLocation);
+    aLocation.theFileName = lTmp;
   }
   if (lIter != theLocationMap.end()) {
     aLocation.theQueryLocation = lIter->first.theQueryLocation;
     lIter->second = true;
     return true;
   }
+  // If the location could not be found, we iterate over all locations and try
+  // to find a location with a filename with a matching substring
+  for (lIter = theLocationMap.begin(); lIter != theLocationMap.end(); lIter++) {
+    if (lIter->first.theFileName.find(aLocation.theFileName) !=
+      std::string::npos && aLocation.theLineNumber ==
+      lIter->first.theLineNumber) {
+        lIter->second = true;
+        aLocation.theQueryLocation = lIter->first.theQueryLocation;
+        return true;
+    }
+  }
+  //otherwise, there could not be found a breakable expression
   return false;
 }
 
