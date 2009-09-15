@@ -121,7 +121,9 @@ UNARY_ACCEPT(DropValueIndex);
 /***************************************************************************//**
 
 ********************************************************************************/
-bool ValueIndexInsertSessionOpener::nextImpl(store::Item_t& result, PlanState& planState) const
+bool ValueIndexInsertSessionOpener::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   bool status;
   PlanIteratorState* state;
@@ -153,7 +155,9 @@ UNARY_ACCEPT(ValueIndexInsertSessionOpener);
 /***************************************************************************//**
 
 ********************************************************************************/
-bool ValueIndexInsertSessionCloser::nextImpl(store::Item_t& result, PlanState& planState) const
+bool ValueIndexInsertSessionCloser::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   bool status;
   ValueIndexInsertSession_t session;
@@ -201,7 +205,8 @@ bool ValueIndexBuilder::nextImpl(store::Item_t& result, PlanState& planState) co
   {
     store::Item_t iName;
     consumeNext(iName, theChildren[0], planState);
-    state->theSession = planState.dctx()->get_index_insert_session(iName->getStringValueP()->str());
+    state->theSession = planState.dctx()->
+                        get_index_insert_session(iName->getStringValueP()->str());
   }
 
   consumeNext(dValue, theChildren[1], planState);

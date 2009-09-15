@@ -40,125 +40,127 @@ static store::Item_t get_uri(expr *e)
 
 RULE_REWRITE_PRE(ExpandBuildIndex)
 {
-  if (node->get_expr_kind() == fo_expr_kind) 
+  if (node->get_expr_kind() != fo_expr_kind)
+    return NULL;
+
+  fo_expr* fo = static_cast<fo_expr *>(&*node);
+
+  if (fo->get_func() == LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS, "build-index", 1)) 
   {
-    fo_expr *fo = static_cast<fo_expr *>(&*node);
+    //
+    // Get index uri
+    //
+    store::Item_t uriItem(get_uri((*fo)[0].getp()));
+    ZORBA_ASSERT(uriItem != NULL);
+    xqpStringStore_t uristore;
+    uriItem->getStringValue(uristore);
+    
+    //
+    // Get ValueIndex obj from static ctx.
+    //
+    xqp_string uri(uristore);
+    ValueIndex *vi = rCtx.getStaticContext()->lookup_index(uri);
+    ZORBA_ASSERT(vi != NULL);
 
-    if (fo->get_func() == LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS, "build-index", 1)) 
+    std::vector<expr_t> se_args;
+    
+    //
+    // create index-session-opener(uri) expr
+    // 
+    expr_t open_index_arg(new const_expr(fo->get_cur_sctx(), fo->get_loc(), uriItem));
+    expr_t open_index(new fo_expr(fo->get_cur_sctx(), fo->get_loc(),
+                                  LOOKUP_OP1("index-session-opener"),
+                                  open_index_arg));
+    se_args.push_back(open_index);
+    
+    //
+    // Create FOR clause:
+    // for $$dot at $$pos in domain_expr
+    //
+    expr::substitution_t subst;
+    flwor_expr::clause_list_t clauses;
+    var_expr_t dot = vi->getDomainVariable();
+    var_expr_t pos = vi->getDomainPositionVariable();
+    
+    expr_t newdom = vi->getDomainExpression()->clone(subst);
+    
+    var_expr_t newdot = new var_expr(dot->get_cur_sctx(),
+                                     dot->get_loc(),
+                                     dot->get_kind(),
+                                     dot->get_varname());
+    var_expr_t newpos = new var_expr(pos->get_cur_sctx(),
+                                     pos->get_loc(),
+                                     pos->get_kind(),
+                                     pos->get_varname());
+    subst[dot] = newdot;
+    subst[pos] = newpos;
+    for_clause* fc = new for_clause(dot->get_cur_sctx(),
+                                    dot->get_loc(),
+                                    newdot,
+                                    newdom,
+                                    newpos);
+    newdot->set_flwor_clause(fc);
+    newpos->set_flwor_clause(fc);
+    
+    clauses.push_back(fc);
+    
+    //
+    // Create RETURN clause:
+    // return index-builder(uri, $$dot, field1_expr, ..., fieldN_expr)
+    //
+    std::vector<expr_t> index_builder_args;
+    expr_t uriExpr(new const_expr(fo->get_cur_sctx(), fo->get_loc(), uriItem));
+    index_builder_args.push_back(uriExpr);
+    
+    expr_t domainVarExpr(new wrapper_expr(fo->get_cur_sctx(), fo->get_loc(), newdot.getp()));
+    index_builder_args.push_back(domainVarExpr);
+    
+    const std::vector<expr_t>& idx_fields(vi->getIndexFieldExpressions());
+    int n = idx_fields.size();
+    for(int i = 0; i < n; ++i) 
     {
-      //
-      // Get index uri
-      //
-      store::Item_t uri_item(get_uri((*fo)[0].getp()));
-      if (uri_item == NULL) {
-        ZORBA_ASSERT(false);
-      }
-      xqpStringStore_t uristore;
-      uri_item->getStringValue(uristore);
-
-      //
-      // Get ValueIndex obj from static ctx.
-      //
-      xqp_string uri(uristore);
-      ValueIndex *vi = rCtx.getStaticContext()->lookup_index(uri);
-      if (vi == NULL) {
-        ZORBA_ASSERT(false);
-      }
-
-      std::vector<expr_t> se_args;
-
-      //
-      // create index-session-opener(uri) expr
-      // 
-      expr_t open_index_arg(new const_expr(fo->get_cur_sctx(), fo->get_loc(), uri_item));
-      expr_t open_index(new fo_expr(fo->get_cur_sctx(), fo->get_loc(),
-                                    LOOKUP_OP1("index-session-opener"),
-                                    open_index_arg));
-      se_args.push_back(open_index);
-
-      //
-      // Create FOR clause:
-      // for $$dot at $$pos in domain_expr
-      //
-      expr::substitution_t subst;
-      flwor_expr::clause_list_t clauses;
-      var_expr_t dot = vi->getDomainVariable();
-      var_expr_t pos = vi->getDomainPositionVariable();
-
-      expr_t newdom = vi->getDomainExpression()->clone(subst);
-
-      var_expr_t newdot = new var_expr(dot->get_cur_sctx(), dot->get_loc(),
-                                       dot->get_kind(),
-                                       dot->get_varname());
-      var_expr_t newpos = new var_expr(pos->get_cur_sctx(),
-                                       pos->get_loc(),
-                                       pos->get_kind(),
-                                       pos->get_varname());
-      subst[dot] = newdot;
-      subst[pos] = newpos;
-      for_clause* fc = new for_clause(dot->get_cur_sctx(), dot->get_loc(), newdot, newdom, newpos);
-      newdot->set_flwor_clause(fc);
-      newpos->set_flwor_clause(fc);
-
-      clauses.push_back(fc);
-
-      //
-      // Create RETURN clause:
-      // return index-builder(uri, $$dot, field1_expr, ..., fieldN_expr)
-      //
-      std::vector<expr_t> index_builder_args;
-      expr_t insert_builder_uri(new const_expr(fo->get_cur_sctx(), fo->get_loc(), uri_item));
-      index_builder_args.push_back(insert_builder_uri);
-
-      expr_t index_builder_var(new wrapper_expr(fo->get_cur_sctx(), fo->get_loc(), newdot.getp()));
-      index_builder_args.push_back(index_builder_var);
-
-      const std::vector<expr_t>& idx_fields(vi->getIndexFieldExpressions());
-      int n = idx_fields.size();
-      for(int i = 0; i < n; ++i) 
-      {
-        index_builder_args.push_back(idx_fields[i]->clone(subst));
-      }
-
-      expr_t ret_expr(new fo_expr(fo->get_cur_sctx(),
-                                  fo->get_loc(),
-                                  LOOKUP_OPN("index-builder"),
-                                  index_builder_args));
-      
-      //
-      // Create flwor_expr with the above FOR and RETURN clauses.
-      //
-      rchandle<flwor_expr> flwor = new flwor_expr(fo->get_cur_sctx(), fo->get_loc(), false);
-      flwor->set_return_expr(ret_expr);
-      for (unsigned i = 0; i < clauses.size(); ++i)
-      {
-        flwor->add_clause(clauses[i]);
-      }
-      se_args.push_back(flwor.getp());
-
-      //
-      // Create index-session-closer(uri) expr.
-      //
-      expr_t close_index_arg(new const_expr(fo->get_cur_sctx(), fo->get_loc(), uri_item));
-      expr_t close_index(new fo_expr(fo->get_cur_sctx(), fo->get_loc(),
-                                     LOOKUP_OP1("index-session-closer"),
-                                     close_index_arg));
-      se_args.push_back(close_index);
-
-      //
-      // Create sequential_expr:
-      //
-      // index-session-opener(uri);
-      //
-      // for $$dot at $$pos in domain_expr
-      // return index-builder(uri, $$dot, field1_expr, ..., fieldN_expr);
-      //
-      // index-session-closer(uri);
-      //
-      expr_t se = new sequential_expr(fo->get_cur_sctx(), fo->get_loc(), se_args);
-      return se;
+      index_builder_args.push_back(idx_fields[i]->clone(subst));
     }
+    
+    expr_t ret_expr(new fo_expr(fo->get_cur_sctx(),
+                                fo->get_loc(),
+                                LOOKUP_OPN("index-builder"),
+                                index_builder_args));
+    
+    //
+    // Create flwor_expr with the above FOR and RETURN clauses.
+    //
+    rchandle<flwor_expr> flwor = new flwor_expr(fo->get_cur_sctx(), fo->get_loc(), false);
+    flwor->set_return_expr(ret_expr);
+    for (unsigned i = 0; i < clauses.size(); ++i)
+    {
+      flwor->add_clause(clauses[i]);
+    }
+    se_args.push_back(flwor.getp());
+    
+    //
+    // Create index-session-closer(uri) expr.
+    //
+    expr_t close_index_arg(new const_expr(fo->get_cur_sctx(), fo->get_loc(), uriItem));
+    expr_t close_index(new fo_expr(fo->get_cur_sctx(), fo->get_loc(),
+                                   LOOKUP_OP1("index-session-closer"),
+                                   close_index_arg));
+    se_args.push_back(close_index);
+    
+    //
+    // Create sequential_expr:
+    //
+    // index-session-opener(uri);
+    //
+    // for $$dot at $$pos in domain_expr
+    // return index-builder(uri, $$dot, field1_expr, ..., fieldN_expr);
+    //
+    // index-session-closer(uri);
+    //
+    expr_t se = new sequential_expr(fo->get_cur_sctx(), fo->get_loc(), se_args);
+    return se;
   }
+
   return NULL;
 }
 

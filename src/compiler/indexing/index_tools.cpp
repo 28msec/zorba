@@ -30,13 +30,21 @@ namespace zorba {
 
 #define LOOKUP_FN( pfx, local, arity ) (sCtx->lookup_fn (pfx, local, arity))
 
-static bool isConstant(expr *e)
+
+/*******************************************************************************
+  Return true if the given expr does not reference any variables.
+********************************************************************************/
+static bool isConstant(expr* e)
 {
-  if (e->get_expr_kind() == var_expr_kind) {
+  if (e->get_expr_kind() == var_expr_kind) 
+  {
     return false;
   }
-  for(expr_iterator i = e->expr_begin(); !i.done(); ++i) {
-    if (!isConstant((*i).getp())) {
+
+  for(expr_iterator i = e->expr_begin(); !i.done(); ++i) 
+  {
+    if (!isConstant((*i).getp())) 
+    {
       return false;
     }
   }
@@ -44,6 +52,10 @@ static bool isConstant(expr *e)
 }
 
 
+/*******************************************************************************
+  Return true if the given expr is of the form "fn:collection(arg_expr)" where
+  arg_expr is a constant.
+********************************************************************************/
 static bool isHoistableCollection(expr* e)
 {
   if (e->get_expr_kind() != fo_expr_kind) 
@@ -60,17 +72,26 @@ static bool isHoistableCollection(expr* e)
 }
 
 
-static xqpStringStore* getCollectionName(expr *e)
+/*******************************************************************************
+  Assuming that the given expr is of the form "fn:collection(arg_expr)" where
+  arg_expr is a constant, return the URI of the collection (i.e., the string
+  value of the const arg).
+********************************************************************************/
+static xqpStringStore* getCollectionName(expr* e)
 {
-  fo_expr *fo = static_cast<fo_expr *>(e);
-  const_expr *arg = static_cast<const_expr *>((*fo)[0].getp());
-  store::Item *val = arg->get_val();
+  fo_expr* fo = static_cast<fo_expr *>(e);
+  const_expr* arg = static_cast<const_expr *>((*fo)[0].getp());
+  store::Item* val = arg->get_val();
   return val->getStringValueP();
 }
 
 
 typedef std::vector<std::pair<expr_t, expr_t> > hoisted_collections_t;
 
+
+/*******************************************************************************
+
+********************************************************************************/
 static rchandle<var_expr> createTempLetVar(short sctx, const QueryLoc& loc, int counter)
 {
   std::stringstream ss;
@@ -83,6 +104,10 @@ static rchandle<var_expr> createTempLetVar(short sctx, const QueryLoc& loc, int 
   return var;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 static expr_t hoistCollectionSources(
     expr_t e,
     hoisted_collections_t& h,
@@ -102,33 +127,43 @@ static expr_t hoistCollectionSources(
     *i = hoistCollectionSources(*i, h, count);
     ++i;
   }
+
   return e;
 }
 
-/*
- * This function tries to see if the given expression is a map
- * in the given variable. If this returns true, then it is
- * guaranteed to be a map. If it returns false, it may still
- * be a map, but this algorithm could not determine that.
- * It assumes that the variable occurs atmost once.
- */
-static bool isMapInVar(expr *e, var_expr *var)
+
+/*******************************************************************************
+  This function tries to see if the given expression is a map in the given var.
+  If this returns true, then it is guaranteed to be a map. If it returns false,
+  it may still be a map, but this algorithm could not determine that.
+  It assumes that the variable occurs at most once.
+********************************************************************************/
+static bool isMapInVar(expr* e, var_expr* var)
 {
-  if (e == var) {
+  if (e == var) 
+  {
     return true;
   }
-  switch(e->get_expr_kind()) {
+
+  switch(e->get_expr_kind()) 
+  {
     case wrapper_expr_kind:
       return isMapInVar(static_cast<wrapper_expr *>(e)->get_expr().getp(), var);
 
-    case flwor_expr_kind: {
-      flwor_expr *flwor = static_cast<flwor_expr *>(e);
-      for(int i = static_cast<int>(flwor->num_clauses()) - 1; i >= 0; --i) {
-        flwor_clause *clause = (*flwor)[i];
+    case flwor_expr_kind: 
+    {
+      flwor_expr* flwor = static_cast<flwor_expr *>(e);
+
+      for(int i = static_cast<int>(flwor->num_clauses()) - 1; i >= 0; --i) 
+      {
+        flwor_clause* clause = (*flwor)[i];
         bool isMap = false;
-        switch(clause->get_kind()) {
+
+        switch(clause->get_kind()) 
+        {
           case flwor_clause::for_clause:
-            isMap = isMap || isMapInVar(static_cast<for_clause *>(clause)->get_expr(), var);
+            isMap = (isMap ||
+                     isMapInVar(static_cast<for_clause *>(clause)->get_expr(), var));
 
           case flwor_clause::let_clause:
           case flwor_clause::where_clause:
@@ -138,21 +173,28 @@ static bool isMapInVar(expr *e, var_expr *var)
           default:
             return false;
         }
+
         return isMap;
       }
     }
 
-    case relpath_expr_kind: {
-      relpath_expr *re = static_cast<relpath_expr *>(e);
+    case relpath_expr_kind: 
+    {
+      relpath_expr* re = static_cast<relpath_expr *>(e);
       return isMapInVar((*re)[0], var);
     }
 
     default:
       break;
   }
+
   return false;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 void IndexTools::inferIndexCreators(ValueIndex *vi)
 {
   expr *de = vi->getDomainExpression();
@@ -166,7 +208,9 @@ void IndexTools::inferIndexCreators(ValueIndex *vi)
   /*
 
     Commenting out for now. But these are the things that need to happen here:
+
       0. Create an expression that is of the following form:
+
         let $t := $externalVar
         for $de in $t
         let $k1 := key1($de)
@@ -178,8 +222,10 @@ void IndexTools::inferIndexCreators(ValueIndex *vi)
 
       1. For each substituted variable that the DE is a map in, replace it
       with an external variable
+
       2. Create an IndexCreator that is capable of evaluating this expression
       with the external variable set to the given item in the appendIndexEntries() call.
+
       3. For each tuple that is returned by this plan, create an IndexEntry containing
       the contents of the tuple.
 

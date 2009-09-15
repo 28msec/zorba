@@ -7200,26 +7200,36 @@ void end_visit (const CompTextConstructor& v, void* /*visit_state*/) {
 /***************************************************************************//**
   IndexStatement ::= ["CREATE" | "BUILD" | "DROP"] "INDEX" UriLiteral
 ********************************************************************************/
-void *begin_visit (const IndexStatement& v) {
+void *begin_visit (const IndexStatement& v) 
+{
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit (const IndexStatement& v, void* /*visit_state*/) {
+void end_visit (const IndexStatement& v, void* /*visit_state*/) 
+{
   rchandle<fo_expr> fo;
-  switch(v.type) {
-    case IndexStatement::build_stmt:
-      fo = new fo_expr(theCCB->m_cur_sctx, v.get_location(), LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS, "build-index", 1));
-      break;
+  switch(v.type) 
+  {
+  case IndexStatement::build_stmt:
+    fo = new fo_expr(theCCB->m_cur_sctx,
+                     v.get_location(),
+                     LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS, "build-index", 1));
+    break;
 
-    case IndexStatement::create_stmt:
-      fo = new fo_expr(theCCB->m_cur_sctx, v.get_location(), LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS, "create-index", 1));
-      break;
-
-    case IndexStatement::drop_stmt:
-      fo = new fo_expr(theCCB->m_cur_sctx, v.get_location(), LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS, "drop-index", 1));
-      break;
+  case IndexStatement::create_stmt:
+    fo = new fo_expr(theCCB->m_cur_sctx,
+                     v.get_location(),
+                     LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS, "create-index", 1));
+    break;
+    
+  case IndexStatement::drop_stmt:
+    fo = new fo_expr(theCCB->m_cur_sctx,
+                     v.get_location(),
+                     LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS, "drop-index", 1));
+    break;
   }
+
   store::Item_t uri_item;
   GENV_ITEMFACTORY->createAnyURI(uri_item, v.get_uri().c_str());
   expr_t uri(new const_expr(theCCB->m_cur_sctx, v.get_location(), uri_item));

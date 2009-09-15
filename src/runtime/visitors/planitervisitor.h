@@ -801,150 +801,155 @@ public:
 
   PLAN_ITER_VISITOR (PromoteIterator);
 
-    PLAN_ITER_VISITOR (CastableIterator);
+  PLAN_ITER_VISITOR (CastableIterator);
 
-    PLAN_ITER_VISITOR (FnDateTimeConstructorIterator);
+  PLAN_ITER_VISITOR (FnDateTimeConstructorIterator);
 
-    PLAN_ITER_VISITOR (FnYearsFromDurationIterator);
+  PLAN_ITER_VISITOR (FnYearsFromDurationIterator);
 
-    PLAN_ITER_VISITOR (FnMonthsFromDurationIterator);
+  PLAN_ITER_VISITOR (FnMonthsFromDurationIterator);
 
-    PLAN_ITER_VISITOR (FnDaysFromDurationIterator);
+  PLAN_ITER_VISITOR (FnDaysFromDurationIterator);
 
-    PLAN_ITER_VISITOR (FnHoursFromDurationIterator);
+  PLAN_ITER_VISITOR (FnHoursFromDurationIterator);
 
-    PLAN_ITER_VISITOR (FnMinutesFromDurationIterator);
+  PLAN_ITER_VISITOR (FnMinutesFromDurationIterator);
 
-    PLAN_ITER_VISITOR (FnSecondsFromDurationIterator);
+  PLAN_ITER_VISITOR (FnSecondsFromDurationIterator);
 
-    PLAN_ITER_VISITOR (FnYearFromDatetimeIterator);
+  PLAN_ITER_VISITOR (FnYearFromDatetimeIterator);
 
-    PLAN_ITER_VISITOR (FnMonthFromDatetimeIterator);
+  PLAN_ITER_VISITOR (FnMonthFromDatetimeIterator);
 
-    PLAN_ITER_VISITOR (FnDayFromDatetimeIterator);
+  PLAN_ITER_VISITOR (FnDayFromDatetimeIterator);
 
-    PLAN_ITER_VISITOR (FnHoursFromDatetimeIterator);
+  PLAN_ITER_VISITOR (FnHoursFromDatetimeIterator);
       
-    PLAN_ITER_VISITOR (FnMinutesFromDatetimeIterator);
+  PLAN_ITER_VISITOR (FnMinutesFromDatetimeIterator);
 
-    PLAN_ITER_VISITOR (FnSecondsFromDatetimeIterator);
+  PLAN_ITER_VISITOR (FnSecondsFromDatetimeIterator);
 
-    PLAN_ITER_VISITOR (FnTimezoneFromDatetimeIterator);
+  PLAN_ITER_VISITOR (FnTimezoneFromDatetimeIterator);
 
-    PLAN_ITER_VISITOR (FnYearFromDateIterator);
+  PLAN_ITER_VISITOR (FnYearFromDateIterator);
 
-    PLAN_ITER_VISITOR (FnMonthFromDateIterator);
+  PLAN_ITER_VISITOR (FnMonthFromDateIterator);
 
-    PLAN_ITER_VISITOR (FnDayFromDateIterator);
+  PLAN_ITER_VISITOR (FnDayFromDateIterator);
 
-    PLAN_ITER_VISITOR (FnTimezoneFromDateIterator);
+  PLAN_ITER_VISITOR (FnTimezoneFromDateIterator);
 
-    PLAN_ITER_VISITOR (FnHoursFromTimeIterator);
+  PLAN_ITER_VISITOR (FnHoursFromTimeIterator);
       
-    PLAN_ITER_VISITOR (FnMinutesFromTimeIterator);
+  PLAN_ITER_VISITOR (FnMinutesFromTimeIterator);
 
-    PLAN_ITER_VISITOR (FnSecondsFromTimeIterator);
+  PLAN_ITER_VISITOR (FnSecondsFromTimeIterator);
 
-    PLAN_ITER_VISITOR (FnTimezoneFromTimeIterator);
+  PLAN_ITER_VISITOR (FnTimezoneFromTimeIterator);
 
-    PLAN_ITER_VISITOR (CtxVariableIterator);
-    PLAN_ITER_VISITOR (CtxVarDeclIterator);
-    PLAN_ITER_VISITOR (CtxVarAssignIterator);
-    PLAN_ITER_VISITOR (CtxVarExistsIterator);
+  PLAN_ITER_VISITOR (CtxVariableIterator);
 
-    PLAN_ITER_VISITOR (EvalIterator);
+  PLAN_ITER_VISITOR (CtxVarDeclIterator);
 
-    PLAN_ITER_VISITOR (OpIsSameNodeIterator);
+  PLAN_ITER_VISITOR (CtxVarAssignIterator);
 
-    PLAN_ITER_VISITOR (OpNodeBeforeIterator);
+  PLAN_ITER_VISITOR (CtxVarExistsIterator);
 
-    PLAN_ITER_VISITOR (OpNodeAfterIterator);
+  PLAN_ITER_VISITOR (EvalIterator);
+  
+  PLAN_ITER_VISITOR (OpIsSameNodeIterator);
+  
+  PLAN_ITER_VISITOR (OpNodeBeforeIterator);
 
-    PLAN_ITER_VISITOR (FnCurrentDateTimeIterator);
+  PLAN_ITER_VISITOR (OpNodeAfterIterator);
 
-    PLAN_ITER_VISITOR (FnCurrentDateIterator);
+  PLAN_ITER_VISITOR (FnCurrentDateTimeIterator);
 
-    PLAN_ITER_VISITOR (FnCurrentTimeIterator);
+  PLAN_ITER_VISITOR (FnCurrentDateIterator);
 
-    PLAN_ITER_VISITOR (FnImplicitTimezoneIterator);
+  PLAN_ITER_VISITOR (FnCurrentTimeIterator);
 
-    PLAN_ITER_VISITOR (FnDefaultCollationIterator);
+  PLAN_ITER_VISITOR (FnImplicitTimezoneIterator);
 
-    PLAN_ITER_VISITOR(FnAdjustToTimeZoneIterator_1);
+  PLAN_ITER_VISITOR (FnDefaultCollationIterator);
 
-    PLAN_ITER_VISITOR(FnAdjustToTimeZoneIterator_2);
+  PLAN_ITER_VISITOR(FnAdjustToTimeZoneIterator_1);
 
-    PLAN_ITER_VISITOR(FnFormatDateTimeIterator);
+  PLAN_ITER_VISITOR(FnAdjustToTimeZoneIterator_2);
 
-    PLAN_ITER_VISITOR(InsertIterator);
+  PLAN_ITER_VISITOR(FnFormatDateTimeIterator);
 
-    PLAN_ITER_VISITOR(DeleteIterator);
+  PLAN_ITER_VISITOR(InsertIterator);
 
-    PLAN_ITER_VISITOR(ReplaceIterator);
+  PLAN_ITER_VISITOR(DeleteIterator);
 
-    PLAN_ITER_VISITOR(RenameIterator);
-    PLAN_ITER_VISITOR(TransformIterator);
-    PLAN_ITER_VISITOR(FnDeepEqualIterator);
+  PLAN_ITER_VISITOR(ReplaceIterator);
+
+  PLAN_ITER_VISITOR(RenameIterator);
+  PLAN_ITER_VISITOR(TransformIterator);
+  PLAN_ITER_VISITOR(FnDeepEqualIterator);
 	PLAN_ITER_VISITOR(FnFormatNumberIterator);
 
-    PLAN_ITER_VISITOR(ZorbaCollectionExistsIterator);
-    PLAN_ITER_VISITOR(ZorbaImportXmlIterator);
-    PLAN_ITER_VISITOR(ZorbaImportCatalogIterator);
-    PLAN_ITER_VISITOR(ZorbaImportFolderIterator);
-    PLAN_ITER_VISITOR(ZorbaListCollectionsIterator);
-    PLAN_ITER_VISITOR(ZorbaCreateCollectionIterator);
-    PLAN_ITER_VISITOR(ZorbaDeleteCollectionIterator);
-    PLAN_ITER_VISITOR(ZorbaDeleteAllCollectionsIterator);
-    PLAN_ITER_VISITOR(ZorbaInsertNodeFirstIterator);
-    PLAN_ITER_VISITOR(ZorbaInsertNodeLastIterator);
-    PLAN_ITER_VISITOR(ZorbaInsertNodeBeforeIterator);
-    PLAN_ITER_VISITOR(ZorbaInsertNodeAfterIterator);
-    PLAN_ITER_VISITOR(ZorbaInsertNodeAtIterator);
-    PLAN_ITER_VISITOR(ZorbaRemoveNodeIterator);
-    PLAN_ITER_VISITOR(ZorbaRemoveNodeAtIterator);
-    PLAN_ITER_VISITOR(ZorbaNodeCountIterator);
-    PLAN_ITER_VISITOR(ZorbaNodeAtIterator);
-    PLAN_ITER_VISITOR(ZorbaIndexOfIterator);
-    PLAN_ITER_VISITOR(ZorbaExportXmlIterator);
+  PLAN_ITER_VISITOR(ZorbaCollectionExistsIterator);
+  PLAN_ITER_VISITOR(ZorbaImportXmlIterator);
+  PLAN_ITER_VISITOR(ZorbaImportCatalogIterator);
+  PLAN_ITER_VISITOR(ZorbaImportFolderIterator);
+  PLAN_ITER_VISITOR(ZorbaListCollectionsIterator);
+  PLAN_ITER_VISITOR(ZorbaCreateCollectionIterator);
+  PLAN_ITER_VISITOR(ZorbaDeleteCollectionIterator);
+  PLAN_ITER_VISITOR(ZorbaDeleteAllCollectionsIterator);
+  PLAN_ITER_VISITOR(ZorbaInsertNodeFirstIterator);
+  PLAN_ITER_VISITOR(ZorbaInsertNodeLastIterator);
+  PLAN_ITER_VISITOR(ZorbaInsertNodeBeforeIterator);
+  PLAN_ITER_VISITOR(ZorbaInsertNodeAfterIterator);
+  PLAN_ITER_VISITOR(ZorbaInsertNodeAtIterator);
+  PLAN_ITER_VISITOR(ZorbaRemoveNodeIterator);
+  PLAN_ITER_VISITOR(ZorbaRemoveNodeAtIterator);
+  PLAN_ITER_VISITOR(ZorbaNodeCountIterator);
+  PLAN_ITER_VISITOR(ZorbaNodeAtIterator);
+  PLAN_ITER_VISITOR(ZorbaIndexOfIterator);
+  PLAN_ITER_VISITOR(ZorbaExportXmlIterator);
 
-    PLAN_ITER_VISITOR(ZorbaSchemaTypeIterator);
-    PLAN_ITER_VISITOR(ZorbaBase64EncodeIterator);
-    PLAN_ITER_VISITOR(ZorbaBase64DecodeIterator);
-    PLAN_ITER_VISITOR(XQDocIterator);
+  PLAN_ITER_VISITOR(ZorbaSchemaTypeIterator);
+  PLAN_ITER_VISITOR(ZorbaBase64EncodeIterator);
+  PLAN_ITER_VISITOR(ZorbaBase64DecodeIterator);
+  PLAN_ITER_VISITOR(XQDocIterator);
 #ifdef ZORBA_WITH_TIDY
-    PLAN_ITER_VISITOR(ZorbaTidyIterator);
-    PLAN_ITER_VISITOR(ZorbaTDocIterator);
+  PLAN_ITER_VISITOR(ZorbaTidyIterator);
+  PLAN_ITER_VISITOR(ZorbaTDocIterator);
 #endif
-    PLAN_ITER_VISITOR(ZorbaRandomIterator);
-    PLAN_ITER_VISITOR(ZorbaUUIDIterator);
+  PLAN_ITER_VISITOR(ZorbaRandomIterator);
+  PLAN_ITER_VISITOR(ZorbaUUIDIterator);
 #ifdef ZORBA_WITH_EMAIL
-    PLAN_ITER_VISITOR(ZorbaMailIterator);
+  PLAN_ITER_VISITOR(ZorbaMailIterator);
 #endif  /* ZORBA_WITH_EMAIL */
 #ifdef ZORBA_WITH_FOP
 	PLAN_ITER_VISITOR(ZorbaFopIterator);
 #endif // ZORBA_WITH_FOP
-    PLAN_ITER_VISITOR(ZorbaJsonParseIterator);
-    PLAN_ITER_VISITOR(ZorbaJsonSerializeIterator);
-    PLAN_ITER_VISITOR(ZorbaJsonMLParseIterator);
-    PLAN_ITER_VISITOR(ZorbaJsonMLSerializeIterator);
+  PLAN_ITER_VISITOR(ZorbaJsonParseIterator);
+  PLAN_ITER_VISITOR(ZorbaJsonSerializeIterator);
+  PLAN_ITER_VISITOR(ZorbaJsonMLParseIterator);
+  PLAN_ITER_VISITOR(ZorbaJsonMLSerializeIterator);
 
-    PLAN_ITER_VISITOR(ZorbaTimestampIterator);
+  PLAN_ITER_VISITOR(ZorbaTimestampIterator);
 
-    PLAN_ITER_VISITOR ( ZorbaDebugIterator );
-    PLAN_ITER_VISITOR ( DebuggerSingletonIterator );
+  PLAN_ITER_VISITOR ( ZorbaDebugIterator );
+  PLAN_ITER_VISITOR ( DebuggerSingletonIterator );
 
 #ifdef ZORBA_WITH_REST
-    PLAN_ITER_VISITOR(ZorbaRestGetIterator);
-    PLAN_ITER_VISITOR(ZorbaRestPostIterator);
-    PLAN_ITER_VISITOR(ZorbaRestPutIterator);
-    PLAN_ITER_VISITOR(ZorbaRestDeleteIterator);
-    PLAN_ITER_VISITOR(ZorbaRestHeadIterator);
+  PLAN_ITER_VISITOR(ZorbaRestGetIterator);
+  PLAN_ITER_VISITOR(ZorbaRestPostIterator);
+  PLAN_ITER_VISITOR(ZorbaRestPutIterator);
+  PLAN_ITER_VISITOR(ZorbaRestDeleteIterator);
+  PLAN_ITER_VISITOR(ZorbaRestHeadIterator);
 #endif
 
-    PLAN_ITER_VISITOR(HoistIterator);
-    PLAN_ITER_VISITOR(UnhoistIterator);
-	  
-  }; /* class PlanIterVisitor */
+  PLAN_ITER_VISITOR(HoistIterator);
+  PLAN_ITER_VISITOR(UnhoistIterator);
+	
+}; /* class PlanIterVisitor */
+
+
 } /* namespace zorba */
 
 #endif

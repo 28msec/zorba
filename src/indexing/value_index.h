@@ -49,8 +49,10 @@ typedef rchandle<ValueIndexInsertSession> ValueIndexInsertSession_t;
 
   - Other index-related syntax:
 
-  IndexStatement ::= [CREATE | BUILD | DROP] UriLiteral
+  IndexStatement ::= ["CREATE" | "BUILD" | "DROP"] INDEX UriLiteral
 
+  These statements are translated into the create-index(), build-index() and
+  drop-index() functions, respectively.
 
   - Index-related functions (see src/functions/Index.h):
 
