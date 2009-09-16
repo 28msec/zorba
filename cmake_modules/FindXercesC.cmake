@@ -4,7 +4,7 @@
 #  XERCESC_FOUND - system has Xerces-C
 #  XERCESC_INCLUDE - the Xerces-C include directory
 #  XERCESC_LIBRARY - Link these to use Xerces-C
-#
+#  XERCESC_VERSION - Xerces-C found version
 
 IF (XERCESC_INCLUDE AND XERCESC_LIBRARY)
    # in cache already
@@ -62,12 +62,11 @@ IF(XERCESC_FOUND)
     MESSAGE(STATUS "       Version: ${XERCESC_VERSION}")
   ENDIF(NOT XERCESC_FIND_QUIETLY)
 ELSE(XERCESC_FOUND)
-  MESSAGE(FATAL_ERROR "Could not find Xerces-C !"
-	"   \nOnly 2.8.0, 3.0.1 and newer versions are supported"
-	"   \nor"
-	"   \nUse -DZORBA_NO_XMLSCHEMA for building without schema support.")
+  MESSAGE(FATAL_ERROR "Could not find Xerces-C !
+     Only 2.8.0, 3.0.1 and newer versions are supported
+     or
+     Use -D ZORBA_NO_XMLSCHEMA=ON option for building without XMLSchema 
+       support.")
 ENDIF(XERCESC_FOUND)
-
-
 
 MARK_AS_ADVANCED(XERCESC_INCLUDE XERCESC_LIBRARY)
