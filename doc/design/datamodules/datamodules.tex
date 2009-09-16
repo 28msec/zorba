@@ -62,13 +62,14 @@ Withing a \textit{Data Module}, the \textit{Prolog} can be extended by the \text
 \par
 \vspace{0.25cm}
 \begin{tabular}{l c p{12cm}}
-{\tt Prolog}           & ::= & {\tt "((DefaultNamespaceDecl | Setter | NamespaceDecl | Import) Separator)* DataModuleProlog ((VarDecl | ContextItemDecl | FunctionDecl | OptionDecl) Separator)*} \\
-{\tt DataModuleProlog} & ::= & {\tt "((CollectionDecl|IndexDecl|ICDecl) Separator)*} 
+{\tt Prolog}           & ::= & {\tt ((DefaultNamespaceDecl | Setter | NamespaceDecl | Import) Separator)* DataModuleProlog ((VarDecl | ContextItemDecl | FunctionDecl | OptionDecl) Separator)*} \\
+{\tt DataModuleProlog} & ::= & {\tt ((CollectionDecl|IndexDecl|ICDecl) Separator)*} 
 \end{tabular}
 
 \subsection{Collection Declaration}
 \begin{tabular}{l c p{12cm}}
-{\tt CollectionDecl} & ::= & {\tt "declare" ("append-only")? ("read-only")? ("persistent")? ("versioned")? "collection" URILiteral ("item-type" KindTest)? ((":=" ExprSingle) | "external")?}
+{\tt CollectionDecl}  & ::= & {\tt "declare" CollDeclOptions "collection" URILiteral ("item-type" KindTest)? ((":=" ExprSingle) | "external")?} \\
+{\tt CollDeclOptions} & ::= & {\tt ("read-only")? | (("append-only")? ("persistent")? ("versioned")?)  }
 \end{tabular}
 
 \vspace{0.5cm}
@@ -87,37 +88,60 @@ Withing a \textit{Data Module}, the \textit{Prolog} can be extended by the \text
   \item As in XQuery 1.1, collection must not be registered in the static context as long as they are not typed. Collections are registered in the dynamic context.
 \end{itemize}
 
-\paragraph{Example}
+\paragraph{Examples}
 \begin{verbatim}
 import schema namespace sc="http://www.zorba-xquery.com/schemas/collection";
-declare persistent collection "http://www.zorba-xquery.com/collection" 
+declare persistent collection "http://www.coll1.com" 
   item-type element() 
   := (<el id="1">a</el>,<el id="2">b</el>,<el id="3">c</el>);
-declare read-only collection "http://www.zorba-xquery.com/collection" 
+declare read-only collection "http://www.coll2.com" 
+  item-type schema-element(sc:element) external;
+\end{verbatim}
+
+\paragraph{Alternatives}
+It is very cumbersome (and error-prone) to use URIs to identify collections. Thus, it would be nice to bind the URI to a variable in the collection declaration:
+\begin{verbatim}
+declare datamodule namespace ns="http://www.namespace.com";
+import schema namespace sc="http://www.zorba-xquery.com/schemas/collection";
+
+declare persistent collection ns:coll1 at "http://www.coll1.com" 
+  item-type element() 
+  := (<el id="1">a</el>,<el id="2">b</el>,<el id="3">c</el>);
+declare read-only collection ns:coll2 at "http://www.zorba-xquery.com/collection" 
   item-type schema-element(sc:element) external;
 
-fn:collection("http://www.zorba-xquery.com/collection")
+(: no cumbersome URIs have to be used in the code :)
+fn:collection(ns:coll1),fn:collection(ns:coll2)
 \end{verbatim}
 
 \subsection{Index}
 \subsubsection{Index Declaration}
 \begin{tabular}{l c p{12cm}}
 {\tt IndexDecl}   & ::= & {\tt "declare" ("unique")? ("ordered" | "unordered")? "index" URILiteral "on" ExprSingle "by" "(" ( IndexColumn ( "," IndexColumn )* ) ")"} \\
-{\tt IndexColumn} & ::= & {\tt ExprSingle (TypeDeclaration) ("collation" URILiteral)}
+{\tt IndexColumn} & ::= & {\tt ExprSingle (TypeDeclaration) ("collation" URILiteral)?}
 \end{tabular}
 
 \paragraph{Errors}
 \begin{itemize}
+  \item \textbf{err:TBD}: It is a static error if an index declaration is in a module other than DataModule.
   \item \textbf{err:TBD}: It is a static error if any expression used in an index declaration has dependencies to the dynamic context.
   \item \textbf{err:TBD}: It is a static error if an index is dependent on non-existing collections (forward references are not allowed).
+  \item \textbf{err:TBD}: It is a static error if an index is declared on a collection declared in a different module.
 \end{itemize}
 
-\paragraph{Example}
+\paragraph{Examples}
 \begin{verbatim}
 declare ordered index "http://www.zorba-xquery.com/collection/index" 
-  on fn:collection("http://www.zorba-xquery.com/collection") by data(./@id);
+  on fn:collection("http://www.coll1.com") by data(./@id) as xs:string;
 ()
 \end{verbatim}
+
+\begin{verbatim}
+declare ordered index "http://www.zorba-xquery.com/collection/index" 
+  on fn:collection(ns:coll1) by data(./@id) as xs:string;
+()
+\end{verbatim}
+
 
 \subsubsection{Index Point Probe}
 \begin{verbatim}
@@ -149,10 +173,8 @@ declare function op-extensions:probe-index-range(
 \noindent
 The function takes six times as many arguments as key columns in the index being probed, after the URI. The result is the sequence of nodes that were inserted into the index with keys that fall in the given range. The col\_have arguments indicate if the corresponding bounds of the range are bounded or unbounded. The col\_incl arguments indicate if the corresponding bounds of the range are included. If a particular col\_have is false, the corresponding col\_incl must be false.
 
-
 \paragraph{Example}
 \begin{verbatim}
-op-extensions:probe-index-point("http://www.zorba-xquery.com/collection/index", 2)
 op-extensions:probe-index-range(
                 "http://www.zorba-xquery.com/collection/index",
                 2,
@@ -163,10 +185,17 @@ op-extensions:probe-index-range(
                 false())
 \end{verbatim}
 
-\paragraph{Question}
-\begin{itemize}
-\item Why can't an empty border indicate 'unbounded'? Why is an additional parameter necessary?
-\end{itemize}
+\paragraph{Simplification}
+The two parameters \textit{have\_left} and \textit{have\_right} are unnecessary. Unbounded can be defined by giving an empty sequence as boundary.
+
+\begin{verbatim}
+op-extensions:probe-index-range(
+                "http://www.zorba-xquery.com/collection/index",
+                2,
+                (),
+                true(),
+                false())
+\end{verbatim}
 
 \subsection{Integrity Constraint}
 \subsubsection{Integrity Constraint Declaration}
@@ -176,6 +205,7 @@ op-extensions:probe-index-range(
 {\tt ICCollSequence}       & ::= & {\tt "\$" QName "check" (ICCollSequenceEBV|ICCollSequenceUnique)} \\
 {\tt ICCollSequenceEBV}    & ::= & {\tt  ExprSingle} \\
 {\tt ICCollSequenceUnique} & ::= & {\tt "unique" "keys" "(" Expr ")"} \\
+{\tt ICCollNode}           & ::= & {\tt "foreach" "node" "\$" QName "check" ExprSingle} \\
 {\tt ICCollNode}           & ::= & {\tt "on" "node" "\$" QName "of" "type" KindTest "check" ExprSingle} \\
 {\tt ICForeignKey}         & ::= & {\tt "foreign" "key" ICForeignKeySource ICForeignKeyTarget} \\
 {\tt ICForeignKeySource}   & ::= & {\tt "from" ICForeignKeyValues} \\
@@ -185,13 +215,47 @@ op-extensions:probe-index-range(
 
 \paragraph{Errors}
 \begin{itemize}
+  \item \textbf{err:TBD}: It is a static error if an integrity constraint declaration is in a module other than DataModule.
   \item \textbf{err:TBD}: It is a static error if any expression used in an integrity constraint declaration has dependencies to the dynamic context.
   \item \textbf{err:TBD}: It is a static error if an integrity contraint is dependent on non-existing collections (forward references are not allowed).
+  \item \textbf{err:TBD}: It is a static error if the source collection is declared in a different module.
+  \item \textbf{err:TBD}: It is a static error if any expression used in an integrity constraint declaration has dependencies to the dynamic context.
 \end{itemize}
 
 \paragraph{Examples}
 \begin{verbatim}
-declare integrity constraint "http://www.zorba-xquery.org/collection/ic" on collection "http://www.zorba-xquery.org/collection" unique keys ( data(.) );
+declare integrity constraint "http://www.ic1.com" 
+  on collection "http://www.coll1" $x check sum($x/size) le 1000;
+\end{verbatim}
+
+\begin{verbatim}
+declare integrity constraint "http://www.ic2.com" 
+  on collection "http://www.coll1" $x check unique keys $x/@id;
+\end{verbatim}
+
+\begin{verbatim}
+declare integrity constraint "http://www.ic3.com" 
+  on collection "http://www.coll1" foreach node $x check $x/size gt 0; 
+\end{verbatim}
+
+\begin{verbatim}
+declare integrity constraint "http://www.ic4.com" 
+  on node $x of type schmema-type(body) check $x/size gt 0; 
+\end{verbatim}
+
+\begin{verbatim}
+declare integrity constraint "http://www.ic5.com" 
+  foreign key 
+    from collection "http://www.people.com" node $x keys ( $x/name) 
+    to collection "http://www.houses.com" node &y keys ( $y/owner);
+\end{verbatim}
+
+\paragraph{Alternatives}
+\begin{verbatim}
+declare integrity constraint "http://www.ic5.com" 
+  foreign key 
+    from fn:collection("http://www.people.com")/name 
+    to fn:collection("http://www.houses.com")/owner;
 \end{verbatim}
 
 \subsection{Data Module Declaration}
@@ -202,11 +266,6 @@ declare integrity constraint "http://www.zorba-xquery.org/collection/ic" on coll
 \vspace{0.5cm}
 \noindent
 [Definition: A data module import imports all collections, indexes and integrity contraints defined into the dynamic context.]
-
-\paragraph{Errors}
-\begin{itemize}
-  \item \textbf{err:TBD}: It is a static error if a non-data module has side-effects on collections.
-\end{itemize}
 
 \section{Implementation in Zorba}
 TODO
