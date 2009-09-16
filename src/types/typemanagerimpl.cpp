@@ -19,7 +19,6 @@
 #include <zorba/typeident.h>
 
 #include "zorbaerrors/Assert.h"
-#include <zorbatypes/xerces_xmlcharray.h>
 
 #include "system/globalenv.h"
 

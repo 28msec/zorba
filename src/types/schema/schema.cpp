@@ -15,7 +15,6 @@
  */
 #include <string>
 
-#include <zorbatypes/xerces_xmlcharray.h>
 #include "compiler/parser/query_loc.h"
 
 #include "zorbamisc/ns_consts.h"
@@ -34,6 +33,10 @@
 #include "store/api/item_factory.h"
 
 #include "types/schema/xercesIncludes.h"
+
+#ifndef ZORBA_NO_XMLSCHEMA
+#include <zorbatypes/xerces_xmlcharray.h>
+#endif //ZORBA_NO_XMLSCHEMA
 
 
 //using namespace std;
@@ -110,7 +113,7 @@ InputSource* SchemaLocationEntityResolver::resolveEntity(
 
 /*******************************************************************************
   Initialize the Xerces platform. Called from GlobalEnvironment::init().
-********************************************************************************/
+*******************************************************************************/
 void Schema::initialize()
 {
 #ifndef ZORBA_NO_XMLSCHEMA
@@ -134,7 +137,7 @@ void Schema::initialize()
 
 /*******************************************************************************
   Terminate the Xerces platform. Called from GlobalEnvironment::destroy().
-********************************************************************************/
+*******************************************************************************/
 void Schema::terminate()
 {
 #ifndef ZORBA_NO_XMLSCHEMA
@@ -149,7 +152,7 @@ void Schema::terminate()
 
 /*******************************************************************************
 
-********************************************************************************/
+*******************************************************************************/
 Schema::Schema()
 {
 #ifndef ZORBA_NO_XMLSCHEMA
@@ -170,7 +173,7 @@ Schema::Schema(::zorba::serialization::Archiver &ar)
 
 /*******************************************************************************
 
-********************************************************************************/
+*******************************************************************************/
 Schema::~Schema()
 {
 #ifndef ZORBA_NO_XMLSCHEMA
@@ -183,7 +186,7 @@ Schema::~Schema()
 
 /*******************************************************************************
 
-********************************************************************************/
+*******************************************************************************/
 void Schema::printXSDInfo(bool excludeBuiltIn)
 {
 #ifndef ZORBA_NO_XMLSCHEMA
@@ -197,7 +200,7 @@ void Schema::printXSDInfo(bool excludeBuiltIn)
 
 /*******************************************************************************
 
-********************************************************************************/
+*******************************************************************************/
 void Schema::registerXSD(const char* xsdURL, std::string& location, const QueryLoc& loc)
 {
   std::auto_ptr<SAX2XMLReader> parser;
@@ -818,8 +821,9 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
 }
 
 
-xqtref_t Schema::createXQTypeFromTypeDefForBuiltinTypes(const TypeManager* typeManager,
-    xqpStringStore_t strUri, const XMLCh* local)
+xqtref_t Schema::createXQTypeFromTypeDefForBuiltinTypes(
+    const TypeManager* typeManager, xqpStringStore_t strUri, 
+    const XMLCh* local)
 {
   xqtref_t result;
     

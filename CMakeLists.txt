@@ -265,10 +265,11 @@ IF (NOT ZORBA_NO_XMLSCHEMA)
     COMPARE_VERSION_STRINGS("${XERCESC_VERSION}" 2.8.0 result)
 
     IF (result LESS 0)
-      MESSAGE(FATAL_ERROR "Xerces ${XERCESC_VERSION} not supported."
-	"   \nOnly 2.8.0, 3.0.1 and newer versions are supported"
-	"   \nor"
-	"   \nUse -DZORBA_NO_XMLSCHEMA for building without schema support.")
+      MESSAGE(FATAL_ERROR "Xerces ${XERCESC_VERSION} not supported.
+	Only 2.8.0, 3.0.1 and newer versions are supported
+	or
+	Use -D ZORBA_NO_XMLSCHEMA=ON option for building without XMLSchema 
+          support.")
     ELSE (result LESS 0)
       MESSAGE(STATUS "Found Xerces ${XERCESC_VERSION} -- ${XERCESC_LIBRARY}")
       INCLUDE_DIRECTORIES(${XERCESC_INCLUDE})

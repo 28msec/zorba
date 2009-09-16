@@ -19,29 +19,34 @@
 #ifndef ZORBA_NO_XMLSCHEMA
 
 #include <xercesc/util/XMLString.hpp>
+#include <xercesc/util/XercesDefs.hpp>
 //daniel: this is to make cygwin work; xerces defines WIN32 in case of cygwin, which is wrong
 #ifdef CYGWIN
 #undef WIN32
-#endif
+#endif // ifdef CYGWIN
+
 
 #include <zorba/config.h>
 #include <zorbatypes/xqpstring.h>
 
-
 XERCES_CPP_NAMESPACE_USE
 
-namespace zorba {
+namespace zorba 
+{
 
 class XMLChArray 
 {
+
   XMLCh *buf;
     
  public:
   XMLChArray (XMLCh *buf_) : buf(buf_) {}
     
-  XMLChArray (const char* str) : buf(XMLString::transcode(str)) {}
+  XMLChArray (const char* str) : 
+    buf(XMLString::transcode(str)) {}
 
-  XMLChArray (const xqpStringStore* str) : buf(XMLString::transcode(str->c_str())) {}
+  XMLChArray (const xqpStringStore* str) : 
+    buf(XMLString::transcode(str->c_str())) {}
     
   XMLCh *get () { return buf; }
   const XMLCh *get () const { return buf; }
@@ -49,7 +54,8 @@ class XMLChArray
   operator XMLCh* () { return get (); }
   operator const XMLCh* () const { return get (); }
 
-  friend std::ostream& operator<<(std::ostream& out, const XMLChArray& xmlChArray)
+  friend std::ostream& operator<<(std::ostream& out, 
+                                  const XMLChArray& xmlChArray)
   {
       out << XMLString::transcode(xmlChArray.get ());
       return out;
@@ -57,6 +63,7 @@ class XMLChArray
 
  
   ~XMLChArray () { XMLString::release (&buf); }
+
 };
 
 }

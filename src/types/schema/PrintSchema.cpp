@@ -21,7 +21,6 @@
 #include "xercesIncludes.h"
 #include "StrX.h"
 #include "schema.h"
-#include "zorbatypes/xerces_xmlcharray.h"
 #include <iostream>
 #include "types/typeimpl.h"
 
