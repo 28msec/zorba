@@ -15,6 +15,7 @@
 PROJECT(zorba)
 ENABLE_TESTING()
 INCLUDE(CTest)
+INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/CMakeCompareVersionStrings.cmake)
 
 cmake_minimum_required(VERSION 2.4)
 IF (CMAKE_VERSION STREQUAL "2.6.3")
@@ -261,18 +262,18 @@ IF (NOT ZORBA_NO_XMLSCHEMA)
   INCLUDE(${CMAKE_MODULE_PATH}/FindXercesC.cmake)
 
   IF (XERCESC_FOUND)
-    SET(XERCESC_MIN_VERSION_SUPPORTED "2.8.0")
+    COMPARE_VERSION_STRINGS("${XERCESC_VERSION}","2.8.0", result)
 
-    IF ( ${XERCESC_VERSION} VERSION_LESS ${XERCESC_MIN_VERSION_SUPPORTED})
+    IF (result LESS 0)
       MESSAGE(FATAL_ERROR "Xerces ${XERCESC_VERSION} not supported."
 	"   \nOnly 2.8.0, 3.0.1 and newer versions are supported"
 	"   \nor"
 	"   \nUse -DZORBA_NO_XMLSCHEMA for building without schema support.")
-    ELSE (${XERCESC_VERSION} VERSION_LESS ${XERCESC_MIN_VERSION_SUPPORTED})
+    ELSE (result LESS 0)
       MESSAGE(STATUS "Found Xerces ${XERCESC_VERSION} -- ${XERCESC_LIBRARY}")
       INCLUDE_DIRECTORIES(${XERCESC_INCLUDE})
       SET(requiredlibs ${requiredlibs} ${XERCESC_LIBRARY})
-    ENDIF (${XERCESC_VERSION} VERSION_LESS ${XERCESC_MIN_VERSION_SUPPORTED})
+    ENDIF (result LESS 0)
 
   ENDIF (XERCESC_FOUND)
 ELSE (NOT ZORBA_NO_XMLSCHEMA)
