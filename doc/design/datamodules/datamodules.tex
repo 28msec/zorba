@@ -69,8 +69,11 @@ Withing a \textit{Data Module}, the \textit{Prolog} can be extended by the \text
 \subsection{Collection Declaration}
 \begin{tabular}{l c p{12cm}}
 {\tt CollectionDecl}  & ::= & {\tt "declare" CollDeclOptions "collection" URILiteral ("item-type" KindTest)? ((":=" ExprSingle) | "external")?} \\
-{\tt CollDeclOptions} & ::= & {\tt ("read-only")? | (("append-only")? ("persistent")? ("versioned")?)  }
+{\tt CollDeclOptions} & ::= & {\tt ("read-only")? | (("append-only")? ("persistent")? ("versioned")? ) ... <TO BE COMPLETED> }
 \end{tabular}
+
+\paragraph{Question}
+Does it really make sense to have the possibility to define initial values for persistent collections?
 
 \vspace{0.5cm}
 \noindent
@@ -91,11 +94,17 @@ Withing a \textit{Data Module}, the \textit{Prolog} can be extended by the \text
 \paragraph{Examples}
 \begin{verbatim}
 import schema namespace sc="http://www.zorba-xquery.com/schemas/collection";
+
 declare persistent collection "http://www.coll1.com" 
   item-type element() 
   := (<el id="1">a</el>,<el id="2">b</el>,<el id="3">c</el>);
+\end{verbatim}
+\begin{verbatim}
 declare read-only collection "http://www.coll2.com" 
   item-type schema-element(sc:element) external;
+\end{verbatim}
+\begin{verbatim}
+declare append-only collection "http://www.coll3.com";
 \end{verbatim}
 
 \paragraph{Alternatives}
