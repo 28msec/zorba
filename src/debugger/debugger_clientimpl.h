@@ -109,6 +109,11 @@ namespace zorba{
       void
       setExecutionStatus(const ExecutionStatus& e);
 
+      virtual std::string listSource(
+        const std::string& aUri,
+        unsigned long aFirstline = 0,
+        unsigned long aLastName = 0) const;
+
     protected:
       static unsigned int theLastId;
 

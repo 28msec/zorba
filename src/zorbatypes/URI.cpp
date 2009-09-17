@@ -43,7 +43,7 @@ xqpStringStore_t  URI::decode_file_URI(const xqpStringStore_t& uri)
     if (uri->byteCompare(0, 8, "file:///") == 0) {
       xqp_string res(uri->c_str() + 7);
       return res.decodeFromUri().getStore();
-    } else if (uri->byteCompare(0, 16, "file://localhost/")) {
+    } else if (uri->byteCompare(0, 16, "file://localhost/") == 0) {
       xqp_string res(uri->c_str() + 16);
       return res.decodeFromUri().getStore();
     } else {

@@ -341,30 +341,10 @@ namespace zorba{
 
 	istream* DebuggerHandler::resolve(const String& aNamespace) const
 	{
-		String lNamespace(aNamespace);
-		assert(theZorba != 0);
-		StaticContext_t lStaticCtx = theZorba->createStaticContext();
-		assert(lStaticCtx != 0);
-		//Check for namespace prefix
-		try
-		{
-			lNamespace = lStaticCtx->getNamespaceURIByPrefix(lNamespace); 
-		}catch(ZorbaException&){ /* do nothing */ }
-
-		ModuleURIResolver* lModuleURIResolver = lStaticCtx->getModuleURIResolver(); 
-		auto_ptr<istream> lInput;
-		if(lModuleURIResolver == 0)
-		{
-			stringstream lFilename;
-			lFilename << lNamespace;
-			lInput.reset(new ifstream(lFilename.str().c_str()));
-		} else {
-			//Resolve the logical/physical URI
-			ItemFactory* lItemFactory = theZorba->getItemFactory();
-			Item lURI = lItemFactory->createAnyURI(lNamespace);
-			lInput.reset(lModuleURIResolver->resolve(lURI, 0)->getModule());
-		}
-		return lInput.release();
+    std::string lSource = theClient->listSource(aNamespace.c_str());
+    std::auto_ptr<std::istringstream> lStream(new std::istringstream());
+    lStream->str(lSource);
+    return lStream.release();
 	}
 
 	bool DebuggerHandler::list(const String& aNamespace) const

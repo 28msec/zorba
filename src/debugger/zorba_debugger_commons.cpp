@@ -14,7 +14,9 @@
 
 #include "zorbatypes/URI.h"
 
-zorba::ZorbaDebuggerCommons::ZorbaDebuggerCommons(zorba::static_context* sctx)
+namespace zorba {
+
+ZorbaDebuggerCommons::ZorbaDebuggerCommons(static_context* sctx)
 :
 theBreak(false),
 theCause(0),
@@ -22,41 +24,41 @@ theExecEval(false)
 {
 }
 
-zorba::ZorbaDebuggerCommons::~ZorbaDebuggerCommons()
+ZorbaDebuggerCommons::~ZorbaDebuggerCommons()
 {
 }
 
-void zorba::ZorbaDebuggerCommons::setRuntime( ZorbaDebuggerRuntime* aRuntime )
+void ZorbaDebuggerCommons::setRuntime( ZorbaDebuggerRuntime* aRuntime )
 {
   theRuntime = aRuntime;
 }
 
-zorba::ZorbaDebuggerRuntime* zorba::ZorbaDebuggerCommons::getRuntime()
+ZorbaDebuggerRuntime* ZorbaDebuggerCommons::getRuntime()
 {
   return theRuntime;
 }
 
-void zorba::ZorbaDebuggerCommons::setCurrentStaticContext( static_context* aStaticContext )
+void ZorbaDebuggerCommons::setCurrentStaticContext( static_context* aStaticContext )
 {
   theCurrentStaticContext = aStaticContext;
 }
 
-void zorba::ZorbaDebuggerCommons::setCurrentDynamicContext( dynamic_context* aDynamicContext )
+void ZorbaDebuggerCommons::setCurrentDynamicContext( dynamic_context* aDynamicContext )
 {
  theCurrentDynamicContext = aDynamicContext;
 }
 
-zorba::dynamic_context* zorba::ZorbaDebuggerCommons::getCurrentDynamicContext() const
+dynamic_context* ZorbaDebuggerCommons::getCurrentDynamicContext() const
 {
   return theCurrentDynamicContext;
 }
 
-zorba::static_context* zorba::ZorbaDebuggerCommons::getCurrentStaticContext() const
+static_context* ZorbaDebuggerCommons::getCurrentStaticContext() const
 {
   return theCurrentStaticContext;
 }
 
-bool zorba::ZorbaDebuggerCommons::addBreakpoint( DebugLocation_t& aLocation )
+bool ZorbaDebuggerCommons::addBreakpoint( DebugLocation_t& aLocation )
 {
   // First we check, if the filename is a module namespace
   std::map<std::string, std::string>::iterator lMapIter;
@@ -94,7 +96,7 @@ bool zorba::ZorbaDebuggerCommons::addBreakpoint( DebugLocation_t& aLocation )
   return false;
 }
 
-bool zorba::ZorbaDebuggerCommons::hasToBreakAt( const QueryLoc& aLocation ) const
+bool ZorbaDebuggerCommons::hasToBreakAt( const QueryLoc& aLocation ) const
 {
   if (theExecEval) {
     return false;
@@ -111,7 +113,7 @@ bool zorba::ZorbaDebuggerCommons::hasToBreakAt( const QueryLoc& aLocation ) cons
   return false;
 }
 
-bool zorba::ZorbaDebuggerCommons::hasToBreakAt( const ZorbaDebugIterator* aIter )
+bool ZorbaDebuggerCommons::hasToBreakAt(const ZorbaDebugIterator* aIter)
 {
   //Preconditions
   ZORBA_ASSERT(aIter != NULL);
@@ -132,7 +134,7 @@ bool zorba::ZorbaDebuggerCommons::hasToBreakAt( const ZorbaDebugIterator* aIter 
   return false;
 }
 
-bool zorba::ZorbaDebuggerCommons::hasToBreak(SuspensionCause* aCause) const
+bool ZorbaDebuggerCommons::hasToBreak(SuspensionCause* aCause) const
 {
   //This is not a precondition, because the client does not hava another
   //way to check it, then calling this function. But if theCause is 0, this
@@ -154,7 +156,7 @@ bool zorba::ZorbaDebuggerCommons::hasToBreak(SuspensionCause* aCause) const
   return theBreak;
 }
 
-void zorba::ZorbaDebuggerCommons::setBreak( bool lBreak, SuspensionCause aCause )
+void ZorbaDebuggerCommons::setBreak( bool lBreak, SuspensionCause aCause )
 {
 #ifndef NDEBUG
   //Check preconditions
@@ -169,19 +171,19 @@ void zorba::ZorbaDebuggerCommons::setBreak( bool lBreak, SuspensionCause aCause 
 #endif //NDEBUG
 }
 
-void zorba::ZorbaDebuggerCommons::setCurrentIterator( const ZorbaDebugIterator* aIterator )
+void ZorbaDebuggerCommons::setCurrentIterator( const ZorbaDebugIterator* aIterator )
 {
   theCurrentIterator = aIterator;
   //Test postconditions
   ZORBA_ASSERT(aIterator == theCurrentIterator);
 }
 
-const zorba::ZorbaDebugIterator* zorba::ZorbaDebuggerCommons::getCurrentIterator()
+const ZorbaDebugIterator* ZorbaDebuggerCommons::getCurrentIterator() const
 {
   return theCurrentIterator;
 }
 
-void zorba::ZorbaDebuggerCommons::makeStepOut()
+void ZorbaDebuggerCommons::makeStepOut()
 {
   const ZorbaDebugIterator* lIter = theCurrentIterator->getParent();
   if (lIter != NULL) {
@@ -189,7 +191,7 @@ void zorba::ZorbaDebuggerCommons::makeStepOut()
   }
 }
 
-void zorba::ZorbaDebuggerCommons::makeStepOver()
+void ZorbaDebuggerCommons::makeStepOver()
 {
   //Preconditions
   ZORBA_ASSERT(theCurrentIterator != NULL);
@@ -200,39 +202,39 @@ void zorba::ZorbaDebuggerCommons::makeStepOver()
   }
 }
 
-void zorba::ZorbaDebuggerCommons::setPlanState( PlanState* aPlanState )
+void ZorbaDebuggerCommons::setPlanState( PlanState* aPlanState )
 {
   thePlanState = aPlanState;
   //Check postconditions
   ZORBA_ASSERT(thePlanState == aPlanState);
 }
 
-void zorba::ZorbaDebuggerCommons::setDebugIteratorState( ZorbaDebugIteratorState* aState )
+void ZorbaDebuggerCommons::setDebugIteratorState( ZorbaDebugIteratorState* aState )
 {
   theDebugIteratorState = aState;
   //Check postconditions
   ZORBA_ASSERT(theDebugIteratorState == aState);
 }
 
-std::list<std::pair<zorba::xqpString, zorba::xqpString> > 
-zorba::ZorbaDebuggerCommons::eval(const xqpString& aExpr)
+std::list<std::pair<xqpString, xqpString> > 
+ZorbaDebuggerCommons::eval(const xqpString& aExpr)
 {
   theExecEval = true;
   xqpStringStore_t lStore = aExpr.getStore();
   GlobalEnvironment::getInstance().getItemFactory()->createString(theEvalItem,
     lStore);
-  std::list<std::pair<zorba::xqpString, zorba::xqpString> > lRes =
+  std::list<std::pair<xqpString, xqpString> > lRes =
     theCurrentIterator->eval(*thePlanState);
   theExecEval = false;
   return lRes;
 }
 
-zorba::store::Item_t* zorba::ZorbaDebuggerCommons::getEvalItem()
+store::Item_t* ZorbaDebuggerCommons::getEvalItem()
 {
   return &theEvalItem;
 }
 
-void zorba::ZorbaDebuggerCommons::addModuleUriMapping( std::string aUri, 
+void ZorbaDebuggerCommons::addModuleUriMapping( std::string aUri, 
                                                       std::string aFileUri )
 {
   ZORBA_ASSERT(theUriFileMappingMap.find(aUri) == theUriFileMappingMap.end());
@@ -241,7 +243,21 @@ void zorba::ZorbaDebuggerCommons::addModuleUriMapping( std::string aUri,
   ZORBA_ASSERT(theUriFileMappingMap.find(aUri) != theUriFileMappingMap.end());
 }
 
-bool zorba::DebugLocation::operator()( const DebugLocation_t& aLocation1, const DebugLocation_t& aLocation2 ) const
+std::string ZorbaDebuggerCommons::getFilepathOfURI(const std::string& aUri) const
+{
+  std::map<std::string, std::string>::const_iterator lIter;
+  lIter = theUriFileMappingMap.find(aUri);
+  xqpStringStore_t lString;
+  if (lIter == theUriFileMappingMap.end()) {
+    lString = new xqpStringStore(aUri);
+  } else {
+    lString = new xqpStringStore(lIter->second);
+  }
+  std::string lRes = URI::decode_file_URI(lString)->c_str();
+  return lRes;
+}
+
+bool DebugLocation::operator()( const DebugLocation_t& aLocation1, const DebugLocation_t& aLocation2 ) const
 {
   int c;
   if ((c = aLocation1.theFileName.compare(aLocation2.theFileName)) != 0) {
@@ -263,26 +279,26 @@ bool zorba::DebugLocation::operator()( const DebugLocation_t& aLocation1, const 
   return aLocation1.theLineNumber < aLocation2.theLineNumber;
 }
 
-zorba::store::Item* zorba::DebuggerSingletonIterator::getValue() const
+store::Item* DebuggerSingletonIterator::getValue() const
 {
   return theValue->getp();
 }
 
-void zorba::DebuggerSingletonIterator::setValue(zorba::store::Item_t* aValue)
+void DebuggerSingletonIterator::setValue(store::Item_t* aValue)
 {
   theValue = aValue;
 }
 
-zorba::DebuggerSingletonIterator::DebuggerSingletonIterator(
-  static_context* sctx, QueryLoc loc, zorba::store::Item_t* aValue ) :
+DebuggerSingletonIterator::DebuggerSingletonIterator(
+  static_context* sctx, QueryLoc loc, store::Item_t* aValue ) :
 NoaryBaseIterator<DebuggerSingletonIterator, PlanIteratorState>(sctx, loc),
 theValue(aValue)
 {
 }
 
-NOARY_ACCEPT(zorba::DebuggerSingletonIterator);
+NOARY_ACCEPT(DebuggerSingletonIterator);
 
-bool zorba::DebuggerSingletonIterator::nextImpl( store::Item_t& result,
+bool DebuggerSingletonIterator::nextImpl( store::Item_t& result,
                                                 PlanState& planState ) const
 {
   PlanIteratorState* state;
@@ -291,3 +307,5 @@ bool zorba::DebuggerSingletonIterator::nextImpl( store::Item_t& result,
   STACK_PUSH ( result != NULL, state );
   STACK_END (state);
 }
+
+} //namespace zorba

@@ -237,13 +237,23 @@ namespace zorba {
     /**
     * @brief Gets the current debugger iterator.
     */
-    const ZorbaDebugIterator* getCurrentIterator();
+    const ZorbaDebugIterator* getCurrentIterator() const;
 
     /**
     * @brief Gets the item, which is used for all eval iterators of the debug
     * iterators.
     */
     store::Item_t* getEvalItem();
+
+    /**
+    * @brief Gets a file path of a uri.
+    *
+    * This function first looks for a file uri associated with this uri
+    * and then, returns a file path represented by this uri. If no file uri
+    * is associated with aUri, this method assumes aUri is a file uri and
+    * transforms it into a file path.
+    */
+    std::string getFilepathOfURI(const std::string& aUri) const;
 
   private:
     std::map<DebugLocation_t, bool, DebugLocation> theLocationMap;

@@ -23,6 +23,7 @@
 
 #include <zorba/api_shared_types.h>
 #include <zorba/debugger_exception.h>
+#include <zorbaerrors/Assert.h>
 
 #include "common/common.h"
 
@@ -520,4 +521,20 @@ StackFrame_t ZorbaDebuggerClientImpl::getStack() const
   lStack.release();
   return lReturnStack;
 }
+
+std::string ZorbaDebuggerClientImpl::listSource(
+  const std::string& aUri,
+  unsigned long aFirstline /*= 0*/,
+  unsigned long aLastName /*= 0*/ ) const
+{
+  std::auto_ptr<ReplyMessage> lReply;
+  std::auto_ptr<ListCommand> lCommand(
+    new ListCommand(aUri, aFirstline, aLastName));
+  lReply.reset(send(lCommand.get()));
+
+  ZORBA_ASSERT(dynamic_cast<ListReply*>(lReply.get()));
+  ListReply* lListReply = static_cast<ListReply*>(lReply.get());
+  return lListReply->getString();
+}
+
 }//end of namespace

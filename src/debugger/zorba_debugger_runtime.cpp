@@ -2,6 +2,8 @@
 
 #include <memory>
 #include <vector>
+#include <sstream>
+#include <fstream>
 
 #include "store/api/store.h"
 
@@ -156,6 +158,9 @@ bool zorba::ZorbaDebuggerRuntime::processMessage(AbstractCommandMessage* message
   case BREAKPOINTS:
     breakpointCommands();
     break;
+  case STATIC:
+    staticCommands();
+    break;
   case DYNAMIC:
     dynamicCommands();
     break;
@@ -244,6 +249,16 @@ void zorba::ZorbaDebuggerRuntime::breakpointCommands()
       lReply->addBreakpoint(lIter->first, lLoc);
     }
     theCurrentMessage->setReplyMessage(lReply.release());
+  }
+}
+
+void zorba::ZorbaDebuggerRuntime::staticCommands()
+{
+  switch (theCurrentMessage->getCommand())
+  {
+  case LIST:
+    theCurrentMessage->setReplyMessage(listSource());
+    break;
   }
 }
 
@@ -386,4 +401,35 @@ void zorba::ZorbaDebuggerRuntime::evalCommand()
     theCommunicator, lExpr.c_str());
   lCommand->setDeleteAfterRun(true);
   lCommand->start();
+}
+
+zorba::ReplyMessage* zorba::ZorbaDebuggerRuntime::listSource()
+{
+  ZORBA_ASSERT(dynamic_cast<ListCommand*>(theCurrentMessage));
+  ListCommand* lCommand = dynamic_cast<ListCommand*>(theCurrentMessage);
+  std::string lFile;
+  lFile = theWrapper->theStateBlock->theDebuggerCommons->getFilepathOfURI(
+    lCommand->getFilename());
+
+  std::string lCurrLine;
+  //std::string::iterator lSIter;
+  //for (lSIter = lFile.begin(); lSIter != lFile.end(); ++lSIter) {
+  //  if (*lSIter == '\\' && *(lSIter+1) == '\\') {
+  //    lFile.erase(lSIter);
+  //    ++lSIter;
+  //  }
+  //}
+  std::ifstream lStream(lFile.c_str());
+  for (unsigned long i = 0; i < lCommand->getFirstline() && lStream.good(); ++i)
+  {
+    std::getline(lStream, lCurrLine);
+  }
+  std::stringstream lOut;
+  for (unsigned long i = lCommand->getFirstline();
+    i < lCommand->getLastline() && lStream.good(); ++i) {
+    std::getline(lStream, lCurrLine);
+    lOut << lCurrLine << std::endl;
+  }
+  return new ListReply(
+    theCurrentMessage->getId(), DEBUGGER_NO_ERROR, lOut.str());
 }

@@ -708,7 +708,9 @@ protected:
   std::string getData() const;
 
 public:
-  ListReply(const Id aId, const ErrorCode aErrorCode);
+  ListReply(const Id aId,
+    const ErrorCode aErrorCode,
+    const std::string& aCode);
   ListReply(Byte* aMessage, const unsigned int aLength);
   virtual ~ListReply();
 

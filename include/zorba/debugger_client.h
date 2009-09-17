@@ -352,6 +352,23 @@ namespace zorba{
        */
       virtual
       StackFrame_t getStack() const = 0;
+
+      /**
+      * @brief List source code from a given uri.
+      *
+      * @param aUri Is a uri, which is either a file uri, a file path or a 
+      *   module uri. The server will itself try to find the appropriate
+      *   file.
+      * @param aFirstline Gives the possibility to the user to tell the
+      *   server, at which line it should start to read.
+      * @param aLastName Gives the possibility to the user to tell the
+      *   server, at which line it should stop to read. If the value is
+      *   set to 0, the server reads till the end of the file.
+      */
+      virtual std::string listSource(
+        const std::string& aUri,
+        unsigned long aFirstline = 0,
+        unsigned long aLastName = 0) const = 0;
   };
 }//end of namespace
 #endif

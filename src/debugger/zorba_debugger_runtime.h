@@ -121,6 +121,11 @@ namespace zorba {
     //            Locking!
     //************************************
     void breakpointCommands();
+    /**
+    * @brief Executes a static command.
+    */
+    void staticCommands();
+    ReplyMessage* listSource();
     //************************************
     // Method:    dynamicCommands
     // FullName:  zorba::ZorbaDebuggerRuntime::dynamicCommands

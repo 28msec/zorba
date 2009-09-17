@@ -1354,7 +1354,10 @@ AbstractCommandMessage(aMessage, aLength)
 ListCommand::ListCommand(std::string aFilename,
                          unsigned long aFirstline,
                          unsigned long aLastline) :
-AbstractCommandMessage(STATIC, LIST)
+AbstractCommandMessage(STATIC, LIST),
+theFilename(aFilename),
+theFirstLine(aFirstline),
+theLastLine(aLastline)
 {
   unsigned int l = MESSAGE_SIZE + getData().length();
   setLength(l);
@@ -1382,9 +1385,18 @@ Byte* ListCommand::serialize( Length& aLength ) const
 
 std::string ListCommand::getData() const
 {
+  std::string lFileName;
+  std::string::const_iterator lIter;
+  for (lIter = theFilename.begin(); lIter != theFilename.end(); ++lIter) {
+    if (*lIter == '\\') {
+      lFileName += "\\\\";
+    } else {
+      lFileName += *lIter;
+    }
+  }
   std::stringstream lStream;
   lStream << "{" << std::endl;
-  lStream << "\"filename\":\"" << theFilename << "\",";
+  lStream << "\"filename\":\"" << lFileName << "\",";
   lStream << "\"firstline\":\"" << theFirstLine << "\",";
   lStream << "\"lastline\":\"" << theLastLine << "\"";
   lStream << "}";
@@ -1403,11 +1415,15 @@ unsigned long ListCommand::getFirstline() const
 
 unsigned long ListCommand::getLastline() const
 {
-  return theLastLine;
+  // if the last line is set to 0, return just the biggest possible number,
+  // so the file will be read to the end.
+  return theLastLine == 0 ? -1 : theLastLine;
 }
 
-ListReply::ListReply( const Id aId, const ErrorCode aErrorCode ) :
-ReplyMessage(aId, aErrorCode)
+ListReply::ListReply(const Id aId,
+                     const ErrorCode aErrorCode,
+                     const std::string& aCode) :
+ReplyMessage(aId, aErrorCode), theString(aCode)
 {
   setFlags(REPLY_LIST_FLAG);
   unsigned int l = MESSAGE_SIZE + getData().length();
@@ -1430,10 +1446,22 @@ ReplyMessage(aMessage, aLength)
   std::string::size_type lBegin = 0;
   std::string::size_type lPos = lString.find("\\\"");
   while (lPos != std::string::npos) {
-    theString += lString.substr(lBegin, lPos) + "\"";
+    std::string lSub = lString.substr(lBegin, lPos - lBegin) + "\"";
+    theString += lSub;
     lBegin = lPos + 2;
     lPos = lString.find("\\\"", lBegin);
   }
+  theString += lString.substr(lBegin, std::string::npos);
+  lBegin = 0;
+  lString = theString;
+  lPos = lString.find("\\n");
+  theString = "";
+  while (lPos != std::string::npos) {
+    theString += lString.substr(lBegin, lPos - lBegin) + "\n";
+    lBegin = lPos + 2;
+    lPos = lString.find("\\n", lBegin);
+  }
+  theString += lString.substr(lBegin, std::string::npos);
 }
 
 ListReply::~ListReply() {}
@@ -1456,8 +1484,8 @@ std::string ListReply::getData() const
 {
   std::stringstream lJSONString;
   std::string lTmp;  
-  std::string::iterator lIter;
-  for (lIter = lTmp.begin(); lIter != lTmp.end(); lIter++) {
+  std::string::const_iterator lIter;
+  for (lIter = theString.begin(); lIter != theString.end(); lIter++) {
     if (*lIter == '"') {
       lTmp += "\\\"";
     } else {
@@ -1465,7 +1493,7 @@ std::string ListReply::getData() const
     }
   }
 
-  lJSONString << "{\"code\":\"" << lTmp<< "\"}";
+  lJSONString << "{\"code\":\"" << lTmp << "\"}";
   return lJSONString.str();
 }
 
