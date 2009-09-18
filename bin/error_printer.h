@@ -12,8 +12,8 @@ namespace zorba {
           static std::ostream&
           print(const QueryException& lException,
                 std::ostream&         lOut,
-                bool                  aIndent,
-                bool                  aAsXml);
+                bool                  aAsXml,
+                bool                  aIndent);
 
   }; /* class ErrorPrinter */
 } /* namespace zorba */
