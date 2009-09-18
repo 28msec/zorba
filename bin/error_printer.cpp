@@ -8,8 +8,8 @@ namespace zorba {
   std::ostream&
   ErrorPrinter::print(const QueryException& aException,
                       std::ostream&         aOut,
-                      bool                  aIndent,
-                      bool                  aAsXml)
+                      bool                  aAsXml,
+                      bool                  aIndent)
   {
       if( !aAsXml ) {
         aOut << aException << " ";
