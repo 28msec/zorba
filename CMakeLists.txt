@@ -255,32 +255,11 @@ ELSE (ICU_FOUND AND ICU_I18N_FOUND AND ICU_DATA_FOUND)
   MESSAGE(FATAL_ERROR "The ICU library is required in order to build Zorba.")
 ENDIF (ICU_FOUND AND ICU_I18N_FOUND AND ICU_DATA_FOUND)       
 
-IF (NOT ZORBA_NO_XMLSCHEMA)
-  #
-  # Xerces-C
-  #
-  INCLUDE(${CMAKE_MODULE_PATH}/FindXercesC.cmake)
+#
+# Xerces-C part 1 - finding in default locations
+#
+INCLUDE(${CMAKE_MODULE_PATH}/FindXercesC.cmake)
 
-  IF (XERCESC_FOUND)
-    COMPARE_VERSION_STRINGS("${XERCESC_VERSION}" 2.8.0 result)
-
-    IF (result LESS 0)
-      MESSAGE(FATAL_ERROR "Xerces ${XERCESC_VERSION} not supported.
-	Only 2.8.0, 3.0.1 and newer versions are supported
-	or
-	Use -D ZORBA_NO_XMLSCHEMA=ON option for building without XMLSchema 
-          support.")
-    ELSE (result LESS 0)
-      MESSAGE(STATUS "Found Xerces ${XERCESC_VERSION} -- ${XERCESC_LIBRARY}")
-      INCLUDE_DIRECTORIES(${XERCESC_INCLUDE})
-      SET(requiredlibs ${requiredlibs} ${XERCESC_LIBRARY})
-    ENDIF (result LESS 0)
-
-  ENDIF (XERCESC_FOUND)
-ELSE (NOT ZORBA_NO_XMLSCHEMA)
-  MESSAGE(STATUS "ZORBA_NO_XMLSCHEMA: ${ZORBA_NO_XMLSCHEMA}"
-    " - build without XMLSchema support")
-ENDIF (NOT ZORBA_NO_XMLSCHEMA)
 
 LIST(APPEND requiredlibs ${requiredlibs-store})
 
@@ -292,6 +271,43 @@ LIST(APPEND requiredlibs ${requiredlibs-store})
 # is used.
 INCLUDE(CMakeConfiguration.txt)
 INCLUDE(CMakeCompiler.txt)
+
+
+#
+# Xerces-C part 2 - version verification
+#
+IF (NOT ZORBA_NO_XMLSCHEMA)
+  # Find XercesC Version based on ${XERCESC_INCLUDE}
+  INCLUDE(${CMAKE_MODULE_PATH}/FindXercesCVersion.cmake)
+  
+  IF (XERCESC_FOUND)
+    COMPARE_VERSION_STRINGS("${XERCESC_VERSION}" 2.8.0 result)
+
+    IF (result LESS 0)
+      MESSAGE(FATAL_ERROR "Xerces-C ${XERCESC_VERSION} not supported.
+	Only 2.8.0, 3.0.1 and newer versions are supported
+	or
+	Use -D ZORBA_NO_XMLSCHEMA=ON option for building without XMLSchema 
+          support.")
+    ELSE (result LESS 0)
+      MESSAGE(STATUS "Found Xerces ${XERCESC_VERSION} -- ${XERCESC_INCLUDE}  ${XERCESC_LIBRARY}")
+      INCLUDE_DIRECTORIES(${XERCESC_INCLUDE})
+      SET(requiredlibs ${requiredlibs} ${XERCESC_LIBRARY})
+    ENDIF (result LESS 0)
+  ELSE  (XERCESC_FOUND)
+    MESSAGE(FATAL_ERROR "Xerces-C not found.
+	Make sure you have Xerces-C 2.8.0 or 3.0.1+ installed
+	or
+	Use -D ZORBA_NO_XMLSCHEMA=ON option for building without XMLSchema 
+          support.")    
+  ENDIF (XERCESC_FOUND)
+ELSE (NOT ZORBA_NO_XMLSCHEMA)
+  MESSAGE(STATUS "ZORBA_NO_XMLSCHEMA: ${ZORBA_NO_XMLSCHEMA}"
+    " - build without XMLSchema support")
+ENDIF (NOT ZORBA_NO_XMLSCHEMA)
+
+LIST(APPEND requiredlibs ${requiredlibs-store})
+
 
 #
 # JSON
