@@ -198,19 +198,20 @@ bool FnResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState)
 bool SequentialIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
   rchandle<store::PUL> lPul;
+  ulong i = 0;
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  for (unsigned i = 0; i < theChildren.size() - 1; i++) 
+  for (; i < theChildren.size(); ++i) 
   {
-    while (CONSUME (result, i))
+    while (CONSUME(result, i))
     {
       if (theChildren[i]->isUpdating())
       {
         std::set<zorba::store::Item*> validationNodes;
 
-        static_cast<store::PUL *> (result.getp ())->applyUpdates(validationNodes);
+        static_cast<store::PUL*>(result.getp())->applyUpdates(validationNodes);
 
         store::Item_t validationPul = GENV_ITEMFACTORY->createPendingUpdateList();
 
@@ -223,11 +224,13 @@ bool SequentialIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 #endif
         validationPul->applyUpdates(validationNodes);
       }
+      else if (i == theChildren.size() - 1)
+      {
+        STACK_PUSH(true, state);
+        i = theChildren.size() - 1;
+      }
     }
   }
-
-  while (CONSUME (result, theChildren.size () - 1))
-    STACK_PUSH (true, state);
 
   STACK_END (state);
 }
