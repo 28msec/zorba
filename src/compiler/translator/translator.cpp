@@ -936,7 +936,7 @@ void bind_udf (store::Item_t qname, function *f, int nargs, const QueryLoc& loc)
 /*******************************************************************************
   Create an fn:concatenate() expr
 ********************************************************************************/
-fo_expr *create_seq (const QueryLoc& loc) 
+fo_expr* create_seq(const QueryLoc& loc) 
 {
   return fo_expr::create_seq (theCCB->m_cur_sctx, loc);
 }
@@ -945,12 +945,21 @@ fo_expr *create_seq (const QueryLoc& loc)
 /*******************************************************************************
   Wrap the given expr in an fn:data() function
 ********************************************************************************/
-expr_t wrap_in_atomization (expr_t e) 
+expr_t wrap_in_atomization(expr_t e) 
 {
   return new fo_expr (theCCB->m_cur_sctx,
                       e->get_loc (),
                       CACHED (fn_data, LOOKUP_FN ("fn", "data", 1)),
                       e);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+expr::expr_t wrap_in_type_conversion(expr_t e, xqtref_t type)
+{
+  return new promote_expr(theCCB->m_cur_sctx, e->get_loc(), e, type);
 }
 
 
@@ -2920,31 +2929,51 @@ void *begin_visit (const IndexFieldList& v)
 
 void end_visit (const IndexFieldList& v, void* /*visit_state*/) 
 {
-  std::vector<expr_t> iCols;
-  std::vector<xqtref_t> iColTypes;
-  std::vector<std::string> iColCollations;
+  std::vector<expr_t> keyExprs;
+  std::vector<xqtref_t> keyTypes;
+  std::vector<std::string> keyCollations;
+
+  ValueIndex* index = indexstack.top();
 
   for(int i = v.fields.size() - 1; i >= 0; --i) 
   {
-    iCols.push_back(pop_nodestack());
     xqtref_t type = (v.fields[i]->get_type() != NULL ?
                      pop_tstack() :
                      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION);
-    iColTypes.push_back(type);
-    iColCollations.push_back(v.fields[i]->coll);
+
+    if (!TypeOps::is_subtype(*type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
+    {
+      ZORBA_ERROR_LOC_DESC_OSS(XQP0036_NON_ATOMIC_INDEX_KEY, v.get_location(),
+                               "A key for index " 
+                               << index->getIndexUri()->str() 
+                               << "has a non atomic value at position "
+                               << i << ".");
+    }
+
+    keyTypes.push_back(type);
+
+    // If no collation is specified in the declaration, v.fields[i]->coll will
+    // be the empty string, and in this case the default collation from the sctx
+    // will be used during runtime.
+    keyCollations.push_back(v.fields[i]->coll);
+
+    expr_t keyExpr = pop_nodestack();
+    keyExpr = wrap_in_atomization(keyExpr);
+    keyExpr = wrap_in_type_conversion(keyExpr, type);
+    keyExprs.push_back(keyExpr);
   }
 
-  std::reverse(iCols.begin(), iCols.end());
-  std::reverse(iColTypes.begin(), iColTypes.end());
-  std::reverse(iColCollations.begin(), iColCollations.end());
+  std::reverse(keyExprs.begin(), keyExprs.end());
+  std::reverse(keyTypes.begin(), keyTypes.end());
+  std::reverse(keyCollations.begin(), keyCollations.end());
 
-  indexstack.top()->setIndexFieldExpressions(iCols);
-  indexstack.top()->setIndexFieldTypes(iColTypes);
-  indexstack.top()->setIndexFieldCollations(iColCollations);
+  index->setKeyExpressions(keyExprs);
+  index->setKeyTypes(keyTypes);
+  index->setKeyCollations(keyCollations);
 
   pop_scope();
 
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 

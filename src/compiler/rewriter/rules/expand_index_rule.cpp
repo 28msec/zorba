@@ -115,7 +115,7 @@ RULE_REWRITE_PRE(ExpandBuildIndex)
     expr_t domainVarExpr(new wrapper_expr(fo->get_cur_sctx(), fo->get_loc(), newdot.getp()));
     index_builder_args.push_back(domainVarExpr);
     
-    const std::vector<expr_t>& idx_fields(vi->getIndexFieldExpressions());
+    const std::vector<expr_t>& idx_fields(vi->getKeyExpressions());
     int n = idx_fields.size();
     for(int i = 0; i < n; ++i) 
     {

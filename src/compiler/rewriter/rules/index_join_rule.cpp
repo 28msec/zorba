@@ -298,11 +298,11 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 
   replace_var(columnExprs[0], predInfo.theInnerVar, idx->getDomainVariable());
 
-  idx->setIndexFieldExpressions(columnExprs);
+  idx->setKeyExpressions(columnExprs);
 
-  idx->setIndexFieldTypes(columnTypes);
+  idx->setKeyTypes(columnTypes);
 
-  idx->setIndexFieldCollations(collations);
+  idx->setKeyCollations(collations);
 
   rCtx.m_sctx->bind_index(uri, idx.getp());
 

@@ -158,10 +158,10 @@ public:
 
 
 /***************************************************************************//**
-  item* probe-index-point(uriExpr     as xs:uri,
-                          column1Expr as anyAtomic?,
-                          ...,
-                          columnNExpr as anyAtomic?)
+  probe-index-point($indexUri as xs:uri,
+                    $key1  as anyAtomic?,
+                    ...,
+                    $keyN  as anyAtomic?) as item()*
 ********************************************************************************/
 class zop_probeindexpoint : public function 
 {
@@ -176,19 +176,19 @@ public:
 
 /*******************************************************************************
   item* probe-index-range(uriExpr                  as xs:uri,
-                          range1LowerBoundExpr     as anyAtomic?,
-                          range1UpperBoundExpr     as anyAtomic?,
-                          range1HaveLowerBound     as anyAtomic?,
-                          range1HaveupperBound     as anyAtomic?,
-                          range1LowerBoundIncluded as anyAtomic?,
-                          range1upperBoundIncluded as anyAtomic?,
+                          range1LowerBound         as anyAtomic?,
+                          range1UpperBound         as anyAtomic?,
+                          range1HaveLowerBound     as boolean?,
+                          range1HaveupperBound     as boolean?,
+                          range1LowerBoundIncluded as boolean?,
+                          range1upperBoundIncluded as boolean?,
                           ....,
-                          rangeNLowerBoundExpr     as anyAtomic?,
-                          rangeNUpperBoundExpr     as anyAtomic?,
-                          rangeNHaveLowerBound     as anyAtomic?,
-                          rangeNHaveupperBound     as anyAtomic?,
-                          rangeNLowerBoundIncluded as anyAtomic?,
-                          rangeNupperBoundIncluded as anyAtomic?,
+                          rangeNLowerBound         as anyAtomic?,
+                          rangeNUpperBound         as anyAtomic?,
+                          rangeNHaveLowerBound     as boolean?,
+                          rangeNHaveupperBound     as boolean?,
+                          rangeNLowerBoundIncluded as boolean?,
+                          rangeNupperBoundIncluded as boolean?)
 ********************************************************************************/
 class zop_probeindexrange : public function 
 {

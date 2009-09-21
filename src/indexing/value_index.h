@@ -39,7 +39,8 @@ typedef rchandle<ValueIndexInsertSession> ValueIndexInsertSession_t;
   that appears in a query. A (index_uri --> ValueIndex obj) mapping is also
   registered in the static context during translation.
 
-  - The DECLARE INDEX sysntax is the following:
+  The DECLARE INDEX sysntax is the following:
+  -------------------------------------------
 
   IndexDecl ::= "DECLARE" ["UNIQUE"] ["HASH" | "BTREE"] "INDEX" UriLiteral
                 "ON" ExprSingle "BY" "(" IndexField+ ")"
@@ -47,30 +48,56 @@ typedef rchandle<ValueIndexInsertSession> ValueIndexInsertSession_t;
   IndexField ::= ExprSingle [TypeDeclaration] ["COLLATION" UriLiteral]
 
 
-  - Other index-related syntax:
+  Constraints:
+  ------------
+
+  The expressions defining the index fields must return a single atomic value
+  for each value returned by the domain expression.
+
+
+  Other index-related syntax:
+  ---------------------------
 
   IndexStatement ::= ["CREATE" | "BUILD" | "DROP"] INDEX UriLiteral
 
   These statements are translated into the create-index(), build-index() and
   drop-index() functions, respectively.
 
+
   - Index-related functions (see src/functions/Index.h):
 
-  create-index(xs:uri)
+  create-index($indexUri as anyURI) as ()
 
-  drop-index(xs:uri)
+  drop-index($indexUri as anyURI) as ()
 
-  build-index(xs:uri)
+  build-index($indexUri as anyURI) as ()
 
-  probe-index-point(xs:uri, xs:anyAtomic?, ..., xs:anyAtomic?) as item*
+  probe-index-point($indexUri as anyURI,
+                    $key1     as anyAtomic?,
+                    ...,
+                    $keyN     as anyAtomic?) as item()*
 
-  probe-index-range(xs:uri, xs:anyAtomic?, ..., xs:anyAtomic?) as item*
+  probe-index-range(uriExpr                  as xs:uri,
+                    range1LowerBound         as anyAtomic?,
+                    range1UpperBound         as anyAtomic?,
+                    range1HaveLowerBound     as boolean?,
+                    range1HaveupperBound     as boolean?,
+                    range1LowerBoundIncluded as boolean?,
+                    range1upperBoundIncluded as boolean?,
+                    ....,
+                    rangeNLowerBound         as anyAtomic?,
+                    rangeNUpperBound         as anyAtomic?,
+                    rangeNHaveLowerBound     as boolean?,
+                    rangeNHaveupperBound     as boolean?,
+                    rangeNLowerBoundIncluded as boolean?,
+                    rangeNupperBoundIncluded as boolean?) as item()*
 
 ********************************************************************************/
 class ValueIndex : public SimpleRCObject 
 {
 public:
-  typedef enum {
+  typedef enum 
+  {
     HASH,
     BTREE
   } index_method_t;
@@ -118,18 +145,18 @@ public:
   var_expr_t getDomainPositionVariable() const;
   void setDomainPositionVariable(var_expr_t domainPosVar);
 
-  const std::vector<expr_t>& getIndexFieldExpressions() const;
-  void setIndexFieldExpressions(const std::vector<expr_t>& indexFieldExprs);
+  const std::vector<expr_t>& getKeyExpressions() const;
+  void setKeyExpressions(const std::vector<expr_t>& indexFieldExprs);
 
-  const std::vector<xqtref_t>& getIndexFieldTypes() const;
-  void setIndexFieldTypes(const std::vector<xqtref_t>& indexFieldTypes);
+  const std::vector<xqtref_t>& getKeyTypes() const;
+  void setKeyTypes(const std::vector<xqtref_t>& indexFieldTypes);
 
-  const std::vector<std::string>& getIndexFieldCollations() const 
+  const std::vector<std::string>& getKeyCollations() const 
   {
     return m_index_field_collations; 
   }
 
-  void setIndexFieldCollations(const std::vector<std::string>& indexFieldCollations) 
+  void setKeyCollations(const std::vector<std::string>& indexFieldCollations) 
   {
     m_index_field_collations = indexFieldCollations;
   }

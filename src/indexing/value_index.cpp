@@ -101,25 +101,25 @@ void ValueIndex::setDomainPositionVariable(var_expr_t domainPosVar)
 }
 
 
-const std::vector<expr_t>& ValueIndex::getIndexFieldExpressions() const 
+const std::vector<expr_t>& ValueIndex::getKeyExpressions() const 
 {
   return m_index_field_exprs; 
 }
 
 
-void ValueIndex::setIndexFieldExpressions(const std::vector<expr_t>& indexFieldExprs) 
+void ValueIndex::setKeyExpressions(const std::vector<expr_t>& indexFieldExprs) 
 {
   m_index_field_exprs = indexFieldExprs;
 }
 
 
-const std::vector<xqtref_t>& ValueIndex::getIndexFieldTypes() const 
+const std::vector<xqtref_t>& ValueIndex::getKeyTypes() const 
 {
   return m_index_field_types; 
 }
 
 
-void ValueIndex::setIndexFieldTypes(const std::vector<xqtref_t>& indexFieldTypes) 
+void ValueIndex::setKeyTypes(const std::vector<xqtref_t>& indexFieldTypes) 
 {
   m_index_field_types = indexFieldTypes;
 }

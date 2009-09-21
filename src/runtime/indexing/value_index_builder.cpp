@@ -62,8 +62,8 @@ bool CreateValueIndex::nextImpl(store::Item_t& result, PlanState& planState) con
   indexSpec = theSctx->lookup_index(result->getStringValueP());
 
   {
-    const std::vector<xqtref_t>& iTypes(indexSpec->getIndexFieldTypes());
-    const std::vector<std::string>& iColls(indexSpec->getIndexFieldCollations());
+    const std::vector<xqtref_t>& iTypes(indexSpec->getKeyTypes());
+    const std::vector<std::string>& iColls(indexSpec->getKeyCollations());
     int n = iTypes.size();
     store::IndexSpecification spec(n);
     xqp_string dColl;
@@ -198,7 +198,8 @@ bool ValueIndexBuilder::nextImpl(store::Item_t& result, PlanState& planState) co
 {
   store::Item_t dValue;
   store::IndexKey key;
-  ValueIndexBuilderState *state;
+
+  ValueIndexBuilderState* state;
   DEFAULT_STACK_INIT(ValueIndexBuilderState, state, planState);
 
   if (state->theSession == NULL) 
@@ -218,23 +219,8 @@ bool ValueIndexBuilder::nextImpl(store::Item_t& result, PlanState& planState) co
     {
       key.push_back(cValue);
 
-      if (!cValue->isAtomic())
-      {
-        ZORBA_ERROR_LOC_DESC_OSS(XQP0036_NON_ATOMIC_INDEX_KEY, loc,
-                                 "A key for index " 
-                                 << state->theIndexUri->getStringValueP()->str() 
-                                 << "has a non atomic value at position "
-                                 << i-2 << ".");
-      }
-
-      if (consumeNext(cValue, theChildren[i], planState))
-      {
-        ZORBA_ERROR_LOC_DESC_OSS(XQP0035_MULTI_VALUED_INDEX_KEY, loc,
-                                 "A key for index " 
-                                 << state->theIndexUri->getStringValueP()->str() 
-                                 << "has multiple values at position "
-                                 << i-2 << ".");
-      }
+      assert(cValue->isAtomic());
+      assert(!consumeNext(cValue, theChildren[i], planState));
     }
     else
     {

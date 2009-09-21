@@ -44,7 +44,10 @@ static inline expr::expr_t wrap_in_bev(short context, static_context *sctx, expr
 }
 
 
-static inline expr::expr_t wrap_in_atomization(short context, static_context *sctx, expr::expr_t e)
+static inline expr::expr_t wrap_in_atomization(
+    short context,
+    static_context *sctx,
+    expr::expr_t e)
 {
   expr::expr_t fh(new fo_expr(context, e->get_loc(), LOOKUP_FN("fn", "data", 1)));
   fo_expr *fp = static_cast<fo_expr *>(fh.getp());
@@ -201,21 +204,29 @@ bool begin_visit (case_clause& node)
   return true;
 }
 
+
 void end_visit (promote_expr&) {}
+
 bool begin_visit (promote_expr& node)
 {
   checkNonUpdating(&*node.get_input());
   return true;
 }
 
+
 void end_visit (trycatch_expr&) {}
+
 bool begin_visit (trycatch_expr& node)
 {
   checkNonUpdating(&*node.get_try_expr());
   return true;
 }
 
-void end_visit (if_expr&) {}
+
+void end_visit (if_expr&)
+{
+}
+
 bool begin_visit (if_expr& node)
 {
   node.set_cond_expr(wrap_in_bev(m_cb->m_cur_sctx, m_cb->m_sctx, node.get_cond_expr()));
@@ -260,6 +271,7 @@ bool begin_visit (fo_expr& node)
 
 
 void end_visit (instanceof_expr&) {}
+
 bool begin_visit (instanceof_expr& node)
 {
   checkNonUpdating(&*node.get_input());
