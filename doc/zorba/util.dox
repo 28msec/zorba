@@ -14,20 +14,20 @@
         <li> \ref tidy
         <li> \ref tdoc
       </ul>
-     </ul>
-    <li> \ref random_generation
-    <ul>
-      <li> \ref uuid
-      <li> \ref random
-    </ul>
-    <li> \ref parse_util
-    <li> \ref serialize_util
-    <li> \ref base64_util
+      <li> \ref random_generation
       <ul>
-        <li> \ref base64_encode
-        <li> \ref base64_decode
+        <li> \ref uuid
+        <li> \ref random
       </ul>
-    <li> \ref apendix_util
+      <li> \ref parse_util
+      <li> \ref serialize_util
+      <li> \ref base64_util
+        <ul>
+          <li> \ref base64_encode
+          <li> \ref base64_decode
+        </ul>
+     </ul>
+     <li> \ref apendix_util
    </ul>
  </ul>
 
@@ -164,7 +164,7 @@ If the seed is not passed as an argument the same number will be generated every
     return zu:random()
 \endcode
 
-\section parse_util 3 Function for parsing XML
+\section parse_util 2.3 Function for parsing XML
 
 \code
   declare function parse($doc xs:string) as document-node()?
@@ -189,7 +189,7 @@ The following query:
 will raise [STR0008] Loader parsing error: Namespace prefix system on order
 is not defined
 
-\section serialize_util 4 Function for serialization
+\section serialize_util 2.4 Function for serialization
 
 \code
   declare function serialize-to-string($doc as item()*) as xs:string
@@ -203,16 +203,16 @@ In the following, we demonstrate the use of the serialize-to-string function.
 
 \include util_serialize_to_string1.xq
 
-\section base64_util 5 Functions to encode/decode base64
+\section base64_util 2.5 Functions to encode/decode base64
 
-\subsection base64_encode 5.1 zorba-util:base64Encode 
+\subsection base64_encode 2.5.1 zorba-util:base64Encode 
 \code
   declare function base64Encode($value as xs:string) as xs:base64Binary
 \endcode
 
 This function takes a string and encodes it to a base64 value.
 
-\subsection base64_decode 5.2 zorba-util:base64Decode 
+\subsection base64_decode 2.5.2 zorba-util:base64Decode 
 \code
   declare function base64Decode($value as xs:base64Binary) as xs:string
 \endcode
