@@ -2249,6 +2249,9 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
       // Parse the imported module
       XQueryCompiler xqc (&mod_ccb);
       xqpString lFileName(aturiitem->getStringValue());
+	  if (lFileUri.size() != 0) {
+		  lFileName = lFileUri.c_str();
+	  }
       rchandle<parsenode> ast = xqc.parse (*modfile, lFileName);
 
       // Get the target namespace that appears in the module declaration

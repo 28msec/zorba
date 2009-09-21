@@ -278,6 +278,9 @@ StandardLibraryModuleURIResolver::resolve(const store::Item_t& aURI,
                                           xqpStringStore* aFileUri)
 {
   xqpStringStore_t lResolvedURI = aURI->getStringValue();
+  if (aFileUri) {
+	  *aFileUri = theFileName;
+  }
 
   assert( lResolvedURI->str() == theLibraryModuleNamespace );
   assert( theStream.good() );

@@ -106,10 +106,11 @@ namespace zorba {
     private:
       std::istream& theStream;
       std::string   theLibraryModuleNamespace;
+	  std::string   theFileName;
 
     public:
-      StandardLibraryModuleURIResolver (std::istream& aXQuery, std::string lib_namespace)
-      : theStream (aXQuery), theLibraryModuleNamespace (lib_namespace) {}
+		StandardLibraryModuleURIResolver (std::istream& aXQuery, std::string lib_namespace, std::string aFileName)
+      : theStream (aXQuery), theLibraryModuleNamespace (lib_namespace), theFileName(aFileName) {}
 
       virtual ~StandardLibraryModuleURIResolver() {}
 
