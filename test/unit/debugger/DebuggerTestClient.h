@@ -50,6 +50,9 @@ public:
   QueryLocation_t
   addBreakpoint(std::string fileName, unsigned int aNumber);
 
+  void
+  clearBreakpoint(unsigned int aId);
+
   QueryLocation_t
   getLocation() const;
 

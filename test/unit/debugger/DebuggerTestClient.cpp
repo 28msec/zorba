@@ -98,4 +98,9 @@ namespace zorba {
     }
     return lResult;
   }
+
+  void DebuggerTestClient::clearBreakpoint( unsigned int aId )
+  {
+    m_client->clearBreakpoint(aId);
+  }
 }

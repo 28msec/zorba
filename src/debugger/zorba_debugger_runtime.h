@@ -142,7 +142,7 @@ namespace zorba {
     // Qualifier:
     // Parameter: const QueryLoc & aLocation
     //************************************
-    QueryLoc addBreakpoint(const QueryLoc& aLocation);
+    QueryLoc addBreakpoint(const QueryLoc& aLocation, unsigned int aId);
     //************************************
     // Method:    getAllVariables
     // FullName:  zorba::ZorbaDebuggerRuntime::getAllVariables

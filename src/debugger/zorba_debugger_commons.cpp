@@ -58,8 +58,10 @@ static_context* ZorbaDebuggerCommons::getCurrentStaticContext() const
   return theCurrentStaticContext;
 }
 
-bool ZorbaDebuggerCommons::addBreakpoint( DebugLocation_t& aLocation )
+bool ZorbaDebuggerCommons::addBreakpoint(DebugLocation_t& aLocation,
+                                         unsigned int aId)
 {
+  bool lResult = false;
   // First we check, if the filename is a module namespace
   std::map<std::string, std::string>::iterator lMapIter;
   lMapIter = theUriFileMappingMap.find(aLocation.theFileName);
@@ -79,21 +81,26 @@ bool ZorbaDebuggerCommons::addBreakpoint( DebugLocation_t& aLocation )
   if (lIter != theLocationMap.end()) {
     aLocation.theQueryLocation = lIter->first.theQueryLocation;
     lIter->second = true;
-    return true;
+    lResult = true;
   }
   // If the location could not be found, we iterate over all locations and try
   // to find a location with a filename with a matching substring
-  for (lIter = theLocationMap.begin(); lIter != theLocationMap.end(); lIter++) {
+  for (lIter = theLocationMap.begin(); !lResult && lIter != theLocationMap.end();
+    lIter++) {
     if (lIter->first.theFileName.find(aLocation.theFileName) !=
       std::string::npos && aLocation.theLineNumber ==
       lIter->first.theLineNumber) {
         lIter->second = true;
         aLocation.theQueryLocation = lIter->first.theQueryLocation;
-        return true;
+        lResult = true;
     }
   }
   //otherwise, there could not be found a breakable expression
-  return false;
+  if (lResult) {
+    theBreakpoints.insert(
+      std::pair<unsigned int, DebugLocation_t>(aId, aLocation));
+  }
+  return lResult;
 }
 
 bool ZorbaDebuggerCommons::hasToBreakAt( const QueryLoc& aLocation ) const
@@ -256,6 +263,15 @@ std::string ZorbaDebuggerCommons::getFilepathOfURI(const std::string& aUri) cons
   }
   std::string lRes = URI::decode_file_URI(lString)->c_str();
   return lRes;
+}
+
+void ZorbaDebuggerCommons::clearBreakpoint( unsigned int aId )
+{
+  std::map<DebugLocation_t, bool, DebugLocation>::iterator lIter;
+  lIter = theLocationMap.find(theBreakpoints.find(aId)->second);
+  if (lIter != theLocationMap.end()) {
+    lIter->second = false;
+  }
 }
 
 bool DebugLocation::operator()( const DebugLocation_t& aLocation1, const DebugLocation_t& aLocation2 ) const

@@ -89,10 +89,8 @@ namespace zorba {
     xqpString                          theEvalString;
     const Zorba_SerializerOptions_t*   theSerOpts;
   };
-}
 
-
-zorba::ZorbaDebuggerRuntime::ZorbaDebuggerRuntime(
+ZorbaDebuggerRuntime::ZorbaDebuggerRuntime(
   XQueryImpl* xqueryImpl,
   std::ostream& oStream,
   const Zorba_SerializerOptions_t*  serializerOptions,
@@ -109,14 +107,14 @@ zorba::ZorbaDebuggerRuntime::ZorbaDebuggerRuntime(
 {
 }
 
-zorba::ZorbaDebuggerRuntime::~ZorbaDebuggerRuntime()
+ZorbaDebuggerRuntime::~ZorbaDebuggerRuntime()
 {
 }
 
 // this is the main loop of the thread
 // the runtime thread terminates if this method finishes
 void
-zorba::ZorbaDebuggerRuntime::run()
+ZorbaDebuggerRuntime::run()
 {
   theWrapper->open();
   thePlanIsOpen = true;
@@ -127,7 +125,7 @@ zorba::ZorbaDebuggerRuntime::run()
   runQuery();
 }
 
-void zorba::ZorbaDebuggerRuntime::finish()
+void ZorbaDebuggerRuntime::finish()
 {
   if (thePlanIsOpen) {
     theWrapper->close();
@@ -138,7 +136,7 @@ void zorba::ZorbaDebuggerRuntime::finish()
   }
 }
 
-void zorba::ZorbaDebuggerRuntime::resetRuntime()
+void ZorbaDebuggerRuntime::resetRuntime()
 {
   theWrapper = theQuery->generateWrapper();
   thePlanIsOpen = false;
@@ -147,7 +145,7 @@ void zorba::ZorbaDebuggerRuntime::resetRuntime()
   reset();
 }
 
-bool zorba::ZorbaDebuggerRuntime::processMessage(AbstractCommandMessage* message)
+bool ZorbaDebuggerRuntime::processMessage(AbstractCommandMessage* message)
 {
   AutoLock lLock(theLock, Lock::WRITE);
   theCurrentMessage = message;
@@ -174,13 +172,13 @@ bool zorba::ZorbaDebuggerRuntime::processMessage(AbstractCommandMessage* message
   return false;
 }
 
-ExecutionStatus zorba::ZorbaDebuggerRuntime::getExecutionStatus() const
+ExecutionStatus ZorbaDebuggerRuntime::getExecutionStatus() const
 {
   AutoLock lLock(theLock, Lock::READ);
   return theExecStatus;
 }
 
-void zorba::ZorbaDebuggerRuntime::runQuery()
+void ZorbaDebuggerRuntime::runQuery()
 {
   theLock.wlock();
   theExecStatus = theExecStatus == QUERY_SUSPENDED ? QUERY_RESUMED : QUERY_RUNNING;
@@ -214,7 +212,7 @@ void zorba::ZorbaDebuggerRuntime::runQuery()
 }
 
 bool
-zorba::ZorbaDebuggerRuntime::execCommands()
+ZorbaDebuggerRuntime::execCommands()
 {
   switch (theCurrentMessage->getCommand())
   {
@@ -233,30 +231,46 @@ zorba::ZorbaDebuggerRuntime::execCommands()
   return false;
 }
 
-void zorba::ZorbaDebuggerRuntime::breakpointCommands()
+void ZorbaDebuggerRuntime::breakpointCommands()
 {
   switch (theCurrentMessage->getCommand())
   {
   case SET:
-    SetMessage* lMessage;
+    {
+      SetMessage* lMessage;
 #ifndef NDEBUG
-    lMessage = dynamic_cast<SetMessage*>(theCurrentMessage);
-    assert(lMessage);
+      lMessage = dynamic_cast<SetMessage*>(theCurrentMessage);
+      assert(lMessage);
 #else
-    lMessage = static_cast<SetMessage*>(theCurrentMessage);
+      lMessage = static_cast<SetMessage*>(theCurrentMessage);
 #endif
-    std::auto_ptr<SetReply> lReply(new SetReply(theCurrentMessage->getId(), DEBUGGER_NO_ERROR));
-    std::map<unsigned int, QueryLoc> lLocations = lMessage->getLocations();
-    std::map<unsigned int, QueryLoc>::iterator lIter;
-    for (lIter = lLocations.begin(); lIter != lLocations.end(); lIter++) {
-      QueryLoc lLoc = addBreakpoint(lIter->second);
-      lReply->addBreakpoint(lIter->first, lLoc);
+      std::auto_ptr<SetReply> lReply(new SetReply(theCurrentMessage->getId(), DEBUGGER_NO_ERROR));
+      std::map<unsigned int, QueryLoc> lLocations = lMessage->getLocations();
+      std::map<unsigned int, QueryLoc>::iterator lIter;
+      for (lIter = lLocations.begin(); lIter != lLocations.end(); lIter++) {
+        QueryLoc lLoc = addBreakpoint(lIter->second, lIter->first);
+        lReply->addBreakpoint(lIter->first, lLoc);
+      }
+      theCurrentMessage->setReplyMessage(lReply.release());
     }
-    theCurrentMessage->setReplyMessage(lReply.release());
+    break;
+  case CLEAR:
+    {
+      ZORBA_ASSERT(dynamic_cast<ClearMessage*>(theCurrentMessage));
+      ClearMessage* lMessage = static_cast<ClearMessage*>(theCurrentMessage);
+      std::vector<unsigned int> lIds = lMessage->getIds();
+      std::vector<unsigned int>::iterator lIter;
+      for (lIter = lIds.begin(); lIter != lIds.end(); ++lIter) {
+        ZorbaDebuggerCommons* lCommons = 
+          theWrapper->theStateBlock->theDebuggerCommons;
+        lCommons->clearBreakpoint(*lIter);
+      }
+    }
+    break;
   }
 }
 
-void zorba::ZorbaDebuggerRuntime::staticCommands()
+void ZorbaDebuggerRuntime::staticCommands()
 {
   switch (theCurrentMessage->getCommand())
   {
@@ -266,7 +280,7 @@ void zorba::ZorbaDebuggerRuntime::staticCommands()
   }
 }
 
-void zorba::ZorbaDebuggerRuntime::dynamicCommands()
+void ZorbaDebuggerRuntime::dynamicCommands()
 {
   if (theExecStatus != QUERY_SUSPENDED) {
     std::auto_ptr<ReplyMessage> lReply(
@@ -286,26 +300,28 @@ void zorba::ZorbaDebuggerRuntime::dynamicCommands()
   }
 }
 
-void zorba::ZorbaDebuggerRuntime::setQueryRunning()
+void ZorbaDebuggerRuntime::setQueryRunning()
 {
   AutoLock lLock(theLock, Lock::WRITE);
   assert(theExecStatus == QUERY_RESUMED);
   theExecStatus = QUERY_RUNNING;
 }
 
-zorba::QueryLoc zorba::ZorbaDebuggerRuntime::addBreakpoint( const QueryLoc& aLocation )
+QueryLoc ZorbaDebuggerRuntime::addBreakpoint(const QueryLoc& aLocation,
+                                             unsigned int aId)
 {
   AutoLock lLock(theLock, Lock::WRITE);
   DebugLocation_t lLocation;
   lLocation.theFileName = aLocation.getFilename().c_str();
   lLocation.theLineNumber = aLocation.getLineno();
-  if (theWrapper->theStateBlock->theDebuggerCommons->addBreakpoint(lLocation)){
+  ZorbaDebuggerCommons* lCommons = theWrapper->theStateBlock->theDebuggerCommons;
+  if (lCommons->addBreakpoint(lLocation, aId)){
     return lLocation.theQueryLocation;
   }
   return QueryLoc();
 }
 
-void zorba::ZorbaDebuggerRuntime::suspendRuntime( QueryLoc aLocation, SuspensionCause aCause )
+void ZorbaDebuggerRuntime::suspendRuntime( QueryLoc aLocation, SuspensionCause aCause )
 {
   theLock.wlock();
   theExecStatus = QUERY_SUSPENDED;
@@ -315,7 +331,7 @@ void zorba::ZorbaDebuggerRuntime::suspendRuntime( QueryLoc aLocation, Suspension
   suspend();
 }
 
-void zorba::ZorbaDebuggerRuntime::resumeQuery()
+void ZorbaDebuggerRuntime::resumeQuery()
 {
   AutoLock lLock(theLock, Lock::WRITE);
 #ifndef NDEBUG
@@ -325,7 +341,7 @@ void zorba::ZorbaDebuggerRuntime::resumeQuery()
   resumeRuntime();
 }
 
-void zorba::ZorbaDebuggerRuntime::resumeRuntime()
+void ZorbaDebuggerRuntime::resumeRuntime()
 {
   theExecStatus = QUERY_RESUMED;
   resume();
@@ -333,7 +349,7 @@ void zorba::ZorbaDebuggerRuntime::resumeRuntime()
   theCommunicator->sendEvent(&lEvent);
 }
 
-void zorba::ZorbaDebuggerRuntime::terminateRuntime()
+void ZorbaDebuggerRuntime::terminateRuntime()
 {
   AutoLock lLock(theLock, Lock::WRITE);
   theExecStatus = QUERY_TERMINATED;
@@ -343,7 +359,7 @@ void zorba::ZorbaDebuggerRuntime::terminateRuntime()
 #endif
 }
 
-zorba::ReplyMessage* zorba::ZorbaDebuggerRuntime::getAllVariables()
+ReplyMessage* ZorbaDebuggerRuntime::getAllVariables()
 {
   ZorbaDebuggerCommons* lCommons = 
     theWrapper->theStateBlock->theDebuggerCommons;
@@ -361,7 +377,7 @@ zorba::ReplyMessage* zorba::ZorbaDebuggerRuntime::getAllVariables()
   return lReply.release();
 }
 
-void zorba::ZorbaDebuggerRuntime::step()
+void ZorbaDebuggerRuntime::step()
 {
 #ifndef NDEBUG
   // Check preconditions
@@ -389,12 +405,12 @@ void zorba::ZorbaDebuggerRuntime::step()
   }
 }
 
-void zorba::ZorbaDebuggerRuntime::setNotSendTerminateEvent()
+void ZorbaDebuggerRuntime::setNotSendTerminateEvent()
 {
   theNotSendTerminateEvent = true;
 }
 
-void zorba::ZorbaDebuggerRuntime::evalCommand()
+void ZorbaDebuggerRuntime::evalCommand()
 {
   ZORBA_ASSERT(dynamic_cast<EvalMessage*>(theCurrentMessage));
   xqpString lExpr = static_cast<EvalMessage*>(theCurrentMessage)->getExpr();
@@ -407,7 +423,7 @@ void zorba::ZorbaDebuggerRuntime::evalCommand()
   lCommand->start();
 }
 
-zorba::ReplyMessage* zorba::ZorbaDebuggerRuntime::listSource()
+ReplyMessage* ZorbaDebuggerRuntime::listSource()
 {
   ZORBA_ASSERT(dynamic_cast<ListCommand*>(theCurrentMessage));
   ListCommand* lCommand = dynamic_cast<ListCommand*>(theCurrentMessage);
@@ -437,3 +453,5 @@ zorba::ReplyMessage* zorba::ZorbaDebuggerRuntime::listSource()
   return new ListReply(
     theCurrentMessage->getId(), DEBUGGER_NO_ERROR, lOut.str());
 }
+
+} // namespace zorba

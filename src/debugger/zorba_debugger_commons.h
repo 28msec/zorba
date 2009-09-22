@@ -173,9 +173,17 @@ namespace zorba {
     /**
     * Adds a breakpoint and then sets theLocation from aLocation
     * to the QueryLoc object, where it has to break.
+    *
+    * @param aLocation The location, where the debugger has to break.
+    * @param aId The identifier of this breakpoint.
+    *
     * @return true, if a breakable expression was found - false otherwise
     */
-    bool addBreakpoint(DebugLocation_t& aLocation);
+    bool addBreakpoint(DebugLocation_t& aLocation, unsigned int aId);
+    /**
+    * @brief Clears the breakpoint with the id aId.
+    */
+    void clearBreakpoint(unsigned int aId);
     //************************************
     // Method:    getRuntime
     // FullName:  zorba::ZorbaDebuggerCommons::getRuntime
@@ -261,6 +269,7 @@ namespace zorba {
   private:
     std::map<DebugLocation_t, bool, DebugLocation> theLocationMap;
     std::map<std::string, std::string >            theUriFileMappingMap;
+    std::map<unsigned int, DebugLocation_t>        theBreakpoints;
     ZorbaDebuggerRuntime*                          theRuntime;
     static_context*                                theCurrentStaticContext;
     dynamic_context*                               theCurrentDynamicContext;
