@@ -91,6 +91,31 @@ json::value* getValue(json::value* aValue, std::string anIndex)
   return (*aValue)[anIndex.c_str()];
 }
 
+void deserializeString(std::string& aString)
+{
+  std::string lRes;
+  std::string::size_type lBegin = 0;
+  std::string::size_type lPos = aString.find("\\\"");
+  while (lPos != std::string::npos) {
+    std::string lSub = aString.substr(lBegin, lPos - lBegin) + "\"";
+    lRes += lSub;
+    lBegin = lPos + 2;
+    lPos = aString.find("\\\"", lBegin);
+  }
+  lRes += aString.substr(lBegin, std::string::npos);
+  lBegin = 0;
+  aString = lRes;
+  lPos = aString.find("\\n");
+  lRes = "";
+  while (lPos != std::string::npos) {
+    lRes += aString.substr(lBegin, lPos - lBegin) + "\n";
+    lBegin = lPos + 2;
+    lPos = aString.find("\\n", lBegin);
+  }
+  lRes += aString.substr(lBegin, std::string::npos);
+  aString = lRes;
+}
+
 bool AbstractMessage::operator == ( const AbstractMessage & message )
 {
   Length length;
@@ -680,6 +705,7 @@ EvaluatedEvent::EvaluatedEvent( Byte* aMessage, const unsigned int aLength ):
     std::wstring* lWString = expr->getstring(L"", true);
     std::string lString( lWString->begin()+1, lWString->end()-1 );
     delete lWString;
+    deserializeString(lString);
     theExpr = lString;
   } else {
     throw MessageFormatException("Invalid JSON format for EvaluatedEvent message.");
@@ -704,7 +730,9 @@ EvaluatedEvent::EvaluatedEvent( Byte* aMessage, const unsigned int aLength ):
       }
       std::wstring *lType = getValue(*it, "type")->getstring(L"", true);
       std::string type = std::string( lType->begin()+1, lType->end()-1 );
-      delete lType; 
+      delete lType;
+      deserializeString(result);
+      deserializeString(type);
       theValuesAndTypes.push_back(std::make_pair(result, type));
     }   
   } else {
@@ -1443,25 +1471,8 @@ ReplyMessage(aMessage, aLength)
   std::auto_ptr<std::wstring> lWString(lCode->getstring(L"", true));
   std::string lString( lWString->begin()+1, lWString->end()-1 );
 
-  std::string::size_type lBegin = 0;
-  std::string::size_type lPos = lString.find("\\\"");
-  while (lPos != std::string::npos) {
-    std::string lSub = lString.substr(lBegin, lPos - lBegin) + "\"";
-    theString += lSub;
-    lBegin = lPos + 2;
-    lPos = lString.find("\\\"", lBegin);
-  }
-  theString += lString.substr(lBegin, std::string::npos);
-  lBegin = 0;
-  lString = theString;
-  lPos = lString.find("\\n");
-  theString = "";
-  while (lPos != std::string::npos) {
-    theString += lString.substr(lBegin, lPos - lBegin) + "\n";
-    lBegin = lPos + 2;
-    lPos = lString.find("\\n", lBegin);
-  }
-  theString += lString.substr(lBegin, std::string::npos);
+  deserializeString(lString);
+  theString = lString;
 }
 
 ListReply::~ListReply() {}
