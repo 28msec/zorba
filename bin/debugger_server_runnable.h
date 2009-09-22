@@ -6,6 +6,7 @@
 #include "zorba/config.h"
 #include "zorba/api_shared_types.h"
 #include "zorbautils/runnable.h"
+#include "zorba/options.h"
 
 namespace zorba {
 
@@ -15,7 +16,8 @@ public:
     DebuggerServerRunnable(const XQuery_t& aQuery,
                            std::ostream&   aOutStream,
                            unsigned short  aRequestPort,
-                           unsigned short  aEventPort);
+                           unsigned short  aEventPort,
+                           Zorba_SerializerOptions* aSerializerOptions = 0);
     virtual ~DebuggerServerRunnable();
 
     virtual void
@@ -29,6 +31,7 @@ private:
     std::ostream&  theOutStream;
     unsigned short theRequestPort;
     unsigned short theEventPort;
+    Zorba_SerializerOptions* theSerializerOptions;
 
 }; /* class DebuggerServerRunnable */
 

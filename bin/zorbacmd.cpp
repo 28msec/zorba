@@ -897,6 +897,10 @@ int _tmain(int argc, _TCHAR* argv[])
         std::auto_ptr<DebuggerHandler>               lHandler;
 
         if (lProperties.debugServer()) {
+          Zorba_SerializerOptions lSerOptions = 
+            Zorba_SerializerOptions::SerializerOptionsFromStringParams(
+            lProperties.getSerializerParameters());
+          createSerializerOptions(lSerOptions, lProperties);
           lServer.reset(new zorba::DebuggerServerRunnable(lQuery,
                                                           *lOutputStream,                                                          
                                                           lProperties.getRequestPort(),

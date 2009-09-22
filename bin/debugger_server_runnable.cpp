@@ -10,11 +10,13 @@ namespace zorba {
 DebuggerServerRunnable::DebuggerServerRunnable(const XQuery_t& aQuery,
                                                std::ostream&   aOutStream,
                                                unsigned short  aRequestPort,
-                                               unsigned short  aEventPort)
+                                               unsigned short  aEventPort,
+                                               Zorba_SerializerOptions* aSerOpts)
   : theQuery(aQuery),
     theOutStream(aOutStream),
     theRequestPort(aRequestPort),
-    theEventPort(aEventPort)
+    theEventPort(aEventPort),
+    theSerializerOptions(aSerOpts)
 {
 }
 
@@ -26,7 +28,10 @@ void
 DebuggerServerRunnable::run()
 {
   try {
-    theQuery->debug(theOutStream, 0, theRequestPort, theEventPort);
+    theQuery->debug(theOutStream,
+      theSerializerOptions,
+      theRequestPort,
+      theEventPort);
   } catch (zorba::QueryException& qe) {
     ErrorPrinter::print(qe, std::cerr, false, true);
   } catch (zorba::ZorbaException& ze) {

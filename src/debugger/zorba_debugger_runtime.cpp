@@ -35,11 +35,13 @@ namespace zorba {
   public:
     EvalCommand(ZorbaDebuggerCommons* aCommons, 
       DebuggerCommunicator* aCommunicator,
-      const xqpString& aEvalString)
+      const xqpString& aEvalString,
+      const Zorba_SerializerOptions_t* aSerOpts)
       : 
     theCommons(aCommons), 
     theCommunicator(aCommunicator),
-    theEvalString(aEvalString)
+    theEvalString(aEvalString),
+    theSerOpts(aSerOpts)
     {}
 
     virtual ~EvalCommand() {}
@@ -62,7 +64,8 @@ namespace zorba {
 
       try {
         lEvent.reset(
-          new EvaluatedEvent(theEvalString, theCommons->eval(theEvalString)));
+          new EvaluatedEvent(theEvalString,
+          theCommons->eval(theEvalString, theSerOpts)));
       } catch (error::ZorbaError& lError) {
         lEvent.reset(
           new EvaluatedEvent(theEvalString, lError.toString()));
@@ -81,9 +84,10 @@ namespace zorba {
     }
 
   private:
-    ZorbaDebuggerCommons*   theCommons;
-    DebuggerCommunicator*   theCommunicator;
-    xqpString               theEvalString;
+    ZorbaDebuggerCommons*              theCommons;
+    DebuggerCommunicator*              theCommunicator;
+    xqpString                          theEvalString;
+    const Zorba_SerializerOptions_t*   theSerOpts;
   };
 }
 
@@ -398,7 +402,7 @@ void zorba::ZorbaDebuggerRuntime::evalCommand()
   // it in this method!
   EvalCommand* lCommand = new EvalCommand(
     theWrapper->theStateBlock->theDebuggerCommons,
-    theCommunicator, lExpr.c_str());
+    theCommunicator, lExpr.c_str(), theSerializerOptions);
   lCommand->setDeleteAfterRun(true);
   lCommand->start();
 }

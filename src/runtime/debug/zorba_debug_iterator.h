@@ -5,6 +5,7 @@
 
 #include "runtime/base/narybase.h"
 #include "runtime/util/plan_wrapper_holder.h"
+#include "zorba/options.h"
 
 #include <vector>
 #include <map>
@@ -85,7 +86,9 @@ public: // Getters
   QueryLoc getQueryLocation() const;
 
 public: // Commands
-  std::list<std::pair<xqpString, xqpString> > eval(PlanState& aPlanState) const;
+  std::list<std::pair<xqpString, xqpString> > eval(
+    PlanState& aPlanState,
+    const Zorba_SerializerOptions_t* aSerOpts) const;
 };
 
 

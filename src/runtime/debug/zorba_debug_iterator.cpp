@@ -14,6 +14,8 @@
 #include "runtime/eval/FnContextImpl.h"
 #include "runtime/core/item_iterator.h"
 #include "runtime/api/plan_iterator_wrapper.h"
+#include "api/serialization/serializer.h"
+#include "api/xqueryimpl.h"
 
 
 namespace zorba {
@@ -150,14 +152,18 @@ const ZorbaDebugIterator* ZorbaDebugIterator::getOverIterator() const
 }
 
 std::list<std::pair<xqpString, xqpString> > ZorbaDebugIterator::eval(
-  PlanState& aPlanState) const
+  PlanState& aPlanState, const Zorba_SerializerOptions_t* aSerOptions) const
 {
   theChildren[1]->reset(aPlanState);
   std::list<std::pair<xqpString, xqpString> > lResult;
   store::Item_t lRes;
+  serializer ser(NULL);
+  XQueryImpl::setSerializationParameters(&ser, aSerOptions);
   while (consumeNext(lRes, theChildren[1], aPlanState)) {
+    std::stringstream lResStream;
+    ser.serialize(lRes, lResStream);
     lResult.push_back(
-      std::pair<xqpString, xqpString>(xqpString(lRes->getStringValue().getp()),
+      std::pair<xqpString, xqpString>(lResStream.str(),
       xqpString(lRes->getType()->getStringValue().getp())));
   }
   return lResult;

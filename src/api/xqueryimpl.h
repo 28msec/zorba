@@ -302,6 +302,9 @@ public:
                     SchemaURIResolver* aSchemaUriResolver = NULL,
                     ModuleURIResolver* aModuleUriResolver = NULL,
                     std::ostream*      theTraceStream = NULL);
+
+  static void
+  setSerializationParameters(serializer*, const Zorba_SerializerOptions_t*);
 protected:
     
   XQueryImpl();
@@ -311,9 +314,6 @@ protected:
 
   CompilerCB::config_t
   getCompilerConfig(const Zorba_CompilerHints_t&);
-
-  static void
-  setSerializationParameters(serializer*, const Zorba_SerializerOptions_t*);
 
   PlanWrapper_t
   generateWrapper();

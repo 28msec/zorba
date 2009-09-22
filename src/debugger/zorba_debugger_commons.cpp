@@ -217,14 +217,15 @@ void ZorbaDebuggerCommons::setDebugIteratorState( ZorbaDebugIteratorState* aStat
 }
 
 std::list<std::pair<xqpString, xqpString> > 
-ZorbaDebuggerCommons::eval(const xqpString& aExpr)
+ZorbaDebuggerCommons::eval(const xqpString& aExpr,
+                           const Zorba_SerializerOptions_t* aSerOpts)
 {
   theExecEval = true;
   xqpStringStore_t lStore = aExpr.getStore();
   GlobalEnvironment::getInstance().getItemFactory()->createString(theEvalItem,
     lStore);
   std::list<std::pair<xqpString, xqpString> > lRes =
-    theCurrentIterator->eval(*thePlanState);
+    theCurrentIterator->eval(*thePlanState, aSerOpts);
   theExecEval = false;
   return lRes;
 }

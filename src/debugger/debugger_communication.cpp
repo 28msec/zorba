@@ -58,7 +58,9 @@ zorba::AbstractCommandMessage* zorba::DebuggerCommunicator::handleTCPClient()
 	{
 		lMessage.reset(MessageFactory::buildMessage( m_commandSocket ));
     if (lMessage.get() == 0) {
-		  synchronous_logger::clog << "[Server Thread] The connection with the client is closed\n";
+#ifdef DEBUG
+      synchronous_logger::clog << "[Server Thread] The connection with the client is closed\n";
+#endif
       return NULL;
     }
 

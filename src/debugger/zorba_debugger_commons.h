@@ -9,6 +9,9 @@
 
 #include "debugger/debugger_common.h"
 
+struct Zorba_SerializerOptions;
+typedef struct Zorba_SerializerOptions Zorba_SerializerOptions_t;
+
 namespace zorba {
   class dynamic_context;
   class static_context;
@@ -165,7 +168,7 @@ namespace zorba {
     * @returns the result of the expression in the current context.
     */
     std::list<std::pair<zorba::xqpString, zorba::xqpString> > 
-      eval(const xqpString& aExpr);
+      eval(const xqpString& aExpr, const Zorba_SerializerOptions_t* aSerOpts);
   public: //Queries
     /**
     * Adds a breakpoint and then sets theLocation from aLocation
