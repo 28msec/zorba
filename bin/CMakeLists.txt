@@ -70,6 +70,12 @@ SET_TESTS_PROPERTIES(bin/zorba_jsonml2 PROPERTIES PASS_REGULAR_EXPRESSION ".*API
 ADD_TEST(bin/zorba_jsonml3 ${ZORBA_EXE_PATH} -q "(<ul>1</ul>,<ul>2</ul>)" -z method=jsonml)
 SET_TESTS_PROPERTIES(bin/zorba_jsonml3 PROPERTIES PASS_REGULAR_EXPRESSION ".*API0066.*")
 
+ADD_TEST(bin/zorba5 ${ZORBA_EXE_PATH} -q -f blub.xq)
+SET_TESTS_PROPERTIES(bin/zorba5 PROPERTIES PASS_REGULAR_EXPRESSION ".*Extra arguments found on command line.*")
+IF (CMAKE_MINOR_VERSION STREQUAL "4")
+  SET_TESTS_PROPERTIES(bin/zorba5 PROPERTIES WILL_FAIL TRUE)
+ENDIF (CMAKE_MINOR_VERSION STREQUAL "4")
+
 # test the compile-only option of the command line tool which is used for semantic checking in eclipse
 ADD_TEST(bin/zorba_compilechk1 ${ZORBA_EXE_PATH} -q "${CMAKE_CURRENT_SOURCE_DIR}/test/mymod.xq" -f -l)
 SET_TESTS_PROPERTIES(bin/zorba_compilechk1 PROPERTIES PASS_REGULAR_EXPRESSION ".*mymod.xq.*line 6, column 8:.*XPST0008.*")
