@@ -91,6 +91,17 @@ json::value* getValue(json::value* aValue, std::string anIndex)
   return (*aValue)[anIndex.c_str()];
 }
 
+void replaceAllInString(std::string& aString,
+                        std::string aPattern,
+                        std::string aReplace)
+{
+  std::string::size_type lPos = aString.find(aPattern);
+  while (lPos != std::string::npos) {
+    aString.replace(lPos, aPattern.size(), aReplace);
+    lPos = aString.find(aPattern, lPos + 1);
+  }
+}
+
 void deserializeString(std::string& aString)
 {
   std::string lRes;
@@ -113,6 +124,7 @@ void deserializeString(std::string& aString)
     lPos = aString.find("\\n", lBegin);
   }
   lRes += aString.substr(lBegin, std::string::npos);
+  replaceAllInString(lRes, "&quot;", "\"");
   aString = lRes;
 }
 
@@ -744,6 +756,7 @@ EvaluatedEvent::EvaluatedEvent( Byte* aMessage, const unsigned int aLength ):
     std::wstring* lWString = error->getstring(L"", true);
     std::string lString( lWString->begin()+1, lWString->end()-1 );
     delete lWString;
+    deserializeString(lString);
     theError = lString;
   } else {
     throw MessageFormatException("Invalid JSON format for EvaluatedEvent message.");
@@ -786,6 +799,8 @@ xqpString EvaluatedEvent::getData() const
 {
   xqpString lExpr = theExpr;
   lExpr = lExpr.replace("\"", "&quot;", "");
+  xqpString lErr = theError;
+  lErr = lErr.replace("\"", "&quot;", "");
   std::stringstream lJSONString;
   lJSONString << "{";
   lJSONString << "\"expr\":\"" << lExpr << "\",";
@@ -800,7 +815,7 @@ xqpString EvaluatedEvent::getData() const
     lJSONString << "{\"result\":\"" << it->first << "\",\"type\":\"" << it->second << "\"}";
   }
   lJSONString << "],";
-  lJSONString << "\"error\":\"" << theError << "\"";
+  lJSONString << "\"error\":\"" << lErr << "\"";
   lJSONString << "}";
   xqpString lData( lJSONString.str() );
   return lData;
