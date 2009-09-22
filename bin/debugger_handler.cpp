@@ -301,7 +301,10 @@ namespace zorba{
 	bool DebuggerHandler::eval(const vector<string>& args)
 	{
 		assert(theClient != 0);
-		assert(!theClient->isQueryIdle());
+    if (theClient->isQueryIdle()) {
+      synchronous_logger::cerr << "Cannot use eval, while the query is ide.\n";
+      return false;
+    }
 		if(args.size() < 2)
 		{
 			synchronous_logger::cerr << "Invalid syntax.\n";
