@@ -287,8 +287,7 @@ IF (NOT ZORBA_NO_XMLSCHEMA)
       MESSAGE(FATAL_ERROR "Xerces-C ${XERCESC_VERSION} not supported.
 	Only 2.8.0, 3.0.1 and newer versions are supported
 	or
-	Use -D ZORBA_NO_XMLSCHEMA=ON option for building without XMLSchema 
-          support.")
+	Use -D ZORBA_NO_XMLSCHEMA=ON option for building without XMLSchema support.")
     ELSE (result LESS 0)
       MESSAGE(STATUS "Found Xerces ${XERCESC_VERSION} -- ${XERCESC_INCLUDE}  ${XERCESC_LIBRARY}")
       INCLUDE_DIRECTORIES(${XERCESC_INCLUDE})
@@ -298,8 +297,7 @@ IF (NOT ZORBA_NO_XMLSCHEMA)
     MESSAGE(FATAL_ERROR "Xerces-C not found.
 	Make sure you have Xerces-C 2.8.0 or 3.0.1+ installed
 	or
-	Use -D ZORBA_NO_XMLSCHEMA=ON option for building without XMLSchema 
-          support.")    
+	Use -D ZORBA_NO_XMLSCHEMA=ON option for building without XMLSchema support.")    
   ENDIF (XERCESC_FOUND)
 ELSE (NOT ZORBA_NO_XMLSCHEMA)
   MESSAGE(STATUS "ZORBA_NO_XMLSCHEMA: ${ZORBA_NO_XMLSCHEMA}"
