@@ -76,3 +76,8 @@ SET_TESTS_PROPERTIES(bin/zorba_compilechk1 PROPERTIES PASS_REGULAR_EXPRESSION ".
 
 ADD_TEST(bin/zorba_compilechk2 ${ZORBA_EXE_PATH} -q "${CMAKE_CURRENT_SOURCE_DIR}/test/mymod.xq" -f -l -x)
 SET_TESTS_PROPERTIES(bin/zorba_compilechk2 PROPERTIES PASS_REGULAR_EXPRESSION ".*XPST0008.*bin/test/mymod.xq' lineStart='6' columnStart='8' lineEnd='6' columnEnd='8'.*")
+
+IF (CMAKE_MINOR_VERSION STREQUAL "4")
+  SET_TESTS_PROPERTIES(bin/zorba_compilechk1 PROPERTIES WILL_FAIL TRUE)
+  SET_TESTS_PROPERTIES(bin/zorba_compilechk2 PROPERTIES WILL_FAIL TRUE)
+ENDIF (CMAKE_MINOR_VERSION STREQUAL "4")
