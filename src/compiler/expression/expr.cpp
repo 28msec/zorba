@@ -533,6 +533,7 @@ void fo_expr::compute_upd_seq_kind () const {
 
   cache.upd_seq_kind.vacuous = get_func ()->getUpdateType () == VACUOUS_EXPR;
 
+  // concatenation of vacuous exprs is vacuous
   if (concat) {
     ulong i;
     for (i = 0; i < size (); ++i) {
@@ -545,13 +546,19 @@ void fo_expr::compute_upd_seq_kind () const {
   }
 
   cache.upd_seq_kind.updating = get_func ()->isUpdating ();
-  if (! cache.upd_seq_kind.updating && concat)
+  if (! cache.upd_seq_kind.updating && concat) {
     for (unsigned i = 0; i < size (); i++)
       if ((*this) [i]->is_updating ()) {
         cache.upd_seq_kind.updating = true;
         break;
       }
+  }
+
   cache.upd_seq_kind.sequential = false;
+  const user_function *f = dynamic_cast<const user_function *> (get_func ());
+  if (f != NULL)
+    cache.upd_seq_kind.sequential = f->isSequential ();
+
   cache.upd_seq_kind.valid = true;
 }
 

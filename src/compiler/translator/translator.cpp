@@ -2713,11 +2713,10 @@ void end_visit (const FunctionDecl& v, void* /*visit_state*/)
   {
     assert(body != NULL);
 
-    if (body->is_sequential() && lFuncType != ParseConstants::fn_sequential) 
-    {
+    if (body->is_sequential() && lFuncType != ParseConstants::fn_sequential) {
       ZORBA_ERROR_LOC_DESC (XPST0003, loc,
                             "Only a sequential function can have a body that is sequential expression");
-  }
+    }
 
     // Under section 2.2.2 "Category Rules", it states: If the body of a
     // sequential function is a Block it must be either a sequential or
