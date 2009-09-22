@@ -23,6 +23,23 @@
 
 
 std::string ZorbaCMDProperties::check_args () {
+
+  if(queriesOrFilesBegin() == queriesOrFilesEnd()) {
+    return "No queries submitted. Use -h for help.";
+  }
+
+  if (getPositionalArgs ().size () != 0) {
+    QueriesOrFiles_t::const_iterator lIter;
+    for (lIter = queriesOrFilesBegin(); lIter != queriesOrFilesEnd();
+         ++lIter)
+    {
+      if (*lIter == "-f")
+        return "Extra arguments found on command line. Possible reason: misplaced -f option (try '-f -q filename' instead of '-q -f filename'). Use -h for help.";
+    }
+    
+    return "Extra arguments found on command line. Use -h for help.";
+  }
+
   if ( theBoundarySpace.size() != 0 )
   {
     if ( ! (theBoundarySpace.compare("strip") == 0 || theBoundarySpace.compare("preserve") == 0 ))

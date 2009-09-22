@@ -71,6 +71,8 @@ const char *copyright_str =
   "Copyright 2006-2009 The FLWOR Foundation.\n"
   "License: Apache License 2.0: <http://www.apache.org/licenses/LICENSE-2.0>";
 
+#define PATH_SEP (zorba::filesystem_path::get_path_separator ())
+
 bool
 populateStaticContext(
     zorba::StaticContext_t& aStaticContext,
@@ -169,41 +171,40 @@ bool createSerializerOptions(
 }
 
 
+/// Fullfills the command-line "as-file" (-f) switch,
+/// or if not requested, infers -f for file:// queries.
+/// Returns an URI or the empty string.
 std::string parseFileURI (bool asPath, const std::string &str) 
 {
   if (asPath)
     return str;
-#ifdef WIN32////for WINDOWS ////
-  // file:///c:/ return c:<backslash>
-  // file://localhost return \\localhost
+
+  // otherwise, the user still might have meant a file
+#ifdef WIN32
+  // file:///c:/ returns c:<backslash>
+  // file://localhost returns \\localhost
+  // BUG: it seems that <a>/x returns <a>\x
   static const char *file3 = "file:///";
   static const char *file2 = "file://";
-  std::string   fpath;
-  if(str.compare(0, strlen(file3), file3) == 0)
-  {
+  std::string fpath;
+  if(str.compare(0, strlen(file3), file3) == 0) {
     fpath = str.substr(strlen(file3));
-  }
-  else if(str.compare(0, strlen(file2), file2) == 0)
-  {
-    fpath = "\\";
+  } else if(str.compare(0, strlen(file2), file2) == 0) {
+    fpath = PATH_SEP;
     fpath += str.substr(strlen(file2));
   }
-  //replace all slash with backslash
+  // replace all slash with backslash
   std::string::size_type off=0;
-  while((off=fpath.find('/', off)) != std::string::npos)
-  {
-    fpath.replace(off, 1, "\\");
-  }
+  while ((off=fpath.find('/', off)) != std::string::npos)
+    fpath.replace(off, 1, PATH_SEP);
   return fpath;
 
-#else///for UNIX ///
+#else // for UNIX
 
   static const char *pfx = "file://";
   static unsigned plen = strlen (pfx);
   if (str.compare (0, plen, pfx) == 0)
-  {
     return str.substr (plen);
-  }
   else
     return "";
 #endif
@@ -220,9 +221,9 @@ tokenize(const std::string& str, const std::string& delimiters)
   std::string::size_type pos = str.find_first_of(delimiters, lastPos);
 
   while (std::string::npos != pos || std::string::npos != lastPos) {
-      tokens.push_back(str.substr(lastPos, pos - lastPos));
-      lastPos = str.find_first_not_of(delimiters, pos);
-      pos = str.find_first_of(delimiters, lastPos);
+    tokens.push_back(str.substr(lastPos, pos - lastPos));
+    lastPos = str.find_first_not_of(delimiters, pos);
+    pos = str.find_first_of(delimiters, lastPos);
   }
 
   return tokens;
@@ -619,14 +620,11 @@ int executeQuery(
   //
   try {
     for (int i = 0; i < lNumExecutions; ++i) {
-      if (query->isUpdateQuery())
-      {
+      if (query->isUpdateQuery()) {
         query->applyUpdates();
-      }
-      else 
-      {
+      } else {
         if (properties.noSerializer ())
-              query->executeSAX ();
+          query->executeSAX ();
         else
           query->serialize(outputStream, &lSerOptions);
       }
@@ -671,7 +669,7 @@ int _tmain(int argc, _TCHAR* argv[])
   bool doTiming = lProperties.timing();
   bool debug = (lProperties.debugServer() || lProperties.debugClient());
 
-  //libModule assumes compileOnly even if compileOnly is false
+  // libModule assumes compileOnly even if compileOnly is false
   bool compileOnly = (lProperties.compileOnly() || lProperties.libModule() );
 
   // write to file or standard out
@@ -684,12 +682,6 @@ int _tmain(int argc, _TCHAR* argv[])
   } else if ( !lOutputStream->good() ) {
     std::cerr << "could not write to output file {" << lProperties.outputFile() << "}" << std::endl;
     return 2;
-  }
-
-  if(lProperties.queriesOrFilesBegin() == lProperties.queriesOrFilesEnd()) {
-    std::cerr << "no queries submitted." << std::endl;
-    lProperties.printHelp(std::cout);
-    return 3;
   }
 
   // Start the engine
@@ -709,11 +701,11 @@ int _tmain(int argc, _TCHAR* argv[])
 
   // For each query ...
 
-  int queryNo = 1;
+  int queryNo;
   ZorbaCMDProperties::QueriesOrFiles_t::const_iterator lIter;
-  for (lIter = lProperties.queriesOrFilesBegin();
+  for (queryNo = 1, lIter = lProperties.queriesOrFilesBegin();
        lIter != lProperties.queriesOrFilesEnd();
-       ++lIter)
+       ++queryNo, ++lIter)
   {
     //
     // Read the query (either from a file or given as parameter)
@@ -767,11 +759,8 @@ int _tmain(int argc, _TCHAR* argv[])
       // to make the doc function doc("mydoc.xml") work
       zorba::filesystem_path p;
       std::stringstream lTmp;
-#ifdef WIN32
-      std::vector<std::string> lTokens = tokenize(p.c_str(), "\\");
-#else
-      std::vector<std::string> lTokens = tokenize(p.c_str(), "/");
-#endif
+      std::vector<std::string> lTokens = tokenize(p.c_str(), PATH_SEP);
+
       lTmp << "file:///";
       for (std::vector<std::string>::const_iterator lIter = lTokens.begin();
            lIter != lTokens.end(); ++lIter) 
@@ -793,14 +782,12 @@ int _tmain(int argc, _TCHAR* argv[])
         zorba::XQuery_t lQuery = lZorbaInstance->createQuery();
         if (asFile)
           lQuery->setFileName(path.get_path());
-          lQuery->parse (*qfile);
+        lQuery->parse (*qfile);
       } catch (zorba::ZorbaException& ze) {
         std::cerr << ze << std::endl;
         return 6;
       }
-    }
-
-    else if (!debug && doTiming) {
+    } else if (!debug && doTiming) {
       if( compileOnly ) {
         try {
           zorba::XQuery_t aQuery = lZorbaInstance->createQuery();
@@ -859,16 +846,15 @@ int _tmain(int argc, _TCHAR* argv[])
                                 *lOutputStream);
       if (status != 0)
         return status;
-    }
-    else if (debug) {
+
+    } else if (debug) {
 
       if (compileOnly) {
-        std::cerr << "cannot debug a query if the compileOnly option is specified" << std::endl;
+        std::cerr << "Cannot debug a query if the compile-only option is specified" << std::endl;
         return 7;
       }
 
-      if(fname.empty())
-      {
+      if (! asFile) {
         std::cerr << "Cannot debug inline queries." << std::endl;
         return 0;
       }
@@ -956,7 +942,6 @@ int _tmain(int argc, _TCHAR* argv[])
       }
     } // else if (debug) 
 
-    queryNo++;
   } // for each query
   return 0;
 }
