@@ -896,6 +896,12 @@ int _tmain(int argc, _TCHAR* argv[])
         std::auto_ptr<ZorbaDebuggerClient>           lClient;
         std::auto_ptr<DebuggerHandler>               lHandler;
 
+        if (lProperties.getRequestPort() == lProperties.getEventPort()) {
+          std::cout << "Command and event port have to be different" <<
+            std::endl;
+          return -1;
+        }
+
         if (lProperties.debugServer()) {
           Zorba_SerializerOptions lSerOptions = 
             Zorba_SerializerOptions::SerializerOptionsFromStringParams(
