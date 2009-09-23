@@ -30,7 +30,7 @@ class CompilerCB;
 //class XQueryImpl;
   namespace serialization{
 
-#define   ARCHIVER_LATEST_VERSION   0x1 //current latest version
+#define   ARCHIVER_LATEST_VERSION   0x2 //current latest version
 
 #define   FIELD_IS_SIMPLE      true
 #define   FIELD_IS_CLASS       true
