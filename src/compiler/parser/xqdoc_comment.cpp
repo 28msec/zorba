@@ -24,7 +24,9 @@ using namespace std;
 
 namespace zorba {
 
-string trim(const string& aString)
+string trim(const string& aString, string *left_ws = NULL);
+
+string trim(const string& aString, string *left_ws)
 {
   size_t lStartPos = aString.find_first_not_of(" \t");
   size_t lEndPos = aString.find_last_not_of(" \t");
@@ -33,6 +35,10 @@ string trim(const string& aString)
   {
     return "";
   } else {
+    if(left_ws && lStartPos)
+    {
+      *left_ws += aString.substr(0, lStartPos);
+    }
     return aString.substr(lStartPos, lEndPos-lStartPos+1);
   }
 }
@@ -41,28 +47,49 @@ XQDocComment::XQDocComment(const string& aComment): theDeprecated(false)
 { 
   bool descriptionState = true;
   string lLine;
+  string left_ws;//remember whitespaces in the left
+  string anno_text;
   istringstream lComment;
   lComment.str(aComment);
   while(getline(lComment, lLine, '\n'))
   {
-    lLine = trim(lLine);
-    if(lLine.empty()) continue;
+    left_ws = "";
+    lLine = trim(lLine, &left_ws);
+    if(lLine.empty()) 
+    {
+      if(descriptionState)
+        appendDescription("\n");
+      else
+        anno_text += "\n";
+      continue;
+    }
     if("(:~" == lLine.substr(0, 3) || ":)" == lLine.substr(0, 2))
     {
       continue;
     } else if (':' == lLine.at(0)) {
       lLine = lLine.substr(1);
+      lLine = trim(lLine, &left_ws);
     }
 
-    if(descriptionState && !isAnAnnotationLine(lLine))
+    if(isAnAnnotationLine(lLine)) 
     {
-        appendDescription(lLine);
-    } else if(isAnAnnotationLine(lLine)) {
-        descriptionState = false;
-        parseAnnotation(trim(lLine).substr(1));
+      descriptionState = false;
+      if(!anno_text.empty())
+        parseAnnotation(anno_text);
+      anno_text = lLine.substr(1);
     }
-
+    else if(descriptionState)
+    {
+      appendDescription(left_ws + lLine);
+    }
+    else
+    {
+      anno_text += "\n";
+      anno_text += left_ws + lLine;
+    }
   }
+  if(!anno_text.empty())
+    parseAnnotation(anno_text);
 }
 
 XQDocComment* XQDocComment::parseAnnotation(const std::string& aLine)

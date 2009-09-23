@@ -92,6 +92,21 @@ static bool decode_string (const char *yytext, uint32_t yyleng, string *result) 
   return true;
 }
 
+static bool decode_string2 (const char *yytext, uint32_t yyleng, string *result) {
+  uint32_t i;
+  for (i = 0; i < yyleng; i++) {
+    char ch = yytext [i];
+    if (ch == '&') {
+      int d = decode_entity (yytext + i + 1, result);
+      if (d < 0) return false;
+      i += d;
+    } else {
+      *result += ch;
+    }
+  }
+  return true;
+}
+
 symbol_table::symbol_table(uint32_t initial_heapsize)
 :
 	heap(initial_heapsize)
@@ -195,6 +210,16 @@ off_t symbol_table::put_stringlit(char const* yytext, uint32_t yyleng)
   yytext = eolNorm.c_str (); yyleng = eolNorm.size ();
   string result;
   if (! decode_string (yytext, yyleng, &result)) return -1;
+	return heap.put (result.c_str (), 0, result.length ());
+}
+
+off_t symbol_table::put_stringlit2(char const* yytext, uint32_t yyleng)
+{
+  string eolNorm;
+  normalize_eol (yytext, yyleng, &eolNorm);
+  yytext = eolNorm.c_str (); yyleng = eolNorm.size ();
+  string result;
+  if (! decode_string2 (yytext, yyleng, &result)) return -1;
 	return heap.put (result.c_str (), 0, result.length ());
 }
 

@@ -62,12 +62,12 @@ private:
     if(!aComment->getDescription().empty() || lAnnotations.begin()!=lAnnotations.end() ||
         aComment->hasVersion() || aComment->hasReturn() || aComment->isDeprecated())
     {
-      os << "<xqdoc:comment>" ;
+      os << "<xqdoc:comment>" << endl;
        
       if(!aComment->getDescription().empty())
       {
         os << "<xqdoc:description><![CDATA[" << aComment->getDescription();
-        os << "]]></xqdoc:description>" ;
+        os << "]]></xqdoc:description>" << endl ;
       }
       for(lIt = lAnnotations.begin(); lIt != lAnnotations.end(); ++lIt)
       {
@@ -79,21 +79,21 @@ private:
         }
         
         os << "<" << lNamespace << ":" << lAnnotation.getName() << "><![CDATA[" << lAnnotation.getValue();
-        os << "]]></" << lNamespace << ":" << lAnnotation.getName() << '>';  
+        os << "]]></" << lNamespace << ":" << lAnnotation.getName() << '>' << endl;  
 
       }
       
       if(aComment->hasVersion())
       {
         
-        os << "<xqdoc:version>" << aComment->getVersion() << "</xqdoc:version>";
+        os << "<xqdoc:version>" << aComment->getVersion() << "</xqdoc:version>" << endl;
         
       }
     
       if(aComment->hasReturn())
       {
         
-        os << "<xqdoc:return>" << aComment->getReturn() << "</xqdoc:return>";
+        os << "<xqdoc:return>" << aComment->getReturn() << "</xqdoc:return>" << endl;
         
       }
     
@@ -103,14 +103,14 @@ private:
         os << "<xqdoc:deprecated";
         if(aComment->getDeprecatedComment().empty())
         {
-          os << " />"; 
+          os << " />" << endl; 
         } else {
-          os << ">" << aComment->getDeprecatedComment() << "</xqdoc:deprecated>"; 
+          os << ">" << aComment->getDeprecatedComment() << "</xqdoc:deprecated>" << endl; 
         }
       }
       
       
-      os << "</xqdoc:comment>"; 
+      os << "</xqdoc:comment>" << endl; 
    }
   }
 
@@ -135,34 +135,34 @@ ParseNodePrintXQDocVisitor(ostream &aStream, const string& aFileName)
 void print(const parsenode* p, const store::Item_t& aDateTime)
 {
     string lContent;
-    os << "<?xml version='1.0' ?>" ;
-    os << "<xqdoc:xqdoc xmlns:xqdoc='http://www.xqdoc.org/1.0' xmlns:zorbadoc='http://www.zorba-xquery.com/zorba/doc'>" ;
+    os << "<?xml version='1.0' ?>" << endl ;
+    os << "<xqdoc:xqdoc xmlns:xqdoc='http://www.xqdoc.org/1.0' xmlns:zorbadoc='http://www.zorba-xquery.com/zorba/doc'>" << endl ;
      
-    os << "<xqdoc:control>" ;
+    os << "<xqdoc:control>" << endl ;
     
-     os << "<xqdoc:date>" << aDateTime->getStringValue() << "</xqdoc:date>" ;
-     os << "<xqdoc:version>1.0</xqdoc:version>" ;
+     os << "<xqdoc:date>" << aDateTime->getStringValue() << "</xqdoc:date>" << endl ;
+     os << "<xqdoc:version>1.0</xqdoc:version>" << endl ;
      
-    os << "</xqdoc:control>" ;
+    os << "</xqdoc:control>" << endl ;
     p->accept(*this);
     lContent = theImports.str();
     if(!lContent.empty())
     { 
       
-      os << "<xqdoc:imports>" ;
+      os << "<xqdoc:imports>";
       os << lContent;
       
-      os << "</xqdoc:imports>" ;
+      os << "</xqdoc:imports>" << endl ;
     }
     lContent = theVariables.str();
     if(!lContent.empty())
     {
       
-      os << "<xqdoc:variables>" ;
+      os << "<xqdoc:variables>";
       
       os << lContent;
       
-      os << "</xqdoc:variables>" ;
+      os << "</xqdoc:variables>" << endl ;
     }
     lContent = theFunctions.str();
     if(!lContent.empty())
@@ -172,9 +172,9 @@ void print(const parsenode* p, const store::Item_t& aDateTime)
       
       os << lContent;
       
-      os << "</xqdoc:functions>" ;
+      os << "</xqdoc:functions>" << endl ;
     }
-    os << "</xqdoc:xqdoc>" ;
+    os << "</xqdoc:xqdoc>" << endl ;
 }
 
 #define IDS \
@@ -211,9 +211,9 @@ void* begin_visit(const ModuleDecl& /*n*/) {
 
 void end_visit(const ModuleDecl& n, void* /*visit_state*/) {
   
-  os << "<xqdoc:uri>" << n.get_target_namespace() << "</xqdoc:uri>";
+  os << "<xqdoc:uri>" << n.get_target_namespace() << "</xqdoc:uri>" << endl;
   
-  os << "<xqdoc:name>" << theFileName << "</xqdoc:name>";
+  os << "<xqdoc:name>" << theFileName << "</xqdoc:name>" << endl;
   
   print_comment(os, n.getComment());
   
@@ -229,7 +229,7 @@ void* begin_visit(const FunctionDecl& /*n*/) {
 
 void end_visit(const FunctionDecl& n, void* /*visit_state*/) {
   print_comment(theFunctions, n.getComment());
-  theFunctions << "<xqdoc:name>" << n.get_name()->get_localname() << "</xqdoc:name>";
+  theFunctions << "<xqdoc:name>" << n.get_name()->get_localname() << "</xqdoc:name>" << endl;
   switch(n.get_type())
   {
     case ParseConstants::fn_read:
@@ -255,11 +255,11 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/) {
   theFunctions << "<xqdoc:signature><![CDATA["; 
   FunctionDecl lFunctionDeclClone(n.get_location(), n.get_name(), n.get_paramlist(), n.get_return_type(), 0, n.get_type());
   FunctionIndex lIndex = print_parsetree_xquery(theFunctions, &lFunctionDeclClone);
-  theFunctions << "]]></xqdoc:signature>" ;
+  theFunctions << "]]></xqdoc:signature>" << endl ;
   
   if(n.get_paramlist())
   {
-    theFunctions << "<zorbadoc:parameters>" ;
+    theFunctions << "<zorbadoc:parameters>" << endl ;
     
     const rchandle<ParamList> lParamList = n.get_paramlist();
     for (vector<rchandle<Param> >::const_iterator it = lParamList->begin();
@@ -280,18 +280,18 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/) {
         } else {
           theFunctions << "type='" << lType << "' "; 
         }
-        theFunctions << "/>" ;;
+        theFunctions << "/>" << endl;
       } else {
-        theFunctions << "<zorbadoc:parameter name='" << lFnName << "' />";
+        theFunctions << "<zorbadoc:parameter name='" << lFnName << "' />" << endl;
       }
     }
     
-    theFunctions << "</zorbadoc:parameters>" ;;
+    theFunctions << "</zorbadoc:parameters>" << endl;
   } else {
-    theFunctions << "<zorbadoc:parameters />" ;
+    theFunctions << "<zorbadoc:parameters />" << endl ;
   }
 
-  theFunctions << "</xqdoc:function>" ;
+  theFunctions << "</xqdoc:function>" << endl ;
 }
 
 void* begin_visit(const VarDecl&) {
@@ -303,7 +303,7 @@ void end_visit(const VarDecl& n, void*) {
   theVariables << "<xqdoc:uri>" << getLocalName(n.get_varname()) << "</xqdoc:uri>" ;
   print_comment(theVariables, n.getComment());
   
-  theVariables << "</xqdoc:variable>" ;
+  theVariables << "</xqdoc:variable>" << endl ;
 }
 
 
@@ -317,7 +317,7 @@ void end_visit(const ModuleImport& n, void*) {
   theImports << "<xqdoc:uri>" << n.get_uri() << "</xqdoc:uri>";
   print_comment(theImports, n.getComment());
   
-  theImports << "</xqdoc:import>";
+  theImports << "</xqdoc:import>" << endl;
 }
 
 XQDOC_NO_BEGIN_END_TAG (SequenceType)
