@@ -35,9 +35,8 @@ typedef std::map<expr *, DynamicBitset> ExprVarsMap;
 class RewriterContext 
 {
 public:
-  CompilerCB           * compilerCB;
-  static_context       * m_sctx;
-  expr_t                 m_root;
+  CompilerCB           * theCCB;
+  expr_t                 theRoot;
   int                    m_tempvarCounter;
   int                    m_tempIndexCounter;
 
@@ -47,18 +46,22 @@ public:
   std::vector<expr_t>    m_flwor_exprs;
 
 public:
-  RewriterContext(CompilerCB*, expr_t root);
+  RewriterContext(CompilerCB* cb, expr_t root);
 
   ~RewriterContext();
 
-  static_context* getStaticContext() { return m_sctx; }
+  CompilerCB* getCompilerCB() const { return theCCB; }
+
+  static_context* getStaticContext(const expr* node) const;
 
   expr_t getRoot();
+
   void setRoot(expr_t root);
 
-  CompilerCB* getCompilerCB() { return compilerCB; }
-
-  rchandle<var_expr> createTempVar(short sctx, const QueryLoc& loc, var_expr::var_kind kind);
+  rchandle<var_expr> createTempVar(
+        short sctx,
+        const QueryLoc& loc,
+        var_expr::var_kind kind);
 };
 
 }

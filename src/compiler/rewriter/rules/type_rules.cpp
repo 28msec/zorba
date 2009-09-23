@@ -48,7 +48,7 @@ RULE_REWRITE_PRE(InferVarTypes)
 
 RULE_REWRITE_POST(InferVarTypes) 
 {
-  static_context* sctx = rCtx.getStaticContext();
+  static_context* sctx = rCtx.getStaticContext(node);
 
   if (node->get_expr_kind() == flwor_expr_kind ||
       node->get_expr_kind() == gflwor_expr_kind) 
@@ -200,7 +200,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     if (fo->get_func() == fnboolean) 
     {
       expr_t arg = (*fo)[0];
-      xqtref_t arg_type = arg->return_type(rCtx.getStaticContext());
+      xqtref_t arg_type = arg->return_type(rCtx.getStaticContext(node));
       if (TypeOps::is_subtype(*arg_type, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
         return arg;
       else
@@ -211,7 +211,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     if (fo->get_func() == fndata) 
     {
       expr_t arg = (*fo)[0];
-      xqtref_t arg_type = arg->return_type(rCtx.getStaticContext());
+      xqtref_t arg_type = arg->return_type(rCtx.getStaticContext(node));
       if (TypeOps::is_subtype(*arg_type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR))
         return arg;
       else
@@ -224,7 +224,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
   if ((pe = dynamic_cast<cast_base_expr *>(node)) != NULL) 
   {
     expr_t arg = pe->get_input();
-    xqtref_t arg_type = arg->return_type(rCtx.getStaticContext());
+    xqtref_t arg_type = arg->return_type(rCtx.getStaticContext(node));
     xqtref_t target_type = pe->get_target_type();
 
     // If arg type is subtype of target type, we can eliminate treat and promote
@@ -340,7 +340,7 @@ RULE_REWRITE_POST(SpecializeOperations)
 
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  static_context* sctx = rCtx.getStaticContext();
+  static_context* sctx = rCtx.getStaticContext(node);
 
   if (node->get_expr_kind() == fo_expr_kind) 
   {
@@ -438,7 +438,7 @@ RULE_REWRITE_POST(SpecializeOperations)
             std::vector<xqtref_t> argTypes;
             argTypes.push_back(string_type);
             argTypes.push_back(string_type);
-            function *replacement = fn->specialize(rCtx.getStaticContext(), argTypes);
+            function *replacement = fn->specialize(sctx, argTypes);
             if (replacement != NULL) {
               fo->set_func(replacement);
               return node;
@@ -446,7 +446,7 @@ RULE_REWRITE_POST(SpecializeOperations)
           }
           else if (TypeOps::is_numeric (*t [0]) && TypeOps::is_numeric (*t [1])) 
           {
-            xqtref_t aType = specialize_numeric (fo, rCtx.getStaticContext());
+            xqtref_t aType = specialize_numeric (fo, sctx);
             if (aType != NULL) {
               if (TypeOps::is_equal (*TypeOps::prime_type (*aType), *rtm.DECIMAL_TYPE_ONE)
                   && TypeOps::is_subtype (*t [0], *rtm.INTEGER_TYPE_ONE))
@@ -466,8 +466,6 @@ RULE_REWRITE_POST(SpecializeOperations)
   else if (node->get_expr_kind() == flwor_expr_kind ||
            node->get_expr_kind() == gflwor_expr_kind)
   {
-    static_context* sctx = rCtx.getStaticContext();
-
     flwor_expr* flworExpr = reinterpret_cast<flwor_expr*>(node);
 
     bool modified = false;

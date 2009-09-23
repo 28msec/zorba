@@ -24,9 +24,8 @@ namespace zorba {
 
 RewriterContext::RewriterContext(CompilerCB* aCompilerCB, expr_t root)
   :
-  compilerCB(aCompilerCB),
-  m_sctx(aCompilerCB->m_sctx),
-  m_root(root),
+  theCCB(aCompilerCB),
+  theRoot(root),
   m_tempvarCounter(0),
   m_tempIndexCounter(0),
   m_varid_map(NULL),
@@ -48,13 +47,19 @@ RewriterContext::~RewriterContext()
 
 expr_t RewriterContext::getRoot()
 {
-  return m_root;
+  return theRoot;
 }
 
 
 void RewriterContext::setRoot(expr_t root)
 {
-  m_root = root;
+  theRoot = root;
+}
+
+
+static_context* RewriterContext::getStaticContext(const expr* node) const
+{
+  return theCCB->getStaticContext(node->get_cur_sctx());
 }
 
 

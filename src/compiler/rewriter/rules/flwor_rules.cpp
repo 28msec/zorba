@@ -128,9 +128,11 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   // "let $x := E return $x"  --> "E"
   if (numClauses == 1 &&
       myVars.varset.size() == 1 &&
-      flwor.get_return_expr() == flwc.get_var())
+      flwor.get_return_expr()->get_expr_kind() == wrapper_expr_kind)
   {
-    return flwc.get_expr();
+    wrapper_expr* w = static_cast<wrapper_expr*>(flwor.get_return_expr());
+    if (w->get_expr().getp() == flwc.get_var())
+      return flwc.get_expr();
   }
 
   // "for $x in ... where E ... return ...", and E doesn't depend on FLWOR vars -->
@@ -159,7 +161,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   }
 
   bool modified = false;
-  static_context* sctx = rCtx.getStaticContext();
+  static_context* sctx = rCtx.getStaticContext(node);
 
   // (a) Remove, if possible, FOR/LET vars that are not referenced anywhere
   // (b) Replace, if possible, FOR/LET vars that are referenced only once, with
@@ -528,7 +530,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
   if (flwor == NULL || flwor->is_general()) 
     return NULL;
 
-  static_context* sctx = rCtx.getStaticContext();
+  static_context* sctx = rCtx.getStaticContext(node);
 
   if_expr* ite_result = dynamic_cast<if_expr*>(flwor->get_return_expr());
 
@@ -606,7 +608,7 @@ static bool refactor_index_pred(
   if (f != LOOKUP_OP2("equal") && f != LOOKUP_OP2 ("value-equal"))
     return false;
 
-  static_context* sctx = rCtx.getStaticContext();
+  static_context* sctx = rCtx.getStaticContext(cond);
   TypeManager* tm = sctx->get_typemanager();
 
   int i;

@@ -292,7 +292,7 @@ RULE_REWRITE_POST(MarkUnfoldableExprs)
     // constext). 
     if (f->requires_dyn_ctx () ||
         f->isFnError() ||
-        maybe_needs_implicit_timezone(fo, rCtx.getStaticContext()) ||
+        maybe_needs_implicit_timezone(fo, rCtx.getStaticContext(node)) ||
         !f->isPureFunction())
       node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
 
@@ -363,7 +363,7 @@ static bool maybe_needs_implicit_timezone(const fo_expr *fo, static_context *sct
 
 RULE_REWRITE_PRE(FoldConst) 
 {
-  xqtref_t rtype = node->return_type (rCtx.getStaticContext ());
+  xqtref_t rtype = node->return_type (rCtx.getStaticContext(node));
   
   if (standalone_expr (node) &&
       ! already_folded (node, rCtx) &&
@@ -500,7 +500,7 @@ RULE_REWRITE_PRE(PartialEval)
     if (arg->get_annotation (Annotations::NONDISCARDABLE_EXPR).getp() == TSVAnnotationValue::TRUE_VAL.getp())
       return NULL;
 
-    xqtref_t arg_type = arg->return_type(rCtx.getStaticContext());
+    xqtref_t arg_type = arg->return_type(rCtx.getStaticContext(node));
 
     if (TypeOps::is_subtype(*arg_type, *cbe->get_target_type()))
       return new const_expr (node->get_cur_sctx(), LOC (node), true);
@@ -541,22 +541,28 @@ RULE_REWRITE_POST(PartialEval)
 static expr_t partial_eval_fo (RewriterContext& rCtx, fo_expr *fo) 
 {
   const function *f = fo->get_func ();
+
   if (f == LOOKUP_OPN ("or"))
+  {
     return partial_eval_logic (fo, true, rCtx);
-
+  }
   else if (f == LOOKUP_OPN ("and"))
+  {
     return partial_eval_logic (fo, false, rCtx);
-
+  }
   else if (f->comparison_kind() == CompareConsts::VALUE_EQUAL ||
            f->comparison_kind() == CompareConsts::GENERAL_EQUAL)
+  {
     return partial_eval_eq (rCtx, *fo);
-
-  else if (f == LOOKUP_FN ("fn", "count", 1)) {
+  }
+  else if (f == LOOKUP_FN ("fn", "count", 1)) 
+  {
     expr_t arg = (*fo) [0];
-    if (arg->get_annotation (Annotations::NONDISCARDABLE_EXPR) != TSVAnnotationValue::TRUE_VAL) {
-      int type_cnt = TypeOps::type_cnt (*arg->return_type (rCtx.getStaticContext()));
+    if (arg->get_annotation(Annotations::NONDISCARDABLE_EXPR) != TSVAnnotationValue::TRUE_VAL) 
+    {
+      int type_cnt = TypeOps::type_cnt(*arg->return_type(rCtx.getStaticContext(fo)));
       if (type_cnt != -1)
-        return new const_expr (fo->get_cur_sctx(), fo->get_loc (), Integer::parseInt (type_cnt));
+        return new const_expr(fo->get_cur_sctx(), fo->get_loc(), Integer::parseInt(type_cnt));
     }
     return NULL;
   }
@@ -588,17 +594,22 @@ static expr_t partial_eval_logic (
   }
 
   if (nontrivial1 == NULL)
-    return new const_expr (fo->get_cur_sctx(), LOC (fo), (xqp_boolean) ! shortcircuit_val);
+    return new const_expr(fo->get_cur_sctx(), LOC(fo), (xqp_boolean) ! shortcircuit_val);
 
-  if (nontrivial2 == NULL) {
-    if (! TypeOps::is_subtype(*nontrivial1->return_type(rCtx.getStaticContext()),
+  if (nontrivial2 == NULL) 
+  {
+    if (! TypeOps::is_subtype(*nontrivial1->return_type(rCtx.getStaticContext(fo)),
                               *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
-      nontrivial1 = fix_annotations (new fo_expr (fo->get_cur_sctx(),
-                                                  LOC (fo),
-                                                  LOOKUP_FN("fn", "boolean", 1),
-                                                  nontrivial1));
+    {
+      nontrivial1 = fix_annotations (new fo_expr(fo->get_cur_sctx(),
+                                                 LOC (fo),
+                                                 LOOKUP_FN("fn", "boolean", 1),
+                                                 nontrivial1));
+    }
+
     return nontrivial1;
   }
+
   return NULL;
 }
 
@@ -620,7 +631,7 @@ static expr_t partial_eval_eq (RewriterContext& rCtx, fo_expr &fo)
   if (i == 2)
     return NULL;
   
-  TypeManager* tm = rCtx.getStaticContext()->get_typemanager();
+  TypeManager* tm = rCtx.getStaticContext(&fo)->get_typemanager();
 
   store::Item_t val = val_expr->get_val ();
   if (TypeOps::is_subtype(*tm->create_named_type(val->getType()),

@@ -71,7 +71,7 @@ static expr_t get_constant_if_typequant_one(static_context *sctx, expr_t e)
 
 RULE_REWRITE_PRE(ReplaceExprWithConstantOneWhenPossible) 
 {
-  static_context *sctx = rCtx.getStaticContext();
+  static_context *sctx = rCtx.getStaticContext(node);
 
   if (node->get_expr_kind() != fo_expr_kind)
     return NULL;
