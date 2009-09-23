@@ -20,8 +20,10 @@ SOURCE_DIR=@CMAKE_CURRENT_SOURCE_DIR@
 
 cp $BINARY_DIR/compiler/parser/xquery_parser.hpp $SOURCE_DIR/compiler/parser
 cp $BINARY_DIR/compiler/parser/xquery_parser.cpp $SOURCE_DIR/compiler/parser
-cp $BINARY_DIR/compiler/parser/location.hh $SOURCE_DIR/compiler/parser
-cp $BINARY_DIR/compiler/parser/position.hh $SOURCE_DIR/compiler/parser
-cp $BINARY_DIR/compiler/parser/stack.hh $SOURCE_DIR/compiler/parser
 cp /usr/include/FlexLexer.h $SOURCE_DIR/compiler/parser/FlexLexer.h
 sed -e 's|^#include <FlexLexer.h>|#include "compiler/parser/FlexLexer.h"|g' $BINARY_DIR/compiler/parser/xquery_scanner.cpp > $SOURCE_DIR/compiler/parser/xquery_scanner.cpp
+
+echo "Copying Done!"
+echo "Important Hint:"
+echo "This script does not copy location.hh, position.hh, and stack.hh! This is the case because the automatically generated position.hh contains code that doesn't compile on Windows. It contains a call to a function that is not defined in Visual C++ (std::max)."
+echo "Thus, if theses files contain changes (happens once in a blue moon), they must be copied and modified by hand."

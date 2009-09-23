@@ -41,8 +41,6 @@
 
 # include <iostream>
 # include <string>
-# include <algorithm>
-
 
 /* Line 38 of location.cc  */
 #line 1 "[Bison:b4_percent_define_default]"
@@ -84,7 +82,12 @@ namespace zorba {
     /// (column related) Advance to the COUNT next columns.
     inline void columns (int count = 1)
     {
-      column = std::max (1u, column + count);
+// zorba patch: std::max is not available on windows!
+//      column = std::max (1u, column + count);
+      if (1u <= (column+count))
+        column += count;
+      else
+        column = 1u;
     }
     /** \} */
 
