@@ -38,7 +38,7 @@ class zop_createindex : public function
 public:
   zop_createindex(const signature& sig) : function(sig) { }
 
-  virtual bool requires_dyn_ctx () const { return true; }
+  virtual bool requires_dyn_ctx() const { return true; }
 
   DEFAULT_UNARY_CODEGEN(CreateValueIndex);
 };
@@ -55,7 +55,7 @@ class zop_dropindex : public function
 public:
   zop_dropindex(const signature& sig) : function(sig) { }
 
-  virtual bool requires_dyn_ctx () const { return true; }
+  virtual bool requires_dyn_ctx() const { return true; }
 
   DEFAULT_UNARY_CODEGEN(DropValueIndex);
 };
