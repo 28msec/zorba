@@ -470,9 +470,10 @@ bool Integer::operator>=(const Double& aDouble) const {
 
 xqpString Integer::toString() const {
 #ifndef ZORBA_NO_BIGNUMBERS
-  char lBuffer[1024];
+  char* lBuffer = new char[theInteger.exponent()+3];
   theInteger.toIntegerString(lBuffer);
   xqpString lResult = lBuffer;
+  delete[] lBuffer;
   return lResult;
 #else
   char lBuffer[124];

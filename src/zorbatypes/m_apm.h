@@ -390,15 +390,12 @@ M_APM_struct myVal.
 	   1-ary functions like sin, cos, tan, etc.
 	   It's the larger of my digits and cpp_min_precision.
    */
-// make myDigits public for use in Integer::toString
-public:
 	int myDigits(void) const 
 	{
 		int maxd=m_apm_significant_digits(cval());
 		if (maxd<MM_cpp_min_precision) maxd=MM_cpp_min_precision;
 		return maxd;
 	}
-protected:
 	/* This is the default number of digits to use for 
 	   2-ary functions like divide, atan2, etc.
 	   It's the larger of my digits, his digits, and cpp_min_precision.
