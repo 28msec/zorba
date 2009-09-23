@@ -147,6 +147,8 @@ do { if (state) ZORBA_ERROR(err); state = true; } while (0)
 
 #define DOT_VAR lookup_ctx_var (DOT_VARNAME, loc).getp()
 
+#define DOT_REF new wrapper_expr(theCCB->m_cur_sctx, loc, DOT_VAR)
+
 
 /*******************************************************************************
 
@@ -882,15 +884,15 @@ varref_t lookup_ctx_var (xqp_string name, const QueryLoc &loc)
 }
 
 
-var_expr *lookup_var (string varname) 
+var_expr* lookup_var(string varname) 
 {
-    return static_cast<var_expr *> (sctx_p->lookup_var (varname));
+  return static_cast<var_expr *>(sctx_p->lookup_var(varname));
 }
 
 
-var_expr *lookup_var (store::Item_t varname) 
+var_expr* lookup_var(store::Item_t varname) 
 {
-  return static_cast<var_expr *> (sctx_p->lookup_var (varname));
+  return static_cast<var_expr *>(sctx_p->lookup_var(varname));
 }
 
 
@@ -2258,9 +2260,9 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
       // Parse the imported module
       XQueryCompiler xqc (&mod_ccb);
       xqpString lFileName(aturiitem->getStringValue());
-	  if (lFileUri.size() != 0) {
-		  lFileName = lFileUri.c_str();
-	  }
+      if (lFileUri.size() != 0) {
+        lFileName = lFileUri.c_str();
+      }
       rchandle<parsenode> ast = xqc.parse (*modfile, lFileName);
 
       // Get the target namespace that appears in the module declaration
@@ -5189,7 +5191,7 @@ void *begin_visit (const PathExpr& v)
 
     expr_t sourceExpr = new treat_expr(theCCB->m_cur_sctx,
                                        loc,
-                                       DOT_VAR,
+                                       DOT_REF,
                                        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
                                        XPTY0020);
 
@@ -5310,7 +5312,7 @@ void* begin_visit(const RelativePathExpr& v)
     {
       expr_t sourceExpr = new treat_expr(theCCB->m_cur_sctx,
                                          loc,
-                                         DOT_VAR,
+                                         DOT_REF,
                                          GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
                                          XPTY0020);
       pathExpr->add_back(sourceExpr);
@@ -5385,11 +5387,20 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
 #ifdef NODE_SORT_OPT
     if (pathExpr->size() == 0) 
     {
+      XQUERY_ERROR errCode = XPTY0019;
+
+      if (stepExpr->get_expr_kind() == wrapper_expr_kind)
+      {
+        wrapper_expr* tmp = static_cast<wrapper_expr*>(stepExpr.getp());
+        if (tmp->get_expr().getp() == lookup_var(DOT_VARNAME))
+          errCode = XPTY0020;
+      }
+
       expr_t sourceExpr = new treat_expr(theCCB->m_cur_sctx,
                                          stepExpr->get_loc(),
                                          stepExpr,
                                          GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
-                                         XPTY0019);
+                                         errCode);
 
       if (TypeOps::type_max_cnt(*sourceExpr->return_type(sctx_p)) > 1)
         theNodeSortStack.top().theSingleInput = false;
@@ -5992,6 +6003,9 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   // This method is called from PredicateList::accept(), after calling accept()
   // on each predicate in the list
 
+  short sctx = theCCB->m_cur_sctx;
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
+
   expr_t predExpr = pop_nodestack();
 
   expr_t f = pop_nodestack();
@@ -6005,28 +6019,31 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
 
   flworExpr->add_clause(lcPred);
 
-  expr_t dotvar = DOT_VAR;
 
   // Check if the pred expr returns a numeric result
-  rchandle<fo_expr> cond = new fo_expr(theCCB->m_cur_sctx, loc, CACHED(op_or, LOOKUP_OPN("or")));
-  cond->add(new instanceof_expr(theCCB->m_cur_sctx, loc, predvar, GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
-  cond->add(new instanceof_expr(theCCB->m_cur_sctx, loc, predvar, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
-  cond = new fo_expr(theCCB->m_cur_sctx, loc, CACHED (op_or, LOOKUP_OPN ("or")), &*cond);
-  cond->add(new instanceof_expr(theCCB->m_cur_sctx, loc, predvar, GENV_TYPESYSTEM.FLOAT_TYPE_ONE));
+  rchandle<fo_expr> cond = new fo_expr(sctx, loc, CACHED(op_or, LOOKUP_OPN("or")));
+
+  cond->add(new instanceof_expr(sctx, loc, predvar, rtm.DECIMAL_TYPE_ONE));
+
+  cond->add(new instanceof_expr(sctx, loc, predvar, rtm.DOUBLE_TYPE_ONE));
+
+  cond = new fo_expr(sctx, loc, CACHED (op_or, LOOKUP_OPN ("or")), &*cond);
+
+  cond->add(new instanceof_expr(sctx, loc, predvar, rtm.FLOAT_TYPE_ONE));
 
   // If so: return $dot if the value of the pred expr is equal to the value
   // of $dot_pos var, otherwise return the empty seq.
-  rchandle<fo_expr> eq = new fo_expr(theCCB->m_cur_sctx, loc, LOOKUP_OP2("value-equal"));
-  eq->add(lookup_ctx_var(DOT_POS_VARNAME, loc).getp ());
+  rchandle<fo_expr> eq = new fo_expr(sctx, loc, LOOKUP_OP2("value-equal"));
+  eq->add(lookup_ctx_var(DOT_POS_VARNAME, loc).getp());
   eq->add(predvar);
 
-  expr_t thenExpr = new if_expr(theCCB->m_cur_sctx, loc, eq.getp(), dotvar, create_seq(loc));
+  expr_t thenExpr = new if_expr(sctx, loc, eq.getp(), DOT_REF, create_seq(loc));
 
   // Else, return $dot if the the value of the pred expr is true, otherwise
   // return the empty seq.
-  expr_t elseExpr = new if_expr(theCCB->m_cur_sctx, loc, predvar, dotvar, create_seq(loc));
+  expr_t elseExpr = new if_expr(sctx, loc, predvar, DOT_REF, create_seq(loc));
 
-  expr_t ifExpr = new if_expr(theCCB->m_cur_sctx, loc, cond.getp(), thenExpr, elseExpr);
+  expr_t ifExpr = new if_expr(sctx, loc, cond.getp(), thenExpr, elseExpr);
 
   flworExpr->set_return_expr(ifExpr);
 
@@ -6192,9 +6209,7 @@ void end_visit (const ContextItemExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
-  var_expr* e = static_cast<var_expr *>(DOT_VAR);
-  e->set_loc(loc);
-  nodestack.push(e);
+  nodestack.push(DOT_REF);
 }
 
 
@@ -6296,8 +6311,10 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/)
       switch (sz) 
       {
       case 0:
-        arguments.push_back(DOT_VAR);
+      {
+        arguments.push_back(DOT_REF);
         break;
+      }
       case 1:
         break;
       default:
@@ -6331,7 +6348,7 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/)
     }
     else if (sz == 0 && xquery_fns_def_dot.find(fname) != xquery_fns_def_dot.end()) 
     {
-      arguments.push_back(DOT_VAR);
+      arguments.push_back(DOT_REF);
     }
     else if (fname == "static-base-uri") 
     {
@@ -6350,7 +6367,9 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/)
     else if (fname == "id")
     {
       if (sz == 1)
-        arguments.insert(arguments.begin(), DOT_VAR);
+      {
+        arguments.insert(arguments.begin(), DOT_REF);
+      }
 
       expr_t idsExpr = arguments[1];
 
@@ -6377,7 +6396,7 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/)
     }
     else if (sz == 1 && (fname == "lang" || fname == "idref")) 
     {
-      arguments.insert(arguments.begin(), DOT_VAR);
+      arguments.insert(arguments.begin(), DOT_REF);
     } 
     else if (sz == 1 && fname == "resolve-uri") 
     {
