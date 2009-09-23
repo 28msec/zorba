@@ -825,7 +825,14 @@ public:
         long timezone = 0,
         const XQPCollator* aCollation = 0) const
   {
-    return theValue == other->getIntegerValue();
+    try
+    {
+      return theValue == other->getIntegerValue();
+    }
+    catch (error::ZorbaError&)
+    {
+      return getDecimalValue() == other->getDecimalValue();
+    }
   }
 
   long compare(
@@ -833,7 +840,14 @@ public:
         long timezone = 0,
         const XQPCollator* aCollation = 0) const
   {
-    return theValue.compare(other->getIntegerValue());
+    try
+    {
+      return theValue.compare(other->getIntegerValue());
+    }
+    catch (error::ZorbaError&)
+    {
+      return getDecimalValue().compare(other->getDecimalValue());
+    }
   }
 
   store::Item_t getEBV( ) const;
@@ -935,11 +949,18 @@ public:
   }
 
   bool equals(
-        const store::Item* aItem,
+        const store::Item* other,
         long timezone = 0,
-        const XQPCollator* aCollation = 0 ) const
+        const XQPCollator* collation = 0 ) const
   {
-    return theValue == aItem->getLongValue();
+    try
+    {
+      return theValue == other->getLongValue();
+    }
+    catch (error::ZorbaError&)
+    {
+      return getDecimalValue() == other->getDecimalValue();
+    }
   }
 
   long compare(
@@ -995,9 +1016,16 @@ public:
   bool equals(
         const store::Item* other,
         long timezone = 0,
-        const XQPCollator* aCollation = 0 ) const
+        const XQPCollator* collation = 0 ) const
   {
-    return theValue == other->getLongValue();
+    try
+    {
+      return theValue == other->getLongValue();
+    }
+    catch (error::ZorbaError&)
+    {
+      return getDecimalValue() == other->getDecimalValue();
+    }
   }
 
   long compare(
@@ -1051,15 +1079,22 @@ public:
   bool equals(
         const store::Item* other,
         long timezone = 0,
-        const XQPCollator* aCollation = 0 ) const
+        const XQPCollator* collation = 0 ) const
   {
-    return theValue == other->getLongValue();
+    try
+    {
+      return theValue == other->getLongValue();
+    }
+    catch (error::ZorbaError&)
+    {
+      return getDecimalValue() == other->getDecimalValue();
+    }
   }
 
   long compare(
         const Item* other,
         long timezone = 0,
-        const XQPCollator* aCollation = 0) const
+        const XQPCollator* collation = 0) const
   {
     return (theValue < other->getLongValue() ?
             -1 :
@@ -1111,15 +1146,22 @@ public:
   bool equals(
         const store::Item* other,
         long timezone = 0,
-        const XQPCollator* aCollation = 0 ) const
+        const XQPCollator* collation = 0 ) const
   {
-    return theValue == other->getLongValue();
+    try
+    {
+      return theValue == other->getLongValue();
+    }
+    catch (error::ZorbaError&)
+    {
+      return getDecimalValue() == other->getDecimalValue();
+    }
   }
 
   long compare(
         const Item* other,
         long timezone = 0,
-        const XQPCollator* aCollation = 0) const
+        const XQPCollator* collation = 0) const
   {
     return (theValue < other->getLongValue() ?
             -1 :
@@ -1169,15 +1211,22 @@ class UnsignedLongItemNaive : public AtomicItem
   bool equals(
         const store::Item* other,
         long timezone = 0,
-        const XQPCollator* aCollation = 0 ) const
+        const XQPCollator* collation = 0 ) const
   {
-    return theValue == other->getUnsignedLongValue();
+    try
+    {
+      return theValue == other->getUnsignedLongValue();
+    }
+    catch (error::ZorbaError&)
+    {
+      return getDecimalValue() == other->getDecimalValue();
+    }
   }
 
   long compare(
         const Item* other,
         long timezone = 0,
-        const XQPCollator* aCollation = 0) const
+        const XQPCollator* collation = 0) const
   {
     return (theValue < other->getUnsignedLongValue() ?
             -1 :
@@ -1227,15 +1276,22 @@ public:
   bool equals(
         const store::Item* other,
         long timezone = 0,
-        const XQPCollator* aCollation = 0 ) const
+        const XQPCollator* collation = 0 ) const
   {
-    return theValue == other->getUnsignedLongValue();
+    try
+    {
+      return theValue == other->getUnsignedLongValue();
+    }
+    catch (error::ZorbaError&)
+    {
+      return getDecimalValue() == other->getDecimalValue();
+    }
   }
 
   long compare(
         const Item* other,
         long timezone = 0,
-        const XQPCollator* aCollation = 0) const
+        const XQPCollator* collation = 0) const
   {
     return (theValue < other->getUnsignedLongValue() ?
             -1 :
@@ -1289,13 +1345,20 @@ public:
         long timezone = 0,
         const XQPCollator* aCollation = 0 ) const
   {
-    return theValue == other->getUnsignedLongValue();
+    try
+    {
+      return theValue == other->getUnsignedLongValue();
+    }
+    catch (error::ZorbaError&)
+    {
+      return getDecimalValue() == other->getDecimalValue();
+    }
   }
 
   long compare(
         const Item* other,
         long timezone = 0,
-        const XQPCollator* aCollation = 0) const
+        const XQPCollator* collation = 0) const
   {
     return (theValue < other->getUnsignedLongValue() ?
             -1 :
@@ -1351,7 +1414,14 @@ public:
         long timezone = 0,
         const XQPCollator* aCollation = 0 ) const
   {
-    return theValue == other->getUnsignedLongValue();
+    try
+    {
+      return theValue == other->getUnsignedLongValue();
+    }
+    catch (error::ZorbaError&)
+    {
+      return getDecimalValue() == other->getDecimalValue();
+    }
   }
 
   long compare(
