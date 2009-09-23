@@ -53,8 +53,9 @@ bool CreateValueIndex::nextImpl(store::Item_t& result, PlanState& planState) con
   bool status;
   ValueIndex_t indexSpec;
   store::Index_t index;
-  PlanIteratorState *state;
   ValueIndexInsertSession_t session;
+
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   status = consumeNext(result, theChild, planState);
