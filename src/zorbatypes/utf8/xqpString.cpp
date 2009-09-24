@@ -1614,6 +1614,20 @@ xqpString xqpString::concat(xqpString s1,
   return result;
 }
 
+xqpString xqpString::concat(const xqpString s1, 
+                        const xqpString s3)
+{
+//  int l1 = s1.bytes();
+//  int l2 = strlen(s2);
+//  int l3 = s3.bytes();
+
+  xqpString   result;//(l1+l2+l3+1);
+  result.theStrStore->theString.reserve(s1.bytes() + s3.bytes() + 1);
+  result.append_in_place(s1.getStore());
+  result.append_in_place(s3.getStore());
+  return result;
+}
+
 xqpString xqpString::concat(const std::string &s1, 
                         const char *s2,
                         const xqpStringStore_t s3)

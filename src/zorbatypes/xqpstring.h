@@ -689,6 +689,8 @@ public:
     static xqpString concat(const xqpString s1, 
                             const char *s2,
                             const xqpString s3);
+    static xqpString concat(const xqpString s1, 
+                            const xqpString s3);
     static xqpString concat(const std::string &s1, 
                             const char *s2,
                             const xqpStringStore_t s3);

@@ -683,7 +683,7 @@ function* static_context::lookup_resolved_fn (
 
 function* static_context::lookup_fn_int (xqp_string key, int arity) const
 {
-  xqp_string    full_key = fn_internal_key() + key;
+  xqp_string    full_key = xqpString::concat(fn_internal_key() , key);
   function* f = lookup_fmap_func (full_key, arity);
   if (f != NULL)
   {
