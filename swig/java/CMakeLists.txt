@@ -35,8 +35,8 @@ IF ( JNI_FOUND )
     INCLUDE_DIRECTORIES ( ${JAVA_INCLUDE_PATH2} )
   ENDIF ( NOT APPLE )
 
-  SET( CMAKE_SWIG_FLAGS -package org.zorba)
-  #SET( CMAKE_SWIG_OUTDIR ${RUNTIME_OUTPUT_DIRECTORY}/org/zorba )
+  SET( CMAKE_SWIG_FLAGS -package org.zorbaxquery.api)
+  
 
   SWIG_ADD_MODULE ( libzorba_api java zorba_api.i)
   SWIG_LINK_LIBRARIES(libzorba_api zorba_simplestore ${JAVA_LIBRARY})
