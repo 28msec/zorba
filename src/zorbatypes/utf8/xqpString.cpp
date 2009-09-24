@@ -1560,6 +1560,7 @@ xqpString xqpString::concat(const char *s1,
 //  int l2 = strlen(s2);
 
   xqpString   result;//(l1+l2+1);
+  result.theStrStore->theString.reserve(strlen(s1) + strlen(s2) + 1);
   result.append_in_place(s1);
   result.append_in_place(s2);
   return result;
@@ -1574,6 +1575,7 @@ xqpString xqpString::concat(const char *s1,
 //  int l3 = s3->bytes();
 
   xqpString   result;//(l1+l2+l3+1);
+  result.theStrStore->theString.reserve(strlen(s1) + strlen(s2) + s3->bytes() + 1);
   result.append_in_place(s1);
   result.append_in_place(s2);
   result.append_in_place(s3.getp());
@@ -1589,6 +1591,7 @@ xqpString xqpString::concat(const char *s1,
 //  int l3 = strlen(s3);
 
   xqpString   result;//(l1+l2+l3+1);
+  result.theStrStore->theString.reserve(strlen(s1) + strlen(s2) + strlen(s3) + 1);
   result.append_in_place(s1);
   result.append_in_place(s2);
   result.append_in_place(s3);
@@ -1604,6 +1607,7 @@ xqpString xqpString::concat(xqpString s1,
 //  int l3 = s3.bytes();
 
   xqpString   result;//(l1+l2+l3+1);
+  result.theStrStore->theString.reserve(s1.bytes() + strlen(s2) + s3.bytes() + 1);
   result.append_in_place(s1.getStore());
   result.append_in_place(s2);
   result.append_in_place(s3.getStore());
@@ -1619,6 +1623,7 @@ xqpString xqpString::concat(const std::string &s1,
 //  int l3 = s3->bytes();
 
   xqpString   result;//(l1+l2+l3+1);
+  result.theStrStore->theString.reserve(s1.length() + strlen(s2) + s3->bytes() + 1);
   result.append_in_place(s1);
   result.append_in_place(s2);
   result.append_in_place(s3.getp());
@@ -1636,6 +1641,7 @@ xqpString xqpString::concat(const xqpStringStore_t s1,
 //  int l4 = strlen(s4);
 
   xqpString   result;//(l1+l2+l3+l4+1);
+  result.theStrStore->theString.reserve(s1->bytes() + strlen(s2) + s3.bytes() + strlen(s4) + 1);
   result.append_in_place(s1.getp());
   result.append_in_place(s2);
   result.append_in_place(s3.getStore());
@@ -1656,6 +1662,7 @@ xqpString xqpString::concat(const char *s1,
 //  int l5 = strlen(s5);
 
   xqpString   result;//(l1+l2+l3+l4+l5+1);
+  result.theStrStore->theString.reserve(strlen(s1) + s2.length() + strlen(s3) + s4->bytes() + strlen(s5) + 1);
   result.append_in_place(s1);
   result.append_in_place(s2);
   result.append_in_place(s3);
