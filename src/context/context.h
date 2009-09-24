@@ -75,6 +75,8 @@ protected:
 	serializable_hashmap<ctx_value_t>   keymap;     // maps strings to ctx_values
 	serializable_hashmap<xqp_string>    str_keymap; // maps strings to strings
 
+  xqpString                      default_function_namespace_internal;
+
 public:
   SERIALIZABLE_CLASS(context)
   context(::zorba::serialization::Archiver &ar) : SimpleRCObject(ar), keymap(ar), str_keymap(ar) {}
@@ -115,11 +117,15 @@ public:
     }
     ar & keymap;
     ar & str_keymap;
+    ar & default_function_namespace_internal;
   }
 public:
   context (context *_parent = NULL) : parent (_parent) {}
 
 	context *get_parent() const { return parent; }
+
+  xqp_string default_function_namespace() const;
+	void set_default_function_namespace(xqp_string);
 
 protected:
   bool lookup_once (xqp_string key, xqp_string& val) const
@@ -210,6 +216,7 @@ protected:
   //serialization helpers
   bool check_parent_is_root();
   void set_parent_as_root();
+
 };
 
 

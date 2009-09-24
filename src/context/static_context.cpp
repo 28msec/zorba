@@ -221,6 +221,19 @@ void context::ctx_value_t::serialize(::zorba::serialization::Archiver &ar)
   }
 }
 
+xqp_string context::default_function_namespace() const
+{
+  if(!this->default_function_namespace_internal.empty() || (this->parent == NULL))
+    return this->default_function_namespace_internal;
+  else
+    return parent->default_function_namespace();
+}
+
+void context::set_default_function_namespace(xqp_string def_fn_ns)
+{
+  this->default_function_namespace_internal = def_fn_ns;
+}
+
 /*******************************************************************************
   Constructors/Destructor
 ********************************************************************************/
@@ -394,7 +407,7 @@ DECL_ENUM_PARAM (static_context, validation_mode)
 
 DECL_INT_PARAM (static_context, revalidation_enabled, bool)
 
-DECL_STR_PARAM (static_context, default_function_namespace, XQST0066)
+//DECL_STR_PARAM (static_context, default_function_namespace, XQST0066)
 DECL_STR_PARAM (static_context, default_elem_type_ns, XQST0066)
 
 DECL_STR_PARAM (static_context, current_absolute_baseuri, MAX_ZORBA_ERROR_CODE)
@@ -600,7 +613,8 @@ pair<xqp_string, xqp_string> decode_qname_internal_key (xqp_string key)
 ********************************************************************************/
 xqp_string static_context::fn_internal_key () 
 {
-  return "fmap:";
+  static xqp_string fmap_xqpstring("fmap:");
+  return fmap_xqpstring;
 }
 
 
@@ -669,14 +683,15 @@ function* static_context::lookup_resolved_fn (
 
 function* static_context::lookup_fn_int (xqp_string key, int arity) const
 {
-  function* f = lookup_fmap_func (fn_internal_key() + key, arity);
+  xqp_string    full_key = fn_internal_key() + key;
+  function* f = lookup_fmap_func (full_key, arity);
   if (f != NULL)
   {
     return f;
   }
   else
   {
-    f = lookup_fmap_func (fn_internal_key () + key, VARIADIC_SIG_SIZE);
+    f = lookup_fmap_func (full_key, VARIADIC_SIG_SIZE);
     return f;
   }
 }

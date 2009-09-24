@@ -78,7 +78,6 @@ protected:
   std::ostream*                  theTraceStream;
 
   CollationCache*                theCollationCache;
-
 public:
   SERIALIZABLE_CLASS(static_context);
   static_context(::zorba::serialization::Archiver &ar);
@@ -120,7 +119,6 @@ public:
 	StaticContextConsts::ordering_mode_t ordering_mode() const;
   StaticContextConsts::validation_mode_t validation_mode() const;
   bool revalidation_enabled () const;
-  xqp_string default_function_namespace() const;
   xqp_string default_elem_type_ns () const;
 
   void set_xquery_version(StaticContextConsts::xquery_version_t v);
@@ -133,7 +131,6 @@ public:
 	void set_ordering_mode(StaticContextConsts::ordering_mode_t v);
   void set_validation_mode(StaticContextConsts::validation_mode_t v);
   void set_revalidation_enabled (bool);
-	void set_default_function_namespace(xqp_string);
   void set_default_elem_type_ns (xqp_string);
 
   //
