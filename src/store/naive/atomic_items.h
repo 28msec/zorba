@@ -968,9 +968,16 @@ public:
         long timezone = 0,
         const XQPCollator* aCollation = 0) const
   {
-    return (theValue < other->getLongValue() ?
-            -1 :
-            (theValue == other->getLongValue() ? 0 : 1));
+    try
+    {
+      return (theValue < other->getLongValue() ?
+              -1 :
+              (theValue == other->getLongValue() ? 0 : 1));
+    }
+    catch (error::ZorbaError&)
+    {
+      return getDecimalValue().compare(other->getDecimalValue());
+    }
   }
 
   store::Item_t getEBV( ) const;
@@ -1033,9 +1040,16 @@ public:
         long timezone = 0,
         const XQPCollator* aCollation = 0) const
   {
-    return (theValue < other->getLongValue() ?
-            -1 :
-            (theValue == other->getLongValue() ? 0 : 1));
+    try
+    {
+      return (theValue < other->getLongValue() ?
+              -1 :
+              (theValue == other->getLongValue() ? 0 : 1));
+    }
+    catch (error::ZorbaError&)
+    {
+      return getDecimalValue().compare(other->getDecimalValue());
+    }
   }
 
   store::Item_t getEBV() const;
@@ -1096,9 +1110,16 @@ public:
         long timezone = 0,
         const XQPCollator* collation = 0) const
   {
-    return (theValue < other->getLongValue() ?
-            -1 :
-            (theValue == other->getLongValue() ? 0 : 1));
+    try
+    {
+      return (theValue < other->getLongValue() ?
+              -1 :
+              (theValue == other->getLongValue() ? 0 : 1));
+    }
+    catch (error::ZorbaError&)
+    {
+      return getDecimalValue().compare(other->getDecimalValue());
+    }
   }
 
   store::Item_t getEBV( ) const;
@@ -1163,9 +1184,16 @@ public:
         long timezone = 0,
         const XQPCollator* collation = 0) const
   {
-    return (theValue < other->getLongValue() ?
-            -1 :
-            (theValue == other->getLongValue() ? 0 : 1));
+    try
+    {
+      return (theValue < other->getLongValue() ?
+              -1 :
+              (theValue == other->getLongValue() ? 0 : 1));
+    }
+    catch (error::ZorbaError&)
+    {
+      return getDecimalValue().compare(other->getDecimalValue());
+    }
   }
 
   store::Item_t getEBV( ) const;
@@ -1228,9 +1256,16 @@ class UnsignedLongItemNaive : public AtomicItem
         long timezone = 0,
         const XQPCollator* collation = 0) const
   {
-    return (theValue < other->getUnsignedLongValue() ?
-            -1 :
-            (theValue == other->getUnsignedLongValue() ? 0 : 1));
+    try
+    {
+      return (theValue < other->getUnsignedLongValue() ?
+              -1 :
+              (theValue == other->getUnsignedLongValue() ? 0 : 1));
+    }
+    catch (error::ZorbaError&)
+    {
+      return getDecimalValue().compare(other->getDecimalValue());
+    }
   }
 
   store::Item_t getEBV( ) const;
@@ -1293,9 +1328,16 @@ public:
         long timezone = 0,
         const XQPCollator* collation = 0) const
   {
-    return (theValue < other->getUnsignedLongValue() ?
-            -1 :
-            (theValue == other->getUnsignedLongValue() ? 0 : 1));
+    try
+    {
+      return (theValue < other->getUnsignedLongValue() ?
+              -1 :
+              (theValue == other->getUnsignedLongValue() ? 0 : 1));
+    }
+    catch (error::ZorbaError&)
+    {
+      return getDecimalValue().compare(other->getDecimalValue());
+    }
   }
 
   store::Item_t getEBV( ) const;
@@ -1360,9 +1402,16 @@ public:
         long timezone = 0,
         const XQPCollator* collation = 0) const
   {
-    return (theValue < other->getUnsignedLongValue() ?
-            -1 :
-            (theValue == other->getUnsignedLongValue() ? 0 : 1));
+    try
+    {
+      return (theValue < other->getUnsignedLongValue() ?
+              -1 :
+              (theValue == other->getUnsignedLongValue() ? 0 : 1));
+    }
+    catch (error::ZorbaError&)
+    {
+      return getDecimalValue().compare(other->getDecimalValue());
+    }
   }
 
   store::Item_t getEBV( ) const;
@@ -1429,9 +1478,16 @@ public:
         long timezone = 0,
         const XQPCollator* aCollation = 0) const
   {
-    return (theValue < other->getUnsignedLongValue() ?
-            -1 :
-            (theValue == other->getUnsignedLongValue() ? 0 : 1));
+    try
+    {
+      return (theValue < other->getUnsignedLongValue() ?
+              -1 :
+              (theValue == other->getUnsignedLongValue() ? 0 : 1));
+    }
+    catch (error::ZorbaError&)
+    {
+      return getDecimalValue().compare(other->getDecimalValue());
+    }
   }
 
   store::Item_t getEBV() const;
