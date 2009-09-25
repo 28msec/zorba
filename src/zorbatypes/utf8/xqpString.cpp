@@ -327,12 +327,45 @@ bool xqpStringStore::byteEqual(const xqpStringStore& src) const
 
 bool xqpStringStore::byteEqual(const char* src, uint32_t srcBytes) const
 {
-  if(bytes() == srcBytes && memcmp(c_str(), src, srcBytes) == 0)
-    return true;
+  if(bytes() != srcBytes)
+    return false;
   
-  return false;
+  //compare strings from back to front
+  const char  *s1 = c_str();
+  uint32_t    llen = srcBytes>>2;
+  const long *l2 = ((long*)src) + llen - 1;
+  const long *l1 = ((long*)s1) + llen - 1;
+  for(;l2>=(const long*)src;l2--, l1--)
+  {
+    if(*l1 != *l2)
+      return false;
+  }
+  s1 += llen<<2;
+  src += llen<<2;
+  while(*s1)
+  {
+    if(*s1 != *src)
+      return false;
+    s1++;
+    src++;
+  }
+
+  return true;
 }
 
+bool xqpStringStore::byteEqual(const char* src) const
+{
+  const char  *mystr = c_str();
+  int   i = 0;
+
+  do
+  {
+    if(mystr[i] != src[i])
+      return false;
+  }while(mystr[i++]);
+
+  return true;
+}
 
 int xqpStringStore::compare(const xqpStringStore* src, const XQPCollator* coll) const
 {

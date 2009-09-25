@@ -137,10 +137,7 @@ public:
   byteEqual(const char* src, uint32_t srcBytes) const;
 
   bool
-  byteEqual(const char* src) const
-  {
-    return byteEqual(src, ::strlen(src));
-  }
+  byteEqual(const char* src) const;
 
   int byteCompare(const std::string& s) 
   {
