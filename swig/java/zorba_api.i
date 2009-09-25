@@ -13,5 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+// Generate Java 1.5 proper enums
+//include "enums.swg"
+%include "enumtypeunsafe.swg"
+
+// don't do a JNI call for constants and enums.
+%javaconst(1);
+
 %include ../zorba_api.i
 
