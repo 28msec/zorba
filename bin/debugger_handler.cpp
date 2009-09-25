@@ -220,7 +220,9 @@ namespace zorba{
 		}else if(args.size() >= 2){
 			const String lStringURI(args.at(1));
 			list(lStringURI);
-		}
+    } else {
+      //list(theCurrentLocation);
+    }
     return true;
 	}
 
@@ -241,8 +243,8 @@ namespace zorba{
 			}
 		} else {
 			synchronous_logger::cerr << "Invalid syntax.\n";
-			synchronous_logger::cerr << "clear <number>\n";
-			synchronous_logger::cerr << "clear all\n";
+			synchronous_logger::cerr << "(clear|cl) <number>\n";
+			synchronous_logger::cerr << "(clear|cl) all\n";
       return false;
 		}
     return true;
@@ -308,7 +310,7 @@ namespace zorba{
 		if(args.size() < 2)
 		{
 			synchronous_logger::cerr << "Invalid syntax.\n";
-			synchronous_logger::cerr << "(p|print) <expr>\n";
+			synchronous_logger::cerr << "(p|print|eval|e) <expr>\n";
 			return false;
 		} else {
 			String lExpr(getExpression(args));
@@ -317,30 +319,101 @@ namespace zorba{
     return true;
 	}
 
-	bool DebuggerHandler::help() const
+  bool DebuggerHandler::help(const std::vector<std::string>& aArgs) const
 	{
-		cerr << "List of available commands." << endl;
-		cerr << "Execution commands:" << endl;
-		cerr << "  run       -- Start the query execution." << endl;
-		cerr << "  resume    -- Resume the query execution." << endl;
-		cerr << "  status    -- Display the status of the query." << endl;
-		cerr << "  where     -- Print the runtime stack frame." << endl;
-		cerr << "  terminate -- Terminate the query." << endl;
-		cerr << "Breakpoint commands:" << endl;
-		cerr << "  break     -- Set a breakpoint at the specified file and line." << endl;
-		cerr << "  watch     -- Add watchpoint to the query" << endl;
-		cerr << "  list      -- Display the executed query line." << endl;
-		cerr << "  clear     -- Clear breakpoints." << endl;
-		cerr << "  over      -- Steps over the expression." << endl;
-		cerr << "  in        -- Steps inside the function call." << endl;
-		cerr << "  out       -- Steps outside the function call." << endl;
-		cerr << "Data commands:" << endl;
-		cerr << "  vars      -- List all variables that are in scope." << endl;
-		cerr << "  eval      -- Evaluate an xquery expression and print its result." << endl;
-		cerr << "Zorba debugger:" << endl;
-		cerr << "  help      -- This help." << endl;
+    if (aArgs.size() < 2) {
+      printDefaultHelp();
+    } else if (aArgs[1] == "run" || aArgs[1] == "r") {
+      cerr << "Usage: (run|r)" << endl;
+      cerr << "Runs the query. If the query is suspended, this command" << endl;
+      cerr << "restarts the execution." << endl;
+    } else if (aArgs[1] == "resume" || aArgs[1] == "c") {
+      cerr << "Usage: (resume|c)" << endl;
+      cerr << "This command continues the execution if the query is" << endl;
+      cerr << "suspended" << endl;
+    } else if (aArgs[1] == "status") {
+      cerr << "Usage: status" << endl;
+      cerr << "Usage: Prints the current status of the engine." << endl;
+      cerr << "Possible status are:" << endl;
+      cerr << " - IDLE - This is before the first execution of the run";
+      cerr << "command." << endl;
+      cerr << " - SUSPENDED - When the query is suspended and waits" << endl;
+      cerr << "   for a step or continue command." << endl;
+    } else if (aArgs[1] == "where") {
+      cerr << "Usage: where" << endl;
+    } else if (aArgs[1] == "terminate" || aArgs[1] == "t") {
+      cerr << "Usage: (terminate|t)" << endl;
+      cerr << "Terminates the engine and the debugger." << endl;
+    } else if (aArgs[1] == "break" || aArgs[1] == "b") {
+      cerr << "Usage: (break|b) (filename|namespace) linenumber" << endl;
+      cerr << "Sets a breakpoint at a given program point." << endl;
+      cerr << "This command handles file paths and module namespaces." << endl;
+      cerr << "If the filename or module namespace is only given as" << endl;
+      cerr << "a part, the engine sets the breakpoint choses one." << endl;
+    } else if (aArgs[1] == "watch" || aArgs[1] == "w") {
+      cerr << "Usage: (watch|w)" << endl;
+    } else if (aArgs[1] == "list" || aArgs[1] == "l") {
+      cerr << "Usage: (list|l) (filename|namespace|b|all)" << endl;
+      cerr << "List takes one argument:" << endl;
+      cerr << " - b lists all set breakpoints." << endl;
+      cerr << " - all lists the source of the main module." << endl;
+      cerr << " - filename lists the source of a given filename." << endl;
+      cerr << " - namespace lists the source of a module with the" << endl;
+      cerr << "   corresponding module namespace." << endl;
+      cerr << "Lists the source code of a " << endl;
+    } else if (aArgs[1] == "clear" || aArgs[1] == "c") {
+      cerr << "Usage: (clear|cl) id" << endl;
+      cerr << "Deletes a breakpoint with a given id. This id can be" << endl;
+      cerr << "found using the command \"list b\"" << endl;
+    } else if (aArgs[1] == "over" || aArgs[1] == "next" || aArgs[1] == "n") {
+      cerr << "Usage: (over|next|n)" << endl;
+      cerr << "Steps to the next breakable expression on the same level." 
+        << endl;
+    } else if (aArgs[1] == "in" || aArgs[1] == "s") {
+      cerr << "Usage: (in|s)" << endl;
+      cerr << "Steps to the next breabable expression." << endl;
+    } else if (aArgs[1] == "out" || aArgs[1] == "o") {
+      cerr << "Usage: (out|o)" << endl;
+      cerr << "Steps to the parent breakable expression." << endl;
+    } else if (aArgs[1] == "vars" || aArgs[1] == "variables" || 
+      aArgs[1] == "var" || aArgs[1] == "var" || aArgs[1] == "v") {
+      cerr << "Usage: (variables|vars|var|v)" << endl;
+      cerr << "Lists all variable in the current scope." << endl;
+    } else if (aArgs[1] == "eval" || aArgs[1] == "print" || aArgs[1] == "p"
+      || aArgs[1] == "e") {
+      cerr << "Usage: (print|p|eval|e) expression" << endl;
+      cerr << "Executes an XQuery expression in the current scope." << endl;
+    } else {
+      printDefaultHelp();
+    }
     return true;
-	}
+  }
+
+  void DebuggerHandler::printDefaultHelp() const
+  {
+    cerr << "List of available commands." << endl;
+    cerr << "Execution commands:" << endl;
+    cerr << "  run       -- Start the query execution." << endl;
+    cerr << "  resume    -- Resume the query execution." << endl;
+    cerr << "  status    -- Display the status of the query." << endl;
+    cerr << "  where     -- Print the runtime stack frame." << endl;
+    cerr << "  terminate -- Terminate the query." << endl;
+    cerr << "Breakpoint commands:" << endl;
+    cerr << "  break     -- Set a breakpoint at the specified file and line." << endl;
+    //cerr << "  watch     -- Add watchpoint to the query" << endl;
+    cerr << "  list      -- Display the executed query line." << endl;
+    cerr << "  clear     -- Clear breakpoints." << endl;
+    cerr << "  over      -- Steps over the expression." << endl;
+    cerr << "  in        -- Steps inside the function call." << endl;
+    cerr << "  out       -- Steps outside the function call." << endl;
+    cerr << "Data commands:" << endl;
+    cerr << "  vars      -- List all variables that are in scope." << endl;
+    cerr << "  eval      -- Evaluate an xquery expression and print its result." << endl;
+    cerr << "Zorba debugger:" << endl;
+    cerr << "  help      -- This help.(Use \"help command\" to get help for a ";
+    cerr << "specific command)" << endl;
+
+  }
 
 	istream* DebuggerHandler::resolve(const String& aNamespace) const
 	{
@@ -519,13 +592,15 @@ namespace zorba{
 		  		if (!eval(lArgs)) continue;
 		  		return;
 		  	} else if(lCommand == "h" || lCommand == "help"){
-		  		if (!help()) continue;
+		  		if (!help(lArgs)) continue;
 		  	} else if (lCommand == "schnitzel") {
 		  		printSchnitzel();
           continue;
 		  	} else {
 		  		cerr << "Unknown command " << lCommand << endl;
-		  		if (!help()) continue;
+          std::vector<std::string> dummyArgs;
+          dummyArgs.push_back("help");
+		  		if (!help(dummyArgs)) continue;
 		  	}
 		  } else {
         // cin not good

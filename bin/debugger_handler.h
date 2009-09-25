@@ -102,7 +102,8 @@ class DebuggerHandler: public DefaultDebuggerEventHandler
     bool where() const;
 
     //Display the help
-    bool help() const;
+    bool help(const std::vector<std::string>& aArgs) const;
+    void printDefaultHelp() const;
 
     //Deals with the input stream
     void handle();
