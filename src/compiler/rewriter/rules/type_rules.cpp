@@ -196,8 +196,8 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
 
   if ((fo = dynamic_cast<fo_expr *>(node)) != NULL) 
   {
-    function *fnboolean = LOOKUP_FN("fn", "boolean", 1);
-    if (fo->get_func() == fnboolean) 
+    //function *fnboolean = LOOKUP_FN("fn", "boolean", 1);
+    if (fo->get_func()->CHECK_IS_BUILTIN_NAMED("boolean", 1)) 
     {
       expr_t arg = (*fo)[0];
       xqtref_t arg_type = arg->return_type(rCtx.getStaticContext(node));
@@ -207,8 +207,8 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
         return NULL;
     }
 
-    function *fndata = LOOKUP_FN("fn", "data", 1);
-    if (fo->get_func() == fndata) 
+    //function *fndata = LOOKUP_FN("fn", "data", 1);
+    if (fo->get_func()->CHECK_IS_BUILTIN_NAMED("data", 1)) 
     {
       expr_t arg = (*fo)[0];
       xqtref_t arg_type = arg->return_type(rCtx.getStaticContext(node));

@@ -43,6 +43,40 @@ END_SERIALIZABLE_CLASS_VERSIONS(user_function)
 /*******************************************************************************
 
 ********************************************************************************/
+function::function(const signature& _sig) 
+  :
+  sig(_sig),
+  theKind(FunctionConsts::FN_UNKNOWN),
+  theFlags(0)
+{
+  if(get_fname()->getNamespace()->byteEqual(ZORBA_FN_NS, sizeof(ZORBA_FN_NS)-1))
+    setFlag(FunctionConsts::hasFnNamespace);
+}
+
+function::function(const signature& _sig, FunctionConsts::FunctionKind kind) 
+  :
+  sig(_sig),
+  theKind(kind),
+  theFlags(0)
+{
+  if(get_fname()->getNamespace()->byteEqual(ZORBA_FN_NS, sizeof(ZORBA_FN_NS)-1))
+    setFlag(FunctionConsts::hasFnNamespace);
+}
+
+bool function::is_builtin_fn_named( 
+                        const char *local, int local_len,
+                        int arg_count) const
+{
+  const store::Item_t&  my_name = get_fname();
+  if(get_arity() == arg_count &&
+     testFlag(FunctionConsts::hasFnNamespace) &&//my_name->getNamespace()->byteEqual(ns, ns_len)
+     my_name->getLocalName()->byteEqual(local, local_len)
+     )
+    return true;
+  else
+    return false;
+}
+
 xqtref_t function::return_type (const std::vector<xqtref_t> &) const 
 {
   return sig.return_type ();

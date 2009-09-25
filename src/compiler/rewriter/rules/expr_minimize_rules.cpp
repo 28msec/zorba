@@ -20,16 +20,18 @@
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/expression/expr.h"
 
+#include "functions/function.h"
+
 #include "types/typeops.h"
 
 using namespace std;
 
 namespace zorba 
 {
-
+/*
 #define LOOKUP_FN( pfx, local, arity ) \
 (GENV.getRootStaticContext ().lookup_fn (pfx, local, arity))
-
+*/
 
 static expr_t get_constant_if_typequant_one(static_context *sctx, expr_t e);
 
@@ -79,9 +81,9 @@ RULE_REWRITE_PRE(ReplaceExprWithConstantOneWhenPossible)
   fo_expr *fo = static_cast<fo_expr *>(&*node);
   const function *fn = fo->get_func();
 
-  if (fn == LOOKUP_FN("fn", "count", 1)
-      || fn == LOOKUP_FN("fn", "empty", 1)
-      || fn == LOOKUP_FN("fn", "exists", 1)) {
+  if (fn->CHECK_IS_BUILTIN_NAMED("count", 1)
+      || fn->CHECK_IS_BUILTIN_NAMED("empty", 1)
+      || fn->CHECK_IS_BUILTIN_NAMED("exists", 1)) {
     expr_t child = (*fo)[0];
     expr_t nc = get_constant_if_typequant_one(sctx, child);
     if (nc != NULL) 

@@ -136,7 +136,7 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
     foExpr = static_cast<const fo_expr*>(predExpr);
     fn = foExpr->get_func();
 
-    if (fn == LOOKUP_FN("fn", "boolean", 1))
+    if (fn->CHECK_IS_BUILTIN_NAMED("boolean", 1))
     {
       predExpr = (*foExpr)[0];
       continue;

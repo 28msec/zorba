@@ -83,6 +83,9 @@ bool propagatesInputToOutput(uint32_t aProducer) const { return true; }
 #define ZORBA_PROPAGATES_ONE_I2O( n ) \
 bool propagatesInputToOutput(uint32_t aProducer) const { return n == aProducer; }
 
+#define CHECK_IS_BUILTIN_NAMED(local, arity)   \
+is_builtin_fn_named(local, sizeof(local)-1, arity)
+
 
 /*******************************************************************************
 
@@ -112,6 +115,7 @@ public:
 };
 
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -133,19 +137,9 @@ public:
   }
 
 public:
-	function(const signature& _sig) 
-    :
-    sig(_sig),
-    theKind(FunctionConsts::FN_UNKNOWN),
-    theFlags(0)
-  {}
+	function(const signature& _sig);
 
-	function(const signature& _sig, FunctionConsts::FunctionKind kind) 
-    :
-    sig(_sig),
-    theKind(kind),
-    theFlags(0)
-  {}
+	function(const signature& _sig, FunctionConsts::FunctionKind kind);
 
 	virtual ~function() {}
 
@@ -159,6 +153,8 @@ public:
   const signature& get_signature() const { return sig; }
 
   int get_arity() const { return sig.arg_count(); }
+
+  virtual bool is_builtin_fn_named(const char *local, int local_len,int arg_count) const;
 
   virtual xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
 
@@ -310,6 +306,8 @@ public:
   const QueryLoc& get_location() const;
 
   virtual expr_update_t getUpdateType() const { return theUpdateType; }
+
+  virtual bool is_builtin_fn_named(const char *local, int local_len,int arg_count) const {return false;}
 
   bool isPureFunction () const { return deterministic; }
 

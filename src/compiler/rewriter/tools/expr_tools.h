@@ -23,6 +23,7 @@
 #include "compiler/rewriter/framework/rewriter_context.h"
 
 #include "functions/signature.h"
+#include "functions/function.h"
 
 #include "store/api/item_factory.h"
 #include "system/globalenv.h"
@@ -51,6 +52,7 @@
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
 #define LOC( expr ) (expr)->get_loc ()
+
 
 
 namespace zorba 
@@ -132,7 +134,7 @@ inline expr_t fix_if_annotations (rchandle<if_expr> ite)
 inline bool is_data(expr *e)
 {
   return (e->get_expr_kind() == fo_expr_kind &&
-          static_cast<fo_expr *>(e)->get_func() == LOOKUP_FN("fn", "data", 1));
+          static_cast<fo_expr *>(e)->get_func()->CHECK_IS_BUILTIN_NAMED("data", 1));
 }
 
 

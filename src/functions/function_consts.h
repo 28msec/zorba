@@ -45,7 +45,9 @@ public:
   typedef enum
   {
     DoDistinct    = 1,   // Used by fn:zore-or-one and fn:exaclty-one 
-    SkipCodeGen   = 2
+    SkipCodeGen   = 2,
+
+    hasFnNamespace = 4
   }
   AnnotationFlags;
 

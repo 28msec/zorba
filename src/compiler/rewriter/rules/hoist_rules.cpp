@@ -419,7 +419,7 @@ static bool is_enclosed_expr(expr *e)
     return false;
 
   const function *fn = static_cast<fo_expr *>(e)->get_func();
-  return (fn == LOOKUP_FN("fn", ":enclosed-expr", 1));
+  return (fn->CHECK_IS_BUILTIN_NAMED(":enclosed-expr", 1));
 }
 
 

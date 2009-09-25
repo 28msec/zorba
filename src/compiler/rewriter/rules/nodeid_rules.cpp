@@ -256,13 +256,13 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
     fo_expr* fo = static_cast<fo_expr *>(node);
     function* f = fo->get_func();
 
-    if (f == LOOKUP_FN("fn", "empty", 1)
-        || f == LOOKUP_FN("fn", "exists", 1)
-        || f == LOOKUP_FN ("fn", "max", 1)
-        || f == LOOKUP_FN ("fn", "max", 2)
-        || f == LOOKUP_FN ("fn", "min", 1)
-        || f == LOOKUP_FN ("fn", "min", 2)
-        || f == LOOKUP_FN ("fn", "boolean", 1))
+    if (f->CHECK_IS_BUILTIN_NAMED("empty", 1)
+        || f->CHECK_IS_BUILTIN_NAMED("exists", 1)
+        || f->CHECK_IS_BUILTIN_NAMED("max", 1)
+        || f->CHECK_IS_BUILTIN_NAMED("max", 2)
+        || f->CHECK_IS_BUILTIN_NAMED("min", 1)
+        || f->CHECK_IS_BUILTIN_NAMED("min", 2)
+        || f->CHECK_IS_BUILTIN_NAMED("boolean", 1))
     {
       expr_t arg = (*fo)[0];
       TSVAnnotationValue::update_annotation(arg,
@@ -272,8 +272,8 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
                                             Annotations::IGNORES_DUP_NODES,
                                             TSVAnnotationValue::TRUE_VAL);
     }
-    else if (f == LOOKUP_FN ("fn", "zero-or-one", 1) ||
-             f == LOOKUP_FN ("fn", "exactly-one", 1))
+    else if (f->CHECK_IS_BUILTIN_NAMED("zero-or-one", 1) ||
+             f->CHECK_IS_BUILTIN_NAMED("exactly-one", 1))
     {
       // If these functions are over a duplicate elimination function, the 
       // duplicate elimination is pulled up into the runtime iterators for
@@ -301,11 +301,11 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
                                             Annotations::IGNORES_SORTED_NODES,
                                             TSVAnnotationValue::TRUE_VAL);
     }
-    else if (f == LOOKUP_FN ("fn", "unordered", 1) ||
-             f == LOOKUP_FN ("fn", "count", 1) ||
-             f == LOOKUP_FN ("fn", "sum", 1) ||
-             f == LOOKUP_FN ("fn", "sum", 2) ||
-             f == LOOKUP_FN ("fn", "avg", 1) ||
+    else if (f->CHECK_IS_BUILTIN_NAMED("unordered", 1) ||
+             f->CHECK_IS_BUILTIN_NAMED("count", 1) ||
+             f->CHECK_IS_BUILTIN_NAMED("sum", 1) ||
+             f->CHECK_IS_BUILTIN_NAMED("sum", 2) ||
+             f->CHECK_IS_BUILTIN_NAMED("avg", 1) ||
              f == LOOKUP_OP1 ("exactly-one-noraise"))
     {
       expr_t arg = (*fo)[0];
@@ -459,7 +459,7 @@ RULE_REWRITE_PRE(EliminateNodeOps)
   {
     const function* f = fo->get_func();
 
-    if (f == LOOKUP_FN ("fn", "unordered", 1))
+    if (f->CHECK_IS_BUILTIN_NAMED("unordered", 1))
       return (*fo)[0];
 
     const op_node_sort_distinct* nsdf = dynamic_cast<const op_node_sort_distinct *> (f);

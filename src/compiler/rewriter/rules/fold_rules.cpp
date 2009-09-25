@@ -344,12 +344,12 @@ static bool maybe_needs_implicit_timezone(const fo_expr *fo, static_context *sct
              f->arithmetic_kind() == ArithmeticConsts::SUBTRACTION) &&
             (TypeOps::maybe_date_time(*type0) || TypeOps::maybe_date_time(*type1)))
            ||
-           ((f == LOOKUP_FN ("fn", "distinct-values", 1) ||
-             f == LOOKUP_FN ("fn", "distinct-values", 2) ||
-             f == LOOKUP_FN ("fn", "min", 1) ||
-             f == LOOKUP_FN ("fn", "min", 2) ||
-             f == LOOKUP_FN ("fn", "max", 1) ||
-             f == LOOKUP_FN ("fn", "max", 2))
+           ((f->CHECK_IS_BUILTIN_NAMED("distinct-values", 1) ||
+             f->CHECK_IS_BUILTIN_NAMED("distinct-values", 2) ||
+             f->CHECK_IS_BUILTIN_NAMED("min", 1) ||
+             f->CHECK_IS_BUILTIN_NAMED("min", 2) ||
+             f->CHECK_IS_BUILTIN_NAMED("max", 1) ||
+             f->CHECK_IS_BUILTIN_NAMED("max", 2))
             && TypeOps::maybe_date_time(*TypeOps::prime_type(*type0))) );
 }
 
@@ -555,7 +555,7 @@ static expr_t partial_eval_fo (RewriterContext& rCtx, fo_expr *fo)
   {
     return partial_eval_eq (rCtx, *fo);
   }
-  else if (f == LOOKUP_FN ("fn", "count", 1)) 
+  else if (f->CHECK_IS_BUILTIN_NAMED("count", 1)) 
   {
     expr_t arg = (*fo) [0];
     if (arg->get_annotation(Annotations::NONDISCARDABLE_EXPR) != TSVAnnotationValue::TRUE_VAL) 
@@ -619,12 +619,12 @@ static expr_t partial_eval_eq (RewriterContext& rCtx, fo_expr &fo)
   int i;
   fo_expr *count_expr = NULL;
   const_expr *val_expr = NULL;
-  const function *fn_count = LOOKUP_FN ("fn", "count", 1);
+  //const function *fn_count = LOOKUP_FN ("fn", "count", 1);
   
   for (i = 0; i < 2; i++) {
     if (NULL != (val_expr = fo [i].dyn_cast<const_expr> ().getp ())
         && NULL != (count_expr = fo [1-i].dyn_cast<fo_expr> ().getp())
-        && count_expr->get_func () == fn_count)
+        && count_expr->get_func ()->CHECK_IS_BUILTIN_NAMED("count", 1))
       break;
   }
 
