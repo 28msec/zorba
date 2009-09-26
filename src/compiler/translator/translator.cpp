@@ -6292,10 +6292,7 @@ void end_visit (const FunctionCall& v, void* /*visit_state*/)
   string prefix = qn_h->get_prefix();
   string fname = qn_h->get_localname();
 
-  //daniel const xqpStringStore* fn_ns = sctx_p->lookup_fn_qname(prefix, fname, loc)->getNamespace();
-  const xqpStringStore* fn_ns = prefix.empty() ?
-                         sctx_p->default_function_namespace().theStrStore :
-                         sctx_p->lookup_ns(prefix, loc).theStrStore;
+  const xqpStringStore* fn_ns = sctx_p->lookup_fn_qname(prefix, fname, loc)->getNamespace();
 
   if (fn_ns->byteEqual(XQUERY_FN_NS)) 
   {
