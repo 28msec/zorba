@@ -298,12 +298,17 @@ bool xqpStringStore::byteEqual(const char* src) const
 {
   const char  *mystr = c_str();
   int   i = 0;
+  std::string::size_type  mylen = bytes();
 
-  do
+  for(i=0;i<mylen;i++)
   {
-    if(mystr[i] != src[i])
+    if(*mystr != *src)
       return false;
-  }while(mystr[i++]);
+    mystr++;
+    src++;
+  }
+  if(*src)
+    return false;
 
   return true;
 }
