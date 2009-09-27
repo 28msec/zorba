@@ -327,6 +327,11 @@ bool xqpStringStore::byteEqual(const xqpStringStore& src) const
 
 bool xqpStringStore::byteEqual(const char* src, uint32_t srcBytes) const
 {
+  if(bytes() == srcBytes && memcmp(c_str(), src, srcBytes) == 0)
+    return true;
+  else
+    return false;
+/*
   if(bytes() != srcBytes)
     return false;
   
@@ -354,6 +359,7 @@ bool xqpStringStore::byteEqual(const char* src, uint32_t srcBytes) const
   }
 
   return true;
+*/
 }
 
 bool xqpStringStore::byteEqual(const char* src) const
