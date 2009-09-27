@@ -345,7 +345,7 @@ bool xqpStringStore::byteEqual(const char* src, uint32_t srcBytes) const
   }
   s1 += llen<<2;
   src += llen<<2;
-  while(*s1)
+  while(*src)
   {
     if(*s1 != *src)
       return false;
