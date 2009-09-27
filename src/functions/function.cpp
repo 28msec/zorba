@@ -49,7 +49,7 @@ function::function(const signature& _sig)
   theKind(FunctionConsts::FN_UNKNOWN),
   theFlags(0)
 {
-  if(get_fname()->getNamespace()->byteEqual(ZORBA_FN_NS, sizeof(ZORBA_FN_NS)-1))
+  if(get_fname()->getNamespace()->byteEqual(XQUERY_FN_NS, sizeof(XQUERY_FN_NS)-1))
     setFlag(FunctionConsts::hasFnNamespace);
 }
 
@@ -59,7 +59,7 @@ function::function(const signature& _sig, FunctionConsts::FunctionKind kind)
   theKind(kind),
   theFlags(0)
 {
-  if(get_fname()->getNamespace()->byteEqual(ZORBA_FN_NS, sizeof(ZORBA_FN_NS)-1))
+  if(get_fname()->getNamespace()->byteEqual(XQUERY_FN_NS, sizeof(XQUERY_FN_NS)-1))
     setFlag(FunctionConsts::hasFnNamespace);
 }
 
