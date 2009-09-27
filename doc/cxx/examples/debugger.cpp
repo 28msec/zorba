@@ -20,6 +20,7 @@
 #include <cstdlib>
 #include "common/common.h"
 #include <time.h>
+#include <limits.h>
 #ifdef UNIX
 #  include <sys/time.h>
 #endif

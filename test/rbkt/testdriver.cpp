@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
 #include "testdriverconfig.h" // SRC and BIN dir definitions
 #include "specification.h" // parsing spec files
 #include "testuriresolver.h"
@@ -43,6 +44,9 @@
 #endif
 
 #include "testdriver_comparator.h"
+
+
+//#define ZORBA_TEST_PLAN_SERIALIZATION
 
 #define EXPECTED_ERROR  0
 #define UNEXPECTED_ERROR  6
@@ -137,6 +141,7 @@ main(int argc, char** argv)
     int path_flags = zorba::file::CONVERT_SLASHES | zorba::file::RESOLVE;
 
     std::string lQueryFileString = rbkt_src_dir + Queriesdir + argv[i];
+
 #ifndef ZORBA_TEST_PLAN_SERIALIZATION_EXECUTION_ONLY
     // Form the full pathname for the file containing the query and make sure
     // that the file exists.
@@ -191,6 +196,7 @@ main(int argc, char** argv)
     // in the pathname of the result and error files.
 
     std::cout << "test " << lQueryWithoutSuffix << std::endl;
+
 #ifndef ZORBA_TEST_PLAN_SERIALIZATION_COMPILE_ONLY
     zorba::file lResultFile (rbkt_bin_dir + "/QueryResults/" 
                              + lQueryWithoutSuffix + ".xml.res", path_flags);
@@ -275,7 +281,13 @@ main(int argc, char** argv)
 
     lQuery = engine->createQuery (&errHandler);
     lQuery->setFileName (lQueryFile.get_path ());
+#if 1
     lQuery->compile (lQueryString.c_str(), lContext, getCompilerHints());
+#else
+    Zorba_CompilerHints lHints;
+    lHints.opt_level = ZORBA_OPT_LEVEL_O0;
+    lQuery->compile (lQueryString.c_str(), lContext, lHints);
+#endif
 
     errors = -1;
     if ( errHandler.errors() )
@@ -312,6 +324,7 @@ main(int argc, char** argv)
       return -1;
     }
 #endif//ZORBA_TEST_PLAN_SERIALIZATION
+
 #ifdef ZORBA_TEST_PLAN_SERIALIZATION_COMPILE_ONLY
     continue;
 #endif//ZORBA_TEST_PLAN_SERIALIZATION_COMPILE_ONLY

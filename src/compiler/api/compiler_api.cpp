@@ -54,7 +54,25 @@
 namespace zorba 
 {
 
-// static context is in the compilercb
+static void print_ast_tree(const parsenode *n, const std::string& name) 
+{
+  std::cout << "AST for " << name << "\n";
+  print_parsetree_xml (std::cout, n);
+  std::cout << std::endl;
+}
+
+
+static void print_xqdoc_tree(
+    const parsenode *n,
+    std::string name,
+    std::ostream& anOutput,
+    store::Item_t aDateTime) 
+{
+  print_parsetree_xqdoc (anOutput, n, name, aDateTime);
+}
+
+
+
 XQueryCompiler::XQueryCompiler(CompilerCB* aCompilerCB) 
   :
   theCompilerCB(aCompilerCB)
@@ -66,15 +84,6 @@ XQueryCompiler::~XQueryCompiler()
 {
 }
 
-static void print_ast_tree (const parsenode *n, std::string name) {
-  std::cout << "AST for " << name << "\n";
-  print_parsetree_xml (std::cout, n);
-  std::cout << std::endl;
-}
-
-static void print_xqdoc_tree (const parsenode *n, std::string name, std::ostream& anOutput, store::Item_t aDateTime) {
-  print_parsetree_xqdoc (anOutput, n, name, aDateTime);
-}
 
 void XQueryCompiler::parseOnly(std::istream& aXQuery, const xqpString& aFileName)
 {

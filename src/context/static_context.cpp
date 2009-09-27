@@ -31,6 +31,8 @@
 #include "compiler/expression/var_expr.h"
 
 #include "zorbautils/strutil.h"
+#include "zorbautils/hashmap_itemp.h"
+
 #include "zorbatypes/collation_manager.h"
 #include "zorbatypes/URI.h"
 
@@ -85,9 +87,11 @@ void context::bind_str (
     xqp_string v,
     XQUERY_ERROR err) 
 {
-  if (str_keymap.put (key, v))
+  if (str_keymap.put(key, v))
+  {
     if (err != MAX_ZORBA_ERROR_CODE)
       ZORBA_ERROR(err);
+  }
 }
 
 
@@ -98,8 +102,10 @@ void context::bind_str2 (
     XQUERY_ERROR err) 
 {
   if (str_keymap.put2 (key1, key2, v))
+  {
     if (err != MAX_ZORBA_ERROR_CODE)
       ZORBA_ERROR(err);
+  }
 }
 
 
@@ -107,8 +113,11 @@ bool context::bind_expr (xqp_string key, expr *e)
 {
   ctx_value_t v(CTX_EXPR);
   v.exprValue = e;
+
+  // return false if the key was in the map already
   if (keymap.put (key, v, false))
     return false;
+
   RCHelper::addReference (e);
   return true;
 }
@@ -118,8 +127,11 @@ bool context::bind_expr2 (const char *key1, xqp_string key2, expr *e)
 {
   ctx_value_t v(CTX_EXPR);
   v.exprValue = e;
+
+  // return false if the key was in the map already
   if (keymap.put2 (key1, key2, v, false))
     return false;
+
   RCHelper::addReference (e);
   return true;
 }
@@ -129,8 +141,11 @@ bool context::bind_func (xqp_string key, function *f)
 {
   ctx_value_t v(CTX_FUNCTION);
   v.functionValue = f;
+
+  // return false if the key was in the map already
   if (keymap.put (key, v, false))
     return false;
+
   RCHelper::addReference (f);
   return true;
 }
@@ -140,8 +155,11 @@ bool context::bind_func2 (const char *key1, xqp_string key2, function *f)
 {
   ctx_value_t v(CTX_FUNCTION);
   v.functionValue = f;
+
+  // return false if the key was in the map already
   if (keymap.put2 (key1, key2, v, false))
     return false;
+
   RCHelper::addReference (f);
   return true;
 }
@@ -151,25 +169,20 @@ bool context::bind_stateless_function(xqp_string key, StatelessExternalFunction*
 {
   ctx_value_t v(CTX_STATELESS_EXTERNAL_FUNC);
   v.stateless_function = f;
+
+  // return false if the key was in the map already
   if (keymap.put (key, v, false))
     return false;
+
   return true;
 }
 
-bool context::bind_index(const char *key1, const xqp_string& key2, ValueIndex *vi)
-{
-  ctx_value_t v(CTX_VALUE_INDEX);
-  v.valueIndex = vi;
-  if (keymap.put2 (key1, key2, v, false))
-    return false;
-  RCHelper::addReference (vi);
-  return true;
-}
 
 bool context::check_parent_is_root()
 {
   return parent == (context*)&GENV_ROOT_STATIC_CONTEXT;
 }
+
 
 void context::set_parent_as_root()
 {
@@ -207,11 +220,6 @@ void context::ctx_value_t::serialize(::zorba::serialization::Archiver &ar)
   case CTX_BOOL:
     ar & boolValue;
     break;
-  case CTX_VALUE_INDEX:
-    ar & valueIndex;
-    if(!ar.is_serializing_out() && valueIndex)
-      RCHelper::addReference (valueIndex);
-    break;
   case CTX_XQTYPE:
   case CTX_STATELESS_EXTERNAL_FUNC:
   default:
@@ -219,6 +227,8 @@ void context::ctx_value_t::serialize(::zorba::serialization::Archiver &ar)
       typeValue = NULL;//don't serialize this
     break;
   }
+
+  // INDEX_TODO: serialize index map
 }
 
 xqp_string context::default_function_namespace() const
@@ -244,6 +254,7 @@ static_context::static_context()
   theColResolver(0),
   theSchemaResolver(0),
   theModuleResolver(0),
+  theIndexMap(NULL),
   theTraceStream(0),
   theCollationCache(0)
 {
@@ -259,11 +270,12 @@ static_context::static_context (static_context *_parent)
   theColResolver(0),
   theSchemaResolver(0),
   theModuleResolver(0),
+  theIndexMap(NULL),
   theTraceStream(0),
   theCollationCache(0)
 {
   if (parent != NULL)
-    RCHelper::addReference (parent);
+    RCHelper::addReference(parent);
 }
 
 
@@ -303,8 +315,6 @@ static_context::~static_context()
         RCHelper::removeReference (const_cast<function *> (val->functionValue));
       } else if (0 == strncmp(keybuff, "fmap:", 5)) {
         delete (const_cast<ArityFMap *> (val->fmapValue));
-      } else if (0 == strncmp(keybuff, "vindex:", 7)) {
-        RCHelper::removeReference(const_cast<ValueIndex *>(val->valueIndex));
       }
     }
   }
@@ -314,8 +324,11 @@ static_context::~static_context()
   set_schema_uri_resolver(0);
   set_module_uri_resolver(0);
 
+  if (theIndexMap)
+    delete theIndexMap;
+
   if (parent)
-    RCHelper::removeReference (parent);
+    RCHelper::removeReference(parent);
 }
 
 
@@ -347,9 +360,28 @@ void static_context::serialize(::zorba::serialization::Archiver &ar)
 /*******************************************************************************
 
 ********************************************************************************/
+static_context* static_context::create_child_context() 
+{
+  return new static_context(this); 
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void static_context::set_typemanager(rchandle<TypeManager> typemgr_)
 {
   typemgr = typemgr_;
+}
+
+
+TypeManager* static_context::get_typemanager() 
+{
+  TypeManager* tm = typemgr.getp();
+  if (tm != NULL) {
+    return tm;
+  }
+  return static_cast<static_context *>(parent)->get_typemanager();
 }
 
 
@@ -431,7 +463,7 @@ void static_context::bind_ns (xqp_string prefix, xqp_string ns, const XQUERY_ERR
 
   The following method searches the static-context tree, starting from "this"
   and moving upwards, looking for the 1st mapping between the given prefix and a
-  namespace uri. It return false if no such mapping is found, or the ns uri in the
+  namespace uri. It returns false if no such mapping is found, or the ns uri in the
   mapping is empty. Otherwise, it returns true and the associated uri.
 
 ********************************************************************************/
@@ -440,21 +472,6 @@ bool static_context::lookup_ns (xqp_string prefix, xqp_string &ns) const
   return context_value2 ("ns:", prefix, ns) && ! ns.empty();
 }
 
-bool
-static_context::lookup_option(const xqp_string& ns, const xqp_string& localname, xqp_string& option) const
-{
-  xqp_string s = ns + localname;
-  if (lookup_once2("option:", s, option))
-    return true;
-  return parent == NULL ? false : dynamic_cast<static_context*>(parent)->lookup_option(ns, localname, option);
-}
-
-bool
-static_context::bind_option(const xqp_string& ns, const xqp_string& localname, const xqp_string& option)
-{
-  xqp_string s = ns + localname;
-  return str_keymap.put2("option:", s, option);
-}
 
 xqp_string static_context::lookup_ns (xqp_string prefix, const XQUERY_ERROR& err) const 
 {
@@ -781,14 +798,6 @@ xqtref_t static_context::lookup_type2( const char *key1, xqp_string key2)
 }
 
 
-void static_context::add_variable_type(
-    const xqp_string var_name, 
-    xqtref_t var_type)
-{
-  bind_type("type:var:" + qname_internal_key("", var_name), var_type);
-}
-
-
 xqtref_t static_context::get_variable_type(store::Item *var_name)
 {
   return lookup_type2("type:var:", qname_internal_key("",
@@ -844,7 +853,7 @@ void static_context::set_default_collection_type(xqtref_t t)
 }
 
 
-xqtref_t    static_context::default_collection_type()
+xqtref_t static_context::default_collection_type()
 {
   return lookup_type("type:defcollection:");
 }
@@ -859,6 +868,33 @@ void static_context::set_collection_type(xqp_string collURI, xqtref_t t)
 xqtref_t static_context::get_collection_type(const xqp_string collURI) 
 {
   return lookup_type2("type:collection:", collURI);
+}
+
+
+/*******************************************************************************
+
+  index management
+
+********************************************************************************/
+bool static_context::bind_index(
+    const store::Item* qname,
+    ValueIndex_t& index)
+{
+  if (theIndexMap == NULL)
+    theIndexMap = new IndexMap(0, NULL, 8, false);
+
+  return theIndexMap->insert(qname, index);
+}
+
+
+ValueIndex* static_context::lookup_index(const store::Item* qname) const
+{
+  ValueIndex_t index;
+
+  if (theIndexMap->get(qname, index))
+    return index.getp();
+  else
+    return NULL;
 }
 
 
@@ -934,6 +970,32 @@ CollationCache* static_context::get_collation_cache()
   return  theCollationCache;
 }
 
+
+/*******************************************************************************
+
+  option management
+
+********************************************************************************/
+bool static_context::lookup_option(
+    const xqp_string& ns,
+    const xqp_string& localname,
+    xqp_string& option) const
+{
+  xqp_string s = ns + localname;
+  if (lookup_once2("option:", s, option))
+    return true;
+  return parent == NULL ? false : dynamic_cast<static_context*>(parent)->lookup_option(ns, localname, option);
+}
+
+
+bool static_context::bind_option(
+    const xqp_string& ns,
+    const xqp_string& localname,
+    const xqp_string& option)
+{
+  xqp_string s = ns + localname;
+  return str_keymap.put2("option:", s, option);
+}
 
 
 /*******************************************************************************

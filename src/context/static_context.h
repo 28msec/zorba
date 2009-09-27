@@ -25,16 +25,17 @@
 
 #include "context/static_context_consts.h"
 #include "context/context.h"
-#include "context/static_context_consts.h"
 #include "context/decimal_format.h"
 #include "context/collation_cache.h"
+#include "context/internal_uri_resolvers.h"
+
 #include "compiler/expression/expr_base.h"
 
 #include "types/typemanager.h"
+
 #include "zorbaerrors/Assert.h"
 
 #include "common/shared_types.h"
-#include "context/internal_uri_resolvers.h"
 
 
 namespace zorba {
@@ -42,6 +43,11 @@ namespace zorba {
 class namespace_node;
 class user_function;
 class TypeManager;
+
+template <class V> class ItemPointerHashMap;
+
+class ValueIndex;
+typedef rchandle<ValueIndex> ValueIndex_t;
 
 
 /*******************************************************************************
@@ -63,39 +69,36 @@ class TypeManager;
 ********************************************************************************/
 class ZORBA_DLL_PUBLIC static_context : public context
 {
+  typedef ItemPointerHashMap<rchandle<ValueIndex> > IndexMap;
+
 protected:
-  rchandle<TypeManager>          typemgr;
+  rchandle<TypeManager>           typemgr;
 
-  InternalDocumentURIResolver*   theDocResolver;
-  InternalCollectionURIResolver* theColResolver;
-  InternalSchemaURIResolver*     theSchemaResolver;
-  InternalModuleURIResolver*     theModuleResolver;
+  InternalDocumentURIResolver   * theDocResolver;
+  InternalCollectionURIResolver * theColResolver;
+  InternalSchemaURIResolver     * theSchemaResolver;
+  InternalModuleURIResolver     * theModuleResolver;
 
-  expr_t                         theQueryExpr;
+  IndexMap                      * theIndexMap;
 
-  std::vector<DecimalFormat_t>   theDecimalFormats;
+  expr_t                          theQueryExpr;
 
-  std::ostream*                  theTraceStream;
+  std::vector<DecimalFormat_t>    theDecimalFormats;
 
-  CollationCache*                theCollationCache;
+  std::ostream                  * theTraceStream;
+  CollationCache                * theCollationCache;
+
 public:
   SERIALIZABLE_CLASS(static_context);
-  static_context(::zorba::serialization::Archiver &ar);
-  void serialize(::zorba::serialization::Archiver &ar);
+  static_context(::zorba::serialization::Archiver& ar);
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   ~static_context();
 
-  static_context* create_child_context() { return new static_context(this); }
+  static_context* create_child_context();
 
-  TypeManager* get_typemanager() 
-  {
-    TypeManager *tm = typemgr.getp();
-    if (tm != NULL) {
-      return tm;
-    }
-    return static_cast<static_context *>(parent)->get_typemanager();
-  }
+  TypeManager* get_typemanager();
 
   TypeManager* get_local_typemanager() const { return typemgr.getp(); }
 
@@ -274,9 +277,6 @@ public:
   xqtref_t
   lookup_type2 (const char *key1, xqp_string key2);
 
-  void
-  add_variable_type( const xqp_string var_name, xqtref_t var_type);
-
   xqtref_t
   get_variable_type( store::Item *var_name );
 
@@ -310,17 +310,13 @@ public:
   xqtref_t
   get_collection_type(const xqp_string);
 
+  //
   // Index
-  void bind_index(const xqp_string& aIndexURI, ValueIndex *vi)
-  {
-    context::bind_index("vindex:", aIndexURI, vi);
-  }
+  //
+  bool bind_index(const store::Item* qname, ValueIndex_t& vi);
 
-  ValueIndex *lookup_index(const xqp_string& aIndexURI) const
-  {
-    ctx_value_t val(CTX_VALUE_INDEX);
-    return context_value2("vindex:", aIndexURI, val) ? val.valueIndex : NULL;
-  }
+  ValueIndex* lookup_index(const store::Item* qname) const;
+
 
   //
   // Collations

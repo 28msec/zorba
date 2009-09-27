@@ -244,6 +244,7 @@ namespace zorba
   class ReplaceIterator;
   class RenameIterator;
   class TransformIterator;
+  class ApplyIterator;
   class NodeReferenceIterator;
   class NodeByReferenceIterator;
   class FnLocalNameIterator;
@@ -886,8 +887,13 @@ public:
   PLAN_ITER_VISITOR(ReplaceIterator);
 
   PLAN_ITER_VISITOR(RenameIterator);
+
   PLAN_ITER_VISITOR(TransformIterator);
+
+  PLAN_ITER_VISITOR(ApplyIterator);
+
   PLAN_ITER_VISITOR(FnDeepEqualIterator);
+
 	PLAN_ITER_VISITOR(FnFormatNumberIterator);
 
   PLAN_ITER_VISITOR(ZorbaCollectionExistsIterator);

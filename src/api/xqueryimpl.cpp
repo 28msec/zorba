@@ -610,14 +610,18 @@ XQueryImpl::serialize(std::ostream& os, const Zorba_SerializerOptions_t* opt)
     throw;
   }
 
-  theDocLoadingUserTime = lPlan->getRuntimeCB ()->docLoadingUserTime;
+  theDocLoadingUserTime = lPlan->getRuntimeCB()->docLoadingUserTime;
   theDocLoadingTime = lPlan->getRuntimeCB()->docLoadingTime;
 
   lPlan->close();
 }
 
+
 void
-XQueryImpl::serialize(std::ostream& os, PlanWrapper_t& aWrapper, const Zorba_SerializerOptions_t* opt)
+XQueryImpl::serialize(
+    std::ostream& os,
+    PlanWrapper_t& aWrapper,
+    const Zorba_SerializerOptions_t* opt)
 {
   ZORBA_TRY
     serializer lSerializer(theErrorManager);
@@ -628,55 +632,36 @@ XQueryImpl::serialize(std::ostream& os, PlanWrapper_t& aWrapper, const Zorba_Ser
   ZORBA_CATCH
 }
 
+
 void
 XQueryImpl::applyUpdates(PlanWrapper_t& aWrapper)
 {
   ZORBA_TRY
+
     store::Item_t pul;
+    aWrapper->next(pul);
 
-    // updating expression might not return a pul because of vacuous expressions
-    if (aWrapper->next(pul))
-    {
-      if (!pul->isPul())
-        ZORBA_ERROR_DESC(XQP0019_INTERNAL_ERROR,
-                         "Query does not return a pending update list");
-
-      std::set<zorba::store::Item*> validationNodes;
-
-      pul->applyUpdates(validationNodes);
-      /*
-      std::set<zorba::store::Item*>::const_iterator it = validationNodes.begin();
-      std::set<zorba::store::Item*>::const_iterator end = validationNodes.end();
-      for (; it != end; it++)
-      {
-        std::cout << "     Validating node " << *it << std::endl;
-      }
-      */
-      QueryLoc loc;
-      store::Item_t validationPul = GENV_ITEMFACTORY->createPendingUpdateList();
-
-#ifndef ZORBA_NO_XMLSCHEMA
-      validateAfterUpdate(validationNodes, validationPul, theStaticContext, loc);
-#endif
-      validationPul->applyUpdates(validationNodes);
-    }
   ZORBA_CATCH
 }
+
 
 void 
 XQueryImpl::applyUpdates()
 {
+  ZORBA_TRY
+
   checkNotClosed();
   checkCompiled();
 
   PlanWrapper_t lPlan = generateWrapper();
+  store::Item_t pul;
 
   SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
 
   try 
   { 
     lPlan->open();
-    applyUpdates(lPlan);
+    lPlan->next(pul);
   }
   catch (...)
   {
@@ -688,6 +673,8 @@ XQueryImpl::applyUpdates()
   theDocLoadingTime = lPlan->getRuntimeCB()->docLoadingTime;
 
   lPlan->close();
+
+  ZORBA_CATCH
 }
 
 

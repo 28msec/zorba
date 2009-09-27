@@ -55,15 +55,6 @@ typedef rchandle<ValueIndexInsertSession> ValueIndexInsertSession_t;
   for each value returned by the domain expression.
 
 
-  Other index-related syntax:
-  ---------------------------
-
-  IndexStatement ::= ["CREATE" | "BUILD" | "DROP"] INDEX UriLiteral
-
-  These statements are translated into the create-index(), build-index() and
-  drop-index() functions, respectively.
-
-
   - Index-related functions (see src/functions/Index.h):
 
   create-index($indexUri as anyURI) as ()
@@ -103,15 +94,15 @@ public:
   } index_method_t;
 
 private:
-  xqpStringStore_t         m_index_uri;
-  bool                     m_unique;
-  bool                     m_temp;
-  index_method_t           m_method;
+  store::Item_t            theName;
+  bool                     theIsUnique;
+  bool                     theIsTemp;
+  index_method_t           theMethod;
 
-  for_clause_t             m_domain_clause;
-  std::vector<expr_t>      m_index_field_exprs;
-  std::vector<xqtref_t>    m_index_field_types;
-  std::vector<std::string> m_index_field_collations;
+  for_clause_t             theDomainClause;
+  std::vector<expr_t>      theKeyExprs;
+  std::vector<xqtref_t>    theKeyTypes;
+  std::vector<std::string> theKeyCollations;
 
   std::vector<store::PatternIECreatorPair> m_creatorPatterns;
 
@@ -121,44 +112,52 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  ValueIndex(short sctx, const QueryLoc& loc, const xqpStringStore_t& indexUri);
+  ValueIndex(short sctx, const QueryLoc& loc, const store::Item_t& name);
 
   ~ValueIndex();
 
-  xqpStringStore_t getIndexUri() const { return m_index_uri; }
+  const store::Item* getName() const;
 
-  bool getUnique() const { return m_unique; }
-  void setUnique(bool unique) { m_unique = unique; }
+  bool getUnique() const { return theIsUnique; }
 
-  bool getTemp() const { return m_temp; }
-  void setTemp(bool tmp) { m_temp = tmp; }
+  void setUnique(bool unique) { theIsUnique = unique; }
 
-  index_method_t getMethod() const { return m_method; }
-  void setMethod(index_method_t method) { m_method = method; }
+  bool getTemp() const { return theIsTemp; }
+
+  void setTemp(bool tmp) { theIsTemp = tmp; }
+
+  index_method_t getMethod() const { return theMethod; }
+
+  void setMethod(index_method_t method) { theMethod = method; }
 
   expr_t getDomainExpression() const;
+
   void setDomainExpression(expr_t domainExpr);
 
   var_expr_t getDomainVariable() const;
+
   void setDomainVariable(var_expr_t domainVar);
 
   var_expr_t getDomainPositionVariable() const;
+
   void setDomainPositionVariable(var_expr_t domainPosVar);
 
   const std::vector<expr_t>& getKeyExpressions() const;
-  void setKeyExpressions(const std::vector<expr_t>& indexFieldExprs);
+
+  void setKeyExpressions(const std::vector<expr_t>& keyExprs);
 
   const std::vector<xqtref_t>& getKeyTypes() const;
-  void setKeyTypes(const std::vector<xqtref_t>& indexFieldTypes);
+
+  void setKeyTypes(const std::vector<xqtref_t>& keyTypes);
 
   const std::vector<std::string>& getKeyCollations() const 
   {
-    return m_index_field_collations; 
+    return theKeyCollations; 
   }
 
-  void setKeyCollations(const std::vector<std::string>& indexFieldCollations) 
+  void setKeyCollations(const std::vector<std::string>& keyCollations) 
   {
-    m_index_field_collations = indexFieldCollations;
+    theKeyCollations = keyCollations;
   }
 
   std::vector<store::PatternIECreatorPair>& getPatternCreatorPairs()

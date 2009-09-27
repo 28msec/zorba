@@ -35,13 +35,13 @@ END_SERIALIZABLE_CLASS_VERSIONS(CompilerCB::config)
 
 
 #define DEF_PRINT_EXPR_TREE( phase )                                    \
-  static void print_expr_tree_##phase (const expr *e, std::string name) \
-  {                                                                     \
-    std::ostream &os = Properties::instance ()->debug_out ();           \
-    os << "Expression tree after " << #phase                            \
-       << " for " << name << "\n";                                      \
-    e->put (os) << std::endl;                                           \
-  }
+static void print_expr_tree_##phase(const expr *e, const std::string& name) \
+{                                                                       \
+  std::ostream &os = Properties::instance ()->debug_out ();             \
+  os << "Expression tree after " << #phase                              \
+     << " for " << name << "\n";                                        \
+  e->put (os) << std::endl;                                             \
+}
 
 
 DEF_PRINT_EXPR_TREE (translation);

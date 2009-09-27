@@ -930,9 +930,8 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
     DEFAULT_END_VISIT (CtxItemDecl);
   	
     DEFAULT_VISIT (IndexDecl)
-  	DEFAULT_VISIT (IndexField)
-  	DEFAULT_VISIT (IndexFieldList)
-  	DEFAULT_VISIT (IndexStatement)
+  	DEFAULT_VISIT (IndexKeySpec)
+  	DEFAULT_VISIT (IndexKeyList)
   	
     void* begin_visit(const VarDecl& n)
     {

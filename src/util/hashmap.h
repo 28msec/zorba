@@ -469,7 +469,7 @@ inline bool HASHMAP<V>::put(const char* key, uint32_t len, V val, bool replace)
 
 /*******************************************************************************
   Store a new (key, val) pair in the map, if key is not in the map already. Here,
-  key is the concatenation of key1 and k2. If key is in the map already, and 
+  key is the concatenation of key1 and key2. If key is in the map already, and 
   "replace" is true, the value associated with key is replaced with the new value. 
 
   Return true if key was in map already, else false.

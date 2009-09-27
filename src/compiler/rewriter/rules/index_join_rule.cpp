@@ -278,11 +278,12 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   // Create the ValueIndex obj
   //
   std::ostringstream os;
-  os << rCtx.m_tempIndexCounter++;
+  os << "tempIndex" << rCtx.m_tempIndexCounter++;
 
-  xqpString uri("tempIndex" + os.str());
+  store::Item_t qname;
+  GENV_ITEMFACTORY->createQName(qname, "", "", os.str().c_str());
 
-  ValueIndex_t idx = new ValueIndex(sctxid, loc, uri.getStore());
+  ValueIndex_t idx = new ValueIndex(sctxid, loc, qname);
 
   idx->setDomainExpression(domainExpr);
 
@@ -308,7 +309,7 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 
   idx->setKeyCollations(collations);
 
-  sctx->bind_index(uri, idx.getp());
+  sctx->bind_index(qname, idx);
 
   //
   // Find the flwor expr defining the outer var
@@ -354,24 +355,22 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   assert(outerFlworExpr != NULL);
 
   //
-  // create the "create index", "build index", and "drop index" exprs
+  // create the "create index", and "build index" exprs
   //
-  store::Item_t uri_item;
-  GENV_ITEMFACTORY->createAnyURI(uri_item, uri.c_str());
-  expr_t uriExpr(new const_expr(sctxid, loc, uri_item));
+  expr_t qnameExpr(new const_expr(sctxid, loc, qname));
 
   rchandle<fo_expr> createExpr;
   rchandle<fo_expr> buildExpr;
 
   createExpr = new fo_expr(sctxid, loc, LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS,
-                                                   "create-index",
-                                                   1));
-  createExpr->add(uriExpr);
+                                                           "create-index",
+                                                           1));
+  createExpr->add(qnameExpr);
 
   buildExpr = new fo_expr(sctxid, loc, LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS,
                                                           "build-index",
                                                           1));
-  buildExpr->add(uriExpr);
+  buildExpr->add(qnameExpr);
 
   //
   //  Build or adjust outer sequential expr 
@@ -403,7 +402,7 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   probeExpr = new fo_expr(sctxid, loc, LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS,
                                                           "probe-index-point",
                                                           VARIADIC_SIG_SIZE));
-  probeExpr->add(uriExpr);
+  probeExpr->add(qnameExpr);
   probeExpr->add(predInfo.theOuterOp);
 
   fc->set_expr(probeExpr.getp());

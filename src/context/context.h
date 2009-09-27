@@ -45,7 +45,10 @@ public:
 protected:
 
   enum ctx_value_type 
-    { CTX_EXPR, CTX_FUNCTION, CTX_ARITY, CTX_INT, CTX_BOOL, CTX_XQTYPE, CTX_STATELESS_EXTERNAL_FUNC, CTX_VALUE_INDEX};
+  {
+    CTX_EXPR, CTX_FUNCTION, CTX_ARITY, CTX_INT, CTX_BOOL, CTX_XQTYPE, CTX_STATELESS_EXTERNAL_FUNC
+  };
+
 public:
   struct ctx_value_t : public ::zorba::serialization::SerializeBaseClass
   {
@@ -58,8 +61,8 @@ public:
       bool               boolValue;
 		  const XQType     * typeValue; ///do manual ref counting on this
       StatelessExternalFunction* stateless_function;
-      ValueIndex       * valueIndex;
     };
+
   public:
     SERIALIZABLE_CLASS(ctx_value_t)
     SERIALIZABLE_CLASS_CONSTRUCTOR(ctx_value_t)
@@ -202,17 +205,25 @@ protected:
     return context_value (key, v) ? v.stateless_function : NULL;
   }
 
+  void bind_str(xqp_string key, xqp_string v, XQUERY_ERROR err = XQP0019_INTERNAL_ERROR);
+
+  void bind_str2(
+        const char *key1,
+        xqp_string key2,
+        xqp_string v,
+        XQUERY_ERROR err = XQP0019_INTERNAL_ERROR);
+
   bool bind_expr (xqp_string key, expr *e);
-  bool bind_func (xqp_string key, function *f);
+
   bool bind_expr2 (const char *key1, xqp_string key2, expr *e);
+
+  bool bind_func (xqp_string key, function *f);
+
   bool bind_func2 (const char *key1, xqp_string key2, function *f);
+
   bool bind_stateless_function(xqp_string key, StatelessExternalFunction* f);
-  bool bind_index(const char *key1, const xqp_string& key2, ValueIndex *vi);
 
-  void bind_str (xqp_string key, xqp_string v, XQUERY_ERROR err = XQP0019_INTERNAL_ERROR);
-
-  void bind_str2 (const char *key1, xqp_string key2, xqp_string v, XQUERY_ERROR err = XQP0019_INTERNAL_ERROR);
-  protected:
+protected:
   //serialization helpers
   bool check_parent_is_root();
   void set_parent_as_root();

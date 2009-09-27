@@ -250,30 +250,29 @@ public:
   /**
    * Creates a new index.
    *
-   * @param uri The uri identifying the index. For non-temporary indices,
-   *        the store maintains the map between uris and indices and makes
-   *        sure that there are no two indices with the same uri.
+   * @param qname The qname identifying the index. For non-temporary indices,
+   *        the store maintains the map between qnames and indices and makes
+   *        sure that there are no two indices with the same qname.
    * @param spec The index specification. It specifies the index properties
    *        (@see index.h)
    */
   virtual Index_t createIndex(
-        const xqpStringStore_t& uri,
+        const store::Item_t& qname,
         const IndexSpecification& spec) = 0;
 
   /**
    * Gets an existing index.
    *
-   * @param uri The uri identifying the index. For non-temporary indices,
-   *        the store maintains the map between uris and indices and makes
-   *        sure that there are no two indices with the same uri.
+   * @param qname The qname identifying the index. For non-temporary indices,
+   *        the store maintains the map between qnames and indices and makes
+   *        sure that there are no two indices with the same qname.
    */
-  virtual Index *getIndex(
-        const xqpStringStore_t& uri) = 0;
+  virtual Index* getIndex(const store::Item_t& qname) = 0;
 
   /**
-   *  Destroy the index with the given uri. The index must not be a temporary one.
+   *  Destroy the index with the given qname. The index must not be a temporary one.
    */
-  virtual void deleteIndex(const xqpStringStore_t& uri) = 0;
+  virtual void deleteIndex(const store::Item_t& qname) = 0;
 };
 
 

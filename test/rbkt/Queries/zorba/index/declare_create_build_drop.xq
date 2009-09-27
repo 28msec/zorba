@@ -1,12 +1,12 @@
-declare namespace op-extensions = "http://www.zorba-xquery.com/zorba/op-extensions";
+declare namespace idx = "http://www.zorba-xquery.com/zorba/op-extensions";
 
-declare index "foo" on (<a i="1"/>, <b i="2"/>, <c i="1"/>)
-by (fn:data(./@i));
+declare index idx:foo on (<a i="1"/>, <b i="2"/>, <c i="1"/>)
+                      by (fn:data(./@i));
 
-create index "foo"; 
-build index "foo";
-op-extensions:probe-index-point(xs:anyURI("foo"), "1");
-drop index "foo";
-create index "foo"; 
-build index "foo"; 
-op-extensions:probe-index-point(xs:anyURI("foo"), "1");
+idx:create-index(xs:QName("idx:foo"));
+idx:build-index(xs:QName("idx:foo"));
+idx:probe-index-point(xs:QName("idx:foo"), "1");
+idx:drop-index(xs:QName("idx:foo"));
+idx:create-index(xs:QName("idx:foo"));
+idx:build-index(xs:QName("idx:foo"));
+idx:probe-index-point(xs:QName("idx:foo"), "1");

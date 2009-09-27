@@ -58,6 +58,10 @@ END_SERIALIZABLE_CLASS_VERSIONS(CopyClause)
 SERIALIZABLE_CLASS_VERSIONS(TransformIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(TransformIterator)
 
+SERIALIZABLE_CLASS_VERSIONS(ApplyIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(ApplyIterator)
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -570,15 +574,19 @@ BINARY_ACCEPT(RenameIterator);
 
 ********************************************************************************/
 TransformIterator::TransformIterator(
-  static_context* sctx,
-  const QueryLoc& aLoc,
-  std::vector<CopyClause>& aCopyClauses,
-  PlanIter_t aModifyIter,
-  PlanIter_t aReturnIter)
+    static_context* sctx,
+    const QueryLoc& aLoc,
+    std::vector<CopyClause>& aCopyClauses,
+    PlanIter_t aModifyIter,
+    PlanIter_t aPulHolderIter,
+    PlanIter_t aApplyIter,
+    PlanIter_t aReturnIter)
   :
   Batcher<TransformIterator>(sctx, aLoc),
   theCopyClauses(aCopyClauses),
   theModifyIter(aModifyIter),
+  thePulHolderIter(aPulHolderIter),
+  theApplyIter(aApplyIter),
   theReturnIter(aReturnIter)
 {
 }
@@ -600,6 +608,8 @@ TransformIterator::getStateSizeOfSubtree() const
     lSize += lIter->theInput->getStateSizeOfSubtree();
   }
   lSize += theModifyIter->getStateSizeOfSubtree();
+  lSize += thePulHolderIter->getStateSizeOfSubtree();
+  lSize += theApplyIter->getStateSizeOfSubtree();
   lSize += theReturnIter->getStateSizeOfSubtree();
   return lSize;
 }
@@ -677,9 +687,9 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
       }
     }
 
-    // generate the PUL for the modify clause. Assumption: Codegen did the
-    // check if theModifyIter is an updating expr, empty seq producion expr
-    // or an error expr
+    // Generate the PUL for the modify clause. Assumption: Codegen did the
+    // check if theModifyIter is an updating expr, empty seq producing expr
+    // or an error expr. If a PUL is generated, then apply its updates.
     if (consumeNext(lItem, theModifyIter, aPlanState))
     {
       ZORBA_FATAL(lItem->isPul(), "");
@@ -690,16 +700,9 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
       // at some of the copied nodes.
       lPul->checkTransformUpdates(copyNodes);
 
-      std::set<zorba::store::Item*> validationNodes;
-
-      lPul->applyUpdates(validationNodes);
-
-      validationPul = GENV_ITEMFACTORY->createPendingUpdateList();
-
-#ifndef ZORBA_NO_XMLSCHEMA
-      validateAfterUpdate(validationNodes, validationPul, theSctx, loc);
-#endif
-      validationPul->applyUpdates(validationNodes);
+      // apply the pul
+      static_cast<ForVarIterator*>(thePulHolderIter.getp())->bind(lPul, aPlanState);
+      consumeNext(temp, theApplyIter, aPlanState);
     }
   }
 
@@ -724,8 +727,11 @@ TransformIterator::openImpl ( PlanState& planState, uint32_t& offset )
   {
     lIter->theInput->open(planState, offset );
   }
-  theModifyIter->open( planState, offset );
-  theReturnIter->open( planState , offset);
+
+  theModifyIter->open(planState, offset);
+  thePulHolderIter->open(planState, offset);
+  theApplyIter->open(planState, offset);
+  theReturnIter->open(planState , offset);
 }
 
 
@@ -740,8 +746,11 @@ TransformIterator::resetImpl ( PlanState& planState ) const
   {
     lIter->theInput->reset(planState);
   }
-  theModifyIter->reset( planState );
-  theReturnIter->reset( planState );
+
+  theModifyIter->reset(planState);
+  thePulHolderIter->reset(planState);
+  theApplyIter->reset(planState);
+  theReturnIter->reset(planState);
 }
 
 
@@ -754,11 +763,57 @@ TransformIterator::closeImpl ( PlanState& planState ) const
   {
     lIter->theInput->close(planState);
   }
-  theModifyIter->close( planState );
-  theReturnIter->close( planState );
+  theModifyIter->close(planState);
+  thePulHolderIter->close(planState);
+  theApplyIter->close(planState);
+  theReturnIter->close(planState);
 
   StateTraitsImpl<PlanIteratorState>::destroyState(planState, theStateOffset);
 }
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool
+ApplyIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
+{ 
+  store::Item_t tmp;
+  store::Item_t pul;
+  store::Item_t validationPul;
+  std::set<zorba::store::Item*> validationNodes;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
+
+  // Note: updating expr might not return a pul because of vacuous exprs
+  if (consumeNext(pul, theChild, aPlanState))
+  {
+    if (!pul->isPul())
+      ZORBA_ERROR_LOC_DESC(XQP0019_INTERNAL_ERROR, loc,
+                           "Expression does not return a pending update list");
+
+    if (consumeNext(tmp, theChild, aPlanState))
+    {
+      ZORBA_ERROR_LOC_DESC(XQP0019_INTERNAL_ERROR, loc,
+                           "Expression returns more than one pending update lists");
+    }
+
+    pul->applyUpdates(validationNodes);
+
+    validationPul = GENV_ITEMFACTORY->createPendingUpdateList();
+
+#ifndef ZORBA_NO_XMLSCHEMA
+    validateAfterUpdate(validationNodes, validationPul, theSctx, loc);
+#endif
+    validationPul->applyUpdates(validationNodes);
+  }
+
+  STACK_END(state);
+}
+
+
+UNARY_ACCEPT(ApplyIterator);
 
 
 } // namespace zorba

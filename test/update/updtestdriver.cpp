@@ -210,9 +210,7 @@ main(int argc, char** argv)
         resolver.reset(new zorba::TestSchemaURIResolver ( uri_map_file.c_str() ));
         lContext->setSchemaURIResolver ( resolver.get() );
 
-        if (path.find("ValSkip") != std::string::npos ||
-            path.find("ValLax") != std::string::npos ||
-            path.find("ValStrict") != std::string::npos) 
+        if (path.find("Val") != std::string::npos)
           lContext->setBoundarySpacePolicy(preserve_space);
 #if 1
       	zorba::String lProlog = zorba::String(std::string("import schema 'http://www.w3.org/XML/1998/namespace';\n"));
@@ -340,7 +338,7 @@ main(int argc, char** argv)
 
               zorba::printFile(std::cout, lResultFile.get_path());
 
-              std::cout << "Reference Result " << lRefFile.get_path() << ": "
+              std::cout << std::endl << "Reference Result " << lRefFile.get_path() << ": "
                         << std::endl << std::endl;
 
               zorba::printFile(std::cout, lRefFile.get_path());

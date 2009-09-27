@@ -58,7 +58,7 @@ private:
   HashMap<const xqpStringStore*, V, CompareFunction> theMap;
 
 public:
- StringHashMap(ulong size, bool sync) : theMap(size, sync) {};
+  StringHashMap(ulong size, bool sync) : theMap(size, sync) {};
 
   ~StringHashMap() { };
 
@@ -72,11 +72,11 @@ public:
 
   bool get(const xqpStringStore* key, V& value) { return theMap.get(key, value); }
 
+  bool find(const xqpStringStore* key) { return theMap.find(key); } 
+
   bool insert(const xqpStringStore* key, V& value) { return theMap.insert(key, value); }
 
   bool remove(const xqpStringStore* key) { return theMap.remove(key); }
-
-  bool find(const xqpStringStore* key) { return theMap.find(key); } 
 };
 
 
@@ -84,3 +84,9 @@ public:
 } // namespace zorba
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

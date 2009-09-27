@@ -16,15 +16,18 @@
 #ifndef ZORBA_DYNAMIC_CONTEXT_H
 #define ZORBA_DYNAMIC_CONTEXT_H
 
-#include "zorbatypes/representations.h"
-
 #include "util/hashmap.h"
-#include <map>
+#include "zorbautils/hashmap_itemp.h"
+
 #include "common/shared_types.h"
+
 #include "store/api/shared_types.h"
 
 
 namespace zorba {
+
+
+template <class V> class ItemPointerHashMap;
 
 
 /*******************************************************************************
@@ -69,7 +72,13 @@ protected:
 
   typedef hashmap<dctx_value_t> ValueMap;
 
-  typedef std::map<std::string, std::pair<store::Index_t, ValueIndexInsertSession_t > > IndexMap;
+  struct ValueIndexInfo
+  {
+    store::Index_t             theIndex;
+    ValueIndexInsertSession_t  theLoadSession;
+  };
+
+  typedef ItemPointerHashMap<ValueIndexInfo> IndexMap;
 
 protected:
   static bool static_init;
@@ -86,7 +95,7 @@ protected:
   //+context size is determined by fn:last() at runtime
 
   ValueMap             keymap;
-  IndexMap             val_idx_ins_session_map;
+  IndexMap           * theAvailableIndices;
 
 public:
   static std::string var_key(const void* var);
@@ -96,7 +105,7 @@ public:
   static void init();
 
 public:
-  dynamic_context(dynamic_context *parent=NULL);
+  dynamic_context(dynamic_context* parent=NULL);
 
   ~dynamic_context();
 
@@ -139,15 +148,15 @@ public:
         store::Item_t& var_item,
         store::Iterator_t& var_iter);
 
-  void bind_index(const std::string& indexUri, store::Index* index);
+  void bind_index(const store::Item* qname, store::Index* index);
 
-  void unbind_index(const std::string& indexUri);
+  void unbind_index(const store::Item* qname);
 
-  store::Index* lookup_index(const std::string& indexUri) const;
+  store::Index* lookup_index(const store::Item* qname) const;
 
-  ValueIndexInsertSession* get_index_insert_session(const std::string& indexUri) const;
+  ValueIndexInsertSession* get_index_insert_session(const store::Item* qname) const;
 
-  void set_index_insert_session(const std::string& indexUri, ValueIndexInsertSession* v);
+  void set_index_insert_session(const store::Item* qname, ValueIndexInsertSession* v);
 
 protected:
   bool lookup_once(const std::string& key, dctx_value_t& val) const 

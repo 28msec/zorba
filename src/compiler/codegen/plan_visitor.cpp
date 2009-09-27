@@ -373,20 +373,32 @@ void end_visit (wrapper_expr& v) {
   push_itstack(iter);
 }
 
-bool begin_visit (sequential_expr& v) {
+
+bool begin_visit (sequential_expr& v) 
+{
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-void end_visit (sequential_expr& v) {
+void end_visit (sequential_expr& v) 
+{
   CODEGEN_TRACE_OUT("");
+
   checked_vector<PlanIter_t> argv;
   size_t lSize = v.size();
+
   for (unsigned i = 0; i < lSize; i++)
-    argv.push_back (pop_itstack ());
+  {
+    PlanIter_t arg = pop_itstack();
+    if (arg->isUpdating())
+      arg = new ApplyIterator(sctx, arg->loc, arg);
+
+    argv.push_back(arg);
+  }
+
   reverse (argv.begin (), argv.end ());
 
-  push_itstack(new SequentialIterator (sctx, qloc, argv, v.is_updating ()));
+  push_itstack(new SequentialIterator(sctx, qloc, argv, v.is_updating()));
 }
 
 
@@ -1554,8 +1566,9 @@ bool begin_visit (transform_expr& v)
 void end_visit (transform_expr& v) 
 {
   CODEGEN_TRACE_OUT("");
-  PlanIter_t lReturn = pop_itstack();
-  PlanIter_t lModify = pop_itstack();
+
+  PlanIter_t returnIter = pop_itstack();
+  PlanIter_t modifyIter = pop_itstack();
 
   vector<CopyClause> lClauses;
   stack<PlanIter_t> lInputs;
@@ -1564,6 +1577,15 @@ void end_visit (transform_expr& v)
   {
     lInputs.push(pop_itstack());  
   }
+
+  // Create a FOR var iterator into which the PUL produced by the modify
+  // iterator will be bound.
+  store::Item_t pulVarName;
+  GENV_ITEMFACTORY->createQName(pulVarName, "", "", "pulHolder");
+  PlanIter_t pulHolderIter = new ForVarIterator(sctx, modifyIter->loc, pulVarName); 
+
+  // Create an ApplyIterator to apply the above PUL
+  PlanIter_t applyIter = new ApplyIterator(sctx, modifyIter->loc, pulHolderIter);
 
   vector<rchandle<copy_clause> >::const_iterator lIter = v.begin();
   vector<rchandle<copy_clause> >::const_iterator lEnd  = v.end();
@@ -1576,8 +1598,14 @@ void end_visit (transform_expr& v)
     lClauses.push_back(CopyClause (*lVarIters, lInput));
   }
 
-  TransformIterator* lTransform = new TransformIterator(sctx, qloc, lClauses, lModify, lReturn); 
-  push_itstack(lTransform);
+  TransformIterator* transformIter = new TransformIterator(sctx,
+                                                           qloc,
+                                                           lClauses,
+                                                           modifyIter,
+                                                           pulHolderIter,
+                                                           applyIter,
+                                                           returnIter); 
+  push_itstack(transformIter);
 }
 
 
@@ -2314,11 +2342,12 @@ void end_visit (extension_expr& v) {
   CODEGEN_TRACE_OUT("");
 }
 
+
 PlanIter_t result()
 {
-    PlanIter_t res = pop_itstack();
-    ZORBA_ASSERT(itstack.empty());
-    return res;
+  PlanIter_t res = pop_itstack();
+  ZORBA_ASSERT(itstack.empty());
+  return res;
 }
 
 
@@ -2330,17 +2359,23 @@ PlanIter_t result()
 
 ********************************************************************************/
 PlanIter_t codegen(
-    const char *descr,
-    expr *root,
-    CompilerCB *ccb,
-    hash64map<vector<LetVarIter_t> *> *arg_var_map)
+    const char* descr,
+    expr* root,
+    CompilerCB* ccb,
+    hash64map<vector<LetVarIter_t> *>* arg_var_map)
 {
   plan_visitor c(ccb, arg_var_map);
-  root->accept (c);
+  root->accept(c);
   PlanIter_t result = c.result();
 
-  if (result != NULL && descr != NULL && Properties::instance()->printIteratorTree()
-      && (xqp_string ("main query") == descr || ! Properties::instance()->iterPlanTest ()))
+  if (result->isUpdating())
+  {
+    result = new ApplyIterator(result->theSctx, result->loc, result);
+  }
+
+  if (result != NULL && descr != NULL
+      && Properties::instance()->printIteratorTree() &&
+      (xqp_string ("main query") == descr || ! Properties::instance()->iterPlanTest ()))
   {
     std::ostream &os = Properties::instance()->iterPlanTest ()
       ? std::cout

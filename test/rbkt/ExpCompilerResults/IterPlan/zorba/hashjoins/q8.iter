@@ -19,11 +19,11 @@ Iterator tree for main query:
   <ReturnClause>
     <SequentialIterator>
       <CreateValueIndex>
-        <SingletonIterator value="xs:anyURI(tempIndex0)"/>
+        <SingletonIterator value="xs:QName(,,tempIndex0)"/>
       </CreateValueIndex>
       <SequentialIterator>
         <ValueIndexInsertSessionOpener>
-          <SingletonIterator value="xs:anyURI(tempIndex0)"/>
+          <SingletonIterator value="xs:QName(,,tempIndex0)"/>
         </ValueIndexInsertSessionOpener>
         <flwor::FLWORIterator>
           <ForVariable name="$$opt_temp_2">
@@ -33,7 +33,7 @@ Iterator tree for main query:
           </ForVariable>
           <ReturnClause>
             <ValueIndexBuilder>
-              <SingletonIterator value="xs:anyURI(tempIndex0)"/>
+              <SingletonIterator value="xs:QName(,,tempIndex0)"/>
               <ForVarIterator varname="$$opt_temp_2"/>
               <CastIterator type="xs:string">
                 <FnDataIterator>
@@ -48,7 +48,7 @@ Iterator tree for main query:
           </ReturnClause>
         </flwor::FLWORIterator>
         <ValueIndexInsertSessionCloser>
-          <SingletonIterator value="xs:anyURI(tempIndex0)"/>
+          <SingletonIterator value="xs:QName(,,tempIndex0)"/>
         </ValueIndexInsertSessionCloser>
       </SequentialIterator>
       <flwor::FLWORIterator>
@@ -92,7 +92,7 @@ Iterator tree for main query:
                 <flwor::FLWORIterator>
                   <ForVariable name="t">
                     <ValueIndexPointProbe>
-                      <SingletonIterator value="xs:anyURI(tempIndex0)"/>
+                      <SingletonIterator value="xs:QName(,,tempIndex0)"/>
                       <UnhoistIterator>
                         <LetVarIterator varname="$$opt_temp_1"/>
                       </UnhoistIterator>

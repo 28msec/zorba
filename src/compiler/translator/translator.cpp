@@ -447,6 +447,8 @@ protected:
 
   int                                  xquery_version;
 
+  RootTypeManager                    & theRTM;
+
   CompilerCB                         * theCCB;
 
   ModulesInfo                        * minfo;
@@ -526,6 +528,7 @@ TranslatorImpl(
     bool isLibModule)
   :
   xquery_version (10000),  // fictious version 100.0 -- allow everything
+  theRTM(GENV_TYPESYSTEM),
   theCCB(aCompilerCB),
   minfo (minfo_),
   mod_stack (mod_stack_),
@@ -910,9 +913,11 @@ void bind_udf(
     const QueryLoc& loc) 
 {
   if (! sctx->bind_fn (qname, f, nargs))
+  {
     ZORBA_ERROR_LOC_PARAM(XQST0034, loc,
                           qname->getStringValue(),
                           loc.getFilenameBegin());
+  }
 }
   
 
@@ -934,6 +939,26 @@ void bind_udf (store::Item_t qname, function *f, int nargs, const QueryLoc& loc)
   }
 }
   
+
+/*******************************************************************************
+  Create a binding in the given sctx obj between the given index qname item and
+  the given index object. Raise error if such a binding exists already in the sctx.
+********************************************************************************/
+void bind_index(
+    const store::Item* qname,
+    ValueIndex_t& index,
+    static_context* sctx,
+    const QueryLoc& loc) 
+{
+  if (! sctx->bind_index(qname, index))
+  {
+    // INDEX_TODO: error code
+    ZORBA_ERROR_LOC_PARAM(XQST0034, loc,
+                          qname->getStringValue(),
+                          loc.getFilenameBegin());
+  }
+}
+
 
 /*******************************************************************************
   Create an fn:concatenate() expr
@@ -2355,7 +2380,7 @@ void *begin_visit (const VFO_DeclList& v)
       if (param_type == NULL) 
       {
         arg_types.push_back (GENV_TYPESYSTEM.ITEM_TYPE_STAR);
-}
+      }
       else 
       {
         param_type->accept(*this);
@@ -2365,10 +2390,10 @@ void *begin_visit (const VFO_DeclList& v)
 
     xqtref_t return_type = GENV_TYPESYSTEM.ITEM_TYPE_STAR;
     if (func_decl->get_return_type() != NULL)  
-{
+    {
       func_decl->get_return_type()->accept(*this);
       return_type = pop_tstack();
-}
+    }
 
     // Expand the function qname (error is raised if qname resolution fails).
     store::Item_t qname = sctx_p->lookup_fn_qname(func_decl->get_name()->get_prefix(),
@@ -2852,111 +2877,124 @@ void end_visit (const Param& v, void* /*visit_state*/)
 
 
 /***************************************************************************//**
-  IndexDecl ::= DECLARE [UNIQUE] [HASH | BTREE] INDEX URI_LITERAL
-                ON ExprSingle
-                BY IndexFieldList ")"
+  IndexDecl ::= "declare" "unique"? 
+                          ("ordered" | "unordered")?
+                          ("manual" | "automatic)?
+                          "index" QName
+                          "on" Expr
+                          "by" IndexKeyList
 
   Translation of an index declaration involves the creation and setting-up of
   a ValueIndex obj (see indexing/value_index.h) and the creation in the current
   sctx (which is the root sctx of the current module) of a binding between the
   index uri and this ValueIndex obj.
 ********************************************************************************/
-void *begin_visit (const IndexDecl& v) 
+void* begin_visit(const IndexDecl& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
 
-  xqpStringStore_t uri(new xqpStringStore(v.get_uri()));
-  ValueIndex_t vi = new ValueIndex(theCCB->m_cur_sctx, v.get_location(), uri);
-  indexstack.push(vi);
+  const QName* qname = v.getName();
+
+  // Expand the index qname (error is raised if qname resolution fails).
+  store::Item_t qnameItem = sctx_p->lookup_fn_qname(qname->get_prefix(),
+                                                    qname->get_localname(),
+                                                    qname->get_location());
+
+  ValueIndex_t index = new ValueIndex(theCCB->m_cur_sctx, loc, qnameItem);
+  index->setUnique(v.isUnique());
+  index->setMethod(v.isOrdered() ? ValueIndex::BTREE : ValueIndex::HASH);
+
+  indexstack.push(index);
 
   return no_state;
 }
 
-void end_visit (const IndexDecl& v, void* /*visit_state*/) 
+void end_visit(const IndexDecl& v, void* /*visit_state*/) 
 {
   TRACE_VISIT_OUT ();
 
-  ValueIndex_t vi = indexstack.top();
+  ValueIndex_t index = indexstack.top();
   indexstack.pop();
-  vi->setUnique(v.uniq);
-  vi->setMethod("btree" == v.method ? ValueIndex::BTREE : ValueIndex::HASH);
 
-  IndexTools::inferIndexCreators(vi.getp());
+  IndexTools::inferIndexCreators(index);
 
-  xqp_string uri(vi->getIndexUri());
-
-  sctx_p->bind_index(uri, vi.getp());
+  bind_index(index->getName(), index, sctx_p, loc);
 }
 
 
 /***************************************************************************//**
   IndexFieldList ::= IndexField (COMMA IndexField)*
 ********************************************************************************/
-void *begin_visit (const IndexFieldList& v) 
+void* begin_visit(const IndexKeyList& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
 
-  expr_t dExpr = pop_nodestack();
-  const std::string& uri = indexstack.top()->getIndexUri()->str();
+  ValueIndex* index = indexstack.top();
+
+  expr_t domainExpr = pop_nodestack();
+
+  std::string name = index->getName()->getStringValue()->str();
 
   if (theCCB->m_config.translate_cb != NULL)
-    theCCB->m_config.translate_cb (&*dExpr, uri);
+    theCCB->m_config.translate_cb(domainExpr.getp(), name);
 
   // Normalize and optimize the domain expr
-  normalize_expr_tree(uri.c_str(), theCCB, dExpr, &*GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR);
+  normalize_expr_tree(name.c_str(), theCCB, domainExpr, &*theRTM.ANY_NODE_TYPE_STAR);
 
   if (theCCB->m_config.opt_level == CompilerCB::config_t::O1) 
   {
-    RewriterContext rCtx(theCCB, dExpr);
+    RewriterContext rCtx(theCCB, domainExpr);
     GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
-    dExpr = rCtx.getRoot();
+    domainExpr = rCtx.getRoot();
+
     if (theCCB->m_config.optimize_cb != NULL)
-      theCCB->m_config.optimize_cb (&*dExpr, uri.c_str());
+      theCCB->m_config.optimize_cb(&*domainExpr, name);
   }
 
-  indexstack.top()->setDomainExpression(dExpr);
+  index->setDomainExpression(domainExpr);
 
   push_scope();
 
-  indexstack.top()->setDomainVariable(bind_var(v.get_location(),
-                                               DOT_VARNAME,
-                                               var_expr::for_var));
+  index->setDomainVariable(bind_var(loc, DOT_VARNAME, var_expr::for_var));
 
-  indexstack.top()->setDomainPositionVariable(bind_var(v.get_location(),
-                                                       DOT_POS_VARNAME,
-                                                       var_expr::pos_var));
+  index->setDomainPositionVariable(bind_var(loc, DOT_POS_VARNAME, var_expr::pos_var));
+
   return no_state;
 }
 
-void end_visit (const IndexFieldList& v, void* /*visit_state*/) 
+void end_visit (const IndexKeyList& v, void* /*visit_state*/) 
 {
   std::vector<expr_t> keyExprs;
   std::vector<xqtref_t> keyTypes;
   std::vector<std::string> keyCollations;
 
+  ulong numColumns = v.size();
+
   ValueIndex* index = indexstack.top();
 
-  for(int i = v.fields.size() - 1; i >= 0; --i) 
+  for(int i = numColumns - 1; i >= 0; --i) 
   {
-    xqtref_t type = (v.fields[i]->get_type() != NULL ?
-                     pop_tstack() :
-                     GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION);
+    const IndexKeySpec* keySpec = v.getKeySpec(i);
 
-    if (!TypeOps::is_subtype(*type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
+    xqtref_t type = (keySpec->getType() != NULL ?
+                     pop_tstack() :
+                     theRTM.ANY_ATOMIC_TYPE_QUESTION);
+
+    if (!TypeOps::is_subtype(*type, *theRTM.ANY_ATOMIC_TYPE_QUESTION))
     {
       ZORBA_ERROR_LOC_DESC_OSS(XQP0036_NON_ATOMIC_INDEX_KEY, v.get_location(),
                                "A key for index " 
-                               << index->getIndexUri()->str() 
+                               << index->getName()->getStringValue()->c_str() 
                                << "has a non atomic value at position "
                                << i << ".");
     }
 
     keyTypes.push_back(type);
 
-    // If no collation is specified in the declaration, v.fields[i]->coll will
-    // be the empty string, and in this case the default collation from the sctx
-    // will be used during runtime.
-    keyCollations.push_back(v.fields[i]->coll);
+    // If no collation is specified in the declaration, keySpec->getCollation()
+    // will be the empty string, and in this case the default collation from
+    // the sctx will be used during runtime.
+    keyCollations.push_back(keySpec->getCollation());
 
     expr_t keyExpr = pop_nodestack();
     keyExpr = wrap_in_atomization(keyExpr);
@@ -2979,17 +3017,19 @@ void end_visit (const IndexFieldList& v, void* /*visit_state*/)
 
 
 /***************************************************************************//**
-  IndexField ::= ExprSingle [TypeDeclaration] ["COLLATION" UriLiteral]
+  IndexKeySpec ::= ExprSingle TypeDeclaration? 
+                              ("empty" ("greatest" | "least"))?
+                              ("collation" UriLiteral)?
 ********************************************************************************/
-void *begin_visit (const IndexField& v) 
+void* begin_visit(const IndexKeySpec& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const IndexField& v, void* /*visit_state*/) 
+void end_visit(const IndexKeySpec& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
@@ -3173,8 +3213,6 @@ void end_visit (const Expr& v, void* /*visit_state*/)
   ** eval
                       EvalExpr
 
-  ** indexes
-                      IndexStatement
 ********************************************************************************/
 
 
@@ -7244,55 +7282,8 @@ void end_visit (const CompTextConstructor& v, void* /*visit_state*/) {
 }
 
 
-
-
-
-/***************************************************************************//**
-  IndexStatement ::= ["CREATE" | "BUILD" | "DROP"] "INDEX" UriLiteral
-********************************************************************************/
-void *begin_visit (const IndexStatement& v) 
+void reorder_globals () 
 {
-  TRACE_VISIT ();
-  return no_state;
-}
-
-void end_visit (const IndexStatement& v, void* /*visit_state*/) 
-{
-  rchandle<fo_expr> fo;
-  switch(v.type) 
-  {
-  case IndexStatement::build_stmt:
-    fo = new fo_expr(theCCB->m_cur_sctx,
-                     v.get_location(),
-                     LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS, "build-index", 1));
-    break;
-
-  case IndexStatement::create_stmt:
-    fo = new fo_expr(theCCB->m_cur_sctx,
-                     v.get_location(),
-                     LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS, "create-index", 1));
-    break;
-    
-  case IndexStatement::drop_stmt:
-    fo = new fo_expr(theCCB->m_cur_sctx,
-                     v.get_location(),
-                     LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS, "drop-index", 1));
-    break;
-  }
-
-  store::Item_t uri_item;
-  GENV_ITEMFACTORY->createAnyURI(uri_item, v.get_uri().c_str());
-  expr_t uri(new const_expr(theCCB->m_cur_sctx, v.get_location(), uri_item));
-  fo->add(uri);
-  nodestack.push((const rchandle<fo_expr>&)fo);
-
-  TRACE_VISIT_OUT ();
-}
-
-
-
-
-void reorder_globals () {
   // STEP 1: Floyd-Warshall transitive closure of edges starting from functions
   for (list<function *>::iterator k = prolog_fn_decls.begin ();
        k != prolog_fn_decls.end (); k++)

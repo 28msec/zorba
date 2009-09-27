@@ -502,9 +502,8 @@ XQDOC_NO_BEGIN_END_TAG (UnorderedExpr)
 XQDOC_NO_BEGIN_END_TAG (ValidateExpr)
 XQDOC_NO_BEGIN_END_TAG (CtxItemDecl)
 XQDOC_NO_BEGIN_END_TAG (IndexDecl)
-XQDOC_NO_BEGIN_END_TAG (IndexField)
-XQDOC_NO_BEGIN_END_TAG (IndexFieldList)
-XQDOC_NO_BEGIN_END_TAG (IndexStatement)
+XQDOC_NO_BEGIN_END_TAG (IndexKeySpec)
+XQDOC_NO_BEGIN_END_TAG (IndexKeyList)
 XQDOC_NO_BEGIN_END_TAG (VarGetsDeclList)
 XQDOC_NO_BEGIN_END_TAG (VarInDeclList)
 XQDOC_NO_BEGIN_END_TAG (CopyVarList)
@@ -518,7 +517,12 @@ XQDOC_NO_BEGIN_END_TAG (WindowVars)
 
 };
 
-void print_parsetree_xqdoc (ostream &os, const parsenode *p, const string& aFileName, const store::Item_t& aDateTime) {
+void print_parsetree_xqdoc(
+    ostream &os,
+    const parsenode *p,
+    const string& aFileName,
+    const store::Item_t& aDateTime) 
+{
   ParseNodePrintXQDocVisitor v (os, aFileName);
   v.print (p, aDateTime);
 }

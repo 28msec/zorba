@@ -20,20 +20,26 @@
 
 namespace zorba {
 
-static store::Item_t get_uri(expr *e)
+static store::Item* getIndexName(expr *e)
 {
   // The following two checks are required if we run after
   // normalization. It does not hurt, otherwise -- so leave it
   // here.
-  if (e->get_expr_kind() == promote_expr_kind) {
+  if (e->get_expr_kind() == promote_expr_kind) 
+  {
     e = static_cast<promote_expr *>(e)->get_input();
   }
-  if (is_data(e)) {
+
+  if (is_data(e)) 
+  {
     e = get_fo_arg(e, 0);
   }
-  if (e->get_expr_kind() == const_expr_kind) {
-    return static_cast<const_expr *>(e)->get_val();
+
+  if (e->get_expr_kind() == const_expr_kind) 
+  {
+    return static_cast<const_expr*>(e)->get_val().getp();
   }
+
   return NULL;
 }
 
@@ -52,18 +58,18 @@ RULE_REWRITE_PRE(ExpandBuildIndex)
   static_context* sctx = rCtx.getStaticContext(fo);
 
   //
-  // Get index uri
+  // Get index qname
   //
-  store::Item_t uriItem(get_uri((*fo)[0].getp()));
-  ZORBA_ASSERT(uriItem != NULL);
-  xqpStringStore_t uristore;
-  uriItem->getStringValue(uristore);
-    
+  store::Item* qnameStringItem = getIndexName((*fo)[0].getp());
+  ZORBA_ASSERT(qnameStringItem != NULL);
+  
+  store::Item_t qnameItem =
+  sctx->lookup_var_qname(qnameStringItem->getStringValue()->c_str(), fo->get_loc());
+
   //
   // Get ValueIndex obj from static ctx.
   //
-  xqp_string uri(uristore);
-  ValueIndex* vi = sctx->lookup_index(uri);
+  ValueIndex* vi = sctx->lookup_index(qnameItem);
   ZORBA_ASSERT(vi != NULL);
 
   std::vector<expr_t> se_args;
@@ -71,11 +77,11 @@ RULE_REWRITE_PRE(ExpandBuildIndex)
   //
   // create index-session-opener(uri) expr
   // 
-  expr_t open_index_arg(new const_expr(sctxid, fo->get_loc(), uriItem));
+  expr_t openQnameExpr(new const_expr(sctxid, fo->get_loc(), qnameItem));
   expr_t open_index(new fo_expr(sctxid,
                                 fo->get_loc(),
                                 LOOKUP_OP1("index-session-opener"),
-                                open_index_arg));
+                                openQnameExpr));
   se_args.push_back(open_index);
   
   //
@@ -111,11 +117,11 @@ RULE_REWRITE_PRE(ExpandBuildIndex)
   
   //
   // Create RETURN clause:
-  // return index-builder(uri, $$dot, field1_expr, ..., fieldN_expr)
+  // return index-builder(qname, $$dot, field1_expr, ..., fieldN_expr)
   //
   std::vector<expr_t> index_builder_args;
-  expr_t uriExpr(new const_expr(sctxid, fo->get_loc(), uriItem));
-  index_builder_args.push_back(uriExpr);
+  expr_t buildQnameExpr(new const_expr(sctxid, fo->get_loc(), qnameItem));
+  index_builder_args.push_back(buildQnameExpr);
   
   expr_t domainVarExpr(new wrapper_expr(sctxid, fo->get_loc(), newdot.getp()));
   index_builder_args.push_back(domainVarExpr);
@@ -146,10 +152,10 @@ RULE_REWRITE_PRE(ExpandBuildIndex)
   //
   // Create index-session-closer(uri) expr.
   //
-  expr_t close_index_arg(new const_expr(sctxid, fo->get_loc(), uriItem));
+  expr_t closeQnameExpr(new const_expr(sctxid, fo->get_loc(), qnameItem));
   expr_t close_index(new fo_expr(sctxid, fo->get_loc(),
                                  LOOKUP_OP1("index-session-closer"),
-                                 close_index_arg));
+                                 closeQnameExpr));
   se_args.push_back(close_index);
   
   //

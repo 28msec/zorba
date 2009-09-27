@@ -18,6 +18,7 @@
 
 #include "zorbautils/mutex.h"
 #include "zorbautils/lock.h"
+#include "zorbautils/hashmap_itemp.h"
 
 #include "common/shared_types.h"
 
@@ -61,7 +62,7 @@ typedef rchandle<XmlNode> XmlNode_t;
 
 typedef store::StringHashMap<XmlNode_t> DocumentSet;
 typedef store::StringHashMap<store::Collection_t> CollectionSet;
-typedef store::StringHashMap<store::Index_t> IndexSet;
+typedef ItemPointerHashMap<store::Index_t> IndexSet;
 
 
 
@@ -146,13 +147,12 @@ public:
   store::Item_t createUri();
 
   store::Index_t createIndex(
-        const xqpStringStore_t& uri,
+        const store::Item_t& qname,
         const store::IndexSpecification& spec);
 
-  store::Index *getIndex(
-        const xqpStringStore_t& uri);
+  store::Index* getIndex(const store::Item_t& qname);
 
-  void deleteIndex(const xqpStringStore_t& uri);
+  void deleteIndex(const store::Item_t& qname);
 
   store::Collection_t createCollection(const xqpStringStore_t& uri);
 
@@ -226,3 +226,9 @@ public:
 } // namespace zorba
 
 #endif /* ZORBA_STORE_SIMPLE_STORE_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

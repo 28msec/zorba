@@ -169,16 +169,20 @@ class TransformIterator : public Batcher<TransformIterator>
 private:
   std::vector<CopyClause> theCopyClauses;
   PlanIter_t              theModifyIter;
+  PlanIter_t              thePulHolderIter;
+  PlanIter_t              theApplyIter;
   PlanIter_t              theReturnIter;
 
 public:
   SERIALIZABLE_CLASS(TransformIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(TransformIterator, Batcher<TransformIterator>)
-  void serialize(::zorba::serialization::Archiver &ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (Batcher<TransformIterator>*)this);
     ar & theCopyClauses;
     ar & theModifyIter;
+    ar & thePulHolderIter;
+    ar & theApplyIter;
     ar & theReturnIter;
   }
 
@@ -188,6 +192,8 @@ public:
     const QueryLoc& aLoc,
     std::vector<CopyClause>& aCopyClauses,
     PlanIter_t aModifyIter,
+    PlanIter_t aPulHolderIter,
+    PlanIter_t aApplyIter,
     PlanIter_t aReturnIter);
 
   ~TransformIterator();
@@ -206,6 +212,13 @@ public:
 
   void closeImpl(PlanState& planState) const;
 };
+
+
+/*******************************************************************************
+
+********************************************************************************/
+UNARY_UPDATE_ITER(ApplyIterator);
+
 
 } // namespace zorba
 

@@ -18,15 +18,21 @@
 
 #include "common/shared_types.h"
 
-namespace zorba {
+namespace zorba 
+{
 
 class XQType;
 class CompilerCB;
 
 
-void normalize_expr_tree (const char *, CompilerCB*, expr_t& root, const XQType *rType);
+void normalize_expr_tree(
+    const char* descr,
+    CompilerCB* cb,
+    expr_t& root,
+    const XQType* rType);
 
-} /* namespace zorba */
+}
+
 #endif /* ZORBA_NORMALIZER_H */
 
 /*

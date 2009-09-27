@@ -76,8 +76,8 @@ public:
       O1
     } opt_level_t;
     
-    typedef void (* expr_callback) (const expr *, std::string name);
-    typedef void (* ast_callback) (const parsenode *, std::string name);
+    typedef void (* expr_callback) (const expr *, const std::string& name);
+    typedef void (* ast_callback) (const parsenode *, const std::string& name);
 
     bool force_gflwor;
     opt_level_t opt_level;

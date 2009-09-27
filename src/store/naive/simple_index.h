@@ -72,17 +72,17 @@ public:
 class IndexImpl : public store::Index
 {
 protected:  
-  store::Item_t                   theUri;
+  store::Item_t                   theQname;
   store::IndexSpecification       theSpec;
   ulong                           theNumColumns;
   std::vector<XQPCollator*>       theCollators;
 
 public:
-  IndexImpl(const xqpStringStore_t& uri, const store::IndexSpecification& spec);
+  IndexImpl(const store::Item_t& qname, const store::IndexSpecification& spec);
 
   virtual ~IndexImpl();
 
-  store::Item* getUri() const { return theUri.getp(); }
+  store::Item* getName() const { return theQname.getp(); }
 
   const store::IndexSpecification& getSpecification() const { return theSpec; }
 
@@ -163,7 +163,7 @@ public:
 
 protected:
   HashIndex(
-        const xqpStringStore_t& uri,
+        const store::Item_t& uri,
         const store::IndexSpecification& spec);
 
   ~HashIndex();
@@ -229,7 +229,7 @@ public:
 
 protected:
   STLMapIndex(
-        const xqpStringStore_t& uri,
+        const store::Item_t& uri,
         const store::IndexSpecification& spec);
 
   ~STLMapIndex();

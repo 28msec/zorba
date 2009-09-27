@@ -85,6 +85,8 @@ void dynamic_context::init()
 
 
 dynamic_context::dynamic_context(dynamic_context* parent)
+  :
+  theAvailableIndices(NULL)
 {
   this->parent = parent;
 
@@ -160,6 +162,9 @@ dynamic_context::~dynamic_context()
 			destroy_dctx_value(&(*it).val);
 		}
 	}
+
+  if (theAvailableIndices)
+    delete theAvailableIndices;
 }
 
 
@@ -407,70 +412,72 @@ void dynamic_context::destroy_dctx_value(dctx_value_t* val)
 }
 
 
-void dynamic_context::bind_index(
-    const std::string& indexUri,
-    store::Index* index)
+void dynamic_context::bind_index(const store::Item* qname, store::Index* index)
 {
-  if (val_idx_ins_session_map.find(indexUri) != val_idx_ins_session_map.end()) 
-  {
-    ZORBA_ERROR_PARAM(XQP0034_INDEX_ALREADY_EXISTS, indexUri.c_str(), "");
-  }
+  if (theAvailableIndices == NULL)
+    theAvailableIndices = new IndexMap(0, NULL, 8, false);
 
-  std::pair<store::Index_t, ValueIndexInsertSession_t> v;
-  v.first = index;
-  v.second = NULL;
-  val_idx_ins_session_map[indexUri] = v;
-}
+  ValueIndexInfo v;
+  v.theIndex = index;
+  v.theLoadSession = NULL;
 
-
-void dynamic_context::unbind_index(
-    const std::string& indexUri)
-{
-  IndexMap::iterator i = val_idx_ins_session_map.find(indexUri);
-  if (i != val_idx_ins_session_map.end())
+  if (!theAvailableIndices->insert(qname, v))
   {
-    val_idx_ins_session_map.erase(i);
-  }
-  else if (parent != NULL)
-  {
-    return parent->unbind_index(indexUri);
-  }
-  else
-  {
-    ZORBA_ERROR_PARAM(XQP0033_INDEX_DOES_NOT_EXIST, indexUri.c_str(), "");
+    ZORBA_ERROR_PARAM(XQP0034_INDEX_ALREADY_EXISTS,
+                      qname->getStringValue()->c_str(), "");
   }
 }
 
 
-store::Index* dynamic_context::lookup_index(const std::string& indexUri) const
+void dynamic_context::unbind_index(const store::Item* qname)
 {
-  IndexMap::const_iterator i = val_idx_ins_session_map.find(indexUri);
-  if (i != val_idx_ins_session_map.end())
+  if (!theAvailableIndices->remove(qname))
   {
-    return i->second.first.getp();
+    if (parent != NULL)
+    {
+      return parent->unbind_index(qname);
+    }
+    else
+    {
+      ZORBA_ERROR_PARAM(XQP0033_INDEX_DOES_NOT_EXIST,
+                        qname->getStringValue()->c_str(), "");
+    }
+  }
+}
+
+
+store::Index* dynamic_context::lookup_index(const store::Item* qname) const
+{
+  ValueIndexInfo info;
+
+  if (theAvailableIndices->get(qname, info))
+  {
+    return info.theIndex.getp();
   }
   else if (parent != NULL)
   {
-    return parent->lookup_index(indexUri);
+    return parent->lookup_index(qname);
   }
   else
   {
-    ZORBA_ERROR_PARAM(XQP0033_INDEX_DOES_NOT_EXIST, indexUri.c_str(), "");
+    ZORBA_ERROR_PARAM(XQP0033_INDEX_DOES_NOT_EXIST,
+                      qname->getStringValue()->c_str(), "");
   }
 }
 
 
 ValueIndexInsertSession* dynamic_context::get_index_insert_session(
-    const std::string& indexUri) const
+    const store::Item* qname) const
 {
-  IndexMap::const_iterator i = val_idx_ins_session_map.find(indexUri);
-  if (i != val_idx_ins_session_map.end())
+  ValueIndexInfo info;
+
+  if (theAvailableIndices->get(qname, info))
   {
-    return i->second.second.getp();
+    return info.theLoadSession.getp();
   }
   else if (parent != NULL)
   {
-    return parent->get_index_insert_session(indexUri);
+    return parent->get_index_insert_session(qname);
   }
   else
   {
@@ -480,17 +487,19 @@ ValueIndexInsertSession* dynamic_context::get_index_insert_session(
 
 
 void dynamic_context::set_index_insert_session (
-    const std::string& indexUri,
+    const store::Item* qname,
     ValueIndexInsertSession* s) 
 {
-  IndexMap::iterator i = val_idx_ins_session_map.find(indexUri);
-  if (i != val_idx_ins_session_map.end())
+  ValueIndexInfo info;
+
+  if (theAvailableIndices->get(qname, info))
   {
-    i->second.second = s;
+    info.theLoadSession = s;
+    theAvailableIndices->update(qname, info);
   }
   else if (parent != NULL)
   {
-    parent->set_index_insert_session(indexUri, s);
+    parent->set_index_insert_session(qname, s);
   }
   else
   {

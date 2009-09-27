@@ -33,7 +33,7 @@ namespace zorba {
 class ValueIndexPointProbeState : public PlanIteratorState 
 {
 public:
-  xqpStringStore_t              theUri;
+  const store::Item           * theQname;
   store::Index                * theIndex;
   store::IndexProbeIterator_t   theIterator;
 
@@ -51,13 +51,14 @@ NARY_ITER_STATE(ValueIndexPointProbe, ValueIndexPointProbeState);
 ********************************************************************************/
 class ValueIndexRangeProbeState : public PlanIteratorState 
 {
-  public:
-    xqpStringStore_t theUri;
-    store::Index *theIndex;
-    store::IndexProbeIterator_t theIterator;
+public:
+  const store::Item           * theQname;
+  store::Index                * theIndex;
+  store::IndexProbeIterator_t   theIterator;
 
-    void init(PlanState&);
-    void reset(PlanState&);
+public:
+  void init(PlanState&);
+  void reset(PlanState&);
 };
 
 
@@ -66,7 +67,7 @@ NARY_ITER_STATE(ValueIndexRangeProbe, ValueIndexRangeProbeState);
 
 }
 
-#endif /* ZORBA_VALUE_INDEX_PROBE_H */
+#endif
 /* vim:set ts=2 sw=2: */
 
 /*

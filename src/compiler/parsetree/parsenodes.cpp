@@ -805,42 +805,55 @@ void Param::accept(parsenode_visitor& v) const
 
 
 /***************************************************************************//**
-  IndexDecl ::= DECLARE [UNIQUE] [HASH | BTREE] INDEX URI_LITERAL
-                ON ExprSingle
-                BY IndexFieldList ")"
+  IndexDecl ::= "declare" "unique"? 
+                          ("ordered" | "unordered")?
+                          ("automatic" | "manual")?
+                          "index" UriLiteral
+                          "on" IndexDomainExpr
+                          "by" "(" IndexKeyList ")"
 ********************************************************************************/
 void IndexDecl::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
-  ACCEPT (on_expr);
-  ACCEPT (fields);
+
+  ACCEPT(theDomainExpr);
+  ACCEPT(theKey);
+
   END_VISITOR ();
 }
 
 
 /***************************************************************************//**
-  IndexFieldList ::= "(" IndexField |
-                      IndexFieldList COMMA IndexField
+  IndexKeyList ::= IndexKeySpec ("," IndexKeySpec)*
 ********************************************************************************/
-void IndexFieldList::accept(parsenode_visitor& v) const
+void IndexKeyList::accept(parsenode_visitor& v) const
 {
-  BEGIN_VISITOR ();
-  for (vector<rchandle<IndexField> >::const_iterator i = fields.begin ();
-       i != fields.end (); i++)
-    ACCEPT (*i);
-  END_VISITOR ();
+  BEGIN_VISITOR();
+
+  for (vector<rchandle<IndexKeySpec> >::const_iterator i = theKeySpecs.begin();
+       i != theKeySpecs.end();
+       ++i)
+  {
+    ACCEPT(*i);
+  }
+
+  END_VISITOR();
 }
 
 
 /***************************************************************************//**
-  IndexField ::= ExprSingle TypeDeclaration? (COLLATION URI_LITERAL)?
+  IndexKeySpec ::= ExprSingle TypeDeclaration? 
+                              ("empty" ("greatest" | "least"))?
+                              ("collation" UriLiteral)?
 ********************************************************************************/
-void IndexField::accept(parsenode_visitor& v) const
+void IndexKeySpec::accept(parsenode_visitor& v) const
 {
-  BEGIN_VISITOR ();
-  ACCEPT (expr);
-  ACCEPT (type);
-  END_VISITOR ();
+  BEGIN_VISITOR();
+
+  ACCEPT(theExpr);
+  ACCEPT(theType);
+
+  END_VISITOR();
 }
 
 
@@ -943,16 +956,6 @@ void Expr::accept(parsenode_visitor& v) const
 int Expr::numberOfChildren() const
 {
   return expr_hv.size();
-}
-
-
-/***************************************************************************//**
-  IndexStatement ::= [CREATE | BUILD | DROP] INDEX URI_LITERAL
-********************************************************************************/
-void IndexStatement::accept(parsenode_visitor& v) const
-{
-  BEGIN_VISITOR ();
-  END_VISITOR ();
 }
 
 

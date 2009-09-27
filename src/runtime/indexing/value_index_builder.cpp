@@ -60,7 +60,7 @@ bool CreateValueIndex::nextImpl(store::Item_t& result, PlanState& planState) con
 
   status = consumeNext(result, theChild, planState);
   ZORBA_ASSERT(status);
-  indexSpec = theSctx->lookup_index(result->getStringValueP());
+  indexSpec = theSctx->lookup_index(result);
 
   {
     const std::vector<xqtref_t>& iTypes(indexSpec->getKeyTypes());
@@ -83,10 +83,11 @@ bool CreateValueIndex::nextImpl(store::Item_t& result, PlanState& planState) con
     spec.theIsThreadSafe = true;
     spec.theIECreators = indexSpec->getPatternCreatorPairs();
 
-    index = GENV_STORE.createIndex(result->getStringValueP(), spec);
+    index = GENV_STORE.createIndex(result, spec);
 
-    planState.dctx()->bind_index(indexSpec->getIndexUri()->str(), index);
+    planState.dctx()->bind_index(indexSpec->getName(), index);
   }
+
   STACK_END (state);
 }
 
@@ -109,8 +110,8 @@ bool DropValueIndex::nextImpl(store::Item_t& result, PlanState& planState) const
   status = consumeNext(result, theChild, planState);
   ZORBA_ASSERT(status);
 
-  planState.dctx()->unbind_index(result->getStringValueP()->str());
-  GENV_STORE.deleteIndex(result->getStringValueP());
+  planState.dctx()->unbind_index(result);
+  GENV_STORE.deleteIndex(result);
 
   STACK_END (state);
 }
@@ -135,15 +136,13 @@ bool ValueIndexInsertSessionOpener::nextImpl(
   ZORBA_ASSERT(status);
 
   {
-    std::string& indexUri = result->getStringValueP()->str();
-
-    store::Index* index = planState.dctx()->lookup_index(indexUri);
+    store::Index* index = planState.dctx()->lookup_index(result);
 
     store::IndexEntryReceiver_t receiver = index->createInsertSession();
 
     ValueIndexInsertSession_t session = new ValueIndexInsertSession(receiver);
 
-    planState.dctx()->set_index_insert_session(indexUri, session);
+    planState.dctx()->set_index_insert_session(result, session);
   }
 
   STACK_END (state);
@@ -168,7 +167,7 @@ bool ValueIndexInsertSessionCloser::nextImpl(
   status = consumeNext(result, theChild, planState);
   ZORBA_ASSERT(status);
 
-  session = planState.dctx()->get_index_insert_session(result->getStringValueP()->str());
+  session = planState.dctx()->get_index_insert_session(result);
   session->commitBulkInsertSession();
 
   STACK_END (state);
@@ -205,10 +204,9 @@ bool ValueIndexBuilder::nextImpl(store::Item_t& result, PlanState& planState) co
 
   if (state->theSession == NULL) 
   {
-    consumeNext(state->theIndexUri, theChildren[0], planState);
+    consumeNext(state->theIndexQname, theChildren[0], planState);
 
-    state->theSession = planState.dctx()->
-    get_index_insert_session(state->theIndexUri->getStringValueP()->str());
+    state->theSession = planState.dctx()->get_index_insert_session(state->theIndexQname);
   }
 
   consumeNext(dValue, theChildren[1], planState);

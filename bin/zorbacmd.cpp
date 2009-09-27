@@ -28,10 +28,11 @@
 #endif
 
 #include <zorba/zorba.h>
+
 #ifndef ZORBA_MINIMAL_STORE
-#  include <simplestore/simplestore.h>
+#include <simplestore/simplestore.h>
 #else
-#  include "store/minimal/min_store.h"
+#include "store/minimal/min_store.h"
 #endif
 
 #include <zorba/debugger_client.h>
@@ -235,6 +236,7 @@ struct TimingInfo
   typedef enum
   {
     INIT_TIMER,
+    DEINIT_TIMER,
     COMP_TIMER,
     EXEC_TIMER,
     UNLOAD_TIMER,
@@ -245,6 +247,8 @@ struct TimingInfo
 
   zorba::DateTime   startInitTime;
   zorba::DateTime   stopInitTime;
+  zorba::DateTime   startDeInitTime;
+  zorba::DateTime   stopDeInitTime;
   zorba::DateTime   startCompTime;
   zorba::DateTime   stopCompTime;
   zorba::DateTime   startExecTime;
@@ -255,6 +259,7 @@ struct TimingInfo
   zorba::DateTime   stopTotalTime;
 
   long              initTime;
+  long              deinitTime;
   long              compTime;
   long              execTime;
   long              loadTime;
@@ -263,6 +268,8 @@ struct TimingInfo
 
   zorbatm::timeinfo startInitClock;
   zorbatm::timeinfo stopInitClock;
+  zorbatm::timeinfo startDeInitClock;
+  zorbatm::timeinfo stopDeInitClock;
   zorbatm::timeinfo startCompClock;
   zorbatm::timeinfo stopCompClock;
   zorbatm::timeinfo startExecClock;
@@ -273,6 +280,7 @@ struct TimingInfo
   zorbatm::timeinfo stopTotalClock;
 
   double            initClock;
+  double            deinitClock;
   double            compClock;
   double            execClock;
   double            loadClock;
@@ -283,12 +291,14 @@ struct TimingInfo
     :
     numExecs(num),
     initTime(0),
+    deinitTime(0),
     compTime(0),
     execTime(0),
     loadTime(0),
     unloadTime(0),
     totalTime(0),
     initClock(0),
+    deinitClock(0),
     compClock(0),
     execClock(0),
     loadClock(0),
@@ -329,6 +339,10 @@ void TimingInfo::startTimer(TimerKind kind, ulong iteration)
     START_TIMER(Init);
     break;
 
+  case DEINIT_TIMER:
+    START_TIMER(DeInit);
+    break;
+
   case TOTAL_TIMER:
     START_TIMER(Total);
     break;
@@ -355,31 +369,43 @@ void TimingInfo::stopTimer(TimerKind kind, ulong iteration)
 
   switch (kind)
   {
-  case INIT_TIMER: {
+  case INIT_TIMER: 
+  {
     STOP_TIMER(Init);
     initTime += diffTime->getTotalMilliseconds();
     initClock += diffClock;
     break;
   }
-  case TOTAL_TIMER: {
+  case DEINIT_TIMER: 
+  {
+    STOP_TIMER(DeInit);
+    deinitTime += diffTime->getTotalMilliseconds();
+    deinitClock += diffClock;
+    break;
+  }
+  case TOTAL_TIMER: 
+  {
     STOP_TIMER(Total);
     totalTime += diffTime->getTotalMilliseconds();
     totalClock += diffClock;
     break;
   }
-  case COMP_TIMER: {
+  case COMP_TIMER: 
+  {
     STOP_TIMER(Comp);
     compTime += diffTime->getTotalMilliseconds();
     compClock += diffClock;
     break;
   }
-  case EXEC_TIMER: {
+  case EXEC_TIMER: 
+  {
     STOP_TIMER(Exec);
     execTime += diffTime->getTotalMilliseconds();
     execClock += diffClock;
     break;
   }
-  case UNLOAD_TIMER: {
+  case UNLOAD_TIMER: 
+  {
     STOP_TIMER(Unload);
     unloadTime += diffTime->getTotalMilliseconds();
     unloadClock += diffClock;
@@ -457,6 +483,8 @@ int executeQueryWithTiming(
   if (properties.libModule())
     lHints.lib_module = true;
 
+  bool indent = properties.indent();
+
   XmlDataManager* store = zorbaInstance->getXmlDataManager();
 
   Zorba_SerializerOptions lSerOptions = Zorba_SerializerOptions::SerializerOptionsFromStringParams(properties.getSerializerParameters());
@@ -475,7 +503,8 @@ int executeQueryWithTiming(
     //
     // Compile the query
     //
-    try {
+    try 
+    {
       timing.startTimer(TimingInfo::COMP_TIMER, i);
 
       query = zorbaInstance->createQuery();
@@ -485,8 +514,13 @@ int executeQueryWithTiming(
       query->compile(qfile, staticContext, lHints);
 
       timing.stopTimer(TimingInfo::COMP_TIMER, i);
-    } catch (zorba::QueryException& qe) {
-      ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), properties.indent());
+    }
+    catch (zorba::QueryException& qe) 
+    {
+      ErrorPrinter::print(qe,
+                          std::cerr,
+                          properties.printErrorsAsXml(),
+                          properties.indent());
       return 5;
     }
 
@@ -494,23 +528,28 @@ int executeQueryWithTiming(
     // Create and populate the dynamic context
     //
     zorba::DynamicContext* lDynamicContext = query->getDynamicContext();
-    try {
+    try 
+    {
       if ( ! populateDynamicContext(lDynamicContext, properties) )
       {
         properties.printHelp(std::cout);
         return 4;
       }
-    } catch (zorba::QueryException& qe) {
-      ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), properties.indent());
+    }
+    catch (zorba::QueryException& qe) 
+    {
+      ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), indent);
       return 5;
-    } catch (zorba::ZorbaException& ze) {
+    }
+    catch (zorba::ZorbaException& ze) 
+    {
       std::cerr << ze << std::endl;
       return 6;
     }
 
     //libModule assumes compileOnly even if compileOnly is false
-    if( ! properties.compileOnly() &&
-        ! properties.libModule() ) {
+    if( ! properties.compileOnly() && ! properties.libModule() ) 
+    {
     //
     // Run the query
     //
@@ -518,9 +557,12 @@ int executeQueryWithTiming(
     {
       timing.startTimer(TimingInfo::EXEC_TIMER, i);
 
-      if (query->isUpdateQuery()) {
+      if (query->isUpdateQuery()) 
+      {
         query->applyUpdates();
-      } else {
+      }
+      else
+      {
         if (properties.noSerializer ())
           query->executeSAX();
         else
@@ -534,10 +576,14 @@ int executeQueryWithTiming(
         timing.loadTime += query->getDocLoadingTime();
         timing.loadClock += query->getDocLoadingUserTime();
       }
-    } catch (zorba::QueryException& qe) {
-      ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), properties.indent());
+    }
+    catch (zorba::QueryException& qe) 
+    {
+      ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), indent);
       return 5;
-    } catch (zorba::ZorbaException& ze) {
+    }
+    catch (zorba::ZorbaException& ze)
+    {
       std::cerr << ze << std::endl;
       return 6;
     }
@@ -674,29 +720,43 @@ int _tmain(int argc, _TCHAR* argv[])
 
   // write to file or standard out
   std::auto_ptr<std::ostream> lFileStream(lProperties.outputFile().size() > 0 ?
-                                          new std::ofstream(lProperties.outputFile().c_str()) 
+                                           new std::ofstream(lProperties.outputFile().c_str()) 
                                           : 0 );
   std::ostream* lOutputStream = lFileStream.get();
-  if ( lOutputStream == 0 ) {
+  if ( lOutputStream == 0 ) 
+  {
     lOutputStream = &std::cout;
-  } else if ( !lOutputStream->good() ) {
-    std::cerr << "could not write to output file {" << lProperties.outputFile() << "}" << std::endl;
+  }
+  else if ( !lOutputStream->good() )
+  {
+    std::cerr << "could not write to output file {" << lProperties.outputFile()
+              << "}" << std::endl;
     return 2;
   }
+
+  if(lProperties.queriesOrFilesBegin() == lProperties.queriesOrFilesEnd()) 
+  {
+    std::cerr << "no queries submitted." << std::endl;
+    lProperties.printHelp(std::cout);
+    return 3;
+  }
+
 
   // Start the engine
 
   timing.startTimer(TimingInfo::INIT_TIMER, 2);
 
 #ifndef ZORBA_MINIMAL_STORE
-  zorba::simplestore::SimpleStore* store = zorba::simplestore::SimpleStoreManager::getStore();
+  zorba::simplestore::SimpleStore* store = 
+  zorba::simplestore::SimpleStoreManager::getStore();
 #else
-  zorba::storeminimal::SimpleStore* store = zorba::storeminimal::SimpleStoreManager::getStore();
+  zorba::storeminimal::SimpleStore* store =
+  zorba::storeminimal::SimpleStoreManager::getStore();
 #endif
 
   zorba::Zorba* lZorbaInstance = zorba::Zorba::getInstance(store);
 
-{
+  {
   timing.stopTimer(TimingInfo::INIT_TIMER, 2);
 
   // For each query ...
@@ -736,7 +796,8 @@ int _tmain(int argc, _TCHAR* argv[])
     //
     // Print the query if requested
     //
-    if ( lProperties.printQuery() ) {
+    if ( lProperties.printQuery() ) 
+    {
       *lOutputStream << "\nQuery number " << queryNo << " :\n";
       std::copy (std::istreambuf_iterator<char> (*qfile),
                  std::istreambuf_iterator<char> (),
@@ -749,12 +810,14 @@ int _tmain(int argc, _TCHAR* argv[])
     // Create the static context and populate it with info taken from the properties
     //
     zorba::StaticContext_t lStaticContext = lZorbaInstance->createStaticContext();
-    if (! populateStaticContext(lStaticContext, lProperties) ) {
+    if (! populateStaticContext(lStaticContext, lProperties) ) 
+    {
       lProperties.printHelp(std::cout);
       return 3;
     }
 
-    if (!asFile && lProperties.baseUri().size() == 0 ) {
+    if (!asFile && lProperties.baseUri().size() == 0 ) 
+    {
       // No user set base URI. Set the cwd to be used as base-uri in order
       // to make the doc function doc("mydoc.xml") work
       zorba::filesystem_path p;
@@ -777,34 +840,46 @@ int _tmain(int argc, _TCHAR* argv[])
     //
     // Parse the query
     //
-    if (lProperties.parseOnly()) {
-      try {
+    if (lProperties.parseOnly()) 
+    {
+      try 
+      {
         zorba::XQuery_t lQuery = lZorbaInstance->createQuery();
         if (asFile)
           lQuery->setFileName(path.get_path());
+
         lQuery->parse (*qfile);
-      } catch (zorba::ZorbaException& ze) {
+      }
+      catch (zorba::ZorbaException& ze) 
+      {
         std::cerr << ze << std::endl;
         return 6;
       }
-    } else if (!debug && doTiming) {
-      if( compileOnly ) {
-        try {
+    }
+
+    //
+    // Compile and run the query N times and print timing info
+    //
+    else if (!debug && doTiming) 
+    {
+      if( compileOnly ) 
+      {
+        try 
+        {
           zorba::XQuery_t aQuery = lZorbaInstance->createQuery();
           if (asFile)
             aQuery->setFileName(path.get_path());
           aQuery->parse (*qfile);
           qfile->clear();
           qfile->seekg(0); // go back to the beginning
-        } catch (zorba::QueryException& qe) {
+        }
+        catch (zorba::QueryException& qe) 
+        {
           ErrorPrinter::print(qe, std::cerr, lProperties.printErrorsAsXml(), lProperties.indent());
           return 6;
         }
       }
 
-      //
-      // Compile and run the query N times and print timing info
-      //
       int status = executeQueryWithTiming(lZorbaInstance,
                                           lProperties,
                                           lStaticContext,
@@ -816,24 +891,32 @@ int _tmain(int argc, _TCHAR* argv[])
         return status;
 
       timing.print(std::cout);
-    } else if (!debug) {
-      if( compileOnly ) {
-        try {
+    }
+
+    //
+    // Compile the query once and then run it N times
+    //
+    else if (!debug) 
+    {
+      if( compileOnly ) 
+      {
+        try 
+        {
           zorba::XQuery_t aQuery = lZorbaInstance->createQuery();
           if (asFile)
             aQuery->setFileName(path.get_path());
           aQuery->parse (*qfile);
           qfile->clear();
           qfile->seekg(0); // go back to the beginning
-        } catch (zorba::QueryException& qe) {
+        }
+        catch (zorba::QueryException& qe) 
+        {
           ErrorPrinter::print(qe, std::cerr, lProperties.printErrorsAsXml(), lProperties.indent());
           return 6;
         }
       }
 
-      //
-      // Compile the query once and then run it N times
-      //
+
       zorba::XQuery_t lQuery = lZorbaInstance->createQuery();
 
       if (asFile)
@@ -846,11 +929,17 @@ int _tmain(int argc, _TCHAR* argv[])
                                 *lOutputStream);
       if (status != 0)
         return status;
+    }
 
-    } else if (debug) {
-
-      if (compileOnly) {
-        std::cerr << "Cannot debug a query if the compile-only option is specified" << std::endl;
+    //
+    //
+    //
+    else if (debug) 
+    {
+      if (compileOnly) 
+      {
+        std::cerr << "cannot debug a query if the compileOnly option is specified"
+                  << std::endl;
         return 7;
       }
 
@@ -864,7 +953,8 @@ int _tmain(int argc, _TCHAR* argv[])
       
       zorba::XQuery_t lQuery;
 
-      try {
+      try 
+      {
         lQuery = lZorbaInstance->createQuery();
         lQuery->setFileName(lFileName);
         lQuery->setDebugMode(true);
@@ -888,7 +978,8 @@ int _tmain(int argc, _TCHAR* argv[])
           return -1;
         }
 
-        if (lProperties.debugServer()) {
+        if (lProperties.debugServer()) 
+        {
           Zorba_SerializerOptions lSerOptions = 
             Zorba_SerializerOptions::SerializerOptionsFromStringParams(
             lProperties.getSerializerParameters());
@@ -903,7 +994,8 @@ int _tmain(int argc, _TCHAR* argv[])
           lServer->start();
         }
         
-        if (lProperties.debugClient()) {
+        if (lProperties.debugClient()) 
+        {
           if (!lProperties.hasNoLogo() )
             std::cout << "Zorba XQuery debugger client.\n" << copyright_str << std::endl;
           
@@ -944,8 +1036,21 @@ int _tmain(int argc, _TCHAR* argv[])
     } // else if (debug) 
 
   } // for each query
+
+  }
+
+  timing.startTimer(TimingInfo::DEINIT_TIMER, 2);
+
+  lZorbaInstance->shutdown();
+  zorba::simplestore::SimpleStoreManager::shutdownStore(store);
+
+  timing.stopTimer(TimingInfo::DEINIT_TIMER, 2);
+
+  std::cout << std::endl << "Engine Shutdown Time     : " << timing.deinitTime
+            << " (user: " << timing.deinitClock << ")"
+            << " milliseconds" << std::endl;
+
   return 0;
-}
 }
 
 /* vim:set ts=2 sw=2: */

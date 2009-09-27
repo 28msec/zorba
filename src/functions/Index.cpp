@@ -206,27 +206,27 @@ void populateContext_Index(static_context* sctx)
 {
   DECL(sctx, zop_createindex,
        (createQName(ZORBA_OPEXTENSIONS_NS,"op-extensions", "create-index"),
-        GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         GENV_TYPESYSTEM.EMPTY_TYPE));
 
   DECL(sctx, zop_dropindex,
        (createQName(ZORBA_OPEXTENSIONS_NS,"op-extensions", "drop-index"),
-        GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         GENV_TYPESYSTEM.EMPTY_TYPE));
 
   DECL(sctx, zop_buildindex,
        (createQName(ZORBA_OPEXTENSIONS_NS,"op-extensions", "build-index"),
-        GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         GENV_TYPESYSTEM.EMPTY_TYPE));
 
   DECL(sctx, zop_index_session_opener,
        (createQName(XQUERY_FN_NS,"fn", ":index-session-opener"),
-        GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         GENV_TYPESYSTEM.EMPTY_TYPE));
   
   DECL(sctx, zop_index_session_closer,
        (createQName(XQUERY_FN_NS,"fn", ":index-session-closer"),
-        GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         GENV_TYPESYSTEM.EMPTY_TYPE));
   
   DECL(sctx, zop_index_builder,

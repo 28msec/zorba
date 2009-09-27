@@ -17,7 +17,7 @@
 #define ZORBA_UTILS_HASHMAP
 
 #include <zorba/config.h>
-#include "zorbamisc/config/platform.h"
+#include "common/common.h"
 #include "zorbautils/fatal.h"
 #include "zorbautils/checked_vector.h"
 #include "zorbautils/mutex.h"
@@ -71,7 +71,7 @@ public:
 
   C is the template parameter that implements the hashing and equality functions.
 
-  C must have two static methods compatible with the following signature.
+  C must have two methods with the following signatures:
     uint32_t hash(const T&);
     bool equal(const T&, const T&);
 
@@ -404,6 +404,32 @@ bool insert(T& item, V& value)
   }
 
   return !found;
+}
+
+
+/******************************************************************************
+  If the set does not already contain an item I that is "equal" to the given
+  item, return false. Otherwise, set the value associated with I to the given
+  value and return true,
+********************************************************************************/
+bool update(T& item, const V& value)
+{
+  bool found;
+  ulong hval = hash(item);
+
+  SYNC_CODE(AutoMutex lock(theMutexp);)
+
+  HashEntry<T, V>* entry = hashInsert(item, hval, found);
+
+  if (!found)
+  {
+    return false;
+  }
+  else
+  {
+    entry->theValue = value;
+    return true;
+  }
 }
 
 

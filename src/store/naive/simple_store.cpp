@@ -84,7 +84,7 @@ SimpleStore::SimpleStore()
   theIteratorFactory(NULL),
   theDocuments(DEFAULT_COLLECTION_MAP_SIZE, true),
   theCollections(DEFAULT_COLLECTION_MAP_SIZE, true),
-  theIndices(DEFAULT_COLLECTION_MAP_SIZE, true),
+  theIndices(0, NULL, DEFAULT_COLLECTION_MAP_SIZE, true),
   theTraceLevel(0)
 {
 }
@@ -316,58 +316,60 @@ store::Item_t SimpleStore::createUri()
   is not a temporary one, raise an error.
 ********************************************************************************/
 store::Index_t SimpleStore::createIndex(
-    const xqpStringStore_t& uri,
+    const store::Item_t& qname,
     const store::IndexSpecification& spec)
 {
-  const xqpStringStore* urip = uri.getp();
-
   store::Index_t index;
 
-  if (!spec.theIsTemp && theIndices.get(urip, index))
+  if (!spec.theIsTemp && theIndices.get(qname, index))
   {
-    ZORBA_ERROR_PARAM(STR0001_INDEX_ALREADY_EXISTS, urip->c_str(), "");
+    ZORBA_ERROR_PARAM(STR0001_INDEX_ALREADY_EXISTS,
+                      qname->getStringValue()->c_str(), "");
   }
 
   if (spec.theIsSorted)
   {
-    index = new STLMapIndex(uri, spec);
+    index = new STLMapIndex(qname, spec);
   }
   else
   {
-    index = new HashIndex(uri, spec);
+    index = new HashIndex(qname, spec);
   }
 
   if (!spec.theIsTemp)
   {
-    theIndices.insert(urip, index);
+    theIndices.insert(qname, index);
   }
 
   return index;
 }
 
-store::Index *SimpleStore::getIndex(const xqpStringStore_t& uri)
-{
-  if (uri == NULL)
-    return NULL;
 
-  store::Index_t index;
-  bool found = theIndices.get(uri, index);
-  if (found)
-    return index.getp();
-
-  return NULL;
-
-}
-    
 /*******************************************************************************
 
 ********************************************************************************/
-void SimpleStore::deleteIndex(const xqpStringStore_t& uri)
+store::Index* SimpleStore::getIndex(const store::Item_t& qname)
 {
-  if (uri == NULL)
+  if (qname == NULL)
+    return NULL;
+
+  store::Index_t index;
+  if (theIndices.get(qname, index))
+    return index.getp();
+
+  return NULL;
+}
+    
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleStore::deleteIndex(const store::Item_t& qname)
+{
+  if (qname == NULL)
     return;
 
-  theIndices.remove(uri);
+  theIndices.remove(qname);
 }
 
 

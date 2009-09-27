@@ -129,8 +129,8 @@ class ForwardStep;
 class FunctionCall;
 class FunctionDecl;
 class GeneralComp;
-class IndexFieldList;
-class IndexField;
+class IndexKeyList;
+class IndexKeySpec;
 class IfExpr;
 class InsertExpr;
 class InstanceofExpr;
@@ -1109,95 +1109,119 @@ public:
 
 
 /***************************************************************************//**
-  IndexDecl ::= DECLARE [UNIQUE] [HASH | BTREE] INDEX URI_LITERAL
-                ON ExprSingle
-                BY IndexFieldList ")"
+  IndexDecl ::= "declare" "unique"? 
+                          ("ordered" | "unordered")?
+                          ("automatic" | "manual")?
+                          "index" QName
+                          "on" IndexDomainExpr
+                          "by" "(" IndexKeyList ")"
 ********************************************************************************/
 class IndexDecl : public parsenode 
 {
 protected:
-  std::string uri;
-  rchandle<exprnode> on_expr;
+  rchandle<QName>        theName;
+  rchandle<exprnode>     theDomainExpr;
+  rchandle<IndexKeyList> theKey;
 
-public:
-  std::string method;
-  rchandle<IndexFieldList> fields;
-  bool create;
-  bool uniq;
+  bool                   theIsOrdered;
+  bool                   theIsUnique;
+  bool                   theIsAutomatic;
 
 public:
   IndexDecl (
-        const QueryLoc& loc_,
-        std::string uri_,
-        rchandle<exprnode> expr_,
-        std::string method_,
-        rchandle<IndexFieldList> fields_)
+        const QueryLoc& loc,
+        QName* name,
+        rchandle<exprnode> domainExpr,
+        rchandle<IndexKeyList> key)
     :
-    parsenode (loc_),
-    uri (uri_),
-    on_expr (expr_),
-    method (method_),
-    fields (fields_),
-    create (false),
-    uniq (false)
+    parsenode(loc),
+    theName(name),
+    theDomainExpr(domainExpr),
+    theKey(key),
+    theIsOrdered(false),
+    theIsUnique(false),
+    theIsAutomatic(false)
   {
   }
 
-  bool is_decl_only () const { return ! create; }
+  const QName* getName() const { return theName.getp(); }
 
-  bool is_uniq () const { return uniq; }
+  const exprnode* getDomainExpr() const { return theDomainExpr; }
 
-  rchandle<exprnode> get_expr () const { return on_expr; }
+  bool isUnique() const { return theIsUnique; }
 
-  const std::string& get_uri () const { return uri; }
+  void setUnique() { theIsUnique = true; }
+
+  bool isOrdered() const { return theIsOrdered; }
+
+  void setOrdered() { theIsOrdered = true; }
+
+  bool isAutomatic() const { return theIsAutomatic; }
+
+  void setAutomatic() { theIsAutomatic = true; }
 
   void accept(parsenode_visitor&) const;
 };
 
 
 /***************************************************************************//**
-  IndexFieldList ::= "(" IndexField |
-                      IndexFieldList COMMA IndexField
+  IndexKeyList ::= IndexKeySpec ("," IndexKeySpec)*
 ********************************************************************************/
-class IndexFieldList : public parsenode 
+class IndexKeyList : public parsenode 
 {
-public:
-  std::vector<rchandle<IndexField> > fields;
+protected:
+  std::vector<rchandle<IndexKeySpec> > theKeySpecs;
 
 public:
-  IndexFieldList (const QueryLoc& loc_)
-    : parsenode (loc_)
-  {
-  }
+  IndexKeyList(const QueryLoc& loc) : parsenode(loc) { }
+
+  void addKeySpec(IndexKeySpec* spec) { theKeySpecs.push_back(spec); }
+
+  ulong size() const { return theKeySpecs.size(); }
+
+  const IndexKeySpec* getKeySpec(ulong i) const { return theKeySpecs[i].getp(); }
 
   void accept(parsenode_visitor&) const;
 };
 
 
 /***************************************************************************//**
-  IndexField ::= ExprSingle TypeDeclaration? (COLLATION URI_LITERAL)?
+  IndexKeySpec ::= ExprSingle TypeDeclaration? 
+                              ("empty" ("greatest" | "least"))?
+                              ("collation" UriLiteral)?
 ********************************************************************************/
-class IndexField : public parsenode 
+class IndexKeySpec : public parsenode 
 {
-  rchandle<exprnode> expr;
-  rchandle<SequenceType> type;
+protected:
+  rchandle<exprnode>     theExpr;
+  rchandle<SequenceType> theType;
+  long                   theEmptyLeast;
+  std::string            theCollation;
 
 public:
-  std::string coll;
-
-public:
-  IndexField (
+  IndexKeySpec(
     const QueryLoc& loc,
-    rchandle<exprnode> expr_,
-    rchandle<SequenceType> type_)
+    rchandle<exprnode> expr,
+    rchandle<SequenceType> type)
     :
-    parsenode (loc), expr (expr_), type (type_)
+    parsenode(loc),
+    theExpr(expr),
+    theType(type),
+    theEmptyLeast(-1)
   {
   }
 
-  rchandle<exprnode> get_expr () const { return expr; }
+  rchandle<exprnode> getExpr() const { return theExpr; }
 
-  rchandle<SequenceType> get_type () const { return type; }
+  rchandle<SequenceType> getType() const { return theType; }
+
+  bool emptyLeast() const { return theEmptyLeast; }
+
+  void setEmptyLeast(long v) { theEmptyLeast = v; }
+
+  const std::string& getCollation() const { return theCollation; }
+
+  void setCollation(const std::string& col) { theCollation = col; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -1330,9 +1354,6 @@ public:
 
   ** eval
                       EvalExpr |
-
-  ** indexes
-                      IndexStatement |
 
   ** updates
                       InsertExpr |
@@ -4810,38 +4831,6 @@ public:
 
   void accept(parsenode_visitor&) const;
 };
-
-
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  Index productions                                                          //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
-
-/***************************************************************************//**
-  IndexStatement ::= [CREATE | BUILD | DROP] INDEX URI_LITERAL
-********************************************************************************/
-class IndexStatement : public exprnode 
-{
-  std::string uri;
-
-public:
-  typedef enum { create_stmt, build_stmt, drop_stmt } stmt_type;
-
-  stmt_type type;
-
-  IndexStatement (const QueryLoc& loc_, std::string uri_, stmt_type type_)
-    :
-    exprnode (loc_), uri (uri_), type (type_)
-  {
-  }
-
-  std::string get_uri () const { return uri; }
-
-  void accept(parsenode_visitor&) const;
-};
-
 
 
 /////////////////////////////////////////////////////////////////////////////////

@@ -43,15 +43,13 @@ namespace simplestore
 
 ********************************************************************************/
 IndexImpl::IndexImpl(
-    const xqpStringStore_t& uri,
+    const store::Item_t& qname,
     const store::IndexSpecification& spec)
   :
+  theQname(qname),
   theSpec(spec),
   theNumColumns(theSpec.theKeyTypes.size())
 {
-  xqpStringStore_t tmpuri(uri.getp());
-  theUri = new AnyUriItemImpl(tmpuri);
-
   theCollators.resize(theNumColumns);
 
   for (ulong i = 0; i < theNumColumns; i++)
@@ -153,10 +151,10 @@ bool HashIndex::CompareFunction::equal(
 
 ********************************************************************************/
 HashIndex::HashIndex(
-    const xqpStringStore_t& uri,
+    const store::Item_t& qname,
     const store::IndexSpecification& spec)
   :
-  IndexImpl(uri, spec),
+  IndexImpl(qname, spec),
   theCompFunction(theNumColumns, spec.theTimezone, theCollators),
   theMap(theCompFunction, 1024, spec.theIsThreadSafe)
 {
@@ -190,7 +188,7 @@ bool HashIndex::insert(store::IndexKey& key, store::Item_t& value)
   if (key.size() != theNumColumns)
   {
     ZORBA_ERROR_PARAM(STR0002_INDEX_PARTIAL_KEY_INSERT,
-                      theUri->getStringValue()->c_str(), key.toString());
+                      theQname->getStringValue()->c_str(), key.toString());
   }
 
   ValueSet* valueSet = NULL;
@@ -231,7 +229,7 @@ bool HashIndex::remove(const store::IndexKey& key, store::Item_t& value)
   if (key.size() != theNumColumns)
   {
     ZORBA_ERROR_PARAM(STR0003_INDEX_PARTIAL_KEY_REMOVE,
-                      theUri->getStringValue()->c_str(), key.toString());
+                      theQname->getStringValue()->c_str(), key.toString());
   }
 
   IndexMap::iterator pos = theMap.get(&key);
@@ -339,10 +337,10 @@ long STLMapIndex::CompareFunction::compare(
 
 ********************************************************************************/
 STLMapIndex::STLMapIndex(
-    const xqpStringStore_t& uri,
+    const store::Item_t& qname,
     const store::IndexSpecification& spec)
   :
-  IndexImpl(uri, spec),
+  IndexImpl(qname, spec),
   theCompFunction(theNumColumns, spec.theTimezone, theCollators),
   theMap(theCompFunction)
 {
@@ -373,7 +371,7 @@ bool STLMapIndex::insert(store::IndexKey& key, store::Item_t& value)
   if (key.size() != theNumColumns)
   {
     ZORBA_ERROR_PARAM(STR0002_INDEX_PARTIAL_KEY_INSERT,
-                      theUri->getStringValue()->c_str(), key.toString());
+                      theQname->getStringValue()->c_str(), key.toString());
   }
 
   SYNC_CODE(AutoMutex lock((isThreadSafe() ? &theMapMutex : NULL));)
@@ -412,7 +410,7 @@ bool STLMapIndex::remove(const store::IndexKey& key, store::Item_t& value)
   if (key.size() != theNumColumns)
   {
     ZORBA_ERROR_PARAM(STR0003_INDEX_PARTIAL_KEY_REMOVE,
-                      theUri->getStringValue()->c_str(), "");
+                      theQname->getStringValue()->c_str(), "");
   }
 
   SYNC_CODE(AutoMutex lock((isThreadSafe() ? &theMapMutex : NULL));)
@@ -469,7 +467,7 @@ void HashProbeIterator::init(const store::IndexCondition_t& cond)
   if (cond->getKind() != store::IndexCondition::EXACT_KEY)
   {
     ZORBA_ERROR_PARAM(STR0006_INDEX_UNSUPPORTED_PROBE_CONDITION,
-                      theIndex->getUri()->getStringValue()->c_str(), 
+                      theIndex->getName()->getStringValue()->c_str(), 
                       cond->getKindString());
   }
 
@@ -480,7 +478,7 @@ void HashProbeIterator::init(const store::IndexCondition_t& cond)
   if (key->size() != theIndex->getNumColumns())
   {
     ZORBA_ERROR_PARAM(STR0004_INDEX_PARTIAL_KEY_PROBE,
-                      theIndex->getUri()->getStringValue()->c_str(),
+                      theIndex->getName()->getStringValue()->c_str(),
                       key->toString());
   }
 
@@ -578,7 +576,7 @@ void STLMapProbeIterator::initExact()
   if (key.size() != theIndex->theNumColumns)
   {
     ZORBA_ERROR_PARAM(STR0004_INDEX_PARTIAL_KEY_PROBE,
-                      theIndex->theUri->getStringValue()->c_str(), 
+                      theIndex->getName()->getStringValue()->c_str(), 
                       key.toString());
   }
 
@@ -613,7 +611,7 @@ void STLMapProbeIterator::initBox()
   if (numRanges > theIndex->getNumColumns())
   {
     ZORBA_ERROR_PARAM(STR0005_INDEX_INVALID_BOX_PROBE, 
-                      theIndex->theUri->getStringValue()->c_str(),
+                      theIndex->getName()->getStringValue()->c_str(),
                       "The box condition has more columns than the index");
   }
 
@@ -698,7 +696,7 @@ void STLMapProbeIterator::initBox()
           (comp == 0 && (!flags[i].theLowerBoundIncl || !flags[i].theUpperBoundIncl)))
       { 
         ZORBA_ERROR_PARAM(STR0005_INDEX_INVALID_BOX_PROBE, 
-                          theIndex->theUri->getStringValue()->c_str(),
+                          theIndex->getName()->getStringValue()->c_str(),
                           theBoxCond->toString());
       }
     }
@@ -1032,3 +1030,4 @@ std::ostream& operator<<(std::ostream& os, const IndexBoxConditionImpl& cond)
 
 }
 }
+
