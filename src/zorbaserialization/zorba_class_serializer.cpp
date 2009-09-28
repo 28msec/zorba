@@ -431,8 +431,9 @@ void operator&(Archiver &ar, MAPM &obj)
 {
   if(ar.is_serializing_out())
   {
-    char lBuffer[1024];
-    obj.toString(lBuffer, 512);//ZORBA_FLOAT_POINT_PRECISION);
+    int nr_digits = obj.significant_digits();
+    char *lBuffer = (char*)malloc(nr_digits + 20);
+    obj.toString(lBuffer, nr_digits);//ZORBA_FLOAT_POINT_PRECISION);
     if(strchr(lBuffer, '.'))
     {//save only necessary decimals
       char *e_ptr = strrchr(lBuffer, 'E');
@@ -448,6 +449,7 @@ void operator&(Archiver &ar, MAPM &obj)
     }
 
     ar.add_simple_field("MAPM", lBuffer, &obj, ARCHIVE_FIELD_NORMAL);
+    free(lBuffer);
   }
   else
   {
