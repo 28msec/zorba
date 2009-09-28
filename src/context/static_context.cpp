@@ -350,6 +350,7 @@ void static_context::serialize(::zorba::serialization::Archiver &ar)
     theSchemaResolver = NULL;
     theModuleResolver = NULL;//user has to set up again the uri resolvers after reloading the plan
     theTraceStream = &std::cerr;
+    theIndexMap = NULL;
   }
   //+ar & theGlobalVars;
   //+ar & theDecimalFormats;
