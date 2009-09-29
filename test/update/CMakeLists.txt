@@ -47,7 +47,7 @@ ENDIF(WIN32)
 # collect all spec files (suffix .spec) in all subdirectories of the Queries dir
 FILE(GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries/ FOLLOW_SYMLINKS "*.spec")
 
-MESSAGE(STATUS "Adding update tests for CTest $TESTFILES")
+MESSAGE(STATUS "Adding update tests for CTest")
 SET(TESTCOUNTER 0)
 
 FOREACH(TESTFILE ${TESTFILES})
