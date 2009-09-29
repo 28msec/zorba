@@ -1,5 +1,15 @@
 #!/bin/bash
 
+die() {
+  echo
+  echo 'Arguments: [--workdir <workdir>] [--builddir <builddir>] <zorba_repository>'
+  echo '<zorba_repository> is the top-level SVN working copy'
+  echo '<workdir> is a temp directory to download and unzip XQTS (default: /tmp)'
+  echo '<builddir> is the directory Zorba has been built in'
+  echo '           (default: <zorba_repository>/build)'
+  exit 1
+}
+
 WORK=/tmp
 while [ $# -gt 1 ]
 do
@@ -17,45 +27,41 @@ fi
 
 if test ! -d "$SRC/test/zorbatest"; then
   echo "Invalid zorba repository $SRC"
-  echo 'Arguments: zorba_repository'
-  echo 'where zorba_repository is the top-level SVN working copy'
+  die
   exit 1
 fi
 
 if test ! -d "$BUILD"; then
   echo "Invalid build directory $BUILD"
   echo "Be sure to finish building Zorba before running this script"
-  echo "If your build directory is not $SRC/build then run with args:"
-  echo "   --builddir /path/to/builddir"
+  die
   exit 1
 fi
 
-ZIP=/tmp/XQTS_1_0_2.zip
+ZIP="$WORK/XQTS.zip"
 echo Downloading test suite to zip $ZIP ...
 wget -c -O $ZIP http://www.w3.org/XML/Query/test-suite/XQTS_1_0_2.zip
 
-d0=`pwd`
+orig_pwd=`pwd`
 
-cd `dirname $SRC`
-SRC=`pwd`/`basename $SRC`
+# Canonicalize SRC and BUILD
+SRC=$(cd "$SRC" && pwd)
 echo Repository is at $SRC
-
-d="$WORK/rwts.$$"
-mkdir "$d"
-cd "$d"
+BUILD=$(cd "$BUILD" && pwd)
+echo Build dir is at $BUILD
 
 echo Unzipping test suite...
+unzip_dir=`mktemp -d "$WORK/xqts.XXXXXX"`
+cd "$unzip_dir"
 unzip $ZIP &>/dev/null
 
 echo Cleaning up previous data...
 rm -rf "$SRC/test/rbkt/Queries/w3c_testsuite" "$SRC/test/rbkt/ExpQueryResults/w3c_testsuite"
-rm -rf "$SRC/test/rbkt/Queries/w3c_testsuite/InputQueries"
-rm -Rf "$SRC/test/rbkt/Queries/w3c_testsuite/TestSources"
 
-mkdir -p "$SRC/test/rbkt/Queries/w3c_testsuite/TestSources/"
+mkdir -p "$SRC/test/rbkt/Queries/w3c_testsuite/TestSources"
 
-q=`mktemp $WORK/rwts.XXXXXX`
-cat >$q <<"EOF"
+q=`mktemp "$WORK/xq.XXXXXX"`
+cat >"$q" <<"EOF"
 declare default element namespace "http://www.w3.org/2005/02/query-test-XQTSCatalog";
 string-join (
   for $sch in //schema
@@ -63,10 +69,10 @@ string-join (
 ")
 EOF
 echo 'Processing URI of catalog (schemas)...'
-$BUILD/bin/zorba --context-item XQTSCatalog.xml --omit-xml-declaration -o $SRC/test/rbkt/Queries/w3c_testsuite/TestSources/uri.txt --as-files --query $q
+"$BUILD/bin/zorba" --context-item XQTSCatalog.xml --omit-xml-declaration -o "$SRC/test/rbkt/Queries/w3c_testsuite/TestSources/uri.txt" --as-files --query "$q"
 
 
-cat >$q <<"EOF"
+cat >"$q" <<"EOF"
 declare default element namespace "http://www.w3.org/2005/02/query-test-XQTSCatalog";
 string-join (distinct-values (
   for $mod in //sources/module
@@ -76,20 +82,20 @@ string-join (distinct-values (
 ")
 EOF
 echo 'Processing URI of catalog (modules)...'
-$BUILD/bin/zorba --context-item XQTSCatalog.xml --omit-xml-declaration -o $SRC/test/rbkt/Queries/w3c_testsuite/TestSources/module.txt --as-files --query $q
+"$BUILD/bin/zorba" --context-item XQTSCatalog.xml --omit-xml-declaration -o "$SRC/test/rbkt/Queries/w3c_testsuite/TestSources/module.txt" --as-files --query "$q"
 
 
-cat >$q <<"EOF"
+cat >"$q" <<"EOF"
 declare default element namespace "http://www.w3.org/2005/02/query-test-XQTSCatalog";
 for $t in //collection
 return concat ($t/@ID, "=", string-join( for $x in $t/input-document return fn:concat( "$RBKT_SRC_DIR/Queries/w3c_testsuite/TestSources/", $x, ".xml"), ";" ), "
 ")
 EOF
 echo 'Processing URI of catalog (collections)...'
-$BUILD/bin/zorba --context-item XQTSCatalog.xml --omit-xml-declaration -o $SRC/test/rbkt/Queries/w3c_testsuite/TestSources/collection.txt --as-files --query $q
+"$BUILD/bin/zorba" --context-item XQTSCatalog.xml --omit-xml-declaration -o "$SRC/test/rbkt/Queries/w3c_testsuite/TestSources/collection.txt" --as-files --query "$q"
 
 
-cat >$q <<"EOF"
+cat >"$q" <<"EOF"
 declare default element namespace "http://www.w3.org/2005/02/query-test-XQTSCatalog";
 string-join ((
 for $sch in //schema return concat ("%uri ", $sch/@uri, " ", $sch/@FileName), 
@@ -126,7 +132,7 @@ string-join ($tc/expected-error/text(), ";")
 EOF
 
 echo 'Processing catalog...'
-$BUILD/bin/zorba --context-item XQTSCatalog.xml --omit-xml-declaration --as-files --query $q | tee /tmp/xq-res.txt | perl -e '
+"$BUILD/bin/zorba" --context-item XQTSCatalog.xml --omit-xml-declaration --as-files --query "$q" | tee "$WORK/xq-res.txt" | perl -e '
 use strict;
 use File::Copy;
 
@@ -268,20 +274,20 @@ if (@errs) {
 }
 
 }
-close (URIS);' $SRC
-rm -f $q
+close (URIS);' "$SRC"
+rm -f "$q"
 
 echo "Importing test sources..."
-mv XQTSCatalog.xml $SRC/test/rbkt/Queries/w3c_testsuite/
-#mv TestSources/* $SRC/test/rbkt/Queries/w3c_testsuite/TestSources/
+mv XQTSCatalog.xml "$SRC/test/rbkt/Queries/w3c_testsuite/"
 # Need the modules which have .xq suffix; rename them to .xqi files because we do not want to test them (ctest would find those also)
 find "TestSources" -name '*.xq' -exec mv "{}" "$SRC/test/rbkt/Queries/w3c_testsuite/{}i" \;
 find "TestSources" -type f -exec mv "{}" "$SRC/test/rbkt/Queries/w3c_testsuite/{}" \;
 mv "XQTSCatalog.xsd" "$SRC/test/rbkt/Queries/w3c_testsuite/"
 
-echo "Cleaning up work directory...$d0 $d"
+echo "Cleaning up work directory...$orig_pwd $unzip_dir"
 
-cd "$d0"; rm -rf "$d"
+cd "$orig_pwd"
+rm -rf "$unzip_dir"
 
 echo Done.
 
