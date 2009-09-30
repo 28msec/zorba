@@ -7712,9 +7712,13 @@ void *begin_visit (const SchemaElementTest& v)
   }
   else
   {
-    xqtref_t seqmatch = CTXTS->create_schema_element_type(elemQNameItem,
-                                                          TypeConstants::QUANT_ONE);
-    tstack.push(seqmatch);
+    try {
+      xqtref_t seqmatch = CTXTS->create_schema_element_type(elemQNameItem,
+          TypeConstants::QUANT_ONE);
+      tstack.push(seqmatch);
+    } catch (error::ZorbaError& e) {
+      ZORBA_ERROR_LOC_DESC(e.theErrorCode, v.get_location(), e.theDescription);
+    }
   }
 #else//ZORBA_NO_XMLSCHEMA
     ZORBA_ERROR_LOC(XQP0004_SYSTEM_NOT_SUPPORTED, v.get_location());
