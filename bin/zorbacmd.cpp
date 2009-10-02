@@ -1039,16 +1039,20 @@ int _tmain(int argc, _TCHAR* argv[])
 
   }
 
-  timing.startTimer(TimingInfo::DEINIT_TIMER, 2);
+  if (doTiming)
+    timing.startTimer(TimingInfo::DEINIT_TIMER, 2);
 
   lZorbaInstance->shutdown();
   zorba::simplestore::SimpleStoreManager::shutdownStore(store);
 
-  timing.stopTimer(TimingInfo::DEINIT_TIMER, 2);
+  if (doTiming)
+  {
+    timing.stopTimer(TimingInfo::DEINIT_TIMER, 2);
 
-  std::cout << std::endl << "Engine Shutdown Time     : " << timing.deinitTime
-            << " (user: " << timing.deinitClock << ")"
-            << " milliseconds" << std::endl;
+    std::cout << std::endl << "Engine Shutdown Time     : " << timing.deinitTime
+              << " (user: " << timing.deinitClock << ")"
+              << " milliseconds" << std::endl;
+  }
 
   return 0;
 }
