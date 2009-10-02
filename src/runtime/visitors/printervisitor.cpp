@@ -1452,10 +1452,8 @@ void endVisitFlworReturn(const PlanIterator& /*a*/)
   PRINTER_VISITOR_DEFINITION(ZorbaExportXmlIterator);
 
   PRINTER_VISITOR_DEFINITION(CreateValueIndex);
+  PRINTER_VISITOR_DEFINITION(CreateInternalIndexIterator);
   PRINTER_VISITOR_DEFINITION(DropValueIndex);
-  PRINTER_VISITOR_DEFINITION(ValueIndexInsertSessionOpener);
-  PRINTER_VISITOR_DEFINITION(ValueIndexInsertSessionCloser);
-  PRINTER_VISITOR_DEFINITION(ValueIndexBuilder);
   PRINTER_VISITOR_DEFINITION(ValueIndexPointProbe);
   PRINTER_VISITOR_DEFINITION(ValueIndexRangeProbe);
 

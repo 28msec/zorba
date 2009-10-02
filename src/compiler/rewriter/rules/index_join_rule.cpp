@@ -283,9 +283,9 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   store::Item_t qname;
   GENV_ITEMFACTORY->createQName(qname, "", "", os.str().c_str());
 
-  ValueIndex_t idx = new ValueIndex(sctxid, loc, qname);
+  ValueIndex_t idx = new ValueIndex(rCtx.theCCB, loc, qname);
 
-  idx->setDomainExpression(domainExpr);
+  idx->setDomainExpr(domainExpr);
 
   idx->setDomainVariable(rCtx.createTempVar(sctxid, loc, var_expr::for_var));
 
@@ -359,18 +359,12 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   //
   expr_t qnameExpr(new const_expr(sctxid, loc, qname));
 
-  rchandle<fo_expr> createExpr;
-  rchandle<fo_expr> buildExpr;
-
-  createExpr = new fo_expr(sctxid, loc, LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS,
-                                                           "create-index",
-                                                           1));
+  rchandle<fo_expr> createExpr = new fo_expr(sctxid,
+                                             loc,
+                                             LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS,
+                                                                "create-internal-index",
+                                                                1));
   createExpr->add(qnameExpr);
-
-  buildExpr = new fo_expr(sctxid, loc, LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS,
-                                                          "build-index",
-                                                          1));
-  buildExpr->add(qnameExpr);
 
   //
   //  Build or adjust outer sequential expr 
@@ -380,7 +374,6 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
     sequential_expr* seqExpr = new sequential_expr(sctxid, loc);
     
     seqExpr->push_back(createExpr.getp());
-    seqExpr->push_back(buildExpr.getp());
     seqExpr->push_back(outerFlworExpr);
 
     outerSeqExpr = seqExpr;
@@ -392,7 +385,6 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
     sequential_expr* seqExpr = reinterpret_cast<sequential_expr*>(outerSeqExpr.getp());
 
     seqExpr->push_front(createExpr.getp());
-    seqExpr->push_front(buildExpr.getp());
   }
 
   //

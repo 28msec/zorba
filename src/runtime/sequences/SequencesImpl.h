@@ -140,13 +140,13 @@ public:
 class FnIndexOfIteratorState : public PlanIteratorState 
 {
 public:  
-  uint32_t theCurrentPos; // the current position in the sequence
+  uint32_t        theCurrentPos; // the current position in the sequence
   store::Item_t   theSearchItem; // the item to search for
-  XQPCollator* theCollator;
+  XQPCollator   * theCollator;
 
+public:
   void init(PlanState&);
   void reset(PlanState&);
-  
 };
 
 
@@ -299,9 +299,11 @@ protected:
 
 public:
   SERIALIZABLE_CLASS(FnZeroOrOneIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnZeroOrOneIterator,
-                                   NaryBaseIterator<FnZeroOrOneIterator,
-                                                    PlanIteratorState >)
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  FnZeroOrOneIterator,
+  NaryBaseIterator<FnZeroOrOneIterator, PlanIteratorState >)
+
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (NaryBaseIterator<FnZeroOrOneIterator,
@@ -344,9 +346,11 @@ protected:
 
 public:
   SERIALIZABLE_CLASS(FnExactlyOneIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnExactlyOneIterator,
-                                   NaryBaseIterator<FnExactlyOneIterator,
-                                                    PlanIteratorState >)
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  FnExactlyOneIterator,
+  NaryBaseIterator<FnExactlyOneIterator, PlanIteratorState >)
+
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (NaryBaseIterator<FnExactlyOneIterator,

@@ -33,7 +33,7 @@ class IndexSpecification;
 class IndexKeyCompareFunction;
 class IndexColumnRange;
 class IndexEntryCreator;
-
+class Iterator;
 
 typedef rchandle<IndexEntryCreator> IndexEntryCreator_t;
 
@@ -150,12 +150,6 @@ public:
   virtual const XQPCollator* getCollator(ulong i) const = 0;
 
   /**
-   * Create an IndexEntryReceiver to be used for bulk insert into the index.
-   * (see class IndexEntryReceiver below).
-   */
-  virtual IndexEntryReceiver_t createInsertSession() = 0;
-
-  /**
    * Create an index condition for a exact-key probe (see class 
    * IndexExactKeyCondition below)
    */
@@ -166,6 +160,20 @@ public:
    * IndexBoxCondition below)
    */
   virtual IndexBoxCondition_t createBoxCondition() = 0;
+
+  /**
+   *  Delete all the contents of the index.
+   */
+  virtual void clear() = 0;
+
+  /**
+   * Insert into the index the entries that are produced by the given iterator.
+   * Given that iterators can produce only a single item at a time, the given
+   * source iterator does not actually produce whole index entries. Instead, 
+   * the items of each index entry are produced one at a time: first the domain
+   * node, followed by each of the key items.
+   */
+  virtual void build(Iterator* sourceIter) = 0;
 
   /**
    *  Insert the given item in the value set of the given key. If the key

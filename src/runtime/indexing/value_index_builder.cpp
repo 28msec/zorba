@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "zorbaerrors/error_manager.h"
+
 #include "system/globalenv.h"
 
 #include "types/typeimpl.h"
@@ -24,25 +26,56 @@
 
 #include "runtime/indexing/value_index_builder.h"
 #include "runtime/visitors/planitervisitor.h"
+#include "runtime/api/plan_wrapper.h"
+#include "runtime/api/plan_iterator_wrapper.h"
 
 #include "store/api/store.h"
 
-namespace zorba {
+namespace zorba 
+{
 
 SERIALIZABLE_CLASS_VERSIONS(CreateValueIndex)
 END_SERIALIZABLE_CLASS_VERSIONS(CreateValueIndex)
 
+SERIALIZABLE_CLASS_VERSIONS(CreateInternalIndexIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(CreateInternalIndexIterator)
+
 SERIALIZABLE_CLASS_VERSIONS(DropValueIndex)
 END_SERIALIZABLE_CLASS_VERSIONS(DropValueIndex)
 
-SERIALIZABLE_CLASS_VERSIONS(ValueIndexInsertSessionOpener)
-END_SERIALIZABLE_CLASS_VERSIONS(ValueIndexInsertSessionOpener)
 
-SERIALIZABLE_CLASS_VERSIONS(ValueIndexInsertSessionCloser)
-END_SERIALIZABLE_CLASS_VERSIONS(ValueIndexInsertSessionCloser)
+static store::Index* createIndex(ValueIndex* zorbaIndex, dynamic_context* dctx)
+{
+  const std::vector<xqtref_t>& keyTypes(zorbaIndex->getKeyTypes());
+  const std::vector<std::string>& keyCollations(zorbaIndex->getKeyCollations());
+  ulong numColumns = keyTypes.size();
 
-SERIALIZABLE_CLASS_VERSIONS(ValueIndexBuilder)
-END_SERIALIZABLE_CLASS_VERSIONS(ValueIndexBuilder)
+  xqp_string defaultCollation;
+  std::string defaultCollationStr;
+  if (zorbaIndex->getSctx()->lookup_default_collation(defaultCollation))
+    defaultCollationStr = defaultCollation.getStore()->str();
+
+  store::IndexSpecification spec(numColumns);
+
+  for(ulong i = 0; i < numColumns; ++i) 
+  {
+    const XQType& t = *keyTypes[i];
+    spec.theKeyTypes[i] = t.get_qname();
+    const std::string& coll = keyCollations[i];
+    spec.theCollations.push_back(coll.empty() ? defaultCollationStr : coll);
+  }
+
+  spec.theIsUnique = zorbaIndex->getUnique();
+  spec.theIsSorted = zorbaIndex->getMethod() == ValueIndex::BTREE;
+  spec.theIsTemp = zorbaIndex->getTemp();
+  spec.theIsThreadSafe = true;
+  
+  store::Index_t storeIndex = GENV_STORE.createIndex(zorbaIndex->getName(), spec);
+
+  dctx->bind_index(zorbaIndex->getName(), storeIndex);
+
+  return storeIndex.getp();
+}
 
 
 /***************************************************************************//**
@@ -51,41 +84,39 @@ END_SERIALIZABLE_CLASS_VERSIONS(ValueIndexBuilder)
 bool CreateValueIndex::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   bool status;
-  ValueIndex_t indexSpec;
-  store::Index_t index;
-  ValueIndexInsertSession_t session;
+  store::Item_t qname;
+  ValueIndex_t zorbaIndex;
+  store::Index_t storeIndex;
+  PlanIterator* buildPlan;
+  store::Iterator_t planWrapper;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  status = consumeNext(result, theChild, planState);
+  status = consumeNext(qname, theChild, planState);
   ZORBA_ASSERT(status);
-  indexSpec = theSctx->lookup_index(result);
 
+  zorbaIndex = theSctx->lookup_index(qname);
+
+  storeIndex = createIndex(zorbaIndex, planState.dctx());
+
+  buildPlan = zorbaIndex->getBuildPlan(planState.theCompilerCB, loc);
+
+  planWrapper = new PlanWrapper(buildPlan, planState.theCompilerCB, planState.dctx());
+
+  try
   {
-    const std::vector<xqtref_t>& iTypes(indexSpec->getKeyTypes());
-    const std::vector<std::string>& iColls(indexSpec->getKeyCollations());
-    int n = iTypes.size();
-    store::IndexSpecification spec(n);
-    xqp_string dColl;
-    std::string dCollString(theSctx->lookup_default_collation(dColl) ?
-                            dColl.getStore()->str() : "");
-    for(int i = 0; i < n; ++i) 
-    {
-      const XQType& t = *iTypes[i];
-      spec.theKeyTypes[i] = t.get_qname();
-      const std::string& coll = iColls[i];
-      spec.theCollations.push_back(coll.empty() ? dCollString : coll);
-    }
-    spec.theIsUnique = indexSpec->getUnique();
-    spec.theIsSorted = indexSpec->getMethod() == ValueIndex::BTREE;
-    spec.theIsTemp = indexSpec->getTemp();
-    spec.theIsThreadSafe = true;
-    spec.theIECreators = indexSpec->getPatternCreatorPairs();
-
-    index = GENV_STORE.createIndex(result, spec);
-
-    planState.dctx()->bind_index(indexSpec->getName(), index);
+    storeIndex->build(planWrapper);
+  }
+  catch(error::ZorbaError& e)
+  {
+    storeIndex->clear();
+    ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+  }
+  catch(...)
+  {
+    storeIndex->clear();
+    throw;
   }
 
   STACK_END (state);
@@ -98,142 +129,69 @@ UNARY_ACCEPT(CreateValueIndex);
 /***************************************************************************//**
 
 ********************************************************************************/
+bool CreateInternalIndexIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::Iterator_t planIteratorWrapper;
+  store::Index* storeIndex;
+  ValueIndex* zorbaIndex;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  zorbaIndex = theSctx->lookup_index(theQName);
+
+  storeIndex = createIndex(zorbaIndex, planState.dctx());
+
+  planIteratorWrapper = new PlanIteratorWrapper(theChild, planState);
+
+  storeIndex = planState.dctx()->lookup_index(theQName);
+
+  try
+  {
+    storeIndex->build(planIteratorWrapper);
+  }
+  catch(error::ZorbaError& e)
+  {
+    storeIndex->clear();
+    ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+  }
+  catch (...)
+  {
+    storeIndex->clear();
+    throw;
+  }
+
+  STACK_END (state);
+}
+
+
+UNARY_ACCEPT(CreateInternalIndexIterator);
+
+
+/***************************************************************************//**
+
+********************************************************************************/
 bool DropValueIndex::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   bool status;
-  ValueIndex_t index;
-  PlanIteratorState *state;
-  ValueIndexInsertSession_t session;
+  store::Item_t qname;
 
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  status = consumeNext(result, theChild, planState);
+  status = consumeNext(qname, theChild, planState);
   ZORBA_ASSERT(status);
 
-  planState.dctx()->unbind_index(result);
-  GENV_STORE.deleteIndex(result);
+  planState.dctx()->unbind_index(qname);
+  GENV_STORE.deleteIndex(qname);
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
 UNARY_ACCEPT(DropValueIndex);
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-bool ValueIndexInsertSessionOpener::nextImpl(
-    store::Item_t& result,
-    PlanState& planState) const
-{
-  bool status;
-  PlanIteratorState* state;
-
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  status = consumeNext(result, theChild, planState);
-  ZORBA_ASSERT(status);
-
-  {
-    store::Index* index = planState.dctx()->lookup_index(result);
-
-    store::IndexEntryReceiver_t receiver = index->createInsertSession();
-
-    ValueIndexInsertSession_t session = new ValueIndexInsertSession(receiver);
-
-    planState.dctx()->set_index_insert_session(result, session);
-  }
-
-  STACK_END (state);
-}
-
-
-UNARY_ACCEPT(ValueIndexInsertSessionOpener);
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-bool ValueIndexInsertSessionCloser::nextImpl(
-    store::Item_t& result,
-    PlanState& planState) const
-{
-  bool status;
-  ValueIndexInsertSession_t session;
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  status = consumeNext(result, theChild, planState);
-  ZORBA_ASSERT(status);
-
-  session = planState.dctx()->get_index_insert_session(result);
-  session->commitBulkInsertSession();
-
-  STACK_END (state);
-}
-
-
-UNARY_ACCEPT(ValueIndexInsertSessionCloser);
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-void ValueIndexBuilderState::init(PlanState& state)
-{
-  PlanIteratorState::init(state);
-  theSession = NULL;
-}
-
-
-void ValueIndexBuilderState::reset(PlanState& state)
-{
-  PlanIteratorState::reset(state);
-  theSession = NULL;
-}
-
-
-bool ValueIndexBuilder::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Item_t dValue;
-  store::IndexKey key;
-
-  ValueIndexBuilderState* state;
-  DEFAULT_STACK_INIT(ValueIndexBuilderState, state, planState);
-
-  if (state->theSession == NULL) 
-  {
-    consumeNext(state->theIndexQname, theChildren[0], planState);
-
-    state->theSession = planState.dctx()->get_index_insert_session(state->theIndexQname);
-  }
-
-  consumeNext(dValue, theChildren[1], planState);
-
-  for(unsigned int i = 2; i < theChildren.size(); ++i) 
-  {
-    store::Item_t cValue;
-    if (consumeNext(cValue, theChildren[i], planState))
-    {
-      key.push_back(cValue);
-
-      assert(cValue->isAtomic());
-      assert(!consumeNext(cValue, theChildren[i], planState));
-    }
-    else
-    {
-      key.push_back(NULL);
-    }
-  }
-
-  state->theSession->getBulkInsertSession()->receive(key, dValue);
-
-  STACK_END (state);
-}
-
-
-NARY_ACCEPT(ValueIndexBuilder);
 
 
 }

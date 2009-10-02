@@ -201,9 +201,6 @@ XQueryCompiler::normalize(parsenode_t aParsenode)
     ZORBA_ERROR( API0002_COMPILE_FAILED);
     return NULL;
   }
-  RewriterContext rCtx(theCompilerCB, lExpr);
-  GENV_COMPILERSUBSYS.getPhase1Rewriter()->rewrite(rCtx);
-  lExpr = rCtx.getRoot();
   normalize_expr_tree ("query", theCompilerCB, lExpr, NULL);
   return lExpr;
 }
@@ -218,10 +215,6 @@ XQueryCompiler::optimize(expr_t lExpr)
     GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
     lExpr = rCtx.getRoot();
     
-    RewriterContext rCtx1(theCompilerCB, lExpr);
-    GENV_COMPILERSUBSYS.getPhase1Rewriter()->rewrite(rCtx1);
-    lExpr = rCtx1.getRoot();
-
     if (theCompilerCB->m_config.optimize_cb != NULL)
       theCompilerCB->m_config.optimize_cb (&*lExpr, "query");
   }

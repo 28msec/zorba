@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_RUNTIME_VALUE_INDEX_BUILDER
-#define ZORBA_RUNTIME_VALUE_INDEX_BUILDER
+#ifndef ZORBA_RUNTIME_VALUE_INDEX
+#define ZORBA_RUNTIME_VALUE_INDEX
 
 #include "runtime/base/unarybase.h"
 #include "runtime/base/narybase.h"
@@ -23,56 +23,63 @@
 namespace zorba 
 {
 
-class ValueIndexInsertSession;
-
-typedef rchandle<ValueIndexInsertSession> ValueIndexInsertSession_t;
-
-
 /***************************************************************************//**
-  Implements the "create index <uri>" expr. It creates the index in the store
-  without populating. It returns the empty sequence.
+  Implements the create-index function.
 ********************************************************************************/
 UNARY_ITER(CreateValueIndex);
 
 
 /***************************************************************************//**
-  Implements the "drop index <uri>" expr. It removes the index from the store.
-  It returns the empty sequence.
+  Implements the create-internal-index function.
+********************************************************************************/
+class CreateInternalIndexIterator : public UnaryBaseIterator<CreateInternalIndexIterator,
+                                                             PlanIteratorState>
+{
+protected:
+  store::Item_t theQName;
+
+public:
+  SERIALIZABLE_CLASS(CreateInternalIndexIterator)
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  CreateInternalIndexIterator,
+  UnaryBaseIterator<CreateInternalIndexIterator, PlanIteratorState >)
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (UnaryBaseIterator<CreateInternalIndexIterator, PlanIteratorState >*)this);
+
+    ar & theQName;
+  }
+
+public:
+  CreateInternalIndexIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        PlanIter_t& arg,
+        store::Item* qname)
+    :
+    UnaryBaseIterator<CreateInternalIndexIterator, PlanIteratorState>(sctx, loc, arg),
+    theQName(qname)
+  {
+  }
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+};
+
+
+/***************************************************************************//**
+  Implements the drop-index function.
 ********************************************************************************/
 UNARY_ITER(DropValueIndex);
 
 
-/***************************************************************************//**
-
-********************************************************************************/
-UNARY_ITER(ValueIndexInsertSessionOpener);
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-UNARY_ITER(ValueIndexInsertSessionCloser);
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-class ValueIndexBuilderState : public PlanIteratorState 
-{
-public:
-  ValueIndexInsertSession_t theSession;
-  store::Item_t             theIndexQname;
-
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-
-NARY_ITER_STATE(ValueIndexBuilder, ValueIndexBuilderState);
-
 }
 
-#endif /* ZORBA_VALUE_INDEX_BUILDER_H */
+#endif 
 /* vim:set ts=2 sw=2: */
 
 /*

@@ -17,42 +17,44 @@
 
 #include "runtime/base/plan_iterator.h"
 
-namespace zorba {
-  /*******************************************************************************
-    class PlanIteratorWrapper
-   ********************************************************************************/
-  PlanIteratorWrapper::PlanIteratorWrapper(const PlanIterator* iter, PlanState& state) 
-    : theIterator(iter),
-    theStateBlock(&state)
-  {
-  }
+namespace zorba 
+{
+
+/*******************************************************************************
+  class PlanIteratorWrapper
+********************************************************************************/
+PlanIteratorWrapper::PlanIteratorWrapper(const PlanIterator* iter, PlanState& state) 
+  :
+  theIterator(iter),
+  theStateBlock(&state)
+{
+}
 
 
-  PlanIteratorWrapper::~PlanIteratorWrapper()
-  {
-  }
-
-  void
-  PlanIteratorWrapper::open()
-  {
-  }
-
-  bool
-  PlanIteratorWrapper::next(store::Item_t& result)
-  {
-    return PlanIterator::consumeNext(result, theIterator, *theStateBlock);
-  }
-
-  void
-  PlanIteratorWrapper::reset()
-  {
-    theIterator->reset(*theStateBlock);
-  }
+PlanIteratorWrapper::~PlanIteratorWrapper()
+{
+}
+  
+  
+void PlanIteratorWrapper::open()
+{
+}
 
 
-  void
-  PlanIteratorWrapper::close() throw()
-  {
-  }
+bool PlanIteratorWrapper::next(store::Item_t& result)
+{
+  return PlanIterator::consumeNext(result, theIterator, *theStateBlock);
+}
 
+
+void PlanIteratorWrapper::reset()
+{
+  theIterator->reset(*theStateBlock);
+}
+  
+
+void PlanIteratorWrapper::close() throw()
+{
+}
+  
 } /* namespace zorba */

@@ -24,6 +24,7 @@ namespace zorba {
 
 NARY_ITER(CreateTupleIterator);
 
+
 class GetTupleFieldIteratorState : public PlanIteratorState {
   public:
     xqp_uint theIndex;

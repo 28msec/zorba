@@ -35,54 +35,47 @@ typedef rchandle<ValueIndexInsertSession> ValueIndexInsertSession_t;
 
   Class ValueIndex represents an index declaration, which describes the index
   properties and the domain and field expressions and their types. An instance
-  of ValueIndex is constructed by the translator for each DECLARE INDEX statement
-  that appears in a query. A (index_uri --> ValueIndex obj) mapping is also
-  registered in the static context during translation.
+  of ValueIndex is constructed by the translator for each DECLARE INDEX stmt
+  that appears in an imported data module. A (index_qname --> ValueIndex obj)
+  mapping is also registered in the static context during translation.
 
   The DECLARE INDEX sysntax is the following:
   -------------------------------------------
 
-  IndexDecl ::= "DECLARE" ["UNIQUE"] ["HASH" | "BTREE"] "INDEX" UriLiteral
-                "ON" ExprSingle "BY" "(" IndexField+ ")"
+  IndexDecl ::= "declare" ("unique" | "non" "unique")? 
+                          ("ordered" | "unordered")?
+                          ("manual" | "automatic)?
+                          "index" QName
+                          "on" Expr
+                          "by" "(" IndexKeyList ")"
 
-  IndexField ::= ExprSingle [TypeDeclaration] ["COLLATION" UriLiteral]
+  IndexKeyList ::= IndexKeySpec (COMMA IndexKeySpec)*
 
+  IndexKeySpec ::= ExprSingle TypeDeclaration? 
+                              ("empty" ("greatest" | "least"))?
+                              ("collation" UriLiteral)?
 
   Constraints:
   ------------
 
-  The expressions defining the index fields must return a single atomic value
-  for each value returned by the domain expression.
+  The domain expr must be deterministic and it must not reference any variables
+  that are not defined inside the expr itself.
+
+  After atomization, the ExprSingle in each IndexKeySpec must return a single
+  atomic value for each value returned by the domain expression.
 
 
-  - Index-related functions (see src/functions/Index.h):
+  Index-related functions:
+  ------------------------
 
-  create-index($indexUri as anyURI) as ()
+    create-index(...)
+    create-internal-index(...)
+    drop-index(...)
+    probe-index-point(...)
+    probe-index-range(...)
 
-  drop-index($indexUri as anyURI) as ()
-
-  build-index($indexUri as anyURI) as ()
-
-  probe-index-point($indexUri as anyURI,
-                    $key1     as anyAtomic?,
-                    ...,
-                    $keyN     as anyAtomic?) as item()*
-
-  probe-index-range(uriExpr                  as xs:uri,
-                    range1LowerBound         as anyAtomic?,
-                    range1UpperBound         as anyAtomic?,
-                    range1HaveLowerBound     as boolean?,
-                    range1HaveupperBound     as boolean?,
-                    range1LowerBoundIncluded as boolean?,
-                    range1upperBoundIncluded as boolean?,
-                    ....,
-                    rangeNLowerBound         as anyAtomic?,
-                    rangeNUpperBound         as anyAtomic?,
-                    rangeNHaveLowerBound     as boolean?,
-                    rangeNHaveupperBound     as boolean?,
-                    rangeNLowerBoundIncluded as boolean?,
-                    rangeNupperBoundIncluded as boolean?) as item()*
-
+  See src/functions/Index.cpp for details.
+ 
 ********************************************************************************/
 class ValueIndex : public SimpleRCObject 
 {
@@ -94,6 +87,8 @@ public:
   } index_method_t;
 
 private:
+  static_context         * theSctx;
+
   store::Item_t            theName;
   bool                     theIsUnique;
   bool                     theIsTemp;
@@ -104,6 +99,9 @@ private:
   std::vector<xqtref_t>    theKeyTypes;
   std::vector<std::string> theKeyCollations;
 
+  expr_t                   theBuildExpr;
+  PlanIter_t               theBuildPlan;
+
   std::vector<store::PatternIECreatorPair> m_creatorPatterns;
 
 public:
@@ -112,11 +110,13 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  ValueIndex(short sctx, const QueryLoc& loc, const store::Item_t& name);
+  ValueIndex(CompilerCB* ccb, const QueryLoc& loc, const store::Item_t& name);
 
   ~ValueIndex();
 
-  const store::Item* getName() const;
+  static_context* getSctx() const { return theSctx; }
+
+  store::Item* getName() const;
 
   bool getUnique() const { return theIsUnique; }
 
@@ -130,9 +130,9 @@ public:
 
   void setMethod(index_method_t method) { theMethod = method; }
 
-  expr_t getDomainExpression() const;
+  expr_t getDomainExpr() const;
 
-  void setDomainExpression(expr_t domainExpr);
+  void setDomainExpr(expr_t domainExpr);
 
   var_expr_t getDomainVariable() const;
 
@@ -169,34 +169,20 @@ public:
   {
     return m_creatorPatterns;
   }
+
+  expr* getBuildExpr(CompilerCB* topCCB, const QueryLoc& loc);
+
+  PlanIterator* getBuildPlan(CompilerCB* topCCB, const QueryLoc& loc);
 };
+
 
 typedef rchandle<ValueIndex> ValueIndex_t;
 
 
-/***************************************************************************//**
-
-********************************************************************************/
-class ValueIndexInsertSession : public SimpleRCObject 
-{
-private:
-  store::IndexEntryReceiver_t m_bulkInsertSession;
-
-public:
-  ValueIndexInsertSession(store::IndexEntryReceiver_t receiver)
-    :
-    m_bulkInsertSession(receiver) { }
-
-  void commitBulkInsertSession();
-
-  void abortBulkInsertSession();
-
-  store::IndexEntryReceiver_t& getBulkInsertSession() { return m_bulkInsertSession; }
-};
-
 }
 
-#endif /* ZORBA_VALUE_INDEX_H */
+#endif
+
 /* vim:set ts=2 sw=2: */
 
 /*

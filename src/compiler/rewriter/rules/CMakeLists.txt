@@ -20,6 +20,5 @@ SET(REWRITER_RULES_SRCS
     path_rules.cpp
     expr_minimize_rules.cpp
     hoist_rules.cpp
-    expand_index_rule.cpp
     index_join_rule.cpp
 )

@@ -65,11 +65,14 @@
 #include "runtime/eval/FnContextImpl.h"
 #include "runtime/misc/MiscImpl.h"
 #include "runtime/update/update.h"
+#include "runtime/indexing/value_index_builder.h"
+#include "runtime/debug/zorba_debug_iterator.h"
+
+#include "debugger/zorba_debugger_commons.h"
 
 #include "functions/function.h"
 
-#include "runtime/debug/zorba_debug_iterator.h"
-#include "debugger/zorba_debugger_commons.h"
+#include "indexing/value_index.h"
 
 #include "types/typeops.h"
 
@@ -1656,7 +1659,8 @@ void end_visit (while_expr& v) {
 }
 
 
-bool begin_visit (fo_expr& v) {
+bool begin_visit (fo_expr& v) 
+{
   CODEGEN_TRACE_IN ("");
 
   // If the function is an enclosed expression, push it in the constructors
@@ -1670,31 +1674,48 @@ bool begin_visit (fo_expr& v) {
 }
 
 
-void end_visit (fo_expr& v) 
+void end_visit(fo_expr& v) 
 {
   CODEGEN_TRACE_OUT("");
 
   const function* func = v.get_func();
-  ZORBA_ASSERT (func != NULL);
+  ZORBA_ASSERT(func != NULL);
 
-  vector<PlanIter_t> argv (v.size ());
-  generate (argv.rbegin (), argv.rend (), stack_to_generator (itstack));
+  vector<PlanIter_t> argv(v.size());
+  generate (argv.rbegin(), argv.rend(), stack_to_generator(itstack));
 
   const QueryLoc& loc = qloc;
 
-  if (func->validate_args (argv)) 
+  if (func->validate_args(argv)) 
   {
-    PlanIter_t iter = func->codegen(ccb, sctx, loc, argv, v);
-    ZORBA_ASSERT(iter != NULL);
-    push_itstack(iter);
-
-    if (is_enclosed_expr(&v)) 
+    if (func->getKind() == FunctionConsts::FN_CREATE_INTERNAL_INDEX)
     {
-      expr *e = pop_stack(theConstructorsStack);
-      ZORBA_ASSERT(e == &v);
+      const const_expr* qnameExpr = static_cast<const const_expr*>(v[0].getp());
+      store::Item* qname = qnameExpr->get_val();
 
-      if (!theAttrContentStack.empty() && theAttrContentStack.top() == true)
-        dynamic_cast<EnclosedIterator*>(iter.getp())->setAttrContent();
+      ValueIndex* index = sctx->lookup_index(qname);
+      
+      expr* buildExpr = index->getBuildExpr(ccb, loc);
+      buildExpr->accept(*this);
+
+      PlanIter_t buildIter = pop_itstack();
+      PlanIter_t iter = new CreateInternalIndexIterator(sctx, loc, buildIter, qname);
+      push_itstack(iter);
+    }
+    else
+    {
+      PlanIter_t iter = func->codegen(ccb, sctx, loc, argv, v);
+      ZORBA_ASSERT(iter != NULL);
+      push_itstack(iter);
+
+      if (is_enclosed_expr(&v)) 
+      {
+        expr* e = pop_stack(theConstructorsStack);
+        ZORBA_ASSERT(e == &v);
+
+        if (!theAttrContentStack.empty() && theAttrContentStack.top() == true)
+          dynamic_cast<EnclosedIterator*>(iter.getp())->setAttrContent();
+      }
     }
   }
   else
@@ -2375,7 +2396,7 @@ PlanIter_t codegen(
 
   if (result != NULL && descr != NULL
       && Properties::instance()->printIteratorTree() &&
-      (xqp_string ("main query") == descr || ! Properties::instance()->iterPlanTest ()))
+      (xqp_string ("main query") == descr || ! Properties::instance()->iterPlanTest()))
   {
     std::ostream &os = Properties::instance()->iterPlanTest ()
       ? std::cout

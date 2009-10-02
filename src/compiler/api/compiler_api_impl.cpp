@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 #include "compiler/api/compiler_api_impl.h"
-#include "compiler/rewriter/rewriters/phase1_rewriter.h"
 #include "compiler/rewriter/rewriters/default_optimizer.h"
 
 namespace zorba {
 
 XQueryCompilerSubsystemImpl::XQueryCompilerSubsystemImpl()
   :
-  m_phase1Rewriter(new Phase1Rewriter()),
   m_defaultOptimizer(new DefaultOptimizer())
 {
 }
@@ -35,11 +33,6 @@ XQueryCompilerSubsystemImpl::~XQueryCompilerSubsystemImpl() throw ()
 Rewriter *XQueryCompilerSubsystemImpl::getDefaultOptimizingRewriter()
 {
   return m_defaultOptimizer.get();
-}
-
-Rewriter *XQueryCompilerSubsystemImpl::getPhase1Rewriter()
-{
-  return m_phase1Rewriter.get();
 }
 
 }

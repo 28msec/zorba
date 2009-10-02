@@ -296,9 +296,12 @@ public:
 
   xquery_version       : 100 for 1.0, 110 for 1.1 etc
 
-  cb                   : The compiler control block associated with this translator
-                         (each translator uses its own compiler cb; also for library
-                          modules).
+  theCCB               : The compiler control block associated with this translator
+                         Each translator uses its own compiler cb. The compiler cb
+                         of each translator is destroyed after translation of the
+                         associated module is done, except for the compiler cb of
+                         the main module, which survives for the whole duration of
+                         the query (including runtime).
 
   minfo                : Pointer to the unique ModulesInfo instance (see class
                          ModulesInfo above).
@@ -907,9 +910,9 @@ var_expr* lookup_var(store::Item_t varname)
 ********************************************************************************/
 void bind_udf(
     store::Item_t qname,
-    function *f,
+    function* f,
     int nargs,
-    static_context *sctx,
+    static_context* sctx,
     const QueryLoc& loc) 
 {
   if (! sctx->bind_fn (qname, f, nargs))
@@ -2257,7 +2260,7 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
       // Create a CompilerCB for the imported module as a copy of the importing
       // module's CompilerCB. Copying is needed for configuration settings,
       // error manager, and debugger
-      CompilerCB mod_ccb (*theCCB);
+      CompilerCB mod_ccb(*theCCB);
 
       // Get the query-level sctx. This is the user-specified sctx (if any) or
       // the zorba default (root) sctx (if no user-specified sctx).
@@ -2789,10 +2792,6 @@ void end_visit (const FunctionDecl& v, void* /*visit_state*/)
       GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
       body = rCtx.getRoot();
 
-      RewriterContext rCtx1(theCCB, body);
-      GENV_COMPILERSUBSYS.getPhase1Rewriter()->rewrite(rCtx1);
-      body = rCtx1.getRoot();
-
       if (theCCB->m_config.optimize_cb != NULL)
         theCCB->m_config.optimize_cb(&*body, v.get_name ()->get_qname ());
     }
@@ -2882,7 +2881,7 @@ void end_visit (const Param& v, void* /*visit_state*/)
                           ("manual" | "automatic)?
                           "index" QName
                           "on" Expr
-                          "by" IndexKeyList
+                          "by" "(" IndexKeyList ")"
 
   Translation of an index declaration involves the creation and setting-up of
   a ValueIndex obj (see indexing/value_index.h) and the creation in the current
@@ -2900,7 +2899,7 @@ void* begin_visit(const IndexDecl& v)
                                                     qname->get_localname(),
                                                     qname->get_location());
 
-  ValueIndex_t index = new ValueIndex(theCCB->m_cur_sctx, loc, qnameItem);
+  ValueIndex_t index = new ValueIndex(theCCB, loc, qnameItem);
   index->setUnique(v.isUnique());
   index->setMethod(v.isOrdered() ? ValueIndex::BTREE : ValueIndex::HASH);
 
@@ -2918,12 +2917,17 @@ void end_visit(const IndexDecl& v, void* /*visit_state*/)
 
   IndexTools::inferIndexCreators(index);
 
+  // Register the index in the sctx of the current module.
   bind_index(index->getName(), index, sctx_p, loc);
+
+  // If this is a library module, register the index in the exported sctx as well.
+  if (export_sctx != NULL)
+    bind_index(index->getName(), index, export_sctx, loc);
 }
 
 
 /***************************************************************************//**
-  IndexFieldList ::= IndexField (COMMA IndexField)*
+  IndexKeyList ::= IndexKeySpec (COMMA IndexKeySpec)*
 ********************************************************************************/
 void* begin_visit(const IndexKeyList& v) 
 {
@@ -2933,13 +2937,13 @@ void* begin_visit(const IndexKeyList& v)
 
   expr_t domainExpr = pop_nodestack();
 
-  std::string name = index->getName()->getStringValue()->str();
+  std::string msg = "domain expr for index " + index->getName()->getStringValue()->str();
 
   if (theCCB->m_config.translate_cb != NULL)
-    theCCB->m_config.translate_cb(domainExpr.getp(), name);
+    theCCB->m_config.translate_cb(domainExpr.getp(), msg);
 
   // Normalize and optimize the domain expr
-  normalize_expr_tree(name.c_str(), theCCB, domainExpr, &*theRTM.ANY_NODE_TYPE_STAR);
+  normalize_expr_tree(msg.c_str(), theCCB, domainExpr, &*theRTM.ANY_NODE_TYPE_STAR);
 
   if (theCCB->m_config.opt_level == CompilerCB::config_t::O1) 
   {
@@ -2948,10 +2952,10 @@ void* begin_visit(const IndexKeyList& v)
     domainExpr = rCtx.getRoot();
 
     if (theCCB->m_config.optimize_cb != NULL)
-      theCCB->m_config.optimize_cb(&*domainExpr, name);
+      theCCB->m_config.optimize_cb(&*domainExpr, msg);
   }
 
-  index->setDomainExpression(domainExpr);
+  index->setDomainExpr(domainExpr);
 
   push_scope();
 
@@ -2999,6 +3003,23 @@ void end_visit (const IndexKeyList& v, void* /*visit_state*/)
     expr_t keyExpr = pop_nodestack();
     keyExpr = wrap_in_atomization(keyExpr);
     keyExpr = wrap_in_type_conversion(keyExpr, type);
+
+    std::ostringstream msg;
+    msg << "key expr " << i << " for index " << index->getName()->getStringValue()->str();
+
+    // Normalize and optimize the key expr
+    normalize_expr_tree(msg.str().c_str(), theCCB, keyExpr, NULL);
+
+    if (theCCB->m_config.opt_level == CompilerCB::config_t::O1) 
+    {
+      RewriterContext rCtx(theCCB, keyExpr);
+      GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
+      keyExpr = rCtx.getRoot();
+      
+      if (theCCB->m_config.optimize_cb != NULL)
+        theCCB->m_config.optimize_cb(&*keyExpr, msg.str());
+    }
+
     keyExprs.push_back(keyExpr);
   }
 
@@ -8768,7 +8789,7 @@ expr_t translate_aux(
 }
 
 
-expr_t translate (const parsenode& root, CompilerCB* aCompilerCB) 
+expr_t translate(const parsenode& root, CompilerCB* aCompilerCB) 
 {
   set<string> mod_stack;
 
@@ -8777,7 +8798,7 @@ expr_t translate (const parsenode& root, CompilerCB* aCompilerCB)
                          root.get_location(),
                          "Module declaration must not be used in a main module");
 
-  ModulesInfo minfo (aCompilerCB);
+  ModulesInfo minfo(aCompilerCB);
 
   return translate_aux (root, aCompilerCB, &minfo, mod_stack, false);
 }

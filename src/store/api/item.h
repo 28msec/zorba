@@ -126,12 +126,6 @@ public:
   getType( ) const;
 
   /**
-   * @return true if items contains a numeric value
-   */
-  //virtual bool
-  //isNumeric() const;
-
-  /**
    * Get a hash value computed from the value of this item.
    *
    * @param RuntimeCB the runtime control block that contains the

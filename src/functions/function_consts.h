@@ -28,7 +28,8 @@ public:
   {
     FN_UNKNOWN,
     FN_COLLECTION,
-    FN_SUM
+    FN_SUM,
+    FN_CREATE_INTERNAL_INDEX
   }
   FunctionKind;
 

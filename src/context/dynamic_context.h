@@ -75,7 +75,6 @@ protected:
   struct ValueIndexInfo
   {
     store::Index_t             theIndex;
-    ValueIndexInsertSession_t  theLoadSession;
   };
 
   typedef ItemPointerHashMap<ValueIndexInfo> IndexMap;
@@ -153,10 +152,6 @@ public:
   void unbind_index(const store::Item* qname);
 
   store::Index* lookup_index(const store::Item* qname) const;
-
-  ValueIndexInsertSession* get_index_insert_session(const store::Item* qname) const;
-
-  void set_index_insert_session(const store::Item* qname, ValueIndexInsertSession* v);
 
 protected:
   bool lookup_once(const std::string& key, dctx_value_t& val) const 

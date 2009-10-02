@@ -56,7 +56,7 @@ PlanWrapper::PlanWrapper(
   // for the moment, let's keep the runtime cb here
   theStateBlock->theRuntimeCB = new RuntimeCB();
   theStateBlock->theRuntimeCB->theDynamicContext = aDynamicContext;
-    theStateBlock->theDebuggerCommons = aCompilerCB->theDebuggerCommons;
+  theStateBlock->theDebuggerCommons = aCompilerCB->theDebuggerCommons;
 }
 
 

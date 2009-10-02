@@ -100,8 +100,6 @@ public:
 
   bool isThreadSafe() const { return theSpec.theIsThreadSafe; }
 
-  store::IndexEntryReceiver_t createInsertSession();
-
   store::IndexPointCondition_t createPointCondition();
 
   store::IndexBoxCondition_t createBoxCondition();
@@ -155,6 +153,10 @@ private:
   IndexMap          theMap;
 
 public:
+  void clear();
+
+  void build(store::Iterator* sourceIter);
+
   bool insert(store::IndexKey& key, store::Item_t& value);
 
   bool remove(const store::IndexKey& key, store::Item_t& value);
@@ -163,7 +165,7 @@ public:
 
 protected:
   HashIndex(
-        const store::Item_t& uri,
+        const store::Item_t& qname,
         const store::IndexSpecification& spec);
 
   ~HashIndex();
@@ -221,6 +223,10 @@ private:
   SYNC_CODE(Mutex   theMapMutex;)
 
 public:
+  void clear();
+
+  void build(store::Iterator* sourceIter);
+
   bool insert(store::IndexKey& key, store::Item_t& value);
 
   bool remove(const store::IndexKey& key, store::Item_t& value);
@@ -229,7 +235,7 @@ public:
 
 protected:
   STLMapIndex(
-        const store::Item_t& uri,
+        const store::Item_t& qname,
         const store::IndexSpecification& spec);
 
   ~STLMapIndex();

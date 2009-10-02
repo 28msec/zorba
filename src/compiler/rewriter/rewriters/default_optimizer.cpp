@@ -75,8 +75,6 @@ DefaultOptimizer::DefaultOptimizer()
 
   if (Properties::instance ()->inferJoins ())
     ADD_ONCE_DRIVER(IndexJoin);
-
-  ADD_SINGLETON_DRIVER(ExpandBuildIndex);
 }
 
 DefaultOptimizer::~DefaultOptimizer() throw ()

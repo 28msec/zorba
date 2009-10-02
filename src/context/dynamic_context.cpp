@@ -419,7 +419,6 @@ void dynamic_context::bind_index(const store::Item* qname, store::Index* index)
 
   ValueIndexInfo v;
   v.theIndex = index;
-  v.theLoadSession = NULL;
 
   if (!theAvailableIndices->insert(qname, v))
   {
@@ -462,48 +461,6 @@ store::Index* dynamic_context::lookup_index(const store::Item* qname) const
   {
     ZORBA_ERROR_PARAM(XQP0033_INDEX_DOES_NOT_EXIST,
                       qname->getStringValue()->c_str(), "");
-  }
-}
-
-
-ValueIndexInsertSession* dynamic_context::get_index_insert_session(
-    const store::Item* qname) const
-{
-  ValueIndexInfo info;
-
-  if (theAvailableIndices->get(qname, info))
-  {
-    return info.theLoadSession.getp();
-  }
-  else if (parent != NULL)
-  {
-    return parent->get_index_insert_session(qname);
-  }
-  else
-  {
-    ZORBA_ASSERT(false);
-  }
-}
-
-
-void dynamic_context::set_index_insert_session (
-    const store::Item* qname,
-    ValueIndexInsertSession* s) 
-{
-  ValueIndexInfo info;
-
-  if (theAvailableIndices->get(qname, info))
-  {
-    info.theLoadSession = s;
-    theAvailableIndices->update(qname, info);
-  }
-  else if (parent != NULL)
-  {
-    parent->set_index_insert_session(qname, s);
-  }
-  else
-  {
-    ZORBA_ASSERT(false);
   }
 }
 

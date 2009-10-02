@@ -24,6 +24,7 @@
 
 #include "zorbaserialization/serialization_engine.h"
 
+
 namespace zorba {
 
 namespace store {
@@ -43,10 +44,13 @@ class TupleField : public ::zorba::serialization::SerializeBaseClass
     FIELD_TYPE_SEQ,
   } tag_t;
 
+public:
   TupleField();
+
   virtual ~TupleField();
 
   TupleField(const TupleField&);
+
   const TupleField& operator=(const TupleField&);
 
   tag_t getTag() const;
@@ -59,9 +63,10 @@ class TupleField : public ::zorba::serialization::SerializeBaseClass
 
   void reset();
 
- private:
+private:
   tag_t m_tag;
   void *m_data;
+
 public:
   SERIALIZABLE_CLASS(TupleField)
   SERIALIZABLE_CLASS_CONSTRUCTOR(TupleField)

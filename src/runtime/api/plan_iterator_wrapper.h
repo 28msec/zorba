@@ -21,7 +21,7 @@
 
 namespace zorba {
 
-  class PlanState;
+class PlanState;
 
 /*******************************************************************************
   This is a "helper" wrapper that is used when we need to pass a plan iterator
@@ -34,8 +34,8 @@ namespace zorba {
 class PlanIteratorWrapper : public store::Iterator
 {
 private:
-  const PlanIterator*   theIterator;
-  PlanState*            theStateBlock;
+  const PlanIterator * theIterator;
+  PlanState          * theStateBlock;
 
 public:
   PlanIteratorWrapper(const PlanIterator* iter, PlanState& planState);

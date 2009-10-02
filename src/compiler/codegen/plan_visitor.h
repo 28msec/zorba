@@ -28,10 +28,10 @@ class CompilerCB;
 template <class T> class hash64map;
 
 PlanIter_t codegen (
-        const char *descr,
-        expr *root,
-        CompilerCB *ccb,
-        hash64map<std::vector<LetVarIter_t> *> *param_var_map = NULL);
+        const char* descr,
+        expr* root,
+        CompilerCB* ccb,
+        hash64map<std::vector<LetVarIter_t> *>* param_var_map = NULL);
 
 } /* namespace zorba */
 #endif /* ZORBA_PLAN_VISITOR_H */

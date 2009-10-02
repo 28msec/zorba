@@ -62,7 +62,6 @@ RULE(MarkImpureExprs);
 RULE(HoistExprsOutOfLoops);
 RULE(PlanPrinter);
 
-RULE(ExpandBuildIndex);
 RULE(IndexJoin);
 
 RULE(InlineFunctions);

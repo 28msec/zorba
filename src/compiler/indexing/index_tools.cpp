@@ -197,7 +197,7 @@ static bool isMapInVar(expr* e, var_expr* var)
 ********************************************************************************/
 void IndexTools::inferIndexCreators(ValueIndex *vi)
 {
-  expr *de = vi->getDomainExpression();
+  expr *de = vi->getDomainExpr();
   expr_t ne = de->clone();
   hoisted_collections_t h;
   int count = 0;

@@ -25,11 +25,11 @@ namespace zorba {
 
 class XQueryCompiler 
 {
- public:
+public:
 
   CompilerCB* theCompilerCB;
 
- public:
+public:
   XQueryCompiler(CompilerCB*  aCompilerCB);
     
   virtual ~XQueryCompiler();
@@ -37,17 +37,18 @@ class XQueryCompiler
   parsenode_t parse(std::istream& aXQuery, const xqpString & aFileName = "");
 
   void parseOnly(std::istream& aXQuery, const xqpString& aFileName);
+
   void xqdoc(std::istream& aXQuery, const xqpString& aFileName, std::ostream& anOutput, const store::Item_t& aDateTime);
 
   PlanIter_t compile(std::istream& aXQuery, const xqpString & aFileName = "");
   PlanIter_t compile(parsenode_t);
 
- protected:
+protected:
   expr_t normalize(parsenode_t);
 
   expr_t optimize(expr_t lExpr);
 
- private:
+private:
   parsenode_t createMainModule(parsenode_t aLibraryModule, std::istream& aXQuery, const xqpString & aFileName = "");
 };
 
@@ -61,7 +62,6 @@ class XQueryCompilerSubsystem
 
   virtual ~XQueryCompilerSubsystem() throw ();
 
-  virtual Rewriter *getPhase1Rewriter() = 0;
   virtual Rewriter *getDefaultOptimizingRewriter() = 0;
 
  private:

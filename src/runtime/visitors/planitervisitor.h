@@ -109,10 +109,8 @@ namespace zorba
   template < class DivideOperation, TypeConstants::atomic_type_code_t > class SpecificNumArithIterator;
   template < TypeConstants::atomic_type_code_t > class TypedValueCompareIterator;
   class CreateValueIndex;
+  class CreateInternalIndexIterator;
   class DropValueIndex;
-  class ValueIndexInsertSessionOpener;
-  class ValueIndexInsertSessionCloser;
-  class ValueIndexBuilder;
   class ValueIndexPointProbe;
   class ValueIndexRangeProbe;
   class OpNumericUnaryIterator;
@@ -540,10 +538,8 @@ public:
   virtual void endVisit ( const TypedValueCompareIterator<TypeConstants::XS_STRING>& ) = 0;
 
   PLAN_ITER_VISITOR (CreateValueIndex);
+  PLAN_ITER_VISITOR (CreateInternalIndexIterator);
   PLAN_ITER_VISITOR (DropValueIndex);
-  PLAN_ITER_VISITOR (ValueIndexInsertSessionOpener);
-  PLAN_ITER_VISITOR (ValueIndexInsertSessionCloser);
-  PLAN_ITER_VISITOR (ValueIndexBuilder);
   PLAN_ITER_VISITOR (ValueIndexPointProbe);
   PLAN_ITER_VISITOR (ValueIndexRangeProbe);
   
