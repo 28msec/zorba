@@ -204,7 +204,7 @@ expr* ValueIndex::getBuildExpr(CompilerCB* topCCB, const QueryLoc& loc)
   //
   flwor_expr* flworExpr = new flwor_expr(sctxid, loc, false);
   theBuildExpr = flworExpr;
-  flworExpr->set_return_expr(returnExpr);
+  flworExpr->set_return_expr(returnExpr.getp());
   for (unsigned i = 0; i < clauses.size(); ++i)
   {
     flworExpr->add_clause(clauses[i]);
