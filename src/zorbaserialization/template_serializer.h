@@ -21,6 +21,7 @@
 #include <vector>
 #include <map>
 #include <sstream>
+#include <stdio.h>
 
 #include "zorbaserialization/class_serializer.h"
 #include "zorbaserialization/archiver.h"
