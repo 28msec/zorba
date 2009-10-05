@@ -60,6 +60,8 @@ namespace zorba
 
       bool testEvalMessage();
 
+      bool testEvalEvent();
+
       bool testVariableMessage();
   };
 }

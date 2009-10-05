@@ -303,6 +303,29 @@ namespace zorba{
 		return true;
 	}
 
+  bool TestDebuggerSerialization::testEvalEvent()
+  {
+    std::cerr << "Test eval event" << std::endl;
+    std::list<std::pair<xqpString, xqpString> > lList;
+    EvaluatedEvent evt("()", lList);
+    evt.setId(5);
+    bool lResult = test_packet<EvaluatedEvent>(&evt);
+    if (!lResult) return false;
+    std::string lData = evt.getData();
+    std::string::size_type lPos = lData.find("id");
+    if (lPos == std::string::npos) {
+      return false;
+    }
+    lPos = lData.find("5", lPos);
+    if (lPos == std::string::npos) {
+      return false;
+    }
+    if (evt.getId() != 5) {
+      return false;
+    }
+    return true;
+  }
+
 	bool TestDebuggerSerialization::testVariableMessage()
 	{
 		std::cerr << "Test variable message" << std::endl;

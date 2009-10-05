@@ -586,7 +586,6 @@ class ZORBA_DLL_PUBLIC EvaluatedEvent: public AbstractCommandMessage
     xqpString theExpr;
     xqpString theError;
     std::list< std::pair<xqpString, xqpString> > theValuesAndTypes;
-    xqpString getData() const;
  
   public:
     EvaluatedEvent( xqpString anExpr, std::list<std::pair<xqpString, xqpString> > valuesAndTypes );
@@ -604,6 +603,11 @@ class ZORBA_DLL_PUBLIC EvaluatedEvent: public AbstractCommandMessage
     std::list<std::pair<xqpString, xqpString> > getValuesAndTypes() const;
 
     xqpString getError() const;
+
+    void setId(Id aId);
+
+  public: // this method is only public for testing purposes
+    xqpString getData() const;
 };
 
 /**

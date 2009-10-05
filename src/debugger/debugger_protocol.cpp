@@ -803,6 +803,7 @@ xqpString EvaluatedEvent::getData() const
   lErr = lErr.replace("\"", "&quot;", "");
   std::stringstream lJSONString;
   lJSONString << "{";
+  lJSONString << "\"id\":\"" << theHeaderContent->theId << "\",";
   lJSONString << "\"expr\":\"" << lExpr << "\",";
   lJSONString << "\"results\":[";
   list<pair<xqpString, xqpString> >::const_iterator it = theValuesAndTypes.begin();
@@ -819,6 +820,11 @@ xqpString EvaluatedEvent::getData() const
   lJSONString << "}";
   xqpString lData( lJSONString.str() );
   return lData;
+}
+
+void EvaluatedEvent::setId(Id aId)
+{
+  AbstractMessage::setId(aId);
 }
 
 /**

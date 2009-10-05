@@ -36,12 +36,14 @@ namespace zorba {
     EvalCommand(ZorbaDebuggerCommons* aCommons, 
       DebuggerCommunicator* aCommunicator,
       const xqpString& aEvalString,
-      const Zorba_SerializerOptions_t* aSerOpts)
+      const Zorba_SerializerOptions_t* aSerOpts,
+      Id aId)
       : 
     theCommons(aCommons), 
     theCommunicator(aCommunicator),
     theEvalString(aEvalString),
-    theSerOpts(aSerOpts)
+    theSerOpts(aSerOpts),
+    theId(aId)
     {}
 
     virtual ~EvalCommand() {}
@@ -70,15 +72,10 @@ namespace zorba {
         lEvent.reset(
           new EvaluatedEvent(theEvalString, lError.toString()));
       }
+      lEvent->setId(theId);
       theCommunicator->sendEvent(lEvent.get());
     }
 
-    /**
-    * @brief Adds the current thread to theEvalThreads.
-    *
-    * The finish method adds the current thread to theEvalThreads so that it
-    * will get deleted by the runtime.
-    */
     virtual void finish()
     {
     }
@@ -88,6 +85,7 @@ namespace zorba {
     DebuggerCommunicator*              theCommunicator;
     xqpString                          theEvalString;
     const Zorba_SerializerOptions_t*   theSerOpts;
+    Id                                 theId;
   };
 
 ZorbaDebuggerRuntime::ZorbaDebuggerRuntime(
@@ -418,7 +416,8 @@ void ZorbaDebuggerRuntime::evalCommand()
   // it in this method!
   EvalCommand* lCommand = new EvalCommand(
     theWrapper->theStateBlock->theDebuggerCommons,
-    theCommunicator, lExpr.c_str(), theSerializerOptions);
+    theCommunicator, lExpr.c_str(), theSerializerOptions,
+    theCurrentMessage->getId());
   lCommand->setDeleteAfterRun(true);
   lCommand->start();
 }
