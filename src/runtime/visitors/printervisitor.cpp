@@ -51,6 +51,7 @@
 #include "runtime/numerics/NumericsImpl.h"
 #include "runtime/core/arithmetic_impl.h"
 #include "runtime/sequences/SequencesImpl.h"
+#include "runtime/sequences/sequences.h"
 #include "runtime/strings/StringsImpl.h"
 #include "runtime/dateTime/DurationsDatesTimes.h"
 #include "runtime/eval/FnContextImpl.h"

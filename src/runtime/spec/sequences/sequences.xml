@@ -1,0 +1,511 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  15.1 General Functions and Operators on Sequences                          //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+-->
+<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+    
+<zorba:header>
+    <zorba:include form="Quoted">runtime/base/narybase.h</zorba:include>
+    <zorba:include form="Quoted">runtime/core/path_iterators.h</zorba:include>
+    <zorba:fwd-decl ns="store">NodeHashSet</zorba:fwd-decl>
+</zorba:header>
+
+<zorba:source>
+    <zorba:include form="Quoted">runtime/sequences/sequences.h</zorba:include>
+    <zorba:include form="Quoted">runtime/visitors/planitervisitor.h</zorba:include>
+</zorba:source>
+
+<!--
+/*******************************************************************************
+  15.1.2 op:concatenate
+********************************************************************************/
+-->
+<zorba:iterator
+    name="FnConcatIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">
+      op:concatenate
+    </zorba:description>
+
+    <zorba:constructor>
+        <zorba:parameter type="bool" name="aIsUpdating" />
+    </zorba:constructor>
+
+    <zorba:member type="bool" name="theIsUpdating" generateAccessor="true"
+                  accessorName="isUpdating" brief=""/>
+
+    <zorba:state generateInit="true" generateReset="true">
+      <zorba:member type="uint32_t" name="theCurIter" defaultValue="0"
+                    brief="the current iterator"/>
+    </zorba:state>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+  15.1.3 fn:index-of
+  ******************************************************************************/
+-->
+<zorba:iterator
+    name="FnIndexOfIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+    
+    <zorba:description author="Zorba Team">
+      Summary: Returns a sequence of positive integers giving the positions 
+      within the sequence $seqParam of items that are equal to $srchParam. 
+      
+      The collation used by the invocation of this function is determined 
+      according to the rules in 7.3.1 Collations. The collation is used when 
+      string comparison is required. 
+      
+      The items in the sequence $seqParam are compared with $srchParam under 
+      the rules for the 'eq' operator. Values that cannot be compared, i.e. 
+      the 'eq' operator is not defined for their types, are considered to be 
+      distinct. If an item compares equal, then the position of that item in 
+      the sequence $seqParam is included in the result. 
+      
+      If the value of $seqParam is the empty sequence, or if no item in 
+      $seqParam matches $srchParam, then the empty sequence is returned. 
+      
+      The first item in a sequence is at position 1, not position 0.
+      The result sequence is in ascending numeric order.
+      fn:index-of($seqParam as xs:anyAtomicType*,
+                  $srchParam as xs:anyAtomicType) as xs:integer*
+      
+      fn:index-of($seqParam as xs:anyAtomicType*,
+                  $srchParam as xs:anyAtomicType,
+                  $collation as xs:string) as xs:integer*
+    </zorba:description>
+    
+    <zorba:state generateInit="true" generateReset="true">
+      <zorba:member type="uint32_t" name="theCurrentPos" defaultValue="0"
+                    brief="the current position in the sequence"/>
+
+      <zorba:member type="store::Item_t" name="theSearchItem" defaultValue="NULL"
+        brief="the item to search for"/>
+
+      <zorba:member type="XQPCollator*" name="theCollator" defaultValue="0"
+        brief="the collator"/>
+    </zorba:state>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+  15.1.4 fn:empty
+********************************************************************************/
+-->
+<zorba:iterator
+    name="FnEmptyIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+    
+    <zorba:description author="Zorba Team">
+      If the value of $arg is the empty sequence, the function returns true;
+      otherwise, the function returns false.
+    </zorba:description>
+</zorba:iterator> 
+
+<!--
+/*******************************************************************************
+  15.1.5 fn:exists
+********************************************************************************/
+-->
+<zorba:iterator
+    name="FnExistsIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+    
+    <zorba:description author="Zorba Team">
+      If the value of $arg is not the empty sequence, the function returns true; 
+      otherwise, the function returns false.
+    </zorba:description>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+  15.1.7 fn:insert-before
+********************************************************************************/ 
+-->
+<zorba:iterator
+    name="FnInsertBeforeIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+    
+    <zorba:description author="Zorba Team">
+      Returns a new sequence constructed from the value of the first parameter with
+      the value of third parameter inserted at the position specified by the value
+      of the second parameter.
+    </zorba:description>
+    
+    <zorba:state generateInit="true" generateReset="true">
+      <zorba:member type="xqp_integer" name="theCurrentPos"
+                    defaultValue="xqp_integer::parseInt(0)" brief="the current position in the sequence"/>
+
+      <zorba:member type="xqp_integer" name="thePosition"
+                    defaultValue="xqp_integer::parseInt(0)" brief=""/>
+
+      <zorba:member type="store::Item_t" name="theTargetItem"
+                    defaultValue="NULL" brief=""/>
+    </zorba:state>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+  15.1.8 fn:remove
+********************************************************************************/
+-->
+<zorba:iterator
+    name="FnRemoveIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+    
+    <zorba:description author="Zorba Team">
+      Returns a new sequence constructed from the value of aTarget with the item at
+      the position specified by the value of aPosition removed.
+    </zorba:description>
+    
+    <zorba:state generateInit="true" generateReset="true">
+      <zorba:member type="xqp_integer" name="theCurrentPos"
+                    defaultValue="xqp_integer::parseInt(0)" brief="the current position in the sequence"/>
+
+      <zorba:member type="xqp_integer" name="thePosition"
+                    defaultValue="xqp_integer::parseInt(0)" brief="the position to delete"/>
+
+      <zorba:member type="XQPCollator*" name="theCollator"
+                    defaultValue="0" brief="the collator"/>
+    </zorba:state>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+  15.1.9 fn:reverse
+********************************************************************************/
+-->
+<zorba:iterator
+    name="FnReverseIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+    
+    <zorba:description author="Zorba Team">
+      fn:reverse
+    </zorba:description>
+    
+    <zorba:state generateInit="false" generateReset="false">
+      <zorba:member type="std::stack&lt;store::Item_t&gt;"
+                    name="theStack" brief=""/>
+    </zorba:state>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+  15.1.10 fn:subsequence
+********************************************************************************/
+-->
+<zorba:iterator
+    name="FnSubsequenceIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+    
+    <zorba:description author="Zorba Team">
+      fn:subsequence
+    </zorba:description>
+    
+    <zorba:state generateInit="true" generateReset="true">
+      <zorba:member type="xqp_integer" name="theRemaining"
+                    defaultValue="xqp_integer::parseInt(0)" brief=""/>
+    </zorba:state>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+  15.2.1 fn:zero-or-one
+********************************************************************************/
+-->
+<zorba:iterator
+    name="FnZeroOrOneIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+    
+    <zorba:description author="Zorba Team">
+      fn:zero-or-one
+    </zorba:description>
+    
+    <zorba:constructor>
+        <zorba:parameter type="bool" name="doDistinct" defaultValue="false"/>
+    </zorba:constructor>
+    
+    <zorba:member type="bool" name="theDoDistinct"
+                  generateAccessor="false" brief=""/>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+  15.2.2 fn:one-or-more
+********************************************************************************/
+-->
+<zorba:iterator
+    name="FnOneOrMoreIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+    
+    <zorba:description author="Zorba Team">
+      fn:one-or-more
+    </zorba:description>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+  15.2.3 fn:exactly-one
+********************************************************************************/
+-->
+<zorba:iterator
+    name="FnExactlyOneIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+    
+    <zorba:description author="Zorba Team">fn:exactly-one</zorba:description>
+    
+    <zorba:constructor>
+        <zorba:parameter type="bool" name="raiseError" defaultValue="true"/>
+        <zorba:parameter type="bool" name="doDistinct" defaultValue="false"/>
+    </zorba:constructor>
+    
+    <zorba:member type="bool" name="theRaiseError"
+                  generateAccessor="false" brief=""/>
+    <zorba:member type="bool" name="theDoDistinct"
+                  generateAccessor="false" brief=""/>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+  15.3.1 fn:deep-equal
+********************************************************************************/
+-->
+<zorba:iterator
+    name="FnDeepEqualIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+    
+    <zorba:description author="Zorba Team">fn:deep-equal</zorba:description>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+  15.3.2 op:union : implemented using concat and sort
+********************************************************************************/
+-->
+<zorba:iterator
+    name="HashSemiJoinIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+    
+    <zorba:description author="Zorba Team">
+      op:union : implemented using concat and sort
+      op:intersect : implemented by the HashSemiJoinIterator below
+      op:except : implemented by the HashSemiJoinIterator below
+
+      Hashing semi/anti join iterator.
+      
+      First producer goes in the result if a match in the second producer is 
+      found/not found. The order of the first producer is retained. No duplicate
+      elimination is performed.
+    </zorba:description>
+
+    <zorba:constructor>
+      <zorba:parameter type="bool" name="antijoin" defaultValue="false"/>
+    </zorba:constructor>
+    
+    <zorba:member type="bool" name="theAntijoin" generateAccessor="false" brief=""/>
+    
+    <zorba:state generateInit="false" generateReset="false"
+                 generateConstructor="false" generateDestructor="false">
+        <zorba:member type="store::NodeHashSet*" name="theRightInput" brief=""/>
+    </zorba:state>
+</zorba:iterator>    
+
+<zorba:iterator
+    name="SortSemiJoinIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+    
+    <zorba:description author="Zorba Team">
+      Sortmerge based semijoin iterator.
+
+      First producer goes in the result if a match in the second producer is found.
+      Precondition: both inputs must be sorted.
+      Postcondition: the order of the first producer is retained.
+      
+      If either of the inputs is guaranteed to contain no duplicates, then the
+      output will be duplicate-free. Otherwise the output may contain duplicates.
+    </zorba:description>
+</zorba:iterator>
+    
+<!--
+/*******************************************************************************
+  15.4.1 fn:count
+********************************************************************************/
+-->
+<zorba:iterator
+    name="FnCountIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+    
+    <zorba:description author="Zorba Team">fn:count</zorba:description>
+</zorba:iterator>
+    
+<!--
+/*******************************************************************************
+  15.4.2 fn:avg
+********************************************************************************/
+-->
+<zorba:iterator
+    name="FnAvgIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+    
+    <zorba:description author="Zorba Team">
+      fn:avg
+    </zorba:description>
+</zorba:iterator>
+    
+<!--
+/*******************************************************************************
+  15.4.5 fn:sum
+********************************************************************************/
+-->
+<zorba:iterator
+    name="FnSumIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+    
+    <zorba:description author="Zorba Team">
+      fn:sum
+    </zorba:description>
+</zorba:iterator>
+
+<zorba:iterator
+    name="FnSumDoubleIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+    
+    <zorba:description author="Zorba Team">
+      fn:sum with arguments xs:double
+    </zorba:description>
+</zorba:iterator>
+
+<zorba:iterator
+    name="FnSumFloatIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+    
+    <zorba:description author="Zorba Team">
+      fn:sum with arguments xs:float
+    </zorba:description>
+</zorba:iterator>
+
+<zorba:iterator
+    name="FnSumDecimalIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+    
+    <zorba:description author="Zorba Team">
+      fn:sum with arguments xs:decimal
+    </zorba:description>
+</zorba:iterator>
+
+<zorba:iterator
+    name="FnSumIntegerIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+    
+    <zorba:description author="Zorba Team">
+      fn:sum with arguments xs:integer
+    </zorba:description>
+</zorba:iterator>
+    
+<zorba:iterator
+    name="OpToIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+    
+    <zorba:description author="Zorba Team">op:to</zorba:description>
+    
+    <zorba:state generateInit="true" generateReset="true">
+      <zorba:member type="xqp_integer" name="theCurInt"
+                    defaultValue="xqp_integer::parseInt(0)" brief="the current integer"/>
+
+       <zorba:member type="xqp_integer" name="theFirstVal"
+                     defaultValue="xqp_integer::parseInt(0)" brief="first integer"/>
+
+       <zorba:member type="xqp_integer" name="theLastVal" defaultValue="xqp_integer::parseInt(0)"
+                     brief="last integer"/>
+    </zorba:state>
+</zorba:iterator>
+    
+<!--
+/*******************************************************************************
+  15.5.4 fn:doc
+********************************************************************************/
+-->
+<zorba:iterator
+    name="FnDocIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+    
+    <zorba:description author="Zorba Team">fn:doc</zorba:description>
+</zorba:iterator>
+    
+<!--
+/*******************************************************************************
+  15.5.5 fn:doc-available
+********************************************************************************/
+-->
+<zorba:iterator
+    name="FnDocAvailableIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+    
+    <zorba:description author="Zorba Team">fn:doc-available</zorba:description>
+</zorba:iterator>
+    
+<zorba:iterator
+    name="FnParseIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+    
+    <zorba:description author="Zorba Team">Zorba-defined parse function</zorba:description>
+</zorba:iterator>
+
+</zorba:iterators>

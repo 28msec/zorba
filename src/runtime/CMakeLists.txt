@@ -11,8 +11,59 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+SET(RUNTIME_SRCS)
 
-SET(RUNTIME_SRCS
+STRING(LENGTH "${CMAKE_SOURCE_DIR}/src/runtime/spec/" RUNTIME_SPEC_LENGTH)
+
+SET(RUNTIME_HEADER_GENERATOR "${CMAKE_SOURCE_DIR}/src/runtime/spec/generate-header.xq")
+SET(RUNTIME_CPP_GENERATOR    "${CMAKE_SOURCE_DIR}/src/runtime/spec/generate-cpp.xq")
+
+# macro used for generating the runtime's header and cpp files out of the xml specifications
+MACRO(RUNTIME_GENERATOR QUERY SPEC_FILE SPEC_PREFIX_NAME OUTPUT)
+  IF (EXISTS ${CMAKE_BINARY_DIR}/bin/zorba) 
+    IF (${QUERY} IS_NEWER_THAN ${OUTPUT} OR ${SPEC_FILE} IS_NEWER_THAN ${OUTPUT})
+  
+      EXECUTE_PROCESS(COMMAND ${CMAKE_BINARY_DIR}/bin/zorba 
+                      "-q" "${QUERY}" "-f"  
+                      "-e" "local:name:=runtime_${SPEC_PREFIX_NAME}"
+                      "-e" "local:input=${SPEC_FILE}" 
+                      "--omit-xml-declaration" "--serialize-text"
+                      "-o" "${OUTPUT}"
+                      RESULT_VARIABLE RETURN_CODE
+                      ERROR_VARIABLE  ERROR_RESULT)
+      IF (NOT RETURN_CODE EQUAL 0)
+        MESSAGE("${ERROR_RESULT}")
+        MESSAGE(FATAL_ERROR "Couldn't generate ${OUTPUT} spec file ${SPEC_FILE} return code ${RETURN_CODE}")
+      ENDIF (NOT RETURN_CODE EQUAL 0)
+      
+      MESSAGE(STATUS "Generated ${OUTPUT}")
+
+    ENDIF (${QUERY} IS_NEWER_THAN ${OUTPUT} OR ${SPEC_FILE} IS_NEWER_THAN ${OUTPUT})
+  ENDIF (EXISTS ${CMAKE_BINARY_DIR}/bin/zorba) 
+ENDMACRO(RUNTIME_GENERATOR)
+
+# look for all spec files and generate the header and cpp file if out of date
+# the cpp files and the according _impl.cpp files are added to the RUNTIME_SRCS list
+FILE(GLOB_RECURSE SPEC_FILES ${CMAKE_SOURCE_DIR}/src/runtime/spec "*.xml")
+FOREACH(SPEC_FILE ${SPEC_FILES})
+
+  STRING(LENGTH ${SPEC_FILE} SPEC_FILE_NAME_LENGTH)
+  MATH(EXPR SPEC_PREFIX_LENGTH "${SPEC_FILE_NAME_LENGTH} - ${RUNTIME_SPEC_LENGTH} - 4")
+  STRING(SUBSTRING ${SPEC_FILE} ${RUNTIME_SPEC_LENGTH} ${SPEC_PREFIX_LENGTH} SPEC_PREFIX)
+  STRING(REPLACE "/" "_" SPEC_PREFIX_NAME ${SPEC_PREFIX} )
+
+  RUNTIME_GENERATOR(${RUNTIME_HEADER_GENERATOR} ${SPEC_FILE} ${SPEC_PREFIX_NAME} 
+                    "${CMAKE_SOURCE_DIR}/src/runtime/${SPEC_PREFIX}.h") 
+
+  RUNTIME_GENERATOR(${RUNTIME_CPP_GENERATOR} ${SPEC_FILE} ${SPEC_PREFIX_NAME}
+                    "${CMAKE_SOURCE_DIR}/src/runtime/${SPEC_PREFIX}.cpp")
+
+  LIST(APPEND RUNTIME_SRCS 
+              "${SPEC_PREFIX}.cpp"
+              "${SPEC_PREFIX}_impl.cpp")
+ENDFOREACH(SPEC_FILE)
+
+LIST(APPEND RUNTIME_SRCS
     accessors/AccessorsImpl.cpp
     api/plan_iterator_wrapper.cpp
     api/plan_wrapper.cpp
@@ -52,8 +103,8 @@ SET(RUNTIME_SRCS
     indexing/value_index_probe.cpp
     numerics/NumericsImpl.cpp
     qnames/QNamesImpl.cpp
-    sequences/SequencesImpl.cpp
     strings/StringsImpl.cpp
+    sequences/SequencesImpl.cpp
     visitors/iterprinter.cpp
     visitors/printervisitor.cpp
     update/update.cpp

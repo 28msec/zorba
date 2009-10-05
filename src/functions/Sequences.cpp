@@ -20,6 +20,7 @@
 #include "compiler/expression/expr.h"
 
 #include "runtime/sequences/SequencesImpl.h"
+#include "runtime/sequences/sequences.h"
 #include "runtime/core/path_iterators.h"
 #include "runtime/core/item_iterator.h"
 
