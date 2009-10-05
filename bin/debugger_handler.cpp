@@ -304,7 +304,7 @@ namespace zorba{
 	{
 		assert(theClient != 0);
     if (theClient->isQueryIdle()) {
-      synchronous_logger::cerr << "Cannot use eval, while the query is ide.\n";
+      synchronous_logger::cerr << "Cannot use eval, while the query is idle.\n";
       return false;
     }
 		if(args.size() < 2)
