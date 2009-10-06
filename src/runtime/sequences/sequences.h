@@ -48,7 +48,7 @@ public:
   void reset(PlanState&);
 };
 
-class FnConcatIterator: public NaryBaseIterator <FnConcatIterator, FnConcatIteratorState>{
+class FnConcatIterator: public NaryBaseIterator <FnConcatIterator, FnConcatIteratorState> {
 protected:
   bool theIsUpdating; //
 public:
@@ -98,7 +98,7 @@ public:
   void reset(PlanState&);
 };
 
-class FnIndexOfIterator: public NaryBaseIterator <FnIndexOfIterator, FnIndexOfIteratorState>{
+class FnIndexOfIterator: public NaryBaseIterator <FnIndexOfIterator, FnIndexOfIteratorState> {
 public:
   SERIALIZABLE_CLASS(FnIndexOfIterator);
 
@@ -130,7 +130,7 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnEmptyIterator: public NaryBaseIterator <FnEmptyIterator, PlanIteratorState>{
+class FnEmptyIterator: public NaryBaseIterator <FnEmptyIterator, PlanIteratorState> {
 public:
   SERIALIZABLE_CLASS(FnEmptyIterator);
 
@@ -162,7 +162,7 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnExistsIterator: public NaryBaseIterator <FnExistsIterator, PlanIteratorState>{
+class FnExistsIterator: public NaryBaseIterator <FnExistsIterator, PlanIteratorState> {
 public:
   SERIALIZABLE_CLASS(FnExistsIterator);
 
@@ -205,7 +205,7 @@ public:
   void reset(PlanState&);
 };
 
-class FnInsertBeforeIterator: public NaryBaseIterator <FnInsertBeforeIterator, FnInsertBeforeIteratorState>{
+class FnInsertBeforeIterator: public NaryBaseIterator <FnInsertBeforeIterator, FnInsertBeforeIteratorState> {
 public:
   SERIALIZABLE_CLASS(FnInsertBeforeIterator);
 
@@ -248,7 +248,7 @@ public:
   void reset(PlanState&);
 };
 
-class FnRemoveIterator: public NaryBaseIterator <FnRemoveIterator, FnRemoveIteratorState>{
+class FnRemoveIterator: public NaryBaseIterator <FnRemoveIterator, FnRemoveIteratorState> {
 public:
   SERIALIZABLE_CLASS(FnRemoveIterator);
 
@@ -289,7 +289,7 @@ public:
   void reset(PlanState&);
 };
 
-class FnReverseIterator: public NaryBaseIterator <FnReverseIterator, FnReverseIteratorState>{
+class FnReverseIterator: public NaryBaseIterator <FnReverseIterator, FnReverseIteratorState> {
 public:
   SERIALIZABLE_CLASS(FnReverseIterator);
 
@@ -330,7 +330,7 @@ public:
   void reset(PlanState&);
 };
 
-class FnSubsequenceIterator: public NaryBaseIterator <FnSubsequenceIterator, FnSubsequenceIteratorState>{
+class FnSubsequenceIterator: public NaryBaseIterator <FnSubsequenceIterator, FnSubsequenceIteratorState> {
 public:
   SERIALIZABLE_CLASS(FnSubsequenceIterator);
 
@@ -362,7 +362,7 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnZeroOrOneIterator: public NaryBaseIterator <FnZeroOrOneIterator, PlanIteratorState>{
+class FnZeroOrOneIterator: public NaryBaseIterator <FnZeroOrOneIterator, PlanIteratorState> {
 protected:
   bool theDoDistinct; //
 public:
@@ -399,7 +399,7 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnOneOrMoreIterator: public NaryBaseIterator <FnOneOrMoreIterator, PlanIteratorState>{
+class FnOneOrMoreIterator: public NaryBaseIterator <FnOneOrMoreIterator, PlanIteratorState> {
 public:
   SERIALIZABLE_CLASS(FnOneOrMoreIterator);
 
@@ -431,7 +431,7 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnExactlyOneIterator: public NaryBaseIterator <FnExactlyOneIterator, PlanIteratorState>{
+class FnExactlyOneIterator: public NaryBaseIterator <FnExactlyOneIterator, PlanIteratorState> {
 protected:
   bool theRaiseError; //
   bool theDoDistinct; //
@@ -472,7 +472,7 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnDeepEqualIterator: public NaryBaseIterator <FnDeepEqualIterator, PlanIteratorState>{
+class FnDeepEqualIterator: public NaryBaseIterator <FnDeepEqualIterator, PlanIteratorState> {
 public:
   SERIALIZABLE_CLASS(FnDeepEqualIterator);
 
@@ -517,7 +517,7 @@ public:
   void reset(PlanState&);
 };
 
-class HashSemiJoinIterator: public NaryBaseIterator <HashSemiJoinIterator, HashSemiJoinIteratorState>{
+class HashSemiJoinIterator: public NaryBaseIterator <HashSemiJoinIterator, HashSemiJoinIteratorState> {
 protected:
   bool theAntijoin; //
 public:
@@ -554,7 +554,7 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class SortSemiJoinIterator: public NaryBaseIterator <SortSemiJoinIterator, PlanIteratorState>{
+class SortSemiJoinIterator: public NaryBaseIterator <SortSemiJoinIterator, PlanIteratorState> {
 public:
   SERIALIZABLE_CLASS(SortSemiJoinIterator);
 
@@ -586,7 +586,7 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnCountIterator: public NaryBaseIterator <FnCountIterator, PlanIteratorState>{
+class FnCountIterator: public NaryBaseIterator <FnCountIterator, PlanIteratorState> {
 public:
   SERIALIZABLE_CLASS(FnCountIterator);
 
@@ -618,7 +618,7 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnAvgIterator: public NaryBaseIterator <FnAvgIterator, PlanIteratorState>{
+class FnAvgIterator: public NaryBaseIterator <FnAvgIterator, PlanIteratorState> {
 public:
   SERIALIZABLE_CLASS(FnAvgIterator);
 
@@ -650,7 +650,7 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnSumIterator: public NaryBaseIterator <FnSumIterator, PlanIteratorState>{
+class FnSumIterator: public NaryBaseIterator <FnSumIterator, PlanIteratorState> {
 public:
   SERIALIZABLE_CLASS(FnSumIterator);
 
@@ -682,7 +682,7 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnSumDoubleIterator: public NaryBaseIterator <FnSumDoubleIterator, PlanIteratorState>{
+class FnSumDoubleIterator: public NaryBaseIterator <FnSumDoubleIterator, PlanIteratorState> {
 public:
   SERIALIZABLE_CLASS(FnSumDoubleIterator);
 
@@ -714,7 +714,7 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnSumFloatIterator: public NaryBaseIterator <FnSumFloatIterator, PlanIteratorState>{
+class FnSumFloatIterator: public NaryBaseIterator <FnSumFloatIterator, PlanIteratorState> {
 public:
   SERIALIZABLE_CLASS(FnSumFloatIterator);
 
@@ -746,7 +746,7 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnSumDecimalIterator: public NaryBaseIterator <FnSumDecimalIterator, PlanIteratorState>{
+class FnSumDecimalIterator: public NaryBaseIterator <FnSumDecimalIterator, PlanIteratorState> {
 public:
   SERIALIZABLE_CLASS(FnSumDecimalIterator);
 
@@ -778,7 +778,7 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnSumIntegerIterator: public NaryBaseIterator <FnSumIntegerIterator, PlanIteratorState>{
+class FnSumIntegerIterator: public NaryBaseIterator <FnSumIntegerIterator, PlanIteratorState> {
 public:
   SERIALIZABLE_CLASS(FnSumIntegerIterator);
 
@@ -821,7 +821,7 @@ public:
   void reset(PlanState&);
 };
 
-class OpToIterator: public NaryBaseIterator <OpToIterator, OpToIteratorState>{
+class OpToIterator: public NaryBaseIterator <OpToIterator, OpToIteratorState> {
 public:
   SERIALIZABLE_CLASS(OpToIterator);
 
@@ -853,7 +853,7 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnDocIterator: public NaryBaseIterator <FnDocIterator, PlanIteratorState>{
+class FnDocIterator: public NaryBaseIterator <FnDocIterator, PlanIteratorState> {
 public:
   SERIALIZABLE_CLASS(FnDocIterator);
 
@@ -885,7 +885,7 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnDocAvailableIterator: public NaryBaseIterator <FnDocAvailableIterator, PlanIteratorState>{
+class FnDocAvailableIterator: public NaryBaseIterator <FnDocAvailableIterator, PlanIteratorState> {
 public:
   SERIALIZABLE_CLASS(FnDocAvailableIterator);
 
@@ -917,7 +917,7 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnParseIterator: public NaryBaseIterator <FnParseIterator, PlanIteratorState>{
+class FnParseIterator: public NaryBaseIterator <FnParseIterator, PlanIteratorState> {
 public:
   SERIALIZABLE_CLASS(FnParseIterator);
 
