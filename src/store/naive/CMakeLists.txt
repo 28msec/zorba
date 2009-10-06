@@ -38,7 +38,6 @@ SET(ZORBA_STORE_IMPL_SRCS
     simple_index.cpp
     simple_temp_seq.cpp
     simple_lazy_temp_seq.cpp
-    simple_loader.cpp
     fast_loader.cpp
     qname_pool.cpp
     string_pool.cpp

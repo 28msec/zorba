@@ -105,6 +105,8 @@ public:
 };
 
 
+#ifdef SIMPLE_LOADER
+
 /*******************************************************************************
 
   theBaseUri   : The loader does not not own the string memory
@@ -185,6 +187,8 @@ public:
 
   static void warning(void * ctx, const char * msg, ... );
 };
+
+#endif // SIMPLE_LOADER
 
 
 class XmlTree;

@@ -313,7 +313,7 @@ public:
   //
   // Index
   //
-  bool bind_index(const store::Item* qname, ValueIndex_t& vi);
+  void bind_index(const store::Item* qname, ValueIndex_t& vi, const QueryLoc& loc);
 
   ValueIndex* lookup_index(const store::Item* qname) const;
 

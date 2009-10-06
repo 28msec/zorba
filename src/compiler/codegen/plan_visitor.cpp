@@ -65,7 +65,7 @@
 #include "runtime/eval/FnContextImpl.h"
 #include "runtime/misc/MiscImpl.h"
 #include "runtime/update/update.h"
-#include "runtime/indexing/value_index_builder.h"
+#include "runtime/indexing/value_index_impl.h"
 #include "runtime/debug/zorba_debug_iterator.h"
 
 #include "debugger/zorba_debugger_commons.h"

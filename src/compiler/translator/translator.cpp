@@ -944,26 +944,6 @@ void bind_udf (store::Item_t qname, function *f, int nargs, const QueryLoc& loc)
   
 
 /*******************************************************************************
-  Create a binding in the given sctx obj between the given index qname item and
-  the given index object. Raise error if such a binding exists already in the sctx.
-********************************************************************************/
-void bind_index(
-    const store::Item* qname,
-    ValueIndex_t& index,
-    static_context* sctx,
-    const QueryLoc& loc) 
-{
-  if (! sctx->bind_index(qname, index))
-  {
-    // INDEX_TODO: error code
-    ZORBA_ERROR_LOC_PARAM(XQST0034, loc,
-                          qname->getStringValue(),
-                          loc.getFilenameBegin());
-  }
-}
-
-
-/*******************************************************************************
   Create an fn:concatenate() expr
 ********************************************************************************/
 fo_expr* create_seq(const QueryLoc& loc) 
@@ -2269,7 +2249,7 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
 
       // Create the root sctx for the imported module as a child of the
       // query-level sctx. Register this sctx in the query-lever sctx map.
-      mod_ccb.m_sctx = independent_sctx->create_child_context ();
+      mod_ccb.m_sctx = independent_sctx->create_child_context();
       mod_ccb.m_cur_sctx = minfo->topCompilerCB->m_context_map->size() + 1;
       mod_ccb.m_sctx->set_entity_retrieval_url(resolveduri->str());
 
@@ -2340,7 +2320,7 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
 
   [6d] VFO_Decl ::= VarDecl | ContextItemDecl | FunctionDecl | IndexDecl | OptionDecl
 ********************************************************************************/
-void *begin_visit (const VFO_DeclList& v) 
+void* begin_visit (const VFO_DeclList& v) 
 {
   TRACE_VISIT ();
 
@@ -2917,12 +2897,13 @@ void end_visit(const IndexDecl& v, void* /*visit_state*/)
 
   IndexTools::inferIndexCreators(index);
 
-  // Register the index in the sctx of the current module.
-  bind_index(index->getName(), index, sctx_p, loc);
+  // Register the index in the sctx of the current module. Raise error if such
+  // a binding exists already in the sctx.
+  sctx_p->bind_index(index->getName(), index, loc);
 
   // If this is a library module, register the index in the exported sctx as well.
   if (export_sctx != NULL)
-    bind_index(index->getName(), index, export_sctx, loc);
+    export_sctx->bind_index(index->getName(), index, loc);
 }
 
 
@@ -3001,11 +2982,23 @@ void end_visit (const IndexKeyList& v, void* /*visit_state*/)
     keyCollations.push_back(keySpec->getCollation());
 
     expr_t keyExpr = pop_nodestack();
+
     keyExpr = wrap_in_atomization(keyExpr);
+
+    if (TypeOps::is_equal(*type, *theRTM.ANY_ATOMIC_TYPE_QUESTION) &&
+        TypeOps::is_subtype(*keyExpr->return_type(sctx_p),
+                            *theRTM.UNTYPED_ATOMIC_TYPE_STAR))
+    {
+      type = theRTM.STRING_TYPE_QUESTION;
+    }
+
     keyExpr = wrap_in_type_conversion(keyExpr, type);
 
     std::ostringstream msg;
     msg << "key expr " << i << " for index " << index->getName()->getStringValue()->str();
+
+    if (theCCB->m_config.translate_cb != NULL)
+      theCCB->m_config.translate_cb(keyExpr.getp(), msg.str());
 
     // Normalize and optimize the key expr
     normalize_expr_tree(msg.str().c_str(), theCCB, keyExpr, NULL);
@@ -3078,7 +3071,7 @@ void end_visit (const EnclosedExpr& v, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
 
   expr_t lContent = pop_nodestack();
-  fo_expr *fo_h = new fo_expr(theCCB->m_cur_sctx,
+  fo_expr* fo_h = new fo_expr(theCCB->m_cur_sctx,
                               loc,
                               CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
   fo_h->add(lContent);

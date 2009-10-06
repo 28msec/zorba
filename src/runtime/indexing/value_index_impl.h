@@ -23,11 +23,6 @@
 namespace zorba 
 {
 
-/***************************************************************************//**
-  Implements the create-index function.
-********************************************************************************/
-UNARY_ITER(CreateValueIndex);
-
 
 /***************************************************************************//**
   Implements the create-internal-index function.
@@ -72,9 +67,76 @@ public:
 
 
 /***************************************************************************//**
+  Implements the create-index function.
+********************************************************************************/
+UNARY_ITER(CreateIndexIterator);
+
+
+/***************************************************************************//**
+  Implements the create-index function.
+********************************************************************************/
+UNARY_ITER(RefreshIndexIterator);
+
+
+/***************************************************************************//**
   Implements the drop-index function.
 ********************************************************************************/
-UNARY_ITER(DropValueIndex);
+UNARY_ITER(DropIndexIterator);
+
+
+/***************************************************************************//**
+  Implements the index-entry-builder function.
+********************************************************************************/
+class IndexEntryBuilderIteratorState : public  PlanIteratorState 
+{
+public:
+  uint32_t theCurChild;
+
+public:
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+
+NARY_ITER_STATE(IndexEntryBuilderIterator, IndexEntryBuilderIteratorState);
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+class IndexPointProbeState : public PlanIteratorState 
+{
+public:
+  const store::Item           * theQname;
+  store::Index                * theIndex;
+  store::IndexProbeIterator_t   theIterator;
+
+public:
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+
+NARY_ITER_STATE(IndexPointProbeIterator, IndexPointProbeState);
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+class IndexRangeProbeState : public PlanIteratorState 
+{
+public:
+  const store::Item           * theQname;
+  store::Index                * theIndex;
+  store::IndexProbeIterator_t   theIterator;
+
+public:
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+
+NARY_ITER_STATE(IndexRangeProbeIterator, IndexRangeProbeState);
 
 
 }

@@ -155,8 +155,6 @@ private:
 public:
   void clear();
 
-  void build(store::Iterator* sourceIter);
-
   bool insert(store::IndexKey& key, store::Item_t& value);
 
   bool remove(const store::IndexKey& key, store::Item_t& value);
@@ -224,8 +222,6 @@ private:
 
 public:
   void clear();
-
-  void build(store::Iterator* sourceIter);
 
   bool insert(store::IndexKey& key, store::Item_t& value);
 

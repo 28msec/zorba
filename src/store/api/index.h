@@ -162,20 +162,6 @@ public:
   virtual IndexBoxCondition_t createBoxCondition() = 0;
 
   /**
-   *  Delete all the contents of the index.
-   */
-  virtual void clear() = 0;
-
-  /**
-   * Insert into the index the entries that are produced by the given iterator.
-   * Given that iterators can produce only a single item at a time, the given
-   * source iterator does not actually produce whole index entries. Instead, 
-   * the items of each index entry are produced one at a time: first the domain
-   * node, followed by each of the key items.
-   */
-  virtual void build(Iterator* sourceIter) = 0;
-
-  /**
    *  Insert the given item in the value set of the given key. If the key
    *  is not in the index already, then the key itself is inserted as well.
    *

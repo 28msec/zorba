@@ -108,11 +108,15 @@ namespace zorba
   template < class MultiplyOperation, TypeConstants::atomic_type_code_t > class SpecificNumArithIterator;
   template < class DivideOperation, TypeConstants::atomic_type_code_t > class SpecificNumArithIterator;
   template < TypeConstants::atomic_type_code_t > class TypedValueCompareIterator;
-  class CreateValueIndex;
+
   class CreateInternalIndexIterator;
-  class DropValueIndex;
-  class ValueIndexPointProbe;
-  class ValueIndexRangeProbe;
+  class CreateIndexIterator;
+  class RefreshIndexIterator;
+  class DropIndexIterator;
+  class IndexEntryBuilderIterator;
+  class IndexPointProbeIterator;
+  class IndexRangeProbeIterator;
+
   class OpNumericUnaryIterator;
   class FnAbsIterator;
   class FnCeilingIterator;
@@ -537,11 +541,13 @@ public:
   virtual void beginVisit ( const TypedValueCompareIterator<TypeConstants::XS_STRING>& ) = 0;
   virtual void endVisit ( const TypedValueCompareIterator<TypeConstants::XS_STRING>& ) = 0;
 
-  PLAN_ITER_VISITOR (CreateValueIndex);
   PLAN_ITER_VISITOR (CreateInternalIndexIterator);
-  PLAN_ITER_VISITOR (DropValueIndex);
-  PLAN_ITER_VISITOR (ValueIndexPointProbe);
-  PLAN_ITER_VISITOR (ValueIndexRangeProbe);
+  PLAN_ITER_VISITOR (CreateIndexIterator);
+  PLAN_ITER_VISITOR (RefreshIndexIterator);
+  PLAN_ITER_VISITOR (DropIndexIterator);
+  PLAN_ITER_VISITOR (IndexEntryBuilderIterator);
+  PLAN_ITER_VISITOR (IndexPointProbeIterator);
+  PLAN_ITER_VISITOR (IndexRangeProbeIterator);
   
   PLAN_ITER_VISITOR (OpNumericUnaryIterator);
     

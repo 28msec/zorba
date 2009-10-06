@@ -196,7 +196,7 @@ long FastXmlLoader::readPacket(std::istream& stream, char* buf, long size)
     if (stream.bad())
     {
       ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                                STR0007_LOADER_IO_ERROR,
+                                STR0020_LOADER_IO_ERROR,
                                 "Input stream in bad state");
     }
 
@@ -205,12 +205,12 @@ long FastXmlLoader::readPacket(std::istream& stream, char* buf, long size)
   catch (std::iostream::failure e)
   {
     ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                              STR0007_LOADER_IO_ERROR, e.what());
+                              STR0020_LOADER_IO_ERROR, e.what());
   }
   catch (...)
   {
     ZORBA_ERROR_DESC_CONTINUE(theErrorManager, 
-                              STR0007_LOADER_IO_ERROR,
+                              STR0020_LOADER_IO_ERROR,
                               "Unknown exception");
   }
 
@@ -250,7 +250,7 @@ store::Item_t FastXmlLoader::loadXml(
     if (numChars < 0)
     {
       ZORBA_ERROR_DESC_CONTINUE(theErrorManager, 
-                                STR0007_LOADER_IO_ERROR,
+                                STR0020_LOADER_IO_ERROR,
                                 "Unknown I/O error");
       abortload();
       return NULL;
@@ -258,7 +258,7 @@ store::Item_t FastXmlLoader::loadXml(
     else if (numChars == 0)
     {
       ZORBA_ERROR_DESC_CONTINUE(theErrorManager, 
-                                STR0007_LOADER_IO_ERROR,
+                                STR0020_LOADER_IO_ERROR,
                                 "No input data.");
       abortload();
       return NULL;
@@ -268,7 +268,7 @@ store::Item_t FastXmlLoader::loadXml(
 
     if (ctxt == NULL)
     {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, STR0008_LOADER_PARSING_ERROR, 
+      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, STR0021_LOADER_PARSING_ERROR, 
                                 "Failed to initialize parser");
       abortload();
 			return NULL;
@@ -288,7 +288,7 @@ store::Item_t FastXmlLoader::loadXml(
 
     if (numChars < 0)
     {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, STR0007_LOADER_IO_ERROR,
+      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, STR0020_LOADER_IO_ERROR,
                                 "Unknown I/O error");
       xmlFreeParserCtxt(ctxt);
       abortload();
@@ -320,14 +320,14 @@ store::Item_t FastXmlLoader::loadXml(
     if (theDocUri != NULL)
     {
       ZORBA_ERROR_PARAM_CONTINUE_OSS(theErrorManager,
-                                     STR0008_LOADER_PARSING_ERROR,
+                                     STR0021_LOADER_PARSING_ERROR,
                                      "The document with URI " << *theDocUri
                                      <<" is not well formed", "");
     }
     else
     {
       ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
-                                STR0008_LOADER_PARSING_ERROR,
+                                STR0021_LOADER_PARSING_ERROR,
                                 "Not well formed XML");
     }
 
@@ -999,7 +999,7 @@ void FastXmlLoader::error(void * ctx, const char * msg, ... )
   vsprintf(buf, msg, args);
   va_end(args);
   ZORBA_ERROR_DESC_CONTINUE(loader->theErrorManager,
-                            STR0008_LOADER_PARSING_ERROR, buf);
+                            STR0021_LOADER_PARSING_ERROR, buf);
 }
 
 

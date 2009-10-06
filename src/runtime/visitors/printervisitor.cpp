@@ -46,8 +46,7 @@
 #include "runtime/core/trycatch.h"
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/core/internal_operators.h"
-#include "runtime/indexing/value_index_builder.h"
-#include "runtime/indexing/value_index_probe.h"
+#include "runtime/indexing/value_index_impl.h"
 #include "runtime/numerics/NumericsImpl.h"
 #include "runtime/core/arithmetic_impl.h"
 #include "runtime/sequences/SequencesImpl.h"
@@ -1452,11 +1451,13 @@ void endVisitFlworReturn(const PlanIterator& /*a*/)
   PRINTER_VISITOR_DEFINITION(ZorbaIndexOfIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaExportXmlIterator);
 
-  PRINTER_VISITOR_DEFINITION(CreateValueIndex);
   PRINTER_VISITOR_DEFINITION(CreateInternalIndexIterator);
-  PRINTER_VISITOR_DEFINITION(DropValueIndex);
-  PRINTER_VISITOR_DEFINITION(ValueIndexPointProbe);
-  PRINTER_VISITOR_DEFINITION(ValueIndexRangeProbe);
+  PRINTER_VISITOR_DEFINITION(CreateIndexIterator);
+  PRINTER_VISITOR_DEFINITION(RefreshIndexIterator);
+  PRINTER_VISITOR_DEFINITION(DropIndexIterator);
+  PRINTER_VISITOR_DEFINITION(IndexEntryBuilderIterator);
+  PRINTER_VISITOR_DEFINITION(IndexPointProbeIterator);
+  PRINTER_VISITOR_DEFINITION(IndexRangeProbeIterator);
 
   PRINTER_VISITOR_DEFINITION(ZorbaSchemaTypeIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaBase64EncodeIterator);

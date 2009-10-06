@@ -206,27 +206,41 @@ DEF_ERR_CODE(API0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED, API0066, "Cannot serial
 //
 // Store Errors
 //
-DEF_ERR_CODE(STR0001_INDEX_ALREADY_EXISTS, STR0001, "An index with URI /s exists already.")
+DEF_ERR_CODE(STR0001_INDEX_ALREADY_EXISTS, STR0001,
+             "An index with qname /s exists already.")
 
-DEF_ERR_CODE(STR0002_INDEX_PARTIAL_KEY_INSERT, STR0002, "Partial key insertion in index \"/s\". Key = /s")
+DEF_ERR_CODE(STR0002_INDEX_DOES_NOT_EXIST, STR0002,
+             "An index with qame /s does not exist.")
 
-DEF_ERR_CODE(STR0003_INDEX_PARTIAL_KEY_REMOVE, STR0003, "Partial key deletion from index \"/s\"")
+DEF_ERR_CODE(STR0003_INDEX_PARTIAL_KEY_INSERT, STR0003,
+             "Partial key insertion in index \"/s\". Key = /s")
 
-DEF_ERR_CODE(STR0004_INDEX_PARTIAL_KEY_PROBE, STR0004, "Partial key probe into index \"/s\"")
+DEF_ERR_CODE(STR0004_INDEX_PARTIAL_KEY_REMOVE, STR0004,
+             "Partial key deletion from index \"/s\"")
 
-DEF_ERR_CODE(STR0005_INDEX_INVALID_BOX_PROBE, STR0005, "Invalid box probe condition for index \"/s\" : /s")
+DEF_ERR_CODE(STR0005_INDEX_PARTIAL_KEY_PROBE, STR0005,
+             "Partial key probe into index \"/s\"")
 
-DEF_ERR_CODE(STR0006_INDEX_UNSUPPORTED_PROBE_CONDITION, STR0006, "Index \"/s\" does not support probe conditions of kind /s")
+DEF_ERR_CODE(STR0006_INDEX_INVALID_BOX_PROBE, STR0006,
+             "Invalid box probe condition for index \"/s\" : /s")
 
-DEF_ERR_CODE(STR0007_LOADER_IO_ERROR, STR0007, "Loader I/O error: /s")
+DEF_ERR_CODE(STR0007_INDEX_UNSUPPORTED_PROBE_CONDITION, STR0007,
+             "Index \"/s\" does not support probe conditions of kind /s")
 
-DEF_ERR_CODE(STR0008_LOADER_PARSING_ERROR, STR0008, "Loader parsing error: /s")
+DEF_ERR_CODE(STR0020_LOADER_IO_ERROR, STR0020, 
+             "Loader I/O error: /s")
 
-DEF_ERR_CODE(STR0009_NODEID_ERROR, STR0009, "Nodeid error: /s")
+DEF_ERR_CODE(STR0021_LOADER_PARSING_ERROR, STR0021,
+             "Loader parsing error: /s")
 
-DEF_ERR_CODE(STR0010_TYPE_ERROR, STR0010, "Type error: /s")
+DEF_ERR_CODE(STR0030_NODEID_ERROR, STR0030,
+             "Nodeid error: /s")
 
-DEF_ERR_CODE (STR0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE, STR0024, "The function called {/s} is not available for the given item type {/s}.")
+DEF_ERR_CODE(STR0040_TYPE_ERROR, STR0040,
+             "Type error: /s")
+
+DEF_ERR_CODE(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE, STR0050,
+             "The function called {/s} is not available for the given item type {/s}.")
 
 //
 // ZORBA-specific errors
@@ -258,17 +272,36 @@ DEF_ERR_CODE (XQP0026_CANNOT_INIT_STORE, XQP0026, "Failed to initialize store.")
 
 DEF_ERR_CODE (XQP0027_MS_DOM_ERROR, XQP0027, "Error from MS DOM engine.")
 
-DEF_ERR_CODE (XQP0028_FUNCTION_IMPL_NOT_FOUND, XQP0028, "The external function called ({/s}/s) is not bound in the static context")
+DEF_ERR_CODE(XQP0028_FUNCTION_IMPL_NOT_FOUND, XQP0028,
+             "The external function called ({/s}/s) is not bound in the static context")
 
-DEF_ERR_CODE (XQP0030_DEADLOCK, XQP0029, "Lock upgrade request will result in deadlock")
+DEF_ERR_CODE(XQP0030_DEADLOCK, XQP0029,
+             "Lock upgrade request will result in deadlock")
 
-DEF_ERR_CODE (XQP0031_MALFORMED_XQUERYX_INPUT, XQP0031, "XQueryX Xml input is malformed.")
-DEF_ERR_CODE (XQP0032_ERROR_TRANSFORMING_XQUERYX_TO_XQUERY, XQP0031, "Error transforming XQueryX to XQuery using XSLT engine.")
+DEF_ERR_CODE(XQP0031_MALFORMED_XQUERYX_INPUT, XQP0031,
+             "XQueryX Xml input is malformed.")
 
-DEF_ERR_CODE(XQP0033_INDEX_DOES_NOT_EXIST, XQP0033, "No index with URI /s exists.")
-DEF_ERR_CODE(XQP0034_INDEX_ALREADY_EXISTS, XQP0034, "Index with URI /s already exists.")
-DEF_ERR_CODE(XQP0035_MULTI_VALUED_INDEX_KEY, XQP0035, "An index key has multiple values.")
-DEF_ERR_CODE(XQP0036_NON_ATOMIC_INDEX_KEY, XQP0036, "An index key has a non-atomic value.")
+DEF_ERR_CODE(XQP0032_ERROR_TRANSFORMING_XQUERYX_TO_XQUERY, XQP0031,
+             "Error transforming XQueryX to XQuery using XSLT engine.")
+
+
+DEF_ERR_CODE(XQP0033_INDEX_DOES_NOT_EXIST, XQP0033,
+             "An index with URI /s does not exists.")
+
+DEF_ERR_CODE(XQP0034_INDEX_ALREADY_EXISTS, XQP0034,
+             "An index with URI /s exists already.")
+
+DEF_ERR_CODE(XQP0035_MULTI_VALUED_INDEX_KEY, XQP0035,
+             "An index key has multiple values.")
+
+DEF_ERR_CODE(XQP0036_NON_ATOMIC_INDEX_KEY, XQP0036,
+             "An index key has a non-atomic value.")
+
+DEF_ERR_CODE(XQP0037_INDEX_IS_NOT_DECLARED, XQP0037,
+             "An index with URI /s is not declared.")
+
+DEF_ERR_CODE(XQP0038_INDEX_IS_ALREADY_DECLARED, XQP0038,
+             "An index with URI /s is declared already.")
 
 //
 // XPDY

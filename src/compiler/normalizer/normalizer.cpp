@@ -28,6 +28,7 @@
 #include "compiler/expression/expr_visitor.h"
 
 #include "functions/signature.h"
+#include "functions/function.h"
 
 namespace zorba {
 
@@ -50,27 +51,33 @@ static inline expr::expr_t wrap_in_atomization(
     expr::expr_t e)
 {
   expr::expr_t fh(new fo_expr(context, e->get_loc(), LOOKUP_FN("fn", "data", 1)));
-  fo_expr *fp = static_cast<fo_expr *>(fh.getp());
+  fo_expr* fp = static_cast<fo_expr *>(fh.getp());
   fp->add(e);
   return fh;
 }
 
 
-static inline expr::expr_t wrap_in_typematch(short context, expr::expr_t e, xqtref_t type)
+static inline expr::expr_t wrap_in_type_conversion(
+    short context,
+    expr::expr_t e,
+    xqtref_t type)
+{
+  expr::expr_t ph = new promote_expr(context, e->get_loc(), e, type);
+  // TODO : Need to add convert_simple_operand
+  return ph;
+}
+
+
+static inline expr::expr_t wrap_in_typematch(
+    short context, 
+    expr::expr_t e,
+    xqtref_t type)
 {
   // treat_expr should be avoided for updating expressions too,
   // but in that case "type" will be item()* anyway
   return TypeOps::is_subtype(*GENV_TYPESYSTEM.ITEM_TYPE_STAR, *type)
     ? e
-    : new treat_expr (context, e->get_loc (), e, type, XPTY0004);
-}
-
-
-static inline expr::expr_t wrap_in_type_conversion(short context, expr::expr_t e, xqtref_t type)
-{
-  expr::expr_t ph = new promote_expr(context, e->get_loc(), e, type);
-  // TODO : Need to add convert_simple_operand
-  return ph;
+    : new treat_expr(context, e->get_loc(), e, type, XPTY0004);
 }
 
 
@@ -86,8 +93,8 @@ class normalizer : public expr_visitor
   CompilerCB*     m_cb;
 
 public:
-  normalizer(CompilerCB* aCompilerCB) 
-    : m_cb(aCompilerCB) {}
+  normalizer(CompilerCB* aCompilerCB) : m_cb(aCompilerCB) {}
+
   ~normalizer() { }
 
 #define DEF_VISIT_METHODS( e )                  \
@@ -240,9 +247,14 @@ void end_visit (fo_expr&)
 
 bool begin_visit (fo_expr& node)
 {
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
+
   const signature& sign = node.get_signature();
 
   int n = node.size();
+
+  const function* func = node.get_func();
+
   for(int i = 0; i < n; ++i) 
   {
     expr::expr_t param = node[i];
@@ -250,10 +262,32 @@ bool begin_visit (fo_expr& node)
     if (!node.is_updating())
       checkNonUpdating(&*param);
 
-    const xqtref_t& param_type = sign[i];
+    xqtref_t param_type;
+
+    if (func->getKind() == FunctionConsts::FN_INDEX_PROBE_POINT)
+    {
+      if (i == 0)
+        param_type = sign[i];
+      else
+        param_type = rtm.ANY_ATOMIC_TYPE_QUESTION;
+    }
+    else if (func->getKind() == FunctionConsts::FN_INDEX_PROBE_RANGE)
+    {
+      if (i == 0)
+        param_type = sign[i];
+      else if (i % 6 == 1 || i % 6 == 2)
+        param_type = rtm.ANY_ATOMIC_TYPE_QUESTION;
+      else
+        param_type = rtm.BOOLEAN_TYPE_QUESTION;
+    }
+    else
+    {
+      param_type = sign[i];
+    }
+
     xqtref_t param_prime_type = TypeOps::prime_type(*param_type);
 
-    if (TypeOps::is_subtype(*param_prime_type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE)) 
+    if (TypeOps::is_subtype(*param_prime_type, *rtm.ANY_ATOMIC_TYPE_ONE)) 
     {
       param = wrap_in_atomization(m_cb->m_cur_sctx, m_cb->m_sctx, param);
       param = wrap_in_type_conversion(m_cb->m_cur_sctx, param, param_type);

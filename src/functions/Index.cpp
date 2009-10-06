@@ -16,8 +16,7 @@
 #include "functions/Index.h"
 #include "functions/function_impl.h"
 
-#include "runtime/indexing/value_index_builder.h"
-#include "runtime/indexing/value_index_probe.h"
+#include "runtime/indexing/value_index_impl.h"
 
 
 namespace zorba
@@ -25,23 +24,34 @@ namespace zorba
 
 /******************************************************************************
   create-internal-index($indexName as xs:QName) as ()
+
+  This is an intenal function that is used by the hashjoins rule to create and
+  populate a temp index. There are 2 reasons why we need a different function
+  than the regular create-index, which is defined below:
+
+  1. create-index assumes that the domain and key expressions do not reference
+     any free variables. This is not true for the temp index created by the
+     hashjoin rule.
+  2. The argument to create-index can be any arbitrary expression that returns
+     a QName. In the case of create-internal-index we know that the arg is a
+     const expr holding a qname item.
 ********************************************************************************/
-class CreateInternalIndex : public function 
+class FunctionCreateInternalIndex : public function 
 {
 public:
-  CreateInternalIndex(const signature& sig) 
+  FunctionCreateInternalIndex(const signature& sig) 
     :
     function(sig, FunctionConsts::FN_CREATE_INTERNAL_INDEX)
   {
   }
 
-  virtual bool requires_dyn_ctx() const { return true; }
+  bool requires_dyn_ctx() const { return true; }
 
   CODEGEN_DECL();
 };
 
 
-CODEGEN_DEF(CreateInternalIndex)
+CODEGEN_DEF(FunctionCreateInternalIndex)
 {
   // There is no single iterator that implements this function. Instead, a
   // whole sub-plan is generated to build the index. This is done in 
@@ -61,19 +71,42 @@ CODEGEN_DEF(CreateInternalIndex)
   the static context, which stores a mapping from the index uri to ValueIndex
   obj (defined in indexing/value_index.h).
 
-    for $$dot at $$pos in domainExpr
-    return concatenate( $$dot, fieldExpr1, ..., fieldExprN);
+  Note: the population of the index is done by a runtime plan that implements
+  the following flwor expr:
 
+    for $$dot at $$pos in domainExpr
+    return index-entry-builder($$dot, fieldExpr1, ..., fieldExprN);
+
+  This plan is generated "on-the-fly" by the CreateIndexIterator. The generated
+  plan is given as an arg to the store::Index::buildIndex() method. 
 ********************************************************************************/
-class zop_createindex : public function 
+class FunctionCreateIndex : public function 
 {
 public:
-  zop_createindex(const signature& sig) : function(sig) { }
+  FunctionCreateIndex(const signature& sig) : function(sig) { }
 
-  virtual bool requires_dyn_ctx() const { return true; }
+  bool requires_dyn_ctx() const { return true; }
 
-  DEFAULT_UNARY_CODEGEN(CreateValueIndex);
+  DEFAULT_UNARY_CODEGEN(CreateIndexIterator);
 };
+
+
+/******************************************************************************
+  refresh-index($indexName as xs:QName) as ()
+
+  Clears the index of its contents and then rebuilds the index the same way as
+  the create-index() function.
+********************************************************************************/
+class FunctionRefreshIndex : public function 
+{
+public:
+  FunctionRefreshIndex(const signature& sig) : function(sig) { }
+
+  bool requires_dyn_ctx() const { return true; }
+
+  DEFAULT_UNARY_CODEGEN(RefreshIndexIterator);
+};
+
 
 
 /******************************************************************************
@@ -82,90 +115,134 @@ public:
   Destroys the index container in the store and removes the index entry from
   the dynamic context. 
 ********************************************************************************/
-class zop_dropindex : public function 
+class FunctionDropIndex : public function 
 {
 public:
-  zop_dropindex(const signature& sig) : function(sig) { }
+  FunctionDropIndex(const signature& sig) : function(sig) { }
 
-  virtual bool requires_dyn_ctx() const { return true; }
+  bool requires_dyn_ctx() const { return true; }
 
-  DEFAULT_UNARY_CODEGEN(DropValueIndex);
+  DEFAULT_UNARY_CODEGEN(DropIndexIterator);
+};
+
+
+/***************************************************************************//**
+  This is a helper function for creating index entries (it constitutes the 
+  return expr of the flwor expr that populates the index; see the create-index
+  function above). Its first arg is a reference to the domain var, and its next
+  M args evaluate and return the key expressions for each domain node. The 
+  function simply evaluates each of its children in turn, and returns the
+  resulting items one-by-one. This is similar to fn:concatenate, but contrary
+  to concatenate, this function also returns NULL items.
+
+  index-entry-builder($domainNode as node(),
+                      $key1  as anyAtomic?,
+                      ...,
+                      $keyN  as anyAtomic?) as item()*
+********************************************************************************/
+class FunctionIndexEntryBuilder : public function 
+{
+public:
+  FunctionIndexEntryBuilder(const signature& sig) : function(sig) { }
+
+  bool requires_dyn_ctx() const { return true; }
+
+  DEFAULT_NARY_CODEGEN(IndexEntryBuilderIterator);
 };
 
 
 /***************************************************************************//**
   probe-index-point($indexName as xs:QName,
-                    $key1  as anyAtomic?,
+                    $key1      as anyAtomic?,
                     ...,
-                    $keyN  as anyAtomic?) as item()*
+                    $keyN      as anyAtomic?) as node()*
 ********************************************************************************/
-class zop_probeindexpoint : public function 
+class FunctionProbeIndexPoint : public function 
 {
 public:
-  zop_probeindexpoint(const signature& sig) : function(sig) { }
+  FunctionProbeIndexPoint(const signature& sig) 
+    :
+    function(sig, FunctionConsts::FN_INDEX_PROBE_POINT)
+  {
+  }
 
-  virtual bool requires_dyn_ctx () const { return true; }
+  bool requires_dyn_ctx() const { return true; }
 
-  DEFAULT_NARY_CODEGEN(ValueIndexPointProbe);
+  DEFAULT_NARY_CODEGEN(IndexPointProbeIterator);
 };
 
 
 /*******************************************************************************
-  item* probe-index-range($indexName               as xs:QName,
-                          range1LowerBound         as anyAtomic?,
-                          range1UpperBound         as anyAtomic?,
-                          range1HaveLowerBound     as boolean?,
-                          range1HaveupperBound     as boolean?,
-                          range1LowerBoundIncluded as boolean?,
-                          range1upperBoundIncluded as boolean?,
-                          ....,
-                          rangeNLowerBound         as anyAtomic?,
-                          rangeNUpperBound         as anyAtomic?,
-                          rangeNHaveLowerBound     as boolean?,
-                          rangeNHaveupperBound     as boolean?,
-                          rangeNLowerBoundIncluded as boolean?,
-                          rangeNupperBoundIncluded as boolean?)
+  probe-index-range($indexName               as xs:QName,
+                    $range1LowerBound         as anyAtomic?,
+                    $range1UpperBound         as anyAtomic?,
+                    $range1HaveLowerBound     as boolean?,
+                    $range1HaveupperBound     as boolean?,
+                    $range1LowerBoundIncluded as boolean?,
+                    $range1upperBoundIncluded as boolean?,
+                    ....,
+                    $rangeNLowerBound         as anyAtomic?,
+                    $rangeNUpperBound         as anyAtomic?,
+                    $rangeNHaveLowerBound     as boolean?,
+                    $rangeNHaveupperBound     as boolean?,
+                    $rangeNLowerBoundIncluded as boolean?,
+                    $rangeNupperBoundIncluded as boolean?) as node()*
 ********************************************************************************/
-class zop_probeindexrange : public function 
+class FunctionProbeIndexRange : public function 
 {
 public:
-  zop_probeindexrange(const signature& sig) : function(sig) { }
+  FunctionProbeIndexRange(const signature& sig) 
+    :
+    function(sig, FunctionConsts::FN_INDEX_PROBE_RANGE)
+  {
+  }
 
-  virtual bool requires_dyn_ctx () const { return true; }
+  bool requires_dyn_ctx() const { return true; }
 
-  DEFAULT_NARY_CODEGEN(ValueIndexRangeProbe);
+  DEFAULT_NARY_CODEGEN(IndexRangeProbeIterator);
 };
 
 
 
 void populateContext_Index(static_context* sctx)
 {
-  DECL(sctx, CreateInternalIndex,
-       (createQName(ZORBA_OPEXTENSIONS_NS,"op-extensions", "create-internal-index"),
+  DECL(sctx, FunctionCreateInternalIndex,
+       (createQName(ZORBA_OPEXTENSIONS_NS, "op-extensions", "create-internal-index"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         GENV_TYPESYSTEM.EMPTY_TYPE));
 
-  DECL(sctx, zop_createindex,
-       (createQName(ZORBA_OPEXTENSIONS_NS,"op-extensions", "create-index"),
+  DECL(sctx, FunctionCreateIndex,
+       (createQName(ZORBA_OPEXTENSIONS_NS, "op-extensions", "create-index"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         GENV_TYPESYSTEM.EMPTY_TYPE));
 
-  DECL(sctx, zop_dropindex,
-       (createQName(ZORBA_OPEXTENSIONS_NS,"op-extensions", "drop-index"),
+  DECL(sctx, FunctionRefreshIndex,
+       (createQName(ZORBA_OPEXTENSIONS_NS, "op-extensions", "refresh-index"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         GENV_TYPESYSTEM.EMPTY_TYPE));
 
-  DECL(sctx, zop_probeindexpoint,
-       (createQName(ZORBA_OPEXTENSIONS_NS,"op-extensions", "probe-index-point"),
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+  DECL(sctx, FunctionDropIndex,
+       (createQName(ZORBA_OPEXTENSIONS_NS, "op-extensions", "drop-index"),
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+        GENV_TYPESYSTEM.EMPTY_TYPE));
+
+  DECL(sctx, FunctionIndexEntryBuilder,
+       (createQName(ZORBA_OPEXTENSIONS_NS, "op-extensions", "index-entry-builder"),
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
         true,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
-  DECL(sctx, zop_probeindexrange,
-       (createQName(ZORBA_OPEXTENSIONS_NS,"op-extensions", "probe-index-range"),
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+  DECL(sctx, FunctionProbeIndexPoint,
+       (createQName(ZORBA_OPEXTENSIONS_NS, "op-extensions", "probe-index-point"),
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         true,
-        GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
+
+  DECL(sctx, FunctionProbeIndexRange,
+       (createQName(ZORBA_OPEXTENSIONS_NS, "op-extensions", "probe-index-range"),
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+        true,
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 }
 
 

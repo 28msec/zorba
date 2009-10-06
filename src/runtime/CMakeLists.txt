@@ -99,8 +99,7 @@ LIST(APPEND RUNTIME_SRCS
     debug/debug_iterators.cpp
     debug/zorba_debug_iterator.cpp
     eval/FnContextImpl.cpp
-    indexing/value_index_builder.cpp
-    indexing/value_index_probe.cpp
+    indexing/value_index_impl.cpp
     numerics/NumericsImpl.cpp
     qnames/QNamesImpl.cpp
     strings/StringsImpl.cpp

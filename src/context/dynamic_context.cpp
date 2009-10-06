@@ -412,18 +412,18 @@ void dynamic_context::destroy_dctx_value(dctx_value_t* val)
 }
 
 
-void dynamic_context::bind_index(const store::Item* qname, store::Index* index)
+void dynamic_context::bind_index(
+    const store::Item* qname,
+    store::Index_t& index,
+    const QueryLoc& loc)
 {
   if (theAvailableIndices == NULL)
     theAvailableIndices = new IndexMap(0, NULL, 8, false);
 
-  ValueIndexInfo v;
-  v.theIndex = index;
-
-  if (!theAvailableIndices->insert(qname, v))
+  if (!theAvailableIndices->insert(qname, index))
   {
-    ZORBA_ERROR_PARAM(XQP0034_INDEX_ALREADY_EXISTS,
-                      qname->getStringValue()->c_str(), "");
+    ZORBA_ERROR_LOC_PARAM(XQP0034_INDEX_ALREADY_EXISTS, loc,
+                          qname->getStringValue()->c_str(), "");
   }
 }
 
@@ -434,12 +434,7 @@ void dynamic_context::unbind_index(const store::Item* qname)
   {
     if (parent != NULL)
     {
-      return parent->unbind_index(qname);
-    }
-    else
-    {
-      ZORBA_ERROR_PARAM(XQP0033_INDEX_DOES_NOT_EXIST,
-                        qname->getStringValue()->c_str(), "");
+      parent->unbind_index(qname);
     }
   }
 }
@@ -447,11 +442,11 @@ void dynamic_context::unbind_index(const store::Item* qname)
 
 store::Index* dynamic_context::lookup_index(const store::Item* qname) const
 {
-  ValueIndexInfo info;
+  store::Index_t index;
 
-  if (theAvailableIndices->get(qname, info))
+  if (theAvailableIndices->get(qname, index))
   {
-    return info.theIndex.getp();
+    return index.getp();
   }
   else if (parent != NULL)
   {
@@ -459,8 +454,7 @@ store::Index* dynamic_context::lookup_index(const store::Item* qname) const
   }
   else
   {
-    ZORBA_ERROR_PARAM(XQP0033_INDEX_DOES_NOT_EXIST,
-                      qname->getStringValue()->c_str(), "");
+    return NULL;
   }
 }
 

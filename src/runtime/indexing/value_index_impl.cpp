@@ -1,0 +1,451 @@
+/*
+ * Copyright 2006-2008 The FLWOR Foundation.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+#include "zorbaerrors/error_manager.h"
+
+#include "system/globalenv.h"
+
+#include "types/typeimpl.h"
+
+#include "context/static_context.h"
+#include "context/dynamic_context.h"
+
+#include "indexing/value_index.h"
+
+#include "runtime/indexing/value_index_impl.h"
+#include "runtime/visitors/planitervisitor.h"
+#include "runtime/api/plan_wrapper.h"
+#include "runtime/api/plan_iterator_wrapper.h"
+
+#include "store/api/store.h"
+#include "store/api/iterator_factory.h"
+
+namespace zorba 
+{
+
+SERIALIZABLE_CLASS_VERSIONS(CreateInternalIndexIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(CreateInternalIndexIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(CreateIndexIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(CreateIndexIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(RefreshIndexIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(RefreshIndexIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(DropIndexIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(DropIndexIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(IndexEntryBuilderIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(IndexEntryBuilderIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(IndexPointProbeIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(IndexPointProbeIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(IndexRangeProbeIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(IndexRangeProbeIterator)
+
+UNARY_ACCEPT(CreateInternalIndexIterator);
+
+UNARY_ACCEPT(CreateIndexIterator);
+
+UNARY_ACCEPT(RefreshIndexIterator);
+
+UNARY_ACCEPT(DropIndexIterator);
+
+NARY_ACCEPT(IndexEntryBuilderIterator);
+
+NARY_ACCEPT(IndexPointProbeIterator);
+
+NARY_ACCEPT(IndexRangeProbeIterator);
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+static store::Index* createIndex(
+    ValueIndex* zorbaIndex,
+    store::Iterator* buildIterator,
+    dynamic_context* dctx,
+    const QueryLoc& loc)
+{
+  const std::vector<xqtref_t>& keyTypes(zorbaIndex->getKeyTypes());
+  const std::vector<std::string>& keyCollations(zorbaIndex->getKeyCollations());
+  ulong numColumns = keyTypes.size();
+
+  xqp_string defaultCollation;
+  std::string defaultCollationStr;
+  if (zorbaIndex->getSctx()->lookup_default_collation(defaultCollation))
+    defaultCollationStr = defaultCollation.getStore()->str();
+
+  store::IndexSpecification spec(numColumns);
+
+  for(ulong i = 0; i < numColumns; ++i) 
+  {
+    const XQType& t = *keyTypes[i];
+    spec.theKeyTypes[i] = t.get_qname();
+    const std::string& coll = keyCollations[i];
+    spec.theCollations.push_back(coll.empty() ? defaultCollationStr : coll);
+  }
+
+  spec.theIsUnique = zorbaIndex->getUnique();
+  spec.theIsSorted = zorbaIndex->getMethod() == ValueIndex::BTREE;
+  spec.theIsTemp = zorbaIndex->getTemp();
+  spec.theIsThreadSafe = true;
+  
+  store::Index_t storeIndex;
+
+  try
+  {
+    storeIndex = GENV_STORE.createIndex(zorbaIndex->getName(), spec, buildIterator);
+  }
+  catch(error::ZorbaError& e)
+  {
+    // Store raises error if index exists already
+    ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+  }
+
+  try
+  {
+    dctx->bind_index(zorbaIndex->getName(), storeIndex, loc);
+  }
+  catch(...)
+  {
+    // Dynamic context raises error if index exists already
+    GENV_STORE.deleteIndex(zorbaIndex->getName());
+    throw;
+  }
+
+  return storeIndex.getp();
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+bool CreateInternalIndexIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::Iterator_t planIteratorWrapper;
+  store::Index* storeIndex;
+  ValueIndex* zorbaIndex;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  zorbaIndex = theSctx->lookup_index(theQName);
+  ZORBA_ASSERT(zorbaIndex);
+
+  planIteratorWrapper = new PlanIteratorWrapper(theChild, planState);
+
+  storeIndex = createIndex(zorbaIndex, planIteratorWrapper, planState.dctx(), loc);
+
+  STACK_END (state);
+}
+
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  bool status;
+  store::Item_t qname;
+  ValueIndex_t zorbaIndex;
+  store::Index_t storeIndex;
+  PlanIterator* buildPlan;
+  store::Iterator_t planWrapper;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  status = consumeNext(qname, theChild, planState);
+  ZORBA_ASSERT(status);
+
+  if ((zorbaIndex = theSctx->lookup_index(qname)) == NULL)
+  {
+    ZORBA_ERROR_LOC_PARAM(XQP0037_INDEX_IS_NOT_DECLARED, loc,
+                          qname->getStringValue()->c_str(), "");
+  }
+
+  buildPlan = zorbaIndex->getBuildPlan(planState.theCompilerCB, loc);
+
+  planWrapper = new PlanWrapper(buildPlan, planState.theCompilerCB, planState.dctx());
+
+  storeIndex = createIndex(zorbaIndex, planWrapper, planState.dctx(), loc);
+
+  STACK_END(state);
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+bool RefreshIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  bool status;
+  store::Item_t qname;
+  ValueIndex_t zorbaIndex;
+  PlanIterator* buildPlan;
+  store::Iterator_t planWrapper;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  status = consumeNext(qname, theChild, planState);
+  ZORBA_ASSERT(status);
+
+  if ((zorbaIndex = theSctx->lookup_index(qname)) == NULL)
+  {
+    ZORBA_ERROR_LOC_PARAM(XQP0037_INDEX_IS_NOT_DECLARED, loc,
+                          qname->getStringValue()->c_str(), "");
+  }
+
+  buildPlan = zorbaIndex->getBuildPlan(planState.theCompilerCB, loc);
+
+  planWrapper = new PlanWrapper(buildPlan, planState.theCompilerCB, planState.dctx());
+  
+  try
+  {
+    GENV_STORE.rebuildIndex(qname, planWrapper);
+  }
+  catch(error::ZorbaError& e)
+  {
+    ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+  }
+
+  STACK_END (state);
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+bool DropIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  bool status;
+  store::Item_t qname;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  status = consumeNext(qname, theChild, planState);
+  ZORBA_ASSERT(status);
+
+  planState.dctx()->unbind_index(qname);
+  GENV_STORE.deleteIndex(qname);
+
+  STACK_END(state);
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void IndexEntryBuilderIteratorState::init(PlanState& planState) 
+{
+  PlanIteratorState::init(planState);
+  theCurChild = 0;
+}
+
+
+void IndexEntryBuilderIteratorState::reset(PlanState& planState) 
+{
+  PlanIteratorState::reset(planState);
+  theCurChild = 0;
+}
+
+
+bool IndexEntryBuilderIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  IndexEntryBuilderIteratorState* state;
+  DEFAULT_STACK_INIT(IndexEntryBuilderIteratorState, state, planState);
+
+  for (; state->theCurChild < theChildren.size(); ++state->theCurChild) 
+  {
+    if (!consumeNext(result, theChildren[state->theCurChild].getp(), planState))
+      result = NULL;
+
+    STACK_PUSH (true, state);
+  }
+  
+  STACK_END (state);
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void IndexPointProbeState::init(PlanState& state)
+{
+  PlanIteratorState::init(state);
+  theQname = NULL;
+  theIndex = NULL;
+  theIterator = NULL;
+}
+
+void IndexPointProbeState::reset(PlanState& state)
+{
+  PlanIteratorState::reset(state);
+  if (theIterator != NULL) {
+    theIterator->close();
+  }
+}
+
+
+bool IndexPointProbeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t qname;
+  store::IndexPointCondition_t cond;
+  int numChildren;
+  bool status;
+
+  IndexPointProbeState* state;
+  DEFAULT_STACK_INIT(IndexPointProbeState, state, planState);
+
+  status = consumeNext(qname, theChildren[0], planState);
+  ZORBA_ASSERT(status);
+
+  if (state->theQname == NULL || !state->theQname->equals(qname)) 
+  {
+    state->theQname = qname;
+    state->theIndex = planState.dctx()->lookup_index(state->theQname);
+    ZORBA_ASSERT(state->theIndex != NULL);
+    state->theIterator = GENV_STORE.getIteratorFactory()->
+                         createIndexProbeIterator(state->theIndex);
+  }
+
+  cond = state->theIndex->createPointCondition();
+
+  numChildren = theChildren.size();
+  for(int i = 1; i < numChildren; ++i) 
+  {
+    store::Item_t temp;
+    if (!consumeNext(temp, theChildren[i], planState)) {
+      temp = NULL;
+    }
+    cond->pushItem(temp);
+  }
+
+  state->theIterator->init((const zorba::store::IndexPointCondition_t&)cond);
+  state->theIterator->open();
+
+  while(state->theIterator->next(result)) 
+  {
+    STACK_PUSH(true, state);
+  }
+
+  STACK_END(state);
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void IndexRangeProbeState::init(PlanState& state)
+{
+  PlanIteratorState::init(state);
+  theQname = NULL;
+  theIndex = NULL;
+  theIterator = NULL;
+}
+
+
+void IndexRangeProbeState::reset(PlanState& state)
+{
+  PlanIteratorState::reset(state);
+  if (theIterator != NULL) {
+    theIterator->close();
+  }
+}
+
+
+bool IndexRangeProbeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t qname;
+  store::IndexBoxCondition_t cond;
+  int numChildren;
+  bool status;
+ 
+  IndexRangeProbeState* state;
+  DEFAULT_STACK_INIT(IndexRangeProbeState, state, planState);
+
+  status = consumeNext(qname, theChildren[0], planState);
+  ZORBA_ASSERT(status);
+
+  if (state->theQname == NULL || !state->theQname->equals(qname)) 
+  {
+    state->theQname = qname;
+    state->theIndex = planState.dctx()->lookup_index(state->theQname);
+    ZORBA_ASSERT(state->theIndex != NULL);
+    state->theIterator = GENV_STORE.getIteratorFactory()->
+                         createIndexProbeIterator(state->theIndex);
+  }
+
+  cond = state->theIndex->createBoxCondition();
+
+  numChildren = theChildren.size();
+  for(int i = 1; i < numChildren; i += 6) 
+  {
+    store::Item_t tempLeft;
+    store::Item_t tempRight;
+    store::Item_t tempHaveLeft;
+    store::Item_t tempHaveRight;
+    store::Item_t tempInclLeft;
+    store::Item_t tempInclRight;
+    if (!consumeNext(tempLeft, theChildren[i], planState)) {
+      tempLeft = NULL;
+    }
+    if (!consumeNext(tempRight, theChildren[i + 1], planState)) {
+      tempRight = NULL;
+    }
+    if (!consumeNext(tempHaveLeft, theChildren[i + 2], planState)) {
+      tempHaveLeft = NULL;
+    }
+    if (!consumeNext(tempHaveRight, theChildren[i + 3], planState)) {
+      tempHaveRight = NULL;
+    }
+    if (!consumeNext(tempInclLeft, theChildren[i + 4], planState)) {
+      tempInclLeft = NULL;
+    }
+    if (!consumeNext(tempInclRight, theChildren[i + 5], planState)) {
+      tempInclRight = NULL;
+    }
+
+    bool haveLeft = tempHaveLeft != NULL && tempHaveLeft->getBooleanValue();
+    bool haveRight = tempHaveRight != NULL && tempHaveRight->getBooleanValue();
+    bool inclLeft = tempInclLeft != NULL && tempInclLeft->getBooleanValue();
+    bool inclRight = tempInclRight != NULL && tempInclRight->getBooleanValue();
+
+    cond->pushRange(tempLeft, tempRight, haveLeft, haveRight, inclLeft, inclRight);
+  }
+
+  state->theIterator->init((const zorba::store::IndexBoxCondition_t&)cond);
+  state->theIterator->open();
+
+  while(state->theIterator->next(result)) 
+  {
+    STACK_PUSH(true, state);
+  }
+
+  STACK_END(state);
+}
+
+
+}
+/* vim:set ts=2 sw=2: */

@@ -152,6 +152,7 @@ expr* ValueIndex::getBuildExpr(CompilerCB* topCCB, const QueryLoc& loc)
   var_expr_t pos = getDomainPositionVariable();
 
   short sctxid = domainExpr->get_cur_sctx();
+  static_context* sctx = topCCB->getStaticContext(sctxid);
 
   flwor_expr::clause_list_t clauses;
 
@@ -186,9 +187,13 @@ expr* ValueIndex::getBuildExpr(CompilerCB* topCCB, const QueryLoc& loc)
 
   //
   // Create RETURN clause:
-  // return concat($$dot, field1_expr, ..., fieldN_expr)
+  // return index-entry-builder($$dot, field1_expr, ..., fieldN_expr)
   //
-  rchandle<fo_expr> returnExpr = fo_expr::create_seq(sctxid, loc);
+  function* f = sctx->lookup_resolved_fn(ZORBA_OPEXTENSIONS_NS,
+                                         "index-entry-builder",
+                                         VARIADIC_SIG_SIZE);
+
+  rchandle<fo_expr> returnExpr =  new fo_expr(sctxid, loc, f);
 
   expr_t domainVarExpr(new wrapper_expr(sctxid, loc, newdot.getp()));
   returnExpr->add(domainVarExpr);

@@ -148,7 +148,12 @@ public:
 
   store::Index_t createIndex(
         const store::Item_t& qname,
-        const store::IndexSpecification& spec);
+        const store::IndexSpecification& spec,
+        store::Iterator* sourceIter);
+
+  void rebuildIndex(
+        const store::Item_t& qname,
+        store::Iterator* sourceIter);
 
   store::Index* getIndex(const store::Item_t& qname);
 

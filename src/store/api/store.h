@@ -255,10 +255,32 @@ public:
    *        sure that there are no two indices with the same qname.
    * @param spec The index specification. It specifies the index properties
    *        (@see index.h)
+   * @param sourceIter It produces the entries to be inserted in the index.
+   *        Note: Given that iterators can produce only a single item at a time, 
+   *        the given source iterator does not actually produce whole index 
+   *        entries. Instead, the items of each index entry are produced one
+   *        at a time: first the domain node, followed by each of the key items.
    */
   virtual Index_t createIndex(
-        const store::Item_t& qname,
-        const IndexSpecification& spec) = 0;
+        const Item_t& qname,
+        const IndexSpecification& spec,
+        Iterator* sourceIter) = 0;
+
+  /**
+   * Rebuilds an existing, non-temo index.
+   *
+   * @param qname The qname identifying the index. For non-temporary indices,
+   *        the store maintains the map between qnames and indices and makes
+   *        sure that there are no two indices with the same qname.
+   * @param sourceIter It produces the entries to be inserted in the index.
+   *        Note: Given that iterators can produce only a single item at a time, 
+   *        the given source iterator does not actually produce whole index 
+   *        entries. Instead, the items of each index entry are produced one
+   *        at a time: first the domain node, followed by each of the key items.
+   */
+  virtual void rebuildIndex(
+        const Item_t& qname,
+        Iterator* sourceIter) = 0;
 
   /**
    * Gets an existing index.
@@ -267,12 +289,12 @@ public:
    *        the store maintains the map between qnames and indices and makes
    *        sure that there are no two indices with the same qname.
    */
-  virtual Index* getIndex(const store::Item_t& qname) = 0;
+  virtual Index* getIndex(const Item_t& qname) = 0;
 
   /**
    *  Destroy the index with the given qname. The index must not be a temporary one.
    */
-  virtual void deleteIndex(const store::Item_t& qname) = 0;
+  virtual void deleteIndex(const Item_t& qname) = 0;
 };
 
 

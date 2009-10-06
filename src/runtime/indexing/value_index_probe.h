@@ -27,43 +27,7 @@
 namespace zorba {
 
 
-/***************************************************************************//**
-
-********************************************************************************/
-class ValueIndexPointProbeState : public PlanIteratorState 
-{
-public:
-  const store::Item           * theQname;
-  store::Index                * theIndex;
-  store::IndexProbeIterator_t   theIterator;
-
-public:
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-
-NARY_ITER_STATE(ValueIndexPointProbe, ValueIndexPointProbeState);
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-class ValueIndexRangeProbeState : public PlanIteratorState 
-{
-public:
-  const store::Item           * theQname;
-  store::Index                * theIndex;
-  store::IndexProbeIterator_t   theIterator;
-
-public:
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-
-NARY_ITER_STATE(ValueIndexRangeProbe, ValueIndexRangeProbeState);
-
+=
 
 }
 

@@ -309,7 +309,7 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 
   idx->setKeyCollations(collations);
 
-  sctx->bind_index(qname, idx);
+  sctx->bind_index(qname, idx, loc);
 
   //
   // Find the flwor expr defining the outer var

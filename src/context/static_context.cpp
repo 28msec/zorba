@@ -877,14 +877,19 @@ xqtref_t static_context::get_collection_type(const xqp_string collURI)
   index management
 
 ********************************************************************************/
-bool static_context::bind_index(
+void static_context::bind_index(
     const store::Item* qname,
-    ValueIndex_t& index)
+    ValueIndex_t& index,
+    const QueryLoc& loc)
 {
   if (theIndexMap == NULL)
     theIndexMap = new IndexMap(0, NULL, 8, false);
 
-  return theIndexMap->insert(qname, index);
+  if (!theIndexMap->insert(qname, index))
+  {
+    ZORBA_ERROR_LOC_PARAM(XQP0038_INDEX_IS_ALREADY_DECLARED, loc,
+                          qname->getStringValue(),  "");
+  }
 }
 
 
@@ -1172,26 +1177,48 @@ xqp_string static_context::make_absolute_uri(
   a module variable or function already appears in this context, the method
   returns false.
 ********************************************************************************/
-bool static_context::import_module (const static_context *module) 
+bool static_context::import_module(const static_context* module) 
 {
-  checked_vector<serializable_hashmap<ctx_value_t>::entry>::const_iterator   it;
-  const char    *keybuff;
+  checked_vector<serializable_hashmap<ctx_value_t>::entry>::const_iterator it;
+  const char* keybuff;
   
-  for(it = module->keymap.begin(); it!=module->keymap.end(); it++) 
+  for(it = module->keymap.begin(); it != module->keymap.end(); ++it) 
   {
     keybuff = (*it).key.c_str();
     const ctx_value_t *val = &(*it).val;
 
-    if (0 == strncmp(keybuff, "var:", 4) && 0 != strncmp(keybuff, "var:$$", 6)) {
+    if (0 == strncmp(keybuff, "var:", 4) && 0 != strncmp(keybuff, "var:$$", 6)) 
+    {
       if (! bind_expr (keybuff, val->exprValue))
         return false;
-    } else if (0 == strncmp(keybuff, "fn:", 3)) {
+    }
+    else if (0 == strncmp(keybuff, "fn:", 3))
+    {
       if (! bind_func (keybuff, val->functionValue))
         return false;
-    } else if (0 == strncmp(keybuff, "fmap:", 5)) {
+    }
+    else if (0 == strncmp(keybuff, "fmap:", 5))
+    {
       ctx_value_t val2(CTX_ARITY);
       val2.fmapValue = new ArityFMap (*val->fmapValue);
       keymap.put (keybuff, val2);
+    }
+  }
+
+  if (module->theIndexMap)
+  {
+    IndexMap::iterator idx_iter = module->theIndexMap->begin();
+    IndexMap::iterator idx_end = module->theIndexMap->end();
+    for (; idx_iter != idx_end; ++idx_iter)
+    {
+      std::pair<const store::Item*, rchandle<ValueIndex> > pair = (*idx_iter);
+
+      if (theIndexMap == NULL)
+      {
+        theIndexMap = new IndexMap(0, NULL, 8, false);
+      }
+
+      theIndexMap->insert(pair.first, pair.second);
     }
   }
 

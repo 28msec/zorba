@@ -416,7 +416,7 @@ int processReply(const QueryLoc& aLoc,
         else
         {
           // xml could not parsed
-          ZORBA_ERROR(STR0008_LOADER_PARSING_ERROR);
+          ZORBA_ERROR(STR0021_LOADER_PARSING_ERROR);
         }
       }
       break;
@@ -438,7 +438,7 @@ int processReply(const QueryLoc& aLoc,
         else
         {
           // xml could not be parsed
-          ZORBA_ERROR(STR0008_LOADER_PARSING_ERROR);
+          ZORBA_ERROR(STR0021_LOADER_PARSING_ERROR);
         }
       }
       break;

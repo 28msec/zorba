@@ -741,7 +741,7 @@ long CompareIterator::equal(
   }
   catch(error::ZorbaError& e)
   {
-    if (e.theErrorCode == STR0010_TYPE_ERROR)
+    if (e.theErrorCode == STR0040_TYPE_ERROR)
       return -2;
     else
       throw e;
@@ -788,7 +788,7 @@ long CompareIterator::compare(
       }
     }
   } catch(error::ZorbaError& e) {
-    if (e.theErrorCode == STR0010_TYPE_ERROR)
+    if (e.theErrorCode == STR0040_TYPE_ERROR)
       return -2;
     else
       throw e;

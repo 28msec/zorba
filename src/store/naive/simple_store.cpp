@@ -317,9 +317,14 @@ store::Item_t SimpleStore::createUri()
 ********************************************************************************/
 store::Index_t SimpleStore::createIndex(
     const store::Item_t& qname,
-    const store::IndexSpecification& spec)
+    const store::IndexSpecification& spec,
+    store::Iterator* sourceIter)
 {
+  ulong numColumns = spec.theKeyTypes.size();
+
   store::Index_t index;
+  store::Item_t domainItem;
+  store::IndexKey key(numColumns);
 
   if (!spec.theIsTemp && theIndices.get(qname, index))
   {
@@ -336,12 +341,66 @@ store::Index_t SimpleStore::createIndex(
     index = new HashIndex(qname, spec);
   }
 
+  sourceIter->open();
+
+  try
+  {
+    while (sourceIter->next(domainItem))
+    {
+      for (ulong i = 0; i < numColumns; ++i)
+      {
+        if (!sourceIter->next(key[i]))
+        {
+          ZORBA_ERROR_DESC(XQP0019_INTERNAL_ERROR, "Incomplete key during index build");
+        }
+      }
+      
+      index->insert(key, domainItem);
+    }
+  }
+  catch(...)
+  {
+    sourceIter->close();
+    throw;
+  }
+
+  sourceIter->close();
+
   if (!spec.theIsTemp)
   {
     theIndices.insert(qname, index);
   }
 
   return index;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleStore::rebuildIndex(
+    const store::Item_t& qname,
+    store::Iterator* sourceIter)
+{
+  store::Index_t index;
+
+  if (!theIndices.get(qname, index))
+  {
+    ZORBA_ERROR_PARAM(STR0002_INDEX_DOES_NOT_EXIST,
+                      qname->getStringValue()->c_str(), "");
+  }
+
+  theIndices.remove(qname);
+
+  try
+  {
+    createIndex(qname, index->getSpecification(), sourceIter);
+  }
+  catch (...)
+  {
+    theIndices.insert(qname, index);
+    throw;
+  }
 }
 
 

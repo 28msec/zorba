@@ -195,7 +195,7 @@ OrdPath::OrdPath(const unsigned char* str, ulong strLen)
 
   if (byteLen > MAX_BYTE_LEN)
   {
-    ZORBA_ERROR_PARAM_OSS(STR0009_NODEID_ERROR,
+    ZORBA_ERROR_PARAM_OSS(STR0030_NODEID_ERROR,
                           "A nodeid requires more than " << MAX_BYTE_LEN
                           << " bytes", "");
   }
@@ -925,7 +925,7 @@ bool OrdPath::pushComp(
   ulong bytesNeeded = byteIndex + (bitsNeeded + 15 - bitsAvailable) / 8;
   if (bytesNeeded > MAX_BYTE_LEN)
   {
-    ZORBA_ERROR_PARAM_OSS(STR0009_NODEID_ERROR,
+    ZORBA_ERROR_PARAM_OSS(STR0030_NODEID_ERROR,
                           "A nodeid requires more than " << MAX_BYTE_LEN
                           << " bytes", "");
   }
@@ -985,7 +985,7 @@ void OrdPath::appendComp(long value)
   ulong bytesNeeded = byteIndex + (bitsNeeded + 15 - bitsAvailable) / 8;
   if (bytesNeeded > OrdPath::MAX_BYTE_LEN)
   {
-    ZORBA_ERROR_PARAM_OSS(STR0009_NODEID_ERROR,
+    ZORBA_ERROR_PARAM_OSS(STR0030_NODEID_ERROR,
                           "A nodeid requires more than " << OrdPath::MAX_BYTE_LEN
                            << " bytes", "");
   }
@@ -1098,7 +1098,7 @@ void OrdPath::bitsNeeded(long value, ulong& bitsNeeded, uint32_t& eval)
     }
     else
     {
-      ZORBA_ERROR_DESC(STR0009_NODEID_ERROR, 
+      ZORBA_ERROR_DESC(STR0030_NODEID_ERROR, 
                        "A nodeid component is too large to be encoded");
       return;
     }
@@ -1157,7 +1157,7 @@ void OrdPath::bitsNeeded(long value, ulong& bitsNeeded, uint32_t& eval)
     }
     else
     {
-      ZORBA_ERROR_DESC( STR0009_NODEID_ERROR,
+      ZORBA_ERROR_DESC( STR0030_NODEID_ERROR,
                        "A nodeid component is too large to be encoded");
       return;
     }
@@ -3774,7 +3774,7 @@ void OrdPathStack::pushChild()
   if (theByteIndex == OrdPath::MAX_BYTE_LEN ||
       (theByteIndex == OrdPath::MAX_BYTE_LEN - 1 && theBitsAvailable < 2))
   {
-    ZORBA_ERROR_PARAM_OSS(STR0009_NODEID_ERROR,
+    ZORBA_ERROR_PARAM_OSS(STR0030_NODEID_ERROR,
                           "A nodeid requires more than " << OrdPath::MAX_BYTE_LEN
                           << " bytes", "");
   }
@@ -3913,8 +3913,8 @@ void OrdPathStack::compressComp(ulong comp, long value)
     }
     else
     {
-      ZORBA_ERROR_DESC( STR0009_NODEID_ERROR,
-                        "A nodeid component is too large to be encoded");
+      ZORBA_ERROR_DESC(STR0030_NODEID_ERROR,
+                       "A nodeid component is too large to be encoded");
       return;
     }
   }
@@ -3972,8 +3972,8 @@ void OrdPathStack::compressComp(ulong comp, long value)
     }
     else
     {
-      ZORBA_ERROR_DESC( STR0009_NODEID_ERROR,
-                        "A nodeid component is too large to be encoded");
+      ZORBA_ERROR_DESC(STR0030_NODEID_ERROR,
+                       "A nodeid component is too large to be encoded");
       return;
     }
   }
@@ -3983,9 +3983,9 @@ void OrdPathStack::compressComp(ulong comp, long value)
 
   if (bytesNeeded > OrdPath::MAX_BYTE_LEN)
   {
-    ZORBA_ERROR_PARAM_OSS( STR0009_NODEID_ERROR,
-                           "A nodeid requires more than " << OrdPath::MAX_BYTE_LEN
-                           << " bytes", "");
+    ZORBA_ERROR_PARAM_OSS(STR0030_NODEID_ERROR,
+                          "A nodeid requires more than " << OrdPath::MAX_BYTE_LEN
+                          << " bytes", "");
     return;
   }
 

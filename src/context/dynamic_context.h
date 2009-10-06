@@ -72,12 +72,7 @@ protected:
 
   typedef hashmap<dctx_value_t> ValueMap;
 
-  struct ValueIndexInfo
-  {
-    store::Index_t             theIndex;
-  };
-
-  typedef ItemPointerHashMap<ValueIndexInfo> IndexMap;
+  typedef ItemPointerHashMap<store::Index_t> IndexMap;
 
 protected:
   static bool static_init;
@@ -147,7 +142,10 @@ public:
         store::Item_t& var_item,
         store::Iterator_t& var_iter);
 
-  void bind_index(const store::Item* qname, store::Index* index);
+  void bind_index(
+        const store::Item* qname,
+        store::Index_t& index,
+        const QueryLoc& loc);
 
   void unbind_index(const store::Item* qname);
 
