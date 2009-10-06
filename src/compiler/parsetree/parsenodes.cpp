@@ -130,14 +130,17 @@ void MainModule::accept(parsenode_visitor& v) const
 
 /*******************************************************************************
   [4] LibraryModule ::= ModuleDecl  Prolog
+  [*] DataModule :=     DataModuleDecl Prolog
 ********************************************************************************/
 LibraryModule::LibraryModule(
     const QueryLoc& loc_,
+    bool _isDataModule_h,
     rchandle<ModuleDecl> _decl_h,
     rchandle<Prolog> _prolog_h,
     rchandle<VersionDecl> _ver)
   :
   Module(loc_, _ver),
+  isDataModule_h(_isDataModule_h),
   decl_h(_decl_h),
   prolog_h(_prolog_h)
 {
@@ -563,10 +566,12 @@ void SchemaPrefix::accept(parsenode_visitor& v) const
 ********************************************************************************/
 ModuleImport::ModuleImport(
     const QueryLoc& loc_,
+    bool imports_data_module,
     std::string const& _uri,
     rchandle<URILiteralList> _uri_list_h)
   :
   XQDocumentable(loc_),
+  imports_data_module_h(imports_data_module),
   uri (_uri),
   uri_list_h(_uri_list_h)
 {
@@ -575,11 +580,13 @@ ModuleImport::ModuleImport(
 
 ModuleImport::ModuleImport(
     const QueryLoc& loc_,
+    bool imports_data_module,
     std::string const& _prefix,
     std::string const& _uri,
     rchandle<URILiteralList> _uri_list_h)
   :
   XQDocumentable(loc_),
+  imports_data_module_h(imports_data_module),
   prefix(_prefix),
   uri(_uri),
   uri_list_h(_uri_list_h)
@@ -803,6 +810,39 @@ void Param::accept(parsenode_visitor& v) const
   END_VISITOR ();
 }
 
+
+/*******************************************************************************
+  [*] CollectionDecl ::=   "declare" "collection" QName CollProperties
+  [*] CollProperties ::=   ("node-type" KindTest)? 
+                           ("collection-modifier" CollModifier)? 
+                           ("node-modifier" NodeModifier)?
+********************************************************************************/
+void CollectionDecl::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(theKindTest);
+  ACCEPT(theCollectionModifier);
+  ACCEPT(theNodeModifier);
+  END_VISITOR();
+}
+
+/*******************************************************************************
+  [*] CollModifier   ::=   ("const" | "append-only" | "queue" | "mutable")
+********************************************************************************/
+void CollectionModifier::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
+}
+
+/*******************************************************************************
+  [*] NodeModifier   ::=   ("read-only" | "mutable " )
+********************************************************************************/
+void NodeModifier::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
+}
 
 /***************************************************************************//**
   IndexDecl ::= "declare" "unique"? 

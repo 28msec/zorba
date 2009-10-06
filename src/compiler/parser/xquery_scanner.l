@@ -429,11 +429,29 @@ typedef zorba::xquery_parser::token token;
 
 "try" { return token::TRY;}
 
+  /*______________________________________________________________________
+   |
+   |  Data Definition Facility tokens 
+   |______________________________________________________________________*/
+
+"datamodule" { return token::DATAMODULE; }
+
+"collection" { return token::COLLECTION; }
+"node-type" { return token::NODE_TYPE; }
+"collection-modifier" { return token::COLLECTION_MODIFIER; }
+"node-modifier" { return token::NODE_MODIFIER; }
+"const" { return token::CONST; }
+"append-only" { return token::APPEND_ONLY; }
+"queue" { return token::QUEUE; }
+"mutable" { return token::MUTABLE; }
+"read-only" { return token::READ_ONLY; }
+
 "index" { return token::INDEX; }
 "unique" { return token::UNIQUE; }
 "manual" { return token::MANUAL; }
 "automatic" { return token::AUTOMATIC; }
 "on" { return token::ON; }
+
  
     /*______________________________________________________________________
      |

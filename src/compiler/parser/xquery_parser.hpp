@@ -1,5 +1,5 @@
 
-/* A Bison parser, made by GNU Bison 2.4.  */
+/* A Bison parser, made by GNU Bison 2.4.1.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
@@ -40,7 +40,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-#line 30 "/home/markos/zorba/zorba/src/compiler/parser/xquery_parser.y"
+#line 30 "/Users/dagraf/work/28msec/software/zorba/trunk/src/compiler/parser/xquery_parser.y"
 
 #include "compiler/parsetree/parsenodes.h"
 namespace zorba {
@@ -50,7 +50,7 @@ class xquery_driver;
 
 
 /* Line 35 of lalr1.cc  */
-#line 54 "/home/markos/zorba/zorba/build-gdb/src/compiler/parser/xquery_parser.hpp"
+#line 54 "/Users/dagraf/work/28msec/software/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -64,7 +64,7 @@ class xquery_driver;
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 68 "/home/markos/zorba/zorba/build-gdb/src/compiler/parser/xquery_parser.hpp"
+#line 68 "/Users/dagraf/work/28msec/software/zorba/build/src/compiler/parser/xquery_parser.hpp"
   class position;
   class location;
 
@@ -74,7 +74,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 78 "/home/markos/zorba/zorba/build-gdb/src/compiler/parser/xquery_parser.hpp"
+#line 78 "/Users/dagraf/work/28msec/software/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -122,7 +122,7 @@ do {							\
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 126 "/home/markos/zorba/zorba/build-gdb/src/compiler/parser/xquery_parser.hpp"
+#line 126 "/Users/dagraf/work/28msec/software/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -134,7 +134,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 120 "/home/markos/zorba/zorba/src/compiler/parser/xquery_parser.y"
+#line 120 "/Users/dagraf/work/28msec/software/zorba/trunk/src/compiler/parser/xquery_parser.y"
 
   zorba::parsenode * node;
   zorba::exprnode * expr;
@@ -153,7 +153,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-#line 157 "/home/markos/zorba/zorba/build-gdb/src/compiler/parser/xquery_parser.hpp"
+#line 157 "/Users/dagraf/work/28msec/software/zorba/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -435,26 +435,36 @@ namespace zorba {
      WORDS = 527,
      THESAURUS = 528,
      WILDCARDS = 529,
-     UNIQUE = 530,
-     INDEX = 531,
-     MANUAL = 532,
-     AUTOMATIC = 533,
-     ON = 534,
-     BYTE_ORDER_MARK_UTF8 = 535,
-     FTCONTAINS_REDUCE = 536,
-     RANGE_REDUCE = 537,
-     ADDITIVE_REDUCE = 538,
-     MULTIPLICATIVE_REDUCE = 539,
-     UNION_REDUCE = 540,
-     INTERSECT_EXCEPT_REDUCE = 541,
-     QVARINDECLLIST_REDUCE = 542,
-     COMMA_DOLLAR = 543,
-     UNARY_PREC = 544,
-     SEQUENCE_TYPE_REDUCE = 545,
-     OCCURS_STAR = 546,
-     OCCURS_PLUS = 547,
-     OCCURS_HOOK = 548,
-     STEP_REDUCE = 549
+     DATAMODULE = 530,
+     COLLECTION = 531,
+     NODE_TYPE = 532,
+     COLLECTION_MODIFIER = 533,
+     NODE_MODIFIER = 534,
+     CONST = 535,
+     APPEND_ONLY = 536,
+     QUEUE = 537,
+     MUTABLE = 538,
+     READ_ONLY = 539,
+     UNIQUE = 540,
+     INDEX = 541,
+     MANUAL = 542,
+     AUTOMATIC = 543,
+     ON = 544,
+     BYTE_ORDER_MARK_UTF8 = 545,
+     FTCONTAINS_REDUCE = 546,
+     RANGE_REDUCE = 547,
+     ADDITIVE_REDUCE = 548,
+     MULTIPLICATIVE_REDUCE = 549,
+     UNION_REDUCE = 550,
+     INTERSECT_EXCEPT_REDUCE = 551,
+     QVARINDECLLIST_REDUCE = 552,
+     COMMA_DOLLAR = 553,
+     UNARY_PREC = 554,
+     SEQUENCE_TYPE_REDUCE = 555,
+     OCCURS_STAR = 556,
+     OCCURS_PLUS = 557,
+     OCCURS_HOOK = 558,
+     STEP_REDUCE = 559
    };
 
     };
@@ -631,7 +641,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 635 "/home/markos/zorba/zorba/build-gdb/src/compiler/parser/xquery_parser.hpp"
+#line 645 "/Users/dagraf/work/28msec/software/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 
 

@@ -464,13 +464,25 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token WILDCARDS	         				"'wildcards'"
 
 
-/* Indexes */
+/* Data Definition Facility */
 
-%token UNIQUE    "'unique'"
-%token INDEX     "'index'"
-%token MANUAL    "'manual'"
-%token AUTOMATIC "'automatic'"
-%token ON        "'on'"
+%token <sval> DATAMODULE "'datamodule'"
+
+%token COLLECTION          "'collection'"
+%token NODE_TYPE           "'node-type'"
+%token COLLECTION_MODIFIER "'collection-modifier'"
+%token NODE_MODIFIER       "'node-modifier'"
+%token CONST               "'const'"
+%token APPEND_ONLY         "'append-only'"
+%token QUEUE               "'queue'"
+%token MUTABLE             "'mutable'"
+%token READ_ONLY           "'read-only'"
+
+%token UNIQUE              "'unique'"
+%token INDEX               "'index'"
+%token MANUAL              "'manual'"
+%token AUTOMATIC           "'automatic'"
+%token ON                  "'on'"
 
 /* Byte Order Marks                  */
 /* --------------------------------- */    
@@ -695,6 +707,15 @@ static void print_token_value(FILE *, int, YYSTYPE);
 /* ----------------- */
 %type <expr> EvalExpr
 
+/* datamodules-related */
+/* ------------------- */
+%type <node> DataModule
+%type <node> DataModuleDecl
+
+/* collection-reladed */
+%type <node> CollectionDecl
+%type <node> CollectionModifier
+%type <node> NodeModifier
 
 /* index-related     */
 /* ----------------- */
@@ -761,7 +782,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 // (not <= 0); but Bison never increments the refcount, so we do it manually...
 
 // parsenodes
-%destructor { if ($$ != NULL) { RCHelper::addReference ($$); RCHelper::removeReference ($$); } } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDecl3 FunctionDecl4 Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp IndexDecl IndexDecl2 IndexDecl3 IndexDeclSuffix IndexKeySpec IndexKeySpec1 IndexKeyList CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard DecimalFormatDecl // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
+%destructor { if ($$ != NULL) { RCHelper::addReference ($$); RCHelper::removeReference ($$); } } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDecl3 FunctionDecl4 Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl CollectionModifier NodeModifier IndexDecl IndexDecl2 IndexDecl3 IndexDeclSuffix IndexKeySpec IndexKeySpec1 IndexKeyList CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard DecimalFormatDecl // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
 // exprnodes
 %destructor { if ($$ != NULL) { RCHelper::addReference ($$); RCHelper::removeReference ($$); } } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockExpr EnclosedExpr Expr ConcatExpr ApplyExpr ExprSingle ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignExpr ExitExpr WhileExpr FlowCtlStatement QNAME FTContainsExpr
 // internal non-terminals with values
@@ -918,6 +939,17 @@ ModuleWithoutBOM :
        $$ = $2;
        driver.set_expr ($$);
 		}
+  | DataModule
+    {
+       $$ = $1;
+       driver.set_expr ($$);
+    }
+  | VersionDecl DataModule
+    {
+       dynamic_cast<LibraryModule *> ($2)->set_version_decl (static_cast<VersionDecl *> ($1));
+       $$ = $2;
+       driver.set_expr ($$);
+    }
   ;
 
 
@@ -960,13 +992,13 @@ MainModule :
 LibraryModule :
     ModuleDecl
     {
-      $$ = new LibraryModule(LOC (@$),
+      $$ = new LibraryModule(LOC (@$), false,
                              static_cast<ModuleDecl*>($1),
                              NULL);
     }
 	|	ModuleDecl  Prolog
 		{
-			$$ = new LibraryModule(LOC (@$),
+			$$ = new LibraryModule(LOC (@$), false,
 								static_cast<ModuleDecl*>($1),
 								static_cast<Prolog*>($2));
 		}
@@ -977,6 +1009,37 @@ LibraryModule :
 // --------------
 ModuleDecl :
 		MODULE NAMESPACE  NCNAME  EQUALS  URI_LITERAL  SEMI
+		{
+			$$ = new ModuleDecl(LOC (@$),
+								SYMTAB ($3), 
+								SYMTAB ($5));
+      dynamic_cast<ModuleDecl *>($$)->setComment(SYMTAB($1));
+		}
+;
+
+
+// [*] DataModule
+// -----------------
+DataModule :
+    DataModuleDecl
+    {
+      $$ = new LibraryModule(LOC (@$), true,
+                             static_cast<ModuleDecl*>($1),
+                             NULL);
+    }
+	|	DataModuleDecl  Prolog
+		{
+			$$ = new LibraryModule(LOC (@$), true,
+								static_cast<ModuleDecl*>($1),
+								static_cast<Prolog*>($2));
+		}
+	;
+
+
+// [*] DataModuleDecl
+// ------------------
+DataModuleDecl :
+		DATAMODULE NAMESPACE  NCNAME  EQUALS  URI_LITERAL  SEMI
 		{
 			$$ = new ModuleDecl(LOC (@$),
 								SYMTAB ($3), 
@@ -1069,6 +1132,9 @@ VFO_Decl :
 
 	/* full-text extension */
 	| FTOptionDecl
+
+  /* Collection */
+  | CollectionDecl
 
   /* Index */
   | IndexDecl
@@ -1395,14 +1461,14 @@ SchemaPrefix :
 ModuleImport :
 		IMPORT MODULE  URI_LITERAL
 		{
-			$$ = new ModuleImport(LOC (@$),
+			$$ = new ModuleImport(LOC (@$), false,
 								SYMTAB ($3),
 								NULL);
       dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
 		}
 	|	IMPORT MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL
 		{
-			$$ = new ModuleImport(LOC (@$),
+			$$ = new ModuleImport(LOC (@$), false,
 								SYMTAB ($4),
 								SYMTAB ($6),
 								NULL);
@@ -1410,14 +1476,44 @@ ModuleImport :
 		}
 	|	IMPORT MODULE  URI_LITERAL  AT  URILiteralList
 		{
-			$$ = new ModuleImport(LOC (@$),
+			$$ = new ModuleImport(LOC (@$), false,
 								SYMTAB ($3),
 								dynamic_cast<URILiteralList*>($5));
       dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
 		}
 	|	IMPORT MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL  AT  URILiteralList
 		{
-			$$ = new ModuleImport(LOC (@$),
+			$$ = new ModuleImport(LOC (@$), false,
+								SYMTAB ($4),
+								SYMTAB ($6),
+								dynamic_cast<URILiteralList*>($8));
+      dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
+		}
+  | IMPORT DATAMODULE  URI_LITERAL
+		{
+			$$ = new ModuleImport(LOC (@$), true,
+								SYMTAB ($3),
+								NULL);
+      dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
+		}
+	|	IMPORT DATAMODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL
+		{
+			$$ = new ModuleImport(LOC (@$), true,
+								SYMTAB ($4),
+								SYMTAB ($6),
+								NULL);
+      dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
+		}
+	|	IMPORT DATAMODULE  URI_LITERAL  AT  URILiteralList
+		{
+			$$ = new ModuleImport(LOC (@$), true,
+								SYMTAB ($3),
+								dynamic_cast<URILiteralList*>($5));
+      dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
+		}
+	|	IMPORT DATAMODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL  AT  URILiteralList
+		{
+			$$ = new ModuleImport(LOC (@$), true,
 								SYMTAB ($4),
 								SYMTAB ($6),
 								dynamic_cast<URILiteralList*>($8));
@@ -1514,6 +1610,102 @@ VarDecl :
       dynamic_cast<VarDecl*>($$)->setComment(SYMTAB($1));
 		}
 	;
+
+CollectionDecl :
+    DECLARE COLLECTION QNAME
+    {
+      $$ = new CollectionDecl( LOC(@$),
+                               static_cast<QName*>($3),
+                               0, 0, 0);
+    }
+  |
+    DECLARE COLLECTION QNAME NODE_TYPE KindTest
+    {
+      $$ = new CollectionDecl( LOC(@$),
+                               static_cast<QName*>($3),
+                               $5, 
+                               0, 0);
+    }
+  | DECLARE COLLECTION QNAME CollectionModifier
+    {
+      $$ = new CollectionDecl( LOC(@$),
+                               static_cast<QName*>($3),
+                               0, 
+                               static_cast<CollectionModifier*>($4), 
+                               0);
+    }
+  | DECLARE COLLECTION QNAME NODE_TYPE KindTest CollectionModifier
+    {
+      $$ = new CollectionDecl( LOC(@$),
+                               static_cast<QName*>($3),
+                               $5, 
+                               static_cast<CollectionModifier*>($6), 
+                               0);
+    }
+  | DECLARE COLLECTION QNAME NodeModifier
+    {
+      $$ = new CollectionDecl( LOC(@$),
+                               static_cast<QName*>($3),
+                               0, 
+                               0, 
+                               static_cast<NodeModifier*>($4));
+    }
+  | DECLARE COLLECTION QNAME NODE_TYPE KindTest NodeModifier
+    {
+      $$ = new CollectionDecl( LOC(@$),
+                               static_cast<QName*>($3),
+                               $5, 
+                               0, 
+                               static_cast<NodeModifier*>($6));
+    }
+  | DECLARE COLLECTION QNAME CollectionModifier NodeModifier
+    {
+      $$ = new CollectionDecl( LOC(@$),
+                               static_cast<QName*>($3),
+                               0, 
+                               static_cast<CollectionModifier*>($4), 
+                               static_cast<NodeModifier*>($5));
+    }
+  | DECLARE COLLECTION QNAME NODE_TYPE KindTest CollectionModifier NodeModifier
+    {
+      $$ = new CollectionDecl( LOC(@$),
+                               static_cast<QName*>($3),
+                               $5, 
+                               static_cast<CollectionModifier*>($6), 
+                               static_cast<NodeModifier*>($7));
+    }
+  ;
+
+CollectionModifier :
+    COLLECTION_MODIFIER CONST
+    {
+      $$ = new CollectionModifier(LOC(@$), CollectionModifier::const_);
+    }
+  | COLLECTION_MODIFIER APPEND_ONLY
+    {
+      $$ = new CollectionModifier(LOC(@$), CollectionModifier::append_only);
+    }
+  | COLLECTION_MODIFIER QUEUE
+    {
+      $$ = new CollectionModifier(LOC(@$), CollectionModifier::queue);
+    }
+  | COLLECTION_MODIFIER MUTABLE
+    {
+      $$ = new CollectionModifier(LOC(@$), CollectionModifier::mutable_);
+    }
+  ;
+
+
+NodeModifier :
+    NODE_MODIFIER READ_ONLY
+    {
+      $$ = new NodeModifier(LOC(@$), NodeModifier::read_only);
+    }
+  | NODE_MODIFIER MUTABLE
+    {
+      $$ = new NodeModifier(LOC(@$), NodeModifier::mutable_);
+    }
+  ;
 
 
 IndexDecl :

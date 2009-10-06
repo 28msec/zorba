@@ -2854,6 +2854,36 @@ void end_visit (const Param& v, void* /*visit_state*/)
   }
 }
 
+/***************************************************************************//**
+  CollectionDecl   ::=  "declare" "collection" QName CollProperties
+  CollProperties   ::=  ("node-type" KindTest)? 
+                        ("collection-modifier" CollModifier)? 
+                        ("node-modifier" NodeModifier)?
+********************************************************************************/
+void* begin_visit(const CollectionDecl& v)
+{
+  return no_state;
+}
+
+void end_visit(const CollectionDecl& v, void* /*visit_state*/) 
+{
+}
+
+/***************************************************************************//**
+  CollModifier     ::=  ("const" | "append-only" | "queue" | "mutable")
+********************************************************************************/
+void* begin_visit(const CollectionModifier& v)
+{ return no_state; }
+void end_visit(const CollectionModifier& v, void* /*visit_state*/) 
+{}
+
+/***************************************************************************//**
+  NodeModifier     ::=  ("read-only" | "mutable " )
+********************************************************************************/
+void* begin_visit(const NodeModifier& v)
+{ return no_state; }
+void end_visit(const NodeModifier& v, void* /*visit_state*/) 
+{}
 
 /***************************************************************************//**
   IndexDecl ::= "declare" "unique"? 

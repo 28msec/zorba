@@ -129,6 +129,8 @@ class ForwardStep;
 class FunctionCall;
 class FunctionDecl;
 class GeneralComp;
+class CollectionModifier;
+class NodeModifier;
 class IndexKeyList;
 class IndexKeySpec;
 class IfExpr;
@@ -346,15 +348,19 @@ public:
 class LibraryModule : public Module
 {
 protected:
+  bool isDataModule_h;
   rchandle<ModuleDecl> decl_h;
   rchandle<Prolog> prolog_h;
 
 public:
   LibraryModule(
     const QueryLoc&,
+    bool _isDataModule_h,
     rchandle<ModuleDecl>,
     rchandle<Prolog>,
     rchandle<VersionDecl> = NULL);
+
+  bool isDataModule() const { return isDataModule_h; }
 
   rchandle<ModuleDecl> get_decl () const { return decl_h; }
 
@@ -787,6 +793,7 @@ public:
 class ModuleImport : public XQDocumentable
 {
 protected:
+  bool imports_data_module_h;
   std::string prefix;
   std::string uri;
   rchandle<URILiteralList> uri_list_h;
@@ -794,14 +801,18 @@ protected:
 public:
   ModuleImport(
     const QueryLoc&,
+    bool imports_data_module,
     std::string const& uri,
     rchandle<URILiteralList>);
 
   ModuleImport(
     const QueryLoc&,
+    bool imports_data_module,
     std::string const& prefix,
     std::string const& uri,
     rchandle<URILiteralList>);
+
+  bool imports_data_module() const { return imports_data_module_h; }
 
   std::string get_prefix() const { return prefix; }
 
@@ -1107,6 +1118,89 @@ public:
   void accept(parsenode_visitor&) const;
 };
 
+/*******************************************************************************
+  [*] CollectionDecl ::=   "declare" "collection" QName CollProperties
+  [*] CollProperties ::=   ("node-type" KindTest)? 
+                           ("collection-modifier" CollModifier)? 
+                           ("node-modifier" NodeModifier)?
+********************************************************************************/
+class CollectionDecl : public parsenode
+{
+protected:
+  rchandle<QName> theName;
+  rchandle<parsenode> theKindTest;
+  rchandle<CollectionModifier> theCollectionModifier;
+  rchandle<NodeModifier> theNodeModifier;
+
+public:
+  CollectionDecl(
+    const QueryLoc&              aLoc,
+    QName*                       aName,
+    rchandle<parsenode>          aKindTest,
+    rchandle<CollectionModifier> aCollectionModifier,
+    rchandle<NodeModifier>       aNodeModifier)
+  : parsenode(aLoc),
+    theName(aName),
+    theKindTest(aKindTest),
+    theCollectionModifier(aCollectionModifier),
+    theNodeModifier(aNodeModifier)
+  {}
+
+  const QName* getName() const { return theName.getp(); }
+  const parsenode* getKindTest() const { return theKindTest.getp(); }
+  const CollectionModifier* getCollectionModifier() const { return theCollectionModifier.getp(); }
+  const NodeModifier* getNodeModifier() const { return theNodeModifier.getp(); }
+
+  void accept(parsenode_visitor&) const;
+};
+
+/*******************************************************************************
+  [*] CollModifier   ::=   ("const" | "append-only" | "queue" | "mutable")
+********************************************************************************/
+class CollectionModifier : public parsenode
+{
+public:
+  typedef enum { const_, append_only, queue, mutable_ } mod_t;
+
+protected:
+  mod_t theModifier;
+
+public:
+  CollectionModifier (
+    const QueryLoc& aLoc,
+    mod_t aModifier)
+  : parsenode(aLoc),
+    theModifier(aModifier)
+  {}
+
+  mod_t getModifier() const { return theModifier; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+/*******************************************************************************
+  [*] NodeModifier   ::=   ("read-only" | "mutable " )
+********************************************************************************/
+class NodeModifier : public parsenode
+{
+public:
+  typedef enum { read_only, mutable_ } mod_t;
+
+protected:
+  mod_t theModifier;
+
+public:
+  NodeModifier (
+    const QueryLoc& aLoc,
+    mod_t aModifier)
+  : parsenode(aLoc),
+    theModifier(aModifier)
+  {}
+
+  mod_t getModifier() const { return theModifier; }
+
+  void accept(parsenode_visitor&) const;
+};
 
 /***************************************************************************//**
   IndexDecl ::= "declare" "unique"? 
