@@ -88,9 +88,9 @@ citemfactory(int argc, char* argv[])
   lItem->boolean_value(lItem, &lTmpInt);
   UNIT_ASSERT ( lTmpInt  == 1 );
 //  UNIT_ASSERT (lItem->nan(lItem, &lTmpInt) == XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE );
-  UNIT_ASSERT (lItem->ns(lItem, &lStringValue) == STR0010_TYPE_ERROR);
-  UNIT_ASSERT (lItem->localname(lItem, &lStringValue) == STR0010_TYPE_ERROR);
-  UNIT_ASSERT (lItem->prefix(lItem, &lStringValue) == STR0010_TYPE_ERROR);
+  UNIT_ASSERT (lItem->ns(lItem, &lStringValue) == STR0040_TYPE_ERROR);
+  UNIT_ASSERT (lItem->localname(lItem, &lStringValue) == STR0040_TYPE_ERROR);
+  UNIT_ASSERT (lItem->prefix(lItem, &lStringValue) == STR0040_TYPE_ERROR);
   lItem->free(lItem);
 
   UNIT_ASSERT ( lFactory->create_boolean(lFactory, 0, &lItem) == XQ_NO_ERROR );
@@ -105,9 +105,9 @@ citemfactory(int argc, char* argv[])
   lItem->string_value(lItem, &lStringValue);
   UNIT_ASSERT ( strcmp(lStringValue, "1") == 0 );
   UNIT_ASSERT (lItem->nan(lItem, &lTmpInt) == 0 );
-  UNIT_ASSERT (lItem->ns(lItem, &lStringValue) == STR0010_TYPE_ERROR);                  
-  UNIT_ASSERT (lItem->localname(lItem, &lStringValue) == STR0010_TYPE_ERROR);            
-  UNIT_ASSERT (lItem->prefix(lItem, &lStringValue) == STR0010_TYPE_ERROR);               
+  UNIT_ASSERT (lItem->ns(lItem, &lStringValue) == STR0040_TYPE_ERROR);                  
+  UNIT_ASSERT (lItem->localname(lItem, &lStringValue) == STR0040_TYPE_ERROR);            
+  UNIT_ASSERT (lItem->prefix(lItem, &lStringValue) == STR0040_TYPE_ERROR);               
   lItem->free(lItem);
 
   lFactory->free(lFactory);

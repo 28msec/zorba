@@ -54,7 +54,7 @@ checkType(const Item& aItem, const String& aLocalname)
     object.member;\
     UNIT_ASSERT(false); \
   } catch (SystemException &e) { \
-    UNIT_ASSERT (e.getErrorCode() == STR0010_TYPE_ERROR); \
+    UNIT_ASSERT (e.getErrorCode() == STR0040_TYPE_ERROR); \
   }
 
 
@@ -111,7 +111,7 @@ int itemfactory(int argc, char* argv[])
     lItem.getPrefix();
     UNIT_ASSERT(false);
   } catch (SystemException &e) {
-    UNIT_ASSERT (e.getErrorCode() == STR0010_TYPE_ERROR);
+    UNIT_ASSERT (e.getErrorCode() == STR0040_TYPE_ERROR);
   }
 //    CHECK_NOT_IMPLEMENTED (lItem, getPrefix());
     CHECK_NOT_IMPLEMENTED (lItem, getLocalName());
