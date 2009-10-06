@@ -16,13 +16,7 @@ Iterator tree for main query:
   </LetVariable>
   <ReturnClause>
     <SequentialIterator>
-      <CreateValueIndex>
-        <SingletonIterator value="xs:QName(,,tempIndex0)"/>
-      </CreateValueIndex>
-      <SequentialIterator>
-        <ValueIndexInsertSessionOpener>
-          <SingletonIterator value="xs:QName(,,tempIndex0)"/>
-        </ValueIndexInsertSessionOpener>
+      <CreateInternalIndexIterator>
         <flwor::FLWORIterator>
           <ForVariable name="$$opt_temp_3">
             <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,closed_auction)" typename="*" nill allowed="0">
@@ -32,8 +26,7 @@ Iterator tree for main query:
             </ChildAxisIterator>
           </ForVariable>
           <ReturnClause>
-            <ValueIndexBuilder>
-              <SingletonIterator value="xs:QName(,,tempIndex0)"/>
+            <IndexEntryBuilderIterator>
               <ForVarIterator varname="$$opt_temp_3"/>
               <CastIterator type="xs:string">
                 <PromoteIterator type="xs:anyAtomicType">
@@ -46,13 +39,10 @@ Iterator tree for main query:
                   </FnDataIterator>
                 </PromoteIterator>
               </CastIterator>
-            </ValueIndexBuilder>
+            </IndexEntryBuilderIterator>
           </ReturnClause>
         </flwor::FLWORIterator>
-        <ValueIndexInsertSessionCloser>
-          <SingletonIterator value="xs:QName(,,tempIndex0)"/>
-        </ValueIndexInsertSessionCloser>
-      </SequentialIterator>
+      </CreateInternalIndexIterator>
       <flwor::FLWORIterator>
         <ForVariable name="p">
           <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
@@ -91,12 +81,12 @@ Iterator tree for main query:
           </UnhoistIterator>
         </ForVariable>
         <ForVariable name="t">
-          <ValueIndexPointProbe>
+          <IndexPointProbeIterator>
             <SingletonIterator value="xs:QName(,,tempIndex0)"/>
             <UnhoistIterator>
               <LetVarIterator varname="$$opt_temp_1"/>
             </UnhoistIterator>
-          </ValueIndexPointProbe>
+          </IndexPointProbeIterator>
         </ForVariable>
         <ReturnClause>
           <ElementIterator>
