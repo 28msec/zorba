@@ -225,7 +225,7 @@ void ZorbaDebuggerCommons::setDebugIteratorState( ZorbaDebugIteratorState* aStat
 
 std::list<std::pair<xqpString, xqpString> > 
 ZorbaDebuggerCommons::eval(const xqpString& aExpr,
-                           const Zorba_SerializerOptions_t* aSerOpts)
+                           Zorba_SerializerOptions& aSerOpts)
 {
   theExecEval = true;
   xqpStringStore_t lStore = aExpr.getStore();

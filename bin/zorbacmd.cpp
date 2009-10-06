@@ -988,7 +988,7 @@ int _tmain(int argc, _TCHAR* argv[])
                                                           *lOutputStream,                                                          
                                                           lProperties.getRequestPort(),
                                                           lProperties.getEventPort(),
-                                                          &lSerOptions));
+                                                          lSerOptions));
           if (!lProperties.hasNoLogo())
             std::cout << "Zorba XQuery debugger server.\n" << copyright_str << std::endl;
           lServer->start();

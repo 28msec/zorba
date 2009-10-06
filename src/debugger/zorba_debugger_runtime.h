@@ -40,7 +40,7 @@ namespace zorba {
     ZorbaDebuggerRuntime(
       XQueryImpl* xqueryImpl,
       std::ostream& oStream,
-      const Zorba_SerializerOptions_t*  serializerOptions,
+      Zorba_SerializerOptions&  serializerOptions,
       DebuggerCommunicator* communicator);
     virtual ~ZorbaDebuggerRuntime();
   public:
@@ -173,7 +173,7 @@ namespace zorba {
   private:
     XQueryImpl*                       theQuery;
     std::ostream&                     theOStream;
-    const Zorba_SerializerOptions_t*  theSerializerOptions;
+    Zorba_SerializerOptions&          theSerializerOptions;
     // Ownership of the communicator is hold by the server
     DebuggerCommunicator*             theCommunicator;
     PlanWrapper_t                     theWrapper;

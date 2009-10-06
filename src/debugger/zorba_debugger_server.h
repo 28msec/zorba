@@ -33,7 +33,7 @@ namespace zorba {
     //            suspended...)
     //************************************
     ZorbaDebuggerServer(XQueryImpl* aQuery,
-                        const Zorba_SerializerOptions_t* serializerOption,
+                        Zorba_SerializerOptions& serializerOption,
                         std::ostream& anOstream,
                         unsigned short requestPort = 8000,
                         unsigned short eventPort = 9000);

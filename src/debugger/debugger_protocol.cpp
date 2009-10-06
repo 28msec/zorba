@@ -1088,8 +1088,6 @@ VariableReply::VariableReply( Byte * aMessage, const unsigned int aLength ):
   theContainsData = (aMessage[MESSAGE_HEADER_SIZE + MESSAGE_FLAGS] & VARIABLE_DATA_FLAG) != 0;
   setFlags( REPLY_VARIABLE_FLAG );
   std::auto_ptr<json::value> lValue(getValue(aMessage, aLength));
-  std::cout.write((char *) aMessage, aLength);
-  std::cout.flush();
   json::value* globals = getValue(lValue.get(), "globals");
   json::value* locals = getValue(lValue.get(), "locals");
 

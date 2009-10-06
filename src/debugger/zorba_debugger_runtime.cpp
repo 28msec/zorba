@@ -36,7 +36,7 @@ namespace zorba {
     EvalCommand(ZorbaDebuggerCommons* aCommons, 
       DebuggerCommunicator* aCommunicator,
       const xqpString& aEvalString,
-      const Zorba_SerializerOptions_t* aSerOpts,
+      Zorba_SerializerOptions& aSerOpts,
       Id aId)
       : 
     theCommons(aCommons), 
@@ -81,17 +81,17 @@ namespace zorba {
     }
 
   private:
-    ZorbaDebuggerCommons*              theCommons;
-    DebuggerCommunicator*              theCommunicator;
-    xqpString                          theEvalString;
-    const Zorba_SerializerOptions_t*   theSerOpts;
-    Id                                 theId;
+    ZorbaDebuggerCommons*     theCommons;
+    DebuggerCommunicator*     theCommunicator;
+    xqpString                 theEvalString;
+    Zorba_SerializerOptions&  theSerOpts;
+    Id                        theId;
   };
 
 ZorbaDebuggerRuntime::ZorbaDebuggerRuntime(
   XQueryImpl* xqueryImpl,
   std::ostream& oStream,
-  const Zorba_SerializerOptions_t*  serializerOptions,
+  Zorba_SerializerOptions& serializerOptions,
   DebuggerCommunicator* communicator)
   : theQuery(xqueryImpl),
     theOStream(oStream),
@@ -193,8 +193,7 @@ void ZorbaDebuggerRuntime::runQuery()
       theOStream << "Query doesn't have a result because it is an updating query.";
     } else {
       serializer lSerializer(theQuery->theErrorManager);
-      lSerializer.set_parameter("omit-xml-declaration", "yes");
-      XQueryImpl::setSerializationParameters(&lSerializer, theSerializerOptions);
+      XQueryImpl::setSerializationParameters(&lSerializer, &theSerializerOptions);
       
       lSerializer.serialize(&*theWrapper, theOStream);
 
@@ -369,7 +368,9 @@ ReplyMessage* ZorbaDebuggerRuntime::getAllVariables()
   std::vector<std::string>::iterator lIter;
   for (lIter = lVariables.begin(); lIter != lVariables.end(); lIter++) {
     if (*lIter == "local") {
-      lReply->addLocal(*(++lIter), "");
+      lReply->addLocal(*(++lIter), *(++lIter));
+    } else if (*lIter == "global") {
+      lReply->addGlobal(*(++lIter), *(++lIter));
     }
   }
   return lReply.release();

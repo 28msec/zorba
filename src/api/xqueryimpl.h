@@ -378,7 +378,7 @@ protected:
 
   void
   debug(std::ostream& aOutStream,
-        const Zorba_SerializerOptions_t* aSerOptions,
+        Zorba_SerializerOptions& aSerOptions,
         unsigned short aCommandPort, unsigned short anEventPort);
 }; /* class XQueryImpl */
 

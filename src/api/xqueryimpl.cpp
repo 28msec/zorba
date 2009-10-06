@@ -884,14 +884,14 @@ void XQueryImpl::checkIsDebugMode() const
 void XQueryImpl::debug( unsigned short aCommandPort, unsigned short anEventPort )
 {
   ZORBA_TRY
-    Zorba_SerializerOptions_t lSerOptions;
+    Zorba_SerializerOptions lSerOptions;
     lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;  
-    debug(std::cout, &lSerOptions, aCommandPort, anEventPort);
+    debug(std::cout, lSerOptions, aCommandPort, anEventPort);
   ZORBA_CATCH
 }
 
 void XQueryImpl::debug(std::ostream& aOutStream,
-                        const Zorba_SerializerOptions_t* aSerOptions,
+                        Zorba_SerializerOptions& aSerOptions,
                         unsigned short aCommandPort, unsigned short anEventPort)
 {
   SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)

@@ -17,7 +17,7 @@ public:
                            std::ostream&   aOutStream,
                            unsigned short  aRequestPort,
                            unsigned short  aEventPort,
-                           Zorba_SerializerOptions* aSerializerOptions = 0);
+                           const Zorba_SerializerOptions& aSerializerOptions);
     virtual ~DebuggerServerRunnable();
 
     virtual void
@@ -31,7 +31,7 @@ private:
     std::ostream&  theOutStream;
     unsigned short theRequestPort;
     unsigned short theEventPort;
-    Zorba_SerializerOptions* theSerializerOptions;
+    Zorba_SerializerOptions theSerializerOptions;
 
 }; /* class DebuggerServerRunnable */
 

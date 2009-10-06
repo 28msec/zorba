@@ -433,7 +433,7 @@ namespace zorba {
        */
       virtual void
       debug(std::ostream& aOutStream,
-            const Zorba_SerializerOptions_t* aSerOptions = NULL,
+            Zorba_SerializerOptions& aSerOptions,
             unsigned short aCommandPort = 8000, unsigned short anEventPort = 9000) = 0;
   };
 

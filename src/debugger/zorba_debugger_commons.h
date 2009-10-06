@@ -168,7 +168,7 @@ namespace zorba {
     * @returns the result of the expression in the current context.
     */
     std::list<std::pair<zorba::xqpString, zorba::xqpString> > 
-      eval(const xqpString& aExpr, const Zorba_SerializerOptions_t* aSerOpts);
+      eval(const xqpString& aExpr, Zorba_SerializerOptions& aSerOpts);
   public: //Queries
     /**
     * Adds a breakpoint and then sets theLocation from aLocation

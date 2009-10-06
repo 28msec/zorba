@@ -88,7 +88,7 @@ public: // Getters
 public: // Commands
   std::list<std::pair<xqpString, xqpString> > eval(
     PlanState& aPlanState,
-    const Zorba_SerializerOptions_t* aSerOpts) const;
+    Zorba_SerializerOptions& aSerOpts) const;
 };
 
 

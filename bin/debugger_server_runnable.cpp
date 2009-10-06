@@ -11,7 +11,8 @@ DebuggerServerRunnable::DebuggerServerRunnable(const XQuery_t& aQuery,
                                                std::ostream&   aOutStream,
                                                unsigned short  aRequestPort,
                                                unsigned short  aEventPort,
-                                               Zorba_SerializerOptions* aSerOpts)
+                                               const Zorba_SerializerOptions& 
+                                                aSerOpts)
   : theQuery(aQuery),
     theOutStream(aOutStream),
     theRequestPort(aRequestPort),

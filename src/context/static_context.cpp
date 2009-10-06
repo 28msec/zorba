@@ -1316,8 +1316,29 @@ static_context::getVariables(std::vector<std::string>& aResult) const
   std::vector<zorba::serializable_hashmap<ctx_value_t>::entry>::const_iterator it;
   for (it = keymap.begin(); it != keymap.end(); it++) {
     const std::string& lKey = (*it).key;
+    ctx_value_t lVal = (*it).val;
     if (lKey.find("var:") == 0) {
-      aResult.push_back("local");
+      ZORBA_ASSERT(dynamic_cast<var_expr*>(lVal.exprValue));
+      var_expr* lExpr = static_cast<var_expr*>(lVal.exprValue);
+      var_expr::var_kind lKind = lExpr->get_kind();
+      if (lKind == var_expr::prolog_var) {
+        aResult.push_back("global");
+      } else {
+        aResult.push_back("local");
+      }
+      std::string lType;
+      if (lExpr->get_type() == NULL || lExpr->get_type()->get_qname() == NULL) {
+        lType = "anyType:http://www.w3.org/2001/XMLSchema";
+      } else {
+        store::Item_t lQname = lExpr->get_type()->get_qname();
+        lType = lQname->getLocalName()->c_str();
+        lType += ":";
+        lType += lQname->getNamespace()->c_str();
+      }
+      if (lExpr->is_sequential()) {
+        lType += "*";
+      }
+      aResult.push_back(lType);
       aResult.push_back(lKey.substr(4, lKey.size() - 5));
     }
   }

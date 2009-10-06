@@ -91,7 +91,10 @@ namespace zorba {
     XQuery_t lQuery = createDebuggableQuery(lZorba, qs);
 
     std::pair<short, short> lPorts = getRandomPorts();
-    DebuggerServerRunnable lServer(lQuery, lRes, lPorts.first, lPorts.second);
+    Zorba_SerializerOptions lSerOptions;
+    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+    DebuggerServerRunnable lServer(lQuery, lRes, lPorts.first,
+      lPorts.second, lSerOptions);
     lServer.start();
 
     sleep(1);
@@ -133,7 +136,10 @@ namespace zorba {
     XQuery_t lQuery = createDebuggableQuery(lZorba, qs);
 
     std::pair<short, short> lPorts = getRandomPorts();
-    DebuggerServerRunnable lServer(lQuery, lRes, lPorts.first, lPorts.second);
+    Zorba_SerializerOptions lSerOptions;
+    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+    DebuggerServerRunnable lServer(lQuery, lRes, lPorts.first, lPorts.second,
+      lSerOptions);
     lServer.start();
 
     sleep(1);
@@ -188,7 +194,10 @@ namespace zorba {
     XQuery_t lQuery = createDebuggableQuery(lZorba, qs);
 
     std::pair<short, short> lPorts = getRandomPorts();
-    DebuggerServerRunnable lServer(lQuery, lRes, lPorts.first, lPorts.second);
+    Zorba_SerializerOptions lSerOptions;
+    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+    DebuggerServerRunnable lServer(lQuery, lRes, lPorts.first, lPorts.second,
+      lSerOptions);
     lServer.start();
 
     sleep(1);
@@ -217,7 +226,11 @@ namespace zorba {
     XQuery_t lQuery = createDebuggableQuery(lZorba, qs);
 
     std::pair<short, short> lPorts = getRandomPorts();
-    DebuggerServerRunnable lServer(lQuery, lRes, lPorts.first, lPorts.second);
+    Zorba_SerializerOptions lSerOptions;
+    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+    DebuggerServerRunnable lServer(lQuery, lRes, lPorts.first, lPorts.second,
+      lSerOptions);
+    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
     lServer.start();
 
     sleep(1);
@@ -269,7 +282,10 @@ namespace zorba {
     XQuery_t lQuery = createDebuggableQuery(aZorba, qs);
 
     std::pair<short, short> lPorts = getRandomPorts();
-    DebuggerServerRunnable lServer(lQuery, lRes, lPorts.first, lPorts.second);
+    Zorba_SerializerOptions lSerOptions;
+    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+    DebuggerServerRunnable lServer(lQuery, lRes, lPorts.first, lPorts.second,
+      lSerOptions);
     lServer.start();
 
     sleep(1);
@@ -334,7 +350,10 @@ namespace zorba {
     XQuery_t lQuery = createDebuggableQuery(lZorba, qs);
 
     std::pair<short, short> lPorts = getRandomPorts();
-    DebuggerServerRunnable lServer(lQuery, lRes, lPorts.first, lPorts.second);
+    Zorba_SerializerOptions lSerOptions;
+    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+    DebuggerServerRunnable lServer(lQuery, lRes, lPorts.first, lPorts.second,
+      lSerOptions);
     lServer.start();
 
     sleep(1);
