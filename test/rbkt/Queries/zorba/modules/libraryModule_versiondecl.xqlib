@@ -1,0 +1,13 @@
+xquery version "1.0";
+module namespace foo = "http://www.28msec.com/foo";
+
+declare variable $foo:g := 42;
+
+declare function foo:test() {
+  let $y := 1, $x := $foo:g return
+  using $x, $y eval {
+    "declare namespace foo='http://www.28msec.com/foo';
+    declare function local:f () { 11 + $foo:g + $y};
+    $x + local:f()"
+  }
+};

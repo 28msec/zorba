@@ -171,7 +171,7 @@ namespace zorbac {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);
 
-      lContext->setXqueryVersion(mode);
+      lContext->setXQueryVersion(mode);
     SC_CATCH
   }
 
@@ -181,7 +181,7 @@ namespace zorbac {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);;
 
-      *mode = lContext->getXqueryVersion();
+      *mode = lContext->getXQueryVersion();
     SC_CATCH
   }
 

@@ -188,6 +188,9 @@ main(int argc, char** argv)
       lContext->setSchemaURIResolver ( resolver.get() );
       lContext->setModuleURIResolver ( mresolver.get() );
       lContext->setCollectionURIResolver ( cresolver.get() );
+
+      // the w3c testsuite always uses xquery 1.0
+      lContext->setXQueryVersion( xquery_version_1_0 );
     }
 
     // Form the full pathname for the files that will receive the result or the

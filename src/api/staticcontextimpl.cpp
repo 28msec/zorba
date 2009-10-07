@@ -242,7 +242,7 @@ StaticContextImpl::getDefaultCollation() const
 
 
 bool   
-StaticContextImpl::setXqueryVersion(xquery_version_t version)
+StaticContextImpl::setXQueryVersion(xquery_version_t version)
 {
   ZORBA_TRY
     if ( version == xquery_version_1_0)
@@ -256,7 +256,7 @@ StaticContextImpl::setXqueryVersion(xquery_version_t version)
 
 
 xquery_version_t  
-StaticContextImpl::getXqueryVersion() const
+StaticContextImpl::getXQueryVersion() const
 {
   try {
     return theCtx->xquery_version()==StaticContextConsts::xquery_version_1_0?

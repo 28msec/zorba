@@ -95,10 +95,10 @@ class StaticContextImpl : public StaticContext
   getDefaultCollation() const;
 
   virtual bool   
-  setXqueryVersion(xquery_version_t mode);
+  setXQueryVersion(xquery_version_t mode);
 
   virtual xquery_version_t  
-  getXqueryVersion() const;
+  getXQueryVersion() const;
 
   virtual bool   
   setXPath1_0CompatibMode( xpath1_0compatib_mode_t mode );

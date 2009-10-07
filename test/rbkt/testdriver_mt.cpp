@@ -446,6 +446,7 @@ void* thread_main(void* param)
       sctx->setSchemaURIResolver(resolver.get());
       sctx->setModuleURIResolver(mresolver.get());
       sctx->setCollectionURIResolver(cresolver.get());
+      sctx->setXQueryVersion( xquery_version_1_0 );
     }
 
     // Set the error file to be used by the error handler for the current query
