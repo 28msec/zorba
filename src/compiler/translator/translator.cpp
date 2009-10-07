@@ -459,6 +459,7 @@ protected:
   set<string>                          mod_stack;
   string                               theModuleNamespace;
   string                               theModulePrefix;
+  bool                                 theIsDataModule;
   set<string>                          mod_import_ns_set;
   set<string>                          zorba_predef_mod_ns;
 
@@ -1635,6 +1636,7 @@ void end_visit (const MainModule & v, void* /*visit_state*/)
 void *begin_visit (const LibraryModule& v) 
 {
   TRACE_VISIT ();
+  theIsDataModule = v.isDataModule();
   return no_state;
 }
 
@@ -2862,28 +2864,46 @@ void end_visit (const Param& v, void* /*visit_state*/)
 ********************************************************************************/
 void* begin_visit(const CollectionDecl& v)
 {
+  TRACE_VISIT();
+  // checks if collection declaration is not located in a DataModule
+  if (!theIsDataModule)
+    // TODO
+    
   return no_state;
 }
 
 void end_visit(const CollectionDecl& v, void* /*visit_state*/) 
 {
+  TRACE_VISIT_OUT ();
 }
 
 /***************************************************************************//**
   CollModifier     ::=  ("const" | "append-only" | "queue" | "mutable")
 ********************************************************************************/
 void* begin_visit(const CollectionModifier& v)
-{ return no_state; }
+{ 
+  TRACE_VISIT();
+  return no_state; 
+}
+
 void end_visit(const CollectionModifier& v, void* /*visit_state*/) 
-{}
+{
+  TRACE_VISIT_OUT ();
+}
 
 /***************************************************************************//**
   NodeModifier     ::=  ("read-only" | "mutable " )
 ********************************************************************************/
 void* begin_visit(const NodeModifier& v)
-{ return no_state; }
+{ 
+  TRACE_VISIT();
+  return no_state; 
+}
+
 void end_visit(const NodeModifier& v, void* /*visit_state*/) 
-{}
+{
+  TRACE_VISIT_OUT ();
+}
 
 /***************************************************************************//**
   IndexDecl ::= "declare" "unique"? 

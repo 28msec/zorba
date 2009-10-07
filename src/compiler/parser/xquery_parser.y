@@ -5476,6 +5476,7 @@ KEYWORD :
   | ZERO_DIGIT { $$ = SYMTAB_PUT ("zero-digit"); }
   | DIGIT { $$ = SYMTAB_PUT ("digit"); }
   | PATTERN_SEPARATOR { $$ = SYMTAB_PUT ("pattern-separator"); }
+  | COLLECTION { $$ = SYMTAB_PUT ("collection"); }
     ;
 
 
