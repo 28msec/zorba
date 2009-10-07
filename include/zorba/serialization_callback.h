@@ -18,6 +18,7 @@
 
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
+#include <ostream>
 
 namespace zorba {
 
