@@ -440,7 +440,7 @@ namespace zorba {
      NODE_TYPE = 532,
      COLLECTION_MODIFIER = 533,
      NODE_MODIFIER = 534,
-     CONST = 535,
+     CONST_ = 535,
      APPEND_ONLY = 536,
      QUEUE = 537,
      MUTABLE = 538,

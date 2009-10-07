@@ -3359,7 +3359,7 @@ namespace zorba {
 /* Line 678 of lalr1.cc  */
 #line 1681 "/Users/dagraf/work/28msec/software/zorba/trunk/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new CollectionModifier(LOC((yyloc)), CollectionModifier::const_);
+      (yyval.node) = new CollectionModifier(LOC((yyloc)), StaticContextConsts::const_);
     }
     break;
 
@@ -3368,7 +3368,7 @@ namespace zorba {
 /* Line 678 of lalr1.cc  */
 #line 1685 "/Users/dagraf/work/28msec/software/zorba/trunk/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new CollectionModifier(LOC((yyloc)), CollectionModifier::append_only);
+      (yyval.node) = new CollectionModifier(LOC((yyloc)), StaticContextConsts::append_only);
     }
     break;
 
@@ -3377,7 +3377,7 @@ namespace zorba {
 /* Line 678 of lalr1.cc  */
 #line 1689 "/Users/dagraf/work/28msec/software/zorba/trunk/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new CollectionModifier(LOC((yyloc)), CollectionModifier::queue);
+      (yyval.node) = new CollectionModifier(LOC((yyloc)), StaticContextConsts::queue);
     }
     break;
 
@@ -3386,7 +3386,7 @@ namespace zorba {
 /* Line 678 of lalr1.cc  */
 #line 1693 "/Users/dagraf/work/28msec/software/zorba/trunk/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new CollectionModifier(LOC((yyloc)), CollectionModifier::mutable_);
+      (yyval.node) = new CollectionModifier(LOC((yyloc)), StaticContextConsts::mutable_coll);
     }
     break;
 
@@ -3395,7 +3395,7 @@ namespace zorba {
 /* Line 678 of lalr1.cc  */
 #line 1701 "/Users/dagraf/work/28msec/software/zorba/trunk/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new NodeModifier(LOC((yyloc)), NodeModifier::read_only);
+      (yyval.node) = new NodeModifier(LOC((yyloc)), StaticContextConsts::read_only);
     }
     break;
 
@@ -3404,7 +3404,7 @@ namespace zorba {
 /* Line 678 of lalr1.cc  */
 #line 1705 "/Users/dagraf/work/28msec/software/zorba/trunk/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.node) = new NodeModifier(LOC((yyloc)), NodeModifier::mutable_);
+      (yyval.node) = new NodeModifier(LOC((yyloc)), StaticContextConsts::mutable_node);
     }
     break;
 

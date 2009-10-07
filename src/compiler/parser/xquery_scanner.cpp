@@ -3845,7 +3845,7 @@ YY_RULE_SETUP
 case 110:
 YY_RULE_SETUP
 #line 443 "/Users/dagraf/work/28msec/software/zorba/trunk/src/compiler/parser/xquery_scanner.l"
-{ return token::CONST; }
+{ return token::CONST_; }
 	YY_BREAK
 case 111:
 YY_RULE_SETUP
