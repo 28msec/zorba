@@ -37,7 +37,6 @@
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
 #include "context/namespace_context.h"
-#include "context/internal_uri_resolvers.h"
 #include "context/standard_uri_resolvers.h"
 
 #include "compiler/translator/translator.h"
@@ -2152,10 +2151,7 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
     }
   }
 
-  // Get the module URI resolver to be used for retrieving the istream of the
-  // module. This can either be Zorba's standard implementation or one that has
-  // been provided by the user
-  InternalModuleURIResolver* lModuleResolver = sctx_p->get_module_uri_resolver();
+  InternalModuleURIResolver* lStandardModuleResolver = GENV.getModuleURIResolver();
 
   // Take each of the URIs collected above and import the module's functions
   // and variables into the current static context.
@@ -2199,7 +2195,9 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
       // input stream can be freed. The current solution might leed to problems
       // on Windows.
       xqpStringStore lFileUri;
-      auto_ptr<istream> modfile(lModuleResolver->resolve(aturiitem, sctx_p, &lFileUri));
+      auto_ptr<istream> modfile;
+      
+      modfile.reset(lStandardModuleResolver->resolve(aturiitem, sctx_p, &lFileUri));
 
       if (modfile.get () == NULL || ! *modfile) 
       {
@@ -2380,8 +2378,8 @@ void* begin_visit (const VFO_DeclList& v)
     case ParseConstants::fn_extern_sequential:
     {
       StatelessExternalFunction* ef =
-      sctx_p->lookup_stateless_external_function(func_decl->get_name()->get_prefix(),
-                                                 func_decl->get_name()->get_localname());
+      sctx_p->lookup_stateless_external_function(qname->getNamespace(),
+                                                 qname->getLocalName());
       // The external function must be registered already in the static context
       // via the StaticContextImpl::registerStatelessExternalFunction() user api.
       if (ef == NULL) 
@@ -2396,7 +2394,7 @@ void* begin_visit (const VFO_DeclList& v)
 
       bool updating = (func_decl->get_type() == ParseConstants::fn_extern_update);
 
-      f = new stateless_external_function_adapter(sig, ef, updating);
+      f = new stateless_external_function_adapter(sig, ef, updating, qname->getPrefix());
       break;
     }
     case ParseConstants::fn_sequential:

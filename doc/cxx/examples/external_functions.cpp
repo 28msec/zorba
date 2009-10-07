@@ -19,20 +19,33 @@
 #include <sstream>
 
 #include <zorba/zorba.h>
+#include <zorba/external_module.h>
 #include <zorba/external_function.h>
 #include <simplestore/simplestore.h>
 
 
 using namespace zorba;
 
+/**
+ * A first simple external function.
+ * The function implements a concatenation of two sequences
+ * passed as arguments.
+ * The concatenation is done eagerly, i.e. the result is materialized
+ */
 class MySimpleExternalFunction : public StatelessExternalFunction
 {
+  protected:
+    const ExternalModule* theModule;
+
   public:
-    virtual String
-    getURI() const { return "urn:foo"; }
+    MySimpleExternalFunction(const ExternalModule* aModule)
+      : theModule(aModule) {}
 
     virtual String
-    getLocalName() const { return "bar"; }
+    getURI() const { return theModule->getURI(); }
+
+    virtual String
+    getLocalName() const { return "bar1"; }
 
     virtual ItemSequence_t 
     evaluate(const StatelessExternalFunction::Arguments_t& args) const 
@@ -77,11 +90,24 @@ class MySimpleExternalFunction : public StatelessExternalFunction
     };
 };
 
+/**
+ * A second simple external function.
+ * The function implements a concatenation of two sequences
+ * passed as arguments.
+ * The concatenation is done lazily, i.e. the result is computed
+ * on the fly
+ */
 class MyLazySimpleExternalFunction : public StatelessExternalFunction
 {
+  protected:
+    const ExternalModule* theModule;
+
   public:
+    MyLazySimpleExternalFunction(const ExternalModule* aModule)
+      : theModule(aModule) {}
+
     virtual String
-    getURI() const { return "urn:foo"; }
+    getURI() const { return theModule->getURI(); }
 
     virtual String
     getLocalName() const { return "bar2"; }
@@ -113,77 +139,17 @@ class MyLazySimpleExternalFunction : public StatelessExternalFunction
     };
 };
 
-bool
-func_example_1(Zorba* aZorba)
-{
-	StaticContext_t sctx = aZorba->createStaticContext();
-
-  MySimpleExternalFunction lFunc;
-  sctx->registerStatelessExternalFunction(&lFunc);
-
-	XQuery_t lQuery = aZorba->compileQuery("declare namespace foo=\"urn:foo\"; declare function foo:bar($a1, $a2) external; foo:bar((1,2,3), (4,5,6))", sctx); 
-
-  std::cout << lQuery << std::endl;
-
-	return true;
-}
-
-bool
-func_example_2(Zorba* aZorba)
-{
-  try {
-    StaticContext_t lContext = aZorba->createStaticContext();
-
-    MySimpleExternalFunction lFunc;
-    
-    lContext->registerStatelessExternalFunction(&lFunc);
-    lContext->registerStatelessExternalFunction(&lFunc); // only allowed to register it once
-
-  } catch (ZorbaException &e) {
-    std::cerr << "some exception " << e << std::endl;
-    return true;
-  }
-
-	return false;
-}
-
-bool 
-func_example_3(Zorba* aZorba)
-{
-  StaticContext_t lContext = aZorba->createStaticContext();
-
-  MyLazySimpleExternalFunction lFunc;
-  
-  lContext->registerStatelessExternalFunction(&lFunc);
-
-	XQuery_t lQuery = aZorba->compileQuery("declare namespace foo=\"urn:foo\"; declare function foo:bar2($a1, $a2) external; foo:bar2((1,2,3), (4,5,6))", lContext); 
-
-  std::cout << lQuery << std::endl;
-
-	return true;
-}
-
-bool
-func_example_4(Zorba* aZorba)
-{
-	StaticContext_t lContext = aZorba->createStaticContext();
-
-  MyLazySimpleExternalFunction lFunc;
-  
-  lContext->registerStatelessExternalFunction(&lFunc);
-
-	XQuery_t lQuery = aZorba->compileQuery("declare namespace foo=\"urn:foo\"; declare function foo:bar2($a1, $a2) external; let $s1 := (1,2,3) let $s2 := (4,5,6) for $x in 1 to 6 return (foo:bar2($s1, $s2)[7-$x])", lContext); 
-
-  std::cout << lQuery << std::endl;
-
-	return true;
-}
-
 class MyErrorReportingExternalFunction : public StatelessExternalFunction
 {
+  protected:
+    const ExternalModule* theModule;
+
   public:
+    MyErrorReportingExternalFunction(const ExternalModule* aModule)
+      : theModule(aModule) {}
+
     virtual String
-    getURI() const { return "urn:foo"; }
+    getURI() const { return theModule->getURI(); }
 
     virtual String
     getLocalName() const { return "bar3"; }
@@ -215,22 +181,151 @@ class MyErrorReportingExternalFunction : public StatelessExternalFunction
     };
 };
 
+class MyExternalModule : public ExternalModule
+{
+  protected:
+    mutable MySimpleExternalFunction*         bar1;
+    mutable MyLazySimpleExternalFunction*     bar2;
+    mutable MyErrorReportingExternalFunction* bar3;
+
+  public:
+    MyExternalModule()
+      : bar1(0),
+        bar2(0),
+        bar3(0) {}
+
+    virtual ~MyExternalModule()
+    {
+      delete bar1;
+      delete bar2;
+      delete bar3;
+    }
+
+    virtual String
+    getURI() const { return "urn:foo"; }
+
+    virtual StatelessExternalFunction*
+    getExternalFunction(String aLocalname) const
+    {
+      if (aLocalname.equals("bar1")) {
+        if (!bar1) {
+          bar1 = new MySimpleExternalFunction(this);
+        } 
+        return bar1;
+      } else if (aLocalname.equals("bar2")) {
+        if (!bar2) {
+          bar2 = new MyLazySimpleExternalFunction(this);
+        } 
+        return bar2;
+      } else if (aLocalname.equals("bar3")) {
+        if (!bar3) {
+          bar3 = new MyErrorReportingExternalFunction(this);
+        } 
+        return bar3;
+      }
+      return 0;
+    }
+};
+
+bool
+func_example_1(Zorba* aZorba)
+{
+	StaticContext_t sctx = aZorba->createStaticContext();
+
+  MyExternalModule lModule;
+  sctx->registerModule(&lModule);
+
+  std::ostringstream lText;
+  lText << "declare namespace foo=\"urn:foo\";" << std::endl
+        << "declare function foo:bar1($a1, $a2) external;" << std::endl
+        << "foo:bar1((1,2,3), (4,5,6))" << std::endl;
+
+	XQuery_t lQuery = aZorba->compileQuery(lText.str(), sctx); 
+  std::cout << lQuery << std::endl;
+
+	return true;
+}
+
+bool
+func_example_2(Zorba* aZorba)
+{
+  try {
+    StaticContext_t lContext = aZorba->createStaticContext();
+
+    MyExternalModule lModule;
+    
+    lContext->registerModule(&lModule);
+    lContext->registerModule(&lModule); // only allowed to register it once
+
+  } catch (ZorbaException &e) {
+    std::cerr << "some exception " << e << std::endl;
+    return true;
+  }
+
+	return false;
+}
+
+bool 
+func_example_3(Zorba* aZorba)
+{
+  StaticContext_t lContext = aZorba->createStaticContext();
+
+  MyExternalModule lModule;
+  
+  lContext->registerModule(&lModule);
+
+  std::ostringstream lText;
+  lText << "declare namespace foo=\"urn:foo\";" << std::endl
+        << "declare function foo:bar2($a1, $a2) external;" << std::endl
+        << "foo:bar2((1,2,3), (4,5,6))" << std::endl;
+
+	XQuery_t lQuery = aZorba->compileQuery(lText.str(), lContext); 
+
+  std::cout << lQuery << std::endl;
+
+	return true;
+}
+
+bool
+func_example_4(Zorba* aZorba)
+{
+	StaticContext_t lContext = aZorba->createStaticContext();
+
+  MyExternalModule lModule;
+  
+  lContext->registerModule(&lModule);
+
+  std::ostringstream lText;
+  lText << "declare namespace foo=\"urn:foo\";" << std::endl
+        << "declare function foo:bar2($a1, $a2) external;" << std::endl
+        << "let $s1 := (1,2,3)" << std::endl
+        << "let $s2 := (4,5,6)" << std::endl
+        << "for $x in 1 to 6 return (foo:bar2($s1, $s2)[7-$x])" << std::endl;
+
+	XQuery_t lQuery = aZorba->compileQuery(lText.str(), lContext); 
+
+  std::cout << lQuery << std::endl;
+
+	return true;
+}
+
+
 bool
 func_example_5(Zorba* aZorba)
 {
 	StaticContext_t lContext = aZorba->createStaticContext();
 
-  MyErrorReportingExternalFunction lFunc;
+  MyExternalModule lModule;
   
-  lContext->registerStatelessExternalFunction(&lFunc);
+  lContext->registerModule(&lModule);
 
-  std::ostringstream lQueryStream;
-  lQueryStream << "declare namespace foo=\"urn:foo\";" << std::endl
-               << "declare function foo:bar3($a1) external;" << std::endl
-               << "let $s1 := ()" << std::endl
-               << "for $x in 1 to 6 return (foo:bar3($s1))" << std::endl;
+  std::ostringstream lText;
+  lText << "declare namespace foo=\"urn:foo\";" << std::endl
+        << "declare function foo:bar3($a1) external;" << std::endl
+        << "let $s1 := ()" << std::endl
+        << "for $x in 1 to 6 return (foo:bar3($s1))" << std::endl;
     
-	XQuery_t lQuery = aZorba->compileQuery(lQueryStream.str(), lContext); 
+	XQuery_t lQuery = aZorba->compileQuery(lText.str(), lContext); 
 
   try {
     std::cout << lQuery << std::endl;

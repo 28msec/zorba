@@ -72,48 +72,44 @@ archive_field::~archive_field()
 //////////////////////////////////////////////////////
 
 Archiver::Archiver(bool is_serializing_out, bool internal_archive)
+  : serializing_out(is_serializing_out),
+    serialize_base_class(false),
+    all_reference_list(0),
+    archive_version(ARCHIVER_LATEST_VERSION),
+    out_fields(0),
+    current_compound_field(0),
+    simple_hashout_fields(0),
+    hash_out_fields(0),
+    nr_ids(0),
+    current_class_version(0),
+    read_optional(false),
+    is_temp_field(0),
+    is_temp_field_one_level(false),
+    internal_archive(internal_archive),
+    theUserCallback(0),
+    compiler_cb(0)
 {
-  this->serializing_out = is_serializing_out;
-  //this->ser = ser;
 
-  this->serialize_base_class = false;
-  archive_version = ARCHIVER_LATEST_VERSION;
-
-  out_fields = NULL;
-  current_compound_field = NULL;
   if(is_serializing_out)
   {
     //create the top most field
-    out_fields = new archive_field("", false, false, NULL, NULL, 0, ARCHIVE_FIELD_NORMAL, 0);
+    out_fields = new archive_field("", false, false, 0, 0, 0,
+                                   ARCHIVE_FIELD_NORMAL, 0);
     current_compound_field = out_fields;
   }
 
-  if(internal_archive)
-    nr_ids = 0;
-  else
+  if (!internal_archive)
   {
-    Archiver *har = ::zorba::serialization::ClassSerializer::getInstance()->harcoded_objects_archive;
+    Archiver *har = ClassSerializer::getInstance()->harcoded_objects_archive;
     nr_ids = har->get_nr_ids();
   }
-  current_class_version = 0;
-  read_optional = false;
-  is_temp_field = 0;
-  is_temp_field_one_level = false;
-  this->internal_archive = internal_archive;
 
-  all_reference_list = NULL;//(??30000, 0.6f)//, hash_out_fields(20000, 0.6f)
   if(is_serializing_out)
   {
-    simple_hashout_fields = new HashMap<SIMPLE_HASHOUT_FIELD, archive_field*, SimpleHashoutFieldCompare>(1000, false);
+    simple_hashout_fields = new HashMap<SIMPLE_HASHOUT_FIELD, archive_field*,
+                                        SimpleHashoutFieldCompare>(1000, false);
     hash_out_fields = new hash64map<archive_field*>(10000, 0.6f);
   }
-  else
-  {
-    simple_hashout_fields = NULL;
-    hash_out_fields = NULL;
-  }
-
-  compiler_cb = NULL;
 }
 
 Archiver::~Archiver()

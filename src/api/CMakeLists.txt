@@ -41,6 +41,7 @@ SET(API_SRCS
     vectoriterator.cpp
     debugger_event_handlerimpl.cpp
     default_debugger_event_handlerimpl.cpp
+    serialization_callback.cpp
     )
 
 SET(API_BUILD_SRCS

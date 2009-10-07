@@ -57,19 +57,41 @@ typedef rchandle<StaticallyKnownCollection> StaticallyKnownCollection_t;
   XQuery 1.0 context
 	[http://www.w3.org/TR/xquery/#id-xq-context-components]
 
-  Note: External API interface is in class public StaticQueryContext
+  Note: External API interface is in abstract class public StaticContext
+        which is implemented in StaticContextImpl
 
-  theDocResolver    :
-  theColResolver    :
-  theSchemaResolver :
+  theDocResolver    : URI resolver which is used for retrieving documents
+                      (used by fn:doc and fn:doc-available) 
+  theColResolver    : URI resolver which is used for retrieving collections
+                      (used by fn:collection and any of the updating
+                      collection functions)
+  theSchemaResolver : URI resolver which is used for retrieving a schema
+                      (used in the translator)
+  theModuleResolver : URI resolver which is used for retrieving a module
+                      (used in the translator)
+  Note: All URI resolvers have standard implementations in the classes
+        Standard*URIResolver.
+        Optionally, the user can provide resolvers which are wrapped by the
+        *URIResolverWrapper classes.
+  
+  Note: URI resolvers are not serialized if the plan is
+        serialized. Instead, they are set again if the query is loaded.
+        If the user has provided a resolver before, he needs to make sure
+        that the resolver is available using the SerializationCallback class.
+        The latter also yields for ExternalModules and the TraceStream.
 
-  theQueryExpr      : If this sctx is the root sctx for a mainModule, theQueryExpr
-                      is the resul of the translation of that mainModule. It is
-                      used in implementing the loadProlog api.
+  theQueryExpr      : If this sctx is the root sctx for a mainModule,
+                      theQueryExpr is the resul of the translation of
+                      that mainModule. It is used in implementing the
+                      loadProlog api.
   theDecimalFormats :
-  theTraceStream    :
+  theTraceStream    : Output stream that is used by the fn:trace function.
+                      std::cerr is the default if the user didn't provide one.
+                      For serialization: see note above.
   theCollationCache :
 ********************************************************************************/
+
+// exported for testing purposes only
 class ZORBA_DLL_PUBLIC static_context : public context
 {
   typedef ItemPointerHashMap<rchandle<StaticallyKnownCollection> > CollectionMap;
@@ -81,9 +103,11 @@ protected:
   InternalDocumentURIResolver   * theDocResolver;
   InternalCollectionURIResolver * theColResolver;
   InternalSchemaURIResolver     * theSchemaResolver;
-  InternalModuleURIResolver     * theModuleResolver;
+
+  std::vector<InternalModuleURIResolver*> theModuleResolvers;
 
   CollectionMap                 * theCollectionMap;
+
   IndexMap                      * theIndexMap;
 
   expr_t                          theQueryExpr;
@@ -96,7 +120,15 @@ protected:
 public:
   SERIALIZABLE_CLASS(static_context);
   static_context(::zorba::serialization::Archiver& ar);
-  void serialize(::zorba::serialization::Archiver& ar);
+
+  void
+  serialize_resolvers(serialization::Archiver& ar);
+
+  void
+  serialize_tracestream(serialization::Archiver& ar);
+
+  void
+  serialize(serialization::Archiver &ar);
 
 public:
   ~static_context();
@@ -269,12 +301,15 @@ public:
   void
   find_functions (const store::Item *qname, std::vector<function *>& functions) const;
 
+  // bind a module registered by the user
+  // this module can be used to retrieve external functions defined
+  // in the namespace of the module
   bool
-  bind_stateless_external_function(StatelessExternalFunction* aExternalFunction);
+  bind_external_module(ExternalModule* aModule);
   
-  StatelessExternalFunction *
-  lookup_stateless_external_function(xqp_string prefix, xqp_string local);
-
+  StatelessExternalFunction*
+  lookup_stateless_external_function(const xqp_string& prefix,
+                                     const xqp_string& local);
 
   //
   // Type Management : Entity Name --> Type 
@@ -446,10 +481,13 @@ public:
   get_schema_uri_resolver();
 
   void
-  set_module_uri_resolver(InternalModuleURIResolver*);
+  add_module_uri_resolver(InternalModuleURIResolver*);
 
-  InternalModuleURIResolver*
-  get_module_uri_resolver();
+  void
+  get_module_uri_resolvers(std::vector<InternalModuleURIResolver*>& lResolvers);
+
+  void
+  remove_module_uri_resolver(InternalModuleURIResolver*);
 
   void
   set_trace_stream(std::ostream&);

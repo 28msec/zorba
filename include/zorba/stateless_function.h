@@ -24,6 +24,8 @@
 
 namespace zorba {
 
+  // TODO derive from Function class and remove getLocalname
+  // TODO move getModule and isPureFunction to the function base class
   class ZORBA_DLL_PUBLIC StatelessExternalFunction : public ExternalFunctionData 
   {
     public:
@@ -32,16 +34,17 @@ namespace zorba {
     public:
       virtual ~StatelessExternalFunction() {}
 
-      virtual String 
+      virtual String
       getURI() const = 0;
-      
+
       virtual String
       getLocalName() const = 0;
 
       virtual ItemSequence_t
       evaluate(const Arguments_t&) const = 0;
 
-      virtual bool isPureFunction() const { return true; }
+      virtual bool
+      isPureFunction() const { return true; }
   };
 } /* namespace zorba */
 #endif

@@ -203,9 +203,8 @@ ZorbaImpl::createStaticContext(ErrorHandler* aErrorHandler)
 }
 
 
+// TODO remove because not needed anymore
 /*******************************************************************************
-
-********************************************************************************/
 bool
 ZorbaImpl::registerStatelessGlobalExternalFunction(StatelessExternalFunction* aExternalFunction)
 {
@@ -224,6 +223,7 @@ ZorbaImpl::registerStatelessGlobalExternalFunction(StatelessExternalFunction* aE
   }
   return true;
 }
+********************************************************************************/
 
 
 /*******************************************************************************

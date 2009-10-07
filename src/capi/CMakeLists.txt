@@ -17,6 +17,7 @@ SET(CAPI_SRCS
     data_manager.cpp
     dynamic_context.cpp
     external_function.cpp
+    external_module.cpp
     implementation.cpp
     item.cpp
     item_factory.cpp

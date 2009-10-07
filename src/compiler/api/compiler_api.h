@@ -23,6 +23,8 @@
 
 namespace zorba {
 
+class StandardLibraryModuleURIResolver;
+
 class XQueryCompiler 
 {
 public:
@@ -49,6 +51,8 @@ protected:
   expr_t optimize(expr_t lExpr);
 
 private:
+  // only needed for compile-checking library modules
+  StandardLibraryModuleURIResolver* theResolver;
   parsenode_t createMainModule(parsenode_t aLibraryModule, std::istream& aXQuery, const xqpString & aFileName = "");
 };
 

@@ -17,6 +17,7 @@
 #define ZORBAC_STATIC_CONTEXT_H
 
 #include <vector>
+#include <map>
 #include <zorba/zorbac.h>
 #include <zorba/api_shared_types.h>
 #include <zorba/zorbastring.h>
@@ -25,7 +26,7 @@
 
 namespace zorbac {
 
-  class ExternalFunctionWrapper;
+  class ExternalModuleWrapper;
 
   class StaticContext {
 
@@ -137,9 +138,9 @@ namespace zorbac {
 
       ~StaticContext();
 
-      std::vector<zorba::String>              theStrings;
-      zorba::StaticContext_t                  theContext;
-      std::vector<zorbac::ExternalFunctionWrapper*> theFunctions;
+      std::vector<zorba::String>                              theStrings;
+      zorba::StaticContext_t                                  theContext;
+      std::map<std::string, zorbac::ExternalModuleWrapper*>   theModules;
   }; /* class StaticContext */
 
 } /* namespace zorbac */

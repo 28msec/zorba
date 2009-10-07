@@ -326,17 +326,17 @@ namespace zorba {
 
       /** \brief Save the compiled execution plan.
        *
-       After compiling an XQuery code you can save the execution plan in a persistent format.
-       The execution plan is saved in a platform independent format.
-       The default format for serializing plan iterators is XML.
-       You can latter load this execution plan in a different XQuery object or a different machine
-       and execute it like it was compiled in place.
+       * After compiling an XQuery code you can save the execution plan in a persistent format.
+       * The execution plan is saved in a platform independent format.
+       * The default format for serializing plan iterators is XML.
+       * You can later load this execution plan into a different XQuery object (potentially 
+       * on a different machine) and execute it like it was compiled in place.
        *
        * @param os Reference to std::ostream.
        *
        * @return true if success.
        * @throw ZorbaException if the query has not been compiled or there are problems serializing
-          the execution plan.
+       *  the execution plan.
        */
       virtual bool
       saveExecutionPlan(std::ostream &os, Zorba_binary_plan_format_t archive_format) = 0;
@@ -350,30 +350,16 @@ namespace zorba {
        complete backward compatibility cannot be quaranteed.
        *
        * @param is Reference to std::istream.
+       * @param aCallback optional callback handler (see SerializationCallback)
+       *                  that is used to retrieve  information that has not
+       *                  been serialized (e.g. external modules).
        *
        * @return true if success.
        * @throw ZorbaException if there are problems loading the execution plan.
        */
       virtual bool
-      loadExecutionPlan(std::istream &is) = 0;
+      loadExecutionPlan(std::istream &is, SerializationCallback* aCallback = 0) = 0;
       
-      /** \brief Load execution plan.
-       *
-       Loads a saved execution plan.
-       Same loading of execution plan, except that here the static context is reinitialized with
-       user-defined uri resolvers.
-       *
-       * @return true if success.
-       * @throw ZorbaException if there are problems loading the execution plan.
-      */
-      virtual bool
-      loadExecutionPlan(std::istream &is, 
-                        DocumentURIResolver* aDocumentURIResolver,
-                        CollectionURIResolver* aCollectionUriResolver = NULL,
-                        SchemaURIResolver* aSchemaUriResolver = NULL,
-                        ModuleURIResolver* aModuleUriResolver = NULL,
-                        std::ostream*      theTraceStream = NULL) = 0;
-
       /** \brief Enable/disable debug mode on the query
        *
        */

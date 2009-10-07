@@ -27,7 +27,7 @@
 
 namespace zorba {
 
-  /** \brief Instances of the class StaticContext containt the information that is available
+  /** \brief Instances of the class StaticContext contain the information that is available
    *         at the time the query is compiled.
    *
    * This class contains the information that is defined in the %XQuery specification
@@ -336,23 +336,23 @@ namespace zorba {
       virtual bool
       getRevalidationEnabled( ) const = 0;
 
-      /** \brief Register a stateless external function.
+      /** \brief Register a module providing access to external functions.
        *
-       * Register an external function that can be called within a query.
-       * The caller keeps the ownership of the StatelessExternalFunction object passed
-       * to this function.
+       * Register a module that provides access to external functions.
+       * The caller keeps the ownership of the Module and the StatelessExternalFunction
+       * objects passed to this function.
        *
-       * @param aExternalFunction the stateless external function.
-       * @return true if the function has been set, false otherwise.
+       * @param aModule the module object
+       * @return true if the module has been set, false otherwise.
        */
       virtual bool 
-      registerStatelessExternalFunction(StatelessExternalFunction* aExternalFunction) = 0;
+      registerModule(ExternalModule* aModule) = 0;
 
       virtual void
       setDocumentURIResolver(DocumentURIResolver* aDocumentURIResolver) = 0;
 
       virtual DocumentURIResolver*
-      getDocumentURIResolver() = 0;
+      getDocumentURIResolver() const = 0;
 
       /** \brief Set the type of a statically known document
        */
@@ -387,10 +387,13 @@ namespace zorba {
       getSchemaURIResolver() const = 0;
 
       virtual void
-      setModuleURIResolver(ModuleURIResolver* aModuleUriResolver) = 0;
+      addModuleURIResolver(ModuleURIResolver* aModuleUriResolver) = 0;
 
-      virtual ModuleURIResolver*
-      getModuleURIResolver() const = 0;
+      virtual std::vector<ModuleURIResolver*>
+      getModuleURIResolvers() const = 0;
+
+      virtual void
+      removeModuleURIResolver(ModuleURIResolver* aModuleUriResolver) = 0;
 
       /** \brief Check if a function with the given name and arity are registered in the context.
        */
@@ -446,6 +449,15 @@ namespace zorba {
        */
       virtual void
       declareOption( const Item& aQName, const String& aOptionValue) = 0;
+
+      virtual void
+      setModulePaths( const std::vector<String>& aModulePaths ) = 0;
+
+      virtual void
+      getModulePaths( std::vector<String>& aModulePaths ) = 0;
+
+      virtual void
+      getFullModulePaths( std::vector<String>& aFullModulePaths ) = 0;
   };
 } /* namespace zorba */
 #endif

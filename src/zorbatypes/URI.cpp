@@ -17,6 +17,7 @@
 #include "representations.h"
 
 #include "zorbaerrors/error_manager.h"
+#include <zorba/util/path.h>
 #include "URI.h"
 
 using namespace std;
@@ -999,12 +1000,58 @@ URI::toString() const
 }
 
 const xqpString&
+URI::toPathNotation() const
+{
+  if (thePathNotation.length() == 0) {
+    build_path_notation();
+  }
+  return thePathNotation;
+}
+
+const xqpString&
 URI::toASCIIString() const
 {
   if (theASCIIURIText.length() == 0) {
     build_ascii_full_text();
   }
   return theASCIIURIText;
+}
+
+void
+URI::build_path_notation() const
+{
+  std::ostringstream lPathNotation;
+
+  std::string lToTokenize;
+  if ( is_set(Host) ) {
+    lToTokenize = theHost.c_str();
+  } else {
+    lToTokenize = theRegBasedAuthority.c_str();
+  }
+
+  std::string::size_type lastPos = lToTokenize.find_last_not_of(".", lToTokenize.length());
+  std::string::size_type pos = lToTokenize.find_last_of(".", lastPos);
+  if (pos == std::string::npos)
+    lPathNotation << lToTokenize;
+
+  while (std::string::npos != pos) {
+    lPathNotation << lToTokenize.substr(pos+1, lastPos-pos) 
+                  << filesystem_path::get_path_separator();
+
+    lastPos = pos - 1;
+    pos = lToTokenize.find_last_of(".", lastPos);
+    if (pos == std::string::npos) {
+      lPathNotation << lToTokenize.substr(0, lastPos+1);
+    }
+  }
+
+  if ( is_set(Path) ) {
+    if (thePath.indexOf("/") !=0 && thePath.length() != 0) {
+      lPathNotation << filesystem_path::get_path_separator();
+    }
+    lPathNotation << thePath;
+  } 
+  thePathNotation = lPathNotation.str();
 }
 
 void

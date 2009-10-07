@@ -29,6 +29,7 @@ namespace zorba {
 class RootTypeManager;
 class root_static_context;
 class XQueryXConvertor;
+class StandardModuleURIResolver;
 
 namespace store {
 class Store;
@@ -64,6 +65,7 @@ class ZORBA_DLL_PUBLIC GlobalEnvironment
   store::Store& getStore();
   store::ItemFactory* getItemFactory();
   store::IteratorFactory* getIteratorFactory();
+  StandardModuleURIResolver* getModuleURIResolver() const { return m_module_resolver; }
 #ifdef ZORBA_XQUERYX
   XQueryXConvertor    *getXQueryXConvertor();
 #endif
@@ -82,6 +84,8 @@ private:
 #ifdef ZORBA_XQUERYX
   XQueryXConvertor                      *xqueryx_convertor;
 #endif
+
+  StandardModuleURIResolver*            m_module_resolver;
 
 public:
 #if defined ZORBA_WITH_REST && defined ZORBA_WITH_SSL && defined ZORBA_VERIFY_PEER_SSL_CERTIFICATE

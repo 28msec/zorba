@@ -291,15 +291,52 @@ StatelessExtFunctionCallIterator::StatelessExtFunctionCallIterator(
     const QueryLoc& loc,
     std::vector<PlanIter_t>& args,
     const StatelessExternalFunction *function,
-    bool aIsUpdating)
+    bool aIsUpdating,
+    const xqp_string& aPrefix)
   :
   NaryBaseIterator<StatelessExtFunctionCallIterator, 
                    StatelessExtFunctionCallIteratorState>(sctx, loc, args),
   m_function(function),
-  theIsUpdating(aIsUpdating) 
+  theIsUpdating(aIsUpdating),
+  thePrefix(aPrefix)
 { 
 }
 
+void
+StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+                      static_cast<NaryBaseIterator<
+                                  StatelessExtFunctionCallIterator,
+                                  StatelessExtFunctionCallIteratorState>*>(this));
+  if (ar.is_serializing_out()) {
+    // serialize out: serialize prefix and localname of the function
+    ar & thePrefix;
+    xqpStringStore_t lTmp;
+    lTmp = Unmarshaller::getInternalString(m_function->getLocalName());
+    ar & lTmp;
+  } else {
+    // serializing in: get the function from the static context
+    //                 using the serialized prefix/uri and localname 
+    ar & thePrefix;
+
+    xqpStringStore_t lLocalname;
+    ar & lLocalname;
+    xqp_string lURI;
+    theSctx->lookup_ns(thePrefix, lURI);
+    m_function = theSctx->lookup_stateless_external_function(lURI,
+                                                             lLocalname.getp());
+    if (!m_function) {
+      ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
+                           "Couldn't load pre-compiled query because "
+                           << " the external function with URI " << lURI
+                           << " and local name " << lLocalname
+                           << " is not available through any of the"
+                           << " ExternalModules.");
+    } 
+  }
+  ar & theIsUpdating;
+}
 
 void StatelessExtFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
@@ -345,10 +382,15 @@ bool StatelessExtFunctionCallIterator::nextImpl(store::Item_t& result, PlanState
   try {
     state->m_result = m_function->evaluate(state->m_extArgs);
   } catch(const ZorbaException& e) {
-    // take all information from the exception raised in the external function (e.g. file name) + add loc information
-    throw error::ErrorManager::createException(e.getErrorCode(), e.getDescription().c_str(), 
-                                               e.getFileName().c_str(), e.getFileLineNumber(), 
-                                               loc.getLineBegin(), loc.getColumnBegin(), loc.getFilenameBegin());
+    // take all information from the exception raised in 
+    // the external function (e.g. file name) + add loc information
+    throw error::ErrorManager::createException(e.getErrorCode(),
+                                               e.getDescription().c_str(), 
+                                               e.getFileName().c_str(),
+                                               e.getFileLineNumber(), 
+                                               loc.getLineBegin(),
+                                               loc.getColumnBegin(),
+                                               loc.getFilenameBegin());
   }
   while (true)
   {
@@ -357,10 +399,15 @@ bool StatelessExtFunctionCallIterator::nextImpl(store::Item_t& result, PlanState
         break;
       }
     } catch(const ZorbaException& e) {
-      // take all information from the exception raised in the external function (e.g. file name) + add loc information
-      throw error::ErrorManager::createException(e.getErrorCode(), e.getDescription().c_str(), 
-                                                 e.getFileName().c_str(), e.getFileLineNumber(), 
-                                                 loc.getLineBegin(), loc.getColumnBegin(), loc.getFilenameBegin());
+      // take all information from the exception raised in
+      // the external function (e.g. file name) + add loc information
+      throw error::ErrorManager::createException(e.getErrorCode(),
+                                                 e.getDescription().c_str(), 
+                                                 e.getFileName().c_str(),
+                                                 e.getFileLineNumber(), 
+                                                 loc.getLineBegin(),
+                                                 loc.getColumnBegin(),
+                                                 loc.getFilenameBegin());
     }
     result = Unmarshaller::getInternalItem(lOutsideItem);
     if (theIsUpdating)
@@ -387,6 +434,6 @@ bool StatelessExtFunctionCallIterator::nextImpl(store::Item_t& result, PlanState
 NARY_ACCEPT(StatelessExtFunctionCallIterator);
 
 
-}
+} /* namespace zorba */
 
 /* vim:set ts=2 sw=2: */

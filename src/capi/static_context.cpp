@@ -17,6 +17,7 @@
 
 #include <cassert>
 #include <zorba/zorba.h>
+#include "capi/external_module.h"
 #include "capi/external_function.h"
 
 using namespace zorba;
@@ -368,14 +369,23 @@ namespace zorbac {
       zorba::StaticContext* lContext = getStaticContext(context);
       zorbac::StaticContext* lWrapper = static_cast<zorbac::StaticContext*>(context->data);
 
-      ExternalFunctionWrapper* lFunc = new ExternalFunctionWrapper(uri, localname, 
-                                                                   init, next, release, 
-                                                                   global_user_data);
+      ExternalModuleWrapper*& lModule = lWrapper->theModules[uri];
+      if (!lModule) {
+        lModule = new ExternalModuleWrapper(uri);
+        lContext->registerModule(lModule);
+      }
 
-      lContext->registerStatelessExternalFunction(lFunc);
+      std::auto_ptr<ExternalFunctionWrapper> lFunc;
+      lFunc.reset(new ExternalFunctionWrapper(uri, localname, init, next,
+                                              release, global_user_data));
 
-      // deletion is done when releasing the static context
-      lWrapper->theFunctions.push_back(lFunc);
+      XQUERY_ERROR lErr = lModule->registerFunction(lFunc.get());
+      if (lErr == XQ_NO_ERROR) {
+        // deletion is done when releasing the static context
+        lFunc.release();
+      } else {
+        return lErr;
+      }
 
     SC_CATCH
   }
@@ -429,10 +439,10 @@ namespace zorbac {
 
   StaticContext::~StaticContext()
   {
-    for (std::vector<ExternalFunctionWrapper*>::iterator lIter = theFunctions.begin();
-         lIter != theFunctions.end();
+    for (std::map<std::string, ExternalModuleWrapper*>::iterator lIter = theModules.begin();
+         lIter != theModules.end();
          ++lIter) {
-      delete *lIter;
+      delete lIter->second;
     }
   }
 

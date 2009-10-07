@@ -425,7 +425,17 @@ namespace zorba {
       }
     }
     childrenIt->close();
-    return res;
+    
+    if (res) {
+      xqpString lStringHolder(value.getp());
+      if (lStringHolder.indexOf("\"") != -1) {
+        lStringHolder = lStringHolder.replace("\"", "&quot;", "");
+      }
+      value = lStringHolder.getStore();
+      return res;
+    }
+     
+    return false;
   }
 
   bool parse_child(const store::Item* element, xqpStringStore_t& json_string, xqpStringStore_t& error_log)

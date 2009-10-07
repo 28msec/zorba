@@ -75,13 +75,15 @@ static void print_xqdoc_tree(
 
 XQueryCompiler::XQueryCompiler(CompilerCB* aCompilerCB) 
   :
-  theCompilerCB(aCompilerCB)
+  theCompilerCB(aCompilerCB),
+  theResolver(0)
 { 
 }
 
 
 XQueryCompiler::~XQueryCompiler()
 {
+  delete theResolver;
 }
 
 
@@ -244,7 +246,8 @@ XQueryCompiler::createMainModule(parsenode_t aLibraryModule, std::istream& aXQue
   aXQuery.clear();
   aXQuery.seekg(0);
 
-  theCompilerCB->m_sctx->set_module_uri_resolver(new StandardLibraryModuleURIResolver(aXQuery, lib_namespace, aFileName.c_str()));
+  theResolver = new StandardLibraryModuleURIResolver(aXQuery, lib_namespace, aFileName.c_str());
+  theCompilerCB->m_sctx->add_module_uri_resolver(theResolver);
 
   return  parse(lDocStream, aFileName);
 }

@@ -28,6 +28,7 @@ namespace zorba {
 
   class ErrorHandler;
   class static_context;
+  class ModuleURIResolverWrapper;
 
 /*******************************************************************************
 
@@ -51,6 +52,11 @@ class StaticContextImpl : public StaticContext
 
   ErrorHandler*    theErrorHandler;
   bool             theUserErrorHandler;
+
+  // remeber all the resolver wrappers that this
+  // context has created
+  std::map<ModuleURIResolver*,
+           ModuleURIResolverWrapper*> theWrappers;
 
  private:
   StaticContextImpl(const StaticContextImpl&);
@@ -157,7 +163,7 @@ class StaticContextImpl : public StaticContext
   getRevalidationEnabled( ) const;
 
   virtual bool 
-  registerStatelessExternalFunction(StatelessExternalFunction* aExternalFunction);
+  registerModule(ExternalModule* aModule);
 
   virtual void
   setDocumentType(const String& aDocUri, TypeIdentifier_t type);
@@ -169,7 +175,7 @@ class StaticContextImpl : public StaticContext
   setDocumentURIResolver(DocumentURIResolver* aDocumentURIResolver);
 
   virtual DocumentURIResolver*
-  getDocumentURIResolver();
+  getDocumentURIResolver() const;
 
   virtual void
   setCollectionURIResolver(CollectionURIResolver* aCollectionUriResolver);
@@ -190,10 +196,13 @@ class StaticContextImpl : public StaticContext
   getSchemaURIResolver() const;
 
   virtual void
-  setModuleURIResolver(ModuleURIResolver* aModuleUriResolver);
+  addModuleURIResolver(ModuleURIResolver* aModuleUriResolver);
 
-  virtual ModuleURIResolver*
-  getModuleURIResolver() const;
+  virtual std::vector<ModuleURIResolver*>
+  getModuleURIResolvers() const;
+
+  virtual void
+  removeModuleURIResolver(ModuleURIResolver* aModuleUriResolver);
 
   virtual bool
   containsFunction(const String& aFnNameUri, const String& aFnNameLocal, int arity) const;
@@ -224,6 +233,15 @@ class StaticContextImpl : public StaticContext
 
   virtual void
   declareOption( const Item& aQName, const String& aOptionValue);
+
+  virtual void
+  setModulePaths( const std::vector<String>& aModulePaths );
+
+  virtual void
+  getModulePaths( std::vector<String>& aModulePaths );
+
+  virtual void
+  getFullModulePaths( std::vector<String>& aFullModulePaths );
 };
 
 } /* namespace zorba */

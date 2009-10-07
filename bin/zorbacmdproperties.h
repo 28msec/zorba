@@ -51,6 +51,9 @@ public:
   
   std::vector<std::pair<std::string,std::string> > 
   getSerializerParameters() const;
+
+  void
+  getModulePaths(std::string&) const;
   
   bool hasNoSyntaxHighlighting(){ return theNoColors; }
 

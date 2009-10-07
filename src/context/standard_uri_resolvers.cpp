@@ -31,33 +31,6 @@
 #include "context/static_context.h"
 
 namespace zorba {
-SERIALIZABLE_CLASS_VERSIONS(InternalDocumentURIResolver)
-END_SERIALIZABLE_CLASS_VERSIONS(InternalDocumentURIResolver)
-
-SERIALIZABLE_CLASS_VERSIONS(InternalCollectionURIResolver)
-END_SERIALIZABLE_CLASS_VERSIONS(InternalCollectionURIResolver)
-
-SERIALIZABLE_CLASS_VERSIONS(InternalSchemaURIResolver)
-END_SERIALIZABLE_CLASS_VERSIONS(InternalSchemaURIResolver)
-
-SERIALIZABLE_CLASS_VERSIONS(InternalModuleURIResolver)
-END_SERIALIZABLE_CLASS_VERSIONS(InternalModuleURIResolver)
-
-SERIALIZABLE_CLASS_VERSIONS(StandardDocumentURIResolver)
-END_SERIALIZABLE_CLASS_VERSIONS(StandardDocumentURIResolver)
-
-SERIALIZABLE_CLASS_VERSIONS(StandardCollectionURIResolver)
-END_SERIALIZABLE_CLASS_VERSIONS(StandardCollectionURIResolver)
-
-SERIALIZABLE_CLASS_VERSIONS(StandardSchemaURIResolver)
-END_SERIALIZABLE_CLASS_VERSIONS(StandardSchemaURIResolver)
-
-SERIALIZABLE_CLASS_VERSIONS(StandardModuleURIResolver)
-END_SERIALIZABLE_CLASS_VERSIONS(StandardModuleURIResolver)
-
-SERIALIZABLE_CLASS_VERSIONS(StandardLibraryModuleURIResolver)
-END_SERIALIZABLE_CLASS_VERSIONS(StandardLibraryModuleURIResolver)
-
 
 store::Item_t
 StandardDocumentURIResolver::resolve(
@@ -246,29 +219,98 @@ StandardSchemaURIResolver::resolve(
     return aLocationHints[0];
 }
 
+std::istream*
+StandardModuleURIResolver::checkModulePath(
+    const std::vector<std::string>& aModulePaths,
+    const store::Item_t& aURI,
+    xqpStringStore* aResultFile)
+{
+  URI lURI(aURI->getStringValueP());
+  // compute path notation of the uri with a .xq at the end
+  // TODO: we might extend that to other file exentsions
+  xqpString lPathNotation(lURI.toPathNotation());
+  if (!lPathNotation.endsWith(".xq")) {
+    lPathNotation = lPathNotation + ".xq";
+  }
 
+  // check all module path in the according order
+  // the higher in the hirarchy the static context is
+  // the higher the priority of its module paths
+  for (std::vector<std::string>::const_iterator lIter = aModulePaths.begin();
+      lIter != aModulePaths.end(); ++lIter) {
+    xqpString lPotentialModuleFile = (*lIter) + lPathNotation;
+    std::auto_ptr<std::istream> modfile(new std::ifstream(lPotentialModuleFile.c_str()));
+    if (modfile->good()) {
+      if (aResultFile) {
+        *aResultFile = *(lPotentialModuleFile.getStore());
+      }
+      return modfile.release();
+    } 
+  }
+  return 0;
+}
+
+// resolve a logical URI (i.e. target ns or location hint) 
+// to an input stream. resolving is done according to the following rules:
+// (1) all module paths are searched for a file with path and name
+//     of the path notation of the uri
+// (2) a (potential) user's resolver is asked
+// (3) the URI is treated as an URL
+// besides returning an input stream, the function also
+// returns the URL of the file
 std::istream*
 StandardModuleURIResolver::resolve(
     const store::Item_t& aURI,
     static_context* aStaticContext,
     xqpStringStore* aFileUri)
 {
-  xqpStringStore_t lResolvedURI = aURI->getStringValue();
-  if (aFileUri) {
-    *aFileUri = *(lResolvedURI.getp());
+  // 1. check using module paths => return if good stream is found
+  std::vector<std::string> lModulePaths;
+  aStaticContext->get_full_module_paths(lModulePaths);
+
+  std::auto_ptr<std::istream> modfile(0); // result file
+
+  if (lModulePaths.size() != 0) {
+    modfile.reset(checkModulePath(lModulePaths, aURI, aFileUri));
+    if (modfile.get() != 0)  {
+      assert(modfile->good());
+      return modfile.release();
+    }
   }
-  std::auto_ptr<std::istream> modfile;
-  if (lResolvedURI->byteStartsWith ("file://"))
+
+  // 2. check the user's resolvers
+  std::vector<InternalModuleURIResolver*> lResolvers;
+  aStaticContext->get_module_uri_resolvers(lResolvers);
+  if (modfile.get() == 0) {
+    for (std::vector<InternalModuleURIResolver*>::const_iterator lIter
+          = lResolvers.begin();
+         lIter != lResolvers.end(); ++lIter) {
+      modfile.reset((*lIter)->resolve(aURI, aStaticContext, aFileUri));
+      if (modfile.get()) {
+        assert(modfile->good());
+        return modfile.release();
+      }
+    }
+  }
+
+  // 3. treat the URI as URL and check if a file is in the
+  // filesystem or on the web
+  xqpStringStore_t  lResolvedURI = aURI->getStringValue();
+  if (aFileUri) {
+    *aFileUri = *lResolvedURI;
+  }
+  if (lResolvedURI->byteStartsWith ("file://")) {
+// maybe we don't want to allow file access for security reasons (e.g. in a webapp)
+#ifdef ZORBA_WITH_FILE_ACCESS
     modfile.reset (new std::ifstream(URI::decode_file_URI (lResolvedURI)->c_str()));
-  else 
-  {
+#endif
+  } else {
     std::auto_ptr<std::stringstream> code(new std::stringstream());
-    if (http_get (lResolvedURI->c_str (), *code) != 0)
+    if (http_get (lResolvedURI->c_str (), *code) != 0) {
       return NULL;
+    }
     modfile.reset (code.release());
   }
-  
-  // we transfer ownership to the caller
   return modfile.release();
 }
 

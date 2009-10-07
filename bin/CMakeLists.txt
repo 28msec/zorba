@@ -14,7 +14,7 @@
 
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_SOURCE_DIR}/src/)
 
-SET(ZORBA_CMD_SRCS zorbacmd.cpp zorbacmdproperties.cpp error_printer.cpp)
+SET(ZORBA_CMD_SRCS zorbacmd.cpp zorbacmdproperties.cpp error_printer.cpp util.cpp module_path.cpp)
 
 SET(ZORBA_CMD_SRCS ${ZORBA_CMD_SRCS} debugger_handler.cpp debugger_server_runnable.cpp)
 

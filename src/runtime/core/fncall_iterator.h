@@ -20,6 +20,11 @@
 
 #include "common/shared_types.h"
 
+// TODO remove the next three includes
+#include "api/unmarshaller.h"
+#include "context/static_context.h"
+#include <zorba/stateless_function.h>
+
 #include "runtime/base/narybase.h"
 
 
@@ -111,6 +116,7 @@ class StatelessExtFunctionCallIterator :
 protected:
   const StatelessExternalFunction *m_function;
   bool theIsUpdating;
+  xqp_string thePrefix;
 
 public:
   SERIALIZABLE_CLASS(StatelessExtFunctionCallIterator);
@@ -120,11 +126,7 @@ public:
   NaryBaseIterator<StatelessExtFunctionCallIterator,
                    StatelessExtFunctionCallIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    ZORBA_SER_ERROR_DESC_OSS(SRL0009_CLASS_NOT_SERIALIZABLE,
-                             "StatelessExtFunctionCallIterator");
-  }
+  void serialize(serialization::Archiver& ar);
 
 public:
   StatelessExtFunctionCallIterator(
@@ -132,7 +134,8 @@ public:
         const QueryLoc& loc,
         std::vector<PlanIter_t>& args,
         const StatelessExternalFunction *function,
-        bool aIsUpdating);
+        bool aIsUpdating,
+        const xqp_string& aPrefix);
 
   virtual ~StatelessExtFunctionCallIterator() { }
 

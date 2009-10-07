@@ -15,7 +15,8 @@
  */
 #include <assert.h>
 
-#include <zorba/stateless_function.h>
+#include <zorba/external_module.h>
+#include <zorba/serialization_callback.h>
 
 #include "context/static_context_consts.h"
 #include "context/static_context.h"
@@ -166,18 +167,12 @@ bool context::bind_func2 (const char *key1, xqp_string key2, function *f)
 }
 
 
-bool context::bind_stateless_function(xqp_string key, StatelessExternalFunction* f) 
+bool context::bind_module(xqp_string uri, ExternalModule* m) 
 {
-  ctx_value_t v(CTX_STATELESS_EXTERNAL_FUNC);
-  v.stateless_function = f;
-
-  // return false if the key was in the map already
-  if (keymap.put (key, v, false))
-    return false;
-
-  return true;
+  ctx_value_t v(CTX_MODULE);
+  v.module = m;
+  return !keymap.put (uri, v, false);
 }
-
 
 bool context::check_parent_is_root()
 {
@@ -190,27 +185,59 @@ void context::set_parent_as_root()
   parent = &GENV_ROOT_STATIC_CONTEXT;
 }
 
+void context::ctx_value_t::serialize_module(serialization::Archiver &ar,
+                                            ExternalModule*& aModule)
+{
+  if(ar.is_serializing_out()) {
+    // serialize out: the uri of the module that is used in this plan
+
+    xqp_string lURI = Unmarshaller::getInternalString(aModule->getURI());
+    xqpStringStore_t lURIStore = lURI.getStore();
+    ar & lURIStore;
+  } else {
+    // serialize in: load the serialized uri of the module and
+    //               get the externalmodule from the user's
+    //               registered serialization callback
+    xqpStringStore_t lURIStore = 0;
+    ar & lURIStore;
+
+    // class registered by the user
+    SerializationCallback* lCallback = ar.getUserCallback();
+    if (!lCallback) {
+      ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
+                           "Couldn't load pre-compiled query because"
+                           << " the external module " << lURIStore 
+                           << " is required but no SerializationCallback is"
+                           << " given for retrieving that module.");
+    }
+
+    // the life-cycle of the module is managed by the user
+    aModule = lCallback->getExternalModule(lURIStore.getp());
+    if (!aModule) {
+      ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
+                           "Couldn't load pre-compiled query because"
+                           << " the external module " << lURIStore 
+                           << " is not available using the registered"
+                           << " SerializationCallback");
+    }
+    
+  }
+}
+
 void context::ctx_value_t::serialize(::zorba::serialization::Archiver &ar)
 {
   SERIALIZE_ENUM(enum ctx_value_type, type);
   switch(type)
   {
   case CTX_EXPR:
-    //if(!ar.is_serializing_out())
-    //  exprValue = NULL;//don't serialize this
     ar & exprValue;
     if(!ar.is_serializing_out() && exprValue)
       RCHelper::addReference (exprValue);
     break;
   case CTX_FUNCTION:
-  {
-      //if(!ar.is_serializing_out())
-    //  functionValue = NULL;//don't serialize this
-    //ar & functionValue;
     SERIALIZE_FUNCTION(functionValue);
     if(!ar.is_serializing_out() && functionValue)
       RCHelper::addReference (functionValue);
-  }
     break;
   case CTX_ARITY:
     ar & fmapValue;
@@ -221,8 +248,10 @@ void context::ctx_value_t::serialize(::zorba::serialization::Archiver &ar)
   case CTX_BOOL:
     ar & boolValue;
     break;
+  case CTX_MODULE:
+    serialize_module(ar, module);
+    break;
   case CTX_XQTYPE:
-  case CTX_STATELESS_EXTERNAL_FUNC:
   default:
     if(!ar.is_serializing_out())
       typeValue = NULL;//don't serialize this
@@ -254,7 +283,6 @@ static_context::static_context()
   theDocResolver(0),
   theColResolver(0),
   theSchemaResolver(0),
-  theModuleResolver(0),
   theCollectionMap(0),
   theIndexMap(NULL),
   theTraceStream(0),
@@ -271,7 +299,6 @@ static_context::static_context (static_context *_parent)
   theDocResolver(0),
   theColResolver(0),
   theSchemaResolver(0),
-  theModuleResolver(0),
   theCollectionMap(0),
   theIndexMap(NULL),
   theTraceStream(0),
@@ -284,7 +311,14 @@ static_context::static_context (static_context *_parent)
 
 static_context::static_context(::zorba::serialization::Archiver &ar)
   :
-  context(ar)
+  context(ar),
+  theDocResolver(0),
+  theColResolver(0),
+  theSchemaResolver(0),
+  theCollectionMap(0),
+  theIndexMap(0),
+  theTraceStream(0),
+  theCollationCache(0)
 {
 }
 
@@ -325,7 +359,6 @@ static_context::~static_context()
   set_document_uri_resolver(0);
   set_collection_uri_resolver(0);
   set_schema_uri_resolver(0);
-  set_module_uri_resolver(0);
 
   if (theCollectionMap) {
     delete theCollectionMap; theCollectionMap = 0;
@@ -342,25 +375,105 @@ static_context::~static_context()
 /*******************************************************************************
 
 ********************************************************************************/
+void
+static_context::serialize_resolvers(serialization::Archiver &ar)
+{
+  bool lUserDocResolver, lUserColResolver;
+  if (ar.is_serializing_out()) {
+    // serialize out: remember whether a doc and collection
+    //                resolver was registered by the user
+    lUserDocResolver = (dynamic_cast<StandardDocumentURIResolver*>(theDocResolver) != NULL); 
+    lUserColResolver = (dynamic_cast<StandardCollectionURIResolver*>(theColResolver) != NULL);
+
+    ar & lUserDocResolver;
+    ar & lUserColResolver;
+  } else {
+    // serialize in: set the document and collection resolvers
+    //               use one by the user or use the default
+    //               if null is returned
+    SerializationCallback* lCallback = ar.getUserCallback();
+
+    ar & lUserDocResolver; // doc resolver passed by the user
+    ar & lUserColResolver; // col resolver passed by the user
+
+    // callback required but not available
+    if ((lUserDocResolver || lUserColResolver) && !lCallback) {
+      ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
+                           "Couldn't load pre-compiled query because"
+                           << " a document or collection resolver"
+                           << " is required but no SerializationCallback"
+                           << " is given for retrieving these resolvers.");
+    }
+
+    if (lUserDocResolver) {
+      DocumentURIResolver* lDocResolver = lCallback->getDocumentURIResolver();
+      if (!lDocResolver) {
+        ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
+                             "Couldn't load pre-compiled query because"
+                             " no document URI resolver could be retrieved"
+                             " using the given SerializationCallback"); 
+      }
+      set_document_uri_resolver(new DocumentURIResolverWrapper(lDocResolver));
+    }
+
+    if (lUserColResolver) {
+      CollectionURIResolver* lColResolver = lCallback->getCollectionURIResolver();
+      if (!lColResolver) {
+        ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
+                             "Couldn't load pre-compiled query because"
+                             " no collection URI resolver could be retrieved"
+                             " using the given SerializationCallback"); 
+      }
+      set_collection_uri_resolver(new CollectionURIResolverWrapper(lColResolver));
+    }
+  }
+}
+
+void
+static_context::serialize_tracestream(serialization::Archiver& ar)
+{
+  bool lUserTraceStream;
+  if (ar.is_serializing_out()) {
+    // serialize out: remember whether the user registered a trace stream
+    lUserTraceStream = (theTraceStream != 0);
+
+    ar & lUserTraceStream;
+  } else {
+    // serialize in: set the trace stream from the user
+    //               std::cerr is used if non was registered
+    SerializationCallback* lCallback = ar.getUserCallback();
+
+    ar & lUserTraceStream; // trace stream passed by the user
+
+    // callback required but not available
+    if (lUserTraceStream && !lCallback) {
+      ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
+                           "Couldn't load pre-compiled query because "
+                           << " a trace stream"
+                           << " is required but no SerializationCallback"
+                           << " is given for retrieving it.");
+    }
+
+    if (lUserTraceStream) {
+      bool lTraceStream =  lCallback->getTraceStream(*theTraceStream);
+      if (!lTraceStream) {
+        ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
+                             "Couldn't load pre-compiled query because"
+                             " no trace stream could be retrieved"
+                             " using the given SerializationCallback."); 
+      }
+    } 
+  }
+}
+
 void static_context::serialize(::zorba::serialization::Archiver &ar)
 {
   serialize_baseclass(ar, (context*)this);
   SERIALIZE_TYPEMANAGER_RCHANDLE(TypeManager, typemgr);
-  //+ar & theDocResolver;
-  //+ar & theColResolver;
-  //+ar & theSchemaResolver;
-  //+ar & theModuleResolver;
-  if(!ar.is_serializing_out())
-  {
-    theDocResolver = NULL;
-    theColResolver = NULL;
-    theSchemaResolver = NULL;
-    theModuleResolver = NULL;//user has to set up again the uri resolvers after reloading the plan
-    theTraceStream = &std::cerr;
-    theIndexMap = NULL;
-  }
-  //+ar & theGlobalVars;
-  //+ar & theDecimalFormats;
+
+  serialize_resolvers(ar);
+  serialize_tracestream(ar);
+
   ar & theCollationCache;
 }
 
@@ -770,23 +883,32 @@ void static_context::find_functions_int (
 }
 
 
-bool static_context::bind_stateless_external_function(
-    StatelessExternalFunction* aExternalFunction) 
+bool
+static_context::bind_external_module( ExternalModule* aModule ) 
 {
-  xqpString lLocalName = Unmarshaller::getInternalString(aExternalFunction->getLocalName());
-  xqpString lURI = Unmarshaller::getInternalString(aExternalFunction->getURI());
+  xqp_string lURI = Unmarshaller::getInternalString(aModule->getURI());
 
-  return bind_stateless_function(xqpString::concat(lLocalName,":",lURI), aExternalFunction);
+  return bind_module(lURI, aModule);
 }
 
 
-StatelessExternalFunction * static_context::lookup_stateless_external_function(
-    xqp_string aPrefix,
-    xqp_string aLocalName)
+StatelessExternalFunction*
+static_context::lookup_stateless_external_function(
+    const xqp_string& aURI,
+    const xqp_string& aLocalName)
 {
-  return lookup_stateless_function(qname_internal_key(default_function_namespace(),
-                                                      aPrefix,
-                                                      aLocalName)); 
+  // get the module for the given namespace
+  ctx_value_t v(CTX_MODULE);
+  bool lRes = context_value(aURI, v);
+  if (!lRes)
+    return NULL;
+
+  ExternalModule* lModule = v.module;
+  assert(lModule);
+
+  // get the function from this module.
+  // return 0 if not found
+  return lModule->getExternalFunction(aLocalName.theStrStore.getp());
 }
 
 
@@ -1287,7 +1409,7 @@ static_context::get_document_uri_resolver()
 {
   if ( theDocResolver != 0 )
     return theDocResolver;
-  return dynamic_cast<static_context*>(parent)->get_document_uri_resolver();
+  return parent!=NULL?dynamic_cast<static_context*>(parent)->get_document_uri_resolver():0;
 }
 
 void
@@ -1303,7 +1425,7 @@ static_context::get_collection_uri_resolver()
 {
   if ( theColResolver != 0 )
     return theColResolver;
-  return dynamic_cast<static_context*>(parent)->get_collection_uri_resolver();
+  return parent!=NULL?dynamic_cast<static_context*>(parent)->get_collection_uri_resolver():0;
 }
 
 void
@@ -1319,23 +1441,37 @@ static_context::get_schema_uri_resolver()
 {
   if ( theSchemaResolver != 0 )
     return theSchemaResolver;
-  return dynamic_cast<static_context*>(parent)->get_schema_uri_resolver();
+  return parent!=NULL?dynamic_cast<static_context*>(parent)->get_schema_uri_resolver():0;
 }
 
 void
-static_context::set_module_uri_resolver(InternalModuleURIResolver* aModuleResolver)
+static_context::add_module_uri_resolver(InternalModuleURIResolver* aModuleResolver)
 {
-  delete theModuleResolver;
-
-  theModuleResolver = aModuleResolver;
+  theModuleResolvers.push_back(aModuleResolver);
 }
 
-InternalModuleURIResolver*
-static_context::get_module_uri_resolver()
+void
+static_context::get_module_uri_resolvers(
+    std::vector<InternalModuleURIResolver*>& lResolvers
+  )
 {
-  if ( theModuleResolver != 0 )
-    return theModuleResolver;
-  return dynamic_cast<static_context*>(parent)->get_module_uri_resolver();
+  if (parent!=NULL) {
+    static_cast<static_context*>(parent)->get_module_uri_resolvers(lResolvers);
+  }
+  lResolvers.insert(lResolvers.end(),
+                    theModuleResolvers.begin(),
+                    theModuleResolvers.end());
+}
+
+void
+static_context::remove_module_uri_resolver(InternalModuleURIResolver* aResolver)
+{
+  for (std::vector<InternalModuleURIResolver*>::iterator 
+        lIter = theModuleResolvers.begin();
+       lIter != theModuleResolvers.end(); ++lIter) {
+    if (aResolver == *lIter)
+      theModuleResolvers.erase(lIter);
+  }
 }
 
 void

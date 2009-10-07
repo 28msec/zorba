@@ -1,0 +1,11 @@
+#include "context/root_static_context.h"
+#include "zorbatypes/xqpstring.h"
+
+namespace zorba {
+
+  const char* root_static_context::theBuiltInModulePaths[] = { 
+    "@CMAKE_SOURCE_DIR@/modules/",
+    "@CMAKE_INSTALL_PREFIX@/modules/",
+    0 };
+
+} /* namespace zorba */

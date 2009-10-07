@@ -60,6 +60,9 @@ class ZORBA_DLL_PUBLIC URI
   const xqpString&
   toASCIIString() const;
 
+  const xqpString&
+  toPathNotation() const;
+
   // getters and setters for each component
   bool
   is_valid() const;
@@ -142,6 +145,9 @@ protected:
 
   void
   build_ascii_full_text() const;
+
+  void
+  build_path_notation() const;
 
   void
   initialize(const xqpString& uri, bool have_base = false);
@@ -230,6 +236,7 @@ protected:
   // it's mutable because get_uri_text is const
   mutable xqpString theURIText; // encoded
   mutable xqpString theASCIIURIText; // decoded
+  mutable xqpString thePathNotation; 
 
   // the uri components (RegBasedAuthority, Path, QueryString, Fragment, and UserInfo are always encoded)
   xqpString theScheme;

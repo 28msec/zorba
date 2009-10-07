@@ -25,8 +25,14 @@ class root_static_context : public static_context {
     root_static_context();
     void init();
     virtual ~root_static_context();
+
+    const char**
+    get_builtin_module_paths() const { return theBuiltInModulePaths; }
     
     friend class GlobalEnvironment;
+
+  protected:
+    static const char* theBuiltInModulePaths[];
 };
 
 }

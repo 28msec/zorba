@@ -1,5 +1,31 @@
 Zorba - The XQuery Processor
-version 0.9.8 (coming)
+version 1.0 (coming)
+  * Changes in the C++ API
+    * Added a new called named ExternalModule.
+      This class must be used for registering external functions.
+      This change makes the external function API incompatible with
+      previous releases
+    * Loading pre-compiled queries requires to pass
+      a SerializationCallback which is used for
+      retrieving registered uri resolvers or trace streams.
+      Moreover, the callback is used for retrieving ExternalModules
+      which have been used when compiling the query.
+  * Resolving of modules is now enhanced by the so called "Zorba Module Path".
+    Moreover, multiple ModuleURIResolvers can be registered in one StaticContext.
+    See the documentation for more information.
+  * Added the excel library to the built-in modules
+
+version 0.9.8-rev1 (2009.09.22)
+  * bug fixes
+	  * fixed a crash caused by converting long integers (> 1024 digits) to string
+		* the compile-only check reports the URI of the encapsulating entity in it's error report (used for XQDT semantic checking)
+		* fixed 'for $x in () return $x/test' to return the empty sequence instead of raising a static error
+		* fixed build using Xerces-C 3.0.1
+		* fixed build for Mac OS X 10.6 (Snow Leopard)
+		* improved error reporting in the command line utility
+		* improved detection of the installed version of Xerces-C (raise an error if a wrong version is installed)
+
+version 0.9.8 (2009.08.26)
   * More XQuery Scripting Features
 		* default initialization for external variables
 		* block local variables

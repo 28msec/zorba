@@ -40,6 +40,8 @@
 #include "debugger_handler.h"
 
 #include "error_printer.h"
+#include "util.h"
+#include "module_path.h"
 
 // For setting the base URI from the current directory
 #include <zorba/util/path.h>
@@ -74,12 +76,26 @@ const char *copyright_str =
 
 #define PATH_SEP (zorba::filesystem_path::get_path_separator ())
 
+
+
 bool
 populateStaticContext(
     zorba::StaticContext_t& aStaticContext,
     const ZorbaCMDProperties& aProperties)
 {
-  try{
+  try {
+
+    // add the following module path to the static context (in this order)
+    // 1. command-line properties
+    // 2. environment ZORBA_MODULE_PATH
+    // 3. current working directory
+    {
+      std::vector<String> lModulePaths;
+      ModulePath::getModulePaths(aProperties, lModulePaths);
+
+      aStaticContext->setModulePaths(lModulePaths);
+    }
+
     if (aProperties.boundarySpace().size() != 0 )
       aStaticContext->setBoundarySpacePolicy(
                          (aProperties.boundarySpace().compare("preserve") == 0
@@ -209,25 +225,6 @@ std::string parseFileURI (bool asPath, const std::string &str)
   else
     return "";
 #endif
-}
-
-
-std::vector<std::string>
-tokenize(const std::string& str, const std::string& delimiters)
-{
-  std::vector<std::string> tokens;
-      
-  std::string::size_type lastPos = str.find_first_not_of(delimiters, 0);
-      
-  std::string::size_type pos = str.find_first_of(delimiters, lastPos);
-
-  while (std::string::npos != pos || std::string::npos != lastPos) {
-    tokens.push_back(str.substr(lastPos, pos - lastPos));
-    lastPos = str.find_first_not_of(delimiters, pos);
-    pos = str.find_first_of(delimiters, lastPos);
-  }
-
-  return tokens;
 }
 
 
@@ -822,7 +819,8 @@ int _tmain(int argc, _TCHAR* argv[])
       // to make the doc function doc("mydoc.xml") work
       zorba::filesystem_path p;
       std::stringstream lTmp;
-      std::vector<std::string> lTokens = tokenize(p.c_str(), PATH_SEP);
+      std::vector<std::string> lTokens;
+      Util::tokenize(p.c_str(), PATH_SEP, lTokens);
 
       lTmp << "file:///";
       for (std::vector<std::string>::const_iterator lIter = lTokens.begin();

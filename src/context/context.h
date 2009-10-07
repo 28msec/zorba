@@ -28,7 +28,7 @@ namespace zorba {
   class expr; class var_expr;
   class function;
 	class XQType;
-  class StatelessExternalFunction;
+  class ExternalModule;
   class ValueIndex;
 
 
@@ -45,9 +45,9 @@ public:
 protected:
 
   enum ctx_value_type 
-  {
-    CTX_EXPR, CTX_FUNCTION, CTX_ARITY, CTX_INT, CTX_BOOL, CTX_XQTYPE, CTX_STATELESS_EXTERNAL_FUNC
-  };
+    {
+      CTX_EXPR, CTX_FUNCTION, CTX_ARITY, CTX_INT, CTX_BOOL, CTX_XQTYPE, CTX_MODULE
+    };
 
 public:
   struct ctx_value_t : public ::zorba::serialization::SerializeBaseClass
@@ -60,12 +60,16 @@ public:
       int                intValue;
       bool               boolValue;
 		  const XQType     * typeValue; ///do manual ref counting on this
-      StatelessExternalFunction* stateless_function;
+      ExternalModule   * module; // module with external functions registered by the user
     };
 
   public:
     SERIALIZABLE_CLASS(ctx_value_t)
     SERIALIZABLE_CLASS_CONSTRUCTOR(ctx_value_t)
+    void
+    serialize_module(serialization::Archiver &ar,
+                     ExternalModule*& aModule);
+
     void serialize(::zorba::serialization::Archiver &ar);
     ctx_value_t(enum ctx_value_type type = (enum ctx_value_type)-1) {this->type = type;}
     virtual ~ctx_value_t() {}
@@ -77,6 +81,7 @@ protected:
 	context              * parent;
 	serializable_hashmap<ctx_value_t>   keymap;     // maps strings to ctx_values
 	serializable_hashmap<xqp_string>    str_keymap; // maps strings to strings
+  checked_vector<std::string>         module_paths; // sequence of locations
 
   xqpString                      default_function_namespace_internal;
 
@@ -120,12 +125,22 @@ public:
     }
     ar & keymap;
     ar & str_keymap;
+    ar & module_paths;
     ar & default_function_namespace_internal;
   }
 public:
   context (context *_parent = NULL) : parent (_parent) {}
 
 	context *get_parent() const { return parent; }
+
+  void
+  set_module_paths(const std::vector<std::string>& aModulePaths);
+
+  void
+  get_module_paths(std::vector<std::string>& aModulePaths) const;
+
+  void
+  get_full_module_paths(std::vector<std::string>& aFullModulePaths) const;
 
   xqp_string default_function_namespace() const;
 	void set_default_function_namespace(xqp_string);
@@ -199,12 +214,6 @@ protected:
 
   function* lookup_fmap_func (xqp_string key, int arity) const;
 
-  StatelessExternalFunction* lookup_stateless_function(xqp_string key) const 
-  {
-    ctx_value_t v(CTX_STATELESS_EXTERNAL_FUNC);
-    return context_value (key, v) ? v.stateless_function : NULL;
-  }
-
   void bind_str(xqp_string key, xqp_string v, XQUERY_ERROR err = XQP0019_INTERNAL_ERROR);
 
   void bind_str2(
@@ -221,7 +230,7 @@ protected:
 
   bool bind_func2 (const char *key1, xqp_string key2, function *f);
 
-  bool bind_stateless_function(xqp_string key, StatelessExternalFunction* f);
+  bool bind_module(xqp_string uri, ExternalModule* m);
 
 protected:
   //serialization helpers

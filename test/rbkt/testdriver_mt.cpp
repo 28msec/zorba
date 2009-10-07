@@ -444,7 +444,7 @@ void* thread_main(void* param)
                                                        testName,
                                                        false));
       sctx->setSchemaURIResolver(resolver.get());
-      sctx->setModuleURIResolver(mresolver.get());
+      sctx->addModuleURIResolver(mresolver.get());
       sctx->setCollectionURIResolver(cresolver.get());
       sctx->setXQueryVersion( xquery_version_1_0 );
     }

@@ -343,7 +343,7 @@ context_example_11(Zorba* aZorba)
 {
   StaticContext_t lContext = aZorba->createStaticContext();
   PrologModuleURIResolver lResolver;
-  lContext->setModuleURIResolver(&lResolver);
+  lContext->addModuleURIResolver(&lResolver);
 
   try {
     Zorba_CompilerHints_t hints;

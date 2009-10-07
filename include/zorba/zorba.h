@@ -302,8 +302,8 @@ namespace zorba {
        * @param aExternalFunction the stateless external function.
        * @return true if the function has been set, false otherwise.
        */
-      virtual bool
-      registerStatelessGlobalExternalFunction(StatelessExternalFunction* aExternalFunction) = 0;
+      //virtual bool
+      //registerStatelessGlobalExternalFunction(StatelessExternalFunction* aExternalFunction) = 0;
 
       /** \brief Gets the singelton instance of the ItemFactory.
        *

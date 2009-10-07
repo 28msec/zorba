@@ -16,10 +16,11 @@
 #include "api/staticcontextimpl.h"
 
 #include <zorba/error.h>
-#include <zorba/stateless_function.h>
+#include <zorba/external_module.h>
 #include <zorba/default_error_handler.h>
 #include <zorba/static_context_consts.h>
 #include <zorba/typeident.h>
+#include <zorba/util/path.h>
 
 #include "zorbatypes/xqpstring.h"
 #include "zorbaerrors/error_manager.h"
@@ -100,6 +101,13 @@ StaticContextImpl::StaticContextImpl(const StaticContextImpl& aStaticContext)
 
 StaticContextImpl::~StaticContextImpl()
 {
+  for (std::map<ModuleURIResolver*, ModuleURIResolverWrapper*>::iterator
+        lIter = theWrappers.begin(); lIter != theWrappers.end(); ++lIter) {
+//      theCtx->remove_module_uri_resolver(lIter->second);
+      delete lIter->second;
+      theWrappers.erase(lIter);
+  }
+
   if ( ! theUserStaticContext )
     RCHelper::removeReference (theCtx);
 
@@ -533,13 +541,14 @@ StaticContextImpl::getRevalidationEnabled( ) const
   
 
 bool 
-StaticContextImpl::registerStatelessExternalFunction(StatelessExternalFunction* aExternalFunction)
+StaticContextImpl::registerModule(ExternalModule* aModule)
 {
   try {
-    if ( ! theCtx->bind_stateless_external_function(aExternalFunction) ) {
-      xqpString lLocalName = Unmarshaller::getInternalString(aExternalFunction->getLocalName());
-      xqpString lMsg = lLocalName +" is already registered";
+    if ( ! theCtx->bind_external_module(aModule) ) {
+      xqpString lURI = Unmarshaller::getInternalString(aModule->getURI());
+      xqpString lMsg = "The external module with URI " + lURI +" is already registered";
 
+      // TODO rename error code to doule
       ZORBA_ERROR_DESC(API0019_FUNCTION_ALREADY_REGISTERED, String(lMsg.theStrStore));
     }
   } catch (error::ZorbaError& e) {
@@ -548,7 +557,6 @@ StaticContextImpl::registerStatelessExternalFunction(StatelessExternalFunction* 
   }
   return true;
 }
-
 
 void
 StaticContextImpl::setDocumentURIResolver(DocumentURIResolver* aDocumentURIResolver)
@@ -562,7 +570,7 @@ StaticContextImpl::setDocumentURIResolver(DocumentURIResolver* aDocumentURIResol
 
 
 DocumentURIResolver*
-StaticContextImpl::getDocumentURIResolver()
+StaticContextImpl::getDocumentURIResolver() const
 {
   DocumentURIResolverWrapper* lWrapper = dynamic_cast<DocumentURIResolverWrapper*>(theCtx->get_document_uri_resolver());
   if (lWrapper) { // if it's the user's resolver
@@ -636,14 +644,66 @@ StaticContextImpl::getCollectionType(const String& aCollectionUri) const
 }
 
 void
-StaticContextImpl::setModuleURIResolver(ModuleURIResolver* aModuleUriResolver)
+StaticContextImpl::addModuleURIResolver(ModuleURIResolver* aModuleUriResolver)
 {
   try {
-    theCtx->set_module_uri_resolver(new ModuleURIResolverWrapper(aModuleUriResolver));
+    // do nothing if the resolver is already registered
+    if (theWrappers[aModuleUriResolver]) {
+      return;
+    }
+
+    std::auto_ptr<ModuleURIResolverWrapper> lWrapper(
+        new ModuleURIResolverWrapper(aModuleUriResolver));
+
+    theCtx->add_module_uri_resolver(lWrapper.get());
+
+    theWrappers[aModuleUriResolver] = lWrapper.release();
+
   } catch (error::ZorbaError& e) {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
 }
+
+
+std::vector<ModuleURIResolver*>
+StaticContextImpl::getModuleURIResolvers() const
+{
+  std::vector<ModuleURIResolver*> lResolvers;
+  try {
+    std::vector<InternalModuleURIResolver*> lResolverWrappers;
+    theCtx->get_module_uri_resolvers(lResolverWrappers);
+    for (std::vector<InternalModuleURIResolver*>::iterator lIter 
+          = lResolverWrappers.begin();
+         lIter != lResolverWrappers.end(); ++lIter) {
+      ModuleURIResolverWrapper* lWrapper 
+        = dynamic_cast<ModuleURIResolverWrapper*>(*lIter);
+      assert(lWrapper);
+      lResolvers.push_back(lWrapper->theModuleResolver);
+    }
+  } catch (error::ZorbaError& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+  }
+  return lResolvers;
+}
+
+void
+StaticContextImpl::removeModuleURIResolver(ModuleURIResolver* aModuleUriResolver)
+{
+  try {
+    for (std::map<ModuleURIResolver*, ModuleURIResolverWrapper*>::iterator
+          lIter = theWrappers.begin(); lIter != theWrappers.end(); ++lIter) {
+      if (lIter->first == aModuleUriResolver) {
+        theCtx->remove_module_uri_resolver(lIter->second);
+        delete lIter->second;
+        theWrappers.erase(lIter);
+        return;
+      }
+    }
+  } catch (error::ZorbaError& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+  }
+}
+
 
 SchemaURIResolver*
 StaticContextImpl::getSchemaURIResolver() const
@@ -663,16 +723,6 @@ StaticContextImpl::setSchemaURIResolver(SchemaURIResolver* aSchemaUriResolver)
   } catch (error::ZorbaError& e) {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
-}
-
-ModuleURIResolver*
-StaticContextImpl::getModuleURIResolver() const
-{
-  ModuleURIResolverWrapper* lWrapper = dynamic_cast<ModuleURIResolverWrapper*>(theCtx->get_module_uri_resolver());
-  if (lWrapper) { // if it's the user's resolver
-    return lWrapper->theModuleResolver;
-  }
-  return 0;
 }
 
 bool
@@ -794,5 +844,62 @@ StaticContextImpl::loadProlog(const String& prolog, const Zorba_CompilerHints_t 
   theCtxMap = impl.theSctxMap;
 }
 
+void
+StaticContextImpl::setModulePaths( const std::vector<String>& aModulePaths )
+{
+  try {
+    std::vector<std::string> lModulePaths;
+
+    for (std::vector<String>::const_iterator lIter = aModulePaths.begin();
+         lIter != aModulePaths.end(); ++lIter) {
+      if (lIter->length()!=0) {
+        lModulePaths.push_back(Unmarshaller::getInternalString(*lIter)->c_str());
+        std::string& lPath = lModulePaths.back();
+        if (lPath.rfind(filesystem_path::get_path_separator()) != std::string::npos) {
+          lPath.append(filesystem_path::get_path_separator());
+        }
+      }
+
+    }
+    
+    theCtx->set_module_paths(lModulePaths);
+  } catch (error::ZorbaError& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+  }
+}
+
+void
+StaticContextImpl::getModulePaths( std::vector<String>& aModulePaths )
+{
+  try {
+    std::vector<std::string> lModulePaths;
+
+    theCtx->get_module_paths(lModulePaths);
+
+    for (std::vector<std::string>::const_iterator lIter = lModulePaths.begin();
+         lIter != lModulePaths.end(); ++lIter) {
+      aModulePaths.push_back(lIter->c_str());
+    }
+  } catch (error::ZorbaError& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+  }
+}
+
+void
+StaticContextImpl::getFullModulePaths( std::vector<String>& aFullModulePaths )
+{
+  try {
+    std::vector<std::string> lFullModulePaths;
+
+    theCtx->get_full_module_paths(lFullModulePaths);
+
+    for (std::vector<std::string>::const_iterator lIter = lFullModulePaths.begin();
+         lIter != lFullModulePaths.end(); ++lIter) {
+      aFullModulePaths.push_back(lIter->c_str());
+    }
+  } catch (error::ZorbaError& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+  }
+}
 
 } /* namespace zorba */

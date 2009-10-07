@@ -186,7 +186,7 @@ main(int argc, char** argv)
       cresolver.reset(new zorba::TestCollectionURIResolver(col_map_file.c_str(),
                                                            rbkt_src_dir));
       lContext->setSchemaURIResolver ( resolver.get() );
-      lContext->setModuleURIResolver ( mresolver.get() );
+      lContext->addModuleURIResolver ( mresolver.get() );
       lContext->setCollectionURIResolver ( cresolver.get() );
 
       // the w3c testsuite always uses xquery 1.0

@@ -30,12 +30,14 @@ class stateless_external_function_adapter : public external_function
 private:
   StatelessExternalFunction * m_function;
   expr_update_t               theUpdateType;
+  xqp_string                  thePrefix;
 
 public:
   stateless_external_function_adapter(
         const signature& sig, 
         StatelessExternalFunction *function,
-        bool aIsUpdating);
+        bool aIsUpdating,
+        const xqp_string& aPrefix);
   
   ~stateless_external_function_adapter();
 

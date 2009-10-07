@@ -21,7 +21,6 @@
 
 #include <zorba/zorba.h>
 
-
 std::string ZorbaCMDProperties::check_args () {
 
   if(queriesOrFilesBegin() == queriesOrFilesEnd()) {
@@ -110,6 +109,12 @@ bool ZorbaCMDProperties::loadProperties(int argc, char* argv[]) {
   } else {
     return false;
   }  
+}
+
+void
+ZorbaCMDProperties::getModulePaths(std::string& aPaths) const
+{
+  aPaths = theModulePath;
 }
 
 std::vector<std::pair<std::string,std::string> > ZorbaCMDProperties::getSerializerParameters() const

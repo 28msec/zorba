@@ -30,10 +30,12 @@ namespace zorba {
   class Iterator;
   class ResultIterator;
   class StatelessExternalFunction;
+  class ExternalModule;
   class TypeIdentifier;
   class ItemSequence;
   class Collection;
   class Function;
+  class SerializationCallback;
 
   class ErrorHandler;
   class QueryLocation;

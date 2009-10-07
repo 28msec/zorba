@@ -593,26 +593,26 @@ void XQueryImpl::doCompile(
 void
 XQueryImpl::serialize(std::ostream& os, const Zorba_SerializerOptions_t* opt)
 {
-  checkNotClosed();
-  checkCompiled();
+  ZORBA_TRY
+    checkNotClosed();
+    checkCompiled();
+  ZORBA_CATCH
 
   PlanWrapper_t lPlan = generateWrapper();
-  
+
   SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
   try {
     lPlan->open();
     serialize(os, lPlan, opt);
-  }
-  catch (...) {
+  } catch (...) {
     lPlan->close();
     throw;
   }
 
+  lPlan->close();
   theDocLoadingUserTime = lPlan->getRuntimeCB()->docLoadingUserTime;
   theDocLoadingTime = lPlan->getRuntimeCB()->docLoadingTime;
-
-  lPlan->close();
 }
 
 
@@ -816,7 +816,7 @@ XQueryImpl::checkNotClosed() const
   }
 }
 
-  
+
 void
 XQueryImpl::checkCompiled() const
 {
@@ -941,69 +941,52 @@ std::ostream& operator<< (std::ostream& os, XQuery* aQuery)
 bool XQueryImpl::saveExecutionPlan(std::ostream &os, Zorba_binary_plan_format_t archive_format)
 {
   ZORBA_TRY
-  if(archive_format == ZORBA_USE_XML_ARCHIVE)
-  {
-    zorba::serialization::XmlArchiver   xmlar(&os);
-    serialize(xmlar);
-    xmlar.serialize_out();
-  }
-  else//ZORBA_USE_BINARY_ARCHIVE
-  {
-    zorba::serialization::BinArchiver   bin_ar(&os);
-    serialize(bin_ar);
-    bin_ar.serialize_out();
-  }
-  return true;
-  ZORBA_CATCH
-  return false;
-}
-
-bool XQueryImpl::loadExecutionPlan(std::istream &is)
-{
-  ZORBA_TRY
-  try{//try the binary format first
-    zorba::serialization::BinArchiver   bin_ar(&is);
-    serialize(bin_ar);
-    bin_ar.finalize_input_serialization();
+    checkNotClosed();
+    checkCompiled();
+    if(archive_format == ZORBA_USE_XML_ARCHIVE)
+    {
+      zorba::serialization::XmlArchiver   xmlar(&os);
+      serialize(xmlar);
+      xmlar.serialize_out();
+    }
+    else//ZORBA_USE_BINARY_ARCHIVE
+    {
+      zorba::serialization::BinArchiver   bin_ar(&os);
+      serialize(bin_ar);
+      bin_ar.serialize_out();
+    }
     return true;
-  }
-  catch(error::ZorbaError &er)
-  {
-    if(er.theErrorCode != SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE)
-      throw;
-    //else go try xml archive reader
-  }
-  zorba::serialization::XmlArchiver   xmlar(&is);
-  serialize(xmlar);
-  xmlar.finalize_input_serialization();
-  return true;
   ZORBA_CATCH
   return false;
 }
 
 bool
-XQueryImpl::loadExecutionPlan(std::istream &is, 
-                  DocumentURIResolver* aDocumentURIResolver,
-                  CollectionURIResolver* aCollectionUriResolver,
-                  SchemaURIResolver* aSchemaUriResolver,
-                  ModuleURIResolver* aModuleUriResolver,
-                  std::ostream*      theTraceStream)
+XQueryImpl::loadExecutionPlan(std::istream &is, SerializationCallback* aCallback)
 {
-  if(!loadExecutionPlan(is))
-    return false;
+  ZORBA_TRY
+    checkNotCompiled();
+    // TODO check if the query is closed
 
-  getStaticContext();
-  if(aDocumentURIResolver)
-    theStaticContextWrapper->setDocumentURIResolver(aDocumentURIResolver);
-  if(aCollectionUriResolver)
-    theStaticContextWrapper->setCollectionURIResolver(aCollectionUriResolver);
-  if(aSchemaUriResolver)
-    theStaticContextWrapper->setSchemaURIResolver(aSchemaUriResolver);
-  if(aModuleUriResolver)
-    theStaticContextWrapper->setModuleURIResolver(aModuleUriResolver);
-  if(theTraceStream)
-    theStaticContextWrapper->setTraceStream(*theTraceStream);
-  return true;
+    try { // try the binary format first
+      zorba::serialization::BinArchiver   bin_ar(&is);
+      bin_ar.setUserCallback(aCallback);
+      serialize(bin_ar);
+      bin_ar.finalize_input_serialization();
+      return true;
+    }
+    catch(error::ZorbaError &er)
+    {
+      if(er.theErrorCode != SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE)
+        throw;
+      //else go try xml archive reader
+    }
+    zorba::serialization::XmlArchiver   xmlar(&is);
+    xmlar.setUserCallback(aCallback);
+    serialize(xmlar);
+    xmlar.finalize_input_serialization();
+    return true;
+  ZORBA_CATCH
+  return false;
 }
 
 } /* namespace zorba */

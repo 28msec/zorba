@@ -293,18 +293,11 @@ public:
   saveExecutionPlan(std::ostream &os, Zorba_binary_plan_format_t archive_format);
 
   bool
-  loadExecutionPlan(std::istream &is);
-  
-  bool
-  loadExecutionPlan(std::istream &is, 
-                    DocumentURIResolver* aDocumentURIResolver,
-                    CollectionURIResolver* aCollectionUriResolver = NULL,
-                    SchemaURIResolver* aSchemaUriResolver = NULL,
-                    ModuleURIResolver* aModuleUriResolver = NULL,
-                    std::ostream*      theTraceStream = NULL);
+  loadExecutionPlan(std::istream &is, SerializationCallback* aCallback = 0);
 
   static void
   setSerializationParameters(serializer*, const Zorba_SerializerOptions_t*);
+
 protected:
     
   XQueryImpl();

@@ -29,7 +29,7 @@
 #include "runtime/visitors/planitervisitor.h"
 
 #include "context/static_context.h"
-#include "context/internal_uri_resolvers.h"
+#include "context/standard_uri_resolvers.h"
 #include "context/dynamic_context.h"
 
 #include "util/web/web.h"
@@ -109,7 +109,7 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   stringstream lOutput;
   istringstream lInput;
   static_context* lSctx;
-  InternalModuleURIResolver* lModuleResolver = 0;
+  StandardModuleURIResolver* lModuleResolver = 0;
 
   // setup a new CompilerCB and a new XQueryCompiler 
   CompilerCB     lCompilerCB(*planState.theCompilerCB);
@@ -135,7 +135,7 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if (!GENV_ITEMFACTORY->createAnyURI(lURIItem, lURI))
       ZORBA_ERROR_LOC_DESC_OSS(XQST0046, loc, "URI is not valid " << lURI);
 
-  lModuleResolver = lSctx->get_module_uri_resolver();
+  lModuleResolver = GENV.getModuleURIResolver();
   // we get the ownership of the input stream
   // TODO: we have to find a way to tell user defined resolvers when their input stream
   // can be freed. The current solution might leed to problems on Windows.

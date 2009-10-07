@@ -22,13 +22,14 @@
 
 #include "zorbaserialization/class_serializer.h"
 
-namespace zorba{
-namespace store{
-class Item;
-}
-class CompilerCB;
-//class XQueryImpl;
-  namespace serialization{
+namespace zorba {
+  namespace store {
+    class Item;
+  }
+  class CompilerCB;
+  class SerializationCallback;
+
+  namespace serialization {
 
 #define   ARCHIVER_LATEST_VERSION   0x2 //current latest version
 
@@ -47,65 +48,54 @@ class CompilerCB;
   of pointers to the same object.
 */
 
-class ClassSerializer;
-
-enum ArchiveFieldTreat
-{
-  ARCHIVE_FIELD_NORMAL,
-  ARCHIVE_FIELD_IS_PTR,
-  ARCHIVE_FIELD_IS_NULL,
-  ARCHIVE_FIELD_IS_BASECLASS,
-  ARCHIVE_FIELD_IS_REFERENCING
-};
-/*
-struct field_ptr_vs_id
-{
-  int   field_id;
-  //bool  is_class;
-  union{
-    SerializeBaseClass  *assoc_class_ptr;
-    void  *assoc_ptr;
-  };
-};
-*/
-
-struct fwd_ref
-{
-  int referencing;
-  void **ptr;
-  bool is_class;
-  //bool add_ref_to_rcobject;
-  char *class_name;
-};
-
-class archive_field
-{
-public:
-  char  *type;
-  bool  is_simple;
-  int   version;//for classes
-  enum ArchiveFieldTreat  field_treat;
-  int   referencing;
-  int   id;
-  bool  is_class;
-  const char  *value;//for simple fields
-  union{
-    const SerializeBaseClass  *assoc_class_ptr;
-    const void  *assoc_ptr;
+  class ClassSerializer;
+  
+  enum ArchiveFieldTreat
+  {
+    ARCHIVE_FIELD_NORMAL,
+    ARCHIVE_FIELD_IS_PTR,
+    ARCHIVE_FIELD_IS_NULL,
+    ARCHIVE_FIELD_IS_BASECLASS,
+    ARCHIVE_FIELD_IS_REFERENCING
   };
 
-  class archive_field  *next;
-  class archive_field  *first_child;
-  class archive_field  *last_child;
-  class archive_field  *parent;
-
-public:
-  archive_field(const char *type, bool is_simple, bool is_class, 
-                const void *value, const void *assoc_ptr,
-                int version, enum ArchiveFieldTreat  field_treat,
-                int referencing);
-  ~archive_field();
-};
+  struct fwd_ref
+  {
+    int referencing;
+    void **ptr;
+    bool is_class;
+    //bool add_ref_to_rcobject;
+    char *class_name;
+  };
+  
+  class archive_field
+  {
+  public:
+    char  *type;
+    bool  is_simple;
+    int   version;//for classes
+    enum ArchiveFieldTreat  field_treat;
+    int   referencing;
+    int   id;
+    bool  is_class;
+    const char  *value;//for simple fields
+    union{
+      const SerializeBaseClass  *assoc_class_ptr;
+      const void  *assoc_ptr;
+    };
+  
+    class archive_field  *next;
+    class archive_field  *first_child;
+    class archive_field  *last_child;
+    class archive_field  *parent;
+  
+  public:
+    archive_field(const char *type, bool is_simple, bool is_class, 
+                  const void *value, const void *assoc_ptr,
+                  int version, enum ArchiveFieldTreat  field_treat,
+                  int referencing);
+    ~archive_field();
+  };
 
 //base class
 class Archiver
@@ -172,15 +162,23 @@ protected:
   bool  internal_archive;
 
   std::vector<store::Item*>   registered_items;
+  SerializationCallback*      theUserCallback;
+
 public:
-  //XQueryImpl  *xquery_impl;//to workaround std::map reference
   CompilerCB  *compiler_cb;///to workaround user defined function compile-at-runtime
+
 public:
   Archiver(bool is_serializing_out, bool internal_archive=false);
   virtual ~Archiver();
 
 public:
+  SerializationCallback*
+  getUserCallback() const { return theUserCallback; }
 
+  void
+  setUserCallback(SerializationCallback* aCallback) { theUserCallback = aCallback; }
+
+public:
   bool add_simple_field( const char *type, 
                         const char *value,
                         const void *orig_ptr,

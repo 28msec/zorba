@@ -64,11 +64,20 @@ void root_static_context::init()
   set_inherit_mode(StaticContextConsts::inherit_ns);
   set_preserve_mode(StaticContextConsts::preserve_ns);
   set_default_collection_type(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
+
+  // TODO move into globalenv
   set_document_uri_resolver(new StandardDocumentURIResolver());
   set_collection_uri_resolver(new StandardCollectionURIResolver());
   set_schema_uri_resolver(new StandardSchemaURIResolver());
-  set_module_uri_resolver(new StandardModuleURIResolver());
   set_validation_mode(StaticContextConsts::lax_validation);
+
+  std::vector<std::string> lRootModulePaths;
+  const char ** lPathsIter = get_builtin_module_paths();
+  for (; *lPathsIter != 0; ++lPathsIter) {
+    lRootModulePaths.push_back(*lPathsIter);
+  }
+  set_module_paths(lRootModulePaths);
+
 } 
 
 root_static_context::~root_static_context()

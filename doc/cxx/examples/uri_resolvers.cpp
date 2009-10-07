@@ -205,7 +205,7 @@ resolver_example_3(Zorba* aZorba)
 
   MyModuleURIResolver lResolver;
 
-  lContext->setModuleURIResolver(&lResolver);
+  lContext->addModuleURIResolver(&lResolver);
 
   try {
     XQuery_t lQuery = aZorba->compileQuery("import module namespace lm='http://www.zorba-xquery.com/mymodule'; lm:foo()", lContext); 

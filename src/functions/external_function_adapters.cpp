@@ -22,11 +22,13 @@ namespace zorba {
 stateless_external_function_adapter::stateless_external_function_adapter(
     const signature& sig,
     StatelessExternalFunction *function, 
-    bool aIsUpdating)
+    bool aIsUpdating,
+    const xqp_string& aPrefix)
   :
   external_function(sig),
   m_function(function),
-  theUpdateType((aIsUpdating ? UPDATE_EXPR : SIMPLE_EXPR))
+  theUpdateType((aIsUpdating ? UPDATE_EXPR : SIMPLE_EXPR)),
+  thePrefix(aPrefix)
 {
 }
 
@@ -43,7 +45,7 @@ PlanIter_t stateless_external_function_adapter::codegen(
     std::vector<PlanIter_t>& argv,
     AnnotationHolder& ann) const
 {
-  return new StatelessExtFunctionCallIterator(sctx, loc, argv, m_function, isUpdating());
+  return new StatelessExtFunctionCallIterator(sctx, loc, argv, m_function, isUpdating(), thePrefix);
 }
 
 }

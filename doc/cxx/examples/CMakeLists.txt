@@ -24,7 +24,9 @@ SET (API_EXAMPLES
   chaining.cpp
   external_functions.cpp
   datamanager.cpp
-  uri_resolvers.cpp)
+  uri_resolvers.cpp
+  execution_plans.cpp
+  )
 
 SET(API_EXAMPLES ${API_EXAMPLES} debugger.cpp)
 

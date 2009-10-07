@@ -30,19 +30,6 @@
 #include "api/xmldatamanagerimpl.h"
 
 namespace zorba {
-SERIALIZABLE_CLASS_VERSIONS(DocumentURIResolverWrapper)
-END_SERIALIZABLE_CLASS_VERSIONS(DocumentURIResolverWrapper)
-
-SERIALIZABLE_CLASS_VERSIONS(CollectionURIResolverWrapper)
-END_SERIALIZABLE_CLASS_VERSIONS(CollectionURIResolverWrapper)
-
-SERIALIZABLE_CLASS_VERSIONS(SchemaURIResolverWrapper)
-END_SERIALIZABLE_CLASS_VERSIONS(SchemaURIResolverWrapper)
-
-SERIALIZABLE_CLASS_VERSIONS(ModuleURIResolverWrapper)
-END_SERIALIZABLE_CLASS_VERSIONS(ModuleURIResolverWrapper)
-
-
   static void
   handle_resolver_error(URIResolverResult* aResolverResult)
   {

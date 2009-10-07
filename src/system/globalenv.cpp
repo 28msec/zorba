@@ -32,6 +32,7 @@
 #include "types/root_typemanager.h"
 #include "types/schema/schema.h"
 #include "context/root_static_context.h"
+#include "context/standard_uri_resolvers.h"
 #include "functions/library.h"
 #include "compiler/api/compiler_api.h"
 #include "compiler/xqueryx/xqueryx_to_xquery.h"
@@ -198,12 +199,15 @@ void GlobalEnvironment::init(store::Store* store)
     XQueryCompilerSubsystem::create();
   m_globalEnv->m_compilerSubSys = lSubSystem.release();
 
+  m_globalEnv->m_module_resolver = new StandardModuleURIResolver();
 }
 
 // destroy all components that were initialized in init 
 // note: destruction must be done in reverse initialization order
 void GlobalEnvironment::destroy()
 {
+  delete m_globalEnv->m_module_resolver;
+
   serialization::ClassSerializer::getInstance()->destroyArchiverForHardcodedObjects();
 
   delete m_globalEnv->m_compilerSubSys;
