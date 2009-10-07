@@ -440,7 +440,7 @@ typedef zorba::xquery_parser::token token;
 "node-type" { return token::NODE_TYPE; }
 "collection-modifier" { return token::COLLECTION_MODIFIER; }
 "node-modifier" { return token::NODE_MODIFIER; }
-"const" { return token::CONST; }
+"const" { return token::CONST_; }
 "append-only" { return token::APPEND_ONLY; }
 "queue" { return token::QUEUE; }
 "mutable" { return token::MUTABLE; }

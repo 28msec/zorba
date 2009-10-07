@@ -472,7 +472,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token NODE_TYPE           "'node-type'"
 %token COLLECTION_MODIFIER "'collection-modifier'"
 %token NODE_MODIFIER       "'node-modifier'"
-%token CONST               "'const'"
+%token CONST_               "'const'"
 %token APPEND_ONLY         "'append-only'"
 %token QUEUE               "'queue'"
 %token MUTABLE             "'mutable'"
@@ -1677,7 +1677,7 @@ CollectionDecl :
   ;
 
 CollectionModifier :
-    COLLECTION_MODIFIER CONST
+    COLLECTION_MODIFIER CONST_
     {
       $$ = new CollectionModifier(LOC(@$), CollectionModifier::const_);
     }
