@@ -18,28 +18,48 @@ STRING(LENGTH "${CMAKE_SOURCE_DIR}/src/runtime/spec/" RUNTIME_SPEC_LENGTH)
 SET(RUNTIME_HEADER_GENERATOR "${CMAKE_SOURCE_DIR}/src/runtime/spec/generate-header.xq")
 SET(RUNTIME_CPP_GENERATOR    "${CMAKE_SOURCE_DIR}/src/runtime/spec/generate-cpp.xq")
 
+IF(WIN32)
+  SET(ZORBA_EXE    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/zorba)
+ELSE(WIN32)
+  SET(ZORBA_EXE    ${CMAKE_BINARY_DIR}/bin/zorba)
+ENDIF(WIN32)
+
+# check if zorbacmd exists and works
+# the result of this check is used for deciding
+# whether we can generate the runtime header and cpp files
+SET(ZORBA_WORKS)
+IF (EXISTS ${ZORBA_EXE})
+  EXECUTE_PROCESS(COMMAND ${ZORBA_EXE} 
+                          "-q" "1+1"
+                  RESULT_VARIABLE ZORBA_WORKS_RES
+                  OUTPUT_VARIABLE ZORBA_WORKS_FOO)
+  IF (NOT ZORBA_WORKS_RES EQUAL 0)
+    SET(ZORBA_WORKS FALSE)
+  ELSE (NOT ZORBA_WORKS_RES EQUAL 0)
+    SET(ZORBA_WORKS TRUE)
+  ENDIF (NOT ZORBA_WORKS_RES EQUAL 0)
+ELSE (EXISTS ${ZORBA_EXE})
+    SET(ZORBA_WORKS FALSE)
+ENDIF (EXISTS ${ZORBA_EXE})
+
 # macro used for generating the runtime's header and cpp files out of the xml specifications
 MACRO(RUNTIME_GENERATOR QUERY SPEC_FILE SPEC_PREFIX_NAME OUTPUT)
-  IF (EXISTS ${CMAKE_BINARY_DIR}/bin/zorba) 
-    IF (${QUERY} IS_NEWER_THAN ${OUTPUT} OR ${SPEC_FILE} IS_NEWER_THAN ${OUTPUT})
-  
-      EXECUTE_PROCESS(COMMAND ${CMAKE_BINARY_DIR}/bin/zorba 
-                      "-q" "${QUERY}" "-f"  
-                      "-e" "local:name:=runtime_${SPEC_PREFIX_NAME}"
-                      "-e" "local:input=${SPEC_FILE}" 
-                      "--omit-xml-declaration" "--serialize-text"
-                      "-o" "${OUTPUT}"
-                      RESULT_VARIABLE RETURN_CODE
-                      ERROR_VARIABLE  ERROR_RESULT)
-      IF (NOT RETURN_CODE EQUAL 0)
-        MESSAGE("${ERROR_RESULT}")
-        MESSAGE(FATAL_ERROR "Couldn't generate ${OUTPUT} spec file ${SPEC_FILE} return code ${RETURN_CODE}")
-      ENDIF (NOT RETURN_CODE EQUAL 0)
-      
-      MESSAGE(STATUS "Generated ${OUTPUT}")
-
-    ENDIF (${QUERY} IS_NEWER_THAN ${OUTPUT} OR ${SPEC_FILE} IS_NEWER_THAN ${OUTPUT})
-  ENDIF (EXISTS ${CMAKE_BINARY_DIR}/bin/zorba) 
+  IF (ZORBA_WORKS) # only try to generate if zorbacmd is working 
+      ADD_CUSTOM_COMMAND(OUTPUT ${OUTPUT}
+                         COMMAND ${ZORBA_EXE} 
+                            "-q" "${QUERY}" "-f"  
+                            "-e" "local:name:=runtime_${SPEC_PREFIX_NAME}"
+                            "-e" "local:input=${SPEC_FILE}" 
+                            "-o" "${OUTPUT}"
+                            "--serialize-text"
+                          DEPENDS ${QUERY} ${SPEC_FILE})
+  ELSE (ZORBA_WORKS)
+    IF (EXISTS ${OUTPUT})
+      MESSAGE(STATUS "The Zorba Command Line Utility is not available to generate ${OUTPUT}. The file from the repository is there and will be used.")
+    ELSE (EXISTS ${OUTPUT})
+      MESSAGE(FATAL_ERROR "Neither the Zorba Command Line Utility nor the file ${OUTPUT} are available. Can't proceed building Zorba.")
+    ENDIF (EXISTS ${OUTPUT})
+  ENDIF (ZORBA_WORKS)
 ENDMACRO(RUNTIME_GENERATOR)
 
 # look for all spec files and generate the header and cpp file if out of date
