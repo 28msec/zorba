@@ -16,6 +16,7 @@
 
 #include "module_path.h"
 
+#include <stdlib.h>
 #include "zorba/zorbastring.h"
 #include "zorba/util/path.h"
 
