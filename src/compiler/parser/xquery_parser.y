@@ -2111,9 +2111,13 @@ QueryBody :
 	;
 
 
-// [31] Expr
-// ---------
+/*******************************************************************************
+  [38]  Expr ::= ApplyExpr | ConcatExpr
 
+  [38a] ApplyExpr ::= (ConcatExpr ";")+
+
+  [38b] ConcatExpr ::= ExprSingle ("," ExprSingle)*
+********************************************************************************/
 Expr :
     ConcatExpr
     {
@@ -2121,12 +2125,16 @@ Expr :
     }
   | ConcatExpr ApplyExpr
     {
-      std::auto_ptr<BlockBody> blk(dynamic_cast<BlockBody *> ($2));
-      BlockBody  *blk2 = new BlockBody (LOC (@$));
+      std::auto_ptr<BlockBody> blk(dynamic_cast<BlockBody *>($2));
+
+      BlockBody* blk2 = new BlockBody(LOC(@$));
+
+      blk2->add($1);
+
+      for (int i = 0; i < blk->size(); ++i)
+        blk2->add((*blk)[i]);
+
       $$ = blk2;
-      blk2->add ($1);
-      for (int i = 0; i < blk->size (); i++)
-        blk2->add ((*blk) [i]);
     }
   ;
 
@@ -2137,8 +2145,8 @@ ApplyExpr :
     }
   | ApplyExpr ConcatExpr SEMI
     {
-      BlockBody *blk = dynamic_cast<BlockBody *> ($1);
-      blk->add ($2);
+      BlockBody* blk = dynamic_cast<BlockBody *>($1);
+      blk->add($2);
       $$ = blk;
     }
   ;
@@ -2151,9 +2159,10 @@ ConcatExpr :
 	|	ConcatExpr COMMA ExprSingle
 		{
 			Expr* expr_p = dynamic_cast<Expr*>($1);
-			if (expr_p == NULL) {
-        expr_p = new Expr (LOC (@$));
-        expr_p->push_back ($1);
+			if (expr_p == NULL) 
+      {
+        expr_p = new Expr(LOC(@$));
+        expr_p->push_back($1);
       }
       expr_p->push_back($3);
 			$$ = expr_p;

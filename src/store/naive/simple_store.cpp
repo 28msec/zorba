@@ -378,35 +378,6 @@ store::Index_t SimpleStore::createIndex(
 /*******************************************************************************
 
 ********************************************************************************/
-void SimpleStore::rebuildIndex(
-    const store::Item_t& qname,
-    store::Iterator* sourceIter)
-{
-  store::Index_t index;
-
-  if (!theIndices.get(qname, index))
-  {
-    ZORBA_ERROR_PARAM(STR0002_INDEX_DOES_NOT_EXIST,
-                      qname->getStringValue()->c_str(), "");
-  }
-
-  theIndices.remove(qname);
-
-  try
-  {
-    createIndex(qname, index->getSpecification(), sourceIter);
-  }
-  catch (...)
-  {
-    theIndices.insert(qname, index);
-    throw;
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 void SimpleStore::addIndex(store::Index_t& index)
 {
   if (index == NULL)

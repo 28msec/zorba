@@ -194,6 +194,10 @@ public:
   virtual void addDropIndex(
         const Item_t& qname) = 0;
 
+  virtual void addRefreshIndex(
+        const Item_t& qname,
+        Iterator* sourceIter) = 0;
+
   virtual void mergeUpdates(Item* other) = 0;
 
   virtual void applyUpdates(std::set<Item*>& validationNodes) = 0;

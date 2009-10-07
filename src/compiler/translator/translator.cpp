@@ -392,7 +392,7 @@ public:
                          V). It is used in building the thePrologDeps: if the
                          prolog_vf_key string is not the empty, then we know
                          that we are in the scope of a var or function decl, and
-                         if that declaration refernces another var V or calls 
+                         if that declaration references another var V or calls 
                          another function F, then we create a dependency between
                          the var or function specified by prolog_vf_key and V
                          or F.
@@ -1328,7 +1328,7 @@ expr_t wrap_in_globalvar_assign(expr_t e)
 {
   for (list<global_binding>::iterator i = thePrologVars.begin();
       i != thePrologVars.end();
-      i++)
+      ++i)
   {
     declare_var(*i, minfo->init_exprs);
   }
@@ -3020,7 +3020,7 @@ void* begin_visit(const IndexKeyList& v)
   return no_state;
 }
 
-void end_visit (const IndexKeyList& v, void* /*visit_state*/) 
+void end_visit(const IndexKeyList& v, void* /*visit_state*/) 
 {
   std::vector<expr_t> keyExprs;
   std::vector<xqtref_t> keyTypes;
@@ -3185,10 +3185,10 @@ void end_visit (const BlockBody& v, void* /*visit_state*/)
   // constructed in reverse... maybe not the best choice
   vector<expr_t> stmts;
 
-  rchandle<VFO_DeclList> decls = v.get_decls ();
+  rchandle<VFO_DeclList> decls = v.get_decls();
 
   for (int i = 0; i < v.size(); i++)
-    stmts.push_back (pop_nodestack ());
+    stmts.push_back(pop_nodestack());
 
   if (decls != NULL)
   {
@@ -3204,14 +3204,14 @@ void end_visit (const BlockBody& v, void* /*visit_state*/)
       reverse(stmts1.begin(), stmts1.end());
 
       stmts.insert(stmts.end(), stmts1.begin(), stmts1.end());
+    }
   }
-  }
 
-  reverse (stmts.begin(), stmts.end());
+  reverse(stmts.begin(), stmts.end());
 
-  nodestack.push (new sequential_expr (theCCB->m_cur_sctx, loc, stmts));
+  nodestack.push(new sequential_expr(theCCB->m_cur_sctx, loc, stmts));
 
-  pop_scope ();
+  pop_scope();
 }
 
 

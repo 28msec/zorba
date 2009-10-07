@@ -682,6 +682,15 @@ void PULImpl::addDropIndex(const store::Item_t& qname)
 }
 
 
+void PULImpl::addRefreshIndex(
+    const store::Item_t& qname,
+    store::Iterator* sourceIter)
+{
+  UpdatePrimitive* upd = new UpdRefreshIndex(this, qname, sourceIter);
+  theRefreshIndexList.push_back(upd);
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -721,6 +730,9 @@ void PULImpl::mergeUpdates(store::Item* other)
                   false, false, false, false, false);
 
   mergeUpdateList(theDropIndexList, otherp->theDropIndexList,
+                  false, false, false, false, false);
+
+  mergeUpdateList(theRefreshIndexList, otherp->theRefreshIndexList,
                   false, false, false, false, false);
 }
 
@@ -921,8 +933,6 @@ void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
   {
     theValidationNodes = &validationNodes;
 
-    applyList(theCreateCollectionList);
-    applyList(theInsertIntoCollectionList);
     applyList(theDoFirstList);
     applyList(theInsertList);
     applyList(theReplaceNodeList);
@@ -934,11 +944,16 @@ void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
     for (ulong i = 0; i < numToRecheck; ++i)
       thePrimitivesToRecheck[i]->check();
 
+    applyList(theCreateCollectionList);
+    applyList(theInsertIntoCollectionList);
     applyList(theDeleteFromCollectionList);
-    applyList(theDeleteCollectionList);
+
+    applyList(theRefreshIndexList);
 
     applyList(theCreateIndexList);
     applyList(theDropIndexList);
+
+    applyList(theDeleteCollectionList);
   }
   catch (error::ZorbaError& e)
   {
@@ -1050,7 +1065,8 @@ inline void undoList(std::vector<UpdatePrimitive*> aVector)
 {
   for ( std::vector<UpdatePrimitive*>::reverse_iterator lIter = aVector.rbegin();
         lIter != aVector.rend();
-        ++lIter ) {
+        ++lIter ) 
+  {
     if ((*lIter)->isApplied())
       (*lIter)->undo();
   }
@@ -1061,14 +1077,21 @@ void PULImpl::undoUpdates()
   try
   {
     undoList(theDeleteCollectionList);
+
+    undoList(theDropIndexList);
+    undoList(theCreateIndexList);
+
+    undoList(theRefreshIndexList);
+
     undoList(theDeleteFromCollectionList);
+    undoList(theInsertIntoCollectionList);
+    undoList(theCreateCollectionList);
+
     undoList(theDeleteList);
     undoList(theReplaceContentList);
     undoList(theReplaceNodeList);
     undoList(theInsertList);
     undoList(theDoFirstList);
-    undoList(theInsertIntoCollectionList);
-    undoList(theCreateCollectionList);
   }
   catch (...)
   {
@@ -1951,7 +1974,12 @@ void UpdDropIndex::apply()
 {
   SimpleStore* store = SimpleStoreManager::getStore();
 
-  theIndex = store->getIndex(theQName);
+  if ((theIndex = store->getIndex(theQName)) == NULL)
+  {
+    ZORBA_ERROR_PARAM(STR0002_INDEX_DOES_NOT_EXIST,
+                      theQName->getStringValue()->c_str(), "");
+  }
+
   store->deleteIndex(theQName);
 
   theIsApplied = true;
@@ -1964,6 +1992,46 @@ void UpdDropIndex::undo()
   {
     SimpleStore* store = SimpleStoreManager::getStore();
 
+    store->addIndex(theIndex);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void UpdRefreshIndex::apply()
+{
+  SimpleStore* store = SimpleStoreManager::getStore();
+
+  if ((theIndex = store->getIndex(theQName)) == NULL)
+  {
+    ZORBA_ERROR_PARAM(STR0002_INDEX_DOES_NOT_EXIST,
+                      theQName->getStringValue()->c_str(), "");
+  }
+
+  store->deleteIndex(theQName);
+
+  try
+  {
+    store->createIndex(theQName, theIndex->getSpecification(), theSourceIter);
+  }
+  catch (...)
+  {
+    store->addIndex(theIndex);
+    throw;
+  }
+
+  theIsApplied = true;
+}
+
+
+void UpdRefreshIndex::undo()
+{
+  if (theIsApplied)
+  {
+    SimpleStore* store = SimpleStoreManager::getStore();
+    store->deleteIndex(theQName);
     store->addIndex(theIndex);
   }
 }

@@ -973,8 +973,7 @@ void QueryBody::accept(parsenode_visitor& v) const
 /*******************************************************************************
   [38] Expr ::= ExprSingle | Expr  COMMA  ExprSingle
 ********************************************************************************/
-Expr::Expr(
-    const QueryLoc& loc_)
+Expr::Expr(const QueryLoc& loc_)
   :
   exprnode(loc_)
 {
@@ -983,14 +982,16 @@ Expr::Expr(
 
 void Expr::accept(parsenode_visitor& v) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
+
   vector<rchandle<exprnode> >::const_reverse_iterator it = expr_hv.rbegin();
-  for (; it!=expr_hv.rend(); ++it) 
+  for (; it != expr_hv.rend(); ++it) 
   {
     const exprnode* e_p = &**it;
-    ACCEPT_CHK (e_p);
+    ACCEPT_CHK(e_p);
   }
-  END_VISITOR ();
+
+  END_VISITOR();
 }
 
 

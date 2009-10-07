@@ -267,22 +267,6 @@ public:
         Iterator* sourceIter) = 0;
 
   /**
-   * Rebuilds an existing, non-temo index.
-   *
-   * @param qname The qname identifying the index. For non-temporary indices,
-   *        the store maintains the map between qnames and indices and makes
-   *        sure that there are no two indices with the same qname.
-   * @param sourceIter It produces the entries to be inserted in the index.
-   *        Note: Given that iterators can produce only a single item at a time, 
-   *        the given source iterator does not actually produce whole index 
-   *        entries. Instead, the items of each index entry are produced one
-   *        at a time: first the domain node, followed by each of the key items.
-   */
-  virtual void rebuildIndex(
-        const Item_t& qname,
-        Iterator* sourceIter) = 0;
-
-  /**
    * Gets an existing index.
    *
    * @param qname The qname identifying the index. For non-temporary indices,

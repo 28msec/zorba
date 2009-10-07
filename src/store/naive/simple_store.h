@@ -153,10 +153,6 @@ public:
 
   void addIndex(store::Index_t& index);
 
-  void rebuildIndex(
-        const store::Item_t& qname,
-        store::Iterator* sourceIter);
-
   store::Index* getIndex(const store::Item_t& qname);
 
   void deleteIndex(const store::Item_t& qname);

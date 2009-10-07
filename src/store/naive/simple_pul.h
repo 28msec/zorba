@@ -149,6 +149,7 @@ protected:
   // index primitives
   std::vector<UpdatePrimitive*>      theCreateIndexList;
   std::vector<UpdatePrimitive*>      theDropIndexList;
+  std::vector<UpdatePrimitive*>      theRefreshIndexList;
 
   NodeToUpdatesMap                   theNodeToUpdatesMap;
 
@@ -299,6 +300,10 @@ public:
 
   void addDropIndex(
         const store::Item_t& qname);
+
+  void addRefreshIndex(
+        const store::Item_t& qname,
+        store::Iterator* sourceIter);
 
   // apply
   void applyUpdates(std::set<zorba::store::Item*>& validationNodes);
@@ -1319,9 +1324,7 @@ protected:
   store::Index_t       theIndex;
 
 public:
-  UpdDropIndex(
-        PULImpl* pul,
-        const store::Item_t& qname)
+  UpdDropIndex(PULImpl* pul, const store::Item_t& qname)
     :
     UpdatePrimitive(pul),
     theQName(qname)
@@ -1337,6 +1340,37 @@ public:
   void undo();
 };
 
+
+class UpdRefreshIndex : public  UpdatePrimitive
+{
+  friend class PULImpl;
+
+protected:
+  const store::Item_t  theQName;
+  store::Iterator_t    theSourceIter;
+
+  store::Index_t       theIndex;
+
+public:
+  UpdRefreshIndex(
+        PULImpl* pul,
+        const store::Item_t& qname,
+        store::Iterator* sourceIter)
+    :
+    UpdatePrimitive(pul),
+    theQName(qname),
+    theSourceIter(sourceIter)
+  {
+  }
+
+  store::UpdateConsts::UpdPrimKind getKind() const
+  { 
+    return store::UpdateConsts::UP_REFRESH_INDEX;
+  }
+
+  void apply();
+  void undo();
+};
 
 
 }

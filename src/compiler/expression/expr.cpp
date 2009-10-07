@@ -505,7 +505,9 @@ bool expr::is_updating_or_vacuous () const {
   return (cache.upd_seq_kind.updating || cache.upd_seq_kind.vacuous);
 }
 
-void expr::compute_upd_seq_kind () const {
+
+void expr::compute_upd_seq_kind() const 
+{
   cache.upd_seq_kind.vacuous
     = cache.upd_seq_kind.updating
     = cache.upd_seq_kind.sequential
@@ -513,14 +515,18 @@ void expr::compute_upd_seq_kind () const {
   cache.upd_seq_kind.valid = true;
 }
 
-void sequential_expr::compute_upd_seq_kind () const {
+
+void sequential_expr::compute_upd_seq_kind() const 
+{
   cache.upd_seq_kind.vacuous = false;
-  cache.upd_seq_kind.updating = size () >= 1 && ((*this) [size () - 1]->is_updating ());
-  cache.upd_seq_kind.sequential = size () >= 2 || (*this) [0]->is_sequential ();
+  cache.upd_seq_kind.updating = size() >= 1 && ((*this)[size() - 1]->is_updating());
+  cache.upd_seq_kind.sequential = size() >= 2 || (*this)[0]->is_sequential();
   cache.upd_seq_kind.valid = true;
 }
 
-void flwor_expr::compute_upd_seq_kind () const {
+
+void flwor_expr::compute_upd_seq_kind() const 
+{
   expr *ret = get_return_expr ();
   cache.upd_seq_kind.vacuous = ret->is_vacuous ();
   cache.upd_seq_kind.updating = ret->is_updating ();
@@ -528,8 +534,10 @@ void flwor_expr::compute_upd_seq_kind () const {
   cache.upd_seq_kind.valid = true;
 }
 
-void fo_expr::compute_upd_seq_kind () const {
-  bool concat = is_concatenation ();
+
+void fo_expr::compute_upd_seq_kind() const 
+{
+  bool concat = is_concatenation();
 
   cache.upd_seq_kind.vacuous = get_func ()->getUpdateType () == VACUOUS_EXPR;
 

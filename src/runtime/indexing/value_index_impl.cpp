@@ -207,14 +207,20 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 ********************************************************************************/
 bool DropIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  bool status;
   store::Item_t qname;
+  dynamic_context* dctx = planState.dctx();
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  status = consumeNext(qname, theChild, planState);
-  ZORBA_ASSERT(status);
+  if (!consumeNext(qname, theChild, planState))
+    ZORBA_ASSERT(false);
+
+  if (dctx->getIndex(qname) == NULL)
+  {
+    ZORBA_ERROR_LOC_PARAM(XQP0033_INDEX_DOES_NOT_EXIST, loc,
+                          qname->getStringValue()->c_str(), "");
+  }
 
   result = GENV_ITEMFACTORY->createPendingUpdateList();
 
@@ -231,17 +237,18 @@ bool DropIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 ********************************************************************************/
 bool RefreshIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  bool status;
   store::Item_t qname;
   ValueIndex_t zorbaIndex;
   PlanIterator* buildPlan;
   store::Iterator_t planWrapper;
 
+  dynamic_context* dctx = planState.dctx();
+
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  status = consumeNext(qname, theChild, planState);
-  ZORBA_ASSERT(status);
+  if (!consumeNext(qname, theChild, planState))
+    ZORBA_ASSERT(false);
 
   if ((zorbaIndex = theSctx->lookup_index(qname)) == NULL)
   {
@@ -249,18 +256,21 @@ bool RefreshIndexIterator::nextImpl(store::Item_t& result, PlanState& planState)
                           qname->getStringValue()->c_str(), "");
   }
 
+  if (dctx->getIndex(qname) == NULL)
+  {
+    ZORBA_ERROR_LOC_PARAM(XQP0033_INDEX_DOES_NOT_EXIST, loc,
+                          qname->getStringValue()->c_str(), "");
+  }
+
   buildPlan = zorbaIndex->getBuildPlan(planState.theCompilerCB, loc);
 
-  planWrapper = new PlanWrapper(buildPlan, planState.theCompilerCB, planState.dctx());
+  planWrapper = new PlanWrapper(buildPlan, planState.theCompilerCB, dctx);
   
-  try
-  {
-    GENV_STORE.rebuildIndex(qname, planWrapper);
-  }
-  catch(error::ZorbaError& e)
-  {
-    ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
-  }
+  result = GENV_ITEMFACTORY->createPendingUpdateList();
+
+  reinterpret_cast<store::PUL*>(result.getp())->addRefreshIndex(qname, planWrapper);
+
+  STACK_PUSH(true, state);
 
   STACK_END(state);
 }

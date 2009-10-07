@@ -104,12 +104,6 @@ public:
 
 
 /***************************************************************************//**
-  Implements the create-index function.
-********************************************************************************/
-UNARY_ITER(RefreshIndexIterator);
-
-
-/***************************************************************************//**
   Implements the drop-index function.
 ********************************************************************************/
 class DropIndexIterator : public UnaryBaseIterator<DropIndexIterator,
@@ -135,6 +129,43 @@ public:
         PlanIter_t& arg)
     :
     UnaryBaseIterator<DropIndexIterator, PlanIteratorState>(sctx, loc, arg)
+  {
+  }
+
+  bool isUpdating() const { return true; }
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+};
+
+
+/***************************************************************************//**
+  Implements the refresh-index function.
+********************************************************************************/
+class RefreshIndexIterator : public UnaryBaseIterator<RefreshIndexIterator,
+                                                      PlanIteratorState>
+{
+public:
+  SERIALIZABLE_CLASS(RefreshIndexIterator)
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  RefreshIndexIterator,
+  UnaryBaseIterator<RefreshIndexIterator, PlanIteratorState >)
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (UnaryBaseIterator<RefreshIndexIterator, PlanIteratorState >*)this);
+  }
+
+public:
+  RefreshIndexIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        PlanIter_t& arg)
+    :
+    UnaryBaseIterator<RefreshIndexIterator, PlanIteratorState>(sctx, loc, arg)
   {
   }
 

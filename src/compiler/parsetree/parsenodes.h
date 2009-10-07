@@ -1013,24 +1013,8 @@ public:
 
   [33] FunctionBody ::= EnclosedExpr | Block
 
-  Block ::= "{" BlockDecls BlockBody "}"
-
-  BlockDecls ::= (BlockVarDecl ";")*
-
-  BlockVarDecl ::= "declare" "$" VarName TypeDeclaration? (":=" ExprSingle)?
-                    ("," "$" VarName TypeDeclaration? (":=" ExprSingle)?)*
-
-  BlockBody ::= Expr
-
   Note: If a function is a sequential one, then its FunctionBody must be a Block,
         otherwise its FunctionBody must be an EnclosedExpr.
-
-  Note: There are no parsenode classes for BlockVarDecl and BlockDecls; instead
-        the parser generates VarDecl and VFO_DeclList parsenodes.
-
-  Note: There is no parsenode class for Block; instead the parser generates either
-        an Expr node if BlockDecls is empty, or a BlockBody node whose "decls"
-        data member stores the var declarations.
 ********************************************************************************/
 class FunctionDecl : public XQDocumentable
 {
@@ -1196,6 +1180,7 @@ public:
   void accept(parsenode_visitor&) const;
 };
 
+
 /***************************************************************************//**
   IndexDecl ::= "declare" "unique"? 
                           ("ordered" | "unordered")?
@@ -1335,52 +1320,6 @@ public:
 
 
 /*******************************************************************************
-  Block ::= "{" BlockDecls BlockBody "}"
-
-  BlockDecls ::= (BlockVarDecl ";")*
-
-  BlockVarDecl ::= "declare" "$" VarName TypeDeclaration? (":=" ExprSingle)?
-                    ("," "$" VarName TypeDeclaration? (":=" ExprSingle)?)*
-
-  BlockBody ::= Expr
-
-  Note: There are no parsenode classes for BlockVarDecl and BlockDecls; instead
-        the parser generates VarDecl and VFO_DeclList parsenodes.
-
-  Note: There is no parsenode class for Block; instead the parser generates either
-        an Expr node if BlockDecls is empty, or a BlockBody node whose "decls"
-        data member stores the var declarations.
-********************************************************************************/
-class BlockBody : public exprnode
-{
-protected:
-  std::vector<rchandle <exprnode> > statements;
-  rchandle<VFO_DeclList> decls;
-
-public:
-  BlockBody (const QueryLoc& loc_, rchandle<VFO_DeclList> decls_ = NULL)
-    :
-    exprnode (loc_), decls (decls_)
-  {
-  }
-
-  void add (rchandle<exprnode> statement) { statements.push_back(statement); }
-
-  const rchandle<exprnode>& operator[](int k) const { return statements[k]; }
-
-  rchandle<exprnode>& operator[](int k) { return statements[k]; }
-
-  int size () const { return statements.size (); }
-
-  rchandle<VFO_DeclList> get_decls () const { return decls; }
-
-  void set_decls (rchandle<VFO_DeclList> decls_) { decls = decls_; }
-
-  void accept(parsenode_visitor&) const;
-};
-
-
-/*******************************************************************************
   [37] QueryBody ::= Expr
 ********************************************************************************/
 class QueryBody : public exprnode
@@ -1402,7 +1341,20 @@ public:
 
 
 /*******************************************************************************
-  [38] Expr ::= ExprSingle | Expr  COMMA  ExprSingle
+  [38]  Expr ::= ApplyExpr | ConcatExpr
+
+  [38a] ApplyExpr ::= (ConcatExpr ";")+
+
+  [38b] ConcatExpr ::= ExprSingle ("," ExprSingle)*
+
+  There are no ApplyExpr or ConcatExpr parsenodes. Instead:
+
+  - If the Expr is an ApplyExpr, no Expr parsenode is generated. Instead, a
+    BlockBody parsenode is generated, whose children are the ConcatExprs that
+    comprise the ApplyExpr. 
+
+  - If the Expr is a ConcatExpr, then an Expr parsenode is generated, whose
+    children are the ExprSingles that comparise the ConcatExpr.
 ********************************************************************************/
 class Expr : public exprnode
 {
@@ -1434,11 +1386,11 @@ public:
                       TryExpr |
 
   ** scripting
+                      BlockExpr |
                       ExitExpr |
                       WhileExpr |
-                      FlowCtlStatement |
                       AssignExpr |
-                      BlockExpr |
+                      FlowCtlStatement |
 
   ** eval
                       EvalExpr |
@@ -1449,7 +1401,57 @@ public:
                       RenameExpr |
                       ReplaceExpr |
                       TransformExpr
+
 ********************************************************************************/
+
+
+/*******************************************************************************
+  BlockExpr ::= "block" Block
+
+  Block ::= "{" BlockDecls BlockBody "}"
+
+  BlockDecls ::= (BlockVarDecl ";")*
+
+  BlockVarDecl ::= "declare" "$" VarName TypeDeclaration? (":=" ExprSingle)?
+                    ("," "$" VarName TypeDeclaration? (":=" ExprSingle)?)*
+
+  BlockBody ::= Expr
+
+  Note: There is no parsenode class for BlockExpr or for Block; instead the
+  parser generates either an Expr node if BlockDecls is empty, or a BlockBody
+  node whose "decls" data member stores the var declarations.
+
+  Note: There are no parsenode classes for BlockVarDecl and BlockDecls; instead
+  the parser generates VarDecl and VFO_DeclList parsenodes.
+
+********************************************************************************/
+class BlockBody : public exprnode
+{
+protected:
+  std::vector<rchandle <exprnode> > statements;
+  rchandle<VFO_DeclList> decls;
+
+public:
+  BlockBody (const QueryLoc& loc_, rchandle<VFO_DeclList> decls_ = NULL)
+    :
+    exprnode (loc_), decls (decls_)
+  {
+  }
+
+  void add (rchandle<exprnode> statement) { statements.push_back(statement); }
+
+  const rchandle<exprnode>& operator[](int k) const { return statements[k]; }
+
+  rchandle<exprnode>& operator[](int k) { return statements[k]; }
+
+  int size () const { return statements.size (); }
+
+  rchandle<VFO_DeclList> get_decls () const { return decls; }
+
+  void set_decls (rchandle<VFO_DeclList> decls_) { decls = decls_; }
+
+  void accept(parsenode_visitor&) const;
+};
 
 
 /*******************************************************************************
