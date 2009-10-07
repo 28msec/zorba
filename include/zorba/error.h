@@ -875,6 +875,11 @@ typedef enum
   SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE,
   SRL0012_INCOMPATIBLE_ARCHIVE_VERSION,
 
+  //
+  // XQuery Data Definition Facility:w
+  //
+  XDXX0001,
+  // Temporarly, this error code is used for all Data Definition Facility related errors.
 
   MAX_ZORBA_ERROR_CODE
 } XQUERY_ERROR;

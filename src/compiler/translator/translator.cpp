@@ -54,6 +54,7 @@
 #include "compiler/indexing/index_tools.h"
 
 #include "indexing/value_index.h"
+#include "context/statically_known_collection.h"
 
 #include "system/globalenv.h"
 
@@ -1667,7 +1668,8 @@ void end_visit (const ModuleDecl& v, void* /*visit_state*/)
 
   [6c] SIND_Decl ::= Setter | NamespaceDecl | DefaultNamespaceDecl | Import
 
-  [6d] VFO_Decl ::= VarDecl | ContextItemDecl | FunctionDecl | IndexDecl | OptionDecl
+  [6d] VFO_Decl ::= VarDecl | ContextItemDecl | FunctionDecl | CollectionDecl 
+                  | IndexDecl | OptionDecl
 ********************************************************************************/
 void *begin_visit (const Prolog& v) 
 {
@@ -2831,9 +2833,10 @@ void* begin_visit(const CollectionDecl& v)
 {
   TRACE_VISIT();
   // checks if collection declaration is not located in a DataModule
-  if (!theIsDataModule)
-  {
-    // TODO
+  if (!theIsDataModule) {
+    ZORBA_ERROR_LOC_DESC_OSS(XDXX0001, v.get_location(), 
+                             "It is a static error if a collection declaration "
+                             << "is used in a module other than a data module.");
   }
  
   return no_state;
@@ -2842,6 +2845,34 @@ void* begin_visit(const CollectionDecl& v)
 void end_visit(const CollectionDecl& v, void* /*visit_state*/) 
 {
   TRACE_VISIT_OUT ();
+
+  const QName* lName = v.getName();
+
+  // Expand the index qname (error is raised if qname resolution fails).
+  store::Item_t lExpandedQName = sctx_p->lookup_fn_qname(lName->get_prefix(),
+                                                         lName->get_localname(),
+                                                         lName->get_location());
+  
+  xqtref_t lNodeType = ( v.getKindTest() == 0 ?
+                         theRTM.ANY_NODE_TYPE_ONE :
+                         pop_tstack());
+  StaticContextConsts::collection_modifier_t lCollectionModifier
+    = ( v.getCollectionModifier() == 0 ?
+        StaticContextConsts::mutable_coll :
+        v.getCollectionModifier()->getModifier());
+  StaticContextConsts::node_modifier_t lNodeModifier
+    = ( v.getNodeModifier() == 0 ?
+        StaticContextConsts::mutable_node :
+        v.getNodeModifier()->getModifier());
+
+  StaticallyKnownCollection_t lColl = new StaticallyKnownCollection(
+                                            lExpandedQName,
+                                            lNodeType,
+                                            lCollectionModifier,
+                                            lNodeModifier);
+
+  sctx_p->add_declared_collection(lColl, v.get_location());
+
 }
 
 /***************************************************************************//**

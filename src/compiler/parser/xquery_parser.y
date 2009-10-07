@@ -1679,19 +1679,19 @@ CollectionDecl :
 CollectionModifier :
     COLLECTION_MODIFIER CONST_
     {
-      $$ = new CollectionModifier(LOC(@$), CollectionModifier::const_);
+      $$ = new CollectionModifier(LOC(@$), StaticContextConsts::const_);
     }
   | COLLECTION_MODIFIER APPEND_ONLY
     {
-      $$ = new CollectionModifier(LOC(@$), CollectionModifier::append_only);
+      $$ = new CollectionModifier(LOC(@$), StaticContextConsts::append_only);
     }
   | COLLECTION_MODIFIER QUEUE
     {
-      $$ = new CollectionModifier(LOC(@$), CollectionModifier::queue);
+      $$ = new CollectionModifier(LOC(@$), StaticContextConsts::queue);
     }
   | COLLECTION_MODIFIER MUTABLE
     {
-      $$ = new CollectionModifier(LOC(@$), CollectionModifier::mutable_);
+      $$ = new CollectionModifier(LOC(@$), StaticContextConsts::mutable_coll);
     }
   ;
 
@@ -1699,11 +1699,11 @@ CollectionModifier :
 NodeModifier :
     NODE_MODIFIER READ_ONLY
     {
-      $$ = new NodeModifier(LOC(@$), NodeModifier::read_only);
+      $$ = new NodeModifier(LOC(@$), StaticContextConsts::read_only);
     }
   | NODE_MODIFIER MUTABLE
     {
-      $$ = new NodeModifier(LOC(@$), NodeModifier::mutable_);
+      $$ = new NodeModifier(LOC(@$), StaticContextConsts::mutable_node);
     }
   ;
 

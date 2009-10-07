@@ -29,6 +29,8 @@ namespace zorba {
     enum preserve_mode_t         { preserve_ns, no_preserve_ns };
     enum validation_mode_t       { strict_validation, lax_validation, skip_validation };
     enum xquery_version_t        { xquery_version_unknown = 0, xquery_version_1_0 = 100, xquery_version_1_1 = 110 };
+    enum collection_modifier_t   { const_, append_only, queue, mutable_coll };
+    enum node_modifier_t         { read_only, mutable_node };
     
   }; /* namespace StaticContextConsts */
 

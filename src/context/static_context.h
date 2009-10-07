@@ -50,6 +50,8 @@ template <class V> class ItemPointerHashMap;
 class ValueIndex;
 typedef rchandle<ValueIndex> ValueIndex_t;
 
+class StaticallyKnownCollection;
+typedef rchandle<StaticallyKnownCollection> StaticallyKnownCollection_t;
 
 /*******************************************************************************
   XQuery 1.0 context
@@ -70,6 +72,7 @@ typedef rchandle<ValueIndex> ValueIndex_t;
 ********************************************************************************/
 class ZORBA_DLL_PUBLIC static_context : public context
 {
+  typedef ItemPointerHashMap<rchandle<StaticallyKnownCollection> > CollectionMap;
   typedef ItemPointerHashMap<rchandle<ValueIndex> > IndexMap;
 
 protected:
@@ -80,6 +83,7 @@ protected:
   InternalSchemaURIResolver     * theSchemaResolver;
   InternalModuleURIResolver     * theModuleResolver;
 
+  CollectionMap                 * theCollectionMap;
   IndexMap                      * theIndexMap;
 
   expr_t                          theQueryExpr;
@@ -317,6 +321,11 @@ public:
 
   xqtref_t
   get_collection_type(const xqp_string);
+
+  // 
+  // Collections
+  //
+  void add_declared_collection( StaticallyKnownCollection_t& aCollection, const QueryLoc& aLoc);
 
   //
   // Index

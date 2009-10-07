@@ -20,4 +20,5 @@ SET(CONTEXT_SRCS
     root_static_context.cpp
     standard_uri_resolvers.cpp
     uri_resolver_wrapper.cpp
+    statically_known_collection.cpp
     )

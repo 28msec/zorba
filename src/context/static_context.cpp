@@ -25,6 +25,7 @@
 #include "context/uri_resolver_wrapper.h"
 #include "context/standard_uri_resolvers.h"
 #include "context/decimal_format.h"
+#include "context/statically_known_collection.h"
 
 
 #include "compiler/expression/expr_base.h"
@@ -254,6 +255,7 @@ static_context::static_context()
   theColResolver(0),
   theSchemaResolver(0),
   theModuleResolver(0),
+  theCollectionMap(0),
   theIndexMap(NULL),
   theTraceStream(0),
   theCollationCache(0)
@@ -270,6 +272,7 @@ static_context::static_context (static_context *_parent)
   theColResolver(0),
   theSchemaResolver(0),
   theModuleResolver(0),
+  theCollectionMap(0),
   theIndexMap(NULL),
   theTraceStream(0),
   theCollationCache(0)
@@ -323,6 +326,10 @@ static_context::~static_context()
   set_collection_uri_resolver(0);
   set_schema_uri_resolver(0);
   set_module_uri_resolver(0);
+
+  if (theCollectionMap) {
+    delete theCollectionMap; theCollectionMap = 0;
+  }
 
   if (theIndexMap)
     delete theIndexMap;
@@ -886,6 +893,29 @@ xqtref_t static_context::get_collection_type(const xqp_string collURI)
   return lookup_type2("type:collection:", collURI);
 }
 
+/*******************************************************************************
+
+  collection management
+
+********************************************************************************/
+void static_context::add_declared_collection(
+       StaticallyKnownCollection_t& aCollection,
+       const QueryLoc& aLoc)
+{
+  if (theCollectionMap == 0)
+    theCollectionMap = new CollectionMap(0, NULL, 8, false);
+
+  if (!theCollectionMap->insert(aCollection->getName(), aCollection))
+  {
+    ZORBA_ERROR_LOC_DESC_OSS(XDXX0001, aLoc,
+                             "It is a static error if the expanded QName ("
+                             << aCollection->getName()->getStringValue()
+                             << ") of a collection"
+                             << " is equal (as defined by the eq operator) to the name of "
+                             << "another collection in the set of statically known collections."
+                            );
+  }
+}
 
 /*******************************************************************************
 

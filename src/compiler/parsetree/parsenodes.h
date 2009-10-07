@@ -1159,21 +1159,18 @@ public:
 ********************************************************************************/
 class CollectionModifier : public parsenode
 {
-public:
-  typedef enum { const_, append_only, queue, mutable_ } mod_t;
-
 protected:
-  mod_t theModifier;
+  StaticContextConsts::collection_modifier_t theModifier;
 
 public:
   CollectionModifier (
-    const QueryLoc& aLoc,
-    mod_t aModifier)
+    const QueryLoc&                            aLoc,
+    StaticContextConsts::collection_modifier_t aModifier)
   : parsenode(aLoc),
     theModifier(aModifier)
   {}
 
-  mod_t getModifier() const { return theModifier; }
+  StaticContextConsts::collection_modifier_t getModifier() const { return theModifier; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -1183,21 +1180,18 @@ public:
 ********************************************************************************/
 class NodeModifier : public parsenode
 {
-public:
-  typedef enum { read_only, mutable_ } mod_t;
-
 protected:
-  mod_t theModifier;
+  StaticContextConsts::node_modifier_t theModifier;
 
 public:
   NodeModifier (
-    const QueryLoc& aLoc,
-    mod_t aModifier)
+    const QueryLoc&                      aLoc,
+    StaticContextConsts::node_modifier_t aModifier)
   : parsenode(aLoc),
     theModifier(aModifier)
   {}
 
-  mod_t getModifier() const { return theModifier; }
+  StaticContextConsts::node_modifier_t getModifier() const { return theModifier; }
 
   void accept(parsenode_visitor&) const;
 };
