@@ -25,6 +25,8 @@ namespace zorba {
   class ZORBA_DLL_PUBLIC SerializationCallback {
 
     public:
+      virtual ~SerializationCallback() {}
+
       virtual ExternalModule*
       getExternalModule(const String& aURI) const;
 
