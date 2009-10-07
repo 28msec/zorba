@@ -99,18 +99,22 @@ private:
   void registerError(const zorba::ZorbaException& e)
   {
     m_errors.push_back(zorba::ZorbaException::getErrorCodeAsString(e.getErrorCode()).c_str());
-    char  strdescr[1000];
+    std::ostringstream strdescr;
+
     if(dynamic_cast<const zorba::QueryException*>(&e))
     {
-      const zorba::QueryException    *qe = dynamic_cast<const zorba::QueryException*>(&e);
-      sprintf(strdescr, "%s [line %d][column %d][file %s]", e.getDescription().c_str(), 
-                                                            qe->getLineBegin(), 
-                                                            qe->getColumnBegin(),
-                                                            qe->getQueryURI().c_str());
+      const zorba::QueryException* qe = dynamic_cast<const zorba::QueryException*>(&e);
+      strdescr <<  e.getDescription().c_str()
+               << "[line " << qe->getLineBegin() << "]"
+               << "[column " <<  qe->getColumnBegin() << "]"
+               << "[file " <<  qe->getQueryURI().c_str() << "]";
     }
     else
-      sprintf(strdescr, "%s", e.getDescription().c_str());
-    m_desc.push_back(strdescr);
+    {
+      strdescr << e.getDescription().c_str();
+    }
+
+    m_desc.push_back(strdescr.str());
   }
 };
 
