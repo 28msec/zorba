@@ -407,6 +407,18 @@ void SimpleStore::rebuildIndex(
 /*******************************************************************************
 
 ********************************************************************************/
+void SimpleStore::addIndex(store::Index_t& index)
+{
+  if (index == NULL)
+    return;
+
+  theIndices.insert(static_cast<IndexImpl*>(index.getp())->getName(), index);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 store::Index* SimpleStore::getIndex(const store::Item_t& qname)
 {
   if (qname == NULL)

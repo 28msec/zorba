@@ -207,24 +207,7 @@ bool SequentialIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   {
     while (CONSUME(result, i))
     {
-      if (theChildren[i]->isUpdating())
-      {
-        std::set<zorba::store::Item*> validationNodes;
-
-        static_cast<store::PUL*>(result.getp())->applyUpdates(validationNodes);
-
-        store::Item_t validationPul = GENV_ITEMFACTORY->createPendingUpdateList();
-
-#ifndef ZORBA_NO_XMLSCHEMA
-        QueryLoc& loc = theChildren[i]->loc;
-        validateAfterUpdate(validationNodes,
-                            validationPul,
-                            getStaticContext(planState),
-                            loc);
-#endif
-        validationPul->applyUpdates(validationNodes);
-      }
-      else if (i == theChildren.size() - 1)
+      if (i == theChildren.size() - 1 && !theChildren[i]->isUpdating())
       {
         STACK_PUSH(true, state);
         i = theChildren.size() - 1;

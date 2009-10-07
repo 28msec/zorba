@@ -18,6 +18,7 @@
 
 #include <memory>
 #include <list>
+#include <set>
 
 #include <zorba/api_shared_types.h>
 
@@ -462,8 +463,7 @@ public:
   * @post aVariableList contains all variable names reachable from the
   *  scope from the current static context.
   */
-  void
-  getVariables(std::vector<std::string>& aVarialeList) const;
+  void getVariables(std::vector<std::string>& aVarialeList) const;
 
   /**
   * @brief This method gets all variable expressions from this static
@@ -485,15 +485,14 @@ public:
 protected:
   static_context();
 
-  static_context (static_context *_parent);
+  static_context(static_context* parent);
  
-  void
-  find_functions_int (xqp_string key,
-                      std::vector<function *>& functions,
-                      std::set<int> &found) const;
+  void find_functions_int(
+        xqp_string key,
+        std::vector<function *>& functions,
+        std::set<int> &found) const;
 
-  static xqp_string
-  fn_internal_key ();
+  static xqp_string fn_internal_key();
 };
 
 

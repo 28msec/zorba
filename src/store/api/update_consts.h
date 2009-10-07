@@ -83,7 +83,7 @@ public:
     UP_SET_ATTRIBUTE_TYPE,
     UP_SET_ELEMENT_TYPE,
 
-    // collection functions
+    // collection primitives
     UP_CREATE_COLLECTION,
     UP_COLLECTION,
     UP_DELETE_COLLECTION,
@@ -94,8 +94,12 @@ public:
     UP_INSERT_AFTER_INTO_COLLECTION,
     UP_INSERT_AT_INTO_COLLECTION,
     UP_REMOVE_FROM_COLLECTION,
-    UP_REMOVE_AT_FROM_COLLECTION
+    UP_REMOVE_AT_FROM_COLLECTION,
 
+    // index primitives
+    UP_CREATE_INDEX,
+    UP_DROP_INDEX,
+    UP_REFRESH_INDEX
   };
 
   static bool isRename(UpdPrimKind k)
@@ -147,69 +151,76 @@ public:
     }
   }
 
-  static std::string toString(UpdPrimKind k)
+static std::string toString(UpdPrimKind k)
+{
+  switch(k) 
   {
-    switch(k) {
-      case UP_DELETE:
-        return "delete";
-      case UP_INSERT_INTO:
-        return "insert_into";
-      case UP_INSERT_INTO_FIRST:
-        return "insert_into_first";
-      case UP_INSERT_INTO_LAST:
-        return "insert_into_last";
-      case UP_INSERT_BEFORE:
-        return "insert_before";
-      case UP_INSERT_AFTER:
-        return "insert_after";
-      case UP_INSERT_ATTRIBUTES:
-        return "insert_attributes";
-      case UP_REPLACE_CHILD:
-        return "replace_child";
-      case UP_REPLACE_ATTRIBUTE:
-        return "replace_attribute";
-      case UP_REPLACE_CONTENT:
-        return "replace_content";
-      case UP_REPLACE_ATTR_VALUE:
-        return "replace_attr_value";
-      case UP_REPLACE_TEXT_VALUE:
-        return "replace_text_value";
-      case UP_REPLACE_PI_VALUE:
-        return "replace_pi_value";
-      case UP_REPLACE_COMMENT_VALUE:
-        return "replace_comment_value";
-      case UP_RENAME_ELEM:
-        return "rename_elem";
-      case UP_RENAME_ATTR:
-        return "rename_attr";
-      case UP_RENAME_PI:
-        return "rename_pi";
-      case UP_CREATE_COLLECTION:
-        return "create_collection";
-      case UP_COLLECTION:
-        return "update_collection";
-      case UP_DELETE_COLLECTION:
-        return "delete_collection";
-      case UP_INSERT_INTO_COLLECTION:
-        return "insert_into_coll";
-      case UP_INSERT_FIRST_INTO_COLLECTION:
-        return "insert_first_into_collection";
-      case UP_INSERT_LAST_INTO_COLLECTION:
-        return "insert_last_into_collection";
-      case UP_INSERT_BEFORE_INTO_COLLECTION:
-        return "insert_before_into_collection";
-      case UP_INSERT_AFTER_INTO_COLLECTION:
-        return "insert_after_into_collection";
-      case UP_INSERT_AT_INTO_COLLECTION:
-        return "insert_at_into_collection";
-      case UP_REMOVE_FROM_COLLECTION:
-        return "remove_from_collection";
-      case UP_REMOVE_AT_FROM_COLLECTION:
-        return "remove_at_from_collection";
-      default:
-        return "<unknown UpdPrimKind>";
-    }
+  case UP_DELETE:
+    return "delete";
+  case UP_INSERT_INTO:
+    return "insert_into";
+  case UP_INSERT_INTO_FIRST:
+    return "insert_into_first";
+  case UP_INSERT_INTO_LAST:
+    return "insert_into_last";
+  case UP_INSERT_BEFORE:
+    return "insert_before";
+  case UP_INSERT_AFTER:
+    return "insert_after";
+  case UP_INSERT_ATTRIBUTES:
+    return "insert_attributes";
+  case UP_REPLACE_CHILD:
+    return "replace_child";
+  case UP_REPLACE_ATTRIBUTE:
+    return "replace_attribute";
+  case UP_REPLACE_CONTENT:
+    return "replace_content";
+  case UP_REPLACE_ATTR_VALUE:
+    return "replace_attr_value";
+  case UP_REPLACE_TEXT_VALUE:
+    return "replace_text_value";
+  case UP_REPLACE_PI_VALUE:
+    return "replace_pi_value";
+  case UP_REPLACE_COMMENT_VALUE:
+    return "replace_comment_value";
+  case UP_RENAME_ELEM:
+    return "rename_elem";
+  case UP_RENAME_ATTR:
+    return "rename_attr";
+  case UP_RENAME_PI:
+    return "rename_pi";
+  case UP_CREATE_COLLECTION:
+    return "create_collection";
+  case UP_COLLECTION:
+    return "update_collection";
+  case UP_DELETE_COLLECTION:
+    return "delete_collection";
+  case UP_INSERT_INTO_COLLECTION:
+    return "insert_into_coll";
+  case UP_INSERT_FIRST_INTO_COLLECTION:
+    return "insert_first_into_collection";
+  case UP_INSERT_LAST_INTO_COLLECTION:
+    return "insert_last_into_collection";
+  case UP_INSERT_BEFORE_INTO_COLLECTION:
+    return "insert_before_into_collection";
+  case UP_INSERT_AFTER_INTO_COLLECTION:
+    return "insert_after_into_collection";
+  case UP_INSERT_AT_INTO_COLLECTION:
+    return "insert_at_into_collection";
+  case UP_REMOVE_FROM_COLLECTION:
+    return "remove_from_collection";
+  case UP_REMOVE_AT_FROM_COLLECTION:
+    return "remove_at_from_collection";
+  case UP_CREATE_INDEX:
+    return "create index";
+  case UP_DROP_INDEX:
+    return "drop index";
+  case UP_REFRESH_INDEX:
+    return "refresh index";
+  default:
+    return "<unknown UpdPrimKind>";
   }
+}
 };
 
 

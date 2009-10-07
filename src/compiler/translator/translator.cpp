@@ -2832,8 +2832,10 @@ void* begin_visit(const CollectionDecl& v)
   TRACE_VISIT();
   // checks if collection declaration is not located in a DataModule
   if (!theIsDataModule)
+  {
     // TODO
-    
+  }
+ 
   return no_state;
 }
 

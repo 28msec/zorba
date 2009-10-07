@@ -740,12 +740,6 @@ Item* Item::copy(
 }
 
 
-void Item::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
-{
-  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
-                        __FUNCTION__, getType()->getStringValue());
-}
-
 const std::vector<zorba::store::TupleField>& Item::getTupleFields() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,

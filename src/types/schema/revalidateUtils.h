@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_SCHEMA_UTILS_H_
-#define ZORBA_SCHEMA_UTILS_H_
+#ifndef ZORBA_TYPES_SCHEMA_REVALIDATION
+#define ZORBA_TYPES_SCHEMA_REVALIDATION
 
 #include <set>
 
@@ -22,17 +22,23 @@
 
 namespace zorba
 {
-  class QueryLoc;
-  class static_context;
+
+namespace store
+{
+class PUL;
+}
+
+class QueryLoc;
+class static_context;
 
 
 void validateAfterUpdate(
     const std::set<zorba::store::Item*>& nodes,
-    zorba::store::Item_t& pul,
-    static_context* staticContext, 
+    store::PUL* pul,
+    static_context* staticContext,
     const QueryLoc& loc);
 
-} // namespace zorba
+}
 
-#endif /*ZORBA_SCHEMA_UTILS_H_*/
+#endif
 

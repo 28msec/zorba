@@ -88,9 +88,9 @@ dynamic_context::dynamic_context(dynamic_context* parent)
   :
   theAvailableIndices(NULL)
 {
-  this->parent = parent;
+  theParent = parent;
 
-  if(!parent)
+  if(!theParent)
   {
 #if defined (WIN32)
     struct _timeb timebuffer;
@@ -119,7 +119,7 @@ dynamic_context::dynamic_context(dynamic_context* parent)
                                      gmtm.tm_hour,
                                      gmtm.tm_min,
                                      gmtm.tm_sec + timebuffer.millitm/1000.0,
-                                     implicit_timezone/3600);
+                                     theTimezone/3600);
 
 #if WIN32
     time_t t0;
@@ -137,12 +137,12 @@ dynamic_context::dynamic_context(dynamic_context* parent)
 	}
 	else
 	{
-		current_date_time_item = parent->current_date_time_item;
-		implicit_timezone = parent->implicit_timezone;
-		default_collection_uri = parent->default_collection_uri;
+		current_date_time_item = theParent->current_date_time_item;
+		theTimezone = theParent->theTimezone;
+		default_collection_uri = theParent->default_collection_uri;
 
-		ctxt_item = parent->ctxt_item;
-		ctxt_position = parent->ctxt_position;
+		ctxt_item = theParent->ctxt_item;
+		ctxt_position = theParent->ctxt_position;
 	}
 }
 
@@ -180,15 +180,15 @@ void dynamic_context::set_default_collection(const store::Item_t& default_collec
 }
 
 
-void dynamic_context::set_implicit_timezone(int tzone_seconds)
+void dynamic_context::set_implicit_timezone(long tzone_seconds)
 {
-	this->implicit_timezone = tzone_seconds;
+	theTimezone = tzone_seconds;
 }
 
 
-int dynamic_context::get_implicit_timezone()
+long dynamic_context::get_implicit_timezone()
 {
-  return implicit_timezone;
+  return theTimezone;
 }
 
 
@@ -372,8 +372,8 @@ bool dynamic_context::lookup_var_value(
 
   if(!keymap.get(key, val))
 	{
-    if(parent)
-      return parent->lookup_var_value(key, var_item, var_iter);
+    if (theParent)
+      return theParent->lookup_var_value(key, var_item, var_iter);
     else
       return false; // variable not found
 	}
@@ -412,49 +412,50 @@ void dynamic_context::destroy_dctx_value(dctx_value_t* val)
 }
 
 
-void dynamic_context::bind_index(
-    const store::Item* qname,
-    store::Index_t& index,
-    const QueryLoc& loc)
+store::Index* dynamic_context::getIndex(const store::Item* qname) const
 {
   if (theAvailableIndices == NULL)
-    theAvailableIndices = new IndexMap(0, NULL, 8, false);
+    return NULL;
 
-  if (!theAvailableIndices->insert(qname, index))
-  {
-    ZORBA_ERROR_LOC_PARAM(XQP0034_INDEX_ALREADY_EXISTS, loc,
-                          qname->getStringValue()->c_str(), "");
-  }
-}
-
-
-void dynamic_context::unbind_index(const store::Item* qname)
-{
-  if (!theAvailableIndices->remove(qname))
-  {
-    if (parent != NULL)
-    {
-      parent->unbind_index(qname);
-    }
-  }
-}
-
-
-store::Index* dynamic_context::lookup_index(const store::Item* qname) const
-{
   store::Index_t index;
 
   if (theAvailableIndices->get(qname, index))
   {
     return index.getp();
   }
-  else if (parent != NULL)
+  else if (theParent != NULL)
   {
-    return parent->lookup_index(qname);
+    return theParent->getIndex(qname);
   }
   else
   {
     return NULL;
+  }
+}
+
+
+void dynamic_context::bindIndex(
+    const store::Item* qname,
+    store::Index_t& index)
+{
+  if (theAvailableIndices == NULL)
+    theAvailableIndices = new IndexMap(0, NULL, 8, false);
+
+  if (!theAvailableIndices->insert(qname, index))
+  {
+    ZORBA_ASSERT(false);
+  }
+}
+
+
+void dynamic_context::unbindIndex(const store::Item* qname)
+{
+  if (!theAvailableIndices->remove(qname))
+  {
+    if (theParent != NULL)
+    {
+      theParent->unbindIndex(qname);
+    }
   }
 }
 

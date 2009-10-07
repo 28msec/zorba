@@ -43,31 +43,56 @@ namespace zorba
 
 #ifndef ZORBA_NO_XMLSCHEMA
     
-void validateAfterUpdate(zorba::store::Item* item, zorba::store::Item_t& pul,
-    static_context* staticContext, const QueryLoc& loc);
+void validateAfterUpdate(
+    store::Item* item,
+    store::PUL* pul,
+    static_context* staticContext,
+    const QueryLoc& loc);
 
-void processElement( store::Item_t& pul, static_context* staticContext, 
-    TypeManager* typeManager, EventSchemaValidator& schemaValidator,
+void processElement(
+    store::PUL* pul,
+    static_context* staticContext, 
+    TypeManager* typeManager,
+    EventSchemaValidator& schemaValidator,
     store::Item_t element);
     
-void validateAttributes( EventSchemaValidator& schemaValidator, store::Iterator_t attributes);
+void validateAttributes(
+    EventSchemaValidator& schemaValidator,
+    store::Iterator_t attributes);
     
-void processAttributes( store::Item_t& pul, namespace_context& nsCtx, 
-    TypeManager* typeManager, EventSchemaValidator& schemaValidator,
-    store::Item* parent, store::Iterator_t attributes);
+void processAttributes(
+    store::PUL* pul,
+    namespace_context& nsCtx, 
+    TypeManager* typeManager,
+    EventSchemaValidator& schemaValidator,
+    store::Item* parent,
+    store::Iterator_t attributes);
         
-void processChildren( store::Item_t& pul, static_context* staticContext, 
-    namespace_context& nsCtx, TypeManager* typeManager, 
-    EventSchemaValidator& schemaValidator, store::Iterator_t children,
+void processChildren( 
+    store::PUL* pul,
+    static_context* staticContext, 
+    namespace_context& nsCtx,
+    TypeManager* typeManager, 
+    EventSchemaValidator& schemaValidator,
+    store::Iterator_t children,
     std::vector<store::Item_t>& typedValues);
     
-void processNamespaces ( EventSchemaValidator& schemaValidator, const store::Item *item);
+void processNamespaces(
+    EventSchemaValidator& schemaValidator,
+    const store::Item *item);
 
-void processTextValue (store::Item_t& pul, TypeManager* typeManager, 
-    namespace_context &nsCtx, store::Item_t typeQName, xqpStringStore_t& textValue, 
-    store::Item_t& originalChild, std::vector<store::Item_t> &resultList);
+void processTextValue(
+    store::PUL* pul,
+    TypeManager* typeManager, 
+    namespace_context& nsCtx,
+    store::Item_t typeQName,
+    xqpStringStore_t& textValue, 
+    store::Item_t& originalChild,
+    std::vector<store::Item_t> &resultList);
 
-store::Item_t findAttributeItem(const store::Item *parent, store::Item_t &attQName);    
+store::Item_t findAttributeItem(
+    const store::Item* parent,
+    store::Item_t& attQName);    
 
 bool typeHasValue(xqtref_t t);
 bool typeHasTypedValue(xqtref_t t);
@@ -83,27 +108,25 @@ bool typeHasEmptyValue(xqtref_t t);
  *   the validation succeds. This should be called after an update.
  */
 void validateAfterUpdate(
-    const std::set<zorba::store::Item*>& nodes,
-    zorba::store::Item_t& pul,
+    const std::set<store::Item*>& nodes,
+    zorba::store::PUL* pul,
     static_context* staticContext, 
     const QueryLoc& loc)
 {
-//#if 0
 #ifndef ZORBA_NO_XMLSCHEMA
-    std::set<zorba::store::Item*>::const_iterator it = nodes.begin();
-    std::set<zorba::store::Item*>::const_iterator end = nodes.end();
-    for (; it != end; it++)
-    {
-        validateAfterUpdate(*it, pul, staticContext, loc);
-    }
-#endif //ZORBA_NO_XMLSCHEMA
-//#endif
+  std::set<zorba::store::Item*>::const_iterator it = nodes.begin();
+  std::set<zorba::store::Item*>::const_iterator end = nodes.end();
+  for (; it != end; it++)
+  {
+    validateAfterUpdate(*it, pul, staticContext, loc);
+  }
+#endif
 }
 
 #ifndef ZORBA_NO_XMLSCHEMA
 void validateAfterUpdate(
     store::Item* item,
-    zorba::store::Item_t& pul,
+    zorba::store::PUL* pul,
     static_context* staticContext, 
     const QueryLoc& loc)
 {
@@ -181,101 +204,99 @@ void validateAfterUpdate(
 
 
 void processElement(
-    store::Item_t& pul,
+    store::PUL* pul,
     static_context* staticContext, 
     TypeManager* typeManager,
     EventSchemaValidator& schemaValidator,
     store::Item_t element)
 {
-    ZORBA_ASSERT(element->isNode());
-    ZORBA_ASSERT(element->getNodeKind() == store::StoreConsts::elementNode);
+  ZORBA_ASSERT(element->isNode());
+  ZORBA_ASSERT(element->getNodeKind() == store::StoreConsts::elementNode);
     
-    store::Item_t nodeName = element->getNodeName();
-    xqpStringStore_t baseUri = element->getBaseURI();
+  store::Item_t nodeName = element->getNodeName();
+  xqpStringStore_t baseUri = element->getBaseURI();
     
-    //cout << " vup    - processElement: " << nodeName->getLocalName()->c_str()
-    //    << " @ " << nodeName->getNamespace()->c_str() << "\n"; cout.flush();
-            
-    schemaValidator.startElem(nodeName);
+  //cout << " vup    - processElement: " << nodeName->getLocalName()->c_str()
+  //    << " @ " << nodeName->getNamespace()->c_str() << "\n"; cout.flush();
+  
+  schemaValidator.startElem(nodeName);
     
-    // namespace declarations must go first
-    processNamespaces( schemaValidator, element);
+  // namespace declarations must go first
+  processNamespaces( schemaValidator, element);
         
-    // since the type of an element is determined only after the validator
-    // receives all of it's attributes, and an attribute node needs it's
-    // parent when created we need to go through the attributes twice: once
-    // for validation and once for creation
-    validateAttributes(schemaValidator, element->getAttributes());
+  // since the type of an element is determined only after the validator
+  // receives all of it's attributes, and an attribute node needs it's
+  // parent when created we need to go through the attributes twice: once
+  // for validation and once for creation
+  validateAttributes(schemaValidator, element->getAttributes());
         
-    store::Item_t typeQName = schemaValidator.getTypeQName();
-    store::Item_t substitutedElemQName = schemaValidator.getSubstitutedElemQName();
+  store::Item_t typeQName = schemaValidator.getTypeQName();
+  store::Item_t substitutedElemQName = schemaValidator.getSubstitutedElemQName();
     
-    //cout << " vup      - elemType old: "
-    //    << element->getType()->getLocalName()->c_str() << " @ "
-    //    << element->getType()->getNamespace()->c_str() << "\n"; cout.flush();
-    //cout << " vup      - elemType new: " << typeQName->getLocalName()->c_str()
-    //    << " @ " << typeQName->getNamespace()->c_str() << "\n"; cout.flush();
+  //cout << " vup      - elemType old: "
+  //    << element->getType()->getLocalName()->c_str() << " @ "
+  //    << element->getType()->getNamespace()->c_str() << "\n"; cout.flush();
+  //cout << " vup      - elemType new: " << typeQName->getLocalName()->c_str()
+  //    << " @ " << typeQName->getNamespace()->c_str() << "\n"; cout.flush();
     
-    bool isInSubstitutionElement = false;
-    if (substitutedElemQName)
-    {
-        isInSubstitutionElement = true;
+  bool isInSubstitutionElement = false;
+  if (substitutedElemQName)
+  {
+    isInSubstitutionElement = true;
     //    cout << " vup        - substitutes: " << substitutedElemQName->getLocalName()->c_str() <<
     //        " @ " << substitutedElemQName->getNamespace()->c_str() << "\n"; cout.flush();
-    }
-
-    bool isNewType = false;
-    xqtref_t newType;
-    store::PUL* p = NULL;
-    store::Item_t elm;
+  }
+  
+  bool isNewType = false;
+  xqtref_t newType;
+  store::Item_t elm;
+  
+  if ( !typeQName->equals(element->getType()) )
+  {
+    isNewType = true;
+    newType = typeManager->create_named_type(typeQName);
     
-    if ( !typeQName->equals(element->getType()) )
-    {
-        isNewType = true;
-        newType = typeManager->create_named_type(typeQName);
-        
-        p = static_cast<store::PUL *>(pul.getp());
-        elm = element;
-    }
-    
-    store::NsBindings bindings;
-    element->getNamespaceBindings(bindings);
-    namespace_context nsCtx = namespace_context(staticContext, bindings);
+    elm = element;
+  }
+  
+  store::NsBindings bindings;
+  element->getNamespaceBindings(bindings);
+  namespace_context nsCtx = namespace_context(staticContext, bindings);
             
-    processAttributes(pul, nsCtx, typeManager, schemaValidator, element, element->getAttributes());
+  processAttributes(pul, nsCtx, typeManager, schemaValidator, element, element->getAttributes());
         
-    std::vector<store::Item_t> typedValues;
-    processChildren(pul, staticContext, nsCtx, typeManager, schemaValidator, 
-                    element->getChildren(), typedValues);
+  std::vector<store::Item_t> typedValues;
+  processChildren(pul, staticContext, nsCtx, typeManager, schemaValidator, 
+                  element->getChildren(), typedValues);
+  
+  if ( isNewType )
+  {    
+    bool tHasValue      = typeHasValue(newType);
+    bool tHasTypedValue = typeHasTypedValue(newType);
+    bool tHasEmptyValue = typeHasEmptyValue(newType);
     
-    if ( isNewType )
-    {    
-      bool tHasValue      = typeHasValue(newType);
-      bool tHasTypedValue = typeHasTypedValue(newType);
-      bool tHasEmptyValue = typeHasEmptyValue(newType);
+    //cout << " vup        - addSetElementType: " << elm->getNodeName()->getLocalName()->str() << "   " << newTypeIdent->getLocalName() << " @ " << newTypeIdent->getUri() << "\n"; cout.flush();
+    //cout << " vup             - " << ( tHasTypedValue ? "hasTypedValue" : "" ) << " values.size: " << typedValues.size() << (typedValues.size()>0 ? " [0]=" + typedValues[0]->getStringValue()->str() : "" ) << ( tHasValue ? " hasValue" : "" ) << ( tHasEmptyValue ? " hasEmptyValue" : "" ) << "\n"; cout.flush();
+    
+    if ( typedValues.size()==1 )
+      pul->addSetElementType(elm,
+                             typeQName,
+                             typedValues[0],
+                             tHasValue, 
+                             tHasEmptyValue,
+                             tHasTypedValue, 
+                             isInSubstitutionElement);
+    else
+      pul->addSetElementType(elm,
+                             typeQName,
+                             (std::vector<store::Item_t>&)typedValues,
+                             tHasValue, 
+                             tHasEmptyValue,
+                             tHasTypedValue,
+                             isInSubstitutionElement);
+  }
 
-        //cout << " vup        - addSetElementType: " << elm->getNodeName()->getLocalName()->str() << "   " << newTypeIdent->getLocalName() << " @ " << newTypeIdent->getUri() << "\n"; cout.flush();
-        //cout << " vup             - " << ( tHasTypedValue ? "hasTypedValue" : "" ) << " values.size: " << typedValues.size() << (typedValues.size()>0 ? " [0]=" + typedValues[0]->getStringValue()->str() : "" ) << ( tHasValue ? " hasValue" : "" ) << ( tHasEmptyValue ? " hasEmptyValue" : "" ) << "\n"; cout.flush();
-
-        if ( typedValues.size()==1 )
-            p->addSetElementType(elm,
-                                 typeQName,
-                                 typedValues[0],
-                                 tHasValue, 
-                                 tHasEmptyValue,
-                                 tHasTypedValue, 
-                                 isInSubstitutionElement);
-        else
-            p->addSetElementType(elm,
-                                 typeQName,
-                                 (std::vector<store::Item_t>&)typedValues,
-                                 tHasValue, 
-                                 tHasEmptyValue,
-                                 tHasTypedValue,
-                                 isInSubstitutionElement);
-    }
-
-    schemaValidator.endElem(nodeName);
+  schemaValidator.endElem(nodeName);
 }
 
 
@@ -299,7 +320,7 @@ void validateAttributes(
 
 
 void processAttributes( 
-    store::Item_t& pul,
+    store::PUL* pul,
     namespace_context& nsCtx, 
     TypeManager* typeManager,
     EventSchemaValidator& schemaValidator,
@@ -358,18 +379,16 @@ void processAttributes(
     } 
     else if ( !typeQName->equals(attrib->getType()) )
     {
-      store::PUL *p = static_cast<store::PUL *>(pul.getp());
       store::Item_t atr = store::Item_t(attrib);
       if ( typedValues.size()==1 )        // optimize when only one item is available 
-        p->addSetAttributeType( atr, typeQName, (store::Item_t&)(typedValues[0]) );
+        pul->addSetAttributeType( atr, typeQName, (store::Item_t&)(typedValues[0]) );
       else            
-        p->addSetAttributeType( atr, typeQName, typedValues );
+        pul->addSetAttributeType( atr, typeQName, typedValues );
     }
   }
   
   if ( defaultAtts.size()>0 )
   {
-    store::PUL *p = static_cast<store::PUL *>(pul.getp());
     store::CopyMode lCopyMode;
     bool typePreserve = true; //(sctx->construction_mode() == StaticContextConsts::cons_preserve ? true : false);
     bool nsPreserve = true; //(sctx->preserve_mode() == StaticContextConsts::preserve_ns ? true : false);
@@ -377,13 +396,13 @@ void processAttributes(
     lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
     
     store::Item_t parentElem = store::Item_t(parent);
-    p->addInsertAttributes(parentElem, defaultAtts, lCopyMode);
+    pul->addInsertAttributes(parentElem, defaultAtts, lCopyMode);
   }
 }
 
 
 void processChildren( 
-    store::Item_t& pul,
+    store::PUL* pul,
     static_context* staticContext,
     namespace_context& nsCtx,
     TypeManager* typeManager, 
@@ -471,7 +490,7 @@ void processNamespaces ( EventSchemaValidator& schemaValidator, const store::Ite
 
 
 void processTextValue (
-    store::Item_t& pul,
+    store::PUL* pul,
     TypeManager* typeManager, 
     namespace_context &nsCtx,
     store::Item_t typeQName,

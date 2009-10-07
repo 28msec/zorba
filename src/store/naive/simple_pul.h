@@ -146,6 +146,10 @@ protected:
   std::vector<UpdatePrimitive*>      theDeleteFromCollectionList;
   std::vector<UpdatePrimitive*>      theDeleteCollectionList;
 
+  // index primitives
+  std::vector<UpdatePrimitive*>      theCreateIndexList;
+  std::vector<UpdatePrimitive*>      theDropIndexList;
+
   NodeToUpdatesMap                   theNodeToUpdatesMap;
 
   std::set<zorba::store::Item*>    * theValidationNodes;
@@ -287,12 +291,25 @@ public:
         store::Item_t&       resolvedURI,
         ulong                pos);
 
+  // Index primitives
+  void addCreateIndex(
+        const store::Item_t& qname,
+        const store::IndexSpecification& spec,
+        store::Iterator* sourceIter);
+
+  void addDropIndex(
+        const store::Item_t& qname);
+
   // apply
   void applyUpdates(std::set<zorba::store::Item*>& validationNodes);
 
   void mergeUpdates(store::Item* other);
 
   void checkTransformUpdates(const std::vector<store::Item*>& rootNodes) const;
+
+  void getCreatedIndices(std::vector<IndexBinding>& indices) const;
+
+  void getDropedIndices(std::vector<const store::Item*>& indices) const;
 
 protected:
   void undoUpdates();
@@ -1252,6 +1269,76 @@ public:
   void apply();
   void undo();
 };
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdCreateIndex : public  UpdatePrimitive
+{
+  friend class PULImpl;
+
+protected:
+  const store::Item_t               theQName;
+  const store::IndexSpecification   theSpec;
+  store::Iterator_t                 theSourceIter;
+
+  store::Index_t                    theIndex;
+
+public:
+  UpdCreateIndex(
+        PULImpl* pul,
+        const store::Item_t& qname,
+        const store::IndexSpecification& spec,
+        store::Iterator* sourceIter)
+    :
+    UpdatePrimitive(pul),
+    theQName(qname),
+    theSpec(spec),
+    theSourceIter(sourceIter)
+  {
+  }
+
+  store::UpdateConsts::UpdPrimKind getKind() const
+  { 
+    return store::UpdateConsts::UP_CREATE_INDEX;
+  }
+
+  void apply();
+  void undo();
+};
+
+
+class UpdDropIndex : public  UpdatePrimitive
+{
+  friend class PULImpl;
+
+protected:
+  const store::Item_t  theQName;
+
+  store::Index_t       theIndex;
+
+public:
+  UpdDropIndex(
+        PULImpl* pul,
+        const store::Item_t& qname)
+    :
+    UpdatePrimitive(pul),
+    theQName(qname)
+  {
+  }
+
+  store::UpdateConsts::UpdPrimKind getKind() const
+  { 
+    return store::UpdateConsts::UP_DROP_INDEX;
+  }
+
+  void apply();
+  void undo();
+};
+
+
+
 }
 }
 

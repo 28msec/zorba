@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_STORE_ITEM_H
-#define ZORBA_STORE_ITEM_H
+#ifndef ZORBA_STORE_ITEM
+#define ZORBA_STORE_ITEM
 
 #include <vector>
-#include <set>
+
 #include <zorba/config.h>
 #include <zorba/store_consts.h>
 
@@ -586,9 +586,6 @@ public:
    * this method.
    */
   virtual void finalizeNode();
-
-  virtual void
-  applyUpdates(std::set<zorba::store::Item*>& validationNodes);
 
   /* -------------------- Methods for tuples --------------------- */
 

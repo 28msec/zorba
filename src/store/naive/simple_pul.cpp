@@ -23,14 +23,17 @@
 #include "store/naive/simple_pul.h"
 #include "store/naive/node_items.h"
 #include "store/naive/atomic_items.h"
+#include "store/naive/simple_collection.h"
 
 #include "store/api/collection.h"
 #include "store/api/iterator.h"
+#include "store/api/item_factory.h"
+
+
 #include "context/static_context.h"
 #include "context/internal_uri_resolvers.h"
 #include "system/globalenv.h"
-#include "store/api/item_factory.h"
-#include "store/naive/simple_collection.h"
+
 
 namespace zorba { namespace simplestore {
 
@@ -662,6 +665,26 @@ void PULImpl::addRemoveAtFromCollection(
 /*******************************************************************************
 
 ********************************************************************************/
+void PULImpl::addCreateIndex(
+    const store::Item_t& qname,
+    const store::IndexSpecification& spec,
+    store::Iterator* sourceIter)
+{
+  UpdatePrimitive* upd = new UpdCreateIndex(this, qname, spec, sourceIter);
+  theCreateIndexList.push_back(upd);
+}
+
+
+void PULImpl::addDropIndex(const store::Item_t& qname)
+{
+  UpdatePrimitive* upd = new UpdDropIndex(this, qname);
+  theDropIndexList.push_back(upd);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void PULImpl::mergeUpdates(store::Item* other)
 {
   PULImpl* otherp = reinterpret_cast<PULImpl*>(other);
@@ -692,6 +715,12 @@ void PULImpl::mergeUpdates(store::Item* other)
                   false, false, false, false, false);
 
   mergeUpdateList(theDeleteCollectionList, otherp->theDeleteCollectionList,
+                  false, false, false, false, false);
+
+  mergeUpdateList(theCreateIndexList, otherp->theCreateIndexList,
+                  false, false, false, false, false);
+
+  mergeUpdateList(theDropIndexList, otherp->theDropIndexList,
                   false, false, false, false, false);
 }
 
@@ -839,14 +868,49 @@ void PULImpl::checkTransformUpdates(const std::vector<store::Item*>& rootNodes) 
   }
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::getCreatedIndices(std::vector<IndexBinding>& indices) const
+{
+  ulong n = theCreateIndexList.size();
+  indices.resize(n);
+
+  for (ulong i = 0; i < n; ++i)
+  {
+    UpdCreateIndex* upd = static_cast<UpdCreateIndex*>(theCreateIndexList[i]);
+    indices[i].first = upd->theQName.getp();
+    indices[i].second = upd->theIndex;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::getDropedIndices(std::vector<const store::Item*>& indices) const
+{
+  ulong n = theDropIndexList.size();
+  indices.resize(n);
+
+  for (ulong i = 0; i < n; ++i)
+  {
+    UpdDropIndex* upd = static_cast<UpdDropIndex*>(theDropIndexList[i]);
+    indices[i] = upd->theQName.getp();
+  }
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
 inline void applyList(std::vector<UpdatePrimitive*> aVector)
 {
-  for ( std::vector<UpdatePrimitive*>::iterator lIter = aVector.begin();
-        lIter != aVector.end();
-        ++lIter ) {
+  for (std::vector<UpdatePrimitive*>::iterator lIter = aVector.begin();
+       lIter != aVector.end();
+       ++lIter) 
+  {
     (*lIter)->apply();
   }
 }
@@ -865,12 +929,16 @@ void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
     applyList(theReplaceContentList);
     applyList(theDeleteList);
     applyList(theValidationList);
-    applyList(theDeleteFromCollectionList);
-    applyList(theDeleteCollectionList);
 
     ulong numToRecheck = thePrimitivesToRecheck.size();
     for (ulong i = 0; i < numToRecheck; ++i)
       thePrimitivesToRecheck[i]->check();
+
+    applyList(theDeleteFromCollectionList);
+    applyList(theDeleteCollectionList);
+
+    applyList(theCreateIndexList);
+    applyList(theDropIndexList);
   }
   catch (error::ZorbaError& e)
   {
@@ -1850,6 +1918,56 @@ void UpdRemoveNodeAtFromCollection::undo()
   static_cast<SimpleCollection*>(lColl.getp())->addNode(theNode);
 #endif
 }
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void UpdCreateIndex::apply()
+{
+  SimpleStore* store = SimpleStoreManager::getStore();
+
+  theIndex = store->createIndex(theQName, theSpec, theSourceIter);
+
+  theIsApplied = true;
+}
+
+
+void UpdCreateIndex::undo()
+{
+  if (theIsApplied)
+  {
+    SimpleStore* store = SimpleStoreManager::getStore();
+
+    store->deleteIndex(theQName);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void UpdDropIndex::apply()
+{
+  SimpleStore* store = SimpleStoreManager::getStore();
+
+  theIndex = store->getIndex(theQName);
+  store->deleteIndex(theQName);
+
+  theIsApplied = true;
+}
+
+
+void UpdDropIndex::undo()
+{
+  if (theIsApplied)
+  {
+    SimpleStore* store = SimpleStoreManager::getStore();
+
+    store->addIndex(theIndex);
+  }
+}
+
 
 }
 }

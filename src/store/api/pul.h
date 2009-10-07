@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_STORE_PUL_H
-#define ZORBA_STORE_PUL_H
+#ifndef ZORBA_STORE_PUL
+#define ZORBA_STORE_PUL
+
+#include <set>
 
 #include <zorba/config.h>
-#include "store/api/shared_types.h"
 
+#include "store/api/shared_types.h"
 #include "store/api/update_consts.h"
 #include "store/api/item.h"
 
@@ -28,17 +30,21 @@ namespace zorba
 
 class static_context;
 
+typedef std::pair<const store::Item*, store::Index_t> IndexBinding;
+
 
 namespace store 
 {
 
 class XmlNode;
+class Iterator;
+class IndexSpecification;
 
 
 /*******************************************************************************
 
 ************************************** ******************************************/
-class  PUL : public Item
+class PUL : public Item
 {
 public:
   virtual ~PUL() { }
@@ -180,9 +186,23 @@ public:
         Item_t&              resolvedURI,
         ulong                pos) = 0;
 
+  virtual void addCreateIndex(
+        const Item_t& qname,
+        const IndexSpecification& spec,
+        Iterator* sourceIter) = 0;
+
+  virtual void addDropIndex(
+        const Item_t& qname) = 0;
+
   virtual void mergeUpdates(Item* other) = 0;
 
+  virtual void applyUpdates(std::set<Item*>& validationNodes) = 0;
+
   virtual void checkTransformUpdates(const std::vector<Item*>& rootNodes) const = 0;
+
+  virtual void getCreatedIndices(std::vector<IndexBinding>& indices) const = 0;
+
+  virtual void getDropedIndices(std::vector<const store::Item*>& indices) const = 0;
 };
 
 

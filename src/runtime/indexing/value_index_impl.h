@@ -69,7 +69,38 @@ public:
 /***************************************************************************//**
   Implements the create-index function.
 ********************************************************************************/
-UNARY_ITER(CreateIndexIterator);
+class CreateIndexIterator : public UnaryBaseIterator<CreateIndexIterator,
+                                                     PlanIteratorState>
+{
+public:
+  SERIALIZABLE_CLASS(CreateIndexIterator)
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  CreateIndexIterator,
+  UnaryBaseIterator<CreateIndexIterator, PlanIteratorState >)
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (UnaryBaseIterator<CreateIndexIterator, PlanIteratorState >*)this);
+  }
+
+public:
+  CreateIndexIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        PlanIter_t& arg)
+    :
+    UnaryBaseIterator<CreateIndexIterator, PlanIteratorState>(sctx, loc, arg)
+  {
+  }
+
+  bool isUpdating() const { return true; }
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+};
 
 
 /***************************************************************************//**
@@ -81,7 +112,38 @@ UNARY_ITER(RefreshIndexIterator);
 /***************************************************************************//**
   Implements the drop-index function.
 ********************************************************************************/
-UNARY_ITER(DropIndexIterator);
+class DropIndexIterator : public UnaryBaseIterator<DropIndexIterator,
+                                                   PlanIteratorState>
+{
+public:
+  SERIALIZABLE_CLASS(DropIndexIterator)
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  DropIndexIterator,
+  UnaryBaseIterator<DropIndexIterator, PlanIteratorState >)
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (UnaryBaseIterator<DropIndexIterator, PlanIteratorState >*)this);
+  }
+
+public:
+  DropIndexIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        PlanIter_t& arg)
+    :
+    UnaryBaseIterator<DropIndexIterator, PlanIteratorState>(sctx, loc, arg)
+  {
+  }
+
+  bool isUpdating() const { return true; }
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+};
 
 
 /***************************************************************************//**

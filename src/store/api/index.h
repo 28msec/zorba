@@ -74,6 +74,16 @@ public:
   std::vector<PatternIECreatorPair>         theIECreators;
 
 public:
+  IndexSpecification()
+    :
+    theTimezone(0),
+    theIsUnique(false),
+    theIsSorted(false),
+    theIsTemp(false),
+    theIsThreadSafe(false)
+  {
+  }
+
   IndexSpecification(ulong numColumns)
     :
     theKeyTypes(numColumns),
@@ -95,6 +105,13 @@ public:
     theIsUnique = theIsSorted = theIsTemp = theIsThreadSafe = false;
     theIECreators.clear();
   }
+
+  void resize(ulong numColumns)
+  {
+    theKeyTypes.resize(numColumns);
+    theCollations.resize(numColumns);
+  }
+
 };
 
 

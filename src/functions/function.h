@@ -166,9 +166,9 @@ public:
 
   virtual bool isPureFunction() const { return true; }
 
-  virtual expr_update_t getUpdateType () const { return SIMPLE_EXPR; }
+  virtual expr_update_t getUpdateType() const { return SIMPLE_EXPR; }
 
-  bool isUpdating () const { return getUpdateType () == UPDATE_EXPR; }
+  bool isUpdating() const { return getUpdateType() == UPDATE_EXPR; }
 
   virtual bool propagatesInputToOutput(uint32_t aProducer) const { return true; }
 

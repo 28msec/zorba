@@ -24,6 +24,7 @@
 #include "types/schema/revalidateUtils.h"
 
 #include "context/static_context.h"
+#include "context/dynamic_context.h"
 
 #include "runtime/update/update.h"
 #include "runtime/api/plan_iterator_wrapper.h"
@@ -36,6 +37,7 @@
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
 #include "store/api/copymode.h"
+#include "store/api/index.h"
 
 
 namespace zorba 
@@ -775,25 +777,29 @@ TransformIterator::closeImpl ( PlanState& planState ) const
 /*******************************************************************************
 
 ********************************************************************************/
-bool
-ApplyIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
+bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 { 
   store::Item_t tmp;
-  store::Item_t pul;
-  store::Item_t validationPul;
+  store::Item_t pulItem;
+  store::PUL* pul;
+  rchandle<store::PUL> validationPul;
   std::set<zorba::store::Item*> validationNodes;
 
+  dynamic_context* dctx = planState.dctx();
+
   PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   // Note: updating expr might not return a pul because of vacuous exprs
-  if (consumeNext(pul, theChild, aPlanState))
+  if (consumeNext(pulItem, theChild, planState))
   {
-    if (!pul->isPul())
+    if (!pulItem->isPul())
       ZORBA_ERROR_LOC_DESC(XQP0019_INTERNAL_ERROR, loc,
                            "Expression does not return a pending update list");
 
-    if (consumeNext(tmp, theChild, aPlanState))
+    pul = static_cast<store::PUL*>(pulItem.getp());
+
+    if (consumeNext(tmp, theChild, planState))
     {
       ZORBA_ERROR_LOC_DESC(XQP0019_INTERNAL_ERROR, loc,
                            "Expression returns more than one pending update lists");
@@ -801,12 +807,29 @@ ApplyIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
     pul->applyUpdates(validationNodes);
 
+#ifndef ZORBA_NO_XMLSCHEMA
     validationPul = GENV_ITEMFACTORY->createPendingUpdateList();
 
-#ifndef ZORBA_NO_XMLSCHEMA
     validateAfterUpdate(validationNodes, validationPul, theSctx, loc);
-#endif
+
     validationPul->applyUpdates(validationNodes);
+#endif
+
+    std::vector<IndexBinding> createdIndices;
+    std::vector<const store::Item*> dropedIndices;
+
+    pul->getCreatedIndices(createdIndices);
+    pul->getDropedIndices(dropedIndices);
+
+    ulong n = createdIndices.size();
+
+    for (ulong i = 0; i < n; ++i)
+      dctx->bindIndex(createdIndices[i].first, createdIndices[i].second);
+
+    n = dropedIndices.size();
+
+    for (ulong i = 0; i < n; ++i)
+      dctx->unbindIndex(dropedIndices[i]);
   }
 
   STACK_END(state);

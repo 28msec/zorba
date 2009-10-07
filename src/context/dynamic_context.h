@@ -49,6 +49,7 @@ template <class V> class ItemPointerHashMap;
 class dynamic_context
 {
   friend class ZorbaDebugIterator;
+
 protected:
 
   struct dctx_value_t 
@@ -75,21 +76,23 @@ protected:
   typedef ItemPointerHashMap<store::Index_t> IndexMap;
 
 protected:
-  static bool static_init;
+  static bool                  static_init;
 
-  dynamic_context    * parent;
+protected:
+  dynamic_context            * theParent;
 
-  store::Item_t        current_date_time_item;
-  store::Item_t        current_time_millis;
-  int                  implicit_timezone;
-  store::Item_t        default_collection_uri;
+  store::Item_t                current_date_time_item;
+  store::Item_t                current_time_millis;
+  long                         theTimezone;
+  store::Item_t                default_collection_uri;
 
-  store::Item_t        ctxt_item;
-  unsigned long        ctxt_position;
+  store::Item_t                ctxt_item;
+  unsigned long                ctxt_position;
   //+context size is determined by fn:last() at runtime
 
-  ValueMap             keymap;
-  IndexMap           * theAvailableIndices;
+  ValueMap                     keymap;
+
+  IndexMap                   * theAvailableIndices;
 
 public:
   static std::string var_key(const void* var);
@@ -99,7 +102,7 @@ public:
   static void init();
 
 public:
-  dynamic_context(dynamic_context* parent=NULL);
+  dynamic_context(dynamic_context* parent = NULL);
 
   ~dynamic_context();
 
@@ -107,15 +110,15 @@ public:
 
   void set_default_collection(const store::Item_t& default_collection_uri);
 
-  void set_current_date_time( const store::Item_t& );
+  void set_current_date_time(const store::Item_t&);
 
   store::Item_t get_current_date_time();
 
   store::Item_t get_current_time_millis();
 
-  void set_implicit_timezone( int tzone_seconds );
+  void set_implicit_timezone(long tzone_seconds);
 
-  int get_implicit_timezone();
+  long get_implicit_timezone();
 
   store::Item_t context_item() const;
 
@@ -142,14 +145,13 @@ public:
         store::Item_t& var_item,
         store::Iterator_t& var_iter);
 
-  void bind_index(
+  store::Index* getIndex(const store::Item* qname) const;
+
+  void bindIndex(
         const store::Item* qname,
-        store::Index_t& index,
-        const QueryLoc& loc);
+        store::Index_t& index);
 
-  void unbind_index(const store::Item* qname);
-
-  store::Index* lookup_index(const store::Item* qname) const;
+  void unbindIndex(const store::Item* qname);
 
 protected:
   bool lookup_once(const std::string& key, dctx_value_t& val) const 
@@ -163,7 +165,7 @@ protected:
     {
       return true;
     }
-    return parent == NULL ? false : parent->context_value(key, val);
+    return theParent == NULL ? false : theParent->context_value(key, val);
   }
 
   bool context_value(const std::string& key, dctx_value_t& val, ValueMap **map) 
@@ -173,7 +175,7 @@ protected:
       if (map != NULL) *map = &keymap;
       return true;
     }
-    return parent == NULL ? false : parent->context_value(key, val, map);
+    return theParent == NULL ? false : theParent->context_value(key, val, map);
   }
 
   void destroy_dctx_value(dctx_value_t *);
