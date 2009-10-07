@@ -294,8 +294,6 @@ public:
   module participating in a query. The instance is destroyed when the translation
   of the associated module is finished.
 
-  xquery_version       : 100 for 1.0, 110 for 1.1 etc
-
   theCCB               : The compiler control block associated with this translator
                          Each translator uses its own compiler cb. The compiler cb
                          of each translator is destroyed after translation of the
@@ -448,8 +446,6 @@ public:
 
 protected:
 
-  int                                  xquery_version;
-
   RootTypeManager                    & theRTM;
 
   CompilerCB                         * theCCB;
@@ -531,7 +527,6 @@ TranslatorImpl(
     set<string> mod_stack_,
     bool isLibModule)
   :
-  xquery_version (10000),  // fictious version 100.0 -- allow everything
   theRTM(GENV_TYPESYSTEM),
   theCCB(aCompilerCB),
   minfo (minfo_),
@@ -1526,31 +1521,6 @@ expr_update_t update_type_anding(
 /*******************************************************************************
 
 ********************************************************************************/
-StaticContextConsts::xquery_version_t parse_xquery_version(const VersionDecl* vh) 
-{
-  if (vh == NULL)
-    return StaticContextConsts::xquery_version_1_0; // TODO: the spec says the default should be 1.1 for a 1.1 processor
-
-  string ver = vh->get_version ();
-  if (ver == "1.0")
-  {
-    xquery_version = StaticContextConsts::xquery_version_1_0;
-    return StaticContextConsts::xquery_version_1_0;
-  }
-  else if (ver == "1.1")
-  {
-    xquery_version = StaticContextConsts::xquery_version_1_1;
-    return StaticContextConsts::xquery_version_1_1;
-  }
-  else
-    return StaticContextConsts::xquery_version_unknown;
-}
-
-
-
-/*******************************************************************************
-
-********************************************************************************/
 void *begin_visit (const exprnode& v) 
 {
   TRACE_VISIT ();
@@ -1596,11 +1566,10 @@ void *begin_visit (const VersionDecl& v)
   if (! xqp_string (v.get_encoding ()).matches ("^[A-Za-z]([A-Za-z0-9._]|[-])*$", ""))
     ZORBA_ERROR_LOC (XQST0087, loc);
 
-  StaticContextConsts::xquery_version_t ver = parse_xquery_version(&v);
-  if (ver == StaticContextConsts::xquery_version_unknown)
+  sctx_p->set_xquery_version(v.get_version());
+  if (sctx_p->xquery_version() == StaticContextConsts::xquery_version_unknown)
     ZORBA_ERROR_LOC(XQST0031, loc);
 
-  sctx_p->set_xquery_version(ver);
   return no_state;
 }
 
@@ -1619,8 +1588,6 @@ void *begin_visit (const MainModule & v)
 
   theDotVar = bind_var(loc, DOT_VARNAME, var_expr::prolog_var, ctx_item_type);
   
-  sctx_p->set_xquery_version(parse_xquery_version(v.get_version_decl().getp()));
-
   return no_state;
 }
 
@@ -1643,8 +1610,6 @@ void *begin_visit (const LibraryModule& v)
 void end_visit (const LibraryModule& v, void* /*visit_state*/) 
 {
   TRACE_VISIT_OUT ();
-
-  sctx_p->set_xquery_version(parse_xquery_version(v.get_version_decl().getp()));
 
   // Note: There is no real reason to put the expr returned by 
   // wrap_in_globalvar_assign() in the nodestack. The only reason is for the
@@ -2588,7 +2553,7 @@ void *begin_visit (const CtxItemDecl& v)
 {
   TRACE_VISIT ();
 
-  if (xquery_version <= StaticContextConsts::xquery_version_1_0)
+  if (sctx_p->xquery_version() <= StaticContextConsts::xquery_version_1_0)
     ZORBA_ERROR_LOC (XPST0003, loc);
 
   return no_state;
@@ -3307,8 +3272,10 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
-  if (xquery_version <= StaticContextConsts::xquery_version_1_0 && v.is_non_10())
+  if (sctx_p->xquery_version() <= StaticContextConsts::xquery_version_1_0 && 
+      v.is_non_10()) {
     ZORBA_ERROR_LOC (XPST0003, loc);
+  }
 
   rchandle<flwor_expr> flwor = new flwor_expr(theCCB->m_cur_sctx, loc, v.is_general());
 
@@ -3410,8 +3377,9 @@ void *begin_visit (const ForClause& v)
 
   if (v.is_outer())
   {
-    if (xquery_version <= StaticContextConsts::xquery_version_1_0)
-      ZORBA_ERROR_LOC(XPST0003, loc);
+    if (sctx_p->xquery_version() < StaticContextConsts::xquery_version_1_1)
+      ZORBA_ERROR_LOC_DESC(XPST0003, loc,
+        "The outer-for clause is available in XQuery 1.1 or later.");
 
     theFlworClausesStack.push_back(NULL);
   }
@@ -3609,8 +3577,9 @@ void *begin_visit(const WindowClause& v)
 {
   TRACE_VISIT();
 
-  if (xquery_version <= StaticContextConsts::xquery_version_1_0)
-    ZORBA_ERROR_LOC (XPST0003, loc);
+  if (sctx_p->xquery_version() < StaticContextConsts::xquery_version_1_1)
+    ZORBA_ERROR_LOC_DESC (XPST0003, loc,
+      "The window clause is a feature that is available in XQuery 1.1 or later.");
 
   return no_state;
 }
@@ -4210,8 +4179,9 @@ void *begin_visit (const CountClause& v)
 {
   TRACE_VISIT ();
 
-  if (xquery_version <= StaticContextConsts::xquery_version_1_0)
-    ZORBA_ERROR_LOC (XPST0003, loc);
+  if (sctx_p->xquery_version() < StaticContextConsts::xquery_version_1_1)
+    ZORBA_ERROR_LOC_DESC (XPST0003, loc,
+      "The count clause is a feature that is only available in XQuery 1.1 or later.");
 
   return no_state;
 }
@@ -8196,8 +8166,9 @@ void end_visit (const TryExpr& v, void* visit_state) {
 void *begin_visit (const EvalExpr& v) 
 {
   TRACE_VISIT ();
-  if (xquery_version <= StaticContextConsts::xquery_version_1_0)
-    ZORBA_ERROR_LOC (XPST0003, loc);
+  if (sctx_p->xquery_version() < StaticContextConsts::xquery_version_1_1)
+    ZORBA_ERROR_LOC_DESC(XPST0003, loc,
+                         "Eval is a feature that is only available in XQuery 1.1 or later.");
   return no_state;
 }
 

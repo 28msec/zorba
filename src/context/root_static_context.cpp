@@ -45,6 +45,8 @@ void root_static_context::init()
   // must be initialized or there be assertions
   set_current_absolute_baseuri ("");
 
+  // default xquery version is 1.1
+  set_xquery_version(StaticContextConsts::xquery_version_1_1);
   set_xpath1_0compatib_mode(StaticContextConsts::xpath2_0);
   const char **p = default_ns_initializers;
   for (; *p != NULL; p += 2)

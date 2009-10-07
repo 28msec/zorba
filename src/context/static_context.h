@@ -125,6 +125,12 @@ public:
   xqp_string default_elem_type_ns () const;
 
   void set_xquery_version(StaticContextConsts::xquery_version_t v);
+
+  // parse and set the xquery version
+  // StaticContextConsts::xquery_version_unknown is set
+  // if the persion could not be parsed
+  void set_xquery_version(const std::string& v);
+
 	void set_xpath1_0compatib_mode(StaticContextConsts::xpath1_0compatib_mode_t v);
 	void set_construction_mode(StaticContextConsts::construction_mode_t v);
 	void set_order_empty_mode(StaticContextConsts::order_empty_mode_t v);
@@ -135,6 +141,7 @@ public:
   void set_validation_mode(StaticContextConsts::validation_mode_t v);
   void set_revalidation_enabled (bool);
   void set_default_elem_type_ns (xqp_string);
+
 
   //
   // Prefix-to-Namespace resolution

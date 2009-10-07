@@ -447,6 +447,21 @@ DECL_STR_PARAM (static_context, current_absolute_baseuri, MAX_ZORBA_ERROR_CODE)
 
 DECL_STR_PARAM_TRIGGER (static_context, encapsulating_entity_baseuri, MAX_ZORBA_ERROR_CODE, set_current_absolute_baseuri (""))
 
+void
+static_context::set_xquery_version(const std::string& v)
+{
+  StaticContextConsts::xquery_version_t lVersion 
+    = StaticContextConsts::xquery_version_unknown;
+  if (v == "1.0")
+  {
+    lVersion = StaticContextConsts::xquery_version_1_0;
+  }
+  else if (v == "1.1")
+  {
+    lVersion = StaticContextConsts::xquery_version_1_1;
+  }
+  set_xquery_version(lVersion);
+}
 
 /*******************************************************************************
   Bind the given prefix to the given namaspace uri. The binding is stored in

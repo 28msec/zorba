@@ -150,6 +150,7 @@ LibraryModule::LibraryModule(
 void LibraryModule::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
+  ACCEPT (version_decl_h);
   ACCEPT (decl_h);
   ACCEPT (prolog_h);
   END_VISITOR ();
