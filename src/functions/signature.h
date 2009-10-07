@@ -131,6 +131,9 @@ public:
     return is_variadic () ? VARIADIC_SIG_SIZE : argv.size() - 1;
   }
 
+  bool
+  equals(const signature& s) const;
+
   xqtref_t const& operator[](int i) const { return argv [variadic ? 1 : (i + 1)]; }
   xqtref_t & operator[](int i)            { return argv [variadic ? 1 : (i + 1)]; }
   xqtref_t const& return_type() const     { return argv [0]; }

@@ -15,6 +15,7 @@
  */
 #include "signature.h"
 #include "store/api/item.h"
+#include "types/typeops.h"
 
 using namespace std;
 
@@ -157,6 +158,27 @@ signature::signature(
   copy (_argv.begin (), _argv.end (), back_inserter (argv));
 }
 
+bool
+signature::equals(const signature& s) const
+{
+  if (arg_count() != s.arg_count())
+    return false;
+
+  if (!qname_p->equals(s.qname_p.getp()))
+    return false;
+
+  if (!TypeOps::is_equal(*return_type().getp(), *s.return_type().getp())) {
+    return false;
+  }
+
+  for (size_t i = 0; i < argv.size(); ++i) {
+    if (!TypeOps::is_equal(*argv[i].getp(), *s.argv[i].getp())) {
+      return false;
+    }
+  }
+
+  return true;
+}
 
 } /* namespace zorba */
 

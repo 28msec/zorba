@@ -315,7 +315,10 @@ public:
                          theModulePrefix is the prefix associated with the ns
                          uri of that module.
 
-  zorba_predef_mod_ns  : Set of ns uris for all internal predefined modules. 
+  zorba_predef_mod_ns  : Set of ns uris for all internal pre-defined modules. 
+                         If a module (i.e. a .xq file), containing external
+                         function declarations, is shipped with Zorba, this
+                         namespace must not be registered in this set.
   mod_import_ns_set    : Set of ns uris for all the modules directly imported 
                          by this module. Used to check that the same module is
                          not imported twice by this module.
@@ -560,7 +563,6 @@ TranslatorImpl(
 
   zorba_predef_mod_ns.insert (ZORBA_XQDOC_FN_NS);
   zorba_predef_mod_ns.insert (ZORBA_FN_NS);
-  zorba_predef_mod_ns.insert (ZORBA_MATH_FN_NS);
   zorba_predef_mod_ns.insert (ZORBA_REST_FN_NS);
   zorba_predef_mod_ns.insert (ZORBA_NODEREF_FN_NS);
   zorba_predef_mod_ns.insert (ZORBA_COLLECTION_FN_NS);
@@ -2377,6 +2379,31 @@ void* begin_visit (const VFO_DeclList& v)
     case ParseConstants::fn_extern:
     case ParseConstants::fn_extern_sequential:
     {
+      // 1. lookup if the function is a built-in function
+      f = sctx_p->lookup_resolved_fn(qname->getNamespace(),
+                                     qname->getLocalName(), nargs);
+      if (f.getp() != 0) {
+        // in debug mode, we make sure that the types of the functions
+        // and the return type are equal to the one that is declared in
+        // the module
+#ifndef NDEBUG
+        const signature& s = f->get_signature();
+        if (!sig.equals(s)) {
+          ZORBA_ERROR_LOC_DESC_OSS(XQP0028_FUNCTION_IMPL_NOT_FOUND,
+              loc,
+              "The signature of the (registered) function ("
+              << qname->getNamespace()->str() 
+              << ":" << qname->getLocalName()->str()
+              << ") does not match the signature of the function that is "
+              << "declared in the module.");
+        }
+#endif
+
+        return no_state;
+      }
+
+      // 2. if no built-in function is there, we check the static context
+      // to see if the user has registered an external function
       StatelessExternalFunction* ef =
       sctx_p->lookup_stateless_external_function(qname->getNamespace(),
                                                  qname->getLocalName());
