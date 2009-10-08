@@ -96,6 +96,12 @@ StaticContextImpl::StaticContextImpl(const StaticContextImpl& aStaticContext)
   // hierarchy of contexts
   theCtx = aStaticContext.theCtx->create_child_context();
   RCHelper::addReference (theCtx);
+
+  for (std::map<ModuleURIResolver*, ModuleURIResolverWrapper*>::const_iterator
+        lIter = aStaticContext.theWrappers.begin();
+        lIter != aStaticContext. theWrappers.end(); ++lIter) {
+    addModuleURIResolver(lIter->first);
+  }
 }
 
 
@@ -103,10 +109,10 @@ StaticContextImpl::~StaticContextImpl()
 {
   for (std::map<ModuleURIResolver*, ModuleURIResolverWrapper*>::iterator
         lIter = theWrappers.begin(); lIter != theWrappers.end(); ++lIter) {
-//      theCtx->remove_module_uri_resolver(lIter->second);
+      theCtx->remove_module_uri_resolver(lIter->second);
       delete lIter->second;
-      theWrappers.erase(lIter);
   }
+  theWrappers.clear();
 
   if ( ! theUserStaticContext )
     RCHelper::removeReference (theCtx);
@@ -655,8 +661,10 @@ StaticContextImpl::addModuleURIResolver(ModuleURIResolver* aModuleUriResolver)
     std::auto_ptr<ModuleURIResolverWrapper> lWrapper(
         new ModuleURIResolverWrapper(aModuleUriResolver));
 
+    // register the wrapper in the internal context
     theCtx->add_module_uri_resolver(lWrapper.get());
 
+    // put the wrapper in the map and transfer ownership
     theWrappers[aModuleUriResolver] = lWrapper.release();
 
   } catch (error::ZorbaError& e) {
@@ -670,8 +678,12 @@ StaticContextImpl::getModuleURIResolvers() const
 {
   std::vector<ModuleURIResolver*> lResolvers;
   try {
+    // get all resovlers (from the internal context upwards to its parent)
     std::vector<InternalModuleURIResolver*> lResolverWrappers;
     theCtx->get_module_uri_resolvers(lResolverWrappers);
+
+    // create a vector containing the pointers to all resolvers
+    // owned by the user
     for (std::vector<InternalModuleURIResolver*>::iterator lIter 
           = lResolverWrappers.begin();
          lIter != lResolverWrappers.end(); ++lIter) {
@@ -690,9 +702,13 @@ void
 StaticContextImpl::removeModuleURIResolver(ModuleURIResolver* aModuleUriResolver)
 {
   try {
+    // look for a resolver, if found
+    // (1) remove it from the internal context
+    // (2) delete the wrapper
+    // (3) remove the entry from the map
     for (std::map<ModuleURIResolver*, ModuleURIResolverWrapper*>::iterator
           lIter = theWrappers.begin(); lIter != theWrappers.end(); ++lIter) {
-      if (lIter->first == aModuleUriResolver) {
+      if (lIter->first == aModuleUriResolver) { // pointer equality
         theCtx->remove_module_uri_resolver(lIter->second);
         delete lIter->second;
         theWrappers.erase(lIter);

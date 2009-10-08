@@ -1494,8 +1494,10 @@ static_context::remove_module_uri_resolver(InternalModuleURIResolver* aResolver)
   for (std::vector<InternalModuleURIResolver*>::iterator 
         lIter = theModuleResolvers.begin();
        lIter != theModuleResolvers.end(); ++lIter) {
-    if (aResolver == *lIter)
+    if (aResolver == *lIter) {
       theModuleResolvers.erase(lIter);
+      return; // no duplicates in the vector
+    }
   }
 }
 
