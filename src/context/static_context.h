@@ -456,7 +456,7 @@ public:
   // Merge in the static context of a module
   //
   bool
-  import_module (const static_context* module);
+  import_module (const static_context* module, const QueryLoc& loc);
 
 
   //

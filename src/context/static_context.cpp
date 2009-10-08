@@ -1344,7 +1344,7 @@ xqp_string static_context::make_absolute_uri(
   a module variable or function already appears in this context, the method
   returns false.
 ********************************************************************************/
-bool static_context::import_module(const static_context* module) 
+bool static_context::import_module(const static_context* module, const QueryLoc& loc) 
 {
   checked_vector<serializable_hashmap<ctx_value_t>::entry>::const_iterator it;
   const char* keybuff;
@@ -1369,6 +1369,31 @@ bool static_context::import_module(const static_context* module)
       ctx_value_t val2(CTX_ARITY);
       val2.fmapValue = new ArityFMap (*val->fmapValue);
       keymap.put (keybuff, val2);
+    }
+  }
+
+  if (module->theCollectionMap)
+  {
+    CollectionMap::iterator coll_iter = module->theCollectionMap->begin();
+    CollectionMap::iterator coll_end = module->theCollectionMap->end();
+    for (; coll_iter != coll_end; ++ coll_iter)
+    {
+      if (theCollectionMap == 0) {
+        theCollectionMap = new CollectionMap(0, 0, 8, false);
+      }
+
+      std::pair<const store::Item*, StaticallyKnownCollection_t > pair = (*coll_iter);
+
+      if (!theCollectionMap->insert(pair.first, pair.second)) {
+        ZORBA_ERROR_LOC_DESC_OSS(XDXX0001, loc,
+                                 "It is a static error if the expanded QName ("
+                                 << pair.second->getName()->getStringValue()
+                                 << ") of a collection declared in an imported module is equal "
+                                 << "(as defined by the eq operator) to the expanded QName of a "
+                                 << "collection declared in the importing module or in another "
+                                 << "imported module (even if the declarations are consistent)."
+                                );
+      }
     }
   }
 

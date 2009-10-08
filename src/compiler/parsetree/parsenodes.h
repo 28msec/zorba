@@ -348,19 +348,19 @@ public:
 class LibraryModule : public Module
 {
 protected:
-  bool isDataModule_h;
+  bool is_data_module_h;
   rchandle<ModuleDecl> decl_h;
   rchandle<Prolog> prolog_h;
 
 public:
   LibraryModule(
     const QueryLoc&,
-    bool _isDataModule_h,
+    bool _is_data_module_h,
     rchandle<ModuleDecl>,
     rchandle<Prolog>,
     rchandle<VersionDecl> = NULL);
 
-  bool isDataModule() const { return isDataModule_h; }
+  bool is_data_module() const { return is_data_module_h; }
 
   rchandle<ModuleDecl> get_decl () const { return decl_h; }
 

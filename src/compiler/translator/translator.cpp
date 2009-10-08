@@ -314,6 +314,8 @@ public:
   theModulePrefix      : If this translator is working on a library module, 
                          theModulePrefix is the prefix associated with the ns
                          uri of that module.
+  theIsDataModule      : Is true if the translator is working on a data module,
+                         otherways always false (set in constructor).
 
   zorba_predef_mod_ns  : Set of ns uris for all internal pre-defined modules. 
                          If a module (i.e. a .xq file), containing external
@@ -534,6 +536,7 @@ TranslatorImpl(
   theCCB(aCompilerCB),
   minfo (minfo_),
   mod_stack (mod_stack_),
+  theIsDataModule (false),
   sctx_p (aCompilerCB->m_sctx),
   export_sctx (NULL),
   ns_ctx(new namespace_context(sctx_p)),
@@ -1605,7 +1608,7 @@ void end_visit (const MainModule & v, void* /*visit_state*/)
 void *begin_visit (const LibraryModule& v) 
 {
   TRACE_VISIT ();
-  theIsDataModule = v.isDataModule();
+  theIsDataModule = v.is_data_module();
   return no_state;
 }
 
@@ -2250,6 +2253,18 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
       if (mod_ast == NULL)
         ZORBA_ERROR_LOC_PARAM (XQST0059, loc, resolveduri, target_ns);
 
+      // throws an error if a datamodule import imports a module other than datamodule
+      if ( v.imports_data_module() && !mod_ast->is_data_module()) {
+        ZORBA_ERROR_LOC_DESC_OSS(XDXX0001, v.get_location(), 
+                                 "It is a static error if a data module import imports a library module.");
+      }
+
+      // throw an error fi a module import imports a datamodule
+      if ( !v.imports_data_module() && mod_ast->is_data_module()) {
+        ZORBA_ERROR_LOC_DESC_OSS(XDXX0001, v.get_location(), 
+                                 "It is a static error if a library module import imports a data module.");
+      }
+
       imported_ns = mod_ast->get_decl()->get_target_namespace();
       
       if (imported_ns.empty())
@@ -2278,7 +2293,7 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
     // current module. Note: We catch duplicate functions / vars in 
     // minfo->globals. We can safely ignore the return value. We might even
     // be able to assert() here (not sure though).
-    sctx_p->import_module(imported_sctx.getp());
+    sctx_p->import_module(imported_sctx.getp(), loc);
 
   } // for (vector<xqpStringStore_t>::iterator lIter = lURIs.begin();
 }
@@ -2897,7 +2912,9 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
                                             lNodeModifier);
 
   sctx_p->add_declared_collection(lColl, v.get_location());
-
+  // a collection declaration must allways be in a data module
+  assert(export_sctx);
+  export_sctx->add_declared_collection(lColl, v.get_location());
 }
 
 /***************************************************************************//**

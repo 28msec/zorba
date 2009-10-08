@@ -134,13 +134,13 @@ void MainModule::accept(parsenode_visitor& v) const
 ********************************************************************************/
 LibraryModule::LibraryModule(
     const QueryLoc& loc_,
-    bool _isDataModule_h,
+    bool _is_data_module_h,
     rchandle<ModuleDecl> _decl_h,
     rchandle<Prolog> _prolog_h,
     rchandle<VersionDecl> _ver)
   :
   Module(loc_, _ver),
-  isDataModule_h(_isDataModule_h),
+  is_data_module_h(_is_data_module_h),
   decl_h(_decl_h),
   prolog_h(_prolog_h)
 {
