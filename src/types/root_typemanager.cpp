@@ -206,7 +206,7 @@ RootTypeManager::RootTypeManager()
 #define ZXSE_PREFIX "zxse"
 
 #define XSQNDECL(var, local)  \
-  GENV.getStore().getItemFactory()->createQName(var, XS_URI, "", local)
+  GENV.getStore().getItemFactory()->createQName(var, XS_URI, "xs", local)
 
   XSQNDECL(XS_ANY_ATOMIC_QNAME, "anyAtomicType");
   XSQNDECL(XS_STRING_QNAME, "string");

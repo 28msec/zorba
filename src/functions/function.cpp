@@ -51,6 +51,12 @@ function::function(const signature& _sig)
 {
   if(get_fname()->getNamespace()->byteEqual(XQUERY_FN_NS, sizeof(XQUERY_FN_NS)-1))
     setFlag(FunctionConsts::hasFnNamespace);
+  zorba::serialization::Archiver &ar = *::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects();
+  if(ar.is_loading_hardcoded_objects())
+  {//register this hardcoded object to help plan serialization
+    function  *this_ptr = this;
+    ar & this_ptr;
+  }
 }
 
 function::function(const signature& _sig, FunctionConsts::FunctionKind kind) 
@@ -61,6 +67,12 @@ function::function(const signature& _sig, FunctionConsts::FunctionKind kind)
 {
   if(get_fname()->getNamespace()->byteEqual(XQUERY_FN_NS, sizeof(XQUERY_FN_NS)-1))
     setFlag(FunctionConsts::hasFnNamespace);
+  zorba::serialization::Archiver &ar = *::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects();
+  if(ar.is_loading_hardcoded_objects())
+  {//register this hardcoded object to help plan serialization
+    function  *this_ptr = this;
+    ar & this_ptr;
+  }
 }
 
 bool function::is_builtin_fn_named( 

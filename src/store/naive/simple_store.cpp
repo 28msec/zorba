@@ -368,7 +368,7 @@ store::Index_t SimpleStore::createIndex(
 
   if (!spec.theIsTemp)
   {
-    theIndices.insert(qname, index);
+    theIndices.insert(qname.getp(), index);
   }
 
   return index;

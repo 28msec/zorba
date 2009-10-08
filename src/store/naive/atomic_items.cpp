@@ -156,8 +156,17 @@ void QNameItemImpl::unsetNormalized()
 
 uint32_t QNameItemImpl::hash(long timezone, const XQPCollator* aCollation) const
 {
-  const void* tmp = getNormalized();
-  return hashfun::h32(tmp, FNV_32_INIT);
+  if(!hash_cache)
+  {
+    //compute my hash for first time
+    QNameItemImpl *normalized_me = getNormalized();
+    hash_cache = hashfun::h32(normalized_me->thePrefix->c_str(), 
+                              hashfun::h32(normalized_me->theUnion.theLocal->c_str(), 
+                                          hashfun::h32(normalized_me->theNamespace->c_str())));
+  }
+//daniel  const void* tmp = getNormalized();
+//  return hashfun::h32(tmp, FNV_32_INIT);
+  return hash_cache;
 }
 
 

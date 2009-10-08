@@ -65,6 +65,7 @@ EvalIterator::EvalIterator(::zorba::serialization::Archiver &ar)
 
 void EvalIterator::serialize(::zorba::serialization::Archiver &ar)
 {
+  ar.set_xquery_with_eval();
   serialize_baseclass(ar, (NaryBaseIterator<EvalIterator, EvalIteratorState>*)this);
   ar & varnames;
   ar & var_keys;

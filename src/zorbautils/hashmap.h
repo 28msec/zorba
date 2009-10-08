@@ -13,8 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_UTILS_HASHMAP
-#define ZORBA_UTILS_HASHMAP
+#if !defined ZORBA_UTILS_HASHMAP_H && !defined ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION || !defined ZORBA_UTILS_HASHMAP_SERIALIZATION_H && defined ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
+#ifndef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
+#define ZORBA_UTILS_HASHMAP_H
+#else
+#define ZORBA_UTILS_HASHMAP_SERIALIZATION_H
+#endif
 
 #include <zorba/config.h>
 #include "common/common.h"
@@ -22,16 +26,31 @@
 #include "zorbautils/checked_vector.h"
 #include "zorbautils/mutex.h"
 
+#ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
+#undef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
+#include "zorbaserialization/serialization_engine.h"
+#define ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
+#endif
 
 namespace zorba 
 { 
 
+#ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
+#define HASHMAP_U  serializable_HashMap
+#define HASHENTRY_U  serializable_HashEntry
+#else
+#define HASHMAP_U HashMap
+#define HASHENTRY_U  HashEntry
+#endif
 
 /*******************************************************************************
 
 ********************************************************************************/
 template <class T, class V> 
-class HashEntry
+class HASHENTRY_U
+#ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
+    : public ::zorba::serialization::SerializeBaseClass
+#endif
 {
 public:
   bool         theIsFree;
@@ -39,9 +58,28 @@ public:
   V            theValue;
   long         theNext;  // offset from "this" to the next entry.
 
-  HashEntry() : theIsFree(true), theNext(0) { }
+    public:
+#ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
+    SERIALIZABLE_TEMPLATE_CLASS(serializable_HashEntry)
+    SERIALIZABLE_CLASS_CONSTRUCTOR(serializable_HashEntry)
+    void serialize(::zorba::serialization::Archiver &ar)
+    {
+      ar & theIsFree;
+      if(!theIsFree)
+      {
+        ar & theItem;
+        ar & theValue;
+      }
+      ar & theNext;
+    }
+#endif
+  HASHENTRY_U() : theIsFree(true), theNext(0) { }
 
-  ~HashEntry() 
+#ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
+  virtual ~HASHENTRY_U() 
+#else
+  ~HASHENTRY_U() 
+#endif
   { 
     theIsFree = true;
     theNext = 0;
@@ -51,12 +89,12 @@ public:
   void setFree()       { theIsFree = true; }
   void unsetFree()     { theIsFree = false; }
 
-  void setNext(HashEntry* nextEntry) 
+  void setNext(HASHENTRY_U* nextEntry) 
   {
     theNext = (nextEntry == NULL ? 0 : nextEntry - this); 
   }
 
-  HashEntry* getNext()       
+  HASHENTRY_U* getNext()       
   {
     return (theNext == 0 ? NULL : this + theNext);
   }
@@ -95,20 +133,23 @@ public:
 
 ********************************************************************************/
 template <class T, class V, class C> 
-class HashMap
+class HASHMAP_U
+#ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
+                  : public ::zorba::serialization::SerializeBaseClass   
+#endif
 {
 public:
 
   class iterator
   {
-    friend class HashMap;
+    friend class HASHMAP_U;
 
   protected:
-    const checked_vector<HashEntry<T, V> >*  theHashTab;
+    const checked_vector<HASHENTRY_U<T, V> >*  theHashTab;
     ulong                                    thePos;
 
   protected:
-    iterator(const checked_vector<HashEntry<T, V> >* ht, ulong pos) 
+    iterator(const checked_vector<HASHENTRY_U<T, V> >* ht, ulong pos) 
       :
       theHashTab(ht),
       thePos(pos)
@@ -157,7 +198,7 @@ public:
     {
       ZORBA_FATAL(thePos < theHashTab->size(), "");
       
-      const HashEntry<T, V>& entry = (*theHashTab)[thePos];
+      const HASHENTRY_U<T, V>& entry = (*theHashTab)[thePos];
 
       return std::pair<T, V>(entry.theItem, entry.theValue);
     }
@@ -172,7 +213,7 @@ protected:
 
   ulong                             theHashTabSize;
   ulong                             theInitialSize;
-  checked_vector<HashEntry<T, V> >  theHashTab;
+  checked_vector<HASHENTRY_U<T, V> >  theHashTab;
   double                            theLoadFactor;
   C                                 theCompareFunction;
 
@@ -183,6 +224,32 @@ protected:
 
   int                               numCollisions;
 
+public:
+#ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
+  SERIALIZABLE_TEMPLATE_CLASS(serializable_HashMap)
+  serializable_HashMap(::zorba::serialization::Archiver &ar) : ::zorba::serialization::SerializeBaseClass(), theCompareFunction(ar)
+  {
+  }
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    ar & theNumEntries;
+    ar & theHashTabSize;
+    ar & theInitialSize;
+    ar & theLoadFactor;
+    ar & theCompareFunction;
+    ar & theUseTransfer;
+    ar & numCollisions;
+    bool with_sync = (theMutexp != NULL);
+    ar.set_is_temp_field(true);
+    ar & with_sync;
+    ar.set_is_temp_field(false);
+    if(!ar.is_serializing_out())
+    {
+      SYNC_CODE(theMutexp = (with_sync ? &theMutex : NULL);)
+    }
+    ar & theHashTab;
+  }
+#endif
 protected:
 
 ulong computeTabSize(ulong size)
@@ -198,7 +265,7 @@ public:
   plus an initial number of free entries (= 32 + 10% of the given size). These
   free entries are placed in a free list.
 ********************************************************************************/
-HashMap(const C& compFunction, ulong size, bool sync, bool useTransfer = false) 
+HASHMAP_U(const C& compFunction, ulong size, bool sync, bool useTransfer = false) 
   :
   theNumEntries(0),
   theHashTabSize(size),
@@ -215,7 +282,7 @@ HashMap(const C& compFunction, ulong size, bool sync, bool useTransfer = false)
 }
 
 
-HashMap(ulong size, bool sync, bool useTransfer = false) 
+HASHMAP_U(ulong size, bool sync, bool useTransfer = false) 
   :
   theNumEntries(0),
   theHashTabSize(size),
@@ -234,7 +301,7 @@ HashMap(ulong size, bool sync, bool useTransfer = false)
 /*******************************************************************************
 
 ********************************************************************************/
-virtual ~HashMap()
+virtual ~HASHMAP_U()
 {
 }
 
@@ -271,7 +338,7 @@ void clear()
 
   for (ulong i = 0; i < n; ++i)
   {
-    theHashTab[i].~HashEntry<T, V>();
+    theHashTab[i].~HASHENTRY_U<T, V>();
   }
 
   formatCollisionArea();
@@ -303,7 +370,7 @@ bool find(const T& item)
 
   SYNC_CODE(AutoMutex lock(theMutexp);)
 
-  HashEntry<T, V>* entry = bucket(hval);
+  HASHENTRY_U<T, V>* entry = bucket(hval);
 
   if (entry->isFree())
     return false;
@@ -331,7 +398,7 @@ iterator get(const T& item)
 
   SYNC_CODE(AutoMutex lock(theMutexp);)
 
-  HashEntry<T, V>* entry = bucket(hval);
+  HASHENTRY_U<T, V>* entry = bucket(hval);
 
   if (entry->isFree())
     return iterator(&theHashTab, hval);
@@ -358,7 +425,7 @@ bool get(const T& item, V& value)
 
   SYNC_CODE(AutoMutex lock(theMutexp);)
 
-  HashEntry<T, V>* entry = bucket(hval);
+  HASHENTRY_U<T, V>* entry = bucket(hval);
 
   if (entry->isFree())
     return false;
@@ -391,7 +458,7 @@ bool insert(T& item, V& value)
 
   SYNC_CODE(AutoMutex lock(theMutexp);)
 
-  HashEntry<T, V>* entry = hashInsert(item, hval, found);
+  HASHENTRY_U<T, V>* entry = hashInsert(item, hval, found);
 
   if (!found)
   {
@@ -419,7 +486,7 @@ bool update(T& item, const V& value)
 
   SYNC_CODE(AutoMutex lock(theMutexp);)
 
-  HashEntry<T, V>* entry = hashInsert(item, hval, found);
+  HASHENTRY_U<T, V>* entry = hashInsert(item, hval, found);
 
   if (!found)
   {
@@ -474,7 +541,7 @@ bool remove(const T& item)
 
 bool removeNoSync(const T& item, ulong hval)
 {
-  HashEntry<T, V>* entry = bucket(hval);
+  HASHENTRY_U<T, V>* entry = bucket(hval);
 
   if (entry->isFree())
     return false;
@@ -490,7 +557,7 @@ bool removeNoSync(const T& item, ulong hval)
 
   // The item to remove is not in the 1st entry of a bucket.
 
-  HashEntry<T, V>* preventry = entry;
+  HASHENTRY_U<T, V>* preventry = entry;
   entry = entry->getNext();
 
   while (entry != NULL)
@@ -529,7 +596,7 @@ bool equal(const T& item1, const T& item2)
 /*******************************************************************************
 
 ********************************************************************************/
-HashEntry<T, V>* bucket(ulong hvalue)
+HASHENTRY_U<T, V>* bucket(ulong hvalue)
 {
   return &theHashTab[hvalue % theHashTabSize];
 }
@@ -538,7 +605,7 @@ HashEntry<T, V>* bucket(ulong hvalue)
 /*******************************************************************************
 
 ********************************************************************************/
-HashEntry<T, V>* freelist()
+HASHENTRY_U<T, V>* freelist()
 {
   return &theHashTab[theHashTabSize];
 }
@@ -547,20 +614,20 @@ HashEntry<T, V>* freelist()
 /*******************************************************************************
 
 ********************************************************************************/
-void removeEntry(HashEntry<T, V>* entry, HashEntry<T, V>* preventry)
+void removeEntry(HASHENTRY_U<T, V>* entry, HASHENTRY_U<T, V>* preventry)
 {
   if (preventry == NULL)
   {
     if (entry->theNext == 0)
     {
-      entry->~HashEntry<T, V>();
+      entry->~HASHENTRY_U<T, V>();
     }
     else
     {
-      HashEntry<T, V>* nextEntry = entry->getNext();
+      HASHENTRY_U<T, V>* nextEntry = entry->getNext();
       *entry = *nextEntry;
       entry->setNext(nextEntry->getNext());
-      nextEntry->~HashEntry<T, V>();
+      nextEntry->~HASHENTRY_U<T, V>();
       nextEntry->setNext(freelist()->getNext());
       freelist()->setNext(nextEntry);
     }
@@ -577,7 +644,7 @@ void removeEntry(HashEntry<T, V>* entry, HashEntry<T, V>* preventry)
   else
   {
     preventry->setNext(entry->getNext());
-    entry->~HashEntry<T, V>();
+    entry->~HASHENTRY_U<T, V>();
     entry->setNext(freelist()->getNext());
     freelist()->setNext(entry);
 
@@ -596,7 +663,7 @@ void removeEntry(HashEntry<T, V>* entry, HashEntry<T, V>* preventry)
 /*******************************************************************************
 
 ********************************************************************************/
-HashEntry<T, V>* hashInsert(
+HASHENTRY_U<T, V>* hashInsert(
     const T&   item,
     ulong      hvalue,
     bool&      found)
@@ -605,7 +672,7 @@ retry:
   found = false;
 
   // Get ptr to the 1st entry of the hash bucket corresponding to the given item.
-  HashEntry<T, V>* headEntry = bucket(hvalue);
+  HASHENTRY_U<T, V>* headEntry = bucket(hvalue);
 
   // If the hash bucket is empty, its 1st entry is used to store the new string.
   if (headEntry->isFree())
@@ -616,7 +683,7 @@ retry:
   }
 
   // Search the hash bucket looking for the given item.
-  HashEntry<T, V>* currEntry = headEntry;
+  HASHENTRY_U<T, V>* currEntry = headEntry;
 
   while (currEntry != NULL)
   {
@@ -701,13 +768,13 @@ void extendCollisionArea()
 /*******************************************************************************
 
 ********************************************************************************/
-void formatCollisionArea(HashEntry<T, V>* firstentry = NULL) 
+void formatCollisionArea(HASHENTRY_U<T, V>* firstentry = NULL) 
 {
   if (firstentry == NULL)
     firstentry = freelist();
 
-  HashEntry<T, V>* lastentry = &theHashTab[theHashTab.size() - 1];
-  for (HashEntry<T, V>* entry = firstentry; entry < lastentry; entry++)
+  HASHENTRY_U<T, V>* lastentry = &theHashTab[theHashTab.size() - 1];
+  for (HASHENTRY_U<T, V>* entry = firstentry; entry < lastentry; entry++)
     entry->theNext = 1;
 
   lastentry->theNext = 0;
@@ -719,11 +786,11 @@ void formatCollisionArea(HashEntry<T, V>* firstentry = NULL)
 ********************************************************************************/
 void resizeHashTab(ulong newSize)
 {
-  HashEntry<T, V>* entry;
-  HashEntry<T, V>* oldentry;
+  HASHENTRY_U<T, V>* entry;
+  HASHENTRY_U<T, V>* oldentry;
 
   // Create a new vector of new size and swap theHashTab with this new vector
-  checked_vector<HashEntry<T, V> > oldTab(computeTabSize(newSize));
+  checked_vector<HASHENTRY_U<T, V> > oldTab(computeTabSize(newSize));
   theHashTab.swap(oldTab);
 
   ulong oldsize = oldTab.size();
@@ -745,7 +812,7 @@ void resizeHashTab(ulong newSize)
 
     if (!entry->isFree())
     {
-      HashEntry<T, V>* headEntry = entry;
+      HASHENTRY_U<T, V>* headEntry = entry;
 
       // Get an entry from the free list in the collision section of the hash
       // table. If no free entry exists, extend the collision area.
@@ -781,9 +848,11 @@ virtual void garbageCollect()
 };
 
 template <class T, class V, class C>
-const double HashMap<T, V, C>::DEFAULT_LOAD_FACTOR = 0.6;
+const double HASHMAP_U<T, V, C>::DEFAULT_LOAD_FACTOR = 0.6;
 
 
+#undef HASHMAP_U
+#undef HASHENTRY_U
 
 } // namespace zorba
 

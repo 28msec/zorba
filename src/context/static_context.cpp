@@ -33,7 +33,9 @@
 #include "compiler/expression/var_expr.h"
 
 #include "zorbautils/strutil.h"
+#define ZORBA_ZORBAUTILS_ITEM_POINTER_HASHMAP_WITH_SERIALIZATION
 #include "zorbautils/hashmap_itemp.h"
+#undef ZORBA_ZORBAUTILS_ITEM_POINTER_HASHMAP_WITH_SERIALIZATION
 
 #include "zorbatypes/collation_manager.h"
 #include "zorbatypes/URI.h"
@@ -235,12 +237,28 @@ void context::ctx_value_t::serialize(::zorba::serialization::Archiver &ar)
       RCHelper::addReference (exprValue);
     break;
   case CTX_FUNCTION:
+  //  ar.set_serialize_only_for_eval(true);
     SERIALIZE_FUNCTION(functionValue);
     if(!ar.is_serializing_out() && functionValue)
       RCHelper::addReference (functionValue);
     break;
   case CTX_ARITY:
+    ar.set_serialize_only_for_eval(true);
     ar & fmapValue;
+    ar.set_serialize_only_for_eval(false);
+  /*  if(ar.is_serializing_out())
+    {
+      printf("out CTX_ARITY %x size=%d\n", fmapValue, fmapValue->size());
+      ArityFMap::const_iterator   ar_it;
+      for(ar_it = fmapValue->begin(); ar_it != fmapValue->end(); ar_it++)
+      {
+        printf("    %d    %s:%s\n", ar_it->first, ar_it->second->get_fname()->getLocalName()->c_str(),
+                                    ar_it->second->get_fname()->getNamespace()->c_str());
+      }
+    }
+  */
+  //  if(!ar.is_serializing_out())
+  //    fmapValue = NULL;//don't serialize this
     break;
   case CTX_INT:
     ar & intValue;
@@ -385,16 +403,20 @@ static_context::serialize_resolvers(serialization::Archiver &ar)
     lUserDocResolver = (dynamic_cast<StandardDocumentURIResolver*>(theDocResolver) != NULL); 
     lUserColResolver = (dynamic_cast<StandardCollectionURIResolver*>(theColResolver) != NULL);
 
+	  ar.set_is_temp_field(true);
     ar & lUserDocResolver;
     ar & lUserColResolver;
+	  ar.set_is_temp_field(false);
   } else {
     // serialize in: set the document and collection resolvers
     //               use one by the user or use the default
     //               if null is returned
     SerializationCallback* lCallback = ar.getUserCallback();
 
+	  ar.set_is_temp_field(true);
     ar & lUserDocResolver; // doc resolver passed by the user
     ar & lUserColResolver; // col resolver passed by the user
+	  ar.set_is_temp_field(false);
 
     // callback required but not available
     if ((lUserDocResolver || lUserColResolver) && !lCallback) {
@@ -437,13 +459,17 @@ static_context::serialize_tracestream(serialization::Archiver& ar)
     // serialize out: remember whether the user registered a trace stream
     lUserTraceStream = (theTraceStream != 0);
 
+	  ar.set_is_temp_field(true);
     ar & lUserTraceStream;
+	  ar.set_is_temp_field(false);
   } else {
     // serialize in: set the trace stream from the user
     //               std::cerr is used if non was registered
     SerializationCallback* lCallback = ar.getUserCallback();
 
+	  ar.set_is_temp_field(true);
     ar & lUserTraceStream; // trace stream passed by the user
+	  ar.set_is_temp_field(false);
 
     // callback required but not available
     if (lUserTraceStream && !lCallback) {
@@ -474,6 +500,7 @@ void static_context::serialize(::zorba::serialization::Archiver &ar)
   serialize_resolvers(ar);
   serialize_tracestream(ar);
 
+  ar & theIndexMap;
   ar & theCollationCache;
 }
 
@@ -1052,7 +1079,7 @@ void static_context::bind_index(
   if (theIndexMap == NULL)
     theIndexMap = new IndexMap(0, NULL, 8, false);
 
-  if (!theIndexMap->insert(qname, index))
+  if (!theIndexMap->insert((store::Item*)qname, index))
   {
     ZORBA_ERROR_LOC_PARAM(XQP0038_INDEX_IS_ALREADY_DECLARED, loc,
                           qname->getStringValue(),  "");
@@ -1410,7 +1437,7 @@ bool static_context::import_module(const static_context* module, const QueryLoc&
         theIndexMap = new IndexMap(0, NULL, 8, false);
       }
 
-      theIndexMap->insert(pair.first, pair.second);
+      theIndexMap->insert((store::Item*)pair.first, pair.second);
     }
   }
 
@@ -1482,7 +1509,7 @@ static_context::get_module_uri_resolvers(
 {
   if (parent!=NULL) {
     static_cast<static_context*>(parent)->get_module_uri_resolvers(lResolvers);
-  }
+}
   lResolvers.insert(lResolvers.end(),
                     theModuleResolvers.begin(),
                     theModuleResolvers.end());
@@ -1498,7 +1525,7 @@ static_context::remove_module_uri_resolver(InternalModuleURIResolver* aResolver)
       theModuleResolvers.erase(lIter);
       return; // no duplicates in the vector
     }
-  }
+}
 }
 
 void

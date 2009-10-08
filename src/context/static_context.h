@@ -35,6 +35,7 @@
 #include "types/typemanager.h"
 
 #include "zorbaerrors/Assert.h"
+#include "zorbautils/hashmap_itemp.h"
 
 #include "common/shared_types.h"
 
@@ -45,7 +46,7 @@ class namespace_node;
 class user_function;
 class TypeManager;
 
-template <class V> class ItemPointerHashMap;
+template <class V> class serializable_ItemPointerHashMap;
 
 class ValueIndex;
 typedef rchandle<ValueIndex> ValueIndex_t;
@@ -73,7 +74,7 @@ typedef rchandle<StaticallyKnownCollection> StaticallyKnownCollection_t;
         Standard*URIResolver.
         Optionally, the user can provide resolvers which are wrapped by the
         *URIResolverWrapper classes.
-  
+
   Note: URI resolvers are not serialized if the plan is
         serialized. Instead, they are set again if the query is loaded.
         If the user has provided a resolver before, he needs to make sure
@@ -95,7 +96,7 @@ typedef rchandle<StaticallyKnownCollection> StaticallyKnownCollection_t;
 class ZORBA_DLL_PUBLIC static_context : public context
 {
   typedef ItemPointerHashMap<rchandle<StaticallyKnownCollection> > CollectionMap;
-  typedef ItemPointerHashMap<rchandle<ValueIndex> > IndexMap;
+  typedef serializable_ItemPointerHashMap<rchandle<ValueIndex> > IndexMap;
 
 protected:
   rchandle<TypeManager>           typemgr;
@@ -307,7 +308,7 @@ public:
   bool
   bind_external_module(ExternalModule* aModule);
   
-  StatelessExternalFunction*
+  StatelessExternalFunction *
   lookup_stateless_external_function(const xqp_string& prefix,
                                      const xqp_string& local);
 
@@ -357,7 +358,7 @@ public:
   xqtref_t
   get_collection_type(const xqp_string);
 
-  // 
+  //
   // Collections
   //
   void add_declared_collection( StaticallyKnownCollection_t& aCollection, const QueryLoc& aLoc);
@@ -536,8 +537,8 @@ protected:
  
   void find_functions_int(
         xqp_string key,
-        std::vector<function *>& functions,
-        std::set<int> &found) const;
+                      std::vector<function *>& functions,
+                      std::set<int> &found) const;
 
   static xqp_string fn_internal_key();
 };

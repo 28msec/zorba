@@ -62,6 +62,9 @@ void library_init()
 
 void BuiltinFunctionLibrary::populateContext(static_context* sctx)
 {
+  zorba::serialization::Archiver &ar = *::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects();
+  ar.set_loading_hardcoded_objects(true);
+
   populateContext_Accesors(sctx);
   populateContext_Nodes(sctx);
   populateContext_AnyURI(sctx);
@@ -89,6 +92,8 @@ void BuiltinFunctionLibrary::populateContext(static_context* sctx)
   populateContext_JSON(sctx);
   populateContext_FOP(sctx);
   populateContext_XQDOC(sctx);
+
+  ar.set_loading_hardcoded_objects(false);
 }
 
 
