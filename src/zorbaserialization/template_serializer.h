@@ -304,7 +304,7 @@ void operator&(Archiver &ar, std::map<T1, T2> *&obj)
       }
       ar.read_end_current_level();
     }
-    else if((id > referencing) && (new_obj = ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
+    else if((new_obj = ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
     {
       obj = (std::map<T1, T2>*)new_obj;
       if(!obj)
@@ -335,10 +335,12 @@ void operator&(Archiver &ar, std::map<T1, T2> &obj)
       typename std::map<T1, T2>::iterator  it;
       for(it=obj.begin(); it != obj.end(); it++)
       {
-        ar.set_is_temp_field(true);
         T1  t1 = (*it).first;
+        ar.set_is_temp_field_one_level(true);
+        ar.dont_allow_delay();
         ar & t1;
-        ar.set_is_temp_field(false);
+        ar.set_is_temp_field_one_level(false);
+        ar.dont_allow_delay();
         ar & (*it).second;
       }
       ar.add_end_compound_field();
@@ -370,10 +372,11 @@ void operator&(Archiver &ar, std::map<T1, T2> &obj)
     std::pair<T1, T2>   p;
     for(int i=0;i<s;i++)
     {
-      ar.set_is_temp_field(true);
+      ar.set_is_temp_field_one_level(true);
       ar & p.first;
+      ar.set_is_temp_field_one_level(true);
       ar & p.second;
-      ar.set_is_temp_field(false);
+      ar.set_is_temp_field_one_level(false);
       obj.insert(p);
     }
     ar.read_end_current_level();
@@ -628,7 +631,7 @@ void operator&(Archiver &ar, T *&obj)
       obj->T::serialize_internal(ar);
       ar.read_end_current_level();
     }
-    else if((id > referencing) && (new_obj = (SerializeBaseClass*)ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
+    else if((new_obj = (SerializeBaseClass*)ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
     {
       obj = dynamic_cast<T*>(new_obj);
       if(!obj)

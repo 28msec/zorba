@@ -29,13 +29,13 @@ class MemArchiver : public Archiver
   archive_field   temp_field;
 public:
   MemArchiver(bool is_serializing_out, bool internal_archive=false) : 
-        Archiver(is_serializing_out, internal_archive) , temp_field("", false, false, NULL, NULL, 0, ARCHIVE_FIELD_NORMAL, 0)
+        Archiver(is_serializing_out, internal_archive) , temp_field("", false, false, NULL, NULL, 0, ARCHIVE_FIELD_NORMAL, NULL, false, true)
   {
     current_field = NULL;
     is_after_last = false;
   }
 
-  virtual bool read_next_field( char **type, 
+  virtual bool read_next_field_impl( char **type, 
                                 std::string *value,
                                 int *id, 
                                 int *version, 
@@ -44,7 +44,7 @@ public:
                                 enum ArchiveFieldTreat *field_treat,
                                 int *referencing);
 
-  virtual void read_end_current_level();
+  virtual void read_end_current_level_impl();
 
 
 ///////////////////////////////////

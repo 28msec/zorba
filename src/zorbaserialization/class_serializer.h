@@ -207,7 +207,7 @@ static const char* get_class_name_str_static() {return class_name_str;}
 
 ********************************************************************************/
 #define SERIALIZABLE_CLASS_FACTORY_DECL(class_name, creator)            \
-template<class T>                                                       \
+template<class T_serialized_class>                                      \
 class class_factory : public ::zorba::serialization::class_deserializer \
 {                                                                       \
 public:                                                                 \
@@ -215,7 +215,7 @@ public:                                                                 \
   {                                                                     \
     /*register this class into plan serializer*/                        \
     serialization::ClassSerializer::getInstance()->                     \
-      register_class_factory(T::get_class_name_str_static(), this);     \
+      register_class_factory(T_serialized_class::get_class_name_str_static(), this);     \
   }                                                                     \
                                                                         \
   virtual serialization::SerializeBaseClass* create_new(serialization::Archiver &ar) \
@@ -225,7 +225,7 @@ public:                                                                 \
                                                                         \
   virtual void cast_ptr(serialization::SerializeBaseClass* ptr, void **class_ptr)\
   {                                                                     \
-    *class_ptr = (void*)dynamic_cast<T*>(ptr);                          \
+    *class_ptr = (void*)dynamic_cast<T_serialized_class*>(ptr);         \
   }                                                                     \
                                                                         \
 };
@@ -308,6 +308,12 @@ const int class_name::class_versions_count = sizeof(class_name::class_versions)/
   template<> const int instance_name,second_T::class_versions_count = g_##template_name##_class_versions_count;\
   template<> const char *instance_name,second_T::class_name_str = #instance_name "," #second_T;
 
+#define SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(template_name, instance_name, second_T, third_T, index) \
+  instance_name,second_T,third_T::class_factory<instance_name,second_T,third_T>   g_class_factory_##template_name##_##index;\
+  template<> const ::zorba::serialization::ClassVersion *instance_name,second_T,third_T::class_versions = g_##template_name##_class_versions;\
+  template<> const int instance_name,second_T,third_T::class_versions_count = g_##template_name##_class_versions_count;\
+  template<> const char *instance_name,second_T,third_T::class_name_str = #instance_name "," #second_T "," #third_T;
+
 //no need to add CLASS_VERSION and END_SERIALIZABLE_CLASS_VERSIONS
 
 
@@ -376,6 +382,8 @@ if(ar.is_serializing_out() && !ar.is_serialize_base_class())    \
 
   void operator&(Archiver &ar, long &obj);
 
+  void operator&(Archiver &ar, unsigned long &obj);
+
   void operator&(Archiver &ar, long long &obj);
 
   void operator&(Archiver &ar, unsigned long long &obj);
@@ -423,7 +431,7 @@ void serialize_array(Archiver &ar, unsigned char *obj, int len);//like char p[20
           ar.set_is_temp_field(false);\
         }
 
-
+/*
 #define  SERIALIZE_FUNCTION(f)                      \
   {                                                 \
     bool is_uf = false;                             \
@@ -448,6 +456,8 @@ void serialize_array(Archiver &ar, unsigned char *obj, int len);//like char p[20
     else if(!ar.is_serializing_out())               \
       f = NULL;                                     \
   }
+*/
+#define  SERIALIZE_FUNCTION(f)    ar & f;
 
   void report_error(   XQUERY_ERROR        aErrorCode,
                       const std::string&   aDesc, 

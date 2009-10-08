@@ -70,6 +70,8 @@ void BinArchiver::serialize_out()
     ZORBA_ERROR(SRL0007_INPUT_ARCHIVE_USED_FOR_OUT_SERIALIZATION);
   }
 
+  prepare_serialize_out();
+
   os->write(ZORBA_BIN_SERIALIZED_PLAN_STRING, sizeof(ZORBA_BIN_SERIALIZED_PLAN_STRING));
 
   os->write(archive_name.c_str(), archive_name.length()+1);
@@ -188,7 +190,7 @@ int BinArchiver::read_int()
   return outval;
 }
 
-bool BinArchiver::read_next_field( char **type, 
+bool BinArchiver::read_next_field_impl( char **type, 
                               std::string *value,
                               int *id, 
                               int *version, 
@@ -240,7 +242,7 @@ bool BinArchiver::read_next_field( char **type,
 
 
 
-void BinArchiver::read_end_current_level()
+void BinArchiver::read_end_current_level_impl()
 {
   unsigned char  tempbyte = 0;
 

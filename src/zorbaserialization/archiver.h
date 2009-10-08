@@ -19,17 +19,18 @@
 
 #include "util/hashmap32.h"
 #include "zorbautils/hashmap.h"
+#include <stack>
 
 #include "zorbaserialization/class_serializer.h"
 
-namespace zorba {
-  namespace store {
-    class Item;
-  }
-  class CompilerCB;
+namespace zorba{
+namespace store{
+class Item;
+}
+class CompilerCB;
   class SerializationCallback;
 
-  namespace serialization {
+  namespace serialization{
 
 #define   ARCHIVER_LATEST_VERSION   0x2 //current latest version
 
@@ -48,54 +49,59 @@ namespace zorba {
   of pointers to the same object.
 */
 
-  class ClassSerializer;
-  
-  enum ArchiveFieldTreat
-  {
-    ARCHIVE_FIELD_NORMAL,
-    ARCHIVE_FIELD_IS_PTR,
-    ARCHIVE_FIELD_IS_NULL,
-    ARCHIVE_FIELD_IS_BASECLASS,
-    ARCHIVE_FIELD_IS_REFERENCING
+class ClassSerializer;
+
+enum ArchiveFieldTreat
+{
+  ARCHIVE_FIELD_NORMAL,
+  ARCHIVE_FIELD_IS_PTR,
+  ARCHIVE_FIELD_IS_NULL,
+  ARCHIVE_FIELD_IS_BASECLASS,
+  ARCHIVE_FIELD_IS_REFERENCING
+};
+
+struct fwd_ref
+{
+  int referencing;
+  void **ptr;
+  bool is_class;
+  //bool add_ref_to_rcobject;
+  char *class_name;
+};
+
+class archive_field
+{
+public:
+  char  *type;
+  bool  is_simple;
+  int   version;//for classes
+  enum ArchiveFieldTreat  field_treat;
+  int   referencing;
+  int   id;
+  bool  is_class;
+  const char  *value;//for simple fields
+  union{
+    const SerializeBaseClass  *assoc_class_ptr;
+    const void  *assoc_ptr;
   };
 
-  struct fwd_ref
-  {
-    int referencing;
-    void **ptr;
-    bool is_class;
-    //bool add_ref_to_rcobject;
-    char *class_name;
-  };
-  
-  class archive_field
-  {
-  public:
-    char  *type;
-    bool  is_simple;
-    int   version;//for classes
-    enum ArchiveFieldTreat  field_treat;
-    int   referencing;
-    int   id;
-    bool  is_class;
-    const char  *value;//for simple fields
-    union{
-      const SerializeBaseClass  *assoc_class_ptr;
-      const void  *assoc_ptr;
-    };
-  
-    class archive_field  *next;
-    class archive_field  *first_child;
-    class archive_field  *last_child;
-    class archive_field  *parent;
-  
-  public:
-    archive_field(const char *type, bool is_simple, bool is_class, 
-                  const void *value, const void *assoc_ptr,
-                  int version, enum ArchiveFieldTreat  field_treat,
-                  int referencing);
-    ~archive_field();
-  };
+  class archive_field  *next;
+  class archive_field  *first_child;
+  class archive_field  *last_child;
+  class archive_field  *parent;
+  class archive_field  *refered;
+
+  int  only_for_eval;
+  bool allow_delay;
+public:
+  archive_field(const char *type, bool is_simple, bool is_class, 
+                const void *value, const void *assoc_ptr,
+                int version, enum ArchiveFieldTreat  field_treat,
+                archive_field *refered,
+                int only_for_eval,
+                bool allow_delay);
+  ~archive_field();
+};
 
 //base class
 class Archiver
@@ -150,16 +156,23 @@ protected:
 
   class archive_field  *out_fields;
   class archive_field  *current_compound_field;
-  HashMap<SIMPLE_HASHOUT_FIELD, archive_field*, SimpleHashoutFieldCompare>    *simple_hashout_fields;
-  hash64map<archive_field*>       *hash_out_fields;//key is ptr, value is archive_field*
+  HashMap<SIMPLE_HASHOUT_FIELD, archive_field*, SimpleHashoutFieldCompare>    *simple_hashout_fields;//for simple types
+  hash64map<archive_field*>       *hash_out_fields;//key is ptr, value is archive_field*, for non-simple types
+  std::vector<archive_field*>     orphan_fields;
 
   int   nr_ids;
   int   current_class_version;
 
   bool  read_optional;
   int   is_temp_field;
-  bool  is_temp_field_one_level;
+  //bool  is_temp_field_one_level;
+  int   current_level;
+  std::stack<int>   limit_temp_level_stack;
   bool  internal_archive;
+  int   only_for_eval;
+  bool  is_xquery_with_eval;
+  bool  loading_hardcoded_objects;
+  bool  allow_delay;
 
   std::vector<store::Item*>   registered_items;
   SerializationCallback*      theUserCallback;
@@ -201,7 +214,18 @@ public:
   archive_field* check_class_pointer(const SerializeBaseClass *ptr);
   
 
-  virtual bool read_next_field( char **type, 
+  bool read_next_field( char **type, 
+                        std::string *value,
+                        int *id, 
+                        int *version, 
+                        bool *is_simple, 
+                        bool *is_class,
+                        enum ArchiveFieldTreat *field_treat,
+                        int *referencing);
+
+  void read_end_current_level();
+
+  virtual bool read_next_field_impl( char **type, 
                                 std::string *value,
                                 int *id, 
                                 int *version, 
@@ -210,7 +234,7 @@ public:
                                 enum ArchiveFieldTreat *field_treat,
                                 int *referencing) = 0;
 
-  virtual void read_end_current_level() = 0;
+  virtual void read_end_current_level_impl() = 0;
 
 
 protected:
@@ -231,13 +255,28 @@ protected:
     *archive_version = this->archive_version;
     *nr_ids = this->nr_ids;
   }
+
+
 protected:
   archive_field* check_nonclass_pointer_internal(const void *ptr, archive_field *fields);
   archive_field* check_class_pointer_internal(const SerializeBaseClass *ptr, archive_field *fields);
+  void replace_field(archive_field  *new_field, archive_field  *ref_field);
   void exchange_fields(archive_field  *new_field, archive_field  *ref_field);
 
   void root_tag_is_read();
   void register_pointers_internal(archive_field *fields);
+  void prepare_serialize_out();
+  archive_field* replace_with_null(archive_field *current_field);
+  int compute_field_depth(archive_field *field);
+  archive_field* find_top_most_eval_only_field(archive_field *parent_field);
+  void check_compound_fields(archive_field   *parent_field);
+  void check_compound_fields2(archive_field   *parent_field);
+  void clean_only_for_eval(archive_field *field, int substract_value);
+  archive_field* get_prev(archive_field* field);
+  int check_order(archive_field *parent_field,
+                  archive_field *field1,
+                  archive_field *field2);
+  void check_allowed_delays(archive_field *parent_field);
 
 public:
   void check_simple_field(bool retval, 
@@ -312,12 +351,44 @@ public:
   bool get_is_temp_field() { return (this->is_temp_field > 0); }
   void set_is_temp_field_one_level(bool is_temp)
   {
-    this->is_temp_field_one_level = is_temp;
+    if(is_temp)
+      limit_temp_level_stack.push(current_level + 1);
+    else
+      limit_temp_level_stack.pop();
   }
-  bool get_is_temp_field_one_level() {return this->is_temp_field_one_level;} 
+  bool get_is_temp_field_one_level() {return !limit_temp_level_stack.empty() && (limit_temp_level_stack.top() == current_level);} 
 
   int get_nr_ids();
 
+  bool xquery_with_eval() {return this->is_xquery_with_eval;}
+  void set_xquery_with_eval() {this->is_xquery_with_eval = true;}
+
+  int get_serialize_only_for_eval() {return only_for_eval;}
+  void set_serialize_only_for_eval(bool evalonly)
+  {
+    if(evalonly)
+      only_for_eval++;
+    else
+      only_for_eval--;
+    assert(only_for_eval >= 0);
+  }
+  void set_loading_hardcoded_objects(bool set_hardcoded)
+  {
+    this->loading_hardcoded_objects = set_hardcoded;
+  }
+  bool is_loading_hardcoded_objects()
+  {
+    return loading_hardcoded_objects;
+  }
+  void dont_allow_delay()
+  {
+    this->allow_delay = false;
+  }
+  void reset_allow_delay()
+  {
+    this->allow_delay = true;
+  }
+  bool get_allow_delay() {return this->allow_delay;}
 };
 
   

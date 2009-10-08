@@ -27,7 +27,7 @@ void MemArchiver::reset_serialize_in()
   root_tag_is_read();
 }
 
-bool MemArchiver::read_next_field( char **type, 
+bool MemArchiver::read_next_field_impl( char **type, 
                       std::string *value,
                       int *id, 
                       int *version, 
@@ -63,7 +63,7 @@ bool MemArchiver::read_next_field( char **type,
   return true;
 }
 
-void MemArchiver::read_end_current_level()
+void MemArchiver::read_end_current_level_impl()
 {
   is_after_last = false;
   current_field = current_field->parent;

@@ -77,6 +77,8 @@ void XmlArchiver::serialize_out()
     ZORBA_ERROR(SRL0007_INPUT_ARCHIVE_USED_FOR_OUT_SERIALIZATION);
   }
 
+  prepare_serialize_out();
+
   write_string("<?xml version=\"1.0\"?>\n");
   write_string("<zorba_archive archive_name=\"");
   encode_string(archive_name.c_str());
@@ -182,7 +184,7 @@ const char *XmlArchiver::get_field_treat_string(enum ArchiveFieldTreat field_tre
 
 ////////////reading archive
 
-bool XmlArchiver::read_next_field( char **type, 
+bool XmlArchiver::read_next_field_impl( char **type, 
                               std::string *value,
                               int *id, 
                               int *version, 
@@ -418,7 +420,7 @@ bool XmlArchiver::read_root_tag(char c)
   return true;
 }
 
-void XmlArchiver::read_end_current_level()
+void XmlArchiver::read_end_current_level_impl()
 {
   if(is_compound_field_without_children)
   {

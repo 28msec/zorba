@@ -357,7 +357,7 @@ void operator&(Archiver &ar, XQType *&obj)
       obj->T::serialize_internal(ar);
       ar.read_end_current_level();
     }
-    else if((id > referencing) && (new_obj = (SerializeBaseClass*)ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
+    else if((new_obj = (SerializeBaseClass*)ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
     {
       obj = dynamic_cast<T*>(new_obj);
       if(!obj)
@@ -539,6 +539,43 @@ void iterator_to_vector(store::Iterator_t iter, std::vector<store::Item_t> &item
   iter->close();
 }
 
+void serialize_my_children(Archiver &ar, store::Iterator_t iter)
+{
+  if(ar.is_serializing_out())
+  {
+    std::vector<store::Item_t>  childs;
+    iterator_to_vector(iter, childs);
+    std::vector<store::Item_t>::iterator  child_it;
+    int child_count = childs.size();
+    ar & child_count;
+    ar.set_is_temp_field(false);
+    for(child_it = childs.begin(); child_it != childs.end(); child_it++)
+    {
+      store::Item*  p = (*child_it).getp();
+    //  ar.set_is_temp_field_one_level(true);
+      ar.dont_allow_delay();
+      ar & p;
+    }
+  }
+  else
+  {
+    int child_count;
+    ar & child_count;
+    ar.set_is_temp_field(false);
+    for(int i=0;i<child_count;i++)
+    {
+      store::Item*  p; 
+    //  ar.set_is_temp_field_one_level(true);
+      ar & p;//should be automatically added to DocumentNode or ElementNode
+    }
+  }
+  ar.set_is_temp_field(true);
+}
+
+void serialize_my_children2(Archiver &ar, store::Iterator_t iter)
+{
+  serialize_my_children(ar, iter);
+}
 
 #define SERIALIZE_FIELD(type, var, get_func)\
       type var;                             \
@@ -946,13 +983,7 @@ EndAtomicItem:;
         SERIALIZE_FIELD(xqpStringStore_t, baseUri, getBaseURI());
         SERIALIZE_FIELD(xqpStringStore_t, docUri, getDocumentURI());
         FINALIZE_SERIALIZE(createDocumentNode, (result, baseUri, docUri));
-        std::vector<store::Item_t>  childs;
-        if(ar.is_serializing_out())
-          iterator_to_vector(obj->getChildren(), childs);
-        ar.set_is_temp_field(false);
-        ar.set_is_temp_field_one_level(true);
-        ar & childs;//should be automatically added to DocumentNode
-        ar.set_is_temp_field(true);
+        serialize_my_children(ar, obj->getChildren());
       }break;
       case store::StoreConsts::elementNode:
       {
@@ -983,16 +1014,18 @@ EndAtomicItem:;
         ar & ns_bindings;
         SERIALIZE_FIELD(xqpStringStore_t, baseUri, getBaseURI());
         FINALIZE_SERIALIZE(createElementNode, (result, parent, -1, nodename, name_of_type, haveTypedValue, haveEmptyValue, ns_bindings, baseUri, isInSubstGroup));
-        std::vector<store::Item_t>  attribs;
-        iterator_to_vector(obj->getAttributes(), attribs);
-        ar.set_is_temp_field(false);
-        ar.set_is_temp_field_one_level(true);
-        ar & attribs;
-        std::vector<store::Item_t>  childs;
-        iterator_to_vector(obj->getChildren(), childs);
-        ar.set_is_temp_field_one_level(true);
-        ar & childs;
-        ar.set_is_temp_field(true);
+      //  std::vector<store::Item_t>  attribs;
+      //  iterator_to_vector(obj->getAttributes(), attribs);
+      //  ar.set_is_temp_field(false);
+      //  ar.set_is_temp_field_one_level(true);
+      //  ar & attribs;
+        serialize_my_children2(ar, obj->getAttributes());
+      //  std::vector<store::Item_t>  childs;
+      //  iterator_to_vector(obj->getChildren(), childs);
+      //  ar.set_is_temp_field_one_level(true);
+      //  ar & childs;
+      //  ar.set_is_temp_field(true);
+        serialize_my_children(ar, obj->getChildren());
       }break;
       case store::StoreConsts::attributeNode:
       {
@@ -1088,7 +1121,7 @@ EndAtomicItem:;
     else
     {
       SerializeBaseClass  *new_obj = NULL;
-      if((id > referencing) && (new_obj = (SerializeBaseClass*)ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
+      if((new_obj = (SerializeBaseClass*)ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
       {
         obj = dynamic_cast<store::Item*>(new_obj);
         if(!obj)
@@ -1186,7 +1219,7 @@ void operator&(Archiver &ar, std::map<int, rchandle<function> > *&obj)
       }
       ar.read_end_current_level();
     }
-    else if((id > referencing) && (new_obj = ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
+    else if((new_obj = ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
     {
       obj = (context::ArityFMap*)new_obj;
       if(!obj)

@@ -19,6 +19,9 @@
 #include "context/context.h"
 #include "common/shared_types.h"
 #include "types/typeimpl.h"
+#define ZORBA_ZORBAUTILS_ITEM_POINTER_HASHMAP_WITH_SERIALIZATION
+#include "zorbautils/hashmap_itemp.h"
+#include "indexing/value_index.h"
 
 #include "zorbaserialization/serialization_engine.h"
 
@@ -47,6 +50,21 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap_entry, serializable
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap_entry, serializable_hashmap<xqp_string>::entry, 2)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap_entry, serializable_hashmap<xqtref_t>::entry, 3)
 
+SERIALIZABLE_TEMPLATE_VERSIONS(serializable_HashEntry)
+END_SERIALIZABLE_TEMPLATE_VERSIONS(serializable_HashEntry)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<store::Item*, rchandle<ValueIndex> >, 1)
+
+SERIALIZABLE_TEMPLATE_VERSIONS(serializable_HashMap)
+END_SERIALIZABLE_TEMPLATE_VERSIONS(serializable_HashMap)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, rchandle<ValueIndex>, serializable_ItemPointerHashMap<rchandle<ValueIndex> >::serializable_CompareFunction>, 1)
+
+SERIALIZABLE_TEMPLATE_VERSIONS(serializable_ItemPointerHashMap)
+END_SERIALIZABLE_TEMPLATE_VERSIONS(serializable_ItemPointerHashMap)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, serializable_ItemPointerHashMap<rchandle<ValueIndex> >, 1)
+
+SERIALIZABLE_TEMPLATE_VERSIONS(serializable_CompareFunction)
+END_SERIALIZABLE_TEMPLATE_VERSIONS(serializable_CompareFunction)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_CompareFunction, serializable_ItemPointerHashMap<rchandle<ValueIndex> >::serializable_CompareFunction, 1)
 
 /*SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(Batcher, Batcher<ElementIterator>)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(Batcher, Batcher<FLWORIterator>)

@@ -36,7 +36,7 @@ public:
   BinArchiver(std::istream *is);
   BinArchiver(std::ostream *os);
 
-  virtual bool read_next_field( char **type, 
+  virtual bool read_next_field_impl( char **type, 
                                 std::string *value,
                                 int *id, 
                                 int *version, 
@@ -45,7 +45,7 @@ public:
                                 enum ArchiveFieldTreat *field_treat,
                                 int *referencing);
 
-  virtual void read_end_current_level();
+  virtual void read_end_current_level_impl();
 
 
 ///////////////////////////////////

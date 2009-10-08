@@ -262,6 +262,36 @@ void operator&(Archiver &ar, long &obj)
   }
 }
 
+void operator&(Archiver &ar, unsigned long &obj)
+{
+  if(ar.is_serializing_out())
+  {
+    char  strtemp[30];
+    sprintf(strtemp, "%lu", obj);
+
+    ar.add_simple_field("unsigned long", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
+  }
+  else
+  {
+    char  *type;
+    std::string value;
+    int   id;
+    int   version;
+    bool  is_simple;
+    bool  is_class;
+    enum  ArchiveFieldTreat field_treat;
+    int   referencing;
+    bool  retval;
+    retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
+    if(!retval && ar.get_read_optional_field())
+      return;
+    ar.check_simple_field(retval, type, "unsigned long", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
+    sscanf(value.c_str(), "%lu", &obj);
+
+    ar.register_reference(id, field_treat, &obj);
+  }
+}
+
 void operator&(Archiver &ar, long long &obj)
 {
   if(ar.is_serializing_out())
@@ -615,9 +645,7 @@ void operator&(Archiver &ar, char* &obj)//like char *p=strdup("io");
       obj = strdup(value.c_str());
       ar.register_reference(id, field_treat, obj);
     }
-    else if(id > referencing)// ARCHIVE_FIELD_IS_REFERENCING
-      obj = (char*)ar.get_reference_value(referencing);
-    else
+    else if((obj = (char*)ar.get_reference_value(referencing)) == NULL)// ARCHIVE_FIELD_IS_REFERENCING
       ar.register_delay_reference((void**)&obj, !FIELD_IS_CLASS, NULL, referencing);
   }
 }
