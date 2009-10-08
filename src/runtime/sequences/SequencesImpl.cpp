@@ -333,6 +333,10 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       ZORBA_ERROR_LOC(FORG0006, loc);
     }
+    else if(e.theQueryLine == 0)
+    {
+      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+    }
     throw;
   }
 }
