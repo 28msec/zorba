@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 #include <zorba/uri_resolvers.h>
+#include <zorba/serialization_callback.h>
 
 #include <map>
 #include <vector>
@@ -130,6 +131,31 @@ protected:
 public:
   virtual Collection_t
   getCollection ( ) const;
+};
+
+
+class TestSerializationCallback : public zorba::SerializationCallback
+{
+  CollectionURIResolver *my_collection_resolver;
+  public:
+    TestSerializationCallback(CollectionURIResolver* my_collection_resolver)
+    {
+      this->my_collection_resolver = my_collection_resolver;
+    }
+                              
+    virtual ~TestSerializationCallback() {}
+
+    virtual ExternalModule*
+      getExternalModule(const String& aURI) const {return NULL;}
+
+    virtual bool
+      getTraceStream(std::ostream&) const {return NULL;}
+
+    virtual CollectionURIResolver*
+      getCollectionURIResolver() const {return my_collection_resolver;}
+
+    virtual DocumentURIResolver*
+      getDocumentURIResolver() const {return NULL;}
 };
 
 

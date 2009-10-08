@@ -351,7 +351,8 @@ main(int argc, char** argv)
       }
       if ( isW3Ctest ) 
       {
-        lQuery->loadExecutionPlan(ifbinary, NULL, cresolver.get(), resolver.get(), mresolver.get());
+        zorba::TestSerializationCallback   serl_callback(cresolver.get());
+        lQuery->loadExecutionPlan(ifbinary, &serl_callback);//, NULL, cresolver.get(), resolver.get(), mresolver.get());
       }
       else
       {
