@@ -429,7 +429,7 @@ namespace zorba {
     if (res) {
       xqpString lStringHolder(value.getp());
       if (lStringHolder.indexOf("\"") != -1) {
-        lStringHolder = lStringHolder.replace("\"", "&quot;", "");
+        lStringHolder = lStringHolder.replace("\"", "'", "");
       }
       value = lStringHolder.getStore();
       return res;
