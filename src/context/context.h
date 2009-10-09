@@ -60,30 +60,40 @@ public:
       int                intValue;
       bool               boolValue;
 		  const XQType     * typeValue; ///do manual ref counting on this
-      ExternalModule   * module; // module with external functions registered by the user
     };
 
   public:
     SERIALIZABLE_CLASS(ctx_value_t)
     SERIALIZABLE_CLASS_CONSTRUCTOR(ctx_value_t)
-    void
-    serialize_module(serialization::Archiver &ar,
-                     ExternalModule*& aModule);
 
     void serialize(::zorba::serialization::Archiver &ar);
     ctx_value_t(enum ctx_value_type type = (enum ctx_value_type)-1) {this->type = type;}
     virtual ~ctx_value_t() {}
   };
 
+  struct ctx_module_t : public ::zorba::serialization::SerializeBaseClass
+  {
+    ExternalModule* module;
+    bool            dyn_loaded_module;
+  public:
+    SERIALIZABLE_CLASS(ctx_module_t)
+    SERIALIZABLE_CLASS_CONSTRUCTOR(ctx_module_t)
+
+    void serialize(::zorba::serialization::Archiver &ar);
+    ctx_module_t() : module(0), dyn_loaded_module(false) {}
+    virtual ~ctx_module_t() {}
+  };
+
   typedef xqp_string (* str_param_t) ();
   
 protected:
-	context              * parent;
+	context                           * parent;
 	serializable_hashmap<ctx_value_t>   keymap;     // maps strings to ctx_values
+	serializable_hashmap<ctx_module_t>  modulemap;  // uris to external modules
 	serializable_hashmap<xqp_string>    str_keymap; // maps strings to strings
   checked_vector<std::string>         module_paths; // sequence of locations
 
-  xqpString                      default_function_namespace_internal;
+  xqpString                           default_function_namespace_internal;
 
 public:
   SERIALIZABLE_CLASS(context)
@@ -124,6 +134,7 @@ public:
         parent->addReference(parent->getSharedRefCounter() SYNC_PARAM2(parent->getRCLock()));
     }
     ar & keymap;
+    ar & modulemap;
     ar & str_keymap;
     ar & module_paths;
     ar & default_function_namespace_internal;
@@ -182,6 +193,15 @@ protected:
       return parent == NULL ? false : parent->context_value2 (key1, key2, val);
 	}
 
+  bool
+  lookup_module(xqp_string key, ctx_module_t& val) const
+  {
+    if (modulemap.get (key, val))
+      return true;
+    else
+      return parent == NULL ? false : parent->lookup_module (key, val);
+  }
+
   expr* lookup_expr (xqp_string key) const 
   {
     ctx_value_t val(CTX_EXPR);
@@ -230,7 +250,7 @@ protected:
 
   bool bind_func2 (const char *key1, xqp_string key2, function *f);
 
-  bool bind_module(xqp_string uri, ExternalModule* m);
+  bool bind_module(xqp_string uri, ExternalModule* m, bool dyn_loaded = false);
 
 protected:
   //serialization helpers

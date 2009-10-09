@@ -306,7 +306,7 @@ public:
   // this module can be used to retrieve external functions defined
   // in the namespace of the module
   bool
-  bind_external_module(ExternalModule* aModule);
+  bind_external_module(ExternalModule* aModule, bool aDynamicallyLoaded = false);
   
   StatelessExternalFunction *
   lookup_stateless_external_function(const xqp_string& prefix,

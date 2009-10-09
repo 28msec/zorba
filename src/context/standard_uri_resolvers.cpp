@@ -19,6 +19,9 @@
 #include <fstream>
 #include <sstream>
 
+#include <zorba/util/file.h>
+#include <zorba/external_module.h>
+
 #include "util/web/web.h"
 
 #include "store/api/item.h"
@@ -29,6 +32,7 @@
 #include "zorbatypes/URI.h"
 #include "zorbaerrors/error_manager.h"
 #include "context/static_context.h"
+#include "context/dynamic_loader.h"
 
 namespace zorba {
 
@@ -295,6 +299,7 @@ StandardModuleURIResolver::resolve(
 
   // 3. treat the URI as URL and check if a file is in the
   // filesystem or on the web
+  // TODO register other interal resolvers for each of the tasks
   xqpStringStore_t  lResolvedURI = aURI->getStringValue();
   if (aFileUri) {
     *aFileUri = *lResolvedURI;
@@ -312,6 +317,80 @@ StandardModuleURIResolver::resolve(
     modfile.reset (code.release());
   }
   return modfile.release();
+}
+
+std::string
+StandardModuleURIResolver::computeLibraryName(const URI aURI)
+{
+  xqpString lPathNotation(aURI.toPathNotation());
+
+  // get the branching path and the name of the file
+  file lPotentialFileName(lPathNotation.getStore()->str());
+  file lBranchPath = lPotentialFileName.branch_path();
+  std::string lFilename = 
+      lPathNotation.getStore()->str().substr(lBranchPath.get_path().length()+1);
+
+  // remove .xq from the end of the file
+  size_t lIndexOfXQ = lFilename.find_last_of(".xq");
+  if (lIndexOfXQ != std::string::npos) {
+    lFilename.erase(lIndexOfXQ - 2);
+  }
+
+  // create the name of the file
+  // win32: module.dll
+  // apple: libmodule.dylib
+  // other unix: libmodule.so
+  std::ostringstream lLibraryName;
+  lLibraryName << lBranchPath.get_path()
+#ifdef WIN32
+      << "\" << lFilename << ".dll";
+#endif
+#ifdef UNIX
+#  ifdef APPLE
+      << "/lib" << lFilename << ".dylib";
+#  else 
+      << "/lib" << lFilename << ".so";
+#  endif
+#endif
+  return lLibraryName.str();
+}
+
+ExternalModule*
+StandardModuleURIResolver::getExternalModule(xqpStringStore* aFileUri,
+                                             static_context* aStaticContext)
+{
+  std::vector<std::string> lModulePaths;
+  aStaticContext->get_full_module_paths(lModulePaths);
+
+  std::auto_ptr<std::istream> modfile(0); // result file
+
+  if (lModulePaths.size() != 0) {
+    URI lURI(aFileUri);
+    std::string lLibraryName = computeLibraryName(lURI);
+
+    // check all module path in the according order
+    // the higher in the hirarchy the static context is
+    // the higher the priority of its module paths
+    for (std::vector<std::string>::const_iterator lIter = lModulePaths.begin();
+        lIter != lModulePaths.end(); ++lIter) {
+      xqpString lPotentialModuleFile = (*lIter) + lLibraryName;
+      std::auto_ptr<std::istream> modfile(new std::ifstream(lPotentialModuleFile.getStore()->str().c_str()));
+      if (modfile->good()) {
+        ExternalModule* lModule 
+          = DynamicLoader::getInstance()->getModule(lPotentialModuleFile.getStore()->c_str());
+        if (lModule) {
+          if (!lModule->getURI().equals(aFileUri->c_str())) {
+            ZORBA_ERROR_DESC_OSS(XQP0028_FUNCTION_IMPL_NOT_FOUND,
+                                 "The module loaded from " << lPotentialModuleFile
+                                 << "doesn't provide the required target namespace "
+                                 << "(" << lURI.toString() << ").");
+          }
+        }
+        return lModule;
+      } 
+    }
+  }
+  return 0;
 }
 
 std::istream*

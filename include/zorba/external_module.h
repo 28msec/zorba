@@ -32,9 +32,18 @@ namespace zorba {
       virtual StatelessExternalFunction*
       getExternalFunction(String aLocalname) const = 0;
 
-      // TODO provide access to all functions
-      // virtual Function*
-      // getFunction(String aLocalname) const = 0;
+      /**
+       * \brief Function used for destroying the ExternalModule object
+       *        passed as parameter.
+       *
+       * The user needs to override this function if the module
+       * passed as parameter was created using the createModule function
+       * which is used for dynamically loading modules from a shared
+       * library.
+       */
+      virtual void
+      destroy() {}
+
   };
 
 } /* namespace zorba */

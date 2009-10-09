@@ -69,6 +69,9 @@ END_SERIALIZABLE_CLASS_VERSIONS(context)
 SERIALIZABLE_CLASS_VERSIONS(context::ctx_value_t)
 END_SERIALIZABLE_CLASS_VERSIONS(context::ctx_value_t)
 
+SERIALIZABLE_CLASS_VERSIONS(context::ctx_module_t)
+END_SERIALIZABLE_CLASS_VERSIONS(context::ctx_module_t)
+
 SERIALIZABLE_CLASS_VERSIONS(static_context)
 END_SERIALIZABLE_CLASS_VERSIONS(static_context)
 
@@ -169,11 +172,13 @@ bool context::bind_func2 (const char *key1, xqp_string key2, function *f)
 }
 
 
-bool context::bind_module(xqp_string uri, ExternalModule* m) 
+bool context::bind_module(xqp_string uri, ExternalModule* m,
+                          bool dyn_loaded) 
 {
-  ctx_value_t v(CTX_MODULE);
+  ctx_module_t v;
   v.module = m;
-  return !keymap.put (uri, v, false);
+  v.dyn_loaded_module = dyn_loaded;
+  return !modulemap.put (uri, v, false);
 }
 
 bool context::check_parent_is_root()
@@ -187,42 +192,59 @@ void context::set_parent_as_root()
   parent = &GENV_ROOT_STATIC_CONTEXT;
 }
 
-void context::ctx_value_t::serialize_module(serialization::Archiver &ar,
-                                            ExternalModule*& aModule)
+void context::ctx_module_t::serialize(serialization::Archiver &ar)
 {
   if(ar.is_serializing_out()) {
     // serialize out: the uri of the module that is used in this plan
 
-    xqp_string lURI = Unmarshaller::getInternalString(aModule->getURI());
+    xqp_string lURI = Unmarshaller::getInternalString(module->getURI());
     xqpStringStore_t lURIStore = lURI.getStore();
     ar & lURIStore;
+    ar & dyn_loaded_module;
   } else {
     // serialize in: load the serialized uri of the module and
     //               get the externalmodule from the user's
     //               registered serialization callback
     xqpStringStore_t lURIStore = 0;
     ar & lURIStore;
+    ar & dyn_loaded_module;
 
-    // class registered by the user
-    SerializationCallback* lCallback = ar.getUserCallback();
-    if (!lCallback) {
-      ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
-                           "Couldn't load pre-compiled query because"
-                           << " the external module " << lURIStore 
-                           << " is required but no SerializationCallback is"
-                           << " given for retrieving that module.");
-    }
+    if (dyn_loaded_module) {
+      InternalModuleURIResolver* lStandardModuleResolver 
+        = GENV.getModuleURIResolver();
 
-    // the life-cycle of the module is managed by the user
-    aModule = lCallback->getExternalModule(lURIStore.getp());
-    if (!aModule) {
-      ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
-                           "Couldn't load pre-compiled query because"
-                           << " the external module " << lURIStore 
-                           << " is not available using the registered"
-                           << " SerializationCallback");
+      module = lStandardModuleResolver->getExternalModule(
+                  lURIStore.getp(), 0);
+
+      // no way to get the module
+      if (!module) {
+        ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
+                             "Couldn't load pre-compiled query because"
+                             << " the external module " << lURIStore 
+                             << " is not available to be loaded from a" 
+                             << " dynamic library.");
+      }
+    } else { 
+      // class registered by the user
+      SerializationCallback* lCallback = ar.getUserCallback();
+      if (!lCallback) {
+        ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
+                             "Couldn't load pre-compiled query because"
+                             << " the external module " << lURIStore 
+                             << " is required but no SerializationCallback is"
+                             << " given for retrieving that module.");
+      }
+
+      // the life-cycle of the module is managed by the user
+      module = lCallback->getExternalModule(lURIStore.getp());
+      if (!module) {
+        ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
+                             "Couldn't load pre-compiled query because"
+                             << " the external module " << lURIStore 
+                             << " is not available using the registered"
+                             << " SerializationCallback");
+      }
     }
-    
   }
 }
 
@@ -265,9 +287,6 @@ void context::ctx_value_t::serialize(::zorba::serialization::Archiver &ar)
     break;
   case CTX_BOOL:
     ar & boolValue;
-    break;
-  case CTX_MODULE:
-    serialize_module(ar, module);
     break;
   case CTX_XQTYPE:
   default:
@@ -371,6 +390,15 @@ static_context::~static_context()
       } else if (0 == strncmp(keybuff, "fmap:", 5)) {
         delete (const_cast<ArityFMap *> (val->fmapValue));
       }
+    }
+  }
+
+  checked_vector<serializable_hashmap<ctx_module_t>::entry>::const_iterator   it2;
+  for(it2 = modulemap.begin(); it2 != modulemap.end(); it2++)
+  {
+    const ctx_module_t *val = &(*it2).val;
+    if (val->dyn_loaded_module) {
+      val->module->destroy();
     }
   }
 
@@ -911,11 +939,12 @@ void static_context::find_functions_int (
 
 
 bool
-static_context::bind_external_module( ExternalModule* aModule ) 
+static_context::bind_external_module( ExternalModule* aModule,
+                                      bool aDynamicallyLoaded)
 {
   xqp_string lURI = Unmarshaller::getInternalString(aModule->getURI());
 
-  return bind_module(lURI, aModule);
+  return bind_module(lURI, aModule, aDynamicallyLoaded);
 }
 
 
@@ -925,13 +954,27 @@ static_context::lookup_stateless_external_function(
     const xqp_string& aLocalName)
 {
   // get the module for the given namespace
-  ctx_value_t v(CTX_MODULE);
-  bool lRes = context_value(aURI, v);
-  if (!lRes)
-    return NULL;
+  ctx_module_t v;
+  bool lRes = lookup_module(aURI, v);
+  ExternalModule* lModule = 0;
 
-  ExternalModule* lModule = v.module;
-  assert(lModule);
+  // if the module is not yet in the static context
+  // we try to get it from the URI resolver
+  if (!lRes) {
+    InternalModuleURIResolver* lStandardModuleResolver = GENV.getModuleURIResolver();
+    lModule = lStandardModuleResolver->getExternalModule(
+                entity_retrieval_url().getStore(), this);
+
+    // no way to get the module
+    if (!lModule) {
+      return NULL;
+    }
+
+    // remember the module for future use
+    bind_external_module(lModule, true);
+  } else  {
+    lModule = v.module;
+  }
 
   // get the function from this module.
   // return 0 if not found

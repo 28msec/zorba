@@ -28,6 +28,7 @@ SET(CONTEXT_SRCS
     uri_resolver_wrapper.cpp
     context.cpp
     statically_known_collection.cpp
+    dynamic_loader.cpp
     )
 
 SET(CONTEXT_BUILD_SRCS

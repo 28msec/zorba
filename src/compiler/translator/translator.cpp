@@ -2220,7 +2220,7 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
       static_cast<static_context *>(minfo->topCompilerCB->m_sctx->get_parent());
 
       // Create the root sctx for the imported module as a child of the
-      // query-level sctx. Register this sctx in the query-lever sctx map.
+      // query-level sctx. Register this sctx in the query-level sctx map.
       mod_ccb.m_sctx = independent_sctx->create_child_context();
       mod_ccb.m_cur_sctx = minfo->topCompilerCB->m_context_map->size() + 1;
       mod_ccb.m_sctx->set_entity_retrieval_url(resolveduri->str());
@@ -2419,9 +2419,14 @@ void* begin_visit (const VFO_DeclList& v)
 
       // 2. if no built-in function is there, we check the static context
       // to see if the user has registered an external function
-      StatelessExternalFunction* ef =
-      sctx_p->lookup_stateless_external_function(qname->getNamespace(),
-                                                 qname->getLocalName());
+      StatelessExternalFunction* ef = 0;
+      try {
+        ef = sctx_p->lookup_stateless_external_function(qname->getNamespace(),
+                qname->getLocalName());
+      } catch (error::ZorbaError& e) {
+        ZORBA_ERROR_LOC_DESC(e.theErrorCode,
+                             loc, e.theDescription);
+      }
       // The external function must be registered already in the static context
       // via the StaticContextImpl::registerStatelessExternalFunction() user api.
       if (ef == NULL) 

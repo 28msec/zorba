@@ -69,6 +69,10 @@ namespace zorba {
       resolve(const store::Item_t& aURI,
               static_context* aStaticContext,
               xqpStringStore* aFileUri = 0) = 0;
+
+      virtual ExternalModule*
+      getExternalModule(xqpStringStore* aFileUri,
+                        static_context* aStaticContext) { return 0; }
   };
 
 } /* namespace zorba */

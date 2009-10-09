@@ -1268,7 +1268,7 @@ class IndexKeySpec : public parsenode
 protected:
   rchandle<exprnode>     theExpr;
   rchandle<SequenceType> theType;
-  long                   theEmptyLeast;
+  bool                   theEmptyLeast;
   std::string            theCollation;
 
 public:
@@ -1280,7 +1280,7 @@ public:
     parsenode(loc),
     theExpr(expr),
     theType(type),
-    theEmptyLeast(-1)
+    theEmptyLeast(false)
   {
   }
 
@@ -1290,7 +1290,7 @@ public:
 
   bool emptyLeast() const { return theEmptyLeast; }
 
-  void setEmptyLeast(long v) { theEmptyLeast = v; }
+  void setEmptyLeast(bool v) { theEmptyLeast = v; }
 
   const std::string& getCollation() const { return theCollation; }
 

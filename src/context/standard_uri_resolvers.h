@@ -65,11 +65,18 @@ namespace zorba {
       resolve(const store::Item_t& aURI,
               static_context* aStaticContext,
               xqpStringStore* aFileUri = 0);
+
+      virtual ExternalModule*
+      getExternalModule(xqpStringStore* aFileUri,
+                        static_context* aStaticContext);
     protected:
       static std::istream*
       checkModulePath(const std::vector<std::string>& aModulePaths,
                       const store::Item_t& aURI,
                       xqpStringStore* aResultFile);
+
+      static std::string
+      computeLibraryName(const URI aURI);
 
   };
 
