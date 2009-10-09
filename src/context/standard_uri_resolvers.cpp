@@ -343,7 +343,7 @@ StandardModuleURIResolver::computeLibraryName(const URI aURI)
   std::ostringstream lLibraryName;
   lLibraryName << lBranchPath.get_path()
 #ifdef WIN32
-      << "\" << lFilename << ".dll";
+      << "\\" << lFilename << ".dll";
 #endif
 #ifdef UNIX
 #  ifdef APPLE
