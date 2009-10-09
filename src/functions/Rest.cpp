@@ -22,6 +22,24 @@
 
 namespace zorba {
 
+class rest_head : public function
+{
+  public:
+    rest_head(const signature& sig): function(sig){}
+
+    bool isPureFunction() const { return false; }
+
+    PlanIter_t codegen(
+      CompilerCB*,
+      static_context* sctx,
+      const QueryLoc& loc,
+      std::vector<PlanIter_t>& argv,
+      AnnotationHolder& ann) const
+    {
+      return new ZorbaRestHeadIterator(sctx, loc, argv);
+    }
+};
+
 class rest_get : public function
 {
 public:
@@ -58,7 +76,6 @@ public:
     return new ZorbaRestGetIterator(sctx, loc, argv, true);
   }
 };
-
 
 class rest_post : public function
 {
@@ -138,24 +155,6 @@ public:
 
   DEFAULT_NARY_CODEGEN(ZorbaRestDeleteIterator);
 };
-
-
-class rest_head : public function
-{
-public:
-  rest_head(const signature& sig) : function(sig) {}
-
-  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const
-  {
-    return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-  }
-
-  bool isPureFunction () const { return false; }
-
-  DEFAULT_NARY_CODEGEN(ZorbaRestHeadIterator);
-};
-
-
 
 void populateContext_Rest(static_context* sctx)
 {
@@ -279,21 +278,20 @@ DECL(sctx, rest_delete,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
-
 // zorba-rest:head with an URI
 DECL(sctx, rest_head,
      (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "head"),
-      GENV_TYPESYSTEM.STRING_TYPE_ONE,
-      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+     GENV_TYPESYSTEM.STRING_TYPE_ONE,
+     GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
-// zorba-rest:head with an URI and a payload
+// zorba-rest:get with an URI and a payload
 DECL(sctx, rest_head,
      (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "head"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
-// zorba-rest:head with an URI, a payload and custom headers
+// zorba-rest:get with an URI, a payload and custom headers
 DECL(sctx, rest_head,
      (createQName(ZORBA_REST_FN_NS, "fn-zorba-rest", "head"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
@@ -301,6 +299,4 @@ DECL(sctx, rest_head,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 }
-
-
 } /* namespace zorba */

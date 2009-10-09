@@ -34,7 +34,6 @@ typedef void CURLM;
 class CurlStreamBuffer;
 typedef rchandle<CurlStreamBuffer> CurlStreamBuffer_t;
 
-
 class CurlStreamBuffer : public std::streambuf, public SimpleRCObject
 {
 public:
@@ -123,6 +122,42 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
+/****************************************************************************
+ *
+ * rest-head Iterator 
+ *
+ ****************************************************************************/
+
+class ZorbaRestHeadIterator : public NaryBaseIterator<ZorbaRestHeadIterator,
+                                                     ZorbaRestGetIteratorState> 
+{
+
+public:
+  SERIALIZABLE_CLASS(ZorbaRestHeadIterator)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaRestHeadIterator,
+                                   NaryBaseIterator<ZorbaRestHeadIterator,
+                                                    ZorbaRestGetIteratorState>)
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar, (NaryBaseIterator<ZorbaRestHeadIterator,
+                                              ZorbaRestGetIteratorState >*)this);
+    //ar & isGetTidy;
+  }
+
+public:
+  ZorbaRestHeadIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& aChildren)
+    :
+    NaryBaseIterator<ZorbaRestHeadIterator, ZorbaRestGetIteratorState>(sctx, loc, aChildren) { } 
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 
 /****************************************************************************
  *
@@ -173,21 +208,11 @@ NARY_ITER_STATE(ZorbaRestPutIterator, ZorbaRestGetIteratorState);
 
 /****************************************************************************
  *
- * zorba-rest put iterator
+ * zorba-rest delete iterator
  *
  ****************************************************************************/
 
 NARY_ITER_STATE(ZorbaRestDeleteIterator, ZorbaRestGetIteratorState);
-
-
-/****************************************************************************
- *
- * zorba-rest head iterator
- *
- ****************************************************************************/
-
-NARY_ITER_STATE(ZorbaRestHeadIterator, ZorbaRestGetIteratorState);
-
 
 } /* namespace zorba */
 

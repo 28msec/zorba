@@ -55,6 +55,9 @@ using namespace store;
 
 static const char expect_buf[] = "Expect:";
 
+SERIALIZABLE_CLASS_VERSIONS(ZorbaRestHeadIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(ZorbaRestHeadIterator)
+
 SERIALIZABLE_CLASS_VERSIONS(ZorbaRestGetIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(ZorbaRestGetIterator)
 
@@ -66,11 +69,6 @@ END_SERIALIZABLE_CLASS_VERSIONS(ZorbaRestPutIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(ZorbaRestDeleteIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(ZorbaRestDeleteIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(ZorbaRestHeadIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ZorbaRestHeadIterator)
-
-
 
 /****************************************************************************
  *
@@ -162,13 +160,6 @@ const char* CurlStreamBuffer::getErrorBuffer() const
 {
   return CurlErrorBuffer;
 }
-
-
-/****************************************************************************
- *
- * rest-get Iterator
- *
- ****************************************************************************/
 
 bool createTypeHelper(store::Item_t& result, xqpString type_name)
 {
@@ -877,6 +868,74 @@ static xqpString processGetPayload(Item_t& payload_data, xqpString& Uri)
   return Uri;
 }
 
+/****************************************************************************
+ *
+ * rest-head Iterator
+ *
+ ****************************************************************************/
+bool ZorbaRestHeadIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t item, lUri, payload_data, headers, tidyUserOpt;
+  xqpString Uri;
+  curl_slist *headers_list = NULL;
+  int code;
+  unsigned int index = 1;
+  
+  ZorbaRestGetIteratorState* state;
+  DEFAULT_STACK_INIT(ZorbaRestGetIteratorState, state, planState);
+
+  setupConnection(state, 4);
+
+  if (CONSUME(lUri,0) == false)
+  {
+    ZORBA_ERROR_DESC(XQP0020_INVALID_URI, "No URI given to the REST head() function.");
+  }
+
+  Uri = lUri->getStringValue()->str();
+
+  if (theChildren.size() > index)
+    while (CONSUME(payload_data, index))
+      Uri = processGetPayload(payload_data, Uri);
+
+  if (theChildren.size() > (index + 1))
+    while (CONSUME(headers, (index + 1)))
+      processHeader(headers, &headers_list);
+
+  curl_easy_setopt(state->EasyHandle, CURLOPT_URL, Uri.c_str());
+  curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPHEADER, headers_list );
+#ifndef ZORBA_VERIFY_PEER_SSL_CERTIFICATE//default is to not verify root certif
+  curl_easy_setopt(state->EasyHandle, CURLOPT_SSL_VERIFYPEER, 0);
+  //but CURLOPT_SSL_VERIFYHOST is left default, value 2, meaning verify that
+  //the Common Name or Subject Alternate Name field in the certificate matches the name of the server
+  //tested with https://www.npr.org/rss/rss.php?id=1001
+  //about using ssl certs in curl: http://curl.haxx.se/docs/sslcerts.html
+#else
+  #if defined WIN32
+  //set the root CA certificates file path
+  if(GENV.g_curl_root_CA_certificates_path[0])
+    curl_easy_setopt(state->EasyHandle, CURLOPT_CAINFO, GENV.g_curl_root_CA_certificates_path);
+  #endif
+#endif
+  code = state->theStreamBuffer->multi_perform();
+  processReply(loc,
+               result,
+               planState,
+               theSctx,
+               Uri,
+               code,
+               *state->headers,
+               state->theStreamBuffer.getp(),
+               (tidyUserOpt!=NULL)?tidyUserOpt->getStringValue()->c_str():NULL, true);
+
+  curl_slist_free_all(headers_list);
+  cleanupConnection(state);
+  STACK_PUSH(true, state);
+  STACK_END (state);
+}
+
+NARY_ACCEPT(ZorbaRestHeadIterator);
+
+
 
 bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -947,9 +1006,7 @@ bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState)
   STACK_END (state);
 }
 
-
 NARY_ACCEPT(ZorbaRestGetIterator);
-
 
 bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -1198,72 +1255,6 @@ bool ZorbaRestDeleteIterator::nextImpl(store::Item_t& result, PlanState& planSta
   STACK_END (state);
 }
 
-
 NARY_ACCEPT(ZorbaRestDeleteIterator);
-
-
-bool ZorbaRestHeadIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Item_t lUri, payload_data, headers;
-  xqpString Uri;
-  curl_slist *headers_list = NULL;
-  int code;
-  
-  ZorbaRestGetIteratorState* state;
-  DEFAULT_STACK_INIT(ZorbaRestGetIteratorState, state, planState);
-  
-  setupConnection(state, 4);
-
-  if (CONSUME(lUri,0) == false)
-  {
-    ZORBA_ERROR_DESC(XQP0020_INVALID_URI, "No URI given to the REST head() function.");
-  }
-
-  Uri = lUri->getStringValue()->str();
-
-  if (theChildren.size() > 1)
-    while (CONSUME(payload_data, 1))
-      Uri = processGetPayload(payload_data, Uri);
-  
-  if (theChildren.size() > 2)
-    while (CONSUME(headers, 2))
-      processHeader(headers, &headers_list);
-
-  curl_easy_setopt(state->EasyHandle, CURLOPT_URL, Uri.c_str());
-  curl_easy_setopt(state->EasyHandle, CURLOPT_HTTPHEADER, headers_list );
-#ifndef ZORBA_VERIFY_PEER_SSL_CERTIFICATE//default is to not verify root certif
-  curl_easy_setopt(state->EasyHandle, CURLOPT_SSL_VERIFYPEER, 0);
-  //but CURLOPT_SSL_VERIFYHOST is left default, value 2, meaning verify that the Common Name or Subject Alternate Name field in the certificate matches the name of the server
-  //tested with https://www.npr.org/rss/rss.php?id=1001
-  //about using ssl certs in curl: http://curl.haxx.se/docs/sslcerts.html
-#else
-#if defined WIN32
-  //set the root CA certificates file path
-  if(GENV.g_curl_root_CA_certificates_path[0])
-    curl_easy_setopt(state->EasyHandle, CURLOPT_CAINFO, GENV.g_curl_root_CA_certificates_path);
-#endif
-#endif
-  code = state->theStreamBuffer->multi_perform();
-  processReply(loc,
-      result,
-      planState,
-      theSctx,
-      Uri,
-      code,
-      *state->headers,
-      state->theStreamBuffer.getp(),
-      NULL,
-      true);
-  
-  curl_slist_free_all(headers_list);
-  cleanupConnection(state);
-  STACK_PUSH(true, state);
-  STACK_END (state);
-}
-
-
-NARY_ACCEPT(ZorbaRestHeadIterator);
-
-
 
 } /* namespace zorba */
