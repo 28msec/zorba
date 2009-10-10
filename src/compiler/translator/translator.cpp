@@ -2221,7 +2221,7 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
 
       // Create the root sctx for the imported module as a child of the
       // query-level sctx. Register this sctx in the query-level sctx map.
-      mod_ccb.m_sctx = independent_sctx->create_child_context();
+      mod_ccb.m_sctx = independent_sctx->create_child_context ();
       mod_ccb.m_cur_sctx = minfo->topCompilerCB->m_context_map->size() + 1;
       mod_ccb.m_sctx->set_entity_retrieval_url(resolveduri->str());
 
@@ -2304,7 +2304,7 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
 
   [6d] VFO_Decl ::= VarDecl | ContextItemDecl | FunctionDecl | IndexDecl | OptionDecl
 ********************************************************************************/
-void* begin_visit (const VFO_DeclList& v) 
+void *begin_visit (const VFO_DeclList& v) 
 {
   TRACE_VISIT ();
 
@@ -3166,7 +3166,7 @@ void end_visit (const EnclosedExpr& v, void* /*visit_state*/)
   TRACE_VISIT_OUT ();
 
   expr_t lContent = pop_nodestack();
-  fo_expr* fo_h = new fo_expr(theCCB->m_cur_sctx,
+  fo_expr *fo_h = new fo_expr(theCCB->m_cur_sctx,
                               loc,
                               CACHED (op_enclosed_expr, LOOKUP_OP1 ("enclosed-expr")));
   fo_h->add(lContent);
@@ -4977,6 +4977,12 @@ expr_t create_cast_expr (const QueryLoc& loc, expr_t node, xqtref_t type, bool i
       {
         if (isCast) 
         {
+          if(e.theQueryLine == 0)
+          {
+            e.theQueryColumn = loc.getColumnBegin();
+            e.theQueryFileName = loc.getFilenameBegin();
+            e.theQueryLine = loc.getLineBegin();
+          }
           throw e;
         }
         else
