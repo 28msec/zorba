@@ -52,6 +52,8 @@ BinArchiver::BinArchiver(std::istream *is) : Archiver(false)
   archive_version = read_int();
   nr_ids = read_int();
 
+  read_string_pool();
+
   root_tag_is_read();
 
 }
@@ -61,6 +63,10 @@ BinArchiver::BinArchiver(std::ostream *os) : Archiver(true)
   //open archiver for output
   this->is = NULL;
   this->os = os;
+}
+
+BinArchiver::~BinArchiver()
+{
 }
 
 void BinArchiver::serialize_out()
@@ -78,8 +84,62 @@ void BinArchiver::serialize_out()
   os->write(archive_info.c_str(), archive_info.length()+1);
   write_int(archive_version);
   write_int(nr_ids);
+
+  //first gather all strings in a string pool
+  collect_strings(out_fields);
+  //now serialize the string pool
+  serialize_out_string_pool();
+  //now serialize the fields
   serialize_compound_fields(out_fields);
 
+}
+
+int BinArchiver::add_to_string_pool(const char *str)
+{
+  if(!str)
+    return 0;
+  int   str_pos;
+  if(string_pool.get(str, str_pos))
+    return str_pos;
+  strings.push_back(str);
+  str_pos = strings.size();
+  const char *str_dup = strdup(str);
+  string_pool.insert(str_dup, str_pos);
+  return str_pos;
+}
+
+void BinArchiver::collect_strings(archive_field   *parent_field)
+{
+  archive_field   *current_field = parent_field->first_child;
+  while(current_field)
+  {
+    if(current_field->field_treat != ARCHIVE_FIELD_IS_NULL)
+    {
+      current_field->type_str_pos_in_pool = add_to_string_pool(current_field->type);
+      if(current_field->field_treat != ARCHIVE_FIELD_IS_REFERENCING)
+      {
+        current_field->value_str_pos_in_pool = add_to_string_pool(current_field->value);
+      }
+    }
+    if(!current_field->is_simple)
+    {
+      if(current_field->field_treat != ARCHIVE_FIELD_IS_REFERENCING)
+      {
+        collect_strings(current_field);
+      }
+    }
+    current_field = current_field->next;
+  }
+}
+
+void   BinArchiver::serialize_out_string_pool()
+{
+  write_int(strings.size());
+  std::vector<std::string>::iterator  strings_it;
+  for(strings_it = strings.begin(); strings_it != strings.end(); strings_it++)
+  {
+    write_string((*strings_it).c_str());
+  }
 }
 
 void BinArchiver::serialize_compound_fields(archive_field   *parent_field)
@@ -95,12 +155,12 @@ void BinArchiver::serialize_compound_fields(archive_field   *parent_field)
     os->write((char*)&tempbyte, 1);
     if(current_field->field_treat != ARCHIVE_FIELD_IS_NULL)
     {
-      write_string(current_field->type);
+      write_int(current_field->type_str_pos_in_pool);
       write_int(current_field->id);
       if(current_field->field_treat != ARCHIVE_FIELD_IS_REFERENCING)
       {
         write_int(current_field->version);
-        write_string(current_field->value);
+        write_int(current_field->value_str_pos_in_pool);
       }
       else
         write_int(current_field->referencing);
@@ -124,9 +184,23 @@ void BinArchiver::write_string(const char *str)
   os->write(str, strlen(str)+1);
 }
 
-void BinArchiver::write_int(const int intval)
-{//big endian
+void BinArchiver::write_int(unsigned int intval)
+{
+  //write 7 bits per byte, only significant bits
+  unsigned int   shifted_int = (intval >> 7);
   unsigned char tmp;
+  while(shifted_int)
+  {//little endian
+    tmp = intval & 0x7F;
+    os->write((char*)&tmp, 1);
+    intval = shifted_int;
+    shifted_int = (intval >> 7);
+  }
+  tmp = (intval & 0x7F) | 0x80;
+  os->write((char*)&tmp, 1);
+
+/*  
+  //big endian
   tmp = (intval>>24) & 0xFF;
   os->write((char*)&tmp, 1);
   tmp = (intval>>16) & 0xFF;
@@ -135,6 +209,7 @@ void BinArchiver::write_int(const int intval)
   os->write((char*)&tmp, 1);
   tmp = intval & 0xFF;
   os->write((char*)&tmp, 1);
+*/
 }
 
 
@@ -174,20 +249,43 @@ void BinArchiver::read_string(char* str)
   }
 }
 
-int BinArchiver::read_int()
-{//big endian
-  int outval = 0;
+unsigned int BinArchiver::read_int()
+{
+  unsigned int outval = 0;
   unsigned char tmp;
-  is->read((char*)&tmp, 1);
-  outval = (outval<<8) + tmp;
-  is->read((char*)&tmp, 1);
-  outval = (outval<<8) + tmp;
-  is->read((char*)&tmp, 1);
-  outval = (outval<<8) + tmp;
-  is->read((char*)&tmp, 1);
-  outval = (outval<<8) + tmp;
+  int   i = 0;
+  
+  do{
+    is->read((char*)&tmp, 1);
+    outval |= ((unsigned int)(tmp&0x7F) << (7*i));
+    i++;
+  }while(!(tmp & 0x80));
 
+/*  //big endian
+  is->read((char*)&tmp, 1);
+  outval = (outval<<8) + tmp;
+  is->read((char*)&tmp, 1);
+  outval = (outval<<8) + tmp;
+  is->read((char*)&tmp, 1);
+  outval = (outval<<8) + tmp;
+  is->read((char*)&tmp, 1);
+  outval = (outval<<8) + tmp;
+*/
   return outval;
+}
+
+void BinArchiver::read_string_pool()
+{
+  strings.clear();
+  std::string   str;
+  int   count;
+  count = read_int();
+  for(int i=0;i<count;i++)
+  {
+    str.clear();
+    read_string(str);
+    strings.push_back(str);
+  }
 }
 
 bool BinArchiver::read_next_field_impl( char **type, 
@@ -224,13 +322,22 @@ bool BinArchiver::read_next_field_impl( char **type,
   assert(*field_treat <= ARCHIVE_FIELD_IS_REFERENCING);
   if(*field_treat != ARCHIVE_FIELD_IS_NULL)
   {
-    read_string(field_type);
-    *type = field_type;
+    unsigned int field_type_pos;
+    //read_string(field_type);
+    field_type_pos = read_int();
+    if(field_type_pos)
+      *type = (char*)strings[field_type_pos-1].c_str();
+    else
+      *type = NULL;
     *id = read_int();
     if(*field_treat != ARCHIVE_FIELD_IS_REFERENCING)
     {
       *version = read_int();
-      read_string(*value);
+    //  read_string(*value);
+      unsigned int value_pos;
+      value_pos = read_int();
+      if(value_pos)
+       *value = strings[value_pos-1];
     }
     else
      *referencing = read_int();

@@ -24,6 +24,9 @@
 namespace zorba{
   namespace serialization{
 
+    #define   ARCHIVER_LATEST_VERSION   0x3 //current latest version
+
+
 /////////////////////////////////////////
 //////////////////////////////////////////////////////
 

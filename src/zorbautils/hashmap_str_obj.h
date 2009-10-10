@@ -77,6 +77,23 @@ public:
 
 };
 
+template<class class_name>
+class HashCharPtrObj : public HashMap<const char *, class_name, CompareCharPtr>
+{
+public:
+  HashCharPtrObj() : HashMap<const char *, class_name, CompareCharPtr>(1024, true) {}
+  virtual ~HashCharPtrObj() {freeAll();}
+  void freeAll()
+  {//free all allocated FloatImpls
+    typename HashMap<const char *, class_name, CompareCharPtr>::iterator  it;
+    for(it=HashMap<const char *, class_name, CompareCharPtr>::begin(); it != HashMap<const char *, class_name, CompareCharPtr>::end(); ++it)
+    {
+      free((void*)(*it).first);
+    }
+  }
+};
+
+
 }
 
 #endif

@@ -32,8 +32,6 @@ class CompilerCB;
 
   namespace serialization{
 
-#define   ARCHIVER_LATEST_VERSION   0x2 //current latest version
-
 #define   FIELD_IS_SIMPLE      true
 #define   FIELD_IS_CLASS       true
 
@@ -73,13 +71,15 @@ class archive_field
 {
 public:
   char  *type;
+  unsigned int   type_str_pos_in_pool;
   bool  is_simple;
-  int   version;//for classes
+  unsigned int   version;//for classes
   enum ArchiveFieldTreat  field_treat;
-  int   referencing;
-  int   id;
+  unsigned int   referencing;
+  unsigned int   id;
   bool  is_class;
   const char  *value;//for simple fields
+  unsigned int   value_str_pos_in_pool;
   union{
     const SerializeBaseClass  *assoc_class_ptr;
     const void  *assoc_ptr;
