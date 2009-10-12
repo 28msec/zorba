@@ -70,13 +70,24 @@ MACRO(RUNTIME_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILE OUTPUT PARAM1 PARAM2 ZO
       ENDIF (NOT HEADER_QUERY STREQUAL "NOQUERY")
       MESSAGE(STATUS "added command for generating ${OUTPUT}")
   ELSE (ZORBA_WORKS)
-    IF (EXISTS "${OUTPUT}.cpp" AND EXISTS "${OUTPUT}.h")
-      MESSAGE(STATUS "The Zorba Command Line Utility is not available to generate ${OUTPUT}.cpp/.h. "
-                     "The files from the repository are there and will be used.")
-    ELSE (EXISTS "${OUTPUT}.cpp" AND EXISTS "${OUTPUT}.h")
-      MESSAGE(FATAL_ERROR "Neither the Zorba Command Line Utility nor the files ${OUTPUT}.cpp/.h are available. "
-                          "Can't proceed building Zorba.")
-    ENDIF (EXISTS "${OUTPUT}.cpp" AND EXISTS "${OUTPUT}.h")
+    IF (NOT CPP_QUERY STREQUAL "NOQUERY")
+      IF (EXISTS "${OUTPUT}.cpp")
+        MESSAGE(STATUS "The Zorba Command Line Utility is not available to generate ${OUTPUT}.cpp. "
+                       "The files from the repository are there and will be used.")
+      ELSE (EXISTS "${OUTPUT}.cpp")
+        MESSAGE(FATAL_ERROR "Neither the Zorba Command Line Utility nor the files ${OUTPUT}.cpp are available. "
+                            "Can't proceed building Zorba.")
+      ENDIF (EXISTS "${OUTPUT}.cpp")
+    ENDIF (NOT CPP_QUERY STREQUAL "NOQUERY")
+    IF (NOT HEADER_QUERY STREQUAL "NOQUERY")
+      IF (EXISTS "${OUTPUT}.h")
+        MESSAGE(STATUS "The Zorba Command Line Utility is not available to generate ${OUTPUT}.h. "
+                       "The files from the repository are there and will be used.")
+      ELSE (EXISTS "${OUTPUT}.h")
+        MESSAGE(FATAL_ERROR "Neither the Zorba Command Line Utility nor the files ${OUTPUT}.h are available. "
+                            "Can't proceed building Zorba.")
+      ENDIF (EXISTS "${OUTPUT}.h")
+    ENDIF (NOT HEADER_QUERY STREQUAL "NOQUERY")
   ENDIF (ZORBA_WORKS)
 ENDMACRO(RUNTIME_GENERATOR)
 
