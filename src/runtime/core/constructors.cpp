@@ -31,7 +31,7 @@
 
 #include "runtime/api/runtimecb.h"
 #include "runtime/core/constructors.h"
-#include "runtime/visitors/planitervisitor.h"
+#include "runtime/visitors/planiter_visitor.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 
 #include "store/api/temp_seq.h"

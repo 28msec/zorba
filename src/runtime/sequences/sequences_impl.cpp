@@ -38,7 +38,7 @@
 #include "runtime/core/arithmetic_impl.h"
 #include "runtime/util/iterator_impl.h"
 #include "runtime/util/handle_hashset_item_value.h"
-#include "runtime/visitors/planitervisitor.h"
+#include "runtime/visitors/planiter_visitor.h"
 
 #include "system/globalenv.h"
 

@@ -21,7 +21,7 @@
 
 #include "runtime/context/ContextImpl.h"
 #include "runtime/api/runtimecb.h"
-#include "runtime/visitors/planitervisitor.h"
+#include "runtime/visitors/planiter_visitor.h"
 
 #include "context/dynamic_context.h"
 #include "context/static_context.h"

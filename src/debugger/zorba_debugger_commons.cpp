@@ -8,7 +8,7 @@
 #include "zorbaerrors/Assert.h"
 
 #include "runtime/debug/zorba_debug_iterator.h"
-#include "runtime/visitors/planitervisitor.h"
+#include "runtime/visitors/planiter_visitor.h"
 
 #include "store/api/item_factory.h"
 

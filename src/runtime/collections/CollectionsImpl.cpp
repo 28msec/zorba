@@ -34,7 +34,7 @@
 
 #include "runtime/api/runtimecb.h"
 #include "runtime/collections/CollectionsImpl.h"
-#include "runtime/visitors/planitervisitor.h"
+#include "runtime/visitors/planiter_visitor.h"
 
 #include "store/api/pul.h"
 #include "store/api/copymode.h"

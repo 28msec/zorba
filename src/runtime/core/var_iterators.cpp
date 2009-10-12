@@ -25,7 +25,7 @@
 #include "runtime/base/noarybase.h"
 #include "runtime/core/var_iterators.h"
 #include "runtime/util/iterator_impl.h"
-#include "runtime/visitors/planitervisitor.h"
+#include "runtime/visitors/planiter_visitor.h"
 
 #include "store/api/iterator.h"
 #include "store/api/item.h"

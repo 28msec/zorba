@@ -18,7 +18,7 @@
 #include "context/dynamic_context.h"
 
 #include "runtime/indexing/value_index_probe.h"
-#include "runtime/visitors/planitervisitor.h"
+#include "runtime/visitors/planiter_visitor.h"
 
 
 namespace zorba {

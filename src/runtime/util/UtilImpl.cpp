@@ -26,7 +26,7 @@
 
 #include "runtime/util/UtilImpl.h"
 #include "runtime/api/runtimecb.h"
-#include "runtime/visitors/planitervisitor.h"
+#include "runtime/visitors/planiter_visitor.h"
 
 #include "context/static_context.h"
 #include "context/standard_uri_resolvers.h"

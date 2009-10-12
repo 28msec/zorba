@@ -39,3 +39,17 @@ declare function zi:add-copyright() as xs:string
 // *                                        *
 // ******************************************"
 };
+
+declare function zi:add-guard-close() as xs:string
+{
+  '#endif'
+};
+
+declare function zi:add-guard-open($name as xs:string) as xs:string
+{
+  let $guardName := string-join(('ZORBA',upper-case($name),'H'),'_')
+  
+  return string-join((string-join(('#ifndef',$guardName),' '),
+                      string-join(('#define',$guardName),' ')), $zi:newline)  
+};
+

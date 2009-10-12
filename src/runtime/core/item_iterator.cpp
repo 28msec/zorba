@@ -17,7 +17,7 @@
 
 #include "runtime/core/item_iterator.h"
 #include "runtime/booleans/BooleanImpl.h"
-#include "runtime/visitors/planitervisitor.h"
+#include "runtime/visitors/planiter_visitor.h"
 
 #include "store/api/item.h"
 

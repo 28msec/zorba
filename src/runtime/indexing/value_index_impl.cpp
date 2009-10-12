@@ -25,7 +25,7 @@
 #include "indexing/value_index.h"
 
 #include "runtime/indexing/value_index_impl.h"
-#include "runtime/visitors/planitervisitor.h"
+#include "runtime/visitors/planiter_visitor.h"
 #include "runtime/api/plan_wrapper.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 

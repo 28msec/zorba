@@ -24,7 +24,7 @@
 
 #include "runtime/qnames/QNamesImpl.h"
 #include "runtime/api/runtimecb.h"
-#include "runtime/visitors/planitervisitor.h"
+#include "runtime/visitors/planiter_visitor.h"
 
 #include "store/api/store.h"
 #include "store/api/item_factory.h"

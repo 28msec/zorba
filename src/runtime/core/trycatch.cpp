@@ -21,7 +21,7 @@
 
 #include "runtime/core/trycatch.h"
 #include "runtime/api/plan_iterator_wrapper.h"
-#include "runtime/visitors/planitervisitor.h"
+#include "runtime/visitors/planiter_visitor.h"
 #include "runtime/core/var_iterators.h"
 #include "runtime/util/item_iterator.h"
 

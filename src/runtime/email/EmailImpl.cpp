@@ -26,7 +26,7 @@
 
 #include "util/mail/uw-imap.h"
 
-#include "runtime/visitors/planitervisitor.h"
+#include "runtime/visitors/planiter_visitor.h"
 
 namespace zorba {
 

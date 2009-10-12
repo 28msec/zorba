@@ -18,7 +18,7 @@
 #include "system/globalenv.h"
 
 #include "runtime/core/gflwor/tuplestream_iterator.h"
-#include "runtime/visitors/planitervisitor.h"
+#include "runtime/visitors/planiter_visitor.h"
 
 #include "store/api/pul.h"
 #include "store/api/store.h"

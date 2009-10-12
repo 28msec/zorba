@@ -33,7 +33,7 @@
 #include "runtime/dateTime/DurationsDatesTimes.h"
 #include "runtime/core/arithmetic_impl.h"
 #include "runtime/api/runtimecb.h"
-#include "runtime/visitors/planitervisitor.h"
+#include "runtime/visitors/planiter_visitor.h"
 
 #include "store/api/item.h"
 #include "store/api/item_factory.h"

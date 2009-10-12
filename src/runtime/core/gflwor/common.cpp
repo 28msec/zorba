@@ -16,7 +16,7 @@
 
 #include "context/dynamic_context.h"
 
-#include "runtime/visitors/planitervisitor.h"
+#include "runtime/visitors/planiter_visitor.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/core/gflwor/common.h"
 #include "runtime/api/runtimecb.h"

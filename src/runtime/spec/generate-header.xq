@@ -164,11 +164,6 @@ declare function local:get-fwd-decl($XMLdoc) as xs:string*
   else string-join(('namespace ', $ns, '{',$gen:newline, local:get-decl($XMLdoc, $ns) ,$gen:newline,'}'),''))
 };
 
-declare function local:add-guard-close() as xs:string
-{
-  '#endif'
-};
-
 declare function local:get-include($XMLdoc) as xs:string*
 {
   for $include in $XMLdoc//zorba:header/zorba:include[@form='Angle-bracket']
@@ -180,23 +175,15 @@ declare function local:get-include($XMLdoc) as xs:string*
     concat('#include "', $include/text(), '"')
 };
 
-declare function local:add-guard-open($name as xs:string) as xs:string
-{
-  let $guardName := string-join(('ZORBA',upper-case($name),'H'),'_')
-  
-  return string-join((string-join(('#ifndef',$guardName),' '),
-                      string-join(('#define',$guardName),' ')),$gen:newline)  
-};
-
-declare variable $local:input external;
-declare variable $local:name  as xs:string external;
+declare variable $input external;
+declare variable $name  as xs:string external;
 
 string-join((gen:add-copyright(), 
-            local:add-guard-open($local:name),
-            local:get-include($local:input),
+            gen:add-guard-open($name),
+            local:get-include($input),
             'namespace zorba {',
-              local:get-fwd-decl($local:input),
-              local:get-iterators($local:input),
+              local:get-fwd-decl($input),
+              local:get-iterators($input),
             '}',
-            local:add-guard-close())
+            gen:add-guard-close())
             ,string-join(($gen:newline,$gen:newline),'')), $gen:newline

@@ -10,7 +10,7 @@
 #include "debugger/zorba_debugger_runtime.h"
 #include "debugger/zorba_debugger_commons.h"
 
-#include "runtime/visitors/planitervisitor.h"
+#include "runtime/visitors/planiter_visitor.h"
 #include "runtime/eval/FnContextImpl.h"
 #include "runtime/core/item_iterator.h"
 #include "runtime/api/plan_iterator_wrapper.h"

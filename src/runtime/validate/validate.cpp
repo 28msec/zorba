@@ -22,7 +22,7 @@
 
 #include "runtime/api/runtimecb.h"
 #include "runtime/validate/validate.h"
-#include "runtime/visitors/planitervisitor.h"
+#include "runtime/visitors/planiter_visitor.h"
 
 #include "context/static_context.h"
 

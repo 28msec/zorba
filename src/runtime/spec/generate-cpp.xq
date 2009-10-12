@@ -86,12 +86,19 @@ declare function local:generate-accept($name as xs:string) as xs:string
   $gen:indent,'v.endVisit(*this);',$gen:newline,'}',$gen:newline),'')
 };
 
-declare function local:get-include($XMLdoc) as xs:string*
+declare function local:get-include($XMLdoc, $name) as xs:string*
 {
- (string-join(for $include in $XMLdoc//zorba:source/zorba:include[@form='Angle-bracket']
-  return string-join(('#include <', $include/text(), '>'),''),$gen:newline),
-  string-join(for $include in $XMLdoc//zorba:source/zorba:include[@form='Quoted'] 
-  return string-join(('#include "', $include/text(), '"'),''),$gen:newline))  
+  fn:concat(
+    '#include "runtime/visitors/planiter_visitor.h"',
+    $gen:newline, $gen:newline,
+    '#include "', fn:replace($name, "_", "/"), '.h"',
+    string-join(for $include in $XMLdoc//zorba:source/zorba:include[@form='Angle-bracket']
+      return concat('#include <', $include/text(), '>'), $gen:newline
+    ),
+    string-join(for $include in $XMLdoc//zorba:source/zorba:include[@form='Quoted'] 
+      return concat('#include "', $include/text(), '"'), $gen:newline
+    )
+  )
 };
 
 declare function local:serializable-class-versions($name as xs:string) as xs:string
@@ -110,11 +117,12 @@ declare function local:end-serializable-class-versions($name as xs:string) as xs
   ,'')
 };
 
-declare variable $local:input external;
+declare variable $input external;
+declare variable $name as xs:string external;
 
 string-join((gen:add-copyright(),
-             local:get-include($local:input),
+             local:get-include($input, $name),
              'namespace zorba {',
-             local:get-iterators($local:input),
+             local:get-iterators($input),
              '}')
              ,string-join(($gen:newline,$gen:newline),''))

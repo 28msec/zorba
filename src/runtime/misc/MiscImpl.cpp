@@ -28,7 +28,7 @@
 #include "runtime/misc/MiscImpl.h"
 #include "runtime/api/runtimecb.h"
 #include "runtime/util/iterator_impl.h"
-#include "runtime/visitors/planitervisitor.h"
+#include "runtime/visitors/planiter_visitor.h"
 
 #include "store/api/item_factory.h"
 #include "store/api/store.h"

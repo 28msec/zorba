@@ -47,8 +47,6 @@
 #endif
 
 #include "runtime/base/plan_iterator.h"
-#include "runtime/visitors/printervisitor.h"
-#include "runtime/visitors/iterprinter.h"
 
 
 namespace zorba 

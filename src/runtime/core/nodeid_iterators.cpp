@@ -19,7 +19,7 @@
 
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/core/nodeid_iterators.h"
-#include "runtime/visitors/planitervisitor.h"
+#include "runtime/visitors/planiter_visitor.h"
 
 #include "store/api/store.h"
 #include "store/api/item.h"

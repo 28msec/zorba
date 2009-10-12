@@ -21,7 +21,7 @@
 
 #include "runtime/core/internal_operators.h"
 #include "runtime/api/plan_iterator_wrapper.h"
-#include "runtime/visitors/planitervisitor.h"
+#include "runtime/visitors/planiter_visitor.h"
 
 #include "zorbaerrors/errors.h"
 

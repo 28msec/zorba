@@ -16,7 +16,7 @@
 
 #include "zorbaerrors/Assert.h"
 
-#include "runtime/visitors/planitervisitor.h"
+#include "runtime/visitors/planiter_visitor.h"
 #include "runtime/core/gflwor/let_iterator.h"
 #include "runtime/core/var_iterators.h"
 #include "runtime/core/gflwor/common.h"

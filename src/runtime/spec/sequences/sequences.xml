@@ -15,11 +15,6 @@
     <zorba:fwd-decl ns="store">NodeHashSet</zorba:fwd-decl>
 </zorba:header>
 
-<zorba:source>
-    <zorba:include form="Quoted">runtime/sequences/sequences.h</zorba:include>
-    <zorba:include form="Quoted">runtime/visitors/planitervisitor.h</zorba:include>
-</zorba:source>
-
 <!--
 /*******************************************************************************
   15.1.2 op:concatenate

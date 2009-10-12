@@ -28,7 +28,7 @@
 #include "compiler/api/compilercb.h"
 
 #include "runtime/api/runtimecb.h"
-#include "runtime/visitors/planitervisitor.h"
+#include "runtime/visitors/planiter_visitor.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/core/gflwor/orderby_iterator.h"
 #include "runtime/core/gflwor/common.h"

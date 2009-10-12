@@ -22,7 +22,7 @@
 
 #include "runtime/core/tuple_iterators.h"
 #include "runtime/api/plan_iterator_wrapper.h"
-#include "runtime/visitors/planitervisitor.h"
+#include "runtime/visitors/planiter_visitor.h"
 
 
 namespace zorba {
