@@ -14,8 +14,9 @@
 
 # all external module libraries are generated in the directory
 # of the corresponding .xq file
-IF (WIN32)
-  SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY   ${CMAKE_CURRENT_BINARY_DIR})
-ENDIF (WIN32)
-
 ADD_SUBDIRECTORY(com)
+
+INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} DESTINATION include/zorba
+        FILES_MATCHING
+        PATTERN "*.svn" EXCLUDE
+        PATTERN "*.xq")
