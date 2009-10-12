@@ -48,7 +48,7 @@ ENDIF (EXISTS ${ZORBA_EXE})
 # macro used for generating the runtime's header and cpp files out of the xml specifications
 MACRO(RUNTIME_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILE OUTPUT PARAM1 PARAM2 ZORBA_WORKS DEPENDENCIES)
   IF (ZORBA_WORKS) # only try to generate if zorbacmd is working 
-      IF (NOT CPP_QUERY STREQUAL "NOQUERY")
+      IF (NOT ${CPP_QUERY} STREQUAL "NOQUERY")
         ADD_CUSTOM_COMMAND(OUTPUT "${OUTPUT}.cpp"
                            COMMAND ${ZORBA_EXE} 
                               "-q" "${CPP_QUERY}" "-f" 
@@ -57,9 +57,9 @@ MACRO(RUNTIME_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILE OUTPUT PARAM1 PARAM2 ZO
                               "--serialize-text"
                             DEPENDS ${CPP_QUERY} ${SPEC_FILE} ${DEPENDENCIES}
                                     "${OUTPUT}.h") # cpp always depends on .h
-      ENDIF (NOT CPP_QUERY STREQUAL "NOQUERY")
+      ENDIF (NOT ${CPP_QUERY} STREQUAL "NOQUERY")
 
-      IF (NOT HEADER_QUERY STREQUAL "NOQUERY")
+      IF (NOT ${HEADER_QUERY} STREQUAL "NOQUERY")
         ADD_CUSTOM_COMMAND(OUTPUT "${OUTPUT}.h"
                            COMMAND ${ZORBA_EXE} 
                               "-q" "${HEADER_QUERY}" "-f" 
@@ -67,10 +67,10 @@ MACRO(RUNTIME_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILE OUTPUT PARAM1 PARAM2 ZO
                               "-o" "${OUTPUT}.h"
                               "--serialize-text"
                             DEPENDS ${HEADER_QUERY} ${SPEC_FILE} ${DEPENDENCIES})
-      ENDIF (NOT HEADER_QUERY STREQUAL "NOQUERY")
+      ENDIF (NOT ${HEADER_QUERY} STREQUAL "NOQUERY")
       MESSAGE(STATUS "added command for generating ${OUTPUT}")
   ELSE (ZORBA_WORKS)
-    IF (NOT CPP_QUERY STREQUAL "NOQUERY")
+    IF (NOT ${CPP_QUERY} STREQUAL "NOQUERY")
       IF (EXISTS "${OUTPUT}.cpp")
         MESSAGE(STATUS "The Zorba Command Line Utility is not available to generate ${OUTPUT}.cpp. "
                        "The files from the repository are there and will be used.")
@@ -78,8 +78,9 @@ MACRO(RUNTIME_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILE OUTPUT PARAM1 PARAM2 ZO
         MESSAGE(FATAL_ERROR "Neither the Zorba Command Line Utility nor the files ${OUTPUT}.cpp are available. "
                             "Can't proceed building Zorba.")
       ENDIF (EXISTS "${OUTPUT}.cpp")
-    ENDIF (NOT CPP_QUERY STREQUAL "NOQUERY")
-    IF (NOT HEADER_QUERY STREQUAL "NOQUERY")
+    ENDIF (NOT ${CPP_QUERY} STREQUAL "NOQUERY")
+
+    IF (NOT ${HEADER_QUERY} STREQUAL "NOQUERY")
       IF (EXISTS "${OUTPUT}.h")
         MESSAGE(STATUS "The Zorba Command Line Utility is not available to generate ${OUTPUT}.h. "
                        "The files from the repository are there and will be used.")
@@ -87,7 +88,7 @@ MACRO(RUNTIME_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILE OUTPUT PARAM1 PARAM2 ZO
         MESSAGE(FATAL_ERROR "Neither the Zorba Command Line Utility nor the files ${OUTPUT}.h are available. "
                             "Can't proceed building Zorba.")
       ENDIF (EXISTS "${OUTPUT}.h")
-    ENDIF (NOT HEADER_QUERY STREQUAL "NOQUERY")
+    ENDIF (NOT ${HEADER_QUERY} STREQUAL "NOQUERY")
   ENDIF (ZORBA_WORKS)
 ENDMACRO(RUNTIME_GENERATOR)
 
