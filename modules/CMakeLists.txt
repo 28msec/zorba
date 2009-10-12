@@ -11,4 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+# all external module libraries are generated in the directory
+# of the corresponding .xq file
+IF (WIN32)
+  SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY   ${CMAKE_CURRENT_BINARY_DIR})
+ENDIF (WIN32)
+
 ADD_SUBDIRECTORY(com)
