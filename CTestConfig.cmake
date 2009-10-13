@@ -19,7 +19,7 @@ SET (CTEST_DROP_LOCATION "/cdash/submit.php?project=zorba")
 SET (CTEST_DROP_SITE_CDASH TRUE)
 SET (CTEST_CUSTOM_WARNING_EXCEPTION
     ${CTEST_CUSTOM_WARNING_EXCEPTION}
-    "Warning: GNU Bison not available.*"
-    "Warning: FlexLexer.h has not been found.*"
-    "Warning: using repository file")
+    "Warning: GNU Bison.*"
+    "Warning: using repository file.*"
+    "Warning: urning: GNU Flex.*")
 # SET (CTEST_COMPRESS_SUBMISSION ON)
