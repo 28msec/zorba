@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+// 7.2 Functions to Assemble and Disassemble Strings
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+-->
+<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+    
+<zorba:header>
+    <zorba:include form="Quoted">runtime/base/narybase.h</zorba:include>
+    <zorba:include form="Quoted">zorbautils/checked_vector.h</zorba:include>
+</zorba:header>
+
+<zorba:source>
+</zorba:source>
+
+<!--
+/*******************************************************************************
+ * 7.2.1 fn:codepoints-to-string
+********************************************************************************/
+-->
+<zorba:iterator
+    name="CodepointsToStringIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">
+      fn:codepoints-to-string
+    </zorba:description>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+ * 7.3.2 fn:compare
+********************************************************************************/
+-->
+
+<zorba:iterator
+    name="CompareStrIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">
+      fn:codepoints-to-string
+    </zorba:description>
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+ * 7.2.1 fn:codepoints-to-string
+********************************************************************************/
+-->
+
+<zorba:iterator
+    name="CodepointEqualIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">
+      fn:codepoints-to-string
+    </zorba:description>
+</zorba:iterator>
+
+
+<!--
+ *
+ * 7.4 Functions on String Values
+ *_______________________________________________________________________*/
+-->
+
+<!--
+/*******************************************************************************
+ * 7.4.1 fn:concat
+********************************************************************************/
+-->
+<zorba:iterator
+    name="ConcatStrIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">
+      fn:codepoints-to-string
+    </zorba:description>
+</zorba:iterator>
+
+
+
+<!--
+/*******************************************************************************
+ * 7.4.2 fn:string-join
+********************************************************************************/
+-->
+<zorba:iterator
+    name="StringJoinIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">
+      fn:codepoints-to-string
+    </zorba:description>
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+ * 7.4.3 fn:substring
+********************************************************************************/
+-->
+<zorba:iterator
+    name="SubstringIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">
+    </zorba:description>
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+ * 7.4.4 fn:string-length
+********************************************************************************/
+-->
+<zorba:iterator
+    name="StringLengthIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">
+    </zorba:description>
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+ * 7.4.5 fn:normalize-space
+********************************************************************************/
+-->
+<zorba:iterator
+    name="NormalizeSpaceIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">
+    </zorba:description>
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+ * 7.4.6 fn:normalize-unicode
+********************************************************************************/
+-->
+<zorba:iterator
+    name="NormalizeUnicodeIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">
+    </zorba:description>
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+ * 7.4.7 fn:upper-case
+********************************************************************************/
+-->
+<zorba:iterator
+    name="UpperCaseIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">
+    </zorba:description>
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+ * 7.4.8 fn:lower-case
+********************************************************************************/
+-->
+<zorba:iterator
+    name="LowerCaseIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">
+    </zorba:description>
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+ * 7.4.9 fn:translate
+********************************************************************************/
+-->
+<zorba:iterator
+    name="TranslateIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">
+    </zorba:description>
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+ * 7.4.10 fn:encode-for-uri
+********************************************************************************/
+-->
+<zorba:iterator
+    name="EncodeForUriIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">
+    </zorba:description>
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+ * 7.4.11 fn:iri-to-uri
+********************************************************************************/
+-->
+<zorba:iterator
+    name="IriToUriIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">
+    </zorba:description>
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+ * 7.4.12 fn:escape-html-uri
+********************************************************************************/
+-->
+<zorba:iterator
+    name="EscapeHtmlUriIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">
+    </zorba:description>
+</zorba:iterator>
+
+
+<!--
+ *
+ * 7.5 Functions Based on Substring Matching
+-->
+
+<!--
+/*******************************************************************************
+ * 7.5.1 fn:contains
+********************************************************************************/
+-->
+<zorba:iterator
+    name="ContainsIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">
+    </zorba:description>
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+ * 7.5.2 fn:starts-with
+********************************************************************************/
+-->
+<zorba:iterator
+    name="StartsWithIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">
+    </zorba:description>
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+ * 7.5.3 fn:ends-with
+********************************************************************************/
+-->
+<zorba:iterator
+    name="EndsWithIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">
+    </zorba:description>
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+ * 7.5.4 fn:substring-before
+********************************************************************************/
+-->
+<zorba:iterator
+    name="SubstringBeforeIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">
+    </zorba:description>
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+ * 7.5.5 fn:substring-after
+********************************************************************************/
+-->
+<zorba:iterator
+    name="SubstringAfterIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">
+    </zorba:description>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+// 7.6.2 fn:matches
+********************************************************************************/
+-->
+<zorba:iterator
+    name="FnMatchesIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">
+    </zorba:description>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+// 7.6.3 fn:replace
+********************************************************************************/
+-->
+<zorba:iterator
+    name="FnReplaceIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">
+    </zorba:description>
+</zorba:iterator>
+
+</zorba:iterators>

@@ -15,24 +15,18 @@ SET(RUNTIME_SRCS)
 
 STRING(LENGTH "${CMAKE_SOURCE_DIR}/src/runtime/spec/" RUNTIME_SPEC_LENGTH)
 
-SET(RUNTIME_HEADER_GENERATOR "${CMAKE_SOURCE_DIR}/src/runtime/spec/generate-header.xq")
-SET(RUNTIME_CPP_GENERATOR    "${CMAKE_SOURCE_DIR}/src/runtime/spec/generate-cpp.xq")
-SET(PRINTER_VISITOR_HEADER_GENERATOR      "${CMAKE_SOURCE_DIR}/src/runtime/spec/generate-printer-visitor-h.xq")
-SET(PRINTER_VISITOR_CPP_VISITOR_GENERATOR "${CMAKE_SOURCE_DIR}/src/runtime/spec/generate-printer-visitor-cpp.xq")
-SET(PLANINTER_VISITOR_HEADER_GENERATOR    "${CMAKE_SOURCE_DIR}/src/runtime/spec/generate-plan-iter-visitor-h.xq")
-
-IF(WIN32)
-  SET(ZORBA_EXE    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/zorba)
-ELSE(WIN32)
-  SET(ZORBA_EXE    ${CMAKE_BINARY_DIR}/bin/zorba)
-ENDIF(WIN32)
+SET(RUNTIME_HEADER_GENERATOR "${CMAKE_SOURCE_DIR}/src/runtime/spec/iterator_h.xq")
+SET(RUNTIME_CPP_GENERATOR    "${CMAKE_SOURCE_DIR}/src/runtime/spec/iterator_cpp.xq")
+SET(PRINTER_VISITOR_HEADER_GENERATOR      "${CMAKE_SOURCE_DIR}/src/runtime/spec/printer_visitor_h.xq")
+SET(PRINTER_VISITOR_CPP_VISITOR_GENERATOR "${CMAKE_SOURCE_DIR}/src/runtime/spec/printer_visitor_cpp.xq")
+SET(PLANINTER_VISITOR_HEADER_GENERATOR    "${CMAKE_SOURCE_DIR}/src/runtime/spec/plan_iter_visitor_h.xq")
 
 # check if zorbacmd exists and works
 # the result of this check is used for deciding
 # whether we can generate the runtime header and cpp files
 SET(ZORBA_WORKS)
-IF (EXISTS ${ZORBA_EXE})
-  EXECUTE_PROCESS(COMMAND ${ZORBA_EXE} 
+IF (EXISTS ${ZORBA_RUNTIME_GENERATOR})
+  EXECUTE_PROCESS(COMMAND ${ZORBA_RUNTIME_GENERATOR} 
                           "-q" "1+1"
                   RESULT_VARIABLE ZORBA_WORKS_RES
                   OUTPUT_VARIABLE ZORBA_WORKS_FOO)
@@ -41,62 +35,16 @@ IF (EXISTS ${ZORBA_EXE})
   ELSE (NOT ZORBA_WORKS_RES EQUAL 0)
     SET(ZORBA_WORKS TRUE)
   ENDIF (NOT ZORBA_WORKS_RES EQUAL 0)
-ELSE (EXISTS ${ZORBA_EXE})
+ELSE (EXISTS ${ZORBA_RUNTIME_GENERATOR})
     SET(ZORBA_WORKS FALSE)
-ENDIF (EXISTS ${ZORBA_EXE})
+ENDIF (EXISTS ${ZORBA_RUNTIME_GENERATOR})
 
-# macro used for generating the runtime's header and cpp files out of the xml specifications
-MACRO(RUNTIME_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILE OUTPUT PARAM1 PARAM2 ZORBA_WORKS DEPENDENCIES)
-  IF (ZORBA_WORKS) # only try to generate if zorbacmd is working 
-      IF (NOT ${CPP_QUERY} STREQUAL "NOQUERY")
-        ADD_CUSTOM_COMMAND(OUTPUT "${OUTPUT}.cpp"
-                           COMMAND ${ZORBA_EXE} 
-                              "-q" "${CPP_QUERY}" "-f" 
-                              "-e" "${PARAM1}" "-e" "${PARAM2}"
-                              "-o" "${OUTPUT}.cpp"
-                              "--serialize-text"
-                            DEPENDS ${CPP_QUERY} ${SPEC_FILE} ${DEPENDENCIES}
-                                    "${OUTPUT}.h") # cpp always depends on .h
-      ENDIF (NOT ${CPP_QUERY} STREQUAL "NOQUERY")
-
-      IF (NOT ${HEADER_QUERY} STREQUAL "NOQUERY")
-        ADD_CUSTOM_COMMAND(OUTPUT "${OUTPUT}.h"
-                           COMMAND ${ZORBA_EXE} 
-                              "-q" "${HEADER_QUERY}" "-f" 
-                              "-e" "${PARAM1}" "-e" "${PARAM2}"
-                              "-o" "${OUTPUT}.h"
-                              "--serialize-text"
-                            DEPENDS ${HEADER_QUERY} ${SPEC_FILE} ${DEPENDENCIES})
-      ENDIF (NOT ${HEADER_QUERY} STREQUAL "NOQUERY")
-      MESSAGE(STATUS "added command for generating ${OUTPUT}")
-  ELSE (ZORBA_WORKS)
-    IF (NOT ${CPP_QUERY} STREQUAL "NOQUERY")
-      IF (EXISTS "${OUTPUT}.cpp")
-        MESSAGE(STATUS "The Zorba Command Line Utility is not available to generate ${OUTPUT}.cpp. "
-                       "The files from the repository are there and will be used.")
-      ELSE (EXISTS "${OUTPUT}.cpp")
-        MESSAGE(FATAL_ERROR "Neither the Zorba Command Line Utility nor the files ${OUTPUT}.cpp are available. "
-                            "Can't proceed building Zorba.")
-      ENDIF (EXISTS "${OUTPUT}.cpp")
-    ENDIF (NOT ${CPP_QUERY} STREQUAL "NOQUERY")
-
-    IF (NOT ${HEADER_QUERY} STREQUAL "NOQUERY")
-      IF (EXISTS "${OUTPUT}.h")
-        MESSAGE(STATUS "The Zorba Command Line Utility is not available to generate ${OUTPUT}.h. "
-                       "The files from the repository are there and will be used.")
-      ELSE (EXISTS "${OUTPUT}.h")
-        MESSAGE(FATAL_ERROR "Neither the Zorba Command Line Utility nor the files ${OUTPUT}.h are available. "
-                            "Can't proceed building Zorba.")
-      ENDIF (EXISTS "${OUTPUT}.h")
-    ENDIF (NOT ${HEADER_QUERY} STREQUAL "NOQUERY")
-  ENDIF (ZORBA_WORKS)
-ENDMACRO(RUNTIME_GENERATOR)
+INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaRuntimeGenerator.cmake)
 
 # look for all spec files and generate the header and cpp files if out of date
 # the cpp files and the according _impl.cpp files are added to the RUNTIME_SRCS list
 FILE(GLOB_RECURSE SPEC_FILES ${CMAKE_SOURCE_DIR}/src/runtime/spec "*.xml")
 FOREACH(SPEC_FILE ${SPEC_FILES})
-
   STRING(LENGTH ${SPEC_FILE} SPEC_FILE_NAME_LENGTH)
   MATH(EXPR SPEC_PREFIX_LENGTH "${SPEC_FILE_NAME_LENGTH} - ${RUNTIME_SPEC_LENGTH} - 4")
   STRING(SUBSTRING ${SPEC_FILE} ${RUNTIME_SPEC_LENGTH} ${SPEC_PREFIX_LENGTH} SPEC_PREFIX)
@@ -105,7 +53,7 @@ FOREACH(SPEC_FILE ${SPEC_FILES})
   RUNTIME_GENERATOR(${RUNTIME_CPP_GENERATOR}
                     ${RUNTIME_HEADER_GENERATOR} ${SPEC_FILE} 
                     "${CMAKE_SOURCE_DIR}/src/runtime/${SPEC_PREFIX}"
-                    "name:=runtime_${SPEC_PREFIX_NAME}" "input=${SPEC_FILE}" ${ZORBA_WORKS} "")
+                    "name:=runtime_${SPEC_PREFIX_NAME}" "input=${SPEC_FILE}" ${ZORBA_WORKS})
 
   LIST(APPEND RUNTIME_SRCS 
               "${SPEC_PREFIX}.cpp"
@@ -115,27 +63,28 @@ ENDFOREACH(SPEC_FILE)
 # generate the printer_visitor.h and printer_visitor.cpp
 # given all the spec files as a list
 # the printer_visitor.cpp and printer_visitor_impl.cpp are added to the RUNTIME_SRCS
-RUNTIME_GENERATOR(${PRINTER_VISITOR_CPP_VISITOR_GENERATOR}
-                  ${PRINTER_VISITOR_HEADER_GENERATOR} ${SPEC_FILES} 
-                  "${CMAKE_SOURCE_DIR}/src/runtime/visitors/printer_visitor"
-                  "files:=${SPEC_FILES}"
-                  "blub:=foo" # artificial parameter to make the macro happy
-                  ${ZORBA_WORKS} ${CMAKE_SOURCE_DIR}/src/runtime/visitors/planiter_visitor.h)
+# the printer_visitor.h depends on the planiter_visitor.h file
+PRINTER_VISITOR_GENERATOR(${PRINTER_VISITOR_CPP_VISITOR_GENERATOR}
+                          ${PRINTER_VISITOR_HEADER_GENERATOR}
+                          "${SPEC_FILES}"
+                          "${CMAKE_SOURCE_DIR}/src/runtime/visitors/printer_visitor"
+                          "files:=${SPEC_FILES}"
+                          ${ZORBA_WORKS})
 
 LIST(APPEND RUNTIME_SRCS
     visitors/printer_visitor.cpp
     visitors/printer_visitor_impl.cpp
 )
 
-RUNTIME_GENERATOR("NOQUERY" ${PLANINTER_VISITOR_HEADER_GENERATOR}
-                  ${SPEC_FILES} 
-                  "${CMAKE_SOURCE_DIR}/src/runtime/visitors/planiter_visitor"
-                  "files:=${SPEC_FILES}"
-                  "blub:=foo" # artificial parameter to make the macro happy
-                  ${ZORBA_WORKS} "")
+PLANINTER_VISITOR_GENERATOR(${PLANINTER_VISITOR_HEADER_GENERATOR}
+                            "${SPEC_FILES}"
+                            "${CMAKE_SOURCE_DIR}/src/runtime/visitors/planiter_visitor"
+                            "files:=${SPEC_FILES}"
+                            ${ZORBA_WORKS})
 
 LIST(APPEND RUNTIME_SRCS
     accessors/AccessorsImpl.cpp
+    visitors/printer_visitor_api.cpp
     api/plan_iterator_wrapper.cpp
     api/plan_wrapper.cpp
     base/plan_iterator.cpp

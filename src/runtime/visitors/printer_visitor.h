@@ -33,8 +33,6 @@ namespace zorba {
   class PlanIterator;
   class IterPrinter;
 
-  void print_iter_plan (IterPrinter& aPrinter, PlanIterator* aIter);
-
   class PrinterVisitor : public PlanIterVisitor {
   private:
     IterPrinter& thePrinter;
@@ -123,6 +121,71 @@ namespace zorba {
 
     void beginVisit( const FnParseIterator& );
     void endVisit  ( const FnParseIterator& );
+    void beginVisit( const CodepointsToStringIterator& );
+    void endVisit  ( const CodepointsToStringIterator& );
+
+    void beginVisit( const CompareStrIterator& );
+    void endVisit  ( const CompareStrIterator& );
+
+    void beginVisit( const CodepointEqualIterator& );
+    void endVisit  ( const CodepointEqualIterator& );
+
+    void beginVisit( const ConcatStrIterator& );
+    void endVisit  ( const ConcatStrIterator& );
+
+    void beginVisit( const StringJoinIterator& );
+    void endVisit  ( const StringJoinIterator& );
+
+    void beginVisit( const SubstringIterator& );
+    void endVisit  ( const SubstringIterator& );
+
+    void beginVisit( const StringLengthIterator& );
+    void endVisit  ( const StringLengthIterator& );
+
+    void beginVisit( const NormalizeSpaceIterator& );
+    void endVisit  ( const NormalizeSpaceIterator& );
+
+    void beginVisit( const NormalizeUnicodeIterator& );
+    void endVisit  ( const NormalizeUnicodeIterator& );
+
+    void beginVisit( const UpperCaseIterator& );
+    void endVisit  ( const UpperCaseIterator& );
+
+    void beginVisit( const LowerCaseIterator& );
+    void endVisit  ( const LowerCaseIterator& );
+
+    void beginVisit( const TranslateIterator& );
+    void endVisit  ( const TranslateIterator& );
+
+    void beginVisit( const EncodeForUriIterator& );
+    void endVisit  ( const EncodeForUriIterator& );
+
+    void beginVisit( const IriToUriIterator& );
+    void endVisit  ( const IriToUriIterator& );
+
+    void beginVisit( const EscapeHtmlUriIterator& );
+    void endVisit  ( const EscapeHtmlUriIterator& );
+
+    void beginVisit( const ContainsIterator& );
+    void endVisit  ( const ContainsIterator& );
+
+    void beginVisit( const StartsWithIterator& );
+    void endVisit  ( const StartsWithIterator& );
+
+    void beginVisit( const EndsWithIterator& );
+    void endVisit  ( const EndsWithIterator& );
+
+    void beginVisit( const SubstringBeforeIterator& );
+    void endVisit  ( const SubstringBeforeIterator& );
+
+    void beginVisit( const SubstringAfterIterator& );
+    void endVisit  ( const SubstringAfterIterator& );
+
+    void beginVisit( const FnMatchesIterator& );
+    void endVisit  ( const FnMatchesIterator& );
+
+    void beginVisit( const FnReplaceIterator& );
+    void endVisit  ( const FnReplaceIterator& );
 
   }; //class PrinterVisitor
 } //namespace zorba

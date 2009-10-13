@@ -38,7 +38,7 @@
 #include "context/static_context_consts.h"
 #include "context/dynamic_context.h"
 
-#include "runtime/visitors/printer_visitor.h"
+#include "runtime/visitors/printer_visitor_api.h"
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/core/sequencetypes.h"

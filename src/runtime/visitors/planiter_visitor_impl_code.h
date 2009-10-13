@@ -253,55 +253,11 @@ PLAN_ITER_VISITOR(NodeReferenceIterator);
 
   PLAN_ITER_VISITOR (NamespaceUriFromQNameIterator);
 
+  PLAN_ITER_VISITOR (StringToCodepointsIterator);
+
   PLAN_ITER_VISITOR (InScopePrefixesIterator);
 
   PLAN_ITER_VISITOR (NamespaceUriForPrefixIterator);
-
-  PLAN_ITER_VISITOR (CodepointsToStringIterator);
-       
-  PLAN_ITER_VISITOR (StringToCodepointsIterator);
-       
-  PLAN_ITER_VISITOR (CompareStrIterator);
-       
-  PLAN_ITER_VISITOR (CodepointEqualIterator);
-       
-  PLAN_ITER_VISITOR (ConcatStrIterator);
-       
-  PLAN_ITER_VISITOR (StringJoinIterator);
-       
-  PLAN_ITER_VISITOR (SubstringIterator);
-       
-  PLAN_ITER_VISITOR (StringLengthIterator);
-       
-  PLAN_ITER_VISITOR (NormalizeSpaceIterator);
-       
-  PLAN_ITER_VISITOR (NormalizeUnicodeIterator);
-       
-  PLAN_ITER_VISITOR (UpperCaseIterator);
-  
-  PLAN_ITER_VISITOR (LowerCaseIterator);
-       
-  PLAN_ITER_VISITOR (TranslateIterator);
-       
-  PLAN_ITER_VISITOR (EncodeForUriIterator);
-       
-  PLAN_ITER_VISITOR (IriToUriIterator);
-  
-  PLAN_ITER_VISITOR (EscapeHtmlUriIterator);
-       
-  PLAN_ITER_VISITOR (ContainsIterator);
-       
-  PLAN_ITER_VISITOR (StartsWithIterator);
-       
-  PLAN_ITER_VISITOR (EndsWithIterator);
-       
-  PLAN_ITER_VISITOR (SubstringBeforeIterator);
-       
-  PLAN_ITER_VISITOR (SubstringAfterIterator);
-
-  PLAN_ITER_VISITOR (FnMatchesIterator);
-
-  PLAN_ITER_VISITOR (FnReplaceIterator);
 
   PLAN_ITER_VISITOR (FnTokenizeIterator);
 

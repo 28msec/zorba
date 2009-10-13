@@ -55,7 +55,7 @@
 #include "runtime/api/plan_wrapper.h"
 #include "runtime/api/runtimecb.h"
 #include "runtime/visitors/iterprinter.h"
-#include "runtime/visitors/printer_visitor.h"
+#include "runtime/visitors/printer_visitor_api.h"
 
 #include "store/api/item.h"
 #include "store/api/item_factory.h"

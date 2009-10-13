@@ -1,4 +1,4 @@
-module namespace zi="http://www.zorba-xquery.com/internal/gen";
+module namespace zi = "http://www.zorba-xquery.com/internal/gen";
 
 declare variable $zi:backward_compatible as xs:boolean := true();
 

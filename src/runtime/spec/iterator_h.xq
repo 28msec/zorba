@@ -1,6 +1,6 @@
 declare namespace zorba="http://www.zorba-xquery.com";
 
-import module namespace gen = "http://www.zorba-xquery.com/internal/gen" at "generate-utils.xq";
+import module namespace gen = "http://www.zorba-xquery.com/internal/gen" at "utils.xq";
 
 declare function local:get-iterators($XMLdoc) as xs:string
 {

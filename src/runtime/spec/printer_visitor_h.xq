@@ -1,6 +1,6 @@
 declare namespace zorba="http://www.zorba-xquery.com";
 
-import module namespace gen = "http://www.zorba-xquery.com/internal/gen" at "generate-utils.xq";
+import module namespace gen = "http://www.zorba-xquery.com/internal/gen" at "utils.xq";
 
 declare function local:get-files($files as xs:string) as xs:string
 {
@@ -27,20 +27,21 @@ declare function local:process-iter($iter) as xs:string
 
 declare function local:create-class() as xs:string
 {
-  string-join(($gen:indent,'void print_iter_plan (IterPrinter&amp; aPrinter, PlanIterator* aIter);',$gen:newline,
-  $gen:newline,$gen:indent,'class PrinterVisitor : public PlanIterVisitor {',$gen:newline,
-  $gen:indent,'private:',$gen:newline,
-  gen:indent(2),'IterPrinter&amp; thePrinter;',$gen:newline,
-  gen:indent(2),'PlanIterator* theIterator;',$gen:newline,
-  gen:indent(2),'int theId;',$gen:newline,
-  $gen:indent,'public:',$gen:newline,
-  gen:indent(2),'PrinterVisitor(IterPrinter&amp; aPrinter, PlanIterator* aIter)',$gen:newline,
-  gen:indent(2),':',
-  gen:indent(2),'thePrinter(aPrinter), theIterator(aIter), theId(0) {}',$gen:newline,$gen:newline,
-  gen:indent(2),'void print();',$gen:newline,
-  gen:indent(2),'void printCommons(const PlanIterator* aIter, int theId);',$gen:newline, $gen:newline,
-  (: temporarily included until all iterators are generated :)
-  '#include "runtime/visitors/printer_visitor_impl.h"'),'')
+  concat(
+    $gen:indent, "class PrinterVisitor : public PlanIterVisitor {", $gen:newline,
+    $gen:indent, 'private:', $gen:newline,
+    gen:indent(2),'IterPrinter&amp; thePrinter;',$gen:newline,
+    gen:indent(2),'PlanIterator* theIterator;',$gen:newline,
+    gen:indent(2),'int theId;',$gen:newline,
+    $gen:indent,'public:',$gen:newline,
+    gen:indent(2),'PrinterVisitor(IterPrinter&amp; aPrinter, PlanIterator* aIter)',$gen:newline,
+    gen:indent(2),':',
+    gen:indent(2),'thePrinter(aPrinter), theIterator(aIter), theId(0) {}',$gen:newline,$gen:newline,
+    gen:indent(2),'void print();',$gen:newline,
+    gen:indent(2),'void printCommons(const PlanIterator* aIter, int theId);',$gen:newline, $gen:newline,
+    (: temporarily included until all iterators are generated :)
+    '#include "runtime/visitors/printer_visitor_impl.h"'
+  )
 };
 
 declare function local:create-fwd-decl() as xs:string

@@ -16,6 +16,7 @@
 #include "functions/function_impl.h"
 
 #include "runtime/strings/StringsImpl.h"
+#include "runtime/strings/strings.h"
 
 namespace zorba {
 

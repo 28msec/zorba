@@ -1,7 +1,7 @@
 declare namespace zorba="http://www.zorba-xquery.com";
 
 import module namespace util="http://www.zorba-xquery.com/zorba/util-functions";
-import module namespace gen = "http://www.zorba-xquery.com/internal/gen" at "generate-utils.xq";
+import module namespace gen = "http://www.zorba-xquery.com/internal/gen" at "utils.xq";
 
 declare function local:get-files($files as xs:string) as xs:string
 {
@@ -57,10 +57,8 @@ declare function local:create-class() as xs:string
   $gen:indent,'lStream << a->nilledAllowed();',$gen:newline,
   $gen:indent,'thePrinter.addAttribute("nill allowed", lStream.str());',$gen:newline,$gen:newline,
   $gen:indent,'if (a->getTargetPos() >= 0)',$gen:newline,
-  gen:indent(2),'thePrinter.addAttribute("target_position", to_string(a->getTargetPos()));',$gen:newline,'}',$gen:newline,$gen:newline,
-  'void print_iter_plan (IterPrinter&amp; aPrinter, PlanIterator* aIter) {',$gen:newline,
-  $gen:indent,'PrinterVisitor v (aPrinter, aIter);',$gen:newline,
-  $gen:indent,'v.print ();',$gen:newline,'}'),'')
+  gen:indent(2),'thePrinter.addAttribute("target_position", to_string(a->getTargetPos()));',$gen:newline,'}'
+  ),'')
 };
 
 declare function local:create-includes($files) as xs:string
