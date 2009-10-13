@@ -174,6 +174,8 @@ class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseC
   double                           theDocLoadingUserTime;
   long                             theDocLoadingTime;
 
+  long                             theTimeout;
+
 public:
   SERIALIZABLE_CLASS(XQueryImpl)
   SERIALIZABLE_CLASS_CONSTRUCTOR(XQueryImpl)
@@ -220,6 +222,9 @@ public:
 
   bool
   isUpdateQuery() const;
+
+  void
+  setTimeout(long aTimeout /* = -1 */);
 
   void
   serialize(std::ostream&, const Zorba_SerializerOptions_t* = NULL);

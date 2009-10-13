@@ -225,7 +225,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
   for (;;) {
     try {
       success = consumeNext (result, state->thePlan, *state->theFnBodyStateBlock);
-    } catch (FlowCtlIterator::ExitException &e) {
+    } catch (ExitException &e) {
       state->exitValue = e.val;
       success = false;
     }

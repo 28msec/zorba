@@ -98,10 +98,21 @@ namespace zorba {
       virtual bool
       isUpdateQuery() const = 0;
 
+      /**
+       * @brief Set a timeout, after which the execution of the query will be
+       *  aborted.
+       *
+       * @param aTimeout is an optional argument, which declares, that the
+       *  execution of a query will be aborted after aTimeout number of seconds.
+       *  If aTimeout is set to -1 (default), the query will never abort.
+       */
+      virtual void
+      setTimeout(long aTimeout = -1) = 0;
+
       /** \brief Serialize the result of the query as text to the given output stream.
        *
        * @param aOutStream the output stream on which the result is written.
-       * @param aSerOptions an optinal set of serialization options.
+       * @param aSerOptions an optional set of serialization options.
        * @throw ZorbaException if an error occurs (e.g. the query is closed or has not been compiled)
        */
       virtual void

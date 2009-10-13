@@ -26,6 +26,8 @@
 
 #include "zorbaserialization/class_serializer.h"
 
+#include "runtime/util/flowctl_exception.h"
+
 #if ZORBA_BATCHING_TYPE == 1
 #include "store/api/item.h"
 #endif
@@ -126,6 +128,8 @@ public:
   RuntimeCB            * theRuntimeCB;
 
   ZorbaDebuggerCommons * theDebuggerCommons;
+
+  bool                   theHasToQuit;
 
 public:
   PlanState(uint32_t blockSize, uint32_t aStackDepth = 0);
@@ -448,6 +452,10 @@ public:
         const PlanIterator* iter,
         PlanState& planState)
   {
+    if (planState.theHasToQuit) {
+      // Quit the execution
+      throw FlowCtlException(FlowCtlException::INTERRUPT);
+    }
     return iter->produceNext(result, planState);
   }
 #endif

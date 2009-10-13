@@ -37,6 +37,8 @@
 #include "context/static_context.h"
 #include "context/internal_uri_resolvers.h"
 
+#include "runtime/util/flowctl_exception.h"
+
 namespace zorba {
 
 

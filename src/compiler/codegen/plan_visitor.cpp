@@ -64,6 +64,7 @@
 #include "runtime/validate/validate.h"
 #include "runtime/eval/FnContextImpl.h"
 #include "runtime/misc/MiscImpl.h"
+#include "runtime/util/flowctl_exception.h"
 #include "runtime/update/update.h"
 #include "runtime/indexing/value_index_impl.h"
 #include "runtime/debug/zorba_debug_iterator.h"
@@ -1621,7 +1622,7 @@ void end_visit (exit_expr& v) {
   CODEGEN_TRACE_OUT("");
   checked_vector<PlanIter_t> argv;
   argv.push_back (pop_itstack ());
-  push_itstack (new FlowCtlIterator (sctx, qloc, argv, FlowCtlIterator::EXIT));
+  push_itstack (new FlowCtlIterator (sctx, qloc, argv, FlowCtlException::EXIT));
 }
 
 bool begin_visit (flowctl_expr& v) {
@@ -1631,13 +1632,13 @@ bool begin_visit (flowctl_expr& v) {
 
 void end_visit (flowctl_expr& v) {
   CODEGEN_TRACE_OUT("");
-  enum FlowCtlIterator::action a;
+  enum FlowCtlException::action a;
   switch (v.get_action ()) {
   case flowctl_expr::BREAK:
-    a = FlowCtlIterator::BREAK;
+    a = FlowCtlException::BREAK;
     break;
   case flowctl_expr::CONTINUE:
-    a = FlowCtlIterator::CONTINUE;
+    a = FlowCtlException::CONTINUE;
     break;
   default:
     ZORBA_FATAL(false, "");

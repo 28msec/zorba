@@ -30,6 +30,7 @@
 #include "system/globalenv.h"
 
 #include "runtime/api/plan_wrapper.h"
+#include "runtime/util/flowctl_exception.h"
 
 #include "store/api/collection.h"
 #include "store/api/item.h"

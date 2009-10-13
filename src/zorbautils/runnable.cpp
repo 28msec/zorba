@@ -80,7 +80,6 @@ void zorba::Runnable::terminate()
   theMutex.unlock();
   join();
   finishImpl();
-
 }
 
 void zorba::Runnable::suspend()

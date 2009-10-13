@@ -25,7 +25,7 @@ using namespace zorba;
 bool
 example_1(Zorba* aZorba)
 {
-  XQuery_t lQuery = aZorba->compileQuery("1+2"); 
+  XQuery_t lQuery = aZorba->compileQuery("1+2");
 
   std::cout << lQuery << std::endl;
 
@@ -231,6 +231,21 @@ example_12(Zorba* aZorba)
 	return true;
 }
 
+bool
+example_13(Zorba* aZorba)
+{
+  XQuery_t lQuery = aZorba->compileQuery("while (fn:true()) {()};");
+  lQuery->setTimeout(2);
+
+  try {
+    std::cout << lQuery << std::endl;
+  } catch (zorba::SystemException&) {
+    return true;
+  }
+
+  return false;
+}
+
 
 int 
 simple(int argc, char* argv[])
@@ -297,6 +312,11 @@ simple(int argc, char* argv[])
 
   std::cout << "executing example 12" << std::endl;
   res = example_12(lZorba);
+  if (!res) return 1;
+  std::cout << std::endl;
+
+  std::cout << "executing example 13" << std::endl;
+  res = example_13(lZorba);
   if (!res) return 1;
   std::cout << std::endl;
 

@@ -19,6 +19,7 @@
 
 #include "runtime/base/plan_iterator.h"
 #include "runtime/api/runtimecb.h"
+#include "runtime/misc/MiscImpl.h"
 
 
 namespace zorba
@@ -50,7 +51,8 @@ PlanState::PlanState(uint32_t blockSize, uint32_t aStackDepth)
   :
   theBlockSize (blockSize),
   theStackDepth (aStackDepth),
-  theRuntimeCB(0)
+  theRuntimeCB(0),
+  theHasToQuit(false)
 {
   theBlock = new int8_t[theBlockSize];
 }
@@ -100,6 +102,9 @@ bool PlanIterator::consumeNext(
     const PlanIterator* iter,
     PlanState& planState)
 {
+  if (planState.theHasToQuit) {
+    throw FlowCtlException(FlowCtlException::INTERRUPT);
+  }
   bool status = iter->produceNext(result, planState);
 
   if (planState.theCompilerCB->m_config.print_item_flow) 
@@ -111,7 +116,6 @@ bool PlanIterator::consumeNext(
   }
   return status;
 }
-
 #endif
 
 

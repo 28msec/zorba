@@ -33,7 +33,7 @@ namespace zorbacmd {
 class ZorbaCMDPropertiesBase : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--lib-module", "--parse-only", "--compile-only", "--no-serializer", "--debug-ports", "--debug-client", "--debug-server", "--no-colors", "--no-logo", "--module-path", NULL };
+    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--lib-module", "--parse-only", "--compile-only", "--no-serializer", "--debug-ports", "--debug-client", "--debug-server", "--no-colors", "--no-logo", "--timeout", "--module-path", NULL };
     return result;
   }
   bool theTiming;
@@ -66,6 +66,7 @@ protected:
   bool theDebugServer;
   bool theNoColors;
   bool theNoLogo;
+  long theTimeout;
   std::string theModulePath;
 
   void initialize () {
@@ -89,6 +90,7 @@ protected:
     theDebugServer = false;
     theNoColors = false;
     theNoLogo = false;
+    theTimeout = -1;
   }
 public:
   const bool &timing () const { return theTiming; }
@@ -121,6 +123,7 @@ public:
   const bool &debugServer () const { return theDebugServer; }
   const bool &noColors () const { return theNoColors; }
   const bool &noLogo () const { return theNoLogo; }
+  const long &timeout () const { return theTimeout; }
   const std::string &modulePath () const { return theModulePath; }
 
   std::string load_argv (int argc, const char **argv) {
@@ -248,6 +251,11 @@ public:
       else if (strcmp (*argv, "--no-logo") == 0) {
         theNoLogo = true;
       }
+      else if (strcmp (*argv, "--timeout") == 0) {
+        int d = 2;
+        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
+        if (*argv == NULL) { result = "No value given for --timeout option"; break; }        init_val (*argv, theTimeout, d);
+      }
       else if (strcmp (*argv, "--module-path") == 0) {
         int d = 2;
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
@@ -299,6 +307,7 @@ public:
 "--debug-server, -s\nLaunch queries on the debugger server.\n\n"
 "--no-colors\nUse no colors in the debugger client.\n\n"
 "--no-logo\nPrint no logo when starting the debugger client or server.\n\n"
+"--timeout\nSpecify a timeout in seconds. After the specified time, the execution of the query will be aborted.\n\n"
 "--module-path\nModule paths added to the built-in resolver, i.e. where module imports are looking for modules.\n\n"
 ;
   }

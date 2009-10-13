@@ -28,6 +28,7 @@
 #include "runtime/misc/MiscImpl.h"
 #include "runtime/api/runtimecb.h"
 #include "runtime/util/iterator_impl.h"
+#include "runtime/util/flowctl_exception.h"
 #include "runtime/visitors/planiter_visitor.h"
 
 #include "store/api/item_factory.h"
@@ -223,13 +224,21 @@ bool FlowCtlIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
   switch (act) {
-  case EXIT:
+  case FlowCtlException::EXIT:
     throw ExitException (new PlanIteratorWrapper (theChildren [0], planState));
   default:
     throw FlowCtlException (act);
   }
     
   STACK_END (state);
+}
+
+void FlowCtlIterator::serialize( ::zorba::serialization::Archiver &ar )
+{
+  serialize_baseclass(ar,
+    (NaryBaseIterator<FlowCtlIterator, PlanIteratorState >*)this);
+
+  SERIALIZE_ENUM(enum FlowCtlException::action, act);
 }
 
 bool FnReadStringIterator::nextImpl (store::Item_t& result, PlanState& planState) const {
@@ -293,13 +302,17 @@ bool LoopIterator::nextImpl (store::Item_t& result, PlanState& planState) const 
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
   for (;;) {
     try {
-      while (! CONSUME (result, 0))
+      while (! CONSUME (result, 0)) {
+        if (planState.theHasToQuit) {
+          goto done;
+        }
         theChildren [0]->reset (planState);
-    } catch (FlowCtlIterator::FlowCtlException &e) {
+      }
+    } catch (FlowCtlException &e) {
       switch (e.act) {
-      case FlowCtlIterator::BREAK:
+      case FlowCtlException::BREAK:
         goto done;
-      case FlowCtlIterator::CONTINUE:
+      case FlowCtlException::CONTINUE:
         theChildren [0]->reset (planState);
         continue;
       default:

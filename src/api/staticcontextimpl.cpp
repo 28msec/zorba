@@ -39,6 +39,8 @@
 #include "types/casting.h"
 #include "types/typeops.h"
 
+#include "runtime/util/flowctl_exception.h"
+
 
 namespace zorba {
 

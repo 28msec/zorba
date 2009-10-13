@@ -28,4 +28,5 @@
 ("debug-server,s", "Launch queries on the debugger server.")
 ("no-colors", "Use no colors in the debugger client.")
 ("no-logo", "Print no logo when starting the debugger client or server.")
+("timeout", po::value< long >()->default_value(-1), "Specify a timeout in seconds. After the specified time, the execution of the query will be aborted.")
 ("module-path", po::value<std::string>(), "Module paths added to the built-in resolver, i.e. where module imports are looking for modules.")

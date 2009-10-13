@@ -138,7 +138,8 @@ URI::is_absolute() const
 int
 URI::find_any(const xqpString& str, const std::string& patterns) 
 {
-  for (uint32_t i = 0; i < str.length(); ++i) {
+  uint32_t lLength = str.length();
+  for (uint32_t i = 0; i < lLength; ++i) {
     char s = str.getStore()->str().at(i); 
     for (uint32_t j = 0; j < patterns.length(); ++j) {
       char p = patterns.at(j); 

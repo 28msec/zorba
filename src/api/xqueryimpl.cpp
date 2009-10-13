@@ -56,6 +56,7 @@
 #include "runtime/api/runtimecb.h"
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/visitors/printer_visitor_api.h"
+#include "runtime/util/flowctl_exception.h"
 
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
@@ -105,7 +106,8 @@ XQueryImpl::XQueryImpl()
   theDocLoadingUserTime(0.0),
   theDocLoadingTime(0),
   theIsDebugMode(false),
-  theProfileName("xquery_profile.out")
+  theProfileName("xquery_profile.out"),
+  theTimeout(-1)
 { 
   theCompilerCB = new CompilerCB(theSctxMap);
 
@@ -714,7 +716,8 @@ XQueryImpl::generateWrapper()
   PlanWrapper_t lPlan = 
   new PlanWrapper(static_cast<PlanIterator*>(thePlan->theRootIter.getp()),
                   theCompilerCB,
-                  theDynamicContext);
+                  theDynamicContext,
+                  0, theTimeout);
   return lPlan;
 }
 
@@ -987,6 +990,11 @@ XQueryImpl::loadExecutionPlan(std::istream &is, SerializationCallback* aCallback
     return true;
   ZORBA_CATCH
   return false;
+}
+
+void XQueryImpl::setTimeout( long aTimeout /* = -1 */ )
+{
+  theTimeout = aTimeout;
 }
 
 } /* namespace zorba */

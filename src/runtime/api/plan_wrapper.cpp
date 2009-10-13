@@ -21,6 +21,7 @@
 #include "runtime/api/plan_wrapper.h"
 #include "runtime/api/runtimecb.h"
 #include "runtime/base/plan_iterator.h"
+#include "runtime/util/timeout.h"
 
 
 namespace zorba {
@@ -32,13 +33,15 @@ PlanWrapper::PlanWrapper(
     const PlanIter_t& aIter,
     CompilerCB* aCompilerCB, 
     dynamic_context* aDynamicContext,
-    uint32_t aStackDepth)
+    uint32_t aStackDepth,
+    long aTimeout)
   :
   theIterator(aIter)
-  ,theDynamicContext(NULL)
+  ,theDynamicContext(NULL) ,
 #ifndef NDEBUG
-  , theIsOpened(false)
+  theIsOpened(false),
 #endif
+  theTimeout(0)
 {
   assert (aCompilerCB);
 
@@ -57,6 +60,11 @@ PlanWrapper::PlanWrapper(
   theStateBlock->theRuntimeCB = new RuntimeCB();
   theStateBlock->theRuntimeCB->theDynamicContext = aDynamicContext;
   theStateBlock->theDebuggerCommons = aCompilerCB->theDebuggerCommons;
+  if (aTimeout != -1) {
+    StateWrapper lWrapper(*theStateBlock);
+    theTimeout = new Timeout(aTimeout, lWrapper);
+    theTimeout->start();
+  }
 }
 
 
@@ -65,6 +73,12 @@ PlanWrapper::~PlanWrapper()
 #ifndef NDEBUG
   assert(!theIsOpened);
 #endif
+  if (theTimeout) {
+    // Terminate could throw an exception
+    // but does not for this particular implementation
+    theTimeout->terminate();
+  }
+  delete theTimeout;
 
   // we created it
   delete theStateBlock->theRuntimeCB; 

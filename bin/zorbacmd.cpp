@@ -916,6 +916,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 
       zorba::XQuery_t lQuery = lZorbaInstance->createQuery();
+      lQuery->setTimeout(lProperties.timeout());
 
       if (asFile)
         lQuery->setFileName (path.get_path ());

@@ -20,10 +20,10 @@
 
 #include "runtime/base/narybase.h"
 #include "runtime/api/plan_iterator_wrapper.h"
+#include "runtime/util/flowctl_exception.h"
 
 
 namespace zorba {
-
 // 3 The Error Function
 NARY_ITER(FnErrorIterator);
 
@@ -74,31 +74,8 @@ public:
 
 class FlowCtlIterator : public NaryBaseIterator<FlowCtlIterator, PlanIteratorState>
 {
-public:
-  enum action {
-    BREAK, CONTINUE, EXIT
-  };
-
-  class FlowCtlException : public error::ZorbaInternalException {
-  public:
-  enum action act;
-    
-    FlowCtlException (enum action act_)
-      : act (act_) 
-    {}
-  };
-
-  class ExitException : public FlowCtlException {
-  public:
-    store::Iterator_t val;
-    ExitException (store::Iterator_t val_)
-      : FlowCtlException (EXIT),
-        val (val_)
-    {}
-  };
-
 private:
-  enum action act;
+  enum FlowCtlException::action act;
 
 public:
   SERIALIZABLE_CLASS(FlowCtlIterator);
@@ -107,20 +84,14 @@ public:
   FlowCtlIterator,
   NaryBaseIterator<FlowCtlIterator, PlanIteratorState >);
 
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FlowCtlIterator, PlanIteratorState >*)this);
-
-    SERIALIZE_ENUM(enum action, act);
-  }
+  void serialize(::zorba::serialization::Archiver &ar);
 
 public:
   FlowCtlIterator(
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& aChildren,
-        enum action act_)
+        enum FlowCtlException::action act_)
     :
     NaryBaseIterator<FlowCtlIterator, PlanIteratorState>(sctx, loc, aChildren),
     act (act_)

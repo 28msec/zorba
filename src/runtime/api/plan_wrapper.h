@@ -27,6 +27,7 @@ namespace zorba
 class PlanState;
 class ZorbaDebuggerCommons;
 class ZorbaDebuggerRuntime;
+class Timeout;
 
 /*******************************************************************************
   Wrapper used to drive the evaluation of an iterator (sub)tree.
@@ -48,13 +49,15 @@ protected:
 #ifndef NDEBUG
   bool		           theIsOpened;
 #endif
+  Timeout          * theTimeout;
 
 public:
   PlanWrapper(
         const PlanIter_t& iter,
         CompilerCB*,
         dynamic_context* aDynamicContext,
-        uint32_t aStackDepth = 0);
+        uint32_t aStackDepth = 0,
+        long aTimeout = -1);
 
   virtual ~PlanWrapper();
 
