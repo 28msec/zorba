@@ -1368,7 +1368,6 @@ public:
     expr_hv.push_back(expr_h);
     // update the location of the current expression to 
     // end at the location of the last child that was added
-    loc.setFilenameEnd(expr_h->get_location().getFilenameEnd());
     loc.setLineEnd(expr_h->get_location().getLineEnd());
     loc.setColumnEnd(expr_h->get_location().getColumnEnd());
   }
