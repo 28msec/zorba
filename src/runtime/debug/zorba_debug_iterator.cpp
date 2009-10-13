@@ -133,12 +133,13 @@ const ZorbaDebugIterator* ZorbaDebugIterator::getOverIterator() const
   if (theDebuggerParent == NULL) {
     return NULL;
   }
+  // jump over us
   if (theDebuggerParent->theDebuggerChildren.back() == this) {
     return NULL;
   }
   std::vector<ZorbaDebugIterator*>::const_iterator lIter;
   const std::vector<ZorbaDebugIterator*> lSilblings =
-    theDebuggerParent->theDebuggerParent->theDebuggerChildren;
+    theDebuggerParent->theDebuggerChildren;
   for (lIter = lSilblings.begin(); lIter != lSilblings.end(); lIter++) {
     if (*lIter == this) {
       ++lIter;
