@@ -105,9 +105,9 @@ XQueryImpl::XQueryImpl()
   theIsClosed(false),
   theDocLoadingUserTime(0.0),
   theDocLoadingTime(0),
+  theTimeout(-1),
   theIsDebugMode(false),
-  theProfileName("xquery_profile.out"),
-  theTimeout(-1)
+  theProfileName("xquery_profile.out")
 { 
   theCompilerCB = new CompilerCB(theSctxMap);
 

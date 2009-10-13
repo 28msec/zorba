@@ -197,18 +197,14 @@ public:
     if(!ar.is_serializing_out())
     {
       RCHelper::addReference (theStaticContext);
-      //theDynamicContext = NULL; 
       theDynamicContextWrapper = NULL; 
       theStaticContextWrapper = NULL;//new StaticContextImpl(theStaticContext, theErrorHandler); 
 
-      //theUserErrorHandler = false; 
-      //theErrorHandler = NULL; 
-      //theErrorManager = NULL;
-      //theSAX2Handler = NULL; 
       theIsClosed = false;
 
       theCompilerCB->m_error_manager = theErrorManager;
     }
+    ar & theTimeout;
   }
 
 public:
