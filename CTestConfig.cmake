@@ -17,4 +17,9 @@ SET (CTEST_NIGHTLY_START_TIME "00:00:00 GMT")
 SET (CTEST_DROP_SITE "dbisdart.inf.ethz.ch") 
 SET (CTEST_DROP_LOCATION "/cdash/submit.php?project=zorba") 
 SET (CTEST_DROP_SITE_CDASH TRUE)
+SET (CTEST_CUSTOM_WARNING_EXCEPTION
+    ${CTEST_CUSTOM_WARNING_EXCEPTION}
+    "Warning: GNU Bison not available.*"
+    "Warning: FlexLexer.h has not been found.*"
+    "Warning: using repository file")
 # SET (CTEST_COMPRESS_SUBMISSION ON)
