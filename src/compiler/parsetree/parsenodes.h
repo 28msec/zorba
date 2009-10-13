@@ -1364,7 +1364,14 @@ protected:
 public:
   Expr(const QueryLoc&);
 
-  void push_back(rchandle<exprnode> expr_h) { expr_hv.push_back(expr_h); }
+  void push_back(rchandle<exprnode> expr_h) {
+    expr_hv.push_back(expr_h);
+    // update the location of the current expression to 
+    // end at the location of the last child that was added
+    loc.setFilenameEnd(expr_h->get_location().getFilenameEnd());
+    loc.setLineEnd(expr_h->get_location().getLineEnd());
+    loc.setColumnEnd(expr_h->get_location().getColumnEnd());
+  }
 
   rchandle<exprnode> operator[](int i) const { return expr_hv[i]; }
 
