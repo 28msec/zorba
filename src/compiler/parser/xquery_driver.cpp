@@ -16,8 +16,20 @@
 #include <fstream>
 #include "util/properties.h"
 #include "compiler/parser/xquery_driver.h"
+
+#ifdef __GNUC__
+  // disable a warning in location.hh which comes with bison
+  // position.hh:141: warning: suggest parentheses around && within ||
+#  pragma GCC diagnostic ignored "-Wparentheses"
+#endif
+
 #include "compiler/parser/xquery_parser.hpp"
 #include "compiler/parser/xquery_scanner.h"
+
+#ifdef __GNUC__
+#  pragma GCC diagnostic warning "-Wparentheses"
+#endif
+
 #include "compiler/api/compilercb.h"
 #include "context/static_context.h"
 #include "zorbaerrors/error_manager.h"
