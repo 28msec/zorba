@@ -23,7 +23,8 @@
 <zorba:iterator
     name="FnConcatIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="true"
     arity="nary">
 
     <zorba:description author="Zorba Team">
@@ -41,6 +42,14 @@
       <zorba:member type="uint32_t" name="theCurIter" defaultValue="0"
                     brief="the current iterator"/>
     </zorba:state>
+  
+    <zorba:function generateReturnTypeFunction="true"
+                    generateComputeAnnotationFunction="true"
+                    annIsUpdating="true">
+      <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname=":concatenate" prefix="fn">
+      </zorba:signature>
+    </zorba:function>
+      
 </zorba:iterator>
 
 <!--
@@ -51,7 +60,8 @@
 <zorba:iterator
     name="FnIndexOfIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="true"
     arity="nary">
     
     <zorba:description author="Zorba Team">
@@ -91,6 +101,11 @@
       <zorba:member type="XQPCollator*" name="theCollator" defaultValue="0"
         brief="the collator"/>
     </zorba:state>
+
+  <zorba:function>
+    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="index-of" prefix="fn">      
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 <!--
@@ -101,13 +116,19 @@
 <zorba:iterator
     name="FnEmptyIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="true"
     arity="nary">
     
     <zorba:description author="Zorba Team">
       If the value of $arg is the empty sequence, the function returns true;
       otherwise, the function returns false.
     </zorba:description>
+  
+    <zorba:function>
+      <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="empty" prefix="fn">      
+      </zorba:signature>
+    </zorba:function>
 </zorba:iterator> 
 
 <!--
@@ -118,13 +139,19 @@
 <zorba:iterator
     name="FnExistsIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="true"
     arity="nary">
     
     <zorba:description author="Zorba Team">
       If the value of $arg is not the empty sequence, the function returns true; 
       otherwise, the function returns false.
     </zorba:description>
+  
+    <zorba:function>
+      <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="exists" prefix="fn">      
+      </zorba:signature>
+    </zorba:function>
 </zorba:iterator>
 
 <!--
@@ -135,7 +162,8 @@
 <zorba:iterator
     name="FnInsertBeforeIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="true"
     arity="nary">
     
     <zorba:description author="Zorba Team">
@@ -154,6 +182,11 @@
       <zorba:member type="store::Item_t" name="theTargetItem"
                     defaultValue="NULL" brief=""/>
     </zorba:state>
+  
+    <zorba:function propagatesInputToOutput="true">
+      <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="insert-before" prefix="fn">      
+      </zorba:signature>
+    </zorba:function>
 </zorba:iterator>
 
 <!--
@@ -164,24 +197,30 @@
 <zorba:iterator
     name="FnRemoveIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="true"
     arity="nary">
     
-    <zorba:description author="Zorba Team">
-      Returns a new sequence constructed from the value of aTarget with the item at
-      the position specified by the value of aPosition removed.
-    </zorba:description>
-    
-    <zorba:state generateInit="true" generateReset="true">
-      <zorba:member type="xqp_integer" name="theCurrentPos"
-                    defaultValue="xqp_integer::parseInt(0)" brief="the current position in the sequence"/>
-
-      <zorba:member type="xqp_integer" name="thePosition"
-                    defaultValue="xqp_integer::parseInt(0)" brief="the position to delete"/>
-
-      <zorba:member type="XQPCollator*" name="theCollator"
-                    defaultValue="0" brief="the collator"/>
-    </zorba:state>
+  <zorba:description author="Zorba Team">
+    Returns a new sequence constructed from the value of aTarget with the item at
+    the position specified by the value of aPosition removed.
+  </zorba:description>
+  
+  <zorba:state generateInit="true" generateReset="true">
+    <zorba:member type="xqp_integer" name="theCurrentPos"
+                  defaultValue="xqp_integer::parseInt(0)" brief="the current position in the sequence"/>
+  
+    <zorba:member type="xqp_integer" name="thePosition"
+                  defaultValue="xqp_integer::parseInt(0)" brief="the position to delete"/>
+  
+    <zorba:member type="XQPCollator*" name="theCollator"
+                  defaultValue="0" brief="the collator"/>
+  </zorba:state>
+  
+  <zorba:function baseSig="single_seq_opt_function">
+   <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="remove" prefix="fn">      
+   </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 <!--
@@ -192,17 +231,24 @@
 <zorba:iterator
     name="FnReverseIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="true"
     arity="nary">
     
-    <zorba:description author="Zorba Team">
-      fn:reverse
-    </zorba:description>
-    
-    <zorba:state generateInit="false" generateReset="false">
-      <zorba:member type="std::stack&lt;store::Item_t&gt;"
-                    name="theStack" brief=""/>
-    </zorba:state>
+  <zorba:description author="Zorba Team">
+    fn:reverse
+  </zorba:description>
+  
+  <zorba:state generateInit="false" generateReset="false">
+    <zorba:member type="std::stack&lt;store::Item_t&gt;"
+                  name="theStack" brief=""/>
+  </zorba:state>
+  
+  <zorba:function baseSig="single_seq_opt_function">
+    <zorba:annotation name="producesNodeIdSorted">NO</zorba:annotation>
+    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="reverse" prefix="fn">      
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 <!--
@@ -213,17 +259,24 @@
 <zorba:iterator
     name="FnSubsequenceIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="true"
     arity="nary">
     
-    <zorba:description author="Zorba Team">
-      fn:subsequence
-    </zorba:description>
-    
-    <zorba:state generateInit="true" generateReset="true">
-      <zorba:member type="xqp_integer" name="theRemaining"
-                    defaultValue="xqp_integer::parseInt(0)" brief=""/>
-    </zorba:state>
+  <zorba:description author="Zorba Team">
+    fn:subsequence
+  </zorba:description>
+  
+  <zorba:state generateInit="true" generateReset="true">
+    <zorba:member type="xqp_integer" name="theRemaining"
+                  defaultValue="xqp_integer::parseInt(0)" brief=""/>
+  </zorba:state>
+  
+  <zorba:function baseSig="single_seq_opt_function"
+    generateComputeAnnotationFunction="true">
+    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="subsequence" prefix="fn">
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 <!--
@@ -234,7 +287,8 @@
 <zorba:iterator
     name="FnZeroOrOneIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="true"
     arity="nary">
     
     <zorba:description author="Zorba Team">
@@ -246,7 +300,12 @@
     </zorba:constructor>
     
     <zorba:member type="bool" name="theDoDistinct"
-                  generateAccessor="false" brief=""/>
+    generateAccessor="false" brief=""/>
+  
+  <zorba:function generateReturnTypeFunction="true">
+    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="zero-or-one" prefix="fn">
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 <!--
@@ -257,12 +316,18 @@
 <zorba:iterator
     name="FnOneOrMoreIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="true"
     arity="nary">
     
     <zorba:description author="Zorba Team">
       fn:one-or-more
     </zorba:description>
+  
+  <zorba:function baseSig="single_seq_opt_function">
+    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="one-or-more" prefix="fn">
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 <!--
@@ -273,7 +338,8 @@
 <zorba:iterator
     name="FnExactlyOneIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="false"
     arity="nary">
     
     <zorba:description author="Zorba Team">fn:exactly-one</zorba:description>
@@ -283,10 +349,9 @@
         <zorba:parameter type="bool" name="doDistinct" defaultValue="false"/>
     </zorba:constructor>
     
-    <zorba:member type="bool" name="theRaiseError"
-                  generateAccessor="false" brief=""/>
-    <zorba:member type="bool" name="theDoDistinct"
-                  generateAccessor="false" brief=""/>
+    <zorba:member type="bool" name="theRaiseError" generateAccessor="false" brief=""/>
+    <zorba:member type="bool" name="theDoDistinct" generateAccessor="false" brief=""/>
+  
 </zorba:iterator>
 
 <!--
@@ -297,10 +362,16 @@
 <zorba:iterator
     name="FnDeepEqualIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="true"
     arity="nary">
     
     <zorba:description author="Zorba Team">fn:deep-equal</zorba:description>
+  
+  <zorba:function propagatesInputToOutput="true">
+    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="deep-equal" prefix="fn">
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 <!--
@@ -311,7 +382,8 @@
 <zorba:iterator
     name="HashSemiJoinIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="false"
     arity="nary">
     
     <zorba:description author="Zorba Team">
@@ -341,7 +413,8 @@
 <zorba:iterator
     name="SortSemiJoinIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="false"
     arity="nary">
     
     <zorba:description author="Zorba Team">
@@ -364,10 +437,16 @@
 <zorba:iterator
     name="FnCountIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="true"
     arity="nary">
     
     <zorba:description author="Zorba Team">fn:count</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="count" prefix="fn">      
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
     
 <!--
@@ -378,12 +457,18 @@
 <zorba:iterator
     name="FnAvgIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="true"
     arity="nary">
     
     <zorba:description author="Zorba Team">
       fn:avg
     </zorba:description>
+  
+  <zorba:function>
+    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="avg" prefix="fn">      
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
     
 <!--
@@ -394,62 +479,93 @@
 <zorba:iterator
     name="FnSumIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="true"
     arity="nary">
-    
+  
     <zorba:description author="Zorba Team">
       fn:sum
     </zorba:description>
+  
+  <zorba:function specializable="true">
+    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="sum" prefix="fn">      
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 <zorba:iterator
     name="FnSumDoubleIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="true"
     arity="nary">
     
     <zorba:description author="Zorba Team">
       fn:sum with arguments xs:double
     </zorba:description>
+  
+  <zorba:function>
+    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="sum-double" prefix="fn">      
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 <zorba:iterator
     name="FnSumFloatIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="true"
     arity="nary">
     
     <zorba:description author="Zorba Team">
       fn:sum with arguments xs:float
     </zorba:description>
+  
+  <zorba:function>
+    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="sum-float" prefix="fn">      
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 <zorba:iterator
     name="FnSumDecimalIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="true"
     arity="nary">
     
     <zorba:description author="Zorba Team">
       fn:sum with arguments xs:decimal
     </zorba:description>
+  
+  <zorba:function>
+    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="sum-decimal" prefix="fn">      
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 <zorba:iterator
     name="FnSumIntegerIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="true"
     arity="nary">
     
     <zorba:description author="Zorba Team">
       fn:sum with arguments xs:integer
     </zorba:description>
+  
+  <zorba:function>
+    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="sum-integer" prefix="fn">      
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
     
 <zorba:iterator
     name="OpToIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="true"
     arity="nary">
     
     <zorba:description author="Zorba Team">op:to</zorba:description>
@@ -464,6 +580,11 @@
        <zorba:member type="xqp_integer" name="theLastVal" defaultValue="xqp_integer::parseInt(0)"
                      brief="last integer"/>
     </zorba:state>
+  
+  <zorba:function>
+    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname=":to" prefix="fn">      
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
     
 <!--
@@ -474,10 +595,18 @@
 <zorba:iterator
     name="FnDocIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="true"
     arity="nary">
     
     <zorba:description author="Zorba Team">fn:doc</zorba:description>
+  
+  <zorba:function requiresDynamicContext="true"
+    isSource="true"
+    propagatesInputToOutput="true">
+    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="doc" prefix="fn">      
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
     
 <!--
@@ -488,19 +617,32 @@
 <zorba:iterator
     name="FnDocAvailableIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="true"
     arity="nary">
     
     <zorba:description author="Zorba Team">fn:doc-available</zorba:description>
+  
+  <zorba:function propagatesInputToOutput="true">
+    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="doc-available" prefix="fn">      
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
     
 <zorba:iterator
     name="FnParseIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="true"
     arity="nary">
     
     <zorba:description author="Zorba Team">Zorba-defined parse function</zorba:description>
+  
+  <zorba:function requiresDynamicContext="true"
+    isSource="true">
+    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="parse" prefix="fn-zorba-util">      
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 </zorba:iterators>
