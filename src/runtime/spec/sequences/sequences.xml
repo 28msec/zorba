@@ -45,11 +45,14 @@
   
     <zorba:function generateReturnTypeFunction="true"
                     generateComputeAnnotationFunction="true"
-                    annIsUpdating="true">
-      <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname=":concatenate" prefix="fn">
+                    annIsUpdating="true"
+                    >
+      <zorba:signature localname=":concatenate" prefix="fn">
+        <zorba:param>item()*</zorba:param>
+        <zorba:param>true</zorba:param>
+        <zorba:output>item()*</zorba:output>
       </zorba:signature>
     </zorba:function>
-      
 </zorba:iterator>
 
 <!--
@@ -102,8 +105,17 @@
         brief="the collator"/>
     </zorba:state>
 
-  <zorba:function>
-    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="index-of" prefix="fn">      
+  <zorba:function >
+    <zorba:signature localname="index-of" prefix="fn">
+      <zorba:param>xs:anyAtomicType*</zorba:param>
+      <zorba:param>xs:anyAtomicType</zorba:param>
+      <zorba:output>xs:integer*</zorba:output>
+    </zorba:signature>
+    <zorba:signature localname="index-of" prefix="fn">
+      <zorba:param>xs:anyAtomicType*</zorba:param>
+      <zorba:param>xs:anyAtomicType</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:integer*</zorba:output>
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>
@@ -125,10 +137,12 @@
       otherwise, the function returns false.
     </zorba:description>
   
-    <zorba:function>
-      <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="empty" prefix="fn">      
-      </zorba:signature>
-    </zorba:function>
+  <zorba:function >
+    <zorba:signature localname="empty" prefix="fn">
+      <zorba:param>item()*</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator> 
 
 <!--
@@ -148,10 +162,12 @@
       otherwise, the function returns false.
     </zorba:description>
   
-    <zorba:function>
-      <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="exists" prefix="fn">      
-      </zorba:signature>
-    </zorba:function>
+  <zorba:function >
+    <zorba:signature localname="exists" prefix="fn">
+      <zorba:param>item()*</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 </zorba:iterator>
 
 <!--
@@ -184,7 +200,11 @@
     </zorba:state>
   
     <zorba:function propagatesInputToOutput="true">
-      <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="insert-before" prefix="fn">      
+      <zorba:signature localname="insert-before" prefix="fn">
+        <zorba:param>item()*</zorba:param>
+        <zorba:param>xs:integer</zorba:param>
+        <zorba:param>item()*</zorba:param>
+        <zorba:output>item()*</zorba:output>
       </zorba:signature>
     </zorba:function>
 </zorba:iterator>
@@ -217,8 +237,12 @@
                   defaultValue="0" brief="the collator"/>
   </zorba:state>
   
-  <zorba:function baseSig="single_seq_opt_function">
-   <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="remove" prefix="fn">      
+  <zorba:function baseSig="single_seq_opt_function"
+    >
+   <zorba:signature localname="remove" prefix="fn">
+     <zorba:param>item()*</zorba:param>
+     <zorba:param>xs:integer</zorba:param>
+     <zorba:output>item()*</zorba:output>
    </zorba:signature>
   </zorba:function>
 </zorba:iterator>
@@ -244,9 +268,12 @@
                   name="theStack" brief=""/>
   </zorba:state>
   
-  <zorba:function baseSig="single_seq_opt_function">
+  <zorba:function baseSig="single_seq_opt_function"
+    >
     <zorba:annotation name="producesNodeIdSorted">NO</zorba:annotation>
-    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="reverse" prefix="fn">      
+    <zorba:signature localname="reverse" prefix="fn"> 
+      <zorba:param>item()*</zorba:param>
+      <zorba:output>item()*</zorba:output>      
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>
@@ -274,7 +301,16 @@
   
   <zorba:function baseSig="single_seq_opt_function"
     generateComputeAnnotationFunction="true">
-    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="subsequence" prefix="fn">
+    <zorba:signature localname="subsequence" prefix="fn">
+      <zorba:param>item()*</zorba:param>
+      <zorba:param>xs:double</zorba:param>
+      <zorba:output>item()*</zorba:output>
+    </zorba:signature>
+    <zorba:signature localname="subsequence" prefix="fn">
+      <zorba:param>item()*</zorba:param>
+      <zorba:param>xs:double</zorba:param>
+      <zorba:param>xs:double</zorba:param>
+      <zorba:output>item()*</zorba:output>
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>
@@ -302,8 +338,11 @@
     <zorba:member type="bool" name="theDoDistinct"
     generateAccessor="false" brief=""/>
   
-  <zorba:function generateReturnTypeFunction="true">
-    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="zero-or-one" prefix="fn">
+  <zorba:function generateReturnTypeFunction="true"
+    >
+    <zorba:signature localname="zero-or-one" prefix="fn">
+      <zorba:param>item()*</zorba:param>
+      <zorba:output>item()?</zorba:output>
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>
@@ -324,8 +363,11 @@
       fn:one-or-more
     </zorba:description>
   
-  <zorba:function baseSig="single_seq_opt_function">
-    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="one-or-more" prefix="fn">
+  <zorba:function baseSig="single_seq_opt_function"
+    >
+    <zorba:signature localname="one-or-more" prefix="fn">
+      <zorba:param>item()*</zorba:param>
+      <zorba:output>item()+</zorba:output>  
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>
@@ -368,8 +410,18 @@
     
     <zorba:description author="Zorba Team">fn:deep-equal</zorba:description>
   
-  <zorba:function propagatesInputToOutput="true">
-    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="deep-equal" prefix="fn">
+  <zorba:function propagatesInputToOutput="true"
+    >
+    <zorba:signature localname="deep-equal" prefix="fn">
+      <zorba:param>item()*</zorba:param>
+      <zorba:param>item()*</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+    <zorba:signature localname="deep-equal" prefix="fn">
+      <zorba:param>item()*</zorba:param>
+      <zorba:param>item()*</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>
@@ -443,8 +495,10 @@
     
     <zorba:description author="Zorba Team">fn:count</zorba:description>
   
-  <zorba:function>
-    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="count" prefix="fn">      
+  <zorba:function >
+    <zorba:signature localname="count" prefix="fn">
+      <zorba:param>item()*</zorba:param>
+      <zorba:output>xs:integer</zorba:output>
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>
@@ -465,8 +519,10 @@
       fn:avg
     </zorba:description>
   
-  <zorba:function>
-    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="avg" prefix="fn">      
+  <zorba:function >
+    <zorba:signature localname="avg" prefix="fn">
+      <zorba:param>xs:anyAtomicType*</zorba:param>
+      <zorba:output>xs:anyAtomicType?</zorba:output>
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>
@@ -488,7 +544,14 @@
     </zorba:description>
   
   <zorba:function specializable="true">
-    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="sum" prefix="fn">      
+    <zorba:signature localname="sum" prefix="fn">
+      <zorba:param>xs:anyAtomicType*</zorba:param>
+      <zorba:output>xs:anyAtomicType</zorba:output>      
+    </zorba:signature>
+    <zorba:signature localname="sum" prefix="fn">
+      <zorba:param>xs:anyAtomicType*</zorba:param>
+      <zorba:param>xs:anyAtomicType?</zorba:param>
+      <zorba:output>xs:anyAtomicType?</zorba:output>      
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>
@@ -504,8 +567,15 @@
       fn:sum with arguments xs:double
     </zorba:description>
   
-  <zorba:function>
-    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="sum-double" prefix="fn">      
+  <zorba:function >
+    <zorba:signature localname="sum-double" prefix="fn">
+      <zorba:param>xs:double*</zorba:param>
+      <zorba:output>xs:double</zorba:output>
+    </zorba:signature>
+    <zorba:signature localname="sum-double" prefix="fn">
+      <zorba:param>xs:double*</zorba:param>
+      <zorba:param>xs:anyAtomicType?</zorba:param>
+      <zorba:output>xs:anyAtomicType?</zorba:output>
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>
@@ -521,8 +591,15 @@
       fn:sum with arguments xs:float
     </zorba:description>
   
-  <zorba:function>
-    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="sum-float" prefix="fn">      
+  <zorba:function >
+    <zorba:signature localname="sum-float" prefix="fn">
+      <zorba:param>xs:float*</zorba:param>
+      <zorba:output>xs:float</zorba:output>
+    </zorba:signature>
+    <zorba:signature localname="sum-float" prefix="fn">
+      <zorba:param>xs:float*</zorba:param>
+      <zorba:param>xs:anyAtomicType?</zorba:param>
+      <zorba:output>xs:anyAtomicType?</zorba:output>
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>
@@ -538,8 +615,15 @@
       fn:sum with arguments xs:decimal
     </zorba:description>
   
-  <zorba:function>
-    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="sum-decimal" prefix="fn">      
+  <zorba:function >
+    <zorba:signature localname="sum-decimal" prefix="fn">
+      <zorba:param>xs:decimal*</zorba:param>
+      <zorba:output>xs:decimal</zorba:output>
+    </zorba:signature>
+    <zorba:signature localname="sum-decimal" prefix="fn">
+      <zorba:param>xs:decimal*</zorba:param>
+      <zorba:param>xs:anyAtomicType?</zorba:param>
+      <zorba:output>xs:anyAtomicType?</zorba:output>
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>
@@ -555,8 +639,15 @@
       fn:sum with arguments xs:integer
     </zorba:description>
   
-  <zorba:function>
-    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="sum-integer" prefix="fn">      
+  <zorba:function >
+    <zorba:signature localname="sum-integer" prefix="fn">
+      <zorba:param>xs:integer*</zorba:param>
+      <zorba:output>xs:integer</zorba:output>
+    </zorba:signature>
+    <zorba:signature localname="sum-integer" prefix="fn">
+      <zorba:param>xs:integer*</zorba:param>
+      <zorba:param>xs:anyAtomicType?</zorba:param>
+      <zorba:output>xs:anyAtomicType?</zorba:output>
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>
@@ -581,8 +672,11 @@
                      brief="last integer"/>
     </zorba:state>
   
-  <zorba:function>
-    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname=":to" prefix="fn">      
+  <zorba:function >
+    <zorba:signature localname=":to" prefix="fn">
+      <zorba:param>xs:integer</zorba:param>
+      <zorba:param>xs:integer</zorba:param>
+      <zorba:output>xs:integer*</zorba:output>
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>
@@ -603,8 +697,11 @@
   
   <zorba:function requiresDynamicContext="true"
     isSource="true"
-    propagatesInputToOutput="true">
-    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="doc" prefix="fn">      
+    propagatesInputToOutput="true"
+    >
+    <zorba:signature localname="doc" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:output>document-node()?</zorba:output>
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>
@@ -623,8 +720,11 @@
     
     <zorba:description author="Zorba Team">fn:doc-available</zorba:description>
   
-  <zorba:function propagatesInputToOutput="true">
-    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="doc-available" prefix="fn">      
+  <zorba:function propagatesInputToOutput="true"
+    >
+    <zorba:signature localname="doc-available" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>
@@ -639,8 +739,11 @@
     <zorba:description author="Zorba Team">Zorba-defined parse function</zorba:description>
   
   <zorba:function requiresDynamicContext="true"
-    isSource="true">
-    <zorba:signature namespace="http://www.w3.org/2005/xpath-functions" localname="parse" prefix="fn-zorba-util">      
+    isSource="true"
+    >
+    <zorba:signature localname="parse" prefix="fn-zorba-util">
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>document-node()</zorba:output>
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>
