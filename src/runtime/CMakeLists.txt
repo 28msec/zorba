@@ -44,6 +44,9 @@ INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaRuntimeGenerator.cmake)
 # look for all spec files and generate the header and cpp files if out of date
 # the cpp files and the according _impl.cpp files are added to the RUNTIME_SRCS list
 FILE(GLOB_RECURSE SPEC_FILES ${CMAKE_SOURCE_DIR}/src/runtime/spec "*.xml")
+
+# mappings.xml is only a helper xml file => don't generate any code for it
+LIST(REMOVE_ITEM SPEC_FILES "${CMAKE_SOURCE_DIR}/src/runtime/spec/mappings.xml")
 FOREACH(SPEC_FILE ${SPEC_FILES})
   STRING(LENGTH ${SPEC_FILE} SPEC_FILE_NAME_LENGTH)
   MATH(EXPR SPEC_PREFIX_LENGTH "${SPEC_FILE_NAME_LENGTH} - ${RUNTIME_SPEC_LENGTH} - 4")
