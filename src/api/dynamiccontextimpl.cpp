@@ -368,7 +368,7 @@ DynamicContextImpl::setCurrentDateTime( const Item& aDateTimeItem )
 
   
 Item
-DynamicContextImpl::getCurrentDateTime( )
+DynamicContextImpl::getCurrentDateTime( ) const
 {
   ZORBA_DCTX_TRY
   {
@@ -397,7 +397,7 @@ DynamicContextImpl::setImplicitTimezone( int aTimezoneMinutes )
 
 
 int
-DynamicContextImpl::getImplicitTimezone()
+DynamicContextImpl::getImplicitTimezone() const
 {
   ZORBA_DCTX_TRY
   {
@@ -441,7 +441,7 @@ void DynamicContextImpl::checkNoIterators()
 
 
 Item
-DynamicContextImpl::getDefaultCollection()
+DynamicContextImpl::getDefaultCollection() const
 {
   ZORBA_DCTX_TRY
   {

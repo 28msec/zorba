@@ -110,7 +110,7 @@ public:
   setCurrentDateTime( const Item& aDateTimeItem );
       
   virtual Item
-  getCurrentDateTime( );
+  getCurrentDateTime( ) const;
 
   // In minutes
   virtual bool
@@ -118,13 +118,13 @@ public:
 
   // In minutes
   virtual int
-  getImplicitTimezone();
+  getImplicitTimezone() const;
 
   virtual bool
   setDefaultCollection( const Item& aCollectionUri );
 
   virtual Item
-  getDefaultCollection();
+  getDefaultCollection() const;
 
 protected:
   void checkNoIterators();

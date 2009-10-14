@@ -156,7 +156,7 @@ class ZORBA_DLL_PUBLIC DynamicContext
    * @return Item the dateTime Item used at the time the query is executed.
    */
   virtual Item
-  getCurrentDateTime( ) = 0;
+  getCurrentDateTime( ) const = 0;
   
   /** \brief Defines the variable of the implicit timezone to be used when a date, time, 
    *         or dateTime value that does not have a timezone is used in a comparison or 
@@ -177,7 +177,7 @@ class ZORBA_DLL_PUBLIC DynamicContext
    * @throw ZorbaException if an error occured.
    */
   virtual int
-  getImplicitTimezone() = 0;
+  getImplicitTimezone() const = 0;
   
   /** \brief Defines the value of the default collection that is used when calling the
    *         fn:collection function without a parameter.
@@ -196,7 +196,7 @@ class ZORBA_DLL_PUBLIC DynamicContext
    * @throw ZorbaException if an error occured.
    */
   virtual Item
-  getDefaultCollection() = 0;
+  getDefaultCollection() const = 0;
   
 protected:
   /** \brief Destructor

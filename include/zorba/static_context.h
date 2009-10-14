@@ -321,7 +321,7 @@ namespace zorba {
        * @return the revalidation mode.
        */
       virtual validation_mode_t
-      getRevalidationMode() = 0;
+      getRevalidationMode() const = 0;
 
       /** \brief Set the revalidation mode.
        *
@@ -454,10 +454,10 @@ namespace zorba {
       setModulePaths( const std::vector<String>& aModulePaths ) = 0;
 
       virtual void
-      getModulePaths( std::vector<String>& aModulePaths ) = 0;
+      getModulePaths( std::vector<String>& aModulePaths ) const = 0;
 
       virtual void
-      getFullModulePaths( std::vector<String>& aFullModulePaths ) = 0;
+      getFullModulePaths( std::vector<String>& aFullModulePaths ) const = 0;
   };
 } /* namespace zorba */
 #endif

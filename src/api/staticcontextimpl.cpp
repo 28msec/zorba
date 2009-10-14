@@ -503,7 +503,7 @@ StaticContextImpl::getBaseURI( ) const
 
 
 validation_mode_t
-StaticContextImpl::getRevalidationMode()
+StaticContextImpl::getRevalidationMode() const
 {
   return validate_lax;
 }
@@ -887,7 +887,7 @@ StaticContextImpl::setModulePaths( const std::vector<String>& aModulePaths )
 }
 
 void
-StaticContextImpl::getModulePaths( std::vector<String>& aModulePaths )
+StaticContextImpl::getModulePaths( std::vector<String>& aModulePaths ) const
 {
   try {
     std::vector<std::string> lModulePaths;
@@ -904,7 +904,7 @@ StaticContextImpl::getModulePaths( std::vector<String>& aModulePaths )
 }
 
 void
-StaticContextImpl::getFullModulePaths( std::vector<String>& aFullModulePaths )
+StaticContextImpl::getFullModulePaths( std::vector<String>& aFullModulePaths ) const
 {
   try {
     std::vector<std::string> lFullModulePaths;

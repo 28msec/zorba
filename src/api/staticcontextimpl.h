@@ -151,7 +151,7 @@ class StaticContextImpl : public StaticContext
   getBaseURI( ) const;
 
   virtual validation_mode_t
-  getRevalidationMode();
+  getRevalidationMode() const;
 
   virtual void
   setRevalidationMode(validation_mode_t aMode);
@@ -238,10 +238,10 @@ class StaticContextImpl : public StaticContext
   setModulePaths( const std::vector<String>& aModulePaths );
 
   virtual void
-  getModulePaths( std::vector<String>& aModulePaths );
+  getModulePaths( std::vector<String>& aModulePaths ) const;
 
   virtual void
-  getFullModulePaths( std::vector<String>& aFullModulePaths );
+  getFullModulePaths( std::vector<String>& aFullModulePaths ) const;
 };
 
 } /* namespace zorba */
