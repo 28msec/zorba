@@ -26,7 +26,7 @@ namespace zorba {
 
   // TODO derive from Function class and remove getLocalname
   // TODO move getModule and isPureFunction to the function base class
-  class ZORBA_DLL_PUBLIC StatelessExternalFunction : public ExternalFunctionData 
+  class ZORBA_DLL_PUBLIC StatelessExternalFunction : public ExternalFunctionData
   {
     public:
       typedef std::vector<ItemSequence*> Arguments_t;
@@ -41,7 +41,9 @@ namespace zorba {
       getLocalName() const = 0;
 
       virtual ItemSequence_t
-      evaluate(const Arguments_t&) const = 0;
+      evaluate(const Arguments_t&,
+               const StaticContext* aSctxCtx,
+               const DynamicContext* aDynCtx) const = 0;
 
       virtual bool
       isPureFunction() const { return true; }

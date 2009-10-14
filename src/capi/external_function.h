@@ -38,7 +38,9 @@ namespace zorbac {
       getLocalName() const;
 
       zorba::ItemSequence_t
-      evaluate(const zorba::StatelessExternalFunction::Arguments_t& args) const;
+      evaluate(const zorba::StatelessExternalFunction::Arguments_t& args,
+               const zorba::StaticContext* sctx,
+               const zorba::DynamicContext* dctx) const;
 
     protected:
       zorba::String theURI;

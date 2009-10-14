@@ -148,7 +148,7 @@ class ZORBA_DLL_PUBLIC DynamicContext
    *        or not a Item of type dateTime
    */
   virtual bool
-    setCurrentDateTime( const Item& aDateTimeItem ) = 0;
+  setCurrentDateTime( const Item& aDateTimeItem ) = 0;
   
   /** \brief Retrieve the dateTime Item used at the time the query is executed 
    *         (see setCurrentDateTime()).

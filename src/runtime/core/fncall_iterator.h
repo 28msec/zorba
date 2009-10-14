@@ -30,6 +30,8 @@
 
 namespace zorba {
 
+class StaticContextImpl;
+
 class UDFunctionCallIteratorState : public PlanIteratorState 
 {
  public:
@@ -137,7 +139,7 @@ public:
         bool aIsUpdating,
         const xqp_string& aPrefix);
 
-  virtual ~StatelessExtFunctionCallIterator() { }
+  virtual ~StatelessExtFunctionCallIterator();
 
   virtual bool isUpdating() const { return theIsUpdating; }
 

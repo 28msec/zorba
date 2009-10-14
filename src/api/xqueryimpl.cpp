@@ -717,6 +717,7 @@ XQueryImpl::generateWrapper()
   new PlanWrapper(static_cast<PlanIterator*>(thePlan->theRootIter.getp()),
                   theCompilerCB,
                   theDynamicContext,
+                  this,
                   0, theTimeout);
   return lPlan;
 }

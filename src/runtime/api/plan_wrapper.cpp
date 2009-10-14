@@ -33,11 +33,13 @@ PlanWrapper::PlanWrapper(
     const PlanIter_t& aIter,
     CompilerCB* aCompilerCB, 
     dynamic_context* aDynamicContext,
+    XQueryImpl* aQuery,
     uint32_t aStackDepth,
     long aTimeout)
   :
-  theIterator(aIter)
-  ,theDynamicContext(NULL) ,
+  theIterator(aIter),
+  theDynamicContext(NULL),
+  theQuery(aQuery),
 #ifndef NDEBUG
   theIsOpened(false),
 #endif
@@ -59,11 +61,11 @@ PlanWrapper::PlanWrapper(
   // for the moment, let's keep the runtime cb here
   theStateBlock->theRuntimeCB = new RuntimeCB();
   theStateBlock->theRuntimeCB->theDynamicContext = aDynamicContext;
+  theStateBlock->theRuntimeCB->theQuery = theQuery;
   theStateBlock->theDebuggerCommons = aCompilerCB->theDebuggerCommons;
   if (aTimeout != -1) {
     StateWrapper lWrapper(*theStateBlock);
     theTimeout = new Timeout(aTimeout, lWrapper);
-    theTimeout->start();
   }
 }
 
@@ -102,6 +104,9 @@ PlanWrapper::open()
 #endif
   uint32_t offset = 0;
   theIterator->open(*theStateBlock, offset);
+  if (theTimeout) {
+    theTimeout->start();
+  }
 
 #ifndef NDEBUG
   theIsOpened = true;

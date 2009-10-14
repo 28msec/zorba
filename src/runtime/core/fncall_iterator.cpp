@@ -38,6 +38,7 @@
 #include "runtime/visitors/planiter_visitor.h"
 
 #include "api/unmarshaller.h"
+#include "api/xqueryimpl.h"
 
 
 namespace zorba {
@@ -302,6 +303,10 @@ StatelessExtFunctionCallIterator::StatelessExtFunctionCallIterator(
 { 
 }
 
+StatelessExtFunctionCallIterator::~StatelessExtFunctionCallIterator()
+{
+}
+
 void
 StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
 {
@@ -373,14 +378,18 @@ void StatelessExtFunctionCallIterator::closeImpl(PlanState& planState)
 
 
 
-bool StatelessExtFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool StatelessExtFunctionCallIterator::nextImpl(store::Item_t& result,
+                                                PlanState& planState) const
 {
   StatelessExtFunctionCallIteratorState *state;
   Item lOutsideItem;
   DEFAULT_STACK_INIT(StatelessExtFunctionCallIteratorState, state, planState);
 
   try {
-    state->m_result = m_function->evaluate(state->m_extArgs);
+    state->m_result = m_function->evaluate(state->m_extArgs,
+      planState.theRuntimeCB->theQuery->getStaticContext(),
+      planState.theRuntimeCB->theQuery->getDynamicContext());
+
   } catch(const ZorbaException& e) {
     // take all information from the exception raised in 
     // the external function (e.g. file name) + add loc information

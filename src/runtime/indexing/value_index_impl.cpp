@@ -188,7 +188,8 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
   buildPlan = zorbaIndex->getBuildPlan(planState.theCompilerCB, loc);
 
-  planWrapper = new PlanWrapper(buildPlan, planState.theCompilerCB, dctx);
+  planWrapper = new PlanWrapper(buildPlan, planState.theCompilerCB, dctx,
+                                0); // no query, yet and hence no external functions
 
   createIndexSpec(zorbaIndex, spec);
 
@@ -264,7 +265,8 @@ bool RefreshIndexIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
   buildPlan = zorbaIndex->getBuildPlan(planState.theCompilerCB, loc);
 
-  planWrapper = new PlanWrapper(buildPlan, planState.theCompilerCB, dctx);
+  planWrapper = new PlanWrapper(buildPlan, planState.theCompilerCB, dctx,
+                                0); // no query, yet and hence no external functions
   
   result = GENV_ITEMFACTORY->createPendingUpdateList();
 

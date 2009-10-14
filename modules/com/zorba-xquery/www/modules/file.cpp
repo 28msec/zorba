@@ -67,7 +67,9 @@ namespace zorba { namespace filemodule {
       getLocalName() const { return "exists"; }
   
       virtual ItemSequence_t 
-      evaluate(const StatelessExternalFunction::Arguments_t& args) const 
+      evaluate(const StatelessExternalFunction::Arguments_t& args,
+               const StaticContext*,
+               const DynamicContext*) const 
       {
         bool        lFileExists = false;
         String      lFile = getOneStringArg(args, 0);

@@ -28,6 +28,7 @@ class PlanState;
 class ZorbaDebuggerCommons;
 class ZorbaDebuggerRuntime;
 class Timeout;
+class XQueryImpl;
 
 /*******************************************************************************
   Wrapper used to drive the evaluation of an iterator (sub)tree.
@@ -46,6 +47,7 @@ protected:
   PlanIter_t         theIterator;
   PlanState        * theStateBlock;
   dynamic_context  * theDynamicContext;
+  XQueryImpl       * theQuery;
 #ifndef NDEBUG
   bool		           theIsOpened;
 #endif
@@ -56,6 +58,7 @@ public:
         const PlanIter_t& iter,
         CompilerCB*,
         dynamic_context* aDynamicContext,
+        XQueryImpl* aQuery,
         uint32_t aStackDepth = 0,
         long aTimeout = -1);
 

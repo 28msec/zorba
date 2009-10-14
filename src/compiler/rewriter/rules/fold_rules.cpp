@@ -70,7 +70,7 @@ static expr_t execute (
   store::Item_t item;
   try 
   {
-    for (PlanWrapperHolder pw (new PlanWrapper (plan, compilercb, NULL)); ; ) {
+    for (PlanWrapperHolder pw (new PlanWrapper (plan, compilercb, 0, NULL)); ; ) {
       if (!pw->next(item)) {
         break;
       }
