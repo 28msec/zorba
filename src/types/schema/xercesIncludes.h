@@ -19,6 +19,12 @@
 #include "common/common.h"
 #ifndef ZORBA_NO_XMLSCHEMA
 
+#ifdef __GNUC__
+  // disable a warning in xerces 
+#  pragma GCC diagnostic ignored "-Wparentheses"
+#  pragma GCC diagnostic ignored "-Wctor-dtor-privacy"
+#endif
+
 #include <xercesc/util/XercesVersion.hpp>
 #include <xercesc/framework/psvi/XSAttributeDeclaration.hpp>
 #include <xercesc/framework/psvi/XSAttributeGroupDefinition.hpp>
@@ -58,6 +64,11 @@
 #include <xercesc/util/XMLUni.hpp>
 #include <xercesc/util/XMLUri.hpp>
 #include <xercesc/util/XMLURL.hpp>
+
+#ifdef __GNUC__
+#  pragma GCC diagnostic warning "-Wctor-dtor-privacy"
+#  pragma GCC diagnostic warning "-Wparentheses"
+#endif
 
 
 //daniel: this is to make cygwin work; xerces defines WIN32 in case of cygwin, which is wrong

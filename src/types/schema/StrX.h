@@ -21,10 +21,22 @@
 
 #include <stdlib.h>
 #include <string.h>
+#ifdef __GNUC__
+  // disable a warning in xerces 
+#  pragma GCC diagnostic ignored "-Wparentheses"
+#  pragma GCC diagnostic ignored "-Wctor-dtor-privacy"
+#endif
+
 #include <xercesc/util/XercesDefs.hpp>
 #include <xercesc/util/XMLString.hpp>
+
+#ifdef __GNUC__
+#  pragma GCC diagnostic warning "-Wctor-dtor-privacy"
+#  pragma GCC diagnostic warning "-Wparentheses"
+#endif
+
 #ifdef CYGWIN
-#undef WIN32
+#  undef WIN32
 #endif
 
 

@@ -19,12 +19,25 @@
 #include "common/common.h"
 #ifndef ZORBA_NO_XMLSCHEMA
 
+#ifdef __GNUC__
+  // disable a warning in xerces 
+#  pragma GCC diagnostic ignored "-Wparentheses"
+#  pragma GCC diagnostic ignored "-Wctor-dtor-privacy"
+#endif
+
 #include <xercesc/framework/psvi/XSNamedMap.hpp>
 #include <xercesc/framework/psvi/XSModelGroup.hpp>
 #include <xercesc/framework/psvi/XSObject.hpp>
-#ifdef CYGWIN
-#undef WIN32
+
+#ifdef __GNUC__
+#  pragma GCC diagnostic warning "-Wctor-dtor-privacy"
+#  pragma GCC diagnostic warning "-Wparentheses"
 #endif
+
+#ifdef CYGWIN
+#  undef WIN32
+#endif
+
 #include <string>
 
 
