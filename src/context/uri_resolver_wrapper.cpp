@@ -68,12 +68,10 @@ namespace zorba {
     Item               lTidyUserOpt(aTidyUserOpt.getp());
 
     // we have the ownership; it will be destroyed automatically once we leave this function
-    std::auto_ptr<DocumentURIResolverResult> lResult = theDocResolver->resolve( lURIItem, 
-                                                                                &lOuterStaticContext,
-                                                                                XmlDataManagerImpl::getInstance(),
-                                                                                validate,
-                                                                                tidying,
-                                                                                lTidyUserOpt);
+    std::auto_ptr<DocumentURIResolverResult> lResult = 
+      theDocResolver->resolve( lURIItem, &lOuterStaticContext,
+                               &XmlDataManagerSingleton::Instance(),
+                               validate, tidying, lTidyUserOpt);
 
     if (lResult->getError() == URIResolverResult::UR_NOERROR) {
       return Unmarshaller::getInternalItem(lResult->getDocument());
@@ -98,9 +96,9 @@ namespace zorba {
     Item               lURIItem(aURI.getp());  
 
     // we have the ownership; it will be destroyed automatically once we leave this function
-    std::auto_ptr<CollectionURIResolverResult> lResult = theColResolver->resolve(lURIItem, 
-                                                                                 &lOuterStaticContext,
-                                                                                 XmlDataManagerImpl::getInstance());
+    std::auto_ptr<CollectionURIResolverResult> lResult = 
+      theColResolver->resolve(lURIItem, &lOuterStaticContext,
+                              &XmlDataManagerSingleton::Instance());
 
     if (lResult->getError() == URIResolverResult::UR_NOERROR) {
       return  Unmarshaller::getInternalCollection(lResult->getCollection());

@@ -62,6 +62,8 @@ ZorbaImpl::shutdown()
   if ( ! theIsInitialized )
     return;
 
+  Loki::DeletableSingleton<ItemFactoryImpl>::GracefulDelete();
+  Loki::DeletableSingleton<XmlDataManagerImpl>::GracefulDelete();
   GlobalEnvironment::destroy();
   theIsInitialized = false;
 }
@@ -203,36 +205,13 @@ ZorbaImpl::createStaticContext(ErrorHandler* aErrorHandler)
 }
 
 
-// TODO remove because not needed anymore
-/*******************************************************************************
-bool
-ZorbaImpl::registerStatelessGlobalExternalFunction(StatelessExternalFunction* aExternalFunction)
-{
-  try {
-    if (!GENV_ROOT_STATIC_CONTEXT.bind_stateless_external_function(aExternalFunction)) {
-      xqpString lLocalName = Unmarshaller::getInternalString(aExternalFunction->getLocalName());
-      xqpString lMsg = lLocalName + " is already registered";
-
-      ZORBA_ERROR_DESC(API0019_FUNCTION_ALREADY_REGISTERED, String(lMsg.theStrStore));
-    }
-  }
-  catch (error::ZorbaError& e) {
-    DefaultErrorHandler h;
-    ZorbaImpl::notifyError(&h, e);
-    return false;
-  }
-  return true;
-}
-********************************************************************************/
-
-
 /*******************************************************************************
 
 ********************************************************************************/
 ItemFactory*
 ZorbaImpl::getItemFactory()
 {
-  return ItemFactoryImpl::getInstance();
+  return &ItemFactorySingleton::Instance();
 }
 
 
@@ -242,7 +221,7 @@ ZorbaImpl::getItemFactory()
 XmlDataManager*
 ZorbaImpl::getXmlDataManager()
 {
-  return XmlDataManagerImpl::getInstance();
+  return &XmlDataManagerSingleton::Instance();
 }
 
 /*******************************************************************************

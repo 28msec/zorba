@@ -77,6 +77,8 @@ Furthermore, this software depends / makes use of:
 
      * MAPM 4.9.5 (by Michael C. Ring; http://www.tc.umn.edu/~ringx004/mapm-main.html)
 
+     * Loki C++ Library (see http://loki-lib.sourceforge.net/index.php?n=Main.HomePage)
+
 Optional:
 
      * FLEX 2.5.33 (http://flex.sourceforge.net/)

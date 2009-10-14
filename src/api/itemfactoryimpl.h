@@ -20,19 +20,19 @@
 
 #include <zorba/api_shared_types.h>
 #include "common/shared_types.h"
+#include "util/singleton.h"
 
 namespace zorba {
   
   class ItemFactoryImpl : public ItemFactory
   {
-    public:
-      static ItemFactoryImpl*
-      getInstance();
-
+    private:
+      friend class Loki::CreateUsingNew<ItemFactoryImpl>;
       ItemFactoryImpl();
 
       virtual ~ItemFactoryImpl();
 
+    public:
       virtual Item
       createString(const String& aString);
 
@@ -185,6 +185,10 @@ namespace zorba {
       store::ItemFactory* theItemFactory;
 
   }; /* class ItemFactoryImpl */
+
+  typedef Loki::SingletonHolder<ItemFactoryImpl,
+                                Loki::CreateUsingNew,
+                                Loki::DeletableSingleton> ItemFactorySingleton;
 
 } /* namespace zorba */
 

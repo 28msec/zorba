@@ -29,20 +29,12 @@
 
 namespace zorba {
   
-  ItemFactoryImpl*
-  ItemFactoryImpl::getInstance()
-  {
-    static ItemFactoryImpl theInstance;
-    return &theInstance;
-  }
-
   ItemFactoryImpl::ItemFactoryImpl()
   {
     theItemFactory = GENV_ITEMFACTORY;
   }
 
-  ItemFactoryImpl::~ItemFactoryImpl() {}
-
+  ItemFactoryImpl::~ItemFactoryImpl() { }
 
   Item
   ItemFactoryImpl::createString(const String& aString)

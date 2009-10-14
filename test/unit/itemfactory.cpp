@@ -58,14 +58,47 @@ checkType(const Item& aItem, const String& aLocalname)
   }
 
 
-
-int itemfactory(int argc, char* argv[]) 
+void
+testMultipleFactoryInitilizations()
 {
+  Zorba* zorba = NULL;
+  simplestore::SimpleStore* store = NULL;
+
+  store = simplestore::SimpleStoreManager::getStore();
+  zorba = Zorba::getInstance(store);
+
+  ItemFactory* factory = zorba->getItemFactory();
+  factory->createString( "" );
+
+  zorba->shutdown();
+  simplestore::SimpleStoreManager::shutdownStore(store);
+
+  store = simplestore::SimpleStoreManager::getStore();
+  zorba = Zorba::getInstance(store);
+
+  factory = zorba->getItemFactory();
+  factory->createString( "" ); // <-- zorba crashes here
+
+  zorba->shutdown();
+  simplestore::SimpleStoreManager::shutdownStore(store);
+}
+
+int
+itemfactory(int argc, char* argv[]) 
+{
+  try {
+    testMultipleFactoryInitilizations();
+  } catch (ZorbaException &e) {
+    std::cerr << e << std::endl;
+    return 1;
+  }
+
   Zorba* lZorba = Zorba::getInstance(simplestore::SimpleStoreManager::getStore());
 
   ItemFactory* lFactory = lZorba->getItemFactory();
 
   Item lItem;
+
   try {
     /** String */
     lItem = lFactory->createString("abc");

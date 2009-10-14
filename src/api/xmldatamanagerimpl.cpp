@@ -62,14 +62,6 @@ namespace zorba {
   }
 
 
-XmlDataManagerImpl*
-XmlDataManagerImpl::getInstance()
-{
-  static XmlDataManagerImpl lInstance;
-  return &lInstance;
-}
-
-
 XmlDataManagerImpl::XmlDataManagerImpl() 
 {
   theErrorHandler = new DefaultErrorHandler();

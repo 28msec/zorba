@@ -23,6 +23,7 @@
 #include "zorbautils/latch.h"
 
 #include "common/shared_types.h"
+#include "util/singleton.h"
 
 
 namespace zorba {
@@ -36,12 +37,13 @@ namespace store {
 
 class XmlDataManagerImpl : public XmlDataManager
 {
- public:
+private:
+  friend class Loki::CreateUsingNew<XmlDataManagerImpl>;
+  XmlDataManagerImpl();
+
   virtual ~XmlDataManagerImpl();
 
-  static XmlDataManagerImpl* 
-  getInstance();
-
+public:
   void
   registerErrorHandler(ErrorHandler* aErrorHandler);
 
@@ -91,8 +93,6 @@ class XmlDataManagerImpl : public XmlDataManager
   deleteCollection(const String& uri, ErrorHandler* aErrorHandler);
 
  protected:
-  XmlDataManagerImpl();
-
   store::Store           * theStore;
   
   ErrorHandler           * theErrorHandler;
@@ -102,6 +102,11 @@ class XmlDataManagerImpl : public XmlDataManager
   SYNC_CODE(Latch          theLatch;)
 
 }; /* class XmlDataManagerImpl */
+
+  typedef
+  Loki::SingletonHolder<XmlDataManagerImpl,
+                        Loki::CreateUsingNew,
+                        Loki::DeletableSingleton> XmlDataManagerSingleton;
 
 } /* namespace zorba */
 #endif
