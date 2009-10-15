@@ -20,13 +20,12 @@
 #include <fstream>
 #include <string>
 #include <stack>
-#include <zorba/zorbastring.h>
-
-#include "compiler/parser/query_loc.h"
 
 namespace zorba {
 
+class String;
 class FnCallEntry;
+class QueryLoc;
 
 class Profiler
 {
@@ -41,10 +40,10 @@ class Profiler
     void print(FnCallEntry* aCall);
 
   public:
-    Profiler(String aFileName, std::string aProfileName);
+    Profiler(const String& aFileName, const std::string& aProfileName);
     ~Profiler();
   
-    void beginFn(std::string aFnName, QueryLoc aQueryLoc);
+    void beginFn(const std::string& aFnName, const QueryLoc& aQueryLoc);
     void endFn();
 };
 }//end of namespace

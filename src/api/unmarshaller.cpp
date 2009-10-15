@@ -15,6 +15,8 @@
  */
 #include "api/unmarshaller.h"
 
+#include <zorba/item.h>
+#include <zorba/zorbastring.h>
 #include "api/staticcontextimpl.h"
 #include "api/dynamiccontextimpl.h"
 #include "api/resultiteratorimpl.h"
@@ -24,6 +26,18 @@
 
 
 namespace zorba {
+
+  store::Item*
+  Unmarshaller::getInternalItem(const Item& aItem)
+  {
+    return aItem.m_item;
+  }
+
+  xqpStringStore*
+  Unmarshaller::getInternalString(const String& aString)
+  {
+    return aString.m_string;
+  }
 
   static_context*
   Unmarshaller::getInternalStaticContext(const StaticContext_t& aCtx)

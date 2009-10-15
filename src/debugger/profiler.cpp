@@ -22,6 +22,8 @@
 #include <sstream>
 #include <list>
 
+#include <zorba/zorbastring.h>
+
 #include "compiler/parser/query_loc.h"
 
 using namespace std;
@@ -127,7 +129,8 @@ namespace zorba {
     return  (double)clock()/CLOCKS_PER_SEC*1000;
   }
 
-  Profiler::Profiler(String aFileName, string aProfileName): theRoot(0), theCurrent(0)
+  Profiler::Profiler(const String& aFileName,
+                     const string& aProfileName): theRoot(0), theCurrent(0)
   {
     stringstream lStream;
     lStream << aFileName;
@@ -175,7 +178,7 @@ namespace zorba {
     }
   }
 
-  void Profiler::beginFn(string aFnName, QueryLoc aQueryLoc)
+  void Profiler::beginFn(const string& aFnName, const QueryLoc& aQueryLoc)
   {
     if(theRoot == 0)
     {

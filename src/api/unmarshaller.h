@@ -16,9 +16,6 @@
 #ifndef ZORBA_UNMARSHALLER_H
 #define ZORBA_UNMARSHALLER_H
 
-#include <zorba/item.h>
-#include <zorba/zorbastring.h>
-
 #include <zorba/api_shared_types.h>
 #include "common/shared_types.h"
 
@@ -27,9 +24,9 @@ namespace zorba {
 class Unmarshaller 
 {
 public:
-  static store::Item* getInternalItem(const Item& aItem) { return aItem.m_item; }
+  static store::Item* getInternalItem(const Item& aItem);
 
-  static xqpStringStore* getInternalString(const String& aString) { return aString.m_string; }
+  static xqpStringStore* getInternalString(const String& aString);
 
   static static_context* getInternalStaticContext(const StaticContext_t& aContext);
 
