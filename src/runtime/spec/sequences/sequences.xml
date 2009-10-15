@@ -282,8 +282,7 @@
                   name="theStack" brief=""/>
   </zorba:state>
   
-  <zorba:function baseSig="single_seq_opt_function"
-    >
+  <zorba:function baseSig="single_seq_opt_function">
     <zorba:annotation name="producesNodeIdSorted">NO</zorba:annotation>
     <zorba:signature localname="reverse" prefix="fn"> 
       <zorba:param>item()*</zorba:param>
@@ -356,8 +355,7 @@
       fn:one-or-more
     </zorba:description>
   
-  <zorba:function baseSig="single_seq_opt_function"
-    >
+  <zorba:function baseSig="single_seq_opt_function">
     <zorba:signature localname="one-or-more" prefix="fn">
       <zorba:param>item()*</zorba:param>
       <zorba:output>item()+</zorba:output>  
@@ -403,8 +401,7 @@
     
     <zorba:description author="Zorba Team">fn:deep-equal</zorba:description>
   
-  <zorba:function propagatesInputToOutput="true"
-    >
+  <zorba:function propagatesInputToOutput="true">
     <zorba:signature localname="deep-equal" prefix="fn">
       <zorba:param>item()*</zorba:param>
       <zorba:param>item()*</zorba:param>
@@ -488,7 +485,7 @@
     
     <zorba:description author="Zorba Team">fn:count</zorba:description>
   
-  <zorba:function >
+  <zorba:function>
     <zorba:signature localname="count" prefix="fn">
       <zorba:param>item()*</zorba:param>
       <zorba:output>xs:integer</zorba:output>
@@ -536,7 +533,7 @@
       fn:sum
     </zorba:description>
   
-  <zorba:function specializable="true">
+  <zorba:function specializable="true" FunctionKind="FN_SUM">
     <zorba:signature localname="sum" prefix="fn">
       <zorba:param>xs:anyAtomicType*</zorba:param>
       <zorba:output>xs:anyAtomicType</zorba:output>      
@@ -560,7 +557,7 @@
       fn:sum with arguments xs:double
     </zorba:description>
   
-  <zorba:function FunctionKind="FN_SUM">
+  <zorba:function>
     <zorba:signature localname="sum-double" prefix="fn">
       <zorba:param>xs:double*</zorba:param>
       <zorba:output>xs:double</zorba:output>
