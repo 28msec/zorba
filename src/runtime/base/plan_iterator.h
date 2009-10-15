@@ -110,6 +110,11 @@ class ZorbaDebuggerCommons;
                     the dynamic context. Additionally, at a later time, it might
                     contain some kind of memory manager or other infrastructure
                     that is needed.
+  theHasToQuit    : Boolean that indicates if the query execution has to quit.
+                    Checking this value is done in each consumeNext call,
+                    i.e. between every two iterator next calls. This value is
+                    set by the StateWrapper class (see runtime/util/timeout.h)
+                    after a user-defined timeout value is exceeded.
 ********************************************************************************/
 class PlanState
 {
