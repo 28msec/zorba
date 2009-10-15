@@ -21,7 +21,7 @@
 
 namespace zorba {
 
-class Unmarshaller 
+class ZORBA_DLL_PUBLIC Unmarshaller 
 {
 public:
   static store::Item* getInternalItem(const Item& aItem);
