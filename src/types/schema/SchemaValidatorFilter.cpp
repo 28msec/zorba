@@ -1339,12 +1339,15 @@ XMLElementDecl *SchemaValidatorFilter::createElementDecl(
   XMLElementDecl* elemDecl = 0;
   const XMLCh* original_uriStr = fGrammar->getTargetNamespace();
   
-  elemDecl = fGrammar->getElemDecl(uriId, theLocalname.getRawBuffer(), 0, 
-      currentScope);
+  elemDecl = fGrammar->getElemDecl(uriId,
+                                   theLocalname.getRawBuffer(),
+                                   0, 
+                                   currentScope);
 
   if(!elemDecl)
-    elemDecl = theElemNonDeclPool->getByKey(theLocalname.getRawBuffer(), uriId,
-        currentScope);
+    elemDecl = theElemNonDeclPool->getByKey(theLocalname.getRawBuffer(),
+                                            uriId,
+                                            currentScope);
   
   unsigned int orgGrammarUri = uriId;
   if(!elemDecl &&
@@ -1378,16 +1381,17 @@ XMLElementDecl *SchemaValidatorFilter::createElementDecl(
       if(uriId != fEmptyNamespaceId) 
       {
         // try emptyNamesapce see if element should be un-qualified.
-        elemDecl = fGrammar->
-            getElemDecl(fEmptyNamespaceId, theLocalname.getRawBuffer(), 0,
-                        currentScope);
+        elemDecl = fGrammar->getElemDecl(fEmptyNamespaceId,
+                                         theLocalname.getRawBuffer(),
+                                         0,
+                                         currentScope);
 
         if (elemDecl &&
             elemDecl->getCreateReason() != XMLElementDecl::JustFaultIn &&
             fValidate)
         {
           fValidator->emitError(XMLValid::ElementNotUnQualified,
-              elemDecl->getFullName());
+                                elemDecl->getFullName());
         }
       }
       else if(orgGrammarUri != uriId) 
@@ -1407,7 +1411,7 @@ XMLElementDecl *SchemaValidatorFilter::createElementDecl(
             fValidate)
         {
           fValidator->emitError(XMLValid::ElementNotQualified,
-              elemDecl->getFullName());
+                                elemDecl->getFullName());
         }
       }
     }
@@ -1430,9 +1434,9 @@ XMLElementDecl *SchemaValidatorFilter::createElementDecl(
                                  fMemoryManager);
 
     elemDecl->setId(theElemNonDeclPool->put((void*)elemDecl->getBaseName(),
-                                           uriId,
-                                           currentScope,
-                                           (SchemaElementDecl*)elemDecl));
+                                            uriId,
+                                            currentScope,
+                                            (SchemaElementDecl*)elemDecl));
         
     if(laxThisOne) 
     {
@@ -1502,8 +1506,14 @@ void SchemaValidatorFilter::error(
   theEventBuffer->resetTextInfo();
 
   // Skip validation errors if validation isn't strict
-  if(!theStrictValidation && errDomain == XMLUni::fgValidityDomain &&
-     errType != XMLErrorReporter::ErrType_Fatal)
+  if(!theStrictValidation &&
+     errDomain == XMLUni::fgValidityDomain &&
+     errType != XMLErrorReporter::ErrType_Fatal &&
+     errCode != XMLValid::ElementNotValidForContent &&
+     errCode != XMLValid::NotEnoughElemsForCM &&
+     errCode != XMLValid::EmptyNotValidForContent &&
+     errCode != XMLValid::RequiredAttrNotProvided)
+     //errCode != XMLValid::AttNotDefinedForElement)
     return;
   
   XMLBuffer exc_msg(1023);
