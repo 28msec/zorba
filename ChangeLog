@@ -18,6 +18,8 @@ version 1.0 (coming)
 		http://www.zorba-xquery.com/modules/math)
   * Pass the Static- and DynamicContext as parameter to the evaluate function
 	  of external functions.
+  * The XQuery class got a setTimeout option that allows the user to set a 
+	  maximum running time of a particular query execution.
 
 version 0.9.8-rev1 (2009.09.22)
   * bug fixes
