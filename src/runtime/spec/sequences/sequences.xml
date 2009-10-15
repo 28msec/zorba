@@ -14,6 +14,20 @@
     <zorba:include form="Quoted">runtime/core/path_iterators.h</zorba:include>
     <zorba:fwd-decl ns="store">NodeHashSet</zorba:fwd-decl>
 </zorba:header>
+  
+<zorba:codegen>
+  <zorba:h>
+    <zorba:include form="Quoted">common/shared_types.h</zorba:include>
+    <zorba:include form="Quoted">functions/function_impl.h</zorba:include>
+    <zorba:include form="Quoted">functions/single_seq_func.h</zorba:include>
+  </zorba:h>
+  <zorba:cpp>
+    <zorba:include form="Quoted">functions/Sequences.h</zorba:include>
+    <zorba:include form="Quoted">runtime/sequences/sequences.h</zorba:include>
+    <zorba:include form="Quoted">system/globalenv.h</zorba:include>
+    <zorba:include form="Quoted">types/typeops.h</zorba:include>
+  </zorba:cpp>
+</zorba:codegen>
 
 <!--
 /*******************************************************************************
@@ -287,7 +301,7 @@
     name="FnSubsequenceIterator"
     generateVisitor="true"
     generateAccept="true"
-    generateCodegen="true"
+    generateCodegen="false"
     arity="nary">
     
   <zorba:description author="Zorba Team">
@@ -299,20 +313,6 @@
                   defaultValue="xqp_integer::parseInt(0)" brief=""/>
   </zorba:state>
   
-  <zorba:function baseSig="single_seq_opt_function"
-    generateComputeAnnotationFunction="true">
-    <zorba:signature localname="subsequence" prefix="fn">
-      <zorba:param>item()*</zorba:param>
-      <zorba:param>xs:double</zorba:param>
-      <zorba:output>item()*</zorba:output>
-    </zorba:signature>
-    <zorba:signature localname="subsequence" prefix="fn">
-      <zorba:param>item()*</zorba:param>
-      <zorba:param>xs:double</zorba:param>
-      <zorba:param>xs:double</zorba:param>
-      <zorba:output>item()*</zorba:output>
-    </zorba:signature>
-  </zorba:function>
 </zorba:iterator>
 
 <!--
@@ -324,7 +324,7 @@
     name="FnZeroOrOneIterator"
     generateVisitor="true"
     generateAccept="true"
-    generateCodegen="true"
+    generateCodegen="false"
     arity="nary">
     
     <zorba:description author="Zorba Team">
@@ -338,13 +338,6 @@
     <zorba:member type="bool" name="theDoDistinct"
     generateAccessor="false" brief=""/>
   
-  <zorba:function generateReturnTypeFunction="true"
-    >
-    <zorba:signature localname="zero-or-one" prefix="fn">
-      <zorba:param>item()*</zorba:param>
-      <zorba:output>item()?</zorba:output>
-    </zorba:signature>
-  </zorba:function>
 </zorba:iterator>
 
 <!--
@@ -567,7 +560,7 @@
       fn:sum with arguments xs:double
     </zorba:description>
   
-  <zorba:function >
+  <zorba:function FunctionKind="FN_SUM">
     <zorba:signature localname="sum-double" prefix="fn">
       <zorba:param>xs:double*</zorba:param>
       <zorba:output>xs:double</zorba:output>
