@@ -7441,7 +7441,7 @@ void end_visit (const CompDocConstructor& v, void* /*visit_state*/)
                                    CACHED(op_enclosed_expr, LOOKUP_OP1("enclosed-expr")),
                                    lContent);
 
-  nodestack.push(new doc_expr(sctxid, loc, lEnclosed.getp()));
+  nodestack.push(new doc_expr(sctxid, loc, lEnclosed));
 }
 
 
