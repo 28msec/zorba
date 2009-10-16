@@ -26,7 +26,7 @@
 
 namespace zorba { namespace filemodule {
 
-  class ExistsFunction : public StatelessExternalFunction
+  class ExistsFunction : public PureStatelessExternalFunction
   {
     protected:
       ItemFactory*              theFactory;
@@ -67,9 +67,7 @@ namespace zorba { namespace filemodule {
       getLocalName() const { return "exists"; }
   
       virtual ItemSequence_t 
-      evaluate(const StatelessExternalFunction::Arguments_t& args,
-               const StaticContext*,
-               const DynamicContext*) const 
+      evaluate(const StatelessExternalFunction::Arguments_t& args) const
       {
         bool        lFileExists = false;
         String      lFile = getOneStringArg(args, 0);

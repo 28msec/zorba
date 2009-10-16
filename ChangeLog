@@ -14,22 +14,25 @@ version 1.0 (coming)
     Moreover, multiple ModuleURIResolvers can be registered in one StaticContext.
     See the documentation for more information.
   * Added the excel library to the built-in modules
-	* Added the math library to the built-in modules (the namespace has changed to 
-		http://www.zorba-xquery.com/modules/math)
+  * Added the math library to the built-in modules (the namespace has changed to 
+    Http://www.zorba-xquery.com/modules/math)
   * Pass the Static- and DynamicContext as parameter to the evaluate function
-	  of external functions.
+    of external functions.
   * The XQuery class got a setTimeout option that allows the user to set a 
-	  maximum running time of a particular query execution.
+    maximum running time of a particular query execution.
+  * The StatelessExternalFunction is now non-pure by default. There is a
+    new subclass called PureStatelessExternalFunction which should be used instead.
+    PureStatelessExternalFunctions don't have access to the Static- and DynamicContext.
 
 version 0.9.8-rev1 (2009.09.22)
   * bug fixes
-	  * fixed a crash caused by converting long integers (> 1024 digits) to string
-		* the compile-only check reports the URI of the encapsulating entity in it's error report (used for XQDT semantic checking)
-		* fixed 'for $x in () return $x/test' to return the empty sequence instead of raising a static error
-		* fixed build using Xerces-C 3.0.1
-		* fixed build for Mac OS X 10.6 (Snow Leopard)
-		* improved error reporting in the command line utility
-		* improved detection of the installed version of Xerces-C (raise an error if a wrong version is installed)
+    * fixed a crash caused by converting long integers (> 1024 digits) to string
+    * the compile-only check reports the URI of the encapsulating entity in it's error report (used for XQDT semantic checking)
+    * fixed 'for $x in () return $x/test' to return the empty sequence instead of raising a static error
+    * fixed build using Xerces-C 3.0.1
+    * fixed build for Mac OS X 10.6 (Snow Leopard)
+    * improved error reporting in the command line utility
+    * improved detection of the installed version of Xerces-C (raise an error if a wrong version is installed)
 
 version 0.9.8 (2009.08.26)
   * More XQuery Scripting Features

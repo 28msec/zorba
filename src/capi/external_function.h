@@ -22,7 +22,7 @@
 
 namespace zorbac {
 
-  class ExternalFunctionWrapper : public zorba::StatelessExternalFunction {
+  class ExternalFunctionWrapper : public zorba::PureStatelessExternalFunction {
     public:
       ExternalFunctionWrapper(const char* uri, 
                               const char* localname,
@@ -38,9 +38,7 @@ namespace zorbac {
       getLocalName() const;
 
       zorba::ItemSequence_t
-      evaluate(const zorba::StatelessExternalFunction::Arguments_t& args,
-               const zorba::StaticContext* sctx,
-               const zorba::DynamicContext* dctx) const;
+      evaluate(const zorba::StatelessExternalFunction::Arguments_t& args) const;
 
     protected:
       zorba::String theURI;

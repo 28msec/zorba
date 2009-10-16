@@ -20,7 +20,8 @@
 
 #include <zorba/item.h>
 #include <zorba/item_sequence.h>
-#include <zorba/stateless_function.h>
+#include <zorba/pure_stateless_function.h>
+#include <zorba/nonepure_stateless_function.h>
 #include <zorba/exception.h>
 
 #include "zorbaerrors/error_manager.h"
@@ -383,12 +384,25 @@ bool StatelessExtFunctionCallIterator::nextImpl(store::Item_t& result,
 {
   StatelessExtFunctionCallIteratorState *state;
   Item lOutsideItem;
+  const PureStatelessExternalFunction* lPureFct = 0;
+  const NonePureStatelessExternalFunction* lNonePureFct = 0;
   DEFAULT_STACK_INIT(StatelessExtFunctionCallIteratorState, state, planState);
 
   try {
-    state->m_result = m_function->evaluate(state->m_extArgs,
-      planState.theRuntimeCB->theQuery->getStaticContext(),
-      planState.theRuntimeCB->theQuery->getDynamicContext());
+    if (m_function->isPureFunction()) {
+      lPureFct = dynamic_cast<const PureStatelessExternalFunction*>(m_function);
+      ZORBA_ASSERT(lPureFct);
+
+      state->m_result = lPureFct->evaluate(state->m_extArgs);
+    } else {
+      lNonePureFct = dynamic_cast<const NonePureStatelessExternalFunction*>(m_function);
+      ZORBA_ASSERT(lNonePureFct);
+
+      ZORBA_ASSERT(planState.theRuntimeCB->theQuery);
+      state->m_result = lNonePureFct->evaluate(state->m_extArgs,
+          planState.theRuntimeCB->theQuery->getStaticContext(),
+          planState.theRuntimeCB->theQuery->getDynamicContext());
+    }
 
   } catch(const ZorbaException& e) {
     // take all information from the exception raised in 

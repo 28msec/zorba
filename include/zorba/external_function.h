@@ -21,7 +21,8 @@
  * external function
  */
 #include <zorba/external_function_data.h>
-#include <zorba/stateless_function.h>
+#include <zorba/pure_stateless_function.h>
+#include <zorba/nonepure_stateless_function.h>
 #include <zorba/item_sequence.h>
 
 #endif

@@ -13,24 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_STATELESS_EXTERNAL_FUNCTION_H
-#define ZORBA_STATELESS_EXTERNAL_FUNCTION_H
+#ifndef ZORBA_PURE_STATELESS_EXTERNAL_FUNCTION_H
+#define ZORBA_PURE_STATELESS_EXTERNAL_FUNCTION_H
 
 #include <zorba/config.h>
 #include <vector>
 #include <zorba/api_shared_types.h> 
 
-#include <zorba/external_function_data.h>
+#include <zorba/stateless_function.h>
 
 namespace zorba {
 
-  class ZORBA_DLL_PUBLIC StatelessExternalFunction : public ExternalFunctionData
+  class ZORBA_DLL_PUBLIC PureStatelessExternalFunction 
+    : public StatelessExternalFunction
   {
     public:
-      typedef std::vector<ItemSequence*> Arguments_t;
-
-    public:
-      virtual ~StatelessExternalFunction() {}
+      virtual ~PureStatelessExternalFunction() {}
 
       virtual String
       getURI() const = 0;
@@ -38,8 +36,11 @@ namespace zorba {
       virtual String
       getLocalName() const = 0;
 
+      virtual ItemSequence_t
+      evaluate(const Arguments_t&) const = 0;
+
       virtual bool
-      isPureFunction() const = 0;
+      isPureFunction() const { return true; }
   };
 } /* namespace zorba */
 #endif

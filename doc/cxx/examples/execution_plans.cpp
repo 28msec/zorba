@@ -49,7 +49,7 @@ execution_plan_example_1(Zorba* aZorba)
 	return true;
 }
 
-class MySerializableExternalFunction : public StatelessExternalFunction
+class MySerializableExternalFunction : public PureStatelessExternalFunction
 {
   protected:
     const ExternalModule* theModule;
@@ -65,9 +65,7 @@ class MySerializableExternalFunction : public StatelessExternalFunction
     getLocalName() const { return "bar1"; }
 
     virtual ItemSequence_t 
-    evaluate(const StatelessExternalFunction::Arguments_t& args,
-             const StaticContext*,
-             const DynamicContext*) const 
+    evaluate(const StatelessExternalFunction::Arguments_t& args) const
     {
         iv_t vec;
         for(int i = 0; i < 2; ++i) {

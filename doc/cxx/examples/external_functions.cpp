@@ -32,7 +32,7 @@ using namespace zorba;
  * passed as arguments.
  * The concatenation is done eagerly, i.e. the result is materialized
  */
-class MySimpleExternalFunction : public StatelessExternalFunction
+class MySimpleExternalFunction : public NonePureStatelessExternalFunction
 {
   protected:
     const ExternalModule* theModule;
@@ -50,9 +50,12 @@ class MySimpleExternalFunction : public StatelessExternalFunction
     virtual ItemSequence_t 
     evaluate(const StatelessExternalFunction::Arguments_t& args,
              const StaticContext* sctx,
-             const DynamicContext*) const 
+             const DynamicContext* dctx) const 
     {
-        std::cout << "namespace " << sctx->getNamespaceURIByPrefix("foo") << std::endl; 
+        std::cout << "namespace " 
+                  << sctx->getNamespaceURIByPrefix("foo") << std::endl; 
+        std::cout << "current datetime " 
+                  << dctx->getCurrentDateTime().getStringValue() << std::endl; 
         iv_t vec;
         for(int i = 0; i < 2; ++i) {
             ItemSequence* iseq = args[i];
@@ -100,7 +103,7 @@ class MySimpleExternalFunction : public StatelessExternalFunction
  * The concatenation is done lazily, i.e. the result is computed
  * on the fly
  */
-class MyLazySimpleExternalFunction : public StatelessExternalFunction
+class MyLazySimpleExternalFunction : public PureStatelessExternalFunction
 {
   protected:
     const ExternalModule* theModule;
@@ -116,12 +119,10 @@ class MyLazySimpleExternalFunction : public StatelessExternalFunction
     getLocalName() const { return "bar2"; }
 
     virtual ItemSequence_t 
-    evaluate(const StatelessExternalFunction::Arguments_t& args,
-             const StaticContext*,
-             const DynamicContext*) const 
+    evaluate(const Arguments_t& args) const
     {
-        // transfer ownership of the IteratorBackedItemSequence to Zorba (using an auto_ptr)
-        return ItemSequence_t(new LazyConcatItemSequence(args));
+      // transfer ownership of the IteratorBackedItemSequence to Zorba (using an auto_ptr)
+      return ItemSequence_t(new LazyConcatItemSequence(args));
     }
 
   private:
@@ -139,12 +140,12 @@ class MyLazySimpleExternalFunction : public StatelessExternalFunction
                 return !i.isNull();
             }
         private:
-            StatelessExternalFunction::Arguments_t m_args;
+            Arguments_t m_args;
             size_t m_i;
     };
 };
 
-class MyErrorReportingExternalFunction : public StatelessExternalFunction
+class MyErrorReportingExternalFunction : public PureStatelessExternalFunction
 {
   protected:
     const ExternalModule* theModule;
@@ -160,9 +161,7 @@ class MyErrorReportingExternalFunction : public StatelessExternalFunction
     getLocalName() const { return "bar3"; }
 
     virtual ItemSequence_t 
-    evaluate(const StatelessExternalFunction::Arguments_t& args,
-             const StaticContext*,
-             const DynamicContext*) const 
+    evaluate(const StatelessExternalFunction::Arguments_t& args) const
     {
         // transfer ownership of the IteratorBackedItemSequence to Zorba (using an auto_ptr)
         return ItemSequence_t(new LazyErrorReportingItemSequence(args));

@@ -148,9 +148,7 @@ namespace zorbac {
   }
 
   ItemSequence_t
-  ExternalFunctionWrapper::evaluate(const StatelessExternalFunction::Arguments_t& args,
-                                    const StaticContext* sctx,
-                                    const DynamicContext* dctx) const
+  ExternalFunctionWrapper::evaluate(const StatelessExternalFunction::Arguments_t& args) const
   {
     return ItemSequence_t(new ExternalFunctionWrapperSequence(args, 
                                                               theInitFunction, 
