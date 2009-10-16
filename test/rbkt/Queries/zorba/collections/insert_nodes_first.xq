@@ -10,7 +10,12 @@ declare sequential function local:insert() {
   exit returning fn:collection("test");
 };
 
-if (fn:not(local:create())) then
+
+declare variable $x := 0;
+
+set $x := local:create();
+
+if (fn:not($x)) then
   fn:false()
 else 
-  local:insert()
+  local:insert();
