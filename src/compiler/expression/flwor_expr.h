@@ -393,14 +393,12 @@ protected:
   expr_t  theCondExpr;
 
 public:
-  flwor_wincond(bool isOnly, const vars& in_vars, const vars& out_vars, expr_t cond)
-    :
-    theIsOnly(isOnly),
-    theInputVars(in_vars),
-    theOutputVars(out_vars),
-    theCondExpr(cond)
-  {
-  }
+  flwor_wincond(
+        static_context* sctx,
+        bool isOnly,
+        const vars& in_vars,
+        const vars& out_vars,
+        expr_t cond);
 
   expr* get_cond() const { return theCondExpr.getp(); }
 

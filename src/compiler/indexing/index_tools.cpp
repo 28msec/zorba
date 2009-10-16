@@ -115,10 +115,10 @@ static expr_t hoistCollectionSources(
 {
   if (isHoistableCollection(e.getp())) 
   {
-    rchandle<var_expr> var(createTempLetVar(e->get_cur_sctx(), e->get_loc(), count));
+    rchandle<var_expr> var(createTempLetVar(e->get_sctx_id(), e->get_loc(), count));
     std::pair<expr_t, expr_t> p(var.getp(), e);
     h.push_back(p);
-    return new wrapper_expr(e->get_cur_sctx(), e->get_loc(), var.getp());
+    return new wrapper_expr(e->get_sctx_id(), e->get_loc(), var.getp());
   }
 
   expr_iterator i = e->expr_begin();

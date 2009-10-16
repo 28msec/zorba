@@ -27,8 +27,15 @@ public:
   typedef enum
   {
     FN_UNKNOWN,
+
     FN_COLLECTION,
+
+    FN_CONCATENATE,
     FN_SUM,
+
+    FN_ENCLOSED,
+
+    FN_VAR_ASSIGN,
 
     FN_CREATE_INTERNAL_INDEX,
     FN_CREATE_INDEX,

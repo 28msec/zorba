@@ -965,7 +965,9 @@ ElementNode::ElementNode(
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
               << " name = " << *theName->getStringValue()
-              << " type = " << *theTypeName->getStringValue());
+              << " type = " << (theTypeName ? 
+                                theTypeName->getStringValue()->c_str() :
+                                "untyped"));
 }
 
 

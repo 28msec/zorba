@@ -41,7 +41,6 @@ public:
   EXPR_VISITOR_METHODS (promote_expr);
   EXPR_VISITOR_METHODS (trycatch_expr);
   EXPR_VISITOR_METHODS (eval_expr);
-  EXPR_VISITOR_METHODS (typeswitch_expr);
   EXPR_VISITOR_METHODS (if_expr);
   EXPR_VISITOR_METHODS (fo_expr);
   EXPR_VISITOR_METHODS (ft_select_expr);

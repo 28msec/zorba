@@ -264,7 +264,7 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   //std::cout << "!!!!! Found Join Index Predicate !!!!!" << std::endl << std::endl;
 
   const QueryLoc& loc = predInfo.thePredicate->get_loc();
-  short sctxid = predInfo.thePredicate->get_cur_sctx();
+  short sctxid = predInfo.thePredicate->get_sctx_id();
   static_context* sctx = rCtx.getStaticContext(predInfo.thePredicate);
 
   for_clause* fc = predInfo.theInnerVar->get_for_clause();
@@ -359,13 +359,12 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   //
   expr_t qnameExpr(new const_expr(sctxid, loc, qname));
 
-  rchandle<fo_expr> createExpr = new fo_expr(sctxid,
-                                             loc,
-                                             LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS,
-                                                                "create-internal-index",
-                                                                1));
-  createExpr->add(qnameExpr);
-
+  fo_expr_t createExpr = new fo_expr(sctxid,
+                                     loc,
+                                     LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS,
+                                                        "create-internal-index",
+                                                        1),
+                                     qnameExpr);
   //
   //  Build or adjust outer sequential expr 
   //
@@ -390,12 +389,13 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   //
   // Replace the expr defining the inner var with an index probe.
   //
-  rchandle<fo_expr> probeExpr;
-  probeExpr = new fo_expr(sctxid, loc, LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS,
-                                                          "probe-index-point",
-                                                          VARIADIC_SIG_SIZE));
-  probeExpr->add(qnameExpr);
-  probeExpr->add(predInfo.theOuterOp);
+  fo_expr_t probeExpr = new fo_expr(sctxid,
+                                    loc,
+                                    LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS,
+                                                       "probe-index-point",
+                                                       VARIADIC_SIG_SIZE),
+                                    qnameExpr,
+                                    predInfo.theOuterOp);
 
   fc->set_expr(probeExpr.getp());
 }

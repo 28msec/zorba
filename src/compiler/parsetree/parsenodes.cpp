@@ -14,11 +14,18 @@
  * limitations under the License.
  */
 
+#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/error_manager.h"
+
+#include "types/typemanager.h"
+
 #include "store/api/item.h"
+
+#include "context/static_context_consts.h"
 
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parser/parse_constants.h"
-#include "context/static_context_consts.h"
+#include "compiler/parsetree/parsenode_visitor.h"
 
 #include <iostream>
 #include <sstream>
@@ -29,15 +36,14 @@
 #include <assert.h>
 #include <algorithm>
 
-#include "compiler/parsetree/parsenode_visitor.h"
+
 #include "util/tracer.h"
-#include "zorbaerrors/Assert.h"
-#include "zorbaerrors/error_manager.h"
-#include "types/typemanager.h"
 
 
 using namespace std;
-namespace zorba {
+
+namespace zorba 
+{
 
 int dummy;
 void *parsenode_visitor::no_state = (void *) &dummy;

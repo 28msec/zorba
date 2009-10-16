@@ -74,7 +74,7 @@ NARY_ACCEPT(IndexPointProbeIterator);
 NARY_ACCEPT(IndexRangeProbeIterator);
 
 
-/***************************************************************************//**
+/*******************************************************************************
 
 ********************************************************************************/
 static void createIndexSpec(
@@ -102,7 +102,7 @@ static void createIndexSpec(
 
   spec.theIsUnique = zorbaIndex->getUnique();
   spec.theIsSorted = zorbaIndex->getMethod() == ValueIndex::BTREE;
-  spec.theIsTemp = zorbaIndex->getTemp();
+  spec.theIsTemp = zorbaIndex->isTemp();
   spec.theIsThreadSafe = true;
 }
 
@@ -209,7 +209,6 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 bool DropIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t qname;
-  dynamic_context* dctx = planState.dctx();
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -217,7 +216,13 @@ bool DropIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   if (!consumeNext(qname, theChild, planState))
     ZORBA_ASSERT(false);
 
-  if (dctx->getIndex(qname) == NULL)
+  if (theSctx->lookup_index(qname) == NULL)
+  {
+    ZORBA_ERROR_LOC_PARAM(XQP0037_INDEX_IS_NOT_DECLARED, loc,
+                          qname->getStringValue()->c_str(), "");
+  }
+
+  if (GENV_STORE.getIndex(qname) == NULL)
   {
     ZORBA_ERROR_LOC_PARAM(XQP0033_INDEX_DOES_NOT_EXIST, loc,
                           qname->getStringValue()->c_str(), "");
@@ -257,7 +262,7 @@ bool RefreshIndexIterator::nextImpl(store::Item_t& result, PlanState& planState)
                           qname->getStringValue()->c_str(), "");
   }
 
-  if (dctx->getIndex(qname) == NULL)
+  if (GENV_STORE.getIndex(qname) == NULL)
   {
     ZORBA_ERROR_LOC_PARAM(XQP0033_INDEX_DOES_NOT_EXIST, loc,
                           qname->getStringValue()->c_str(), "");
@@ -337,6 +342,7 @@ void IndexPointProbeState::reset(PlanState& state)
 bool IndexPointProbeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t qname;
+  ValueIndex_t zorbaIndex;
   store::IndexPointCondition_t cond;
   int numChildren;
   bool status;
@@ -350,8 +356,23 @@ bool IndexPointProbeIterator::nextImpl(store::Item_t& result, PlanState& planSta
   if (state->theQname == NULL || !state->theQname->equals(qname)) 
   {
     state->theQname = qname;
-    state->theIndex = planState.dctx()->getIndex(state->theQname);
-    ZORBA_ASSERT(state->theIndex != NULL);
+
+    if ((zorbaIndex = theSctx->lookup_index(qname)) == NULL)
+    {
+      ZORBA_ERROR_LOC_PARAM(XQP0037_INDEX_IS_NOT_DECLARED, loc,
+                            qname->getStringValue()->c_str(), "");
+    }
+
+    state->theIndex = (zorbaIndex->isTemp() ?
+                       planState.dctx()->getIndex(qname) :
+                       GENV_STORE.getIndex(state->theQname));
+
+    if (state->theIndex == NULL)
+    {
+      ZORBA_ERROR_LOC_PARAM(XQP0033_INDEX_DOES_NOT_EXIST, loc,
+                            qname->getStringValue()->c_str(), "");
+    }
+
     state->theIterator = GENV_STORE.getIteratorFactory()->
                          createIndexProbeIterator(state->theIndex);
   }
@@ -405,6 +426,7 @@ void IndexRangeProbeState::reset(PlanState& state)
 bool IndexRangeProbeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t qname;
+  ValueIndex_t zorbaIndex;
   store::IndexBoxCondition_t cond;
   int numChildren;
   bool status;
@@ -418,8 +440,23 @@ bool IndexRangeProbeIterator::nextImpl(store::Item_t& result, PlanState& planSta
   if (state->theQname == NULL || !state->theQname->equals(qname)) 
   {
     state->theQname = qname;
-    state->theIndex = planState.dctx()->getIndex(state->theQname);
-    ZORBA_ASSERT(state->theIndex != NULL);
+
+    if ((zorbaIndex = theSctx->lookup_index(qname)) == NULL)
+    {
+      ZORBA_ERROR_LOC_PARAM(XQP0037_INDEX_IS_NOT_DECLARED, loc,
+                            qname->getStringValue()->c_str(), "");
+    }
+
+    state->theIndex = (zorbaIndex->isTemp() ?
+                       planState.dctx()->getIndex(qname) :
+                       GENV_STORE.getIndex(state->theQname));
+
+    if (state->theIndex == NULL)
+    {
+      ZORBA_ERROR_LOC_PARAM(XQP0033_INDEX_DOES_NOT_EXIST, loc,
+                            qname->getStringValue()->c_str(), "");
+    }
+
     state->theIterator = GENV_STORE.getIteratorFactory()->
                          createIndexProbeIterator(state->theIndex);
   }

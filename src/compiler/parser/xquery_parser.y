@@ -1849,16 +1849,23 @@ Block :
     LBRACE BlockDecls Expr RBRACE
     {
       if ($2 == NULL)
+      {
         $$ = $3;
-      else {
-        BlockBody *b = dynamic_cast<BlockBody *> ($3);
-        VFO_DeclList *vfo = dynamic_cast<VFO_DeclList *> ($2);
-        if (b == NULL) {
-          b = new BlockBody ($3->get_location (), vfo);
-          b->add ($3);
-        } else {
-          b->set_decls (vfo);
+      }
+      else 
+      {
+        BlockBody* b = dynamic_cast<BlockBody *>($3);
+        VFO_DeclList* vfo = dynamic_cast<VFO_DeclList *>($2);
+        if (b == NULL) 
+        {
+          b = new BlockBody($3->get_location(), vfo);
+          b->add($3);
         }
+        else 
+        {
+          b->set_decls(vfo);
+        }
+
         $$ = b;
       }
     }
@@ -1936,12 +1943,14 @@ ExitExpr :
 WhileExpr :
     WHILE LPAR ExprSingle RPAR Block
     {
-      BlockBody *b = dynamic_cast<BlockBody *> ($5);
-      if (b == NULL) {
-        b = new BlockBody ($5->get_location ()); 
-        b->add ($5);
+      BlockBody* b = dynamic_cast<BlockBody *>($5);
+      if (b == NULL) 
+      {
+        b = new BlockBody($5->get_location()); 
+        b->add($5);
       }
-      $$ = new WhileExpr (LOC (@$), $3, b);
+
+      $$ = new WhileExpr(LOC(@$), $3, b);
     }
   ;
 

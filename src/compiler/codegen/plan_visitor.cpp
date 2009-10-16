@@ -85,7 +85,7 @@
 
 #define QLOCDECL const QueryLoc &qloc = v.get_loc(); (void) qloc
 
-#define SCTXDECL static_context* sctx = get_sctx(v.get_cur_sctx()); (void)sctx;
+#define SCTXDECL static_context* sctx = get_sctx(v.get_sctx_id()); (void)sctx;
 
 #ifndef NDEBUG
 
@@ -433,7 +433,7 @@ PlanIter_t base_var_codegen(
   bool bound = varMap.get((uint64_t) &var, varRefs);
   ZORBA_ASSERT(bound);
 
-  Iter* iter = new Iter(get_sctx(var.get_cur_sctx()),
+  Iter* iter = new Iter(get_sctx(var.get_sctx_id()),
                         var.get_loc(),
                         var.get_varname());
 
@@ -448,13 +448,13 @@ PlanIter_t create_var_iter(const var_expr& var, bool forvar)
   PlanIter_t iter;
   if (forvar)
   {
-    iter = new ForVarIterator(get_sctx(var.get_cur_sctx()),
+    iter = new ForVarIterator(get_sctx(var.get_sctx_id()),
                               var.get_loc(),
                               var.get_varname());
   }
   else
   {
-    iter = new LetVarIterator(get_sctx(var.get_cur_sctx()),
+    iter = new LetVarIterator(get_sctx(var.get_sctx_id()),
                               var.get_loc(),
                               var.get_varname());
   }
@@ -465,7 +465,7 @@ PlanIter_t create_var_iter(const var_expr& var, bool forvar)
 void general_var_codegen (const var_expr& var)
 {
   const QueryLoc& qloc = var.get_loc();
-  static_context* sctx = get_sctx(var.get_cur_sctx());
+  static_context* sctx = get_sctx(var.get_sctx_id());
 
   bool isForVar = false;
 
@@ -589,10 +589,10 @@ void general_var_codegen (const var_expr& var)
     }
     else 
     {
-      expr_t lookup_expr = new fo_expr(var.get_cur_sctx(),
+      expr_t lookup_expr = new fo_expr(var.get_sctx_id(),
                                        qloc,
                                        LOOKUP_OP1 ("ctxvariable"),
-                                       new const_expr(var.get_cur_sctx(),
+                                       new const_expr(var.get_sctx_id(),
                                                       qloc,
                                                       dynamic_context::var_key(&var)));
       lookup_expr->accept (*this);
@@ -863,7 +863,7 @@ struct wincond_var_iters
 
 bool nativeColumnSort(expr* colExpr)
 { 
-  static_context* sctx = get_sctx(colExpr->get_cur_sctx());
+  static_context* sctx = get_sctx(colExpr->get_sctx_id());
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   xqtref_t colType = colExpr->return_type(sctx);
@@ -890,7 +890,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 
   const QueryLoc& qloc = flworExpr.get_loc();
 
-  static_context* sctx = get_sctx(flworExpr.get_cur_sctx());
+  static_context* sctx = get_sctx(flworExpr.get_sctx_id());
 
   if (currentClause < 0)
   {
@@ -1300,7 +1300,7 @@ void flwor_codegen(const flwor_expr& flworExpr)
 
   std::reverse(forletClauses.begin(), forletClauses.end());
 
-  flworIter = new flwor::FLWORIterator(get_sctx(flworExpr.get_cur_sctx()),
+  flworIter = new flwor::FLWORIterator(get_sctx(flworExpr.get_sctx_id()),
                                        flworExpr.get_loc(),
                                        forletClauses,
                                        whereIter,
@@ -1430,24 +1430,16 @@ void end_visit (eval_expr& v) {
   push_itstack (new EvalIterator (sctx, qloc, varnames, var_keys, vartypes, argv));
 }
 
-bool begin_visit (typeswitch_expr& v) {
-  CODEGEN_TRACE_IN("");
-  ZORBA_NOT_IMPLEMENTED ("typeswitch codegen");
-  return true;
-}
 
-void end_visit (typeswitch_expr& v) {
-  CODEGEN_TRACE_OUT("");
-}
-
-
-bool begin_visit (if_expr& v) {
+bool begin_visit (if_expr& v) 
+{
   CODEGEN_TRACE_IN("");
   return true;
 }
 
 
-void end_visit (if_expr& v) {
+void end_visit (if_expr& v) 
+{
   CODEGEN_TRACE_OUT("");
   PlanIter_t iterElse = pop_itstack();
   PlanIter_t iterThen = pop_itstack();
@@ -1462,11 +1454,62 @@ bool begin_visit (insert_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
+  store::UpdateConsts::InsertType kind  = v.getType();
+
   expr_t targetExpr = v.getTargetExpr();
+  expr_t sourceExpr = v.getSourceExpr();
   xqtref_t targetType = targetExpr->return_type(sctx);
 
   if (TypeOps::is_equal(*targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
     ZORBA_ERROR_LOC(XUDY0027, qloc);
+
+  if (TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.DOCUMENT_TYPE_STAR))
+  {
+    xqtref_t sourceType = sourceExpr->return_type(sctx);
+
+    if (TypeOps::is_subtype(*sourceType, *GENV_TYPESYSTEM.ATTRIBUTE_TYPE_STAR))
+    {
+      ZORBA_ERROR_LOC(XUTY0022, qloc);
+    }
+  }
+
+  if (kind == store::UpdateConsts::INTO ||
+      kind == store::UpdateConsts::AS_FIRST_INTO ||
+      kind == store::UpdateConsts::AS_LAST_INTO)
+  {
+#if 0
+    if (TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE))
+    {
+      ZORBA_ERROR_LOC(XUTY0005, qloc);
+    }
+
+    if (TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.ATTRIBUTE_TYPE_STAR))
+    {
+      ZORBA_ERROR_LOC(XUTY0005, qloc);
+    }
+
+    // etc....
+#else
+    if (!TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.DOCUMENT_TYPE_STAR) &&
+        !TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.ELEMENT_TYPE_STAR))
+    {
+      ZORBA_ERROR_LOC(XUTY0005, qloc);
+    }
+#endif
+  }
+  else
+  {
+#if 0
+#else
+    if (!TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.ELEMENT_TYPE_STAR) &&
+        !TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.TEXT_TYPE_STAR) &&
+        !TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.COMMENT_TYPE_STAR) &&
+        !TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.PI_TYPE_STAR))
+    {
+      ZORBA_ERROR_LOC(XUTY0006, qloc);
+    }
+#endif
+  }
 
   return true;
 }
@@ -1474,6 +1517,7 @@ bool begin_visit (insert_expr& v)
 void end_visit (insert_expr& v) 
 {
   CODEGEN_TRACE_OUT("");
+
   PlanIter_t lTarget = pop_itstack();
   PlanIter_t lSource = pop_itstack();
   PlanIter_t lInsert = new InsertIterator(sctx, qloc, v.getType(), lSource, lTarget); 

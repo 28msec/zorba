@@ -15,7 +15,6 @@
  */
 #include "system/globalenv.h"
 
-#include "functions/EnclosedExpr.h"
 #include "functions/function_impl.h"
 
 #include "runtime/core/constructors.h"
@@ -27,9 +26,13 @@ namespace zorba
 class op_enclosed_expr : public function 
 {
 public:
-  op_enclosed_expr(const signature& sig) : function (sig) {}
+  op_enclosed_expr(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ENCLOSED)
+  {
+  }
 
-  xqtref_t return_type(const std::vector<xqtref_t> &arg_types) const;
+  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
 
   DEFAULT_UNARY_CODEGEN(EnclosedIterator);
 };

@@ -252,14 +252,12 @@ private:
   uint16_t            theNextFree;
   uint16_t            thePrevFree;
 
-  mutable uint32_t            hash_cache;
 protected:
  QNameItemImpl() 
    :
   thePosition(0),
   theNextFree(0),
-  thePrevFree(0),
-  hash_cache(0)
+  thePrevFree(0) 
   {
     theUnion.theLocal = NULL;
   }

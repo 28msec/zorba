@@ -30,19 +30,11 @@
 #include "functions/signature.h"
 #include "functions/function.h"
 
-namespace zorba {
+namespace zorba 
+{
 
 #define LOOKUP_FN( pfx, local, arity ) (sctx->lookup_fn (pfx, local, arity))
 #define LOOKUP_OP1( local ) (m_cb->m_sctx->lookup_builtin_fn (":" local, 1))
-
-
-static inline expr::expr_t wrap_in_bev(short context, static_context *sctx, expr::expr_t e)
-{
-  expr::expr_t fh(new fo_expr(context, e->get_loc(), LOOKUP_FN("fn", "boolean", 1)));
-  fo_expr *fp = static_cast<fo_expr *>(fh.getp());
-  fp->add(e);
-  return fh;
-}
 
 
 static inline expr::expr_t wrap_in_atomization(
@@ -50,10 +42,8 @@ static inline expr::expr_t wrap_in_atomization(
     static_context *sctx,
     expr::expr_t e)
 {
-  expr::expr_t fh(new fo_expr(context, e->get_loc(), LOOKUP_FN("fn", "data", 1)));
-  fo_expr* fp = static_cast<fo_expr *>(fh.getp());
-  fp->add(e);
-  return fh;
+  fo_expr_t fo = new fo_expr(context, e->get_loc(), LOOKUP_FN("fn", "data", 1), e);
+  return fo.getp();
 }
 
 
@@ -88,9 +78,12 @@ static inline void checkNonUpdating(const expr* lExpr)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 class normalizer : public expr_visitor 
 {
-  CompilerCB*     m_cb;
+  CompilerCB   * m_cb;
 
 public:
   normalizer(CompilerCB* aCompilerCB) : m_cb(aCompilerCB) {}
@@ -98,8 +91,8 @@ public:
   ~normalizer() { }
 
 #define DEF_VISIT_METHODS( e )                  \
-  bool begin_visit (e& node) { return true; }   \
-  void end_visit (e& node) {}
+  bool begin_visit(e& node) { return true; }    \
+  void end_visit(e& node) {}
 
 DEF_VISIT_METHODS (expr)
 
@@ -115,16 +108,6 @@ DEF_VISIT_METHODS (order_modifier)
 
 DEF_VISIT_METHODS (eval_expr)
 
-DEF_VISIT_METHODS (typeswitch_expr)
-
-
-void wrap_flwor_wincond(short context, static_context* sctx, flwor_wincond* c) 
-{
-  if (c == NULL)
-    return;
-
-  c->set_cond(wrap_in_bev(context, sctx, c->get_cond()));
-}
 
 
 bool begin_visit(flwor_expr& node) 
@@ -141,19 +124,9 @@ void end_visit(flwor_expr& node)
 
     if (c.get_kind() == flwor_clause::where_clause) 
     {
-      where_clause* wc = static_cast<where_clause *>(&c);
-      wc->set_where(wrap_in_bev(m_cb->m_cur_sctx, m_cb->m_sctx.getp(), wc->get_where()));
     }
     else if (c.get_kind() == flwor_clause::order_clause)
     {
-      orderby_clause* obc = static_cast<orderby_clause *>(&c);
-
-      unsigned numColumns = obc->num_columns();
-
-      for (unsigned i = 0; i < numColumns; ++i)
-      { 
-        obc->set_column_expr(i, wrap_in_atomization(m_cb->m_cur_sctx, m_cb->m_sctx.getp(), obc->get_column_expr(i)));
-      }
     }
     else if (c.get_kind() == flwor_clause::for_clause)
     {
@@ -193,26 +166,14 @@ void end_visit(flwor_expr& node)
         expr_t e = wc->get_expr();
         wc->set_expr(wrap_in_typematch(m_cb->m_cur_sctx, e, vartype));
       }
-
-      wrap_flwor_wincond(m_cb->m_cur_sctx, m_cb->m_sctx, wc->get_win_start());
-      wrap_flwor_wincond(m_cb->m_cur_sctx, m_cb->m_sctx, wc->get_win_stop());
     }
   }
 }
 
 
-void end_visit (case_clause&) 
+void end_visit (promote_expr&) 
 {
 }
-
-bool begin_visit (case_clause& node)
-{
-  checkNonUpdating(&*node.get_var_h());
-  return true;
-}
-
-
-void end_visit (promote_expr&) {}
 
 bool begin_visit (promote_expr& node)
 {
@@ -221,7 +182,9 @@ bool begin_visit (promote_expr& node)
 }
 
 
-void end_visit (trycatch_expr&) {}
+void end_visit (trycatch_expr&) 
+{
+}
 
 bool begin_visit (trycatch_expr& node)
 {
@@ -234,9 +197,8 @@ void end_visit (if_expr&)
 {
 }
 
-bool begin_visit (if_expr& node)
+bool begin_visit(if_expr& node)
 {
-  node.set_cond_expr(wrap_in_bev(m_cb->m_cur_sctx, m_cb->m_sctx, node.get_cond_expr()));
   return true;
 }
 
@@ -247,64 +209,13 @@ void end_visit (fo_expr&)
 
 bool begin_visit (fo_expr& node)
 {
-  RootTypeManager& rtm = GENV_TYPESYSTEM;
-
-  const signature& sign = node.get_signature();
-
-  int n = node.size();
-
-  const function* func = node.get_func();
-
-  for(int i = 0; i < n; ++i) 
-  {
-    expr::expr_t param = node[i];
-
-    if (!node.is_updating())
-      checkNonUpdating(&*param);
-
-    xqtref_t param_type;
-
-    if (func->getKind() == FunctionConsts::FN_INDEX_PROBE_POINT)
-    {
-      if (i == 0)
-        param_type = sign[i];
-      else
-        param_type = rtm.ANY_ATOMIC_TYPE_QUESTION;
-    }
-    else if (func->getKind() == FunctionConsts::FN_INDEX_PROBE_RANGE)
-    {
-      if (i == 0)
-        param_type = sign[i];
-      else if (i % 6 == 1 || i % 6 == 2)
-        param_type = rtm.ANY_ATOMIC_TYPE_QUESTION;
-      else
-        param_type = rtm.BOOLEAN_TYPE_QUESTION;
-    }
-    else
-    {
-      param_type = sign[i];
-    }
-
-    xqtref_t param_prime_type = TypeOps::prime_type(*param_type);
-
-    if (TypeOps::is_subtype(*param_prime_type, *rtm.ANY_ATOMIC_TYPE_ONE)) 
-    {
-      param = wrap_in_atomization(m_cb->m_cur_sctx, m_cb->m_sctx, param);
-      param = wrap_in_type_conversion(m_cb->m_cur_sctx, param, param_type);
-    }
-    else
-    {
-      param = wrap_in_typematch(m_cb->m_cur_sctx, param, param_type);
-    }
-
-    node[i] = param;
-  }
-
   return true;
 }
 
 
-void end_visit (instanceof_expr&) {}
+void end_visit (instanceof_expr&) 
+{
+}
 
 bool begin_visit (instanceof_expr& node)
 {
@@ -312,7 +223,9 @@ bool begin_visit (instanceof_expr& node)
   return true;
 }
 
+
 DEF_VISIT_METHODS (treat_expr)
+
 
 void end_visit (castable_expr&) 
 {
@@ -324,6 +237,7 @@ bool begin_visit (castable_expr& node)
   return true;
 }
 
+
 void end_visit (cast_expr&) 
 {
 }
@@ -331,13 +245,9 @@ void end_visit (cast_expr&)
 bool begin_visit (cast_expr& node)
 {
   checkNonUpdating(&*node.get_input());
-
-  expr_t arg = wrap_in_atomization(m_cb->m_cur_sctx, m_cb->m_sctx, node.get_input());
-
-  node.set_input(arg);
-
   return true;
 }
+
 
 void end_visit (name_cast_expr&) 
 {
@@ -349,6 +259,7 @@ bool begin_visit (name_cast_expr& node)
   return true;
 }
 
+
 void end_visit (validate_expr&) 
 {
 }
@@ -358,6 +269,7 @@ bool begin_visit (validate_expr& node)
   checkNonUpdating(&*node.get_expr());
   return true;
 }
+
 
 void end_visit (extension_expr&) 
 {
@@ -369,28 +281,18 @@ bool begin_visit (extension_expr& node)
   return true;
 }
 
-void end_visit (relpath_expr&) 
-{
-}
 
-bool begin_visit (relpath_expr& node)
-{
-#if 0
-  if (node.size() > 0) {
-    expr_t ie = node[0];
-    expr_t pe = new treat_expr(m_cb->m_cur_sctx, ie->get_loc(), ie, GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, XPTY0019);
-    node[0] = pe;
-  }
-#endif
-  return true;
-}
-
+DEF_VISIT_METHODS (relpath_expr)
 DEF_VISIT_METHODS (axis_step_expr)
 DEF_VISIT_METHODS (match_expr)
 DEF_VISIT_METHODS (const_expr)
 DEF_VISIT_METHODS (order_expr)
 
-void end_visit (elem_expr&) {}
+
+void end_visit (elem_expr&) 
+{
+}
+
 bool begin_visit (elem_expr& node)
 {
   //node.setQNameExpr(wrap_in_atomization(m_sctx, node.getQNameExpr()));
@@ -400,7 +302,11 @@ bool begin_visit (elem_expr& node)
   return true;
 }
 
-void end_visit (doc_expr&) {}
+
+void end_visit (doc_expr&) 
+{
+}
+
 bool begin_visit (doc_expr& node)
 {
   checkNonUpdating(node.getContent());
@@ -408,7 +314,10 @@ bool begin_visit (doc_expr& node)
 }
 
 
-void end_visit (attr_expr&) {}
+void end_visit (attr_expr&) 
+{
+}
+
 bool begin_visit (attr_expr& node)
 {
   assert (node.getQNameExpr() != NULL);
@@ -416,50 +325,42 @@ bool begin_visit (attr_expr& node)
   checkNonUpdating(&*node.getQNameExpr());
   checkNonUpdating(&*node.getValueExpr());
 
-  // node.setQNameExpr(wrap_in_atomization(m_sctx, node.getQNameExpr()));
-  
-  if (node.getValueExpr() != NULL) {
-    rchandle<expr> lExpr = node.getValueExpr();
-    fo_expr* lFoExpr = 0;
-    if ((lFoExpr = dynamic_cast<fo_expr*>(&*lExpr)))
-    {
-      function* lTestFunc = LOOKUP_OP1("enclosed-expr");
-      if (lFoExpr->get_func() == lTestFunc)
-      {
-        (*lFoExpr)[0] = wrap_in_atomization(m_cb->m_cur_sctx, m_cb->m_sctx, (*lFoExpr)[0].getp());
-        return true;
-      }
-    }
-    node.setValueExpr(wrap_in_atomization(m_cb->m_cur_sctx, m_cb->m_sctx, node.getValueExpr()));
-  }
-
   return true;
 }
 
-#undef LOOKUP_OP1
 
-void end_visit (text_expr&) {}
+void end_visit (text_expr&) 
+{
+}
+
 bool begin_visit (text_expr& node)
 {
   checkNonUpdating(&*node.get_text());
   return true;
 }
 
-void end_visit (pi_expr&) {}
+
+void end_visit (pi_expr&) 
+{
+}
+
 bool begin_visit (pi_expr& node)
 {
   checkNonUpdating(&*node.get_target_expr());
   return true;
 }
 
+
 DEF_VISIT_METHODS (insert_expr)
 DEF_VISIT_METHODS (delete_expr)
 DEF_VISIT_METHODS (rename_expr)
 DEF_VISIT_METHODS (replace_expr)
 DEF_VISIT_METHODS (transform_expr)
+
 DEF_VISIT_METHODS (exit_expr)
 DEF_VISIT_METHODS (while_expr)
 DEF_VISIT_METHODS (flowctl_expr)
+
 DEF_VISIT_METHODS (function_def_expr)
 
 DEF_VISIT_METHODS (ft_select_expr)

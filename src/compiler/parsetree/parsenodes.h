@@ -1014,7 +1014,7 @@ public:
   [33] FunctionBody ::= EnclosedExpr | Block
 
   Note: If a function is a sequential one, then its FunctionBody must be a Block,
-        otherwise its FunctionBody must be an EnclosedExpr.
+  otherwise its FunctionBody must be an EnclosedExpr.
 ********************************************************************************/
 class FunctionDecl : public XQDocumentable
 {
@@ -1411,6 +1411,7 @@ public:
 ********************************************************************************/
 
 
+
 /*******************************************************************************
   BlockExpr ::= "block" Block
 
@@ -1423,9 +1424,14 @@ public:
 
   BlockBody ::= Expr
 
-  Note: There is no parsenode class for BlockExpr or for Block; instead the
-  parser generates either an Expr node if BlockDecls is empty, or a BlockBody
-  node whose "decls" data member stores the var declarations.
+  Note: There is no parsenode class for BlockExpr or for Block; instead:
+
+  1. If BlockDecls is not empty the parser generates a BlockBody node whose
+     "decls" data member stores the var declarations.
+  2. If BlockDecls is empty and Expr is a ConcatExpr, the parser generates an
+     Expr node.
+  3. If BlockDecls is empty and Expr is an ApplyExpr, the parser generates a
+     BlockBody node.
 
   Note: There are no parsenode classes for BlockVarDecl and BlockDecls; instead
   the parser generates VarDecl and VFO_DeclList parsenodes.

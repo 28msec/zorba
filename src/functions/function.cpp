@@ -143,18 +143,19 @@ FunctionConsts::AnnotationValue function::producesNodeIdSorted() const
 ********************************************************************************/
 user_function::user_function(
     const QueryLoc& loc, 
-    const signature& _sig, 
+    const signature& sig, 
     expr_t expr_body, 
     enum ParseConstants::function_type_t ftype,
     bool deterministic_)
   :
-  function(_sig), 
+  function(sig),
   m_loc(loc), 
   m_expr_body(expr_body), 
-  theUpdateType((ftype == ParseConstants::fn_update) ? UPDATE_EXPR : SIMPLE_EXPR),
-  sequential (ftype == ParseConstants::fn_sequential),
-  deterministic (deterministic_),
-  leaf (true)
+  theUpdateType(ftype == ParseConstants::fn_update ?
+                UPDATE_EXPR :
+                ftype == ParseConstants::fn_sequential ? SEQUENTIAL_EXPR : SIMPLE_EXPR),
+  deterministic(deterministic_),
+  leaf(true)
 {
   m_state_size = 0;
 }
@@ -179,7 +180,6 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar, (function*)this);
   ar & m_loc;
   SERIALIZE_ENUM(expr_update_t, theUpdateType);
-  ar & sequential;
   ar & deterministic;
   ar & leaf;
   ar & m_plan;

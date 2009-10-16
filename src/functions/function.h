@@ -170,6 +170,8 @@ public:
 
   bool isUpdating() const { return getUpdateType() == UPDATE_EXPR; }
 
+  bool isSequential() const { return getUpdateType() == SEQUENTIAL_EXPR; }
+
   virtual bool propagatesInputToOutput(uint32_t aProducer) const { return true; }
 
   virtual function* specialize(
@@ -278,7 +280,6 @@ private:
   std::vector<var_expr_t> m_args;
 
   expr_update_t           theUpdateType;
-  bool                    sequential;
   bool                    deterministic;
   bool                    leaf;  // does not call other UDF's
   
@@ -310,8 +311,6 @@ public:
   virtual bool is_builtin_fn_named(const char *local, int local_len,int arg_count) const {return false;}
 
   bool isPureFunction () const { return deterministic; }
-
-  bool isSequential () const { return sequential; }
 
   void setLeaf (bool leaf_) { leaf = leaf_; }
 

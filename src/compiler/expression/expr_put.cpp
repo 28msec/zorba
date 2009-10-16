@@ -87,7 +87,7 @@ std::ostream& debugger_expr::put(std::ostream& os) const
 
 std::ostream& wrapper_expr::put(std::ostream& os) const
 {
-  get_expr ()->put(os);
+  get_expr()->put(os);
   return os;
 }
 
@@ -290,8 +290,9 @@ ostream& flwor_expr::put( ostream& os) const
 
 ostream& promote_expr::put(ostream& os) const
 {
-  os << INDENT << "promote_expr " << target_type->toString () << expr_addr (this) << " [\n";
-  input_expr_h->put(os);
+  os << INDENT << "promote_expr " << theTargetType->toString()
+     << expr_addr (this) << " [\n";
+  theInputExpr->put(os);
   CLOSE_EXPR;
 }
 
@@ -320,39 +321,21 @@ ostream& eval_expr::put( ostream& os) const
   CLOSE_EXPR;
 }
 
-ostream& typeswitch_expr::put( ostream& os) const
-{
-  BEGIN_EXPR (typeswitch_expr);
-
-  switch_expr_h->put(os);
-
-  for (vector<clauseref_t>::const_iterator it = case_clause_hv.begin();
-       it!=case_clause_hv.end(); ++it)
-  {
-    clauseref_t cc_h = *it;
-    os << INDENT << "case: ";
-    if (cc_h->var_h!=NULL) cc_h->var_h->put(os) << " as ";
-    // TODO(VRB) os << sequence_type::describe(cc_h->type);
-    os << " return ";
-    cc_h->case_expr_h->put(os) << endl;
-    UNDENT;
-  }
-  CLOSE_EXPR;
-}
 
 ostream& if_expr::put( ostream& os) const
 {
-  BEGIN_EXPR (if_expr);
-  cond_expr_h->put(os);
-  PUT_SUB ("THEN", then_expr_h);
-  PUT_SUB ("ELSE", else_expr_h);
+  BEGIN_EXPR(if_expr);
+  theCondExpr->put(os);
+  PUT_SUB("THEN", theThenExpr);
+  PUT_SUB("ELSE", theElseExpr);
   CLOSE_EXPR;
 }
 
 ostream& fo_expr::put( ostream& os) const
 {
-  store::Item_t qname = func->get_fname ();
-  os << INDENT << qname->getStringValue() << "/" << size () << expr_addr (this) << " [\n";
+  store::Item_t qname = theFunction->get_fname();
+
+  os << INDENT << qname->getStringValue() << "/" << size() << expr_addr(this) << " [\n";
   
   for (vector<rchandle<expr> >::const_iterator it = begin();
        it != end(); ++it)
@@ -375,36 +358,40 @@ ostream& ft_contains_expr::put( ostream& os) const
 
 ostream& instanceof_expr::put( ostream& os) const
 {
-  os << INDENT << "instanceof_expr " << target_type->toString () << expr_addr (this) << " [\n";
-  input_expr_h->put(os);
+  os << INDENT << "instanceof_expr " << theTargetType->toString()
+     << expr_addr (this) << " [\n";
+  theInputExpr->put(os);
   CLOSE_EXPR;
 }
 
 ostream& treat_expr::put( ostream& os) const
 {
-  os << INDENT << "treat_expr " << target_type->toString () << expr_addr (this) << " [\n";
-  input_expr_h->put(os);
+  os << INDENT << "treat_expr " << theTargetType->toString()
+     << expr_addr (this) << " [\n";
+  theInputExpr->put(os);
   CLOSE_EXPR;
 }
 
 ostream& castable_expr::put( ostream& os) const
 {
-  os << INDENT << "castable_expr " << target_type->toString () << expr_addr (this) << " [\n";
-  input_expr_h->put(os);
+  os << INDENT << "castable_expr " << theTargetType->toString()
+     << expr_addr (this) << " [\n";
+  theInputExpr->put(os);
   CLOSE_EXPR;
 }
 
 ostream& cast_expr::put( ostream& os) const
 {
-  os << INDENT << "cast_expr " << target_type->toString () << expr_addr (this) << " [\n";
-  input_expr_h->put(os);
+  os << INDENT << "cast_expr " << theTargetType->toString()
+     << expr_addr (this) << " [\n";
+  theInputExpr->put(os);
   CLOSE_EXPR;
 }
 
 ostream& name_cast_expr::put( ostream& os) const
 {
   BEGIN_EXPR (name_cast_expr);
-  input_expr_h->put(os);
+  theInputExpr->put(os);
   CLOSE_EXPR;
 }
 

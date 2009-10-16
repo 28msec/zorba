@@ -66,10 +66,6 @@ void DataflowAnnotationsComputer::compute(expr *e)
       compute_promote_expr(static_cast<promote_expr *>(e));
       break;
 
-    case typeswitch_expr_kind:
-      compute_typeswitch_expr(static_cast<typeswitch_expr *>(e));
-      break;
-
     case if_expr_kind:
       compute_if_expr(static_cast<if_expr *>(e));
       break;
@@ -247,13 +243,6 @@ void DataflowAnnotationsComputer::compute_promote_expr(promote_expr *e)
   default_walk(e);
   PROPOGATE_SORTED_NODES(e->get_input().getp(), e);
   PROPOGATE_DISTINCT_NODES(e->get_input().getp(), e);
-}
-
-
-void DataflowAnnotationsComputer::compute_typeswitch_expr(typeswitch_expr *e)
-{
-  default_walk(e);
-  generic_compute(e);
 }
 
 

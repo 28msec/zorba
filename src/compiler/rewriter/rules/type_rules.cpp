@@ -239,7 +239,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
       target_ptype = TypeOps::prime_type (*target_type);
     if (node->get_expr_kind () == cast_expr_kind
         && TypeOps::is_equal (*arg_ptype, *target_ptype))
-      return new treat_expr (node->get_cur_sctx(), node->get_loc (), pe->get_input (), target_type, XPTY0004, false);
+      return new treat_expr(node->get_sctx_id(), node->get_loc (), pe->get_input (), target_type, XPTY0004, false);
 
     if (node->get_expr_kind () == treat_expr_kind) {
       treat_expr *te = dynamic_cast<treat_expr *> (pe);
@@ -364,7 +364,7 @@ RULE_REWRITE_POST(SpecializeOperations)
 
         if (TypeOps::is_subtype(*argType, *rtm.UNTYPED_ATOMIC_TYPE_STAR))
         {
-          expr_t promoteExpr = new promote_expr(argExpr->get_cur_sctx(),
+          expr_t promoteExpr = new promote_expr(argExpr->get_sctx_id(),
                                                 argExpr->get_loc(),
                                                 argExpr,
                                                 rtm.DOUBLE_TYPE_STAR);
@@ -419,7 +419,7 @@ RULE_REWRITE_POST(SpecializeOperations)
           {
             if (TypeOps::is_subtype(*t[i], *rtm.UNTYPED_ATOMIC_TYPE_QUESTION)) 
             {
-              nargs [i] = new cast_expr(arg[i]->get_cur_sctx(),
+              nargs [i] = new cast_expr(arg[i]->get_sctx_id(),
                                         arg[i]->get_loc(),
                                         arg[i],
                                         string_type);
@@ -485,7 +485,7 @@ RULE_REWRITE_POST(SpecializeOperations)
 
           if (TypeOps::is_subtype(*colType, *rtm.UNTYPED_ATOMIC_TYPE_STAR))
           {
-            expr_t castExpr = new cast_expr(colExpr->get_cur_sctx(),
+            expr_t castExpr = new cast_expr(colExpr->get_sctx_id(),
                                             colExpr->get_loc(),
                                             colExpr,
                                             rtm.STRING_TYPE_QUESTION);
@@ -519,7 +519,7 @@ static expr_t wrap_in_num_promotion (expr_t arg, xqtref_t oldt, xqtref_t t)
     if (TypeOps::is_equal (*inner_t, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
       arg = inner_e;
   }
-  return new promote_expr (arg->get_cur_sctx(), arg->get_loc (), arg, t);
+  return new promote_expr (arg->get_sctx_id(), arg->get_loc (), arg, t);
 }
 
 

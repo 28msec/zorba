@@ -390,7 +390,7 @@ void SimpleStore::addIndex(store::Index_t& index)
 /*******************************************************************************
 
 ********************************************************************************/
-store::Index* SimpleStore::getIndex(const store::Item_t& qname)
+store::Index* SimpleStore::getIndex(const store::Item* qname)
 {
   if (qname == NULL)
     return NULL;
@@ -406,7 +406,7 @@ store::Index* SimpleStore::getIndex(const store::Item_t& qname)
 /*******************************************************************************
 
 ********************************************************************************/
-void SimpleStore::deleteIndex(const store::Item_t& qname)
+void SimpleStore::deleteIndex(const store::Item* qname)
 {
   if (qname == NULL)
     return;

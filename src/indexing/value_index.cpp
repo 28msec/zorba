@@ -151,7 +151,7 @@ expr* ValueIndex::getBuildExpr(CompilerCB* topCCB, const QueryLoc& loc)
   var_expr_t dot = getDomainVariable();
   var_expr_t pos = getDomainPositionVariable();
 
-  short sctxid = domainExpr->get_cur_sctx();
+  short sctxid = domainExpr->get_sctx_id();
   static_context* sctx = topCCB->getStaticContext(sctxid);
 
   flwor_expr::clause_list_t clauses;
@@ -193,17 +193,20 @@ expr* ValueIndex::getBuildExpr(CompilerCB* topCCB, const QueryLoc& loc)
                                          "index-entry-builder",
                                          VARIADIC_SIG_SIZE);
 
-  rchandle<fo_expr> returnExpr =  new fo_expr(sctxid, loc, f);
-
   expr_t domainVarExpr(new wrapper_expr(sctxid, loc, newdot.getp()));
-  returnExpr->add(domainVarExpr);
-  
+
   ulong n = theKeyExprs.size();
+  std::vector<expr_t> foArgs(n+1);
+  
+  foArgs[0] = domainVarExpr;
+
   for(ulong i = 0; i < n; ++i) 
   {
-    returnExpr->add(theKeyExprs[i]->clone(subst));
+    foArgs[i+1] = theKeyExprs[i]->clone(subst);
   }
   
+  fo_expr_t returnExpr =  new fo_expr(sctxid, loc, f, foArgs);
+
   //
   // Create flwor_expr with the above FOR and RETURN clauses.
   //

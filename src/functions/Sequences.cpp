@@ -67,7 +67,11 @@ namespace zorba
 class op_concatenate : public function 
 {
 public:
-  op_concatenate(const signature& sig) : function (sig) {}
+  op_concatenate(const signature& sig) 
+    :
+    function(sig, FunctionConsts::FN_CONCATENATE)
+  {
+  }
 
   xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
 

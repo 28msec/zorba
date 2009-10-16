@@ -475,10 +475,10 @@ DEF_ERR_CODE (XQTY0024, XQTY0024, "It is a type error if the content sequence in
 // UPDATE FACILITY
 //
 
-DEF_ERR_CODE(XUST0001, XUST0001, "It is a static error if an updating expression is used in any position other than one of the following: \
- 1. The topmost expression in the body of a query. \
- 2. The modify clause of a transform expression. \
- 3. The return clause of a FLWOR expression. \
+DEF_ERR_CODE(XUST0001, XUST0001, "It is a static error if an updating expression is used in any position other than one of the following: \n \
+ 1. The topmost expression in the body of a query. \n \
+ 2. The modify clause of a transform expression. \n \
+ 3. The return clause of a FLWOR expression. \n \
  4. The return clauses of a typeswitch expression in which every return \
     clause contains an updating expression, an empty expression ( ), or \
     a call to the fn:error function. \

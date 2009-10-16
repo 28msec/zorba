@@ -96,7 +96,8 @@ typedef rchandle<StaticallyKnownCollection> StaticallyKnownCollection_t;
 class ZORBA_DLL_PUBLIC static_context : public context
 {
   typedef ItemPointerHashMap<rchandle<StaticallyKnownCollection> > CollectionMap;
-  typedef serializable_ItemPointerHashMap<rchandle<ValueIndex> > IndexMap;
+
+  typedef ItemPointerHashMap<rchandle<ValueIndex> > IndexMap;
 
 protected:
   rchandle<TypeManager>           typemgr;
@@ -122,14 +123,11 @@ public:
   SERIALIZABLE_CLASS(static_context);
   static_context(::zorba::serialization::Archiver& ar);
 
-  void
-  serialize_resolvers(serialization::Archiver& ar);
+  void serialize_resolvers(serialization::Archiver& ar);
 
-  void
-  serialize_tracestream(serialization::Archiver& ar);
+  void serialize_tracestream(serialization::Archiver& ar);
 
-  void
-  serialize(serialization::Archiver &ar);
+  void serialize(serialization::Archiver& ar);
 
 public:
   ~static_context();

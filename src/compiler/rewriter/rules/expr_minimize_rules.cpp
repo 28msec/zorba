@@ -60,7 +60,7 @@ static expr_t get_constant_if_typequant_one(static_context *sctx, expr_t e)
   {
     if (TypeOps::type_cnt(*(e->return_type(sctx))) == 1) 
     {
-      return new const_expr(e->get_cur_sctx(), e->get_loc(), 1);
+      return new const_expr(e->get_sctx_id(), e->get_loc(), 1);
     }
     else
     {

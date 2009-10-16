@@ -40,7 +40,6 @@ private:
   void compute_flwor_expr(flwor_expr *e);
   void compute_trycatch_expr(trycatch_expr *e);
   void compute_promote_expr(promote_expr *e);
-  void compute_typeswitch_expr(typeswitch_expr *e);
   void compute_if_expr(if_expr *e);
   void compute_function_def_expr(function_def_expr *e);
   void compute_fo_expr(fo_expr *e);

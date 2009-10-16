@@ -89,6 +89,7 @@ typedef rchandle<parsenode> parsenode_t;
 
 // Expression nodes
 class expr; 
+class fo_expr;
 class var_expr;
 class flwor_clause;
 class forletwin_clause;
@@ -96,6 +97,7 @@ class for_clause;
 class let_clause;
 typedef rchandle<expr> expr_t;
 typedef rchandle<var_expr> var_expr_t;
+typedef rchandle<fo_expr> fo_expr_t;
 typedef rchandle<flwor_clause> flwor_clause_t;
 typedef rchandle<for_clause> for_clause_t;
 typedef rchandle<let_clause> let_clause_t;

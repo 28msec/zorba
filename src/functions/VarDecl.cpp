@@ -60,9 +60,15 @@ public:
 class ctx_var_assign : public function
 {
 public:
-  ctx_var_assign(const signature& sig) : function (sig) {}
+  ctx_var_assign(const signature& sig) 
+    :
+    function(sig, FunctionConsts::FN_VAR_ASSIGN)
+  {
+  }
 
   bool requires_dyn_ctx() const { return true; }
+
+  expr_update_t getUpdateType() const { return SEQUENTIAL_EXPR; }
 
   CODEGEN_DECL();
 };

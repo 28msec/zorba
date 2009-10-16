@@ -21,6 +21,11 @@
 #include <vector>
 #include <map>
 
+#include "zorbaerrors/Assert.h"
+#include "zorbaerrors/error_manager.h"
+
+#include "system/globalenv.h"
+
 #include "context/static_context_consts.h"
 #include "context/namespace_context.h"
 #include "context/dynamic_context.h"
@@ -31,15 +36,12 @@
 #include "compiler/parser/parse_constants.h"
 #include "compiler/expression/expr_visitor.h"
 
-#include "system/globalenv.h"
 #include "functions/function.h"
 
 #include "util/tracer.h"
 
-#include "zorbaerrors/Assert.h"
-#include "zorbaerrors/error_manager.h"
-
 #include "types/root_typemanager.h"
+#include "types/typeops.h"
 
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
@@ -78,9 +80,6 @@ END_SERIALIZABLE_CLASS_VERSIONS(eval_expr)
 SERIALIZABLE_CLASS_VERSIONS(wrapper_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(wrapper_expr)
 
-SERIALIZABLE_CLASS_VERSIONS(case_clause)
-END_SERIALIZABLE_CLASS_VERSIONS(case_clause)
-
 SERIALIZABLE_CLASS_VERSIONS(cast_or_castable_base_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(cast_or_castable_base_expr)
 
@@ -107,9 +106,6 @@ END_SERIALIZABLE_CLASS_VERSIONS(cast_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(name_cast_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(name_cast_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(typeswitch_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(typeswitch_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(if_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(if_expr)
@@ -244,156 +240,18 @@ SERIALIZABLE_CLASS_VERSIONS(flwor_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(flwor_expr)
 
 
+/*******************************************************************************
 
-#define ITEM_FACTORY (GENV.getStore().getItemFactory())
-
-static QueryLoc null_loc;
-
-static expr_t dummy_expr;
-static expr_t* expr_iter_done = &dummy_expr;
-
-#define CLONE( e, s ) ((e) == NULL ? NULL : (e)->clone (s))
-
-// Expr iterators
-
-#define BEGIN_EXPR_ITER() switch (v.state) { case 0:
-
-#define BEGIN_EXPR_ITER2( type )                                        \
-  type##_iterator_data &vv = dynamic_cast<type##_iterator_data &> (v);  \
-  BEGIN_EXPR_ITER()
-
-#define END_EXPR_ITER()   v.i = expr_iter_done; }
-
-#define ITER( m )                                                \
-  do {                                                           \
-    v.state = __LINE__; v.i = reinterpret_cast<expr_t *> (&(m)); \
-    if ((m) != NULL) { invalidate (); return; }                  \
-  case __LINE__:; } while (0)
-
-#define ITER_FOR_EACH( iter, begin, end, expr )                      \
-  for (vv.iter = (begin); vv.iter != (end); ++(vv.iter))  {          \
-    ITER (expr);                                                     \
-  }
-
-// iterator classes
-
-bool expr_iterator_data::done () const { return i == expr_iter_done; }
-
-class fo_expr_iterator_data : public expr_iterator_data {
-public:
-  std::vector<expr_t>::iterator arg_iter;
-  
-public:
-  fo_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
-};
-
-class trycatch_expr_iterator_data : public expr_iterator_data {
-public:
-  std::vector<trycatch_expr::clauseref_t>::const_iterator clause_iter;
-
-  trycatch_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
-};
-
-class typeswitch_expr_iterator_data : public expr_iterator_data {
-public:
-  std::vector<typeswitch_expr::clauseref_t>::const_iterator clause_iter;
-
-  typeswitch_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
-};
-
-class relpath_expr_iterator_data : public expr_iterator_data {
-public:
-  std::vector<expr_t>::iterator step_iter;
-
-  relpath_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
-};
-
-class axis_step_expr_iterator_data : public expr_iterator_data {
-public:
-  std::vector<expr_t>::iterator pred_iter;
-
-  axis_step_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
-};
-
-class transform_expr_iterator_data : public expr_iterator_data {
-public:
-  std::vector<rchandle<copy_clause> >::iterator clause_iter;
-  transform_expr_iterator_data (expr *e_) : expr_iterator_data(e_) {}
-};
-
-
-class eval_expr_iterator_data : public expr_iterator_data {
-public:
-  checked_vector<eval_expr::eval_var>::iterator var_iter;
-
-  eval_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
-};
-
-class debugger_expr_iterator_data: public expr_iterator_data {
-public:
-  checked_vector<eval_expr::eval_var>::iterator var_iter;
-  
-  debugger_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
-};
-
-class sequential_expr_iterator_data : public expr_iterator_data {
-public:
-  checked_vector<expr_t>::iterator iter;
-
-  sequential_expr_iterator_data (expr *e_) : expr_iterator_data (e_) {}
-};
-
-
-expr_iterator::expr_iterator (const expr_iterator &other) 
-:
-iter (new expr_iterator_data (*other.iter)) 
-{}
-
-
-expr_iterator &expr_iterator::operator= (const expr_iterator &other) 
-{
-  if (this != &other) 
-  {
-    delete iter;
-    iter = new expr_iterator_data (*other.iter);
-  }
-  return *this;
+********************************************************************************/
+#define DEF_ACCEPT( type )             \
+void type::accept(expr_visitor& v)     \
+{                                      \
+  if (v.begin_visit(*this))            \
+    accept_children(v);                \
+                                       \
+  v.end_visit(*this);                  \
 }
 
-
-expr_iterator &expr_iterator::operator++ ()
-{
-  iter->next ();
-  return *this; 
-}
-
-
-expr_iterator expr_iterator::operator++ (int)
-{
-  expr_iterator old; old = *this; ++*this; return old;
-}
-
-expr_t& expr_iterator::operator* ()
-{
-  return *(iter->i);
-}
-
-bool expr_iterator::done () const 
-{
-  return iter->done ();
-}
-
-expr_iterator::~expr_iterator () 
-{
-  delete iter; 
-}
-
-#define DEF_ACCEPT( type )                         \
-  void type::accept (expr_visitor &v) {            \
-    if (v.begin_visit (*this))                     \
-      accept_children (v);                         \
-    v.end_visit (*this);                           \
-  }
 
 DEF_ACCEPT (expr)
 DEF_ACCEPT (debugger_expr)
@@ -404,7 +262,6 @@ DEF_ACCEPT (flwor_expr)
 DEF_ACCEPT (promote_expr)
 DEF_ACCEPT (trycatch_expr)
 DEF_ACCEPT (eval_expr)
-DEF_ACCEPT (typeswitch_expr)
 DEF_ACCEPT (if_expr)
 DEF_ACCEPT (function_def_expr)
 DEF_ACCEPT (fo_expr)
@@ -437,235 +294,875 @@ DEF_ACCEPT (while_expr)
 
 #undef DEF_ACCEPT
 
-// end expr iterators
 
+static inline void checkNonUpdating(const expr* e)
+{
+  if (e != 0 && e->is_updating())
+    ZORBA_ERROR_LOC(XUST0001, e->get_loc());
+}
+
+
+#define DEBUG_RT(e, t) t
+
+#ifndef DEBUG_RT
+#define DEBUG_RT(e, t) print_expr_and_type(e, t)
+
+static xqtref_t print_expr_and_type(expr *e, xqtref_t t) 
+{
+  if (Properties::instance()->printStaticTypes ()) {
+    std::cout << "Return type for " << e << ":\n";
+    e->put(std::cout);
+    std::cout << " => " << t->toString() << std::endl;
+  }
+  return t;
+}
+
+#endif
+
+
+#define CLONE( e, s ) ((e) == NULL ? NULL : (e)->clone (s))
+
+
+/*******************************************************************************
+  Iterator macros
+********************************************************************************/
+
+static expr_t dummy_expr;
+static expr_t* expr_iter_done = &dummy_expr;
+
+#define BEGIN_EXPR_ITER() switch (v.theState) { case 0:
+
+
+#define BEGIN_EXPR_ITER2( type )                                       \
+  type##_iterator_data &vv = dynamic_cast<type##_iterator_data &>(v);  \
+  BEGIN_EXPR_ITER()
+
+#define END_EXPR_ITER()   v.theCurrentChild = expr_iter_done; }
+
+
+#define ITER( m )                                                \
+do                                                               \
+{                                                                \
+  v.theState = __LINE__;                                         \
+  v.theCurrentChild = reinterpret_cast<expr_t*>(&(m));           \
+                                                                 \
+  if ((m) != NULL) { invalidate(); return; }                     \
+                                                                 \
+  case __LINE__:;                                                \
+                                                                 \
+} while (0)
+
+
+#define ITER_FOR_EACH( iter, begin, end, expr )                  \
+for (vv.iter = (begin); vv.iter != (end); ++(vv.iter))           \
+{                                                                \
+  ITER(expr);                                                    \
+}
+
+
+/*******************************************************************************
+  Class expr_iterator
+********************************************************************************/
+expr_iterator::expr_iterator(const expr_iterator& other) 
+  :
+  iter(new expr_iterator_data(*other.iter)) 
+{
+}
+
+
+expr_iterator::~expr_iterator() 
+{
+  delete iter; 
+}
+
+
+expr_iterator& expr_iterator::operator=(const expr_iterator& other) 
+{
+  if (this != &other) 
+  {
+    delete iter;
+    iter = new expr_iterator_data(*other.iter);
+  }
+  return *this;
+}
+
+
+expr_iterator& expr_iterator::operator++()
+{
+  iter->next();
+  return *this; 
+}
+
+
+expr_iterator expr_iterator::operator++(int)
+{
+  expr_iterator old;
+  old = *this;
+  ++*this;
+  return old;
+}
+
+
+expr_t& expr_iterator::operator*()
+{
+  return *(iter->theCurrentChild);
+}
+
+
+bool expr_iterator::done() const 
+{
+  return iter->done();
+}
+
+
+/*******************************************************************************
+  Class expr_iterator_data
+********************************************************************************/
+bool expr_iterator_data::done() const 
+{
+  return theCurrentChild == expr_iter_done;
+}
+
+
+/*******************************************************************************
+  Specific expr_iterator_data classes
+********************************************************************************/
+class fo_expr_iterator_data : public expr_iterator_data 
+{
+public:
+  std::vector<expr_t>::iterator arg_iter;
   
-expr::expr(short _sctx, const QueryLoc& _loc) : context(_sctx), loc(_loc) {
-  invalidate ();
-  cache.type.sctx = NULL;
-  cache.upd_seq_kind.vacuous = false;
-  cache.upd_seq_kind.updating = false;
-  cache.upd_seq_kind.sequential = false;
+public:
+  fo_expr_iterator_data (expr* e) : expr_iterator_data(e) {}
+};
+
+
+class trycatch_expr_iterator_data : public expr_iterator_data 
+{
+public:
+  std::vector<trycatch_expr::clauseref_t>::const_iterator clause_iter;
+
+  trycatch_expr_iterator_data (expr* e) : expr_iterator_data(e) {}
+};
+
+
+class relpath_expr_iterator_data : public expr_iterator_data 
+{
+public:
+  std::vector<expr_t>::iterator step_iter;
+
+  relpath_expr_iterator_data (expr* e) : expr_iterator_data(e) {}
+};
+
+
+class axis_step_expr_iterator_data : public expr_iterator_data 
+{
+public:
+  std::vector<expr_t>::iterator pred_iter;
+
+  axis_step_expr_iterator_data (expr* e) : expr_iterator_data(e) {}
+};
+
+
+class transform_expr_iterator_data : public expr_iterator_data 
+{
+public:
+  std::vector<rchandle<copy_clause> >::iterator clause_iter;
+  transform_expr_iterator_data (expr* e) : expr_iterator_data(e) {}
+};
+
+
+class eval_expr_iterator_data : public expr_iterator_data 
+{
+public:
+  checked_vector<eval_expr::eval_var>::iterator var_iter;
+
+  eval_expr_iterator_data (expr* e) : expr_iterator_data(e) {}
+};
+
+
+class debugger_expr_iterator_data: public expr_iterator_data 
+{
+public:
+  checked_vector<eval_expr::eval_var>::iterator var_iter;
+  
+  debugger_expr_iterator_data (expr* e) : expr_iterator_data(e) {}
+};
+
+
+class sequential_expr_iterator_data : public expr_iterator_data 
+{
+public:
+  checked_vector<expr_t>::iterator iter;
+
+  sequential_expr_iterator_data(expr* e) : expr_iterator_data(e) {}
+};
+
+
+
+
+/*******************************************************************************
+  Base expr class
+********************************************************************************/
+
+expr::expr(short sctx, const QueryLoc& _loc) : theSctxId(sctx), loc(_loc) 
+{
+  invalidate();
+  theCache.type.sctx = NULL;
+  theCache.upd_seq_kind.kind = VACUOUS_EXPR;
 }
 
   
-expr::~expr() {}
+expr::~expr() 
+{
+}
 
-void expr::serialize(::zorba::serialization::Archiver &ar)
+
+void expr::serialize(::zorba::serialization::Archiver& ar)
 {
   //serialize_baseclass(ar, (SimpleRCObject*)this);
   serialize_baseclass(ar, (AnnotationHolder*)this);
-  ar & context;
+  ar & theSctxId;
   ar & loc;
-  ar & cache.type.valid;
-  ar & cache.type.t;
-  ar & cache.type.sctx;
-  ar & cache.upd_seq_kind.valid;
-  ar & cache.upd_seq_kind.vacuous;
-  ar & cache.upd_seq_kind.updating;
-  ar & cache.upd_seq_kind.sequential;
+  ar & theCache.type.valid;
+  ar & theCache.type.t;
+  ar & theCache.type.sctx;
+  ar & theCache.upd_seq_kind.valid;
+  SERIALIZE_ENUM(expr_update_t, theCache.upd_seq_kind.kind);
 }
 
-expr_update_t expr::get_update_type () const {
-  if (is_vacuous ())
+
+expr_update_t expr::get_update_type() const 
+{
+  if (is_vacuous())
     return VACUOUS_EXPR;
-  else if (is_updating ())
+
+  else if (is_updating())
     return UPDATE_EXPR;
-  else return SIMPLE_EXPR;
+
+  else if (is_sequential())
+    return SEQUENTIAL_EXPR;
+
+  else
+    return SIMPLE_EXPR;
 }
 
 
-bool expr::is_updating () const {
-  if (! cache.upd_seq_kind.valid)
-    compute_upd_seq_kind ();
-  return cache.upd_seq_kind.updating;
+bool expr::is_updating() const 
+{
+  if (! theCache.upd_seq_kind.valid)
+    compute_upd_seq_kind();
+
+  return theCache.upd_seq_kind.kind == UPDATE_EXPR;
+}
+
+  
+bool expr::is_sequential() const 
+{
+  if (! theCache.upd_seq_kind.valid)
+    compute_upd_seq_kind();
+
+  return theCache.upd_seq_kind.kind == SEQUENTIAL_EXPR;
 }
   
-bool expr::is_sequential () const {
-  if (! cache.upd_seq_kind.valid)
-    compute_upd_seq_kind ();
-  return cache.upd_seq_kind.sequential;
-}
-  
-bool expr::is_vacuous () const {
-  if (! cache.upd_seq_kind.valid)
-    compute_upd_seq_kind ();
-  return cache.upd_seq_kind.vacuous;
+
+bool expr::is_vacuous() const 
+{
+  if (! theCache.upd_seq_kind.valid)
+    compute_upd_seq_kind();
+
+  return theCache.upd_seq_kind.kind == VACUOUS_EXPR;
 }
 
-bool expr::is_simple () const {
-  if (! cache.upd_seq_kind.valid)
-    compute_upd_seq_kind ();
-  return ! (cache.upd_seq_kind.updating || cache.upd_seq_kind.sequential || cache.upd_seq_kind.vacuous);
+
+bool expr::is_simple() const 
+{
+  if (! theCache.upd_seq_kind.valid)
+    compute_upd_seq_kind();
+
+  return theCache.upd_seq_kind.kind == SIMPLE_EXPR;
 }
 
-bool expr::is_updating_or_vacuous () const {
-  if (! cache.upd_seq_kind.valid)
-    compute_upd_seq_kind ();
-  return (cache.upd_seq_kind.updating || cache.upd_seq_kind.vacuous);
+
+bool expr::is_updating_or_vacuous() const 
+{
+  if (! theCache.upd_seq_kind.valid)
+    compute_upd_seq_kind();
+
+  return (theCache.upd_seq_kind.kind == UPDATE_EXPR ||
+          theCache.upd_seq_kind.kind == VACUOUS_EXPR);
 }
 
 
 void expr::compute_upd_seq_kind() const 
 {
-  cache.upd_seq_kind.vacuous
-    = cache.upd_seq_kind.updating
-    = cache.upd_seq_kind.sequential
-    = false;
-  cache.upd_seq_kind.valid = true;
+  theCache.upd_seq_kind.kind = SIMPLE_EXPR;
+  theCache.upd_seq_kind.valid = true;
 }
 
 
-void sequential_expr::compute_upd_seq_kind() const 
+expr_update_t expr::update_type_anding(
+    expr_update_t type1, 
+    expr_update_t type2, 
+    const QueryLoc& loc)
 {
-  cache.upd_seq_kind.vacuous = false;
-  cache.upd_seq_kind.updating = size() >= 1 && ((*this)[size() - 1]->is_updating());
-  cache.upd_seq_kind.sequential = size() >= 2 || (*this)[0]->is_sequential();
-  cache.upd_seq_kind.valid = true;
-}
+  switch(type1)
+  {
+  case VACUOUS_EXPR:
+  {
+    switch(type2) 
+    {
+    case VACUOUS_EXPR:
+      return VACUOUS_EXPR;
 
+    case SIMPLE_EXPR:
+      return SIMPLE_EXPR;
 
-void flwor_expr::compute_upd_seq_kind() const 
-{
-  expr *ret = get_return_expr ();
-  cache.upd_seq_kind.vacuous = ret->is_vacuous ();
-  cache.upd_seq_kind.updating = ret->is_updating ();
-  cache.upd_seq_kind.sequential = ret->is_sequential ();
-  cache.upd_seq_kind.valid = true;
-}
+    case UPDATE_EXPR:
+      return UPDATE_EXPR;
 
-
-void fo_expr::compute_upd_seq_kind() const 
-{
-  bool concat = is_concatenation();
-
-  cache.upd_seq_kind.vacuous = get_func ()->getUpdateType () == VACUOUS_EXPR;
-
-  // concatenation of vacuous exprs is vacuous
-  if (concat) {
-    ulong i;
-    for (i = 0; i < size (); ++i) {
-      if (!argv[i]->is_vacuous())
-        break;
+    case SEQUENTIAL_EXPR:
+      return SEQUENTIAL_EXPR;
     }
 
-    if (i == size ())
-      cache.upd_seq_kind.vacuous = true;
+    break;
+  }
+  case SIMPLE_EXPR:
+  {
+    switch(type2) 
+    {
+    case VACUOUS_EXPR:
+      return SIMPLE_EXPR;
+
+    case SIMPLE_EXPR:
+      return SIMPLE_EXPR;
+
+    case UPDATE_EXPR:
+      ZORBA_ERROR_LOC(XUST0001, loc);
+      break;
+
+    case SEQUENTIAL_EXPR:
+      return SEQUENTIAL_EXPR;
+    }
+
+    break;
+  }
+  case UPDATE_EXPR:
+  {
+    switch(type2) 
+    {
+    case VACUOUS_EXPR:
+      return UPDATE_EXPR;
+
+    case SIMPLE_EXPR:
+      ZORBA_ERROR_LOC(XUST0001, loc);
+      break;
+
+    case UPDATE_EXPR:
+      return UPDATE_EXPR;
+
+    case SEQUENTIAL_EXPR:
+      ZORBA_ERROR_LOC(XUST0001, loc);
+      break;
+    }
+
+    break;
+  }
+  case SEQUENTIAL_EXPR:
+  {
+    switch(type2) 
+    {
+    case VACUOUS_EXPR:
+      return SEQUENTIAL_EXPR;
+
+    case SIMPLE_EXPR:
+      return SEQUENTIAL_EXPR;
+
+    case UPDATE_EXPR:
+      ZORBA_ERROR_LOC(XUST0001, loc);
+      break;
+
+    case SEQUENTIAL_EXPR:
+      return SEQUENTIAL_EXPR;
+    }
+
+    break;
+  }
+  default:
+  {
+    ZORBA_ASSERT(false);
+  }
   }
 
-  cache.upd_seq_kind.updating = get_func ()->isUpdating ();
-  if (! cache.upd_seq_kind.updating && concat) {
-    for (unsigned i = 0; i < size (); i++)
-      if ((*this) [i]->is_updating ()) {
-        cache.upd_seq_kind.updating = true;
-        break;
-      }
-  }
-
-  cache.upd_seq_kind.sequential = false;
-  const user_function *f = dynamic_cast<const user_function *> (get_func ());
-  if (f != NULL)
-    cache.upd_seq_kind.sequential = f->isSequential ();
-
-  cache.upd_seq_kind.valid = true;
-}
-
-void if_expr::compute_upd_seq_kind () const {
-  cache.upd_seq_kind.vacuous =
-    then_expr_h->is_vacuous () && else_expr_h->is_vacuous ();
-  cache.upd_seq_kind.updating =
-    then_expr_h->is_updating () || else_expr_h->is_updating ();
-  cache.upd_seq_kind.sequential = false;
-  cache.upd_seq_kind.valid = true;
-}
-
-string expr::toString () const {
-  ostringstream oss;
-  put (oss);
-  return oss.str ();
-}
-
-
-expr_iterator_data *expr::make_iter () {
-  return new expr_iterator_data (this);
+  return SIMPLE_EXPR;
 }
   
 
-expr_iterator expr::expr_begin() {
-  invalidate ();
-  expr_iterator_data *iter_data = make_iter ();
-  iter_data->next ();
-  return expr_iterator (iter_data);
+xqtref_t expr::return_type(static_context* sctx) 
+{
+  if (! cache_compliant())
+    return DEBUG_RT(this, return_type_impl(sctx));
+
+  if (! theCache.type.valid ||
+      (theCache.type.sctx != sctx && // ????
+       ! TypeOps::is_subtype(*theCache.type.t, *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE)))
+  {
+    theCache.type.t = DEBUG_RT(this, return_type_impl(sctx));
+    theCache.type.sctx = sctx;
+    theCache.type.valid = true;
+  }
+
+  return theCache.type.t;
+}
+
+
+xqtref_t expr::return_type_impl(static_context* sctx)
+{
+  return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+}
+
+
+expr_iterator expr::expr_begin() 
+{
+  invalidate();
+  expr_iterator_data* iter_data = make_iter();
+  iter_data->next();
+  return expr_iterator(iter_data);
 }
 
   
-void expr::next_iter (expr_iterator_data &v) {
+void expr::next_iter(expr_iterator_data& v) 
+{
   BEGIN_EXPR_ITER();
   ZORBA_ASSERT (false);
   END_EXPR_ITER();
 }
 
 
-void expr::accept_children (expr_visitor &v) {
-  for (expr_iterator i = expr_begin (); ! i.done (); ++i) {
-    if (*i != NULL)
-      (*i)->accept (v);
-  }
+expr_iterator_data* expr::make_iter()
+{
+  return new expr_iterator_data(this);
 }
+  
 
- 
-expr_t expr::clone() {
+expr_t expr::clone() 
+{
   substitution_t subst;
   return clone(subst);
 }
 
 
-expr_t expr::clone(substitution_t& subst) {
-  ZORBA_ERROR_LOC (XQP0019_INTERNAL_ERROR, get_loc ());
-  return NULL; // Make the compiler happy
+expr_t expr::clone(substitution_t& subst) 
+{
+  ZORBA_ERROR_LOC(XQP0019_INTERNAL_ERROR, get_loc());
+  return NULL;
 }
 
-  expr_iterator_data *debugger_expr::make_iter() {
-    return new debugger_expr_iterator_data(this);
+
+void expr::accept_children(expr_visitor& v)
+{
+  for (expr_iterator i = expr_begin(); ! i.done(); ++i) 
+  {
+    if (*i != NULL)
+      (*i)->accept(v);
+  }
+}
+
+
+string expr::toString() const 
+{
+  ostringstream oss;
+  put(oss);
+  return oss.str();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void sequential_expr::compute_upd_seq_kind() const 
+{
+  theCache.upd_seq_kind.kind = SIMPLE_EXPR;
+  bool vacuous = true;
+
+  ulong numChildren = sequence.size();
+
+  for (ulong i = 0; i < numChildren; ++i)
+  {
+    expr_update_t kind = sequence[i]->get_update_type();
+
+    if (kind == SEQUENTIAL_EXPR || kind == UPDATE_EXPR)
+    {
+      theCache.upd_seq_kind.kind = SEQUENTIAL_EXPR;
+      vacuous = false;
+      break;
+    }
+    else if (kind == SIMPLE_EXPR)
+    {
+      vacuous = false;
+    }
   }
 
-  void debugger_expr::next_iter (expr_iterator_data& v) {
-    BEGIN_EXPR_ITER2 (debugger_expr);
-    ITER (expr_h);
-    ITER_FOR_EACH (var_iter, vars.begin (), vars.end (), vv.var_iter->val);
-    END_EXPR_ITER ();
-  }  
+  if (vacuous)
+    theCache.upd_seq_kind.kind = VACUOUS_EXPR;
+
+  theCache.upd_seq_kind.valid = true;
+}
 
 
-  void wrapper_expr::next_iter (expr_iterator_data& v) {
-    BEGIN_EXPR_ITER ();
-    ITER (wrapped);
-    END_EXPR_ITER ();
+xqtref_t sequential_expr::return_type_impl(static_context *sctx)
+{
+  return sequence[sequence.size() - 1]->return_type(sctx);
+}
+
+
+expr_iterator_data* sequential_expr::make_iter() 
+{
+  return new sequential_expr_iterator_data(this);
+}
+
+
+void sequential_expr::next_iter(expr_iterator_data& v) 
+{
+  BEGIN_EXPR_ITER2(sequential_expr);
+
+  ITER_FOR_EACH(iter, sequence.begin(), sequence.end(), (*vv.iter));
+
+  END_EXPR_ITER();
+}
+
+
+expr_t sequential_expr::clone(substitution_t& subst) 
+{
+  vector<expr_t> seq2;
+  for (unsigned i = 0; i < sequence.size(); i++)
+    seq2.push_back(sequence [i]->clone(subst));
+
+  return new sequential_expr(theSctxId, get_loc(), seq2);
+}
+
+
+/*******************************************************************************
+  [68] IfExpr ::= "if" "(" Expr ")" "then" ExprSingle "else" ExprSingle
+********************************************************************************/
+if_expr::if_expr(
+  short sctxid,
+  const QueryLoc& loc,
+  static_context* sctx,
+  expr_t condExpr,
+  expr_t thenExpr,
+  expr_t elseExpr)
+  :
+  expr(sctxid, loc),
+  theThenExpr(thenExpr),
+  theElseExpr(elseExpr)
+{
+  checkNonUpdating(condExpr);
+
+  if (sctx != NULL &&
+      !TypeOps::is_equal(*condExpr->return_type(sctx),
+                         *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
+  {
+    fo_expr* boolExpr = new fo_expr(sctxid,
+                                    loc,
+                                    sctx->lookup_fn("fn", "boolean", 1),
+                                    condExpr);
+    condExpr = boolExpr;
   }
 
-  bool sequential_expr::is_updating_kind() const {
-    return sequence.size () == 0 ? false : sequence [sequence.size () - 1]->is_updating_kind ();
+  theCondExpr = condExpr;
+
+  compute_upd_seq_kind();
+}
+
+
+void if_expr::compute_upd_seq_kind() const 
+{
+  expr_update_t thenKind = theThenExpr->get_update_type();
+  expr_update_t elseKind = theElseExpr->get_update_type();
+  theCache.upd_seq_kind.kind = expr::update_type_anding(thenKind, elseKind, loc);
+  theCache.upd_seq_kind.valid = true;
+}
+
+
+xqtref_t if_expr::return_type_impl(static_context* sctx) 
+{
+  return TypeOps::union_type(*theThenExpr->return_type(sctx),
+                             *theElseExpr->return_type(sctx));
+}
+
+
+expr_t if_expr::clone(substitution_t& subst) 
+{
+  return new if_expr(theSctxId,
+                     get_loc(),
+                     NULL,
+                     get_cond_expr()->clone(subst),
+                     get_then_expr()->clone(subst),
+                     get_else_expr()->clone(subst));
+}
+
+
+void if_expr::next_iter(expr_iterator_data& v) 
+{
+  BEGIN_EXPR_ITER();
+
+  ITER(theCondExpr);
+  ITER(theThenExpr);
+  ITER(theElseExpr);
+
+  END_EXPR_ITER();
+}
+
+
+/*******************************************************************************
+  Base for cast, treat, promote, castable, instanceof
+********************************************************************************/
+cast_or_castable_base_expr::cast_or_castable_base_expr(
+    short sctx,
+    const QueryLoc& loc,
+    expr_t input,
+    xqtref_t type)
+  :
+  expr(sctx, loc),
+  theInputExpr(input),
+  theTargetType(type)
+{
+  assert(type != NULL);
+  assert(input != NULL);
+}
+
+
+xqtref_t cast_or_castable_base_expr::get_target_type() const 
+{
+  return theTargetType;
+}
+
+void cast_or_castable_base_expr::set_target_type(xqtref_t target) 
+{
+  invalidate();
+  theTargetType = target;
+}
+
+
+/***************************************************************************//**
+  Base for cast, treat, promote
+********************************************************************************/
+cast_base_expr::cast_base_expr(
+    short sctx,
+    const QueryLoc& loc,
+    expr_t input,
+    xqtref_t type)
+  : 
+  cast_or_castable_base_expr(sctx, loc, input, type)
+{
+}
+
+
+xqtref_t cast_base_expr::return_type_impl(static_context* sctx) 
+{
+  TypeConstants::quantifier_t q =
+  TypeOps::intersect_quant(TypeOps::quantifier(*theInputExpr->return_type(sctx)),
+                           TypeOps::quantifier(*theTargetType));
+
+  return sctx->get_typemanager()->create_type(*theTargetType, q);
+}
+
+
+/***************************************************************************//**
+  Base for castable, instanceof
+********************************************************************************/
+castable_base_expr::castable_base_expr(
+    short sctx,
+    const QueryLoc& loc,
+    expr_t input,
+    xqtref_t type)
+  :
+  cast_or_castable_base_expr(sctx, loc, input, type)
+{
+}
+
+
+xqtref_t castable_base_expr::return_type_impl(static_context* sctx) 
+{
+  return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
+}
+
+
+/*******************************************************************************
+  first-order expressions. Represents function invocations as well as:
+
+  OrExpr, AndExpr, ComparisonExpr, RangeExpr, AdditiveExpr, MultiplicativeExpr,
+  UnionExpr, and IntersectExceptExpr.
+********************************************************************************/
+
+fo_expr* fo_expr::create_seq(short sctx, const QueryLoc& loc) 
+{
+  auto_ptr<fo_expr> fo(new fo_expr(sctx,
+                                   loc,
+                                   GENV.getRootStaticContext().lookup_builtin_fn(":" "concatenate", VARIADIC_SIG_SIZE)));
+
+  return fo.release();
+}
+
+
+void fo_expr::serialize(::zorba::serialization::Archiver &ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  ar & theArgs;
+  SERIALIZE_FUNCTION((function*&)theFunction);
+}
+
+
+const signature& fo_expr::get_signature() const 
+{
+  return theFunction->get_signature();
+}
+
+
+store::Item_t fo_expr::get_fname() const
+{ 
+  return theFunction->get_fname(); 
+}
+
+
+expr_iterator_data* fo_expr::make_iter() 
+{ 
+  return new fo_expr_iterator_data(this); 
+}
+
+
+void fo_expr::next_iter(expr_iterator_data& v) 
+{
+  BEGIN_EXPR_ITER2(fo_expr);
+  ITER_FOR_EACH(arg_iter, begin(), end(), *vv.arg_iter);
+  END_EXPR_ITER();
+}
+
+
+void fo_expr::compute_upd_seq_kind() const 
+{
+  const function* func = get_func();
+  ulong numArgs = size();
+
+  if (func->getKind() == FunctionConsts::FN_CONCATENATE)
+  {
+    expr_update_t kind = VACUOUS_EXPR;
+
+    for (ulong i = 0; i < numArgs; ++i) 
+    {
+      expr_update_t argKind = theArgs[i]->get_update_type();
+
+      kind = update_type_anding(kind, argKind, theArgs[i]->get_loc());
+    }
+
+    theCache.upd_seq_kind.kind = kind;
+  }
+  else if (func->getKind() == FunctionConsts::FN_VAR_ASSIGN)
+  {
+    for (ulong i = 0; i < numArgs; ++i) 
+    {
+      expr_update_t argKind = theArgs[i]->get_update_type();
+      
+      if (argKind == UPDATE_EXPR)
+      {
+        ZORBA_ERROR_LOC(XUST0001, theArgs[i]->get_loc());
+      }
+    }
+  }
+  else
+  {
+    theCache.upd_seq_kind.kind = func->getUpdateType();
+
+    for (ulong i = 0; i < numArgs; ++i) 
+    {
+      expr_update_t argKind = theArgs[i]->get_update_type();
+      
+      if (argKind == UPDATE_EXPR || argKind == SEQUENTIAL_EXPR)
+      {
+        ZORBA_ERROR_LOC(XUST0001, theArgs[i]->get_loc());
+      }
+    }
   }
 
-  expr_iterator_data *sequential_expr::make_iter () {
-    return new sequential_expr_iterator_data (this);
-  }
+  theCache.upd_seq_kind.valid = true;
+}
 
-  void sequential_expr::next_iter (expr_iterator_data& v) {
-  BEGIN_EXPR_ITER2 (sequential_expr);
 
-  ITER_FOR_EACH (iter, sequence.begin (), sequence.end (),
-                 (*vv.iter));
+xqtref_t fo_expr::return_type_impl(static_context* sctx)
+{
+  vector<xqtref_t> types;
+  for (vector<expr_t>::const_iterator i = theArgs.begin(); i != theArgs.end(); ++i)
+    types.push_back((*i)->return_type(sctx));
 
+  return theFunction->return_type(types);
+}
+
+
+expr_t fo_expr::clone(substitution_t& subst) 
+{
+  std::auto_ptr<fo_expr> fo(new fo_expr(theSctxId, get_loc(), get_func()));
+
+  for (unsigned i = 0; i < theArgs.size (); i++)
+    fo->theArgs.push_back(theArgs[i]->clone(subst));
+
+  return fo.release();
+}
+
+
+/*******************************************************************************
+  Normally, it is used to wrap a var_expr in order to represent a var reference
+  (see var_expr.h). But it may wrap any other kind of expr as well.
+********************************************************************************/
+void wrapper_expr::next_iter(expr_iterator_data& v) 
+{
+  BEGIN_EXPR_ITER();
+  ITER(theWrappedExpr);
+  END_EXPR_ITER();
+}
+
+
+expr_t wrapper_expr::clone(substitution_t& subst) 
+{
+  expr_t e = theWrappedExpr->clone(subst);
+
+  if (theWrappedExpr->get_expr_kind() == var_expr_kind &&
+      e->get_expr_kind() != var_expr_kind)
+    return e;
+  else
+    return new wrapper_expr(theSctxId, get_loc(), e);
+}
+
+
+xqtref_t wrapper_expr::return_type_impl(static_context* sctx) 
+{
+  return theWrappedExpr->return_type(sctx);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void flwor_expr::compute_upd_seq_kind() const 
+{
+  expr* ret = get_return_expr();
+  theCache.upd_seq_kind.kind = ret->get_update_type();
+  theCache.upd_seq_kind.valid = true;
+}
+
+
+expr_iterator_data* debugger_expr::make_iter() 
+{
+  return new debugger_expr_iterator_data(this);
+}
+
+void debugger_expr::next_iter(expr_iterator_data& v) 
+{
+  BEGIN_EXPR_ITER2 (debugger_expr);
+  ITER (expr_h);
+  ITER_FOR_EACH (var_iter, vars.begin (), vars.end (), vv.var_iter->val);
   END_EXPR_ITER ();
-  }
-
-  expr_t sequential_expr::clone(substitution_t& subst) {
-    vector<expr_t> seq2;
-    for (unsigned i = 0; i < sequence.size (); i++)
-      seq2.push_back (sequence [i]->clone (subst));
-    return new sequential_expr (context, get_loc (), seq2);
-  }
+}  
 
 
 void var_expr::serialize(::zorba::serialization::Archiver &ar)
@@ -1032,6 +1529,31 @@ flwor_clause_t window_clause::clone(expr::substitution_t& subst)
 /*******************************************************************************
 
 ********************************************************************************/
+flwor_wincond::flwor_wincond(
+    static_context* sctx,
+    bool isOnly,
+    const vars& in_vars,
+    const vars& out_vars,
+    expr_t cond)
+  :
+  theIsOnly(isOnly),
+  theInputVars(in_vars),
+  theOutputVars(out_vars),
+  theCondExpr(cond)
+{
+  xqtref_t condType = theCondExpr->return_type(sctx);
+
+  if (sctx != NULL &&
+      !TypeOps::is_equal(*condType, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
+  {
+    theCondExpr = new fo_expr(theCondExpr->get_sctx_id(),
+                              theCondExpr->get_loc(),
+                              sctx->lookup_fn("fn", "boolean", 1),
+                              theCondExpr);
+  }
+}
+
+
 void flwor_wincond::vars::set_flwor_clause(flwor_clause* c) 
 {
   if (posvar != NULL) posvar->set_flwor_clause(c);
@@ -1088,7 +1610,7 @@ flwor_wincond_t flwor_wincond::clone(expr::substitution_t& subst)
 
   expr_t cloneCondExpr = theCondExpr->clone(subst);
 
-  return new flwor_wincond(theIsOnly, cloneInVars, cloneOutVars, cloneCondExpr);
+  return new flwor_wincond(NULL, theIsOnly, cloneInVars, cloneOutVars, cloneCondExpr);
 }
 
 
@@ -1225,7 +1747,8 @@ flwor_clause_t count_clause::clone(expr::substitution_t& subst) {
 /*******************************************************************************
 
 ********************************************************************************/
-flwor_clause_t where_clause::clone(expr::substitution_t& subst) {
+flwor_clause_t where_clause::clone(expr::substitution_t& subst) 
+{
   expr_t cloneExpr = theWhereExpr->clone(subst);
 
   return new where_clause(theContext, get_loc(), cloneExpr);
@@ -1235,7 +1758,8 @@ flwor_clause_t where_clause::clone(expr::substitution_t& subst) {
 /*******************************************************************************
 
 ********************************************************************************/
-class flwor_expr_iterator_data : public expr_iterator_data {
+class flwor_expr_iterator_data : public expr_iterator_data 
+{
 public:
   flwor_expr::clause_list_t::iterator    theClausesIter;
   flwor_expr::clause_list_t::iterator    theClausesEnd;
@@ -1265,14 +1789,16 @@ void flwor_expr::add_clause(ulong pos, flwor_clause* c) {
 }
 
 
-void flwor_expr::add_where(expr_t e) {
-  where_clause* whereClause = new where_clause(context, e->get_loc(), e);
+void flwor_expr::add_where(expr_t e) 
+{
+  where_clause* whereClause = new where_clause(theSctxId, e->get_loc(), e);
 
   theClauses.push_back(whereClause);
 }
 
 
-expr* flwor_expr::get_where() const {
+expr* flwor_expr::get_where() const 
+{
   unsigned numClauses = num_clauses();
   for (unsigned i = 0; i < numClauses; ++i)
   {
@@ -1284,7 +1810,8 @@ expr* flwor_expr::get_where() const {
 }
 
 
-void flwor_expr::set_where(expr* e) {
+void flwor_expr::set_where(expr* e) 
+{
   ZORBA_ASSERT(e != NULL);
 
   unsigned numClauses = num_clauses();
@@ -1309,12 +1836,13 @@ void flwor_expr::set_where(expr* e) {
     return;
   }
 
-  where_clause* wc = new where_clause(context, e->get_loc(), e);
+  where_clause* wc = new where_clause(theSctxId, e->get_loc(), e);
   theClauses.insert(theClauses.begin() + i, wc);
 }
 
 
-void flwor_expr::remove_where_clause() {
+void flwor_expr::remove_where_clause() 
+{
   unsigned numClauses = num_clauses();
   for (unsigned i = 0; i < numClauses; ++i)
   {
@@ -1327,7 +1855,8 @@ void flwor_expr::remove_where_clause() {
 }
 
 
-group_clause* flwor_expr::get_group_clause() const {
+group_clause* flwor_expr::get_group_clause() const 
+{
   ulong numClauses = num_clauses();
   for (ulong i = 0; i < numClauses; ++i)
   {
@@ -1339,7 +1868,8 @@ group_clause* flwor_expr::get_group_clause() const {
 }
 
 
-ulong flwor_expr::num_forlet_clauses() {
+ulong flwor_expr::num_forlet_clauses() 
+{
   ulong num = 0;
   ulong numClauses = num_clauses();
   for (ulong i = 0; i < numClauses; ++i)
@@ -1357,7 +1887,8 @@ ulong flwor_expr::num_forlet_clauses() {
 }
 
 
-void flwor_expr::remove_clause(ulong pos) {
+void flwor_expr::remove_clause(ulong pos) 
+{
   theClauses.erase(theClauses.begin() + pos);
 }
 
@@ -1435,10 +1966,11 @@ long flwor_expr::defines_variable(const var_expr* v, const flwor_clause* limit) 
 }
 
 
-expr_t flwor_expr::clone(substitution_t& subst) {
+expr_t flwor_expr::clone(substitution_t& subst) 
+{
   ulong numClauses = num_clauses();
 
-  flwor_expr_t cloneFlwor = new flwor_expr(context, get_loc(), theIsGeneral);
+  flwor_expr_t cloneFlwor = new flwor_expr(theSctxId, get_loc(), theIsGeneral);
 
   for (ulong i = 0; i < numClauses; ++i) {
     flwor_clause_t cloneClause = theClauses[i]->clone(subst);
@@ -1452,7 +1984,8 @@ expr_t flwor_expr::clone(substitution_t& subst) {
 }
 
 
-void flwor_expr::accept_children(expr_visitor& v) {
+void flwor_expr::accept_children(expr_visitor& v) 
+{
   ulong numClauses = num_clauses();
 
   for (ulong i = 0; i < numClauses; ++i) 
@@ -1664,8 +2197,6 @@ void trycatch_expr::next_iter(expr_iterator_data& v) {
   END_EXPR_ITER ();
 }
 
-case_clause::case_clause() : var_h(NULL), case_expr_h(NULL), type(GENV_TYPESYSTEM.UNTYPED_TYPE) {}
-
 
 expr_iterator_data *eval_expr::make_iter () {
   return new eval_expr_iterator_data (this);
@@ -1684,33 +2215,6 @@ eval_expr::eval_var::eval_var (var_expr *ve, expr_t val_)
 {
 }
 
-cast_or_castable_base_expr::cast_or_castable_base_expr(short sctx,
-                                                       const QueryLoc& loc,
-                                                       expr_t input,
-                                                       xqtref_t type)
-  : expr (sctx, loc), input_expr_h (input), target_type (type)
-{
-  assert (type != NULL);
-  assert (input != NULL);
-}
-
-xqtref_t cast_or_castable_base_expr::get_target_type() const {
-  return target_type;
-}
-
-void cast_or_castable_base_expr::set_target_type(xqtref_t target) {
-  invalidate ();
-  target_type = target;
-}
-
-
-cast_base_expr::cast_base_expr(short sctx,
-                               const QueryLoc& loc,
-                               expr_t input,
-                               xqtref_t type)
-  : cast_or_castable_base_expr (sctx, loc, input, type)
-{}
-
 
 promote_expr::promote_expr(short sctx,
                            const QueryLoc& loc,
@@ -1721,131 +2225,7 @@ promote_expr::promote_expr(short sctx,
 
 void promote_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER ();
-  ITER (input_expr_h);
-  END_EXPR_ITER ();
-}
-
-
-// [42] [http://www.w3.org/TR/xquery/#prod-xquery-QuantifiedExpr]
-
-// [43] [http://www.w3.org/TR/xquery/#prod-xquery-TypeswitchExpr]
-
-typeswitch_expr::typeswitch_expr(
-  short sctx,
-  const QueryLoc& loc)
-:
-  expr(sctx, loc)
-{}
-
-expr_iterator_data *typeswitch_expr::make_iter () {
-  return new typeswitch_expr_iterator_data (this);
-}
-
-void typeswitch_expr::next_iter (expr_iterator_data& v) {
-  BEGIN_EXPR_ITER2 (typeswitch_expr);
-  ITER (switch_expr_h);
-  for (vv.clause_iter = begin (); vv.clause_iter != end (); ++(vv.clause_iter)) {
-    ITER ((*vv.clause_iter)->var_h);
-    ITER ((*vv.clause_iter)->case_expr_h);
-  }
-  ITER (default_var_h);
-  ITER (default_clause_h);
-  END_EXPR_ITER ();
-}
-
-
-// [45] [http://www.w3.org/TR/xquery/#prod-xquery-IfExpr]
-
-if_expr::if_expr(
-  short sctx,
-  const QueryLoc& loc,
-  expr_t _cond_expr_h,
-  expr_t _then_expr_h,
-  expr_t _else_expr_h)
-:
-  expr(sctx, loc),
-  cond_expr_h(_cond_expr_h),
-  then_expr_h(_then_expr_h),
-  else_expr_h(_else_expr_h)
-{}
-
-if_expr::if_expr(
-  short sctx,
-  const QueryLoc& loc)
-:
-  expr(sctx, loc)
-{}
-
-
-void if_expr::next_iter (expr_iterator_data& v) {
-  BEGIN_EXPR_ITER();
-  ITER (cond_expr_h);
-  ITER (then_expr_h);
-  ITER (else_expr_h);
-  END_EXPR_ITER();
-}
-
-////////////////////////////////
-//  first-order expressions
-////////////////////////////////
-// includes:
-// [46] [http://www.w3.org/TR/xquery/#prod-xquery-OrExpr]
-// [47] [http://www.w3.org/TR/xquery/#prod-xquery-AndExpr]
-// [48] [http://www.w3.org/TR/xquery/#prod-xquery-ComparisonExpr]
-// [49] [http://www.w3.org/TR/xquery/#prod-xquery-RangeExpr]
-// [50] [http://www.w3.org/TR/xquery/#prod-xquery-AdditiveExpr]
-// [51] [http://www.w3.org/TR/xquery/#prod-xquery-MultiplicativeExpr]
-// [52] [http://www.w3.org/TR/xquery/#prod-xquery-UnionExpr]
-// [53] [http://www.w3.org/TR/xquery/#prod-xquery-IntersectExceptExpr]
-
-
-const signature &fo_expr::get_signature () const 
-{
-  return func->get_signature ();
-}
-
-store::Item_t fo_expr::get_fname () const
-{ 
-  return func->get_fname (); 
-}
-
-
-fo_expr *fo_expr::create_seq(short sctx, const QueryLoc &loc) 
-{
-  auto_ptr<fo_expr> fo (new fo_expr (sctx, loc, GENV.getRootStaticContext ().lookup_builtin_fn (":" "concatenate", VARIADIC_SIG_SIZE)));
-  fo->put_annotation (Annotations::CONCAT_EXPR, TSVAnnotationValue::TRUE_VAL);
-  return fo.release ();
-}
-
-bool fo_expr::is_concatenation () const 
-{
-  return get_annotation(Annotations::CONCAT_EXPR).getp() == TSVAnnotationValue::TRUE_VAL.getp ();
-}
-
-
-expr_t fo_expr::clone (substitution_t& subst) 
-{
-  std::auto_ptr<fo_expr> fo(is_concatenation() ?
-                 create_seq(context, get_loc()) :
-                 new fo_expr(context, get_loc(), get_func()));
-
-  for (unsigned i = 0; i < argv.size (); i++)
-    fo->add (argv [i]->clone (subst));
-
-  return fo.release();
-}
-
-
-expr_iterator_data *fo_expr::make_iter () 
-{
-  return new fo_expr_iterator_data (this); 
-}
-
-
-void fo_expr::next_iter (expr_iterator_data& v) 
-{
-  BEGIN_EXPR_ITER2 (fo_expr);
-  ITER_FOR_EACH (arg_iter, begin (), end (), *vv.arg_iter);
+  ITER (theInputExpr);
   END_EXPR_ITER ();
 }
 
@@ -1853,17 +2233,18 @@ void fo_expr::next_iter (expr_iterator_data& v)
 // [48a] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTContainsExpr]
 
 ft_contains_expr::ft_contains_expr(
-  short sctx,
-  const QueryLoc& loc,
-  expr_t _range_h,
-  expr_t _ft_select_h,
-  expr_t _ft_ignore_h)
-:
+    short sctx,
+    const QueryLoc& loc,
+    expr_t _range_h,
+    expr_t _ft_select_h,
+    expr_t _ft_ignore_h)
+  :
   expr(sctx, loc),
   range_h(_range_h),
   ft_select_h(_ft_select_h),
   ft_ignore_h(_ft_ignore_h)
-{}
+{
+}
 
 
 void ft_contains_expr::next_iter (expr_iterator_data& v) {
@@ -1877,12 +2258,6 @@ void ft_contains_expr::next_iter (expr_iterator_data& v) {
 
 // [54] [http://www.w3.org/TR/xquery/#prod-xquery-InstanceofExpr]
 
-castable_base_expr::castable_base_expr (short sctx,
-                                        const QueryLoc& loc,
-                                        expr_t _expr_h,
-                                        xqtref_t _type)
-  : cast_or_castable_base_expr (sctx, loc, _expr_h, _type)
-{}
 
 instanceof_expr::instanceof_expr(short sctx,
                                  const QueryLoc& loc,
@@ -1893,7 +2268,7 @@ instanceof_expr::instanceof_expr(short sctx,
 
 void instanceof_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER();
-  ITER (input_expr_h);
+  ITER (theInputExpr);
   END_EXPR_ITER();  
 }
 
@@ -1914,7 +2289,7 @@ treat_expr::treat_expr(
 
 void treat_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER ();
-  ITER (input_expr_h);
+  ITER (theInputExpr);
   END_EXPR_ITER ();
 }
 
@@ -1931,7 +2306,7 @@ castable_expr::castable_expr(
 
 void castable_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER ();
-  ITER (input_expr_h);
+  ITER (theInputExpr);
   END_EXPR_ITER ();
 }
 
@@ -1948,7 +2323,7 @@ cast_expr::cast_expr(
 
 void cast_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER ();
-  ITER (input_expr_h);
+  ITER (theInputExpr);
   END_EXPR_ITER ();
 }
 
@@ -1957,19 +2332,19 @@ name_cast_expr::name_cast_expr(
   const QueryLoc& loc,
   expr_t _expr_h,
   NamespaceContext_t aNCtx)
-: expr(sctx, loc), input_expr_h(_expr_h), theNCtx(aNCtx) 
+: expr(sctx, loc), theInputExpr(_expr_h), theNCtx(aNCtx) 
 {}
 
 void name_cast_expr::serialize(::zorba::serialization::Archiver &ar)
 {
   serialize_baseclass(ar, (expr*)this);
-  ar & input_expr_h;
+  ar & theInputExpr;
   ar & theNCtx;
 }
 
 void name_cast_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER ();
-  ITER (input_expr_h);
+  ITER (theInputExpr);
   END_EXPR_ITER ();
 }
 
@@ -1999,7 +2374,7 @@ void validate_expr::next_iter (expr_iterator_data& v) {
 }
 
 expr_t validate_expr::clone(substitution_t &subst) {
-  return new validate_expr (context,
+  return new validate_expr (theSctxId,
                             get_loc (),
                             get_valmode (),
                             get_type_name (),
@@ -2161,14 +2536,14 @@ const_expr::const_expr(short sctx, const QueryLoc& loc, xqpString v)
   expr(sctx, loc)
 {
   xqpStringStore_t tmp = v.getStore();
-  ITEM_FACTORY->createString(val, tmp); 
+  GENV_ITEMFACTORY->createString(val, tmp); 
 }
 
 const_expr::const_expr(short sctx, const QueryLoc& loc, xqp_integer v)
   :
   expr(sctx, loc)
 {
-  ITEM_FACTORY->createInteger (val, v);
+  GENV_ITEMFACTORY->createInteger(val, v);
 }
 
 const_expr::const_expr(
@@ -2178,7 +2553,7 @@ const_expr::const_expr(
 :
   expr(sctx, loc)
 {
-  ITEM_FACTORY->createDecimal (val, v);
+  GENV_ITEMFACTORY->createDecimal(val, v);
 }
 
 const_expr::const_expr(
@@ -2188,7 +2563,7 @@ const_expr::const_expr(
 :
   expr(sctx, loc)
 {
-  ITEM_FACTORY->createDouble (val, v);
+  GENV_ITEMFACTORY->createDouble(val, v);
 }
 
 const_expr::const_expr(
@@ -2198,28 +2573,29 @@ const_expr::const_expr(
 :
   expr(sctx, loc)
 {
-  ITEM_FACTORY->createBoolean (val, v);
+  GENV_ITEMFACTORY->createBoolean(val, v);
 }
 
 const_expr::const_expr(
-  short sctx,
-  const QueryLoc& loc,
-  store::Item_t v)
-:
+    short sctx,
+    const QueryLoc& loc,
+    store::Item_t v)
+  :
   expr(sctx, loc),
   val(v)
-{}
+{
+}
 
 const_expr::const_expr(
-  short sctx,
-  const QueryLoc& aLoc, 
-  const char* aNamespace,
-  const char* aPrefix, 
-  const char* aLocal)
-:
+    short sctx,
+    const QueryLoc& aLoc, 
+    const char* aNamespace,
+    const char* aPrefix, 
+    const char* aLocal)
+  :
   expr(sctx, aLoc)
 {
-  ITEM_FACTORY->createQName(val, aNamespace, aPrefix, aLocal);
+  GENV_ITEMFACTORY->createQName(val, aNamespace, aPrefix, aLocal);
 }
 
 
@@ -2251,7 +2627,7 @@ void order_expr::next_iter (expr_iterator_data& v) {
 
 
 expr_t order_expr::clone(substitution_t& subst) {
-  return new order_expr (context, get_loc (), get_type (), get_expr ()->clone (subst));
+  return new order_expr (theSctxId, get_loc (), get_type (), get_expr ()->clone (subst));
 }
 
 
@@ -2299,7 +2675,7 @@ void elem_expr::next_iter (expr_iterator_data& v) {
 }
 
 expr_t elem_expr::clone(substitution_t& subst) {
-  return new elem_expr (context, get_loc (),
+  return new elem_expr (theSctxId, get_loc (),
                         CLONE (getQNameExpr (), subst),
                         CLONE (getAttrs (), subst),
                         CLONE (getContent (), subst),
@@ -2326,7 +2702,7 @@ void doc_expr::next_iter (expr_iterator_data& v) {
 }
 
 expr_t doc_expr::clone(substitution_t& subst) {
-  return new doc_expr (context, get_loc (), CLONE (getContent (), subst));
+  return new doc_expr (theSctxId, get_loc (), CLONE (getContent (), subst));
 }
 
 
@@ -2365,7 +2741,7 @@ void attr_expr::next_iter (expr_iterator_data& v) {
 }
 
 expr_t attr_expr::clone(substitution_t& subst) {
-  return new attr_expr (context, get_loc (),
+  return new attr_expr (theSctxId, get_loc (),
                         CLONE (getQNameExpr (), subst), CLONE (getValueExpr (), subst));
 }
 
@@ -2390,7 +2766,7 @@ void text_expr::next_iter (expr_iterator_data& v) {
 }
 
 expr_t text_expr::clone(substitution_t& subst) {
-  return new text_expr (context, get_loc (), get_type (), CLONE (get_text (), subst));
+  return new text_expr (theSctxId, get_loc (), get_type (), CLONE (get_text (), subst));
 }
 
 // [115] [http://www.w3.org/TR/xquery/#prod-xquery-CompCommentConstructor]
@@ -2420,7 +2796,7 @@ void pi_expr::next_iter (expr_iterator_data& v) {
 void function_def_expr::next_iter (expr_iterator_data& v) {}
 
 expr_t pi_expr::clone(substitution_t& subst) {
-  return new pi_expr (context, get_loc (),
+  return new pi_expr (theSctxId, get_loc (),
                       CLONE (get_target_expr (), subst), CLONE (get_text (), subst));
 }
 
@@ -2475,11 +2851,10 @@ insert_expr::insert_expr(
 	theTargetExpr(aTargetExpr)
 {}
 
-void insert_expr::compute_upd_seq_kind () const {
-  cache.upd_seq_kind.vacuous = false;
-  cache.upd_seq_kind.updating = true;
-  cache.upd_seq_kind.sequential = false;
-  cache.upd_seq_kind.valid = true;
+void insert_expr::compute_upd_seq_kind () const 
+{
+  theCache.upd_seq_kind.kind = UPDATE_EXPR;
+  theCache.upd_seq_kind.valid = true;
 }
 
 void 
@@ -2492,7 +2867,7 @@ insert_expr::next_iter(expr_iterator_data& v)
 }
 
 expr_t insert_expr::clone (substitution_t& subst) {
-  return new insert_expr (context, get_loc (), getType (), getSourceExpr ()->clone (subst), getTargetExpr ()->clone (subst));
+  return new insert_expr (theSctxId, get_loc (), getType (), getSourceExpr ()->clone (subst), getTargetExpr ()->clone (subst));
 }
 
 // [243] [http://www.w3.org/TR/xqupdate/#prod-xquery-DeleteExpr]
@@ -2506,11 +2881,11 @@ delete_expr::delete_expr(
 	theTargetExpr(aTargetExpr)
 {}
 
-void delete_expr::compute_upd_seq_kind () const {
-  cache.upd_seq_kind.vacuous = false;
-  cache.upd_seq_kind.updating = true;
-  cache.upd_seq_kind.sequential = false;
-  cache.upd_seq_kind.valid = true;
+
+void delete_expr::compute_upd_seq_kind () const 
+{
+  theCache.upd_seq_kind.kind = UPDATE_EXPR;
+  theCache.upd_seq_kind.valid = true;
 }
 
 void delete_expr::next_iter(expr_iterator_data& v)
@@ -2521,7 +2896,7 @@ void delete_expr::next_iter(expr_iterator_data& v)
 }
 
 expr_t delete_expr::clone (substitution_t& subst) {
-  return new delete_expr (context, get_loc (), getTargetExpr ()->clone (subst));
+  return new delete_expr (theSctxId, get_loc (), getTargetExpr ()->clone (subst));
 }
 
 
@@ -2541,10 +2916,8 @@ replace_expr::replace_expr(
 {}
 
 void replace_expr::compute_upd_seq_kind () const {
-  cache.upd_seq_kind.vacuous = false;
-  cache.upd_seq_kind.updating = true;
-  cache.upd_seq_kind.sequential = false;
-  cache.upd_seq_kind.valid = true;
+  theCache.upd_seq_kind.kind = UPDATE_EXPR;
+  theCache.upd_seq_kind.valid = true;
 }
 
 void replace_expr::next_iter(expr_iterator_data& v)
@@ -2556,7 +2929,7 @@ void replace_expr::next_iter(expr_iterator_data& v)
 }
 
 expr_t replace_expr::clone (substitution_t& subst) {
-  return new replace_expr (context, get_loc (), getType (), getTargetExpr ()->clone (subst), getReplaceExpr ()->clone (subst));
+  return new replace_expr (theSctxId, get_loc (), getType (), getTargetExpr ()->clone (subst), getReplaceExpr ()->clone (subst));
 }
 
 // [245] [http://www.w3.org/TR/xqupdate/#prod-xquery-RenameExpr]
@@ -2572,11 +2945,10 @@ rename_expr::rename_expr(
 	theNameExpr(aNameExpr)
 {}
 
-void rename_expr::compute_upd_seq_kind () const {
-  cache.upd_seq_kind.vacuous = false;
-  cache.upd_seq_kind.updating = true;
-  cache.upd_seq_kind.sequential = false;
-  cache.upd_seq_kind.valid = true;
+void rename_expr::compute_upd_seq_kind () const 
+{
+  theCache.upd_seq_kind.kind = UPDATE_EXPR;
+  theCache.upd_seq_kind.valid = true;
 }
 
 void rename_expr::next_iter(expr_iterator_data& v)
@@ -2589,7 +2961,7 @@ void rename_expr::next_iter(expr_iterator_data& v)
 
 expr_t rename_expr::clone (substitution_t& subst) 
 {
-  return new rename_expr (context, get_loc (), getTargetExpr ()->clone (subst), getNameExpr ()->clone (subst));
+  return new rename_expr (theSctxId, get_loc (), getTargetExpr ()->clone (subst), getNameExpr ()->clone (subst));
 }
 
 
@@ -2634,7 +3006,7 @@ void exit_expr::next_iter (expr_iterator_data& v)
 }
 
 expr_t exit_expr::clone (substitution_t& subst) {
-  return new exit_expr (context, get_loc (), get_value ()->clone (subst));
+  return new exit_expr (theSctxId, get_loc (), get_value ()->clone (subst));
 }
 
 void flowctl_expr::next_iter (expr_iterator_data& v)
@@ -2644,7 +3016,7 @@ void flowctl_expr::next_iter (expr_iterator_data& v)
 }
 
 expr_t flowctl_expr::clone (substitution_t& subst) {
-  return new flowctl_expr (context, get_loc (), get_action ());
+  return new flowctl_expr (theSctxId, get_loc (), get_action ());
 }
 
 void while_expr::next_iter (expr_iterator_data& v)
@@ -2655,39 +3027,17 @@ void while_expr::next_iter (expr_iterator_data& v)
 }
 
 expr_t while_expr::clone (substitution_t& subst) {
-  return new while_expr (context, get_loc (), get_body ()->clone (subst));
-}
-
-expr_t if_expr::clone (substitution_t& subst) {
-  return new if_expr (context,
-                      get_loc (),
-                      get_cond_expr ()->clone (subst),
-                      get_then_expr ()->clone (subst),
-                      get_else_expr ()->clone (subst));
+  return new while_expr (theSctxId, get_loc (), get_body ()->clone (subst));
 }
 
 expr_t const_expr::clone (substitution_t&) {
-  return new const_expr (context, get_loc (), get_val ());
-}
-
-expr_t wrapper_expr::clone (substitution_t& subst) {
-  expr_t e = wrapped->clone (subst);
-  if (wrapped->get_expr_kind () == var_expr_kind && e->get_expr_kind () != var_expr_kind)
-    return e;
-  else
-    return new wrapper_expr (context, get_loc (), e);
+  return new const_expr (theSctxId, get_loc (), get_val ());
 }
 
 
-void fo_expr::serialize(::zorba::serialization::Archiver &ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & argv;
-  SERIALIZE_FUNCTION((function*&)func);
-}
 
 expr_t match_expr::clone (substitution_t& subst) {
-  match_expr *me = new match_expr (context, get_loc ());
+  match_expr *me = new match_expr (theSctxId, get_loc ());
   me->setTestKind (getTestKind ());
   me->setDocTestKind (getDocTestKind ());
   me->setWildName (getWildName ());
@@ -2699,41 +3049,42 @@ expr_t match_expr::clone (substitution_t& subst) {
 }
 
 expr_t axis_step_expr::clone (substitution_t& subst) {
-  axis_step_expr *ae = new axis_step_expr (context, get_loc ());
+  axis_step_expr *ae = new axis_step_expr (theSctxId, get_loc ());
   ae->setAxis (getAxis ());
   ae->setTest (getTest ());
   return ae;
 }
 
 expr_t relpath_expr::clone (substitution_t& subst) {
-  auto_ptr<relpath_expr> re (new relpath_expr (context, get_loc ()));
+  auto_ptr<relpath_expr> re (new relpath_expr (theSctxId, get_loc ()));
   for (unsigned i = 0; i < size (); i++)
     re->add_back ((*this) [i]->clone (subst));
   return re.release ();
 }
 
-expr_t promote_expr::clone (substitution_t& subst) {
-  return new promote_expr (context, get_loc (), get_input ()->clone (subst), get_target_type ());
+expr_t promote_expr::clone (substitution_t& subst) 
+{
+  return new promote_expr(theSctxId, get_loc (), get_input ()->clone (subst), get_target_type ());
 }
 
 expr_t treat_expr::clone (substitution_t& subst) {
-  return new treat_expr (context, get_loc (), get_input ()->clone (subst), get_target_type (), get_err (), get_check_prime ());
+  return new treat_expr (theSctxId, get_loc (), get_input ()->clone (subst), get_target_type (), get_err (), get_check_prime ());
 }
 
 expr_t castable_expr::clone (substitution_t& subst) {
-  return new castable_expr (context, get_loc (), get_input ()->clone (subst), get_target_type ());
+  return new castable_expr (theSctxId, get_loc (), get_input ()->clone (subst), get_target_type ());
 }
 
 expr_t instanceof_expr::clone (substitution_t& subst) {
-  return new instanceof_expr (context, get_loc (), get_input ()->clone (subst), get_target_type ());
+  return new instanceof_expr (theSctxId, get_loc (), get_input ()->clone (subst), get_target_type ());
 }
 
 expr_t cast_expr::clone (substitution_t& subst) {
-  return new cast_expr (context, get_loc (), get_input ()->clone (subst), get_target_type ());
+  return new cast_expr (theSctxId, get_loc (), get_input ()->clone (subst), get_target_type ());
 }
 
 expr_t name_cast_expr::clone (substitution_t& subst) {
-  return new name_cast_expr (context, get_loc (), get_input ()->clone (subst), getNamespaceContext());
+  return new name_cast_expr (theSctxId, get_loc (), get_input ()->clone (subst), getNamespaceContext());
 }
 
 

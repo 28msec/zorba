@@ -16,7 +16,8 @@
 #ifndef ZORBA_EXPR_CONSTS_H
 #define ZORBA_EXPR_CONSTS_H
 
-namespace zorba {
+namespace zorba 
+{
 
 
 enum axis_kind_t
@@ -61,11 +62,13 @@ enum match_wild_t
   match_name_wild
 };
 
+
 enum expr_update_t
 {
   UPDATE_EXPR,
   VACUOUS_EXPR,
-  SIMPLE_EXPR
+  SIMPLE_EXPR,
+  SEQUENTIAL_EXPR
 };
 
 

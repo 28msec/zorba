@@ -27,9 +27,11 @@
 #include "compiler/expression/expr_consts.h"
 #include "compiler/semantic_annotations/annotation_holder.h"
 
-namespace zorba {
+namespace zorba 
+{
 
-enum expr_kind_t {
+enum expr_kind_t 
+{
   wrapper_expr_kind,
   sequential_expr_kind,
   exit_expr_kind,
@@ -98,23 +100,29 @@ class expr_iterator
 {
 private:
   // should be an auto_ptr, but older gcc's don't like auto_ptr w/ forward decl
-  expr_iterator_data *iter;
+  expr_iterator_data * iter;
 
 public:
-  expr_iterator () : iter (0) {}
-  expr_iterator (expr_iterator_data *iter_) : iter (iter_) {}
-  expr_iterator (const expr_iterator &other);
-  ~expr_iterator ();
-  expr_iterator &operator= (const expr_iterator &other);
+  expr_iterator() : iter(0) {}
 
-  expr_iterator &operator++ ();
-  expr_iterator operator++ (int);
-  expr_t &operator* ();
-  bool done () const;
+  expr_iterator(expr_iterator_data* iter_) : iter (iter_) {}
+
+  expr_iterator(const expr_iterator& other);
+
+  ~expr_iterator();
+
+  expr_iterator& operator=(const expr_iterator& other);
+
+  expr_iterator &operator++();
+  expr_iterator operator++(int);
+
+  expr_t& operator*();
+
+  bool done() const;
 
 private:
   // comparisson forbidden; use done()
-  bool operator== (const expr_iterator &other) { return false; }
+  bool operator==(const expr_iterator& other) { return false; }
 };
 
 
@@ -131,84 +139,104 @@ public:
   typedef substitution_t::iterator subst_iter_t;
 
 protected:
-  short    context;
-  QueryLoc loc;
-
   // Pitfall when using the cache -- AVOID THIS SCENARIO:
   // (1) obtain a non-const ptr to a child expression (cache is invalidated)
   // (2) call an operation P() that caches its result
   // (3) modify the child expr (cache is NOT invalidated)
   // (4) call P() again and get (possibly wrong) cached result
-  struct {
-    struct {
-      bool valid;
-      xqtref_t t;
-      static_context *sctx;
+  struct Cache
+  {
+    struct 
+    {
+      bool             valid;
+      xqtref_t         t;
+      static_context * sctx;
     } type;
-    mutable struct {
-      bool valid;
-      bool vacuous;
-      bool updating;
-      bool sequential;
+
+    mutable struct 
+    {
+      bool          valid;
+      expr_update_t kind;
     } upd_seq_kind;
-  } cache;
+  };
 
-  void invalidate () { cache.type.valid = cache.upd_seq_kind.valid = false; }
-
-  // Returns true if all modifiers, as well as all accessors that permit future
-  // modifications of child expressions, call invalidate(). Note that expr
-  // iterators are compliant.
-  virtual bool cache_compliant () { return false; }
+  short    theSctxId;
+  QueryLoc loc;
+  Cache    theCache;
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(expr, AnnotationHolder)
-  void serialize(::zorba::serialization::Archiver &ar);
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  static expr_update_t update_type_anding(
+        expr_update_t type1, 
+        expr_update_t type2, 
+        const QueryLoc& loc);
 
 public:
   virtual ~expr();
 
-  virtual expr_kind_t get_expr_kind () const = 0;
+  virtual expr_kind_t get_expr_kind() const = 0;
 
-  const QueryLoc &get_loc() const { return loc; }
+  const QueryLoc& get_loc() const { return loc; }
+
   void set_loc(const QueryLoc& aLoc) { loc = aLoc; }
 
-  short get_cur_sctx() const { return context; }
+  short get_sctx_id() const { return theSctxId; }
 
-  virtual expr_iterator expr_begin ();
-  virtual void accept(expr_visitor&);
-  virtual void accept_children(expr_visitor &v);
-  virtual void next_iter (expr_iterator_data &) = 0;
+  virtual expr_update_t get_update_type() const;
 
-  virtual std::ostream& put(std::ostream&) const = 0;
-  virtual std::string toString () const;
+  virtual bool is_updating() const;
+  virtual bool is_sequential() const;
+  virtual bool is_vacuous() const;
+  virtual bool is_simple() const;
+  virtual bool is_updating_or_vacuous() const;
 
-  virtual xqtref_t return_type(static_context *sctx);
-  virtual xqtref_t return_type_impl(static_context *sctx);
+  virtual void compute_upd_seq_kind() const;
+
+  virtual xqtref_t return_type(static_context* sctx);
+
+  virtual xqtref_t return_type_impl(static_context* sctx);
+
+  virtual expr_iterator expr_begin();
+
+  virtual void next_iter(expr_iterator_data &) = 0;
 
   expr_t clone();
+
   virtual expr_t clone(substitution_t& substitution);
 
-  virtual void compute_upd_seq_kind () const;
-  virtual bool is_updating_kind () const { return false; }
-  virtual bool is_updating () const;
-  virtual bool is_sequential () const;
-  virtual bool is_vacuous () const;
-  virtual bool is_simple () const;
-  virtual bool is_updating_or_vacuous () const;
-  virtual expr_update_t get_update_type () const;
+  virtual void accept(expr_visitor& v);
+
+  virtual void accept_children(expr_visitor& v);
+
+  virtual std::ostream& put(std::ostream&) const = 0;
+
+  virtual std::string toString() const;
 
 protected:
   expr(short, const QueryLoc&);
 
-  virtual expr_iterator_data *make_iter ();
+  void invalidate() 
+  {
+    theCache.type.valid = false;
+    theCache.upd_seq_kind.valid = false;
+  }
+
+  // Returns true if all modifiers, as well as all accessors that permit future
+  // modifications of child expressions, call invalidate(). Note that expr
+  // iterators are compliant.
+  virtual bool cache_compliant() { return false; }
+
+  virtual expr_iterator_data* make_iter();
 };
 
 
 /*******************************************************************************
-  Base class for iterators that iterate over the subexpressions of a given expr.
-
-  Notice that theCurrentSubexpr is a pointer to expr_t.
+  Base class for iterators that iterate over the subexpressions (children) of
+  a given expr. Notice that theCurrentChild is a pointer to expr_t.
 ********************************************************************************/
 class expr_iterator_data 
 {
@@ -216,17 +244,17 @@ protected:
   expr   * theExpr;
   
 public:
-  expr_t * i;
-  int      state;
+  expr_t * theCurrentChild;
+  int      theState;
   
 public:
-  expr_iterator_data (expr* e) : theExpr(e), i(NULL), state(0) {}
+  expr_iterator_data(expr* e) : theExpr(e), theCurrentChild(NULL), theState(0) {}
 
-  virtual ~expr_iterator_data () {}
+  virtual ~expr_iterator_data() {}
 
-  virtual void next () { theExpr->next_iter (*this); }
+  virtual void next() { theExpr->next_iter(*this); }
 
-  bool done () const;
+  bool done() const;
 };
 
 } /* namespace zorba */

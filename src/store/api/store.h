@@ -273,12 +273,12 @@ public:
    *        the store maintains the map between qnames and indices and makes
    *        sure that there are no two indices with the same qname.
    */
-  virtual Index* getIndex(const Item_t& qname) = 0;
+  virtual Index* getIndex(const Item* qname) = 0;
 
   /**
    *  Destroy the index with the given qname. The index must not be a temporary one.
    */
-  virtual void deleteIndex(const Item_t& qname) = 0;
+  virtual void deleteIndex(const Item* qname) = 0;
 };
 
 

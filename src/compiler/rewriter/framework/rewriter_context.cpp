@@ -59,7 +59,7 @@ void RewriterContext::setRoot(expr_t root)
 
 static_context* RewriterContext::getStaticContext(const expr* node) const
 {
-  return theCCB->getStaticContext(node->get_cur_sctx());
+  return theCCB->getStaticContext(node->get_sctx_id());
 }
 
 

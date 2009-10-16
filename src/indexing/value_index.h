@@ -122,7 +122,7 @@ public:
 
   void setUnique(bool unique) { theIsUnique = unique; }
 
-  bool getTemp() const { return theIsTemp; }
+  bool isTemp() const { return theIsTemp; }
 
   void setTemp(bool tmp) { theIsTemp = tmp; }
 

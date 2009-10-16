@@ -814,22 +814,6 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     validationPul->applyUpdates(validationNodes);
 #endif
-
-    std::vector<IndexBinding> createdIndices;
-    std::vector<const store::Item*> dropedIndices;
-
-    pul->getCreatedIndices(createdIndices);
-    pul->getDropedIndices(dropedIndices);
-
-    ulong n = createdIndices.size();
-
-    for (ulong i = 0; i < n; ++i)
-      dctx->bindIndex(createdIndices[i].first, createdIndices[i].second);
-
-    n = dropedIndices.size();
-
-    for (ulong i = 0; i < n; ++i)
-      dctx->unbindIndex(dropedIndices[i]);
   }
 
   STACK_END(state);

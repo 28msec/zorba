@@ -153,9 +153,9 @@ public:
 
   void addIndex(store::Index_t& index);
 
-  store::Index* getIndex(const store::Item_t& qname);
+  store::Index* getIndex(const store::Item* qname);
 
-  void deleteIndex(const store::Item_t& qname);
+  void deleteIndex(const store::Item* qname);
 
   store::Collection_t createCollection(const xqpStringStore_t& uri);
 

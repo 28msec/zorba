@@ -81,7 +81,8 @@ FnBooleanIterator::FnBooleanIterator(
   :
   UnaryBaseIterator<FnBooleanIterator, PlanIteratorState>(sctx, loc, aIter),
   theNegate(aNegate)
-{}
+{
+}
     
 
 bool FnBooleanIterator::effectiveBooleanValue(
@@ -132,10 +133,14 @@ bool FnBooleanIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   PlanIteratorState* aState;
   DEFAULT_STACK_INIT(PlanIteratorState, aState, planState);
 
-  GENV_ITEMFACTORY->createBoolean(result,
-                                  FnBooleanIterator::effectiveBooleanValue(this->loc, planState, theChild, theNegate));
-  STACK_PUSH (true, aState);
-  STACK_END (aState);
+  GENV_ITEMFACTORY->
+  createBoolean(result,
+                FnBooleanIterator::effectiveBooleanValue(this->loc,
+                                                         planState,
+                                                         theChild,
+                                                         theNegate));
+  STACK_PUSH(true, aState);
+  STACK_END(aState);
 }
 
 

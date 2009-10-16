@@ -259,7 +259,7 @@ void context::ctx_value_t::serialize(::zorba::serialization::Archiver &ar)
       RCHelper::addReference (exprValue);
     break;
   case CTX_FUNCTION:
-  //  ar.set_serialize_only_for_eval(true);
+    ar.set_serialize_only_for_eval(true);
     SERIALIZE_FUNCTION(functionValue);
     if(!ar.is_serializing_out() && functionValue)
       RCHelper::addReference (functionValue);
@@ -267,7 +267,7 @@ void context::ctx_value_t::serialize(::zorba::serialization::Archiver &ar)
   case CTX_ARITY:
     ar.set_serialize_only_for_eval(true);
     ar & fmapValue;
-    ar.set_serialize_only_for_eval(false);
+    // ar.set_serialize_only_for_eval(false);
   /*  if(ar.is_serializing_out())
     {
       printf("out CTX_ARITY %x size=%d\n", fmapValue, fmapValue->size());
@@ -528,7 +528,7 @@ void static_context::serialize(::zorba::serialization::Archiver &ar)
   serialize_resolvers(ar);
   serialize_tracestream(ar);
 
-  ar & theIndexMap;
+  //  ar & theIndexMap;
   ar & theCollationCache;
 }
 
@@ -1062,6 +1062,11 @@ xqtref_t static_context::get_document_type(const xqp_string docURI)
 }
 
 
+/*******************************************************************************
+
+  collection management
+
+********************************************************************************/
 void static_context::set_default_collection_type(xqtref_t t)
 {
   bind_type("type:defcollection:", t);
@@ -1085,11 +1090,7 @@ xqtref_t static_context::get_collection_type(const xqp_string collURI)
   return lookup_type2("type:collection:", collURI);
 }
 
-/*******************************************************************************
 
-  collection management
-
-********************************************************************************/
 void static_context::add_declared_collection(
        StaticallyKnownCollection_t& aCollection,
        const QueryLoc& aLoc)
@@ -1108,6 +1109,7 @@ void static_context::add_declared_collection(
                             );
   }
 }
+
 
 /*******************************************************************************
 
