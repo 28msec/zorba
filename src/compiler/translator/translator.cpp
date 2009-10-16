@@ -6316,7 +6316,12 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
                                  predvar);
   normalize_fo(eqExpr);
 
-  expr_t thenExpr = new if_expr(sctxid, loc, sctx_p, eqExpr, DOT_REF, create_seq(loc));
+  expr_t thenExpr = new if_expr(sctxid,
+                                loc,
+                                sctx_p,
+                                eqExpr.getp(),
+                                DOT_REF,
+                                create_seq(loc));
 
   // Else, return $dot if the the value of the pred expr is true, otherwise
   // return the empty seq.
@@ -7436,7 +7441,7 @@ void end_visit (const CompDocConstructor& v, void* /*visit_state*/)
                                    CACHED(op_enclosed_expr, LOOKUP_OP1("enclosed-expr")),
                                    lContent);
 
-  nodestack.push(new doc_expr(sctxid, loc, lEnclosed ));
+  nodestack.push(new doc_expr(sctxid, loc, lEnclosed.getp()));
 }
 
 
@@ -7452,7 +7457,8 @@ void end_visit (const CompElemConstructor& v, void* /*visit_state*/)
 
   expr_t nameExpr, contentExpr;
 
-  if (v.get_content_expr() != 0) {
+  if (v.get_content_expr() != 0) 
+  {
     contentExpr = pop_nodestack();
 
     fo_expr* lEnclosed = new fo_expr(sctxid,
