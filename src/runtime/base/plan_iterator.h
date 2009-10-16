@@ -337,11 +337,6 @@ public:
   CollationCache* collationCache(PlanState& planState);
 
   /**
-   * Return true if "this" may return a pending update list.
-   */
-  virtual bool isUpdating() const { return false; }
-
-  /**
    * Accept method for the PlanIterator-Tree-Visitor
    * 
    * @param PlanIterVisitor

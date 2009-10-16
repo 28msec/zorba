@@ -150,44 +150,12 @@ public:                                                                 \
 };
 
 
-#define UNARY_UPDATE_ITER_STATE(iterName, stateName)                    \
-class iterName : public UnaryBaseIterator<iterName, stateName>          \
-{                                                                       \
-public:                                                                 \
-  SERIALIZABLE_CLASS(iterName);                                         \
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(iterName, UnaryBaseIterator<iterName, stateName>) \
-  void serialize(::zorba::serialization::Archiver& ar)                  \
-  {                                                                     \
-    serialize_baseclass(ar, (UnaryBaseIterator<iterName, stateName>*)this); \
-  }                                                                     \
-                                                                        \
-public:                                                                 \
-  iterName(                                                             \
-        static_context* sctx,                                           \
-        const QueryLoc& loc,                                            \
-        PlanIter_t& aChild)                                             \
-    :                                                                   \
-    UnaryBaseIterator<iterName, stateName>(sctx, loc, aChild)           \
-  { }                                                                   \
-                                                                        \
-  bool isUpdating() const { return true; }                              \
-                                                                        \
-  void accept(PlanIterVisitor& v) const;                                \
-                                                                        \
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;    \
-};
-
-
 /*******************************************************************************
   Macro for defining iterators with N children and no additional state
 ********************************************************************************/
 
 #define UNARY_ITER(name) \
 UNARY_ITER_STATE(name, PlanIteratorState) 
-
-#define UNARY_UPDATE_ITER(name) \
-UNARY_UPDATE_ITER_STATE(name, PlanIteratorState) 
-
 
 
 }; /* namespace zorba*/

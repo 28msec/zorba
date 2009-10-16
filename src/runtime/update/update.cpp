@@ -785,8 +785,6 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   rchandle<store::PUL> validationPul;
   std::set<zorba::store::Item*> validationNodes;
 
-  dynamic_context* dctx = planState.dctx();
-
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 

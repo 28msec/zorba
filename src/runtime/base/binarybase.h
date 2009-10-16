@@ -166,47 +166,12 @@ public:                                                                 \
 };
 
 
-#define BINARY_UPDATE_ITER_STATE(iterName, stateName)                   \
-class iterName : public BinaryBaseIterator<iterName, stateName>         \
-{                                                                       \
-public:                                                                 \
-  SERIALIZABLE_CLASS(iterName);                                         \
-                                                                        \
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(                                     \
-  iterName, BinaryBaseIterator<iterName, stateName>);                   \
-                                                                        \
-  void serialize(::zorba::serialization::Archiver& ar)                  \
-  {                                                                     \
-    serialize_baseclass(ar, (BinaryBaseIterator<iterName, stateName>*)this); \
-  }                                                                     \
-                                                                        \
-public:                                                                 \
-  iterName(                                                             \
-        static_context* sctx,                                           \
-        const QueryLoc& loc,                                            \
-        PlanIter_t& child1,                                             \
-        PlanIter_t& child2)                                             \
-    :                                                                   \
-    BinaryBaseIterator<iterName, stateName>(sctx, loc, child1, child2)  \
-  { }                                                                   \
-                                                                        \
-  bool isUpdating() const { return true; }                              \
-                                                                        \
-  void accept(PlanIterVisitor& v) const;                                \
-                                                                        \
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;    \
-};
-
-
 /*******************************************************************************
   Macro for defining iterators with 2 children and no additional state
 ********************************************************************************/
 
 #define BINARY_ITER(name) \
 BINARY_ITER_STATE(name, PlanIteratorState) 
-
-#define BINARY_UPDATE_ITER(name) \
-BINARY_UPDATE_ITER_STATE(name, PlanIteratorState) 
 
 
 

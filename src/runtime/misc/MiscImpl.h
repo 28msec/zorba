@@ -34,9 +34,6 @@ NARY_ITER(FnResolveUriIterator);
 
 class SequentialIterator : public NaryBaseIterator<SequentialIterator, PlanIteratorState >
 {
-private:
-  bool theUpdating;
-
 public:
   SERIALIZABLE_CLASS(SequentialIterator);
 
@@ -48,27 +45,20 @@ public:
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<SequentialIterator, PlanIteratorState >*)this);
-
-    ar & theUpdating;
   }
 
 public:
   SequentialIterator(
         static_context* sctx,
         const QueryLoc& loc,
-        std::vector<PlanIter_t>& aChildren,
-        bool aUpdating) 
+        std::vector<PlanIter_t>& aChildren)
     :
-    NaryBaseIterator<SequentialIterator, PlanIteratorState>(sctx, loc, aChildren),
-    theUpdating(aUpdating)
+    NaryBaseIterator<SequentialIterator, PlanIteratorState>(sctx, loc, aChildren)
   {}
-
 
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-
-  bool isUpdating() const { return theUpdating; }
 };
 
 

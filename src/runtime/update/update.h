@@ -61,8 +61,6 @@ public:
 
   ~InsertIterator() {}
 
-  bool isUpdating() const { return true; }
-
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t&, PlanState&) const;
@@ -72,7 +70,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-UNARY_UPDATE_ITER(DeleteIterator);
+UNARY_ITER(DeleteIterator);
 
 
 /*******************************************************************************
@@ -111,8 +109,6 @@ public:
 
   ~ReplaceIterator() {}
 
-  bool isUpdating() const { return true; }
-
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t&, PlanState&) const;
@@ -122,7 +118,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-BINARY_UPDATE_ITER(RenameIterator);
+BINARY_ITER(RenameIterator);
 
 
 /*******************************************************************************
@@ -217,7 +213,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-UNARY_UPDATE_ITER(ApplyIterator);
+UNARY_ITER(ApplyIterator);
 
 
 } // namespace zorba

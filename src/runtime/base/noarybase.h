@@ -136,33 +136,6 @@ class iterName : public NoaryBaseIterator<iterName, stateName >         \
 };
 
 
-#define NOARY_UPDATE_ITER_STATE(iterName, stateName)                    \
-class iterName : public NoaryBaseIterator<iterName, stateName>          \
-{                                                                       \
- public:                                                                \
-  SERIALIZABLE_CLASS(iterName)                                          \
-                                                                        \
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(iterName, NoaryBaseIterator<iterName, stateName>) \
-                                                                        \
-  void serialize(::zorba::serialization::Archiver& ar)                  \
-  {                                                                     \
-    serialize_baseclass(ar, (NoaryBaseIterator<iterName, stateName>*)this); \
-  }                                                                     \
-                                                                        \
-public:                                                                 \
-  iterName(static_context* sctx, const QueryLoc& loc)                   \
-    :                                                                   \
-    NoaryBaseIterator<iterName, stateName>(sctx, loc)                   \
-  { }                                                                   \
-                                                                        \
-  bool isUpdating() const { return true; }                              \
-                                                                        \
-  void accept(PlanIterVisitor& v) const;                                \
-                                                                        \
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;    \
-};
-
-
 /*******************************************************************************
   Macro for defining iterators with N children and no additional state
 ********************************************************************************/
@@ -170,14 +143,11 @@ public:                                                                 \
 #define NOARY_ITER(name) \
 NOARY_ITER_STATE(name, PlanIteratorState) 
 
-#define NOARY_UPDATE_ITER(name) \
-NOARY_UPDATE_ITER_STATE(name, PlanIteratorState) 
 
 
+};
 
-}; /* namespace zorba*/
-
-#endif /* ZORBA_NOARYBASE_H */
+#endif
 
 /*
  * Local variables:

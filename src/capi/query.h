@@ -43,12 +43,6 @@ namespace zorbac {
                        const Zorba_SerializerOptions_t* options, 
                        XQC_OutputStream stream);
 
-      static int
-      is_update_query(XQC_Query query);
-
-	    static XQUERY_ERROR 
-      apply_updates(XQC_Query query);
-
 	    static XQUERY_ERROR 
       sequence(XQC_Query query, XQC_Sequence_Ref sequence);
 

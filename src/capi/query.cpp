@@ -186,28 +186,6 @@ namespace zorbac {
     ZORBA_XQUERY_CATCH_NOTIFY
   }
 
-  int
-  Query::is_update_query(XQC_Query query)
-  {
-    ZORBA_XQUERY_TRY
-      XQuery* lQuery = getXQuery(query);
-
-      return lQuery->isUpdateQuery();
-
-    ZORBA_XQUERY_CATCH
-  }
-
-  XQUERY_ERROR 
-  Query::apply_updates(XQC_Query query)
-  {
-    XQuery* lQuery = 0;
-    ZORBA_XQUERY_TRY
-      lQuery = getXQuery(query);
-
-      lQuery->applyUpdates();
-
-    ZORBA_XQUERY_CATCH_NOTIFY;
-  }
 
   XQUERY_ERROR 
   Query::sequence(XQC_Query query, XQC_Sequence_Ref sequence)
@@ -259,8 +237,6 @@ namespace zorbac {
     query->execute               = Query::execute;
     query->serialize_file        = Query::serialize_file;
     query->serialize_stream      = Query::serialize_stream;
-    query->is_update_query       = Query::is_update_query;
-    query->apply_updates         = Query::apply_updates;
     query->sequence              = Query::sequence;
     query->set_error_handler     = Query::set_error_handler;
     query->free                  = Query::free;

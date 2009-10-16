@@ -318,17 +318,6 @@ XQueryImpl::getDynamicContext() const
 }
 
 
-bool
-XQueryImpl::isUpdateQuery() const
-{ 
-  ZORBA_TRY
-    checkNotClosed();
-    checkCompiled();
-    return static_cast<PlanIterator*>(thePlan->theRootIter.getp())->isUpdating();
-  ZORBA_CATCH
-  return false;
-}
-
 
 CompilerCB::config_t
 XQueryImpl::getCompilerConfig(const Zorba_CompilerHints_t& aHints)
@@ -630,51 +619,6 @@ XQueryImpl::serialize(
       setSerializationParameters(&lSerializer, opt);
     
     lSerializer.serialize(&*aWrapper, os);
-  ZORBA_CATCH
-}
-
-
-void
-XQueryImpl::applyUpdates(PlanWrapper_t& aWrapper)
-{
-  ZORBA_TRY
-
-    store::Item_t pul;
-    aWrapper->next(pul);
-
-  ZORBA_CATCH
-}
-
-
-void 
-XQueryImpl::applyUpdates()
-{
-  ZORBA_TRY
-
-  checkNotClosed();
-  checkCompiled();
-
-  PlanWrapper_t lPlan = generateWrapper();
-  store::Item_t pul;
-
-  SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
-
-  try 
-  { 
-    lPlan->open();
-    lPlan->next(pul);
-  }
-  catch (...)
-  {
-    lPlan->close();
-    throw;
-  }
-
-  theDocLoadingUserTime = lPlan->getRuntimeCB()->docLoadingUserTime;
-  theDocLoadingTime = lPlan->getRuntimeCB()->docLoadingTime;
-
-  lPlan->close();
-
   ZORBA_CATCH
 }
 

@@ -145,11 +145,6 @@ PlanWrapper::close() throw ()
 #endif
 }
 
-bool
-PlanWrapper::isUpdating() const
-{ 
-  return theIterator->isUpdating();
-}
 
 void PlanWrapper::checkDepth (const QueryLoc &loc)
 { theStateBlock->checkDepth (loc); }

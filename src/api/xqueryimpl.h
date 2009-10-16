@@ -216,17 +216,11 @@ public:
   void
   resetErrorHandler();
 
-  bool
-  isUpdateQuery() const;
-
   void
   setTimeout(long aTimeout /* = -1 */);
 
   void
   serialize(std::ostream&, const Zorba_SerializerOptions_t* = NULL);
-
-  void 
-  applyUpdates();
 
   ResultIterator_t
   iterator();
@@ -326,9 +320,6 @@ protected:
   // closed by the caller
   void
   serialize(std::ostream&, PlanWrapper_t& aWrapper, const Zorba_SerializerOptions_t* = NULL);
-
-  void 
-  applyUpdates(PlanWrapper_t& aWrapper);
 
   void
   removeResultIterator(const ResultIterator* iter);

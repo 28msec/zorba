@@ -78,9 +78,6 @@ public:
 
   virtual void checkDepth(const QueryLoc &loc);
 
-  virtual bool
-  isUpdating() const;
-
   const RuntimeCB* getRuntimeCB() const;
 };
 

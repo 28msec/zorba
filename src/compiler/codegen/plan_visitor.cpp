@@ -365,12 +365,15 @@ void end_visit (debugger_expr& v) {
   push_itstack(aDebugIterator.release());
 }
 
-bool begin_visit (wrapper_expr& v) {
+
+bool begin_visit (wrapper_expr& v) 
+{
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-void end_visit (wrapper_expr& v) {
+void end_visit (wrapper_expr& v) 
+{
   CODEGEN_TRACE_OUT("");
   PlanIter_t iter = pop_itstack ();
   iter->setLocation (v.get_loc ());
@@ -378,31 +381,30 @@ void end_visit (wrapper_expr& v) {
 }
 
 
-bool begin_visit (sequential_expr& v) 
+bool begin_visit(sequential_expr& v) 
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-void end_visit (sequential_expr& v) 
+void end_visit(sequential_expr& v) 
 {
   CODEGEN_TRACE_OUT("");
 
-  checked_vector<PlanIter_t> argv;
-  size_t lSize = v.size();
+  ulong numArgs = v.size();
+  checked_vector<PlanIter_t> args(numArgs);
 
-  for (unsigned i = 0; i < lSize; i++)
+  for (long i = numArgs-1; i >= 0; --i)
   {
     PlanIter_t arg = pop_itstack();
-    if (arg->isUpdating())
-      arg = new ApplyIterator(sctx, arg->loc, arg);
 
-    argv.push_back(arg);
+    if (v[i]->is_updating())
+      args[i] = new ApplyIterator(sctx, arg->loc, arg);
+    else
+      args[i] = arg;
   }
 
-  reverse (argv.begin (), argv.end ());
-
-  push_itstack(new SequentialIterator(sctx, qloc, argv, v.is_updating()));
+  push_itstack(new SequentialIterator(sctx, qloc, args));
 }
 
 
@@ -2434,13 +2436,14 @@ PlanIter_t codegen(
   root->accept(c);
   PlanIter_t result = c.result();
 
-  if (result->isUpdating())
+  if (root->is_updating())
   {
     result = new ApplyIterator(result->theSctx, result->loc, result);
   }
 
-  if (result != NULL && descr != NULL
-      && Properties::instance()->printIteratorTree() &&
+  if (result != NULL && 
+      descr != NULL &&
+      Properties::instance()->printIteratorTree() &&
       (xqp_string ("main query") == descr || ! Properties::instance()->iterPlanTest()))
   {
     std::ostream &os = Properties::instance()->iterPlanTest ()

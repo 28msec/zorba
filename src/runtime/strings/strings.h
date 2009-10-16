@@ -65,7 +65,7 @@ public:
 
 
 /**
- * fn:codepoints-to-string
+ * fn:compare
  * 
  * Author: Zorba Team * 
  */
@@ -97,7 +97,7 @@ public:
 
 
 /**
- * fn:codepoints-to-string
+ * fn:codepoint-equal
  * 
  * Author: Zorba Team * 
  */
@@ -129,7 +129,7 @@ public:
 
 
 /**
- * fn:codepoints-to-string
+ * fn:concat
  * 
  * Author: Zorba Team * 
  */
@@ -161,7 +161,7 @@ public:
 
 
 /**
- * fn:codepoints-to-string
+ * fn:string-join
  * 
  * Author: Zorba Team * 
  */
@@ -193,7 +193,7 @@ public:
 
 
 /**
- * 
+ * fn:substring
  * 
  * Author: Zorba Team * 
  */
@@ -225,7 +225,7 @@ public:
 
 
 /**
- * 
+ * fn:string-length
  * 
  * Author: Zorba Team * 
  */
@@ -257,7 +257,7 @@ public:
 
 
 /**
- * 
+ * fn:normalize-space
  * 
  * Author: Zorba Team * 
  */
@@ -289,7 +289,7 @@ public:
 
 
 /**
- * 
+ * fn:normalize-unicode
  * 
  * Author: Zorba Team * 
  */
@@ -321,7 +321,7 @@ public:
 
 
 /**
- * 
+ * fn:upper-case
  * 
  * Author: Zorba Team * 
  */
@@ -353,7 +353,7 @@ public:
 
 
 /**
- * 
+ * fn:lower-case
  * 
  * Author: Zorba Team * 
  */
@@ -385,7 +385,7 @@ public:
 
 
 /**
- * 
+ * fn:translate
  * 
  * Author: Zorba Team * 
  */
@@ -417,7 +417,7 @@ public:
 
 
 /**
- * 
+ * fn:encode-for-uri
  * 
  * Author: Zorba Team * 
  */
@@ -449,7 +449,7 @@ public:
 
 
 /**
- * 
+ * fn:iri-to-uri
  * 
  * Author: Zorba Team * 
  */
@@ -481,7 +481,7 @@ public:
 
 
 /**
- * 
+ * fn:escape-html-uri
  * 
  * Author: Zorba Team * 
  */
@@ -513,7 +513,7 @@ public:
 
 
 /**
- * 
+ * fn:contains
  * 
  * Author: Zorba Team * 
  */
@@ -545,7 +545,7 @@ public:
 
 
 /**
- * 
+ * fn:starts-with
  * 
  * Author: Zorba Team * 
  */
@@ -577,7 +577,7 @@ public:
 
 
 /**
- * 
+ * fn:ends-with
  * 
  * Author: Zorba Team * 
  */
@@ -609,7 +609,7 @@ public:
 
 
 /**
- * 
+ * fn:substring-before
  * 
  * Author: Zorba Team * 
  */
@@ -641,7 +641,7 @@ public:
 
 
 /**
- * 
+ * fn:substring-after
  * 
  * Author: Zorba Team * 
  */
@@ -673,7 +673,7 @@ public:
 
 
 /**
- * 
+ * fn:matches
  * 
  * Author: Zorba Team * 
  */
@@ -705,7 +705,7 @@ public:
 
 
 /**
- * 
+ * fn:replace
  * 
  * Author: Zorba Team * 
  */

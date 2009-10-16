@@ -67,31 +67,31 @@ public:
 NARY_ITER_STATE(ZorbaListCollectionsIterator, ZorbaListCollectionsState);
 
 // updating collection functions
-NARY_UPDATE_ITER(ZorbaImportXmlIterator);
+NARY_ITER(ZorbaImportXmlIterator);
 
-NARY_UPDATE_ITER(ZorbaImportCatalogIterator);
+NARY_ITER(ZorbaImportCatalogIterator);
 
-NARY_UPDATE_ITER (ZorbaImportFolderIterator);
+NARY_ITER (ZorbaImportFolderIterator);
 
-NARY_UPDATE_ITER(ZorbaCreateCollectionIterator);
+NARY_ITER(ZorbaCreateCollectionIterator);
 
-NARY_UPDATE_ITER(ZorbaDeleteCollectionIterator);
+NARY_ITER(ZorbaDeleteCollectionIterator);
 
-NARY_UPDATE_ITER(ZorbaDeleteAllCollectionsIterator);
+NARY_ITER(ZorbaDeleteAllCollectionsIterator);
 
-NARY_UPDATE_ITER(ZorbaInsertNodeFirstIterator);
+NARY_ITER(ZorbaInsertNodeFirstIterator);
 
-NARY_UPDATE_ITER(ZorbaInsertNodeLastIterator);
+NARY_ITER(ZorbaInsertNodeLastIterator);
 
-NARY_UPDATE_ITER(ZorbaInsertNodeBeforeIterator);
+NARY_ITER(ZorbaInsertNodeBeforeIterator);
 
-NARY_UPDATE_ITER(ZorbaInsertNodeAfterIterator);
+NARY_ITER(ZorbaInsertNodeAfterIterator);
 
-NARY_UPDATE_ITER(ZorbaInsertNodeAtIterator);
+NARY_ITER(ZorbaInsertNodeAtIterator);
 
-NARY_UPDATE_ITER(ZorbaRemoveNodeIterator);
+NARY_ITER(ZorbaRemoveNodeIterator);
 
-NARY_UPDATE_ITER(ZorbaRemoveNodeAtIterator);
+NARY_ITER(ZorbaRemoveNodeAtIterator);
 
 // helper function
 store::Collection_t getCollection(static_context*,

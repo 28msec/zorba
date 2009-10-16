@@ -95,8 +95,6 @@ public:
   {
   }
 
-  bool isUpdating() const { return true; }
-
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
@@ -132,8 +130,6 @@ public:
   {
   }
 
-  bool isUpdating() const { return true; }
-
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
@@ -168,8 +164,6 @@ public:
     UnaryBaseIterator<RefreshIndexIterator, PlanIteratorState>(sctx, loc, arg)
   {
   }
-
-  bool isUpdating() const { return true; }
 
   void accept(PlanIterVisitor& v) const;
 

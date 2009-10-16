@@ -208,7 +208,7 @@ bool SequentialIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   {
     while (CONSUME(result, i))
     {
-      if (i == theChildren.size() - 1 && !theChildren[i]->isUpdating())
+      if (i == theChildren.size() - 1)
       {
         STACK_PUSH(true, state);
         i = theChildren.size() - 1;
@@ -220,7 +220,8 @@ bool SequentialIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 }
 
 
-bool FlowCtlIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
+bool FlowCtlIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+{
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
   switch (act) {

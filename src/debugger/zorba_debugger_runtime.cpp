@@ -188,17 +188,12 @@ void ZorbaDebuggerRuntime::runQuery()
     theWrapper->theStateBlock->theDebuggerCommons->setRuntime(this);
     theLock.unlock();
 
-    if (theQuery->isUpdateQuery()) {
-      theQuery->applyUpdates(theWrapper);
-      theOStream << "Query doesn't have a result because it is an updating query.";
-    } else {
-      serializer lSerializer(theQuery->theErrorManager);
-      XQueryImpl::setSerializationParameters(&lSerializer, &theSerializerOptions);
+    serializer lSerializer(theQuery->theErrorManager);
+    XQueryImpl::setSerializationParameters(&lSerializer, &theSerializerOptions);
       
-      lSerializer.serialize(&*theWrapper, theOStream);
-
-      theOStream.flush();
-    }
+    lSerializer.serialize(&*theWrapper, theOStream);
+    
+    theOStream.flush();
   } catch(error::ZorbaError& e){
     // this does not rethrow but only print the error message
     ZorbaImpl::notifyError(&lErrorHandler, e);
