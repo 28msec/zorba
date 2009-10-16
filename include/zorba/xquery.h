@@ -88,16 +88,6 @@ namespace zorba {
       virtual void
       resetErrorHandler() = 0;
 
-      /** \brief Check if this query is an updating query.
-       *
-       * @return true if the query is an updating query, false otherwise.
-       * @throw SystemException if the query is not compiled or has been closed.
-       * @see close()
-       * @see compile(...)
-       */
-      virtual bool
-      isUpdateQuery() const = 0;
-
       /**
        * @brief Set a timeout, after which the execution of the query will be
        *  aborted.
@@ -118,14 +108,6 @@ namespace zorba {
       virtual void
       serialize(std::ostream& aOutStream, 
                 const Zorba_SerializerOptions_t* aSerOptions = NULL) = 0;
-
-      /** \brief Apply/execute the query if it is an updating query.
-       *
-       * @throw ZorbaException if an error occured, e.g. if the query has been closed, if the query
-       *        has not been compiled, or an error occures during execution.
-       */
-      virtual void 
-      applyUpdates() = 0;
 
       /** \brief Get an iterator for the result of the query.
         *
