@@ -42,8 +42,10 @@
 #include "util/properties.h"
 #include "testdriver_comparator.h"
 
-bool isErrorExpected(zorba::ZorbaException& e, State* aState) {
-  if ( aState->hasErrors) {
+bool isErrorExpected(zorba::ZorbaException& e, State* aState) 
+{
+  if ( aState->hasErrors) 
+  {
     std::vector<std::string>::const_iterator lIter = aState->theErrors.begin();
     std::vector<std::string>::const_iterator lEnd  = aState->theErrors.end();
     zorba::String lError = zorba::ZorbaException::getErrorCodeAsString(e.getErrorCode());
@@ -58,8 +60,8 @@ bool isErrorExpected(zorba::ZorbaException& e, State* aState) {
   return false;
 }
 
-Zorba_CompilerHints
-getCompilerHints()
+
+Zorba_CompilerHints getCompilerHints()
 {
   Zorba_CompilerHints lHints;
 
@@ -171,28 +173,27 @@ main(int argc, char** argv)
   Zorba_SerializerOptions lSerOptions;
   lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
 
-  int lRun = 0;
-  std::vector<State*>::const_iterator lIter = lSpec.statesBegin();
-  std::vector<State*>::const_iterator lEnd = lSpec.statesEnd();
-
   std::vector<zorba::XQuery_t> lQueries;
 
-  for(; lIter != lEnd; ++lIter)
-  {
-    State* lState = *lIter;
+  ulong numQueries = lSpec.theStates.size();
 
-    std::string   qname_str;
+  for(ulong curQuery = 0; curQuery < numQueries; ++curQuery)
+  {
+    State* lState = lSpec.theStates[curQuery];
+
+    std::string qname_str;
     if(lSpecPath.get_path().find("XQueryX") == std::string::npos)
-      qname_str = (*lIter)->theName + ".xq";
+      qname_str = lState->theName + ".xq";
     else
-      qname_str = (*lIter)->theName + ".xqx";
+      qname_str = lState->theName + ".xqx";
+
     std::cout << "qname_str " << qname_str << std::endl;
 
     zorba::filesystem_path lQueryName(qname_str,
                                       zorba::file::CONVERT_SLASHES);
     zorba::filesystem_path lQueryFile(lSpecPath, lQueryName);
 
-    std::cout << std::endl << "Query (Run " << ++lRun << "):" << std::endl;
+    std::cout << std::endl << "Query (Run " << curQuery+1 << "):" << std::endl;
     std::cout << "Query file " << lQueryFile << ": " << std::endl;
     zorba::printFile(std::cout, lQueryFile);
     std::cout << std::endl;
@@ -204,7 +205,7 @@ main(int argc, char** argv)
       std::string path = lQueryFile.get_path();
 
       std::auto_ptr<zorba::TestSchemaURIResolver> resolver;
-      if ( path.find ( "w3c_update_testsuite" ) != std::string::npos ) 
+      if (path.find("w3c_update_testsuite") != std::string::npos) 
       {
         std::string uri_map_file = srcDir + "/Queries/w3c_update_testsuite/TestSources/uri.txt";
         resolver.reset(new zorba::TestSchemaURIResolver ( uri_map_file.c_str() ));
@@ -251,8 +252,8 @@ main(int argc, char** argv)
         lDynCtx->setCurrentDateTime(engine->getItemFactory()->createDateTime(lDateTime));
       }
       
-      std::vector<Variable*>::const_iterator lVarIter = (*lIter)->varsBegin();
-      std::vector<Variable*>::const_iterator lVarEnd = (*lIter)->varsEnd();
+      std::vector<Variable*>::const_iterator lVarIter = lState->varsBegin();
+      std::vector<Variable*>::const_iterator lVarEnd = lState->varsEnd();
     
       for(; lVarIter != lVarEnd; ++lVarIter) 
       {
@@ -294,6 +295,7 @@ main(int argc, char** argv)
           bool lRes = false;
           bool anyMatch = false;
           ulong numRefs = lState->theCompares.size();
+
           for (ulong i = 0; i < numRefs && !lRes; i++) 
           {
             std::string lRefFileTmpString = lRefPath;
@@ -364,7 +366,7 @@ main(int argc, char** argv)
           } 
           
         }
-        else if (lState->hasErrors) 
+        else if (lState->hasErrors && curQuery == numQueries-1) 
         {
           std::cout << "Query must throw an error!" << std::endl;
           return 5; 
