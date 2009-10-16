@@ -274,116 +274,109 @@ main(int argc, char** argv)
     
     try 
     {
-      if (lQueries.back()->isUpdateQuery()) 
+      if (lResultFile.exists()) 
+        lResultFile.remove();
+
+      std::ofstream lResFileStream(lResultFile.get_path().c_str());
+      lQueries.back()->serialize(lResFileStream, &lSerOptions);
+      lResFileStream.flush();
+        
+      if (lState->hasCompare) 
       {
-        zorba::XQuery_t query = lQueries.back();
-        query->applyUpdates();
+        bool lRes = false;
+        bool anyMatch = false;
+        ulong numRefs = lState->theCompares.size();
+        
+        for (ulong i = 0; i < numRefs && !lRes; i++) 
+        {
+          std::string lRefFileTmpString = lRefPath;
           
-        std::cout << "Updating Query -> no Result" << std::endl;
+          // the ref file is the same for xqueryx and xquery tests
+          // hence, we remove the string xqueryx or xquery from the path
+          size_t lPosOfW3C = lRefPath.get_path().find("w3c_update_testsuite");
+          if (lPosOfW3C != std::string::npos) 
+          {
+            if (lRefPath.get_path().find("XQueryX", lPosOfW3C) != std::string::npos)
+              lRefFileTmpString = lRefFileTmpString.erase(lPosOfW3C + 21, 8);
+            else
+              lRefFileTmpString = lRefFileTmpString.erase(lPosOfW3C + 21, 7);
+          }
+          
+          zorba::filesystem_path lRefFile(lRefFileTmpString,
+                                          zorba::filesystem_path(lState->theCompares[i],
+                                                                 zorba::file::CONVERT_SLASHES));
+          std::cout << std::endl << "Ref " << lRefFile.get_path()  << std::endl;
+          
+          int lLine, lCol, lPos;
+          std::string lRefLine, lResultLine;
+          lRes = zorba::fileEquals(lRefFile.get_path().c_str(),
+                                   lResultFile.get_path().c_str(),
+                                   lLine, lCol, lPos, lRefLine, lResultLine);
+          
+          // if the simple comparison doesn't work, we do the full-fledged
+          // xml canonical comparison
+          if (lRes) 
+          {
+            std::cout << "updtestdriver: success (non-canonical result matches)"
+                      << std::endl;
+            anyMatch = true;
+            break;
+          } 
+          else 
+          {
+            std::cout << "Actual and Reference results are not identical"
+                      << std::endl << std::endl
+                      << "Actual Result " << lResultFile.get_path() << ": "
+                      << std::endl << std::endl;
+            
+            zorba::printFile(std::cout, lResultFile.get_path());
+            
+            std::cout << std::endl << "Reference Result " << lRefFile.get_path() << ": "
+                      << std::endl << std::endl;
+            
+            zorba::printFile(std::cout, lRefFile.get_path());
+            
+            std::cout << std::endl << std::endl;
+            
+            int lCanonicalRes =
+            zorba::canonicalizeAndCompare(State::compareTypeStr(lState->theCompareTypes[i]),
+                                          lRefFile.get_path().c_str(),
+                                          lResultFile.get_path().c_str(),
+                                          zorba::UPDATE_BINARY_DIR.c_str());
+            if (lCanonicalRes == 0) 
+            {
+              anyMatch = true;
+              break;
+            }
+          }
+        } // multiple compare possible
+        
+        if (!anyMatch) 
+        {
+          return 4;
+        } 
+        
+      }
+      else if (lState->hasErrors && curQuery == numQueries-1) 
+      {
+        std::cout << "Query must throw an error!" << std::endl;
+        return 5; 
       }
       else 
       {
-        if ( lResultFile.exists ()) 
-          lResultFile.remove();
-
-        std::ofstream lResFileStream(lResultFile.get_path().c_str());
-        lQueries.back()->serialize(lResFileStream, &lSerOptions);
-        lResFileStream.flush();
-        
-        if (lState->hasCompare) 
-        {
-          bool lRes = false;
-          bool anyMatch = false;
-          ulong numRefs = lState->theCompares.size();
-
-          for (ulong i = 0; i < numRefs && !lRes; i++) 
-          {
-            std::string lRefFileTmpString = lRefPath;
-
-            // the ref file is the same for xqueryx and xquery tests
-            // hence, we remove the string xqueryx or xquery from the path
-            size_t lPosOfW3C = lRefPath.get_path().find("w3c_update_testsuite");
-            if (lPosOfW3C != std::string::npos) 
-            {
-              if (lRefPath.get_path().find("XQueryX", lPosOfW3C) != std::string::npos)
-                lRefFileTmpString = lRefFileTmpString.erase(lPosOfW3C + 21, 8);
-              else
-                lRefFileTmpString = lRefFileTmpString.erase(lPosOfW3C + 21, 7);
-            }
-
-            zorba::filesystem_path lRefFile(lRefFileTmpString,
-                                            zorba::filesystem_path(lState->theCompares[i],
-                                                                   zorba::file::CONVERT_SLASHES));
-            std::cout << std::endl << "Ref " << lRefFile.get_path()  << std::endl;
-
-            int lLine, lCol, lPos;
-            std::string lRefLine, lResultLine;
-            lRes = zorba::fileEquals(lRefFile.get_path().c_str(),
-                                     lResultFile.get_path().c_str(),
-                                     lLine, lCol, lPos, lRefLine, lResultLine);
-            
-            // if the simple comparison doesn't work, we do the full-fledged
-            // xml canonical comparison
-            if (lRes) 
-            {
-              std::cout << "updtestdriver: success (non-canonical result matches)"
-                        << std::endl;
-              anyMatch = true;
-              break;
-            } 
-            else 
-            {
-              std::cout << "Actual and Reference results are not identical"
-                        << std::endl << std::endl
-                        << "Actual Result " << lResultFile.get_path() << ": "
-                        << std::endl << std::endl;
-
-              zorba::printFile(std::cout, lResultFile.get_path());
-
-              std::cout << std::endl << "Reference Result " << lRefFile.get_path() << ": "
-                        << std::endl << std::endl;
-
-              zorba::printFile(std::cout, lRefFile.get_path());
-
-              std::cout << std::endl << std::endl;
-
-              int lCanonicalRes =
-              zorba::canonicalizeAndCompare(State::compareTypeStr(lState->theCompareTypes[i]),
-                                            lRefFile.get_path().c_str(),
-                                            lResultFile.get_path().c_str(),
-                                            zorba::UPDATE_BINARY_DIR.c_str());
-              if (lCanonicalRes == 0) 
-              {
-                anyMatch = true;
-                break;
-              }
-            }
-          } // multiple compare possible
-          
-          if (!anyMatch) 
-          {
-            return 4;
-          } 
-          
-        }
-        else if (lState->hasErrors && curQuery == numQueries-1) 
-        {
-          std::cout << "Query must throw an error!" << std::endl;
-          return 5; 
-        }
-        else 
-        {
-          std::cout << "Query returns result but no expected result defined!"
-                    << std::endl;
-        }
-      } // if non-updating query
+        std::cout << "Query returns result but no expected result defined!"
+                  << std::endl;
+      }
     }
     catch (zorba::ZorbaException &e) 
     {
-      if (isErrorExpected(e, lState)) {
+      if (isErrorExpected(e, lState))
+      {
         std::cout << "Expected execution error:\n" << e << std::endl;
         continue;
-      } else {
+      }
+      else
+      {
         std::cout << "Unexpected execution error:\n" << e << std::endl;
         return 6;
       }
