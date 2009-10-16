@@ -554,17 +554,10 @@ int executeQueryWithTiming(
     {
       timing.startTimer(TimingInfo::EXEC_TIMER, i);
 
-      if (query->isUpdateQuery()) 
-      {
-        query->applyUpdates();
-      }
+      if (properties.noSerializer())
+        query->executeSAX();
       else
-      {
-        if (properties.noSerializer ())
-          query->executeSAX();
-        else
-          query->serialize(outputStream, &lSerOptions);
-      }
+        query->serialize(outputStream, &lSerOptions);
       
       timing.stopTimer(TimingInfo::EXEC_TIMER, i);
 
@@ -641,44 +634,51 @@ int executeQuery(
   // Create and populate the dynamic context
   //
   zorba::DynamicContext* lDynamicContext = query->getDynamicContext();
-  try {
+  try 
+  {
     if ( ! populateDynamicContext(lDynamicContext, properties) )
     {
       properties.printHelp(std::cout);
       return 4;
     }
-  } catch (zorba::QueryException& qe) {
+  }
+  catch (zorba::QueryException& qe) 
+  {
     ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), properties.indent());
     return 5;
-  } catch (zorba::ZorbaException& ze) {
+  }
+  catch (zorba::ZorbaException& ze) 
+  {
     std::cerr << ze << std::endl;
     return 6;
   }
 
   //libModule assumes compileOnly even if compileOnly is false
-  if( ! properties.compileOnly() &&
-      ! properties.libModule() ) {
-  //
-  // Run the query N times
-  //
-  try {
-    for (int i = 0; i < lNumExecutions; ++i) {
-      if (query->isUpdateQuery()) {
-        query->applyUpdates();
-      } else {
+  if( ! properties.compileOnly() && ! properties.libModule() ) 
+  {
+    //
+    // Run the query N times
+    //
+    try 
+    {
+      for (int i = 0; i < lNumExecutions; ++i) 
+      {
         if (properties.noSerializer ())
           query->executeSAX ();
         else
           query->serialize(outputStream, &lSerOptions);
       }
     }
-  } catch (zorba::QueryException& qe) {
-    ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), properties.indent());
-    return 5;
-  } catch (zorba::ZorbaException& ze) {
-    std::cerr << ze << std::endl;
-    return 6;
-  }
+    catch (zorba::QueryException& qe) 
+    {
+      ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), properties.indent());
+      return 5;
+    }
+    catch (zorba::ZorbaException& ze) 
+    {
+      std::cerr << ze << std::endl;
+      return 6;
+    }
   }
 
   return 0;
