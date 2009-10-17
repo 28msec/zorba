@@ -32,28 +32,6 @@
 
 namespace zorba{
 
-    class CodepointsToStringIterator;
-    class CompareStrIterator;
-    class CodepointEqualIterator;
-    class ConcatStrIterator;
-    class StringJoinIterator;
-    class SubstringIterator;
-    class StringLengthIterator;
-    class NormalizeSpaceIterator;
-    class NormalizeUnicodeIterator;
-    class UpperCaseIterator;
-    class LowerCaseIterator;
-    class TranslateIterator;
-    class EncodeForUriIterator;
-    class IriToUriIterator;
-    class EscapeHtmlUriIterator;
-    class ContainsIterator;
-    class StartsWithIterator;
-    class EndsWithIterator;
-    class SubstringBeforeIterator;
-    class SubstringAfterIterator;
-    class FnMatchesIterator;
-    class FnReplaceIterator;
     class FnConcatIterator;
     class FnIndexOfIterator;
     class FnEmptyIterator;
@@ -79,6 +57,28 @@ namespace zorba{
     class FnDocIterator;
     class FnDocAvailableIterator;
     class FnParseIterator;
+    class CodepointsToStringIterator;
+    class CompareStrIterator;
+    class CodepointEqualIterator;
+    class ConcatStrIterator;
+    class StringJoinIterator;
+    class SubstringIterator;
+    class StringLengthIterator;
+    class NormalizeSpaceIterator;
+    class NormalizeUnicodeIterator;
+    class UpperCaseIterator;
+    class LowerCaseIterator;
+    class TranslateIterator;
+    class EncodeForUriIterator;
+    class IriToUriIterator;
+    class EscapeHtmlUriIterator;
+    class ContainsIterator;
+    class StartsWithIterator;
+    class EndsWithIterator;
+    class SubstringBeforeIterator;
+    class SubstringAfterIterator;
+    class FnMatchesIterator;
+    class FnReplaceIterator;
 
 #include "runtime/visitors/planiter_visitor_impl_include.h"
 
@@ -90,72 +90,6 @@ public:
   virtual ~PlanIterVisitor() {}
 
 #include "runtime/visitors/planiter_visitor_impl_code.h"
-
-    virtual void beginVisit ( const CodepointsToStringIterator& ) = 0;
-    virtual void endVisit   ( const CodepointsToStringIterator& ) = 0;
-
-    virtual void beginVisit ( const CompareStrIterator& ) = 0;
-    virtual void endVisit   ( const CompareStrIterator& ) = 0;
-
-    virtual void beginVisit ( const CodepointEqualIterator& ) = 0;
-    virtual void endVisit   ( const CodepointEqualIterator& ) = 0;
-
-    virtual void beginVisit ( const ConcatStrIterator& ) = 0;
-    virtual void endVisit   ( const ConcatStrIterator& ) = 0;
-
-    virtual void beginVisit ( const StringJoinIterator& ) = 0;
-    virtual void endVisit   ( const StringJoinIterator& ) = 0;
-
-    virtual void beginVisit ( const SubstringIterator& ) = 0;
-    virtual void endVisit   ( const SubstringIterator& ) = 0;
-
-    virtual void beginVisit ( const StringLengthIterator& ) = 0;
-    virtual void endVisit   ( const StringLengthIterator& ) = 0;
-
-    virtual void beginVisit ( const NormalizeSpaceIterator& ) = 0;
-    virtual void endVisit   ( const NormalizeSpaceIterator& ) = 0;
-
-    virtual void beginVisit ( const NormalizeUnicodeIterator& ) = 0;
-    virtual void endVisit   ( const NormalizeUnicodeIterator& ) = 0;
-
-    virtual void beginVisit ( const UpperCaseIterator& ) = 0;
-    virtual void endVisit   ( const UpperCaseIterator& ) = 0;
-
-    virtual void beginVisit ( const LowerCaseIterator& ) = 0;
-    virtual void endVisit   ( const LowerCaseIterator& ) = 0;
-
-    virtual void beginVisit ( const TranslateIterator& ) = 0;
-    virtual void endVisit   ( const TranslateIterator& ) = 0;
-
-    virtual void beginVisit ( const EncodeForUriIterator& ) = 0;
-    virtual void endVisit   ( const EncodeForUriIterator& ) = 0;
-
-    virtual void beginVisit ( const IriToUriIterator& ) = 0;
-    virtual void endVisit   ( const IriToUriIterator& ) = 0;
-
-    virtual void beginVisit ( const EscapeHtmlUriIterator& ) = 0;
-    virtual void endVisit   ( const EscapeHtmlUriIterator& ) = 0;
-
-    virtual void beginVisit ( const ContainsIterator& ) = 0;
-    virtual void endVisit   ( const ContainsIterator& ) = 0;
-
-    virtual void beginVisit ( const StartsWithIterator& ) = 0;
-    virtual void endVisit   ( const StartsWithIterator& ) = 0;
-
-    virtual void beginVisit ( const EndsWithIterator& ) = 0;
-    virtual void endVisit   ( const EndsWithIterator& ) = 0;
-
-    virtual void beginVisit ( const SubstringBeforeIterator& ) = 0;
-    virtual void endVisit   ( const SubstringBeforeIterator& ) = 0;
-
-    virtual void beginVisit ( const SubstringAfterIterator& ) = 0;
-    virtual void endVisit   ( const SubstringAfterIterator& ) = 0;
-
-    virtual void beginVisit ( const FnMatchesIterator& ) = 0;
-    virtual void endVisit   ( const FnMatchesIterator& ) = 0;
-
-    virtual void beginVisit ( const FnReplaceIterator& ) = 0;
-    virtual void endVisit   ( const FnReplaceIterator& ) = 0;
 
     virtual void beginVisit ( const FnConcatIterator& ) = 0;
     virtual void endVisit   ( const FnConcatIterator& ) = 0;
@@ -231,6 +165,72 @@ public:
 
     virtual void beginVisit ( const FnParseIterator& ) = 0;
     virtual void endVisit   ( const FnParseIterator& ) = 0;
+
+    virtual void beginVisit ( const CodepointsToStringIterator& ) = 0;
+    virtual void endVisit   ( const CodepointsToStringIterator& ) = 0;
+
+    virtual void beginVisit ( const CompareStrIterator& ) = 0;
+    virtual void endVisit   ( const CompareStrIterator& ) = 0;
+
+    virtual void beginVisit ( const CodepointEqualIterator& ) = 0;
+    virtual void endVisit   ( const CodepointEqualIterator& ) = 0;
+
+    virtual void beginVisit ( const ConcatStrIterator& ) = 0;
+    virtual void endVisit   ( const ConcatStrIterator& ) = 0;
+
+    virtual void beginVisit ( const StringJoinIterator& ) = 0;
+    virtual void endVisit   ( const StringJoinIterator& ) = 0;
+
+    virtual void beginVisit ( const SubstringIterator& ) = 0;
+    virtual void endVisit   ( const SubstringIterator& ) = 0;
+
+    virtual void beginVisit ( const StringLengthIterator& ) = 0;
+    virtual void endVisit   ( const StringLengthIterator& ) = 0;
+
+    virtual void beginVisit ( const NormalizeSpaceIterator& ) = 0;
+    virtual void endVisit   ( const NormalizeSpaceIterator& ) = 0;
+
+    virtual void beginVisit ( const NormalizeUnicodeIterator& ) = 0;
+    virtual void endVisit   ( const NormalizeUnicodeIterator& ) = 0;
+
+    virtual void beginVisit ( const UpperCaseIterator& ) = 0;
+    virtual void endVisit   ( const UpperCaseIterator& ) = 0;
+
+    virtual void beginVisit ( const LowerCaseIterator& ) = 0;
+    virtual void endVisit   ( const LowerCaseIterator& ) = 0;
+
+    virtual void beginVisit ( const TranslateIterator& ) = 0;
+    virtual void endVisit   ( const TranslateIterator& ) = 0;
+
+    virtual void beginVisit ( const EncodeForUriIterator& ) = 0;
+    virtual void endVisit   ( const EncodeForUriIterator& ) = 0;
+
+    virtual void beginVisit ( const IriToUriIterator& ) = 0;
+    virtual void endVisit   ( const IriToUriIterator& ) = 0;
+
+    virtual void beginVisit ( const EscapeHtmlUriIterator& ) = 0;
+    virtual void endVisit   ( const EscapeHtmlUriIterator& ) = 0;
+
+    virtual void beginVisit ( const ContainsIterator& ) = 0;
+    virtual void endVisit   ( const ContainsIterator& ) = 0;
+
+    virtual void beginVisit ( const StartsWithIterator& ) = 0;
+    virtual void endVisit   ( const StartsWithIterator& ) = 0;
+
+    virtual void beginVisit ( const EndsWithIterator& ) = 0;
+    virtual void endVisit   ( const EndsWithIterator& ) = 0;
+
+    virtual void beginVisit ( const SubstringBeforeIterator& ) = 0;
+    virtual void endVisit   ( const SubstringBeforeIterator& ) = 0;
+
+    virtual void beginVisit ( const SubstringAfterIterator& ) = 0;
+    virtual void endVisit   ( const SubstringAfterIterator& ) = 0;
+
+    virtual void beginVisit ( const FnMatchesIterator& ) = 0;
+    virtual void endVisit   ( const FnMatchesIterator& ) = 0;
+
+    virtual void beginVisit ( const FnReplaceIterator& ) = 0;
+    virtual void endVisit   ( const FnReplaceIterator& ) = 0;
 
 
   }; //class PlanIterVisitor
