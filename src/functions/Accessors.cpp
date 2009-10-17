@@ -24,6 +24,7 @@
 #include "functions/single_seq_func.h"
 
 #include "runtime/accessors/AccessorsImpl.h"
+#include "runtime/accessors/accessors.h"
 #include "runtime/core/var_iterators.h"
 
 using namespace std;
@@ -99,7 +100,7 @@ class fn_root_func : public function
 public:
   fn_root_func(const signature& s) : function (s) {}
 
-  DEFAULT_NARY_CODEGEN(FnRootIterator);
+  DEFAULT_NARY_CODEGEN(RootIterator);
 };
 
 
@@ -111,7 +112,7 @@ class fn_nodename_func : public function
 public:
   fn_nodename_func(const signature& s) : function (s) {}
 
-  DEFAULT_NARY_CODEGEN(FnNodeNameIterator);
+  DEFAULT_NARY_CODEGEN(NodeNameIterator);
 };
 
 
@@ -123,7 +124,7 @@ class fn_nilled_func : public function
 public:
   fn_nilled_func(const signature& s) : function (s) {}
 
-  DEFAULT_NARY_CODEGEN(FnNilledIterator);
+  DEFAULT_NARY_CODEGEN(NilledIterator);
 };
 
 
@@ -135,7 +136,7 @@ class fn_base_uri_func : public function
 public:
   fn_base_uri_func(const signature& s) : function (s) {}
 
-  DEFAULT_NARY_CODEGEN(FnBaseUriIterator);
+  DEFAULT_NARY_CODEGEN(BaseUriIterator);
 };
 
 
@@ -147,7 +148,7 @@ class fn_document_uri_func : public function
 public:
   fn_document_uri_func(const signature& s) : function (s) {}
 
-  DEFAULT_NARY_CODEGEN(FnDocumentUriIterator);
+  DEFAULT_NARY_CODEGEN(DocumentUriIterator);
 };
 
 
@@ -170,10 +171,10 @@ PlanIter_t fn_name_func::codegen(
     std::vector<PlanIter_t>& argv,
     AnnotationHolder& ann) const
 {
-  PlanIter_t nnIter = new FnNodeNameIterator(sctx, loc, argv);
+  PlanIter_t nnIter = new NodeNameIterator(sctx, loc, argv);
   std::vector<PlanIter_t> lVec;
   lVec.push_back(nnIter);
-  return new FnStringIterator(sctx, loc, lVec, true);
+  return new StringIterator(sctx, loc, lVec, true);
 }
 
 
@@ -192,7 +193,7 @@ public:
         std::vector<PlanIter_t>& argv,
         AnnotationHolder& ann) const
   {
-    return new FnStringIterator(sctx, loc, argv, true);
+    return new StringIterator(sctx, loc, argv, true);
   }
 };
 

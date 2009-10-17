@@ -1,4 +1,4 @@
-PLAN_ITER_VISITOR(NodeReferenceIterator);
+  PLAN_ITER_VISITOR(NodeReferenceIterator);
   
   PLAN_ITER_VISITOR(NodeByReferenceIterator);
     
@@ -9,20 +9,8 @@ PLAN_ITER_VISITOR(NodeReferenceIterator);
   PLAN_ITER_VISITOR (LoopIterator);
 
   PLAN_ITER_VISITOR (FnDataIterator);
-       
-  PLAN_ITER_VISITOR (FnRootIterator);
-       
-  PLAN_ITER_VISITOR (FnNodeNameIterator);
-  
-  PLAN_ITER_VISITOR (FnNilledIterator);
-
-  PLAN_ITER_VISITOR (FnBaseUriIterator);
-
-  PLAN_ITER_VISITOR (FnDocumentUriIterator);
 
   PLAN_ITER_VISITOR (FnResolveUriIterator);
-
-  PLAN_ITER_VISITOR (FnStringIterator);
 
   PLAN_ITER_VISITOR (FnLocalNameIterator);
 

@@ -35,6 +35,7 @@
 
 #include "runtime/sequences/sequences.h"
 #include "runtime/strings/strings.h"
+#include "runtime/accessors/accessors.h"
 
 namespace zorba{
 
@@ -689,6 +690,84 @@ void PrinterVisitor::endVisit ( const FnReplaceIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FnReplaceIterator>
+
+// <NodeNameIterator>
+void PrinterVisitor::beginVisit ( const NodeNameIterator& a) {
+  thePrinter.startBeginVisit("NodeNameIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const NodeNameIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </NodeNameIterator>
+
+// <NilledIterator>
+void PrinterVisitor::beginVisit ( const NilledIterator& a) {
+  thePrinter.startBeginVisit("NilledIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const NilledIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </NilledIterator>
+
+// <StringIterator>
+void PrinterVisitor::beginVisit ( const StringIterator& a) {
+  thePrinter.startBeginVisit("StringIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const StringIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </StringIterator>
+
+// <BaseUriIterator>
+void PrinterVisitor::beginVisit ( const BaseUriIterator& a) {
+  thePrinter.startBeginVisit("BaseUriIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const BaseUriIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </BaseUriIterator>
+
+// <DocumentUriIterator>
+void PrinterVisitor::beginVisit ( const DocumentUriIterator& a) {
+  thePrinter.startBeginVisit("DocumentUriIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const DocumentUriIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </DocumentUriIterator>
+
+// <RootIterator>
+void PrinterVisitor::beginVisit ( const RootIterator& a) {
+  thePrinter.startBeginVisit("RootIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const RootIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </RootIterator>
 
 
 }

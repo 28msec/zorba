@@ -186,6 +186,23 @@ namespace zorba {
 
     void beginVisit( const FnReplaceIterator& );
     void endVisit  ( const FnReplaceIterator& );
+    void beginVisit( const NodeNameIterator& );
+    void endVisit  ( const NodeNameIterator& );
+
+    void beginVisit( const NilledIterator& );
+    void endVisit  ( const NilledIterator& );
+
+    void beginVisit( const StringIterator& );
+    void endVisit  ( const StringIterator& );
+
+    void beginVisit( const BaseUriIterator& );
+    void endVisit  ( const BaseUriIterator& );
+
+    void beginVisit( const DocumentUriIterator& );
+    void endVisit  ( const DocumentUriIterator& );
+
+    void beginVisit( const RootIterator& );
+    void endVisit  ( const RootIterator& );
 
   }; //class PrinterVisitor
 } //namespace zorba

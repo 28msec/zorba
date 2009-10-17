@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+// 2. Accessors                                                                //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+-->
+<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+    
+<zorba:header>
+    <zorba:include form="Quoted">common/shared_types.h</zorba:include>
+    <zorba:include form="Quoted">runtime/base/narybase.h</zorba:include>
+    <!--    <zorba:include form="Quoted">runtime/base/unarybase.h</zorba:include> -->
+</zorba:header>
+
+<zorba:source>
+    <zorba:include form="Quoted">system/globalenv.h</zorba:include>
+    <zorba:include form="Quoted">runtime/accessors/AccessorsImpl.h</zorba:include>
+    <zorba:include form="Quoted">runtime/visitors/planiter_visitor.h</zorba:include>
+    <zorba:include form="Quoted">store/api/item.h</zorba:include>
+    <zorba:include form="Quoted">store/api/iterator.h</zorba:include>
+    <zorba:include form="Quoted">store/api/item_factory.h</zorba:include>
+</zorba:source>
+
+<!-- 
+<zorba:codegen>
+    <zorba:h>
+        <zorba:include form="Quoted">common/shared_types.h</zorba:include>
+        <zorba:include form="Quoted">functions/function_impl.h</zorba:include>
+    </zorba:h>
+    <zorba:cpp>
+        <zorba:include form="Quoted">runtime/strings/StringsImpl.h</zorba:include>
+        <zorba:include form="Quoted">runtime/strings/strings.h</zorba:include>
+        <zorba:include form="Quoted">functions/Strings.h</zorba:include>
+    </zorba:cpp>
+</zorba:codegen>
+-->
+    
+<!--
+/*******************************************************************************
+ * 2.1 fn:node-name
+********************************************************************************/
+-->
+<zorba:iterator
+    name="NodeNameIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">fn:node-name</zorba:description>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+ * 2.2 fn:nilled
+********************************************************************************/
+-->
+
+<zorba:iterator
+    name="NilledIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">fn:nilled</zorba:description>
+    
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+ * 2.3 fn:string
+********************************************************************************/
+-->
+
+<zorba:iterator
+    name="StringIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">fn:string</zorba:description>
+    
+    <zorba:constructor>
+        <zorba:parameter type="bool" name="emptyStringOnNULL" />
+    </zorba:constructor>
+    
+    <zorba:member type="bool" name="theEmptyStringOnNULL" generateAccessor="true"
+        accessorName="isUpdating" brief=""/>
+    
+    <zorba:state generateInit="true" generateReset="true"
+        generateConstructor="true" generateDestructor="true">
+        <zorba:member type="bool" name="hasOutput" defaultValue="false" brief=""/>
+    </zorba:state>
+    
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+ * 2.4 fn:data
+********************************************************************************/
+
+<zorba:iterator
+    name="DataIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="unary">
+
+    <zorba:description author="Zorba Team">fn:concat</zorba:description>
+    
+    <zorba:state generateInit="true" generateReset="true">
+        <zorba:member type="store::Iterator_t" name="theTypedValueIter" defaultValue="NULL" brief=""/>
+    </zorba:state>
+    
+</zorba:iterator>
+-->
+
+<!--
+/*******************************************************************************
+ * 2.5 fn:base-uri
+********************************************************************************/
+-->
+<zorba:iterator
+    name="BaseUriIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">fn:base-uri</zorba:description>
+    
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+ * 2.6 fn:document-uri
+********************************************************************************/
+-->
+<zorba:iterator
+    name="DocumentUriIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">fn:document-uri</zorba:description>
+    
+</zorba:iterator>
+
+<!--
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+// 14 Functions and Operators on Nodes                                         //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+-->
+
+
+<!--
+/*******************************************************************************
+ * 14.9 fn:root
+********************************************************************************/
+-->
+<zorba:iterator
+    name="RootIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+    
+    <zorba:description author="Zorba Team">fn:root</zorba:description>
+
+</zorba:iterator>
+
+</zorba:iterators>

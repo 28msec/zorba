@@ -79,6 +79,12 @@ namespace zorba{
     class SubstringAfterIterator;
     class FnMatchesIterator;
     class FnReplaceIterator;
+    class NodeNameIterator;
+    class NilledIterator;
+    class StringIterator;
+    class BaseUriIterator;
+    class DocumentUriIterator;
+    class RootIterator;
 
 #include "runtime/visitors/planiter_visitor_impl_include.h"
 
@@ -231,6 +237,24 @@ public:
 
     virtual void beginVisit ( const FnReplaceIterator& ) = 0;
     virtual void endVisit   ( const FnReplaceIterator& ) = 0;
+
+    virtual void beginVisit ( const NodeNameIterator& ) = 0;
+    virtual void endVisit   ( const NodeNameIterator& ) = 0;
+
+    virtual void beginVisit ( const NilledIterator& ) = 0;
+    virtual void endVisit   ( const NilledIterator& ) = 0;
+
+    virtual void beginVisit ( const StringIterator& ) = 0;
+    virtual void endVisit   ( const StringIterator& ) = 0;
+
+    virtual void beginVisit ( const BaseUriIterator& ) = 0;
+    virtual void endVisit   ( const BaseUriIterator& ) = 0;
+
+    virtual void beginVisit ( const DocumentUriIterator& ) = 0;
+    virtual void endVisit   ( const DocumentUriIterator& ) = 0;
+
+    virtual void beginVisit ( const RootIterator& ) = 0;
+    virtual void endVisit   ( const RootIterator& ) = 0;
 
 
   }; //class PlanIterVisitor

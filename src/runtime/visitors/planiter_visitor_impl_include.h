@@ -4,14 +4,8 @@
   class FlowCtlIterator;
   class LoopIterator;
   class FnDataIterator;
-  class FnRootIterator;
-  class FnNodeNameIterator;
-  class FnNilledIterator;
-  class FnBaseUriIterator;
-  class FnDocumentUriIterator;
   class FnErrorIterator;
   class FnResolveUriIterator;
-  class FnStringIterator;
   class FnBooleanIterator;
 #ifndef ZORBA_NO_XMLSCHEMA
   class ValidateIterator;
