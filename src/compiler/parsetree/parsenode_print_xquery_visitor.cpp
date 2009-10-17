@@ -618,7 +618,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
     void* begin_visit(const OrderEmptySpec& n)
     {
       os << "empty ";
-      switch(n.get_empty_order_spec())
+      switch(n.getValue())
       {
         case StaticContextConsts::empty_greatest:
           os << "greatest ";

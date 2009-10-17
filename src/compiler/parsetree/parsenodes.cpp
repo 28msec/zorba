@@ -859,6 +859,24 @@ void NodeModifier::accept(parsenode_visitor& v) const
                           "on" IndexDomainExpr
                           "by" "(" IndexKeyList ")"
 ********************************************************************************/
+IndexDecl::IndexDecl (
+    const QueryLoc& loc,
+    QName* name,
+    rchandle<exprnode> domainExpr,
+    rchandle<IndexKeyList> key,
+    rchandle<IndexProperties> props)
+  :
+  parsenode(loc),
+  theName(name),
+  theDomainExpr(domainExpr),
+  theKey(key)
+{
+  theIsUnique = props->isUnique();
+  theIsOrdered = props->isOrdered();
+  theIsAutomatic = props->isAutomatic();
+}
+
+
 void IndexDecl::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();

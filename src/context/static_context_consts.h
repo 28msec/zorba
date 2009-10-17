@@ -18,21 +18,52 @@
 
 namespace zorba {
 
-  namespace StaticContextConsts 
+namespace StaticContextConsts 
+{
+  enum xpath1_0compatib_mode_t { xpath2_0, xpath1_0_only     };
+
+  enum construction_mode_t     { cons_preserve, cons_strip   };
+
+  enum ordering_mode_t         { ordered, unordered          };
+
+  enum order_empty_mode_t      { empty_greatest, empty_least };
+
+  enum boundary_space_mode_t   { preserve_space, strip_space };
+
+  enum inherit_mode_t          { inherit_ns, no_inherit_ns   };
+
+  enum preserve_mode_t         { preserve_ns, no_preserve_ns };
+
+  enum validation_mode_t
   {
-    enum xpath1_0compatib_mode_t { xpath2_0, xpath1_0_only     };
-    enum construction_mode_t     { cons_preserve, cons_strip   };
-    enum ordering_mode_t         { ordered, unordered          };
-    enum order_empty_mode_t      { empty_greatest, empty_least };
-    enum boundary_space_mode_t   { preserve_space, strip_space };
-    enum inherit_mode_t          { inherit_ns, no_inherit_ns   };
-    enum preserve_mode_t         { preserve_ns, no_preserve_ns };
-    enum validation_mode_t       { strict_validation, lax_validation, skip_validation };
-    enum xquery_version_t        { xquery_version_unknown = 0, xquery_version_1_0 = 100, xquery_version_1_1 = 110 };
-    enum collection_modifier_t   { const_, append_only, queue, mutable_coll };
-    enum node_modifier_t         { read_only, mutable_node };
-    
-  }; /* namespace StaticContextConsts */
+    strict_validation,
+    lax_validation,
+    skip_validation
+  };
+
+  enum xquery_version_t
+  {
+    xquery_version_unknown = 0,
+    xquery_version_1_0 = 100,
+    xquery_version_1_1 = 110
+  };
+
+  enum collection_modifier_t
+  {
+    const_,
+    append_only,
+    queue,
+    mutable_coll 
+  };
+  
+  enum node_modifier_t
+  {
+    read_only,
+    mutable_node
+  };
+  
+
+}; /* namespace StaticContextConsts */
 
 } /* namespace zorba */
 

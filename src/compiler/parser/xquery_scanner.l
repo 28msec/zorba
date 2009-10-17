@@ -448,6 +448,7 @@ typedef zorba::xquery_parser::token token;
 
 "index" { return token::INDEX; }
 "unique" { return token::UNIQUE; }
+"non" { return token::NON; }
 "manual" { return token::MANUAL; }
 "automatic" { return token::AUTOMATIC; }
 "on" { return token::ON; }

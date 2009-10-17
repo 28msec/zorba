@@ -3087,11 +3087,12 @@ void* begin_visit(const IndexKeyList& v)
 
 void end_visit(const IndexKeyList& v, void* /*visit_state*/) 
 {
-  std::vector<expr_t> keyExprs;
-  std::vector<xqtref_t> keyTypes;
-  std::vector<std::string> keyCollations;
-
   ulong numColumns = v.size();
+
+  std::vector<expr_t> keyExprs(numColumns);
+  std::vector<xqtref_t> keyTypes(numColumns);
+  std::vector<std::string> keyCollations(numColumns);
+  std::vector<bool> keyEmptyLeastSpecs(numColumns);
 
   ValueIndex* index = indexstack.top();
 
@@ -3112,12 +3113,23 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
                                << i << ".");
     }
 
-    keyTypes.push_back(type);
+    keyTypes[i] = type;
+
+    if (keySpec->getEmptyOrderSpec() != NULL)
+    {
+      keyEmptyLeastSpecs[i] = 
+      (keySpec->getEmptyOrderSpec()->getValue() == StaticContextConsts::empty_least);
+    }
+    else
+    {
+      keyEmptyLeastSpecs[i] = 
+      (sctx_p->order_empty_mode() == StaticContextConsts::empty_least);
+    }
 
     // If no collation is specified in the declaration, keySpec->getCollation()
     // will be the empty string, and in this case the default collation from
     // the sctx will be used during runtime.
-    keyCollations.push_back(keySpec->getCollation());
+    keyCollations[i] = keySpec->getCollation();
 
     expr_t keyExpr = pop_nodestack();
 
@@ -3151,16 +3163,13 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
         theCCB->m_config.optimize_cb(&*keyExpr, msg.str());
     }
 
-    keyExprs.push_back(keyExpr);
+    keyExprs[i] = keyExpr;
   }
-
-  std::reverse(keyExprs.begin(), keyExprs.end());
-  std::reverse(keyTypes.begin(), keyTypes.end());
-  std::reverse(keyCollations.begin(), keyCollations.end());
 
   index->setKeyExpressions(keyExprs);
   index->setKeyTypes(keyTypes);
   index->setKeyCollations(keyCollations);
+  index->setEmptyLeastSpecs(keyEmptyLeastSpecs);
 
   pop_scope();
 
@@ -4203,7 +4212,7 @@ void end_visit(const OrderByClause& v, void* /*visit_state*/)
 
     StaticContextConsts::order_empty_mode_t emptySpec = sctx_p->order_empty_mode();
     if (mod && mod->get_empty_spec() != NULL)
-      emptySpec = mod->get_empty_spec()->get_empty_order_spec();
+      emptySpec = mod->get_empty_spec()->getValue();
 
     string collation = sctx_p->default_collation_uri();
     if (mod && mod->get_collation_spec() != NULL)

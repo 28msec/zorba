@@ -133,6 +133,7 @@ class CollectionModifier;
 class NodeModifier;
 class IndexKeyList;
 class IndexKeySpec;
+class IndexProperties;
 class IfExpr;
 class InsertExpr;
 class InstanceofExpr;
@@ -1182,12 +1183,10 @@ public:
 
 
 /***************************************************************************//**
-  IndexDecl ::= "declare" "unique"? 
-                          ("ordered" | "unordered")?
-                          ("automatic" | "manual")?
-                          "index" QName
-                          "on" IndexDomainExpr
-                          "by" "(" IndexKeyList ")"
+  IndexDecl ::= "declare" "index" QName
+                "on" IndexDomainExpr
+                "by" "(" IndexKeyList ")"
+                 IndexProperties
 ********************************************************************************/
 class IndexDecl : public parsenode 
 {
@@ -1196,8 +1195,8 @@ protected:
   rchandle<exprnode>     theDomainExpr;
   rchandle<IndexKeyList> theKey;
 
-  bool                   theIsOrdered;
   bool                   theIsUnique;
+  bool                   theIsOrdered;
   bool                   theIsAutomatic;
 
 public:
@@ -1205,21 +1204,48 @@ public:
         const QueryLoc& loc,
         QName* name,
         rchandle<exprnode> domainExpr,
-        rchandle<IndexKeyList> key)
-    :
-    parsenode(loc),
-    theName(name),
-    theDomainExpr(domainExpr),
-    theKey(key),
-    theIsOrdered(false),
-    theIsUnique(false),
-    theIsAutomatic(false)
-  {
-  }
+        rchandle<IndexKeyList> key,
+        rchandle<IndexProperties> props);
 
   const QName* getName() const { return theName.getp(); }
 
   const exprnode* getDomainExpr() const { return theDomainExpr; }
+
+  bool isUnique() const { return theIsUnique; }
+
+  bool isOrdered() const { return theIsOrdered; }
+
+  bool isAutomatic() const { return theIsAutomatic; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/***************************************************************************//**
+  IndexProperties ::= ("unique" | "non" "unique")? 
+                      ("ordered" | "unordered")?
+                      ("automatic" | "manual")?
+********************************************************************************/
+class IndexProperties : public parsenode 
+{
+protected:
+  bool   theIsUnique;
+  bool   theIsOrdered;
+  bool   theIsAutomatic;
+
+public:
+  IndexProperties(
+        const QueryLoc& loc,
+        bool isUnique,
+        bool isOrdered,
+        bool isAutomatic)
+    :
+    parsenode(loc),
+    theIsUnique(isUnique),
+    theIsOrdered(isOrdered),
+    theIsAutomatic(isAutomatic)
+  {
+  }
 
   bool isUnique() const { return theIsUnique; }
 
@@ -1233,7 +1259,7 @@ public:
 
   void setAutomatic() { theIsAutomatic = true; }
 
-  void accept(parsenode_visitor&) const;
+  void accept(parsenode_visitor&) const { }
 };
 
 
@@ -1258,18 +1284,20 @@ public:
 };
 
 
-/***************************************************************************//**
-  IndexKeySpec ::= ExprSingle TypeDeclaration? 
-                              ("empty" ("greatest" | "least"))?
-                              ("collation" UriLiteral)?
+/*******************************************************************************
+  IndexKeySpec ::= ExprSingle TypeDeclaration? OrderEmptySpec? OrderCollationSpec?
+
+  OrderEmptySpec ::= "empty" ("greatest" | "least")
+
+  OrderCollationSpec ::= "collation" URILiteral
 ********************************************************************************/
 class IndexKeySpec : public parsenode 
 {
 protected:
-  rchandle<exprnode>     theExpr;
-  rchandle<SequenceType> theType;
-  bool                   theEmptyLeast;
-  std::string            theCollation;
+  rchandle<exprnode>       theExpr;
+  rchandle<SequenceType>   theType;
+  rchandle<OrderEmptySpec> theEmptyOrderSpec;
+  std::string              theCollation;
 
 public:
   IndexKeySpec(
@@ -1279,8 +1307,7 @@ public:
     :
     parsenode(loc),
     theExpr(expr),
-    theType(type),
-    theEmptyLeast(false)
+    theType(type)
   {
   }
 
@@ -1288,9 +1315,9 @@ public:
 
   rchandle<SequenceType> getType() const { return theType; }
 
-  bool emptyLeast() const { return theEmptyLeast; }
+  void setEmptyOrderSpec(OrderEmptySpec* oes) { theEmptyOrderSpec = oes; }
 
-  void setEmptyLeast(bool v) { theEmptyLeast = v; }
+  const OrderEmptySpec* getEmptyOrderSpec() const { return theEmptyOrderSpec.getp(); }
 
   const std::string& getCollation() const { return theCollation; }
 
@@ -2005,7 +2032,7 @@ public:
         const QueryLoc&,
         StaticContextConsts::order_empty_mode_t empty_order_spec);
 
-  StaticContextConsts::order_empty_mode_t get_empty_order_spec() const
+  StaticContextConsts::order_empty_mode_t getValue() const
   {
     return empty_order_spec;
   }

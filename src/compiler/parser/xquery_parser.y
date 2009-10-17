@@ -479,6 +479,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token READ_ONLY           "'read-only'"
 
 %token UNIQUE              "'unique'"
+%token NON                 "'non'"
 %token INDEX               "'index'"
 %token MANUAL              "'manual'"
 %token AUTOMATIC           "'automatic'"
@@ -720,9 +721,9 @@ static void print_token_value(FILE *, int, YYSTYPE);
 /* index-related     */
 /* ----------------- */
 %type <node> IndexDecl
-%type <node> IndexDecl2
-%type <node> IndexDecl3
-%type <node> IndexDeclSuffix
+%type <node> IndexProperties
+%type <node> IndexProperties2
+%type <node> IndexProperties3
 %type <node> IndexKeySpec
 %type <node> IndexKeySpec1
 %type <node> IndexKeyList
@@ -782,7 +783,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 // (not <= 0); but Bison never increments the refcount, so we do it manually...
 
 // parsenodes
-%destructor { if ($$ != NULL) { RCHelper::addReference ($$); RCHelper::removeReference ($$); } } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDecl3 FunctionDecl4 Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl CollectionModifier NodeModifier IndexDecl IndexDecl2 IndexDecl3 IndexDeclSuffix IndexKeySpec IndexKeySpec1 IndexKeyList CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard DecimalFormatDecl // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
+%destructor { if ($$ != NULL) { RCHelper::addReference ($$); RCHelper::removeReference ($$); } } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDecl3 FunctionDecl4 Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl CollectionModifier NodeModifier IndexDecl IndexProperties IndexProperties2 IndexProperties3 IndexKeySpec IndexKeySpec1 IndexKeyList CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard DecimalFormatDecl // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
 // exprnodes
 %destructor { if ($$ != NULL) { RCHelper::addReference ($$); RCHelper::removeReference ($$); } } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockExpr EnclosedExpr Expr ConcatExpr ApplyExpr ExprSingle ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignExpr ExitExpr WhileExpr FlowCtlStatement QNAME FTContainsExpr
 // internal non-terminals with values
@@ -1709,58 +1710,71 @@ NodeModifier :
 
 
 IndexDecl :
-    DECLARE IndexDecl2
+    DECLARE INDEX QNAME ON Expr BY IndexKeyList RPAR IndexProperties
     {
+      $$ = new IndexDecl(LOC(@$),
+                         static_cast<QName*>($3),
+                         $5,
+                         dynamic_cast<IndexKeyList*>($7),
+                         dynamic_cast<IndexProperties*>($9));
+    }
+;
+
+
+IndexProperties :
+    IndexProperties2
+    {
+      $$ = $1;
+    }
+
+  | UNIQUE IndexProperties2
+    {
+      IndexProperties* p = dynamic_cast<IndexProperties*>($2);
+      p->setUnique();
       $$ = $2;
     }
-  | DECLARE UNIQUE IndexDecl2
+
+  | NON UNIQUE IndexProperties2
     {
-      dynamic_cast<IndexDecl*>($3)->setUnique();
       $$ = $3;
     }
   ;
 
-IndexDecl2 :
-    IndexDecl3
+IndexProperties2 :
+    IndexProperties3
     {
       $$ = $1;
     }
-  | UNORDERED IndexDecl3
-    {
-      $$ = $2;
-    }
-  | ORDERED IndexDecl3
-    {
-      dynamic_cast<IndexDecl*>($2)->setOrdered();
-      $$ = $2;
-    }
-  ;
 
-IndexDecl3 :
-    IndexDeclSuffix
+  | ORDERED IndexProperties3
     {
-      $$ = $1;
-    }
-  | MANUAL IndexDeclSuffix
-    {
+      IndexProperties* p = dynamic_cast<IndexProperties*>($2);
+      p->setOrdered();
       $$ = $2;
     }
-  | AUTOMATIC IndexDeclSuffix
-    {
-      dynamic_cast<IndexDecl*>($2)->setAutomatic();
-      $$ = $2;
-    }
-  ;
 
-IndexDeclSuffix :
-    INDEX QNAME ON Expr BY IndexKeyList RPAR
+  | UNORDERED IndexProperties3
     {
-      $$ = new IndexDecl(LOC(@$),
-                         static_cast<QName*>($2),
-                         $4,
-                         dynamic_cast<IndexKeyList*>($6));
+      $$ = $2;
     }
-  ;
+;
+
+IndexProperties3:
+    {
+      // default properties: non-unique, non-ordered, manual
+      $$ = new IndexProperties(LOC(@$), false, false, false);
+    }
+  | MANUAL
+    {
+      $$ = new IndexProperties(LOC(@$), false, false, false);
+    }
+
+  | AUTOMATIC
+    {
+      $$ = new IndexProperties(LOC(@$), false, false, true);
+    }
+;
+
 
 IndexKeyList :
     LPAR IndexKeySpec
@@ -1774,7 +1788,7 @@ IndexKeyList :
       dynamic_cast<IndexKeyList*>($1)->addKeySpec(dynamic_cast<IndexKeySpec*>($3));
       $$ = $1;
     }
-  ;
+;
 
 IndexKeySpec :
     IndexKeySpec1
@@ -1785,6 +1799,19 @@ IndexKeySpec :
     {
       dynamic_cast<IndexKeySpec*>($1)->setCollation(SYMTAB($3));
       $$ = $1;
+    }
+  | IndexKeySpec1 OrderEmptySpec COLLATION URI_LITERAL
+    {
+      OrderEmptySpec* oes = dynamic_cast<OrderEmptySpec*>($2);
+      dynamic_cast<IndexKeySpec*>($1)->setEmptyOrderSpec(oes);
+      dynamic_cast<IndexKeySpec*>($1)->setCollation(SYMTAB($4));
+      $$ = $1;
+    }
+  | IndexKeySpec1 OrderEmptySpec
+    {
+      $$ = $1;
+      OrderEmptySpec* oes = dynamic_cast<OrderEmptySpec*>($2);
+      dynamic_cast<IndexKeySpec*>($1)->setEmptyOrderSpec(oes);
     }
   ;
 
@@ -2827,13 +2854,11 @@ OrderDirSpec :
 OrderEmptySpec:
 		_EMPTY GREATEST
 		{
-			$$ = new OrderEmptySpec(LOC (@$),
-								StaticContextConsts::empty_greatest);
+			$$ = new OrderEmptySpec(LOC(@$), StaticContextConsts::empty_greatest);
 		}
 	|	_EMPTY LEAST
 		{
-			$$ = new OrderEmptySpec(LOC (@$),
-								StaticContextConsts::empty_least);
+			$$ = new OrderEmptySpec(LOC(@$), StaticContextConsts::empty_least);
 		}
 	;
 
@@ -5480,6 +5505,7 @@ KEYWORD :
   | SET { $$ = SYMTAB_PUT ("set"); }
   | INDEX { $$ = SYMTAB_PUT ("index"); }
   | UNIQUE { $$ = SYMTAB_PUT ("unique"); }
+  | NON { $$ = SYMTAB_PUT ("non"); }
   | ON { $$ = SYMTAB_PUT ("on"); }
   | MANUAL { $$ = SYMTAB_PUT ("manual"); }
   | AUTOMATIC { $$ = SYMTAB_PUT ("automatic"); }

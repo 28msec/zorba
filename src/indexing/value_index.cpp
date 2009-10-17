@@ -66,6 +66,7 @@ void ValueIndex::serialize(::zorba::serialization::Archiver &ar)
   ar & theDomainClause;
   ar & theKeyExprs;
   ar & theKeyTypes;
+  //ar & theEmptyLeastSpecs; TODO
   ar & theKeyCollations;
   ar & m_creatorPatterns;
 }
@@ -142,6 +143,12 @@ void ValueIndex::setKeyTypes(const std::vector<xqtref_t>& keyTypes)
 }
 
 
+void ValueIndex::setEmptyLeastSpecs(const std::vector<bool>& emptyLeastSpecs)
+{
+  theEmptyLeastSpecs = emptyLeastSpecs;
+}
+
+
 expr* ValueIndex::getBuildExpr(CompilerCB* topCCB, const QueryLoc& loc)
 { 
   if (theBuildExpr != NULL)
@@ -153,8 +160,6 @@ expr* ValueIndex::getBuildExpr(CompilerCB* topCCB, const QueryLoc& loc)
 
   short sctxid = domainExpr->get_sctx_id();
   static_context* sctx = topCCB->getStaticContext(sctxid);
-
-  flwor_expr::clause_list_t clauses;
 
   //
   // Create FOR clause:
@@ -183,8 +188,6 @@ expr* ValueIndex::getBuildExpr(CompilerCB* topCCB, const QueryLoc& loc)
   newdot->set_flwor_clause(fc);
   newpos->set_flwor_clause(fc);
   
-  clauses.push_back(fc);
-
   //
   // Create RETURN clause:
   // return index-entry-builder($$dot, field1_expr, ..., fieldN_expr)
@@ -213,10 +216,7 @@ expr* ValueIndex::getBuildExpr(CompilerCB* topCCB, const QueryLoc& loc)
   flwor_expr* flworExpr = new flwor_expr(sctxid, loc, false);
   theBuildExpr = flworExpr;
   flworExpr->set_return_expr(returnExpr.getp());
-  for (unsigned i = 0; i < clauses.size(); ++i)
-  {
-    flworExpr->add_clause(clauses[i]);
-  }
+  flworExpr->add_clause(fc);
 
   std::string msg = "build expr for index " + theName->getStringValue()->str();
 

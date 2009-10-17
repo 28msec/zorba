@@ -34,7 +34,7 @@ typedef rchandle<ValueIndexInsertSession> ValueIndexInsertSession_t;
 /******************************************************************************
 
   Class ValueIndex represents an index declaration, which describes the index
-  properties and the domain and field expressions and their types. An instance
+  properties and the domain and key expressions and their types. An instance
   of ValueIndex is constructed by the translator for each DECLARE INDEX stmt
   that appears in an imported data module. A (index_qname --> ValueIndex obj)
   mapping is also registered in the static context during translation.
@@ -42,12 +42,14 @@ typedef rchandle<ValueIndexInsertSession> ValueIndexInsertSession_t;
   The DECLARE INDEX sysntax is the following:
   -------------------------------------------
 
-  IndexDecl ::= "declare" ("unique" | "non" "unique")? 
-                          ("ordered" | "unordered")?
-                          ("manual" | "automatic)?
-                          "index" QName
+  IndexDecl ::= "declare" "index" QName
                           "on" Expr
                           "by" "(" IndexKeyList ")"
+                          IndexProperties
+
+  IndexProperties ::= ("unique" | "non" "unique")? 
+                      ("ordered" | "unordered")?
+                      ("manual" | "automatic)?
 
   IndexKeyList ::= IndexKeySpec (COMMA IndexKeySpec)*
 
@@ -61,7 +63,7 @@ typedef rchandle<ValueIndexInsertSession> ValueIndexInsertSession_t;
   The domain expr must be deterministic and it must not reference any variables
   that are not defined inside the expr itself.
 
-  After atomization, the ExprSingle in each IndexKeySpec must return a single
+  After atomization, the ExprSingle in each IndexKeySpec must return at most one
   atomic value for each value returned by the domain expression.
 
 
@@ -71,6 +73,7 @@ typedef rchandle<ValueIndexInsertSession> ValueIndexInsertSession_t;
     create-index(...)
     create-internal-index(...)
     drop-index(...)
+    refresh-index(...)
     probe-index-point(...)
     probe-index-range(...)
 
@@ -97,6 +100,7 @@ private:
   for_clause_t             theDomainClause;
   std::vector<expr_t>      theKeyExprs;
   std::vector<xqtref_t>    theKeyTypes;
+  std::vector<bool>        theEmptyLeastSpecs;
   std::vector<std::string> theKeyCollations;
 
   expr_t                   theBuildExpr;
@@ -154,6 +158,8 @@ public:
   {
     return theKeyCollations; 
   }
+
+  void setEmptyLeastSpecs(const std::vector<bool>& emptyLeastSpecs);
 
   void setKeyCollations(const std::vector<std::string>& keyCollations) 
   {
