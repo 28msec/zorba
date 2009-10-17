@@ -409,8 +409,8 @@ int yyFlexLexer::yywrap() { return 1; }
 	(yy_c_buf_p) = yy_cp;
 
 /* %% [4.0] data tables for the DFA and the user's section 1 definitions go here */
-#define YY_NUM_RULES 307
-#define YY_END_OF_BUFFER 308
+#define YY_NUM_RULES 308
+#define YY_END_OF_BUFFER 309
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -420,175 +420,175 @@ struct yy_trans_info
 	};
 static yyconst flex_int16_t yy_accept[1541] =
     {   0,
-      251,  251,    0,    0,    0,    0,    0,    0,    0,    0,
+      252,  252,    0,    0,    0,    0,    0,    0,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,  254,  254,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,  260,  260,
-        0,    0,    0,    0,    0,    0,  278,  278,    0,    0,
-        0,    0,    0,    0,  308,  306,  251,  251,  121,  306,
-       15,  306,  306,    1,    9,   10,    5,    3,    4,   12,
-        6,  234,  306,    2,  245,  166,  176,   13,    8,  239,
-      239,  180,   14,  239,  239,  239,  239,  239,  239,  239,
+        0,    0,    0,    0,  255,  255,    0,    0,    0,    0,
+        0,    0,    0,    0,    0,    0,    0,    0,  261,  261,
+        0,    0,    0,    0,    0,    0,  279,  279,    0,    0,
+        0,    0,    0,    0,  309,  307,  252,  252,  122,  307,
+       15,  307,  307,    1,    9,   10,    5,    3,    4,   12,
+        6,  235,  307,    2,  246,  167,  177,   13,    8,  240,
+      240,  181,   14,  240,  240,  240,  240,  240,  240,  240,
 
-      239,  239,  239,  239,  239,  239,  239,  239,  239,  239,
-      239,  239,  239,  239,  239,  249,  193,  250,  306,  306,
-      306,  301,  301,  306,  298,  299,  306,  289,  289,  289,
-      307,  270,  270,  306,  269,  265,  306,  275,  276,  306,
-      306,  306,  281,  281,  281,  281,  283,  283,  283,  254,
-      254,  306,  306,  306,  306,  306,  307,  306,  284,  284,
-      306,  306,  286,  306,  306,  306,  306,  307,  306,  293,
-      293,  290,  306,  291,  306,  263,  260,  260,  260,  257,
-      258,  263,  259,  256,  262,  263,  263,  263,  278,  278,
-      306,  251,  184,    0,  241,    0,  120,    0,    0,  241,
+      240,  240,  240,  240,  240,  240,  240,  240,  240,  240,
+      240,  240,  240,  240,  240,  250,  194,  251,  307,  307,
+      307,  302,  302,  307,  299,  300,  307,  290,  290,  290,
+      308,  271,  271,  307,  270,  266,  307,  276,  277,  307,
+      307,  307,  282,  282,  282,  282,  284,  284,  284,  255,
+      255,  307,  307,  307,  307,  307,  308,  307,  285,  285,
+      307,  307,  287,  307,  307,  307,  307,  308,  307,  294,
+      294,  291,  307,  292,  307,  264,  261,  261,  261,  258,
+      259,  264,  260,  257,  263,  264,  264,  264,  279,  279,
+      307,  252,  185,    0,  242,    0,  121,    0,    0,  242,
 
-      248,  247,    0,   11,  235,    7,  235,  234,  237,  237,
-      164,    0,  182,  181,  243,  174,  175,  239,    0,    0,
-        0,    0,  239,  239,  239,  239,  239,   92,   90,  239,
-      239,  239,  239,  239,  239,  186,  239,  239,  239,  239,
-      239,  239,  239,  239,  239,  239,  168,  239,  239,  239,
-      239,  239,  239,  239,  169,  239,  170,  239,   16,  239,
-      124,  179,  239,  239,  171,  239,  172,  239,  239,  239,
-      239,  239,  173,  239,  239,  201,  119,  239,  188,  239,
-      239,  239,  239,  239,  239,  239,  239,  239,  239,  239,
-      239,  239,  239,  239,  239,  239,  239,  191,  239,  239,
+      249,  248,    0,   11,  236,    7,  236,  235,  238,  238,
+      165,    0,  183,  182,  244,  175,  176,  240,    0,    0,
+        0,    0,  240,  240,  240,  240,  240,   92,   90,  240,
+      240,  240,  240,  240,  240,  187,  240,  240,  240,  240,
+      240,  240,  240,  240,  240,  240,  169,  240,  240,  240,
+      240,  240,  240,  240,  170,  240,  171,  240,   16,  240,
+      125,  180,  240,  240,  172,  240,  173,  240,  240,  240,
+      240,  240,  174,  240,  240,  202,  120,  240,  189,  240,
+      240,  240,  240,  240,  240,  240,  240,  240,  240,  240,
+      240,  240,  240,  240,  240,  240,  240,  192,  240,  240,
 
-      239,  239,  239,  239,  239,  239,  239,  239,  239,  239,
-      239,  239,  122,  239,    0,    0,  301,    0,    0,    0,
-        0,    0,    0,  300,  304,  305,    0,  270,    0,    0,
-        0,    0,    0,    0,    0,  264,  267,  273,  274,  276,
-      276,    0,    0,    0,    0,  276,    0,    0,  280,  279,
-      282,  254,  252,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,  255,  284,    0,    0,  285,
-      286,    0,    0,    0,  286,    0,    0,    0,    0,  287,
-      293,  292,    0,    0,    0,    0,    0,    0,  296,  297,
-      260,  261,  262,    0,    0,    0,    0,  262,    0,    0,
+      240,  240,  240,  240,  240,  240,  240,  240,  240,  240,
+      240,  240,  123,  240,    0,    0,  302,    0,    0,    0,
+        0,    0,    0,  301,  305,  306,    0,  271,    0,    0,
+        0,    0,    0,    0,    0,  265,  268,  274,  275,  277,
+      277,    0,    0,    0,    0,  277,    0,    0,  281,  280,
+      283,  255,  253,    0,    0,    0,    0,    0,    0,    0,
+        0,    0,    0,    0,    0,  256,  285,    0,    0,  286,
+      287,    0,    0,    0,  287,    0,    0,    0,    0,  288,
+      294,  293,    0,    0,    0,    0,    0,    0,  297,  298,
+      261,  262,  263,    0,    0,    0,    0,  263,    0,    0,
 
-      278,    0,  278,    0,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,  246,  240,    0,    0,
-        0,    0,  235,  237,    0,  236,    0,    0,  238,  239,
-        0,    0,    0,  239,    0,    0,   98,  239,  125,  239,
-      215,  127,  239,  239,  239,  239,  239,  239,  239,  239,
-      239,  239,  239,  239,  239,  239,  239,  239,  239,  239,
-      239,  239,  239,  239,  239,  239,  239,  239,  239,  165,
-      239,  239,  239,  239,  239,  129,  239,  239,  239,  239,
-      239,  239,  239,  239,  239,   70,  239,  239,  239,  239,
-      239,  239,  239,  239,  239,  239,  239,  239,  239,  239,
+      279,    0,  279,    0,    0,    0,    0,    0,    0,    0,
+        0,    0,    0,    0,    0,    0,  247,  241,    0,    0,
+        0,    0,  236,  238,    0,  237,    0,    0,  239,  240,
+        0,    0,    0,  240,    0,    0,   98,  240,  126,  240,
+      216,  128,  240,  240,  240,  240,  240,  240,  240,  240,
+      240,  240,  240,  240,  240,  240,  240,  240,  240,  240,
+      240,  240,  240,  240,  240,  240,  240,  240,  240,  166,
+      240,  240,  240,  240,  240,  130,  240,  240,  240,  240,
+      240,  240,  240,  240,  240,   70,  240,  240,  240,  240,
+      240,  240,  240,  240,  240,  240,  240,  240,  240,  240,
 
-      239,  239,  210,  239,   72,  239,  239,  239,  239,  239,
-      183,  239,  239,  239,  239,  239,  239,  239,  123,  239,
-      239,  239,  239,  239,  239,  239,  239,  239,  239,  239,
-      239,  239,  239,  239,  239,  239,  239,  239,  239,  239,
-      239,  239,  239,  239,   25,  239,  239,  239,  239,  239,
-      239,  239,  239,  239,  239,  239,  239,  104,  239,  239,
-      239,  239,  239,  239,  239,  239,  239,  239,  239,  239,
-      239,  239,  239,  239,  239,  239,  239,    0,    0,    0,
-        0,    0,    0,    0,    0,  288,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,  276,    0,    0,    0,  276,
+      240,  240,  211,  240,   72,  240,  240,  240,  240,  240,
+      184,  240,  240,  240,  240,  240,  240,  117,  124,  240,
+      240,  240,  240,  240,  240,  240,  240,  240,  240,  240,
+      240,  240,  240,  240,  240,  240,  240,  240,  240,  240,
+      240,  240,  240,  240,   25,  240,  240,  240,  240,  240,
+      240,  240,  240,  240,  240,  240,  240,  104,  240,  240,
+      240,  240,  240,  240,  240,  240,  240,  240,  240,  240,
+      240,  240,  240,  240,  240,  240,  240,    0,    0,    0,
+        0,    0,    0,    0,    0,  289,    0,    0,    0,    0,
+        0,    0,    0,    0,    0,  277,    0,    0,    0,  277,
 
-        0,    0,    0,  253,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,  255,    0,    0,  286,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,  262,    0,    0,
-        0,  262,    0,    0,    0,  278,  277,    0,    0,    0,
+        0,    0,    0,  254,    0,    0,    0,    0,    0,    0,
+        0,    0,    0,  256,    0,    0,  287,    0,    0,    0,
+        0,    0,    0,    0,    0,    0,    0,  263,    0,    0,
+        0,  263,    0,    0,    0,  279,  278,    0,    0,    0,
         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-        0,  240,    0,    0,    0,  240,    0,    0,  236,  242,
-        0,  239,    0,    0,    0,  239,    0,    0,    0,  239,
-      239,  239,  239,  239,  239,  239,  239,  239,  239,  239,
-      133,  221,  239,  239,  239,  239,  239,  239,  203,  239,
-      239,  239,  239,  239,  239,  239,  239,  239,  239,  239,
+        0,  241,    0,    0,    0,  241,    0,    0,  237,  243,
+        0,  240,    0,    0,    0,  240,    0,    0,    0,  240,
+      240,  240,  240,  240,  240,  240,  240,  240,  240,  240,
+      134,  222,  240,  240,  240,  240,  240,  240,  204,  240,
+      240,  240,  240,  240,  240,  240,  240,  240,  240,  240,
 
-      239,  239,  239,  213,  239,  239,  239,   28,  239,  239,
-      239,   19,  239,  239,  239,  143,  239,  239,  239,  239,
-      239,  177,  239,  239,  239,  239,  239,  239,  239,  205,
-      220,  239,  226,  239,  239,   22,  239,  239,  239,  239,
-      239,  131,  239,  239,   76,  239,  239,   46,  239,  239,
-       77,  239,  239,  239,  239,  239,  239,  239,  239,  239,
-      239,  239,  239,  239,  239,  239,  239,  239,  239,  239,
-      239,  151,  239,  239,  239,  239,  239,  239,  239,  239,
-      211,  239,   81,  239,  239,  239,  161,  239,   32,  212,
-      239,  239,  239,  239,  239,  239,  239,  239,  239,  239,
+      240,  240,  240,  214,  240,  240,  240,   28,  240,  240,
+      240,   19,  240,  240,  240,  144,  240,  240,  240,  240,
+      240,  178,  240,  240,  240,  240,  240,  240,  240,  206,
+      221,  240,  227,  240,  240,   22,  240,  240,  240,  240,
+      240,  132,  240,  240,   76,  240,  240,   46,  240,  240,
+       77,  240,  240,  240,  240,  240,  240,  240,  240,  240,
+      240,  240,  240,  240,  240,  240,  240,  240,  240,  240,
+      240,  152,  240,  240,  240,  240,  240,  240,  240,  240,
+      212,  240,   81,  240,  240,  240,  162,  240,   32,  213,
+      240,  240,  240,  240,  240,  240,  240,  240,  240,  240,
 
-      239,  239,  239,  239,  239,  239,   78,  239,  239,  239,
-      239,   20,  128,  239,  239,  303,    0,    0,  302,    0,
-        0,  272,    0,    0,  271,    0,    0,  266,    0,  276,
-        0,    0,    0,  276,    0,    0,    0,    0,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,  295,    0,    0,
-      294,    0,    0,  262,    0,    0,    0,  262,    0,    0,
-        0,    0,    0,    0,    0,    0,    0,    0,    0,  240,
-        0,    0,    0,    0,  239,    0,    0,    0,  206,  239,
-      239,  239,  239,  239,  239,  239,   18,  239,   21,  239,
-      227,  239,  239,  239,  239,  110,  239,  239,  239,   79,
+      240,  240,  240,  240,  240,  240,   78,  240,  240,  240,
+      240,   20,  129,  240,  240,  304,    0,    0,  303,    0,
+        0,  273,    0,    0,  272,    0,    0,  267,    0,  277,
+        0,    0,    0,  277,    0,    0,    0,    0,    0,    0,
+        0,    0,    0,    0,    0,    0,    0,  296,    0,    0,
+      295,    0,    0,  263,    0,    0,    0,  263,    0,    0,
+        0,    0,    0,    0,    0,    0,    0,    0,    0,  241,
+        0,    0,    0,    0,  240,    0,    0,    0,  207,  240,
+      240,  240,  240,  240,  240,  240,   18,  240,   21,  240,
+      228,  240,  240,  240,  240,  110,  240,  240,  240,   79,
 
-      239,  239,  239,  239,  239,  239,  239,  239,  239,  102,
-      239,  239,  239,  228,  239,  239,   82,  239,  239,  239,
-      225,  239,  239,  239,  239,  239,  185,  239,  115,  239,
-      239,  239,  239,  239,  239,  239,  130,  239,  239,  239,
-      239,  239,  239,  239,  239,  239,  239,  239,  204,  239,
-      239,  239,   62,   71,  239,  239,  239,  239,  239,  239,
-      239,  239,  239,  239,  112,  239,  239,  239,  239,  239,
-      239,  239,  239,  152,    0,  239,  239,  239,  239,  239,
-      239,  132,  239,  239,  196,  239,  155,  224,  239,  239,
-      192,  239,  239,  239,  239,   80,  239,  200,  239,  239,
+      240,  240,  240,  240,  240,  240,  240,  240,  240,  102,
+      240,  240,  240,  229,  240,  240,   82,  240,  240,  240,
+      226,  240,  240,  240,  240,  240,  186,  240,  115,  240,
+      240,  240,  240,  240,  240,  240,  131,  240,  240,  240,
+      240,  240,  240,  240,  240,  240,  240,  240,  205,  240,
+      240,  240,   62,   71,  240,  240,  240,  240,  240,  240,
+      240,  240,  240,  240,  112,  240,  240,  240,  240,  240,
+      240,  240,  240,  153,    0,  240,  240,  240,  240,  240,
+      240,  133,  240,  240,  197,  240,  156,  225,  240,  240,
+      193,  240,  240,  240,  240,   80,  240,  201,  240,  240,
 
-      239,  194,   24,  239,  239,  239,  126,  239,  239,    0,
-        0,    0,  276,    0,    0,    0,    0,    0,    0,    0,
-        0,  262,    0,    0,    0,    0,    0,    0,  239,  239,
-      239,  239,  239,  239,  207,  239,  239,    0,  239,  239,
-      239,  239,  239,  239,  239,  239,  239,  239,  239,  239,
-      198,  239,  239,  239,  239,  239,  239,  239,  239,  239,
-      140,  239,  167,  239,  239,  239,  239,  239,  239,  239,
-       67,  239,  239,  239,  197,  239,  239,  239,  145,  239,
-      117,  239,  208,   65,  239,  239,  239,  239,  239,  239,
-      239,  147,   89,  239,  239,  239,  239,  239,  239,  239,
+      240,  195,   24,  240,  240,  240,  127,  240,  240,    0,
+        0,    0,  277,    0,    0,    0,    0,    0,    0,    0,
+        0,  263,    0,    0,    0,    0,    0,    0,  240,  240,
+      240,  240,  240,  240,  208,  240,  240,    0,  240,  240,
+      240,  240,  240,  240,  240,  240,  240,  240,  240,  240,
+      199,  240,  240,  240,  240,  240,  240,  240,  240,  240,
+      141,  240,  168,  240,  240,  240,  240,  240,  240,  240,
+       67,  240,  240,  240,  198,  240,  240,  240,  146,  240,
+      118,  240,  209,   65,  240,  240,  240,  240,  240,  240,
+      240,  148,   89,  240,  240,  240,  240,  240,  240,  240,
 
-      149,  239,  239,  239,  239,  239,  239,  202,  239,  189,
-      239,  239,   68,   59,  239,  239,  239,   39,  239,  187,
-      239,  209,  239,  239,  239,  116,  239,  239,  239,  239,
-      239,  239,  157,  239,  158,  239,   87,  239,    0,    0,
-        0,    0,    0,  239,  239,  239,  239,  239,  239,  239,
-      239,   51,  239,  239,   34,  239,  141,   83,  239,  239,
-      239,  239,   35,   61,  239,  239,  239,  239,  239,  239,
-       29,  239,  239,  142,  239,  239,  239,  239,  239,  239,
-      239,  239,  216,  239,  239,  239,  239,  239,  239,  113,
-      239,  239,  239,  239,  239,  239,   42,  239,  239,    0,
+      150,  240,  240,  240,  240,  240,  240,  203,  240,  190,
+      240,  240,   68,   59,  240,  240,  240,   39,  240,  188,
+      240,  210,  240,  240,  240,  116,  240,  240,  240,  240,
+      240,  240,  158,  240,  159,  240,   87,  240,    0,    0,
+        0,    0,    0,  240,  240,  240,  240,  240,  240,  240,
+      240,   51,  240,  240,   34,  240,  142,   83,  240,  240,
+      240,  240,   35,   61,  240,  240,  240,  240,  240,  240,
+       29,  240,  240,  143,  240,  240,  240,  240,  240,  240,
+      240,  240,  217,  240,  240,  240,  240,  240,  240,  113,
+      240,  240,  240,  240,  240,  240,   42,  240,  240,    0,
 
-      239,  239,   99,  239,  239,  239,  239,  239,  239,  199,
-      239,  239,  239,  239,  239,  239,  239,   73,  239,  239,
-      239,  239,  239,  239,  239,  239,  239,   88,  239,  159,
-      239,    0,    0,  239,  239,  239,  239,  239,   66,  239,
-      222,  239,  239,  239,   23,  239,  239,  239,  239,  239,
-      239,  239,  239,  139,   31,  239,  232,  214,  239,  239,
-      239,   36,  229,  239,   96,  239,  223,  239,  144,  239,
-      239,  239,  239,  239,  239,  239,  239,   86,  239,   56,
-      239,  239,  239,  195,   75,  239,  239,  239,  239,  239,
-      239,  239,  239,  239,  153,  239,  160,  239,   74,  239,
+      240,  240,   99,  240,  240,  240,  240,  240,  240,  200,
+      240,  240,  240,  240,  240,  240,  240,   73,  240,  240,
+      240,  240,  240,  240,  240,  240,  240,   88,  240,  160,
+      240,    0,    0,  240,  240,  240,  240,  240,   66,  240,
+      223,  240,  240,  240,   23,  240,  240,  240,  240,  240,
+      240,  240,  240,  140,   31,  240,  233,  215,  240,  240,
+      240,   36,  230,  240,   96,  240,  224,  240,  145,  240,
+      240,  240,  240,  240,  240,  240,  240,   86,  240,   56,
+      240,  240,  240,  196,   75,  240,  240,  240,  240,  240,
+      240,  240,  240,  240,  154,  240,  161,  240,   74,  240,
 
-      239,   40,  239,   26,   84,  239,  239,    0,  244,  239,
-        0,  239,  230,   30,  118,  239,   63,  239,  239,  239,
-      239,  239,  239,  239,  239,  239,  239,  138,  239,  239,
-      239,  136,  239,  239,  239,  178,  146,  239,   64,  239,
-      239,  239,  107,  239,  148,  239,  100,  239,  239,  114,
-      239,   17,  239,  190,  239,  239,  135,  154,  239,  162,
-      239,   43,  156,  163,  239,  268,  239,   49,  239,    0,
-      239,  106,  239,  239,  105,  239,  239,  239,  231,  239,
-      137,  239,  239,  239,    0,  233,  239,  239,   97,  217,
-      239,  239,  239,  239,  239,    0,  239,  239,  239,  239,
+      240,   40,  240,   26,   84,  240,  240,    0,  245,  240,
+        0,  240,  231,   30,  119,  240,   63,  240,  240,  240,
+      240,  240,  240,  240,  240,  240,  240,  139,  240,  240,
+      240,  137,  240,  240,  240,  179,  147,  240,   64,  240,
+      240,  240,  107,  240,  149,  240,  100,  240,  240,  114,
+      240,   17,  240,  191,  240,  240,  136,  155,  240,  163,
+      240,   43,  157,  164,  240,  269,  240,   49,  240,    0,
+      240,  106,  240,  240,  105,  240,  240,  240,  232,  240,
+      138,  240,  240,  240,    0,  234,  240,  240,   97,  218,
+      240,  240,  240,  240,  240,    0,  240,  240,  240,  240,
 
-      239,   41,   27,  101,  239,  111,   50,  239,  239,  239,
-      239,  239,  239,  239,    0,  239,  239,  239,  239,   55,
-      239,  134,  218,  239,  239,  239,  239,   58,  239,  239,
-      239,  239,  239,  239,  239,  239,   60,  239,  239,  239,
-      239,   53,  239,  239,  239,  239,  239,  239,  239,  239,
-      239,  239,  150,   91,  239,  239,  239,  239,  239,  239,
-      239,  239,  239,   37,   47,  239,  239,  239,  109,  239,
-      239,  239,  239,  239,  239,  239,   85,  239,  239,   93,
-      239,  239,  219,  239,  239,  239,  239,  239,  239,  239,
-       44,  239,  239,   69,  239,  239,  239,  239,  239,  239,
+      240,   41,   27,  101,  240,  111,   50,  240,  240,  240,
+      240,  240,  240,  240,    0,  240,  240,  240,  240,   55,
+      240,  135,  219,  240,  240,  240,  240,   58,  240,  240,
+      240,  240,  240,  240,  240,  240,   60,  240,  240,  240,
+      240,   53,  240,  240,  240,  240,  240,  240,  240,  240,
+      240,  240,  151,   91,  240,  240,  240,  240,  240,  240,
+      240,  240,  240,   37,   47,  240,  240,  240,  109,  240,
+      240,  240,  240,  240,  240,  240,   85,  240,  240,   93,
+      240,  240,  220,  240,  240,  240,  240,  240,  240,  240,
+       44,  240,  240,   69,  240,  240,  240,  240,  240,  240,
 
-      239,  239,  239,  239,  239,  239,  239,  239,  239,   38,
-      239,  239,  239,   45,    0,  239,   94,  239,  239,  239,
-      103,  239,  239,   48,  239,  239,    0,   95,    0,  239,
-      108,    0,   54,   57,  239,   52,  239,  239,   33,    0
+      240,  240,  240,  240,  240,  240,  240,  240,  240,   38,
+      240,  240,  240,   45,    0,  240,   94,  240,  240,  240,
+      103,  240,  240,   48,  240,  240,    0,   95,    0,  240,
+      108,    0,   54,   57,  240,   52,  240,  240,   33,    0
     } ;
 
 static yyconst flex_int32_t yy_ec[256] =
@@ -2721,7 +2721,7 @@ static yyconst flex_int16_t yy_chk[7804] =
      1540, 1540, 1540
     } ;
 
-static yyconst flex_int16_t yy_rule_linenum[307] =
+static yyconst flex_int16_t yy_rule_linenum[308] =
     {   0,
       309,  310,  311,  312,  313,  314,  315,  316,  317,  318,
       319,  320,  321,  322,  323,  325,  326,  327,  328,  329,
@@ -2735,7 +2735,7 @@ static yyconst flex_int16_t yy_rule_linenum[307] =
       415,  416,  418,  419,  420,  421,  422,  423,  424,  425,
 
       426,  427,  428,  430,  437,  439,  440,  441,  442,  443,
-      444,  445,  446,  447,  449,  450,  451,  452,  453,  461,
+      444,  445,  446,  447,  449,  450,  451,  452,  453,  454,
       462,  463,  464,  465,  466,  467,  468,  469,  470,  471,
       472,  473,  474,  475,  476,  477,  478,  479,  480,  481,
       482,  483,  484,  485,  486,  487,  488,  489,  490,  491,
@@ -2743,20 +2743,20 @@ static yyconst flex_int16_t yy_rule_linenum[307] =
       502,  503,  504,  505,  506,  507,  508,  509,  510,  511,
       512,  513,  514,  515,  516,  517,  518,  519,  520,  521,
       522,  523,  524,  525,  526,  527,  528,  529,  530,  531,
-      532,  533,  534,  535,  536,  537,  545,  546,  547,  548,
+      532,  533,  534,  535,  536,  537,  538,  546,  547,  548,
 
-      549,  550,  551,  552,  553,  554,  555,  556,  558,  559,
-      560,  561,  562,  563,  564,  566,  567,  568,  569,  570,
+      549,  550,  551,  552,  553,  554,  555,  556,  557,  559,
+      560,  561,  562,  563,  564,  565,  567,  568,  569,  570,
       571,  572,  573,  574,  575,  576,  577,  578,  579,  580,
-      581,  582,  583,  594,  599,  604,  609,  614,  618,  622,
-      626,  636,  640,  647,  655,  660,  665,  670,  678,  682,
-      685,  741,  742,  743,  754,  768,  769,  770,  771,  772,
-      773,  774,  775,  792,  793,  794,  795,  796,  797,  798,
-      799,  800,  801,  802,  813,  814,  825,  826,  838,  839,
-      840,  855,  856,  878,  879,  880,  891,  905,  906,  923,
-      924,  925,  926,  927,  928,  929,  930,  942,  943,  944,
+      581,  582,  583,  584,  595,  600,  605,  610,  615,  619,
+      623,  627,  637,  641,  648,  656,  661,  666,  671,  679,
+      683,  686,  742,  743,  744,  755,  769,  770,  771,  772,
+      773,  774,  775,  776,  793,  794,  795,  796,  797,  798,
+      799,  800,  801,  802,  803,  814,  815,  826,  827,  839,
+      840,  841,  856,  857,  879,  880,  881,  892,  906,  907,
+      924,  925,  926,  927,  928,  929,  930,  931,  943,  944,
 
-      945,  946,  947,  948,  949,  958
+      945,  946,  947,  948,  949,  950,  959
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -3274,12 +3274,12 @@ do_action:	/* This label is used only to access EOF actions. */
 			{
 			if ( yy_act == 0 )
 				std::cerr << "--scanner backing up\n";
-			else if ( yy_act < 307 )
+			else if ( yy_act < 308 )
 				std::cerr << "--accepting rule at line " << yy_rule_linenum[yy_act] <<
 				         "(\"" << yytext << "\")\n";
-			else if ( yy_act == 307 )
-				std::cerr << "--accepting default rule (\"" << yytext << "\")\n";
 			else if ( yy_act == 308 )
+				std::cerr << "--accepting default rule (\"" << yytext << "\")\n";
+			else if ( yy_act == 309 )
 				std::cerr << "--(end of buffer or a NUL)\n";
 			else
 				std::cerr << "--EOF (start condition " << YY_START << ")\n";
@@ -3894,594 +3894,599 @@ YY_RULE_SETUP
 case 117:
 YY_RULE_SETUP
 #line 451 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::MANUAL; }
+{ return token::NON; }
 	YY_BREAK
 case 118:
 YY_RULE_SETUP
 #line 452 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::AUTOMATIC; }
+{ return token::MANUAL; }
 	YY_BREAK
 case 119:
 YY_RULE_SETUP
 #line 453 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+{ return token::AUTOMATIC; }
+	YY_BREAK
+case 120:
+YY_RULE_SETUP
+#line 454 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 { return token::ON; }
 	YY_BREAK
 /*______________________________________________________________________
      |
      | FT tokens
      |______________________________________________________________________*/
-case 120:
-YY_RULE_SETUP
-#line 461 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::FTAND; }
-	YY_BREAK
 case 121:
 YY_RULE_SETUP
 #line 462 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::FTNOT; }
+{ return token::FTAND; }
 	YY_BREAK
 case 122:
 YY_RULE_SETUP
 #line 463 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::FTOR; }
+{ return token::FTNOT; }
 	YY_BREAK
 case 123:
 YY_RULE_SETUP
 #line 464 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::FTNOT; }
+{ return token::FTOR; }
 	YY_BREAK
 case 124:
 YY_RULE_SETUP
 #line 465 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::_IN; }
+{ return token::FTNOT; }
 	YY_BREAK
 case 125:
 YY_RULE_SETUP
 #line 466 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::ALL; }
+{ return token::_IN; }
 	YY_BREAK
 case 126:
 YY_RULE_SETUP
 #line 467 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::WORDS; }
+{ return token::ALL; }
 	YY_BREAK
 case 127:
 YY_RULE_SETUP
 #line 468 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::ANY; }
+{ return token::WORDS; }
 	YY_BREAK
 case 128:
 YY_RULE_SETUP
 #line 469 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::WORD; }
+{ return token::ANY; }
 	YY_BREAK
 case 129:
 YY_RULE_SETUP
 #line 470 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::END; }
+{ return token::WORD; }
 	YY_BREAK
 case 130:
 YY_RULE_SETUP
 #line 471 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::LEAST; }
+{ return token::END; }
 	YY_BREAK
 case 131:
 YY_RULE_SETUP
 #line 472 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::MOST; }
+{ return token::LEAST; }
 	YY_BREAK
 case 132:
 YY_RULE_SETUP
 #line 473 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::START; }
+{ return token::MOST; }
 	YY_BREAK
 case 133:
 YY_RULE_SETUP
 #line 474 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::CASE; }
+{ return token::START; }
 	YY_BREAK
 case 134:
 YY_RULE_SETUP
 #line 475 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::INSENSITIVE; }
+{ return token::CASE; }
 	YY_BREAK
 case 135:
 YY_RULE_SETUP
 #line 476 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::SENSITIVE; }
+{ return token::INSENSITIVE; }
 	YY_BREAK
 case 136:
 YY_RULE_SETUP
 #line 477 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::FT_OPTION; }
+{ return token::SENSITIVE; }
 	YY_BREAK
 case 137:
 YY_RULE_SETUP
 #line 478 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::DIACRITICS; }
+{ return token::FT_OPTION; }
 	YY_BREAK
 case 138:
 YY_RULE_SETUP
 #line 479 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::DIFFERENT; }
+{ return token::DIACRITICS; }
 	YY_BREAK
 case 139:
 YY_RULE_SETUP
 #line 480 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::DISTANCE; }
+{ return token::DIFFERENT; }
 	YY_BREAK
 case 140:
 YY_RULE_SETUP
 #line 481 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::ENTIRE; }
+{ return token::DISTANCE; }
 	YY_BREAK
 case 141:
 YY_RULE_SETUP
 #line 482 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::CONTENT; }
+{ return token::ENTIRE; }
 	YY_BREAK
 case 142:
 YY_RULE_SETUP
 #line 483 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::EXACTLY; }
+{ return token::CONTENT; }
 	YY_BREAK
 case 143:
 YY_RULE_SETUP
 #line 484 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::FROM; }
+{ return token::EXACTLY; }
 	YY_BREAK
 case 144:
 YY_RULE_SETUP
 #line 485 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::LANGUAGE; }
+{ return token::FROM; }
 	YY_BREAK
 case 145:
 YY_RULE_SETUP
 #line 486 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::LEVELS; }
+{ return token::LANGUAGE; }
 	YY_BREAK
 case 146:
 YY_RULE_SETUP
 #line 487 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::LOWERCASE; }
+{ return token::LEVELS; }
 	YY_BREAK
 case 147:
 YY_RULE_SETUP
 #line 488 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::OCCURS; }
+{ return token::LOWERCASE; }
 	YY_BREAK
 case 148:
 YY_RULE_SETUP
 #line 489 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::PARAGRAPH; }
+{ return token::OCCURS; }
 	YY_BREAK
 case 149:
 YY_RULE_SETUP
 #line 490 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::PHRASE; }
+{ return token::PARAGRAPH; }
 	YY_BREAK
 case 150:
 YY_RULE_SETUP
 #line 491 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::RELATIONSHIP; }
+{ return token::PHRASE; }
 	YY_BREAK
 case 151:
 YY_RULE_SETUP
 #line 492 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::SAME; }
+{ return token::RELATIONSHIP; }
 	YY_BREAK
 case 152:
 YY_RULE_SETUP
 #line 493 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::SCORE; }
+{ return token::SAME; }
 	YY_BREAK
 case 153:
 YY_RULE_SETUP
 #line 494 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::SENTENCE; }
+{ return token::SCORE; }
 	YY_BREAK
 case 154:
 YY_RULE_SETUP
 #line 495 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::SENTENCES; }
+{ return token::SENTENCE; }
 	YY_BREAK
 case 155:
 YY_RULE_SETUP
 #line 496 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::TIMES; }
+{ return token::SENTENCES; }
 	YY_BREAK
 case 156:
 YY_RULE_SETUP
 #line 497 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::UPPERCASE; }
+{ return token::TIMES; }
 	YY_BREAK
 case 157:
 YY_RULE_SETUP
 #line 498 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::WEIGHT; }
+{ return token::UPPERCASE; }
 	YY_BREAK
 case 158:
 YY_RULE_SETUP
 #line 499 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::WINDOW; }
+{ return token::WEIGHT; }
 	YY_BREAK
 case 159:
 YY_RULE_SETUP
 #line 500 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::WITHOUT; }
+{ return token::WINDOW; }
 	YY_BREAK
 case 160:
 YY_RULE_SETUP
 #line 501 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::STEMMING; }
+{ return token::WITHOUT; }
 	YY_BREAK
 case 161:
 YY_RULE_SETUP
 #line 502 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::STOP; }
+{ return token::STEMMING; }
 	YY_BREAK
 case 162:
 YY_RULE_SETUP
 #line 503 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::THESAURUS; }
+{ return token::STOP; }
 	YY_BREAK
 case 163:
 YY_RULE_SETUP
 #line 504 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::WILDCARDS; }
+{ return token::THESAURUS; }
 	YY_BREAK
 case 164:
 YY_RULE_SETUP
 #line 505 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::GETS; }
+{ return token::WILDCARDS; }
 	YY_BREAK
 case 165:
 YY_RULE_SETUP
 #line 506 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::DIV; }
+{ return token::GETS; }
 	YY_BREAK
 case 166:
 YY_RULE_SETUP
 #line 507 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::EQUALS; }
+{ return token::DIV; }
 	YY_BREAK
 case 167:
 YY_RULE_SETUP
 #line 508 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::EXCEPT; }
+{ return token::EQUALS; }
 	YY_BREAK
 case 168:
 YY_RULE_SETUP
 #line 509 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::VAL_EQ; }
+{ return token::EXCEPT; }
 	YY_BREAK
 case 169:
 YY_RULE_SETUP
 #line 510 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::VAL_GE; }
+{ return token::VAL_EQ; }
 	YY_BREAK
 case 170:
 YY_RULE_SETUP
 #line 511 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::VAL_GT; }
+{ return token::VAL_GE; }
 	YY_BREAK
 case 171:
 YY_RULE_SETUP
 #line 512 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::VAL_LE; }
+{ return token::VAL_GT; }
 	YY_BREAK
 case 172:
 YY_RULE_SETUP
 #line 513 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::VAL_LT; }
+{ return token::VAL_LE; }
 	YY_BREAK
 case 173:
 YY_RULE_SETUP
 #line 514 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::VAL_NE; }
+{ return token::VAL_LT; }
 	YY_BREAK
 case 174:
 YY_RULE_SETUP
 #line 515 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::GE; }
+{ return token::VAL_NE; }
 	YY_BREAK
 case 175:
 YY_RULE_SETUP
 #line 516 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::FOLLOWS; }
+{ return token::GE; }
 	YY_BREAK
 case 176:
 YY_RULE_SETUP
 #line 517 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::GT; }
+{ return token::FOLLOWS; }
 	YY_BREAK
 case 177:
 YY_RULE_SETUP
 #line 518 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::IDIV; }
+{ return token::GT; }
 	YY_BREAK
 case 178:
 YY_RULE_SETUP
 #line 519 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::INTERSECT; }
+{ return token::IDIV; }
 	YY_BREAK
 case 179:
 YY_RULE_SETUP
 #line 520 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::IS; }
+{ return token::INTERSECT; }
 	YY_BREAK
 case 180:
 YY_RULE_SETUP
 #line 521 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::LBRACK; }
+{ return token::IS; }
 	YY_BREAK
 case 181:
 YY_RULE_SETUP
 #line 522 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::LE; }
+{ return token::LBRACK; }
 	YY_BREAK
 case 182:
 YY_RULE_SETUP
 #line 523 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::PRECEDES; }
+{ return token::LE; }
 	YY_BREAK
 case 183:
 YY_RULE_SETUP
 #line 524 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::MOD; }
+{ return token::PRECEDES; }
 	YY_BREAK
 case 184:
 YY_RULE_SETUP
 #line 525 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::NE; }
+{ return token::MOD; }
 	YY_BREAK
 case 185:
 YY_RULE_SETUP
 #line 526 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::GROUP; }
+{ return token::NE; }
 	YY_BREAK
 case 186:
 YY_RULE_SETUP
 #line 527 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::BY; }
+{ return token::GROUP; }
 	YY_BREAK
 case 187:
 YY_RULE_SETUP
 #line 528 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::STABLE; }
+{ return token::BY; }
 	YY_BREAK
 case 188:
 YY_RULE_SETUP
 #line 529 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::OR; }
+{ return token::STABLE; }
 	YY_BREAK
 case 189:
 YY_RULE_SETUP
 #line 530 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::RETURN; }
+{ return token::OR; }
 	YY_BREAK
 case 190:
 YY_RULE_SETUP
 #line 531 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::SATISFIES; }
+{ return token::RETURN; }
 	YY_BREAK
 case 191:
 YY_RULE_SETUP
 #line 532 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::TO; }
+{ return token::SATISFIES; }
 	YY_BREAK
 case 192:
 YY_RULE_SETUP
 #line 533 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::UNION; }
+{ return token::TO; }
 	YY_BREAK
 case 193:
 YY_RULE_SETUP
 #line 534 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::VBAR; }
+{ return token::UNION; }
 	YY_BREAK
 case 194:
 YY_RULE_SETUP
 #line 535 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::WHERE; }
+{ return token::VBAR; }
 	YY_BREAK
 case 195:
 YY_RULE_SETUP
 #line 536 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::PRESERVE; }
+{ return token::WHERE; }
 	YY_BREAK
 case 196:
 YY_RULE_SETUP
 #line 537 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+{ return token::PRESERVE; }
+	YY_BREAK
+case 197:
+YY_RULE_SETUP
+#line 538 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 { return token::STRIP; }
 	YY_BREAK
 /*______________________________________________________________________
    |
    | Update rules
    |______________________________________________________________________*/
-case 197:
-YY_RULE_SETUP
-#line 545 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::INSERT; }
-	YY_BREAK
 case 198:
 YY_RULE_SETUP
 #line 546 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::_DELETE; }
+{ return token::INSERT; }
 	YY_BREAK
 case 199:
 YY_RULE_SETUP
 #line 547 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::REPLACE; }
+{ return token::_DELETE; }
 	YY_BREAK
 case 200:
 YY_RULE_SETUP
 #line 548 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::VALUE; }
+{ return token::REPLACE; }
 	YY_BREAK
 case 201:
 YY_RULE_SETUP
 #line 549 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::OF; }
+{ return token::VALUE; }
 	YY_BREAK
 case 202:
 YY_RULE_SETUP
 #line 550 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::RENAME; }
+{ return token::OF; }
 	YY_BREAK
 case 203:
 YY_RULE_SETUP
 #line 551 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::COPY; }
+{ return token::RENAME; }
 	YY_BREAK
 case 204:
 YY_RULE_SETUP
 #line 552 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::NODES; }
+{ return token::COPY; }
 	YY_BREAK
 case 205:
 YY_RULE_SETUP
 #line 553 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::INTO; }
+{ return token::NODES; }
 	YY_BREAK
 case 206:
 YY_RULE_SETUP
 #line 554 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::AFTER; }
+{ return token::INTO; }
 	YY_BREAK
 case 207:
 YY_RULE_SETUP
 #line 555 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::BEFORE; }
+{ return token::AFTER; }
 	YY_BREAK
 case 208:
 YY_RULE_SETUP
 #line 556 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::MODIFY; }
+{ return token::BEFORE; }
 	YY_BREAK
 case 209:
 YY_RULE_SETUP
-#line 558 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::_STRICT; }
+#line 557 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+{ return token::MODIFY; }
 	YY_BREAK
 case 210:
 YY_RULE_SETUP
 #line 559 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::LAX; }
+{ return token::_STRICT; }
 	YY_BREAK
 case 211:
 YY_RULE_SETUP
 #line 560 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::SKIP; }
+{ return token::LAX; }
 	YY_BREAK
 case 212:
 YY_RULE_SETUP
 #line 561 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::THEN; }
+{ return token::SKIP; }
 	YY_BREAK
 case 213:
 YY_RULE_SETUP
 #line 562 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::ELSE; }
+{ return token::THEN; }
 	YY_BREAK
 case 214:
 YY_RULE_SETUP
 #line 563 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::EXTERNAL; }
+{ return token::ELSE; }
 	YY_BREAK
 case 215:
 YY_RULE_SETUP
 #line 564 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::AND; }
+{ return token::EXTERNAL; }
 	YY_BREAK
 case 216:
 YY_RULE_SETUP
-#line 566 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::INHERIT; }
+#line 565 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+{ return token::AND; }
 	YY_BREAK
 case 217:
 YY_RULE_SETUP
 #line 567 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::NO_INHERIT; }
+{ return token::INHERIT; }
 	YY_BREAK
 case 218:
 YY_RULE_SETUP
 #line 568 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::NO_PRESERVE; }
+{ return token::NO_INHERIT; }
 	YY_BREAK
 case 219:
 YY_RULE_SETUP
 #line 569 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::EMPTY_SEQUENCE; }
+{ return token::NO_PRESERVE; }
 	YY_BREAK
 case 220:
 YY_RULE_SETUP
 #line 570 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::ITEM; }
+{ return token::EMPTY_SEQUENCE; }
 	YY_BREAK
 case 221:
 YY_RULE_SETUP
 #line 571 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::CAST; }
+{ return token::ITEM; }
 	YY_BREAK
 case 222:
 YY_RULE_SETUP
 #line 572 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::CASTABLE; }
+{ return token::CAST; }
 	YY_BREAK
 case 223:
 YY_RULE_SETUP
 #line 573 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::INSTANCE;}
+{ return token::CASTABLE; }
 	YY_BREAK
 case 224:
 YY_RULE_SETUP
 #line 574 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::TREAT; }
+{ return token::INSTANCE;}
 	YY_BREAK
 case 225:
 YY_RULE_SETUP
 #line 575 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::FIRST; }
+{ return token::TREAT; }
 	YY_BREAK
 case 226:
 YY_RULE_SETUP
 #line 576 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::LAST; }
+{ return token::FIRST; }
 	YY_BREAK
 case 227:
 YY_RULE_SETUP
 #line 577 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::CATCH; }
+{ return token::LAST; }
 	YY_BREAK
 case 228:
 YY_RULE_SETUP
 #line 578 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::_EMPTY; }
+{ return token::CATCH; }
 	YY_BREAK
 case 229:
 YY_RULE_SETUP
 #line 579 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::GREATEST; }
+{ return token::_EMPTY; }
 	YY_BREAK
 case 230:
 YY_RULE_SETUP
 #line 580 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::ASCENDING; }
+{ return token::GREATEST; }
 	YY_BREAK
 case 231:
 YY_RULE_SETUP
 #line 581 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::DESCENDING; }
+{ return token::ASCENDING; }
 	YY_BREAK
 case 232:
 YY_RULE_SETUP
 #line 582 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::ENCODING; }
+{ return token::DESCENDING; }
 	YY_BREAK
 case 233:
 YY_RULE_SETUP
 #line 583 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+{ return token::ENCODING; }
+	YY_BREAK
+case 234:
+YY_RULE_SETUP
+#line 584 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 { return token::FTCONTAINS; }
 	YY_BREAK
 /* TODO: fix 'if (1) then 2 else processing-instruction' */
@@ -4489,63 +4494,63 @@ YY_RULE_SETUP
    |
    | Tokens with values
    |______________________________________________________________________*/
-case 234:
+case 235:
 YY_RULE_SETUP
-#line 594 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+#line 595 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->ival = getDriver()->symtab.integerval(yytext, yyleng);
   return token::INTEGER_LITERAL;
 }
 	YY_BREAK
-case 235:
+case 236:
 YY_RULE_SETUP
-#line 599 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+#line 600 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->decval = getDriver()->symtab.decimalval(yytext, yyleng);
   return token::DECIMAL_LITERAL;
 }
 	YY_BREAK
-case 236:
+case 237:
 YY_RULE_SETUP
-#line 604 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+#line 605 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 {
   yylval->dval = getDriver()->symtab.doubleval(yytext, yyleng);
   return token::DOUBLE_LITERAL;
 }
 	YY_BREAK
-case 237:
+case 238:
 YY_RULE_SETUP
-#line 609 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+#line 610 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* invalid integer literal */
   return token::UNRECOGNIZED;
 }
 	YY_BREAK
-case 238:
+case 239:
 YY_RULE_SETUP
-#line 614 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+#line 615 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 {
   TRY_SVAL_TOKEN (ELEM_WILDCARD, put_ncname(yytext, yyleng-2));
 }
 	YY_BREAK
-case 239:
+case 240:
 YY_RULE_SETUP
-#line 618 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+#line 619 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 {
   TRY_SVAL_TOKEN(QNAME_SVAL, put_qname(yytext, yyleng));
 }
 	YY_BREAK
-case 240:
+case 241:
 YY_RULE_SETUP
-#line 622 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+#line 623 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 {
   TRY_SVAL_TOKEN (PREFIX_WILDCARD, put_ncname(yytext+2, yyleng-2));
 }
 	YY_BREAK
-case 241:
-/* rule 241 can match eol */
+case 242:
+/* rule 242 can match eol */
 YY_RULE_SETUP
-#line 626 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+#line 627 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 { 
   TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
 }
@@ -4554,16 +4559,16 @@ YY_RULE_SETUP
    |
    | State transitions
    |______________________________________________________________________*/
-case 242:
+case 243:
 YY_RULE_SETUP
-#line 636 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+#line 637 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_XML_COMMENT); return token::XML_COMMENT_BEGIN; }
 	YY_BREAK
 /* transition to PROCESSING_INSTRUCTION */
 /* ------------------------------------ */
-case 243:
+case 244:
 YY_RULE_SETUP
-#line 640 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+#line 641 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 {
   PUSH_STATE(MODE_PROCESSING_INSTRUCTION);
   return token::PI_BEGIN;
@@ -4571,9 +4576,9 @@ YY_RULE_SETUP
 	YY_BREAK
 /* transition to CDATA_SECTION */
 /* --------------------------- */
-case 244:
+case 245:
 YY_RULE_SETUP
-#line 647 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+#line 648 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 {
   // PUSH_AND_BEGIN (MODE_CDATA_SECTION, MODE_OPERATOR);
   return token::CDATA_BEGIN;
@@ -4581,30 +4586,30 @@ YY_RULE_SETUP
 	YY_BREAK
 /* transition to MODE_START_TAG */
 /* ---------------------------- */
-case 245:
+case 246:
 YY_RULE_SETUP
-#line 655 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+#line 656 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_START_TAG); return token::LT_OR_START_TAG; }
 	YY_BREAK
 /* transition to MODE_EXPR_DOC_COMMENT */
 /* ----------------------------------- */
-case 246:
+case 247:
 YY_RULE_SETUP
-#line 660 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+#line 661 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_EXPR_DOC_COMMENT); }
 	YY_BREAK
 /* transition to MODE_EXPR_COMMENT */
 /* ------------------------------- */
-case 247:
+case 248:
 YY_RULE_SETUP
-#line 665 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+#line 666 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_EXPR_COMMENT); }
 	YY_BREAK
 /* transition to PRAGMA */
 /* -------------------- */
-case 248:
+case 249:
 YY_RULE_SETUP
-#line 670 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+#line 671 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_PRAGMA;
   return token::PRAGMA_BEGIN;
@@ -4612,22 +4617,22 @@ YY_RULE_SETUP
 	YY_BREAK
 /* push initial state */
 /* ------------------ */
-case 249:
+case 250:
 YY_RULE_SETUP
-#line 678 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+#line 679 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(INITIAL); return token::LBRACE; }
 	YY_BREAK
 /* pop previous state */
 /* ------------------ */
-case 250:
+case 251:
 YY_RULE_SETUP
-#line 682 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+#line 683 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 { POP_STATE(); return token::RBRACE; }
 	YY_BREAK
-case 251:
-/* rule 251 can match eol */
+case 252:
+/* rule 252 can match eol */
 YY_RULE_SETUP
-#line 685 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+#line 686 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -4673,21 +4678,21 @@ YY_RULE_SETUP
    | a QName that transits to a PRAGMACONTENTS state rather than an
    | OPERATOR state.
    |______________________________________________________________________*/
-case 252:
-/* rule 252 can match eol */
-YY_RULE_SETUP
-#line 741 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(QNAME_SVAL, put_qname(yytext, yyleng, true, true)); }
-	YY_BREAK
 case 253:
+/* rule 253 can match eol */
 YY_RULE_SETUP
 #line 742 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ BEGIN INITIAL; TRY_SVAL_TOKEN(QNAME_SVAL_AND_END_PRAGMA, put_qname(yytext, yyleng-2)); }
+{ BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(QNAME_SVAL, put_qname(yytext, yyleng, true, true)); }
 	YY_BREAK
 case 254:
-/* rule 254 can match eol */
 YY_RULE_SETUP
 #line 743 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+{ BEGIN INITIAL; TRY_SVAL_TOKEN(QNAME_SVAL_AND_END_PRAGMA, put_qname(yytext, yyleng-2)); }
+	YY_BREAK
+case 255:
+/* rule 255 can match eol */
+YY_RULE_SETUP
+#line 744 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 { /* continue lexing */ }
 	YY_BREAK
 /*______________________________________________________________________
@@ -4697,10 +4702,10 @@ YY_RULE_SETUP
    | This state recognizes characters in pragma content and transitions
    | out of this state when a '#)' pattern is recognized.
    |______________________________________________________________________*/
-case 255:
-/* rule 255 can match eol */
+case 256:
+/* rule 256 can match eol */
 YY_RULE_SETUP
-#line 754 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+#line 755 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 { BEGIN INITIAL; TRY_SVAL_TOKEN(PRAGMA_LITERAL_AND_END_PRAGMA, put(yytext, yyleng-2)); }
 	YY_BREAK
 /*______________________________________________________________________
@@ -4713,45 +4718,45 @@ YY_RULE_SETUP
    | the START_TAG state, the string ">" is recognized as a token which
    | is associated with the transition to the original state.
    |______________________________________________________________________*/
-case 256:
-YY_RULE_SETUP
-#line 768 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ BEGIN MODE_ELEMENT_CONTENT; return token::TAG_END; }
-	YY_BREAK
 case 257:
 YY_RULE_SETUP
 #line 769 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ BEGIN MODE_QUOTE_ATTRIBUTE_CONTENT; return token::QUOTE; }
+{ BEGIN MODE_ELEMENT_CONTENT; return token::TAG_END; }
 	YY_BREAK
 case 258:
 YY_RULE_SETUP
 #line 770 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ BEGIN MODE_APOS_ATTRIBUTE_CONTENT; return token::APOS; }
+{ BEGIN MODE_QUOTE_ATTRIBUTE_CONTENT; return token::QUOTE; }
 	YY_BREAK
 case 259:
 YY_RULE_SETUP
 #line 771 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::EQUALS; }
+{ BEGIN MODE_APOS_ATTRIBUTE_CONTENT; return token::APOS; }
 	YY_BREAK
 case 260:
-/* rule 260 can match eol */
 YY_RULE_SETUP
 #line 772 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::BLANK; }
+{ return token::EQUALS; }
 	YY_BREAK
 case 261:
+/* rule 261 can match eol */
 YY_RULE_SETUP
 #line 773 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ POP_STATE(); return token::EMPTY_TAG_END; }
+{ return token::BLANK; }
 	YY_BREAK
 case 262:
 YY_RULE_SETUP
 #line 774 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng)); }
+{ POP_STATE(); return token::EMPTY_TAG_END; }
 	YY_BREAK
 case 263:
 YY_RULE_SETUP
 #line 775 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+{ TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng)); }
+	YY_BREAK
+case 264:
+YY_RULE_SETUP
+#line 776 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 { return token::UNRECOGNIZED; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -4767,60 +4772,60 @@ YY_RULE_SETUP
    | string "</" is interpreted as the beginning of an end tag, which is
    | associated with a transition to the END_TAG state.
    |______________________________________________________________________*/
-case 264:
-YY_RULE_SETUP
-#line 792 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ BEGIN MODE_END_TAG; return token::START_TAG_END; }
-	YY_BREAK
 case 265:
 YY_RULE_SETUP
 #line 793 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ PUSH_STATE(INITIAL); return token::LBRACE; }
+{ BEGIN MODE_END_TAG; return token::START_TAG_END; }
 	YY_BREAK
 case 266:
 YY_RULE_SETUP
 #line 794 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ PUSH_STATE(MODE_XML_COMMENT); return token::XML_COMMENT_BEGIN; }
+{ PUSH_STATE(INITIAL); return token::LBRACE; }
 	YY_BREAK
 case 267:
 YY_RULE_SETUP
 #line 795 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ PUSH_STATE(MODE_PROCESSING_INSTRUCTION); return token::PI_BEGIN; }
+{ PUSH_STATE(MODE_XML_COMMENT); return token::XML_COMMENT_BEGIN; }
 	YY_BREAK
 case 268:
 YY_RULE_SETUP
 #line 796 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ PUSH_STATE(MODE_CDATA_SECTION); return token::CDATA_BEGIN; }
+{ PUSH_STATE(MODE_PROCESSING_INSTRUCTION); return token::PI_BEGIN; }
 	YY_BREAK
 case 269:
 YY_RULE_SETUP
 #line 797 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ PUSH_STATE(MODE_START_TAG); return token::LT_OR_START_TAG; }
+{ PUSH_STATE(MODE_CDATA_SECTION); return token::CDATA_BEGIN; }
 	YY_BREAK
 case 270:
-/* rule 270 can match eol */
 YY_RULE_SETUP
 #line 798 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ TRY_SVAL_TOKEN (ELEMENT_CONTENT, put(yytext, yyleng, 1)); }
+{ PUSH_STATE(MODE_START_TAG); return token::LT_OR_START_TAG; }
 	YY_BREAK
 case 271:
+/* rule 271 can match eol */
 YY_RULE_SETUP
 #line 799 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ TRY_SVAL_TOKEN (ELEMENT_CONTENT, put_entityref(yytext, yyleng)); }
+{ TRY_SVAL_TOKEN (ELEMENT_CONTENT, put(yytext, yyleng, 1)); }
 	YY_BREAK
 case 272:
 YY_RULE_SETUP
 #line 800 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
+{ TRY_SVAL_TOKEN (ELEMENT_CONTENT, put_entityref(yytext, yyleng)); }
 	YY_BREAK
 case 273:
 YY_RULE_SETUP
 #line 801 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::DOUBLE_LBRACE; }
+{ TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
 	YY_BREAK
 case 274:
 YY_RULE_SETUP
 #line 802 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+{ return token::DOUBLE_LBRACE; }
+	YY_BREAK
+case 275:
+YY_RULE_SETUP
+#line 803 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 { return token::DOUBLE_RBRACE; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -4830,15 +4835,15 @@ YY_RULE_SETUP
    | When the end tag is terminated, the state is popped to the state
    | that was pushed at the start of the corresponding start tag.
    |______________________________________________________________________*/
-case 275:
-YY_RULE_SETUP
-#line 813 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ POP_STATE(); return token::TAG_END; }
-	YY_BREAK
 case 276:
-/* rule 276 can match eol */
 YY_RULE_SETUP
 #line 814 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+{ POP_STATE(); return token::TAG_END; }
+	YY_BREAK
+case 277:
+/* rule 277 can match eol */
+YY_RULE_SETUP
+#line 815 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 { TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng, false, true)); }
 	YY_BREAK
 /*______________________________________________________________________
@@ -4848,15 +4853,15 @@ YY_RULE_SETUP
    | token marks the end. This allows no special interpretation of other
    | characters in this state.
    |______________________________________________________________________*/
-case 277:
-YY_RULE_SETUP
-#line 825 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ POP_STATE(); return token::XML_COMMENT_END; }
-	YY_BREAK
 case 278:
-/* rule 278 can match eol */
 YY_RULE_SETUP
 #line 826 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+{ POP_STATE(); return token::XML_COMMENT_END; }
+	YY_BREAK
+case 279:
+/* rule 279 can match eol */
+YY_RULE_SETUP
+#line 827 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 { TRY_SVAL_TOKEN (XML_COMMENT_LITERAL, put(yytext, yyleng)); }
 	YY_BREAK
 /*______________________________________________________________________
@@ -4867,24 +4872,24 @@ YY_RULE_SETUP
    | the ":)" token marks the end. This allows no special interpretation
    | of other characters in this state.
    |______________________________________________________________________*/
-case 279:
-YY_RULE_SETUP
-#line 838 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ POP_STATE(); }
-	YY_BREAK
 case 280:
 YY_RULE_SETUP
 #line 839 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ PUSH_STATE(MODE_EXPR_COMMENT); }
+{ POP_STATE(); }
 	YY_BREAK
 case 281:
-/* rule 281 can match eol */
 YY_RULE_SETUP
 #line 840 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+{ PUSH_STATE(MODE_EXPR_COMMENT); }
+	YY_BREAK
+case 282:
+/* rule 282 can match eol */
+YY_RULE_SETUP
+#line 841 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 { /* do nothing */ }
 	YY_BREAK
 case YY_STATE_EOF(MODE_EXPR_COMMENT):
-#line 841 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+#line 842 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 { return token::UNRECOGNIZED; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -4896,15 +4901,15 @@ case YY_STATE_EOF(MODE_EXPR_COMMENT):
    | of other characters in this state.
    |______________________________________________________________________*/
 /* <MODE_EXPR_COMMENT>{  */
-case 282:
-YY_RULE_SETUP
-#line 855 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ POP_STATE(); }
-	YY_BREAK
 case 283:
-/* rule 283 can match eol */
 YY_RULE_SETUP
 #line 856 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+{ POP_STATE(); }
+	YY_BREAK
+case 284:
+/* rule 284 can match eol */
+YY_RULE_SETUP
+#line 857 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 {
   if(theDriver->theDocComment.empty())
   {
@@ -4914,7 +4919,7 @@ YY_RULE_SETUP
 }
 	YY_BREAK
 case YY_STATE_EOF(MODE_EXPR_DOC_COMMENT):
-#line 863 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+#line 864 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 { return token::UNRECOGNIZED; }
 	YY_BREAK
 /* } */  /* END <MODE_EXPR_COMMENT> */
@@ -4925,20 +4930,20 @@ case YY_STATE_EOF(MODE_EXPR_DOC_COMMENT):
    | In this state, only patterns that are legal in a processing
    | instruction name are recognized.
    |______________________________________________________________________*/
-case 284:
-/* rule 284 can match eol */
-YY_RULE_SETUP
-#line 878 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ BEGIN MODE_PROCESSING_INSTRUCTION_CONTENT; /* continue lexing */ }
-	YY_BREAK
 case 285:
+/* rule 285 can match eol */
 YY_RULE_SETUP
 #line 879 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ POP_STATE(); return token::PI_END; }
+{ BEGIN MODE_PROCESSING_INSTRUCTION_CONTENT; /* continue lexing */ }
 	YY_BREAK
 case 286:
 YY_RULE_SETUP
 #line 880 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+{ POP_STATE(); return token::PI_END; }
+	YY_BREAK
+case 287:
+YY_RULE_SETUP
+#line 881 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 /* PITarget */    { TRY_SVAL_TOKEN (NCNAME_SVAL, put(yytext, yyleng)); }
 	YY_BREAK
 /*______________________________________________________________________
@@ -4948,10 +4953,10 @@ YY_RULE_SETUP
    | In this state, only characters are that are legal in processing
    | instruction content are recognized.
    |______________________________________________________________________*/
-case 287:
-/* rule 287 can match eol */
+case 288:
+/* rule 288 can match eol */
 YY_RULE_SETUP
-#line 891 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+#line 892 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 {
   POP_STATE();
   TRY_SVAL_TOKEN (CHAR_LITERAL_AND_PI_END, put(yytext, yyleng-2));
@@ -4964,15 +4969,15 @@ YY_RULE_SETUP
    | In this state, only lexemes that are legal in a CDATA section are
    | recognized.
    |______________________________________________________________________*/
-case 288:
-YY_RULE_SETUP
-#line 905 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ POP_STATE(); TRY_SVAL_TOKEN (CHAR_LITERAL_AND_CDATA_END, put(yytext, yyleng-3)); }
-	YY_BREAK
 case 289:
-/* rule 289 can match eol */
 YY_RULE_SETUP
 #line 906 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+{ POP_STATE(); TRY_SVAL_TOKEN (CHAR_LITERAL_AND_CDATA_END, put(yytext, yyleng-3)); }
+	YY_BREAK
+case 290:
+/* rule 290 can match eol */
+YY_RULE_SETUP
+#line 907 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 { yymore(); }
 	YY_BREAK
 /*______________________________________________________________________
@@ -4988,45 +4993,45 @@ YY_RULE_SETUP
    | except that apostrophes are allowed without escaping, and an
    | unescaped quote marks the end of the state.
    |______________________________________________________________________*/
-case 290:
-YY_RULE_SETUP
-#line 923 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ BEGIN MODE_START_TAG; return token::QUOTE; }
-	YY_BREAK
 case 291:
 YY_RULE_SETUP
 #line 924 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ PUSH_STATE(INITIAL); return token::LBRACE; }
+{ BEGIN MODE_START_TAG; return token::QUOTE; }
 	YY_BREAK
 case 292:
 YY_RULE_SETUP
 #line 925 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::ESCAPE_QUOTE; }
+{ PUSH_STATE(INITIAL); return token::LBRACE; }
 	YY_BREAK
 case 293:
-/* rule 293 can match eol */
 YY_RULE_SETUP
 #line 926 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ TRY_SVAL_TOKEN (QUOTE_ATTR_CONTENT, put(yytext, yyleng, 2)); }
+{ return token::ESCAPE_QUOTE; }
 	YY_BREAK
 case 294:
+/* rule 294 can match eol */
 YY_RULE_SETUP
 #line 927 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ TRY_SVAL_TOKEN (QUOTE_ATTR_CONTENT, put_entityref(yytext, yyleng)); }
+{ TRY_SVAL_TOKEN (QUOTE_ATTR_CONTENT, put(yytext, yyleng, 2)); }
 	YY_BREAK
 case 295:
 YY_RULE_SETUP
 #line 928 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
+{ TRY_SVAL_TOKEN (QUOTE_ATTR_CONTENT, put_entityref(yytext, yyleng)); }
 	YY_BREAK
 case 296:
 YY_RULE_SETUP
 #line 929 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::DOUBLE_LBRACE; }
+{ TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
 	YY_BREAK
 case 297:
 YY_RULE_SETUP
 #line 930 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+{ return token::DOUBLE_LBRACE; }
+	YY_BREAK
+case 298:
+YY_RULE_SETUP
+#line 931 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 { return token::DOUBLE_RBRACE; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -5037,63 +5042,63 @@ YY_RULE_SETUP
    | quotes are allowed, and an unescaped apostrophe marks the end of
    | the state.
    |______________________________________________________________________*/
-case 298:
-YY_RULE_SETUP
-#line 942 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ BEGIN MODE_START_TAG; return token::APOS; }
-	YY_BREAK
 case 299:
 YY_RULE_SETUP
 #line 943 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ PUSH_AND_BEGIN (INITIAL, MODE_APOS_ATTRIBUTE_CONTENT); return token::LBRACE; }
+{ BEGIN MODE_START_TAG; return token::APOS; }
 	YY_BREAK
 case 300:
 YY_RULE_SETUP
 #line 944 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::ESCAPE_APOS; }
+{ PUSH_AND_BEGIN (INITIAL, MODE_APOS_ATTRIBUTE_CONTENT); return token::LBRACE; }
 	YY_BREAK
 case 301:
-/* rule 301 can match eol */
 YY_RULE_SETUP
 #line 945 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ TRY_SVAL_TOKEN (APOS_ATTR_CONTENT, put(yytext, yyleng, 2)); }
+{ return token::ESCAPE_APOS; }
 	YY_BREAK
 case 302:
+/* rule 302 can match eol */
 YY_RULE_SETUP
 #line 946 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ TRY_SVAL_TOKEN (APOS_ATTR_CONTENT, put_entityref(yytext, yyleng)); }
+{ TRY_SVAL_TOKEN (APOS_ATTR_CONTENT, put(yytext, yyleng, 2)); }
 	YY_BREAK
 case 303:
 YY_RULE_SETUP
 #line 947 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
+{ TRY_SVAL_TOKEN (APOS_ATTR_CONTENT, put_entityref(yytext, yyleng)); }
 	YY_BREAK
 case 304:
 YY_RULE_SETUP
 #line 948 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
-{ return token::DOUBLE_LBRACE; }
+{ TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
 	YY_BREAK
 case 305:
 YY_RULE_SETUP
 #line 949 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+{ return token::DOUBLE_LBRACE; }
+	YY_BREAK
+case 306:
+YY_RULE_SETUP
+#line 950 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 { return token::DOUBLE_RBRACE; }
 	YY_BREAK
 /*______________________________________________________________________
    |
    | Catch-all rule
    |______________________________________________________________________*/
-case 306:
+case 307:
 YY_RULE_SETUP
-#line 958 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+#line 959 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 return token::UNRECOGNIZED;
 	YY_BREAK
 /* END OF FLEX RULES */
-case 307:
+case 308:
 YY_RULE_SETUP
-#line 964 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+#line 965 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 ECHO;
 	YY_BREAK
-#line 5097 "xquery_scanner.yy.cpp"
+#line 5102 "xquery_scanner.yy.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(MODE_APOS_ATTRIBUTE_CONTENT):
 case YY_STATE_EOF(MODE_CDATA_SECTION):
@@ -6171,7 +6176,7 @@ void Zorbafree (void * ptr )
 
 /* %ok-for-header */
 
-#line 964 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
+#line 965 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 
 
 

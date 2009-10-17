@@ -446,25 +446,26 @@ namespace zorba {
      MUTABLE = 538,
      READ_ONLY = 539,
      UNIQUE = 540,
-     INDEX = 541,
-     MANUAL = 542,
-     AUTOMATIC = 543,
-     ON = 544,
-     BYTE_ORDER_MARK_UTF8 = 545,
-     FTCONTAINS_REDUCE = 546,
-     RANGE_REDUCE = 547,
-     ADDITIVE_REDUCE = 548,
-     MULTIPLICATIVE_REDUCE = 549,
-     UNION_REDUCE = 550,
-     INTERSECT_EXCEPT_REDUCE = 551,
-     QVARINDECLLIST_REDUCE = 552,
-     COMMA_DOLLAR = 553,
-     UNARY_PREC = 554,
-     SEQUENCE_TYPE_REDUCE = 555,
-     OCCURS_STAR = 556,
-     OCCURS_PLUS = 557,
-     OCCURS_HOOK = 558,
-     STEP_REDUCE = 559
+     NON = 541,
+     INDEX = 542,
+     MANUAL = 543,
+     AUTOMATIC = 544,
+     ON = 545,
+     BYTE_ORDER_MARK_UTF8 = 546,
+     FTCONTAINS_REDUCE = 547,
+     RANGE_REDUCE = 548,
+     ADDITIVE_REDUCE = 549,
+     MULTIPLICATIVE_REDUCE = 550,
+     UNION_REDUCE = 551,
+     INTERSECT_EXCEPT_REDUCE = 552,
+     QVARINDECLLIST_REDUCE = 553,
+     COMMA_DOLLAR = 554,
+     UNARY_PREC = 555,
+     SEQUENCE_TYPE_REDUCE = 556,
+     OCCURS_STAR = 557,
+     OCCURS_PLUS = 558,
+     OCCURS_HOOK = 559,
+     STEP_REDUCE = 560
    };
 
     };
@@ -641,7 +642,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 645 "/home/markos/zorba/zorba/build-gdb/src/compiler/parser/xquery_parser.hpp"
+#line 646 "/home/markos/zorba/zorba/build-gdb/src/compiler/parser/xquery_parser.hpp"
 
 
 
