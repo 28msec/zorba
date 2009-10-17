@@ -19,6 +19,7 @@
 #include "functions/function_impl.h"
 
 #include "runtime/booleans/BooleanImpl.h"
+#include "runtime/booleans/booleans.h"
 #include "runtime/core/item_iterator.h"
 
 #include "store/api/item_factory.h"
@@ -372,7 +373,7 @@ class op_is_same_node : public function
 public:
   op_is_same_node( const signature &sig) : function(sig) {}
 
-  DEFAULT_NARY_CODEGEN (OpIsSameNodeIterator)
+  DEFAULT_NARY_CODEGEN (IsSameNodeIterator)
 };
   
 
@@ -381,7 +382,7 @@ class op_node_before : public function
 public:
   op_node_before( const signature &sig) : function(sig) {}
 
-  DEFAULT_NARY_CODEGEN (OpNodeBeforeIterator)
+  DEFAULT_NARY_CODEGEN (NodeBeforeIterator)
 };
   
 
@@ -390,7 +391,7 @@ class op_node_after : public function
 public:
   op_node_after( const signature &sig) : function(sig) {}
 
-  DEFAULT_NARY_CODEGEN (OpNodeAfterIterator)
+  DEFAULT_NARY_CODEGEN (NodeAfterIterator)
 };
 
 

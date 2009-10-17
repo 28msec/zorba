@@ -410,12 +410,6 @@
   PLAN_ITER_VISITOR (CtxVarExistsIterator);
 
   PLAN_ITER_VISITOR (EvalIterator);
-  
-  PLAN_ITER_VISITOR (OpIsSameNodeIterator);
-  
-  PLAN_ITER_VISITOR (OpNodeBeforeIterator);
-
-  PLAN_ITER_VISITOR (OpNodeAfterIterator);
 
   PLAN_ITER_VISITOR (FnCurrentDateTimeIterator);
 

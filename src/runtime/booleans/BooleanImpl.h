@@ -383,18 +383,6 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
-
-/*******************************************************************************
-  Node comparison iterators
-********************************************************************************/
-NARY_ITER(OpIsSameNodeIterator); 
-
-
-NARY_ITER(OpNodeBeforeIterator);
-
-
-NARY_ITER(OpNodeAfterIterator);
-
 }
 
 #endif

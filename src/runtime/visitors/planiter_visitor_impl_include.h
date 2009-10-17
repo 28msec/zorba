@@ -176,9 +176,6 @@
   class FnAdjustToTimeZoneIterator_1;
   class FnAdjustToTimeZoneIterator_2;
   class FnFormatDateTimeIterator;
-  class OpIsSameNodeIterator;
-  class OpNodeBeforeIterator;
-  class OpNodeAfterIterator;
   class FnCurrentDateTimeIterator;
   class FnCurrentDateIterator;
   class FnCurrentTimeIterator;

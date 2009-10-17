@@ -22,8 +22,11 @@
 // ******************************************
 
 #include "runtime/visitors/planiter_visitor.h"
+#include "runtime/accessors/accessors.h"
+#include "system/globalenv.h"
 
-#include "runtime/accessors/accessors.h"#include "system/globalenv.h"
+
+#include "system/globalenv.h"
 #include "runtime/accessors/AccessorsImpl.h"
 #include "runtime/visitors/planiter_visitor.h"
 #include "store/api/item.h"

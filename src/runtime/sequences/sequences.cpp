@@ -22,8 +22,10 @@
 // ******************************************
 
 #include "runtime/visitors/planiter_visitor.h"
-
 #include "runtime/sequences/sequences.h"
+#include "system/globalenv.h"
+
+
 
 namespace zorba {
 

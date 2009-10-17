@@ -51,15 +51,6 @@ END_SERIALIZABLE_CLASS_VERSIONS(LogicIterator)
 SERIALIZABLE_CLASS_VERSIONS(CompareIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(CompareIterator)
 
-SERIALIZABLE_CLASS_VERSIONS(OpIsSameNodeIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(OpIsSameNodeIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(OpNodeBeforeIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(OpNodeBeforeIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(OpNodeAfterIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(OpNodeAfterIterator)
-
 SERIALIZABLE_TEMPLATE_VERSIONS(TypedValueCompareIterator)
 END_SERIALIZABLE_TEMPLATE_VERSIONS(TypedValueCompareIterator)
 
@@ -895,98 +886,4 @@ template class TypedValueCompareIterator<TypeConstants::XS_FLOAT>;
 template class TypedValueCompareIterator<TypeConstants::XS_DECIMAL>;
 template class TypedValueCompareIterator<TypeConstants::XS_INTEGER>;
 template class TypedValueCompareIterator<TypeConstants::XS_STRING>;
-
-  
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  Node Ordering Iterators                                                    //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool
-OpIsSameNodeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{ 
-  bool lBool;
-  store::Item_t lItem0, lItem1;
-
-  PlanIteratorState* aState;
-  DEFAULT_STACK_INIT(PlanIteratorState, aState, planState);
-  
-  if (CONSUME (lItem0, 0)) {
-    if (CONSUME (lItem1, 1)) {
-      if (!lItem0->isNode() || !lItem0->isNode()) {
-        ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "op:is-same-node must have nodes as parameters.");
-      }
-      lBool = (GENV_STORE.compareNodes(lItem0, lItem1) == 0); 
-      STACK_PUSH (GENV_ITEMFACTORY->createBoolean(result, lBool),
-                  aState);
-    }
-  }
-  STACK_END (aState);
-}
-
-
-NARY_ACCEPT(OpIsSameNodeIterator);
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool
-OpNodeBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{ 
-  bool lBool;
-  store::Item_t lItem0, lItem1;
-
-  PlanIteratorState* aState;
-  DEFAULT_STACK_INIT(PlanIteratorState, aState, planState);
-
-  if (CONSUME (lItem0, 0)) {
-    if (CONSUME (lItem1, 1)) {
-      if (!lItem0->isNode() || !lItem0->isNode()) {
-        ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "op:node-before must have nodes as parameters.");
-      }
-      lBool = (GENV_STORE.compareNodes(lItem0, lItem1) == -1); 
-      STACK_PUSH (GENV_ITEMFACTORY->createBoolean(result, lBool), aState);
-    }
-  }
-  STACK_END (aState);
-}
-
-
-NARY_ACCEPT(OpNodeBeforeIterator);
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool
-OpNodeAfterIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{ 
-  bool lBool;
-  store::Item_t lItem0, lItem1;
-
-  PlanIteratorState* aState;
-  DEFAULT_STACK_INIT(PlanIteratorState, aState, planState);
-
-  if (CONSUME (lItem0, 0)) {
-    if (CONSUME (lItem1, 1)) {
-      if (!lItem0->isNode() || !lItem0->isNode()) {
-        ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "op:node-after must have nodes as parameters.");
-      }
-      lBool = (GENV_STORE.compareNodes(lItem0, lItem1) == 1); 
-      STACK_PUSH (GENV_ITEMFACTORY->createBoolean(result, lBool), aState);
-    }
-  }
-  STACK_END (aState);
-}
-
-
-NARY_ACCEPT(OpNodeAfterIterator);
-
-
 }

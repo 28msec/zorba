@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+    
+<zorba:header>
+    <zorba:include form="Quoted">common/shared_types.h</zorba:include>
+    <zorba:include form="Quoted">runtime/base/narybase.h</zorba:include>
+</zorba:header>
+
+<zorba:source/>
+
+<!-- 
+<zorba:codegen>
+    <zorba:h>
+        <zorba:include form="Quoted">common/shared_types.h</zorba:include>
+        <zorba:include form="Quoted">functions/function_impl.h</zorba:include>
+    </zorba:h>
+    <zorba:cpp>
+        <zorba:include form="Quoted">runtime/strings/StringsImpl.h</zorba:include>
+        <zorba:include form="Quoted">runtime/strings/strings.h</zorba:include>
+        <zorba:include form="Quoted">functions/Strings.h</zorba:include>
+    </zorba:cpp>
+</zorba:codegen>
+-->
+    
+<!--
+/*******************************************************************************
+* 14.6 op:is-same-node
+********************************************************************************/
+-->
+<zorba:iterator
+    name="IsSameNodeIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">op:is-same-node</zorba:description>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+* 14.7 op:node-before
+********************************************************************************/
+-->
+
+<zorba:iterator
+    name="NodeBeforeIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">op:node-before</zorba:description>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+* 14.8 op:node-after
+********************************************************************************/
+-->
+
+<zorba:iterator
+    name="NodeAfterIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">op:node-after</zorba:description>
+    
+</zorba:iterator>
+
+</zorba:iterators>
