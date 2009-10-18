@@ -1029,7 +1029,7 @@ bool NameCastIterator::nextImpl(store::Item_t& result, PlanState& planState) con
                          "Sequences with more than one item cannot be cast to QName.");
   }
 
-  lItemType = planState.theCompilerCB->m_sctx->get_typemanager()->
+  lItemType = planState.theCompilerCB->theRootSctx->get_typemanager()->
               create_value_type(result);
 
   if (TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.QNAME_TYPE_ONE))

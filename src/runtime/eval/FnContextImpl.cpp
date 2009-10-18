@@ -114,8 +114,8 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   // set up eval state's ccb
   state->ccb.reset (new CompilerCB (*planState.theCompilerCB));
-  state->ccb->m_sctx = getStaticContext(planState)->create_child_context();
-  (*state->ccb->m_context_map)[state->ccb->m_cur_sctx] = state->ccb->m_sctx; 
+  state->ccb->theRootSctx = getStaticContext(planState)->create_child_context();
+  (*state->ccb->m_context_map)[state->ccb->m_cur_sctx] = state->ccb->theRootSctx; 
   CONSUME (item, 0);
 
   {
@@ -136,7 +136,7 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       // TODO: is saving an open iterator efficient?
       // Then again if we close theChildren [1] here,
       // we won't be able to re-open it later via the PlanIteratorWrapper
-      state->dctx->add_variable (dynamic_context::var_key (state->ccb->m_sctx->lookup_var (varnames [i])), lIter);
+      state->dctx->add_variable(dynamic_context::var_key(state->ccb->theRootSctx->lookup_var(varnames[i])), lIter);
     }
   }
 

@@ -278,10 +278,7 @@ struct NodeSortInfo
   There is only one ModulesInfo instance per compilation. It is created on the
   stack by the translate() method.
 
-  topCompilerCB : The compilerCB for the root module of the compilation. It
-                  provides access to the static context that is common to all 
-                  modules (this is either a user-provided sctx, or the zorba
-                  default sctx).
+  theTopCCB     : The compilerCB for the root module of the compilation. 
 
   mod_ns_map    : Maps resolved module location uris to target namespaces.
                   Used to skip compilation of a module that has been compiled
@@ -302,17 +299,17 @@ struct NodeSortInfo
 class ModulesInfo 
 {
 public:
-  CompilerCB                * topCompilerCB;
+  CompilerCB                * theTopCCB;
   hashmap<static_context_t>   mod_sctx_map;
   hashmap<string>             mod_ns_map;
   checked_vector<expr_t>      init_exprs;
   auto_ptr<static_context>    globals;
 
-  ModulesInfo(CompilerCB *topCompilerCB_)
+  ModulesInfo(CompilerCB* topCompilerCB)
     :
-    topCompilerCB (topCompilerCB_),
+    theTopCCB(topCompilerCB),
     globals(static_cast<static_context *>
-            (topCompilerCB->m_sctx->get_parent())->create_child_context())
+            (topCompilerCB->theRootSctx->get_parent())->create_child_context())
   {
   }
 };
@@ -568,7 +565,7 @@ TranslatorImpl(
   minfo (minfo_),
   mod_stack (mod_stack_),
   theIsDataModule (false),
-  sctx_p (aCompilerCB->m_sctx),
+  sctx_p(aCompilerCB->theRootSctx),
   export_sctx (NULL),
   ns_ctx(new namespace_context(sctx_p)),
   print_depth (0),
@@ -1648,16 +1645,16 @@ void end_visit (const MainModule & v, void* /*visit_state*/)
 /*******************************************************************************
   [4] LibraryModule ::= ModuleDecl  Prolog
 ********************************************************************************/
-void *begin_visit (const LibraryModule& v) 
+void* begin_visit(const LibraryModule& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   theIsDataModule = v.is_data_module();
   return no_state;
 }
 
-void end_visit (const LibraryModule& v, void* /*visit_state*/) 
+void end_visit(const LibraryModule& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
   // Note: There is no real reason to put the expr returned by 
   // wrap_in_globalvar_assign() in the nodestack. The only reason is for the
@@ -2131,19 +2128,19 @@ void end_visit (const SchemaPrefix& v, void* /*visit_state*/)
   [25] ModuleImport ::= "import" "module" ("namespace" NCName "=")? URILiteral
                         ("at" URILiteralList)?
 ********************************************************************************/
-void *begin_visit (const ModuleImport& v) 
+void* begin_visit(const ModuleImport& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
 
-void end_visit (const ModuleImport& v, void* /*visit_state*/) 
+void end_visit(const ModuleImport& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
-  string pfx = v.get_prefix ();
-  string target_ns = v.get_uri ();
+  string pfx = v.get_prefix();
+  string target_ns = v.get_uri();
 
   // The namespace prefix specified in a module import must not be xml or xmlns
   // [err:XQST0070]
@@ -2260,15 +2257,15 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
       // Get the query-level sctx. This is the user-specified sctx (if any) or
       // the zorba default (root) sctx (if no user-specified sctx).
       static_context_t independent_sctx = 
-      static_cast<static_context *>(minfo->topCompilerCB->m_sctx->get_parent());
+      static_cast<static_context *>(minfo->theTopCCB->theRootSctx->get_parent());
 
       // Create the root sctx for the imported module as a child of the
       // query-level sctx. Register this sctx in the query-level sctx map.
-      mod_ccb.m_sctx = independent_sctx->create_child_context ();
-      mod_ccb.m_cur_sctx = minfo->topCompilerCB->m_context_map->size() + 1;
-      mod_ccb.m_sctx->set_entity_retrieval_url(resolveduri->str());
+      mod_ccb.theRootSctx = independent_sctx->create_child_context();
+      mod_ccb.m_cur_sctx = minfo->theTopCCB->m_context_map->size() + 1;
+      mod_ccb.theRootSctx->set_entity_retrieval_url(resolveduri->str());
 
-      (*minfo->topCompilerCB->m_context_map)[mod_ccb.m_cur_sctx] = mod_ccb.m_sctx;
+      (*minfo->theTopCCB->m_context_map)[mod_ccb.m_cur_sctx] = mod_ccb.theRootSctx;
 
       // Create an sctx where the imported module is going to register all the
       // variable and function declarations that appear in its prolog. After the
@@ -2347,7 +2344,7 @@ void end_visit (const ModuleImport& v, void* /*visit_state*/)
 
   [6d] VFO_Decl ::= VarDecl | ContextItemDecl | FunctionDecl | IndexDecl | OptionDecl
 ********************************************************************************/
-void *begin_visit (const VFO_DeclList& v) 
+void* begin_visit(const VFO_DeclList& v) 
 {
   TRACE_VISIT ();
 
@@ -2921,7 +2918,8 @@ void* begin_visit(const CollectionDecl& v)
 {
   TRACE_VISIT();
   // checks if collection declaration is not located in a DataModule
-  if (!theIsDataModule) {
+  if (!theIsDataModule) 
+  {
     ZORBA_ERROR_LOC_DESC_OSS(XDXX0001, v.get_location(), 
                              "It is a static error if a collection declaration "
                              << "is used in a module other than a data module.");
@@ -3009,6 +3007,13 @@ void end_visit(const NodeModifier& v, void* /*visit_state*/)
 void* begin_visit(const IndexDecl& v) 
 {
   TRACE_VISIT();
+
+  if (!theIsDataModule)
+  {
+    ZORBA_ERROR_LOC_DESC_OSS(XDXX0001, v.get_location(), 
+                             "It is a static error if an index declaration "
+                             << "is used in a module other than a data module.");
+  }
 
   const QName* qname = v.getName();
 
@@ -3252,7 +3257,7 @@ void end_visit (const QueryBody& v, void* /*visit_state*/)
 
   nodestack.push(resultExpr);
 
-  if (minfo->topCompilerCB->isLoadPrologQuery())
+  if (minfo->theTopCCB->isLoadPrologQuery())
     sctx_p->set_query_expr(resultExpr);
 }
 

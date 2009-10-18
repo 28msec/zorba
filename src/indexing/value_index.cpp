@@ -38,7 +38,7 @@ ValueIndex::ValueIndex(
     const QueryLoc& loc,
     const store::Item_t& name)
   :
-  theSctx(ccb->m_sctx),
+  theSctx(ccb->theRootSctx),
   theName(name),
   theIsUnique(false),
   theIsTemp(false),
@@ -55,7 +55,7 @@ ValueIndex::ValueIndex(::zorba::serialization::Archiver& ar)
 }
 
 
-void ValueIndex::serialize(::zorba::serialization::Archiver &ar)
+void ValueIndex::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theSctx;
   ar & theName;

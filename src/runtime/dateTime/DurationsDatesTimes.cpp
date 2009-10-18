@@ -1257,7 +1257,7 @@ FnFormatDateTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (planState.theCompilerCB->m_sctx->xquery_version() == StaticContextConsts::xquery_version_1_0)
+  if (planState.theCompilerCB->theRootSctx->xquery_version() == StaticContextConsts::xquery_version_1_0)
     ZORBA_ERROR_LOC_DESC(XPST0017, loc, "The date/time formatting functions are only available in the XQuery 1.1 processing mode.");
 
   if (!consumeNext(dateTimeItem, theChildren[0].getp(), planState))

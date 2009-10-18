@@ -245,7 +245,7 @@ XQueryCompiler::createMainModule(parsenode_t aLibraryModule, std::istream& aXQue
   aXQuery.seekg(0);
 
   theResolver = new StandardLibraryModuleURIResolver(aXQuery, lib_namespace, aFileName.c_str());
-  theCompilerCB->m_sctx->add_module_uri_resolver(theResolver);
+  theCompilerCB->theRootSctx->add_module_uri_resolver(theResolver);
 
   return  parse(lDocStream, aFileName);
 }

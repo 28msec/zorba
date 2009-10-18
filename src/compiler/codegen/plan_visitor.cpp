@@ -236,7 +236,7 @@ protected:
 
   std::stack<ZorbaDebugIterator*>        theDebuggerStack;
 
-#define LOOKUP_OP1( local ) (ccb->m_sctx->lookup_builtin_fn (":" local, 1))
+#define LOOKUP_OP1( local ) (ccb->theRootSctx->lookup_builtin_fn (":" local, 1))
 
 public:
 

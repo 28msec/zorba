@@ -1969,7 +1969,7 @@ bool FnFormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planStat
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
 
-  if (planState.theCompilerCB->m_sctx->xquery_version() == StaticContextConsts::xquery_version_1_0)
+  if (planState.theCompilerCB->theRootSctx->xquery_version() == StaticContextConsts::xquery_version_1_0)
     ZORBA_ERROR_LOC_DESC(XPST0017, loc, "The format-number() function is only available in the XQuery 1.1 processing mode.");
 
   if (!consumeNext(result, theChildren[0].getp(), planState ))
@@ -1987,9 +1987,9 @@ bool FnFormatNumberIterator::nextImpl(store::Item_t& result, PlanState& planStat
     
     if (theChildren.size() >= 3 &&
         consumeNext(formatName, theChildren[2].getp(), planState))
-      df_t = planState.theCompilerCB->m_sctx->get_decimal_format(formatName);
+      df_t = planState.theCompilerCB->theRootSctx->get_decimal_format(formatName);
     else
-      df_t = planState.theCompilerCB->m_sctx->get_decimal_format(NULL);
+      df_t = planState.theCompilerCB->theRootSctx->get_decimal_format(NULL);
 
     info.readFormat(df_t);
     

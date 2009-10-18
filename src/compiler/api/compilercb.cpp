@@ -53,7 +53,7 @@ CompilerCB::CompilerCB(std::map<short, static_context_t>& sctx_map)
   :
   m_is_loadprolog(false),
   m_context_map(&sctx_map),
-  m_sctx(0),
+  theRootSctx(0),
   m_cur_sctx(0),
   m_error_manager(0),
   theDebuggerCommons(0)
@@ -66,7 +66,7 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
   zorba::serialization::SerializeBaseClass(cb),
   m_is_loadprolog(false),
   m_context_map(cb.m_context_map),
-  m_sctx(NULL),
+  theRootSctx(NULL),
   m_cur_sctx(cb.m_cur_sctx),
   m_error_manager(cb.m_error_manager),
   m_config(cb.m_config),
@@ -92,7 +92,7 @@ void CompilerCB::serialize(::zorba::serialization::Archiver& ar)
   ar & m_is_loadprolog;
   ar & m_cur_sctx;
   ar & m_context_map;
-  ar & m_sctx;
+  ar & theRootSctx;
   ar & m_sctx_list;
   if(!ar.is_serializing_out())
   {

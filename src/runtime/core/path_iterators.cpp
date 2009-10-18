@@ -255,7 +255,7 @@ doctest1:
 
     if (theType != NULL)
     {
-      xqtref_t atype = planState.theCompilerCB->m_sctx->get_typemanager()->
+      xqtref_t atype = planState.theCompilerCB->theRootSctx->get_typemanager()->
                        create_value_type(node);
       
       if ((!TypeOps::is_subtype(*atype, *theType)) || 
@@ -278,7 +278,7 @@ doctest2:
     if (!theQName->equals(node->getNodeName()))
       return false;
 
-    xqtref_t atype = planState.theCompilerCB->m_sctx->get_typemanager()->
+    xqtref_t atype = planState.theCompilerCB->theRootSctx->get_typemanager()->
                      create_value_type(node);
       
     if ((!TypeOps::is_subtype(*atype, *theType)) || 
@@ -298,7 +298,7 @@ doctest2:
 
     if (theType != NULL)
     {
-      xqtref_t atype = planState.theCompilerCB->m_sctx->get_typemanager()->
+      xqtref_t atype = planState.theCompilerCB->theRootSctx->get_typemanager()->
                        create_value_type(node);
 
       if (! TypeOps::is_subtype(*atype, *theType))
@@ -315,7 +315,7 @@ doctest2:
     if (!theQName->equals(node->getNodeName()))
       return false;
 
-    xqtref_t atype = planState.theCompilerCB->m_sctx->get_typemanager()->
+    xqtref_t atype = planState.theCompilerCB->theRootSctx->get_typemanager()->
                      create_value_type(node);
 
     if (! TypeOps::is_subtype(*atype, *theType))

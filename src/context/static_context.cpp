@@ -1092,8 +1092,8 @@ xqtref_t static_context::get_collection_type(const xqp_string collURI)
 
 
 void static_context::add_declared_collection(
-       StaticallyKnownCollection_t& aCollection,
-       const QueryLoc& aLoc)
+    StaticallyKnownCollection_t& aCollection,
+    const QueryLoc& aLoc)
 {
   if (theCollectionMap == 0)
     theCollectionMap = new CollectionMap(0, NULL, 8, false);
@@ -1450,13 +1450,15 @@ bool static_context::import_module(const static_context* module, const QueryLoc&
     CollectionMap::iterator coll_end = module->theCollectionMap->end();
     for (; coll_iter != coll_end; ++ coll_iter)
     {
-      if (theCollectionMap == 0) {
+      if (theCollectionMap == 0) 
+      {
         theCollectionMap = new CollectionMap(0, 0, 8, false);
       }
 
       std::pair<const store::Item*, StaticallyKnownCollection_t > pair = (*coll_iter);
 
-      if (!theCollectionMap->insert(pair.first, pair.second)) {
+      if (!theCollectionMap->insert(pair.first, pair.second)) 
+      {
         ZORBA_ERROR_LOC_DESC_OSS(XDXX0001, loc,
                                  "It is a static error if the expanded QName ("
                                  << pair.second->getName()->getStringValue()
@@ -1482,7 +1484,11 @@ bool static_context::import_module(const static_context* module, const QueryLoc&
         theIndexMap = new IndexMap(0, NULL, 8, false);
       }
 
-      theIndexMap->insert((store::Item*)pair.first, pair.second);
+      if (!theIndexMap->insert((store::Item*)pair.first, pair.second))
+      {
+        ZORBA_ERROR_LOC_PARAM(XQP0038_INDEX_IS_ALREADY_DECLARED, loc,
+                              pair.first->getStringValue()->c_str(), "");
+      }
     }
   }
 

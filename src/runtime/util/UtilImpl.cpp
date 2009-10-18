@@ -113,7 +113,7 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   // setup a new CompilerCB and a new XQueryCompiler 
   CompilerCB     lCompilerCB(*planState.theCompilerCB);
-  lCompilerCB.m_sctx = GENV.getRootStaticContext().create_child_context();
+  lCompilerCB.theRootSctx = GENV.getRootStaticContext().create_child_context();
 
   // the XQueryCompiler's constructor destroys the existing type manager 
   // in the static context. Hence, we create a new one

@@ -41,7 +41,7 @@ class static_context;
   The CompilerCBs of imported modules are created and stay alive only during the
   translation of their associated modules.
 
-  m_sctx          : The root static ctx for the associated module. For each
+  theRootSctx     : The root static ctx for the associated module. For each
                     module, this is a child of either a user provided static
                     ctx or the zorba default root context.
   m_cur_sctx      : The numeric id of the last sctx that was added to the 
@@ -114,7 +114,7 @@ public:
   bool                                m_is_loadprolog;
   std::map<short, static_context_t> * m_context_map;
   
-  static_context_t                    m_sctx;
+  static_context_t                    theRootSctx;
   short                               m_cur_sctx;
   std::vector<static_context_t>       m_sctx_list;
 

@@ -200,7 +200,7 @@ XQueryImpl::clone() const
     lImpl->theStaticContext = theStaticContext->create_child_context();
     RCHelper::addReference(lImpl->theStaticContext);
 
-    lImpl->theCompilerCB->m_sctx = lImpl->theStaticContext;
+    lImpl->theCompilerCB->theRootSctx = lImpl->theStaticContext;
     lImpl->theCompilerCB->m_context_map = theCompilerCB->m_context_map;
 
     // child dynamic context
@@ -414,7 +414,7 @@ XQueryImpl::parse(std::istream& aQuery)
 
     theStaticContext->set_entity_retrieval_url(xqp_string (&*URI::encode_file_URI (theFileName)));
 
-    theCompilerCB->m_sctx = theStaticContext;
+    theCompilerCB->theRootSctx = theStaticContext;
 
     XQueryCompiler lCompiler(theCompilerCB);
     lCompiler.parseOnly(aQuery, theFileName);
@@ -551,7 +551,7 @@ void XQueryImpl::doCompile(
 
   theStaticContext->set_entity_retrieval_url(xqp_string(&*URI::encode_file_URI(theFileName)));
 
-  theCompilerCB->m_sctx = theStaticContext;
+  theCompilerCB->theRootSctx = theStaticContext;
   theCompilerCB->m_cur_sctx = theCompilerCB->m_context_map->size() + 1;
   (*theCompilerCB->m_context_map)[theCompilerCB->m_cur_sctx] = theStaticContext;
 
@@ -565,7 +565,7 @@ void XQueryImpl::doCompile(
   if ( theIsDebugMode){
     theCompilerCB->m_config.force_gflwor = true;
     theCompilerCB->theDebuggerCommons =
-      new ZorbaDebuggerCommons(theCompilerCB->m_sctx);
+      new ZorbaDebuggerCommons(theCompilerCB->theRootSctx);
     theCompilerCB->m_config.opt_level = CompilerCB::config_t::O0;
   }
   // let's compile

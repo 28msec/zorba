@@ -97,7 +97,7 @@ bool FnBooleanIterator::effectiveBooleanValue(
   }
   else
   {
-    xqtref_t type = planState.theCompilerCB->m_sctx->get_typemanager()->create_value_type(item);
+    xqtref_t type = planState.theCompilerCB->theRootSctx->get_typemanager()->create_value_type(item);
     if (( !consumeNext(temp, iter, planState))
         && (TypeOps::is_equal(*type, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE)
             || TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.STRING_TYPE_ONE )

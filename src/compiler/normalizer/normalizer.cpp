@@ -138,7 +138,7 @@ void end_visit(flwor_expr& node)
         if (TypeOps::is_empty(*vartype))
           ZORBA_ERROR_LOC_PARAM(XPTY0004, fc->get_loc(), "empty-sequence()", "");
 
-        xqtref_t promote_type = m_cb->m_sctx->get_typemanager()->
+        xqtref_t promote_type = m_cb->theRootSctx->get_typemanager()->
                                 create_type(*vartype, TypeConstants::QUANT_STAR);
 
         expr_t e = fc->get_expr();
@@ -383,7 +383,7 @@ void normalize_expr_tree(
   {
     if (TypeOps::is_builtin_simple(*rType)) 
     {
-      root = wrap_in_atomization(aCompilerCB->m_cur_sctx, aCompilerCB->m_sctx, root);
+      root = wrap_in_atomization(aCompilerCB->m_cur_sctx, aCompilerCB->theRootSctx, root);
       root = wrap_in_type_conversion(aCompilerCB->m_cur_sctx, root, rType);
     }
     else 
