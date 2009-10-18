@@ -725,7 +725,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> IndexProperties2
 %type <node> IndexProperties3
 %type <node> IndexKeySpec
-%type <node> IndexKeySpec1
 %type <node> IndexKeyList
 
 /* full-text-related */
@@ -783,7 +782,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 // (not <= 0); but Bison never increments the refcount, so we do it manually...
 
 // parsenodes
-%destructor { if ($$ != NULL) { RCHelper::addReference ($$); RCHelper::removeReference ($$); } } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDecl3 FunctionDecl4 Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl CollectionModifier NodeModifier IndexDecl IndexProperties IndexProperties2 IndexProperties3 IndexKeySpec IndexKeySpec1 IndexKeyList CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard DecimalFormatDecl // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
+%destructor { if ($$ != NULL) { RCHelper::addReference ($$); RCHelper::removeReference ($$); } } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDecl3 FunctionDecl4 Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl CollectionModifier NodeModifier IndexDecl IndexProperties IndexProperties2 IndexProperties3 IndexKeySpec IndexKeyList CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard DecimalFormatDecl // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
 // exprnodes
 %destructor { if ($$ != NULL) { RCHelper::addReference ($$); RCHelper::removeReference ($$); } } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockExpr EnclosedExpr Expr ConcatExpr ApplyExpr ExprSingle ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignExpr ExitExpr WhileExpr FlowCtlStatement QNAME FTContainsExpr
 // internal non-terminals with values
@@ -1790,39 +1789,33 @@ IndexKeyList :
     }
 ;
 
-IndexKeySpec :
-    IndexKeySpec1
-    {
-      $$ = $1;
-    }
-  | IndexKeySpec1 COLLATION URI_LITERAL
-    {
-      dynamic_cast<IndexKeySpec*>($1)->setCollation(SYMTAB($3));
-      $$ = $1;
-    }
-  | IndexKeySpec1 OrderEmptySpec COLLATION URI_LITERAL
-    {
-      OrderEmptySpec* oes = dynamic_cast<OrderEmptySpec*>($2);
-      dynamic_cast<IndexKeySpec*>($1)->setEmptyOrderSpec(oes);
-      dynamic_cast<IndexKeySpec*>($1)->setCollation(SYMTAB($4));
-      $$ = $1;
-    }
-  | IndexKeySpec1 OrderEmptySpec
-    {
-      $$ = $1;
-      OrderEmptySpec* oes = dynamic_cast<OrderEmptySpec*>($2);
-      dynamic_cast<IndexKeySpec*>($1)->setEmptyOrderSpec(oes);
-    }
-  ;
 
-IndexKeySpec1 :
+IndexKeySpec :
     ExprSingle
     {
-      $$ = new IndexKeySpec(LOC(@$), $1, NULL);
+      $$ = new IndexKeySpec(LOC(@$), $1, NULL, NULL);
+    }
+  |
+    ExprSingle OrderModifier
+    {
+      $$ = new IndexKeySpec(LOC(@$),
+                            $1,
+                            NULL,
+                            dynamic_cast<OrderModifierPN*>($2));
     }
   | ExprSingle TypeDeclaration
     {
-      $$ = new IndexKeySpec(LOC(@$), $1, dynamic_cast<SequenceType*>($2));
+      $$ = new IndexKeySpec(LOC(@$),
+                            $1,
+                            dynamic_cast<SequenceType*>($2),
+                            NULL);
+    }
+  | ExprSingle TypeDeclaration OrderModifier
+    {
+      $$ = new IndexKeySpec(LOC(@$),
+                            $1,
+                            dynamic_cast<SequenceType*>($2),
+                            dynamic_cast<OrderModifierPN*>($3));
     }
   ;
 
@@ -2774,8 +2767,8 @@ OrderSpec :
 	|	ExprSingle OrderModifier
 		{
 			$$ = new OrderSpec(LOC (@$),
-								$1,
-								dynamic_cast<OrderModifier*>($2));
+                         $1,
+                         dynamic_cast<OrderModifierPN*>($2));
 		}
 	;
 
@@ -2785,52 +2778,52 @@ OrderSpec :
 OrderModifier :
 		OrderDirSpec
 		{
-			$$ = new OrderModifier(LOC (@$),
-								dynamic_cast<OrderDirSpec*>($1),
-								NULL,
-								NULL);
+			$$ = new OrderModifierPN(LOC(@$),
+                               dynamic_cast<OrderDirSpec*>($1),
+                               NULL,
+                               NULL);
 		}
 	|	OrderEmptySpec
 		{
-			$$ = new OrderModifier(LOC (@$),
-								NULL,
-								dynamic_cast<OrderEmptySpec*>($1),
-								NULL);
+			$$ = new OrderModifierPN(LOC(@$),
+                               NULL,
+                               dynamic_cast<OrderEmptySpec*>($1),
+                               NULL);
 		}
 	|	OrderCollationSpec
 		{
-			$$ = new OrderModifier(LOC (@$),
-								NULL,
-								NULL,
-								dynamic_cast<OrderCollationSpec*>($1));
+			$$ = new OrderModifierPN(LOC(@$),
+                               NULL,
+                               NULL,
+                               dynamic_cast<OrderCollationSpec*>($1));
 		}
 	|	OrderDirSpec  OrderEmptySpec
 		{
-			$$ = new OrderModifier(LOC (@$),
-								dynamic_cast<OrderDirSpec*>($1),
-								dynamic_cast<OrderEmptySpec*>($2),
-								NULL);
+			$$ = new OrderModifierPN(LOC(@$),
+                               dynamic_cast<OrderDirSpec*>($1),
+                               dynamic_cast<OrderEmptySpec*>($2),
+                               NULL);
 		}
 	|	OrderDirSpec  OrderCollationSpec
 		{
-			$$ = new OrderModifier(LOC (@$),
-								dynamic_cast<OrderDirSpec*>($1),
-								NULL,
-								dynamic_cast<OrderCollationSpec*>($2));
+			$$ = new OrderModifierPN(LOC(@$),
+                               dynamic_cast<OrderDirSpec*>($1),
+                               NULL,
+                               dynamic_cast<OrderCollationSpec*>($2));
 		}
 	|	OrderEmptySpec  OrderCollationSpec
 		{
-			$$ = new OrderModifier(LOC (@$),
-								NULL,
-								dynamic_cast<OrderEmptySpec*>($1),
-								dynamic_cast<OrderCollationSpec*>($2));
+			$$ = new OrderModifierPN(LOC(@$),
+                               NULL,
+                               dynamic_cast<OrderEmptySpec*>($1),
+                               dynamic_cast<OrderCollationSpec*>($2));
 		}
 	|	OrderDirSpec  OrderEmptySpec  OrderCollationSpec
 		{
-			$$ = new OrderModifier(LOC (@$),
-								dynamic_cast<OrderDirSpec*>($1),
-								dynamic_cast<OrderEmptySpec*>($2),
-								dynamic_cast<OrderCollationSpec*>($3));
+			$$ = new OrderModifierPN(LOC(@$),
+                               dynamic_cast<OrderDirSpec*>($1),
+                               dynamic_cast<OrderEmptySpec*>($2),
+                               dynamic_cast<OrderCollationSpec*>($3));
 		}
 	;
 

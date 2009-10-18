@@ -345,7 +345,7 @@ class DeweyClassification: public parsenode_visitor
   	DECL_CONCRETE_VISIT (OrderCollationSpec);
   	DECL_CONCRETE_VISIT (OrderDirSpec);
   	DECL_CONCRETE_VISIT (OrderEmptySpec);
-  	DECL_CONCRETE_VISIT (OrderModifier);
+  	DECL_CONCRETE_VISIT (OrderModifierPN);
   	DECL_CONCRETE_VISIT (OrderSpec);
   	DECL_CONCRETE_VISIT (OrderSpecList);
   	DECL_CONCRETE_VISIT (OrderingModeDecl);

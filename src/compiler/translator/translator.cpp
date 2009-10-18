@@ -3091,14 +3091,14 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
 
   std::vector<expr_t> keyExprs(numColumns);
   std::vector<xqtref_t> keyTypes(numColumns);
-  std::vector<std::string> keyCollations(numColumns);
-  std::vector<bool> keyEmptyLeastSpecs(numColumns);
+  std::vector<OrderModifier> keyModifiers(numColumns);
 
   ValueIndex* index = indexstack.top();
 
   for(int i = numColumns - 1; i >= 0; --i) 
   {
     const IndexKeySpec* keySpec = v.getKeySpec(i);
+    const OrderModifierPN* ordmod = keySpec->getOrderModifier();
 
     xqtref_t type = (keySpec->getType() != NULL ?
                      pop_tstack() :
@@ -3106,7 +3106,7 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
 
     if (!TypeOps::is_subtype(*type, *theRTM.ANY_ATOMIC_TYPE_QUESTION))
     {
-      ZORBA_ERROR_LOC_DESC_OSS(XQP0036_NON_ATOMIC_INDEX_KEY, v.get_location(),
+      ZORBA_ERROR_LOC_DESC_OSS(XQP0036_NON_ATOMIC_INDEX_KEY, keySpec->get_location(),
                                "A key for index " 
                                << index->getName()->getStringValue()->c_str() 
                                << "has a non atomic value at position "
@@ -3115,21 +3115,30 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
 
     keyTypes[i] = type;
 
-    if (keySpec->getEmptyOrderSpec() != NULL)
+    ParseConstants::dir_spec_t dirSpec = ParseConstants::dir_ascending;
+    StaticContextConsts::order_empty_mode_t emptySpec = sctx_p->order_empty_mode();
+    string collation = sctx_p->default_collation_uri();
+
+    if (ordmod != NULL)
     {
-      keyEmptyLeastSpecs[i] = 
-      (keySpec->getEmptyOrderSpec()->getValue() == StaticContextConsts::empty_least);
-    }
-    else
-    {
-      keyEmptyLeastSpecs[i] = 
-      (sctx_p->order_empty_mode() == StaticContextConsts::empty_least);
+      if (ordmod->get_dir_spec() != NULL)
+        dirSpec = ordmod->get_dir_spec()->getValue();
+
+      if (ordmod->get_empty_spec() != NULL)
+        emptySpec = ordmod->get_empty_spec()->getValue();
+
+      if (ordmod->get_collation_spec() != NULL)
+      {
+        collation = ordmod->get_collation_spec()->get_uri();
+
+        if (! sctx_p->has_collation_uri(collation))
+         ZORBA_ERROR_LOC(XQST0076, keySpec->get_location());
+      }
     }
 
-    // If no collation is specified in the declaration, keySpec->getCollation()
-    // will be the empty string, and in this case the default collation from
-    // the sctx will be used during runtime.
-    keyCollations[i] = keySpec->getCollation();
+    keyModifiers[i].theAscending = (dirSpec == ParseConstants::dir_ascending);
+    keyModifiers[i].theEmptyLeast = (emptySpec == StaticContextConsts::empty_least);
+    keyModifiers[i].theCollation = collation;
 
     expr_t keyExpr = pop_nodestack();
 
@@ -3168,8 +3177,7 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
 
   index->setKeyExpressions(keyExprs);
   index->setKeyTypes(keyTypes);
-  index->setKeyCollations(keyCollations);
-  index->setEmptyLeastSpecs(keyEmptyLeastSpecs);
+  index->setOrderModifiers(keyModifiers);
 
   pop_scope();
 
@@ -4198,17 +4206,17 @@ void end_visit(const OrderByClause& v, void* /*visit_state*/)
   const OrderSpecList& orderSpecs = *v.get_spec_list();
   unsigned numOrderSpecs = orderSpecs.size();
 
-  std::vector<order_modifier> modifiers(numOrderSpecs);
+  std::vector<OrderModifier> modifiers(numOrderSpecs);
   std::vector<expr_t> orderExprs(numOrderSpecs);
 
   for (int i = numOrderSpecs - 1; i >= 0; --i) 
   {
     OrderSpec* spec = orderSpecs[i];
-    OrderModifier* mod = spec->get_modifier();
+    const OrderModifierPN* mod = spec->get_modifier();
 
     ParseConstants::dir_spec_t dirSpec = ParseConstants::dir_ascending;
     if (mod && mod->get_dir_spec() != NULL)
-      dirSpec = mod->get_dir_spec()->get_dir_spec();
+      dirSpec = mod->get_dir_spec()->getValue();
 
     StaticContextConsts::order_empty_mode_t emptySpec = sctx_p->order_empty_mode();
     if (mod && mod->get_empty_spec() != NULL)
@@ -4216,9 +4224,12 @@ void end_visit(const OrderByClause& v, void* /*visit_state*/)
 
     string collation = sctx_p->default_collation_uri();
     if (mod && mod->get_collation_spec() != NULL)
+    {
       collation = mod->get_collation_spec()->get_uri();
-    if (! sctx_p->has_collation_uri(collation))
-      ZORBA_ERROR_LOC(XQST0076, loc);
+
+      if (! sctx_p->has_collation_uri(collation))
+        ZORBA_ERROR_LOC(XQST0076, loc);
+    }
 
     expr_t orderExpr = pop_nodestack();
 
@@ -4227,7 +4238,10 @@ void end_visit(const OrderByClause& v, void* /*visit_state*/)
 
     orderExpr = wrap_in_atomization(orderExpr);
 
-    modifiers[i] = order_modifier(dirSpec, emptySpec, collation);
+    modifiers[i].theAscending = (dirSpec == ParseConstants::dir_ascending);
+    modifiers[i].theEmptyLeast = (emptySpec == StaticContextConsts::empty_least);
+    modifiers[i].theCollation = collation;
+
     orderExprs[i] = orderExpr;
   }
 
@@ -4279,16 +4293,17 @@ void end_visit(const OrderSpec& v, void* /*visit_state*/)
 
   OrderEmptySpec ::= "empty" ("greatest" | "least")
 ********************************************************************************/
-void *begin_visit(const OrderModifier& v) 
+void* begin_visit(const OrderModifierPN& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit(const OrderModifier& v, void* /*visit_state*/) 
+void end_visit(const OrderModifierPN& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
+
 
 void *begin_visit(const OrderCollationSpec& v) 
 {
@@ -7460,11 +7475,12 @@ void *begin_visit (const CompElemConstructor& v)
   return no_state;
 }
 
-void end_visit (const CompElemConstructor& v, void* /*visit_state*/) 
+void end_visit(const CompElemConstructor& v, void* /*visit_state*/) 
 {
   TRACE_VISIT_OUT ();
 
-  expr_t nameExpr, contentExpr;
+  expr_t nameExpr;
+  expr_t contentExpr;
 
   if (v.get_content_expr() != 0) 
   {
@@ -7488,7 +7504,7 @@ void end_visit (const CompElemConstructor& v, void* /*visit_state*/)
   {
     nameExpr = pop_nodestack();
 
-    rchandle<fo_expr> atomExpr = wrap_in_atomization(nameExpr);
+    expr_t atomExpr = wrap_in_atomization(nameExpr);
     nameExpr = new name_cast_expr(sctxid, loc, atomExpr.getp(), ns_ctx);
   }
 
@@ -9084,12 +9100,14 @@ void end_visit (const FTMatchOptionProximity& v, void* /*visit_state*/) {
 
 // Pass-thru -- nothing to be done
 
-void *begin_visit (const ParseErrorNode& v) {
+void *begin_visit (const ParseErrorNode& v) 
+{
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit (const ParseErrorNode& v, void* /*visit_state*/) {
+void end_visit (const ParseErrorNode& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
 }
 

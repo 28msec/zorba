@@ -41,7 +41,7 @@
 #include "compiler/codegen/plan_visitor.h"
 #include "compiler/parsetree/parsenode_print_xml_visitor.h"
 #include "compiler/parsetree/parsenode_print_xqdoc_visitor.h"
-#include "compiler/dewey/dewey.h"
+//#include "compiler/dewey/dewey.h"
 #ifdef ZORBA_XQUERYX
 #include "compiler/xqueryx/xqueryx_to_xquery.h"
 #endif

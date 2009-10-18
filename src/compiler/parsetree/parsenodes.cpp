@@ -862,9 +862,9 @@ void NodeModifier::accept(parsenode_visitor& v) const
 IndexDecl::IndexDecl (
     const QueryLoc& loc,
     QName* name,
-    rchandle<exprnode> domainExpr,
-    rchandle<IndexKeyList> key,
-    rchandle<IndexProperties> props)
+    exprnode* domainExpr,
+    IndexKeyList* key,
+    IndexProperties* props)
   :
   parsenode(loc),
   theName(name),
@@ -1527,17 +1527,16 @@ void OrderSpecList::accept(parsenode_visitor& v) const
 // [40] OrderSpec
 // --------------
 OrderSpec::OrderSpec(
-  const QueryLoc& loc_,
-  rchandle<exprnode> _spec_h,
-  rchandle<OrderModifier> _modifier_h)
-:
+    const QueryLoc& loc_,
+    exprnode* _spec_h,
+    OrderModifierPN* _modifier_h)
+  :
   parsenode(loc_),
   spec_h(_spec_h),
   modifier_h(_modifier_h)
-{}
+{
+}
 
-
-//-OrderSpec::
 
 void OrderSpec::accept(parsenode_visitor& v) const
 {
@@ -1550,22 +1549,21 @@ void OrderSpec::accept(parsenode_visitor& v) const
 
 // [41] OrderModifier
 // ------------------
-OrderModifier::OrderModifier(
-  const QueryLoc& loc_,
-  rchandle<OrderDirSpec> _dir_spec_h,
-  rchandle<OrderEmptySpec> _empty_spec_h,
-  rchandle<OrderCollationSpec> _collation_spec_h)
-:
+OrderModifierPN::OrderModifierPN(
+    const QueryLoc& loc_,
+    OrderDirSpec* _dir_spec_h,
+    OrderEmptySpec* _empty_spec_h,
+    OrderCollationSpec* _collation_spec_h)
+  :
   parsenode(loc_),
   dir_spec_h(_dir_spec_h),
   empty_spec_h(_empty_spec_h),
   collation_spec_h(_collation_spec_h)
-{}
+{
+}
 
 
-//-OrderModifier::
-
-void OrderModifier::accept(parsenode_visitor& v) const
+void OrderModifierPN::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
   ACCEPT (dir_spec_h);

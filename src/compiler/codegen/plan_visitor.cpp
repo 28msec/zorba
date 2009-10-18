@@ -1114,14 +1114,14 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 
     const orderby_clause* obc = static_cast<const orderby_clause *>(&c);
     ulong numColumns = obc->num_columns();
-    const std::vector<order_modifier>& modifiers = obc->get_modifiers();
+    const std::vector<OrderModifier>& modifiers = obc->get_modifiers();
 
     std::vector<flwor::OrderSpec> orderSpecs(numColumns);
 
     for (long i = numColumns - 1; i >= 0; --i)
     {
-      bool emptyLeast = (modifiers[i].theEmptyMode == StaticContextConsts::empty_least);
-      bool descending = (modifiers[i].theDirection == ParseConstants::dir_descending);
+      bool emptyLeast = modifiers[i].theEmptyLeast;
+      bool descending = !modifiers[i].theAscending;
 
       orderSpecs[i] = flwor::OrderSpec(pop_itstack(), 
                                        emptyLeast,
@@ -1197,14 +1197,14 @@ void flwor_codegen(const flwor_expr& flworExpr)
     {
       const orderby_clause* obc = static_cast<const orderby_clause*>(&c);
       unsigned numColumns = obc->num_columns();
-      const std::vector<order_modifier>& modifiers = obc->get_modifiers();
+      const std::vector<OrderModifier>& modifiers = obc->get_modifiers();
 
       vector<flwor::OrderSpec> orderSpecs(numColumns);
 
       for (int i = numColumns - 1; i >= 0; --i)
       {
-        bool emptyLeast = (modifiers[i].theEmptyMode == StaticContextConsts::empty_least);
-        bool descending = (modifiers[i].theDirection == ParseConstants::dir_descending);
+        bool emptyLeast = modifiers[i].theEmptyLeast;
+        bool descending = !modifiers[i].theAscending;
 
         orderSpecs[i] = flwor::OrderSpec(pop_itstack(),
                                          emptyLeast,

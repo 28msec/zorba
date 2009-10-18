@@ -21,6 +21,7 @@
 
 #include "compiler/expression/expr_base.h"
 #include "compiler/expression/var_expr.h"
+#include "compiler/expression/expr_utils.h"
 
 
 namespace zorba 
@@ -513,25 +514,26 @@ protected:
   friend class flwor_expr;
 
   bool                        theStableOrder;
-  std::vector<order_modifier> theModifiers;
+  std::vector<OrderModifier>  theModifiers;
   std::vector<expr_t>         theOrderingExprs;
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(orderby_clause)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(orderby_clause, flwor_clause)
-  void serialize(::zorba::serialization::Archiver &ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (flwor_clause*)this);
     ar & theStableOrder;
     ar & theModifiers;
     ar & theOrderingExprs;
   }
+
 public:
   orderby_clause (
         short sctx,
         const QueryLoc& loc,
         bool stable,
-        const std::vector<order_modifier>& modifiers,
+        const std::vector<OrderModifier>& modifiers,
         const std::vector<expr_t>& orderingExprs)
     :
     flwor_clause(sctx, loc, flwor_clause::order_clause),
@@ -543,7 +545,7 @@ public:
 
   bool is_stable() const { return theStableOrder; }
 
-  const std::vector<order_modifier>& get_modifiers() const { return theModifiers; }
+  const std::vector<OrderModifier>& get_modifiers() const { return theModifiers; }
 
   const std::vector<expr_t>& get_column_exprs() const { return theOrderingExprs; }
 
@@ -558,35 +560,6 @@ public:
   std::ostream& put(std::ostream&) const;
 };
 
-
-
-/******************************************************************************
-
-********************************************************************************/
-class order_modifier : public SimpleRCObject 
-{
-public:
-  ParseConstants::dir_spec_t theDirection;
-  StaticContextConsts::order_empty_mode_t theEmptyMode;
-  std::string theCollation;
-
-public:
-  order_modifier() 
-    :
-    theDirection(ParseConstants::dir_ascending),
-    theEmptyMode(StaticContextConsts::empty_least)
-  {
-  }
-
-  order_modifier(
-        ParseConstants::dir_spec_t dir,
-        StaticContextConsts::order_empty_mode_t empty_mode,
-        const std::string& collation)
-    :
-    theDirection(dir), theEmptyMode(empty_mode), theCollation(collation)
-  {
-  }
-};
 
 
 /***************************************************************************//**

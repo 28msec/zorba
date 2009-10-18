@@ -82,13 +82,8 @@ static void createIndexSpec(
     store::IndexSpecification& spec)
 {
   const std::vector<xqtref_t>& keyTypes(zorbaIndex->getKeyTypes());
-  const std::vector<std::string>& keyCollations(zorbaIndex->getKeyCollations());
+  const std::vector<OrderModifier>& keyModifiers(zorbaIndex->getOrderModifiers());
   ulong numColumns = keyTypes.size();
-
-  xqp_string defaultCollation;
-  std::string defaultCollationStr;
-  if (zorbaIndex->getSctx()->lookup_default_collation(defaultCollation))
-    defaultCollationStr = defaultCollation.getStore()->str();
 
   spec.resize(numColumns);
 
@@ -96,8 +91,7 @@ static void createIndexSpec(
   {
     const XQType& t = *keyTypes[i];
     spec.theKeyTypes[i] = t.get_qname();
-    const std::string& coll = keyCollations[i];
-    spec.theCollations.push_back(coll.empty() ? defaultCollationStr : coll);
+    spec.theCollations.push_back(keyModifiers[i].theCollation);
   }
 
   spec.theIsUnique = zorbaIndex->getUnique();

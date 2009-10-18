@@ -61,11 +61,7 @@ class sequential_expr : public expr
 public:
   SERIALIZABLE_CLASS(sequential_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(sequential_expr, expr)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (expr*)this);
-    ar & sequence;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   sequential_expr(short sctx, const QueryLoc& loc)
@@ -154,13 +150,7 @@ protected:
 public:
   SERIALIZABLE_CLASS(if_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(if_expr, expr)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (expr*)this);
-    ar & theCondExpr;
-    ar & theThenExpr;
-    ar & theElseExpr;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   if_expr(
@@ -191,7 +181,7 @@ public:
 
   void compute_upd_seq_kind() const;
 
-  virtual expr_t clone(substitution_t &s);
+  virtual expr_t clone(substitution_t& s);
 
   void next_iter(expr_iterator_data&);
 
@@ -220,12 +210,7 @@ protected:
 public:
   SERIALIZABLE_ABSTRACT_CLASS(cast_or_castable_base_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(cast_or_castable_base_expr, expr)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (expr*)this);
-    ar & theInputExpr;
-    ar & theTargetType;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   bool cache_compliant() { return true; }
@@ -246,17 +231,14 @@ public:
 class cast_base_expr : public cast_or_castable_base_expr 
 {
 public:
+  SERIALIZABLE_ABSTRACT_CLASS(cast_base_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(cast_base_expr, cast_or_castable_base_expr)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
   cast_base_expr(short sctx, const QueryLoc& loc, expr_t input, xqtref_t type);
 
   xqtref_t return_type_impl(static_context* sctx);
-
-public:
-  SERIALIZABLE_ABSTRACT_CLASS(cast_base_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(cast_base_expr, cast_or_castable_base_expr)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (cast_or_castable_base_expr*)this);
-  }
 };
 
 
@@ -265,19 +247,77 @@ public:
 ********************************************************************************/
 class castable_base_expr : public cast_or_castable_base_expr 
 {
-protected:
-  castable_base_expr(short sctx, const QueryLoc&, expr_t, xqtref_t);
-
-public:
-  xqtref_t return_type_impl(static_context* sctx);
-
 public:
   SERIALIZABLE_ABSTRACT_CLASS(castable_base_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(castable_base_expr, cast_or_castable_base_expr)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (cast_or_castable_base_expr*)this);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  castable_base_expr(short sctx, const QueryLoc&, expr_t, xqtref_t);
+
+  xqtref_t return_type_impl(static_context* sctx);
+};
+
+
+/***************************************************************************//**
+  CastableExpr ::= CastExpr ( "castable" "as" SingleType )?
+
+  SingleType ::= AtomicType "?"?
+********************************************************************************/
+class castable_expr : public castable_base_expr 
+{
+public:
+  SERIALIZABLE_CLASS(castable_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(castable_expr, castable_base_expr)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  castable_expr(
+        short sctx, 
+        const QueryLoc&,
+        expr_t,
+        xqtref_t);
+  
+  expr_kind_t get_expr_kind() const { return castable_expr_kind; }
+
+  bool is_optional() const;
+
+  void next_iter(expr_iterator_data&);
+
+  expr_t clone(substitution_t& s);
+
+  void accept(expr_visitor&);
+
+  std::ostream& put(std::ostream&) const;
+};
+
+
+/***************************************************************************//**
+	InstanceofExpr ::= TreatExpr ( "instance" "of" SequenceType )?
+********************************************************************************/
+class instanceof_expr : public castable_base_expr 
+{
+public:
+  SERIALIZABLE_CLASS(instanceof_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(instanceof_expr, castable_base_expr)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  instanceof_expr(
+        short sctx, 
+        const QueryLoc&,
+        expr_t,
+        xqtref_t);
+
+  expr_kind_t get_expr_kind() const { return instanceof_expr_kind; }
+
+  void next_iter(expr_iterator_data&);
+
+  expr_t clone(substitution_t& s);
+
+  void accept(expr_visitor&);
+
+  std::ostream& put(std::ostream&) const;
 };
 
 
@@ -293,7 +333,7 @@ protected:
 public:
   SERIALIZABLE_CLASS(fo_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(fo_expr, expr)
-  void serialize(::zorba::serialization::Archiver &ar);
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   static fo_expr* create_seq(short sctx, const QueryLoc &);
@@ -716,38 +756,6 @@ public:
 };
 
 
-/***************************************************************************//**
-  CastableExpr ::= CastExpr ( "castable" "as" SingleType )?
-
-  SingleType ::= AtomicType "?"?
-********************************************************************************/
-class castable_expr : public castable_base_expr {
-public:
-  expr_kind_t get_expr_kind () const { return castable_expr_kind; }
-
-public:
-  SERIALIZABLE_CLASS(castable_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(castable_expr, castable_base_expr)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (castable_base_expr*)this);
-  }
-public:
-  castable_expr(
-    short sctx, 
-    const QueryLoc&,
-                   expr_t,
-                   xqtref_t);
-
-public:
-  bool is_optional() const;
-
-public:
-  void next_iter (expr_iterator_data&);
-  void accept (expr_visitor&);
-  std::ostream& put(std::ostream&) const;
-  expr_t clone (substitution_t& s);
-};
 
 
 /***************************************************************************//**
@@ -786,43 +794,6 @@ public:
   std::ostream& put(std::ostream&) const;
   xqtref_t return_type_impl (static_context *sctx);  
   expr_t clone (substitution_t& s);
-};
-
-
-/***************************************************************************//**
-	InstanceofExpr ::= TreatExpr ( "instance" "of" SequenceType )?
-********************************************************************************/
-class instanceof_expr : public castable_base_expr {
-public:
-
-protected:
-  bool forced;  // error if not instance?
-
-public:
-  SERIALIZABLE_CLASS(instanceof_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(instanceof_expr, castable_base_expr)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (castable_base_expr*)this);
-    ar & forced;
-  }
-public:
-  instanceof_expr (short sctx, 
-                   const QueryLoc&,
-    expr_t,
-    xqtref_t);
-
-  expr_kind_t get_expr_kind () const { return instanceof_expr_kind; }
-
-  bool isForced () { return forced; }
-
-  expr_t clone (substitution_t& s);
-
-  void next_iter (expr_iterator_data&);
-
-  void accept (expr_visitor&);
-
-  std::ostream& put(std::ostream&) const;
 };
 
 

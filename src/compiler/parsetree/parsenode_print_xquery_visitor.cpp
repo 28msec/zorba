@@ -602,7 +602,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
 
     void* begin_visit(const OrderDirSpec& n)
     {
-      switch(n.get_dir_spec())
+      switch(n.getValue())
       {
         case ParseConstants::dir_ascending:
           os << "ascending ";
@@ -631,7 +631,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
     }
     DEFAULT_END_VISIT (OrderEmptySpec)
   	
-    DEFAULT_VISIT (OrderModifier)//@checked
+    DEFAULT_VISIT (OrderModifierPN)//@checked
   	
     DEFAULT_VISIT (OrderSpec) //@checked
 

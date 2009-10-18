@@ -240,6 +240,10 @@ SERIALIZABLE_CLASS_VERSIONS(flwor_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(flwor_expr)
 
 
+SERIALIZABLE_CLASS_VERSIONS(OrderModifier)
+END_SERIALIZABLE_CLASS_VERSIONS(OrderModifier)
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -780,6 +784,13 @@ string expr::toString() const
 /*******************************************************************************
 
 ********************************************************************************/
+void sequential_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  ar & sequence;
+}
+
+
 void sequential_expr::compute_upd_seq_kind() const 
 {
   theCache.upd_seq_kind.kind = SIMPLE_EXPR;
@@ -876,6 +887,15 @@ if_expr::if_expr(
 }
 
 
+void if_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  ar & theCondExpr;
+  ar & theThenExpr;
+  ar & theElseExpr;
+}
+  
+
 void if_expr::compute_upd_seq_kind() const 
 {
   expr_update_t thenKind = theThenExpr->get_update_type();
@@ -933,6 +953,14 @@ cast_or_castable_base_expr::cast_or_castable_base_expr(
 }
 
 
+void cast_or_castable_base_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  ar & theInputExpr;
+  ar & theTargetType;
+}
+
+
 xqtref_t cast_or_castable_base_expr::get_target_type() const 
 {
   return theTargetType;
@@ -956,6 +984,12 @@ cast_base_expr::cast_base_expr(
   : 
   cast_or_castable_base_expr(sctx, loc, input, type)
 {
+}
+
+
+void cast_base_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (cast_or_castable_base_expr*)this);
 }
 
 
@@ -983,9 +1017,104 @@ castable_base_expr::castable_base_expr(
 }
 
 
+void castable_base_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (cast_or_castable_base_expr*)this);
+}
+
+
 xqtref_t castable_base_expr::return_type_impl(static_context* sctx) 
 {
   return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
+}
+
+
+/***************************************************************************//**
+  CastableExpr ::= CastExpr ( "castable" "as" SingleType )?
+
+  SingleType ::= AtomicType "?"?
+********************************************************************************/
+castable_expr::castable_expr(
+    short sctx,
+    const QueryLoc& loc,
+    expr_t inputExpr,
+    xqtref_t type)
+  :
+  castable_base_expr (sctx, loc, inputExpr, type)
+{
+}
+
+
+void castable_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (castable_base_expr*)this);
+}
+
+
+bool castable_expr::is_optional() const 
+{
+  return TypeOps::quantifier(*theTargetType) == TypeConstants::QUANT_QUESTION; 
+}
+
+
+void castable_expr::next_iter(expr_iterator_data& v) 
+{
+  BEGIN_EXPR_ITER();
+  ITER(theInputExpr);
+  END_EXPR_ITER();
+}
+
+
+expr_t castable_expr::clone (substitution_t& subst) 
+{
+  return new castable_expr(theSctxId, 
+                           get_loc(),
+                           get_input()->clone(subst),
+                           get_target_type());
+}
+
+
+/***************************************************************************//**
+	InstanceofExpr ::= TreatExpr ( "instance" "of" SequenceType )?
+********************************************************************************/
+instanceof_expr::instanceof_expr(
+    short sctx,
+    const QueryLoc& loc,
+    expr_t inputExpr,
+    xqtref_t type)
+  :
+  castable_base_expr(sctx, loc, inputExpr, type)
+{
+}
+
+
+void instanceof_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (castable_base_expr*)this);
+}
+
+
+void instanceof_expr::next_iter(expr_iterator_data& v) 
+{
+  BEGIN_EXPR_ITER();
+  ITER(theInputExpr);
+  END_EXPR_ITER();  
+}
+
+
+expr_t instanceof_expr::clone (substitution_t& subst) 
+{
+  return new instanceof_expr(theSctxId,
+                             get_loc(),
+                             get_input()->clone(subst),
+                             get_target_type());
+}
+
+
+
+bool cast_expr::is_optional() const 
+{
+  return TypeOps::quantifier(*theTargetType) == TypeConstants::QUANT_QUESTION; 
 }
 
 
@@ -2256,23 +2385,6 @@ void ft_contains_expr::next_iter (expr_iterator_data& v) {
 }
 
 
-// [54] [http://www.w3.org/TR/xquery/#prod-xquery-InstanceofExpr]
-
-
-instanceof_expr::instanceof_expr(short sctx,
-                                 const QueryLoc& loc,
-                                 expr_t _expr_h,
-                                 xqtref_t _type)
-  : castable_base_expr (sctx, loc, _expr_h, _type)
-{}
-
-void instanceof_expr::next_iter (expr_iterator_data& v) {
-  BEGIN_EXPR_ITER();
-  ITER (theInputExpr);
-  END_EXPR_ITER();  
-}
-
-
 // [55] [http://www.w3.org/TR/xquery/#prod-xquery-TreatExpr]
 
 treat_expr::treat_expr(
@@ -2293,22 +2405,6 @@ void treat_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER ();
 }
 
-// [56] [http://www.w3.org/TR/xquery/#prod-xquery-CastableExpr]
-
-castable_expr::castable_expr(
-  short sctx,
-  const QueryLoc& loc,
-  expr_t _expr_h,
-  xqtref_t _type)
-:
-  castable_base_expr (sctx, loc, _expr_h, _type)
-{}
-
-void castable_expr::next_iter (expr_iterator_data& v) {
-  BEGIN_EXPR_ITER ();
-  ITER (theInputExpr);
-  END_EXPR_ITER ();
-}
 
 
 // [57] [http://www.w3.org/TR/xquery/#prod-xquery-CastExpr]
@@ -3071,13 +3167,6 @@ expr_t treat_expr::clone (substitution_t& subst) {
   return new treat_expr (theSctxId, get_loc (), get_input ()->clone (subst), get_target_type (), get_err (), get_check_prime ());
 }
 
-expr_t castable_expr::clone (substitution_t& subst) {
-  return new castable_expr (theSctxId, get_loc (), get_input ()->clone (subst), get_target_type ());
-}
-
-expr_t instanceof_expr::clone (substitution_t& subst) {
-  return new instanceof_expr (theSctxId, get_loc (), get_input ()->clone (subst), get_target_type ());
-}
 
 expr_t cast_expr::clone (substitution_t& subst) {
   return new cast_expr (theSctxId, get_loc (), get_input ()->clone (subst), get_target_type ());

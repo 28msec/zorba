@@ -171,7 +171,7 @@ class GroupCollationSpec;
 class OrderByClause;
 class OrderSpecList;
 class OrderSpec;
-class OrderModifier;
+class OrderModifierPN;
 class OrderCollationSpec;
 class OrderDirSpec;
 class OrderEmptySpec;
@@ -1203,9 +1203,9 @@ public:
   IndexDecl (
         const QueryLoc& loc,
         QName* name,
-        rchandle<exprnode> domainExpr,
-        rchandle<IndexKeyList> key,
-        rchandle<IndexProperties> props);
+        exprnode* domainExpr,
+        IndexKeyList* key,
+        IndexProperties* props);
 
   const QName* getName() const { return theName.getp(); }
 
@@ -1285,7 +1285,11 @@ public:
 
 
 /*******************************************************************************
-  IndexKeySpec ::= ExprSingle TypeDeclaration? OrderEmptySpec? OrderCollationSpec?
+  IndexKeySpec ::= ExprSingle TypeDeclaration? OrderModifier
+
+  OrderModifier ::= OrderDirSpec? OrderEmptySpec? OrderCollationSpec?
+
+  OrderDirSpec ::= "ascending" | "descending"
 
   OrderEmptySpec ::= "empty" ("greatest" | "least")
 
@@ -1294,34 +1298,29 @@ public:
 class IndexKeySpec : public parsenode 
 {
 protected:
-  rchandle<exprnode>       theExpr;
-  rchandle<SequenceType>   theType;
-  rchandle<OrderEmptySpec> theEmptyOrderSpec;
-  std::string              theCollation;
+  rchandle<exprnode>        theExpr;
+  rchandle<SequenceType>    theType;
+  rchandle<OrderModifierPN> theOrderModifier;
 
 public:
   IndexKeySpec(
     const QueryLoc& loc,
-    rchandle<exprnode> expr,
-    rchandle<SequenceType> type)
+    exprnode* expr,
+    SequenceType* type,
+    OrderModifierPN* modifier)
     :
     parsenode(loc),
     theExpr(expr),
-    theType(type)
+    theType(type),
+    theOrderModifier(modifier)
   {
   }
 
-  rchandle<exprnode> getExpr() const { return theExpr; }
+  const exprnode* getExpr() const { return theExpr.getp(); }
 
-  rchandle<SequenceType> getType() const { return theType; }
+  const SequenceType* getType() const { return theType.getp(); }
 
-  void setEmptyOrderSpec(OrderEmptySpec* oes) { theEmptyOrderSpec = oes; }
-
-  const OrderEmptySpec* getEmptyOrderSpec() const { return theEmptyOrderSpec.getp(); }
-
-  const std::string& getCollation() const { return theCollation; }
-
-  void setCollation(const std::string& col) { theCollation = col; }
+  const OrderModifierPN* getOrderModifier() const { return theOrderModifier.getp(); }
 
   void accept(parsenode_visitor&) const;
 };
@@ -1959,17 +1958,17 @@ class OrderSpec : public parsenode
 {
 protected:
   rchandle<exprnode> spec_h;
-  rchandle<OrderModifier> modifier_h;
+  rchandle<OrderModifierPN> modifier_h;
 
 public:
   OrderSpec(
         const QueryLoc&,
-        rchandle<exprnode>,
-        rchandle<OrderModifier>);
+        exprnode*,
+        OrderModifierPN*);
 
   rchandle<exprnode> get_spec() const { return spec_h; }
 
-  OrderModifier* get_modifier() const { return modifier_h.getp(); }
+  const OrderModifierPN* get_modifier() const { return modifier_h.getp(); }
 
   void accept(parsenode_visitor&) const;
 };
@@ -1978,7 +1977,7 @@ public:
 /*******************************************************************************
   OrderModifier ::= OrderDirSpec? OrderEmptySpec? OrderCollationSpec?
 ********************************************************************************/
-class OrderModifier : public parsenode
+class OrderModifierPN : public parsenode
 {
 protected:
   rchandle<OrderDirSpec> dir_spec_h;
@@ -1986,17 +1985,17 @@ protected:
   rchandle<OrderCollationSpec> collation_spec_h;
 
 public:
-  OrderModifier(
+  OrderModifierPN(
         const QueryLoc&,
-        rchandle<OrderDirSpec>,
-        rchandle<OrderEmptySpec>,
-        rchandle<OrderCollationSpec>);
+        OrderDirSpec*,
+        OrderEmptySpec*,
+        OrderCollationSpec*);
 
-  rchandle<OrderDirSpec> get_dir_spec() const  { return dir_spec_h; }
+  const OrderDirSpec* get_dir_spec() const  { return dir_spec_h; }
 
-  rchandle<OrderEmptySpec> get_empty_spec() const  { return empty_spec_h; }
+  const OrderEmptySpec* get_empty_spec() const  { return empty_spec_h; }
 
-  rchandle<OrderCollationSpec> get_collation_spec() const { return collation_spec_h; }
+  const OrderCollationSpec* get_collation_spec() const { return collation_spec_h; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -2013,7 +2012,7 @@ protected:
 public:
   OrderDirSpec(const QueryLoc&, ParseConstants::dir_spec_t dir_spec);
   
-  ParseConstants::dir_spec_t get_dir_spec() const { return dir_spec; }
+  ParseConstants::dir_spec_t getValue() const { return dir_spec; }
 
   void accept(parsenode_visitor&) const;
 };

@@ -788,16 +788,4 @@ xqtref_t var_expr::return_type_impl(static_context* sctx)
 }
 
 
-bool castable_expr::is_optional() const 
-{
-  return TypeOps::quantifier(*theTargetType) == TypeConstants::QUANT_QUESTION; 
-}
-
-
-bool cast_expr::is_optional() const 
-{
-  return TypeOps::quantifier(*theTargetType) == TypeConstants::QUANT_QUESTION; 
-}
-
-
 };  // namespace zorba

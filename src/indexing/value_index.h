@@ -13,14 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_VALUE_INDEX_H
-#define ZORBA_VALUE_INDEX_H
+#ifndef ZORBA_COMPILER_VALUE_INDEX
+#define ZORBA_COMPILER_VALUE_INDEX
 
 #include <vector>
 
 #include "common/shared_types.h"
 
-//#include "compiler/expression/expr.h"
+#include "compiler/expression/expr_utils.h"
+
 #include "store/api/index.h"
 
 namespace zorba 
@@ -53,9 +54,11 @@ typedef rchandle<ValueIndexInsertSession> ValueIndexInsertSession_t;
 
   IndexKeyList ::= IndexKeySpec (COMMA IndexKeySpec)*
 
-  IndexKeySpec ::= ExprSingle TypeDeclaration? 
-                              ("empty" ("greatest" | "least"))?
-                              ("collation" UriLiteral)?
+  IndexKeySpec ::= ExprSingle TypeDeclaration? OrderModifier
+
+  OrderModifier ::= ("ascending" | "descending")?
+                    ("empty" ("greatest" | "least"))?
+                    ("collation" UriLiteral)?
 
   Constraints:
   ------------
@@ -90,21 +93,20 @@ public:
   } index_method_t;
 
 private:
-  static_context         * theSctx;
+  static_context            * theSctx;
 
-  store::Item_t            theName;
-  bool                     theIsUnique;
-  bool                     theIsTemp;
-  index_method_t           theMethod;
+  store::Item_t               theName;
+  bool                        theIsUnique;
+  bool                        theIsTemp;
+  index_method_t              theMethod;
 
-  for_clause_t             theDomainClause;
-  std::vector<expr_t>      theKeyExprs;
-  std::vector<xqtref_t>    theKeyTypes;
-  std::vector<bool>        theEmptyLeastSpecs;
-  std::vector<std::string> theKeyCollations;
+  for_clause_t                theDomainClause;
+  std::vector<expr_t>         theKeyExprs;
+  std::vector<xqtref_t>       theKeyTypes;
+  std::vector<OrderModifier>  theOrderModifiers;
 
-  expr_t                   theBuildExpr;
-  PlanIter_t               theBuildPlan;
+  expr_t                      theBuildExpr;
+  PlanIter_t                  theBuildPlan;
 
   std::vector<store::PatternIECreatorPair> m_creatorPatterns;
 
@@ -154,17 +156,9 @@ public:
 
   void setKeyTypes(const std::vector<xqtref_t>& keyTypes);
 
-  const std::vector<std::string>& getKeyCollations() const 
-  {
-    return theKeyCollations; 
-  }
+  const std::vector<OrderModifier>& getOrderModifiers() const;
 
-  void setEmptyLeastSpecs(const std::vector<bool>& emptyLeastSpecs);
-
-  void setKeyCollations(const std::vector<std::string>& keyCollations) 
-  {
-    theKeyCollations = keyCollations;
-  }
+  void setOrderModifiers(const std::vector<OrderModifier>& modifiers);
 
   std::vector<store::PatternIECreatorPair>& getPatternCreatorPairs()
   {

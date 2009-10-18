@@ -57,7 +57,6 @@ ValueIndex::ValueIndex(::zorba::serialization::Archiver& ar)
 
 void ValueIndex::serialize(::zorba::serialization::Archiver &ar)
 {
-  //serialize_baseclass(ar, (SimpleRCObject*)this);
   ar & theSctx;
   ar & theName;
   ar & theIsUnique;
@@ -66,8 +65,7 @@ void ValueIndex::serialize(::zorba::serialization::Archiver &ar)
   ar & theDomainClause;
   ar & theKeyExprs;
   ar & theKeyTypes;
-  //ar & theEmptyLeastSpecs; TODO
-  ar & theKeyCollations;
+  ar & theOrderModifiers;
   ar & m_creatorPatterns;
 }
 
@@ -143,9 +141,15 @@ void ValueIndex::setKeyTypes(const std::vector<xqtref_t>& keyTypes)
 }
 
 
-void ValueIndex::setEmptyLeastSpecs(const std::vector<bool>& emptyLeastSpecs)
+const std::vector<OrderModifier>& ValueIndex::getOrderModifiers() const
 {
-  theEmptyLeastSpecs = emptyLeastSpecs;
+  return theOrderModifiers;
+}
+
+
+void ValueIndex::setOrderModifiers(const std::vector<OrderModifier>& modifiers)
+{
+  theOrderModifiers = modifiers;
 }
 
 

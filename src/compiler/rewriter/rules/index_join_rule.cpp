@@ -295,11 +295,13 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 
   std::vector<expr_t> columnExprs(1);
   std::vector<xqtref_t> columnTypes(1);
-  std::vector<std::string> collations(1);
+  std::vector<OrderModifier> modifiers(1);
 
   columnExprs[0] = predInfo.theInnerOp;
   columnTypes[0] = predInfo.theInnerOp->return_type(sctx);
-  collations[0] = sctx->default_collation_uri().c_str();
+  modifiers[0].theAscending = true;
+  modifiers[0].theEmptyLeast = true;
+  modifiers[0].theCollation = sctx->default_collation_uri().c_str();
 
   replace_var(columnExprs[0], predInfo.theInnerVar, idx->getDomainVariable());
 
@@ -307,7 +309,7 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 
   idx->setKeyTypes(columnTypes);
 
-  idx->setKeyCollations(collations);
+  idx->setOrderModifiers(modifiers);
 
   sctx->bind_index(qname, idx, loc);
 
