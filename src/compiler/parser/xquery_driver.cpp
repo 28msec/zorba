@@ -96,7 +96,7 @@ bool xquery_driver::parse_string(const xqpString& input)
 
 void xquery_driver::set_expr(parsenode* e_p) {
   if (theCompilerCB->m_config.parse_cb != NULL)
-    theCompilerCB->m_config.parse_cb (e_p, theCompilerCB->m_sctx->entity_retrieval_url ());
+    theCompilerCB->m_config.parse_cb (e_p, theCompilerCB->theRootSctx->entity_retrieval_url ());
   expr_p = e_p;
 }
 
