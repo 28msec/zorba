@@ -24,19 +24,16 @@
     <zorba:include form="Quoted">store/api/item_factory.h</zorba:include>
 </zorba:source>
 
-<!-- 
 <zorba:codegen>
     <zorba:h>
         <zorba:include form="Quoted">common/shared_types.h</zorba:include>
         <zorba:include form="Quoted">functions/function_impl.h</zorba:include>
     </zorba:h>
     <zorba:cpp>
-        <zorba:include form="Quoted">runtime/strings/StringsImpl.h</zorba:include>
-        <zorba:include form="Quoted">runtime/strings/strings.h</zorba:include>
-        <zorba:include form="Quoted">functions/Strings.h</zorba:include>
+        <zorba:include form="Quoted">runtime/accessors/accessors.h</zorba:include>
+        <zorba:include form="Quoted">functions/Accessors.h</zorba:include>
     </zorba:cpp>
 </zorba:codegen>
--->
     
 <!--
 /*******************************************************************************
@@ -46,10 +43,18 @@
 <zorba:iterator
     name="NodeNameIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="true"
     arity="nary">
 
     <zorba:description author="Zorba Team">fn:node-name</zorba:description>
+    
+    <zorba:function>
+        <zorba:signature localname="node-name" prefix="fn">
+            <zorba:param>node()?</zorba:param>
+            <zorba:output>xs:QName?</zorba:output>
+        </zorba:signature>
+    </zorba:function>
     
 </zorba:iterator>
 
@@ -62,10 +67,18 @@
 <zorba:iterator
     name="NilledIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="true"
     arity="nary">
 
     <zorba:description author="Zorba Team">fn:nilled</zorba:description>
+    
+    <zorba:function>
+        <zorba:signature localname="nilled" prefix="fn">
+            <zorba:param>node()?</zorba:param>
+            <zorba:output>xs:boolean?</zorba:output>
+        </zorba:signature>
+    </zorba:function>
     
 </zorba:iterator>
 
@@ -79,7 +92,8 @@
 <zorba:iterator
     name="StringIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="false"
     arity="nary">
 
     <zorba:description author="Zorba Team">fn:string</zorba:description>
@@ -95,7 +109,6 @@
         generateConstructor="true" generateDestructor="true">
         <zorba:member type="bool" name="hasOutput" defaultValue="false" brief=""/>
     </zorba:state>
-    
     
 </zorba:iterator>
 
@@ -127,10 +140,18 @@
 <zorba:iterator
     name="BaseUriIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="true"
     arity="nary">
 
     <zorba:description author="Zorba Team">fn:base-uri</zorba:description>
+    
+    <zorba:function>
+        <zorba:signature localname="base-uri" prefix="fn">
+            <zorba:param>node()?</zorba:param>
+            <zorba:output>xs:anyURI?</zorba:output>
+        </zorba:signature>
+    </zorba:function>
     
 </zorba:iterator>
 
@@ -143,10 +164,18 @@
 <zorba:iterator
     name="DocumentUriIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="true"
     arity="nary">
 
     <zorba:description author="Zorba Team">fn:document-uri</zorba:description>
+    
+    <zorba:function>
+        <zorba:signature localname="document-uri" prefix="fn">
+            <zorba:param>node()?</zorba:param>
+            <zorba:output>xs:anyURI?</zorba:output>
+        </zorba:signature>
+    </zorba:function>
     
 </zorba:iterator>
 
@@ -167,10 +196,18 @@
 <zorba:iterator
     name="RootIterator"
     generateVisitor="true"
-    generateAccept="true" 
+    generateAccept="true"
+    generateCodegen="true"
     arity="nary">
     
     <zorba:description author="Zorba Team">fn:root</zorba:description>
+    
+    <zorba:function>
+        <zorba:signature localname="root" prefix="fn">
+            <zorba:param>node()?</zorba:param>
+            <zorba:output>node()?</zorba:output>
+        </zorba:signature>
+    </zorba:function>
 
 </zorba:iterator>
 

@@ -9,19 +9,17 @@
 
 <zorba:source/>
 
-<!-- 
 <zorba:codegen>
     <zorba:h>
         <zorba:include form="Quoted">common/shared_types.h</zorba:include>
         <zorba:include form="Quoted">functions/function_impl.h</zorba:include>
+        <zorba:method>void populateContext_Comparison(static_context *sctx);</zorba:method>
     </zorba:h>
     <zorba:cpp>
-        <zorba:include form="Quoted">runtime/strings/StringsImpl.h</zorba:include>
-        <zorba:include form="Quoted">runtime/strings/strings.h</zorba:include>
-        <zorba:include form="Quoted">functions/Strings.h</zorba:include>
+        <zorba:include form="Quoted">runtime/booleans/booleans.h</zorba:include>
+        <zorba:include form="Quoted">functions/Boolean.h</zorba:include>
     </zorba:cpp>
 </zorba:codegen>
--->
     
 <!--
 /*******************************************************************************
@@ -35,6 +33,14 @@
     arity="nary">
 
     <zorba:description author="Zorba Team">op:is-same-node</zorba:description>
+    
+    <zorba:function>
+        <zorba:signature localname=":is-same-node" prefix="fn">
+            <zorba:param>node()</zorba:param>
+            <zorba:param>node()</zorba:param>
+            <zorba:output>xs:boolean</zorba:output>
+        </zorba:signature>
+    </zorba:function>
     
 </zorba:iterator>
 
@@ -52,6 +58,14 @@
 
     <zorba:description author="Zorba Team">op:node-before</zorba:description>
     
+    <zorba:function>
+        <zorba:signature localname=":node-before" prefix="fn">
+            <zorba:param>node()</zorba:param>
+            <zorba:param>node()</zorba:param>
+            <zorba:output>xs:boolean</zorba:output>
+        </zorba:signature>
+    </zorba:function>
+    
 </zorba:iterator>
 
 <!--
@@ -67,6 +81,14 @@
     arity="nary">
 
     <zorba:description author="Zorba Team">op:node-after</zorba:description>
+    
+    <zorba:function>
+        <zorba:signature localname=":node-after" prefix="fn">
+            <zorba:param>node()</zorba:param>
+            <zorba:param>node()</zorba:param>
+            <zorba:output>xs:boolean</zorba:output>
+        </zorba:signature>
+    </zorba:function>
     
 </zorba:iterator>
 
