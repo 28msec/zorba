@@ -33,7 +33,7 @@ class ZorbaException
   virtual std::string getDescription() const 
   { return std::string(theException->getDescription().c_str()); }
 
-  virtual int getErrorCode () const
+  virtual XQUERY_ERROR getErrorCode () const
   { return theException->getErrorCode(); }
 
   virtual unsigned int getFileLineNumber () const
@@ -41,6 +41,12 @@ class ZorbaException
 
   virtual std::string getFileName () const
   { return std::string(theException->getFileName().c_str()); }
+
+  static std::string getErrorCodeAsString(const int &aErrorCode)
+  { 
+    return zorba::ZorbaException::
+      getErrorCodeAsString((const XQUERY_ERROR &)aErrorCode); 
+  }
 };
 
 class QueryException : public ZorbaException 
@@ -48,6 +54,16 @@ class QueryException : public ZorbaException
  protected:
   QueryException() {}
   QueryException(const zorba::QueryException *qe) : ZorbaException(qe) {}
+ private:
+  const zorba::QueryException* getQEx() const
+  { return dynamic_cast<const zorba::QueryException*>(theException); }
+ public:
+  virtual unsigned int getColumnBegin () const
+  { return getQEx()->getColumnBegin(); }
+  virtual unsigned int getLineBegin () const
+  { return getQEx()->getLineBegin(); }
+  virtual std::string  getQueryURI () const
+  { return std::string(getQEx()->getQueryURI().c_str()); }
 };
 
 class SystemException : public ZorbaException 
@@ -66,7 +82,6 @@ class DynamicException : public QueryException
   friend class ErrorHandler;
 
  protected:
-  const zorba::DynamicException* theException;
   DynamicException (const zorba::DynamicException *de) : QueryException(de) {}
   DynamicException() {}
 
@@ -78,7 +93,6 @@ class SerializationException : public QueryException
   friend class ErrorHandler;
 
  protected:
-  const zorba::SerializationException* theException;
   SerializationException (const zorba::SerializationException *se) : 
       QueryException(se) {}
   SerializationException() {}
@@ -91,7 +105,6 @@ class StaticException : public QueryException
   friend class ErrorHandler;
 
  protected:
-  const zorba::StaticException* theException;
   StaticException (const zorba::StaticException *se) : 
       QueryException(se) {}
   StaticException() {}
@@ -104,7 +117,6 @@ class TypeException : public QueryException
   friend class ErrorHandler;
 
  protected:
-  const zorba::TypeException* theException;
   TypeException (const zorba::TypeException *se) : 
       QueryException(se) {}
   TypeException() {}
@@ -117,7 +129,6 @@ class UserException : public QueryException
   friend class ErrorHandler;
 
  protected:
-  const zorba::UserException* theException;
   UserException (const zorba::UserException *se) : 
       QueryException(se) {}
   UserException() {}
@@ -137,8 +148,8 @@ class UserException : public QueryException
 %include "enums.swg"
 %javaconst(1);
 #endif
-%rename(XQueryError) XQUERY_ERROR;
-#include <zorba/error.h>
+%rename(XQueryErrorEnum) XQUERY_ERROR;
+%include <zorba/error.h>
 
 
 class ZorbaException 
@@ -148,15 +159,20 @@ class ZorbaException
  
  public:
   virtual std::string  getDescription()    const;
-  virtual int          getErrorCode()      const;
+  virtual XQUERY_ERROR getErrorCode()      const;
   virtual unsigned int getFileLineNumber() const;
   virtual std::string  getFileName()       const;
+  static  std::string  getErrorCodeAsString(const int &aErrorCode);
 };
 
 class QueryException : public ZorbaException 
 {
  private:
   QueryException();
+ public:
+  virtual unsigned int 	getColumnBegin () const;
+  virtual unsigned int 	getLineBegin () const;
+  virtual std::string 	getQueryURI () const;
 };
 
 class SystemException : public ZorbaException 

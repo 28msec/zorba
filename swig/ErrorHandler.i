@@ -50,7 +50,9 @@ class ErrorHandler : public zorba::ErrorHandler
     const UserException ue(&aUserError);
     userError(ue);     
   }
+
  public:
+  virtual ~ErrorHandler() {}
   virtual void dynamicError(const DynamicException &de) {}
   virtual void serializationError (const SerializationException &asError) {} 
   virtual void staticError (const StaticException &aStaticError) {}
@@ -67,6 +69,7 @@ class ErrorHandler : public zorba::ErrorHandler
 class ErrorHandler 
 {
  public:
+  virtual ~ErrorHandler();
   virtual void dynamicError(const DynamicException &de); 
   virtual void serializationError(const SerializationException &e);
   virtual void staticError(const StaticException &e);

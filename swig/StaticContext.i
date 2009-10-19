@@ -17,10 +17,14 @@
 
 %{  // start Implementation
 
+#include <zorba/static_context_consts.h>
+
 
 class StaticContext 
 {
   friend class Zorba;
+  //friend class DocumentURIResolver;
+
 private:
   zorba::StaticContext_t theStaticContext;
 public:
@@ -58,18 +62,26 @@ public:
 
   //virtual void 	disableFunction (const Function_t &aFunction)=0;
   //virtual void 	findFunctions (const Item &aQName, std::vector< Function_t > &aFunctions) const =0
+
   virtual void 	free ()
   { theStaticContext->free(); }
 
   virtual std::string getBaseURI () const
   { return std::string(theStaticContext->getBaseURI().c_str()); }
 
-  //virtual boundary_space_mode_t 	getBoundarySpacePolicy () const =0;
-  //virtual TypeIdentifier_t 	getCollectionType (const std::string &aCollectionUri) const =0;
-  //virtual CollectionURIResolver * 	getCollectionURIResolver () const =0;
-  //virtual construction_mode_t 	getConstructionMode () const =0
- 	//virtual TypeIdentifier_t 	getContextItemStaticType () const =0
-  //virtual void 	getCopyNamespacesMode (preserve_mode_t &aPreserve, inherit_mode_t &aInherit) const =0;
+  virtual boundary_space_mode_t getBoundarySpacePolicy() const
+  { return theStaticContext->getBoundarySpacePolicy(); }
+
+  //virtual TypeIdentifier_t getCollectionType (const std::string &aCollectionUri) const =0;
+  //virtual CollectionURIResolver * getCollectionURIResolver () const =0;
+
+  virtual construction_mode_t getConstructionMode () const 
+  { return theStaticContext->getConstructionMode(); }		
+
+  //virtual TypeIdentifier_t 	getContextItemStaticType () const =0
+  virtual void 	getCopyNamespacesMode (preserve_mode_t &aPreserve, inherit_mode_t &aInherit) const
+  { return theStaticContext->getCopyNamespacesMode(aPreserve, aInherit); }		
+
   virtual std::string getDefaultCollation () const 
   { return std::string(theStaticContext->getDefaultCollation().c_str()); }
 
@@ -84,10 +96,13 @@ public:
     return std::string(theStaticContext->getDefaultFunctionNamespace().c_str());
   }
 
-  //virtual order_empty_mode_t 	getDefaultOrderForEmptySequences () const =0;
+  virtual order_empty_mode_t getDefaultOrderForEmptySequences() const
+  { return theStaticContext->getDefaultOrderForEmptySequences(); }		
+
   //virtual TypeIdentifier_t 	getDocumentType (const std::string &aDocUri) const =0;
   //virtual DocumentURIResolver * 	getDocumentURIResolver ()=0;
   //virtual ModuleURIResolver * 	getModuleURIResolver () const =0;
+
   virtual std::string getNamespaceURIByPrefix(const std::string &aPrefix) const
   {
     return std::string(theStaticContext->getNamespaceURIByPrefix(aPrefix).
@@ -100,22 +115,32 @@ public:
     return theStaticContext->getOption(aQName.theItem, optVal); 
   }
 
-  //virtual ordering_mode_t 	getOrderingMode () const =0
+  virtual ordering_mode_t getOrderingMode () const
+  { return theStaticContext->getOrderingMode(); }		
+
   long 	getRefCount () const
   { return theStaticContext->getRefCount(); }
 
   virtual bool 	getRevalidationEnabled () const
   { return theStaticContext->getRevalidationEnabled(); }
 
-  //virtual validation_mode_t 	getRevalidationMode ()=0;
-  //virtual SchemaURIResolver * 	getSchemaURIResolver () const =0;
-  //virtual xpath1_0compatib_mode_t 	getXPath1_0CompatibMode () const =0
-  //virtual xquery_version_t 	getXqueryVersion () const =0;
- 	virtual void 	loadProlog (const std::string & aProlog, 
-                            const CompilerHints &hints)
+  virtual validation_mode_t getRevalidationMode ()
+  { return theStaticContext->getRevalidationMode(); }		
+
+  //virtual SchemaURIResolver * getSchemaURIResolver () const =0;
+
+  virtual xpath1_0compatib_mode_t getXPath1_0CompatibMode () const
+  { return theStaticContext->getXPath1_0CompatibMode(); } 
+
+  //virtual xquery_version_t 	getXqueryVersion () const 
+  //{ return theStaticContext->getXqueryVersion(); } 
+
+  virtual void loadProlog (const std::string & aProlog, 
+                           const CompilerHints &hints)
   { theStaticContext->loadProlog( aProlog, hints.theCompilerHints); }
 
   //virtual bool 	registerStatelessExternalFunction (StatelessExternalFunction *aExternalFunction)=0
+
   void 	removeReference ()
   { theStaticContext->removeReference(); }
 
@@ -125,12 +150,21 @@ public:
   virtual bool 	setBaseURI (const std::string &aBaseURI)
   { return theStaticContext->setBaseURI(aBaseURI); }
 
-  //virtual bool 	setBoundarySpacePolicy (boundary_space_mode_t aMode)=0
+  virtual bool 	setBoundarySpacePolicy (boundary_space_mode_t aMode)
+  { return theStaticContext->setBoundarySpacePolicy(aMode); } 
+
   //virtual void 	setCollectionType (const std::string &aCollectionUri, TypeIdentifier_t type)=0
- 	//virtual void 	setCollectionURIResolver (CollectionURIResolver *aCollectionUriResolver)=0
-  //virtual bool 	setConstructionMode (construction_mode_t aMode)=0
+  //virtual void 	setCollectionURIResolver (CollectionURIResolver *aCollectionUriResolver)=0
+
+  virtual bool 	setConstructionMode (construction_mode_t aMode)
+  { return theStaticContext->setConstructionMode(aMode); } 
+
   //virtual void 	setContextItemStaticType (TypeIdentifier_t type)=0
-  //virtual bool 	setCopyNamespacesMode (preserve_mode_t aPreserve, inherit_mode_t aInherit)=0
+
+  virtual bool 	setCopyNamespacesMode (preserve_mode_t aPreserve, 
+    inherit_mode_t aInherit)
+  { return theStaticContext->setCopyNamespacesMode(aPreserve, aInherit); }   
+
   virtual bool 	setDefaultCollation (const std::string &aURI)
   { return theStaticContext->setDefaultCollation(aURI); }
 
@@ -140,21 +174,33 @@ public:
   virtual bool 	setDefaultFunctionNamespace (const std::string &aURI)
   { return theStaticContext->setDefaultFunctionNamespace(aURI); }
 
-  //virtual bool 	setDefaultOrderForEmptySequences (order_empty_mode_t aMode)=0
+  virtual bool 	setDefaultOrderForEmptySequences (order_empty_mode_t aMode)
+  { return theStaticContext->setDefaultOrderForEmptySequences(aMode); } 
+
   //virtual void 	setDocumentType (const std::string &aDocUri, TypeIdentifier_t type)=0
   //virtual void 	setDocumentURIResolver (DocumentURIResolver *aDocumentURIResolver)=0
   //virtual void 	setModuleURIResolver (ModuleURIResolver *aModuleUriResolver)=0
-  //virtual bool 	setOrderingMode (ordering_mode_t aMode)=0
- 	virtual bool 	setRevalidationEnabled (bool enabled)
+
+  virtual bool 	setOrderingMode (ordering_mode_t aMode)
+  { return theStaticContext->setOrderingMode(aMode); } 
+
+  virtual bool 	setRevalidationEnabled (bool enabled)
   { return theStaticContext->setRevalidationEnabled(enabled); }
 
-  //virtual void 	setRevalidationMode (validation_mode_t aMode)=0
- 	//virtual void 	setSchemaURIResolver (SchemaURIResolver *aSchemaUriResolver)=0
-  //virtual void 	setTraceStream (std::ostream &)=0
- 	//virtual bool 	setXPath1_0CompatibMode (xpath1_0compatib_mode_t aMode)=0
- 	//virtual bool 	setXqueryVersion (xquery_version_t aMode)=0
+  virtual void 	setRevalidationMode (validation_mode_t aMode)
+  { return theStaticContext->setRevalidationMode(aMode); } 
 
-  void destroy() { theStaticContext = 0; }
+  //virtual void 	setSchemaURIResolver (SchemaURIResolver *aSchemaUriResolver)=0
+  //virtual void 	setTraceStream (std::ostream &)=0
+
+  virtual bool 	setXPath1_0CompatibMode (xpath1_0compatib_mode_t aMode)
+  { return theStaticContext->setXPath1_0CompatibMode(aMode); }
+
+  //virtual bool setXqueryVersion (xquery_version_t aMode)
+  //{ return theStaticContext->setXqueryVersion(aMode); } 
+
+  void destroy() 
+  { theStaticContext = 0; }
    
 }; // class StaticContext
 
@@ -166,6 +212,45 @@ public:
 
     // Interface
 
+%rename(XPath1_0CompatibModeEnum) xpath1_0compatib_mode_t;
+%rename(XPATH2_0) xpath2_0;
+%rename(XPATH1_0) xpath1_0;
+
+%rename(OrderingModeEnum) ordering_mode_t;
+%rename(ORDERED) ordered;
+%rename(UNORDERED) unordered;
+
+%rename(OrderEmptyModeEnum) order_empty_mode_t;
+%rename(EMPTY_GREATEST) empty_greatest;
+%rename(EMPTY_LEAST) empty_least;
+
+%rename(InheritModeEnum) inherit_mode_t;
+%rename(INHERIT_NS) inherit_ns;
+%rename(NO_INHERIT_NS) no_inherit_ns;
+
+%rename(PreserveModeEnum) preserve_mode_t;
+%rename(PRESERVE_NS) preserve_ns;
+%rename(NO_PRESERVE_NS) no_preserve_ns;
+
+%rename(BoundarySpaceModeEnum) boundary_space_mode_t;
+%rename(PRESERVE_SPACE) preserve_space;
+%rename(STRIP_SPACE) strip_space;
+
+%rename(ConstructionModeEnum) construction_mode_t;
+%rename(PRESERVE_CONS) preserve_cons;
+%rename(STRIP_CONS) strip_cons;
+
+%rename(XQueryVersionEnum) xquery_version_t;
+%rename(XQUERY_VERSION_1_0) xquery_version_1_0;
+%rename(XQUERY_VERSION_1_1) xquery_version_1_1;
+
+%rename(ValidationModeEnum) validation_mode_t;
+%rename(VALIDATE_SKIP) validate_skip;
+%rename(VALIDATE_LAX) validate_lax;
+%rename(VALIDATE_STRICT) validate_strict;
+
+%include <zorba/static_context_consts.h>
+
 
 class StaticContext 
 {
@@ -176,64 +261,80 @@ class StaticContext
   void addReference() const;
   virtual bool containsFunction(const std::string &aFnNameUri, 
                                 const std::string &aFnNameLocal, 
-                                int arity) const =0;
+                                int arity) const;
 
-  virtual StaticContext	createChildContext() const =0;
+  virtual StaticContext	createChildContext() const;
   virtual void declareOption(const Item &aQName, 
-                             const std::string &aOptionVal)=0;
-  virtual void disableFunction(const Item &aQName, int arity)=0;
+                             const std::string &aOptionVal);
+  virtual void disableFunction(const Item &aQName, int arity);
 
   //virtual void 	disableFunction (const Function_t &aFunction)=0;
   //virtual void 	findFunctions (const Item &aQName, std::vector< Function_t > &aFunctions) const =0
+
   virtual void 	free ();
-  virtual std::string 	getBaseURI () const =0;
-  //virtual boundary_space_mode_t 	getBoundarySpacePolicy () const =0;
+  virtual std::string 	getBaseURI () const;
+  virtual boundary_space_mode_t 	getBoundarySpacePolicy () const;
+
   //virtual TypeIdentifier_t 	getCollectionType (const std::string &aCollectionUri) const =0;
   //virtual CollectionURIResolver * 	getCollectionURIResolver () const =0;
-  //virtual construction_mode_t 	getConstructionMode () const =0
- 	//virtual TypeIdentifier_t 	getContextItemStaticType () const =0
-  //virtual void 	getCopyNamespacesMode (preserve_mode_t &aPreserve, inherit_mode_t &aInherit) const =0;
-  virtual std::string 	getDefaultCollation () const =0;
-  virtual std::string 	getDefaultElementAndTypeNamespace () const =0;
-  virtual std::string 	getDefaultFunctionNamespace () const =0;
-  //virtual order_empty_mode_t 	getDefaultOrderForEmptySequences () const =0;
+
+  virtual construction_mode_t 	getConstructionMode () const;
+  //virtual TypeIdentifier_t 	        getContextItemStaticType () const =0
+  virtual void getCopyNamespacesMode (preserve_mode_t &aPreserve, inherit_mode_t &aInherit) const;
+  virtual std::string 	getDefaultCollation () const;
+  virtual std::string 	getDefaultElementAndTypeNamespace () const;
+  virtual std::string 	getDefaultFunctionNamespace () const;
+  virtual order_empty_mode_t 	getDefaultOrderForEmptySequences () const;
+
   //virtual TypeIdentifier_t 	getDocumentType (const std::string &aDocUri) const =0;
   //virtual DocumentURIResolver * 	getDocumentURIResolver ()=0;
   //virtual ModuleURIResolver * 	getModuleURIResolver () const =0;
-  virtual std::string 	getNamespaceURIByPrefix (const std::string &aPrefix) const =0;
-  virtual bool 	getOption (const Item &aQName, std::string &aOptionValue) const =0;
-  //virtual ordering_mode_t 	getOrderingMode () const =0
-  long 	getRefCount () const;
-  virtual bool 	getRevalidationEnabled () const =0;
-  //virtual validation_mode_t 	getRevalidationMode ()=0;
+
+  virtual std::string getNamespaceURIByPrefix(const std::string &aPrefix) const;
+  virtual bool getOption(const Item &aQName, std::string &aOptionValue) const;
+  virtual ordering_mode_t getOrderingMode() const;
+  long 	getRefCount() const;
+  virtual bool 	getRevalidationEnabled() const;
+  virtual validation_mode_t getRevalidationMode();
   //virtual SchemaURIResolver * 	getSchemaURIResolver () const =0;
-  //virtual xpath1_0compatib_mode_t 	getXPath1_0CompatibMode () const =0
-  //virtual xquery_version_t 	getXqueryVersion () const =0;
- 	virtual void 	loadProlog (const std::string &, const Zorba_CompilerHints_t &hints)=0;
+  virtual xpath1_0compatib_mode_t 	getXPath1_0CompatibMode () const;
+  //virtual xquery_version_t 	getXqueryVersion () const;
+ 	virtual void 	loadProlog (const std::string &, 
+                            const Zorba_CompilerHints_t &hints);
+
   //virtual bool 	registerStatelessExternalFunction (StatelessExternalFunction *aExternalFunction)=0
+
   void 	removeReference ();
-  virtual void 	resetTraceStream ()=0;
-  virtual bool 	setBaseURI (const std::string &aBaseURI)=0;
-  //virtual bool 	setBoundarySpacePolicy (boundary_space_mode_t aMode)=0
+  virtual void 	resetTraceStream ();
+  virtual bool 	setBaseURI (const std::string &aBaseURI);
+  virtual bool 	setBoundarySpacePolicy (boundary_space_mode_t aMode);
+
   //virtual void 	setCollectionType (const std::string &aCollectionUri, TypeIdentifier_t type)=0
- 	//virtual void 	setCollectionURIResolver (CollectionURIResolver *aCollectionUriResolver)=0
-  //virtual bool 	setConstructionMode (construction_mode_t aMode)=0
+  //virtual void 	setCollectionURIResolver (CollectionURIResolver *aCollectionUriResolver)=0
+  virtual bool 	setConstructionMode (construction_mode_t aMode);
+
   //virtual void 	setContextItemStaticType (TypeIdentifier_t type)=0
-  //virtual bool 	setCopyNamespacesMode (preserve_mode_t aPreserve, inherit_mode_t aInherit)=0
-  virtual bool 	setDefaultCollation (const std::string &aURI)=0;
-  virtual bool 	setDefaultElementAndTypeNamespace (const std::string &aURI)=0;
-  virtual bool 	setDefaultFunctionNamespace (const std::string &aURI)=0;
-  //virtual bool 	setDefaultOrderForEmptySequences (order_empty_mode_t aMode)=0
+
+  virtual bool 	setCopyNamespacesMode (preserve_mode_t aPreserve, 
+                                       inherit_mode_t aInherit);
+  virtual bool 	setDefaultCollation (const std::string &aURI);
+  virtual bool 	setDefaultElementAndTypeNamespace (const std::string &aURI);
+  virtual bool 	setDefaultFunctionNamespace (const std::string &aURI);
+  virtual bool 	setDefaultOrderForEmptySequences (order_empty_mode_t aMode);
+
   //virtual void 	setDocumentType (const std::string &aDocUri, TypeIdentifier_t type)=0
   //virtual void 	setDocumentURIResolver (DocumentURIResolver *aDocumentURIResolver)=0
   //virtual void 	setModuleURIResolver (ModuleURIResolver *aModuleUriResolver)=0
-  //virtual bool 	setOrderingMode (ordering_mode_t aMode)=0
- 	virtual bool 	setRevalidationEnabled (bool enabled)=0;
-  //virtual void 	setRevalidationMode (validation_mode_t aMode)=0
- 	//virtual void 	setSchemaURIResolver (SchemaURIResolver *aSchemaUriResolver)=0
+
+  virtual bool 	setOrderingMode (ordering_mode_t aMode);
+  virtual bool 	setRevalidationEnabled (bool enabled);
+  virtual void 	setRevalidationMode (validation_mode_t aMode);
+
+  //virtual void 	setSchemaURIResolver (SchemaURIResolver *aSchemaUriResolver)=0
   //virtual void 	setTraceStream (std::ostream &)=0
- 	//virtual bool 	setXPath1_0CompatibMode (xpath1_0compatib_mode_t aMode)=0
- 	//virtual bool 	setXqueryVersion (xquery_version_t aMode)=0
+
+  virtual bool 	setXPath1_0CompatibMode (xpath1_0compatib_mode_t aMode);
+  //virtual bool setXqueryVersion (xquery_version_t aMode);
  	
   void destroy();
 }; // class StaticContext

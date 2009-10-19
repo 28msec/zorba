@@ -95,7 +95,8 @@ public class Test_Zorba
   static boolean example_5 ( Zorba zorba )
   {
     XmlDataManager dm = zorba.getXmlDataManager();
-    dm.loadDocument("books.xml", "<books><book>Book 1</book><book>Book 2</book></books>");
+    dm.loadDocument("books.xml", 
+                    "<books><book>Book 1</book><book>Book 2</book></books>");
     XQuery xquery = zorba.compileQuery("doc('books.xml')//book");
     System.out.println (  xquery.execute() );
 
@@ -105,13 +106,10 @@ public class Test_Zorba
   static boolean example_6 ( Zorba zorba )
   {
     XmlDataManager dm = zorba.getXmlDataManager();
-    dm.loadDocument("books.xml", "<books><book>Book 1</book><book>Book 2</book></books>");
-    XQuery xquery1 = zorba.compileQuery("insert node <book>Book 3</book> into doc('books.xml')/books");
-    
-    if (xquery1.isUpdateQuery() ) 
-    {
-      xquery1.applyUpdates();
-    }
+    dm.loadDocument("books.xml", 
+                    "<books><book>Book 1</book><book>Book 2</book></books>");
+    XQuery xquery1 = zorba.
+      compileQuery("insert node <book>Book 3</book> into doc('books.xml')/books");
     
     XQuery xquery2 = zorba.compileQuery("doc('books.xml')//book");
     System.out.println ( xquery2.execute() );

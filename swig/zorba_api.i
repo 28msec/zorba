@@ -46,22 +46,32 @@
 #include <zorba/options.h>
 
   class CompilerHints;
-  class DynamicException;
   class ErrorHandler;
   class Item;
   class ResultIterator;
   class XQuery;
-  class QueryException;
-  class SystemException;
-  class SerializationException;
   class StaticContext;
-  class StaticException;
   class Store;
+  class Zorba;
+
+  class DynamicException;
+  class QueryException;
+  class SerializationException;
+  class StaticException;
+  class SystemException;
   class TypeException;
   class UserException;
-  class Zorba;
   class ZorbaException;
 
+  class URIResolverResult;
+  class CollectionURIResolverResult;
+  class DocumentURIResolverResult;
+  class ModuleURIResolverResult;
+  class SchemaURIResolverResult;
+  class CollectionURIResolver;
+  class DocumentURIResolver;
+  class ModuleURIResolver;
+  class SchemaURIResolver;
   %}
 
 
@@ -73,6 +83,7 @@
 %include "ErrorHandler.i"
 %include "CompilerHints.i"
 %include "StaticContext.i"
+%include "Resolvers.i"
 %include "Zorba.i"
 
 

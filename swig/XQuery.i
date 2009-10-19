@@ -5,6 +5,7 @@ class Item
 {
   friend class ResultIterator;
   friend class StaticContext;
+  friend class DocumentURIResolver;
 
 private:
   zorba::Item theItem;
@@ -12,15 +13,70 @@ private:
 public:
   Item() {}
   Item(const Item& aItem) : theItem(aItem.theItem) {}
-  static Item createEmptyItem() { return Item(); }
+  Item(const zorba::Item& aZItem) : theItem(aZItem) {}
+
+  static Item createEmptyItem() 
+  { return Item(); }
+
   std::string getStringValue() const 
   { return 		std::string(theItem.getStringValue().c_str()); }
-
-  std::string serialize() const {
+  
+  std::string serialize() const 
+  {
     std::stringstream lStream;
     theItem.serialize(lStream);
     return lStream.str();
   }
+  
+  Item 	getAtomizationValue () const
+  { return Item(theItem.getAtomizationValue()); }
+  
+  //Iterator_t 	getAttributes () const
+  //{ return }
+  
+  bool 	getBooleanValue () const
+  { return theItem.getBooleanValue(); }
+
+  //Iterator_t 	getChildren () const;
+
+  Item 	getEBV () const
+  { return Item(theItem.getEBV()); }
+
+  int32_t 	getIntValue () const
+  { return theItem.getIntValue(); }
+  
+  std::string 	getLocalName () const
+  { return std::string(theItem.getLocalName().c_str()); }
+
+  std::string 	getNamespace () const
+  { return std::string(theItem.getNamespace().c_str()); }
+
+  bool 	getNodeName (Item &aNodeName) const
+  { return theItem.getNodeName( aNodeName.theItem ); }
+
+  std::string	getPrefix () const
+  { return std::string(theItem.getPrefix().c_str()); }
+
+  Item 	getType () const
+  { return Item( theItem.getType() ); }
+
+  uint32_t 	getUnsignedIntValue () const
+  { return theItem.getUnsignedIntValue(); }
+
+  bool 	isAtomic () const
+  { return theItem.isAtomic(); }
+
+  bool 	isNaN () const
+  { return theItem.isNaN(); }
+
+  bool 	isNode () const
+  { return theItem.isNode(); }
+
+  bool 	isNull () const
+  { return theItem.isNull(); }
+
+  bool 	isPosOrNegInf () const
+  { return theItem.isPosOrNegInf(); }
 }; // class Item
 
 class ResultIterator 
@@ -87,8 +143,6 @@ public:
   { theQuery->executeSAX(contentHandlerProxy); }
 #endif
 
-  bool isUpdateQuery() { return theQuery->isUpdateQuery(); }
-  void applyUpdates() { theQuery->applyUpdates(); }
   void destroy() { theQuery = 0; }
   ResultIterator iterator() { return ResultIterator(theQuery->iterator()); }
 }; // class XQuery
@@ -105,6 +159,23 @@ public:
   static Item createEmptyItem();
   std::string getStringValue() const;
   std::string serialize() const;
+  Item 	getAtomizationValue () const;
+  //Iterator_t 	getAttributes () const;
+  bool 	getBooleanValue () const;
+  //Iterator_t 	getChildren () const;
+  Item 	getEBV () const;
+  int32_t 	getIntValue () const;
+  std::string 	getLocalName () const;
+  std::string 	getNamespace () const;
+  bool 	getNodeName (Item &aNodeName) const;
+  std::string 	getPrefix () const;
+  Item 	getType () const;
+  uint32_t 	getUnsignedIntValue () const;
+  bool 	isAtomic () const;
+  bool 	isNaN () const;
+  bool 	isNode () const;
+  bool 	isNull () const;
+  bool 	isPosOrNegInf () const;
 }; // class Item
 
 class ResultIterator 
@@ -127,8 +198,6 @@ public:
   void executeSAX(SAX2ContentHandlerProxy* contentHandlerProxy);
 #endif
 
-  bool isUpdateQuery();
-  void applyUpdates();
   void destroy();
   ResultIterator iterator();
   void setVariableAsDocument(const std::string& aVarName, 
