@@ -52,13 +52,13 @@ Iterator tree for main query:
         </NodeSortIterator>
       </ForVariable>
       <ReturnClause>
-        <FnStringIterator>
+        <StringIterator>
           <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill allowed="0">
             <ParentAxisIterator test kind="match_anykind_test" qname="*" typename="*" nill allowed="0">
               <ForVarIterator varname="x"/>
             </ParentAxisIterator>
           </AttributeAxisIterator>
-        </FnStringIterator>
+        </StringIterator>
       </ReturnClause>
     </flwor::FLWORIterator>
   </EnclosedIterator>

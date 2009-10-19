@@ -91,10 +91,10 @@ Iterator tree for main query:
         </ForVariable>
         <WhereClause>
           <FnBooleanIterator>
-            <OpNodeBeforeIterator>
+            <NodeBeforeIterator>
               <ForVarIterator varname="pr1"/>
               <ForVarIterator varname="pr2"/>
-            </OpNodeBeforeIterator>
+            </NodeBeforeIterator>
           </FnBooleanIterator>
         </WhereClause>
         <ReturnClause>

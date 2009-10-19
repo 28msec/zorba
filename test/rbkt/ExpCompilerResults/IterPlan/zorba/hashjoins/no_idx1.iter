@@ -10,21 +10,21 @@ Iterator tree for main query:
   <LetVariable name="$$opt_temp_0" materialize="true">
     <HoistIterator>
       <HoistIterator>
-        <FnStringIterator>
-          <FnNodeNameIterator>
+        <StringIterator>
+          <NodeNameIterator>
             <ForVarIterator varname="ancestor"/>
-          </FnNodeNameIterator>
-        </FnStringIterator>
+          </NodeNameIterator>
+        </StringIterator>
       </HoistIterator>
     </HoistIterator>
   </LetVariable>
   <ReturnClause>
     <FnConcatIterator>
-      <FnStringIterator>
-        <FnNodeNameIterator>
+      <StringIterator>
+        <NodeNameIterator>
           <ForVarIterator varname="ancestor"/>
-        </FnNodeNameIterator>
-      </FnStringIterator>
+        </NodeNameIterator>
+      </StringIterator>
       <NodeSortIterator distinct="true" ascending="true">
         <flwor::FLWORIterator>
           <ForVariable name="$$dot">
@@ -36,11 +36,11 @@ Iterator tree for main query:
           </ForVariable>
           <WhereClause>
             <TypedValueCompareIterator_STRING>
-              <FnStringIterator>
-                <FnNodeNameIterator>
+              <StringIterator>
+                <NodeNameIterator>
                   <ForVarIterator varname="$$dot"/>
-                </FnNodeNameIterator>
-              </FnStringIterator>
+                </NodeNameIterator>
+              </StringIterator>
               <UnhoistIterator>
                 <UnhoistIterator>
                   <LetVarIterator varname="$$opt_temp_0"/>
