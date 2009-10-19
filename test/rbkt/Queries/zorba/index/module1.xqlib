@@ -3,9 +3,10 @@ module namespace idx = "http://www.w3.org/TestModules/idx";
 
 declare namespace zorba = "http://www.zorba-xquery.com/zorba/op-extensions";
 
-declare ordered index idx:foo
+declare index idx:foo
 on doc("auction.xml")/site/people/person
-by (fn:data(./@id));
+by (fn:data(./@id))
+ordered;
 
 
 declare function idx:probe($indexName as xs:QName, $id as xs:string)

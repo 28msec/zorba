@@ -1,4 +1,5 @@
-import module namespace idx = "http://www.w3.org/TestModules/idx" at "module2.xqlib";
+import datamodule namespace idx = "http://www.w3.org/TestModules/idx" at
+                                  "data_module2.xqlib";
 
 declare namespace zorba = "http://www.zorba-xquery.com/zorba/op-extensions";
 
