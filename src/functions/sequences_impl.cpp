@@ -282,6 +282,13 @@ fn_min::codegen(
   return new FnMinMaxIterator(aSctx, aLoc, aArgs, FnMinMaxIterator::MIN);
 }
 
+//15.5.2 fn:id
+typedef function_impl<FnIdIterator> fn_id;
+
+
+//15.5.3 fn:idref
+typedef function_impl<FnIdRefIterator> fn_id_ref;
+
 void
 populate_context_sequences_impl(static_context* sctx)
 {
@@ -341,6 +348,19 @@ populate_context_sequences_impl(static_context* sctx)
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
         GENV_TYPESYSTEM.STRING_TYPE_ONE, 
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
+  DECL(sctx, fn_id,
+       (createQName(XQUERY_FN_NS,"fn","id"),
+        GENV_TYPESYSTEM.STRING_TYPE_STAR,
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR)
+      );
+
+  DECL(sctx, fn_id_ref,
+       (createQName(XQUERY_FN_NS,"fn","idref"),
+        GENV_TYPESYSTEM.STRING_TYPE_STAR,
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
 }
 
