@@ -24,17 +24,19 @@
 
 #include "functions/accessors.h"
 #include "functions/accessors_impl.h"
+#include "functions/booleans.h"
+#include "functions/booleans_impl.h"
+#include "functions/context.h"
 #include "functions/sequences.h"
 #include "functions/sequences_impl.h"
+
 
 #include "functions/Collections.h"
 #include "functions/Numerics.h"
 #include "functions/QNames.h"
 #include "functions/nodeid_internal.h"
 #include "functions/Strings.h"
-#include "functions/Boolean.h"
 #include "functions/EnclosedExpr.h"
-#include "functions/ContextFunctions.h"
 #include "functions/DateTime.h"
 #include "functions/VarDecl.h"
 #include "functions/Misc.h"
@@ -70,19 +72,20 @@ void BuiltinFunctionLibrary::populateContext(static_context* sctx)
 
   populate_context_accessors(sctx);
   populate_context_accessors_impl(sctx);
+  populate_context_booleans(sctx);
+  populate_context_booleans_impl(sctx);
   populate_context_sequences(sctx);
   populate_context_sequences_impl(sctx);
+  populate_context_context(sctx);
 
   populateContext_Nodes(sctx);
   populateContext_AnyURI(sctx);
   populateContext_Arithmetics(sctx);
   populateContext_Numerics(sctx);
-  populateContext_Context(sctx);
   populateContext_QNames(sctx);
   populateContext_DocOrder(sctx);
   populateContext_Comparison(sctx);
   populateContext_Strings(sctx);
-  populateContext_Boolean(sctx);
   populateContext_Constructors(sctx);
   populateContext_Datetime(sctx);
   populateContext_Collections(sctx);

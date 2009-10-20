@@ -20,7 +20,6 @@
 #include "runtime/nodes/NodesImpl.h"
 #include "store/api/item_factory.h"
 
-#include "runtime/context/ContextImpl.h"
 #include "runtime/api/runtimecb.h"
 #include "runtime/util/iterator_impl.h"
 #include "runtime/visitors/planiter_visitor.h"

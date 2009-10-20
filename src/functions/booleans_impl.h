@@ -26,7 +26,7 @@
 namespace zorba 
 {
 
-void populateContext_Boolean(static_context *sctx);
+void populate_context_booleans_impl(static_context *sctx);
 
 void populateContext_Comparison(static_context *sctx);
 

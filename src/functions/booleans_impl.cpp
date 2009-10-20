@@ -15,7 +15,7 @@
  */
 #include "system/globalenv.h"
 
-#include "functions/Boolean.h"
+#include "functions/booleans_impl.h"
 #include "functions/function_impl.h"
 
 #include "runtime/booleans/BooleanImpl.h"
@@ -617,7 +617,7 @@ DECL(sctx, op_node_after,
 }
 
 
-void populateContext_Boolean(static_context* sctx) 
+void populate_context_booleans_impl(static_context* sctx) 
 {
 // start Boolean
 DECL(sctx, fn_true,

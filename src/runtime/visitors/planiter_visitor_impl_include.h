@@ -176,11 +176,6 @@
   class FnAdjustToTimeZoneIterator_1;
   class FnAdjustToTimeZoneIterator_2;
   class FnFormatDateTimeIterator;
-  class FnCurrentDateTimeIterator;
-  class FnCurrentDateIterator;
-  class FnCurrentTimeIterator;
-  class FnImplicitTimezoneIterator;
-  class FnDefaultCollationIterator;
   class InsertIterator;
   class DeleteIterator;
   class ReplaceIterator;

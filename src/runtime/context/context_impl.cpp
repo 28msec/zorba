@@ -19,7 +19,7 @@
 
 #include "compiler/api/compilercb.h"
 
-#include "runtime/context/ContextImpl.h"
+#include "runtime/context/context.h"
 #include "runtime/api/runtimecb.h"
 #include "runtime/visitors/planiter_visitor.h"
 
@@ -33,44 +33,9 @@
 
 namespace zorba
 {
-SERIALIZABLE_CLASS_VERSIONS(FnCurrentDateTimeIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(FnCurrentDateTimeIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(FnCurrentDateIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(FnCurrentDateIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(FnCurrentTimeIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(FnCurrentTimeIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(FnImplicitTimezoneIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(FnImplicitTimezoneIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(FnDefaultCollationIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(FnDefaultCollationIterator)
-
-
-NARY_ACCEPT(FnCurrentDateTimeIterator);
-
-NARY_ACCEPT(FnCurrentDateIterator);
-
-NARY_ACCEPT(FnCurrentTimeIterator);
-
-NARY_ACCEPT(FnImplicitTimezoneIterator);
-
-NARY_ACCEPT(FnDefaultCollationIterator);
-
-
-/**
- *______________________________________________________________________
- *
- * 16.3 fn:current-dateTime
- *
- * fn:current-dateTime() as xs:dateTime
- *_______________________________________________________________________*/
-
-/*begin class FnCurrentDateTimeIterator */
+//16.3 fn:current-dateTime
 bool
-FnCurrentDateTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+CurrentDateTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -81,19 +46,10 @@ FnCurrentDateTimeIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
   STACK_END (state);
 }
-/*end class FnCurrentDateTimeIterator */
 
-/**
- *______________________________________________________________________
- *
- * 16.4 fn:current-date
- *
- * fn:current-date() as xs:date
- *_______________________________________________________________________*/
-
-/*begin class FnCurrentDateIterator */
+//16.4 fn:current-date
 bool
-FnCurrentDateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+CurrentDateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemRes;
   std::auto_ptr<xqp_date> d;
@@ -110,19 +66,10 @@ FnCurrentDateIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 
   STACK_END (state);
 }
-/*end class FnCurrentDateIterator */
 
-/**
- *______________________________________________________________________
- *
- * 16.5 fn:current-time
- *
- * fn:current-time() as xs:time
- *_______________________________________________________________________*/
-
-/*begin class FnCurrentTimeIterator */
+//16.5 fn:current-time
 bool
-FnCurrentTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+CurrentTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemRes;
   std::auto_ptr<xqp_time> t;
@@ -139,19 +86,9 @@ FnCurrentTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 
   STACK_END (state);
 }
-/*end class FnCurrentTimeIterator */
-
-/**
- *______________________________________________________________________
- *
- * 16.6 fn:implicit-timezone
- *
- * fn:implicit-timezone() as xs:dayTimeDuration
- *_______________________________________________________________________*/
-
-/*begin class FnImplicitTimezoneIterator */
+//16.6 fn:implicit-timezone
 bool
-FnImplicitTimezoneIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+ImplicitTimezoneIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   long secs;
   bool neg;
@@ -166,23 +103,16 @@ FnImplicitTimezoneIterator::nextImpl(store::Item_t& result, PlanState& planState
   if (neg)
     secs = -secs;
   dur = std::auto_ptr<Duration>(new Duration(Duration::DAYTIMEDURATION_FACET, neg, 0, 0, 0, 0, 0 , secs));
-                                                                                                    
+
   STACK_PUSH( GENV_ITEMFACTORY->createDayTimeDuration(result, dur.get()), state );
 
   STACK_END (state);
 }
 
 
-/**
- *______________________________________________________________________
- *
- * 16.7 fn:default-collation
- *
- * fn:default-collation() as xs:string
- *_______________________________________________________________________*/
-
+//16.7 fn:default-collation
 bool
-FnDefaultCollationIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+DefaultCollationIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   xqpStringStore_t strColUri;
 

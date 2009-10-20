@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+    
+<zorba:header>
+    <zorba:include form="Quoted">common/shared_types.h</zorba:include>
+    <zorba:include form="Quoted">runtime/base/narybase.h</zorba:include>
+</zorba:header>
+
+<zorba:source/>
+
+<zorba:codegen>
+    <zorba:h>
+        <zorba:include form="Quoted">common/shared_types.h</zorba:include>
+        <zorba:include form="Quoted">functions/function_impl.h</zorba:include>
+    </zorba:h>
+    <zorba:cpp>
+        <zorba:include form="Quoted">runtime/context/context.h</zorba:include>
+        <zorba:include form="Quoted">functions/context.h</zorba:include>
+    </zorba:cpp>
+</zorba:codegen>
+
+<!--
+/*******************************************************************************
+* 16.3 fn:current-dateTime
+********************************************************************************/
+-->
+<zorba:iterator
+    name="CurrentDateTimeIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">fn:current-dateTime</zorba:description>
+    
+    <zorba:function requiresDynamicContext="true">
+        <zorba:signature localname="current-dateTime" prefix="fn">
+            <zorba:output>xs:dateTime</zorba:output>
+        </zorba:signature>
+    </zorba:function>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+* 16.4 fn:current-date
+********************************************************************************/
+-->
+
+<zorba:iterator
+    name="CurrentDateIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">fn:current-date</zorba:description>
+    
+    <zorba:function requiresDynamicContext="true">
+        <zorba:signature localname="current-date" prefix="fn">
+            <zorba:output>xs:date</zorba:output>
+        </zorba:signature>
+    </zorba:function>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+* 16.5 fn:current-time
+********************************************************************************/
+-->
+
+<zorba:iterator
+    name="CurrentTimeIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+
+    <zorba:description author="Zorba Team">fn:current-time</zorba:description>
+    
+    <zorba:function requiresDynamicContext="true">
+        <zorba:signature localname="current-time" prefix="fn">
+            <zorba:output>xs:time</zorba:output>
+        </zorba:signature>
+    </zorba:function>
+    
+</zorba:iterator>
+    
+<!--
+/*******************************************************************************
+* 16.6 fn:implicit-timezone
+********************************************************************************/
+-->
+
+<zorba:iterator
+    name="ImplicitTimezoneIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+    
+    <zorba:description author="Zorba Team">fn:implicit-timezone</zorba:description>
+    
+    <zorba:function requiresDynamicContext="true">
+        <zorba:signature localname="implicit-timezone" prefix="fn">
+            <zorba:output>xs:dayTimeDuration</zorba:output>
+        </zorba:signature>
+    </zorba:function>
+    
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+* 16.7 fn:default-collation
+********************************************************************************/
+-->
+
+<zorba:iterator
+    name="DefaultCollationIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="nary">
+    
+    <zorba:description author="Zorba Team">fn:default-collation</zorba:description>
+    
+    <zorba:function requiresDynamicContext="true">
+        <zorba:signature localname="default-collation" prefix="fn">
+            <zorba:output>xs:string</zorba:output>
+        </zorba:signature>
+    </zorba:function>
+    
+</zorba:iterator>
+    
+</zorba:iterators>

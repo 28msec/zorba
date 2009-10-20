@@ -411,16 +411,6 @@
 
   PLAN_ITER_VISITOR (EvalIterator);
 
-  PLAN_ITER_VISITOR (FnCurrentDateTimeIterator);
-
-  PLAN_ITER_VISITOR (FnCurrentDateIterator);
-
-  PLAN_ITER_VISITOR (FnCurrentTimeIterator);
-
-  PLAN_ITER_VISITOR (FnImplicitTimezoneIterator);
-
-  PLAN_ITER_VISITOR (FnDefaultCollationIterator);
-
   PLAN_ITER_VISITOR(FnAdjustToTimeZoneIterator_1);
 
   PLAN_ITER_VISITOR(FnAdjustToTimeZoneIterator_2);

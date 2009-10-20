@@ -56,11 +56,10 @@ LIST(APPEND FUNCTIONS_SRCS
     # computeAnnotation, and specialize
     sequences_impl.cpp
     accessors_impl.cpp
+    booleans_impl.cpp
     Alexis.cpp
     arithmetic.cpp
-    Boolean.cpp
     Collections.cpp
-    ContextFunctions.cpp
     Convertors.cpp
     DateTime.cpp
     EnclosedExpr.cpp

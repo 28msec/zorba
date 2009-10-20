@@ -47,31 +47,20 @@ namespace zorba {
 
 #include "runtime/visitors/printer_visitor_impl.h"
 
-    void beginVisit( const NodeNameIterator& );
-    void endVisit  ( const NodeNameIterator& );
+    void beginVisit( const CurrentDateTimeIterator& );
+    void endVisit  ( const CurrentDateTimeIterator& );
 
-    void beginVisit( const NilledIterator& );
-    void endVisit  ( const NilledIterator& );
+    void beginVisit( const CurrentDateIterator& );
+    void endVisit  ( const CurrentDateIterator& );
 
-    void beginVisit( const FnStringIterator& );
-    void endVisit  ( const FnStringIterator& );
+    void beginVisit( const CurrentTimeIterator& );
+    void endVisit  ( const CurrentTimeIterator& );
 
-    void beginVisit( const BaseUriIterator& );
-    void endVisit  ( const BaseUriIterator& );
+    void beginVisit( const ImplicitTimezoneIterator& );
+    void endVisit  ( const ImplicitTimezoneIterator& );
 
-    void beginVisit( const DocumentUriIterator& );
-    void endVisit  ( const DocumentUriIterator& );
-
-    void beginVisit( const RootIterator& );
-    void endVisit  ( const RootIterator& );
-    void beginVisit( const IsSameNodeIterator& );
-    void endVisit  ( const IsSameNodeIterator& );
-
-    void beginVisit( const NodeBeforeIterator& );
-    void endVisit  ( const NodeBeforeIterator& );
-
-    void beginVisit( const NodeAfterIterator& );
-    void endVisit  ( const NodeAfterIterator& );
+    void beginVisit( const DefaultCollationIterator& );
+    void endVisit  ( const DefaultCollationIterator& );
     void beginVisit( const FnConcatIterator& );
     void endVisit  ( const FnConcatIterator& );
 
@@ -146,6 +135,23 @@ namespace zorba {
 
     void beginVisit( const FnParseIterator& );
     void endVisit  ( const FnParseIterator& );
+    void beginVisit( const NodeNameIterator& );
+    void endVisit  ( const NodeNameIterator& );
+
+    void beginVisit( const NilledIterator& );
+    void endVisit  ( const NilledIterator& );
+
+    void beginVisit( const FnStringIterator& );
+    void endVisit  ( const FnStringIterator& );
+
+    void beginVisit( const BaseUriIterator& );
+    void endVisit  ( const BaseUriIterator& );
+
+    void beginVisit( const DocumentUriIterator& );
+    void endVisit  ( const DocumentUriIterator& );
+
+    void beginVisit( const RootIterator& );
+    void endVisit  ( const RootIterator& );
     void beginVisit( const CodepointsToStringIterator& );
     void endVisit  ( const CodepointsToStringIterator& );
 
@@ -211,6 +217,14 @@ namespace zorba {
 
     void beginVisit( const FnReplaceIterator& );
     void endVisit  ( const FnReplaceIterator& );
+    void beginVisit( const IsSameNodeIterator& );
+    void endVisit  ( const IsSameNodeIterator& );
+
+    void beginVisit( const NodeBeforeIterator& );
+    void endVisit  ( const NodeBeforeIterator& );
+
+    void beginVisit( const NodeAfterIterator& );
+    void endVisit  ( const NodeAfterIterator& );
 
   }; //class PrinterVisitor
 } //namespace zorba

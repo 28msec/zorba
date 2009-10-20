@@ -559,7 +559,12 @@
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>
-    
+
+<!--
+/*******************************************************************************
+  15.5.1 op:to
+********************************************************************************/
+-->
 <zorba:iterator name="OpToIterator">
     
     <zorba:description author="Zorba Team">op:to</zorba:description>
@@ -583,7 +588,8 @@
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>
-    
+
+
 <!--
 /*******************************************************************************
   15.5.4 fn:doc

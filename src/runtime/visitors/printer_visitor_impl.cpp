@@ -19,7 +19,6 @@
 #include "types/typeops.h"
 #include "util/properties.h"
 
-#include "runtime/context/ContextImpl.h"
 #include "runtime/core/item_iterator.h"
 #include "runtime/core/var_iterators.h"
 #include "runtime/core/constructors.h"
@@ -1188,11 +1187,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION (CtxVarAssignIterator)
   PRINTER_VISITOR_DEFINITION (CtxVarExistsIterator)
   PRINTER_VISITOR_DEFINITION (EvalIterator)
-  PRINTER_VISITOR_DEFINITION (FnCurrentDateTimeIterator)
-  PRINTER_VISITOR_DEFINITION (FnCurrentDateIterator)
-  PRINTER_VISITOR_DEFINITION (FnCurrentTimeIterator)
-  PRINTER_VISITOR_DEFINITION (FnImplicitTimezoneIterator)
-  PRINTER_VISITOR_DEFINITION (FnDefaultCollationIterator)
   PRINTER_VISITOR_DEFINITION(FnAdjustToTimeZoneIterator_1);
   PRINTER_VISITOR_DEFINITION(FnAdjustToTimeZoneIterator_2);
   PRINTER_VISITOR_DEFINITION(FnFormatDateTimeIterator);
