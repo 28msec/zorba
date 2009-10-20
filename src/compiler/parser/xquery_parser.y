@@ -1041,10 +1041,8 @@ DataModule :
 DataModuleDecl :
 		DATAMODULE NAMESPACE  NCNAME  EQUALS  URI_LITERAL  SEMI
 		{
-			$$ = new ModuleDecl(LOC (@$),
-								SYMTAB ($3), 
-								SYMTAB ($5));
-      dynamic_cast<ModuleDecl *>($$)->setComment(SYMTAB($1));
+			$$ = new ModuleDecl(LOC(@$), SYMTAB($3), SYMTAB($5));
+      // dynamic_cast<ModuleDecl *>($$)->setComment(SYMTAB($1));
 		}
 	;
 
@@ -1054,21 +1052,17 @@ DataModuleDecl :
 Prolog :
 		SIND_DeclList  SEMI
 		{
-			$$ = new Prolog(LOC (@$),
-								static_cast<SIND_DeclList*>($1),
-								NULL);
+			$$ = new Prolog(LOC(@$), static_cast<SIND_DeclList*>($1), NULL);
 		}
 	|	VFO_DeclList  SEMI
 		{
-			$$ = new Prolog(LOC (@$),
-								NULL,
-								static_cast<VFO_DeclList*>($1));
+			$$ = new Prolog(LOC(@$), NULL, static_cast<VFO_DeclList*>($1));
 		}
 	|	SIND_DeclList  SEMI  VFO_DeclList  SEMI
 		{
-			$$ = new Prolog(LOC (@$),
-								static_cast<SIND_DeclList*>($1),
-								static_cast<VFO_DeclList*>($3));
+			$$ = new Prolog(LOC(@$),
+                      static_cast<SIND_DeclList*>($1),
+                      static_cast<VFO_DeclList*>($3));
 		}
 	;
   
@@ -2233,7 +2227,11 @@ FLWORExpr :
     FLWORClauseList ReturnExpr
     {
       ReturnExpr* lReturnExpr = dynamic_cast<ReturnExpr*>($2);
-      $$ = new FLWORExpr (LOC (@$), dynamic_cast<FLWORClauseList*>($1), lReturnExpr->get_return_val(), lReturnExpr->get_location(), driver.theCompilerCB->m_config.force_gflwor);
+      $$ = new FLWORExpr(LOC(@$),
+                         dynamic_cast<FLWORClauseList*>($1),
+                         lReturnExpr->get_return_val(),
+                         lReturnExpr->get_location(),
+                         driver.theCompilerCB->theConfig.force_gflwor);
       delete $2;
     }
     ;

@@ -94,9 +94,10 @@ bool xquery_driver::parse_string(const xqpString& input)
   return parse_stream(iss);
 }
 
-void xquery_driver::set_expr(parsenode* e_p) {
-  if (theCompilerCB->m_config.parse_cb != NULL)
-    theCompilerCB->m_config.parse_cb (e_p, theCompilerCB->theRootSctx->entity_retrieval_url ());
+void xquery_driver::set_expr(parsenode* e_p) 
+{
+  if (theCompilerCB->theConfig.parse_cb != NULL)
+    theCompilerCB->theConfig.parse_cb (e_p, theCompilerCB->theRootSctx->entity_retrieval_url());
   expr_p = e_p;
 }
 
