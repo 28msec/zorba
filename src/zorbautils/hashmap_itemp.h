@@ -129,7 +129,7 @@ void operator&(Archiver &ar, ItemPointerHashMap<T>* &obj)
     is_ref = ar.add_compound_field("ItemPointerHashMap<T>*", 0, !FIELD_IS_CLASS, "", obj, ARCHIVE_FIELD_IS_PTR);
     if(!is_ref)
     {
-      ItemPointerHashMap<T>::iterator   obj_it;
+      typename ItemPointerHashMap<T>::iterator   obj_it;
       ar.set_is_temp_field(true);
       ulong obj_count = obj->object_count();
       ar & obj_count;
