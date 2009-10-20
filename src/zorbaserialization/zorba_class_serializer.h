@@ -134,10 +134,13 @@ void operator&(Archiver &ar, zorba::rchandle<T> &obj)
   if(ar.is_serializing_out())
   {
     bool is_ref;
+    bool allow_delay = ar.get_allow_delay();
     is_ref = ar.add_compound_field("rchandle<T>", 0, !FIELD_IS_CLASS, "", &obj, ARCHIVE_FIELD_NORMAL);
     if(!is_ref)
     {
       T *p = obj.getp();
+      if(!allow_delay)
+        ar.dont_allow_delay();
       ar & p;
       ar.add_end_compound_field();
     }

@@ -59,6 +59,9 @@ public:
     {
       return t->hash(theTimeZone, theCollation);
     }
+
+    long  get_timezone() {return theTimeZone;}
+    const XQPCollator*    get_collation() {return theCollation;}
   };
 
   typedef typename HashMap<const store::Item*, V, CompareFunction>::iterator iterator;
@@ -94,8 +97,135 @@ public:
   bool update(const store::Item* key, V& value) { return theMap.update(key, value); }
 
   bool remove(const store::Item* key) { return theMap.remove(key); }
+
+
+  //helpers for serialization
+  ulong object_count() {return theMap.object_count();}
+  long  get_timezone() {return theMap.get_compare_function().get_timezone();}
+  const XQPCollator*    get_collation() {return theMap.get_compare_function().get_collation();}
+  ulong get_size()  {return theMap.capacity();}
+  bool  get_sync()   {return theMap.has_sync();}
 };
 
+
+namespace serialization
+{
+
+template<class T>
+void operator&(Archiver &ar, ItemPointerHashMap<T>* &obj)
+{
+  if(ar.is_serializing_out())
+  {
+    if((obj == NULL))
+    {
+      ar.add_compound_field("NULL", 
+                            1 ,//class_version
+                            !FIELD_IS_CLASS, "NULL", 
+                            NULL,//(SerializeBaseClass*)obj, 
+                            ARCHIVE_FIELD_IS_NULL);
+      return;
+    }
+    bool is_ref;
+    is_ref = ar.add_compound_field("ItemPointerHashMap<T>*", 0, !FIELD_IS_CLASS, "", obj, ARCHIVE_FIELD_IS_PTR);
+    if(!is_ref)
+    {
+      ItemPointerHashMap<T>::iterator   obj_it;
+      ar.set_is_temp_field(true);
+      ulong obj_count = obj->object_count();
+      ar & obj_count;
+      long timezone = obj->get_timezone();
+      ar & timezone;
+      XQPCollator* collation = (XQPCollator*)obj->get_collation();
+      ar & collation;
+      ulong size = obj->get_size();
+      ar & size;
+      bool sync = obj->get_sync();
+      ar & sync;
+      ar.set_is_temp_field(false);
+      for(obj_it = obj->begin(); obj_it != obj->end(); ++obj_it)
+      {
+        store::Item *key_item = (store::Item *)(*obj_it).first;
+        ar.dont_allow_delay();
+        ar.set_is_temp_field(true);
+        ar & key_item;
+        ar.set_is_temp_field(false);
+        ar.dont_allow_delay();
+        ar.set_is_temp_field_one_level(true);
+        ar & (*obj_it).second;
+        ar.set_is_temp_field_one_level(false);
+      }
+      ar.add_end_compound_field();
+    }
+  }
+  else
+  {
+    char  *type;
+    std::string value;
+    int   id;
+    int   version;
+    bool  is_simple;
+    bool  is_class;
+    enum  ArchiveFieldTreat field_treat;
+    int   referencing;
+    bool  retval;
+    retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
+    if(!retval && ar.get_read_optional_field())
+      return;
+    ar.check_nonclass_field(retval, type, "ItemPointerHashMap<T>*", is_simple, is_class, field_treat, (ArchiveFieldTreat)-1, id);
+    if(field_treat == ARCHIVE_FIELD_IS_NULL)
+    {
+      obj = NULL;
+      ar.read_end_current_level();
+      return;
+    }
+    void *new_obj;
+    if(field_treat == ARCHIVE_FIELD_IS_PTR)
+    {
+
+      ar.set_is_temp_field(true);
+      ulong obj_count, i;
+      ar & obj_count;
+      long timezone;
+      ar & timezone;
+      XQPCollator* collation;
+      ar & collation;
+      ulong size;
+      ar & size;
+      bool sync;
+      ar & sync;
+      ar.set_is_temp_field(false);
+      obj = new ItemPointerHashMap<T>(timezone, collation, size, sync);
+      ar.register_reference(id, field_treat, obj);
+      for(i=0;i<obj_count;i++)
+      {
+        store::Item *key_item;
+        ar.set_is_temp_field(true);
+        ar & key_item;
+        ar.set_is_temp_field(false);
+        T t_value;
+        ar.set_is_temp_field_one_level(true);
+        ar & t_value;
+        ar.set_is_temp_field_one_level(false);
+
+        obj->insert(key_item, t_value);
+      }
+
+      ar.read_end_current_level();
+    }
+    else if((new_obj = ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
+    {
+      obj = (ItemPointerHashMap<T>*)new_obj;
+      if(!obj)
+      {
+        ZORBA_SER_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
+      }
+    }
+    else
+      ar.register_delay_reference((void**)&obj, !FIELD_IS_CLASS, "ItemPointerHashMap<T>*", referencing);
+
+  }
+}
+}//end namespace serialization
 
 } // namespace zorba
 

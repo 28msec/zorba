@@ -199,14 +199,18 @@ void context::ctx_module_t::serialize(serialization::Archiver &ar)
 
     xqp_string lURI = Unmarshaller::getInternalString(module->getURI());
     xqpStringStore_t lURIStore = lURI.getStore();
+	ar.set_is_temp_field_one_level(true);
     ar & lURIStore;
+	ar.set_is_temp_field_one_level(false);
     ar & dyn_loaded_module;
   } else {
     // serialize in: load the serialized uri of the module and
     //               get the externalmodule from the user's
     //               registered serialization callback
     xqpStringStore_t lURIStore = 0;
+	ar.set_is_temp_field_one_level(true);
     ar & lURIStore;
+	ar.set_is_temp_field_one_level(false);
     ar & dyn_loaded_module;
 
     if (dyn_loaded_module) {
@@ -263,11 +267,12 @@ void context::ctx_value_t::serialize(::zorba::serialization::Archiver &ar)
     SERIALIZE_FUNCTION(functionValue);
     if(!ar.is_serializing_out() && functionValue)
       RCHelper::addReference (functionValue);
+    ar.set_serialize_only_for_eval(false);
     break;
   case CTX_ARITY:
     ar.set_serialize_only_for_eval(true);
     ar & fmapValue;
-    // ar.set_serialize_only_for_eval(false);
+    ar.set_serialize_only_for_eval(false);
   /*  if(ar.is_serializing_out())
     {
       printf("out CTX_ARITY %x size=%d\n", fmapValue, fmapValue->size());
@@ -528,7 +533,7 @@ void static_context::serialize(::zorba::serialization::Archiver &ar)
   serialize_resolvers(ar);
   serialize_tracestream(ar);
 
-  //  ar & theIndexMap;
+  ar & theIndexMap;
   ar & theCollationCache;
 }
 

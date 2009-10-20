@@ -690,10 +690,10 @@ int Archiver::get_nr_ids()
 
 void Archiver::prepare_serialize_out()
 {
-  if(xquery_with_eval())
-    return;
-
-  check_compound_fields(out_fields);
+  if(!xquery_with_eval())
+  {
+    check_compound_fields(out_fields);
+  }
   check_allowed_delays(out_fields);
 }
 
@@ -837,7 +837,7 @@ void Archiver::check_compound_fields2(archive_field   *parent_field)
     }
   */
     if(!current_field->is_simple)
-      check_compound_fields(current_field);
+      check_compound_fields2(current_field);
     current_field = current_field->next;
   }
 }
@@ -915,8 +915,8 @@ void Archiver::check_allowed_delays(archive_field *parent_field)
     if(!child->allow_delay && (child->field_treat == ARCHIVE_FIELD_IS_REFERENCING) &&
        check_order(out_fields, child, child->refered) < 1)
     {
-      if((child->refered->field_treat == ARCHIVE_FIELD_NORMAL) ||
-        !child->refered->allow_delay)
+      if((child->refered->field_treat == ARCHIVE_FIELD_NORMAL))// ||
+        //!child->refered->allow_delay)
       {
         //impossible to solve situation
         //need to change the serialization order somewhere
