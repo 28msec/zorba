@@ -196,7 +196,8 @@ public:
     ar & theStaticContext;
     if(!ar.is_serializing_out())
     {
-      RCHelper::addReference (theStaticContext);
+      if(theStaticContext)
+        RCHelper::addReference (theStaticContext);
       theDynamicContextWrapper = NULL; 
       theStaticContextWrapper = NULL;//new StaticContextImpl(theStaticContext, theErrorHandler); 
 

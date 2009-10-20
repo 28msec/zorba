@@ -928,6 +928,7 @@ XQueryImpl::loadExecutionPlan(std::istream &is, SerializationCallback* aCallback
         throw;
       //else go try xml archive reader
     }
+    is.seekg(0);
     zorba::serialization::XmlArchiver   xmlar(&is);
     xmlar.setUserCallback(aCallback);
     serialize(xmlar);
