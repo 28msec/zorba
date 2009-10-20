@@ -151,7 +151,8 @@ void operator&(Archiver &ar, ItemPointerHashMap<T>* &obj)
         ar.set_is_temp_field(false);
         ar.dont_allow_delay();
         ar.set_is_temp_field_one_level(true);
-        ar & (*obj_it).second;
+        T t_value = (T)(*obj_it).second;
+        ar & t_value;
         ar.set_is_temp_field_one_level(false);
       }
       ar.add_end_compound_field();
