@@ -22,24 +22,27 @@
 
 #include <zorba/external_function_data.h>
 
-namespace zorba {
+namespace zorba 
+{
 
-  class ZORBA_DLL_PUBLIC StatelessExternalFunction : public ExternalFunctionData
-  {
-    public:
-      typedef std::vector<ItemSequence*> Arguments_t;
+class ZORBA_DLL_PUBLIC StatelessExternalFunction : public ExternalFunctionData
+{
+ public:
+  typedef std::vector<ItemSequence*> Arguments_t;
 
-    public:
-      virtual ~StatelessExternalFunction() {}
+ public:
+  virtual ~StatelessExternalFunction() {}
 
-      virtual String
-      getURI() const = 0;
+  virtual String
+  getURI() const = 0;
 
-      virtual String
-      getLocalName() const = 0;
+  virtual String
+  getLocalName() const = 0;
 
-      virtual bool
-      isPureFunction() const = 0;
-  };
+  virtual bool
+  isDeterministic() const = 0;
+};
+
+
 } /* namespace zorba */
 #endif
