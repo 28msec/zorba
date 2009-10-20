@@ -22,6 +22,7 @@
 // ******************************************
 
 #include "runtime/accessors/accessors.h"
+#include "functions/accessors.h"
 
 namespace zorba{
 
