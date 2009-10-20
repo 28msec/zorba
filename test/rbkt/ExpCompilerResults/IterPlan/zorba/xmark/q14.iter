@@ -17,13 +17,13 @@ Iterator tree for main query:
   </ForVariable>
   <WhereClause>
     <ContainsIterator>
-      <FnStringIterator>
+      <StringIterator>
         <FnExactlyOneIterator>
           <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,description)" typename="*" nill allowed="0">
             <ForVarIterator varname="i"/>
           </ChildAxisIterator>
         </FnExactlyOneIterator>
-      </FnStringIterator>
+      </StringIterator>
       <SingletonIterator value="xs:string(gold)"/>
     </ContainsIterator>
   </WhereClause>
