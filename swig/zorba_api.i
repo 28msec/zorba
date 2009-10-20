@@ -48,6 +48,7 @@
   class CompilerHints;
   class ErrorHandler;
   class Item;
+  class Iterator;
   class ResultIterator;
   class XQuery;
   class StaticContext;

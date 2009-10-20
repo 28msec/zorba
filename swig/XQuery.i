@@ -1,8 +1,36 @@
 
 %{  // start Implementation
 
+class Iterator 
+{
+protected:
+  zorba::Iterator_t theIterator;
+
+public:
+  Iterator() {}
+  Iterator(const Iterator& anIterator) : theIterator(anIterator.theIterator) {}
+  Iterator(zorba::Iterator_t anIterator) : theIterator(anIterator) {}
+  void open()            { theIterator->open(); }
+  bool next(Item& aItem);
+  void close()           { theIterator->close(); }
+  void destroy()         { theIterator = 0; }
+}; // class Iterator
+
+
+class ResultIterator : public Iterator
+{
+public:
+  ResultIterator() {}
+  ResultIterator(const ResultIterator& aResultIterator) 
+    : Iterator(dynamic_cast<const Iterator&>(aResultIterator))   {}
+  ResultIterator(zorba::ResultIterator_t aResultIterator)
+    : Iterator(zorba::Iterator_t(aResultIterator.get())) {}
+}; // class ResultIterator
+
+
 class Item 
 {
+  friend class Iterator;
   friend class ResultIterator;
   friend class StaticContext;
   friend class DocumentURIResolver;
@@ -31,18 +59,19 @@ public:
   Item 	getAtomizationValue () const
   { return Item(theItem.getAtomizationValue()); }
   
-  //Iterator_t 	getAttributes () const
-  //{ return }
+  Iterator getAttributes () const
+  { return Iterator(theItem.getAttributes()); }
   
   bool 	getBooleanValue () const
   { return theItem.getBooleanValue(); }
 
-  //Iterator_t 	getChildren () const;
+  Iterator 	getChildren () const
+  { return Iterator(theItem.getChildren()); }
 
   Item 	getEBV () const
   { return Item(theItem.getEBV()); }
 
-  int32_t 	getIntValue () const
+  int 	getIntValue () const
   { return theItem.getIntValue(); }
   
   std::string 	getLocalName () const
@@ -60,7 +89,7 @@ public:
   Item 	getType () const
   { return Item( theItem.getType() ); }
 
-  uint32_t 	getUnsignedIntValue () const
+  unsigned int 	getUnsignedIntValue () const
   { return theItem.getUnsignedIntValue(); }
 
   bool 	isAtomic () const
@@ -79,23 +108,6 @@ public:
   { return theItem.isPosOrNegInf(); }
 }; // class Item
 
-class ResultIterator 
-{
-private:
-  zorba::ResultIterator_t theResultIterator;
-
-public:
-  ResultIterator() {}
-  ResultIterator(const ResultIterator& aResultIterator) 
-    : theResultIterator(aResultIterator.theResultIterator) {}
-  ResultIterator(zorba::ResultIterator_t aResultIterator) : 
-      theResultIterator(aResultIterator) {}
-  void open() { theResultIterator->open(); }
-  bool next(Item& aItem) { return theResultIterator->next(aItem.theItem); }
-  void close() { theResultIterator->close(); }
-  void destroy() { theResultIterator = 0; }
-
-}; // class ResultIterator
 
 class XQuery 
 {
@@ -148,6 +160,11 @@ public:
 }; // class XQuery
 
 
+// remaining method definitions from Iterator
+bool Iterator::next(Item& aItem)
+{ return theIterator->next(aItem.theItem); }
+
+
 %}  // end   Implementation
 
 
@@ -160,17 +177,17 @@ public:
   std::string getStringValue() const;
   std::string serialize() const;
   Item 	getAtomizationValue () const;
-  //Iterator_t 	getAttributes () const;
+  Iterator 	getAttributes () const;
   bool 	getBooleanValue () const;
-  //Iterator_t 	getChildren () const;
+  Iterator 	getChildren () const;
   Item 	getEBV () const;
-  int32_t 	getIntValue () const;
+  int 	getIntValue () const;
   std::string 	getLocalName () const;
   std::string 	getNamespace () const;
   bool 	getNodeName (Item &aNodeName) const;
   std::string 	getPrefix () const;
   Item 	getType () const;
-  uint32_t 	getUnsignedIntValue () const;
+  unsigned int 	getUnsignedIntValue () const;
   bool 	isAtomic () const;
   bool 	isNaN () const;
   bool 	isNode () const;
@@ -178,14 +195,21 @@ public:
   bool 	isPosOrNegInf () const;
 }; // class Item
 
-class ResultIterator 
+
+class Iterator 
 {
 public:
   void open();
   bool next(Item&);
   void close();
   void destroy();
+}; // class Iterator
+
+
+class ResultIterator : public Iterator
+{
 }; // class ResultIterator
+
 
 class XQuery 
 {
