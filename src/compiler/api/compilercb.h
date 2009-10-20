@@ -41,6 +41,8 @@ class static_context;
   The CompilerCBs of imported modules are created and stay alive only during the
   translation of their associated modules.
 
+  theIsLoadProlog :
+
   theRootSctx     : The root static ctx for the associated module. For each
                     module, this is a child of either a user provided static
                     ctx or the zorba default root context.
@@ -48,7 +50,7 @@ class static_context;
                     m_context_map. Every time an expr is created, the current
                     value of m_cur_sctx is stored in the expr obj, so that each
                     expr will be executed in the appropriate sctx.
-  m_context_map   : A reference to the query-level map that maps sctx numeric ids
+  theSctxMap      : A reference to the query-level map that maps sctx numeric ids
                     to sctx objs. In non-DEBUGGER mode, the map stores entries 
                     only for the root sctx of each module. In DEBUGGER mode, it
                     stores entries for all sctxs created by each module. By 
@@ -71,7 +73,8 @@ class ZORBA_DLL_PUBLIC CompilerCB : public zorba::serialization::SerializeBaseCl
 public:
   typedef struct config : public zorba::serialization::SerializeBaseClass
   {
-    typedef enum {
+    typedef enum 
+    {
       O0,
       O1
     } opt_level_t;
@@ -79,18 +82,20 @@ public:
     typedef void (* expr_callback) (const expr *, const std::string& name);
     typedef void (* ast_callback) (const parsenode *, const std::string& name);
 
-    bool force_gflwor;
-    opt_level_t opt_level;
-    bool lib_module;
-    ast_callback parse_cb;
-    expr_callback translate_cb, normalize_cb, optimize_cb;
-    bool print_item_flow;  // TODO: move to RuntimeCB
+    bool          force_gflwor;
+    opt_level_t   opt_level;
+    bool          lib_module;
+    ast_callback  parse_cb;
+    expr_callback translate_cb;
+    expr_callback normalize_cb;
+    expr_callback optimize_cb;
+    bool          print_item_flow;  // TODO: move to RuntimeCB
 
     config();
 
    public:
     SERIALIZABLE_CLASS(config)
-    config(::zorba::serialization::Archiver &ar) 
+    config(::zorba::serialization::Archiver& ar) 
       :
       parse_cb(NULL),
       translate_cb(NULL),
@@ -101,7 +106,7 @@ public:
 
     ~config() {}
 
-    void serialize(::zorba::serialization::Archiver &ar)
+    void serialize(::zorba::serialization::Archiver& ar)
     {
       ar & force_gflwor;
       SERIALIZE_ENUM(opt_level_t, opt_level);
@@ -111,15 +116,15 @@ public:
   } config_t;
 
 public:  
-  bool                                m_is_loadprolog;
-  std::map<short, static_context_t> * m_context_map;
+  bool                                theIsLoadProlog;
   
   static_context_t                    theRootSctx;
   short                               m_cur_sctx;
+  std::map<short, static_context_t> * theSctxMap;
   std::vector<static_context_t>       m_sctx_list;
 
-  error::ErrorManager               * m_error_manager;
-  config_t                            m_config;
+  error::ErrorManager               * theErrorManager;
+  config_t                            theConfig;
   ZorbaDebuggerCommons              * theDebuggerCommons;
 
 public:
@@ -134,17 +139,18 @@ public:
 
   virtual ~CompilerCB();
 
-  bool isLoadPrologQuery() const { return m_is_loadprolog; }
+  bool isLoadPrologQuery() const { return theIsLoadProlog; }
 
-  void setLoadPrologQuery() { m_is_loadprolog = true; }
+  void setLoadPrologQuery() { theIsLoadProlog = true; }
 
   static_context* getStaticContext(short c);
 };
 
 
-} /* namespace zorba */
+}
 
-#endif /* XQP_COMPILERCB_H */
+#endif
+
 /* vim:set ts=2 sw=2: */
 /*
  * Local variables:

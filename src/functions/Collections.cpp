@@ -29,10 +29,13 @@ namespace zorba
 class fn_collection : public function 
 {
 public:
-  fn_collection(const signature & sig) 
+  fn_collection(const signature& sig) 
     :
     function(sig, FunctionConsts::FN_COLLECTION)
-  {}
+  {
+  }
+
+  bool isSource() const { return true; }
 
   bool requires_dyn_ctx() const { return true; }
 

@@ -202,7 +202,7 @@ public:
 
       theIsClosed = false;
 
-      theCompilerCB->m_error_manager = theErrorManager;
+      theCompilerCB->theErrorManager = theErrorManager;
     }
     ar & theTimeout;
   }

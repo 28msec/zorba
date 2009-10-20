@@ -355,7 +355,8 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       "Type promotion not possible on sequence with more than one item");
     }
 
-    try{
+    try
+    {
       if (! GenericCast::promote(result, lItem, thePromoteType, *tm))
       {
         ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
@@ -363,7 +364,8 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
                                  << tm->create_value_type(lItem)->toString()
                                  << " -> " << thePromoteType->toString() );
       }
-    }catch(error::ZorbaError &e)
+    }
+    catch(error::ZorbaError &e)
     {
       ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
     }

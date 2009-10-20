@@ -634,9 +634,9 @@ class fn_doc_func : public function
 public:
   fn_doc_func(const signature& sig) : function (sig) {}
 
-  virtual bool isSource() const { return true; }
+  bool isSource() const { return true; }
 
-  bool requires_dyn_ctx () const { return true; }  // TODO: rename to unfoldable()
+  bool requires_dyn_ctx() const { return true; }  // TODO: rename to unfoldable()
 
   ZORBA_NOT_PROPAGATES_I2O;
 
@@ -652,9 +652,9 @@ class fn_parse_func : public function
 public:
   fn_parse_func(const signature& sig) : function (sig) {}
 
-  virtual bool isSource() const { return true; }
+  bool isSource() const { return true; }
 
-  bool requires_dyn_ctx () const { return true; }  // TODO: rename to unfoldable()
+  bool requires_dyn_ctx() const { return true; }  // TODO: rename to unfoldable()
 
   DEFAULT_NARY_CODEGEN(FnParseIterator);
 };

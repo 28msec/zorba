@@ -2007,7 +2007,7 @@ bool GenericCast::promote(
     // decimal --> xs:float
     if (TypeOps::is_subtype(*lItemType, *typesys.DECIMAL_TYPE_ONE)) 
     {
-      return GenericCast::castToAtomic(result, aItem, &*typesys.FLOAT_TYPE_ONE, tm); 
+      return GenericCast::castToAtomic(result, aItem, aTargetType, tm); 
     }
   }
   else if (TypeOps::is_subtype(*aTargetType, *typesys.DOUBLE_TYPE_ONE))
@@ -2016,7 +2016,7 @@ bool GenericCast::promote(
     if (TypeOps::is_subtype(*lItemType, *typesys.DECIMAL_TYPE_ONE) ||
         TypeOps::is_subtype(*lItemType, *typesys.FLOAT_TYPE_ONE)) 
     {
-      return GenericCast::castToAtomic(result, aItem, &*typesys.DOUBLE_TYPE_ONE, tm);
+      return GenericCast::castToAtomic(result, aItem, aTargetType, tm);
     }
   }
   else if (TypeOps::is_subtype(*aTargetType, *typesys.STRING_TYPE_ONE)) 

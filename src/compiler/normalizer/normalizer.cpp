@@ -392,8 +392,8 @@ void normalize_expr_tree(
     }
   }
 
-  if (aCompilerCB->m_config.normalize_cb)
-    aCompilerCB->m_config.normalize_cb (&*root, norm_descr);
+  if (aCompilerCB->theConfig.normalize_cb)
+    aCompilerCB->theConfig.normalize_cb (&*root, norm_descr);
 }
 
 }

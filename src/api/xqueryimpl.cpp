@@ -121,7 +121,7 @@ XQueryImpl::XQueryImpl()
   //      into the error handler
   theErrorHandler = new DefaultErrorHandler();
   theErrorManager = new error::ErrorManager();
-  theCompilerCB->m_error_manager = theErrorManager;
+  theCompilerCB->theErrorManager = theErrorManager;
 }
 
 
@@ -201,7 +201,7 @@ XQueryImpl::clone() const
     RCHelper::addReference(lImpl->theStaticContext);
 
     lImpl->theCompilerCB->theRootSctx = lImpl->theStaticContext;
-    lImpl->theCompilerCB->m_context_map = theCompilerCB->m_context_map;
+    lImpl->theCompilerCB->theSctxMap = theCompilerCB->theSctxMap;
 
     // child dynamic context
     delete lImpl->theDynamicContext;
@@ -461,7 +461,7 @@ XQueryImpl::compile(
     // if the static context results from loadProlog, we need all the contexts
     // that were created when compiling the query
     theSctxMap = static_cast<StaticContextImpl*>(aStaticContext.get())->theCtxMap;
-    theCompilerCB->m_context_map = &theSctxMap;
+    theCompilerCB->theSctxMap = &theSctxMap;
 
     std::istringstream lQueryStream(lQuery);
     doCompile(lQueryStream, aHints);
@@ -494,7 +494,7 @@ void XQueryImpl::compile(
     // if the static context results from loadProlog, we need all the context
     // that were created when compiling the query
     theSctxMap = static_cast<StaticContextImpl*>(aStaticContext.get())->theCtxMap;
-    theCompilerCB->m_context_map = &theSctxMap;
+    theCompilerCB->theSctxMap = &theSctxMap;
 
     doCompile(aQuery, aHints);
   ZORBA_CATCH
@@ -552,21 +552,21 @@ void XQueryImpl::doCompile(
   theStaticContext->set_entity_retrieval_url(xqp_string(&*URI::encode_file_URI(theFileName)));
 
   theCompilerCB->theRootSctx = theStaticContext;
-  theCompilerCB->m_cur_sctx = theCompilerCB->m_context_map->size() + 1;
-  (*theCompilerCB->m_context_map)[theCompilerCB->m_cur_sctx] = theStaticContext;
+  theCompilerCB->m_cur_sctx = theCompilerCB->theSctxMap->size() + 1;
+  (*theCompilerCB->theSctxMap)[theCompilerCB->m_cur_sctx] = theStaticContext;
 
   // set the compiler config
-  theCompilerCB->m_config = getCompilerConfig(aHints);
+  theCompilerCB->theConfig = getCompilerConfig(aHints);
 
   XQueryCompiler lCompiler(theCompilerCB);
 
   //theCompilerCB->m_debugger = theDebugger;
   //if the debug mode is set, we force the gflwor, we set the query input stream
   if ( theIsDebugMode){
-    theCompilerCB->m_config.force_gflwor = true;
+    theCompilerCB->theConfig.force_gflwor = true;
     theCompilerCB->theDebuggerCommons =
       new ZorbaDebuggerCommons(theCompilerCB->theRootSctx);
-    theCompilerCB->m_config.opt_level = CompilerCB::config_t::O0;
+    theCompilerCB->theConfig.opt_level = CompilerCB::config_t::O0;
   }
   // let's compile
   PlanIter_t planRoot = lCompiler.compile(aQuery, theFileName); 

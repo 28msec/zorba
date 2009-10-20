@@ -17,16 +17,16 @@
 #include "compiler/api/compilercb.h"
 #include "compiler/expression/expr_base.h"
 
-#include "runtime/api/plan_wrapper.h"
-
-#include "api/xqueryimpl.h"
+//#include "api/xqueryimpl.h"
 
 #include "context/static_context.h"
 
 #include "util/properties.h"
 
 
-namespace zorba {
+namespace zorba 
+{
+
 SERIALIZABLE_CLASS_VERSIONS(CompilerCB)
 END_SERIALIZABLE_CLASS_VERSIONS(CompilerCB)
 
@@ -35,27 +35,27 @@ END_SERIALIZABLE_CLASS_VERSIONS(CompilerCB::config)
 
 
 #define DEF_PRINT_EXPR_TREE( phase )                                    \
-static void print_expr_tree_##phase(const expr *e, const std::string& name) \
+static void print_expr_tree_##phase(const expr* e, const std::string& name) \
 {                                                                       \
-  std::ostream &os = Properties::instance ()->debug_out ();             \
+  std::ostream& os = Properties::instance()->debug_out();               \
   os << "Expression tree after " << #phase                              \
      << " for " << name << "\n";                                        \
-  e->put (os) << std::endl;                                             \
+  e->put(os) << std::endl;                                              \
 }
 
 
-DEF_PRINT_EXPR_TREE (translation);
-DEF_PRINT_EXPR_TREE (normalization);
-DEF_PRINT_EXPR_TREE (optimization);
+DEF_PRINT_EXPR_TREE(translation);
+DEF_PRINT_EXPR_TREE(normalization);
+DEF_PRINT_EXPR_TREE(optimization);
 
 
 CompilerCB::CompilerCB(std::map<short, static_context_t>& sctx_map)
   :
-  m_is_loadprolog(false),
-  m_context_map(&sctx_map),
+  theIsLoadProlog(false),
   theRootSctx(0),
   m_cur_sctx(0),
-  m_error_manager(0),
+  theSctxMap(&sctx_map),
+  theErrorManager(0),
   theDebuggerCommons(0)
 {
 }
@@ -64,12 +64,12 @@ CompilerCB::CompilerCB(std::map<short, static_context_t>& sctx_map)
 CompilerCB::CompilerCB(const CompilerCB& cb)
   :
   zorba::serialization::SerializeBaseClass(cb),
-  m_is_loadprolog(false),
-  m_context_map(cb.m_context_map),
+  theIsLoadProlog(false),
   theRootSctx(NULL),
   m_cur_sctx(cb.m_cur_sctx),
-  m_error_manager(cb.m_error_manager),
-  m_config(cb.m_config),
+  theSctxMap(cb.theSctxMap),
+  theErrorManager(cb.theErrorManager),
+  theConfig(cb.theConfig),
   theDebuggerCommons(cb.theDebuggerCommons)
 {
 }
@@ -89,17 +89,17 @@ CompilerCB::~CompilerCB()
 
 void CompilerCB::serialize(::zorba::serialization::Archiver& ar)
 {
-  ar & m_is_loadprolog;
+  ar & theIsLoadProlog;
   ar & m_cur_sctx;
-  ar & m_context_map;
+  ar & theSctxMap;
   ar & theRootSctx;
   ar & m_sctx_list;
   if(!ar.is_serializing_out())
   {
-    m_error_manager = NULL;//don't serialize this
+    theErrorManager = NULL;//don't serialize this
     theDebuggerCommons = NULL;
   }
-  ar & m_config;
+  ar & theConfig;
   //ar & theDebuggerCommons;
 }
 
@@ -108,13 +108,13 @@ static_context*
 CompilerCB::getStaticContext(short c)
 {
   std::map<short, static_context_t>::iterator lIter;
-  lIter = m_context_map->find(c);
-  assert(lIter != m_context_map->end());
+  lIter = theSctxMap->find(c);
+  assert(lIter != theSctxMap->end());
   return lIter->second.getp();
 }
 
 
-CompilerCB::config::config ()
+CompilerCB::config::config()
   :
   opt_level (O1),
   lib_module(false),

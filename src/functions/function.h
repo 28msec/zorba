@@ -164,7 +164,7 @@ public:
 
   virtual bool isSource() const { return false; }
 
-  virtual bool isPureFunction() const { return true; }
+  virtual bool isDeterministic() const { return true; }
 
   virtual expr_update_t getUpdateType() const { return SIMPLE_EXPR; }
 
@@ -310,7 +310,7 @@ public:
 
   virtual bool is_builtin_fn_named(const char *local, int local_len,int arg_count) const {return false;}
 
-  bool isPureFunction () const { return deterministic; }
+  bool isDeterministic() const { return deterministic; }
 
   void setLeaf (bool leaf_) { leaf = leaf_; }
 

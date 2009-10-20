@@ -389,7 +389,7 @@ bool StatelessExtFunctionCallIterator::nextImpl(store::Item_t& result,
   DEFAULT_STACK_INIT(StatelessExtFunctionCallIteratorState, state, planState);
 
   try {
-    if (m_function->isPureFunction()) {
+    if (m_function->isDeterministic()) {
       lPureFct = dynamic_cast<const PureStatelessExternalFunction*>(m_function);
       ZORBA_ASSERT(lPureFct);
 

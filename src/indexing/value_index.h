@@ -82,6 +82,13 @@ typedef rchandle<ValueIndexInsertSession> ValueIndexInsertSession_t;
 
   See src/functions/Index.cpp for details.
  
+
+  Data members:
+  -------------
+
+  theSctx  : The root static context of the data module containing the index
+             declaration.
+  theName  : The qname that identifies the index.
 ********************************************************************************/
 class ValueIndex : public SimpleRCObject 
 {

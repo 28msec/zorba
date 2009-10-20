@@ -303,6 +303,18 @@ DEF_ERR_CODE(XQP0037_INDEX_IS_NOT_DECLARED, XQP0037,
 DEF_ERR_CODE(XQP0038_INDEX_IS_ALREADY_DECLARED, XQP0038,
              "An index with URI /s is declared already.")
 
+DEF_ERR_CODE(XQP0039_INDEX_IN_NON_DATA_MODULE, XQP0039,
+             "The index with URI /s is declared in a non data module.")
+
+DEF_ERR_CODE(XQP0040_INDEX_HAS_FREE_VARS, XQP0040,
+             "The index with URI /s has free variables in its definition.")
+
+DEF_ERR_CODE(XQP0041_INDEX_HAS_INVALID_DATA_SOURCE, XQP0041,
+             "The index with URI /s references a data source that is not a collection among the statically known collections.")
+
+DEF_ERR_CODE(XQP0042_INDEX_NOT_DETERMINISTIC, XQP0042,
+             "The index with URI /s has a non deterministic definition.")
+
 //
 // XPDY
 //

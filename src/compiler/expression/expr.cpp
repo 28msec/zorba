@@ -30,6 +30,9 @@
 #include "context/namespace_context.h"
 #include "context/dynamic_context.h"
 
+#include "types/root_typemanager.h"
+#include "types/typeops.h"
+
 #include "compiler/expression/expr.h"
 #include "compiler/semantic_annotations/tsv_annotation.h"
 #include "compiler/semantic_annotations/annotation_keys.h"
@@ -39,9 +42,6 @@
 #include "functions/function.h"
 
 #include "util/tracer.h"
-
-#include "types/root_typemanager.h"
-#include "types/typeops.h"
 
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
@@ -950,6 +950,8 @@ cast_or_castable_base_expr::cast_or_castable_base_expr(
 {
   assert(type != NULL);
   assert(input != NULL);
+
+  compute_upd_seq_kind();
 }
 
 
@@ -970,6 +972,15 @@ void cast_or_castable_base_expr::set_target_type(xqtref_t target)
 {
   invalidate();
   theTargetType = target;
+}
+
+
+void cast_or_castable_base_expr::compute_upd_seq_kind() const 
+{
+  theCache.upd_seq_kind.kind = SIMPLE_EXPR;
+  theCache.upd_seq_kind.valid = true;
+
+  checkNonUpdating(theInputExpr);
 }
 
 
@@ -1000,6 +1011,129 @@ xqtref_t cast_base_expr::return_type_impl(static_context* sctx)
                            TypeOps::quantifier(*theTargetType));
 
   return sctx->get_typemanager()->create_type(*theTargetType, q);
+}
+
+
+/***************************************************************************//**
+  CastExpr ::= UnaryExpr ( "cast" "as" SingleType )?
+
+  SingleType ::= AtomicType "?"?
+********************************************************************************/
+cast_expr::cast_expr(
+    short sctx,
+    const QueryLoc& loc,
+    expr_t inputExpr,
+    xqtref_t type)
+  :
+  cast_base_expr(sctx, loc, inputExpr, type)
+{
+  assert(type->get_quantifier() == TypeConstants::QUANT_ONE ||
+         type->get_quantifier() == TypeConstants::QUANT_QUESTION);
+}
+
+
+void cast_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (cast_base_expr*)this);
+}
+
+
+bool cast_expr::is_optional() const 
+{
+  return TypeOps::quantifier(*theTargetType) == TypeConstants::QUANT_QUESTION; 
+}
+
+
+void cast_expr::next_iter(expr_iterator_data& v) 
+{
+  BEGIN_EXPR_ITER();
+  ITER(theInputExpr);
+  END_EXPR_ITER();
+}
+
+
+expr_t cast_expr::clone (substitution_t& subst) 
+{
+  return new cast_expr(theSctxId,
+                       get_loc(),
+                       get_input()->clone(subst), 
+                       get_target_type());
+}
+
+
+/***************************************************************************//**
+	TreatExpr ::= CastableExpr ( "treat" "as" SequenceType )?
+********************************************************************************/
+treat_expr::treat_expr(
+  short sctx,
+  const QueryLoc& loc,
+  expr_t inputExpr,
+  xqtref_t type,
+  XQUERY_ERROR err,
+  bool check_prime_)
+:
+  cast_base_expr(sctx, loc, inputExpr, type),
+  theError(err),
+  check_prime(check_prime_)
+{
+}
+
+
+void treat_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (cast_base_expr*)this);
+  SERIALIZE_ENUM(XQUERY_ERROR, theError);
+  ar & check_prime;
+}
+
+
+void treat_expr::next_iter(expr_iterator_data& v) 
+{
+  BEGIN_EXPR_ITER();
+  ITER(theInputExpr);
+  END_EXPR_ITER();
+}
+
+
+expr_t treat_expr::clone (substitution_t& subst) 
+{
+  return new treat_expr(theSctxId,
+                        get_loc(),
+                        get_input()->clone(subst), 
+                        get_target_type(),
+                        get_err(),
+                        get_check_prime());
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+promote_expr::promote_expr(
+    short sctx,
+    const QueryLoc& loc,
+    expr_t input,
+    xqtref_t type)
+  :
+  cast_base_expr(sctx, loc, input, type)
+{
+}
+
+
+void promote_expr::next_iter(expr_iterator_data& v) 
+{
+  BEGIN_EXPR_ITER();
+  ITER(theInputExpr);
+  END_EXPR_ITER();
+}
+
+
+expr_t promote_expr::clone(substitution_t& subst) 
+{
+  return new promote_expr(theSctxId, 
+                          get_loc(),
+                          get_input()->clone(subst),
+                          get_target_type());
 }
 
 
@@ -1111,10 +1245,49 @@ expr_t instanceof_expr::clone (substitution_t& subst)
 }
 
 
+/***************************************************************************//**
 
-bool cast_expr::is_optional() const 
+********************************************************************************/
+name_cast_expr::name_cast_expr(
+    short sctx,
+    const QueryLoc& loc,
+    expr_t inputExpr,
+    NamespaceContext_t aNCtx)
+  :
+  expr(sctx, loc),
+  theInputExpr(inputExpr),
+  theNCtx(aNCtx) 
 {
-  return TypeOps::quantifier(*theTargetType) == TypeConstants::QUANT_QUESTION; 
+}
+
+
+void name_cast_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  ar & theInputExpr;
+  ar & theNCtx;
+}
+
+
+void name_cast_expr::next_iter(expr_iterator_data& v) 
+{
+  BEGIN_EXPR_ITER();
+  ITER(theInputExpr);
+  END_EXPR_ITER();
+}
+
+rchandle<namespace_context> name_cast_expr::getNamespaceContext() 
+{
+  return theNCtx;
+}
+
+
+expr_t name_cast_expr::clone(substitution_t& subst) 
+{
+  return new name_cast_expr(theSctxId,
+                            get_loc(),
+                            get_input()->clone(subst),
+                            getNamespaceContext());
 }
 
 
@@ -1908,12 +2081,14 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-void flwor_expr::add_clause(flwor_clause* c) {
+void flwor_expr::add_clause(flwor_clause* c) 
+{
   theClauses.push_back(c);
 }
 
 
-void flwor_expr::add_clause(ulong pos, flwor_clause* c) {
+void flwor_expr::add_clause(ulong pos, flwor_clause* c) 
+{
   theClauses.insert(theClauses.begin() + pos, c);
 }
 
@@ -2040,7 +2215,7 @@ long flwor_expr::defines_variable(const var_expr* v, const flwor_clause* limit) 
       if (fc->get_var() == v || fc->get_pos_var() == v)
         return i;
     }
-    if (c->get_kind() == flwor_clause::let_clause)
+    else if (c->get_kind() == flwor_clause::let_clause)
     {
       const let_clause* lc = static_cast<const let_clause *>(c);
 
@@ -2092,6 +2267,56 @@ long flwor_expr::defines_variable(const var_expr* v, const flwor_clause* limit) 
   }
 
   return -1;
+}
+
+
+void flwor_expr::get_vars_defined(std::vector<var_expr*>& varExprs)
+{
+  // put in the given the var_exprs for the variables defined by this flwor expr
+
+  ulong numClauses = theClauses.size();
+
+  for (ulong i = 0; i < numClauses; ++i)
+  {
+    const flwor_clause* c = theClauses[i];
+
+    if (c->get_kind() == flwor_clause::for_clause)
+    {
+      const for_clause* fc = static_cast<const for_clause *>(c);
+
+      varExprs.push_back(fc->get_var());
+
+      if (fc->get_pos_var())
+        varExprs.push_back(fc->get_pos_var());;
+    }
+    else if (c->get_kind() == flwor_clause::let_clause)
+    {
+      const let_clause* lc = static_cast<const let_clause *>(c);
+
+      varExprs.push_back(lc->get_var());
+    }
+    else if (c->get_kind() == flwor_clause::window_clause)
+    {
+      const window_clause* wc = static_cast<const window_clause *>(c);
+
+      varExprs.push_back(wc->get_var());
+
+      const flwor_wincond* startCond = wc->get_win_start();
+      const flwor_wincond* stopCond = wc->get_win_stop();
+      const flwor_wincond::vars& startVars = startCond->get_out_vars();
+      const flwor_wincond::vars& stopVars = stopCond->get_out_vars();
+
+      if (startVars.posvar) varExprs.push_back(startVars.posvar.getp());
+      if (startVars.curr) varExprs.push_back(startVars.curr.getp());
+      if (startVars.prev) varExprs.push_back(startVars.prev.getp());
+      if (startVars.next) varExprs.push_back(startVars.next.getp());
+
+      if (stopVars.posvar) varExprs.push_back(stopVars.posvar.getp());
+      if (stopVars.curr) varExprs.push_back(stopVars.curr.getp());
+      if (stopVars.prev) varExprs.push_back(stopVars.prev.getp());
+      if (stopVars.next) varExprs.push_back(stopVars.next.getp());
+    }
+  }
 }
 
 
@@ -2212,12 +2437,14 @@ void flwor_expr::accept_children(expr_visitor& v)
 }
 
 
-expr_iterator_data* flwor_expr::make_iter() {
+expr_iterator_data* flwor_expr::make_iter() 
+{
   return new flwor_expr_iterator_data(this);
 }
 
 
-void flwor_expr::next_iter(expr_iterator_data& v) {
+void flwor_expr::next_iter(expr_iterator_data& v) 
+{
   flwor_clause* c = NULL;
   window_clause* wc = NULL;
   flwor_wincond* wincond = NULL;
@@ -2307,9 +2534,11 @@ void flwor_expr::next_iter(expr_iterator_data& v) {
 
 catch_clause::catch_clause()
   : catch_expr_h(NULL)
-{}
+{
+}
 
-expr_iterator_data *trycatch_expr::make_iter() {
+expr_iterator_data *trycatch_expr::make_iter() 
+{
   return new trycatch_expr_iterator_data(this);
 }
 
@@ -2327,11 +2556,13 @@ void trycatch_expr::next_iter(expr_iterator_data& v) {
 }
 
 
-expr_iterator_data *eval_expr::make_iter () {
+expr_iterator_data *eval_expr::make_iter () 
+{
   return new eval_expr_iterator_data (this);
 }
 
-void eval_expr::next_iter (expr_iterator_data& v) {
+void eval_expr::next_iter (expr_iterator_data& v) 
+{
   BEGIN_EXPR_ITER2 (eval_expr);
   ITER (expr_h);
   ITER_FOR_EACH (var_iter, vars.begin (), vars.end (), vv.var_iter->val);
@@ -2342,20 +2573,6 @@ eval_expr::eval_var::eval_var (var_expr *ve, expr_t val_)
   : varname (ve->get_varname ()),
     var_key (dynamic_context::var_key (ve)), type(ve->get_type()), val (val_)
 {
-}
-
-
-promote_expr::promote_expr(short sctx,
-                           const QueryLoc& loc,
-                           expr_t input,
-                           xqtref_t type)
-  : cast_base_expr (sctx, loc, input, type)
-{}
-
-void promote_expr::next_iter (expr_iterator_data& v) {
-  BEGIN_EXPR_ITER ();
-  ITER (theInputExpr);
-  END_EXPR_ITER ();
 }
 
 
@@ -2384,67 +2601,6 @@ void ft_contains_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER ();
 }
 
-
-// [55] [http://www.w3.org/TR/xquery/#prod-xquery-TreatExpr]
-
-treat_expr::treat_expr(
-  short sctx,
-  const QueryLoc& loc,
-  expr_t _expr_h,
-  xqtref_t _type,
-  XQUERY_ERROR err_,
-  bool check_prime_)
-:
-  cast_base_expr (sctx, loc, _expr_h, _type),
-  err (err_), check_prime (check_prime_)
-{}
-
-void treat_expr::next_iter (expr_iterator_data& v) {
-  BEGIN_EXPR_ITER ();
-  ITER (theInputExpr);
-  END_EXPR_ITER ();
-}
-
-
-
-// [57] [http://www.w3.org/TR/xquery/#prod-xquery-CastExpr]
-
-cast_expr::cast_expr(
-  short sctx,
-  const QueryLoc& loc,
-  expr_t _expr_h,
-  xqtref_t _type)
-  : cast_base_expr (sctx, loc, _expr_h, _type)
-{}
-
-void cast_expr::next_iter (expr_iterator_data& v) {
-  BEGIN_EXPR_ITER ();
-  ITER (theInputExpr);
-  END_EXPR_ITER ();
-}
-
-name_cast_expr::name_cast_expr(
-  short sctx,
-  const QueryLoc& loc,
-  expr_t _expr_h,
-  NamespaceContext_t aNCtx)
-: expr(sctx, loc), theInputExpr(_expr_h), theNCtx(aNCtx) 
-{}
-
-void name_cast_expr::serialize(::zorba::serialization::Archiver &ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-  ar & theInputExpr;
-  ar & theNCtx;
-}
-
-void name_cast_expr::next_iter (expr_iterator_data& v) {
-  BEGIN_EXPR_ITER ();
-  ITER (theInputExpr);
-  END_EXPR_ITER ();
-}
-
-rchandle<namespace_context> name_cast_expr::getNamespaceContext() { return theNCtx; }
 
 // [63] [http://www.w3.org/TR/xquery/#prod-xquery-ValidateExpr]
 
@@ -3158,23 +3314,6 @@ expr_t relpath_expr::clone (substitution_t& subst) {
   return re.release ();
 }
 
-expr_t promote_expr::clone (substitution_t& subst) 
-{
-  return new promote_expr(theSctxId, get_loc (), get_input ()->clone (subst), get_target_type ());
-}
-
-expr_t treat_expr::clone (substitution_t& subst) {
-  return new treat_expr (theSctxId, get_loc (), get_input ()->clone (subst), get_target_type (), get_err (), get_check_prime ());
-}
-
-
-expr_t cast_expr::clone (substitution_t& subst) {
-  return new cast_expr (theSctxId, get_loc (), get_input ()->clone (subst), get_target_type ());
-}
-
-expr_t name_cast_expr::clone (substitution_t& subst) {
-  return new name_cast_expr (theSctxId, get_loc (), get_input ()->clone (subst), getNamespaceContext());
-}
 
 
 } /* namespace zorba */

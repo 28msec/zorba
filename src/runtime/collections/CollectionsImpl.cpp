@@ -192,7 +192,8 @@ void FnCollectionIteratorState::reset(PlanState& planState)
   {
     // closing the iterator is necessary here if an exception occurs
     // in the producer or if the iterator is not fully consumed
-    if (theIteratorOpened) {
+    if (theIteratorOpened) 
+    {
       theIterator->close();
       theIteratorOpened = false;
     }

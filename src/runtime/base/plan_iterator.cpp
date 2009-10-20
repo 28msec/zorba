@@ -107,7 +107,7 @@ bool PlanIterator::consumeNext(
   }
   bool status = iter->produceNext(result, planState);
 
-  if (planState.theCompilerCB->m_config.print_item_flow) 
+  if (planState.theCompilerCB->theConfig.print_item_flow) 
   {
     std::cout << "next (" << iter << " = " << typeid (*iter).name()
               << ") -> " 

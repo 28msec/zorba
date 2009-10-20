@@ -152,6 +152,77 @@ void ValueIndex::setOrderModifiers(const std::vector<OrderModifier>& modifiers)
   theOrderModifiers = modifiers;
 }
 
+#if 0
+void ValueIndex::analyzeExprInternal(
+    const expr* e,
+    ulong& numSources,
+    std::vector<store::Item*>& sources)
+{
+  numSources = 0;
+  std::vector<expr*> varExprs;
+
+  analyzeExprInternal(e, numSources, sources, varExprs);
+}
+
+
+void ValueIndex::analyzeExprInternal(
+    const expr* e,
+    ulong& numSources,
+    std::vector<store::Item*>& sources,
+    std::vector<expr*>& varExprs) 
+{
+  if (e->get_expr_kind() == expr::fo_expr_kind)
+  {
+    const fo_expr* foExpr = static_cast<const fo_expr*>(e);
+    const function* func = foExpr->get_func();
+
+    if (!func->isDeterministic())
+    {
+      ZORBA_ERROR_LOC_PARAM(XQP0042_INDEX_NOT_DETERMINISTIC, e->get_loc(),
+                            theName->getStringValue()->c_str(), "");
+    }
+
+    if (func->isSource())
+    {
+      ++numSources;
+
+      if (func->getKind() == FunctionConsts::FN_COLLECTION)
+      {
+        const_expr qnameExpr;
+
+        if (foExpr->size() > 0 &&
+            (qnameExpr = dynamic_cast<const_expr*>((*foExpr)[0])) != NULL)
+        {
+          sources.push_back(qnameExpr->get_val());
+        }
+      }
+      else
+      {
+        ZORBA_ERROR_LOC_PARAM(XQP0041_INDEX_HAS_INVALID_DATA_SOURCE, e->get_loc(),
+                              theName->getStringValue()->c_str(), "");
+      }
+    }
+  }
+  else if (e->get_expr_kind() == expr::flwor_expr_kind ||
+           e->get_expr_kind() == expr::gflwor_expr_kind)
+  {
+    static_cast<const flwor_expr*>(e)->getVars(varExprs);
+  }
+  else if (e->get_expr_kind() == expr::var_expr_kind)
+  {
+    if (varExprs.find() == varExprs.end())
+    {
+      ZORBA_ERROR_LOC_PARAM(XQP0040_INDEX_HAS_FREE_VARS, e->get_loc(),
+                            theName->getStringValue()->c_str(), "");
+    }
+  }
+
+  for(expr_iterator i = e->expr_begin(); !i.done(); ++i) 
+  {
+    analyzeExpr((*i).getp(), sources);
+  }
+}
+#endif
 
 expr* ValueIndex::getBuildExpr(CompilerCB* topCCB, const QueryLoc& loc)
 { 
@@ -224,8 +295,8 @@ expr* ValueIndex::getBuildExpr(CompilerCB* topCCB, const QueryLoc& loc)
 
   std::string msg = "build expr for index " + theName->getStringValue()->str();
 
-  if (topCCB->m_config.optimize_cb != NULL)
-    topCCB->m_config.optimize_cb(theBuildExpr.getp(), msg);
+  if (topCCB->theConfig.optimize_cb != NULL)
+    topCCB->theConfig.optimize_cb(theBuildExpr.getp(), msg);
 
   return theBuildExpr.getp();
 }

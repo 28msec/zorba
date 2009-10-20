@@ -119,7 +119,7 @@ XQueryCompiler::compile(std::istream& aXQuery, const xqpString & aFileName)
 {
   parsenode_t lAST = parse(aXQuery, aFileName);
 
-  if(theCompilerCB->m_config.lib_module &&
+  if(theCompilerCB->theConfig.lib_module &&
      typeid (lAST) != typeid (LibraryModule))
     lAST = createMainModule(lAST, aXQuery, aFileName);
 
@@ -132,7 +132,7 @@ XQueryCompiler::parse(std::istream& aXQuery, const xqpString & aFileName)
 {
   // TODO: move these out
   if (Properties::instance()->printAst()) {
-    theCompilerCB->m_config.parse_cb = print_ast_tree;
+    theCompilerCB->theConfig.parse_cb = print_ast_tree;
   }
   
   std::istream  *xquery_stream = &aXQuery;
@@ -209,25 +209,30 @@ XQueryCompiler::normalize(parsenode_t aParsenode)
 expr_t
 XQueryCompiler::optimize(expr_t lExpr) 
 {
-  if (theCompilerCB->m_config.opt_level > CompilerCB::config_t::O0) 
+  if (theCompilerCB->theConfig.opt_level > CompilerCB::config_t::O0) 
   {
     RewriterContext rCtx(theCompilerCB, lExpr);
     GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
     lExpr = rCtx.getRoot();
     
-    if (theCompilerCB->m_config.optimize_cb != NULL)
-      theCompilerCB->m_config.optimize_cb (&*lExpr, "query");
+    if (theCompilerCB->theConfig.optimize_cb != NULL)
+      theCompilerCB->theConfig.optimize_cb (&*lExpr, "query");
   }
 
   return lExpr;
 }
 
+
 parsenode_t
-XQueryCompiler::createMainModule(parsenode_t aLibraryModule, std::istream& aXQuery, const xqpString & aFileName)
+XQueryCompiler::createMainModule(
+    parsenode_t aLibraryModule,
+    std::istream& aXQuery,
+    const xqpString & aFileName)
 {
   //get the namespace from the LibraryModule
   LibraryModule *mod_ast = dynamic_cast<LibraryModule *> (&*aLibraryModule);
-  if (!mod_ast) {
+  if (!mod_ast) 
+  {
     ZORBA_ERROR_DESC_OSS(API0002_COMPILE_FAILED,
                         "given library module is not a valid module, e.g. the module declaration is missing");
 

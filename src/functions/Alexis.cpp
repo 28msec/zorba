@@ -40,7 +40,22 @@ typedef function_impl<ZorbaSchemaTypeIterator> zorba_schema_type;
 typedef function_impl<ZorbaTidyIterator> zorba_tidy;
 
 
-typedef function_impl<ZorbaTDocIterator> zorba_tdoc;
+/*******************************************************************************
+  15.5.4 fn:doc
+********************************************************************************/
+class zorba_tdoc : public function 
+{
+public:
+  zorba_tdoc(const signature& sig) : function(sig) {}
+
+  bool isSource() const { return true; }
+
+  bool requires_dyn_ctx() const { return true; }
+
+  ZORBA_NOT_PROPAGATES_I2O;
+
+  DEFAULT_NARY_CODEGEN(ZorbaTDocIterator);
+};
 
 #endif/* ZORBA_WITH_TIDY */
 
@@ -50,7 +65,7 @@ class zorba_random : public function
 public:
   zorba_random(const signature& sig): function(sig){}
     
-  bool isPureFunction () const { return false; }
+  bool isDeterministic () const { return false; }
 
   DEFAULT_NARY_CODEGEN(ZorbaRandomIterator);
 };
@@ -61,7 +76,7 @@ class zorba_uuid : public function
 public:
   zorba_uuid(const signature& sig): function(sig){}
     
-  bool isPureFunction () const { return false; }
+  bool isDeterministic () const { return false; }
 
   DEFAULT_NARY_CODEGEN(ZorbaUUIDIterator);
 };
@@ -72,7 +87,7 @@ class zorba_timestamp : public function
 public:
   zorba_timestamp(const signature& sig) : function(sig) {}
 
-  bool requires_dyn_ctx () const { return true; }
+  bool requires_dyn_ctx() const { return true; }
 
   DEFAULT_NARY_CODEGEN(ZorbaTimestampIterator);
 };
@@ -83,7 +98,7 @@ class zorba_serialize_to_string : public function
 public:
   zorba_serialize_to_string(const signature& sig) : function(sig) {}
 
-  bool isPureFunction () const { return false; }
+  bool isDeterministic () const { return false; }
 
   PlanIter_t codegen(CompilerCB*,
                      static_context* sctx,
@@ -91,7 +106,7 @@ public:
                      std::vector<PlanIter_t>& argv,
                      AnnotationHolder &) const
   {
-    return new FnPrintIterator (sctx, loc, argv, false);
+    return new FnPrintIterator(sctx, loc, argv, false);
   }
 };
 

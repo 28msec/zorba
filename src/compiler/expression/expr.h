@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_EXPR_H
-#define ZORBA_EXPR_H
+#ifndef ZORBA_COMPILER_EXPR
+#define ZORBA_COMPILER_EXPR
 
 #include <string>
 #include <vector>
@@ -28,6 +28,8 @@
 
 #include "zorbaerrors/errors.h"
 
+#include "functions/signature.h"
+
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/flwor_expr.h"
 
@@ -39,11 +41,10 @@
 #include <zorba/store_consts.h>
 #include "store/api/fullText/ft_options.h"
 #include "store/api/update_consts.h"
-#include "store/api/item.h" // TODO remove by putting functions and explicit destructors into the cpp file
+#include "store/api/item.h"
 
-#include "functions/signature.h"
-
-namespace zorba {
+namespace zorba 
+{
 
 class expr_visitor;
 class NodeNameTest;
@@ -222,6 +223,8 @@ public:
   xqtref_t get_target_type() const;
 
   void set_target_type(xqtref_t target);
+
+  void compute_upd_seq_kind() const;
 };
 
 
@@ -239,6 +242,145 @@ public:
   cast_base_expr(short sctx, const QueryLoc& loc, expr_t input, xqtref_t type);
 
   xqtref_t return_type_impl(static_context* sctx);
+};
+
+
+/***************************************************************************//**
+  CastExpr ::= UnaryExpr ( "cast" "as" SingleType )?
+
+  SingleType ::= AtomicType "?"?
+********************************************************************************/
+class cast_expr : public cast_base_expr 
+{
+public:
+  SERIALIZABLE_CLASS(cast_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(cast_expr, cast_base_expr)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  cast_expr(
+    short sctx, 
+    const QueryLoc&,
+    expr_t,
+    xqtref_t);
+
+  expr_kind_t get_expr_kind() const { return cast_expr_kind; }
+
+  bool is_optional() const;
+
+  void next_iter(expr_iterator_data&);
+
+  expr_t clone(substitution_t& s);
+
+  void accept(expr_visitor&);
+
+  std::ostream& put(std::ostream&) const;
+};
+
+
+/***************************************************************************//**
+	TreatExpr ::= CastableExpr ( "treat" "as" SequenceType )?
+
+  theCheckPrime : Normally, this is true. If false, then during runtime, only
+                  the cardinality of theInputExpr will be checked w.r.t. the
+                  quantifier of theTargetType. theCheckPrime is set to false
+                  by the optimizer, if it discovers that the prime type of the
+                  static type of theInputExpr is a subtype of the prime type of
+                  theTargetType.
+********************************************************************************/
+class treat_expr : public cast_base_expr 
+{
+protected:
+  XQUERY_ERROR theError;
+  bool check_prime;
+
+public:
+  SERIALIZABLE_CLASS(treat_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(treat_expr, cast_base_expr)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  treat_expr(
+    short sctx, 
+    const QueryLoc&,
+    expr_t,
+    xqtref_t,
+    XQUERY_ERROR,
+    bool check_prime = true);
+
+  expr_kind_t get_expr_kind() const { return treat_expr_kind; }
+
+  XQUERY_ERROR get_err() { return theError; }
+
+  bool get_check_prime() { return check_prime; }
+
+  void set_check_prime(bool check_prime_) { check_prime = check_prime_; }
+
+  xqtref_t return_type_impl(static_context* sctx);  
+
+  void next_iter(expr_iterator_data&);
+
+  expr_t clone(substitution_t& s);
+
+  void accept(expr_visitor&);
+
+  std::ostream& put(std::ostream&) const;
+};
+
+
+/***************************************************************************//**
+  This is an internal zorba expr. Its semantics are the following:
+
+  1. Let "input sequence" be the result of theInputExpr, and "output sequence"
+     be the result of the promote_expr.
+
+  2. Raise error if the cardinality of the input sequence is not compatible with
+     the quantifier of theTargetType.
+
+  3. For each item I in the input sequence, let F(I) be the result of the
+     function defined as follows:
+
+     - Let "actual type" be the dynamic type of I, and "target type" be the prime
+       type of theTargetType.
+     - If the target type is the NONE type, F(I) = error, else
+     - If the actual type is a subtype of the target type, F(I) = I, else
+     - If the target type is not an atomic type, F(I) = error, else
+     - If the actual type is untypedAtomic and the target type is not QName, 
+       F(I) = cast(I, target type), else
+     - If the actual type is (subtype of) decimal and the target type is float,
+       F(I) = cast(I, target type), else
+     - If the actual type is (subtype of) decimal or float and the target type is double,
+       F(I) = cast(I, target type), else
+     - If the actual type is anyURI and the target type is string,
+       F(I) = cast(I, string), else
+     - F(I) = error
+
+  4. Put F(I) in the output sequence.
+********************************************************************************/
+class promote_expr : public cast_base_expr
+{
+public:
+  SERIALIZABLE_CLASS(promote_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(promote_expr, cast_base_expr)
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar, (cast_base_expr*)this);
+  }
+
+public:
+  promote_expr(short sctx, const QueryLoc& loc, expr_t input, xqtref_t type);
+
+  expr_kind_t get_expr_kind() const { return promote_expr_kind; }
+
+  xqtref_t return_type_impl(static_context* sctx);
+
+  void next_iter(expr_iterator_data&);
+
+  expr_t clone(substitution_t& s);
+
+  void accept(expr_visitor&);
+
+  std::ostream& put(std::ostream&) const;
 };
 
 
@@ -310,6 +452,43 @@ public:
         xqtref_t);
 
   expr_kind_t get_expr_kind() const { return instanceof_expr_kind; }
+
+  void next_iter(expr_iterator_data&);
+
+  expr_t clone(substitution_t& s);
+
+  void accept(expr_visitor&);
+
+  std::ostream& put(std::ostream&) const;
+};
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+class name_cast_expr : public expr 
+{
+private:
+  expr_t             theInputExpr;
+  NamespaceContext_t theNCtx;
+
+public:
+  SERIALIZABLE_CLASS(name_cast_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(name_cast_expr, expr)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  name_cast_expr (
+        short sctx,
+        const QueryLoc&,
+        expr_t,
+        NamespaceContext_t);
+
+  expr_kind_t get_expr_kind() const { return name_cast_expr_kind; }
+
+  expr_t get_input() { return theInputExpr; }
+
+  NamespaceContext_t getNamespaceContext();
 
   void next_iter(expr_iterator_data&);
 
@@ -479,20 +658,6 @@ public:
 /***************************************************************************//**
 
 ********************************************************************************/
-class constructor_expr : public expr 
-{
-protected:
-  constructor_expr(short sctx, const QueryLoc& loc) : expr (sctx, loc) {}
-public:
-  SERIALIZABLE_ABSTRACT_CLASS(constructor_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(constructor_expr, expr)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (expr*)this);
-  }
-};
-
-
 class catch_clause : public SimpleRCObject 
 {
   friend class trycatch_expr;
@@ -718,137 +883,6 @@ private:
       }
     }
   }
-};
-
-
-
-/***************************************************************************//**
-  CastExpr ::= UnaryExpr ( "cast" "as" SingleType )?
-
-  SingleType ::= AtomicType "?"?
-********************************************************************************/
-class cast_expr : public cast_base_expr {
-public:
-  cast_expr(
-    short sctx, 
-    const QueryLoc&,
-    expr_t,
-    xqtref_t);
-
-  expr_kind_t get_expr_kind () const { return cast_expr_kind; }
-
-  bool is_optional() const;
-
-  expr_t clone (substitution_t& s);
-
-  void next_iter (expr_iterator_data&);
-
-  void accept (expr_visitor&);
-
-  std::ostream& put(std::ostream&) const;
-public:
-  SERIALIZABLE_CLASS(cast_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(cast_expr, cast_base_expr)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (cast_base_expr*)this);
-  }
-};
-
-
-
-
-/***************************************************************************//**
-	TreatExpr ::= CastableExpr ( "treat" "as" SequenceType )?
-********************************************************************************/
-class treat_expr : public cast_base_expr {
-protected:
-  XQUERY_ERROR err;
-  bool check_prime;
-
-public:
-  SERIALIZABLE_CLASS(treat_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(treat_expr, cast_base_expr)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (cast_base_expr*)this);
-    SERIALIZE_ENUM(XQUERY_ERROR, err);
-    ar & check_prime;
-  }
-public:
-  expr_kind_t get_expr_kind () const { return treat_expr_kind; }
-  treat_expr(
-    short sctx, 
-    const QueryLoc&,
-    expr_t,
-    xqtref_t,
-    XQUERY_ERROR,
-    bool check_prime = true);
-
-  XQUERY_ERROR get_err () { return err; }
-  bool get_check_prime () { return check_prime; }
-  void set_check_prime (bool check_prime_) { check_prime = check_prime_; }
-
-  void next_iter (expr_iterator_data&);
-  void accept (expr_visitor&);
-  std::ostream& put(std::ostream&) const;
-  xqtref_t return_type_impl (static_context *sctx);  
-  expr_t clone (substitution_t& s);
-};
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-class promote_expr : public cast_base_expr {
-public:
-  expr_kind_t get_expr_kind () const { return promote_expr_kind; }
-
-  promote_expr(short sctx, const QueryLoc& loc, expr_t input, xqtref_t type);
-  xqtref_t return_type_impl (static_context *sctx);
-
-public:
-  void next_iter (expr_iterator_data&);
-  void accept (expr_visitor&);
-  std::ostream& put(std::ostream&) const;
-  expr_t clone (substitution_t& s);
-public:
-  SERIALIZABLE_CLASS(promote_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(promote_expr, cast_base_expr)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (cast_base_expr*)this);
-  }
-};
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-class name_cast_expr : public expr {
-private:
-  expr_t theInputExpr;
-  NamespaceContext_t theNCtx;
-public:
-  SERIALIZABLE_CLASS(name_cast_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(name_cast_expr, expr)
-  void serialize(::zorba::serialization::Archiver &ar);
-public:
-  name_cast_expr (
-    short sctx,
-    const QueryLoc&,
-    expr_t,
-    NamespaceContext_t);
-
-  expr_kind_t get_expr_kind () const { return name_cast_expr_kind; }
-  expr_t get_input() { return theInputExpr; }
-  NamespaceContext_t getNamespaceContext();
-
-public:
-  void next_iter (expr_iterator_data&);
-  void accept (expr_visitor&);
-  std::ostream& put(std::ostream&) const;
-  expr_t clone (substitution_t& s);
 };
 
 
@@ -1223,26 +1257,6 @@ public:
 /***************************************************************************//**
 
 ********************************************************************************/
-/*______________________________________________________________________
-| primary_expr ::=
-|       Literal
-|     | VarRef
-|     | ParenthesizedExpr
-|     | ContextItemExpr
-|     | FunctionCall
-|     | Constructor
-|     | OrderedExpr
-|     | UnorderedExpr
-|_______________________________________________________________________*/
-
-
-
-/*______________________________________________________________________
-| ::= NumericLiteral | StringLiteral
-|_______________________________________________________________________*/
-/***************************************************************************//**
-
-********************************************************************************/
 class const_expr : public expr 
 {
 public:
@@ -1279,11 +1293,6 @@ public:
 };
 
 
-
-/*______________________________________________________________________
-| ::= ORDERED_LBRACE  Expr  RBRACE
-|     | UNORDERED_LBRACE  Expr  RBRACE
-|_______________________________________________________________________*/
 /***************************************************************************//**
 
 ********************************************************************************/
@@ -1331,16 +1340,26 @@ public:
 };
 
 
-/*______________________________________________________________________
-| ::= QNAME  LPAR  ArgList  RPAR  
-|                                 gn:parensXQ
-|                                 gn:reserved-function-namesXQ 
-|_______________________________________________________________________*/
+/***************************************************************************//**
+
+********************************************************************************/
+class constructor_expr : public expr 
+{
+protected:
+  constructor_expr(short sctx, const QueryLoc& loc) : expr (sctx, loc) {}
+
+public:
+  SERIALIZABLE_ABSTRACT_CLASS(constructor_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(constructor_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+  }
+};
 
 
-// [96] [http://www.w3.org/TR/xquery/#doc-xquery-DirElemConstructor]
-
-class elem_expr : public constructor_expr {
+class elem_expr : public constructor_expr 
+{
 public:
   expr_kind_t get_expr_kind () const { return elem_expr_kind; }
 protected:
@@ -1393,10 +1412,6 @@ public:
 };
 
 
-
-/*______________________________________________________________________
-| ::= DOCUMENT_LBRACE  Expr  RBRACE
-|_______________________________________________________________________*/
 /***************************************************************************//**
 
 ********************************************************************************/

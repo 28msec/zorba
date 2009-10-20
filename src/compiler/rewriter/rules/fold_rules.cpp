@@ -293,7 +293,7 @@ RULE_REWRITE_POST(MarkUnfoldableExprs)
     if (f->requires_dyn_ctx () ||
         f->isFnError() ||
         maybe_needs_implicit_timezone(fo, rCtx.getStaticContext(node)) ||
-        !f->isPureFunction())
+        !f->isDeterministic())
       node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
 
     break;

@@ -27,7 +27,7 @@ class rest_head : public function
   public:
     rest_head(const signature& sig): function(sig){}
 
-    bool isPureFunction() const { return false; }
+    bool isDeterministic() const { return false; }
 
     PlanIter_t codegen(
       CompilerCB*,
@@ -45,7 +45,7 @@ class rest_get : public function
 public:
   rest_get(const signature& sig) : function(sig) {}
 
-  bool isPureFunction () const { return false; }
+  bool isDeterministic () const { return false; }
 
   PlanIter_t codegen(
         CompilerCB* /*cb*/,
@@ -64,7 +64,7 @@ class rest_get_tidy : public function
 public:
   rest_get_tidy(const signature& sig) : function(sig) {}
 
-  bool isPureFunction () const { return false; }
+  bool isDeterministic () const { return false; }
 
   PlanIter_t codegen(
         CompilerCB* /*cb*/,
@@ -87,7 +87,7 @@ public:
     return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
   }
 
-  bool isPureFunction () const { return false; }
+  bool isDeterministic () const { return false; }
 
   PlanIter_t codegen(
         CompilerCB* /*cb*/,
@@ -111,7 +111,7 @@ public:
     return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
   }
 
-  bool isPureFunction () const { return false; }
+  bool isDeterministic () const { return false; }
 
   PlanIter_t codegen(
         CompilerCB* /*cb*/,
@@ -135,7 +135,7 @@ public:
     return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
   }
 
-  bool isPureFunction () const { return false; }
+  bool isDeterministic () const { return false; }
 
   DEFAULT_NARY_CODEGEN(ZorbaRestPutIterator);
 };
@@ -151,10 +151,11 @@ public:
     return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
   }
 
-  bool isPureFunction () const { return false; }
+  bool isDeterministic () const { return false; }
 
   DEFAULT_NARY_CODEGEN(ZorbaRestDeleteIterator);
 };
+
 
 void populateContext_Rest(static_context* sctx)
 {

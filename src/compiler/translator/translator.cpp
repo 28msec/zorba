@@ -704,8 +704,8 @@ void push_scope()
     // this allows the debugger to introspect (during runtime)
     // all variables in scope
     sctxstack.push(theCCB->m_cur_sctx);
-    theCCB->m_cur_sctx = theCCB->m_context_map->size() + 1;
-    (*theCCB->m_context_map)[theCCB->m_cur_sctx] = sctx_p; 
+    theCCB->m_cur_sctx = theCCB->theSctxMap->size() + 1;
+    (*theCCB->theSctxMap)[theCCB->m_cur_sctx] = sctx_p; 
   }
   else
   {
@@ -728,7 +728,7 @@ void pop_scope()
   if (theCCB->theDebuggerCommons != NULL) 
   {
     theCCB->m_cur_sctx = sctxstack.top();
-    sctx_p = (*theCCB->m_context_map)[theCCB->m_cur_sctx];
+    sctx_p = (*theCCB->theSctxMap)[theCCB->m_cur_sctx];
     sctxstack.pop();
   }
   else
@@ -2262,10 +2262,10 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // Create the root sctx for the imported module as a child of the
       // query-level sctx. Register this sctx in the query-level sctx map.
       mod_ccb.theRootSctx = independent_sctx->create_child_context();
-      mod_ccb.m_cur_sctx = minfo->theTopCCB->m_context_map->size() + 1;
+      mod_ccb.m_cur_sctx = minfo->theTopCCB->theSctxMap->size() + 1;
       mod_ccb.theRootSctx->set_entity_retrieval_url(resolveduri->str());
 
-      (*minfo->theTopCCB->m_context_map)[mod_ccb.m_cur_sctx] = mod_ccb.theRootSctx;
+      (*minfo->theTopCCB->theSctxMap)[mod_ccb.m_cur_sctx] = mod_ccb.theRootSctx;
 
       // Create an sctx where the imported module is going to register all the
       // variable and function declarations that appear in its prolog. After the
@@ -2812,22 +2812,22 @@ void end_visit (const FunctionDecl& v, void* /*visit_state*/)
     // Normalize and optimize the function body. This has to be done here because
     // we have the correct static context here (udfs declared in a library module
     // must be compiled in the contex tof that module).
-    if (theCCB->m_config.translate_cb != NULL)
-      theCCB->m_config.translate_cb(&*body, v.get_name()->get_qname());
+    if (theCCB->theConfig.translate_cb != NULL)
+      theCCB->theConfig.translate_cb(&*body, v.get_name()->get_qname());
 
     normalize_expr_tree(v.get_name()->get_qname().c_str(),
                         theCCB,
                         body,
                         *&(udf->get_signature().return_type()));
 
-    if (theCCB->m_config.opt_level == CompilerCB::config_t::O1) 
+    if (theCCB->theConfig.opt_level == CompilerCB::config_t::O1) 
     {
       RewriterContext rCtx(theCCB, body);
       GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
       body = rCtx.getRoot();
 
-      if (theCCB->m_config.optimize_cb != NULL)
-        theCCB->m_config.optimize_cb(&*body, v.get_name ()->get_qname ());
+      if (theCCB->theConfig.optimize_cb != NULL)
+        theCCB->theConfig.optimize_cb(&*body, v.get_name ()->get_qname ());
     }
 
     udf->set_body(body);
@@ -3008,14 +3008,13 @@ void* begin_visit(const IndexDecl& v)
 {
   TRACE_VISIT();
 
+  const QName* qname = v.getName();
+
   if (!theIsDataModule)
   {
-    ZORBA_ERROR_LOC_DESC_OSS(XDXX0001, v.get_location(), 
-                             "It is a static error if an index declaration "
-                             << "is used in a module other than a data module.");
+    ZORBA_ERROR_LOC_PARAM(XQP0039_INDEX_IN_NON_DATA_MODULE, v.get_location(), 
+                          qname->get_qname(), "");
   }
-
-  const QName* qname = v.getName();
 
   // Expand the index qname (error is raised if qname resolution fails).
   store::Item_t qnameItem = sctx_p->lookup_fn_qname(qname->get_prefix(),
@@ -3033,7 +3032,7 @@ void* begin_visit(const IndexDecl& v)
 
 void end_visit(const IndexDecl& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
   ValueIndex_t index = indexstack.top();
   indexstack.pop();
@@ -3063,20 +3062,20 @@ void* begin_visit(const IndexKeyList& v)
 
   std::string msg = "domain expr for index " + index->getName()->getStringValue()->str();
 
-  if (theCCB->m_config.translate_cb != NULL)
-    theCCB->m_config.translate_cb(domainExpr.getp(), msg);
+  if (theCCB->theConfig.translate_cb != NULL)
+    theCCB->theConfig.translate_cb(domainExpr.getp(), msg);
 
   // Normalize and optimize the domain expr
   normalize_expr_tree(msg.c_str(), theCCB, domainExpr, &*theRTM.ANY_NODE_TYPE_STAR);
 
-  if (theCCB->m_config.opt_level == CompilerCB::config_t::O1) 
+  if (theCCB->theConfig.opt_level == CompilerCB::config_t::O1) 
   {
     RewriterContext rCtx(theCCB, domainExpr);
     GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
     domainExpr = rCtx.getRoot();
 
-    if (theCCB->m_config.optimize_cb != NULL)
-      theCCB->m_config.optimize_cb(&*domainExpr, msg);
+    if (theCCB->theConfig.optimize_cb != NULL)
+      theCCB->theConfig.optimize_cb(&*domainExpr, msg);
   }
 
   index->setDomainExpr(domainExpr);
@@ -3092,6 +3091,8 @@ void* begin_visit(const IndexKeyList& v)
 
 void end_visit(const IndexKeyList& v, void* /*visit_state*/) 
 {
+  TRACE_VISIT_OUT();
+
   ulong numColumns = v.size();
 
   std::vector<expr_t> keyExprs(numColumns);
@@ -3161,20 +3162,20 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
     std::ostringstream msg;
     msg << "key expr " << i << " for index " << index->getName()->getStringValue()->str();
 
-    if (theCCB->m_config.translate_cb != NULL)
-      theCCB->m_config.translate_cb(keyExpr.getp(), msg.str());
+    if (theCCB->theConfig.translate_cb != NULL)
+      theCCB->theConfig.translate_cb(keyExpr.getp(), msg.str());
 
     // Normalize and optimize the key expr
     normalize_expr_tree(msg.str().c_str(), theCCB, keyExpr, NULL);
 
-    if (theCCB->m_config.opt_level == CompilerCB::config_t::O1) 
+    if (theCCB->theConfig.opt_level == CompilerCB::config_t::O1) 
     {
       RewriterContext rCtx(theCCB, keyExpr);
       GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
       keyExpr = rCtx.getRoot();
       
-      if (theCCB->m_config.optimize_cb != NULL)
-        theCCB->m_config.optimize_cb(&*keyExpr, msg.str());
+      if (theCCB->theConfig.optimize_cb != NULL)
+        theCCB->theConfig.optimize_cb(&*keyExpr, msg.str());
     }
 
     keyExprs[i] = keyExpr;
@@ -3185,8 +3186,6 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
   index->setOrderModifiers(keyModifiers);
 
   pop_scope();
-
-  TRACE_VISIT_OUT();
 }
 
 
@@ -9169,8 +9168,8 @@ expr_t translate_aux(
 
   rchandle<expr> result = t->result ();
 
-  if (aCompilerCB->m_config.translate_cb != NULL)
-    aCompilerCB->m_config.translate_cb (&*result, "XQuery program");
+  if (aCompilerCB->theConfig.translate_cb != NULL)
+    aCompilerCB->theConfig.translate_cb (&*result, "XQuery program");
 
   return result;
 }

@@ -271,7 +271,7 @@ bool FnPrintIterator::nextImpl (store::Item_t& result, PlanState& planState) con
     {
       if (lSerializer == NULL)
       {
-        lSerializer = new serializer(planState.theCompilerCB->m_error_manager);
+        lSerializer = new serializer(planState.theCompilerCB->theErrorManager);
         lSerializer->set_parameter("omit-xml-declaration", "yes");
       }
 

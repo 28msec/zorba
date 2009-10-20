@@ -704,11 +704,13 @@ public:
 
   long defines_variable(const var_expr* v, const flwor_clause* limit) const;
 
-  expr_t clone(substitution_t& substitution);
+  void get_vars_defined(std::vector<var_expr*>& varExprs);
 
   expr_iterator_data* make_iter();
 
   void next_iter(expr_iterator_data&);
+
+  expr_t clone(substitution_t& substitution);
 
   // The following 5 methods are for the simple flwor only. They should be
   // removed eventually.

@@ -43,7 +43,7 @@ public:
 
   virtual expr_update_t getUpdateType() const { return theUpdateType; }
 
-  virtual bool isPureFunction() const { return m_function->isPureFunction(); }
+  virtual bool isDeterministic() const { return m_function->isDeterministic(); }
 
   PlanIter_t codegen(
     CompilerCB* /*cb*/,

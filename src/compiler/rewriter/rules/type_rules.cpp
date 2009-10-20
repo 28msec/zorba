@@ -230,23 +230,31 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     // If arg type is subtype of target type, we can eliminate treat and promote
     // (because they are noops in this case), but not cast (which will actually
     // create a new item with the target type).
-    if (TypeOps::is_equal(*arg_type, *target_type)
-        || (node->get_expr_kind () != cast_expr_kind
-            && TypeOps::is_subtype(*arg_type, *target_type)))
+    if (TypeOps::is_equal(*arg_type, *target_type) ||
+        (node->get_expr_kind() != cast_expr_kind &&
+         TypeOps::is_subtype(*arg_type, *target_type)))
       return arg;
     
-    xqtref_t arg_ptype = TypeOps::prime_type (*arg_type),
-      target_ptype = TypeOps::prime_type (*target_type);
-    if (node->get_expr_kind () == cast_expr_kind
-        && TypeOps::is_equal (*arg_ptype, *target_ptype))
-      return new treat_expr(node->get_sctx_id(), node->get_loc (), pe->get_input (), target_type, XPTY0004, false);
+    xqtref_t arg_ptype = TypeOps::prime_type(*arg_type);
+    xqtref_t target_ptype = TypeOps::prime_type(*target_type);
 
-    if (node->get_expr_kind () == treat_expr_kind) {
-      treat_expr *te = dynamic_cast<treat_expr *> (pe);
-      if (te->get_check_prime ()
-          && TypeOps::is_subtype (*arg_ptype, *target_ptype))
+    if (node->get_expr_kind() == cast_expr_kind &&
+        TypeOps::is_equal(*arg_ptype, *target_ptype))
+    {
+      return new treat_expr(node->get_sctx_id(),
+                            node->get_loc(),
+                            pe->get_input(),
+                            target_type,
+                            XPTY0004,
+                            false);
+    }
+
+    if (node->get_expr_kind() == treat_expr_kind)
+    {
+      treat_expr* te = dynamic_cast<treat_expr *> (pe);
+      if (te->get_check_prime() && TypeOps::is_subtype(*arg_ptype, *target_ptype))
       {
-        te->set_check_prime (false);
+        te->set_check_prime(false);
         return node;
       }
     }
