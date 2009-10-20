@@ -37,6 +37,12 @@ END_SERIALIZABLE_CLASS_VERSIONS(FnDataIterator)
 /*******************************************************************************
   2.4 fn:data
 ********************************************************************************/
+FnDataIteratorState::FnDataIteratorState()
+{}
+
+FnDataIteratorState::~FnDataIteratorState()
+{}
+
 void FnDataIteratorState::init(PlanState& planState) 
 { 
   PlanIteratorState::init( planState );

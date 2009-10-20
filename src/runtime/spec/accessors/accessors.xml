@@ -90,7 +90,7 @@
 -->
 
 <zorba:iterator
-    name="StringIterator"
+    name="FnStringIterator"
     generateVisitor="true"
     generateAccept="true"
     generateCodegen="false"

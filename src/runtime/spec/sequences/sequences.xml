@@ -22,7 +22,7 @@
     <zorba:include form="Quoted">functions/single_seq_func.h</zorba:include>
   </zorba:h>
   <zorba:cpp>
-    <zorba:include form="Quoted">functions/Sequences.h</zorba:include>
+    <zorba:include form="Quoted">functions/sequences.h</zorba:include>
     <zorba:include form="Quoted">runtime/sequences/sequences.h</zorba:include>
     <zorba:include form="Quoted">system/globalenv.h</zorba:include>
     <zorba:include form="Quoted">types/typeops.h</zorba:include>
@@ -34,12 +34,7 @@
   15.1.2 op:concatenate
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="FnConcatIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="true"
-    arity="nary">
+<zorba:iterator name="FnConcatIterator">
 
     <zorba:description author="Zorba Team">
       op:concatenate
@@ -57,13 +52,12 @@
                     brief="the current iterator"/>
     </zorba:state>
   
-    <zorba:function generateReturnTypeFunction="true"
-                    generateComputeAnnotationFunction="true"
-                    annIsUpdating="true"
-                    >
+    <zorba:function generateReturnTypeDecl="true"
+                    generateComputeAnnotationDecl="true"
+                    annIsUpdating="true">
       <zorba:signature localname=":concatenate" prefix="fn">
         <zorba:param>item()*</zorba:param>
-        <zorba:param>true</zorba:param>
+        <zorba:param>true</zorba:param> <!-- variadic function -->
         <zorba:output>item()*</zorba:output>
       </zorba:signature>
     </zorba:function>
@@ -74,12 +68,7 @@
   15.1.3 fn:index-of
   ******************************************************************************/
 -->
-<zorba:iterator
-    name="FnIndexOfIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="true"
-    arity="nary">
+<zorba:iterator name="FnIndexOfIterator">
     
     <zorba:description author="Zorba Team">
       Summary: Returns a sequence of positive integers giving the positions 
@@ -139,12 +128,7 @@
   15.1.4 fn:empty
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="FnEmptyIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="true"
-    arity="nary">
+<zorba:iterator name="FnEmptyIterator">
     
     <zorba:description author="Zorba Team">
       If the value of $arg is the empty sequence, the function returns true;
@@ -164,12 +148,7 @@
   15.1.5 fn:exists
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="FnExistsIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="true"
-    arity="nary">
+<zorba:iterator name="FnExistsIterator">
     
     <zorba:description author="Zorba Team">
       If the value of $arg is not the empty sequence, the function returns true; 
@@ -189,12 +168,7 @@
   15.1.7 fn:insert-before
 ********************************************************************************/ 
 -->
-<zorba:iterator
-    name="FnInsertBeforeIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="true"
-    arity="nary">
+<zorba:iterator name="FnInsertBeforeIterator">
     
     <zorba:description author="Zorba Team">
       Returns a new sequence constructed from the value of the first parameter with
@@ -213,7 +187,7 @@
                     defaultValue="NULL" brief=""/>
     </zorba:state>
   
-    <zorba:function propagatesInputToOutput="true">
+    <zorba:function>
       <zorba:signature localname="insert-before" prefix="fn">
         <zorba:param>item()*</zorba:param>
         <zorba:param>xs:integer</zorba:param>
@@ -228,12 +202,7 @@
   15.1.8 fn:remove
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="FnRemoveIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="true"
-    arity="nary">
+<zorba:iterator name="FnRemoveIterator">
     
   <zorba:description author="Zorba Team">
     Returns a new sequence constructed from the value of aTarget with the item at
@@ -251,8 +220,7 @@
                   defaultValue="0" brief="the collator"/>
   </zorba:state>
   
-  <zorba:function baseSig="single_seq_opt_function"
-    >
+  <zorba:function baseSig="single_seq_opt_function">
    <zorba:signature localname="remove" prefix="fn">
      <zorba:param>item()*</zorba:param>
      <zorba:param>xs:integer</zorba:param>
@@ -266,12 +234,7 @@
   15.1.9 fn:reverse
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="FnReverseIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="true"
-    arity="nary">
+<zorba:iterator name="FnReverseIterator">
     
   <zorba:description author="Zorba Team">
     fn:reverse
@@ -296,12 +259,7 @@
   15.1.10 fn:subsequence
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="FnSubsequenceIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="false"
-    arity="nary">
+<zorba:iterator name="FnSubsequenceIterator">
     
   <zorba:description author="Zorba Team">
     fn:subsequence
@@ -311,6 +269,23 @@
     <zorba:member type="xqp_integer" name="theRemaining"
                   defaultValue="xqp_integer::parseInt(0)" brief=""/>
   </zorba:state>
+
+  <zorba:function generateComputeAnnotationDecl="true"
+    baseSig="single_seq_opt_function"
+    generateCodegen="false">
+    <zorba:signature localname="subsequence" prefix="fn">
+      <zorba:param>item()*</zorba:param>
+      <zorba:param>xs:double</zorba:param>
+      <zorba:output>item()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="subsequence" prefix="fn">
+      <zorba:param>item()*</zorba:param>
+      <zorba:param>xs:double</zorba:param>
+      <zorba:param>xs:double</zorba:param>
+      <zorba:param>item()*</zorba:param>
+    </zorba:signature>
+  </zorba:function>
   
 </zorba:iterator>
 
@@ -319,12 +294,7 @@
   15.2.1 fn:zero-or-one
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="FnZeroOrOneIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="false"
-    arity="nary">
+<zorba:iterator name="FnZeroOrOneIterator">
     
     <zorba:description author="Zorba Team">
       fn:zero-or-one
@@ -335,7 +305,15 @@
     </zorba:constructor>
     
     <zorba:member type="bool" name="theDoDistinct"
-    generateAccessor="false" brief=""/>
+                  generateAccessor="false" brief=""/>
+
+    <zorba:function generateReturnTypeDecl="true" generateCodegen="false">
+      <zorba:signature localname="zero-or-one" prefix="fn">
+        <zorba:param>item()*</zorba:param>
+        <zorba:output>item()?</zorba:output>
+      </zorba:signature>
+   </zorba:function>
+
   
 </zorba:iterator>
 
@@ -344,12 +322,7 @@
   15.2.2 fn:one-or-more
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="FnOneOrMoreIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="true"
-    arity="nary">
+<zorba:iterator name="FnOneOrMoreIterator">
     
     <zorba:description author="Zorba Team">
       fn:one-or-more
@@ -368,12 +341,7 @@
   15.2.3 fn:exactly-one
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="FnExactlyOneIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="false"
-    arity="nary">
+<zorba:iterator name="FnExactlyOneIterator" generateCodegen="false">
     
     <zorba:description author="Zorba Team">fn:exactly-one</zorba:description>
     
@@ -392,16 +360,11 @@
   15.3.1 fn:deep-equal
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="FnDeepEqualIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="true"
-    arity="nary">
+<zorba:iterator name="FnDeepEqualIterator">
     
     <zorba:description author="Zorba Team">fn:deep-equal</zorba:description>
   
-  <zorba:function propagatesInputToOutput="true">
+  <zorba:function>
     <zorba:signature localname="deep-equal" prefix="fn">
       <zorba:param>item()*</zorba:param>
       <zorba:param>item()*</zorba:param>
@@ -421,12 +384,7 @@
   15.3.2 op:union : implemented using concat and sort
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="HashSemiJoinIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="false"
-    arity="nary">
+<zorba:iterator name="HashSemiJoinIterator" generateCodegen="false">
     
     <zorba:description author="Zorba Team">
       op:union : implemented using concat and sort
@@ -452,12 +410,7 @@
     </zorba:state>
 </zorba:iterator>    
 
-<zorba:iterator
-    name="SortSemiJoinIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="false"
-    arity="nary">
+<zorba:iterator name="SortSemiJoinIterator" generateCodegen="false">
     
     <zorba:description author="Zorba Team">
       Sortmerge based semijoin iterator.
@@ -476,12 +429,7 @@
   15.4.1 fn:count
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="FnCountIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="true"
-    arity="nary">
+<zorba:iterator name="FnCountIterator">
     
     <zorba:description author="Zorba Team">fn:count</zorba:description>
   
@@ -498,12 +446,7 @@
   15.4.2 fn:avg
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="FnAvgIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="true"
-    arity="nary">
+<zorba:iterator name="FnAvgIterator">
     
     <zorba:description author="Zorba Team">
       fn:avg
@@ -522,47 +465,37 @@
   15.4.5 fn:sum
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="FnSumIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="true"
-    arity="nary">
+<zorba:iterator name="FnSumIterator">
   
     <zorba:description author="Zorba Team">
       fn:sum
     </zorba:description>
   
-  <zorba:function specializable="true" FunctionKind="FN_SUM">
+  <zorba:function specializable="true">
     <zorba:signature localname="sum" prefix="fn">
       <zorba:param>xs:anyAtomicType*</zorba:param>
-      <zorba:output>xs:anyAtomicType</zorba:output>      
+      <zorba:output>xs:anyAtomicType</zorba:output>
     </zorba:signature>
     <zorba:signature localname="sum" prefix="fn">
       <zorba:param>xs:anyAtomicType*</zorba:param>
       <zorba:param>xs:anyAtomicType?</zorba:param>
-      <zorba:output>xs:anyAtomicType?</zorba:output>      
+      <zorba:output>xs:anyAtomicType?</zorba:output>
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>
 
-<zorba:iterator
-    name="FnSumDoubleIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="true"
-    arity="nary">
+<zorba:iterator name="FnSumDoubleIterator">
     
     <zorba:description author="Zorba Team">
       fn:sum with arguments xs:double
     </zorba:description>
   
   <zorba:function>
-    <zorba:signature localname="sum-double" prefix="fn">
+    <zorba:signature localname="sum_double" prefix="fn">
       <zorba:param>xs:double*</zorba:param>
       <zorba:output>xs:double</zorba:output>
     </zorba:signature>
-    <zorba:signature localname="sum-double" prefix="fn">
+    <zorba:signature localname="sum_double" prefix="fn">
       <zorba:param>xs:double*</zorba:param>
       <zorba:param>xs:anyAtomicType?</zorba:param>
       <zorba:output>xs:anyAtomicType?</zorba:output>
@@ -570,23 +503,18 @@
   </zorba:function>
 </zorba:iterator>
 
-<zorba:iterator
-    name="FnSumFloatIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="true"
-    arity="nary">
+<zorba:iterator name="FnSumFloatIterator">
     
     <zorba:description author="Zorba Team">
       fn:sum with arguments xs:float
     </zorba:description>
   
   <zorba:function >
-    <zorba:signature localname="sum-float" prefix="fn">
+    <zorba:signature localname="sum_float" prefix="fn">
       <zorba:param>xs:float*</zorba:param>
       <zorba:output>xs:float</zorba:output>
     </zorba:signature>
-    <zorba:signature localname="sum-float" prefix="fn">
+    <zorba:signature localname="sum_float" prefix="fn">
       <zorba:param>xs:float*</zorba:param>
       <zorba:param>xs:anyAtomicType?</zorba:param>
       <zorba:output>xs:anyAtomicType?</zorba:output>
@@ -594,23 +522,18 @@
   </zorba:function>
 </zorba:iterator>
 
-<zorba:iterator
-    name="FnSumDecimalIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="true"
-    arity="nary">
+<zorba:iterator name="FnSumDecimalIterator">
     
     <zorba:description author="Zorba Team">
       fn:sum with arguments xs:decimal
     </zorba:description>
   
   <zorba:function >
-    <zorba:signature localname="sum-decimal" prefix="fn">
+    <zorba:signature localname="sum_decimal" prefix="fn">
       <zorba:param>xs:decimal*</zorba:param>
       <zorba:output>xs:decimal</zorba:output>
     </zorba:signature>
-    <zorba:signature localname="sum-decimal" prefix="fn">
+    <zorba:signature localname="sum_decimal" prefix="fn">
       <zorba:param>xs:decimal*</zorba:param>
       <zorba:param>xs:anyAtomicType?</zorba:param>
       <zorba:output>xs:anyAtomicType?</zorba:output>
@@ -618,23 +541,18 @@
   </zorba:function>
 </zorba:iterator>
 
-<zorba:iterator
-    name="FnSumIntegerIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="true"
-    arity="nary">
+<zorba:iterator name="FnSumIntegerIterator">
     
     <zorba:description author="Zorba Team">
       fn:sum with arguments xs:integer
     </zorba:description>
   
   <zorba:function >
-    <zorba:signature localname="sum-integer" prefix="fn">
+    <zorba:signature localname="sum_integer" prefix="fn">
       <zorba:param>xs:integer*</zorba:param>
       <zorba:output>xs:integer</zorba:output>
     </zorba:signature>
-    <zorba:signature localname="sum-integer" prefix="fn">
+    <zorba:signature localname="sum_integer" prefix="fn">
       <zorba:param>xs:integer*</zorba:param>
       <zorba:param>xs:anyAtomicType?</zorba:param>
       <zorba:output>xs:anyAtomicType?</zorba:output>
@@ -642,12 +560,7 @@
   </zorba:function>
 </zorba:iterator>
     
-<zorba:iterator
-    name="OpToIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="true"
-    arity="nary">
+<zorba:iterator name="OpToIterator">
     
     <zorba:description author="Zorba Team">op:to</zorba:description>
     
@@ -676,19 +589,12 @@
   15.5.4 fn:doc
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="FnDocIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="true"
-    arity="nary">
+<zorba:iterator name="FnDocIterator">
     
     <zorba:description author="Zorba Team">fn:doc</zorba:description>
   
   <zorba:function requiresDynamicContext="true"
-    isSource="true"
-    propagatesInputToOutput="true"
-    >
+    isSource="true" propagatesInputToOutput="false">
     <zorba:signature localname="doc" prefix="fn">
       <zorba:param>xs:string?</zorba:param>
       <zorba:output>document-node()?</zorba:output>
@@ -701,17 +607,11 @@
   15.5.5 fn:doc-available
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="FnDocAvailableIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="true"
-    arity="nary">
+<zorba:iterator name="FnDocAvailableIterator">
     
     <zorba:description author="Zorba Team">fn:doc-available</zorba:description>
   
-  <zorba:function propagatesInputToOutput="true"
-    >
+  <zorba:function>
     <zorba:signature localname="doc-available" prefix="fn">
       <zorba:param>xs:string?</zorba:param>
       <zorba:output>xs:boolean</zorba:output>
@@ -719,12 +619,7 @@
   </zorba:function>
 </zorba:iterator>
     
-<zorba:iterator
-    name="FnParseIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="true"
-    arity="nary">
+<zorba:iterator name="FnParseIterator">
     
     <zorba:description author="Zorba Team">Zorba-defined parse function</zorba:description>
   

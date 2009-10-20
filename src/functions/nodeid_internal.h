@@ -19,6 +19,7 @@
 
 #include "functions/single_seq_func.h"
 #include "functions/function_impl.h"
+#include "functions/function_enum.h"
 
 #include "zorbautils/checked_vector.h"
 
@@ -44,7 +45,9 @@ public:
         nodes_or_atomics_t noa);
 
 public:
-  op_node_sort_distinct(const signature& sig) : single_seq_function (sig) {}
+  op_node_sort_distinct(const signature& sig,
+                        FunctionConsts::FunctionKind kind)
+    : single_seq_function (sig, kind) {}
 
   // (sort?, atomics?, distinct?, ascending?)
   virtual const bool* action() const = 0;

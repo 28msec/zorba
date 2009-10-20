@@ -101,7 +101,7 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class StringIteratorState : public PlanIteratorState
+class FnStringIteratorState : public PlanIteratorState
 {
 public:
   bool hasOutput; //
@@ -110,31 +110,31 @@ public:
   void reset(PlanState&);
 };
 
-class StringIterator: public NaryBaseIterator <StringIterator, StringIteratorState> {
+class FnStringIterator: public NaryBaseIterator <FnStringIterator, FnStringIteratorState> {
 protected:
   bool theEmptyStringOnNULL; //
 public:
-  SERIALIZABLE_CLASS(StringIterator);
+  SERIALIZABLE_CLASS(FnStringIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(StringIterator,
-  NaryBaseIterator<StringIterator, StringIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnStringIterator,
+  NaryBaseIterator<FnStringIterator, FnStringIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar){
     serialize_baseclass(ar,
-    (NaryBaseIterator<StringIterator, StringIteratorState>*)this);
+    (NaryBaseIterator<FnStringIterator, FnStringIteratorState>*)this);
 
     ar & theEmptyStringOnNULL;
   }
 
-  StringIterator(static_context* sctx, const QueryLoc& loc,
+  FnStringIterator(static_context* sctx, const QueryLoc& loc,
   std::vector<PlanIter_t>& aChildren,
   bool emptyStringOnNULL)
   :
-  NaryBaseIterator<StringIterator, StringIteratorState>
+  NaryBaseIterator<FnStringIterator, FnStringIteratorState>
   (sctx, loc, aChildren),
   theEmptyStringOnNULL(emptyStringOnNULL){}
 
-  virtual ~StringIterator();
+  virtual ~FnStringIterator();
 
   virtual bool isUpdating() const { return theEmptyStringOnNULL; }
 

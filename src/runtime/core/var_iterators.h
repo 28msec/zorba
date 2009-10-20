@@ -117,6 +117,10 @@ NARY_ITER(CtxVarExistsIterator);
 class CtxVariableIteratorState : public  PlanIteratorState 
 {
 public:
+  CtxVariableIteratorState();
+  
+  ~CtxVariableIteratorState();
+
   store::Iterator_t theIter;
 };
 

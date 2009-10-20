@@ -33,9 +33,9 @@ protected:
   unsigned src;
   
 public:
-  single_seq_function(const signature& sig, unsigned src_ = 0)
+  single_seq_function(const signature& sig, FunctionConsts::FunctionKind kind, unsigned src_ = 0)
     :
-    function (sig),
+    function (sig, kind),
     src (src_)
   {}
 
@@ -61,9 +61,9 @@ protected:
   unsigned src;
   
 public:
-  single_seq_opt_function(const signature& sig, unsigned src_ = 0) 
+  single_seq_opt_function(const signature& sig, FunctionConsts::FunctionKind kind, unsigned src_ = 0) 
     :
-    function (sig),
+    function (sig, kind),
     src (src_)
   {}
 

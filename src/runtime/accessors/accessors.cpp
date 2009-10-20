@@ -89,18 +89,18 @@ NilledIterator::~NilledIterator() {}
 // </NilledIterator>
 
 
-// <StringIterator>
-const char* StringIterator::class_name_str = "StringIterator";
-StringIterator::class_factory<StringIterator>
-StringIterator::g_class_factory;
+// <FnStringIterator>
+const char* FnStringIterator::class_name_str = "FnStringIterator";
+FnStringIterator::class_factory<FnStringIterator>
+FnStringIterator::g_class_factory;
 
 const serialization::ClassVersion 
-StringIterator::class_versions[] ={{ 1, 0x000905, false}};
+FnStringIterator::class_versions[] ={{ 1, 0x000905, false}};
 
-const int StringIterator::class_versions_count =
-sizeof(StringIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+const int FnStringIterator::class_versions_count =
+sizeof(FnStringIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void StringIterator::accept(PlanIterVisitor& v) const {
+void FnStringIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -111,21 +111,21 @@ void StringIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
-StringIterator::~StringIterator() {}
+FnStringIterator::~FnStringIterator() {}
 
 
-void StringIteratorState::init(PlanState& planState) {
+void FnStringIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
 
   hasOutput = false;
 }
 
-void StringIteratorState::reset(PlanState& planState) {
+void FnStringIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
 
   hasOutput = false;
 }
-// </StringIterator>
+// </FnStringIterator>
 
 
 // <BaseUriIterator>

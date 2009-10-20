@@ -17,7 +17,7 @@
     </zorba:h>
     <zorba:cpp>
         <zorba:include form="Quoted">runtime/booleans/booleans.h</zorba:include>
-        <zorba:include form="Quoted">functions/Boolean.h</zorba:include>
+        <zorba:include form="Quoted">functions/booleans.h</zorba:include>
     </zorba:cpp>
 </zorba:codegen>
     

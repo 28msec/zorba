@@ -172,6 +172,11 @@ NARY_ACCEPT(CtxVarExistsIterator);
 //  Prolog and Block-Local Var Reference                                       //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
+CtxVariableIteratorState::CtxVariableIteratorState()
+{}
+
+CtxVariableIteratorState::~CtxVariableIteratorState()
+{}
 
 bool CtxVariableIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {

@@ -22,11 +22,14 @@
 #include "functions/function.h"
 #include "functions/signature.h"
 
-#include "functions/Accessors.h"
+#include "functions/accessors.h"
+#include "functions/accessors_impl.h"
+#include "functions/sequences.h"
+#include "functions/sequences_impl.h"
+
 #include "functions/Collections.h"
 #include "functions/Numerics.h"
 #include "functions/QNames.h"
-#include "functions/Sequences.h"
 #include "functions/nodeid_internal.h"
 #include "functions/Strings.h"
 #include "functions/Boolean.h"
@@ -65,14 +68,17 @@ void BuiltinFunctionLibrary::populateContext(static_context* sctx)
   zorba::serialization::Archiver &ar = *::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects();
   ar.set_loading_hardcoded_objects(true);
 
-  populateContext_Accesors(sctx);
+  populate_context_accessors(sctx);
+  populate_context_accessors_impl(sctx);
+  populate_context_sequences(sctx);
+  populate_context_sequences_impl(sctx);
+
   populateContext_Nodes(sctx);
   populateContext_AnyURI(sctx);
   populateContext_Arithmetics(sctx);
   populateContext_Numerics(sctx);
   populateContext_Context(sctx);
   populateContext_QNames(sctx);
-  populateContext_Sequences(sctx);
   populateContext_DocOrder(sctx);
   populateContext_Comparison(sctx);
   populateContext_Strings(sctx);

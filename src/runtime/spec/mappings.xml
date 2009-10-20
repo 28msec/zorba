@@ -25,7 +25,7 @@
   <zorba:types>
     <!-- see http://www.w3.org/TR/xquery-operators/#datatypes -->
     <zorba:type zorbaType="ITEM">item()</zorba:type>
-    <zorba:type zorbaType="DOCUMENT">document-node()</zorba:type> <!-- is the correct type DOCUMENT or DOCUMENT_UNTYPED ?!?!? -->
+    <zorba:type zorbaType="DOCUMENT_UNTYPED">document-node()</zorba:type>
     <zorba:type zorbaType="ANY_NODE">node()</zorba:type>
     
     <zorba:type zorbaType="ANY_ATOMIC">xs:anyAtomicType</zorba:type>

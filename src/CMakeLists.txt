@@ -18,6 +18,15 @@ INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
 INCLUDE_DIRECTORIES(BEFORE ${CMAKE_SOURCE_DIR}/external) 
 
+INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaRuntimeGenerator.cmake)
+
+# look for all spec files and generate the header and cpp files if out of date
+# the cpp files and the according _impl.cpp files are added to the RUNTIME_SRCS list
+FILE(GLOB_RECURSE SPEC_FILES ${CMAKE_SOURCE_DIR}/src/runtime/spec "*.xml")
+
+# mappings.xml is only a helper xml file => don't generate any code for it
+SET(MAPPINGS_SPEC_XML                     "${CMAKE_SOURCE_DIR}/src/runtime/spec/mappings.xml")
+LIST(REMOVE_ITEM SPEC_FILES "${MAPPINGS_SPEC_XML}")
 
 ################################################################################
 #                                                                              #
@@ -109,6 +118,7 @@ FOREACH(ZORBA_STORE_DIR ${ZORBA_STORE_DIRS})
   ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
 ENDFOREACH(ZORBA_STORE_DIR ${ZORBA_STORE_DIRS})
+
 
 #
 # Specify where the zorba libs are to be installed

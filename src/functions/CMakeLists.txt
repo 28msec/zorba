@@ -11,8 +11,51 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-SET(FUNCTIONS_SRCS
-    Accessors.cpp
+SET(FUNCTIONS_SRCS)
+
+STRING(LENGTH "${CMAKE_SOURCE_DIR}/src/runtime/spec/" RUNTIME_SPEC_LENGTH)
+
+SET(CODEGEN_HEADER_GENERATOR              "${CMAKE_SOURCE_DIR}/src/runtime/spec/codegen-h.xq")
+SET(CODEGEN_SOURCE_GENERATOR              "${CMAKE_SOURCE_DIR}/src/runtime/spec/codegen-cpp.xq")
+SET(FUNCTION_HEADER_GENERATOR             "${CMAKE_SOURCE_DIR}/src/runtime/spec/function-enum.xq")
+
+# temp
+#LIST(REMOVE_ITEM SPEC_FILES "${CMAKE_SOURCE_DIR}/src/runtime/spec/strings/strings.xml")
+
+FUNCTION_ENUM_GENERATOR(${FUNCTION_HEADER_GENERATOR}
+                        "${SPEC_FILES}"
+                        "${CMAKE_SOURCE_DIR}/src/functions/function_enum.h"
+                        "file-list:=${SPEC_FILES}"
+                        ${ZORBA_WORKS})
+
+SET_SOURCE_FILES_PROPERTIES(${CMAKE_SOURCE_DIR}/src/functions/function.h
+                            PROPERTIES OBJECT_DEPENDS "${CMAKE_SOURCE_DIR}/src/functions/function_enum.h")
+
+FOREACH(SPEC_FILE ${SPEC_FILES})
+  GET_FILENAME_COMPONENT(SPEC_FILE_NAME ${SPEC_FILE} NAME)
+  STRING(REPLACE ".xml" "" SPEC_PREFIX ${SPEC_FILE_NAME})
+
+  IF (SPEC_FILE_NAME STREQUAL "strings.xml")
+    MESSAGE(STATUS "skipping strings.xml temporarily")
+  ELSE (SPEC_FILE_NAME STREQUAL "strings.xml")
+    CODEGEN_GENERATOR(${CODEGEN_SOURCE_GENERATOR}
+                      ${CODEGEN_HEADER_GENERATOR} ${SPEC_FILE}
+                      "${CMAKE_SOURCE_DIR}/src/functions/${SPEC_PREFIX}"
+                      "file:=${SPEC_FILE}"
+                      "mappings:=${MAPPINGS_SPEC_XML}"
+                       ${ZORBA_WORKS})
+    LIST(APPEND FUNCTIONS_SRCS 
+                "${SPEC_PREFIX}.cpp"
+        )
+  ENDIF (SPEC_FILE_NAME STREQUAL "strings.xml")
+                    
+ENDFOREACH(SPEC_FILE)
+
+LIST(APPEND FUNCTIONS_SRCS
+    # provides the functions return_type,
+    # computeAnnotation, and specialize
+    sequences_impl.cpp
+    accessors_impl.cpp
     Alexis.cpp
     arithmetic.cpp
     Boolean.cpp
@@ -30,7 +73,6 @@ SET(FUNCTIONS_SRCS
     Nodes.cpp
     Numerics.cpp
     QNames.cpp
-    Sequences.cpp
     signature.cpp
     Strings.cpp
     tuple_functions.cpp

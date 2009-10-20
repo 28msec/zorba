@@ -20,7 +20,7 @@
 
 #include "common/shared_types.h"
 
-#include "functions/function_consts.h"
+#include "functions/function_enum.h"
 #include "functions/signature.h"
 
 #include "compiler/parser/parse_constants.h"
@@ -137,9 +137,9 @@ public:
   }
 
 public:
-	function(const signature& _sig);
+	function(const signature& sig);
 
-	function(const signature& _sig, FunctionConsts::FunctionKind kind);
+	function(const signature& sig, FunctionConsts::FunctionKind kind);
 
 	virtual ~function() {}
 

@@ -21,32 +21,6 @@ SET(PRINTER_VISITOR_HEADER_GENERATOR      "${CMAKE_SOURCE_DIR}/src/runtime/spec/
 SET(PRINTER_VISITOR_CPP_VISITOR_GENERATOR "${CMAKE_SOURCE_DIR}/src/runtime/spec/printer_visitor_cpp.xq")
 SET(PLANINTER_VISITOR_HEADER_GENERATOR    "${CMAKE_SOURCE_DIR}/src/runtime/spec/plan_iter_visitor_h.xq")
 
-# check if zorbacmd exists and works
-# the result of this check is used for deciding
-# whether we can generate the runtime header and cpp files
-SET(ZORBA_WORKS)
-IF (EXISTS ${ZORBA_RUNTIME_GENERATOR})
-  EXECUTE_PROCESS(COMMAND ${ZORBA_RUNTIME_GENERATOR} 
-                          "-q" "1+1"
-                  RESULT_VARIABLE ZORBA_WORKS_RES
-                  OUTPUT_VARIABLE ZORBA_WORKS_FOO)
-  IF (NOT ZORBA_WORKS_RES EQUAL 0)
-    SET(ZORBA_WORKS FALSE)
-  ELSE (NOT ZORBA_WORKS_RES EQUAL 0)
-    SET(ZORBA_WORKS TRUE)
-  ENDIF (NOT ZORBA_WORKS_RES EQUAL 0)
-ELSE (EXISTS ${ZORBA_RUNTIME_GENERATOR})
-    SET(ZORBA_WORKS FALSE)
-ENDIF (EXISTS ${ZORBA_RUNTIME_GENERATOR})
-
-INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaRuntimeGenerator.cmake)
-
-# look for all spec files and generate the header and cpp files if out of date
-# the cpp files and the according _impl.cpp files are added to the RUNTIME_SRCS list
-FILE(GLOB_RECURSE SPEC_FILES ${CMAKE_SOURCE_DIR}/src/runtime/spec "*.xml")
-
-# mappings.xml is only a helper xml file => don't generate any code for it
-LIST(REMOVE_ITEM SPEC_FILES "${CMAKE_SOURCE_DIR}/src/runtime/spec/mappings.xml")
 FOREACH(SPEC_FILE ${SPEC_FILES})
   STRING(LENGTH ${SPEC_FILE} SPEC_FILE_NAME_LENGTH)
   MATH(EXPR SPEC_PREFIX_LENGTH "${SPEC_FILE_NAME_LENGTH} - ${RUNTIME_SPEC_LENGTH} - 4")
@@ -84,6 +58,7 @@ PLANINTER_VISITOR_GENERATOR(${PLANINTER_VISITOR_HEADER_GENERATOR}
                             "${CMAKE_SOURCE_DIR}/src/runtime/visitors/planiter_visitor"
                             "files:=${SPEC_FILES}"
                             ${ZORBA_WORKS})
+
 
 LIST(APPEND RUNTIME_SRCS
     accessors/AccessorsImpl.cpp

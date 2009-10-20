@@ -88,13 +88,13 @@ bool NilledIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 /*******************************************************************************
   2.3 fn:string
 ********************************************************************************/
-bool StringIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool FnStringIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t inVal;
   xqpStringStore_t strval;
 
-  StringIteratorState* state;
-  DEFAULT_STACK_INIT(StringIteratorState, state, planState);
+  FnStringIteratorState* state;
+  DEFAULT_STACK_INIT(FnStringIteratorState, state, planState);
 
   while(consumeNext(inVal, theChildren[0], planState))
   {

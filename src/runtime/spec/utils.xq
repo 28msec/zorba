@@ -53,3 +53,16 @@ declare function zi:add-guard-open($name as xs:string) as xs:string
                       string-join(('#define',$guardName),' ')), $zi:newline)  
 };
 
+declare function zi:function-kind($sig) as xs:string
+{
+  upper-case(
+    replace(
+      fn:concat($sig/@prefix,
+                "_",
+                if (fn:starts-with($sig/@localname, ":"))
+                then fn:substring($sig/@localname, 2)
+                else $sig/@localname),
+      "-", "_")
+   )
+};
+

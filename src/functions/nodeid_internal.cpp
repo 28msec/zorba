@@ -186,7 +186,8 @@ PlanIter_t op_node_sort_distinct::codegen(
 class op_either_nodes_or_atomics : public op_node_sort_distinct
 {
 public:
-  op_either_nodes_or_atomics (const signature& sig) : op_node_sort_distinct (sig) {}
+  op_either_nodes_or_atomics (const signature& sig)
+    : op_node_sort_distinct (sig, FunctionConsts::OP_EITHER_NODES_OR_ATOMIC) {}
 
   const bool* action() const 
   {
@@ -205,7 +206,8 @@ public:
 class op_distinct_nodes : public op_node_sort_distinct
 {
 public:
-  op_distinct_nodes(const signature& sig) : op_node_sort_distinct (sig) {}
+  op_distinct_nodes(const signature& sig)
+    : op_node_sort_distinct (sig, FunctionConsts::OP_DISTINCT_NODES) {}
 
   virtual bool is_node_sort_func() const { return true; }
   virtual bool is_node_distinct_func() const { return true; }
@@ -227,7 +229,8 @@ public:
 class op_distinct_nodes_or_atomics : public op_node_sort_distinct 
 {
 public:
-  op_distinct_nodes_or_atomics(const signature& sig) : op_node_sort_distinct(sig) {}
+  op_distinct_nodes_or_atomics(const signature& sig)
+    : op_node_sort_distinct(sig, FunctionConsts::OP_DISTINCT_NODES_OR_ATOMIC) {}
 
   const bool* action () const 
   {
@@ -244,7 +247,8 @@ public:
 class op_sort_nodes_ascending : public op_node_sort_distinct
 {
 public:
-  op_sort_nodes_ascending(const signature& sig) : op_node_sort_distinct (sig) {}
+  op_sort_nodes_ascending(const signature& sig)
+    : op_node_sort_distinct (sig, FunctionConsts::OP_SORT_NODES_ASCENDING) {}
 
   const bool* action () const 
   {
@@ -262,7 +266,8 @@ public:
 class op_sort_nodes_asc_or_atomics : public op_node_sort_distinct 
 {
 public:
-  op_sort_nodes_asc_or_atomics(const signature& sig) : op_node_sort_distinct (sig) {}
+  op_sort_nodes_asc_or_atomics(const signature& sig)
+    : op_node_sort_distinct (sig, FunctionConsts::OP_SORT_DISTINCT_NODES_ASC_OR_ATOMICS) {}
 
   const bool* action () const 
   {
@@ -279,7 +284,8 @@ public:
 class op_sort_nodes_descending : public op_node_sort_distinct
 {
 public:
-  op_sort_nodes_descending(const signature& sig) : op_node_sort_distinct (sig) {}
+  op_sort_nodes_descending(const signature& sig)
+    : op_node_sort_distinct (sig, FunctionConsts::OP_SORT_NODES_DESCENDING) {}
   
   const bool* action () const 
   {
@@ -297,7 +303,8 @@ public:
 class op_sort_nodes_desc_or_atomics : public op_node_sort_distinct
 {
 public:
-  op_sort_nodes_desc_or_atomics(const signature& sig) : op_node_sort_distinct (sig) {}
+  op_sort_nodes_desc_or_atomics(const signature& sig)
+    : op_node_sort_distinct (sig, FunctionConsts::OP_SORT_NODES_DESC_OR_ATOMICS) {}
   
   const bool* action () const 
   {
@@ -314,7 +321,8 @@ public:
 class op_sort_distinct_nodes_ascending : public op_node_sort_distinct
 {
 public:
-  op_sort_distinct_nodes_ascending(const signature& sig) : op_node_sort_distinct (sig) {}
+  op_sort_distinct_nodes_ascending(const signature& sig)
+    : op_node_sort_distinct (sig, FunctionConsts::OP_SORT_DISTINCT_NODES_ASCENDING) {}
 
   virtual bool is_node_sort_func() const { return true; }
   virtual bool is_node_distinct_func() const { return true; }
@@ -337,7 +345,7 @@ class op_sort_distinct_nodes_asc_or_atomics : public op_node_sort_distinct
 public:
   op_sort_distinct_nodes_asc_or_atomics(const signature& sig) 
     :
-    op_node_sort_distinct (sig)
+    op_node_sort_distinct (sig, FunctionConsts::OP_SORT_DISTINCT_NODES_ASC_OR_ATOMICS)
   {}
 
   const bool* action () const 
@@ -356,7 +364,8 @@ public:
 class op_sort_distinct_nodes_descending : public op_node_sort_distinct
 {
 public:
-  op_sort_distinct_nodes_descending(const signature& sig) : op_node_sort_distinct (sig) {}
+  op_sort_distinct_nodes_descending(const signature& sig)
+    : op_node_sort_distinct (sig, FunctionConsts::OP_SORT_DISTINCT_NODES_DESCENDING) {}
 
   const bool* action () const 
   {
@@ -372,7 +381,8 @@ public:
 class fn_unordered : public single_seq_function 
 {
 public:
-  fn_unordered(const signature& sig) : single_seq_function (sig) {}
+  fn_unordered(const signature& sig)
+    : single_seq_function (sig, FunctionConsts::FN_UNORDERED) {}
 
   COMPUTE_ANNOTATION_DECL();
 

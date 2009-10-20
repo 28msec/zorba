@@ -33,9 +33,9 @@ public:
   store::Iterator_t theTypedValueIter;
 
 public:
-  FnDataIteratorState() {}
+  FnDataIteratorState();
 
-  ~FnDataIteratorState() {}
+  ~FnDataIteratorState();
 
   void init(PlanState& planState);
 
