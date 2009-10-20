@@ -31,7 +31,6 @@
     </zorba:h>
     <zorba:cpp>
         <zorba:include form="Quoted">runtime/accessors/accessors.h</zorba:include>
-        <zorba:include form="Quoted">functions/Accessors.h</zorba:include>
     </zorba:cpp>
 </zorba:codegen>
     
