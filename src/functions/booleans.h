@@ -36,8 +36,10 @@ namespace zorba{
 void populate_context_booleans(static_context* sctx);
 
 
+
 //op:is-same-node
-class op_is_same_node : public function {
+class op_is_same_node : public function
+{
 public:
   op_is_same_node ( const signature& sig) : function (sig, FunctionConsts::FN_IS_SAME_NODE) {}
 
@@ -47,8 +49,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //op:node-before
-class op_node_before : public function {
+class op_node_before : public function
+{
 public:
   op_node_before ( const signature& sig) : function (sig, FunctionConsts::FN_NODE_BEFORE) {}
 
@@ -58,8 +62,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //op:node-after
-class op_node_after : public function {
+class op_node_after : public function
+{
 public:
   op_node_after ( const signature& sig) : function (sig, FunctionConsts::FN_NODE_AFTER) {}
 
@@ -74,4 +80,9 @@ public:
 } //namespace zorba
 
 
-#endif 
+#endif
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */ 

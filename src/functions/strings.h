@@ -36,8 +36,10 @@ namespace zorba{
 void populate_context_strings(static_context* sctx);
 
 
+
 //fn:codepoints-to-string
-class fn_codepoints_to_string : public function {
+class fn_codepoints_to_string : public function
+{
 public:
   fn_codepoints_to_string ( const signature& sig) : function (sig, FunctionConsts::FN_CODEPOINTS_TO_STRING) {}
 
@@ -47,8 +49,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:compare
-class fn_compare : public function {
+class fn_compare : public function
+{
 public:
   fn_compare ( const signature& sig) : function (sig, FunctionConsts::FN_COMPARE) {}
 
@@ -58,8 +62,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:codepoint-equal
-class fn_codepoint_equal : public function {
+class fn_codepoint_equal : public function
+{
 public:
   fn_codepoint_equal ( const signature& sig) : function (sig, FunctionConsts::FN_CODEPOINT_EQUAL) {}
 
@@ -69,8 +75,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:concat
-class fn_concat : public function {
+class fn_concat : public function
+{
 public:
   fn_concat ( const signature& sig) : function (sig, FunctionConsts::FN_CONCAT) {}
 
@@ -80,8 +88,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:string-join
-class fn_string_join : public function {
+class fn_string_join : public function
+{
 public:
   fn_string_join ( const signature& sig) : function (sig, FunctionConsts::FN_STRING_JOIN) {}
 
@@ -91,8 +101,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:substring
-class fn_substring : public function {
+class fn_substring : public function
+{
 public:
   fn_substring ( const signature& sig) : function (sig, FunctionConsts::FN_SUBSTRING) {}
 
@@ -102,8 +114,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:string-length
-class fn_string_length : public function {
+class fn_string_length : public function
+{
 public:
   fn_string_length ( const signature& sig) : function (sig, FunctionConsts::FN_STRING_LENGTH) {}
 
@@ -113,8 +127,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:normalize-space
-class fn_normalize_space : public function {
+class fn_normalize_space : public function
+{
 public:
   fn_normalize_space ( const signature& sig) : function (sig, FunctionConsts::FN_NORMALIZE_SPACE) {}
 
@@ -124,8 +140,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:normalize-unicode
-class fn_normalize_unicode : public function {
+class fn_normalize_unicode : public function
+{
 public:
   fn_normalize_unicode ( const signature& sig) : function (sig, FunctionConsts::FN_NORMALIZE_UNICODE) {}
 
@@ -135,8 +153,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:upper-case
-class fn_upper_case : public function {
+class fn_upper_case : public function
+{
 public:
   fn_upper_case ( const signature& sig) : function (sig, FunctionConsts::FN_UPPER_CASE) {}
 
@@ -146,8 +166,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:lower-case
-class fn_lower_case : public function {
+class fn_lower_case : public function
+{
 public:
   fn_lower_case ( const signature& sig) : function (sig, FunctionConsts::FN_LOWER_CASE) {}
 
@@ -157,8 +179,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:translate
-class fn_translate : public function {
+class fn_translate : public function
+{
 public:
   fn_translate ( const signature& sig) : function (sig, FunctionConsts::FN_TRANSLATE) {}
 
@@ -168,8 +192,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:encode-for-uri
-class fn_encode_for_uri : public function {
+class fn_encode_for_uri : public function
+{
 public:
   fn_encode_for_uri ( const signature& sig) : function (sig, FunctionConsts::FN_ENCODE_FOR_URI) {}
 
@@ -179,8 +205,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:iri-to-uri
-class fn_iri_to_uri : public function {
+class fn_iri_to_uri : public function
+{
 public:
   fn_iri_to_uri ( const signature& sig) : function (sig, FunctionConsts::FN_IRI_TO_URI) {}
 
@@ -190,8 +218,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:escape-html-uri
-class fn_escape_html_uri : public function {
+class fn_escape_html_uri : public function
+{
 public:
   fn_escape_html_uri ( const signature& sig) : function (sig, FunctionConsts::FN_ESCAPE_HTML_URI) {}
 
@@ -201,8 +231,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:contains
-class fn_contains : public function {
+class fn_contains : public function
+{
 public:
   fn_contains ( const signature& sig) : function (sig, FunctionConsts::FN_CONTAINS) {}
 
@@ -212,8 +244,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:starts-with
-class fn_starts_with : public function {
+class fn_starts_with : public function
+{
 public:
   fn_starts_with ( const signature& sig) : function (sig, FunctionConsts::FN_STARTS_WITH) {}
 
@@ -223,8 +257,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:ends-with
-class fn_ends_with : public function {
+class fn_ends_with : public function
+{
 public:
   fn_ends_with ( const signature& sig) : function (sig, FunctionConsts::FN_ENDS_WITH) {}
 
@@ -234,8 +270,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:substring-before
-class fn_substring_before : public function {
+class fn_substring_before : public function
+{
 public:
   fn_substring_before ( const signature& sig) : function (sig, FunctionConsts::FN_SUBSTRING_BEFORE) {}
 
@@ -245,8 +283,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:substring-after
-class fn_substring_after : public function {
+class fn_substring_after : public function
+{
 public:
   fn_substring_after ( const signature& sig) : function (sig, FunctionConsts::FN_SUBSTRING_AFTER) {}
 
@@ -256,8 +296,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:matches
-class fn_matches : public function {
+class fn_matches : public function
+{
 public:
   fn_matches ( const signature& sig) : function (sig, FunctionConsts::FN_MATCHES) {}
 
@@ -267,8 +309,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:replace
-class fn_replace : public function {
+class fn_replace : public function
+{
 public:
   fn_replace ( const signature& sig) : function (sig, FunctionConsts::FN_REPLACE) {}
 
@@ -283,4 +327,9 @@ public:
 } //namespace zorba
 
 
-#endif 
+#endif
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */ 

@@ -37,8 +37,10 @@ namespace zorba{
 void populate_context_sequences(static_context* sctx);
 
 
+
 //op:concatenate
-class op_concatenate : public function {
+class op_concatenate : public function
+{
 public:
   op_concatenate ( const signature& sig) : function (sig, FunctionConsts::FN_CONCATENATE) {}
 
@@ -54,8 +56,10 @@ public:
                           std::vector<AnnotationHolder *>& kids,
                           Annotations::Key k) const;
 };
+
 //fn:index-of
-class fn_index_of : public function {
+class fn_index_of : public function
+{
 public:
   fn_index_of ( const signature& sig) : function (sig, FunctionConsts::FN_INDEX_OF) {}
 
@@ -65,8 +69,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:empty
-class fn_empty : public function {
+class fn_empty : public function
+{
 public:
   fn_empty ( const signature& sig) : function (sig, FunctionConsts::FN_EMPTY) {}
 
@@ -76,8 +82,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:exists
-class fn_exists : public function {
+class fn_exists : public function
+{
 public:
   fn_exists ( const signature& sig) : function (sig, FunctionConsts::FN_EXISTS) {}
 
@@ -87,8 +95,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:insert-before
-class fn_insert_before : public function {
+class fn_insert_before : public function
+{
 public:
   fn_insert_before ( const signature& sig) : function (sig, FunctionConsts::FN_INSERT_BEFORE) {}
 
@@ -98,8 +108,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:remove
-class fn_remove : public single_seq_opt_function {
+class fn_remove : public single_seq_opt_function
+{
 public:
   fn_remove ( const signature& sig) : single_seq_opt_function (sig, FunctionConsts::FN_REMOVE) {}
 
@@ -109,8 +121,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:reverse
-class fn_reverse : public single_seq_opt_function {
+class fn_reverse : public single_seq_opt_function
+{
 public:
   fn_reverse ( const signature& sig) : single_seq_opt_function (sig, FunctionConsts::FN_REVERSE) {}
 
@@ -124,8 +138,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:subsequence
-class fn_subsequence : public single_seq_opt_function {
+class fn_subsequence : public single_seq_opt_function
+{
 public:
   fn_subsequence ( const signature& sig) : single_seq_opt_function (sig, FunctionConsts::FN_SUBSEQUENCE) {}
 
@@ -139,8 +155,10 @@ public:
                           std::vector<AnnotationHolder *>& kids,
                           Annotations::Key k) const;
 };
+
 //fn:zero-or-one
-class fn_zero_or_one : public function {
+class fn_zero_or_one : public function
+{
 public:
   fn_zero_or_one ( const signature& sig) : function (sig, FunctionConsts::FN_ZERO_OR_ONE) {}
 
@@ -152,8 +170,10 @@ public:
 
   xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
 };
+
 //fn:one-or-more
-class fn_one_or_more : public single_seq_opt_function {
+class fn_one_or_more : public single_seq_opt_function
+{
 public:
   fn_one_or_more ( const signature& sig) : single_seq_opt_function (sig, FunctionConsts::FN_ONE_OR_MORE) {}
 
@@ -163,8 +183,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:deep-equal
-class fn_deep_equal : public function {
+class fn_deep_equal : public function
+{
 public:
   fn_deep_equal ( const signature& sig) : function (sig, FunctionConsts::FN_DEEP_EQUAL) {}
 
@@ -174,8 +196,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:count
-class fn_count : public function {
+class fn_count : public function
+{
 public:
   fn_count ( const signature& sig) : function (sig, FunctionConsts::FN_COUNT) {}
 
@@ -185,8 +209,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:avg
-class fn_avg : public function {
+class fn_avg : public function
+{
 public:
   fn_avg ( const signature& sig) : function (sig, FunctionConsts::FN_AVG) {}
 
@@ -196,8 +222,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:sum
-class fn_sum : public function {
+class fn_sum : public function
+{
 public:
   fn_sum ( const signature& sig) : function (sig, FunctionConsts::FN_SUM) {}
 
@@ -212,8 +240,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:sum_double
-class fn_sum_double : public function {
+class fn_sum_double : public function
+{
 public:
   fn_sum_double ( const signature& sig) : function (sig, FunctionConsts::FN_SUM_DOUBLE) {}
 
@@ -223,8 +253,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:sum_float
-class fn_sum_float : public function {
+class fn_sum_float : public function
+{
 public:
   fn_sum_float ( const signature& sig) : function (sig, FunctionConsts::FN_SUM_FLOAT) {}
 
@@ -234,8 +266,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:sum_decimal
-class fn_sum_decimal : public function {
+class fn_sum_decimal : public function
+{
 public:
   fn_sum_decimal ( const signature& sig) : function (sig, FunctionConsts::FN_SUM_DECIMAL) {}
 
@@ -245,8 +279,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:sum_integer
-class fn_sum_integer : public function {
+class fn_sum_integer : public function
+{
 public:
   fn_sum_integer ( const signature& sig) : function (sig, FunctionConsts::FN_SUM_INTEGER) {}
 
@@ -256,8 +292,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //op:to
-class op_to : public function {
+class op_to : public function
+{
 public:
   op_to ( const signature& sig) : function (sig, FunctionConsts::FN_TO) {}
 
@@ -267,8 +305,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:doc
-class fn_doc : public function {
+class fn_doc : public function
+{
 public:
   fn_doc ( const signature& sig) : function (sig, FunctionConsts::FN_DOC) {}
 
@@ -284,8 +324,10 @@ public:
 
   bool propagatesInputToOutput(uint32_t aProducer) const;
 };
+
 //fn:doc-available
-class fn_doc_available : public function {
+class fn_doc_available : public function
+{
 public:
   fn_doc_available ( const signature& sig) : function (sig, FunctionConsts::FN_DOC_AVAILABLE) {}
 
@@ -295,8 +337,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn-zorba-util:parse
-class fn_zorba_util_parse : public function {
+class fn_zorba_util_parse : public function
+{
 public:
   fn_zorba_util_parse ( const signature& sig) : function (sig, FunctionConsts::FN_ZORBA_UTIL_PARSE) {}
 
@@ -315,4 +359,9 @@ public:
 } //namespace zorba
 
 
-#endif 
+#endif
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */ 

@@ -36,8 +36,10 @@ namespace zorba{
 void populate_context_accessors(static_context* sctx);
 
 
+
 //fn:node-name
-class fn_node_name : public function {
+class fn_node_name : public function
+{
 public:
   fn_node_name ( const signature& sig) : function (sig, FunctionConsts::FN_NODE_NAME) {}
 
@@ -47,8 +49,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:nilled
-class fn_nilled : public function {
+class fn_nilled : public function
+{
 public:
   fn_nilled ( const signature& sig) : function (sig, FunctionConsts::FN_NILLED) {}
 
@@ -58,8 +62,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:base-uri
-class fn_base_uri : public function {
+class fn_base_uri : public function
+{
 public:
   fn_base_uri ( const signature& sig) : function (sig, FunctionConsts::FN_BASE_URI) {}
 
@@ -69,8 +75,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:document-uri
-class fn_document_uri : public function {
+class fn_document_uri : public function
+{
 public:
   fn_document_uri ( const signature& sig) : function (sig, FunctionConsts::FN_DOCUMENT_URI) {}
 
@@ -80,8 +88,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:root
-class fn_root : public function {
+class fn_root : public function
+{
 public:
   fn_root ( const signature& sig) : function (sig, FunctionConsts::FN_ROOT) {}
 
@@ -96,4 +106,9 @@ public:
 } //namespace zorba
 
 
-#endif 
+#endif
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */ 

@@ -36,8 +36,10 @@ namespace zorba{
 void populate_context_convertors(static_context* sctx);
 
 
+
 //zorba-json:parse
-class zorba_json_parse : public function {
+class zorba_json_parse : public function
+{
 public:
   zorba_json_parse ( const signature& sig) : function (sig, FunctionConsts::ZORBA_JSON_PARSE) {}
 
@@ -47,8 +49,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //zorba-json:serialize
-class zorba_json_serialize : public function {
+class zorba_json_serialize : public function
+{
 public:
   zorba_json_serialize ( const signature& sig) : function (sig, FunctionConsts::ZORBA_JSON_SERIALIZE) {}
 
@@ -58,8 +62,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //zorba-json-ml:parse
-class zorba_json_ml_parse : public function {
+class zorba_json_ml_parse : public function
+{
 public:
   zorba_json_ml_parse ( const signature& sig) : function (sig, FunctionConsts::ZORBA_JSON_ML_PARSE) {}
 
@@ -69,8 +75,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //zorba-json-ml:serialize
-class zorba_json_ml_serialize : public function {
+class zorba_json_ml_serialize : public function
+{
 public:
   zorba_json_ml_serialize ( const signature& sig) : function (sig, FunctionConsts::ZORBA_JSON_ML_SERIALIZE) {}
 
@@ -85,4 +93,9 @@ public:
 } //namespace zorba
 
 
-#endif 
+#endif
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */ 

@@ -36,8 +36,10 @@ namespace zorba{
 void populate_context_context(static_context* sctx);
 
 
+
 //fn:current-dateTime
-class fn_current_dateTime : public function {
+class fn_current_dateTime : public function
+{
 public:
   fn_current_dateTime ( const signature& sig) : function (sig, FunctionConsts::FN_CURRENT_DATETIME) {}
 
@@ -49,8 +51,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:current-date
-class fn_current_date : public function {
+class fn_current_date : public function
+{
 public:
   fn_current_date ( const signature& sig) : function (sig, FunctionConsts::FN_CURRENT_DATE) {}
 
@@ -62,8 +66,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:current-time
-class fn_current_time : public function {
+class fn_current_time : public function
+{
 public:
   fn_current_time ( const signature& sig) : function (sig, FunctionConsts::FN_CURRENT_TIME) {}
 
@@ -75,8 +81,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:implicit-timezone
-class fn_implicit_timezone : public function {
+class fn_implicit_timezone : public function
+{
 public:
   fn_implicit_timezone ( const signature& sig) : function (sig, FunctionConsts::FN_IMPLICIT_TIMEZONE) {}
 
@@ -88,8 +96,10 @@ public:
                       std::vector<PlanIter_t>& argv,
                       AnnotationHolder& ann) const;
 };
+
 //fn:default-collation
-class fn_default_collation : public function {
+class fn_default_collation : public function
+{
 public:
   fn_default_collation ( const signature& sig) : function (sig, FunctionConsts::FN_DEFAULT_COLLATION) {}
 
@@ -106,4 +116,9 @@ public:
 } //namespace zorba
 
 
-#endif 
+#endif
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */ 
