@@ -22,7 +22,7 @@
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
 
-#include "indexing/value_index.h"
+#include "compiler/indexing/value_index.h"
 
 #include "runtime/indexing/value_index_impl.h"
 #include "runtime/visitors/planiter_visitor.h"

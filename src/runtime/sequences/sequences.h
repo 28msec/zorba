@@ -20,20 +20,18 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
-
 #ifndef ZORBA_RUNTIME_SEQUENCES_SEQUENCES_H
 #define ZORBA_RUNTIME_SEQUENCES_SEQUENCES_H
 
-#include "runtime/base/narybase.h"
 
+#include "runtime/base/narybase.h"
 #include "runtime/core/path_iterators.h"
 
-namespace zorba {
 
+namespace zorba {
 namespace store{
   class NodeHashSet;
 }
-
 /**
  * op:concatenate
  * 
@@ -48,7 +46,8 @@ public:
   void reset(PlanState&);
 };
 
-class FnConcatIterator: public NaryBaseIterator <FnConcatIterator, FnConcatIteratorState> {
+class FnConcatIterator: public NaryBaseIterator <FnConcatIterator, FnConcatIteratorState>
+{
 protected:
   bool theIsUpdating; //
 public:
@@ -57,7 +56,8 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnConcatIterator,
   NaryBaseIterator<FnConcatIterator, FnConcatIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<FnConcatIterator, FnConcatIteratorState>*)this);
 
@@ -98,17 +98,18 @@ public:
   void reset(PlanState&);
 };
 
-class FnIndexOfIterator: public NaryBaseIterator <FnIndexOfIterator, FnIndexOfIteratorState> {
+class FnIndexOfIterator: public NaryBaseIterator <FnIndexOfIterator, FnIndexOfIteratorState>
+{
 public:
   SERIALIZABLE_CLASS(FnIndexOfIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnIndexOfIterator,
   NaryBaseIterator<FnIndexOfIterator, FnIndexOfIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<FnIndexOfIterator, FnIndexOfIteratorState>*)this);
-
   }
 
   FnIndexOfIterator(static_context* sctx, const QueryLoc& loc,
@@ -130,17 +131,18 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnEmptyIterator: public NaryBaseIterator <FnEmptyIterator, PlanIteratorState> {
+class FnEmptyIterator: public NaryBaseIterator <FnEmptyIterator, PlanIteratorState>
+{
 public:
   SERIALIZABLE_CLASS(FnEmptyIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnEmptyIterator,
   NaryBaseIterator<FnEmptyIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<FnEmptyIterator, PlanIteratorState>*)this);
-
   }
 
   FnEmptyIterator(static_context* sctx, const QueryLoc& loc,
@@ -162,17 +164,18 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnExistsIterator: public NaryBaseIterator <FnExistsIterator, PlanIteratorState> {
+class FnExistsIterator: public NaryBaseIterator <FnExistsIterator, PlanIteratorState>
+{
 public:
   SERIALIZABLE_CLASS(FnExistsIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnExistsIterator,
   NaryBaseIterator<FnExistsIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<FnExistsIterator, PlanIteratorState>*)this);
-
   }
 
   FnExistsIterator(static_context* sctx, const QueryLoc& loc,
@@ -205,17 +208,18 @@ public:
   void reset(PlanState&);
 };
 
-class FnInsertBeforeIterator: public NaryBaseIterator <FnInsertBeforeIterator, FnInsertBeforeIteratorState> {
+class FnInsertBeforeIterator: public NaryBaseIterator <FnInsertBeforeIterator, FnInsertBeforeIteratorState>
+{
 public:
   SERIALIZABLE_CLASS(FnInsertBeforeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnInsertBeforeIterator,
   NaryBaseIterator<FnInsertBeforeIterator, FnInsertBeforeIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<FnInsertBeforeIterator, FnInsertBeforeIteratorState>*)this);
-
   }
 
   FnInsertBeforeIterator(static_context* sctx, const QueryLoc& loc,
@@ -248,17 +252,18 @@ public:
   void reset(PlanState&);
 };
 
-class FnRemoveIterator: public NaryBaseIterator <FnRemoveIterator, FnRemoveIteratorState> {
+class FnRemoveIterator: public NaryBaseIterator <FnRemoveIterator, FnRemoveIteratorState>
+{
 public:
   SERIALIZABLE_CLASS(FnRemoveIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnRemoveIterator,
   NaryBaseIterator<FnRemoveIterator, FnRemoveIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<FnRemoveIterator, FnRemoveIteratorState>*)this);
-
   }
 
   FnRemoveIterator(static_context* sctx, const QueryLoc& loc,
@@ -289,17 +294,18 @@ public:
   void reset(PlanState&);
 };
 
-class FnReverseIterator: public NaryBaseIterator <FnReverseIterator, FnReverseIteratorState> {
+class FnReverseIterator: public NaryBaseIterator <FnReverseIterator, FnReverseIteratorState>
+{
 public:
   SERIALIZABLE_CLASS(FnReverseIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnReverseIterator,
   NaryBaseIterator<FnReverseIterator, FnReverseIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<FnReverseIterator, FnReverseIteratorState>*)this);
-
   }
 
   FnReverseIterator(static_context* sctx, const QueryLoc& loc,
@@ -330,17 +336,18 @@ public:
   void reset(PlanState&);
 };
 
-class FnSubsequenceIterator: public NaryBaseIterator <FnSubsequenceIterator, FnSubsequenceIteratorState> {
+class FnSubsequenceIterator: public NaryBaseIterator <FnSubsequenceIterator, FnSubsequenceIteratorState>
+{
 public:
   SERIALIZABLE_CLASS(FnSubsequenceIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnSubsequenceIterator,
   NaryBaseIterator<FnSubsequenceIterator, FnSubsequenceIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<FnSubsequenceIterator, FnSubsequenceIteratorState>*)this);
-
   }
 
   FnSubsequenceIterator(static_context* sctx, const QueryLoc& loc,
@@ -362,7 +369,8 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnZeroOrOneIterator: public NaryBaseIterator <FnZeroOrOneIterator, PlanIteratorState> {
+class FnZeroOrOneIterator: public NaryBaseIterator <FnZeroOrOneIterator, PlanIteratorState>
+{
 protected:
   bool theDoDistinct; //
 public:
@@ -371,7 +379,8 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnZeroOrOneIterator,
   NaryBaseIterator<FnZeroOrOneIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<FnZeroOrOneIterator, PlanIteratorState>*)this);
 
@@ -399,17 +408,18 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnOneOrMoreIterator: public NaryBaseIterator <FnOneOrMoreIterator, PlanIteratorState> {
+class FnOneOrMoreIterator: public NaryBaseIterator <FnOneOrMoreIterator, PlanIteratorState>
+{
 public:
   SERIALIZABLE_CLASS(FnOneOrMoreIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnOneOrMoreIterator,
   NaryBaseIterator<FnOneOrMoreIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<FnOneOrMoreIterator, PlanIteratorState>*)this);
-
   }
 
   FnOneOrMoreIterator(static_context* sctx, const QueryLoc& loc,
@@ -431,7 +441,8 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnExactlyOneIterator: public NaryBaseIterator <FnExactlyOneIterator, PlanIteratorState> {
+class FnExactlyOneIterator: public NaryBaseIterator <FnExactlyOneIterator, PlanIteratorState>
+{
 protected:
   bool theRaiseError; //
   bool theDoDistinct; //
@@ -441,7 +452,8 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnExactlyOneIterator,
   NaryBaseIterator<FnExactlyOneIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<FnExactlyOneIterator, PlanIteratorState>*)this);
 
@@ -472,17 +484,18 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnDeepEqualIterator: public NaryBaseIterator <FnDeepEqualIterator, PlanIteratorState> {
+class FnDeepEqualIterator: public NaryBaseIterator <FnDeepEqualIterator, PlanIteratorState>
+{
 public:
   SERIALIZABLE_CLASS(FnDeepEqualIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnDeepEqualIterator,
   NaryBaseIterator<FnDeepEqualIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<FnDeepEqualIterator, PlanIteratorState>*)this);
-
   }
 
   FnDeepEqualIterator(static_context* sctx, const QueryLoc& loc,
@@ -517,7 +530,8 @@ public:
   void reset(PlanState&);
 };
 
-class HashSemiJoinIterator: public NaryBaseIterator <HashSemiJoinIterator, HashSemiJoinIteratorState> {
+class HashSemiJoinIterator: public NaryBaseIterator <HashSemiJoinIterator, HashSemiJoinIteratorState>
+{
 protected:
   bool theAntijoin; //
 public:
@@ -526,7 +540,8 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(HashSemiJoinIterator,
   NaryBaseIterator<HashSemiJoinIterator, HashSemiJoinIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<HashSemiJoinIterator, HashSemiJoinIteratorState>*)this);
 
@@ -554,17 +569,18 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class SortSemiJoinIterator: public NaryBaseIterator <SortSemiJoinIterator, PlanIteratorState> {
+class SortSemiJoinIterator: public NaryBaseIterator <SortSemiJoinIterator, PlanIteratorState>
+{
 public:
   SERIALIZABLE_CLASS(SortSemiJoinIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(SortSemiJoinIterator,
   NaryBaseIterator<SortSemiJoinIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<SortSemiJoinIterator, PlanIteratorState>*)this);
-
   }
 
   SortSemiJoinIterator(static_context* sctx, const QueryLoc& loc,
@@ -586,17 +602,18 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnCountIterator: public NaryBaseIterator <FnCountIterator, PlanIteratorState> {
+class FnCountIterator: public NaryBaseIterator <FnCountIterator, PlanIteratorState>
+{
 public:
   SERIALIZABLE_CLASS(FnCountIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnCountIterator,
   NaryBaseIterator<FnCountIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<FnCountIterator, PlanIteratorState>*)this);
-
   }
 
   FnCountIterator(static_context* sctx, const QueryLoc& loc,
@@ -618,17 +635,18 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnAvgIterator: public NaryBaseIterator <FnAvgIterator, PlanIteratorState> {
+class FnAvgIterator: public NaryBaseIterator <FnAvgIterator, PlanIteratorState>
+{
 public:
   SERIALIZABLE_CLASS(FnAvgIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnAvgIterator,
   NaryBaseIterator<FnAvgIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<FnAvgIterator, PlanIteratorState>*)this);
-
   }
 
   FnAvgIterator(static_context* sctx, const QueryLoc& loc,
@@ -650,17 +668,18 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnSumIterator: public NaryBaseIterator <FnSumIterator, PlanIteratorState> {
+class FnSumIterator: public NaryBaseIterator <FnSumIterator, PlanIteratorState>
+{
 public:
   SERIALIZABLE_CLASS(FnSumIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnSumIterator,
   NaryBaseIterator<FnSumIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<FnSumIterator, PlanIteratorState>*)this);
-
   }
 
   FnSumIterator(static_context* sctx, const QueryLoc& loc,
@@ -682,17 +701,18 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnSumDoubleIterator: public NaryBaseIterator <FnSumDoubleIterator, PlanIteratorState> {
+class FnSumDoubleIterator: public NaryBaseIterator <FnSumDoubleIterator, PlanIteratorState>
+{
 public:
   SERIALIZABLE_CLASS(FnSumDoubleIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnSumDoubleIterator,
   NaryBaseIterator<FnSumDoubleIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<FnSumDoubleIterator, PlanIteratorState>*)this);
-
   }
 
   FnSumDoubleIterator(static_context* sctx, const QueryLoc& loc,
@@ -714,17 +734,18 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnSumFloatIterator: public NaryBaseIterator <FnSumFloatIterator, PlanIteratorState> {
+class FnSumFloatIterator: public NaryBaseIterator <FnSumFloatIterator, PlanIteratorState>
+{
 public:
   SERIALIZABLE_CLASS(FnSumFloatIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnSumFloatIterator,
   NaryBaseIterator<FnSumFloatIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<FnSumFloatIterator, PlanIteratorState>*)this);
-
   }
 
   FnSumFloatIterator(static_context* sctx, const QueryLoc& loc,
@@ -746,17 +767,18 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnSumDecimalIterator: public NaryBaseIterator <FnSumDecimalIterator, PlanIteratorState> {
+class FnSumDecimalIterator: public NaryBaseIterator <FnSumDecimalIterator, PlanIteratorState>
+{
 public:
   SERIALIZABLE_CLASS(FnSumDecimalIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnSumDecimalIterator,
   NaryBaseIterator<FnSumDecimalIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<FnSumDecimalIterator, PlanIteratorState>*)this);
-
   }
 
   FnSumDecimalIterator(static_context* sctx, const QueryLoc& loc,
@@ -778,17 +800,18 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnSumIntegerIterator: public NaryBaseIterator <FnSumIntegerIterator, PlanIteratorState> {
+class FnSumIntegerIterator: public NaryBaseIterator <FnSumIntegerIterator, PlanIteratorState>
+{
 public:
   SERIALIZABLE_CLASS(FnSumIntegerIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnSumIntegerIterator,
   NaryBaseIterator<FnSumIntegerIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<FnSumIntegerIterator, PlanIteratorState>*)this);
-
   }
 
   FnSumIntegerIterator(static_context* sctx, const QueryLoc& loc,
@@ -821,17 +844,18 @@ public:
   void reset(PlanState&);
 };
 
-class OpToIterator: public NaryBaseIterator <OpToIterator, OpToIteratorState> {
+class OpToIterator: public NaryBaseIterator <OpToIterator, OpToIteratorState>
+{
 public:
   SERIALIZABLE_CLASS(OpToIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(OpToIterator,
   NaryBaseIterator<OpToIterator, OpToIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<OpToIterator, OpToIteratorState>*)this);
-
   }
 
   OpToIterator(static_context* sctx, const QueryLoc& loc,
@@ -853,17 +877,18 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnDocIterator: public NaryBaseIterator <FnDocIterator, PlanIteratorState> {
+class FnDocIterator: public NaryBaseIterator <FnDocIterator, PlanIteratorState>
+{
 public:
   SERIALIZABLE_CLASS(FnDocIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnDocIterator,
   NaryBaseIterator<FnDocIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<FnDocIterator, PlanIteratorState>*)this);
-
   }
 
   FnDocIterator(static_context* sctx, const QueryLoc& loc,
@@ -885,17 +910,18 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnDocAvailableIterator: public NaryBaseIterator <FnDocAvailableIterator, PlanIteratorState> {
+class FnDocAvailableIterator: public NaryBaseIterator <FnDocAvailableIterator, PlanIteratorState>
+{
 public:
   SERIALIZABLE_CLASS(FnDocAvailableIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnDocAvailableIterator,
   NaryBaseIterator<FnDocAvailableIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<FnDocAvailableIterator, PlanIteratorState>*)this);
-
   }
 
   FnDocAvailableIterator(static_context* sctx, const QueryLoc& loc,
@@ -917,17 +943,18 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class FnParseIterator: public NaryBaseIterator <FnParseIterator, PlanIteratorState> {
+class FnParseIterator: public NaryBaseIterator <FnParseIterator, PlanIteratorState>
+{
 public:
   SERIALIZABLE_CLASS(FnParseIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnParseIterator,
   NaryBaseIterator<FnParseIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<FnParseIterator, PlanIteratorState>*)this);
-
   }
 
   FnParseIterator(static_context* sctx, const QueryLoc& loc,
@@ -944,7 +971,10 @@ public:
 };
 
 
-
 }
-
-#endif 
+#endif
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */ 

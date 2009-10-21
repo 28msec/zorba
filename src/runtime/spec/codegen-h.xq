@@ -4,6 +4,7 @@ import module namespace util="http://www.zorba-xquery.com/zorba/util-functions";
 
 import module namespace gen = "http://www.zorba-xquery.com/internal/gen" at "utils.xq";
 
+
 declare function local:create-include($doc) as xs:string
 {
   string-join((
@@ -16,6 +17,7 @@ declare function local:create-include($doc) as xs:string
     concat('#include "', $include/text(), '"')),$gen:newline)
 };
 
+
 declare function local:add-populate($name as xs:string) as xs:string
 {
   concat (
@@ -23,10 +25,12 @@ declare function local:add-populate($name as xs:string) as xs:string
   )
 };
 
+
 declare function local:process-file($doc) as xs:string
 {
   string-join(for $iter in $doc//zorba:iterator return local:create-function($iter),$gen:newline)
 };
+
 
 declare function local:create-function($iter) as xs:string?
 { 
@@ -39,9 +43,12 @@ declare function local:create-function($iter) as xs:string?
       'Error: could not find "prefix" and "localname" attributes for "zorba:function" element'
     else
       string-join(
-        (local:description($iter),
+        ($gen:newline,
+         local:description($iter),
          $gen:newline,
-         'class ', $name, ' : public ', local:base-class($iter), ' {',
+         'class ', $name, ' : public ', local:base-class($iter),
+         $gen:newline,
+         '{',
          $gen:newline,
          'public:',
          $gen:newline, $gen:indent,
@@ -92,6 +99,7 @@ declare function local:create-function($iter) as xs:string?
     ()
 };
 
+
 declare function local:base-class($iter)
 {
   if(not($iter/zorba:function/@baseSig)) then
@@ -99,6 +107,7 @@ declare function local:base-class($iter)
   else
     $iter/zorba:function/@baseSig 
 };
+
 
 declare function local:add-is-source($iter) as xs:string?
 {
@@ -108,6 +117,7 @@ declare function local:add-is-source($iter) as xs:string?
   else ()
 };
 
+
 declare function local:add-unfoldable($iter) as xs:string?
 {
   if($iter/zorba:function/@requiresDynamicContext = 'true') then
@@ -115,6 +125,7 @@ declare function local:add-unfoldable($iter) as xs:string?
     'bool requires_dyn_ctx () const { return true; }',$gen:newline),'')
   else ()
 };
+
 
 declare function local:add-specialization($iter) as xs:string?
 {
@@ -127,6 +138,7 @@ declare function local:add-specialization($iter) as xs:string?
   else ()
 };
 
+
 declare function local:add-annotations($iter) as xs:string?
 {
   if(count($iter/zorba:function//zorba:annotation) > 0) then
@@ -137,6 +149,7 @@ declare function local:add-annotations($iter) as xs:string?
       $gen:indent,'}',$gen:newline),'')
   else ()
 };
+
 
 declare function local:description($iter) as xs:string
 {
@@ -149,6 +162,7 @@ declare function local:description($iter) as xs:string
     else string-join(($sig/@prefix,':',$sig/@localname),'')),'')
 };
 
+
 declare function local:function-name($iter) as xs:string
 {
   let $sig := $iter/zorba:function//zorba:signature[1]
@@ -158,6 +172,7 @@ declare function local:function-name($iter) as xs:string
   else string-join((translate($sig/@prefix,'-','_'),translate($sig/@localname,'-','_')),'_')
 };
 
+
 declare function local:iterator-call($iter) as xs:string
 {
   if($iter/zorba:function/@annIsUpdating = 'true') then
@@ -166,25 +181,41 @@ declare function local:iterator-call($iter) as xs:string
     string-join(($iter/@name,'(sctx,loc,argv)'),'')
 };
 
+
+(:
+   Variable $file will be bound to the pathname of the xml file that is to
+   be converted to a .h file
+:)
 declare variable $file as xs:string external;
 
+
 let $pieces as xs:string* := tokenize($file,'/')
+
 let $name := substring($pieces[count($pieces)],1,string-length($pieces[count($pieces)])-4)
+
 let $doc := fn:doc($file)/zorba:iterators
+
 return
   string-join((gen:add-copyright(),
-    $gen:newline,
-    gen:add-guard-open(string-join(('functions_',$name),'')),
-    $gen:newline,
-    local:create-include($doc),
-    $gen:newline,
-    'namespace zorba{',
-    $gen:newline,
-    local:add-populate($name),
-    $gen:newline,
-    local:process-file($doc),
-    $gen:newline,
-    '} //namespace zorba',
-    $gen:newline,
-    gen:add-guard-close()), $gen:newline
-  ), $gen:newline
+               $gen:newline,
+               gen:add-guard-open(string-join(('functions_',$name),'')),
+               $gen:newline,
+               local:create-include($doc),
+               $gen:newline,
+               'namespace zorba{',
+               $gen:newline,
+               local:add-populate($name),
+               $gen:newline,
+               local:process-file($doc),
+               $gen:newline,
+               '} //namespace zorba',
+               $gen:newline,
+               gen:add-guard-close(),
+               '/*',
+               ' * Local variables:',
+               ' * mode: c++',
+               ' * End:',
+               ' */'
+              ),
+              $gen:newline),
+  $gen:newline

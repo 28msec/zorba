@@ -72,7 +72,7 @@ declare function local:NARY-ITER-STATE($iter, $name as xs:string, $state as xs:s
     (: TODO user fn:error :)
     'Error: the number of "zorba:parameters" in the "zorba:constructor" is different than the number of "zorba:members"'
   else
-    concat ('class ', $name, ': ', 'public NaryBaseIterator <', $name, ', ', $state, '> {', $gen:newline,
+    concat('class ', $name, ': ', 'public NaryBaseIterator <', $name, ', ', $state, '>', $gen:newline, '{', $gen:newline,
     local:add-protected($iter),
 
     (: serialization code :)
@@ -80,9 +80,10 @@ declare function local:NARY-ITER-STATE($iter, $name as xs:string, $state as xs:s
     $gen:indent, 'SERIALIZABLE_CLASS(',$name,');', $gen:newline, $gen:newline,
     $gen:indent, 'SERIALIZABLE_CLASS_CONSTRUCTOR2T(', $name,',', $gen:newline,
     $gen:indent, 'NaryBaseIterator<', $name,', ', $state,'>);', $gen:newline, $gen:newline,
-    $gen:indent, 'void serialize(::zorba::serialization::Archiver&amp; ar){',$gen:newline,
+    $gen:indent, 'void serialize(::zorba::serialization::Archiver&amp; ar)', $gen:newline,
+    $gen:indent, '{',$gen:newline,
     gen:indent(2), 'serialize_baseclass(ar,',$gen:newline,
-    gen:indent(2),'(NaryBaseIterator<',$name,', ',$state,'>*)this);',$gen:newline,$gen:newline,
+    gen:indent(2),'(NaryBaseIterator<',$name,', ',$state,'>*)this);',$gen:newline,
     local:add-arch($iter),
     $gen:indent,'}',$gen:newline,$gen:newline,
     $gen:indent,$name,'(static_context* sctx, const QueryLoc&amp; loc,',$gen:newline,
@@ -140,11 +141,19 @@ declare function local:add-protected($iter) as xs:string?
   else ()
 };
 
+
 declare function local:add-arch($iter) as xs:string?
 {
   if(count($iter/zorba:member) > 0) then
-  string-join((for $member in $iter/zorba:member return 
-  string-join((gen:indent(2),'ar &amp; ', $member/@name,';',$gen:newline),'')),'')
+    string-join(($gen:newline,
+                 for $member in $iter/zorba:member
+                 return 
+                 string-join((gen:indent(2),
+                              'ar &amp; ',
+                              $member/@name,
+                              ';',
+                              $gen:newline),'')),
+                '')
   else ()
 };
 
@@ -175,15 +184,25 @@ declare function local:get-include($XMLdoc) as xs:string*
     concat('#include "', $include/text(), '"')
 };
 
+
 declare variable $input external;
+
 declare variable $name  as xs:string external;
 
 string-join((gen:add-copyright(), 
-            gen:add-guard-open($name),
-            local:get-include($input),
-            'namespace zorba {',
-              local:get-fwd-decl($input),
-              local:get-iterators($input),
-            '}',
-            gen:add-guard-close())
-            ,string-join(($gen:newline,$gen:newline),'')), $gen:newline
+             gen:add-guard-open($name),
+             $gen:newline,
+             local:get-include($input),
+             $gen:newline,
+             'namespace zorba {',
+             local:get-fwd-decl($input),
+             local:get-iterators($input),
+             '}',
+             gen:add-guard-close(),
+             '/*',
+             ' * Local variables:',
+             ' * mode: c++',
+             ' * End:',
+             ' */'),
+            $gen:newline),
+$gen:newline

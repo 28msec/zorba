@@ -20,34 +20,33 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
-
 #ifndef ZORBA_RUNTIME_CONTEXT_CONTEXT_H
 #define ZORBA_RUNTIME_CONTEXT_CONTEXT_H
 
-#include "common/shared_types.h"
 
+#include "common/shared_types.h"
 #include "runtime/base/narybase.h"
 
+
 namespace zorba {
-
-
 
 /**
  * fn:current-dateTime
  * 
  * Author: Zorba Team * 
  */
-class CurrentDateTimeIterator: public NaryBaseIterator <CurrentDateTimeIterator, PlanIteratorState> {
+class CurrentDateTimeIterator: public NaryBaseIterator <CurrentDateTimeIterator, PlanIteratorState>
+{
 public:
   SERIALIZABLE_CLASS(CurrentDateTimeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(CurrentDateTimeIterator,
   NaryBaseIterator<CurrentDateTimeIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<CurrentDateTimeIterator, PlanIteratorState>*)this);
-
   }
 
   CurrentDateTimeIterator(static_context* sctx, const QueryLoc& loc,
@@ -69,17 +68,18 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class CurrentDateIterator: public NaryBaseIterator <CurrentDateIterator, PlanIteratorState> {
+class CurrentDateIterator: public NaryBaseIterator <CurrentDateIterator, PlanIteratorState>
+{
 public:
   SERIALIZABLE_CLASS(CurrentDateIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(CurrentDateIterator,
   NaryBaseIterator<CurrentDateIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<CurrentDateIterator, PlanIteratorState>*)this);
-
   }
 
   CurrentDateIterator(static_context* sctx, const QueryLoc& loc,
@@ -101,17 +101,18 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class CurrentTimeIterator: public NaryBaseIterator <CurrentTimeIterator, PlanIteratorState> {
+class CurrentTimeIterator: public NaryBaseIterator <CurrentTimeIterator, PlanIteratorState>
+{
 public:
   SERIALIZABLE_CLASS(CurrentTimeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(CurrentTimeIterator,
   NaryBaseIterator<CurrentTimeIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<CurrentTimeIterator, PlanIteratorState>*)this);
-
   }
 
   CurrentTimeIterator(static_context* sctx, const QueryLoc& loc,
@@ -133,17 +134,18 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class ImplicitTimezoneIterator: public NaryBaseIterator <ImplicitTimezoneIterator, PlanIteratorState> {
+class ImplicitTimezoneIterator: public NaryBaseIterator <ImplicitTimezoneIterator, PlanIteratorState>
+{
 public:
   SERIALIZABLE_CLASS(ImplicitTimezoneIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ImplicitTimezoneIterator,
   NaryBaseIterator<ImplicitTimezoneIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<ImplicitTimezoneIterator, PlanIteratorState>*)this);
-
   }
 
   ImplicitTimezoneIterator(static_context* sctx, const QueryLoc& loc,
@@ -165,17 +167,18 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class DefaultCollationIterator: public NaryBaseIterator <DefaultCollationIterator, PlanIteratorState> {
+class DefaultCollationIterator: public NaryBaseIterator <DefaultCollationIterator, PlanIteratorState>
+{
 public:
   SERIALIZABLE_CLASS(DefaultCollationIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(DefaultCollationIterator,
   NaryBaseIterator<DefaultCollationIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar){
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
     serialize_baseclass(ar,
     (NaryBaseIterator<DefaultCollationIterator, PlanIteratorState>*)this);
-
   }
 
   DefaultCollationIterator(static_context* sctx, const QueryLoc& loc,
@@ -192,7 +195,10 @@ public:
 };
 
 
-
 }
-
-#endif 
+#endif
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */ 
