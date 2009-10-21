@@ -23,6 +23,7 @@ INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaRuntimeGenerator.cmake)
 # look for all spec files and generate the header and cpp files if out of date
 # the cpp files and the according _impl.cpp files are added to the RUNTIME_SRCS list
 FILE(GLOB_RECURSE SPEC_FILES ${CMAKE_SOURCE_DIR}/src/runtime/spec "*.xml")
+LIST(SORT SPEC_FILES)
 
 # create the corresponding directories in the src/runtime/ build directory
 IF (NOT EXISTS "${CMAKE_BINARY_DIR}/src/runtime/visitors")
