@@ -1416,7 +1416,17 @@ void UpdSetElementType::apply()
 
   target->theTypeName.transfer(theTypeName);
 
-  assert(!target->haveTypedTypedValue());
+  if(target->haveTypedTypedValue())
+  {
+    TextNode* textChild = reinterpret_cast<TextNode*>(target->getChild(0));
+
+    xqpStringStore_t textValue;
+    textChild->getStringValue(textValue);
+    textChild->setValue(NULL);
+
+    textChild->theFlags &= ~XmlNode::IsTyped;
+    textChild->setText(textValue);
+  }
 
   if (theHaveValue)
   {
