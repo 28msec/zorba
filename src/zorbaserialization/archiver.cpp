@@ -769,6 +769,38 @@ archive_field* Archiver::find_top_most_eval_only_field(archive_field *parent_fie
   return refering_field;
 }
 
+void Archiver::exchange_mature_fields(archive_field *field1, archive_field *field2)
+{
+  archive_field *field1_prev = get_prev(field1);
+  archive_field *field1_next = field1->next;
+  archive_field *field1_parent = field1->parent;
+  archive_field *field2_prev = get_prev(field2);
+  archive_field *field2_parent = field2->parent;
+  archive_field *field2_next = field2->next;
+  //move field2
+  if(field1_prev)
+    field1_prev->next = field2;
+  else
+    field1_parent->first_child = field2;
+  field2->next = field1_next;
+  if(!field1_next)
+    field1_parent->last_child = field2;
+  field2->parent = field1_parent;
+  //move field1
+  if(field2_prev)
+    field2_prev->next = field1;
+  else
+    field2_parent->first_child = field1;
+  field1->next = field2_next;
+  if(!field2_next)
+    field2_parent->last_child = field1;
+  field1->parent = field2_parent;
+
+  bool temp_delay = field1->allow_delay;
+  field1->allow_delay = field2->allow_delay;
+  field2->allow_delay = temp_delay;
+}
+
 void Archiver::check_compound_fields(archive_field *parent_field)
 {
   //resolve all references first
@@ -779,6 +811,13 @@ void Archiver::check_compound_fields(archive_field *parent_field)
     refering_field = find_top_most_eval_only_field(parent_field);
     if(!refering_field)
       break;
+  //+debug
+  printf("move reference %s, %s -> %s\n", refering_field->refered->type, refering_field->refered->parent->type, refering_field->parent->type);
+  if(!strcmp(refering_field->refered->parent->type, "UDFunctionCallIterator"))
+  {
+    int i=0;
+  }
+/*
     replace_with_null(refering_field->refered);
     //get that archive_field
     replace_field(refering_field->refered, refering_field);
@@ -795,6 +834,12 @@ void Archiver::check_compound_fields(archive_field *parent_field)
         break;
       }
     }
+*/
+    exchange_mature_fields(refering_field, refering_field->refered);
+    refering_field->only_for_eval = refering_field->refered->only_for_eval;
+    
+    refering_field = refering_field->refered;
+
     clean_only_for_eval(refering_field, refering_field->only_for_eval);
   }
   check_compound_fields2(parent_field);
@@ -808,6 +853,8 @@ void Archiver::check_compound_fields2(archive_field   *parent_field)
     if(current_field->only_for_eval && (current_field->field_treat != ARCHIVE_FIELD_NORMAL))
     {
       //don't save it, replace it with NULL if possible
+  //+debug
+//  printf("replace only_for_eval with null %s\n", current_field->type);
       archive_field *null_field = replace_with_null(current_field);
 
       orphan_fields.push_back(current_field);
@@ -923,31 +970,8 @@ void Archiver::check_allowed_delays(archive_field *parent_field)
         assert(false);
       }
       //exchange fields
-      archive_field *child_prev = get_prev(child);
-      archive_field *refered_prev = get_prev(child->refered);
-      archive_field *refered_parent = child->refered->parent;
-      archive_field *child_next = child->next;
-      archive_field *refered_next = child->refered->next;
-      //move refered
-      if(child_prev)
-        child_prev = child->refered;
-      else
-        parent_field->first_child = child->refered;
-      child->refered->next = child_next;
-      if(!child_next)
-        parent_field->last_child = child->refered;
-      child->refered->parent = parent_field;
-      //move child
-      if(refered_prev)
-        refered_prev = child;
-      else
-        refered_parent->first_child = child;
-      child->next = refered_next;
-      if(!refered_next)
-        refered_parent->last_child = child;
-      child->parent = refered_parent;
+      exchange_mature_fields(child, child->refered);
 
-      child->allow_delay = child->refered->allow_delay;
       child->refered->allow_delay = true;
       child = child->refered;
     }

@@ -272,6 +272,7 @@ protected:
   void check_compound_fields(archive_field   *parent_field);
   void check_compound_fields2(archive_field   *parent_field);
   void clean_only_for_eval(archive_field *field, int substract_value);
+  void exchange_mature_fields(archive_field *field1, archive_field *field2);
   archive_field* get_prev(archive_field* field);
   int check_order(archive_field *parent_field,
                   archive_field *field1,
