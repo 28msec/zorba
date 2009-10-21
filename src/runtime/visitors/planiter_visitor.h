@@ -57,6 +57,15 @@ namespace zorba{
     class FnDocIterator;
     class FnDocAvailableIterator;
     class FnParseIterator;
+    class IsSameNodeIterator;
+    class NodeBeforeIterator;
+    class NodeAfterIterator;
+    class NodeNameIterator;
+    class NilledIterator;
+    class FnStringIterator;
+    class BaseUriIterator;
+    class DocumentUriIterator;
+    class RootIterator;
     class CodepointsToStringIterator;
     class CompareStrIterator;
     class CodepointEqualIterator;
@@ -79,15 +88,6 @@ namespace zorba{
     class SubstringAfterIterator;
     class FnMatchesIterator;
     class FnReplaceIterator;
-    class NodeNameIterator;
-    class NilledIterator;
-    class FnStringIterator;
-    class BaseUriIterator;
-    class DocumentUriIterator;
-    class RootIterator;
-    class IsSameNodeIterator;
-    class NodeBeforeIterator;
-    class NodeAfterIterator;
     class CurrentDateTimeIterator;
     class CurrentDateIterator;
     class CurrentTimeIterator;
@@ -180,6 +180,33 @@ public:
     virtual void beginVisit ( const FnParseIterator& ) = 0;
     virtual void endVisit   ( const FnParseIterator& ) = 0;
 
+    virtual void beginVisit ( const IsSameNodeIterator& ) = 0;
+    virtual void endVisit   ( const IsSameNodeIterator& ) = 0;
+
+    virtual void beginVisit ( const NodeBeforeIterator& ) = 0;
+    virtual void endVisit   ( const NodeBeforeIterator& ) = 0;
+
+    virtual void beginVisit ( const NodeAfterIterator& ) = 0;
+    virtual void endVisit   ( const NodeAfterIterator& ) = 0;
+
+    virtual void beginVisit ( const NodeNameIterator& ) = 0;
+    virtual void endVisit   ( const NodeNameIterator& ) = 0;
+
+    virtual void beginVisit ( const NilledIterator& ) = 0;
+    virtual void endVisit   ( const NilledIterator& ) = 0;
+
+    virtual void beginVisit ( const FnStringIterator& ) = 0;
+    virtual void endVisit   ( const FnStringIterator& ) = 0;
+
+    virtual void beginVisit ( const BaseUriIterator& ) = 0;
+    virtual void endVisit   ( const BaseUriIterator& ) = 0;
+
+    virtual void beginVisit ( const DocumentUriIterator& ) = 0;
+    virtual void endVisit   ( const DocumentUriIterator& ) = 0;
+
+    virtual void beginVisit ( const RootIterator& ) = 0;
+    virtual void endVisit   ( const RootIterator& ) = 0;
+
     virtual void beginVisit ( const CodepointsToStringIterator& ) = 0;
     virtual void endVisit   ( const CodepointsToStringIterator& ) = 0;
 
@@ -245,33 +272,6 @@ public:
 
     virtual void beginVisit ( const FnReplaceIterator& ) = 0;
     virtual void endVisit   ( const FnReplaceIterator& ) = 0;
-
-    virtual void beginVisit ( const NodeNameIterator& ) = 0;
-    virtual void endVisit   ( const NodeNameIterator& ) = 0;
-
-    virtual void beginVisit ( const NilledIterator& ) = 0;
-    virtual void endVisit   ( const NilledIterator& ) = 0;
-
-    virtual void beginVisit ( const FnStringIterator& ) = 0;
-    virtual void endVisit   ( const FnStringIterator& ) = 0;
-
-    virtual void beginVisit ( const BaseUriIterator& ) = 0;
-    virtual void endVisit   ( const BaseUriIterator& ) = 0;
-
-    virtual void beginVisit ( const DocumentUriIterator& ) = 0;
-    virtual void endVisit   ( const DocumentUriIterator& ) = 0;
-
-    virtual void beginVisit ( const RootIterator& ) = 0;
-    virtual void endVisit   ( const RootIterator& ) = 0;
-
-    virtual void beginVisit ( const IsSameNodeIterator& ) = 0;
-    virtual void endVisit   ( const IsSameNodeIterator& ) = 0;
-
-    virtual void beginVisit ( const NodeBeforeIterator& ) = 0;
-    virtual void endVisit   ( const NodeBeforeIterator& ) = 0;
-
-    virtual void beginVisit ( const NodeAfterIterator& ) = 0;
-    virtual void endVisit   ( const NodeAfterIterator& ) = 0;
 
     virtual void beginVisit ( const CurrentDateTimeIterator& ) = 0;
     virtual void endVisit   ( const CurrentDateTimeIterator& ) = 0;

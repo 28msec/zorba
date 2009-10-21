@@ -29,7 +29,7 @@ FOREACH(SPEC_FILE ${SPEC_FILES})
 
   RUNTIME_GENERATOR(${RUNTIME_CPP_GENERATOR}
                     ${RUNTIME_HEADER_GENERATOR} ${SPEC_FILE} 
-                    "${CMAKE_SOURCE_DIR}/src/runtime/${SPEC_PREFIX}"
+                    "src/runtime/${SPEC_PREFIX}"
                     "name:=runtime_${SPEC_PREFIX_NAME}" "input=${SPEC_FILE}" ${ZORBA_WORKS})
 
   LIST(APPEND RUNTIME_SRCS 
@@ -44,7 +44,7 @@ ENDFOREACH(SPEC_FILE)
 PRINTER_VISITOR_GENERATOR(${PRINTER_VISITOR_CPP_VISITOR_GENERATOR}
                           ${PRINTER_VISITOR_HEADER_GENERATOR}
                           "${SPEC_FILES}"
-                          "${CMAKE_SOURCE_DIR}/src/runtime/visitors/printer_visitor"
+                          "src/runtime/visitors/printer_visitor"
                           "files:=${SPEC_FILES}"
                           ${ZORBA_WORKS})
 
@@ -55,7 +55,7 @@ LIST(APPEND RUNTIME_SRCS
 
 PLANINTER_VISITOR_GENERATOR(${PLANINTER_VISITOR_HEADER_GENERATOR}
                             "${SPEC_FILES}"
-                            "${CMAKE_SOURCE_DIR}/src/runtime/visitors/planiter_visitor"
+                            "src/runtime/visitors/planiter_visitor"
                             "files:=${SPEC_FILES}"
                             ${ZORBA_WORKS})
 

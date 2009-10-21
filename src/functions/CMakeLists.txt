@@ -24,7 +24,7 @@ SET(FUNCTION_HEADER_GENERATOR             "${CMAKE_SOURCE_DIR}/src/runtime/spec/
 
 FUNCTION_ENUM_GENERATOR(${FUNCTION_HEADER_GENERATOR}
                         "${SPEC_FILES}"
-                        "${CMAKE_SOURCE_DIR}/src/functions/function_enum.h"
+                        "src/functions/function_enum.h"
                         "file-list:=${SPEC_FILES}"
                         ${ZORBA_WORKS})
 
@@ -37,7 +37,7 @@ FOREACH(SPEC_FILE ${SPEC_FILES})
 
   CODEGEN_GENERATOR(${CODEGEN_SOURCE_GENERATOR}
                     ${CODEGEN_HEADER_GENERATOR} ${SPEC_FILE}
-                    "${CMAKE_SOURCE_DIR}/src/functions/${SPEC_PREFIX}"
+                    "src/functions/${SPEC_PREFIX}"
                     "file:=${SPEC_FILE}"
                     "mappings:=${MAPPINGS_SPEC_XML}"
                       ${ZORBA_WORKS})

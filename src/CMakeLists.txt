@@ -24,8 +24,29 @@ INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaRuntimeGenerator.cmake)
 # the cpp files and the according _impl.cpp files are added to the RUNTIME_SRCS list
 FILE(GLOB_RECURSE SPEC_FILES ${CMAKE_SOURCE_DIR}/src/runtime/spec "*.xml")
 
+# create the corresponding directories in the src/runtime/ build directory
+IF (NOT EXISTS "${CMAKE_BINARY_DIR}/src/runtime/visitors")
+  FILE(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/src/runtime/visitors")
+  MESSAGE(STATUS "created directory ${CMAKE_BINARY_DIR}/src/runtime/visitors}")
+ENDIF (NOT EXISTS "${CMAKE_BINARY_DIR}/src/runtime/visitors")
+
+IF (NOT EXISTS "${CMAKE_BINARY_DIR}/src/functions")
+  FILE(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/src/functions")
+  MESSAGE(STATUS "created directory ${CMAKE_BINARY_DIR}/src/functions}")
+ENDIF (NOT EXISTS "${CMAKE_BINARY_DIR}/src/functions")
+
+FOREACH (SPEC_FILE ${SPEC_FILES})
+  FILE(RELATIVE_PATH RELATIVE_FILE "${CMAKE_SOURCE_DIR}/src/runtime/spec" ${SPEC_FILE})
+  GET_FILENAME_COMPONENT(DIR ${RELATIVE_FILE} PATH)
+  SET(FULL_DIR "${CMAKE_BINARY_DIR}/src/runtime/${DIR}")
+  IF (NOT EXISTS "${FULL_DIR}")
+    FILE(MAKE_DIRECTORY ${FULL_DIR})
+    MESSAGE(STATUS "created directory ${FULL_DIR}")
+  ENDIF (NOT EXISTS "${FULL_DIR}")
+ENDFOREACH(SPEC_FILE)
+
 # mappings.xml is only a helper xml file => don't generate any code for it
-SET(MAPPINGS_SPEC_XML                     "${CMAKE_SOURCE_DIR}/src/runtime/spec/mappings.xml")
+SET(MAPPINGS_SPEC_XML       "${CMAKE_SOURCE_DIR}/src/runtime/spec/mappings.xml")
 LIST(REMOVE_ITEM SPEC_FILES "${MAPPINGS_SPEC_XML}")
 
 ################################################################################
