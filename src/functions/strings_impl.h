@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_FUNCTIONS_STRINGS_H
-#define ZORBA_FUNCTIONS_STRINGS_H
+#ifndef ZORBA_FUNCTIONS_STRINGS_IMPL_H
+#define ZORBA_FUNCTIONS_STRINGS_IMPL_H
 
 #include "common/shared_types.h"
 
 namespace zorba 
 {
 
-void populateContext_Strings(static_context* sctx);
+  void populate_context_strings_impl(static_context* sctx);
 
 }
 #endif

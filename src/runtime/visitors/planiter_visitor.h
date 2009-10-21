@@ -32,11 +32,6 @@
 
 namespace zorba{
 
-    class CurrentDateTimeIterator;
-    class CurrentDateIterator;
-    class CurrentTimeIterator;
-    class ImplicitTimezoneIterator;
-    class DefaultCollationIterator;
     class FnConcatIterator;
     class FnIndexOfIterator;
     class FnEmptyIterator;
@@ -62,12 +57,6 @@ namespace zorba{
     class FnDocIterator;
     class FnDocAvailableIterator;
     class FnParseIterator;
-    class NodeNameIterator;
-    class NilledIterator;
-    class FnStringIterator;
-    class BaseUriIterator;
-    class DocumentUriIterator;
-    class RootIterator;
     class CodepointsToStringIterator;
     class CompareStrIterator;
     class CodepointEqualIterator;
@@ -90,9 +79,20 @@ namespace zorba{
     class SubstringAfterIterator;
     class FnMatchesIterator;
     class FnReplaceIterator;
+    class NodeNameIterator;
+    class NilledIterator;
+    class FnStringIterator;
+    class BaseUriIterator;
+    class DocumentUriIterator;
+    class RootIterator;
     class IsSameNodeIterator;
     class NodeBeforeIterator;
     class NodeAfterIterator;
+    class CurrentDateTimeIterator;
+    class CurrentDateIterator;
+    class CurrentTimeIterator;
+    class ImplicitTimezoneIterator;
+    class DefaultCollationIterator;
 
 #include "runtime/visitors/planiter_visitor_impl_include.h"
 
@@ -104,21 +104,6 @@ public:
   virtual ~PlanIterVisitor() {}
 
 #include "runtime/visitors/planiter_visitor_impl_code.h"
-
-    virtual void beginVisit ( const CurrentDateTimeIterator& ) = 0;
-    virtual void endVisit   ( const CurrentDateTimeIterator& ) = 0;
-
-    virtual void beginVisit ( const CurrentDateIterator& ) = 0;
-    virtual void endVisit   ( const CurrentDateIterator& ) = 0;
-
-    virtual void beginVisit ( const CurrentTimeIterator& ) = 0;
-    virtual void endVisit   ( const CurrentTimeIterator& ) = 0;
-
-    virtual void beginVisit ( const ImplicitTimezoneIterator& ) = 0;
-    virtual void endVisit   ( const ImplicitTimezoneIterator& ) = 0;
-
-    virtual void beginVisit ( const DefaultCollationIterator& ) = 0;
-    virtual void endVisit   ( const DefaultCollationIterator& ) = 0;
 
     virtual void beginVisit ( const FnConcatIterator& ) = 0;
     virtual void endVisit   ( const FnConcatIterator& ) = 0;
@@ -195,24 +180,6 @@ public:
     virtual void beginVisit ( const FnParseIterator& ) = 0;
     virtual void endVisit   ( const FnParseIterator& ) = 0;
 
-    virtual void beginVisit ( const NodeNameIterator& ) = 0;
-    virtual void endVisit   ( const NodeNameIterator& ) = 0;
-
-    virtual void beginVisit ( const NilledIterator& ) = 0;
-    virtual void endVisit   ( const NilledIterator& ) = 0;
-
-    virtual void beginVisit ( const FnStringIterator& ) = 0;
-    virtual void endVisit   ( const FnStringIterator& ) = 0;
-
-    virtual void beginVisit ( const BaseUriIterator& ) = 0;
-    virtual void endVisit   ( const BaseUriIterator& ) = 0;
-
-    virtual void beginVisit ( const DocumentUriIterator& ) = 0;
-    virtual void endVisit   ( const DocumentUriIterator& ) = 0;
-
-    virtual void beginVisit ( const RootIterator& ) = 0;
-    virtual void endVisit   ( const RootIterator& ) = 0;
-
     virtual void beginVisit ( const CodepointsToStringIterator& ) = 0;
     virtual void endVisit   ( const CodepointsToStringIterator& ) = 0;
 
@@ -279,6 +246,24 @@ public:
     virtual void beginVisit ( const FnReplaceIterator& ) = 0;
     virtual void endVisit   ( const FnReplaceIterator& ) = 0;
 
+    virtual void beginVisit ( const NodeNameIterator& ) = 0;
+    virtual void endVisit   ( const NodeNameIterator& ) = 0;
+
+    virtual void beginVisit ( const NilledIterator& ) = 0;
+    virtual void endVisit   ( const NilledIterator& ) = 0;
+
+    virtual void beginVisit ( const FnStringIterator& ) = 0;
+    virtual void endVisit   ( const FnStringIterator& ) = 0;
+
+    virtual void beginVisit ( const BaseUriIterator& ) = 0;
+    virtual void endVisit   ( const BaseUriIterator& ) = 0;
+
+    virtual void beginVisit ( const DocumentUriIterator& ) = 0;
+    virtual void endVisit   ( const DocumentUriIterator& ) = 0;
+
+    virtual void beginVisit ( const RootIterator& ) = 0;
+    virtual void endVisit   ( const RootIterator& ) = 0;
+
     virtual void beginVisit ( const IsSameNodeIterator& ) = 0;
     virtual void endVisit   ( const IsSameNodeIterator& ) = 0;
 
@@ -287,6 +272,21 @@ public:
 
     virtual void beginVisit ( const NodeAfterIterator& ) = 0;
     virtual void endVisit   ( const NodeAfterIterator& ) = 0;
+
+    virtual void beginVisit ( const CurrentDateTimeIterator& ) = 0;
+    virtual void endVisit   ( const CurrentDateTimeIterator& ) = 0;
+
+    virtual void beginVisit ( const CurrentDateIterator& ) = 0;
+    virtual void endVisit   ( const CurrentDateIterator& ) = 0;
+
+    virtual void beginVisit ( const CurrentTimeIterator& ) = 0;
+    virtual void endVisit   ( const CurrentTimeIterator& ) = 0;
+
+    virtual void beginVisit ( const ImplicitTimezoneIterator& ) = 0;
+    virtual void endVisit   ( const ImplicitTimezoneIterator& ) = 0;
+
+    virtual void beginVisit ( const DefaultCollationIterator& ) = 0;
+    virtual void endVisit   ( const DefaultCollationIterator& ) = 0;
 
 
   }; //class PlanIterVisitor

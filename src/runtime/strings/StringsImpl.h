@@ -23,6 +23,8 @@
 
 #include "runtime/base/narybase.h"
 
+#include "store/api/iterator.h"
+#include "store/api/iterator_factory.h"
 
 namespace zorba {
 
