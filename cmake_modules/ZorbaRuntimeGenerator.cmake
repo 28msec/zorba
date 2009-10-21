@@ -94,7 +94,8 @@ MACRO(PRINTER_VISITOR_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILES OUTPUT PARAM1 
                         COMMAND "${CMAKE_COMMAND}" "-E" "copy_if_different"
                         "${H_OUTPUT_BINARY_DIR}"
                         "${H_OUTPUT_SOURCE_DIR}"
-                         DEPENDS ${HEADER_QUERY} ${SPEC_FILES})
+                         DEPENDS ${HEADER_QUERY} ${SPEC_FILES}
+                         )
   ELSE (ZORBA_WORKS)
     CHECK_OUTPUT_EXISTS("${CPP_OUTPUT_SOURCE_DIR}")
     CHECK_OUTPUT_EXISTS("${H_OUTPUT_SOURCE_DIR}")

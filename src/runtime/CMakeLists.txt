@@ -13,7 +13,7 @@
 # limitations under the License.
 SET(RUNTIME_SRCS)
 
-STRING(LENGTH "${CMAKE_SOURCE_DIR}/src/runtime/spec/" RUNTIME_SPEC_LENGTH)
+#STRING(LENGTH "${CMAKE_SOURCE_DIR}/src/runtime/spec/" RUNTIME_SPEC_LENGTH)
 
 SET(RUNTIME_HEADER_GENERATOR "${CMAKE_SOURCE_DIR}/src/runtime/spec/iterator_h.xq")
 SET(RUNTIME_CPP_GENERATOR    "${CMAKE_SOURCE_DIR}/src/runtime/spec/iterator_cpp.xq")
@@ -23,14 +23,19 @@ SET(PLANINTER_VISITOR_HEADER_GENERATOR    "${CMAKE_SOURCE_DIR}/src/runtime/spec/
 
 FOREACH(SPEC_FILE ${SPEC_FILES})
   STRING(LENGTH ${SPEC_FILE} SPEC_FILE_NAME_LENGTH)
-  MATH(EXPR SPEC_PREFIX_LENGTH "${SPEC_FILE_NAME_LENGTH} - ${RUNTIME_SPEC_LENGTH} - 4")
-  STRING(SUBSTRING ${SPEC_FILE} ${RUNTIME_SPEC_LENGTH} ${SPEC_PREFIX_LENGTH} SPEC_PREFIX)
+  MATH(EXPR SPEC_PREFIX_LENGTH "${SPEC_FILE_NAME_LENGTH} - 4")
+  STRING(SUBSTRING ${SPEC_FILE} 0 ${SPEC_PREFIX_LENGTH} SPEC_PREFIX)
   STRING(REPLACE "/" "_" SPEC_PREFIX_NAME ${SPEC_PREFIX} )
 
+  SET(ABSOLUTE_SPEC_FILE_NAME "${CMAKE_SOURCE_DIR}/src/runtime/spec/${SPEC_FILE}")
+
   RUNTIME_GENERATOR(${RUNTIME_CPP_GENERATOR}
-                    ${RUNTIME_HEADER_GENERATOR} ${SPEC_FILE} 
+                    ${RUNTIME_HEADER_GENERATOR}
+                    "${ABSOLUTE_SPEC_FILE_NAME}"
                     "src/runtime/${SPEC_PREFIX}"
-                    "name:=runtime_${SPEC_PREFIX_NAME}" "input=${SPEC_FILE}" ${ZORBA_WORKS})
+                    "name:=runtime_${SPEC_PREFIX_NAME}"
+                    "input=${ABSOLUTE_SPEC_FILE_NAME}"
+                    ${ZORBA_WORKS})
 
   LIST(APPEND RUNTIME_SRCS 
               "${SPEC_PREFIX}.cpp"
@@ -43,9 +48,9 @@ ENDFOREACH(SPEC_FILE)
 # the printer_visitor.h depends on the planiter_visitor.h file
 PRINTER_VISITOR_GENERATOR(${PRINTER_VISITOR_CPP_VISITOR_GENERATOR}
                           ${PRINTER_VISITOR_HEADER_GENERATOR}
-                          "${SPEC_FILES}"
+                          "${ABSOLUTE_SPEC_FILES}"
                           "src/runtime/visitors/printer_visitor"
-                          "files:=${SPEC_FILES}"
+                          "files:=${ABSOLUTE_SPEC_FILES}"
                           ${ZORBA_WORKS})
 
 LIST(APPEND RUNTIME_SRCS
@@ -54,7 +59,7 @@ LIST(APPEND RUNTIME_SRCS
 )
 
 PLANINTER_VISITOR_GENERATOR(${PLANINTER_VISITOR_HEADER_GENERATOR}
-                            "${SPEC_FILES}"
+                            "${ABSOLUTE_SPEC_FILES}"
                             "src/runtime/visitors/planiter_visitor"
                             "files:=${SPEC_FILES}"
                             ${ZORBA_WORKS})

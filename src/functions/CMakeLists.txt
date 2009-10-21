@@ -19,11 +19,8 @@ SET(CODEGEN_HEADER_GENERATOR              "${CMAKE_SOURCE_DIR}/src/runtime/spec/
 SET(CODEGEN_SOURCE_GENERATOR              "${CMAKE_SOURCE_DIR}/src/runtime/spec/codegen-cpp.xq")
 SET(FUNCTION_HEADER_GENERATOR             "${CMAKE_SOURCE_DIR}/src/runtime/spec/function-enum.xq")
 
-# temp
-#LIST(REMOVE_ITEM SPEC_FILES "${CMAKE_SOURCE_DIR}/src/runtime/spec/strings/strings.xml")
-
 FUNCTION_ENUM_GENERATOR(${FUNCTION_HEADER_GENERATOR}
-                        "${SPEC_FILES}"
+                        "${ABSOLUTE_SPEC_FILES}"
                         "src/functions/function_enum.h"
                         "file-list:=${SPEC_FILES}"
                         ${ZORBA_WORKS})
@@ -36,10 +33,10 @@ FOREACH(SPEC_FILE ${SPEC_FILES})
   STRING(REPLACE ".xml" "" SPEC_PREFIX ${SPEC_FILE_NAME})
 
   CODEGEN_GENERATOR(${CODEGEN_SOURCE_GENERATOR}
-                    ${CODEGEN_HEADER_GENERATOR} ${SPEC_FILE}
+                    ${CODEGEN_HEADER_GENERATOR} "${CMAKE_SOURCE_DIR}/src/runtime/spec/${SPEC_FILE}"
                     "src/functions/${SPEC_PREFIX}"
-                    "file:=${SPEC_FILE}"
-                    "mappings:=${MAPPINGS_SPEC_XML}"
+                    "file:=${CMAKE_SOURCE_DIR}/src/runtime/spec/${SPEC_FILE}"
+                    "mappings:=${CMAKE_SOURCE_DIR}/src/runtime/spec/mappings.xml"
                       ${ZORBA_WORKS})
   LIST(APPEND FUNCTIONS_SRCS
               "${SPEC_PREFIX}.cpp"

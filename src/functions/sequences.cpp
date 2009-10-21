@@ -450,8 +450,8 @@ void populate_context_sequences(static_context* sctx) {
 
   DECL(sctx, op_to,
       (createQName("http://www.w3.org/2005/xpath-functions","fn",":to"),
-      GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
-      GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
+      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION,
+      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_STAR));
 
   DECL(sctx, fn_doc,
