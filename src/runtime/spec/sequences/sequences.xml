@@ -582,8 +582,8 @@
   
   <zorba:function >
     <zorba:signature localname=":to" prefix="fn">
-      <zorba:param>xs:integer</zorba:param>
-      <zorba:param>xs:integer</zorba:param>
+      <zorba:param>xs:integer?</zorba:param>
+      <zorba:param>xs:integer?</zorba:param>
       <zorba:output>xs:integer*</zorba:output>
     </zorba:signature>
   </zorba:function>
