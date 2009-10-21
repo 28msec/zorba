@@ -36,9 +36,9 @@
     
     <zorba:function>
         <zorba:signature localname=":is-same-node" prefix="fn">
-            <zorba:param>node()</zorba:param>
-            <zorba:param>node()</zorba:param>
-            <zorba:output>xs:boolean</zorba:output>
+            <zorba:param>node()?</zorba:param>
+            <zorba:param>node()?</zorba:param>
+            <zorba:output>xs:boolean?</zorba:output>
         </zorba:signature>
     </zorba:function>
     
@@ -60,9 +60,9 @@
     
     <zorba:function>
         <zorba:signature localname=":node-before" prefix="fn">
-            <zorba:param>node()</zorba:param>
-            <zorba:param>node()</zorba:param>
-            <zorba:output>xs:boolean</zorba:output>
+            <zorba:param>node()?</zorba:param>
+            <zorba:param>node()?</zorba:param>
+            <zorba:output>xs:boolean?</zorba:output>
         </zorba:signature>
     </zorba:function>
     
@@ -84,9 +84,9 @@
     
     <zorba:function>
         <zorba:signature localname=":node-after" prefix="fn">
-            <zorba:param>node()</zorba:param>
-            <zorba:param>node()</zorba:param>
-            <zorba:output>xs:boolean</zorba:output>
+            <zorba:param>node()?</zorba:param>
+            <zorba:param>node()?</zorba:param>
+            <zorba:output>xs:boolean?</zorba:output>
         </zorba:signature>
     </zorba:function>
     
