@@ -98,7 +98,7 @@ IF(NOT ZORBA_MINIMAL_STORE)
 #  
 #  ADD_EXECUTABLE(test_store ${TEST_STORE_SRCS})
 #  
-#  TARGET_LINK_LIBRARIES(test_store zorba)
+#  TARGET_LINK_LIBRARIES(test_store zorba_simplestore)
 #  
 
 # # test_index
