@@ -113,7 +113,7 @@ public:
 
   expr_iterator& operator=(const expr_iterator& other);
 
-  expr_iterator &operator++();
+  expr_iterator& operator++();
   expr_iterator operator++(int);
 
   expr_t& operator*();
@@ -123,6 +123,39 @@ public:
 private:
   // comparisson forbidden; use done()
   bool operator==(const expr_iterator& other) { return false; }
+};
+
+
+/*******************************************************************************
+  A class to iterate over the subexpressions of an expr. 
+********************************************************************************/
+class const_expr_iterator 
+{
+private:
+  expr_iterator_data * theIter;
+
+public:
+  const_expr_iterator() : theIter(0) {}
+
+  const_expr_iterator(expr_iterator_data* iter) : theIter(iter) {}
+
+  const_expr_iterator(const const_expr_iterator& other);
+
+  ~const_expr_iterator();
+
+  const_expr_iterator& operator=(const const_expr_iterator& other);
+
+  const_expr_iterator& operator++();
+
+  const_expr_iterator operator++(int);
+
+  const expr* operator*();
+
+  bool done() const;
+
+private:
+  // comparisson forbidden; use done()
+  bool operator==(const const_expr_iterator& other) { return false; }
 };
 
 
@@ -186,21 +219,25 @@ public:
 
   short get_sctx_id() const { return theSctxId; }
 
-  virtual expr_update_t get_update_type() const;
+  bool is_constant() const;
 
-  virtual bool is_updating() const;
-  virtual bool is_sequential() const;
-  virtual bool is_vacuous() const;
-  virtual bool is_simple() const;
-  virtual bool is_updating_or_vacuous() const;
+  expr_update_t get_update_type() const;
+
+  bool is_updating() const;
+  bool is_sequential() const;
+  bool is_vacuous() const;
+  bool is_simple() const;
+  bool is_updating_or_vacuous() const;
 
   virtual void compute_upd_seq_kind() const;
 
-  virtual xqtref_t return_type(static_context* sctx);
+  xqtref_t return_type(static_context* sctx);
 
   virtual xqtref_t return_type_impl(static_context* sctx);
 
-  virtual expr_iterator expr_begin();
+  expr_iterator expr_begin();
+
+  const_expr_iterator expr_begin_const() const;
 
   virtual void next_iter(expr_iterator_data &) = 0;
 
@@ -246,19 +283,30 @@ protected:
 public:
   expr_t * theCurrentChild;
   int      theState;
-  
+  bool     theIsConst;
+
 public:
-  expr_iterator_data(expr* e) : theExpr(e), theCurrentChild(NULL), theState(0) {}
+  expr_iterator_data(expr* e) 
+    :
+    theExpr(e),
+    theCurrentChild(NULL),
+    theState(0),
+    theIsConst(false)
+  {
+  }
 
   virtual ~expr_iterator_data() {}
 
-  virtual void next() { theExpr->next_iter(*this); }
+  void set_const() { theIsConst = true; }
+
+  void next() { theExpr->next_iter(*this); }
 
   bool done() const;
 };
 
-} /* namespace zorba */
-#endif  /*  ZORBA_EXPR_BASE_H */
+
+}
+#endif
 
 /*
  * Local variables:

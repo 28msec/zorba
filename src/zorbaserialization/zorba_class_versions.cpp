@@ -21,7 +21,7 @@
 #include "types/typeimpl.h"
 #define ZORBA_ZORBAUTILS_ITEM_POINTER_HASHMAP_WITH_SERIALIZATION
 #include "zorbautils/hashmap_itemp.h"
-#include "indexing/value_index.h"
+//#include "indexing/value_index.h"
 
 #include "zorbaserialization/serialization_engine.h"
 

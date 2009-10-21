@@ -12,4 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 SET(INDEXING_SRCS
+    value_index.cpp
     index_tools.cpp)

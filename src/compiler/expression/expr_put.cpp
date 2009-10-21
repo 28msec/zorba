@@ -539,7 +539,7 @@ ostream& const_expr::put(ostream& os) const
 {
   os << INDENT << "const_expr" << expr_addr(this) << " "
      << get_val()->getType()->getStringValue()->c_str()
-     << " [ " << val->getStringValue() << " ]\n";
+     << " [ " << theValue->getStringValue() << " ]\n";
   UNDENT;
   return os;
 }

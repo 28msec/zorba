@@ -43,39 +43,11 @@ static xqtref_t create_axis_step_type(
 
 
 
-
-xqtref_t const_expr::return_type_impl(static_context *sctx)
-{
-  xqtref_t type = sctx->get_typemanager()->create_value_type(val.getp());
-
-  return type;
-}
-
-
 xqtref_t flwor_expr::return_type_impl(static_context *sctx) 
 {
   // TODO: quant multiplication
   return sctx->get_typemanager()->create_type(*theReturnExpr->return_type(sctx),
                                               TypeConstants::QUANT_STAR);
-}
-
-
-xqtref_t treat_expr::return_type_impl (static_context *sctx) 
-{
-  xqtref_t input_type = get_input()->return_type (sctx);
-  xqtref_t input_ptype = TypeOps::prime_type(*input_type);
-  xqtref_t target_ptype = TypeOps::prime_type (*theTargetType);
-
-  TypeConstants::quantifier_t q =
-    TypeOps::intersect_quant(TypeOps::quantifier(*input_type),
-                             TypeOps::quantifier(*theTargetType));
-
-  if (TypeOps::is_subtype(*input_ptype, *target_ptype)) 
-  {
-    return sctx->get_typemanager()->create_type(*input_ptype, q);
-  }
-
-  return sctx->get_typemanager()->create_type(*target_ptype, q);
 }
 
 
@@ -675,49 +647,6 @@ xqtref_t text_expr::return_type_impl (static_context *sctx)
                                                    q,
                                                    false,
                                                    false);
-}
-
-  
-xqtref_t promote_expr::return_type_impl (static_context *sctx) 
-{
-  TypeManager *tm = sctx->get_typemanager();
-  xqtref_t in_type = theInputExpr->return_type(sctx),
-    in_ptype = TypeOps::prime_type (*in_type),
-    target_ptype = TypeOps::prime_type(*theTargetType);
-  TypeConstants::quantifier_t q =
-    TypeOps::intersect_quant (TypeOps::quantifier (*in_type),
-                              TypeOps::quantifier (*theTargetType));
-  if (TypeOps::is_subtype(*in_ptype, *target_ptype))
-    return tm->create_type_x_quant (*in_ptype, q);
-
-  // be liberal
-  return tm->create_type_x_quant (*target_ptype, q);
-
-#if 0
-  RootTypeManager& ts = GENV_TYPESYSTEM;
-  // TODO: for nodes, the result would be none
-  if (TypeOps::is_equal (*in_ptype, *ts.UNTYPED_ATOMIC_TYPE_ONE))
-    return tm->create_type_x_quant (*target_ptype, q);
-  
-  // decimal --> float
-  if (TypeOps::is_subtype(*target_ptype, *ts.FLOAT_TYPE_ONE)) {
-    if (TypeOps::is_subtype(*in_ptype, *ts.DECIMAL_TYPE_ONE))
-      return tm->create_type_x_quant (*target_ptype, q);
-  }
-  
-  // decimal/float --> double
-  if (TypeOps::is_subtype(*target_ptype, *ts.DOUBLE_TYPE_ONE)) {
-    if (TypeOps::is_subtype(*in_ptype, *ts.DECIMAL_TYPE_ONE)
-        || TypeOps::is_subtype(*in_ptype, *ts.FLOAT_TYPE_ONE))
-      return tm->create_type_x_quant (*target_ptype, q);
-  }
-  
-  // uri --> string
-  if (TypeOps::is_subtype(*target_ptype, *ts.STRING_TYPE_ONE)) {
-    if (TypeOps::is_subtype(*in_ptype, *ts.ANY_URI_TYPE_ONE))
-      return tm->create_type_x_quant (*target_ptype, q);
-  }
-#endif
 }
 
 

@@ -738,7 +738,7 @@ xqtref_t TypeManagerImpl::create_type(
 
 /***************************************************************************//**
   Create a sequence type whose ItemType is the same as the one of a given type
-  T, and whose quntifier is the union of T's quantifier and another given 
+  T, and whose quantifier is the union of T's quantifier and another given 
   quantifier.
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_type_x_quant(

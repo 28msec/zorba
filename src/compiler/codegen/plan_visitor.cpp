@@ -32,6 +32,7 @@
 #include "compiler/expression/expr.h"
 #include "compiler/expression/expr_visitor.h"
 #include "compiler/parser/parse_constants.h"
+#include "compiler/indexing/value_index.h"
 
 #include "context/namespace_context.h"
 #include "context/static_context.h"
@@ -72,8 +73,6 @@
 #include "debugger/zorba_debugger_commons.h"
 
 #include "functions/function.h"
-
-#include "indexing/value_index.h"
 
 #include "types/typeops.h"
 
@@ -1829,7 +1828,8 @@ void end_visit (cast_expr& v) {
   push_itstack(new CastIterator(sctx, qloc, lChild, v.get_target_type()));
 }
 
-bool begin_visit (name_cast_expr& v) 
+
+bool begin_visit(name_cast_expr& v) 
 {
   CODEGEN_TRACE_IN("");
 
@@ -1851,7 +1851,8 @@ bool begin_visit (name_cast_expr& v)
   return true;
 }
 
-void end_visit (name_cast_expr& v) {
+void end_visit(name_cast_expr& v)
+{
   CODEGEN_TRACE_OUT("");
   PlanIter_t lChild = pop_itstack();
   push_itstack(new NameCastIterator(sctx, qloc, lChild, v.getNamespaceContext()));

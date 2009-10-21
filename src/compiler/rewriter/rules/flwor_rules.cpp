@@ -189,6 +189,12 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       if (pvar != NULL && count_variable_uses(&flwor, pvar, 1) == 0)
         MODIFY(fc->set_pos_var(pvar = NULL));
 
+      if (domainExpr->is_sequential())
+      {
+        ++i;
+        continue;
+      }
+
       if (! is_let) 
       {
         xqtref_t domainType = domainExpr->return_type(sctx);
@@ -199,7 +205,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       if (is_let || quant_cnt < 2) 
       {
         if (quant_cnt == 0)
-          return fo_expr::create_seq (node->get_sctx_id(), LOC(node));
+          return fo_expr::create_seq(node->get_sctx_id(), LOC(node));
 
         if (pvar != NULL)
           MODIFY(subst_vars(rCtx,
@@ -415,7 +421,6 @@ static bool safe_to_fold_single_use(
       }
     }
   }
-
          
   if (flwor.get_where() != NULL &&
       referencingExpr == NULL &&

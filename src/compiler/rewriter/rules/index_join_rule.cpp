@@ -21,7 +21,7 @@
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/expression/expr.h"
 #include "compiler/rewriter/tools/expr_tools.h"
-#include "indexing/value_index.h"
+#include "compiler/indexing/value_index.h"
 
 namespace zorba 
 {

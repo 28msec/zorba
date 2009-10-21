@@ -16,7 +16,7 @@
 #ifndef ZORBA_INDEX_TOOLS_H
 #define ZORBA_INDEX_TOOLS_H
 
-#include "indexing/value_index.h"
+#include "compiler/indexing/value_index.h"
 
 namespace zorba {
 

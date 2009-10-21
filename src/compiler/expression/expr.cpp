@@ -191,24 +191,6 @@ END_SERIALIZABLE_CLASS_VERSIONS(ft_contains_expr)
 SERIALIZABLE_CLASS_VERSIONS(var_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(var_expr)
 
-//SERIALIZABLE_CLASS_VERSIONS(gflwor_clause)
-//END_SERIALIZABLE_CLASS_VERSIONS(gflwor_clause)
-//
-//SERIALIZABLE_CLASS_VERSIONS(where_gclause)
-//END_SERIALIZABLE_CLASS_VERSIONS(where_gclause)
-//
-//SERIALIZABLE_CLASS_VERSIONS(count_gclause)
-//END_SERIALIZABLE_CLASS_VERSIONS(count_gclause)
-//
-//SERIALIZABLE_CLASS_VERSIONS(orderby_gclause)
-//END_SERIALIZABLE_CLASS_VERSIONS(orderby_gclause)
-//
-//SERIALIZABLE_CLASS_VERSIONS(group_gclause)
-//END_SERIALIZABLE_CLASS_VERSIONS(group_gclause)
-//
-//SERIALIZABLE_CLASS_VERSIONS(gflwor_expr)
-//END_SERIALIZABLE_CLASS_VERSIONS(gflwor_expr)
-
 SERIALIZABLE_CLASS_VERSIONS(flwor_clause)
 END_SERIALIZABLE_CLASS_VERSIONS(flwor_clause)
 
@@ -344,16 +326,20 @@ static expr_t* expr_iter_done = &dummy_expr;
 #define END_EXPR_ITER()   v.theCurrentChild = expr_iter_done; }
 
 
-#define ITER( m )                                                \
-do                                                               \
-{                                                                \
-  v.theState = __LINE__;                                         \
-  v.theCurrentChild = reinterpret_cast<expr_t*>(&(m));           \
-                                                                 \
-  if ((m) != NULL) { invalidate(); return; }                     \
-                                                                 \
-  case __LINE__:;                                                \
-                                                                 \
+#define ITER(subExprHandle)                                         \
+do                                                                  \
+{                                                                   \
+  v.theState = __LINE__;                                            \
+  v.theCurrentChild = reinterpret_cast<expr_t*>(&(subExprHandle));  \
+                                                                    \
+  if ((subExprHandle) != NULL)                                      \
+  {                                                                 \
+    if (!v.theIsConst) invalidate();                                \
+    return;                                                         \
+  }                                                                 \
+                                                                    \
+case __LINE__:;                                                     \
+                                                                    \
 } while (0)
 
 
@@ -416,6 +402,61 @@ expr_t& expr_iterator::operator*()
 bool expr_iterator::done() const 
 {
   return iter->done();
+}
+
+
+/*******************************************************************************
+  Class const_expr_iterator
+********************************************************************************/
+const_expr_iterator::const_expr_iterator(const const_expr_iterator& other) 
+  :
+  theIter(new expr_iterator_data(*other.theIter)) 
+{
+}
+
+
+const_expr_iterator::~const_expr_iterator() 
+{
+  delete theIter; 
+}
+
+
+const_expr_iterator& const_expr_iterator::operator=(const const_expr_iterator& other) 
+{
+  if (this != &other)
+  {
+    delete theIter;
+    theIter = new expr_iterator_data(*other.theIter);
+  }
+  return *this;
+}
+
+
+const_expr_iterator& const_expr_iterator::operator++()
+{
+  theIter->next();
+  return *this; 
+}
+
+
+const_expr_iterator const_expr_iterator::operator++(int)
+{
+  const_expr_iterator old;
+  old = *this;
+  ++*this;
+  return old;
+}
+
+
+const expr* const_expr_iterator::operator*()
+{
+  return theIter->theCurrentChild->getp();
+}
+
+
+bool const_expr_iterator::done() const 
+{
+  return theIter->done();
 }
 
 
@@ -536,6 +577,27 @@ void expr::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
+/*******************************************************************************
+  Return true if the expr does not reference any variables.
+********************************************************************************/
+bool expr::is_constant() const
+{
+  if (get_expr_kind() == var_expr_kind) 
+  {
+    return false;
+  }
+
+  for(const_expr_iterator i = expr_begin_const(); !i.done(); ++i) 
+  {
+    if (!(*i)->is_constant()) 
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
+
 expr_update_t expr::get_update_type() const 
 {
   if (is_vacuous())
@@ -602,6 +664,11 @@ void expr::compute_upd_seq_kind() const
 {
   theCache.upd_seq_kind.kind = SIMPLE_EXPR;
   theCache.upd_seq_kind.valid = true;
+
+  for(const_expr_iterator i = expr_begin_const(); !i.done(); ++i) 
+  {
+    checkNonUpdating(*i);
+  }
 }
 
 
@@ -734,11 +801,20 @@ expr_iterator expr::expr_begin()
   return expr_iterator(iter_data);
 }
 
+
+const_expr_iterator expr::expr_begin_const() const 
+{
+  expr_iterator_data* iter_data = const_cast<expr*>(this)->make_iter();
+  iter_data->set_const();
+  iter_data->next();
+  return const_expr_iterator(iter_data);
+}
+
   
 void expr::next_iter(expr_iterator_data& v) 
 {
   BEGIN_EXPR_ITER();
-  ZORBA_ASSERT (false);
+  ZORBA_ASSERT(false);
   END_EXPR_ITER();
 }
 
@@ -784,6 +860,54 @@ string expr::toString() const
 /*******************************************************************************
 
 ********************************************************************************/
+sequential_expr::sequential_expr(short sctx, const QueryLoc& loc)
+  :
+  expr(sctx, loc)
+{
+  compute_upd_seq_kind();
+}
+
+
+sequential_expr::sequential_expr(
+    short sctx,
+    const QueryLoc& loc,
+    expr_t first,
+    expr_t second)
+  :
+  expr(sctx, loc)
+{
+  sequence.push_back(first);
+  sequence.push_back(second);
+  compute_upd_seq_kind();
+}
+
+
+sequential_expr::sequential_expr(
+    short sctx,
+    const QueryLoc& loc,
+    checked_vector<expr_t> seq,
+    expr_t result)
+  :
+  expr(sctx, loc),
+  sequence(seq)
+{
+  sequence.push_back(result);
+  compute_upd_seq_kind();
+}
+
+
+sequential_expr::sequential_expr(
+    short sctx,
+    const QueryLoc& loc,
+    checked_vector<expr_t> seq)
+  :
+  expr(sctx, loc),
+  sequence(seq)
+{
+  compute_upd_seq_kind();
+}
+
+
 void sequential_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);
@@ -1087,6 +1211,25 @@ void treat_expr::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
+xqtref_t treat_expr::return_type_impl(static_context* sctx) 
+{
+  xqtref_t input_type = get_input()->return_type(sctx);
+  xqtref_t input_ptype = TypeOps::prime_type(*input_type);
+  xqtref_t target_ptype = TypeOps::prime_type(*theTargetType);
+
+  TypeConstants::quantifier_t q =
+    TypeOps::intersect_quant(TypeOps::quantifier(*input_type),
+                             TypeOps::quantifier(*theTargetType));
+
+  if (TypeOps::is_subtype(*input_ptype, *target_ptype)) 
+  {
+    return sctx->get_typemanager()->create_type(*input_ptype, q);
+  }
+
+  return sctx->get_typemanager()->create_type(*target_ptype, q);
+}
+
+
 void treat_expr::next_iter(expr_iterator_data& v) 
 {
   BEGIN_EXPR_ITER();
@@ -1117,6 +1260,55 @@ promote_expr::promote_expr(
   :
   cast_base_expr(sctx, loc, input, type)
 {
+}
+
+
+xqtref_t promote_expr::return_type_impl(static_context* sctx) 
+{
+  TypeManager* tm = sctx->get_typemanager();
+
+  xqtref_t in_type = theInputExpr->return_type(sctx);
+  xqtref_t in_ptype = TypeOps::prime_type(*in_type);
+  xqtref_t target_ptype = TypeOps::prime_type(*theTargetType);
+
+  TypeConstants::quantifier_t q =
+    TypeOps::intersect_quant(TypeOps::quantifier(*in_type),
+                             TypeOps::quantifier(*theTargetType));
+
+  if (TypeOps::is_subtype(*in_ptype, *target_ptype))
+    return tm->create_type(*in_ptype, q);
+
+  // be liberal
+  return tm->create_type(*target_ptype, q);
+
+#if 0
+  RootTypeManager& ts = GENV_TYPESYSTEM;
+  // TODO: for nodes, the result would be none
+  if (TypeOps::is_equal (*in_ptype, *ts.UNTYPED_ATOMIC_TYPE_ONE))
+    return tm->create_type_x_quant(*target_ptype, q);
+  
+  // decimal --> float
+  if (TypeOps::is_subtype(*target_ptype, *ts.FLOAT_TYPE_ONE)) 
+  {
+    if (TypeOps::is_subtype(*in_ptype, *ts.DECIMAL_TYPE_ONE))
+      return tm->create_type_x_quant(*target_ptype, q);
+  }
+  
+  // decimal/float --> double
+  if (TypeOps::is_subtype(*target_ptype, *ts.DOUBLE_TYPE_ONE)) 
+  {
+    if (TypeOps::is_subtype(*in_ptype, *ts.DECIMAL_TYPE_ONE) ||
+        TypeOps::is_subtype(*in_ptype, *ts.FLOAT_TYPE_ONE))
+      return tm->create_type_x_quant(*target_ptype, q);
+  }
+  
+  // uri --> string
+  if (TypeOps::is_subtype(*target_ptype, *ts.STRING_TYPE_ONE)) 
+  {
+    if (TypeOps::is_subtype(*in_ptype, *ts.ANY_URI_TYPE_ONE))
+      return tm->create_type_x_quant(*target_ptype, q);
+  }
+#endif
 }
 
 
@@ -1199,7 +1391,7 @@ void castable_expr::next_iter(expr_iterator_data& v)
 }
 
 
-expr_t castable_expr::clone (substitution_t& subst) 
+expr_t castable_expr::clone(substitution_t& subst) 
 {
   return new castable_expr(theSctxId, 
                            get_loc(),
@@ -1236,7 +1428,7 @@ void instanceof_expr::next_iter(expr_iterator_data& v)
 }
 
 
-expr_t instanceof_expr::clone (substitution_t& subst) 
+expr_t instanceof_expr::clone(substitution_t& subst) 
 {
   return new instanceof_expr(theSctxId,
                              get_loc(),
@@ -1258,6 +1450,7 @@ name_cast_expr::name_cast_expr(
   theInputExpr(inputExpr),
   theNCtx(aNCtx) 
 {
+  compute_upd_seq_kind();
 }
 
 
@@ -1305,6 +1498,57 @@ fo_expr* fo_expr::create_seq(short sctx, const QueryLoc& loc)
                                    GENV.getRootStaticContext().lookup_builtin_fn(":" "concatenate", VARIADIC_SIG_SIZE)));
 
   return fo.release();
+}
+
+
+fo_expr::fo_expr(short sctx, const QueryLoc& loc, function* f)
+  :
+  expr(sctx, loc),
+  theFunction(f)
+{
+  assert(f != NULL);
+  compute_upd_seq_kind();
+}
+
+
+fo_expr::fo_expr(short sctx, const QueryLoc& loc, function* f, expr_t arg)
+  :
+  expr(sctx, loc),
+  theFunction(f)
+{
+  assert(f != NULL);
+  theArgs.push_back(arg);
+  
+  compute_upd_seq_kind();
+}
+
+
+fo_expr::fo_expr(short sctx, const QueryLoc& loc, function* f, expr_t arg1, expr_t arg2)
+  :
+  expr(sctx, loc),
+  theFunction(f)
+{
+  assert(f != NULL);
+  theArgs.resize(2);
+  theArgs[0] = arg1;
+  theArgs[1] = arg2;
+  
+  compute_upd_seq_kind();
+}
+
+
+fo_expr::fo_expr(
+    short sctx,
+    const QueryLoc& loc,
+    function* f,
+    const std::vector<expr_t>& args)
+  :
+  expr(sctx, loc),
+  theArgs(args),
+  theFunction(f)
+{
+  assert(f != NULL);
+  compute_upd_seq_kind();
 }
 
 
@@ -1416,6 +1660,35 @@ expr_t fo_expr::clone(substitution_t& subst)
   Normally, it is used to wrap a var_expr in order to represent a var reference
   (see var_expr.h). But it may wrap any other kind of expr as well.
 ********************************************************************************/
+wrapper_expr::wrapper_expr(short sctx, const QueryLoc& loc, expr_t wrapped)
+  :
+  expr(sctx, loc),
+  theWrappedExpr(wrapped)
+{
+  compute_upd_seq_kind();
+}
+
+
+void wrapper_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  ar & theWrappedExpr;
+}
+
+
+void wrapper_expr::compute_upd_seq_kind() const
+{
+  theCache.upd_seq_kind.kind = theWrappedExpr->get_update_type();;
+  theCache.upd_seq_kind.valid = true;  
+}
+
+
+xqtref_t wrapper_expr::return_type_impl(static_context* sctx) 
+{
+  return theWrappedExpr->return_type(sctx);
+}
+
+
 void wrapper_expr::next_iter(expr_iterator_data& v) 
 {
   BEGIN_EXPR_ITER();
@@ -1436,9 +1709,105 @@ expr_t wrapper_expr::clone(substitution_t& subst)
 }
 
 
-xqtref_t wrapper_expr::return_type_impl(static_context* sctx) 
+/***************************************************************************//**
+
+********************************************************************************/
+const_expr::const_expr(short sctx, const QueryLoc& loc, xqpString v)
+  :
+  expr(sctx, loc)
 {
-  return theWrappedExpr->return_type(sctx);
+  xqpStringStore_t tmp = v.getStore();
+  GENV_ITEMFACTORY->createString(theValue, tmp); 
+}
+
+const_expr::const_expr(short sctx, const QueryLoc& loc, xqp_integer v)
+  :
+  expr(sctx, loc)
+{
+  GENV_ITEMFACTORY->createInteger(theValue, v);
+}
+
+const_expr::const_expr(
+    short sctx,
+    const QueryLoc& loc,
+    xqp_decimal v)
+  :
+  expr(sctx, loc)
+{
+  GENV_ITEMFACTORY->createDecimal(theValue, v);
+}
+
+const_expr::const_expr(
+    short sctx,
+    const QueryLoc& loc,
+    xqp_double v)
+  :
+  expr(sctx, loc)
+{
+  GENV_ITEMFACTORY->createDouble(theValue, v);
+}
+
+
+const_expr::const_expr(
+    short sctx,
+    const QueryLoc& loc,
+    xqp_boolean v)
+  :
+  expr(sctx, loc)
+{
+  GENV_ITEMFACTORY->createBoolean(theValue, v);
+}
+
+
+const_expr::const_expr(
+    short sctx,
+    const QueryLoc& loc,
+    store::Item_t v)
+  :
+  expr(sctx, loc),
+  theValue(v)
+{
+}
+
+
+const_expr::const_expr(
+    short sctx,
+    const QueryLoc& aLoc, 
+    const char* aNamespace,
+    const char* aPrefix, 
+    const char* aLocal)
+  :
+  expr(sctx, aLoc)
+{
+  GENV_ITEMFACTORY->createQName(theValue, aNamespace, aPrefix, aLocal);
+}
+
+
+void const_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  ar & theValue;
+}
+
+
+xqtref_t const_expr::return_type_impl(static_context* sctx)
+{
+  xqtref_t type = sctx->get_typemanager()->create_value_type(theValue.getp());
+
+  return type;
+}
+
+
+void const_expr::next_iter(expr_iterator_data& v) 
+{
+  BEGIN_EXPR_ITER();
+  END_EXPR_ITER();
+}
+
+
+expr_t const_expr::clone(substitution_t&) 
+{
+  return new const_expr(theSctxId, get_loc(), get_val());
 }
 
 
@@ -2683,6 +3052,7 @@ void relpath_expr::next_iter (expr_iterator_data& v) {
   END_EXPR_ITER();
 }
 
+
 /*******************************************************************************
 
   [71] [http://www.w3.org/TR/xquery/#prod-xquery-AxisStep]
@@ -2778,83 +3148,6 @@ store::StoreConsts::NodeKind match_expr::getNodeKind() const
   return store::StoreConsts::anyNode;
 }
 
-// [84] [http://www.w3.org/TR/xquery/#prod-xquery-PrimaryExpr]
-
-
-// [85] [http://www.w3.org/TR/xquery/#prod-xquery-PrimaryExpr]
-
-const_expr::const_expr(short sctx, const QueryLoc& loc, xqpString v)
-  :
-  expr(sctx, loc)
-{
-  xqpStringStore_t tmp = v.getStore();
-  GENV_ITEMFACTORY->createString(val, tmp); 
-}
-
-const_expr::const_expr(short sctx, const QueryLoc& loc, xqp_integer v)
-  :
-  expr(sctx, loc)
-{
-  GENV_ITEMFACTORY->createInteger(val, v);
-}
-
-const_expr::const_expr(
-  short sctx,
-  const QueryLoc& loc,
-  xqp_decimal v)
-:
-  expr(sctx, loc)
-{
-  GENV_ITEMFACTORY->createDecimal(val, v);
-}
-
-const_expr::const_expr(
-  short sctx,
-  const QueryLoc& loc,
-  xqp_double v)
-:
-  expr(sctx, loc)
-{
-  GENV_ITEMFACTORY->createDouble(val, v);
-}
-
-const_expr::const_expr(
-  short sctx,
-  const QueryLoc& loc,
-  xqp_boolean v)
-:
-  expr(sctx, loc)
-{
-  GENV_ITEMFACTORY->createBoolean(val, v);
-}
-
-const_expr::const_expr(
-    short sctx,
-    const QueryLoc& loc,
-    store::Item_t v)
-  :
-  expr(sctx, loc),
-  val(v)
-{
-}
-
-const_expr::const_expr(
-    short sctx,
-    const QueryLoc& aLoc, 
-    const char* aNamespace,
-    const char* aPrefix, 
-    const char* aLocal)
-  :
-  expr(sctx, aLoc)
-{
-  GENV_ITEMFACTORY->createQName(val, aNamespace, aPrefix, aLocal);
-}
-
-
-void const_expr::next_iter (expr_iterator_data& v) {
-  BEGIN_EXPR_ITER();
-  END_EXPR_ITER();
-}
 
 
 // [91] [http://www.w3.org/TR/xquery/#prod-xquery-OrderedExpr]
@@ -3152,7 +3445,7 @@ expr_t delete_expr::clone (substitution_t& subst) {
 }
 
 
-// [244] [http://www.w3.org/TR/xqupdate/#prod-xquery-ReplaceExpr]
+
 
 replace_expr::replace_expr(
   short sctx,
@@ -3184,7 +3477,7 @@ expr_t replace_expr::clone (substitution_t& subst) {
   return new replace_expr (theSctxId, get_loc (), getType (), getTargetExpr ()->clone (subst), getReplaceExpr ()->clone (subst));
 }
 
-// [245] [http://www.w3.org/TR/xqupdate/#prod-xquery-RenameExpr]
+
 
 rename_expr::rename_expr(
   short sctx,
@@ -3217,6 +3510,9 @@ expr_t rename_expr::clone (substitution_t& subst)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 copy_clause::copy_clause(rchandle<var_expr> aVar, expr_t aExpr)
   :
   theVar(aVar),
@@ -3237,6 +3533,14 @@ transform_expr::transform_expr(
 	theReturnExpr(aReturnExpr)
 {
 }
+
+
+void transform_expr::compute_upd_seq_kind() const 
+{
+  theCache.upd_seq_kind.kind = SIMPLE_EXPR;
+  theCache.upd_seq_kind.valid = true;
+}
+
 
 expr_iterator_data *transform_expr::make_iter () { return new transform_expr_iterator_data(this); }
 
@@ -3280,10 +3584,6 @@ void while_expr::next_iter (expr_iterator_data& v)
 
 expr_t while_expr::clone (substitution_t& subst) {
   return new while_expr (theSctxId, get_loc (), get_body ()->clone (subst));
-}
-
-expr_t const_expr::clone (substitution_t&) {
-  return new const_expr (theSctxId, get_loc (), get_val ());
 }
 
 

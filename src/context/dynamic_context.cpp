@@ -32,14 +32,13 @@
 #include "context/namespace_context.h"
 
 #include "compiler/expression/var_expr.h"
+#include "compiler/indexing/value_index.h"
 
 #include "types/root_typemanager.h"
 
 #include "runtime/api/plan_wrapper.h"
 
 #include "zorbautils/strutil.h"
-
-#include "indexing/value_index.h"
 
 using namespace std;
 

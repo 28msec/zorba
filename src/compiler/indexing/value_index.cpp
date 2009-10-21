@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "indexing/value_index.h"
 
+#include "compiler/indexing/value_index.h"
 #include "compiler/api/compilercb.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/expr.h"

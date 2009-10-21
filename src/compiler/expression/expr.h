@@ -65,38 +65,13 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  sequential_expr(short sctx, const QueryLoc& loc)
-    :
-    expr(sctx, loc)
-  {
-    compute_upd_seq_kind();
-  }
+  sequential_expr(short, const QueryLoc&);
 
-  sequential_expr(short sctx, const QueryLoc& loc, expr_t first, expr_t second)
-    :
-    expr(sctx, loc)
-  {
-    sequence.push_back(first);
-    sequence.push_back(second);
-    compute_upd_seq_kind();
-  }
+  sequential_expr(short, const QueryLoc&, expr_t first, expr_t second);
 
-  sequential_expr(short sctx, const QueryLoc& loc, checked_vector<expr_t> seq, expr_t result)
-    :
-    expr(sctx, loc),
-    sequence(seq)
-  {
-    sequence.push_back(result);
-    compute_upd_seq_kind();
-  }
+  sequential_expr(short, const QueryLoc&, checked_vector<expr_t> seq, expr_t result);
 
-  sequential_expr(short sctx, const QueryLoc& loc, checked_vector<expr_t> seq)
-    :
-    expr(sctx, loc),
-    sequence(seq)
-  {
-    compute_upd_seq_kind();
-  }
+  sequential_expr(short, const QueryLoc&, checked_vector<expr_t> seq);
 
   expr_kind_t get_expr_kind() const { return sequential_expr_kind; }
 
@@ -258,11 +233,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  cast_expr(
-    short sctx, 
-    const QueryLoc&,
-    expr_t,
-    xqtref_t);
+  cast_expr(short sctx, const QueryLoc&, expr_t, xqtref_t);
 
   expr_kind_t get_expr_kind() const { return cast_expr_kind; }
 
@@ -301,12 +272,12 @@ public:
 
 public:
   treat_expr(
-    short sctx, 
-    const QueryLoc&,
-    expr_t,
-    xqtref_t,
-    XQUERY_ERROR,
-    bool check_prime = true);
+        short sctx, 
+        const QueryLoc&,
+        expr_t,
+        xqtref_t,
+        XQUERY_ERROR,
+        bool check_prime = true);
 
   expr_kind_t get_expr_kind() const { return treat_expr_kind; }
 
@@ -414,11 +385,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  castable_expr(
-        short sctx, 
-        const QueryLoc&,
-        expr_t,
-        xqtref_t);
+  castable_expr(short sctx, const QueryLoc&, expr_t, xqtref_t);
   
   expr_kind_t get_expr_kind() const { return castable_expr_kind; }
 
@@ -445,11 +412,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  instanceof_expr(
-        short sctx, 
-        const QueryLoc&,
-        expr_t,
-        xqtref_t);
+  instanceof_expr(short sctx, const QueryLoc&, expr_t, xqtref_t);
 
   expr_kind_t get_expr_kind() const { return instanceof_expr_kind; }
 
@@ -464,7 +427,14 @@ public:
 
 
 /***************************************************************************//**
+  Casts the result of theInputExpr to a qname item. theInputExpr must return
+  exactly one item. If that item is a qname, it is simply returned to the
+  consumer iterator. If the input item is a string or an untyped item, it is
+  cast, if possible, to qname using the prefix-to-ns bindings in theNCtx.
 
+  This is an internal zorba expr. It is used in the case of computed element or
+  attribute constructors when the name of the element/attribute is not a const
+  expr.
 ********************************************************************************/
 class name_cast_expr : public expr 
 {
@@ -478,11 +448,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  name_cast_expr (
-        short sctx,
-        const QueryLoc&,
-        expr_t,
-        NamespaceContext_t);
+  name_cast_expr(short sctx, const QueryLoc&, expr_t, NamespaceContext_t);
 
   expr_kind_t get_expr_kind() const { return name_cast_expr_kind; }
 
@@ -518,52 +484,18 @@ public:
   static fo_expr* create_seq(short sctx, const QueryLoc &);
 
 public:
-  fo_expr(short sctx, const QueryLoc& loc, function* f)
-    :
-    expr(sctx, loc),
-    theFunction(f)
-  {
-    assert(f != NULL);
-    compute_upd_seq_kind();
-  }
+  fo_expr(short sctx, const QueryLoc& loc, function* f);
 
-  fo_expr(short sctx, const QueryLoc& loc, function* f, expr_t arg)
-    :
-    expr(sctx, loc),
-    theFunction(f)
-  {
-    assert(f != NULL);
-    theArgs.push_back(arg);
+  fo_expr(short sctx, const QueryLoc& loc, function* f, expr_t arg);
 
-    compute_upd_seq_kind();
-  }
+  fo_expr(short sctx, const QueryLoc& loc, function* f, expr_t arg1, expr_t arg2);
 
-  fo_expr(short sctx, const QueryLoc& loc, function* f, expr_t arg1, expr_t arg2)
-    :
-    expr(sctx, loc),
-    theFunction(f)
-  {
-    assert(f != NULL);
-    theArgs.resize(2);
-    theArgs[0] = arg1;
-    theArgs[1] = arg2;
-
-    compute_upd_seq_kind();
-  }
-
-  fo_expr(short sctx, const QueryLoc& loc, function* f, const std::vector<expr_t>& args)
-    :
-    expr(sctx, loc),
-    theArgs(args),
-    theFunction(f)
-  {
-    assert(f != NULL);
-    compute_upd_seq_kind();
-  }
+  fo_expr(short sctx, const QueryLoc& loc, function* f, const std::vector<expr_t>& args);
 
   expr_kind_t get_expr_kind() const { return fo_expr_kind; }
 
   bool cache_compliant() { return true; }
+
 #if 0
   void add(expr_t e) 
   {
@@ -572,6 +504,7 @@ public:
     theArgs.push_back(e); 
   }
 #endif
+
   const function* get_func() const { return theFunction; }
 
   function* get_func() { invalidate(); return theFunction; }
@@ -600,11 +533,11 @@ public:
 
   void next_iter(expr_iterator_data&);
 
-  virtual xqtref_t return_type_impl(static_context* sctx);
+  xqtref_t return_type_impl(static_context* sctx);
 
   void compute_upd_seq_kind() const;
 
-  virtual expr_t clone(substitution_t& s);
+  expr_t clone(substitution_t& s);
 
   void accept(expr_visitor&);
 
@@ -623,25 +556,18 @@ class wrapper_expr : public expr
 public:
   SERIALIZABLE_CLASS(wrapper_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(wrapper_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (expr*)this);
-    ar & theWrappedExpr;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  wrapper_expr(short sctx, const QueryLoc& loc, expr_t wrapped)
-    :
-    expr(sctx, loc),
-    theWrappedExpr(wrapped)
-  {
-  }
+  wrapper_expr(short sctx, const QueryLoc& loc, expr_t wrapped);
 
-  expr_kind_t get_expr_kind () const { return wrapper_expr_kind; }
+  expr_kind_t get_expr_kind() const { return wrapper_expr_kind; }
 
   expr_t get_expr() const { return theWrappedExpr; }
 
   void set_expr(expr* e) { theWrappedExpr = e; }
+
+  void compute_upd_seq_kind() const;
 
   void next_iter(expr_iterator_data&);
 
@@ -649,7 +575,51 @@ public:
 
   xqtref_t return_type_impl(static_context* sctx);
 
-  virtual expr_t clone(substitution_t& s);
+  expr_t clone(substitution_t& s);
+
+  std::ostream& put(std::ostream&) const;
+};
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+class const_expr : public expr 
+{
+protected:
+  store::Item_t theValue;
+
+public:
+  SERIALIZABLE_CLASS(const_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(const_expr, expr)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  const_expr(short sctx, const QueryLoc&, xqpString sval);
+
+  const_expr(short sctx, const QueryLoc&, xqp_integer);
+
+  const_expr(short sctx, const QueryLoc&, xqp_decimal);
+
+  const_expr(short sctx, const QueryLoc&, xqp_double);
+
+  const_expr(short sctx, const QueryLoc&, xqp_boolean);
+
+  const_expr(short sctx, const QueryLoc&, store::Item_t);  
+
+  const_expr(short sctx, const QueryLoc&, const char* ns, const char* pre, const char* local);
+
+  expr_kind_t get_expr_kind() const { return const_expr_kind; }
+
+  store::Item_t get_val() const { return theValue; }
+
+  xqtref_t return_type_impl(static_context* sctx);
+
+  void next_iter(expr_iterator_data&);
+
+  expr_t clone(substitution_t& s);
+
+  void accept(expr_visitor&);
 
   std::ostream& put(std::ostream&) const;
 };
@@ -1253,46 +1223,6 @@ public:
 };
 
 
-
-/***************************************************************************//**
-
-********************************************************************************/
-class const_expr : public expr 
-{
-public:
-  expr_kind_t get_expr_kind () const { return const_expr_kind; }
-protected:
-  store::Item_t val;
-
-public:
-  SERIALIZABLE_CLASS(const_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(const_expr, expr)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (expr*)this);
-    ar & val;
-  }
-public:
-  const_expr(short sctx, const QueryLoc&, xqpString sval);
-  const_expr(short sctx, const QueryLoc&, xqp_integer);
-  const_expr(short sctx, const QueryLoc&, xqp_decimal);
-  const_expr(short sctx, const QueryLoc&, xqp_double);
-  const_expr(short sctx, const QueryLoc&, xqp_boolean);
-  const_expr(short sctx, const QueryLoc&, store::Item_t);  
-  const_expr(short sctx, const QueryLoc&, const char* aNamespace, const char* aPrefix, const char* aLocal);
-
-public:
-  store::Item_t get_val () const { return val; }
-
-public:
-  void next_iter (expr_iterator_data&);
-  void accept (expr_visitor&);
-  std::ostream& put(std::ostream&) const;
-  virtual xqtref_t return_type_impl(static_context *sctx);
-  virtual expr_t clone(substitution_t &s);
-};
-
-
 /***************************************************************************//**
 
 ********************************************************************************/
@@ -1809,9 +1739,11 @@ public:
   expr_kind_t get_expr_kind () const { return transform_expr_kind; }
 
 	expr_t getModifyExpr() const { return theModifyExpr; }
+
 	expr_t getReturnExpr() const { return theReturnExpr; }
 
   void setModifyExpr(expr* e) { theModifyExpr = e; }
+
   void setReturnExpr(expr* e) { theReturnExpr = e; }
 
 	void add_back(rchandle<copy_clause> aCopyClause)
@@ -1841,11 +1773,13 @@ public:
 	size_t size() const
   { return theCopyClauses.size(); }
 
-  expr_iterator_data *make_iter ();
+  void compute_upd_seq_kind() const;
 
-  void next_iter (expr_iterator_data&);
+  expr_iterator_data* make_iter();
 
-  void accept (expr_visitor&);
+  void next_iter(expr_iterator_data&);
+
+  void accept(expr_visitor&);
 
 	std::ostream& put(std::ostream&) const;
 };

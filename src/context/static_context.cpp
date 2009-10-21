@@ -31,6 +31,7 @@
 
 #include "compiler/expression/expr_base.h"
 #include "compiler/expression/var_expr.h"
+#include "compiler/indexing/value_index.h"
 
 #include "zorbautils/strutil.h"
 #define ZORBA_ZORBAUTILS_ITEM_POINTER_HASHMAP_WITH_SERIALIZATION
@@ -54,8 +55,6 @@
 
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
-
-#include "indexing/value_index.h"
 
 
 using namespace std;
@@ -316,6 +315,7 @@ void context::set_default_function_namespace(xqp_string def_fn_ns)
   this->default_function_namespace_internal = def_fn_ns;
 }
 
+
 /*******************************************************************************
   Constructors/Destructor
 ********************************************************************************/
@@ -525,7 +525,8 @@ static_context::serialize_tracestream(serialization::Archiver& ar)
   }
 }
 
-void static_context::serialize(::zorba::serialization::Archiver &ar)
+
+void static_context::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (context*)this);
   SERIALIZE_TYPEMANAGER_RCHANDLE(TypeManager, typemgr);

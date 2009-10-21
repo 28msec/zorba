@@ -31,26 +31,6 @@ namespace zorba {
 #define LOOKUP_FN( pfx, local, arity ) (sCtx->lookup_fn (pfx, local, arity))
 
 
-/*******************************************************************************
-  Return true if the given expr does not reference any variables.
-********************************************************************************/
-static bool isConstant(expr* e)
-{
-  if (e->get_expr_kind() == var_expr_kind) 
-  {
-    return false;
-  }
-
-  for(expr_iterator i = e->expr_begin(); !i.done(); ++i) 
-  {
-    if (!isConstant((*i).getp())) 
-    {
-      return false;
-    }
-  }
-  return true;
-}
-
 
 /*******************************************************************************
   Return true if the given expr is of the form "fn:collection(arg_expr)" where
@@ -68,7 +48,7 @@ static bool isHoistableCollection(expr* e)
     return false;
 
   expr* arg = (*fo)[0].getp();
-  return isConstant(arg);
+  return arg->is_constant();
 }
 
 

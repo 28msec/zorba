@@ -51,8 +51,8 @@
 #include "compiler/api/compiler_api.h"
 #include "compiler/parser/util.h"
 #include "compiler/indexing/index_tools.h"
+#include "compiler/indexing/value_index.h"
 
-#include "indexing/value_index.h"
 #include "context/statically_known_collection.h"
 
 #include "system/globalenv.h"
