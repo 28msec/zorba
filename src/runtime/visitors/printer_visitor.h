@@ -47,6 +47,20 @@ namespace zorba {
 
 #include "runtime/visitors/printer_visitor_impl.h"
 
+    void beginVisit( const CurrentDateTimeIterator& );
+    void endVisit  ( const CurrentDateTimeIterator& );
+
+    void beginVisit( const CurrentDateIterator& );
+    void endVisit  ( const CurrentDateIterator& );
+
+    void beginVisit( const CurrentTimeIterator& );
+    void endVisit  ( const CurrentTimeIterator& );
+
+    void beginVisit( const ImplicitTimezoneIterator& );
+    void endVisit  ( const ImplicitTimezoneIterator& );
+
+    void beginVisit( const DefaultCollationIterator& );
+    void endVisit  ( const DefaultCollationIterator& );
     void beginVisit( const FnConcatIterator& );
     void endVisit  ( const FnConcatIterator& );
 
@@ -121,14 +135,6 @@ namespace zorba {
 
     void beginVisit( const FnParseIterator& );
     void endVisit  ( const FnParseIterator& );
-    void beginVisit( const IsSameNodeIterator& );
-    void endVisit  ( const IsSameNodeIterator& );
-
-    void beginVisit( const NodeBeforeIterator& );
-    void endVisit  ( const NodeBeforeIterator& );
-
-    void beginVisit( const NodeAfterIterator& );
-    void endVisit  ( const NodeAfterIterator& );
     void beginVisit( const NodeNameIterator& );
     void endVisit  ( const NodeNameIterator& );
 
@@ -211,20 +217,25 @@ namespace zorba {
 
     void beginVisit( const FnReplaceIterator& );
     void endVisit  ( const FnReplaceIterator& );
-    void beginVisit( const CurrentDateTimeIterator& );
-    void endVisit  ( const CurrentDateTimeIterator& );
+    void beginVisit( const ZorbaJsonParseIterator& );
+    void endVisit  ( const ZorbaJsonParseIterator& );
 
-    void beginVisit( const CurrentDateIterator& );
-    void endVisit  ( const CurrentDateIterator& );
+    void beginVisit( const ZorbaJsonSerializeIterator& );
+    void endVisit  ( const ZorbaJsonSerializeIterator& );
 
-    void beginVisit( const CurrentTimeIterator& );
-    void endVisit  ( const CurrentTimeIterator& );
+    void beginVisit( const ZorbaJsonMLParseIterator& );
+    void endVisit  ( const ZorbaJsonMLParseIterator& );
 
-    void beginVisit( const ImplicitTimezoneIterator& );
-    void endVisit  ( const ImplicitTimezoneIterator& );
+    void beginVisit( const ZorbaJsonMLSerializeIterator& );
+    void endVisit  ( const ZorbaJsonMLSerializeIterator& );
+    void beginVisit( const IsSameNodeIterator& );
+    void endVisit  ( const IsSameNodeIterator& );
 
-    void beginVisit( const DefaultCollationIterator& );
-    void endVisit  ( const DefaultCollationIterator& );
+    void beginVisit( const NodeBeforeIterator& );
+    void endVisit  ( const NodeBeforeIterator& );
+
+    void beginVisit( const NodeAfterIterator& );
+    void endVisit  ( const NodeAfterIterator& );
 
   }; //class PrinterVisitor
 } //namespace zorba

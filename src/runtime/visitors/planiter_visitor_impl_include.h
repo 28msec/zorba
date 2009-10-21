@@ -206,10 +206,6 @@
 #ifdef ZORBA_WITH_FOP
   class ZorbaFopIterator;
 #endif
-  class ZorbaJsonParseIterator;
-  class ZorbaJsonSerializeIterator;
-  class ZorbaJsonMLParseIterator;
-  class ZorbaJsonMLSerializeIterator;
 
   class ZorbaTimestampIterator;
 

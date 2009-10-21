@@ -33,11 +33,12 @@
 
 #include "zorbautils/strutil.h"
 
+#include "runtime/context/context.h"
 #include "runtime/sequences/sequences.h"
-#include "runtime/booleans/booleans.h"
 #include "runtime/accessors/accessors.h"
 #include "runtime/strings/strings.h"
-#include "runtime/context/context.h"
+#include "runtime/convertors/convertors.h"
+#include "runtime/booleans/booleans.h"
 
 namespace zorba{
 
@@ -81,6 +82,71 @@ void PrinterVisitor::printNameOrKindTest(const AxisIteratorHelper* a) {
   if (a->getTargetPos() >= 0)
     thePrinter.addAttribute("target_position", to_string(a->getTargetPos()));
 }
+
+// <CurrentDateTimeIterator>
+void PrinterVisitor::beginVisit ( const CurrentDateTimeIterator& a) {
+  thePrinter.startBeginVisit("CurrentDateTimeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const CurrentDateTimeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </CurrentDateTimeIterator>
+
+// <CurrentDateIterator>
+void PrinterVisitor::beginVisit ( const CurrentDateIterator& a) {
+  thePrinter.startBeginVisit("CurrentDateIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const CurrentDateIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </CurrentDateIterator>
+
+// <CurrentTimeIterator>
+void PrinterVisitor::beginVisit ( const CurrentTimeIterator& a) {
+  thePrinter.startBeginVisit("CurrentTimeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const CurrentTimeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </CurrentTimeIterator>
+
+// <ImplicitTimezoneIterator>
+void PrinterVisitor::beginVisit ( const ImplicitTimezoneIterator& a) {
+  thePrinter.startBeginVisit("ImplicitTimezoneIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ImplicitTimezoneIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ImplicitTimezoneIterator>
+
+// <DefaultCollationIterator>
+void PrinterVisitor::beginVisit ( const DefaultCollationIterator& a) {
+  thePrinter.startBeginVisit("DefaultCollationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const DefaultCollationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </DefaultCollationIterator>
 
 // <FnConcatIterator>
 void PrinterVisitor::beginVisit ( const FnConcatIterator& a) {
@@ -406,45 +472,6 @@ void PrinterVisitor::endVisit ( const FnParseIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FnParseIterator>
-
-// <IsSameNodeIterator>
-void PrinterVisitor::beginVisit ( const IsSameNodeIterator& a) {
-  thePrinter.startBeginVisit("IsSameNodeIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const IsSameNodeIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </IsSameNodeIterator>
-
-// <NodeBeforeIterator>
-void PrinterVisitor::beginVisit ( const NodeBeforeIterator& a) {
-  thePrinter.startBeginVisit("NodeBeforeIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const NodeBeforeIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </NodeBeforeIterator>
-
-// <NodeAfterIterator>
-void PrinterVisitor::beginVisit ( const NodeAfterIterator& a) {
-  thePrinter.startBeginVisit("NodeAfterIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const NodeAfterIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </NodeAfterIterator>
 
 // <NodeNameIterator>
 void PrinterVisitor::beginVisit ( const NodeNameIterator& a) {
@@ -810,70 +837,96 @@ void PrinterVisitor::endVisit ( const FnReplaceIterator& ) {
 }
 // </FnReplaceIterator>
 
-// <CurrentDateTimeIterator>
-void PrinterVisitor::beginVisit ( const CurrentDateTimeIterator& a) {
-  thePrinter.startBeginVisit("CurrentDateTimeIterator", ++theId);
+// <ZorbaJsonParseIterator>
+void PrinterVisitor::beginVisit ( const ZorbaJsonParseIterator& a) {
+  thePrinter.startBeginVisit("ZorbaJsonParseIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const CurrentDateTimeIterator& ) {
+void PrinterVisitor::endVisit ( const ZorbaJsonParseIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </CurrentDateTimeIterator>
+// </ZorbaJsonParseIterator>
 
-// <CurrentDateIterator>
-void PrinterVisitor::beginVisit ( const CurrentDateIterator& a) {
-  thePrinter.startBeginVisit("CurrentDateIterator", ++theId);
+// <ZorbaJsonSerializeIterator>
+void PrinterVisitor::beginVisit ( const ZorbaJsonSerializeIterator& a) {
+  thePrinter.startBeginVisit("ZorbaJsonSerializeIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const CurrentDateIterator& ) {
+void PrinterVisitor::endVisit ( const ZorbaJsonSerializeIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </CurrentDateIterator>
+// </ZorbaJsonSerializeIterator>
 
-// <CurrentTimeIterator>
-void PrinterVisitor::beginVisit ( const CurrentTimeIterator& a) {
-  thePrinter.startBeginVisit("CurrentTimeIterator", ++theId);
+// <ZorbaJsonMLParseIterator>
+void PrinterVisitor::beginVisit ( const ZorbaJsonMLParseIterator& a) {
+  thePrinter.startBeginVisit("ZorbaJsonMLParseIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const CurrentTimeIterator& ) {
+void PrinterVisitor::endVisit ( const ZorbaJsonMLParseIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </CurrentTimeIterator>
+// </ZorbaJsonMLParseIterator>
 
-// <ImplicitTimezoneIterator>
-void PrinterVisitor::beginVisit ( const ImplicitTimezoneIterator& a) {
-  thePrinter.startBeginVisit("ImplicitTimezoneIterator", ++theId);
+// <ZorbaJsonMLSerializeIterator>
+void PrinterVisitor::beginVisit ( const ZorbaJsonMLSerializeIterator& a) {
+  thePrinter.startBeginVisit("ZorbaJsonMLSerializeIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const ImplicitTimezoneIterator& ) {
+void PrinterVisitor::endVisit ( const ZorbaJsonMLSerializeIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </ImplicitTimezoneIterator>
+// </ZorbaJsonMLSerializeIterator>
 
-// <DefaultCollationIterator>
-void PrinterVisitor::beginVisit ( const DefaultCollationIterator& a) {
-  thePrinter.startBeginVisit("DefaultCollationIterator", ++theId);
+// <IsSameNodeIterator>
+void PrinterVisitor::beginVisit ( const IsSameNodeIterator& a) {
+  thePrinter.startBeginVisit("IsSameNodeIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const DefaultCollationIterator& ) {
+void PrinterVisitor::endVisit ( const IsSameNodeIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </DefaultCollationIterator>
+// </IsSameNodeIterator>
+
+// <NodeBeforeIterator>
+void PrinterVisitor::beginVisit ( const NodeBeforeIterator& a) {
+  thePrinter.startBeginVisit("NodeBeforeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const NodeBeforeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </NodeBeforeIterator>
+
+// <NodeAfterIterator>
+void PrinterVisitor::beginVisit ( const NodeAfterIterator& a) {
+  thePrinter.startBeginVisit("NodeAfterIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const NodeAfterIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </NodeAfterIterator>
 
 
 }

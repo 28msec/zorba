@@ -68,7 +68,6 @@ LIST(APPEND RUNTIME_SRCS
     base/plan_iterator.cpp
     booleans/BooleanImpl.cpp
     collections/CollectionsImpl.cpp
-    convertors/ConvertorsImpl.cpp
     core/arithmetic_impl.cpp
     core/constructors.cpp
     core/flwor_iterator.cpp

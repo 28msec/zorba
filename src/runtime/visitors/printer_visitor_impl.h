@@ -276,10 +276,6 @@
   DECLARE_VISITOR (DebuggerSingletonIterator);
   DECLARE_VISITOR (HoistIterator);
   DECLARE_VISITOR (UnhoistIterator);
-  DECLARE_VISITOR (ZorbaJsonParseIterator);
-  DECLARE_VISITOR (ZorbaJsonSerializeIterator);
-  DECLARE_VISITOR (ZorbaJsonMLParseIterator);
-  DECLARE_VISITOR (ZorbaJsonMLSerializeIterator);
 
   DECLARE_VISITOR (AttributeAxisIterator)
   DECLARE_VISITOR (ParentAxisIterator)

@@ -26,6 +26,7 @@
 #include "functions/accessors_impl.h"
 #include "functions/booleans.h"
 #include "functions/booleans_impl.h"
+#include "functions/convertors.h"
 #include "functions/context.h"
 #include "functions/strings.h"
 #include "functions/strings_impl.h"
@@ -47,7 +48,6 @@
 #include "functions/InternalOperators.h"
 #include "functions/Index.h"
 #include "functions/Alexis.h"
-#include "functions/Convertors.h"
 #include "functions/XQDocFunctions.h"
 #include "functions/Rest.h"
 #include "functions/Email.h"
@@ -75,6 +75,7 @@ void BuiltinFunctionLibrary::populateContext(static_context* sctx)
   populate_context_accessors_impl(sctx);
   populate_context_booleans(sctx);
   populate_context_booleans_impl(sctx);
+  populate_context_convertors(sctx);
   populate_context_strings(sctx);
   populate_context_strings_impl(sctx);
   populate_context_sequences(sctx);
@@ -100,7 +101,6 @@ void BuiltinFunctionLibrary::populateContext(static_context* sctx)
   populateContext_Alexis(sctx);
   populateContext_Rest(sctx);
   populateContext_Email(sctx);
-  populateContext_JSON(sctx);
   populateContext_FOP(sctx);
   populateContext_XQDOC(sctx);
 

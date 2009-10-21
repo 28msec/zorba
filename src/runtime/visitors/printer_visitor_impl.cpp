@@ -55,7 +55,6 @@
 #include "debugger/zorba_debugger_commons.h"
 #include "runtime/collections/CollectionsImpl.h"
 #include "runtime/util/UtilImpl.h"
-#include "runtime/convertors/ConvertorsImpl.h"
 #include "context/static_context.h"
 #include "context/namespace_context.h"
 
@@ -1232,10 +1231,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION(DebuggerSingletonIterator);
   PRINTER_VISITOR_DEFINITION(HoistIterator);
   PRINTER_VISITOR_DEFINITION(UnhoistIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaJsonParseIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaJsonSerializeIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaJsonMLParseIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaJsonMLSerializeIterator);
 
   PRINTER_VISITOR_AXIS_DEFINITION (AttributeAxisIterator)
   PRINTER_VISITOR_AXIS_DEFINITION (ParentAxisIterator)

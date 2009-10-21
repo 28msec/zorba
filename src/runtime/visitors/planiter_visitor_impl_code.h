@@ -467,10 +467,6 @@
 #ifdef ZORBA_WITH_FOP
 	PLAN_ITER_VISITOR(ZorbaFopIterator);
 #endif // ZORBA_WITH_FOP
-  PLAN_ITER_VISITOR(ZorbaJsonParseIterator);
-  PLAN_ITER_VISITOR(ZorbaJsonSerializeIterator);
-  PLAN_ITER_VISITOR(ZorbaJsonMLParseIterator);
-  PLAN_ITER_VISITOR(ZorbaJsonMLSerializeIterator);
 
   PLAN_ITER_VISITOR(ZorbaTimestampIterator);
 

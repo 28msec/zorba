@@ -57,7 +57,6 @@ LIST(APPEND FUNCTIONS_SRCS
     Alexis.cpp
     arithmetic.cpp
     Collections.cpp
-    Convertors.cpp
     DateTime.cpp
     EnclosedExpr.cpp
     external_function_adapters.cpp

@@ -20,40 +20,16 @@
 
 #include "context/static_context.h"
 
-#include "compiler/api/compilercb.h"
+#include "runtime/convertors/convertors.h"
 
-#include "runtime/convertors/ConvertorsImpl.h"
-#include "runtime/api/runtimecb.h"
 #include "runtime/visitors/planiter_visitor.h"
 
 #include "store/api/item_factory.h"
 
+#include "runtime/convertors/convertors.h"
+
 
 namespace zorba {
-//Json
-SERIALIZABLE_CLASS_VERSIONS(ZorbaJsonParseIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ZorbaJsonParseIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(ZorbaJsonSerializeIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ZorbaJsonSerializeIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(ZorbaJsonMLParseIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ZorbaJsonMLParseIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(ZorbaJsonMLSerializeIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ZorbaJsonMLSerializeIterator)
-
-
-NARY_ACCEPT (ZorbaJsonParseIterator);
-
-NARY_ACCEPT (ZorbaJsonSerializeIterator);
-
-NARY_ACCEPT (ZorbaJsonMLParseIterator);
-
-NARY_ACCEPT (ZorbaJsonMLSerializeIterator);
-
-
-
 bool
 ZorbaJsonParseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -61,8 +37,8 @@ ZorbaJsonParseIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   bool              parseOK = true;
   store::Item_t     strItem;
 
-  FnJsonParseIteratorState *state;
-  DEFAULT_STACK_INIT(FnJsonParseIteratorState, state, planState);
+  ZorbaJsonParseIteratorState *state;
+  DEFAULT_STACK_INIT(ZorbaJsonParseIteratorState, state, planState);
 
   if( state->theBaseUri.empty() )
     state->theBaseUri = theSctx->final_baseuri();
@@ -95,18 +71,6 @@ ZorbaJsonParseIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   }
 
   STACK_END (state);
-}
-
-void
-FnJsonParseIteratorState::init(PlanState& planState) {
-  PlanIteratorState::init(planState);
-  theBaseUri = xqp_string();
-}
-
-void
-FnJsonParseIteratorState::reset(PlanState& planState) {
-  PlanIteratorState::reset(planState);
-  theBaseUri = xqp_string();
 }
 
 bool
@@ -146,8 +110,8 @@ ZorbaJsonMLParseIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   bool              parseOK = true;
   store::Item_t     strItem;
 
-  FnJsonMLParseIteratorState *state;
-  DEFAULT_STACK_INIT(FnJsonMLParseIteratorState, state, planState);
+  ZorbaJsonMLParseIteratorState *state;
+  DEFAULT_STACK_INIT(ZorbaJsonMLParseIteratorState, state, planState);
 
   if( state->theBaseUri.empty() )
     state->theBaseUri = theSctx->final_baseuri();
@@ -177,18 +141,6 @@ ZorbaJsonMLParseIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   }
 
   STACK_END (state);
-}
-
-void
-FnJsonMLParseIteratorState::init(PlanState& planState) {
-  PlanIteratorState::init(planState);
-  theBaseUri = xqp_string();
-}
-
-void
-FnJsonMLParseIteratorState::reset(PlanState& planState) {
-  PlanIteratorState::reset(planState);
-  theBaseUri = xqp_string();
 }
 
 bool
