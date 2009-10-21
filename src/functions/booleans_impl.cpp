@@ -365,37 +365,6 @@ DECL_ALL_SPECIFIC_GENERAL_OPS(LESS_EQUAL, less_equal, "less-equal");
  
 
 /*******************************************************************************
-  Node Comparison
-********************************************************************************/
-
-class op_is_same_node : public function 
-{
-public:
-  op_is_same_node( const signature &sig) : function(sig) {}
-
-  DEFAULT_NARY_CODEGEN (IsSameNodeIterator)
-};
-  
-
-class op_node_before : public function 
-{
-public:
-  op_node_before( const signature &sig) : function(sig) {}
-
-  DEFAULT_NARY_CODEGEN (NodeBeforeIterator)
-};
-  
-
-class op_node_after : public function 
-{
-public:
-  op_node_after( const signature &sig) : function(sig) {}
-
-  DEFAULT_NARY_CODEGEN (NodeAfterIterator)
-};
-
-
-/*******************************************************************************
   Logic Operators (and/or)
 ********************************************************************************/
 
@@ -592,27 +561,6 @@ DECL(sctx, op_less_equal,
 #undef DECL_TYPED_VAL
 
 // end Value Comparison
-
-// Node Comparison
-DECL(sctx, op_is_same_node,
-     (createQName(XQUERY_FN_NS,"fn", ":is-same-node"),
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
-
-DECL(sctx, op_node_before,
-     (createQName(XQUERY_FN_NS,"fn", ":node-before"),
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
-
-DECL(sctx, op_node_after,
-     (createQName(XQUERY_FN_NS,"fn", ":node-after"),
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
-
-// end Node Comparson
 
 }
 
