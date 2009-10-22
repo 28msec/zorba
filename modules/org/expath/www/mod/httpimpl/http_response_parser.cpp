@@ -28,7 +28,20 @@ namespace zorba { namespace http_client {
 
   void HttpResponseParser::parse()
   {
+    theStreamBuffer->setInformer(this);
     theStreamBuffer->multi_perform();
+  }
+
+  void HttpResponseParser::beforeRead()
+  {
+    std::vector<std::pair<std::string, std::string> >::iterator lIter;
+    for (lIter = theHeaders.begin(); lIter != theHeaders.end(); ++lIter) {
+      theHandler.header(lIter->first, lIter->second);
+    }
+  }
+
+  void HttpResponseParser::afterRead()
+  {
   }
 
   void HttpResponseParser::registerHandler()
@@ -58,9 +71,10 @@ namespace zorba { namespace http_client {
     std::string lName = lData.substr(0, lPos);
     std::string lValue = lData.substr(lPos + 1);
     if (lName == "Content-Type") {
-      lParser->theCurrentContentType = lName;
+      lParser->theCurrentContentType = lValue;
     }
-    lParser->theHandler.header(lName, lValue);
+    lParser->theHeaders.push_back(
+      std::pair<std::string, std::string>(lName, lValue));
     return lSize;
   }
 }}

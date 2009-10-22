@@ -1,8 +1,10 @@
 #include "curl_stream_buffer.h"
+#include "inform_data_read.h"
 
 namespace zorba { namespace http_client {
   CurlStreamBuffer::CurlStreamBuffer(CURLM* aMultiHandle, CURL* aEasyHandle)
-    : std::streambuf(), MultiHandle(aMultiHandle), EasyHandle(aEasyHandle)
+    : std::streambuf(), MultiHandle(aMultiHandle), EasyHandle(aEasyHandle),
+    theInformer(0)
   {
     CurlErrorBuffer = new char[CURLOPT_ERRORBUFFER];
     memset(CurlErrorBuffer, 0, CURLOPT_ERRORBUFFER);
@@ -46,8 +48,14 @@ namespace zorba { namespace http_client {
   size_t CurlStreamBuffer::write_callback(char* buffer, size_t size, size_t nitems, void* userp)
   {
     CurlStreamBuffer* sbuffer = static_cast<CurlStreamBuffer*>(userp);
+    if (sbuffer->theInformer != 0) {
+      sbuffer->theInformer->beforeRead();
+    }
     size_t result = sbuffer->sputn(buffer, size*nitems);
     sbuffer->setg(sbuffer->eback(), sbuffer->gptr(), sbuffer->pptr());
+    if (sbuffer->theInformer != 0) {
+      sbuffer->theInformer->afterRead();
+    }
     return result;
   }
 
@@ -84,5 +92,10 @@ namespace zorba { namespace http_client {
   const char* CurlStreamBuffer::getErrorBuffer() const
   {
     return CurlErrorBuffer;
+  }
+
+  void CurlStreamBuffer::setInformer( InformDataRead* aInformer )
+  {
+    theInformer = aInformer;
   }
 }} //namespace zorba, http_client

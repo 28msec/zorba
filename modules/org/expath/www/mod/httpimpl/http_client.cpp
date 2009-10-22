@@ -12,7 +12,7 @@
 
 namespace zorba {
 namespace http_client {
-  class HttpSendFunction : public StatelessExternalFunction {
+  class HttpSendFunction : public NonePureStatelessExternalFunction {
   protected:
     const ExternalModule*     theModule;
     ItemFactory*              theFactory;
@@ -33,11 +33,10 @@ namespace http_client {
     virtual String
     getLocalName() const { return "http-send-request-impl"; }
 
-    virtual bool
-      isDeterministic() const { return true; }
-
     virtual ItemSequence_t 
-    evaluate(const StatelessExternalFunction::Arguments_t& args) const 
+      evaluate(const StatelessExternalFunction::Arguments_t& args,
+      const StaticContext* aStaticContext, const DynamicContext* aDynamicContext)
+      const 
     {
       CURL* lCURL = curl_easy_init();
       
@@ -48,7 +47,7 @@ namespace http_client {
 
       bool lReqSet = args[0]->next(lRequest);
       bool lHrefSet = args[1]->next(lHref);
-      args[2]->next(lContent);
+      bool lContentSet = args[2]->next(lContent);
       bool lSerialSet = args[3]->next(lSerial);
 
       std::string lData;
@@ -58,7 +57,7 @@ namespace http_client {
         HttpRequestHandler lHandler(lCURL, args[2], lSerialString);
         RequestParser lParser(&lHandler);
         lParser.parse(lRequest);
-      } else {
+      } else if (lContentSet) {
         std::stringstream lSerStream;
         if (lSerialSet && lSerial.getStringValue() == "text") {
           lSerStream << lContent.getStringValue();

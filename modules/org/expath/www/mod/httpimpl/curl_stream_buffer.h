@@ -6,6 +6,7 @@
 #include <curl/curl.h>
 
 namespace zorba { namespace http_client {
+  class InformDataRead;
   class CurlStreamBuffer : public std::streambuf
   {
   public:
@@ -15,6 +16,7 @@ namespace zorba { namespace http_client {
     virtual int overflow(int c);
     virtual int underflow();
     int multi_perform();
+    void setInformer(InformDataRead* aInformer);
 
     const char* getErrorBuffer() const;
 
@@ -22,6 +24,7 @@ namespace zorba { namespace http_client {
     char* CurlErrorBuffer;
     CURLM* MultiHandle;
     CURL* EasyHandle;
+    InformDataRead *theInformer;
 
     // callback called by curl
     static size_t

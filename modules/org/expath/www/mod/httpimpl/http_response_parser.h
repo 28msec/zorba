@@ -5,11 +5,13 @@
 
 #include <curl/curl.h>
 
+#include "inform_data_read.h"
+
 namespace zorba {namespace http_client {
   class RequestHandler;
   class CurlStreamBuffer;
 
-  class HttpResponseParser {
+  class HttpResponseParser : public InformDataRead {
   private:
     RequestHandler& theHandler;
     CURL* theCurl;
@@ -23,6 +25,8 @@ namespace zorba {namespace http_client {
     HttpResponseParser(RequestHandler& aHandler, CURL* aCurl);
     virtual ~HttpResponseParser();
     void parse();
+    virtual void beforeRead();
+    virtual void afterRead();
   private:
     void registerHandler();
   public: //Handler

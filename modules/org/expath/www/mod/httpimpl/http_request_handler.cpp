@@ -146,7 +146,7 @@ namespace zorba { namespace http_client {
     std::string lData = theSerStream->str();
     if (!theInsideMultipart) {
       curl_easy_setopt(theCurl, CURLOPT_POSTFIELDSIZE, lData.length());
-      curl_easy_setopt(theCurl, CURLOPT_COPYPOSTFIELDS, lData.c_str());
+      curl_easy_setopt(theCurl, CURLOPT_POSTFIELDS, lData.c_str());
     } else {
       curl_formadd(&thePost, &theLast, CURLFORM_COPYCONTENTS, lData.c_str(),
         CURLFORM_CONTENTSLENGTH, lData.length(),
