@@ -11,6 +11,7 @@ namespace zorba { namespace http_client {
   //////////////////////////////////////////////////////////////////////////
 
   HttpResponseIterator::HttpResponseIterator()
+    : theIndex(0)
   {
     // Set an empty item as the response item
     theItems.push_back(Item());
@@ -18,17 +19,16 @@ namespace zorba { namespace http_client {
 
   HttpResponseIterator::~HttpResponseIterator()
   {
-    theIterator = theItems.begin();
   }
 
   bool HttpResponseIterator::next( Item& aItem )
   {
-    if (theIterator == theItems.end()) {
-      return false;
+    if (theIndex < theItems.size()) {
+      aItem = theItems[theIndex];
+      ++theIndex;
+      return true;
     }
-    aItem = *theIterator;
-    ++theIterator;
-    return true;
+    return false;
   }
 
   void HttpResponseIterator::addItem(const Item& aItem)
@@ -40,7 +40,6 @@ namespace zorba { namespace http_client {
   {
     theItems[0] = aItem;
   }
-
   //////////////////////////////////////////////////////////////////////////
   // HttpResponseHandler
   //////////////////////////////////////////////////////////////////////////

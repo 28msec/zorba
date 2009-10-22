@@ -35,7 +35,7 @@ namespace zorba { namespace http_client {
     String lUsername;
     String lPassword;
     String lAuthMethod;
-    bool lSendAuthorization;
+    bool lSendAuthorization = false;
     String lOverrideContentType;
     bool lFollowRedirect = false;
     int lTimeout = -1;
@@ -80,7 +80,7 @@ namespace zorba { namespace http_client {
 
   bool RequestParser::handleResponse( const Item aItem )
   {
-    int lStatus;
+    int lStatus = 0;
     String lMessage;
 
     Iterator_t lIter = aItem.getAttributes();

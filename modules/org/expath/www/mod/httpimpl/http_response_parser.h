@@ -18,9 +18,12 @@ namespace zorba {namespace http_client {
     CURLM* theMulti;
     std::string theCurrentContentType;
     std::vector<std::pair<std::string, std::string> > theHeaders;
-    long theStatus;
+    int theStatus;
     std::string theMessage;
     CurlStreamBuffer* theStreamBuffer;
+    std::string theId;
+    std::string theDescription;
+    bool theInsideRead;
   public:
     HttpResponseParser(RequestHandler& aHandler, CURL* aCurl);
     virtual ~HttpResponseParser();
@@ -29,6 +32,7 @@ namespace zorba {namespace http_client {
     virtual void afterRead();
   private:
     void registerHandler();
+    void parseStatusAndMessage(std::string aHeader);
   public: //Handler
     static size_t writefunction(void* ptr, size_t size, size_t nmemb,
       void* stream);

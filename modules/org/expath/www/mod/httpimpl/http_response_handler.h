@@ -14,7 +14,7 @@ namespace http_client {
   class HttpResponseIterator : public ItemSequence {
   private:
     std::vector<Item> theItems;
-    std::vector<Item>::iterator theIterator;
+    std::vector<Item>::size_type theIndex;
   public:
     HttpResponseIterator();
     virtual ~HttpResponseIterator();
