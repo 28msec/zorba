@@ -98,9 +98,6 @@ namespace http_client {
     virtual StatelessExternalFunction*
     getExternalFunction(String aLocalname) const
     {
-      if (aLocalname != "send-request") {
-        return 0;
-      }
       return theFunction;
     }
 

@@ -26,7 +26,7 @@ module namespace http = "http://www.expath.org/mod/http-client";
 
 import module namespace httpclientimpl = "http://www.expath.org/mod/httpclientimpl";
 
-import schema namespace http = "http://www.expath.org/mod/http-client" at "file:///C:/Projects/zorba_current/modules/org/expath/www/mod/http-client.xsd";
+import schema namespace https = "http://www.expath.org/mod/http-client" at "file:///C:/Projects/zorba_current/modules/org/expath/www/mod/http-client.xsd";
 
 (:~
  : This function sends an HTTP request and returns the corresponding 
@@ -43,7 +43,7 @@ import schema namespace http = "http://www.expath.org/mod/http-client" at "file:
  :  and OPTIONS. 
 :)
 declare function http:send-request(
-    $request as element(http:request, http:requestType)?,
+    $request as element(https:request, https:requestType)?,
     $href as xs:string?,
     $content as item()?,
     $serial as item()?) as item()+ {
@@ -68,7 +68,7 @@ declare function http:send-request(
  : @see http://www.expath.org/mod/http-client;send-request
 :)
 declare function http:send-request (
-    $request as element(http:request, http:requestType)) as item()+ {
+    $request as element(https:request, https:requestType)) as item()+ {
     http:send-request($request,(),(),())
 };
 
@@ -79,7 +79,7 @@ declare function http:send-request (
  : @see http://www.expath.org/mod/http-client;send-request
 :)
 declare function http:send-request(
-    $request as element(http:request, http:requestType)?,
+    $request as element(https:request, https:requestType)?,
     $href as xs:string?) as item()+ {
     http:send-request($request,$href,(),())  
 };
@@ -91,7 +91,7 @@ declare function http:send-request(
  : @see http://www.expath.org/mod/http-client;send-request
 :)
 declare function http:send-request(
-    $request as element(http:request, http:requestType)?,
+    $request as element(https:request, https:requestType)?,
     $href as xs:string?,
     $content as item()?) as item()+ {
     http:send-request($request,$href,$content,())

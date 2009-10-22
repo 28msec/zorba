@@ -28,7 +28,7 @@ namespace zorba { namespace http_client {
 
   void HttpResponseParser::parse()
   {
-    int code = theStreamBuffer->multi_perform();
+    theStreamBuffer->multi_perform();
   }
 
   void HttpResponseParser::registerHandler()
