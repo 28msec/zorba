@@ -17,9 +17,11 @@
 SET(SRCS 
       httpimpl/http_client.cpp
       httpimpl/request_parser.cpp
+      httpimpl/request_handler.cpp
       httpimpl/http_request_handler.cpp
       httpimpl/http_response_handler.cpp
-      httpimpl/http_response_parser.cpp)
+      httpimpl/http_response_parser.cpp
+      httpimpl/curl_stream_buffer.cpp)
 ADD_LIBRARY(httpclientimpl SHARED ${SRCS})
 TARGET_LINK_LIBRARIES(httpclientimpl zorba_simplestore)
 SET_TARGET_PROPERTIES(httpclientimpl PROPERTIES VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})  

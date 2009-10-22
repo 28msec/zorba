@@ -48,8 +48,10 @@ namespace http_client {
 
       bool lReqSet = args[0]->next(lRequest);
       bool lHrefSet = args[1]->next(lHref);
-      bool lContentSet = args[2]->next(lContent);
+      args[2]->next(lContent);
       bool lSerialSet = args[3]->next(lSerial);
+
+      std::string lData;
 
       if (lReqSet) {
         String lSerialString = lSerialSet ? lSerial.getStringValue() : "";
@@ -63,17 +65,18 @@ namespace http_client {
         } else {
           lContent.serialize(lSerStream);
         }
-        std::string lData = lSerStream.str();
+        lData = lSerStream.str();
         curl_easy_setopt(lCURL, CURLOPT_POSTFIELDSIZE, lData.length());
-        curl_easy_setopt(lCURL, CURLOPT_COPYPOSTFIELDS, lData.c_str());
+        curl_easy_setopt(lCURL, CURLOPT_POSTFIELDS, lData.c_str());
       }
       if (lHrefSet) {
         curl_easy_setopt(lCURL, CURLOPT_URL, lHref.getStringValue().c_str());
       }
+      curl_easy_setopt(lCURL, CURLOPT_USERAGENT, "libcurl-agent/1.0");
       HttpResponseHandler lRespHandler(theFactory);
+      //This gives the ownership of lCurl to the HttpResponseParser
       HttpResponseParser lRespParser(lRespHandler, lCURL);
       lRespParser.parse();
-      curl_easy_cleanup(lCURL);
       return ItemSequence_t(lRespHandler.getResult());
     }
   }; // class http_request

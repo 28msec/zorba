@@ -8,6 +8,8 @@ class Item;
 namespace http_client {
   class RequestHandler {
   public:
+    virtual ~RequestHandler();
+  public:
     virtual void begin() = 0;
     virtual void beginResponse(int aStatus, String aMessage) = 0;
     virtual void endResponse() = 0;

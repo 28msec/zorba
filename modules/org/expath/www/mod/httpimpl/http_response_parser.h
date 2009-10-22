@@ -7,18 +7,21 @@
 
 namespace zorba {namespace http_client {
   class RequestHandler;
+  class CurlStreamBuffer;
 
   class HttpResponseParser {
   private:
     RequestHandler& theHandler;
     CURL* theCurl;
+    CURLM* theMulti;
     std::string theCurrentContentType;
     std::vector<std::pair<std::string, std::string> > theHeaders;
-    bool theIsInsideMultipart;
     long theStatus;
     std::string theMessage;
+    CurlStreamBuffer* theStreamBuffer;
   public:
     HttpResponseParser(RequestHandler& aHandler, CURL* aCurl);
+    virtual ~HttpResponseParser();
     void parse();
   private:
     void registerHandler();
