@@ -15,6 +15,7 @@
  */
 #ifndef ZORBA_ITEM_FACTORY_API_H
 #define ZORBA_ITEM_FACTORY_API_H
+#include <vector>
 
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
@@ -499,9 +500,76 @@ namespace zorba {
        */
       virtual Item
       createUnsignedShort(unsigned short aValue) = 0;
-    
-    
-  }; /* class ItemFactory */
+
+      /**
+      * @brief Creates a new element node.
+      *
+      * Create a new element node N and place it at the  end among the
+      * children of a given parent node. If no parent is given, N becomes the
+      * root (and single node) of a new XML tree. 
+      *
+      * @param aParent        The parent P of the new node; may be NULL.
+      * @param aNodeName      The fully qualified name of the new node.
+      * @param aTypeName      The fully qualified name of the new node's type.
+      * @param aHasTypedValue Whether the node has a typed value or not (element
+      *                       nodes with complex type and element-only content do
+      *                       not have typed value).
+      * @param aHasEmptyValue True if the typed value of the node is the empty
+      *                       sequence. This is the case if the element has a
+      *                       complex type with empty content.
+      * @param aLocalBindings A set of namespace bindings. The namespaces property
+      *                       of N will be the union of this set and the namespaces 
+      *                       property of P.
+      * @return               The new node N created by this method
+      */
+      virtual Item
+      createElementNode(Item& aParent,
+                        Item aNodeName,
+                        Item aTypeName,
+                        bool aHasTypedValue,
+                        bool aHasEmptyValue,
+                        std::vector<std::pair<String, String> > aNsBindings) = 0;
+
+      /**
+      * Create a new attribute node N and place it among the
+      * attributes of a given parent node. If no parent is given, N becomes the
+      * root (and single node) of a new XML tree. 
+      *
+      * @param aParent     The parent P of the new node; may be NULL.
+      * @param aNodeName   The fully qualified name of the new node. The nemaspace
+      *                    binding implied by this name will be added to the namespaces
+      *                    of P. If the name prefix is "xml" and the local name is
+      *                    "base", then the base-uri property of P will be set or
+      *                    updated accordingly.
+      * @param aTypeName   The fully qualified name of the new node's type.
+      * @param aTypedValue The typed value of the new node.
+      * @return            The new node N created by this method
+      */
+      virtual Item
+      createAttributeNode(Item aParent,
+                          Item aNodeName,
+                          Item aTypeName,
+                          Item aTypedValue) = 0;
+
+      virtual Item
+        createAttributeNode(Item aParent,
+        Item aNodeName,
+        Item aTypeName,
+        std::vector<Item> aTypedValue) = 0;
+
+      /**
+      * Create a new text node N and place it among the
+      * children of a given parent node. If no parent is given, N becomes the
+      * root (and single node) of a new XML tree. 
+      *
+      * @param parent  The parent P of the new node; may be NULL.
+      * @param content The content of the new node.
+      * @return        The new node N created by this method
+      */
+      virtual Item createTextNode(
+        Item   parent,
+        String content) = 0;
+}; /* class ItemFactory */
 
 } /* namespace zorba */
 #endif

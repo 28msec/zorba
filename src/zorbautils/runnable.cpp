@@ -82,11 +82,16 @@ void zorba::Runnable::terminate()
   finishImpl();
 }
 
-void zorba::Runnable::suspend()
+void zorba::Runnable::suspend(unsigned long aTimeInMs /*= 0*/)
 {
 #ifdef WIN32
   theStatus = SUSPENDED;
-  SuspendThread(theThread);
+  if (aTimeInMs != 0) {
+    DWORD lTime = aTimeInMs;
+    WaitForSingleObject(theThread, lTime);
+  } else {
+    SuspendThread(theThread);
+  }
 #else
   theMutex.lock();
   pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);

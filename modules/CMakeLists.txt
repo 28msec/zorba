@@ -15,6 +15,7 @@
 # all external module libraries are generated in the directory
 # of the corresponding .xq file
 ADD_SUBDIRECTORY(com)
+ADD_SUBDIRECTORY(org)
 
 IF (CMAKE_MINOR_VERSION STREQUAL "4")
   INSTALL(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}

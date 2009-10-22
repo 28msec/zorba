@@ -29,7 +29,7 @@ namespace zorba {
 
   void Timeout::run()
   {
-    sleep(theTimeout);
+    suspend(1000*theTimeout);
     theWrapper.doBreak();
   }
 

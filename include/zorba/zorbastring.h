@@ -141,6 +141,18 @@ public:
   bool
   operator>=(const String& str) const;
 
+  String
+  operator+(const String& str) const;
+
+  String
+  operator+(const char* str) const;
+  
+  String&
+  operator+=(const String& str);
+
+  String&
+  operator+=(const char* str);
+
   /** \brief Byte by byte comparison of two strings.
    *
    */  
@@ -168,11 +180,17 @@ public:
   bool
   endsWith(const char* pattern) const;
 
-  /** \brief Append characters onto "this".
+  /** \brief Creates a new String with this as prefix and suffix as suffix.
    *
-   */  
-  const String&
-  append(const char* suffix);
+   */
+  String
+  append(const char* suffix) const;
+
+  /** \brief Creates a new String with this as prefix and suffix as suffix.
+  *
+  */
+  String
+  append(const String& suffix) const;
 
   /** \brief Convert to uppercase.
    *

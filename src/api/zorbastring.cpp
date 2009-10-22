@@ -160,6 +160,28 @@ String::operator>=(const String& str) const
   return compare(str) >= 0;
 }
 
+zorba::String String::operator+(const String& str) const
+{
+  return append(str);
+}
+
+zorba::String String::operator+(const char* str) const
+{
+  return append(str);
+}
+
+zorba::String& String::operator+=(const String& str)
+{
+  m_string = m_string->append(str.m_string);
+  return *this;
+}
+
+zorba::String& String::operator+=(const char* str)
+{
+  m_string = m_string->append(str);
+  return *this;
+}
+
 bool
 String::byteEqual(const char* aString, unsigned int aBytes) const
 {
@@ -184,20 +206,14 @@ String::endsWith(const char* pattern) const
   return m_string->endsWith( pattern );
 }
 
-const String&
-String::append(const char* suffix)
+zorba::String String::append( const char* suffix ) const
 {
-  xqpStringStore_t res = m_string->append( suffix );
-  if (m_string != res) {
-    if (m_string != NULL) {
-      RCHelper::removeReference(m_string);
-    }
-    m_string = res;
-    if (m_string != NULL) {
-      RCHelper::addReference(m_string);
-    }
-  }
-  return *this;
+  return String(m_string->append(suffix));
+}
+
+zorba::String String::append( const String& suffix ) const
+{
+  return String(m_string->append(suffix.m_string));
 }
 
 const String&

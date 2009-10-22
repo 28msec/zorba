@@ -181,6 +181,30 @@ namespace zorba {
       virtual Item
       createUnsignedShort(unsigned short aValue);
 
+      virtual Item
+      createElementNode(Item& aParent,
+                        Item aNodeName,
+                        Item aTypeName,
+                        bool aHasTypedValue,
+                        bool aHasEmptyValue,
+                        std::vector<std::pair<String, String> > aNsBindings);
+
+      virtual Item
+      createAttributeNode(Item aParent,
+        Item aNodeName,
+        Item aTypeName,
+        Item aTypedValue);
+
+      virtual Item
+      createAttributeNode(Item aParent,
+        Item aNodeName,
+        Item aTypeName,
+        std::vector<Item> aTypedValue);
+
+      virtual Item createTextNode(
+        Item   parent,
+        String content);
+
     protected:
       store::ItemFactory* theItemFactory;
 

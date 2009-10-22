@@ -10,6 +10,10 @@ version 1.0 (coming)
       retrieving registered uri resolvers or trace streams.
       Moreover, the callback is used for retrieving ExternalModules
       which have been used when compiling the query.
+		* Changed the append function in zorba::String to const. Now, the function
+		  does not change the String itself, but returns a new String. Furgthermore
+			zorba::String::append can now handle other zorba::String objects - not only
+			const char*. Also the operators + and += are defined on zorba::String.
   * Resolving of modules is now enhanced by the so called "Zorba Module Path".
     Moreover, multiple ModuleURIResolvers can be registered in one StaticContext.
     See the documentation for more information.

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request xmlns:test="http://www.example.com/test" method="POST" xmlns="http://www.expath.org/mod/http-client">
+  <header name="test" value="test"/>
+  <multipart content-type="text/html" boundary="------">
+    <header name="bla" value="test"/>
+    <header name="bla" value="test"/>
+    <header name="bla" value="test"/>
+    <body content-type="text/html">
+      bla<a>test</a>
+    </body>
+    <header name="bla" value="test"/>
+    <header name="bla" value="test"/>
+    <header name="bla" value="test"/>
+    <body content-type="text/html">
+      test
+    </body>
+  </multipart>
+</request>

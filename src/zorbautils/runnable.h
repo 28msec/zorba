@@ -56,7 +56,7 @@ public:
     terminate();
 
     void
-    suspend();
+    suspend(unsigned long aTimeInMs = 0);
 
     void
     resume();

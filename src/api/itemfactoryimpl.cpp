@@ -15,6 +15,7 @@
  */
 #define  __STDC_LIMIT_MACROS
 #include <zorba/item.h>
+#include <zorba/zorbastring.h>
 #include "zorbaerrors/errors.h"
 #include "api/itemfactoryimpl.h"
 
@@ -548,4 +549,82 @@ namespace zorba {
     theItemFactory->createUnsignedShort(lItem, aValue);
     return &*lItem;
   }
-} /* namespace zorba */
+
+  zorba::Item
+  ItemFactoryImpl::createElementNode(Item& aParent,
+                                     Item aNodeName,
+                                     Item aTypeName,
+                                     bool aHasTypedValue,
+                                     bool aHasEmptyValue,
+                                     std::vector<std::pair<String, String> >
+                                      aNsBindings )
+  {
+    store::Item_t lItem;
+    store::Item_t lNodeName = Unmarshaller::getInternalItem(aNodeName);
+    store::Item_t lTypeName = Unmarshaller::getInternalItem(aTypeName);
+    store::NsBindings lNsBindings;
+    
+    std::vector<std::pair<String, String> >::iterator lIter;
+    for (lIter = aNsBindings.begin(); lIter != aNsBindings.end(); ++lIter) {
+      xqpStringStore_t lFirst = Unmarshaller::getInternalString(lIter->first);
+      xqpStringStore_t lSecond = Unmarshaller::getInternalString(lIter->second);
+      lNsBindings.push_back(
+        std::pair<xqpStringStore_t, xqpStringStore_t>(lFirst, lSecond));
+    }
+
+    xqpStringStore_t lBaseUri = NULL;
+    theItemFactory->createElementNode(lItem,
+      Unmarshaller::getInternalItem(aParent),
+      -1,
+      lNodeName,
+      lTypeName,
+      aHasTypedValue,
+      aHasEmptyValue,
+      lNsBindings,
+      lBaseUri);
+    return &*lItem;
+  }
+
+  zorba::Item ItemFactoryImpl::createAttributeNode(Item aParent,
+                                                   Item aNodeName,
+                                                   Item aTypeName,
+                                                   Item aTypedValue)
+  {
+    store::Item_t lItem;
+    store::Item_t lNodeName = Unmarshaller::getInternalItem(aNodeName);
+    store::Item_t lTypeName = Unmarshaller::getInternalItem(aTypeName);
+    store::Item_t lTypedValue = Unmarshaller::getInternalItem(aTypedValue);
+    theItemFactory->createAttributeNode(lItem,
+      Unmarshaller::getInternalItem(aParent), -1, lNodeName, lTypeName,
+      lTypedValue);
+    return &*lItem;
+  }
+
+  zorba::Item ItemFactoryImpl::createAttributeNode(Item aParent,
+                                                   Item aNodeName,
+                                                   Item aTypeName,
+                                                   std::vector<Item> aTypedValue )
+  {
+    store::Item_t lItem;
+    store::Item_t lNodeName = Unmarshaller::getInternalItem(aNodeName);
+    store::Item_t lTypeName = Unmarshaller::getInternalItem(aTypeName);
+    std::vector<store::Item_t> lTypedValue;
+    std::vector<Item>::iterator lIter;
+    for (lIter = aTypedValue.begin(); lIter != aTypedValue.end(); ++lIter) {
+      lTypedValue.push_back(Unmarshaller::getInternalItem(*lIter));
+    }
+    theItemFactory->createAttributeNode(lItem,
+      Unmarshaller::getInternalItem(aParent), -1, lNodeName, lTypeName,
+      lTypedValue);
+    return &*lItem;
+  }
+
+  zorba::Item ItemFactoryImpl::createTextNode(Item parent, String content)
+  {
+    store::Item_t lItem;
+    xqpStringStore_t lContent = Unmarshaller::getInternalString(content);
+    theItemFactory->createTextNode(lItem, Unmarshaller::getInternalItem(parent),
+      -1, lContent);
+    return &*lItem;
+  }
+} //namespace zorba

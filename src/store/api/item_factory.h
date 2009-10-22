@@ -516,19 +516,19 @@ public:
    * attributes of a given parent node. If no parent is given, N becomes the
    * root (and single node) of a new XML tree. 
    *
-   * @param result   The new node N created by this method
-   * @param parent   The parent P of the new node; may be NULL.
-   * @param pos      The position, among the attributes of P, that N will occupy.
-   *                 If pos < 0 or pos >= current number of P's attributes, then
-   *                 N is appended to the list of attributes.
-   * @param nodeName The fully qualified name of the new node. The nemaspace
-   *                 binding implied by this name will be added to the namespaces
-   *                 of P. If the name prefix is "xml" and the local name is
-   *                 "base", then the base-uri property of P will be set or
-   *                 updated accordingly.
-   * @param typeName The fully qualified name of the new node's type.
+   * @param result     The new node N created by this method
+   * @param parent     The parent P of the new node; may be NULL.
+   * @param pos        The position, among the attributes of P, that N will occupy.
+   *                   If pos < 0 or pos >= current number of P's attributes, then
+   *                   N is appended to the list of attributes.
+   * @param nodeName   The fully qualified name of the new node. The nemaspace
+   *                   binding implied by this name will be added to the namespaces
+   *                   of P. If the name prefix is "xml" and the local name is
+   *                   "base", then the base-uri property of P will be set or
+   *                   updated accordingly.
+   * @param typeName   The fully qualified name of the new node's type.
    * @param typedValue The typed value of the new node.
-   * @return         Always true (if any errors occur, the method throws exceptions)
+   * @return           Always true (if any errors occur, the method throws exceptions)
    */
   virtual bool createAttributeNode(
         Item_t&              result,

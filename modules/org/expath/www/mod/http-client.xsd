@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ - Copyright 2006-2008 The FLWOR Foundation.
+ -
+ - Licensed under the Apache License, Version 2.0 (the "License");
+ - you may not use this file except in compliance with the License.
+ - You may obtain a copy of the License at
+ -
+ - http://www.apache.org/licenses/LICENSE-2.0
+ -
+ - Unless required by applicable law or agreed to in writing, software
+ - distributed under the License is distributed on an "AS IS" BASIS,
+ - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ - See the License for the specific language governing permissions and
+ - limitations under the License.
+-->
+<schema targetNamespace="http://www.expath.org/mod/http-client"
+        elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema"
+        xmlns:http="http://www.expath.org/mod/http-client">
+  <annotation xml:lang="en">
+    <documentation>
+      This schema defines the type used by the XQuery http module
+      http://www.expath.org/mod/http-client.
+    </documentation>
+  </annotation>
+  <complexType name="requestType">
+    <annotation>
+      <documentation xml:lang="en">
+        This type defines a request. An element of this type can be used to make
+        an http request with the XQuery module
+        http://www.expath.org/mod/http-client.
+      </documentation>
+    </annotation>
+    <sequence>
+      <element name="header" type="http:headerType" minOccurs="0"
+        maxOccurs="unbounded">
+        <annotation xml:lang="en">
+          <documentation>
+            Several http headers can be defined inside a http request.
+          </documentation>
+        </annotation>
+      </element>
+      <choice>
+        <annotation xml:lang="en">
+          <documentation>
+            The user has the choice to create either a multipart request or a
+            normal request (postRequest).
+          </documentation>
+        </annotation>
+        <element name="multipart" type="http:multipartType" minOccurs="0"
+                 maxOccurs="1">
+          <annotation xml:lang="en">
+            <documentation>
+              Represents a multi-part body, either in a request or a response,
+              as defined below.
+            </documentation>
+          </annotation>
+        </element>
+        <element name="body" type="http:bodyType" minOccurs="0" maxOccurs="1">
+          <annotation xml:lang="en">
+            <documentation>
+              Represents a multi-part body, either in a request or a response,
+              as defined below. It can be overridden by the parameter $content
+              (the way $content is used to build the body can be controlled by
+              the parameter $serial, see section below for details.)
+            </documentation>
+          </annotation>
+        </element>
+      </choice>
+    </sequence>
+    <attribute name="method" type="NCName" use="required">
+      <annotation xml:lang="en">
+        <documentation>
+          Is the http verb to use, as GET, POST, etc. It is case insensitive.
+        </documentation>
+      </annotation>
+    </attribute>
+    <attribute name="href" type="anyURI" use="optional">
+      <annotation xml:lang="en">
+        <documentation>
+          Is the URI the request has to be sent to. It can be overridden by the
+          parameter $href.
+        </documentation>
+      </annotation>
+    </attribute>
+    <attribute name="status-only" type="boolean" use="optional">
+      <annotation xml:lang="en">
+        <documentation>
+          Control how the response will look like; if true, only the
+          status code and the headers are returned, the content is not (neither
+          http:body, http:multipart, nor the interpreted additional value in
+          the returned sequence, see hereafter.)
+        </documentation>
+      </annotation>
+    </attribute>
+    <attribute name="username" type="string" use="optional">
+      <annotation xml:lang="en">
+        <documentation>
+          HTTP authentication when sending a request is controlled by the
+          attributes username, password, auth-method and send-authorization
+          on the element http:request. If username has a value, password and
+          auth-method must have a value too. And if any one of the three other
+          attributes have been set, username must be set too.
+        </documentation>
+      </annotation>
+    </attribute>
+    <attribute name="password" type="string" use="optional">
+      <annotation xml:lang="en">
+        <documentation>
+          HTTP authentication when sending a request is controlled by the
+          attributes username, password, auth-method and send-authorization
+          on the element http:request. If username has a value, password and
+          auth-method must have a value too. And if any one of the three other
+          attributes have been set, username must be set too.
+        </documentation>
+      </annotation>
+    </attribute>
+    <attribute name="send-authorization" type="boolean"
+      use="optional">
+      <annotation xml:lang="en">
+        <documentation>
+          HTTP authentication when sending a request is controlled by the
+          attributes username, password, auth-method and send-authorization
+          on the element http:request. If username has a value, password and
+          auth-method must have a value too. And if any one of the three other
+          attributes have been set, username must be set too.
+        </documentation>
+      </annotation>
+    </attribute>
+    <attribute name="override-content-type" type="string"
+      use="optional">
+      <annotation xml:lang="en">
+        <documentation>
+          Is a MIME type. It can be used only with http:request, and will
+          override the Content-Type header returned by the server.
+        </documentation>
+      </annotation>
+    </attribute>
+    <attribute name="follow-redirect" type="string" use="optional">
+      <annotation xml:lang="en">
+        <documentation>
+          Control whether an http redirect is automatically followed or not. If
+          it is false, the http redirect is returned as the response. If it is
+          true (the default) the function tries to follow the redirect, by
+          sending the same request to the new address (including body, headers,
+          and authentication credentials.) Maximum one redirect is followed
+          (there is no attempt to follow a redirect in response to following a
+          first redirect.)
+        </documentation>
+      </annotation>
+    </attribute>
+    <attribute name="timeout" type="integer" use="optional">
+      <annotation xml:lang="en">
+        <documentation>
+          Is the maximum number of seconds to wait for the server to respond. If
+          this time duration is reached, an error is thrown.
+        </documentation>
+      </annotation>
+    </attribute>
+  </complexType>
+
+  <element name="request" type="http:requestType">
+    <annotation xml:lang="en">
+      <documentation>
+        An element to be used to make an http request with the
+        http://www.expath.org/mod/http-client module.
+      </documentation>
+    </annotation>
+  </element>
+
+  <complexType name="headerType">
+    <annotation xml:lang="en">
+      <documentation>
+        This type represents a key value pair of a header element.
+      </documentation>
+    </annotation>
+    <attribute name="name" type="string">
+      <annotation xml:lang="en">
+        <documentation>
+          The key of the key/value pair.
+        </documentation>
+      </annotation>
+    </attribute>
+    <attribute name="value" type="string">
+      <annotation xml:lang="en">
+        <documentation>
+          The value of the key/value pair.
+        </documentation>
+      </annotation>
+    </attribute>
+  </complexType>
+
+  <complexType name="bodyType" mixed="true">
+    <annotation xml:lang="en">
+      <documentation>
+        The http:body element represents the body of either an HTTP request or
+        of an HTTP response (in multi-part requests and responses, it represents
+        the body of a single one part.)
+      </documentation>
+    </annotation>
+    <sequence>
+      <any namespace="##any" minOccurs="0" maxOccurs="unbounded" processContents="skip"></any>
+    </sequence>
+    <attribute name="content-type" type="string" use="required"/>
+    <attribute name="encoding" type="string" use="optional"/>
+    <attribute name="id" type="string" use="optional"/>
+    <attribute name="description" type="string" use="optional"/>
+    <attribute name="src" type="anyURI" use="optional"/>
+  </complexType>
+
+  <complexType name="multipartType">
+    <annotation xml:lang="en">
+      <documentation>
+        The http:multipart element represents an multi-part request or
+        response. The content-type attribute is the media type of the
+        request or response, and has to be a multipart media type (that is, its
+        main type must be multipart.) The boundary attribute is the boundary
+        marker used to separate the several parts in the message (the value of
+        the attribute is prefixed with "--" to form the actual boundary marker
+        in the request; on the other way, this prefix is removed from the
+        boundary marker in the response to set the value of the attribute.)
+      </documentation>
+    </annotation>
+    <sequence>
+      <sequence minOccurs="1" maxOccurs="unbounded">
+        <element name="header" type="http:headerType" minOccurs="0" maxOccurs="unbounded"/>
+        <element name="body" type="http:bodyType" minOccurs="1" maxOccurs="1"/>
+      </sequence>
+    </sequence>
+    <attribute name="content-type" type="string" use="required"></attribute>
+    <attribute name="boundary" type="string" use="required"></attribute>
+  </complexType>
+
+  <complexType name="responseType">
+    <annotation xml:lang="en">
+      <documentation>
+        This is the first item returned by the function defined in this module.
+        The status attribute is the http status code returned by the server, and
+        message is the message coming with the status on the status line. The
+        http:header elements are as defined for the request, but represent
+        instead the response headers. The http:body and http:multipart elements
+        are also like in the request, but http:body elements must be empty.
+      </documentation>
+    </annotation>
+    <sequence>
+      <element name="header" type="http:headerType" minOccurs="0"
+        maxOccurs="unbounded">
+      </element>
+      <choice>
+        <element name="multipart" type="http:multipartType" minOccurs="0"
+          maxOccurs="1">
+        </element>
+        <element name="body" type="http:bodyType" minOccurs="0" maxOccurs="1"></element>
+      </choice>
+    </sequence>
+    <attribute name="status" type="integer" use="required"></attribute>
+    <attribute name="message" type="string" use="required"></attribute>
+  </complexType>
+
+  <element name="response" type="http:responseType"/>
+</schema>
