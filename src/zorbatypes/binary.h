@@ -59,6 +59,7 @@ public:
 
   static void encode(const std::vector<char>&, std::vector<char>&);
   static xqpString encode(std::istream& aStream);
+  static void encode(std::istream& aStream, Base64& aResult);
   static void encode(const xqpStringStore* aString, Base64&);
 
   static void decode(const std::vector<char>&, std::vector<char>&);

@@ -125,7 +125,16 @@ namespace zorba {
     
     return &*lItem;
   }
-      
+
+  zorba::Item ItemFactoryImpl::createBase64Binary(std::istream& aStream)
+  {
+    Base64 lBase64;
+    Base64::encode(aStream, lBase64);
+    store::Item_t lResult;
+    theItemFactory->createBase64Binary(lResult, lBase64);
+    return &*lResult;
+  }
+
   Item 
   ItemFactoryImpl::createBoolean(bool aValue)
   {

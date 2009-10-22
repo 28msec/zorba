@@ -16,6 +16,8 @@
 #ifndef ZORBA_ITEM_FACTORY_IMPL_H
 #define ZORBA_ITEM_FACTORY_IMPL_H
 
+#include <istream>
+
 #include <zorba/item_factory.h>
 
 #include <zorba/api_shared_types.h>
@@ -51,6 +53,9 @@ namespace zorba {
     
       virtual Item 
       createBase64Binary(const char* aBinData, size_t aLength);
+
+      virtual Item
+      createBase64Binary(std::istream& aStream);
       
       virtual Item 
       createBoolean(bool aValue);

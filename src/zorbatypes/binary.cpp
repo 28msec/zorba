@@ -187,6 +187,17 @@ xqpString Base64::encode(std::istream& aStream)
     xqpResult.append_in_place(result[i]);
   return xqpResult;
 }
+
+void Base64::encode( std::istream& aStream, Base64& aResult )
+{
+  std::vector<char> source, result;
+
+  while (aStream.good())
+    source.push_back((char)(aStream.get()));
+
+  encode(source, result);
+  aResult.theData = result;
+}
     
 void Base64::encode(const xqpStringStore* aString, Base64& aResult)
 {
