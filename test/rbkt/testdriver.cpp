@@ -299,7 +299,7 @@ main(int argc, char** argv)
       if( errors == UNEXPECTED_ERROR )
         return 6;
       std::cout << "testdriver: success" << std::endl;
-      return 0;
+      continue;
     } 
     // no compilation errors
 
@@ -431,6 +431,7 @@ main(int argc, char** argv)
       std::cout << "=== end of result ===" << std::endl;
       std::cout.flush();
       size_t i = 1;
+      bool lResultMatches = false;
       for (std::vector<zorba::file>::const_iterator lIter = lRefFiles.begin();
            lIter != lRefFiles.end(); ++lIter) 
       {
@@ -444,7 +445,8 @@ main(int argc, char** argv)
         {
           std::cout << "testdriver: success (non-canonical result # " << i 
                     << " matches)" << std::endl;
-          return 0;
+          lResultMatches = true;
+          break;
         }
 
         std::cout << "testdriver: non-canonical result for reference result # " 
@@ -458,17 +460,22 @@ main(int argc, char** argv)
         {
           std::cout << "testdriver: success (canonical result # " << i  
                     << " matches)" << std::endl;
-          return 0;
+          lResultMatches = true;
+          break;
         }
         std::cout << "testdriver: canonical result for reference result # " << i 
                   << " doesn't match." << std::endl;
         ++i;
       } // for 
-      
-      std::cout << "testdriver: none of the reference results matched" << std::endl;
-      return 8;
+
+      if (lResultMatches) {
+        continue; // in case there are more queries, we have to execute all of them
+      } else {
+        std::cout << "testdriver: none of the reference results matched" << std::endl;
+        return 8;
+      }
     }
-  }
+  } // for (int testcnt = 1; i < argc; ++i, ++testcnt)
   std::cout << "testdriver: success" << std::endl;
   return 0;
 }
