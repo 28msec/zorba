@@ -51,44 +51,46 @@ namespace zorba {
 
 #define END true
 
-directory::dir_iterator directory::begin()
+dir_iterator
+directory::begin()
 {
-  return directory::dir_iterator(path);
+  return dir_iterator(getPathString());
 }
 
-directory::dir_iterator directory::end()
+dir_iterator
+directory::end()
 {
-  return directory::dir_iterator(path, END);
+  return dir_iterator(getPathString(), END);
 }
 
-directory::dir_iterator::dir_iterator(
-	string const& path,
-	bool end_iterator)
-
+dir_iterator::dir_iterator(
+    string const& path,
+    bool end_iterator)
 :
-	dirpath(path)
-#if ! defined (WIN32) 
-	,dirent(0)
+  	dirpath(path)
+#ifndef WIN32
+	  ,dirent(0)
 #endif
 {
-#if ! defined (WIN32) 
+#ifndef WIN32
 	dir = opendir(path.c_str());
   if (dir==0) {
-    error(__FUNCTION__, "opendir failed on "+dirpath);
+      std::string lMsg = "opendir failed on " + dirpath;
+      ZORBA_ERROR_DESC( XQP0011_SYSTEM_FILE_ERROR_IN_FUNCTION, lMsg);
 	}
   if (!end_iterator) operator++();
 #else
-	if(!end_iterator)
-	{
-		if((*path.end() == '/') || (*path.end() == '\\'))
-			win32_dir = FindFirstFile((LPCTSTR)(path+"\\*.*").c_str(), &win32_direntry);
-		else
-			win32_dir = FindFirstFile((LPCTSTR)(path+"*.*").c_str(), &win32_direntry);
-		if(win32_dir == INVALID_HANDLE_VALUE)
-			error(__FUNCTION__, "opendir failed on "+dirpath);
-	}
-	else
-	{
+	if(!end_iterator) {
+		win32_dir = FindFirstFile((LPCTSTR)(path + "\\*.*").c_str(), &win32_direntry);
+    if(win32_dir == INVALID_HANDLE_VALUE) {
+      std::string lMsg = "opendir failed on " + dirpath;
+      ZORBA_ERROR_DESC( XQP0011_SYSTEM_FILE_ERROR_IN_FUNCTION, lMsg);
+    }
+    if (_tcscmp(win32_direntry.cFileName,_T(".")) == 0 ||
+      _tcscmp(win32_direntry.cFileName,_T("..")) == 0) {
+        operator ++();
+    }
+	} else {
 		win32_dir = INVALID_HANDLE_VALUE;
 #ifdef UNICODE
 		_tcscpy(win32_direntry.cFileName, _T(""));
@@ -100,21 +102,22 @@ directory::dir_iterator::dir_iterator(
 
 }
 
-
-directory::dir_iterator::~dir_iterator()
+dir_iterator::~dir_iterator()
 {
 #if ! defined (WIN32) 
   if (dir!=0) closedir(dir);
 #else
-	if(win32_dir != INVALID_HANDLE_VALUE)
+  if(win32_dir != INVALID_HANDLE_VALUE) {
 		FindClose(win32_dir);
+  }
 #endif
 }
 
 
-void directory::dir_iterator::operator++()
+void
+dir_iterator::operator++()
 {
-#if ! defined (WIN32) 
+#ifndef WIN32
   if (dir!=0) {
     while (true) {
       dirent = readdir(dir);
@@ -124,41 +127,34 @@ void directory::dir_iterator::operator++()
         break; 
       }
       if (strcmp(dirent->d_name,".") &&
-          strcmp(dirent->d_name,"..") &&
-          strcmp(dirent->d_name,"lost+found")) {
+          strcmp(dirent->d_name,"..")) {
         break;
 			}
     }
   }
 #else
-	if(win32_dir != INVALID_HANDLE_VALUE)
-	{
-		while(true)
-		{
-			if(!FindNextFile(win32_dir, &win32_direntry))
-			{				
+	if(win32_dir != INVALID_HANDLE_VALUE) {
+		while(true) {
+			if(!FindNextFile(win32_dir, &win32_direntry)) {				
         FindClose(win32_dir); 
         win32_dir = INVALID_HANDLE_VALUE; 
 				_tcscpy(win32_direntry.cFileName, _T(""));
         break; 
       }
 			if (_tcscmp(win32_direntry.cFileName,_T(".")) &&
-          _tcscmp(win32_direntry.cFileName,_T("..")) &&
-          _tcscmp(win32_direntry.cFileName,_T("lost+found"))) //daniel ??
-			{
+          _tcscmp(win32_direntry.cFileName,_T(".."))) {
         break;
 			}
 		}
-	}
+  }
 #endif
 }
 
-
 bool operator!=(
-	directory::dir_iterator const& x,
-	directory::dir_iterator const& y)
+	  dir_iterator const& x,
+	  dir_iterator const& y)
 {
-#if ! defined (WIN32) 
+#ifndef WIN32
 	if (x.dirpath==y.dirpath) return false;
 	if (x.dirent==y.dirent) return false;
 	return true;

@@ -45,6 +45,18 @@ bool Base64::parseString(const char* aString, size_t aLength,  Base64& aBase64)
   return true;
 }
 
+bool Base64::parseString(const char* aString, size_t aLength,  Base64& aBase64, std::string& lErrorMessage)
+{
+  aBase64.theData.clear();
+  try {
+    aBase64.insertData(aString, aLength);
+  } catch (error::ZorbaError& e) {
+    lErrorMessage = e.theDescription;
+    return false;
+  }
+  return true;
+}
+
 void Base64::insertData(const char* aCharStar, size_t len)
 {
   for (size_t i = 0; i < len; ++i)

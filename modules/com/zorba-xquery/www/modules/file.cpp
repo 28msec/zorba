@@ -14,125 +14,335 @@
  * limitations under the License.
  */
 
-#include <map>
-#include <sstream>
-
-#include <zorba/zorba.h>
-#include <zorba/external_module.h>
-#include <zorba/external_function.h>
+#include <zorba/file.h>
+#include <zorba/empty_sequence.h>
 #include <zorba/singleton_item_sequence.h>
 
-#include <zorba/util/file.h>
+//#include <zorba/error.h>
+//#include "zorbaerrors/errors.h"
+
+#include "file.h"
+#include "file_module.h"
+
+#include <fstream>
+#include <sstream>
 
 namespace zorba { namespace filemodule {
 
-  class ExistsFunction : public PureStatelessExternalFunction
-  {
-    protected:
-      ItemFactory*              theFactory;
-      const ExternalModule*     theModule;
+//*****************************************************************************
 
-      static String
-      getOneStringArg(const StatelessExternalFunction::Arguments_t& aArgs,
-                      int aPos) {
-        Item        lItem;
-        if (!aArgs[0]->next(lItem)) {
-          std::stringstream lErrorMessage;
-          lErrorMessage << "An empty-sequence is not allowed as " 
-                        << aPos << ". parameter.";
-          throw zorba::ExternalFunctionData::createZorbaException(XPTY0004,
-                  lErrorMessage.str().c_str(), __FILE__, __LINE__);
-        } 
-        zorba::String lTmpString = lItem.getStringValue();
-        if (aArgs[aPos]->next(lItem)) {
-          std::stringstream lErrorMessage;
-          lErrorMessage << "A sequence of more then one item is not allowed as "
-                        << aPos << ". parameter.";
-          throw zorba::ExternalFunctionData::createZorbaException(XPTY0004,
-                  lErrorMessage.str().c_str(), __FILE__, __LINE__);
-        }
-        return lTmpString;
-      }
-
-    public:
-      ExistsFunction(const ExternalModule* aModule)
-        : theFactory(Zorba::getInstance(0)->getItemFactory()),
-          theModule(aModule)
-      {}
+ExistsFunction::ExistsFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
   
-      virtual String
-      getURI() const { return theModule->getURI(); }
-  
-      virtual String
-      getLocalName() const { return "exists"; }
-  
-      virtual ItemSequence_t 
-      evaluate(const StatelessExternalFunction::Arguments_t& args) const
-      {
-        bool        lFileExists = false;
-        String      lFile = getOneStringArg(args, 0);
-        std::string lFileName = lFile.c_str();
-        zorba::file lTest(lFileName);
-        if (lTest.exists()) {
-          lFileExists = true;
-        }
+ItemSequence_t
+ExistsFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
+                         const StaticContext* aSctxCtx,
+                         const DynamicContext* aDynCtx) const
+{
+  bool   lFileExists = false;
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
 
-        return ItemSequence_t(new SingletonItemSequence(
-                theFactory->createBoolean(lFileExists)));
-      }
-  };
+  File_t lFile = File::createFile(lFileStr.c_str());
+  if (lFile->exists()) {
+    lFileExists = true;
+  }
 
-  class FileModule : public ExternalModule
-  {
-    protected:
-      class ltstr
-      {
-        public:
-          bool
-          operator()(const String& s1, const String& s2) const
-          {
-            return s1.compare(s2) < 0;
-          }
-      };
+  return ItemSequence_t(new SingletonItemSequence(
+      theModule->getItemFactory()->createBoolean(lFileExists)));
+}
 
-      typedef std::map<String, StatelessExternalFunction*, ltstr> FuncMap_t;
-      mutable FuncMap_t theFunctions;
+//*****************************************************************************
+
+FilesFunction::FilesFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
   
-    public:
-      virtual ~FileModule()
-      {
-        for (FuncMap_t::const_iterator lIter = theFunctions.begin();
-             lIter != theFunctions.end(); ++lIter) {
-          delete lIter->second;
-        }
-        theFunctions.clear();
-      }
-  
-      virtual String
-      getURI() const { return "http://www.zorba-xquery.com/modules/file"; }
-  
-      virtual StatelessExternalFunction*
-      getExternalFunction(String aLocalname) const
-      {
-        StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
-        if (!lFunc) {
-          if (aLocalname.equals("exists")) {
-            lFunc = new ExistsFunction(this);
-          } 
-        }
-        return lFunc;
-      }
+ItemSequence_t
+FilesFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
+                         const StaticContext* aSctxCtx,
+                         const DynamicContext* aDynCtx) const
+{
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
+  File_t lFile = File::createFile(lFileStr.c_str());
 
-      virtual void
-      destroy()
-      {
-        if (!dynamic_cast<FileModule*>(this)) {
-          return;
-        }
-        delete this;
-      }
+  if (!lFile->isDirectory()) {
+      return ItemSequence_t(new EmptySequence());
+  }
 
-  };
+  DirectoryIterator_t lIter = lFile->files();
+  return ItemSequence_t(new IteratorBackedItemSequence(lIter, theModule->getItemFactory()));
+}
+
+FilesFunction::IteratorBackedItemSequence::IteratorBackedItemSequence(
+    DirectoryIterator_t& aIter,
+    ItemFactory* aFactory)
+  : theIterator(aIter), theItemFactory(aFactory)
+{
+}
+
+FilesFunction::IteratorBackedItemSequence::~IteratorBackedItemSequence()
+{
+}
+
+bool
+FilesFunction::IteratorBackedItemSequence::next(Item& lItem)
+{
+  std::string lPath;
+  if (!theIterator->next(lPath)) {
+    return false;
+  }
+  
+  String lUriStr(lPath.c_str());
+  lItem = theItemFactory->createAnyURI(lUriStr);
+  return true;
+}
+
+//*****************************************************************************
+
+IsDirectoryFunction::IsDirectoryFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+  
+ItemSequence_t
+IsDirectoryFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
+                              const StaticContext* aSctxCtx,
+                              const DynamicContext* aDynCtx) const
+{
+  bool   lResult = false;
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
+
+  File_t lFile = File::createFile(lFileStr.c_str());
+  if (lFile->isDirectory()) {
+    lResult = true;
+  }
+  return ItemSequence_t(new SingletonItemSequence(
+      theModule->getItemFactory()->createBoolean(lResult)));
+}
+
+//*****************************************************************************
+
+IsFileFunction::IsFileFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+  
+ItemSequence_t
+IsFileFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
+                         const StaticContext* aSctxCtx,
+                         const DynamicContext* aDynCtx) const
+{
+  bool   lResult = false;
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
+
+  File_t lFile = File::createFile(lFileStr.c_str());
+  if (lFile->isFile()) {
+    lResult = true;
+  }
+  return ItemSequence_t(new SingletonItemSequence(
+      theModule->getItemFactory()->createBoolean(lResult)));
+}
+
+//*****************************************************************************
+
+LastModifiedFunction::LastModifiedFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+  
+ItemSequence_t
+LastModifiedFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
+                        const StaticContext* aSctxCtx,
+                        const DynamicContext* aDynCtx) const
+{
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
+  File_t lFile = File::createFile(lFileStr.c_str());
+
+  time_t lTime = lFile->lastModified();
+  struct tm *lT = localtime(&lTime);
+
+  short gmtOffset = LastModifiedFunction::getGmtOffset();
+
+  return ItemSequence_t(new SingletonItemSequence(
+    theModule->getItemFactory()->createDateTime(1900 + lT->tm_year, lT->tm_mon, lT->tm_mday, lT->tm_hour, lT->tm_min, lT->tm_sec, gmtOffset)));
+}
+
+short
+LastModifiedFunction::getGmtOffset()
+{
+  time_t t = time(0);
+  struct tm* data;
+  data = localtime(&t);
+  data->tm_isdst = 0;
+  time_t a = mktime(data);
+  data = gmtime(&t);
+  data->tm_isdst = 0;
+  time_t b = mktime(data);
+  return (a - b)/3600; 
+}
+
+//*****************************************************************************
+
+MkdirFunction::MkdirFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+  
+ItemSequence_t
+MkdirFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
+                        const StaticContext* aSctxCtx,
+                        const DynamicContext* aDynCtx) const
+{
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
+  File_t lFile = File::createFile(lFileStr.c_str());
+
+  bool lStatus = lFile->mkdir();
+
+  return ItemSequence_t(new SingletonItemSequence(
+      theModule->getItemFactory()->createBoolean(lStatus)));
+}
+
+//*****************************************************************************
+
+MkdirsFunction::MkdirsFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+
+ItemSequence_t
+MkdirsFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
+                         const StaticContext* aSctxCtx,
+                         const DynamicContext* aDynCtx) const
+{
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
+  File_t lFile = File::createFile(lFileStr.c_str());
+
+  bool lStatus = lFile->mkdirs();
+
+  return ItemSequence_t(new SingletonItemSequence(
+    theModule->getItemFactory()->createBoolean(lStatus)));
+}
+
+//*****************************************************************************
+
+ReadFunction::ReadFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+  
+ItemSequence_t
+ReadFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
+                       const StaticContext* aSctxCtx,
+                       const DynamicContext* aDynCtx) const
+{
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
+  File_t lFile = File::createFile(lFileStr.c_str());
+
+  std::ifstream lInStream;
+  lFile->read(lInStream);
+
+  std::stringstream lStrStream;
+  char lBuf[1024];
+  while (!lInStream.eof()) {
+    lInStream.read(lBuf, 1024);
+    lStrStream.write(lBuf, lInStream.gcount());
+  }  
+
+  XmlDataManager* lDataManager = Zorba::getInstance(0)->getXmlDataManager();
+
+  std::string lResult = lStrStream.str();
+  Item lItem = theModule->getItemFactory()->createBase64Binary(lResult.c_str(), lResult.size());
+
+  if (lItem.isNull()) {
+    throw ExternalFunctionData::createZorbaException(XPTY0004, "Invalid Binary64 file.", __FILE__, __LINE__);
+  }
+
+  return ItemSequence_t(new SingletonItemSequence(lItem));
+}
+
+//*****************************************************************************
+
+ReadXmlFunction::ReadXmlFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+  
+ItemSequence_t
+ReadXmlFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
+                          const StaticContext* aSctxCtx,
+                          const DynamicContext* aDynCtx) const
+{
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
+  File_t lFile = File::createFile(lFileStr.c_str());
+
+  std::ifstream lInStream;
+  lFile->read(lInStream);
+
+  XmlDataManager* lDataManager = Zorba::getInstance(0)->getXmlDataManager();
+  Item lItem = lDataManager->parseDocument(lInStream);
+
+  return ItemSequence_t(new SingletonItemSequence(lItem));
+}
+
+//*****************************************************************************
+
+ReadTextFunction::ReadTextFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+  
+ItemSequence_t
+ReadTextFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
+                           const StaticContext* aSctxCtx,
+                           const DynamicContext* aDynCtx) const
+{
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
+  File_t lFile = File::createFile(lFileStr.c_str());
+
+  std::ifstream lInStream;
+  lFile->read(lInStream);
+
+  std::stringstream lStrStream;
+  char lBuf[1024];
+  while (!lInStream.eof()) {
+    lInStream.read(lBuf, 1024);
+    lStrStream.write(lBuf, lInStream.gcount());
+  }  
+
+  XmlDataManager* lDataManager = Zorba::getInstance(0)->getXmlDataManager();
+
+  std::string lResult = lStrStream.str();
+  Item lItem = theModule->getItemFactory()->createString(lResult.c_str());
+
+  return ItemSequence_t(new SingletonItemSequence(lItem));
+}
+
+//*****************************************************************************
+
+RemoveFunction::RemoveFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+  
+ItemSequence_t
+RemoveFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
+                         const StaticContext* aSctxCtx,
+                         const DynamicContext* aDynCtx) const
+{
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
+  File_t lFile = File::createFile(lFileStr.c_str());
+
+  bool lStatus = lFile->remove();
+
+  return ItemSequence_t(new SingletonItemSequence(
+      theModule->getItemFactory()->createBoolean(lStatus)));
+}
+
+//*****************************************************************************
+
 
 } /* namespace filemodule */ } /* namespace zorba */
 

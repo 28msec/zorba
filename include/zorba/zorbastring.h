@@ -180,15 +180,51 @@ public:
   bool
   endsWith(const char* pattern) const;
 
-  /** \brief Creates a new String with this as prefix and suffix as suffix.
+  /** \brief Determine if "pattern" is a prefix of "this".
    *
-   */
+   * @return True if "this" starts with "pattern".
+   */  
+  bool
+  startsWith(const char* pattern) const;
+
+  /** \brief Returns a new zorba::String containing the substring of "this"
+   *         starting at a certain index.
+   *
+   * @return The substring of "this" starting at index "aIndex".
+   */  
+  String
+  substring(unsigned int aIndex) const;
+
+  /** \brief Returns a new zorba::String containing the substring of "this"
+   *         starting at a certain index and a certain length.
+   *
+   * @return The substring of "this" starting at index "aIndex"
+   *         having the length "aLength".
+   */  
+  String
+  substring(unsigned int aIndex, unsigned int aLength) const;
+
+  /** \brief Returns the character in "this" at certain position.
+   *
+   * @return The char in "this" at position "aIndex".
+   *         having the length "aLength".
+   */  
+  char
+  charAt(unsigned aIndex) const;
+
+  /** \brief Appends the suffix characters to the string in "this".
+   *
+   * @return A new zorba::String containing the string in "this" suffixed
+   *         with the charactes in "suffix".
+   */  
   String
   append(const char* suffix) const;
 
-  /** \brief Creates a new String with this as prefix and suffix as suffix.
-  *
-  */
+  /** \brief Appends the suffix string to the string in "this".
+   *
+   * @return A new zorba::String containing the string in "this" suffixed
+   *         with the "suffix" string.
+   */  
   String
   append(const String& suffix) const;
 
@@ -258,6 +294,13 @@ public:
    */
   const String&
   encodeForUri();
+
+  /** \brief Decodes the encoded characters from this String.
+   *         see Section 2 [http://www.ietf.org/rfc/rfc3986.txt]
+   *
+   */
+  const String&
+  decodeFromUri();
 
 private:
   friend class Unmarshaller;

@@ -202,9 +202,9 @@ void TestModuleURIResolver::initialize ()
     std::string::size_type eq = uris.find ('=');
     String uri (uris.substr (0, eq));
     String file ( path );
-    file.append ("/");
-    file.append (uris.substr (eq+1).c_str());
-    file.append (".xqi");
+    file = file.append ("/");
+    file = file.append (uris.substr (eq+1).c_str());
+    file = file.append (".xqi");
     uri_map [uri] = file;
   }
 

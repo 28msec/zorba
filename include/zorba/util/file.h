@@ -25,6 +25,8 @@
 #include <time.h>
 #include <string>
 
+#include <zorba/file.h>
+
 #include <zorba/config.h>
 #include <zorba/util/path.h>
 
@@ -33,26 +35,24 @@ namespace zorba {
 class ZORBA_DLL_PUBLIC file : public filesystem_path
 {
 public:
-  enum filetype {
-    type_invalid,
-    type_non_existent,
-    type_directory,
-    type_link,
-    type_file,
-    type_volume
-  };
 
-#ifdef WIN32
-  typedef __int64 file_size_t;
-#else
-  typedef int64_t file_size_t;
-#endif
+      enum filetype {
+        type_invalid,
+        type_non_existent,
+        type_directory,
+        type_link,
+        type_file,
+        type_volume
+      };
+
+
+typedef zorba::File::FileSize_t file_size_t;
 
 protected:
   enum filetype type; 
 
 // file attributes
-  file_size_t  size;          // size in bytes
+  file_size_t size;          // size in bytes
 
   void do_stat ();
 
@@ -71,6 +71,9 @@ public: // common methods
 
   bool is_invalid() const { return (type==type_invalid); }  
   bool exists() const { return (type!=type_non_existent && type!=type_invalid); }  
+
+  time_t lastModified();
+
   static void error(std::string const& location, std::string const& msg);
 
 public: // file methods
@@ -83,7 +86,7 @@ public: // file methods
 public: // directory methods
   void mkdir();
   void deep_mkdir();
-  void rmdir(bool ignore);
+  void rmdir(bool ignore = true);
 #ifndef _WIN32_WCE
   void chdir();
 #endif

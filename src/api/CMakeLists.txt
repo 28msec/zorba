@@ -44,6 +44,7 @@ SET(API_SRCS
     serialization_callback.cpp
     vector_item_sequence.cpp
     singleton_item_sequence.cpp
+    fileimpl.cpp
     )
 
 SET(API_BUILD_SRCS

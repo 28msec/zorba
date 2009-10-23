@@ -22,8 +22,8 @@
 
 #ifndef _WIN32_WCE
 #include <errno.h>
-#include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #else
 #include <types.h>
 #endif
@@ -57,7 +57,8 @@
 using namespace std;
 namespace zorba {
 
-const char *filesystem_path::get_path_separator () {
+const char *
+filesystem_path::get_path_separator () {
 #ifdef WIN32
   return "\\";
 #else
@@ -90,7 +91,9 @@ filesystem_path::filesystem_path (const string &path_, int flags)
     resolve_relative ();
 }
 
-bool filesystem_path::is_complete () const {
+bool
+filesystem_path::is_complete () const
+{
 #ifdef WIN32
   // c:dir1\file is NOT absolute! Only c:\dir\file is
   if (path.size () >= 3 && isalpha (path [0]) && path [1] == ':' && path [2] == '\\')
@@ -102,7 +105,9 @@ bool filesystem_path::is_complete () const {
   return false;
 }
 
-void filesystem_path::resolve_relative () {
+void
+filesystem_path::resolve_relative ()
+{
   if (! is_complete ()) {
 #ifdef WIN32
     // call GetFullPathName as per
@@ -120,7 +125,9 @@ void filesystem_path::resolve_relative () {
   }
 }
 
-bool filesystem_path::is_root () const {
+bool
+filesystem_path::is_root () const
+{
   const string &sep = get_path_separator ();
 #ifdef WIN32
   return path.size () == 3
@@ -131,7 +138,8 @@ bool filesystem_path::is_root () const {
 #endif
 }
 
-void filesystem_path::canonicalize () {
+void filesystem_path::canonicalize ()
+{
   const string &sep = get_path_separator ();
   string::size_type pos, start;
   string pfx;
@@ -190,7 +198,9 @@ void filesystem_path::canonicalize () {
     path.erase (path.size () - sep.size (), sep.size ());
 }
 
-filesystem_path filesystem_path::branch_path () const {
+filesystem_path
+filesystem_path::branch_path () const
+{
   if (is_root () && is_complete ())
     return *this;
 
@@ -207,8 +217,14 @@ filesystem_path filesystem_path::branch_path () const {
   else return filesystem_path (path.substr (0, pos + sep.size ()));
 }
 
+std::string
+filesystem_path::getPathString() const
+{
+  return path;
+}
+
 void file::do_stat () {
-#if ! defined (WIN32) 
+#ifndef WIN32
   struct stat st;
   if (::stat(c_str(), &st)) {
     if (errno!=ENOENT) file::error(__FUNCTION__,"stat failed on " +get_path ());
@@ -219,8 +235,7 @@ void file::do_stat () {
             (st.st_mode & S_IFLNK)  ? type_link : type_invalid;
   }
 #else
-  WIN32_FIND_DATA   findData;
-  HANDLE            hfind;
+
 #ifdef UNICODE
   TCHAR path_str[1024];
   MultiByteToWideChar(CP_ACP,/// or CP_UTF8
@@ -230,16 +245,25 @@ void file::do_stat () {
   const char  *path_str = c_str();
 #endif
 
-  hfind = FindFirstFile(path_str, &findData);
-  if(hfind == INVALID_HANDLE_VALUE)
-    ;//error(__FUNCTION__,"file/dir not exist " + get_path ());
-  else {
-    size = findData.nFileSizeLow + (((int64_t)(findData.nFileSizeHigh))<<32);
-    type  = (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)  ? type_directory :
-            ((findData.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE ) | (findData.dwFileAttributes & FILE_ATTRIBUTE_NORMAL )) ? type_file :
-            //(st.st_mode & S_IFLNK)  ? type_link : 
-            type_invalid;
-    FindClose(hfind);
+  DWORD lFileAttributes;
+  lFileAttributes = GetFileAttributes(path_str);
+  if(lFileAttributes == INVALID_FILE_ATTRIBUTES) {
+    type = type_invalid;
+  } else {
+    HANDLE hFile = CreateFile(path_str, GENERIC_READ, FILE_SHARE_READ |
+        FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (hFile == INVALID_HANDLE_VALUE) {
+      size = -1;
+    } else {
+      LARGE_INTEGER lLi;
+      if (GetFileSizeEx(hFile, &lLi)) {
+        size = lLi.QuadPart;
+      }
+    }
+    type  = (lFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? type_directory :
+        ((lFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) ? type_link :
+        type_file);
+    CloseHandle(hFile);
   }
 #endif
 }
@@ -256,7 +280,7 @@ file::file(const filesystem_path &path_, int flags_)
 enum file::filetype file::get_filetype() {
   if (type!=type_non_existent) return type;
 
-#if ! defined (WIN32) 
+#ifndef WIN32
   // call native file system status
   struct stat st;
   if (::stat(c_str(), &st)) {
@@ -274,8 +298,6 @@ enum file::filetype file::get_filetype() {
 
 #else
 
-  WIN32_FIND_DATA   findData;
-  HANDLE            hfind;
 #ifdef UNICODE
   TCHAR path_str[1024];
   MultiByteToWideChar(CP_ACP,/// or CP_UTF8
@@ -284,25 +306,42 @@ enum file::filetype file::get_filetype() {
 #else
   const char  *path_str = c_str();
 #endif
-  hfind = FindFirstFile(path_str, &findData);
-  if(hfind == INVALID_HANDLE_VALUE)
-  {
+
+  DWORD lFileAttributes;
+  lFileAttributes = GetFileAttributes(path_str);
+  if(lFileAttributes == INVALID_FILE_ATTRIBUTES) {
     error(__FUNCTION__,"file/dir not exist " + get_path ());
     return type_non_existent;
-  }
-  else
-  {
-    size = findData.nFileSizeLow + (((int64_t)(findData.nFileSizeHigh))<<32);
-    type  = (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)  ? type_directory :
-            ((findData.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE ) | (findData.dwFileAttributes & FILE_ATTRIBUTE_NORMAL )) ? type_file :
-            //(st.st_mode & S_IFLNK)  ? type_link : 
-            type_invalid;
-    FindClose(hfind);
+  } else {
+    HANDLE hFile = CreateFile(path_str, GENERIC_READ, FILE_SHARE_READ |
+        FILE_SHARE_WRITE, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (hFile == INVALID_HANDLE_VALUE) {
+      size = -1;
+    } else {
+      LARGE_INTEGER lLi;
+      if (GetFileSizeEx(hFile, &lLi)) {
+        size = lLi.QuadPart;
+      }
+    }
+    type  = (lFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ? type_directory :
+        ((lFileAttributes & FILE_ATTRIBUTE_REPARSE_POINT) ? type_link :
+        type_file);
+    CloseHandle(hFile);
     return type;
   }
 #endif  
 }
 
+time_t
+file::lastModified()
+{
+  struct stat s;
+  int i = stat(get_path().c_str(), &s);
+  if (i == 0) {
+    return s.st_mtime;
+  }
+  return -1;
+}
 
 
 void file::error(
@@ -379,8 +418,11 @@ void file::deep_mkdir () {
 
 void file::remove(bool ignore) {
 #if ! defined (WIN32) 
-  if (::remove(c_str()) && !ignore) {
-    error(__FUNCTION__, "failed to remove " + get_path ());
+  if (::remove(c_str())) {
+    if (!ignore) {
+      error(__FUNCTION__, "failed to remove " + get_path ());
+    }
+    return;
   }
 #else
   BOOL  retval = TRUE;
@@ -405,8 +447,11 @@ void file::remove(bool ignore) {
 
 void file::rmdir(bool ignore) {
 #if ! defined (WIN32) 
-  if (::rmdir(c_str()) && !ignore) {
-    error(__FUNCTION__, "rmdir failed on " + get_path ());
+  if (::rmdir(c_str())) {
+    if (!ignore) {
+      error(__FUNCTION__, "rmdir failed on " + get_path ());
+    }
+    return;
   }
 #else
   BOOL  retval;
@@ -419,7 +464,7 @@ void file::rmdir(bool ignore) {
   const char  *path_str = c_str();
 #endif
   retval = RemoveDirectory(path_str);
-  if(!retval)
+  if(!retval && !ignore)
     error(__FUNCTION__, "rmdir failed on " + get_path ());
 #endif
   set_filetype(file::type_non_existent);

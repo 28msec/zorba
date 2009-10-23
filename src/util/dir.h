@@ -23,51 +23,68 @@
 
 namespace zorba {
 
-class directory : public file {
-public:
-	class dir_iterator : public SimpleRCObject
-	{
-	public:
-  	std::string dirpath;
-  	std::string path;
-#if ! defined (WIN32) 
-  	DIR *dir;
-  	struct dirent *dirent;
+  class dir_iterator : public SimpleRCObject
+  {
+
+    public:
+
+      std::string dirpath;
+      std::string path;
+#ifndef WIN32
+      DIR *dir;
+      struct dirent *dirent;
 #else
-		HANDLE						win32_dir;
-		WIN32_FIND_DATA		win32_direntry;
+      HANDLE          win32_dir;
+      WIN32_FIND_DATA win32_direntry;
 #endif
-	public:
-  	dir_iterator(const std::string& path, bool end_iterator = false);
-  	~dir_iterator();
-	public:	// iterator interface
-		void operator++();
-#if ! defined (WIN32) 
-		const char* operator*() { 
-			return dirent->d_name; 
-		}
+
+    public:
+
+      dir_iterator(const std::string& path, bool end_iterator = false);
+      ~dir_iterator();
+
+    public:	// iterator interface
+
+      void operator++();
+
+      bool end() const {
+#ifndef WIN32
+        return dir == 0;
 #else
-		const TCHAR* operator*() { 
-			return win32_direntry.cFileName;
-		}
+        return win32_dir == INVALID_HANDLE_VALUE;
 #endif
-	public:	
-#if ! defined (WIN32) 
-		const char* get_name() const { 
-			return dirent?dirent->d_name:0;
-		}
+      }
+
+#ifndef WIN32
+  		const char* operator*() { 
+	      return dirent->d_name; 
+      }
 #else
-		const TCHAR* get_name() const { 
-			return (win32_dir != INVALID_HANDLE_VALUE) ? win32_direntry.cFileName : NULL;
-		}
+      const TCHAR* operator*() { 
+	      return win32_direntry.cFileName;
+      }
+#endif
+
+    public:	
+#ifndef WIN32
+      const char* get_name() const { 
+	      return dirent?dirent->d_name:0;
+      }
+#else
+      const TCHAR* get_name() const { 
+	      return (win32_dir != INVALID_HANDLE_VALUE) ? win32_direntry.cFileName : NULL;
+      }
 #endif
 	};
 
-  dir_iterator begin();
-  dir_iterator end();
-
-	friend bool operator!=(dir_iterator const& x, dir_iterator const& y);
+  class directory : public file {
   
-};
+    public:
+      dir_iterator begin();
+      dir_iterator end();
+
+	    friend bool operator!=(dir_iterator const& x, dir_iterator const& y);
+  
+  };
 
 }

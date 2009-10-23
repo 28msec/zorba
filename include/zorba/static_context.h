@@ -458,6 +458,14 @@ namespace zorba {
 
       virtual void
       getFullModulePaths( std::vector<String>& aFullModulePaths ) const = 0;
+
+      /** \brief Resolves a relative URI against an absolute base URI.
+       *
+       * @param aBaseUri The absolute URI against which the resolving is performed.
+       * @param aString The relative URI to be resolved.
+       */
+      virtual String
+      resolve( const String& aBaseUri, const String& aRelativeURI) const = 0;
   };
 } /* namespace zorba */
 #endif

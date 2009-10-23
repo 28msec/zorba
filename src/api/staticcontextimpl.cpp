@@ -920,4 +920,14 @@ StaticContextImpl::getFullModulePaths( std::vector<String>& aFullModulePaths ) c
   }
 }
 
+String
+StaticContextImpl::resolve( const String& aBaseUri, const String& aRelativeURI ) const {
+  xqpString lBaseUri = Unmarshaller::getInternalString(aBaseUri);
+  xqpString lRelativeUri = Unmarshaller::getInternalString(aRelativeURI);
+
+  xqpString lResolved = theCtx->resolve_relative_uri(lRelativeUri, lBaseUri);
+
+  return &*lResolved.theStrStore;
+}
+
 } /* namespace zorba */

@@ -47,6 +47,7 @@ public:
     return parseString(aString.c_str(), aString.length(), aBase64);
   }
   static bool parseString(const char* aString, size_t aLength, Base64& aBase64);
+  static bool parseString(const char* aString, size_t aLength, Base64& aBase64, std::string& lErrorMessage);
 
 private:
   void insertData(const char* aCharStar, size_t len);

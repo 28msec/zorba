@@ -16,6 +16,7 @@ SET(UTIL_SRCS
     fx/mmfile.cpp
     fx/fxcharheap.cpp
     file.cpp
+    dir.cpp
     properties.cpp
     XmlWhitespace.cpp
     uuid/sysdep.cpp

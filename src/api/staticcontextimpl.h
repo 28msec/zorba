@@ -242,6 +242,10 @@ class StaticContextImpl : public StaticContext
 
   virtual void
   getFullModulePaths( std::vector<String>& aFullModulePaths ) const;
+
+  virtual String
+  resolve( const String& aBaseUri, const String& aRelativeURI ) const;
+
 };
 
 } /* namespace zorba */

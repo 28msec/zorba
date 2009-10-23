@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # create and install the external file module
-SET(FILE_SRCS file.cpp)
+SET(FILE_SRCS file.cpp file_function.cpp file_module.cpp)
 ADD_LIBRARY(file SHARED ${FILE_SRCS})
 TARGET_LINK_LIBRARIES(file zorba_simplestore)
 SET_TARGET_PROPERTIES(file PROPERTIES VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})  

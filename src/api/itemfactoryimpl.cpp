@@ -17,6 +17,7 @@
 #include <zorba/item.h>
 #include <zorba/zorbastring.h>
 #include "zorbaerrors/errors.h"
+#include "zorbaerrors/error_manager.h"
 #include "api/itemfactoryimpl.h"
 
 
@@ -120,9 +121,12 @@ namespace zorba {
   {
     store::Item_t lItem;
     xqp_base64Binary n;
-    if (xqp_base64Binary::parseString(aBinData, aLength, n))
+    std::string lMessage;
+    if (xqp_base64Binary::parseString(aBinData, aLength, n, lMessage)) {
       theItemFactory->createBase64Binary(lItem, n);
-    
+    } else {
+      ZORBA_ERROR_DESC(STR0040_TYPE_ERROR, lMessage);
+    }
     return &*lItem;
   }
 

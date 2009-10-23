@@ -206,14 +206,40 @@ String::endsWith(const char* pattern) const
   return m_string->endsWith( pattern );
 }
 
-zorba::String String::append( const char* suffix ) const
+bool
+String::startsWith(const char* pattern) const
 {
-  return String(m_string->append(suffix));
+  return m_string->byteStartsWith( pattern );
 }
 
-zorba::String String::append( const String& suffix ) const
+char
+String::charAt(unsigned aIndex) const
 {
-  return String(m_string->append(suffix.m_string));
+  return m_string->byteAt( aIndex );
+}
+
+String
+String::substring(unsigned aIndex) const
+{
+  return String(m_string->substr( aIndex ));
+}
+
+String
+String::substring(unsigned int aIndex, unsigned int aLength) const
+{
+  return String(m_string->substr( aIndex, aLength ));
+}
+
+String
+String::append(const char* suffix) const
+{
+  return String(m_string->append( suffix ));
+}
+
+String
+String::append(const String& suffix) const
+{
+  return String(m_string->append( suffix.c_str() ));
 }
 
 const String&
@@ -348,6 +374,22 @@ const String&
 String::encodeForUri()
 {
   xqpStringStore_t res = m_string->encodeForUri();
+  if (m_string != res) {
+    if (m_string != NULL) {
+      RCHelper::removeReference(m_string);
+    }
+    m_string = res;
+    if (m_string != NULL) {
+      RCHelper::addReference(m_string);
+    }
+  }
+  return *this;
+}
+
+const String&
+String::decodeFromUri()
+{
+  xqpStringStore_t res = m_string->decodeFromUri();
   if (m_string != res) {
     if (m_string != NULL) {
       RCHelper::removeReference(m_string);
