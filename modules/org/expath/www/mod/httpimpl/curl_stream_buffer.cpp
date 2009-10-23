@@ -1,5 +1,7 @@
 #include "curl_stream_buffer.h"
 #include "inform_data_read.h"
+#include <cstring>
+#include <stdlib.h>
 
 namespace zorba { namespace http_client {
   CurlStreamBuffer::CurlStreamBuffer(CURLM* aMultiHandle, CURL* aEasyHandle)
