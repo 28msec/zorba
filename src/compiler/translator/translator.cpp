@@ -6611,7 +6611,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   string prefix = qn_h->get_prefix();
   string fname = qn_h->get_localname();
 
-  const xqpStringStore* fn_ns = sctx_p->lookup_fn_qname(prefix, fname, loc)->getNamespace();
+  store::Item_t fn_qname = sctx_p->lookup_fn_qname(prefix, fname, loc);
+  const xqpStringStore* fn_ns = fn_qname->getNamespace();
 
   // Some special processing is required for certain "fn" functions
   if (fn_ns->byteEqual(XQUERY_FN_NS)) 
