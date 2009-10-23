@@ -4,9 +4,6 @@
            targetNamespace="http://ns.example.com/books"
            elementFormDefault="qualified">
            
- <!-- importing the XML namespace makes xml:id an ID attribute under lax validation -->
- <xs:import namespace="http://www.w3.org/XML/1998/namespace"/>          
-
 
  <xs:element name="BOOKLIST">
   <xs:complexType>
@@ -60,7 +57,6 @@
    </xs:sequence>
    <xs:attribute name="CAT" type="xs:IDREF" use="required"/>
    <xs:attribute name="TAX" type="xs:NMTOKEN" use="optional" default="V"/>
-   <xs:anyAttribute namespace="##other" processContents="lax"/>
   </xs:complexType>
  
  <xs:element name="SUBITEM" substitutionGroup="ITEM"/>
