@@ -621,23 +621,48 @@ public:
 };
 
 
-#define DECL_DOUBLE_MATH_FUN( name, iter )                                    \
-class fn_##name : public function_impl<Fn##iter##Iterator>                    \
+#define DECL_DOUBLE_MATH_FUN_UNARY( name, iter )                              \
+class fn_##name : public function                                             \
 {                                                                             \
  public:                                                                      \
-  fn_##name(const signature& sig) : function_impl<Fn##iter##Iterator>(sig) {} \
+  fn_##name(const signature& sig) : function(sig) {}                          \
+                                                                              \
+  DEFAULT_UNARY_CODEGEN (Fn##iter##Iterator)                                  \
 }
 
+#define DECL_DOUBLE_MATH_FUN_BINARY( name, iter )                             \
+class fn_##name : public function                                             \
+{                                                                             \
+ public:                                                                      \
+  fn_##name(const signature& sig) : function(sig) {}                          \
+                                                                              \
+  DEFAULT_BINARY_CODEGEN (Fn##iter##Iterator)                                 \
+}
 
-DECL_DOUBLE_MATH_FUN (exp, Exp);
-DECL_DOUBLE_MATH_FUN (log, Log);
-DECL_DOUBLE_MATH_FUN (sin, Sin);
-DECL_DOUBLE_MATH_FUN (cos, Cos);
-DECL_DOUBLE_MATH_FUN (tan, Tan);
-DECL_DOUBLE_MATH_FUN (asin, ArcSin);
-DECL_DOUBLE_MATH_FUN (acos, ArcCos);
-DECL_DOUBLE_MATH_FUN (atan, ArcTan);
+#define DECL_DOUBLE_MATH_FUN_UNARY_2(name, iter) DECL_DOUBLE_MATH_FUN_UNARY(name, iter)
 
+DECL_DOUBLE_MATH_FUN_UNARY (exp, Exp);
+DECL_DOUBLE_MATH_FUN_UNARY (log, Log);
+DECL_DOUBLE_MATH_FUN_UNARY (sin, Sin);
+DECL_DOUBLE_MATH_FUN_UNARY (cos, Cos);
+DECL_DOUBLE_MATH_FUN_UNARY (tan, Tan);
+DECL_DOUBLE_MATH_FUN_UNARY (asin, ArcSin);
+DECL_DOUBLE_MATH_FUN_UNARY (acos, ArcCos);
+DECL_DOUBLE_MATH_FUN_UNARY (atan, ArcTan);
+
+DECL_DOUBLE_MATH_FUN_BINARY (atan2, Atan2);
+DECL_DOUBLE_MATH_FUN_UNARY (cosh, Cosh);
+DECL_DOUBLE_MATH_FUN_UNARY (acosh, Acosh);
+DECL_DOUBLE_MATH_FUN_BINARY (fmod, Fmod);
+DECL_DOUBLE_MATH_FUN_UNARY_2 (frexp, Frexp);
+DECL_DOUBLE_MATH_FUN_BINARY (ldexp, Ldexp);
+DECL_DOUBLE_MATH_FUN_UNARY (log10, Log10);
+DECL_DOUBLE_MATH_FUN_UNARY_2 (modf, Modf);
+DECL_DOUBLE_MATH_FUN_BINARY (pow, Pow);
+DECL_DOUBLE_MATH_FUN_UNARY (sinh, Sinh);
+DECL_DOUBLE_MATH_FUN_UNARY (tanh, Tanh);
+DECL_DOUBLE_MATH_FUN_UNARY (atanh, Atanh);
+DECL_DOUBLE_MATH_FUN_UNARY (asinh, Asinh);
 
 /*******************************************************************************
   Register numeric math functions
@@ -647,6 +672,19 @@ DECL(sctx, fn_##name,                                           \
      (createQName(ZORBA_MATH_FN_NS, "fn-zorba-math", #name),    \
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,                          \
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
+
+#define REGISTER_DOUBLE_MATH_FUN2( name )                       \
+DECL(sctx, fn_##name,                                           \
+     (createQName(ZORBA_MATH_FN_NS, "fn-zorba-math", #name),    \
+      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,                          \
+      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,                          \
+      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
+
+#define REGISTER_DOUBLE_MATH_FUN_2( name )                      \
+DECL(sctx, fn_##name,                                           \
+     (createQName(ZORBA_MATH_FN_NS, "fn-zorba-math", #name),    \
+      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,                          \
+      GENV_TYPESYSTEM.DOUBLE_TYPE_PLUS))
 
 
 void populateContext_Math(static_context *sctx) 
@@ -664,6 +702,25 @@ void populateContext_Math(static_context *sctx)
   REGISTER_DOUBLE_MATH_FUN (asin);
   REGISTER_DOUBLE_MATH_FUN (acos);
   REGISTER_DOUBLE_MATH_FUN (atan);
+
+
+  REGISTER_DOUBLE_MATH_FUN2 (atan2);
+  REGISTER_DOUBLE_MATH_FUN (cosh);
+  REGISTER_DOUBLE_MATH_FUN (acosh);
+  REGISTER_DOUBLE_MATH_FUN2 (fmod);
+  REGISTER_DOUBLE_MATH_FUN_2 (frexp);
+  DECL(sctx, fn_ldexp,
+       (createQName(ZORBA_MATH_FN_NS,"fn-zorba-math", "ldexp"),
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
+        GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+  REGISTER_DOUBLE_MATH_FUN (log10);
+  REGISTER_DOUBLE_MATH_FUN_2 (modf);
+  REGISTER_DOUBLE_MATH_FUN2 (pow);
+  REGISTER_DOUBLE_MATH_FUN (sinh);
+  REGISTER_DOUBLE_MATH_FUN (asinh);
+  REGISTER_DOUBLE_MATH_FUN (tanh);
+  REGISTER_DOUBLE_MATH_FUN (atanh);
 }
 
 

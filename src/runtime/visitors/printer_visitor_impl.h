@@ -170,6 +170,19 @@
   DECLARE_VISITOR (FnArcSinIterator)
   DECLARE_VISITOR (FnArcCosIterator)
   DECLARE_VISITOR (FnArcTanIterator)
+  DECLARE_VISITOR (FnAtan2Iterator);
+  DECLARE_VISITOR (FnCoshIterator);
+  DECLARE_VISITOR (FnAcoshIterator);
+  DECLARE_VISITOR (FnFmodIterator);
+  DECLARE_VISITOR (FnFrexpIterator);
+  DECLARE_VISITOR (FnLdexpIterator);
+  DECLARE_VISITOR (FnLog10Iterator);
+  DECLARE_VISITOR (FnModfIterator);
+  DECLARE_VISITOR (FnPowIterator);
+  DECLARE_VISITOR (FnSinhIterator);
+  DECLARE_VISITOR (FnAsinhIterator);
+  DECLARE_VISITOR (FnTanhIterator);
+  DECLARE_VISITOR (FnAtanhIterator);
   DECLARE_VISITOR (FnRoundHalfToEvenIterator)
   DECLARE_VISITOR (FnIdIterator)
   DECLARE_VISITOR (FnIdRefIterator)

@@ -211,6 +211,8 @@ public:
 
   Integer sqrt() const;
 
+  Double  pow(Integer p) const;
+
   bool
   operator==(const Integer& aInteger) const { return theInteger == aInteger.theInteger; } 
       

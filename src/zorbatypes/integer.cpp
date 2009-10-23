@@ -436,6 +436,21 @@ Integer Integer::sqrt () const {
 #endif
 }
 
+Double  Integer::pow(Integer p) const
+{
+#ifndef ZORBA_NO_BIGNUMBERS
+  MAPM result;
+  result = theInteger.pow(p.theInteger, 15);
+  char outbuf[300];
+  result.toFixPtString(outbuf, 15);
+  xqp_double    double_result;
+  xqp_double::parseString(outbuf, double_result);
+  return double_result;
+#else
+  return xqp_double(::pow((double)theInteger, p.theInteger));
+#endif
+}
+
 bool Integer::operator==(const Decimal& aDecimal) const {
   return theInteger == aDecimal.theDecimal;
 }

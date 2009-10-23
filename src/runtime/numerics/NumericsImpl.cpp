@@ -129,6 +129,32 @@ END_SERIALIZABLE_CLASS_VERSIONS(FnArcTanIterator)
 SERIALIZABLE_CLASS_VERSIONS(FnFormatNumberIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(FnFormatNumberIterator)
 
+SERIALIZABLE_CLASS_VERSIONS(FnAtan2Iterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnAtan2Iterator)
+SERIALIZABLE_CLASS_VERSIONS(FnCoshIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnCoshIterator)
+SERIALIZABLE_CLASS_VERSIONS(FnAcoshIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnAcoshIterator)
+SERIALIZABLE_CLASS_VERSIONS(FnFmodIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnFmodIterator)
+SERIALIZABLE_CLASS_VERSIONS(FnFrexpIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnFrexpIterator)
+SERIALIZABLE_CLASS_VERSIONS(FnLdexpIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnLdexpIterator)
+SERIALIZABLE_CLASS_VERSIONS(FnLog10Iterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnLog10Iterator)
+SERIALIZABLE_CLASS_VERSIONS(FnModfIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnModfIterator)
+SERIALIZABLE_CLASS_VERSIONS(FnPowIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnPowIterator)
+SERIALIZABLE_CLASS_VERSIONS(FnSinhIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnSinhIterator)
+SERIALIZABLE_CLASS_VERSIONS(FnAsinhIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnAsinhIterator)
+SERIALIZABLE_CLASS_VERSIONS(FnTanhIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnTanhIterator)
+SERIALIZABLE_CLASS_VERSIONS(FnAtanhIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnAtanhIterator)
 
 NARY_ACCEPT (FnAbsIterator);
 
@@ -142,24 +168,37 @@ NARY_ACCEPT (FnRoundHalfToEvenIterator);
 
 NARY_ACCEPT (FnSQRTIterator);
 
-NARY_ACCEPT (FnExpIterator);
+UNARY_ACCEPT (FnExpIterator);
 
-NARY_ACCEPT (FnLogIterator);
+UNARY_ACCEPT (FnLogIterator);
 
-NARY_ACCEPT (FnSinIterator);
+UNARY_ACCEPT (FnSinIterator);
 
-NARY_ACCEPT (FnCosIterator);
+UNARY_ACCEPT (FnCosIterator);
 
-NARY_ACCEPT (FnTanIterator);
+UNARY_ACCEPT (FnTanIterator);
 
-NARY_ACCEPT (FnArcSinIterator);
+UNARY_ACCEPT (FnArcSinIterator);
 
-NARY_ACCEPT (FnArcCosIterator);
+UNARY_ACCEPT (FnArcCosIterator);
 
-NARY_ACCEPT (FnArcTanIterator);
+UNARY_ACCEPT (FnArcTanIterator);
 
 NARY_ACCEPT (FnFormatNumberIterator);
 
+BINARY_ACCEPT (FnAtan2Iterator);
+UNARY_ACCEPT (FnCoshIterator);
+UNARY_ACCEPT (FnAcoshIterator);
+BINARY_ACCEPT (FnFmodIterator);
+UNARY_ACCEPT (FnFrexpIterator);
+BINARY_ACCEPT (FnLdexpIterator);
+UNARY_ACCEPT (FnLog10Iterator);
+UNARY_ACCEPT (FnModfIterator);
+BINARY_ACCEPT (FnPowIterator);
+UNARY_ACCEPT (FnSinhIterator);
+UNARY_ACCEPT (FnAsinhIterator);
+UNARY_ACCEPT (FnTanhIterator);
+UNARY_ACCEPT (FnAtanhIterator);
 
 /*******************************************************************************
   AddOperation (see runtime/core/arithmetic_impl.h/cpp)
@@ -1352,7 +1391,7 @@ bool FnExpIterator::nextImpl (store::Item_t& result, PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
 
-  if (consumeNext(result, theChildren[0].getp(), planState )) 
+  if (consumeNext(result, this->theChild.getp(), planState )) 
   {
     GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().exp());
     STACK_PUSH (true, state);
@@ -1369,7 +1408,7 @@ bool FnLogIterator::nextImpl (store::Item_t& result, PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
 
-  if (consumeNext(result, theChildren[0].getp(), planState )) 
+  if (consumeNext(result, this->theChild.getp(), planState )) 
   {
     GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().log());
     STACK_PUSH (true, state);
@@ -1386,7 +1425,7 @@ bool FnSinIterator::nextImpl (store::Item_t& result, PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
 
-  if (consumeNext(result, theChildren[0].getp(), planState )) 
+  if (consumeNext(result, this->theChild.getp(), planState )) 
   {
     GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().sin());
     STACK_PUSH (true, state);
@@ -1403,7 +1442,7 @@ bool FnCosIterator::nextImpl (store::Item_t& result, PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
 
-  if (consumeNext(result, theChildren[0].getp(), planState )) 
+  if (consumeNext(result, this->theChild.getp(), planState )) 
   {
     GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().cos());
     STACK_PUSH (true, state);
@@ -1420,7 +1459,7 @@ bool FnTanIterator::nextImpl (store::Item_t& result, PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
 
-  if (consumeNext(result, theChildren[0].getp(), planState )) 
+  if (consumeNext(result, this->theChild.getp(), planState )) 
   {
     GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().tan());
     STACK_PUSH (true, state);
@@ -1437,7 +1476,7 @@ bool FnArcSinIterator::nextImpl (store::Item_t& result, PlanState& planState) co
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
 
-  if (consumeNext(result, theChildren[0].getp(), planState )) 
+  if (consumeNext(result, this->theChild.getp(), planState )) 
   {
     GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().asin());
     STACK_PUSH (true, state);
@@ -1454,7 +1493,7 @@ bool FnArcCosIterator::nextImpl (store::Item_t& result, PlanState& planState) co
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
 
-  if (consumeNext(result, theChildren[0].getp(), planState )) 
+  if (consumeNext(result, this->theChild.getp(), planState )) 
   {
     GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().acos());
     STACK_PUSH (true, state);
@@ -1471,13 +1510,308 @@ bool FnArcTanIterator::nextImpl (store::Item_t& result, PlanState& planState) co
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
 
-  if (consumeNext(result, theChildren[0].getp(), planState )) 
+  if (consumeNext(result, this->theChild.getp(), planState )) 
   {
     GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().atan());
     STACK_PUSH (true, state);
   }
   STACK_END (state);
 }
+
+/*******************************************************************************
+
+********************************************************************************/
+bool FnAtan2Iterator::nextImpl (store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t n0;
+  store::Item_t n1;
+  
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if (consumeNext(n0, this->theChild0.getp(), planState))
+  {
+    if (consumeNext(n1, this->theChild1.getp(), planState))
+    {
+      {
+        xqp_double doub1 = n0->getDoubleValue();
+        xqp_double doub2 = n1->getDoubleValue();
+
+        GENV_ITEMFACTORY->createDouble(result, doub1.atan2(doub2));
+      }
+
+      if (consumeNext(n0, this->theChild0.getp(), planState) ||
+          consumeNext(n1, this->theChild1.getp(), planState))
+        ZORBA_ERROR_DESC(XPTY0004,
+                         "Atan2 function has a sequence longer than one as an operand.");
+      STACK_PUSH(true, state);
+    }
+  }
+
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool FnCoshIterator::nextImpl (store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+
+  if (consumeNext(result, theChild.getp(), planState )) 
+  {
+    GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().cosh());
+    STACK_PUSH (true, state);
+  }
+  STACK_END (state);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool FnAcoshIterator::nextImpl (store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+
+  if (consumeNext(result, theChild.getp(), planState )) 
+  {
+    GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().acosh());
+    STACK_PUSH (true, state);
+  }
+  STACK_END (state);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool FnFmodIterator::nextImpl (store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t n0;
+  store::Item_t n1;
+  
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if (consumeNext(n0, this->theChild0.getp(), planState))
+  {
+    if (consumeNext(n1, this->theChild1.getp(), planState))
+    {
+      {
+        xqp_double doub1 = n0->getDoubleValue();
+        xqp_double doub2 = n1->getDoubleValue();
+
+        GENV_ITEMFACTORY->createDouble(result, doub1.fmod(doub2));
+      }
+
+      if (consumeNext(n0, this->theChild0.getp(), planState) ||
+          consumeNext(n1, this->theChild1.getp(), planState))
+        ZORBA_ERROR_DESC(XPTY0004,
+                         "Fmod function has a sequence longer than one as an operand.");
+      STACK_PUSH(true, state);
+    }
+  }
+
+  STACK_END(state);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool FnFrexpIterator::nextImpl (store::Item_t& result, PlanState& planState) const
+{
+  FnFrexpState* state;
+  DEFAULT_STACK_INIT ( FnFrexpState, state, planState );
+
+  if (consumeNext(result, theChild.getp(), planState )) 
+  {
+    {
+      xqp_double    doub = result->getDoubleValue();
+      xqp_double    doub_mantissa;
+      doub.frexp(doub_mantissa, state->int_exponent);
+      GENV_ITEMFACTORY->createDouble(result, doub_mantissa);
+    }
+    STACK_PUSH (true, state);
+    GENV_ITEMFACTORY->createInteger(result, state->int_exponent);
+    STACK_PUSH (true, state);
+  }
+  STACK_END (state);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool FnLdexpIterator::nextImpl (store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t n0;
+  store::Item_t n1;
+  
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if (consumeNext(n0, this->theChild0.getp(), planState))
+  {
+    if (consumeNext(n1, this->theChild1.getp(), planState))
+    {
+      {
+        xqp_integer integ = n1->getIntegerValue();
+        xqp_double  doub = n0->getDoubleValue();
+        xqp_integer integ_2 = Integer::parseInt(2);
+        xqp_double doub_pow = integ_2.pow(integ);
+
+        GENV_ITEMFACTORY->createDouble(result, doub * doub_pow);
+      }
+
+      if (consumeNext(n0, this->theChild0.getp(), planState) ||
+          consumeNext(n1, this->theChild1.getp(), planState))
+        ZORBA_ERROR_DESC(XPTY0004,
+                         "Ldexp function has a sequence longer than one as an operand.");
+      STACK_PUSH(true, state);
+    }
+  }
+
+  STACK_END(state);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool FnLog10Iterator::nextImpl (store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+
+  if (consumeNext(result, theChild.getp(), planState )) 
+  {
+    GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().log10());
+    STACK_PUSH (true, state);
+  }
+  STACK_END (state);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool FnModfIterator::nextImpl (store::Item_t& result, PlanState& planState) const
+{
+  FnModfState* state;
+  DEFAULT_STACK_INIT ( FnModfState, state, planState );
+
+  if (consumeNext(result, theChild.getp(), planState )) 
+  {
+    {
+      xqp_double    doub = result->getDoubleValue();
+      xqp_double    doub_fraction;
+      doub.modf(doub_fraction, state->doub_integer);
+      GENV_ITEMFACTORY->createDouble(result, doub_fraction);
+    }
+    STACK_PUSH (true, state);
+    GENV_ITEMFACTORY->createDouble(result, state->doub_integer);
+    STACK_PUSH (true, state);
+  }
+  STACK_END (state);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool FnPowIterator::nextImpl (store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t n0;
+  store::Item_t n1;
+  
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if (consumeNext(n0, this->theChild0.getp(), planState))
+  {
+    if (consumeNext(n1, this->theChild1.getp(), planState))
+    {
+      {
+        xqp_double doub1 = n0->getDoubleValue();
+        xqp_double  doub2 = n1->getDoubleValue();
+
+        GENV_ITEMFACTORY->createDouble(result, doub1.pow(doub2));
+      }
+
+      if (consumeNext(n0, this->theChild0.getp(), planState) ||
+          consumeNext(n1, this->theChild1.getp(), planState))
+        ZORBA_ERROR_DESC(XPTY0004,
+                         "Pow function has a sequence longer than one as an operand.");
+      STACK_PUSH(true, state);
+    }
+  }
+
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool FnSinhIterator::nextImpl (store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+
+  if (consumeNext(result, theChild.getp(), planState )) 
+  {
+    GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().sinh());
+    STACK_PUSH (true, state);
+  }
+  STACK_END (state);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool FnAsinhIterator::nextImpl (store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+
+  if (consumeNext(result, theChild.getp(), planState )) 
+  {
+    GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().asinh());
+    STACK_PUSH (true, state);
+  }
+  STACK_END (state);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool FnTanhIterator::nextImpl (store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+
+  if (consumeNext(result, theChild.getp(), planState )) 
+  {
+    GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().tanh());
+    STACK_PUSH (true, state);
+  }
+  STACK_END (state);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool FnAtanhIterator::nextImpl (store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+
+  if (consumeNext(result, theChild.getp(), planState )) 
+  {
+    GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().atanh());
+    STACK_PUSH (true, state);
+  }
+  STACK_END (state);
+}
+
 
 
 /*******************************************************************************

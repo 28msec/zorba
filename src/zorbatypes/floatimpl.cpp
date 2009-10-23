@@ -439,7 +439,7 @@ FloatImpl<FloatType> FloatImpl<FloatType>::operator/(const FloatImpl& aFloatImpl
 
 template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::operator%(const FloatImpl& aFloatImpl) const{
-  FloatImpl lFloatImpl(fmod(theFloating, aFloatImpl.theFloating));
+  FloatImpl lFloatImpl(::fmod(theFloating, aFloatImpl.theFloating));
   return lFloatImpl;
 }
 
@@ -614,6 +614,41 @@ FloatImpl<FloatType> FloatImpl<FloatType>::sqrt() const
   return FloatImpl (::sqrt(theFloating));
 }
 
+template <typename FloatType>
+FloatImpl<FloatType> FloatImpl<FloatType>::pow(FloatImpl<FloatType> p) const
+{
+  return FloatImpl (::pow(theFloating, p.theFloating));
+}
+
+template <typename FloatType>
+FloatImpl<FloatType> FloatImpl<FloatType>::fmod(FloatImpl<FloatType> p) const
+{
+  return FloatImpl (::fmod(theFloating, p.theFloating));
+}
+
+template <typename FloatType>
+void FloatImpl<FloatType>::frexp(FloatImpl<FloatType> &out_mantissa, Integer &out_exponent) const
+{
+  int expint;
+  out_mantissa = FloatImpl (::frexp(theFloating, &expint));
+  out_exponent = Integer(expint);
+}
+
+template <>
+void FloatImpl<double>::modf(FloatImpl<double> &out_fraction, FloatImpl<double> &out_integer) const
+{
+  double int_part;
+  out_fraction = FloatImpl (::modf(theFloating, &int_part));
+  out_integer = FloatImpl(int_part);
+}
+template <>
+void FloatImpl<float>::modf(FloatImpl<float> &out_fraction, FloatImpl<float> &out_integer) const
+{
+  float int_part;
+  out_fraction = FloatImpl (::modff(theFloating, &int_part));
+  out_integer = FloatImpl(int_part);
+}
+
 #define PASSTHRU( fn )                                    \
   template <typename FloatType>                           \
   FloatImpl<FloatType> FloatImpl<FloatType>::fn() const   \
@@ -650,6 +685,12 @@ FloatImpl<FloatType> FloatImpl<FloatType>::acos() const
   if (*this < one_neg() || *this > one())
     return nan();
   return FloatImpl (::acos(theFloating));
+}
+
+template <typename FloatType>
+FloatImpl<FloatType> FloatImpl<FloatType>::atan2(FloatImpl<FloatType> x) const
+{
+  return FloatImpl (::atan2(theFloating, x.theFloating));
 }
 
 PASSTHRU (exp)

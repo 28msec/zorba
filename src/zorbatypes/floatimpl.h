@@ -263,6 +263,12 @@ public:
   FloatImpl<FloatType> acosh() const;
   FloatImpl<FloatType> atanh() const;
 
+  FloatImpl<FloatType> atan2(FloatImpl<FloatType> x) const;
+  FloatImpl<FloatType> pow(FloatImpl<FloatType> p) const;
+  FloatImpl<FloatType> fmod(FloatImpl<FloatType> p) const;
+  void frexp(FloatImpl<FloatType> &out_mantissa, Integer &out_exponent) const;
+  void modf(FloatImpl<FloatType> &out_fraction, FloatImpl<FloatType> &out_integer) const;
+
   bool 
   isNaN() const;
 
