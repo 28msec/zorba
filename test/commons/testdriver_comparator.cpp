@@ -83,6 +83,9 @@ canonicalizeAndCompare(const std::string& aComparisonMethod,
         if (*bufp == '?')
           bufp += 2;
 
+        if (*bufp == '\r')
+          ++bufp;
+
         if (*bufp == '\n')
           ++bufp;
       }
