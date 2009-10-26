@@ -82,6 +82,8 @@
 #include "store/api/iterator.h"
 
 
+#define XQUF_STATIC_TYPING_STRICT 1
+
 #define QLOCDECL const QueryLoc &qloc = v.get_loc(); (void) qloc
 
 #define SCTXDECL static_context* sctx = get_sctx(v.get_sctx_id()); (void)sctx;
@@ -1460,48 +1462,60 @@ bool begin_visit (insert_expr& v)
   expr_t targetExpr = v.getTargetExpr();
   expr_t sourceExpr = v.getSourceExpr();
   xqtref_t targetType = targetExpr->return_type(sctx);
+  xqtref_t sourceType = sourceExpr->return_type(sctx);
 
   if (TypeOps::is_equal(*targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
     ZORBA_ERROR_LOC(XUDY0027, qloc);
 
-  if (TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.DOCUMENT_TYPE_STAR))
-  {
-    xqtref_t sourceType = sourceExpr->return_type(sctx);
-
-    if (TypeOps::is_subtype(*sourceType, *GENV_TYPESYSTEM.ATTRIBUTE_TYPE_STAR))
-    {
-      ZORBA_ERROR_LOC(XUTY0022, qloc);
-    }
-  }
+#if XQUF_STATIC_TYPING_SAFE
 
   if (kind == store::UpdateConsts::INTO ||
       kind == store::UpdateConsts::AS_FIRST_INTO ||
       kind == store::UpdateConsts::AS_LAST_INTO)
   {
-#if 0
+    if (TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.DOCUMENT_TYPE_STAR) &&
+        TypeOps::is_subtype(*sourceType, *GENV_TYPESYSTEM.ATTRIBUTE_TYPE_STAR))
+    {
+      ZORBA_ERROR_LOC(XUTY0022, qloc);
+    }
+
     if (TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE))
     {
       ZORBA_ERROR_LOC(XUTY0005, qloc);
     }
 
-    if (TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.ATTRIBUTE_TYPE_STAR))
+    if (TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.ATTRIBUTE_TYPE_STAR) ||
+        TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.TEXT_TYPE_STAR) ||
+        TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.COMMENT_TYPE_STAR) ||
+        TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.PI_TYPE_STAR))
     {
       ZORBA_ERROR_LOC(XUTY0005, qloc);
     }
+  }
+  else
+  {
+  }
 
-    // etc....
-#else
+#elif XQUF_STATIC_TYPING_STRICT
+
+  if (kind == store::UpdateConsts::INTO ||
+      kind == store::UpdateConsts::AS_FIRST_INTO ||
+      kind == store::UpdateConsts::AS_LAST_INTO)
+  {
+    if (TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.DOCUMENT_TYPE_STAR) &&
+        TypeOps::is_subtype(*sourceType, *GENV_TYPESYSTEM.ATTRIBUTE_TYPE_STAR))
+    {
+      ZORBA_ERROR_LOC(XUTY0022, qloc);
+    }
+    
     if (!TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.DOCUMENT_TYPE_STAR) &&
         !TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.ELEMENT_TYPE_STAR))
     {
       ZORBA_ERROR_LOC(XUTY0005, qloc);
     }
-#endif
   }
   else
   {
-#if 0
-#else
     if (!TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.ELEMENT_TYPE_STAR) &&
         !TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.TEXT_TYPE_STAR) &&
         !TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.COMMENT_TYPE_STAR) &&
@@ -1509,8 +1523,8 @@ bool begin_visit (insert_expr& v)
     {
       ZORBA_ERROR_LOC(XUTY0006, qloc);
     }
-#endif
   }
+#endif
 
   return true;
 }
@@ -2247,7 +2261,7 @@ void end_visit (elem_expr& v) {
                                         lQNameIter,
                                         lAttrsIter,
                                         lContentIter,
-                                        v.getNSCtx().getp(),
+                                        v.getNSCtx(),
                                         isRoot);
   push_itstack(iter);
 }

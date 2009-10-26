@@ -592,9 +592,9 @@ ostream& attr_expr::put( ostream& os) const
 
 ostream& text_expr::put(ostream& os) const
 {
-  BEGIN_EXPR (text_expr);
+  BEGIN_EXPR(text_expr);
 
-  text->put(os);
+  theContentExpr->put(os);
 
   CLOSE_EXPR;
 }
@@ -603,9 +603,9 @@ ostream& pi_expr::put( ostream& os) const
 {
   BEGIN_EXPR (pi_expr);
 
-  PUT_SUB ("TARGET", target_expr_h);
+  PUT_SUB ("TARGET", theTargetExpr);
 
-  PUT_SUB ("CONTENT", get_text ());
+  PUT_SUB ("CONTENT", theContentExpr);
 
   CLOSE_EXPR;
 }

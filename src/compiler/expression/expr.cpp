@@ -1484,6 +1484,360 @@ expr_t name_cast_expr::clone(substitution_t& subst)
 }
 
 
+/***************************************************************************//**
+  Base class for all node constructing expressions
+********************************************************************************/
+constructor_expr::constructor_expr(short sctx, const QueryLoc& loc) 
+  :
+  expr(sctx, loc)
+{
+}
+
+
+void constructor_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+}
+
+
+/***************************************************************************//**
+  CompDocConstructor ::= "document" "{" Expr "}"
+********************************************************************************/
+doc_expr::doc_expr(
+    short sctx,
+    const QueryLoc& loc,
+    expr_t aContent)
+  :
+  constructor_expr(sctx, loc),
+  theContent(aContent)
+{
+  compute_upd_seq_kind();
+}
+
+
+void doc_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (constructor_expr*)this);
+  ar & theContent;
+}
+
+
+xqtref_t doc_expr::return_type_impl(static_context* sctx) 
+{
+  return sctx->get_typemanager()->
+         create_node_type(store::StoreConsts::documentNode,
+                          NULL,
+                          theContent == NULL ? NULL : theContent->return_type(sctx),
+                          TypeConstants::QUANT_ONE,
+                          false,
+                          false);
+}
+
+
+void doc_expr::next_iter(expr_iterator_data& v) 
+{
+  BEGIN_EXPR_ITER();
+  ITER(theContent);
+  END_EXPR_ITER();
+}
+
+
+expr_t doc_expr::clone(substitution_t& subst) 
+{
+  return new doc_expr(theSctxId, get_loc(), CLONE(getContent(), subst));
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+elem_expr::elem_expr (
+    short sctx,
+    const QueryLoc& aLoc,
+    expr_t aQNameExpr,
+    expr_t aAttrs,
+    expr_t aContent,
+    rchandle<namespace_context> aNSCtx)
+  :
+  constructor_expr(sctx, aLoc),
+  theQNameExpr(aQNameExpr),
+  theAttrs(aAttrs),
+  theContent(aContent),
+  theNSCtx(aNSCtx)
+{
+  compute_upd_seq_kind();
+}
+
+elem_expr::elem_expr (
+    short sctx,
+    const QueryLoc& aLoc,
+    expr_t aQNameExpr,
+    expr_t aContent,
+    rchandle<namespace_context> aNSCtx)
+  :
+  constructor_expr(sctx, aLoc),
+  theQNameExpr(aQNameExpr),
+  theAttrs(0),
+  theContent(aContent),
+  theNSCtx(aNSCtx)
+{
+  compute_upd_seq_kind();
+}
+  
+
+void elem_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (constructor_expr*)this);
+  ar & theQNameExpr;
+  ar & theAttrs;
+  ar & theContent;
+  ar & theNSCtx;
+}
+
+
+namespace_context* elem_expr::getNSCtx() const
+{
+  return theNSCtx.getp(); 
+}
+
+
+xqtref_t elem_expr::return_type_impl(static_context* sctx) 
+{
+  xqtref_t typeName =
+           (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
+            GENV_TYPESYSTEM.ANY_TYPE : 
+            GENV_TYPESYSTEM.UNTYPED_TYPE);
+
+  return sctx->get_typemanager()->
+         create_node_type(store::StoreConsts::elementNode,
+                          NULL,
+                          typeName,
+                          TypeConstants::QUANT_ONE,
+                          false,
+                          false);
+}
+
+
+void elem_expr::next_iter(expr_iterator_data& v) 
+{
+  BEGIN_EXPR_ITER();
+  ITER(theQNameExpr);
+  ITER(theAttrs);
+  ITER(theContent);
+  END_EXPR_ITER();
+}
+
+
+expr_t elem_expr::clone(substitution_t& subst) 
+{
+  return new elem_expr(theSctxId,
+                       get_loc(),
+                       CLONE(getQNameExpr(), subst),
+                       CLONE(getAttrs(), subst),
+                       CLONE(getContent(), subst),
+                       getNSCtx());
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+attr_expr::attr_expr(
+    short sctx,
+    const QueryLoc& loc,
+    expr_t aQNameExpr,
+    expr_t aValueExpr)
+  :
+  constructor_expr(sctx, loc),
+  theQNameExpr(aQNameExpr),
+  theValueExpr(aValueExpr)
+{
+  compute_upd_seq_kind();
+}
+
+
+void attr_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (constructor_expr*)this);
+  ar & theQNameExpr;
+  ar & theValueExpr;
+}
+
+
+store::Item* attr_expr::getQName() const
+{
+  const_expr* qnExpr =  dynamic_cast<const_expr*>(theQNameExpr.getp());
+  if (qnExpr != 0)
+    return qnExpr->get_val().getp();
+
+  return 0;
+}
+
+
+xqtref_t attr_expr::return_type_impl(static_context* sctx) 
+{
+  return sctx->get_typemanager()->
+         create_node_type(store::StoreConsts::attributeNode,
+                          NULL,
+                          theValueExpr == NULL ? NULL : theValueExpr->return_type(sctx),
+                          TypeConstants::QUANT_ONE,
+                          false,
+                          false);
+}
+
+
+void attr_expr::next_iter(expr_iterator_data& v) 
+{
+  BEGIN_EXPR_ITER();
+  ITER(theQNameExpr);
+  ITER(theValueExpr);
+  END_EXPR_ITER();
+}
+
+
+expr_t attr_expr::clone(substitution_t& subst) 
+{
+  return new attr_expr(theSctxId,
+                       get_loc(),
+                       CLONE(getQNameExpr(), subst),
+                       CLONE(getValueExpr(), subst));
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+text_expr::text_expr(
+    short sctx,
+    const QueryLoc& loc,
+    text_constructor_type type_arg,
+    expr_t content)
+  :
+  constructor_expr(sctx, loc),
+  type (type_arg),
+  theContentExpr(content)
+{
+  compute_upd_seq_kind();
+}
+
+
+void text_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (constructor_expr*)this);
+  SERIALIZE_ENUM(text_constructor_type, type);
+  ar & theContentExpr;
+}
+
+
+xqtref_t text_expr::return_type_impl(static_context* sctx) 
+{
+  store::StoreConsts::NodeKind nodeKind;
+
+  TypeConstants::quantifier_t q = TypeConstants::QUANT_ONE;
+
+  switch (type) 
+  {
+    case text_constructor: 
+    {
+      xqtref_t t = get_text()->return_type(sctx);
+
+      if (TypeOps::is_empty(*t))
+        return t;
+
+      else if (TypeOps::type_min_cnt(*t) == 0)
+        q = TypeConstants::QUANT_QUESTION;
+
+      nodeKind = store::StoreConsts::textNode;
+      break;
+    }
+
+  case comment_constructor:
+    nodeKind = store::StoreConsts::commentNode;
+    break;
+
+  default:
+    ZORBA_ASSERT(false);
+    break;
+  }
+
+  return sctx->get_typemanager()->create_node_type(nodeKind,
+                                                   NULL,
+                                                   NULL,
+                                                   q,
+                                                   false,
+                                                   false);
+}
+
+
+void text_expr::next_iter(expr_iterator_data& v) 
+{
+  BEGIN_EXPR_ITER();
+  ITER(theContentExpr);
+  END_EXPR_ITER();
+}
+
+
+expr_t text_expr::clone(substitution_t& subst) 
+{
+  return new text_expr(theSctxId, get_loc(), get_type(), CLONE(get_text(), subst));
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+pi_expr::pi_expr(
+    short sctx,
+    const QueryLoc& loc,
+    expr_t targetExpr,
+    expr_t contentExpr)
+:
+  constructor_expr(sctx, loc),
+  theTargetExpr(targetExpr),
+  theContentExpr(contentExpr)
+{
+  compute_upd_seq_kind();
+}
+
+
+void pi_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (constructor_expr*)this);
+  ar & theTargetExpr;
+  ar & theContentExpr;
+}
+
+
+xqtref_t pi_expr::return_type_impl(static_context* sctx) 
+{
+  return sctx->get_typemanager()->
+         create_node_type(store::StoreConsts::piNode,
+                          NULL,
+                          NULL,
+                          TypeConstants::QUANT_ONE,
+                          false,
+                          false);
+}
+
+
+void pi_expr::next_iter(expr_iterator_data& v) 
+{
+  BEGIN_EXPR_ITER();
+  ITER(theTargetExpr);
+  ITER(theContentExpr);
+  END_EXPR_ITER();
+}
+
+
+expr_t pi_expr::clone(substitution_t& subst) 
+{
+  return new pi_expr(theSctxId,
+                     get_loc(),
+                     CLONE(get_target_expr(), subst),
+                     CLONE(get_content_expr(), subst));
+}
+
+
 /*******************************************************************************
   first-order expressions. Represents function invocations as well as:
 
@@ -3042,7 +3396,10 @@ relpath_expr::relpath_expr(short sctx, const QueryLoc& loc)
   expr(sctx, loc)
 {}
 
-expr_iterator_data *relpath_expr::make_iter () { return new relpath_expr_iterator_data (this); }
+expr_iterator_data *relpath_expr::make_iter() 
+{ 
+  return new relpath_expr_iterator_data (this); 
+}
 
 void relpath_expr::next_iter (expr_iterator_data& v) {
   BEGIN_EXPR_ITER2 (relpath_expr);
@@ -3176,174 +3533,7 @@ expr_t order_expr::clone(substitution_t& subst) {
 }
 
 
-// [93] [http://www.w3.org/TR/xquery/#prod-xquery-FunctionCall]
-
-// [96] [http://www.w3.org/TR/xquery/#doc-exquery-DirElemConstructor]
-elem_expr::elem_expr (
-    short sctx,
-    const QueryLoc& aLoc,
-    expr_t aQNameExpr,
-    expr_t aAttrs,
-    expr_t aContent,
-    rchandle<namespace_context> aNSCtx)
-    :
-    constructor_expr ( sctx, aLoc ),
-    theQNameExpr ( aQNameExpr ),
-    theAttrs ( aAttrs ),
-    theContent ( aContent ),
-    theNSCtx(aNSCtx)
-{}
-
-elem_expr::elem_expr (
-    short sctx,
-    const QueryLoc& aLoc,
-    expr_t aQNameExpr,
-    expr_t aContent,
-    rchandle<namespace_context> aNSCtx)
-    :
-    constructor_expr ( sctx, aLoc ),
-    theQNameExpr ( aQNameExpr ),
-    theAttrs ( 0 ),
-    theContent ( aContent ),
-    theNSCtx(aNSCtx)
-{}
-  
-
-rchandle<namespace_context> elem_expr::getNSCtx() { return theNSCtx; }
-
-void elem_expr::next_iter (expr_iterator_data& v) {
-  BEGIN_EXPR_ITER();
-  ITER (theQNameExpr);
-  ITER (theAttrs);
-  ITER (theContent);
-  END_EXPR_ITER();
-}
-
-expr_t elem_expr::clone(substitution_t& subst) {
-  return new elem_expr (theSctxId, get_loc (),
-                        CLONE (getQNameExpr (), subst),
-                        CLONE (getAttrs (), subst),
-                        CLONE (getContent (), subst),
-                        getNSCtx ());
-}
-
-
-// [110] [http://www.w3.org/TR/xquery/#prod-xquery-CompDocConstructor]
-
-doc_expr::doc_expr(
-  short sctx,
-  const QueryLoc& loc,
-  expr_t aContent)
-:
-  constructor_expr(sctx, loc),
-  theContent(aContent)
-{}
-
-
-void doc_expr::next_iter (expr_iterator_data& v) {
-  BEGIN_EXPR_ITER();
-  ITER(theContent);
-  END_EXPR_ITER();
-}
-
-expr_t doc_expr::clone(substitution_t& subst) {
-  return new doc_expr (theSctxId, get_loc (), CLONE (getContent (), subst));
-}
-
-
-// [111] [http://www.w3.org/TR/xquery/#prod-xquery-CompElemConstructor]
-
-
-// [113] [http://www.w3.org/TR/xquery/#prod-xquery-CompAttrConstructor]
-
-attr_expr::attr_expr(
-  short sctx,
-  const QueryLoc& loc,
-  expr_t aQNameExpr,
-  expr_t aValueExpr)
-:
-  constructor_expr(sctx, loc),
-  theQNameExpr(aQNameExpr),
-  theValueExpr(aValueExpr)
-{}
-
-
-store::Item* attr_expr::getQName() const
-{
-  const_expr* qnExpr =  dynamic_cast<const_expr*>(theQNameExpr.getp());
-  if (qnExpr != 0)
-    return qnExpr->get_val().getp();
-
-  return 0;
-}
-
-
-void attr_expr::next_iter (expr_iterator_data& v) {
-  BEGIN_EXPR_ITER();
-  ITER (theQNameExpr);
-  ITER (theValueExpr);
-  END_EXPR_ITER();
-}
-
-expr_t attr_expr::clone(substitution_t& subst) {
-  return new attr_expr (theSctxId, get_loc (),
-                        CLONE (getQNameExpr (), subst), CLONE (getValueExpr (), subst));
-}
-
-// [114] [http://www.w3.org/TR/xquery/#prod-xquery-CompTextConstructor]
-
-text_expr::text_expr(
-  short sctx,
-  const QueryLoc& loc,
-  text_constructor_type type_arg,
-  expr_t text_arg)
-:
-  constructor_expr(sctx, loc),
-  type (type_arg),
-  text(text_arg)
-{}
-
-
-void text_expr::next_iter (expr_iterator_data& v) {
-  BEGIN_EXPR_ITER();
-  ITER (text);
-  END_EXPR_ITER();
-}
-
-expr_t text_expr::clone(substitution_t& subst) {
-  return new text_expr (theSctxId, get_loc (), get_type (), CLONE (get_text (), subst));
-}
-
-// [115] [http://www.w3.org/TR/xquery/#prod-xquery-CompCommentConstructor]
-
-
-// [114] [http://www.w3.org/TR/xquery/#prod-xquery-CompPIConstructor]
-
-pi_expr::pi_expr(
-  short sctx,
-  const QueryLoc& loc,
-  expr_t _target_expr_h,
-  expr_t _content_expr_h)
-:
-  text_expr(sctx, loc, text_expr::pi_constructor, _content_expr_h),
-  target_expr_h(_target_expr_h)
-{}
-
-
-void pi_expr::next_iter (expr_iterator_data& v) {
-  BEGIN_EXPR_ITER ();
-  ITER (target_expr_h);
-  ITER (text);
-  END_EXPR_ITER ();
-}
-
-
 void function_def_expr::next_iter (expr_iterator_data& v) {}
-
-expr_t pi_expr::clone(substitution_t& subst) {
-  return new pi_expr (theSctxId, get_loc (),
-                      CLONE (get_target_expr (), subst), CLONE (get_text (), subst));
-}
 
 
 void function_def_expr::serialize(::zorba::serialization::Archiver &ar)
