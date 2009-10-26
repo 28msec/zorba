@@ -52,18 +52,16 @@ declare function local:create-function($iter) as xs:string?
          $gen:newline,
          'public:',
          $gen:newline, $gen:indent,
-         $name, ' ( const signature&amp; sig) : ',
-         local:base-class($iter), ' (sig, FunctionConsts::', gen:function-kind($iter/zorba:function/zorba:signature[1]),') {}',
+         $name, '(const signature&amp; sig) : ',
+         local:base-class($iter), '(sig, FunctionConsts::', gen:function-kind($iter/zorba:function/zorba:signature[1]),') {}',
          $gen:newline,
         local:add-annotations($iter),
         local:add-specialization($iter),
         local:add-unfoldable($iter),
         local:add-is-source($iter),
-        $gen:newline,$gen:indent,'PlanIter_t codegen( CompilerCB*,',$gen:newline,
-        gen:indent(11),'static_context* sctx,',$gen:newline,
-        gen:indent(11),'const QueryLoc&amp; loc,',$gen:newline,
-        gen:indent(11),'std::vector&lt;PlanIter_t&gt;&amp; argv,',$gen:newline,
-        gen:indent(11),'AnnotationHolder&amp; ann) const;',$gen:newline,
+        local:add-is-updating($iter),
+        local:add-is-sequential($iter),
+        $gen:newline,$gen:indent,'CODEGEN_DECL();',$gen:newline,
 
         (: generate the return type function or not 
          : if true, the user has to provide his own implementation
@@ -114,6 +112,24 @@ declare function local:add-is-source($iter) as xs:string?
   if($iter/zorba:function/@isSource = 'true') then
     string-join(($gen:newline,$gen:indent,
     'virtual bool isSource() const { return true; }',$gen:newline),'')
+  else ()
+};
+
+
+declare function local:add-is-updating($iter) as xs:string?
+{
+  if($iter/zorba:function/@isUpdating = 'true') then
+    string-join(($gen:newline,$gen:indent,
+    'expr_update_t getUpdateType() const { return UPDATE_EXPR; }',$gen:newline),'')
+  else ()
+};
+
+
+declare function local:add-is-sequential($iter) as xs:string?
+{
+  if($iter/zorba:function/@isSequential = 'true') then
+    string-join(($gen:newline,$gen:indent,
+    'expr_update_t getUpdateType() const { return SEQUENTIAL_EXPR; }',$gen:newline),'')
   else ()
 };
 
