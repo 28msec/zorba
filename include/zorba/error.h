@@ -592,6 +592,10 @@ typedef enum
   // It is a dynamic error if an insert expression specifies the insertion
   // of an attribute node before or after a child of a document node.
 
+  XUDY0031,
+  // It is a dynamic error if multiple calls to fn:put in the same snapshot
+  // specify the same URI (after resolution of relative URIs).
+
   //
   // XQuery 1.0 and XPath 2.0 Functions and Operators
   //
