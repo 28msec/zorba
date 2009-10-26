@@ -37,7 +37,6 @@
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
 #include "store/api/copymode.h"
-#include "store/api/index.h"
 
 
 namespace zorba 
