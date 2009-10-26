@@ -541,25 +541,25 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
 
   static_context* sctx = rCtx.getStaticContext(node);
 
-  if_expr* ite_result = dynamic_cast<if_expr*>(flwor->get_return_expr());
-
-  rchandle<const_expr> pos;
-  var_expr* pvar;
-
+  if_expr* ifReturnExpr = dynamic_cast<if_expr*>(flwor->get_return_expr());
   expr* whereExpr = flwor->get_where();
 
   // "for $x in ... return if (ce) then te else ()" --> 
   // "for $x in ... where ce return te"
-  if (ite_result != NULL &&
+  if (ifReturnExpr != NULL &&
       whereExpr == NULL &&
-      TypeOps::is_empty(*ite_result->get_else_expr()->return_type(sctx)))
+      ifReturnExpr->is_simple() &&
+      TypeOps::is_empty(*ifReturnExpr->get_else_expr()->return_type(sctx)))
   {
-    expr_t cond = ite_result->get_cond_expr();
-    expr_t then = ite_result->get_then_expr();
+    expr_t cond = ifReturnExpr->get_cond_expr();
+    expr_t then = ifReturnExpr->get_then_expr();
     flwor->set_return_expr(then);
     flwor->set_where(cond);
     return flwor;
   }
+
+  rchandle<const_expr> pos;
+  var_expr* pvar;
   
   // '... for $x at $p in E ... where $p = const ... return ...' -->
   // '... for $x in fn:subsequence(E, const, 1) ... return ...
