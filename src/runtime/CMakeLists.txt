@@ -113,7 +113,6 @@ LIST(APPEND RUNTIME_SRCS
     util/UtilImpl.cpp
     util/timeout.cpp
     util/flowctl_exception.cpp
-    fnput/fnput.cpp
 )
 
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS debug)
