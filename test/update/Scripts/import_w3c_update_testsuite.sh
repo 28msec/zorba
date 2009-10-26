@@ -81,27 +81,49 @@ cp "$SRC/test/update/xml.xsd" "$SRC/test/update/Queries/w3c_update_testsuite/Tes
 
 cat >"$q" <<"EOF"
 declare default element namespace "http://www.w3.org/2005/02/query-test-update";
-string-join ((
-for $sch in //schema return concat ("%uri ", $sch/@uri, " ", $sch/@FileName), 
-for $src in //source return concat ("%src ", $src/@ID, " ", $src/@FileName),
-for $tc in //test-case
-return 
+
+string-join (
 (
-concat("case=",$tc/@FilePath,$tc/@name),
-for $state in $tc/state
-return (
-concat("State: ",$state/query/@name),
-concat("Args:", string-join(
-  for $infile in $state/input-file 
-  let $source := //source[@ID eq $infile/text()]
-  return concat(" -x ", $infile/@variable,"=$UPDATE_SRC_DIR/Queries/w3c_update_testsuite/",$source/@FileName) ,"")  ,if ($state/query/@date) then concat(" -d ",$state/query/@date) else ()),
-for $outfile in $state/output-file
-return concat("Compare: ", $outfile/text(), " ", $outfile/@compare),
-for $error in $state/expected-error
-return concat("Error: ", $error/text())
-),
-"end"
-)
+  for $sch in //schema return concat ("%uri ", $sch/@uri, " ", $sch/@FileName), 
+
+  for $src in //source return concat ("%src ", $src/@ID, " ", $src/@FileName),
+
+  for $tc in //test-case
+  return 
+  (
+    concat("case=", $tc/@FilePath, $tc/@name),
+
+    for $state in $tc/state
+    return 
+    (
+      concat("State: ", $state/query/@name),
+
+      concat("Args:", 
+             string-join(for $infile in $state/input-file 
+                         let $source := //source[@ID eq $infile/text()]
+                         return concat(" -x ",
+                                       $infile/@variable,
+                                       "=$UPDATE_SRC_DIR/Queries/w3c_update_testsuite/",
+                                       $source/@FileName) ,
+                         ""),
+             string-join(for $inuri in $state/input-URI 
+                         let $source := //source[@ID eq $inuri/text()]
+                         return concat(" -x ",
+                                       $inuri/@variable,
+                                       ":=$UPDATE_SRC_DIR/Queries/w3c_update_testsuite/",
+                                       $source/@FileName) ,
+                         ""),
+             if ($state/query/@date) then concat(" -d ",$state/query/@date) else ()),
+
+      for $outfile in $state/output-file
+      return concat("Compare: ", $outfile/text(), " ", $outfile/@compare),
+
+      for $error in $state/expected-error
+      return concat("Error: ", $error/text())
+    ),
+
+    "end"
+  )
 ),
 "
 ")
