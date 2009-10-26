@@ -21,56 +21,40 @@
 // *                                        *
 // ******************************************
 
-
-#ifndef ZORBA_FUNCTIONS_BOOLEANS_H
-#define ZORBA_FUNCTIONS_BOOLEANS_H
-
-
-#include "common/shared_types.h"
-#include "functions/function_impl.h"
-
-
-namespace zorba{
-
-
-void populate_context_booleans(static_context* sctx);
+#include "runtime/visitors/planiter_visitor.h"
+#include "runtime/fnput/fnput.h"
+#include "system/globalenv.h"
 
 
 
-//op:is-same-node
-class op_is_same_node : public function
-{
-public:
-  op_is_same_node(const signature& sig) : function(sig, FunctionConsts::FN_IS_SAME_NODE) {}
+namespace zorba {
 
-  CODEGEN_DECL();
-};
+// <FnPutIterator>
+const char* FnPutIterator::class_name_str = "FnPutIterator";
+FnPutIterator::class_factory<FnPutIterator>
+FnPutIterator::g_class_factory;
 
-//op:node-before
-class op_node_before : public function
-{
-public:
-  op_node_before(const signature& sig) : function(sig, FunctionConsts::FN_NODE_BEFORE) {}
+const serialization::ClassVersion 
+FnPutIterator::class_versions[] ={{ 1, 0x000905, false}};
 
-  CODEGEN_DECL();
-};
+const int FnPutIterator::class_versions_count =
+sizeof(FnPutIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-//op:node-after
-class op_node_after : public function
-{
-public:
-  op_node_after(const signature& sig) : function(sig, FunctionConsts::FN_NODE_AFTER) {}
+void FnPutIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
 
-  CODEGEN_DECL();
-};
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
 
+  v.endVisit(*this);
+}
+FnPutIterator::~FnPutIterator() {}
 
-} //namespace zorba
+// </FnPutIterator>
 
 
-#endif
-/*
- * Local variables:
- * mode: c++
- * End:
- */ 
+
+}

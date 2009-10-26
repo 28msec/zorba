@@ -82,6 +82,7 @@ public:
     UP_RENAME_PI,
     UP_SET_ATTRIBUTE_TYPE,
     UP_SET_ELEMENT_TYPE,
+    UP_PUT,
 
     // collection primitives
     UP_CREATE_COLLECTION,
@@ -123,7 +124,8 @@ public:
 
   static std::string toString(UpdateKind k)
   {
-    switch(k) {
+    switch(k) 
+    {
       case INSERT_BEFORE:
         return "insert_before";
       case INSERT_AFTER:
@@ -189,6 +191,8 @@ static std::string toString(UpdPrimKind k)
     return "rename_attr";
   case UP_RENAME_PI:
     return "rename_pi";
+  case UP_PUT:
+    return "put";
   case UP_CREATE_COLLECTION:
     return "create_collection";
   case UP_COLLECTION:

@@ -20,54 +20,49 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
+#ifndef ZORBA_RUNTIME_FNPUT_FNPUT_H
+#define ZORBA_RUNTIME_FNPUT_FNPUT_H
 
 
-#ifndef ZORBA_FUNCTIONS_BOOLEANS_H
-#define ZORBA_FUNCTIONS_BOOLEANS_H
+#include "runtime/base/narybase.h"
 
 
-#include "common/shared_types.h"
-#include "functions/function_impl.h"
+namespace zorba {
 
-
-namespace zorba{
-
-
-void populate_context_booleans(static_context* sctx);
-
-
-
-//op:is-same-node
-class op_is_same_node : public function
+/**
+ * fn:put
+ * 
+ * Author: Zorba Team * 
+ */
+class FnPutIterator: public NaryBaseIterator <FnPutIterator, PlanIteratorState>
 {
 public:
-  op_is_same_node(const signature& sig) : function(sig, FunctionConsts::FN_IS_SAME_NODE) {}
+  SERIALIZABLE_CLASS(FnPutIterator);
 
-  CODEGEN_DECL();
-};
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnPutIterator,
+  NaryBaseIterator<FnPutIterator, PlanIteratorState>);
 
-//op:node-before
-class op_node_before : public function
-{
-public:
-  op_node_before(const signature& sig) : function(sig, FunctionConsts::FN_NODE_BEFORE) {}
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnPutIterator, PlanIteratorState>*)this);
+  }
 
-  CODEGEN_DECL();
-};
+  FnPutIterator(static_context* sctx, const QueryLoc& loc,
+  std::vector<PlanIter_t>& aChildren)
+  :
+  NaryBaseIterator<FnPutIterator, PlanIteratorState>
+  (sctx, loc, aChildren){}
 
-//op:node-after
-class op_node_after : public function
-{
-public:
-  op_node_after(const signature& sig) : function(sig, FunctionConsts::FN_NODE_AFTER) {}
+  virtual ~FnPutIterator();
 
-  CODEGEN_DECL();
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
 
-} //namespace zorba
-
-
+}
 #endif
 /*
  * Local variables:

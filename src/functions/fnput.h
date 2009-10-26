@@ -22,8 +22,8 @@
 // ******************************************
 
 
-#ifndef ZORBA_FUNCTIONS_BOOLEANS_H
-#define ZORBA_FUNCTIONS_BOOLEANS_H
+#ifndef ZORBA_FUNCTIONS_FNPUT_H
+#define ZORBA_FUNCTIONS_FNPUT_H
 
 
 #include "common/shared_types.h"
@@ -33,35 +33,21 @@
 namespace zorba{
 
 
-void populate_context_booleans(static_context* sctx);
+void populate_context_fnput(static_context* sctx);
 
 
 
-//op:is-same-node
-class op_is_same_node : public function
+//fn:put
+class fn_put : public function
 {
 public:
-  op_is_same_node(const signature& sig) : function(sig, FunctionConsts::FN_IS_SAME_NODE) {}
+  fn_put(const signature& sig) : function(sig, FunctionConsts::FN_PUT) {}
+
+  expr_update_t getUpdateType() const { return UPDATE_EXPR; }
 
   CODEGEN_DECL();
-};
 
-//op:node-before
-class op_node_before : public function
-{
-public:
-  op_node_before(const signature& sig) : function(sig, FunctionConsts::FN_NODE_BEFORE) {}
-
-  CODEGEN_DECL();
-};
-
-//op:node-after
-class op_node_after : public function
-{
-public:
-  op_node_after(const signature& sig) : function(sig, FunctionConsts::FN_NODE_AFTER) {}
-
-  CODEGEN_DECL();
+  bool propagatesInputToOutput(uint32_t aProducer) const;
 };
 
 

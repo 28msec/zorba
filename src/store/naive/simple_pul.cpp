@@ -77,6 +77,7 @@ PULImpl::~PULImpl()
   cleanList(theReplaceNodeList);
   cleanList(theReplaceContentList);
   cleanList(theDeleteList);
+  cleanList(thePutList);
   cleanList(theValidationList);
   cleanList(theCreateCollectionList);
   cleanList(theInsertIntoCollectionList);
@@ -549,6 +550,46 @@ void PULImpl::addSetAttributeType(
 
 
 /*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addPut(store::Item_t& target, store::Item_t& uri)
+{
+  ulong numPuts = thePutList.size();
+
+  for (ulong i = 0; i < numPuts; ++i)
+  {
+    UpdPut* upd = static_cast<UpdPut*>(thePutList[i]);
+
+    if (upd->theTargetUri == uri)
+    {
+      ZORBA_ERROR(XUDY0031);
+    }
+  }
+
+  if (target->getNodeKind() != store::StoreConsts::documentNode)
+  {
+    assert(target->getNodeKind() == store::StoreConsts::elementNode);
+
+    ElementNode* elem =  static_cast<ElementNode*>(target.getp());
+
+    DocumentNode* doc = new DocumentNode();
+    doc->setTree(elem->getTree());
+    doc->setOrdPath(NULL, 1, store::StoreConsts::documentNode);
+
+    doc->insertChild(elem, 0);
+
+    store::Item_t docItem(doc);
+
+    target = docItem;
+  }
+
+  UpdatePrimitive* upd = new UpdPut(this, target, uri);
+
+  thePutList.push_back(upd);
+}
+
+
+/*******************************************************************************
  collection functions
 ********************************************************************************/
 void PULImpl::addCreateCollection(
@@ -698,53 +739,51 @@ void PULImpl::mergeUpdates(store::Item* other)
 {
   PULImpl* otherp = reinterpret_cast<PULImpl*>(other);
 
-  mergeUpdateList(theDoFirstList, otherp->theDoFirstList,
-                  true, true, false, false, false);
+  mergeUpdateList(theDoFirstList, otherp->theDoFirstList, UP_LIST_DO_FIRST);
 
-  mergeUpdateList(theInsertList, otherp->theInsertList,
-                  false, false, false, false, false);
+  mergeUpdateList(theInsertList, otherp->theInsertList, UP_LIST_NONE);
 
-  mergeUpdateList(theReplaceNodeList, otherp->theReplaceNodeList,
-                  false, false, true, false, false);
+  mergeUpdateList(theReplaceNodeList,
+                  otherp->theReplaceNodeList,
+                  UP_LIST_REPLACE_NODE);
 
-  mergeUpdateList(theReplaceContentList, otherp->theReplaceContentList,
-                  false, false, false, true, false);
+  mergeUpdateList(theReplaceContentList,
+                  otherp->theReplaceContentList,
+                  UP_LIST_REPLACE_CONTENT);
 
-  mergeUpdateList(theDeleteList, otherp->theDeleteList,
-                  false, false, false, false, true);
+  mergeUpdateList(theDeleteList, otherp->theDeleteList, UP_LIST_DELETE);
+
+  mergeUpdateList(thePutList, otherp->thePutList, UP_LIST_PUT);
 
   // merge collection functions
-  mergeUpdateList(theCreateCollectionList, otherp->theCreateCollectionList,
-                  false, false, false, false, false);
+  mergeUpdateList(theCreateCollectionList,
+                  otherp->theCreateCollectionList,
+                  UP_LIST_NONE);
 
-  mergeUpdateList(theInsertIntoCollectionList, otherp->theInsertIntoCollectionList,
-                  false, false, false, false, false);
+  mergeUpdateList(theInsertIntoCollectionList,
+                  otherp->theInsertIntoCollectionList,
+                  UP_LIST_NONE);
 
-  mergeUpdateList(theDeleteFromCollectionList, otherp->theDeleteFromCollectionList,
-                  false, false, false, false, false);
+  mergeUpdateList(theDeleteFromCollectionList,
+                  otherp->theDeleteFromCollectionList,
+                  UP_LIST_NONE);
 
-  mergeUpdateList(theDeleteCollectionList, otherp->theDeleteCollectionList,
-                  false, false, false, false, false);
+  mergeUpdateList(theDeleteCollectionList,
+                  otherp->theDeleteCollectionList,
+                  UP_LIST_NONE);
 
-  mergeUpdateList(theCreateIndexList, otherp->theCreateIndexList,
-                  false, false, false, false, false);
+  mergeUpdateList(theCreateIndexList, otherp->theCreateIndexList, UP_LIST_NONE);
 
-  mergeUpdateList(theDropIndexList, otherp->theDropIndexList,
-                  false, false, false, false, false);
+  mergeUpdateList(theDropIndexList, otherp->theDropIndexList, UP_LIST_NONE);
 
-  mergeUpdateList(theRefreshIndexList, otherp->theRefreshIndexList,
-                  false, false, false, false, false);
+  mergeUpdateList(theRefreshIndexList, otherp->theRefreshIndexList, UP_LIST_NONE);
 }
 
 
 void PULImpl::mergeUpdateList(
-    std::vector<UpdatePrimitive*>& myList,
-    std::vector<UpdatePrimitive*>& otherList,
-    bool                           checkRename,
-    bool                           checkReplaceValue,
-    bool                           checkReplaceNode,
-    bool                           checkReplaceContent,
-    bool                           checkDelete)
+    std::vector<UpdatePrimitive*>&  myList,
+    std::vector<UpdatePrimitive*>&  otherList,
+    UpdListKind                     listKind)
 {
   ulong numUpdates;
   ulong numOtherUpdates;
@@ -754,18 +793,40 @@ void PULImpl::mergeUpdateList(
 
   for (ulong i = 0; i < numOtherUpdates; i++)
   {
-    UpdatePrimitive* upd = otherList[i];
-    upd->thePul = this;
+    if (listKind == UP_LIST_PUT)
+    {
+      UpdPut* otherUpd = static_cast<UpdPut*>(otherList[i]);
 
-    store::UpdateConsts::UpdPrimKind updKind = upd->getKind();
+      ulong numPuts = thePutList.size();
+
+      for (ulong j = 0; j < numPuts; ++j)
+      {
+        UpdPut* upd = static_cast<UpdPut*>(thePutList[j]);
+
+        if (upd->theTargetUri->equals(otherUpd->theTargetUri))
+        {
+          ZORBA_ERROR(XUDY0031);
+        }
+      }
+
+      thePutList.push_back(otherUpd);
+      otherList[i] = NULL;
+
+      continue;
+    }
+
+    UpdatePrimitive* otherUpd = otherList[i];
+    otherUpd->thePul = this;
+
+    store::UpdateConsts::UpdPrimKind updKind = otherUpd->getKind();
     XmlNode* target;
 
     if (updKind == store::UpdateConsts::UP_REPLACE_CHILD)
-      target = BASE_NODE(reinterpret_cast<UpdReplaceChild*>(upd)->theChild);
+      target = BASE_NODE(reinterpret_cast<UpdReplaceChild*>(otherUpd)->theChild);
     else if (updKind == store::UpdateConsts::UP_REPLACE_ATTRIBUTE)
-      target = BASE_NODE(reinterpret_cast<UpdReplaceAttribute*>(upd)->theAttr);
+      target = BASE_NODE(reinterpret_cast<UpdReplaceAttribute*>(otherUpd)->theAttr);
     else
-      target = BASE_NODE(upd->theTarget);
+      target = BASE_NODE(otherUpd->theTarget);
 
     NodeUpdates* targetUpdates = NULL;
     bool found = (target == NULL ?
@@ -774,71 +835,92 @@ void PULImpl::mergeUpdateList(
 
     if (!found)
     {
-      myList.push_back(upd);
+      myList.push_back(otherUpd);
       otherList[i] = NULL;
 
       if (target)
       {
         targetUpdates = new NodeUpdates(1);
-        (*targetUpdates)[0] = upd;
+        (*targetUpdates)[0] = otherUpd;
         theNodeToUpdatesMap.insert(target, targetUpdates);
       }
     }
     else
     {
-      if (checkRename && store::UpdateConsts::isRename(updKind))
+      switch (listKind)
       {
-        ulong numTargetUpdates = targetUpdates->size();
-        for (ulong j = 0; j < numTargetUpdates; j++)
+      case UP_LIST_DO_FIRST:
+      {
+        if (store::UpdateConsts::isRename(updKind))
         {
-          if (store::UpdateConsts::isRename((*targetUpdates)[j]->getKind()))
-            ZORBA_ERROR(XUDY0015);
+          ulong numTargetUpdates = targetUpdates->size();
+          for (ulong j = 0; j < numTargetUpdates; j++)
+          {
+            if (store::UpdateConsts::isRename((*targetUpdates)[j]->getKind()))
+              ZORBA_ERROR(XUDY0015);
+          }
         }
+        else if (store::UpdateConsts::isReplaceValue(updKind))
+        {
+          ulong numTargetUpdates = targetUpdates->size();
+          for (ulong j = 0; j < numTargetUpdates; j++)
+          {
+            if (store::UpdateConsts::isReplaceValue((*targetUpdates)[j]->getKind()))
+              ZORBA_ERROR(XUDY0017);
+          }
+        }
+        break;
       }
-      else if (checkReplaceValue && store::UpdateConsts::isReplaceValue(updKind))
+      case UP_LIST_REPLACE_NODE:
       {
-        ulong numTargetUpdates = targetUpdates->size();
-        for (ulong j = 0; j < numTargetUpdates; j++)
+        if (store::UpdateConsts::isReplaceNode(updKind))
         {
-          if (store::UpdateConsts::isReplaceValue((*targetUpdates)[j]->getKind()))
-            ZORBA_ERROR(XUDY0017);
+          ulong numTargetUpdates = targetUpdates->size();
+          for (ulong j = 0; j < numTargetUpdates; ++j)
+          {
+            if (store::UpdateConsts::isReplaceNode((*targetUpdates)[j]->getKind()))
+              ZORBA_ERROR(XUDY0016);
+          }
         }
+        break;
       }
-      else if (checkReplaceNode && store::UpdateConsts::isReplaceNode(updKind))
+      case UP_LIST_REPLACE_CONTENT:
       {
-        ulong numTargetUpdates = targetUpdates->size();
-        for (ulong j = 0; j < numTargetUpdates; j++)
+        if (updKind == store::UpdateConsts::UP_REPLACE_CONTENT)
         {
-          if (store::UpdateConsts::isReplaceNode((*targetUpdates)[j]->getKind()))
-            ZORBA_ERROR(XUDY0016);
+          ulong numTargetUpdates = targetUpdates->size();
+          for (ulong j = 0; j < numTargetUpdates; ++j)
+          {
+            if ((*targetUpdates)[j]->getKind() == store::UpdateConsts::UP_REPLACE_CONTENT)
+              ZORBA_ERROR(XUDY0017);
+          }
         }
+        break;
       }
-      else if (checkReplaceContent && upd->getKind() == store::UpdateConsts::UP_REPLACE_CONTENT)
+      case UP_LIST_DELETE:
       {
-        ulong numTargetUpdates = targetUpdates->size();
-        for (ulong j = 0; j < numTargetUpdates; j++)
+        if (updKind == store::UpdateConsts::UP_DELETE)
         {
-          if ((*targetUpdates)[j]->getKind() == store::UpdateConsts::UP_REPLACE_CONTENT)
-            ZORBA_ERROR(XUDY0017);
-        }
-      }
-      else if (checkDelete && upd->getKind() == store::UpdateConsts::UP_DELETE)
-      {
-        ulong numTargetUpdates = targetUpdates->size();
-        ulong j;
-        for (j = 0; j < numTargetUpdates; j++)
-        {
-          if ((*targetUpdates)[j]->getKind() == store::UpdateConsts::UP_DELETE)
-            break;
-        }
+          ulong numTargetUpdates = targetUpdates->size();
+          ulong j;
+          for (j = 0; j < numTargetUpdates; ++j)
+          {
+            if ((*targetUpdates)[j]->getKind() == store::UpdateConsts::UP_DELETE)
+              break;
+          }
 
-        if (j < numTargetUpdates)
-          continue;
+          if (j < numTargetUpdates)
+            continue;
+        }
+        break;
+      }
+      default:
+        break;
       }
 
-      myList.push_back(upd);
+      myList.push_back(otherUpd);
       otherList[i] = NULL;
-      targetUpdates->push_back(upd);
+      targetUpdates->push_back(otherUpd);
     }
   }
 
@@ -944,6 +1026,8 @@ void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
     for (ulong i = 0; i < numToRecheck; ++i)
       thePrimitivesToRecheck[i]->check();
 
+    applyList(thePutList);
+
     applyList(theCreateCollectionList);
     applyList(theInsertIntoCollectionList);
     applyList(theDeleteFromCollectionList);
@@ -998,17 +1082,10 @@ void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
     {
       UpdatePrimitive* upd = theReplaceNodeList[i];
 
-#ifndef NDEBUG
-      XmlNode* node = BASE_NODE(
-                      upd->getKind() == store::UpdateConsts::UP_REPLACE_CHILD ?
-                      dynamic_cast<UpdReplaceChild*>(upd)->theChild :
-                      dynamic_cast<UpdReplaceAttribute*>(upd)->theAttr);
-#else
       XmlNode* node = BASE_NODE(
                       upd->getKind() == store::UpdateConsts::UP_REPLACE_CHILD ?
                       static_cast<UpdReplaceChild*>(upd)->theChild :
                       static_cast<UpdReplaceAttribute*>(upd)->theAttr);
-#endif
 
       // To make the detach() method work properly, we must set the node's
       // parent back to what it used to be.
@@ -1020,11 +1097,7 @@ void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
     for (ulong i = 0; i < numUpdates; i++)
     {
       UpdReplaceElemContent* upd;
-#ifndef NDEBUG
-      upd = dynamic_cast<UpdReplaceElemContent*>(theReplaceContentList[i]);
-#else
       upd = static_cast<UpdReplaceElemContent*>(theReplaceContentList[i]);
-#endif
 
       ulong numChildren = upd->theOldChildren.size();
       for (ulong j = 0; j < numChildren; j++)
@@ -1038,11 +1111,8 @@ void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
     numUpdates = theDeleteList.size();
     for (ulong i = 0; i < numUpdates; i++)
     {
-#ifndef NDEBUG
-      UpdDelete* upd = dynamic_cast<UpdDelete*>(theDeleteList[i]);
-#else
       UpdDelete* upd = static_cast<UpdDelete*>(theDeleteList[i]);
-#endif
+
       if (upd->theParent != NULL)
       {
         XmlNode* target = BASE_NODE(upd->theTarget);
@@ -1086,6 +1156,8 @@ void PULImpl::undoUpdates()
     undoList(theDeleteFromCollectionList);
     undoList(theInsertIntoCollectionList);
     undoList(theCreateCollectionList);
+
+    undoList(thePutList);
 
     undoList(theDeleteList);
     undoList(theReplaceContentList);
@@ -1585,6 +1657,44 @@ void UpdReplaceCommentValue::apply()
 void UpdReplaceCommentValue::undo()
 {
   COMMENT_NODE(theTarget)->restoreValue(*this);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void UpdPut::apply()
+{
+  SimpleStore* store = SimpleStoreManager::getStore();
+
+  try
+  {
+    store->addNode(theTargetUri->getStringValue(), theTarget);
+  }
+  catch(error::ZorbaError& e)
+  {
+    if (e.theErrorCode == API0020_DOCUMENT_ALREADY_EXISTS)
+    {
+      theOldDocument = store->getDocument(theTargetUri->getStringValue());
+      store->deleteDocument(theTargetUri->getStringValue());
+      store->addNode(theTargetUri->getStringValue(), theTarget);
+    }
+    else
+    {
+      throw;
+    }
+  }
+
+  theIsApplied = true;
+}
+
+
+void UpdPut::undo()
+{
+  SimpleStore* store = SimpleStoreManager::getStore();
+
+  store->deleteDocument(theTargetUri->getStringValue());
+  store->addNode(theTargetUri->getStringValue(), theOldDocument);
 }
 
 

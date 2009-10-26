@@ -516,6 +516,7 @@ private:
 class InternalNode : public XmlNode
 {
   friend class XmlNode;
+  friend class PULImpl;
 
 protected:
   NodeVector  theChildren;

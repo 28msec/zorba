@@ -134,6 +134,9 @@ XmlNode::XmlNode(
     setTree(tree);
     tree->setRoot(this);
     theOrdPath.setAsRoot();
+
+    if (nodeKind != store::StoreConsts::documentNode)
+      theOrdPath.appendComp(1);
   }
   else
   {
@@ -172,6 +175,12 @@ void XmlNode::setOrdPath(
     long pos,
     store::StoreConsts::NodeKind nodeKind)
 {
+  if (parent == NULL)
+  {
+    theOrdPath.setAsRoot();
+    return;
+  }
+
   if (!parent->theOrdPath.isValid())
     return;
 

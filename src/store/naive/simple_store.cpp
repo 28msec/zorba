@@ -593,7 +593,7 @@ void SimpleStore::addNode(const xqpStringStore_t& uri, const store::Item_t& node
 
   if(node == NULL || !node->isNode())
   {
-    ZORBA_ERROR_PARAM( API0021_ITEM_TO_LOAD_IS_NOT_NODE, uri, "");
+    ZORBA_ERROR_PARAM(API0021_ITEM_TO_LOAD_IS_NOT_NODE, uri, "");
   }
 
   XmlNode_t root = reinterpret_cast<XmlNode*>(node.getp());

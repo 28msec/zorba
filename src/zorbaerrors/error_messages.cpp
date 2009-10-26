@@ -565,6 +565,8 @@ DEF_ERR_CODE(XUDY0029, XUDY0029, "In an insert expression where before or after 
 
 DEF_ERR_CODE(XUDY0030, XUDY0030, "It is a dynamic error if an insert expression specifies the insertion of an attribute node before or after a child of a document node.")
 
+DEF_ERR_CODE(XUDY0031, XUDY0031, "It is a dynamic error if multiple calls to fn:put in the same snapshot specify the same URI (after resolution of relative URIs).")
+
 
 DEF_ERR_CODE(SRL0001_INEXISTENT_INPUT_FIELD, SRL0001, "Plan serialization error: Cannot read expected input field.")
 

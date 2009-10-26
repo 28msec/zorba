@@ -50,6 +50,7 @@ namespace zorba{
     class ZorbaJsonSerializeIterator;
     class ZorbaJsonMLParseIterator;
     class ZorbaJsonMLSerializeIterator;
+    class FnPutIterator;
     class FnConcatIterator;
     class FnIndexOfIterator;
     class FnEmptyIterator;
@@ -162,6 +163,9 @@ public:
 
     virtual void beginVisit ( const ZorbaJsonMLSerializeIterator& ) = 0;
     virtual void endVisit   ( const ZorbaJsonMLSerializeIterator& ) = 0;
+
+    virtual void beginVisit ( const FnPutIterator& ) = 0;
+    virtual void endVisit   ( const FnPutIterator& ) = 0;
 
     virtual void beginVisit ( const FnConcatIterator& ) = 0;
     virtual void endVisit   ( const FnConcatIterator& ) = 0;

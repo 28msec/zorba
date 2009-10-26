@@ -1380,10 +1380,10 @@ void static_context::set_baseuri (xqp_string val, bool from_prolog)
 }
 
 
-xqp_string static_context::entity_retrieval_url () const 
+xqp_string static_context::entity_retrieval_url() const 
 { 
   xqp_string val; 
-  GET_CONTEXT_VALUE (entity_retrieval_url, val); 
+  GET_CONTEXT_VALUE(entity_retrieval_url, val); 
   return val;                   
 }                               
                   

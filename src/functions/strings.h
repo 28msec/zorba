@@ -41,286 +41,198 @@ void populate_context_strings(static_context* sctx);
 class fn_codepoints_to_string : public function
 {
 public:
-  fn_codepoints_to_string ( const signature& sig) : function (sig, FunctionConsts::FN_CODEPOINTS_TO_STRING) {}
+  fn_codepoints_to_string(const signature& sig) : function(sig, FunctionConsts::FN_CODEPOINTS_TO_STRING) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:compare
 class fn_compare : public function
 {
 public:
-  fn_compare ( const signature& sig) : function (sig, FunctionConsts::FN_COMPARE) {}
+  fn_compare(const signature& sig) : function(sig, FunctionConsts::FN_COMPARE) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:codepoint-equal
 class fn_codepoint_equal : public function
 {
 public:
-  fn_codepoint_equal ( const signature& sig) : function (sig, FunctionConsts::FN_CODEPOINT_EQUAL) {}
+  fn_codepoint_equal(const signature& sig) : function(sig, FunctionConsts::FN_CODEPOINT_EQUAL) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:concat
 class fn_concat : public function
 {
 public:
-  fn_concat ( const signature& sig) : function (sig, FunctionConsts::FN_CONCAT) {}
+  fn_concat(const signature& sig) : function(sig, FunctionConsts::FN_CONCAT) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:string-join
 class fn_string_join : public function
 {
 public:
-  fn_string_join ( const signature& sig) : function (sig, FunctionConsts::FN_STRING_JOIN) {}
+  fn_string_join(const signature& sig) : function(sig, FunctionConsts::FN_STRING_JOIN) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:substring
 class fn_substring : public function
 {
 public:
-  fn_substring ( const signature& sig) : function (sig, FunctionConsts::FN_SUBSTRING) {}
+  fn_substring(const signature& sig) : function(sig, FunctionConsts::FN_SUBSTRING) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:string-length
 class fn_string_length : public function
 {
 public:
-  fn_string_length ( const signature& sig) : function (sig, FunctionConsts::FN_STRING_LENGTH) {}
+  fn_string_length(const signature& sig) : function(sig, FunctionConsts::FN_STRING_LENGTH) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:normalize-space
 class fn_normalize_space : public function
 {
 public:
-  fn_normalize_space ( const signature& sig) : function (sig, FunctionConsts::FN_NORMALIZE_SPACE) {}
+  fn_normalize_space(const signature& sig) : function(sig, FunctionConsts::FN_NORMALIZE_SPACE) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:normalize-unicode
 class fn_normalize_unicode : public function
 {
 public:
-  fn_normalize_unicode ( const signature& sig) : function (sig, FunctionConsts::FN_NORMALIZE_UNICODE) {}
+  fn_normalize_unicode(const signature& sig) : function(sig, FunctionConsts::FN_NORMALIZE_UNICODE) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:upper-case
 class fn_upper_case : public function
 {
 public:
-  fn_upper_case ( const signature& sig) : function (sig, FunctionConsts::FN_UPPER_CASE) {}
+  fn_upper_case(const signature& sig) : function(sig, FunctionConsts::FN_UPPER_CASE) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:lower-case
 class fn_lower_case : public function
 {
 public:
-  fn_lower_case ( const signature& sig) : function (sig, FunctionConsts::FN_LOWER_CASE) {}
+  fn_lower_case(const signature& sig) : function(sig, FunctionConsts::FN_LOWER_CASE) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:translate
 class fn_translate : public function
 {
 public:
-  fn_translate ( const signature& sig) : function (sig, FunctionConsts::FN_TRANSLATE) {}
+  fn_translate(const signature& sig) : function(sig, FunctionConsts::FN_TRANSLATE) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:encode-for-uri
 class fn_encode_for_uri : public function
 {
 public:
-  fn_encode_for_uri ( const signature& sig) : function (sig, FunctionConsts::FN_ENCODE_FOR_URI) {}
+  fn_encode_for_uri(const signature& sig) : function(sig, FunctionConsts::FN_ENCODE_FOR_URI) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:iri-to-uri
 class fn_iri_to_uri : public function
 {
 public:
-  fn_iri_to_uri ( const signature& sig) : function (sig, FunctionConsts::FN_IRI_TO_URI) {}
+  fn_iri_to_uri(const signature& sig) : function(sig, FunctionConsts::FN_IRI_TO_URI) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:escape-html-uri
 class fn_escape_html_uri : public function
 {
 public:
-  fn_escape_html_uri ( const signature& sig) : function (sig, FunctionConsts::FN_ESCAPE_HTML_URI) {}
+  fn_escape_html_uri(const signature& sig) : function(sig, FunctionConsts::FN_ESCAPE_HTML_URI) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:contains
 class fn_contains : public function
 {
 public:
-  fn_contains ( const signature& sig) : function (sig, FunctionConsts::FN_CONTAINS) {}
+  fn_contains(const signature& sig) : function(sig, FunctionConsts::FN_CONTAINS) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:starts-with
 class fn_starts_with : public function
 {
 public:
-  fn_starts_with ( const signature& sig) : function (sig, FunctionConsts::FN_STARTS_WITH) {}
+  fn_starts_with(const signature& sig) : function(sig, FunctionConsts::FN_STARTS_WITH) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:ends-with
 class fn_ends_with : public function
 {
 public:
-  fn_ends_with ( const signature& sig) : function (sig, FunctionConsts::FN_ENDS_WITH) {}
+  fn_ends_with(const signature& sig) : function(sig, FunctionConsts::FN_ENDS_WITH) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:substring-before
 class fn_substring_before : public function
 {
 public:
-  fn_substring_before ( const signature& sig) : function (sig, FunctionConsts::FN_SUBSTRING_BEFORE) {}
+  fn_substring_before(const signature& sig) : function(sig, FunctionConsts::FN_SUBSTRING_BEFORE) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:substring-after
 class fn_substring_after : public function
 {
 public:
-  fn_substring_after ( const signature& sig) : function (sig, FunctionConsts::FN_SUBSTRING_AFTER) {}
+  fn_substring_after(const signature& sig) : function(sig, FunctionConsts::FN_SUBSTRING_AFTER) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:matches
 class fn_matches : public function
 {
 public:
-  fn_matches ( const signature& sig) : function (sig, FunctionConsts::FN_MATCHES) {}
+  fn_matches(const signature& sig) : function(sig, FunctionConsts::FN_MATCHES) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:replace
 class fn_replace : public function
 {
 public:
-  fn_replace ( const signature& sig) : function (sig, FunctionConsts::FN_REPLACE) {}
+  fn_replace(const signature& sig) : function(sig, FunctionConsts::FN_REPLACE) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 

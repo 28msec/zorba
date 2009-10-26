@@ -37,6 +37,7 @@
 #include "runtime/booleans/booleans.h"
 #include "runtime/context/context.h"
 #include "runtime/convertors/convertors.h"
+#include "runtime/fnput/fnput.h"
 #include "runtime/sequences/sequences.h"
 #include "runtime/strings/strings.h"
 
@@ -316,6 +317,19 @@ void PrinterVisitor::endVisit ( const ZorbaJsonMLSerializeIterator& ) {
   thePrinter.endEndVisit();
 }
 // </ZorbaJsonMLSerializeIterator>
+
+// <FnPutIterator>
+void PrinterVisitor::beginVisit ( const FnPutIterator& a) {
+  thePrinter.startBeginVisit("FnPutIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnPutIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnPutIterator>
 
 // <FnConcatIterator>
 void PrinterVisitor::beginVisit ( const FnConcatIterator& a) {

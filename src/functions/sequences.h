@@ -42,13 +42,9 @@ void populate_context_sequences(static_context* sctx);
 class op_concatenate : public function
 {
 public:
-  op_concatenate ( const signature& sig) : function (sig, FunctionConsts::FN_CONCATENATE) {}
+  op_concatenate(const signature& sig) : function(sig, FunctionConsts::FN_CONCATENATE) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 
   xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
 
@@ -61,95 +57,67 @@ public:
 class fn_index_of : public function
 {
 public:
-  fn_index_of ( const signature& sig) : function (sig, FunctionConsts::FN_INDEX_OF) {}
+  fn_index_of(const signature& sig) : function(sig, FunctionConsts::FN_INDEX_OF) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:empty
 class fn_empty : public function
 {
 public:
-  fn_empty ( const signature& sig) : function (sig, FunctionConsts::FN_EMPTY) {}
+  fn_empty(const signature& sig) : function(sig, FunctionConsts::FN_EMPTY) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:exists
 class fn_exists : public function
 {
 public:
-  fn_exists ( const signature& sig) : function (sig, FunctionConsts::FN_EXISTS) {}
+  fn_exists(const signature& sig) : function(sig, FunctionConsts::FN_EXISTS) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:insert-before
 class fn_insert_before : public function
 {
 public:
-  fn_insert_before ( const signature& sig) : function (sig, FunctionConsts::FN_INSERT_BEFORE) {}
+  fn_insert_before(const signature& sig) : function(sig, FunctionConsts::FN_INSERT_BEFORE) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:remove
 class fn_remove : public single_seq_opt_function
 {
 public:
-  fn_remove ( const signature& sig) : single_seq_opt_function (sig, FunctionConsts::FN_REMOVE) {}
+  fn_remove(const signature& sig) : single_seq_opt_function(sig, FunctionConsts::FN_REMOVE) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:reverse
 class fn_reverse : public single_seq_opt_function
 {
 public:
-  fn_reverse ( const signature& sig) : single_seq_opt_function (sig, FunctionConsts::FN_REVERSE) {}
+  fn_reverse(const signature& sig) : single_seq_opt_function(sig, FunctionConsts::FN_REVERSE) {}
 
   FunctionConsts::AnnotationValue producesNodeIdSorted() const {
     return FunctionConsts::NO;
   }
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:subsequence
 class fn_subsequence : public single_seq_opt_function
 {
 public:
-  fn_subsequence ( const signature& sig) : single_seq_opt_function (sig, FunctionConsts::FN_SUBSEQUENCE) {}
+  fn_subsequence(const signature& sig) : single_seq_opt_function(sig, FunctionConsts::FN_SUBSEQUENCE) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 
   void compute_annotation(AnnotationHolder* parent,
                           std::vector<AnnotationHolder *>& kids,
@@ -160,13 +128,9 @@ public:
 class fn_zero_or_one : public function
 {
 public:
-  fn_zero_or_one ( const signature& sig) : function (sig, FunctionConsts::FN_ZERO_OR_ONE) {}
+  fn_zero_or_one(const signature& sig) : function(sig, FunctionConsts::FN_ZERO_OR_ONE) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 
   xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
 };
@@ -175,152 +139,108 @@ public:
 class fn_one_or_more : public single_seq_opt_function
 {
 public:
-  fn_one_or_more ( const signature& sig) : single_seq_opt_function (sig, FunctionConsts::FN_ONE_OR_MORE) {}
+  fn_one_or_more(const signature& sig) : single_seq_opt_function(sig, FunctionConsts::FN_ONE_OR_MORE) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:deep-equal
 class fn_deep_equal : public function
 {
 public:
-  fn_deep_equal ( const signature& sig) : function (sig, FunctionConsts::FN_DEEP_EQUAL) {}
+  fn_deep_equal(const signature& sig) : function(sig, FunctionConsts::FN_DEEP_EQUAL) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:count
 class fn_count : public function
 {
 public:
-  fn_count ( const signature& sig) : function (sig, FunctionConsts::FN_COUNT) {}
+  fn_count(const signature& sig) : function(sig, FunctionConsts::FN_COUNT) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:avg
 class fn_avg : public function
 {
 public:
-  fn_avg ( const signature& sig) : function (sig, FunctionConsts::FN_AVG) {}
+  fn_avg(const signature& sig) : function(sig, FunctionConsts::FN_AVG) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:sum
 class fn_sum : public function
 {
 public:
-  fn_sum ( const signature& sig) : function (sig, FunctionConsts::FN_SUM) {}
+  fn_sum(const signature& sig) : function(sig, FunctionConsts::FN_SUM) {}
 
   bool specializable() const { return true; }
 
   function* specialize( static_context* sctx,
                         const std::vector<xqtref_t>& argTypes) const;
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:sum_double
 class fn_sum_double : public function
 {
 public:
-  fn_sum_double ( const signature& sig) : function (sig, FunctionConsts::FN_SUM_DOUBLE) {}
+  fn_sum_double(const signature& sig) : function(sig, FunctionConsts::FN_SUM_DOUBLE) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:sum_float
 class fn_sum_float : public function
 {
 public:
-  fn_sum_float ( const signature& sig) : function (sig, FunctionConsts::FN_SUM_FLOAT) {}
+  fn_sum_float(const signature& sig) : function(sig, FunctionConsts::FN_SUM_FLOAT) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:sum_decimal
 class fn_sum_decimal : public function
 {
 public:
-  fn_sum_decimal ( const signature& sig) : function (sig, FunctionConsts::FN_SUM_DECIMAL) {}
+  fn_sum_decimal(const signature& sig) : function(sig, FunctionConsts::FN_SUM_DECIMAL) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:sum_integer
 class fn_sum_integer : public function
 {
 public:
-  fn_sum_integer ( const signature& sig) : function (sig, FunctionConsts::FN_SUM_INTEGER) {}
+  fn_sum_integer(const signature& sig) : function(sig, FunctionConsts::FN_SUM_INTEGER) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //op:to
 class op_to : public function
 {
 public:
-  op_to ( const signature& sig) : function (sig, FunctionConsts::FN_TO) {}
+  op_to(const signature& sig) : function(sig, FunctionConsts::FN_TO) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:doc
 class fn_doc : public function
 {
 public:
-  fn_doc ( const signature& sig) : function (sig, FunctionConsts::FN_DOC) {}
+  fn_doc(const signature& sig) : function(sig, FunctionConsts::FN_DOC) {}
 
   bool requires_dyn_ctx () const { return true; }
 
   virtual bool isSource() const { return true; }
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 
   bool propagatesInputToOutput(uint32_t aProducer) const;
 };
@@ -329,30 +249,22 @@ public:
 class fn_doc_available : public function
 {
 public:
-  fn_doc_available ( const signature& sig) : function (sig, FunctionConsts::FN_DOC_AVAILABLE) {}
+  fn_doc_available(const signature& sig) : function(sig, FunctionConsts::FN_DOC_AVAILABLE) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn-zorba-util:parse
 class fn_zorba_util_parse : public function
 {
 public:
-  fn_zorba_util_parse ( const signature& sig) : function (sig, FunctionConsts::FN_ZORBA_UTIL_PARSE) {}
+  fn_zorba_util_parse(const signature& sig) : function(sig, FunctionConsts::FN_ZORBA_UTIL_PARSE) {}
 
   bool requires_dyn_ctx () const { return true; }
 
   virtual bool isSource() const { return true; }
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 

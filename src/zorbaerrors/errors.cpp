@@ -167,18 +167,14 @@ ZorbaError::isXPathTypeError() const
 bool
 ZorbaError::isXQueryDynamicError() const
 {
-  return ((XQDY0025 <= theErrorCode && 
-           theErrorCode <= XQDY0092) ||
+  return ((XQDY0025 <= theErrorCode && theErrorCode <= XQDY0092) ||
           XUDY0009 == theErrorCode ||
-          (XUDY0014 <= theErrorCode && 
-           theErrorCode <= XUDY0021) ||
-          (XUDY0023 <= theErrorCode && 
-           theErrorCode <= XUDY0025) ||
+          (XUDY0014 <= theErrorCode && theErrorCode <= XUDY0021) ||
+          (XUDY0023 <= theErrorCode && theErrorCode <= XUDY0025) ||
           theErrorCode == XUDY0027 ||
-          theErrorCode == XUDY0029 
-      ||
-          theErrorCode == XUDY0030 
-      ||
+          theErrorCode == XUDY0029 ||
+          theErrorCode == XUDY0030 ||
+          theErrorCode == XUDY0031 ||
           (XTDE1310 <= theErrorCode && theErrorCode <= XTDE1350));
 }
 
@@ -210,7 +206,7 @@ ZorbaError::isXQueryTypeError() const
 bool 
 ZorbaError::isFunctionError() const
 {
-  return FOER0000 <= theErrorCode && theErrorCode <= FOTY0012;
+  return FOER0000 <= theErrorCode && theErrorCode <= FOUP0002;
 }
   
 

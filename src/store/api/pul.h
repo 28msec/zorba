@@ -133,6 +133,11 @@ public:
         Item_t&              typeName,
         std::vector<Item_t>& typedValue) = 0;
 
+
+  virtual void addPut(
+        Item_t& target,
+        Item_t& uri) = 0;
+
   // functions to add primitives for updating collection functions (e.g. create-collection)
 
   virtual void addCreateCollection(

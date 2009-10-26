@@ -131,6 +131,17 @@ class PULImpl : public store::PUL
   friend class ElementNode;
   friend class AttributeNode;
 
+public:
+  enum UpdListKind
+  {
+    UP_LIST_NONE,
+    UP_LIST_DO_FIRST,
+    UP_LIST_REPLACE_NODE,
+    UP_LIST_REPLACE_CONTENT,
+    UP_LIST_DELETE,
+    UP_LIST_PUT
+  };
+
 protected:
   std::vector<UpdatePrimitive*>      theDoFirstList;
   std::vector<UpdatePrimitive*>      theInsertList;
@@ -139,6 +150,8 @@ protected:
   std::vector<UpdatePrimitive*>      theDeleteList;
 
   std::vector<UpdatePrimitive*>      theValidationList;
+
+  std::vector<UpdatePrimitive*>      thePutList;
 
   // update primitives for collection functions
   std::vector<UpdatePrimitive*>      theCreateCollectionList;
@@ -240,6 +253,10 @@ public:
         store::Item_t&              typeName,
         std::vector<store::Item_t>& typedValue);
 
+  void addPut(
+        store::Item_t& node,
+        store::Item_t& uri);
+
   // collection functions
   void addCreateCollection(
         static_context*      aStaticContext,
@@ -329,11 +346,7 @@ protected:
   void mergeUpdateList(
         std::vector<UpdatePrimitive*>& myList,
         std::vector<UpdatePrimitive*>& otherList,
-        bool                           checkRename,
-        bool                           checkReplaceValue,
-        bool                           checkReplaceNode,
-        bool                           checkReplaceContent,
-        bool                           checkDelete);
+        UpdListKind                    listKind);
 };
 
 
@@ -958,6 +971,36 @@ public:
   store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_REPLACE_COMMENT_VALUE;
+  }
+
+  void apply();
+  void undo();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdPut : public UpdatePrimitive
+{
+  friend class PULImpl;
+
+protected:
+  store::Item_t theTargetUri;
+
+  store::Item_t theOldDocument;
+
+public:
+  UpdPut(PULImpl* pul, store::Item_t& target, store::Item_t& uri)
+    :
+    UpdatePrimitive(pul, target)
+  {
+    theTargetUri.transfer(uri);
+  }
+
+  store::UpdateConsts::UpdPrimKind getKind() const
+  {
+    return store::UpdateConsts::UP_PUT;
   }
 
   void apply();

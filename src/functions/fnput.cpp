@@ -21,56 +21,33 @@
 // *                                        *
 // ******************************************
 
-
-#ifndef ZORBA_FUNCTIONS_BOOLEANS_H
-#define ZORBA_FUNCTIONS_BOOLEANS_H
-
-
-#include "common/shared_types.h"
-#include "functions/function_impl.h"
-
+#include "functions/fnput.h"
+#include "runtime/fnput/fnput.h"
 
 namespace zorba{
 
 
-void populate_context_booleans(static_context* sctx);
-
-
-
-//op:is-same-node
-class op_is_same_node : public function
+PlanIter_t fn_put::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
 {
-public:
-  op_is_same_node(const signature& sig) : function(sig, FunctionConsts::FN_IS_SAME_NODE) {}
-
-  CODEGEN_DECL();
-};
-
-//op:node-before
-class op_node_before : public function
-{
-public:
-  op_node_before(const signature& sig) : function(sig, FunctionConsts::FN_NODE_BEFORE) {}
-
-  CODEGEN_DECL();
-};
-
-//op:node-after
-class op_node_after : public function
-{
-public:
-  op_node_after(const signature& sig) : function(sig, FunctionConsts::FN_NODE_AFTER) {}
-
-  CODEGEN_DECL();
-};
+  return new FnPutIterator(sctx,loc,argv);
+}
 
 
-} //namespace zorba
+bool fn_put::propagatesInputToOutput ( uint32_t ) const {
+  return false;
+}
+void populate_context_fnput(static_context* sctx) {
 
+  DECL(sctx, fn_put,
+      (createQName("http://www.w3.org/2005/xpath-functions","fn","put"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.EMPTY_TYPE));
+}
 
-#endif
-/*
- * Local variables:
- * mode: c++
- * End:
- */ 
+}

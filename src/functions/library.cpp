@@ -33,7 +33,6 @@
 #include "functions/sequences.h"
 #include "functions/sequences_impl.h"
 
-
 #include "functions/Collections.h"
 #include "functions/Numerics.h"
 #include "functions/QNames.h"
@@ -52,6 +51,7 @@
 #include "functions/Rest.h"
 #include "functions/Email.h"
 #include "functions/Fop.h"
+#include "functions/fnput.h"
 
 
 namespace zorba 
@@ -68,7 +68,7 @@ void library_init()
 
 void BuiltinFunctionLibrary::populateContext(static_context* sctx)
 {
-  zorba::serialization::Archiver &ar = *::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects();
+  zorba::serialization::Archiver& ar = *::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects();
   ar.set_loading_hardcoded_objects(true);
 
   populate_context_accessors(sctx);
@@ -103,6 +103,8 @@ void BuiltinFunctionLibrary::populateContext(static_context* sctx)
   populateContext_Email(sctx);
   populateContext_FOP(sctx);
   populateContext_XQDOC(sctx);
+
+  populate_context_fnput(sctx);
 
   ar.set_loading_hardcoded_objects(false);
 }

@@ -175,6 +175,10 @@ declare function local:create-zorba-type($param,$mapping) as xs:string?
 {
   if($param = 'true') then
     string-join((',',$gen:newline,gen:indent(3),$param),'')
+
+  else if ($param eq 'empty-sequence()') then
+    string-join((',', $gen:newline, gen:indent(3), 'GENV_TYPESYSTEM.EMPTY_TYPE'), '')
+
   else if($param) then
     let $suffix := if(ends-with($param,'?')) then 'TYPE_QUESTION' 
                    else if(ends-with($param,'+')) then 'TYPE_PLUS'
@@ -184,8 +188,11 @@ declare function local:create-zorba-type($param,$mapping) as xs:string?
     let $prefix as xs:string := string($mapping/zorba:types//zorba:type[starts-with($param, text())][1]/@zorbaType)
     
     return string-join((',',$gen:newline,gen:indent(3),string-join(('GENV_TYPESYSTEM.',$prefix,'_',$suffix),'')),'')
-  else ()
+
+  else
+    ()
 };
+
 
 declare variable $file as xs:string external;
 declare variable $mappings as xs:string external;

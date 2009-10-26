@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+
+
+<zorba:header>
+    <zorba:include form="Quoted">runtime/base/narybase.h</zorba:include>
+</zorba:header>
+
+
+<zorba:codegen>
+  <zorba:h>
+    <zorba:include form="Quoted">common/shared_types.h</zorba:include>
+    <zorba:include form="Quoted">functions/function_impl.h</zorba:include>
+  </zorba:h>
+  <zorba:cpp>
+    <zorba:include form="Quoted">functions/fnput.h</zorba:include>
+    <zorba:include form="Quoted">runtime/fnput/fnput.h</zorba:include>
+  </zorba:cpp>
+</zorba:codegen>
+
+
+
+
+<!--
+/*******************************************************************************
+  fn:put
+********************************************************************************/
+-->
+<zorba:iterator name="FnPutIterator">
+    
+    <zorba:description author="Zorba Team">fn:put</zorba:description>
+  
+  <zorba:function requiresDynamicContext="false"
+                  isSource="false"
+                  isUpdating="true"
+                  propagatesInputToOutput="false">
+    <zorba:signature localname="put" prefix="fn">
+      <zorba:param>node()</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>empty-sequence()</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+
+</zorba:iterators>

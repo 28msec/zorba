@@ -41,65 +41,45 @@ void populate_context_accessors(static_context* sctx);
 class fn_node_name : public function
 {
 public:
-  fn_node_name ( const signature& sig) : function (sig, FunctionConsts::FN_NODE_NAME) {}
+  fn_node_name(const signature& sig) : function(sig, FunctionConsts::FN_NODE_NAME) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:nilled
 class fn_nilled : public function
 {
 public:
-  fn_nilled ( const signature& sig) : function (sig, FunctionConsts::FN_NILLED) {}
+  fn_nilled(const signature& sig) : function(sig, FunctionConsts::FN_NILLED) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:base-uri
 class fn_base_uri : public function
 {
 public:
-  fn_base_uri ( const signature& sig) : function (sig, FunctionConsts::FN_BASE_URI) {}
+  fn_base_uri(const signature& sig) : function(sig, FunctionConsts::FN_BASE_URI) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:document-uri
 class fn_document_uri : public function
 {
 public:
-  fn_document_uri ( const signature& sig) : function (sig, FunctionConsts::FN_DOCUMENT_URI) {}
+  fn_document_uri(const signature& sig) : function(sig, FunctionConsts::FN_DOCUMENT_URI) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 //fn:root
 class fn_root : public function
 {
 public:
-  fn_root ( const signature& sig) : function (sig, FunctionConsts::FN_ROOT) {}
+  fn_root(const signature& sig) : function(sig, FunctionConsts::FN_ROOT) {}
 
-  PlanIter_t codegen( CompilerCB*,
-                      static_context* sctx,
-                      const QueryLoc& loc,
-                      std::vector<PlanIter_t>& argv,
-                      AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 

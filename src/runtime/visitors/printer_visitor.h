@@ -97,6 +97,8 @@ namespace zorba {
 
     void beginVisit( const ZorbaJsonMLSerializeIterator& );
     void endVisit  ( const ZorbaJsonMLSerializeIterator& );
+    void beginVisit( const FnPutIterator& );
+    void endVisit  ( const FnPutIterator& );
     void beginVisit( const FnConcatIterator& );
     void endVisit  ( const FnConcatIterator& );
 
