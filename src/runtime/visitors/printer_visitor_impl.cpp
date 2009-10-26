@@ -48,7 +48,7 @@
 #include "runtime/core/arithmetic_impl.h"
 #include "runtime/strings/StringsImpl.h"
 #include "runtime/sequences/SequencesImpl.h"
-#include "runtime/dateTime/DurationsDatesTimes.h"
+#include "runtime/durations_dates_times/DurationsDatesTimesImpl.h"
 #include "runtime/eval/FnContextImpl.h"
 #include "runtime/debug/debug_iterators.h"
 #include "runtime/debug/zorba_debug_iterator.h"

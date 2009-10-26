@@ -48,7 +48,7 @@ namespace zorba
  * fn:years-from-duration($arg as xs:duration?) as xs:integer?
  *_______________________________________________________________________*/
 bool
-FnYearsFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+YearsFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemArg;
   int32_t lYears;
@@ -78,7 +78,7 @@ FnYearsFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planStat
  * fn:months-from-duration($arg as xs:duration?) as xs:integer?
  *_______________________________________________________________________*/
 bool
-FnMonthsFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+MonthsFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemArg;
 
@@ -106,7 +106,7 @@ FnMonthsFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planSta
  * fn:days-from-duration($arg as xs:duration?) as xs:integer?
  *_______________________________________________________________________*/
 bool
-FnDaysFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+DaysFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemArg;
 
@@ -134,7 +134,7 @@ FnDaysFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState
  * fn:hours-from-duration($arg as xs:duration?) as xs:integer?
  *_______________________________________________________________________*/
 bool
-FnHoursFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+HoursFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemArg;
 
@@ -162,7 +162,7 @@ FnHoursFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planStat
  * fn:minutes-from-duration($arg as xs:duration?) as xs:integer?
  *_______________________________________________________________________*/
 bool
-FnMinutesFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+MinutesFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemArg;
 
@@ -190,7 +190,7 @@ FnMinutesFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planSt
  * fn:seconds-from-duration($arg as xs:duration?) as xs:decimal?
  *_______________________________________________________________________*/
 bool
-FnSecondsFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+SecondsFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemArg;
   xqp_decimal lDecimal;
@@ -218,7 +218,7 @@ FnSecondsFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planSt
  * fn:year-from-dateTime($arg as xs:dateTime?) as xs:integer?
  *_______________________________________________________________________*/
 bool
-FnYearFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+YearFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemArg;
 
@@ -245,7 +245,7 @@ FnYearFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState
  * fn:month-from-dateTime($arg as xs:dateTime?) as xs:integer?
  *_______________________________________________________________________*/
 bool
-FnMonthFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+MonthFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemArg;
 
@@ -273,7 +273,7 @@ FnMonthFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planStat
  * fn:day-from-dateTime($arg as xs:dateTime?) as xs:integer?
  *_______________________________________________________________________*/
 bool
-FnDayFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+DayFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemArg;
 
@@ -301,7 +301,7 @@ FnDayFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState)
  * fn:hours-from-dateTime($arg as xs:dateTime?) as xs:integer?
  *_______________________________________________________________________*/
 bool
-FnHoursFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+HoursFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemArg;
 
@@ -329,7 +329,7 @@ FnHoursFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planStat
  * fn:minutes-from-dateTime($arg as xs:dateTime?) as xs:integer?
  *_______________________________________________________________________*/
 bool
-FnMinutesFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+MinutesFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemArg;
 
@@ -357,7 +357,7 @@ FnMinutesFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planSt
  * fn:seconds-from-dateTime($arg as xs:dateTime?) as xs:decimal?
  *_______________________________________________________________________*/
 bool
-FnSecondsFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+SecondsFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemArg;
   xqp_decimal lDecimal;
@@ -385,7 +385,7 @@ FnSecondsFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planSt
  * fn:timezone-from-dateTime($arg as xs:dateTime?) as xs:dayTimeDuration?
  *_______________________________________________________________________*/
 bool
-FnTimezoneFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+TimezoneFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemArg;
   xqp_dayTimeDuration tmpDuration;
@@ -411,7 +411,7 @@ FnTimezoneFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planS
  * fn:year-from-date($arg as xs:date?) as xs:integer?
  *_______________________________________________________________________*/
 bool
-FnYearFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+YearFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemArg;
 
@@ -439,7 +439,7 @@ FnYearFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) co
  * fn:month-from-date($arg as xs:date?) as xs:integer?
  *_______________________________________________________________________*/
 bool
-FnMonthFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+MonthFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemArg;
 
@@ -467,7 +467,7 @@ FnMonthFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) c
  * fn:day-from-date($arg as xs:date?) as xs:integer?
  *_______________________________________________________________________*/
 bool
-FnDayFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+DayFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemArg;
 
@@ -495,7 +495,7 @@ FnDayFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) con
  * fn:timezone-from-date($arg as xs:date?) as xs:dayTimeDuration?
  *_______________________________________________________________________*/
 bool
-FnTimezoneFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+TimezoneFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemArg;
   xqp_dayTimeDuration tmpDuration;
@@ -521,7 +521,7 @@ FnTimezoneFromDateIterator::nextImpl(store::Item_t& result, PlanState& planState
  * fn:hours-from-time($arg as xs:time?) as xs:integer?
  *_______________________________________________________________________*/
 bool
-FnHoursFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+HoursFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemArg;
 
@@ -549,7 +549,7 @@ FnHoursFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
  * fn:minutes-from-time($arg as xs:time?) as xs:integer?
  *_______________________________________________________________________*/
 bool
-FnMinutesFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+MinutesFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemArg;
 
@@ -578,7 +578,7 @@ FnMinutesFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState)
  * fn:seconds-from-time($arg as xs:time?) as xs:decimal?
  *_______________________________________________________________________*/
 bool
-FnSecondsFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+SecondsFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemArg;
   xqp_decimal lDecimal;
@@ -606,7 +606,7 @@ FnSecondsFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState)
  * fn:timezone-from-time($arg as xs:time?) as xs:dayTimeDuration?
  *_______________________________________________________________________*/
 bool
-FnTimezoneFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+TimezoneFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t itemArg;
   xqp_dayTimeDuration tmpDuration;
