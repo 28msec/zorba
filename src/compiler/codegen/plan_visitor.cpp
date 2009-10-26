@@ -2372,16 +2372,6 @@ void end_visit (pi_expr& v) {
 }
 
 
-bool begin_visit(function_def_expr& v) {
-  CODEGEN_TRACE_IN("");
-  return true;
-}
-
-void end_visit (function_def_expr &v) {
-  CODEGEN_TRACE_OUT("");
-}
-
-
 bool begin_visit (const_expr& v) {
   CODEGEN_TRACE_IN ("");
   return true;

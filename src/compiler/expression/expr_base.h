@@ -86,26 +86,23 @@ class expr_iterator;
 
 
 /*******************************************************************************
-
-  A class to iterate over the subexpressions of an expr. 
-
-  Each actual instance of the abstract expr class has its own way of storing
-  pointers to its subexpressions. So, to make expr_iterator work with any
-  kind of expr, the actual work of expr_iterator is done by an actual instance
-  of expr_iterator_data (there is a subclass of expr_iterator_data for each
-  kind of expr).
-
+  A class to iterate over the subexpressions of an expr. The actual work is done
+  by an instance of expr_iterator_data (see below). Such instances are allocated
+  dynamically in the heap, whenever we need to iterate over the subexpressions of
+  an expr. On the other hand, instances of expr_iterator are always allocated on
+  the stack; they wrap corresponding instances of expr_iterator_data (always a
+  1:1 relationship) and provide an object-based, rather than pointer-based, 
+  iterator interface. 
 ********************************************************************************/
 class expr_iterator 
 {
 private:
-  // should be an auto_ptr, but older gcc's don't like auto_ptr w/ forward decl
-  expr_iterator_data * iter;
+  expr_iterator_data * theIter;
 
 public:
-  expr_iterator() : iter(0) {}
+  expr_iterator() : theIter(0) {}
 
-  expr_iterator(expr_iterator_data* iter_) : iter (iter_) {}
+  expr_iterator(expr_iterator_data* iter) : theIter(iter) {}
 
   expr_iterator(const expr_iterator& other);
 
@@ -114,7 +111,8 @@ public:
   expr_iterator& operator=(const expr_iterator& other);
 
   expr_iterator& operator++();
-  expr_iterator operator++(int);
+
+  //expr_iterator operator++(int);
 
   expr_t& operator*();
 
@@ -127,7 +125,7 @@ private:
 
 
 /*******************************************************************************
-  A class to iterate over the subexpressions of an expr. 
+  A const version of expr_iterator. 
 ********************************************************************************/
 class const_expr_iterator 
 {
@@ -146,8 +144,6 @@ public:
   const_expr_iterator& operator=(const const_expr_iterator& other);
 
   const_expr_iterator& operator++();
-
-  const_expr_iterator operator++(int);
 
   const expr* operator*();
 
@@ -224,9 +220,13 @@ public:
   expr_update_t get_update_type() const;
 
   bool is_updating() const;
+
   bool is_sequential() const;
+
   bool is_vacuous() const;
+
   bool is_simple() const;
+
   bool is_updating_or_vacuous() const;
 
   virtual void compute_upd_seq_kind() const;
@@ -235,7 +235,7 @@ public:
 
   virtual xqtref_t return_type_impl(static_context* sctx);
 
-  expr_iterator expr_begin();
+  expr_iterator expr_begin(bool invalidateCache = true);
 
   const_expr_iterator expr_begin_const() const;
 
@@ -259,7 +259,7 @@ protected:
   void invalidate() 
   {
     theCache.type.valid = false;
-    theCache.upd_seq_kind.valid = false;
+    // theCache.upd_seq_kind.valid = false;
   }
 
   // Returns true if all modifiers, as well as all accessors that permit future
@@ -274,6 +274,12 @@ protected:
 /*******************************************************************************
   Base class for iterators that iterate over the subexpressions (children) of
   a given expr. Notice that theCurrentChild is a pointer to expr_t.
+
+  Each actual instance of the abstract expr class has its own way of storing
+  pointers to its subexpressions. So, to make expr_iterator_data work with any
+  kind of expr, the actual work of expr_iterator_data is done by the virtual
+  expr::next_iter() method. Every concrete subclass of expr must defined its
+  own next_iter() method. 
 ********************************************************************************/
 class expr_iterator_data 
 {
@@ -283,7 +289,7 @@ protected:
 public:
   expr_t * theCurrentChild;
   int      theState;
-  bool     theIsConst;
+  bool     theInvalidate;
 
 public:
   expr_iterator_data(expr* e) 
@@ -291,13 +297,13 @@ public:
     theExpr(e),
     theCurrentChild(NULL),
     theState(0),
-    theIsConst(false)
+    theInvalidate(true)
   {
   }
 
   virtual ~expr_iterator_data() {}
 
-  void set_const() { theIsConst = true; }
+  void set_invalidate(bool v) { theInvalidate = v; }
 
   void next() { theExpr->next_iter(*this); }
 

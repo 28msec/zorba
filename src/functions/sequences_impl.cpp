@@ -28,42 +28,56 @@
 
 #include "types/typeops.h"
 
-namespace zorba {
-
-xqtref_t
-op_concatenate::return_type(const std::vector<xqtref_t>& arg_types) const 
+namespace zorba 
 {
-  int sz = arg_types.size ();
+
+xqtref_t op_concatenate::return_type(const std::vector<xqtref_t>& arg_types) const 
+{
+  int sz = arg_types.size();
+
   if (sz == 0)
+  {
     return GENV_TYPESYSTEM.EMPTY_TYPE;
-  else {
-    xqtref_t t = arg_types [0];
+  }
+  else 
+  {
+    xqtref_t t = arg_types[0];
     TypeConstants::quantifier_t q = TypeConstants::QUANT_STAR;
-    for (int i = 1; i < sz; i++) {
-      t = TypeOps::union_type (*t, *arg_types [i]);
-      TypeConstants::quantifier_t pq = TypeOps::quantifier (*t);
+    for (int i = 1; i < sz; i++) 
+    {
+      t = TypeOps::union_type(*t, *arg_types[i]);
+      TypeConstants::quantifier_t pq = TypeOps::quantifier(*t);
       if (pq == TypeConstants::QUANT_ONE || pq == TypeConstants::QUANT_PLUS)
         q = TypeConstants::QUANT_PLUS;
     }
-    return GENV_TYPESYSTEM.create_type_x_quant (*t, q);
+
+    return GENV_TYPESYSTEM.create_type_x_quant(*t, q);
   }
 }
 
-void
-op_concatenate::compute_annotation (
+
+void op_concatenate::compute_annotation(
     AnnotationHolder *parent,
     std::vector<AnnotationHolder *> &kids,
     Annotations::Key k) const 
 {
-  switch (k) {
+  switch (k) 
+  {
     case Annotations::IGNORES_SORTED_NODES:
     case Annotations::IGNORES_DUP_NODES:
-      for (std::vector<AnnotationHolder *>::iterator i = kids.begin (); i < kids.end (); i++)
-        TSVAnnotationValue::update_annotation ((*i), k, parent->get_annotation (k));
+    {
+      for (std::vector<AnnotationHolder *>::iterator i = kids.begin();
+           i < kids.end();
+           ++i)
+        TSVAnnotationValue::update_annotation((*i), k, parent->get_annotation(k));
+
       break;
+    }
     default: break;
   }
 }
+
+
 
 function* fn_sum::specialize(
    static_context* sctx,

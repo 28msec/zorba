@@ -35,13 +35,11 @@ public:
 private:
   void compute_sequential_expr(sequential_expr *e);
   void compute_wrapper_expr(wrapper_expr *e);
-  void compute_constructor_expr(constructor_expr *e);
   void compute_var_expr(var_expr *e);
   void compute_flwor_expr(flwor_expr *e);
   void compute_trycatch_expr(trycatch_expr *e);
   void compute_promote_expr(promote_expr *e);
   void compute_if_expr(if_expr *e);
-  void compute_function_def_expr(function_def_expr *e);
   void compute_fo_expr(fo_expr *e);
   void compute_ft_contains_expr(ft_contains_expr *e);
   void compute_instanceof_expr(instanceof_expr *e);

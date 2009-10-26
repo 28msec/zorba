@@ -62,9 +62,6 @@ END_SERIALIZABLE_CLASS_VERSIONS(expr)
 SERIALIZABLE_CLASS_VERSIONS(sequential_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(sequential_expr)
 
-SERIALIZABLE_CLASS_VERSIONS(constructor_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(constructor_expr)
-
 SERIALIZABLE_CLASS_VERSIONS(catch_clause)
 END_SERIALIZABLE_CLASS_VERSIONS(catch_clause)
 
@@ -109,9 +106,6 @@ END_SERIALIZABLE_CLASS_VERSIONS(name_cast_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(if_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(if_expr)
-
-SERIALIZABLE_CLASS_VERSIONS(function_def_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(function_def_expr)
 
 SERIALIZABLE_CLASS_VERSIONS(fo_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(fo_expr)
@@ -249,7 +243,6 @@ DEF_ACCEPT (promote_expr)
 DEF_ACCEPT (trycatch_expr)
 DEF_ACCEPT (eval_expr)
 DEF_ACCEPT (if_expr)
-DEF_ACCEPT (function_def_expr)
 DEF_ACCEPT (fo_expr)
 DEF_ACCEPT (ft_contains_expr)
 DEF_ACCEPT (instanceof_expr)
@@ -310,7 +303,8 @@ static xqtref_t print_expr_and_type(expr *e, xqtref_t t)
 
 
 /*******************************************************************************
-  Iterator macros
+  Iterator macros. These macros are used inside the expr::next_iter() method:
+  expr::next_iter(expr_iterator_data& v) 
 ********************************************************************************/
 
 static expr_t dummy_expr;
@@ -334,7 +328,7 @@ do                                                                  \
                                                                     \
   if ((subExprHandle) != NULL)                                      \
   {                                                                 \
-    if (!v.theIsConst) invalidate();                                \
+    if (v.theInvalidate) invalidate();                              \
     return;                                                         \
   }                                                                 \
                                                                     \
@@ -355,14 +349,14 @@ for (vv.iter = (begin); vv.iter != (end); ++(vv.iter))           \
 ********************************************************************************/
 expr_iterator::expr_iterator(const expr_iterator& other) 
   :
-  iter(new expr_iterator_data(*other.iter)) 
+  theIter(new expr_iterator_data(*other.theIter)) 
 {
 }
 
 
 expr_iterator::~expr_iterator() 
 {
-  delete iter; 
+  delete theIter; 
 }
 
 
@@ -370,8 +364,8 @@ expr_iterator& expr_iterator::operator=(const expr_iterator& other)
 {
   if (this != &other) 
   {
-    delete iter;
-    iter = new expr_iterator_data(*other.iter);
+    delete theIter;
+    theIter = new expr_iterator_data(*other.theIter);
   }
   return *this;
 }
@@ -379,11 +373,11 @@ expr_iterator& expr_iterator::operator=(const expr_iterator& other)
 
 expr_iterator& expr_iterator::operator++()
 {
-  iter->next();
+  theIter->next();
   return *this; 
 }
 
-
+#if 0
 expr_iterator expr_iterator::operator++(int)
 {
   expr_iterator old;
@@ -391,17 +385,17 @@ expr_iterator expr_iterator::operator++(int)
   ++*this;
   return old;
 }
-
+#endif
 
 expr_t& expr_iterator::operator*()
 {
-  return *(iter->theCurrentChild);
+  return *(theIter->theCurrentChild);
 }
 
 
 bool expr_iterator::done() const 
 {
-  return iter->done();
+  return theIter->done();
 }
 
 
@@ -436,15 +430,6 @@ const_expr_iterator& const_expr_iterator::operator++()
 {
   theIter->next();
   return *this; 
-}
-
-
-const_expr_iterator const_expr_iterator::operator++(int)
-{
-  const_expr_iterator old;
-  old = *this;
-  ++*this;
-  return old;
 }
 
 
@@ -550,10 +535,14 @@ public:
   Base expr class
 ********************************************************************************/
 
-expr::expr(short sctx, const QueryLoc& _loc) : theSctxId(sctx), loc(_loc) 
+expr::expr(short sctx, const QueryLoc& _loc) 
+  :
+  theSctxId(sctx),
+  loc(_loc) 
 {
   invalidate();
   theCache.type.sctx = NULL;
+  theCache.upd_seq_kind.valid = false;
   theCache.upd_seq_kind.kind = VACUOUS_EXPR;
 }
 
@@ -793,11 +782,15 @@ xqtref_t expr::return_type_impl(static_context* sctx)
 }
 
 
-expr_iterator expr::expr_begin() 
+expr_iterator expr::expr_begin(bool invalidate) 
 {
-  invalidate();
+  if (invalidate)
+    this->invalidate();
+
   expr_iterator_data* iter_data = make_iter();
+  iter_data->set_invalidate(invalidate);
   iter_data->next();
+
   return expr_iterator(iter_data);
 }
 
@@ -805,23 +798,24 @@ expr_iterator expr::expr_begin()
 const_expr_iterator expr::expr_begin_const() const 
 {
   expr_iterator_data* iter_data = const_cast<expr*>(this)->make_iter();
-  iter_data->set_const();
+  iter_data->set_invalidate(false);
   iter_data->next();
-  return const_expr_iterator(iter_data);
-}
 
-  
-void expr::next_iter(expr_iterator_data& v) 
-{
-  BEGIN_EXPR_ITER();
-  ZORBA_ASSERT(false);
-  END_EXPR_ITER();
+  return const_expr_iterator(iter_data);
 }
 
 
 expr_iterator_data* expr::make_iter()
 {
   return new expr_iterator_data(this);
+}
+
+ 
+void expr::next_iter(expr_iterator_data& v) 
+{
+  BEGIN_EXPR_ITER();
+  ZORBA_ASSERT(false);
+  END_EXPR_ITER();
 }
   
 
@@ -1057,6 +1051,108 @@ void if_expr::next_iter(expr_iterator_data& v)
 
   END_EXPR_ITER();
 }
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+order_expr::order_expr(
+    short sctx,
+    const QueryLoc& loc,
+    order_type_t type,
+    expr_t inExpr)
+  :
+  expr(sctx, loc),
+  theType(type),
+  theExpr(inExpr)
+{
+  compute_upd_seq_kind();
+}
+
+
+void order_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  SERIALIZE_ENUM(order_type_t, theType);
+  ar & theExpr;
+}
+
+
+xqtref_t order_expr::return_type_impl(static_context* sctx) 
+{
+  return theExpr->return_type(sctx); 
+}
+
+
+void order_expr::next_iter(expr_iterator_data& v) 
+{
+  BEGIN_EXPR_ITER();
+  ITER(theExpr);
+  END_EXPR_ITER();
+}
+
+
+expr_t order_expr::clone(substitution_t& subst) 
+{
+  return new order_expr(theSctxId, get_loc(), get_type(), get_expr()->clone(subst));
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+validate_expr::validate_expr(
+    short sctx,
+    const QueryLoc& loc,
+    enum ParseConstants::validation_mode_t mode,
+    store::Item_t typeName,
+    expr_t inExpr,
+    rchandle<TypeManager> typemgr)
+  :
+  expr(sctx, loc),
+  theMode(mode),
+  theTypeName(typeName),
+  theTypeMgr(typemgr),
+  theExpr(inExpr)
+{
+  compute_upd_seq_kind();
+}
+
+
+void validate_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  SERIALIZE_ENUM(ParseConstants::validation_mode_t, theMode);
+  ar & theTypeName;
+  SERIALIZE_TYPEMANAGER_RCHANDLE(TypeManager, theTypeMgr);
+  ar & theExpr;
+}
+
+
+xqtref_t validate_expr::return_type_impl(static_context* sctx)
+{
+  return GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE;
+}
+
+
+void validate_expr::next_iter(expr_iterator_data& v) 
+{
+  BEGIN_EXPR_ITER();
+  ITER(theExpr);
+  END_EXPR_ITER();
+}
+
+
+expr_t validate_expr::clone(substitution_t& subst) 
+{
+  return new validate_expr(theSctxId,
+                           get_loc(),
+                           get_valmode(),
+                           get_type_name(),
+                           get_expr()->clone(subst),
+                           get_typemgr());
+}
+
 
 
 /*******************************************************************************
@@ -1485,22 +1581,6 @@ expr_t name_cast_expr::clone(substitution_t& subst)
 
 
 /***************************************************************************//**
-  Base class for all node constructing expressions
-********************************************************************************/
-constructor_expr::constructor_expr(short sctx, const QueryLoc& loc) 
-  :
-  expr(sctx, loc)
-{
-}
-
-
-void constructor_expr::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (expr*)this);
-}
-
-
-/***************************************************************************//**
   CompDocConstructor ::= "document" "{" Expr "}"
 ********************************************************************************/
 doc_expr::doc_expr(
@@ -1508,7 +1588,7 @@ doc_expr::doc_expr(
     const QueryLoc& loc,
     expr_t aContent)
   :
-  constructor_expr(sctx, loc),
+  expr(sctx, loc),
   theContent(aContent)
 {
   compute_upd_seq_kind();
@@ -1517,7 +1597,7 @@ doc_expr::doc_expr(
 
 void doc_expr::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (constructor_expr*)this);
+  serialize_baseclass(ar, (expr*)this);
   ar & theContent;
 }
 
@@ -1559,7 +1639,7 @@ elem_expr::elem_expr (
     expr_t aContent,
     rchandle<namespace_context> aNSCtx)
   :
-  constructor_expr(sctx, aLoc),
+  expr(sctx, aLoc),
   theQNameExpr(aQNameExpr),
   theAttrs(aAttrs),
   theContent(aContent),
@@ -1575,7 +1655,7 @@ elem_expr::elem_expr (
     expr_t aContent,
     rchandle<namespace_context> aNSCtx)
   :
-  constructor_expr(sctx, aLoc),
+  expr(sctx, aLoc),
   theQNameExpr(aQNameExpr),
   theAttrs(0),
   theContent(aContent),
@@ -1587,7 +1667,7 @@ elem_expr::elem_expr (
 
 void elem_expr::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (constructor_expr*)this);
+  serialize_baseclass(ar, (expr*)this);
   ar & theQNameExpr;
   ar & theAttrs;
   ar & theContent;
@@ -1648,7 +1728,7 @@ attr_expr::attr_expr(
     expr_t aQNameExpr,
     expr_t aValueExpr)
   :
-  constructor_expr(sctx, loc),
+  expr(sctx, loc),
   theQNameExpr(aQNameExpr),
   theValueExpr(aValueExpr)
 {
@@ -1658,7 +1738,7 @@ attr_expr::attr_expr(
 
 void attr_expr::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (constructor_expr*)this);
+  serialize_baseclass(ar, (expr*)this);
   ar & theQNameExpr;
   ar & theValueExpr;
 }
@@ -1713,7 +1793,7 @@ text_expr::text_expr(
     text_constructor_type type_arg,
     expr_t content)
   :
-  constructor_expr(sctx, loc),
+  expr(sctx, loc),
   type (type_arg),
   theContentExpr(content)
 {
@@ -1723,7 +1803,7 @@ text_expr::text_expr(
 
 void text_expr::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (constructor_expr*)this);
+  serialize_baseclass(ar, (expr*)this);
   SERIALIZE_ENUM(text_constructor_type, type);
   ar & theContentExpr;
 }
@@ -1792,7 +1872,7 @@ pi_expr::pi_expr(
     expr_t targetExpr,
     expr_t contentExpr)
 :
-  constructor_expr(sctx, loc),
+  expr(sctx, loc),
   theTargetExpr(targetExpr),
   theContentExpr(contentExpr)
 {
@@ -1802,7 +1882,7 @@ pi_expr::pi_expr(
 
 void pi_expr::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, (constructor_expr*)this);
+  serialize_baseclass(ar, (expr*)this);
   ar & theTargetExpr;
   ar & theContentExpr;
 }
@@ -2005,6 +2085,8 @@ expr_t fo_expr::clone(substitution_t& subst)
 
   for (unsigned i = 0; i < theArgs.size (); i++)
     fo->theArgs.push_back(theArgs[i]->clone(subst));
+
+  fo->theCache.upd_seq_kind.kind  = theCache.upd_seq_kind.kind;
 
   return fo.release();
 }
@@ -3299,65 +3381,6 @@ eval_expr::eval_var::eval_var (var_expr *ve, expr_t val_)
 }
 
 
-// [48a] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTContainsExpr]
-
-ft_contains_expr::ft_contains_expr(
-    short sctx,
-    const QueryLoc& loc,
-    expr_t _range_h,
-    expr_t _ft_select_h,
-    expr_t _ft_ignore_h)
-  :
-  expr(sctx, loc),
-  range_h(_range_h),
-  ft_select_h(_ft_select_h),
-  ft_ignore_h(_ft_ignore_h)
-{
-}
-
-
-void ft_contains_expr::next_iter (expr_iterator_data& v) {
-  BEGIN_EXPR_ITER ();
-  ITER (range_h);
-  ITER (ft_select_h);
-  ITER (ft_ignore_h);
-  END_EXPR_ITER ();
-}
-
-
-// [63] [http://www.w3.org/TR/xquery/#prod-xquery-ValidateExpr]
-
-validate_expr::validate_expr(
-  short sctx,
-  const QueryLoc& loc,
-  enum ParseConstants::validation_mode_t _valmode,
-  store::Item_t aTypeName,
-  expr_t _expr_h, rchandle<TypeManager> typemgr_)
-:
-  expr(sctx, loc),
-  valmode(_valmode),
-  typeName(aTypeName),
-  typemgr (typemgr_),
-  expr_h(_expr_h)
-{}
-
-
-void validate_expr::next_iter (expr_iterator_data& v) {
-  BEGIN_EXPR_ITER ();
-  ITER (expr_h);
-  END_EXPR_ITER ();
-}
-
-expr_t validate_expr::clone(substitution_t &subst) {
-  return new validate_expr (theSctxId,
-                            get_loc (),
-                            get_valmode (),
-                            get_type_name (),
-                            get_expr ()->clone (subst),
-                            get_typemgr ());
-}
-
-
 // [65] [http://www.w3.org/TR/xquery/#prod-xquery-ExtensionExpr]
 
 extension_expr::extension_expr(
@@ -3506,94 +3529,89 @@ store::StoreConsts::NodeKind match_expr::getNodeKind() const
 }
 
 
-
-// [91] [http://www.w3.org/TR/xquery/#prod-xquery-OrderedExpr]
-
-order_expr::order_expr(
-  short sctx,
-  const QueryLoc& loc,
-  order_type_t _type,
-  expr_t _expr_h)
-:
-  expr(sctx, loc),
-  type(_type),
-  expr_h(_expr_h)
-{}
-
-
-void order_expr::next_iter (expr_iterator_data& v) {
-  BEGIN_EXPR_ITER ();
-  ITER (expr_h);
-  END_EXPR_ITER ();
-}
-
-
-expr_t order_expr::clone(substitution_t& subst) {
-  return new order_expr (theSctxId, get_loc (), get_type (), get_expr ()->clone (subst));
-}
-
-
-void function_def_expr::next_iter (expr_iterator_data& v) {}
-
-
-void function_def_expr::serialize(::zorba::serialization::Archiver &ar)
+expr_t match_expr::clone (substitution_t& subst) 
 {
-  serialize_baseclass(ar, (expr*)this);
-  ar & name;
-  ar & params;
-  ar & body;
-  if(ar.is_serializing_out())
-  {
-    signature *psig = sig.get();
-    ar & psig;
-  }
-  else
-  {
-    signature *psig;
-    ar & psig;
-    sig = auto_ptr<signature>(psig);
-  }
+  match_expr* me = new match_expr(theSctxId, get_loc());
+  me->setTestKind(getTestKind());
+  me->setDocTestKind(getDocTestKind());
+  me->setWildName(getWildName());
+  me->setWildKind(getWildKind());
+  me->setQName(getQName());
+  me->setTypeName(getTypeName());
+  me->setNilledAllowed(getNilledAllowed());
+  return me;
 }
 
-function_def_expr::function_def_expr (short sctx,
-                                      const QueryLoc& loc,
-                                      store::Item_t name_,
-                                      std::vector<rchandle<var_expr> > &params_,
-                                      xqtref_t return_type_impl)
-  : expr (sctx, loc), name (name_)
+expr_t axis_step_expr::clone(substitution_t& subst) 
 {
-  assert (return_type_impl != NULL);
-  params.swap (params_);
-  vector<xqtref_t> args;
-  // TODO: copy param types into sig
-  for (unsigned i = 0; i < param_size (); i++)
-    args.push_back (GENV_TYPESYSTEM.ITEM_TYPE_STAR);
-  sig = auto_ptr<signature> (new signature (get_name (), args, GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+  axis_step_expr* ae = new axis_step_expr(theSctxId, get_loc());
+  ae->setAxis(getAxis());
+  ae->setTest(getTest());
+  return ae;
 }
 
-// [242] [http://www.w3.org/TR/xqupdate/#prod-xquery-InsertExpr]
+expr_t relpath_expr::clone(substitution_t& subst) 
+{
+  auto_ptr<relpath_expr> re(new relpath_expr(theSctxId, get_loc()));
+  for (unsigned i = 0; i < size(); i++)
+    re->add_back((*this)[i]->clone (subst));
+  return re.release();
+}
 
+
+/////////////////////////////////////////////////////////////////////////
+//                                                                     //
+//	Update expressions                                                 //
+//  [http://www.w3.org/TR/xqupdate/]                                   //
+//                                                                     //
+/////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+
+********************************************************************************/
 insert_expr::insert_expr(
-  short sctx,
-	const QueryLoc& loc,
-  store::UpdateConsts::InsertType aType,
-	expr_t aSourceExpr,
-	expr_t aTargetExpr)
-:
+    short sctx,
+    const QueryLoc& loc,
+    store::UpdateConsts::InsertType aType,
+    expr_t aSourceExpr,
+    expr_t aTargetExpr)
+  :
 	expr(sctx, loc),
   theType(aType),
 	theSourceExpr(aSourceExpr),
 	theTargetExpr(aTargetExpr)
-{}
+{
+  compute_upd_seq_kind();
+}
 
-void insert_expr::compute_upd_seq_kind () const 
+
+void insert_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  SERIALIZE_ENUM(store::UpdateConsts::InsertType, theType);
+  ar & theSourceExpr;
+  ar & theTargetExpr;
+}
+
+
+void insert_expr::compute_upd_seq_kind() const 
 {
   theCache.upd_seq_kind.kind = UPDATE_EXPR;
   theCache.upd_seq_kind.valid = true;
+
+  checkNonUpdating(theSourceExpr);
+  checkNonUpdating(theTargetExpr);
 }
 
-void 
-insert_expr::next_iter(expr_iterator_data& v)
+
+xqtref_t insert_expr::return_type_impl(static_context* sctx)
+{
+  return GENV_TYPESYSTEM.EMPTY_TYPE;
+}
+
+
+void insert_expr::next_iter(expr_iterator_data& v)
 {
   BEGIN_EXPR_ITER();
   ITER(theSourceExpr);
@@ -3601,27 +3619,51 @@ insert_expr::next_iter(expr_iterator_data& v)
   END_EXPR_ITER(); 
 }
 
-expr_t insert_expr::clone (substitution_t& subst) {
-  return new insert_expr (theSctxId, get_loc (), getType (), getSourceExpr ()->clone (subst), getTargetExpr ()->clone (subst));
+expr_t insert_expr::clone(substitution_t& subst) 
+{
+  return new insert_expr(theSctxId,
+                         get_loc(),
+                         getType(),
+                         getSourceExpr()->clone(subst),
+                         getTargetExpr()->clone(subst));
 }
 
-// [243] [http://www.w3.org/TR/xqupdate/#prod-xquery-DeleteExpr]
 
+/*******************************************************************************
+
+********************************************************************************/
 delete_expr::delete_expr(
-  short sctx,
-	const QueryLoc& loc,
-	expr_t aTargetExpr)
-:
+    short sctx,
+    const QueryLoc& loc,
+    expr_t aTargetExpr)
+  :
 	expr(sctx, loc),
 	theTargetExpr(aTargetExpr)
-{}
+{
+  compute_upd_seq_kind();
+}
 
 
-void delete_expr::compute_upd_seq_kind () const 
+void delete_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  ar & theTargetExpr;
+}
+
+void delete_expr::compute_upd_seq_kind() const 
 {
   theCache.upd_seq_kind.kind = UPDATE_EXPR;
   theCache.upd_seq_kind.valid = true;
+
+  checkNonUpdating(theTargetExpr);
 }
+
+
+xqtref_t delete_expr::return_type_impl(static_context* sctx)
+{
+  return GENV_TYPESYSTEM.EMPTY_TYPE;
+}
+
 
 void delete_expr::next_iter(expr_iterator_data& v)
 {
@@ -3630,30 +3672,55 @@ void delete_expr::next_iter(expr_iterator_data& v)
   END_EXPR_ITER(); 
 }
 
-expr_t delete_expr::clone (substitution_t& subst) {
-  return new delete_expr (theSctxId, get_loc (), getTargetExpr ()->clone (subst));
+expr_t delete_expr::clone (substitution_t& subst) 
+{
+  return new delete_expr(theSctxId, get_loc(), getTargetExpr()->clone(subst));
 }
 
 
+/*******************************************************************************
 
-
+********************************************************************************/
 replace_expr::replace_expr(
-  short sctx,
-	const QueryLoc& loc,
-  store::UpdateConsts::ReplaceType aType,
-	expr_t aTargetExpr,
-	expr_t aReplaceExpr)
-:
+    short sctx,
+    const QueryLoc& loc,
+    store::UpdateConsts::ReplaceType aType,
+    expr_t aTargetExpr,
+    expr_t aReplaceExpr)
+  :
 	expr(sctx, loc),
   theType(aType),
 	theTargetExpr(aTargetExpr),
 	theReplaceExpr(aReplaceExpr)
-{}
+{
+  compute_upd_seq_kind();
+}
 
-void replace_expr::compute_upd_seq_kind () const {
+
+void replace_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  SERIALIZE_ENUM(store::UpdateConsts::ReplaceType, theType);
+  ar & theTargetExpr;
+  ar & theReplaceExpr;
+}
+
+
+void replace_expr::compute_upd_seq_kind() const 
+{
   theCache.upd_seq_kind.kind = UPDATE_EXPR;
   theCache.upd_seq_kind.valid = true;
+
+  checkNonUpdating(theTargetExpr);
+  checkNonUpdating(theReplaceExpr);
 }
+
+
+xqtref_t replace_expr::return_type_impl(static_context* sctx)
+{
+  return GENV_TYPESYSTEM.EMPTY_TYPE;
+}
+
 
 void replace_expr::next_iter(expr_iterator_data& v)
 {
@@ -3663,28 +3730,57 @@ void replace_expr::next_iter(expr_iterator_data& v)
   END_EXPR_ITER();
 }
 
-expr_t replace_expr::clone (substitution_t& subst) {
-  return new replace_expr (theSctxId, get_loc (), getType (), getTargetExpr ()->clone (subst), getReplaceExpr ()->clone (subst));
+
+expr_t replace_expr::clone(substitution_t& subst) 
+{
+  return new replace_expr(theSctxId,
+                          get_loc(),
+                          getType(),
+                          getTargetExpr()->clone(subst),
+                          getReplaceExpr()->clone(subst));
 }
 
 
+/*******************************************************************************
 
+********************************************************************************/
 rename_expr::rename_expr(
-  short sctx,
-	const QueryLoc& loc,
-	expr_t aTargetExpr,
-	expr_t aNameExpr)
-:
+    short sctx,
+    const QueryLoc& loc,
+    expr_t aTargetExpr,
+    expr_t aNameExpr)
+  :
 	expr(sctx, loc),
 	theTargetExpr(aTargetExpr),
 	theNameExpr(aNameExpr)
-{}
+{
+  compute_upd_seq_kind();
+}
 
-void rename_expr::compute_upd_seq_kind () const 
+
+void rename_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  ar & theTargetExpr;
+  ar & theNameExpr;
+}
+
+
+void rename_expr::compute_upd_seq_kind() const 
 {
   theCache.upd_seq_kind.kind = UPDATE_EXPR;
   theCache.upd_seq_kind.valid = true;
+
+  checkNonUpdating(theTargetExpr);
+  checkNonUpdating(theNameExpr);
 }
+
+
+xqtref_t rename_expr::return_type_impl(static_context* sctx)
+{
+  return GENV_TYPESYSTEM.EMPTY_TYPE;
+}
+
 
 void rename_expr::next_iter(expr_iterator_data& v)
 {
@@ -3694,9 +3790,13 @@ void rename_expr::next_iter(expr_iterator_data& v)
   END_EXPR_ITER();
 }
 
-expr_t rename_expr::clone (substitution_t& subst) 
+
+expr_t rename_expr::clone(substitution_t& subst) 
 {
-  return new rename_expr (theSctxId, get_loc (), getTargetExpr ()->clone (subst), getNameExpr ()->clone (subst));
+  return new rename_expr(theSctxId,
+                         get_loc(),
+                         getTargetExpr()->clone(subst),
+                         getNameExpr()->clone(subst));
 }
 
 
@@ -3712,6 +3812,13 @@ copy_clause::copy_clause(rchandle<var_expr> aVar, expr_t aExpr)
 }
 
 
+void copy_clause::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & theVar;
+  ar & theExpr;
+}
+
+
 transform_expr::transform_expr(
     short sctx,
 	  const QueryLoc& loc,
@@ -3722,6 +3829,37 @@ transform_expr::transform_expr(
 	theModifyExpr(aModifyExpr),
 	theReturnExpr(aReturnExpr)
 {
+  compute_upd_seq_kind();
+}
+
+
+void transform_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  ar & theCopyClauses;
+  ar & theModifyExpr;
+  ar & theReturnExpr;
+}
+
+
+void transform_expr::setModifyExpr(expr* e) 
+{
+  theModifyExpr = e;
+  compute_upd_seq_kind();
+}
+
+
+void transform_expr::setReturnExpr(expr* e)
+{
+  theReturnExpr = e;
+  compute_upd_seq_kind();
+}
+
+
+void transform_expr::add_back(copy_clause_t c)
+{
+  theCopyClauses.push_back(c);
+  compute_upd_seq_kind();
 }
 
 
@@ -3729,81 +3867,182 @@ void transform_expr::compute_upd_seq_kind() const
 {
   theCache.upd_seq_kind.kind = SIMPLE_EXPR;
   theCache.upd_seq_kind.valid = true;
+
+  ulong numCopyVars = theCopyClauses.size();
+
+  for (ulong i = 0; i < numCopyVars; ++i)
+  {
+    checkNonUpdating(theCopyClauses[i]->getExpr());
+  }
+
+  if (theModifyExpr != NULL)
+  {
+    expr_update_t modKind = theModifyExpr->get_update_type();
+
+    if (modKind != UPDATE_EXPR && modKind != VACUOUS_EXPR)
+    {
+      ZORBA_ERROR_LOC(XUST0002, theModifyExpr->get_loc());
+    }
+  }
+
+  checkNonUpdating(theReturnExpr);
 }
 
 
-expr_iterator_data *transform_expr::make_iter () { return new transform_expr_iterator_data(this); }
+xqtref_t transform_expr::return_type_impl(static_context* sctx)
+{
+  return theReturnExpr->return_type(sctx);
+}
+
+
+expr_iterator_data* transform_expr::make_iter()
+{
+  return new transform_expr_iterator_data(this);
+}
+
 
 void transform_expr::next_iter(expr_iterator_data& v)
 {
-  BEGIN_EXPR_ITER2 (transform_expr);
+  BEGIN_EXPR_ITER2(transform_expr);
+
   ITER_FOR_EACH(clause_iter, theCopyClauses.begin(), theCopyClauses.end(),
                 (*vv.clause_iter)->theExpr);
+
   ITER(theModifyExpr);
   ITER(theReturnExpr);
+
   END_EXPR_ITER();
 } 
 
-void exit_expr::next_iter (expr_iterator_data& v)
+
+/////////////////////////////////////////////////////////////////////////
+//                                                                     //
+//	Scripting expressions                                              //
+//  [http://www.w3.org/TR/xquery-sx-10/]                               //
+//                                                                     //
+/////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+
+********************************************************************************/
+exit_expr::exit_expr(short sctx, const QueryLoc& loc, expr_t inExpr)
+  :
+  expr(sctx, loc),
+  theExpr(inExpr)
+{
+}
+
+
+void exit_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  ar & theExpr;
+}
+
+
+void exit_expr::next_iter(expr_iterator_data& v)
 {
   BEGIN_EXPR_ITER();
-  ITER(val);
+  ITER(theExpr);
   END_EXPR_ITER();
 }
 
-expr_t exit_expr::clone (substitution_t& subst) {
-  return new exit_expr (theSctxId, get_loc (), get_value ()->clone (subst));
+expr_t exit_expr::clone(substitution_t& subst) 
+{
+  return new exit_expr(theSctxId, get_loc(), get_value()->clone(subst));
 }
 
-void flowctl_expr::next_iter (expr_iterator_data& v)
+
+/*******************************************************************************
+
+********************************************************************************/
+flowctl_expr::flowctl_expr(short sctx, const QueryLoc &loc, enum action action)
+  :
+  expr(sctx, loc),
+  theAction(action)
+{
+}
+
+
+void flowctl_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  SERIALIZE_ENUM(enum action, theAction);
+}
+
+
+void flowctl_expr::next_iter(expr_iterator_data& v)
 {
   BEGIN_EXPR_ITER();
   END_EXPR_ITER();
 }
 
-expr_t flowctl_expr::clone (substitution_t& subst) {
-  return new flowctl_expr (theSctxId, get_loc (), get_action ());
+
+expr_t flowctl_expr::clone(substitution_t& subst) 
+{
+  return new flowctl_expr(theSctxId, get_loc(), get_action());
 }
 
-void while_expr::next_iter (expr_iterator_data& v)
+
+/*******************************************************************************
+
+********************************************************************************/
+while_expr::while_expr(short sctx, const QueryLoc& loc, expr_t body)
+  : 
+  expr(sctx, loc),
+  theBody(body)
+{
+}
+
+
+void while_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  ar & theBody;
+}
+
+
+void while_expr::next_iter(expr_iterator_data& v)
 {
   BEGIN_EXPR_ITER();
-  ITER (body);
+  ITER(theBody);
   END_EXPR_ITER();
 }
 
-expr_t while_expr::clone (substitution_t& subst) {
-  return new while_expr (theSctxId, get_loc (), get_body ()->clone (subst));
+
+expr_t while_expr::clone(substitution_t& subst) 
+{
+  return new while_expr(theSctxId, get_loc(), get_body()->clone(subst));
 }
 
 
+/*******************************************************************************
 
-expr_t match_expr::clone (substitution_t& subst) {
-  match_expr *me = new match_expr (theSctxId, get_loc ());
-  me->setTestKind (getTestKind ());
-  me->setDocTestKind (getDocTestKind ());
-  me->setWildName (getWildName ());
-  me->setWildKind (getWildKind ());
-  me->setQName (getQName ());
-  me->setTypeName (getTypeName ());
-  me->setNilledAllowed (getNilledAllowed ());
-  return me;
+********************************************************************************/
+ft_contains_expr::ft_contains_expr(
+    short sctx,
+    const QueryLoc& loc,
+    expr_t _range_h,
+    expr_t _ft_select_h,
+    expr_t _ft_ignore_h)
+  :
+  expr(sctx, loc),
+  range_h(_range_h),
+  ft_select_h(_ft_select_h),
+  ft_ignore_h(_ft_ignore_h)
+{
 }
 
-expr_t axis_step_expr::clone (substitution_t& subst) {
-  axis_step_expr *ae = new axis_step_expr (theSctxId, get_loc ());
-  ae->setAxis (getAxis ());
-  ae->setTest (getTest ());
-  return ae;
-}
 
-expr_t relpath_expr::clone (substitution_t& subst) {
-  auto_ptr<relpath_expr> re (new relpath_expr (theSctxId, get_loc ()));
-  for (unsigned i = 0; i < size (); i++)
-    re->add_back ((*this) [i]->clone (subst));
-  return re.release ();
+void ft_contains_expr::next_iter(expr_iterator_data& v) 
+{
+  BEGIN_EXPR_ITER ();
+  ITER (range_h);
+  ITER (ft_select_h);
+  ITER (ft_ignore_h);
+  END_EXPR_ITER ();
 }
-
 
 
 } /* namespace zorba */

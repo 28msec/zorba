@@ -203,16 +203,6 @@ void DataflowAnnotationsComputer::compute_wrapper_expr(wrapper_expr *e)
 }
 
 
-/*******************************************************************************
-
-********************************************************************************/
-void DataflowAnnotationsComputer::compute_constructor_expr(constructor_expr *e)
-{
-  default_walk(e);
-  SORTED_NODES(e);
-  DISTINCT_NODES(e);
-}
-
 void DataflowAnnotationsComputer::compute_var_expr(var_expr *e)
 {
   if (!generic_compute(e)) {
@@ -250,14 +240,6 @@ void DataflowAnnotationsComputer::compute_if_expr(if_expr *e)
 {
   default_walk(e);
   generic_compute(e);
-}
-
-
-void DataflowAnnotationsComputer::compute_function_def_expr(function_def_expr *e)
-{
-  default_walk(e);
-  if (!generic_compute(e)) {
-  }
 }
 
 

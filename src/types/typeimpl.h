@@ -303,6 +303,8 @@ public:
 
   bool is_builtin() const { return theIsBuiltin; }
 
+  virtual bool isList() const { return false; }
+
   virtual content_kind_t content_kind() const { return MIXED_CONTENT_KIND; };
 
   virtual store::Item_t get_qname() const { return NULL; }
@@ -667,10 +669,14 @@ public:
 
   store::Item_t get_qname() const { return m_qname;    }
 
-  bool isAtomic()                 const { return m_typeCategory == ATOMIC_TYPE;  }
-  bool isList()                   const { return m_typeCategory == LIST_TYPE;    }
-  bool isUnion()                  const { return m_typeCategory == UNION_TYPE;   }
-  bool isComplex()                const { return m_typeCategory == COMPLEX_TYPE; }
+  bool isAtomic() const { return m_typeCategory == ATOMIC_TYPE;  }
+
+  bool isList() const { return m_typeCategory == LIST_TYPE;    }
+
+  bool isUnion() const { return m_typeCategory == UNION_TYPE;   }
+
+  bool isComplex() const { return m_typeCategory == COMPLEX_TYPE; }
+
   type_category_t getTypeCategory() const { return m_typeCategory; }
 
   xqtref_t getBaseType() const { return m_baseType; }

@@ -395,19 +395,22 @@ ostream& name_cast_expr::put( ostream& os) const
   CLOSE_EXPR;
 }
 
-ostream& validate_expr::put( ostream& os) const
-{
-  BEGIN_EXPR (validate_expr);
 
-  switch (valmode) {
+ostream& validate_expr::put(ostream& os) const
+{
+  BEGIN_EXPR(validate_expr);
+
+  switch (theMode) 
+  {
   case ParseConstants::val_strict: os << "strict\n"; break;
   case ParseConstants::val_lax: os << "lax\n"; break;
   case ParseConstants::val_typename: os << "typename\n"; break;
   default: os << "??\n";
   }
-  expr_h->put(os) << endl;
+  theExpr->put(os) << endl;
   CLOSE_EXPR;
 }
+
 
 ostream& extension_expr::put( ostream& os) const
 {
@@ -545,24 +548,25 @@ ostream& const_expr::put(ostream& os) const
 }
 
 
-ostream& order_expr::put( ostream& os) const
+ostream& order_expr::put(ostream& os) const
 {
   os << INDENT << "order_expr" << expr_addr (this) << "\n";
   os << DENT << "[ ";
 
-  switch (type) 
+  switch (theType) 
   {
   case ordered: os << "ordered\n"; break;
   case unordered: os << "unordered\n"; break;
   default: os << "??\n";
   }
-  expr_h->put(os) << endl;
+  theExpr->put(os) << endl;
   CLOSE_EXPR;
 }
 
+
 ostream& elem_expr::put(ostream& os) const
 {
-  BEGIN_EXPR (elem_expr);
+  BEGIN_EXPR(elem_expr);
 
   if (theQNameExpr != NULL)
     theQNameExpr->put(os);
@@ -610,10 +614,6 @@ ostream& pi_expr::put( ostream& os) const
   CLOSE_EXPR;
 }
 
-ostream& function_def_expr::put (ostream &os) const {
-  BEGIN_EXPR (fn_def_expr);
-  CLOSE_EXPR;
-}
 
 ostream& insert_expr::put( ostream& os) const
 {
@@ -670,21 +670,21 @@ ostream& transform_expr::put( ostream& os) const
 
 ostream& exit_expr::put( ostream& os) const
 {
-  BEGIN_EXPR (exit_expr);
-  val->put (os);
+  BEGIN_EXPR(exit_expr);
+  theExpr->put(os);
   CLOSE_EXPR;
 }
 
 ostream& flowctl_expr::put( ostream& os) const
 {
-  BEGIN_EXPR (flowctl_expr);
+  BEGIN_EXPR(flowctl_expr);
   CLOSE_EXPR;
 }
 
 ostream& while_expr::put( ostream& os) const
 {
-  BEGIN_EXPR (while_expr);
-  body->put (os);
+  BEGIN_EXPR(while_expr);
+  theBody->put(os);
   CLOSE_EXPR;
 }
 

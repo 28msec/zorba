@@ -62,7 +62,6 @@ public:
   EXPR_VISITOR_METHODS (attr_expr);
   EXPR_VISITOR_METHODS (text_expr);
   EXPR_VISITOR_METHODS (pi_expr);
-  EXPR_VISITOR_METHODS (function_def_expr);
   EXPR_VISITOR_METHODS (insert_expr);
   EXPR_VISITOR_METHODS (delete_expr);
   EXPR_VISITOR_METHODS (rename_expr);

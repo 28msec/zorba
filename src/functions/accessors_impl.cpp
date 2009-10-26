@@ -41,48 +41,56 @@ fn_data_func::codegen(CompilerCB* aCb,
 
 
 xqtref_t
-fn_data_func::return_type (const std::vector<xqtref_t> &arg_types) const
+fn_data_func::return_type(const std::vector<xqtref_t>& arg_types) const
 {
   RootTypeManager& RTM = GENV_TYPESYSTEM;
 
   if (TypeOps::is_subtype(*arg_types[0], *RTM.ANY_ATOMIC_TYPE_STAR))
     return arg_types[0];  // includes () case
 
-  TypeConstants::quantifier_t q = TypeOps::quantifier (*arg_types [0]);
+  const XQType& argType = *arg_types[0];
+  TypeConstants::quantifier_t q = TypeOps::quantifier(argType);
 
-  if (TypeOps::is_subtype(*arg_types[0], *RTM.ANY_NODE_TYPE_STAR))
+  if (argType.type_kind() == XQType::NODE_TYPE_KIND)
   {
-    const XQType& type = *arg_types[0];
-    if (type.type_kind() == XQType::NODE_TYPE_KIND)
+    const NodeXQType& nType = static_cast<const NodeXQType&>(argType);
+
+    store::StoreConsts::NodeKind nodeKind = nType.get_node_kind();
+
+    if (nodeKind == store::StoreConsts::piNode ||
+        nodeKind == store::StoreConsts::commentNode)
     {
-      const NodeXQType& nType = static_cast<const NodeXQType&>(type);
+      return RTM.create_builtin_atomic_type(TypeConstants::XS_STRING, q);
+    }
 
-      store::StoreConsts::NodeKind nodeKind = nType.get_node_kind();
-
-      if (nodeKind == store::StoreConsts::piNode ||
-          nodeKind == store::StoreConsts::commentNode)
+    if (nodeKind == store::StoreConsts::documentNode ||
+        nodeKind == store::StoreConsts::textNode)
+    {
+      return RTM.create_builtin_atomic_type(TypeConstants::XS_UNTYPED_ATOMIC, q);
+    }
+    
+    xqtref_t cType = nType.get_content_type();
+    if (cType != NULL)
+    {
+      if (cType->isList())
       {
-        return RTM.create_builtin_atomic_type(TypeConstants::XS_STRING, q);
+        const XQType* itemType = static_cast<const UserDefinedXQType*>(cType.getp())->
+                                 getListItemType();
+        return RTM.create_type(*itemType, TypeConstants::QUANT_STAR);
       }
-
-      if (nodeKind == store::StoreConsts::documentNode ||
-          nodeKind == store::StoreConsts::textNode)
+      else if (TypeOps::is_equal(*cType, *RTM.UNTYPED_TYPE))
       {
         return RTM.create_builtin_atomic_type(TypeConstants::XS_UNTYPED_ATOMIC, q);
       }
-
-      xqtref_t cType = nType.get_content_type();
-      if (cType != NULL)
+      else if (TypeOps::is_subtype(*cType, *RTM.ANY_ATOMIC_TYPE_STAR))
       {
-        if (TypeOps::is_equal(*cType, *RTM.UNTYPED_TYPE))
-          return RTM.create_builtin_atomic_type(TypeConstants::XS_UNTYPED_ATOMIC, q);
-        else if (TypeOps::is_subtype(*cType, *RTM.ANY_ATOMIC_TYPE_STAR))
-          return RTM.create_type(*cType, q);
+        return RTM.create_type(*cType, q);
       }
     }
   }
 
-  return RTM.create_builtin_atomic_type(TypeConstants::XS_ANY_ATOMIC, q);
+  return RTM.create_builtin_atomic_type(TypeConstants::XS_ANY_ATOMIC,
+                                        TypeConstants::QUANT_STAR);
 }
 
 PlanIter_t

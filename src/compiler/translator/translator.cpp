@@ -8440,14 +8440,15 @@ void* begin_visit(const RevalidationDecl& v)
   return no_state;
 }
 
-void end_visit (const RevalidationDecl& v, void* /*visit_state*/) {
+void end_visit (const RevalidationDecl& v, void* /*visit_state*/) 
+{
   TRACE_VISIT_OUT ();
 }
 
 
-void *begin_visit (const TransformExpr& v) 
+void* begin_visit(const TransformExpr& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
 
   transform_expr* transformExpr = new transform_expr(theCCB->m_cur_sctx,
                                                      loc,
@@ -8458,9 +8459,9 @@ void *begin_visit (const TransformExpr& v)
   return no_state;
 }
 
-void end_visit (const TransformExpr& v, void* /*visit_state*/) 
+void end_visit(const TransformExpr& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
   expr_t returnExpr = pop_nodestack();
   if (returnExpr->is_updating()) 
@@ -8488,19 +8489,19 @@ void end_visit (const TransformExpr& v, void* /*visit_state*/)
 }
 
 
-void *begin_visit (const CopyVarList& v) 
+void* begin_visit(const CopyVarList& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const CopyVarList& v, void* /*visit_state*/) 
+void end_visit(const CopyVarList& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
-void *begin_visit (const VarBinding& v) 
+void* begin_visit(const VarBinding& v) 
 {
   TRACE_VISIT();
 

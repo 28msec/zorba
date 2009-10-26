@@ -566,12 +566,6 @@ xqtref_t match_expr::return_type_impl(static_context *sctx)
 
   
 
-xqtref_t order_expr::return_type_impl(static_context *sctx) 
-{
-  return expr_h->return_type (sctx); 
-}
-  
-
 xqtref_t var_expr::return_type_impl(static_context* sctx) 
 {
   RootTypeManager& rtm = GENV_TYPESYSTEM;
