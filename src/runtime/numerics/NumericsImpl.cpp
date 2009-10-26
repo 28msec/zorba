@@ -155,6 +155,12 @@ SERIALIZABLE_CLASS_VERSIONS(FnTanhIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(FnTanhIterator)
 SERIALIZABLE_CLASS_VERSIONS(FnAtanhIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(FnAtanhIterator)
+SERIALIZABLE_CLASS_VERSIONS(FnPiIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnPiIterator)
+SERIALIZABLE_CLASS_VERSIONS(FnIsInfIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnIsInfIterator)
+SERIALIZABLE_CLASS_VERSIONS(FnIsNaNIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnIsNaNIterator)
 
 NARY_ACCEPT (FnAbsIterator);
 
@@ -166,7 +172,7 @@ NARY_ACCEPT (FnRoundIterator);
   
 NARY_ACCEPT (FnRoundHalfToEvenIterator);
 
-NARY_ACCEPT (FnSQRTIterator);
+UNARY_ACCEPT (FnSQRTIterator);
 
 UNARY_ACCEPT (FnExpIterator);
 
@@ -199,6 +205,9 @@ UNARY_ACCEPT (FnSinhIterator);
 UNARY_ACCEPT (FnAsinhIterator);
 UNARY_ACCEPT (FnTanhIterator);
 UNARY_ACCEPT (FnAtanhIterator);
+NOARY_ACCEPT (FnPiIterator);
+UNARY_ACCEPT (FnIsInfIterator);
+UNARY_ACCEPT (FnIsNaNIterator);
 
 /*******************************************************************************
   AddOperation (see runtime/core/arithmetic_impl.h/cpp)
@@ -1341,37 +1350,39 @@ bool FnSQRTIterator::nextImpl (store::Item_t& result, PlanState& planState) cons
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
 
-  if (consumeNext(result, theChildren[0].getp(), planState ))
+  if (consumeNext(result, theChild.getp(), planState ))
   {
-    assert(result->isAtomic());
+    //assert(result->isAtomic());
 
-    //get the value and the type of the item
-    type = tm.create_value_type (result);
+    ////get the value and the type of the item
+    //type = tm.create_value_type (result);
 
-    //Parameters of type xs:untypedAtomic are always promoted to xs:double
-    if ( TypeOps::is_subtype(*type, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
-    {
-      GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm);
-      type = tm.create_value_type(result);
-    }
+    ////Parameters of type xs:untypedAtomic are always promoted to xs:double
+    //if ( TypeOps::is_subtype(*type, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+    //{
+    //  GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm);
+    //  type = tm.create_value_type(result);
+    //}
 
-    if ( TypeOps::is_subtype ( *type, *rtm.DOUBLE_TYPE_ONE ) )
-      GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().sqrt());
-     
-    else if ( TypeOps::is_subtype ( *type, *rtm.FLOAT_TYPE_ONE ) )
-      GENV_ITEMFACTORY->createFloat(result, result->getFloatValue().sqrt());
+    //if ( TypeOps::is_subtype ( *type, *rtm.DOUBLE_TYPE_ONE ) )
+    //  GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().sqrt());
+    // 
+    //else if ( TypeOps::is_subtype ( *type, *rtm.FLOAT_TYPE_ONE ) )
+    //  GENV_ITEMFACTORY->createFloat(result, result->getFloatValue().sqrt());
 
-    else if(TypeOps::is_subtype ( *type, *rtm.INTEGER_TYPE_ONE ))
-      GENV_ITEMFACTORY->createInteger(result, result->getIntegerValue().sqrt());
+    //else if(TypeOps::is_subtype ( *type, *rtm.INTEGER_TYPE_ONE ))
+    //  GENV_ITEMFACTORY->createInteger(result, result->getIntegerValue().sqrt());
 
-    else if (TypeOps::is_subtype ( *type, *rtm.DECIMAL_TYPE_ONE ))
-      GENV_ITEMFACTORY->createDecimal(result, result->getDecimalValue().sqrt());
+    //else if (TypeOps::is_subtype ( *type, *rtm.DECIMAL_TYPE_ONE ))
+    //  GENV_ITEMFACTORY->createDecimal(result, result->getDecimalValue().sqrt());
 
-    else
-      ZORBA_ERROR_LOC_DESC( XPTY0004,
-                            loc, "Wrong operand type for fn:sqrt.");
+    //else
+    //  ZORBA_ERROR_LOC_DESC( XPTY0004,
+    //                        loc, "Wrong operand type for fn:sqrt.");
 
-    if ( consumeNext(item, theChildren[0].getp(), planState ))
+    GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().sqrt());
+
+    if ( consumeNext(item, theChild.getp(), planState ))
     {
       ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
                            "fn:sqrt has a sequence longer than one as an operator.");
@@ -1694,6 +1705,20 @@ bool FnLog10Iterator::nextImpl (store::Item_t& result, PlanState& planState) con
 /*******************************************************************************
 
 ********************************************************************************/
+bool FnPiIterator::nextImpl (store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+
+  GENV_ITEMFACTORY->createDouble(result, 3.1415926535897932384626433832795);
+  STACK_PUSH (true, state);
+
+  STACK_END (state);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
 bool FnModfIterator::nextImpl (store::Item_t& result, PlanState& planState) const
 {
   FnModfState* state;
@@ -1811,6 +1836,39 @@ bool FnAtanhIterator::nextImpl (store::Item_t& result, PlanState& planState) con
   }
   STACK_END (state);
 }
+
+/*******************************************************************************
+
+********************************************************************************/
+bool FnIsInfIterator::nextImpl (store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+
+  if (consumeNext(result, theChild.getp(), planState )) 
+  {
+    GENV_ITEMFACTORY->createBoolean(result, !result->getDoubleValue().isFinite());
+    STACK_PUSH (true, state);
+  }
+  STACK_END (state);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+bool FnIsNaNIterator::nextImpl (store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+
+  if (consumeNext(result, theChild.getp(), planState )) 
+  {
+    GENV_ITEMFACTORY->createBoolean(result, result->getDoubleValue().isNaN());
+    STACK_PUSH (true, state);
+  }
+  STACK_END (state);
+}
+
 
 
 

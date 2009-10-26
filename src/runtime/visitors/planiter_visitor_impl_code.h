@@ -228,6 +228,9 @@
   PLAN_ITER_VISITOR (FnAsinhIterator);
   PLAN_ITER_VISITOR (FnTanhIterator);
   PLAN_ITER_VISITOR (FnAtanhIterator);
+  PLAN_ITER_VISITOR (FnPiIterator);
+  PLAN_ITER_VISITOR (FnIsInfIterator);
+  PLAN_ITER_VISITOR (FnIsNaNIterator);
 
   PLAN_ITER_VISITOR (FnIdIterator);
 

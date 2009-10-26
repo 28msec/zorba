@@ -612,14 +612,14 @@ public:
   Math functions
 ********************************************************************************/
 
-class fn_sqrt : public single_numeric_func
-{
-public:
-  fn_sqrt(const signature& sig) : single_numeric_func (sig) {}
-
-  DEFAULT_NARY_CODEGEN(FnSQRTIterator);
-};
-
+//class fn_sqrt : public single_numeric_func
+//{
+//public:
+//  fn_sqrt(const signature& sig) : single_numeric_func (sig) {}
+//
+//  DEFAULT_NARY_CODEGEN(FnSQRTIterator);
+//};
+//
 
 #define DECL_DOUBLE_MATH_FUN_UNARY( name, iter )                              \
 class fn_##name : public function                                             \
@@ -641,6 +641,7 @@ class fn_##name : public function                                             \
 
 #define DECL_DOUBLE_MATH_FUN_UNARY_2(name, iter) DECL_DOUBLE_MATH_FUN_UNARY(name, iter)
 
+DECL_DOUBLE_MATH_FUN_UNARY (sqrt, SQRT);
 DECL_DOUBLE_MATH_FUN_UNARY (exp, Exp);
 DECL_DOUBLE_MATH_FUN_UNARY (log, Log);
 DECL_DOUBLE_MATH_FUN_UNARY (sin, Sin);
@@ -663,6 +664,16 @@ DECL_DOUBLE_MATH_FUN_UNARY (sinh, Sinh);
 DECL_DOUBLE_MATH_FUN_UNARY (tanh, Tanh);
 DECL_DOUBLE_MATH_FUN_UNARY (atanh, Atanh);
 DECL_DOUBLE_MATH_FUN_UNARY (asinh, Asinh);
+DECL_DOUBLE_MATH_FUN_UNARY (is_inf, IsInf);
+DECL_DOUBLE_MATH_FUN_UNARY (is_nan, IsNaN);
+
+class fn_pi : public function                                             
+{                                                                             
+ public:                                                                      
+  fn_pi(const signature& sig) : function(sig) {}                          
+                                                                              
+  DEFAULT_NOARY_CODEGEN (FnPiIterator)                                  
+};
 
 /*******************************************************************************
   Register numeric math functions
@@ -689,10 +700,11 @@ DECL(sctx, fn_##name,                                           \
 
 void populateContext_Math(static_context *sctx) 
 {
-  DECL(sctx, fn_sqrt,
-       (createQName(ZORBA_MATH_FN_NS,"fn-zorba-math", "sqrt"),
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+  //DECL(sctx, fn_sqrt,
+  //     (createQName(ZORBA_MATH_FN_NS,"fn-zorba-math", "sqrt"),
+  //      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
+  //      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+  REGISTER_DOUBLE_MATH_FUN (sqrt);
   
   REGISTER_DOUBLE_MATH_FUN (exp);
   REGISTER_DOUBLE_MATH_FUN (log);
@@ -721,6 +733,18 @@ void populateContext_Math(static_context *sctx)
   REGISTER_DOUBLE_MATH_FUN (asinh);
   REGISTER_DOUBLE_MATH_FUN (tanh);
   REGISTER_DOUBLE_MATH_FUN (atanh);
+
+  DECL(sctx, fn_pi,
+       (createQName(ZORBA_MATH_FN_NS,"fn-zorba-math", "pi"),
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+  DECL(sctx, fn_is_inf,
+       (createQName(ZORBA_MATH_FN_NS,"fn-zorba-math", "is_inf"),
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+  DECL(sctx, fn_is_nan,
+       (createQName(ZORBA_MATH_FN_NS,"fn-zorba-math", "is_nan"),
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 }
 
 

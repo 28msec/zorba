@@ -46,11 +46,11 @@ double asinh( double z)
 }
 float atanh( float z)
 {//formula from www.mathworks.com
-  return (float)1.0/(2*(float)::log((1+z)/(1-z)));
+  return (float)0.5*(float)::log((1+z)/(1-z));
 }
 double atanh( double z)
 {
-  return 1.0/(2*::log((1+z)/(1-z)));
+  return 0.5*::log((1+z)/(1-z));
 }
 
 namespace zorba {

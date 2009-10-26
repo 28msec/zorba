@@ -221,7 +221,7 @@ NOARY_ITER_STATE(ZorNumGen, ZorNumGenState);
 /*******************************************************************************
   Math functions
 ********************************************************************************/
-NARY_ITER (FnSQRTIterator);
+UNARY_ITER (FnSQRTIterator);
 UNARY_ITER (FnExpIterator);
 UNARY_ITER (FnLogIterator);
 UNARY_ITER (FnSinIterator);
@@ -242,6 +242,9 @@ UNARY_ITER (FnSinhIterator);
 UNARY_ITER (FnAsinhIterator);
 UNARY_ITER (FnTanhIterator);
 UNARY_ITER (FnAtanhIterator);
+NOARY_ITER (FnPiIterator);
+UNARY_ITER (FnIsInfIterator);
+UNARY_ITER (FnIsNaNIterator);
 
 class FnModfState : public PlanIteratorState
 {

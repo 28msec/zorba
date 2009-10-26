@@ -1139,6 +1139,9 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION (FnTanhIterator);
   PRINTER_VISITOR_DEFINITION (FnAtanhIterator);
   PRINTER_VISITOR_DEFINITION (FnRoundHalfToEvenIterator)
+  PRINTER_VISITOR_DEFINITION (FnPiIterator);
+  PRINTER_VISITOR_DEFINITION (FnIsInfIterator);
+  PRINTER_VISITOR_DEFINITION (FnIsNaNIterator);
   PRINTER_VISITOR_DEFINITION (FnIdIterator)
   PRINTER_VISITOR_DEFINITION (FnIdRefIterator)
   PRINTER_VISITOR_DEFINITION (FnDistinctValuesIterator)

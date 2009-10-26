@@ -184,6 +184,9 @@
   DECLARE_VISITOR (FnTanhIterator);
   DECLARE_VISITOR (FnAtanhIterator);
   DECLARE_VISITOR (FnRoundHalfToEvenIterator)
+  DECLARE_VISITOR (FnPiIterator);
+  DECLARE_VISITOR (FnIsInfIterator);
+  DECLARE_VISITOR (FnIsNaNIterator);
   DECLARE_VISITOR (FnIdIterator)
   DECLARE_VISITOR (FnIdRefIterator)
   DECLARE_VISITOR (FnDistinctValuesIterator)

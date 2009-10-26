@@ -112,6 +112,9 @@
   class FnAsinhIterator;
   class FnTanhIterator;
   class FnAtanhIterator;
+  class FnPiIterator;
+  class FnIsInfIterator;
+  class FnIsNaNIterator;
   class FnIdIterator;
   class FnIdRefIterator;
   class FnDistinctValuesIterator;
