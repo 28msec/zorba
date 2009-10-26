@@ -651,16 +651,25 @@ bool DeepEqual(
         break;
         
       case store::StoreConsts::elementNode:
-        if (0 != item1->getNodeName()->getStringValue()->compare(item2->getNodeName()->getStringValue(), collator))
+        if (! item1->getNodeName()->equals(item2->getNodeName()))
           return false;
-        return DeepEqual(sctx, item1->getAttributes(), item2->getAttributes(), collator, theRuntimeCB)
-            &&
-            DeepEqual(sctx, item1->getChildren(), item2->getChildren(), collator, theRuntimeCB);
+
+        return (DeepEqual(sctx,
+                          item1->getAttributes(),
+                          item2->getAttributes(),
+                          collator,
+                          theRuntimeCB)
+                &&
+                DeepEqual(sctx,
+                          item1->getChildren(),
+                          item2->getChildren(),
+                          collator,
+                          theRuntimeCB));
         break;
         
       case store::StoreConsts::attributeNode:
       {
-        if (0 != item1->getNodeName()->getStringValue()->compare(item2->getNodeName()->getStringValue(), collator))
+        if (! item1->getNodeName()->equals(item2->getNodeName()))
           return false;
 
         store::Item_t tvalue1, tvalue2;
