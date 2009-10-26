@@ -1,7 +1,7 @@
-import module namespace fn-zorba-collection="http://www.zorba-xquery.com/zorba/collection-functions";
+import module namespace ddl = "http://www.zorba-xquery.com/module/ddl";
 
 declare sequential function local:foo() {
-  fn-zorba-collection:delete-all-collections();
+  ddl:drop-all-collections();
   exit returning ();
 };
 

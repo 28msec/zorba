@@ -403,25 +403,22 @@
 
 	PLAN_ITER_VISITOR(FnFormatNumberIterator);
 
+  PLAN_ITER_VISITOR(ZorbaCollectionIterator);
   PLAN_ITER_VISITOR(ZorbaCollectionExistsIterator);
-  PLAN_ITER_VISITOR(ZorbaImportXmlIterator);
-  PLAN_ITER_VISITOR(ZorbaImportCatalogIterator);
-  PLAN_ITER_VISITOR(ZorbaImportFolderIterator);
   PLAN_ITER_VISITOR(ZorbaListCollectionsIterator);
+  PLAN_ITER_VISITOR(ScIsDeclaredCollectionIterator);
+  PLAN_ITER_VISITOR(ScDeclaredCollectionsIterator);
   PLAN_ITER_VISITOR(ZorbaCreateCollectionIterator);
-  PLAN_ITER_VISITOR(ZorbaDeleteCollectionIterator);
-  PLAN_ITER_VISITOR(ZorbaDeleteAllCollectionsIterator);
-  PLAN_ITER_VISITOR(ZorbaInsertNodeFirstIterator);
-  PLAN_ITER_VISITOR(ZorbaInsertNodeLastIterator);
-  PLAN_ITER_VISITOR(ZorbaInsertNodeBeforeIterator);
-  PLAN_ITER_VISITOR(ZorbaInsertNodeAfterIterator);
-  PLAN_ITER_VISITOR(ZorbaInsertNodeAtIterator);
-  PLAN_ITER_VISITOR(ZorbaRemoveNodeIterator);
+  PLAN_ITER_VISITOR(ZorbaDropCollectionIterator);
+  PLAN_ITER_VISITOR(ZorbaDropAllCollectionsIterator);
+  PLAN_ITER_VISITOR(ZorbaInsertNodesFirstIterator);
+  PLAN_ITER_VISITOR(ZorbaInsertNodesLastIterator);
+  PLAN_ITER_VISITOR(ZorbaInsertNodesBeforeIterator);
+  PLAN_ITER_VISITOR(ZorbaInsertNodesAfterIterator);
+  PLAN_ITER_VISITOR(ZorbaInsertNodesAtIterator);
+  PLAN_ITER_VISITOR(ZorbaRemoveNodesIterator);
   PLAN_ITER_VISITOR(ZorbaRemoveNodeAtIterator);
-  PLAN_ITER_VISITOR(ZorbaNodeCountIterator);
-  PLAN_ITER_VISITOR(ZorbaNodeAtIterator);
   PLAN_ITER_VISITOR(ZorbaIndexOfIterator);
-  PLAN_ITER_VISITOR(ZorbaExportXmlIterator);
 
   PLAN_ITER_VISITOR(ZorbaSchemaTypeIterator);
   PLAN_ITER_VISITOR(ZorbaBase64EncodeIterator);

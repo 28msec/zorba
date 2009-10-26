@@ -139,7 +139,8 @@ public:
     UP_LIST_REPLACE_NODE,
     UP_LIST_REPLACE_CONTENT,
     UP_LIST_DELETE,
-    UP_LIST_PUT
+    UP_LIST_PUT,
+    UP_LIST_CREATE_COLLECTION
   };
 
 protected:
@@ -157,7 +158,7 @@ protected:
   std::vector<UpdatePrimitive*>      theCreateCollectionList;
   std::vector<UpdatePrimitive*>      theInsertIntoCollectionList;
   std::vector<UpdatePrimitive*>      theDeleteFromCollectionList;
-  std::vector<UpdatePrimitive*>      theDeleteCollectionList;
+  std::vector<UpdatePrimitive*>      theDropCollectionList;
 
   // index primitives
   std::vector<UpdatePrimitive*>      theCreateIndexList;
@@ -259,55 +260,45 @@ public:
 
   // collection functions
   void addCreateCollection(
-        static_context*      aStaticContext,
-        xqpStringStore_t&    resolvedURI);
+        store::Item_t&              name);
 
-  void addDeleteCollection(
-        static_context*      aStaticContext,
-        store::Item_t&              resolvedURI);
+  void addDropCollection(
+        store::Item_t&              name);
 
   void addInsertIntoCollection(
-        static_context*             aStaticContext,
-        store::Item_t&              resolvedURI,
+        store::Item_t&              name,
         store::Item_t&              node);
 
   void addInsertFirstIntoCollection(
-        static_context*             aStaticContext,
-        store::Item_t&              resolvedURI,
+        store::Item_t&              name,
         std::vector<store::Item_t>& nodes);
 
   void addInsertLastIntoCollection(
-        static_context*             aStaticContext,
-        store::Item_t&              resolvedURI,
+        store::Item_t&              name,
         std::vector<store::Item_t>& nodes);
 
   void addInsertBeforeIntoCollection(
-        static_context*             aStaticContext,
-        store::Item_t&              resolvedURI,
+        store::Item_t&              name,
         store::Item_t&              target,
         std::vector<store::Item_t>& nodes);
 
   void addInsertAfterIntoCollection(
-        static_context*             aStaticContext,
-        store::Item_t&              resolvedURI,
+        store::Item_t&              name,
         store::Item_t&              target,
         std::vector<store::Item_t>& nodes);
 
   void addInsertAtIntoCollection(
-        static_context*             aStaticContext,
-        store::Item_t&              resolvedURI,
+        store::Item_t&              name,
         ulong                       pos,
         std::vector<store::Item_t>& nodes);
 
   void addRemoveFromCollection(
-        static_context*             aStaticContext,
-        store::Item_t&              resolvedURI,
+        store::Item_t&              name,
         std::vector<store::Item_t>& nodes);
 
   void addRemoveAtFromCollection(
-        static_context*      aStaticContext,
-        store::Item_t&       resolvedURI,
-        ulong                pos);
+        store::Item_t&              name,
+        ulong                       pos);
 
   // Index primitives
   void addCreateIndex(
@@ -1014,20 +1005,19 @@ public:
 class UpdCreateCollection : public UpdatePrimitive
 {
 protected:
-  static_context*    theStaticContext;
-  xqpStringStore_t   theCollectionUri;
+  store::Item_t   theCollectionName;
 
 public:
   UpdCreateCollection(
         PULImpl* pul,
-        static_context* aStaticContext,
-        xqpStringStore_t& collectionUri)
+        store::Item_t& name)
     :
     UpdatePrimitive(pul),
-    theStaticContext(aStaticContext),
-    theCollectionUri(collectionUri)
+    theCollectionName(name)
   {
   }
+
+  const store::Item* getCollectionName() const { return theCollectionName.getp(); }
 
   store::UpdateConsts::UpdPrimKind getKind() const
   {
@@ -1043,47 +1033,41 @@ public:
 class UpdCollection : public UpdatePrimitive
 {
 protected:
-  static_context*    theStaticContext;
-  store::Item_t      theTargetCollectionUri;
+  store::Item_t      theCollectionName;
 
 public:
   UpdCollection(
         PULImpl* pul,
-        static_context* aStaticContext,
-        store::Item_t& targetCollectionUri)
+        store::Item_t& name)
     :
     UpdatePrimitive(pul),
-    theStaticContext(aStaticContext),
-    theTargetCollectionUri(targetCollectionUri)
+    theCollectionName(name)
   {
   }
 
   UpdCollection(
         PULImpl* pul,
-        static_context* aStaticContext, 
         store::Item_t& target,
-        store::Item_t& targetCollectionUri)
+        store::Item_t& name)
     :
     UpdatePrimitive(pul, target),
-    theStaticContext(aStaticContext),
-    theTargetCollectionUri(targetCollectionUri)
+    theCollectionName(name)
   {
   }
 };
 
 
-class UpdDeleteCollection : public UpdCollection
+class UpdDropCollection : public UpdCollection
 {
 protected:
   std::vector<store::Item_t> theSavedItems; // only used for undo
 
 public:
-  UpdDeleteCollection(
+  UpdDropCollection(
         PULImpl* pul,
-        static_context* aStaticContext,
-        store::Item_t& targetCollectionUri)
+        store::Item_t& name)
     :
-    UpdCollection(pul, aStaticContext, targetCollectionUri)
+    UpdCollection(pul, name)
   {
   }
 
@@ -1105,11 +1089,10 @@ protected:
 public:
   UpdInsertIntoCollection(
         PULImpl* pul,
-        static_context* aStaticContext,
-        store::Item_t& targetCollectionUri, 
+        store::Item_t& name, 
         store::Item_t& node)
       :
-      UpdCollection(pul, aStaticContext, targetCollectionUri),
+      UpdCollection(pul, name),
       theNode(node)
   {
   }
@@ -1132,11 +1115,10 @@ protected:
 public:
   UpdInsertFirstIntoCollection(
       PULImpl* pul,
-      static_context* aStaticContext,
-      store::Item_t& targetCollectionUri,
+      store::Item_t& name,
       std::vector<store::Item_t>& nodes)
     :
-    UpdCollection(pul, aStaticContext, targetCollectionUri),
+    UpdCollection(pul, name),
     theNodes(nodes)
   {
   }
@@ -1159,11 +1141,10 @@ protected:
 public:
   UpdInsertLastIntoCollection(
         PULImpl* pul,
-        static_context* aStaticContext,
-        store::Item_t& targetCollectionUri,
+        store::Item_t& name,
         std::vector<store::Item_t>& nodes)
     :
-    UpdCollection(pul, aStaticContext, targetCollectionUri),
+    UpdCollection(pul, name),
     theNodes(nodes)
   {
   }
@@ -1186,12 +1167,11 @@ protected:
 public:
   UpdInsertBeforeIntoCollection(
         PULImpl* pul,
-        static_context* aStaticContext,
-        store::Item_t& targetCollectionUri,
+        store::Item_t& name,
         store::Item_t& target,
         std::vector<store::Item_t>& nodes)
     :
-    UpdCollection(pul, aStaticContext, target, targetCollectionUri),
+    UpdCollection(pul, target, name),
     theNodes(nodes)
   {
   }
@@ -1214,12 +1194,11 @@ protected:
 public:
   UpdInsertAfterIntoCollection(
         PULImpl* pul,
-        static_context* aStaticContext,
-        store::Item_t& targetCollectionUri,
+        store::Item_t& name,
         store::Item_t&    target,
         std::vector<store::Item_t>& nodes)
     :
-    UpdCollection(pul, aStaticContext, target, targetCollectionUri),
+    UpdCollection(pul, target, name),
     theNodes(nodes)
   {
   }
@@ -1243,12 +1222,11 @@ protected:
 public:
   UpdInsertAtIntoCollection(
         PULImpl* pul,
-        static_context* aStaticContext,
-        store::Item_t& targetCollectionUri,
+        store::Item_t& name,
         ulong                       pos,
         std::vector<store::Item_t>& nodes)
     :
-    UpdCollection(pul, aStaticContext, targetCollectionUri),
+    UpdCollection(pul, name),
     theNodes(nodes),
     thePos(pos)
   {
@@ -1272,11 +1250,10 @@ protected:
 public:
   UpdRemoveNodesFromCollection(
         PULImpl* pul,
-        static_context* aStaticContext,
-        store::Item_t& targetCollectionUri,
+        store::Item_t& name,
         std::vector<store::Item_t>& nodes)
     :
-    UpdCollection(pul, aStaticContext, targetCollectionUri),
+    UpdCollection(pul, name),
     theNodesToDelete(nodes)
   {
   }
@@ -1300,11 +1277,10 @@ protected:
 public:
   UpdRemoveNodeAtFromCollection(
       PULImpl* pul,
-      static_context* aStaticContext,
-      store::Item_t& targetCollectionUri,
+      store::Item_t& name,
       ulong pos)
     :
-    UpdCollection(pul, aStaticContext, targetCollectionUri),
+    UpdCollection(pul, name),
     thePos(pos)
   {
   }

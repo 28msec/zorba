@@ -206,7 +206,7 @@ StandardCollectionURIResolver::resolve(
   }
 
   // try to get it from the store again
-  lResultCol = lStore.getCollection(lURI.toString().getStore());
+  lResultCol = lStore.getUriCollection(lURI.toString().getStore());
   return lResultCol;
 }
 

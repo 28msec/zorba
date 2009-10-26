@@ -434,7 +434,12 @@ typedef zorba::xquery_parser::token token;
    |  Data Definition Facility tokens 
    |______________________________________________________________________*/
 
-"datamodule" { return token::DATAMODULE; }
+"datamodule" {
+  std::string lDocComment = theDriver->theDocComment;
+  yylval->sval = getDriver()->symtab.put_stringlit2(lDocComment.c_str(), lDocComment.length());
+  theDriver->theDocComment = "";
+  return token::DATAMODULE;
+}
 
 "collection" { return token::COLLECTION; }
 "node-type" { return token::NODE_TYPE; }

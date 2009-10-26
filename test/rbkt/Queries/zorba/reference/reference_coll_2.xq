@@ -1,11 +1,14 @@
-import module namespace coll="http://www.zorba-xquery.com/zorba/collection-functions";
+import module namespace ddl = "http://www.zorba-xquery.com/module/ddl";
+import module namespace dc = "http://www.zorba-xquery.com/module/dynamic-context";
+import datamodule namespace ns = "http://example.org/datamodule/" at "collections.xqdata";
+
 import module namespace zorba = "http://www.zorba-xquery.com/zorba/node-ref-functions";
 
 declare sequential function local:test()
 {
-  coll:create-collection("a");
-  coll:insert-nodes-last("a", (<a/>,<b><z/></b>,<c/>));
-  exit returning zorba:node-by-reference(zorba:node-reference(fn:collection("a")[2]/z));
+  ddl:create-collection(xs:QName("ns:test"));
+  ddl:insert-nodes-last(xs:QName("ns:test"), (<a/>,<b><z/></b>,<c/>));
+  exit returning zorba:node-by-reference(zorba:node-reference(dc:collection(xs:QName("ns:test"))[2]/z));
 };
 
 local:test()

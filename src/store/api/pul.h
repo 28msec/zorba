@@ -141,55 +141,45 @@ public:
   // functions to add primitives for updating collection functions (e.g. create-collection)
 
   virtual void addCreateCollection(
-        static_context*      aStaticContext,
-        xqpStringStore_t&    resolvedURI) = 0;
+        Item_t&                     name) = 0;
 
-  virtual void addDeleteCollection(
-        static_context*      aStaticContext,
-        Item_t&              resolvedURI) = 0;
+  virtual void addDropCollection(
+        Item_t&                     name) = 0;
 
   virtual void addInsertIntoCollection(
-        static_context*             aStaticContext,
-        Item_t&                     resolvedURI,
+        Item_t&                     name,
         Item_t&                     nodes) = 0;            
 
   virtual void addInsertFirstIntoCollection(
-        static_context*             aStaticContext,
-        Item_t&                     resolvedURI,
+        Item_t&                     name,
         std::vector<store::Item_t>& nodes) = 0;
 
   virtual void addInsertLastIntoCollection(
-        static_context*             aStaticContext,
-        Item_t&                     resolvedURI,
+        Item_t&                     name,
         std::vector<store::Item_t>& nodes) = 0;
 
   virtual void addInsertBeforeIntoCollection(
-        static_context*             aStaticContext,
-        Item_t&                     resolvedURI,
+        Item_t&                     name,
         Item_t&                     target,
         std::vector<store::Item_t>& nodes) = 0;
 
   virtual void addInsertAfterIntoCollection(
-        static_context*             aStaticContext,
-        Item_t&                     resolvedURI,
+        Item_t&                     name,
         Item_t&                     target,
         std::vector<store::Item_t>& nodes) = 0;
 
   virtual void addInsertAtIntoCollection(
-        static_context*             aStaticContext,
-        Item_t&                     resolvedURI,
+        Item_t&                     name,
         ulong                       pos,
         std::vector<store::Item_t>& nodes) = 0;
 
   virtual void addRemoveFromCollection(
-        static_context*      aStaticContext,
-        Item_t&              resolvedURI,
+        Item_t&                     name,
         std::vector<store::Item_t>& nodes) = 0;
 
   virtual void addRemoveAtFromCollection(
-        static_context*      aStaticContext,
-        Item_t&              resolvedURI,
-        ulong                pos) = 0;
+        Item_t&                     name,
+        ulong                       pos) = 0;
 
   virtual void addCreateIndex(
         const Item_t& qname,

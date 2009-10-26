@@ -45,7 +45,7 @@ class ZORBA_DLL_PUBLIC Collection : public SmartObject
    * @return The URI of the Collection as an anyURI Item.
    */
   virtual Item
-  getUri() const = 0;
+  getName() const = 0;
 
   /** 
    * \brief Returns the number of nodes in the collection.

@@ -1,1 +1,1 @@
-http://example.org/http
+ns:http

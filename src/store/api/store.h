@@ -212,37 +212,34 @@ public:
   /**
    * Creates a collection in the store.
    * 
-   * @param URI The URI of the collection to create.
+   * @param QName The QName of the collection to create.
    * @return rchandle to the newly created collection or NULL if a collection
    *         with the given uri exists already.
    */
-  virtual Collection_t createCollection(const xqpStringStore_t& uri) = 0;
+  virtual Collection_t createCollection(Item_t& name) = 0;
+  virtual Collection_t createUriCollection(const xqpStringStore_t& uri) = 0;
 
-  /** Creates a collection in the store (without given URI).
-   * 
-   * @return handle object of the newly created collection
-   */
-  virtual Collection_t createCollection() = 0;
-	
   /** Returns an XDM instance which is saved in the store 
    * (corresponds to the opening of a connection to a database)
    *
-   * @param URI of the collection
+   * @param QName of the collection
    * @return handle object of the collection. Returns NULL if the collection
    *         does not exist
    */
-  virtual Collection_t getCollection(const xqpStringStore_t& uri) = 0;
+  virtual Collection_t getCollection(const Item_t& name) = 0;
+  virtual Collection_t getUriCollection(const xqpStringStore_t& uri) = 0;
 		
   /** Deletes a collection.
    *
-   * @param URI to identify the collection to delete.
+   * @param QName to identify the collection to delete.
    */
-  virtual void deleteCollection(const xqpStringStore_t& uri) = 0;
+  virtual void deleteCollection(const Item_t& name) = 0;
+  virtual void deleteUriCollection(const xqpStringStore_t& uri) = 0;
 
   /** 
-   * Returns an iterator that lists the URI's of all the available collections.
+   * Returns an iterator that lists the names of all the available collections.
    */
-  virtual Iterator_t listCollectionUris() = 0;
+  virtual Iterator_t listCollectionNames() = 0;
 
 
   /* ------------------------ Index Management ---------------------------*/

@@ -1,3 +1,4 @@
-import module namespace
-fn-zorba-collection="http://www.zorba-xquery.com/zorba/collection-functions";
-fn-zorba-collection:insert-nodes-last('http://example.org/collection_333', <a/>)
+import module namespace ddl = "http://www.zorba-xquery.com/module/ddl";
+import datamodule namespace ns = "http://example.org/datamodule/" at "../collections.xqdata";
+
+ddl:insert-nodes-last(xs:QName('ns:collection_333'), <a/>)

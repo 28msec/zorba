@@ -58,7 +58,7 @@ datamanager_example_2(Zorba* aZorba, XmlDataManager* aDataManager)
     Collection_t lCollection = 
       aDataManager->createCollection("http://www.zorba-xquery.com/collections/mybooks");
 
-    std::cout << "URI "  << lCollection->getUri().getStringValue() << std::endl;
+    std::cout << "URI "  << lCollection->getName().getStringValue() << std::endl;
 
     /* Populate the collection */
     for (int i = 0; i < 10; ++i) {

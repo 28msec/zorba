@@ -389,6 +389,8 @@ public:
   bool isTuple() const   { return false; }
   bool isError() const   { return false; }
 
+  virtual const store::Item* getCollectionName() const;
+
   store::StoreConsts::NodeKind getNodeKind() const
   {
     return (store::StoreConsts::NodeKind)(theFlags & NodeKindMask);

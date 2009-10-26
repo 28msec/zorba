@@ -557,7 +557,7 @@ void static_context::set_typemanager(rchandle<TypeManager> typemgr_)
 }
 
 
-TypeManager* static_context::get_typemanager() 
+TypeManager* static_context::get_typemanager() const
 {
   TypeManager* tm = typemgr.getp();
   if (tm != NULL) {
@@ -1114,6 +1114,53 @@ void static_context::add_declared_collection(
                              << "another collection in the set of statically known collections."
                             );
   }
+}
+
+
+const StaticallyKnownCollection* static_context::get_declared_collection(const store::Item* aName) const
+{
+  StaticallyKnownCollection_t lColl;
+
+  if (theCollectionMap->get(aName, lColl))
+    return lColl.getp();
+  else
+    return 0;
+}
+
+
+class CollectionNameIterator : public store::Iterator
+{
+private:
+  ItemPointerHashMap<rchandle<StaticallyKnownCollection> >*          theCollections;
+  ItemPointerHashMap<rchandle<StaticallyKnownCollection> >::iterator theIterator;
+
+public:
+  CollectionNameIterator(ItemPointerHashMap<rchandle<StaticallyKnownCollection> >* aCollections)
+  : theCollections(aCollections)
+  {}
+  virtual ~CollectionNameIterator() { close(); }
+  virtual void open() {
+    theIterator = theCollections->begin();
+  }
+  virtual bool next(store::Item_t& aResult) {
+    if (theIterator == theCollections->end()) {
+       aResult = NULL;
+      return false;
+    }
+    else {
+      aResult = (*theIterator).first;
+      ++theIterator;
+      return true;
+    }
+  }
+  virtual void reset() {
+    theIterator = theCollections->begin();
+  }
+  virtual void close() {}
+};
+
+store::Iterator_t static_context::list_collection_names() const {
+  return new CollectionNameIterator(theCollectionMap);
 }
 
 

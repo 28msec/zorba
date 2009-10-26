@@ -134,7 +134,7 @@ public:
 
   static_context* create_child_context();
 
-  TypeManager* get_typemanager();
+  TypeManager* get_typemanager() const;
 
   TypeManager* get_local_typemanager() const { return typemgr.getp(); }
 
@@ -360,6 +360,10 @@ public:
   // Collections
   //
   void add_declared_collection( StaticallyKnownCollection_t& aCollection, const QueryLoc& aLoc);
+
+  const StaticallyKnownCollection* get_declared_collection(const store::Item* aName) const;
+
+  store::Iterator_t list_collection_names() const;
 
   //
   // Index

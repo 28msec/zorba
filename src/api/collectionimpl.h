@@ -35,7 +35,7 @@ class CollectionImpl : public Collection
   virtual ~CollectionImpl();
 
   Item
-  getUri() const;
+  getName() const;
 
   unsigned long
   size() const;

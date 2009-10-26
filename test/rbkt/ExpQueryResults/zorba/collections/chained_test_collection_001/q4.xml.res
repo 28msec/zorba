@@ -1,1 +1,1 @@
-http://example.org/collection_2
+ns:collection_2

@@ -241,7 +241,6 @@ void XmlDataManagerImpl::deleteAllDocuments()
   ZORBA_DM_CATCH
 }
 
-
 Collection_t
 XmlDataManagerImpl::createCollection(const String& uri)
 {
@@ -257,7 +256,7 @@ XmlDataManagerImpl::createCollection(const String& uri, ErrorHandler* aErrorHand
   ZORBA_DM_TRY
   {
     xqpStringStore_t lUri = Unmarshaller::getInternalString(uri);
-    return Collection_t(new CollectionImpl(theStore->createCollection(lUri), 
+    return Collection_t(new CollectionImpl(theStore->createUriCollection(lUri), 
                                            aErrorHandler));
   }
   ZORBA_DM_CATCH
@@ -280,7 +279,7 @@ XmlDataManagerImpl::getCollection(const String& uri, ErrorHandler* aErrorHandler
   ZORBA_DM_TRY
   {
     xqpStringStore* lUri = Unmarshaller::getInternalString(uri);
-    store::Collection_t lColl = theStore->getCollection(lUri);
+    store::Collection_t lColl = theStore->getUriCollection(lUri);
     if (lColl)
       return Collection_t(new CollectionImpl(lColl, aErrorHandler));
     else
@@ -306,7 +305,7 @@ XmlDataManagerImpl::deleteCollection(const String& uri, ErrorHandler* aErrorHand
   ZORBA_DM_TRY
   {
     xqpStringStore* lUri = Unmarshaller::getInternalString(uri);
-    theStore->deleteCollection(lUri);
+    theStore->deleteUriCollection(lUri);
     return true;
   }
   ZORBA_DM_CATCH

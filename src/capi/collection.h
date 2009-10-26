@@ -24,7 +24,7 @@ namespace zorbac {
 
     public:
       static XQUERY_ERROR
-      get_uri(XQC_Collection collection, XQC_Item_Ref uri_item);
+      get_name(XQC_Collection collection, XQC_Item_Ref uri_item);
   
       static XQUERY_ERROR
       add_node(XQC_Collection collection, XQC_Item node);

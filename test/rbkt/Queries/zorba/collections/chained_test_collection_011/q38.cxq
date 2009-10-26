@@ -1,3 +1,0 @@
-import module namespace
-fn-zorba-collection="http://www.zorba-xquery.com/zorba/collection-functions";
-fn-zorba-collection:nodes-count('http://example.org/collection_333')

@@ -30,7 +30,6 @@
 #include "store/api/item_factory.h"
 
 
-#include "context/static_context.h"
 #include "context/internal_uri_resolvers.h"
 #include "system/globalenv.h"
 
@@ -82,7 +81,7 @@ PULImpl::~PULImpl()
   cleanList(theCreateCollectionList);
   cleanList(theInsertIntoCollectionList);
   cleanList(theDeleteFromCollectionList);
-  cleanList(theDeleteCollectionList);
+  cleanList(theDropCollectionList);
 }
 
 
@@ -593,112 +592,102 @@ void PULImpl::addPut(store::Item_t& target, store::Item_t& uri)
  collection functions
 ********************************************************************************/
 void PULImpl::addCreateCollection(
-    static_context*      aStaticContext,
-    xqpStringStore_t&    resolvedURI)
+    store::Item_t&    name)
 {
   theCreateCollectionList.push_back(
-    new UpdCreateCollection(this, aStaticContext, resolvedURI)
+    new UpdCreateCollection(this, name)
   );
 }
 
 
-void PULImpl::addDeleteCollection(
-    static_context*      aStaticContext,
-    store::Item_t&              resolvedURI)
+void PULImpl::addDropCollection(
+    store::Item_t&              name)
 {
-  theDeleteCollectionList.push_back(
-    new UpdDeleteCollection(this, aStaticContext, resolvedURI)
+  theDropCollectionList.push_back(
+    new UpdDropCollection(this, name)
   );
 }
 
 
 void PULImpl::addInsertIntoCollection(
-    static_context*        aStaticContext,
-    store::Item_t&         resolvedURI,
+    store::Item_t&         name,
     store::Item_t&         node)
 {
   theInsertIntoCollectionList.push_back(
-    new UpdInsertIntoCollection(this, aStaticContext, resolvedURI, node)
+    new UpdInsertIntoCollection(this, name, node)
   );
 } 
 
 
 void PULImpl::addInsertFirstIntoCollection(
-    static_context*             aStaticContext,
-    store::Item_t&              resolvedURI,
+    store::Item_t&              name,
     std::vector<store::Item_t>& nodes)
 {
   theInsertIntoCollectionList.push_back(
-    new UpdInsertFirstIntoCollection(this, aStaticContext, resolvedURI, nodes)
+    new UpdInsertFirstIntoCollection(this, name, nodes)
   );
 }
 
 
 void PULImpl::addInsertLastIntoCollection(
-    static_context*             aStaticContext,
-    store::Item_t&              resolvedURI,
+    store::Item_t&              name,
     std::vector<store::Item_t>& nodes)
 {
   theInsertIntoCollectionList.push_back(
-    new UpdInsertLastIntoCollection(this, aStaticContext, resolvedURI, nodes)
+    new UpdInsertLastIntoCollection(this, name, nodes)
   );
 }
 
 
 void PULImpl::addInsertBeforeIntoCollection(
-    static_context*             aStaticContext,
-    store::Item_t&              resolvedURI,
+    store::Item_t&              name,
     store::Item_t&              target,
     std::vector<store::Item_t>& nodes)
 {
   theInsertIntoCollectionList.push_back(
-    new UpdInsertBeforeIntoCollection(this, aStaticContext, resolvedURI, target, nodes)
+    new UpdInsertBeforeIntoCollection(this, name, target, nodes)
   );
 }
 
 
 void PULImpl::addInsertAfterIntoCollection(
-    static_context*             aStaticContext,
-    store::Item_t&              resolvedURI,
+    store::Item_t&              name,
     store::Item_t&              target,
     std::vector<store::Item_t>& nodes)
 {
   theInsertIntoCollectionList.push_back(
-    new UpdInsertAfterIntoCollection(this, aStaticContext, resolvedURI, target, nodes)
+    new UpdInsertAfterIntoCollection(this, name, target, nodes)
   );
 }
 
 
 void PULImpl::addInsertAtIntoCollection(
-    static_context*             aStaticContext,
-    store::Item_t&              resolvedURI,
+    store::Item_t&              name,
     ulong                       pos,
     std::vector<store::Item_t>& nodes)
 {
   theInsertIntoCollectionList.push_back(
-    new UpdInsertAtIntoCollection(this, aStaticContext, resolvedURI, pos, nodes)
+    new UpdInsertAtIntoCollection(this, name, pos, nodes)
   );
 }
 
 
 void PULImpl::addRemoveFromCollection(
-    static_context*    aStaticContext,
-    store::Item_t&            resolvedURI,
+    store::Item_t&            name,
     std::vector<store::Item_t>& nodes)
 {
   theDeleteFromCollectionList.push_back(
-    new UpdRemoveNodesFromCollection(this, aStaticContext, resolvedURI, nodes)
+    new UpdRemoveNodesFromCollection(this, name, nodes)
   );
 }
 
 
 void PULImpl::addRemoveAtFromCollection(
-    static_context*    aStaticContext,
-    store::Item_t&            resolvedURI,
+    store::Item_t&            name,
     ulong              pos)
 {
   theDeleteFromCollectionList.push_back(
-    new UpdRemoveNodeAtFromCollection(this, aStaticContext, resolvedURI, pos)
+    new UpdRemoveNodeAtFromCollection(this, name, pos)
   );
 }
 
@@ -758,7 +747,7 @@ void PULImpl::mergeUpdates(store::Item* other)
   // merge collection functions
   mergeUpdateList(theCreateCollectionList,
                   otherp->theCreateCollectionList,
-                  UP_LIST_NONE);
+                  UP_LIST_CREATE_COLLECTION);
 
   mergeUpdateList(theInsertIntoCollectionList,
                   otherp->theInsertIntoCollectionList,
@@ -768,8 +757,8 @@ void PULImpl::mergeUpdates(store::Item* other)
                   otherp->theDeleteFromCollectionList,
                   UP_LIST_NONE);
 
-  mergeUpdateList(theDeleteCollectionList,
-                  otherp->theDeleteCollectionList,
+  mergeUpdateList(theDropCollectionList,
+                  otherp->theDropCollectionList,
                   UP_LIST_NONE);
 
   mergeUpdateList(theCreateIndexList, otherp->theCreateIndexList, UP_LIST_NONE);
@@ -813,6 +802,18 @@ void PULImpl::mergeUpdateList(
       otherList[i] = NULL;
 
       continue;
+    }
+
+    if (listKind == UP_LIST_CREATE_COLLECTION) {
+      UpdCreateCollection* otherUpd = static_cast<UpdCreateCollection*>(otherList[i]);
+      for (size_t j = 0; j < theCreateCollectionList.size(); ++j) {
+        if (myList[j]->getKind() == store::UpdateConsts::UP_CREATE_COLLECTION) {
+          UpdCreateCollection* upd = static_cast<UpdCreateCollection*>(theCreateCollectionList[j]);
+          if (upd->getCollectionName()->equals(otherUpd->getCollectionName())) {
+            ZORBA_ERROR(XDXX0001);
+          }
+        }
+      }
     }
 
     UpdatePrimitive* otherUpd = otherList[i];
@@ -1037,7 +1038,7 @@ void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
     applyList(theCreateIndexList);
     applyList(theDropIndexList);
 
-    applyList(theDeleteCollectionList);
+    applyList(theDropCollectionList);
   }
   catch (error::ZorbaError& e)
   {
@@ -1146,7 +1147,7 @@ void PULImpl::undoUpdates()
 {
   try
   {
-    undoList(theDeleteCollectionList);
+    undoList(theDropCollectionList);
 
     undoList(theDropIndexList);
     undoList(theCreateIndexList);
@@ -1708,32 +1709,27 @@ void UpdPut::undo()
 ********************************************************************************/
 void UpdCreateCollection::apply()
 {
-  GET_STORE().createCollection(theCollectionUri);
+  GET_STORE().createCollection(theCollectionName);
   theIsApplied = true;
 }
 
 
 void UpdCreateCollection::undo()
 {
-  store::Item_t item;
-  GENV_ITEMFACTORY->createAnyURI(item, theCollectionUri);
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
-                              resolve(item, theStaticContext);
+  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
   if (lColl) 
   {
-    xqpStringStore_t lCollString = lColl->getUri()->getStringValueP();
-    GET_STORE().deleteCollection(lCollString);
+    GET_STORE().deleteCollection(theCollectionName);
   }
 }
 
 
 /*******************************************************************************
-  UpdDeleteCollection
+  UpdDropCollection
 ********************************************************************************/
-void UpdDeleteCollection::apply()
+void UpdDropCollection::apply()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
-                              resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
   assert(lColl);
 
   // save nodes for potential undo
@@ -1746,22 +1742,20 @@ void UpdDeleteCollection::apply()
     theSavedItems.push_back(lTmp);
   lIter->close();
 
-  xqpStringStore_t lStr = theTargetCollectionUri->getStringValueP();
-  GET_STORE().deleteCollection(lStr);
+  GET_STORE().deleteCollection(theCollectionName);
   theIsApplied = true;
 }
 
 
-void UpdDeleteCollection::undo()
+void UpdDropCollection::undo()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()
-                         ->resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
   if (!lColl) {
-    xqpStringStore_t lStr = theTargetCollectionUri->getStringValueP();
-    GET_STORE().createCollection(lStr); 
-    lColl = theStaticContext->get_collection_uri_resolver()
-              ->resolve(theTargetCollectionUri, theStaticContext);
+    GET_STORE().createCollection(theCollectionName); 
+#ifndef NDEBUG
+    lColl = GENV_STORE.getCollection(theCollectionName);
     assert(lColl);
+#endif
   }
 
 
@@ -1784,8 +1778,7 @@ void UpdDeleteCollection::undo()
 ********************************************************************************/
 void UpdInsertIntoCollection::apply()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
-                              resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
   assert(lColl);
 
   lColl->addNode(theNode);
@@ -1796,8 +1789,7 @@ void UpdInsertIntoCollection::apply()
 
 void UpdInsertIntoCollection::undo()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()
-                         ->resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
   assert(lColl);
 
   // remove the node if it exists
@@ -1814,8 +1806,7 @@ void UpdInsertIntoCollection::undo()
 ********************************************************************************/
 void UpdInsertFirstIntoCollection::apply()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
-                              resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
   assert(lColl);
 
   for (std::vector<store::Item_t>::reverse_iterator lIter = theNodes.rbegin();
@@ -1828,8 +1819,7 @@ void UpdInsertFirstIntoCollection::apply()
 
 void UpdInsertFirstIntoCollection::undo()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
-                              resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
   assert(lColl);
 
   long lIndex;
@@ -1850,8 +1840,7 @@ void UpdInsertFirstIntoCollection::undo()
 ********************************************************************************/
 void UpdInsertLastIntoCollection::apply()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
-                              resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
   assert(lColl);
 
   for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
@@ -1864,8 +1853,7 @@ void UpdInsertLastIntoCollection::apply()
 
 void UpdInsertLastIntoCollection::undo()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
-                              resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
   assert(lColl);
 
   long lIndex;
@@ -1886,8 +1874,7 @@ void UpdInsertLastIntoCollection::undo()
 ********************************************************************************/
 void UpdInsertBeforeIntoCollection::apply()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
-                              resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
   assert(lColl);
 
   for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
@@ -1900,8 +1887,7 @@ void UpdInsertBeforeIntoCollection::apply()
 
 void UpdInsertBeforeIntoCollection::undo()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
-                              resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
   assert(lColl);
 
   long lIndex;
@@ -1922,8 +1908,7 @@ void UpdInsertBeforeIntoCollection::undo()
 ********************************************************************************/
 void UpdInsertAfterIntoCollection::apply()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
-                              resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
   assert(lColl);
 
   for (std::vector<store::Item_t>::reverse_iterator lIter = theNodes.rbegin();
@@ -1937,8 +1922,7 @@ void UpdInsertAfterIntoCollection::apply()
 
 void UpdInsertAfterIntoCollection::undo()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
-                              resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
   assert(lColl);
 
   long lIndex;
@@ -1959,8 +1943,7 @@ void UpdInsertAfterIntoCollection::undo()
 ********************************************************************************/
 void UpdInsertAtIntoCollection::apply()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
-                              resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
   assert(lColl);
 
   ulong lPos = thePos;
@@ -1974,8 +1957,7 @@ void UpdInsertAtIntoCollection::apply()
 
 void UpdInsertAtIntoCollection::undo()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
-                              resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
   assert(lColl);
 
   long lIndex;
@@ -1996,8 +1978,7 @@ void UpdInsertAtIntoCollection::undo()
 ********************************************************************************/
 void UpdRemoveNodesFromCollection::apply()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
-                              resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
   assert(lColl);
 
   for (std::vector<store::Item_t>::iterator lIter = theNodesToDelete.begin();
@@ -2010,8 +1991,7 @@ void UpdRemoveNodesFromCollection::apply()
 
 void UpdRemoveNodesFromCollection::undo()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
-                              resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
   assert(lColl);
 
   long lIndex;
@@ -2036,8 +2016,7 @@ void UpdRemoveNodesFromCollection::undo()
 ********************************************************************************/
 void UpdRemoveNodeAtFromCollection::apply()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
-                              resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
   assert(lColl);
 
   theNode = lColl->nodeAt(thePos);
@@ -2047,8 +2026,7 @@ void UpdRemoveNodeAtFromCollection::apply()
 
 void UpdRemoveNodeAtFromCollection::undo()
 {
-  store::Collection_t lColl = theStaticContext->get_collection_uri_resolver()->
-                              resolve(theTargetCollectionUri, theStaticContext);
+  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
   assert(lColl);
 
 #ifndef NDEBUG

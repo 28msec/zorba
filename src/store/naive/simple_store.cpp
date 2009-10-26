@@ -83,7 +83,8 @@ SimpleStore::SimpleStore()
   theItemFactory(NULL),
   theIteratorFactory(NULL),
   theDocuments(DEFAULT_COLLECTION_MAP_SIZE, true),
-  theCollections(DEFAULT_COLLECTION_MAP_SIZE, true),
+  theCollections(0, NULL, DEFAULT_COLLECTION_MAP_SIZE, true),
+  theUriCollections(DEFAULT_COLLECTION_MAP_SIZE, true),
   theIndices(0, NULL, DEFAULT_COLLECTION_MAP_SIZE, true),
   theTraceLevel(0)
 {
@@ -213,11 +214,10 @@ SimpleStore::~SimpleStore()
 ********************************************************************************/
 void SimpleStore::shutdown()
 {
-  theItemUris.clear();
-
   theIndices.clear();
 
   theCollections.clear();
+  theUriCollections.clear();
 
   theDocuments.clear();
 
@@ -416,11 +416,31 @@ void SimpleStore::deleteIndex(const store::Item* qname)
 
 
 /*******************************************************************************
-  Create a collection with a given URI and return an rchandle to the new
-  collection object. If a collection with the given URI exists already, return
+  Create a collection with a given QName and return an rchandle to the new
+  collection object. If a collection with the given QName exists already, return
   NULL and register an error.
 ********************************************************************************/
-store::Collection_t SimpleStore::createCollection(const xqpStringStore_t& uri)
+store::Collection_t SimpleStore::createCollection(store::Item_t& aName)
+{
+  if (aName == NULL)
+    return NULL;
+
+  store::Collection_t collection(new SimpleCollection(aName));
+
+  store::Item* lName = collection->getName();
+
+  bool inserted = theCollections.insert(lName, collection);
+
+  if (!inserted)
+  {
+    ZORBA_ERROR_PARAM(API0005_COLLECTION_ALREADY_EXISTS, lName->getStringValue(), "");
+    return NULL;
+  }
+
+  return collection;
+}
+
+store::Collection_t SimpleStore::createUriCollection(const xqpStringStore_t& uri)
 {
   if (uri == NULL)
     return NULL;
@@ -429,18 +449,15 @@ store::Collection_t SimpleStore::createCollection(const xqpStringStore_t& uri)
   xqpStringStore_t tmpuri(uri.getp());
   theItemFactory->createAnyURI(uriItem, tmpuri);
 
-  theItemUris.push_back(uriItem);
-
   store::Collection_t collection(new SimpleCollection(uriItem));
 
-  const xqpStringStore* urip = collection->getUri()->getStringValueP();
-  bool inserted = theCollections.insert(urip, collection);
+  const xqpStringStore* urip = collection->getName()->getStringValueP();
+  bool inserted = theUriCollections.insert(urip, collection);
 
   if (!inserted)
   {
-    theItemUris.erase(theItemUris.end() - 1);
     ZORBA_ERROR_PARAM(API0005_COLLECTION_ALREADY_EXISTS, uri->c_str(), "");
-    return NULL;
+    return 0;
   }
 
   return collection;
@@ -448,30 +465,16 @@ store::Collection_t SimpleStore::createCollection(const xqpStringStore_t& uri)
 
 
 /*******************************************************************************
-  Create a collection in the store. The collection will be assigned an internal
-  URI by the store.
+  Return an rchandle to the Collection object corresponding to the given QName,
+  or NULL if there is no collection with that QName.
 ********************************************************************************/
-store::Collection_t SimpleStore::createCollection()
+store::Collection_t SimpleStore::getCollection(const store::Item_t& aName)
 {
-  store::Item_t uriItem = createUri();
-
-  xqpStringStore_t uriStr = uriItem->getStringValue();
-
-  return createCollection(uriStr);
-}
-
-
-/*******************************************************************************
-  Return an rchandle to the Collection object corresponding to the given URI,
-  or NULL if there is no collection with that URI.
-********************************************************************************/
-store::Collection_t SimpleStore::getCollection(const xqpStringStore_t& uri)
-{
-  if (uri == NULL)
+  if (aName == NULL)
     return NULL;
 
   store::Collection_t collection;
-  if (theCollections.get(uri, collection) )
+  if (theCollections.get(aName, collection) )
     return collection.getp();
   else
   {
@@ -479,44 +482,82 @@ store::Collection_t SimpleStore::getCollection(const xqpStringStore_t& uri)
   }
 }
 
+store::Collection_t SimpleStore::getUriCollection(const xqpStringStore_t& uri)
+{
+  if (uri == NULL)
+    return NULL;
+
+  store::Collection_t collection;
+  if (theUriCollections.get(uri, collection) )
+    return collection.getp();
+  else
+  {
+    return NULL;
+  }
+}
 
 /*******************************************************************************
-  Delete the collection with the given URI. If there is no collection with
-  that URI, this method is a NOOP.
+  Delete the collection with the given QName. If there is no collection with
+  that QName, this method is a NOOP.
 ********************************************************************************/
-void SimpleStore::deleteCollection(const xqpStringStore_t& uri)
+void SimpleStore::deleteCollection(const store::Item_t& aName)
+{
+  if (aName == NULL)
+    return;
+
+  if (!theCollections.remove(aName)) {
+    ZORBA_ERROR_PARAM(API0006_COLLECTION_NOT_FOUND, aName->getStringValue(), "");
+  }
+}
+void SimpleStore::deleteUriCollection(const xqpStringStore_t& uri)
 {
   if (uri == NULL)
     return;
 
-  bool deleted = theCollections.remove(uri);
+  bool deleted = theUriCollections.remove(uri);
 
-  if(deleted )
-  {
-    checked_vector<store::Item_t>::iterator it = theItemUris.begin();
-    checked_vector<store::Item_t>::iterator end = theItemUris.end();
-
-    for (; it != end; ++it)
-    {
-      if( (*it)->getStringValue()->compare(uri) == 0 )
-      {
-        theItemUris.erase(it);
-        break;
-      }
-    }
-
-  }
-  else
+  if (!deleted) {
     ZORBA_ERROR_PARAM(API0006_COLLECTION_NOT_FOUND, uri->c_str(), "");
+  }
 }
 
-
 /*******************************************************************************
-  Resturn an iterator that lists the URI's of all the available collections.
+  Resturn an iterator that lists the QName's of all the available collections.
 ********************************************************************************/
-store::Iterator_t SimpleStore::listCollectionUris()
+class CollectionNameIterator : public store::Iterator
 {
-  return new ItemIterator(theItemUris, false);
+private:
+  CollectionSet*          theCollections;
+  CollectionSet::iterator theIterator;
+
+public:
+  CollectionNameIterator(CollectionSet& aCollections) {
+    theCollections = &aCollections;
+  }
+  virtual ~CollectionNameIterator() { close(); }
+  virtual void open() {
+    theIterator = theCollections->begin();
+  }
+  virtual bool next(store::Item_t& aResult) {
+    if (theIterator == theCollections->end()) {
+       aResult = NULL;
+      return false;
+    }
+    else {
+      aResult = (*theIterator).first;
+      ++theIterator;
+      return true;
+    }
+  }
+  virtual void reset() {
+    theIterator = theCollections->begin();
+  }
+  virtual void close() {}
+};
+
+store::Iterator_t SimpleStore::listCollectionNames()
+{
+  return new CollectionNameIterator(theCollections);
 }
 
 

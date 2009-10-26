@@ -1,3 +1,5 @@
-import module namespace
-fn-zorba-collection="http://www.zorba-xquery.com/zorba/collection-functions";
-fn-zorba-collection:index-of('http://example.org/collection_333', <a/>)
+import module namespace dc = "http://www.zorba-xquery.com/module/dynamic-context";
+import datamodule namespace ns = "http://example.org/datamodule/" at "../collections.xqdata";
+declare namespace ns = "http://example.org/datamodule/";
+
+dc:index-of(xs:QName('ns:collection_333'), <a/>)

@@ -1,3 +1,4 @@
-import module namespace
-fn-zorba-collection="http://www.zorba-xquery.com/zorba/collection-functions";
-fn-zorba-collection:collection-exists('http://example.org/collection_1')
+import module namespace dc = "http://www.zorba-xquery.com/module/dynamic-context";
+declare namespace ns = "http://example.org/datamodule/";
+
+dc:is-available-collection(xs:QName("ns:collection_1"));

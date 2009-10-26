@@ -1,13 +1,14 @@
-import module namespace coll =
-"http://www.zorba-xquery.com/zorba/collection-functions";
+import module namespace ddl = "http://www.zorba-xquery.com/module/ddl";
+import module namespace dc = "http://www.zorba-xquery.com/module/dynamic-context";
+import datamodule namespace ns = "http://example.org/datamodule/" at "collections.xqdata";
 
 declare sequential function local:test()
 {
-  coll:create-collection("test", <a><b>Foo</b></a>);
+  ddl:create-collection(xs:QName("ns:test1"), <a><b>Foo</b></a>);
 
-  replace value of node collection("test")[1]/b with "Bar";
+  replace value of node dc:collection(xs:QName("ns:test1"))[1]/b with "Bar";
 
-  coll:insert-nodes-at("test", 2, <a />);
+  ddl:insert-nodes-at(xs:QName("ns:test1"), 2, <a />);
 
   ();
 };

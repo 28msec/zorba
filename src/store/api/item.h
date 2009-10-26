@@ -509,6 +509,13 @@ public:
   virtual Item*
   getNodeName() const;
 
+  /** Returns the name of the collection if the item belongs to one. 
+   *  Otherwise, returns 0.
+   *  @return qname?
+   */
+  virtual const Item*
+  getCollectionName() const;
+
   /**
    * Accessor for element, attribute, processing instruction, comment, text nodes
    * @return node?

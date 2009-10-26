@@ -55,6 +55,9 @@ LIST(APPEND FUNCTIONS_SRCS
     Alexis.cpp
     arithmetic.cpp
     Collections.cpp
+    StaticContext.cpp
+    DynamicContext.cpp
+    DataDefinitionLanguage.cpp
     EnclosedExpr.cpp
     external_function_adapters.cpp
     VarDecl.cpp

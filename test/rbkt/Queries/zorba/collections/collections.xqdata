@@ -1,0 +1,8 @@
+datamodule namespace ns = "http://example.org/datamodule/";
+
+declare collection ns:collection_1;
+declare collection ns:collection_2;
+declare collection ns:http;
+declare collection ns:test1;
+declare collection ns:test2;
+declare collection ns:test3;

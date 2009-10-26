@@ -1,12 +1,14 @@
-import module namespace coll="http://www.zorba-xquery.com/zorba/collection-functions";
+import module namespace ddl = "http://www.zorba-xquery.com/module/ddl";
+import module namespace dc = "http://www.zorba-xquery.com/module/dynamic-context";
+import datamodule namespace ns = "http://example.org/datamodule/" at "collections.xqdata";
 
-declare sequential function local:foo($collUri) {
-  coll:create-collection($collUri,<a/>);
-  let $a := fn:collection($collUri)
-  return coll:insert-nodes-last($collUri, <b/>);
+declare sequential function local:foo($collName as xs:QName) {
+  ddl:create-collection($collName,<a/>);
+  let $a := dc:collection($collName)
+  return ddl:insert-nodes-last($collName, <b/>);
   exit returning ();
 };
 
 
-let $collUri := "http://example.org/collection_1"
-return local:foo($collUri)
+let $collName := xs:QName("ns:collection_1")
+return local:foo($collName)

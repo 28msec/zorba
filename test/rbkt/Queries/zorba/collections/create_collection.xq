@@ -1,22 +1,16 @@
-import module namespace coll="http://www.zorba-xquery.com/zorba/collection-functions";
+import module namespace ddl = "http://www.zorba-xquery.com/module/ddl";
+import module namespace dc = "http://www.zorba-xquery.com/module/dynamic-context";
+import datamodule namespace ns = "http://example.org/datamodule/" at "collections.xqdata";
 
-declare sequential function local:create() 
-{
-  coll:create-collection("test");
-  coll:create-collection("test1");
-  exit returning coll:collection-exists("test") and coll:collection-exists("test1");
+declare sequential function local:create() {
+  ddl:create-collection(xs:QName("ns:test1"));
+  ddl:create-collection(xs:QName("ns:test2"));
+  exit returning dc:is-available-collection(xs:QName("ns:test1")) and dc:is-available-collection(xs:QName("ns:test2"));
 };
 
-declare sequential function local:create-and-insert() 
-{
-  coll:create-collection("test3", for $i in 1 to 10 return <a> { $i } </a>);
-  exit returning coll:collection-exists("test3") and fn:count(fn:collection("test3")) eq 10;
+declare sequential function local:create-and-insert() {
+  ddl:create-collection(xs:QName("ns:test3"), for $i in 1 to 10 return <a> { $i } </a>);
+  exit returning dc:is-available-collection(xs:QName("ns:test3")) and fn:count(dc:collection(xs:QName("ns:test3"))) eq 10;
 };
 
-declare variable $x := 0;
-declare variable $y := 0;
-
-set $x := local:create();
-set $y := local:create-and-insert();
-$x and $y;
-
+local:create() and local:create-and-insert()

@@ -1,4 +1,4 @@
-/*
+ /*
  * Copyright 2006-2008 The FLWOR Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -5512,6 +5512,15 @@ KEYWORD :
   | DIGIT { $$ = SYMTAB_PUT ("digit"); }
   | PATTERN_SEPARATOR { $$ = SYMTAB_PUT ("pattern-separator"); }
   | COLLECTION { $$ = SYMTAB_PUT ("collection"); }
+  | DATAMODULE { $$ = SYMTAB_PUT ("datamodule"); }
+  | NODE_TYPE { $$ = SYMTAB_PUT ("node-type"); }
+  | COLLECTION_MODIFIER { $$ = SYMTAB_PUT ("collection-modifier"); }
+  | NODE_MODIFIER { $$ = SYMTAB_PUT ("node-modifier"); }
+  | CONST_ { $$ = SYMTAB_PUT ("const"); }
+  | APPEND_ONLY { $$ = SYMTAB_PUT ("append-only"); }
+  | QUEUE { $$ = SYMTAB_PUT ("queue"); }
+  | MUTABLE { $$ = SYMTAB_PUT ("mutable"); }
+  | READ_ONLY { $$ = SYMTAB_PUT ("read-only"); }
     ;
 
 

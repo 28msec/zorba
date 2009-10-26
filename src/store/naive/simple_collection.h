@@ -57,16 +57,16 @@ public:
 
 
 protected:
-  store::Item_t                 theUri;
+  store::Item_t                 theName;
   checked_vector<store::Item_t> theXmlTrees;
   SYNC_CODE(Latch               theLatch;)
 
 public:
-  SimpleCollection(store::Item_t& uri);
+  SimpleCollection(store::Item_t& aName);
 
   virtual ~SimpleCollection();
 
-  store::Item* getUri() const { return theUri.getp(); }
+  store::Item* getName() const { return theName.getp(); }
 
   ulong size() const { return theXmlTrees.size(); }
 

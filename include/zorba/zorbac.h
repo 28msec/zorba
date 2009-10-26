@@ -1782,7 +1782,7 @@ struct XQC_Collection_s
    * \retval ::XQP0019_INTERNAL_ERROR
    */
   XQUERY_ERROR
-  (*get_uri)(XQC_Collection collection, XQC_Item_Ref uri_item);
+  (*get_name)(XQC_Collection collection, XQC_Item_Ref name_item);
 
   /** 
    * Adds a Node Item to the Collection

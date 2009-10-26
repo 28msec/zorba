@@ -15,6 +15,7 @@
  */
 #include "store/api/item.h"
 #include "store/naive/item_iterator.h"
+#include "store/api/collection.h"
 
 namespace zorba { namespace simplestore {
 
@@ -84,6 +85,5 @@ ItemIterator::close()
     theItems = NULL;
   }
 }
-
 } // namespace store
 } // namespace zorba

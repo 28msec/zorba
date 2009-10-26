@@ -45,7 +45,6 @@ public:
   virtual void reset();
   virtual void close();
 };
-
 } // namespace store
 } // namespace zorba
 

@@ -668,6 +668,11 @@ store::Item* Item::getNodeName() const
   return NULL;
 }
 
+const store::Item* Item::getCollectionName() const
+{
+  return NULL;
+}
+
 
 Item* Item::getParent() const
 {

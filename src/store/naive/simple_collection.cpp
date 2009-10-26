@@ -28,9 +28,9 @@ namespace zorba { namespace simplestore {
 /*******************************************************************************
 
 ********************************************************************************/
-SimpleCollection::SimpleCollection(store::Item_t& uri)
+SimpleCollection::SimpleCollection(store::Item_t& aName)
 {
-  theUri.transfer(uri);
+  theName.transfer(aName);
 }
 
 
@@ -127,13 +127,13 @@ void SimpleCollection::addNode(
   if (node->getCollection() != NULL)
   {
     ZORBA_ERROR_PARAM(API0031_NODE_ALREADY_IN_COLLECTION, 
-                      node->getCollection()->getUri()->getStringValue()->c_str(), "");
+                      node->getCollection()->getName()->getStringValue()->c_str(), "");
   }
 
   if (node->getParent() != NULL)
   {
     ZORBA_ERROR_PARAM(API0032_NON_ROOT_NODE_IN_COLLECTION,
-                      getUri()->getStringValue()->c_str(), "");
+                      getName()->getStringValue()->c_str(), "");
   }
 
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE););
@@ -166,13 +166,13 @@ void SimpleCollection::addNode(
   if (node->getCollection() != NULL)
   {
     ZORBA_ERROR_PARAM(API0031_NODE_ALREADY_IN_COLLECTION, 
-                      node->getCollection()->getUri()->getStringValue()->c_str(), "");
+                      node->getCollection()->getName()->getStringValue()->c_str(), "");
   }
 
   if (node->getParent() != NULL)
   {
     ZORBA_ERROR_PARAM(API0032_NON_ROOT_NODE_IN_COLLECTION,
-                      getUri()->getStringValue()->c_str(), "");
+                      getName()->getStringValue()->c_str(), "");
   }
 
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
@@ -316,6 +316,17 @@ int SimpleCollection::nodePositionInCollection(const store::Item* newNode)
   return -1;
 }
 
+// Has been move to this place to avoid simple_collection.h incode in node_items.cpp
+const store::Item* XmlNode::getCollectionName() const
+{
+  SimpleCollection* lCollection = getCollection();
+  if (lCollection != 0) {
+    return lCollection->getName(); 
+  }
+  else {
+    return 0;
+  }
+}
 
 /*******************************************************************************
 

@@ -25,6 +25,8 @@
 
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
+#include "context/statically_known_collection.h"
+#include "context/static_context_consts.h"
 
 #include "runtime/update/update.h"
 #include "runtime/api/plan_iterator_wrapper.h"
@@ -61,6 +63,27 @@ END_SERIALIZABLE_CLASS_VERSIONS(TransformIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(ApplyIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(ApplyIterator)
+
+void areNodeModifiersViolated(
+    const static_context* aSctx,
+    const store::Item* aTarget,
+    const QueryLoc& aLoc)
+{
+  const store::Item* lCollName = aTarget->getCollectionName();
+  if (lCollName != 0) {
+    const StaticallyKnownCollection* lDeclColl = aSctx->get_declared_collection(lCollName);
+    ZORBA_ASSERT(lDeclColl != 0);
+    switch(lDeclColl->getNodeModifier()) {
+    case StaticContextConsts::read_only:
+      ZORBA_ERROR_LOC_DESC_OSS(XDXX0001, aLoc, 
+        "It is an error if an updating expression has a target that belongs to a read-only collection");
+      break;
+    case StaticContextConsts::mutable_node:
+      // good to go
+      break;
+    }
+  }
+}
 
 
 /*******************************************************************************
@@ -116,6 +139,8 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
   {
     ZORBA_ERROR_LOC(XUDY0027, loc);
   }
+
+  areNodeModifiersViolated(theSctx, target, loc);
 
   if (theType == store::UpdateConsts::BEFORE ||
       theType == store::UpdateConsts::AFTER)
@@ -297,6 +322,8 @@ DeleteIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
     if (!target->isNode())
       ZORBA_ERROR_LOC(XUTY0007, loc);
 
+    areNodeModifiersViolated(theSctx, target, loc);
+
     pul->addDelete(target);
 
   }
@@ -359,6 +386,8 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
   if (!consumeNext(lTarget, theChild0, aPlanState))
     ZORBA_ERROR_LOC(XUDY0027, loc);
+
+  areNodeModifiersViolated(theSctx, lTarget, loc);
 
   if (consumeNext(temp, theChild0, aPlanState))
     ZORBA_ERROR_LOC(XUTY0008, loc);
@@ -537,6 +566,8 @@ RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   {
     ZORBA_ERROR_LOC(XUDY0027, loc);
   }
+
+  areNodeModifiersViolated(theSctx, lTarget, loc);
   
   if (!lTarget->isNode())
     ZORBA_ERROR_LOC(XUTY0012, loc);

@@ -56,10 +56,10 @@ CollectionImpl::~CollectionImpl()
 
  
 Item
-CollectionImpl::getUri() const
+CollectionImpl::getName() const
 {
   ZORBA_TRY
-    return theCollection->getUri();
+    return theCollection->getName();
   ZORBA_CATCH
   return Item();
 }

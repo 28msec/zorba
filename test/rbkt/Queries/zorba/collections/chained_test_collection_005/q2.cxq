@@ -1,5 +1,7 @@
-import module namespace
-fn-zorba-collection="http://www.zorba-xquery.com/zorba/collection-functions";
+import module namespace dc = "http://www.zorba-xquery.com/module/dynamic-context";
+declare namespace ns = "http://example.org/datamodule/";
+
 declare variable $input-context1 external;
-let $cur := fn:collection('http')[4]
-return fn-zorba-collection:index-of('http', $cur)
+
+let $cur := dc:collection(xs:QName('ns:http'))[4]
+return dc:index-of(xs:QName('ns:http'), $cur)

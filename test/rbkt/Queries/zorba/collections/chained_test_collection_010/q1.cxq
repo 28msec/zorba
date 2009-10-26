@@ -1,8 +1,8 @@
-import module namespace
-fn-zorba-collection="http://www.zorba-xquery.com/zorba/collection-functions";
+import module namespace ddl = "http://www.zorba-xquery.com/module/ddl";
+import datamodule namespace ns = "http://example.org/datamodule/" at "../collections.xqdata";
 
 declare sequential function local:foo() {
-  fn-zorba-collection:create-collection('http://example.org/collection_1');
+  ddl:create-collection(xs:QName("ns:collection_1"));
   exit returning ();
 };
 

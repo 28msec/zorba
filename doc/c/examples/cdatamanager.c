@@ -37,7 +37,7 @@ cdatamanager_example_1(XQC_Implementation impl, XQC_DataManager mgr)
   // create a new collection
   mgr->create_collection(mgr, "http://www.zorba-xquery.com/collections/mybooks", &lCollection);
 
-  lCollection->get_uri(lCollection, &lURIItem);
+  lCollection->get_name(lCollection, &lURIItem);
 
   lURIItem->string_value(lURIItem, &lStringBuffer);
 

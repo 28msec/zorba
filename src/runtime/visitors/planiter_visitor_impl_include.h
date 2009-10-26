@@ -162,25 +162,22 @@
   class GetTupleFieldIterator;
   class FnFormatNumberIterator;
 
+  class ZorbaCollectionIterator;
   class ZorbaCollectionExistsIterator;
-  class ZorbaImportXmlIterator;
-  class ZorbaImportCatalogIterator;
-  class ZorbaImportFolderIterator;
   class ZorbaListCollectionsIterator;
+  class ScIsDeclaredCollectionIterator;
+  class ScDeclaredCollectionsIterator;
   class ZorbaCreateCollectionIterator;
-  class ZorbaDeleteCollectionIterator;
-  class ZorbaDeleteAllCollectionsIterator;
-  class ZorbaInsertNodeFirstIterator;
-  class ZorbaInsertNodeLastIterator;
-  class ZorbaInsertNodeBeforeIterator;
-  class ZorbaInsertNodeAfterIterator;
-  class ZorbaInsertNodeAtIterator;
-  class ZorbaRemoveNodeIterator;
+  class ZorbaDropCollectionIterator;
+  class ZorbaDropAllCollectionsIterator;
+  class ZorbaInsertNodesFirstIterator;
+  class ZorbaInsertNodesLastIterator;
+  class ZorbaInsertNodesBeforeIterator;
+  class ZorbaInsertNodesAfterIterator;
+  class ZorbaInsertNodesAtIterator;
+  class ZorbaRemoveNodesIterator;
   class ZorbaRemoveNodeAtIterator;
-  class ZorbaNodeCountIterator;
-  class ZorbaNodeAtIterator;
   class ZorbaIndexOfIterator;
-  class ZorbaExportXmlIterator;
 
   class ZorbaSchemaTypeIterator;
   class ZorbaBase64EncodeIterator;

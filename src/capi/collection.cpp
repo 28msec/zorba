@@ -42,7 +42,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  Collection::get_uri(XQC_Collection collection, XQC_Item_Ref uri_item)
+  Collection::get_name(XQC_Collection collection, XQC_Item_Ref name_item)
   {
     ZORBAC_COLLECTION_TRY
       zorba::Collection* lCollection = getCollection(collection);
@@ -50,12 +50,12 @@ namespace zorbac {
       std::auto_ptr<XQC_Item_s> lItem(new XQC_Item_s());
       std::auto_ptr<zorbac::Item> lInnerItem(new zorbac::Item());
 
-      lInnerItem->theItem = lCollection->getUri();
+      lInnerItem->theItem = lCollection->getName();
 
       Item::assign_functions(lItem.get());
 
-      (*uri_item) = lItem.release();
-      (*uri_item)->data = lInnerItem.release();
+      (*name_item) = lItem.release();
+      (*name_item)->data = lInnerItem.release();
     ZORBAC_COLLECTION_CATCH
   }
 
@@ -138,7 +138,7 @@ namespace zorbac {
   void
   Collection::assign_functions(XQC_Collection collection)
   {
-    collection->get_uri           = Collection::get_uri;
+    collection->get_name          = Collection::get_name;
     collection->add_node          = Collection::add_node;
     collection->delete_node       = Collection::delete_node;
     collection->add_sequence      = Collection::add_sequence;

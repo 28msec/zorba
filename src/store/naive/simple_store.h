@@ -61,7 +61,8 @@ class Index;
 typedef rchandle<XmlNode> XmlNode_t;
 
 typedef store::StringHashMap<XmlNode_t> DocumentSet;
-typedef store::StringHashMap<store::Collection_t> CollectionSet;
+typedef ItemPointerHashMap<store::Collection_t> CollectionSet;
+typedef store::StringHashMap<store::Collection_t> UriCollectionSet;
 typedef ItemPointerHashMap<store::Index_t> IndexSet;
 
 
@@ -109,9 +110,8 @@ protected:
 
   DocumentSet                   theDocuments;
   CollectionSet                 theCollections;
+  UriCollectionSet              theUriCollections;
   IndexSet                      theIndices;
-
-  checked_vector<store::Item_t> theItemUris;
 
   SYNC_CODE(Lock                theGlobalLock;)
 
@@ -157,15 +157,18 @@ public:
 
   void deleteIndex(const store::Item* qname);
 
-  store::Collection_t createCollection(const xqpStringStore_t& uri);
+  store::Collection_t createCollection(store::Item_t& aName);
+  store::Collection_t createUriCollection(const xqpStringStore_t& uri);
 
-  store::Collection_t createCollection();
+  store::Collection_t getCollection(const store::Item_t& aName);
+  store::Collection_t getUriCollection(const xqpStringStore_t& uri);
 
-  store::Collection_t getCollection(const xqpStringStore_t& uri);
+  const CollectionSet getCollections() const;
 
-  void deleteCollection(const xqpStringStore_t& uri);
+  void deleteCollection(const store::Item_t& aName);
+  void deleteUriCollection(const xqpStringStore_t& uri);
 
-  store::Iterator_t listCollectionUris();
+  store::Iterator_t listCollectionNames();
 
   store::Item_t loadDocument(
         const xqpStringStore_t& uri,

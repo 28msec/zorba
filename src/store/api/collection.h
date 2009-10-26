@@ -36,11 +36,11 @@ public:
   virtual ~Collection() {}
 
   /**
-   * Returns the URI of the collection.
-   * @return URI
+   * Returns the Name of the collection.
+   * @return Name
    *
    */
-  virtual Item* getUri() const = 0;
+  virtual Item* getName() const = 0;
 
   /**
    * Returns the number of items in the collection.
