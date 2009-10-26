@@ -28,6 +28,8 @@
 #include "functions/booleans_impl.h"
 #include "functions/convertors.h"
 #include "functions/context.h"
+#include "functions/durations_dates_times.h"
+#include "functions/durations_dates_times_impl.h"
 #include "functions/strings.h"
 #include "functions/strings_impl.h"
 #include "functions/sequences.h"
@@ -38,7 +40,6 @@
 #include "functions/QNames.h"
 #include "functions/nodeid_internal.h"
 #include "functions/EnclosedExpr.h"
-#include "functions/DateTime.h"
 #include "functions/VarDecl.h"
 #include "functions/Misc.h"
 #include "functions/arithmetic.h"
@@ -76,6 +77,8 @@ void BuiltinFunctionLibrary::populateContext(static_context* sctx)
   populate_context_booleans(sctx);
   populate_context_booleans_impl(sctx);
   populate_context_convertors(sctx);
+  populate_context_durations_dates_times(sctx);
+  populate_context_durations_dates_times_impl(sctx);
   populate_context_strings(sctx);
   populate_context_strings_impl(sctx);
   populate_context_sequences(sctx);
@@ -90,7 +93,6 @@ void BuiltinFunctionLibrary::populateContext(static_context* sctx)
   populateContext_DocOrder(sctx);
   populateContext_Comparison(sctx);
   populateContext_Constructors(sctx);
-  populateContext_Datetime(sctx);
   populateContext_Collections(sctx);
   populateContext_VarDecl(sctx);
   populateContext_Error(sctx);

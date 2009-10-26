@@ -96,7 +96,7 @@ LIST(APPEND RUNTIME_SRCS
     core/gflwor/outerfor_iterator.cpp
     core/tuple_iterators.cpp
     core/internal_operators.cpp
-    dateTime/DurationsDatesTimes.cpp
+    durations_dates_times/DurationsDatesTimesImpl.cpp
     debug/debug_iterators.cpp
     debug/zorba_debug_iterator.cpp
     eval/FnContextImpl.cpp

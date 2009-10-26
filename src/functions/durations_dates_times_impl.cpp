@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#include "functions/DateTime.h"
+#include "functions/durations_dates_times_impl.h"
 #include "functions/function_impl.h"
 
-#include "runtime/dateTime/DurationsDatesTimes.h"
+#include "runtime/durations_dates_times/DurationsDatesTimesImpl.h"
 #include "runtime/numerics/NumericsImpl.h"
 #include "runtime/core/arithmetic_impl.h"
 
@@ -31,138 +31,6 @@ public:
 
   DEFAULT_BINARY_CODEGEN(FnDateTimeConstructorIterator);
 };
-
-
-/*______________________________________________________________________
- *
- * 10.5 Component Extraction Functions on Durations, Dates and Times
- *_______________________________________________________________________*/
-
-
-/*
- * 10.5.1 fn:years-from-duration
- * --------------------*/
-typedef function_impl<FnYearsFromDurationIterator> fn_years_from_duration;
-
-
-/*
- * 10.5.2 fn:months-from-duration
- * --------------------*/
-typedef function_impl<FnMonthsFromDurationIterator> fn_months_from_duration;
-
-
-/*
- * 10.5.3 fn:days-from-duration
- * --------------------*/
-typedef function_impl<FnDaysFromDurationIterator> fn_days_from_duration;
-
-
-/*
- * 10.5.4 fn:hours-from-duration
- * --------------------*/
-typedef function_impl<FnHoursFromDurationIterator> fn_hours_from_duration;
-
-
-/*
- * 10.5.5 fn:minutes-from-duration
- * --------------------*/
-typedef function_impl<FnMinutesFromDurationIterator> fn_minutes_from_duration;
-
-
-/*
- * 10.5.6 fn:seconds-from-duration
- * --------------------*/
-typedef function_impl<FnSecondsFromDurationIterator> fn_seconds_from_duration;
-
-
-/*
- * 10.5.7 fn:year-from-dateTime
- * --------------------*/
-typedef function_impl<FnYearFromDatetimeIterator> fn_year_from_datetime;
-
-
-/*
- * 10.5.8 fn:month-from-dateTime
- * --------------------*/
-typedef function_impl<FnMonthFromDatetimeIterator> fn_month_from_datetime;
-
-
-/*
- * 10.5.9 fn:day-from-dateTime
- * --------------------*/
-typedef function_impl<FnDayFromDatetimeIterator> fn_day_from_datetime;
-
-
-/*
- * 10.5.10 fn:hours-from-dateTime
- * --------------------*/
-typedef function_impl<FnHoursFromDatetimeIterator> fn_hours_from_datetime;
-
-
-/*
- * 10.5.11 fn:minutes-from-dateTime
- * --------------------*/
-typedef function_impl<FnMinutesFromDatetimeIterator> fn_minutes_from_datetime;
-
-
-/*
- * 10.5.12 fn:seconds-from-dateTime
- * --------------------*/
-typedef function_impl<FnSecondsFromDatetimeIterator> fn_seconds_from_datetime;
-  
-
-/*
- * 10.5.13 fn:timezone-from-dateTime
- * --------------------*/
-typedef function_impl<FnTimezoneFromDatetimeIterator> fn_timezone_from_datetime;
-
-
-/*
- * 10.5.14 fn:year-from-date
- * --------------------*/
-typedef function_impl<FnYearFromDateIterator> fn_year_from_date;
-
-
-/*
- * 10.5.15 fn:month-from-date
- * --------------------*/
-typedef function_impl<FnMonthFromDateIterator> fn_month_from_date;
-
-
-/*
- * 10.5.16 fn:day-from-date
- * --------------------*/
-typedef function_impl<FnDayFromDateIterator> fn_day_from_date;
-
-
-/*
- * 10.5.17 fn:timezone-from-date
- * --------------------*/
-typedef function_impl<FnTimezoneFromDateIterator> fn_timezone_from_date;
-
-
-/*
- * 10.5.18 fn:hours-from-time
- * --------------------*/
-typedef function_impl<FnHoursFromTimeIterator> fn_hours_from_time;
-
-
-/*
- * 10.5.19 fn:minutes-from-time
- * --------------------*/
-typedef function_impl<FnMinutesFromTimeIterator> fn_minutes_from_time;
-
-
-/*
- * 10.5.20 fn:seconds-from-time
- * --------------------*/
-typedef function_impl<FnSecondsFromTimeIterator> fn_seconds_from_time;
-
-
-/*
- * 10.5.21 fn:timezone-from-time
- * --------------------*/
-typedef function_impl<FnTimezoneFromTimeIterator> fn_timezone_from_time;
 
 
 /*
@@ -617,7 +485,7 @@ public:
 
 
 
-void populateContext_Datetime(static_context *sctx)
+void populate_context_durations_dates_times_impl(static_context *sctx)
 {
 // begin date time
 DECL(sctx, fn_datetime_ctor,
@@ -625,111 +493,6 @@ DECL(sctx, fn_datetime_ctor,
       GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION));
-
-DECL(sctx, fn_years_from_duration,
-     (createQName(XQUERY_FN_NS,"fn", "years-from-duration"),
-      GENV_TYPESYSTEM.DURATION_TYPE_QUESTION,
-      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
-
-DECL(sctx, fn_months_from_duration,
-     (createQName(XQUERY_FN_NS,"fn", "months-from-duration"),
-      GENV_TYPESYSTEM.DURATION_TYPE_QUESTION,
-      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
-
-DECL(sctx, fn_days_from_duration,
-     (createQName(XQUERY_FN_NS,"fn", "days-from-duration"),
-      GENV_TYPESYSTEM.DURATION_TYPE_QUESTION,
-      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
-
-DECL(sctx, fn_hours_from_duration,
-     (createQName(XQUERY_FN_NS,"fn", "hours-from-duration"),
-      GENV_TYPESYSTEM.DURATION_TYPE_QUESTION,
-      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
-
-DECL(sctx, fn_minutes_from_duration,
-     (createQName(XQUERY_FN_NS,"fn", "minutes-from-duration"),
-      GENV_TYPESYSTEM.DURATION_TYPE_QUESTION,
-      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
-
-DECL(sctx, fn_seconds_from_duration,
-     (createQName(XQUERY_FN_NS,"fn", "seconds-from-duration"),
-      GENV_TYPESYSTEM.DURATION_TYPE_QUESTION,
-      GENV_TYPESYSTEM.DECIMAL_TYPE_QUESTION));
-
-DECL(sctx, fn_year_from_datetime,
-     (createQName(XQUERY_FN_NS,"fn", "year-from-dateTime"),
-      GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
-      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
-
-DECL(sctx, fn_month_from_datetime,
-     (createQName(XQUERY_FN_NS,"fn", "month-from-dateTime"),
-      GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
-      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
-
-DECL(sctx, fn_day_from_datetime,
-     (createQName(XQUERY_FN_NS,"fn", "day-from-dateTime"),
-      GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
-      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
-
-DECL(sctx, fn_hours_from_datetime,
-     (createQName(XQUERY_FN_NS,"fn", "hours-from-dateTime"),
-      GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
-      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
-
-DECL(sctx, fn_minutes_from_datetime,
-     (createQName(XQUERY_FN_NS,"fn", "minutes-from-dateTime"),
-      GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
-      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
-
-DECL(sctx, fn_seconds_from_datetime,
-     (createQName(XQUERY_FN_NS,"fn", "seconds-from-dateTime"),
-      GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
-      GENV_TYPESYSTEM.DECIMAL_TYPE_QUESTION));
-
-DECL(sctx, fn_timezone_from_datetime,
-     (createQName(XQUERY_FN_NS,"fn", "timezone-from-dateTime"),
-      GENV_TYPESYSTEM.DATETIME_TYPE_QUESTION,
-      GENV_TYPESYSTEM.DT_DURATION_TYPE_QUESTION));
-
-DECL(sctx, fn_year_from_date,
-     (createQName(XQUERY_FN_NS,"fn", "year-from-date"),
-      GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
-
-DECL(sctx, fn_month_from_date,
-     (createQName(XQUERY_FN_NS,"fn", "month-from-date"),
-      GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
-
-DECL(sctx, fn_day_from_date,
-     (createQName(XQUERY_FN_NS,"fn", "day-from-date"),
-      GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
-
-DECL(sctx, fn_timezone_from_date,
-     (createQName(XQUERY_FN_NS,"fn", "timezone-from-date"),
-      GENV_TYPESYSTEM.DATE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.DT_DURATION_TYPE_QUESTION));
-
-DECL(sctx, fn_hours_from_time,
-     (createQName(XQUERY_FN_NS,"fn", "hours-from-time"),
-      GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
-      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
-
-DECL(sctx, fn_minutes_from_time,
-     (createQName(XQUERY_FN_NS,"fn", "minutes-from-time"),
-      GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
-      GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION));
-
-DECL(sctx, fn_seconds_from_time,
-     (createQName(XQUERY_FN_NS,"fn", "seconds-from-time"),
-      GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
-      GENV_TYPESYSTEM.DECIMAL_TYPE_QUESTION));
-
-DECL(sctx, fn_timezone_from_time,
-     (createQName(XQUERY_FN_NS,"fn", "timezone-from-time"),
-      GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
-      GENV_TYPESYSTEM.DT_DURATION_TYPE_QUESTION));
 
 DECL(sctx, op_ym_durations_add,
      (createQName (XQUERY_FN_NS,"fn", "add-yearMonthDurations"),

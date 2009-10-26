@@ -50,6 +50,27 @@ namespace zorba{
     class ZorbaJsonSerializeIterator;
     class ZorbaJsonMLParseIterator;
     class ZorbaJsonMLSerializeIterator;
+    class YearsFromDurationIterator;
+    class MonthsFromDurationIterator;
+    class DaysFromDurationIterator;
+    class HoursFromDurationIterator;
+    class MinutesFromDurationIterator;
+    class SecondsFromDurationIterator;
+    class YearFromDatetimeIterator;
+    class MonthFromDatetimeIterator;
+    class DayFromDatetimeIterator;
+    class HoursFromDatetimeIterator;
+    class MinutesFromDatetimeIterator;
+    class SecondsFromDatetimeIterator;
+    class TimezoneFromDatetimeIterator;
+    class YearFromDateIterator;
+    class MonthFromDateIterator;
+    class DayFromDateIterator;
+    class TimezoneFromDateIterator;
+    class HoursFromTimeIterator;
+    class MinutesFromTimeIterator;
+    class SecondsFromTimeIterator;
+    class TimezoneFromTimeIterator;
     class FnPutIterator;
     class FnConcatIterator;
     class FnIndexOfIterator;
@@ -163,6 +184,69 @@ public:
 
     virtual void beginVisit ( const ZorbaJsonMLSerializeIterator& ) = 0;
     virtual void endVisit   ( const ZorbaJsonMLSerializeIterator& ) = 0;
+
+    virtual void beginVisit ( const YearsFromDurationIterator& ) = 0;
+    virtual void endVisit   ( const YearsFromDurationIterator& ) = 0;
+
+    virtual void beginVisit ( const MonthsFromDurationIterator& ) = 0;
+    virtual void endVisit   ( const MonthsFromDurationIterator& ) = 0;
+
+    virtual void beginVisit ( const DaysFromDurationIterator& ) = 0;
+    virtual void endVisit   ( const DaysFromDurationIterator& ) = 0;
+
+    virtual void beginVisit ( const HoursFromDurationIterator& ) = 0;
+    virtual void endVisit   ( const HoursFromDurationIterator& ) = 0;
+
+    virtual void beginVisit ( const MinutesFromDurationIterator& ) = 0;
+    virtual void endVisit   ( const MinutesFromDurationIterator& ) = 0;
+
+    virtual void beginVisit ( const SecondsFromDurationIterator& ) = 0;
+    virtual void endVisit   ( const SecondsFromDurationIterator& ) = 0;
+
+    virtual void beginVisit ( const YearFromDatetimeIterator& ) = 0;
+    virtual void endVisit   ( const YearFromDatetimeIterator& ) = 0;
+
+    virtual void beginVisit ( const MonthFromDatetimeIterator& ) = 0;
+    virtual void endVisit   ( const MonthFromDatetimeIterator& ) = 0;
+
+    virtual void beginVisit ( const DayFromDatetimeIterator& ) = 0;
+    virtual void endVisit   ( const DayFromDatetimeIterator& ) = 0;
+
+    virtual void beginVisit ( const HoursFromDatetimeIterator& ) = 0;
+    virtual void endVisit   ( const HoursFromDatetimeIterator& ) = 0;
+
+    virtual void beginVisit ( const MinutesFromDatetimeIterator& ) = 0;
+    virtual void endVisit   ( const MinutesFromDatetimeIterator& ) = 0;
+
+    virtual void beginVisit ( const SecondsFromDatetimeIterator& ) = 0;
+    virtual void endVisit   ( const SecondsFromDatetimeIterator& ) = 0;
+
+    virtual void beginVisit ( const TimezoneFromDatetimeIterator& ) = 0;
+    virtual void endVisit   ( const TimezoneFromDatetimeIterator& ) = 0;
+
+    virtual void beginVisit ( const YearFromDateIterator& ) = 0;
+    virtual void endVisit   ( const YearFromDateIterator& ) = 0;
+
+    virtual void beginVisit ( const MonthFromDateIterator& ) = 0;
+    virtual void endVisit   ( const MonthFromDateIterator& ) = 0;
+
+    virtual void beginVisit ( const DayFromDateIterator& ) = 0;
+    virtual void endVisit   ( const DayFromDateIterator& ) = 0;
+
+    virtual void beginVisit ( const TimezoneFromDateIterator& ) = 0;
+    virtual void endVisit   ( const TimezoneFromDateIterator& ) = 0;
+
+    virtual void beginVisit ( const HoursFromTimeIterator& ) = 0;
+    virtual void endVisit   ( const HoursFromTimeIterator& ) = 0;
+
+    virtual void beginVisit ( const MinutesFromTimeIterator& ) = 0;
+    virtual void endVisit   ( const MinutesFromTimeIterator& ) = 0;
+
+    virtual void beginVisit ( const SecondsFromTimeIterator& ) = 0;
+    virtual void endVisit   ( const SecondsFromTimeIterator& ) = 0;
+
+    virtual void beginVisit ( const TimezoneFromTimeIterator& ) = 0;
+    virtual void endVisit   ( const TimezoneFromTimeIterator& ) = 0;
 
     virtual void beginVisit ( const FnPutIterator& ) = 0;
     virtual void endVisit   ( const FnPutIterator& ) = 0;

@@ -49,12 +49,12 @@ LIST(APPEND FUNCTIONS_SRCS
     # computeAnnotation, and specialize
     accessors_impl.cpp
     booleans_impl.cpp
+    durations_dates_times_impl.cpp
     strings_impl.cpp
     sequences_impl.cpp
     Alexis.cpp
     arithmetic.cpp
     Collections.cpp
-    DateTime.cpp
     EnclosedExpr.cpp
     external_function_adapters.cpp
     VarDecl.cpp

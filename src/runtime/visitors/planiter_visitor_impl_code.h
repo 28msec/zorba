@@ -373,48 +373,6 @@
 
   PLAN_ITER_VISITOR (FnDateTimeConstructorIterator);
 
-  PLAN_ITER_VISITOR (FnYearsFromDurationIterator);
-
-  PLAN_ITER_VISITOR (FnMonthsFromDurationIterator);
-
-  PLAN_ITER_VISITOR (FnDaysFromDurationIterator);
-
-  PLAN_ITER_VISITOR (FnHoursFromDurationIterator);
-
-  PLAN_ITER_VISITOR (FnMinutesFromDurationIterator);
-
-  PLAN_ITER_VISITOR (FnSecondsFromDurationIterator);
-
-  PLAN_ITER_VISITOR (FnYearFromDatetimeIterator);
-
-  PLAN_ITER_VISITOR (FnMonthFromDatetimeIterator);
-
-  PLAN_ITER_VISITOR (FnDayFromDatetimeIterator);
-
-  PLAN_ITER_VISITOR (FnHoursFromDatetimeIterator);
-      
-  PLAN_ITER_VISITOR (FnMinutesFromDatetimeIterator);
-
-  PLAN_ITER_VISITOR (FnSecondsFromDatetimeIterator);
-
-  PLAN_ITER_VISITOR (FnTimezoneFromDatetimeIterator);
-
-  PLAN_ITER_VISITOR (FnYearFromDateIterator);
-
-  PLAN_ITER_VISITOR (FnMonthFromDateIterator);
-
-  PLAN_ITER_VISITOR (FnDayFromDateIterator);
-
-  PLAN_ITER_VISITOR (FnTimezoneFromDateIterator);
-
-  PLAN_ITER_VISITOR (FnHoursFromTimeIterator);
-      
-  PLAN_ITER_VISITOR (FnMinutesFromTimeIterator);
-
-  PLAN_ITER_VISITOR (FnSecondsFromTimeIterator);
-
-  PLAN_ITER_VISITOR (FnTimezoneFromTimeIterator);
-
   PLAN_ITER_VISITOR (CtxVariableIterator);
 
   PLAN_ITER_VISITOR (CtxVarDeclIterator);

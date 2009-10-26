@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_FUNCTIONS_DATETIME_H
-#define ZORBA_FUNCTIONS_DATETIME_H
+#ifndef ZORBA_FUNCTIONS_DURATIONS_DATES_TIMES_IMPL_H
+#define ZORBA_FUNCTIONS_DURATIONS_DATES_TIMES_IMPL_H
 
 #include "common/shared_types.h"
 
 namespace zorba
 {
 
-void populateContext_Datetime(static_context* sctx);
+void populate_context_durations_dates_times_impl(static_context* sctx);
 
 } // namespace zorba
 

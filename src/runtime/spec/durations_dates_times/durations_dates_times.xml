@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  10 Functions and Operators on Durations, Dates and Times                   //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+-->
+<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+    
+<zorba:header>
+    <zorba:include form="Quoted">runtime/base/narybase.h</zorba:include>
+</zorba:header>
+  
+<zorba:codegen>
+  <zorba:h>
+    <zorba:include form="Quoted">common/shared_types.h</zorba:include>
+    <zorba:include form="Quoted">functions/function_impl.h</zorba:include>
+  </zorba:h>
+  <zorba:cpp>
+    <zorba:include form="Quoted">functions/durations_dates_times.h</zorba:include>
+    <zorba:include form="Quoted">runtime/durations_dates_times/durations_dates_times.h</zorba:include>
+  </zorba:cpp>
+</zorba:codegen>
+
+<!--
+/*******************************************************************************
+  10.5.1 fn:years-from-duration
+********************************************************************************/
+-->
+<zorba:iterator name="YearsFromDurationIterator">
+  
+  <zorba:description author="Zorba Team">fn:years-from-duration</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="years-from-duration" prefix="fn">
+      <zorba:param>xs:duration?</zorba:param>
+      <zorba:output>xs:integer?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+  10.5.2 fn:months-from-duration
+********************************************************************************/
+-->
+<zorba:iterator name="MonthsFromDurationIterator">
+  
+  <zorba:description author="Zorba Team">fn:months-from-duration</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="months-from-duration" prefix="fn">
+      <zorba:param>xs:duration?</zorba:param>
+      <zorba:output>xs:integer?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+  
+<!--
+/*******************************************************************************
+  10.5.3 fn:days-from-duration
+********************************************************************************/
+-->
+<zorba:iterator name="DaysFromDurationIterator">
+  
+  <zorba:description author="Zorba Team">fn:days-from-duration</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="days-from-duration" prefix="fn">
+      <zorba:param>xs:duration?</zorba:param>
+      <zorba:output>xs:integer?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+  
+<!--
+/*******************************************************************************
+  10.5.4 fn:hours-from-duration
+********************************************************************************/
+-->
+<zorba:iterator name="HoursFromDurationIterator">
+  
+  <zorba:description author="Zorba Team">fn:hours-from-duration</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="hours-from-duration" prefix="fn">
+      <zorba:param>xs:duration?</zorba:param>
+      <zorba:output>xs:integer?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+  
+<!--
+/*******************************************************************************
+  10.5.5 fn:minutes-from-duration
+********************************************************************************/
+-->
+<zorba:iterator name="MinutesFromDurationIterator">
+  
+  <zorba:description author="Zorba Team">fn:minutes-from-duration</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="minutes-from-duration" prefix="fn">
+      <zorba:param>xs:duration?</zorba:param>
+      <zorba:output>xs:integer?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+  
+<!--
+/*******************************************************************************
+  10.5.6 fn:seconds-from-duration
+********************************************************************************/
+-->
+<zorba:iterator name="SecondsFromDurationIterator">
+  
+  <zorba:description author="Zorba Team">fn:seconds-from-duration</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="seconds-from-duration" prefix="fn">
+      <zorba:param>xs:duration?</zorba:param>
+      <zorba:output>xs:decimal?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+  
+<!--
+/*******************************************************************************
+  10.5.7 fn:year-from-dateTime
+********************************************************************************/
+-->
+<zorba:iterator name="YearFromDatetimeIterator">
+  
+  <zorba:description author="Zorba Team">fn:year-from-dateTime</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="year-from-dateTime" prefix="fn">
+      <zorba:param>xs:dateTime?</zorba:param>
+      <zorba:output>xs:integer?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+  
+<!--
+/*******************************************************************************
+  10.5.8 fn:month-from-dateTime
+********************************************************************************/
+-->
+<zorba:iterator name="MonthFromDatetimeIterator">
+  
+  <zorba:description author="Zorba Team">fn:month-from-dateTime</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="month-from-dateTime" prefix="fn">
+      <zorba:param>xs:dateTime?</zorba:param>
+      <zorba:output>xs:integer?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+  10.5.9 fn:day-from-dateTime
+********************************************************************************/
+-->
+<zorba:iterator name="DayFromDatetimeIterator">
+  
+  <zorba:description author="Zorba Team">fn:day-from-dateTime</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="day-from-dateTime" prefix="fn">
+      <zorba:param>xs:dateTime?</zorba:param>
+      <zorba:output>xs:integer?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+  
+<!--
+/*******************************************************************************
+  10.5.10 fn:hours-from-dateTime
+********************************************************************************/
+-->
+<zorba:iterator name="HoursFromDatetimeIterator">
+  
+  <zorba:description author="Zorba Team">fn:hours-from-dateTime</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="hours-from-dateTime" prefix="fn">
+      <zorba:param>xs:dateTime?</zorba:param>
+      <zorba:output>xs:integer?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+  
+<!--
+/*******************************************************************************
+  10.5.11 fn:minutes-from-dateTime
+********************************************************************************/
+-->
+<zorba:iterator name="MinutesFromDatetimeIterator">
+  
+  <zorba:description author="Zorba Team">fn:minutes-from-dateTime</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="minutes-from-dateTime" prefix="fn">
+      <zorba:param>xs:dateTime?</zorba:param>
+      <zorba:output>xs:integer?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+  
+<!--
+/*******************************************************************************
+  10.5.12 fn:seconds-from-dateTime
+********************************************************************************/
+-->
+<zorba:iterator name="SecondsFromDatetimeIterator">
+  
+  <zorba:description author="Zorba Team">fn:seconds-from-dateTime</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="seconds-from-dateTime" prefix="fn">
+      <zorba:param>xs:dateTime?</zorba:param>
+      <zorba:output>xs:decimal?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+  10.5.13 fn:timezone-from-dateTime
+********************************************************************************/
+-->
+<zorba:iterator name="TimezoneFromDatetimeIterator">
+  
+  <zorba:description author="Zorba Team">fn:timezone-from-dateTime</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="timezone-from-dateTime" prefix="fn">
+      <zorba:param>xs:dateTime?</zorba:param>
+      <zorba:output>xs:dayTimeDuration?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+  
+<!--
+/*******************************************************************************
+  10.5.14 fn:year-from-date
+********************************************************************************/
+-->
+<zorba:iterator name="YearFromDateIterator">
+  
+  <zorba:description author="Zorba Team">fn:year-from-date</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="year-from-date" prefix="fn">
+      <zorba:param>xs:date?</zorba:param>
+      <zorba:output>xs:integer?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+  
+<!--
+/*******************************************************************************
+  10.5.15 fn:month-from-date
+********************************************************************************/
+-->
+<zorba:iterator name="MonthFromDateIterator">
+  
+  <zorba:description author="Zorba Team">fn:month-from-date</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="month-from-date" prefix="fn">
+      <zorba:param>xs:date?</zorba:param>
+      <zorba:output>xs:integer?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+  10.5.16 fn:day-from-date
+********************************************************************************/
+-->
+<zorba:iterator name="DayFromDateIterator">
+  
+  <zorba:description author="Zorba Team">fn:day-from-date</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="day-from-date" prefix="fn">
+      <zorba:param>xs:date?</zorba:param>
+      <zorba:output>xs:integer?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+  
+<!--
+/*******************************************************************************
+  10.5.17 fn:timezone-from-date
+********************************************************************************/
+-->
+<zorba:iterator name="TimezoneFromDateIterator">
+  
+  <zorba:description author="Zorba Team">fn:timezone-from-date</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="timezone-from-date" prefix="fn">
+      <zorba:param>xs:date?</zorba:param>
+      <zorba:output>xs:dayTimeDuration?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+  
+<!--
+/*******************************************************************************
+  10.5.18 fn:hours-from-time
+********************************************************************************/
+-->
+<zorba:iterator name="HoursFromTimeIterator">
+  
+  <zorba:description author="Zorba Team">fn:hours-from-time</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="hours-from-time" prefix="fn">
+      <zorba:param>xs:time?</zorba:param>
+      <zorba:output>xs:integer?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+  
+<!--
+/*******************************************************************************
+  10.5.19 fn:minutes-from-time
+********************************************************************************/
+-->
+<zorba:iterator name="MinutesFromTimeIterator">
+  
+  <zorba:description author="Zorba Team">fn:minutes-from-time</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="minutes-from-time" prefix="fn">
+      <zorba:param>xs:time?</zorba:param>
+      <zorba:output>xs:integer?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+  
+<!--
+/*******************************************************************************
+  10.5.20 fn:seconds-from-time
+********************************************************************************/
+-->
+<zorba:iterator name="SecondsFromTimeIterator">
+  
+  <zorba:description author="Zorba Team">fn:seconds-from-time</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="seconds-from-time" prefix="fn">
+      <zorba:param>xs:time?</zorba:param>
+      <zorba:output>xs:decimal?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+  
+<!--
+/*******************************************************************************
+  10.5.21 fn:timezone-from-time
+********************************************************************************/
+-->
+<zorba:iterator name="TimezoneFromTimeIterator">
+  
+  <zorba:description author="Zorba Team">fn:timezone-from-time</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="timezone-from-time" prefix="fn">
+      <zorba:param>xs:time?</zorba:param>
+      <zorba:output>xs:dayTimeDuration?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+
+</zorba:iterators>

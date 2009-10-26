@@ -97,6 +97,68 @@ namespace zorba {
 
     void beginVisit( const ZorbaJsonMLSerializeIterator& );
     void endVisit  ( const ZorbaJsonMLSerializeIterator& );
+    void beginVisit( const YearsFromDurationIterator& );
+    void endVisit  ( const YearsFromDurationIterator& );
+
+    void beginVisit( const MonthsFromDurationIterator& );
+    void endVisit  ( const MonthsFromDurationIterator& );
+
+    void beginVisit( const DaysFromDurationIterator& );
+    void endVisit  ( const DaysFromDurationIterator& );
+
+    void beginVisit( const HoursFromDurationIterator& );
+    void endVisit  ( const HoursFromDurationIterator& );
+
+    void beginVisit( const MinutesFromDurationIterator& );
+    void endVisit  ( const MinutesFromDurationIterator& );
+
+    void beginVisit( const SecondsFromDurationIterator& );
+    void endVisit  ( const SecondsFromDurationIterator& );
+
+    void beginVisit( const YearFromDatetimeIterator& );
+    void endVisit  ( const YearFromDatetimeIterator& );
+
+    void beginVisit( const MonthFromDatetimeIterator& );
+    void endVisit  ( const MonthFromDatetimeIterator& );
+
+    void beginVisit( const DayFromDatetimeIterator& );
+    void endVisit  ( const DayFromDatetimeIterator& );
+
+    void beginVisit( const HoursFromDatetimeIterator& );
+    void endVisit  ( const HoursFromDatetimeIterator& );
+
+    void beginVisit( const MinutesFromDatetimeIterator& );
+    void endVisit  ( const MinutesFromDatetimeIterator& );
+
+    void beginVisit( const SecondsFromDatetimeIterator& );
+    void endVisit  ( const SecondsFromDatetimeIterator& );
+
+    void beginVisit( const TimezoneFromDatetimeIterator& );
+    void endVisit  ( const TimezoneFromDatetimeIterator& );
+
+    void beginVisit( const YearFromDateIterator& );
+    void endVisit  ( const YearFromDateIterator& );
+
+    void beginVisit( const MonthFromDateIterator& );
+    void endVisit  ( const MonthFromDateIterator& );
+
+    void beginVisit( const DayFromDateIterator& );
+    void endVisit  ( const DayFromDateIterator& );
+
+    void beginVisit( const TimezoneFromDateIterator& );
+    void endVisit  ( const TimezoneFromDateIterator& );
+
+    void beginVisit( const HoursFromTimeIterator& );
+    void endVisit  ( const HoursFromTimeIterator& );
+
+    void beginVisit( const MinutesFromTimeIterator& );
+    void endVisit  ( const MinutesFromTimeIterator& );
+
+    void beginVisit( const SecondsFromTimeIterator& );
+    void endVisit  ( const SecondsFromTimeIterator& );
+
+    void beginVisit( const TimezoneFromTimeIterator& );
+    void endVisit  ( const TimezoneFromTimeIterator& );
     void beginVisit( const FnPutIterator& );
     void endVisit  ( const FnPutIterator& );
     void beginVisit( const FnConcatIterator& );

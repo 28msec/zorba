@@ -37,6 +37,7 @@
 #include "runtime/booleans/booleans.h"
 #include "runtime/context/context.h"
 #include "runtime/convertors/convertors.h"
+#include "runtime/durations_dates_times/durations_dates_times.h"
 #include "runtime/fnput/fnput.h"
 #include "runtime/sequences/sequences.h"
 #include "runtime/strings/strings.h"
@@ -317,6 +318,279 @@ void PrinterVisitor::endVisit ( const ZorbaJsonMLSerializeIterator& ) {
   thePrinter.endEndVisit();
 }
 // </ZorbaJsonMLSerializeIterator>
+
+// <YearsFromDurationIterator>
+void PrinterVisitor::beginVisit ( const YearsFromDurationIterator& a) {
+  thePrinter.startBeginVisit("YearsFromDurationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const YearsFromDurationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </YearsFromDurationIterator>
+
+// <MonthsFromDurationIterator>
+void PrinterVisitor::beginVisit ( const MonthsFromDurationIterator& a) {
+  thePrinter.startBeginVisit("MonthsFromDurationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const MonthsFromDurationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </MonthsFromDurationIterator>
+
+// <DaysFromDurationIterator>
+void PrinterVisitor::beginVisit ( const DaysFromDurationIterator& a) {
+  thePrinter.startBeginVisit("DaysFromDurationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const DaysFromDurationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </DaysFromDurationIterator>
+
+// <HoursFromDurationIterator>
+void PrinterVisitor::beginVisit ( const HoursFromDurationIterator& a) {
+  thePrinter.startBeginVisit("HoursFromDurationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const HoursFromDurationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </HoursFromDurationIterator>
+
+// <MinutesFromDurationIterator>
+void PrinterVisitor::beginVisit ( const MinutesFromDurationIterator& a) {
+  thePrinter.startBeginVisit("MinutesFromDurationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const MinutesFromDurationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </MinutesFromDurationIterator>
+
+// <SecondsFromDurationIterator>
+void PrinterVisitor::beginVisit ( const SecondsFromDurationIterator& a) {
+  thePrinter.startBeginVisit("SecondsFromDurationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SecondsFromDurationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SecondsFromDurationIterator>
+
+// <YearFromDatetimeIterator>
+void PrinterVisitor::beginVisit ( const YearFromDatetimeIterator& a) {
+  thePrinter.startBeginVisit("YearFromDatetimeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const YearFromDatetimeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </YearFromDatetimeIterator>
+
+// <MonthFromDatetimeIterator>
+void PrinterVisitor::beginVisit ( const MonthFromDatetimeIterator& a) {
+  thePrinter.startBeginVisit("MonthFromDatetimeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const MonthFromDatetimeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </MonthFromDatetimeIterator>
+
+// <DayFromDatetimeIterator>
+void PrinterVisitor::beginVisit ( const DayFromDatetimeIterator& a) {
+  thePrinter.startBeginVisit("DayFromDatetimeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const DayFromDatetimeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </DayFromDatetimeIterator>
+
+// <HoursFromDatetimeIterator>
+void PrinterVisitor::beginVisit ( const HoursFromDatetimeIterator& a) {
+  thePrinter.startBeginVisit("HoursFromDatetimeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const HoursFromDatetimeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </HoursFromDatetimeIterator>
+
+// <MinutesFromDatetimeIterator>
+void PrinterVisitor::beginVisit ( const MinutesFromDatetimeIterator& a) {
+  thePrinter.startBeginVisit("MinutesFromDatetimeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const MinutesFromDatetimeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </MinutesFromDatetimeIterator>
+
+// <SecondsFromDatetimeIterator>
+void PrinterVisitor::beginVisit ( const SecondsFromDatetimeIterator& a) {
+  thePrinter.startBeginVisit("SecondsFromDatetimeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SecondsFromDatetimeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SecondsFromDatetimeIterator>
+
+// <TimezoneFromDatetimeIterator>
+void PrinterVisitor::beginVisit ( const TimezoneFromDatetimeIterator& a) {
+  thePrinter.startBeginVisit("TimezoneFromDatetimeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const TimezoneFromDatetimeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </TimezoneFromDatetimeIterator>
+
+// <YearFromDateIterator>
+void PrinterVisitor::beginVisit ( const YearFromDateIterator& a) {
+  thePrinter.startBeginVisit("YearFromDateIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const YearFromDateIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </YearFromDateIterator>
+
+// <MonthFromDateIterator>
+void PrinterVisitor::beginVisit ( const MonthFromDateIterator& a) {
+  thePrinter.startBeginVisit("MonthFromDateIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const MonthFromDateIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </MonthFromDateIterator>
+
+// <DayFromDateIterator>
+void PrinterVisitor::beginVisit ( const DayFromDateIterator& a) {
+  thePrinter.startBeginVisit("DayFromDateIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const DayFromDateIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </DayFromDateIterator>
+
+// <TimezoneFromDateIterator>
+void PrinterVisitor::beginVisit ( const TimezoneFromDateIterator& a) {
+  thePrinter.startBeginVisit("TimezoneFromDateIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const TimezoneFromDateIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </TimezoneFromDateIterator>
+
+// <HoursFromTimeIterator>
+void PrinterVisitor::beginVisit ( const HoursFromTimeIterator& a) {
+  thePrinter.startBeginVisit("HoursFromTimeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const HoursFromTimeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </HoursFromTimeIterator>
+
+// <MinutesFromTimeIterator>
+void PrinterVisitor::beginVisit ( const MinutesFromTimeIterator& a) {
+  thePrinter.startBeginVisit("MinutesFromTimeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const MinutesFromTimeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </MinutesFromTimeIterator>
+
+// <SecondsFromTimeIterator>
+void PrinterVisitor::beginVisit ( const SecondsFromTimeIterator& a) {
+  thePrinter.startBeginVisit("SecondsFromTimeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SecondsFromTimeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SecondsFromTimeIterator>
+
+// <TimezoneFromTimeIterator>
+void PrinterVisitor::beginVisit ( const TimezoneFromTimeIterator& a) {
+  thePrinter.startBeginVisit("TimezoneFromTimeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const TimezoneFromTimeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </TimezoneFromTimeIterator>
 
 // <FnPutIterator>
 void PrinterVisitor::beginVisit ( const FnPutIterator& a) {
