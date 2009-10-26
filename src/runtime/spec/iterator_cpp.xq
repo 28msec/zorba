@@ -90,7 +90,7 @@ declare function local:get-include($XMLdoc, $name) as xs:string*
 {
   fn:concat(
     '#include "runtime/visitors/planiter_visitor.h"', $gen:newline, 
-    '#include "', fn:replace($name, "_", "/"), '.h"', $gen:newline,
+    '#include "', $name, '.h"', $gen:newline,
     '#include "system/globalenv.h"',
     string-join(($gen:newline,for $include in $XMLdoc//zorba:source/zorba:include[@form='Angle-bracket']
       return concat($gen:newline,'#include <', $include/text(), '>')), ''

@@ -190,7 +190,7 @@ declare variable $input external;
 declare variable $name  as xs:string external;
 
 string-join((gen:add-copyright(), 
-             gen:add-guard-open($name),
+             gen:add-guard-open(replace($name,'/','_')),
              $gen:newline,
              local:get-include($input),
              $gen:newline,

@@ -25,7 +25,6 @@ FOREACH(SPEC_FILE ${SPEC_FILES})
   STRING(LENGTH ${SPEC_FILE} SPEC_FILE_NAME_LENGTH)
   MATH(EXPR SPEC_PREFIX_LENGTH "${SPEC_FILE_NAME_LENGTH} - 4")
   STRING(SUBSTRING ${SPEC_FILE} 0 ${SPEC_PREFIX_LENGTH} SPEC_PREFIX)
-  STRING(REPLACE "/" "_" SPEC_PREFIX_NAME ${SPEC_PREFIX} )
 
   SET(ABSOLUTE_SPEC_FILE_NAME "${CMAKE_SOURCE_DIR}/src/runtime/spec/${SPEC_FILE}")
 
@@ -33,7 +32,7 @@ FOREACH(SPEC_FILE ${SPEC_FILES})
                     ${RUNTIME_HEADER_GENERATOR}
                     "${ABSOLUTE_SPEC_FILE_NAME}"
                     "src/runtime/${SPEC_PREFIX}"
-                    "name:=runtime_${SPEC_PREFIX_NAME}"
+                    "name:=runtime/${SPEC_PREFIX}"
                     "input=${ABSOLUTE_SPEC_FILE_NAME}"
                     ${ZORBA_WORKS})
 
