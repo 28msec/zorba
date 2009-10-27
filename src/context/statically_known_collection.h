@@ -19,6 +19,8 @@
 #include "common/shared_types.h"
 #include "context/static_context_consts.h"
 
+#include "zorbaserialization/serialization_engine.h"
+
 namespace zorba {
 
 class StaticallyKnownCollection : public SimpleRCObject {
@@ -28,6 +30,20 @@ private:
   StaticContextConsts::collection_modifier_t theCollectionModifier;
   StaticContextConsts::node_modifier_t       theNodeModifier;
 
+public:
+  SERIALIZABLE_CLASS(StaticallyKnownCollection);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(StaticallyKnownCollection, SimpleRCObject);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar, (SimpleRCObject*)this);
+
+    ar & theName;
+    ar & theNodeType;
+    SERIALIZE_ENUM(StaticContextConsts::collection_modifier_t, theCollectionModifier);
+    SERIALIZE_ENUM(StaticContextConsts::node_modifier_t, theNodeModifier);
+  }
 public:
   StaticallyKnownCollection(store::Item_t&                             aName,
                             xqtref_t&                                  aNodeType,

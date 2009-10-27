@@ -19,6 +19,9 @@
 
 namespace zorba {
 
+SERIALIZABLE_CLASS_VERSIONS(StaticallyKnownCollection)
+END_SERIALIZABLE_CLASS_VERSIONS(StaticallyKnownCollection)
+
 StaticallyKnownCollection::StaticallyKnownCollection(
                              store::Item_t&                             aName,
                              xqtref_t&                                  aNodeType,

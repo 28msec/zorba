@@ -534,6 +534,7 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   serialize_resolvers(ar);
   serialize_tracestream(ar);
 
+  ar & theCollectionMap;
   ar & theIndexMap;
   ar & theCollationCache;
 }
