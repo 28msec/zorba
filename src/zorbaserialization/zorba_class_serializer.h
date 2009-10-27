@@ -144,6 +144,10 @@ void operator&(Archiver &ar, zorba::rchandle<T> &obj)
       ar & p;
       ar.add_end_compound_field();
     }
+    else
+    {
+      int i=0;
+    }
   }
   else
   {

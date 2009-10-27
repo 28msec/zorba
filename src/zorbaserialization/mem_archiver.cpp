@@ -22,6 +22,7 @@ namespace zorba{
 void MemArchiver::reset_serialize_in()
 {
   serializing_out = false;
+  current_level = 0;
 
   current_field = out_fields->first_child;
   root_tag_is_read();

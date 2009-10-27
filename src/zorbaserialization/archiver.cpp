@@ -171,7 +171,7 @@ bool Archiver::add_simple_field(const char *type,
   //int id = 0;
   if(!orig_ptr)
     field_treat = ARCHIVE_FIELD_IS_NULL;
-  else if((field_treat != ARCHIVE_FIELD_IS_BASECLASS) && orig_ptr && !get_is_temp_field())
+  else if((field_treat != ARCHIVE_FIELD_IS_BASECLASS) && orig_ptr && !get_is_temp_field() && !get_is_temp_field_one_level())
     ref_field = check_nonclass_pointer(type, orig_ptr);
   if(ref_field)
   {
@@ -262,13 +262,14 @@ bool Archiver::add_compound_field(const char *type,
                               enum ArchiveFieldTreat field_treat
                               )
 {
+  current_level++;
   archive_field  *new_field;
   archive_field  *ref_field = NULL;
   bool      exch_fields = false;
   //int id = 0;
   if(!ptr)
     field_treat = ARCHIVE_FIELD_IS_NULL;
-  else if((field_treat != ARCHIVE_FIELD_IS_BASECLASS) && ptr && !get_is_temp_field())
+  else if((field_treat != ARCHIVE_FIELD_IS_BASECLASS) && ptr && !get_is_temp_field() && !get_is_temp_field_one_level())
   {
     if(!is_class)
       ref_field = check_nonclass_pointer(type, ptr);
@@ -285,6 +286,7 @@ bool Archiver::add_compound_field(const char *type,
     }
     field_treat = ARCHIVE_FIELD_IS_REFERENCING;
     ptr = NULL;
+    current_level--;
   }
 
   new_field = new archive_field(type, false, is_class, info, ptr, version, field_treat, ref_field, get_serialize_only_for_eval(), allow_delay);
@@ -323,6 +325,7 @@ bool Archiver::add_compound_field(const char *type,
 void Archiver::add_end_compound_field()
 {
   current_compound_field = current_compound_field->parent;
+  current_level--;
 }
 
 void Archiver::set_class_type(const char *class_name)
@@ -812,11 +815,7 @@ void Archiver::check_compound_fields(archive_field *parent_field)
     if(!refering_field)
       break;
   //+debug
-  printf("move reference %s, %s -> %s\n", refering_field->refered->type, refering_field->refered->parent->type, refering_field->parent->type);
-  if(!strcmp(refering_field->refered->parent->type, "UDFunctionCallIterator"))
-  {
-    int i=0;
-  }
+//  printf("move reference %s, %s -> %s\n", refering_field->refered->type, refering_field->refered->parent->type, refering_field->parent->type);
 /*
     replace_with_null(refering_field->refered);
     //get that archive_field
