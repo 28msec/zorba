@@ -1,0 +1,5 @@
+datamodule namespace ns = "http://example.org/datamodule/";
+
+declare variable $ns:coll_1 as xs:QName := xs:QName("ns:coll_1");
+declare collection ns:coll_1 node-modifier read-only;
+

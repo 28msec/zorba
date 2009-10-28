@@ -1349,10 +1349,10 @@ bool ZorbaRemoveNodeAtIterator::nextImpl(
 
   consumeNext(posItem, theChildren[theChildren.size()-1].getp(), planState);
 
-  if(posItem->getIntegerValue() < Integer::zero())
+  if(posItem->getIntegerValue() <= Integer::zero())
   {
     ZORBA_ERROR_LOC_DESC(XDDY0014, loc, 
-                         "The position parameter of remove-node-at must not be negative.");
+                         "The position parameter of remove-node-at must be positive.");
   }
 
   NumConversions::strToUInt(posItem->getIntegerValue().toString(),lpos);
