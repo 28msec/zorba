@@ -146,7 +146,7 @@ void operator&(Archiver &ar, zorba::rchandle<T> &obj)
     }
     else
     {
-      int i=0;
+      //int i=0;
     }
   }
   else
