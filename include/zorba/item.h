@@ -289,12 +289,23 @@ public:
    * The file \link simple.cpp \endlink contains some basic examples the demonstrate
    * the use of this function.
    *
-   * @return bool if the name of the node was retrieved successfully.
+   * @return bool if the name of the node was retrieved successfully
    * @return aNodeName the name of the node
-   * @throw ZorbaException if an error occured, e.g. the Item is not of type node.
+   * @throw ZorbaException if an error occured (e.g. the Item is not of type node).
    */
   bool
   getNodeName(Item& aNodeName) const;
+
+  /** \brief Get the type of this (node) Item.
+   *
+   * Note that this function is only available for node Items.
+   *
+   * @return int the kind of this node (the avaialble kinds can be found in the store::StoreConsts class)
+   * @throw ZorbaException if an error occured (e.g. the Item is not of type node).
+   */
+  int
+  getNodeKind() const;
+
 
 private:
   friend class Unmarshaller;

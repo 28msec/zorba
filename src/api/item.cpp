@@ -383,4 +383,16 @@ Item::getNodeName(Item& aNodeName) const
   return false;
 }
 
+int
+Item::getNodeKind() const
+{
+  ITEM_TRY
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+  
+    return m_item->getNodeKind();
+  ITEM_CATCH
+  return -1;
+}
+
+
 } /* namespace zorba */
