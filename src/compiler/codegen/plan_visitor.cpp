@@ -82,7 +82,8 @@
 #include "store/api/iterator.h"
 
 
-#define XQUF_STATIC_TYPING_STRICT 1
+//#define XQUF_STATIC_TYPING_STRICT 1
+#define XQUF_STATIC_TYPING_SAFE 1
 
 #define QLOCDECL const QueryLoc &qloc = v.get_loc(); (void) qloc
 
