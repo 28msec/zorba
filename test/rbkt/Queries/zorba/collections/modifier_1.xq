@@ -4,16 +4,16 @@ import datamodule namespace ns = "http://example.org/datamodule/" at "modifier_1
 
 declare sequential function local:init() {
   (
-    ddl:create-collection(xs:QName("ns:coll_1"), (<x/>,<y/>)),
-    ddl:create-collection(xs:QName("ns:coll_2"), (<x/>,<y/>)),
-    ddl:create-collection(xs:QName("ns:coll_3"), (<x/>,<y/>))
+    ddl:create-collection($ns:coll_1, (<x/>,<y/>)),
+    ddl:create-collection($ns:coll_2, (<x/>,<y/>)),
+    ddl:create-collection($ns:coll_3, (<x/>,<y/>))
   );
 };
 
 declare function local:testa_1() {
   try {
     block {
-      ddl:insert-nodes-first(xs:QName("ns:coll_1"), <a/>);
+      ddl:insert-nodes-first($ns:coll_1, <a/>);
     }
   } catch * ($error) {
     ("a",$error)
@@ -23,7 +23,7 @@ declare function local:testa_1() {
 declare function local:testa_2() {
   try {
     block {
-      ddl:insert-nodes-first(xs:QName("ns:coll_2"), <a/>);
+      ddl:insert-nodes-first($ns:coll_2, <a/>);
     }
   } catch * ($error) {
     ("a",$error)
@@ -33,7 +33,7 @@ declare function local:testa_2() {
 declare function local:testa_3() {
   try {
     block {
-      ddl:insert-nodes-first(xs:QName("ns:coll_3"), <a/>);
+      ddl:insert-nodes-first($ns:coll_3, <a/>);
     }
   } catch * ($error) {
     ("a",$error)
@@ -43,7 +43,7 @@ declare function local:testa_3() {
 declare function local:testb_1() {
   try {
     block {
-      ddl:insert-nodes-last(xs:QName("ns:coll_1"), <b/>);
+      ddl:insert-nodes-last($ns:coll_1, <b/>);
     }
   } catch * ($error) {
     ("b",$error)
@@ -51,17 +51,17 @@ declare function local:testb_1() {
 };
 
 declare sequential function local:testb_2() {
-  ddl:insert-nodes-last(xs:QName("ns:coll_2"), <b/>);
+  ddl:insert-nodes-last($ns:coll_2, <b/>);
 };
 
 declare sequential function local:testb_3() {
-  ddl:insert-nodes-last(xs:QName("ns:coll_3"), <b/>);
+  ddl:insert-nodes-last($ns:coll_3, <b/>);
 };
 
 declare function local:testc_1() {
   try {
     block {
-      ddl:insert-nodes-before(xs:QName("ns:coll_1"), dc:collection(xs:QName("ns:coll_1")[1]), <c/>);
+      ddl:insert-nodes-before($ns:coll_1, dc:collection($ns:coll_1[1]), <c/>);
     }
   } catch * ($error) {
     ("c",$error)
@@ -71,7 +71,7 @@ declare function local:testc_1() {
 declare function local:testc_2() {
   try {
     block {
-      ddl:insert-nodes-before(xs:QName("ns:coll_2"), dc:collection(xs:QName("ns:coll_2")[1]), <c/>);
+      ddl:insert-nodes-before($ns:coll_2, dc:collection($ns:coll_2[1]), <c/>);
     }
   } catch * ($error) {
     ("c",$error)
@@ -81,7 +81,7 @@ declare function local:testc_2() {
 declare function local:testc_3() {
   try {
     block {
-      ddl:insert-nodes-before(xs:QName("ns:coll_3"), dc:collection(xs:QName("ns:coll_3")[1]), <c/>);
+      ddl:insert-nodes-before($ns:coll_3, dc:collection($ns:coll_3[1]), <c/>);
     }
   } catch * ($error) {
     ("c",$error)
@@ -91,7 +91,7 @@ declare function local:testc_3() {
 declare function local:testd_1() {
   try {
     block {
-      ddl:insert-nodes-after(xs:QName("ns:coll_1"), dc:collection(xs:QName("ns:coll_1")[last()]), <d/>);
+      ddl:insert-nodes-after($ns:coll_1, dc:collection($ns:coll_1[last()]), <d/>);
     }
   } catch * ($error) {
     ("d",$error)
@@ -101,7 +101,7 @@ declare function local:testd_1() {
 declare function local:testd_2() {
   try {
     block {
-      ddl:insert-nodes-after(xs:QName("ns:coll_2"), dc:collection(xs:QName("ns:coll_2")[last()]), <d/>);
+      ddl:insert-nodes-after($ns:coll_2, dc:collection($ns:coll_2[last()]), <d/>);
     }
   } catch * ($error) {
     ("d",$error)
@@ -111,7 +111,7 @@ declare function local:testd_2() {
 declare function local:testd_3() {
   try {
     block {
-      ddl:insert-nodes-after(xs:QName("ns:coll_3"), dc:collection(xs:QName("ns:coll_3")[last()]), <d/>);
+      ddl:insert-nodes-after($ns:coll_3, dc:collection($ns:coll_3[last()]), <d/>);
     }
   } catch * ($error) {
     ("d",$error)
@@ -121,7 +121,7 @@ declare function local:testd_3() {
 declare function local:teste_1() {
   try {
     block {
-      ddl:insert-nodes-at(xs:QName("ns:coll_1"), 1, <e/>);
+      ddl:insert-nodes-at($ns:coll_1, 1, <e/>);
     }
   } catch * ($error) {
     ("e",$error)
@@ -131,7 +131,7 @@ declare function local:teste_1() {
 declare function local:teste_2() {
   try {
     block {
-      ddl:insert-nodes-at(xs:QName("ns:coll_2"), 1, <e/>);
+      ddl:insert-nodes-at($ns:coll_2, 1, <e/>);
     }
   } catch * ($error) {
     ("e",$error)
@@ -141,7 +141,7 @@ declare function local:teste_2() {
 declare function local:teste_3() {
   try {
     block {
-      ddl:insert-nodes-at(xs:QName("ns:coll_3"), 1, <e/>);
+      ddl:insert-nodes-at($ns:coll_3, 1, <e/>);
     }
   } catch * ($error) {
     ("e",$error)
@@ -166,9 +166,9 @@ declare sequential function local:main() {
     local:teste_1(),
     local:teste_2(),
     local:teste_3(),
-    <coll_1>{dc:collection(xs:QName("ns:coll_1"))}</coll_1>,
-    <coll_2>{dc:collection(xs:QName("ns:coll_2"))}</coll_2>,
-    <coll_3>{dc:collection(xs:QName("ns:coll_3"))}</coll_3>
+    <coll_1>{dc:collection($ns:coll_1)}</coll_1>,
+    <coll_2>{dc:collection($ns:coll_2)}</coll_2>,
+    <coll_3>{dc:collection($ns:coll_3)}</coll_3>
   );
 };
 
