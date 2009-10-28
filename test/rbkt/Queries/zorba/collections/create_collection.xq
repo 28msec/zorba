@@ -13,4 +13,7 @@ declare sequential function local:create-and-insert() {
   exit returning dc:is-available-collection(xs:QName("ns:test3")) and fn:count(dc:collection(xs:QName("ns:test3"))) eq 10;
 };
 
-local:create() and local:create-and-insert()
+let $create := local:create()
+let $create-and-insert := local:create-and-insert()
+return
+  $create or $create-and-insert

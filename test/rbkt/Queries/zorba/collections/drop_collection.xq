@@ -19,8 +19,16 @@ declare sequential function local:drop-all() {
   exit returning fn:not(dc:is-available-collection(xs:QName("ns:test1")) or dc:is-available-collection(xs:QName("ns:test2")));
 };
 
-if (fn:not(local:create() or local:drop())) then
+if (
+     let $create := local:create()
+     let $drop := local:drop()
+     return
+       fn:not($create or $drop)
+  ) then
   fn:false()
 else
-  local:create() and local:drop-all()
+  let $create := local:create()
+  let $drop-all := local:drop-all()
+  return
+    $create and $drop-all
 
