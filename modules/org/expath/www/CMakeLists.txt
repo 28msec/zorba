@@ -14,6 +14,6 @@
 
 # all external module libraries are generated in the directory
 # of the corresponding .xq file
-IF(ZORBA_WITH_REST)
-ADD_SUBDIRECTORY(mod)
-ENDIF(ZORBA_WITH_REST)
+IF (ZORBA_WITH_REST AND LIBTIDY_FOUND)
+  ADD_SUBDIRECTORY(mod)
+ENDIF (ZORBA_WITH_REST AND LIBTIDY_FOUND)
