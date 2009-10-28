@@ -316,10 +316,10 @@ simple(int argc, char* argv[])
   if (!res) return 1;
   std::cout << std::endl;
 
-  std::cout << "executing example 13" << std::endl;
-  res = example_13(lZorba);
-  if (!res) return 1;
-  std::cout << std::endl;
+//std::cout << "executing example 13" << std::endl;
+//res = example_13(lZorba);
+//if (!res) return 1;
+//std::cout << std::endl;
 
   lZorba->shutdown();
   simplestore::SimpleStoreManager::shutdownStore(lStore);
