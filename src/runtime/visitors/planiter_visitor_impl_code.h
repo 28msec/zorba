@@ -407,8 +407,8 @@
 	PLAN_ITER_VISITOR(FnFormatNumberIterator);
 
   PLAN_ITER_VISITOR(ZorbaCollectionIterator);
-  PLAN_ITER_VISITOR(ZorbaCollectionExistsIterator);
-  PLAN_ITER_VISITOR(ZorbaListCollectionsIterator);
+  PLAN_ITER_VISITOR(DcIsAvailableCollectionIterator);
+  PLAN_ITER_VISITOR(DcAvailableCollectionsIterator);
   PLAN_ITER_VISITOR(ScIsDeclaredCollectionIterator);
   PLAN_ITER_VISITOR(ScDeclaredCollectionsIterator);
   PLAN_ITER_VISITOR(ZorbaCreateCollectionIterator);

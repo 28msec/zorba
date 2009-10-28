@@ -888,8 +888,21 @@ typedef enum
   //
   // XQuery Data Definition Facility:w
   //
-  XDXX0001,
-  // Temporarly, this error code is used for all Data Definition Facility related errors.
+  XDST0001,
+  XDST0002,
+  XDST0007,
+  XDST0008,
+  XDST0010,
+
+  XDDY0003,
+  XDDY0004,
+  XDDY0005,
+  XDDY0006,
+  XDDY0009,
+  XDDY0011,
+  XDDY0012,
+  XDDY0013,
+  XDDY0014,
 
   MAX_ZORBA_ERROR_CODE
 } XQUERY_ERROR;

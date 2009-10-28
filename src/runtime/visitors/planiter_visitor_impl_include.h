@@ -166,8 +166,8 @@
   class FnFormatNumberIterator;
 
   class ZorbaCollectionIterator;
-  class ZorbaCollectionExistsIterator;
-  class ZorbaListCollectionsIterator;
+  class DcIsAvailableCollectionIterator;
+  class DcAvailableCollectionsIterator;
   class ScIsDeclaredCollectionIterator;
   class ScDeclaredCollectionsIterator;
   class ZorbaCreateCollectionIterator;

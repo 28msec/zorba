@@ -1,0 +1,5 @@
+datamodule namespace ns = "http://example.org/datamodule/";
+
+declare collection ns:coll_1 collection-modifier const;
+declare collection ns:coll_2 collection-modifier append-only;
+declare collection ns:coll_3 collection-modifier queue;

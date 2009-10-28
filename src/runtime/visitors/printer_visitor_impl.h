@@ -237,8 +237,8 @@
   DECLARE_VISITOR (ApplyIterator);
   DECLARE_VISITOR (FnFormatNumberIterator);
   DECLARE_VISITOR (ZorbaCollectionIterator);
-  DECLARE_VISITOR (ZorbaCollectionExistsIterator);
-  DECLARE_VISITOR (ZorbaListCollectionsIterator);
+  DECLARE_VISITOR (DcIsAvailableCollectionIterator);
+  DECLARE_VISITOR (DcAvailableCollectionsIterator);
   DECLARE_VISITOR (ScIsDeclaredCollectionIterator);
   DECLARE_VISITOR (ScDeclaredCollectionsIterator);
   DECLARE_VISITOR (ZorbaCreateCollectionIterator);

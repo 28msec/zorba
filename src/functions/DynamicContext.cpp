@@ -35,14 +35,14 @@ public:
   DEFAULT_NARY_CODEGEN(ZorbaCollectionIterator);
 };
 
-class dc_is_avaible_collections : public function
+class dc_is_available_collections : public function
 {
 public:
-  dc_is_avaible_collections(const signature& sig): function(sig){}
+  dc_is_available_collections(const signature& sig): function(sig){}
 
   bool requires_dyn_ctx() const { return true; }
 
-  DEFAULT_NARY_CODEGEN(ZorbaCollectionExistsIterator);
+  DEFAULT_NARY_CODEGEN(DcIsAvailableCollectionIterator);
 };
 
 class dc_available_collections : public function
@@ -52,7 +52,7 @@ public:
 
   bool requires_dyn_ctx () const { return true; }
 
-  DEFAULT_NARY_CODEGEN(ZorbaListCollectionsIterator);
+  DEFAULT_NARY_CODEGEN(DcAvailableCollectionsIterator);
 };
 
 class dc_index_of : public function
@@ -72,7 +72,7 @@ DECL(sctx, dc_collection,
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
-DECL(sctx, dc_is_avaible_collections,
+DECL(sctx, dc_is_available_collections,
      (createQName(ZORBA_DYNAMICCONTEXT_FN_NS, "fn-zorba-dynamiccontext", "is-available-collection"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));

@@ -2298,13 +2298,13 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
       // throws an error if a datamodule import imports a module other than datamodule
       if ( v.imports_data_module() && !mod_ast->is_data_module()) {
-        ZORBA_ERROR_LOC_DESC_OSS(XDXX0001, v.get_location(), 
+        ZORBA_ERROR_LOC_DESC_OSS(XDST0007, v.get_location(), 
                                  "It is a static error if a data module import imports a library module.");
       }
 
       // throw an error fi a module import imports a datamodule
       if ( !v.imports_data_module() && mod_ast->is_data_module()) {
-        ZORBA_ERROR_LOC_DESC_OSS(XDXX0001, v.get_location(), 
+        ZORBA_ERROR_LOC_DESC_OSS(XDST0007, v.get_location(), 
                                  "It is a static error if a library module import imports a data module.");
       }
 
@@ -2923,7 +2923,7 @@ void* begin_visit(const CollectionDecl& v)
   // checks if collection declaration is not located in a DataModule
   if (!theIsDataModule) 
   {
-    ZORBA_ERROR_LOC_DESC_OSS(XDXX0001, v.get_location(), 
+    ZORBA_ERROR_LOC_DESC_OSS(XDST0002, v.get_location(), 
                              "It is a static error if a collection declaration "
                              << "is used in a module other than a data module.");
   }

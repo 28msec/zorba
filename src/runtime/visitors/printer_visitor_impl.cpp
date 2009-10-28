@@ -1192,8 +1192,8 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION(ApplyIterator);
   PRINTER_VISITOR_DEFINITION(FnFormatNumberIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaCollectionIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaCollectionExistsIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaListCollectionsIterator);
+  PRINTER_VISITOR_DEFINITION(DcIsAvailableCollectionIterator);
+  PRINTER_VISITOR_DEFINITION(DcAvailableCollectionsIterator);
   PRINTER_VISITOR_DEFINITION(ScIsDeclaredCollectionIterator);
   PRINTER_VISITOR_DEFINITION(ScDeclaredCollectionsIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaCreateCollectionIterator);

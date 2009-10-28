@@ -810,7 +810,7 @@ void PULImpl::mergeUpdateList(
         if (myList[j]->getKind() == store::UpdateConsts::UP_CREATE_COLLECTION) {
           UpdCreateCollection* upd = static_cast<UpdCreateCollection*>(theCreateCollectionList[j]);
           if (upd->getCollectionName()->equals(otherUpd->getCollectionName())) {
-            ZORBA_ERROR(XDXX0001);
+            ZORBA_ERROR(XDDY0013);
           }
         }
       }

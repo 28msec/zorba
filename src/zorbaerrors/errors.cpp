@@ -186,7 +186,9 @@ ZorbaError::isXQueryStaticError() const
            theErrorCode <= XQST0093) ||
           (XUST0001 <= theErrorCode && 
            theErrorCode <= XUST0003) ||
-          theErrorCode == XUST0028);
+          theErrorCode == XUST0028 ||
+          (XDST0001 <= theErrorCode &&
+           theErrorCode <= XDST0010));
 }
 
   
@@ -199,7 +201,9 @@ ZorbaError::isXQueryTypeError() const
            theErrorCode <= XUTY0008) ||
           (XUTY0010 <= theErrorCode && 
            theErrorCode <= XUTY0013) ||
-          theErrorCode == XUTY0022);
+          theErrorCode == XUTY0022 ||
+          (XDDY0003 <= theErrorCode &&
+           theErrorCode <= XDDY0013));
 }
     
 

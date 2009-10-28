@@ -1107,7 +1107,7 @@ void static_context::add_declared_collection(
 
   if (!theCollectionMap->insert(aCollection->getName(), aCollection))
   {
-    ZORBA_ERROR_LOC_DESC_OSS(XDXX0001, aLoc,
+    ZORBA_ERROR_LOC_DESC_OSS(XDST0001, aLoc,
                              "It is a static error if the expanded QName ("
                              << aCollection->getName()->getStringValue()
                              << ") of a collection"
@@ -1122,7 +1122,7 @@ const StaticallyKnownCollection* static_context::get_declared_collection(const s
 {
   StaticallyKnownCollection_t lColl;
 
-  if (theCollectionMap->get(aName, lColl))
+  if (theCollectionMap && theCollectionMap->get(aName, lColl))
     return lColl.getp();
   else
     return 0;
@@ -1141,9 +1141,15 @@ public:
   {}
   virtual ~CollectionNameIterator() { close(); }
   virtual void open() {
-    theIterator = theCollections->begin();
+    if (theCollections) {
+      theIterator = theCollections->begin();
+    }
   }
   virtual bool next(store::Item_t& aResult) {
+    if (!theCollections) {
+      return false;
+    }
+
     if (theIterator == theCollections->end()) {
        aResult = NULL;
       return false;
@@ -1155,7 +1161,9 @@ public:
     }
   }
   virtual void reset() {
-    theIterator = theCollections->begin();
+    if (theCollections) {
+      theIterator = theCollections->begin();
+    }
   }
   virtual void close() {}
 };
@@ -1513,7 +1521,7 @@ bool static_context::import_module(const static_context* module, const QueryLoc&
 
       if (!theCollectionMap->insert(pair.first, pair.second)) 
       {
-        ZORBA_ERROR_LOC_DESC_OSS(XDXX0001, loc,
+        ZORBA_ERROR_LOC_DESC_OSS(XDST0008, loc,
                                  "It is a static error if the expanded QName ("
                                  << pair.second->getName()->getStringValue()
                                  << ") of a collection declared in an imported module is equal "

@@ -56,7 +56,7 @@ public:
 NARY_ITER_STATE(ZorbaCollectionIterator, ZorbaCollectionIteratorState);
 
 // non-updating collection functions
-NARY_ITER(ZorbaCollectionExistsIterator);
+NARY_ITER(DcIsAvailableCollectionIterator);
 
 NARY_ITER(ZorbaIndexOfIterator);
 
@@ -73,7 +73,7 @@ public:
 };
 
 
-NARY_ITER_STATE(ZorbaListCollectionsIterator, CollectionNamesListState);
+NARY_ITER_STATE(DcAvailableCollectionsIterator, CollectionNamesListState);
 
 NARY_ITER(ScIsDeclaredCollectionIterator);
 
