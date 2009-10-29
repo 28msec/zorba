@@ -527,9 +527,12 @@ bool Decimal::operator>=(const Integer& aInteger) const {
 }
 
 xqpString Decimal::decimalToString(MAPM theValue, int precision) {
+  bool do_reduce = false;
 #ifndef ZORBA_NO_BIGNUMBERS
   char lBuffer[1024];
  theValue.toFixPtString(lBuffer, precision);
+ if(precision < ZORBA_FLOAT_POINT_PRECISION)
+   do_reduce = true;
 #else
   char lBuffer[174];
   if(theValue == 0)
@@ -538,6 +541,7 @@ xqpString Decimal::decimalToString(MAPM theValue, int precision) {
   //  sprintf(lBuffer, "%.20lf", theValue);
   else
     sprintf(lBuffer, "%.16lf", theValue);
+  do_reduce = true;
 #endif
 
   // Note in the canonical representation the decimal point is required
@@ -553,9 +557,145 @@ xqpString Decimal::decimalToString(MAPM theValue, int precision) {
     if(*lastChar=='.')
       *lastChar=0;
   }
-    
+  //+debug
+/*
+  char str1[100];
+  strcpy(str1, "9.99999");
+  Decimal::reduceFloatingPointString(str1);
+  strcpy(str1, "9.999999999");
+  Decimal::reduceFloatingPointString(str1);
+  strcpy(str1, "9.999999999E12");
+  Decimal::reduceFloatingPointString(str1);
+  strcpy(str1, "-9.999999999E12");
+  Decimal::reduceFloatingPointString(str1);
+  strcpy(str1, "9.99919999");
+  Decimal::reduceFloatingPointString(str1);
+  strcpy(str1, "9.0000000001");
+  Decimal::reduceFloatingPointString(str1);
+  strcpy(str1, "0.000009999998");
+  Decimal::reduceFloatingPointString(str1);
+*/
+
+
+  if(do_reduce)
+    Decimal::reduceFloatingPointString(lBuffer);
   xqpString lResult = lBuffer;
   return lResult;
+}
+
+/*
+    Remove trailing .99999 or .000001.
+    Find four or five consecutive 9 or 0 after decimal point and eliminate them.
+*/
+void Decimal::reduceFloatingPointString(char *str)
+{
+  char *strDot = strrchr(str, '.');
+  if(!strDot)
+    return;//not a floating point number
+  char *lE = strrchr(str, 'E');
+  int len = strlen(str);
+  bool has_E = false;
+  if(!lE)
+    lE = strrchr(str, 'e');
+  if(!lE)
+    lE = str + len;
+  else
+    has_E = true;
+  char *digit_ptr = lE-1;
+  int pos = (digit_ptr - strDot);
+  while(pos > 8) //(*digit_ptr != '.')
+  {
+    if(*digit_ptr == '9')
+    {
+      if((digit_ptr[-1] == '9') && (digit_ptr[-2] == '9') && (digit_ptr[-3] == '9'))
+      {
+        if(isdigit(digit_ptr[1]) && (digit_ptr[1] >= '5'))
+          digit_ptr -= 4;
+        else if(digit_ptr[-4] == '9')
+          digit_ptr -= 5;
+        else
+          goto nextDigit;
+        //now add 1 to remaining digits
+        char *last_digit = digit_ptr;
+        while(digit_ptr >= str)
+        {
+          if(digit_ptr[0] == '.')
+          {//skip
+          }
+          else if(digit_ptr[0] == '9')
+          {
+            digit_ptr[0] = '0';
+            if(last_digit == digit_ptr)
+              last_digit--;
+          }
+          else
+          {
+            if(isdigit(digit_ptr[0]))
+              digit_ptr[0]++;
+            break;
+          }
+          digit_ptr--;
+        }
+        if(last_digit[0] != '.')
+          last_digit++;
+        else if(has_E)
+        {
+          last_digit[1] = '0';
+          last_digit += 2;
+        }
+        if((digit_ptr < str) || !isdigit(digit_ptr[0]))
+        {
+          memmove(str+1, str, (last_digit-str));
+          last_digit++;
+          if(isdigit(str[0]))
+            str[0] = '1';
+          else
+            str[1] = '1';
+          if(has_E)
+          {
+            //increment the Exponent
+            strDot++;
+            strDot[0] = strDot[-1];
+            strDot[-1] = '.';
+            int expon = atoi(lE+1);
+            expon++;
+            sprintf(lE+1, "%d", expon);
+            last_digit--;
+          }
+        }
+        memmove(last_digit, lE, strlen(lE));
+        last_digit[strlen(lE)] = 0;
+        break;
+      }
+    }
+    else if(*digit_ptr == '0')
+    {
+      if((digit_ptr[-1] == '0') && (digit_ptr[-2] == '0') && (digit_ptr[-3] == '0'))
+      {
+        if(isdigit(digit_ptr[1]) && (digit_ptr[1] < '5'))
+          digit_ptr -= 4;
+        else if(digit_ptr[-4] == '0')
+          digit_ptr -= 5;
+        else
+          goto nextDigit;
+        while(*digit_ptr == '0')
+          digit_ptr--;
+        if(*digit_ptr != '.')
+          digit_ptr++;
+        else if(has_E)
+        {
+          digit_ptr[1] = '0';
+          digit_ptr += 2;
+        }
+        memmove(digit_ptr, lE, strlen(lE));
+        digit_ptr[strlen(lE)] = 0;
+        break;
+      }
+    }
+nextDigit:
+    digit_ptr--;
+    pos--;
+  }
 }
 
 xqpString Decimal::toString() const {

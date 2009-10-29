@@ -78,6 +78,7 @@ public:
 
 private:
   static xqpString decimalToString(MAPM, int precision=ZORBA_FLOAT_POINT_PRECISION);
+  static void reduceFloatingPointString(char *str);
 
 public:
   static Decimal& zero();

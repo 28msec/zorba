@@ -838,6 +838,7 @@ xqpString FloatImpl<FloatType>::toString(bool no_scientific_format) const {
       lZeros[1] = 0;
     }
 
+    Decimal::reduceFloatingPointString(lBuffer);
     return lBuffer;
   }
 }
