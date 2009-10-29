@@ -1,0 +1,22 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns="http://ns.example.com/books-modified-zorba"
+           xmlns:b="http://ns.example.com/books-modified-zorba"
+           targetNamespace="http://ns.example.com/books-modified-zorba"
+           elementFormDefault="qualified">
+           
+ <!-- importing the XML namespace makes xml:id an ID attribute under lax validation -->
+ <xs:import namespace="http://www.w3.org/XML/1998/namespace"
+              schemaLocation="http://www.w3.org/2001/xml.xsd"/>       
+
+ <xs:element name="ITEM" type="itemType"/>
+ 
+ <xs:complexType name="itemType">
+   <xs:sequence>
+    <xs:element name="TITLE" type="xs:string"/>
+   </xs:sequence>
+   <xs:attribute name="CAT" type="xs:IDREF" use="required"/>
+   <xs:attribute name="TAX" type="xs:NMTOKEN" use="optional" default="V"/>
+   <!--xs:anyAttribute namespace="##other" processContents="lax"/-->
+  </xs:complexType>
+   
+</xs:schema>

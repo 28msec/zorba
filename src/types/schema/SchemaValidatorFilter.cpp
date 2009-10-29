@@ -50,6 +50,8 @@
 # define XERCESC_XMLSize_t XMLSize_t
 #endif
 
+
+//using namespace std;
 XERCES_CPP_NAMESPACE_USE;
 
 namespace zorba {
@@ -538,6 +540,9 @@ void SchemaValidatorFilter::processAttrs(XMLElementDecl *elemDecl)
       //  Its not valid for this element, so issue an error if we are
       //  validating.
       //
+      
+      //cout << "  sv  att not valid " << XMLString::transcode(localname) << endl;
+ 
       XMLBufBid bbMsg(&fBufMgr);
       XMLBuffer& bufMsg = bbMsg.getBuffer();
       if(uriId != fEmptyNamespaceId) 
@@ -1501,10 +1506,6 @@ void SchemaValidatorFilter::error(
 #endif // _XERCES_VERSION >= 30000
     )
 {
-  theErrorOccurred = true;
-  theEventBuffer->resetAttList();
-  theEventBuffer->resetTextInfo();
-
   // Skip validation errors if validation isn't strict
   if(!theStrictValidation &&
      errDomain == XMLUni::fgValidityDomain &&
@@ -1512,10 +1513,14 @@ void SchemaValidatorFilter::error(
      errCode != XMLValid::ElementNotValidForContent &&
      errCode != XMLValid::NotEnoughElemsForCM &&
      errCode != XMLValid::EmptyNotValidForContent &&
+     //errCode != XMLValid::AttNotDefinedForElement &&
      errCode != XMLValid::RequiredAttrNotProvided)
-     //errCode != XMLValid::AttNotDefinedForElement)
     return;
   
+  theErrorOccurred = true;
+  theEventBuffer->resetAttList();
+  theEventBuffer->resetTextInfo();
+
   XMLBuffer exc_msg(1023);
   exc_msg.set( XMLChArray("Schema validation failed: ").get() );
   exc_msg.append(errorText);
