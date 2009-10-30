@@ -55,7 +55,7 @@ canonicalizeAndCompare(const std::string& aComparisonMethod,
   {
     // prepend and append an artifical root tag as requested by the guidelines
     std::ostringstream lTmpRefResult;
-    lTmpRefResult << "<root>" << std::endl;
+    lTmpRefResult << "<root>";
     std::ifstream lRefInStream(aRefFile);
     if (!lRefInStream.good())
     {
@@ -63,16 +63,22 @@ canonicalizeAndCompare(const std::string& aComparisonMethod,
       return 8;
     }
 
-    char buf[1024];
+    char buf[2048];
+    char buf2[2048];
     char* bufp;
+    char* bufp2;
+    char* bufend = (buf + 2048);
 
     while (!lRefInStream.eof()) 
     {
-      lRefInStream.read(buf, 1024);
+      memset(buf, 0, 2048);
+
+      lRefInStream.read(buf, 2048);
+
       bufp = buf;
+      bufp2 = buf2;
 
       // Skip xml declaration, if any
-      long numSkipped;
       if (!strncmp(bufp, "<?xml", 5))
       {
         while (*bufp != '\n' && strncmp(bufp, "?>", 2))
@@ -90,23 +96,33 @@ canonicalizeAndCompare(const std::string& aComparisonMethod,
           ++bufp;
       }
 
-      numSkipped = (bufp - buf);
+      // Convert \r\n to \n
+      while (bufp != bufend && *bufp != '\0')
+      {
+        if (*bufp == '\r' && *(bufp+1) == '\n')
+          ++bufp;
 
-      lTmpRefResult.write(bufp, lRefInStream.gcount() - numSkipped);
+        *bufp2 = *bufp;
+
+        ++bufp;
+        ++bufp2;
+      }
+
+      if (*bufp == '\0')
+        *bufp2 = *bufp;
+
+      lTmpRefResult.write(buf2, bufp2 - buf2);
     }
-
-    if (buf[lRefInStream.gcount()-1] != '\n')
-      lTmpRefResult << std::endl;
 
     lTmpRefResult << "</root>";
 
     lRefResult_ptr = xmlReadMemory(lTmpRefResult.str().c_str(),
                                    lTmpRefResult.str().size(),
-                                   "ref_result.xml", 0, 0);
+                                   "ref_result.xml", 0, XML_PARSE_NOBLANKS);
 
     // prepend and append an artifical root tag as requested by the guidelines
     std::ostringstream lTmpResult;
-    lTmpResult << "<root>" << std::endl;
+    lTmpResult << "<root>";
     std::ifstream lInStream(aResultFile);
     if (!lInStream.good())
     {
@@ -116,15 +132,18 @@ canonicalizeAndCompare(const std::string& aComparisonMethod,
 
     while (!lInStream.eof()) 
     {
-      lInStream.read(buf, 1024);
+      memset(buf, 0, 2048);
+
+      lInStream.read(buf, 2048);
+
       lTmpResult.write(buf, lInStream.gcount());
     }
 
-    lTmpResult << std::endl << "</root>";
+    lTmpResult << "</root>";
 
     lResult_ptr = xmlReadMemory(lTmpResult.str().c_str(),
                                 lTmpResult.str().size(),
-                                "result.xml", 0, 0);
+                                "result.xml", 0, XML_PARSE_NOBLANKS);
     
   }
   else if (aComparisonMethod.compare("Error") == 0 ) 
@@ -274,8 +293,8 @@ fileEquals(
     std::getline(ri, rLine);
 
     // TODO: should be removed, right?
-    trim ( lLine );
-    trim ( rLine );
+    //trim ( lLine );
+    //trim ( rLine );
 
     while ( (aCol = lLine.compare(rLine)) != 0) 
     {
