@@ -11,7 +11,7 @@ declare sequential function local:init() {
   ddl:create-collection($ns:collection, local:create-person("default"));
 };
 
-declare function local:testa_1() {
+declare sequential function local:testa_1() {
   try {
     block {
       ddl:insert-nodes-first($ns:collection, <a/>);
@@ -25,7 +25,7 @@ declare sequential function local:testa_2() {
   ddl:insert-nodes-first($ns:collection, local:create-person("aaa"));
 };
 
-declare function local:testb_1() {
+declare sequential function local:testb_1() {
   try {
     block {
       ddl:insert-nodes-last($ns:collection, <b/>);
@@ -39,7 +39,7 @@ declare sequential function local:testb_2() {
   ddl:insert-nodes-last($ns:collection, local:create-person("bbb"));
 };
 
-declare function local:testc_1() {
+declare sequential function local:testc_1() {
   try {
     block {
       let $x as schema-element(s:person) := dc:collection($ns:collection)[1]
@@ -57,7 +57,7 @@ declare sequential function local:testc_2() {
     ddl:insert-nodes-before($ns:collection, $x, local:create-person("ccc"));
 };
 
-declare function local:testd_1() {
+declare sequential function local:testd_1() {
   try {
     block {
       let $x as schema-element(s:person) := dc:collection($ns:collection)[1]
@@ -76,7 +76,7 @@ declare sequential function local:testd_2() {
 };
 
 
-declare function local:teste_1() {
+declare sequential function local:teste_1() {
   try {
     block {
       ddl:insert-nodes-at($ns:collection, 1, <e/>);
@@ -90,7 +90,7 @@ declare sequential function local:teste_2() {
   ddl:insert-nodes-at($ns:collection, 1, local:create-person("eee"));
 };
 
-declare function local:testf_1() {
+declare sequential function local:testf_1() {
   try {
     block {
       let $x as schema-element(s:person) := dc:collection($ns:collection)[1]

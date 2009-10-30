@@ -10,7 +10,7 @@ declare sequential function local:init() {
   );
 };
 
-declare function local:testa_1() {
+declare sequential function local:testa_1() {
   try {
     block {
       ddl:remove-nodes($ns:coll_1, subsequence(dc:collection($ns:coll_1), 1, 2));
@@ -20,7 +20,7 @@ declare function local:testa_1() {
   }
 };
 
-declare function local:testa_2() {
+declare sequential function local:testa_2() {
   try {
     block {
       ddl:remove-nodes($ns:coll_2, subsequence(dc:collection($ns:coll_2), 1, 2));
@@ -30,7 +30,7 @@ declare function local:testa_2() {
   }
 };
 
-declare function local:testa_3() {
+declare sequential function local:testa_3() {
   try {
     block {
       ddl:remove-nodes($ns:coll_3, subsequence(dc:collection($ns:coll_3), 2, 2));
@@ -44,7 +44,7 @@ declare sequential function local:testa_4() {
   ddl:remove-nodes($ns:coll_3, subsequence(dc:collection($ns:coll_3), 1, 2));
 };
 
-declare function local:testb_1() {
+declare sequential function local:testb_1() {
   try {
     block {
       ddl:remove-node-at($ns:coll_1, 1);
@@ -54,7 +54,7 @@ declare function local:testb_1() {
   }
 };
 
-declare function local:testb_2() {
+declare sequential function local:testb_2() {
   try {
     block {
       ddl:remove-node-at($ns:coll_2, 1);
@@ -64,7 +64,7 @@ declare function local:testb_2() {
   }
 };
 
-declare function local:testb_3() {
+declare sequential function local:testb_3() {
   try {
     block {
       ddl:remove-node-at($ns:coll_3, 2);

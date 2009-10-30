@@ -23,7 +23,7 @@ declare function local:testb() {
   }
 };
 
-declare function local:testc() {
+declare sequential function local:testc() {
   try {
     block {
       ddl:drop-collection($ns:http);
@@ -33,7 +33,7 @@ declare function local:testc() {
   }
 };
 
-declare function local:testd() {
+declare sequential function local:testd() {
   try {
     block {
       ddl:insert-nodes-first($ns:http, <a/>);
@@ -43,7 +43,7 @@ declare function local:testd() {
   }
 };
 
-declare function local:teste() {
+declare sequential function local:teste() {
   try {
     block {
       ddl:insert-nodes-last($ns:http, <a/>);
@@ -53,7 +53,7 @@ declare function local:teste() {
   }
 };
 
-declare function local:testf() {
+declare sequential function local:testf() {
   try {
     block {
       ddl:insert-nodes-before($ns:http, <a/>, <a/>);
@@ -63,7 +63,7 @@ declare function local:testf() {
   }
 };
 
-declare function local:testg() {
+declare sequential function local:testg() {
   try {
     block {
       ddl:insert-nodes-after($ns:http, <a/>, <a/>);
@@ -73,7 +73,7 @@ declare function local:testg() {
   }
 };
 
-declare function local:testh() {
+declare sequential function local:testh() {
   try {
     block {
       ddl:insert-nodes-at($ns:http, 1, <a/>);
@@ -83,7 +83,7 @@ declare function local:testh() {
   }
 };
 
-declare function local:testi() {
+declare sequential function local:testi() {
   try {
     block {
       ddl:remove-nodes($ns:http, <a/>);
@@ -93,7 +93,7 @@ declare function local:testi() {
   }
 };
 
-declare function local:testj() {
+declare sequential function local:testj() {
   try {
     block {
       ddl:remove-node-at($ns:http, 1);

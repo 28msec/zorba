@@ -6,7 +6,7 @@ declare sequential function local:init() {
   ddl:create-collection($ns:collection_1, (<x/>,<y/>));
 };
 
-declare function local:testa() {
+declare sequential function local:testa() {
   try {
     block {
       ddl:remove-node-at($ns:collection_1, 0);
@@ -16,7 +16,7 @@ declare function local:testa() {
   }
 };
 
-declare function local:testb() {
+declare sequential function local:testb() {
   try {
     block {
       ddl:remove-node-at($ns:collection_1, 3);

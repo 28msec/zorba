@@ -5,7 +5,7 @@ declare namespace ns = "http://www.unknown.com/";
 
 declare variable $name as xs:QName := xs:QName("ns:name");
 
-declare function local:testa() {
+declare sequential function local:testa() {
   try {
     block {
       dc:is-available-collection($name);
@@ -15,7 +15,7 @@ declare function local:testa() {
   }
 };
 
-declare function local:testb() {
+declare sequential function local:testb() {
   try {
     block {
       dc:collection($name);
@@ -25,7 +25,7 @@ declare function local:testb() {
   }
 };
 
-declare function local:testc() {
+declare sequential function local:testc() {
   try {
     block {
       dc:index-of($name, <a/>);
@@ -35,7 +35,7 @@ declare function local:testc() {
   }
 };
 
-declare function local:testd() {
+declare sequential function local:testd() {
   try {
     block {
       ddl:create-collection($name);
@@ -45,7 +45,7 @@ declare function local:testd() {
   }
 };
 
-declare function local:teste() {
+declare sequential function local:teste() {
   try {
     block {
       ddl:drop-collection($name);
@@ -55,7 +55,7 @@ declare function local:teste() {
   }
 };
 
-declare function local:testf() {
+declare sequential function local:testf() {
   try {
     block {
       ddl:insert-nodes-first($name, <a/>);
@@ -65,7 +65,7 @@ declare function local:testf() {
   }
 };
 
-declare function local:testg() {
+declare sequential function local:testg() {
   try {
     block {
       ddl:insert-nodes-last($name, <a/>);
@@ -75,7 +75,7 @@ declare function local:testg() {
   }
 };
 
-declare function local:testh() {
+declare sequential function local:testh() {
   try {
     block {
       ddl:insert-nodes-before($name, <a/>, <a/>);
@@ -85,7 +85,7 @@ declare function local:testh() {
   }
 };
 
-declare function local:testi() {
+declare sequential function local:testi() {
   try {
     block {
       ddl:insert-nodes-after($name, <a/>, <a/>);
@@ -95,7 +95,7 @@ declare function local:testi() {
   }
 };
 
-declare function local:testj() {
+declare sequential function local:testj() {
   try {
     block {
       ddl:insert-nodes-at($name, 1, <a/>);
@@ -105,7 +105,7 @@ declare function local:testj() {
   }
 };
 
-declare function local:testk() {
+declare sequential function local:testk() {
   try {
     block {
       ddl:remove-nodes($name, <a/>);
@@ -115,7 +115,7 @@ declare function local:testk() {
   }
 };
 
-declare function local:testl() {
+declare sequential function local:testl() {
   try {
     block {
       ddl:remove-node-at($name, 1);

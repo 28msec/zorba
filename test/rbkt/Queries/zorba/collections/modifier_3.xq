@@ -6,7 +6,7 @@ declare sequential function local:init() {
     ddl:create-collection(xs:QName("ns:coll_1"), (<a><x/></a>,<b/>,<c/>,<d/>,<e/>,<f/>,<g/>,<h/>,<i/>,<j/>,<k/>));
 };
 
-declare function local:test1() {
+declare sequential function local:test1() {
   try {
     block {
       let $x as element() := dc:collection($ns:coll_1)[1]
@@ -18,7 +18,7 @@ declare function local:test1() {
   }
 };
 
-declare function local:test2() {
+declare sequential function local:test2() {
   try {
     block {
       let $x as element() := dc:collection($ns:coll_1)[1]
@@ -30,7 +30,7 @@ declare function local:test2() {
   }
 };
 
-declare function local:test3() {
+declare sequential function local:test3() {
   try {
     block {
       let $x as element() := dc:collection($ns:coll_1)[1]
@@ -42,7 +42,7 @@ declare function local:test3() {
   }
 };
 
-declare function local:test4() {
+declare sequential function local:test4() {
   try {
     block {
       let $x as element() := dc:collection($ns:coll_1)[1]
