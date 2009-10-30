@@ -92,7 +92,7 @@ static expr_t translate_aux(
 
 #define TRACE_VISIT()                                              \
   const QueryLoc& loc = v.get_location(); (void)loc;               \
-  long sctxid = theCCB->m_cur_sctx; (void)sctxid;                  \
+  short sctxid = theCCB->m_cur_sctx; (void)sctxid;                  \
                                                                    \
   if (Properties::instance()->traceTranslator())                   \
     cout << string(++print_depth, ' ') << TRACE << ", stk size "   \
@@ -102,7 +102,7 @@ static expr_t translate_aux(
 
 #define TRACE_VISIT_OUT()                                          \
   const QueryLoc& loc = v.get_location(); (void)loc;               \
-  long sctxid = theCCB->m_cur_sctx; (void)sctxid;                  \
+  short sctxid = theCCB->m_cur_sctx; (void)sctxid;                  \
                                                                    \
   if (Properties::instance()->traceTranslator())                   \
     cout << string(print_depth--, ' ') << TRACE << ", stk size: "  \
@@ -113,12 +113,12 @@ static expr_t translate_aux(
 
 #define TRACE_VISIT()                                              \
   const QueryLoc& loc = v.get_location(); (void)loc;               \
-  long sctxid = theCCB->m_cur_sctx; (void)sctxid;                  \
+  short sctxid = theCCB->m_cur_sctx; (void)sctxid;                  \
 
 
 #define TRACE_VISIT_OUT()                                          \
   const QueryLoc& loc = v.get_location(); (void)loc;               \
-  long sctxid = theCCB->m_cur_sctx; (void)sctxid;                  \
+  short sctxid = theCCB->m_cur_sctx; (void)sctxid;                  \
 
 #endif
 
@@ -1520,7 +1520,7 @@ void declare_var(const global_binding& b, std::vector<expr_t>& stmts)
   var_expr_t var = b.first;
   expr_t initExpr = b.second;
 
-  long sctxid = theCCB->m_cur_sctx;
+  short sctxid = theCCB->m_cur_sctx;
   const QueryLoc& loc = var->get_loc();
 
   xqpStringStore dot (".");
