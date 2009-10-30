@@ -22,9 +22,13 @@
 
 #include "context/static_context.h"
 
+#include "compiler/api/compilercb.h"
 #include "compiler/normalizer/normalizer.h"
 #include "compiler/expression/expr.h"
-#include "compiler/api/compilercb.h"
+#include "compiler/expression/fo_expr.h"
+#include "compiler/expression/var_expr.h"
+#include "compiler/expression/flwor_expr.h"
+#include "compiler/expression/path_expr.h"
 #include "compiler/expression/expr_visitor.h"
 
 #include "functions/signature.h"
@@ -120,7 +124,7 @@ void end_visit(flwor_expr& node)
 {
   for (unsigned i = 0; i < node.num_clauses(); i++) 
   {
-    flwor_clause& c = *(node[i]);
+    flwor_clause& c = *node.get_clause(i, true);
 
     if (c.get_kind() == flwor_clause::where_clause) 
     {
@@ -363,8 +367,8 @@ DEF_VISIT_METHODS (flowctl_expr)
 
 DEF_VISIT_METHODS (function_def_expr)
 
-DEF_VISIT_METHODS (ft_select_expr)
-DEF_VISIT_METHODS (ft_contains_expr)
+//DEF_VISIT_METHODS (ft_select_expr)
+//DEF_VISIT_METHODS (ft_contains_expr)
 
 };
 

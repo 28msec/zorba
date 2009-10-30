@@ -19,7 +19,7 @@
 
 #include "compiler/api/compilercb.h"
 #include "compiler/rewriter/rules/ruleset.h"
-#include "compiler/expression/expr.h"
+#include "compiler/expression/flwor_expr.h"
 #include "compiler/rewriter/tools/expr_tools.h"
 #include "compiler/indexing/value_index.h"
 
@@ -486,13 +486,13 @@ static void expandVars(
 
     if (wrapper->get_expr()->get_expr_kind() == var_expr_kind)
     {
-      var_expr* var = reinterpret_cast<var_expr*>(wrapper->get_expr().getp());
+      const var_expr* var = reinterpret_cast<const var_expr*>(wrapper->get_expr());
       int varid = (*rCtx.m_varid_map)[var];
 
       if (varid > outerVarId)
       {
         wrapper->set_expr(var->get_forletwin_clause()->get_expr());
-        expandVars(rCtx, wrapper->get_expr(), outerVarId);
+        expandVars(rCtx, wrapper->get_expr(true), outerVarId);
         return;
       }
     }

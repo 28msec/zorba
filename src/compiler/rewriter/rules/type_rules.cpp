@@ -13,23 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include "system/globalenv.h"
+
+#include "types/root_typemanager.h"
+#include "types/typeops.h"
+
+#include "compiler/expression/flwor_expr.h"
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/rewriter/tools/expr_tools.h"
 
 #include "context/static_context.h"
 
-#include "types/root_typemanager.h"
-#include "types/typeops.h"
-
 #include "functions/function.h"
-
-#include "system/globalenv.h"
 
 #include "util/properties.h"
 
 using namespace std;
 
-namespace zorba {
+namespace zorba 
+{
 
 static void inferWinCondVarTypes(const flwor_wincond* cond, xqtref_t domainType);
 
@@ -223,7 +226,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
   // Note: the if cond is true for promote_expr, treat_expr, and cast_expr
   if ((pe = dynamic_cast<cast_base_expr *>(node)) != NULL) 
   {
-    expr_t arg = pe->get_input();
+    expr_t arg = pe->get_input(true);
     xqtref_t arg_type = arg->return_type(rCtx.getStaticContext(node));
     xqtref_t target_type = pe->get_target_type();
 
@@ -243,7 +246,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     {
       return new treat_expr(node->get_sctx_id(),
                             node->get_loc(),
-                            pe->get_input(),
+                            arg,
                             target_type,
                             XPTY0004,
                             false);
@@ -286,7 +289,7 @@ static void modify_expr (expr_t &old, expr_t ne) {
 }
 
 
-static xqtref_t specialize_numeric(fo_expr *fo, static_context *sctx)
+static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx)
 {
   const function* fn = fo->get_func();
   expr_t arg0 = (*fo)[0];
@@ -299,7 +302,7 @@ static xqtref_t specialize_numeric(fo_expr *fo, static_context *sctx)
                            *t1,
                            fn->arithmetic_kind() == ArithmeticConsts::DIVISION);
   
-  if (!TypeOps::is_numeric(*aType)) 
+  if (!TypeOps::is_numeric(*aType))
   {
     return NULL;
   }
@@ -312,8 +315,8 @@ static xqtref_t specialize_numeric(fo_expr *fo, static_context *sctx)
   if (replacement != NULL) 
   {
     fo->set_func(replacement);
-    modify_expr ((*fo)[0], wrap_in_num_promotion (arg0, t0, aType));
-    modify_expr ((*fo)[1], wrap_in_num_promotion (arg1, t1, aType));    
+    modify_expr((*fo)[0], wrap_in_num_promotion(arg0, t0, aType));
+    modify_expr((*fo)[1], wrap_in_num_promotion(arg1, t1, aType));    
     return aType;
   }
 
@@ -383,7 +386,7 @@ RULE_REWRITE_POST(SpecializeOperations)
         return node;
       }
     }
-    else if (fo->size() == 2) 
+    else if (fo->num_args() == 2) 
     {
       expr_t arg [2];
       arg [0] = (*fo)[0];
@@ -483,7 +486,8 @@ RULE_REWRITE_POST(SpecializeOperations)
     {
       if ((*flworExpr)[i]->get_kind() == flwor_clause::order_clause)
       {
-        orderby_clause* obc = reinterpret_cast<orderby_clause*>((*flworExpr)[i]);
+        orderby_clause* obc = reinterpret_cast<orderby_clause*>
+                              (flworExpr->get_clause(i, false));
 
         ulong numColumns = obc->num_columns();
         for (ulong j = 0; j < numColumns; ++j)
@@ -513,21 +517,21 @@ RULE_REWRITE_POST(SpecializeOperations)
 }
 
 
-static expr_t wrap_in_num_promotion (expr_t arg, xqtref_t oldt, xqtref_t t) 
+static expr_t wrap_in_num_promotion(expr_t arg, xqtref_t oldt, xqtref_t t) 
 {
   if (TypeOps::is_subtype(*oldt, *t))
     return NULL;
 
-  if (arg->get_expr_kind () == promote_expr_kind
-      && TypeOps::type_max_cnt (*t) <= 1)
+  if (arg->get_expr_kind() == promote_expr_kind && TypeOps::type_max_cnt(*t) <= 1)
   {
-    promote_expr *pe = arg.cast<promote_expr> ();
-    expr_t inner_e = pe->get_input ();
-    xqtref_t inner_t = pe->get_target_type ();
-    if (TypeOps::is_equal (*inner_t, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
+    promote_expr* pe = arg.cast<promote_expr>();
+    expr_t inner_e = pe->get_input(true);
+    xqtref_t inner_t = pe->get_target_type();
+    if (TypeOps::is_equal(*inner_t, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
       arg = inner_e;
   }
-  return new promote_expr (arg->get_sctx_id(), arg->get_loc (), arg, t);
+
+  return new promote_expr(arg->get_sctx_id(), arg->get_loc(), arg, t);
 }
 
 

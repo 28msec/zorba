@@ -53,10 +53,10 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         PlanIter_t& arg,
-        store::Item* qname)
+        const store::Item* qname)
     :
     UnaryBaseIterator<CreateInternalIndexIterator, PlanIteratorState>(sctx, loc, arg),
-    theQName(qname)
+    theQName(const_cast<store::Item*>(qname))
   {
   }
 

@@ -31,7 +31,6 @@
 #include "functions/signature.h"
 
 #include "compiler/expression/var_expr.h"
-#include "compiler/expression/flwor_expr.h"
 
 #include "context/static_context.h"
 #include "context/namespace_context.h"
@@ -39,7 +38,7 @@
 #include "types/typeimpl.h"
 
 #include <zorba/store_consts.h>
-#include "store/api/fullText/ft_options.h"
+
 #include "store/api/update_consts.h"
 #include "store/api/item.h"
 
@@ -48,7 +47,6 @@ namespace zorba
 
 class expr_visitor;
 class NodeNameTest;
-class match_expr;
 class signature;
 
 
@@ -75,42 +73,164 @@ public:
 
   expr_kind_t get_expr_kind() const { return sequential_expr_kind; }
 
-  bool cache_compliant() { return true; }
+  bool cache_compliant() const { return true; }
 
   unsigned size() const { return sequence.size (); }
 
   const expr_t& operator[](int i) const { return sequence [i]; }
 
-  expr_t& operator[](int i) { invalidate(); return sequence [i]; }
-
   void push_back(expr_t expr) 
   {
     invalidate();
     sequence.push_back(expr);
-    compute_upd_seq_kind();
+    compute_scripting_kind();
   }
 
   void push_front(expr_t front) 
   {
     invalidate();
     sequence.insert(sequence.begin(), front);
-    compute_upd_seq_kind();
+    compute_scripting_kind();
   }
 
-  void compute_upd_seq_kind() const;
+  void compute_scripting_kind() const;
 
-  xqtref_t return_type_impl(static_context *);
+  xqtref_t return_type_impl(static_context *) const;
 
-  expr_iterator_data *make_iter();
+  expr_iterator_data* make_iter();
 
   void next_iter(expr_iterator_data&);
 
-  virtual expr_t clone(substitution_t& s);
+  expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
   std::ostream& put(std::ostream&) const;
 };
+
+
+/***************************************************************************//**
+  [169] TryCatchExpr ::= TryClause CatchClauseList
+
+  [170] TryClause ::= "try" "{" TryTargetExpr "}"
+
+  [171] TryTargetExpr ::= Expr
+
+        CatchClauseList := CatchClause+
+
+  [172] CatchClause ::= "catch" CatchErrorList CatchVars? "{" Expr "}"
+
+  [173] CatchErrorList ::= NameTest ("|" NameTest)*
+
+  [174] CatchVars ::= "(" CatchErrorCode ("," CatchErrorDesc ("," CatchErrorVal)?)? ")"
+
+  [175] CatchErrorCode ::= "$" VarName
+
+  [176] CatchErrorDesc ::= "$" VarName
+
+  [177] CatchErrorVal ::= "$" VarName
+********************************************************************************/
+class catch_clause : public SimpleRCObject 
+{
+  friend class trycatch_expr;
+
+public:
+  typedef rchandle<NodeNameTest> nt_t;
+  typedef std::vector<nt_t> nt_list_t;
+
+protected:
+  nt_list_t   theNameTests;
+  var_expr_t  theErrorCodeVar;
+  var_expr_t  theErrorDescVar;
+  var_expr_t  theErrorItemVar;
+  expr_t      theCatchExpr;
+  
+public:
+  SERIALIZABLE_CLASS(catch_clause)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(catch_clause, SimpleRCObject)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  catch_clause();
+  
+  void set_nametests(nt_list_t& a) { theNameTests = a; }
+
+  nt_list_t& get_nametests() { return theNameTests; }
+  
+  void add_nametest_h(nt_t n) { theNameTests.push_back(n); }
+  
+  void set_error_code_var(varref_t a) { theErrorCodeVar = a; }
+
+  const var_expr* get_error_code_var() const { return theErrorCodeVar.getp(); }
+  
+  void set_error_desc_var(varref_t a) { theErrorDescVar = a; }
+
+  const var_expr* get_error_desc_var() const { return theErrorDescVar.getp(); }
+  
+  void set_error_item_var(varref_t a) { theErrorItemVar = a; }
+
+  const var_expr* get_error_item_var() const { return theErrorItemVar.getp(); }
+  
+  void set_catch_expr(expr_t a) { theCatchExpr = a; }
+
+  const expr* get_catch_expr() const { return theCatchExpr.getp(); }
+};
+
+
+typedef rchandle<catch_clause> catch_clause_t;
+
+
+class trycatch_expr : public expr 
+{
+protected:
+    expr_t                      theTryExpr;
+    std::vector<catch_clause_t> theCatchClauses;
+
+public:
+  SERIALIZABLE_CLASS(trycatch_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(trycatch_expr, expr)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  trycatch_expr(short sctx, const QueryLoc&, expr_t tryExpr);
+
+  expr_kind_t get_expr_kind() const { return trycatch_expr_kind; }
+
+  bool cache_compliant() const { return true; }
+
+  const expr* get_try_expr() const { return theTryExpr; }
+
+  void add_clause_in_front(catch_clause_t cc);
+  
+  std::vector<catch_clause_t>::const_iterator begin() const
+  {
+    return theCatchClauses.begin();
+  }
+
+  std::vector<catch_clause_t>::const_iterator end() const
+  {
+    return theCatchClauses.end(); 
+  }
+
+  uint32_t clause_count() const { return theCatchClauses.size(); }
+  
+  catch_clause_t const& operator[](int i) const { return theCatchClauses[i]; }
+
+  void compute_scripting_kind() const;
+
+  // TODO return_type_impl() ????
+  
+  expr_iterator_data* make_iter();
+  
+  void next_iter(expr_iterator_data&);
+
+  // TODO clone() ????
+
+  void accept(expr_visitor&);
+
+  std::ostream& put(std::ostream&) const;
+};
+
 
 
 /*******************************************************************************
@@ -139,13 +259,13 @@ public:
 
   expr_kind_t get_expr_kind() const { return if_expr_kind; }
 
-  bool cache_compliant() { return true; }
+  bool cache_compliant() const { return true; }
   
-  expr* get_cond_expr() { invalidate(); return theCondExpr; }
+  expr* get_cond_expr(bool invalidate);
 
-  expr* get_then_expr() { invalidate(); return theThenExpr; }
+  expr* get_then_expr(bool invalidate);
 
-  expr* get_else_expr() { invalidate(); return theElseExpr; }
+  expr* get_else_expr(bool invalidate);
 
   const expr* get_cond_expr() const { return theCondExpr; }
 
@@ -153,11 +273,11 @@ public:
 
   const expr* get_else_expr() const { return theElseExpr; }
 
-  xqtref_t return_type_impl(static_context* sctx);
+  xqtref_t return_type_impl(static_context*) const;
 
-  void compute_upd_seq_kind() const;
+  void compute_scripting_kind() const;
 
-  virtual expr_t clone(substitution_t& s);
+  expr_t clone(substitution_t& s) const;
 
   void next_iter(expr_iterator_data&);
 
@@ -193,12 +313,17 @@ public:
 
   expr_kind_t get_expr_kind() const { return order_expr_kind; }
 
+  bool cache_compliant() const { return true; }
+
   order_type_t get_type() const { return theType; }
-  expr_t get_expr() const { return theExpr; }
 
-  xqtref_t return_type_impl(static_context* sctx);
+  const expr* get_expr() const { return theExpr; }
 
-  expr_t clone(substitution_t& s);
+  void compute_scripting_kind() const;
+
+  xqtref_t return_type_impl(static_context*) const;
+
+  expr_t clone(substitution_t& s) const;
 
   void next_iter(expr_iterator_data&);
 
@@ -235,19 +360,23 @@ public:
 
   expr_kind_t get_expr_kind() const { return validate_expr_kind; }
 
-  expr_t get_expr() const { return theExpr; }
+  bool cache_compliant() const { return true; }
 
-  store::Item_t get_type_name() { return theTypeName; }
+  const expr* get_expr() const { return theExpr; }
+
+  const store::Item* get_type_name() const { return theTypeName; }
 
   TypeManager* get_typemgr() const { return theTypeMgr.getp(); }
 
   ParseConstants::validation_mode_t get_valmode() const { return theMode; }
 
-  xqtref_t return_type_impl(static_context* sctx);
+  void compute_scripting_kind() const;
+
+  xqtref_t return_type_impl(static_context*) const;
 
   void next_iter(expr_iterator_data&);
 
-  expr_t clone(substitution_t& s);
+  expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -277,17 +406,17 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  bool cache_compliant() { return true; }
+  bool cache_compliant() const { return true; }
 
-  expr_t get_input() { invalidate(); return theInputExpr; }
+  const expr* get_input() const { return theInputExpr.getp(); }
 
-  void set_input(expr_t input) { invalidate(); theInputExpr = input; }
-  
+  expr* get_input(bool invalidate);
+
   xqtref_t get_target_type() const;
 
   void set_target_type(xqtref_t target);
 
-  void compute_upd_seq_kind() const;
+  void compute_scripting_kind() const;
 };
 
 
@@ -304,7 +433,7 @@ public:
 public:
   cast_base_expr(short sctx, const QueryLoc& loc, expr_t input, xqtref_t type);
 
-  xqtref_t return_type_impl(static_context* sctx);
+  xqtref_t return_type_impl(static_context*) const;
 };
 
 
@@ -329,7 +458,7 @@ public:
 
   void next_iter(expr_iterator_data&);
 
-  expr_t clone(substitution_t& s);
+  expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -351,7 +480,7 @@ class treat_expr : public cast_base_expr
 {
 protected:
   XQUERY_ERROR theError;
-  bool check_prime;
+  bool         theCheckPrime;
 
 public:
   SERIALIZABLE_CLASS(treat_expr)
@@ -369,17 +498,17 @@ public:
 
   expr_kind_t get_expr_kind() const { return treat_expr_kind; }
 
-  XQUERY_ERROR get_err() { return theError; }
+  XQUERY_ERROR get_err() const { return theError; }
 
-  bool get_check_prime() { return check_prime; }
+  bool get_check_prime() const { return theCheckPrime; }
 
-  void set_check_prime(bool check_prime_) { check_prime = check_prime_; }
+  void set_check_prime(bool check_prime) { theCheckPrime = check_prime; }
 
-  xqtref_t return_type_impl(static_context* sctx);  
+  xqtref_t return_type_impl(static_context*) const;  
 
   void next_iter(expr_iterator_data&);
 
-  expr_t clone(substitution_t& s);
+  expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -431,11 +560,11 @@ public:
 
   expr_kind_t get_expr_kind() const { return promote_expr_kind; }
 
-  xqtref_t return_type_impl(static_context* sctx);
+  xqtref_t return_type_impl(static_context*) const;
 
   void next_iter(expr_iterator_data&);
 
-  expr_t clone(substitution_t& s);
+  expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -456,7 +585,7 @@ public:
 public:
   castable_base_expr(short sctx, const QueryLoc&, expr_t, xqtref_t);
 
-  xqtref_t return_type_impl(static_context* sctx);
+  xqtref_t return_type_impl(static_context*) const;
 };
 
 
@@ -481,7 +610,7 @@ public:
 
   void next_iter(expr_iterator_data&);
 
-  expr_t clone(substitution_t& s);
+  expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -506,7 +635,7 @@ public:
 
   void next_iter(expr_iterator_data&);
 
-  expr_t clone(substitution_t& s);
+  expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -536,17 +665,21 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  name_cast_expr(short sctx, const QueryLoc&, expr_t, NamespaceContext_t);
+  name_cast_expr(short sctx, const QueryLoc&, expr_t, const namespace_context*);
 
   expr_kind_t get_expr_kind() const { return name_cast_expr_kind; }
 
-  expr_t get_input() { return theInputExpr; }
+  bool cache_compliant() const { return true; }
 
-  NamespaceContext_t getNamespaceContext();
+  const expr* get_input() const { return theInputExpr.getp(); }
+
+  const namespace_context* get_namespace_context() const;
+
+  void compute_scripting_kind() const;
 
   void next_iter(expr_iterator_data&);
 
-  expr_t clone(substitution_t& s);
+  expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -572,13 +705,17 @@ public:
 
   expr_kind_t get_expr_kind() const { return doc_expr_kind; }
 
-  expr_t getContent() const { return theContent; }
+  bool cache_compliant() const { return true; }
 
-  xqtref_t return_type_impl(static_context* sctx);
+  const expr* getContent() const { return theContent.getp(); }
+
+  void compute_scripting_kind() const;
+
+  xqtref_t return_type_impl(static_context*) const;
 
   void next_iter(expr_iterator_data&);
 
-  expr_t clone(substitution_t& s);
+  expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -632,32 +769,34 @@ public:
         expr_t aQNameExpr,
         expr_t aAttrs,
         expr_t aContent,
-        rchandle<namespace_context> aNSCtx);
+        const namespace_context* aNSCtx);
   
   elem_expr(
         short sctx,
         const QueryLoc&,
         expr_t aQNameExpr,
         expr_t aContent,
-        rchandle<namespace_context> aNSCtx);
+        const namespace_context* aNSCtx);
   
   expr_kind_t get_expr_kind() const { return elem_expr_kind; }
+
+  bool cache_compliant() const { return true; }
   
-  expr_t getQNameExpr() const { return theQNameExpr; }
+  const expr* getQNameExpr() const { return theQNameExpr.getp(); }
 
-  void setQNameExpr(expr_t aQNameExpr) { theQNameExpr = aQNameExpr; }
+  const expr* getContent() const { return theContent.getp(); }
 
-  expr_t getContent() const { return theContent; }
+  const expr* getAttrs() const { return theAttrs; }
 
-  expr_t getAttrs() const { return theAttrs; }
+  const namespace_context* getNSCtx() const;
 
-  namespace_context* getNSCtx() const;
+  void compute_scripting_kind() const;
   
-  xqtref_t return_type_impl(static_context *);
+  xqtref_t return_type_impl(static_context *) const;
 
   void next_iter(expr_iterator_data&);
 
-  expr_t clone(substitution_t& s);  
+  expr_t clone(substitution_t& s) const;  
 
   void accept(expr_visitor&);
 
@@ -709,21 +848,21 @@ public:
 
   expr_kind_t get_expr_kind() const { return attr_expr_kind; }
 
-  expr_t getQNameExpr() const { return theQNameExpr; }
+  bool cache_compliant() const { return true; }
 
-  void setQNameExpr(expr_t aQNameExpr) { theQNameExpr = aQNameExpr; }
+  const expr* getQNameExpr() const { return theQNameExpr.getp(); }
 
-  expr_t getValueExpr() const { return theValueExpr; }
+  const expr* getValueExpr() const { return theValueExpr.getp(); }
 
-  void setValueExpr(expr_t aValueExpr) { theValueExpr = aValueExpr; }
+  const store::Item* getQName() const;
 
-  store::Item* getQName() const;
+  void compute_scripting_kind() const;
 
-  xqtref_t return_type_impl(static_context* sctx);
+  xqtref_t return_type_impl(static_context*) const;
 
   void next_iter(expr_iterator_data&);
 
-  expr_t clone(substitution_t& s);
+  expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -761,15 +900,19 @@ public:
 
   expr_kind_t get_expr_kind() const { return text_expr_kind; }
 
-  expr_t get_text() const { return theContentExpr; }
+  bool cache_compliant() const { return true; }
+
+  const expr* get_text() const { return theContentExpr.getp(); }
 
   text_constructor_type get_type() const { return type; }
 
-  xqtref_t return_type_impl(static_context* sctx);
+  void compute_scripting_kind() const;
+
+  xqtref_t return_type_impl(static_context*) const;
 
   void next_iter(expr_iterator_data&);
 
-  expr_t clone(substitution_t& s);  
+  expr_t clone(substitution_t& s) const;  
 
   void accept(expr_visitor&);
 
@@ -795,91 +938,26 @@ public:
   pi_expr(short sctx, const QueryLoc&, expr_t, expr_t);
  
   expr_kind_t get_expr_kind() const { return pi_expr_kind; }
+
+  bool cache_compliant() const { return true; }
  
-  expr_t get_target_expr() const { return theTargetExpr; }
+  const expr* get_target_expr() const { return theTargetExpr.getp(); }
 
-  expr_t get_content_expr() const { return theContentExpr; }
+  const expr* get_content_expr() const { return theContentExpr.getp(); }
+
+  void compute_scripting_kind() const;
   
-  xqtref_t return_type_impl(static_context* sctx);
+  xqtref_t return_type_impl(static_context*) const;
 
   void next_iter(expr_iterator_data&);
 
-  expr_t clone(substitution_t& s);  
+  expr_t clone(substitution_t& s) const;  
 
   void accept(expr_visitor&);
 
   std::ostream& put(std::ostream&) const;
 };
 
-
-/*******************************************************************************
-  first-order expressions
-********************************************************************************/
-class fo_expr : public expr 
-{
-protected:
-  checked_vector<expr_t>   theArgs;
-  function               * theFunction;
-
-public:
-  SERIALIZABLE_CLASS(fo_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(fo_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  static fo_expr* create_seq(short sctx, const QueryLoc &);
-
-public:
-  fo_expr(short sctx, const QueryLoc& loc, function* f);
-
-  fo_expr(short sctx, const QueryLoc& loc, function* f, expr_t arg);
-
-  fo_expr(short sctx, const QueryLoc& loc, function* f, expr_t arg1, expr_t arg2);
-
-  fo_expr(short sctx, const QueryLoc& loc, function* f, const std::vector<expr_t>& args);
-
-  expr_kind_t get_expr_kind() const { return fo_expr_kind; }
-
-  bool cache_compliant() { return true; }
-
-  const function* get_func() const { return theFunction; }
-
-  function* get_func() { invalidate(); return theFunction; }
-
-  void set_func(function* f) { invalidate(); theFunction = f; }
-
-  const signature& get_signature() const;
-
-  store::Item_t get_fname() const;
-
-  uint32_t size() const { return theArgs.size(); }
-
-  expr_t& operator[](int i) { invalidate(); return theArgs[i]; }
-
-  const expr_t& operator[](int i) const { return theArgs[i]; }
-
-  std::vector<expr_t>::const_iterator begin() const { return theArgs.begin(); }
-
-  std::vector<expr_t>::const_iterator end() const { return theArgs.end(); }
-
-  std::vector<expr_t>::iterator begin() { invalidate(); return theArgs.begin(); }
-
-  std::vector<expr_t>::iterator end() { invalidate(); return theArgs.end(); }
-
-  expr_iterator_data* make_iter();
-
-  void next_iter(expr_iterator_data&);
-
-  xqtref_t return_type_impl(static_context* sctx);
-
-  void compute_upd_seq_kind() const;
-
-  expr_t clone(substitution_t& s);
-
-  void accept(expr_visitor&);
-
-  std::ostream& put(std::ostream&) const;
-};
 
 
 /*******************************************************************************
@@ -900,19 +978,23 @@ public:
 
   expr_kind_t get_expr_kind() const { return wrapper_expr_kind; }
 
-  expr_t get_expr() const { return theWrappedExpr; }
+  bool cache_compliant() const { return true; }
 
-  void set_expr(expr* e) { theWrappedExpr = e; }
+  const expr* get_expr() const { return theWrappedExpr; }
 
-  void compute_upd_seq_kind() const;
+  expr* get_expr(bool invalidate);
+
+  void set_expr(expr* e) { invalidate(); theWrappedExpr = e; }
+
+  void compute_scripting_kind() const;
 
   void next_iter(expr_iterator_data&);
 
   void accept(expr_visitor&);
 
-  xqtref_t return_type_impl(static_context* sctx);
+  xqtref_t return_type_impl(static_context*) const;
 
-  expr_t clone(substitution_t& s);
+  expr_t clone(substitution_t& s) const;
 
   std::ostream& put(std::ostream&) const;
 };
@@ -948,13 +1030,19 @@ public:
 
   expr_kind_t get_expr_kind() const { return const_expr_kind; }
 
-  store::Item_t get_val() const { return theValue; }
+  bool cache_compliant() const { return true; }
 
-  xqtref_t return_type_impl(static_context* sctx);
+  const store::Item* get_val() const { return theValue; }
+
+  store::Item* get_val(bool invalidate);
+ 
+  void compute_scripting_kind() const;
+
+  xqtref_t return_type_impl(static_context*) const;
 
   void next_iter(expr_iterator_data&);
 
-  expr_t clone(substitution_t& s);
+  expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -965,110 +1053,56 @@ public:
 /***************************************************************************//**
 
 ********************************************************************************/
-class catch_clause : public SimpleRCObject 
+class pragma : public SimpleRCObject
 {
-  friend class trycatch_expr;
-  public:
-    typedef rchandle<NodeNameTest> nt_t;
-    typedef std::vector<nt_t> nt_list_t;
-  protected:
-    nt_list_t nametests_h;
-    varref_t errorcode_var_h;
-    varref_t errordesc_var_h;
-    varref_t errorobj_var_h;
-    expr_t catch_expr_h;
+public:
+  store::Item_t theQName;
+  std::string theContent;
 
-  public:
-    SERIALIZABLE_CLASS(catch_clause)
-    SERIALIZABLE_CLASS_CONSTRUCTOR2(catch_clause, SimpleRCObject)
-    void serialize(::zorba::serialization::Archiver &ar)
-    {
-      //serialize_baseclass(ar, (SimpleRCObject*)this);
-      ar & nametests_h;
-      ar & errorcode_var_h;
-      ar & errordesc_var_h;
-      ar & errorobj_var_h;
-      ar & catch_expr_h;
-    }
-  public:
-    catch_clause();
+public:
+  SERIALIZABLE_CLASS(pragma)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(pragma, SimpleRCObject)
+  void serialize(::zorba::serialization::Archiver& ar);
 
-    void set_nametests(nt_list_t& a) { nametests_h = a; }
-    nt_list_t& get_nametests() { return nametests_h; }
-
-    void add_nametest_h(nt_t n) { nametests_h.push_back(n); }
-
-    void set_errorcode_var_h(varref_t a) { errorcode_var_h = a; }
-    varref_t get_errorcode_var_h() const { return errorcode_var_h; }
-
-    void set_errordesc_var_h(varref_t a) { errordesc_var_h = a; }
-    varref_t get_errordesc_var_h() const { return errordesc_var_h; }
-
-    void set_errorobj_var_h(varref_t a) { errorobj_var_h = a; }
-    varref_t get_errorobj_var_h() const { return errorobj_var_h; }
-
-    void set_catch_expr_h(expr_t a) { catch_expr_h = a; }
-    expr_t get_catch_expr_h() const { return catch_expr_h; }
+public:
+  pragma(store::Item_t name, std::string const& content);
 };
 
 
-class trycatch_expr : public expr 
+/***************************************************************************//**
+
+********************************************************************************/
+class extension_expr : public expr 
 {
-public:
-  expr_kind_t get_expr_kind () const { return trycatch_expr_kind; }
-
-public:
-    typedef rchandle<catch_clause> clauseref_t;
-
 protected:
-    expr_t try_expr_h;
-    std::vector<clauseref_t> catch_clause_hv;
+  std::vector<rchandle<pragma> > thePragmas;
+  expr_t                         theExpr;
 
 public:
-  SERIALIZABLE_CLASS(trycatch_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(trycatch_expr, expr)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (expr*)this);
-    ar & try_expr_h;
-    ar & catch_clause_hv;
-  }
+  SERIALIZABLE_CLASS(extension_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(extension_expr, expr)
+  void serialize(::zorba::serialization::Archiver& ar);
+
 public:
-    trycatch_expr(short sctx, const QueryLoc&);
+  extension_expr(short sctx, const QueryLoc&);
 
-    expr_t get_try_expr() const
-    { return try_expr_h; }
-    void set_try_expr(expr_t e_h)
-    { try_expr_h = e_h; }
+  extension_expr(short sctx, const QueryLoc&, expr_t);
 
-    void add_clause(clauseref_t cc_h)
-    { catch_clause_hv.push_back(cc_h); }
+  expr_kind_t get_expr_kind() const { return extension_expr_kind; }
 
-    void add_clause_in_front(clauseref_t cc_h)
-    { catch_clause_hv.insert(catch_clause_hv.begin(), cc_h); }
+  void add(rchandle<pragma> p) { thePragmas.push_back(p); }
 
-    std::vector<clauseref_t>::const_iterator begin() const
-    { return catch_clause_hv.begin(); }
-    std::vector<clauseref_t>::const_iterator end() const
-    { return catch_clause_hv.end(); }
-    std::vector<clauseref_t>::iterator begin()
-    { return catch_clause_hv.begin(); }
-    std::vector<clauseref_t>::iterator end()
-    { return catch_clause_hv.end(); }
+  const expr* get_expr() const { return theExpr; }
 
-    uint32_t clause_count() const
-    { return catch_clause_hv.size(); }
+  void next_iter(expr_iterator_data&);
 
-    clauseref_t & operator[](int i)
-    { return catch_clause_hv[i]; }
-    clauseref_t const& operator[](int i) const
-    { return catch_clause_hv[i]; }
+  void compute_scripting_kind() const;
 
-    expr_iterator_data *make_iter ();
+  // TODO clone ????
 
-    void next_iter (expr_iterator_data&);
-    void accept (expr_visitor&);
-    std::ostream& put(std::ostream&) const;
+  void accept(expr_visitor&);
+
+  std::ostream& put(std::ostream&) const;
 };
 
 
@@ -1085,10 +1119,11 @@ public:
     std::string var_key;
     xqtref_t type;
     expr_t val;
+
   public:
     SERIALIZABLE_CLASS(eval_var)
     SERIALIZABLE_CLASS_CONSTRUCTOR(eval_var)
-    void serialize(::zorba::serialization::Archiver &ar)
+    void serialize(::zorba::serialization::Archiver& ar)
     {
       ar & varname;
       ar & var_key;
@@ -1097,378 +1132,109 @@ public:
     }
 
     eval_var() {}
+
     eval_var (var_expr *ve, expr_t val);
+
     virtual ~eval_var() {}
   };
 
 protected:
-  expr_t expr_h;
+  expr_t                   theExpr;
   checked_vector<eval_var> vars;
 
 public:
   SERIALIZABLE_CLASS(eval_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(eval_expr, expr)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (expr*)this);
-    ar & expr_h;
-    ar & vars;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
+
 public:
-  expr_kind_t get_expr_kind () const { return eval_expr_kind; }
+  eval_expr(short sctx, const QueryLoc& loc, expr_t e)
+    :
+    expr(sctx, loc),
+    theExpr(e)
+  {
+  }
 
-  eval_expr (short sctx, const QueryLoc &loc, expr_t expr_)
-    : expr (sctx, loc), expr_h (expr_)
-  {}
+  expr_kind_t get_expr_kind() const { return eval_expr_kind; }
 
-  checked_vector<eval_var> &get_vars () { return vars; }
+  checked_vector<eval_var>& get_vars() { return vars; }
 
-  const expr_t &get_expr () const { return expr_h; }
-  expr_t get_expr () { return expr_h; }
+  const expr_t& get_expr() const { return theExpr; }
 
-  unsigned var_count () const { return vars.size (); }
-  eval_var &var_at (unsigned i) { return vars [i]; }
+  expr_t get_expr() { return theExpr; }
 
-  void add_var (eval_var var) { vars.push_back (var); }
+  unsigned var_count() const { return vars.size (); }
 
-  expr_iterator_data *make_iter ();
-  void next_iter (expr_iterator_data&);
-  void accept (expr_visitor&);
+  eval_var& var_at(unsigned i) { return vars [i]; }
+
+  void add_var(eval_var var) { vars.push_back(var); }
+
+  void compute_scripting_kind() const;
+
+  expr_iterator_data* make_iter();
+
+  void next_iter(expr_iterator_data&);
+
+  void accept(expr_visitor&);
+
   std::ostream& put(std::ostream&) const;
 };
 
 
-//debugger expression
+/***************************************************************************//**
+  debugger expression
+********************************************************************************/
 class debugger_expr: public eval_expr
 {
-public:
-  expr_kind_t get_expr_kind () const { return debugger_expr_kind; }
-
 private:
   std::list<global_binding> theGlobals;
-  bool theForExpr;
+  bool                      theForExpr;
 
 public:
-  debugger_expr(short sctx, const QueryLoc& loc, expr_t aChild, std::list<global_binding> aGlobals )
-    : eval_expr(sctx, loc, aChild ), theGlobals( aGlobals ){}
+  debugger_expr(
+        short sctx,
+        const QueryLoc& loc,
+        expr_t aChild,
+        std::list<global_binding> aGlobals)
+    :
+    eval_expr(sctx, loc, aChild),
+    theGlobals(aGlobals)
+  {
+  }
 
-  debugger_expr( short sctx, const QueryLoc& loc, expr_t aChild,
-    checked_vector<varref_t> aScopedVariables,
-    std::list<global_binding> aGlobals,
-    bool aForExpr = false):
-  eval_expr(sctx, loc, aChild ), theGlobals( aGlobals ), theForExpr(aForExpr)
+  debugger_expr(
+        short sctx,
+        const QueryLoc& loc,
+        expr_t aChild,
+        checked_vector<varref_t> aScopedVariables,
+        std::list<global_binding> aGlobals,
+        bool aForExpr = false)
+    :
+    eval_expr(sctx, loc, aChild ),
+    theGlobals( aGlobals ),
+    theForExpr(aForExpr)
   {
     store_local_variables( aScopedVariables );
   }
 
-  expr_iterator_data *make_iter();
-  void next_iter (expr_iterator_data&);
-  void accept (expr_visitor&);
-  std::ostream& put(std::ostream&) const;
+ expr_kind_t get_expr_kind() const { return debugger_expr_kind; }
 
-  std::list<global_binding> getGlobals() const
-  {
-    return theGlobals;
-  }
+  std::list<global_binding> getGlobals() const { return theGlobals; }
 
   bool isForExpr() const { return theForExpr; }
 
+  expr_iterator_data* make_iter();
+
+  void next_iter(expr_iterator_data&);
+
+  void accept(expr_visitor&);
+
+  std::ostream& put(std::ostream&) const;
+
 private:
-  void store_local_variables(checked_vector<varref_t> &aScopedVariables)
-  {
-    std::set<store::Item_t> lQNames;
-    checked_vector<varref_t>::reverse_iterator it;
-    for ( it = aScopedVariables.rbegin(); it != aScopedVariables.rend(); ++it )
-    {
-      if ( lQNames.find( (*it)->get_varname() ) == lQNames.end() )
-      {
-        lQNames.insert( (*it)->get_varname() );
-        varref_t lValue = (*it);
-        varref_t lVariable(new var_expr(theSctxId, loc, var_expr::eval_var, lValue->get_varname() ) );
-        lVariable->set_type( lValue->get_type() );
-        add_var(eval_expr::eval_var(&*lVariable, lValue.getp()));
-      }
-    }
-  }
+  void store_local_variables(checked_vector<varref_t>& aScopedVariables);
 };
 
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-class pragma : public SimpleRCObject
-{
-public:
-  store::Item_t name_h;
-  std::string content;
-
-public:
-  SERIALIZABLE_CLASS(pragma)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(pragma, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    ar & name_h;
-    ar & content;
-  }
-
-public:
-  pragma(store::Item_t _name_h, std::string const& _content)
-    :
-    name_h(_name_h),
-    content(_content)
-  {
-  }
-};
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-class extension_expr : public expr 
-{
-protected:
-  rchandle<pragma> pragma_h;
-  expr_t expr_h;
-
-public:
-  SERIALIZABLE_CLASS(extension_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(extension_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (expr*)this);
-    ar & pragma_h;
-    ar & expr_h;
-  }
-
-public:
-  extension_expr(short sctx, const QueryLoc&);
-
-  extension_expr(short sctx, const QueryLoc&, expr_t);
-
-  expr_kind_t get_expr_kind () const { return extension_expr_kind; }
-
-  void add(rchandle<pragma> _pragma_h) { pragma_h = _pragma_h; }
-
-  void add(expr_t _expr_h) { expr_h = _expr_h; }
-
-  expr_t get_expr() const { return expr_h; }
-
-  void next_iter (expr_iterator_data&);
-
-  // TODO clone ????
-
-  void accept (expr_visitor&);
-
-  std::ostream& put(std::ostream&) const;
-};
-
-
-
-/*******************************************************************************
-
-  PathExpr ::= 	("/" RelativePathExpr?) |
-                ("//" RelativePathExpr) |
-                RelativePathExpr
-
-  RelativePathExpr ::= StepExpr (("/" | "//") StepExpr)*
-
-
-  Formal Semantics [http://www.w3.org/TR/xquery-semantics]:
-    /    == fn:root(self::node())
-    /A   == fn:root(self::node())/A
-    //A  == fn:root(self::node())/descendant-or-self::node()/A
-    A//B == A/descendant-or-self::node()/B
-  This implies that all path expressions are relative path expressions. So a
-  relative path is defined as follows:
-
- RelativPathExpr ::= "/" | ("/" | "//")?  StepExpr (("/" | "//") StepExpr)*
-
-********************************************************************************/
-class relpath_expr : public expr 
-{
-protected:
-  std::vector<expr_t> theSteps;
-  long                theTargetPos;
-
-public:
-  SERIALIZABLE_CLASS(relpath_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(relpath_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (expr*)this);
-    ar & theSteps;
-    ar & theTargetPos;
-  }
-public:
-  relpath_expr(short sctx, const QueryLoc& loc);
-
-  expr_kind_t get_expr_kind () const { return relpath_expr_kind; }
-
-	size_t size() const          { return theSteps.size(); }
-	void add_back(expr_t step)   { theSteps.push_back(step); }
-  void erase(ulong i)          { theSteps.erase(theSteps.begin() + i); }
-
-  ulong numSteps() const       { return theSteps.size(); }
-
-	expr_t& operator[](int n)    { return theSteps[n]; }
-
-  std::vector<expr_t>::const_iterator begin() const { return theSteps.begin(); }
-  std::vector<expr_t>::const_iterator end()   const { return theSteps.end(); }
-  std::vector<expr_t>::iterator begin() { return theSteps.begin(); }
-  std::vector<expr_t>::iterator end()   { return theSteps.end(); }
-
-  void setTargetPosition(long pos) { theTargetPos = pos; }
-
-  long getTargetPosition() const { return theTargetPos; }
-
-  expr_iterator_data *make_iter ();
-  void next_iter (expr_iterator_data&);
-  void accept (expr_visitor&);
-  std::ostream& put(std::ostream&) const;
-
-  xqtref_t return_type_impl(static_context *sctx);
-  expr_t clone (substitution_t &);
-};
-
-
-/*******************************************************************************
-
-  StepExpr ::= AxisStep  |  FilterExpr
-
-********************************************************************************/
-
-
-/*******************************************************************************
-
-  AxisStep ::= Axis NodeTest Predicate*
-
-********************************************************************************/
-class axis_step_expr : public expr 
-{
-protected:
-  axis_kind_t             theAxis;
-  expr_t                  theNodeTest;
-
-public:
-  SERIALIZABLE_CLASS(axis_step_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(axis_step_expr, expr)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (expr*)this);
-    SERIALIZE_ENUM(axis_kind_t, theAxis);
-    ar & theNodeTest;
-  }
-public:
-  axis_step_expr(short sctx, const QueryLoc&);
-
-  expr_kind_t get_expr_kind () const { return axis_step_expr_kind; }
-
-  axis_kind_t getAxis() const          { return theAxis; }
-  void setAxis(axis_kind_t v)          { theAxis = v; }
-  bool is_reverse_axis () const        { return is_reverse_axis (getAxis ()); }
-
-  rchandle<match_expr> getTest() const 
-  {
-    return reinterpret_cast<match_expr*>(theNodeTest.getp());
-  }
-
-  void setTest(rchandle<match_expr> v) { theNodeTest = v.getp(); }
-
-  expr_iterator_data *make_iter ();
-  void next_iter (expr_iterator_data&);
-  void accept (expr_visitor&);
-  std::ostream& put(std::ostream&) const;
-
-  xqtref_t return_type_impl(static_context *sctx);
-  expr_t clone (substitution_t &);
-
-public:
-  static bool is_reverse_axis (axis_kind_t kind);
-};
-
-
-/*******************************************************************************
-
-  [78] NodeTest ::= KindTest | NameTest
-
-  [79] NameTest ::= QName | Wildcard
-  [80] Wildcard ::= "*" | (NCName ":" "*") | ("*" ":" NCName)
-
-  [123] KindTest ::= DocumentTest | ElementTest | AttributeTest |
-                     SchemaElementTest | SchemaAttributeTest |
-                     PITest | CommentTest | TextTest | AnyKindTest
-
-  If a match_expr represents a KindTest, then theWildKind and theWildName data
-  members are not used. If a match_expr represents a NameTest, then theTypeName
-  and theNilledAllowed data members are not used.
-
-********************************************************************************/
-class match_expr : public expr 
-{
-protected:
-  match_test_t  theTestKind;
-  match_test_t  theDocTestKind;
-
-  match_wild_t  theWildKind;
-  xqp_string    theWildName;
-
-  store::Item_t theQName;
-  store::Item_t theTypeName;
-  bool          theNilledAllowed;
-
-public:
-  SERIALIZABLE_CLASS(match_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(match_expr, expr)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (expr*)this);
-    SERIALIZE_ENUM(match_test_t, theTestKind);
-    SERIALIZE_ENUM(match_test_t, theDocTestKind);
-    SERIALIZE_ENUM(match_wild_t, theWildKind);
-    ar & theWildName;
-    ar & theQName;
-    ar & theTypeName;
-    ar & theNilledAllowed;
-  }
-public:
-  match_expr(short sctx, const QueryLoc&);
-
-  expr_kind_t get_expr_kind () const       { return match_expr_kind; }
-
-  match_test_t getTestKind() const         { return theTestKind; }
-  void setTestKind(enum match_test_t v)    { theTestKind = v; }
-
-  match_test_t getDocTestKind() const      { return theDocTestKind; }
-  void setDocTestKind(enum match_test_t v) { theDocTestKind = v; }
-
-  match_wild_t getWildKind() const         { return theWildKind; }
-  void setWildKind(enum match_wild_t v)    { theWildKind = v; }
-
-  const xqp_string& getWildName() const    { return theWildName; }
-  void setWildName(const xqp_string& v)    { theWildName = v; } 
-
-  store::Item* getQName() const            { return theQName.getp(); }
-  void setQName(const store::Item_t& v)    { theQName = v; }
-
-  store::Item* getTypeName() const         { return theTypeName.getp(); }
-  void setTypeName(const store::Item_t& v) { theTypeName = v; }
-
-  bool getNilledAllowed() const            { return theNilledAllowed; }
-  void setNilledAllowed(bool v)            { theNilledAllowed = v; }
-
-  store::StoreConsts::NodeKind getNodeKind() const;
-
-  xqtref_t return_type_impl(static_context *sctx);
-
-  expr_t clone (substitution_t &);
-
-  void next_iter (expr_iterator_data&);
-
-  void accept (expr_visitor&);
-
-  std::ostream& put(std::ostream&) const;
-};
 
 
 /////////////////////////////////////////////////////////////////////////
@@ -1504,19 +1270,21 @@ public:
 
   expr_kind_t get_expr_kind() const { return insert_expr_kind; }
 
+  bool cache_compliant() const { return true; }
+
   store::UpdateConsts::InsertType getType() const { return theType; }
 
-	expr_t getSourceExpr() const { return theSourceExpr; }
+	const expr* getSourceExpr() const { return theSourceExpr.getp(); }
 
-	expr_t getTargetExpr() const { return theTargetExpr; }
+	const expr* getTargetExpr() const { return theTargetExpr.getp(); }
   
-  void compute_upd_seq_kind() const;
+  void compute_scripting_kind() const;
 
-  xqtref_t return_type_impl(static_context* sctx);
+  xqtref_t return_type_impl(static_context*) const;
 
   void next_iter(expr_iterator_data&);
 
-  expr_t clone(substitution_t& s);
+  expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -1542,15 +1310,17 @@ public:
 
   expr_kind_t get_expr_kind() const { return delete_expr_kind; }
 
-	expr_t getTargetExpr() const { return theTargetExpr; }
+  bool cache_compliant() const { return true; }
+
+	const expr* getTargetExpr() const { return theTargetExpr.getp(); }
 
   void next_iter(expr_iterator_data&);
 
-  void compute_upd_seq_kind() const;
+  void compute_scripting_kind() const;
 
-  xqtref_t return_type_impl(static_context* sctx);
+  xqtref_t return_type_impl(static_context*) const;
 
-  expr_t clone(substitution_t& s);
+  expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -1583,19 +1353,21 @@ public:
 
   expr_kind_t get_expr_kind() const { return replace_expr_kind; }
 
+  bool cache_compliant() const { return true; }
+
   store::UpdateConsts::ReplaceType getType() const { return theType; }
 
-	expr_t getTargetExpr() const { return theTargetExpr; }
+	const expr* getTargetExpr() const { return theTargetExpr.getp(); }
 
-	expr_t getReplaceExpr() const { return theReplaceExpr; }
+	const expr* getReplaceExpr() const { return theReplaceExpr.getp(); }
 
-  void compute_upd_seq_kind() const;
+  void compute_scripting_kind() const;
 
-  xqtref_t return_type_impl(static_context* sctx);
+  xqtref_t return_type_impl(static_context*) const;
 
   void next_iter(expr_iterator_data&);
 
-  expr_t clone(substitution_t& s);
+  expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -1622,17 +1394,19 @@ public:
 
   expr_kind_t get_expr_kind() const { return rename_expr_kind; }
 
-	expr_t getTargetExpr() const { return theTargetExpr; }
+  bool cache_compliant() const { return true; }
 
-	expr_t getNameExpr() const { return theNameExpr; }
+	const expr* getTargetExpr() const { return theTargetExpr.getp(); }
 
-  void compute_upd_seq_kind() const;
+	const expr* getNameExpr() const { return theNameExpr.getp(); }
 
-  xqtref_t return_type_impl(static_context* sctx);
+  void compute_scripting_kind() const;
+
+  xqtref_t return_type_impl(static_context*) const;
 
   void next_iter(expr_iterator_data&);
 
-  expr_t clone(substitution_t& s);
+  expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
@@ -1692,7 +1466,9 @@ public:
 		expr_t aModifyExpr,
 		expr_t aReturnExpr);
 
-  expr_kind_t get_expr_kind () const { return transform_expr_kind; }
+  expr_kind_t get_expr_kind() const { return transform_expr_kind; }
+
+  bool cache_compliant() const { return true; }
 
 	expr_t getModifyExpr() const { return theModifyExpr; }
 
@@ -1714,9 +1490,9 @@ public:
 
 	size_t size() const { return theCopyClauses.size(); }
 
-  void compute_upd_seq_kind() const;
+  void compute_scripting_kind() const;
 
-  xqtref_t return_type_impl(static_context* sctx);
+  xqtref_t return_type_impl(static_context*) const;
 
   expr_iterator_data* make_iter();
 
@@ -1739,7 +1515,7 @@ public:
 
 
 /*******************************************************************************
-
+  ExitExpr ::= "exit" "with" ExprSingle
 ********************************************************************************/
 class exit_expr : public expr 
 {
@@ -1756,9 +1532,15 @@ public:
 
   expr_kind_t get_expr_kind() const { return exit_expr_kind; }
 
+  bool cache_compliant() const { return true; }
+
   expr* get_value() const { return theExpr.getp(); }
 
-  expr_t clone(substitution_t& s);
+  void compute_scripting_kind() const;
+
+  xqtref_t return_type_impl(static_context*) const;
+
+  expr_t clone(substitution_t& s) const;
 
   void next_iter(expr_iterator_data&);
 
@@ -1789,9 +1571,15 @@ public:
 
   expr_kind_t get_expr_kind() const { return flowctl_expr_kind; }
 
+  bool cache_compliant() const { return true; }
+
   enum action get_action() const { return theAction; }
 
-  expr_t clone(substitution_t& s);
+  expr_t clone(substitution_t& s) const;
+
+  void compute_scripting_kind() const;
+
+  xqtref_t return_type_impl(static_context*) const;
 
   void next_iter(expr_iterator_data&);
 
@@ -1802,7 +1590,9 @@ public:
 
 
 /*******************************************************************************
+	WhileExpr ::= "while" "(" ExprSingle ")" WhileBody
 
+  WhileBody ::= Block
 ********************************************************************************/
 class while_expr : public expr 
 {
@@ -1814,77 +1604,25 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  while_expr(short sctx, const QueryLoc &loc, expr_t body);
+  while_expr(short sctx, const QueryLoc& loc, expr_t body);
 
   expr_kind_t get_expr_kind() const { return while_expr_kind; }
 
+  bool cache_compliant() const { return true; }
+
   expr* get_body() const { return theBody.getp(); }
+
+  void compute_scripting_kind() const;
+
+  xqtref_t return_type_impl(static_context*) const;
 
   void next_iter(expr_iterator_data&);
 
-  expr_t clone(substitution_t& s);
+  expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
 	std::ostream& put(std::ostream&) const;
-};
-
-
-
-/////////////////////////////////////////////////////////////////////////
-//                                                                     //
-//	Full-Text expressions                                              //
-//  [http://www.w3.org/TR/????/]                                       //
-//                                                                     //
-/////////////////////////////////////////////////////////////////////////
-
-class ft_select_expr : public expr 
-{
-public:
-  ft_select_expr (short sctx, const QueryLoc &loc) : expr (sctx, loc) {}
-public:
-  SERIALIZABLE_ABSTRACT_CLASS(ft_select_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ft_select_expr, expr)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (expr*)this);
-  }
-};
-
-
-class ft_contains_expr : public expr 
-{
-protected:
-  expr_t range_h;
-  expr_t ft_select_h;
-  expr_t ft_ignore_h;
-
-public:
-  SERIALIZABLE_ABSTRACT_CLASS(ft_contains_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ft_contains_expr, expr)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (expr*)this);
-    ar & range_h;
-    ar & ft_select_h;
-    ar & ft_ignore_h;
-  }
-
-public:
-  ft_contains_expr(
-        short sctx,
-        const QueryLoc&,
-        expr_t,
-        expr_t,
-        expr_t);
-
-  expr_t get_range() const { return range_h; }
-  expr_t get_ft_select() const { return ft_select_h; }
-  expr_t get_ignore() const { return ft_ignore_h; }
-
-  void next_iter (expr_iterator_data&);
-  void accept (expr_visitor&);
-  std::ostream& put(std::ostream&) const;
 };
 
 

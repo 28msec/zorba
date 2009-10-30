@@ -63,7 +63,7 @@ enum match_wild_t
 };
 
 
-enum expr_update_t
+enum expr_script_kind_t
 {
   UPDATE_EXPR,
   VACUOUS_EXPR,

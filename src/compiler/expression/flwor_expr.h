@@ -76,13 +76,7 @@ protected:
 public:
   SERIALIZABLE_ABSTRACT_CLASS(flwor_clause)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(flwor_clause, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    //serialize_baseclass(ar, (SimpleRCObject*)this);
-    ar & theContext;
-    ar & theLocation;
-    SERIALIZE_ENUM(ClauseKind, theKind);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   flwor_clause (short sctx, const QueryLoc& loc, ClauseKind kind) 
@@ -97,7 +91,7 @@ public:
 
   ClauseKind get_kind() const { return theKind; }
 
-  virtual flwor_clause_t clone(expr::substitution_t& substitution) = 0;
+  virtual flwor_clause_t clone(expr::substitution_t& substitution) const = 0;
 };
 
 
@@ -138,12 +132,7 @@ protected:
 public:
   SERIALIZABLE_ABSTRACT_CLASS(forletwin_clause)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(forletwin_clause, flwor_clause)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (flwor_clause*)this);
-    ar & theVarExpr;
-    ar & theDomainExpr;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   forletwin_clause(
@@ -189,13 +178,8 @@ protected:
 public:
   SERIALIZABLE_CLASS(for_clause)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(for_clause, forletwin_clause)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (forletwin_clause*)this);
-    ar & thePosVarExpr;
-    ar & theScoreVarExpr;
-    ar & theIsOuter;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
+
 public:
   for_clause(
         short sctx,
@@ -231,7 +215,7 @@ public:
       theScoreVarExpr->set_flwor_clause(this); 
   }
 
-  flwor_clause_t clone(expr::substitution_t& substitution);
+  flwor_clause_t clone(expr::substitution_t& substitution) const;
 
   std::ostream& put(std::ostream&) const;
 };
@@ -250,11 +234,8 @@ protected:
 public:
   SERIALIZABLE_CLASS(let_clause)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(let_clause, forletwin_clause)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (forletwin_clause*)this);
-    ar & theScoreVarExpr;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
+
 public:
   let_clause(
         short sctx,
@@ -275,7 +256,7 @@ public:
       theScoreVarExpr->set_flwor_clause(this); 
   }
 
-  flwor_clause_t clone(expr::substitution_t& substitution);
+  flwor_clause_t clone(expr::substitution_t& substitution) const;
 
   std::ostream& put(std::ostream&) const;
 };
@@ -299,13 +280,7 @@ protected:
 public:
   SERIALIZABLE_CLASS(window_clause)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(window_clause, forletwin_clause)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (forletwin_clause*)this);
-    SERIALIZE_ENUM(window_t, theWindowKind);
-    ar & theWinStartCond;
-    ar & theWinStopCond;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   window_clause(
@@ -330,7 +305,7 @@ public:
 
   void set_win_stop(flwor_wincond* cond);
 
-  flwor_clause_t clone(expr::substitution_t& substitution);
+  flwor_clause_t clone(expr::substitution_t& substitution) const;
 
   std::ostream& put(std::ostream&) const;
 };
@@ -380,9 +355,7 @@ public:
 
     void set_flwor_clause(flwor_clause* c);
 
-    void clone(
-        vars& cloneVars,
-        expr::substitution_t& subst); 
+    void clone(vars& cloneVars, expr::substitution_t& subst) const;
       
     std::ostream& put(std::ostream&) const;
   };
@@ -413,7 +386,7 @@ public:
 
   void set_flwor_clause(flwor_clause *);
 
-  flwor_wincond_t clone(expr::substitution_t& substitution);
+  flwor_wincond_t clone(expr::substitution_t& substitution) const;
 
   std::ostream& put(std::ostream&) const;
 };
@@ -456,13 +429,7 @@ protected:
 public:
   SERIALIZABLE_ABSTRACT_CLASS(group_clause)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(group_clause, flwor_clause)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (flwor_clause*)this);
-    ar & theGroupVars;
-    ar & theNonGroupVars;
-    ar & theCollations;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   group_clause(
@@ -488,7 +455,7 @@ public:
 
   expr* get_input_for_nongroup_var(const var_expr* var);
 
-  flwor_clause_t clone(expr::substitution_t& substitution);
+  flwor_clause_t clone(expr::substitution_t& substitution) const;
 
   std::ostream& put(std::ostream&) const;
 };
@@ -520,13 +487,7 @@ protected:
 public:
   SERIALIZABLE_ABSTRACT_CLASS(orderby_clause)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(orderby_clause, flwor_clause)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (flwor_clause*)this);
-    ar & theStableOrder;
-    ar & theModifiers;
-    ar & theOrderingExprs;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   orderby_clause (
@@ -555,7 +516,7 @@ public:
 
   void set_column_expr(ulong i, expr_t e) { theOrderingExprs[i] = e; }
 
-  flwor_clause_t clone(expr::substitution_t& substitution);
+  flwor_clause_t clone(expr::substitution_t& substitution) const;
 
   std::ostream& put(std::ostream&) const;
 };
@@ -573,11 +534,8 @@ protected:
 public:
   SERIALIZABLE_ABSTRACT_CLASS(count_clause)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(count_clause, flwor_clause)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (flwor_clause*)this);
-    ar & theVarExpr;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
+
 public:
   count_clause(short sctx, const QueryLoc& loc, var_expr_t var) 
     :
@@ -590,7 +548,7 @@ public:
 
   var_expr* get_var() const { return theVarExpr.getp(); }
 
-  flwor_clause_t clone(expr::substitution_t& substitution);
+  flwor_clause_t clone(expr::substitution_t& substitution) const;
 };
 
 
@@ -606,11 +564,7 @@ class where_clause : public flwor_clause
 public:
   SERIALIZABLE_ABSTRACT_CLASS(where_clause)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(where_clause, flwor_clause)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (flwor_clause*)this);
-    ar & theWhereExpr;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   where_clause(short sctx, const QueryLoc& loc, expr_t where) 
@@ -624,7 +578,7 @@ public:
 
   void set_where(expr_t where) { theWhereExpr = where; }
 
-  flwor_clause_t clone(expr::substitution_t& substitution);
+  flwor_clause_t clone(expr::substitution_t& substitution) const;
 };
 
 
@@ -652,37 +606,36 @@ protected:
 public:
   SERIALIZABLE_CLASS(flwor_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(flwor_expr, expr)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (expr*)this);
-    ar & theIsGeneral;
-    ar & theClauses;
-    ar & theReturnExpr;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   flwor_expr(short sctx, const QueryLoc& loc, bool general) 
     :
     expr(sctx, loc),
     theIsGeneral(general)
-  {}
+  {
+  }
 
   expr_kind_t get_expr_kind() const 
   {
     return (theIsGeneral ? gflwor_expr_kind : flwor_expr_kind);
   }
 
+  bool cache_compliant() const { return true; }
+
   bool is_general() const { return theIsGeneral; }
 
   bool is_updating() const { return theReturnExpr->is_updating(); }
 
-  expr* get_return_expr() const { return theReturnExpr.getp(); }
+  const expr* get_return_expr() const { return theReturnExpr.getp(); }
 
-  void set_return_expr(expr_t e) { theReturnExpr = e; }
+  expr* get_return_expr(bool invalidate);
 
-  xqtref_t return_type_impl(static_context* sctx);
+  void set_return_expr(expr_t e) { invalidate(); theReturnExpr = e; }
 
-  void compute_upd_seq_kind () const;
+  xqtref_t return_type_impl(static_context*) const;
+
+  void compute_scripting_kind() const;
 
   ulong num_clauses() const { return theClauses.size(); }
 
@@ -696,7 +649,7 @@ public:
 
   const flwor_clause* operator[](int i) const { return theClauses[i].getp(); }
 
-  flwor_clause* operator[](int i) { return theClauses[i].getp(); }
+  flwor_clause* get_clause(ulong i, bool invalidate);
 
   clause_list_t::const_iterator clause_begin() const { return theClauses.begin(); }
 
@@ -704,13 +657,13 @@ public:
 
   long defines_variable(const var_expr* v, const flwor_clause* limit) const;
 
-  void get_vars_defined(std::vector<var_expr*>& varExprs);
+  void get_vars_defined(std::vector<var_expr*>& varExprs) const;
 
   expr_iterator_data* make_iter();
 
   void next_iter(expr_iterator_data&);
 
-  expr_t clone(substitution_t& substitution);
+  expr_t clone(substitution_t& substitution) const;
 
   // The following 5 methods are for the simple flwor only. They should be
   // removed eventually.
@@ -721,8 +674,6 @@ public:
   ulong num_forlet_clauses();
 
   void accept(expr_visitor&);
-
-  void accept_children(expr_visitor&);
 
   std::ostream& put(std::ostream&) const;
 };

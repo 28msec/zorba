@@ -4257,9 +4257,11 @@ void CatchListExpr::accept(parsenode_visitor& v) const
 void CatchExpr::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
+
   for(NameTestList::const_iterator i = theNameTests.begin(); i != theNameTests.end(); ++i) {
     ACCEPT(*i);
   }
+
   ACCEPT(theExprSingle);
   END_VISITOR();
 }

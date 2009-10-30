@@ -16,7 +16,8 @@
 
 #include "common/shared_types.h"
 
-namespace zorba {
+namespace zorba 
+{
   class debugger_expr;
   class wrapper_expr;
   class sequential_expr; class exit_expr; class while_expr; class flowctl_expr;

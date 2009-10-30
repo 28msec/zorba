@@ -23,7 +23,7 @@
 
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/rewriter/tools/expr_tools.h"
-#include "compiler/expression/expr.h"
+#include "compiler/expression/flwor_expr.h"
 #include "compiler/codegen/plan_visitor.h"
 
 #include "types/root_typemanager.h"
@@ -337,8 +337,8 @@ RULE_REWRITE_POST(MarkUnfoldableExprs)
 static bool maybe_needs_implicit_timezone(const fo_expr *fo, static_context *sctx) 
 {
   const function *f = fo->get_func ();
-  xqtref_t type0 = (fo->size() > 0 ? (*fo)[0]->return_type (sctx) : NULL);
-  xqtref_t type1 = (fo->size() > 1 ? (*fo)[1]->return_type (sctx) : NULL);
+  xqtref_t type0 = (fo->num_args() > 0 ? (*fo)[0]->return_type (sctx) : NULL);
+  xqtref_t type1 = (fo->num_args() > 1 ? (*fo)[1]->return_type (sctx) : NULL);
 
   return ( ((f->isComparisonFunction() ||
              f->arithmetic_kind() == ArithmeticConsts::SUBTRACTION) &&
@@ -406,10 +406,10 @@ static bool already_folded (expr_t e, RewriterContext& rCtx)
     return true;
   if (e->get_expr_kind () != fo_expr_kind)
     return false;
-  const fo_expr *fo = e.dyn_cast<fo_expr> ().getp ();
+  const fo_expr *fo = e.dyn_cast<fo_expr>().getp ();
 
   return (fo->get_func()->getKind() == FunctionConsts::FN_CONCATENATE && 
-          fo->size() == 0);
+          fo->num_args() == 0);
 }
 
 
@@ -495,38 +495,50 @@ RULE_REWRITE_POST(MarkImpureExprs)
 
 RULE_REWRITE_PRE(PartialEval) 
 {
-  castable_base_expr *cbe;
-  if ((cbe = dynamic_cast<castable_base_expr *>(node)) != NULL) 
+  const castable_base_expr* cbe;
+  if ((cbe = dynamic_cast<const castable_base_expr *>(node)) != NULL) 
   {
-    expr_t arg = cbe->get_input();
-    if (arg->get_annotation (Annotations::NONDISCARDABLE_EXPR).getp() == TSVAnnotationValue::TRUE_VAL.getp())
+    const expr* arg = cbe->get_input();
+
+    if (arg->get_annotation(Annotations::NONDISCARDABLE_EXPR).getp() == TSVAnnotationValue::TRUE_VAL.getp())
       return NULL;
 
     xqtref_t arg_type = arg->return_type(rCtx.getStaticContext(node));
 
     if (TypeOps::is_subtype(*arg_type, *cbe->get_target_type()))
-      return new const_expr (node->get_sctx_id(), LOC (node), true);
-
+    {
+      return new const_expr(node->get_sctx_id(), LOC(node), true);
+    }
     else if (node->get_expr_kind() == instanceof_expr_kind)
-      return TypeOps::intersect_type(*arg_type, *cbe->get_target_type()) == GENV_TYPESYSTEM.NONE_TYPE 
-        ? new const_expr (node->get_sctx_id(), LOC (node), false) : NULL;
+    {
+      return (TypeOps::intersect_type(*arg_type, *cbe->get_target_type()) ==
+              GENV_TYPESYSTEM.NONE_TYPE ?
+              new const_expr(node->get_sctx_id(), LOC(node), false) :
+              NULL);
+    }
     else
+    {
       return NULL;
+    }
   }
 
-  switch (node->get_expr_kind ()) 
+  switch (node->get_expr_kind()) 
   {
-  case if_expr_kind: {
-    if_expr *ite = dynamic_cast<if_expr *> (node);
-    const_expr* cond = dynamic_cast<const_expr*>(ite->get_cond_expr());
-    if (cond != NULL) {
-      return cond->get_val ()->getBooleanValue () ? ite->get_then_expr () : ite->get_else_expr ();
+  case if_expr_kind: 
+  {
+    if_expr* ite = dynamic_cast<if_expr *> (node);
+    const const_expr* cond = dynamic_cast<const const_expr*>(ite->get_cond_expr());
+    if (cond != NULL) 
+    {
+      return (cond->get_val()->getBooleanValue() ?
+              ite->get_then_expr(true) :
+              ite->get_else_expr(true));
     }
     break;
   }
 
   case fo_expr_kind:
-    return partial_eval_fo (rCtx, dynamic_cast<fo_expr *> (node));
+    return partial_eval_fo(rCtx, dynamic_cast<fo_expr *> (node));
     
   default: break;
   }
@@ -540,7 +552,7 @@ RULE_REWRITE_POST(PartialEval)
 }
 
 
-static expr_t partial_eval_fo (RewriterContext& rCtx, fo_expr *fo) 
+static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr *fo) 
 {
   const function *f = fo->get_func ();
 
@@ -572,44 +584,67 @@ static expr_t partial_eval_fo (RewriterContext& rCtx, fo_expr *fo)
 }
 
 
-static expr_t partial_eval_logic (
-    fo_expr *fo,
+/*******************************************************************************
+  fo is a logical "and" or "or" expr. If "and" then the shortcircuit_val is 
+  false, otherwise, shortcircuit_val is true.
+********************************************************************************/
+static expr_t partial_eval_logic(
+    fo_expr* fo,
     bool shortcircuit_val,
     RewriterContext& rCtx) 
 {
-  // fo is a logical "and" or "or" expr
+  long nonConst1 = -1;
+  long nonConst2 = -1;
 
-  expr_t nontrivial1, nontrivial2;
-  for (vector<expr_t>::iterator i = fo->begin (); i != fo->end (); i++) {
-    const_expr *cond = i->dyn_cast<const_expr> ().getp ();
-    if (cond != NULL) {
-      if (cond->get_val ()->getEBV ()->getBooleanValue () == shortcircuit_val)
-        return new const_expr (fo->get_sctx_id(), LOC (fo), (xqp_boolean) shortcircuit_val);
-    } else {
-      if (nontrivial1 == NULL)
-        nontrivial1 = *i;
-      else {
-        nontrivial2 = *i;
+  ulong numArgs = fo->num_args();
+
+  for (ulong i = 0; i < numArgs; ++i) 
+  {
+    const expr* arg = ((*fo)[i]).getp();
+    const const_expr* constArg;
+
+    if ((constArg = dynamic_cast<const const_expr*>(arg)) != NULL) 
+    {
+      if (constArg->get_val()->getEBV()->getBooleanValue() == shortcircuit_val)
+        return new const_expr(fo->get_sctx_id(), LOC(fo), (xqp_boolean)shortcircuit_val);
+    }
+    else
+    {
+      if (nonConst1 < 0)
+      {
+        nonConst1 = i;
+      }
+      else 
+      {
+        nonConst2 = i;
         break;  // no rewrite anyway
       }
     }
   }
 
-  if (nontrivial1 == NULL)
-    return new const_expr(fo->get_sctx_id(), LOC(fo), (xqp_boolean) ! shortcircuit_val);
-
-  if (nontrivial2 == NULL) 
+  if (nonConst1 < 0)
   {
-    if (! TypeOps::is_subtype(*nontrivial1->return_type(rCtx.getStaticContext(fo)),
+    // Both args are constant exprs
+    return new const_expr(fo->get_sctx_id(), LOC(fo), (xqp_boolean) ! shortcircuit_val);
+  }
+
+  if (nonConst2 < 0) 
+  {
+    // Only one of the args is a constant expr. The non-const arg is pointed
+    // to by nonConst1.
+
+    expr_t arg = (*fo)[nonConst1];
+
+    if (! TypeOps::is_subtype(*arg->return_type(rCtx.getStaticContext(fo)),
                               *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
     {
-      nontrivial1 = fix_annotations (new fo_expr(fo->get_sctx_id(),
-                                                 LOC (fo),
-                                                 LOOKUP_FN("fn", "boolean", 1),
-                                                 nontrivial1));
+      arg = fix_annotations(new fo_expr(fo->get_sctx_id(),
+                                        LOC (fo),
+                                        LOOKUP_FN("fn", "boolean", 1),
+                                        arg));
     }
 
-    return nontrivial1;
+    return arg;
   }
 
   return NULL;
@@ -623,7 +658,8 @@ static expr_t partial_eval_eq (RewriterContext& rCtx, fo_expr &fo)
   const_expr* val_expr = NULL;
   //const function *fn_count = LOOKUP_FN ("fn", "count", 1);
   
-  for (i = 0; i < 2; i++) {
+  for (i = 0; i < 2; i++) 
+  {
     if (NULL != (val_expr = fo [i].dyn_cast<const_expr> ().getp ())
         && NULL != (count_expr = fo [1-i].dyn_cast<fo_expr> ().getp())
         && count_expr->get_func ()->CHECK_IS_BUILTIN_NAMED("count", 1))
@@ -635,7 +671,7 @@ static expr_t partial_eval_eq (RewriterContext& rCtx, fo_expr &fo)
   
   TypeManager* tm = rCtx.getStaticContext(&fo)->get_typemanager();
 
-  store::Item_t val = val_expr->get_val ();
+  store::Item_t val = val_expr->get_val(false);
   if (TypeOps::is_subtype(*tm->create_named_type(val->getType()),
                           *GENV_TYPESYSTEM.INTEGER_TYPE_ONE)) 
   {
@@ -644,25 +680,25 @@ static expr_t partial_eval_eq (RewriterContext& rCtx, fo_expr &fo)
 
     if (ival < zero)
     {
-      return new const_expr (val_expr->get_sctx_id(), LOC (val_expr), false);
+      return new const_expr(val_expr->get_sctx_id(), LOC (val_expr), false);
     }
     else if (ival == zero)
     {
-      return fix_annotations (new fo_expr (fo.get_sctx_id(), fo.get_loc (),
-                                           LOOKUP_FN ("fn", "empty", 1),
-                                           (*count_expr) [0]));
+      return fix_annotations(new fo_expr(fo.get_sctx_id(), fo.get_loc (),
+                                         LOOKUP_FN ("fn", "empty", 1),
+                                         (*count_expr) [0]));
     }
     else if (ival == xqp_integer::parseInt (1))
     {
-      return fix_annotations (new fo_expr (fo.get_sctx_id(), fo.get_loc (),
-                                           LOOKUP_OP1 ("exactly-one-noraise"),
-                                           (*count_expr) [0]));
+      return fix_annotations(new fo_expr(fo.get_sctx_id(), fo.get_loc (),
+                                         LOOKUP_OP1 ("exactly-one-noraise"),
+                                         (*count_expr) [0]));
     }
     else 
     {
       store::Item_t pVal;
       GenericCast::promote(pVal, val, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, *tm);
-      expr_t dpos = new const_expr (val_expr->get_sctx_id(), LOC (val_expr), pVal);
+      expr_t dpos = new const_expr(val_expr->get_sctx_id(), LOC(val_expr), pVal);
 
       std::vector<expr_t> args(3);
       args[0] = (*count_expr)[0];

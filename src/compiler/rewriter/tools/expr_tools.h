@@ -18,8 +18,9 @@
 
 #include "common/shared_types.h"
 
-#include "compiler/semantic_annotations/annotation_keys.h"
 #include "compiler/expression/expr.h"
+#include "compiler/expression/fo_expr.h"
+#include "compiler/semantic_annotations/annotation_keys.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
 
 #include "functions/signature.h"
@@ -76,19 +77,20 @@ public:
 
 const var_ptr_set& get_varset_annotation(const expr *e, Annotations::Key k);
 
-int count_variable_uses(expr *root, var_expr *var, int limit);
+int count_variable_uses(const expr* root, const var_expr* var, int limit);
 
 
 /*******************************************************************************
   copy annotations when wrapping an expression in a new one
 ********************************************************************************/
-inline expr_t fix_annotations (expr_t new_expr, expr *old_expr = NULL) 
+inline expr_t fix_annotations(expr_t new_expr, const expr* old_expr = NULL) 
 {
   if (old_expr == NULL) 
   {
-    switch (new_expr->get_expr_kind ()) {
+    switch (new_expr->get_expr_kind ()) 
+    {
     case fo_expr_kind:
-      old_expr = (*new_expr.dyn_cast<fo_expr> ().getp ()) [0];
+      old_expr = (*new_expr.dyn_cast<fo_expr>().getp ())[0];
       break;
     default:
       assert (false);
@@ -103,7 +105,11 @@ inline expr_t fix_annotations (expr_t new_expr, expr *old_expr = NULL)
       const var_ptr_set& old_set = get_varset_annotation(old_expr, Annotations::FREE_VARS);
       const var_ptr_set& new_set = get_varset_annotation(old_expr, Annotations::FREE_VARS);
       var_ptr_set s;
-      std::set_union(old_set.begin(), old_set.end(), new_set.begin(), new_set.end(), inserter(s, s.begin()));
+      std::set_union(old_set.begin(), 
+                     old_set.end(),
+                     new_set.begin(),
+                     new_set.end(),
+                     inserter(s, s.begin()));
 
       new_expr->put_annotation(static_cast<Annotations::Key>(k),
                                Annotation::value_ref_t(new VarSetAnnVal(s)));
@@ -122,11 +128,11 @@ inline expr_t fix_annotations (expr_t new_expr, expr *old_expr = NULL)
 }
 
 
-inline expr_t fix_if_annotations (rchandle<if_expr> ite) 
+inline expr_t fix_if_annotations(rchandle<if_expr> ite) 
 {
-  fix_annotations (&*ite, ite->get_cond_expr ());
-  fix_annotations (&*ite, ite->get_then_expr ());
-  fix_annotations (&*ite, ite->get_else_expr ());
+  fix_annotations(&*ite, ite->get_cond_expr());
+  fix_annotations(&*ite, ite->get_then_expr());
+  fix_annotations(&*ite, ite->get_else_expr());
   return &*ite;
 }
 

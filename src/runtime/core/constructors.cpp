@@ -196,19 +196,19 @@ void ElementIteratorState::reset(PlanState&)
 
 
 ElementIterator::ElementIterator (
-    static_context*     sctx,
-    const QueryLoc&     loc,
-    PlanIter_t&         qnameIter,
-    PlanIter_t&         attrsIter,
-    PlanIter_t&         childrenIter,
-    namespace_context*  localBindings,
-    bool                isRoot)
+    static_context*          sctx,
+    const QueryLoc&          loc,
+    PlanIter_t&              qnameIter,
+    PlanIter_t&              attrsIter,
+    PlanIter_t&              childrenIter,
+    const namespace_context* localBindings,
+    bool                     isRoot)
   :
   NoaryBaseIterator<ElementIterator, ElementIteratorState>(sctx, loc),
   theQNameIter(qnameIter),
   theAttributesIter(attrsIter),
   theChildrenIter(childrenIter),
-  theLocalBindings(localBindings),
+  theLocalBindings(const_cast<namespace_context*>(localBindings)),
   theIsRoot(isRoot),
   theTypePreserve(false),
   theNsPreserve(false),
@@ -993,10 +993,10 @@ NameCastIterator::NameCastIterator(
     static_context* sctx,
     const QueryLoc& loc,
     PlanIter_t& aChild,
-    NamespaceContext_t aNCtx)
+    const namespace_context* aNCtx)
   :
   UnaryBaseIterator<NameCastIterator, PlanIteratorState>(sctx, loc, aChild),
-  theNCtx(aNCtx)
+  theNCtx(const_cast<namespace_context*>(aNCtx))
 {
 }
 

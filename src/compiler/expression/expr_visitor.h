@@ -29,7 +29,9 @@ public:
 public:
   
 #define EXPR_VISITOR_METHODS( e )         \
+                                          \
   virtual bool begin_visit(e&) = 0;       \
+                                          \
   virtual void end_visit(e&) = 0
   
   EXPR_VISITOR_METHODS (expr);
@@ -43,8 +45,8 @@ public:
   EXPR_VISITOR_METHODS (eval_expr);
   EXPR_VISITOR_METHODS (if_expr);
   EXPR_VISITOR_METHODS (fo_expr);
-  EXPR_VISITOR_METHODS (ft_select_expr);
-  EXPR_VISITOR_METHODS (ft_contains_expr);
+  //EXPR_VISITOR_METHODS (ft_select_expr);
+  //EXPR_VISITOR_METHODS (ft_contains_expr);
   EXPR_VISITOR_METHODS (instanceof_expr);
   EXPR_VISITOR_METHODS (treat_expr);
   EXPR_VISITOR_METHODS (castable_expr);
@@ -70,10 +72,6 @@ public:
   EXPR_VISITOR_METHODS (exit_expr);
   EXPR_VISITOR_METHODS (while_expr);
   EXPR_VISITOR_METHODS (flowctl_expr);
-
-  virtual void visit_flwor_clause(const flwor_clause* c, bool general)
-  {
-  }
 
 #undef EXPR_VISITOR_METHODS
 };

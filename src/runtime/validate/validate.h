@@ -80,8 +80,8 @@ public:
         const QueryLoc& loc,
         PlanIter_t& aIter,
         TypeManager* tm,
-        store::Item_t a_typeName,
-        ParseConstants::validation_mode_t a_validationMode);
+        const store::Item* typeName,
+        ParseConstants::validation_mode_t validationMode);
 
   ~ValidateIterator() {};
 

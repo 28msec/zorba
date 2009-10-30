@@ -41,15 +41,19 @@
 
 #include "compiler/translator/translator.h"
 #include "compiler/api/compilercb.h"
-#include "compiler/expression/expr.h"
+#include "compiler/api/compiler_api.h"
+#include "compiler/parser/util.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parser/parse_constants.h"
 #include "compiler/parsetree/parsenode_visitor.h"
+#include "compiler/expression/expr.h"
+#include "compiler/expression/fo_expr.h"
+#include "compiler/expression/var_expr.h"
+#include "compiler/expression/flwor_expr.h"
+#include "compiler/expression/path_expr.h"
 #include "compiler/normalizer/normalizer.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/rewriter/framework/rewriter.h"
-#include "compiler/api/compiler_api.h"
-#include "compiler/parser/util.h"
 #include "compiler/indexing/index_tools.h"
 #include "compiler/indexing/value_index.h"
 
@@ -991,7 +995,7 @@ void normalize_fo(fo_expr* foExpr)
 {
   const signature& sign = foExpr->get_signature();
 
-  ulong n = foExpr->size();
+  ulong n = foExpr->num_args();
 
   const function* func = foExpr->get_func();
 
@@ -1286,13 +1290,15 @@ rchandle<flwor_expr> wrap_expr_in_flwor(expr* inputExpr, bool withContextSize)
   to set breakpoints of expressions which are not translated at the
   beginning (e.g. inside functions).
 ********************************************************************************/
-void wrap_in_debugger_expr (expr_t& aExpr) 
+void wrap_in_debugger_expr(expr_t& aExpr) 
 {
-  if (theCCB->theDebuggerCommons != NULL) {
+  if (theCCB->theDebuggerCommons != NULL) 
+  {
     DebugLocation_t lLocation;
     std::auto_ptr<debugger_expr> lExpr(new debugger_expr(theCCB->m_cur_sctx,
                                                          aExpr->get_loc(), 
-                                                         aExpr, thePrologVars));
+                                                         aExpr,
+                                                         thePrologVars));
 
     lLocation.theFileName = aExpr->get_loc().getFilename();
     lLocation.theLineNumber = aExpr->get_loc().getLineno();
@@ -1308,25 +1314,25 @@ void wrap_in_debugger_expr (expr_t& aExpr)
     // for each var, create a eval_var and add it to
     // the debugger expression
     for (VarExprVector::iterator lIter = lAllInScopeVars.begin();
-         lIter != lAllInScopeVars.end(); ++lIter) {
+         lIter != lAllInScopeVars.end(); 
+         ++lIter) 
+    {
       store::Item_t lVarname = (*lIter)->get_varname();
       if (std::string(lVarname->getStringValue()->c_str()) == "$$dot") {
         continue;
       }
+
       varref_t ve = create_var(lLocation.theQueryLocation,
-        lVarname, var_expr::eval_var, NULL).dyn_cast<var_expr> ();
+                               lVarname,
+                               var_expr::eval_var,
+                               NULL).dyn_cast<var_expr>();
+
       var_expr *lVe = lookup_var(ve->get_varname());
-      expr_t val = new wrapper_expr(theCCB->m_cur_sctx, lLocation.theQueryLocation,
-        rchandle<expr>(lVe));
+
+      expr_t val = new wrapper_expr(theCCB->m_cur_sctx,
+                                    lLocation.theQueryLocation,
+                                    rchandle<expr>(lVe));
       lExpr->add_var(eval_expr::eval_var(&*ve, val));
-      /*varref_t ve((*lIter).dyn_cast<var_expr>());
-      var_expr *lVe = lookup_var(ve->get_varname());
-      ve->set_kind(var_expr::eval_var);
-      expr_t val = new 
-        wrapper_expr(theCCB->m_cur_sctx, aExpr->get_loc(), rchandle<expr>(lVe));
-
-     lExpr->add_var(eval_expr::eval_var(&*ve, val));*/
-
     }
 
     aExpr = lExpr.release();
@@ -5692,7 +5698,7 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
       if (stepExpr->get_expr_kind() == wrapper_expr_kind)
       {
         wrapper_expr* tmp = static_cast<wrapper_expr*>(stepExpr.getp());
-        if (tmp->get_expr().getp() == lookup_var(DOT_VARNAME))
+        if (tmp->get_expr() == lookup_var(DOT_VARNAME))
           errCode = XPTY0020;
       }
 
@@ -6696,7 +6702,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
       rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(idsExpr, false);
 
-      for_clause* fc = reinterpret_cast<for_clause*>((*flworExpr.getp())[0]);
+      const for_clause* fc = reinterpret_cast<const for_clause*>((*flworExpr.getp())[0]);
       expr* flworVarExpr = fc->get_var();
 
       fo_expr_t normExpr;
@@ -6751,17 +6757,17 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         //validate uri
         if(doc_uri->get_expr_kind() == const_expr_kind)
         {
-          const_expr  *const_uri = reinterpret_cast<const_expr*>(doc_uri.getp());
-          store::Item_t uri_value = const_uri->get_val();
-          xqpStringStore_t   uri_string = uri_value->getStringValue();
+          const_expr* const_uri = reinterpret_cast<const_expr*>(doc_uri.getp());
+          const store::Item* uri_value = const_uri->get_val();
+          xqpStringStore_t uri_string = uri_value->getStringValue();
           try
           {
-            xqpString   xqp_uri_string(uri_string);
+            xqpString xqp_uri_string(uri_string);
             //xqpString   xqp_base_uri("http://website/");
             //URI   baseURI(xqp_base_uri, false);
             if(uri_string->indexOf(":/") >= 0)
             {
-              URI   docURI(xqp_uri_string, true);//with validate`
+              URI docURI(xqp_uri_string, true);//with validate`
             }
           }
           catch(error::ZorbaError &e)
@@ -6894,7 +6900,9 @@ void end_visit (const DirElemConstructor& v, void* /*visit_state*/)
   rchandle<QName> start_tag = v.get_elem_name ();
 
   if (end_tag != NULL && start_tag->get_qname() != end_tag->get_qname ())
-    ZORBA_ERROR_LOC_DESC(XPST0003, loc, string("Start tag ") + start_tag->get_qname() + " does not match end tag " + end_tag->get_qname());
+    ZORBA_ERROR_LOC_DESC_OSS(XPST0003, loc,
+                             "Start tag " << start_tag->get_qname()
+                             << " does not match end tag " << end_tag->get_qname());
 
   if (v.get_dir_content_list() != NULL)
     contentExpr = pop_nodestack();
@@ -8532,19 +8540,109 @@ void end_visit (const VarBinding& v, void*)
 }
 
 
-/* try-catch-related */
-void *begin_visit (const TryExpr& v) {
-  TRACE_VISIT ();
-  nodestack.push(new trycatch_expr(theCCB->m_cur_sctx, loc));
+/*******************************************************************************
+  [169] TryCatchExpr ::= TryClause CatchClauseList
+
+  [170] TryClause ::= "try" "{" TryTargetExpr "}"
+
+  [171] TryTargetExpr ::= Expr
+********************************************************************************/
+void* begin_visit(const TryExpr& v) 
+{
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const TryExpr& v, void* visit_state) {
-  TRACE_VISIT_OUT ();
+void end_visit(const TryExpr& v, void* visit_state) 
+{
+  TRACE_VISIT_OUT();
 }
 
 
-void *begin_visit (const EvalExpr& v) 
+void* begin_visit(const CatchListExpr& v) 
+{
+  TRACE_VISIT();
+
+  expr_t tryExpr = pop_nodestack();
+
+  trycatch_expr* tce = new trycatch_expr(theCCB->m_cur_sctx, loc, tryExpr);
+
+  nodestack.push(tce);
+
+  return no_state;
+}
+
+void end_visit(const CatchListExpr& v, void* visit_state) 
+{
+  TRACE_VISIT_OUT();
+  
+  trycatch_expr* tce = static_cast<trycatch_expr*>(nodestack.top().getp());
+
+  tce->compute_scripting_kind();
+}
+
+
+void* begin_visit(const CatchExpr& v) 
+{
+  TRACE_VISIT();
+
+  trycatch_expr* tce = dynamic_cast<trycatch_expr *>(&*nodestack.top());
+
+  catch_clause_t cc = new catch_clause();
+
+  push_scope();
+
+  if (v.getVarErrorCode() != "") 
+  {
+    varref_t ev = bind_var(loc,
+                           v.getVarErrorCode(),
+                           var_expr::catch_var,
+                           theRTM.QNAME_TYPE_QUESTION);
+
+    cc->set_error_code_var(ev);
+
+    if (v.getVarErrorDescr() != "") 
+    {
+      varref_t dv = bind_var(loc,
+                             v.getVarErrorDescr(),
+                             var_expr::catch_var,
+                             theRTM.STRING_TYPE_QUESTION);
+
+      cc->set_error_desc_var(dv);
+
+      if (v.getVarErrorVal() != "") 
+      {
+        varref_t vv = bind_var(loc,
+                               v.getVarErrorVal(), 
+                               var_expr::catch_var,
+                               theRTM.ITEM_TYPE_QUESTION);
+
+        cc->set_error_item_var(vv);
+      }
+    }
+  }
+
+  tce->add_clause_in_front(cc);
+
+  return no_state;
+}
+
+void end_visit(const CatchExpr& v, void* visit_state) 
+{
+  TRACE_VISIT_OUT();
+
+  expr_t ce = pop_nodestack();
+  trycatch_expr* tce = dynamic_cast<trycatch_expr *>(&*nodestack.top());
+
+  catch_clause* cc = &*(*tce)[0];
+  cc->set_catch_expr(ce);
+
+  pop_scope();
+}
+
+
+
+void* begin_visit (const EvalExpr& v) 
 {
   TRACE_VISIT ();
   if (sctx_p->xquery_version() < StaticContextConsts::xquery_version_1_1)
@@ -8586,50 +8684,6 @@ void end_visit (const EvalExpr& v, void* visit_state)
 }
 
 
-void *begin_visit (const CatchListExpr& v) {
-  TRACE_VISIT ();
-  expr_t te = pop_nodestack();
-  trycatch_expr *tce = dynamic_cast<trycatch_expr *>(&*nodestack.top());
-  tce->set_try_expr(te);
-  return no_state;
-}
-
-void end_visit (const CatchListExpr& v, void* visit_state) {
-  TRACE_VISIT_OUT ();
-}
-
-
-void *begin_visit (const CatchExpr& v) {
-  TRACE_VISIT ();
-  trycatch_expr *tce = dynamic_cast<trycatch_expr *>(&*nodestack.top());
-  trycatch_expr::clauseref_t cc = new catch_clause();
-  tce->add_clause_in_front(cc);
-  push_scope();
-  if (v.getVarErrorCode() != "") {
-    varref_t ev = bind_var(loc, v.getVarErrorCode(), var_expr::catch_var, GENV_TYPESYSTEM.QNAME_TYPE_QUESTION);
-    cc->set_errorcode_var_h(ev);
-
-  if (v.getVarErrorDescr() != "") {
-      varref_t dv = bind_var(loc, v.getVarErrorDescr(), var_expr::catch_var, GENV_TYPESYSTEM.STRING_TYPE_QUESTION);
-      cc->set_errordesc_var_h(dv);
-      if (v.getVarErrorVal() != "") {
-        varref_t vv = bind_var(loc, v.getVarErrorVal(), var_expr::catch_var, GENV_TYPESYSTEM.ITEM_TYPE_QUESTION);
-        cc->set_errorobj_var_h(vv);
-      }
-    }
-  }
-  return no_state;
-}
-
-void end_visit (const CatchExpr& v, void* visit_state) {
-  TRACE_VISIT_OUT ();
-  expr_t ce = pop_nodestack();
-  trycatch_expr *tce = dynamic_cast<trycatch_expr *>(&*nodestack.top());
-  catch_clause *cc = &*(*tce)[0];
-  cc->set_catch_expr_h(ce);
-  pop_scope();
-}
-
 
 void *begin_visit (const AssignExpr& v) 
 {
@@ -8661,32 +8715,47 @@ void* begin_visit(const ExitExpr& v)
   return no_state;
 }
 
-void end_visit (const ExitExpr& v, void* visit_state) {
-  TRACE_VISIT_OUT ();
-  nodestack.push (new exit_expr (theCCB->m_cur_sctx, loc, pop_nodestack ()));
+void end_visit(const ExitExpr& v, void* visit_state) 
+{
+  TRACE_VISIT_OUT();
+  nodestack.push (new exit_expr(theCCB->m_cur_sctx, loc, pop_nodestack()));
 }
 
-void *begin_visit (const WhileExpr& v) {
-  TRACE_VISIT ();
+
+void* begin_visit(const WhileExpr& v) 
+{
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const WhileExpr& v, void* visit_state) 
+void end_visit(const WhileExpr& v, void* visit_state) 
 {
   TRACE_VISIT_OUT();
 
-  rchandle<sequential_expr> body = pop_nodestack().cast<sequential_expr>();
-
+  expr_t body = pop_nodestack();
   expr_t cond = pop_nodestack();
 
-  body->push_front(new if_expr(sctxid,
-                               loc,
-                               sctx_p,
-                               cond,
-                               create_seq(loc),
-                               new flowctl_expr(sctxid, loc, flowctl_expr::BREAK)));
+  sequential_expr* seqBody = NULL;
 
-  nodestack.push(new while_expr(sctxid, loc, body.getp()));
+  if (body->get_expr_kind() != sequential_expr_kind)
+  {
+    seqBody = new sequential_expr(body->get_sctx_id(), body->get_loc());
+    seqBody->push_back(body);
+    body = seqBody;
+  }
+  else
+  {
+    seqBody = static_cast<sequential_expr*>(body.getp());
+  }
+
+  seqBody->push_front(new if_expr(sctxid,
+                                  loc,
+                                  sctx_p,
+                                  cond,
+                                  create_seq(loc),
+                                  new flowctl_expr(sctxid, loc, flowctl_expr::BREAK)));
+
+  nodestack.push(new while_expr(sctxid, loc, seqBody));
 }
 
 

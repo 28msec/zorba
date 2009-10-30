@@ -12,9 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 SET(EXPRESSION_SRCS
-    expr.cpp
-    expr_static_type.cpp
-    expr_put.cpp
-    ft_expr.cpp
     expr_consts.cpp
-    expr_annotations.cpp)
+    expr_base.cpp
+    expr.cpp
+    expr_put.cpp
+    var_expr.cpp
+    path_expr.cpp
+    flwor_expr.cpp
+    fo_expr.cpp
+    ft_expr.cpp)
+

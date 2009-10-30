@@ -20,7 +20,8 @@
 #include "compiler/rewriter/tools/dataflow_annotations.h"
 #include "compiler/rewriter/framework/rule_driver.h"
 
-#include "compiler/expression/expr.h"
+#include "compiler/expression/flwor_expr.h"
+#include "compiler/expression/path_expr.h"
 
 #include "types/typeops.h"
 
@@ -41,7 +42,7 @@ template<typename T> void exprs_to_holders (
 }
 
 
-static op_node_sort_distinct::nodes_or_atomics_t nodes_or_atomics (xqtref_t type) 
+static op_node_sort_distinct::nodes_or_atomics_t nodes_or_atomics(xqtref_t type) 
 {
   xqtref_t pt = TypeOps::prime_type (*type);
   if (TypeOps::is_subtype (*pt, *GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE))
@@ -53,13 +54,15 @@ static op_node_sort_distinct::nodes_or_atomics_t nodes_or_atomics (xqtref_t type
 }
 
 
-static void propagate_down_nodeid_props(expr *src, expr *target) 
+static void propagate_down_nodeid_props(expr* src, expr* target) 
 {
   Annotations::Key k;
+
   k = Annotations::IGNORES_SORTED_NODES;
-  TSVAnnotationValue::update_annotation (target, k, src->get_annotation (k));
+  TSVAnnotationValue::update_annotation(target, k, src->get_annotation(k));
+
   k = Annotations::IGNORES_DUP_NODES;
-  TSVAnnotationValue::update_annotation (target, k, src->get_annotation (k));
+  TSVAnnotationValue::update_annotation(target, k, src->get_annotation(k));
 }
 
 
@@ -197,50 +200,56 @@ static bool analyze_let_vars_consumer_props (flwor_expr* flwor)
 
 ********************************************************************************/
 static void mark_casts(
-    cast_or_castable_base_expr *node,
-    expr_t input,
-    static_context *sctx) 
+    const cast_or_castable_base_expr* node,
+    expr* input,
+    static_context* sctx) 
 {
-  xqtref_t target = node->get_target_type ();
-  if (TypeOps::is_empty (*target)) 
+  xqtref_t target = node->get_target_type();
+
+  if (TypeOps::is_empty(*target)) 
   {
-    TSVAnnotationValue::update_annotation (input,
-                                           Annotations::IGNORES_SORTED_NODES,
-                                           TSVAnnotationValue::TRUE_VAL);
-    TSVAnnotationValue::update_annotation (input,
-                                           Annotations::IGNORES_DUP_NODES,
-                                           TSVAnnotationValue::TRUE_VAL);
+    TSVAnnotationValue::update_annotation(input,
+                                          Annotations::IGNORES_SORTED_NODES,
+                                          TSVAnnotationValue::TRUE_VAL);
+    TSVAnnotationValue::update_annotation(input,
+                                          Annotations::IGNORES_DUP_NODES,
+                                          TSVAnnotationValue::TRUE_VAL);
     return;
   }
 
-  bool is_cast = dynamic_cast<cast_base_expr *> (input.getp ()) != NULL;
+  bool is_cast = dynamic_cast<cast_base_expr *>(input) != NULL;
 
-  TypeConstants::quantifier_t q = TypeOps::quantifier (*target);
+  TypeConstants::quantifier_t q = TypeOps::quantifier(*target);
 
   if (! is_cast ||
       q == TypeConstants::QUANT_ONE ||
       q == TypeConstants::QUANT_QUESTION) 
   {
-    TSVAnnotationValue::update_annotation (input,
-                                           Annotations::IGNORES_SORTED_NODES,
-                                           TSVAnnotationValue::TRUE_VAL);
+    TSVAnnotationValue::update_annotation(input,
+                                          Annotations::IGNORES_SORTED_NODES,
+                                          TSVAnnotationValue::TRUE_VAL);
   }
   else if (is_cast) 
   {
-    TSVAnnotationValue::update_annotation (input,
-                                           Annotations::IGNORES_SORTED_NODES,
-                                           TSVAnnotationValue::from_bool(node->get_annotation(Annotations::IGNORES_DUP_NODES).getp() == TSVAnnotationValue::TRUE_VAL.getp()));
+    TSVAnnotationValue::update_annotation(input,
+                                          Annotations::IGNORES_SORTED_NODES,
+                                          TSVAnnotationValue::from_bool(node->get_annotation(Annotations::IGNORES_DUP_NODES).getp() == TSVAnnotationValue::TRUE_VAL.getp()));
   }
 
-  bool ignores_dups =
-    q == TypeConstants::QUANT_STAR
-    || (q == TypeConstants::QUANT_PLUS
-        && TypeOps::type_min_cnt (*input->return_type (sctx)) >= 1);
+  bool ignores_dups = (q == TypeConstants::QUANT_STAR ||
+                       (q == TypeConstants::QUANT_PLUS &&
+                        TypeOps::type_min_cnt(*input->return_type(sctx)) >= 1));
+
   if (is_cast)
-    ignores_dups = ignores_dups && node->get_annotation (Annotations::IGNORES_DUP_NODES).getp() == TSVAnnotationValue::TRUE_VAL.getp();
-  TSVAnnotationValue::update_annotation (input,
-                                         Annotations::IGNORES_DUP_NODES,
-                                         TSVAnnotationValue::from_bool (ignores_dups));
+  {
+    ignores_dups = (ignores_dups &&
+                    node->get_annotation(Annotations::IGNORES_DUP_NODES).getp() ==
+                    TSVAnnotationValue::TRUE_VAL.getp());
+  }
+
+  TSVAnnotationValue::update_annotation(input,
+                                        Annotations::IGNORES_DUP_NODES,
+                                        TSVAnnotationValue::from_bool (ignores_dups));
 }
 
 
@@ -327,7 +336,7 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
       // stages can put it back in.
       for (int i = 0; i < 2; i++) 
       {
-        expr_t arg = (*fo) [i];
+        expr_t arg = (*fo)[i];
         TSVAnnotationValue::update_annotation (arg,
                                                Annotations::IGNORES_SORTED_NODES,
                                                TSVAnnotationValue::TRUE_VAL);
@@ -349,18 +358,18 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
 
   case if_expr_kind: 
   {
-    if_expr *ite = static_cast<if_expr *> (node);
-    propagate_down_nodeid_props (node, ite->get_then_expr ());
-    propagate_down_nodeid_props (node, ite->get_else_expr ());
+    if_expr* ite = static_cast<if_expr *> (node);
+    propagate_down_nodeid_props(node, ite->get_then_expr(false));
+    propagate_down_nodeid_props(node, ite->get_else_expr(false));
     break;
   }
 
   case flwor_expr_kind: 
   {
-    flwor_expr *flwor = static_cast<flwor_expr *> (node);
-    init_let_vars_consumer_props (flwor);
-    mark_for_vars_ignoring_sort (flwor);
-    propagate_down_nodeid_props (node, flwor->get_return_expr());
+    flwor_expr* flwor = static_cast<flwor_expr *> (node);
+    init_let_vars_consumer_props(flwor);
+    mark_for_vars_ignoring_sort(flwor);
+    propagate_down_nodeid_props(node, flwor->get_return_expr(false));
     break;
   }
 
@@ -378,18 +387,18 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
 
   case wrapper_expr_kind: 
   {
-    wrapper_expr *we = static_cast<wrapper_expr *> (node);
-    propagate_down_nodeid_props (node, we->get_expr ());
+    wrapper_expr* we = static_cast<wrapper_expr *> (node);
+    propagate_down_nodeid_props(node, we->get_expr(false));
     break;
   }    
 
   default:
   {
-    cast_or_castable_base_expr *ce = dynamic_cast<cast_base_expr *> (node);
+    cast_or_castable_base_expr* ce = dynamic_cast<cast_base_expr *> (node);
     if (ce != NULL) 
     {
-      expr_t input = ce->get_input ();
-      mark_casts (ce, input, rCtx.getStaticContext(node));
+      expr* input = ce->get_input(false);
+      mark_casts(ce, input, rCtx.getStaticContext(node));
       break;
     }
   }

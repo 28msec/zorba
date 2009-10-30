@@ -179,7 +179,7 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
     get_plan(ar.compiler_cb);
   serialize_baseclass(ar, (function*)this);
   ar & m_loc;
-  SERIALIZE_ENUM(expr_update_t, theUpdateType);
+  SERIALIZE_ENUM(expr_script_kind_t, theUpdateType);
   ar & deterministic;
   ar & leaf;
   ar & m_plan;

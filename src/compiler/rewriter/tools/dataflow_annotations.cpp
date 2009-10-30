@@ -13,12 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include "compiler/expression/expr.h"
+#include "compiler/expression/fo_expr.h"
+#include "compiler/expression/path_expr.h"
+#include "compiler/expression/flwor_expr.h"
+
 #include "compiler/rewriter/tools/dataflow_annotations.h"
 #include "compiler/semantic_annotations/annotation_keys.h"
 #include "compiler/semantic_annotations/tsv_annotation.h"
+
 #include "types/typeops.h"
+
 #include "context/static_context.h"
 #include "context/namespace_context.h"
+
 #include "functions/function.h"
 
 namespace zorba {
@@ -173,7 +182,8 @@ bool DataflowAnnotationsComputer::generic_compute(expr *e)
 {
   xqtref_t rt = e->return_type(m_ctx);
   TypeConstants::quantifier_t quant = TypeOps::quantifier(*rt);
-  if (quant == TypeConstants::QUANT_ONE || quant == TypeConstants::QUANT_QUESTION) {
+  if (quant == TypeConstants::QUANT_ONE || quant == TypeConstants::QUANT_QUESTION) 
+  {
     SORTED_NODES(e);
     DISTINCT_NODES(e);
     return true;
@@ -185,7 +195,7 @@ bool DataflowAnnotationsComputer::generic_compute(expr *e)
 /*******************************************************************************
 
 ********************************************************************************/
-void DataflowAnnotationsComputer::compute_sequential_expr(sequential_expr *e)
+void DataflowAnnotationsComputer::compute_sequential_expr(sequential_expr* e)
 {
   default_walk(e);
   generic_compute(e);
@@ -195,18 +205,20 @@ void DataflowAnnotationsComputer::compute_sequential_expr(sequential_expr *e)
 /*******************************************************************************
 
 ********************************************************************************/
-void DataflowAnnotationsComputer::compute_wrapper_expr(wrapper_expr *e)
+void DataflowAnnotationsComputer::compute_wrapper_expr(wrapper_expr* e)
 {
   default_walk(e);
-  PROPOGATE_SORTED_NODES(e->get_expr().getp(), e);
-  PROPOGATE_DISTINCT_NODES(e->get_expr().getp(), e);
+  PROPOGATE_SORTED_NODES(e->get_expr(), e);
+  PROPOGATE_DISTINCT_NODES(e->get_expr(), e);
 }
 
 
-void DataflowAnnotationsComputer::compute_var_expr(var_expr *e)
+void DataflowAnnotationsComputer::compute_var_expr(var_expr* e)
 {
-  if (!generic_compute(e)) {
-    if (e->get_kind() == var_expr::let_var) {
+  if (!generic_compute(e)) 
+  {
+    if (e->get_kind() == var_expr::let_var) 
+    {
       PROPOGATE_SORTED_NODES(e->get_forletwin_clause()->get_expr(), e);
       PROPOGATE_DISTINCT_NODES(e->get_forletwin_clause()->get_expr(), e);
     }
@@ -214,14 +226,14 @@ void DataflowAnnotationsComputer::compute_var_expr(var_expr *e)
 }
 
 
-void DataflowAnnotationsComputer::compute_flwor_expr(flwor_expr *e)
+void DataflowAnnotationsComputer::compute_flwor_expr(flwor_expr* e)
 {
   default_walk(e);
   generic_compute(e);
 }
 
 
-void DataflowAnnotationsComputer::compute_trycatch_expr(trycatch_expr *e)
+void DataflowAnnotationsComputer::compute_trycatch_expr(trycatch_expr* e)
 {
   default_walk(e);
   generic_compute(e);
@@ -231,8 +243,8 @@ void DataflowAnnotationsComputer::compute_trycatch_expr(trycatch_expr *e)
 void DataflowAnnotationsComputer::compute_promote_expr(promote_expr *e)
 {
   default_walk(e);
-  PROPOGATE_SORTED_NODES(e->get_input().getp(), e);
-  PROPOGATE_DISTINCT_NODES(e->get_input().getp(), e);
+  PROPOGATE_SORTED_NODES(e->get_input(), e);
+  PROPOGATE_DISTINCT_NODES(e->get_input(), e);
 }
 
 
@@ -291,28 +303,21 @@ void DataflowAnnotationsComputer::compute_fo_expr(fo_expr *e)
 }
 
 
-void DataflowAnnotationsComputer::compute_ft_contains_expr(ft_contains_expr *e)
-{
-  default_walk(e);
-  if (!generic_compute(e)) {
-  }
-}
-
-
 void DataflowAnnotationsComputer::compute_instanceof_expr(instanceof_expr *e)
 {
   default_walk(e);
-  PROPOGATE_SORTED_NODES(e->get_input().getp(), e);
-  PROPOGATE_DISTINCT_NODES(e->get_input().getp(), e);
+  PROPOGATE_SORTED_NODES(e->get_input(), e);
+  PROPOGATE_DISTINCT_NODES(e->get_input(), e);
 }
 
 
 void DataflowAnnotationsComputer::compute_treat_expr(treat_expr *e)
 {
   default_walk(e);
-  if (!generic_compute(e)) {
-    PROPOGATE_SORTED_NODES(e->get_input().getp(), e);
-    PROPOGATE_DISTINCT_NODES(e->get_input().getp(), e);
+  if (!generic_compute(e)) 
+  {
+    PROPOGATE_SORTED_NODES(e->get_input(), e);
+    PROPOGATE_DISTINCT_NODES(e->get_input(), e);
   }
 }
 
@@ -320,43 +325,47 @@ void DataflowAnnotationsComputer::compute_treat_expr(treat_expr *e)
 void DataflowAnnotationsComputer::compute_castable_expr(castable_expr *e)
 {
   default_walk(e);
-  PROPOGATE_SORTED_NODES(e->get_input().getp(), e);
-  PROPOGATE_DISTINCT_NODES(e->get_input().getp(), e);
+  PROPOGATE_SORTED_NODES(e->get_input(), e);
+  PROPOGATE_DISTINCT_NODES(e->get_input(), e);
 }
 
-void DataflowAnnotationsComputer::compute_cast_expr(cast_expr *e)
+void DataflowAnnotationsComputer::compute_cast_expr(cast_expr* e)
 {
   default_walk(e);
-  if (!generic_compute(e)) {
-    PROPOGATE_SORTED_NODES(e->get_input().getp(), e);
-    PROPOGATE_DISTINCT_NODES(e->get_input().getp(), e);
+  if (!generic_compute(e)) 
+  {
+    PROPOGATE_SORTED_NODES(e->get_input(), e);
+    PROPOGATE_DISTINCT_NODES(e->get_input(), e);
   }
 }
 
-void DataflowAnnotationsComputer::compute_name_cast_expr(name_cast_expr *e)
+void DataflowAnnotationsComputer::compute_name_cast_expr(name_cast_expr* e)
 {
   default_walk(e);
-  if (!generic_compute(e)) {
-    PROPOGATE_SORTED_NODES(e->get_input().getp(), e);
-    PROPOGATE_DISTINCT_NODES(e->get_input().getp(), e);
+  if (!generic_compute(e)) 
+  {
+    PROPOGATE_SORTED_NODES(e->get_input(), e);
+    PROPOGATE_DISTINCT_NODES(e->get_input(), e);
   }
 }
 
-void DataflowAnnotationsComputer::compute_validate_expr(validate_expr *e)
+void DataflowAnnotationsComputer::compute_validate_expr(validate_expr* e)
 {
   default_walk(e);
-  if (!generic_compute(e)) {
-    PROPOGATE_SORTED_NODES(e->get_expr().getp(), e);
-    PROPOGATE_DISTINCT_NODES(e->get_expr().getp(), e);
+  if (!generic_compute(e))
+  {
+    PROPOGATE_SORTED_NODES(e->get_expr(), e);
+    PROPOGATE_DISTINCT_NODES(e->get_expr(), e);
   }
 }
 
-void DataflowAnnotationsComputer::compute_extension_expr(extension_expr *e)
+void DataflowAnnotationsComputer::compute_extension_expr(extension_expr* e)
 {
   default_walk(e);
-  if (!generic_compute(e)) {
-    PROPOGATE_SORTED_NODES(e->get_expr().getp(), e);
-    PROPOGATE_DISTINCT_NODES(e->get_expr().getp(), e);
+  if (!generic_compute(e)) 
+  {
+    PROPOGATE_SORTED_NODES(e->get_expr(), e);
+    PROPOGATE_DISTINCT_NODES(e->get_expr(), e);
   }
 }
 
@@ -364,7 +373,7 @@ void DataflowAnnotationsComputer::compute_extension_expr(extension_expr *e)
 /*******************************************************************************
 
 ********************************************************************************/
-void DataflowAnnotationsComputer::compute_relpath_expr(relpath_expr *e)
+void DataflowAnnotationsComputer::compute_relpath_expr(relpath_expr* e)
 {
   default_walk(e);
 

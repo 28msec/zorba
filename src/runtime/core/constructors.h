@@ -164,7 +164,7 @@ public:
       PlanIter_t&         aQNameIter,
       PlanIter_t&         aAttrs,
       PlanIter_t&         aChildren,
-      namespace_context*  localBindings,
+      const namespace_context* localBindings,
       bool                isRoot);
 
   uint32_t getStateSizeOfSubtree() const;
@@ -430,7 +430,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         PlanIter_t& aChild,
-        NamespaceContext_t aNCtx);
+        const namespace_context* aNCtx);
 
   virtual ~NameCastIterator();
 

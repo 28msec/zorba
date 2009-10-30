@@ -29,7 +29,7 @@ class stateless_external_function_adapter : public external_function
 {
 private:
   StatelessExternalFunction * m_function;
-  expr_update_t               theUpdateType;
+  expr_script_kind_t          theUpdateType;
   xqp_string                  thePrefix;
 
 public:
@@ -41,7 +41,7 @@ public:
   
   ~stateless_external_function_adapter();
 
-  virtual expr_update_t getUpdateType() const { return theUpdateType; }
+  virtual expr_script_kind_t getUpdateType() const { return theUpdateType; }
 
   virtual bool isDeterministic() const { return m_function->isDeterministic(); }
 

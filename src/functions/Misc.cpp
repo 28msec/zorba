@@ -38,7 +38,7 @@ public:
 
   bool isFnError() const { return true; }
 
-  virtual expr_update_t getUpdateType() const { return VACUOUS_EXPR; }
+  virtual expr_script_kind_t getUpdateType() const { return VACUOUS_EXPR; }
 
   DEFAULT_NARY_CODEGEN(FnErrorIterator);
 };

@@ -245,7 +245,6 @@ public:
 };
 
 
-
 //[349] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTWordsSelection]
 class ft_words_selection_expr : public expr
 /*______________________________________________________________________
@@ -340,6 +339,57 @@ public:
 public:
 	virtual std::ostream& put(std::ostream&) const;
 
+};
+
+
+class ft_select_expr : public expr 
+{
+public:
+  SERIALIZABLE_ABSTRACT_CLASS(ft_select_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ft_select_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+  }
+
+public:
+  ft_select_expr (short sctx, const QueryLoc &loc) : expr (sctx, loc) {}
+};
+
+
+class ft_contains_expr : public expr 
+{
+protected:
+  expr_t range_h;
+  expr_t ft_select_h;
+  expr_t ft_ignore_h;
+
+public:
+  SERIALIZABLE_ABSTRACT_CLASS(ft_contains_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ft_contains_expr, expr)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (expr*)this);
+    ar & range_h;
+    ar & ft_select_h;
+    ar & ft_ignore_h;
+  }
+
+public:
+  ft_contains_expr(
+        short sctx,
+        const QueryLoc&,
+        expr_t,
+        expr_t,
+        expr_t);
+
+  expr_t get_range() const { return range_h; }
+  expr_t get_ft_select() const { return ft_select_h; }
+  expr_t get_ignore() const { return ft_ignore_h; }
+
+  //void next_iter (expr_iterator_data&);
+  //void accept (expr_visitor&);
+  //std::ostream& put(std::ostream&) const;
 };
 
 

@@ -16,12 +16,12 @@
 #ifndef ZORBA_EXPR_BASE_H
 #define ZORBA_EXPR_BASE_H
 
-#include "common/common.h"
 #include "common/shared_types.h"
 
 #include "context/static_context_consts.h"
 
 #include "types/typeimpl.h"
+
 #include "compiler/parser/query_loc.h"
 #include "compiler/parser/parse_constants.h"
 #include "compiler/expression/expr_consts.h"
@@ -160,10 +160,12 @@ private:
 ********************************************************************************/
 class expr : public AnnotationHolder 
 {
+  friend class expr_iterator_data;
+
 public:
   typedef rchandle<expr> expr_t;
 
-  typedef std::map<var_expr *, expr_t> substitution_t;
+  typedef std::map<const var_expr *, expr_t> substitution_t;
 
   typedef substitution_t::iterator subst_iter_t;
 
@@ -175,22 +177,26 @@ protected:
   // (4) call P() again and get (possibly wrong) cached result
   struct Cache
   {
-    struct 
+    mutable struct 
     {
       bool             valid;
       xqtref_t         t;
-      static_context * sctx;
     } type;
 
     mutable struct 
     {
-      bool          valid;
-      expr_update_t kind;
-    } upd_seq_kind;
+      bool               valid;
+      expr_script_kind_t kind;
+    } scripting_kind;
   };
 
+protected:
+  static expr_t iter_end_expr;
+  static expr_t* iter_done;
+
+protected:
   short    theSctxId;
-  QueryLoc loc;
+  QueryLoc theLoc;
   Cache    theCache;
 
 public:
@@ -199,25 +205,27 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  static expr_update_t update_type_anding(
-        expr_update_t type1, 
-        expr_update_t type2, 
+  static expr_script_kind_t scripting_kind_anding(
+        expr_script_kind_t type1, 
+        expr_script_kind_t type2, 
         const QueryLoc& loc);
 
 public:
+  expr(short, const QueryLoc&);
+
   virtual ~expr();
 
   virtual expr_kind_t get_expr_kind() const = 0;
 
-  const QueryLoc& get_loc() const { return loc; }
+  const QueryLoc& get_loc() const { return theLoc; }
 
-  void set_loc(const QueryLoc& aLoc) { loc = aLoc; }
+  void set_loc(const QueryLoc& aLoc) { theLoc = aLoc; }
 
   short get_sctx_id() const { return theSctxId; }
 
   bool is_constant() const;
 
-  expr_update_t get_update_type() const;
+  expr_script_kind_t get_scripting_kind() const;
 
   bool is_updating() const;
 
@@ -229,11 +237,9 @@ public:
 
   bool is_updating_or_vacuous() const;
 
-  virtual void compute_upd_seq_kind() const;
+  xqtref_t return_type(static_context* sctx) const;
 
-  xqtref_t return_type(static_context* sctx);
-
-  virtual xqtref_t return_type_impl(static_context* sctx);
+  virtual xqtref_t return_type_impl(static_context* sctx) const;
 
   expr_iterator expr_begin(bool invalidateCache = true);
 
@@ -241,9 +247,9 @@ public:
 
   virtual void next_iter(expr_iterator_data &) = 0;
 
-  expr_t clone();
+  expr_t clone() const;
 
-  virtual expr_t clone(substitution_t& substitution);
+  virtual expr_t clone(substitution_t& substitution) const;
 
   virtual void accept(expr_visitor& v);
 
@@ -251,11 +257,9 @@ public:
 
   virtual std::ostream& put(std::ostream&) const = 0;
 
-  virtual std::string toString() const;
+  std::string toString() const;
 
 protected:
-  expr(short, const QueryLoc&);
-
   void invalidate() 
   {
     theCache.type.valid = false;
@@ -265,7 +269,9 @@ protected:
   // Returns true if all modifiers, as well as all accessors that permit future
   // modifications of child expressions, call invalidate(). Note that expr
   // iterators are compliant.
-  virtual bool cache_compliant() { return false; }
+  virtual bool cache_compliant() const { return false; }
+
+  virtual void compute_scripting_kind() const = 0;
 
   virtual expr_iterator_data* make_iter();
 };
@@ -309,6 +315,58 @@ public:
 
   bool done() const;
 };
+
+
+/*******************************************************************************
+  Iterator macros. These macros are used inside the expr::next_iter() method:
+  expr::next_iter(expr_iterator_data& v) 
+********************************************************************************/
+
+#define BEGIN_EXPR_ITER() switch (v.theState) { case 0:
+
+
+#define BEGIN_EXPR_ITER2( type )                                       \
+  type##_iterator_data& vv = dynamic_cast<type##_iterator_data &>(v);  \
+  BEGIN_EXPR_ITER()
+
+#define END_EXPR_ITER()   v.theCurrentChild = expr::iter_done; }
+
+
+#define ITER(subExprHandle)                                         \
+do                                                                  \
+{                                                                   \
+  v.theState = __LINE__;                                            \
+  v.theCurrentChild = reinterpret_cast<expr_t*>(&(subExprHandle));  \
+                                                                    \
+  if ((subExprHandle) != NULL)                                      \
+  {                                                                 \
+    if (v.theInvalidate) invalidate();                              \
+    return;                                                         \
+  }                                                                 \
+                                                                    \
+case __LINE__:;                                                     \
+                                                                    \
+} while (0)
+
+
+#define ITER_FOR_EACH( iter, begin, end, expr )                  \
+for (vv.iter = (begin); vv.iter != (end); ++(vv.iter))           \
+{                                                                \
+  ITER(expr);                                                    \
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+#define DEF_EXPR_ACCEPT( type )             \
+void type::accept(expr_visitor& v)          \
+{                                           \
+  if (v.begin_visit(*this))                 \
+    accept_children(v);                     \
+                                            \
+  v.end_visit(*this);                       \
+}
 
 
 }

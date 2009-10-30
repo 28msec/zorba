@@ -19,6 +19,8 @@
 
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/expression/expr.h"
+#include "compiler/expression/fo_expr.h"
+#include "compiler/expression/flwor_expr.h"
 
 #include "functions/function.h"
 
@@ -42,7 +44,7 @@ static void replace_with_constant_if_typequant_one(static_context *sctx, expr_t 
     case flwor_expr_kind: 
     {
       flwor_expr* flwor = static_cast<flwor_expr *>(&*expr);
-      expr_t ret = flwor->get_return_expr();
+      expr_t ret = flwor->get_return_expr(false);
       expr_t nret = get_constant_if_typequant_one(sctx, ret);
       if (nret != NULL) {
         flwor->set_return_expr(nret);

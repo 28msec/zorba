@@ -55,10 +55,15 @@ public:
   }
 
 public:
-  SingletonIterator(static_context* sctx, const QueryLoc& loc, store::Item_t value)
+  SingletonIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        const store::Item* value)
     :
     NoaryBaseIterator<SingletonIterator, PlanIteratorState>(sctx, loc),
-    theValue(value) {}
+    theValue(const_cast<store::Item*>(value))
+  {
+  }
 
   virtual ~SingletonIterator() {}
   

@@ -20,6 +20,9 @@
 #include "functions/function.h"
 
 #include "compiler/indexing/index_tools.h"
+#include "compiler/expression/flwor_expr.h"
+#include "compiler/expression/path_expr.h"
+#include "compiler/expression/fo_expr.h"
 #include "compiler/expression/expr.h"
 
 #include "system/globalenv.h"
@@ -44,7 +47,7 @@ static bool isHoistableCollection(expr* e)
   fo_expr* fo = static_cast<fo_expr *>(e);
 
   if (fo->get_func()->getKind() != FunctionConsts::FN_COLLECTION ||
-      fo->size() != 1) 
+      fo->num_args() != 1) 
     return false;
 
   expr* arg = (*fo)[0].getp();
@@ -61,7 +64,7 @@ static xqpStringStore* getCollectionName(expr* e)
 {
   fo_expr* fo = static_cast<fo_expr *>(e);
   const_expr* arg = static_cast<const_expr *>((*fo)[0].getp());
-  store::Item* val = arg->get_val();
+  const store::Item* val = arg->get_val();
   return val->getStringValueP();
 }
 
@@ -118,7 +121,7 @@ static expr_t hoistCollectionSources(
   it may still be a map, but this algorithm could not determine that.
   It assumes that the variable occurs at most once.
 ********************************************************************************/
-static bool isMapInVar(expr* e, var_expr* var)
+static bool isMapInVar(const expr* e, const var_expr* var)
 {
   if (e == var) 
   {
@@ -128,22 +131,22 @@ static bool isMapInVar(expr* e, var_expr* var)
   switch(e->get_expr_kind()) 
   {
     case wrapper_expr_kind:
-      return isMapInVar(static_cast<wrapper_expr *>(e)->get_expr().getp(), var);
+      return isMapInVar(static_cast<const wrapper_expr *>(e)->get_expr(), var);
 
     case flwor_expr_kind: 
     {
-      flwor_expr* flwor = static_cast<flwor_expr *>(e);
+      const flwor_expr* flwor = static_cast<const flwor_expr *>(e);
 
       for(int i = static_cast<int>(flwor->num_clauses()) - 1; i >= 0; --i) 
       {
-        flwor_clause* clause = (*flwor)[i];
+        const flwor_clause* clause = (*flwor)[i];
         bool isMap = false;
 
         switch(clause->get_kind()) 
         {
           case flwor_clause::for_clause:
             isMap = (isMap ||
-                     isMapInVar(static_cast<for_clause *>(clause)->get_expr(), var));
+                     isMapInVar(static_cast<const for_clause *>(clause)->get_expr(), var));
 
           case flwor_clause::let_clause:
           case flwor_clause::where_clause:
@@ -160,7 +163,7 @@ static bool isMapInVar(expr* e, var_expr* var)
 
     case relpath_expr_kind: 
     {
-      relpath_expr* re = static_cast<relpath_expr *>(e);
+      const relpath_expr* re = static_cast<const relpath_expr *>(e);
       return isMapInVar((*re)[0], var);
     }
 

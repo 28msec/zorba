@@ -17,6 +17,7 @@
 #include "compiler/indexing/value_index.h"
 #include "compiler/api/compilercb.h"
 #include "compiler/expression/flwor_expr.h"
+#include "compiler/expression/fo_expr.h"
 #include "compiler/expression/expr.h"
 #include "compiler/codegen/plan_visitor.h"
 

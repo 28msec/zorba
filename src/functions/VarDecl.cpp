@@ -20,7 +20,7 @@
 #include "functions/function_impl.h"
 
 #include "compiler/api/compilercb.h"
-#include "compiler/expression/expr.h"
+#include "compiler/expression/fo_expr.h"
 
 #include "runtime/core/var_iterators.h"
 
@@ -68,7 +68,7 @@ public:
 
   bool requires_dyn_ctx() const { return true; }
 
-  expr_update_t getUpdateType() const { return SEQUENTIAL_EXPR; }
+ expr_script_kind_t getUpdateType() const { return SEQUENTIAL_EXPR; }
 
   CODEGEN_DECL();
 };

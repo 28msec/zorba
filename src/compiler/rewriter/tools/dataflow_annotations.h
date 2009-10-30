@@ -16,17 +16,18 @@
 #ifndef ZORBA_DATAFLOW_ANNOTATIONS_H
 #define ZORBA_DATAFLOW_ANNOTATIONS_H
 
-#include "compiler/expression/expr.h"
+#include "compiler/expression/expr_classes.h"
 
-namespace zorba {
+namespace zorba 
+{
 
 class DataflowAnnotationsComputer 
 {
 private:
-  static_context *m_ctx;
+  static_context * m_ctx;
 
 public:
-  DataflowAnnotationsComputer(static_context *ctx) : m_ctx(ctx) { }
+  DataflowAnnotationsComputer(static_context* ctx) : m_ctx(ctx) { }
 
   ~DataflowAnnotationsComputer() { }
   
@@ -41,7 +42,6 @@ private:
   void compute_promote_expr(promote_expr *e);
   void compute_if_expr(if_expr *e);
   void compute_fo_expr(fo_expr *e);
-  void compute_ft_contains_expr(ft_contains_expr *e);
   void compute_instanceof_expr(instanceof_expr *e);
   void compute_treat_expr(treat_expr *e);
   void compute_castable_expr(castable_expr *e);

@@ -22,12 +22,12 @@ namespace zorba {
 class var_counter : public abstract_expr_visitor 
 {
 private:
-  var_expr *m_var;
-  int m_counter;
-  int m_limit;
+  const var_expr * m_var;
+  int              m_counter;
+  int              m_limit;
   
 public:
-  var_counter(var_expr *var, int limit) : m_var(var), m_counter(0), m_limit (0) { }
+  var_counter(const var_expr* var, int limit) : m_var(var), m_counter(0), m_limit (0) { }
   
   int get_counter() { return m_counter; }
   
@@ -37,7 +37,8 @@ public:
   bool begin_visit(var_expr& v)
   {
     if (m_limit > 0 && m_counter >= m_limit) return false;
-    if (&v == m_var) {
+    if (&v == m_var) 
+    {
       ++m_counter;
     }
     return true;
@@ -45,12 +46,47 @@ public:
 };
 
   
-int count_variable_uses(expr *root, var_expr *var, int limit = 0)
+bool count_variable_uses_rec(
+    const expr* e,
+    const var_expr* var,
+    int limit,
+    int& count)
 {
+  if (limit > 0 && count >= limit)
+  {
+    return false;
+  }
+
+  if (e == var)
+  {
+    ++count;
+    return true;
+  }
+
+  for (const_expr_iterator iter = e->expr_begin_const(); !iter.done(); ++iter)
+  {
+    if (!count_variable_uses_rec((*iter), var, limit, count))
+      return false;
+  }
+
+  return true;
+}
+
+
+int count_variable_uses(const expr* root, const var_expr* var, int limit = 0)
+{
+#if 0
   var_counter c(var, limit);
   root->accept(c);
   return c.get_counter();
+#endif
+  int count = 0;
+
+  count_variable_uses_rec(root, var, limit, count);
+
+  return count;
 }
+
 
 }
 

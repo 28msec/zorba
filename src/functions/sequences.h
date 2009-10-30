@@ -236,7 +236,7 @@ class fn_doc : public function
 public:
   fn_doc(const signature& sig) : function(sig, FunctionConsts::FN_DOC) {}
 
-  bool requires_dyn_ctx () const { return true; }
+  bool requires_dyn_ctx() const { return true; }
 
   virtual bool isSource() const { return true; }
 
@@ -260,7 +260,7 @@ class fn_zorba_util_parse : public function
 public:
   fn_zorba_util_parse(const signature& sig) : function(sig, FunctionConsts::FN_ZORBA_UTIL_PARSE) {}
 
-  bool requires_dyn_ctx () const { return true; }
+  bool requires_dyn_ctx() const { return true; }
 
   virtual bool isSource() const { return true; }
 

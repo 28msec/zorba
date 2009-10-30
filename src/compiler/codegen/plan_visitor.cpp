@@ -30,6 +30,10 @@
 #include "compiler/api/compilercb.h"
 #include "compiler/codegen/plan_visitor.h"
 #include "compiler/expression/expr.h"
+#include "compiler/expression/fo_expr.h"
+#include "compiler/expression/var_expr.h"
+#include "compiler/expression/flwor_expr.h"
+#include "compiler/expression/path_expr.h"
 #include "compiler/expression/expr_visitor.h"
 #include "compiler/parser/parse_constants.h"
 #include "compiler/indexing/value_index.h"
@@ -619,7 +623,115 @@ void general_var_codegen (const var_expr& var)
 bool begin_visit(flwor_expr& v) 
 {
   CODEGEN_TRACE_IN("");
-  return true;
+
+  bool isGeneral = v.is_general();
+
+  ulong numClauses = v.num_clauses();
+
+  for (ulong i = 0; i < numClauses; ++i) 
+  {
+    const flwor_clause* c = v[i];
+
+    switch (c->get_kind()) 
+    {
+
+    case flwor_clause::for_clause: 
+    {
+      visit_flwor_clause(c, isGeneral);
+
+      const for_clause* fc = reinterpret_cast<const for_clause*>(c);
+      fc->get_expr()->accept(*this);
+      break;
+    }
+
+    case flwor_clause::let_clause: 
+    {
+      visit_flwor_clause(c, isGeneral);
+
+      const for_clause* fc = reinterpret_cast<const for_clause*>(c);
+      fc->get_expr()->accept(*this);
+      break;
+    }
+
+    case flwor_clause::window_clause: 
+    {
+      visit_flwor_clause(c, isGeneral);
+
+      const window_clause* wc = reinterpret_cast<const window_clause*>(c);
+
+      flwor_wincond* startCond = wc->get_win_start();
+      flwor_wincond* stopCond = wc->get_win_stop();
+
+      if (startCond)
+        startCond->get_cond()->accept(*this);
+
+      if (stopCond)
+        stopCond->get_cond()->accept(*this);
+
+      wc->get_expr()->accept(*this);
+
+      break;
+    }
+
+    case flwor_clause::group_clause: 
+    {
+      const group_clause* gc = reinterpret_cast<const group_clause*>(c);
+
+      const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
+      const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
+      
+      for (ulong i = 0; i < gvars.size(); ++i)
+      {
+        gvars[i].first->accept(*this);
+      }
+
+      for (ulong i = 0; i < ngvars.size(); ++i)
+      {
+        ngvars[i].first->accept(*this);
+      }
+
+      visit_flwor_clause(c, isGeneral);
+
+      break;
+    }
+
+    case flwor_clause::order_clause: 
+    {
+      const orderby_clause* oc = reinterpret_cast<const orderby_clause*>(c);
+
+      ulong numCols = oc->num_columns();
+      for (ulong i = 0; i < numCols; ++i)
+      {
+        oc->get_column_expr(i)->accept(*this);
+      }
+
+      visit_flwor_clause(c, isGeneral);
+
+      break;
+    }
+
+    case flwor_clause::count_clause: 
+    {
+      visit_flwor_clause(c, isGeneral);
+      break;
+    }
+
+    case flwor_clause::where_clause: 
+    {
+      const where_clause* wc = reinterpret_cast<const where_clause*>(c);
+      wc->get_where()->accept(*this);
+      break;
+    }
+    default:
+      ZORBA_ASSERT(false);
+    }
+  }
+
+  v.get_return_expr(false)->accept(*this);
+
+  // Do not visit the children of this flwor expr; this was done already by
+  // this method 
+  return false;
 }
 
 
@@ -1353,56 +1465,70 @@ void generate_groupby(
 
 ********************************************************************************/
 
-bool begin_visit (promote_expr& v) {
+bool begin_visit (promote_expr& v) 
+{
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-void end_visit (promote_expr& v) {
+void end_visit (promote_expr& v) 
+{
   CODEGEN_TRACE_OUT("");
   PlanIter_t lChild = pop_itstack();
   // TODO: Currently we use cast. Promotion may be more efficient.
   push_itstack(new PromoteIterator(sctx, qloc, lChild, v.get_target_type()));
 }
 
-bool begin_visit (trycatch_expr& v) {
+
+bool begin_visit(trycatch_expr& v) 
+{
   CODEGEN_TRACE_IN("");
-  for(int i = v.clause_count() - 1; i >= 0; --i) {
-    catch_clause *cc = &*v[i];
-    if (cc->get_errorcode_var_h() != NULL) {
-      catchvar_iter_map.put((uint64_t)&*cc->get_errorcode_var_h(), new vector<LetVarIter_t>());
+
+  for(int i = v.clause_count() - 1; i >= 0; --i) 
+  {
+    catch_clause* cc = &*v[i];
+    if (cc->get_error_code_var() != NULL) 
+    {
+      catchvar_iter_map.put((uint64_t)&*cc->get_error_code_var(), new vector<LetVarIter_t>());
     }
-    if (cc->get_errordesc_var_h() != NULL) {
-      catchvar_iter_map.put((uint64_t)&*cc->get_errordesc_var_h(), new vector<LetVarIter_t>());
+    if (cc->get_error_desc_var() != NULL) 
+    {
+      catchvar_iter_map.put((uint64_t)&*cc->get_error_desc_var(), new vector<LetVarIter_t>());
     }
-    if (cc->get_errorobj_var_h() != NULL) {
-      catchvar_iter_map.put((uint64_t)&*cc->get_errorobj_var_h(), new vector<LetVarIter_t>());
+    if (cc->get_error_item_var() != NULL) 
+    {
+      catchvar_iter_map.put((uint64_t)&*cc->get_error_item_var(), new vector<LetVarIter_t>());
     }
   }
   return true;
 }
 
-void end_visit (trycatch_expr& v) {
+void end_visit(trycatch_expr& v) 
+{
   CODEGEN_TRACE_OUT("");
   vector<LetVarIter_t> *vec = NULL;
   vector<TryCatchIterator::CatchClause> rev_ccs;
-  for(int i = v.clause_count() - 1; i >= 0; --i) {
-    catch_clause *cc = &*v[i];
+  for(int i = v.clause_count() - 1; i >= 0; --i) 
+  {
+    catch_clause* cc = &*v[i];
     TryCatchIterator::CatchClause rcc;
     rcc.node_names = cc->get_nametests();
     rcc.catch_expr = pop_itstack();
-    if (cc->get_errorcode_var_h() != NULL) {
-      bool bound = catchvar_iter_map.get((uint64_t)&*cc->get_errorcode_var_h(), vec);
+    if (cc->get_error_code_var() != NULL) 
+    {
+      bool bound = catchvar_iter_map.get((uint64_t)&*cc->get_error_code_var(), vec);
       ZORBA_ASSERT(bound);
       rcc.errorcode_var = *vec;
     }
-    if (cc->get_errordesc_var_h() != NULL) {
-      bool bound = catchvar_iter_map.get((uint64_t)&*cc->get_errordesc_var_h(), vec);
+    if (cc->get_error_desc_var() != NULL) 
+    {
+      bool bound = catchvar_iter_map.get((uint64_t)&*cc->get_error_desc_var(), vec);
       ZORBA_ASSERT(bound);
       rcc.errordesc_var = *vec;
     }
-    if (cc->get_errorobj_var_h() != NULL) {
-      bool bound = catchvar_iter_map.get((uint64_t)&*cc->get_errorobj_var_h(), vec);
+    if (cc->get_error_item_var() != NULL) 
+    {
+      bool bound = catchvar_iter_map.get((uint64_t)&*cc->get_error_item_var(), vec);
       ZORBA_ASSERT(bound);
       rcc.errorobj_var = *vec;
     }
@@ -1460,8 +1586,8 @@ bool begin_visit (insert_expr& v)
 
   store::UpdateConsts::InsertType kind  = v.getType();
 
-  expr_t targetExpr = v.getTargetExpr();
-  expr_t sourceExpr = v.getSourceExpr();
+  const expr* targetExpr = v.getTargetExpr();
+  const expr* sourceExpr = v.getSourceExpr();
   xqtref_t targetType = targetExpr->return_type(sctx);
   xqtref_t sourceType = sourceExpr->return_type(sctx);
 
@@ -1561,7 +1687,7 @@ bool begin_visit (replace_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
-  expr_t targetExpr = v.getTargetExpr();
+  const expr* targetExpr = v.getTargetExpr();
   xqtref_t targetType = targetExpr->return_type(sctx);
 
   if (TypeOps::is_equal(*targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
@@ -1587,7 +1713,7 @@ bool begin_visit (rename_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
-  expr_t targetExpr = v.getTargetExpr();
+  const expr* targetExpr = v.getTargetExpr();
   xqtref_t targetType = targetExpr->return_type(sctx);
 
   if (TypeOps::is_equal(*targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
@@ -1742,7 +1868,7 @@ void end_visit(fo_expr& v)
   const function* func = v.get_func();
   ZORBA_ASSERT(func != NULL);
 
-  vector<PlanIter_t> argv(v.size());
+  vector<PlanIter_t> argv(v.num_args());
   generate (argv.rbegin(), argv.rend(), stack_to_generator(itstack));
 
   const QueryLoc& loc = qloc;
@@ -1752,7 +1878,7 @@ void end_visit(fo_expr& v)
     if (func->getKind() == FunctionConsts::FN_CREATE_INTERNAL_INDEX)
     {
       const const_expr* qnameExpr = static_cast<const const_expr*>(v[0].getp());
-      store::Item* qname = qnameExpr->get_val();
+      const store::Item* qname = qnameExpr->get_val();
 
       ValueIndex* index = sctx->lookup_index(qname);
       
@@ -1787,16 +1913,6 @@ void end_visit(fo_expr& v)
   }
 }
 
-
-bool begin_visit (ft_select_expr& v) {
-  CODEGEN_TRACE_IN("");
-  return true;
-}
-
-bool begin_visit (ft_contains_expr& v) {
-  CODEGEN_TRACE_IN("");
-  return true;
-}
 
 bool begin_visit (instanceof_expr& v) {
   CODEGEN_TRACE_IN("");
@@ -1848,7 +1964,7 @@ bool begin_visit(name_cast_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
-  expr_t targetExpr = v.get_input();
+  const expr* targetExpr = v.get_input();
   xqtref_t targetType = targetExpr->return_type(sctx);
 
   if (TypeOps::is_subtype(*GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE, *targetType) ||
@@ -1869,8 +1985,11 @@ bool begin_visit(name_cast_expr& v)
 void end_visit(name_cast_expr& v)
 {
   CODEGEN_TRACE_OUT("");
-  PlanIter_t lChild = pop_itstack();
-  push_itstack(new NameCastIterator(sctx, qloc, lChild, v.getNamespaceContext()));
+  PlanIter_t child = pop_itstack();
+  push_itstack(new NameCastIterator(sctx,
+                                    qloc,
+                                    child,
+                                    v.get_namespace_context()));
 }
 
 
@@ -1888,12 +2007,12 @@ void end_visit (validate_expr& v)
   PlanIter_t lChild = pop_itstack();
   //store::Item_t typeName = v.get_type_name();
   //std::cout << "validate end-visit: type: " << typeName->getLocalName()->c_str() << " @ " << typeName->getNamespace()->c_str() << "\n"; cout.flush();
-  push_itstack (new ValidateIterator (sctx,
-                                      qloc,
-                                      lChild,
-                                      v.get_typemgr(),
-                                      v.get_type_name(),
-                                      v.get_valmode()));
+  push_itstack (new ValidateIterator(sctx,
+                                     qloc,
+                                     lChild,
+                                     v.get_typemgr(),
+                                     v.get_type_name(),
+                                     v.get_valmode()));
 #else
   //no schema support
   ZORBA_ERROR_LOC(XQST0009, qloc);
@@ -1904,6 +2023,11 @@ void end_visit (validate_expr& v)
 bool begin_visit (extension_expr& v) {
   CODEGEN_TRACE_IN("");
   return true;
+}
+
+void end_visit (extension_expr& v) 
+{
+  CODEGEN_TRACE_OUT("");
 }
 
 
@@ -2356,7 +2480,8 @@ bool begin_visit (pi_expr& v) {
 }
 
 
-void end_visit (pi_expr& v) {
+void end_visit (pi_expr& v) 
+{
   CODEGEN_TRACE_OUT("");
 
   bool isRoot = false;
@@ -2369,54 +2494,69 @@ void end_visit (pi_expr& v) {
 
   PlanIter_t content = pop_itstack ();
   PlanIter_t target = pop_itstack ();
-  push_itstack (new PiIterator (sctx, qloc, target, content, isRoot));
+  push_itstack(new PiIterator(sctx, qloc, target, content, isRoot));
 }
 
 
-bool begin_visit (const_expr& v) {
+bool begin_visit (const_expr& v) 
+{
   CODEGEN_TRACE_IN ("");
   return true;
 }
 
-void end_visit (const_expr& v) {
+void end_visit (const_expr& v) 
+{
   CODEGEN_TRACE_OUT("");
-  PlanIter_t it = new SingletonIterator (sctx, qloc, v.get_val ());
+  PlanIter_t it = new SingletonIterator(sctx, qloc, v.get_val());
   push_itstack (it);
 }
 
 
-bool begin_visit (order_expr& v) {
+bool begin_visit (order_expr& v) 
+{
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-void end_visit (order_expr& v) {
+void end_visit (order_expr& v) 
+{
   CODEGEN_TRACE_OUT("");
 }
 
 
 /*******************************************************************************
 
-
 ********************************************************************************/
 
-/*..........................................
- :  end visit                              :
- :.........................................*/
-
-void end_visit (ft_select_expr& v) {
-  CODEGEN_TRACE_OUT("");
+#if 0
+bool begin_visit (ft_select_expr& v) 
+{
+  CODEGEN_TRACE_IN("");
+  return true;
 }
 
-void end_visit (ft_contains_expr& v) {
-  CODEGEN_TRACE_OUT("");
-}
-
-void end_visit (extension_expr& v) {
+void end_visit (ft_select_expr& v) 
+{
   CODEGEN_TRACE_OUT("");
 }
 
 
+bool begin_visit (ft_contains_expr& v) 
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+void end_visit (ft_contains_expr& v) 
+{
+  CODEGEN_TRACE_OUT("");
+}
+#endif
+
+
+/*******************************************************************************
+
+********************************************************************************/
 PlanIter_t result()
 {
   PlanIter_t res = pop_itstack();

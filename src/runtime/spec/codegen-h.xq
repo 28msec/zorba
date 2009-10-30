@@ -120,7 +120,7 @@ declare function local:add-is-updating($iter) as xs:string?
 {
   if($iter/zorba:function/@isUpdating = 'true') then
     string-join(($gen:newline,$gen:indent,
-    'expr_update_t getUpdateType() const { return UPDATE_EXPR; }',$gen:newline),'')
+    'expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }',$gen:newline),'')
   else ()
 };
 
@@ -129,7 +129,7 @@ declare function local:add-is-sequential($iter) as xs:string?
 {
   if($iter/zorba:function/@isSequential = 'true') then
     string-join(($gen:newline,$gen:indent,
-    'expr_update_t getUpdateType() const { return SEQUENTIAL_EXPR; }',$gen:newline),'')
+    'expr_script_kind_t getUpdateType() const { return SEQUENTIAL_EXPR; }',$gen:newline),'')
   else ()
 };
 
@@ -138,7 +138,7 @@ declare function local:add-unfoldable($iter) as xs:string?
 {
   if($iter/zorba:function/@requiresDynamicContext = 'true') then
     string-join(($gen:newline,$gen:indent,
-    'bool requires_dyn_ctx () const { return true; }',$gen:newline),'')
+    'bool requires_dyn_ctx() const { return true; }',$gen:newline),'')
   else ()
 };
 

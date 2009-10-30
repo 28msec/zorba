@@ -26,7 +26,7 @@ static void add_var(var_expr*, int&, VarIdMap&, IdVarMap*);
 
 static void remove_wincond_vars(const flwor_wincond*, const VarIdMap&, DynamicBitset&);
 
-static void set_bit(var_expr*, const std::map<var_expr*, int>&, DynamicBitset&, bool);
+static void set_bit(var_expr*, const std::map<const var_expr*, int>&, DynamicBitset&, bool);
 
 
 /*******************************************************************************
@@ -38,7 +38,7 @@ void replace_var(expr* e, var_expr* oldVar, var_expr* newVar)
   {
     wrapper_expr* wrapper = reinterpret_cast<wrapper_expr*>(e);
 
-    if (wrapper->get_expr().getp() == oldVar)
+    if (wrapper->get_expr() == oldVar)
     {
       wrapper->set_expr(newVar);
       return;
@@ -338,7 +338,7 @@ static void set_bit(
   if (v == NULL)
     return;
 
-  std::map<var_expr *, int>::const_iterator i = varmap.find(v);
+  std::map<const var_expr *, int>::const_iterator i = varmap.find(v);
   if (i != varmap.end())
     freeset.set(i->second, value);
 }

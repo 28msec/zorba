@@ -43,7 +43,7 @@ class fn_put : public function
 public:
   fn_put(const signature& sig) : function(sig, FunctionConsts::FN_PUT) {}
 
-  expr_update_t getUpdateType() const { return UPDATE_EXPR; }
+  expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
   CODEGEN_DECL();
 

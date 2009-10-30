@@ -13,11 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "compiler/rewriter/rules/ruleset.h"
-#include "context/static_context.h"
-#include "compiler/rewriter/tools/expr_tools.h"
 
-namespace zorba {
+#include "context/static_context.h"
+
+#include "compiler/rewriter/rules/ruleset.h"
+#include "compiler/expression/path_expr.h"
+
+
+namespace zorba 
+{
 
 RULE_REWRITE_PRE(EliminateExtraneousPathSteps)
 {

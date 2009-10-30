@@ -70,10 +70,13 @@ void areNodeModifiersViolated(
     const QueryLoc& aLoc)
 {
   const store::Item* lCollName = aTarget->getCollectionName();
-  if (lCollName != 0) {
+  if (lCollName != 0) 
+  {
     const StaticallyKnownCollection* lDeclColl = aSctx->get_declared_collection(lCollName);
     ZORBA_ASSERT(lDeclColl != 0);
-    switch(lDeclColl->getNodeModifier()) {
+
+    switch(lDeclColl->getNodeModifier()) 
+    {
     case StaticContextConsts::read_only:
       ZORBA_ERROR_LOC_DESC_OSS(XDDY0006, aLoc, 
         "A node from a read-only collection is the target of an updating expression.");

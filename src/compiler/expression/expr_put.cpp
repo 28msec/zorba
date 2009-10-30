@@ -19,42 +19,25 @@
 #include <string>
 #include <vector>
 
+#include "util/properties.h"
+
 #include "context/static_context_consts.h"
 
 #include "compiler/expression/expr.h"
+#include "compiler/expression/fo_expr.h"
+#include "compiler/expression/path_expr.h"
+#include "compiler/expression/var_expr.h"
+#include "compiler/expression/flwor_expr.h"
 #include "compiler/parser/parse_constants.h"
 
 #include "functions/function.h"
 
-#include "types/typeops.h"
-
-#include "zorbaerrors/Assert.h"
-#include "util/tracer.h"
-#include "util/properties.h"
-
-#include "system/globalenv.h"
 
 using namespace std;
 
 namespace zorba 
 {
   
-  static inline xqp_string qname_to_string (store::Item_t qname) {
-    xqp_string result;
-    xqp_string pfx = qname->getPrefix (), ns = qname->getNamespace();
-    if (! ns.empty ())
-      result += pfx + "[=" + qname->getNamespace()->str() + "]:";
-    result += qname->getLocalName()->str();
-    return result;
-  }
-
-  static inline ostream &put_qname (store::Item_t qname, ostream &os) {
-    xqp_string pfx = qname->getPrefix (), ns = qname->getNamespace();
-    if (! ns.empty ())
-      os << pfx << "[=" << qname->getNamespace()->str() << "]:";
-    os << qname->getLocalName()->str();
-    return os;
-  }
 
 static int printdepth0 = -2;
 
@@ -68,20 +51,47 @@ static int printdepth0 = -2;
 
 #define PUT_SUB( descr, sub ) do { if ((sub) != NULL) { os << DENT << (descr) << "\n"; (sub)->put (os); } } while (0)
 
-static inline string expr_addr (const void *e) {
-  if (Properties::instance ()->noTreeIds ())
+
+static inline xqp_string qname_to_string(store::Item_t qname) 
+{
+  xqp_string result;
+  xqp_string pfx = qname->getPrefix (), ns = qname->getNamespace();
+  if (! ns.empty ())
+    result += pfx + "[=" + qname->getNamespace()->str() + "]:";
+  result += qname->getLocalName()->str();
+  return result;
+}
+
+
+static inline ostream& put_qname(store::Item_t qname, ostream &os) 
+{
+  xqp_string pfx = qname->getPrefix (), ns = qname->getNamespace();
+  if (! ns.empty ())
+    os << pfx << "[=" << qname->getNamespace()->str() << "]:";
+  os << qname->getLocalName()->str();
+  return os;
+}
+
+
+static inline string expr_addr(const void *e) 
+{
+  if (Properties::instance()->noTreeIds ())
+  {
     return "";
-  else {
+  }
+  else 
+  {
     ostringstream os;
     os << " (" << e << ")";
     return os.str ();
   }
 }
 
+
 std::ostream& debugger_expr::put(std::ostream& os) const
 {
   BEGIN_EXPR (debugger_expr);
-  expr_h->put(os);
+  theExpr->put(os);
   CLOSE_EXPR;
 }
 
@@ -300,15 +310,15 @@ ostream& trycatch_expr::put( ostream& os) const
 {
   BEGIN_EXPR (trycatch_expr);
 
-  try_expr_h->put(os);
+  theTryExpr->put(os);
 
-  for (vector<clauseref_t>::const_iterator it = catch_clause_hv.begin();
-       it!=catch_clause_hv.end(); ++it)
+  for (vector<catch_clause_t>::const_iterator it = theCatchClauses.begin();
+       it != theCatchClauses.end(); ++it)
   {
-    clauseref_t cc_h = *it;
+    catch_clause_t cc = *it;
     os << DENT << "CATCH ";
     os << "\n";
-    cc_h->catch_expr_h->put(os);
+    cc->theCatchExpr->put(os);
   }
   os << DENT << "]\n";
   return os;
@@ -317,7 +327,7 @@ ostream& trycatch_expr::put( ostream& os) const
 ostream& eval_expr::put( ostream& os) const
 {
   BEGIN_EXPR (eval_expr);
-  expr_h->put (os);
+  theExpr->put (os);
   CLOSE_EXPR;
 }
 
@@ -335,7 +345,8 @@ ostream& fo_expr::put( ostream& os) const
 {
   store::Item_t qname = theFunction->get_fname();
 
-  os << INDENT << qname->getStringValue() << "/" << size() << expr_addr(this) << " [\n";
+  os << INDENT << qname->getStringValue() << "/" << num_args()
+     << expr_addr(this) << " [\n";
   
   for (vector<rchandle<expr> >::const_iterator it = begin();
        it != end(); ++it)
@@ -343,16 +354,6 @@ ostream& fo_expr::put( ostream& os) const
     rchandle<expr> e_h = *it;
     e_h->put(os);
   }
-  CLOSE_EXPR;
-}
-
-ostream& ft_contains_expr::put( ostream& os) const
-{
-  BEGIN_EXPR (ft_contains_expr);
-  range_h->put(os) << endl;
-  os << "ft_contains\n";
-  ft_select_h->put(os) << endl;
-  if (ft_ignore_h!=NULL) ft_ignore_h->put(os);
   CLOSE_EXPR;
 }
 
@@ -417,11 +418,11 @@ ostream& extension_expr::put( ostream& os) const
   BEGIN_EXPR (extension_expr);
 
   os << INDENT;
-  os << "?"; put_qname (pragma_h->name_h, os);
-  os << " " << pragma_h->content << endl;
+  os << "?"; put_qname (thePragmas[0]->theQName, os);
+  os << " " << thePragmas[0]->theContent << endl;
   UNDENT;
 
-  expr_h->put(os) << endl;
+  theExpr->put(os) << endl;
   CLOSE_EXPR;
 }
 

@@ -31,7 +31,7 @@ public:
 
   bool requires_dyn_ctx () const { return true; }
 
-  expr_update_t getUpdateType() const { return UPDATE_EXPR; }
+ expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
   DEFAULT_NARY_CODEGEN(ZorbaCreateCollectionIterator);
 };
@@ -43,7 +43,7 @@ public:
 
   bool requires_dyn_ctx () const { return true; }
 
-  expr_update_t getUpdateType() const { return UPDATE_EXPR; }
+ expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
   DEFAULT_NARY_CODEGEN(ZorbaDropCollectionIterator);
 };
@@ -55,7 +55,7 @@ public:
 
   bool requires_dyn_ctx () const { return true; }
 
-  expr_update_t getUpdateType() const { return UPDATE_EXPR; }
+ expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
   DEFAULT_NARY_CODEGEN(ZorbaDropAllCollectionsIterator);
 };
@@ -68,7 +68,7 @@ public:
 
   bool requires_dyn_ctx () const { return true; }
 
-  expr_update_t getUpdateType() const { return UPDATE_EXPR; }
+ expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
   DEFAULT_NARY_CODEGEN(ZorbaInsertNodesFirstIterator);
 };
@@ -80,7 +80,7 @@ public:
 
   bool requires_dyn_ctx () const { return true; }
 
-  expr_update_t getUpdateType() const { return UPDATE_EXPR; }
+ expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
   DEFAULT_NARY_CODEGEN(ZorbaInsertNodesLastIterator);
 };
@@ -92,7 +92,7 @@ public:
 
   bool requires_dyn_ctx () const { return true; }
 
-  expr_update_t getUpdateType() const { return UPDATE_EXPR; }
+ expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
   DEFAULT_NARY_CODEGEN(ZorbaInsertNodesBeforeIterator);
 };
@@ -104,7 +104,7 @@ public:
 
   bool requires_dyn_ctx () const { return true; }
 
-  expr_update_t getUpdateType() const { return UPDATE_EXPR; }
+ expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
   DEFAULT_NARY_CODEGEN(ZorbaInsertNodesAfterIterator);
 };
@@ -116,7 +116,7 @@ public:
 
   bool requires_dyn_ctx () const { return true; }
 
-  expr_update_t getUpdateType() const { return UPDATE_EXPR; }
+ expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
   DEFAULT_NARY_CODEGEN(ZorbaInsertNodesAtIterator);
 };
@@ -128,7 +128,7 @@ public:
 
   bool requires_dyn_ctx () const { return true; }
 
-  expr_update_t getUpdateType() const { return UPDATE_EXPR; }
+ expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
   DEFAULT_NARY_CODEGEN(ZorbaRemoveNodesIterator);
 };
@@ -140,7 +140,7 @@ public:
 
   bool requires_dyn_ctx () const { return true; }
 
-  expr_update_t getUpdateType() const { return UPDATE_EXPR; }
+ expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
   DEFAULT_NARY_CODEGEN(ZorbaRemoveNodeAtIterator);
 };

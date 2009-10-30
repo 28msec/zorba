@@ -22,6 +22,8 @@
 #include "system/globalenv.h"
 
 #include "compiler/expression/expr.h"
+#include "compiler/expression/fo_expr.h"
+#include "compiler/expression/path_expr.h"
 
 #include "compiler/semantic_annotations/annotation_keys.h"
 #include "compiler/semantic_annotations/tsv_annotation.h"
@@ -188,7 +190,8 @@ fn_subsequence::compute_annotation(
     std::vector<AnnotationHolder *>& kids,
     Annotations::Key k) const
 {
-  switch (k) {
+  switch (k) 
+  {
   case Annotations::IGNORES_SORTED_NODES:
   case Annotations::IGNORES_DUP_NODES:
     // don't use single_seq_fun default propagation rule
@@ -215,7 +218,7 @@ fn_subsequence::codegen(
   dynamic_cast<const const_expr*>(subseqExpr[1].getp());
 
   const const_expr* lenExpr = NULL;
-  if (subseqExpr.size() > 2)
+  if (subseqExpr.num_args() > 2)
     lenExpr = dynamic_cast<const const_expr*>(subseqExpr[2].getp());
 
   if (posExpr != NULL && lenExpr != NULL && pathExpr != NULL)

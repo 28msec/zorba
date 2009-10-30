@@ -98,7 +98,7 @@ public:
 
   bool requires_dyn_ctx() const { return true; }
 
-  expr_update_t getUpdateType() const { return UPDATE_EXPR; }
+ expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
   DEFAULT_UNARY_CODEGEN(CreateIndexIterator);
 };
@@ -123,7 +123,7 @@ public:
 
   bool requires_dyn_ctx() const { return true; }
 
-  expr_update_t getUpdateType() const { return UPDATE_EXPR; }
+ expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
   DEFAULT_UNARY_CODEGEN(DropIndexIterator);
 };
@@ -148,7 +148,7 @@ public:
 
   bool requires_dyn_ctx() const { return true; }
 
-  expr_update_t getUpdateType() const { return UPDATE_EXPR; }
+ expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
   DEFAULT_UNARY_CODEGEN(RefreshIndexIterator);
 };

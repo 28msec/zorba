@@ -16,7 +16,9 @@
 #include "compiler/expression/ft_expr.h"
 
 using namespace std;
-namespace zorba {
+
+namespace zorba 
+{
   
 SERIALIZABLE_CLASS_VERSIONS(ft_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(ft_expr)
@@ -39,8 +41,31 @@ END_SERIALIZABLE_CLASS_VERSIONS(ft_words_selection_expr)
 SERIALIZABLE_CLASS_VERSIONS(ft_unarynot_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(ft_unarynot_expr)
 
+SERIALIZABLE_CLASS_VERSIONS(ft_select_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(ft_select_expr)
 
-  
+SERIALIZABLE_CLASS_VERSIONS(ft_contains_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(ft_contains_expr)
+
+
+#if 0
+/*******************************************************************************
+
+********************************************************************************/
+#define DEF_ACCEPT( type )             \
+void type::accept(expr_visitor& v)     \
+{                                      \
+  if (v.begin_visit(*this))            \
+    accept_children(v);                \
+                                       \
+  v.end_visit(*this);                  \
+}
+
+
+DEF_ACCEPT (ft_contains_expr)
+#endif
+
+
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
 //  Full-text productions                                              //
@@ -224,6 +249,44 @@ ostream& ft_words_expr::put(ostream& os) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+ft_contains_expr::ft_contains_expr(
+    short sctx,
+    const QueryLoc& loc,
+    expr_t _range_h,
+    expr_t _ft_select_h,
+    expr_t _ft_ignore_h)
+  :
+  expr(sctx, loc),
+  range_h(_range_h),
+  ft_select_h(_ft_select_h),
+  ft_ignore_h(_ft_ignore_h)
+{
+}
+
+#if 0
+void ft_contains_expr::next_iter(expr_iterator_data& v) 
+{
+  BEGIN_EXPR_ITER ();
+  ITER (range_h);
+  ITER (ft_select_h);
+  ITER (ft_ignore_h);
+  END_EXPR_ITER ();
+}
+
+
+ostream& ft_contains_expr::put( ostream& os) const
+{
+  BEGIN_EXPR (ft_contains_expr);
+  range_h->put(os) << endl;
+  os << "ft_contains\n";
+  ft_select_h->put(os) << endl;
+  if (ft_ignore_h!=NULL) ft_ignore_h->put(os);
+  CLOSE_EXPR;
+}
+#endif
 
 } /* namespace zorba */
 

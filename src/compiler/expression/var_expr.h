@@ -17,8 +17,8 @@
 #define ZORBA_COMPILER_VAR_EXPR_H
 
 #include "compiler/expression/expr_base.h"
-//#include "compiler/expression/flwor_expr.h"
-#include "zorbaserialization/serialization_engine.h"
+
+#include "zorbaserialization/class_serializer.h"
 
 namespace zorba {
 
@@ -75,6 +75,7 @@ public:
   enum var_kind 
   {
     eval_var,
+
     for_var,
     let_var,
     pos_var,
@@ -85,14 +86,19 @@ public:
     wincond_in_var,
     wincond_in_pos_var,
     count_var,
-    quant_var,
-    prolog_var,
-    local_var,
-    arg_var,
-    catch_var,
-    copy_var,
     groupby_var,
     non_groupby_var,
+
+    copy_var,
+
+    catch_var,
+    
+    prolog_var,
+
+    local_var,
+
+    arg_var,
+
     unknown_var  // TODO: get rid
   };
 
@@ -111,7 +117,7 @@ protected:
 public:
   SERIALIZABLE_CLASS(var_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(var_expr, expr)
-  void serialize(::zorba::serialization::Archiver &ar);
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   static std::string decode_var_kind(enum var_kind);
@@ -124,6 +130,8 @@ public:
         store::Item_t name);
 
   expr_kind_t get_expr_kind() const { return var_expr_kind; }
+
+  int get_unique_id() const { return unique_id; }
 
   store::Item_t get_varname() const;
 
@@ -151,35 +159,34 @@ public:
 
   var_expr* get_pos_var() const;
 
-  virtual expr_t clone(substitution_t& substitution);
+  void compute_scripting_kind() const;
 
-  virtual xqtref_t return_type_impl(static_context *);
+  xqtref_t return_type_impl(static_context*) const;
+
+  expr_t clone(substitution_t& subst) const;
 
   void next_iter(expr_iterator_data&);
 
   void accept(expr_visitor&);
 
   std::ostream& put(std::ostream&) const;
-
-  int get_unique_id() const {return unique_id;}
 };
 
 
-struct global_binding : public std::pair<varref_t, expr_t>, public ::zorba::serialization::SerializeBaseClass
+struct global_binding : public std::pair<varref_t, expr_t>,
+                        public ::zorba::serialization::SerializeBaseClass
 {
-    bool ext;
+  bool ext;
+
 public:
   SERIALIZABLE_CLASS(global_binding)
   SERIALIZABLE_CLASS_CONSTRUCTOR(global_binding)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    ar & ext;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
+
 public:
+  global_binding() : ext(false) {}
 
-  global_binding () : ext (false) {}
-
-  global_binding (varref_t v, expr_t e, bool ext_)
+  global_binding(varref_t v, expr_t e, bool ext_)
     :
     std::pair<varref_t, expr_t> (v, e),
     ext (ext_)
@@ -187,7 +194,8 @@ public:
   }
 
   virtual ~global_binding() {}
-  bool is_extern () const { return ext; }
+
+  bool is_extern() const { return ext; }
 };
 
 }

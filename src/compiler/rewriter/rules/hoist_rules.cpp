@@ -19,7 +19,7 @@
 
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/rewriter/tools/expr_tools.h"
-#include "compiler/expression/expr.h"
+#include "compiler/expression/flwor_expr.h"
 
 #include "util/dynamic_bitset.h"
 
@@ -28,21 +28,34 @@ using namespace std;
 namespace zorba 
 {
 
-static bool hoist_expressions(RewriterContext&, expr*, const std::map<var_expr*, int>&, const std::map<expr*, DynamicBitset>&, struct flwor_holder*);
+static bool hoist_expressions(
+    RewriterContext&,
+    expr*,
+    const std::map<const var_expr*, int>&,
+    const std::map<expr*, DynamicBitset>&,
+    struct flwor_holder*);
 
-static expr_t try_hoisting(RewriterContext&, expr*, const std::map<var_expr*, int>&, const std::map<expr*, DynamicBitset>&, struct flwor_holder*);
+static expr_t try_hoisting(
+    RewriterContext&,
+    expr*,
+    const std::map<const var_expr*, int>&,
+    const std::map<expr*, DynamicBitset>&,
+    struct flwor_holder*);
 
-static bool non_hoistable (expr*);
+static bool non_hoistable (const expr*);
 
-static bool is_already_hoisted(expr*);
+static bool is_already_hoisted(const expr*);
 
-static bool contains_var(var_expr*, const std::map<var_expr*, int>&, const DynamicBitset&);
+static bool contains_var(
+    var_expr*,
+    const std::map<const var_expr*, int>&,
+    const DynamicBitset&);
 
-static bool contains_node_construction(expr*);
+static bool contains_node_construction(const expr*);
 
-static bool is_enclosed_expr(expr*);
+static bool is_enclosed_expr(const expr*);
 
-static bool contains_updates(expr*);
+static bool contains_updates(const expr*);
 
 
 /*******************************************************************************
@@ -71,7 +84,7 @@ RULE_REWRITE_PRE(HoistExprsOutOfLoops)
     return NULL;
 
   int numVars = 0;
-  std::map<var_expr *, int> varmap;
+  std::map<const var_expr *, int> varmap;
 
   index_flwor_vars(node, numVars, varmap, NULL);
 
@@ -108,7 +121,7 @@ RULE_REWRITE_POST(HoistExprsOutOfLoops)
 static bool hoist_expressions(
     RewriterContext& rCtx,
     expr* e,
-    const std::map<var_expr *, int>& varmap,
+    const std::map<const var_expr *, int>& varmap,
     const std::map<expr *, DynamicBitset>& freevarMap,
     struct flwor_holder* fholder)
 {
@@ -125,7 +138,7 @@ static bool hoist_expressions(
     ulong i = 0;
     while(i < numForLetClauses) 
     {
-      forletwin_clause* flc = static_cast<forletwin_clause*>((*flwor)[i]);
+      forletwin_clause* flc = static_cast<forletwin_clause*>(flwor->get_clause(i, true));
 
       expr* domainExpr = flc->get_expr();
 
@@ -144,6 +157,7 @@ static bool hoist_expressions(
         if (status)
           numForLetClauses = flwor->num_forlet_clauses();
       }
+
       i = ++(curr_holder.clause_count);
 
       assert(numForLetClauses == flwor->num_forlet_clauses());
@@ -164,7 +178,7 @@ static bool hoist_expressions(
       }
     }
 
-    expr_t re = flwor->get_return_expr();
+    expr_t re = flwor->get_return_expr(false);
     expr_t rvar = try_hoisting(rCtx, re, varmap, freevarMap, &curr_holder);
     if (rvar != NULL) 
     {
@@ -215,7 +229,7 @@ static bool hoist_expressions(
 static expr_t try_hoisting(
     RewriterContext& rCtx,
     expr* e,
-    const std::map<var_expr*, int>& varmap,
+    const std::map<const var_expr*, int>& varmap,
     const std::map<expr*, DynamicBitset>& freevarMap,
     struct flwor_holder* holder)
 {
@@ -282,7 +296,9 @@ static expr_t try_hoisting(
     // be hoisted out of any such FOR vars. Otherwise, e cannot be hoisted.  
     for(i = h->clause_count - 1; i >= 0; --i) 
     {
-      forletwin_clause* flc = reinterpret_cast<forletwin_clause*>((*h->flwor)[i]);
+      const forletwin_clause* flc = reinterpret_cast<const forletwin_clause*>
+                                    ((*h->flwor)[i]);
+
       if (contains_var(flc->get_var(), varmap, varset) ||
           contains_var(flc->get_pos_var(), varmap, varset) ||
           contains_var(flc->get_score_var(), varmap, varset)) 
@@ -333,7 +349,7 @@ static expr_t try_hoisting(
 ********************************************************************************/
 static bool contains_var(
     var_expr* v,
-    const std::map<var_expr *, int>& varmap,
+    const std::map<const var_expr *, int>& varmap,
     const DynamicBitset& varset)
 {
   if (v == NULL) 
@@ -341,7 +357,7 @@ static bool contains_var(
     return false;
   }
 
-  std::map<var_expr *, int>::const_iterator i = varmap.find(v);
+  std::map<const var_expr *, int>::const_iterator i = varmap.find(v);
   if (i == varmap.end()) 
   {
     return false;
@@ -354,26 +370,28 @@ static bool contains_var(
 /*******************************************************************************
 
 ********************************************************************************/
-static bool non_hoistable (expr* e) 
+static bool non_hoistable(const expr* e) 
 {
   expr_kind_t k = e->get_expr_kind();
-  return k == var_expr_kind
-    || k == const_expr_kind
-    || k == axis_step_expr_kind
-    || k == match_expr_kind
-    || (k == wrapper_expr_kind && non_hoistable (static_cast<const wrapper_expr *> (e)->get_expr ()))
-    || is_already_hoisted(e);
+
+  return (k == var_expr_kind ||
+          k == const_expr_kind ||
+          k == axis_step_expr_kind ||
+          k == match_expr_kind ||
+          (k == wrapper_expr_kind && 
+           non_hoistable(static_cast<const wrapper_expr*>(e)->get_expr()))  ||
+          is_already_hoisted(e));
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-static bool is_already_hoisted(expr *e)
+static bool is_already_hoisted(const expr* e)
 {
   if (e->get_expr_kind() == fo_expr_kind) 
   {
-    return static_cast<fo_expr *>(e)->get_func() == LOOKUP_OP1("unhoist");
+    return static_cast<const fo_expr *>(e)->get_func() == LOOKUP_OP1("unhoist");
   }
   return false;
 }
@@ -383,7 +401,7 @@ static bool is_already_hoisted(expr *e)
   Check if the expr tree rooted at e contains any node-constructor expr. If so,
   e cannot be hoisted.
 ********************************************************************************/
-static bool contains_node_construction(expr *e)
+static bool contains_node_construction(const expr *e)
 {
   if (e->get_expr_kind() == elem_expr_kind
       || e->get_expr_kind() == attr_expr_kind
@@ -394,13 +412,14 @@ static bool contains_node_construction(expr *e)
     return true;
   }
 
-  expr_iterator i = e->expr_begin();
+  const_expr_iterator i = e->expr_begin_const();
   while(!i.done()) 
   {
-    expr *ce = &*(*i);
+    const expr* ce = &*(*i);
     if (ce) 
     {
-      if (contains_node_construction(ce)) {
+      if (contains_node_construction(ce)) 
+      {
         return true;
       }
     }
@@ -413,12 +432,12 @@ static bool contains_node_construction(expr *e)
 /*******************************************************************************
   Enclosed exprs cannot be hoisted because they may construct text nodes.
 ********************************************************************************/
-static bool is_enclosed_expr(expr *e)
+static bool is_enclosed_expr(const expr* e)
 {
   if (e->get_expr_kind() != fo_expr_kind)
     return false;
 
-  const function *fn = static_cast<fo_expr *>(e)->get_func();
+  const function* fn = static_cast<const fo_expr *>(e)->get_func();
   return (fn->CHECK_IS_BUILTIN_NAMED(":enclosed-expr", 1));
 }
 
@@ -426,15 +445,15 @@ static bool is_enclosed_expr(expr *e)
 /*******************************************************************************
 
 ********************************************************************************/
-static bool contains_updates(expr *e)
+static bool contains_updates(const expr* e)
 {
   if (e->is_updating())
     return true;
 
-  expr_iterator i = e->expr_begin();
+  const_expr_iterator i = e->expr_begin_const();
   while(!i.done()) 
   {
-    expr *ce = &*(*i);
+    const expr* ce = &*(*i);
     if (ce) 
     {
       if (contains_updates(ce))

@@ -166,7 +166,7 @@ public:
 
   virtual bool isDeterministic() const { return true; }
 
-  virtual expr_update_t getUpdateType() const { return SIMPLE_EXPR; }
+  virtual expr_script_kind_t getUpdateType() const { return SIMPLE_EXPR; }
 
   bool isUpdating() const { return getUpdateType() == UPDATE_EXPR; }
 
@@ -279,7 +279,7 @@ private:
   expr_t                  m_expr_body;
   std::vector<var_expr_t> m_args;
 
-  expr_update_t           theUpdateType;
+  expr_script_kind_t      theUpdateType;
   bool                    deterministic;
   bool                    leaf;  // does not call other UDF's
   
@@ -306,7 +306,7 @@ public:
 
   const QueryLoc& get_location() const;
 
-  virtual expr_update_t getUpdateType() const { return theUpdateType; }
+  virtual expr_script_kind_t getUpdateType() const { return theUpdateType; }
 
   virtual bool is_builtin_fn_named(const char *local, int local_len,int arg_count) const {return false;}
 
