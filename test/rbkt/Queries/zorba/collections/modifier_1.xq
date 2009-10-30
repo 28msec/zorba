@@ -10,7 +10,8 @@ declare sequential function local:init() {
   );
 };
 
-declare function local:testa_1() {
+
+declare sequential function local:testa_1() {
   try {
     block {
       ddl:insert-nodes-first($ns:coll_1, <a/>);
@@ -20,7 +21,8 @@ declare function local:testa_1() {
   }
 };
 
-declare function local:testa_2() {
+
+declare sequential function local:testa_2() {
   try {
     block {
       ddl:insert-nodes-first($ns:coll_2, <a/>);
@@ -30,7 +32,7 @@ declare function local:testa_2() {
   }
 };
 
-declare function local:testa_3() {
+declare sequential function local:testa_3() {
   try {
     block {
       ddl:insert-nodes-first($ns:coll_3, <a/>);
@@ -40,7 +42,7 @@ declare function local:testa_3() {
   }
 };
 
-declare function local:testb_1() {
+declare sequential function local:testb_1() {
   try {
     block {
       ddl:insert-nodes-last($ns:coll_1, <b/>);
@@ -50,15 +52,18 @@ declare function local:testb_1() {
   }
 };
 
+
 declare sequential function local:testb_2() {
   ddl:insert-nodes-last($ns:coll_2, <b/>);
 };
+
 
 declare sequential function local:testb_3() {
   ddl:insert-nodes-last($ns:coll_3, <b/>);
 };
 
-declare function local:testc_1() {
+
+declare sequential function local:testc_1() {
   try {
     block {
       ddl:insert-nodes-before($ns:coll_1, dc:collection($ns:coll_1)[1], <c/>);
@@ -68,7 +73,8 @@ declare function local:testc_1() {
   }
 };
 
-declare function local:testc_2() {
+
+declare sequential function local:testc_2() {
   try {
     block {
       ddl:insert-nodes-before($ns:coll_2, dc:collection($ns:coll_2)[1], <c/>);
@@ -78,7 +84,8 @@ declare function local:testc_2() {
   }
 };
 
-declare function local:testc_3() {
+
+declare sequential function local:testc_3() {
   try {
     block {
       ddl:insert-nodes-before($ns:coll_3, dc:collection($ns:coll_3)[1], <c/>);
@@ -88,7 +95,8 @@ declare function local:testc_3() {
   }
 };
 
-declare function local:testd_1() {
+
+declare sequential function local:testd_1() {
   try {
     block {
       ddl:insert-nodes-after($ns:coll_1, dc:collection($ns:coll_1)[last()], <d/>);
@@ -98,7 +106,8 @@ declare function local:testd_1() {
   }
 };
 
-declare function local:testd_2() {
+
+declare sequential function local:testd_2() {
   try {
     block {
       ddl:insert-nodes-after($ns:coll_2, dc:collection($ns:coll_2)[last()], <d/>);
@@ -108,7 +117,8 @@ declare function local:testd_2() {
   }
 };
 
-declare function local:testd_3() {
+
+declare sequential function local:testd_3() {
   try {
     block {
       ddl:insert-nodes-after($ns:coll_3, dc:collection($ns:coll_3)[last()], <d/>);
@@ -118,7 +128,8 @@ declare function local:testd_3() {
   }
 };
 
-declare function local:teste_1() {
+
+declare sequential function local:teste_1() {
   try {
     block {
       ddl:insert-nodes-at($ns:coll_1, 1, <e/>);
@@ -128,7 +139,7 @@ declare function local:teste_1() {
   }
 };
 
-declare function local:teste_2() {
+declare sequential function local:teste_2() {
   try {
     block {
       ddl:insert-nodes-at($ns:coll_2, 1, <e/>);
@@ -138,7 +149,7 @@ declare function local:teste_2() {
   }
 };
 
-declare function local:teste_3() {
+declare sequential function local:teste_3() {
   try {
     block {
       ddl:insert-nodes-at($ns:coll_3, 1, <e/>);
