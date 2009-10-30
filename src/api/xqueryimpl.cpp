@@ -40,7 +40,9 @@
 #include "api/resultiteratorimpl.h"
 #include "api/unmarshaller.h"
 #include "api/serialization/serializer.h"
+#include "api/serialization/serializable.h"
 #include "api/zorbaimpl.h"
+#include "api/serializerimpl.h"
 
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
@@ -370,13 +372,13 @@ XQueryImpl::executeSAX()
   PlanWrapper_t lPlan = generateWrapper();
   serializer lSerializer(theErrorManager);
   Zorba_SerializerOptions_t opt;
-  setSerializationParameters(&lSerializer, &opt);
+  SerializerImpl::setSerializationParameters(lSerializer, opt);
 
-  try { 
+  try {
     lPlan->open();
     if (theSAX2Handler != NULL) {
-    lSerializer.serializeSAX2(&*lPlan, std::cerr, theSAX2Handler );
-    std::cerr << std::endl;
+      lSerializer.serialize((intern::Serializable*)&*lPlan, std::cerr, theSAX2Handler);
+      std::cerr << std::endl;
     } else {
       store::Item_t item;
       while (lPlan->next(item)){};
@@ -615,10 +617,11 @@ XQueryImpl::serialize(
 {
   ZORBA_TRY
     serializer lSerializer(theErrorManager);
-    if (opt != NULL)
-      setSerializationParameters(&lSerializer, opt);
-    
-    lSerializer.serialize(&*aWrapper, os);
+    if (opt != NULL) {
+      const Zorba_SerializerOptions_t lOptions = *opt;
+      SerializerImpl::setSerializationParameters(lSerializer, lOptions);
+    }
+    lSerializer.serialize((intern::Serializable*)aWrapper, os);
   ZORBA_CATCH
 }
 
@@ -657,103 +660,15 @@ XQueryImpl::removeResultIterator(const ResultIterator* iter)
 PlanWrapper_t
 XQueryImpl::generateWrapper()
 {
-  PlanWrapper_t lPlan = 
-  new PlanWrapper(static_cast<PlanIterator*>(thePlan->theRootIter.getp()),
-                  theCompilerCB,
-                  theDynamicContext,
-                  this,
-                  0, theTimeout);
+  PlanWrapper_t lPlan = new PlanWrapper(
+      static_cast<PlanIterator*>(thePlan->theRootIter.getp()),
+      theCompilerCB,
+      theDynamicContext,
+      this,
+      0,
+      theTimeout);
   return lPlan;
 }
-
-
-void
-XQueryImpl::setSerializationParameters(
-    serializer* ser,
-    const Zorba_SerializerOptions_t* opt)
-{
-  if (opt == NULL)
-    return;
-  
-  switch (opt->ser_method) 
-  {
-  case ZORBA_SERIALIZATION_METHOD_XML:
-    ser->set_parameter("method", "xml"); break;
-  case ZORBA_SERIALIZATION_METHOD_HTML:
-    ser->set_parameter("method", "html"); break;
-  case ZORBA_SERIALIZATION_METHOD_XHTML:
-    ser->set_parameter("method", "xhtml"); break;
-  case ZORBA_SERIALIZATION_METHOD_TEXT:
-    ser->set_parameter("method", "text"); break;
-  case ZORBA_SERIALIZATION_METHOD_JSON:
-    ser->set_parameter("method", "json"); break;
-  case ZORBA_SERIALIZATION_METHOD_JSONML:
-    ser->set_parameter("method", "jsonml"); break;
-  }
-
-  switch (opt->byte_order_mark) 
-  {
-  case ZORBA_BYTE_ORDER_MARK_YES:
-    ser->set_parameter("byte-order-mark", "yes"); break;
-  case ZORBA_BYTE_ORDER_MARK_NO:
-    ser->set_parameter("byte-order-mark", "no"); break;
-  }
-
-  switch (opt->include_content_type)
-  {
-  case ZORBA_INCLUDE_CONTENT_TYPE_YES:
-    ser->set_parameter("include-content-type", "yes"); break;
-  case ZORBA_INCLUDE_CONTENT_TYPE_NO:
-    ser->set_parameter("include-content-type", "no"); break;
-  }
-
-  switch (opt->indent) 
-  {
-  case ZORBA_INDENT_YES:
-    ser->set_parameter("indent", "yes"); break;
-  case ZORBA_INDENT_NO:
-    ser->set_parameter("indent", "no"); break;
-  }
-
-  switch (opt->omit_xml_declaration)
-  {
-  case ZORBA_OMIT_XML_DECLARATION_YES:
-    ser->set_parameter("omit-xml-declaration", "yes"); break;
-  case ZORBA_OMIT_XML_DECLARATION_NO:
-    ser->set_parameter("omit-xml-declaration", "no"); break;
-  }
-
-  switch (opt->standalone)
-  {
-  case ZORBA_STANDALONE_YES:
-    ser->set_parameter("standalone", "yes"); break;
-  case ZORBA_STANDALONE_NO:
-    ser->set_parameter("standalone", "no"); break;
-  case ZORBA_STANDALONE_OMIT:
-    ser->set_parameter("standalone", "omit"); break;
-  }
-
-  switch (opt->undeclare_prefixes)
-  {
-  case ZORBA_UNDECLARE_PREFIXES_YES:
-    ser->set_parameter("undeclare-prefixes", "yes"); break;
-  case ZORBA_UNDECLARE_PREFIXES_NO:
-    ser->set_parameter("undeclare-prefixes", "no"); break;
-  }
-
-  if (opt->media_type != "")
-    ser->set_parameter("media-type", opt->media_type.c_str());
-
-  if (opt->doctype_system != "")
-    ser->set_parameter("doctype-system", opt->doctype_system.c_str());
-
-  if (opt->doctype_public != "")
-    ser->set_parameter("doctype-public", opt->doctype_public.c_str());
-  
-  if (opt->cdata_section_elements != "")
-    ser->set_parameter("cdata-section-elements", opt->cdata_section_elements.c_str());
-}
-
 
 void
 XQueryImpl::checkNotClosed() const

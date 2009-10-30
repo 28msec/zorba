@@ -18,7 +18,7 @@
 
 #include <zorba/config.h>
 #include <zorba/item_sequence.h>
-#include <zorba/item.h>
+#include <zorba/serializable.h>
 
 namespace zorba { 
 
@@ -33,9 +33,9 @@ namespace zorba {
     public:
       /** \brief Constructor
        * 
-       * @param aSequence the vector containing the sequence of Items
+       * @param aItem the single item in this sequence
        */
-      SingletonItemSequence(const Item& aSequence);
+      SingletonItemSequence(const Item& aItem);
 
       /** \brief Destructor
        */
@@ -51,6 +51,7 @@ namespace zorba {
       next(Item& aItem);
 
     protected:
+
       Item theItem;
       bool theFirstCall;
 

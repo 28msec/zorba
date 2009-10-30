@@ -1,6 +1,7 @@
 #include <curl/curl.h>
 
 #include <zorba/zorba.h>
+#include <zorba/serializer.h>
 #include <zorba/external_module.h>
 #include <zorba/external_function.h>
 #include <zorba/singleton_item_sequence.h>
@@ -62,7 +63,13 @@ namespace http_client {
         if (lSerialSet && lSerial.getStringValue() == "text") {
           lSerStream << lContent.getStringValue();
         } else {
-          lContent.serialize(lSerStream);
+          Zorba_SerializerOptions_t lOptions;
+          Serializer_t lSerializer = Serializer::createSerializer(lOptions);
+
+          // Build a singleton item sequence which is also a Serializable.
+          // The new serializer interface only accepts Serializable objects.
+          SingletonItemSequence lSequence(lContent);
+          lSerializer->serialize((Serializable*)&lSequence, lSerStream);
         }
         lData = lSerStream.str();
         curl_easy_setopt(lCURL, CURLOPT_POSTFIELDSIZE, lData.length());

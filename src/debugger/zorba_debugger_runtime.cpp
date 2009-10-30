@@ -9,6 +9,7 @@
 
 #include "api/zorbaimpl.h"
 #include "api/xqueryimpl.h"
+#include "api/serializerimpl.h"
 
 #include "context/static_context.h"
 
@@ -189,9 +190,9 @@ void ZorbaDebuggerRuntime::runQuery()
     theLock.unlock();
 
     serializer lSerializer(theQuery->theErrorManager);
-    XQueryImpl::setSerializationParameters(&lSerializer, &theSerializerOptions);
-      
-    lSerializer.serialize(&*theWrapper, theOStream);
+    SerializerImpl::setSerializationParameters(lSerializer, theSerializerOptions);
+
+    lSerializer.serialize((intern::Serializable*)theWrapper, theOStream);
     
     theOStream.flush();
   } catch(error::ZorbaError& e){

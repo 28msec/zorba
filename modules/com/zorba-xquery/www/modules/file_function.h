@@ -35,7 +35,7 @@ namespace zorba { namespace filemodule {
 #endif
 
     protected:
-      const FileModule*     theModule;
+      const FileModule* theModule;
 
       static void
       throwError(

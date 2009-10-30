@@ -21,9 +21,12 @@
 #include "zorbaerrors/error_manager.h"
 
 #include "api/serialization/serializer.h"
+
 #include "store/api/shared_types.h"
 
 namespace zorba {
+
+  class Serializable;
 
   class SerializerImpl : public Serializer
   {
@@ -33,18 +36,19 @@ namespace zorba {
 
     public:
 
-      SerializerImpl(const Zorba_SerializerOptions_t& aOptions);
+      SerializerImpl(const Zorba_SerializerOptions_t& options);
 
       virtual ~SerializerImpl() {}
 
-      virtual void serialize(const Item& item, std::ostream& os) const;
-
-      virtual void serialize(ItemSequence* sequence, std::ostream& os) const;
+      virtual void
+      serialize(
+        Serializable* object,
+        std::ostream& stream) const;
 
       static void
       setSerializationParameters(
-          serializer& aInternalSerializer,
-          const Zorba_SerializerOptions_t& aSerializerOptions);
+        serializer&                       serializer,
+        const Zorba_SerializerOptions_t&  options);
 
   };
 

@@ -15,24 +15,27 @@
  */
 
 #include <zorba/singleton_item_sequence.h>
-
 #include <zorba/item.h>
 
 namespace zorba { 
 
-SingletonItemSequence::SingletonItemSequence(const Item& aItem)
-    : theItem(aItem),
-      theFirstCall(true) {}
+SingletonItemSequence::SingletonItemSequence(
+  const Item& aItem)
+  : theItem(aItem),
+    theFirstCall(true)
+{
+}
 
 bool
-SingletonItemSequence::next(Item& val)
+SingletonItemSequence::next(Item& aItem)
 {
   if (!theFirstCall) {
       return false;
   }
-  val = theItem;
+  aItem = theItem;
   theFirstCall = false;
   return true;
 }
+
 
 } // namespace zorba

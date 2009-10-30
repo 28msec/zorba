@@ -39,6 +39,8 @@ FileModule::getExternalFunction(String aLocalname) const
   if (!lFunc) {
     if (1 == 0) {
 
+    } else if (aLocalname.equals("copy")) {
+      lFunc = new CopyFunction(this);
     } else if (aLocalname.equals("exists")) {
       lFunc = new ExistsFunction(this);
     } else if (aLocalname.equals("files")) {
@@ -63,6 +65,8 @@ FileModule::getExternalFunction(String aLocalname) const
       lFunc = new ReadXmlFunction(this);
     } else if (aLocalname.equals("remove")) {
       lFunc = new RemoveFunction(this);
+    } else if (aLocalname.equals("write")) {
+      lFunc = new WriteFunction(this);
     }
   }
   return lFunc;

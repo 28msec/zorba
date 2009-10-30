@@ -31,7 +31,7 @@ namespace zorba {
 ********************************************************************************/
 PlanWrapper::PlanWrapper(
     const PlanIter_t& aIter,
-    CompilerCB* aCompilerCB, 
+    CompilerCB* aCompilerCB,
     dynamic_context* aDynamicContext,
     XQueryImpl* aQuery,
     uint32_t aStackDepth,
@@ -145,11 +145,26 @@ PlanWrapper::close() throw ()
 #endif
 }
 
+void
+PlanWrapper::checkDepth (const QueryLoc &loc)
+{
+  theStateBlock->checkDepth (loc);
+}
 
-void PlanWrapper::checkDepth (const QueryLoc &loc)
-{ theStateBlock->checkDepth (loc); }
+const RuntimeCB*
+PlanWrapper::getRuntimeCB () const
+{
+  return theStateBlock->getRuntimeCB ();
+}
 
-const RuntimeCB *PlanWrapper::getRuntimeCB () const
-{ return theStateBlock->getRuntimeCB (); }
+bool
+PlanWrapper::nextSerializableItem(store::Item_t& aItem)
+{
+  if (!next(aItem)) {
+    return false;
+  }
+  return true;
+}
+
 
 } /* namespace zorba */

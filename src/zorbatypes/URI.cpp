@@ -222,16 +222,30 @@ URI::initialize(const xqpString& uri, bool have_base)
   int32_t  lFragmentIdx = lTrimmedURI.indexOf("#");
 
 
+#ifdef WIN32
+  // on WIN32 we might have a drive specification ("C:")
+  // and we don't want to consider this as scheme
+  char lLetter = lTrimmedURI.c_str()[0];
+  bool lIsDrive = false;
+  if (lColonIdx == 1 &&
+     ((lLetter >= 65 && 90 >= lLetter) || (lLetter >= 97 && 122 >= lLetter))) {
+    lIsDrive = true;
+  }
+#endif
+
   /**
    * Scheme
    * must be before `/', '?' or '#'.  
    */
   if ((lColonIdx <= 0) ||
+#ifdef WIN32
+      lIsDrive ||
+#endif
       (lColonIdx > lSlashIdx && lSlashIdx != -1) ||
       (lColonIdx > lQueryIdx && lQueryIdx != -1) ||
       (lColonIdx > lFragmentIdx && lFragmentIdx != -1)) {
 
-   // A standalone base is a valid URI
+    // A standalone base is a valid URI
     if ( (valid) && (lColonIdx == 0 || (!have_base && lFragmentIdx != 0)) ) {
       ZORBA_ERROR_DESC_OSS(XQST0046, "URI \"" << lTrimmedURI << "\" doesn't have an URI scheme");
     }

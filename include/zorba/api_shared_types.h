@@ -38,6 +38,7 @@ namespace zorba {
   class SerializationCallback;
   class File;
   class DirectoryIterator;
+  class Serializer;
 
   class ErrorHandler;
   class QueryLocation;
@@ -55,6 +56,7 @@ namespace zorba {
   typedef zorba::SmartPtr<Function>                   Function_t;
   typedef zorba::SmartPtr<File>                       File_t;
   typedef zorba::SmartPtr<DirectoryIterator>          DirectoryIterator_t;
+  typedef zorba::SmartPtr<Serializer>                 Serializer_t;
 
   // auto pointer (used for transfering ownership of the return type of external functions)
   typedef std::auto_ptr<ItemSequence>                   ItemSequence_t;

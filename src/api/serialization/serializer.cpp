@@ -24,11 +24,11 @@
 #include "zorbatypes/utf8.h"
 
 #include "api/serialization/serializer.h"
+#include "api/serialization/serializable.h"
 #include "api/sax2impl.h"
+#include "api/serializerimpl.h"
 
 #include "util/converters/json_converter.h"
-
-#include "runtime/api/plan_wrapper.h"
 
 #include "system/globalenv.h"
 
@@ -1640,102 +1640,102 @@ void serializer::reset()
 }
 
 
-void serializer::set_parameter(const char* parameter_name, const char* value)
+void serializer::setParameter(const char* aName, const char* aValue)
 {
   // TODO: add handled parameters translation
-  if (!strcmp(parameter_name, "indent"))
+  if (!strcmp(aName, "indent"))
   {
-    if (!strcmp(value, "yes"))
+    if (!strcmp(aValue, "yes"))
       indent = PARAMETER_VALUE_YES;
-    else if (!strcmp(value, "no"))
+    else if (!strcmp(aValue, "no"))
       indent = PARAMETER_VALUE_NO;
     else
     {
       ZORBA_ERROR( SEPM0016);
     }
   }
-  else if (!strcmp(parameter_name, "standalone"))
+  else if (!strcmp(aName, "standalone"))
   {
-    if (!strcmp(value, "yes"))
+    if (!strcmp(aValue, "yes"))
       standalone = PARAMETER_VALUE_YES;
-    else if (!strcmp(value, "no"))
+    else if (!strcmp(aValue, "no"))
       standalone = PARAMETER_VALUE_NO;
-    else if (!strcmp(value, "omit"))
+    else if (!strcmp(aValue, "omit"))
       standalone = PARAMETER_VALUE_OMIT;
     else
     {
       ZORBA_ERROR( SEPM0016);
     }
   }
-  else if (!strcmp(parameter_name, "omit-xml-declaration"))
+  else if (!strcmp(aName, "omit-xml-declaration"))
   {
-    if (!strcmp(value, "yes"))
+    if (!strcmp(aValue, "yes"))
       omit_xml_declaration = PARAMETER_VALUE_YES;
-    else if (!strcmp(value, "no"))
+    else if (!strcmp(aValue, "no"))
       omit_xml_declaration = PARAMETER_VALUE_NO;    
     else
     {
       ZORBA_ERROR( SEPM0016);
     }
   }
-  else if (!strcmp(parameter_name, "byte-order-mark"))
+  else if (!strcmp(aName, "byte-order-mark"))
   {
-    if (!strcmp(value, "yes"))
+    if (!strcmp(aValue, "yes"))
       byte_order_mark = PARAMETER_VALUE_YES;
-    else if (!strcmp(value, "no"))
+    else if (!strcmp(aValue, "no"))
       byte_order_mark = PARAMETER_VALUE_NO;
     else
     {
       ZORBA_ERROR( SEPM0016);
     }
   }
-  else if (!strcmp(parameter_name, "undeclare-prefixes"))
+  else if (!strcmp(aName, "undeclare-prefixes"))
   {
-    if (!strcmp(value, "yes"))
+    if (!strcmp(aValue, "yes"))
       undeclare_prefixes = PARAMETER_VALUE_YES;
-    else if (!strcmp(value, "no"))
+    else if (!strcmp(aValue, "no"))
       undeclare_prefixes = PARAMETER_VALUE_NO;
     else
     {
       ZORBA_ERROR( SEPM0016);
     }
   }
-  else if (!strcmp(parameter_name, "method"))
+  else if (!strcmp(aName, "method"))
   {
-    if (!strcmp(value, "xml"))
+    if (!strcmp(aValue, "xml"))
       method = PARAMETER_VALUE_XML;
-    else if (!strcmp(value, "html"))
+    else if (!strcmp(aValue, "html"))
       method = PARAMETER_VALUE_HTML;
-    else if (!strcmp(value, "xhtml"))
+    else if (!strcmp(aValue, "xhtml"))
       method = PARAMETER_VALUE_XHTML;
-    else if (!strcmp(value, "text"))
+    else if (!strcmp(aValue, "text"))
       method = PARAMETER_VALUE_TEXT;
-    else if (!strcmp(value, "json"))
+    else if (!strcmp(aValue, "json"))
       method = PARAMETER_VALUE_JSON;
-    else if (!strcmp(value, "jsonml"))
+    else if (!strcmp(aValue, "jsonml"))
       method = PARAMETER_VALUE_JSONML;
     else
     {
       ZORBA_ERROR( SEPM0016);
     }
   }
-  else if (!strcmp(parameter_name, "include-content-type"))
+  else if (!strcmp(aName, "include-content-type"))
   {
-    if (!strcmp(value, "yes"))
+    if (!strcmp(aValue, "yes"))
       include_content_type = PARAMETER_VALUE_YES;
-    else if (!strcmp(value, "no"))
+    else if (!strcmp(aValue, "no"))
       include_content_type = PARAMETER_VALUE_NO;
     else
     {
       ZORBA_ERROR( SEPM0016);
     }
   }
-  else if (!strcmp(parameter_name, "encoding"))
+  else if (!strcmp(aName, "encoding"))
   {
-    if (!strcmp(value, "UTF-8"))
+    if (!strcmp(aValue, "UTF-8"))
       encoding = PARAMETER_VALUE_UTF_8;
 #ifndef ZORBA_NO_UNICODE
-    else if (!strcmp(value, "UTF-16"))
+    else if (!strcmp(aValue, "UTF-16"))
       encoding = PARAMETER_VALUE_UTF_16;
 #endif
     else
@@ -1743,26 +1743,26 @@ void serializer::set_parameter(const char* parameter_name, const char* value)
       ZORBA_ERROR( SEPM0016);
     }
   }
-  else if (!strcmp(parameter_name, "media-type"))
+  else if (!strcmp(aName, "media-type"))
   {
-    media_type = new xqpStringStore(value);
+    media_type = new xqpStringStore(aValue);
   }
-  else if (!strcmp(parameter_name, "version"))
+  else if (!strcmp(aName, "version"))
   {
-    version = new xqpStringStore(value);
+    version = new xqpStringStore(aValue);
     version_has_default_value = false;
   }
-  else if (!strcmp(parameter_name, "doctype-system"))
+  else if (!strcmp(aName, "doctype-system"))
   {
-    doctype_system = new xqpStringStore(value);
+    doctype_system = new xqpStringStore(aValue);
   }
-  else if (!strcmp(parameter_name, "doctype-public"))
+  else if (!strcmp(aName, "doctype-public"))
   {
-    doctype_public = new xqpStringStore(value);
+    doctype_public = new xqpStringStore(aValue);
   }
-  else if (!strcmp(parameter_name, "cdata-section-elements"))
+  else if (!strcmp(aName, "cdata-section-elements"))
   {
-    cdata_section_elements = new xqpStringStore(value);
+    cdata_section_elements = new xqpStringStore(aValue);
   }
   else
   {
@@ -1835,73 +1835,65 @@ bool serializer::setup(ostream& os)
   return true;
 }
 
-
-void serializer::serialize(PlanWrapper* result, ostream& os)
+void
+serializer::serialize(
+  intern::Serializable* aObject,
+  ostream&      aOStream)
 {
+  serialize(aObject, aOStream, 0);
+}
+
+void
+serializer::serialize(
+  intern::Serializable* aObject,
+  ostream&              aOStream,
+  SAX2_ContentHandler*  aHandler)
+{
+  // used for JSON serialization only
   bool firstItem = true;
 
   validate_parameters();
-
-  if (!setup(os))
+  if (!setup(aOStream)) {
     return;
+  }
+
+  // in case we use SAX event notifications
+  if (aHandler) {
+    // only allow XML-based methods for SAX notifications
+    if (method != PARAMETER_VALUE_XML &&
+        method != PARAMETER_VALUE_XHTML &&
+        method != PARAMETER_VALUE_JSONML) {
+      ZORBA_ERROR(API0070_INVALID_SERIALIZATION_METHOD_FOR_SAX);
+    }
+    // it's OK now, build a SAX emmiter
+    e = new sax2_emitter(this, *tr, aHandler); 
+  }
 
   e->emit_declaration();
 
-  store::Item_t item;
-
-  while (result->next(item))
-  {
-    if( (method == PARAMETER_VALUE_JSON ||
-         method == PARAMETER_VALUE_JSONML) &&
-         !firstItem )
-    {
+  store::Item_t lItem;
+  while (aObject->nextSerializableItem(lItem)) {
+    // JSON serialization only alows one single item to be serialized
+    // so throw an error if we get to a second item
+    if (!firstItem && (
+        method == PARAMETER_VALUE_JSON ||
+        method == PARAMETER_VALUE_JSONML)) {
       ZORBA_ERROR(API0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED);
     }
 
-    if (item->isPul())
+    // PUL's cannot be serialized
+    if (lItem->isPul()) {
       ZORBA_ERROR(API0023_CANNOT_SERIALIZE_UPDATE_QUERY);
+    }
 
-    e->emit_item(&*item);
+    e->emit_item(&*lItem);
+
+    // used for JSON serialization only
     firstItem = false;
   }
 
   e->emit_declaration_end();
 }
 
-
-void serializer::serializeSAX2(
-    PlanWrapper * result,
-    ostream & os,
-    SAX2_ContentHandler * aSAX2ContentHandler )
-{
-  validate_parameters();
-
-  if (!setup(os))
-    return;
-  
-  e = new sax2_emitter( this, *tr, aSAX2ContentHandler ); 
-  e->emit_declaration();
-
-  store::Item_t item;
-  while (result->next(item))
-  {
-    if (item->isPul())
-      ZORBA_ERROR(API0023_CANNOT_SERIALIZE_UPDATE_QUERY);
-
-    e->emit_item(&*item);
-  }
-  e->emit_declaration_end();
-}
-
-
-void serializer::serialize(const store::Item* item, ostream& os)
-{
-  validate_parameters();
-  setup(os);
-  
-  e->emit_declaration();
-  e->emit_item(item);
-  e->emit_declaration_end();
-}
 
 } // namespace zorba

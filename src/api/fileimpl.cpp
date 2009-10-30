@@ -34,6 +34,11 @@ DirectoryIteratorImpl::DirectoryIteratorImpl(std::string const& aPath)
   theInternalDirIter = new dir_iterator(aPath);
 }
 
+DirectoryIteratorImpl::~DirectoryIteratorImpl(std::string const& aPath)
+{
+  delete theInternalDirIter;
+}
+
 bool
 DirectoryIteratorImpl::next(std::string& aPathStr) const
 {
@@ -278,20 +283,39 @@ FileImpl::files() const
 }
 
 void
-FileImpl::read(std::ifstream& aInStream) const
+FileImpl::openInputStream(std::ifstream& aInStream) const
 {
-
   ZORBA_TRY
     std::string lPath(theInternalFile->get_path());
 
     if (!theInternalFile->exists()) {
       ZORBA_ERROR_DESC_OSS(FODC0002, "File not found: " << lPath);
     }
+    if (!theInternalFile->is_file()) {
+      ZORBA_ERROR_DESC_OSS(FODC0002, "\"" << lPath << "\" is not a file");
+    }
     aInStream.open(lPath.c_str(), std::ifstream::in);
     if (aInStream.is_open() == false) {
       ZORBA_ERROR_DESC_OSS(FODC0002, "File not accessible: " << lPath);
     }
+  ZORBA_CATCH
+}
 
+void
+FileImpl::openOutputStream(std::ofstream& aOutStream, bool append) const
+{
+  ZORBA_TRY
+    std::string lPath(theInternalFile->get_path());
+
+    if (theInternalFile->exists() && !theInternalFile->is_file()) {
+      ZORBA_ERROR_DESC_OSS(FODC0002, "\"" << lPath << "\" is not a file");
+    }
+    int lMode = append ? std::ofstream::app : (std::ofstream::out | std::ofstream::trunc);
+
+    aOutStream.open(lPath.c_str(), lMode);
+    if (aOutStream.is_open() == false) {
+      ZORBA_ERROR_DESC_OSS(FODC0002, "File not accessible: " << lPath);
+    }
   ZORBA_CATCH
 }
 

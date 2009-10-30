@@ -27,7 +27,6 @@ SET(API_SRCS
     resultiteratorimpl.cpp
     zorbastring.cpp
     itemfactoryimpl.cpp
-    serialization/serializer.cpp
     item.cpp
     typeidentimpl.cpp
     unmarshaller.cpp
@@ -42,10 +41,15 @@ SET(API_SRCS
     debugger_event_handlerimpl.cpp
     default_debugger_event_handlerimpl.cpp
     serialization_callback.cpp
+    item_sequence.cpp
     vector_item_sequence.cpp
     singleton_item_sequence.cpp
     fileimpl.cpp
+    serializerimpl.cpp
+    base64impl.cpp
     )
+
+ADD_SRC_SUBFOLDER(API_SRCS serialization API_SERIALIZATION_SRCS)
 
 SET(API_BUILD_SRCS
   ${CMAKE_CURRENT_BINARY_DIR}/api/version.cpp

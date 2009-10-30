@@ -217,35 +217,6 @@ uint32_t Item::getUnsignedIntValue() const
 }
 
 
-void Item::serialize(std::ostream& os) const
-{
-  SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
-
-  try 
-  {
-    error::ErrorManager lErrorManger;
-    serializer lSerializer(&lErrorManger);
-    lSerializer.set_parameter("omit-xml-declaration", "yes");
-    lSerializer.serialize(m_item, os);
-  }
-  catch (::zorba::error::ZorbaError& e) 
-  {
-    DefaultErrorHandler lErrorHandler;
-    ZorbaImpl::notifyError(&lErrorHandler, e);
-  }
-  catch (std::exception& e) 
-  {
-    DefaultErrorHandler lErrorHandler;
-    ZorbaImpl::notifyError(&lErrorHandler, e.what());
-  }
-  catch (...) 
-  {
-    DefaultErrorHandler lErrorHandler;
-    ZorbaImpl::notifyError(&lErrorHandler, "Internal error");
-  }
-}
-
-
 Item Item::getEBV() const
 {
   ITEM_TRY

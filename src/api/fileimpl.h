@@ -36,7 +36,7 @@ namespace zorba {
 
       DirectoryIteratorImpl(std::string const& aPath);
 
-      ~DirectoryIteratorImpl() {}
+      ~DirectoryIteratorImpl();
 
       bool next(std::string& aPathStr) const;
 
@@ -77,7 +77,8 @@ namespace zorba {
 
       DirectoryIterator_t files() const;
 
-      void read(std::ifstream& aInStream) const;
+      void openInputStream(std::ifstream& aInStream) const;
+      void openOutputStream(std::ofstream& aOutStream, bool append = false) const;
 
       time_t lastModified() const;
 

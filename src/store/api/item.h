@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_STORE_ITEM
-#define ZORBA_STORE_ITEM
+#ifndef ZORBA_STORE_ITEM_H
+#define ZORBA_STORE_ITEM_H
 
 #include <vector>
 

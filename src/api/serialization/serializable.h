@@ -13,33 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_SERIALIZER_ITEM_SEQUENCE_H
-#define ZORBA_SERIALIZER_ITEM_SEQUENCE_H
+#ifndef ZORBA_SERIALIZABLE_H
+#define ZORBA_SERIALIZABLE_H
 
-#include <zorba/item_sequence.h>
+#include <store/api/item.h>
 
-#include "api/serialization/serializer_sequence.h"
+namespace zorba { namespace intern
+{
 
-namespace zorba {
-
-  class ItemSequence;
-
-  class SerializerItemSequence : public SerializerSequence
-  {
-    private:
-
-      ItemSequence* theItemSequence;
+  class Serializable {
 
     public:
 
-      SerializerItemSequence(ItemSequence* aItemSequence);
+      virtual ~Serializable() {}
 
-      virtual ~SerializerItemSequence() {}
-
-      virtual bool next(store::Item_t& aItem);
+      virtual bool nextSerializableItem(store::Item_t& item) = 0;
 
   };
 
-} /* namespace zorba */
+} // namespace intern
+
+} // namespace zorba
 
 #endif

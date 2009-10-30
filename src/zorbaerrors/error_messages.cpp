@@ -203,6 +203,7 @@ DEF_ERR_CODE(API0064_CONV_JSON_ML_SERIALIZE, API0064, "Could not serialize the e
 DEF_ERR_CODE(API0065_CONV_JSON_ML_PARAM, API0065, "Parameter with string representation {/s} is not an element node.");
 
 DEF_ERR_CODE(API0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED, API0066, "Cannot serialize a sequence with more than one element if the 'json' or 'jsonml' method was selected.")
+DEF_ERR_CODE(API0070_INVALID_SERIALIZATION_METHOD_FOR_SAX, API0070, "Invalid serialization method. Only XML output can issue SAX event notifications. Therefore, only the following serialization methods are allowed: xml, xhtml, jsonml")
 //
 // Store Errors
 //

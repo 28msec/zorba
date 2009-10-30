@@ -17,9 +17,9 @@
 #include <zorba/file.h>
 #include <zorba/empty_sequence.h>
 #include <zorba/singleton_item_sequence.h>
-
-//#include <zorba/error.h>
-//#include "zorbaerrors/errors.h"
+#include <zorba/serializer.h>
+#include <zorba/store_consts.h>
+#include <zorba/base64.h>
 
 #include "file.h"
 #include "file_module.h"
@@ -31,15 +31,76 @@ namespace zorba { namespace filemodule {
 
 //*****************************************************************************
 
+CopyFunction::CopyFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+  
+ItemSequence_t
+CopyFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& args,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
+{
+  bool lResult = false;
+
+  String lSrcFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
+  File_t lSrcFile = File::createFile(lSrcFileStr.c_str());
+  String lDstFileStr = FileFunction::getFilePathString(aSctxCtx, args, 1);
+  File_t lDstFile = File::createFile(lDstFileStr.c_str());
+
+  // do we have overwrite existing files?
+  bool lOverwrite = false;
+  if (args.size() == 3) {
+    Item lOverwriteItem;
+    args[2]->next(lOverwriteItem);
+    lOverwrite = lOverwriteItem.getBooleanValue();
+  }
+
+  // only continue if we have a file to copy
+  // AND (
+  //  if the destination is not present
+  //    OR
+  //  if the overwrite flag, but, in this case, the desfination must be a file
+  // )
+  if (lSrcFile->isFile() && (!lDstFile->exists() || (lOverwrite && lDstFile->isFile()))) {
+
+    // open the output stream in the desired write mode
+    std::ifstream lInStream;
+    std::ofstream lOutStream;
+    lSrcFile->openInputStream(lInStream);
+    lDstFile->openOutputStream(lOutStream);
+
+    // copy the data
+    char lBuf[1024];
+    while (!lInStream.eof()) {
+      lInStream.read(lBuf, 1024);
+      lOutStream.write(lBuf, lInStream.gcount());
+    }  
+
+    // close the streams
+    lInStream.close();
+    lOutStream.close();
+
+    lResult = true;
+  }
+
+  return ItemSequence_t(new SingletonItemSequence(
+      theModule->getItemFactory()->createBoolean(lResult)));
+}
+
+//*****************************************************************************
+
 ExistsFunction::ExistsFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {
 }
   
 ItemSequence_t
-ExistsFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
-                         const StaticContext* aSctxCtx,
-                         const DynamicContext* aDynCtx) const
+ExistsFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& args,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
 {
   bool   lFileExists = false;
   String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
@@ -61,9 +122,10 @@ FilesFunction::FilesFunction(const FileModule* aModule)
 }
   
 ItemSequence_t
-FilesFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
-                         const StaticContext* aSctxCtx,
-                         const DynamicContext* aDynCtx) const
+FilesFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& args,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
 {
   String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
@@ -108,9 +170,10 @@ IsDirectoryFunction::IsDirectoryFunction(const FileModule* aModule)
 }
   
 ItemSequence_t
-IsDirectoryFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
-                              const StaticContext* aSctxCtx,
-                              const DynamicContext* aDynCtx) const
+IsDirectoryFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& args,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
 {
   bool   lResult = false;
   String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
@@ -131,9 +194,10 @@ IsFileFunction::IsFileFunction(const FileModule* aModule)
 }
   
 ItemSequence_t
-IsFileFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
-                         const StaticContext* aSctxCtx,
-                         const DynamicContext* aDynCtx) const
+IsFileFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& args,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
 {
   bool   lResult = false;
   String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
@@ -154,23 +218,30 @@ LastModifiedFunction::LastModifiedFunction(const FileModule* aModule)
 }
   
 ItemSequence_t
-LastModifiedFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
-                        const StaticContext* aSctxCtx,
-                        const DynamicContext* aDynCtx) const
+LastModifiedFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& args,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
 {
   String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
+  if(!lFile->exists()) {
+    std::stringstream lErrorMessage;
+    lErrorMessage << "The provided path/URI does not point to a file system item.";
+    throwError(lErrorMessage.str(), XPTY0004);
+  }
+
   time_t lTime = lFile->lastModified();
   struct tm *lT = localtime(&lTime);
 
-  short gmtOffset = LastModifiedFunction::getGmtOffset();
+  int gmtOffset = LastModifiedFunction::getGmtOffset();
 
   return ItemSequence_t(new SingletonItemSequence(
     theModule->getItemFactory()->createDateTime(1900 + lT->tm_year, lT->tm_mon, lT->tm_mday, lT->tm_hour, lT->tm_min, lT->tm_sec, gmtOffset)));
 }
 
-short
+int
 LastModifiedFunction::getGmtOffset()
 {
   time_t t = time(0);
@@ -181,7 +252,7 @@ LastModifiedFunction::getGmtOffset()
   data = gmtime(&t);
   data->tm_isdst = 0;
   time_t b = mktime(data);
-  return (a - b)/3600; 
+  return (int)(a - b)/3600; 
 }
 
 //*****************************************************************************
@@ -192,9 +263,10 @@ MkdirFunction::MkdirFunction(const FileModule* aModule)
 }
   
 ItemSequence_t
-MkdirFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
-                        const StaticContext* aSctxCtx,
-                        const DynamicContext* aDynCtx) const
+MkdirFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& args,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
 {
   String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
@@ -213,9 +285,10 @@ MkdirsFunction::MkdirsFunction(const FileModule* aModule)
 }
 
 ItemSequence_t
-MkdirsFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
-                         const StaticContext* aSctxCtx,
-                         const DynamicContext* aDynCtx) const
+MkdirsFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& args,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
 {
   String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
@@ -234,15 +307,16 @@ ReadFunction::ReadFunction(const FileModule* aModule)
 }
   
 ItemSequence_t
-ReadFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
-                       const StaticContext* aSctxCtx,
-                       const DynamicContext* aDynCtx) const
+ReadFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& args,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
 {
   String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
   std::ifstream lInStream;
-  lFile->read(lInStream);
+  lFile->openInputStream(lInStream);
 
   std::stringstream lStrStream;
   char lBuf[1024];
@@ -251,38 +325,13 @@ ReadFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
     lStrStream.write(lBuf, lInStream.gcount());
   }  
 
-  XmlDataManager* lDataManager = Zorba::getInstance(0)->getXmlDataManager();
-
-  std::string lResult = lStrStream.str();
-  Item lItem = theModule->getItemFactory()->createBase64Binary(lResult.c_str(), lResult.size());
+  String lContent(lStrStream.str());
+  String lEncodedContent = encoding::Base64::encode(lContent);
+  Item lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());
 
   if (lItem.isNull()) {
-    throw ExternalFunctionData::createZorbaException(XPTY0004, "Invalid Binary64 file.", __FILE__, __LINE__);
+    throw ExternalFunctionData::createZorbaException(XPTY0004, "Error while building the base64binaty item.", __FILE__, __LINE__);
   }
-
-  return ItemSequence_t(new SingletonItemSequence(lItem));
-}
-
-//*****************************************************************************
-
-ReadXmlFunction::ReadXmlFunction(const FileModule* aModule)
-  : FileFunction(aModule)
-{
-}
-  
-ItemSequence_t
-ReadXmlFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
-                          const StaticContext* aSctxCtx,
-                          const DynamicContext* aDynCtx) const
-{
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
-  File_t lFile = File::createFile(lFileStr.c_str());
-
-  std::ifstream lInStream;
-  lFile->read(lInStream);
-
-  XmlDataManager* lDataManager = Zorba::getInstance(0)->getXmlDataManager();
-  Item lItem = lDataManager->parseDocument(lInStream);
 
   return ItemSequence_t(new SingletonItemSequence(lItem));
 }
@@ -295,15 +344,16 @@ ReadTextFunction::ReadTextFunction(const FileModule* aModule)
 }
   
 ItemSequence_t
-ReadTextFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
-                           const StaticContext* aSctxCtx,
-                           const DynamicContext* aDynCtx) const
+ReadTextFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& args,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
 {
   String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
   std::ifstream lInStream;
-  lFile->read(lInStream);
+  lFile->openInputStream(lInStream);
 
   std::stringstream lStrStream;
   char lBuf[1024];
@@ -312,10 +362,33 @@ ReadTextFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
     lStrStream.write(lBuf, lInStream.gcount());
   }  
 
-  XmlDataManager* lDataManager = Zorba::getInstance(0)->getXmlDataManager();
-
   std::string lResult = lStrStream.str();
   Item lItem = theModule->getItemFactory()->createString(lResult.c_str());
+
+  return ItemSequence_t(new SingletonItemSequence(lItem));
+}
+
+//*****************************************************************************
+
+ReadXmlFunction::ReadXmlFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+  
+ItemSequence_t
+ReadXmlFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& args,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
+{
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
+  File_t lFile = File::createFile(lFileStr.c_str());
+
+  std::ifstream lInStream;
+  lFile->openInputStream(lInStream);
+
+  XmlDataManager* lDataManager = Zorba::getInstance(0)->getXmlDataManager();
+  Item lItem = lDataManager->parseDocument(lInStream);
 
   return ItemSequence_t(new SingletonItemSequence(lItem));
 }
@@ -328,9 +401,10 @@ RemoveFunction::RemoveFunction(const FileModule* aModule)
 }
   
 ItemSequence_t
-RemoveFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
-                         const StaticContext* aSctxCtx,
-                         const DynamicContext* aDynCtx) const
+RemoveFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& args,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
 {
   String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
@@ -340,6 +414,112 @@ RemoveFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
   return ItemSequence_t(new SingletonItemSequence(
       theModule->getItemFactory()->createBoolean(lStatus)));
 }
+
+//*****************************************************************************
+
+WriteFunction::WriteFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+  
+ItemSequence_t
+WriteFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& args,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
+{
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
+  File_t lFile = File::createFile(lFileStr.c_str());
+
+  // do we have an "append" or a "write new" operation?
+  bool lAppend = false;
+  if (args.size() == 4) {
+    Item lAppendItem;
+    args[3]->next(lAppendItem);
+    lAppend = lAppendItem.getBooleanValue();
+  }
+  
+  // initialize serializer
+  Item lItem;
+  if (!args[2]->next(lItem)) {
+    std::stringstream lErrorMessage;
+    lErrorMessage << "The serialization options parameter cannot be empty-sequence";
+    throwError(lErrorMessage.str(), XPTY0004);
+  }
+  const Zorba_SerializerOptions_t lOptions = createSerializerOptions(lItem);
+  Serializer_t s = Serializer::createSerializer(lOptions);
+
+  // open the output stream in the desired write mode
+  std::ofstream lOutStream;
+  lFile->openOutputStream(lOutStream, lAppend);
+
+  // serialize the content
+  s->serialize((Serializable*)args[1], lOutStream);
+
+  lOutStream.close();
+
+  return ItemSequence_t(new EmptySequence());
+}
+
+const Zorba_SerializerOptions_t
+WriteFunction::createSerializerOptions(const Item& aItem) const
+{
+  Zorba_SerializerOptions_t lOptions;
+  
+  // in case the parameter is a string
+  if (aItem.isAtomic()) {
+    zorba::String lMethod = aItem.getStringValue();
+    if (lMethod == "xml") {
+      lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XML;
+    } else if (lMethod == "html") {
+      lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_HTML;
+    } else if (lMethod == "xhtml") {
+      lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XHTML;
+    } else if (lMethod == "text") {
+      lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_TEXT;
+    } else if (lMethod == "json") {
+      lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_JSON;
+    } else if (lMethod == "jsonml") {
+      lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_JSONML;
+    } else {
+      throwInvalidSerializationOptionValue();
+    }
+  // if we have an element node
+  } else if (aItem.isNode() && aItem.getNodeKind() == store::StoreConsts::elementNode) {
+    // and must have "output" as local name
+    Item lQName;
+    aItem.getNodeName(lQName);
+    zorba::String lLocalName = lQName.getLocalName();
+    if(lLocalName != "output") {
+      throwInvalidSerializationOptionValue();
+    }
+    // iterate all the atributes and set the serialization options accordingly
+    // NOTE: Extra attributes and invalid values for attributes are ignored.
+    Iterator_t lIter = aItem.getAttributes();
+    lIter->open();
+    Item lAttribute;
+    while (lIter->next(lAttribute)) {
+      Item lAttributeQName;
+      lAttribute.getNodeName(lAttributeQName);
+      lOptions.SetSerializerOption(lAttributeQName.getLocalName().c_str(), lAttribute.getStringValue().c_str());
+    }
+    lIter->close();
+  } else {
+    throwInvalidSerializationOptionValue();
+  }
+
+  return lOptions;
+}
+
+void
+WriteFunction::throwInvalidSerializationOptionValue() const
+{
+  std::stringstream lErrorMessage;
+  lErrorMessage << "Invalid serialization options parameter. "
+      << "Please see the documentation for valid values.";
+  throwError(lErrorMessage.str(), XPTY0004);
+}
+
 
 //*****************************************************************************
 

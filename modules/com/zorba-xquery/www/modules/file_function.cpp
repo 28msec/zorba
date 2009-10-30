@@ -47,7 +47,7 @@ FileFunction::getOneStringArg(
     int aPos)
 {
   Item lItem;
-  if (!aArgs[0]->next(lItem)) {
+  if (!aArgs[aPos]->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "An empty-sequence is not allowed as " 
                   << aPos << ". parameter.";

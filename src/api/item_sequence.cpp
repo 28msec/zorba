@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2009 The FLWOR Foundation.
+ * Copyright 2006-2008 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,33 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_SERIALIZER_API_H
-#define ZORBA_SERIALIZER_API_H
 
-#include <zorba/options.h>
-#include <zorba/config.h>
-#include <zorba/api_shared_types.h>
+#include <zorba/item_sequence.h>
 #include <zorba/item.h>
 
-namespace zorba {
+namespace zorba { 
 
-  class Serializable;
+bool
+ItemSequence::nextSerializableItem(Item& aItem)
+{
+  return next(aItem);
+}
 
-  class ZORBA_DLL_PUBLIC Serializer : public SmartObject
-  {
-    public:
 
-      virtual ~Serializer() {}
-
-      virtual void
-      serialize(
-        Serializable* object,
-        std::ostream& stream) const = 0;
-
-      static Serializer_t createSerializer(const Zorba_SerializerOptions_t& options);
-
-  };
-
-} /* namespace zorba */
-
-#endif
+} // namespace zorba

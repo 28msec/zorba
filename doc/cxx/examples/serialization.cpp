@@ -17,6 +17,9 @@
 #include <iostream>
 
 #include <zorba/zorba.h>
+#include <zorba/serializer.h>
+#include <zorba/singleton_item_sequence.h>
+
 #include <simplestore/simplestore.h>
 
 using namespace zorba;
@@ -141,6 +144,9 @@ serialization_example_7(Zorba* aZorba)
 {
   XQuery_t lQuery = aZorba->compileQuery("for $i in (1 to 3) return <a> { $i } </a>"); 
 
+  Zorba_SerializerOptions_t lOptions;
+  Serializer_t lSerializer = Serializer::createSerializer(lOptions);
+
   ResultIterator_t lIterator = lQuery->iterator();
 
   try {
@@ -148,7 +154,9 @@ serialization_example_7(Zorba* aZorba)
 
     Item lItem;
     while ( lIterator->next(lItem) ) {
-      lItem.serialize(std::cout);
+      // we have to wrap the item in a Serializable object
+      SingletonItemSequence lSequence(lItem);
+      lSerializer->serialize((Serializable*)&lSequence, std::cout);
     }
 
     lIterator->close();

@@ -13,33 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_SERIALIZER_API_H
-#define ZORBA_SERIALIZER_API_H
 
-#include <zorba/options.h>
-#include <zorba/config.h>
-#include <zorba/api_shared_types.h>
 #include <zorba/item.h>
+#include <zorba/serializable.h>
 
-namespace zorba {
+#include "api/serialization/serializable_wrapper.h"
 
-  class Serializable;
+#include "api/unmarshaller.h"
+#include "store/api/item.h"
 
-  class ZORBA_DLL_PUBLIC Serializer : public SmartObject
-  {
-    public:
+namespace zorba { namespace intern {
 
-      virtual ~Serializer() {}
 
-      virtual void
-      serialize(
-        Serializable* object,
-        std::ostream& stream) const = 0;
+SerializableWrapper::SerializableWrapper(zorba::Serializable* aObject)
+  : theApiSerializable(aObject)
+{
+}
 
-      static Serializer_t createSerializer(const Zorba_SerializerOptions_t& options);
+bool
+SerializableWrapper::nextSerializableItem(store::Item_t& aItem)
+{
+  Item lItem;
+  if (!theApiSerializable->nextSerializableItem(lItem)) {
+    return false;
+  }
 
-  };
+  aItem = Unmarshaller::getInternalItem(lItem);
+  return true;
+}
 
-} /* namespace zorba */
 
-#endif
+} // namespace intern
+
+} // namespace zorba

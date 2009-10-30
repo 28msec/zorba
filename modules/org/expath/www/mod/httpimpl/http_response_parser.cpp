@@ -5,6 +5,7 @@
 #include <zorba/item_factory.h>
 #include <zorba/item.h>
 #include <zorba/xmldatamanager.h>
+#include <zorba/base64.h>
 
 #include <tidy.h>
 #include <buffio.h>
@@ -188,7 +189,11 @@ namespace zorba { namespace http_client {
   zorba::Item HttpResponseParser::createBase64Item( std::istream& aStream )
   {
     ItemFactory* lFactory = Zorba::getInstance(0)->getItemFactory();
-    return lFactory->createBase64Binary(aStream);
+    // TODO: once a proper streaming implementation is in place this can be
+    // changed. This required a Base64 encoding stream since the item factory
+    // work only builds base64binary and assumes the data is already encoded.
+    String lEncoded = encoding::Base64::encode(aStream);
+    return lFactory->createBase64Binary(lEncoded.c_str(), lEncoded.bytes());
   }
 
   zorba::Item HttpResponseParser::createXmlItem( std::istream& aStream )

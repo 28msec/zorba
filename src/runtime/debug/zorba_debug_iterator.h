@@ -7,22 +7,35 @@
 #include "runtime/util/plan_wrapper_holder.h"
 #include "zorba/options.h"
 
+#include "api/serialization/serializable.h"
+
+#include "store/api/item.h"
+
 #include <vector>
 #include <map>
 
 namespace zorba {
 
-class ZorbaDebugIterator : public NaryBaseIterator<ZorbaDebugIterator,
-                                                   PlanIteratorState>
-{
-protected:
-  checked_vector<store::Item_t> varnames;
-  checked_vector<std::string> var_keys;  
-  checked_vector<xqtref_t> vartypes;
+  class ZorbaDebugIterator :
+      public NaryBaseIterator<ZorbaDebugIterator, PlanIteratorState> {
 
-private:
-  std::vector<ZorbaDebugIterator*>  theDebuggerChildren;
-  ZorbaDebugIterator*               theDebuggerParent;
+    public:
+
+      //// implementing the Serializable interface
+      //bool
+      //nextSerializableItem(store::Item_t& item);
+
+
+    protected:
+
+      checked_vector<store::Item_t> varnames;
+      checked_vector<std::string> var_keys;  
+      checked_vector<xqtref_t> vartypes;
+
+    private:
+
+      std::vector<ZorbaDebugIterator*>  theDebuggerChildren;
+      ZorbaDebugIterator*               theDebuggerParent;
 
 public: // Constructor
   ZorbaDebugIterator(

@@ -272,13 +272,13 @@ bool FnPrintIterator::nextImpl (store::Item_t& result, PlanState& planState) con
       if (lSerializer == NULL)
       {
         lSerializer = new serializer(planState.theCompilerCB->theErrorManager);
-        lSerializer->set_parameter("omit-xml-declaration", "yes");
+        lSerializer->setParameter("omit-xml-declaration", "yes");
       }
 
       if (m_printToConsole) {
-        lSerializer->serialize(item.getp(), std::cout);
+        //lSerializer->serialize(item.getp(), std::cout);
       } else {
-        lSerializer->serialize(item.getp(), os);
+        //lSerializer->serialize(item.getp(), os);
       }
     }
     else

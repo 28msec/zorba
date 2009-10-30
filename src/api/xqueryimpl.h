@@ -291,9 +291,6 @@ public:
   bool
   loadExecutionPlan(std::istream &is, SerializationCallback* aCallback = 0);
 
-  static void
-  setSerializationParameters(serializer*, const Zorba_SerializerOptions_t*);
-
 protected:
     
   XQueryImpl();

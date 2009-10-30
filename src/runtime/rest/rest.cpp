@@ -24,12 +24,15 @@
 
 #include "zorbaerrors/error_manager.h"
 
+#include "zorba/item.h"
+#include "zorba/singleton_item_sequence.h"
 #include "zorbatypes/datetime/parse.h"
 #include "util/web/web.h"
 
 #include "system/globalenv.h"
 
 #include "api/serialization/serializer.h"
+#include "api/serialization/serializable_wrapper.h"
 
 #include "context/static_context.h"
 #include "context/namespace_context.h"
@@ -570,25 +573,32 @@ void processHeader(store::Item_t& headers, curl_slist** headers_list)
 static void getSerializedChildren(store::Item_t node, xqpString& children_string, bool& has_element_child)
 {
   store::Iterator_t it;
-  store::Item_t child;
+  store::Item_t lChild;
   children_string = "";
   has_element_child = false;
   
   it = node->getChildren();
   it->open();
-  while (it->next(child) && child)
+  while (it->next(lChild) && lChild)
   {
-    if (child->getNodeKind() == store::StoreConsts::textNode)
+    if (lChild->getNodeKind() == store::StoreConsts::textNode)
     {
-      children_string += xqpString(child->getStringValue());
+      children_string += xqpString(lChild->getStringValue());
     }
-    else if (child->getNodeKind() == store::StoreConsts::elementNode)
+    else if (lChild->getNodeKind() == store::StoreConsts::elementNode)
     {
       stringstream ss;
       error::ErrorManager lErrorManager;
       serializer ser(&lErrorManager);
-      ser.set_parameter("omit-xml-declaration","yes");
-      ser.serialize(child, ss);
+      ser.setParameter("omit-xml-declaration", "yes");
+
+      // Build a singleton item sequence and wrap it in a Serializable.
+      // The new serializer interface only accepts Serializable objects.
+      const zorba::Item lItem(lChild);
+      SingletonItemSequence lSequence(lItem);
+      intern::SerializableWrapper lWrapper(&lSequence);
+      ser.serialize(&lWrapper, ss);
+
       children_string += ss.str().c_str();        
       has_element_child = true;
     }

@@ -16,13 +16,32 @@
 #ifndef ZORBA_FILEMODULE_FILE_H
 #define ZORBA_FILEMODULE_FILE_H
 
+#include <zorba/options.h>
+
 #include "file_function.h"
 
 namespace zorba { 
   
   class ItemFactory;
+  class SerializationItemProvider;
 
   namespace filemodule {
+
+//*****************************************************************************
+
+  class CopyFunction : public FileFunction
+  {
+    public:
+      CopyFunction(const FileModule* aModule);
+
+      virtual String
+      getLocalName() const { return "copy"; }
+  
+      virtual ItemSequence_t 
+      evaluate(const StatelessExternalFunction::Arguments_t& args,
+               const StaticContext* aSctxCtx,
+               const DynamicContext* aDynCtx) const;
+  };
 
 //*****************************************************************************
 
@@ -120,7 +139,7 @@ namespace zorba {
                const DynamicContext* aDynCtx) const;
 
   private:
-      static short
+      static int
       getGmtOffset();
 
   };
@@ -235,6 +254,31 @@ namespace zorba {
       evaluate(const StatelessExternalFunction::Arguments_t& args,
                const StaticContext* aSctxCtx,
                const DynamicContext* aDynCtx) const;
+  };
+
+//*****************************************************************************
+
+  class WriteFunction : public FileFunction
+  {
+    public:
+      WriteFunction(const FileModule* aModule);
+
+      virtual String
+      getLocalName() const { return "write"; }
+  
+      virtual ItemSequence_t 
+      evaluate(const StatelessExternalFunction::Arguments_t& args,
+               const StaticContext* aSctxCtx,
+               const DynamicContext* aDynCtx) const;
+
+      virtual const Zorba_SerializerOptions_t
+      createSerializerOptions(const Item& aItem) const;
+
+    private:
+
+      virtual void
+      throwInvalidSerializationOptionValue() const;
+
   };
 
 //*****************************************************************************

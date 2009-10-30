@@ -1,4 +1,21 @@
+/*
+ * Copyright 2006-2008 The FLWOR Foundation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include "runtime/debug/zorba_debug_iterator.h"
+
+#include <zorba/singleton_item_sequence.h>
 
 #include "types/typeimpl.h"
 
@@ -15,29 +32,39 @@
 #include "runtime/core/item_iterator.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "api/serialization/serializer.h"
-#include "api/xqueryimpl.h"
+#include "api/serialization/serializable_wrapper.h"
+#include "api/serializerimpl.h"
 
 
 namespace zorba {
 
 ZorbaDebugIterator::ZorbaDebugIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& aChildvector )
-  : 
-  NaryBaseIterator<ZorbaDebugIterator,
-                   PlanIteratorState> (sctx, loc, aChildvector),
-  theDebuggerParent(0)
+  static_context*           sctx,
+  const QueryLoc&           loc,
+  std::vector<PlanIter_t>&  aChildvector )
+  : NaryBaseIterator<ZorbaDebugIterator, PlanIteratorState> (
+      sctx,
+      loc,
+      aChildvector),
+    theDebuggerParent(0)
 {
 }
+
+//// implementing the Serializable interface
+//bool
+//ZorbaDebugIterator::nextSerializableItem(store::Item_t& lItem)
+//{
+//  return nextImpl(lItem,);
+//}
 
 // the debug iterator needs to know all variables, their keys
 // and types. this is required for the eval command
 // this function is called by the plan_visitor
 void
-ZorbaDebugIterator::setVariables(checked_vector<store::Item_t>& aVarNames,
-                                 checked_vector<std::string>&   aVarKeys,
-                                 checked_vector<xqtref_t>&      aVarTypes)
+ZorbaDebugIterator::setVariables(
+  checked_vector<store::Item_t>& aVarNames,
+  checked_vector<std::string>&   aVarKeys,
+  checked_vector<xqtref_t>&      aVarTypes)
 {
   varnames = aVarNames;
   var_keys = aVarKeys;
@@ -45,7 +72,9 @@ ZorbaDebugIterator::setVariables(checked_vector<store::Item_t>& aVarNames,
 }
 
 bool
-zorba::ZorbaDebugIterator::nextImpl( store::Item_t& result, PlanState& planState ) const
+ZorbaDebugIterator::nextImpl(
+  store::Item_t&  result,
+  PlanState&      planState) const
 {
   SuspensionCause lCause          = 0;
   ZorbaDebuggerCommons* lCommons  = planState.theDebuggerCommons;
@@ -152,20 +181,30 @@ const ZorbaDebugIterator* ZorbaDebugIterator::getOverIterator() const
   return NULL;
 }
 
-std::list<std::pair<xqpString, xqpString> > ZorbaDebugIterator::eval(
-  PlanState& aPlanState, Zorba_SerializerOptions& aSerOptions) const
+std::list<std::pair<xqpString, xqpString>>
+ZorbaDebugIterator::eval(
+  PlanState&                aPlanState,
+  Zorba_SerializerOptions&  aSerOptions) const
 {
   theChildren[1]->reset(aPlanState);
   std::list<std::pair<xqpString, xqpString> > lResult;
   store::Item_t lRes;
   serializer ser(NULL);
-  XQueryImpl::setSerializationParameters(&ser, &aSerOptions);
+  SerializerImpl::setSerializationParameters(ser, aSerOptions);
   while (consumeNext(lRes, theChildren[1], aPlanState)) {
     std::stringstream lResStream;
-    ser.serialize(lRes, lResStream);
-    lResult.push_back(
-      std::pair<xqpString, xqpString>(lResStream.str(),
-      xqpString(lRes->getType()->getStringValue().getp())));
+
+    // Build a singleton item sequence and wrap it in an internal Serializable.
+    // The new serializer interface only accepts Serializable objects.
+    const Item lItem(lRes);
+    SingletonItemSequence lSequence(lItem);
+    intern::SerializableWrapper lWrapper(&lSequence);
+    ser.serialize(&lWrapper, lResStream);
+
+    // build the result pair and append it to the list
+    xqpString lTypeStr(lRes->getType()->getStringValue().getp());
+    std::pair<xqpString, xqpString> lPair(lResStream.str(), lTypeStr);
+    lResult.push_back(lPair);
   }
   return lResult;
 }

@@ -1,4 +1,7 @@
 #include <zorba/zorba.h>
+#include <zorba/singleton_item_sequence.h>
+#include <zorba/serializer.h>
+#include <zorba/api_shared_types.h>
 
 #include "http_request_handler.h"
 
@@ -123,7 +126,10 @@ namespace zorba { namespace http_client {
     if (theSerial == "text") {
       (*theSerStream) << aItem.getStringValue();
     } else {
-      aItem.serialize(*theSerStream);
+      Zorba_SerializerOptions_t lOptions;
+      Serializer_t lSerializer = Serializer::createSerializer(lOptions);
+      SingletonItemSequence lSequence(aItem);
+      lSerializer->serialize(&lSequence, *theSerStream);
     }
   }
 
@@ -139,7 +145,10 @@ namespace zorba { namespace http_client {
         if (theSerial == "text") {
           (*theSerStream) << lItem.getStringValue();
         } else {
-          lItem.serialize(*theSerStream);
+          Zorba_SerializerOptions_t lOptions;
+          Serializer_t lSerializer = Serializer::createSerializer(lOptions);
+          SingletonItemSequence lSequence(lItem);
+          lSerializer->serialize(&lSequence, *theSerStream);
         }
       }
     }

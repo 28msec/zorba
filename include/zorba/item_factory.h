@@ -98,13 +98,12 @@ namespace zorba {
       virtual Item 
       createBase64Binary(const char* aBinData, size_t aLength) = 0;
 
-      /**
-      * @brief Reads all data from a stream and creates a base64 item
-      *   from the read data.
-      *
-      * @param A stream which points to the binary data.
-      * @return the Base64Binary Item.
-      */
+      /** \brief Creates a Base64Binary Item 
+       *         see [http://www.w3.org/TR/xmlschema-2/#base64Binary]
+       *
+       * @param aStream A stream containing the Base64 encoded data.
+       * @return the Base64Binary Item.
+       */
       virtual Item
       createBase64Binary(std::istream& aStream) = 0;
       
