@@ -210,9 +210,10 @@ main(int argc, char** argv)
         std::string uri_map_file = srcDir + "/Queries/w3c_update_testsuite/TestSources/uri.txt";
         resolver.reset(new zorba::TestSchemaURIResolver ( uri_map_file.c_str() ));
         lContext->setSchemaURIResolver ( resolver.get() );
-
+#if 0
         if (path.find("Val") != std::string::npos)
           lContext->setBoundarySpacePolicy(preserve_space);
+#endif
 #if 1
       	zorba::String lProlog = zorba::String(std::string("import schema 'http://www.w3.org/XML/1998/namespace';\n"));
 	
