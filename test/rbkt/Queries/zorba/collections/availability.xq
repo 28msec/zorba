@@ -9,7 +9,9 @@ declare sequential function local:create() {
   ddl:create-collection($ns:test1);
   ( 
     "create",
-    dc:available-collections(),
+    for $x in dc:available-collections()
+    order by xs:string($x)
+    return $x,
     dc:is-available-collection($ns:collection_1),
     dc:is-available-collection(xs:QName("ns:test3"))
   );
@@ -20,7 +22,9 @@ declare sequential function local:drop() {
   ( 
     "drop",
     dc:is-available-collection($ns:collection_1),
-    dc:available-collections()
+    for $x in dc:available-collections()
+    order by xs:string($x)
+    return $x
   );
 };
 
