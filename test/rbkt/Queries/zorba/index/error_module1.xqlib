@@ -1,0 +1,12 @@
+
+(:
+  This is NOT a data module. It is used to mae sure that indexes are declared
+  in data modules only.
+:)
+
+module namespace idx = "http://www.w3.org/TestModules/idx";
+
+declare index idx:foo
+on doc("auction.xml")/site/people/person
+by (fn:data(./@id))
+ordered;

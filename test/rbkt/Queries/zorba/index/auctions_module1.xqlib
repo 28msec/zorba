@@ -1,0 +1,85 @@
+
+datamodule namespace auctions = "http://www.w3.org/TestModules/auctions";
+
+import module namespace dc = "http://www.zorba-xquery.com/module/dynamic-context";
+import module namespace ddl = "http://www.zorba-xquery.com/module/ddl";
+
+declare variable $auctions:auctions := xs:QName("auctions:auctions");
+declare variable $auctions:EmpId := xs:QName("auctions:EmpId");
+declare variable $auctions:EmpCity := xs:QName("auctions:EmpCity");
+
+declare collection auctions:auctions;
+
+
+(:
+  The EmpId index maps each id to the employee with that id.
+:)
+
+declare index auctions:EmpId
+on dc:collection(xs:QName("auctions:auctions"))/site/people/person
+by (fn:data(./@id))
+unique ordered;
+
+
+(:
+  The EmpCity index maps each city to the employees that live in that city.
+  The EmpCity index contains some NULL keys because not all emps have a city 
+:)
+
+declare index auctions:EmpCity
+on dc:collection(xs:QName("auctions:auctions"))/site/people/person
+by ((.//city))
+ordered;
+
+
+(:
+  Create and populate the collection, and then create the indexes
+:)
+
+declare sequential function auctions:create-db()
+{
+  ddl:create-collection($auctions:auctions);
+
+  ddl:insert-nodes-last($auctions:auctions, doc("auctions1.xml"));
+
+  ddl:create-index($auctions:EmpId);
+
+  ddl:create-index($auctions:EmpCity);
+};
+
+
+declare function auctions:probe-point-id($indexName as xs:QName, $id as xs:string)
+{
+  dc:probe-index-point($indexName, $id)
+};
+
+
+declare function auctions:probe-range-id($indexName as xs:QName, $id as xs:string)
+{
+  dc:probe-index-range($indexName,
+                       $id,
+                       1,
+                       xs:boolean("true"), 
+                       xs:boolean("false"),
+                       xs:boolean("true"),
+                       xs:boolean("false"))
+};
+
+
+declare function auctions:probe-point-city($indexName as xs:QName, $city as xs:string?)
+{
+  dc:probe-index-point($indexName, $city)
+};
+
+
+declare function auctions:probe-range-city($indexName as xs:QName, $city as xs:string)
+{
+  dc:probe-index-range($indexName,
+                       $city,
+                       1,
+                       xs:boolean("true"),
+                       xs:boolean("false"),
+                       xs:boolean("true"),
+                       xs:boolean("false"))
+};
+

@@ -1,10 +1,10 @@
-declare namespace idx = "http://www.zorba-xquery.com/zorba/op-extensions";
+(: Declaration of index in main module :)
 
-declare index idx:foo on (<a i="1"/>, <b i="2"/>, <c i="1"/>)
-                      by (fn:data(./@i));
+import module namespace ddl = "http://www.zorba-xquery.com/module/ddl";
 
-idx:create-index(xs:QName("idx:foo"));
-idx:probe-index-point(xs:QName("idx:foo"), "1");
-idx:drop-index(xs:QName("idx:foo"));
-idx:create-index(xs:QName("idx:foo"));
-idx:probe-index-point(xs:QName("idx:foo"), "1");
+declare index foo on (<a i="1"/>, <b i="2"/>, <c i="1"/>)
+                     by (fn:data(./@i));
+
+ddl:create-index(xs:QName("foo"));
+ddl:drop-index(xs:QName("foo"));
+
