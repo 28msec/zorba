@@ -2,6 +2,7 @@
  // this file is used until all functions
  // are generated
  FN_COLLECTION,
+ FN_ZORBA_COLLECTION,
  FN_ENCLOSED,
  FN_VAR_ASSIGN,
  FN_CREATE_INTERNAL_INDEX,
