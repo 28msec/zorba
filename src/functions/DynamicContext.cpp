@@ -27,13 +27,14 @@ namespace zorba
 class dc_collection : public function 
 {
 public:
-  dc_collection(const signature & sig): function(sig)
+  dc_collection(const signature& sig): function(sig, FunctionConsts::FN_ZORBA_COLLECTION)
   {}
 
   bool requires_dyn_ctx() const { return true; }
 
   DEFAULT_NARY_CODEGEN(ZorbaCollectionIterator);
 };
+
 
 class dc_is_available_collections : public function
 {
@@ -45,6 +46,7 @@ public:
   DEFAULT_NARY_CODEGEN(DcIsAvailableCollectionIterator);
 };
 
+
 class dc_available_collections : public function
 {
 public:
@@ -54,6 +56,7 @@ public:
 
   DEFAULT_NARY_CODEGEN(DcAvailableCollectionsIterator);
 };
+
 
 class dc_index_of : public function
 {
@@ -65,12 +68,13 @@ public:
   DEFAULT_NARY_CODEGEN(ZorbaIndexOfIterator);
 };
 
+
 void populateContext_DynamicContext(static_context* sctx)
 {
 DECL(sctx, dc_collection,
      (createQName(ZORBA_DYNAMICCONTEXT_FN_NS, "fn-zorba-dynamiccontext", "collection"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
+      GENV_TYPESYSTEM.DOCUMENT_UNTYPED_TYPE_STAR));
 
 DECL(sctx, dc_is_available_collections,
      (createQName(ZORBA_DYNAMICCONTEXT_FN_NS, "fn-zorba-dynamiccontext", "is-available-collection"),
