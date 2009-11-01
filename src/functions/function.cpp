@@ -89,9 +89,9 @@ bool function::is_builtin_fn_named(
     return false;
 }
 
-xqtref_t function::return_type (const std::vector<xqtref_t> &) const 
+xqtref_t function::return_type(const std::vector<xqtref_t> &) const 
 {
-  return sig.return_type ();
+  return sig.return_type();
 }
 
 

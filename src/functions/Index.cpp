@@ -235,39 +235,41 @@ public:
 void populateContext_Index(static_context* sctx)
 {
   DECL(sctx, FunctionCreateInternalIndex,
-       (createQName(ZORBA_OPEXTENSIONS_NS, "op-extensions", "create-internal-index"),
+       (createQName(ZORBA_DDL_FN_NS, "fn-zorba-ddl", "create-internal-index"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         GENV_TYPESYSTEM.EMPTY_TYPE));
 
   DECL(sctx, FunctionCreateIndex,
-       (createQName(ZORBA_OPEXTENSIONS_NS, "op-extensions", "create-index"),
+       (createQName(ZORBA_DDL_FN_NS, "fn-zorba-ddl", "create-index"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         GENV_TYPESYSTEM.EMPTY_TYPE));
 
   DECL(sctx, FunctionRefreshIndex,
-       (createQName(ZORBA_OPEXTENSIONS_NS, "op-extensions", "refresh-index"),
+       (createQName(ZORBA_DDL_FN_NS, "fn-zorba-ddl", "refresh-index"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         GENV_TYPESYSTEM.EMPTY_TYPE));
 
   DECL(sctx, FunctionDropIndex,
-       (createQName(ZORBA_OPEXTENSIONS_NS, "op-extensions", "drop-index"),
+       (createQName(ZORBA_DDL_FN_NS, "fn-zorba-ddl", "drop-index"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         GENV_TYPESYSTEM.EMPTY_TYPE));
 
   DECL(sctx, FunctionIndexEntryBuilder,
-       (createQName(ZORBA_OPEXTENSIONS_NS, "op-extensions", "index-entry-builder"),
+       (createQName(ZORBA_DDL_FN_NS, "fn-zorba-ddl", "index-entry-builder"),
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
         true,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
   DECL(sctx, FunctionProbeIndexPoint,
-       (createQName(ZORBA_OPEXTENSIONS_NS, "op-extensions", "probe-index-point"),
+       (createQName(ZORBA_DYNAMICCONTEXT_FN_NS,
+                    "fn-zorba-dynamiccontext", "probe-index-point"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         true,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
   DECL(sctx, FunctionProbeIndexRange,
-       (createQName(ZORBA_OPEXTENSIONS_NS, "op-extensions", "probe-index-range"),
+       (createQName(ZORBA_DYNAMICCONTEXT_FN_NS,
+                    "fn-zorba-dynamiccontext", "probe-index-range"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         true,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
