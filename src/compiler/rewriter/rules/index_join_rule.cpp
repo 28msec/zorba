@@ -363,7 +363,7 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 
   fo_expr_t createExpr = new fo_expr(sctxid,
                                      loc,
-                                     LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS,
+                                     LOOKUP_RESOLVED_FN(ZORBA_DDL_FN_NS,
                                                         "create-internal-index",
                                                         1),
                                      qnameExpr);
@@ -393,7 +393,7 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   //
   fo_expr_t probeExpr = new fo_expr(sctxid,
                                     loc,
-                                    LOOKUP_RESOLVED_FN(ZORBA_OPEXTENSIONS_NS,
+                                    LOOKUP_RESOLVED_FN(ZORBA_DYNAMICCONTEXT_FN_NS,
                                                        "probe-index-point",
                                                        VARIADIC_SIG_SIZE),
                                     qnameExpr,

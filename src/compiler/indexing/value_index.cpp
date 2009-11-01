@@ -268,7 +268,7 @@ expr* ValueIndex::getBuildExpr(CompilerCB* topCCB, const QueryLoc& loc)
   // Create RETURN clause:
   // return index-entry-builder($$dot, field1_expr, ..., fieldN_expr)
   //
-  function* f = sctx->lookup_resolved_fn(ZORBA_OPEXTENSIONS_NS,
+  function* f = sctx->lookup_resolved_fn(ZORBA_DDL_FN_NS,
                                          "index-entry-builder",
                                          VARIADIC_SIG_SIZE);
 
