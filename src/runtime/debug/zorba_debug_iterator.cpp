@@ -181,7 +181,7 @@ const ZorbaDebugIterator* ZorbaDebugIterator::getOverIterator() const
   return NULL;
 }
 
-std::list<std::pair<xqpString, xqpString>>
+std::list<std::pair<xqpString, xqpString> >
 ZorbaDebugIterator::eval(
   PlanState&                aPlanState,
   Zorba_SerializerOptions&  aSerOptions) const

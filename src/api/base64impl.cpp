@@ -32,7 +32,7 @@ Base64::encode(String& aString) {
 
 String
 Base64::encode(std::istream& aStream) {
-  return zorba::Base64::encode(aStream);
+  return zorba::Base64::encode(aStream).getStore();
 }
 
 // TODO: once the internal Base64 class is symmetrical
