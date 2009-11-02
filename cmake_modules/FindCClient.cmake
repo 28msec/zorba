@@ -22,7 +22,7 @@ mark_as_advanced(CCLIENT_INCLUDE)
 find_file(
   CCLIENT_LIBRARY
   NAMES libc-client.a libc-client4.a
-  PATHS ${CCLIENT_LIBRARY_DIRS} /opt/local/lib
+  PATHS ${CCLIENT_LIBRARY_DIRS} /opt/local/lib /usr/lib
   DOC "Library to link against for the email support")
 
 if (CCLIENT_LIBRARY)
