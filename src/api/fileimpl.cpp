@@ -311,8 +311,8 @@ FileImpl::openOutputStream(std::ofstream& aOutStream, bool append) const
       ZORBA_ERROR_DESC_OSS(FODC0002, "\"" << lPath << "\" is not a file");
     }
 
-    std::ofstream::open_mode lMode = append ? std::ofstream::app :
-        (std::ofstream::out | std::ofstream::trunc);
+    std::ios_base::openmode lMode = append ? std::ios_base::app :
+        (std::ios_base::out | std::ios_base::trunc);
 
     aOutStream.open(lPath.c_str(), lMode);
     if (aOutStream.is_open() == false) {
