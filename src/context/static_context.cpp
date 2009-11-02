@@ -1098,7 +1098,7 @@ xqtref_t static_context::get_collection_type(const xqp_string collURI)
 }
 
 
-void static_context::add_declared_collection(
+void static_context::bind_collection(
     StaticallyKnownCollection_t& aCollection,
     const QueryLoc& aLoc)
 {
@@ -1118,7 +1118,7 @@ void static_context::add_declared_collection(
 }
 
 
-const StaticallyKnownCollection* static_context::get_declared_collection(const store::Item* aName) const
+const StaticallyKnownCollection* static_context::lookup_collection(const store::Item* aName) const
 {
   StaticallyKnownCollection_t lColl;
 

@@ -2963,10 +2963,10 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
                                             lCollectionModifier,
                                             lNodeModifier);
 
-  sctx_p->add_declared_collection(lColl, v.get_location());
+  sctx_p->bind_collection(lColl, v.get_location());
   // a collection declaration must allways be in a data module
   assert(export_sctx);
-  export_sctx->add_declared_collection(lColl, v.get_location());
+  export_sctx->bind_collection(lColl, v.get_location());
 }
 
 /***************************************************************************//**
@@ -4531,49 +4531,69 @@ void end_visit (const QVarInDecl& v, void* /*visit_state*/)
   case $v1 as type1 return E1
   ......
   case $vn as typen return En
-  default return Ed
+  default $def return Ed
 
   is translated into:
 
   let $sv := E
   return if (instance_of($sv, type1)) then
-           let $v1 := cast($sv, type1) return E1
+           let $v1 := treat_as($sv, type1) return E1
          else if (instance_of($sv, type2)) then
-           let $v2 := cast($sv, type2) return E2
+           let $v2 := treat_as($sv, type2) return E2
          ....
          else if instance_of($sv, typen)) then
-           let $vn := cast($sv, typen) return En
+           let $vn := treat_as($sv, typen) return En
          else
-           return Ed
+           let $def := sv return Ed
 ********************************************************************************/
-void *begin_visit (const TypeswitchExpr& v) 
+void* begin_visit(const TypeswitchExpr& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
 
   var_expr_t sv = tempvar(v.get_switch_expr()->get_location(), var_expr::let_var);
 
-  string defvar_name = v.get_default_varname();
-  varref_t defvar;
-  expr_t defret;
+  v.get_switch_expr()->accept(*this);
 
-  if (! defvar_name.empty ()) 
+  expr_t se = pop_nodestack();
+
+  if (se->is_updating()) 
+  {
+    ZORBA_ERROR_LOC(XUST0001, loc);
+  }
+
+  // flworExpr = [let $sv := E return NULL]
+  expr_t retExpr;
+  expr_t flworExpr = wrap_in_let_flwor(se, sv, retExpr);
+
+  string defvar_name = v.get_default_varname();
+  var_expr_t defvar;
+
+  if (! defvar_name.empty())
   {
     push_scope();
     defvar = bind_var(v.get_default_clause()->get_location(),
                       defvar_name,
                       var_expr::let_var);
+
+    // retExpr = [let $def := $sv return NULL]
+    retExpr = &*wrap_in_let_flwor(&*sv, defvar, NULL);
   }
 
   v.get_default_clause()->accept(*this);
 
-  defret = pop_nodestack();
+  expr_t defExpr = pop_nodestack();
 
-  if (! defvar_name.empty()) 
+  if (!defvar_name.empty()) 
   {
     pop_scope();
-    
-    // defret = [let $defvar := $sv return defret]
-    defret = &*wrap_in_let_flwor(&*sv, defvar, defret);
+
+    // retExpr = [let $def := $sv return Ed]
+    static_cast<flwor_expr*>(retExpr.getp())->set_return_expr(defExpr);
+  }
+  else
+  {
+    // retExpr = [Ed]
+    retExpr = defExpr;
   }
 
   const CaseClauseList* clauses = v.get_clause_list();
@@ -4581,56 +4601,60 @@ void *begin_visit (const TypeswitchExpr& v)
        it != clauses->rend();
        ++it)
   {
-    const CaseClause *e_p = &**it;
-    const QueryLoc &loc = e_p->get_location ();
+    const CaseClause* caseClause = &**it;
+    const QueryLoc& loc = caseClause->get_location();
+    expr_t clauseExpr;
 
-    string varname = e_p->get_varname ();
+    caseClause->get_type()->accept(*this);
+    xqtref_t type = pop_tstack();
+
+    string varname = caseClause->get_varname();
     varref_t caseVar;
 
-    if (! varname.empty ()) 
+    if (! varname.empty())
     {
-      push_scope ();
+      push_scope();
+
       caseVar = bind_var(loc, varname, var_expr::let_var);
+
+      expr_t treatExpr = new treat_expr(theCCB->m_cur_sctx,
+                                        loc,
+                                        sv.getp(),
+                                        type,
+                                        XPDY0050);
+
+      // clauseExpr = [let $caseVar := cast($sv, caseType) return NULL]
+      clauseExpr = wrap_in_let_flwor(treatExpr, caseVar, NULL);
     }
 
-    e_p->accept (*this);
+    caseClause->get_expr()->accept(*this);
+    expr_t caseExpr = pop_nodestack();
 
-    xqtref_t type = pop_tstack ();
-
-    if (! varname.empty ()) 
+    if (! varname.empty()) 
     {
       pop_scope();
-      expr_t caseExpr = pop_nodestack();
 
-      expr_t castExpr = create_cast_expr(loc, sv.getp(), type, true);
-
-      // case_clause = [let $caseVar := cast($sv, caseType) return caseExpr]
-      expr_t lFlwor = wrap_in_let_flwor(castExpr, caseVar, caseExpr);
-
-      nodestack.push (lFlwor);
+      // clauseExpr = [let $caseVar := cast($sv, caseType) return NULL]
+      static_cast<flwor_expr*>(clauseExpr.getp())->set_return_expr(caseExpr);
+    }
+    else
+    {
+      // clauseExpr = [caseExpr]
+      clauseExpr = caseExpr;
     }
 
-    expr_t lThen = pop_nodestack();
-
-    defret = new if_expr(sctxid,
-                         e_p->get_location(),
-                         sctx_p,
-                         new instanceof_expr(sctxid, loc, &*sv, type),
-                         lThen,
-                         defret);
+    // retExpr = [if (instance_of($sv, type)) then clauseExpr else retExpr]
+    retExpr = new if_expr(sctxid,
+                          loc,
+                          sctx_p,
+                          new instanceof_expr(sctxid, loc, &*sv, type),
+                          clauseExpr,
+                          retExpr);
   }
 
-  v.get_switch_expr()->accept(*this);
+  static_cast<flwor_expr*>(flworExpr.getp())->set_return_expr(retExpr);
 
-  expr_t se = pop_nodestack();
-
-  if (se->is_updating()) {
-    ZORBA_ERROR_LOC(XUST0001, loc);
-  }
-
-  expr_t lFlwor = wrap_in_let_flwor(se, sv, defret);
-
-  nodestack.push (lFlwor);
+  nodestack.push(flworExpr);
 
   // Return NULL so that TypeswitchExpr::accept() will not call accept() on the
   // children of the TypeswitchExpr parsenode.
@@ -4651,34 +4675,34 @@ void end_visit (const TypeswitchExpr& v, void* /*visit_state*/)
 ********************************************************************************/
 void* begin_visit(const CaseClauseList& v) 
 {
-  TRACE_VISIT ();
-
+  TRACE_VISIT();
   // shouldn't get here
-  ZORBA_ASSERT (false);
-
+  ZORBA_ASSERT(false);
   return no_state;
 }
 
 
 void end_visit(const CaseClauseList& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
 /*******************************************************************************
   [67] CaseClause ::= "case" ("$" VarName "as")? SequenceType "return" ExprSingle
 ********************************************************************************/
-void *begin_visit (const CaseClause& v) 
+void* begin_visit(const CaseClause& v) 
 {
-  TRACE_VISIT ();
-
+  TRACE_VISIT();
+  // shouldn't get here
+  ZORBA_ASSERT(false);
   return no_state;
 }
 
-void end_visit (const CaseClause& v, void* /*visit_state*/) 
+
+void end_visit(const CaseClause& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
@@ -5058,13 +5082,13 @@ void end_visit (const InstanceofExpr& v, void* /*visit_state*/)
 /*******************************************************************************
   [78] TreatExpr ::= CastableExpr ( "treat" "as" SequenceType )?
 ********************************************************************************/
-void *begin_visit (const TreatExpr& v) 
+void* begin_visit(const TreatExpr& v) 
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit (const TreatExpr& v, void* /*visit_state*/) 
+void end_visit(const TreatExpr& v, void* /*visit_state*/) 
 {
   TRACE_VISIT_OUT();
 
@@ -5079,13 +5103,13 @@ void end_visit (const TreatExpr& v, void* /*visit_state*/)
 /*******************************************************************************
   [79] CastableExpr ::= CastExpr ( "castable" "as" SingleType )?
 ********************************************************************************/
-void *begin_visit (const CastableExpr& v) 
+void* begin_visit(const CastableExpr& v) 
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit (const CastableExpr& v, void* /*visit_state*/)
+void end_visit(const CastableExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 

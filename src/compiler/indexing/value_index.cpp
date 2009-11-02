@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <algorithm>
+
+#include "functions/function.h"
 
 #include "compiler/indexing/value_index.h"
 #include "compiler/api/compilercb.h"
@@ -153,26 +156,28 @@ void ValueIndex::setOrderModifiers(const std::vector<OrderModifier>& modifiers)
   theOrderModifiers = modifiers;
 }
 
-#if 0
-void ValueIndex::analyzeExprInternal(
-    const expr* e,
-    ulong& numSources,
-    std::vector<store::Item*>& sources)
-{
-  numSources = 0;
-  std::vector<expr*> varExprs;
 
-  analyzeExprInternal(e, numSources, sources, varExprs);
+/*******************************************************************************
+  Check that the given expr 
+  (a) is deterministic,
+  (b) does not have any free variables,
+  (c) does not reference any input functions other than dc:collection()
+  (d) the arg to each dc:collection is a const qname 
+********************************************************************************/
+void ValueIndex::analyzeExpr(const expr* e)
+{
+  std::vector<const var_expr*> varExprs;
+
+  analyzeExprInternal(e, theSources, varExprs);
 }
 
 
 void ValueIndex::analyzeExprInternal(
     const expr* e,
-    ulong& numSources,
-    std::vector<store::Item*>& sources,
-    std::vector<expr*>& varExprs) 
+    std::vector<const store::Item*>& sources,
+    std::vector<const var_expr*>& varExprs) 
 {
-  if (e->get_expr_kind() == expr::fo_expr_kind)
+  if (e->get_expr_kind() == fo_expr_kind)
   {
     const fo_expr* foExpr = static_cast<const fo_expr*>(e);
     const function* func = foExpr->get_func();
@@ -185,16 +190,20 @@ void ValueIndex::analyzeExprInternal(
 
     if (func->isSource())
     {
-      ++numSources;
-
-      if (func->getKind() == FunctionConsts::FN_COLLECTION)
+      if (func->getKind() == FunctionConsts::FN_ZORBA_COLLECTION)
       {
-        const_expr qnameExpr;
+        const const_expr* qnameExpr;
 
-        if (foExpr->size() > 0 &&
-            (qnameExpr = dynamic_cast<const_expr*>((*foExpr)[0])) != NULL)
+        if (foExpr->num_args() > 0 &&
+            (qnameExpr = dynamic_cast<const const_expr*>((*foExpr)[0])) != NULL &&
+            theSctx->lookup_collection(qnameExpr->get_val()))
         {
           sources.push_back(qnameExpr->get_val());
+        }
+        else
+        {
+          ZORBA_ERROR_LOC_PARAM(XQP0041_INDEX_HAS_INVALID_DATA_SOURCE, e->get_loc(),
+                                theName->getStringValue()->c_str(), "");
         }
       }
       else
@@ -204,27 +213,31 @@ void ValueIndex::analyzeExprInternal(
       }
     }
   }
-  else if (e->get_expr_kind() == expr::flwor_expr_kind ||
-           e->get_expr_kind() == expr::gflwor_expr_kind)
+  else if (e->get_expr_kind() == flwor_expr_kind ||
+           e->get_expr_kind() == gflwor_expr_kind)
   {
-    static_cast<const flwor_expr*>(e)->getVars(varExprs);
+    static_cast<const flwor_expr*>(e)->get_vars_defined(varExprs);
   }
-  else if (e->get_expr_kind() == expr::var_expr_kind)
+  else if (e->get_expr_kind() == var_expr_kind)
   {
-    if (varExprs.find() == varExprs.end())
+    if (std::find(varExprs.begin(), varExprs.end(), e) == varExprs.end())
     {
       ZORBA_ERROR_LOC_PARAM(XQP0040_INDEX_HAS_FREE_VARS, e->get_loc(),
                             theName->getStringValue()->c_str(), "");
     }
   }
 
-  for(expr_iterator i = e->expr_begin(); !i.done(); ++i) 
+  for(const_expr_iterator i = e->expr_begin_const(); !i.done(); ++i) 
   {
-    analyzeExpr((*i).getp(), sources);
+    analyzeExprInternal((*i), sources, varExprs);
   }
 }
-#endif
 
+
+
+/*******************************************************************************
+
+********************************************************************************/
 expr* ValueIndex::getBuildExpr(CompilerCB* topCCB, const QueryLoc& loc)
 { 
   if (theBuildExpr != NULL)
@@ -303,6 +316,9 @@ expr* ValueIndex::getBuildExpr(CompilerCB* topCCB, const QueryLoc& loc)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 PlanIterator* ValueIndex::getBuildPlan(CompilerCB* topCCB, const QueryLoc& loc)
 { 
   if (theBuildPlan != NULL)

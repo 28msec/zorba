@@ -72,7 +72,7 @@ void areNodeModifiersViolated(
   const store::Item* lCollName = aTarget->getCollectionName();
   if (lCollName != 0) 
   {
-    const StaticallyKnownCollection* lDeclColl = aSctx->get_declared_collection(lCollName);
+    const StaticallyKnownCollection* lDeclColl = aSctx->lookup_collection(lCollName);
     ZORBA_ASSERT(lDeclColl != 0);
 
     switch(lDeclColl->getNodeModifier()) 

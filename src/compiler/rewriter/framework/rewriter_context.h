@@ -30,7 +30,7 @@ namespace zorba
 
 typedef std::map<const var_expr *, int> VarIdMap;
 typedef std::vector<var_expr*> IdVarMap;
-typedef std::map<expr *, DynamicBitset> ExprVarsMap;
+typedef std::map<const expr *, DynamicBitset> ExprVarsMap;
 
 class RewriterContext 
 {

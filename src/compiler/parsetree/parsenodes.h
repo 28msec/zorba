@@ -2418,7 +2418,7 @@ public:
 
   rchandle<SequenceType> get_type() const { return type_h; }
 
-  rchandle<exprnode> get_val() const { return val_h; }
+  rchandle<exprnode> get_expr() const { return val_h; }
 
   void accept(parsenode_visitor&) const;
 };

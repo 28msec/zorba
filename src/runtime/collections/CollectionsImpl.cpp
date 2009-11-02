@@ -496,7 +496,7 @@ ScIsDeclaredCollectionIterator::nextImpl(store::Item_t& aResult, PlanState& aPla
 
   DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
   consumeNext(lName, theChildren[0].getp(), aPlanState);
-  if (theSctx->get_declared_collection(lName.getp()) == 0) {
+  if (theSctx->lookup_collection(lName.getp()) == 0) {
     STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( aResult, false ), lState);
   }
   else {
@@ -555,7 +555,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
   consumeNext(lName, theChildren[0].getp(), aPlanState);
 
   // check a collection is in the set of statically known collection with this name
-  if ( theSctx->get_declared_collection(lName.getp()) == 0 ) {
+  if ( theSctx->lookup_collection(lName.getp()) == 0 ) {
     ZORBA_ERROR_LOC_DESC_OSS(
       XDST0010, loc,
       "collection "
@@ -1410,7 +1410,7 @@ store::Collection_t getCollection(
     const store::Item_t aName,
     const QueryLoc& aLoc)
 {
-  if (aSctx->get_declared_collection(aName.getp()) == 0) {
+  if (aSctx->lookup_collection(aName.getp()) == 0) {
     ZORBA_ERROR_LOC_PARAM_OSS(XDST0010, aLoc, aName->getStringValue(),
                               "The collection with name " 
                               << aName->getStringValue() 
@@ -1434,7 +1434,7 @@ const StaticallyKnownCollection* getDeclColl(
     const store::Item_t aName,
     const QueryLoc& aLoc)
 {
-  const StaticallyKnownCollection* lDeclColl = aSctx->get_declared_collection(aName);
+  const StaticallyKnownCollection* lDeclColl = aSctx->lookup_collection(aName);
   if (lDeclColl == 0) {
     ZORBA_ERROR_LOC_DESC_OSS(XDST0010, aLoc,
                              "The requested collection with name "

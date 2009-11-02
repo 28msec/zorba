@@ -32,14 +32,14 @@ static bool hoist_expressions(
     RewriterContext&,
     expr*,
     const std::map<const var_expr*, int>&,
-    const std::map<expr*, DynamicBitset>&,
+    const ExprVarsMap&,
     struct flwor_holder*);
 
 static expr_t try_hoisting(
     RewriterContext&,
     expr*,
     const std::map<const var_expr*, int>&,
-    const std::map<expr*, DynamicBitset>&,
+    const ExprVarsMap&,
     struct flwor_holder*);
 
 static bool non_hoistable (const expr*);
@@ -88,7 +88,7 @@ RULE_REWRITE_PRE(HoistExprsOutOfLoops)
 
   index_flwor_vars(node, numVars, varmap, NULL);
 
-  std::map<expr *, DynamicBitset> freevarMap;
+  ExprVarsMap freevarMap;
   DynamicBitset freeset(numVars);
   find_flwor_vars(node, varmap, freeset, freevarMap);
 
@@ -122,7 +122,7 @@ static bool hoist_expressions(
     RewriterContext& rCtx,
     expr* e,
     const std::map<const var_expr *, int>& varmap,
-    const std::map<expr *, DynamicBitset>& freevarMap,
+    const ExprVarsMap& freevarMap,
     struct flwor_holder* fholder)
 {
   bool status = false;
@@ -230,7 +230,7 @@ static expr_t try_hoisting(
     RewriterContext& rCtx,
     expr* e,
     const std::map<const var_expr*, int>& varmap,
-    const std::map<expr*, DynamicBitset>& freevarMap,
+    const ExprVarsMap& freevarMap,
     struct flwor_holder* holder)
 {
   if (non_hoistable (e) || 
@@ -240,7 +240,7 @@ static expr_t try_hoisting(
     return NULL;
   }
 
-  std::map<expr*, DynamicBitset>::const_iterator fvme = freevarMap.find(e);
+  std::map<const expr*, DynamicBitset>::const_iterator fvme = freevarMap.find(e);
   ZORBA_ASSERT(fvme != freevarMap.end());
   const DynamicBitset& varset = fvme->second;
   bool inloop = false;

@@ -86,9 +86,27 @@ typedef rchandle<ValueIndexInsertSession> ValueIndexInsertSession_t;
   Data members:
   -------------
 
-  theSctx  : The root static context of the data module containing the index
-             declaration.
-  theName  : The qname that identifies the index.
+  theSctx          : The root static context of the data module containing the
+                     index declaration.
+  theName          : The qname that identifies the index.
+  theIsUnique      : Whether it is a unique index or not.
+  theIsTemp        : Whether it is a temp index or not. A temp index is an index
+                     that is created on-the-fly to optimize a query by converting
+                     a nested-lopp join to a hashjoin (see index_join_rule.cpp).
+                     Such an index is destroyed at the end of the query that 
+                     created it.
+  theMethod        : Whether this is a tree-based (ordered) or hash-based
+                     (unordered) index.
+  theDomainClause  : A FOR-clause that associates the domain expr with a FOR var
+                     that is referenced by the key exprs and acts as the domain
+                     node for those exprs.
+  theKeyExprs      :
+  theOrderModifiers:
+
+  theSources       : The qnames of the collections referenced in the domain and
+                     key exprs.
+  theBuildExpr     :
+  theBuildPlan     :
 ********************************************************************************/
 class ValueIndex : public SimpleRCObject 
 {
@@ -112,8 +130,10 @@ private:
   std::vector<xqtref_t>       theKeyTypes;
   std::vector<OrderModifier>  theOrderModifiers;
 
-  expr_t                      theBuildExpr;
-  PlanIter_t                  theBuildPlan;
+  std::vector<const store::Item*> theSources;
+
+  expr_t                          theBuildExpr;
+  PlanIter_t                      theBuildPlan;
 
   std::vector<store::PatternIECreatorPair> m_creatorPatterns;
 
@@ -177,9 +197,17 @@ public:
     return m_creatorPatterns;
   }
 
+  void analyzeExpr(const expr* e);
+
   expr* getBuildExpr(CompilerCB* topCCB, const QueryLoc& loc);
 
   PlanIterator* getBuildPlan(CompilerCB* topCCB, const QueryLoc& loc);
+
+private:
+  void analyzeExprInternal(
+        const expr* e,
+        std::vector<const store::Item*>& sources,
+        std::vector<const var_expr*>& varExprs);
 };
 
 

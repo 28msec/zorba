@@ -87,7 +87,7 @@ public:
 
   expr_t& operator[](int i) { invalidate(); return theArgs[i]; }
 
-  const expr_t& operator[](int i) const { return theArgs[i]; }
+  const expr* operator[](int i) const { return theArgs[i].getp(); }
 
   std::vector<expr_t>::const_iterator begin() const { return theArgs.begin(); }
 

@@ -152,7 +152,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       }
       n.get_type()->accept(*this);
       os << "return ";
-      n.get_val()->accept(*this);
+      n.get_expr()->accept(*this);
       return no_state;
     }
     DEFAULT_END_VISIT (CaseClause)

@@ -657,7 +657,7 @@ public:
 
   long defines_variable(const var_expr* v, const flwor_clause* limit) const;
 
-  void get_vars_defined(std::vector<var_expr*>& varExprs) const;
+  void get_vars_defined(std::vector<const var_expr*>& varExprs) const;
 
   expr_iterator_data* make_iter();
 

@@ -359,9 +359,9 @@ public:
   //
   // Collections
   //
-  void add_declared_collection( StaticallyKnownCollection_t& aCollection, const QueryLoc& aLoc);
+  void bind_collection(StaticallyKnownCollection_t& aCollection, const QueryLoc& aLoc);
 
-  const StaticallyKnownCollection* get_declared_collection(const store::Item* aName) const;
+  const StaticallyKnownCollection* lookup_collection(const store::Item* aName) const;
 
   store::Iterator_t list_collection_names() const;
 

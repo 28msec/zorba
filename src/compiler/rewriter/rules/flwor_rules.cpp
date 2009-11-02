@@ -41,7 +41,7 @@ static bool safe_to_fold_single_use(var_expr*, const flwor_expr&, static_context
 
 static bool var_in_try_block_or_in_loop(static_context*, const var_expr*, const expr*, bool);
 
-static bool refactor_index_pred(RewriterContext&, const expr*, var_expr*&, rchandle<const_expr>&);
+static bool refactor_index_pred(RewriterContext&, const expr*, const var_expr*&, rchandle<const_expr>&);
 
 
 #define MODIFY( expr ) do { modified = true; expr; } while (0)
@@ -572,7 +572,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
   }
 
   rchandle<const_expr> pos;
-  var_expr* pvar;
+  const var_expr* pvar;
   
   // '... for $x at $p in E ... where $p = const ... return ...' -->
   // '... for $x in fn:subsequence(E, const, 1) ... return ...
@@ -620,9 +620,11 @@ RULE_REWRITE_POST(RefactorPredFLWOR)
 static bool refactor_index_pred(
     RewriterContext& rCtx,
     const expr* cond,
-    var_expr*& pvar,
+    const var_expr*& pvar,
     rchandle<const_expr>& pos_expr) 
 {
+  const const_expr* pos;
+
   const fo_expr* fo = dynamic_cast<const fo_expr*>(cond);
 
   if (fo == NULL)
@@ -639,19 +641,20 @@ static bool refactor_index_pred(
   int i;
   for (i = 0; i < 2; i++) 
   {
-    if (NULL != (pvar = (*fo)[i].dyn_cast<var_expr>()) &&
+    if (NULL != (pvar = dynamic_cast<const var_expr*>((*fo)[i])) &&
         pvar->get_kind() == var_expr::pos_var &&
-        NULL != (pos_expr = (*fo)[1 - i].dyn_cast<const_expr>().getp())) 
+        NULL != (pos = dynamic_cast<const const_expr*>((*fo)[1 - i]))) 
     {
-      store::Item_t val = pos_expr->get_val(false);
+      const store::Item* val = pos->get_val();
 
       if (TypeOps::is_subtype(*tm->create_named_type(val->getType()),
                               *GENV_TYPESYSTEM.INTEGER_TYPE_ONE)
           && val->getIntegerValue() >= xqp_integer::parseInt(1)) 
       {
+        store::Item_t iVal = const_cast<store::Item*>(val);
         store::Item_t pVal;
-        GenericCast::promote(pVal, val, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, *tm);
-        pos_expr = new const_expr(pos_expr->get_sctx_id(), LOC(pos_expr), pVal);
+        GenericCast::promote(pVal, iVal, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, *tm);
+        pos_expr = new const_expr(pos->get_sctx_id(), LOC(pos), pVal);
         return true;
       }
     }

@@ -32,7 +32,7 @@ static bool isIndexJoinPredicate(RewriterContext&, PredicateInfo&);
 
 static void rewriteJoin(RewriterContext&, PredicateInfo&);
 
-static var_expr* findForVar(RewriterContext&, expr*, int&);
+static var_expr* findForVar(RewriterContext&, const expr*, int&);
 
 static bool checkVarDependency(RewriterContext&, expr*, int);
 
@@ -45,10 +45,10 @@ struct PredicateInfo
 {
   flwor_expr * theFlworExpr;
   expr       * thePredicate;
-  expr       * theOuterOp;
+  const expr * theOuterOp;
   var_expr   * theOuterVar;
   int          theOuterVarId;
-  expr       * theInnerOp;
+  const expr * theInnerOp;
   var_expr   * theInnerVar;
 };
 
@@ -148,8 +148,8 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
   if (fn->comparison_kind() != CompareConsts::VALUE_EQUAL)
     return false;
 
-  const expr_t& op1 = (*foExpr)[0];
-  const expr_t& op2 = (*foExpr)[1];
+  const expr* op1 = (*foExpr)[0];
+  const expr* op2 = (*foExpr)[1];
 
   if (rCtx.m_varid_map == NULL)
   {
@@ -167,12 +167,12 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
   // Analyze each operand of the eq to see if it depends on a single for
   // variable. If that is not true, we reject this predicate.
   int var1id;
-  var_expr* var1 = findForVar(rCtx, op1.getp(), var1id);
+  var_expr* var1 = findForVar(rCtx, op1, var1id);
   if (var1 == NULL)
     return false;
 
   int var2id;
-  var_expr* var2 = findForVar(rCtx, op2.getp(), var2id);
+  var_expr* var2 = findForVar(rCtx, op2, var2id);
   if (var2 == NULL)
     return false;
 
@@ -185,20 +185,20 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
 
   if (var1id < var2id)
   {
-    predInfo.theOuterOp = op1.getp();
+    predInfo.theOuterOp = op1;
     predInfo.theOuterVar = var1;
     predInfo.theOuterVarId = var1id;
-    predInfo.theInnerOp = op2.getp();
+    predInfo.theInnerOp = op2;
     predInfo.theInnerVar = var2;
     outerVarId = var1id;
     innerVarId = var2id;
   }
   else
   {
-    predInfo.theOuterOp = op2.getp();
+    predInfo.theOuterOp = op2;
     predInfo.theOuterVar = var2;
     predInfo.theOuterVarId = var2id;
-    predInfo.theInnerOp = op1.getp();
+    predInfo.theInnerOp = op1;
     predInfo.theInnerVar = var1; 
     outerVarId = var2id;
     innerVarId = var1id;
@@ -397,7 +397,7 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
                                                        "probe-index-point",
                                                        VARIADIC_SIG_SIZE),
                                     qnameExpr,
-                                    predInfo.theOuterOp);
+                                    const_cast<expr*>(predInfo.theOuterOp));
 
   fc->set_expr(probeExpr.getp());
 }
@@ -406,7 +406,7 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 /*******************************************************************************
 
 ********************************************************************************/
-static var_expr* findForVar(RewriterContext& rCtx, expr* curExpr, int& varid)
+static var_expr* findForVar(RewriterContext& rCtx, const expr* curExpr, int& varid)
 {
   var_expr* var = NULL;
 
