@@ -53,7 +53,6 @@
 #include "functions/Alexis.h"
 #include "functions/XQDocFunctions.h"
 #include "functions/Rest.h"
-#include "functions/Email.h"
 #include "functions/Fop.h"
 #include "functions/fnput.h"
 
@@ -108,7 +107,6 @@ void BuiltinFunctionLibrary::populateContext(static_context* sctx)
   populateContext_Hoisting(sctx);
   populateContext_Alexis(sctx);
   populateContext_Rest(sctx);
-  populateContext_Email(sctx);
   populateContext_FOP(sctx);
   populateContext_XQDOC(sctx);
 

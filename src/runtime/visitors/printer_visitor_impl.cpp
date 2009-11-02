@@ -64,9 +64,6 @@
 #ifdef ZORBA_WITH_FOP
 #include "runtime/fop/FopImpl.h"
 #endif // ZORBA_WITH_FOP
-#ifdef ZORBA_WITH_EMAIL
-#include "runtime/email/EmailImpl.h"
-#endif
 
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/update/update.h"
@@ -1067,9 +1064,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
 #endif  // ZORBA_WITH_TIDY
   PRINTER_VISITOR_DEFINITION(ZorbaRandomIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaUUIDIterator);
-#ifdef ZORBA_WITH_EMAIL
-  PRINTER_VISITOR_DEFINITION(ZorbaMailIterator);
-#endif  // ZORBA_WITH_EMAIL
 
 #ifdef ZORBA_WITH_REST
   PRINTER_VISITOR_DEFINITION(ZorbaRestGetIterator);

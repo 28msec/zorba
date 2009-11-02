@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_UTIL_UW_IMAP_H
-#define ZORBA_UTIL_UW_IMAP_H
+#ifndef ZORBA_MODULES_UW_IMAP_H
+#define ZORBA_MODULES_UW_IMAP_H
 
-#include "zorbatypes/representations.h"
-
-#include "store/api/item.h"
-#include "store/api/item_factory.h"
+#include "zorba/api_shared_types.h"
 
 namespace zorba {
 
+  namespace smtpmodule
+  {
   /* smtp_send -- send SMTP email */
   bool mail(const char* to, const char* cc, const char* bcc,
             const char* subject, const char* message,
             const char* SMTPServer, const char* SMTPUser, const char* SMTPPwd,
-            xqp_string& diagnostics);
+            zorba::String& diagnostics);
 
-  bool mail(store::Item_t itemMessage,
+  bool mail(const Item& itemMessage,
             const char* SMTPServer, const char* SMTPUser, const char* SMTPPwd,
-            xqp_string& diagnostics);
+            zorba::String& diagnostics);
 
-}/*namespace zorba*/
+  }//namespace smtpmodule
+}//namespace zorba
 
-#endif /* ZORBA_UTIL_UW_IMAP_H */
+#endif // ZORBA_MODULES_UW_IMAP_H

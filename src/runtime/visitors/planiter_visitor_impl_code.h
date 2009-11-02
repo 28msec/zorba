@@ -433,9 +433,6 @@
 #endif
   PLAN_ITER_VISITOR(ZorbaRandomIterator);
   PLAN_ITER_VISITOR(ZorbaUUIDIterator);
-#ifdef ZORBA_WITH_EMAIL
-  PLAN_ITER_VISITOR(ZorbaMailIterator);
-#endif  /* ZORBA_WITH_EMAIL */
 #ifdef ZORBA_WITH_FOP
 	PLAN_ITER_VISITOR(ZorbaFopIterator);
 #endif // ZORBA_WITH_FOP

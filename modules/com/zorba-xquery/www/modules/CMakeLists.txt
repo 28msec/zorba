@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+ADD_SUBDIRECTORY(email)
+
 # create and install the external file module
 SET(FILE_SRCS file.cpp file_function.cpp file_module.cpp)
 ADD_LIBRARY(file SHARED ${FILE_SRCS})

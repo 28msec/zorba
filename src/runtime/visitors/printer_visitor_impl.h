@@ -294,9 +294,6 @@
 #endif  // ZORBA_WITH_TIDY
   DECLARE_VISITOR (ZorbaRandomIterator);
   DECLARE_VISITOR (ZorbaUUIDIterator);
-#ifdef ZORBA_WITH_EMAIL
-  DECLARE_VISITOR (ZorbaMailIterator);
-#endif  // ZORBA_WITH_EMAIL
 
 #ifdef ZORBA_WITH_REST
   DECLARE_VISITOR (ZorbaRestGetIterator);

@@ -46,7 +46,6 @@
          <li> \ref zorba-math
          <li> \ref zorba-io
          <li> \ref util
-         <li> \ref email
          <li> \ref converters
          <li> \ref fop
        </ul>

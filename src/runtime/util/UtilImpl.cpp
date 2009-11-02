@@ -34,7 +34,6 @@
 
 #include "util/web/web.h"
 #include "util/uuid/uuid.h"
-#include "util/mail/uw-imap.h"
 
 #include <stdlib.h>
 #include <time.h>

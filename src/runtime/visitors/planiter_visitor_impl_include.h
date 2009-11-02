@@ -192,9 +192,6 @@
 #endif  /* ZORBA_WITH_TIDY */
   class ZorbaRandomIterator;
   class ZorbaUUIDIterator;
-#ifdef ZORBA_WITH_EMAIL
-  class ZorbaMailIterator;
-#endif  /* ZORBA_WITH_EMAIL */
 #ifdef ZORBA_WITH_FOP
   class ZorbaFopIterator;
 #endif

@@ -15,17 +15,26 @@
  */
 
 #include <iostream>
+#include <sstream>
 #include <cstdio>
-#include "system/globalenv.h"
+#include <vector>
 
-#include <signal.h>
+// #include <signal.h>
 
-#include "util/mail/uw-imap.h"
+#include "uw-imap.h"
 #include "c-client.h"
+
+#include <zorba/store_consts.h>
+#include <zorba/item_factory.h>
+#include <zorba/item.h>
+#include <zorba/zorbastring.h>
+#include <zorba/iterator.h>
 
 char *SMTPUsername, *SMTPPassword;
 
 namespace zorba {
+  namespace smtpmodule
+  {
 
   /*private methods*/
   PARAMETER * createParam(const char* attribute, const char * value, PARAMETER * previous = NIL)
@@ -74,27 +83,35 @@ namespace zorba {
 
   void set_text_body(BODY* body, const char* message)
   {
-    body->contents.text.data = (unsigned char *) fs_get (8*MAILTMPLEN);   /*message body*/
+    body->contents.text.data = (unsigned char *) fs_get (8*MAILTMPLEN);   //message body
     sprintf ((char*)body->contents.text.data,"%s\015\012",message);
     body->contents.text.size = strlen ((const char*)body->contents.text.data);
   }
 
   void freeEnvelope(ENVELOPE* msg);
   void freeBody(BODY* body);
-  bool get_text_value(const store::Item* element, xqpStringStore_t& value);
-  bool get_text_value(const store::Item* element, std::istream* result);
-  bool set_content_type_value(BODY* body, xqpStringStore_t& value);
 
+  zorba::String get_nodename(const Item element);
+  bool get_text_value(const Item element, zorba::String& value);
+  bool set_content_type_value(BODY* body, zorba::String& value);
 
-  void parse_multipart_soso(BODY* body, store::Item_t itemMultipart);
-  void parse_content_soso(BODY* body, store::Item_t itemContent);
+  void parse_multipart(BODY* body, const Item itemMultipart);
+  void parse_content(BODY* body, const Item itemContent);
 
-  bool parse_message(ENVELOPE* envelope, BODY* body, store::Item_t itemDoc, std::iostream& result)
+  zorba::String
+  get_nodename(const Item element)
   {
-    store::Iterator_t childrenIt;
-    store::Item_t     child, itemMessage;
+    Item lNodeName;
+    element.getNodeName(lNodeName);
+    return lNodeName.getStringValue();
+  }
+
+  bool parse_message(ENVELOPE* envelope, BODY* body, const Item& itemDoc, std::iostream& result)
+  {
+    Iterator_t        childrenIt;
+    Item              child, itemMessage;
     bool              res = false, parseOk = false;
-    xqpStringStore_t  value, mimeVersion, nonMime;
+    zorba::String     value, mimeVersion, nonMime;
 
     char line[MAILTMPLEN];
 
@@ -106,69 +123,65 @@ namespace zorba {
     envelope->date = (unsigned char *) fs_get (1+strlen (line));
     strcpy ((char *)envelope->date,line);
 
-    childrenIt = itemDoc->getChildren();
-    childrenIt->open();
+    childrenIt = itemDoc.getChildren();
     if(childrenIt->next(itemMessage))
-      if (itemMessage->getNodeKind() == store::StoreConsts::elementNode)
-        if(itemMessage->getNodeName()->getStringValue()->lowercase()->byteCompare("message") != 0)
+      if (itemMessage.getNodeKind() == store::StoreConsts::elementNode)
+        if(!get_nodename(itemMessage).lowercase().equals("message"))
           return false;
-    childrenIt->close();
 
-    childrenIt = itemMessage->getChildren();
-    childrenIt->open();
+    childrenIt = itemMessage.getChildren();
     while (childrenIt->next(child))
     {
-      if (child->getNodeKind() == store::StoreConsts::elementNode)
+      if (child.getNodeKind() == store::StoreConsts::elementNode)
       {
         res = get_text_value(child, value);
-        if(child->getNodeName()->getStringValue()->lowercase()->byteCompare("date") == 0) {
-          envelope->date = (unsigned char *) value->c_str();
+        if(get_nodename(child).lowercase().equals("date")) {
+          envelope->date = (unsigned char *) value.c_str();
         }
-        else if(child->getNodeName()->getStringValue()->lowercase()->byteCompare("from") == 0) {
+        else if(get_nodename(child).lowercase().equals("from")) {
           envelope->from = mail_newaddr ();
-          rfc822_parse_adrlist (&envelope->from, (char*)value->c_str(), NIL);
+          rfc822_parse_adrlist (&envelope->from, (char*)value.c_str(), NIL);
         }
-        else if(child->getNodeName()->getStringValue()->lowercase()->byteCompare("sender") == 0) {
+        else if(get_nodename(child).lowercase().equals("sender")) {
           envelope->sender = mail_newaddr ();
-          rfc822_parse_adrlist (&envelope->sender, (char*)value->c_str(), NIL);
+          rfc822_parse_adrlist (&envelope->sender, (char*)value.c_str(), NIL);
         }
-        else if(child->getNodeName()->getStringValue()->lowercase()->byteCompare("replyto") == 0) {
+        else if(get_nodename(child).lowercase().equals("replyto")) {
           envelope->reply_to = mail_newaddr ();
-          rfc822_parse_adrlist (&envelope->reply_to, (char*)value->c_str(), NIL);
+          rfc822_parse_adrlist (&envelope->reply_to, (char*)value.c_str(), NIL);
         }
-        else if(child->getNodeName()->getStringValue()->lowercase()->byteCompare("subject") == 0) {
-          envelope->subject = cpystr ((char*)value->c_str());
+        else if(get_nodename(child).lowercase().equals("subject")) {
+          envelope->subject = cpystr ((char*)value.c_str());
         }
-        else if(child->getNodeName()->getStringValue()->lowercase()->byteCompare("to") == 0) {
+        else if(get_nodename(child).lowercase().equals("to")) {
           envelope->to = mail_newaddr ();
-          rfc822_parse_adrlist (&envelope->to, (char*)value->c_str(), NIL);
+          rfc822_parse_adrlist (&envelope->to, (char*)value.c_str(), NIL);
         }
-        else if(child->getNodeName()->getStringValue()->lowercase()->byteCompare("cc") == 0) {
+        else if(get_nodename(child).lowercase().equals("cc")) {
           envelope->cc = mail_newaddr ();
-          rfc822_parse_adrlist (&envelope->cc, (char*)value->c_str(), NIL);
+          rfc822_parse_adrlist (&envelope->cc, (char*)value.c_str(), NIL);
         }
-        else if(child->getNodeName()->getStringValue()->lowercase()->byteCompare("bcc") == 0) {
+        else if(get_nodename(child).lowercase().equals("bcc")) {
           envelope->bcc = mail_newaddr ();
-          rfc822_parse_adrlist (&envelope->bcc, (char*)value->c_str(), NIL);
+          rfc822_parse_adrlist (&envelope->bcc, (char*)value.c_str(), NIL);
         }
-        else if(child->getNodeName()->getStringValue()->lowercase()->byteCompare("mimeversion") == 0) {
+        else if(get_nodename(child).lowercase().equals("mimeversion")) {
           mimeVersion = value;
         }
-        else if(child->getNodeName()->getStringValue()->lowercase()->byteCompare("nonmime") == 0) {
+        else if(get_nodename(child).lowercase().equals("nonmime")) {
           nonMime = value;
         }
-        else if(child->getNodeName()->getStringValue()->lowercase()->byteCompare("content") == 0) {
+        else if(get_nodename(child).lowercase().equals("content")) {
           parseOk = true;
-          parse_content_soso(body, child);
+          parse_content(body, child);
         }
-        else if(child->getNodeName()->getStringValue()->lowercase()->byteCompare("multipart") == 0) {
+        else if(get_nodename(child).lowercase().equals("multipart")) {
           parseOk = true;
           //nu fac nimik cu PART-ul returnat?
-          parse_multipart_soso(body, child);
+          parse_multipart(body, child);
         }
       }
     }
-    childrenIt->close();
 
     if(!parseOk)
       result << "The message structure is not correct: neither 'content' nor 'multipart' nodes were found.\n";
@@ -179,7 +192,7 @@ namespace zorba {
   bool mail(const char* to, const char* cc,const char* bcc,
             const char* subject, const char* message,
             const char* SMTPServer, const char* SMTPUser, const char* SMTPPwd,
-            xqp_string& diagnostics)
+            zorba::String& diagnostics)
   {
     std::stringstream out;
 
@@ -238,17 +251,13 @@ namespace zorba {
     if(body)
       mail_free_body(&body);
 
-    out.seekg (0, std::ios::end);
-    uint size = out.tellg();
-    out.seekg (0, std::ios::beg);
-
-    diagnostics = new xqpStringStore(out.str().c_str(), size);
+    diagnostics = zorba::String(out.str());
     return res;
   }
 
-  bool mail(store::Item_t itemMessage,
+  bool mail(const Item& itemMessage,
             const char* SMTPServer, const char* SMTPUser, const char* SMTPPwd,
-            xqp_string& diagnostics)
+            zorba::String& diagnostics)
   {
     std::auto_ptr<std::stringstream> out(new std::stringstream());
 
@@ -312,11 +321,7 @@ namespace zorba {
     if( body )
       freeBody( body );
 
-    out->seekg (0, std::ios::end);
-    uint size = out->tellg();
-    out->seekg (0, std::ios::beg);
-
-    diagnostics = new xqpStringStore(out->str().c_str(), size);
+    diagnostics = zorba::String(out->str());
     return res;
 
   }
@@ -346,70 +351,48 @@ namespace zorba {
     mail_free_body(&body);
   }
 
-  bool get_text_value(const store::Item* element, xqpStringStore_t& value)
+  bool get_text_value(const Item element, zorba::String& value)
   {
-    store::Iterator_t childrenIt;
-    store::Item_t     child;
-    bool              res = false;
+    Iterator_t  childrenIt;
+    Item        child;
+    bool        res = false;
 
-    childrenIt = element->getChildren();
-    childrenIt->open();
+    childrenIt = element.getChildren();
     while (childrenIt->next(child))
     {
-      if (child->getNodeKind() == store::StoreConsts::textNode)
-        value = child->getStringValue();
+      if (child.getNodeKind() == store::StoreConsts::textNode)
+        value = child.getStringValue();
       else
-        value = new xqpStringStore();
+        value = String();
 
       res = true;
     }
-    childrenIt->close();
     return res;
   }
 
-  bool get_text_value(const store::Item* element, std::istream* result)
-  {
-    store::Iterator_t childrenIt;
-    store::Item_t     child;
-    bool              res = false;
-
-    childrenIt = element->getChildren();
-    childrenIt->open();
-    while (childrenIt->next(child))
-    {
-      if (child->getNodeKind() == store::StoreConsts::textNode)
-      {
-        result = new std::istringstream(child->getStringValue()->c_str());
-        res = true;
-      }
-    }
-    childrenIt->close();
-    return res;
-  }
-
-  bool set_content_type_value(BODY* body, xqpStringStore_t& value)
+  bool set_content_type_value(BODY* body, zorba::String& value)
   {
     // the list of subtypes of each type is available at
     // http://www.iana.org/assignments/media-types/
-    xqpStringStore_t  subtype;
-    bool              res = true;
-    int32_t           pos = value->indexOf("/");
+    zorba::String subtype;
+    bool          res = true;
+    int           pos = value.indexOf("/");
 
     //set the message type
-    xqpStringStore_t tmp = value->substr(0,pos);
-    if(tmp->lowercase()->byteCompare("text") == 0)
+    zorba::String tmp = value.substring(0,pos);
+    if(tmp.lowercase().equals("text"))
       body->type = TYPETEXT;
-    else if(tmp->lowercase()->byteCompare("multipart") == 0)
+    else if(tmp.lowercase().equals("multipart"))
       body->type = TYPEMULTIPART;
-    else if(tmp->lowercase()->byteCompare("message") == 0)
+    else if(tmp.lowercase().equals("message"))
       body->type = TYPEMESSAGE;
-    else if(tmp->lowercase()->byteCompare("application") == 0)
+    else if(tmp.lowercase().equals("application"))
       body->type = TYPEAPPLICATION;
-    else if(tmp->lowercase()->byteCompare("image") == 0)
+    else if(tmp.lowercase().equals("image"))
       body->type = TYPEIMAGE;
-    else if(tmp->lowercase()->byteCompare("audio") == 0)
+    else if(tmp.lowercase().equals("audio"))
       body->type = TYPEAUDIO;
-    else if(tmp->lowercase()->byteCompare("video") == 0)
+    else if(tmp.lowercase().equals("video"))
       body->type = TYPEVIDEO;
     else
     {
@@ -418,27 +401,25 @@ namespace zorba {
     }
     if( res ) {
       //set the message subtype
-      subtype = value->substr(pos + 1,value->size() - pos);
-      body->subtype = cpystr((char*) subtype->uppercase()->c_str());
+      subtype = value.substring(pos + 1,value.length() - pos);
+      body->subtype = cpystr((char*) subtype.uppercase().c_str());
     }
 
     return res;
   }
 
-  void parse_multipart_soso(BODY* body, store::Item_t itemMultipart)
+  void parse_multipart(BODY* body, const Item itemMultipart)
   {
-    store::Iterator_t childrenIt;
-    store::Item_t     child;
-    xqpStringStore_t  value, name;
-    PART*             partRoot = NIL;
-    PART*             partPrev = NIL;
+    Iterator_t    childrenIt;
+    Item          child;
+    zorba::String value;
+    PART*         partRoot = NIL;
+    PART*         partPrev = NIL;
 
-    childrenIt = itemMultipart->getChildren();
-    childrenIt->open();
+    childrenIt = itemMultipart.getChildren();
     while (childrenIt->next(child)) {
-      if (child->getNodeKind() == store::StoreConsts::elementNode) {
-        name = child->getNodeName()->getStringValue()->lowercase();
-        if(name->byteCompare("contenttype") == 0) {
+      if (child.getNodeKind() == store::StoreConsts::elementNode) {
+        if(get_nodename(child).lowercase().equals("contenttype")) {
           get_text_value(child, value);
           if(body->type == TYPEOTHER)
             set_content_type_value(body, value);
@@ -449,7 +430,7 @@ namespace zorba {
           part = mail_newbody_part();
           part->body.type = TYPEOTHER;
 
-          parse_multipart_soso(&part->body,child);
+          parse_multipart(&part->body,child);
 
           if(partPrev)
             partPrev->next = part;
@@ -461,65 +442,63 @@ namespace zorba {
         else if((body->type != TYPEOTHER) &&
                 (body->type != TYPEMULTIPART))
         {
-          parse_content_soso(body, itemMultipart);
+          parse_content(body, itemMultipart);
           break;
         }
       }
     }
-    childrenIt->close();
 
     if(partRoot)
       body->nested.part = partRoot;
   }
 
-  void  parse_content_soso(BODY* body, store::Item_t itemContent)
+  void  parse_content(BODY* body, const Item itemContent)
   {
-    store::Iterator_t childrenIt;
-    store::Item_t     child;
-    xqpStringStore_t  name, value;
+    Iterator_t    childrenIt;
+    Item          child;
+    zorba::String name, value;
     bool res = false;
 
     PARAMETER* root = NIL;
     PARAMETER* pPrev = NIL;
 
-    childrenIt = itemContent->getChildren();
-    childrenIt->open();
+    childrenIt = itemContent.getChildren();
     while (childrenIt->next(child)) {
-      if (child->getNodeKind() == store::StoreConsts::elementNode) {
-        name = child->getNodeName()->getStringValue();
+      if (child.getNodeKind() == store::StoreConsts::elementNode) {
+        name = get_nodename(child);
         res = get_text_value(child, value);
-        if(name->lowercase()->byteCompare("contenttype") == 0) {
+        if(name.lowercase().equals("contenttype")) {
           if(body->type == TYPEOTHER)
             set_content_type_value(body, value);
         }
-        else if(name->lowercase()->byteCompare("charset") == 0) {
-          root = createParam((char*)name->c_str(), (char*)value->uppercase()->c_str(), NIL);
+        else if(name.lowercase().equals("charset")) {
+          root = createParam((char*)name.c_str(), (char*)value.uppercase().c_str(), NIL);
           pPrev = root;
         }
-        else if(child->getNodeName()->getStringValue()->lowercase()->byteCompare("contenttransferencoding") == 0) {
-          if(value->uppercase()->byteCompare("ENC7BIT") == 0)
+        else if(name.lowercase().equals("contenttransferencoding")) {
+          if(value.uppercase().equals("ENC7BIT"))
             body->encoding = ENC7BIT;
-          else if (value->uppercase()->byteCompare("ENC8BIT") == 0)
+          else if (value.uppercase().equals("ENC8BIT"))
             body->encoding = ENC8BIT;
-          else if (value->uppercase()->byteCompare("ENCBINARY") == 0)
+          else if (value.uppercase().equals("ENCBINARY"))
             body->encoding = ENCBINARY;
-          else if (value->uppercase()->byteCompare("ENCBASE64") == 0)
+          else if (value.uppercase().equals("ENCBASE64"))
             body->encoding = ENCBASE64;
-          else if (value->uppercase()->byteCompare("ENCQUOTEDPRINTABLE") == 0)
+          else if (value.uppercase().equals("ENCQUOTEDPRINTABLE"))
             body->encoding = ENCQUOTEDPRINTABLE;
           else
             body->encoding = ENCOTHER;
         }
         //also parse the serialization attribute
-        else if(child->getNodeName()->getStringValue()->lowercase()->byteCompare("body") == 0) {
-          set_text_body(body, value->c_str());
+        else if(name.lowercase().equals("body")) {
+          set_text_body(body, value.c_str());
         }
         else {
-          if( name->lowercase()->byteCompare("contentdisposition") == 0 )
-            name = new xqpStringStore("Content-Disposition");
+          if( name.lowercase().equals("contentdisposition"))
+            name = zorba::String("Content-Disposition");
 
           PARAMETER* temp;
-          temp = createParam((char*)name->c_str(), (char*)value->lowercase()->c_str(), pPrev);
+          temp = createParam((char*)name.c_str(), (char*)value.lowercase().c_str(), pPrev);
 
           if(pPrev)
             pPrev->next = temp;
@@ -530,12 +509,12 @@ namespace zorba {
         }
       }
     }
-    childrenIt->close();
 
     if(root && root->value)
       body->parameter = root;
   }
-} /*namespace Zorba */
+  }//namespace smtpmodule
+} //namespace Zorba
 
 /* Co-routines from MAIL library */
 void mm_searched (MAILSTREAM *stream,unsigned long msgno) {}

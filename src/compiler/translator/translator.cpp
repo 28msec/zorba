@@ -605,9 +605,6 @@ TranslatorImpl(
   zorba_predef_mod_ns.insert (ZORBA_STATICCONTEXT_FN_NS);
   zorba_predef_mod_ns.insert (ZORBA_DDL_FN_NS);
   zorba_predef_mod_ns.insert (ZORBA_ALEXIS_FN_NS);
-#ifdef ZORBA_WITH_EMAIL
-  zorba_predef_mod_ns.insert (ZORBA_EMAIL_FN_NS);
-#endif
   zorba_predef_mod_ns.insert (ZORBA_JSON_FN_NS);
   zorba_predef_mod_ns.insert (ZORBA_JSON_ML_FN_NS);
   zorba_predef_mod_ns.insert (ZORBA_OPEXTENSIONS_NS);
