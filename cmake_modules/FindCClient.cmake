@@ -1,8 +1,8 @@
 # Finds the C-CLIENT library that is part of the UW IMAP toolkit
 #
 #  CCLIENT_FOUND        - True if C-CLIENT library found.
-#  CCLIENT_INCLUDE_DIRS - Directory to include to get C-CLIENT headers
-#  CCLIENT_LIBRARIES    - Libraries to link against for the C-CLIENT library
+#  CCLIENT_INCLUDE      - Directory to include to get C-CLIENT headers
+#  CCLIENT_LIBRARY      - Libraries to link against for the C-CLIENT library
 #
 
 if (CCLIENT_INCLUDE_DIRS AND CCLIENT_LIBRARIES)
@@ -12,9 +12,9 @@ endif (CCLIENT_INCLUDE_DIRS AND CCLIENT_LIBRARIES)
 
 find_path(
   CCLIENT_INCLUDE
-  NAMES linkage.h
+  NAMES linkage.c
   PATHS ${CCLIENT_INCLUDE_DIRS}
-  PATH_SUFFIXES c-client
+  PATH_SUFFIXES imap
   DOC "Include directory for the CCLient library linkage")
 mark_as_advanced(CCLIENT_INCLUDE)
 
@@ -26,16 +26,14 @@ find_file(
   DOC "Library to link against for the email support")
 
 if (CCLIENT_LIBRARY)
-  MESSAGE("-- Found CCLIENT library -- " ${CCLIENT_LIBRARY})
+  MESSAGE(STATUS "Found CCLIENT library -- " ${CCLIENT_LIBRARY})
 else (CCLIENT_LIBRARY)
-  MESSAGE("-- Could not find CCLIENT library")
+  MESSAGE(STATUS "Could not find CCLIENT library")
 endif (CCLIENT_LIBRARY)
 
 # Copy the results to the output variables.
 if(CCLIENT_INCLUDE AND CCLIENT_LIBRARY)
   set(CCLIENT_FOUND 1)
-  set(CCLIENT_LIBRARIES ${CCLIENT_LIBRARY})
-  set(CCLIENT_INCLUDE_DIRS ${CCLIENT_INCLUDE_DIRS} ${CCLIENT_INCLUDE})
 
   # Do not treat the operator name keywords and, bitand, bitor, compl, not, or and xor
   # as synonyms as keywords. Needed in order to include C-CLIENT library
@@ -47,6 +45,6 @@ if(CCLIENT_INCLUDE AND CCLIENT_LIBRARY)
 
 else(CCLIENT_INCLUDE AND CCLIENT_LIBRARY)
   set(CCLIENT_FOUND 0)
-  set(CCLIENT_LIBRARIES)
-  set(CCLIENT_INCLUDE_DIRS)
+  set(CCLIENT_LIBRARY)
+  set(CCLIENT_INCLUDE)
 endif(CCLIENT_INCLUDE AND CCLIENT_LIBRARY)
