@@ -529,7 +529,7 @@ void* thread_main(void* param)
       lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
       lSerOptions.indent = ZORBA_INDENT_NO;
 
-      query->serialize(resFileStream, &lSerOptions);
+      query->execute(resFileStream, &lSerOptions);
       resFileStream.close();
     }
     catch(...)
