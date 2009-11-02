@@ -276,7 +276,11 @@ ulong capacity() const
 ********************************************************************************/
 bool has_sync()
 {
+#ifndef ZORBA_FOR_ONE_THREAD_ONLY
   return theMutexp!=NULL;
+#else
+  return true;
+#endif
 }
 
 /*******************************************************************************
