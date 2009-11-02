@@ -171,6 +171,9 @@ ENDIF(LIBTIDY_FOUND)
 
 # CClient library part of the UW IMAP toolkit required by the email functionality
 FIND_PACKAGE(CClient)
+IF( NOT WIN32 AND NOT CYGWIN)
+  FIND_PACKAGE(PAM)
+ENDIF( NOT WIN32 AND NOT CYGWIN)
 
 #
 # Java
