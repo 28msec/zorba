@@ -382,7 +382,7 @@ main(int argc, char** argv)
         lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
         lSerOptions.indent = ZORBA_INDENT_NO;
         
-        lQuery->serialize(lResFileStream, &lSerOptions);
+        lQuery->execute(lResFileStream, &lSerOptions);
       }
       
       if (lSpec.errorsSize() == 0 && ! lRefFileExists )

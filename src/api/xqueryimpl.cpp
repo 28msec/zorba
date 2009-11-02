@@ -319,7 +319,16 @@ XQueryImpl::getDynamicContext() const
   return 0;
 }
 
-
+bool
+XQueryImpl::isUpdating() const
+{
+  ZORBA_TRY
+    checkNotClosed();
+    checkCompiled();
+    return theCompilerCB->isUpdating();
+  ZORBA_CATCH
+  return false;
+}
 
 CompilerCB::config_t
 XQueryImpl::getCompilerConfig(const Zorba_CompilerHints_t& aHints)
@@ -368,6 +377,11 @@ XQueryImpl::executeSAX()
 {
   checkNotClosed();
   checkCompiled();
+
+  if (isUpdating()) {
+    ZORBA_ERROR_DESC(API0024_CANNOT_ITERATE_OVER_UPDATE_QUERY,
+      "Can't perform SAX serialization with an updating query.");
+  }
 
   PlanWrapper_t lPlan = generateWrapper();
   serializer lSerializer(theErrorManager);
@@ -584,7 +598,7 @@ void XQueryImpl::doCompile(
  */
 
 void
-XQueryImpl::serialize(std::ostream& os, const Zorba_SerializerOptions_t* opt)
+XQueryImpl::execute(std::ostream& os, const Zorba_SerializerOptions_t* opt)
 {
   ZORBA_TRY
     checkNotClosed();
@@ -608,6 +622,34 @@ XQueryImpl::serialize(std::ostream& os, const Zorba_SerializerOptions_t* opt)
   theDocLoadingTime = lPlan->getRuntimeCB()->docLoadingTime;
 }
 
+void
+XQueryImpl::execute()
+{
+  ZORBA_TRY
+    checkNotClosed();
+    checkCompiled();
+    if (!isUpdating()) {
+      ZORBA_ERROR_DESC(API0024_CANNOT_ITERATE_OVER_UPDATE_QUERY,
+        "Can't execute a non-updating query.");
+    }
+
+  PlanWrapper_t lPlan = generateWrapper();
+
+  SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+  ResultIterator_t lIter(new ResultIteratorImpl(this, lPlan));
+  
+  // call next once in order to apply updates
+  // close is called in the destructor
+  lIter->open();
+  Item lItem;
+  lIter->next(lItem);
+
+  theDocLoadingUserTime = lPlan->getRuntimeCB()->docLoadingUserTime;
+  theDocLoadingTime = lPlan->getRuntimeCB()->docLoadingTime;
+
+  ZORBA_CATCH
+}
 
 void
 XQueryImpl::serialize(
@@ -789,7 +831,7 @@ XQueryImpl::printPlan( std::ostream& aStream, bool aDotFormat ) const
 
 std::ostream& operator<< (std::ostream& os, const XQuery_t& aQuery)
 {
-  aQuery->serialize(os); 
+  aQuery->execute(os); 
   return os;
 }
 
@@ -797,7 +839,7 @@ std::ostream& operator<< (std::ostream& os, XQuery* aQuery)
 {
   XQueryImpl* lQuery = dynamic_cast<XQueryImpl*>(aQuery);
   ZORBA_ASSERT (lQuery != NULL);
-  lQuery->serialize(os); 
+  lQuery->execute(os); 
   return os;
 }
 

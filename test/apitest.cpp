@@ -174,7 +174,7 @@ int _tmain(int argc, _TCHAR* argv[])
     try {
       if (lProp->useSerializer()) {
         Zorba_SerializerOptions opts = Zorba_SerializerOptions::SerializerOptionsFromStringParams(lProp->getSerializerParameters());
-        query->serialize(*resultFile, &opts);
+        query->execute(*resultFile, &opts);
         // *resultFile << query;
       } else {
         ResultIterator_t result = query->iterator();

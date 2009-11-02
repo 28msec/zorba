@@ -557,7 +557,7 @@ int executeQueryWithTiming(
       if (properties.noSerializer())
         query->executeSAX();
       else
-        query->serialize(outputStream, &lSerOptions);
+        query->execute(outputStream, &lSerOptions);
       
       timing.stopTimer(TimingInfo::EXEC_TIMER, i);
 
@@ -666,7 +666,7 @@ int executeQuery(
         if (properties.noSerializer ())
           query->executeSAX ();
         else
-          query->serialize(outputStream, &lSerOptions);
+          query->execute(outputStream, &lSerOptions);
       }
     }
     catch (zorba::QueryException& qe) 

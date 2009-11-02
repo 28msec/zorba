@@ -115,8 +115,16 @@ public:
     }
   } config_t;
 
+  void
+  setIsUpdating(bool aIsUpdating) { theIsUpdating = aIsUpdating; }
+
+  bool
+  isUpdating() const { return theIsUpdating; }
+
 public:  
   bool                                theIsLoadProlog;
+
+  bool                                theIsUpdating;
   
   static_context_t                    theRootSctx;
   short                               m_cur_sctx;

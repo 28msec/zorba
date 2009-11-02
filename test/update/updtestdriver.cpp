@@ -279,7 +279,7 @@ main(int argc, char** argv)
         lResultFile.remove();
 
       std::ofstream lResFileStream(lResultFile.get_path().c_str());
-      lQueries.back()->serialize(lResFileStream, &lSerOptions);
+      lQueries.back()->execute(lResFileStream, &lSerOptions);
       lResFileStream.flush();
         
       if (lState->hasCompare) 

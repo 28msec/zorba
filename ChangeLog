@@ -27,6 +27,8 @@ version 1.0 (coming)
   * The StatelessExternalFunction is now non-pure by default. There is a
     new subclass called PureStatelessExternalFunction which should be used instead.
     PureStatelessExternalFunctions don't have access to the Static- and DynamicContext.
+  * Renamed XQuery::serialize to XQuery::execute. The new method also implements
+    the functionality of the XQuery::applyUpdates method (which was removed).
 
 version 0.9.8-rev1 (2009.09.22)
   * bug fixes

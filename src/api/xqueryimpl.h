@@ -221,7 +221,10 @@ public:
   setTimeout(long aTimeout /* = -1 */);
 
   void
-  serialize(std::ostream&, const Zorba_SerializerOptions_t* = NULL);
+  execute(std::ostream&, const Zorba_SerializerOptions_t* = NULL);
+
+  void
+  execute();
 
   ResultIterator_t
   iterator();
@@ -284,6 +287,9 @@ public:
 
   XQuery_t
   clone() const;
+
+  bool
+  isUpdating() const;
 
   bool
   saveExecutionPlan(std::ostream &os, Zorba_binary_plan_format_t archive_format);

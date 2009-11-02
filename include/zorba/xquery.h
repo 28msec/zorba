@@ -99,15 +99,27 @@ namespace zorba {
       virtual void
       setTimeout(long aTimeout = -1) = 0;
 
-      /** \brief Serialize the result of the query as text to the given output stream.
+      /** \brief Execute the query and write the result to the given output stream.
+       *         The query only has a result if it's a non-updating query.
        *
        * @param aOutStream the output stream on which the result is written.
        * @param aSerOptions an optional set of serialization options.
+       * @see   isUpdating
        * @throw ZorbaException if an error occurs (e.g. the query is closed or has not been compiled)
        */
       virtual void
-      serialize(std::ostream& aOutStream, 
-                const Zorba_SerializerOptions_t* aSerOptions = NULL) = 0;
+      execute(std::ostream& aOutStream, 
+              const Zorba_SerializerOptions_t* aSerOptions = NULL) = 0;
+
+      /** \brief Execute the (updating) query. The query can only be execute
+       *         with this function if it is an updating query.
+       *
+       * @see   isUpdating
+       * @throw ZorbaException if an error occurs (e.g. the query is closed or has not been compiled
+                or is not updating)
+       */
+      virtual void
+      execute() = 0;
 
       /** \brief Get an iterator for the result of the query.
         *
@@ -245,6 +257,7 @@ namespace zorba {
 
       /** \brief Register a SAX2_ContentHandler for retrieving the serialized 
        *         query result as SAX.
+       *         The query only has a result if it's a non-updating query.
        * 
        * @param aContentHandler the content handler on which SAX callbacks are called.
        */
@@ -316,6 +329,16 @@ namespace zorba {
        */
       virtual XQuery_t
       clone() const = 0;
+
+      /** \brief Check if this query is an updating query.
+       *
+       * @return true if the query is an updating query, false otherwise.
+       * @throw SystemException if the query is not compiled or has been closed.
+       * @see close()
+       * @see compile(...)
+       */
+      virtual bool
+      isUpdating() const = 0;
 
       /** \brief Save the compiled execution plan.
        *

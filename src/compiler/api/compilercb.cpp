@@ -52,6 +52,7 @@ DEF_PRINT_EXPR_TREE(optimization);
 CompilerCB::CompilerCB(std::map<short, static_context_t>& sctx_map)
   :
   theIsLoadProlog(false),
+  theIsUpdating(false),
   theRootSctx(0),
   m_cur_sctx(0),
   theSctxMap(&sctx_map),
@@ -65,6 +66,7 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
   :
   zorba::serialization::SerializeBaseClass(cb),
   theIsLoadProlog(false),
+  theIsUpdating(false),
   theRootSctx(NULL),
   m_cur_sctx(cb.m_cur_sctx),
   theSctxMap(cb.theSctxMap),
@@ -90,6 +92,7 @@ CompilerCB::~CompilerCB()
 void CompilerCB::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theIsLoadProlog;
+  ar & theIsUpdating;
   ar & m_cur_sctx;
   ar & theSctxMap;
   ar & theRootSctx;
