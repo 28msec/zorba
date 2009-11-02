@@ -168,6 +168,10 @@ ELSE(LIBTIDY_FOUND)
   MESSAGE(STATUS "The LibTidy library was not found.")
 ENDIF(LIBTIDY_FOUND)
 
+
+# CClient library part of the UW IMAP toolkit required by the email functionality
+FIND_PACKAGE(CClient)
+
 #
 # Java
 #
