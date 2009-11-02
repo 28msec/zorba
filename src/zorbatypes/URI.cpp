@@ -239,6 +239,7 @@ URI::initialize(const xqpString& uri, bool have_base)
    */
   if ((lColonIdx <= 0) ||
 #ifdef WIN32
+      // avoid interpreting the drive as a scheme
       lIsDrive ||
 #endif
       (lColonIdx > lSlashIdx && lSlashIdx != -1) ||
