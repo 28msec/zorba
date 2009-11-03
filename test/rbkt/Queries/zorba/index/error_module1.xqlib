@@ -1,6 +1,6 @@
 
 (:
-  This is NOT a data module. It is used to mae sure that indexes are declared
+  This is NOT a data module. It is used to make sure that indexes are declared
   in data modules only.
 :)
 
