@@ -1,11 +1,8 @@
 (:~
  : Module Name: File I/O
- : Module Version: 0.1
- : Date: October 23, 2009
- : Copyright:  2006-2009 The FLWOR Foundation. Licensed under the Apache License, Version 2.0.
- : Proprietary XQuery Extensions Used: None
- : XQuery Specification: January 2007
  : Module Overview: This library module provides simple file system I/O operations.
+ : Date: October 23, 2009
+ : Copyright: 2006-2009 The FLWOR Foundation. Licensed under the Apache License, Version 2.0.
  : @author Gabriel Petrovay
  : @version 1.0
  :)

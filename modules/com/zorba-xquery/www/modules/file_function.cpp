@@ -76,7 +76,7 @@ FileFunction::getFilePathString(
   // if we have an absolute file URI
   // e.g.: file://localhost/C:/my%20file.txt
   if(lFileArg.startsWith(FILE_SCHEMA.c_str())) {
-    // make sure the URI contains is a valid one
+    // make sure the URI is a valid one
     aSctxCtx->resolve("", lFileArg);
 
     // test if we have a valid URI
@@ -217,7 +217,8 @@ FileFunction::isValidDriveSegment(
   // the string is already upper case
   if (lDrive < 65 || lDrive > 90) {
     return false;
-  } 
+  }
+  return true;
 }
 #endif
 
