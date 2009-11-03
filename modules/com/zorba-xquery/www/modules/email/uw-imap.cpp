@@ -19,10 +19,10 @@
 #include <cstdio>
 #include <vector>
 
-// #include <signal.h>
+#include <signal.h>
 
 #include "uw-imap.h"
-#include "imap/c-client.h"
+#include "c-client.h"
 
 #include <zorba/store_consts.h>
 #include <zorba/item_factory.h>
@@ -210,7 +210,7 @@ namespace zorba {
     BODY *body = mail_newbody ();
     mail_initbody(body);
 
-#include "imap/linkage.c"
+#include "linkage.c"
 #if MACOS
   {
     size_t *base = (size_t *) 0x000908;
@@ -275,7 +275,7 @@ namespace zorba {
     BODY *body = mail_newbody ();
     mail_initbody(body);
 
-#include "imap/linkage.c"
+#include "linkage.c"
 #if MACOS
     {
       size_t *base = (size_t *) 0x000908;

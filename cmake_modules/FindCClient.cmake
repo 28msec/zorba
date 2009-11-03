@@ -13,8 +13,7 @@ endif (CCLIENT_INCLUDE_DIRS AND CCLIENT_LIBRARIES)
 find_path(
   CCLIENT_INCLUDE
   NAMES linkage.c
-  PATHS ${CCLIENT_INCLUDE_DIRS}
-  PATH_SUFFIXES imap
+  PATHS ${CCLIENT_LIBRARY_DIRS} /usr/include/imap
   DOC "Include directory for the CCLient library linkage")
 mark_as_advanced(CCLIENT_INCLUDE)
 

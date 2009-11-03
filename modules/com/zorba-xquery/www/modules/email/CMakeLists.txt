@@ -13,12 +13,12 @@
 # limitations under the License.
 
 IF (ZORBA_WITH_EMAIL)
-
   # create and install the external file module
   SET(EMAIL_SRCS uw-imap.cpp smtp.cpp email_function.cpp email_module.cpp)
   ADD_LIBRARY(smtp SHARED ${EMAIL_SRCS})
   IF( NOT WIN32 AND NOT CYGWIN)
-    TARGET_LINK_LIBRARIES(smtp zorba_simplestore ${CCLIENT_LIBRARY} ${PAM_LIBRARIES})
+    INCLUDE_DIRECTORIES(${CCLIENT_INCLUDE})
+    TARGET_LINK_LIBRARIES(smtp ${CCLIENT_LIBRARY} ${PAM_LIBRARIES} zorba_simplestore)
   ELSE( NOT WIN32 AND NOT CYGWIN)
     TARGET_LINK_LIBRARIES(smtp zorba_simplestore ${CCLIENT_LIBRARY} secur32.lib crypt32.lib winmm.lib ws2_32.lib)
   ENDIF( NOT WIN32 AND NOT CYGWIN)
