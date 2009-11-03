@@ -44,6 +44,8 @@
 #include <zorba/exception.h>
 #include <zorba/error_handler.h>
 #include <zorba/options.h>
+#include <zorba/singleton_item_sequence.h>
+#include <zorba/serializer.h>
 
   class CompilerHints;
   class ErrorHandler;
