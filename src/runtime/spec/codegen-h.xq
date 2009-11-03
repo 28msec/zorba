@@ -1,8 +1,8 @@
 declare namespace zorba="http://www.zorba-xquery.com";
 
 import module namespace util="http://www.zorba-xquery.com/zorba/util-functions";
-
 import module namespace gen = "http://www.zorba-xquery.com/internal/gen" at "utils.xq";
+import module namespace file = "http://www.zorba-xquery.com/modules/file";
 
 
 declare function local:create-include($doc) as xs:string
@@ -203,35 +203,35 @@ declare function local:iterator-call($iter) as xs:string
    be converted to a .h file
 :)
 declare variable $file as xs:string external;
+declare variable $doc := "";
 
 
 let $pieces as xs:string* := tokenize($file,'/')
-
 let $name := substring($pieces[count($pieces)],1,string-length($pieces[count($pieces)])-4)
-
-let $doc := fn:doc($file)/zorba:iterators
-
 return
-  string-join((gen:add-copyright(),
-               $gen:newline,
-               gen:add-guard-open(string-join(('functions_',$name),'')),
-               $gen:newline,
-               local:create-include($doc),
-               $gen:newline,
-               'namespace zorba{',
-               $gen:newline,
-               local:add-populate($name),
-               $gen:newline,
-               local:process-file($doc),
-               $gen:newline,
-               '} //namespace zorba',
-               $gen:newline,
-               gen:add-guard-close(),
-               '/*',
-               ' * Local variables:',
-               ' * mode: c++',
-               ' * End:',
-               ' */'
-              ),
-              $gen:newline),
-  $gen:newline
+  block {
+    set $doc := file:read-xml($file)/zorba:iterators;
+    string-join((gen:add-copyright(),
+          $gen:newline,
+          gen:add-guard-open(string-join(('functions_',$name),'')),
+          $gen:newline,
+          local:create-include($doc),
+          $gen:newline,
+          'namespace zorba{',
+          $gen:newline,
+          local:add-populate($name),
+          $gen:newline,
+          local:process-file($doc),
+          $gen:newline,
+          '} //namespace zorba',
+          $gen:newline,
+          gen:add-guard-close(),
+          '/*',
+             ' * Local variables:',
+             ' * mode: c++',
+             ' * End:',
+             ' */'
+          ),
+          $gen:newline),
+          $gen:newline;
+    }

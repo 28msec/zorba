@@ -1,7 +1,8 @@
 declare namespace zorba="http://www.zorba-xquery.com";
 
-import module namespace util="http://www.zorba-xquery.com/zorba/util-functions";
+import module namespace util = "http://www.zorba-xquery.com/zorba/util-functions";
 import module namespace gen = "http://www.zorba-xquery.com/internal/gen" at "utils.xq";
+import module namespace file = "http://www.zorba-xquery.com/modules/file";
 
 declare variable $local:CODEGEN_ERROR as xs:QName := xs:QName("zorba:codegen");
 
@@ -19,7 +20,7 @@ declare function local:create-include($doc) as xs:string
 
 declare function local:process-file($doc,
                                     $name as xs:string,
-                                    $mappings as xs:string) as xs:string
+                                    $mappings) as xs:string
 {
   string-join((
     local:process($doc,'function',$name, $mappings),
@@ -32,9 +33,9 @@ declare function local:process-file($doc,
 declare function local:process($doc,
                                $type as xs:string,
                                $name as xs:string,
-                               $mappings as xs:string) as xs:string
+                               $mappings) as xs:string
 {
-  let $mapping := doc($mappings)/zorba:mappings
+  let $mapping := $mappings/zorba:mappings
   return 
     if($type = 'function')
     then (
@@ -187,7 +188,15 @@ declare function local:create-zorba-type($param,$mapping) as xs:string?
     
     let $prefix as xs:string := string($mapping/zorba:types//zorba:type[starts-with($param, text())][1]/@zorbaType)
     
-    return string-join((',',$gen:newline,gen:indent(3),string-join(('GENV_TYPESYSTEM.',$prefix,'_',$suffix),'')),'')
+    return string-join((',',
+                        $gen:newline,
+                        gen:indent(3),
+                        string-join (('GENV_TYPESYSTEM.',
+                                      $prefix,
+                                      '_',
+                                      $suffix),
+                                     '')),
+                        '')
 
   else
     ()
@@ -196,15 +205,20 @@ declare function local:create-zorba-type($param,$mapping) as xs:string?
 
 declare variable $file as xs:string external;
 declare variable $mappings as xs:string external;
+declare variable $mappings_doc := "";
+declare variable $file_doc := "";
 
 let $pieces as xs:string* := tokenize($file,'/')
 let $name := substring($pieces[count($pieces)],1,string-length($pieces[count($pieces)])-4)
-let $doc := fn:doc($file)/zorba:iterators
 return
-  string-join((gen:add-copyright(),
-    local:create-include($doc),
-    'namespace zorba{',
-    local:process-file($doc,$name, $mappings),
-    '}')
-    ,string-join(($gen:newline,$gen:newline),'')
-  )
+  block {
+    set $mappings_doc := file:read-xml($mappings);
+    set $file_doc     := file:read-xml($file);
+    string-join((gen:add-copyright(),
+      local:create-include($file_doc),
+      'namespace zorba{',
+      local:process-file($file_doc, $name, $mappings_doc),
+      '}')
+      ,string-join(($gen:newline, $gen:newline),'')
+    );
+  }

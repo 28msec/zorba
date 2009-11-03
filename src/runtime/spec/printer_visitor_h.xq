@@ -1,6 +1,7 @@
 declare namespace zorba="http://www.zorba-xquery.com";
 
 import module namespace gen = "http://www.zorba-xquery.com/internal/gen" at "utils.xq";
+import module namespace file = "http://www.zorba-xquery.com/modules/file";
 
 declare function local:get-files($files as xs:string) as xs:string
 {
@@ -10,7 +11,7 @@ declare function local:get-files($files as xs:string) as xs:string
 
 declare function local:process-file($file) as xs:string
 {
-  let $doc := fn:doc($file)/zorba:iterators
+  let $doc := file:read-xml($file)/zorba:iterators
   
   return string-join(for $iter in $doc//zorba:iterator return 
   if(fn:not($iter/@generateVisitor) or $iter/@generateVisitor eq "true") then

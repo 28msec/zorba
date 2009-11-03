@@ -23,12 +23,5 @@ SET(SRCS
       httpimpl/http_response_parser.cpp
       httpimpl/curl_stream_buffer.cpp
       httpimpl/inform_data_read.cpp)
-ADD_LIBRARY(httpclientimpl SHARED ${SRCS})
-TARGET_LINK_LIBRARIES(httpclientimpl zorba_simplestore)
-SET_TARGET_PROPERTIES(httpclientimpl PROPERTIES VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})  
-SET_TARGET_PROPERTIES(httpclientimpl PROPERTIES CLEAN_DIRECT_OUTPUT 0)
 
-# install to include/modules/com/zorba-xquery/www/modules
-# the include/modules directory needs to belong to the set of Zorba Module Paths
-FILE(RELATIVE_PATH RELATIVE_MODULE_PATH "${CMAKE_SOURCE_DIR}/modules" "${CMAKE_CURRENT_SOURCE_DIR}")
-INSTALL(TARGETS httpclientimpl DESTINATION "include/${RELATIVE_MODULE_PATH}")
+GENERATE_MODULE_LIBRARY(httpclientimpl "${SRCS}" "")

@@ -168,17 +168,9 @@ ELSE(LIBTIDY_FOUND)
   MESSAGE(STATUS "The LibTidy library was not found.")
 ENDIF(LIBTIDY_FOUND)
 
-
-# CClient library part of the UW IMAP toolkit required by the email functionality
-FIND_PACKAGE(CClient)
-IF( NOT WIN32 AND NOT CYGWIN)
-  FIND_PACKAGE(PAM)
-ENDIF( NOT WIN32 AND NOT CYGWIN)
-
 #
 # Java
 #
-
 FIND_PACKAGE(Java)
 INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/FindJNI.cmake)
 
@@ -377,6 +369,10 @@ ELSE (ZORBA_STORE_DIRS MATCHES "src/store/naive")
   SET(BUILDING_SIMPLESTORE "OFF")
 ENDIF (ZORBA_STORE_DIRS MATCHES "src/store/naive")
 
+# add this here because we need the file target
+# later for the generation of runtime and functions
+ADD_SUBDIRECTORY(modules)
+
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/external)
 ADD_SUBDIRECTORY(external)
 
@@ -398,7 +394,6 @@ IF (BUILDING_SIMPLESTORE)
   ADD_SUBDIRECTORY(bin)
 ENDIF (BUILDING_SIMPLESTORE)
 
-ADD_SUBDIRECTORY(modules)
 ADD_SUBDIRECTORY(doc)
 ADD_SUBDIRECTORY(scripts)
 

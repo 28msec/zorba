@@ -12,22 +12,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# CClient library part of the UW IMAP toolkit required by the email functionality
+FIND_PACKAGE(CClient)
+IF (NOT WIN32 AND NOT CYGWIN)
+  FIND_PACKAGE(PAM)
+ENDIF (NOT WIN32 AND NOT CYGWIN)
+
+IF ( CCLIENT_FOUND )
+  SET (ZORBA_WITH_EMAIL ON CACHE BOOL "Compile Zorba with email support" FORCE)
+ELSE ( CCLIENT_FOUND )
+  SET (ZORBA_WITH_EMAIL OFF CACHE BOOL "No email support" FORCE )
+ENDIF ( CCLIENT_FOUND )
+
+MESSAGE ( STATUS "ZORBA_WITH_EMAIL: " ${ZORBA_WITH_EMAIL} )
+
 IF (ZORBA_WITH_EMAIL)
-  # create and install the external file module
-  SET(EMAIL_SRCS uw-imap.cpp smtp.cpp email_function.cpp email_module.cpp)
-  ADD_LIBRARY(smtp SHARED ${EMAIL_SRCS})
+  SET(SMTP_SRCS uw-imap.cpp smtp.cpp email_function.cpp email_module.cpp)
+  SET(SMTP_LINK_LIBRARIES ${CCLIENT_LIBRARY})
+
   IF( NOT WIN32 AND NOT CYGWIN)
     INCLUDE_DIRECTORIES(${CCLIENT_INCLUDE})
-    TARGET_LINK_LIBRARIES(smtp ${CCLIENT_LIBRARY} ${PAM_LIBRARIES} zorba_simplestore)
+    LIST(APPEND SMTP_LINK_LIBRARIES ${PAM_LIBRARIES})
   ELSE( NOT WIN32 AND NOT CYGWIN)
-    TARGET_LINK_LIBRARIES(smtp zorba_simplestore ${CCLIENT_LIBRARY} secur32.lib crypt32.lib winmm.lib ws2_32.lib)
+    LIST(APPEND SMTP_LINK_LIBRARIES secur32.lib crypt32.lib winmm.lib ws2_32.lib)
   ENDIF( NOT WIN32 AND NOT CYGWIN)
-  SET_TARGET_PROPERTIES(smtp PROPERTIES VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
-  SET_TARGET_PROPERTIES(smtp PROPERTIES CLEAN_DIRECT_OUTPUT 0)
 
-  # install to include/zorba/modules/com/zorba-xquery/www/modules
-  # the include/zorba/modules directory needs to belong to the set of Zorba Module Paths
-  FILE(RELATIVE_PATH RELATIVE_MODULE_PATH "${CMAKE_SOURCE_DIR}/modules" "${CMAKE_CURRENT_SOURCE_DIR}")
-  INSTALL(TARGETS smtp DESTINATION "include/zorba/modules/${RELATIVE_MODULE_PATH}")
+  GENERATE_MODULE_LIBRARY(smtp "${SMTP_SRCS}" "${SMTP_LINK_LIBRARIES}")
 
 ENDIF (ZORBA_WITH_EMAIL)

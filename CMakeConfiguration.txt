@@ -131,9 +131,7 @@ ENDIF (CURL_FOUND )
 #  MESSAGE(STATUS "Compile Zorba without XSL-FO support")
 #ENDIF ( JNI_FOUND )
 
-
 MESSAGE ( STATUS "ZORBA_WITH_REST: " ${ZORBA_WITH_REST} )
-
 
 IF ( LIBTIDY_FOUND )
   SET(ZORBA_WITH_TIDY ON CACHE BOOL "Compile Zorba with TIDY support" FORCE)
@@ -143,15 +141,6 @@ ELSE ( LIBTIDY_FOUND )
   MESSAGE ( STATUS "Setting TIDY off" )
 ENDIF ( LIBTIDY_FOUND )
 MESSAGE ( STATUS "ZORBA_WITH_TIDY: " ${ZORBA_WITH_TIDY} )
-
-IF ( CCLIENT_FOUND )
-  SET(ZORBA_WITH_EMAIL ON CACHE BOOL "Compile Zorba with email support" FORCE)
-ELSE ( CCLIENT_FOUND )
-  MESSAGE ( STATUS "Can't build Zorba with email support because C-Client library part of the UW IMAP toolkit was not found.")
-  SET(ZORBA_WITH_EMAIL OFF CACHE BOOL "No email support" FORCE )
-  MESSAGE ( STATUS "Setting email support off" )
-ENDIF ( CCLIENT_FOUND )
-MESSAGE ( STATUS "ZORBA_WITH_EMAIL: " ${ZORBA_WITH_EMAIL} )
 
 IF ( ${ZORBA_WITH_CODE_PROFILE} )
 SET(ZORBA_BUILD_STATIC_LIBRARY ON CACHE BOOL "build a static library, e.g. when creating a profile")
