@@ -155,11 +155,6 @@ DECL(sctx, ddl_create_collection,
 DECL(sctx, ddl_create_collection,
      (createQName(ZORBA_DDL_FN_NS, "fn-zorba-ddl", "create-collection"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
-      GENV_TYPESYSTEM.NONE_TYPE));
-
-DECL(sctx, ddl_create_collection,
-     (createQName(ZORBA_DDL_FN_NS, "fn-zorba-ddl", "create-collection"),
-      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
       GENV_TYPESYSTEM.NONE_TYPE));
 
