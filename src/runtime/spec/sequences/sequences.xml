@@ -22,7 +22,7 @@
     <zorba:include form="Quoted">functions/single_seq_func.h</zorba:include>
   </zorba:h>
   <zorba:cpp>
-    <zorba:include form="Quoted">functions/sequences.h</zorba:include>
+    <zorba:include form="Quoted">functions/func_sequences.h</zorba:include>
     <zorba:include form="Quoted">runtime/sequences/sequences.h</zorba:include>
     <zorba:include form="Quoted">system/globalenv.h</zorba:include>
     <zorba:include form="Quoted">types/typeops.h</zorba:include>

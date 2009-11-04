@@ -16,7 +16,7 @@
     </zorba:h>
     <zorba:cpp>
         <zorba:include form="Quoted">runtime/context/context.h</zorba:include>
-        <zorba:include form="Quoted">functions/context.h</zorba:include>
+        <zorba:include form="Quoted">functions/func_context.h</zorba:include>
     </zorba:cpp>
 </zorba:codegen>
 

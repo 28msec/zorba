@@ -24,7 +24,7 @@
     <zorba:cpp>
         <zorba:include form="Quoted">runtime/strings/StringsImpl.h</zorba:include>
         <zorba:include form="Quoted">runtime/strings/strings.h</zorba:include>
-        <zorba:include form="Quoted">functions/strings.h</zorba:include>
+        <zorba:include form="Quoted">functions/func_strings.h</zorba:include>
     </zorba:cpp>
 </zorba:codegen>
 <!--

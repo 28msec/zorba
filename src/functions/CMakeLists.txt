@@ -34,12 +34,12 @@ FOREACH(SPEC_FILE ${SPEC_FILES})
 
   CODEGEN_GENERATOR(${CODEGEN_SOURCE_GENERATOR}
                     ${CODEGEN_HEADER_GENERATOR} "${CMAKE_SOURCE_DIR}/src/runtime/spec/${SPEC_FILE}"
-                    "src/functions/${SPEC_PREFIX}"
+                    "src/functions/func_${SPEC_PREFIX}"
                     "file:=${CMAKE_SOURCE_DIR}/src/runtime/spec/${SPEC_FILE}"
                     "mappings:=${CMAKE_SOURCE_DIR}/src/runtime/spec/mappings.xml"
                       ${ZORBA_WORKS})
   LIST(APPEND FUNCTIONS_SRCS
-              "${SPEC_PREFIX}.cpp"
+              "func_${SPEC_PREFIX}.cpp"
       )
 
 ENDFOREACH(SPEC_FILE)

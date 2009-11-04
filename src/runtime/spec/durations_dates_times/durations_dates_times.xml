@@ -19,7 +19,7 @@
     <zorba:include form="Quoted">functions/function_impl.h</zorba:include>
   </zorba:h>
   <zorba:cpp>
-    <zorba:include form="Quoted">functions/durations_dates_times.h</zorba:include>
+    <zorba:include form="Quoted">functions/func_durations_dates_times.h</zorba:include>
     <zorba:include form="Quoted">runtime/durations_dates_times/durations_dates_times.h</zorba:include>
   </zorba:cpp>
 </zorba:codegen>
