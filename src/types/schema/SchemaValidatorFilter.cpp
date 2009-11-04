@@ -449,6 +449,9 @@ void SchemaValidatorFilter::processAttrs(XMLElementDecl *elemDecl)
     unsigned int uriId = attr->getURIId();
     const XMLCh *uri = getURIText(uriId);
         
+    //cout << "   svf: processAttrs: " << StrX(localname) << "@" << StrX(uri) <<
+    //  " ='" << StrX(value) << "'" << endl;
+
     bool attrValid = true;
     DatatypeValidator *attrValidator = 0;
     
@@ -477,8 +480,8 @@ void SchemaValidatorFilter::processAttrs(XMLElementDecl *elemDecl)
     {
       if (attWildCard) 
       {
-        //if schema, see if we should lax or skip the validation of this attribute
-        if (anyAttributeValidation(attWildCard, uriId, skipThisOne, laxThisOne)) 
+        //if schema, see if we should lax or skip the validation of this attr
+        if (anyAttributeValidation(attWildCard, uriId, skipThisOne, laxThisOne))
         {
           if(!skipThisOne)
           {
@@ -534,14 +537,15 @@ void SchemaValidatorFilter::processAttrs(XMLElementDecl *elemDecl)
     if(!attDef)
       attrValid = false;
     
-    if(fValidate && !attDef && !skipThisOne && !laxThisOne) 
-    {
-      //
+    // Only if currentElement has a type error out, 
+    // othewise attrs not defined are fine
+    if(fValidate && !attDef && !skipThisOne && !laxThisOne && 
+       (currType || currDV) ) 
+    {   
       //  Its not valid for this element, so issue an error if we are
       //  validating.
-      //
-      
-      //cout << "  sv  att not valid " << XMLString::transcode(localname) << endl;
+
+      //cout << "  sv  att not valid: " << XMLString::transcode(localname) << endl;
  
       XMLBufBid bbMsg(&fBufMgr);
       XMLBuffer& bufMsg = bbMsg.getBuffer();
@@ -1203,7 +1207,8 @@ bool SchemaValidatorFilter::laxElementValidation(
       if (type == ContentSpecNode::Leaf)
       {
         if (((uri == elementURI)
-             && XMLString::equals(fElemMap->getLocalPart(), element->getLocalPart()))
+             && XMLString::equals(fElemMap->getLocalPart(), 
+                                  element->getLocalPart()))
             || comparator.isEquivalentTo(element, fElemMap))
         {
           nextState = cm->getNextState(currState, i);
@@ -1506,15 +1511,15 @@ void SchemaValidatorFilter::error(
 #endif // _XERCES_VERSION >= 30000
     )
 {
-  // Skip validation errors if validation isn't strict
+  // Skip some validation errors if validation isn't strict
   if(!theStrictValidation &&
      errDomain == XMLUni::fgValidityDomain &&
      errType != XMLErrorReporter::ErrType_Fatal &&
-     errCode != XMLValid::ElementNotValidForContent &&
-     errCode != XMLValid::NotEnoughElemsForCM &&
-     errCode != XMLValid::EmptyNotValidForContent &&
-     //errCode != XMLValid::AttNotDefinedForElement &&
-     errCode != XMLValid::RequiredAttrNotProvided)
+     !( errCode == XMLValid::ElementNotValidForContent ||
+        errCode == XMLValid::NotEnoughElemsForCM ||
+        errCode == XMLValid::EmptyNotValidForContent ||
+        errCode == XMLValid::AttNotDefinedForElement ||
+        errCode == XMLValid::RequiredAttrNotProvided) )
     return;
   
   theErrorOccurred = true;
