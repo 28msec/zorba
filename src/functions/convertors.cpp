@@ -21,12 +21,15 @@
 // *                                        *
 // ******************************************
 
+
 #include "functions/convertors.h"
 #include "runtime/convertors/convertors.h"
 #include "system/globalenv.h"
 #include "types/typeops.h"
 
+
 namespace zorba{
+
 
 
 PlanIter_t zorba_json_parse::codegen(
@@ -102,5 +105,6 @@ void populate_context_convertors(static_context* sctx) {
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
       GENV_TYPESYSTEM.STRING_TYPE_STAR));
 }
+
 
 }

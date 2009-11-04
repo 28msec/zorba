@@ -21,10 +21,13 @@
 // *                                        *
 // ******************************************
 
+
 #include "functions/durations_dates_times.h"
 #include "runtime/durations_dates_times/durations_dates_times.h"
 
+
 namespace zorba{
+
 
 
 PlanIter_t fn_years_from_duration::codegen(
@@ -406,5 +409,6 @@ void populate_context_durations_dates_times(static_context* sctx) {
       GENV_TYPESYSTEM.TIME_TYPE_QUESTION,
       GENV_TYPESYSTEM.DT_DURATION_TYPE_QUESTION));
 }
+
 
 }

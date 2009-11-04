@@ -21,12 +21,15 @@
 // *                                        *
 // ******************************************
 
+
 #include "functions/sequences.h"
 #include "runtime/sequences/sequences.h"
 #include "system/globalenv.h"
 #include "types/typeops.h"
 
+
 namespace zorba{
+
 
 
 PlanIter_t op_concatenate::codegen(
@@ -469,5 +472,6 @@ void populate_context_sequences(static_context* sctx) {
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.DOCUMENT_UNTYPED_TYPE_ONE));
 }
+
 
 }

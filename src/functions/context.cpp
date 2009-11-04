@@ -21,10 +21,13 @@
 // *                                        *
 // ******************************************
 
+
 #include "runtime/context/context.h"
 #include "functions/context.h"
 
+
 namespace zorba{
+
 
 
 PlanIter_t fn_current_dateTime::codegen(
@@ -113,5 +116,6 @@ void populate_context_context(static_context* sctx) {
       (createQName("http://www.w3.org/2005/xpath-functions","fn","default-collation"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 }
+
 
 }

@@ -21,11 +21,14 @@
 // *                                        *
 // ******************************************
 
+
 #include "runtime/strings/StringsImpl.h"
 #include "runtime/strings/strings.h"
 #include "functions/strings.h"
 
+
 namespace zorba{
+
 
 
 PlanIter_t fn_codepoints_to_string::codegen(
@@ -510,5 +513,6 @@ void populate_context_strings(static_context* sctx) {
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 }
+
 
 }

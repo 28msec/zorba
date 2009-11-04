@@ -21,10 +21,13 @@
 // *                                        *
 // ******************************************
 
+
 #include "functions/fnput.h"
 #include "runtime/fnput/fnput.h"
 
+
 namespace zorba{
+
 
 
 PlanIter_t fn_put::codegen(
@@ -49,5 +52,6 @@ void populate_context_fnput(static_context* sctx) {
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.EMPTY_TYPE));
 }
+
 
 }

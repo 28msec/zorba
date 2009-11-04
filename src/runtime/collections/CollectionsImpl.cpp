@@ -612,7 +612,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
     while (consumeNext(node, theChildren[1].getp(), aPlanState))
     {
       checkNodeType(node, theSctx, lDeclColl, loc);
-      copyNode = node->copy(NULL, NULL, lCopyMode);
+      copyNode = node->copy(NULL, 0, lCopyMode);
       pul->addInsertIntoCollection(lName,
                                    copyNode);
     }
@@ -763,7 +763,7 @@ ZorbaInsertNodesFirstIterator::nextImpl(store::Item_t& result, PlanState& planSt
   while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState))
   {
     checkNodeType(node, theSctx, lDeclColl, loc);
-    copyNode = node->copy(NULL, NULL, lCopyMode);
+    copyNode = node->copy(NULL, 0, lCopyMode);
     nodes.push_back(copyNode);
   }
 
@@ -847,7 +847,7 @@ ZorbaInsertNodesLastIterator::nextImpl(store::Item_t& result, PlanState& planSta
   while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState))
   {
     checkNodeType(node, theSctx, lDeclColl, loc);
-    copyNode = node->copy(NULL, NULL, lCopyMode);
+    copyNode = node->copy(NULL, 0, lCopyMode);
     nodes.push_back(copyNode);
   }
 
@@ -967,7 +967,7 @@ ZorbaInsertNodesBeforeIterator::nextImpl(store::Item_t& result, PlanState& planS
   while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState))
   {
     checkNodeType(node, theSctx, lDeclColl, loc);
-    copyNode = node->copy(NULL, NULL, lCopyMode);
+    copyNode = node->copy(NULL, 0, lCopyMode);
     nodes.push_back(copyNode);
   }
 
@@ -1086,7 +1086,7 @@ ZorbaInsertNodesAfterIterator::nextImpl(store::Item_t& result, PlanState& planSt
   while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState))
   {
     checkNodeType(node, theSctx, lDeclColl, loc);
-    copyNode = node->copy(NULL, NULL, lCopyMode);
+    copyNode = node->copy(NULL, 0, lCopyMode);
     nodes.push_back(copyNode);
   }
 
@@ -1205,7 +1205,7 @@ ZorbaInsertNodesAtIterator::nextImpl(store::Item_t& result, PlanState& planState
   while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState))
   {
     checkNodeType(node, theSctx, lDeclColl, loc);
-    copyNode = node->copy(NULL, NULL, lCopyMode);
+    copyNode = node->copy(NULL, 0, lCopyMode);
     nodes.push_back(copyNode);
   }
 

@@ -20,18 +20,14 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
-
 #ifndef ZORBA_RUNTIME_VISITORS_PLAN_ITER_VISITOR_H
 #define ZORBA_RUNTIME_VISITORS_PLAN_ITER_VISITOR_H
-
 #include <vector>
 #include "common/common.h"
 #include "zorbatypes/zorbatypes_decl.h"
 #include "types/typeconstants.h"
 
-
 namespace zorba{
-
     class NodeNameIterator;
     class NilledIterator;
     class FnStringIterator;
@@ -121,7 +117,6 @@ namespace zorba{
     class FnReplaceIterator;
 
 #include "runtime/visitors/planiter_visitor_impl_include.h"
-
 /**
  * Visitor to visit a PlanIterator tree.
  */
@@ -130,7 +125,6 @@ public:
   virtual ~PlanIterVisitor() {}
 
 #include "runtime/visitors/planiter_visitor_impl_code.h"
-
     virtual void beginVisit ( const NodeNameIterator& ) = 0;
     virtual void endVisit   ( const NodeNameIterator& ) = 0;
 
@@ -392,9 +386,7 @@ public:
     virtual void beginVisit ( const FnReplaceIterator& ) = 0;
     virtual void endVisit   ( const FnReplaceIterator& ) = 0;
 
-
   }; //class PlanIterVisitor
 } //namespace zorba
-
 
 #endif

@@ -70,4 +70,5 @@ string-join((gen:add-copyright(),
     $gen:newline,
   '} //namespace zorba',$gen:newline),''),
   gen:add-guard-close()),
-  string-join(($gen:newline,$gen:newline),''))
+  string-join(($gen:newline),'
+'))

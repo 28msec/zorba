@@ -21,10 +21,13 @@
 // *                                        *
 // ******************************************
 
+
 #include "runtime/booleans/booleans.h"
 #include "functions/booleans.h"
 
+
 namespace zorba{
+
 
 
 PlanIter_t op_is_same_node::codegen(
@@ -85,5 +88,6 @@ void populate_context_booleans(static_context* sctx) {
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
 }
+
 
 }

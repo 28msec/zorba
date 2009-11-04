@@ -1344,42 +1344,11 @@ bool FnSQRTIterator::nextImpl (store::Item_t& result, PlanState& planState) cons
   store::Item_t item;
   xqtref_t type;
     
-  const TypeManager& tm = *theSctx->get_typemanager();
-  const RootTypeManager& rtm = GENV_TYPESYSTEM;
-
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
 
   if (consumeNext(result, theChild.getp(), planState ))
   {
-    //assert(result->isAtomic());
-
-    ////get the value and the type of the item
-    //type = tm.create_value_type (result);
-
-    ////Parameters of type xs:untypedAtomic are always promoted to xs:double
-    //if ( TypeOps::is_subtype(*type, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
-    //{
-    //  GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm);
-    //  type = tm.create_value_type(result);
-    //}
-
-    //if ( TypeOps::is_subtype ( *type, *rtm.DOUBLE_TYPE_ONE ) )
-    //  GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().sqrt());
-    // 
-    //else if ( TypeOps::is_subtype ( *type, *rtm.FLOAT_TYPE_ONE ) )
-    //  GENV_ITEMFACTORY->createFloat(result, result->getFloatValue().sqrt());
-
-    //else if(TypeOps::is_subtype ( *type, *rtm.INTEGER_TYPE_ONE ))
-    //  GENV_ITEMFACTORY->createInteger(result, result->getIntegerValue().sqrt());
-
-    //else if (TypeOps::is_subtype ( *type, *rtm.DECIMAL_TYPE_ONE ))
-    //  GENV_ITEMFACTORY->createDecimal(result, result->getDecimalValue().sqrt());
-
-    //else
-    //  ZORBA_ERROR_LOC_DESC( XPTY0004,
-    //                        loc, "Wrong operand type for fn:sqrt.");
-
     GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().sqrt());
 
     if ( consumeNext(item, theChild.getp(), planState ))

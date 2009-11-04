@@ -21,10 +21,13 @@
 // *                                        *
 // ******************************************
 
+
 #include "runtime/accessors/accessors.h"
 #include "functions/accessors.h"
 
+
 namespace zorba{
+
 
 
 PlanIter_t fn_node_name::codegen(
@@ -118,5 +121,6 @@ void populate_context_accessors(static_context* sctx) {
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION));
 }
+
 
 }
