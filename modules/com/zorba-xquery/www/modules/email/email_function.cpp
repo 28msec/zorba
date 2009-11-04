@@ -20,10 +20,10 @@
 
 #include "email_module.h"
 
-namespace zorba {
-
-  namespace smtpmodule {
-
+namespace zorba
+{
+  namespace email
+  {
     EmailFunction::EmailFunction(const EmailModule* aModule)
     : theModule(aModule)
     {
@@ -46,5 +46,5 @@ namespace zorba {
       throw zorba::ExternalFunctionData::createZorbaException(aErrorType,
           aErrorMessage.c_str(), __FILE__, __LINE__);
     }
-  } // namespace smtpmodule
+  } // namespace email
 } // namespace zorba

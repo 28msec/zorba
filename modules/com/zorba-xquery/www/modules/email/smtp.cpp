@@ -25,95 +25,16 @@
 
 namespace zorba
 {
-  namespace smtpmodule
+  namespace email
   {
-  //MailFunction
-  MailFunction::MailFunction(const EmailModule* aModule)
+  //SendFunction
+  SendFunction::SendFunction(const EmailModule* aModule)
   : EmailFunction(aModule)
   {
   }
 
   ItemSequence_t
-  MailFunction::evaluate(
-    const StatelessExternalFunction::Arguments_t& args,
-    const StaticContext* aSctxCtx,
-    const DynamicContext* aDynCtx) const
-  {
-    zorba::Item   itemTo, itemCc, itemBcc, itemSubj, itemMsg;
-    bool          res = false, lSMTPServerFound = false, hasRecipient = false;
-    zorba::String SMTPServer, SMTPUser, SMTPPwd, diagnostics;
-
-    lSMTPServerFound = aSctxCtx->getOption(theModule->getItemFactory()->
-        createQName("http://www.zorba-xquery.org/options","SMTPServer"),SMTPServer);
-
-    aSctxCtx->getOption(theModule->getItemFactory()->
-        createQName("http://www.zorba-xquery.org/options","SMTPUser"),SMTPUser);
-
-    aSctxCtx->getOption(theModule->getItemFactory()->
-        createQName("http://www.zorba-xquery.org/options","SMTPPwd"),SMTPPwd);
-
-
-    if( !lSMTPServerFound ||
-         (lSMTPServerFound && SMTPServer.empty()) )
-    {
-      //TODO implement excenption handling via external_function_data
-      std::stringstream lErrorMessage;
-      lErrorMessage << "The SMTP server was not set in the static context. Please set SMTP username and password also if needed.";
-      throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);
-    }
-    else
-    {
-      //TODO implement check for empty or sequence params
-      args[0]->next(itemTo);
-      args[1]->next(itemCc);
-      args[2]->next(itemBcc);
-      args[3]->next(itemSubj);
-      args[4]->next(itemMsg);
-
-      hasRecipient = (!itemTo.getStringValue().empty() ||
-            !itemCc.getStringValue().empty() ||
-            !itemBcc.getStringValue().empty());
-
-      if( !hasRecipient )
-      {
-        //TODO implement excenption handling via external_function_data
-        std::stringstream lErrorMessage;
-        lErrorMessage << "Recipient was not set; please set either one of To, Cc or Bcc.";
-        throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);
-      }
-
-      res = mail((!itemTo.getStringValue().empty()?itemTo.getStringValue().c_str():NULL),
-                 (!itemCc.getStringValue().empty()?itemCc.getStringValue().c_str():NULL),
-                 (!itemBcc.getStringValue().empty()?itemBcc.getStringValue().c_str():NULL),
-                 itemSubj.getStringValue().c_str(),
-                 itemMsg.getStringValue().c_str(),
-                 SMTPServer.c_str(),
-                 SMTPUser.c_str(),
-                 SMTPPwd.c_str(),
-                 diagnostics);
-
-      if( !res )
-      {
-        //TODO implement excenption handling via external_function_data
-        std::stringstream lErrorMessage;
-        lErrorMessage << "Mail could not be sent. Here is the log:" << std::endl;
-        lErrorMessage << diagnostics.c_str();
-        throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);
-      }
-    }
-
-    return ItemSequence_t(new SingletonItemSequence(
-                          theModule->getItemFactory()->createBoolean(res)));
-  }
-
-  //MultipartFunction
-  MultipartFunction::MultipartFunction(const EmailModule* aModule)
-  : EmailFunction(aModule)
-  {
-  }
-
-  ItemSequence_t
-  MultipartFunction::evaluate(
+  SendFunction::evaluate(
     const StatelessExternalFunction::Arguments_t& args,
     const StaticContext* aSctxCtx,
     const DynamicContext* aDynCtx) const
@@ -123,13 +44,13 @@ namespace zorba
     zorba::String SMTPServer, SMTPUser, SMTPPwd, diagnostics;
 
     lSMTPServerFound = aSctxCtx->getOption(theModule->getItemFactory()->
-        createQName("http://www.zorba-xquery.org/options","SMTPServer"),SMTPServer);
+        createQName("http://www.zorba-xquery.com/modules/email/smtp","SMTPServer"),SMTPServer);
 
     aSctxCtx->getOption(theModule->getItemFactory()->
-        createQName("http://www.zorba-xquery.org/options","SMTPUser"),SMTPUser);
+        createQName("http://www.zorba-xquery.com/modules/email/smtp","SMTPUser"),SMTPUser);
 
     aSctxCtx->getOption(theModule->getItemFactory()->
-        createQName("http://www.zorba-xquery.org/options","SMTPPwd"),SMTPPwd);
+        createQName("http://www.zorba-xquery.com/modules/email/smtp","SMTPPwd"),SMTPPwd);
 
 
     if( !lSMTPServerFound ||
@@ -165,7 +86,7 @@ namespace zorba
                           theModule->getItemFactory()->createBoolean(res)));
   }
 
-  } // namespace smtpmodule
+  } // namespace email
 } // namespace zorba
 
 #ifdef WIN32
@@ -175,5 +96,5 @@ namespace zorba
 #endif
 
   extern "C" DLL_EXPORT zorba::ExternalModule* createModule() {
-    return new zorba::smtpmodule::EmailModule();
+    return new zorba::email::EmailModule();
   }

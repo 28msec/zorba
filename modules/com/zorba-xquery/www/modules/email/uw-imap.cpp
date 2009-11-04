@@ -35,8 +35,9 @@
 
 char *SMTPUsername, *SMTPPassword;
 
-namespace zorba {
-  namespace smtpmodule
+namespace zorba
+{
+  namespace email
   {
 
   /*private methods*/
@@ -127,12 +128,15 @@ namespace zorba {
     strcpy ((char *)envelope->date,line);
 
     childrenIt = itemDoc.getChildren();
+    childrenIt->open();
     if(childrenIt->next(itemMessage))
       if (itemMessage.getNodeKind() == store::StoreConsts::elementNode)
         if(!get_nodename(itemMessage).lowercase().equals("message"))
           return false;
+    childrenIt->close();
 
     childrenIt = itemMessage.getChildren();
+    childrenIt->open();
     while (childrenIt->next(child))
     {
       if (child.getNodeKind() == store::StoreConsts::elementNode)
@@ -185,6 +189,7 @@ namespace zorba {
         }
       }
     }
+    childrenIt->close();
 
     if(!parseOk)
       result << "The message structure is not correct: neither 'content' nor 'multipart' nodes were found.\n";
@@ -361,6 +366,7 @@ namespace zorba {
     bool        res = false;
 
     childrenIt = element.getChildren();
+    childrenIt->open();
     while (childrenIt->next(child))
     {
       if (child.getNodeKind() == store::StoreConsts::textNode)
@@ -370,6 +376,7 @@ namespace zorba {
 
       res = true;
     }
+    childrenIt->close();
     return res;
   }
 
@@ -420,6 +427,7 @@ namespace zorba {
     PART*         partPrev = NIL;
 
     childrenIt = itemMultipart.getChildren();
+    childrenIt->open();
     while (childrenIt->next(child)) {
       if (child.getNodeKind() == store::StoreConsts::elementNode) {
         if(get_nodename(child).lowercase().equals("contenttype")) {
@@ -450,6 +458,7 @@ namespace zorba {
         }
       }
     }
+    childrenIt->close();
 
     if(partRoot)
       body->nested.part = partRoot;
@@ -466,6 +475,7 @@ namespace zorba {
     PARAMETER* pPrev = NIL;
 
     childrenIt = itemContent.getChildren();
+    childrenIt->open();
     while (childrenIt->next(child)) {
       if (child.getNodeKind() == store::StoreConsts::elementNode) {
         name = get_nodename(child);
@@ -512,11 +522,12 @@ namespace zorba {
         }
       }
     }
+    childrenIt->close();
 
     if(root && root->value)
       body->parameter = root;
   }
-  }//namespace smtpmodule
+  }//namespace email
 } //namespace Zorba
 
 /* Co-routines from MAIL library */

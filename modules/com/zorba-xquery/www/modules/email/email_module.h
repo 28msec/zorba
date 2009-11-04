@@ -24,7 +24,7 @@
 
 namespace zorba
 {
-  namespace smtpmodule
+  namespace email
   {
     class EmailModule : public ExternalModule
     {
@@ -65,7 +65,7 @@ namespace zorba
         virtual void
         destroy();
     };
-  } /* namespace smtpmodule */
+  } /* namespace email */
 } /* namespace zorba */
 
 #endif // ZORBA_EMAIL_EMAILMODULE_H

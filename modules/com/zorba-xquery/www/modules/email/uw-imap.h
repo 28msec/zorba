@@ -19,9 +19,9 @@
 
 #include "zorba/api_shared_types.h"
 
-namespace zorba {
-
-  namespace smtpmodule
+namespace zorba
+{
+  namespace email
   {
   /* smtp_send -- send SMTP email */
   bool mail(const char* to, const char* cc, const char* bcc,
@@ -33,7 +33,7 @@ namespace zorba {
             const char* SMTPServer, const char* SMTPUser, const char* SMTPPwd,
             zorba::String& diagnostics);
 
-  }//namespace smtpmodule
+  }//namespace email
 }//namespace zorba
 
 #endif // ZORBA_MODULES_UW_IMAP_H

@@ -21,41 +21,22 @@
 
 namespace zorba
 {
-
-  class ItemFactory;
-
-  namespace smtpmodule
+  namespace email
   {
-
-    class MailFunction : public EmailFunction
+    class SendFunction : public EmailFunction
     {
-      public:
-        MailFunction(const EmailModule* aModule);
+    public:
+      SendFunction(const EmailModule* aModule);
 
-        virtual String
-        getLocalName() const { return "mail"; }
+      virtual String
+      getLocalName() const { return "send"; }
 
-        virtual ItemSequence_t
-        evaluate( const StatelessExternalFunction::Arguments_t& args,
-                  const StaticContext* aSctxCtx,
-                  const DynamicContext* aDynCtx) const;
+      virtual ItemSequence_t
+      evaluate( const StatelessExternalFunction::Arguments_t& args,
+                const StaticContext* aSctxCtx,
+                const DynamicContext* aDynCtx) const;
     };
-
-    class MultipartFunction : public EmailFunction
-    {
-      public:
-        MultipartFunction(const EmailModule* aModule);
-
-        virtual String
-        getLocalName() const { return "multipart"; }
-
-        virtual ItemSequence_t
-        evaluate( const StatelessExternalFunction::Arguments_t& args,
-                  const StaticContext* aSctxCtx,
-                  const DynamicContext* aDynCtx) const;
-    };
-
-  } // namespace smtpmodule
+  } // namespace email
 } // namespace zorba
 
 #endif // ZORBA_EMAIL_SMTP_H

@@ -21,7 +21,7 @@
 
 namespace zorba {
 
-  namespace smtpmodule {
+  namespace email {
 
     ItemFactory* EmailModule::theFactory = 0;
 
@@ -42,12 +42,9 @@ namespace zorba {
       StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
       if (!lFunc)
       {
-        if (aLocalname.equals("mail"))
+        if (aLocalname.equals("send"))
         {
-          lFunc = new MailFunction(this);
-        } else if (aLocalname.equals("multipart"))
-        {
-          lFunc = new MultipartFunction(this);
+          lFunc = new SendFunction(this);
         }
       }
       return lFunc;
@@ -63,5 +60,5 @@ namespace zorba {
       delete this;
     }
 
-  } // namespace smtpmodule
+  } // namespace email
 } // namespace zorba

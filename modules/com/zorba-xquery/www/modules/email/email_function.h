@@ -19,10 +19,10 @@
 
 #include <zorba/external_function.h>
 
-namespace zorba {
-
-  namespace smtpmodule {
-
+namespace zorba
+{
+  namespace email
+  {
     class EmailModule;
 
     class EmailFunction : public NonePureStatelessExternalFunction
@@ -43,7 +43,7 @@ namespace zorba {
         getURI() const;
 
     }; //class EmailFunction
-  } // namespace smtpmodule
+  } // namespace email
 } // namespace zorba
 
 #endif // ZORBA_EMAIL_EMAILFUNCTION_H
