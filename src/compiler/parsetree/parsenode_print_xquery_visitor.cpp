@@ -353,15 +353,13 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
     { 
       Parameters lParameters;
       os << "declare ";
-      switch(n.get_type())
-      {
+      switch(n.get_type()) {
         case ParseConstants::fn_update:
-          os << "updating ";
-          break;
         case ParseConstants::fn_extern_update:
           os << "updating ";
           break;
         case ParseConstants::fn_sequential:
+        case ParseConstants::fn_extern_sequential:
           os << "sequential ";
           break;
         default:
@@ -370,13 +368,11 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       os << "function ";
       n.get_name()->accept(*this);
       os << '(';
-      if(n.get_paramlist())
-      {
+      if(n.get_paramlist()) {
         n.get_paramlist()->accept(*this);
       }
       os << ')';
-      if(n.get_return_type())
-      {
+      if(n.get_return_type()) {
         os << " as ";
         stringstream lReturnType;
         print_parsetree_xquery(lReturnType, n.get_return_type().getp());
@@ -384,24 +380,20 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
         os << lReturnType.str();
         lParameters.push(lReturnType.str());
       }
-      if(n.get_body())
-      { 
+      if(n.get_body()) { 
         os << '{';
         n.get_body()->accept(*this);
         os << '}';
-      } 
-      
-      if((n.get_type() == ParseConstants::fn_extern_update) ||
-          (n.get_type() == ParseConstants::fn_extern)) {
-        os << "external ";
+      } else if(n.get_type() == ParseConstants::fn_extern ||
+          n.get_type() == ParseConstants::fn_extern_update ||
+          n.get_type() == ParseConstants::fn_extern_sequential) {
+        os << " external";
       }
 
-      if(n.get_paramlist())
-      {
+      if(n.get_paramlist()) {
         const rchandle<ParamList> paramList = n.get_paramlist();
         for (vector<rchandle<Param> >::const_iterator it = paramList->begin();
-              it != paramList->end(); ++it)
-        {
+             it != paramList->end(); ++it) {
           const Param* param = &**it;
           stringstream lParamString;
           print_parsetree_xquery(lParamString, param);
