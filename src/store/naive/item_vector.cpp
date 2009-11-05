@@ -37,9 +37,14 @@ xqpStringStore_t ItemVector::getStringValue() const
   std::ostringstream ostr;
   ulong numItems = theItems.size();
 
-  for (ulong i = 0; i < numItems; i++)
+  if (numItems > 0)
   {
-    ostr << theItems[i]->getStringValue()->c_str() << " ";
+    ostr << theItems[0]->getStringValue()->c_str();
+
+    for (ulong i = 1; i < numItems; ++i)
+    {
+      ostr << " " << theItems[i]->getStringValue()->c_str();
+    }
   }
 
   return new xqpStringStore(ostr.str());
