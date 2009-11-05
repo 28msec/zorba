@@ -165,6 +165,11 @@ ENDIF (MSVC AND NOT ZORBA_BUILD_STATIC_LIBRARY)
 
 IF (WIN32)
   IF (MSVC_IDE)
+    # do not let Visual Studio to use $(OutDir) for this variable which is the default value
+    # otherwise cmake cannot find targets in directories like: .../$(OutDir)/
+    # even when cmake runs from VS, this variable is not expanded to the configuration name
+    SET(CMAKE_CFG_INTDIR ${CMAKE_BUILD_TYPE})
+  
     # this assignment is not 100% correct since this is just the default CMake Visual Studio
     # project layout. If the user changes the output directory, this will not work anymore.
     # But still, CMake will overwrite his configuration on next run and will go back to default.
