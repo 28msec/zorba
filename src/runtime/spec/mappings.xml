@@ -19,7 +19,7 @@
     <zorba:namespace uri="http://www.zorba-xquery.com/zorba/json-functions" define="ZORBA_JSON_FN_NS" prefix="zorba-json"/>
     <zorba:namespace uri="http://www.zorba-xquery.com/zorba/json-ml-functions" define="ZORBA_JSON_ML_FN_NS" prefix="zorba-json-ml"/>
     <zorba:namespace uri="http://www.zorba-xquery.com/zorba/fop-functions" define="ZORBA_FOP_FN_NS" prefix="fn-zorba-fop"/>    
-    <zorba:namespace uri="http://www.zorba-xquery.com/zorba/xqdoc-functions" define="ZORBA_XQDOC_FN_NS" prefix="xqdoc"/>
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/xqdoc" define="ZORBA_XQDOC_FN_NS" prefix="xqdoc"/>
   </zorba:namespaces>
 
   <zorba:types>

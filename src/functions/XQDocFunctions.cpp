@@ -35,7 +35,7 @@ void populateContext_XQDOC(static_context* sctx)
 {
   DECL(sctx, XQDocFunction,
        (createQName(ZORBA_XQDOC_FN_NS, "xqdoc", "xqdoc"),
-        GENV_TYPESYSTEM.STRING_TYPE_ONE, GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+        GENV_TYPESYSTEM.STRING_TYPE_ONE, GENV_TYPESYSTEM.ELEMENT_TYPE_ONE));
 }
 
 

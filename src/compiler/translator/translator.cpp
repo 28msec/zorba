@@ -596,7 +596,6 @@ TranslatorImpl(
   op_concatenate = op_enclosed_expr = op_or = fn_data = NULL;
   ctx_decl = ctx_set = ctx_get = ctx_exists = NULL;
 
-  zorba_predef_mod_ns.insert (ZORBA_XQDOC_FN_NS);
   zorba_predef_mod_ns.insert (ZORBA_FN_NS);
   zorba_predef_mod_ns.insert (ZORBA_REST_FN_NS);
   zorba_predef_mod_ns.insert (ZORBA_NODEREF_FN_NS);

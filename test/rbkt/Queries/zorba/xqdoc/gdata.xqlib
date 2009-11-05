@@ -1,18 +1,23 @@
 (:~
- : Foo Bar module
+ :
+ : The description of this module must have the whitespaces
+ 
+ : normalized: 1) NL at top, middle & end; 2) TABs in this
+ : line;			3) SPACES      here and after.         
+ :
+ :
  : @see http://example.com
  :)
 module namespace gdata="http://www.28msec.com/modules/gdata";
 
 import module namespace zorba = "http://www.zorba-xquery.com/zorba/internal-functions";
 import module namespace atompub = "http://www.28msec.com/modules/atom" at "atom.xq";
+import module namespace rest = "http://www.zorba-xquery.com/zorba/rest-functions";
+
 (:~
  : Import the Atom XML Schema
  : @see http://www.kbcafe.com/rss/atom.xsd.xml
  :)
-import module namespace rest    = "http://www.zorba-xquery.com/zorba/rest-functions";
-
-
 import schema namespace atom = "http://www.w3.org/2005/Atom" at "atom.xsd";
 
 declare variable $gdata:version := "3.0";
@@ -25,6 +30,10 @@ declare variable $gdata:authToken := <authSubToken />;
 
 (:~
  : Google Login
+ : @param account This parameter will be deleted by the test query.
+ : @param password This description must have      
+ :        the whitespaces normalized.
+ :
  : @see http://www.google.com
  :)
 declare function gdata:login($account as xs:string*, $password as xs:string+, $service as xs:string?) as xs:boolean+
