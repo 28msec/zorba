@@ -14,7 +14,7 @@
  * limitations under the License.
  */
  
-#include "functions/sequences.h"
+#include "functions/func_sequences.h"
 #include "functions/sequences_impl.h"
 
 #include "runtime/sequences/sequences.h"

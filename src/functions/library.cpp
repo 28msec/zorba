@@ -34,6 +34,7 @@
 #include "functions/strings_impl.h"
 #include "functions/func_sequences.h"
 #include "functions/sequences_impl.h"
+#include "functions/func_fnput.h"
 
 #include "functions/Collections.h"
 #include "functions/DynamicContext.h"
@@ -54,7 +55,6 @@
 #include "functions/XQDocFunctions.h"
 #include "functions/Rest.h"
 #include "functions/Fop.h"
-#include "functions/fnput.h"
 
 
 namespace zorba 
