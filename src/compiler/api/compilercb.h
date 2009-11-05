@@ -82,20 +82,20 @@ public:
     typedef void (* expr_callback) (const expr *, const std::string& name);
     typedef void (* ast_callback) (const parsenode *, const std::string& name);
 
-    bool          force_gflwor;
-    opt_level_t   opt_level;
-    bool          lib_module;
-    ast_callback  parse_cb;
+    bool force_gflwor;
+    opt_level_t opt_level;
+    bool lib_module;
+    ast_callback parse_cb;
     expr_callback translate_cb;
     expr_callback normalize_cb;
     expr_callback optimize_cb;
-    bool          print_item_flow;  // TODO: move to RuntimeCB
+    bool print_item_flow;  // TODO: move to RuntimeCB
 
     config();
 
    public:
     SERIALIZABLE_CLASS(config)
-    config(::zorba::serialization::Archiver& ar) 
+    config(::zorba::serialization::Archiver &ar) 
       :
       parse_cb(NULL),
       translate_cb(NULL),
@@ -106,7 +106,7 @@ public:
 
     ~config() {}
 
-    void serialize(::zorba::serialization::Archiver& ar)
+    void serialize(::zorba::serialization::Archiver &ar)
     {
       ar & force_gflwor;
       SERIALIZE_ENUM(opt_level_t, opt_level);

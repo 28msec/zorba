@@ -167,7 +167,7 @@ protected:
   int   is_temp_field;
   //bool  is_temp_field_one_level;
   int   current_level;
-  std::stack<int>   limit_temp_level_stack;
+  std::stack< std::pair<int, bool> >   limit_temp_level_stack;
   bool  internal_archive;
   int   only_for_eval;
   bool  is_xquery_with_eval;
@@ -350,14 +350,19 @@ public:
     assert(is_temp_field >= 0);
   }
   bool get_is_temp_field() { return (this->is_temp_field > 0); }
-  void set_is_temp_field_one_level(bool is_temp)
+  void set_is_temp_field_one_level(bool is_temp, bool also_for_ptr = false)
   {
     if(is_temp)
-      limit_temp_level_stack.push(current_level + 1);
+      limit_temp_level_stack.push(std::pair<int, bool>(current_level + 1, also_for_ptr));
     else
       limit_temp_level_stack.pop();
   }
-  bool get_is_temp_field_one_level() {return !limit_temp_level_stack.empty() && (limit_temp_level_stack.top() == current_level);} 
+  bool get_is_temp_field_one_level() 
+  {
+    //if(get_is_temp_field()) return true;
+    return !limit_temp_level_stack.empty() && (limit_temp_level_stack.top().first == current_level);
+  } 
+  bool get_is_temp_field_also_for_ptr() {return limit_temp_level_stack.top().second;} 
 
   int get_nr_ids();
 

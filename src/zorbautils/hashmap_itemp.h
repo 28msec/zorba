@@ -130,7 +130,7 @@ void operator&(Archiver &ar, ItemPointerHashMap<T>* &obj)
     if(!is_ref)
     {
       typename ItemPointerHashMap<T>::iterator   obj_it;
-      ar.set_is_temp_field(true);
+      ar.set_is_temp_field_one_level(true);
       ulong obj_count = obj->object_count();
       ar & obj_count;
       long timezone = obj->get_timezone();
@@ -141,20 +141,16 @@ void operator&(Archiver &ar, ItemPointerHashMap<T>* &obj)
       ar & size;
       bool sync = obj->get_sync();
       ar & sync;
-      ar.set_is_temp_field(false);
       for(obj_it = obj->begin(); obj_it != obj->end(); ++obj_it)
       {
         store::Item *key_item = (store::Item *)(*obj_it).first;
         ar.dont_allow_delay();
-        ar.set_is_temp_field(true);
         ar & key_item;
-        ar.set_is_temp_field(false);
         ar.dont_allow_delay();
-        ar.set_is_temp_field_one_level(true);
         T t_value = (T)(*obj_it).second;
         ar & t_value;
-        ar.set_is_temp_field_one_level(false);
       }
+      ar.set_is_temp_field_one_level(false);
       ar.add_end_compound_field();
     }
   }
@@ -183,7 +179,7 @@ void operator&(Archiver &ar, ItemPointerHashMap<T>* &obj)
     if(field_treat == ARCHIVE_FIELD_IS_PTR)
     {
 
-      ar.set_is_temp_field(true);
+      ar.set_is_temp_field_one_level(true);
       ulong obj_count, i;
       ar & obj_count;
       long timezone;
@@ -194,22 +190,18 @@ void operator&(Archiver &ar, ItemPointerHashMap<T>* &obj)
       ar & size;
       bool sync;
       ar & sync;
-      ar.set_is_temp_field(false);
       obj = new ItemPointerHashMap<T>(timezone, collation, size, sync);
       ar.register_reference(id, field_treat, obj);
       for(i=0;i<obj_count;i++)
       {
         store::Item *key_item;
-        ar.set_is_temp_field(true);
         ar & key_item;
-        ar.set_is_temp_field(false);
         T t_value;
-        ar.set_is_temp_field_one_level(true);
         ar & t_value;
-        ar.set_is_temp_field_one_level(false);
 
         obj->insert(key_item, t_value);
       }
+      ar.set_is_temp_field_one_level(false);
 
       ar.read_end_current_level();
     }

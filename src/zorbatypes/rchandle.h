@@ -315,6 +315,13 @@ protected:
   }
 
 public:
+  union union_T
+  {
+    T** t;
+    void** v;
+  };
+
+public:
   rchandle(T* realPtr = 0) : p(realPtr)
   {
     init(); 
@@ -336,7 +343,7 @@ public:
   void setNull()              { p = NULL;}
 
   T* getp() const             { return p; }
-  T** getp_ref()              { return &p; }
+  union_T getp_ref()             { union_T u_t; u_t.t = &p; return u_t;}
 
   // rchandle const-ness is unclear. The implicit operators are more
   // restrictive than the explicit cast() and getp() methods.
@@ -473,6 +480,7 @@ public:
   void setNull()              { rchandle<T>::setNull();}
 
   const T* getp () const { return rchandle<T>::getp (); }
+  typename rchandle<T>::union_T getp_ref()             { return rchandle<T>::getp_ref(); }
   operator const T * () const { return rchandle<T>::getp (); }
 
   const T* operator->() const { return getp(); } 

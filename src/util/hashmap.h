@@ -147,7 +147,7 @@ public:
     //ar & tab;
     //compress tab
     int tab_size = tab.size();
-    ar.set_is_temp_field(true);
+    ar.set_is_temp_field_one_level(true);
     ar & tab_size;
     if(ar.is_serializing_out())
     {
@@ -194,7 +194,7 @@ public:
 
       assert((int)tab.size() == (int)tab_size);
     }
-    ar.set_is_temp_field(false);
+    ar.set_is_temp_field_one_level(false);
   }
 #endif
 public:

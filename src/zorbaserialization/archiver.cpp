@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifdef MY_D_USE_VISUAL_LEAK_DETECTOR
+#include <vld.h>
+#endif
 
 #include "zorbaserialization/archiver.h"
 #include "zorbaerrors/error_manager.h"
@@ -165,16 +168,22 @@ bool Archiver::add_simple_field(const char *type,
                             enum ArchiveFieldTreat field_treat
                             )
 {
+  current_level++;
   archive_field  *new_field;
   archive_field  *ref_field = NULL;
   bool      exch_fields = false;
   //int id = 0;
   if(!orig_ptr)
+  {
     field_treat = ARCHIVE_FIELD_IS_NULL;
-  else if((field_treat != ARCHIVE_FIELD_IS_BASECLASS) && orig_ptr && !get_is_temp_field() && !get_is_temp_field_one_level())
+  }
+  else if((field_treat != ARCHIVE_FIELD_IS_BASECLASS) && orig_ptr && 
+    !get_is_temp_field() && (!get_is_temp_field_one_level() || ((field_treat == ARCHIVE_FIELD_IS_PTR) && !get_is_temp_field_also_for_ptr())))
     ref_field = check_nonclass_pointer(type, orig_ptr);
   if(ref_field)
   {
+    if(get_is_temp_field_one_level() && (field_treat == ARCHIVE_FIELD_IS_PTR))
+      allow_delay = false;
     if(field_treat == ARCHIVE_FIELD_NORMAL)
     {
       //special case
@@ -189,7 +198,8 @@ bool Archiver::add_simple_field(const char *type,
 
   new_field = new archive_field(type, true, false, value, orig_ptr, 0, field_treat, ref_field, get_serialize_only_for_eval(), allow_delay);
   allow_delay = true;
-  if(!ref_field && (field_treat != ARCHIVE_FIELD_IS_BASECLASS) && orig_ptr && !get_is_temp_field() && !get_is_temp_field_one_level())
+  if(!ref_field && (field_treat != ARCHIVE_FIELD_IS_BASECLASS) && orig_ptr && 
+    !get_is_temp_field() && (!get_is_temp_field_one_level() || ((field_treat == ARCHIVE_FIELD_IS_PTR) && !get_is_temp_field_also_for_ptr())))
   {
     SIMPLE_HASHOUT_FIELD  f(type, orig_ptr);
     simple_hashout_fields->insert(f, new_field);
@@ -208,8 +218,7 @@ bool Archiver::add_simple_field(const char *type,
   {
     exchange_fields(new_field, ref_field);
   }
-//  if(get_is_temp_field_one_level())
-//    set_is_temp_field_one_level(false);
+  current_level--;
   return ref_field != NULL;
 }
 
@@ -252,6 +261,8 @@ void Archiver::exchange_fields(archive_field  *new_field, archive_field  *ref_fi
     current_compound_field->first_child = ref_field;
   ref_field->next = NULL;
   current_compound_field->last_child = ref_field;
+
+  new_field->allow_delay = ref_field->allow_delay;
 }
 
 bool Archiver::add_compound_field(const char *type, 
@@ -268,8 +279,12 @@ bool Archiver::add_compound_field(const char *type,
   bool      exch_fields = false;
   //int id = 0;
   if(!ptr)
+  {
     field_treat = ARCHIVE_FIELD_IS_NULL;
-  else if((field_treat != ARCHIVE_FIELD_IS_BASECLASS) && ptr && !get_is_temp_field() && !get_is_temp_field_one_level())
+    current_level--;
+  }
+  else if((field_treat != ARCHIVE_FIELD_IS_BASECLASS) && ptr && 
+    !get_is_temp_field() && (!get_is_temp_field_one_level() || ((field_treat == ARCHIVE_FIELD_IS_PTR) && !get_is_temp_field_also_for_ptr())))
   {
     if(!is_class)
       ref_field = check_nonclass_pointer(type, ptr);
@@ -278,6 +293,8 @@ bool Archiver::add_compound_field(const char *type,
   }
   if(ref_field)
   {
+    if(get_is_temp_field_one_level() && (field_treat == ARCHIVE_FIELD_IS_PTR))
+      allow_delay = false;
     if(field_treat == ARCHIVE_FIELD_NORMAL)
     {
       //special case
@@ -286,12 +303,12 @@ bool Archiver::add_compound_field(const char *type,
     }
     field_treat = ARCHIVE_FIELD_IS_REFERENCING;
     ptr = NULL;
-    current_level--;
   }
 
   new_field = new archive_field(type, false, is_class, info, ptr, version, field_treat, ref_field, get_serialize_only_for_eval(), allow_delay);
   allow_delay = true;
-  if(!ref_field && (field_treat != ARCHIVE_FIELD_IS_BASECLASS) && ptr && !get_is_temp_field() && !get_is_temp_field_one_level())
+  if(!ref_field && (field_treat != ARCHIVE_FIELD_IS_BASECLASS) && ptr && 
+      !get_is_temp_field() && (!get_is_temp_field_one_level() || ((field_treat == ARCHIVE_FIELD_IS_PTR) && !get_is_temp_field_also_for_ptr())))
   {
     if(!is_class)
     {
@@ -299,7 +316,9 @@ bool Archiver::add_compound_field(const char *type,
       simple_hashout_fields->insert(f, new_field);
     }
     else
+    {
       hash_out_fields->put((uint64_t)ptr, new_field);
+    }
   }
   if(!exch_fields)
   {
@@ -317,8 +336,8 @@ bool Archiver::add_compound_field(const char *type,
   {
     exchange_fields(new_field, ref_field);
   }
-//  if(get_is_temp_field_one_level())
-//    set_is_temp_field_one_level(false);
+  if(ref_field)
+    current_level--;
   return ref_field != NULL;
 }
 
@@ -521,7 +540,9 @@ void Archiver::check_class_field(bool retval,
 
 void Archiver::register_reference(int id, enum ArchiveFieldTreat field_treat, const void *ptr)
 {
-  if(get_is_temp_field() && (field_treat != ARCHIVE_FIELD_IS_PTR))
+  if(get_is_temp_field())// && (field_treat != ARCHIVE_FIELD_IS_PTR))
+    return;
+  if(get_is_temp_field_one_level() && ((field_treat != ARCHIVE_FIELD_IS_PTR) || get_is_temp_field_also_for_ptr()))
     return;
 
 //  struct field_ptr_vs_id    fid;

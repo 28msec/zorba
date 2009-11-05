@@ -1693,7 +1693,7 @@ void Schema::serialize(::zorba::serialization::Archiver &ar)
    ar & theUdTypesCache;
 
    bool is_grammar_NULL = (theGrammarPool == NULL);
-   ar.set_is_temp_field(true);
+   ar.set_is_temp_field_one_level(true, true);
    ar & is_grammar_NULL;
    if(ar.is_serializing_out())
    {
@@ -1740,7 +1740,7 @@ void Schema::serialize(::zorba::serialization::Archiver &ar)
        theGrammarPool = NULL;
      }
    }
-   ar.set_is_temp_field(false);
+   ar.set_is_temp_field_one_level(false);
 #endif
 }
 } // namespace zorba

@@ -474,60 +474,7 @@ void operator&(Archiver &ar, MAPM &obj)
 }
 #endif
 
-/*
-void serialize_qname(Archiver &ar, store::Item_t &obj)
-{
-  if(ar.is_serializing_out())
-  {
-    bool is_ref;
-    is_ref = ar.add_compound_field("store::QName", 0, !FIELD_IS_CLASS, "", &obj, ARCHIVE_FIELD_NORMAL);
-    if(!is_ref)
-    {
-      ar.set_is_temp_field(true);
-      xqpStringStore_t  ns = obj->getNamespace();
-      xqpStringStore_t  prefix = obj->getPrefix();
-      xqpStringStore_t  local = obj->getLocalName();
-      ar & ns;
-      ar & prefix;
-      ar & local;
-      ar.set_is_temp_field(false);
-      ar.add_end_compound_field();
-    }
-  }
-  else
-  {
-    char  *type;
-    std::string value;
-    int   id;
-    int   version;
-    bool  is_simple;
-    bool  is_class;
-    enum  ArchiveFieldTreat field_treat;
-    int   referencing;
-    bool  retval;
-    retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
-    if(!retval && ar.get_read_optional_field())
-      return;
-    ar.check_nonclass_field(retval, type, "store::QName", is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
-    ar.register_reference(id, field_treat, &obj);
 
-    {
-      ar.set_is_temp_field(true);
-      xqpStringStore_t  ns;
-      xqpStringStore_t  prefix;
-      xqpStringStore_t  local;
-      ar & ns;
-      ar & prefix;
-      ar & local;
-      ar.set_is_temp_field(false);
-      GENV_ITEMFACTORY->createQName(obj, ns, prefix, local);
-      ar.add_end_compound_field();
-    }
-    ar.read_end_current_level();
-
-  }
-}
-*/
 void iterator_to_vector(store::Iterator_t iter, std::vector<store::Item_t> &items)
 {
   store::Item_t  i;
@@ -565,7 +512,6 @@ void serialize_my_children(Archiver &ar, store::Iterator_t iter)
     for(int i=0;i<child_count;i++)
     {
       store::Item*  p; 
-    //  ar.set_is_temp_field_one_level(true);
       ar & p;//should be automatically added to DocumentNode or ElementNode
     }
   }
@@ -580,7 +526,8 @@ void serialize_my_children2(Archiver &ar, store::Iterator_t iter)
 #define SERIALIZE_FIELD(type, var, get_func)\
       type var;                             \
       if(ar.is_serializing_out())           \
-        var = obj->get_func;              \
+        var = obj->get_func;                \
+      ar.dont_allow_delay();                \
       ar & var;
 
 #define SERIALIZE_REF_FIELD(type, var, get_func)  \
@@ -590,6 +537,7 @@ void serialize_my_children2(Archiver &ar, store::Iterator_t iter)
         const type &var = obj->get_func;              \
         var##_in = var;                           \
       }                                           \
+      ar.dont_allow_delay();                      \
       ar & var##_in;                              \
 
 #define FINALIZE_SERIALIZE(create_func, func_params)    \
@@ -600,7 +548,9 @@ void serialize_my_children2(Archiver &ar, store::Iterator_t iter)
         obj = result.getp();                            \
         if(obj)                                         \
           obj->addReference(obj->getSharedRefCounter() SYNC_PARAM2(obj->getRCLock()));     \
+        ar.set_is_temp_field(false);                    \
         ar.register_reference(id, ARCHIVE_FIELD_IS_PTR, obj);                \
+        ar.set_is_temp_field(true);                    \
       }                                                 
 
 #define COMPARE_NAME_OF_TYPE_STRING(str)\
@@ -638,7 +588,7 @@ void operator&(Archiver &ar, store::Item* &obj)
     is_tuple = obj->isTuple();
     is_error = obj->isError();
     assert(is_node || is_atomic || is_pul || is_tuple || is_error);
-    sprintf(strtemp, "isNode:%disAtomic:%disPul:%disTuple:%disError:%d",
+    sprintf(strtemp, "n%da%dp%dt%de%d",
                     is_node, is_atomic, is_pul, is_tuple, is_error);
 
     is_ref = ar.add_compound_field("store::Item*", 0, FIELD_IS_CLASS, strtemp, obj, ARCHIVE_FIELD_IS_PTR);
@@ -669,7 +619,7 @@ void operator&(Archiver &ar, store::Item* &obj)
     is_ref = (field_treat == ARCHIVE_FIELD_IS_REFERENCING);
     if(!is_ref)
     {
-      sscanf(value.c_str(), "isNode:%disAtomic:%disPul:%disTuple:%disError:%d",
+      sscanf(value.c_str(), "n%da%dp%dt%de%d",
                     &is_node, &is_atomic, &is_pul, &is_tuple, &is_error);
     }
   }
@@ -679,10 +629,11 @@ void operator&(Archiver &ar, store::Item* &obj)
   if(!is_ref)
   {
     ar.set_is_temp_field(true);
+    ar.set_is_temp_field_one_level(true);
     if(is_atomic)
     {
       store::Item_t type;
-      xqpStringStore *name_of_type;
+      xqpStringStore *name_of_type = NULL;
       bool is_qname;
       if(ar.is_serializing_out())
       {
@@ -695,12 +646,14 @@ void operator&(Archiver &ar, store::Item* &obj)
       ar & is_qname;
       if(!is_qname)
       {
+        ar.dont_allow_delay();
         ar & type;//save qname of type
         ///check for User Typed Atomic Item
         store::Item*    baseItem;
         if(ar.is_serializing_out())         
           baseItem = (store::Item*)obj->getBaseItem();            
         ar.set_is_temp_field(false);
+        ar.dont_allow_delay();
         ar & baseItem;
         ar.set_is_temp_field(true);
         if(baseItem)
@@ -970,7 +923,7 @@ EndAtomicItem:;
     }
     else if(is_node)
     {
-      store::StoreConsts::NodeKind   nodekind;
+      store::StoreConsts::NodeKind   nodekind = store::StoreConsts::anyNode;
       if(ar.is_serializing_out())
         nodekind = obj->getNodeKind();
       SERIALIZE_ENUM(store::StoreConsts::NodeKind, nodekind);
@@ -1014,17 +967,9 @@ EndAtomicItem:;
         ar & ns_bindings;
         SERIALIZE_FIELD(xqpStringStore_t, baseUri, getBaseURI());
         FINALIZE_SERIALIZE(createElementNode, (result, parent, -1, nodename, name_of_type, haveTypedValue, haveEmptyValue, ns_bindings, baseUri, isInSubstGroup));
-      //  std::vector<store::Item_t>  attribs;
-      //  iterator_to_vector(obj->getAttributes(), attribs);
-      //  ar.set_is_temp_field(false);
-      //  ar.set_is_temp_field_one_level(true);
-      //  ar & attribs;
+
         serialize_my_children2(ar, obj->getAttributes());
-      //  std::vector<store::Item_t>  childs;
-      //  iterator_to_vector(obj->getChildren(), childs);
-      //  ar.set_is_temp_field_one_level(true);
-      //  ar & childs;
-      //  ar.set_is_temp_field(true);
+
         serialize_my_children(ar, obj->getChildren());
       }break;
       case store::StoreConsts::attributeNode:
@@ -1104,6 +1049,7 @@ EndAtomicItem:;
     }
 
     ar.set_is_temp_field(false);
+    ar.set_is_temp_field_one_level(false);
   }
 
   if(ar.is_serializing_out())
@@ -1155,22 +1101,20 @@ void operator&(Archiver &ar, std::map<int, rchandle<function> > *&obj)
     is_ref = ar.add_compound_field("context::ArityFMap*", 0, !FIELD_IS_CLASS, "", &obj, ARCHIVE_FIELD_IS_PTR);
     if(!is_ref)
     {
-      ar.set_is_temp_field(true);
+      ar.set_is_temp_field_one_level(true);
       int s = (int)obj->size();
       ar & s;
-      ar.set_is_temp_field(false);
       context::ArityFMap::iterator  it;
       function *f;
       int i1;
       for(it=obj->begin(); it != obj->end(); it++)
       {
         i1 = (*it).first;
-        ar.set_is_temp_field(true);
         ar & i1;
-        ar.set_is_temp_field(false);
         f = (*it).second.getp();
         SERIALIZE_FUNCTION(f);
       }
+      ar.set_is_temp_field_one_level(false);
       ar.add_end_compound_field();
     }
   }
@@ -1201,22 +1145,20 @@ void operator&(Archiver &ar, std::map<int, rchandle<function> > *&obj)
       obj = new context::ArityFMap;
       ar.register_reference(id, field_treat, obj);
 
-      ar.set_is_temp_field(true);
+      ar.set_is_temp_field_one_level(true);
       int s;
       ar & s;
-      ar.set_is_temp_field(false);
       context::ArityFMap::iterator  it;
       //std::pair<int, rchandle<function>>   p;
       int a1;
       function *a2;
       for(int i=0;i<s;i++)
       {
-        ar.set_is_temp_field(true);
         ar & a1;
-        ar.set_is_temp_field(false);
         SERIALIZE_FUNCTION(a2);
         obj->insert(std::pair<int, rchandle<function> >(a1, a2));
       }
+      ar.set_is_temp_field_one_level(false);
       ar.read_end_current_level();
     }
     else if((new_obj = ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING

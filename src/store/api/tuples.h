@@ -86,9 +86,9 @@ public:
       case FIELD_TYPE_ITEM:
       {
         Item *ip = static_cast<Item *>(m_data);
-        ar.set_is_temp_field(true);
+        ar.set_is_temp_field_one_level(true);
         ar & ip;
-        ar.set_is_temp_field(false);
+        ar.set_is_temp_field_one_level(false);
         if(!ar.is_serializing_out())
         {
           m_data = (void*)ip;
@@ -98,9 +98,9 @@ public:
       case FIELD_TYPE_SEQ:
       {
         TempSeq *seq = static_cast<TempSeq *>(m_data);
-        ar.set_is_temp_field(true);
+        ar.set_is_temp_field_one_level(true);
         ar & seq;
-        ar.set_is_temp_field(false);
+        ar.set_is_temp_field_one_level(false);
         if(!ar.is_serializing_out())
         {
           m_data = (void*)seq;

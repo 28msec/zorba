@@ -98,7 +98,7 @@ int BinArchiver::add_to_string_pool(const char *str)
 {
   if(!str)
     return 0;
-  int   str_pos;
+  int   str_pos = 0;
   if(string_pool.get(str, str_pos))
     return str_pos;
   strings.push_back(str);

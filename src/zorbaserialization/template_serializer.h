@@ -245,19 +245,19 @@ void operator&(Archiver &ar, std::map<T1, T2> *&obj)
     is_ref = ar.add_compound_field("std::map<T1, T2>", 0, !FIELD_IS_CLASS, "", obj, ARCHIVE_FIELD_IS_PTR);
     if(!is_ref)
     {
-      ar.set_is_temp_field(true);
+      ar.set_is_temp_field_one_level(true);
       int s = (int)obj->size();
       ar & s;
-      ar.set_is_temp_field(false);
       typename std::map<T1, T2>::iterator  it;
       for(it=obj->begin(); it != obj->end(); it++)
       {
-        ar.set_is_temp_field(true);
+        ar.dont_allow_delay();
         T1  t1 = (*it).first;
         ar & t1;
-        ar.set_is_temp_field(false);
+        ar.dont_allow_delay();
         ar & (*it).second;
       }
+      ar.set_is_temp_field_one_level(true);
       ar.add_end_compound_field();
     }
   }
@@ -288,20 +288,18 @@ void operator&(Archiver &ar, std::map<T1, T2> *&obj)
       obj = new std::map<T1, T2>;
       ar.register_reference(id, field_treat, obj);
 
-      ar.set_is_temp_field(true);
+      ar.set_is_temp_field_one_level(true);
       int s;
       ar & s;
-      ar.set_is_temp_field(false);
       typename std::map<T1, T2>::iterator  it;
       std::pair<T1, T2>   p;
       for(int i=0;i<s;i++)
       {
-        ar.set_is_temp_field(true);
         ar & p.first;
         ar & p.second;
-        ar.set_is_temp_field(false);
         obj->insert(p);
       }
+      ar.set_is_temp_field_one_level(false);
       ar.read_end_current_level();
     }
     else if((new_obj = ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
@@ -328,21 +326,19 @@ void operator&(Archiver &ar, std::map<T1, T2> &obj)
     is_ref = ar.add_compound_field("std::map<T1, T2>", 0, !FIELD_IS_CLASS, "", &obj, ARCHIVE_FIELD_NORMAL);
     if(!is_ref)
     {
-      ar.set_is_temp_field(true);
+      ar.set_is_temp_field_one_level(true);
       int s = (int)obj.size();
       ar & s;
-      ar.set_is_temp_field(false);
       typename std::map<T1, T2>::iterator  it;
       for(it=obj.begin(); it != obj.end(); it++)
       {
         T1  t1 = (*it).first;
-        ar.set_is_temp_field_one_level(true);
         ar.dont_allow_delay();
         ar & t1;
-        ar.set_is_temp_field_one_level(false);
         ar.dont_allow_delay();
         ar & (*it).second;
       }
+      ar.set_is_temp_field_one_level(false);
       ar.add_end_compound_field();
     }
   }
@@ -364,21 +360,18 @@ void operator&(Archiver &ar, std::map<T1, T2> &obj)
 
     ar.register_reference(id, field_treat, &obj);
 
-    ar.set_is_temp_field(true);
+    ar.set_is_temp_field_one_level(true);
     int s;
     ar & s;
-    ar.set_is_temp_field(false);
     typename std::map<T1, T2>::iterator  it;
     std::pair<T1, T2>   p;
     for(int i=0;i<s;i++)
     {
-      ar.set_is_temp_field_one_level(true);
       ar & p.first;
-      ar.set_is_temp_field_one_level(true);
       ar & p.second;
-      ar.set_is_temp_field_one_level(false);
       obj.insert(p);
     }
+    ar.set_is_temp_field_one_level(false);
     ar.read_end_current_level();
   }
 }
@@ -633,7 +626,12 @@ void operator&(Archiver &ar, T *&obj)
     }
     else if((new_obj = (SerializeBaseClass*)ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
     {
-      obj = dynamic_cast<T*>(new_obj);
+      try{
+        obj = dynamic_cast<T*>(new_obj);
+      }catch(...)
+      {
+        ZORBA_SER_ERROR_DESC_OSS(SRL0004_UNRESOLVED_FIELD_REFERENCE, id);
+      }
       if(!obj)
       {
         ZORBA_SER_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);

@@ -103,10 +103,10 @@ public:
     //serialize_baseclass(ar, (SimpleRCObject*)this);
     if(ar.is_serializing_out())
     {
-      ar.set_is_temp_field(true);
+      ar.set_is_temp_field_one_level(true);
       bool  parent_is_root = check_parent_is_root();//(
       ar & parent_is_root;
-      ar.set_is_temp_field(false);
+      ar.set_is_temp_field_one_level(false);
       if(!parent_is_root)
       {
         ar & parent;
@@ -120,10 +120,10 @@ public:
     else
     {
       //in serialization
-      ar.set_is_temp_field(true);
+      ar.set_is_temp_field_one_level(true);
       bool  parent_is_root;
       ar & parent_is_root;
-      ar.set_is_temp_field(false);
+      ar.set_is_temp_field_one_level(false);
       if(parent_is_root)
       {
         set_parent_as_root();

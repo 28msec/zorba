@@ -423,12 +423,12 @@ void serialize_array(Archiver &ar, unsigned char *obj, int len);//like char p[20
 
 #define  SERIALIZE_ENUM(enum_type, obj)\
         {\
-          ar.set_is_temp_field(true);\
+          ar.set_is_temp_field_one_level(true);\
           int int_enum = (int)obj;\
           ar & int_enum;\
           if(!ar.is_serializing_out())\
             obj = (enum_type)int_enum;\
-          ar.set_is_temp_field(false);\
+          ar.set_is_temp_field_one_level(false);\
         }
 
 /*

@@ -48,9 +48,9 @@ void operator&(Archiver &ar, std::map<int, rchandle<function> >* &obj);//ArityFM
 
 #define SERIALIZE_TYPEMANAGER(type_mgr_type, type_mgr)                             \
   bool is_root_type_mgr = (!GENV.isRootStaticContextInitialized() || ((TypeManager*)type_mgr == (TypeManager*)&GENV_TYPESYSTEM));            \
-  ar.set_is_temp_field(true);                                       \
+  ar.set_is_temp_field_one_level(true);                             \
   ar & is_root_type_mgr;                                            \
-  ar.set_is_temp_field(false);                                      \
+  ar.set_is_temp_field_one_level(false);                            \
   if(is_root_type_mgr)                                              \
   {                                                                 \
     if(!ar.is_serializing_out())                                    \
@@ -66,9 +66,9 @@ void operator&(Archiver &ar, std::map<int, rchandle<function> >* &obj);//ArityFM
 
 #define SERIALIZE_TYPEMANAGER_RCHANDLE(type_mgr_type, type_mgr)                             \
   bool is_root_type_mgr = (!GENV.isRootStaticContextInitialized() || ((TypeManager*)type_mgr.getp() == (TypeManager*)&GENV_TYPESYSTEM));            \
-  ar.set_is_temp_field(true);                                       \
+  ar.set_is_temp_field_one_level(true);                             \
   ar & is_root_type_mgr;                                            \
-  ar.set_is_temp_field(false);                                      \
+  ar.set_is_temp_field_one_level(false);                            \
   if(is_root_type_mgr)                                              \
   {                                                                 \
     if(!ar.is_serializing_out())                                    \
@@ -141,12 +141,22 @@ void operator&(Archiver &ar, zorba::rchandle<T> &obj)
       T *p = obj.getp();
       if(!allow_delay)
         ar.dont_allow_delay();
+      bool is_temp = false;
+      if(ar.get_is_temp_field_one_level())
+      {
+        is_temp = true;
+        ar.set_is_temp_field_one_level(true, ar.get_is_temp_field_also_for_ptr());
+        if(!ar.get_is_temp_field_also_for_ptr())
+          ar.dont_allow_delay();
+      }
       ar & p;
+      if(is_temp)
+        ar.set_is_temp_field_one_level(false);
       ar.add_end_compound_field();
     }
     else
     {
-      //int i=0;
+      assert(false);
     }
   }
   else
@@ -164,14 +174,29 @@ void operator&(Archiver &ar, zorba::rchandle<T> &obj)
     if(!retval && ar.get_read_optional_field())
       return;
     ar.check_nonclass_field(retval, type, "rchandle<T>", is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
-    ar.register_reference(id, field_treat, &obj);
+    //ar.register_reference(id, field_treat, &obj);
 
+    bool is_temp = false;
+    if(ar.get_is_temp_field_one_level())
+    {
+      is_temp = true;
+      ar.set_is_temp_field_one_level(true, ar.get_is_temp_field_also_for_ptr());
+    }
     T *p;
     ar & p;
+    if(is_temp)
+      ar.set_is_temp_field_one_level(false);
     obj = p;
     if(p == NULL)
     {
-      ar.reconf_last_delayed_rcobject((void**)&p, (void**)obj.getp_ref());
+      //workaround for the strict_aliasing warning in gcc
+      union 
+      {
+        T **t;
+        void **v;
+      }u_p;
+      u_p.t = &p;
+      ar.reconf_last_delayed_rcobject(u_p.v, obj.getp_ref().v);
     }
     ar.read_end_current_level();
 
@@ -184,12 +209,29 @@ void operator&(Archiver &ar, zorba::const_rchandle<T> &obj)
   if(ar.is_serializing_out())
   {
     bool is_ref;
+    bool allow_delay = ar.get_allow_delay();
     is_ref = ar.add_compound_field("const_rchandle<T>", 0, !FIELD_IS_CLASS, "", &obj, ARCHIVE_FIELD_NORMAL);
     if(!is_ref)
     {
       T *p = (T*)obj.getp();
+      if(!allow_delay)
+        ar.dont_allow_delay();
+      bool is_temp = false;
+      if(ar.get_is_temp_field_one_level())
+      {
+        is_temp = true;
+        ar.set_is_temp_field_one_level(true, ar.get_is_temp_field_also_for_ptr());
+        if(!ar.get_is_temp_field_also_for_ptr())
+          ar.dont_allow_delay();
+      }
       ar & p;
+      if(is_temp)
+        ar.set_is_temp_field_one_level(false);
       ar.add_end_compound_field();
+    }
+    else
+    {
+      assert(false);
     }
   }
   else
@@ -207,11 +249,30 @@ void operator&(Archiver &ar, zorba::const_rchandle<T> &obj)
     if(!retval && ar.get_read_optional_field())
       return;
     ar.check_nonclass_field(retval, type, "const_rchandle<T>", is_simple, is_class, field_treat, ARCHIVE_FIELD_NORMAL, id);
-    ar.register_reference(id, field_treat, &obj);
+    //ar.register_reference(id, field_treat, &obj);
 
+    bool is_temp = false;
+    if(ar.get_is_temp_field_one_level())
+    {
+      is_temp = true;
+      ar.set_is_temp_field_one_level(true, ar.get_is_temp_field_also_for_ptr());
+    }
     T *p;
     ar & p;
     obj = p;
+    if(is_temp)
+      ar.set_is_temp_field_one_level(false);
+    if(p == NULL)
+    {
+      //workaround for the strict_aliasing warning in gcc
+      union 
+      {
+        T **t;
+        void **v;
+      }u_p;
+      u_p.t = &p;
+      ar.reconf_last_delayed_rcobject(u_p.v, obj.getp_ref().v);
+    }
     ar.read_end_current_level();
 
   }
