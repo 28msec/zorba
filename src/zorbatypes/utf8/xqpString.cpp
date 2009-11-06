@@ -819,31 +819,25 @@ xqpStringStore_t xqpStringStore::trimR(const char* start, uint16_t len) const
   if (end0 == end) return const_cast<xqpStringStore *> (this);
   else return new xqpStringStore (str, end - str);
 }
-  
 
-/*******************************************************************************
-
-********************************************************************************/
-xqpStringStore_t xqpStringStore::trim(const char* start, uint16_t len) const
+xqpStringStore_t
+xqpStringStore::trim(const char* aChars, uint16_t aLength) const
 {
-  if(empty() || 0 == len)
+  if(empty() || 0 == aLength)
     return new xqpStringStore(*this);
 
-  return trimL(start, len)->trimR(start, len);
+  return trimL(aChars, aLength)->trimR(aChars, aLength);
 }
 
-
-/*******************************************************************************
-  Removes the leading and trailing whitespaces (#x20).
-********************************************************************************/
-xqpStringStore_t xqpStringStore::trim() const
+xqpStringStore_t
+xqpStringStore::trim() const
 {
   if(empty())
     return new xqpStringStore("");
   
-  char seq = ' ';
-  xqpStringStore_t tmp = trimL(&seq, 1);
-  return tmp->trimR(&seq,1);
+  char* lSeq = " \n\r\t";
+  xqpStringStore_t lTmpStr = trimL(lSeq, 4);
+  return lTmpStr->trimR(lSeq, 4);
 }
 
 

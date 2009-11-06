@@ -242,11 +242,20 @@ public:
   xqpStringStore_t
   trimR(const char* start, uint16_t len) const;
 
+  /** \brief Removes leading and trailing whitespace.
+   *
+   * @note whitespace is any of the following: ' ', '\n', '\r', '\t'
+   */  
   xqpStringStore_t
   trim() const;
 
+  /** \brief Removes leading and trailing characters from this string.
+   *
+   * @param chars An array containing the characters to be trimmed.
+   * @param lengthOfChars The length of the chars array.
+   */  
   xqpStringStore_t
-  trim(const char* start, uint16_t len) const;
+  trim(const char* chars, uint16_t lengthOfChars) const;
 
   xqpStringStore_t
   formatAsXML() const;

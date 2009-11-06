@@ -252,17 +252,24 @@ public:
   const String&
   normalizeSpace();
 
-  /** \brief Removes leading and trailing whitespace.
+  /** \brief Removes leading and trailing characters from this string.
    *
-   * @note If called with trim(" \t\r\n", 4) it will strip leading and trailing whitespaces.
-   * Whitespace = " \t\r\n" meaning (\#x20) (\#x9) (\#xD) (\#xA).
+   * @param chars A string containing the characters to be trimmed.
    */  
   const String&
-  trim(const char* start, int len);
+  trim(const String chars);
 
-  /** \brief Removes leading and trailing space.
+  /** \brief Removes leading and trailing characters from this string.
    *
-   * @note Space = " " meaning (\#x20).
+   * @param chars An array containing the characters to be trimmed.
+   * @param lengthOfChars The length of the chars array.
+   */  
+  const String&
+  trim(const char* chars, int lengthOfChars);
+
+  /** \brief Removes leading and trailing whitespace.
+   *
+   * @note whitespace is any of the following: ' ', '\n', '\r', '\t'
    */  
   const String&
   trim();

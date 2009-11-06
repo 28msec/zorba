@@ -291,9 +291,25 @@ String::normalizeSpace()
 }
 
 const String&
-String::trim(const char* start, int len)
+String::trim(const String aChars)
 {
-  xqpStringStore_t res = m_string->trim(start, len);
+  xqpStringStore_t res = m_string->trim(aChars.c_str(), aChars.length());
+  if (m_string != res) {
+    if (m_string != NULL) {
+      RCHelper::removeReference(m_string);
+    }
+    m_string = res;
+    if (m_string != NULL) {
+      RCHelper::addReference(m_string);
+    }
+  }
+  return *this;
+}
+
+const String&
+String::trim(const char* aChars, int aLength)
+{
+  xqpStringStore_t res = m_string->trim(aChars, aLength);
   if (m_string != res) {
     if (m_string != NULL) {
       RCHelper::removeReference(m_string);
