@@ -3,27 +3,32 @@
 # whether we can generate the runtime header and cpp files
 SET(ZORBA_WORKS)
 
-# we need the ZORBA_RUNTIME_GENERATOR and the file api
+# we need the ZORBA_RUNTIME_GENERATOR and the file API
 # for the generation of the runtime and codegen
-GET_TARGET_PROPERTY(LIBFILE_OUTPUT file LOCATION)
-IF (EXISTS ${ZORBA_RUNTIME_GENERATOR} AND EXISTS ${LIBFILE_OUTPUT})
-  EXECUTE_PROCESS(COMMAND ${ZORBA_RUNTIME_GENERATOR} 
-                          "-q" "1+1"
+# the Zorba will fail running the test query if the file API dll
+# is not found in the correct location
+IF (EXISTS ${ZORBA_RUNTIME_GENERATOR})
+  EXECUTE_PROCESS(COMMAND ${ZORBA_RUNTIME_GENERATOR}
+                          "-q" "import module namespace file = 'http://www.zorba-xquery.com/modules/file';
+                                file:exists( 'a non existant file' )"
                   RESULT_VARIABLE ZORBA_WORKS_RES
                   OUTPUT_VARIABLE ZORBA_WORKS_FOO)
   IF (NOT ZORBA_WORKS_RES EQUAL 0)
     SET(ZORBA_WORKS FALSE)
+    MESSAGE(STATUS "Zorba Command Line Utility at \"${ZORBA_RUNTIME_GENERATOR}\ "
+                   "does not work properly and cannot generate the runtime source files. "
+                   "This will cause the repository version of thiese files to be used.")
   ELSE (NOT ZORBA_WORKS_RES EQUAL 0)
     SET(ZORBA_WORKS TRUE)
   ENDIF (NOT ZORBA_WORKS_RES EQUAL 0)
-ELSE (EXISTS ${ZORBA_RUNTIME_GENERATOR} AND EXISTS ${LIBFILE_OUTPUT})
-    SET(ZORBA_WORKS FALSE)
-ENDIF (EXISTS ${ZORBA_RUNTIME_GENERATOR} AND EXISTS ${LIBFILE_OUTPUT})
+ELSE (EXISTS ${ZORBA_RUNTIME_GENERATOR})
+  SET(ZORBA_WORKS FALSE)
+  MESSAGE(STATUS "Zorba Command Line Utility was not found at \"${ZORBA_RUNTIME_GENERATOR}\".")
+ENDIF (EXISTS ${ZORBA_RUNTIME_GENERATOR})
 
 MACRO(CHECK_OUTPUT_EXISTS OUTPUT)
   IF (EXISTS "${OUTPUT}")
-    MESSAGE(STATUS "The Zorba Command Line Utility is not available to generate ${OUTPUT}. "
-                   "The files from the repository are there and will be used.")
+    MESSAGE(STATUS "Using the repository file for ${OUTPUT}. ")
   ELSE (EXISTS "${OUTPUT}")
     MESSAGE(FATAL_ERROR "Neither the Zorba Command Line Utility nor the files ${OUTPUT} are available. "
                         "Can't proceed building Zorba.")

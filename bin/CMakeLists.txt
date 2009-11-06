@@ -18,6 +18,13 @@ SET(ZORBA_CMD_SRCS zorbacmd.cpp zorbacmdproperties.cpp error_printer.cpp util.cp
 
 SET(ZORBA_CMD_SRCS ${ZORBA_CMD_SRCS} debugger_handler.cpp debugger_server_runnable.cpp)
 
+# We need to change the CMAKE_CFG_INTDIR from the default value (a VS macro)
+# otherwise this will make CMake fail when searching for the zorba.exe, because
+# it does not know how to expand VS macros like $(OutDir).
+IF (MSVC_IDE)
+  SET(CMAKE_CFG_INTDIR ${CMAKE_BUILD_TYPE})
+ENDIF (MSVC_IDE)
+
 ADD_EXECUTABLE(zorbacmd ${ZORBA_CMD_SRCS})
 
 TARGET_LINK_LIBRARIES(zorbacmd zorba_${ZORBA_STORE_LIB_EXTENSION})
