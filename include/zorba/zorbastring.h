@@ -260,7 +260,7 @@ public:
   const String&
   trim(const char* start, int len);
 
-  /** \brief Removes leading and trailing whitespace.
+  /** \brief Removes leading and trailing space.
    *
    * @note Space = " " meaning (\#x20).
    */  
