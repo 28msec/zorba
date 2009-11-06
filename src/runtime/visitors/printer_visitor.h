@@ -238,6 +238,9 @@ namespace zorba {
     void beginVisit( const CodepointsToStringIterator& );
     void endVisit  ( const CodepointsToStringIterator& );
 
+    void beginVisit( const StringToCodepointsIterator& );
+    void endVisit  ( const StringToCodepointsIterator& );
+
     void beginVisit( const CompareStrIterator& );
     void endVisit  ( const CompareStrIterator& );
 
@@ -300,6 +303,9 @@ namespace zorba {
 
     void beginVisit( const FnReplaceIterator& );
     void endVisit  ( const FnReplaceIterator& );
+
+    void beginVisit( const FnTokenizeIterator& );
+    void endVisit  ( const FnTokenizeIterator& );
 
   }; //class PrinterVisitor
 } //namespace zorba

@@ -130,8 +130,6 @@
   class NamespaceUriFromQNameIterator;
   class NamespaceUriForPrefixIterator;
   class InScopePrefixesIterator;
-  class StringToCodepointsIterator;
-  class FnTokenizeIterator;
   class ZorNumGen;
   class TextIterator;
   class DocumentIterator;

@@ -50,7 +50,6 @@ LIST(APPEND FUNCTIONS_SRCS
     accessors_impl.cpp
     booleans_impl.cpp
     durations_dates_times_impl.cpp
-    strings_impl.cpp
     sequences_impl.cpp
     Alexis.cpp
     arithmetic.cpp

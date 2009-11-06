@@ -99,6 +99,59 @@ CodepointsToStringIterator::nextImpl(store::Item_t& result, PlanState& planState
   STACK_END (state);
 }
 
+/**
+ *______________________________________________________________________
+ *
+ *  7.2.2 fn:string-to-codepoints
+ *
+ *  fn:string-to-codepoints($arg as xs:string?) as xs:integer*
+ *_______________________________________________________________________
+ */
+bool
+StringToCodepointsIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
+  // TODO Optimization for large strings: large strings mean that a large integer vector should be store in the state that is not good.
+  store::Item_t item;
+  xqpStringStore_t inputStr;
+
+  StringToCodepointsIteratorState* state;
+  DEFAULT_STACK_INIT(StringToCodepointsIteratorState, state, planState);
+
+  if (consumeNext(item, theChildren [0].getp(), planState )) {
+    inputStr = item->getStringValue();
+    if(!inputStr->empty())
+    {
+      state->theResult = inputStr->getCodepoints();
+  
+      while (state->theIterator < state->theResult.size())
+      {
+        GENV_ITEMFACTORY->createInteger( 
+          result,
+          Integer::parseInt(state->theResult[state->theIterator]) 
+        );
+        STACK_PUSH(true, state );
+        state->theIterator = state->theIterator + 1;
+      }
+    }
+  }
+  STACK_END (state);
+}
+
+void
+StringToCodepointsIteratorState::init(PlanState& planState)
+{
+  PlanIteratorState::init(planState);
+  theIterator = 0;
+  theResult.clear();
+}
+
+void
+StringToCodepointsIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  theIterator = 0;
+  theResult.clear();
+}
+/* end class StringToCodepointsIterator */
 
 /**
   *______________________________________________________________________
@@ -1291,4 +1344,84 @@ FnReplaceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 }
 /*end class FnReplaceIterator*/
 
+/**
+ *______________________________________________________________________
+ *
+ *  7.6.4 fn:tokenize
+ *
+ *fn:tokenize($input    as xs:string?,
+ *            $pattern  as xs:string) as xs:string*
+ *fn:tokenize($input    as xs:string?,
+ *            $pattern  as xs:string,
+ *            $flags    as xs:string) as xs:string*
+ *_______________________________________________________________________
+ */
+void
+FnTokenizeIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  theString = xqp_string();
+  start_pos = 0;
+  hasmatched = false;
+  thePattern = xqp_string();
+  theFlags = xqp_string();
+}
+
+bool
+FnTokenizeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  xqpStringStore_t token;
+  store::Item_t item;
+  bool tmp;
+
+  FnTokenizeIteratorState* state;
+  DEFAULT_STACK_INIT(FnTokenizeIteratorState, state, planState);
+
+  if (consumeNext(item, theChildren[0].getp(), planState))
+    state->theString = item->getStringValue().getp();
+
+  if (!consumeNext(item, theChildren[1].getp(), planState))
+    ZORBA_ASSERT (false);
+  state->thePattern = item->getStringValue().getp();
+
+  if(theChildren.size() == 3) {
+    if (!consumeNext(item, theChildren[2].getp(), planState))
+      ZORBA_ASSERT (false);
+    state->theFlags = item->getStringValue().getp();
+  }
+
+  try{
+    tmp = xqp_string().matches(state->thePattern, state->theFlags);
+  }
+  catch(zorbatypesException& ex){
+    ZORBA_ERROR_LOC_PARAM(error::DecodeZorbatypesError(ex.ErrorCode()), loc, ex.what(), "");
+  }
+
+  if(tmp)
+    ZORBA_ERROR_LOC_DESC(FORX0003, loc,
+                         "Regular expression matches zero-length string.");
+
+  while ((xqp_uint)state->start_pos < state->theString.length ())
+  {
+    try {
+      token = state->theString.tokenize(state->thePattern,
+                                        state->theFlags,
+                                        &state->start_pos,
+                                        &state->hasmatched).getStore();
+    }
+    catch(zorbatypesException& ex) {
+      ZORBA_ERROR_LOC_PARAM(error::DecodeZorbatypesError(ex.ErrorCode()), loc, ex.what(), "");
+    }
+
+    STACK_PUSH(GENV_ITEMFACTORY->createString(result, token), state);
+  }
+  if(state->hasmatched)
+  {
+    //the last token is empty (is after the last match)
+    token = new xqpStringStore;
+    STACK_PUSH(GENV_ITEMFACTORY->createString(result, token), state);
+  }
+  STACK_END(state);
+}
+/*end class FnTokenizeIterator*/
 } /* namespace zorba */

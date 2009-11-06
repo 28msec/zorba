@@ -943,6 +943,19 @@ void PrinterVisitor::endVisit ( const CodepointsToStringIterator& ) {
 }
 // </CodepointsToStringIterator>
 
+// <StringToCodepointsIterator>
+void PrinterVisitor::beginVisit ( const StringToCodepointsIterator& a) {
+  thePrinter.startBeginVisit("StringToCodepointsIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const StringToCodepointsIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </StringToCodepointsIterator>
+
 // <CompareStrIterator>
 void PrinterVisitor::beginVisit ( const CompareStrIterator& a) {
   thePrinter.startBeginVisit("CompareStrIterator", ++theId);
@@ -1215,6 +1228,19 @@ void PrinterVisitor::endVisit ( const FnReplaceIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FnReplaceIterator>
+
+// <FnTokenizeIterator>
+void PrinterVisitor::beginVisit ( const FnTokenizeIterator& a) {
+  thePrinter.startBeginVisit("FnTokenizeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnTokenizeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnTokenizeIterator>
 
 
 }

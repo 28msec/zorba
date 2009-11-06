@@ -102,7 +102,6 @@ LIST(APPEND RUNTIME_SRCS
     indexing/value_index_impl.cpp
     numerics/NumericsImpl.cpp
     qnames/QNamesImpl.cpp
-    strings/StringsImpl.cpp
     sequences/SequencesImpl.cpp
     visitors/iterprinter.cpp
     update/update.cpp

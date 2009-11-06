@@ -58,13 +58,11 @@ ZorbaJsonParseIterator::~ZorbaJsonParseIterator() {}
 
 void ZorbaJsonParseIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
-
   theBaseUri = xqp_string();
 }
 
 void ZorbaJsonParseIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
-
   theBaseUri = xqp_string();
 }
 // </ZorbaJsonParseIterator>
@@ -124,13 +122,11 @@ ZorbaJsonMLParseIterator::~ZorbaJsonMLParseIterator() {}
 
 void ZorbaJsonMLParseIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
-
   theBaseUri = xqp_string();
 }
 
 void ZorbaJsonMLParseIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
-
   theBaseUri = xqp_string();
 }
 // </ZorbaJsonMLParseIterator>

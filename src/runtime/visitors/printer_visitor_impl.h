@@ -201,8 +201,6 @@
   DECLARE_VISITOR (NamespaceUriFromQNameIterator)
   DECLARE_VISITOR (NamespaceUriForPrefixIterator)
   DECLARE_VISITOR (InScopePrefixesIterator)
-  DECLARE_VISITOR (StringToCodepointsIterator)
-  DECLARE_VISITOR (FnTokenizeIterator)
   DECLARE_VISITOR (ZorNumGen)
   DECLARE_VISITOR (TextIterator)
   DECLARE_VISITOR (FnDateTimeConstructorIterator)

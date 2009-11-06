@@ -56,13 +56,11 @@ FnConcatIterator::~FnConcatIterator() {}
 
 void FnConcatIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
-
   theCurIter = 0;
 }
 
 void FnConcatIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
-
   theCurIter = 0;
 }
 // </FnConcatIterator>
@@ -95,7 +93,6 @@ FnIndexOfIterator::~FnIndexOfIterator() {}
 
 void FnIndexOfIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
-
   theCurrentPos = 0;
   theSearchItem = NULL;
   theCollator = 0;
@@ -103,7 +100,6 @@ void FnIndexOfIteratorState::init(PlanState& planState) {
 
 void FnIndexOfIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
-
   theCurrentPos = 0;
   theSearchItem = NULL;
   theCollator = 0;
@@ -192,7 +188,6 @@ FnInsertBeforeIterator::~FnInsertBeforeIterator() {}
 
 void FnInsertBeforeIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
-
   theCurrentPos = xqp_integer::parseInt(0);
   thePosition = xqp_integer::parseInt(0);
   theTargetItem = NULL;
@@ -200,7 +195,6 @@ void FnInsertBeforeIteratorState::init(PlanState& planState) {
 
 void FnInsertBeforeIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
-
   theCurrentPos = xqp_integer::parseInt(0);
   thePosition = xqp_integer::parseInt(0);
   theTargetItem = NULL;
@@ -235,7 +229,6 @@ FnRemoveIterator::~FnRemoveIterator() {}
 
 void FnRemoveIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
-
   theCurrentPos = xqp_integer::parseInt(0);
   thePosition = xqp_integer::parseInt(0);
   theCollator = 0;
@@ -243,7 +236,6 @@ void FnRemoveIteratorState::init(PlanState& planState) {
 
 void FnRemoveIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
-
   theCurrentPos = xqp_integer::parseInt(0);
   thePosition = xqp_integer::parseInt(0);
   theCollator = 0;
@@ -305,13 +297,11 @@ FnSubsequenceIterator::~FnSubsequenceIterator() {}
 
 void FnSubsequenceIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
-
   theRemaining = xqp_integer::parseInt(0);
 }
 
 void FnSubsequenceIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
-
   theRemaining = xqp_integer::parseInt(0);
 }
 // </FnSubsequenceIterator>
@@ -695,7 +685,6 @@ OpToIterator::~OpToIterator() {}
 
 void OpToIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
-
   theCurInt = xqp_integer::parseInt(0);
   theFirstVal = xqp_integer::parseInt(0);
   theLastVal = xqp_integer::parseInt(0);
@@ -703,7 +692,6 @@ void OpToIteratorState::init(PlanState& planState) {
 
 void OpToIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
-
   theCurInt = xqp_integer::parseInt(0);
   theFirstVal = xqp_integer::parseInt(0);
   theLastVal = xqp_integer::parseInt(0);

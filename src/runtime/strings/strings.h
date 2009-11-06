@@ -26,6 +26,7 @@
 
 #include "runtime/base/narybase.h"
 #include "zorbautils/checked_vector.h"
+#include "zorbatypes/representations.h"
 
 
 namespace zorba {
@@ -56,6 +57,49 @@ public:
   (sctx, loc, aChildren){}
 
   virtual ~CodepointsToStringIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * fn:string-to-codepoints
+ * 
+ * Author: Zorba Team * 
+ */
+class StringToCodepointsIteratorState : public PlanIteratorState
+{
+public:
+  xqp_uint theIterator; //the current iterator
+  checked_vector<xqp_uint> theResult; //the resulting vector
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class StringToCodepointsIterator: public NaryBaseIterator <StringToCodepointsIterator, StringToCodepointsIteratorState>
+{
+public:
+  SERIALIZABLE_CLASS(StringToCodepointsIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(StringToCodepointsIterator,
+  NaryBaseIterator<StringToCodepointsIterator, StringToCodepointsIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<StringToCodepointsIterator, StringToCodepointsIteratorState>*)this);
+  }
+
+  StringToCodepointsIterator(static_context* sctx, const QueryLoc& loc,
+  std::vector<PlanIter_t>& aChildren)
+  :
+  NaryBaseIterator<StringToCodepointsIterator, StringToCodepointsIteratorState>
+  (sctx, loc, aChildren){}
+
+  virtual ~StringToCodepointsIterator();
 
   void accept(PlanIterVisitor& v) const;
 
@@ -749,6 +793,52 @@ public:
   (sctx, loc, aChildren){}
 
   virtual ~FnReplaceIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * fn:tokenize
+ * 
+ * Author: Zorba Team * 
+ */
+class FnTokenizeIteratorState : public PlanIteratorState
+{
+public:
+  xqp_string theString; //the remaining string
+  xqp_string thePattern; //the pattern string
+  xqp_string theFlags; //the tokenizing flags
+  xqp_int start_pos; //the start position
+  xqp_boolean hasmatched; //flag indicating whether a match was found
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class FnTokenizeIterator: public NaryBaseIterator <FnTokenizeIterator, FnTokenizeIteratorState>
+{
+public:
+  SERIALIZABLE_CLASS(FnTokenizeIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnTokenizeIterator,
+  NaryBaseIterator<FnTokenizeIterator, FnTokenizeIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnTokenizeIterator, FnTokenizeIteratorState>*)this);
+  }
+
+  FnTokenizeIterator(static_context* sctx, const QueryLoc& loc,
+  std::vector<PlanIter_t>& aChildren)
+  :
+  NaryBaseIterator<FnTokenizeIterator, FnTokenizeIteratorState>
+  (sctx, loc, aChildren){}
+
+  virtual ~FnTokenizeIterator();
 
   void accept(PlanIterVisitor& v) const;
 

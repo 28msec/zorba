@@ -22,7 +22,6 @@
 // ******************************************
 
 
-#include "runtime/strings/StringsImpl.h"
 #include "runtime/strings/strings.h"
 #include "functions/func_strings.h"
 
@@ -39,6 +38,19 @@ PlanIter_t fn_codepoints_to_string::codegen(
   AnnotationHolder& ann) const
 {
   return new CodepointsToStringIterator(sctx,loc,argv);
+}
+
+
+
+
+PlanIter_t fn_string_to_codepoints::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new StringToCodepointsIterator(sctx,loc,argv);
 }
 
 
@@ -316,12 +328,30 @@ PlanIter_t fn_replace::codegen(
 
 
 
+
+PlanIter_t fn_tokenize::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new FnTokenizeIterator(sctx,loc,argv);
+}
+
+
+
 void populate_context_strings(static_context* sctx) {
 
   DECL(sctx, fn_codepoints_to_string,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","codepoints-to-string"),
       GENV_TYPESYSTEM.INTEGER_TYPE_STAR,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
+
+  DECL(sctx, fn_string_to_codepoints,
+      (createQName("http://www.w3.org/2005/xpath-functions","fn","string-to-codepoints"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.INTEGER_TYPE_STAR));
 
   DECL(sctx, fn_compare,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","compare"),
@@ -512,6 +542,19 @@ void populate_context_strings(static_context* sctx) {
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
+
+  DECL(sctx, fn_tokenize,
+      (createQName("http://www.w3.org/2005/xpath-functions","fn","tokenize"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_STAR));
+
+  DECL(sctx, fn_tokenize,
+      (createQName("http://www.w3.org/2005/xpath-functions","fn","tokenize"),
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_STAR));
 }
 
 

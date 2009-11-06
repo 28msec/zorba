@@ -116,13 +116,11 @@ FnStringIterator::~FnStringIterator() {}
 
 void FnStringIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
-
   hasOutput = false;
 }
 
 void FnStringIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
-
   hasOutput = false;
 }
 // </FnStringIterator>

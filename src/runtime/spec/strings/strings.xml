@@ -12,6 +12,7 @@
 <zorba:header>
     <zorba:include form="Quoted">runtime/base/narybase.h</zorba:include>
     <zorba:include form="Quoted">zorbautils/checked_vector.h</zorba:include>
+    <zorba:include form="Quoted">zorbatypes/representations.h</zorba:include>
 </zorba:header>
 
 <zorba:source/>
@@ -22,7 +23,6 @@
         <zorba:include form="Quoted">functions/function_impl.h</zorba:include>
     </zorba:h>
     <zorba:cpp>
-        <zorba:include form="Quoted">runtime/strings/StringsImpl.h</zorba:include>
         <zorba:include form="Quoted">runtime/strings/strings.h</zorba:include>
         <zorba:include form="Quoted">functions/func_strings.h</zorba:include>
     </zorba:cpp>
@@ -47,6 +47,33 @@
             <zorba:param>xs:integer*</zorba:param>
             <zorba:output>xs:string</zorba:output>
         </zorba:signature>
+    </zorba:function>
+</zorba:iterator>
+<!--
+/*******************************************************************************
+ * 7.2.2 fn:string-to-codepoints
+********************************************************************************/
+-->
+<zorba:iterator
+    name="StringToCodepointsIterator"
+    arity="nary">
+
+    <zorba:description author="Zorba Team">
+        fn:string-to-codepoints
+    </zorba:description>
+
+    <zorba:state generateInit="false" generateReset="false">
+      <zorba:member type="xqp_uint" name="theIterator"
+                    brief="the current iterator"/>
+      <zorba:member type="checked_vector&lt;xqp_uint&gt;" name="theResult"
+                    brief="the resulting vector"/>
+    </zorba:state>
+    
+    <zorba:function>
+      <zorba:signature localname="string-to-codepoints" prefix="fn">
+          <zorba:param>xs:string?</zorba:param>
+          <zorba:output>xs:integer*</zorba:output>
+      </zorba:signature>
     </zorba:function>
 </zorba:iterator>
 
@@ -640,4 +667,42 @@
     </zorba:function>
 </zorba:iterator>
 
+<!--
+/*******************************************************************************
+ * 7.6.4 fn:tokenize
+********************************************************************************/
+-->
+<zorba:iterator name="FnTokenizeIterator" arity="nary">
+
+    <zorba:description author="Zorba Team">
+        fn:tokenize
+    </zorba:description>
+
+    <zorba:state generateReset="false">
+      <zorba:member type="xqp_string" name="theString"
+                    brief="the remaining string"/>
+      <zorba:member type="xqp_string" name="thePattern"
+                    brief="the pattern string"/>
+      <zorba:member type="xqp_string" name="theFlags"
+                    brief="the tokenizing flags"/>
+      <zorba:member type="xqp_int" name="start_pos" defaultValue="0"
+                    brief="the start position"/>
+      <zorba:member type="xqp_boolean" name="hasmatched" defaultValue="false"
+                    brief="flag indicating whether a match was found"/>
+    </zorba:state>
+    
+    <zorba:function>
+      <zorba:signature localname="tokenize" prefix="fn">
+          <zorba:param>xs:string?</zorba:param>
+          <zorba:param>xs:string</zorba:param>
+          <zorba:output>xs:string*</zorba:output>
+      </zorba:signature>
+      <zorba:signature localname="tokenize" prefix="fn">
+          <zorba:param>xs:string?</zorba:param>
+          <zorba:param>xs:string</zorba:param>
+          <zorba:param>xs:string</zorba:param>
+          <zorba:output>xs:string*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+</zorba:iterator>
 </zorba:iterators>

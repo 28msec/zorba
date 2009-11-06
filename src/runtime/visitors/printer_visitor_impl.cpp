@@ -46,7 +46,6 @@
 #include "runtime/indexing/value_index_impl.h"
 #include "runtime/numerics/NumericsImpl.h"
 #include "runtime/core/arithmetic_impl.h"
-#include "runtime/strings/StringsImpl.h"
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/durations_dates_times/DurationsDatesTimesImpl.h"
 #include "runtime/eval/FnContextImpl.h"
@@ -1150,8 +1149,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION (NamespaceUriFromQNameIterator)
   PRINTER_VISITOR_DEFINITION (NamespaceUriForPrefixIterator)
   PRINTER_VISITOR_DEFINITION (InScopePrefixesIterator)
-  PRINTER_VISITOR_DEFINITION (StringToCodepointsIterator)
-  PRINTER_VISITOR_DEFINITION (FnTokenizeIterator)
   PRINTER_VISITOR_DEFINITION (ZorNumGen)
   PRINTER_VISITOR_DEFINITION (TextIterator)
   PRINTER_VISITOR_DEFINITION (FnDateTimeConstructorIterator)

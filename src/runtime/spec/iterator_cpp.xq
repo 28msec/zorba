@@ -46,11 +46,14 @@ declare function local:process-iterator($iter) as xs:string
   '// &lt;/',$iter/@name,'&gt;',$gen:newline,$gen:newline),'')
 };
 
-declare function local:generate-init-values($state) as xs:string
+declare function local:generate-init-values($state) 
 {
-  string-join(($gen:newline,for $member in $state//zorba:member return 
-  string-join(($gen:indent,string($member/@name),' = ',string($member/@defaultValue),';',$gen:newline),''))
-  ,'')
+  for $member in $state//zorba:member
+  return 
+    if (exists($member/@defaultValue))
+    then
+      concat($gen:indent, string($member/@name), ' = ', string($member/@defaultValue), ';', $gen:newline)
+    else ()
 };
 
 declare function local:generate-destructor($iter) as xs:string

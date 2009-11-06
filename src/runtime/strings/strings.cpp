@@ -56,6 +56,33 @@ CodepointsToStringIterator::~CodepointsToStringIterator() {}
 // </CodepointsToStringIterator>
 
 
+// <StringToCodepointsIterator>
+const char* StringToCodepointsIterator::class_name_str = "StringToCodepointsIterator";
+StringToCodepointsIterator::class_factory<StringToCodepointsIterator>
+StringToCodepointsIterator::g_class_factory;
+
+const serialization::ClassVersion 
+StringToCodepointsIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int StringToCodepointsIterator::class_versions_count =
+sizeof(StringToCodepointsIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void StringToCodepointsIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+StringToCodepointsIterator::~StringToCodepointsIterator() {}
+
+// </StringToCodepointsIterator>
+
+
 // <CompareStrIterator>
 const char* CompareStrIterator::class_name_str = "CompareStrIterator";
 CompareStrIterator::class_factory<CompareStrIterator>
@@ -621,6 +648,39 @@ void FnReplaceIterator::accept(PlanIterVisitor& v) const {
 FnReplaceIterator::~FnReplaceIterator() {}
 
 // </FnReplaceIterator>
+
+
+// <FnTokenizeIterator>
+const char* FnTokenizeIterator::class_name_str = "FnTokenizeIterator";
+FnTokenizeIterator::class_factory<FnTokenizeIterator>
+FnTokenizeIterator::g_class_factory;
+
+const serialization::ClassVersion 
+FnTokenizeIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int FnTokenizeIterator::class_versions_count =
+sizeof(FnTokenizeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void FnTokenizeIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+FnTokenizeIterator::~FnTokenizeIterator() {}
+
+
+void FnTokenizeIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+  start_pos = 0;
+  hasmatched = false;
+}
+// </FnTokenizeIterator>
 
 
 

@@ -258,13 +258,9 @@
 
   PLAN_ITER_VISITOR (NamespaceUriFromQNameIterator);
 
-  PLAN_ITER_VISITOR (StringToCodepointsIterator);
-
   PLAN_ITER_VISITOR (InScopePrefixesIterator);
 
   PLAN_ITER_VISITOR (NamespaceUriForPrefixIterator);
-
-  PLAN_ITER_VISITOR (FnTokenizeIterator);
 
   PLAN_ITER_VISITOR (ZorNumGen);
       

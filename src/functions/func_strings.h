@@ -46,6 +46,15 @@ public:
   CODEGEN_DECL();
 };
 
+//fn:string-to-codepoints
+class fn_string_to_codepoints : public function
+{
+public:
+  fn_string_to_codepoints(const signature& sig) : function(sig, FunctionConsts::FN_STRING_TO_CODEPOINTS) {}
+
+  CODEGEN_DECL();
+};
+
 //fn:compare
 class fn_compare : public function
 {
@@ -231,6 +240,15 @@ class fn_replace : public function
 {
 public:
   fn_replace(const signature& sig) : function(sig, FunctionConsts::FN_REPLACE) {}
+
+  CODEGEN_DECL();
+};
+
+//fn:tokenize
+class fn_tokenize : public function
+{
+public:
+  fn_tokenize(const signature& sig) : function(sig, FunctionConsts::FN_TOKENIZE) {}
 
   CODEGEN_DECL();
 };

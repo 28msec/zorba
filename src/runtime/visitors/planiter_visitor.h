@@ -94,6 +94,7 @@ namespace zorba{
     class FnDocAvailableIterator;
     class FnParseIterator;
     class CodepointsToStringIterator;
+    class StringToCodepointsIterator;
     class CompareStrIterator;
     class CodepointEqualIterator;
     class ConcatStrIterator;
@@ -115,6 +116,7 @@ namespace zorba{
     class SubstringAfterIterator;
     class FnMatchesIterator;
     class FnReplaceIterator;
+    class FnTokenizeIterator;
 
 #include "runtime/visitors/planiter_visitor_impl_include.h"
 /**
@@ -323,6 +325,9 @@ public:
     virtual void beginVisit ( const CodepointsToStringIterator& ) = 0;
     virtual void endVisit   ( const CodepointsToStringIterator& ) = 0;
 
+    virtual void beginVisit ( const StringToCodepointsIterator& ) = 0;
+    virtual void endVisit   ( const StringToCodepointsIterator& ) = 0;
+
     virtual void beginVisit ( const CompareStrIterator& ) = 0;
     virtual void endVisit   ( const CompareStrIterator& ) = 0;
 
@@ -385,6 +390,9 @@ public:
 
     virtual void beginVisit ( const FnReplaceIterator& ) = 0;
     virtual void endVisit   ( const FnReplaceIterator& ) = 0;
+
+    virtual void beginVisit ( const FnTokenizeIterator& ) = 0;
+    virtual void endVisit   ( const FnTokenizeIterator& ) = 0;
 
   }; //class PlanIterVisitor
 } //namespace zorba
