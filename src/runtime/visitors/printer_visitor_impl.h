@@ -130,7 +130,6 @@
 
   DECLARE_VISITOR (NodeReferenceIterator)
   DECLARE_VISITOR (NodeByReferenceIterator)
-  DECLARE_VISITOR (FnDataIterator)
   DECLARE_VISITOR (SequentialIterator)
   DECLARE_VISITOR (FlowCtlIterator)
   DECLARE_VISITOR (LoopIterator)

@@ -65,7 +65,6 @@ PLANINTER_VISITOR_GENERATOR(${PLANINTER_VISITOR_HEADER_GENERATOR}
 
 
 LIST(APPEND RUNTIME_SRCS
-    accessors/AccessorsImpl.cpp
     visitors/printer_visitor_api.cpp
     api/plan_iterator_wrapper.cpp
     api/plan_wrapper.cpp

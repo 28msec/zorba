@@ -21,7 +21,6 @@
 
 #include "context/namespace_context.h"
 
-#include "runtime/accessors/AccessorsImpl.h"
 #include "runtime/accessors/accessors.h"
 
 #include "runtime/visitors/planiter_visitor.h"
@@ -112,6 +111,61 @@ bool FnStringIterator::nextImpl(store::Item_t& result, PlanState& planState) con
     STACK_PUSH(true, state);
   }
 
+  STACK_END (state);
+}
+
+/*******************************************************************************
+  2.3 fn:data
+********************************************************************************/
+bool
+FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  PlanIter_t iter;
+  store::Item_t itemNode;
+
+  FnDataIteratorState* state;
+  DEFAULT_STACK_INIT(FnDataIteratorState, state, planState);
+  
+  while (true) 
+  {
+    if (!consumeNext(result, theChildren[0], planState))
+      break;
+
+    if (result->isAtomic())
+    {
+      STACK_PUSH(true, state);
+    }
+    else
+    {
+      assert(result->isNode());
+
+      itemNode.transfer(result);
+      itemNode->getTypedValue(result, state->theTypedValueIter);
+
+      if (state->theTypedValueIter == NULL)
+      {
+        if (result == NULL)
+          continue;
+
+        STACK_PUSH(true, state );
+      }
+      else
+      {
+        state->theTypedValueIter->open();
+      
+        while (true) 
+        {
+          if (!state->theTypedValueIter->next(result))
+            break;
+
+          assert(!result->isNode());
+          STACK_PUSH(true, state );
+        }
+      }
+    }
+  }
+
+  state->theTypedValueIter = 0; // TODO remove???
   STACK_END (state);
 }
 

@@ -26,7 +26,6 @@
 #include "runtime/core/fncall_iterator.h"
 #include "runtime/qnames/QNamesImpl.h"
 #include "runtime/core/sequencetypes.h"
-#include "runtime/accessors/AccessorsImpl.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/validate/validate.h"
 #include "runtime/core/gflwor/let_iterator.h"
@@ -1078,7 +1077,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
 
   PRINTER_VISITOR_DEFINITION(NodeReferenceIterator)
   PRINTER_VISITOR_DEFINITION(NodeByReferenceIterator)
-  PRINTER_VISITOR_DEFINITION (FnDataIterator)
   PRINTER_VISITOR_DEFINITION (SequentialIterator)
   PRINTER_VISITOR_DEFINITION (FlowCtlIterator)
   PRINTER_VISITOR_DEFINITION (LoopIterator)

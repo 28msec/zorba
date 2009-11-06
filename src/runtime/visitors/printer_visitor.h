@@ -56,6 +56,9 @@ namespace zorba {
     void beginVisit( const FnStringIterator& );
     void endVisit  ( const FnStringIterator& );
 
+    void beginVisit( const FnDataIterator& );
+    void endVisit  ( const FnDataIterator& );
+
     void beginVisit( const BaseUriIterator& );
     void endVisit  ( const BaseUriIterator& );
 

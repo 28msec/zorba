@@ -8,8 +8,6 @@
 
   PLAN_ITER_VISITOR (LoopIterator);
 
-  PLAN_ITER_VISITOR (FnDataIterator);
-
   PLAN_ITER_VISITOR (FnResolveUriIterator);
 
   PLAN_ITER_VISITOR (FnLocalNameIterator);

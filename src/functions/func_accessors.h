@@ -28,6 +28,7 @@
 
 #include "common/shared_types.h"
 #include "functions/function_impl.h"
+#include "functions/single_seq_func.h"
 
 
 namespace zorba{
@@ -53,6 +54,26 @@ public:
   fn_nilled(const signature& sig) : function(sig, FunctionConsts::FN_NILLED) {}
 
   CODEGEN_DECL();
+};
+
+//fn:string
+class fn_string : public function
+{
+public:
+  fn_string(const signature& sig) : function(sig, FunctionConsts::FN_STRING) {}
+
+  CODEGEN_DECL();
+};
+
+//fn:data
+class fn_data : public single_seq_opt_function
+{
+public:
+  fn_data(const signature& sig) : single_seq_opt_function(sig, FunctionConsts::FN_DATA) {}
+
+  CODEGEN_DECL();
+
+  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
 };
 
 //fn:base-uri

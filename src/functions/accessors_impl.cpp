@@ -23,25 +23,14 @@
 #include "types/typeops.h"
 #include "functions/single_seq_func.h"
 #include "functions/function_impl.h"
-#include "runtime/accessors/AccessorsImpl.h"
 #include "runtime/accessors/accessors.h"
+#include "functions/func_accessors.h"
 
 
 namespace zorba {
 
-PlanIter_t
-fn_data_func::codegen(CompilerCB* aCb,
-                                static_context* aSctx,
-                                const QueryLoc& aLoc,
-                                std::vector<PlanIter_t>& aArgs,
-                                AnnotationHolder& aAnn) const
-{
-  return new FnDataIterator(aSctx, aLoc, aArgs[0]);
-}
-
-
 xqtref_t
-fn_data_func::return_type(const std::vector<xqtref_t>& arg_types) const
+fn_data::return_type(const std::vector<xqtref_t>& arg_types) const
 {
   RootTypeManager& RTM = GENV_TYPESYSTEM;
 
@@ -109,7 +98,7 @@ fn_name_func::codegen(
 
 
 PlanIter_t
-fn_string_func::codegen(
+fn_string::codegen(
       CompilerCB* /*cb*/,
       static_context* sctx,
       const QueryLoc& loc,
@@ -124,17 +113,9 @@ fn_string_func::codegen(
 ********************************************************************************/
 void populate_context_accessors_impl(static_context* sctx)
 {
-  DECL(sctx, fn_data_func,
-       (createQName (XQUERY_FN_NS, "fn", "data"),
-        GENV_TYPESYSTEM.ITEM_TYPE_STAR, GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR));
-  
   DECL(sctx, fn_name_func,
        (createQName(XQUERY_FN_NS, "fn", "name"),
         GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION, GENV_TYPESYSTEM.STRING_TYPE_ONE));
-
-  DECL(sctx, fn_string_func,
-      (createQName(XQUERY_FN_NS, "fn", "string"),
-      GENV_TYPESYSTEM.ITEM_TYPE_QUESTION, GENV_TYPESYSTEM.STRING_TYPE_ONE));
 }
 
 

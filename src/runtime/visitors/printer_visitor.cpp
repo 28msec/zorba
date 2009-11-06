@@ -124,6 +124,19 @@ void PrinterVisitor::endVisit ( const FnStringIterator& ) {
 }
 // </FnStringIterator>
 
+// <FnDataIterator>
+void PrinterVisitor::beginVisit ( const FnDataIterator& a) {
+  thePrinter.startBeginVisit("FnDataIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnDataIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnDataIterator>
+
 // <BaseUriIterator>
 void PrinterVisitor::beginVisit ( const BaseUriIterator& a) {
   thePrinter.startBeginVisit("BaseUriIterator", ++theId);

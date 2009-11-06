@@ -56,6 +56,23 @@ PlanIter_t fn_nilled::codegen(
 
 
 
+
+
+
+
+PlanIter_t fn_data::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new FnDataIterator(sctx,loc,argv);
+}
+
+
+
+
 PlanIter_t fn_base_uri::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -105,6 +122,16 @@ void populate_context_accessors(static_context* sctx) {
       (createQName("http://www.w3.org/2005/xpath-functions","fn","nilled"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
+
+  DECL(sctx, fn_string,
+      (createQName("http://www.w3.org/2005/xpath-functions","fn","string"),
+      GENV_TYPESYSTEM.ITEM_TYPE_QUESTION,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE));
+
+  DECL(sctx, fn_data,
+      (createQName("http://www.w3.org/2005/xpath-functions","fn","data"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR));
 
   DECL(sctx, fn_base_uri,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","base-uri"),

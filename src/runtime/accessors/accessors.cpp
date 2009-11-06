@@ -27,7 +27,6 @@
 
 
 #include "system/globalenv.h"
-#include "runtime/accessors/AccessorsImpl.h"
 #include "runtime/visitors/planiter_visitor.h"
 #include "store/api/item.h"
 #include "store/api/iterator.h"
@@ -124,6 +123,43 @@ void FnStringIteratorState::reset(PlanState& planState) {
   hasOutput = false;
 }
 // </FnStringIterator>
+
+
+// <FnDataIterator>
+const char* FnDataIterator::class_name_str = "FnDataIterator";
+FnDataIterator::class_factory<FnDataIterator>
+FnDataIterator::g_class_factory;
+
+const serialization::ClassVersion 
+FnDataIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int FnDataIterator::class_versions_count =
+sizeof(FnDataIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void FnDataIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+FnDataIterator::~FnDataIterator() {}
+
+
+void FnDataIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+  theTypedValueIter = NULL;
+}
+
+void FnDataIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+  theTypedValueIter = NULL;
+}
+// </FnDataIterator>
 
 
 // <BaseUriIterator>

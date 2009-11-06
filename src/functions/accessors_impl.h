@@ -29,26 +29,6 @@ namespace zorba {
 
 void populate_context_accessors_impl(static_context* sctx);
 
-
-/*******************************************************************************
-  
-********************************************************************************/
-class fn_data_func : public single_seq_function
-{
-public:
-  fn_data_func(const signature& sig)
-    : single_seq_function (sig, FunctionConsts::FN_DATA) {}
-
-  xqtref_t return_type(const std::vector<xqtref_t> &arg_types) const;
-
-  PlanIter_t codegen(CompilerCB* cb,
-                     static_context* sctx,
-                     const QueryLoc& loc,
-                     std::vector<PlanIter_t>& argv,
-                     AnnotationHolder& ann) const;
-};
-
-
 /*******************************************************************************
   
 ********************************************************************************/
@@ -63,25 +43,6 @@ public:
                      std::vector<PlanIter_t>& argv,
                      AnnotationHolder& ann) const;
 };
-
-/*******************************************************************************
-  
-********************************************************************************/
-class fn_string_func : public function
-{
-public:
-  fn_string_func(const signature& s) : function (s) {}
-
-  PlanIter_t codegen(
-        CompilerCB* /*cb*/,
-        static_context* sctx,
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const;
-};
-
-
-
 
 } //namespace zorba
 

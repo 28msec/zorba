@@ -31,6 +31,7 @@ namespace zorba{
     class NodeNameIterator;
     class NilledIterator;
     class FnStringIterator;
+    class FnDataIterator;
     class BaseUriIterator;
     class DocumentUriIterator;
     class RootIterator;
@@ -135,6 +136,9 @@ public:
 
     virtual void beginVisit ( const FnStringIterator& ) = 0;
     virtual void endVisit   ( const FnStringIterator& ) = 0;
+
+    virtual void beginVisit ( const FnDataIterator& ) = 0;
+    virtual void endVisit   ( const FnDataIterator& ) = 0;
 
     virtual void beginVisit ( const BaseUriIterator& ) = 0;
     virtual void endVisit   ( const BaseUriIterator& ) = 0;

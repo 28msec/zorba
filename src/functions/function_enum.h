@@ -33,6 +33,8 @@ typedef enum {
 #include "functions/function_consts.h"
   FN_NODE_NAME,
   FN_NILLED,
+  FN_STRING,
+  FN_DATA,
   FN_BASE_URI,
   FN_DOCUMENT_URI,
   FN_ROOT,

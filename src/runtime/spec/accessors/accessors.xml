@@ -17,7 +17,6 @@
 
 <zorba:source>
     <zorba:include form="Quoted">system/globalenv.h</zorba:include>
-    <zorba:include form="Quoted">runtime/accessors/AccessorsImpl.h</zorba:include>
     <zorba:include form="Quoted">runtime/visitors/planiter_visitor.h</zorba:include>
     <zorba:include form="Quoted">store/api/item.h</zorba:include>
     <zorba:include form="Quoted">store/api/iterator.h</zorba:include>
@@ -26,12 +25,13 @@
 
 <zorba:codegen>
     <zorba:h>
-        <zorba:include form="Quoted">common/shared_types.h</zorba:include>
-        <zorba:include form="Quoted">functions/function_impl.h</zorba:include>
+      <zorba:include form="Quoted">common/shared_types.h</zorba:include>
+      <zorba:include form="Quoted">functions/function_impl.h</zorba:include>
+      <zorba:include form="Quoted">functions/single_seq_func.h</zorba:include>
     </zorba:h>
     <zorba:cpp>
-        <zorba:include form="Quoted">runtime/accessors/accessors.h</zorba:include>
-        <zorba:include form="Quoted">functions/func_accessors.h</zorba:include>
+      <zorba:include form="Quoted">runtime/accessors/accessors.h</zorba:include>
+      <zorba:include form="Quoted">functions/func_accessors.h</zorba:include>
     </zorba:cpp>
 </zorba:codegen>
     
@@ -93,7 +93,6 @@
     name="FnStringIterator"
     generateVisitor="true"
     generateAccept="true"
-    generateCodegen="false"
     arity="nary">
 
     <zorba:description author="Zorba Team">fn:string</zorba:description>
@@ -109,6 +108,13 @@
         generateConstructor="true" generateDestructor="true">
         <zorba:member type="bool" name="hasOutput" defaultValue="false" brief=""/>
     </zorba:state>
+
+    <zorba:function generateCodegen="false">
+        <zorba:signature localname="string" prefix="fn">
+            <zorba:param>item()?</zorba:param>
+            <zorba:output>xs:string</zorba:output>
+        </zorba:signature>
+    </zorba:function>
     
 </zorba:iterator>
 
@@ -116,21 +122,24 @@
 /*******************************************************************************
  * 2.4 fn:data
 ********************************************************************************/
+-->
 
-<zorba:iterator
-    name="DataIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="unary">
+<zorba:iterator name="FnDataIterator">
 
-    <zorba:description author="Zorba Team">fn:concat</zorba:description>
-    
-    <zorba:state generateInit="true" generateReset="true">
-        <zorba:member type="store::Iterator_t" name="theTypedValueIter" defaultValue="NULL" brief=""/>
-    </zorba:state>
+  <zorba:description author="Zorba Team">fn:data</zorba:description>
+  
+  <zorba:state generateInit="true" generateReset="true">
+      <zorba:member type="store::Iterator_t" name="theTypedValueIter" defaultValue="NULL" brief=""/>
+  </zorba:state>
+
+  <zorba:function generateReturnTypeDecl="true" baseSig="single_seq_opt_function">
+    <zorba:signature localname="data" prefix="fn">
+      <zorba:param>item()*</zorba:param>
+      <zorba:output>xs:anyAtomicType*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
     
 </zorba:iterator>
--->
 
 <!--
 /*******************************************************************************

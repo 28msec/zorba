@@ -147,6 +147,48 @@ public:
 
 
 /**
+ * fn:data
+ * 
+ * Author: Zorba Team * 
+ */
+class FnDataIteratorState : public PlanIteratorState
+{
+public:
+  store::Iterator_t theTypedValueIter; //
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class FnDataIterator: public NaryBaseIterator <FnDataIterator, FnDataIteratorState>
+{
+public:
+  SERIALIZABLE_CLASS(FnDataIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnDataIterator,
+  NaryBaseIterator<FnDataIterator, FnDataIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FnDataIterator, FnDataIteratorState>*)this);
+  }
+
+  FnDataIterator(static_context* sctx, const QueryLoc& loc,
+  std::vector<PlanIter_t>& aChildren)
+  :
+  NaryBaseIterator<FnDataIterator, FnDataIteratorState>
+  (sctx, loc, aChildren){}
+
+  virtual ~FnDataIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
  * fn:base-uri
  * 
  * Author: Zorba Team * 

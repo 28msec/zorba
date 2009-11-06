@@ -3,7 +3,6 @@
   class SequentialIterator;
   class FlowCtlIterator;
   class LoopIterator;
-  class FnDataIterator;
   class FnErrorIterator;
   class FnResolveUriIterator;
   class FnBooleanIterator;
