@@ -57,7 +57,7 @@ ENDIF(WIN32)
 # Compile and build the multi-threaded testdriver executable
 #
 
-SET(ZORBA_BUILD_MT_TESTDRIVER 1)
+#SET(ZORBA_BUILD_MT_TESTDRIVER 1)
 
 IF (ZORBA_BUILD_MT_TESTDRIVER)
 
