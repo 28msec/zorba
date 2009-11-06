@@ -36,8 +36,6 @@
 #include "functions/func_fnput.h"
 
 #include "functions/Collections.h"
-#include "functions/DynamicContext.h"
-#include "functions/StaticContext.h"
 #include "functions/DataDefinitionLanguage.h"
 #include "functions/Numerics.h"
 #include "functions/QNames.h"
@@ -94,8 +92,6 @@ void BuiltinFunctionLibrary::populateContext(static_context* sctx)
   populateContext_Comparison(sctx);
   populateContext_Constructors(sctx);
   populateContext_Collections(sctx);
-  populateContext_DynamicContext(sctx);
-  populateContext_StaticContext(sctx);
   populateContext_DataDefinitionLanguage(sctx);
   populateContext_VarDecl(sctx);
   populateContext_Error(sctx);

@@ -42,6 +42,71 @@ public:
   DEFAULT_NARY_CODEGEN(FnCollectionIterator);
 };
 
+
+class dc_collection : public function 
+{
+public:
+  dc_collection(const signature& sig): function(sig, FunctionConsts::FN_ZORBA_COLLECTION)
+  {}
+
+  bool requires_dyn_ctx() const { return true; }
+
+  DEFAULT_NARY_CODEGEN(ZorbaCollectionIterator);
+};
+
+
+class dc_is_available_collections : public function
+{
+public:
+  dc_is_available_collections(const signature& sig): function(sig){}
+
+  bool requires_dyn_ctx() const { return true; }
+
+  DEFAULT_NARY_CODEGEN(DcIsAvailableCollectionIterator);
+};
+
+
+class dc_available_collections : public function
+{
+public:
+  dc_available_collections(const signature& sig): function(sig){}
+
+  bool requires_dyn_ctx () const { return true; }
+
+  DEFAULT_NARY_CODEGEN(DcAvailableCollectionsIterator);
+};
+
+
+class dc_index_of : public function
+{
+public:
+  dc_index_of(const signature& sig): function(sig){}
+
+  bool requires_dyn_ctx () const { return true; }
+
+  DEFAULT_NARY_CODEGEN(ZorbaIndexOfIterator);
+};
+
+class sc_is_declared_collection : public function
+{
+public:
+  sc_is_declared_collection(const signature& sig): function(sig){}
+
+  bool requires_dyn_ctx () const { return false; }
+
+  DEFAULT_NARY_CODEGEN(ScIsDeclaredCollectionIterator);
+};
+
+class sc_declared_collections : public function
+{
+public:
+  sc_declared_collections(const signature& sig): function(sig){}
+
+  bool requires_dyn_ctx () const { return false; }
+
+  DEFAULT_NARY_CODEGEN(ScDeclaredCollectionsIterator);
+};
+
 void populateContext_Collections(static_context* sctx)
 {
 
@@ -53,6 +118,35 @@ DECL(sctx, fn_collection,
      (createQName(XQUERY_FN_NS, "fn", "collection"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
+
+DECL(sctx, dc_collection,
+     (createQName(ZORBA_DYNAMICCONTEXT_FN_NS, "fn-zorba-dynamiccontext", "collection"),
+      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+      GENV_TYPESYSTEM.DOCUMENT_UNTYPED_TYPE_STAR));
+
+DECL(sctx, dc_is_available_collections,
+     (createQName(ZORBA_DYNAMICCONTEXT_FN_NS, "fn-zorba-dynamiccontext", "is-available-collection"),
+      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+
+DECL(sctx, dc_available_collections,
+     (createQName(ZORBA_DYNAMICCONTEXT_FN_NS, "fn-zorba-dynamiccontext", "available-collections"),
+      GENV_TYPESYSTEM.QNAME_TYPE_STAR));
+
+DECL(sctx, dc_index_of,
+     (createQName(ZORBA_DYNAMICCONTEXT_FN_NS, "fn-zorba-dynamiccontext", "index-of"),
+      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
+
+DECL(sctx, sc_is_declared_collection,
+     (createQName(ZORBA_STATICCONTEXT_FN_NS, "fn-zorba-staticcontext", "is-declared-collection"),
+      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+
+DECL(sctx, sc_declared_collections,
+     (createQName(ZORBA_STATICCONTEXT_FN_NS, "fn-zorba-staticcontext", "declared-collections"),
+      GENV_TYPESYSTEM.QNAME_TYPE_STAR));
 }
 
 } /* namespace zorba */
