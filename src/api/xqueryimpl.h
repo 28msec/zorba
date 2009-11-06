@@ -27,9 +27,10 @@
 
 #include "common/shared_types.h" 
 #include "compiler/api/compilercb.h"
-#include "context/dynamic_context.h"
 
-namespace zorba {
+
+namespace zorba 
+{
 
 class RCObject;
 class ZorbaDebugger;
@@ -38,6 +39,7 @@ class ZorbaDebuggerCommons;
 class DynamicContextImpl;
 class StaticContextImpl;
 class ResultIteratorImpl;
+class dynamic_context;
 
 
 /*******************************************************************************

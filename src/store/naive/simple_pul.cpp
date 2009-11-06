@@ -24,13 +24,13 @@
 #include "store/naive/node_items.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/simple_collection.h"
+#include "store/naive/simple_index.h"
 
 #include "store/api/collection.h"
 #include "store/api/iterator.h"
 #include "store/api/item_factory.h"
+#include "store/api/index.h"
 
-
-#include "context/internal_uri_resolvers.h"
 #include "system/globalenv.h"
 
 
@@ -493,12 +493,17 @@ void PULImpl::addSetElementType(
     bool                        haveTypedValue,
     bool                        isInSubstitutionGroup)
 {
-  UpdatePrimitive* upd = new UpdSetElementType(this, target,
-                                               typeName, value,
-                                               haveValue, haveEmptyValue,
-                                               haveTypedValue,
-                                               false,
-                                               isInSubstitutionGroup);
+  UpdatePrimitive* upd = 
+  new UpdSetElementType(this,
+                        target,
+                        typeName,
+                        value,
+                        haveValue,
+                        haveEmptyValue,
+                        haveTypedValue,
+                        false,
+                        isInSubstitutionGroup);
+
   theValidationList.push_back(upd);
 }
 
@@ -514,12 +519,17 @@ void PULImpl::addSetElementType(
 {
   store::Item_t typedValue = new ItemVector(valueV);
 
-  UpdatePrimitive* upd = new UpdSetElementType(this, target,
-                                               typeName, typedValue,
-                                               haveValue, haveEmptyValue,
-                                               haveTypedValue,
-                                               true,
-                                               isInSubstitutionGroup);
+  UpdatePrimitive* upd =
+  new UpdSetElementType(this,
+                        target,
+                        typeName,
+                        typedValue,
+                        haveValue,
+                        haveEmptyValue,
+                        haveTypedValue,
+                        true,
+                        isInSubstitutionGroup);
+
   theValidationList.push_back(upd);
 }
 
@@ -529,8 +539,9 @@ void PULImpl::addSetAttributeType(
     store::Item_t&              typeName,
     store::Item_t&              typedValue)
 {
-  UpdatePrimitive* upd = new UpdSetAttributeType(this, target,
-                                                 typeName, typedValue, false);
+  UpdatePrimitive* upd = 
+  new UpdSetAttributeType(this, target, typeName, typedValue, false);
+
   theValidationList.push_back(upd);
 }
 
@@ -542,8 +553,9 @@ void PULImpl::addSetAttributeType(
 {
   store::Item_t typedValue = new ItemVector(typedValueV);
 
-  UpdatePrimitive* upd = new UpdSetAttributeType(this, target,
-                                                 typeName, typedValue, true);
+  UpdatePrimitive* upd = 
+  new UpdSetAttributeType(this, target, typeName, typedValue, true);
+
   theValidationList.push_back(upd);
 }
 
@@ -565,23 +577,6 @@ void PULImpl::addPut(store::Item_t& target, store::Item_t& uri)
     }
   }
 
-  if (target->getNodeKind() != store::StoreConsts::documentNode)
-  {
-    assert(target->getNodeKind() == store::StoreConsts::elementNode);
-
-    ElementNode* elem =  static_cast<ElementNode*>(target.getp());
-
-    DocumentNode* doc = new DocumentNode();
-    doc->setTree(elem->getTree());
-    doc->setOrdPath(NULL, 1, store::StoreConsts::documentNode);
-
-    doc->insertChild(elem, 0);
-
-    store::Item_t docItem(doc);
-
-    target = docItem;
-  }
-
   UpdatePrimitive* upd = new UpdPut(this, target, uri);
 
   thePutList.push_back(upd);
@@ -592,7 +587,7 @@ void PULImpl::addPut(store::Item_t& target, store::Item_t& uri)
  collection functions
 ********************************************************************************/
 void PULImpl::addCreateCollection(
-    store::Item_t&    name)
+    store::Item_t& name)
 {
   theCreateCollectionList.push_back(
     new UpdCreateCollection(this, name)
@@ -601,7 +596,7 @@ void PULImpl::addCreateCollection(
 
 
 void PULImpl::addDropCollection(
-    store::Item_t&              name)
+    store::Item_t& name)
 {
   theDropCollectionList.push_back(
     new UpdDropCollection(this, name)
@@ -610,8 +605,8 @@ void PULImpl::addDropCollection(
 
 
 void PULImpl::addInsertIntoCollection(
-    store::Item_t&         name,
-    store::Item_t&         node)
+    store::Item_t& name,
+    store::Item_t& node)
 {
   theInsertIntoCollectionList.push_back(
     new UpdInsertIntoCollection(this, name, node)
@@ -967,16 +962,46 @@ void PULImpl::checkTransformUpdates(const std::vector<store::Item*>& rootNodes) 
 /*******************************************************************************
 
 ********************************************************************************/
-void PULImpl::getCreatedIndices(std::vector<IndexBinding>& indices) const
+void PULImpl::getIndicesToRefresh(std::vector<const store::Item*>& indices) const
 {
-  ulong n = theCreateIndexList.size();
-  indices.resize(n);
+  SimpleStore* store = SimpleStoreManager::getStore();
 
-  for (ulong i = 0; i < n; ++i)
+  std::vector<const store::Item*> modifiedCollections;
+
+  getModifiedCollections(modifiedCollections);
+
+  ulong numModifiedCollections = modifiedCollections.size();
+
+  IndexSet::iterator ite = store->getIndices().begin();
+  IndexSet::iterator end = store->getIndices().end();
+
+  for (; ite != end; ++ite)
   {
-    UpdCreateIndex* upd = static_cast<UpdCreateIndex*>(theCreateIndexList[i]);
-    indices[i].first = upd->theQName.getp();
-    indices[i].second = upd->theIndex;
+    IndexImpl* index = static_cast<IndexImpl*>((*ite).second.getp());
+    const store::IndexSpecification& indexSpec = index->getSpecification();
+
+    if (!indexSpec.theIsAutomatic)
+      continue;
+
+    const std::vector<store::Item_t>& indexSources = indexSpec.theSources;
+    ulong numIndexSources = indexSources.size();
+
+    for (ulong i = 0; i < numIndexSources; ++i)
+    {
+      ulong j = 0;
+
+      for (; j < numModifiedCollections; ++j)
+      {
+        if (indexSources[i]->equals(modifiedCollections[j]))
+        {
+          indices.push_back(index->getName());
+          break;
+        }
+      }
+
+      if (j < numModifiedCollections)
+        break;
+    }
   }
 }
 
@@ -984,15 +1009,19 @@ void PULImpl::getCreatedIndices(std::vector<IndexBinding>& indices) const
 /*******************************************************************************
 
 ********************************************************************************/
-void PULImpl::getDropedIndices(std::vector<const store::Item*>& indices) const
+void PULImpl::getModifiedCollections(std::vector<const store::Item*>& collections) const
 {
-  ulong n = theDropIndexList.size();
-  indices.resize(n);
+  NodeToUpdatesMap::iterator ite = theNodeToUpdatesMap.begin();
+  NodeToUpdatesMap::iterator end = theNodeToUpdatesMap.end();
 
-  for (ulong i = 0; i < n; ++i)
+  for (; ite != end; ++ite)
   {
-    UpdDropIndex* upd = static_cast<UpdDropIndex*>(theDropIndexList[i]);
-    indices[i] = upd->theQName.getp();
+    XmlNode* node = (*ite).first;
+
+    SimpleCollection* collection = node->getCollection();
+
+    if (collection != NULL)
+      collections.push_back(collection->getName());
   }
 }
 
@@ -1670,6 +1699,33 @@ void UpdPut::apply()
 
   try
   {
+    // Have to copy because addNode() will set the doc uri of target tree to
+    // the uri passed as an arg to fn:put, but the target tree may already
+    // have a doc uri, which we should not overwrite. Another reason that we
+    // have to copy is that if the target node is an element node, we wrap it
+    // with a doc node, but thi not be possible would if the target node
+    // has a parent already.
+    store::CopyMode copymode;
+    copymode.set(true, true, true, true);
+    theTarget = theTarget->copy(NULL, 0, copymode);
+
+    if (theTarget->getNodeKind() != store::StoreConsts::documentNode)
+    {
+      assert(theTarget->getNodeKind() == store::StoreConsts::elementNode);
+
+      ElementNode* elem =  static_cast<ElementNode*>(theTarget.getp());
+
+      DocumentNode* doc = new DocumentNode();
+      doc->setTree(elem->getTree());
+      doc->setOrdPath(NULL, 1, store::StoreConsts::documentNode);
+      
+      doc->insertChild(elem, 0);
+
+      store::Item_t docItem(doc);
+
+      theTarget = docItem;
+    }
+
     store->addNode(theTargetUri->getStringValue(), theTarget);
   }
   catch(error::ZorbaError& e)

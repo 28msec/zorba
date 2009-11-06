@@ -98,6 +98,16 @@ static void createIndexSpec(
   spec.theIsSorted = zorbaIndex->getMethod() == ValueIndex::BTREE;
   spec.theIsTemp = zorbaIndex->isTemp();
   spec.theIsThreadSafe = true;
+  spec.theIsAutomatic = zorbaIndex->isAutomatic();
+
+  ulong numSources = zorbaIndex->num_sources();
+
+  spec.theSources.resize(numSources);
+
+  for (ulong i = 0; i < numSources; ++i)
+  {
+    spec.theSources[i] = const_cast<store::Item*>(zorbaIndex->get_source(i));
+  }
 }
 
 
@@ -264,8 +274,7 @@ bool RefreshIndexIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
   buildPlan = zorbaIndex->getBuildPlan(planState.theCompilerCB, loc);
 
-  planWrapper = new PlanWrapper(buildPlan, planState.theCompilerCB, dctx,
-                                0); // no query, yet and hence no external functions
+  planWrapper = new PlanWrapper(buildPlan, planState.theCompilerCB, dctx, NULL); 
   
   result = GENV_ITEMFACTORY->createPendingUpdateList();
 

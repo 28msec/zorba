@@ -551,6 +551,8 @@ void InternalNode::insertChild(XmlNode* child, ulong pos)
 {
   children().insert(child, pos);
 
+  assert(child->theParent == NULL);
+
   child->theParent = this;
 }
 

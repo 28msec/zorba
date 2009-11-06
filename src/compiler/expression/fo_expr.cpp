@@ -86,13 +86,14 @@ fo_expr::fo_expr(
     short sctx,
     const QueryLoc& loc,
     const function* f,
-    expr_t arg)
+    const expr* arg)
   :
   expr(sctx, loc),
   theFunction(const_cast<function*>(f))
 {
   assert(f != NULL);
-  theArgs.push_back(arg);
+  theArgs.resize(1);
+  theArgs[0] = arg;
   
   compute_scripting_kind();
 }
@@ -102,8 +103,8 @@ fo_expr::fo_expr(
     short sctx,
     const QueryLoc& loc,
     const function* f,
-    expr_t arg1,
-    expr_t arg2)
+    const expr* arg1,
+    const expr* arg2)
   :
   expr(sctx, loc),
   theFunction(const_cast<function*>(f))
@@ -170,7 +171,7 @@ void fo_expr::compute_scripting_kind() const
 
     theCache.scripting_kind.kind = kind;
   }
-  else if (func->getKind() == FunctionConsts::FN_VAR_ASSIGN)
+  else if (func->getKind() == FunctionConsts::OP_VAR_ASSIGN)
   {
     for (ulong i = 0; i < numArgs; ++i) 
     {
@@ -215,6 +216,19 @@ xqtref_t fo_expr::return_type_impl(static_context* sctx) const
 }
 
 
+expr_t fo_expr::clone(substitution_t& subst) const
+{
+  std::auto_ptr<fo_expr> fo(new fo_expr(theSctxId, get_loc(), get_func()));
+
+  for (unsigned i = 0; i < theArgs.size(); ++i)
+    fo->theArgs.push_back(theArgs[i]->clone(subst));
+
+  fo->theCache.scripting_kind.kind  = theCache.scripting_kind.kind;
+
+  return fo.release();
+}
+
+
 expr_iterator_data* fo_expr::make_iter() 
 { 
   return new fo_expr_iterator_data(this); 
@@ -233,19 +247,6 @@ void fo_expr::next_iter(expr_iterator_data& v)
   }
 
   END_EXPR_ITER();
-}
-
-
-expr_t fo_expr::clone(substitution_t& subst) const
-{
-  std::auto_ptr<fo_expr> fo(new fo_expr(theSctxId, get_loc(), get_func()));
-
-  for (unsigned i = 0; i < theArgs.size(); ++i)
-    fo->theArgs.push_back(theArgs[i]->clone(subst));
-
-  fo->theCache.scripting_kind.kind  = theCache.scripting_kind.kind;
-
-  return fo.release();
 }
 
 

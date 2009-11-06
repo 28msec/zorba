@@ -36,8 +36,11 @@ namespace zorba
 
 static void inferWinCondVarTypes(const flwor_wincond* cond, xqtref_t domainType);
 
-static expr_t wrap_in_num_promotion (expr_t arg, xqtref_t oldt, xqtref_t t);
+static expr_t wrap_in_num_promotion(expr* arg, xqtref_t oldt, xqtref_t t);
 
+static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx);
+
+static function* flip_value_cmp(std::string fname);
 
 
 /*******************************************************************************
@@ -202,7 +205,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     //function *fnboolean = LOOKUP_FN("fn", "boolean", 1);
     if (fo->get_func()->CHECK_IS_BUILTIN_NAMED("boolean", 1)) 
     {
-      expr_t arg = (*fo)[0];
+      expr_t arg = fo->get_arg(0, false);
       xqtref_t arg_type = arg->return_type(rCtx.getStaticContext(node));
       if (TypeOps::is_subtype(*arg_type, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
         return arg;
@@ -213,7 +216,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     //function *fndata = LOOKUP_FN("fn", "data", 1);
     if (fo->get_func()->CHECK_IS_BUILTIN_NAMED("data", 1)) 
     {
-      expr_t arg = (*fo)[0];
+      expr_t arg = fo->get_arg(0, false);
       xqtref_t arg_type = arg->return_type(rCtx.getStaticContext(node));
       if (TypeOps::is_subtype(*arg_type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR))
         return arg;
@@ -283,68 +286,6 @@ RULE_REWRITE_PRE(SpecializeOperations)
 }
 
 
-static void modify_expr (expr_t &old, expr_t ne) {
-  if (ne != NULL)
-    old = ne;
-}
-
-
-static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx)
-{
-  const function* fn = fo->get_func();
-  expr_t arg0 = (*fo)[0];
-  expr_t arg1 = (*fo)[1];
-  xqtref_t t0 = arg0->return_type(sctx);
-  xqtref_t t1 = arg1->return_type(sctx);
-
-  xqtref_t aType = 
-  TypeOps::arithmetic_type(*t0,
-                           *t1,
-                           fn->arithmetic_kind() == ArithmeticConsts::DIVISION);
-  
-  if (!TypeOps::is_numeric(*aType))
-  {
-    return NULL;
-  }
-
-  std::vector<xqtref_t> argTypes;  
-  argTypes.push_back(aType);
-  argTypes.push_back(aType);
-  
-  function* replacement = fn->specialize(sctx, argTypes);
-  if (replacement != NULL) 
-  {
-    fo->set_func(replacement);
-    modify_expr((*fo)[0], wrap_in_num_promotion(arg0, t0, aType));
-    modify_expr((*fo)[1], wrap_in_num_promotion(arg1, t1, aType));    
-    return aType;
-  }
-
-  return NULL;
-}
-
-
-static function* flip_value_cmp (std::string fname) 
-{
-  size_t pos = fname.rfind ('-');
-  std::string n = fname.substr (0, pos), n1;
-
-  if (n == ":value-equal" || n == ":value-not-equal")
-    n1 = n;
-  else if (n == ":value-greater-equal")
-    n1 = ":value-less-equal";
-  else if (n == ":value-less-equal")
-    n1 = ":value-greater-equal";
-  else if (n == ":value-greater")
-    n1 = ":value-less";
-  else if (n == ":value-less")
-    n1 = ":value-greater";
-  else
-    return NULL;
-  return LOOKUP_FN ("fn", n1 + n.substr (pos), 2);
-}
-
-
 RULE_REWRITE_POST(SpecializeOperations)
 {
   const Properties& props = *Properties::instance();
@@ -363,7 +304,7 @@ RULE_REWRITE_POST(SpecializeOperations)
 
     if (fn->getKind() == FunctionConsts::FN_SUM)
     {
-      const expr_t& argExpr = (*fo)[0];
+      expr_t argExpr = fo->get_arg(0, false);
       xqtref_t argType = argExpr->return_type(sctx);
       std::vector<xqtref_t> argTypes;  
       argTypes.push_back(argType);
@@ -380,7 +321,7 @@ RULE_REWRITE_POST(SpecializeOperations)
                                                 argExpr,
                                                 rtm.DOUBLE_TYPE_STAR);
           
-          (*fo)[0] = promoteExpr;
+          fo->set_arg(0, promoteExpr);
         }
 
         return node;
@@ -388,21 +329,19 @@ RULE_REWRITE_POST(SpecializeOperations)
     }
     else if (fo->num_args() == 2) 
     {
-      expr_t arg [2];
-      arg [0] = (*fo)[0];
-      arg [1] = (*fo)[1];
+      expr* arg0 = fo->get_arg(0, false);
+      expr* arg1 = fo->get_arg(1, false);
 
-      xqtref_t t[2];
-      t[0] = arg[0]->return_type(sctx);
-      t[1] = arg[1]->return_type(sctx);
+      xqtref_t t0 = arg0->return_type(sctx);
+      xqtref_t t1 = arg1->return_type(sctx);
 
-      if (TypeOps::type_max_cnt(*t[0]) > 1 || TypeOps::type_max_cnt(*t[1]) > 1)
+      if (TypeOps::type_max_cnt(*t0) > 1 || TypeOps::type_max_cnt(*t1) > 1)
         return NULL;
 
-      if (props.specializeNum() && fn->isArithmeticFunction()) 
+      if (props.specializeNum() && fn->isArithmeticFunction())
       {
-        if (! TypeOps::is_numeric_or_untyped(*t [0]) ||
-            ! TypeOps::is_numeric_or_untyped (*t [1]))
+        if (! TypeOps::is_numeric_or_untyped(*t0) ||
+            ! TypeOps::is_numeric_or_untyped(*t1))
           return NULL;
 
         if (specialize_numeric(fo, sctx) != NULL)
@@ -410,13 +349,14 @@ RULE_REWRITE_POST(SpecializeOperations)
       }
       else if (props.specializeCmp() && fn->isComparisonFunction()) 
       {
-        if (fn->isGeneralComparisonFunction()) 
+        if (fn->isGeneralComparisonFunction())
         {
           std::vector<xqtref_t> argTypes;
-          argTypes.push_back(t [0]);
-          argTypes.push_back(t [1]);
+          argTypes.push_back(t0);
+          argTypes.push_back(t1);
           function* replacement = fn->specialize(sctx, argTypes);
-          if (replacement != NULL) {
+          if (replacement != NULL) 
+          {
             fo->set_func(replacement);
             return node;
           }
@@ -425,17 +365,21 @@ RULE_REWRITE_POST(SpecializeOperations)
         {
           xqtref_t string_type = rtm.STRING_TYPE_QUESTION;
           bool string_cmp = true;
-          expr_t nargs [2];
+          expr_t nargs[2];
+
           for (int i = 0; i < 2; i++) 
           {
-            if (TypeOps::is_subtype(*t[i], *rtm.UNTYPED_ATOMIC_TYPE_QUESTION)) 
+            expr* arg = (i == 0 ? arg0 : arg1);
+            xqtref_t type = (i == 0 ? t0 : t1);
+
+            if (TypeOps::is_subtype(*type, *rtm.UNTYPED_ATOMIC_TYPE_QUESTION)) 
             {
-              nargs [i] = new cast_expr(arg[i]->get_sctx_id(),
-                                        arg[i]->get_loc(),
-                                        arg[i],
-                                        string_type);
+              nargs[i] = new cast_expr(arg->get_sctx_id(),
+                                       arg->get_loc(),
+                                       arg,
+                                       string_type);
             }
-            else if (! TypeOps::is_subtype(*t[i], *string_type)) 
+            else if (! TypeOps::is_subtype(*type, *string_type)) 
             {
               string_cmp = false;
               break;
@@ -445,28 +389,35 @@ RULE_REWRITE_POST(SpecializeOperations)
           if (string_cmp) 
           {
             for (int i = 0; i < 2; i++)
-              modify_expr ((*fo) [i], nargs [i]);
+            {
+              if (nargs[i] != NULL)
+                fo->set_arg(i, nargs[i]);
+            }
+
             std::vector<xqtref_t> argTypes;
             argTypes.push_back(string_type);
             argTypes.push_back(string_type);
-            function *replacement = fn->specialize(sctx, argTypes);
-            if (replacement != NULL) {
+            function* replacement = fn->specialize(sctx, argTypes);
+            if (replacement != NULL) 
+            {
               fo->set_func(replacement);
               return node;
             } 
           }
-          else if (TypeOps::is_numeric (*t [0]) && TypeOps::is_numeric (*t [1])) 
+          else if (TypeOps::is_numeric(*t0) && TypeOps::is_numeric(*t1)) 
           {
-            xqtref_t aType = specialize_numeric (fo, sctx);
-            if (aType != NULL) {
-              if (TypeOps::is_equal (*TypeOps::prime_type (*aType), *rtm.DECIMAL_TYPE_ONE)
-                  && TypeOps::is_subtype (*t [0], *rtm.INTEGER_TYPE_ONE))
+            xqtref_t aType = specialize_numeric(fo, sctx);
+            if (aType != NULL) 
+            {
+              if (TypeOps::is_equal(*TypeOps::prime_type(*aType), *rtm.DECIMAL_TYPE_ONE)
+                  && TypeOps::is_subtype(*t0, *rtm.INTEGER_TYPE_ONE))
               {
-                expr_t tmp = (*fo) [0];
-                (*fo) [0] = (*fo) [1];
-                (*fo) [1] = tmp;
+                expr_t tmp = fo->get_arg(0, false);
+                fo->set_arg(0, fo->get_arg(1, false));
+                fo->set_arg(1, tmp);
                 fo->set_func(flip_value_cmp(fo->get_fname()->getLocalName()->str()));
               }
+
               return node;
             }
           }
@@ -517,21 +468,84 @@ RULE_REWRITE_POST(SpecializeOperations)
 }
 
 
-static expr_t wrap_in_num_promotion(expr_t arg, xqtref_t oldt, xqtref_t t) 
+static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx)
+{
+  const function* fn = fo->get_func();
+  expr* arg0 = fo->get_arg(0, false);
+  expr* arg1 = fo->get_arg(1, false);
+  xqtref_t t0 = arg0->return_type(sctx);
+  xqtref_t t1 = arg1->return_type(sctx);
+
+  xqtref_t aType = 
+  TypeOps::arithmetic_type(*t0,
+                           *t1,
+                           fn->arithmetic_kind() == ArithmeticConsts::DIVISION);
+  
+  if (!TypeOps::is_numeric(*aType))
+  {
+    return NULL;
+  }
+
+  std::vector<xqtref_t> argTypes;  
+  argTypes.push_back(aType);
+  argTypes.push_back(aType);
+  
+  function* replacement = fn->specialize(sctx, argTypes);
+  if (replacement != NULL) 
+  {
+    fo->set_func(replacement);
+
+    expr_t newArg0 = wrap_in_num_promotion(arg0, t0, aType);
+    expr_t newArg1 = wrap_in_num_promotion(arg1, t1, aType);
+
+    if (newArg0 != NULL)
+      fo->set_arg(0, newArg0);
+
+    if (newArg1 != NULL)
+      fo->set_arg(1, newArg1);
+ 
+    return aType;
+  }
+
+  return NULL;
+}
+
+
+static expr_t wrap_in_num_promotion(expr* arg, xqtref_t oldt, xqtref_t t) 
 {
   if (TypeOps::is_subtype(*oldt, *t))
     return NULL;
 
   if (arg->get_expr_kind() == promote_expr_kind && TypeOps::type_max_cnt(*t) <= 1)
   {
-    promote_expr* pe = arg.cast<promote_expr>();
-    expr_t inner_e = pe->get_input(true);
-    xqtref_t inner_t = pe->get_target_type();
-    if (TypeOps::is_equal(*inner_t, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
-      arg = inner_e;
+    promote_expr* pe = static_cast<promote_expr*>(arg);
+    xqtref_t peType = pe->get_target_type();
+    if (TypeOps::is_equal(*peType, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
+      arg = pe->get_input(false);
   }
 
   return new promote_expr(arg->get_sctx_id(), arg->get_loc(), arg, t);
+}
+
+
+static function* flip_value_cmp(std::string fname) 
+{
+  size_t pos = fname.rfind ('-');
+  std::string n = fname.substr (0, pos), n1;
+
+  if (n == ":value-equal" || n == ":value-not-equal")
+    n1 = n;
+  else if (n == ":value-greater-equal")
+    n1 = ":value-less-equal";
+  else if (n == ":value-less-equal")
+    n1 = ":value-greater-equal";
+  else if (n == ":value-greater")
+    n1 = ":value-less";
+  else if (n == ":value-less")
+    n1 = ":value-greater";
+  else
+    return NULL;
+  return LOOKUP_FN ("fn", n1 + n.substr (pos), 2);
 }
 
 

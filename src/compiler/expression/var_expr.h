@@ -157,7 +157,7 @@ public:
 
   expr* get_domain_expr() const;
 
-  var_expr* get_pos_var() const;
+  const var_expr* get_pos_var() const;
 
   void compute_scripting_kind() const;
 

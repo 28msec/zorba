@@ -440,6 +440,7 @@ store::Collection_t SimpleStore::createCollection(store::Item_t& aName)
   return collection;
 }
 
+
 store::Collection_t SimpleStore::createUriCollection(const xqpStringStore_t& uri)
 {
   if (uri == NULL)
@@ -477,10 +478,9 @@ store::Collection_t SimpleStore::getCollection(const store::Item_t& aName)
   if (theCollections.get(aName, collection) )
     return collection.getp();
   else
-  {
     return NULL;
-  }
 }
+
 
 store::Collection_t SimpleStore::getUriCollection(const xqpStringStore_t& uri)
 {
@@ -491,10 +491,9 @@ store::Collection_t SimpleStore::getUriCollection(const xqpStringStore_t& uri)
   if (theUriCollections.get(uri, collection) )
     return collection.getp();
   else
-  {
     return NULL;
-  }
 }
+
 
 /*******************************************************************************
   Delete the collection with the given QName. If there is no collection with
@@ -505,10 +504,13 @@ void SimpleStore::deleteCollection(const store::Item_t& aName)
   if (aName == NULL)
     return;
 
-  if (!theCollections.remove(aName)) {
+  if (!theCollections.remove(aName)) 
+  {
     ZORBA_ERROR_PARAM(API0006_COLLECTION_NOT_FOUND, aName->getStringValue(), "");
   }
 }
+
+
 void SimpleStore::deleteUriCollection(const xqpStringStore_t& uri)
 {
   if (uri == NULL)
@@ -516,10 +518,12 @@ void SimpleStore::deleteUriCollection(const xqpStringStore_t& uri)
 
   bool deleted = theUriCollections.remove(uri);
 
-  if (!deleted) {
+  if (!deleted) 
+  {
     ZORBA_ERROR_PARAM(API0006_COLLECTION_NOT_FOUND, uri->c_str(), "");
   }
 }
+
 
 /*******************************************************************************
   Resturn an iterator that lists the QName's of all the available collections.
@@ -531,29 +535,35 @@ private:
   CollectionSet::iterator theIterator;
 
 public:
-  CollectionNameIterator(CollectionSet& aCollections) {
+  CollectionNameIterator(CollectionSet& aCollections) 
+  {
     theCollections = &aCollections;
   }
+
   virtual ~CollectionNameIterator() { close(); }
-  virtual void open() {
-    theIterator = theCollections->begin();
-  }
-  virtual bool next(store::Item_t& aResult) {
-    if (theIterator == theCollections->end()) {
+
+  virtual void open() { theIterator = theCollections->begin(); }
+
+  virtual bool next(store::Item_t& aResult) 
+  {
+    if (theIterator == theCollections->end()) 
+    {
        aResult = NULL;
       return false;
     }
-    else {
+    else
+    {
       aResult = (*theIterator).first;
       ++theIterator;
       return true;
     }
   }
-  virtual void reset() {
-    theIterator = theCollections->begin();
-  }
+
+  virtual void reset() { theIterator = theCollections->begin(); }
+
   virtual void close() {}
 };
+
 
 store::Iterator_t SimpleStore::listCollectionNames()
 {

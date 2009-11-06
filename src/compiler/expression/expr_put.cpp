@@ -347,13 +347,14 @@ ostream& fo_expr::put( ostream& os) const
 
   os << INDENT << qname->getStringValue() << "/" << num_args()
      << expr_addr(this) << " [\n";
-  
-  for (vector<rchandle<expr> >::const_iterator it = begin();
-       it != end(); ++it)
+
+  ulong numArgs = theArgs.size();
+
+  for (ulong i = 0; i < numArgs; ++i)
   {
-    rchandle<expr> e_h = *it;
-    e_h->put(os);
+    theArgs[i]->put(os);
   }
+
   CLOSE_EXPR;
 }
 

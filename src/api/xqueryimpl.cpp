@@ -47,13 +47,12 @@
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
 
-#include "types/typemanagerimpl.h"
 #include "types/root_typemanager.h"
 
 #include "compiler/api/compiler_api.h"
 #include "compiler/api/compilercb.h"
 
-#include "runtime/base/plan_iterator.h"  // maybe we can separate the batcher from the plan iterator
+#include "runtime/base/plan_iterator.h" 
 #include "runtime/api/plan_wrapper.h"
 #include "runtime/api/runtimecb.h"
 #include "runtime/visitors/iterprinter.h"
@@ -61,8 +60,6 @@
 #include "runtime/util/flowctl_exception.h"
 
 #include "store/api/item.h"
-#include "store/api/item_factory.h"
-#include "store/api/pul.h"
 #include "store/api/store.h"
 
 #include "zorbaserialization/xml_archiver.h"

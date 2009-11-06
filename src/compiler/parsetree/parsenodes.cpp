@@ -1102,30 +1102,49 @@ void FLWORExpr::compute_general ()
 #endif
 
   bool has_where = false, has_order = false, has_group = false;
-  for (unsigned i = 0; i < clauses->size (); i++) {
-    const FLWORClause* cp = (*clauses) [i].getp ();
-    if (dynamic_cast<const FLWORInitialClause *> (cp) != NULL) {
+
+  for (unsigned i = 0; i < clauses->size(); i++) 
+  {
+    const FLWORClause* cp = (*clauses)[i].getp();
+
+    if (typeid (*cp) == typeid (ForClause)) 
+    {
       // any preceding non-initial clause triggers GFLWOR
       if (has_group || has_where || has_order)
         non_10 = general = true;
 
-      if (typeid (*cp) == typeid (ForClause)) {
-        if (static_cast<const ForClause *> (cp)->is_outer ())
-          non_10 = general = true;
-      } else if (typeid (*cp) == typeid (WindowClause)) {
-        non_10 = general =true;
-      }
-    } else if (typeid (*cp) == typeid (WhereClause)) {
+      if (static_cast<const ForClause *> (cp)->is_outer ())
+        non_10 = general = true;
+    }
+    else if (typeid (*cp) == typeid (LetClause)) 
+    {
+      // any preceding non-initial clause triggers GFLWOR
+      if (has_group || has_where || has_order)
+        non_10 = general = true;
+    }
+    else if (typeid (*cp) == typeid (WindowClause)) 
+    {
+      non_10 = general =true;
+    }
+    else if (typeid (*cp) == typeid (WhereClause)) 
+    {
       if (has_where || has_group || has_order) non_10 = general = true;
       has_where = true;
-    } else if (typeid (*cp) == typeid (OrderByClause)) {
+    }
+    else if (typeid (*cp) == typeid (OrderByClause)) 
+    {
       if (has_order) non_10 = general = true;
       has_order = true;
-    } else if (typeid (*cp) == typeid (GroupByClause)) {
+    }
+    else if (typeid (*cp) == typeid (GroupByClause)) 
+    {
       if (has_group || has_order) non_10 = general = true;
       has_group = true;
-    } else if (typeid (*cp) == typeid (CountClause))
+    }
+    else if (typeid (*cp) == typeid (CountClause))
+    {
       non_10 = general = true;
+    }
   }
 }
 

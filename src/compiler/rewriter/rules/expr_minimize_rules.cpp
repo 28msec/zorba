@@ -26,37 +26,61 @@
 
 #include "types/typeops.h"
 
-using namespace std;
-
 namespace zorba 
 {
-/*
-#define LOOKUP_FN( pfx, local, arity ) \
-(GENV.getRootStaticContext ().lookup_fn (pfx, local, arity))
-*/
 
-static expr_t get_constant_if_typequant_one(static_context *sctx, expr_t e);
+static expr_t get_constant_if_typequant_one(static_context* sctx, expr* e);
 
-static void replace_with_constant_if_typequant_one(static_context *sctx, expr_t expr)
+static void replace_with_constant_if_typequant_one(static_context* sctx, expr* e);
+
+
+/*******************************************************************************
+  This rule looks for exprs of the form:
+
+  count(E) or 
+  count(flwor_FE), where flwor_FE is a flwor expr whose return expr is FE.
+
+  Then, it checks whether the return type of E/FE has quantifier ONE, and if so,
+  it replaces E/FE with the constant 1.
+
+  In fact the check on FE is recursive: if FE does not have a return type with
+  quantifier ONE, but FE is a flwor expr with return expr FFE, then the rule is
+  applied to FFE and so on.
+********************************************************************************/
+
+RULE_REWRITE_PRE(ReplaceExprWithConstantOneWhenPossible) 
 {
-  switch(expr->get_expr_kind()) 
+  static_context* sctx = rCtx.getStaticContext(node);
+
+  if (node->get_expr_kind() != fo_expr_kind)
+    return NULL;
+
+  fo_expr* fo = static_cast<fo_expr *>(&*node);
+  const function* fn = fo->get_func();
+
+  if (fn->CHECK_IS_BUILTIN_NAMED("count", 1) ||
+      fn->CHECK_IS_BUILTIN_NAMED("empty", 1) ||
+      fn->CHECK_IS_BUILTIN_NAMED("exists", 1)) 
   {
-    case flwor_expr_kind: 
+    expr_t child = fo->get_arg(0, false);
+    expr_t nc = get_constant_if_typequant_one(sctx, child);
+    if (nc != NULL) 
     {
-      flwor_expr* flwor = static_cast<flwor_expr *>(&*expr);
-      expr_t ret = flwor->get_return_expr(false);
-      expr_t nret = get_constant_if_typequant_one(sctx, ret);
-      if (nret != NULL) {
-        flwor->set_return_expr(nret);
-      }
-      break;
+      fo->set_arg(0, nc);
+      return node;
     }
-    default:
-      break;
   }
+  return NULL;
 }
 
-static expr_t get_constant_if_typequant_one(static_context *sctx, expr_t e)
+
+RULE_REWRITE_POST(ReplaceExprWithConstantOneWhenPossible) 
+{
+  return NULL;
+}
+
+
+static expr_t get_constant_if_typequant_one(static_context* sctx, expr* e)
 {
   if (e->get_expr_kind() != const_expr_kind) 
   {
@@ -69,38 +93,32 @@ static expr_t get_constant_if_typequant_one(static_context *sctx, expr_t e)
       replace_with_constant_if_typequant_one(sctx, e);
     }
   }
+
   return NULL;
 }
 
 
-RULE_REWRITE_PRE(ReplaceExprWithConstantOneWhenPossible) 
+static void replace_with_constant_if_typequant_one(static_context* sctx, expr* e)
 {
-  static_context *sctx = rCtx.getStaticContext(node);
-
-  if (node->get_expr_kind() != fo_expr_kind)
-    return NULL;
-
-  fo_expr *fo = static_cast<fo_expr *>(&*node);
-  const function *fn = fo->get_func();
-
-  if (fn->CHECK_IS_BUILTIN_NAMED("count", 1)
-      || fn->CHECK_IS_BUILTIN_NAMED("empty", 1)
-      || fn->CHECK_IS_BUILTIN_NAMED("exists", 1)) {
-    expr_t child = (*fo)[0];
-    expr_t nc = get_constant_if_typequant_one(sctx, child);
-    if (nc != NULL) 
+  switch(e->get_expr_kind())
+  {
+    case flwor_expr_kind: 
     {
-      (*fo)[0] = nc;
-      return node;
+      flwor_expr* flwor = static_cast<flwor_expr *>(e);
+      expr* ret = flwor->get_return_expr(false);
+      expr_t nret = get_constant_if_typequant_one(sctx, ret);
+      if (nret != NULL) 
+      {
+        flwor->set_return_expr(nret);
+      }
+      break;
     }
+    default:
+      break;
   }
-  return NULL;
 }
 
-RULE_REWRITE_POST(ReplaceExprWithConstantOneWhenPossible) 
-{
-  return NULL;
-}
+
 
 }
 /* vim:set ts=2 sw=2: */

@@ -69,7 +69,14 @@ typedef std::vector<NodeTypeInfo> TypeUndoList;
 
 /*******************************************************************************
   A map that maps each target node N to the update primitives having N as their
-  target. This map is a data member of each PUL. 
+  target. This map is a data member of each PUL. The map contains target nodes
+  that appear in the following kinds of primitives:
+
+  UpdDelete,
+  UpdRenameElem, UpdRenameAttr, UpdRenamePi,
+  UpdInsertChildren, UpdInsertAttributes, UpdReplaceChild,
+  UpdReplaceAttribute, UpdReplaceElemContent, 
+  UpdReplaceAttrValue, UpdReplacePiValue, UpdReplaceTextValue, UpdReplaceCommentValue, 
 
   It is used to check that, for certain kinds of updates, there are no duplicate
   updates of that kind on the same target node. In particular, there can be no
@@ -320,9 +327,8 @@ public:
 
   void checkTransformUpdates(const std::vector<store::Item*>& rootNodes) const;
 
-  void getCreatedIndices(std::vector<IndexBinding>& indices) const;
-
-  void getDropedIndices(std::vector<const store::Item*>& indices) const;
+  // utils
+  void getIndicesToRefresh(std::vector<const store::Item*>& indices) const;
 
 protected:
   void undoUpdates();
@@ -338,6 +344,8 @@ protected:
         std::vector<UpdatePrimitive*>& myList,
         std::vector<UpdatePrimitive*>& otherList,
         UpdListKind                    listKind);
+
+  void getModifiedCollections(std::vector<const store::Item*>& indices) const;
 };
 
 

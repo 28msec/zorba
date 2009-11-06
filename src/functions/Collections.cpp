@@ -46,8 +46,13 @@ public:
 class dc_collection : public function 
 {
 public:
-  dc_collection(const signature& sig): function(sig, FunctionConsts::FN_ZORBA_COLLECTION)
-  {}
+  dc_collection(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_COLLECTION)
+  {
+  }
+
+  bool isSource() const { return true; }
 
   bool requires_dyn_ctx() const { return true; }
 

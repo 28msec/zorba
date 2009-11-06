@@ -199,9 +199,7 @@ public:
 
   virtual void checkTransformUpdates(const std::vector<Item*>& rootNodes) const = 0;
 
-  virtual void getCreatedIndices(std::vector<IndexBinding>& indices) const = 0;
-
-  virtual void getDropedIndices(std::vector<const store::Item*>& indices) const = 0;
+  virtual void getIndicesToRefresh(std::vector<const Item*>& indices) const = 0;
 };
 
 

@@ -28,7 +28,6 @@
 
 #include <memory>
 
-using namespace std;
 
 namespace zorba 
 {
@@ -53,12 +52,12 @@ static bool refactor_index_pred(RewriterContext&, const expr*, const var_expr*&,
 class SubstVars : public RewriteRule 
 {
 protected:
-  var_expr   * theVarExpr;
-  expr       * theSubstExpr;
-  std::string  theRuleName;
+  const var_expr   * theVarExpr;
+  expr             * theSubstExpr;
+  std::string        theRuleName;
 
 public:
-  SubstVars(var_expr* var, expr* subst) 
+  SubstVars(const var_expr* var, expr* subst) 
     :
     theVarExpr(var),
     theSubstExpr(subst),
@@ -68,8 +67,8 @@ public:
 
   const std::string& getRuleName() const { return theRuleName; }
 
-  expr_t rewritePre(expr *node, RewriterContext& rCtx);
-  expr_t rewritePost(expr *node, RewriterContext& rCtx);
+  expr_t rewritePre(expr* node, RewriterContext& rCtx);
+  expr_t rewritePost(expr* node, RewriterContext& rCtx);
 };
 
 
@@ -88,11 +87,11 @@ RULE_REWRITE_POST(SubstVars)
 /*******************************************************************************
   Replace all references to var "var" inside the expr "root" with expr "subst"
 ********************************************************************************/
-expr_t subst_vars(RewriterContext rCtx0, expr_t root, var_expr* var, expr* subst) 
+expr_t subst_vars(RewriterContext rCtx0, expr_t root, const var_expr* var, expr* subst) 
 {
-  RewriterContext rCtx (rCtx0.getCompilerCB (), root);
+  RewriterContext rCtx (rCtx0.getCompilerCB(), root);
 
-  auto_ptr<Rewriter> rw(new SingletonRuleMajorDriverBase(rule_ptr_t(new SubstVars(var, subst))));
+  std::auto_ptr<Rewriter> rw(new SingletonRuleMajorDriverBase(rule_ptr_t(new SubstVars(var, subst))));
 
   rw->rewrite(rCtx);
 
@@ -183,11 +182,14 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
       expr* domainExpr = flwc->get_expr();
       var_expr* var = flwc->get_var();
-      var_expr* pvar = (is_let ? NULL : fc->get_pos_var());
+      const var_expr* pvar = (is_let ? NULL : fc->get_pos_var());
       int quant_cnt = 2;  // cardinality of FOR clause: 0, 1 or more
 
       if (pvar != NULL && count_variable_uses(&flwor, pvar, 1) == 0)
-        MODIFY(fc->set_pos_var(pvar = NULL));
+      {
+        MODIFY(fc->set_pos_var(NULL));
+        pvar = NULL;
+      }
 
       if (domainExpr->is_sequential())
       {
@@ -615,7 +617,8 @@ RULE_REWRITE_POST(RefactorPredFLWOR)
 
 /*******************************************************************************
   Checks whether "cond" has the form '$pos_var = const', where const is an
-  integer literal that is >= 1.
+  integer literal that is >= 1. If so, it returns true, and sets pos_expr to
+  a new const expr storing the const value promoted to DOUBLE.
 ********************************************************************************/
 static bool refactor_index_pred(
     RewriterContext& rCtx,
@@ -641,9 +644,9 @@ static bool refactor_index_pred(
   int i;
   for (i = 0; i < 2; i++) 
   {
-    if (NULL != (pvar = dynamic_cast<const var_expr*>((*fo)[i])) &&
+    if (NULL != (pvar = dynamic_cast<const var_expr*>(fo->get_arg(i))) &&
         pvar->get_kind() == var_expr::pos_var &&
-        NULL != (pos = dynamic_cast<const const_expr*>((*fo)[1 - i]))) 
+        NULL != (pos = dynamic_cast<const const_expr*>(fo->get_arg(1 - i)))) 
     {
       const store::Item* val = pos->get_val();
 

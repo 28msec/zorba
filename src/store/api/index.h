@@ -57,6 +57,12 @@ typedef std::pair<xqpStringStore_t, IndexEntryCreator_t> PatternIECreatorPair;
   theIsSorted     : Whether the index is sorted by its key values or not.
   theIsTemp       : Whether the index is temporary or not.
   theIsThreadSafe : Whether the index can be shared among multiple threads or not
+  theIsAutomatic  : Whether the index must be maintained during/after each apply-
+                    updates or not.
+
+  theSources      : The qnames of the collections accessed by the defining exprs
+                    of this index.
+
   theIECreators   : A vector of pattern-creator pairs that the store can use to
                     compute index entries.
 ********************************************************************************/
@@ -67,10 +73,15 @@ public:
   store::Item_t                             theValueType;
   std::vector<std::string>                  theCollations;
   long                                      theTimezone;
+
   bool                                      theIsUnique;
   bool                                      theIsSorted;
   bool                                      theIsTemp;
   bool                                      theIsThreadSafe;
+  bool                                      theIsAutomatic;
+
+  std::vector<store::Item_t>                theSources;
+
   std::vector<PatternIECreatorPair>         theIECreators;
 
 public:

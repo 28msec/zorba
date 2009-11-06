@@ -52,7 +52,7 @@ IndexImpl::IndexImpl(
 {
   theCollators.resize(theNumColumns);
 
-  for (ulong i = 0; i < theNumColumns; i++)
+  for (ulong i = 0; i < theNumColumns; ++i)
   {
     if (spec.theKeyTypes[i] == GET_STORE().theSchemaTypeNames[XS_STRING] ||
         spec.theKeyTypes[i] == GET_STORE().theSchemaTypeNames[XS_NORMALIZED_STRING])

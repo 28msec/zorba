@@ -22,17 +22,66 @@ namespace zorba
 
 static void add_wincond_vars(const flwor_wincond*, int&, VarIdMap&, IdVarMap*);
 
-static void add_var(var_expr*, int&, VarIdMap&, IdVarMap*);
+static void add_var(const var_expr*, int&, VarIdMap&, IdVarMap*);
 
 static void remove_wincond_vars(const flwor_wincond*, const VarIdMap&, DynamicBitset&);
 
-static void set_bit(var_expr*, const std::map<const var_expr*, int>&, DynamicBitset&, bool);
+static void set_bit(const var_expr*, const std::map<const var_expr*, int>&, DynamicBitset&, bool);
+
+
+/*******************************************************************************
+  copy annotations when wrapping an expression in a new one
+********************************************************************************/
+expr_t fix_annotations(expr_t new_expr, const expr* old_expr) 
+{
+  if (old_expr == NULL) 
+  {
+    switch (new_expr->get_expr_kind()) 
+    {
+    case fo_expr_kind:
+      old_expr = static_cast<fo_expr*>(new_expr.getp())->get_arg(0);
+      break;
+    default:
+      assert(false);
+      return NULL;
+    }
+  }
+  
+  for (int k = 0; k < Annotations::MAX_ANNOTATION; ++k) 
+  {
+    if (k == Annotations::FREE_VARS)
+    {
+      const var_ptr_set& old_set = get_varset_annotation(old_expr, Annotations::FREE_VARS);
+      const var_ptr_set& new_set = get_varset_annotation(old_expr, Annotations::FREE_VARS);
+      var_ptr_set s;
+      std::set_union(old_set.begin(), 
+                     old_set.end(),
+                     new_set.begin(),
+                     new_set.end(),
+                     inserter(s, s.begin()));
+
+      new_expr->put_annotation(static_cast<Annotations::Key>(k),
+                               Annotation::value_ref_t(new VarSetAnnVal(s)));
+    }
+    else if (k != Annotations::CONCAT_EXPR)
+    {
+      Annotation::value_ref_t v = 
+      old_expr->get_annotation(static_cast<Annotations::Key>(k));
+      
+      if (v != NULL)
+        new_expr->put_annotation(static_cast<Annotations::Key>(k), v);
+    }
+  }
+  
+  return new_expr;
+}
+
 
 
 /*******************************************************************************
   Replace all references to "oldVar" inside "e" with references to "newVar".
 ********************************************************************************/
-void replace_var(expr* e, var_expr* oldVar, var_expr* newVar)
+void replace_var(expr* e, const var_expr* oldVar, var_expr* newVar)
 {
   if (e->get_expr_kind() == wrapper_expr_kind)
   {
@@ -180,7 +229,11 @@ static void add_wincond_vars(
 /*******************************************************************************
 
 ********************************************************************************/
-static void add_var(var_expr* v, int& numVars, VarIdMap& varidmap, IdVarMap* idvarmap)
+static void add_var(
+    const var_expr* v,
+    int& numVars,
+    VarIdMap& varidmap,
+    IdVarMap* idvarmap)
 {
   if (v != NULL)
   {
@@ -330,7 +383,7 @@ static void remove_wincond_vars(
 
 ********************************************************************************/
 static void set_bit(
-    var_expr* v,
+    const var_expr* v,
     const VarIdMap& varmap,
     DynamicBitset& freeset,
     bool value)

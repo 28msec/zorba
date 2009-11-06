@@ -77,6 +77,8 @@ protected:
   ulong                           theNumColumns;
   std::vector<XQPCollator*>       theCollators;
 
+  std::vector<store::Item_t>      theSources;
+
 public:
   IndexImpl(const store::Item_t& qname, const store::IndexSpecification& spec);
 

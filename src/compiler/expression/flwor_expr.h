@@ -157,9 +157,9 @@ public:
       theVarExpr->set_flwor_clause(this); 
   }
 
-  virtual var_expr* get_pos_var() const { return NULL; }
+  virtual const var_expr* get_pos_var() const { return NULL; }
 
-  virtual var_expr* get_score_var() const { return NULL; }
+  virtual const var_expr* get_score_var() const { return NULL; }
 };
 
 
@@ -197,9 +197,9 @@ public:
 
   void set_outer(bool outer) { theIsOuter = outer; }
 
-  var_expr* get_pos_var() const { return thePosVarExpr.getp(); }
+  const var_expr* get_pos_var() const { return thePosVarExpr.getp(); }
 
-  var_expr* get_score_var() const { return theScoreVarExpr.getp(); }
+  const var_expr* get_score_var() const { return theScoreVarExpr.getp(); }
 
   void set_pos_var(var_expr_t v) 
   {
@@ -247,7 +247,7 @@ public:
   ~let_clause();
 
 public:
-  var_expr* get_score_var() const { return theScoreVarExpr.getp(); }
+  const var_expr* get_score_var() const { return theScoreVarExpr.getp(); }
 
   void set_score_var(var_expr_t v) 
   {

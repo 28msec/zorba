@@ -153,7 +153,6 @@ class OrExpr;
 class FLWORExpr;
 class FLWORClauseList;
 class FLWORClause;
-class FLWORInitialClause;
 class ForOrLetClause;
 class ForClause;
 class VarInDeclList;
@@ -1390,7 +1389,8 @@ protected:
 public:
   Expr(const QueryLoc&);
 
-  void push_back(rchandle<exprnode> expr_h) {
+  void push_back(rchandle<exprnode> expr_h) 
+  {
     expr_hv.push_back(expr_h);
     // update the location of the current expression to 
     // end at the location of the last child that was added
@@ -1439,7 +1439,6 @@ public:
 
 
 /*******************************************************************************
-  BlockExpr ::= "block" Block
 
   Block ::= "{" BlockDecls BlockBody "}"
 
@@ -1450,17 +1449,42 @@ public:
 
   BlockBody ::= Expr
 
-  Note: There is no parsenode class for BlockExpr or for Block; instead:
 
-  1. If BlockDecls is not empty the parser generates a BlockBody node whose
-     "decls" data member stores the var declarations.
-  2. If BlockDecls is empty and Expr is a ConcatExpr, the parser generates an
-     Expr node.
-  3. If BlockDecls is empty and Expr is an ApplyExpr, the parser generates a
-     BlockBody node.
+  - Synactically, BlockBody appears only in Block, and Block appears in
+    BlockExpr, WhileExpr, and FunctionDecl iff the function is declared as
+    sequential:
 
-  Note: There are no parsenode classes for BlockVarDecl and BlockDecls; instead
-  the parser generates VarDecl and VFO_DeclList parsenodes.
+  BlockExpr ::= "block" Block
+
+  WhileExpr ::= "while" "(" ExprSingle ")" Block
+
+  FunctionDecl ::= "declare" ("deterministic" | "nondeterministic")?
+                   "sequential" "function" QName "(" ParamList? ")" ("as" SequenceType)?
+                    Bock
+
+
+  - There is no parsenode class for BlockExpr or for Block; instead, the parser
+    generates:
+
+  1. BlockBody, if BlockDecls is not empty. The "decls" data member of this
+     BlockBody stores the var declarations.
+
+  2. BlockBody, if BlockDecls is empty and Expr is an ApplyExpr.
+
+  3. Expr, if BlockDecls is empty and Expr is a ConcatExpr.
+
+  In addition to cases 1 and 2 above, a BlockBody node is also generated
+
+  4. In the case of any Expr that is an ApplyExpr.
+
+  4. In the case of a WhileExpr if the Block that appears in the WhileExpr
+     syntax did not generate a BlockBody itself (i.e., case 3 above). In this 
+     case, the BlockBody has a single child, which is the Expr node generated
+     by Block.
+
+
+  - There are no parsenode classes for BlockVarDecl and BlockDecls; instead
+    the parser generates VarDecl and VFO_DeclList parsenodes.
 
 ********************************************************************************/
 class BlockBody : public exprnode
@@ -1494,6 +1518,22 @@ public:
 
 /*******************************************************************************
   FLWORExpr ::= InitialClause FLWORClauseList? ReturnClause
+
+  - For the Generalized FLWOR:
+
+  InitialClause ::= ForClause | LetClause | WindowClause
+
+  FLWORClauseList ::= FLWORClause*
+
+
+  - For the traditional FLWOR:
+
+  InitialClause ::= ForClause | LetClause
+
+  FLWORClauseList ::= (ForClause | LetClause)* 
+                      WhereCluase?
+                      GroupByClause?
+                      OrderByClause?
 ********************************************************************************/
 class FLWORExpr : public exprnode
 {
@@ -1536,13 +1576,13 @@ protected:
 
 
 /*******************************************************************************
-  - For the Generazed FLWOR:
+  - For the Generalized FLWOR:
 
-  FLWORClauseList ::= FLWORClause | FLWORClause  FLWORClauseList
+  FLWORClauseList ::= FLWORClause*
 
   - For the traditional FLWOR:
 
-  FLWORClauseList ::= (ForClause | LetClause)+ 
+  FLWORClauseList ::= (ForClause | LetClause)* 
                       WhereCluase?
                       GroupByClause?
                       OrderByClause?
@@ -1567,48 +1607,34 @@ public:
 
 
 /*******************************************************************************
-  FLWORClause ::= InitialClause | IntermediateClause
+  FLWORClause ::= ForClause |
+                  LetClause |
+                  WindowClause |
+                  WhereClause |
+                  GroupByClause |
+                  OrderByClause |
+                  CountClause
 ********************************************************************************/
 class FLWORClause : public parsenode 
 {
 public:
-  FLWORClause (const QueryLoc& loc_) : parsenode (loc_) {}
+  FLWORClause(const QueryLoc& loc) : parsenode(loc) {}
 };
-
-
-/*******************************************************************************
-  InitialClause ::= ForClause | LetClause | WindowClause
-
-  For traditional FLWOR, InitialClause does not include WindowClause.
-********************************************************************************/
-class FLWORInitialClause : public FLWORClause 
-{
-public:
-  FLWORInitialClause (const QueryLoc& loc_) : FLWORClause (loc_) {}
-};
-
-
-/*******************************************************************************
-  IntermediateClause ::= InitialClause |
-                         WhereClause |
-                         GroupByClause |
-                         OrderByClause
-********************************************************************************/
 
 
 /*******************************************************************************
   ForOrLetClause ::= ForClause | LetClause
 ********************************************************************************/
-class ForOrLetClause : public FLWORInitialClause 
+class ForOrLetClause : public FLWORClause 
 {
 public:
   typedef enum { for_clause, let_clause } for_or_let_t;
 
-  ForOrLetClause (const QueryLoc& loc_) : FLWORInitialClause (loc_) {}
+  ForOrLetClause (const QueryLoc& loc) : FLWORClause(loc) {}
 
-  virtual for_or_let_t for_or_let () const = 0;
+  virtual for_or_let_t for_or_let() const = 0;
 
-  virtual int get_decl_count () const = 0;
+  virtual int get_decl_count() const = 0;
 };
 
 
@@ -2081,7 +2107,7 @@ class ReturnExpr: public exprnode
   SlidingWindowClause ::= "sliding" "window" WindowVarDecl
                           WindowStartCondition WindowEndCondition
 ********************************************************************************/
-class WindowClause : public FLWORInitialClause 
+class WindowClause : public FLWORClause 
 {
 public:
   typedef enum { tumbling_window, sliding_window } win_clause_t;
@@ -2093,18 +2119,18 @@ private:
 
 public:
   WindowClause (
-        const QueryLoc& loc_,
+        const QueryLoc& loc,
         win_clause_t type_,
         rchandle<WindowVarDecl> var_,
         rchandle<FLWORWinCond> start_,
         rchandle<FLWORWinCond> end_)
     :
-    FLWORInitialClause (loc_),
-    var (var_),
-    type (type_)
+    FLWORClause(loc),
+    var(var_),
+    type(type_)
   {
-    conditions [0] = start_;
-    conditions [1] = end_;
+    conditions[0] = start_;
+    conditions[1] = end_;
   }
 
   win_clause_t get_wintype () const { return type; }

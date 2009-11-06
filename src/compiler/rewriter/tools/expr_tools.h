@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_EXPR_TOOLS_H
-#define ZORBA_EXPR_TOOLS_H
+#ifndef ZORBA_REWRITER_EXPR_TOOLS_H
+#define ZORBA_REWRITER_EXPR_TOOLS_H
 
 #include "common/shared_types.h"
 
@@ -59,6 +59,25 @@
 namespace zorba 
 {
 
+int count_variable_uses(const expr* root, const var_expr* var, int limit);
+
+expr_t fix_annotations(expr_t new_expr, const expr* old_expr = NULL); 
+
+
+/*******************************************************************************
+  Util functions used by rules: HoistExprsOutOfLoops and IndexJoin.
+********************************************************************************/
+
+void index_flwor_vars(expr*, int&, VarIdMap&, IdVarMap*);
+
+void find_flwor_vars(expr*, const VarIdMap&, DynamicBitset&, ExprVarsMap&);
+
+void replace_var(expr*, const var_expr* oldVar, var_expr* newVar);
+
+
+/*******************************************************************************
+
+********************************************************************************/
 typedef std::set<const var_expr *> var_ptr_set;
 
 
@@ -67,65 +86,15 @@ class VarSetAnnVal : public AnnotationValue
 public:
   var_ptr_set varset;
 
-  VarSetAnnVal () {}
+  VarSetAnnVal() {}
 
-  VarSetAnnVal (var_ptr_set varset_) : varset (varset_) {}
+  VarSetAnnVal(var_ptr_set varset_) : varset (varset_) {}
 
-  void add (const var_expr* v) { varset.insert(varset.begin(), v); }
+  void add(const var_expr* v) { varset.insert(varset.begin(), v); }
 };
   
 
 const var_ptr_set& get_varset_annotation(const expr *e, Annotations::Key k);
-
-int count_variable_uses(const expr* root, const var_expr* var, int limit);
-
-
-/*******************************************************************************
-  copy annotations when wrapping an expression in a new one
-********************************************************************************/
-inline expr_t fix_annotations(expr_t new_expr, const expr* old_expr = NULL) 
-{
-  if (old_expr == NULL) 
-  {
-    switch (new_expr->get_expr_kind ()) 
-    {
-    case fo_expr_kind:
-      old_expr = (*new_expr.dyn_cast<fo_expr>().getp ())[0];
-      break;
-    default:
-      assert (false);
-      return NULL;
-    }
-  }
-  
-  for (int k = 0; k < Annotations::MAX_ANNOTATION; ++k) 
-  {
-    if (k == Annotations::FREE_VARS)
-    {
-      const var_ptr_set& old_set = get_varset_annotation(old_expr, Annotations::FREE_VARS);
-      const var_ptr_set& new_set = get_varset_annotation(old_expr, Annotations::FREE_VARS);
-      var_ptr_set s;
-      std::set_union(old_set.begin(), 
-                     old_set.end(),
-                     new_set.begin(),
-                     new_set.end(),
-                     inserter(s, s.begin()));
-
-      new_expr->put_annotation(static_cast<Annotations::Key>(k),
-                               Annotation::value_ref_t(new VarSetAnnVal(s)));
-    }
-    else if (k != Annotations::CONCAT_EXPR)
-    {
-      Annotation::value_ref_t v = 
-      old_expr->get_annotation(static_cast<Annotations::Key>(k));
-      
-      if (v != NULL)
-        new_expr->put_annotation(static_cast<Annotations::Key>(k), v);
-    }
-  }
-  
-  return new_expr;
-}
 
 
 inline expr_t fix_if_annotations(rchandle<if_expr> ite) 
@@ -143,23 +112,6 @@ inline bool is_data(expr *e)
           static_cast<fo_expr *>(e)->get_func()->CHECK_IS_BUILTIN_NAMED("data", 1));
 }
 
-
-inline expr* get_fo_arg(expr* e, int arg_idx)
-{
-  ZORBA_ASSERT(e != NULL && e->get_expr_kind() == fo_expr_kind);
-  return (*static_cast<fo_expr *>(e))[arg_idx];
-}
-
-
-/*******************************************************************************
-  Util functions used by rules: HoistExprsOutOfLoops and IndexJoin.
-********************************************************************************/
-
-void index_flwor_vars(expr*, int&, VarIdMap&, IdVarMap*);
-
-void find_flwor_vars(expr*, const VarIdMap&, DynamicBitset&, ExprVarsMap&);
-
-void replace_var(expr*, var_expr* oldVar, var_expr* newVar);
 
 }
 

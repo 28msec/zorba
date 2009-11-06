@@ -35,7 +35,7 @@
 #include "types/typemanager.h"
 
 #include "zorbaerrors/Assert.h"
-#include "zorbautils/hashmap_itemp.h"
+//#include "zorbautils/hashmap_itemp.h"
 
 #include "common/shared_types.h"
 
@@ -53,6 +53,10 @@ typedef rchandle<ValueIndex> ValueIndex_t;
 
 class StaticallyKnownCollection;
 typedef rchandle<StaticallyKnownCollection> StaticallyKnownCollection_t;
+
+
+template <class V> class ItemPointerHashMap;
+
 
 /*******************************************************************************
   XQuery 1.0 context
@@ -95,9 +99,9 @@ typedef rchandle<StaticallyKnownCollection> StaticallyKnownCollection_t;
 // exported for testing purposes only
 class ZORBA_DLL_PUBLIC static_context : public context
 {
-  typedef ItemPointerHashMap<rchandle<StaticallyKnownCollection> > CollectionMap;
+  typedef ItemPointerHashMap<StaticallyKnownCollection_t> CollectionMap;
 
-  typedef ItemPointerHashMap<rchandle<ValueIndex> > IndexMap;
+  typedef ItemPointerHashMap<ValueIndex_t> IndexMap;
 
 protected:
   rchandle<TypeManager>           typemgr;
@@ -237,13 +241,13 @@ public:
   // Normalized qname construction
   //
   static xqp_string
-  qname_internal_key (const store::Item *qname);
+  qname_internal_key(const store::Item* qname);
 
   xqp_string
-  qname_internal_key (xqp_string default_ns, xqp_string prefix, xqp_string local) const;
+  qname_internal_key(xqp_string default_ns, xqp_string prefix, xqp_string local) const;
 
   xqp_string
-  qname_internal_key (xqp_string default_ns, xqp_string qname) const;
+  qname_internal_key(xqp_string default_ns, xqp_string qname) const;
 
   static std::pair<xqp_string /*local*/, xqp_string /*uri*/>
   decode_qname_internal_key (xqp_string key);
@@ -253,21 +257,21 @@ public:
   // Var QName --> Var Expr
   //
   bool
-  bind_var (const store::Item *qname, expr *expr) 
+  bind_var(const store::Item* qname, expr* expr) 
   {
     return bind_expr2 ("var:", qname_internal_key (qname), expr);
   }
 
   expr*
-  lookup_var (xqp_string qname) const 
+  lookup_var(xqp_string qname) const 
   {
-    return lookup_expr2 ("var:", qname_internal_key ("", qname));
+    return lookup_expr2("var:", qname_internal_key("", qname));
   }
 
   expr*
-  lookup_var (store::Item_t qname) 
+  lookup_var(const store::Item* qname)
   {
-    return lookup_expr2 ("var:", qname_internal_key (qname));
+    return lookup_expr2("var:", qname_internal_key(qname));
   }
 
   expr*

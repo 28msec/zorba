@@ -129,7 +129,7 @@ void var_expr::set_type(xqtref_t t)
 /*******************************************************************************
 
 ********************************************************************************/
-var_expr* var_expr::get_pos_var() const 
+const var_expr* var_expr::get_pos_var() const 
 {
   if (theKind == for_var) 
   {

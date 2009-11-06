@@ -28,8 +28,10 @@
 #include "context/statically_known_collection.h"
 #include "context/static_context_consts.h"
 
+#include "compiler/indexing/value_index.h"
+
 #include "runtime/update/update.h"
-#include "runtime/api/plan_iterator_wrapper.h"
+#include "runtime/api/plan_wrapper.h"
 #include "runtime/core/var_iterators.h"
 #include "runtime/visitors/planiter_visitor.h"
 
@@ -817,6 +819,11 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::PUL* pul;
   rchandle<store::PUL> validationPul;
   std::set<zorba::store::Item*> validationNodes;
+  rchandle<store::PUL> indexPul;
+  std::vector<const store::Item*> indexNames;
+
+  dynamic_context* dctx = planState.dctx();
+  CompilerCB* ccb = planState.theCompilerCB;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -838,6 +845,7 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     pul->applyUpdates(validationNodes);
 
+    // Revalidate
 #ifndef ZORBA_NO_XMLSCHEMA
     validationPul = GENV_ITEMFACTORY->createPendingUpdateList();
 
@@ -845,6 +853,37 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     validationPul->applyUpdates(validationNodes);
 #endif
+
+    // Refresh indices
+    pul->getIndicesToRefresh(indexNames);
+
+    ulong numIndices = indexNames.size();
+
+    if (numIndices > 0)
+    {
+      indexPul = GENV_ITEMFACTORY->createPendingUpdateList();
+
+      for (ulong i = 0; i < numIndices; ++i)
+      {
+        ValueIndex* zorbaIndex = theSctx->lookup_index(indexNames[i]);
+        
+        if (zorbaIndex == NULL)
+        {
+          ZORBA_ERROR_LOC_PARAM(XQP0037_INDEX_IS_NOT_DECLARED, loc,
+                                indexNames[i]->getStringValue()->c_str(), "");
+        }
+
+        ZORBA_ASSERT(zorbaIndex->isAutomatic());
+
+        PlanIterator* buildPlan = zorbaIndex->getBuildPlan(ccb, loc);
+
+        store::Iterator_t planWrapper = new PlanWrapper(buildPlan, ccb, dctx, NULL);
+
+        indexPul->addRefreshIndex(const_cast<store::Item*>(indexNames[i]), planWrapper);
+      }
+
+      indexPul->applyUpdates(validationNodes);
+    }
   }
 
   STACK_END(state);

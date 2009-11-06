@@ -46,6 +46,7 @@ ValueIndex::ValueIndex(
   theName(name),
   theIsUnique(false),
   theIsTemp(false),
+  theIsAutomatic(false),
   theMethod(HASH),
   theDomainClause(new for_clause(ccb->m_cur_sctx, loc, NULL, NULL))
 { 
@@ -65,6 +66,7 @@ void ValueIndex::serialize(::zorba::serialization::Archiver& ar)
   ar & theName;
   ar & theIsUnique;
   ar & theIsTemp;
+  ar & theIsAutomatic;
   SERIALIZE_ENUM(index_method_t, theMethod);
   ar & theDomainClause;
   ar & theKeyExprs;
@@ -85,7 +87,7 @@ store::Item* ValueIndex::getName() const
 }
 
 
-expr_t ValueIndex::getDomainExpr() const 
+expr* ValueIndex::getDomainExpr() const 
 {
   return theDomainClause->get_expr();
 }
@@ -97,7 +99,7 @@ void ValueIndex::setDomainExpr(expr_t domainExpr)
 }
 
 
-var_expr_t ValueIndex::getDomainVariable() const 
+var_expr* ValueIndex::getDomainVariable() const 
 {
   return theDomainClause->get_var();
 }
@@ -109,7 +111,7 @@ void ValueIndex::setDomainVariable(var_expr_t domainVar)
 }
 
 
-var_expr_t ValueIndex::getDomainPositionVariable() const 
+const var_expr* ValueIndex::getDomainPositionVariable() const 
 {
   return theDomainClause->get_pos_var();
 }
@@ -158,24 +160,33 @@ void ValueIndex::setOrderModifiers(const std::vector<OrderModifier>& modifiers)
 
 
 /*******************************************************************************
-  Check that the given expr 
+  Check that the doman expr 
   (a) is deterministic,
   (b) does not have any free variables,
   (c) does not reference any input functions other than dc:collection()
   (d) the arg to each dc:collection is a const qname 
 ********************************************************************************/
-void ValueIndex::analyzeExpr(const expr* e)
+void ValueIndex::analyze()
 {
   std::vector<const var_expr*> varExprs;
 
-  analyzeExprInternal(e, theSources, varExprs);
+  analyzeExprInternal(getDomainExpr(), theSources, varExprs);
+
+  varExprs.clear();
+
+  ulong numKeys = theKeyExprs.size();
+
+  for (ulong i = 0; i < numKeys; ++i)
+  {
+    analyzeExprInternal(theKeyExprs[i].getp(), theSources, varExprs);
+  }
 }
 
 
 void ValueIndex::analyzeExprInternal(
     const expr* e,
     std::vector<const store::Item*>& sources,
-    std::vector<const var_expr*>& varExprs) 
+    std::vector<const var_expr*>& varExprs)
 {
   if (e->get_expr_kind() == fo_expr_kind)
   {
@@ -194,8 +205,8 @@ void ValueIndex::analyzeExprInternal(
       {
         const const_expr* qnameExpr;
 
-        if (foExpr->num_args() > 0 &&
-            (qnameExpr = dynamic_cast<const const_expr*>((*foExpr)[0])) != NULL &&
+        if (foExpr->num_args() == 1 &&
+            (qnameExpr = dynamic_cast<const const_expr*>(foExpr->get_arg(0))) != NULL &&
             theSctx->lookup_collection(qnameExpr->get_val()))
         {
           sources.push_back(qnameExpr->get_val());
@@ -212,6 +223,17 @@ void ValueIndex::analyzeExprInternal(
                               theName->getStringValue()->c_str(), "");
       }
     }
+    else if (func->getKind() == FunctionConsts::OP_VAR_DECLARE)
+    {
+      const const_expr* qnameExpr = dynamic_cast<const const_expr*>(foExpr->get_arg(0));
+      ZORBA_ASSERT(qnameExpr != NULL);
+      const store::Item* qname = qnameExpr->get_val();
+
+      const var_expr* varExpr = static_cast<const var_expr*>(theSctx->lookup_var(qname));
+      ZORBA_ASSERT(varExpr->get_kind() == var_expr::local_var);
+
+      varExprs.push_back(varExpr);
+    }
   }
   else if (e->get_expr_kind() == flwor_expr_kind ||
            e->get_expr_kind() == gflwor_expr_kind)
@@ -220,7 +242,8 @@ void ValueIndex::analyzeExprInternal(
   }
   else if (e->get_expr_kind() == var_expr_kind)
   {
-    if (std::find(varExprs.begin(), varExprs.end(), e) == varExprs.end())
+    if (e != getDomainVariable() &&
+        std::find(varExprs.begin(), varExprs.end(), e) == varExprs.end())
     {
       ZORBA_ERROR_LOC_PARAM(XQP0040_INDEX_HAS_FREE_VARS, e->get_loc(),
                             theName->getStringValue()->c_str(), "");
@@ -244,8 +267,8 @@ expr* ValueIndex::getBuildExpr(CompilerCB* topCCB, const QueryLoc& loc)
     return theBuildExpr.getp();
 
   expr* domainExpr = getDomainExpr();
-  var_expr_t dot = getDomainVariable();
-  var_expr_t pos = getDomainPositionVariable();
+  const var_expr* dot = getDomainVariable();
+  const var_expr* pos = getDomainPositionVariable();
 
   short sctxid = domainExpr->get_sctx_id();
   static_context* sctx = topCCB->getStaticContext(sctxid);

@@ -212,14 +212,14 @@ fn_subsequence::codegen(
   fo_expr& subseqExpr = static_cast<fo_expr&>(aAnn);
 
   const relpath_expr* pathExpr =
-  dynamic_cast<const relpath_expr*>(subseqExpr[0].getp());
+  dynamic_cast<const relpath_expr*>(subseqExpr.get_arg(0));
 
   const const_expr* posExpr =
-  dynamic_cast<const const_expr*>(subseqExpr[1].getp());
+  dynamic_cast<const const_expr*>(subseqExpr.get_arg(1));
 
   const const_expr* lenExpr = NULL;
   if (subseqExpr.num_args() > 2)
-    lenExpr = dynamic_cast<const const_expr*>(subseqExpr[2].getp());
+    lenExpr = dynamic_cast<const const_expr*>(subseqExpr.get_arg(2));
 
   if (posExpr != NULL && lenExpr != NULL && pathExpr != NULL)
   {

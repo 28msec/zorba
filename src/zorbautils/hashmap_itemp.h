@@ -80,9 +80,9 @@ public:
   {
   }
 
-  iterator begin() { return theMap.begin(); }
+  iterator begin() const { return theMap.begin(); }
 
-  iterator end() { return theMap.end(); }
+  iterator end() const { return theMap.end(); }
 
   bool empty() const { return theMap.empty(); }
 

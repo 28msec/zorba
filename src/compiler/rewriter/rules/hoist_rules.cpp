@@ -47,7 +47,7 @@ static bool non_hoistable (const expr*);
 static bool is_already_hoisted(const expr*);
 
 static bool contains_var(
-    var_expr*,
+    const var_expr*,
     const std::map<const var_expr*, int>&,
     const DynamicBitset&);
 
@@ -348,7 +348,7 @@ static expr_t try_hoisting(
   Check if the given var is contained in the given varset.
 ********************************************************************************/
 static bool contains_var(
-    var_expr* v,
+    const var_expr* v,
     const std::map<const var_expr *, int>& varmap,
     const DynamicBitset& varset)
 {

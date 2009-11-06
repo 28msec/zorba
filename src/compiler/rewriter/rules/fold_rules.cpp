@@ -334,11 +334,11 @@ RULE_REWRITE_POST(MarkUnfoldableExprs)
 }
 
 
-static bool maybe_needs_implicit_timezone(const fo_expr *fo, static_context *sctx) 
+static bool maybe_needs_implicit_timezone(const fo_expr* fo, static_context* sctx) 
 {
-  const function *f = fo->get_func ();
-  xqtref_t type0 = (fo->num_args() > 0 ? (*fo)[0]->return_type (sctx) : NULL);
-  xqtref_t type1 = (fo->num_args() > 1 ? (*fo)[1]->return_type (sctx) : NULL);
+  const function* f = fo->get_func ();
+  xqtref_t type0 = (fo->num_args() > 0 ? fo->get_arg(0)->return_type(sctx) : NULL);
+  xqtref_t type1 = (fo->num_args() > 1 ? fo->get_arg(1)->return_type(sctx) : NULL);
 
   return ( ((f->isComparisonFunction() ||
              f->arithmetic_kind() == ArithmeticConsts::SUBTRACTION) &&
@@ -571,7 +571,7 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr *fo)
   }
   else if (f->CHECK_IS_BUILTIN_NAMED("count", 1)) 
   {
-    expr_t arg = (*fo) [0];
+    expr_t arg = fo->get_arg(0, false);
     if (arg->get_annotation(Annotations::NONDISCARDABLE_EXPR) != TSVAnnotationValue::TRUE_VAL) 
     {
       int type_cnt = TypeOps::type_cnt(*arg->return_type(rCtx.getStaticContext(fo)));
@@ -600,7 +600,7 @@ static expr_t partial_eval_logic(
 
   for (ulong i = 0; i < numArgs; ++i) 
   {
-    const expr* arg = ((*fo)[i]).getp();
+    const expr* arg = fo->get_arg(i);
     const const_expr* constArg;
 
     if ((constArg = dynamic_cast<const const_expr*>(arg)) != NULL) 
@@ -633,7 +633,7 @@ static expr_t partial_eval_logic(
     // Only one of the args is a constant expr. The non-const arg is pointed
     // to by nonConst1.
 
-    expr_t arg = (*fo)[nonConst1];
+    expr_t arg = fo->get_arg(nonConst1, true);
 
     if (! TypeOps::is_subtype(*arg->return_type(rCtx.getStaticContext(fo)),
                               *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
@@ -651,7 +651,10 @@ static expr_t partial_eval_logic(
 }
 
 
-static expr_t partial_eval_eq (RewriterContext& rCtx, fo_expr &fo) 
+/*******************************************************************************
+  count(expr) = int_const
+********************************************************************************/
+static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo) 
 {
   int i;
   fo_expr* count_expr = NULL;
@@ -660,9 +663,9 @@ static expr_t partial_eval_eq (RewriterContext& rCtx, fo_expr &fo)
   
   for (i = 0; i < 2; i++) 
   {
-    if (NULL != (val_expr = fo [i].dyn_cast<const_expr> ().getp ())
-        && NULL != (count_expr = fo [1-i].dyn_cast<fo_expr> ().getp())
-        && count_expr->get_func ()->CHECK_IS_BUILTIN_NAMED("count", 1))
+    if (NULL != (val_expr = dynamic_cast<const_expr*>(fo.get_arg(i, false))) &&
+        NULL != (count_expr = dynamic_cast<fo_expr*>(fo.get_arg(1-i, false))) &&
+        count_expr->get_func()->CHECK_IS_BUILTIN_NAMED("count", 1))
       break;
   }
 
@@ -672,6 +675,7 @@ static expr_t partial_eval_eq (RewriterContext& rCtx, fo_expr &fo)
   TypeManager* tm = rCtx.getStaticContext(&fo)->get_typemanager();
 
   store::Item_t val = val_expr->get_val(false);
+
   if (TypeOps::is_subtype(*tm->create_named_type(val->getType()),
                           *GENV_TYPESYSTEM.INTEGER_TYPE_ONE)) 
   {
@@ -680,19 +684,19 @@ static expr_t partial_eval_eq (RewriterContext& rCtx, fo_expr &fo)
 
     if (ival < zero)
     {
-      return new const_expr(val_expr->get_sctx_id(), LOC (val_expr), false);
+      return new const_expr(val_expr->get_sctx_id(), LOC(val_expr), false);
     }
     else if (ival == zero)
     {
-      return fix_annotations(new fo_expr(fo.get_sctx_id(), fo.get_loc (),
-                                         LOOKUP_FN ("fn", "empty", 1),
-                                         (*count_expr) [0]));
+      return fix_annotations(new fo_expr(fo.get_sctx_id(), fo.get_loc(),
+                                         LOOKUP_FN("fn", "empty", 1),
+                                         count_expr->get_arg(0, false)));
     }
-    else if (ival == xqp_integer::parseInt (1))
+    else if (ival == xqp_integer::parseInt(1))
     {
-      return fix_annotations(new fo_expr(fo.get_sctx_id(), fo.get_loc (),
+      return fix_annotations(new fo_expr(fo.get_sctx_id(), fo.get_loc(),
                                          LOOKUP_OP1 ("exactly-one-noraise"),
-                                         (*count_expr) [0]));
+                                         count_expr->get_arg(0, false)));
     }
     else 
     {
@@ -701,7 +705,7 @@ static expr_t partial_eval_eq (RewriterContext& rCtx, fo_expr &fo)
       expr_t dpos = new const_expr(val_expr->get_sctx_id(), LOC(val_expr), pVal);
 
       std::vector<expr_t> args(3);
-      args[0] = (*count_expr)[0];
+      args[0] = count_expr->get_arg(0);
       args[1] = dpos;
       args[2] = new const_expr(val_expr->get_sctx_id(),
                                LOC(val_expr),
@@ -736,27 +740,37 @@ RULE_REWRITE_PRE(InlineFunctions)
 
 RULE_REWRITE_POST(InlineFunctions)
 {
-  if (node->get_expr_kind () == fo_expr_kind) {
-    fo_expr *fo = static_cast<fo_expr *> (node);
-    const user_function *udf = dynamic_cast<const user_function *> (fo->get_func ());
+  if (node->get_expr_kind () == fo_expr_kind) 
+  {
+    const fo_expr* fo = static_cast<const fo_expr *> (node);
+    const user_function* udf = dynamic_cast<const user_function *>(fo->get_func());
     expr_t body;
-    if (NULL != udf && ! udf->isSequential () && udf->isLeaf ()
-        && (NULL != (body = udf->get_body ())))
+
+    if (NULL != udf && ! udf->isSequential() && udf->isLeaf() &&
+        (NULL != (body = udf->get_body())))
     {
-      expr_t body = udf->get_body ();
-      const std::vector<var_expr_t>& params = udf->get_args();
+      const std::vector<var_expr_t>& udfArgs = udf->get_args();
       expr::substitution_t subst;
-      for (unsigned i = 0; i < params.size (); ++i) {
-        var_expr_t p = params [i];
-        subst [p] = (*fo) [i];
+
+      for (unsigned i = 0; i < udfArgs.size(); ++i) 
+      {
+        var_expr_t p = udfArgs[i];
+        subst[p] = fo->get_arg(i);
       }
-      try {
-        body = body->clone (subst);
+
+      try 
+      {
+        expr_t body = udf->get_body();
+        body = body->clone(subst);
         return body;
-      // TODO: this is caught here, because clone is not implemented for all expressions
-      } catch (...) {}
+        // TODO: this is caught here, because clone is not implemented for all expressions
+      }
+      catch (...) 
+      {
+      }
     }
   }
+
   return NULL;
 }
 

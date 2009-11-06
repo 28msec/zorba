@@ -88,15 +88,20 @@ typedef rchandle<ValueIndexInsertSession> ValueIndexInsertSession_t;
 
   theSctx          : The root static context of the data module containing the
                      index declaration.
+
   theName          : The qname that identifies the index.
+
   theIsUnique      : Whether it is a unique index or not.
   theIsTemp        : Whether it is a temp index or not. A temp index is an index
                      that is created on-the-fly to optimize a query by converting
                      a nested-lopp join to a hashjoin (see index_join_rule.cpp).
                      Such an index is destroyed at the end of the query that 
                      created it.
+  theIsAutomatic   : Whether the index must be maintained during/after each apply-
+                     updates or not.
   theMethod        : Whether this is a tree-based (ordered) or hash-based
                      (unordered) index.
+
   theDomainClause  : A FOR-clause that associates the domain expr with a FOR var
                      that is referenced by the key exprs and acts as the domain
                      node for those exprs.
@@ -118,17 +123,19 @@ public:
   } index_method_t;
 
 private:
-  static_context            * theSctx;
+  static_context                * theSctx;
 
-  store::Item_t               theName;
-  bool                        theIsUnique;
-  bool                        theIsTemp;
-  index_method_t              theMethod;
+  store::Item_t                   theName;
 
-  for_clause_t                theDomainClause;
-  std::vector<expr_t>         theKeyExprs;
-  std::vector<xqtref_t>       theKeyTypes;
-  std::vector<OrderModifier>  theOrderModifiers;
+  bool                            theIsUnique;
+  bool                            theIsTemp;
+  bool                            theIsAutomatic;
+  index_method_t                  theMethod;
+
+  for_clause_t                    theDomainClause;
+  std::vector<expr_t>             theKeyExprs;
+  std::vector<xqtref_t>           theKeyTypes;
+  std::vector<OrderModifier>      theOrderModifiers;
 
   std::vector<const store::Item*> theSources;
 
@@ -159,19 +166,23 @@ public:
 
   void setTemp(bool tmp) { theIsTemp = tmp; }
 
+  bool isAutomatic() const { return theIsAutomatic; }
+
+  void setAutomatic(bool v) { theIsAutomatic = v; }
+ 
   index_method_t getMethod() const { return theMethod; }
 
   void setMethod(index_method_t method) { theMethod = method; }
 
-  expr_t getDomainExpr() const;
+  expr* getDomainExpr() const;
 
   void setDomainExpr(expr_t domainExpr);
 
-  var_expr_t getDomainVariable() const;
+  var_expr* getDomainVariable() const;
 
   void setDomainVariable(var_expr_t domainVar);
 
-  var_expr_t getDomainPositionVariable() const;
+  const var_expr* getDomainPositionVariable() const;
 
   void setDomainPositionVariable(var_expr_t domainPosVar);
 
@@ -187,17 +198,16 @@ public:
 
   void setOrderModifiers(const std::vector<OrderModifier>& modifiers);
 
-  std::vector<store::PatternIECreatorPair>& getPatternCreatorPairs()
-  {
-    return m_creatorPatterns;
-  }
+  ulong num_sources() const { return theSources.size(); }
+
+  const store::Item* get_source(ulong i) const { return theSources[i]; }
 
   const std::vector<store::PatternIECreatorPair>& getPatternCreatorPairs() const
   {
     return m_creatorPatterns;
   }
 
-  void analyzeExpr(const expr* e);
+  void analyze();
 
   expr* getBuildExpr(CompilerCB* topCCB, const QueryLoc& loc);
 

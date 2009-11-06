@@ -50,7 +50,7 @@ static bool isHoistableCollection(expr* e)
       fo->num_args() != 1) 
     return false;
 
-  expr* arg = (*fo)[0].getp();
+  const expr* arg = fo->get_arg(0);
   return arg->is_constant();
 }
 
@@ -60,10 +60,10 @@ static bool isHoistableCollection(expr* e)
   arg_expr is a constant, return the URI of the collection (i.e., the string
   value of the const arg).
 ********************************************************************************/
-static xqpStringStore* getCollectionName(expr* e)
+static xqpStringStore* getCollectionName(const expr* e)
 {
-  fo_expr* fo = static_cast<fo_expr *>(e);
-  const_expr* arg = static_cast<const_expr *>((*fo)[0].getp());
+  const fo_expr* fo = static_cast<const fo_expr *>(e);
+  const const_expr* arg = static_cast<const const_expr *>(fo->get_arg(0));
   const store::Item* val = arg->get_val();
   return val->getStringValueP();
 }

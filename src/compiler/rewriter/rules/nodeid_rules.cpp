@@ -27,20 +27,9 @@
 
 #include "functions/nodeid_internal.h"
 
-using namespace std;
 
-namespace zorba {
-
-
-template<typename T> void exprs_to_holders (
-    T exprs_begin,
-    T exprs_end,
-    vector <AnnotationHolder *> &anns)
+namespace zorba 
 {
-  for (T i = exprs_begin; i < exprs_end; i++)
-    anns.push_back (static_cast<AnnotationHolder *> (&* (*i)));
-}
-
 
 static op_node_sort_distinct::nodes_or_atomics_t nodes_or_atomics(xqtref_t type) 
 {
@@ -88,8 +77,8 @@ static void mark_for_vars_ignoring_sort(flwor_expr* flwor)
 
     const for_clause* fc = static_cast<const for_clause *>(&c);
 
-    varref_t var = fc->get_var();
-    varref_t pos_var = fc->get_pos_var();
+    var_expr* var = fc->get_var();
+    const var_expr* pos_var = fc->get_pos_var();
     assert(var->get_kind() == var_expr::for_var); 
 
     TSVAnnotationValue::update_annotation(fc->get_expr(),
@@ -263,7 +252,7 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
   case fo_expr_kind: 
   {
     fo_expr* fo = static_cast<fo_expr *>(node);
-    function* f = fo->get_func();
+    function* f = fo->get_func(false);
 
     if (f->CHECK_IS_BUILTIN_NAMED("empty", 1)
         || f->CHECK_IS_BUILTIN_NAMED("exists", 1)
@@ -273,7 +262,7 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
         || f->CHECK_IS_BUILTIN_NAMED("min", 2)
         || f->CHECK_IS_BUILTIN_NAMED("boolean", 1))
     {
-      expr_t arg = (*fo)[0];
+      expr_t arg = fo->get_arg(0, false);
       TSVAnnotationValue::update_annotation(arg,
                                             Annotations::IGNORES_SORTED_NODES,
                                             TSVAnnotationValue::TRUE_VAL);
@@ -288,18 +277,18 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
       // duplicate elimination is pulled up into the runtime iterators for
       // fn:zero-or-one or fn:exactly-one.
       bool ignoresDups = false;
-      expr_t arg = (*fo)[0];
+      expr_t arg = fo->get_arg(0, false);
 
       if (arg->get_expr_kind() == fo_expr_kind)
       {
-        fo_expr* fo = static_cast<fo_expr *>(arg.getp());
-        function* argFunc = fo->get_func();
+        const fo_expr* fo = static_cast<fo_expr *>(arg.getp());
+        const function* argFunc = fo->get_func();
 
         if (argFunc->isNodeDistinctFunction())
         {
           ignoresDups = true;
           f->setFlag(FunctionConsts::DoDistinct);
-         }
+        }
       }
 
       TSVAnnotationValue::update_annotation(arg,
@@ -317,7 +306,7 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
              f->CHECK_IS_BUILTIN_NAMED("avg", 1) ||
              f == LOOKUP_OP1 ("exactly-one-noraise"))
     {
-      expr_t arg = (*fo)[0];
+      expr_t arg = fo->get_arg(0, false);
       TSVAnnotationValue::update_annotation(arg,
                                             Annotations::IGNORES_SORTED_NODES,
                                             TSVAnnotationValue::TRUE_VAL);
@@ -334,9 +323,9 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
       // the output than to sort the inputs. For union, it's unclear.
       // In any case, if a sort is eliminated, it won't be missed, as other
       // stages can put it back in.
-      for (int i = 0; i < 2; i++) 
+      for (int i = 0; i < 2; ++i) 
       {
-        expr_t arg = (*fo)[i];
+        expr_t arg = fo->get_arg(i, false);
         TSVAnnotationValue::update_annotation (arg,
                                                Annotations::IGNORES_SORTED_NODES,
                                                TSVAnnotationValue::TRUE_VAL);
@@ -347,11 +336,13 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
     }
     else
     {
-      vector <AnnotationHolder *> anns;
-      exprs_to_holders (fo->begin (), fo->end (), anns);
+      std::vector <AnnotationHolder *> args;
+      ulong numArgs = fo->num_args();
+      for (ulong i = 0; i < numArgs; ++i)
+        args.push_back(static_cast<AnnotationHolder*>(fo->get_arg(i, false)));
 
-      f->compute_annotation (node, anns, Annotations::IGNORES_DUP_NODES);
-      f->compute_annotation (node, anns, Annotations::IGNORES_SORTED_NODES);
+      f->compute_annotation(node, args, Annotations::IGNORES_DUP_NODES);
+      f->compute_annotation(node, args, Annotations::IGNORES_SORTED_NODES);
     }
     break;
   }
@@ -460,24 +451,24 @@ RULE_REWRITE_POST(MarkProducerNodeProps)
 ********************************************************************************/
 RULE_REWRITE_PRE(EliminateNodeOps)
 {
-  static_context *sctx = rCtx.getStaticContext(node);
+  static_context* sctx = rCtx.getStaticContext(node);
 
-  fo_expr *fo = dynamic_cast<fo_expr *>(node);
+  fo_expr* fo = dynamic_cast<fo_expr *>(node);
 
   if (fo != NULL) 
   {
     const function* f = fo->get_func();
 
     if (f->CHECK_IS_BUILTIN_NAMED("unordered", 1))
-      return (*fo)[0];
+      return fo->get_arg(0, true);
 
     const op_node_sort_distinct* nsdf = dynamic_cast<const op_node_sort_distinct *> (f);
     if (nsdf != NULL) 
     {
-      function *fmin = nsdf->min_action(sctx,
+      function* fmin = nsdf->min_action(sctx,
                                         node,
-                                        (*fo)[0],
-                                        nodes_or_atomics((*fo)[0]->return_type(sctx)));
+                                        fo->get_arg(0),
+                                        nodes_or_atomics(fo->get_arg(0)->return_type(sctx)));
       if (fmin != NULL) 
       {
         fo->set_func(fmin);
@@ -486,9 +477,9 @@ RULE_REWRITE_PRE(EliminateNodeOps)
       {
         // re-compute IGNORES_*
         fo->set_func(LOOKUP_FN ("fn", "reverse", 1)); // HACK: need fn:identity here
-        auto_ptr<Rewriter> rw (new SingletonRuleMajorDriverBase(rule_ptr_t(new MarkConsumerNodeProps())));
-        rw->rewrite (rCtx);
-        return (*fo)[0];
+        std::auto_ptr<Rewriter> rw(new SingletonRuleMajorDriverBase(rule_ptr_t(new MarkConsumerNodeProps())));
+        rw->rewrite(rCtx);
+        return fo->get_arg(0, true);
       }
     }
   }

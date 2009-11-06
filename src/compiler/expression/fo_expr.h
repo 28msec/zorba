@@ -54,14 +54,14 @@ public:
         short sctx,
         const QueryLoc& loc,
         const function* f,
-        expr_t arg);
+        const expr* arg);
 
   fo_expr(
         short sctx,
         const QueryLoc& loc,
         const function* f,
-        expr_t arg1,
-        expr_t arg2);
+        const expr* arg1,
+        const expr* arg2);
 
   fo_expr(
         short sctx,
@@ -75,33 +75,31 @@ public:
 
   const function* get_func() const { return theFunction; }
 
-  function* get_func() { invalidate(); return theFunction; }
+  function* get_func(bool inv) { if (inv) invalidate(); return theFunction; }
 
-  void set_func(function* f) { invalidate(); theFunction = f; }
+  void set_func(function* f) { theFunction = f; invalidate(); }
 
   const signature& get_signature() const;
 
   const store::Item* get_fname() const;
 
-  uint32_t num_args() const { return theArgs.size(); }
+  ulong num_args() const { return theArgs.size(); }
 
-  expr_t& operator[](int i) { invalidate(); return theArgs[i]; }
+  const expr* get_arg(ulong i) const { return theArgs[i]; }
 
-  const expr* operator[](int i) const { return theArgs[i].getp(); }
+  expr* get_arg(ulong i, bool inv) { if (inv) invalidate(); return theArgs[i]; }
 
-  std::vector<expr_t>::const_iterator begin() const { return theArgs.begin(); }
-
-  std::vector<expr_t>::const_iterator end() const { return theArgs.end(); }
-
-  expr_iterator_data* make_iter();
-
-  void next_iter(expr_iterator_data&);
+  void set_arg(ulong i, expr* e) { theArgs[i] = e; invalidate(); }
 
   xqtref_t return_type_impl(static_context*) const;
 
   void compute_scripting_kind() const;
 
   expr_t clone(substitution_t& s) const;
+
+  expr_iterator_data* make_iter();
+
+  void next_iter(expr_iterator_data&);
 
   void accept(expr_visitor&);
 

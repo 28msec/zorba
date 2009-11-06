@@ -39,7 +39,11 @@ namespace zorba
 class ctx_var_declare : public function
 {
 public:
-  ctx_var_declare(const signature& sig) : function (sig) {}
+  ctx_var_declare(const signature& sig) 
+    :
+    function(sig, FunctionConsts::OP_VAR_DECLARE)
+  {
+  }
 
   bool requires_dyn_ctx() const { return true; }
 
@@ -62,7 +66,7 @@ class ctx_var_assign : public function
 public:
   ctx_var_assign(const signature& sig) 
     :
-    function(sig, FunctionConsts::FN_VAR_ASSIGN)
+    function(sig, FunctionConsts::OP_VAR_ASSIGN)
   {
   }
 
@@ -85,7 +89,7 @@ PlanIter_t ctx_var_assign::codegen(
 
   const fo_expr& expr = reinterpret_cast<const fo_expr&>(ann);
 
-  xqtref_t exprType = (expr[1])->return_type(sctx);
+  xqtref_t exprType = expr.get_arg(1)->return_type(sctx);
 
   if (exprType->get_quantifier() == TypeConstants::QUANT_ONE)
     iter->setSingleItem();

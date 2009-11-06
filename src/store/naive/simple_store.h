@@ -146,6 +146,20 @@ public:
 
   store::Item_t createUri();
 
+  store::Collection_t createUriCollection(const xqpStringStore_t& uri);
+
+  store::Collection_t getUriCollection(const xqpStringStore_t& uri);
+
+  void deleteUriCollection(const xqpStringStore_t& uri);
+
+  store::Collection_t createCollection(store::Item_t& aName);
+
+  void deleteCollection(const store::Item_t& aName);
+
+  store::Collection_t getCollection(const store::Item_t& aName);
+
+  store::Iterator_t listCollectionNames();
+
   store::Index_t createIndex(
         const store::Item_t& qname,
         const store::IndexSpecification& spec,
@@ -157,18 +171,7 @@ public:
 
   void deleteIndex(const store::Item* qname);
 
-  store::Collection_t createCollection(store::Item_t& aName);
-  store::Collection_t createUriCollection(const xqpStringStore_t& uri);
-
-  store::Collection_t getCollection(const store::Item_t& aName);
-  store::Collection_t getUriCollection(const xqpStringStore_t& uri);
-
-  const CollectionSet getCollections() const;
-
-  void deleteCollection(const store::Item_t& aName);
-  void deleteUriCollection(const xqpStringStore_t& uri);
-
-  store::Iterator_t listCollectionNames();
+  const IndexSet& getIndices() const { return theIndices; }
 
   store::Item_t loadDocument(
         const xqpStringStore_t& uri,

@@ -42,8 +42,6 @@ bool FnPutIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::Item_t resolvedUriItem;
   std::auto_ptr<store::PUL> pul;
 
-  store::CopyMode copymode;
-
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
@@ -54,10 +52,6 @@ bool FnPutIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     ZORBA_ERROR_LOC(FOUP0001, loc);
   }
-
-  copymode.set(true, true, true, true);
-
-  node = node->copy(NULL, 0, copymode);
 
   consumeNext(uriItem, theChildren[1].getp(), planState);
 

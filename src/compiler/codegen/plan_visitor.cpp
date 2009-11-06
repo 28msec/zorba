@@ -1877,7 +1877,7 @@ void end_visit(fo_expr& v)
   {
     if (func->getKind() == FunctionConsts::FN_CREATE_INTERNAL_INDEX)
     {
-      const const_expr* qnameExpr = static_cast<const const_expr*>(v[0].getp());
+      const const_expr* qnameExpr = static_cast<const const_expr*>(v.get_arg(0));
       const store::Item* qname = qnameExpr->get_val();
 
       ValueIndex* index = sctx->lookup_index(qname);

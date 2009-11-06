@@ -29,7 +29,7 @@ unique ordered;
 declare index auctions:EmpCity
 on dc:collection(xs:QName("auctions:auctions"))/site/people/person
 by ((.//city))
-ordered;
+ordered automatic;
 
 
 (:

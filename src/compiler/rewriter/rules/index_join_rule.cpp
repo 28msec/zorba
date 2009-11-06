@@ -32,7 +32,7 @@ static bool isIndexJoinPredicate(RewriterContext&, PredicateInfo&);
 
 static void rewriteJoin(RewriterContext&, PredicateInfo&);
 
-static var_expr* findForVar(RewriterContext&, const expr*, int&);
+static const var_expr* findForVar(RewriterContext&, const expr*, int&);
 
 static bool checkVarDependency(RewriterContext&, expr*, int);
 
@@ -43,13 +43,13 @@ static bool isAndExpr(expr* e);
 
 struct PredicateInfo
 {
-  flwor_expr * theFlworExpr;
-  expr       * thePredicate;
-  const expr * theOuterOp;
-  var_expr   * theOuterVar;
-  int          theOuterVarId;
-  const expr * theInnerOp;
-  var_expr   * theInnerVar;
+  flwor_expr     * theFlworExpr;
+  expr           * thePredicate;
+  const expr     * theOuterOp;
+  const var_expr * theOuterVar;
+  int              theOuterVarId;
+  const expr     * theInnerOp;
+  const var_expr * theInnerVar;
 };
 
 
@@ -138,7 +138,7 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
 
     if (fn->CHECK_IS_BUILTIN_NAMED("boolean", 1))
     {
-      predExpr = (*foExpr)[0];
+      predExpr = foExpr->get_arg(0);
       continue;
     }
 
@@ -148,8 +148,8 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
   if (fn->comparison_kind() != CompareConsts::VALUE_EQUAL)
     return false;
 
-  const expr* op1 = (*foExpr)[0];
-  const expr* op2 = (*foExpr)[1];
+  const expr* op1 = foExpr->get_arg(0);
+  const expr* op2 = foExpr->get_arg(1);
 
   if (rCtx.m_varid_map == NULL)
   {
@@ -167,12 +167,12 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
   // Analyze each operand of the eq to see if it depends on a single for
   // variable. If that is not true, we reject this predicate.
   int var1id;
-  var_expr* var1 = findForVar(rCtx, op1, var1id);
+  const var_expr* var1 = findForVar(rCtx, op1, var1id);
   if (var1 == NULL)
     return false;
 
   int var2id;
-  var_expr* var2 = findForVar(rCtx, op2, var2id);
+  const var_expr* var2 = findForVar(rCtx, op2, var2id);
   if (var2 == NULL)
     return false;
 
@@ -406,9 +406,12 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 /*******************************************************************************
 
 ********************************************************************************/
-static var_expr* findForVar(RewriterContext& rCtx, const expr* curExpr, int& varid)
+static const var_expr* findForVar(
+    RewriterContext& rCtx,
+    const expr* curExpr,
+    int& varid)
 {
-  var_expr* var = NULL;
+  const var_expr* var = NULL;
 
   while (true)
   {
@@ -460,7 +463,7 @@ static bool checkVarDependency(
   ulong numVars = varidSet.size();
   for (ulong i = 0; i < numVars; ++i)
   {
-    var_expr* var = (*rCtx.m_idvar_map)[varidSet[i]];
+    const var_expr* var = (*rCtx.m_idvar_map)[varidSet[i]];
     curExpr = var->get_forletwin_clause()->get_expr();
 
     if (checkVarDependency(rCtx, curExpr, searchVarId))

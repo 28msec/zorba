@@ -997,7 +997,7 @@ void normalize_fo(fo_expr* foExpr)
 
   for(ulong i = 0; i < n; ++i) 
   {
-    expr::expr_t argExpr = (*foExpr)[i];
+    expr::expr_t argExpr = foExpr->get_arg(i, true);
 
     xqtref_t paramType;
 
@@ -1034,7 +1034,7 @@ void normalize_fo(fo_expr* foExpr)
       argExpr = wrap_in_type_match(argExpr, paramType);
     }
 
-    (*foExpr)[i] = argExpr;
+    foExpr->set_arg(i, argExpr);
   }
 }
 
@@ -1042,7 +1042,7 @@ void normalize_fo(fo_expr* foExpr)
 /*******************************************************************************
   Wrap the given expr in an fn:data() function
 ********************************************************************************/
-expr_t wrap_in_atomization(expr_t e) 
+expr_t wrap_in_atomization(expr* e) 
 {
   return new fo_expr(theCCB->m_cur_sctx,
                      e->get_loc(),
@@ -1510,8 +1510,8 @@ expr_t wrap_in_globalvar_assign(expr_t e)
 ********************************************************************************/
 void declare_var(const global_binding& b, std::vector<expr_t>& stmts) 
 {
-  CACHED (ctx_decl, LOOKUP_OP1 ("ctxvar-declare"));
-  CACHED (ctx_set, LOOKUP_OP2 ("ctxvar-assign"));
+  CACHED(ctx_decl, LOOKUP_OP1("ctxvar-declare"));
+  CACHED(ctx_set, LOOKUP_OP2("ctxvar-assign"));
 
   var_expr_t var = b.first;
   expr_t initExpr = b.second;
@@ -2351,7 +2351,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 ********************************************************************************/
 void* begin_visit(const VFO_DeclList& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
 
   // Function declaration translation must be done in two passes because of
   // mutually recursive functions and also because the defining expr of a declared
@@ -2527,9 +2527,9 @@ void end_visit (const VFO_DeclList& v, void* /*visit_state*/)
 /*******************************************************************************
   [13] OptionDecl ::= DECLARE_OPTION  QNAME  STRING_LITERAL
 ********************************************************************************/
-void *begin_visit (const OptionDecl& v) 
+void *begin_visit(const OptionDecl& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   //check if namespace for option is valid
   rchandle<QName>   qn = v.get_qname();
   xqpString   option_ns = sctx_p->lookup_ns(qn->get_prefix(), loc);
@@ -2564,9 +2564,9 @@ void end_visit (const OptionDecl& v, void* /*visit_state*/)
   BlockVarDecl ::= "declare" "$" VarName TypeDeclaration? (":=" ExprSingle)?
                     ("," "$" VarName TypeDeclaration? (":=" ExprSingle)?)*
 ********************************************************************************/
-void *begin_visit (const VarDecl& v) 
+void* begin_visit(const VarDecl& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
 
   store::Item_t varQNameItem = sctx_p->lookup_var_qname(v.get_varname(), loc);
   string key = static_context::qname_internal_key(varQNameItem);
@@ -2583,9 +2583,9 @@ void *begin_visit (const VarDecl& v)
 }
 
 
-void end_visit (const VarDecl& v, void* /*visit_state*/) 
+void end_visit(const VarDecl& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
   if (v.is_global())
     prolog_vf_key.clear();
@@ -2701,7 +2701,7 @@ void end_visit (const CtxItemDecl& v, void* /*visit_state*/)
         an Expr node if BlockDecls is empty, or a BlockBody node whose "decls"
         data member stores the var declarations.
 ********************************************************************************/
-void *begin_visit (const FunctionDecl& v) 
+void* begin_visit(const FunctionDecl& v) 
 {
   TRACE_VISIT ();
 
@@ -3029,6 +3029,7 @@ void* begin_visit(const IndexDecl& v)
   ValueIndex_t index = new ValueIndex(theCCB, loc, qnameItem);
   index->setUnique(v.isUnique());
   index->setMethod(v.isOrdered() ? ValueIndex::BTREE : ValueIndex::HASH);
+  index->setAutomatic(v.isAutomatic());
 
   indexstack.push(index);
 
@@ -3042,7 +3043,8 @@ void end_visit(const IndexDecl& v, void* /*visit_state*/)
   ValueIndex_t index = indexstack.top();
   indexstack.pop();
 
-  IndexTools::inferIndexCreators(index);
+  index->analyze();
+  //IndexTools::inferIndexCreators(index);
 
   // Register the index in the sctx of the current module. Raise error if such
   // a binding exists already in the sctx.
@@ -3247,15 +3249,15 @@ void end_visit (const EnclosedExpr& v, void* /*visit_state*/)
 /*******************************************************************************
   [37] QueryBody ::= Expr
 ********************************************************************************/
-void *begin_visit (const QueryBody& v) 
+void* begin_visit(const QueryBody& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const QueryBody& v, void* /*visit_state*/) 
+void end_visit(const QueryBody& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
   expr_t resultExpr = wrap_in_globalvar_assign(pop_nodestack());
 
@@ -3281,8 +3283,8 @@ void end_visit (const QueryBody& v, void* /*visit_state*/)
 
   - If the Expr is a ConcatExpr, then an Expr parsenode is generated, whose
     children are the ExprSingles that comparise the ConcatExpr. In this case,
-    if Expr has more than 1 children, it is translated as an fn:concatenate
-    expr. Otherwise, it is translated to its unique child.
+    if Expr has either 0 or more than 1 children, it is translated as an
+    fn:concatenate expr. Otherwise, it is translated to its unique child.
 ********************************************************************************/
 void* begin_visit(const Expr& v) 
 {
@@ -3317,6 +3319,38 @@ void end_visit(const Expr& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
+  [39] ExprSingle ::= 
+
+  ** XQuery 1.1 exprs
+                      FLWORExpr |
+                      QuantifiedExpr |
+                      TypeswitchExpr |
+                      IfExpr |
+                      OrExpr |
+                      TryExpr |
+
+  ** scripting
+                      BlockExpr |
+                      ExitExpr |
+                      WhileExpr |
+                      AssignExpr |
+                      FlowCtlStatement |
+
+  ** eval
+                      EvalExpr |
+
+  ** updates
+                      InsertExpr |
+                      DeleteExpr |
+                      RenameExpr |
+                      ReplaceExpr |
+                      TransformExpr
+
+********************************************************************************/
+
+
+/*******************************************************************************
+
   Block ::= "{" BlockDecls BlockBody "}"
 
   BlockDecls ::= (BlockVarDecl ";")*
@@ -3327,9 +3361,9 @@ void end_visit(const Expr& v, void* /*visit_state*/)
   BlockBody ::= Expr
 
 
-  - Synactically, BlockBody appears nonly in Block, and Block appears in
-  BlockExpr, WhileExpr, and FunctionDecl iff the function is declared as
-  sequential. BlockExpr and WhileExpr are ExprSingles.
+  - Synactically, BlockBody appears only in Block, and Block appears in
+    BlockExpr, WhileExpr, and FunctionDecl iff the function is declared as
+    sequential:
 
   BlockExpr ::= "block" Block
 
@@ -3341,10 +3375,10 @@ void end_visit(const Expr& v, void* /*visit_state*/)
 
 
   - There is no parsenode class for BlockExpr or for Block; instead, the parser
-  generates:
+    generates:
 
   1. BlockBody, if BlockDecls is not empty. The "decls" data member of this
-     BlockBode stores the var declarations.
+     BlockBody stores the var declarations.
 
   2. BlockBody, if BlockDecls is empty and Expr is an ApplyExpr.
 
@@ -3361,7 +3395,7 @@ void end_visit(const Expr& v, void* /*visit_state*/)
 
 
   - There are no parsenode classes for BlockVarDecl and BlockDecls; instead
-  the parser generates VarDecl and VFO_DeclList parsenodes.
+    the parser generates VarDecl and VFO_DeclList parsenodes.
 
 ********************************************************************************/
 void* begin_visit(const BlockBody& v) 
@@ -3390,11 +3424,11 @@ void end_visit(const BlockBody& v, void* /*visit_state*/)
     for (int i = decls->size() - 1; i >= 0; --i) 
     {
       expr_t val = pop_nodestack();
-      varref_t ve = pop_nodestack().cast<var_expr> ();
-      global_binding b (ve, val, false);
+      var_expr_t ve = pop_nodestack().cast<var_expr> ();
+      global_binding b(ve, val, false);
 
       vector<expr_t> stmts1;
-      declare_var (b, stmts1);
+      declare_var(b, stmts1);
 
       reverse(stmts1.begin(), stmts1.end());
 
@@ -3410,33 +3444,6 @@ void end_visit(const BlockBody& v, void* /*visit_state*/)
 }
 
 
-/*******************************************************************************
-  [39] ExprSingle ::= 
-
-  ** XQuery 1.1 exprs
-                      FLWORExpr |
-                      QuantifiedExpr |
-                      TypeswitchExpr |
-                      IfExpr |
-                      OrExpr |
-                      TryExpr |
-  ** scripting
-                      ExitExpr |
-                      WhileExpr |
-                      FlowCtlStatement |
-                      AssignExpr |
-                      BlockExpr |
-  ** updates
-                      InsertExpr |
-                      DeleteExpr |
-                      RenameExpr |
-                      ReplaceExpr |
-                      TransformExpr |
-  ** eval
-                      EvalExpr
-
-********************************************************************************/
-
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
@@ -3448,12 +3455,33 @@ void end_visit(const BlockBody& v, void* /*visit_state*/)
 
   FLWORExpr ::= InitialClause FLWORClauseList? ReturnClause
 
+  - For the Generalized FLWOR:
+
   InitialClause ::= ForClause | LetClause | WindowClause
 
+  FLWORClauseList ::= FLWORClause*
+
+  FLWORClause ::= ForClause |
+                  LetClause |
+                  WindowClause |
+                  WhereClause |
+                  GroupByClause |
+                  OrderByClause |
+                  CountClause
+
+  - For the traditional FLWOR:
+
+  InitialClause ::= ForClause | LetClause
+
+  FLWORClauseList ::= (ForClause | LetClause)* 
+                      WhereCluase?
+                      GroupByClause?
+                      OrderByClause?
+
 ********************************************************************************/
-void *begin_visit (const FLWORExpr& v) 
+void* begin_visit(const FLWORExpr& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
 
   theFlworClausesStack.push_back(NULL);
 
@@ -3461,13 +3489,14 @@ void *begin_visit (const FLWORExpr& v)
 }
 
 
-void end_visit (const FLWORExpr& v, void* /*visit_state*/) 
+void end_visit(const FLWORExpr& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
   if (sctx_p->xquery_version() <= StaticContextConsts::xquery_version_1_0 && 
-      v.is_non_10()) {
-    ZORBA_ERROR_LOC (XPST0003, loc);
+      v.is_non_10()) 
+  {
+    ZORBA_ERROR_LOC(XPST0003, loc);
   }
 
   rchandle<flwor_expr> flwor = new flwor_expr(theCCB->m_cur_sctx, loc, v.is_general());
@@ -3538,35 +3567,35 @@ void end_visit (const FLWORExpr& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-  - For the Generazed FLWOR:
+  - For the Generalized FLWOR:
 
-  FLWORClauseList ::= FLWORClause | FLWORClause  FLWORClauseList
+  FLWORClauseList ::= FLWORClause*
 
   - For the traditional FLWOR:
 
-  FLWORClauseList ::= (ForClause | LetClause)+ 
+  FLWORClauseList ::= (ForClause | LetClause)* 
                       WhereCluase?
                       GroupByClause?
                       OrderByClause?
 ********************************************************************************/
-void *begin_visit (const FLWORClauseList& v) 
+void* begin_visit(const FLWORClauseList& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const FLWORClauseList& v, void* /*visit_state*/) 
+void end_visit(const FLWORClauseList& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
 /*******************************************************************************
   ForClause ::= "outer"? "for" "$"  VarInDeclList
 ********************************************************************************/
-void *begin_visit (const ForClause& v) 
+void* begin_visit(const ForClause& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
 
   if (v.is_outer())
   {
@@ -7103,7 +7132,7 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
     if ((foExpr = dynamic_cast<fo_expr*>(valueExpr.getp())) != NULL &&
         foExpr->get_func()->getKind() == FunctionConsts::FN_ENCLOSED)
     {
-      (*foExpr)[0] = wrap_in_atomization((*foExpr)[0].getp());
+      foExpr->set_arg(0, wrap_in_atomization(foExpr->get_arg(0, false)));
     }
     else if (valueExpr != NULL)
     {
