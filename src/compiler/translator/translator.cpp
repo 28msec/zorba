@@ -7130,7 +7130,7 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
 
     fo_expr* foExpr;
     if ((foExpr = dynamic_cast<fo_expr*>(valueExpr.getp())) != NULL &&
-        foExpr->get_func()->getKind() == FunctionConsts::FN_ENCLOSED)
+        foExpr->get_func()->getKind() == FunctionConsts::OP_ENCLOSED)
     {
       foExpr->set_arg(0, wrap_in_atomization(foExpr->get_arg(0, false)));
     }

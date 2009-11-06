@@ -28,7 +28,7 @@ class op_enclosed_expr : public function
 public:
   op_enclosed_expr(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ENCLOSED)
+    function(sig, FunctionConsts::OP_ENCLOSED)
   {
   }
 
