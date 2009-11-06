@@ -43,7 +43,7 @@ class FunctionCreateInternalIndex : public function
 public:
   FunctionCreateInternalIndex(const signature& sig) 
     :
-    function(sig, FunctionConsts::FN_CREATE_INTERNAL_INDEX)
+    function(sig, FunctionConsts::OP_CREATE_INTERNAL_INDEX)
   {
   }
 
