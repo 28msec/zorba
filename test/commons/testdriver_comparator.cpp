@@ -34,16 +34,18 @@ namespace zorba {
 /*******************************************************************************
 
 ********************************************************************************/
-int
-canonicalizeAndCompare(const std::string& aComparisonMethod,
-                       const char* aRefFile,
-                       const char* aResultFile,
-                       const std::string& aRBKTBinDir)
+int canonicalizeAndCompare(
+    const std::string& aComparisonMethod,
+    const char* aRefFile,
+    const char* aResultFile,
+    const std::string& aRBKTBinDir)
 {
   xmlDocPtr lRefResult_ptr;
   xmlDocPtr lResult_ptr;
   
   LIBXML_TEST_VERSION
+
+  int libxmlFlags = XML_PARSE_NOBLANKS;
 
   if (aComparisonMethod.compare("XML") == 0) 
   {
@@ -118,7 +120,7 @@ canonicalizeAndCompare(const std::string& aComparisonMethod,
 
     lRefResult_ptr = xmlReadMemory(lTmpRefResult.str().c_str(),
                                    lTmpRefResult.str().size(),
-                                   "ref_result.xml", 0, XML_PARSE_NOBLANKS);
+                                   "ref_result.xml", 0, libxmlFlags);
 
     // prepend and append an artifical root tag as requested by the guidelines
     std::ostringstream lTmpResult;
@@ -143,7 +145,7 @@ canonicalizeAndCompare(const std::string& aComparisonMethod,
 
     lResult_ptr = xmlReadMemory(lTmpResult.str().c_str(),
                                 lTmpResult.str().size(),
-                                "result.xml", 0, XML_PARSE_NOBLANKS);
+                                "result.xml", 0, libxmlFlags);
     
   }
   else if (aComparisonMethod.compare("Error") == 0 ) 
@@ -251,8 +253,7 @@ canonicalizeAndCompare(const std::string& aComparisonMethod,
   aPos is the character number off the first difference in the file
   -1 is returned for aLine, aCol, and aPos if the files are equal
 ********************************************************************************/
-bool
-fileEquals(
+bool fileEquals(
     const char* aRefFile,
     const char* aResFile,
     int& aLine,
@@ -292,10 +293,6 @@ fileEquals(
     std::getline(li, lLine);
     std::getline(ri, rLine);
 
-    // TODO: should be removed, right?
-    //trim ( lLine );
-    //trim ( rLine );
-
     while ( (aCol = lLine.compare(rLine)) != 0) 
     {
       if (aLine == 1 &&
@@ -314,6 +311,21 @@ fileEquals(
     }
 
     ++aLine;
+  }
+
+  if (! ri.eof() ) 
+  {
+    std::getline(ri, rLine);
+
+    if (ri.peek() == -1) // ignore end-of-line in the actual result
+    {
+      return true;
+    }
+    else
+    { 
+      aResLine = rLine;
+      return false;
+    }
   }
 
   return true;
@@ -363,18 +375,6 @@ printFile(std::ostream& os, const std::string &aInFile)
   }
   os << std::endl;
 }
-
-void
-trim(std::string& str)
-{
-
-  std::string::size_type  notwhite = str.find_first_not_of(" \r\t\n");
-  str.erase(0,notwhite);
-
-  notwhite = str.find_last_not_of(" \t\n\r"); 
-  str.erase(notwhite+1); 
-}
-
 
 
 } /* namespace zorba */
