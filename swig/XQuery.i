@@ -230,4 +230,12 @@ public:
   void setVariableAsDocument(const std::string& aVarName, 
                              const std::string& aURL, 
                              const std::string& aContent);
+
+  /*XQuery_t 	clone () const;
+  void 	close ();
+  void 	compile (std::istream &aQuery, const StaticContext_t &aStaticContext, const Zorba_CompilerHints_t &aHints);
+  void 	compile (const String &aQuery, const StaticContext_t &aStaticContext, const Zorba_CompilerHints_t &aHints);
+  void 	compile (std::istream &aQuery, const Zorba_CompilerHints_t &aHints);
+  void 	compile (const String &aQuery, const Zorba_CompilerHints_t &aHints);
+  void 	compile (const String &aQuery);*/
 }; // class XQuery

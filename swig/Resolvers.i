@@ -109,7 +109,7 @@
                  &newXmlDataManager, validate,
                  tidying, newTidyUserOpt);
       
-      std::auto_ptr<zorba::DocumentURIResolverResult> myRes;
+      std::auto_ptr<zorba::DocumentURIResolverResult> myRes ; //=
         (new MyDocumentURIResolverResult(result->getDocument().theItem)); 
       return myRes;
     }
@@ -130,8 +130,76 @@
             bool tidying,
             const Item& aTidyUserOpt) = 0;
   };
- 
+
+
+
+
   /*
+  class CollectionURIResolverResult : public URIResolverResult
+  {
+    friend class CollectionURIResolver;
+  protected:
+    zorba::CollectionURIResolverResult *theResult;
+    CollectionURIResolverResult() {}
+
+  public:
+    virtual ~CollectionURIResolverResult() {}
+    
+    virtual Collection getCollection() const =0;
+  };
+  
+  class MyCollectionURIResolverResult 
+    : public zorba::CollectionURIResolverResult
+  {
+  private:
+    zorba::Collection theCollection;
+  public:
+    MyCollectionURIResolverResult(zorba::Item aCol) : theCollection (aCol) {};
+    virtual zorba::Collection getCollection() const 
+    { return theCollection; }
+  };
+  
+  class CollectionURIResolver : protected zorba::CollectionURIResolver
+  {
+  public:
+    virtual ~CollectionURIResolver() {}
+    
+  private:
+    virtual std::auto_ptr<zorba::CollectionURIResolverResult>
+      resolve(const zorba::Item& aURI,
+            zorba::StaticContext* aStaticContext,
+            zorba::XmlDataManager* aXmlDataManager,
+            bool validate,
+            bool tidying,
+            const zorba::Item& aTidyUserOpt) 
+    { 
+      Item newURI = Item::createEmptyItem();
+      newURI.theItem = aURI;
+
+      StaticContext newStaticContext(aStaticContext);
+      XmlDataManager newXmlDataManager(aXmlDataManager);
+
+      CollectionURIResolverResult* result = 
+        resolve(newURI, &newStaticContext, 
+                 &newXmlDataManager);
+      
+      std::auto_ptr<zorba::CollectionURIResolverResult> myRes =
+        (new MyCollectionURIResolverResult(result->getCollection())); 
+      return myRes;
+    }
+
+  public:
+    // swig error when using auto_ptr<>
+    //virtual std::auto_ptr<DocumentURIResolverResult>
+    //  resolve2(const Item& aURI,
+    //        StaticContext* aStaticContext,
+    //        XmlDataManager* aXmlDataManager) =0;    
+    virtual CollectionURIResolverResult* resolve(const Item& aURI,
+            StaticContext* aStaticContext,
+            XmlDataManager* aXmlDataManager) = 0;
+  };
+ 
+  
   class CollectionURIResolverResult : public URIResolverResult
   {
     public:
