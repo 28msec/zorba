@@ -54,7 +54,8 @@ MACRO(RUNTIME_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILE OUTPUT PARAM1 PARAM2 ZO
                         "${CPP_OUTPUT_BINARY_DIR}"
                         "${CPP_OUTPUT_SOURCE_DIR}"
                          DEPENDS ${CPP_QUERY} ${SPEC_FILE}
-                                 "${H_OUTPUT_BINARY_DIR}") # cpp always depends on .h
+                                 "${H_OUTPUT_BINARY_DIR}"
+                                 "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq") # cpp always depends on .h
 
      MESSAGE(STATUS "Generating ${H_OUTPUT_BINARY_DIR}")
      ADD_CUSTOM_COMMAND(OUTPUT "${H_OUTPUT_BINARY_DIR}"
@@ -66,7 +67,8 @@ MACRO(RUNTIME_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILE OUTPUT PARAM1 PARAM2 ZO
                         COMMAND "${CMAKE_COMMAND}" "-E" "copy_if_different"
                         "${H_OUTPUT_BINARY_DIR}"
                         "${H_OUTPUT_SOURCE_DIR}"
-                         DEPENDS ${HEADER_QUERY} ${SPEC_FILE})
+                         DEPENDS ${HEADER_QUERY} ${SPEC_FILE}
+                                 "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq")
   ELSE (ZORBA_WORKS)
     CHECK_OUTPUT_EXISTS("${CPP_OUTPUT_SOURCE_DIR}")
     CHECK_OUTPUT_EXISTS("${H_OUTPUT_SOURCE_DIR}")
@@ -91,7 +93,8 @@ MACRO(PRINTER_VISITOR_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILES OUTPUT PARAM1 
                         "${CPP_OUTPUT_SOURCE_DIR}"
                          DEPENDS ${CPP_QUERY} ${SPEC_FILES}
                                  "${H_OUTPUT_BINARY_DIR}" # cpp always depends on .h
-                                 "${CMAKE_BINARY_DIR}/src/runtime/visitors/planiter_visitor.h")
+                                 "${CMAKE_BINARY_DIR}/src/runtime/visitors/planiter_visitor.h"
+                                 "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq")
 
      MESSAGE(STATUS "Generating ${H_OUTPUT_BINARY_DIR}")
      ADD_CUSTOM_COMMAND(OUTPUT "${H_OUTPUT_BINARY_DIR}"
@@ -104,6 +107,7 @@ MACRO(PRINTER_VISITOR_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILES OUTPUT PARAM1 
                         "${H_OUTPUT_BINARY_DIR}"
                         "${H_OUTPUT_SOURCE_DIR}"
                          DEPENDS ${HEADER_QUERY} ${SPEC_FILES}
+                                 "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq"
                          )
   ELSE (ZORBA_WORKS)
     CHECK_OUTPUT_EXISTS("${CPP_OUTPUT_SOURCE_DIR}")
@@ -125,7 +129,8 @@ MACRO(PLANINTER_VISITOR_GENERATOR HEADER_QUERY SPEC_FILES OUTPUT PARAM1 ZORBA_WO
                         COMMAND "${CMAKE_COMMAND}" "-E" "copy_if_different"
                         "${H_OUTPUT_BINARY_DIR}"
                         "${H_OUTPUT_SOURCE_DIR}"
-                         DEPENDS ${HEADER_QUERY} ${SPEC_FILES})
+                         DEPENDS ${HEADER_QUERY} ${SPEC_FILES}
+                                 "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq")
   ELSE (ZORBA_WORKS)
     CHECK_OUTPUT_EXISTS("${H_OUTPUT_SOURCE_DIR}")
   ENDIF (ZORBA_WORKS)
@@ -150,6 +155,7 @@ MACRO(CODEGEN_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILE  OUTPUT PARAM1 PARAM2 Z
                         "${CPP_OUTPUT_SOURCE_DIR}"
                          DEPENDS ${CPP_QUERY} ${SPEC_FILE}
                                  "${H_OUTPUT_BINARY_DIR}" # cpp always depends on .h
+                                 "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq"
                        )
 
      MESSAGE(STATUS "Generating ${H_OUTPUT_BINARY_DIR}")
@@ -162,7 +168,8 @@ MACRO(CODEGEN_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILE  OUTPUT PARAM1 PARAM2 Z
                         COMMAND "${CMAKE_COMMAND}" "-E" "copy_if_different"
                         "${H_OUTPUT_BINARY_DIR}"
                         "${H_OUTPUT_SOURCE_DIR}"
-                         DEPENDS ${HEADER_QUERY} ${SPEC_FILE})
+                         DEPENDS ${HEADER_QUERY} ${SPEC_FILE}
+                                 "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq")
   ELSE (ZORBA_WORKS)
     CHECK_OUTPUT_EXISTS("${CPP_OUTPUT_SOURCE_DIR}")
     CHECK_OUTPUT_EXISTS("${H_OUTPUT_SOURCE_DIR}")
@@ -183,7 +190,8 @@ MACRO(FUNCTION_ENUM_GENERATOR HEADER_QUERY SPEC_FILES OUTPUT PARAM1 ZORBA_WORKS)
                         COMMAND "${CMAKE_COMMAND}" "-E" "copy_if_different"
                         "${OUTPUT_BINARY_DIR}"
                         "${OUTPUT_SOURCE_DIR}"
-                         DEPENDS ${HEADER_QUERY} ${SPEC_FILES})
+                         DEPENDS ${HEADER_QUERY} ${SPEC_FILES}
+                                 "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq")
   ELSE (ZORBA_WORKS)
     CHECK_OUTPUT_EXISTS("${OUTPUT_SOURCE_DIR}")
   ENDIF (ZORBA_WORKS)
