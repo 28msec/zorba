@@ -25,7 +25,7 @@ set (svn_path "https://zorba.svn.sourceforge.net/svnroot/zorba")
 
 # Sleep for N seconds
 macro (sleep seconds)
-  execute_process (COMMAND "${CMAKE_CTEST_COMMAND" -Q
+  execute_process (COMMAND "${CMAKE_CTEST_COMMAND"
                    -S "${cwd}/Sleep.cmake,${seconds}")
 endmacro ()
 
