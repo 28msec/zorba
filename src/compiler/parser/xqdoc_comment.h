@@ -22,80 +22,120 @@
 
 namespace zorba {
 
-class XQDocumentable;
+  class XQDocumentable;
 
-enum XQDocType
-{
-  TYPE_AUTHOR, TYPE_VERSION, TYPE_PARAM, TYPE_RETURN, TYPE_ERROR, TYPE_DEPRECATED, TYPE_SEE, TYPE_SINCE, TYPE_UNKNOWN
-};
+  enum XQDocType
+  {
+    TYPE_AUTHOR,
+    TYPE_VERSION,
+    TYPE_PARAM,
+    TYPE_RETURN,
+    TYPE_ERROR,
+    TYPE_DEPRECATED,
+    TYPE_SEE,
+    TYPE_SINCE,
+    TYPE_UNKNOWN
+  };
 
-class XQDocAnnotation
-{
-  friend class XQDocComment;
+  class XQDocAnnotation
+  {
+    friend class XQDocComment;
 
-  private:
-    const std::string theName;
-    const std::string theValue;
-    XQDocType theType;   
- 
-    XQDocAnnotation(std::string& aName, std::string& aValue): theName(aName), theValue(aValue)
-    {
-      if(theName == "author")
+    private:
+
+      const std::string theName;
+      const std::string theValue;
+      XQDocType         theType;   
+   
+      XQDocAnnotation(std::string& aName, std::string& aValue)
+        : theName(aName),
+          theValue(aValue)
       {
-        theType = TYPE_AUTHOR;
-      } else if(theName == "version") {
-        theType = TYPE_VERSION;
-      } else if(theName == "param") {
-        theType = TYPE_PARAM;
-      } else if(theName == "return") {
-        theType = TYPE_RETURN;
-      } else if(theName == "error") {
-        theType = TYPE_ERROR;
-      } else if(theName == "deprecated") {
-        theType = TYPE_DEPRECATED;
-      } else if(theName == "see") {
-        theType = TYPE_SEE;
-      } else if(theName == "since") {
-        theType = TYPE_SINCE;
-      } else {
-        theType = TYPE_UNKNOWN;
+        if(theName == "author") {
+          theType = TYPE_AUTHOR;
+        } else if(theName == "version") {
+          theType = TYPE_VERSION;
+        } else if(theName == "param") {
+          theType = TYPE_PARAM;
+        } else if(theName == "return") {
+          theType = TYPE_RETURN;
+        } else if(theName == "error") {
+          theType = TYPE_ERROR;
+        } else if(theName == "deprecated") {
+          theType = TYPE_DEPRECATED;
+        } else if(theName == "see") {
+          theType = TYPE_SEE;
+        } else if(theName == "since") {
+          theType = TYPE_SINCE;
+        } else {
+          theType = TYPE_UNKNOWN;
+        }
       }
-    }
 
-  public:
-    const std::string& getName() const { return theName; }
-    const std::string& getValue() const { return theValue; }
-    XQDocType getType() const { return theType; }
-};
 
-class XQDocComment
-{
-  friend class XQDocumentable;
+    public:
 
-  private:
-    std::stringstream theDescription;
-    std::list<XQDocAnnotation> theAnnotations;
-    std::string theVersion;
-    std::string theReturn;
-    bool theDeprecated;
-    std::string theDeprecatedComment;
+      const std::string&
+      getName() const { return theName; }
 
-    bool isAnAnnotationLine(const std::string& aLine);
-    XQDocComment* parseAnnotation(const std::string& aLine);
-    XQDocComment* appendDescription(const std::string& aLine);
+      const std::string&
+      getValue() const { return theValue; }
 
-    XQDocComment(const std::string& aComment);
-  
-  public:
-    const std::string getDescription() const { return theDescription.str(); }
-    const std::list<XQDocAnnotation>& getAnnotations() const { return theAnnotations; }
+      XQDocType
+      getType() const { return theType; }
+  };
 
-    bool hasVersion() const { return !theVersion.empty(); }
-    const std::string& getVersion() const { return theVersion; }
-    bool hasReturn() const { return !theReturn.empty(); }
-    const std::string& getReturn() const { return theReturn; }
-    bool isDeprecated() const { return theDeprecated; }
-    const std::string& getDeprecatedComment() const { return theDeprecatedComment; }
-};
+  class XQDocComment
+  {
+    friend class XQDocumentable;
+
+    private:
+
+      std::string                 theDescription;
+      std::list<XQDocAnnotation>  theAnnotations;
+      std::string                 theVersion;
+      std::string                 theReturn;
+      bool                        theDeprecated;
+      std::string                 theDeprecatedComment;
+
+      bool
+      trimLine(std::string& line);
+
+      bool
+      isAnAnnotationLine(const std::string& aLine);
+
+      void
+      parseAnnotation(const std::string& aLine);
+
+      XQDocComment(const std::string& aComment);
+    
+    public:
+
+      const std::string
+      getDescription() const { return theDescription; }
+
+      const std::list<XQDocAnnotation>&
+      getAnnotations() const { return theAnnotations; }
+
+      bool
+      hasVersion() const { return !theVersion.empty(); }
+
+      const std::string&
+      getVersion() const { return theVersion; }
+
+      bool
+      hasReturn() const { return !theReturn.empty(); }
+
+      const std::string&
+      getReturn() const { return theReturn; }
+
+      bool
+      isDeprecated() const { return theDeprecated; }
+
+      const std::string&
+      getDeprecatedComment() const { return theDeprecatedComment; }
+
+  };
+
 }//end of namespace
 #endif

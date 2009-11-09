@@ -37,7 +37,6 @@
 
 #include "context/static_context.h"
 
-
 #include <iostream>
 
 
@@ -255,6 +254,9 @@ bool FnReadStringIterator::nextImpl (store::Item_t& result, PlanState& planState
 }
 
 
+// TODO: This print iterator has to be removed and the classes that need
+// to be serialized have to implement the zorba:intern::Serializable
+// interface.
 bool FnPrintIterator::nextImpl (store::Item_t& result, PlanState& planState) const 
 {
   std::ostringstream os;
@@ -275,10 +277,13 @@ bool FnPrintIterator::nextImpl (store::Item_t& result, PlanState& planState) con
         lSerializer->setParameter("omit-xml-declaration", "yes");
       }
 
+      // TODO: This print iterator has to be removed and the classes that need
+      // to be serialized have to implement the zorba:intern::Serializable
+      // interface.
       if (m_printToConsole) {
-        //lSerializer->serialize(item.getp(), std::cout);
+        // lSerializer->serialize(item.getp(), std::cout);
       } else {
-        //lSerializer->serialize(item.getp(), os);
+        // lSerializer->serialize(item.getp(), os);
       }
     }
     else

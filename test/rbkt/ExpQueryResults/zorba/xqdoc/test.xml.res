@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xqdoc:xqdoc xmlns:xqdoc="http://www.xqdoc.org/1.0">
 <xqdoc:control>
-<xqdoc:date>2009-11-05T23:06:13.79+01:00</xqdoc:date>
+<xqdoc:date/>
 <xqdoc:version>1.0</xqdoc:version>
 </xqdoc:control>
 <xqdoc:module type="library"><xqdoc:uri>http://www.28msec.com/modules/gdata</xqdoc:uri>
 <xqdoc:name>gdata.xqlib</xqdoc:name>
 <xqdoc:comment>
-<xqdoc:description>The description of this module must have the whitespaces normalized: 1) NL at top, middle &amp; end; 2) TABs in this line;			3) SPACES      here and after.</xqdoc:description>
+<xqdoc:description>The description of this module must have the whitespaces normalized: 1) NL at top, middle &amp; end; 2) TABs in this line; 3) SPACES here and after.</xqdoc:description>
 <xqdoc:see>http://example.com</xqdoc:see>
 </xqdoc:comment>
 </xqdoc:module><xqdoc:imports><xqdoc:import><xqdoc:uri>http://www.zorba-xquery.com/zorba/internal-functions</xqdoc:uri></xqdoc:import>
@@ -28,7 +28,7 @@
 </xqdoc:variables>
 <xqdoc:functions><xqdoc:function><xqdoc:comment>
 <xqdoc:description>Google Login</xqdoc:description>
-
+<xqdoc:param>account This parameter will be deleted by the test query.</xqdoc:param>
 <xqdoc:param>password This description must have the whitespaces normalized.</xqdoc:param>
 <xqdoc:see>http://www.google.com</xqdoc:see>
 </xqdoc:comment>

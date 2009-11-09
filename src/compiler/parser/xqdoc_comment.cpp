@@ -14,99 +14,113 @@
  * limitations under the License.
  */
 
-#include "compiler/parser/xqdoc_comment.h"
+#include "xqdoc_comment.h"
 
 #include <cctype>
 #include <algorithm>
 #include <string>
 
-using namespace std;
+#include <zorba/zorbastring.h>
 
 namespace zorba {
 
-string trim(const string& aString, string *left_ws = NULL);
-
-string trim(const string& aString, string *left_ws)
-{
-  size_t lStartPos = aString.find_first_not_of(" \t");
-  size_t lEndPos = aString.find_last_not_of(" \t");
-
-  if((string::npos == lStartPos) || (string::npos == lEndPos))
-  {
-    return "";
-  } else {
-    if(left_ws && lStartPos)
-    {
-      *left_ws += aString.substr(0, lStartPos);
-    }
-    return aString.substr(lStartPos, lEndPos-lStartPos+1);
-  }
-}
-
-XQDocComment::XQDocComment(const string& aComment): theDeprecated(false)
+XQDocComment::XQDocComment(const std::string& aComment)
+  : theDeprecated(false)
 { 
-  bool descriptionState = true;
-  string lLine;
-  string left_ws;//remember whitespaces in the left
-  string anno_text;
-  istringstream lComment;
-  lComment.str(aComment);
-  while(getline(lComment, lLine, '\n'))
+  bool lDescriptionState = true;
+  bool lNewLineAdded = true;
+
+  std::string lLine;
+  std::string lAnntotation;
+  std::stringstream lComment;
+  
+  // add one column to the comment such that all the lines are treated the same
+  lComment << ":" << aComment;
+
+  while(std::getline(lComment, lLine, '\n'))
   {
-    left_ws = "";
-    lLine = trim(lLine, &left_ws);
-    if(lLine.empty()) 
-    {
-      if(descriptionState)
-        appendDescription("\n");
-      else
-        anno_text += "\n";
-      continue;
-    }
-    if("(:~" == lLine.substr(0, 3) || ":)" == lLine.substr(0, 2))
-    {
-      continue;
-    } else if (':' == lLine.at(0)) {
-      lLine = lLine.substr(1);
-      lLine = trim(lLine, &left_ws);
+    // remove the leading and trailing whitespaces, and the leading ':'
+    if (!trimLine(lLine)) {
+      // the line did not start with a ':' preceeded by whitespaces
+      // therefore we ignore these lines
+      continue;      
     }
 
-    if(isAnAnnotationLine(lLine)) 
-    {
-      descriptionState = false;
-      if(!anno_text.empty())
-        parseAnnotation(anno_text);
-      anno_text = lLine.substr(1);
+    // only add one new line every time an sequence of empty lines is found
+    if (lLine.empty()) {
+      if (!lNewLineAdded) {
+        if (lDescriptionState) {
+          theDescription += "\n";
+        } else {
+          lAnntotation += "\n";
+        }
+        lNewLineAdded = true;
+      }
+      continue;
     }
-    else if(descriptionState)
-    {
-      appendDescription(left_ws + lLine);
-    }
-    else
-    {
-      anno_text += "\n";
-      anno_text += left_ws + lLine;
+    lNewLineAdded = false;
+
+    // if the line contains an annotation, than we finish the description
+    if (lLine.at(0) == '@') {
+      lDescriptionState = false;
+      if (!lAnntotation.empty()) {
+        parseAnnotation(lAnntotation);
+      }
+      lAnntotation = lLine;
+    } else if (lDescriptionState) {
+      theDescription += lLine + " ";
+    } else {
+      lAnntotation += " " + lLine;
     }
   }
-  if(!anno_text.empty())
-    parseAnnotation(anno_text);
+  if(!lAnntotation.empty()) {
+    parseAnnotation(lAnntotation);
+  }
+
+  // normalize spaces in the description
+  String lTemp(theDescription);
+  lTemp.normalizeSpace();
+  theDescription = std::string(lTemp.c_str());
 }
 
-XQDocComment* XQDocComment::parseAnnotation(const std::string& aLine)
+bool
+XQDocComment::trimLine(std::string& aLine)
+{
+  String lResult(aLine);
+  lResult.trim(" \t");
+
+  if (lResult.charAt(0) == ':') {
+    lResult = lResult.substring(1);
+    lResult.trim(" \t");
+    aLine = std::string(lResult.c_str());
+  } else {
+    return false;
+  }
+
+  return true;
+}
+
+void
+XQDocComment::parseAnnotation(const std::string& aLine)
 {
   size_t lIndex;
-  string lName, lValue="";
+  std::string lName, lValue = "";
   lIndex = aLine.find(' ');
-  if(lIndex == string::npos)
-  {
-    lName = aLine;
+
+  if (lIndex == std::string::npos) {
+    lName = aLine.substr(1);
   } else {
-    lName = aLine.substr(0, lIndex);
-    lValue = trim(aLine.substr(lIndex));
+    lName = aLine.substr(1, lIndex - 1);
+    lValue = aLine.substr(lIndex + 1);
   }
+
   transform(lName.begin(), lName.end(), lName.begin(), ::tolower);
-  if("version" == lName)
-  {
+
+  String lNormValue(lValue);
+  lNormValue.normalizeSpace();
+  lValue = std::string(lNormValue.c_str());
+
+  if ("version" == lName) {
     theVersion = lValue;
   } else if("return" == lName) {
     theReturn = lValue;
@@ -117,25 +131,6 @@ XQDocComment* XQDocComment::parseAnnotation(const std::string& aLine)
     XQDocAnnotation lAnnotation(lName, lValue);
     theAnnotations.push_back(lAnnotation);
   }
-  return this; 
 }
 
-bool XQDocComment::isAnAnnotationLine(const string& aLine)
-{
-  string lLine = trim(aLine);
-  return !lLine.empty() && '@' == lLine.at(0);
-}
-
-XQDocComment* XQDocComment::appendDescription(const std::string& aLine)
-{
-  if(!aLine.empty())
-  {
-    if(!theDescription.str().empty())
-    {
-      theDescription << endl;
-    }
-    theDescription << aLine;
-  }
-  return this;
-}
 }//end of namespace

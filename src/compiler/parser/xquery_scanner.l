@@ -343,7 +343,7 @@ typedef zorba::xquery_parser::token token;
 "comment" { return token::COMMENT; }
 "declare" {
   std::string lDocComment = theDriver->theDocComment;
-  yylval->sval = getDriver()->symtab.put_stringlit2(lDocComment.c_str(), lDocComment.length());
+  yylval->sval = getDriver()->symtab.put_commentcontent(lDocComment.c_str(), lDocComment.length());
   theDriver->theDocComment = "";
   return token::DECLARE;
 }
@@ -380,7 +380,7 @@ typedef zorba::xquery_parser::token token;
 "namespace" { return token::NAMESPACE; }
 "module" {
   std::string lDocComment = theDriver->theDocComment;
-  yylval->sval = getDriver()->symtab.put_stringlit2(lDocComment.c_str(), lDocComment.length());
+  yylval->sval = getDriver()->symtab.put_commentcontent(lDocComment.c_str(), lDocComment.length());
   theDriver->theDocComment = "";
   return token::MODULE;
 }
@@ -436,7 +436,7 @@ typedef zorba::xquery_parser::token token;
 
 "datamodule" {
   std::string lDocComment = theDriver->theDocComment;
-  yylval->sval = getDriver()->symtab.put_stringlit2(lDocComment.c_str(), lDocComment.length());
+  yylval->sval = getDriver()->symtab.put_commentcontent(lDocComment.c_str(), lDocComment.length());
   theDriver->theDocComment = "";
   return token::DATAMODULE;
 }

@@ -3470,7 +3470,7 @@ YY_RULE_SETUP
 #line 344 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 {
   std::string lDocComment = theDriver->theDocComment;
-  yylval->sval = getDriver()->symtab.put_stringlit2(lDocComment.c_str(), lDocComment.length());
+  yylval->sval = getDriver()->symtab.put_commentcontent(lDocComment.c_str(), lDocComment.length());
   theDriver->theDocComment = "";
   return token::DECLARE;
 }
@@ -3625,7 +3625,7 @@ YY_RULE_SETUP
 #line 381 "/home/markos/zorba/zorba/src/compiler/parser/xquery_scanner.l"
 {
   std::string lDocComment = theDriver->theDocComment;
-  yylval->sval = getDriver()->symtab.put_stringlit2(lDocComment.c_str(), lDocComment.length());
+  yylval->sval = getDriver()->symtab.put_commentcontent(lDocComment.c_str(), lDocComment.length());
   theDriver->theDocComment = "";
   return token::MODULE;
 }

@@ -3,7 +3,9 @@ import schema namespace xqds = "http://www.xqdoc.org/1.0" at "xqdoc-1.0.xsd";
 
 declare sequential function local:remove-date($xqdoc)
 {
-  delete node $xqdoc//xqds:param[1];
+  let $date := $xqdoc//xqds:date[1]
+  return
+	replace value of node $date with "";
   exit returning $xqdoc;
 };
 

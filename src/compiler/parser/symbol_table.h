@@ -49,7 +49,7 @@ public:			// table interface
 	off_t put_entityref(char const* text, uint32_t length);
 	off_t put_charref(char const* text, uint32_t length);
 	off_t put_stringlit(char const* text, uint32_t length);
-	off_t put_stringlit2(char const* text, uint32_t length);
+	off_t put_commentcontent(char const* text, uint32_t length);
 
 	std::string get(off_t id);
 	uint32_t size() const;
