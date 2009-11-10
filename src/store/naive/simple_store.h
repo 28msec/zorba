@@ -171,6 +171,8 @@ public:
 
   void deleteIndex(const store::Item* qname);
 
+  store::Iterator_t listIndexNames();
+
   const IndexSet& getIndices() const { return theIndices; }
 
   store::Item_t loadDocument(

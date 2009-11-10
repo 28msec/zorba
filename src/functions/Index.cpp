@@ -17,6 +17,7 @@
 #include "functions/function_impl.h"
 
 #include "runtime/indexing/value_index_impl.h"
+#include "runtime/indexing/context_index_impl.h"
 
 
 namespace zorba
@@ -230,7 +231,61 @@ public:
   DEFAULT_NARY_CODEGEN(IndexRangeProbeIterator);
 };
 
+class FunctionIsDeclaredIndex : public function 
+{
+public:
+  FunctionIsDeclaredIndex(const signature& sig) 
+    :
+    function(sig)
+  {
+  }
 
+  bool requires_dyn_ctx() const { return false; }
+
+  DEFAULT_NARY_CODEGEN(IsDeclaredIndexIterator);
+};
+
+class FunctionDeclaredIndexes : public function 
+{
+public:
+  FunctionDeclaredIndexes(const signature& sig) 
+    :
+    function(sig)
+  {
+  }
+
+  bool requires_dyn_ctx() const { return false; }
+
+  DEFAULT_NARY_CODEGEN(DeclaredIndexesIterator);
+};
+
+class FunctionIsAvailableIndex : public function 
+{
+public:
+  FunctionIsAvailableIndex(const signature& sig) 
+    :
+    function(sig)
+  {
+  }
+
+  bool requires_dyn_ctx() const { return true; }
+
+  DEFAULT_NARY_CODEGEN(IsAvailableIndexIterator);
+};
+
+class FunctionAvailableIndexes : public function 
+{
+public:
+  FunctionAvailableIndexes(const signature& sig) 
+    :
+    function(sig)
+  {
+  }
+
+  bool requires_dyn_ctx() const { return false; }
+
+  DEFAULT_NARY_CODEGEN(AvailableIndexesIterator);
+};
 
 void populateContext_Index(static_context* sctx)
 {
@@ -273,6 +328,28 @@ void populateContext_Index(static_context* sctx)
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         true,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
+
+  DECL(sctx, FunctionIsDeclaredIndex,
+       (createQName(ZORBA_STATICCONTEXT_FN_NS,
+                    "fn-zorba-staticcontext", "is-declared-index"),
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+
+  DECL(sctx, FunctionDeclaredIndexes,
+       (createQName(ZORBA_STATICCONTEXT_FN_NS,
+                    "fn-zorba-staticcontext", "declared-indexes"),
+        GENV_TYPESYSTEM.QNAME_TYPE_STAR));
+
+  DECL(sctx, FunctionIsAvailableIndex,
+       (createQName(ZORBA_DYNAMICCONTEXT_FN_NS,
+                    "fn-zorba-dynamiccontext", "is-available-index"),
+        GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+        GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+
+  DECL(sctx, FunctionAvailableIndexes,
+       (createQName(ZORBA_DYNAMICCONTEXT_FN_NS,
+                    "fn-zorba-dynamiccontext", "available-indexes"),
+        GENV_TYPESYSTEM.QNAME_TYPE_STAR));
 }
 
 

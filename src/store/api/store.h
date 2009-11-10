@@ -276,6 +276,11 @@ public:
    *  Destroy the index with the given qname. The index must not be a temporary one.
    */
   virtual void deleteIndex(const Item* qname) = 0;
+
+  /** 
+   * Returns an iterator that lists the names of all the available indexes.
+   */
+  virtual Iterator_t listIndexNames() = 0;
 };
 
 

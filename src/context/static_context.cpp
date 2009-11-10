@@ -1175,28 +1175,29 @@ const StaticallyKnownCollection* static_context::lookup_collection(const store::
 }
 
 
-class CollectionNameIterator : public store::Iterator
+template < typename T>
+class NameIterator : public store::Iterator
 {
 private:
-  ItemPointerHashMap<rchandle<StaticallyKnownCollection> >*          theCollections;
-  ItemPointerHashMap<rchandle<StaticallyKnownCollection> >::iterator theIterator;
+  ItemPointerHashMap<rchandle<T> >*          theItems;
+  typename ItemPointerHashMap<rchandle<T> >::iterator theIterator;
 
 public:
-  CollectionNameIterator(ItemPointerHashMap<rchandle<StaticallyKnownCollection> >* aCollections)
-  : theCollections(aCollections)
+  NameIterator(ItemPointerHashMap<rchandle<T> >* aItems)
+  : theItems(aItems)
   {}
-  virtual ~CollectionNameIterator() { close(); }
+  virtual ~NameIterator() { close(); }
   virtual void open() {
-    if (theCollections) {
-      theIterator = theCollections->begin();
+    if (theItems) {
+      theIterator = theItems->begin();
     }
   }
   virtual bool next(store::Item_t& aResult) {
-    if (!theCollections) {
+    if (!theItems) {
       return false;
     }
 
-    if (theIterator == theCollections->end()) {
+    if (theIterator == theItems->end()) {
        aResult = NULL;
       return false;
     }
@@ -1207,15 +1208,15 @@ public:
     }
   }
   virtual void reset() {
-    if (theCollections) {
-      theIterator = theCollections->begin();
+    if (theItems) {
+      theIterator = theItems->begin();
     }
   }
   virtual void close() {}
 };
 
 store::Iterator_t static_context::list_collection_names() const {
-  return new CollectionNameIterator(theCollectionMap);
+  return new NameIterator<StaticallyKnownCollection>(theCollectionMap);
 }
 
 
@@ -1250,6 +1251,9 @@ ValueIndex* static_context::lookup_index(const store::Item* qname) const
     return NULL;
 }
 
+store::Iterator_t static_context::list_index_names() const {
+  return new NameIterator<ValueIndex>(theIndexMap);
+}
 
 /*******************************************************************************
 

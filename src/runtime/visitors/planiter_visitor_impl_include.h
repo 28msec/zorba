@@ -82,6 +82,10 @@
   class IndexEntryBuilderIterator;
   class IndexPointProbeIterator;
   class IndexRangeProbeIterator;
+  class IsAvailableIndexIterator;
+  class AvailableIndexesIterator;
+  class IsDeclaredIndexIterator;
+  class DeclaredIndexesIterator;
 
   class OpNumericUnaryIterator;
   class FnAbsIterator;

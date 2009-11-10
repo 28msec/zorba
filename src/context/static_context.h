@@ -373,6 +373,8 @@ public:
 
   ValueIndex* lookup_index(const store::Item* qname) const;
 
+  store::Iterator_t list_index_names() const;
+
 
   //
   // Collations

@@ -189,6 +189,10 @@
   PLAN_ITER_VISITOR (IndexEntryBuilderIterator);
   PLAN_ITER_VISITOR (IndexPointProbeIterator);
   PLAN_ITER_VISITOR (IndexRangeProbeIterator);
+  PLAN_ITER_VISITOR (IsAvailableIndexIterator);
+  PLAN_ITER_VISITOR (AvailableIndexesIterator);
+  PLAN_ITER_VISITOR (IsDeclaredIndexIterator);
+  PLAN_ITER_VISITOR (DeclaredIndexesIterator);
   
   PLAN_ITER_VISITOR (OpNumericUnaryIterator);
     

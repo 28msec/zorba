@@ -414,6 +414,46 @@ void SimpleStore::deleteIndex(const store::Item* qname)
   theIndices.remove(qname);
 }
 
+/*******************************************************************************
+  Iterator to return Index and Collection Names
+********************************************************************************/
+template < typename T >
+class NameIterator : public store::Iterator
+{
+private:
+  T*                   theItems;
+  typename T::iterator theIterator;
+
+public:
+  NameIterator(T& aItems) {
+    theItems = &aItems;
+  }
+  virtual ~NameIterator() { close(); }
+  virtual void open() {
+    theIterator = theItems->begin();
+  }
+  virtual bool next(store::Item_t& aResult) {
+    if (theIterator == theItems->end()) {
+       aResult = NULL;
+      return false;
+    }
+    else {
+      aResult = (*theIterator).first;
+      ++theIterator;
+      return true;
+    }
+  }
+  virtual void reset() {
+    theIterator = theItems->begin();
+  }
+  virtual void close() {}
+};
+
+
+store::Iterator_t SimpleStore::listIndexNames()
+{
+  return new NameIterator<IndexSet>(theIndices);
+}
 
 /*******************************************************************************
   Create a collection with a given QName and return an rchandle to the new
@@ -564,10 +604,9 @@ public:
   virtual void close() {}
 };
 
-
 store::Iterator_t SimpleStore::listCollectionNames()
 {
-  return new CollectionNameIterator(theCollections);
+  return new NameIterator<CollectionSet>(theCollections);
 }
 
 
