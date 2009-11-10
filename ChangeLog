@@ -31,6 +31,8 @@ version 1.0 (coming)
     the functionality of the XQuery::applyUpdates method (which was removed).
   * Added the serialize library to the built-in modules. The function
     util:serialize-to-string has been removed.
+  * The DynamicContext can be used to pass arbitrary name-value pairs
+    to the evaluate method of external functions.
 
 version 0.9.8-rev1 (2009.09.22)
   * bug fixes

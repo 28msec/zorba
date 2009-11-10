@@ -126,6 +126,12 @@ public:
   virtual Item
   getDefaultCollection() const;
 
+  virtual bool
+  addExternalFunctionParam( const String& aName, void* aValue );
+
+  virtual bool
+  getExternalFunctionParam ( const String& aName, void*& ) const;
+
 protected:
   void checkNoIterators();
 };

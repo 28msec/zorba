@@ -198,6 +198,31 @@ class ZORBA_DLL_PUBLIC DynamicContext
   virtual Item
   getDefaultCollection() const = 0;
   
+  /** \brief Add a name-value pair the this context.
+   *         The value can be accessed in the evaluate method
+   *         of external functions (see NonePureStatelessExternalFunction).
+   *
+   * @param aName the name of the parameter to add
+   * @param aValue the value that can be accessed in the evaluate method.
+   * @return returns true if an entry with the same name did not already exist,
+   *         false otherwise.
+   */
+  virtual bool
+  addExternalFunctionParam( const String& aName, void* aValue ) = 0;
+
+  /** \brief Get the value of a pair that was registered using
+   *         the addExternalFunctionParam method. This can
+   *         be used in the evaluate method 
+   *         of external functions (see NonePureStatelessExternalFunction).
+   *
+   * @param aName the name of the parameter to retrieve
+   * @return aValue the value matching the given name if true is returned.
+   * @return returns true if an entry with the given name was found,
+   *         false otherwise.
+   */
+  virtual bool
+  getExternalFunctionParam ( const String& aName, void*& aValue ) const = 0;
+
 protected:
   /** \brief Destructor
    */

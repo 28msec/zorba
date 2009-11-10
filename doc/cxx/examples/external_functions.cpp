@@ -17,10 +17,12 @@
 #include <vector>
 #include <iostream>
 #include <sstream>
+#include <cassert>
 
 #include <zorba/zorba.h>
 #include <zorba/external_module.h>
 #include <zorba/external_function.h>
+#include <zorba/empty_sequence.h>
 #include <simplestore/simplestore.h>
 
 
@@ -187,24 +189,57 @@ class MyErrorReportingExternalFunction : public PureStatelessExternalFunction
     };
 };
 
+class MyParametrizedExternalFunction : public NonePureStatelessExternalFunction
+{
+  protected:
+    const ExternalModule* theModule;
+
+  public:
+    MyParametrizedExternalFunction(const ExternalModule* aModule)
+      : theModule(aModule) {}
+
+    virtual String
+    getURI() const { return theModule->getURI(); }
+
+    virtual String
+    getLocalName() const { return "bar4"; }
+
+    virtual ItemSequence_t 
+    evaluate(const StatelessExternalFunction::Arguments_t& args,
+             const StaticContext* sctx,
+             const DynamicContext* dctx) const 
+    {
+        void* lParam;
+        std::string lParamName("myparam");
+        if ( ! dctx->getExternalFunctionParam( lParamName, lParam ) ) {
+          assert(false); 
+        }
+        std::cout << "the function param: " << *static_cast<std::string*>(lParam) << std::endl;
+        return ItemSequence_t(new EmptySequence());
+    }
+};
+
 class MyExternalModule : public ExternalModule
 {
   protected:
     mutable MySimpleExternalFunction*         bar1;
     mutable MyLazySimpleExternalFunction*     bar2;
     mutable MyErrorReportingExternalFunction* bar3;
+    mutable MyParametrizedExternalFunction*   bar4;
 
   public:
     MyExternalModule()
       : bar1(0),
         bar2(0),
-        bar3(0) {}
+        bar3(0),
+        bar4(0) {}
 
     virtual ~MyExternalModule()
     {
       delete bar1;
       delete bar2;
       delete bar3;
+      delete bar4;
     }
 
     virtual String
@@ -228,6 +263,11 @@ class MyExternalModule : public ExternalModule
           bar3 = new MyErrorReportingExternalFunction(this);
         } 
         return bar3;
+      } else if (aLocalname.equals("bar4")) {
+        if (!bar3) {
+          bar4 = new MyParametrizedExternalFunction(this);
+        } 
+        return bar4;
       }
       return 0;
     }
@@ -345,6 +385,34 @@ func_example_5(Zorba* aZorba)
 
 	return false;
 }
+
+bool
+func_example_6(Zorba* aZorba)
+{
+	StaticContext_t lContext = aZorba->createStaticContext();
+
+  MyExternalModule lModule;
+  
+  lContext->registerModule(&lModule);
+
+  std::ostringstream lText;
+  lText << "declare namespace foo=\"urn:foo\";" << std::endl
+        << "declare function foo:bar4() external;" << std::endl
+        << "for $x in 1 to 6 return (foo:bar4())" << std::endl;
+    
+	XQuery_t lQuery = aZorba->compileQuery(lText.str(), lContext); 
+
+  DynamicContext* lDynContext = lQuery->getDynamicContext();
+
+  std::string lFunctionParam ("foo:bar");
+
+  lDynContext->addExternalFunctionParam("myparam", &lFunctionParam);
+
+  std::cout << lQuery << std::endl;
+
+	return true;
+}
+
 int 
 external_functions(int argc, char* argv[])
 {
@@ -374,6 +442,11 @@ external_functions(int argc, char* argv[])
 
   std::cout << std::endl  << "executing simple external function test 5" << std::endl;
   res = func_example_5(lZorba);
+  if (!res) return 1; 
+  std::cout << std::endl;
+  
+  std::cout << std::endl  << "executing simple external function test 6" << std::endl;
+  res = func_example_6(lZorba);
   if (!res) return 1; 
   std::cout << std::endl;
   

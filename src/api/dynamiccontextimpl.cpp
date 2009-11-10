@@ -451,4 +451,32 @@ DynamicContextImpl::getDefaultCollection() const
   return Item();
 }
 
+bool
+DynamicContextImpl::addExternalFunctionParam (
+  const String& aName,
+  void* aValue )
+{
+  ZORBA_DCTX_TRY
+  {
+    std::string lName = aName.c_str();
+    return theCtx->addExternalFunctionParam(lName, aValue);
+  }
+  ZORBA_DCTX_CATCH
+  return false;
+}
+
+bool
+DynamicContextImpl::getExternalFunctionParam (
+  const String& aName,
+  void*& aValue) const
+{
+  ZORBA_DCTX_TRY
+  {
+    std::string lName = aName.c_str();
+    return theCtx->getExternalFunctionParam(lName, aValue);
+  }
+  ZORBA_DCTX_CATCH
+  return false;
+}
+
 } /* namespace zorba */

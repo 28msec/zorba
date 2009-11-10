@@ -458,6 +458,37 @@ void dynamic_context::unbindIndex(const store::Item* qname)
   }
 }
 
+bool
+dynamic_context::addExternalFunctionParam (
+  const std::string& aName,
+  void* aValue )
+{
+  dctx_value_t value;
+  value.type = dynamic_context::dctx_value_t::ext_func_param;
+  value.func_param = aValue;
+  
+  return keymap.put ( aName, value);
+}
+
+bool
+dynamic_context::getExternalFunctionParam (
+  const std::string& aName,
+  void*& aValue) const
+{
+  dctx_value_t val;
+
+  if ( !keymap.get(aName, val) ) {
+    if (theParent)
+      theParent->getExternalFunctionParam(aName, aValue);
+    else
+      return false;
+  }
+
+  ZORBA_ASSERT(val.type == dynamic_context::dctx_value_t::ext_func_param);
+  aValue = val.func_param;
+  return true;
+}
+
 
 }	/* namespace zorba */
 

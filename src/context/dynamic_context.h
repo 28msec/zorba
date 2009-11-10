@@ -59,16 +59,18 @@ protected:
       no_val,
       var_item_val,
       var_temp_seq_val,
+      ext_func_param // params that can be used by ext. functions
     } val_type_t;
 
     union
     {
       store::Item*     var_item;
       store::TempSeq*  var_temp_seq;
-    }           val;
+    } val;
 
     val_type_t  type;
     bool        in_progress;
+    void*       func_param;
   };
 
   typedef hashmap<dctx_value_t> ValueMap;
@@ -153,6 +155,12 @@ public:
 
   void unbindIndex(const store::Item* qname);
 
+  bool
+  addExternalFunctionParam ( const std::string& aName, void* aValue );
+  
+  bool
+  getExternalFunctionParam ( const std::string& aName, void*& aValue) const;
+
 protected:
   bool lookup_once(const std::string& key, dctx_value_t& val) const 
   {
@@ -184,8 +192,9 @@ protected:
         const std::string& key,
         store::Item_t& var_item,
         store::Iterator_t& var_iter);
-};
 
+};
+  
 
 } /* namespace zorba */
 #endif /* ZORBA_DYNAMIC_CONTEXT_H */
