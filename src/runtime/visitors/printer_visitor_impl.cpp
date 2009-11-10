@@ -66,7 +66,6 @@
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/update/update.h"
 #include "runtime/misc/MiscImpl.h"
-#include "runtime/nodes/NodesImpl.h"
 
 namespace zorba{
 
