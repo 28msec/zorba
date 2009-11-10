@@ -178,6 +178,20 @@ namespace zorba {
 
     void beginVisit( const ErrorIterator& );
     void endVisit  ( const ErrorIterator& );
+    void beginVisit( const NodeReferenceIterator& );
+    void endVisit  ( const NodeReferenceIterator& );
+
+    void beginVisit( const NodeByReferenceIterator& );
+    void endVisit  ( const NodeByReferenceIterator& );
+
+    void beginVisit( const FnLocalNameIterator& );
+    void endVisit  ( const FnLocalNameIterator& );
+
+    void beginVisit( const FnNamespaceUriIterator& );
+    void endVisit  ( const FnNamespaceUriIterator& );
+
+    void beginVisit( const FnLangIterator& );
+    void endVisit  ( const FnLangIterator& );
     void beginVisit( const FnConcatIterator& );
     void endVisit  ( const FnConcatIterator& );
 

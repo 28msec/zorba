@@ -10,11 +10,6 @@
 
 <zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
     
-<zorba:header>
-    <zorba:include form="Quoted">common/shared_types.h</zorba:include>
-    <zorba:include form="Quoted">runtime/base/narybase.h</zorba:include>
-</zorba:header>
-
 <zorba:source>
     <zorba:include form="Quoted">system/globalenv.h</zorba:include>
     <zorba:include form="Quoted">runtime/visitors/planiter_visitor.h</zorba:include>
@@ -22,17 +17,6 @@
     <zorba:include form="Quoted">store/api/iterator.h</zorba:include>
     <zorba:include form="Quoted">store/api/item_factory.h</zorba:include>
 </zorba:source>
-
-<zorba:codegen>
-    <zorba:h>
-      <zorba:include form="Quoted">common/shared_types.h</zorba:include>
-      <zorba:include form="Quoted">functions/function_impl.h</zorba:include>
-    </zorba:h>
-    <zorba:cpp>
-      <zorba:include form="Quoted">runtime/misc/misc.h</zorba:include>
-      <zorba:include form="Quoted">functions/func_misc.h</zorba:include>
-    </zorba:cpp>
-</zorba:codegen>
     
 <!--
 /*******************************************************************************

@@ -27,82 +27,10 @@
 namespace zorba 
 {
 
-
-class node_reference : public function
-{
-public:
-  node_reference(const signature &sig) : function (sig) {} 
-
-  DEFAULT_NARY_CODEGEN (NodeReferenceIterator)
-};
-
-
-class node_by_reference : public function
-{
-public:
-  node_by_reference(const signature &sig) : function (sig) {}    
-
-  DEFAULT_NARY_CODEGEN (NodeByReferenceIterator)
-};
-
-
-class fn_local_name : public function 
-{
-public:
-  fn_local_name(const signature &sig) : function (sig) {}
-
-  DEFAULT_NARY_CODEGEN (FnLocalNameIterator)
-};
-
-
-class fn_namespace_uri : public function 
-{
-public:
-  fn_namespace_uri(const signature &sig) : function (sig) {}
-
-  DEFAULT_NARY_CODEGEN (FnNamespaceUriIterator)
-};
-  
-
-class fn_lang : public function 
-{
-public:
-  fn_lang(const signature &sig) : function (sig) {}
-
-  DEFAULT_NARY_CODEGEN (FnLangIterator)
-};
   
 
 void populateContext_Nodes(static_context* sctx)
 {
-//begin functions on nodes
-DECL(sctx, fn_local_name,
-     (createQName(XQUERY_FN_NS, "fn", "local-name"),
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.STRING_TYPE_ONE));
-
-DECL(sctx, fn_namespace_uri,
-     (createQName(XQUERY_FN_NS, "fn", "namespace-uri"),
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
-
-// lang / - handled by translator
-DECL(sctx, fn_lang,
-     (createQName(XQUERY_FN_NS, "fn", "lang"),
-      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
-//end functions on nodes
-
-DECL(sctx, node_reference,
-     (createQName(ZORBA_NODEREF_FN_NS, "fn-zorba", "node-reference"),
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
-      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
-
-DECL(sctx, node_by_reference,
-     (createQName(ZORBA_NODEREF_FN_NS, "fn-zorba", "node-by-reference"),
-      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION));
 
 }
 

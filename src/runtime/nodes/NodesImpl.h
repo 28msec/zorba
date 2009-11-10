@@ -22,20 +22,20 @@
 namespace zorba {
 
 // zorba:node-reference
-NARY_ITER(NodeReferenceIterator);
+//NARY_ITER(NodeReferenceIterator);
 
 // zorba:node-by-reference
-NARY_ITER(NodeByReferenceIterator);
+//NARY_ITER(NodeByReferenceIterator);
 
 
 // 14.2 fn:local-name
-NARY_ITER(FnLocalNameIterator);
+//NARY_ITER(FnLocalNameIterator);
 
 // 14.3 fn:namespace-uri
-NARY_ITER(FnNamespaceUriIterator);
+//NARY_ITER(FnNamespaceUriIterator);
 
 // 14.5 fn:lang
-NARY_ITER(FnLangIterator);
+//NARY_ITER(FnLangIterator);
 
 
 } /* namespace zorba */

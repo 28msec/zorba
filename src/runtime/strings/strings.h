@@ -24,6 +24,7 @@
 #define ZORBA_RUNTIME_STRINGS_STRINGS_H
 
 
+#include "common/shared_types.h"
 #include "runtime/base/narybase.h"
 #include "zorbautils/checked_vector.h"
 #include "zorbatypes/representations.h"

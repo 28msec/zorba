@@ -13,55 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <vector>
+#include "runtime/nodes/nodes.h"
 
-#include "zorbaerrors/Assert.h"
 #include "system/globalenv.h"
-#include "runtime/nodes/NodesImpl.h"
 #include "store/api/item_factory.h"
 
-#include "runtime/api/runtimecb.h"
-#include "runtime/util/iterator_impl.h"
-#include "runtime/visitors/planiter_visitor.h"
-
-#include "context/dynamic_context.h"
-#include "context/static_context.h"
-#include "context/internal_uri_resolvers.h"
-#include "context/namespace_context.h"
-
 #include "store/api/store.h"
-#include "store/api/collection.h"
-#include "store/api/iterator.h"
 
 using namespace std;
 
 namespace zorba {
-//SERIALIZABLE_CLASS_VERSIONS(NodeReferenceIterator)
-//END_SERIALIZABLE_CLASS_VERSIONS(NodeReferenceIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(NodeByReferenceIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(NodeByReferenceIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(FnLocalNameIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(FnLocalNameIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(FnNamespaceUriIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(FnNamespaceUriIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(FnLangIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(FnLangIterator)
-
-
-//NARY_ACCEPT(NodeReferenceIterator);
-
-NARY_ACCEPT(NodeByReferenceIterator);
-
-NARY_ACCEPT(FnLocalNameIterator);
-
-NARY_ACCEPT(FnNamespaceUriIterator);
-
-NARY_ACCEPT(FnLangIterator);
-
 
 bool NodeReferenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -76,7 +37,6 @@ bool NodeReferenceIterator::nextImpl(store::Item_t& result, PlanState& planState
   STACK_PUSH(GENV_STORE.getReference(result, inNode), state);
   STACK_END(state);
 }
-
 
 bool NodeByReferenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -171,11 +131,11 @@ bool FnLangIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if(CONSUME(item, 0))
+  if(consumeNext(item, theChildren[0].getp(), planState))
   {
     reqLang = item->getStringValue().getp();
     
-    if (CONSUME(node, 1)) {
+    if (consumeNext(node, theChildren[1].getp(), planState)) {
       for(;
         NULL != node && node->getNodeKind () == store::StoreConsts::elementNode && ! found;
         node = node->getParent())

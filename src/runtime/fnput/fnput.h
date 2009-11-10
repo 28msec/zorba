@@ -24,6 +24,7 @@
 #define ZORBA_RUNTIME_FNPUT_FNPUT_H
 
 
+#include "common/shared_types.h"
 #include "runtime/base/narybase.h"
 
 

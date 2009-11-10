@@ -5,17 +5,31 @@ import module namespace gen = "http://www.zorba-xquery.com/internal/gen" at "uti
 import module namespace file = "http://www.zorba-xquery.com/modules/file";
 
 declare variable $local:CODEGEN_ERROR as xs:QName := xs:QName("zorba:codegen");
+declare variable $file as xs:string external;
+declare variable $mappings as xs:string external;
+declare variable $mappings_doc := "";
+declare variable $file_doc := "";
 
-declare function local:create-include($doc) as xs:string
+
+declare function local:includes($doc) as xs:string
 {
-  string-join((
-  for $include in $doc//zorba:codegen/zorba:cpp/zorba:include[@form='Angle-bracket']
-  return 
-    concat('#include <', $include/text(), '>'),
-
-  for $include in $doc//zorba:codegen/zorba:cpp/zorba:include[@form='Quoted']
+  let $dir-name := fn:replace(fn:string-join(fn:tokenize($file, "/")[position() gt last() - 2], "/"),
+                     ".xml", ".h")
   return
-    concat('#include "', $include/text(), '"')),$gen:newline)
+  string-join(
+    (
+      concat('#include "runtime/', $dir-name, '"'),
+      concat('#include "functions/func_', fn:tokenize($dir-name, "/")[last()], '"'),
+      for $include in $doc//zorba:codegen/zorba:cpp/zorba:include[@form='Angle-bracket']
+      return 
+        concat('#include <', $include/text(), '>'),
+
+      for $include in $doc//zorba:codegen/zorba:cpp/zorba:include[@form='Quoted']
+      return
+        concat('#include "', $include/text(), '"')
+    ),
+    $gen:newline
+  )
 };
 
 declare function local:process-file($doc,
@@ -206,11 +220,6 @@ declare function local:create-zorba-type($param,$mapping) as xs:string?
 };
 
 
-declare variable $file as xs:string external;
-declare variable $mappings as xs:string external;
-declare variable $mappings_doc := "";
-declare variable $file_doc := "";
-
 let $pieces as xs:string* := tokenize($file,'/')
 let $name := substring($pieces[count($pieces)],1,string-length($pieces[count($pieces)])-4)
 return
@@ -218,7 +227,7 @@ return
     set $mappings_doc := file:read-xml($mappings);
     set $file_doc     := file:read-xml($file);
     string-join((gen:add-copyright(),
-      local:create-include($file_doc),
+      local:includes($file_doc),
       'namespace zorba{',
       local:process-file($file_doc, $name, $mappings_doc),
       '}')

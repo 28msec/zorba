@@ -40,6 +40,7 @@
 #include "runtime/durations_dates_times/durations_dates_times.h"
 #include "runtime/fnput/fnput.h"
 #include "runtime/misc/misc.h"
+#include "runtime/nodes/nodes.h"
 #include "runtime/sequences/sequences.h"
 #include "runtime/strings/strings.h"
 
@@ -683,6 +684,71 @@ void PrinterVisitor::endVisit ( const ErrorIterator& ) {
   thePrinter.endEndVisit();
 }
 // </ErrorIterator>
+
+// <NodeReferenceIterator>
+void PrinterVisitor::beginVisit ( const NodeReferenceIterator& a) {
+  thePrinter.startBeginVisit("NodeReferenceIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const NodeReferenceIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </NodeReferenceIterator>
+
+// <NodeByReferenceIterator>
+void PrinterVisitor::beginVisit ( const NodeByReferenceIterator& a) {
+  thePrinter.startBeginVisit("NodeByReferenceIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const NodeByReferenceIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </NodeByReferenceIterator>
+
+// <FnLocalNameIterator>
+void PrinterVisitor::beginVisit ( const FnLocalNameIterator& a) {
+  thePrinter.startBeginVisit("FnLocalNameIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnLocalNameIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnLocalNameIterator>
+
+// <FnNamespaceUriIterator>
+void PrinterVisitor::beginVisit ( const FnNamespaceUriIterator& a) {
+  thePrinter.startBeginVisit("FnNamespaceUriIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnNamespaceUriIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnNamespaceUriIterator>
+
+// <FnLangIterator>
+void PrinterVisitor::beginVisit ( const FnLangIterator& a) {
+  thePrinter.startBeginVisit("FnLangIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnLangIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnLangIterator>
 
 // <FnConcatIterator>
 void PrinterVisitor::beginVisit ( const FnConcatIterator& a) {

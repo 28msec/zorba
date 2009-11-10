@@ -151,11 +151,6 @@
   class RenameIterator;
   class TransformIterator;
   class ApplyIterator;
-  class NodeReferenceIterator;
-  class NodeByReferenceIterator;
-  class FnLocalNameIterator;
-  class FnNamespaceUriIterator;
-  class FnLangIterator;
   class FnCollectionIterator;
   class CreateTupleIterator;
   class GetTupleFieldIterator;

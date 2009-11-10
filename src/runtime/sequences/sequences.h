@@ -24,6 +24,8 @@
 #define ZORBA_RUNTIME_SEQUENCES_SEQUENCES_H
 
 
+#include "common/shared_types.h"
+#include "runtime/base/narybase.h"
 #include "runtime/base/narybase.h"
 #include "runtime/core/path_iterators.h"
 

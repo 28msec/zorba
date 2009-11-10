@@ -24,6 +24,7 @@
 #define ZORBA_RUNTIME_CONVERTORS_CONVERTORS_H
 
 
+#include "common/shared_types.h"
 #include "runtime/base/narybase.h"
 #include "store/api/iterator.h"
 #include "store/api/iterator_factory.h"

@@ -34,6 +34,7 @@
 #include "functions/func_sequences.h"
 #include "functions/sequences_impl.h"
 #include "functions/func_fnput.h"
+#include "functions/func_nodes.h"
 
 #include "functions/func_misc.h"
 
@@ -45,7 +46,6 @@
 #include "functions/EnclosedExpr.h"
 #include "functions/VarDecl.h"
 #include "functions/arithmetic.h"
-#include "functions/Nodes.h"
 #include "functions/tuple_functions.h"
 #include "functions/InternalOperators.h"
 #include "functions/Index.h"
@@ -80,17 +80,17 @@ void BuiltinFunctionLibrary::populateContext(static_context* sctx)
   populate_context_accessors_impl(sctx);
   populate_context_booleans(sctx);
   populate_context_booleans_impl(sctx);
+  populate_context_context(sctx);
   populate_context_convertors(sctx);
   populate_context_durations_dates_times(sctx);
   populate_context_durations_dates_times_impl(sctx);
+  populate_context_nodes(sctx);
   populate_context_strings(sctx);
   populate_context_sequences(sctx);
   populate_context_sequences_impl(sctx);
-  populate_context_context(sctx);
   populate_context_fnput(sctx);
   populate_context_misc(sctx);
 
-  populateContext_Nodes(sctx);
   populateContext_Arithmetics(sctx);
   populateContext_Numerics(sctx);
   populateContext_QNames(sctx);

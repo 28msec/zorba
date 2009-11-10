@@ -2,23 +2,10 @@
 
 <zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
     
-<zorba:header>
-    <zorba:include form="Quoted">common/shared_types.h</zorba:include>
-    <zorba:include form="Quoted">runtime/base/narybase.h</zorba:include>
-</zorba:header>
-
-<zorba:source/>
-
 <zorba:codegen>
     <zorba:h>
-        <zorba:include form="Quoted">common/shared_types.h</zorba:include>
-        <zorba:include form="Quoted">functions/function_impl.h</zorba:include>
         <zorba:method>void populateContext_Comparison(static_context *sctx);</zorba:method>
     </zorba:h>
-    <zorba:cpp>
-        <zorba:include form="Quoted">runtime/booleans/booleans.h</zorba:include>
-        <zorba:include form="Quoted">functions/func_booleans.h</zorba:include>
-    </zorba:cpp>
 </zorba:codegen>
     
 <!--

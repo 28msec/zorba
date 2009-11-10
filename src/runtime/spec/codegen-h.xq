@@ -5,16 +5,22 @@ import module namespace gen = "http://www.zorba-xquery.com/internal/gen" at "uti
 import module namespace file = "http://www.zorba-xquery.com/modules/file";
 
 
-declare function local:create-include($doc) as xs:string
+declare function local:includes($doc) as xs:string
 {
-  string-join((
-  for $include in $doc//zorba:codegen/zorba:h/zorba:include[@form='Angle-bracket']
-  return 
-    concat('#include <', $include/text(), '>'),
+  string-join(
+    (
+      '#include "common/shared_types.h"',
+      '#include "functions/function_impl.h"',
+      for $include in $doc//zorba:codegen/zorba:h/zorba:include[@form='Angle-bracket']
+      return 
+        concat('#include <', $include/text(), '>'),
 
-  for $include in $doc//zorba:codegen/zorba:h/zorba:include[@form='Quoted'] 
-  return
-    concat('#include "', $include/text(), '"')),$gen:newline)
+      for $include in $doc//zorba:codegen/zorba:h/zorba:include[@form='Quoted'] 
+      return
+        concat('#include "', $include/text(), '"')
+    ),
+    $gen:newline
+  )
 };
 
 
@@ -282,7 +288,7 @@ return
           $gen:newline,
           gen:add-guard-open(string-join(('functions_',$name),'')),
           $gen:newline,
-          local:create-include($doc),
+          local:includes($doc),
           $gen:newline,
           'namespace zorba{',
           $gen:newline,

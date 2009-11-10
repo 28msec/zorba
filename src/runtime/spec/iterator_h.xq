@@ -173,8 +173,10 @@ declare function local:get-fwd-decl($XMLdoc) as xs:string*
   else string-join(('namespace ', $ns, '{',$gen:newline, local:get-decl($XMLdoc, $ns) ,$gen:newline,'}'),''))
 };
 
-declare function local:get-include($XMLdoc) as xs:string*
+declare function local:includes($XMLdoc) as xs:string*
 {
+  '#include "common/shared_types.h"',
+  '#include "runtime/base/narybase.h"',
   for $include in $XMLdoc//zorba:header/zorba:include[@form='Angle-bracket']
   return 
     concat('#include <', $include/text(), '>'),
@@ -192,7 +194,7 @@ declare variable $name  as xs:string external;
 string-join((gen:add-copyright(), 
              gen:add-guard-open(replace($name,'/','_')),
              $gen:newline,
-             local:get-include($input),
+             local:includes($input),
              $gen:newline,
              'namespace zorba {',
              local:get-fwd-decl($input),

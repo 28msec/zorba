@@ -128,16 +128,11 @@
     void endVisit ( const TypedValueCompareIterator<TypeConstants::XS_FLOAT>& a);
     void endVisit ( const TypedValueCompareIterator<TypeConstants::XS_STRING>& a);
 
-  DECLARE_VISITOR (NodeReferenceIterator)
-  DECLARE_VISITOR (NodeByReferenceIterator)
   DECLARE_VISITOR (SequentialIterator)
   DECLARE_VISITOR (FlowCtlIterator)
   DECLARE_VISITOR (LoopIterator)
   DECLARE_VISITOR (UDFunctionCallIterator)
   DECLARE_VISITOR (StatelessExtFunctionCallIterator)
-  DECLARE_VISITOR (FnLocalNameIterator)
-  DECLARE_VISITOR (FnNamespaceUriIterator)
-  DECLARE_VISITOR (FnLangIterator)
   DECLARE_VISITOR (FnCollectionIterator)
   DECLARE_VISITOR (FnBooleanIterator)
   DECLARE_VISITOR (LogicIterator)

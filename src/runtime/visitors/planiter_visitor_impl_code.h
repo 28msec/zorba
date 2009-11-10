@@ -1,18 +1,8 @@
-  PLAN_ITER_VISITOR(NodeReferenceIterator);
-  
-  PLAN_ITER_VISITOR(NodeByReferenceIterator);
-    
   PLAN_ITER_VISITOR (SequentialIterator);
 
   PLAN_ITER_VISITOR (FlowCtlIterator);
 
   PLAN_ITER_VISITOR (LoopIterator);
-
-  PLAN_ITER_VISITOR (FnLocalNameIterator);
-
-  PLAN_ITER_VISITOR (FnNamespaceUriIterator);
-
-  PLAN_ITER_VISITOR (FnLangIterator);
 
   PLAN_ITER_VISITOR (FnCollectionIterator);
 

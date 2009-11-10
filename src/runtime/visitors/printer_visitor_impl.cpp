@@ -1075,16 +1075,11 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION(ZorbaFopIterator);
 #endif // ZORBA_WITH_FOP
 
-  PRINTER_VISITOR_DEFINITION(NodeReferenceIterator)
-  PRINTER_VISITOR_DEFINITION(NodeByReferenceIterator)
   PRINTER_VISITOR_DEFINITION (SequentialIterator)
   PRINTER_VISITOR_DEFINITION (FlowCtlIterator)
   PRINTER_VISITOR_DEFINITION (LoopIterator)
   PRINTER_VISITOR_DEFINITION (UDFunctionCallIterator)
   PRINTER_VISITOR_DEFINITION (StatelessExtFunctionCallIterator)
-  PRINTER_VISITOR_DEFINITION (FnLocalNameIterator)
-  PRINTER_VISITOR_DEFINITION (FnNamespaceUriIterator)
-  PRINTER_VISITOR_DEFINITION (FnLangIterator)
   PRINTER_VISITOR_DEFINITION (FnCollectionIterator)
   PRINTER_VISITOR_DEFINITION (FnBooleanIterator)
   PRINTER_VISITOR_DEFINITION (LogicIterator)

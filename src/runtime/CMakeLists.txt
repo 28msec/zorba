@@ -106,7 +106,6 @@ LIST(APPEND RUNTIME_SRCS
     visitors/iterprinter.cpp
     update/update.cpp
     misc/MiscImpl.cpp
-    nodes/NodesImpl.cpp
     util/item_iterator.cpp
     util/UtilImpl.cpp
     util/timeout.cpp

@@ -22,8 +22,8 @@
 // ******************************************
 
 
-#include "functions/func_fnput.h"
 #include "runtime/fnput/fnput.h"
+#include "functions/func_fnput.h"
 
 
 namespace zorba{

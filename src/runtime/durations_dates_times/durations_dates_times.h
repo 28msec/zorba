@@ -24,6 +24,7 @@
 #define ZORBA_RUNTIME_DURATIONS_DATES_TIMES_DURATIONS_DATES_TIMES_H
 
 
+#include "common/shared_types.h"
 #include "runtime/base/narybase.h"
 
 

@@ -10,23 +10,10 @@
 <zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
     
 <zorba:header>
-    <zorba:include form="Quoted">runtime/base/narybase.h</zorba:include>
     <zorba:include form="Quoted">zorbautils/checked_vector.h</zorba:include>
     <zorba:include form="Quoted">zorbatypes/representations.h</zorba:include>
 </zorba:header>
 
-<zorba:source/>
-
-<zorba:codegen>
-    <zorba:h>
-        <zorba:include form="Quoted">common/shared_types.h</zorba:include>
-        <zorba:include form="Quoted">functions/function_impl.h</zorba:include>
-    </zorba:h>
-    <zorba:cpp>
-        <zorba:include form="Quoted">runtime/strings/strings.h</zorba:include>
-        <zorba:include form="Quoted">functions/func_strings.h</zorba:include>
-    </zorba:cpp>
-</zorba:codegen>
 <!--
 /*******************************************************************************
  * 7.2.1 fn:codepoints-to-string
