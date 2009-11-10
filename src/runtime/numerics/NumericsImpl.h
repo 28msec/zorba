@@ -176,27 +176,6 @@ public:
 
 
 /*******************************************************************************
-  6.4 Functions on Numeric Values
-
-  6.4.1 fn:abs
-  6.4.2 fn:ceiling
-  6.4.3 fn:floor
-  6.4.4 fn:round
-  6.4.5 fn:round-half-to-even
-********************************************************************************/
-
-NARY_ITER (FnAbsIterator);
-
-NARY_ITER (FnCeilingIterator);
-
-NARY_ITER (FnFloorIterator);
-  
-NARY_ITER (FnRoundIterator);
-  
-NARY_ITER (FnRoundHalfToEvenIterator);
-
-
-/*******************************************************************************
   Helper Iterator to produce a defined amount of integer items
 ********************************************************************************/
 class ZorNumGenState : public PlanIteratorState
@@ -263,13 +242,6 @@ public:
   
 
 UNARY_ITER_STATE(FnFrexpIterator, FnFrexpState);
-
-/*******************************************************************************
-  XQuery 1.1 functions
-********************************************************************************/
-NARY_ITER(FnFormatNumberIterator);
-
-
 }
 #endif
 

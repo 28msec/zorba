@@ -1095,10 +1095,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION (InstanceOfIterator)
   PRINTER_VISITOR_DEFINITION (EitherNodesOrAtomicsIterator)
   PRINTER_VISITOR_DEFINITION (OpNumericUnaryIterator)
-  PRINTER_VISITOR_DEFINITION (FnAbsIterator)
-  PRINTER_VISITOR_DEFINITION (FnCeilingIterator)
-  PRINTER_VISITOR_DEFINITION (FnFloorIterator)
-  PRINTER_VISITOR_DEFINITION (FnRoundIterator)
   PRINTER_VISITOR_DEFINITION (FnSQRTIterator)
   PRINTER_VISITOR_DEFINITION (FnExpIterator)
   PRINTER_VISITOR_DEFINITION (FnLogIterator)
@@ -1121,7 +1117,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION (FnAsinhIterator);
   PRINTER_VISITOR_DEFINITION (FnTanhIterator);
   PRINTER_VISITOR_DEFINITION (FnAtanhIterator);
-  PRINTER_VISITOR_DEFINITION (FnRoundHalfToEvenIterator)
   PRINTER_VISITOR_DEFINITION (FnPiIterator);
   PRINTER_VISITOR_DEFINITION (FnIsInfIterator);
   PRINTER_VISITOR_DEFINITION (FnIsNaNIterator);
@@ -1168,7 +1163,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION(RenameIterator);
   PRINTER_VISITOR_DEFINITION(TransformIterator);
   PRINTER_VISITOR_DEFINITION(ApplyIterator);
-  PRINTER_VISITOR_DEFINITION(FnFormatNumberIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaCollectionIterator);
   PRINTER_VISITOR_DEFINITION(DcIsAvailableCollectionIterator);
   PRINTER_VISITOR_DEFINITION(DcAvailableCollectionsIterator);

@@ -35,6 +35,7 @@
 #include "functions/sequences_impl.h"
 #include "functions/func_fnput.h"
 #include "functions/func_nodes.h"
+#include "functions/func_numerics.h"
 
 #include "functions/func_misc.h"
 
@@ -85,6 +86,7 @@ void BuiltinFunctionLibrary::populateContext(static_context* sctx)
   populate_context_durations_dates_times(sctx);
   populate_context_durations_dates_times_impl(sctx);
   populate_context_nodes(sctx);
+  populate_context_numerics(sctx);
   populate_context_strings(sctx);
   populate_context_sequences(sctx);
   populate_context_sequences_impl(sctx);

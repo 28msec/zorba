@@ -182,16 +182,6 @@
   
   PLAN_ITER_VISITOR (OpNumericUnaryIterator);
     
-  PLAN_ITER_VISITOR (FnAbsIterator);
-
-  PLAN_ITER_VISITOR (FnCeilingIterator);
-
-  PLAN_ITER_VISITOR (FnFloorIterator);
-
-  PLAN_ITER_VISITOR (FnRoundIterator);
-
-  PLAN_ITER_VISITOR (FnRoundHalfToEvenIterator);
-      
   PLAN_ITER_VISITOR (FnSQRTIterator);
 
   PLAN_ITER_VISITOR (FnExpIterator);
@@ -381,8 +371,6 @@
   PLAN_ITER_VISITOR(TransformIterator);
 
   PLAN_ITER_VISITOR(ApplyIterator);
-
-	PLAN_ITER_VISITOR(FnFormatNumberIterator);
 
   PLAN_ITER_VISITOR(ZorbaCollectionIterator);
   PLAN_ITER_VISITOR(DcIsAvailableCollectionIterator);

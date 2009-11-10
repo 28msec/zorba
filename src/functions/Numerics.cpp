@@ -635,81 +635,6 @@ PlanIter_t op_numeric_unary_minus::codegen(
 }
 
 
-/*______________________________________________________________________
-|  
-| 6.4 Functions on Numeric Values
-|_______________________________________________________________________*/
-
-// 6.4.1 fn:abs
-class fn_abs : public single_numeric_func 
-{
-public:
-  fn_abs(const signature& sig) 
-    :
-    single_numeric_func(sig, FunctionConsts::FN_ABS_1)
-  { 
-  }
-
-  DEFAULT_NARY_CODEGEN(FnAbsIterator);
-};
-
-
-// 6.4.2 fn:ceiling
-class fn_ceiling : public single_numeric_func
-{
-public:
-  fn_ceiling(const signature& sig)
-    :
-    single_numeric_func(sig, FunctionConsts::FN_CEILING_1)
-  {
-  }
-
-  DEFAULT_NARY_CODEGEN(FnCeilingIterator);
-};
-
-
-// 6.4.3 fn:floor
-class fn_floor : public single_numeric_func
-{
-public:
-  fn_floor(const signature& sig)
-    :
-    single_numeric_func(sig, FunctionConsts::FN_FLOOR_1)
-  {
-  }
-
-  DEFAULT_NARY_CODEGEN(FnFloorIterator);
-};
-
-
-// 6.4.4 fn:round
-class fn_round : public single_numeric_func
-{
-public:
-  fn_round(const signature& sig)
-    :
-    single_numeric_func(sig, FunctionConsts::FN_ROUND_1)
-  {
-  }
-
-  DEFAULT_NARY_CODEGEN(FnRoundIterator);
-};
-
-
-// 6.4.5 fn:round-half-to-even
-class fn_round_half_to_even : public single_numeric_func
-{
-public:
-  fn_round_half_to_even(const signature& sig)
-    :
-    single_numeric_func(sig, FunctionConsts::FN_ROUND_HALF_TO_EVEN_1)
-  {
-  }
-
-  DEFAULT_NARY_CODEGEN(FnRoundHalfToEvenIterator);
-};
-
-
 /*******************************************************************************
   Function to produce a fixed amount of integer for testing purposes.
 ********************************************************************************/
@@ -720,29 +645,6 @@ public:
 
   DEFAULT_NOARY_CODEGEN(ZorNumGen);
 };
-
-
-/*******************************************************************************
-  XQuery 1.1 functions
-********************************************************************************/
-
-class fn_format_number_2 : public function
-{
-public:
-  fn_format_number_2(const signature& sig) : function(sig) {};
-
-  DEFAULT_NARY_CODEGEN(FnFormatNumberIterator);
-};
-
-
-class fn_format_number_3 : public function
-{
-public:
-  fn_format_number_3(const signature& sig) : function(sig) {};
-
-  DEFAULT_NARY_CODEGEN(FnFormatNumberIterator);
-};
-
 
 
 /*******************************************************************************
@@ -937,50 +839,6 @@ void populateContext_Numerics(static_context* sctx)
        (createQName (XQUERY_OP_NS,"op", "unary-plus"),
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE));
-
-  DECL(sctx, fn_abs,
-       (createQName(XQUERY_FN_NS, "fn", "abs"),
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
-
-  DECL(sctx, fn_ceiling,
-       (createQName(XQUERY_FN_NS, "fn", "ceiling"),
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
-
-  DECL(sctx, fn_floor,
-       (createQName(XQUERY_FN_NS, "fn", "floor"),
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
-  
-  DECL(sctx, fn_round,
-       (createQName(XQUERY_FN_NS, "fn", "round"),
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
-
-  DECL(sctx, fn_round_half_to_even,
-       (createQName(XQUERY_FN_NS, "fn", "round-half-to-even"),
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-        GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION,
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
-
-  DECL(sctx, fn_round_half_to_even,
-       (createQName(XQUERY_FN_NS, "fn", "round-half-to-even"),
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
-
-  DECL(sctx, fn_format_number_2,
-       (createQName(XQUERY_FN_NS, "fn", "format-number"),
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-        GENV_TYPESYSTEM.STRING_TYPE_ONE,
-        GENV_TYPESYSTEM.STRING_TYPE_ONE));
-
-  DECL(sctx, fn_format_number_3,
-       (createQName(XQUERY_FN_NS, "fn", "format-number"),
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
-        GENV_TYPESYSTEM.STRING_TYPE_ONE,
-        GENV_TYPESYSTEM.STRING_TYPE_ONE,
-        GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
   DECL(sctx, zor_numgen,
        (createQName(XQUERY_FN_NS,"fn", "zorba:numgen"),

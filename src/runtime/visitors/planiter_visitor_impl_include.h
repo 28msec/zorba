@@ -86,11 +86,6 @@
   class DeclaredIndexesIterator;
 
   class OpNumericUnaryIterator;
-  class FnAbsIterator;
-  class FnCeilingIterator;
-  class FnFloorIterator;
-  class FnRoundIterator;
-  class FnRoundHalfToEvenIterator;
   class FnSQRTIterator;
   class FnExpIterator;
   class FnLogIterator;
@@ -154,7 +149,6 @@
   class FnCollectionIterator;
   class CreateTupleIterator;
   class GetTupleFieldIterator;
-  class FnFormatNumberIterator;
 
   class ZorbaCollectionIterator;
   class DcIsAvailableCollectionIterator;

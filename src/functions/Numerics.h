@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_FUNCTIONS_NUMERICS_H
-#define ZORBA_FUNCTIONS_NUMERICS_H
+#ifndef ZORBA_FUNCTIONS_NUMERICS_OLD_H
+#define ZORBA_FUNCTIONS_NUMERICS_OLD_H
 
 #include "common/shared_types.h"
 

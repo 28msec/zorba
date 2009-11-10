@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/////////////////////////////////////////////////////////////////////////////////
+//  6.4  Functions on Numeric Values                                           // 
+//  XQuery 1.1 functions (FormatNumber)                                        //
+/////////////////////////////////////////////////////////////////////////////////
+-->
+<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+    
+<!--
+/*******************************************************************************
+ * 6.4.1 fn:abs
+********************************************************************************/
+-->
+<zorba:iterator name="AbsIterator">
+
+  <zorba:description author="Zorba Team">fn:abs</zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="abs" prefix="fn">
+      <zorba:param>xs:anyAtomicType?</zorba:param>
+      <zorba:output>xs:anyAtomicType?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+ * 6.4.2 fn:ceiling
+********************************************************************************/
+-->
+<zorba:iterator name="CeilingIterator">
+  
+  <zorba:description author="Zorba Team">fn:ceiling</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="ceiling" prefix="fn">
+      <zorba:param>xs:anyAtomicType?</zorba:param>
+      <zorba:output>xs:anyAtomicType?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+  
+<!--
+/*******************************************************************************
+ * 6.4.3 fn:floor
+********************************************************************************/
+-->
+<zorba:iterator name="FloorIterator">
+  
+  <zorba:description author="Zorba Team">fn:floor</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="floor" prefix="fn">
+      <zorba:param>xs:anyAtomicType?</zorba:param>
+      <zorba:output>xs:anyAtomicType?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+  
+
+<!--
+/*******************************************************************************
+ * 6.4.4 fn:round
+********************************************************************************/
+-->
+<zorba:iterator name="RoundIterator">
+  
+  <zorba:description author="Zorba Team">fn:round</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="round" prefix="fn">
+      <zorba:param>xs:anyAtomicType?</zorba:param>
+      <zorba:output>xs:anyAtomicType?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+ * 6.4.5 fn:round-half-to-even
+********************************************************************************/
+-->
+<zorba:iterator name="RoundHalfToEvenIterator">
+  
+  <zorba:description author="Zorba Team">fn:round-half-to-even</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="round-half-to-even" prefix="fn">
+      <zorba:param>xs:anyAtomicType?</zorba:param>
+      <zorba:output>xs:anyAtomicType?</zorba:output>
+    </zorba:signature>
+    <zorba:signature localname="round-half-to-even" prefix="fn">
+      <zorba:param>xs:anyAtomicType?</zorba:param>
+      <zorba:param>xs:integer</zorba:param>
+      <zorba:output>xs:anyAtomicType?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+ * XQuery 1.1 functions
+********************************************************************************/
+-->
+  <zorba:iterator name="FormatNumberIterator">
+    
+    <zorba:description author="Zorba Team">fn:format-number</zorba:description>
+    
+    <zorba:function>
+      <zorba:signature localname="format-number" prefix="fn">
+        <zorba:param>xs:anyAtomicType?</zorba:param>
+        <zorba:param>xs:string</zorba:param>
+        <zorba:output>xs:string</zorba:output>
+      </zorba:signature>
+      <zorba:signature localname="format-number" prefix="fn">
+        <zorba:param>xs:anyAtomicType?</zorba:param>
+        <zorba:param>xs:string</zorba:param>
+        <zorba:param>xs:string</zorba:param>
+        <zorba:output>xs:string</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+  </zorba:iterator>
+  
+ </zorba:iterators>

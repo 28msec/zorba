@@ -79,6 +79,12 @@ namespace zorba{
     class FnLocalNameIterator;
     class FnNamespaceUriIterator;
     class FnLangIterator;
+    class AbsIterator;
+    class CeilingIterator;
+    class FloorIterator;
+    class RoundIterator;
+    class RoundHalfToEvenIterator;
+    class FormatNumberIterator;
     class FnConcatIterator;
     class FnIndexOfIterator;
     class FnEmptyIterator;
@@ -290,6 +296,24 @@ public:
 
     virtual void beginVisit ( const FnLangIterator& ) = 0;
     virtual void endVisit   ( const FnLangIterator& ) = 0;
+
+    virtual void beginVisit ( const AbsIterator& ) = 0;
+    virtual void endVisit   ( const AbsIterator& ) = 0;
+
+    virtual void beginVisit ( const CeilingIterator& ) = 0;
+    virtual void endVisit   ( const CeilingIterator& ) = 0;
+
+    virtual void beginVisit ( const FloorIterator& ) = 0;
+    virtual void endVisit   ( const FloorIterator& ) = 0;
+
+    virtual void beginVisit ( const RoundIterator& ) = 0;
+    virtual void endVisit   ( const RoundIterator& ) = 0;
+
+    virtual void beginVisit ( const RoundHalfToEvenIterator& ) = 0;
+    virtual void endVisit   ( const RoundHalfToEvenIterator& ) = 0;
+
+    virtual void beginVisit ( const FormatNumberIterator& ) = 0;
+    virtual void endVisit   ( const FormatNumberIterator& ) = 0;
 
     virtual void beginVisit ( const FnConcatIterator& ) = 0;
     virtual void endVisit   ( const FnConcatIterator& ) = 0;

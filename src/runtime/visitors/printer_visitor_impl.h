@@ -149,10 +149,6 @@
   DECLARE_VISITOR (InstanceOfIterator)
   DECLARE_VISITOR (EitherNodesOrAtomicsIterator)
   DECLARE_VISITOR (OpNumericUnaryIterator)
-  DECLARE_VISITOR (FnAbsIterator)
-  DECLARE_VISITOR (FnCeilingIterator)
-  DECLARE_VISITOR (FnFloorIterator)
-  DECLARE_VISITOR (FnRoundIterator)
   DECLARE_VISITOR (FnSQRTIterator)
   DECLARE_VISITOR (FnExpIterator)
   DECLARE_VISITOR (FnLogIterator)
@@ -175,7 +171,6 @@
   DECLARE_VISITOR (FnAsinhIterator);
   DECLARE_VISITOR (FnTanhIterator);
   DECLARE_VISITOR (FnAtanhIterator);
-  DECLARE_VISITOR (FnRoundHalfToEvenIterator)
   DECLARE_VISITOR (FnPiIterator);
   DECLARE_VISITOR (FnIsInfIterator);
   DECLARE_VISITOR (FnIsNaNIterator);
@@ -222,7 +217,6 @@
   DECLARE_VISITOR (RenameIterator);
   DECLARE_VISITOR (TransformIterator);
   DECLARE_VISITOR (ApplyIterator);
-  DECLARE_VISITOR (FnFormatNumberIterator);
   DECLARE_VISITOR (ZorbaCollectionIterator);
   DECLARE_VISITOR (DcIsAvailableCollectionIterator);
   DECLARE_VISITOR (DcAvailableCollectionsIterator);

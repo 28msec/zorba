@@ -41,6 +41,7 @@
 #include "runtime/fnput/fnput.h"
 #include "runtime/misc/misc.h"
 #include "runtime/nodes/nodes.h"
+#include "runtime/numerics/numerics.h"
 #include "runtime/sequences/sequences.h"
 #include "runtime/strings/strings.h"
 
@@ -749,6 +750,84 @@ void PrinterVisitor::endVisit ( const FnLangIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FnLangIterator>
+
+// <AbsIterator>
+void PrinterVisitor::beginVisit ( const AbsIterator& a) {
+  thePrinter.startBeginVisit("AbsIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const AbsIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </AbsIterator>
+
+// <CeilingIterator>
+void PrinterVisitor::beginVisit ( const CeilingIterator& a) {
+  thePrinter.startBeginVisit("CeilingIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const CeilingIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </CeilingIterator>
+
+// <FloorIterator>
+void PrinterVisitor::beginVisit ( const FloorIterator& a) {
+  thePrinter.startBeginVisit("FloorIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FloorIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FloorIterator>
+
+// <RoundIterator>
+void PrinterVisitor::beginVisit ( const RoundIterator& a) {
+  thePrinter.startBeginVisit("RoundIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const RoundIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </RoundIterator>
+
+// <RoundHalfToEvenIterator>
+void PrinterVisitor::beginVisit ( const RoundHalfToEvenIterator& a) {
+  thePrinter.startBeginVisit("RoundHalfToEvenIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const RoundHalfToEvenIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </RoundHalfToEvenIterator>
+
+// <FormatNumberIterator>
+void PrinterVisitor::beginVisit ( const FormatNumberIterator& a) {
+  thePrinter.startBeginVisit("FormatNumberIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FormatNumberIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FormatNumberIterator>
 
 // <FnConcatIterator>
 void PrinterVisitor::beginVisit ( const FnConcatIterator& a) {
