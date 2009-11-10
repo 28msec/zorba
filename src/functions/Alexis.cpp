@@ -93,25 +93,6 @@ public:
 };
 
 
-class zorba_serialize_to_string : public function 
-{
-public:
-  zorba_serialize_to_string(const signature& sig) : function(sig) {}
-
-  bool isDeterministic () const { return false; }
-
-  PlanIter_t codegen(CompilerCB*,
-                     static_context* sctx,
-                     const QueryLoc& loc,
-                     std::vector<PlanIter_t>& argv,
-                     AnnotationHolder &) const
-  {
-    return new FnPrintIterator(sctx, loc, argv, false);
-  }
-};
-
-
-
 void populateContext_Alexis(static_context* sctx)
 {
 DECL(sctx, zorba_decode_base64,
@@ -169,11 +150,6 @@ DECL(sctx, zorba_schema_type,
   DECL(sctx, zorba_timestamp,
        (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "timestamp"),
         GENV_TYPESYSTEM.LONG_TYPE_ONE));
-
-  DECL (sctx, zorba_serialize_to_string,
-        (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "serialize-to-string"),
-         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-         GENV_TYPESYSTEM.STRING_TYPE_ONE));
 }
 
 

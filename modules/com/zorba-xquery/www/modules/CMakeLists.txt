@@ -16,3 +16,6 @@ ADD_SUBDIRECTORY(email)
 
 SET(FILE_SRCS file.cpp file_function.cpp file_module.cpp)
 GENERATE_MODULE_LIBRARY(file "${FILE_SRCS}" "")
+
+SET(SERIALIZE_SRCS serialize_function.cpp serialize_module.cpp)
+GENERATE_MODULE_LIBRARY(serialize "${SERIALIZE_SRCS}" "")

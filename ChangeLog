@@ -29,6 +29,8 @@ version 1.0 (coming)
     PureStatelessExternalFunctions don't have access to the Static- and DynamicContext.
   * Renamed XQuery::serialize to XQuery::execute. The new method also implements
     the functionality of the XQuery::applyUpdates method (which was removed).
+  * Added the serialize library to the built-in modules. The function
+    util:serialize-to-string has been removed.
 
 version 0.9.8-rev1 (2009.09.22)
   * bug fixes
