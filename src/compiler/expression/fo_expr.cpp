@@ -17,6 +17,7 @@
 
 #include "context/static_context.h"
 
+#include "functions/library.h"
 #include "functions/function.h"
 
 #include "compiler/expression/fo_expr.h"
@@ -61,9 +62,9 @@ public:
 
 fo_expr* fo_expr::create_seq(short sctx, const QueryLoc& loc) 
 {
-  std::auto_ptr<fo_expr> fo(new fo_expr(sctx,
-                                        loc,
-                                        GENV.getRootStaticContext().lookup_builtin_fn(":" "concatenate", VARIADIC_SIG_SIZE)));
+  function* f = BuiltinFunctionLibrary::getFunction(FunctionConsts::OP_CONCATENATE_N);
+
+  std::auto_ptr<fo_expr> fo(new fo_expr(sctx, loc, f));
 
   return fo.release();
 }
@@ -149,7 +150,7 @@ const signature& fo_expr::get_signature() const
 
 const store::Item* fo_expr::get_fname() const
 { 
-  return theFunction->get_fname(); 
+  return theFunction->getName(); 
 }
 
 
@@ -158,7 +159,7 @@ void fo_expr::compute_scripting_kind() const
   const function* func = get_func();
   ulong numArgs = num_args();
 
-  if (func->getKind() == FunctionConsts::FN_CONCATENATE)
+  if (func->getKind() == FunctionConsts::OP_CONCATENATE_N)
   {
     expr_script_kind_t kind = VACUOUS_EXPR;
 
@@ -171,7 +172,7 @@ void fo_expr::compute_scripting_kind() const
 
     theCache.scripting_kind.kind = kind;
   }
-  else if (func->getKind() == FunctionConsts::OP_VAR_ASSIGN)
+  else if (func->getKind() == FunctionConsts::OP_VAR_ASSIGN_1)
   {
     for (ulong i = 0; i < numArgs; ++i) 
     {

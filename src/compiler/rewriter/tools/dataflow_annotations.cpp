@@ -29,6 +29,7 @@
 #include "context/namespace_context.h"
 
 #include "functions/function.h"
+#include "functions/library.h"
 
 namespace zorba {
 
@@ -39,8 +40,6 @@ namespace zorba {
 #define PROPOGATE_SORTED_NODES(src, tgt) tgt->put_annotation(Annotations::PRODUCES_SORTED_NODES, src->get_annotation(Annotations::PRODUCES_SORTED_NODES))
 
 #define PROPOGATE_DISTINCT_NODES(src, tgt) tgt->put_annotation(Annotations::PRODUCES_DISTINCT_NODES, src->get_annotation(Annotations::PRODUCES_DISTINCT_NODES))
-
-#define LOOKUP_FN( pfx, local, arity ) (m_ctx->lookup_fn (pfx, local, arity))
 
 
 /*******************************************************************************
@@ -258,7 +257,8 @@ void DataflowAnnotationsComputer::compute_if_expr(if_expr *e)
 void DataflowAnnotationsComputer::compute_fo_expr(fo_expr *e)
 {
   default_walk(e);
-  if (!generic_compute(e)) {
+  if (!generic_compute(e)) 
+  {
     const function *f = e->get_func();
 #if 0
     // VRB
@@ -266,11 +266,16 @@ void DataflowAnnotationsComputer::compute_fo_expr(fo_expr *e)
     // "compute_annotation" code. temporarily for this release
     uint32_t nArgs = e->size();
     function::AnnotationProperty_t sorted = f->producesNodeIdSorted();
-    if (sorted == function::YES) {
+    if (sorted == function::YES) 
+    {
       SORTED_NODES(e);
-    } else if (sorted == function::NO) {
+    }
+    else if (sorted == function::NO) 
+    {
       // do nothing
-    } else {
+    } 
+    else 
+    {
       Annotation::value_ref_t sortedAnnot = TSVAnnotationValue::TRUE_VAL;
       for(uint32_t i = 0; i < nArgs; ++i) {
         if (f->propagatesInputToOutput(i)) {
@@ -294,7 +299,8 @@ void DataflowAnnotationsComputer::compute_fo_expr(fo_expr *e)
       e->put_annotation(Annotations::PRODUCES_DISTINCT_NODES, distinctAnnot);
     }
 #else
-    if (f == LOOKUP_FN("fn", "doc", 1)) {
+    if (f->getKind() == FunctionConsts::FN_DOC_1) 
+    {
       SORTED_NODES(e);
       DISTINCT_NODES(e);
     }

@@ -277,7 +277,7 @@ public:
   expr*
   lookup_var_nofail (xqp_string qname) const 
   {
-    expr *e = lookup_var (qname);
+    expr *e = lookup_var(qname);
     ZORBA_ASSERT (e != NULL);
     return e;
   }
@@ -287,22 +287,19 @@ public:
   // Function QName, Arity --> Function Object
   //
   bool
-  bind_fn (const store::Item *qname, function *f, int arity, bool override = false);
-
-  static function*
-  lookup_builtin_fn (xqp_string local, int arity);
+  bind_fn(const store::Item* qname, function* f, int arity, bool override = false);
 
   function*
-  lookup_fn (xqp_string prefix, xqp_string local, int arity) const;
+  lookup_fn(xqp_string prefix, xqp_string local, int arity) const;
 
   function*
-  lookup_resolved_fn (xqp_string ns, xqp_string local, int arity) const;
+  lookup_resolved_fn(xqp_string ns, xqp_string local, int arity) const;
 
   function*
-  lookup_fn_int (xqp_string key, int arity) const;
+  lookup_fn_int(xqp_string key, int arity) const;
 
   void
-  find_functions (const store::Item *qname, std::vector<function *>& functions) const;
+  find_functions(const store::Item *qname, std::vector<function *>& functions) const;
 
   // bind a module registered by the user
   // this module can be used to retrieve external functions defined
@@ -335,13 +332,13 @@ public:
 
 	xqtref_t
 	context_item_static_type();
-
+#if 0
 	void
   set_function_type(const store::Item *qname, xqtref_t t);
 
   xqtref_t
   get_function_type(const store::Item_t);
-
+#endif
 	void
   set_document_type(xqp_string docURI, xqtref_t t);
 

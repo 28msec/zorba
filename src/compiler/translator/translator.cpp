@@ -61,6 +61,7 @@
 
 #include "system/globalenv.h"
 
+#include "functions/library.h"
 #include "functions/signature.h"
 #include "functions/external_function_adapters.h"
 
@@ -128,16 +129,6 @@ static expr_t translate_aux(
   local name and arity. Return NULL if such a function is not found 
 ********************************************************************************/
 #define LOOKUP_FN( pfx, local, arity ) (sctx_p->lookup_fn (pfx, local, arity))
-
-#define LOOKUP_OP1( local ) (sctx_p->lookup_builtin_fn (":" local, 1))
-
-#define LOOKUP_OP2( local ) (sctx_p->lookup_builtin_fn (":" local, 2))
-
-#define LOOKUP_OP3( local ) (sctx_p->lookup_builtin_fn (":" local, 3))
-
-#define LOOKUP_OPN( local ) (sctx_p->lookup_builtin_fn (":" local, VARIADIC_SIG_SIZE))
-
-#define LOOKUP_RESOLVED_FN( ns, local, arity ) (sctx_p->lookup_resolved_fn(ns, local, arity))
 
 
 /*******************************************************************************
@@ -472,8 +463,6 @@ public:
 
   op_concatenate       : Cached ptr to the function obj for the concat func 
   op_enclosed_expr     : Cached ptr to the function obj for the enclosed_expr op
-  op_or                : Cached ptr to the function obj for the or op 
-  fn_data              : Cached ptr to the function obj for the data func 
 
 ********************************************************************************/
 class TranslatorImpl : public parsenode_visitor
@@ -549,13 +538,11 @@ protected:
   set<string>                          xquery_fns_def_dot;
 
   function                           * op_concatenate;
-  function                           * op_enclosed_expr;
-  function                           * op_or;
-  function                           * fn_data;
-  function                           * ctx_decl; 
-  function                           * ctx_set;
-  function                           * ctx_get;
-  function                           * ctx_exists;
+  function                           * op_enclosed;
+  function                           * var_decl; 
+  function                           * var_set;
+  function                           * var_get;
+  function                           * var_exists;
   
 
 TranslatorImpl(
@@ -593,10 +580,19 @@ TranslatorImpl(
   xquery_fns_def_dot.insert ("name");
   xquery_fns_def_dot.insert ("string");
   
-  op_concatenate = op_enclosed_expr = op_or = fn_data = NULL;
-  ctx_decl = ctx_set = ctx_get = ctx_exists = NULL;
+  op_concatenate = GET_BUILTIN_FUNCTION(OP_CONCATENATE_N);
+  assert(op_concatenate != NULL);
 
-  zorba_predef_mod_ns.insert (ZORBA_FN_NS);
+  op_enclosed = GET_BUILTIN_FUNCTION(OP_ENCLOSED_1);
+  assert(op_enclosed != NULL);
+
+  var_decl = GET_BUILTIN_FUNCTION(OP_VAR_DECLARE_1);
+  var_set = GET_BUILTIN_FUNCTION(OP_VAR_ASSIGN_1);
+  var_get = GET_BUILTIN_FUNCTION(OP_VAR_REF_1);
+  var_exists = GET_BUILTIN_FUNCTION(OP_VAR_EXISTS_1);
+  assert(var_decl != NULL && var_set != NULL && var_get != NULL && var_exists != NULL);
+
+  zorba_predef_mod_ns.insert (ZORBA_OP_NS);
   zorba_predef_mod_ns.insert (ZORBA_REST_FN_NS);
   zorba_predef_mod_ns.insert (ZORBA_NODEREF_FN_NS);
   zorba_predef_mod_ns.insert (ZORBA_COLLECTION_FN_NS);
@@ -606,7 +602,6 @@ TranslatorImpl(
   zorba_predef_mod_ns.insert (ZORBA_ALEXIS_FN_NS);
   zorba_predef_mod_ns.insert (ZORBA_JSON_FN_NS);
   zorba_predef_mod_ns.insert (ZORBA_JSON_ML_FN_NS);
-  zorba_predef_mod_ns.insert (ZORBA_OPEXTENSIONS_NS);
   zorba_predef_mod_ns.insert (ZORBA_FOP_FN_NS);
   
   ctx_item_type = GENV_TYPESYSTEM.ITEM_TYPE_ONE;
@@ -1001,14 +996,14 @@ void normalize_fo(fo_expr* foExpr)
 
     xqtref_t paramType;
 
-    if (func->getKind() == FunctionConsts::FN_INDEX_PROBE_POINT)
+    if (func->getKind() == FunctionConsts::FN_INDEX_PROBE_POINT_N)
     {
       if (i == 0)
         paramType = sign[i];
       else
         paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
     }
-    else if (func->getKind() == FunctionConsts::FN_INDEX_PROBE_RANGE)
+    else if (func->getKind() == FunctionConsts::FN_INDEX_PROBE_RANGE_N)
     {
       if (i == 0)
         paramType = sign[i];
@@ -1046,7 +1041,7 @@ expr_t wrap_in_atomization(expr* e)
 {
   return new fo_expr(theCCB->m_cur_sctx,
                      e->get_loc(),
-                     CACHED(fn_data, LOOKUP_FN("fn", "data", 1)),
+                     GET_BUILTIN_FUNCTION(FN_DATA_1),
                      e);
 }
 
@@ -1081,7 +1076,7 @@ expr_t wrap_in_bev(expr_t e)
 {
   fo_expr* fo = new fo_expr(theCCB->m_cur_sctx,
                             e->get_loc(),
-                            LOOKUP_FN("fn", "boolean", 1),
+                            GET_BUILTIN_FUNCTION(FN_BOOLEAN_1),
                             e);
   return fo;
 }
@@ -1096,21 +1091,28 @@ expr_t wrap_in_bev(expr_t e)
 ********************************************************************************/
 expr_t wrap_in_dos_and_dupelim(expr_t expr, bool atomics, bool reverse = false) 
 {
-  std::ostringstream funcName;
+  FunctionConsts::FunctionKind fkind;
 
-  funcName << ":sort-distinct-nodes";
-
-  if (reverse)
-    funcName << "-desc";
+  if (reverse && atomics)
+  {
+    fkind = FunctionConsts::OP_SORT_DISTINCT_NODES_DESC_OR_ATOMICS_1;
+  }
+  else if (reverse)
+  {
+    fkind = FunctionConsts::OP_SORT_DISTINCT_NODES_DESC_1;
+  }
+  else if (atomics)
+  {
+    fkind = FunctionConsts::OP_SORT_DISTINCT_NODES_ASC_OR_ATOMICS_1;
+  }
   else
-    funcName << "-asc";
-
-  if (atomics)
-    funcName << "-or-atomics";
+  {
+    fkind = FunctionConsts::OP_SORT_DISTINCT_NODES_ASC_1;
+  }
 
   rchandle<fo_expr> dos = new fo_expr(theCCB->m_cur_sctx,
                                       expr->get_loc(),
-                                      sctx_p->lookup_builtin_fn(funcName.str(), 1),
+                                      BuiltinFunctionLibrary::getFunction(fkind),
                                       expr);
   normalize_fo(dos.getp());
 
@@ -1248,7 +1250,7 @@ rchandle<flwor_expr> wrap_expr_in_flwor(expr* inputExpr, bool withContextSize)
     // compute the size of the input seq
     rchandle<fo_expr> countExpr = new fo_expr(theCCB->m_cur_sctx,
                                               loc,
-                                              LOOKUP_FN("fn", "count", 1),
+                                              GET_BUILTIN_FUNCTION(FN_COUNT_1),
                                               lcInputSeq->get_var());
     normalize_fo(countExpr);
 
@@ -1510,9 +1512,6 @@ expr_t wrap_in_globalvar_assign(expr_t e)
 ********************************************************************************/
 void declare_var(const global_binding& b, std::vector<expr_t>& stmts) 
 {
-  CACHED(ctx_decl, LOOKUP_OP1("ctxvar-declare"));
-  CACHED(ctx_set, LOOKUP_OP2("ctxvar-assign"));
-
   var_expr_t var = b.first;
   expr_t initExpr = b.second;
 
@@ -1526,22 +1525,20 @@ void declare_var(const global_binding& b, std::vector<expr_t>& stmts)
                                     var->get_varname()->getStringValue()->equals(&dot) ?
                                     "." : dynamic_context::var_key(&*var));
 
-  expr_t declExpr = new fo_expr(sctxid, loc, ctx_decl, qnameExpr->clone());
+  expr_t declExpr = new fo_expr(sctxid, loc, var_decl, qnameExpr->clone());
   
   if (initExpr != NULL) 
   {
     if (initExpr->is_updating())
       ZORBA_ERROR_LOC(XUST0001, initExpr->get_loc());
 
-    initExpr = new fo_expr(sctxid, loc, ctx_set, qnameExpr->clone(), initExpr);
+    initExpr = new fo_expr(sctxid, loc, var_set, qnameExpr->clone(), initExpr);
 
     initExpr = new sequential_expr(sctxid, var->get_loc(), declExpr, initExpr);
 
     if (b.is_extern()) 
     {
-      CACHED(ctx_exists, LOOKUP_OP1 ("ctxvar-exists"));
-
-      expr_t existsExpr = new fo_expr(sctxid, loc, ctx_exists, qnameExpr->clone());
+      expr_t existsExpr = new fo_expr(sctxid, loc, var_exists, qnameExpr->clone());
 
       initExpr = new if_expr(sctxid, loc, sctx_p, existsExpr, create_seq(loc), initExpr);
     }
@@ -1559,9 +1556,7 @@ void declare_var(const global_binding& b, std::vector<expr_t>& stmts)
   if (varType != NULL && (b.is_extern() || b.second != NULL)) 
   {
     // check type for vars that are external or have an init expr
-    CACHED(ctx_get, LOOKUP_OP1("ctxvariable"));
-
-    expr_t getExpr = new fo_expr(sctxid, loc, ctx_get, qnameExpr->clone());
+    expr_t getExpr = new fo_expr(sctxid, loc, var_get, qnameExpr->clone());
 
     stmts.push_back(new treat_expr(sctxid, loc, getExpr, varType, XPTY0004));
   }
@@ -1970,24 +1965,26 @@ void end_visit (const NamespaceDecl& v, void* /*visit_state*/)
   [12] DefaultNamespaceDecl ::= DECLARE DEFAULT ELEMENT NAMESPACE URILiteral |
                                 DECLARE DEFAULT FUNCTION NAMESPACE URILiteral
 ********************************************************************************/
-void *begin_visit (DefaultNamespaceDecl const& v) 
+void* begin_visit(DefaultNamespaceDecl const& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
+
   switch (v.get_mode()) 
   {
   case ParseConstants::ns_element_default:
-    sctx_p->set_default_elem_type_ns (v.get_default_namespace ());
+    sctx_p->set_default_elem_type_ns(v.get_default_namespace());
     break;
   case ParseConstants::ns_function_default:
-    sctx_p->set_default_function_namespace (v.get_default_namespace ());
+    sctx_p->set_default_function_ns(v.get_default_namespace().c_str(),
+                                    &v.get_location());
     break;
   }
   return NULL;
 }
 
-void end_visit (const DefaultNamespaceDecl& v, void* /*visit_state*/) 
+void end_visit(const DefaultNamespaceDecl& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
@@ -2383,15 +2380,15 @@ void* begin_visit(const VFO_DeclList& v)
     // udf and put the resulting types in the arg_types vector.
     vector<xqtref_t> arg_types;
 
-    for (vector<rchandle<Param> >::const_iterator it = params->begin ();
-         it != params->end ();
+    for (vector<rchandle<Param> >::const_iterator it = params->begin();
+         it != params->end();
          ++it)
     {
-      const Param* param = (*it).getp ();
-      const SequenceType* param_type = param->get_typedecl().getp ();
+      const Param* param = (*it).getp();
+      const SequenceType* param_type = param->get_typedecl().getp();
       if (param_type == NULL) 
       {
-        arg_types.push_back (GENV_TYPESYSTEM.ITEM_TYPE_STAR);
+        arg_types.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
       }
       else 
       {
@@ -2442,13 +2439,15 @@ void* begin_visit(const VFO_DeclList& v)
       // 1. lookup if the function is a built-in function
       f = sctx_p->lookup_resolved_fn(qname->getNamespace(),
                                      qname->getLocalName(), nargs);
-      if (f.getp() != 0) {
+      if (f.getp() != 0) 
+      {
         // in debug mode, we make sure that the types of the functions
         // and the return type are equal to the one that is declared in
         // the module
 #ifndef NDEBUG
         const signature& s = f->get_signature();
-        if (!sig.equals(s)) {
+        if (!sig.equals(s)) 
+        {
           ZORBA_ERROR_LOC_DESC_OSS(XQP0028_FUNCTION_IMPL_NOT_FOUND,
               loc,
               "The signature of the (registered) function ("
@@ -2465,10 +2464,13 @@ void* begin_visit(const VFO_DeclList& v)
       // 2. if no built-in function is there, we check the static context
       // to see if the user has registered an external function
       StatelessExternalFunction* ef = 0;
-      try {
+      try 
+      {
         ef = sctx_p->lookup_stateless_external_function(qname->getNamespace(),
                 qname->getLocalName());
-      } catch (error::ZorbaError& e) {
+      }
+      catch (error::ZorbaError& e) 
+      {
         ZORBA_ERROR_LOC_DESC(e.theErrorCode,
                              loc, e.theDescription);
       }
@@ -2703,20 +2705,20 @@ void end_visit (const CtxItemDecl& v, void* /*visit_state*/)
 ********************************************************************************/
 void* begin_visit(const FunctionDecl& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
 
-  push_scope ();
+  push_scope();
 
-  // Get qname item out of function qname (will raise error if prefix in qname
+  // Get function obj out of function qname (will raise error if prefix in qname
   // is not bound to a namespace).
-  store::Item_t qname = sctx_p->lookup_fn_qname(v.get_name()->get_prefix(),
-                                                v.get_name()->get_localname(),
-                                                v.get_location ());
+  function* f = sctx_p->lookup_fn(v.get_name()->get_prefix(),
+                                  v.get_name()->get_localname(),
+                                  v.get_param_count());
 
-  string key = sctx_p->qname_internal_key (qname);
+  const store::Item* qname = f->getName();
+
+  string key = sctx_p->qname_internal_key(qname);
   prolog_vf_key = string("F") + key;
-
-  function* f = sctx_p->lookup_fn_int(key, v.get_param_count());
 
   prolog_fn_decls.push_front(f);
   fn_decl_stack.push_front(f);
@@ -2793,8 +2795,8 @@ void end_visit (const FunctionDecl& v, void* /*visit_state*/)
     // TODO: the error code has not yet been decided by the w3c
     if ( lFuncType == ParseConstants::fn_sequential && body->is_updating() ) 
     {
-      ZORBA_ERROR_LOC_DESC (XPTY0004, loc,
-                            "A sequential function cannot have a body that returns a pending update list");
+      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
+                           "A sequential function cannot have a body that returns a pending update list");
     }
 
     if (lFuncType == ParseConstants::fn_read) 
@@ -2804,15 +2806,15 @@ void end_visit (const FunctionDecl& v, void* /*visit_state*/)
     }
     else if (lFuncType == ParseConstants::fn_update) 
     {
-      if (! body->is_updating_or_vacuous ())
+      if (! body->is_updating_or_vacuous())
         ZORBA_ERROR_LOC(XUST0002, loc);
     } 
 
-    user_function *udf = dynamic_cast<user_function *>(
-                         LOOKUP_FN(v.get_name ()->get_prefix (),
-                                   v.get_name ()->get_localname (),
+    user_function* udf = dynamic_cast<user_function *>(
+                         LOOKUP_FN(v.get_name()->get_prefix(),
+                                   v.get_name()->get_localname(),
                                    nargs));
-    ZORBA_ASSERT (udf != NULL);
+    ZORBA_ASSERT(udf != NULL);
 
     // Normalize and optimize the function body. This has to be done here because
     // we have the correct static context here (udfs declared in a library module
@@ -3238,10 +3240,8 @@ void end_visit (const EnclosedExpr& v, void* /*visit_state*/)
 
   expr_t lContent = pop_nodestack();
 
-  fo_expr* foExpr = new fo_expr(sctxid,
-                                loc,
-                                CACHED(op_enclosed_expr, LOOKUP_OP1("enclosed-expr")),
-                                lContent);
+  fo_expr* foExpr = new fo_expr(sctxid, loc, op_enclosed, lContent);
+
   nodestack.push(foExpr);
 }
 
@@ -3308,8 +3308,7 @@ void end_visit(const Expr& v, void* /*visit_state*/)
 
     fo_expr_t concatExpr = new fo_expr(sctxid,
                                        v.get_location(),
-                                       sctx_p->lookup_builtin_fn(":" "concatenate",
-                                                                 VARIADIC_SIG_SIZE),
+                                       op_concatenate,
                                        args);
     normalize_fo(concatExpr.getp());
 
@@ -4475,7 +4474,7 @@ void end_visit(const QuantifiedExpr& v, void* /*visit_state*/)
   {
     rchandle<fo_expr> uw = new fo_expr(sctxid,
                                        v.get_expr()->get_location(),
-                                       LOOKUP_FN("fn", "not", 1),
+                                       GET_BUILTIN_FUNCTION(FN_NOT_1),
                                        testExpr);
     testExpr = uw.getp();
   }
@@ -4497,8 +4496,8 @@ void end_visit(const QuantifiedExpr& v, void* /*visit_state*/)
   rchandle<fo_expr> quant = new fo_expr(sctxid,
                                         loc,
                                         v.get_qmode() == ParseConstants::quant_every ?
-                                        LOOKUP_FN("fn", "empty", 1) :
-                                        LOOKUP_FN("fn", "exists", 1),
+                                        GET_BUILTIN_FUNCTION(FN_EMPTY_1) :
+                                        GET_BUILTIN_FUNCTION(FN_EXISTS_1),
                                         flworExpr.getp());
   nodestack.push(&*quant);
 }
@@ -4777,7 +4776,7 @@ void end_visit(const OrExpr& v, void* /*visit_state*/)
   rchandle<expr> e1 = pop_nodestack();
   rchandle<expr> e2 = pop_nodestack();
 
-  fo_expr* fo = new fo_expr(sctxid, loc, CACHED(op_or, LOOKUP_OPN("or")), e2, e1);
+  fo_expr* fo = new fo_expr(sctxid, loc, GET_BUILTIN_FUNCTION(OP_OR_2), e2, e1);
 
   nodestack.push(fo);
 }
@@ -4799,7 +4798,7 @@ void end_visit(const AndExpr& v, void* /*visit_state*/)
   rchandle<expr> e1 = pop_nodestack();
   rchandle<expr> e2 = pop_nodestack();
 
-  fo_expr* fo = new fo_expr(sctxid, loc, LOOKUP_OPN("and"), e2, e1);
+  fo_expr* fo = new fo_expr(sctxid, loc, GET_BUILTIN_FUNCTION(OP_AND_2), e2, e1);
 
   nodestack.push(fo);
 }
@@ -4817,48 +4816,77 @@ void end_visit(const AndExpr& v, void* /*visit_state*/)
 ********************************************************************************/
 void* begin_visit(const ComparisonExpr& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const ComparisonExpr& v, void* /*visit_state*/) 
+void end_visit(const ComparisonExpr& v, void* /*visit_state*/) 
 {
-#define M( pc, op ) case ParseConstants::pc: f = LOOKUP_OP2 (op); break;
+  TRACE_VISIT_OUT();
 
-  TRACE_VISIT_OUT ();
+  function* f = NULL;
 
-  function *f = NULL;
-  if (v.get_gencomp()!=NULL) 
+  if (v.get_gencomp() != NULL) 
   {
     switch (v.get_gencomp()->get_type()) 
     {
-    M (op_eq, "equal");
-    M (op_ne, "not-equal");
-    M (op_lt, "less");
-    M (op_le, "less-equal");
-    M (op_gt, "greater");
-    M (op_ge, "greater-equal");
+    case ParseConstants::op_eq:
+      f = GET_BUILTIN_FUNCTION(OP_EQUAL_2);
+      break;
+    case ParseConstants::op_ne:
+      f = GET_BUILTIN_FUNCTION(OP_NOT_EQUAL_2);
+      break;
+    case ParseConstants::op_lt:
+      f = GET_BUILTIN_FUNCTION(OP_LESS_2);
+      break;
+    case ParseConstants::op_le:
+     f = GET_BUILTIN_FUNCTION(OP_LESS_EQUAL_2);
+     break;
+    case ParseConstants::op_gt:
+      f = GET_BUILTIN_FUNCTION(OP_GREATER_2);
+      break;
+    case ParseConstants::op_ge:
+      f = GET_BUILTIN_FUNCTION(OP_GREATER_EQUAL_2);
+      break;
     }
   }
-  else if (v.get_valcomp () != NULL) 
+  else if (v.get_valcomp() != NULL) 
   {
     switch (v.get_valcomp()->get_type()) 
     {
-    M (op_val_eq, "value-equal");
-    M (op_val_ne, "value-not-equal");
-    M (op_val_lt, "value-less");
-    M (op_val_le, "value-less-equal");
-    M (op_val_gt, "value-greater");
-    M (op_val_ge, "value-greater-equal");
+    case ParseConstants::op_val_eq:
+      f = GET_BUILTIN_FUNCTION(OP_VALUE_EQUAL_2);
+      break;
+    case ParseConstants::op_val_ne:
+      f = GET_BUILTIN_FUNCTION(OP_VALUE_NOT_EQUAL_2);
+      break;
+    case ParseConstants::op_val_lt:
+      f = GET_BUILTIN_FUNCTION(OP_VALUE_LESS_2);
+      break;
+    case ParseConstants::op_val_le:
+     f = GET_BUILTIN_FUNCTION(OP_VALUE_LESS_EQUAL_2);
+     break;
+    case ParseConstants::op_val_gt:
+      f = GET_BUILTIN_FUNCTION(OP_VALUE_GREATER_2);
+      break;
+    case ParseConstants::op_val_ge:
+      f = GET_BUILTIN_FUNCTION(OP_VALUE_GREATER_EQUAL_2);
+      break;
     }
   }
-  else if (v.get_nodecomp()!=NULL) 
+  else if (v.get_nodecomp() != NULL) 
   {
     switch (v.get_nodecomp()->get_type()) 
     {
-    M (op_is, "is-same-node");
-    M (op_precedes, "node-before");
-    M (op_follows, "node-after");
+    case ParseConstants::op_is:
+      f = GET_BUILTIN_FUNCTION(OP_IS_SAME_NODE_2);
+      break;
+    case ParseConstants::op_precedes:
+      f = GET_BUILTIN_FUNCTION(OP_NODE_BEFORE_2);
+      break;
+    case ParseConstants::op_follows:
+      f = GET_BUILTIN_FUNCTION(OP_NODE_AFTER_2);
+      break;
     }
   }
 
@@ -4936,7 +4964,7 @@ void end_visit(const RangeExpr& v, void* /*visit_state*/)
   rchandle<expr> e1 = pop_nodestack();
   rchandle<expr> e2 = pop_nodestack();
 
-  fo_expr* e = new fo_expr(sctxid, loc, LOOKUP_OP2 ("to"), e2, e1);
+  fo_expr* e = new fo_expr(sctxid, loc, GET_BUILTIN_FUNCTION(OP_TO_2), e2, e1);
 
   normalize_fo(e);
 
@@ -4965,10 +4993,10 @@ void end_visit(const AdditiveExpr& v, void* /*visit_state*/)
   switch (v.get_add_op()) 
   {
   case ParseConstants::op_plus:
-    func = LOOKUP_OP2 ("add");
+    func = GET_BUILTIN_FUNCTION(OP_ADD_2);
     break;
   case ParseConstants::op_minus:
-    func = LOOKUP_OP2 ("subtract");
+    func = GET_BUILTIN_FUNCTION(OP_SUBTRACT_2);
     break;
   }
 
@@ -4983,7 +5011,7 @@ void end_visit(const AdditiveExpr& v, void* /*visit_state*/)
 /*******************************************************************************
   [74] MultiplicativeExpr ::= UnionExpr (("*" | "div" | "idiv" | "mod") UnionExpr)*
 ********************************************************************************/
-void *begin_visit (const MultiplicativeExpr& v) 
+void* begin_visit(const MultiplicativeExpr& v) 
 {
   TRACE_VISIT ();
   return no_state;
@@ -5000,16 +5028,16 @@ void end_visit(const MultiplicativeExpr& v, void* /*visit_state*/)
   switch (v.get_mult_op()) 
   {
   case ParseConstants::op_mul:
-    f = LOOKUP_OP2 ("multiply");
+    f = GET_BUILTIN_FUNCTION(OP_MULTIPLY_2);
     break;
   case ParseConstants::op_div:
-    f = LOOKUP_OP2 ("divide");
+    f = GET_BUILTIN_FUNCTION(OP_DIVIDE_2);
     break;
   case ParseConstants::op_idiv:
-    f = LOOKUP_OP2 ("integer-divide");
+    f = GET_BUILTIN_FUNCTION(OP_INTEGER_DIVIDE_2);
     break;
   case ParseConstants::op_mod:
-    f = LOOKUP_OP2 ("mod");
+    f = GET_BUILTIN_FUNCTION(OP_MOD_2);
     break;
   }
 
@@ -5037,13 +5065,13 @@ void end_visit(const UnionExpr& v, void* /*visit_state*/)
   rchandle<expr> e1 = pop_nodestack();
   rchandle<expr> e2 = pop_nodestack();
 
-  fo_expr* foExpr = new fo_expr(sctxid, loc, LOOKUP_OP2 ("union"), e2, e1);
+  fo_expr* foExpr = new fo_expr(sctxid, loc, GET_BUILTIN_FUNCTION(OP_UNION_2), e2, e1);
 
   normalize_fo(foExpr);
 
   nodestack.push(new fo_expr(sctxid,
                              loc,
-                             LOOKUP_OP1("sort-distinct-nodes-asc"),
+                             GET_BUILTIN_FUNCTION(OP_SORT_DISTINCT_NODES_ASC_1),
                              foExpr));
 }
 
@@ -5069,10 +5097,10 @@ void end_visit(const IntersectExceptExpr& v, void* /*visit_state*/)
   switch (v.get_intex_op()) 
   {
   case ParseConstants::op_intersect:
-    f = LOOKUP_OP2 ("intersect");
+    f = GET_BUILTIN_FUNCTION(OP_INTERSECT_2);
     break;
   case ParseConstants::op_except:
-    f = LOOKUP_OP2 ("except");
+    f = GET_BUILTIN_FUNCTION(OP_EXCEPT_2);
     break;
   }
 
@@ -5082,7 +5110,7 @@ void end_visit(const IntersectExceptExpr& v, void* /*visit_state*/)
 
   nodestack.push(new fo_expr(sctxid,
                              loc,
-                             LOOKUP_OP1 ("sort-distinct-nodes-asc"),
+                             GET_BUILTIN_FUNCTION(OP_SORT_DISTINCT_NODES_ASC_1),
                              foExpr));
 }
 
@@ -5090,7 +5118,7 @@ void end_visit(const IntersectExceptExpr& v, void* /*visit_state*/)
 /*******************************************************************************
   [77] InstanceofExpr ::= TreatExpr ( "instance" "of" SequenceType )?
 ********************************************************************************/
-void *begin_visit (const InstanceofExpr& v) 
+void* begin_visit(const InstanceofExpr& v) 
 {
   TRACE_VISIT();
   return no_state;
@@ -5254,9 +5282,9 @@ void end_visit(const UnaryExpr& v, void* /*visit_state*/)
 
   fo_expr* foExpr = new fo_expr(sctxid,
                                 loc,
-                                v.get_signlist()->get_sign()
-                                ? LOOKUP_OP1 ("unary-plus")
-                                : LOOKUP_OP1 ("unary-minus"),
+                                (v.get_signlist()->get_sign() ?
+                                 GET_BUILTIN_FUNCTION(OP_UNARY_PLUS_1) :
+                                 GET_BUILTIN_FUNCTION(OP_UNARY_MINUS_1)),
                                 e1);
   normalize_fo(foExpr);
 
@@ -5563,7 +5591,7 @@ void *begin_visit (const PathExpr& v)
 
     rchandle<fo_expr> fo = new fo_expr(sctxid,
                                        loc,
-                                       LOOKUP_FN("fn", "root", 1),
+                                       GET_BUILTIN_FUNCTION(FN_ROOT_1),
                                        ctx_path_expr.getp());
     result = fo.getp();
 
@@ -5595,9 +5623,9 @@ void *begin_visit (const PathExpr& v)
 }
 
 
-void end_visit (const PathExpr& v, void* /*visit_state*/) 
+void end_visit(const PathExpr& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
   expr_t arg2 = pop_nodestack();
   expr_t arg1 = pop_nodestack();
@@ -5619,7 +5647,7 @@ void end_visit (const PathExpr& v, void* /*visit_state*/)
     rchandle<fo_expr> checkExpr = 
     new fo_expr(sctxid,
                 arg2->get_loc(),
-                sctx_p->lookup_builtin_fn(":either-nodes-or-atomics", 1),
+                GET_BUILTIN_FUNCTION(OP_EITHER_NODES_OR_ATOMICS_1),
                 arg2);
 
     nodestack.push(checkExpr.getp());
@@ -6390,14 +6418,14 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   expr_t e3 = new instanceof_expr(sctxid, loc, predvar, rtm.FLOAT_TYPE_ONE);
 
   fo_expr_t condExpr;
-  condExpr = new fo_expr(sctxid, loc, CACHED(op_or, LOOKUP_OPN("or")), e1, e2);
-  condExpr = new fo_expr(sctxid, loc, CACHED (op_or, LOOKUP_OPN ("or")), &*condExpr, e3);
+  condExpr = new fo_expr(sctxid, loc, GET_BUILTIN_FUNCTION(OP_OR_2), e1, e2);
+  condExpr = new fo_expr(sctxid, loc, GET_BUILTIN_FUNCTION(OP_OR_2), &*condExpr, e3);
 
   // If so: return $dot if the value of the pred expr is equal to the value
   // of $dot_pos var, otherwise return the empty seq.
   fo_expr_t eqExpr = new fo_expr(sctxid,
                                  loc,
-                                 LOOKUP_OP2("value-equal"),
+                                 GET_BUILTIN_FUNCTION(OP_VALUE_EQUAL_2),
                                  lookup_ctx_var(DOT_POS_VARNAME, loc).getp(),
                                  predvar);
   normalize_fo(eqExpr);
@@ -6760,13 +6788,13 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
       normExpr = new fo_expr(sctxid,
                              loc,
-                             LOOKUP_FN("fn", "normalize-space", 1), 
+                             GET_BUILTIN_FUNCTION(FN_NORMALIZE_SPACE_1), 
                              flworVarExpr);
       normalize_fo(normExpr);
 
       tokenExpr = new fo_expr(sctxid,
                               loc,
-                              LOOKUP_FN("fn", "tokenize", 2),
+                              GET_BUILTIN_FUNCTION(FN_TOKENIZE_2),
                               normExpr.getp(),
                               constExpr.getp());
       normalize_fo(tokenExpr);
@@ -6829,7 +6857,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   }
 
   //  Some special processing is required for certain "zorba" functions
-  else if (fn_ns->byteEqual(ZORBA_FN_NS)) 
+  else if (fn_ns->byteEqual(ZORBA_OP_NS)) 
   {
     if (fname == "inline-xml" && sz == 1) 
     {
@@ -6861,7 +6889,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     nodestack.push(create_cast_expr(loc, arguments [0], type, true));
   }
 
-  // It is not a a builtin constructor function
+  // It is not a builtin constructor function
   else 
   {
     function* f = LOOKUP_FN(prefix, fname, sz);
@@ -7034,8 +7062,7 @@ void* begin_visit(const DirAttributeList& v)
 
     fo_expr* expr_list = new fo_expr(sctxid,
                                      v.get_location(),
-                                     sctx_p->lookup_builtin_fn(":" "concatenate",
-                                                               VARIADIC_SIG_SIZE),
+                                     op_concatenate,
                                      args);
 
     normalize_fo(expr_list);
@@ -7130,7 +7157,7 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
 
     fo_expr* foExpr;
     if ((foExpr = dynamic_cast<fo_expr*>(valueExpr.getp())) != NULL &&
-        foExpr->get_func()->getKind() == FunctionConsts::OP_ENCLOSED)
+        foExpr->get_func()->getKind() == FunctionConsts::OP_ENCLOSED_1)
     {
       foExpr->set_arg(0, wrap_in_atomization(foExpr->get_arg(0, false)));
     }
@@ -7180,8 +7207,7 @@ void end_visit(const DirElemContentList& v, void* /*visit_state*/)
   {
     fo_expr_t expr_list = new fo_expr(sctxid,
                                       v.get_location(),
-                                      sctx_p->lookup_builtin_fn(":" "concatenate",
-                                                                VARIADIC_SIG_SIZE),
+                                      op_concatenate,
                                       args);
     
     normalize_fo(expr_list.getp());
@@ -7329,8 +7355,7 @@ void attr_content_list(const QueryLoc& loc, void* /*visit_state*/)
   {
     fo_expr_t expr_list = new fo_expr(theCCB->m_cur_sctx,
                                       loc,
-                                      sctx_p->lookup_builtin_fn(":" "concatenate",
-                                                                VARIADIC_SIG_SIZE),
+                                      op_concatenate,
                                       args);
     normalize_fo(expr_list.getp());
 
@@ -7525,10 +7550,7 @@ void end_visit (const CompDocConstructor& v, void* /*visit_state*/)
 
   expr_t lContent = pop_nodestack();
 
-  fo_expr* lEnclosed = new fo_expr(sctxid,
-                                   loc,
-                                   CACHED(op_enclosed_expr, LOOKUP_OP1("enclosed-expr")),
-                                   lContent);
+  fo_expr* lEnclosed = new fo_expr(sctxid, loc, op_enclosed, lContent);
 
   nodestack.push(new doc_expr(sctxid, loc, lEnclosed));
 }
@@ -7551,10 +7573,7 @@ void end_visit(const CompElemConstructor& v, void* /*visit_state*/)
   {
     contentExpr = pop_nodestack();
 
-    fo_expr* lEnclosed = new fo_expr(sctxid,
-                                     loc,
-                                     CACHED(op_enclosed_expr, LOOKUP_OP1("enclosed-expr")),
-                                     contentExpr);
+    fo_expr* lEnclosed = new fo_expr(sctxid, loc, op_enclosed, contentExpr);
     contentExpr = lEnclosed;
   }
 
@@ -7596,11 +7615,7 @@ void end_visit(const CompAttrConstructor& v, void* /*visit_state*/)
     valueExpr = pop_nodestack();
     valueExpr = wrap_in_atomization(valueExpr);
 
-    fo_expr* enclosedExpr = new fo_expr(sctxid,
-                                        loc,
-                                        CACHED(op_enclosed_expr,
-                                               LOOKUP_OP1("enclosed-expr")),
-                                        valueExpr);
+    fo_expr* enclosedExpr = new fo_expr(sctxid, loc, op_enclosed, valueExpr);
     valueExpr = enclosedExpr;
   }
 
@@ -7609,7 +7624,9 @@ void end_visit(const CompAttrConstructor& v, void* /*visit_state*/)
   if (constQName != NULL)
   {
     nameExpr = new const_expr(sctxid, loc,
-                              sctx_p->lookup_qname("", constQName->get_qname(), constQName->get_location()));
+                              sctx_p->lookup_qname("",
+                                                   constQName->get_qname(),
+                                                   constQName->get_location()));
   }
   else
   {
@@ -7636,11 +7653,7 @@ void end_visit(const CompCommentConstructor& v, void* /*visit_state*/)
 
   expr_t inputExpr = pop_nodestack();
 
-  fo_expr_t enclosedExpr = new fo_expr(sctxid,
-                                       loc,
-                                       CACHED(op_enclosed_expr,
-                                              LOOKUP_OP1("enclosed-expr")),
-                                       inputExpr);
+  fo_expr_t enclosedExpr = new fo_expr(sctxid, loc, op_enclosed, inputExpr);
 
   expr_t textExpr = new text_expr(sctxid, loc,
                                   text_expr::comment_constructor,
@@ -7671,11 +7684,7 @@ void end_visit(const CompPIConstructor& v, void* /*visit_state*/)
   {
     content = pop_nodestack();
 
-    fo_expr_t enclosedExpr = new fo_expr(sctxid,
-                                         loc,
-                                         CACHED(op_enclosed_expr,
-                                                LOOKUP_OP1("enclosed-expr")),
-                                         content);
+    fo_expr_t enclosedExpr = new fo_expr(sctxid, loc, op_enclosed, content);
     content = enclosedExpr;
   }
 
@@ -7685,11 +7694,7 @@ void end_visit(const CompPIConstructor& v, void* /*visit_state*/)
 
     expr_t castExpr = create_cast_expr(loc, target.getp(), theRTM.NCNAME_TYPE_ONE, true);
 
-    fo_expr_t enclosedExpr = new fo_expr(sctxid,
-                                         loc,
-                                         CACHED(op_enclosed_expr,
-                                                LOOKUP_OP1("enclosed-expr")),
-                                         castExpr.getp());
+    fo_expr_t enclosedExpr = new fo_expr(sctxid, loc, op_enclosed, castExpr.getp());
     target = enclosedExpr;
   }
 
@@ -7713,11 +7718,7 @@ void end_visit(const CompTextConstructor& v, void* /*visit_state*/)
 
   expr_t inputExpr = pop_nodestack();
 
-  fo_expr_t enclosedExpr = new fo_expr(sctxid,
-                                       loc,
-                                       CACHED(op_enclosed_expr,
-                                              LOOKUP_OP1("enclosed-expr")),
-                                       inputExpr);
+  fo_expr_t enclosedExpr = new fo_expr(sctxid, loc, op_enclosed, inputExpr);
 
   expr_t textExpr = new text_expr(sctxid, loc,
                                   text_expr::text_constructor,
@@ -7733,17 +7734,18 @@ void reorder_globals ()
   for (list<function *>::iterator k = prolog_fn_decls.begin ();
        k != prolog_fn_decls.end (); k++)
   {
-    string kkey = "F" + static_context::qname_internal_key ((*k)->get_fname ());
+    string kkey = "F" + static_context::qname_internal_key ((*k)->getName());
     strset_t kedges;    
     if (! thePrologDeps.get (kkey, kedges))
       continue;
 
-    for (set<string>::iterator j = kedges->begin (); j != kedges->end (); j++) {
+    for (set<string>::iterator j = kedges->begin (); j != kedges->end (); j++) 
+    {
       string jkey = *j;
       for (list<function *>::iterator i = prolog_fn_decls.begin ();
            i != prolog_fn_decls.end (); i++)
       {
-        string ikey = "F" + static_context::qname_internal_key ((*i)->get_fname ());
+        string ikey = "F" + static_context::qname_internal_key ((*i)->getName ());
         strset_t iedges, new_iedges;
         if (thePrologDeps.get (ikey, iedges)
             && iedges->find (kkey) != iedges->end ()
@@ -8416,10 +8418,7 @@ void end_visit(const InsertExpr& v, void* /*visit_state*/)
     ZORBA_ERROR_LOC(XUST0001, loc);
   }
 
-  fo_expr_t lEnclosed = new fo_expr(sctxid, 
-                                    loc,
-                                    CACHED(op_enclosed_expr, LOOKUP_OP1("enclosed-expr")),
-                                    lSource);
+  fo_expr_t lEnclosed = new fo_expr(sctxid, loc, op_enclosed, lSource);
   lSource = lEnclosed;
 
   expr_t lInsert = new insert_expr(sctxid, loc, v.getType(), lSource, lTarget);
@@ -8472,11 +8471,7 @@ void end_visit(const ReplaceExpr& v, void* /*visit_state*/)
 
   if (v.getType() == store::UpdateConsts::NODE) 
   {
-    fo_expr_t lEnclosed = new fo_expr(sctxid,
-                                      loc,
-                                      CACHED(op_enclosed_expr,
-                                             LOOKUP_OP1("enclosed-expr")),
-                                      lReplacement);
+    fo_expr_t lEnclosed = new fo_expr(sctxid, loc, op_enclosed, lReplacement);
     lReplacement = lEnclosed;
   }
 
@@ -8745,7 +8740,6 @@ void end_visit(const AssignExpr& v, void* visit_state)
   TRACE_VISIT_OUT();
 
   // TODO: add treat_expr to check var type
-  function* ctx_set = LOOKUP_OP2 ("ctxvar-assign");
   varref_t ve = lookup_ctx_var (v.get_varname (), loc);
   if (ve->get_kind() != var_expr::local_var && ve->get_kind() != var_expr::prolog_var)
     ZORBA_ERROR_LOC (XPST0003, loc);
@@ -8754,7 +8748,7 @@ void end_visit(const AssignExpr& v, void* visit_state)
                                      ve->get_loc(),
                                      dynamic_context::var_key(&*ve));
 
-  nodestack.push(new fo_expr(sctxid, loc, ctx_set, qname_expr, pop_nodestack()));
+  nodestack.push(new fo_expr(sctxid, loc, var_set, qname_expr, pop_nodestack()));
 }
 
 

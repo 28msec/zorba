@@ -304,7 +304,7 @@ PlanIter_t fn_zorba_util_parse::codegen(
 void populate_context_sequences(static_context* sctx) {
 
   DECL(sctx, op_concatenate,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn",":concatenate"),
+      (createQName("http://www.w3.org/2005/xpath-functions","op","concatenate"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       true,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
@@ -452,7 +452,7 @@ void populate_context_sequences(static_context* sctx) {
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
   DECL(sctx, op_to,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn",":to"),
+      (createQName("http://www.w3.org/2005/xpath-functions","op","to"),
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_STAR));

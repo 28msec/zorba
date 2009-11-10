@@ -26,6 +26,7 @@
 #include "context/static_context.h"
 
 #include "functions/function.h"
+#include "functions/library.h"
 
 #include "util/properties.h"
 
@@ -40,7 +41,7 @@ static expr_t wrap_in_num_promotion(expr* arg, xqtref_t oldt, xqtref_t t);
 
 static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx);
 
-static function* flip_value_cmp(std::string fname);
+static function* flip_value_cmp(FunctionConsts::FunctionKind kind);
 
 
 /*******************************************************************************
@@ -202,8 +203,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
 
   if ((fo = dynamic_cast<fo_expr *>(node)) != NULL) 
   {
-    //function *fnboolean = LOOKUP_FN("fn", "boolean", 1);
-    if (fo->get_func()->CHECK_IS_BUILTIN_NAMED("boolean", 1)) 
+    if (fo->get_func()->getKind() == FunctionConsts::FN_BOOLEAN_1) 
     {
       expr_t arg = fo->get_arg(0, false);
       xqtref_t arg_type = arg->return_type(rCtx.getStaticContext(node));
@@ -213,8 +213,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
         return NULL;
     }
 
-    //function *fndata = LOOKUP_FN("fn", "data", 1);
-    if (fo->get_func()->CHECK_IS_BUILTIN_NAMED("data", 1)) 
+    if (fo->get_func()->getKind() == FunctionConsts::FN_DATA_1) 
     {
       expr_t arg = fo->get_arg(0, false);
       xqtref_t arg_type = arg->return_type(rCtx.getStaticContext(node));
@@ -302,7 +301,8 @@ RULE_REWRITE_POST(SpecializeOperations)
     if (! fn->specializable ())
       return NULL;
 
-    if (fn->getKind() == FunctionConsts::FN_SUM)
+    if (fn->getKind() == FunctionConsts::FN_SUM_1 ||
+        fn->getKind() == FunctionConsts::FN_SUM_2)
     {
       expr_t argExpr = fo->get_arg(0, false);
       xqtref_t argType = argExpr->return_type(sctx);
@@ -367,7 +367,7 @@ RULE_REWRITE_POST(SpecializeOperations)
           bool string_cmp = true;
           expr_t nargs[2];
 
-          for (int i = 0; i < 2; i++) 
+          for (int i = 0; i < 2; ++i) 
           {
             expr* arg = (i == 0 ? arg0 : arg1);
             xqtref_t type = (i == 0 ? t0 : t1);
@@ -407,7 +407,7 @@ RULE_REWRITE_POST(SpecializeOperations)
           else if (TypeOps::is_numeric(*t0) && TypeOps::is_numeric(*t1)) 
           {
             xqtref_t aType = specialize_numeric(fo, sctx);
-            if (aType != NULL) 
+            if (aType != NULL)
             {
               if (TypeOps::is_equal(*TypeOps::prime_type(*aType), *rtm.DECIMAL_TYPE_ONE)
                   && TypeOps::is_subtype(*t0, *rtm.INTEGER_TYPE_ONE))
@@ -415,7 +415,7 @@ RULE_REWRITE_POST(SpecializeOperations)
                 expr_t tmp = fo->get_arg(0, false);
                 fo->set_arg(0, fo->get_arg(1, false));
                 fo->set_arg(1, tmp);
-                fo->set_func(flip_value_cmp(fo->get_fname()->getLocalName()->str()));
+                fo->set_func(flip_value_cmp(fo->get_func()->getKind()));
               }
 
               return node;
@@ -528,24 +528,83 @@ static expr_t wrap_in_num_promotion(expr* arg, xqtref_t oldt, xqtref_t t)
 }
 
 
-static function* flip_value_cmp(std::string fname) 
+static function* flip_value_cmp(FunctionConsts::FunctionKind kind) 
 {
-  size_t pos = fname.rfind ('-');
-  std::string n = fname.substr (0, pos), n1;
+  FunctionConsts::FunctionKind newKind;
 
-  if (n == ":value-equal" || n == ":value-not-equal")
-    n1 = n;
-  else if (n == ":value-greater-equal")
-    n1 = ":value-less-equal";
-  else if (n == ":value-less-equal")
-    n1 = ":value-greater-equal";
-  else if (n == ":value-greater")
-    n1 = ":value-less";
-  else if (n == ":value-less")
-    n1 = ":value-greater";
-  else
-    return NULL;
-  return LOOKUP_FN ("fn", n1 + n.substr (pos), 2);
+  switch (kind)
+  {
+  case FunctionConsts::OP_VALUE_EQUAL_DOUBLE_2:
+  case FunctionConsts::OP_VALUE_EQUAL_FLOAT_2:
+  case FunctionConsts::OP_VALUE_EQUAL_DECIMAL_2:
+  case FunctionConsts::OP_VALUE_EQUAL_INTEGER_2:
+    newKind = kind;
+    break;
+
+  case FunctionConsts::OP_VALUE_NOT_EQUAL_DOUBLE_2:
+  case FunctionConsts::OP_VALUE_NOT_EQUAL_FLOAT_2:
+  case FunctionConsts::OP_VALUE_NOT_EQUAL_DECIMAL_2:
+  case FunctionConsts::OP_VALUE_NOT_EQUAL_INTEGER_2:
+    newKind = kind;
+    break;
+
+  case FunctionConsts::OP_VALUE_LESS_EQUAL_DOUBLE_2:
+    newKind = FunctionConsts::OP_VALUE_GREATER_EQUAL_DOUBLE_2;
+    break;
+  case FunctionConsts::OP_VALUE_LESS_EQUAL_FLOAT_2:
+    newKind = FunctionConsts::OP_VALUE_GREATER_EQUAL_FLOAT_2;
+    break;
+  case FunctionConsts::OP_VALUE_LESS_EQUAL_DECIMAL_2:
+    newKind = FunctionConsts::OP_VALUE_GREATER_EQUAL_DECIMAL_2;
+    break;
+  case FunctionConsts::OP_VALUE_LESS_EQUAL_INTEGER_2:
+    newKind = FunctionConsts::OP_VALUE_GREATER_EQUAL_INTEGER_2;
+    break;
+
+  case FunctionConsts::OP_VALUE_LESS_DOUBLE_2:
+    newKind = FunctionConsts::OP_VALUE_GREATER_DOUBLE_2;
+    break;
+  case FunctionConsts::OP_VALUE_LESS_FLOAT_2:
+    newKind = FunctionConsts::OP_VALUE_GREATER_FLOAT_2;
+    break;
+  case FunctionConsts::OP_VALUE_LESS_DECIMAL_2:
+    newKind = FunctionConsts::OP_VALUE_GREATER_DECIMAL_2;
+    break;
+  case FunctionConsts::OP_VALUE_LESS_INTEGER_2:
+    newKind = FunctionConsts::OP_VALUE_GREATER_INTEGER_2;
+    break;
+
+  case FunctionConsts::OP_VALUE_GREATER_EQUAL_DOUBLE_2:
+    newKind = FunctionConsts::OP_VALUE_LESS_EQUAL_DOUBLE_2;
+    break;
+  case FunctionConsts::OP_VALUE_GREATER_EQUAL_FLOAT_2:
+    newKind = FunctionConsts::OP_VALUE_LESS_EQUAL_FLOAT_2;
+    break;
+  case FunctionConsts::OP_VALUE_GREATER_EQUAL_DECIMAL_2:
+    newKind = FunctionConsts::OP_VALUE_LESS_EQUAL_DECIMAL_2;
+    break;
+  case FunctionConsts::OP_VALUE_GREATER_EQUAL_INTEGER_2:
+    newKind = FunctionConsts::OP_VALUE_LESS_EQUAL_INTEGER_2;
+    break;
+
+  case FunctionConsts::OP_VALUE_GREATER_DOUBLE_2:
+    newKind = FunctionConsts::OP_VALUE_LESS_DOUBLE_2;
+    break;
+  case FunctionConsts::OP_VALUE_GREATER_FLOAT_2:
+    newKind = FunctionConsts::OP_VALUE_LESS_FLOAT_2;
+    break;
+  case FunctionConsts::OP_VALUE_GREATER_DECIMAL_2:
+    newKind = FunctionConsts::OP_VALUE_LESS_DECIMAL_2;
+    break;
+  case FunctionConsts::OP_VALUE_GREATER_INTEGER_2:
+    newKind = FunctionConsts::OP_VALUE_LESS_INTEGER_2;
+    break;
+
+  default:
+    ZORBA_ASSERT(false);
+  }
+
+  return BuiltinFunctionLibrary::getFunction(newKind);
 }
 
 

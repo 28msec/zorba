@@ -17,6 +17,8 @@
 
 #include "context/static_context.h"
 
+#include "functions/library.h"
+
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/rewriter/tools/expr_tools.h"
 #include "compiler/expression/flwor_expr.h"
@@ -321,8 +323,14 @@ static expr_t try_hoisting(
   // variable V, and (c) we replace e with opext:unhoist($$temp).
 
   rchandle<var_expr> letvar(rCtx.createTempVar(e->get_sctx_id(), e->get_loc(), var_expr::let_var));
-  expr_t hoisted = new fo_expr(e->get_sctx_id(), e->get_loc(), LOOKUP_OP1("hoist"), e);
+
+  expr_t hoisted = new fo_expr(e->get_sctx_id(),
+                               e->get_loc(),
+                               GET_BUILTIN_FUNCTION(OP_HOIST_1),
+                               e);
+
   let_clause_t flref(new let_clause(e->get_sctx_id(), e->get_loc(), letvar, hoisted));
+
   letvar->set_flwor_clause(flref.getp());
 
   if (h->prev == NULL) 
@@ -339,7 +347,10 @@ static expr_t try_hoisting(
     ++h->clause_count;
   }
 
-  expr_t unhoisted = new fo_expr(e->get_sctx_id(), e->get_loc(), LOOKUP_OP1("unhoist"), letvar.getp());
+  expr_t unhoisted = new fo_expr(e->get_sctx_id(),
+                                 e->get_loc(),
+                                 GET_BUILTIN_FUNCTION(OP_UNHOIST_1),
+                                 letvar.getp());
   return unhoisted.getp();
 }
 
@@ -391,7 +402,8 @@ static bool is_already_hoisted(const expr* e)
 {
   if (e->get_expr_kind() == fo_expr_kind) 
   {
-    return static_cast<const fo_expr *>(e)->get_func() == LOOKUP_OP1("unhoist");
+    return static_cast<const fo_expr *>(e)->get_func()->getKind() == 
+           FunctionConsts::OP_UNHOIST_1;
   }
   return false;
 }
@@ -401,7 +413,7 @@ static bool is_already_hoisted(const expr* e)
   Check if the expr tree rooted at e contains any node-constructor expr. If so,
   e cannot be hoisted.
 ********************************************************************************/
-static bool contains_node_construction(const expr *e)
+static bool contains_node_construction(const expr* e)
 {
   if (e->get_expr_kind() == elem_expr_kind
       || e->get_expr_kind() == attr_expr_kind
@@ -438,7 +450,7 @@ static bool is_enclosed_expr(const expr* e)
     return false;
 
   const function* fn = static_cast<const fo_expr *>(e)->get_func();
-  return (fn->CHECK_IS_BUILTIN_NAMED(":enclosed-expr", 1));
+  return (fn->getKind() == FunctionConsts::OP_ENCLOSED_1);
 }
 
 

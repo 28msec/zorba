@@ -33,12 +33,11 @@
 
 #include "functions/signature.h"
 #include "functions/function.h"
+#include "functions/library.h"
+
 
 namespace zorba 
 {
-
-#define LOOKUP_FN( pfx, local, arity ) (sctx->lookup_fn (pfx, local, arity))
-#define LOOKUP_OP1( local ) (m_cb->m_sctx->lookup_builtin_fn (":" local, 1))
 
 
 static inline expr::expr_t wrap_in_atomization(
@@ -46,7 +45,7 @@ static inline expr::expr_t wrap_in_atomization(
     static_context *sctx,
     expr::expr_t e)
 {
-  fo_expr_t fo = new fo_expr(context, e->get_loc(), LOOKUP_FN("fn", "data", 1), e);
+  fo_expr_t fo = new fo_expr(context, e->get_loc(), GET_BUILTIN_FUNCTION(FN_DATA_1), e);
   return fo.getp();
 }
 

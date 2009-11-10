@@ -55,7 +55,7 @@
     <zorba:function generateReturnTypeDecl="true"
                     generateComputeAnnotationDecl="true"
                     annIsUpdating="true">
-      <zorba:signature localname=":concatenate" prefix="fn">
+      <zorba:signature localname="concatenate" prefix="op">
         <zorba:param>item()*</zorba:param>
         <zorba:param>true</zorba:param> <!-- variadic function -->
         <zorba:output>item()*</zorba:output>
@@ -283,7 +283,7 @@
       <zorba:param>item()*</zorba:param>
       <zorba:param>xs:double</zorba:param>
       <zorba:param>xs:double</zorba:param>
-      <zorba:param>item()*</zorba:param>
+      <zorba:output>item()*</zorba:output>
     </zorba:signature>
   </zorba:function>
   
@@ -581,7 +581,7 @@
     </zorba:state>
   
   <zorba:function >
-    <zorba:signature localname=":to" prefix="fn">
+    <zorba:signature localname="to" prefix="op">
       <zorba:param>xs:integer?</zorba:param>
       <zorba:param>xs:integer?</zorba:param>
       <zorba:output>xs:integer*</zorba:output>

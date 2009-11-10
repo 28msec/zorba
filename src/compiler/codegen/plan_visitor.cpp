@@ -77,6 +77,7 @@
 #include "debugger/zorba_debugger_commons.h"
 
 #include "functions/function.h"
+#include "functions/library.h"
 
 #include "types/typeops.h"
 
@@ -242,8 +243,6 @@ protected:
 
   std::stack<ZorbaDebugIterator*>        theDebuggerStack;
 
-#define LOOKUP_OP1( local ) (ccb->theRootSctx->lookup_builtin_fn (":" local, 1))
-
 public:
 
 plan_visitor(CompilerCB *ccb_, hash64map<vector<LetVarIter_t> *> *arg_var_map = NULL)
@@ -302,9 +301,9 @@ static_context* get_sctx(short sctx)
 
 bool is_enclosed_expr(expr* e) 
 {
-  fo_expr* foe = dynamic_cast<fo_expr*>(e);
-  if (foe != NULL &&
-      foe->get_fname()->getLocalName()->byteEqual(":enclosed-expr", 14))
+  fo_expr* foExpr = dynamic_cast<fo_expr*>(e);
+  if (foExpr != NULL &&
+      foExpr->get_func()->getKind() == FunctionConsts::OP_ENCLOSED_1)
     return true;
   
   return false;
@@ -599,7 +598,7 @@ void general_var_codegen (const var_expr& var)
     {
       expr_t lookup_expr = new fo_expr(var.get_sctx_id(),
                                        qloc,
-                                       LOOKUP_OP1 ("ctxvariable"),
+                                       GET_BUILTIN_FUNCTION(OP_VAR_REF_1),
                                        new const_expr(var.get_sctx_id(),
                                                       qloc,
                                                       dynamic_context::var_key(&var)));
@@ -1875,7 +1874,7 @@ void end_visit(fo_expr& v)
 
   if (func->validate_args(argv)) 
   {
-    if (func->getKind() == FunctionConsts::OP_CREATE_INTERNAL_INDEX)
+    if (func->getKind() == FunctionConsts::OP_CREATE_INTERNAL_INDEX_1)
     {
       const const_expr* qnameExpr = static_cast<const const_expr*>(v.get_arg(0));
       const store::Item* qname = qnameExpr->get_val();

@@ -29,10 +29,6 @@
 namespace zorba 
 {
 
-#define LOOKUP_OPN( local ) \
-(GENV.getRootStaticContext ().lookup_builtin_fn (":" local, VARIADIC_SIG_SIZE))
-
-
 SERIALIZABLE_CLASS_VERSIONS(ValueIndex)
 END_SERIALIZABLE_CLASS_VERSIONS(ValueIndex)
 
@@ -201,7 +197,7 @@ void ValueIndex::analyzeExprInternal(
 
     if (func->isSource())
     {
-      if (func->getKind() == FunctionConsts::FN_ZORBA_COLLECTION)
+      if (func->getKind() == FunctionConsts::FN_ZORBA_COLLECTION_1)
       {
         const const_expr* qnameExpr;
 
@@ -223,7 +219,7 @@ void ValueIndex::analyzeExprInternal(
                               theName->getStringValue()->c_str(), "");
       }
     }
-    else if (func->getKind() == FunctionConsts::OP_VAR_DECLARE)
+    else if (func->getKind() == FunctionConsts::OP_VAR_DECLARE_1)
     {
       const const_expr* qnameExpr = dynamic_cast<const const_expr*>(foExpr->get_arg(0));
       ZORBA_ASSERT(qnameExpr != NULL);

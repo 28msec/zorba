@@ -38,67 +38,102 @@ void populate_context_accessors(static_context* sctx);
 
 
 
+
 //fn:node-name
 class fn_node_name : public function
 {
 public:
-  fn_node_name(const signature& sig) : function(sig, FunctionConsts::FN_NODE_NAME) {}
+  fn_node_name(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_NODE_NAME_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:nilled
 class fn_nilled : public function
 {
 public:
-  fn_nilled(const signature& sig) : function(sig, FunctionConsts::FN_NILLED) {}
+  fn_nilled(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_NILLED_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:string
 class fn_string : public function
 {
 public:
-  fn_string(const signature& sig) : function(sig, FunctionConsts::FN_STRING) {}
+  fn_string(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_STRING_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:data
 class fn_data : public single_seq_opt_function
 {
 public:
-  fn_data(const signature& sig) : single_seq_opt_function(sig, FunctionConsts::FN_DATA) {}
+  fn_data(const signature& sig)
+    :
+    single_seq_opt_function(sig, FunctionConsts::FN_DATA_1)
+  {
+  }
 
   CODEGEN_DECL();
 
   xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
 };
 
+
 //fn:base-uri
 class fn_base_uri : public function
 {
 public:
-  fn_base_uri(const signature& sig) : function(sig, FunctionConsts::FN_BASE_URI) {}
+  fn_base_uri(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_BASE_URI_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:document-uri
 class fn_document_uri : public function
 {
 public:
-  fn_document_uri(const signature& sig) : function(sig, FunctionConsts::FN_DOCUMENT_URI) {}
+  fn_document_uri(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_DOCUMENT_URI_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:root
 class fn_root : public function
 {
 public:
-  fn_root(const signature& sig) : function(sig, FunctionConsts::FN_ROOT) {}
+  fn_root(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ROOT_1)
+  {
+  }
 
   CODEGEN_DECL();
 };

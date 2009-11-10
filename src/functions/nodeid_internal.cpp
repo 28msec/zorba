@@ -31,10 +31,10 @@ namespace zorba
 #define TSV_TRUE TSVAnnotationValue::TRUE_VAL
 #define TSV_TRUE_P TSVAnnotationValue::TRUE_VAL.getp()
 
-#define A_SORT ((a) [0])
-#define A_ATOMICS ((a) [1])
-#define A_DISTINCT ((a) [2])
-#define A_ASCENDING ((a) [3])
+#define A_SORT ((a)[0])
+#define A_ATOMICS ((a)[1])
+#define A_DISTINCT ((a)[2])
+#define A_ASCENDING ((a)[3])
 
 
 /*******************************************************************************
@@ -47,8 +47,6 @@ function* op_node_sort_distinct::op_for_action(
     const AnnotationHolder* child,
     nodes_or_atomics_t noa) 
 {
-#define LOOKUP_OP1(local) (sctx->lookup_builtin_fn((xqp_string(":") + local).c_str(), 1))
-
   Annotations::Key ignoresSortedNodes = Annotations::IGNORES_SORTED_NODES;
   Annotations::Key producesSortedNodes = Annotations::PRODUCES_SORTED_NODES;
   Annotations::Key ignoresDupNodes = Annotations::IGNORES_DUP_NODES;
@@ -83,22 +81,47 @@ function* op_node_sort_distinct::op_for_action(
        child->get_annotation(producesSortedNodes).getp() == TSV_TRUE_P &&
        A_ASCENDING))
   {
-    return (distinct ?
-            LOOKUP_OP1 ("distinct-nodes" + (atomics ? "-or-atomics" : ""))
-            :
-            (atomics ? LOOKUP_OP1 ("either-nodes-or-atomics") : NULL));
+    if (distinct && atomics)
+    {
+      return GET_BUILTIN_FUNCTION(OP_DISTINCT_NODES_OR_ATOMICS_1); 
+    }
+    else if (distinct)
+    {
+      return GET_BUILTIN_FUNCTION(OP_DISTINCT_NODES_1); 
+    }
+    else if (atomics)
+    {
+      return GET_BUILTIN_FUNCTION(OP_EITHER_NODES_OR_ATOMICS_1);
+    }
+    else
+    {
+      return NULL;
+    }
   }
-
-  xqp_string part1 = xqpString::concat("sort-",
-                                       (distinct ? "distinct-" : ""),
-                                       "nodes-");
-
-  xqp_string part2 = xqpString::concat(A_ASCENDING ? "asc" : "desc",
-                                       (atomics ? "-or-atomics" : ""));
-
-  return LOOKUP_OP1(part1 + part2);
-
-#undef LOOKUP_OP1
+  else if (distinct && atomics)
+  {
+    return (A_ASCENDING ?
+            GET_BUILTIN_FUNCTION(OP_SORT_DISTINCT_NODES_ASC_OR_ATOMICS_1) :
+            GET_BUILTIN_FUNCTION(OP_SORT_DISTINCT_NODES_DESC_OR_ATOMICS_1)); 
+  }
+  else if (distinct)
+  {
+    return (A_ASCENDING ?
+            GET_BUILTIN_FUNCTION(OP_SORT_DISTINCT_NODES_ASC_1) :
+            GET_BUILTIN_FUNCTION(OP_SORT_DISTINCT_NODES_DESC_1)); 
+  }
+  else if (atomics)
+  {
+    return (A_ASCENDING ?
+            GET_BUILTIN_FUNCTION(OP_SORT_NODES_ASC_OR_ATOMICS_1) :
+            GET_BUILTIN_FUNCTION(OP_SORT_NODES_DESC_OR_ATOMICS_1)); 
+  }
+  else
+  {
+    return (A_ASCENDING ?
+            GET_BUILTIN_FUNCTION(OP_SORT_NODES_ASC_1) :
+            GET_BUILTIN_FUNCTION(OP_SORT_NODES_DESC_1)); 
+  }
 }
 
 
@@ -106,12 +129,12 @@ function* op_node_sort_distinct::op_for_action(
 
 ********************************************************************************/
 function* op_node_sort_distinct::min_action(
-    const static_context *sctx,
-    const AnnotationHolder *self,
-    const AnnotationHolder *child,
+    const static_context* sctx,
+    const AnnotationHolder* self,
+    const AnnotationHolder* child,
     nodes_or_atomics_t noa) const 
 {
-  return op_for_action (sctx, action(), self, child, noa);
+  return op_for_action(sctx, action(), self, child, noa);
 }
 
 
@@ -176,7 +199,7 @@ PlanIter_t op_node_sort_distinct::codegen(
             (A_ATOMICS ? new EitherNodesOrAtomicsIterator(sctx, loc, argv) : argv[0]));
   }
   else
-    return new NodeSortIterator(sctx, loc, argv [0], A_ASCENDING, distinct, A_ATOMICS);
+    return new NodeSortIterator(sctx, loc, argv[0], A_ASCENDING, distinct, A_ATOMICS);
 }
 
 
@@ -186,8 +209,11 @@ PlanIter_t op_node_sort_distinct::codegen(
 class op_either_nodes_or_atomics : public op_node_sort_distinct
 {
 public:
-  op_either_nodes_or_atomics (const signature& sig)
-    : op_node_sort_distinct (sig, FunctionConsts::OP_EITHER_NODES_OR_ATOMIC) {}
+  op_either_nodes_or_atomics(const signature& sig)
+    :
+    op_node_sort_distinct(sig, FunctionConsts::OP_EITHER_NODES_OR_ATOMICS_1)
+  {
+  }
 
   const bool* action() const 
   {
@@ -207,9 +233,13 @@ class op_distinct_nodes : public op_node_sort_distinct
 {
 public:
   op_distinct_nodes(const signature& sig)
-    : op_node_sort_distinct (sig, FunctionConsts::OP_DISTINCT_NODES) {}
+    :
+    op_node_sort_distinct(sig, FunctionConsts::OP_DISTINCT_NODES_1)
+  {
+  }
 
   virtual bool is_node_sort_func() const { return true; }
+
   virtual bool is_node_distinct_func() const { return true; }
 
   const bool *action () const 
@@ -230,12 +260,15 @@ class op_distinct_nodes_or_atomics : public op_node_sort_distinct
 {
 public:
   op_distinct_nodes_or_atomics(const signature& sig)
-    : op_node_sort_distinct(sig, FunctionConsts::OP_DISTINCT_NODES_OR_ATOMIC) {}
-
-  const bool* action () const 
+    :
+    op_node_sort_distinct(sig, FunctionConsts::OP_DISTINCT_NODES_OR_ATOMICS_1)
   {
-    //                         sort   atomics  distinct  ascendig
-    static const bool a [] = { false, true,     true,    false };
+  }
+
+  const bool* action() const 
+  {
+    //                        sort   atomics  distinct  ascendig
+    static const bool a[] = { false, true,     true,    false };
     return a;
   }
 };
@@ -248,11 +281,14 @@ class op_sort_nodes_ascending : public op_node_sort_distinct
 {
 public:
   op_sort_nodes_ascending(const signature& sig)
-    : op_node_sort_distinct (sig, FunctionConsts::OP_SORT_NODES_ASCENDING) {}
-
-  const bool* action () const 
+    :
+    op_node_sort_distinct(sig, FunctionConsts::OP_SORT_NODES_ASC_1)
   {
-    static const bool a [] = { true, false, false, true };
+  }
+
+  const bool* action() const 
+  {
+    static const bool a[] = { true, false, false, true };
     return a;
   }
 };
@@ -267,12 +303,15 @@ class op_sort_nodes_asc_or_atomics : public op_node_sort_distinct
 {
 public:
   op_sort_nodes_asc_or_atomics(const signature& sig)
-    : op_node_sort_distinct (sig, FunctionConsts::OP_SORT_DISTINCT_NODES_ASC_OR_ATOMICS) {}
-
-  const bool* action () const 
+    :
+    op_node_sort_distinct(sig, FunctionConsts::OP_SORT_NODES_ASC_OR_ATOMICS_1)
   {
-    //                         sort   atomics  distinct  ascendig
-    static const bool a [] = { true,  true,    false,    true };
+  }
+
+  const bool* action() const 
+  {
+    //                        sort   atomics  distinct  ascendig
+    static const bool a[] = { true,  true,    false,    true };
     return a;
   }
 };
@@ -285,11 +324,14 @@ class op_sort_nodes_descending : public op_node_sort_distinct
 {
 public:
   op_sort_nodes_descending(const signature& sig)
-    : op_node_sort_distinct (sig, FunctionConsts::OP_SORT_NODES_DESCENDING) {}
-  
-  const bool* action () const 
+    :
+    op_node_sort_distinct(sig, FunctionConsts::OP_SORT_NODES_DESC_1)
   {
-    static const bool a [] = { true, false, false, false };
+  }
+  
+  const bool* action() const 
+  {
+    static const bool a[] = { true, false, false, false };
     return a;
   }
 };
@@ -304,12 +346,15 @@ class op_sort_nodes_desc_or_atomics : public op_node_sort_distinct
 {
 public:
   op_sort_nodes_desc_or_atomics(const signature& sig)
-    : op_node_sort_distinct (sig, FunctionConsts::OP_SORT_NODES_DESC_OR_ATOMICS) {}
-  
-  const bool* action () const 
+    :
+    op_node_sort_distinct(sig, FunctionConsts::OP_SORT_NODES_DESC_OR_ATOMICS_1)
   {
-    //                         sort   atomics  distinct  ascendig
-    static const bool a [] = { true,  true,    false,    false };
+  }
+  
+  const bool* action() const 
+  {
+    //                        sort   atomics  distinct  ascendig
+    static const bool a[] = { true,  true,    false,    false };
     return a;
   }
 };
@@ -322,14 +367,17 @@ class op_sort_distinct_nodes_ascending : public op_node_sort_distinct
 {
 public:
   op_sort_distinct_nodes_ascending(const signature& sig)
-    : op_node_sort_distinct (sig, FunctionConsts::OP_SORT_DISTINCT_NODES_ASCENDING) {}
+    :
+    op_node_sort_distinct(sig, FunctionConsts::OP_SORT_DISTINCT_NODES_ASC_1)
+  {
+  }
 
   virtual bool is_node_sort_func() const { return true; }
   virtual bool is_node_distinct_func() const { return true; }
   
-  const bool* action () const 
+  const bool* action() const 
   {
-    static const bool a [] = { true, false, true, true };
+    static const bool a[] = { true, false, true, true };
     return a;
   }
 };
@@ -345,13 +393,14 @@ class op_sort_distinct_nodes_asc_or_atomics : public op_node_sort_distinct
 public:
   op_sort_distinct_nodes_asc_or_atomics(const signature& sig) 
     :
-    op_node_sort_distinct (sig, FunctionConsts::OP_SORT_DISTINCT_NODES_ASC_OR_ATOMICS)
-  {}
-
-  const bool* action () const 
+    op_node_sort_distinct(sig, FunctionConsts::OP_SORT_DISTINCT_NODES_ASC_OR_ATOMICS_1)
   {
-    //                         sort   atomics  distinct  ascendig
-    static const bool a [] = { true,  true,    true,     true };
+  }
+
+  const bool* action() const 
+  {
+    //                        sort   atomics  distinct  ascendig
+    static const bool a[] = { true,  true,    true,     true };
     return a;
   }
 };
@@ -365,11 +414,37 @@ class op_sort_distinct_nodes_descending : public op_node_sort_distinct
 {
 public:
   op_sort_distinct_nodes_descending(const signature& sig)
-    : op_node_sort_distinct (sig, FunctionConsts::OP_SORT_DISTINCT_NODES_DESCENDING) {}
-
-  const bool* action () const 
+    :
+    op_node_sort_distinct(sig, FunctionConsts::OP_SORT_DISTINCT_NODES_DESC_1)
   {
-    static const bool a [] = { true, false, true, false };
+  }
+
+  const bool* action() const 
+  {
+    //                        sort   atomics  distinct  ascendig
+    static const bool a[] = { true,  false,   true,     false };
+    return a;
+  }
+};
+
+
+/*******************************************************************************
+  internal function for sort-nodes in reverse document order and doing 
+  distinct-nodes in one run
+********************************************************************************/ 
+class op_sort_distinct_nodes_descending_or_atomics : public op_node_sort_distinct
+{
+public:
+  op_sort_distinct_nodes_descending_or_atomics(const signature& sig)
+    :
+    op_node_sort_distinct(sig, FunctionConsts::OP_SORT_DISTINCT_NODES_DESC_OR_ATOMICS_1)
+  {
+  }
+
+  const bool* action() const 
+  {
+    //                        sort   atomics  distinct  ascendig
+    static const bool a[] = { true,  true,   true,     false };
     return a;
   }
 };
@@ -382,7 +457,8 @@ class fn_unordered : public single_seq_function
 {
 public:
   fn_unordered(const signature& sig)
-    : single_seq_function (sig, FunctionConsts::FN_UNORDERED) {}
+    :
+    single_seq_function(sig, FunctionConsts::FN_UNORDERED_1) {}
 
   COMPUTE_ANNOTATION_DECL();
 
@@ -423,63 +499,63 @@ void fn_unordered::compute_annotation(
 void populateContext_DocOrder(static_context* sctx) 
 {
   DECL(sctx, fn_unordered,
-       (createQName(XQUERY_FN_NS,"fn","unordered"),
+       (createQName(XQUERY_OP_NS,"fn","unordered"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
   
   DECL(sctx, op_either_nodes_or_atomics,
-       (createQName(XQUERY_FN_NS,"fn",":either-nodes-or-atomics"),
+       (createQName(ZORBA_OP_NS,"op","either-nodes-or-atomics"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
   DECL(sctx, op_distinct_nodes,
-       (createQName(XQUERY_FN_NS,"fn",":distinct-nodes"),
+       (createQName(ZORBA_OP_NS,"op","distinct-nodes"),
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
   
   DECL(sctx, op_distinct_nodes_or_atomics,
-       (createQName(XQUERY_FN_NS,"fn",":distinct-nodes-or-atomics"),
+       (createQName(ZORBA_OP_NS,"op","distinct-nodes-or-atomics"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
   DECL(sctx, op_sort_nodes_ascending,
-       (createQName(XQUERY_FN_NS,"fn",":sort-nodes-asc"),
+       (createQName(ZORBA_OP_NS,"op","sort-nodes-asc"),
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
   DECL(sctx, op_sort_nodes_asc_or_atomics,
-       (createQName(XQUERY_FN_NS,"fn",":sort-nodes-asc-or-atomics"),
+       (createQName(ZORBA_OP_NS,"op","sort-nodes-asc-or-atomics"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
   DECL(sctx, op_sort_nodes_descending,
-       (createQName(XQUERY_FN_NS,"fn",":sort-nodes-desc"),
+       (createQName(ZORBA_OP_NS,"op","sort-nodes-desc"),
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
   DECL(sctx, op_sort_nodes_desc_or_atomics,
-       (createQName(XQUERY_FN_NS,"fn",":sort-nodes-desc-or-atomics"),
+       (createQName(ZORBA_OP_NS,"op","sort-nodes-desc-or-atomics"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
   DECL(sctx, op_sort_distinct_nodes_ascending,
-       (createQName(XQUERY_FN_NS,"fn",":sort-distinct-nodes-asc"),
+       (createQName(ZORBA_OP_NS,"op","sort-distinct-nodes-asc"),
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
   DECL(sctx, op_sort_distinct_nodes_asc_or_atomics,
-       (createQName(XQUERY_FN_NS,"fn",":sort-distinct-nodes-asc-or-atomics"),
+       (createQName(ZORBA_OP_NS, "op", "sort-distinct-nodes-asc-or-atomics"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
   DECL(sctx, op_sort_distinct_nodes_descending,
-       (createQName(XQUERY_FN_NS,"fn",":sort-distinct-nodes-desc"),
+       (createQName(ZORBA_OP_NS, "op", "sort-distinct-nodes-desc"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
   // TODO: separate function
-  DECL(sctx, op_sort_distinct_nodes_descending,
-       (createQName(XQUERY_FN_NS,"fn",":sort-distinct-nodes-desc-or-atomics"),
+  DECL(sctx, op_sort_distinct_nodes_descending_or_atomics,
+       (createQName(ZORBA_OP_NS, "op", "sort-distinct-nodes-desc-or-atomics"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 }

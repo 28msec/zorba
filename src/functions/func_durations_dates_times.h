@@ -37,191 +37,296 @@ void populate_context_durations_dates_times(static_context* sctx);
 
 
 
+
 //fn:years-from-duration
 class fn_years_from_duration : public function
 {
 public:
-  fn_years_from_duration(const signature& sig) : function(sig, FunctionConsts::FN_YEARS_FROM_DURATION) {}
+  fn_years_from_duration(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_YEARS_FROM_DURATION_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:months-from-duration
 class fn_months_from_duration : public function
 {
 public:
-  fn_months_from_duration(const signature& sig) : function(sig, FunctionConsts::FN_MONTHS_FROM_DURATION) {}
+  fn_months_from_duration(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_MONTHS_FROM_DURATION_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:days-from-duration
 class fn_days_from_duration : public function
 {
 public:
-  fn_days_from_duration(const signature& sig) : function(sig, FunctionConsts::FN_DAYS_FROM_DURATION) {}
+  fn_days_from_duration(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_DAYS_FROM_DURATION_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:hours-from-duration
 class fn_hours_from_duration : public function
 {
 public:
-  fn_hours_from_duration(const signature& sig) : function(sig, FunctionConsts::FN_HOURS_FROM_DURATION) {}
+  fn_hours_from_duration(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_HOURS_FROM_DURATION_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:minutes-from-duration
 class fn_minutes_from_duration : public function
 {
 public:
-  fn_minutes_from_duration(const signature& sig) : function(sig, FunctionConsts::FN_MINUTES_FROM_DURATION) {}
+  fn_minutes_from_duration(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_MINUTES_FROM_DURATION_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:seconds-from-duration
 class fn_seconds_from_duration : public function
 {
 public:
-  fn_seconds_from_duration(const signature& sig) : function(sig, FunctionConsts::FN_SECONDS_FROM_DURATION) {}
+  fn_seconds_from_duration(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_SECONDS_FROM_DURATION_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:year-from-dateTime
 class fn_year_from_dateTime : public function
 {
 public:
-  fn_year_from_dateTime(const signature& sig) : function(sig, FunctionConsts::FN_YEAR_FROM_DATETIME) {}
+  fn_year_from_dateTime(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_YEAR_FROM_DATETIME_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:month-from-dateTime
 class fn_month_from_dateTime : public function
 {
 public:
-  fn_month_from_dateTime(const signature& sig) : function(sig, FunctionConsts::FN_MONTH_FROM_DATETIME) {}
+  fn_month_from_dateTime(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_MONTH_FROM_DATETIME_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:day-from-dateTime
 class fn_day_from_dateTime : public function
 {
 public:
-  fn_day_from_dateTime(const signature& sig) : function(sig, FunctionConsts::FN_DAY_FROM_DATETIME) {}
+  fn_day_from_dateTime(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_DAY_FROM_DATETIME_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:hours-from-dateTime
 class fn_hours_from_dateTime : public function
 {
 public:
-  fn_hours_from_dateTime(const signature& sig) : function(sig, FunctionConsts::FN_HOURS_FROM_DATETIME) {}
+  fn_hours_from_dateTime(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_HOURS_FROM_DATETIME_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:minutes-from-dateTime
 class fn_minutes_from_dateTime : public function
 {
 public:
-  fn_minutes_from_dateTime(const signature& sig) : function(sig, FunctionConsts::FN_MINUTES_FROM_DATETIME) {}
+  fn_minutes_from_dateTime(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_MINUTES_FROM_DATETIME_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:seconds-from-dateTime
 class fn_seconds_from_dateTime : public function
 {
 public:
-  fn_seconds_from_dateTime(const signature& sig) : function(sig, FunctionConsts::FN_SECONDS_FROM_DATETIME) {}
+  fn_seconds_from_dateTime(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_SECONDS_FROM_DATETIME_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:timezone-from-dateTime
 class fn_timezone_from_dateTime : public function
 {
 public:
-  fn_timezone_from_dateTime(const signature& sig) : function(sig, FunctionConsts::FN_TIMEZONE_FROM_DATETIME) {}
+  fn_timezone_from_dateTime(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_TIMEZONE_FROM_DATETIME_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:year-from-date
 class fn_year_from_date : public function
 {
 public:
-  fn_year_from_date(const signature& sig) : function(sig, FunctionConsts::FN_YEAR_FROM_DATE) {}
+  fn_year_from_date(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_YEAR_FROM_DATE_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:month-from-date
 class fn_month_from_date : public function
 {
 public:
-  fn_month_from_date(const signature& sig) : function(sig, FunctionConsts::FN_MONTH_FROM_DATE) {}
+  fn_month_from_date(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_MONTH_FROM_DATE_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:day-from-date
 class fn_day_from_date : public function
 {
 public:
-  fn_day_from_date(const signature& sig) : function(sig, FunctionConsts::FN_DAY_FROM_DATE) {}
+  fn_day_from_date(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_DAY_FROM_DATE_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:timezone-from-date
 class fn_timezone_from_date : public function
 {
 public:
-  fn_timezone_from_date(const signature& sig) : function(sig, FunctionConsts::FN_TIMEZONE_FROM_DATE) {}
+  fn_timezone_from_date(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_TIMEZONE_FROM_DATE_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:hours-from-time
 class fn_hours_from_time : public function
 {
 public:
-  fn_hours_from_time(const signature& sig) : function(sig, FunctionConsts::FN_HOURS_FROM_TIME) {}
+  fn_hours_from_time(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_HOURS_FROM_TIME_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:minutes-from-time
 class fn_minutes_from_time : public function
 {
 public:
-  fn_minutes_from_time(const signature& sig) : function(sig, FunctionConsts::FN_MINUTES_FROM_TIME) {}
+  fn_minutes_from_time(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_MINUTES_FROM_TIME_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:seconds-from-time
 class fn_seconds_from_time : public function
 {
 public:
-  fn_seconds_from_time(const signature& sig) : function(sig, FunctionConsts::FN_SECONDS_FROM_TIME) {}
+  fn_seconds_from_time(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_SECONDS_FROM_TIME_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:timezone-from-time
 class fn_timezone_from_time : public function
 {
 public:
-  fn_timezone_from_time(const signature& sig) : function(sig, FunctionConsts::FN_TIMEZONE_FROM_TIME) {}
+  fn_timezone_from_time(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_TIMEZONE_FROM_TIME_1)
+  {
+  }
 
   CODEGEN_DECL();
 };

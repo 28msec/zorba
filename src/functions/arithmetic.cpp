@@ -36,16 +36,22 @@ namespace zorba {
   The actual operations are represented by subclasses of this class, one for
   each operation, e.g., op_add, op_substract, etc. The runtime iterators 
   associated with these functions can handle any acceptable combination of
-  operand types. However, for better performance of numeric operations, the
-  optimizer will try to specialize these functions to other functions that
-  are specific to the type of the arguments. For example:
+  operand types. However, for better performance operations, the optimizer
+  will try to specialize these functions to other functions that are specific
+  to the type of the arguments. For example:
 
   op_add(xs:integer, xs:double) --> op_add_numeric_double(xs:double, xs:double) 
 ********************************************************************************/
 class binary_arith_func : public function 
 {
 public:
-  binary_arith_func (const signature& sig) : function (sig) {}
+  binary_arith_func(const signature& sig) : function(sig) {}
+
+  binary_arith_func(const signature& sig, FunctionConsts::FunctionKind kind)
+    :
+    function(sig, kind)
+  {
+  }
 
   virtual bool isArithmeticFunction() const { return true; }
 
@@ -95,9 +101,33 @@ function* binary_arith_func::specialize(
     
   if (TypeOps::is_numeric(*t0) && TypeOps::is_numeric(*t1)) 
   {
-    function* f1;
-    function* f2;
-    f1 = sctx->lookup_builtin_fn(std::string(":numeric-") + op_name(), 2);
+    function* f1 = NULL;
+    function* f2 = NULL;
+
+    switch (theKind)
+    {
+    case FunctionConsts::OP_ADD_2:
+      f1 = GET_BUILTIN_FUNCTION(OP_NUMERIC_ADD_2);
+      break;
+    case FunctionConsts::OP_SUBTRACT_2:
+      f1 = GET_BUILTIN_FUNCTION(FunctionConsts::OP_NUMERIC_SUBTRACT_2);
+      break;
+    case FunctionConsts::OP_MULTIPLY_2:
+      f1 = GET_BUILTIN_FUNCTION(FunctionConsts::OP_NUMERIC_MULTIPLY_2);
+      break;
+    case FunctionConsts::OP_DIVIDE_2:
+      f1 = GET_BUILTIN_FUNCTION(OP_NUMERIC_DIVIDE_2);
+      break;
+    case FunctionConsts::OP_INTEGER_DIVIDE_2:
+      f1 = GET_BUILTIN_FUNCTION(OP_NUMERIC_INTEGER_DIVIDE_2);
+      break;
+    case FunctionConsts::OP_MOD_2:
+      f1 = GET_BUILTIN_FUNCTION(OP_NUMERIC_MOD_2);
+      break;
+    default:
+      ZORBA_ASSERT(false);
+    }
+
     f2 = f1->specialize(sctx, argTypes);
 
     return f2 == NULL ? f1 : f2;
@@ -113,7 +143,11 @@ function* binary_arith_func::specialize(
 class op_add : public binary_arith_func
 {
 public:
-  op_add(const signature& sig) : binary_arith_func (sig) {}
+  op_add(const signature& sig) 
+    :
+    binary_arith_func(sig, FunctionConsts::OP_ADD_2)
+  {
+  }
 
   const char* op_name() const { return "add"; }
 
@@ -132,7 +166,11 @@ public:
 class op_subtract : public binary_arith_func 
 {
 public:
-  op_subtract(const signature& sig) : binary_arith_func (sig) {}
+  op_subtract(const signature& sig)
+    :
+    binary_arith_func(sig, FunctionConsts::OP_SUBTRACT_2)
+  {
+  }
 
   const char* op_name() const { return "subtract"; }
 
@@ -151,7 +189,11 @@ public:
 class op_multiply : public binary_arith_func
 {
 public:
-  op_multiply(const signature& sig) : binary_arith_func (sig) {}
+  op_multiply(const signature& sig) 
+    :
+    binary_arith_func(sig, FunctionConsts::OP_MULTIPLY_2)
+  {
+  }
 
   const char* op_name() const { return "multiply"; }
 
@@ -170,7 +212,11 @@ public:
 class op_divide : public binary_arith_func
 {
 public:
-  op_divide(const signature& sig) : binary_arith_func (sig) {}
+  op_divide(const signature& sig)
+    :
+    binary_arith_func(sig, FunctionConsts::OP_DIVIDE_2)
+  {
+  }
 
   const char* op_name() const { return "divide"; }
 
@@ -189,7 +235,11 @@ public:
 class op_integer_divide : public binary_arith_func
 {
 public:
-  op_integer_divide(const signature& sig) : binary_arith_func(sig) {}
+  op_integer_divide(const signature& sig) 
+    :
+    binary_arith_func(sig, FunctionConsts::OP_INTEGER_DIVIDE_2)
+  {
+  }
 
   const char* op_name() const { return "integer-divide"; }
 
@@ -208,7 +258,11 @@ public:
 class op_mod : public binary_arith_func
 {
 public:
-	op_mod(const signature& sig) : binary_arith_func(sig) {}
+	op_mod(const signature& sig) 
+    :
+    binary_arith_func(sig, FunctionConsts::OP_MOD_2)
+  {
+  }
 
   const char* op_name() const { return "mod"; }
 
@@ -227,37 +281,37 @@ public:
 void populateContext_Arithmetics(static_context* sctx) 
 {
 DECL(sctx, op_add,
-     (createQName (XQUERY_OP_NS,"fn", ":add"),
+     (createQName (XQUERY_OP_NS,"op", "add"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 DECL(sctx, op_subtract,
-     (createQName (XQUERY_OP_NS,"fn", ":subtract"),
+     (createQName (XQUERY_OP_NS,"op", "subtract"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 DECL(sctx, op_multiply,
-     (createQName (XQUERY_OP_NS,"fn", ":multiply"),
+     (createQName (XQUERY_OP_NS,"op", "multiply"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 DECL(sctx, op_divide,
-     (createQName (XQUERY_OP_NS,"fn", ":divide"),
+     (createQName (XQUERY_OP_NS,"op", "divide"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 DECL(sctx, op_integer_divide,
-     (createQName (XQUERY_OP_NS,"fn", ":integer-divide"),
+     (createQName (XQUERY_OP_NS,"op", "integer-divide"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
 DECL(sctx, op_mod,
-     (createQName (XQUERY_OP_NS,"fn", ":mod"),
+     (createQName (XQUERY_OP_NS,"op", "mod"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));

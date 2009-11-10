@@ -57,10 +57,11 @@ RULE_REWRITE_PRE(ReplaceExprWithConstantOneWhenPossible)
 
   fo_expr* fo = static_cast<fo_expr *>(&*node);
   const function* fn = fo->get_func();
+  FunctionConsts::FunctionKind fkind = fn->getKind();
 
-  if (fn->CHECK_IS_BUILTIN_NAMED("count", 1) ||
-      fn->CHECK_IS_BUILTIN_NAMED("empty", 1) ||
-      fn->CHECK_IS_BUILTIN_NAMED("exists", 1)) 
+  if (fkind == FunctionConsts::FN_COUNT_1 ||
+      fkind == FunctionConsts::FN_EMPTY_1 ||
+      fkind == FunctionConsts::FN_EXISTS_1) 
   {
     expr_t child = fo->get_arg(0, false);
     expr_t nc = get_constant_if_typequant_one(sctx, child);

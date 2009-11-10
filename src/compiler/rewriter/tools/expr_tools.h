@@ -109,7 +109,7 @@ inline expr_t fix_if_annotations(rchandle<if_expr> ite)
 inline bool is_data(expr *e)
 {
   return (e->get_expr_kind() == fo_expr_kind &&
-          static_cast<fo_expr *>(e)->get_func()->CHECK_IS_BUILTIN_NAMED("data", 1));
+          static_cast<fo_expr *>(e)->get_func()->getKind() == FunctionConsts::FN_DATA_1);
 }
 
 

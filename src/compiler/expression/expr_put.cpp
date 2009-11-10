@@ -343,7 +343,7 @@ ostream& if_expr::put( ostream& os) const
 
 ostream& fo_expr::put( ostream& os) const
 {
-  store::Item_t qname = theFunction->get_fname();
+  const store::Item* qname = theFunction->getName();
 
   os << INDENT << qname->getStringValue() << "/" << num_args()
      << expr_addr(this) << " [\n";

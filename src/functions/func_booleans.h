@@ -37,29 +37,44 @@ void populate_context_booleans(static_context* sctx);
 
 
 
+
 //op:is-same-node
 class op_is_same_node : public function
 {
 public:
-  op_is_same_node(const signature& sig) : function(sig, FunctionConsts::FN_IS_SAME_NODE) {}
+  op_is_same_node(const signature& sig)
+    :
+    function(sig, FunctionConsts::OP_IS_SAME_NODE_2)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //op:node-before
 class op_node_before : public function
 {
 public:
-  op_node_before(const signature& sig) : function(sig, FunctionConsts::FN_NODE_BEFORE) {}
+  op_node_before(const signature& sig)
+    :
+    function(sig, FunctionConsts::OP_NODE_BEFORE_2)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //op:node-after
 class op_node_after : public function
 {
 public:
-  op_node_after(const signature& sig) : function(sig, FunctionConsts::FN_NODE_AFTER) {}
+  op_node_after(const signature& sig)
+    :
+    function(sig, FunctionConsts::OP_NODE_AFTER_2)
+  {
+  }
 
   CODEGEN_DECL();
 };

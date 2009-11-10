@@ -202,6 +202,7 @@ void GlobalEnvironment::init(store::Store* store)
   m_globalEnv->m_module_resolver = new StandardModuleURIResolver();
 }
 
+
 // destroy all components that were initialized in init 
 // note: destruction must be done in reverse initialization order
 void GlobalEnvironment::destroy()
@@ -260,10 +261,12 @@ void GlobalEnvironment::destroy()
 
 
 GlobalEnvironment::GlobalEnvironment()
-: m_store(0), 
+  :
+  m_store(0), 
   m_rootStaticContext(0),
   m_compilerSubSys(0)
-{}
+{
+}
 
 
 static_context& GlobalEnvironment::getRootStaticContext()

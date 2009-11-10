@@ -35,18 +35,16 @@ protected:
 public:
   fn_exactly_one_noraise(const signature& sig)
     :
-    function(sig),
+    function(sig, FunctionConsts::OP_EXACTLY_ONE_NORAISE_1),
     theRaiseError(false)
-  {}
+  {
+  }
 
   xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
 
-  PlanIter_t codegen(CompilerCB* cb,
-                     static_context* sctx,
-                     const QueryLoc& loc,
-                     std::vector<PlanIter_t>& argv,
-                     AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
+
 
 class fn_exactly_one : public fn_exactly_one_noraise
 {
@@ -54,8 +52,10 @@ public:
   fn_exactly_one(const signature& sig) : fn_exactly_one_noraise(sig)
   {
     theRaiseError = true;
+    theKind = FunctionConsts::FN_EXACTLY_ONE_1;
   }
 };
+
 
 /*******************************************************************************
   fn:union is implemented as fn:concat wrapped in a sort-distinct-nodes-asc.
@@ -63,13 +63,18 @@ public:
 class fn_union : public function
 {
 public:
-  fn_union(const signature& sig) : function (sig) {}
+  fn_union(const signature& sig)
+    :
+    function(sig, FunctionConsts::OP_UNION_2)
+  {
+  }
 
   ZORBA_PRODUCES_SORTED;
   ZORBA_PRODUCES_DISTINCT;
 
   CODEGEN_DECL();
 };
+
 
 /*******************************************************************************
   For intersect and except, it's always more efficient to sort the output
@@ -84,13 +89,18 @@ public:
 class fn_intersect : public function
 {
 public:
-  fn_intersect(const signature& sig) : function (sig) {}
+  fn_intersect(const signature& sig) 
+    :
+    function(sig, FunctionConsts::OP_INTERSECT_2)
+  {
+  }
 
   ZORBA_PRODUCES_SORTED;
   ZORBA_PRODUCES_DISTINCT;
 
   CODEGEN_DECL();
 };
+
 
 /*******************************************************************************
 
@@ -98,13 +108,18 @@ public:
 class fn_except: public function 
 {
 public:
-  fn_except(const signature& sig) : function (sig) {}
+  fn_except(const signature& sig) 
+    :
+    function(sig, FunctionConsts::OP_EXCEPT_2)
+  {
+  }
 
   ZORBA_PRODUCES_SORTED;
   ZORBA_PRODUCES_DISTINCT;
   
   CODEGEN_DECL();
 };
+
 
 /*******************************************************************************
   15.1.6 fn:distinct-values
@@ -113,7 +128,13 @@ class fn_distinct_values : public single_seq_function
 {
 public:
   fn_distinct_values(const signature& sig)
-    : single_seq_function (sig, FunctionConsts::FN_DISTINCT_VALUES) {}
+    :
+    single_seq_function(sig)
+  {
+    theKind = (sig.arg_count() == 1 ?
+               FunctionConsts::FN_DISTINCT_VALUES_1 :
+               FunctionConsts::FN_DISTINCT_VALUES_2);
+  }
 
   ZORBA_PRODUCES_SORTED;
   ZORBA_PRODUCES_DISTINCT;
@@ -122,15 +143,24 @@ public:
 };
 
 
+/*******************************************************************************
+  15.4.3 fn:max
+********************************************************************************/
 class fn_max : public function
 {
 public:
-  fn_max(const signature& sig) : function (sig) {}
+  fn_max(const signature& sig) : function(sig)
+  {
+    theKind = (sig.arg_count() == 1 ?
+               FunctionConsts::FN_MAX_1 :
+               FunctionConsts::FN_MAX_2);
+  }
 
   ZORBA_PROPAGATES_ONE_I2O(0);
 
   CODEGEN_DECL();
 };
+
 
 /*******************************************************************************
   15.4.4 fn:min
@@ -138,7 +168,12 @@ public:
 class fn_min : public function
 {
 public:
-  fn_min(const signature& sig) : function (sig) {}
+  fn_min(const signature& sig) : function(sig)
+  {
+    theKind = (sig.arg_count() == 1 ?
+               FunctionConsts::FN_MIN_1 :
+               FunctionConsts::FN_MIN_2);
+  }
 
   ZORBA_PROPAGATES_ONE_I2O(0);
 
@@ -147,3 +182,9 @@ public:
 
 } /* namespace zorba */
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

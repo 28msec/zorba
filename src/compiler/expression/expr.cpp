@@ -33,6 +33,8 @@
 #include "types/root_typemanager.h"
 #include "types/typeops.h"
 
+#include "functions/library.h"
+
 #include "compiler/expression/expr.h"
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/var_expr.h"
@@ -512,7 +514,7 @@ if_expr::if_expr(
   {
     fo_expr* boolExpr = new fo_expr(sctxid,
                                     loc,
-                                    sctx->lookup_fn("fn", "boolean", 1),
+                                    GET_BUILTIN_FUNCTION(FN_BOOLEAN_1),
                                     condExpr);
     condExpr = boolExpr;
   }

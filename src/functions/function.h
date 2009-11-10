@@ -83,9 +83,6 @@ bool propagatesInputToOutput(uint32_t aProducer) const { return true; }
 #define ZORBA_PROPAGATES_ONE_I2O( n ) \
 bool propagatesInputToOutput(uint32_t aProducer) const { return n == aProducer; }
 
-#define CHECK_IS_BUILTIN_NAMED(local, arity)   \
-is_builtin_fn_named(local, sizeof(local)-1, arity)
-
 
 /*******************************************************************************
 
@@ -122,19 +119,14 @@ public:
 class function : public SimpleRCObject 
 {
 protected:
-	signature                    sig;
+	signature                    theSignature;
   FunctionConsts::FunctionKind theKind;
   uint32_t                     theFlags;
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(function)
-  SERIALIZABLE_CLASS_CONSTRUCTOR3(function, SimpleRCObject, sig)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    ar & sig;
-    SERIALIZE_ENUM(FunctionConsts::FunctionKind, theKind);
-    ar & theFlags;
-  }
+  SERIALIZABLE_CLASS_CONSTRUCTOR3(function, SimpleRCObject, theSignature)
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
 	function(const signature& sig);
@@ -145,16 +137,13 @@ public:
 
   FunctionConsts::FunctionKind getKind() const { return theKind; }
 
-	// XQuery signature (name+arity)
-	const store::Item_t& get_fname() const { return sig.get_name(); }
+	const store::Item* getName() const { return theSignature.get_name(); }
 
-	void set_signature(signature& _sig) { sig = _sig; }
+	void set_signature(signature& sig) { theSignature = sig; }
 
-  const signature& get_signature() const { return sig; }
+  const signature& get_signature() const { return theSignature; }
 
-  int get_arity() const { return sig.arg_count(); }
-
-  virtual bool is_builtin_fn_named(const char *local, int local_len,int arg_count) const;
+  int get_arity() const { return theSignature.arg_count(); }
 
   virtual xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
 
@@ -226,7 +215,7 @@ public:
 
   virtual FunctionConsts::AnnotationValue producesNodeIdSorted() const;
 
-  virtual void compute_annotation (
+  virtual void compute_annotation(
         AnnotationHolder *,
         std::vector<AnnotationHolder *> &,
         Annotations::Key) const;

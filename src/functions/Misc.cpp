@@ -169,11 +169,11 @@ void populateContext_Debug(static_context* sctx)
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
   DECL(sctx, fn_read_string,
-       (createQName (ZORBA_FN_NS, "fn-zorba", "read-line"),
+       (createQName (ZORBA_OP_NS, "op-zorba", "read-line"),
         GENV_TYPESYSTEM.STRING_TYPE_ONE));
   
   DECL(sctx, fn_print,
-       (createQName (ZORBA_FN_NS, "fn-zorba", "print"),
+       (createQName (ZORBA_OP_NS, "op-zorba", "print"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.EMPTY_TYPE));
 }

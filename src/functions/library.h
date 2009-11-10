@@ -16,19 +16,37 @@
 #ifndef ZORBA_FUNCTION_LIBRARY_H
 #define ZORBA_FUNCTION_LIBRARY_H
 
+#include "functions/function_enum.h"
+
 
 namespace zorba 
 {
 
 class static_context;
+class function;
+
 
 class BuiltinFunctionLibrary 
 {
-private:
   friend class GlobalEnvironment;
 
+public:
+  static function  ** theFunctions;
+
+public:
+  static function* getFunction(FunctionConsts::FunctionKind kind)
+  {
+    return theFunctions[kind];
+  }
+
+private:
   static void populateContext(static_context* sctx);
 };
+
+
+
+#define GET_BUILTIN_FUNCTION(func_code) \
+BuiltinFunctionLibrary::getFunction(FunctionConsts::func_code)
 
 
 }

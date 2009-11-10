@@ -19,6 +19,7 @@
 #include "system/globalenv.h"
 
 #include "functions/function.h"
+#include "functions/library.h"
 
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
@@ -29,9 +30,9 @@
 
 #include "util/properties.h"
 
-#define DEBUG_FN_DECL( fname, cnt )                                     \
-  if (Properties::instance ()->dumpLib ())                              \
-    std::cout << "Bound function " << fname->getStringValue () << "/" << cnt << std::endl;
+#define DEBUG_FN_DECL(fname, cnt)                                     \
+  if (Properties::instance()->dumpLib())                              \
+    std::cout << "Bound function " << fname->getStringValue() << "/" << cnt << std::endl;
 
 #else
 
@@ -40,14 +41,14 @@
 #endif
 
 
-#define DECL(sctx, type, sig)                                           \
-  do {                                                                  \
-    std::auto_ptr<function> type##_ptr(new type(signature sig));        \
-    store::Item_t fname = type##_ptr->get_fname ();                     \
-    unsigned cnt = type##_ptr->get_signature().arg_count();             \
-    DEBUG_FN_DECL (fname, cnt);                                         \
-    sctx->bind_fn(fname, type##_ptr.get(), cnt);                        \
-    type##_ptr.release();                                               \
+#define DECL(sctx, type, sig)                                             \
+  do {                                                                    \
+    std::auto_ptr<function> type##_ptr(new type(signature sig));          \
+    const store::Item* fname = type##_ptr->getName();                     \
+    unsigned cnt = type##_ptr->get_signature().arg_count();               \
+    DEBUG_FN_DECL(fname, cnt);                                            \
+    sctx->bind_fn(fname, type##_ptr.get(), cnt);                          \
+    BuiltinFunctionLibrary::theFunctions[type##_ptr->getKind()] = type##_ptr.release(); \
   } while(0)
 
 

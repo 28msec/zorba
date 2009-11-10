@@ -15,6 +15,7 @@
  */
 
 #include "functions/function.h"
+#include "functions/library.h"
 
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/rewriter/framework/rule_driver.h"
@@ -582,7 +583,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
       refactor_index_pred(rCtx, whereExpr, pvar, pos) &&
       count_variable_uses(flwor, pvar, 2) <= 1) 
   {
-    function* subseq = LOOKUP_FN("fn", "subsequence", 3);
+    function* subseq = GET_BUILTIN_FUNCTION(FN_SUBSEQUENCE_3);
     expr* domainExpr = pvar->get_for_clause()->get_expr();
 
     std::vector<expr_t> args(3);
@@ -635,7 +636,8 @@ static bool refactor_index_pred(
 
   const function* f = fo->get_func();
 
-  if (f != LOOKUP_OP2("equal") && f != LOOKUP_OP2 ("value-equal"))
+  if (f->getKind() != FunctionConsts::OP_EQUAL_2 &&
+      f->getKind() != FunctionConsts::OP_VALUE_EQUAL_2)
     return false;
 
   static_context* sctx = rCtx.getStaticContext(cond);

@@ -31,9 +31,6 @@
 
 namespace zorba {
 
-#define LOOKUP_FN( pfx, local, arity ) (sCtx->lookup_fn (pfx, local, arity))
-
-
 
 /*******************************************************************************
   Return true if the given expr is of the form "fn:collection(arg_expr)" where
@@ -46,7 +43,7 @@ static bool isHoistableCollection(expr* e)
 
   fo_expr* fo = static_cast<fo_expr *>(e);
 
-  if (fo->get_func()->getKind() != FunctionConsts::FN_COLLECTION ||
+  if (fo->get_func()->getKind() != FunctionConsts::FN_COLLECTION_1 ||
       fo->num_args() != 1) 
     return false;
 

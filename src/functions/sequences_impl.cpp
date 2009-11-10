@@ -80,7 +80,9 @@ void op_concatenate::compute_annotation(
 }
 
 
+/*******************************************************************************
 
+********************************************************************************/
 function* fn_sum::specialize(
    static_context* sctx,
    const std::vector<xqtref_t>& argTypes) const
@@ -91,23 +93,33 @@ function* fn_sum::specialize(
 
   if (TypeOps::is_subtype(*argType, *rtm.UNTYPED_ATOMIC_TYPE_STAR))
   {
-    return sctx->lookup_builtin_fn("sum_double", get_arity());
+    return (get_arity() == 1 ?
+            GET_BUILTIN_FUNCTION(FN_SUM_DOUBLE_1) :
+            GET_BUILTIN_FUNCTION(FN_SUM_DOUBLE_2));
   }
   else if (TypeOps::is_subtype(*argType, *rtm.DOUBLE_TYPE_STAR))
   {
-    return sctx->lookup_builtin_fn("sum_double", get_arity());
+    return (get_arity() == 1 ?
+            GET_BUILTIN_FUNCTION(FN_SUM_DOUBLE_1) :
+            GET_BUILTIN_FUNCTION(FN_SUM_DOUBLE_2));
   }
   else if (TypeOps::is_subtype(*argType, *rtm.FLOAT_TYPE_STAR))
   {
-    return sctx->lookup_builtin_fn("sum_foat", get_arity());
+    return (get_arity() == 1 ?
+            GET_BUILTIN_FUNCTION(FN_SUM_FLOAT_1) :
+            GET_BUILTIN_FUNCTION(FN_SUM_FLOAT_2));
   }
   else if (TypeOps::is_subtype(*argType, *rtm.INTEGER_TYPE_STAR))
   {
-    return sctx->lookup_builtin_fn("sum_integer", get_arity());
+    return (get_arity() == 1 ?
+            GET_BUILTIN_FUNCTION(FN_SUM_INTEGER_1) :
+            GET_BUILTIN_FUNCTION(FN_SUM_INTEGER_2));
   }
   else if (TypeOps::is_subtype(*argType, *rtm.DECIMAL_TYPE_STAR))
   {
-    return sctx->lookup_builtin_fn("sum_decimal", get_arity());
+    return (get_arity() == 1 ?
+            GET_BUILTIN_FUNCTION(FN_SUM_DECIMAL_1) :
+            GET_BUILTIN_FUNCTION(FN_SUM_DECIMAL_2));
   }
   else
   {
@@ -115,6 +127,10 @@ function* fn_sum::specialize(
   }
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 xqtref_t fn_exactly_one_noraise::return_type(
     const std::vector<xqtref_t>& arg_types) const
 {
@@ -139,6 +155,10 @@ fn_exactly_one_noraise::codegen(CompilerCB* aCb,
                                   testFlag(FunctionConsts::DoDistinct));
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 PlanIter_t
 fn_union::codegen (
       CompilerCB* /*cb*/,
@@ -172,6 +192,9 @@ PlanIter_t fn_intersect::codegen(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 PlanIter_t
 fn_except::codegen(
       CompilerCB* /*cb*/,
@@ -184,8 +207,11 @@ fn_except::codegen(
   return new HashSemiJoinIterator(sctx, loc, argv, true);
 }
 
-void
-fn_subsequence::compute_annotation(
+
+/*******************************************************************************
+
+********************************************************************************/
+void fn_subsequence::compute_annotation(
     AnnotationHolder* parent,
     std::vector<AnnotationHolder *>& kids,
     Annotations::Key k) const
@@ -244,6 +270,10 @@ fn_subsequence::codegen(
   return new FnSubsequenceIterator(aSctx, aLoc, aArgs);
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 xqtref_t
 fn_zero_or_one::return_type(const std::vector<xqtref_t>& arg_types) const
 {
@@ -267,6 +297,10 @@ fn_zero_or_one::codegen(
                                  testFlag(FunctionConsts::DoDistinct));
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 PlanIter_t
 fn_distinct_values::codegen(CompilerCB* /* cb */,
                    static_context* sctx,
@@ -277,6 +311,10 @@ fn_distinct_values::codegen(CompilerCB* /* cb */,
   return new FnDistinctValuesIterator(sctx, loc, argv);
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 PlanIter_t
 fn_max::codegen(
         CompilerCB* /*cb*/,
@@ -288,6 +326,10 @@ fn_max::codegen(
   return new FnMinMaxIterator(aSctx, aLoc, aArgs, FnMinMaxIterator::MAX);
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 PlanIter_t
 fn_min::codegen(
         CompilerCB* /*cb*/,
@@ -315,22 +357,22 @@ populate_context_sequences_impl(static_context* sctx)
         GENV_TYPESYSTEM.ITEM_TYPE_ONE));
 
   DECL(sctx, fn_exactly_one_noraise,
-       (createQName(XQUERY_FN_NS,"fn",":exactly-one-noraise"),
+       (createQName(ZORBA_OP_NS,"op-zorba","exactly-one-noraise"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
   DECL(sctx, fn_union,
-       (createQName(XQUERY_FN_NS,"fn",":union"),
+       (createQName(XQUERY_OP_NS,"op","union"),
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
   DECL(sctx, fn_intersect,
-       (createQName(XQUERY_FN_NS,"fn",":intersect"),
+       (createQName(XQUERY_OP_NS,"op","intersect"),
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
   DECL(sctx, fn_except,
-       (createQName(XQUERY_FN_NS,"fn",":except"),
+       (createQName(XQUERY_OP_NS,"op","except"),
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 

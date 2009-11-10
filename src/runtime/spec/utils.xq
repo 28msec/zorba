@@ -1,5 +1,7 @@
 module namespace zi = "http://www.zorba-xquery.com/internal/gen";
 
+declare namespace zorba="http://www.zorba-xquery.com";
+
 declare variable $zi:backward_compatible as xs:boolean := true();
 
 declare variable $zi:zorba_version as xs:string := '0x000905';
@@ -53,15 +55,25 @@ declare function zi:add-guard-open($name as xs:string) as xs:string
                       string-join(('#define',$guardName),' ')), $zi:newline)  
 };
 
+
 declare function zi:function-kind($sig) as xs:string
 {
+  let $numParams := count($sig/zorba:param)
+  let $variadic := if ($numParams eq 2 and $sig/zorba:param[2]/text() eq "true")
+                   then fn:true()
+                   else fn:false()
+  return
   upper-case(
     replace(
       fn:concat($sig/@prefix,
                 "_",
                 if (fn:starts-with($sig/@localname, ":"))
                 then fn:substring($sig/@localname, 2)
-                else $sig/@localname),
+                else $sig/@localname,
+                "_",
+                if ($variadic)
+                then "N"
+                else xs:string($numParams)),
       "-", "_")
    )
 };

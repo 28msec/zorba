@@ -40,65 +40,68 @@ END_SERIALIZABLE_CLASS_VERSIONS(function)
 SERIALIZABLE_CLASS_VERSIONS(user_function)
 END_SERIALIZABLE_CLASS_VERSIONS(user_function)
 
+
 /*******************************************************************************
 
 ********************************************************************************/
-function::function(const signature& _sig) 
+function::function(const signature& sig) 
   :
-  sig(_sig),
+  theSignature(sig),
   theKind(FunctionConsts::FN_UNKNOWN),
   theFlags(0)
 {
-  if(get_fname()->getNamespace()->byteEqual(XQUERY_FN_NS, sizeof(XQUERY_FN_NS)-1))
+  if(getName()->getNamespace()->byteEqual(XQUERY_FN_NS, sizeof(XQUERY_FN_NS)-1))
     setFlag(FunctionConsts::hasFnNamespace);
-  zorba::serialization::Archiver &ar = *::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects();
+
+  zorba::serialization::Archiver& ar = *::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects();
+
   if(ar.is_loading_hardcoded_objects())
-  {//register this hardcoded object to help plan serialization
-    function  *this_ptr = this;
+  {
+    //register this hardcoded object to help plan serialization
+    function* this_ptr = this;
     ar & this_ptr;
   }
 }
 
-function::function(const signature& _sig, FunctionConsts::FunctionKind kind) 
+
+function::function(const signature& sig, FunctionConsts::FunctionKind kind) 
   :
-  sig(_sig),
+  theSignature(sig),
   theKind(kind),
   theFlags(0)
 {
-  if(get_fname()->getNamespace()->byteEqual(XQUERY_FN_NS, sizeof(XQUERY_FN_NS)-1))
+  if(getName()->getNamespace()->byteEqual(XQUERY_FN_NS, sizeof(XQUERY_FN_NS)-1))
     setFlag(FunctionConsts::hasFnNamespace);
-  zorba::serialization::Archiver &ar = *::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects();
+
+  zorba::serialization::Archiver& ar = *::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects();
+
   if(ar.is_loading_hardcoded_objects())
-  {//register this hardcoded object to help plan serialization
-    function  *this_ptr = this;
+  {
+    //register this hardcoded object to help plan serialization
+    function* this_ptr = this;
     ar & this_ptr;
   }
 }
 
-bool function::is_builtin_fn_named( 
-                        const char *local, int local_len,
-                        int arg_count) const
+
+void function::serialize(::zorba::serialization::Archiver& ar)
 {
-  const store::Item_t&  my_name = get_fname();
-  if(get_arity() == arg_count &&
-     testFlag(FunctionConsts::hasFnNamespace) &&//my_name->getNamespace()->byteEqual(ns, ns_len)
-     my_name->getLocalName()->byteEqual(local, local_len)
-     )
-    return true;
-  else
-    return false;
+  ar & theSignature;
+  SERIALIZE_ENUM(FunctionConsts::FunctionKind, theKind);
+  ar & theFlags;
 }
+
 
 xqtref_t function::return_type(const std::vector<xqtref_t> &) const 
 {
-  return sig.return_type();
+  return theSignature.return_type();
 }
 
 
 bool function::validate_args(std::vector<PlanIter_t>& argv) const 
 {
-  uint32_t n = sig.arg_count ();
-  return n == VARIADIC_SIG_SIZE || argv.size() == sig.arg_count();
+  uint32_t n = theSignature.arg_count ();
+  return n == VARIADIC_SIG_SIZE || argv.size() == theSignature.arg_count();
 }
 
 
@@ -116,13 +119,13 @@ void function::compute_annotation (
         TSVAnnotationValue::update_annotation (kids [src], k, TSVAnnotationValue::MAYBE_VAL);
     break;
   default: break;
-  }  
+  }
 }
 
 
 FunctionConsts::AnnotationValue function::producesDuplicates() const 
 {
-  xqtref_t rt = sig.return_type ();
+  xqtref_t rt = theSignature.return_type ();
   if (TypeOps::type_max_cnt (*rt) <= 1 || TypeOps::is_builtin_simple (*rt))
     return FunctionConsts::NO;
   return FunctionConsts::YES;
@@ -131,7 +134,7 @@ FunctionConsts::AnnotationValue function::producesDuplicates() const
 
 FunctionConsts::AnnotationValue function::producesNodeIdSorted() const 
 {
-  xqtref_t rt = sig.return_type ();
+  xqtref_t rt = theSignature.return_type ();
   if (TypeOps::type_max_cnt (*rt) <= 1 || TypeOps::is_builtin_simple (*rt))
     return FunctionConsts::YES;
   return FunctionConsts::NO;
@@ -244,7 +247,7 @@ PlanIter_t user_function::get_plan(CompilerCB *ccb) const
       param_map.put((uint64_t)&*m_args[i], &param_iter_vec[i]);
     }
 
-    m_plan = zorba::codegen(get_fname()->getStringValue()->c_str (),
+    m_plan = zorba::codegen(getName()->getStringValue()->c_str (),
                             &*m_expr_body,
                             ccb,
                             &param_map);

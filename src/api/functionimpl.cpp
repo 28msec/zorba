@@ -39,7 +39,7 @@ Item
 FunctionImpl::getFunctionName() const
 {
   try {
-    Item lFunctionName(theFunction->get_fname().getp());
+    Item lFunctionName(theFunction->getName());
     return lFunctionName;
   } catch (error::ZorbaError& e) {
     ZorbaImpl::notifyError(theErrorHandler, e);

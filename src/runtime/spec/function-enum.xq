@@ -7,6 +7,7 @@ import module namespace gen = "http://www.zorba-xquery.com/internal/gen" at "uti
 declare variable $file-list as xs:string external;
 
 let $files as xs:string* := tokenize($file-list,';')
+
 let $funcs := distinct-values(
                 for $sig in for $doc in $files
                             return doc($doc)//zorba:signature
@@ -27,8 +28,9 @@ return
      return concat (
       $gen:indent,
       $func,
-      if ($i < fn:count($funcs)) then ',' else ''
+      ','
      ),
+    '  FN_MAX_FUNC',
     '} FunctionKind;',
     $gen:newline,
     'typedef enum ',

@@ -33,13 +33,26 @@ protected:
   unsigned src;
   
 public:
-  single_seq_function(const signature& sig, FunctionConsts::FunctionKind kind, unsigned src_ = 0)
+  single_seq_function(
+        const signature& sig,
+        unsigned src_ = 0)
     :
-    function (sig, kind),
-    src (src_)
-  {}
+    function(sig),
+    src(src_)
+  {
+  }
 
-  xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
+  single_seq_function(
+        const signature& sig,
+        FunctionConsts::FunctionKind kind,
+        unsigned src_ = 0)
+    :
+    function(sig, kind),
+    src(src_)
+  {
+  }
+
+  xqtref_t return_type (const std::vector<xqtref_t>& arg_types) const;
 
   void compute_annotation(
         AnnotationHolder* parent,
@@ -61,13 +74,26 @@ protected:
   unsigned src;
   
 public:
-  single_seq_opt_function(const signature& sig, FunctionConsts::FunctionKind kind, unsigned src_ = 0) 
+  single_seq_opt_function(
+        const signature& sig,
+        unsigned src_ = 0)
     :
-    function (sig, kind),
-    src (src_)
-  {}
+    function(sig),
+    src(src_)
+  {
+  }
 
-  xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const;
+  single_seq_opt_function(
+        const signature& sig,
+        FunctionConsts::FunctionKind kind,
+        unsigned src_ = 0) 
+    :
+    function(sig, kind),
+    src(src_)
+  {
+  }
+
+  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
 };
 
 }

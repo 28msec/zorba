@@ -31,6 +31,7 @@
 #include "types/casting.h"
 
 #include "functions/function.h"
+#include "functions/library.h"
 
 #include "runtime/util/plan_wrapper_holder.h"
 #include "runtime/base/plan_iterator.h"
@@ -93,7 +94,7 @@ static expr_t execute (
     // loc.setColumnBegin(e.theQueryColumn);
     // store::Item_t qname;
     // ITEM_FACTORY->createQName (qname, "http://www.w3.org/2005/xqt-errors", "err",  error::ZorbaError::toString(lErrorCode).c_str ());
-    // expr_t err_expr = new fo_expr (node->get_sctx_id(), loc, LOOKUP_FN ("fn", "error", 2),
+    // expr_t err_expr = new fo_expr(node->get_sctx_id(), loc, GET_BUILTIN_FUNCTION(FN_ERROR_2),
     //                                new const_expr (node->get_sctx_id(), loc, qname),
     //                                new const_expr (node->get_sctx_id(), loc, e.theDescription));
     // err_expr->put_annotation (AnnotationKey::UNFOLDABLE_OP, TSVAnnotationValue::TRUE_VAL);
@@ -107,10 +108,12 @@ static expr_t execute (
   If any of the subexprs of the given expr E has the given annotation k, then
   set the k annotation on E as well. 
 ********************************************************************************/
-void propagate_any_child_up (expr *node, Annotations::Key k) 
+void propagate_any_child_up(expr* node, Annotations::Key k) 
 {
-  for(expr_iterator i = node->expr_begin(); ! i.done(); ++i) {
-    if ((*i)->get_annotation (k).getp() == TSVAnnotationValue::TRUE_VAL.getp()) {
+  for(expr_iterator i = node->expr_begin(); ! i.done(); ++i) 
+  {
+    if ((*i)->get_annotation (k).getp() == TSVAnnotationValue::TRUE_VAL.getp()) 
+    {
       node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
       break;
     }
@@ -336,7 +339,8 @@ RULE_REWRITE_POST(MarkUnfoldableExprs)
 
 static bool maybe_needs_implicit_timezone(const fo_expr* fo, static_context* sctx) 
 {
-  const function* f = fo->get_func ();
+  const function* f = fo->get_func();
+  FunctionConsts::FunctionKind fkind = f->getKind();
   xqtref_t type0 = (fo->num_args() > 0 ? fo->get_arg(0)->return_type(sctx) : NULL);
   xqtref_t type1 = (fo->num_args() > 1 ? fo->get_arg(1)->return_type(sctx) : NULL);
 
@@ -344,12 +348,12 @@ static bool maybe_needs_implicit_timezone(const fo_expr* fo, static_context* sct
              f->arithmetic_kind() == ArithmeticConsts::SUBTRACTION) &&
             (TypeOps::maybe_date_time(*type0) || TypeOps::maybe_date_time(*type1)))
            ||
-           ((f->CHECK_IS_BUILTIN_NAMED("distinct-values", 1) ||
-             f->CHECK_IS_BUILTIN_NAMED("distinct-values", 2) ||
-             f->CHECK_IS_BUILTIN_NAMED("min", 1) ||
-             f->CHECK_IS_BUILTIN_NAMED("min", 2) ||
-             f->CHECK_IS_BUILTIN_NAMED("max", 1) ||
-             f->CHECK_IS_BUILTIN_NAMED("max", 2))
+           ((fkind == FunctionConsts::FN_DISTINCT_VALUES_1 ||
+             fkind == FunctionConsts::FN_DISTINCT_VALUES_2 ||
+             fkind == FunctionConsts::FN_MIN_1 ||
+             fkind == FunctionConsts::FN_MIN_2 ||
+             fkind == FunctionConsts::FN_MAX_1 ||
+             fkind == FunctionConsts::FN_MAX_2)
             && TypeOps::maybe_date_time(*TypeOps::prime_type(*type0))) );
 }
 
@@ -408,7 +412,7 @@ static bool already_folded (expr_t e, RewriterContext& rCtx)
     return false;
   const fo_expr *fo = e.dyn_cast<fo_expr>().getp ();
 
-  return (fo->get_func()->getKind() == FunctionConsts::FN_CONCATENATE && 
+  return (fo->get_func()->getKind() == FunctionConsts::OP_CONCATENATE_N && 
           fo->num_args() == 0);
 }
 
@@ -441,10 +445,10 @@ RULE_REWRITE_POST(MarkImpureExprs)
   // TODO: update exprs probably non-discardable as well
   case fo_expr_kind: 
   {
-    fo_expr *fo = static_cast<fo_expr *> (node);
-    const function *f = fo->get_func ();
+    fo_expr* fo = static_cast<fo_expr *> (node);
+    const function* f = fo->get_func();
 
-    if (f == LOOKUP_OP2("ctxvar-assign") || f->isFnError())
+    if (f->getKind() == FunctionConsts::OP_VAR_ASSIGN_1 || f->isFnError())
       node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
 
     break;
@@ -552,15 +556,16 @@ RULE_REWRITE_POST(PartialEval)
 }
 
 
-static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr *fo) 
+static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo) 
 {
-  const function *f = fo->get_func ();
+  const function* f = fo->get_func();
+  FunctionConsts::FunctionKind fkind = f->getKind();
 
-  if (f == LOOKUP_OPN ("or"))
+  if (fkind == FunctionConsts::OP_OR_2)
   {
-    return partial_eval_logic (fo, true, rCtx);
+    return partial_eval_logic(fo, true, rCtx);
   }
-  else if (f == LOOKUP_OPN ("and"))
+  else if (fkind == FunctionConsts::OP_AND_2)
   {
     return partial_eval_logic (fo, false, rCtx);
   }
@@ -569,7 +574,7 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr *fo)
   {
     return partial_eval_eq (rCtx, *fo);
   }
-  else if (f->CHECK_IS_BUILTIN_NAMED("count", 1)) 
+  else if (fkind == FunctionConsts::FN_COUNT_1) 
   {
     expr_t arg = fo->get_arg(0, false);
     if (arg->get_annotation(Annotations::NONDISCARDABLE_EXPR) != TSVAnnotationValue::TRUE_VAL) 
@@ -639,8 +644,8 @@ static expr_t partial_eval_logic(
                               *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
     {
       arg = fix_annotations(new fo_expr(fo->get_sctx_id(),
-                                        LOC (fo),
-                                        LOOKUP_FN("fn", "boolean", 1),
+                                        LOC(fo),
+                                        GET_BUILTIN_FUNCTION(FN_BOOLEAN_1),
                                         arg));
     }
 
@@ -659,13 +664,12 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
   int i;
   fo_expr* count_expr = NULL;
   const_expr* val_expr = NULL;
-  //const function *fn_count = LOOKUP_FN ("fn", "count", 1);
   
   for (i = 0; i < 2; i++) 
   {
     if (NULL != (val_expr = dynamic_cast<const_expr*>(fo.get_arg(i, false))) &&
         NULL != (count_expr = dynamic_cast<fo_expr*>(fo.get_arg(1-i, false))) &&
-        count_expr->get_func()->CHECK_IS_BUILTIN_NAMED("count", 1))
+        count_expr->get_func()->getKind() == FunctionConsts::FN_COUNT_1)
       break;
   }
 
@@ -689,13 +693,14 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
     else if (ival == zero)
     {
       return fix_annotations(new fo_expr(fo.get_sctx_id(), fo.get_loc(),
-                                         LOOKUP_FN("fn", "empty", 1),
+                                         GET_BUILTIN_FUNCTION(FN_EMPTY_1),
                                          count_expr->get_arg(0, false)));
     }
     else if (ival == xqp_integer::parseInt(1))
     {
-      return fix_annotations(new fo_expr(fo.get_sctx_id(), fo.get_loc(),
-                                         LOOKUP_OP1 ("exactly-one-noraise"),
+      return fix_annotations(new fo_expr(fo.get_sctx_id(),
+                                         fo.get_loc(),
+                                         GET_BUILTIN_FUNCTION(OP_EXACTLY_ONE_NORAISE_1),
                                          count_expr->get_arg(0, false)));
     }
     else 
@@ -714,12 +719,12 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
       expr_t subseq_expr = fix_annotations(
                            new fo_expr(count_expr->get_sctx_id(),
                                        LOC (count_expr),
-                                       LOOKUP_FN("fn", "subsequence", 3),
+                                       GET_BUILTIN_FUNCTION(FN_SUBSEQUENCE_3),
                                        args));
 
       return fix_annotations(new fo_expr(fo.get_sctx_id(),
-                                         fo.get_loc (),
-                                         LOOKUP_OP1 ("exactly-one-noraise"),
+                                         fo.get_loc(),
+                                         GET_BUILTIN_FUNCTION(OP_EXACTLY_ONE_NORAISE_1),
                                          subseq_expr));
     }
   }

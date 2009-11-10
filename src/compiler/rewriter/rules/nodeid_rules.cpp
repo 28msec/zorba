@@ -77,9 +77,8 @@ static void mark_for_vars_ignoring_sort(flwor_expr* flwor)
 
     const for_clause* fc = static_cast<const for_clause *>(&c);
 
-    var_expr* var = fc->get_var();
     const var_expr* pos_var = fc->get_pos_var();
-    assert(var->get_kind() == var_expr::for_var); 
+    assert(pos_var == NULL || pos_var->get_kind() == var_expr::pos_var); 
 
     TSVAnnotationValue::update_annotation(fc->get_expr(),
                                           k,
@@ -254,13 +253,15 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
     fo_expr* fo = static_cast<fo_expr *>(node);
     function* f = fo->get_func(false);
 
-    if (f->CHECK_IS_BUILTIN_NAMED("empty", 1)
-        || f->CHECK_IS_BUILTIN_NAMED("exists", 1)
-        || f->CHECK_IS_BUILTIN_NAMED("max", 1)
-        || f->CHECK_IS_BUILTIN_NAMED("max", 2)
-        || f->CHECK_IS_BUILTIN_NAMED("min", 1)
-        || f->CHECK_IS_BUILTIN_NAMED("min", 2)
-        || f->CHECK_IS_BUILTIN_NAMED("boolean", 1))
+    FunctionConsts::FunctionKind fkind = f->getKind();
+
+    if (fkind == FunctionConsts::FN_EMPTY_1 ||
+        fkind == FunctionConsts::FN_EXISTS_1 ||
+        fkind == FunctionConsts::FN_MAX_1 ||
+        fkind == FunctionConsts::FN_MAX_2 ||
+        fkind == FunctionConsts::FN_MIN_1 ||
+        fkind == FunctionConsts::FN_MIN_2 ||
+        fkind == FunctionConsts::FN_BOOLEAN_1)
     {
       expr_t arg = fo->get_arg(0, false);
       TSVAnnotationValue::update_annotation(arg,
@@ -270,8 +271,8 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
                                             Annotations::IGNORES_DUP_NODES,
                                             TSVAnnotationValue::TRUE_VAL);
     }
-    else if (f->CHECK_IS_BUILTIN_NAMED("zero-or-one", 1) ||
-             f->CHECK_IS_BUILTIN_NAMED("exactly-one", 1))
+    else if (fkind == FunctionConsts::FN_ZERO_OR_ONE_1 ||
+             fkind == FunctionConsts::FN_EXACTLY_ONE_1)
     {
       // If these functions are over a duplicate elimination function, the 
       // duplicate elimination is pulled up into the runtime iterators for
@@ -299,12 +300,12 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
                                             Annotations::IGNORES_SORTED_NODES,
                                             TSVAnnotationValue::TRUE_VAL);
     }
-    else if (f->CHECK_IS_BUILTIN_NAMED("unordered", 1) ||
-             f->CHECK_IS_BUILTIN_NAMED("count", 1) ||
-             f->CHECK_IS_BUILTIN_NAMED("sum", 1) ||
-             f->CHECK_IS_BUILTIN_NAMED("sum", 2) ||
-             f->CHECK_IS_BUILTIN_NAMED("avg", 1) ||
-             f == LOOKUP_OP1 ("exactly-one-noraise"))
+    else if (fkind == FunctionConsts::FN_UNORDERED_1 ||
+             fkind == FunctionConsts::FN_COUNT_1 ||
+             fkind == FunctionConsts::FN_SUM_1 ||
+             fkind == FunctionConsts::FN_SUM_2 ||
+             fkind == FunctionConsts::FN_AVG_1 ||
+             fkind == FunctionConsts::OP_EXACTLY_ONE_NORAISE_1)
     {
       expr_t arg = fo->get_arg(0, false);
       TSVAnnotationValue::update_annotation(arg,
@@ -314,9 +315,9 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
                                             Annotations::IGNORES_DUP_NODES,
                                             TSVAnnotationValue::FALSE_VAL);
     }
-    else if (f == LOOKUP_OP2 ("union")
-             || f == LOOKUP_OP2 ("intersect")
-             || f == LOOKUP_OP2 ("except"))
+    else if (fkind == FunctionConsts::OP_UNION_2 ||
+             fkind == FunctionConsts::OP_INTERSECT_2 ||
+             fkind == FunctionConsts::OP_EXCEPT_2)
     {
       // Union, intersect and except CAN use sorted inputs, but do not require
       // them. For intersect and except, it's ALWAYS more efficient to sort
@@ -459,7 +460,7 @@ RULE_REWRITE_PRE(EliminateNodeOps)
   {
     const function* f = fo->get_func();
 
-    if (f->CHECK_IS_BUILTIN_NAMED("unordered", 1))
+    if (f->getKind() == FunctionConsts::FN_UNORDERED_1)
       return fo->get_arg(0, true);
 
     const op_node_sort_distinct* nsdf = dynamic_cast<const op_node_sort_distinct *> (f);
@@ -476,7 +477,7 @@ RULE_REWRITE_PRE(EliminateNodeOps)
       else 
       {
         // re-compute IGNORES_*
-        fo->set_func(LOOKUP_FN ("fn", "reverse", 1)); // HACK: need fn:identity here
+        fo->set_func(GET_BUILTIN_FUNCTION(FN_REVERSE_1)); // HACK: need fn:identity here
         std::auto_ptr<Rewriter> rw(new SingletonRuleMajorDriverBase(rule_ptr_t(new MarkConsumerNodeProps())));
         rw->rewrite(rCtx);
         return fo->get_arg(0, true);

@@ -23,13 +23,16 @@
 #include "util/hashmap.h"
 #undef ZORBA_HASHMAP_WITH_SERIALIZATION
 
-namespace zorba {
+namespace zorba 
+{
 
-  class expr; class var_expr;
-  class function;
-	class XQType;
-  class ExternalModule;
-  class ValueIndex;
+class expr;
+class var_expr;
+class function;
+class XQType;
+class ExternalModule;
+class ValueIndex;
+class QueryLoc;
 
 
 /*******************************************************************************
@@ -37,23 +40,27 @@ namespace zorba {
 ********************************************************************************/
 class ZORBA_DLL_PUBLIC context : public SimpleRCObject
 {
+protected:
+
+  enum ctx_value_type 
+  {
+    CTX_EXPR, CTX_FUNCTION, CTX_ARITY, CTX_INT, CTX_BOOL, CTX_XQTYPE, CTX_MODULE
+  };
+
 public:
+
   // Used for mapping (function name, arity) to function object. The function
   // name is used first to probe the keymap, and the arity is used to probe
   // the ArityFMap that is returned by the 1st probe.
   typedef std::map<int, rchandle<function> > ArityFMap;
-protected:
 
-  enum ctx_value_type 
-    {
-      CTX_EXPR, CTX_FUNCTION, CTX_ARITY, CTX_INT, CTX_BOOL, CTX_XQTYPE, CTX_MODULE
-    };
 
-public:
   struct ctx_value_t : public ::zorba::serialization::SerializeBaseClass
   {
     enum ctx_value_type type;
-    union { 
+
+    union 
+    { 
       expr             * exprValue;
       function         * functionValue;
       ArityFMap        * fmapValue; 
@@ -65,24 +72,32 @@ public:
   public:
     SERIALIZABLE_CLASS(ctx_value_t)
     SERIALIZABLE_CLASS_CONSTRUCTOR(ctx_value_t)
+    void serialize(::zorba::serialization::Archiver& ar);
 
-    void serialize(::zorba::serialization::Archiver &ar);
-    ctx_value_t(enum ctx_value_type type = (enum ctx_value_type)-1) {this->type = type;}
+    ctx_value_t(enum ctx_value_type type = (enum ctx_value_type)-1) 
+    {
+      this->type = type;
+    }
+
     virtual ~ctx_value_t() {}
   };
 
+
   struct ctx_module_t : public ::zorba::serialization::SerializeBaseClass
   {
-    ExternalModule* module;
-    bool            dyn_loaded_module;
+    ExternalModule * module;
+    bool             dyn_loaded_module;
+
   public:
     SERIALIZABLE_CLASS(ctx_module_t)
     SERIALIZABLE_CLASS_CONSTRUCTOR(ctx_module_t)
-
     void serialize(::zorba::serialization::Archiver &ar);
+
     ctx_module_t() : module(0), dyn_loaded_module(false) {}
+
     virtual ~ctx_module_t() {}
   };
+
 
   typedef xqp_string (* str_param_t) ();
   
@@ -93,78 +108,44 @@ protected:
 	serializable_hashmap<xqp_string>    str_keymap; // maps strings to strings
   checked_vector<std::string>         module_paths; // sequence of locations
 
-  xqpString                           default_function_namespace_internal;
+  xqpStringStore_t                    theDefaultFunctionNamespace;
 
 public:
   SERIALIZABLE_CLASS(context)
-  context(::zorba::serialization::Archiver &ar) : SimpleRCObject(ar), keymap(ar), str_keymap(ar) {}
-  void serialize(::zorba::serialization::Archiver &ar)
+  context(::zorba::serialization::Archiver& ar)
+    :
+    SimpleRCObject(ar),
+    keymap(ar),
+    str_keymap(ar)
   {
-    //serialize_baseclass(ar, (SimpleRCObject*)this);
-    if(ar.is_serializing_out())
-    {
-      ar.set_is_temp_field_one_level(true);
-      bool  parent_is_root = check_parent_is_root();//(
-      ar & parent_is_root;
-      ar.set_is_temp_field_one_level(false);
-      if(!parent_is_root)
-      {
-        ar & parent;
-      }
-      else
-      {
-      //  context *fooctx = NULL;
-      //  ar & fooctx;
-      }
-    }
-    else
-    {
-      //in serialization
-      ar.set_is_temp_field_one_level(true);
-      bool  parent_is_root;
-      ar & parent_is_root;
-      ar.set_is_temp_field_one_level(false);
-      if(parent_is_root)
-      {
-        set_parent_as_root();
-      }
-      else
-        ar & parent;
-      if(parent)
-        parent->addReference(parent->getSharedRefCounter() SYNC_PARAM2(parent->getRCLock()));
-    }
-    ar & keymap;
-    ar & modulemap;
-    ar & str_keymap;
-    ar & module_paths;
-    ar & default_function_namespace_internal;
   }
+
+  void serialize(::zorba::serialization::Archiver& ar);
+
 public:
-  context (context *_parent = NULL) : parent (_parent) {}
+  context(context *_parent = NULL) : parent (_parent) {}
 
-	context *get_parent() const { return parent; }
+	context* get_parent() const { return parent; }
 
-  void
-  set_module_paths(const std::vector<std::string>& aModulePaths);
+  void set_module_paths(const std::vector<std::string>& aModulePaths);
 
-  void
-  get_module_paths(std::vector<std::string>& aModulePaths) const;
+  void get_module_paths(std::vector<std::string>& aModulePaths) const;
 
-  void
-  get_full_module_paths(std::vector<std::string>& aFullModulePaths) const;
+  void get_full_module_paths(std::vector<std::string>& aFullModulePaths) const;
 
-  xqp_string default_function_namespace() const;
-	void set_default_function_namespace(xqp_string);
+  xqpStringStore* default_function_ns() const;
+
+	void set_default_function_ns(const char* ns, const QueryLoc* loc = NULL);
 
 protected:
-  bool lookup_once (xqp_string key, xqp_string& val) const
+  bool lookup_once(xqp_string key, xqp_string& val) const
   { 
-    return str_keymap.get (key, val); 
+    return str_keymap.get(key, val); 
   }
 
-  bool lookup_once2 (const char *key1, xqp_string key2, xqp_string& val) const
+  bool lookup_once2(const char* key1, xqp_string key2, xqp_string& val) const
   {
-    return str_keymap.get2 (key1, key2, val); 
+    return str_keymap.get2(key1, key2, val); 
   }
 
   bool lookup_once (xqp_string key, ctx_value_t &val) const
@@ -256,7 +237,6 @@ protected:
   //serialization helpers
   bool check_parent_is_root();
   void set_parent_as_root();
-
 };
 
 

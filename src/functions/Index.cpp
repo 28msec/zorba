@@ -43,7 +43,7 @@ class FunctionCreateInternalIndex : public function
 public:
   FunctionCreateInternalIndex(const signature& sig) 
     :
-    function(sig, FunctionConsts::OP_CREATE_INTERNAL_INDEX)
+    function(sig, FunctionConsts::OP_CREATE_INTERNAL_INDEX_1)
   {
   }
 
@@ -92,7 +92,7 @@ class FunctionCreateIndex : public function
 public:
   FunctionCreateIndex(const signature& sig) 
     :
-    function(sig, FunctionConsts::FN_CREATE_INDEX)
+    function(sig, FunctionConsts::FN_CREATE_INDEX_1)
   { 
   }
 
@@ -117,7 +117,7 @@ class FunctionDropIndex : public function
 public:
   FunctionDropIndex(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_DROP_INDEX)
+    function(sig, FunctionConsts::FN_DROP_INDEX_1)
   {
   }
 
@@ -142,7 +142,7 @@ class FunctionRefreshIndex : public function
 public:
   FunctionRefreshIndex(const signature& sig) 
     :
-    function(sig, FunctionConsts::FN_REFRESH_INDEX)
+    function(sig, FunctionConsts::FN_REFRESH_INDEX_1)
   {
   }
 
@@ -190,7 +190,7 @@ class FunctionProbeIndexPoint : public function
 public:
   FunctionProbeIndexPoint(const signature& sig) 
     :
-    function(sig, FunctionConsts::FN_INDEX_PROBE_POINT)
+    function(sig, FunctionConsts::FN_INDEX_PROBE_POINT_N)
   {
   }
 
@@ -221,7 +221,7 @@ class FunctionProbeIndexRange : public function
 public:
   FunctionProbeIndexRange(const signature& sig) 
     :
-    function(sig, FunctionConsts::FN_INDEX_PROBE_RANGE)
+    function(sig, FunctionConsts::FN_INDEX_PROBE_RANGE_N)
   {
   }
 

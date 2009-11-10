@@ -37,11 +37,16 @@ void populate_context_fnput(static_context* sctx);
 
 
 
+
 //fn:put
 class fn_put : public function
 {
 public:
-  fn_put(const signature& sig) : function(sig, FunctionConsts::FN_PUT) {}
+  fn_put(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_PUT_2)
+  {
+  }
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 

@@ -57,6 +57,8 @@
 namespace zorba 
 {
 
+function**  BuiltinFunctionLibrary::theFunctions = NULL;
+
 // clear static initializer state
 
 // dummy function to tell the windows linker to keep the library.obj
@@ -70,6 +72,8 @@ void BuiltinFunctionLibrary::populateContext(static_context* sctx)
 {
   zorba::serialization::Archiver& ar = *::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects();
   ar.set_loading_hardcoded_objects(true);
+
+  theFunctions = new function*[FunctionConsts::FN_MAX_FUNC];
 
   populate_context_accessors(sctx);
   populate_context_accessors_impl(sctx);

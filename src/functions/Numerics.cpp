@@ -31,6 +31,26 @@ namespace zorba
 {
 
 
+#define SPECIALIZE_NUMERIC_ARITH_FUNCTION(kind, type)             \
+  switch (kind)                                                   \
+  {                                                               \
+  case FunctionConsts::OP_NUMERIC_ADD_2:                          \
+    return GET_BUILTIN_FUNCTION(OP_NUMERIC_ADD_##type##_2);       \
+                                                                  \
+  case FunctionConsts::OP_NUMERIC_SUBTRACT_2:                     \
+    return GET_BUILTIN_FUNCTION(OP_NUMERIC_SUBTRACT_##type##_2);  \
+                                                                  \
+ case FunctionConsts::OP_NUMERIC_MULTIPLY_2:                      \
+   return GET_BUILTIN_FUNCTION(OP_NUMERIC_MULTIPLY_##type##_2);   \
+                                                                  \
+ case FunctionConsts::OP_NUMERIC_DIVIDE_2:                        \
+   return GET_BUILTIN_FUNCTION(OP_NUMERIC_DIVIDE_##type##_2);     \
+                                                                  \
+ default:                                                         \
+   ZORBA_ASSERT(false);                                           \
+}
+
+
 #define CODEGEN_SPECIFIC_NUMERIC(op, t)                                    \
 PlanIter_t codegen(                                                        \
     CompilerCB*,                                                           \
@@ -43,54 +63,6 @@ PlanIter_t codegen(                                                        \
 }
 
 
-
-
-static function* specialize_numeric(
-    static_context* sctx,
-    const std::vector<xqtref_t>& argTypes,
-    const char* op) 
-{
-  xqtref_t t0 = argTypes[0];
-  xqtref_t t1 = argTypes[1];
-  std::ostringstream oss;
-
-  oss << ":" "numeric-" << op << "-";
-
-  if (t0->type_kind() == XQType::ATOMIC_TYPE_KIND &&
-      t1->type_kind() == XQType::ATOMIC_TYPE_KIND)
-  {
-    TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
-    TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
-    
-    if (tc0 == tc1)
-    {
-      switch(tc0) 
-      {
-      case TypeConstants::XS_DOUBLE:
-        oss << "double";
-        return sctx->lookup_builtin_fn (oss.str (), 2);
-        
-      case TypeConstants::XS_DECIMAL:
-        oss << "decimal";
-        return sctx->lookup_builtin_fn (oss.str (), 2);
-        
-      case TypeConstants::XS_FLOAT:
-        oss << "float";
-        return sctx->lookup_builtin_fn (oss.str (), 2);
-        
-      case TypeConstants::XS_INTEGER:
-        oss << "integer";
-        return sctx->lookup_builtin_fn (oss.str (), 2);
-        
-      default:
-        return NULL;
-      }
-    }
-  }
-  return NULL;
-}
-
-
 /*******************************************************************************
   Common base class for all functions and operators that work with 2 numeric
   operands.
@@ -98,7 +70,11 @@ static function* specialize_numeric(
 class bin_num_arith_func : public function 
 {
 public:
-  bin_num_arith_func(const signature& sig) : function (sig) {}
+  bin_num_arith_func(const signature& sig, FunctionConsts::FunctionKind kind) 
+    :
+    function(sig, kind)
+  {
+  }
 
   bool isArithmeticFunction() const { return true; }
 
@@ -117,23 +93,56 @@ public:
 class specializable_bin_num_arith_func : public bin_num_arith_func 
 {
 public:
-  specializable_bin_num_arith_func(const signature& sig)
+  specializable_bin_num_arith_func(
+        const signature& sig,
+        FunctionConsts::FunctionKind kind)
     :
-    bin_num_arith_func (sig)
+    bin_num_arith_func(sig, kind)
   {
   }
 
-  virtual const char* op_name() const = 0;
+  bool specializable() const { return true; }
 
-  virtual bool specializable() const { return true; }
-
-  function* specialize(
-        static_context* sctx,
-        const std::vector<xqtref_t>& argTypes) const 
-  {
-    return specialize_numeric(sctx, argTypes, op_name());
-  }
+  function* specialize(static_context*, const std::vector<xqtref_t>&) const;
 };
+
+
+function* specializable_bin_num_arith_func::specialize(
+    static_context* sctx,
+    const std::vector<xqtref_t>& argTypes) const 
+{
+  xqtref_t t0 = argTypes[0];
+  xqtref_t t1 = argTypes[1];
+
+  if (t0->type_kind() == XQType::ATOMIC_TYPE_KIND &&
+      t1->type_kind() == XQType::ATOMIC_TYPE_KIND)
+  {
+    TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
+    TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
+    
+    if (tc0 == tc1)
+    {
+      switch(tc0) 
+      {
+      case TypeConstants::XS_DOUBLE:
+        SPECIALIZE_NUMERIC_ARITH_FUNCTION(theKind, DOUBLE);
+        break;
+      case TypeConstants::XS_DECIMAL:
+        SPECIALIZE_NUMERIC_ARITH_FUNCTION(theKind, DECIMAL);
+        break;
+      case TypeConstants::XS_FLOAT:
+        SPECIALIZE_NUMERIC_ARITH_FUNCTION(theKind, FLOAT);
+        break;
+      case TypeConstants::XS_INTEGER:
+        SPECIALIZE_NUMERIC_ARITH_FUNCTION(theKind, INTEGER);
+        break;
+      default:
+        return NULL;
+      }
+    }
+  }
+  return NULL;
+}
 
 
 /*******************************************************************************
@@ -154,9 +163,11 @@ public:
 class op_numeric_add : public specializable_bin_num_arith_func
 {
 public:
-  op_numeric_add(const signature& sig) : specializable_bin_num_arith_func(sig) {};
-
-  const char* op_name() const { return "add"; }
+  op_numeric_add(const signature& sig)
+    :
+    specializable_bin_num_arith_func(sig, FunctionConsts::OP_NUMERIC_ADD_2)
+  {
+  };
 
   ArithmeticConsts::OperationKind arithmetic_kind() const 
   {
@@ -167,11 +178,13 @@ public:
 };
 
 
-template<TypeConstants::atomic_type_code_t t>
+template<TypeConstants::atomic_type_code_t t, FunctionConsts::FunctionKind k>
 class op_numeric_add_specific : public bin_num_arith_func
 {
 public:
-  op_numeric_add_specific(const signature& sig) : bin_num_arith_func(sig) {};
+  op_numeric_add_specific(const signature& sig) : bin_num_arith_func(sig, k)
+  {
+  }
 
   ArithmeticConsts::OperationKind arithmetic_kind() const 
   {
@@ -182,10 +195,28 @@ public:
 };
 
 
-typedef op_numeric_add_specific<TypeConstants::XS_DOUBLE> op_numeric_add_double;
-typedef op_numeric_add_specific<TypeConstants::XS_FLOAT> op_numeric_add_float;
-typedef op_numeric_add_specific<TypeConstants::XS_DECIMAL> op_numeric_add_decimal;
-typedef op_numeric_add_specific<TypeConstants::XS_INTEGER> op_numeric_add_integer;
+typedef 
+op_numeric_add_specific<TypeConstants::XS_DOUBLE,
+                        FunctionConsts::OP_NUMERIC_ADD_DOUBLE_2> 
+op_numeric_add_double;
+
+
+typedef 
+op_numeric_add_specific<TypeConstants::XS_FLOAT,
+                        FunctionConsts::OP_NUMERIC_ADD_FLOAT_2> 
+op_numeric_add_float;
+
+
+typedef 
+op_numeric_add_specific<TypeConstants::XS_DECIMAL,
+                        FunctionConsts::OP_NUMERIC_ADD_DECIMAL_2> 
+op_numeric_add_decimal;
+
+
+typedef 
+op_numeric_add_specific<TypeConstants::XS_INTEGER,
+                        FunctionConsts::OP_NUMERIC_ADD_INTEGER_2> 
+op_numeric_add_integer;
 
 
 /*******************************************************************************
@@ -206,9 +237,11 @@ typedef op_numeric_add_specific<TypeConstants::XS_INTEGER> op_numeric_add_intege
 class op_numeric_subtract : public specializable_bin_num_arith_func
 {
 public:
-  op_numeric_subtract(const signature& sig) : specializable_bin_num_arith_func(sig) {};
-
-  const char* op_name() const { return "subtract"; }
+  op_numeric_subtract(const signature& sig) 
+    :
+    specializable_bin_num_arith_func(sig, FunctionConsts::OP_NUMERIC_SUBTRACT_2)
+  {
+  };
 
   ArithmeticConsts::OperationKind arithmetic_kind() const 
   {
@@ -219,11 +252,13 @@ public:
 };
 
 
-template<TypeConstants::atomic_type_code_t t>
+template<TypeConstants::atomic_type_code_t t, FunctionConsts::FunctionKind k>
 class op_numeric_subtract_specific : public bin_num_arith_func
 {
 public:
-  op_numeric_subtract_specific(const signature& sig) : bin_num_arith_func(sig) {};
+  op_numeric_subtract_specific(const signature& sig) : bin_num_arith_func(sig, k)
+  {
+  }
 
   ArithmeticConsts::OperationKind arithmetic_kind() const 
   {
@@ -234,10 +269,28 @@ public:
 };
 
 
-typedef op_numeric_subtract_specific<TypeConstants::XS_DOUBLE> op_numeric_subtract_double;
-typedef op_numeric_subtract_specific<TypeConstants::XS_FLOAT> op_numeric_subtract_float;
-typedef op_numeric_subtract_specific<TypeConstants::XS_DECIMAL> op_numeric_subtract_decimal;
-typedef op_numeric_subtract_specific<TypeConstants::XS_INTEGER> op_numeric_subtract_integer;
+typedef 
+op_numeric_subtract_specific<TypeConstants::XS_DOUBLE,
+                             FunctionConsts::OP_NUMERIC_SUBTRACT_DOUBLE_2> 
+op_numeric_subtract_double;
+
+
+typedef 
+op_numeric_subtract_specific<TypeConstants::XS_FLOAT,
+                             FunctionConsts::OP_NUMERIC_SUBTRACT_FLOAT_2> 
+op_numeric_subtract_float;
+
+
+typedef 
+op_numeric_subtract_specific<TypeConstants::XS_DECIMAL,
+                             FunctionConsts::OP_NUMERIC_SUBTRACT_DECIMAL_2> 
+op_numeric_subtract_decimal;
+
+
+typedef 
+op_numeric_subtract_specific<TypeConstants::XS_INTEGER,
+                             FunctionConsts::OP_NUMERIC_SUBTRACT_INTEGER_2> 
+op_numeric_subtract_integer;
 
 
 /*******************************************************************************
@@ -257,9 +310,11 @@ typedef op_numeric_subtract_specific<TypeConstants::XS_INTEGER> op_numeric_subtr
 class op_numeric_multiply : public specializable_bin_num_arith_func
 {
 public:
-  op_numeric_multiply(const signature& sig) : specializable_bin_num_arith_func(sig) {};
-
-  const char* op_name() const { return "multiply"; }
+  op_numeric_multiply(const signature& sig) 
+    :
+    specializable_bin_num_arith_func(sig, FunctionConsts::OP_NUMERIC_MULTIPLY_2)
+  {
+  };
 
   ArithmeticConsts::OperationKind arithmetic_kind() const 
   {
@@ -270,11 +325,13 @@ public:
 };
 
 
-template<TypeConstants::atomic_type_code_t t>
+template<TypeConstants::atomic_type_code_t t, FunctionConsts::FunctionKind k>
 class op_numeric_multiply_specific : public bin_num_arith_func
 {
 public:
-  op_numeric_multiply_specific(const signature& sig) : bin_num_arith_func(sig) {};
+  op_numeric_multiply_specific(const signature& sig) : bin_num_arith_func(sig, k)
+  {
+  };
 
   ArithmeticConsts::OperationKind arithmetic_kind() const 
   {
@@ -285,10 +342,28 @@ public:
 };
 
 
-typedef op_numeric_multiply_specific<TypeConstants::XS_DOUBLE> op_numeric_multiply_double;
-typedef op_numeric_multiply_specific<TypeConstants::XS_FLOAT> op_numeric_multiply_float;
-typedef op_numeric_multiply_specific<TypeConstants::XS_DECIMAL> op_numeric_multiply_decimal;
-typedef op_numeric_multiply_specific<TypeConstants::XS_INTEGER> op_numeric_multiply_integer;
+typedef
+op_numeric_multiply_specific<TypeConstants::XS_DOUBLE,
+                             FunctionConsts::OP_NUMERIC_MULTIPLY_DOUBLE_2>
+op_numeric_multiply_double;
+
+
+typedef
+op_numeric_multiply_specific<TypeConstants::XS_FLOAT,
+                             FunctionConsts::OP_NUMERIC_MULTIPLY_FLOAT_2>
+op_numeric_multiply_float;
+
+
+typedef 
+op_numeric_multiply_specific<TypeConstants::XS_DECIMAL, 
+                             FunctionConsts::OP_NUMERIC_MULTIPLY_DECIMAL_2>
+op_numeric_multiply_decimal;
+
+
+typedef 
+op_numeric_multiply_specific<TypeConstants::XS_INTEGER,
+                             FunctionConsts::OP_NUMERIC_MULTIPLY_INTEGER_2>
+op_numeric_multiply_integer;
 
 
 /*******************************************************************************
@@ -317,9 +392,11 @@ typedef op_numeric_multiply_specific<TypeConstants::XS_INTEGER> op_numeric_multi
 class op_numeric_divide : public specializable_bin_num_arith_func
 {
 public:
-  op_numeric_divide(const signature& sig) : specializable_bin_num_arith_func(sig) {};
-
-  const char* op_name() const { return "divide"; }
+  op_numeric_divide(const signature& sig) 
+    :
+    specializable_bin_num_arith_func(sig, FunctionConsts::OP_NUMERIC_DIVIDE_2)
+  {
+  }
 
   ArithmeticConsts::OperationKind arithmetic_kind() const 
   {
@@ -330,11 +407,13 @@ public:
 };
 
 
-template<TypeConstants::atomic_type_code_t t>
+template<TypeConstants::atomic_type_code_t t, FunctionConsts::FunctionKind k>
 class op_numeric_divide_specific : public bin_num_arith_func
 {
 public:
-  op_numeric_divide_specific(const signature& sig) : bin_num_arith_func(sig) {};
+  op_numeric_divide_specific(const signature& sig) : bin_num_arith_func(sig, k)
+  {
+  }
 
   ArithmeticConsts::OperationKind arithmetic_kind() const 
   {
@@ -345,10 +424,28 @@ public:
 };
 
 
-typedef op_numeric_divide_specific<TypeConstants::XS_DOUBLE> op_numeric_divide_double;
-typedef op_numeric_divide_specific<TypeConstants::XS_FLOAT> op_numeric_divide_float;
-typedef op_numeric_divide_specific<TypeConstants::XS_DECIMAL> op_numeric_divide_decimal;
-typedef op_numeric_divide_specific<TypeConstants::XS_INTEGER> op_numeric_divide_integer;
+typedef
+op_numeric_divide_specific<TypeConstants::XS_DOUBLE,
+                           FunctionConsts::OP_NUMERIC_DIVIDE_DOUBLE_2>
+op_numeric_divide_double;
+
+
+typedef
+op_numeric_divide_specific<TypeConstants::XS_FLOAT,
+                           FunctionConsts::OP_NUMERIC_DIVIDE_FLOAT_2>
+op_numeric_divide_float;
+
+
+typedef 
+op_numeric_divide_specific<TypeConstants::XS_DECIMAL,
+                           FunctionConsts::OP_NUMERIC_DIVIDE_DECIMAL_2> 
+op_numeric_divide_decimal;
+
+
+typedef 
+op_numeric_divide_specific<TypeConstants::XS_INTEGER,
+                           FunctionConsts::OP_NUMERIC_DIVIDE_INTEGER_2> 
+op_numeric_divide_integer;
 
 
 
@@ -380,7 +477,11 @@ typedef op_numeric_divide_specific<TypeConstants::XS_INTEGER> op_numeric_divide_
 class op_numeric_integer_divide : public bin_num_arith_func
 {
 public:
-  op_numeric_integer_divide(const signature& sig) : bin_num_arith_func(sig) {};
+  op_numeric_integer_divide(const signature& sig) 
+    :
+    bin_num_arith_func(sig, FunctionConsts::OP_NUMERIC_INTEGER_DIVIDE_2)
+  {
+  };
 
   ArithmeticConsts::OperationKind arithmetic_kind() const 
   {
@@ -429,7 +530,11 @@ public:
 class op_numeric_mod : public bin_num_arith_func
 {
 public:
-  op_numeric_mod(const signature& sig) : bin_num_arith_func(sig) {};
+  op_numeric_mod(const signature& sig) 
+    :
+    bin_num_arith_func(sig, FunctionConsts::OP_NUMERIC_MOD_2) 
+  {
+  };
 
   ArithmeticConsts::OperationKind arithmetic_kind() const 
   {
@@ -447,11 +552,15 @@ public:
 class single_numeric_func : public function 
 {
 public:
-  single_numeric_func (const signature &sig) : function (sig) {}
-
-  virtual xqtref_t return_type (const std::vector<xqtref_t> &arg_types) const
+  single_numeric_func(const signature& sig, FunctionConsts::FunctionKind kind)
+    :
+    function(sig, kind)
   {
-    return arg_types [0];
+  }
+
+  virtual xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const
+  {
+    return arg_types[0];
   }
 
   virtual bool isArithmeticFunction() const { return true; }
@@ -469,7 +578,11 @@ public:
 class op_numeric_unary_plus : public single_numeric_func
 {
 public:
-  op_numeric_unary_plus(const signature& sig) : single_numeric_func(sig) {}
+  op_numeric_unary_plus(const signature& sig)
+    :
+    single_numeric_func(sig, FunctionConsts::OP_UNARY_PLUS_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
@@ -501,7 +614,11 @@ PlanIter_t op_numeric_unary_plus::codegen(
 class op_numeric_unary_minus : public single_numeric_func
 {
 public:
-  op_numeric_unary_minus(const signature& sig) : single_numeric_func(sig) {}
+  op_numeric_unary_minus(const signature& sig)
+    :
+    single_numeric_func(sig, FunctionConsts::OP_UNARY_MINUS_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
@@ -527,7 +644,11 @@ PlanIter_t op_numeric_unary_minus::codegen(
 class fn_abs : public single_numeric_func 
 {
 public:
-  fn_abs(const signature& sig) : single_numeric_func(sig) { }
+  fn_abs(const signature& sig) 
+    :
+    single_numeric_func(sig, FunctionConsts::FN_ABS_1)
+  { 
+  }
 
   DEFAULT_NARY_CODEGEN(FnAbsIterator);
 };
@@ -537,7 +658,11 @@ public:
 class fn_ceiling : public single_numeric_func
 {
 public:
-  fn_ceiling(const signature& sig) : single_numeric_func(sig) { }
+  fn_ceiling(const signature& sig)
+    :
+    single_numeric_func(sig, FunctionConsts::FN_CEILING_1)
+  {
+  }
 
   DEFAULT_NARY_CODEGEN(FnCeilingIterator);
 };
@@ -547,7 +672,11 @@ public:
 class fn_floor : public single_numeric_func
 {
 public:
-  fn_floor(const signature& sig) : single_numeric_func(sig) { }
+  fn_floor(const signature& sig)
+    :
+    single_numeric_func(sig, FunctionConsts::FN_FLOOR_1)
+  {
+  }
 
   DEFAULT_NARY_CODEGEN(FnFloorIterator);
 };
@@ -557,7 +686,11 @@ public:
 class fn_round : public single_numeric_func
 {
 public:
-  fn_round(const signature& sig) : single_numeric_func(sig) { }
+  fn_round(const signature& sig)
+    :
+    single_numeric_func(sig, FunctionConsts::FN_ROUND_1)
+  {
+  }
 
   DEFAULT_NARY_CODEGEN(FnRoundIterator);
 };
@@ -567,7 +700,11 @@ public:
 class fn_round_half_to_even : public single_numeric_func
 {
 public:
-  fn_round_half_to_even(const signature& sig) : single_numeric_func(sig) { }
+  fn_round_half_to_even(const signature& sig)
+    :
+    single_numeric_func(sig, FunctionConsts::FN_ROUND_HALF_TO_EVEN_1)
+  {
+  }
 
   DEFAULT_NARY_CODEGEN(FnRoundHalfToEvenIterator);
 };
@@ -753,7 +890,7 @@ void populateContext_Math(static_context *sctx)
 ********************************************************************************/
 #define DECL_ARITH( sctx, op, type, xqt )                              \
 DECL(sctx, op_numeric_##op##_##type,                                   \
-     (createQName (XQUERY_OP_NS,"fn", ":numeric-" #op "-" #type),      \
+     (createQName (XQUERY_OP_NS,"op", "numeric-" #op "-" #type),      \
       GENV_TYPESYSTEM.xqt##_TYPE_QUESTION,                             \
       GENV_TYPESYSTEM.xqt##_TYPE_QUESTION,                             \
       GENV_TYPESYSTEM.xqt##_TYPE_QUESTION))
@@ -761,7 +898,7 @@ DECL(sctx, op_numeric_##op##_##type,                                   \
 
 #define DECL_ALL_ARITH( sctx, op )                             \
 DECL(sctx, op_numeric_##op,                                    \
-     (createQName (XQUERY_OP_NS, "fn", ":numeric-" #op),       \
+     (createQName (XQUERY_OP_NS, "op", "numeric-" #op),        \
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,                \
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,                \
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));              \
@@ -772,7 +909,7 @@ DECL_ARITH(sctx, op, decimal, DECIMAL);                        \
 DECL_ARITH(sctx, op, integer, INTEGER)
 
 
-void populateContext_Numerics(static_context *sctx) 
+void populateContext_Numerics(static_context* sctx) 
 {
   DECL_ALL_ARITH (sctx, add);
   DECL_ALL_ARITH (sctx, subtract);
@@ -780,24 +917,24 @@ void populateContext_Numerics(static_context *sctx)
   DECL_ALL_ARITH (sctx, divide);
 
   DECL(sctx, op_numeric_integer_divide,
-       (createQName (XQUERY_OP_NS,"fn", ":numeric-integer-divide"),
+       (createQName (XQUERY_OP_NS,"op", "numeric-integer-divide"),
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
   DECL(sctx, op_numeric_mod,
-       (createQName (XQUERY_OP_NS,"fn", ":numeric-mod"),
+       (createQName (XQUERY_OP_NS,"op", "numeric-mod"),
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
   DECL(sctx, op_numeric_unary_minus,
-       (createQName (XQUERY_OP_NS,"fn", ":unary-minus"),
+       (createQName (XQUERY_OP_NS,"op", "unary-minus"),
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE));
 
   DECL(sctx, op_numeric_unary_plus,
-       (createQName (XQUERY_OP_NS,"fn", ":unary-plus"),
+       (createQName (XQUERY_OP_NS,"op", "unary-plus"),
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE));
 

@@ -23,6 +23,8 @@
 
 #include "context/static_context.h"
 
+#include "functions/library.h"
+
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/expr_visitor.h"
@@ -350,7 +352,7 @@ flwor_wincond::flwor_wincond(
     {
       theCondExpr = new fo_expr(theCondExpr->get_sctx_id(),
                                 theCondExpr->get_loc(),
-                                sctx->lookup_fn("fn", "boolean", 1),
+                                GET_BUILTIN_FUNCTION(FN_BOOLEAN_1),
                                 theCondExpr);
     }
   }

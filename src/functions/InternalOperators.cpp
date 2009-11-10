@@ -25,9 +25,9 @@ namespace zorba
 class zop_hoist : public function 
 {
 public:
-  zop_hoist(const signature& sig) : function(sig) {}
+  zop_hoist(const signature& sig) : function(sig, FunctionConsts::OP_HOIST_1) {}
 
-  xqtref_t return_type (const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
 
   DEFAULT_NARY_CODEGEN(HoistIterator);
 };
@@ -42,9 +42,9 @@ xqtref_t zop_hoist::return_type(const std::vector<xqtref_t>& arg_types) const
 class zop_unhoist : public function 
 {
 public:
-  zop_unhoist(const signature& sig) : function(sig) {}
+  zop_unhoist(const signature& sig) : function(sig, FunctionConsts::OP_UNHOIST_1) {}
 
-  xqtref_t return_type (const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
 
   DEFAULT_NARY_CODEGEN(UnhoistIterator);
 };
@@ -59,12 +59,12 @@ xqtref_t zop_unhoist::return_type(const std::vector<xqtref_t>& arg_types) const
 void populateContext_Hoisting(static_context* sctx)
 {
   DECL(sctx, zop_hoist,
-       (createQName(XQUERY_FN_NS,"fn", ":hoist"),
+       (createQName(ZORBA_OP_NS, "op", "hoist"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
   DECL(sctx, zop_unhoist,
-       (createQName(XQUERY_FN_NS,"fn", ":unhoist"),
+       (createQName(ZORBA_OP_NS, "op", "unhoist"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 }

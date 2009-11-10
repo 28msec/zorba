@@ -37,38 +37,58 @@ void populate_context_convertors(static_context* sctx);
 
 
 
+
 //zorba-json:parse
 class zorba_json_parse : public function
 {
 public:
-  zorba_json_parse(const signature& sig) : function(sig, FunctionConsts::ZORBA_JSON_PARSE) {}
+  zorba_json_parse(const signature& sig)
+    :
+    function(sig, FunctionConsts::ZORBA_JSON_PARSE_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //zorba-json:serialize
 class zorba_json_serialize : public function
 {
 public:
-  zorba_json_serialize(const signature& sig) : function(sig, FunctionConsts::ZORBA_JSON_SERIALIZE) {}
+  zorba_json_serialize(const signature& sig)
+    :
+    function(sig, FunctionConsts::ZORBA_JSON_SERIALIZE_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //zorba-json-ml:parse
 class zorba_json_ml_parse : public function
 {
 public:
-  zorba_json_ml_parse(const signature& sig) : function(sig, FunctionConsts::ZORBA_JSON_ML_PARSE) {}
+  zorba_json_ml_parse(const signature& sig)
+    :
+    function(sig, FunctionConsts::ZORBA_JSON_ML_PARSE_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //zorba-json-ml:serialize
 class zorba_json_ml_serialize : public function
 {
 public:
-  zorba_json_ml_serialize(const signature& sig) : function(sig, FunctionConsts::ZORBA_JSON_ML_SERIALIZE) {}
+  zorba_json_ml_serialize(const signature& sig)
+    :
+    function(sig, FunctionConsts::ZORBA_JSON_ML_SERIALIZE_1)
+  {
+  }
 
   CODEGEN_DECL();
 };

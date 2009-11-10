@@ -78,7 +78,50 @@ END_SERIALIZABLE_CLASS_VERSIONS(static_context)
 /*******************************************************************************
   Class context methods
 ********************************************************************************/
-function* context::lookup_fmap_func (xqp_string key, int arity) const 
+void context::serialize(::zorba::serialization::Archiver& ar)
+{
+  //serialize_baseclass(ar, (SimpleRCObject*)this);
+  if(ar.is_serializing_out())
+  {
+    ar.set_is_temp_field_one_level(true);
+    bool  parent_is_root = check_parent_is_root();//(
+    ar & parent_is_root;
+    ar.set_is_temp_field_one_level(false);
+    if(!parent_is_root)
+    {
+      ar & parent;
+    }
+    else
+    {
+      //  context *fooctx = NULL;
+      //  ar & fooctx;
+    }
+  }
+  else
+  {
+    //in serialization
+    ar.set_is_temp_field_one_level(true);
+    bool  parent_is_root;
+    ar & parent_is_root;
+    ar.set_is_temp_field_one_level(false);
+    if(parent_is_root)
+    {
+      set_parent_as_root();
+    }
+    else
+      ar & parent;
+    if(parent)
+      parent->addReference(parent->getSharedRefCounter() SYNC_PARAM2(parent->getRCLock()));
+  }
+  ar & keymap;
+  ar & modulemap;
+  ar & str_keymap;
+  ar & module_paths;
+  ar & theDefaultFunctionNamespace;
+}
+  
+
+function* context::lookup_fmap_func(xqp_string key, int arity) const 
 {
   ArityFMap *fmap = lookup_fmap (key);
   if (fmap == NULL)
@@ -299,21 +342,29 @@ void context::ctx_value_t::serialize(::zorba::serialization::Archiver &ar)
       typeValue = NULL;//don't serialize this
     break;
   }
-
-  // INDEX_TODO: serialize index map
 }
 
-xqp_string context::default_function_namespace() const
+
+xqpStringStore* context::default_function_ns() const
 {
-  if(!this->default_function_namespace_internal.empty() || (this->parent == NULL))
-    return this->default_function_namespace_internal;
+  if (theDefaultFunctionNamespace != NULL || this->parent == NULL)
+    return theDefaultFunctionNamespace.getp();
   else
-    return parent->default_function_namespace();
+    return parent->default_function_ns();
 }
 
-void context::set_default_function_namespace(xqp_string def_fn_ns)
+
+void context::set_default_function_ns(const char* ns, const QueryLoc* loc)
 {
-  this->default_function_namespace_internal = def_fn_ns;
+  if (theDefaultFunctionNamespace != NULL)
+  {
+    if (loc)
+      ZORBA_ERROR_LOC(XQST0066, *loc);
+    else
+      ZORBA_ERROR(XQST0066);
+  }
+
+  theDefaultFunctionNamespace = new xqpStringStore(ns);
 }
 
 
@@ -683,7 +734,10 @@ xqp_string static_context::lookup_ns (xqp_string prefix, const XQUERY_ERROR& err
 }
 
 
-xqp_string static_context::lookup_ns (xqp_string prefix, const QueryLoc& loc, const XQUERY_ERROR& err) const 
+xqp_string static_context::lookup_ns(
+    xqp_string prefix,
+    const QueryLoc& loc,
+    const XQUERY_ERROR& err) const 
 {
   xqp_string ns;
   if (! lookup_ns (prefix, ns)) {
@@ -752,12 +806,15 @@ store::Item_t static_context::lookup_qname (
 }
 
 
-store::Item_t static_context::lookup_fn_qname (xqp_string pfx, xqp_string local, const QueryLoc& loc) const 
+store::Item_t static_context::lookup_fn_qname(
+    xqp_string pfx,
+    xqp_string local,
+    const QueryLoc& loc) const 
 {
   store::Item_t ret;
   try 
   {
-    ret = lookup_qname (default_function_namespace (), pfx, local, loc);
+    ret = lookup_qname(default_function_ns(), pfx, local, loc);
   }
   catch (error::ZorbaError& e) 
   {
@@ -834,9 +891,9 @@ xqp_string static_context::fn_internal_key ()
 }
 
 
-bool static_context::bind_fn (
-    const store::Item *qname,
-    function *f,
+bool static_context::bind_fn(
+    const store::Item* qname,
+    function* f,
     int arity,
     bool allow_override) 
 {
@@ -865,49 +922,36 @@ bool static_context::bind_fn (
 }
 
 
-function* static_context::lookup_builtin_fn (xqp_string local, int arity)
-{
-  function* f = GENV.getRootStaticContext().
-                lookup_fn_int (qname_internal_key2 (XQUERY_FN_NS, local), arity);
-
-  if (f == NULL)
-    ZORBA_NOT_IMPLEMENTED ("built-in `" + local + "/" + to_string (arity) + "'");
-  return f;
-}
-
-
-function* static_context::lookup_fn (
+function* static_context::lookup_fn(
     xqp_string prefix,
     xqp_string local,
     int arity) const 
 {
-  return lookup_fn_int (qname_internal_key (default_function_namespace (),
-                                            prefix,
-                                            local),
-                        arity);
+  return lookup_fn_int(qname_internal_key(default_function_ns(), prefix, local),
+                       arity);
 }
 
 
-function* static_context::lookup_resolved_fn (
+function* static_context::lookup_resolved_fn(
     xqp_string ns,
     xqp_string local,
     int arity) const 
 {
-  return lookup_fn_int (qname_internal_key2 (ns, local), arity);
+  return lookup_fn_int(qname_internal_key2(ns, local), arity);
 }
 
 
-function* static_context::lookup_fn_int (xqp_string key, int arity) const
+function* static_context::lookup_fn_int(xqp_string key, int arity) const
 {
-  xqp_string    full_key = xqpString::concat(fn_internal_key() , key);
-  function* f = lookup_fmap_func (full_key, arity);
+  xqp_string full_key = xqpString::concat(fn_internal_key() , key);
+  function* f = lookup_fmap_func(full_key, arity);
   if (f != NULL)
   {
     return f;
   }
   else
   {
-    f = lookup_fmap_func (full_key, VARIADIC_SIG_SIZE);
+    f = lookup_fmap_func(full_key, VARIADIC_SIG_SIZE);
     return f;
   }
 }
@@ -1040,10 +1084,10 @@ xqtref_t static_context::context_item_static_type()
   return lookup_type("type:context:");
 }
 
-
+#if 0
 void static_context::set_function_type(const store::Item *qname, xqtref_t t)
 {
-  bind_type("type:fun:" + qname_internal_key(default_function_namespace(),
+  bind_type("type:fun:" + qname_internal_key(default_function_ns(),
                                              qname->getPrefix(),
                                              qname->getLocalName()),
             t);
@@ -1052,11 +1096,11 @@ void static_context::set_function_type(const store::Item *qname, xqtref_t t)
 
 xqtref_t static_context::get_function_type(const store::Item_t qname) 
 {
-  return lookup_type2("type:fun:", qname_internal_key(default_function_namespace(),
+  return lookup_type2("type:fun:", qname_internal_key(default_function_ns(),
                                                       qname->getPrefix(),
                                                       qname->getLocalName()));
 }
-
+#endif
 
 void static_context::set_document_type(xqp_string docURI, xqtref_t t)
 {

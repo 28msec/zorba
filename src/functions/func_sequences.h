@@ -38,11 +38,16 @@ void populate_context_sequences(static_context* sctx);
 
 
 
+
 //op:concatenate
 class op_concatenate : public function
 {
 public:
-  op_concatenate(const signature& sig) : function(sig, FunctionConsts::FN_CONCATENATE) {}
+  op_concatenate(const signature& sig)
+    :
+    function(sig, FunctionConsts::OP_CONCATENATE_N)
+  {
+  }
 
   CODEGEN_DECL();
 
@@ -53,56 +58,87 @@ public:
                           Annotations::Key k) const;
 };
 
+
 //fn:index-of
 class fn_index_of : public function
 {
 public:
-  fn_index_of(const signature& sig) : function(sig, FunctionConsts::FN_INDEX_OF) {}
+  fn_index_of(const signature& sig) : function(sig)
+  {
+    theKind = (sig.arg_count() == 2 ?
+                FunctionConsts::FN_INDEX_OF_2 :
+                FunctionConsts::FN_INDEX_OF_3);
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:empty
 class fn_empty : public function
 {
 public:
-  fn_empty(const signature& sig) : function(sig, FunctionConsts::FN_EMPTY) {}
+  fn_empty(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_EMPTY_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:exists
 class fn_exists : public function
 {
 public:
-  fn_exists(const signature& sig) : function(sig, FunctionConsts::FN_EXISTS) {}
+  fn_exists(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_EXISTS_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:insert-before
 class fn_insert_before : public function
 {
 public:
-  fn_insert_before(const signature& sig) : function(sig, FunctionConsts::FN_INSERT_BEFORE) {}
+  fn_insert_before(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_INSERT_BEFORE_3)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:remove
 class fn_remove : public single_seq_opt_function
 {
 public:
-  fn_remove(const signature& sig) : single_seq_opt_function(sig, FunctionConsts::FN_REMOVE) {}
+  fn_remove(const signature& sig)
+    :
+    single_seq_opt_function(sig, FunctionConsts::FN_REMOVE_2)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:reverse
 class fn_reverse : public single_seq_opt_function
 {
 public:
-  fn_reverse(const signature& sig) : single_seq_opt_function(sig, FunctionConsts::FN_REVERSE) {}
+  fn_reverse(const signature& sig)
+    :
+    single_seq_opt_function(sig, FunctionConsts::FN_REVERSE_1)
+  {
+  }
 
   FunctionConsts::AnnotationValue producesNodeIdSorted() const {
     return FunctionConsts::NO;
@@ -111,11 +147,17 @@ public:
   CODEGEN_DECL();
 };
 
+
 //fn:subsequence
 class fn_subsequence : public single_seq_opt_function
 {
 public:
-  fn_subsequence(const signature& sig) : single_seq_opt_function(sig, FunctionConsts::FN_SUBSEQUENCE) {}
+  fn_subsequence(const signature& sig) : single_seq_opt_function(sig)
+  {
+    theKind = (sig.arg_count() == 2 ?
+                FunctionConsts::FN_SUBSEQUENCE_2 :
+                FunctionConsts::FN_SUBSEQUENCE_3);
+  }
 
   CODEGEN_DECL();
 
@@ -124,58 +166,90 @@ public:
                           Annotations::Key k) const;
 };
 
+
 //fn:zero-or-one
 class fn_zero_or_one : public function
 {
 public:
-  fn_zero_or_one(const signature& sig) : function(sig, FunctionConsts::FN_ZERO_OR_ONE) {}
+  fn_zero_or_one(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZERO_OR_ONE_1)
+  {
+  }
 
   CODEGEN_DECL();
 
   xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
 };
 
+
 //fn:one-or-more
 class fn_one_or_more : public single_seq_opt_function
 {
 public:
-  fn_one_or_more(const signature& sig) : single_seq_opt_function(sig, FunctionConsts::FN_ONE_OR_MORE) {}
+  fn_one_or_more(const signature& sig)
+    :
+    single_seq_opt_function(sig, FunctionConsts::FN_ONE_OR_MORE_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:deep-equal
 class fn_deep_equal : public function
 {
 public:
-  fn_deep_equal(const signature& sig) : function(sig, FunctionConsts::FN_DEEP_EQUAL) {}
+  fn_deep_equal(const signature& sig) : function(sig)
+  {
+    theKind = (sig.arg_count() == 2 ?
+                FunctionConsts::FN_DEEP_EQUAL_2 :
+                FunctionConsts::FN_DEEP_EQUAL_3);
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:count
 class fn_count : public function
 {
 public:
-  fn_count(const signature& sig) : function(sig, FunctionConsts::FN_COUNT) {}
+  fn_count(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_COUNT_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:avg
 class fn_avg : public function
 {
 public:
-  fn_avg(const signature& sig) : function(sig, FunctionConsts::FN_AVG) {}
+  fn_avg(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_AVG_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:sum
 class fn_sum : public function
 {
 public:
-  fn_sum(const signature& sig) : function(sig, FunctionConsts::FN_SUM) {}
+  fn_sum(const signature& sig) : function(sig)
+  {
+    theKind = (sig.arg_count() == 1 ?
+                FunctionConsts::FN_SUM_1 :
+                FunctionConsts::FN_SUM_2);
+  }
 
   bool specializable() const { return true; }
 
@@ -185,56 +259,90 @@ public:
   CODEGEN_DECL();
 };
 
+
 //fn:sum_double
 class fn_sum_double : public function
 {
 public:
-  fn_sum_double(const signature& sig) : function(sig, FunctionConsts::FN_SUM_DOUBLE) {}
+  fn_sum_double(const signature& sig) : function(sig)
+  {
+    theKind = (sig.arg_count() == 1 ?
+                FunctionConsts::FN_SUM_DOUBLE_1 :
+                FunctionConsts::FN_SUM_DOUBLE_2);
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:sum_float
 class fn_sum_float : public function
 {
 public:
-  fn_sum_float(const signature& sig) : function(sig, FunctionConsts::FN_SUM_FLOAT) {}
+  fn_sum_float(const signature& sig) : function(sig)
+  {
+    theKind = (sig.arg_count() == 1 ?
+                FunctionConsts::FN_SUM_FLOAT_1 :
+                FunctionConsts::FN_SUM_FLOAT_2);
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:sum_decimal
 class fn_sum_decimal : public function
 {
 public:
-  fn_sum_decimal(const signature& sig) : function(sig, FunctionConsts::FN_SUM_DECIMAL) {}
+  fn_sum_decimal(const signature& sig) : function(sig)
+  {
+    theKind = (sig.arg_count() == 1 ?
+                FunctionConsts::FN_SUM_DECIMAL_1 :
+                FunctionConsts::FN_SUM_DECIMAL_2);
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:sum_integer
 class fn_sum_integer : public function
 {
 public:
-  fn_sum_integer(const signature& sig) : function(sig, FunctionConsts::FN_SUM_INTEGER) {}
+  fn_sum_integer(const signature& sig) : function(sig)
+  {
+    theKind = (sig.arg_count() == 1 ?
+                FunctionConsts::FN_SUM_INTEGER_1 :
+                FunctionConsts::FN_SUM_INTEGER_2);
+  }
 
   CODEGEN_DECL();
 };
+
 
 //op:to
 class op_to : public function
 {
 public:
-  op_to(const signature& sig) : function(sig, FunctionConsts::FN_TO) {}
+  op_to(const signature& sig)
+    :
+    function(sig, FunctionConsts::OP_TO_2)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn:doc
 class fn_doc : public function
 {
 public:
-  fn_doc(const signature& sig) : function(sig, FunctionConsts::FN_DOC) {}
+  fn_doc(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_DOC_1)
+  {
+  }
 
   bool requires_dyn_ctx() const { return true; }
 
@@ -245,20 +353,30 @@ public:
   bool propagatesInputToOutput(uint32_t aProducer) const;
 };
 
+
 //fn:doc-available
 class fn_doc_available : public function
 {
 public:
-  fn_doc_available(const signature& sig) : function(sig, FunctionConsts::FN_DOC_AVAILABLE) {}
+  fn_doc_available(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_DOC_AVAILABLE_1)
+  {
+  }
 
   CODEGEN_DECL();
 };
+
 
 //fn-zorba-util:parse
 class fn_zorba_util_parse : public function
 {
 public:
-  fn_zorba_util_parse(const signature& sig) : function(sig, FunctionConsts::FN_ZORBA_UTIL_PARSE) {}
+  fn_zorba_util_parse(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_UTIL_PARSE_1)
+  {
+  }
 
   bool requires_dyn_ctx() const { return true; }
 

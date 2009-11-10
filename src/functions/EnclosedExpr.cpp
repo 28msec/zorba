@@ -28,7 +28,7 @@ class op_enclosed_expr : public function
 public:
   op_enclosed_expr(const signature& sig)
     :
-    function(sig, FunctionConsts::OP_ENCLOSED)
+    function(sig, FunctionConsts::OP_ENCLOSED_1)
   {
   }
 
@@ -52,7 +52,7 @@ xqtref_t op_enclosed_expr::return_type(const std::vector<xqtref_t>& arg_types) c
 void populateContext_Constructors(static_context* sctx)
 {
 DECL(sctx, op_enclosed_expr,
-     (createQName(XQUERY_OP_NS,"fn", ":enclosed-expr"),
+     (createQName(ZORBA_OP_NS, "op", "enclosed-expr"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 }

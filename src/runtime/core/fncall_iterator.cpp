@@ -179,7 +179,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
   if(lDebugger != 0)
   {
-    name << theUDF->get_fname()->getStringValue() << '(';
+    name << theUDF->getName()->getStringValue() << '(';
   }
   {
     // Bind the args.

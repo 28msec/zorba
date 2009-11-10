@@ -25,7 +25,8 @@
 #define XQUERY_LOCAL_FN_NS "http://www.w3.org/2005/xquery-local-functions"
 #define XQUERY_ERR_NS  "http://www.w3.org/2005/xqt-errors"
 
-#define ZORBA_FN_NS                 "http://www.zorba-xquery.com/zorba/internal-functions"
+#define ZORBA_OP_NS                 "http://www.zorba-xquery.com/zorba/internal-functions"
+
 #define ZORBA_REST_FN_NS            "http://www.zorba-xquery.com/zorba/rest-functions"
 #define ZORBA_MATH_FN_NS            "http://www.zorba-xquery.com/modules/math"
 #define ZORBA_NODEREF_FN_NS         "http://www.zorba-xquery.com/zorba/node-ref-functions"
@@ -46,8 +47,6 @@
 #define ZORBA_COLLATION_NS_BASE "http://www.zorba-xquery.com/zorba/collations/"
 #define ZORBA_DEF_COLLATION_NS ZORBA_COLLATION_NS_BASE "IDENTICAL/en/US"
 #define W3C_CODEPT_COLLATION_NS "http://www.w3.org/2005/xpath-functions/collation/codepoint"
-
-#define ZORBA_OPEXTENSIONS_NS "http://www.zorba-xquery.com/zorba/op-extensions"
 
 #endif
 /*

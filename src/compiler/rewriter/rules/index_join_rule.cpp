@@ -16,6 +16,7 @@
 #include "types/typeops.h"
 
 #include "functions/function.h"
+#include "functions/library.h"
 
 #include "compiler/api/compilercb.h"
 #include "compiler/rewriter/rules/ruleset.h"
@@ -136,7 +137,7 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
     foExpr = static_cast<const fo_expr*>(predExpr);
     fn = foExpr->get_func();
 
-    if (fn->CHECK_IS_BUILTIN_NAMED("boolean", 1))
+    if (fn->getKind() == FunctionConsts::FN_BOOLEAN_1)
     {
       predExpr = foExpr->get_arg(0);
       continue;
@@ -363,9 +364,7 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 
   fo_expr_t createExpr = new fo_expr(sctxid,
                                      loc,
-                                     LOOKUP_RESOLVED_FN(ZORBA_DDL_FN_NS,
-                                                        "create-internal-index",
-                                                        1),
+                                     GET_BUILTIN_FUNCTION(OP_CREATE_INTERNAL_INDEX_1),
                                      qnameExpr);
   //
   //  Build or adjust outer sequential expr 
@@ -393,9 +392,7 @@ static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   //
   fo_expr_t probeExpr = new fo_expr(sctxid,
                                     loc,
-                                    LOOKUP_RESOLVED_FN(ZORBA_DYNAMICCONTEXT_FN_NS,
-                                                       "probe-index-point",
-                                                       VARIADIC_SIG_SIZE),
+                                    GET_BUILTIN_FUNCTION(FN_INDEX_PROBE_POINT_N),
                                     qnameExpr,
                                     const_cast<expr*>(predInfo.theOuterOp));
 
@@ -520,7 +517,7 @@ static bool isAndExpr(expr* e)
     return false;
 
   const function* fn = static_cast<fo_expr *>(e)->get_func();
-  return (fn == LOOKUP_OP2("and"));
+  return (fn->getKind() == FunctionConsts::OP_AND_2);
 }
 
 

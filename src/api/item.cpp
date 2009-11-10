@@ -45,11 +45,12 @@ namespace zorba {
   } 
 
 
-Item::Item(store::Item *other)
+Item::Item(const store::Item* other)
   :
-  m_item(other)
+  m_item(const_cast<store::Item*>(other))
 {
-  if (!isNull()) {
+  if (!isNull()) 
+  {
     RCHelper::addReference(m_item);
   }
 }
@@ -66,7 +67,8 @@ Item::Item(const Item& other)
   :
   m_item(other.m_item)
 {
-  if (!isNull()) {
+  if (!isNull()) 
+  {
     RCHelper::addReference(m_item);
   }
 }
@@ -81,7 +83,8 @@ Item::~Item()
 void
 Item::close()
 {
-  if (!isNull()) {
+  if (!isNull()) 
+  {
     RCHelper::removeReference(m_item);
     m_item = NULL;
   }
@@ -90,10 +93,12 @@ Item::close()
 
 const Item& Item::operator =(const Item& rhs)
 {
-  if (m_item != rhs.m_item) {
+  if (m_item != rhs.m_item) 
+  {
     close();
     m_item = rhs.m_item;
-    if (!isNull()) {
+    if (!isNull()) 
+    {
       RCHelper::addReference(m_item);
     }
   }
@@ -101,12 +106,14 @@ const Item& Item::operator =(const Item& rhs)
 }
 
 
-const Item& Item::operator =(store::Item *rhs)
+const Item& Item::operator =(const store::Item* rhs)
 {
-  if (m_item != rhs) {
+  if (m_item != rhs) 
+  {
     close();
-    m_item = rhs;
-    if (!isNull()) {
+    m_item = const_cast<store::Item*>(rhs);
+    if (!isNull()) 
+    {
       RCHelper::addReference(m_item);
     }
   }

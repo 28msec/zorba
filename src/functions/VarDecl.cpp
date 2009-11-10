@@ -41,7 +41,7 @@ class ctx_var_declare : public function
 public:
   ctx_var_declare(const signature& sig) 
     :
-    function(sig, FunctionConsts::OP_VAR_DECLARE)
+    function(sig, FunctionConsts::OP_VAR_DECLARE_1)
   {
   }
 
@@ -66,7 +66,7 @@ class ctx_var_assign : public function
 public:
   ctx_var_assign(const signature& sig) 
     :
-    function(sig, FunctionConsts::OP_VAR_ASSIGN)
+    function(sig, FunctionConsts::OP_VAR_ASSIGN_1)
   {
   }
 
@@ -108,7 +108,11 @@ PlanIter_t ctx_var_assign::codegen(
 class ctx_var_exists : public function
 {
 public:
-  ctx_var_exists(const signature& sig) : function (sig) {}
+  ctx_var_exists(const signature& sig) 
+    :
+    function(sig, FunctionConsts::OP_VAR_EXISTS_1)
+  {
+  }
 
   bool requires_dyn_ctx() const { return true; }
 
@@ -127,7 +131,11 @@ public:
 class ctx_variable : public function
 {
 public:
-  ctx_variable(const signature& sig) : function (sig) {}
+  ctx_variable(const signature& sig) 
+    :
+    function(sig, FunctionConsts::OP_VAR_REF_1)
+  {
+  }
 
   bool requires_dyn_ctx() const { return true; }
 
@@ -138,20 +146,20 @@ public:
 void populateContext_VarDecl(static_context* sctx)
 {
 DECL(sctx, ctx_variable,
-     (createQName(XQUERY_FN_NS,"fn", ":ctxvariable"),
+     (createQName(ZORBA_OP_NS,"op-zorba", "ctxvar-ref"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 DECL(sctx, ctx_var_declare,
-     (createQName(XQUERY_FN_NS,"fn", ":ctxvar-declare"),
+     (createQName(ZORBA_OP_NS,"op-zorba", "ctxvar-declare"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.EMPTY_TYPE));
 DECL(sctx, ctx_var_assign,
-     (createQName(XQUERY_FN_NS,"fn", ":ctxvar-assign"),
+     (createQName(ZORBA_OP_NS,"op-zorba", "ctxvar-assign"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.EMPTY_TYPE));
 DECL(sctx, ctx_var_exists,
-     (createQName(XQUERY_FN_NS,"fn", ":ctxvar-exists"),
+     (createQName(ZORBA_OP_NS,"op-zorba", "ctxvar-exists"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 }

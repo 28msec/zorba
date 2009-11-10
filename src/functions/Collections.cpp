@@ -29,10 +29,11 @@ namespace zorba
 class fn_collection : public function 
 {
 public:
-  fn_collection(const signature& sig) 
-    :
-    function(sig, FunctionConsts::FN_COLLECTION)
+  fn_collection(const signature& sig) : function(sig)
   {
+    theKind = (sig.arg_count() == 0 ?
+               FunctionConsts::FN_COLLECTION_0 :
+               FunctionConsts::FN_COLLECTION_1);
   }
 
   bool isSource() const { return true; }
@@ -48,7 +49,7 @@ class dc_collection : public function
 public:
   dc_collection(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_COLLECTION)
+    function(sig, FunctionConsts::FN_ZORBA_COLLECTION_1)
   {
   }
 

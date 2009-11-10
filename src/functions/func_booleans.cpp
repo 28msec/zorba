@@ -71,19 +71,19 @@ PlanIter_t op_node_after::codegen(
 void populate_context_booleans(static_context* sctx) {
 
   DECL(sctx, op_is_same_node,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn",":is-same-node"),
+      (createQName("http://www.w3.org/2005/xpath-functions","op","is-same-node"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
 
   DECL(sctx, op_node_before,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn",":node-before"),
+      (createQName("http://www.w3.org/2005/xpath-functions","op","node-before"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
 
   DECL(sctx, op_node_after,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn",":node-after"),
+      (createQName("http://www.w3.org/2005/xpath-functions","op","node-after"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));

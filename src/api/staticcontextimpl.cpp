@@ -182,11 +182,16 @@ StaticContextImpl::setDefaultElementAndTypeNamespace( const String& aURI )
 String   
 StaticContextImpl::getDefaultElementAndTypeNamespace( ) const
 {
-  try {
+  try 
+  {
     return &*theCtx->default_elem_type_ns().theStrStore;
-  } catch (error::ZorbaError& e) {
+  }
+  catch (error::ZorbaError& e)
+  {
     ZorbaImpl::notifyError(theErrorHandler, e);
-    } catch (std::exception& e) {
+  }
+  catch (std::exception& e)
+  {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }
   return "";
@@ -197,8 +202,8 @@ bool
 StaticContextImpl::setDefaultFunctionNamespace( const String& aURI )
 {
   ZORBA_TRY
-    xqpString lURI = Unmarshaller::getInternalString(aURI);
-    theCtx->set_default_function_namespace(lURI);
+    xqpStringStore* lURI = Unmarshaller::getInternalString(aURI);
+    theCtx->set_default_function_ns(lURI->c_str());
     return true;
   ZORBA_CATCH
   return false;
@@ -208,11 +213,16 @@ StaticContextImpl::setDefaultFunctionNamespace( const String& aURI )
 String   
 StaticContextImpl::getDefaultFunctionNamespace( ) const
 {
-  try {
-    return &*theCtx->default_function_namespace().theStrStore;
-  } catch (error::ZorbaError& e) {
+  try 
+  {
+    return theCtx->default_function_ns();
+  }
+  catch (error::ZorbaError& e) 
+  {
     ZorbaImpl::notifyError(theErrorHandler, e);
-  } catch (std::exception& e) {
+  }
+  catch (std::exception& e) 
+  {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }
   return "";

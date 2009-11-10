@@ -21,9 +21,11 @@
 #include "system/globalenv.h"
 #include "common/common.h"
 
-namespace zorba {
+namespace zorba 
+{
 
-static const char *default_ns_initializers [] = {
+static const char *default_ns_initializers [] = 
+{
   "fn", XQUERY_FN_NS,
   "xml", XML_NS,
   "xs", XML_SCHEMA_NS,
@@ -33,8 +35,8 @@ static const char *default_ns_initializers [] = {
   NULL, NULL
 };
 
-root_static_context::root_static_context()
-    : static_context()
+
+root_static_context::root_static_context() : static_context()
 {
   typemgr = new RootTypeManager();
 }
@@ -48,11 +50,15 @@ void root_static_context::init()
   // default xquery version is 1.1
   set_xquery_version(StaticContextConsts::xquery_version_1_1);
   set_xpath1_0compatib_mode(StaticContextConsts::xpath2_0);
-  const char **p = default_ns_initializers;
+
+  const char** p = default_ns_initializers;
   for (; *p != NULL; p += 2)
-    bind_ns (p [0], p [1]);
-  set_default_elem_type_ns ("");		
-  set_default_function_namespace (lookup_ns ("fn"));
+    bind_ns(p[0], p[1]);
+
+  set_default_elem_type_ns("");		
+
+  set_default_function_ns(XQUERY_FN_NS);
+
   set_context_item_static_type(GENV_TYPESYSTEM.ITEM_TYPE_ONE);
   set_default_collation_uri (W3C_CODEPT_COLLATION_NS);
   add_collation(ZORBA_DEF_COLLATION_NS);
@@ -73,12 +79,14 @@ void root_static_context::init()
 
   std::vector<std::string> lRootModulePaths;
   const char ** lPathsIter = get_builtin_module_paths();
-  for (; *lPathsIter != 0; ++lPathsIter) {
+  for (; *lPathsIter != 0; ++lPathsIter) 
+  {
     lRootModulePaths.push_back(*lPathsIter);
   }
   set_module_paths(lRootModulePaths);
 
 } 
+
 
 root_static_context::~root_static_context()
 {
