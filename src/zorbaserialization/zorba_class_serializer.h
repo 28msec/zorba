@@ -134,19 +134,19 @@ void operator&(Archiver &ar, zorba::rchandle<T> &obj)
   if(ar.is_serializing_out())
   {
     bool is_ref;
-    bool allow_delay = ar.get_allow_delay();
+    ENUM_ALLOW_DELAY allow_delay = ar.get_allow_delay();
     is_ref = ar.add_compound_field("rchandle<T>", 0, !FIELD_IS_CLASS, "", &obj, ARCHIVE_FIELD_NORMAL);
     if(!is_ref)
     {
       T *p = obj.getp();
-      if(!allow_delay)
-        ar.dont_allow_delay();
+      if(allow_delay != ALLOW_DELAY)
+        ar.dont_allow_delay(allow_delay);
       bool is_temp = false;
       if(ar.get_is_temp_field_one_level())
       {
         is_temp = true;
         ar.set_is_temp_field_one_level(true, ar.get_is_temp_field_also_for_ptr());
-        if(!ar.get_is_temp_field_also_for_ptr())
+        if(!ar.get_is_temp_field_also_for_ptr() && (allow_delay == ALLOW_DELAY))
           ar.dont_allow_delay();
       }
       ar & p;
@@ -196,7 +196,7 @@ void operator&(Archiver &ar, zorba::rchandle<T> &obj)
         void **v;
       }u_p;
       u_p.t = &p;
-      ar.reconf_last_delayed_rcobject(u_p.v, obj.getp_ref().v);
+      ar.reconf_last_delayed_rcobject(u_p.v, obj.getp_ref().v, true);
     }
     ar.read_end_current_level();
 
@@ -209,19 +209,19 @@ void operator&(Archiver &ar, zorba::const_rchandle<T> &obj)
   if(ar.is_serializing_out())
   {
     bool is_ref;
-    bool allow_delay = ar.get_allow_delay();
+    ENUM_ALLOW_DELAY allow_delay = ar.get_allow_delay();
     is_ref = ar.add_compound_field("const_rchandle<T>", 0, !FIELD_IS_CLASS, "", &obj, ARCHIVE_FIELD_NORMAL);
     if(!is_ref)
     {
       T *p = (T*)obj.getp();
-      if(!allow_delay)
-        ar.dont_allow_delay();
+      if(allow_delay != ALLOW_DELAY)
+        ar.dont_allow_delay(allow_delay);
       bool is_temp = false;
       if(ar.get_is_temp_field_one_level())
       {
         is_temp = true;
         ar.set_is_temp_field_one_level(true, ar.get_is_temp_field_also_for_ptr());
-        if(!ar.get_is_temp_field_also_for_ptr())
+        if(!ar.get_is_temp_field_also_for_ptr() && (allow_delay == ALLOW_DELAY))
           ar.dont_allow_delay();
       }
       ar & p;
@@ -271,7 +271,7 @@ void operator&(Archiver &ar, zorba::const_rchandle<T> &obj)
         void **v;
       }u_p;
       u_p.t = &p;
-      ar.reconf_last_delayed_rcobject(u_p.v, obj.getp_ref().v);
+      ar.reconf_last_delayed_rcobject(u_p.v, obj.getp_ref().v, true);
     }
     ar.read_end_current_level();
 

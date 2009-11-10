@@ -65,6 +65,14 @@ struct fwd_ref
   bool is_class;
   //bool add_ref_to_rcobject;
   char *class_name;
+  bool to_add_ref;
+};
+
+enum ENUM_ALLOW_DELAY  
+{
+  ALLOW_DELAY,
+  DONT_ALLOW_DELAY,
+  SERIALIZE_NOW
 };
 
 class archive_field
@@ -92,14 +100,14 @@ public:
   class archive_field  *refered;
 
   int  only_for_eval;
-  bool allow_delay;
+  ENUM_ALLOW_DELAY  allow_delay2;
 public:
   archive_field(const char *type, bool is_simple, bool is_class, 
                 const void *value, const void *assoc_ptr,
                 int version, enum ArchiveFieldTreat  field_treat,
                 archive_field *refered,
                 int only_for_eval,
-                bool allow_delay);
+                ENUM_ALLOW_DELAY allow_delay);
   ~archive_field();
 };
 
@@ -172,7 +180,7 @@ protected:
   int   only_for_eval;
   bool  is_xquery_with_eval;
   bool  loading_hardcoded_objects;
-  bool  allow_delay;
+  ENUM_ALLOW_DELAY  allow_delay2;
 
   std::vector<store::Item*>   registered_items;
   SerializationCallback*      theUserCallback;
@@ -270,14 +278,15 @@ protected:
   int compute_field_depth(archive_field *field);
   archive_field* find_top_most_eval_only_field(archive_field *parent_field);
   void check_compound_fields(archive_field   *parent_field);
-  void check_compound_fields2(archive_field   *parent_field);
+  bool check_only_for_eval_nondelay_referencing(archive_field   *parent_field);
+  void replace_only_for_eval_with_null(archive_field   *parent_field);
   void clean_only_for_eval(archive_field *field, int substract_value);
   void exchange_mature_fields(archive_field *field1, archive_field *field2);
   archive_field* get_prev(archive_field* field);
   int check_order(archive_field *parent_field,
                   archive_field *field1,
                   archive_field *field2);
-  void check_allowed_delays(archive_field *parent_field);
+  bool check_allowed_delays(archive_field *parent_field);
 
 public:
   void check_simple_field(bool retval, 
@@ -305,7 +314,7 @@ public:
                                   int id);
   void register_reference(int id, enum ArchiveFieldTreat field_treat, const void *ptr);
   void register_delay_reference(void **ptr, bool is_class, const char *class_name, int referencing);
-  void reconf_last_delayed_rcobject(void **last_obj, void **new_last_obj);
+  void reconf_last_delayed_rcobject(void **last_obj, void **new_last_obj, bool to_add_ref);
   void register_item(store::Item* i);
 
   int get_class_version();
@@ -386,15 +395,15 @@ public:
   {
     return loading_hardcoded_objects;
   }
-  void dont_allow_delay()
+  void dont_allow_delay(ENUM_ALLOW_DELAY d = DONT_ALLOW_DELAY)
   {
-    this->allow_delay = false;
+    this->allow_delay2 = d;
   }
   void reset_allow_delay()
   {
-    this->allow_delay = true;
+    this->allow_delay2 = ALLOW_DELAY;
   }
-  bool get_allow_delay() {return this->allow_delay;}
+  ENUM_ALLOW_DELAY get_allow_delay() {return this->allow_delay2;}
 };
 
   

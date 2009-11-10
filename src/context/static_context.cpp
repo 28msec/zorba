@@ -307,6 +307,7 @@ void context::ctx_value_t::serialize(::zorba::serialization::Archiver &ar)
     break;
   case CTX_FUNCTION:
     ar.set_serialize_only_for_eval(true);
+    ar.dont_allow_delay();
     SERIALIZE_FUNCTION(functionValue);
     if(!ar.is_serializing_out() && functionValue)
       RCHelper::addReference (functionValue);

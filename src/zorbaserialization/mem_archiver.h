@@ -29,7 +29,7 @@ class MemArchiver : public Archiver
   archive_field   temp_field;
 public:
   MemArchiver(bool is_serializing_out, bool internal_archive=false) : 
-        Archiver(is_serializing_out, internal_archive) , temp_field("", false, false, NULL, NULL, 0, ARCHIVE_FIELD_NORMAL, NULL, false, true)
+        Archiver(is_serializing_out, internal_archive) , temp_field("", false, false, NULL, NULL, 0, ARCHIVE_FIELD_NORMAL, NULL, false, ALLOW_DELAY)
   {
     current_field = NULL;
     is_after_last = false;

@@ -22,6 +22,7 @@
 #include <zorba/error.h>
 #include "zorbaserialization/mem_archiver.h"
 
+#include "functions/function.h"
 #include "store/api/item.h"
 
 namespace zorba{
@@ -38,9 +39,10 @@ archive_field::archive_field(const char *type, bool is_simple, bool is_class,
               int version, enum ArchiveFieldTreat  field_treat,
               archive_field *refered,
               int only_for_eval,
-              bool allow_delay)
+              ENUM_ALLOW_DELAY allow_delay)
 {
   this->type = strdup(type);
+  this->type_str_pos_in_pool = 0;//initialy is the number of references to this field
   this->is_simple = is_simple;
   this->is_class = is_class;
   if(value)
@@ -61,7 +63,7 @@ archive_field::archive_field(const char *type, bool is_simple, bool is_class,
   this->refered = refered;
 
   this->only_for_eval = only_for_eval;
-  this->allow_delay = allow_delay;
+  this->allow_delay2 = allow_delay;
 }
 
 archive_field::~archive_field()
@@ -106,7 +108,7 @@ Archiver::Archiver(bool is_serializing_out, bool internal_archive)
   if(is_serializing_out)
   {
     //create the top most field
-    out_fields = new archive_field("", false, false, NULL, NULL, 0, ARCHIVE_FIELD_NORMAL, NULL, false, true);
+    out_fields = new archive_field("", false, false, NULL, NULL, 0, ARCHIVE_FIELD_NORMAL, NULL, false, ALLOW_DELAY);
     current_compound_field = out_fields;
   }
 
@@ -127,7 +129,7 @@ Archiver::Archiver(bool is_serializing_out, bool internal_archive)
   this->only_for_eval = 0;
   this->is_xquery_with_eval = false;
   loading_hardcoded_objects = false;
-  allow_delay = true;
+  allow_delay2 = ALLOW_DELAY;
 }
 
 Archiver::~Archiver()
@@ -182,8 +184,8 @@ bool Archiver::add_simple_field(const char *type,
     ref_field = check_nonclass_pointer(type, orig_ptr);
   if(ref_field)
   {
-    if(get_is_temp_field_one_level() && (field_treat == ARCHIVE_FIELD_IS_PTR))
-      allow_delay = false;
+    if(get_is_temp_field_one_level() && (field_treat == ARCHIVE_FIELD_IS_PTR) && (allow_delay2 == ALLOW_DELAY))
+      allow_delay2 = DONT_ALLOW_DELAY;
     if(field_treat == ARCHIVE_FIELD_NORMAL)
     {
       //special case
@@ -196,8 +198,8 @@ bool Archiver::add_simple_field(const char *type,
   }
 
 
-  new_field = new archive_field(type, true, false, value, orig_ptr, 0, field_treat, ref_field, get_serialize_only_for_eval(), allow_delay);
-  allow_delay = true;
+  new_field = new archive_field(type, true, false, value, orig_ptr, 0, field_treat, ref_field, get_serialize_only_for_eval(), allow_delay2);
+  allow_delay2 = ALLOW_DELAY;
   if(!ref_field && (field_treat != ARCHIVE_FIELD_IS_BASECLASS) && orig_ptr && 
     !get_is_temp_field() && (!get_is_temp_field_one_level() || ((field_treat == ARCHIVE_FIELD_IS_PTR) && !get_is_temp_field_also_for_ptr())))
   {
@@ -262,7 +264,7 @@ void Archiver::exchange_fields(archive_field  *new_field, archive_field  *ref_fi
   ref_field->next = NULL;
   current_compound_field->last_child = ref_field;
 
-  new_field->allow_delay = ref_field->allow_delay;
+  new_field->allow_delay2 = ref_field->allow_delay2;
 }
 
 bool Archiver::add_compound_field(const char *type, 
@@ -293,8 +295,8 @@ bool Archiver::add_compound_field(const char *type,
   }
   if(ref_field)
   {
-    if(get_is_temp_field_one_level() && (field_treat == ARCHIVE_FIELD_IS_PTR))
-      allow_delay = false;
+    if(get_is_temp_field_one_level() && (field_treat == ARCHIVE_FIELD_IS_PTR) && (allow_delay2 == ALLOW_DELAY))
+      allow_delay2 = DONT_ALLOW_DELAY;
     if(field_treat == ARCHIVE_FIELD_NORMAL)
     {
       //special case
@@ -305,8 +307,8 @@ bool Archiver::add_compound_field(const char *type,
     ptr = NULL;
   }
 
-  new_field = new archive_field(type, false, is_class, info, ptr, version, field_treat, ref_field, get_serialize_only_for_eval(), allow_delay);
-  allow_delay = true;
+  new_field = new archive_field(type, false, is_class, info, ptr, version, field_treat, ref_field, get_serialize_only_for_eval(), allow_delay2);
+  allow_delay2 = ALLOW_DELAY;
   if(!ref_field && (field_treat != ARCHIVE_FIELD_IS_BASECLASS) && ptr && 
       !get_is_temp_field() && (!get_is_temp_field_one_level() || ((field_treat == ARCHIVE_FIELD_IS_PTR) && !get_is_temp_field_also_for_ptr())))
   {
@@ -551,6 +553,7 @@ void Archiver::register_reference(int id, enum ArchiveFieldTreat field_treat, co
 //  all_reference_list->push_back(fid);
   all_reference_list->put((uint32_t)id, (void*)ptr);
 
+
 }
 void Archiver::register_item(store::Item* i)
 {
@@ -573,10 +576,12 @@ void Archiver::register_delay_reference(void **ptr,
     fid.class_name = strdup(class_name);
   else
     fid.class_name = NULL;
+  fid.to_add_ref = false;
   fwd_reference_list.push_back(fid);
+
 }
 
-void Archiver::reconf_last_delayed_rcobject(void **last_obj, void **new_last_obj)
+void Archiver::reconf_last_delayed_rcobject(void **last_obj, void **new_last_obj, bool to_add_ref)
 {
   if(fwd_reference_list.size() > 0)
   {
@@ -585,6 +590,7 @@ void Archiver::reconf_last_delayed_rcobject(void **last_obj, void **new_last_obj
     {
       //fid.add_ref_to_rcobject = false;
       fid.ptr = new_last_obj;
+      fid.to_add_ref = to_add_ref;
     }
   }
 }
@@ -661,7 +667,12 @@ void Archiver::finalize_input_serialization()
       store::Item* rcobj2;
       xqpStringStore* rcobj3;
 
-      if((rcobj1 = dynamic_cast<SimpleRCObject*>((SerializeBaseClass*)ptr)) != NULL)
+
+      if(!(*it).to_add_ref)
+      {
+        int i=0;
+      }
+      else if((rcobj1 = dynamic_cast<SimpleRCObject*>((SerializeBaseClass*)ptr)) != NULL)
       {
         RCHelper::addReference(rcobj1); //this can lead to memory leaks
       }
@@ -682,8 +693,20 @@ void Archiver::finalize_input_serialization()
 
   //decrement RC on Items
   std::vector<store::Item*>::iterator item_it;
+  int j=0;
   for(item_it = registered_items.begin(); item_it != registered_items.end(); item_it++)
   {
+    j++;
+    long *rc = (*item_it)->getSharedRefCounter();
+    if(rc)
+    {
+      assert(*rc > 1);
+    }
+    else
+    {
+      long rc = (*item_it)->getRefCount();
+      assert(rc > 1);
+    }
     (*item_it)->removeReference((*item_it)->getSharedRefCounter() SYNC_PARAM2((*item_it)->getRCLock()));
   }
 }
@@ -718,7 +741,7 @@ void Archiver::prepare_serialize_out()
   {
     check_compound_fields(out_fields);
   }
-  check_allowed_delays(out_fields);
+  while(check_allowed_delays(out_fields));
 }
 
 archive_field* Archiver::replace_with_null(archive_field *current_field)
@@ -728,7 +751,7 @@ archive_field* Archiver::replace_with_null(archive_field *current_field)
     archive_field   *null_field = new archive_field("NULL", 
                                                     current_field->is_simple, 
                                                     current_field->is_class, "", NULL, 0, 
-                                                    ARCHIVE_FIELD_IS_NULL, NULL, false, true);
+                                                    ARCHIVE_FIELD_IS_NULL, NULL, false, ALLOW_DELAY);
     null_field->id = ++nr_ids;
     replace_field(null_field, current_field);
     current_field->parent = NULL;
@@ -820,9 +843,9 @@ void Archiver::exchange_mature_fields(archive_field *field1, archive_field *fiel
     field2_parent->last_child = field1;
   field1->parent = field2_parent;
 
-  bool temp_delay = field1->allow_delay;
-  field1->allow_delay = field2->allow_delay;
-  field2->allow_delay = temp_delay;
+  ENUM_ALLOW_DELAY temp_delay = field1->allow_delay2;
+  field1->allow_delay2 = field2->allow_delay2;
+  field2->allow_delay2 = temp_delay;
 }
 
 void Archiver::check_compound_fields(archive_field *parent_field)
@@ -835,76 +858,82 @@ void Archiver::check_compound_fields(archive_field *parent_field)
     refering_field = find_top_most_eval_only_field(parent_field);
     if(!refering_field)
       break;
-  //+debug
-//  printf("move reference %s, %s -> %s\n", refering_field->refered->type, refering_field->refered->parent->type, refering_field->parent->type);
-/*
-    replace_with_null(refering_field->refered);
-    //get that archive_field
-    replace_field(refering_field->refered, refering_field);
-    archive_field *temp_field = refering_field->refered;
-    delete refering_field;
-    refering_field = temp_field;
-    //search in orphan list
-    std::vector<archive_field*>::iterator orphan_it;
-    for(orphan_it = orphan_fields.begin(); orphan_it != orphan_fields.end(); orphan_it++)
+
+    if(refering_field->refered->allow_delay2 != ALLOW_DELAY)
     {
-      if((*orphan_it) == refering_field)
+      //must preserve this serialization
+      archive_field *temp_field = refering_field->refered->parent;
+      while(temp_field)
       {
-        orphan_fields.erase(orphan_it);
-        break;
+        temp_field->only_for_eval = 0;
+        temp_field = temp_field->parent;
       }
     }
-*/
-    exchange_mature_fields(refering_field, refering_field->refered);
-    refering_field->only_for_eval = refering_field->refered->only_for_eval;
-    
-    refering_field = refering_field->refered;
-
-    clean_only_for_eval(refering_field, refering_field->only_for_eval);
+    else
+    {
+      exchange_mature_fields(refering_field, refering_field->refered);
+      refering_field->only_for_eval = refering_field->refered->only_for_eval;
+    }
+    clean_only_for_eval(refering_field->refered, refering_field->refered->only_for_eval);
   }
-  check_compound_fields2(parent_field);
+  while(check_only_for_eval_nondelay_referencing(parent_field));
+  replace_only_for_eval_with_null(parent_field);
 }
 
-void Archiver::check_compound_fields2(archive_field   *parent_field)
+bool Archiver::check_only_for_eval_nondelay_referencing(archive_field   *parent_field)
 {
   archive_field   *current_field = parent_field->first_child;
   while(current_field)
   {
     if(current_field->only_for_eval && (current_field->field_treat != ARCHIVE_FIELD_NORMAL))
     {
-      //don't save it, replace it with NULL if possible
-  //+debug
-//  printf("replace only_for_eval with null %s\n", current_field->type);
+      if((current_field->field_treat == ARCHIVE_FIELD_IS_REFERENCING) &&
+        (current_field->allow_delay2 != ALLOW_DELAY) &&
+        (!current_field->refered->only_for_eval))
+      {
+        //exchange fields
+      //  exchange_mature_fields(current_field, current_field->refered);
+      //  current_field->only_for_eval = false;
+
+        //must preserve this serialization
+        archive_field *temp_field = current_field;
+        while(temp_field)
+        {
+          temp_field->only_for_eval = 0;
+          temp_field = temp_field->parent;
+        }
+        return true;
+      }
+    }
+
+    if(!current_field->is_simple)
+    {
+      if(check_only_for_eval_nondelay_referencing(current_field))
+        return true;
+    }
+    current_field = current_field->next;
+  }
+  return false;
+}
+
+void Archiver::replace_only_for_eval_with_null(archive_field   *parent_field)
+{
+  archive_field   *current_field = parent_field->first_child;
+  while(current_field)
+  {
+    if(current_field->only_for_eval && (current_field->field_treat != ARCHIVE_FIELD_NORMAL))
+    {
+    //don't save it, replace it with NULL if possible
       archive_field *null_field = replace_with_null(current_field);
 
       orphan_fields.push_back(current_field);
       current_field = null_field;
     }
-  /*  else if((current_field->field_treat == ARCHIVE_FIELD_IS_REFERENCING) &&
-            current_field->refered->only_for_eval &&
-            (current_field->refered->field_treat != ARCHIVE_FIELD_NORMAL))
-    {
-      archive_field *null_field = replace_with_null(current_field->refered);
-      //get that archive_field
-      replace_field(current_field->refered, current_field);
-      archive_field *temp_field = current_field->refered;
-      delete current_field;
-      current_field = temp_field;
-      //search in orphan list
-      std::vector<archive_field*>::iterator orphan_it;
-      for(orphan_it = orphan_fields.begin(); orphan_it != orphan_fields.end(); orphan_it++)
-      {
-        if((*orphan_it) == current_field)
-        {
-          orphan_fields.erase(orphan_it);
-          break;
-        }
-      }
-      clean_only_for_eval(current_field, current_field->only_for_eval);
-    }
-  */
+
     if(!current_field->is_simple)
-      check_compound_fields2(current_field);
+    {
+      replace_only_for_eval_with_null(current_field);
+    }
     current_field = current_field->next;
   }
 }
@@ -970,20 +999,23 @@ archive_field* Archiver::get_prev(archive_field* field)
   return NULL;
 }
 
-void Archiver::check_allowed_delays(archive_field *parent_field)
+bool Archiver::check_allowed_delays(archive_field *parent_field)
 {
   //check all fields with dont_allow_delay and see if they are delayed
   //exchange field with the reference then
-  
   archive_field   *child;
   child = parent_field->first_child;
   while(child)
   {
-    if(!child->allow_delay && (child->field_treat == ARCHIVE_FIELD_IS_REFERENCING) &&
-       check_order(out_fields, child, child->refered) < 1)
+    if((child->field_treat == ARCHIVE_FIELD_IS_REFERENCING) &&
+       ((child->allow_delay2 == DONT_ALLOW_DELAY) && (check_order(out_fields, child, child->refered) < 1) ||
+       (child->allow_delay2 == SERIALIZE_NOW)))
     {
-      if((child->refered->field_treat == ARCHIVE_FIELD_NORMAL))// ||
-        //!child->refered->allow_delay)
+      if(child->allow_delay2 == SERIALIZE_NOW)
+      {
+      }
+      if((child->refered->field_treat == ARCHIVE_FIELD_NORMAL) ||
+        (child->refered->allow_delay2 == SERIALIZE_NOW))
       {
         //impossible to solve situation
         //need to change the serialization order somewhere
@@ -992,13 +1024,17 @@ void Archiver::check_allowed_delays(archive_field *parent_field)
       //exchange fields
       exchange_mature_fields(child, child->refered);
 
-      child->refered->allow_delay = true;
+    //  child->refered->allow_delay2 = ALLOW_DELAY;
       child = child->refered;
+
+      return true;
     }
-    check_allowed_delays(child);
+    if(check_allowed_delays(child))
+      return true;
     child = child->next;
   }
 
+  return false;
 }
 
 }}

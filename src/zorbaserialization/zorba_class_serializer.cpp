@@ -486,6 +486,8 @@ void iterator_to_vector(store::Iterator_t iter, std::vector<store::Item_t> &item
   iter->close();
 }
 
+void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree);
+
 void serialize_my_children(Archiver &ar, store::Iterator_t iter)
 {
   if(ar.is_serializing_out())
@@ -495,27 +497,29 @@ void serialize_my_children(Archiver &ar, store::Iterator_t iter)
     std::vector<store::Item_t>::iterator  child_it;
     int child_count = childs.size();
     ar & child_count;
-    ar.set_is_temp_field(false);
+//    ar.set_is_temp_field(false);
     for(child_it = childs.begin(); child_it != childs.end(); child_it++)
     {
       store::Item*  p = (*child_it).getp();
     //  ar.set_is_temp_field_one_level(true);
-      ar.dont_allow_delay();
-      ar & p;
+      ar.dont_allow_delay(SERIALIZE_NOW);
+      //ar & p;
+      serialize_node_tree(ar, p, false);
     }
   }
   else
   {
     int child_count;
     ar & child_count;
-    ar.set_is_temp_field(false);
+//    ar.set_is_temp_field(false);
     for(int i=0;i<child_count;i++)
     {
-      store::Item*  p; 
-      ar & p;//should be automatically added to DocumentNode or ElementNode
+      store::Item*  p = NULL; 
+      //ar & p;//should be automatically added to DocumentNode or ElementNode
+      serialize_node_tree(ar, p, false);
     }
   }
-  ar.set_is_temp_field(true);
+//  ar.set_is_temp_field(true);
 }
 
 void serialize_my_children2(Archiver &ar, store::Iterator_t iter)
@@ -534,11 +538,18 @@ void serialize_my_children2(Archiver &ar, store::Iterator_t iter)
       type var##_in;                              \
       if(ar.is_serializing_out())                 \
       {                                           \
-        const type &var = obj->get_func;              \
+        const type &var = obj->get_func;          \
         var##_in = var;                           \
       }                                           \
       ar.dont_allow_delay();                      \
       ar & var##_in;                              \
+
+#define  SERIALIZE_PARENT                         \
+      store::Item* parent = NULL;                 \
+      if(ar.is_serializing_out())                 \
+        parent = obj->getParent();                \
+      ar.dont_allow_delay();                      \
+      serialize_node_tree(ar, parent, false);
 
 #define FINALIZE_SERIALIZE(create_func, func_params)    \
       if(!ar.is_serializing_out())                      \
@@ -590,8 +601,12 @@ void operator&(Archiver &ar, store::Item* &obj)
     assert(is_node || is_atomic || is_pul || is_tuple || is_error);
     sprintf(strtemp, "n%da%dp%dt%de%d",
                     is_node, is_atomic, is_pul, is_tuple, is_error);
-
+    if(is_node)
+      ar.set_is_temp_field(true);
     is_ref = ar.add_compound_field("store::Item*", 0, FIELD_IS_CLASS, strtemp, obj, ARCHIVE_FIELD_IS_PTR);
+    if(is_node)
+      ar.set_is_temp_field(false);
+
   }
   else
   {
@@ -923,111 +938,7 @@ EndAtomicItem:;
     }
     else if(is_node)
     {
-      store::StoreConsts::NodeKind   nodekind = store::StoreConsts::anyNode;
-      if(ar.is_serializing_out())
-        nodekind = obj->getNodeKind();
-      SERIALIZE_ENUM(store::StoreConsts::NodeKind, nodekind);
-      switch(nodekind)
-      {
-      case store::StoreConsts::anyNode:
-        ZORBA_SER_ERROR_DESC_OSS(SRL0010_ITEM_TYPE_NOT_SERIALIZABLE, "anyNode");
-      case store::StoreConsts::documentNode:
-      {
-        SERIALIZE_FIELD(xqpStringStore_t, baseUri, getBaseURI());
-        SERIALIZE_FIELD(xqpStringStore_t, docUri, getDocumentURI());
-        FINALIZE_SERIALIZE(createDocumentNode, (result, baseUri, docUri));
-        serialize_my_children(ar, obj->getChildren());
-      }break;
-      case store::StoreConsts::elementNode:
-      {
-        ar.set_is_temp_field(false);
-        SERIALIZE_FIELD(store::Item*, parent, getParent());
-        ar.set_is_temp_field(true);
-        //pos = -1
-        SERIALIZE_FIELD(store::Item_t, nodename, getNodeName());
-        SERIALIZE_FIELD(store::Item_t, name_of_type, getType());
-        SERIALIZE_FIELD(bool, isInSubstGroup, isInSubstitutionGroup());
-        bool  haveTypedValue = false;
-        bool  haveEmptyValue = true;
-        if(ar.is_serializing_out())
-        {
-          //workaround
-        //  store::simplestore::ElementNode *elem_node = dynamic_cast<store::simplestore::ElementNode*>(obj);
-        //  haveTypedValue = elem_node->haveTypedValue();
-        //  haveEmptyValue = elem_node->haveEmptyValue();
-          if(!name_of_type->getNamespace()->byteEqual("http://www.w3.org/2001/XMLSchema") ||
-              !name_of_type->getLocalName()->byteEqual("untyped"))
-            haveTypedValue = true;
-        }
-        ar & haveTypedValue;
-        ar & haveEmptyValue;
-        store::NsBindings ns_bindings;
-        if(ar.is_serializing_out())
-          obj->getNamespaceBindings(ns_bindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);
-        ar & ns_bindings;
-        SERIALIZE_FIELD(xqpStringStore_t, baseUri, getBaseURI());
-        FINALIZE_SERIALIZE(createElementNode, (result, parent, -1, nodename, name_of_type, haveTypedValue, haveEmptyValue, ns_bindings, baseUri, isInSubstGroup));
-
-        serialize_my_children2(ar, obj->getAttributes());
-
-        serialize_my_children(ar, obj->getChildren());
-      }break;
-      case store::StoreConsts::attributeNode:
-      {
-        ar.set_is_temp_field(false);
-        SERIALIZE_FIELD(store::Item*, parent, getParent());
-        ar.set_is_temp_field(true);
-        SERIALIZE_FIELD(store::Item_t, nodename, getNodeName());
-        SERIALIZE_FIELD(store::Item_t, name_of_type, getType());
-        store::Item_t val;
-        store::Iterator_t val_it;
-        if(ar.is_serializing_out())
-          obj->getTypedValue(val, val_it);
-        ar & val;
-        std::vector<store::Item_t> val_vector;
-        if(val == NULL)
-        {
-          iterator_to_vector(val_it, val_vector);
-        }
-        ar & val_vector;
-        if(val != NULL)
-        {
-          FINALIZE_SERIALIZE(createAttributeNode, (result, parent, -1, nodename, name_of_type, val));
-        }
-        else
-        {
-          FINALIZE_SERIALIZE(createAttributeNode, (result, parent, -1, nodename, name_of_type, val_vector));
-        }
-      }break;
-      case store::StoreConsts::textNode:
-      {
-        ar.set_is_temp_field(false);
-        SERIALIZE_FIELD(store::Item*, parent, getParent());
-        ar.set_is_temp_field(true);
-        SERIALIZE_FIELD(xqpStringStore_t, content, getStringValue());
-        FINALIZE_SERIALIZE(createTextNode, (result, parent, -1, content));
-      }break;
-      case store::StoreConsts::piNode:
-      {
-        ar.set_is_temp_field(false);
-        SERIALIZE_FIELD(store::Item*, parent, getParent());
-        ar.set_is_temp_field(true);
-        SERIALIZE_FIELD(xqpStringStore_t, target, getTarget());
-        SERIALIZE_FIELD(xqpStringStore_t, content, getStringValue());
-        SERIALIZE_FIELD(xqpStringStore_t, baseUri, getBaseURI());
-        FINALIZE_SERIALIZE(createPiNode, (result, parent, -1, target, content, baseUri));
-      }break;
-      case store::StoreConsts::commentNode:
-      {
-        ar.set_is_temp_field(false);
-        SERIALIZE_FIELD(store::Item*, parent, getParent());
-        ar.set_is_temp_field(true);
-        SERIALIZE_FIELD(xqpStringStore_t, content, getStringValue());
-        FINALIZE_SERIALIZE(createCommentNode, (result, parent, -1, content));
-      }break;
-      default:
-        ZORBA_SER_ERROR_DESC_OSS(SRL0010_ITEM_TYPE_NOT_SERIALIZABLE, "unknown");
-      }
+      serialize_node_tree(ar, obj, true);
     }
     else if(is_pul)
     {
@@ -1051,6 +962,194 @@ EndAtomicItem:;
     ar.set_is_temp_field(false);
     ar.set_is_temp_field_one_level(false);
   }
+
+  if(ar.is_serializing_out())
+  {
+    if(!is_ref)
+      ar.add_end_compound_field();
+  }
+  else
+  {
+    if(!is_ref)
+    {
+      if(!is_node)
+        ar.register_item(obj);
+      ar.read_end_current_level();
+    }
+    else
+    {
+      SerializeBaseClass  *new_obj = NULL;
+      if((new_obj = (SerializeBaseClass*)ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
+      {
+        obj = dynamic_cast<store::Item*>(new_obj);
+        if(!obj)
+        {
+          ZORBA_SER_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
+        }
+      }
+      else if(!ar.get_is_temp_field() && !ar.get_is_temp_field_one_level())
+        ar.register_delay_reference((void**)&obj, FIELD_IS_CLASS, "store::Item*", referencing);
+      else
+        obj = NULL;
+    }
+  }
+
+}
+
+void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
+{
+  //only for node items
+  //serialize first whole tree and then the item (will surely be a reference)
+  if(all_tree)
+  {
+    store::Item *parent = NULL;
+    if(ar.is_serializing_out())
+    {
+      parent = obj->getParent();
+      while(parent->getParent())
+        parent = parent->getParent();
+      if(!parent)
+      {
+        parent = obj;
+      }
+    }
+    serialize_node_tree(ar, parent, false);
+  }
+  ar.set_is_temp_field(false);
+  int   id;
+  enum  ArchiveFieldTreat field_treat;
+  int   referencing;
+  bool is_ref;
+  if(ar.is_serializing_out())
+  {
+    is_ref = ar.add_compound_field("store::Item*", 0, FIELD_IS_CLASS, "", obj, ARCHIVE_FIELD_IS_PTR);
+  }
+  else
+  {
+    char  *type;
+    std::string value;
+    int   version;
+    bool  is_simple;
+    bool  is_class;
+    bool  retval;
+    retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
+    if(!retval && ar.get_read_optional_field())
+      return;
+    ar.check_class_field(retval, type, "store::Item*", is_simple, is_class, field_treat, (enum  ArchiveFieldTreat)-1, id);
+    if(field_treat == ARCHIVE_FIELD_IS_NULL)
+    {
+      obj = NULL;//unreachable
+      ar.read_end_current_level();
+      ar.set_is_temp_field(true);
+      return;
+    }
+    //ar.register_reference(id, &obj);
+    if((field_treat != ARCHIVE_FIELD_IS_PTR) && (field_treat != ARCHIVE_FIELD_IS_REFERENCING))
+    {
+      ZORBA_SER_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
+    }
+    is_ref = (field_treat == ARCHIVE_FIELD_IS_REFERENCING);
+  }
+  ar.set_is_temp_field(true);
+
+  if(!is_ref)
+  {
+    store::StoreConsts::NodeKind   nodekind = store::StoreConsts::anyNode;
+    if(ar.is_serializing_out())
+      nodekind = obj->getNodeKind();
+    SERIALIZE_ENUM(store::StoreConsts::NodeKind, nodekind);
+    switch(nodekind)
+    {
+    case store::StoreConsts::anyNode:
+      ZORBA_SER_ERROR_DESC_OSS(SRL0010_ITEM_TYPE_NOT_SERIALIZABLE, "anyNode");
+    case store::StoreConsts::documentNode:
+    {
+      SERIALIZE_FIELD(xqpStringStore_t, baseUri, getBaseURI());
+      SERIALIZE_FIELD(xqpStringStore_t, docUri, getDocumentURI());
+      FINALIZE_SERIALIZE(createDocumentNode, (result, baseUri, docUri));
+      serialize_my_children(ar, obj->getChildren());
+    }break;
+    case store::StoreConsts::elementNode:
+    {
+      SERIALIZE_PARENT;
+      //pos = -1
+      SERIALIZE_FIELD(store::Item_t, nodename, getNodeName());
+      SERIALIZE_FIELD(store::Item_t, name_of_type, getType());
+      SERIALIZE_FIELD(bool, isInSubstGroup, isInSubstitutionGroup());
+      bool  haveTypedValue = false;
+      bool  haveEmptyValue = true;
+      if(ar.is_serializing_out())
+      {
+        //workaround
+      //  store::simplestore::ElementNode *elem_node = dynamic_cast<store::simplestore::ElementNode*>(obj);
+      //  haveTypedValue = elem_node->haveTypedValue();
+      //  haveEmptyValue = elem_node->haveEmptyValue();
+        if(!name_of_type->getNamespace()->byteEqual("http://www.w3.org/2001/XMLSchema") ||
+            !name_of_type->getLocalName()->byteEqual("untyped"))
+          haveTypedValue = true;
+      }
+      ar & haveTypedValue;
+      ar & haveEmptyValue;
+      store::NsBindings ns_bindings;
+      if(ar.is_serializing_out())
+        obj->getNamespaceBindings(ns_bindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);
+      ar & ns_bindings;
+      SERIALIZE_FIELD(xqpStringStore_t, baseUri, getBaseURI());
+      FINALIZE_SERIALIZE(createElementNode, (result, parent, -1, nodename, name_of_type, haveTypedValue, haveEmptyValue, ns_bindings, baseUri, isInSubstGroup));
+
+      serialize_my_children2(ar, obj->getAttributes());
+
+      serialize_my_children(ar, obj->getChildren());
+    }break;
+    case store::StoreConsts::attributeNode:
+    {
+      SERIALIZE_PARENT;
+      SERIALIZE_FIELD(store::Item_t, nodename, getNodeName());
+      SERIALIZE_FIELD(store::Item_t, name_of_type, getType());
+      store::Item_t val;
+      store::Iterator_t val_it;
+      if(ar.is_serializing_out())
+        obj->getTypedValue(val, val_it);
+      ar & val;
+      std::vector<store::Item_t> val_vector;
+      if(val == NULL)
+      {
+        iterator_to_vector(val_it, val_vector);
+      }
+      ar & val_vector;
+      if(val != NULL)
+      {
+        FINALIZE_SERIALIZE(createAttributeNode, (result, parent, -1, nodename, name_of_type, val));
+      }
+      else
+      {
+        FINALIZE_SERIALIZE(createAttributeNode, (result, parent, -1, nodename, name_of_type, val_vector));
+      }
+    }break;
+    case store::StoreConsts::textNode:
+    {
+      SERIALIZE_PARENT;
+      SERIALIZE_FIELD(xqpStringStore_t, content, getStringValue());
+      FINALIZE_SERIALIZE(createTextNode, (result, parent, -1, content));
+    }break;
+    case store::StoreConsts::piNode:
+    {
+      SERIALIZE_PARENT;
+      SERIALIZE_FIELD(xqpStringStore_t, target, getTarget());
+      SERIALIZE_FIELD(xqpStringStore_t, content, getStringValue());
+      SERIALIZE_FIELD(xqpStringStore_t, baseUri, getBaseURI());
+      FINALIZE_SERIALIZE(createPiNode, (result, parent, -1, target, content, baseUri));
+    }break;
+    case store::StoreConsts::commentNode:
+    {
+      SERIALIZE_PARENT;
+      SERIALIZE_FIELD(xqpStringStore_t, content, getStringValue());
+      FINALIZE_SERIALIZE(createCommentNode, (result, parent, -1, content));
+    }break;
+    default:
+      ZORBA_SER_ERROR_DESC_OSS(SRL0010_ITEM_TYPE_NOT_SERIALIZABLE, "unknown");
+    }
+  }//end is_ref
 
   if(ar.is_serializing_out())
   {
@@ -1112,6 +1211,7 @@ void operator&(Archiver &ar, std::map<int, rchandle<function> > *&obj)
         i1 = (*it).first;
         ar & i1;
         f = (*it).second.getp();
+        ar.dont_allow_delay();
         SERIALIZE_FUNCTION(f);
       }
       ar.set_is_temp_field_one_level(false);
