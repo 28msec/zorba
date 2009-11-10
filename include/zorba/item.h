@@ -58,7 +58,7 @@ public:
    *
    * This constructor is for internal use only.
    */
-  Item(store::Item *item);
+  Item(const store::Item* item);
 
   /** \brief Assingment operator
    */
@@ -68,7 +68,7 @@ public:
    *
    * This operator is for internal use only.
    */
-  const Item& operator =(store::Item *rhs);
+  const Item& operator =(const store::Item* rhs);
 
   /** \brief Destructor
    */
@@ -309,8 +309,8 @@ public:
 
 private:
   friend class Unmarshaller;
-  store::Item *m_item;
 
+  store::Item * m_item;
 };
 
 } // namespace zorba
