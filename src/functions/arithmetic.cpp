@@ -110,10 +110,10 @@ function* binary_arith_func::specialize(
       f1 = GET_BUILTIN_FUNCTION(OP_NUMERIC_ADD_2);
       break;
     case FunctionConsts::OP_SUBTRACT_2:
-      f1 = GET_BUILTIN_FUNCTION(FunctionConsts::OP_NUMERIC_SUBTRACT_2);
+      f1 = GET_BUILTIN_FUNCTION(OP_NUMERIC_SUBTRACT_2);
       break;
     case FunctionConsts::OP_MULTIPLY_2:
-      f1 = GET_BUILTIN_FUNCTION(FunctionConsts::OP_NUMERIC_MULTIPLY_2);
+      f1 = GET_BUILTIN_FUNCTION(OP_NUMERIC_MULTIPLY_2);
       break;
     case FunctionConsts::OP_DIVIDE_2:
       f1 = GET_BUILTIN_FUNCTION(OP_NUMERIC_DIVIDE_2);
