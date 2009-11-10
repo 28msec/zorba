@@ -51,6 +51,7 @@ LIST(APPEND FUNCTIONS_SRCS
     booleans_impl.cpp
     durations_dates_times_impl.cpp
     sequences_impl.cpp
+    misc_impl.cpp
     Alexis.cpp
     arithmetic.cpp
     Collections.cpp
@@ -61,7 +62,6 @@ LIST(APPEND FUNCTIONS_SRCS
     function.cpp
     single_seq_func.cpp
     library.cpp
-    Misc.cpp
     Nodes.cpp
     Numerics.cpp
     QNames.cpp

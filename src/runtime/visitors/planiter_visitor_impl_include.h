@@ -3,8 +3,6 @@
   class SequentialIterator;
   class FlowCtlIterator;
   class LoopIterator;
-  class FnErrorIterator;
-  class FnResolveUriIterator;
   class FnBooleanIterator;
 #ifndef ZORBA_NO_XMLSCHEMA
   class ValidateIterator;
@@ -122,9 +120,6 @@
   class FnIdRefIterator;
   class FnDistinctValuesIterator;
   class FnMinMaxIterator;
-  class FnTraceIterator;
-  class FnReadStringIterator;
-  class FnPrintIterator;
   class ResolveQNameIterator;
   class QNameIterator;
   class QNameEqualIterator;

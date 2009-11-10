@@ -49,7 +49,6 @@
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/durations_dates_times/DurationsDatesTimesImpl.h"
 #include "runtime/eval/FnContextImpl.h"
-#include "runtime/debug/debug_iterators.h"
 #include "runtime/debug/zorba_debug_iterator.h"
 #include "debugger/zorba_debugger_commons.h"
 #include "runtime/collections/CollectionsImpl.h"
@@ -1081,8 +1080,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION (SequentialIterator)
   PRINTER_VISITOR_DEFINITION (FlowCtlIterator)
   PRINTER_VISITOR_DEFINITION (LoopIterator)
-  PRINTER_VISITOR_DEFINITION (FnErrorIterator)
-  PRINTER_VISITOR_DEFINITION (FnResolveUriIterator)
   PRINTER_VISITOR_DEFINITION (UDFunctionCallIterator)
   PRINTER_VISITOR_DEFINITION (StatelessExtFunctionCallIterator)
   PRINTER_VISITOR_DEFINITION (FnLocalNameIterator)
@@ -1137,9 +1134,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION (FnIdIterator)
   PRINTER_VISITOR_DEFINITION (FnIdRefIterator)
   PRINTER_VISITOR_DEFINITION (FnDistinctValuesIterator)
-  PRINTER_VISITOR_DEFINITION (FnTraceIterator)
-  PRINTER_VISITOR_DEFINITION (FnReadStringIterator)
-  PRINTER_VISITOR_DEFINITION (FnPrintIterator)
   PRINTER_VISITOR_DEFINITION (ResolveQNameIterator)
   PRINTER_VISITOR_DEFINITION (QNameIterator)
   PRINTER_VISITOR_DEFINITION (QNameEqualIterator)

@@ -35,6 +35,8 @@
 #include "functions/sequences_impl.h"
 #include "functions/func_fnput.h"
 
+#include "functions/func_misc.h"
+
 #include "functions/Collections.h"
 #include "functions/DataDefinitionLanguage.h"
 #include "functions/Numerics.h"
@@ -42,7 +44,6 @@
 #include "functions/nodeid_internal.h"
 #include "functions/EnclosedExpr.h"
 #include "functions/VarDecl.h"
-#include "functions/Misc.h"
 #include "functions/arithmetic.h"
 #include "functions/Nodes.h"
 #include "functions/tuple_functions.h"
@@ -86,9 +87,10 @@ void BuiltinFunctionLibrary::populateContext(static_context* sctx)
   populate_context_sequences(sctx);
   populate_context_sequences_impl(sctx);
   populate_context_context(sctx);
+  populate_context_fnput(sctx);
+  populate_context_misc(sctx);
 
   populateContext_Nodes(sctx);
-  populateContext_AnyURI(sctx);
   populateContext_Arithmetics(sctx);
   populateContext_Numerics(sctx);
   populateContext_QNames(sctx);
@@ -98,8 +100,6 @@ void BuiltinFunctionLibrary::populateContext(static_context* sctx)
   populateContext_Collections(sctx);
   populateContext_DataDefinitionLanguage(sctx);
   populateContext_VarDecl(sctx);
-  populateContext_Error(sctx);
-  populateContext_Debug(sctx);
   populateContext_Math(sctx);
   populateContext_Index(sctx);
   populateContext_Hoisting(sctx);
@@ -107,8 +107,6 @@ void BuiltinFunctionLibrary::populateContext(static_context* sctx)
   populateContext_Rest(sctx);
   populateContext_FOP(sctx);
   populateContext_XQDOC(sctx);
-
-  populate_context_fnput(sctx);
 
   ar.set_loading_hardcoded_objects(false);
 }

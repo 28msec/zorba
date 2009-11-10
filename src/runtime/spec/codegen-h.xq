@@ -110,7 +110,9 @@ declare function local:create-function($iter) as xs:string?
          local:add-specialization($iter),
          local:add-unfoldable($iter),
          local:add-is-source($iter),
+         local:add-is-fn-error($iter),
          local:add-is-updating($iter),
+         local:add-is-vacuous($iter),
          local:add-is-sequential($iter),
          $gen:newline,$gen:indent,'CODEGEN_DECL();',$gen:newline,
 
@@ -166,6 +168,13 @@ declare function local:add-is-source($iter) as xs:string?
   else ()
 };
 
+declare function local:add-is-fn-error($iter) as xs:string?
+{
+  if($iter/zorba:function/@isFnError = 'true') then
+    string-join(($gen:newline,$gen:indent,
+    'bool isFnError() const { return true; }',$gen:newline),'')
+  else ()
+};
 
 declare function local:add-is-updating($iter) as xs:string?
 {
@@ -175,6 +184,13 @@ declare function local:add-is-updating($iter) as xs:string?
   else ()
 };
 
+declare function local:add-is-vacuous($iter) as xs:string?
+{
+  if($iter/zorba:function/@isVacuous = 'true') then
+    string-join(($gen:newline,$gen:indent,
+    'expr_script_kind_t getUpdateType() const { return VACUOUS_EXPR; }',$gen:newline),'')
+  else ()
+};
 
 declare function local:add-is-sequential($iter) as xs:string?
 {

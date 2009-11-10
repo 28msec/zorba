@@ -179,6 +179,9 @@ declare function local:create-zorba-type($param,$mapping) as xs:string?
 
   else if ($param eq 'empty-sequence()') then
     string-join((',', $gen:newline, gen:indent(3), 'GENV_TYPESYSTEM.EMPTY_TYPE'), '')
+    
+  else if ($param eq 'none') then
+    string-join((',', $gen:newline, gen:indent(3), 'GENV_TYPESYSTEM.NONE_TYPE'), '')
 
   else if($param) then
     let $suffix := if(ends-with($param,'?')) then 'TYPE_QUESTION' 

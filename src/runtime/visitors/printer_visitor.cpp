@@ -39,6 +39,7 @@
 #include "runtime/convertors/convertors.h"
 #include "runtime/durations_dates_times/durations_dates_times.h"
 #include "runtime/fnput/fnput.h"
+#include "runtime/misc/misc.h"
 #include "runtime/sequences/sequences.h"
 #include "runtime/strings/strings.h"
 
@@ -617,6 +618,71 @@ void PrinterVisitor::endVisit ( const FnPutIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FnPutIterator>
+
+// <TraceIterator>
+void PrinterVisitor::beginVisit ( const TraceIterator& a) {
+  thePrinter.startBeginVisit("TraceIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const TraceIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </TraceIterator>
+
+// <ReadLineIterator>
+void PrinterVisitor::beginVisit ( const ReadLineIterator& a) {
+  thePrinter.startBeginVisit("ReadLineIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ReadLineIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ReadLineIterator>
+
+// <PrintIterator>
+void PrinterVisitor::beginVisit ( const PrintIterator& a) {
+  thePrinter.startBeginVisit("PrintIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const PrintIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </PrintIterator>
+
+// <ResolveUriIterator>
+void PrinterVisitor::beginVisit ( const ResolveUriIterator& a) {
+  thePrinter.startBeginVisit("ResolveUriIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ResolveUriIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ResolveUriIterator>
+
+// <ErrorIterator>
+void PrinterVisitor::beginVisit ( const ErrorIterator& a) {
+  thePrinter.startBeginVisit("ErrorIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ErrorIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ErrorIterator>
 
 // <FnConcatIterator>
 void PrinterVisitor::beginVisit ( const FnConcatIterator& a) {

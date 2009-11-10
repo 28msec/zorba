@@ -8,8 +8,6 @@
 
   PLAN_ITER_VISITOR (LoopIterator);
 
-  PLAN_ITER_VISITOR (FnResolveUriIterator);
-
   PLAN_ITER_VISITOR (FnLocalNameIterator);
 
   PLAN_ITER_VISITOR (FnNamespaceUriIterator);
@@ -18,8 +16,6 @@
 
   PLAN_ITER_VISITOR (FnCollectionIterator);
 
-  PLAN_ITER_VISITOR (FnErrorIterator);
-       
   PLAN_ITER_VISITOR (FnBooleanIterator);
 
 #ifndef ZORBA_NO_XMLSCHEMA
@@ -241,12 +237,6 @@
   PLAN_ITER_VISITOR (FnDistinctValuesIterator);
 
   PLAN_ITER_VISITOR (FnMinMaxIterator);
-
-  PLAN_ITER_VISITOR (FnTraceIterator);
-
-  PLAN_ITER_VISITOR (FnReadStringIterator);
-
-  PLAN_ITER_VISITOR (FnPrintIterator);
 
   PLAN_ITER_VISITOR (ResolveQNameIterator);
 

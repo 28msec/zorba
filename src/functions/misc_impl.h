@@ -13,41 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_DEBUG_ITERATORS_H
-#define ZORBA_DEBUG_ITERATORS_H
-
-#include "zorbatypes/xqpstring.h"
+#ifndef ZORBA_FUNCTIONS_MISC_IMPL_H
+#define ZORBA_FUNCTIONS_MISC_IMPL_H
 
 #include "common/shared_types.h"
+#include "functions/function_impl.h"
 
-#include "runtime/base/narybase.h"
-
-namespace zorba {
-
-
-class FnTraceIteratorState : public PlanIteratorState 
+namespace zorba
 {
-public:
-  store::Item_t theTagItem;
-  xqpString     theTag;
-  uint32_t      theIndex;
-  std::ostream* theOS;
 
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-
-NARY_ITER_STATE(FnTraceIterator, FnTraceIteratorState);
-
-
-} 
-
-#endif
-/* vim:set ts=2 sw=2: */
-
-/*
- * Local variables:
- * mode: c++
- * End:
- */
+} // namespace zorba
+#endif //ZORBA_FUNCTIONS_MISC_IMPL_H

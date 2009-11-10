@@ -19,18 +19,11 @@
 #include "common/shared_types.h"
 
 #include "runtime/base/narybase.h"
-#include "runtime/api/plan_iterator_wrapper.h"
+
 #include "runtime/util/flowctl_exception.h"
 
 
 namespace zorba {
-// 3 The Error Function
-NARY_ITER(FnErrorIterator);
-
-
-// 8.1 fn:resolve-uri
-NARY_ITER(FnResolveUriIterator);
-
 
 class SequentialIterator : public NaryBaseIterator<SequentialIterator, PlanIteratorState >
 {
@@ -94,47 +87,6 @@ public:
 
 
 NARY_ITER (LoopIterator);
-
-
-NARY_ITER (FnReadStringIterator);
-
-
-class FnPrintIterator : public NaryBaseIterator<FnPrintIterator, PlanIteratorState>
-{
-private:
-	bool m_printToConsole;
-
-public:
-  SERIALIZABLE_CLASS(FnPrintIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
-  FnPrintIterator,
-  NaryBaseIterator<FnPrintIterator, PlanIteratorState >);
-
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnPrintIterator, PlanIteratorState >*)this);
-
-    ar & m_printToConsole;
-  }
-
-public:
-	FnPrintIterator(
-        static_context* sctx,
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& aChildren,
-        bool printToConsole = true)
-    :
-	  NaryBaseIterator<FnPrintIterator, PlanIteratorState >(sctx, loc, aChildren),
-    m_printToConsole(printToConsole)
-  {
-  }
-
-  void accept(PlanIterVisitor& v) const;
-
-	bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
 
 } /* namespace zorba */
 

@@ -164,6 +164,20 @@ namespace zorba {
     void endVisit  ( const TimezoneFromTimeIterator& );
     void beginVisit( const FnPutIterator& );
     void endVisit  ( const FnPutIterator& );
+    void beginVisit( const TraceIterator& );
+    void endVisit  ( const TraceIterator& );
+
+    void beginVisit( const ReadLineIterator& );
+    void endVisit  ( const ReadLineIterator& );
+
+    void beginVisit( const PrintIterator& );
+    void endVisit  ( const PrintIterator& );
+
+    void beginVisit( const ResolveUriIterator& );
+    void endVisit  ( const ResolveUriIterator& );
+
+    void beginVisit( const ErrorIterator& );
+    void endVisit  ( const ErrorIterator& );
     void beginVisit( const FnConcatIterator& );
     void endVisit  ( const FnConcatIterator& );
 
