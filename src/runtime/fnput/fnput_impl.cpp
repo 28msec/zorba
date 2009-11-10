@@ -25,6 +25,7 @@
 #include "store/api/pul.h"
 #include "store/api/item_factory.h"
 #include "store/api/copymode.h"
+#include "zorbatypes/URI.h"
 
 
 namespace zorba 
@@ -39,6 +40,7 @@ bool FnPutIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::Item_t uriItem;
   xqpString uriString;
   xqpStringStore_t resolvedUriString;
+  URI           lTargetUri;
   store::Item_t resolvedUriItem;
   std::auto_ptr<store::PUL> pul;
 
@@ -59,6 +61,11 @@ bool FnPutIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   resolvedUriString = theSctx->resolve_relative_uri(uriString, xqp_string(), false).getStore();
   GENV_ITEMFACTORY->createAnyURI(resolvedUriItem, resolvedUriString);
+  try {
+    lTargetUri = URI( resolvedUriString.getp() );
+  } catch (error::ZorbaError& e) {
+    ZORBA_ERROR_LOC_DESC(FOUP0002, loc, e.theDescription);
+  }
 
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
