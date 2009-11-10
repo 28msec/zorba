@@ -62,7 +62,6 @@ LIST(APPEND FUNCTIONS_SRCS
     function.cpp
     single_seq_func.cpp
     library.cpp
-    Nodes.cpp
     Numerics.cpp
     QNames.cpp
     signature.cpp
