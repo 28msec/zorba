@@ -48,7 +48,8 @@
     unsigned cnt = type##_ptr->get_signature().arg_count();               \
     DEBUG_FN_DECL(fname, cnt);                                            \
     sctx->bind_fn(fname, type##_ptr.get(), cnt);                          \
-    BuiltinFunctionLibrary::theFunctions[type##_ptr->getKind()] = type##_ptr.release(); \
+    BuiltinFunctionLibrary::theFunctions[type##_ptr->getKind()] = type##_ptr.get(); \
+    type##_ptr.release(); \
   } while(0)
 
 
