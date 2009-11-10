@@ -388,9 +388,9 @@ static_context::static_context()
 }
 
   
-static_context::static_context (static_context *_parent)
+static_context::static_context (static_context* parent)
   :
-  context (_parent),
+  context(parent),
   theDocResolver(0),
   theColResolver(0),
   theSchemaResolver(0),
@@ -404,7 +404,7 @@ static_context::static_context (static_context *_parent)
 }
 
 
-static_context::static_context(::zorba::serialization::Archiver &ar)
+static_context::static_context(::zorba::serialization::Archiver& ar)
   :
   context(ar),
   theDocResolver(0),
@@ -427,8 +427,8 @@ static_context::~static_context()
   delete theCollationCache;
 
   ///free the pointers from ctx_value_t from keymap
-  checked_vector<serializable_hashmap<ctx_value_t>::entry>::const_iterator   it;
-  const char    *keybuff;
+  checked_vector<serializable_hashmap<ctx_value_t>::entry>::const_iterator it;
+  const char* keybuff;
   
   //keybuff[sizeof(keybuff)-1] = 0;
   for(it = keymap.begin(); it != keymap.end(); it++)
@@ -479,11 +479,11 @@ static_context::~static_context()
 /*******************************************************************************
 
 ********************************************************************************/
-void
-static_context::serialize_resolvers(serialization::Archiver &ar)
+void static_context::serialize_resolvers(serialization::Archiver& ar)
 {
   bool lUserDocResolver, lUserColResolver;
-  if (ar.is_serializing_out()) {
+  if (ar.is_serializing_out()) 
+  {
     // serialize out: remember whether a doc and collection
     //                resolver was registered by the user
     lUserDocResolver = (dynamic_cast<StandardDocumentURIResolver*>(theDocResolver) != NULL); 
@@ -537,11 +537,12 @@ static_context::serialize_resolvers(serialization::Archiver &ar)
   }
 }
 
-void
-static_context::serialize_tracestream(serialization::Archiver& ar)
+
+void static_context::serialize_tracestream(serialization::Archiver& ar)
 {
   bool lUserTraceStream;
-  if (ar.is_serializing_out()) {
+  if (ar.is_serializing_out()) 
+  {
     // serialize out: remember whether the user registered a trace stream
     lUserTraceStream = (theTraceStream != 0);
 
@@ -582,7 +583,7 @@ static_context::serialize_tracestream(serialization::Archiver& ar)
 void static_context::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (context*)this);
-  SERIALIZE_TYPEMANAGER_RCHANDLE(TypeManager, typemgr);
+  SERIALIZE_TYPEMANAGER_RCHANDLE(TypeManager, theTypemgr);
 
   serialize_resolvers(ar);
   serialize_tracestream(ar);
@@ -605,21 +606,26 @@ static_context* static_context::create_child_context()
 /*******************************************************************************
 
 ********************************************************************************/
-void static_context::set_typemanager(rchandle<TypeManager> typemgr_)
+void static_context::set_typemanager(rchandle<TypeManager> typemgr)
 {
-  typemgr = typemgr_;
+  theTypemgr = typemgr;
 }
 
 
 TypeManager* static_context::get_typemanager() const
 {
-  TypeManager* tm = typemgr.getp();
+  TypeManager* tm = theTypemgr.getp();
   if (tm != NULL) {
     return tm;
   }
   return static_cast<static_context *>(parent)->get_typemanager();
 }
 
+
+TypeManager* static_context::get_local_typemanager() const 
+{
+  return theTypemgr.getp(); 
+}
 
 /*******************************************************************************
 

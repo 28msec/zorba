@@ -2347,8 +2347,9 @@ void end_visit (doc_expr& v) {
 }
 
 
-bool begin_visit (elem_expr& v) {
-  CODEGEN_TRACE_IN ("");
+bool begin_visit(elem_expr& v) 
+{
+  CODEGEN_TRACE_IN("");
 
   theConstructorsStack.push(&v);
   theAttrContentStack.push(false);
@@ -2357,8 +2358,9 @@ bool begin_visit (elem_expr& v) {
 }
 
 
-void end_visit (elem_expr& v) {
-  CODEGEN_TRACE_OUT ("");
+void end_visit(elem_expr& v) 
+{
+  CODEGEN_TRACE_OUT("");
 
   PlanIter_t lQNameIter = 0;
   PlanIter_t lContentIter = 0;
@@ -2376,7 +2378,8 @@ void end_visit (elem_expr& v) {
   theAttrContentStack.pop();
   expr* e = pop_stack(theConstructorsStack);
   ZORBA_ASSERT(e == &v);
-  if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top())) {
+  if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top())) 
+  {
     isRoot = true;
   }
 

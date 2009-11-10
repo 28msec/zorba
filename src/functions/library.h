@@ -40,7 +40,9 @@ public:
   }
 
 private:
-  static void populateContext(static_context* sctx);
+  static void create(static_context* sctx);
+
+  static void destroy();
 };
 
 

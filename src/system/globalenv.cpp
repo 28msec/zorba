@@ -143,7 +143,7 @@ void GlobalEnvironment::init(store::Store* store)
   m_globalEnv->m_rootStaticContext->init();
   RCHelper::addReference (m_globalEnv->m_rootStaticContext);
 
-  BuiltinFunctionLibrary::populateContext(m_globalEnv->m_rootStaticContext);
+  BuiltinFunctionLibrary::create(m_globalEnv->m_rootStaticContext);
 
 #ifndef ZORBA_NO_BIGNUMBERS
   // initialize mapm for bignum handling
@@ -250,6 +250,7 @@ void GlobalEnvironment::destroy()
   // see http://www.icu-project.org/apiref/icu4c/uclean_8h.html#93f27d0ddc7c196a1da864763f2d8920
   m_globalEnv->cleanup_icu();
 
+  BuiltinFunctionLibrary::destroy();
 
   delete m_globalEnv;
 	m_globalEnv = NULL;

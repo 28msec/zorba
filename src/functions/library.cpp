@@ -70,7 +70,7 @@ void library_init()
 {
 }
 
-void BuiltinFunctionLibrary::populateContext(static_context* sctx)
+void BuiltinFunctionLibrary::create(static_context* sctx)
 {
   zorba::serialization::Archiver& ar = *::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects();
   ar.set_loading_hardcoded_objects(true);
@@ -112,6 +112,13 @@ void BuiltinFunctionLibrary::populateContext(static_context* sctx)
 
   ar.set_loading_hardcoded_objects(false);
 }
+
+
+void BuiltinFunctionLibrary::destroy()
+{
+  delete [] theFunctions;
+}
+
 
 
 } /* namespace zorba */

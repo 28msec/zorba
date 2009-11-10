@@ -104,7 +104,7 @@ class ZORBA_DLL_PUBLIC static_context : public context
   typedef ItemPointerHashMap<ValueIndex_t> IndexMap;
 
 protected:
-  rchandle<TypeManager>           typemgr;
+  rchandle<TypeManager>           theTypemgr;
 
   InternalDocumentURIResolver   * theDocResolver;
   InternalCollectionURIResolver * theColResolver;
@@ -140,7 +140,7 @@ public:
 
   TypeManager* get_typemanager() const;
 
-  TypeManager* get_local_typemanager() const { return typemgr.getp(); }
+  TypeManager* get_local_typemanager() const;
 
   void set_typemanager(rchandle<TypeManager>);
   
@@ -153,16 +153,26 @@ public:
   void set_query_expr(expr_t expr);
 
   StaticContextConsts::xquery_version_t xquery_version() const;
+
 	StaticContextConsts::xpath1_0compatib_mode_t xpath1_0compatib_mode() const;
+
 	StaticContextConsts::construction_mode_t construction_mode() const;
+
 	StaticContextConsts::order_empty_mode_t order_empty_mode() const;
+
 	StaticContextConsts::boundary_space_mode_t boundary_space_mode() const;
+
 	StaticContextConsts::inherit_mode_t inherit_mode() const;
+
 	StaticContextConsts::preserve_mode_t preserve_mode() const;
+
 	StaticContextConsts::ordering_mode_t ordering_mode() const;
+
   StaticContextConsts::validation_mode_t validation_mode() const;
-  bool revalidation_enabled () const;
-  xqp_string default_elem_type_ns () const;
+
+  bool revalidation_enabled() const;
+
+  xqp_string default_elem_type_ns() const;
 
   void set_xquery_version(StaticContextConsts::xquery_version_t v);
 
@@ -187,10 +197,10 @@ public:
   // Prefix-to-Namespace resolution
   //
   void
-  bind_ns (xqp_string prefix, xqp_string ns, const XQUERY_ERROR& err = XQST0033);
+  bind_ns(xqp_string prefix, xqp_string ns, const XQUERY_ERROR& err = XQST0033);
 
   bool
-  lookup_ns (xqp_string prefix, xqp_string &ns) const;
+  lookup_ns(xqp_string prefix, xqp_string &ns) const;
 
   xqp_string
   lookup_ns (xqp_string prefix, const XQUERY_ERROR& err = XPST0081) const;
@@ -211,28 +221,28 @@ public:
   bind_option(const xqp_string& prefix, const xqp_string& localname, const xqp_string& option);
 
   store::Item_t
-  lookup_qname (xqp_string default_ns, xqp_string name, const QueryLoc& loc) const;
+  lookup_qname(xqp_string default_ns, xqp_string name, const QueryLoc& loc) const;
 
   store::Item_t
-  lookup_qname (xqp_string default_ns, xqp_string pfx, xqp_string local, const QueryLoc& loc) const;
+  lookup_qname(xqp_string default_ns, xqp_string pfx, xqp_string local, const QueryLoc& loc) const;
 
   store::Item_t
-  lookup_fn_qname (xqp_string pfx, xqp_string local, const QueryLoc& loc) const;
+  lookup_fn_qname(xqp_string pfx, xqp_string local, const QueryLoc& loc) const;
 
   store::Item_t
-  lookup_elem_qname (xqp_string qname, const QueryLoc& loc) const 
+  lookup_elem_qname(xqp_string qname, const QueryLoc& loc) const 
   {
     return lookup_qname(lookup_ns_or_default("", default_elem_type_ns()), qname, loc);
   }
 
   store::Item_t
-  lookup_elem_qname (xqp_string pfx, xqp_string local, const QueryLoc& loc) const 
+  lookup_elem_qname(xqp_string pfx, xqp_string local, const QueryLoc& loc) const 
   {
     return lookup_qname(lookup_ns_or_default("", default_elem_type_ns()), pfx, local, loc);
   }
 
   store::Item_t
-  lookup_var_qname (xqp_string qname, const QueryLoc& loc) const 
+  lookup_var_qname(xqp_string qname, const QueryLoc& loc) const 
   {
     return lookup_qname ("", qname, loc);
   }
@@ -277,7 +287,7 @@ public:
   expr*
   lookup_var_nofail (xqp_string qname) const 
   {
-    expr *e = lookup_var(qname);
+    expr* e = lookup_var(qname);
     ZORBA_ASSERT (e != NULL);
     return e;
   }
@@ -322,23 +332,17 @@ public:
   lookup_type (xqp_string key);
 
   xqtref_t
-  lookup_type2 (const char *key1, xqp_string key2);
+  lookup_type2(const char* key1, xqp_string key2);
 
   xqtref_t
-  get_variable_type( store::Item *var_name );
+  get_variable_type(store::Item* var_name);
 
 	void
   set_context_item_static_type(xqtref_t t);
 
 	xqtref_t
 	context_item_static_type();
-#if 0
-	void
-  set_function_type(const store::Item *qname, xqtref_t t);
 
-  xqtref_t
-  get_function_type(const store::Item_t);
-#endif
 	void
   set_document_type(xqp_string docURI, xqtref_t t);
 

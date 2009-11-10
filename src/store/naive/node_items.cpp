@@ -1730,6 +1730,14 @@ void ElementNode::checkNamespaceConflict(
 
   xqpStringStore* ns2 = findBinding(prefix);
 
+  if (ns2 == NULL && prefix->empty() && !ns->empty())
+  {
+    ZORBA_ERROR_DESC_OSS(ecode,
+                         "The implied namespace binding of " << qname->show()
+                         << " conflicts with namespace binding ["
+                         << prefix->str() << ", \"\"" << "]");
+  }
+
   if (ns2 != NULL && !ns2->byteEqual(*ns))
   {
     ZORBA_ERROR_DESC_OSS(ecode,
