@@ -350,7 +350,7 @@ int processReply(const QueryLoc& aLoc,
     else if (content_type.indexOf("+xml") > -1)
       doc_type = 3;
     else if (content_type.indexOf("text/html") == 0)
-      doc_type = 4;
+      doc_type = 2;
     else if (content_type.indexOf("text/") == 0)
       doc_type = 2;
     else
