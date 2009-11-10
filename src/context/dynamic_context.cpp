@@ -463,11 +463,11 @@ dynamic_context::addExternalFunctionParam (
   const std::string& aName,
   void* aValue )
 {
-  dctx_value_t value;
-  value.type = dynamic_context::dctx_value_t::ext_func_param;
-  value.func_param = aValue;
+  dctx_value_t val;
+  val.type = dynamic_context::dctx_value_t::ext_func_param;
+  val.func_param = aValue;
   
-  return keymap.put ( aName, value);
+  return keymap.put ( aName, val);
 }
 
 bool
@@ -476,10 +476,12 @@ dynamic_context::getExternalFunctionParam (
   void*& aValue) const
 {
   dctx_value_t val;
+  val.type = dynamic_context::dctx_value_t::no_val;
+  val.func_param = 0;
 
   if ( !keymap.get(aName, val) ) {
     if (theParent)
-      theParent->getExternalFunctionParam(aName, aValue);
+      return theParent->getExternalFunctionParam(aName, aValue);
     else
       return false;
   }
