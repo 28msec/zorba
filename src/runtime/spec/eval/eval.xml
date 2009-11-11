@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+    
+<zorba:header>
+  <zorba:include form="Quoted">runtime/util/plan_wrapper_holder.h</zorba:include>
+  <zorba:include form="Quoted">types/typeimpl.h</zorba:include>
+</zorba:header>
+<zorba:cpp>
+  <zorba:include form="Quoted">runtime/api/runtimecb.h</zorba:include>
+  <zorba:include form="Quoted">system/globalenv.h</zorba:include>
+</zorba:cpp>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="EvalIterator" generateCodegen="false">
+
+  <zorba:description author="Zorba Team">eval iterator</zorba:description>
+
+  <zorba:member type="checked_vector&lt;store::Item_t>" name="varnames"
+                accessorName="getVarNames"/>
+  <zorba:member type="checked_vector&lt;std::string>"   name="var_keys"
+                accessorName="getVarKeys"/>
+  <zorba:member type="checked_vector&lt;xqtref_t>"      name="vartypes"
+                accessorName="getVarTypes"/>
+
+  <zorba:state generateInit="true" generateReset="true">
+    <zorba:member type="PlanWrapperHolder" name="eval_plan"
+                  brief="the plan to execute"/>
+    <zorba:member type="std::auto_ptr&lt;CompilerCB>" name="ccb"
+                  brief="the CompilerCB used to compile the eval plan"/>
+    <zorba:member type="std::auto_ptr&lt;dynamic_context>" name="dctx"
+                  brief="the dynamic context used to during execution of the eval plan"/>
+  </zorba:state>
+
+  <zorba:constructor>
+    <zorba:parameter type="checked_vector&lt;store::Item_t>" name="aVarNames"/>
+    <zorba:parameter type="checked_vector&lt;std::string>"   name="aVarKeys"/>
+    <zorba:parameter type="checked_vector&lt;xqtref_t>"      name="aVarTypes"/>
+  </zorba:constructor>
+
+  <zorba:constructor>
+  </zorba:constructor>
+    
+</zorba:iterator>
+
+</zorba:iterators>

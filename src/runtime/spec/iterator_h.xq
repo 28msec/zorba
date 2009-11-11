@@ -131,47 +131,42 @@ declare function local:constructor($iter, $name as xs:string, $base as xs:string
 
 declare function local:iterator($iter, $name as xs:string, $state as xs:string) as xs:string
 {
-  if(count($iter/zorba:constructor/zorba:parameter) ne count($iter/zorba:member))
-  then
-    (: TODO user fn:error :)
-    'Error: the number of "zorba:parameters" in the "zorba:constructor" is different than the number of "zorba:members"'
-  else
-    let $base := concat(local:arity($iter), 'BaseIterator <', $name, ', ', $state, '>')
-    return
-      concat ( 'class ', $name, ' : ', 'public ', $base,
-               $gen:newline, '{ ',
-               $gen:newline,
+  let $base := concat(local:arity($iter), 'BaseIterator <', $name, ', ', $state, '>')
+  return
+    concat ( 'class ', $name, ' : ', 'public ', $base,
+             $gen:newline, '{ ',
+             $gen:newline,
 
-      local:add-protected($iter),
+    local:add-protected($iter),
 
-      (: begin serialization, TODO: move implementation to cpp file :)
-      'public:',
-      $gen:newline, 
-      gen:indent(), 'SERIALIZABLE_CLASS(',$name,');',
-      $gen:newline, $gen:newline,
-      gen:indent(), 'SERIALIZABLE_CLASS_CONSTRUCTOR2T(', $name,',',
-      $gen:newline,
-      gen:indent(2), $base, ');', $gen:newline, $gen:newline,
-      gen:indent(), 'void serialize(::zorba::serialization::Archiver&amp; ar)',
-      $gen:newline,
-      gen:indent(), '{',
-      $gen:newline,
-      gen:indent(2), 'serialize_baseclass(ar,',
-      $gen:newline,
-      gen:indent(2),'(', $base, '*)this);',
-      $gen:newline,
-      local:add-arch($iter),
-      gen:indent(),'}',
-      $gen:newline, $gen:newline,
-      (: end serialization :)
+    (: begin serialization, TODO: move implementation to cpp file :)
+    'public:',
+    $gen:newline, 
+    gen:indent(), 'SERIALIZABLE_CLASS(',$name,');',
+    $gen:newline, $gen:newline,
+    gen:indent(), 'SERIALIZABLE_CLASS_CONSTRUCTOR2T(', $name,',',
+    $gen:newline,
+    gen:indent(2), $base, ');', $gen:newline, $gen:newline,
+    gen:indent(), 'void serialize(::zorba::serialization::Archiver&amp; ar)',
+    $gen:newline,
+    gen:indent(), '{',
+    $gen:newline,
+    gen:indent(2), 'serialize_baseclass(ar,',
+    $gen:newline,
+    gen:indent(2),'(', $base, '*)this);',
+    $gen:newline,
+    local:add-arch($iter),
+    gen:indent(),'}',
+    $gen:newline, $gen:newline,
+    (: end serialization :)
 
-      local:constructor($iter, $name, $base),
+    local:constructor($iter, $name, $base),
 
-      local:add-destructor($iter),
-      local:add-accessor($iter),
-      $gen:indent,'void accept(PlanIterVisitor&amp; v) const;',$gen:newline,$gen:newline,
-      $gen:indent,'bool nextImpl(store::Item_t&amp; result, PlanState&amp; aPlanState) const;',$gen:newline,'};',$gen:newline,$gen:newline
-      )
+    local:add-destructor($iter),
+    local:add-accessor($iter),
+    $gen:indent,'void accept(PlanIterVisitor&amp; v) const;',$gen:newline,$gen:newline,
+    $gen:indent,'bool nextImpl(store::Item_t&amp; result, PlanState&amp; aPlanState) const;',$gen:newline,'};',$gen:newline,$gen:newline
+    )
 };
 
 declare function local:add-destructor($iter) as xs:string?

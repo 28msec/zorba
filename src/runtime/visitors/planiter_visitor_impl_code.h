@@ -349,8 +349,6 @@
 
   PLAN_ITER_VISITOR (CtxVarExistsIterator);
 
-  PLAN_ITER_VISITOR (EvalIterator);
-
   PLAN_ITER_VISITOR(FnAdjustToTimeZoneIterator_1);
 
   PLAN_ITER_VISITOR(FnAdjustToTimeZoneIterator_2);

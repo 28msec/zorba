@@ -29,18 +29,22 @@ SET_SOURCE_FILES_PROPERTIES(${CMAKE_SOURCE_DIR}/src/functions/function.h
                             PROPERTIES OBJECT_DEPENDS "${CMAKE_SOURCE_DIR}/src/functions/function_enum.h")
 
 FOREACH(SPEC_FILE ${SPEC_FILES})
+
   GET_FILENAME_COMPONENT(SPEC_FILE_NAME ${SPEC_FILE} NAME)
   STRING(REPLACE ".xml" "" SPEC_PREFIX ${SPEC_FILE_NAME})
 
-  CODEGEN_GENERATOR(${CODEGEN_SOURCE_GENERATOR}
-                    ${CODEGEN_HEADER_GENERATOR} "${CMAKE_SOURCE_DIR}/src/runtime/spec/${SPEC_FILE}"
-                    "src/functions/func_${SPEC_PREFIX}"
-                    "file:=${CMAKE_SOURCE_DIR}/src/runtime/spec/${SPEC_FILE}"
-                    "mappings:=${CMAKE_SOURCE_DIR}/src/runtime/spec/mappings.xml"
-                      ${ZORBA_WORKS})
-  LIST(APPEND FUNCTIONS_SRCS
-              "func_${SPEC_PREFIX}.cpp"
-      )
+
+  IF (NOT ${SPEC_FILE_NAME} STREQUAL "eval.xml") # exclude some files
+    CODEGEN_GENERATOR(${CODEGEN_SOURCE_GENERATOR}
+                      ${CODEGEN_HEADER_GENERATOR} "${CMAKE_SOURCE_DIR}/src/runtime/spec/${SPEC_FILE}"
+                      "src/functions/func_${SPEC_PREFIX}"
+                      "file:=${CMAKE_SOURCE_DIR}/src/runtime/spec/${SPEC_FILE}"
+                      "mappings:=${CMAKE_SOURCE_DIR}/src/runtime/spec/mappings.xml"
+                        ${ZORBA_WORKS})
+    LIST(APPEND FUNCTIONS_SRCS
+                "func_${SPEC_PREFIX}.cpp"
+        )
+  ENDIF (NOT ${SPEC_FILE_NAME} STREQUAL "eval.xml")
 
 ENDFOREACH(SPEC_FILE)
 

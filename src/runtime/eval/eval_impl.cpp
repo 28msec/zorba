@@ -13,67 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+ #include "runtime/eval/eval.h"
 
-#include "compiler/api/compiler_api.h"
-#include "compiler/parsetree/parsenodes.h"
-#include "compiler/api/compilercb.h"
-
-#include "runtime/eval/FnContextImpl.h"
-#include "runtime/core/item_iterator.h"
+#include <sstream>
 #include "runtime/api/runtimecb.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/util/iterator_impl.h"
-#include "runtime/visitors/planiter_visitor.h"
+
+#include "compiler/parsetree/parsenodes.h"
+#include "compiler/api/compilercb.h"
+#include "compiler/api/compiler_api.h"
 
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
 
-#include "types/typeimpl.h"
-
-#include "store/api/store.h"
-#include "store/api/iterator.h"
-#include "store/api/temp_seq.h"
-#include "store/api/item_factory.h"
-
-#include "system/globalenv.h"
-
 using namespace std;
 
-namespace zorba
-{
+namespace zorba {
 
-SERIALIZABLE_CLASS_VERSIONS(EvalIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(EvalIterator)
-
-
-EvalIteratorState::EvalIteratorState()
-{
-}
-
-
-EvalIteratorState::~EvalIteratorState()
-{
-}
-
-
-EvalIterator::EvalIterator(::zorba::serialization::Archiver &ar)
-  :
-  NaryBaseIterator<EvalIterator, EvalIteratorState>(ar)
-{
-}
-
-
-void EvalIterator::serialize(::zorba::serialization::Archiver &ar)
-{
-  ar.set_xquery_with_eval();
-  serialize_baseclass(ar, (NaryBaseIterator<EvalIterator, EvalIteratorState>*)this);
-  ar & varnames;
-  ar & var_keys;
-  ar & vartypes;
-}
-
-
-PlanIter_t EvalIterator::compile(
+PlanIter_t compile(
     CompilerCB *ccb,
     xqp_string query, 
     checked_vector<store::Item_t> varnames,    checked_vector<xqtref_t> vartypes) 
@@ -103,7 +61,6 @@ PlanIter_t EvalIterator::compile(
 
     return compiler.compile (ast);
   }
-
 
 bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
@@ -148,9 +105,4 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   STACK_END (state);
 }
-
-
-NARY_ACCEPT(EvalIterator);
-
-
 }

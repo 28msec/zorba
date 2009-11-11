@@ -205,7 +205,6 @@
   DECLARE_VISITOR (CtxVarDeclIterator)
   DECLARE_VISITOR (CtxVarAssignIterator)
   DECLARE_VISITOR (CtxVarExistsIterator)
-  DECLARE_VISITOR (EvalIterator)
   DECLARE_VISITOR (FnAdjustToTimeZoneIterator_1);
   DECLARE_VISITOR (FnAdjustToTimeZoneIterator_2);
   DECLARE_VISITOR (FnFormatDateTimeIterator);

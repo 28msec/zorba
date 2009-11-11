@@ -68,6 +68,7 @@ namespace zorba{
     class MinutesFromTimeIterator;
     class SecondsFromTimeIterator;
     class TimezoneFromTimeIterator;
+    class EvalIterator;
     class FnPutIterator;
     class FnSQRTIterator;
     class FnAtan2Iterator;
@@ -265,6 +266,9 @@ public:
 
     virtual void beginVisit ( const TimezoneFromTimeIterator& ) = 0;
     virtual void endVisit   ( const TimezoneFromTimeIterator& ) = 0;
+
+    virtual void beginVisit ( const EvalIterator& ) = 0;
+    virtual void endVisit   ( const EvalIterator& ) = 0;
 
     virtual void beginVisit ( const FnPutIterator& ) = 0;
     virtual void endVisit   ( const FnPutIterator& ) = 0;

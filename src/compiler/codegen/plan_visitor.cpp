@@ -67,12 +67,12 @@
 #include "runtime/core/gflwor/tuplesource_iterator.h"
 #include "runtime/core/gflwor/orderby_iterator.h"
 #include "runtime/validate/validate.h"
-#include "runtime/eval/FnContextImpl.h"
 #include "runtime/misc/MiscImpl.h"
 #include "runtime/util/flowctl_exception.h"
 #include "runtime/update/update.h"
 #include "runtime/indexing/value_index_impl.h"
 #include "runtime/debug/zorba_debug_iterator.h"
+#include "runtime/eval/eval.h"
 
 #include "debugger/zorba_debugger_commons.h"
 
@@ -356,8 +356,8 @@ void end_visit (debugger_expr& v) {
 
   // set the child of the debugger iterator
   argv.push_back(pop_itstack ());
-  argv.push_back(new EvalIterator(sctx, qloc, varnames, var_keys, 
-    vartypes, argvEvalIter));
+  argv.push_back(new EvalIterator(sctx, qloc, argvEvalIter, varnames, var_keys, 
+    vartypes));
   aDebugIterator->setChildren(argv);
 
   aDebugIterator->setVariables(varnames, var_keys, vartypes);
@@ -1556,7 +1556,7 @@ void end_visit (eval_expr& v) {
   }
   argv.push_back (pop_itstack ());
   reverse (argv.begin (), argv.end ());
-  push_itstack (new EvalIterator (sctx, qloc, varnames, var_keys, vartypes, argv));
+  push_itstack (new EvalIterator (sctx, qloc, argv, varnames, var_keys, vartypes));
 }
 
 

@@ -38,6 +38,7 @@
 #include "runtime/context/context.h"
 #include "runtime/convertors/convertors.h"
 #include "runtime/durations_dates_times/durations_dates_times.h"
+#include "runtime/eval/eval.h"
 #include "runtime/fnput/fnput.h"
 #include "runtime/maths/maths.h"
 #include "runtime/misc/misc.h"
@@ -608,6 +609,19 @@ void PrinterVisitor::endVisit ( const TimezoneFromTimeIterator& ) {
   thePrinter.endEndVisit();
 }
 // </TimezoneFromTimeIterator>
+
+// <EvalIterator>
+void PrinterVisitor::beginVisit ( const EvalIterator& a) {
+  thePrinter.startBeginVisit("EvalIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const EvalIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </EvalIterator>
 
 // <FnPutIterator>
 void PrinterVisitor::beginVisit ( const FnPutIterator& a) {

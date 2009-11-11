@@ -48,7 +48,6 @@
 #include "runtime/core/arithmetic_impl.h"
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/durations_dates_times/DurationsDatesTimesImpl.h"
-#include "runtime/eval/FnContextImpl.h"
 #include "runtime/debug/zorba_debug_iterator.h"
 #include "debugger/zorba_debugger_commons.h"
 #include "runtime/collections/CollectionsImpl.h"
@@ -1151,7 +1150,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION (CtxVarDeclIterator)
   PRINTER_VISITOR_DEFINITION (CtxVarAssignIterator)
   PRINTER_VISITOR_DEFINITION (CtxVarExistsIterator)
-  PRINTER_VISITOR_DEFINITION (EvalIterator)
   PRINTER_VISITOR_DEFINITION(FnAdjustToTimeZoneIterator_1);
   PRINTER_VISITOR_DEFINITION(FnAdjustToTimeZoneIterator_2);
   PRINTER_VISITOR_DEFINITION(FnFormatDateTimeIterator);
