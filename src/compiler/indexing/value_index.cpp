@@ -15,6 +15,8 @@
  */
 #include <algorithm>
 
+#include "types/typeops.h"
+
 #include "functions/function.h"
 
 #include "compiler/indexing/value_index.h"
@@ -197,23 +199,55 @@ void ValueIndex::analyzeExprInternal(
 
     if (func->isSource())
     {
+      bool valid = false;
+
       if (func->getKind() == FunctionConsts::FN_ZORBA_COLLECTION_1)
       {
-        const const_expr* qnameExpr;
+        TypeManager* tm = theSctx->get_typemanager();
 
-        if (foExpr->num_args() == 1 &&
-            (qnameExpr = dynamic_cast<const const_expr*>(foExpr->get_arg(0))) != NULL &&
-            theSctx->lookup_collection(qnameExpr->get_val()))
+        const expr* argExpr = foExpr->get_arg(0);
+        const const_expr* qnameExpr = dynamic_cast<const const_expr*>(argExpr);
+
+        if (qnameExpr != NULL)
         {
-          sources.push_back(qnameExpr->get_val());
+          xqtref_t valueType = tm->create_value_type(qnameExpr->get_val());
+
+          if (TypeOps::is_subtype(*valueType, *GENV_TYPESYSTEM.QNAME_TYPE_ONE) &&
+              theSctx->lookup_collection(qnameExpr->get_val()))
+          {
+            sources.push_back(qnameExpr->get_val());
+            valid = true;
+          }
         }
-        else
+        else if (argExpr->get_expr_kind() == promote_expr_kind)
         {
-          ZORBA_ERROR_LOC_PARAM(XQP0041_INDEX_HAS_INVALID_DATA_SOURCE, e->get_loc(),
-                                theName->getStringValue()->c_str(), "");
+          const promote_expr* promoteExpr = static_cast<const promote_expr*>(argExpr);
+
+          argExpr = promoteExpr->get_input();
+          const fo_expr* dataExpr = dynamic_cast<const fo_expr*>(argExpr);
+
+          if (dataExpr != NULL &&
+              dataExpr->get_func()->getKind() == FunctionConsts::FN_DATA_1)
+          {
+            argExpr = dataExpr->get_arg(0);
+            const const_expr* qnameExpr = dynamic_cast<const const_expr*>(argExpr);
+
+            if (qnameExpr != NULL)
+            {
+              xqtref_t valueType = tm->create_value_type(qnameExpr->get_val());
+
+              if (TypeOps::is_subtype(*valueType, *GENV_TYPESYSTEM.QNAME_TYPE_ONE) &&
+                  theSctx->lookup_collection(qnameExpr->get_val()))
+              {
+                sources.push_back(qnameExpr->get_val());
+                valid = true;
+              }
+            }
+          }
         }
       }
-      else
+
+      if (!valid)
       {
         ZORBA_ERROR_LOC_PARAM(XQP0041_INDEX_HAS_INVALID_DATA_SOURCE, e->get_loc(),
                               theName->getStringValue()->c_str(), "");
