@@ -84,7 +84,7 @@ SET (TESTDRIVER_MT_SRCS
   ${CMAKE_SOURCE_DIR}/test/commons/testuriresolver.cpp
   )
 
-ADD_EXECUTABLE(testdriver_mt ${TESTDRIVER_MT_SRCS})
+#ADD_EXECUTABLE(testdriver_mt ${TESTDRIVER_MT_SRCS})
 
 TARGET_LINK_LIBRARIES(testdriver_mt
                       zorba_${ZORBA_STORE_LIB_EXTENSION}
