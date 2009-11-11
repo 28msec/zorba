@@ -214,7 +214,7 @@ static inline void checkNonUpdating(const expr* e)
 
 static inline void checkSimpleExpr(const expr* e)
 {
-  if (e != 0 && !e->is_simple() && !e->is_vacuous())
+  if (e != 0 && !e->is_simple() && !e->is_vacuous() && !e->is_sequential())
     ZORBA_ERROR_LOC(XUST0001, e->get_loc());
 }
 
