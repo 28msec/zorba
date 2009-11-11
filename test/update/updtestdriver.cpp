@@ -119,6 +119,70 @@ set_var (bool inlineFile, std::string name, std::string val, zorba::DynamicConte
   }
 }
 
+#ifdef ZORBA_TEST_PLAN_SERIALIZATION
+int save_load_plan(zorba::Zorba* engine, zorba::XQuery_t &lQuery, std::string lQueryFileString)
+{
+  try
+  {
+    clock_t t0, t1;
+  std::string binary_path = lQueryFileString;
+  binary_path = binary_path.substr( 0, binary_path.rfind('.') );
+  binary_path += ".plan";
+  t0 = clock();
+  std::ofstream fbinary(binary_path.c_str(), std::ios_base::binary);
+  if(!lQuery->saveExecutionPlan(fbinary, ZORBA_USE_BINARY_ARCHIVE))
+  {
+    printf("save execution plan FAILED\n");
+    return 0x0badc0de;
+  }
+  fbinary.close();
+  t1 = clock();
+  printf("save execution plan in %f sec\n", (float)(t1-t0)/CLOCKS_PER_SEC);
+  }
+  catch(zorba::ZorbaException &err)
+  {
+    std::cout << err << std::endl;
+    return -1;
+  }
+
+  //now load back
+  try
+  {
+    clock_t t0, t1;
+    std::string binary_path = lQueryFileString;
+    binary_path = binary_path.substr( 0, binary_path.rfind('.') );
+    binary_path += ".plan";
+    lQuery = engine->createQuery ();
+    t0 = clock();
+    std::ifstream   ifbinary(binary_path.c_str(), std::ios_base::binary);
+    if(!ifbinary.is_open())
+    {
+      std::cout << "cannot open plan " << binary_path << std::endl;
+      return 15;
+    }
+    bool load_ret;
+    load_ret = lQuery->loadExecutionPlan(ifbinary);
+
+    if(!load_ret)
+    {
+      std::cout << "cannot load plan " << binary_path << std::endl;
+      return 16;
+    }
+    t1 = clock();
+    printf("load execution plan in %f sec\n", (float)(t1-t0)/CLOCKS_PER_SEC);
+
+  }
+  catch(zorba::ZorbaException &err)
+  {
+    std::cout << err << std::endl;
+    return -1;
+  }
+
+
+  return 0;
+}
+#endif//ZORBA_TEST_PLAN_SERIALIZATION
+
 int
 #ifdef _WIN32_WCE
 _tmain(int argc, _TCHAR* argv[])
@@ -224,6 +288,15 @@ main(int argc, char** argv)
       zorba::XQuery_t lQuery = engine->createQuery();
       lQuery->setFileName (lQueryFile.c_str());
       lQuery->compile(lQueryStream, lContext, getCompilerHints());
+
+#ifdef ZORBA_TEST_PLAN_SERIALIZATION
+      int save_retval;
+      if((save_retval = save_load_plan(engine, lQuery, lQueryFile.get_path())))
+      {
+        return save_retval;
+      }
+#endif
+
       lQueries.push_back(lQuery);
     }
     catch (zorba::ZorbaException &e) 
@@ -241,6 +314,7 @@ main(int argc, char** argv)
       }
     }
     
+
     try
     {
       zorba::DynamicContext* lDynCtx = lQueries.back()->getDynamicContext();

@@ -18,6 +18,8 @@
 
 namespace zorba {
 
+#cmakedefine ZORBA_TEST_PLAN_SERIALIZATION
+
 static std::string UPDATE_SRC_DIR = "@CMAKE_CURRENT_SOURCE_DIR@";
 static std::string UPDATE_BINARY_DIR = "@CMAKE_CURRENT_BINARY_DIR@";
 
