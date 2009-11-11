@@ -1,5 +1,18 @@
 /** \page commandline The Zorba Command Line Utility
 
+<ul>
+  <li> Table of Contents
+  <ul>
+    <li> \ref commandLineUsage
+    <li> \ref commandLineHelp
+    <li> \ref commandlineexamples
+    <ul>
+      <li> \ref cmdlineExample1
+      <li> \ref cmdlineExample2
+    </ul>
+  </ul>
+</ul>
+
 \section commandLineUsage Usage
 %zorba [options] [-q Inline_Query ...] or \n
 %zorba [options] -f [-q Query_File ...]
@@ -100,7 +113,7 @@ Print no logo when starting the debugger client or server.
 
 \section commandlineexamples Examples
 
-\subsection cmdlineExample1 Execute inline queries:
+\subsection cmdlineExample1 Execute inline queries
 This example shows the use of <tt>-t</tt>, <tt>--print-query</tt> output options and <tt>-i</tt> execute option.
 
 Zorba command:
@@ -135,7 +148,7 @@ Compilation time: 8 milliseconds
 First Execution time: 0 milliseconds (i.e. parsing the document is included)
 \endverbatim
 
-\subsection cmdlineExample2 Execute update queries:
+\subsection cmdlineExample2 Execute update queries
 The purpose of this example is to demonstrate the use of <tt>-f</tt> and <tt>-e</tt> execute options.
 
  These are the files used in this example and their meaning:
