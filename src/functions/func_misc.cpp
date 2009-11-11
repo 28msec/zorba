@@ -41,7 +41,7 @@ PlanIter_t op_zorba_read_line::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ReadLineIterator(sctx,loc,argv);
+  return new ReadLineIterator ( sctx, loc, argv);
 }
 
 
@@ -54,7 +54,7 @@ PlanIter_t op_zorba_print::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new PrintIterator(sctx,loc,argv);
+  return new PrintIterator ( sctx, loc, argv);
 }
 
 
@@ -67,7 +67,7 @@ PlanIter_t fn_resolve_uri::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ResolveUriIterator(sctx,loc,argv);
+  return new ResolveUriIterator ( sctx, loc, argv);
 }
 
 
@@ -80,7 +80,7 @@ PlanIter_t fn_error::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ErrorIterator(sctx,loc,argv);
+  return new ErrorIterator ( sctx, loc, argv);
 }
 
 

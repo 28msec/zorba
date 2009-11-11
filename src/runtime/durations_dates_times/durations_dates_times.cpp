@@ -51,6 +51,7 @@ void YearsFromDurationIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 YearsFromDurationIterator::~YearsFromDurationIterator() {}
 
 // </YearsFromDurationIterator>
@@ -78,6 +79,7 @@ void MonthsFromDurationIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 MonthsFromDurationIterator::~MonthsFromDurationIterator() {}
 
 // </MonthsFromDurationIterator>
@@ -105,6 +107,7 @@ void DaysFromDurationIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 DaysFromDurationIterator::~DaysFromDurationIterator() {}
 
 // </DaysFromDurationIterator>
@@ -132,6 +135,7 @@ void HoursFromDurationIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 HoursFromDurationIterator::~HoursFromDurationIterator() {}
 
 // </HoursFromDurationIterator>
@@ -159,6 +163,7 @@ void MinutesFromDurationIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 MinutesFromDurationIterator::~MinutesFromDurationIterator() {}
 
 // </MinutesFromDurationIterator>
@@ -186,6 +191,7 @@ void SecondsFromDurationIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 SecondsFromDurationIterator::~SecondsFromDurationIterator() {}
 
 // </SecondsFromDurationIterator>
@@ -213,6 +219,7 @@ void YearFromDatetimeIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 YearFromDatetimeIterator::~YearFromDatetimeIterator() {}
 
 // </YearFromDatetimeIterator>
@@ -240,6 +247,7 @@ void MonthFromDatetimeIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 MonthFromDatetimeIterator::~MonthFromDatetimeIterator() {}
 
 // </MonthFromDatetimeIterator>
@@ -267,6 +275,7 @@ void DayFromDatetimeIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 DayFromDatetimeIterator::~DayFromDatetimeIterator() {}
 
 // </DayFromDatetimeIterator>
@@ -294,6 +303,7 @@ void HoursFromDatetimeIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 HoursFromDatetimeIterator::~HoursFromDatetimeIterator() {}
 
 // </HoursFromDatetimeIterator>
@@ -321,6 +331,7 @@ void MinutesFromDatetimeIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 MinutesFromDatetimeIterator::~MinutesFromDatetimeIterator() {}
 
 // </MinutesFromDatetimeIterator>
@@ -348,6 +359,7 @@ void SecondsFromDatetimeIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 SecondsFromDatetimeIterator::~SecondsFromDatetimeIterator() {}
 
 // </SecondsFromDatetimeIterator>
@@ -375,6 +387,7 @@ void TimezoneFromDatetimeIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 TimezoneFromDatetimeIterator::~TimezoneFromDatetimeIterator() {}
 
 // </TimezoneFromDatetimeIterator>
@@ -402,6 +415,7 @@ void YearFromDateIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 YearFromDateIterator::~YearFromDateIterator() {}
 
 // </YearFromDateIterator>
@@ -429,6 +443,7 @@ void MonthFromDateIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 MonthFromDateIterator::~MonthFromDateIterator() {}
 
 // </MonthFromDateIterator>
@@ -456,6 +471,7 @@ void DayFromDateIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 DayFromDateIterator::~DayFromDateIterator() {}
 
 // </DayFromDateIterator>
@@ -483,6 +499,7 @@ void TimezoneFromDateIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 TimezoneFromDateIterator::~TimezoneFromDateIterator() {}
 
 // </TimezoneFromDateIterator>
@@ -510,6 +527,7 @@ void HoursFromTimeIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 HoursFromTimeIterator::~HoursFromTimeIterator() {}
 
 // </HoursFromTimeIterator>
@@ -537,6 +555,7 @@ void MinutesFromTimeIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 MinutesFromTimeIterator::~MinutesFromTimeIterator() {}
 
 // </MinutesFromTimeIterator>
@@ -564,6 +583,7 @@ void SecondsFromTimeIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 SecondsFromTimeIterator::~SecondsFromTimeIterator() {}
 
 // </SecondsFromTimeIterator>
@@ -591,6 +611,7 @@ void TimezoneFromTimeIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 TimezoneFromTimeIterator::~TimezoneFromTimeIterator() {}
 
 // </TimezoneFromTimeIterator>

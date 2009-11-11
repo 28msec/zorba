@@ -51,6 +51,7 @@ void CodepointsToStringIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 CodepointsToStringIterator::~CodepointsToStringIterator() {}
 
 // </CodepointsToStringIterator>
@@ -78,6 +79,7 @@ void StringToCodepointsIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 StringToCodepointsIterator::~StringToCodepointsIterator() {}
 
 // </StringToCodepointsIterator>
@@ -105,6 +107,7 @@ void CompareStrIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 CompareStrIterator::~CompareStrIterator() {}
 
 // </CompareStrIterator>
@@ -132,6 +135,7 @@ void CodepointEqualIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 CodepointEqualIterator::~CodepointEqualIterator() {}
 
 // </CodepointEqualIterator>
@@ -159,6 +163,7 @@ void ConcatStrIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 ConcatStrIterator::~ConcatStrIterator() {}
 
 // </ConcatStrIterator>
@@ -186,6 +191,7 @@ void StringJoinIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 StringJoinIterator::~StringJoinIterator() {}
 
 // </StringJoinIterator>
@@ -213,6 +219,7 @@ void SubstringIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 SubstringIterator::~SubstringIterator() {}
 
 // </SubstringIterator>
@@ -240,6 +247,7 @@ void StringLengthIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 StringLengthIterator::~StringLengthIterator() {}
 
 // </StringLengthIterator>
@@ -267,6 +275,7 @@ void NormalizeSpaceIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 NormalizeSpaceIterator::~NormalizeSpaceIterator() {}
 
 // </NormalizeSpaceIterator>
@@ -294,6 +303,7 @@ void NormalizeUnicodeIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 NormalizeUnicodeIterator::~NormalizeUnicodeIterator() {}
 
 // </NormalizeUnicodeIterator>
@@ -321,6 +331,7 @@ void UpperCaseIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 UpperCaseIterator::~UpperCaseIterator() {}
 
 // </UpperCaseIterator>
@@ -348,6 +359,7 @@ void LowerCaseIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 LowerCaseIterator::~LowerCaseIterator() {}
 
 // </LowerCaseIterator>
@@ -375,6 +387,7 @@ void TranslateIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 TranslateIterator::~TranslateIterator() {}
 
 // </TranslateIterator>
@@ -402,6 +415,7 @@ void EncodeForUriIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 EncodeForUriIterator::~EncodeForUriIterator() {}
 
 // </EncodeForUriIterator>
@@ -429,6 +443,7 @@ void IriToUriIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 IriToUriIterator::~IriToUriIterator() {}
 
 // </IriToUriIterator>
@@ -456,6 +471,7 @@ void EscapeHtmlUriIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 EscapeHtmlUriIterator::~EscapeHtmlUriIterator() {}
 
 // </EscapeHtmlUriIterator>
@@ -483,6 +499,7 @@ void ContainsIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 ContainsIterator::~ContainsIterator() {}
 
 // </ContainsIterator>
@@ -510,6 +527,7 @@ void StartsWithIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 StartsWithIterator::~StartsWithIterator() {}
 
 // </StartsWithIterator>
@@ -537,6 +555,7 @@ void EndsWithIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 EndsWithIterator::~EndsWithIterator() {}
 
 // </EndsWithIterator>
@@ -564,6 +583,7 @@ void SubstringBeforeIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 SubstringBeforeIterator::~SubstringBeforeIterator() {}
 
 // </SubstringBeforeIterator>
@@ -591,6 +611,7 @@ void SubstringAfterIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 SubstringAfterIterator::~SubstringAfterIterator() {}
 
 // </SubstringAfterIterator>
@@ -618,6 +639,7 @@ void FnMatchesIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnMatchesIterator::~FnMatchesIterator() {}
 
 // </FnMatchesIterator>
@@ -645,6 +667,7 @@ void FnReplaceIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnReplaceIterator::~FnReplaceIterator() {}
 
 // </FnReplaceIterator>
@@ -672,6 +695,7 @@ void FnTokenizeIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnTokenizeIterator::~FnTokenizeIterator() {}
 
 

@@ -680,7 +680,7 @@ class fn_##name : public function                                             \
 
 #define DECL_DOUBLE_MATH_FUN_UNARY_2(name, iter) DECL_DOUBLE_MATH_FUN_UNARY(name, iter)
 
-DECL_DOUBLE_MATH_FUN_UNARY (sqrt, SQRT);
+//DECL_DOUBLE_MATH_FUN_UNARY (sqrt, SQRT);
 DECL_DOUBLE_MATH_FUN_UNARY (exp, Exp);
 DECL_DOUBLE_MATH_FUN_UNARY (log, Log);
 DECL_DOUBLE_MATH_FUN_UNARY (sin, Sin);
@@ -690,7 +690,7 @@ DECL_DOUBLE_MATH_FUN_UNARY (asin, ArcSin);
 DECL_DOUBLE_MATH_FUN_UNARY (acos, ArcCos);
 DECL_DOUBLE_MATH_FUN_UNARY (atan, ArcTan);
 
-DECL_DOUBLE_MATH_FUN_BINARY (atan2, Atan2);
+//DECL_DOUBLE_MATH_FUN_BINARY (atan2, Atan2);
 DECL_DOUBLE_MATH_FUN_UNARY (cosh, Cosh);
 DECL_DOUBLE_MATH_FUN_UNARY (acosh, Acosh);
 DECL_DOUBLE_MATH_FUN_BINARY (fmod, Fmod);
@@ -743,7 +743,7 @@ void populateContext_Math(static_context *sctx)
   //     (createQName(ZORBA_MATH_FN_NS,"fn-zorba-math", "sqrt"),
   //      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
   //      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
-  REGISTER_DOUBLE_MATH_FUN (sqrt);
+  //REGISTER_DOUBLE_MATH_FUN (sqrt);
   
   REGISTER_DOUBLE_MATH_FUN (exp);
   REGISTER_DOUBLE_MATH_FUN (log);
@@ -755,7 +755,7 @@ void populateContext_Math(static_context *sctx)
   REGISTER_DOUBLE_MATH_FUN (atan);
 
 
-  REGISTER_DOUBLE_MATH_FUN2 (atan2);
+  //REGISTER_DOUBLE_MATH_FUN2 (atan2);
   REGISTER_DOUBLE_MATH_FUN (cosh);
   REGISTER_DOUBLE_MATH_FUN (acosh);
   REGISTER_DOUBLE_MATH_FUN2 (fmod);

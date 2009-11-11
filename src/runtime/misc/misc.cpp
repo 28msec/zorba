@@ -56,6 +56,7 @@ void TraceIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 TraceIterator::~TraceIterator() {}
 
 
@@ -97,6 +98,7 @@ void ReadLineIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 ReadLineIterator::~ReadLineIterator() {}
 
 // </ReadLineIterator>
@@ -124,6 +126,7 @@ void PrintIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 PrintIterator::~PrintIterator() {}
 
 // </PrintIterator>
@@ -151,6 +154,7 @@ void ResolveUriIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 ResolveUriIterator::~ResolveUriIterator() {}
 
 // </ResolveUriIterator>
@@ -178,6 +182,7 @@ void ErrorIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 ErrorIterator::~ErrorIterator() {}
 
 // </ErrorIterator>

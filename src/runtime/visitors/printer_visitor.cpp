@@ -39,6 +39,7 @@
 #include "runtime/convertors/convertors.h"
 #include "runtime/durations_dates_times/durations_dates_times.h"
 #include "runtime/fnput/fnput.h"
+#include "runtime/maths/maths.h"
 #include "runtime/misc/misc.h"
 #include "runtime/nodes/nodes.h"
 #include "runtime/numerics/numerics.h"
@@ -620,6 +621,32 @@ void PrinterVisitor::endVisit ( const FnPutIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FnPutIterator>
+
+// <FnSQRTIterator>
+void PrinterVisitor::beginVisit ( const FnSQRTIterator& a) {
+  thePrinter.startBeginVisit("FnSQRTIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnSQRTIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnSQRTIterator>
+
+// <FnAtan2Iterator>
+void PrinterVisitor::beginVisit ( const FnAtan2Iterator& a) {
+  thePrinter.startBeginVisit("FnAtan2Iterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnAtan2Iterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnAtan2Iterator>
 
 // <TraceIterator>
 void PrinterVisitor::beginVisit ( const TraceIterator& a) {

@@ -37,7 +37,7 @@ PlanIter_t fn_node_name::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new NodeNameIterator(sctx,loc,argv);
+  return new NodeNameIterator ( sctx, loc, argv);
 }
 
 
@@ -50,7 +50,7 @@ PlanIter_t fn_nilled::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new NilledIterator(sctx,loc,argv);
+  return new NilledIterator ( sctx, loc, argv);
 }
 
 
@@ -67,7 +67,7 @@ PlanIter_t fn_data::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new FnDataIterator(sctx,loc,argv);
+  return new FnDataIterator ( sctx, loc, argv);
 }
 
 
@@ -80,7 +80,7 @@ PlanIter_t fn_base_uri::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new BaseUriIterator(sctx,loc,argv);
+  return new BaseUriIterator ( sctx, loc, argv);
 }
 
 
@@ -93,7 +93,7 @@ PlanIter_t fn_document_uri::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new DocumentUriIterator(sctx,loc,argv);
+  return new DocumentUriIterator ( sctx, loc, argv);
 }
 
 
@@ -106,7 +106,7 @@ PlanIter_t fn_root::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new RootIterator(sctx,loc,argv);
+  return new RootIterator ( sctx, loc, argv);
 }
 
 

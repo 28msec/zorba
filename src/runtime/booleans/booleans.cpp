@@ -51,6 +51,7 @@ void IsSameNodeIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 IsSameNodeIterator::~IsSameNodeIterator() {}
 
 // </IsSameNodeIterator>
@@ -78,6 +79,7 @@ void NodeBeforeIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 NodeBeforeIterator::~NodeBeforeIterator() {}
 
 // </NodeBeforeIterator>
@@ -105,6 +107,7 @@ void NodeAfterIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 NodeAfterIterator::~NodeAfterIterator() {}
 
 // </NodeAfterIterator>

@@ -22,35 +22,51 @@
 // ******************************************
 
 
-#include "runtime/fnput/fnput.h"
-#include "functions/func_fnput.h"
+#include "runtime/maths/maths.h"
+#include "functions/func_maths.h"
 
 
 namespace zorba{
 
 
 
-PlanIter_t fn_put::codegen(
+PlanIter_t fn_zorba_math_sqrt::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new FnPutIterator ( sctx, loc, argv);
+  return new FnSQRTIterator ( sctx, loc, argv[0]);
 }
 
 
-bool fn_put::propagatesInputToOutput ( uint32_t ) const {
-  return false;
-}
-void populate_context_fnput(static_context* sctx) {
 
-  DECL(sctx, fn_put,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","put"),
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
-      GENV_TYPESYSTEM.STRING_TYPE_ONE,
-      GENV_TYPESYSTEM.EMPTY_TYPE));
+
+PlanIter_t fn_zorba_math_atan2::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new FnAtan2Iterator ( sctx, loc, argv[0], argv[1]);
+}
+
+
+
+void populate_context_maths(static_context* sctx) {
+
+  DECL(sctx, fn_zorba_math_sqrt,
+      (createQName("http://www.zorba-xquery.com/modules/math","fn-zorba-math","sqrt"),
+      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
+      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+
+  DECL(sctx, fn_zorba_math_atan2,
+      (createQName("http://www.zorba-xquery.com/modules/math","fn-zorba-math","atan2"),
+      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
+      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
+      GENV_TYPESYSTEM.DOUBLE_TYPE_PLUS));
 }
 
 

@@ -51,6 +51,7 @@ void CurrentDateTimeIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 CurrentDateTimeIterator::~CurrentDateTimeIterator() {}
 
 // </CurrentDateTimeIterator>
@@ -78,6 +79,7 @@ void CurrentDateIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 CurrentDateIterator::~CurrentDateIterator() {}
 
 // </CurrentDateIterator>
@@ -105,6 +107,7 @@ void CurrentTimeIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 CurrentTimeIterator::~CurrentTimeIterator() {}
 
 // </CurrentTimeIterator>
@@ -132,6 +135,7 @@ void ImplicitTimezoneIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 ImplicitTimezoneIterator::~ImplicitTimezoneIterator() {}
 
 // </ImplicitTimezoneIterator>
@@ -159,6 +163,7 @@ void DefaultCollationIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 DefaultCollationIterator::~DefaultCollationIterator() {}
 
 // </DefaultCollationIterator>

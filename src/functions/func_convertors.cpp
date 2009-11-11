@@ -39,7 +39,7 @@ PlanIter_t zorba_json_parse::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ZorbaJsonParseIterator(sctx,loc,argv);
+  return new ZorbaJsonParseIterator ( sctx, loc, argv);
 }
 
 
@@ -52,7 +52,7 @@ PlanIter_t zorba_json_serialize::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ZorbaJsonSerializeIterator(sctx,loc,argv);
+  return new ZorbaJsonSerializeIterator ( sctx, loc, argv);
 }
 
 
@@ -65,7 +65,7 @@ PlanIter_t zorba_json_ml_parse::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ZorbaJsonMLParseIterator(sctx,loc,argv);
+  return new ZorbaJsonMLParseIterator ( sctx, loc, argv);
 }
 
 
@@ -78,7 +78,7 @@ PlanIter_t zorba_json_ml_serialize::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ZorbaJsonMLSerializeIterator(sctx,loc,argv);
+  return new ZorbaJsonMLSerializeIterator ( sctx, loc, argv);
 }
 
 

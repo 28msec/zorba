@@ -22,36 +22,56 @@
 // ******************************************
 
 
-#include "runtime/fnput/fnput.h"
-#include "functions/func_fnput.h"
+#ifndef ZORBA_FUNCTIONS_MATHS_H
+#define ZORBA_FUNCTIONS_MATHS_H
+
+
+#include "common/shared_types.h"
+#include "functions/function_impl.h"
 
 
 namespace zorba{
 
 
+void populate_context_maths(static_context* sctx);
 
-PlanIter_t fn_put::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
+
+
+
+//fn-zorba-math:sqrt
+class fn_zorba_math_sqrt : public function
 {
-  return new FnPutIterator ( sctx, loc, argv);
-}
+public:
+  fn_zorba_math_sqrt(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_MATH_SQRT_1)
+  {
+  }
+
+  CODEGEN_DECL();
+};
 
 
-bool fn_put::propagatesInputToOutput ( uint32_t ) const {
-  return false;
-}
-void populate_context_fnput(static_context* sctx) {
+//fn-zorba-math:atan2
+class fn_zorba_math_atan2 : public function
+{
+public:
+  fn_zorba_math_atan2(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_MATH_ATAN2_2)
+  {
+  }
 
-  DECL(sctx, fn_put,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","put"),
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
-      GENV_TYPESYSTEM.STRING_TYPE_ONE,
-      GENV_TYPESYSTEM.EMPTY_TYPE));
-}
+  CODEGEN_DECL();
+};
 
 
-}
+} //namespace zorba
+
+
+#endif
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */ 

@@ -37,7 +37,7 @@ declare function local:process-iterator($iter) as xs:string
     else (),
 
     (: generate the iterator declaration :)
-    local:NARY-ITER-STATE($iter, $iter/@name, $stateName)
+    local:iterator($iter, $iter/@name, $stateName)
   ) (: concat :)
 };
 
@@ -66,38 +66,112 @@ declare function local:process-state($state, $stateName as xs:string) as xs:stri
   '};',$gen:newline, $gen:newline),'')
 };
 
-declare function local:NARY-ITER-STATE($iter, $name as xs:string, $state as xs:string) as xs:string
+declare function local:arity($iter) as xs:string
 {
-  if(count($iter/zorba:constructor/zorba:parameter) ne count($iter/zorba:member)) then
+  let $arity := lower-case($iter/@arity)
+  return
+    if ( $arity eq "unary" )
+    then 'Unary'
+    else if ( $arity eq "binary" )
+    then 'Binary'
+    else if ( $arity eq "noary" )
+    then 'Noary'
+    else 'Nary'
+};
+
+declare function local:children-decl($iter) as xs:string
+{
+  let $arity := lower-case($iter/@arity)
+  return
+    if ( $arity eq "unary" )
+    then ', PlanIter_t&amp; aChild'
+    else if ( $arity eq "binary" )
+    then ', PlanIter_t&amp; aChild1, PlanIter_t&amp; aChild2'
+    else if ( $arity eq "noary" )
+    then ''
+    else ', std::vector<PlanIter_t>&amp; aChildren'
+  
+};
+
+declare function local:children-args($iter) as xs:string
+{
+  let $arity := lower-case($iter/@arity)
+  return
+    if ( $arity eq "unary" )
+    then ', aChild'
+    else if ( $arity eq "binary" )
+    then ', aChild1, aChild2'
+    else if ( $arity eq "noary" )
+    then ''
+    else ', aChildren'
+  
+};
+declare function local:constructor($iter, $name as xs:string, $base as xs:string) as xs:string
+{
+  concat(
+    gen:indent(), $name, '(',
+    $gen:newline,
+    gen:indent(2), 'static_context* sctx,',
+    $gen:newline,
+    gen:indent(2), 'const QueryLoc&amp; loc',
+    $gen:newline,
+    gen:indent(2), local:children-decl($iter),
+    local:add-constructor-param($iter),
+    ')',
+    $gen:newline,
+    gen:indent(2), ': ', $base,
+    $gen:newline,
+    gen:indent(2), '(sctx, loc', local:children-args($iter),
+    local:add-constructor-param-2($iter),
+    ' {}',
+    $gen:newline, $gen:newline
+  )
+};
+
+
+declare function local:iterator($iter, $name as xs:string, $state as xs:string) as xs:string
+{
+  if(count($iter/zorba:constructor/zorba:parameter) ne count($iter/zorba:member))
+  then
     (: TODO user fn:error :)
     'Error: the number of "zorba:parameters" in the "zorba:constructor" is different than the number of "zorba:members"'
   else
-    concat('class ', $name, ': ', 'public NaryBaseIterator <', $name, ', ', $state, '>', $gen:newline, '{', $gen:newline,
-    local:add-protected($iter),
+    let $base := concat(local:arity($iter), 'BaseIterator <', $name, ', ', $state, '>')
+    return
+      concat ( 'class ', $name, ' : ', 'public ', $base,
+               $gen:newline, '{ ',
+               $gen:newline,
 
-    (: serialization code :)
-    'public:', $gen:newline, 
-    $gen:indent, 'SERIALIZABLE_CLASS(',$name,');', $gen:newline, $gen:newline,
-    $gen:indent, 'SERIALIZABLE_CLASS_CONSTRUCTOR2T(', $name,',', $gen:newline,
-    $gen:indent, 'NaryBaseIterator<', $name,', ', $state,'>);', $gen:newline, $gen:newline,
-    $gen:indent, 'void serialize(::zorba::serialization::Archiver&amp; ar)', $gen:newline,
-    $gen:indent, '{',$gen:newline,
-    gen:indent(2), 'serialize_baseclass(ar,',$gen:newline,
-    gen:indent(2),'(NaryBaseIterator<',$name,', ',$state,'>*)this);',$gen:newline,
-    local:add-arch($iter),
-    $gen:indent,'}',$gen:newline,$gen:newline,
-    $gen:indent,$name,'(static_context* sctx, const QueryLoc&amp; loc,',$gen:newline,
-    $gen:indent,'std::vector<PlanIter_t>&amp; aChildren',
-    local:add-constructor-param($iter),
-    ')',$gen:newline,$gen:indent,':',$gen:newline,
-    $gen:indent,'NaryBaseIterator<',$name,', ',$state,'>',$gen:newline,$gen:indent,'(sctx, loc, aChildren',
-    local:add-constructor-param-2($iter),
-    '{}',$gen:newline,$gen:newline,
-    local:add-destructor($iter),
-    local:add-accessor($iter),
-    $gen:indent,'void accept(PlanIterVisitor&amp; v) const;',$gen:newline,$gen:newline,
-    $gen:indent,'bool nextImpl(store::Item_t&amp; result, PlanState&amp; aPlanState) const;',$gen:newline,'};',$gen:newline,$gen:newline
-    )
+      local:add-protected($iter),
+
+      (: begin serialization, TODO: move implementation to cpp file :)
+      'public:',
+      $gen:newline, 
+      gen:indent(), 'SERIALIZABLE_CLASS(',$name,');',
+      $gen:newline, $gen:newline,
+      gen:indent(), 'SERIALIZABLE_CLASS_CONSTRUCTOR2T(', $name,',',
+      $gen:newline,
+      gen:indent(2), $base, ');', $gen:newline, $gen:newline,
+      gen:indent(), 'void serialize(::zorba::serialization::Archiver&amp; ar)',
+      $gen:newline,
+      gen:indent(), '{',
+      $gen:newline,
+      gen:indent(2), 'serialize_baseclass(ar,',
+      $gen:newline,
+      gen:indent(2),'(', $base, '*)this);',
+      $gen:newline,
+      local:add-arch($iter),
+      gen:indent(),'}',
+      $gen:newline, $gen:newline,
+      (: end serialization :)
+
+      local:constructor($iter, $name, $base),
+
+      local:add-destructor($iter),
+      local:add-accessor($iter),
+      $gen:indent,'void accept(PlanIterVisitor&amp; v) const;',$gen:newline,$gen:newline,
+      $gen:indent,'bool nextImpl(store::Item_t&amp; result, PlanState&amp; aPlanState) const;',$gen:newline,'};',$gen:newline,$gen:newline
+      )
 };
 
 declare function local:add-destructor($iter) as xs:string?
@@ -119,7 +193,7 @@ declare function local:add-constructor-param-2($iter) as xs:string?
   let $member := $iter/zorba:member
   let $param := $iter/zorba:constructor/zorba:parameter
   return if (count($member) > 0) then string-join((')',for $i in (1 to count($member)) return
-  string-join((',',$gen:newline,$gen:indent,$member[$i]/@name,'(',$param[$i]/@name,')'),'')),'')
+  string-join((',',$gen:newline,gen:indent(2),$member[$i]/@name,'(',$param[$i]/@name,')'),'')),'')
   else ')'
 };
 
@@ -127,7 +201,7 @@ declare function local:add-constructor-param($iter) as xs:string?
 {
   if(count($iter/zorba:constructor/zorba:parameter > 0)) then
   string-join((for $param in $iter/zorba:constructor/zorba:parameter return 
-  string-join((',',$gen:newline,$gen:indent,$param/@type,' ',$param/@name,
+  string-join((',',$gen:newline,gen:indent(2),$param/@type,' ',$param/@name,
   if(exists($param/@defaultValue) and ($param/@defaultValue ne '')) then string-join((' = ',$param/@defaultValue),'') else ()
   ),'')),'')
   else ()
@@ -176,7 +250,20 @@ declare function local:get-fwd-decl($XMLdoc) as xs:string*
 declare function local:includes($XMLdoc) as xs:string*
 {
   '#include "common/shared_types.h"',
-  '#include "runtime/base/narybase.h"',
+  if ( exists($XMLdoc/zorba:iterators/zorba:iterator[ @arity eq 'unary' ]) )
+  then '#include "runtime/base/unarybase.h"'
+  else '',
+  if ( exists($XMLdoc/zorba:iterators/zorba:iterator[ @arity eq 'binary' ]) )
+  then '#include "runtime/base/binarybase.h"'
+  else '',
+  if ( exists($XMLdoc/zorba:iterators/zorba:iterator[ @arity eq 'noary' ]) )
+  then '#include "runtime/base/noarybase.h"'
+  else '',
+  if ( not(exists($XMLdoc/zorba:iterators/zorba:iterator/@arity)) or
+       exists($XMLdoc/zorba:iterators/zorba:iterator[ @arity eq 'nary' ]) )
+  then '#include "runtime/base/narybase.h"'
+  else '',
+
   for $include in $XMLdoc//zorba:header/zorba:include[@form='Angle-bracket']
   return 
     concat('#include <', $include/text(), '>'),

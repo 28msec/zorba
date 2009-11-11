@@ -84,9 +84,6 @@ END_SERIALIZABLE_CLASS_VERSIONS(OpNumericUnaryIterator)
 SERIALIZABLE_CLASS_VERSIONS(ZorNumGen)
 END_SERIALIZABLE_CLASS_VERSIONS(ZorNumGen)
 
-SERIALIZABLE_CLASS_VERSIONS(FnSQRTIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(FnSQRTIterator)
-
 SERIALIZABLE_CLASS_VERSIONS(FnExpIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(FnExpIterator)
 
@@ -111,8 +108,6 @@ END_SERIALIZABLE_CLASS_VERSIONS(FnArcCosIterator)
 SERIALIZABLE_CLASS_VERSIONS(FnArcTanIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(FnArcTanIterator)
 
-SERIALIZABLE_CLASS_VERSIONS(FnAtan2Iterator)
-END_SERIALIZABLE_CLASS_VERSIONS(FnAtan2Iterator)
 SERIALIZABLE_CLASS_VERSIONS(FnCoshIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(FnCoshIterator)
 SERIALIZABLE_CLASS_VERSIONS(FnAcoshIterator)
@@ -144,8 +139,6 @@ END_SERIALIZABLE_CLASS_VERSIONS(FnIsInfIterator)
 SERIALIZABLE_CLASS_VERSIONS(FnIsNaNIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(FnIsNaNIterator)
 
-UNARY_ACCEPT (FnSQRTIterator);
-
 UNARY_ACCEPT (FnExpIterator);
 
 UNARY_ACCEPT (FnLogIterator);
@@ -162,7 +155,6 @@ UNARY_ACCEPT (FnArcCosIterator);
 
 UNARY_ACCEPT (FnArcTanIterator);
 
-BINARY_ACCEPT (FnAtan2Iterator);
 UNARY_ACCEPT (FnCoshIterator);
 UNARY_ACCEPT (FnAcoshIterator);
 BINARY_ACCEPT (FnFmodIterator);
@@ -981,33 +973,6 @@ UNARY_ACCEPT(OpNumericUnaryIterator);
 /*******************************************************************************
 
 ********************************************************************************/
-bool FnSQRTIterator::nextImpl (store::Item_t& result, PlanState& planState) const 
-{
-  store::Item_t item;
-  xqtref_t type;
-    
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-
-  if (consumeNext(result, theChild.getp(), planState ))
-  {
-    GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().sqrt());
-
-    if ( consumeNext(item, theChild.getp(), planState ))
-    {
-      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-                           "fn:sqrt has a sequence longer than one as an operator.");
-    }
-    
-    STACK_PUSH (true, state);
-  }
-  STACK_END (state);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 bool FnExpIterator::nextImpl (store::Item_t& result, PlanState& planState) const
 {
   PlanIteratorState* state;
@@ -1138,39 +1103,6 @@ bool FnArcTanIterator::nextImpl (store::Item_t& result, PlanState& planState) co
     STACK_PUSH (true, state);
   }
   STACK_END (state);
-}
-
-/*******************************************************************************
-
-********************************************************************************/
-bool FnAtan2Iterator::nextImpl (store::Item_t& result, PlanState& planState) const
-{
-  store::Item_t n0;
-  store::Item_t n1;
-  
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  if (consumeNext(n0, this->theChild0.getp(), planState))
-  {
-    if (consumeNext(n1, this->theChild1.getp(), planState))
-    {
-      {
-        xqp_double doub1 = n0->getDoubleValue();
-        xqp_double doub2 = n1->getDoubleValue();
-
-        GENV_ITEMFACTORY->createDouble(result, doub1.atan2(doub2));
-      }
-
-      if (consumeNext(n0, this->theChild0.getp(), planState) ||
-          consumeNext(n1, this->theChild1.getp(), planState))
-        ZORBA_ERROR_DESC(XPTY0004,
-                         "Atan2 function has a sequence longer than one as an operand.");
-      STACK_PUSH(true, state);
-    }
-  }
-
-  STACK_END(state);
 }
 
 

@@ -161,10 +161,24 @@ declare function local:function-name($iter) as xs:string
 
 declare function local:iterator-call($iter) as xs:string
 {
-  if($iter/zorba:function/@annIsUpdating = 'true') then
-    string-join(($iter/@name,'(sctx,loc,argv,ann.is_updating())'),'')
-  else
-    string-join(($iter/@name,'(sctx,loc,argv)'),'')
+  concat (
+    $iter/@name,
+    ' ( sctx, loc, ',
+    let $arity := lower-case($iter/@arity)
+    return (
+      if ( $arity eq "unary" )
+      then
+        'argv[0]'
+      else if ( $arity eq "binary" )
+      then 'argv[0], argv[1]'
+      else if ( $arity eq "noary" )
+      then ''
+      else 'argv'
+    ),
+    if($iter/zorba:function/@annIsUpdating = 'true')
+    then ', ann.is_updating() )'
+    else ')'
+  )
 };
 
 declare function local:create-context($iter,$mapping) as xs:string?

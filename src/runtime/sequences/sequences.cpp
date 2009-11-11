@@ -51,6 +51,7 @@ void FnConcatIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnConcatIterator::~FnConcatIterator() {}
 
 
@@ -88,6 +89,7 @@ void FnIndexOfIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnIndexOfIterator::~FnIndexOfIterator() {}
 
 
@@ -129,6 +131,7 @@ void FnEmptyIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnEmptyIterator::~FnEmptyIterator() {}
 
 // </FnEmptyIterator>
@@ -156,6 +159,7 @@ void FnExistsIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnExistsIterator::~FnExistsIterator() {}
 
 // </FnExistsIterator>
@@ -183,6 +187,7 @@ void FnInsertBeforeIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnInsertBeforeIterator::~FnInsertBeforeIterator() {}
 
 
@@ -224,6 +229,7 @@ void FnRemoveIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnRemoveIterator::~FnRemoveIterator() {}
 
 
@@ -265,6 +271,7 @@ void FnReverseIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnReverseIterator::~FnReverseIterator() {}
 
 // </FnReverseIterator>
@@ -292,6 +299,7 @@ void FnSubsequenceIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnSubsequenceIterator::~FnSubsequenceIterator() {}
 
 
@@ -329,6 +337,7 @@ void FnZeroOrOneIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnZeroOrOneIterator::~FnZeroOrOneIterator() {}
 
 // </FnZeroOrOneIterator>
@@ -356,6 +365,7 @@ void FnOneOrMoreIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnOneOrMoreIterator::~FnOneOrMoreIterator() {}
 
 // </FnOneOrMoreIterator>
@@ -383,6 +393,7 @@ void FnExactlyOneIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnExactlyOneIterator::~FnExactlyOneIterator() {}
 
 // </FnExactlyOneIterator>
@@ -410,6 +421,7 @@ void FnDeepEqualIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnDeepEqualIterator::~FnDeepEqualIterator() {}
 
 // </FnDeepEqualIterator>
@@ -437,6 +449,7 @@ void HashSemiJoinIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 HashSemiJoinIterator::~HashSemiJoinIterator() {}
 
 // </HashSemiJoinIterator>
@@ -464,6 +477,7 @@ void SortSemiJoinIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 SortSemiJoinIterator::~SortSemiJoinIterator() {}
 
 // </SortSemiJoinIterator>
@@ -491,6 +505,7 @@ void FnCountIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnCountIterator::~FnCountIterator() {}
 
 // </FnCountIterator>
@@ -518,6 +533,7 @@ void FnAvgIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnAvgIterator::~FnAvgIterator() {}
 
 // </FnAvgIterator>
@@ -545,6 +561,7 @@ void FnSumIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnSumIterator::~FnSumIterator() {}
 
 // </FnSumIterator>
@@ -572,6 +589,7 @@ void FnSumDoubleIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnSumDoubleIterator::~FnSumDoubleIterator() {}
 
 // </FnSumDoubleIterator>
@@ -599,6 +617,7 @@ void FnSumFloatIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnSumFloatIterator::~FnSumFloatIterator() {}
 
 // </FnSumFloatIterator>
@@ -626,6 +645,7 @@ void FnSumDecimalIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnSumDecimalIterator::~FnSumDecimalIterator() {}
 
 // </FnSumDecimalIterator>
@@ -653,6 +673,7 @@ void FnSumIntegerIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnSumIntegerIterator::~FnSumIntegerIterator() {}
 
 // </FnSumIntegerIterator>
@@ -680,6 +701,7 @@ void OpToIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 OpToIterator::~OpToIterator() {}
 
 
@@ -721,6 +743,7 @@ void FnDocIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnDocIterator::~FnDocIterator() {}
 
 // </FnDocIterator>
@@ -748,6 +771,7 @@ void FnDocAvailableIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnDocAvailableIterator::~FnDocAvailableIterator() {}
 
 // </FnDocAvailableIterator>
@@ -775,6 +799,7 @@ void FnParseIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnParseIterator::~FnParseIterator() {}
 
 // </FnParseIterator>

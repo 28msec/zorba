@@ -149,7 +149,6 @@
   DECLARE_VISITOR (InstanceOfIterator)
   DECLARE_VISITOR (EitherNodesOrAtomicsIterator)
   DECLARE_VISITOR (OpNumericUnaryIterator)
-  DECLARE_VISITOR (FnSQRTIterator)
   DECLARE_VISITOR (FnExpIterator)
   DECLARE_VISITOR (FnLogIterator)
   DECLARE_VISITOR (FnSinIterator)
@@ -158,7 +157,6 @@
   DECLARE_VISITOR (FnArcSinIterator)
   DECLARE_VISITOR (FnArcCosIterator)
   DECLARE_VISITOR (FnArcTanIterator)
-  DECLARE_VISITOR (FnAtan2Iterator);
   DECLARE_VISITOR (FnCoshIterator);
   DECLARE_VISITOR (FnAcoshIterator);
   DECLARE_VISITOR (FnFmodIterator);

@@ -25,6 +25,9 @@
 
 
 #include "common/shared_types.h"
+
+
+
 #include "runtime/base/narybase.h"
 
 
@@ -35,25 +38,26 @@ namespace zorba {
  * 
  * Author: Zorba Team * 
  */
-class NodeNameIterator: public NaryBaseIterator <NodeNameIterator, PlanIteratorState>
-{
+class NodeNameIterator : public NaryBaseIterator <NodeNameIterator, PlanIteratorState>
+{ 
 public:
   SERIALIZABLE_CLASS(NodeNameIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(NodeNameIterator,
-  NaryBaseIterator<NodeNameIterator, PlanIteratorState>);
+    NaryBaseIterator <NodeNameIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<NodeNameIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator <NodeNameIterator, PlanIteratorState>*)this);
   }
 
-  NodeNameIterator(static_context* sctx, const QueryLoc& loc,
-  std::vector<PlanIter_t>& aChildren)
-  :
-  NaryBaseIterator<NodeNameIterator, PlanIteratorState>
-  (sctx, loc, aChildren){}
+  NodeNameIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <NodeNameIterator, PlanIteratorState>
+    (sctx, loc, aChildren) {}
 
   virtual ~NodeNameIterator();
 
@@ -68,25 +72,26 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class NilledIterator: public NaryBaseIterator <NilledIterator, PlanIteratorState>
-{
+class NilledIterator : public NaryBaseIterator <NilledIterator, PlanIteratorState>
+{ 
 public:
   SERIALIZABLE_CLASS(NilledIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(NilledIterator,
-  NaryBaseIterator<NilledIterator, PlanIteratorState>);
+    NaryBaseIterator <NilledIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<NilledIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator <NilledIterator, PlanIteratorState>*)this);
   }
 
-  NilledIterator(static_context* sctx, const QueryLoc& loc,
-  std::vector<PlanIter_t>& aChildren)
-  :
-  NaryBaseIterator<NilledIterator, PlanIteratorState>
-  (sctx, loc, aChildren){}
+  NilledIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <NilledIterator, PlanIteratorState>
+    (sctx, loc, aChildren) {}
 
   virtual ~NilledIterator();
 
@@ -110,31 +115,32 @@ public:
   void reset(PlanState&);
 };
 
-class FnStringIterator: public NaryBaseIterator <FnStringIterator, FnStringIteratorState>
-{
+class FnStringIterator : public NaryBaseIterator <FnStringIterator, FnStringIteratorState>
+{ 
 protected:
   bool theEmptyStringOnNULL; //
 public:
   SERIALIZABLE_CLASS(FnStringIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnStringIterator,
-  NaryBaseIterator<FnStringIterator, FnStringIteratorState>);
+    NaryBaseIterator <FnStringIterator, FnStringIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<FnStringIterator, FnStringIteratorState>*)this);
+    (NaryBaseIterator <FnStringIterator, FnStringIteratorState>*)this);
 
     ar & theEmptyStringOnNULL;
   }
 
-  FnStringIterator(static_context* sctx, const QueryLoc& loc,
-  std::vector<PlanIter_t>& aChildren,
-  bool emptyStringOnNULL)
-  :
-  NaryBaseIterator<FnStringIterator, FnStringIteratorState>
-  (sctx, loc, aChildren),
-  theEmptyStringOnNULL(emptyStringOnNULL){}
+  FnStringIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren,
+    bool emptyStringOnNULL)
+    : NaryBaseIterator <FnStringIterator, FnStringIteratorState>
+    (sctx, loc, aChildren),
+    theEmptyStringOnNULL(emptyStringOnNULL) {}
 
   virtual ~FnStringIterator();
 
@@ -160,25 +166,26 @@ public:
   void reset(PlanState&);
 };
 
-class FnDataIterator: public NaryBaseIterator <FnDataIterator, FnDataIteratorState>
-{
+class FnDataIterator : public NaryBaseIterator <FnDataIterator, FnDataIteratorState>
+{ 
 public:
   SERIALIZABLE_CLASS(FnDataIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnDataIterator,
-  NaryBaseIterator<FnDataIterator, FnDataIteratorState>);
+    NaryBaseIterator <FnDataIterator, FnDataIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<FnDataIterator, FnDataIteratorState>*)this);
+    (NaryBaseIterator <FnDataIterator, FnDataIteratorState>*)this);
   }
 
-  FnDataIterator(static_context* sctx, const QueryLoc& loc,
-  std::vector<PlanIter_t>& aChildren)
-  :
-  NaryBaseIterator<FnDataIterator, FnDataIteratorState>
-  (sctx, loc, aChildren){}
+  FnDataIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <FnDataIterator, FnDataIteratorState>
+    (sctx, loc, aChildren) {}
 
   virtual ~FnDataIterator();
 
@@ -193,25 +200,26 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class BaseUriIterator: public NaryBaseIterator <BaseUriIterator, PlanIteratorState>
-{
+class BaseUriIterator : public NaryBaseIterator <BaseUriIterator, PlanIteratorState>
+{ 
 public:
   SERIALIZABLE_CLASS(BaseUriIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(BaseUriIterator,
-  NaryBaseIterator<BaseUriIterator, PlanIteratorState>);
+    NaryBaseIterator <BaseUriIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<BaseUriIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator <BaseUriIterator, PlanIteratorState>*)this);
   }
 
-  BaseUriIterator(static_context* sctx, const QueryLoc& loc,
-  std::vector<PlanIter_t>& aChildren)
-  :
-  NaryBaseIterator<BaseUriIterator, PlanIteratorState>
-  (sctx, loc, aChildren){}
+  BaseUriIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <BaseUriIterator, PlanIteratorState>
+    (sctx, loc, aChildren) {}
 
   virtual ~BaseUriIterator();
 
@@ -226,25 +234,26 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class DocumentUriIterator: public NaryBaseIterator <DocumentUriIterator, PlanIteratorState>
-{
+class DocumentUriIterator : public NaryBaseIterator <DocumentUriIterator, PlanIteratorState>
+{ 
 public:
   SERIALIZABLE_CLASS(DocumentUriIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(DocumentUriIterator,
-  NaryBaseIterator<DocumentUriIterator, PlanIteratorState>);
+    NaryBaseIterator <DocumentUriIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<DocumentUriIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator <DocumentUriIterator, PlanIteratorState>*)this);
   }
 
-  DocumentUriIterator(static_context* sctx, const QueryLoc& loc,
-  std::vector<PlanIter_t>& aChildren)
-  :
-  NaryBaseIterator<DocumentUriIterator, PlanIteratorState>
-  (sctx, loc, aChildren){}
+  DocumentUriIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <DocumentUriIterator, PlanIteratorState>
+    (sctx, loc, aChildren) {}
 
   virtual ~DocumentUriIterator();
 
@@ -259,25 +268,26 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class RootIterator: public NaryBaseIterator <RootIterator, PlanIteratorState>
-{
+class RootIterator : public NaryBaseIterator <RootIterator, PlanIteratorState>
+{ 
 public:
   SERIALIZABLE_CLASS(RootIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(RootIterator,
-  NaryBaseIterator<RootIterator, PlanIteratorState>);
+    NaryBaseIterator <RootIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<RootIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator <RootIterator, PlanIteratorState>*)this);
   }
 
-  RootIterator(static_context* sctx, const QueryLoc& loc,
-  std::vector<PlanIter_t>& aChildren)
-  :
-  NaryBaseIterator<RootIterator, PlanIteratorState>
-  (sctx, loc, aChildren){}
+  RootIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <RootIterator, PlanIteratorState>
+    (sctx, loc, aChildren) {}
 
   virtual ~RootIterator();
 

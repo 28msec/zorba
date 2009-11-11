@@ -37,7 +37,7 @@ PlanIter_t fn_abs::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new AbsIterator(sctx,loc,argv);
+  return new AbsIterator ( sctx, loc, argv);
 }
 
 
@@ -50,7 +50,7 @@ PlanIter_t fn_ceiling::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new CeilingIterator(sctx,loc,argv);
+  return new CeilingIterator ( sctx, loc, argv);
 }
 
 
@@ -63,7 +63,7 @@ PlanIter_t fn_floor::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new FloorIterator(sctx,loc,argv);
+  return new FloorIterator ( sctx, loc, argv);
 }
 
 
@@ -76,7 +76,7 @@ PlanIter_t fn_round::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new RoundIterator(sctx,loc,argv);
+  return new RoundIterator ( sctx, loc, argv);
 }
 
 
@@ -89,7 +89,7 @@ PlanIter_t fn_round_half_to_even::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new RoundHalfToEvenIterator(sctx,loc,argv);
+  return new RoundHalfToEvenIterator ( sctx, loc, argv);
 }
 
 
@@ -102,7 +102,7 @@ PlanIter_t fn_format_number::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new FormatNumberIterator(sctx,loc,argv);
+  return new FormatNumberIterator ( sctx, loc, argv);
 }
 
 

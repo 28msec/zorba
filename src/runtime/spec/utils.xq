@@ -11,9 +11,14 @@ declare variable $zi:indent as xs:string := '  ';
 declare variable $zi:newline as xs:string := '
 ';
 
-declare function zi:indent($noTabs as xs:integer) as xs:string
+declare function zi:indent($i) as xs:string
 {
-  fn:string-join (for $i in (1 to $noTabs) return $zi:indent,'')
+  string-join(for $j in 1 to $i * 2 return ' ', '')
+};
+
+declare function zi:indent() as xs:string
+{
+  zi:indent(1)
 };
 
 declare function zi:add-copyright() as xs:string

@@ -1095,7 +1095,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION (InstanceOfIterator)
   PRINTER_VISITOR_DEFINITION (EitherNodesOrAtomicsIterator)
   PRINTER_VISITOR_DEFINITION (OpNumericUnaryIterator)
-  PRINTER_VISITOR_DEFINITION (FnSQRTIterator)
   PRINTER_VISITOR_DEFINITION (FnExpIterator)
   PRINTER_VISITOR_DEFINITION (FnLogIterator)
   PRINTER_VISITOR_DEFINITION (FnSinIterator)
@@ -1104,7 +1103,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION (FnArcSinIterator)
   PRINTER_VISITOR_DEFINITION (FnArcCosIterator)
   PRINTER_VISITOR_DEFINITION (FnArcTanIterator)
-  PRINTER_VISITOR_DEFINITION (FnAtan2Iterator);
   PRINTER_VISITOR_DEFINITION (FnCoshIterator);
   PRINTER_VISITOR_DEFINITION (FnAcoshIterator);
   PRINTER_VISITOR_DEFINITION (FnFmodIterator);

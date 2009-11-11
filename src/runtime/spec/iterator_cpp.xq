@@ -16,7 +16,7 @@ declare function local:process-iterator($iter) as xs:string
   (: generate the visitor if requested :)
   if(fn:not($iter/@generateAccept) or $iter/@generateAccept eq "true") 
   then
-    local:generate-accept($iter/@name)
+    concat(local:generate-accept($iter), $gen:newline)
   else
     (),
 
@@ -77,16 +77,40 @@ declare function local:generate-init($iter) as xs:string
   ),'')
 };
 
-declare function local:generate-accept($name as xs:string) as xs:string
+declare function local:generate-accept($iter) as xs:string
 {
-  string-join(($gen:newline,'void ',$name,'::accept(PlanIterVisitor&amp; v) const {',$gen:newline,
-  $gen:indent,'v.beginVisit(*this);',$gen:newline,$gen:newline,
-  $gen:indent,'std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();',$gen:newline,
-  $gen:indent,'std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();',$gen:newline,
-  $gen:indent,'for ( ; lIter != lEnd; ++lIter ){',$gen:newline,
-  $gen:indent,$gen:indent,'(*lIter)->accept(v);',$gen:newline,
-  $gen:indent,'}',$gen:newline,$gen:newline,
-  $gen:indent,'v.endVisit(*this);',$gen:newline,'}',$gen:newline),'')
+  string-join(( $gen:newline,
+    'void ',$iter/@name,'::accept(PlanIterVisitor&amp; v) const {',
+    $gen:newline,
+    $gen:indent,'v.beginVisit(*this);',
+    $gen:newline,$gen:newline,
+    $gen:indent,
+
+    let $arity := lower-case($iter/@arity)
+    return (
+      if ( $arity eq "unary" )
+      then
+        'theChild->accept(v);'
+      else if ( $arity eq "binary" )
+      then concat(
+        'theChild0->accept(v);',
+        $gen:newline,
+        'theChild1->accept(v);'
+      )
+      else if ( $arity eq "noary" )
+      then ''
+      else concat(
+        'std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();',$gen:newline,
+        $gen:indent,'std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();',$gen:newline,
+        $gen:indent,'for ( ; lIter != lEnd; ++lIter ){',$gen:newline,
+        $gen:indent,$gen:indent,'(*lIter)->accept(v);',$gen:newline,
+        $gen:indent,'}'
+      )
+    ),
+    $gen:newline, $gen:newline,
+    $gen:indent,'v.endVisit(*this);',$gen:newline,'}',
+    $gen:newline
+  ), '')
 };
 
 declare function local:get-include($XMLdoc, $name) as xs:string*

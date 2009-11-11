@@ -69,6 +69,8 @@ namespace zorba{
     class SecondsFromTimeIterator;
     class TimezoneFromTimeIterator;
     class FnPutIterator;
+    class FnSQRTIterator;
+    class FnAtan2Iterator;
     class TraceIterator;
     class ReadLineIterator;
     class PrintIterator;
@@ -266,6 +268,12 @@ public:
 
     virtual void beginVisit ( const FnPutIterator& ) = 0;
     virtual void endVisit   ( const FnPutIterator& ) = 0;
+
+    virtual void beginVisit ( const FnSQRTIterator& ) = 0;
+    virtual void endVisit   ( const FnSQRTIterator& ) = 0;
+
+    virtual void beginVisit ( const FnAtan2Iterator& ) = 0;
+    virtual void endVisit   ( const FnAtan2Iterator& ) = 0;
 
     virtual void beginVisit ( const TraceIterator& ) = 0;
     virtual void endVisit   ( const TraceIterator& ) = 0;

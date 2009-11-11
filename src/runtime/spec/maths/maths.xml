@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+    
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="FnSQRTIterator" arity="unary">
+
+  <zorba:description author="Zorba Team">math:sqrt</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="sqrt" prefix="fn-zorba-math">
+      <zorba:param>xs:double</zorba:param>
+      <zorba:output>xs:double</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="FnAtan2Iterator" arity="binary">
+
+  <zorba:description author="Zorba Team">math:atan2</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="atan2" prefix="fn-zorba-math">
+      <zorba:param>xs:double</zorba:param>
+      <zorba:param>xs:double</zorba:param>
+      <zorba:output>xs:double+</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+</zorba:iterators>
+

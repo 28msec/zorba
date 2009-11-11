@@ -25,6 +25,9 @@
 
 
 #include "common/shared_types.h"
+
+
+
 #include "runtime/base/narybase.h"
 
 
@@ -46,25 +49,26 @@ public:
   void reset(PlanState&);
 };
 
-class TraceIterator: public NaryBaseIterator <TraceIterator, TraceIteratorState>
-{
+class TraceIterator : public NaryBaseIterator <TraceIterator, TraceIteratorState>
+{ 
 public:
   SERIALIZABLE_CLASS(TraceIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(TraceIterator,
-  NaryBaseIterator<TraceIterator, TraceIteratorState>);
+    NaryBaseIterator <TraceIterator, TraceIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<TraceIterator, TraceIteratorState>*)this);
+    (NaryBaseIterator <TraceIterator, TraceIteratorState>*)this);
   }
 
-  TraceIterator(static_context* sctx, const QueryLoc& loc,
-  std::vector<PlanIter_t>& aChildren)
-  :
-  NaryBaseIterator<TraceIterator, TraceIteratorState>
-  (sctx, loc, aChildren){}
+  TraceIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <TraceIterator, TraceIteratorState>
+    (sctx, loc, aChildren) {}
 
   virtual ~TraceIterator();
 
@@ -79,25 +83,26 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class ReadLineIterator: public NaryBaseIterator <ReadLineIterator, PlanIteratorState>
-{
+class ReadLineIterator : public NaryBaseIterator <ReadLineIterator, PlanIteratorState>
+{ 
 public:
   SERIALIZABLE_CLASS(ReadLineIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ReadLineIterator,
-  NaryBaseIterator<ReadLineIterator, PlanIteratorState>);
+    NaryBaseIterator <ReadLineIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<ReadLineIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator <ReadLineIterator, PlanIteratorState>*)this);
   }
 
-  ReadLineIterator(static_context* sctx, const QueryLoc& loc,
-  std::vector<PlanIter_t>& aChildren)
-  :
-  NaryBaseIterator<ReadLineIterator, PlanIteratorState>
-  (sctx, loc, aChildren){}
+  ReadLineIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <ReadLineIterator, PlanIteratorState>
+    (sctx, loc, aChildren) {}
 
   virtual ~ReadLineIterator();
 
@@ -112,31 +117,32 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class PrintIterator: public NaryBaseIterator <PrintIterator, PlanIteratorState>
-{
+class PrintIterator : public NaryBaseIterator <PrintIterator, PlanIteratorState>
+{ 
 protected:
   bool thePrintToConsole; //
 public:
   SERIALIZABLE_CLASS(PrintIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(PrintIterator,
-  NaryBaseIterator<PrintIterator, PlanIteratorState>);
+    NaryBaseIterator <PrintIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<PrintIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator <PrintIterator, PlanIteratorState>*)this);
 
     ar & thePrintToConsole;
   }
 
-  PrintIterator(static_context* sctx, const QueryLoc& loc,
-  std::vector<PlanIter_t>& aChildren,
-  bool aPrintToConsole = true)
-  :
-  NaryBaseIterator<PrintIterator, PlanIteratorState>
-  (sctx, loc, aChildren),
-  thePrintToConsole(aPrintToConsole){}
+  PrintIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren,
+    bool aPrintToConsole = true)
+    : NaryBaseIterator <PrintIterator, PlanIteratorState>
+    (sctx, loc, aChildren),
+    thePrintToConsole(aPrintToConsole) {}
 
   virtual ~PrintIterator();
 
@@ -151,25 +157,26 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class ResolveUriIterator: public NaryBaseIterator <ResolveUriIterator, PlanIteratorState>
-{
+class ResolveUriIterator : public NaryBaseIterator <ResolveUriIterator, PlanIteratorState>
+{ 
 public:
   SERIALIZABLE_CLASS(ResolveUriIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ResolveUriIterator,
-  NaryBaseIterator<ResolveUriIterator, PlanIteratorState>);
+    NaryBaseIterator <ResolveUriIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<ResolveUriIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator <ResolveUriIterator, PlanIteratorState>*)this);
   }
 
-  ResolveUriIterator(static_context* sctx, const QueryLoc& loc,
-  std::vector<PlanIter_t>& aChildren)
-  :
-  NaryBaseIterator<ResolveUriIterator, PlanIteratorState>
-  (sctx, loc, aChildren){}
+  ResolveUriIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <ResolveUriIterator, PlanIteratorState>
+    (sctx, loc, aChildren) {}
 
   virtual ~ResolveUriIterator();
 
@@ -184,25 +191,26 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class ErrorIterator: public NaryBaseIterator <ErrorIterator, PlanIteratorState>
-{
+class ErrorIterator : public NaryBaseIterator <ErrorIterator, PlanIteratorState>
+{ 
 public:
   SERIALIZABLE_CLASS(ErrorIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ErrorIterator,
-  NaryBaseIterator<ErrorIterator, PlanIteratorState>);
+    NaryBaseIterator <ErrorIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<ErrorIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator <ErrorIterator, PlanIteratorState>*)this);
   }
 
-  ErrorIterator(static_context* sctx, const QueryLoc& loc,
-  std::vector<PlanIter_t>& aChildren)
-  :
-  NaryBaseIterator<ErrorIterator, PlanIteratorState>
-  (sctx, loc, aChildren){}
+  ErrorIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <ErrorIterator, PlanIteratorState>
+    (sctx, loc, aChildren) {}
 
   virtual ~ErrorIterator();
 

@@ -51,6 +51,7 @@ void FnPutIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnPutIterator::~FnPutIterator() {}
 
 // </FnPutIterator>

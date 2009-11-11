@@ -51,6 +51,7 @@ void AbsIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 AbsIterator::~AbsIterator() {}
 
 // </AbsIterator>
@@ -78,6 +79,7 @@ void CeilingIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 CeilingIterator::~CeilingIterator() {}
 
 // </CeilingIterator>
@@ -105,6 +107,7 @@ void FloorIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FloorIterator::~FloorIterator() {}
 
 // </FloorIterator>
@@ -132,6 +135,7 @@ void RoundIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 RoundIterator::~RoundIterator() {}
 
 // </RoundIterator>
@@ -159,6 +163,7 @@ void RoundHalfToEvenIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 RoundHalfToEvenIterator::~RoundHalfToEvenIterator() {}
 
 // </RoundHalfToEvenIterator>
@@ -186,6 +191,7 @@ void FormatNumberIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FormatNumberIterator::~FormatNumberIterator() {}
 
 // </FormatNumberIterator>

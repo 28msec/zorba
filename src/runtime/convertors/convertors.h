@@ -25,6 +25,9 @@
 
 
 #include "common/shared_types.h"
+
+
+
 #include "runtime/base/narybase.h"
 #include "store/api/iterator.h"
 #include "store/api/iterator_factory.h"
@@ -46,25 +49,26 @@ public:
   void reset(PlanState&);
 };
 
-class ZorbaJsonParseIterator: public NaryBaseIterator <ZorbaJsonParseIterator, ZorbaJsonParseIteratorState>
-{
+class ZorbaJsonParseIterator : public NaryBaseIterator <ZorbaJsonParseIterator, ZorbaJsonParseIteratorState>
+{ 
 public:
   SERIALIZABLE_CLASS(ZorbaJsonParseIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaJsonParseIterator,
-  NaryBaseIterator<ZorbaJsonParseIterator, ZorbaJsonParseIteratorState>);
+    NaryBaseIterator <ZorbaJsonParseIterator, ZorbaJsonParseIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<ZorbaJsonParseIterator, ZorbaJsonParseIteratorState>*)this);
+    (NaryBaseIterator <ZorbaJsonParseIterator, ZorbaJsonParseIteratorState>*)this);
   }
 
-  ZorbaJsonParseIterator(static_context* sctx, const QueryLoc& loc,
-  std::vector<PlanIter_t>& aChildren)
-  :
-  NaryBaseIterator<ZorbaJsonParseIterator, ZorbaJsonParseIteratorState>
-  (sctx, loc, aChildren){}
+  ZorbaJsonParseIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <ZorbaJsonParseIterator, ZorbaJsonParseIteratorState>
+    (sctx, loc, aChildren) {}
 
   virtual ~ZorbaJsonParseIterator();
 
@@ -79,25 +83,26 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class ZorbaJsonSerializeIterator: public NaryBaseIterator <ZorbaJsonSerializeIterator, PlanIteratorState>
-{
+class ZorbaJsonSerializeIterator : public NaryBaseIterator <ZorbaJsonSerializeIterator, PlanIteratorState>
+{ 
 public:
   SERIALIZABLE_CLASS(ZorbaJsonSerializeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaJsonSerializeIterator,
-  NaryBaseIterator<ZorbaJsonSerializeIterator, PlanIteratorState>);
+    NaryBaseIterator <ZorbaJsonSerializeIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<ZorbaJsonSerializeIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator <ZorbaJsonSerializeIterator, PlanIteratorState>*)this);
   }
 
-  ZorbaJsonSerializeIterator(static_context* sctx, const QueryLoc& loc,
-  std::vector<PlanIter_t>& aChildren)
-  :
-  NaryBaseIterator<ZorbaJsonSerializeIterator, PlanIteratorState>
-  (sctx, loc, aChildren){}
+  ZorbaJsonSerializeIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <ZorbaJsonSerializeIterator, PlanIteratorState>
+    (sctx, loc, aChildren) {}
 
   virtual ~ZorbaJsonSerializeIterator();
 
@@ -121,25 +126,26 @@ public:
   void reset(PlanState&);
 };
 
-class ZorbaJsonMLParseIterator: public NaryBaseIterator <ZorbaJsonMLParseIterator, ZorbaJsonMLParseIteratorState>
-{
+class ZorbaJsonMLParseIterator : public NaryBaseIterator <ZorbaJsonMLParseIterator, ZorbaJsonMLParseIteratorState>
+{ 
 public:
   SERIALIZABLE_CLASS(ZorbaJsonMLParseIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaJsonMLParseIterator,
-  NaryBaseIterator<ZorbaJsonMLParseIterator, ZorbaJsonMLParseIteratorState>);
+    NaryBaseIterator <ZorbaJsonMLParseIterator, ZorbaJsonMLParseIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<ZorbaJsonMLParseIterator, ZorbaJsonMLParseIteratorState>*)this);
+    (NaryBaseIterator <ZorbaJsonMLParseIterator, ZorbaJsonMLParseIteratorState>*)this);
   }
 
-  ZorbaJsonMLParseIterator(static_context* sctx, const QueryLoc& loc,
-  std::vector<PlanIter_t>& aChildren)
-  :
-  NaryBaseIterator<ZorbaJsonMLParseIterator, ZorbaJsonMLParseIteratorState>
-  (sctx, loc, aChildren){}
+  ZorbaJsonMLParseIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <ZorbaJsonMLParseIterator, ZorbaJsonMLParseIteratorState>
+    (sctx, loc, aChildren) {}
 
   virtual ~ZorbaJsonMLParseIterator();
 
@@ -154,25 +160,26 @@ public:
  * 
  * Author: Zorba Team * 
  */
-class ZorbaJsonMLSerializeIterator: public NaryBaseIterator <ZorbaJsonMLSerializeIterator, PlanIteratorState>
-{
+class ZorbaJsonMLSerializeIterator : public NaryBaseIterator <ZorbaJsonMLSerializeIterator, PlanIteratorState>
+{ 
 public:
   SERIALIZABLE_CLASS(ZorbaJsonMLSerializeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaJsonMLSerializeIterator,
-  NaryBaseIterator<ZorbaJsonMLSerializeIterator, PlanIteratorState>);
+    NaryBaseIterator <ZorbaJsonMLSerializeIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<ZorbaJsonMLSerializeIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator <ZorbaJsonMLSerializeIterator, PlanIteratorState>*)this);
   }
 
-  ZorbaJsonMLSerializeIterator(static_context* sctx, const QueryLoc& loc,
-  std::vector<PlanIter_t>& aChildren)
-  :
-  NaryBaseIterator<ZorbaJsonMLSerializeIterator, PlanIteratorState>
-  (sctx, loc, aChildren){}
+  ZorbaJsonMLSerializeIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <ZorbaJsonMLSerializeIterator, PlanIteratorState>
+    (sctx, loc, aChildren) {}
 
   virtual ~ZorbaJsonMLSerializeIterator();
 

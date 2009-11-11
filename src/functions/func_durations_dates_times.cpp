@@ -37,7 +37,7 @@ PlanIter_t fn_years_from_duration::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new YearsFromDurationIterator(sctx,loc,argv);
+  return new YearsFromDurationIterator ( sctx, loc, argv);
 }
 
 
@@ -50,7 +50,7 @@ PlanIter_t fn_months_from_duration::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new MonthsFromDurationIterator(sctx,loc,argv);
+  return new MonthsFromDurationIterator ( sctx, loc, argv);
 }
 
 
@@ -63,7 +63,7 @@ PlanIter_t fn_days_from_duration::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new DaysFromDurationIterator(sctx,loc,argv);
+  return new DaysFromDurationIterator ( sctx, loc, argv);
 }
 
 
@@ -76,7 +76,7 @@ PlanIter_t fn_hours_from_duration::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new HoursFromDurationIterator(sctx,loc,argv);
+  return new HoursFromDurationIterator ( sctx, loc, argv);
 }
 
 
@@ -89,7 +89,7 @@ PlanIter_t fn_minutes_from_duration::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new MinutesFromDurationIterator(sctx,loc,argv);
+  return new MinutesFromDurationIterator ( sctx, loc, argv);
 }
 
 
@@ -102,7 +102,7 @@ PlanIter_t fn_seconds_from_duration::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new SecondsFromDurationIterator(sctx,loc,argv);
+  return new SecondsFromDurationIterator ( sctx, loc, argv);
 }
 
 
@@ -115,7 +115,7 @@ PlanIter_t fn_year_from_dateTime::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new YearFromDatetimeIterator(sctx,loc,argv);
+  return new YearFromDatetimeIterator ( sctx, loc, argv);
 }
 
 
@@ -128,7 +128,7 @@ PlanIter_t fn_month_from_dateTime::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new MonthFromDatetimeIterator(sctx,loc,argv);
+  return new MonthFromDatetimeIterator ( sctx, loc, argv);
 }
 
 
@@ -141,7 +141,7 @@ PlanIter_t fn_day_from_dateTime::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new DayFromDatetimeIterator(sctx,loc,argv);
+  return new DayFromDatetimeIterator ( sctx, loc, argv);
 }
 
 
@@ -154,7 +154,7 @@ PlanIter_t fn_hours_from_dateTime::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new HoursFromDatetimeIterator(sctx,loc,argv);
+  return new HoursFromDatetimeIterator ( sctx, loc, argv);
 }
 
 
@@ -167,7 +167,7 @@ PlanIter_t fn_minutes_from_dateTime::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new MinutesFromDatetimeIterator(sctx,loc,argv);
+  return new MinutesFromDatetimeIterator ( sctx, loc, argv);
 }
 
 
@@ -180,7 +180,7 @@ PlanIter_t fn_seconds_from_dateTime::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new SecondsFromDatetimeIterator(sctx,loc,argv);
+  return new SecondsFromDatetimeIterator ( sctx, loc, argv);
 }
 
 
@@ -193,7 +193,7 @@ PlanIter_t fn_timezone_from_dateTime::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new TimezoneFromDatetimeIterator(sctx,loc,argv);
+  return new TimezoneFromDatetimeIterator ( sctx, loc, argv);
 }
 
 
@@ -206,7 +206,7 @@ PlanIter_t fn_year_from_date::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new YearFromDateIterator(sctx,loc,argv);
+  return new YearFromDateIterator ( sctx, loc, argv);
 }
 
 
@@ -219,7 +219,7 @@ PlanIter_t fn_month_from_date::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new MonthFromDateIterator(sctx,loc,argv);
+  return new MonthFromDateIterator ( sctx, loc, argv);
 }
 
 
@@ -232,7 +232,7 @@ PlanIter_t fn_day_from_date::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new DayFromDateIterator(sctx,loc,argv);
+  return new DayFromDateIterator ( sctx, loc, argv);
 }
 
 
@@ -245,7 +245,7 @@ PlanIter_t fn_timezone_from_date::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new TimezoneFromDateIterator(sctx,loc,argv);
+  return new TimezoneFromDateIterator ( sctx, loc, argv);
 }
 
 
@@ -258,7 +258,7 @@ PlanIter_t fn_hours_from_time::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new HoursFromTimeIterator(sctx,loc,argv);
+  return new HoursFromTimeIterator ( sctx, loc, argv);
 }
 
 
@@ -271,7 +271,7 @@ PlanIter_t fn_minutes_from_time::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new MinutesFromTimeIterator(sctx,loc,argv);
+  return new MinutesFromTimeIterator ( sctx, loc, argv);
 }
 
 
@@ -284,7 +284,7 @@ PlanIter_t fn_seconds_from_time::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new SecondsFromTimeIterator(sctx,loc,argv);
+  return new SecondsFromTimeIterator ( sctx, loc, argv);
 }
 
 
@@ -297,7 +297,7 @@ PlanIter_t fn_timezone_from_time::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new TimezoneFromTimeIterator(sctx,loc,argv);
+  return new TimezoneFromTimeIterator ( sctx, loc, argv);
 }
 
 

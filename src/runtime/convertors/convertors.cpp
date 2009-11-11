@@ -53,6 +53,7 @@ void ZorbaJsonParseIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 ZorbaJsonParseIterator::~ZorbaJsonParseIterator() {}
 
 
@@ -90,6 +91,7 @@ void ZorbaJsonSerializeIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 ZorbaJsonSerializeIterator::~ZorbaJsonSerializeIterator() {}
 
 // </ZorbaJsonSerializeIterator>
@@ -117,6 +119,7 @@ void ZorbaJsonMLParseIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 ZorbaJsonMLParseIterator::~ZorbaJsonMLParseIterator() {}
 
 
@@ -154,6 +157,7 @@ void ZorbaJsonMLSerializeIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 ZorbaJsonMLSerializeIterator::~ZorbaJsonMLSerializeIterator() {}
 
 // </ZorbaJsonMLSerializeIterator>

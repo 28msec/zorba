@@ -56,6 +56,7 @@ void NodeNameIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 NodeNameIterator::~NodeNameIterator() {}
 
 // </NodeNameIterator>
@@ -83,6 +84,7 @@ void NilledIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 NilledIterator::~NilledIterator() {}
 
 // </NilledIterator>
@@ -110,6 +112,7 @@ void FnStringIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnStringIterator::~FnStringIterator() {}
 
 
@@ -147,6 +150,7 @@ void FnDataIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnDataIterator::~FnDataIterator() {}
 
 
@@ -184,6 +188,7 @@ void BaseUriIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 BaseUriIterator::~BaseUriIterator() {}
 
 // </BaseUriIterator>
@@ -211,6 +216,7 @@ void DocumentUriIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 DocumentUriIterator::~DocumentUriIterator() {}
 
 // </DocumentUriIterator>
@@ -238,6 +244,7 @@ void RootIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 RootIterator::~RootIterator() {}
 
 // </RootIterator>

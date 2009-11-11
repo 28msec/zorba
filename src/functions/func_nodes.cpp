@@ -37,7 +37,7 @@ PlanIter_t fn_zorba_ref_node_reference::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new NodeReferenceIterator(sctx,loc,argv);
+  return new NodeReferenceIterator ( sctx, loc, argv);
 }
 
 
@@ -50,7 +50,7 @@ PlanIter_t fn_zorba_ref_node_by_reference::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new NodeByReferenceIterator(sctx,loc,argv);
+  return new NodeByReferenceIterator ( sctx, loc, argv);
 }
 
 
@@ -63,7 +63,7 @@ PlanIter_t fn_local_name::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new FnLocalNameIterator(sctx,loc,argv);
+  return new FnLocalNameIterator ( sctx, loc, argv);
 }
 
 
@@ -76,7 +76,7 @@ PlanIter_t fn_namespace_uri::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new FnNamespaceUriIterator(sctx,loc,argv);
+  return new FnNamespaceUriIterator ( sctx, loc, argv);
 }
 
 
@@ -89,7 +89,7 @@ PlanIter_t fn_lang::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new FnLangIterator(sctx,loc,argv);
+  return new FnLangIterator ( sctx, loc, argv);
 }
 
 

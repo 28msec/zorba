@@ -200,7 +200,7 @@ NOARY_ITER_STATE(ZorNumGen, ZorNumGenState);
 /*******************************************************************************
   Math functions
 ********************************************************************************/
-UNARY_ITER (FnSQRTIterator);
+//UNARY_ITER (FnSQRTIterator);
 UNARY_ITER (FnExpIterator);
 UNARY_ITER (FnLogIterator);
 UNARY_ITER (FnSinIterator);
@@ -210,7 +210,7 @@ UNARY_ITER (FnArcSinIterator);
 UNARY_ITER (FnArcCosIterator);
 UNARY_ITER (FnArcTanIterator);
 
-BINARY_ITER (FnAtan2Iterator);
+//BINARY_ITER (FnAtan2Iterator);
 UNARY_ITER (FnCoshIterator);
 UNARY_ITER (FnAcoshIterator);
 BINARY_ITER (FnFmodIterator);

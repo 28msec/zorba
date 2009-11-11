@@ -51,6 +51,7 @@ void NodeReferenceIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 NodeReferenceIterator::~NodeReferenceIterator() {}
 
 // </NodeReferenceIterator>
@@ -78,6 +79,7 @@ void NodeByReferenceIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 NodeByReferenceIterator::~NodeByReferenceIterator() {}
 
 // </NodeByReferenceIterator>
@@ -105,6 +107,7 @@ void FnLocalNameIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnLocalNameIterator::~FnLocalNameIterator() {}
 
 // </FnLocalNameIterator>
@@ -132,6 +135,7 @@ void FnNamespaceUriIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnNamespaceUriIterator::~FnNamespaceUriIterator() {}
 
 // </FnNamespaceUriIterator>
@@ -159,6 +163,7 @@ void FnLangIterator::accept(PlanIterVisitor& v) const {
 
   v.endVisit(*this);
 }
+
 FnLangIterator::~FnLangIterator() {}
 
 // </FnLangIterator>

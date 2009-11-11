@@ -182,8 +182,6 @@
   
   PLAN_ITER_VISITOR (OpNumericUnaryIterator);
     
-  PLAN_ITER_VISITOR (FnSQRTIterator);
-
   PLAN_ITER_VISITOR (FnExpIterator);
   PLAN_ITER_VISITOR (FnLogIterator);
   PLAN_ITER_VISITOR (FnSinIterator);
@@ -193,7 +191,6 @@
   PLAN_ITER_VISITOR (FnArcCosIterator);
   PLAN_ITER_VISITOR (FnArcTanIterator);
 
-  PLAN_ITER_VISITOR (FnAtan2Iterator);
   PLAN_ITER_VISITOR (FnCoshIterator);
   PLAN_ITER_VISITOR (FnAcoshIterator);
   PLAN_ITER_VISITOR (FnFmodIterator);

@@ -36,6 +36,7 @@
 #include "functions/func_fnput.h"
 #include "functions/func_nodes.h"
 #include "functions/func_numerics.h"
+#include "functions/func_maths.h"
 
 #include "functions/func_misc.h"
 
@@ -85,13 +86,14 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_convertors(sctx);
   populate_context_durations_dates_times(sctx);
   populate_context_durations_dates_times_impl(sctx);
+  populate_context_maths(sctx);
+  populate_context_misc(sctx);
   populate_context_nodes(sctx);
   populate_context_numerics(sctx);
   populate_context_strings(sctx);
   populate_context_sequences(sctx);
   populate_context_sequences_impl(sctx);
   populate_context_fnput(sctx);
-  populate_context_misc(sctx);
 
   populateContext_Arithmetics(sctx);
   populateContext_Numerics(sctx);
