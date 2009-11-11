@@ -578,7 +578,6 @@ void Archiver::register_delay_reference(void **ptr,
     fid.class_name = NULL;
   fid.to_add_ref = false;
   fwd_reference_list.push_back(fid);
-
 }
 
 void Archiver::reconf_last_delayed_rcobject(void **last_obj, void **new_last_obj, bool to_add_ref)
@@ -670,7 +669,6 @@ void Archiver::finalize_input_serialization()
 
       if(!(*it).to_add_ref)
       {
-        int i=0;
       }
       else if((rcobj1 = dynamic_cast<SimpleRCObject*>((SerializeBaseClass*)ptr)) != NULL)
       {
@@ -741,7 +739,9 @@ void Archiver::prepare_serialize_out()
   {
     check_compound_fields(out_fields);
   }
-  while(check_allowed_delays(out_fields));
+  while(check_allowed_delays(out_fields)) 
+  {}
+
 }
 
 archive_field* Archiver::replace_with_null(archive_field *current_field)
@@ -876,7 +876,8 @@ void Archiver::check_compound_fields(archive_field *parent_field)
     }
     clean_only_for_eval(refering_field->refered, refering_field->refered->only_for_eval);
   }
-  while(check_only_for_eval_nondelay_referencing(parent_field));
+  while(check_only_for_eval_nondelay_referencing(parent_field))
+  {}
   replace_only_for_eval_with_null(parent_field);
 }
 
@@ -1008,7 +1009,7 @@ bool Archiver::check_allowed_delays(archive_field *parent_field)
   while(child)
   {
     if((child->field_treat == ARCHIVE_FIELD_IS_REFERENCING) &&
-       ((child->allow_delay2 == DONT_ALLOW_DELAY) && (check_order(out_fields, child, child->refered) < 1) ||
+       (((child->allow_delay2 == DONT_ALLOW_DELAY) && (check_order(out_fields, child, child->refered) < 1)) ||
        (child->allow_delay2 == SERIALIZE_NOW)))
     {
       if(child->allow_delay2 == SERIALIZE_NOW)
