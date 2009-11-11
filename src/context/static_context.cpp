@@ -89,6 +89,7 @@ void context::serialize(::zorba::serialization::Archiver& ar)
     ar.set_is_temp_field_one_level(false);
     if(!parent_is_root)
     {
+      ar.dont_allow_delay();
       ar & parent;
     }
     else
@@ -301,6 +302,7 @@ void context::ctx_value_t::serialize(::zorba::serialization::Archiver &ar)
   switch(type)
   {
   case CTX_EXPR:
+    ar.dont_allow_delay();
     ar & exprValue;
     if(!ar.is_serializing_out() && exprValue)
       RCHelper::addReference (exprValue);
