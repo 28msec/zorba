@@ -1,8 +1,5 @@
   class xqpStringStore;
   class PlanIterator;
-  class SequentialIterator;
-  class FlowCtlIterator;
-  class LoopIterator;
   class FnBooleanIterator;
 #ifndef ZORBA_NO_XMLSCHEMA
   class ValidateIterator;

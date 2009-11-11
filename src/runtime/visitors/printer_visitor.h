@@ -216,6 +216,14 @@ namespace zorba {
 
     void beginVisit( const FormatNumberIterator& );
     void endVisit  ( const FormatNumberIterator& );
+    void beginVisit( const SequentialIterator& );
+    void endVisit  ( const SequentialIterator& );
+
+    void beginVisit( const LoopIterator& );
+    void endVisit  ( const LoopIterator& );
+
+    void beginVisit( const FlowCtlIterator& );
+    void endVisit  ( const FlowCtlIterator& );
     void beginVisit( const FnConcatIterator& );
     void endVisit  ( const FnConcatIterator& );
 

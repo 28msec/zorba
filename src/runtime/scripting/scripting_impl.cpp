@@ -14,51 +14,16 @@
  * limitations under the License.
  */
 
-#include "api/serialization/serializer.h"
-
-#include "system/globalenv.h"
-
-#include "types/schema/revalidateUtils.h"
-
-#include "compiler/api/compilercb.h"
-
-#include "runtime/misc/MiscImpl.h"
-#include "runtime/api/runtimecb.h"
-#include "runtime/api/plan_iterator_wrapper.h"
+#include "runtime/scripting/scripting.h"
 #include "runtime/util/iterator_impl.h"
 #include "runtime/util/flowctl_exception.h"
-#include "runtime/visitors/planiter_visitor.h"
-
-#include "store/api/item_factory.h"
-#include "store/api/store.h"
-#include "store/api/pul.h"
-
-#include "context/static_context.h"
-
-#include <iostream>
-
+#include "runtime/api/plan_iterator_wrapper.h"
 
 namespace zorba {
 
-SERIALIZABLE_CLASS_VERSIONS(SequentialIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(SequentialIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(FlowCtlIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(FlowCtlIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(LoopIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(LoopIterator)
-
-NARY_ACCEPT(SequentialIterator);
-
-NARY_ACCEPT(FlowCtlIterator);
-
-NARY_ACCEPT (LoopIterator);
-
-
-bool SequentialIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool
+SequentialIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  rchandle<store::PUL> lPul;
   ulong i = 0;
 
   PlanIteratorState* state;
@@ -79,30 +44,8 @@ bool SequentialIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   STACK_END (state);
 }
 
-
-bool FlowCtlIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
-{
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-  switch (act) {
-  case FlowCtlException::EXIT:
-    throw ExitException (new PlanIteratorWrapper (theChildren [0], planState));
-  default:
-    throw FlowCtlException (act);
-  }
-    
-  STACK_END (state);
-}
-
-void FlowCtlIterator::serialize( ::zorba::serialization::Archiver &ar )
-{
-  serialize_baseclass(ar,
-    (NaryBaseIterator<FlowCtlIterator, PlanIteratorState >*)this);
-
-  SERIALIZE_ENUM(enum FlowCtlException::action, act);
-}
-
-bool LoopIterator::nextImpl (store::Item_t& result, PlanState& planState) const {
+bool
+LoopIterator::nextImpl (store::Item_t& result, PlanState& planState) const {
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
   for (;;) {
@@ -129,6 +72,30 @@ bool LoopIterator::nextImpl (store::Item_t& result, PlanState& planState) const 
 
 done:
   STACK_END (state);
+}
+
+bool
+FlowCtlIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+{
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  switch (act) {
+  case FlowCtlException::EXIT:
+    throw ExitException (new PlanIteratorWrapper (theChildren [0], planState));
+  default:
+    throw FlowCtlException (act);
+  }
+    
+  STACK_END (state);
+}
+
+void
+FlowCtlIterator::serialize( ::zorba::serialization::Archiver &ar )
+{
+  serialize_baseclass(ar,
+    (NaryBaseIterator<FlowCtlIterator, PlanIteratorState >*)this);
+
+  SERIALIZE_ENUM(enum FlowCtlException::action, act);
 }
 
 } /* namespace zorba */

@@ -33,7 +33,7 @@
 #include "functions/function.h"
 
 #include "runtime/core/var_iterators.h"
-#include "runtime/misc/MiscImpl.h"  // for ExitException
+#include "runtime/util/flowctl_exception.h"  // for ExitException
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/api/runtimecb.h"
 #include "runtime/visitors/planiter_visitor.h"

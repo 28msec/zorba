@@ -148,15 +148,20 @@ declare function local:iterator($iter, $name as xs:string, $state as xs:string) 
     $gen:newline,
     gen:indent(2), $base, ');', $gen:newline, $gen:newline,
     gen:indent(), 'void serialize(::zorba::serialization::Archiver&amp; ar)',
-    $gen:newline,
-    gen:indent(), '{',
-    $gen:newline,
-    gen:indent(2), 'serialize_baseclass(ar,',
-    $gen:newline,
-    gen:indent(2),'(', $base, '*)this);',
-    $gen:newline,
-    local:add-arch($iter),
-    gen:indent(),'}',
+    if ( not(exists($iter/@generateSerialize)) or
+         $iter/@generateSerialize eq 'true')
+    then concat(
+      $gen:newline,
+      gen:indent(), '{',
+      $gen:newline,
+      gen:indent(2), 'serialize_baseclass(ar,',
+      $gen:newline,
+      gen:indent(2),'(', $base, '*)this);',
+      $gen:newline,
+      local:add-arch($iter),
+      gen:indent(),'}'
+    )
+    else ";",
     $gen:newline, $gen:newline,
     (: end serialization :)
 

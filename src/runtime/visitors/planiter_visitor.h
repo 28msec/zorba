@@ -88,6 +88,9 @@ namespace zorba{
     class RoundIterator;
     class RoundHalfToEvenIterator;
     class FormatNumberIterator;
+    class SequentialIterator;
+    class LoopIterator;
+    class FlowCtlIterator;
     class FnConcatIterator;
     class FnIndexOfIterator;
     class FnEmptyIterator;
@@ -326,6 +329,15 @@ public:
 
     virtual void beginVisit ( const FormatNumberIterator& ) = 0;
     virtual void endVisit   ( const FormatNumberIterator& ) = 0;
+
+    virtual void beginVisit ( const SequentialIterator& ) = 0;
+    virtual void endVisit   ( const SequentialIterator& ) = 0;
+
+    virtual void beginVisit ( const LoopIterator& ) = 0;
+    virtual void endVisit   ( const LoopIterator& ) = 0;
+
+    virtual void beginVisit ( const FlowCtlIterator& ) = 0;
+    virtual void endVisit   ( const FlowCtlIterator& ) = 0;
 
     virtual void beginVisit ( const FnConcatIterator& ) = 0;
     virtual void endVisit   ( const FnConcatIterator& ) = 0;

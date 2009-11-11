@@ -64,7 +64,6 @@
 
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/update/update.h"
-#include "runtime/misc/MiscImpl.h"
 
 namespace zorba{
 
@@ -1073,9 +1072,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION(ZorbaFopIterator);
 #endif // ZORBA_WITH_FOP
 
-  PRINTER_VISITOR_DEFINITION (SequentialIterator)
-  PRINTER_VISITOR_DEFINITION (FlowCtlIterator)
-  PRINTER_VISITOR_DEFINITION (LoopIterator)
   PRINTER_VISITOR_DEFINITION (UDFunctionCallIterator)
   PRINTER_VISITOR_DEFINITION (StatelessExtFunctionCallIterator)
   PRINTER_VISITOR_DEFINITION (FnCollectionIterator)

@@ -1,9 +1,3 @@
-  PLAN_ITER_VISITOR (SequentialIterator);
-
-  PLAN_ITER_VISITOR (FlowCtlIterator);
-
-  PLAN_ITER_VISITOR (LoopIterator);
-
   PLAN_ITER_VISITOR (FnCollectionIterator);
 
   PLAN_ITER_VISITOR (FnBooleanIterator);

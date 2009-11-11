@@ -67,7 +67,7 @@
 #include "runtime/core/gflwor/tuplesource_iterator.h"
 #include "runtime/core/gflwor/orderby_iterator.h"
 #include "runtime/validate/validate.h"
-#include "runtime/misc/MiscImpl.h"
+#include "runtime/scripting/scripting.h"
 #include "runtime/util/flowctl_exception.h"
 #include "runtime/update/update.h"
 #include "runtime/indexing/value_index_impl.h"

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+
+  <zorba:header>
+    <zorba:include form="Quoted">runtime/util/flowctl_exception.h</zorba:include>
+  </zorba:header>
+    
+  <!--
+  /*******************************************************************************
+  ********************************************************************************/
+  -->
+  <zorba:iterator name="SequentialIterator" generateCodegen="false">
+  
+    <zorba:description author="Zorba Team">Sequential Iterator</zorba:description>
+      
+  </zorba:iterator>
+  
+  <!--
+  /*******************************************************************************
+  ********************************************************************************/
+  -->
+  <zorba:iterator name="LoopIterator" generateCodegen="false">
+  
+    <zorba:description author="Zorba Team">Loop Iterator</zorba:description>
+      
+  </zorba:iterator>
+  
+  <!--
+  /*******************************************************************************
+  ********************************************************************************/
+  -->
+  <zorba:iterator name="FlowCtlIterator"
+                  generateCodegen="false"
+                  generateSerialize="false">
+  
+    <zorba:description author="Zorba Team">FlowCtlIterator</zorba:description>
+  
+    <zorba:member type="enum FlowCtlException::action" name="act"/>
+  
+    <zorba:constructor>
+        <zorba:parameter type="enum FlowCtlException::action" name="aAction" />
+    </zorba:constructor>
+   
+  </zorba:iterator>
+
+</zorba:iterators>
+
