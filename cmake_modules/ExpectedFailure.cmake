@@ -5,7 +5,7 @@
 #  where "testname" is the full test name and "bugid" is the Sourceforge
 #  Tracker artifact ID.
 
-function (expected_failure testname bugid)
+MACRO(expected_failure testname bugid)
   # The meat: flip the "will_fail" flag
   get_test_property ("${testname}" WILL_FAIL willfail)
   if (willfail)
@@ -19,13 +19,13 @@ function (expected_failure testname bugid)
   file (APPEND "${expected_failures_file}"
         "<Test name=\"${testname}\" bug=\"${bugid}\"/>")
 
-endfunction ()
+ENDMACRO(expected_failure)
 
 # Initialize output file when first included
 set (expected_failures_file "${CMAKE_BINARY_DIR}/ExpectedFailures.xml")
 file (WRITE "${expected_failures_file}" "<ExpectedFailures>")
 
-# Call this function to close out output file
-function (close_expected_failures)
+# Call this MACRO to close out output file
+MACRO(close_expected_failures)
   file (APPEND "${expected_failures_file}" "</ExpectedFailures>")
-endfunction ()
+ENDMACRO(close_expected_failures)
