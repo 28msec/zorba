@@ -92,7 +92,7 @@ class ZorbaRestGetIterator : public NaryBaseIterator<ZorbaRestGetIterator,
                                                      ZorbaRestGetIteratorState > 
 {
 private:
-  bool isGetTidy;
+  bool lGetTidy;
 
 public:
   SERIALIZABLE_CLASS(ZorbaRestGetIterator)
@@ -103,7 +103,7 @@ public:
   {
     serialize_baseclass(ar, (NaryBaseIterator<ZorbaRestGetIterator,
                                               ZorbaRestGetIteratorState >*)this);
-    ar & isGetTidy;
+    ar & lGetTidy;
   }
 
 public:
@@ -111,11 +111,13 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& aChildren,
-        bool tidy = false)
+        bool aTidy = false)
     :
     NaryBaseIterator<ZorbaRestGetIterator, ZorbaRestGetIteratorState>(sctx, loc, aChildren),
-    isGetTidy(tidy)
-  { } 
+    lGetTidy(aTidy)
+  { }
+
+  bool isGetTidy() const { return lGetTidy; }
 
   void accept(PlanIterVisitor& v) const;
 
@@ -169,7 +171,7 @@ class ZorbaRestPostIterator : public NaryBaseIterator<ZorbaRestPostIterator,
                                                       ZorbaRestGetIteratorState >
 {
 private:
-  bool isPostTidy;
+  bool lPostTidy;
 
 public:
   SERIALIZABLE_CLASS(ZorbaRestPostIterator)
@@ -177,7 +179,7 @@ public:
   void serialize(::zorba::serialization::Archiver &ar)
   {
     serialize_baseclass(ar, (NaryBaseIterator<ZorbaRestPostIterator, ZorbaRestGetIteratorState >*)this);
-    ar & isPostTidy;	
+    ar & lPostTidy;	
   }
 
 public:
@@ -185,11 +187,13 @@ public:
         static_context* sctx, 
         const QueryLoc& loc,
         std::vector<PlanIter_t>& aChildren,
-        bool tidy = false)
+        bool aTidy = false)
     :
     NaryBaseIterator<ZorbaRestPostIterator, ZorbaRestGetIteratorState>(sctx, loc, aChildren),
-    isPostTidy(tidy)
+    lPostTidy(aTidy)
   { }
+
+  bool isPostTidy() const { return lPostTidy; }
 
   void accept(PlanIterVisitor& v) const;
 

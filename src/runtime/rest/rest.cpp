@@ -350,7 +350,10 @@ int processReply(const QueryLoc& aLoc,
     else if (content_type.indexOf("+xml") > -1)
       doc_type = 3;
     else if (content_type.indexOf("text/html") == 0)
-      doc_type = 2;
+      if(NULL != tidyUserOpt)
+        doc_type = 4;
+      else
+        doc_type = 2;
     else if (content_type.indexOf("text/") == 0)
       doc_type = 2;
     else
@@ -954,7 +957,8 @@ bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState)
   curl_slist *headers_list = NULL;
   int code;
   unsigned int index = 1;
-  
+  xqpString emptyString("");
+
   ZorbaRestGetIteratorState* state;
   DEFAULT_STACK_INIT(ZorbaRestGetIteratorState, state, planState);
 
@@ -968,7 +972,7 @@ bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState)
   Uri = lUri->getStringValue()->str();
 
 #ifdef ZORBA_WITH_TIDY
-  if(isGetTidy)
+  if(isGetTidy())
   {
     index = 2;
     if (theChildren.size() > 1)
@@ -1008,7 +1012,8 @@ bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState)
                code,
                *state->headers,
                state->theStreamBuffer.getp(),
-               (tidyUserOpt!=NULL)?tidyUserOpt->getStringValue()->c_str():NULL);
+               (tidyUserOpt!=NULL)?tidyUserOpt->getStringValue()->c_str():
+               (isGetTidy())?emptyString.c_str():NULL);
 
   curl_slist_free_all(headers_list);
   cleanupConnection(state);
@@ -1030,6 +1035,7 @@ bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState
   bool single_payload = false;
   PAYLOAD_TYPE payload_type = PAYLOAD_TYPE_MULTIPART_FORMDATA;
   xqpString constructedURL;
+  xqpString emptyString("");
   
   ZorbaRestGetIteratorState* state;
   DEFAULT_STACK_INIT(ZorbaRestGetIteratorState, state, planState);
@@ -1043,7 +1049,7 @@ bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState
   Uri = lUri->getStringValue()->str();
 
 #ifdef ZORBA_WITH_TIDY
-  if(isPostTidy)
+  if(isPostTidy())
   {
     index = 2;
     if(theChildren.size() > 1)
@@ -1106,8 +1112,9 @@ bool ZorbaRestPostIterator::nextImpl(store::Item_t& result, PlanState& planState
       code,
       *state->headers,
       state->theStreamBuffer.getp(),
-      (tidyUserOpt!=NULL)?tidyUserOpt->getStringValue()->c_str():NULL);
-  
+      (tidyUserOpt!=NULL)?tidyUserOpt->getStringValue()->c_str():
+      (isPostTidy())?emptyString.c_str():NULL);
+
   curl_formfree(first);
   curl_slist_free_all(headers_list);
   cleanupConnection(state);
