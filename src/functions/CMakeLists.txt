@@ -34,19 +34,15 @@ FOREACH(SPEC_FILE ${SPEC_FILES})
   STRING(REPLACE ".xml" "" SPEC_PREFIX ${SPEC_FILE_NAME})
 
 
-  IF (NOT ${SPEC_FILE_NAME} STREQUAL "eval.xml" OR
-      NOT ${SPEC_FILE_NAME} STREQUAL "scripting.xml") # exclude some files
-    CODEGEN_GENERATOR(${CODEGEN_SOURCE_GENERATOR}
-                      ${CODEGEN_HEADER_GENERATOR} "${CMAKE_SOURCE_DIR}/src/runtime/spec/${SPEC_FILE}"
-                      "src/functions/func_${SPEC_PREFIX}"
-                      "file:=${CMAKE_SOURCE_DIR}/src/runtime/spec/${SPEC_FILE}"
-                      "mappings:=${CMAKE_SOURCE_DIR}/src/runtime/spec/mappings.xml"
-                        ${ZORBA_WORKS})
-    LIST(APPEND FUNCTIONS_SRCS
-                "func_${SPEC_PREFIX}.cpp"
-        )
-  ENDIF (NOT ${SPEC_FILE_NAME} STREQUAL "eval.xml" OR
-         NOT ${SPEC_FILE_NAME} STREQUAL "scripting.xml") 
+  CODEGEN_GENERATOR(${CODEGEN_SOURCE_GENERATOR}
+                    ${CODEGEN_HEADER_GENERATOR} "${CMAKE_SOURCE_DIR}/src/runtime/spec/${SPEC_FILE}"
+                    "src/functions/func_${SPEC_PREFIX}"
+                    "file:=${CMAKE_SOURCE_DIR}/src/runtime/spec/${SPEC_FILE}"
+                    "mappings:=${CMAKE_SOURCE_DIR}/src/runtime/spec/mappings.xml"
+                      ${ZORBA_WORKS})
+  LIST(APPEND FUNCTIONS_SRCS
+              "func_${SPEC_PREFIX}.cpp"
+      )
 
 ENDFOREACH(SPEC_FILE)
 
