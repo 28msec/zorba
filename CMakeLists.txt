@@ -54,13 +54,16 @@ ENDIF(NOT CMAKE_BUILD_TYPE)
 
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 
+# Include this now (very early) to ensure the "expected_failure()" function
+# is available to anyone who might add tests.
+INCLUDE(ExpectedFailure)
 
-#################################################################################
-#                                                                               #
-# Search for all the external libraries that any library or executable under    #
-#  this CMake depends on.                                                       #
-#                                                                               #
-#################################################################################
+################################################################################
+#                                                                              #
+# Search for all the external libraries that any library or executable under   #
+#  this CMake depends on.                                                      #
+#                                                                              #
+################################################################################
 
 SET(requiredlibs)
 SET(requiredlibs-store)
@@ -338,7 +341,8 @@ ADD_DEFINITIONS(${DEFINITIONS})
 
 
 ################################################################################
-# find all dylib files (i.e. transitive closure of the library files that are linked)
+# find all dylib files (i.e. transitive closure of the library files
+# that are linked)
 IF (APPLE )
   EXECUTE_PROCESS(COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${ICU_LIBRARIES}
                     OUTPUT_VARIABLE Zorba_ICUUC)
@@ -418,9 +422,12 @@ IF( APPLE AND UNIVERSAL )
   MESSAGE( "Building Apple universal binaries" )
 ENDIF( APPLE AND UNIVERSAL )
 
-# Create config (build settings, library dependencies, etc.) files that are needed by 
-# cmake projects which extend the zorba project
+# Create config (build settings, library dependencies, etc.) files
+# that are needed by cmake projects which extend the zorba project
 INCLUDE(CMakeExportBuildSettings)
 CMAKE_EXPORT_BUILD_SETTINGS(${CMAKE_BINARY_DIR}/ZorbaBuildSettings.cmake)
 EXPORT_LIBRARY_DEPENDENCIES(${CMAKE_BINARY_DIR}/ZorbaLibraryDepends.cmake)
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/ZorbaConfig.cmake.in ${CMAKE_BINARY_DIR}/ZorbaConfig.cmake)
+
+# Close expected failures listing
+close_expected_failures ()
