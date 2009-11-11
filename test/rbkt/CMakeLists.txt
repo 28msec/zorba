@@ -229,12 +229,3 @@ FOREACH(TESTFILE ${TESTFILES})
 
 
 ENDFOREACH(TESTFILE)
-
-# Current rbkt expected failures
-# QQQ file real Sourceforge bugs for these
-expected_failure ("test/rbkt/zorba/index/auctions1" 9999999)
-expected_failure ("test/rbkt/zorba/index/auctions1u" 9999999)
-expected_failure ("test/rbkt/zorba/index/available" 9999999)
-expected_failure ("test/rbkt/zorba/index/declared" 9999999)
-expected_failure ("test/rbkt/zorba/collections/declare_1" 9999999)
-expected_failure ("test/rbkt/zorba/collections/import_2" 9999999)
