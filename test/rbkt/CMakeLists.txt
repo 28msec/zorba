@@ -57,7 +57,7 @@ ENDIF(WIN32)
 # Compile and build the multi-threaded testdriver executable
 #
 
-SET(ZORBA_BUILD_MT_TESTDRIVER 1)
+# SET(ZORBA_BUILD_MT_TESTDRIVER 1)
 
 IF (ZORBA_BUILD_MT_TESTDRIVER)
 
@@ -84,7 +84,7 @@ SET (TESTDRIVER_MT_SRCS
   ${CMAKE_SOURCE_DIR}/test/commons/testuriresolver.cpp
   )
 
-#ADD_EXECUTABLE(testdriver_mt ${TESTDRIVER_MT_SRCS})
+ADD_EXECUTABLE(testdriver_mt ${TESTDRIVER_MT_SRCS})
 
 TARGET_LINK_LIBRARIES(testdriver_mt
                       zorba_${ZORBA_STORE_LIB_EXTENSION}
