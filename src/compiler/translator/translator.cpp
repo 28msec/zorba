@@ -594,6 +594,7 @@ TranslatorImpl(
 
   zorba_predef_mod_ns.insert (ZORBA_OP_NS);
   zorba_predef_mod_ns.insert (ZORBA_REST_FN_NS);
+  zorba_predef_mod_ns.insert (ZORBA_MATH_FN_NS);
   zorba_predef_mod_ns.insert (ZORBA_NODEREF_FN_NS);
   zorba_predef_mod_ns.insert (ZORBA_COLLECTION_FN_NS);
   zorba_predef_mod_ns.insert (ZORBA_DYNAMICCONTEXT_FN_NS);

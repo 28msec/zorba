@@ -173,11 +173,80 @@ namespace zorba {
     void beginVisit( const FnPutIterator& );
     void endVisit  ( const FnPutIterator& );
 
-    void beginVisit( const FnSQRTIterator& );
-    void endVisit  ( const FnSQRTIterator& );
+    void beginVisit( const SqrtIterator& );
+    void endVisit  ( const SqrtIterator& );
 
-    void beginVisit( const FnAtan2Iterator& );
-    void endVisit  ( const FnAtan2Iterator& );
+    void beginVisit( const ExpIterator& );
+    void endVisit  ( const ExpIterator& );
+
+    void beginVisit( const LogIterator& );
+    void endVisit  ( const LogIterator& );
+
+    void beginVisit( const SinIterator& );
+    void endVisit  ( const SinIterator& );
+
+    void beginVisit( const CosIterator& );
+    void endVisit  ( const CosIterator& );
+
+    void beginVisit( const TanIterator& );
+    void endVisit  ( const TanIterator& );
+
+    void beginVisit( const ArcSinIterator& );
+    void endVisit  ( const ArcSinIterator& );
+
+    void beginVisit( const ArcCosIterator& );
+    void endVisit  ( const ArcCosIterator& );
+
+    void beginVisit( const ArcTanIterator& );
+    void endVisit  ( const ArcTanIterator& );
+
+    void beginVisit( const Atan2Iterator& );
+    void endVisit  ( const Atan2Iterator& );
+
+    void beginVisit( const CoshIterator& );
+    void endVisit  ( const CoshIterator& );
+
+    void beginVisit( const AcoshIterator& );
+    void endVisit  ( const AcoshIterator& );
+
+    void beginVisit( const FmodIterator& );
+    void endVisit  ( const FmodIterator& );
+
+    void beginVisit( const LdexpIterator& );
+    void endVisit  ( const LdexpIterator& );
+
+    void beginVisit( const Log10Iterator& );
+    void endVisit  ( const Log10Iterator& );
+
+    void beginVisit( const PowIterator& );
+    void endVisit  ( const PowIterator& );
+
+    void beginVisit( const SinhIterator& );
+    void endVisit  ( const SinhIterator& );
+
+    void beginVisit( const AsinhIterator& );
+    void endVisit  ( const AsinhIterator& );
+
+    void beginVisit( const TanhIterator& );
+    void endVisit  ( const TanhIterator& );
+
+    void beginVisit( const AtanhIterator& );
+    void endVisit  ( const AtanhIterator& );
+
+    void beginVisit( const PiNumberIterator& );
+    void endVisit  ( const PiNumberIterator& );
+
+    void beginVisit( const IsInfIterator& );
+    void endVisit  ( const IsInfIterator& );
+
+    void beginVisit( const IsNaNIterator& );
+    void endVisit  ( const IsNaNIterator& );
+
+    void beginVisit( const ModfIterator& );
+    void endVisit  ( const ModfIterator& );
+
+    void beginVisit( const FrexpIterator& );
+    void endVisit  ( const FrexpIterator& );
 
     void beginVisit( const TraceIterator& );
     void endVisit  ( const TraceIterator& );

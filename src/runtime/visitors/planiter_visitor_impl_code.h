@@ -172,31 +172,6 @@
   
   PLAN_ITER_VISITOR (OpNumericUnaryIterator);
     
-  PLAN_ITER_VISITOR (FnExpIterator);
-  PLAN_ITER_VISITOR (FnLogIterator);
-  PLAN_ITER_VISITOR (FnSinIterator);
-  PLAN_ITER_VISITOR (FnCosIterator);
-  PLAN_ITER_VISITOR (FnTanIterator);
-  PLAN_ITER_VISITOR (FnArcSinIterator);
-  PLAN_ITER_VISITOR (FnArcCosIterator);
-  PLAN_ITER_VISITOR (FnArcTanIterator);
-
-  PLAN_ITER_VISITOR (FnCoshIterator);
-  PLAN_ITER_VISITOR (FnAcoshIterator);
-  PLAN_ITER_VISITOR (FnFmodIterator);
-  PLAN_ITER_VISITOR (FnFrexpIterator);
-  PLAN_ITER_VISITOR (FnLdexpIterator);
-  PLAN_ITER_VISITOR (FnLog10Iterator);
-  PLAN_ITER_VISITOR (FnModfIterator);
-  PLAN_ITER_VISITOR (FnPowIterator);
-  PLAN_ITER_VISITOR (FnSinhIterator);
-  PLAN_ITER_VISITOR (FnAsinhIterator);
-  PLAN_ITER_VISITOR (FnTanhIterator);
-  PLAN_ITER_VISITOR (FnAtanhIterator);
-  PLAN_ITER_VISITOR (FnPiIterator);
-  PLAN_ITER_VISITOR (FnIsInfIterator);
-  PLAN_ITER_VISITOR (FnIsNaNIterator);
-
   PLAN_ITER_VISITOR (FnIdIterator);
 
   PLAN_ITER_VISITOR (FnIdRefIterator);

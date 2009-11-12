@@ -106,7 +106,6 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populateContext_Collections(sctx);
   populateContext_DataDefinitionLanguage(sctx);
   populateContext_VarDecl(sctx);
-  populateContext_Math(sctx);
   populateContext_Index(sctx);
   populateContext_Hoisting(sctx);
   populateContext_Alexis(sctx);

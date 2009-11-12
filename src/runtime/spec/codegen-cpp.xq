@@ -176,17 +176,17 @@ declare function local:iterator-call($iter) as xs:string
 {
   concat (
     $iter/@name,
-    ' ( sctx, loc, ',
+    ' ( sctx, loc',
     let $arity := lower-case($iter/@arity)
     return (
       if ( $arity eq "unary" )
       then
-        'argv[0]'
+        ', argv[0]'
       else if ( $arity eq "binary" )
-      then 'argv[0], argv[1]'
+      then ', argv[0], argv[1]'
       else if ( $arity eq "noary" )
       then ''
-      else 'argv'
+      else ', argv'
     ),
     if($iter/zorba:function/@annIsUpdating = 'true')
     then ', ann.is_updating() )'

@@ -146,29 +146,6 @@
   DECLARE_VISITOR (InstanceOfIterator)
   DECLARE_VISITOR (EitherNodesOrAtomicsIterator)
   DECLARE_VISITOR (OpNumericUnaryIterator)
-  DECLARE_VISITOR (FnExpIterator)
-  DECLARE_VISITOR (FnLogIterator)
-  DECLARE_VISITOR (FnSinIterator)
-  DECLARE_VISITOR (FnCosIterator)
-  DECLARE_VISITOR (FnTanIterator)
-  DECLARE_VISITOR (FnArcSinIterator)
-  DECLARE_VISITOR (FnArcCosIterator)
-  DECLARE_VISITOR (FnArcTanIterator)
-  DECLARE_VISITOR (FnCoshIterator);
-  DECLARE_VISITOR (FnAcoshIterator);
-  DECLARE_VISITOR (FnFmodIterator);
-  DECLARE_VISITOR (FnFrexpIterator);
-  DECLARE_VISITOR (FnLdexpIterator);
-  DECLARE_VISITOR (FnLog10Iterator);
-  DECLARE_VISITOR (FnModfIterator);
-  DECLARE_VISITOR (FnPowIterator);
-  DECLARE_VISITOR (FnSinhIterator);
-  DECLARE_VISITOR (FnAsinhIterator);
-  DECLARE_VISITOR (FnTanhIterator);
-  DECLARE_VISITOR (FnAtanhIterator);
-  DECLARE_VISITOR (FnPiIterator);
-  DECLARE_VISITOR (FnIsInfIterator);
-  DECLARE_VISITOR (FnIsNaNIterator);
   DECLARE_VISITOR (FnIdIterator)
   DECLARE_VISITOR (FnIdRefIterator)
   DECLARE_VISITOR (ResolveQNameIterator)

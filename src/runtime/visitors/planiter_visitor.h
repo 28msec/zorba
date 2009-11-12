@@ -112,9 +112,55 @@ namespace zorba{
 
     class FnPutIterator;
 
-    class FnSQRTIterator;
+    class SqrtIterator;
 
-    class FnAtan2Iterator;
+    class ExpIterator;
+
+    class LogIterator;
+
+    class SinIterator;
+
+    class CosIterator;
+
+    class TanIterator;
+
+    class ArcSinIterator;
+
+    class ArcCosIterator;
+
+    class ArcTanIterator;
+
+    class Atan2Iterator;
+
+    class CoshIterator;
+
+    class AcoshIterator;
+
+    class FmodIterator;
+
+    class LdexpIterator;
+
+    class Log10Iterator;
+
+    class PowIterator;
+
+    class SinhIterator;
+
+    class AsinhIterator;
+
+    class TanhIterator;
+
+    class AtanhIterator;
+
+    class PiNumberIterator;
+
+    class IsInfIterator;
+
+    class IsNaNIterator;
+
+    class ModfIterator;
+
+    class FrexpIterator;
 
     class TraceIterator;
 
@@ -395,11 +441,80 @@ public:
     virtual void beginVisit ( const FnPutIterator& ) = 0;
     virtual void endVisit   ( const FnPutIterator& ) = 0;
 
-    virtual void beginVisit ( const FnSQRTIterator& ) = 0;
-    virtual void endVisit   ( const FnSQRTIterator& ) = 0;
+    virtual void beginVisit ( const SqrtIterator& ) = 0;
+    virtual void endVisit   ( const SqrtIterator& ) = 0;
 
-    virtual void beginVisit ( const FnAtan2Iterator& ) = 0;
-    virtual void endVisit   ( const FnAtan2Iterator& ) = 0;
+    virtual void beginVisit ( const ExpIterator& ) = 0;
+    virtual void endVisit   ( const ExpIterator& ) = 0;
+
+    virtual void beginVisit ( const LogIterator& ) = 0;
+    virtual void endVisit   ( const LogIterator& ) = 0;
+
+    virtual void beginVisit ( const SinIterator& ) = 0;
+    virtual void endVisit   ( const SinIterator& ) = 0;
+
+    virtual void beginVisit ( const CosIterator& ) = 0;
+    virtual void endVisit   ( const CosIterator& ) = 0;
+
+    virtual void beginVisit ( const TanIterator& ) = 0;
+    virtual void endVisit   ( const TanIterator& ) = 0;
+
+    virtual void beginVisit ( const ArcSinIterator& ) = 0;
+    virtual void endVisit   ( const ArcSinIterator& ) = 0;
+
+    virtual void beginVisit ( const ArcCosIterator& ) = 0;
+    virtual void endVisit   ( const ArcCosIterator& ) = 0;
+
+    virtual void beginVisit ( const ArcTanIterator& ) = 0;
+    virtual void endVisit   ( const ArcTanIterator& ) = 0;
+
+    virtual void beginVisit ( const Atan2Iterator& ) = 0;
+    virtual void endVisit   ( const Atan2Iterator& ) = 0;
+
+    virtual void beginVisit ( const CoshIterator& ) = 0;
+    virtual void endVisit   ( const CoshIterator& ) = 0;
+
+    virtual void beginVisit ( const AcoshIterator& ) = 0;
+    virtual void endVisit   ( const AcoshIterator& ) = 0;
+
+    virtual void beginVisit ( const FmodIterator& ) = 0;
+    virtual void endVisit   ( const FmodIterator& ) = 0;
+
+    virtual void beginVisit ( const LdexpIterator& ) = 0;
+    virtual void endVisit   ( const LdexpIterator& ) = 0;
+
+    virtual void beginVisit ( const Log10Iterator& ) = 0;
+    virtual void endVisit   ( const Log10Iterator& ) = 0;
+
+    virtual void beginVisit ( const PowIterator& ) = 0;
+    virtual void endVisit   ( const PowIterator& ) = 0;
+
+    virtual void beginVisit ( const SinhIterator& ) = 0;
+    virtual void endVisit   ( const SinhIterator& ) = 0;
+
+    virtual void beginVisit ( const AsinhIterator& ) = 0;
+    virtual void endVisit   ( const AsinhIterator& ) = 0;
+
+    virtual void beginVisit ( const TanhIterator& ) = 0;
+    virtual void endVisit   ( const TanhIterator& ) = 0;
+
+    virtual void beginVisit ( const AtanhIterator& ) = 0;
+    virtual void endVisit   ( const AtanhIterator& ) = 0;
+
+    virtual void beginVisit ( const PiNumberIterator& ) = 0;
+    virtual void endVisit   ( const PiNumberIterator& ) = 0;
+
+    virtual void beginVisit ( const IsInfIterator& ) = 0;
+    virtual void endVisit   ( const IsInfIterator& ) = 0;
+
+    virtual void beginVisit ( const IsNaNIterator& ) = 0;
+    virtual void endVisit   ( const IsNaNIterator& ) = 0;
+
+    virtual void beginVisit ( const ModfIterator& ) = 0;
+    virtual void endVisit   ( const ModfIterator& ) = 0;
+
+    virtual void beginVisit ( const FrexpIterator& ) = 0;
+    virtual void endVisit   ( const FrexpIterator& ) = 0;
 
     virtual void beginVisit ( const TraceIterator& ) = 0;
     virtual void endVisit   ( const TraceIterator& ) = 0;

@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+
+<zorba:header>
+    <zorba:include form="Quoted">zorbatypes/representations.h</zorba:include>
+</zorba:header>
     
 <!--
 /*******************************************************************************
+* math:sqrt
 ********************************************************************************/
 -->
-<zorba:iterator name="FnSQRTIterator" arity="unary">
+<zorba:iterator name="SqrtIterator" arity="unary">
 
   <zorba:description author="Zorba Team">math:sqrt</zorba:description>
   
@@ -18,12 +23,158 @@
   </zorba:function>
     
 </zorba:iterator>
+  
+<!--
+/*******************************************************************************
+* math:exp
+********************************************************************************/
+-->
+<zorba:iterator name="ExpIterator" arity="unary">
+  
+  <zorba:description author="Zorba Team">math:exp</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="exp" prefix="fn-zorba-math">
+      <zorba:param>xs:double</zorba:param>
+      <zorba:output>xs:double</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+  
+<!--
+/*******************************************************************************
+* math:log
+********************************************************************************/
+-->
+<zorba:iterator name="LogIterator" arity="unary">
+  
+  <zorba:description author="Zorba Team">math:log</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="log" prefix="fn-zorba-math">
+      <zorba:param>xs:double</zorba:param>
+      <zorba:output>xs:double</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
 
 <!--
 /*******************************************************************************
+* math:sin
 ********************************************************************************/
 -->
-<zorba:iterator name="FnAtan2Iterator" arity="binary">
+<zorba:iterator name="SinIterator" arity="unary">
+  
+  <zorba:description author="Zorba Team">math:sin</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="sin" prefix="fn-zorba-math">
+      <zorba:param>xs:double</zorba:param>
+      <zorba:output>xs:double</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+  
+<!--
+/*******************************************************************************
+* math:cos
+********************************************************************************/
+-->
+<zorba:iterator name="CosIterator" arity="unary">
+  
+  <zorba:description author="Zorba Team">math:cos</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="cos" prefix="fn-zorba-math">
+      <zorba:param>xs:double</zorba:param>
+      <zorba:output>xs:double</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+* math:tan
+********************************************************************************/
+-->
+<zorba:iterator name="TanIterator" arity="unary">
+  
+  <zorba:description author="Zorba Team">math:tan</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="tan" prefix="fn-zorba-math">
+      <zorba:param>xs:double</zorba:param>
+      <zorba:output>xs:double</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+* math:asin
+********************************************************************************/
+-->
+<zorba:iterator name="ArcSinIterator" arity="unary">
+  
+  <zorba:description author="Zorba Team">math:asin</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="asin" prefix="fn-zorba-math">
+      <zorba:param>xs:double</zorba:param>
+      <zorba:output>xs:double</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+* math:acos
+********************************************************************************/
+-->
+<zorba:iterator name="ArcCosIterator" arity="unary">
+  
+  <zorba:description author="Zorba Team">math:acos</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="acos" prefix="fn-zorba-math">
+      <zorba:param>xs:double</zorba:param>
+      <zorba:output>xs:double</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+* math:atan
+********************************************************************************/
+-->
+<zorba:iterator name="ArcTanIterator" arity="unary">
+  
+  <zorba:description author="Zorba Team">math:atan</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="atan" prefix="fn-zorba-math">
+      <zorba:param>xs:double</zorba:param>
+      <zorba:output>xs:double</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+  
+
+<!--
+/*******************************************************************************
+* math:atan2
+********************************************************************************/
+-->
+<zorba:iterator name="Atan2Iterator" arity="binary">
 
   <zorba:description author="Zorba Team">math:atan2</zorba:description>
   
@@ -37,5 +188,286 @@
     
 </zorba:iterator>
 
-</zorba:iterators>
+<!--
+/*******************************************************************************
+* math:cosh
+********************************************************************************/
+-->
+<zorba:iterator name="CoshIterator" arity="unary">
 
+  <zorba:description author="Zorba Team">math:cosh</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="cosh" prefix="fn-zorba-math">
+      <zorba:param>xs:double</zorba:param>
+      <zorba:output>xs:double</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+* math:acosh
+********************************************************************************/
+-->
+<zorba:iterator name="AcoshIterator" arity="unary">
+
+  <zorba:description author="Zorba Team">math:acosh</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="acosh" prefix="fn-zorba-math">
+      <zorba:param>xs:double</zorba:param>
+      <zorba:output>xs:double</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+* math:fmod
+********************************************************************************/
+-->
+<zorba:iterator name="FmodIterator" arity="binary">
+
+  <zorba:description author="Zorba Team">math:fmod</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="fmod" prefix="fn-zorba-math">
+      <zorba:param>xs:double</zorba:param>
+      <zorba:param>xs:double</zorba:param>
+      <zorba:output>xs:double</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+* math:ldexp
+********************************************************************************/
+-->
+<zorba:iterator name="LdexpIterator" arity="binary">
+
+  <zorba:description author="Zorba Team">math:ldexp</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="ldexp" prefix="fn-zorba-math">
+      <zorba:param>xs:double</zorba:param>
+      <zorba:param>xs:integer</zorba:param>
+      <zorba:output>xs:double</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+* math:log10
+********************************************************************************/
+-->
+<zorba:iterator name="Log10Iterator" arity="unary">
+
+  <zorba:description author="Zorba Team">math:log10</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="log10" prefix="fn-zorba-math">
+      <zorba:param>xs:double</zorba:param>
+      <zorba:output>xs:double</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+* math:pow
+********************************************************************************/
+-->
+<zorba:iterator name="PowIterator" arity="binary">
+
+  <zorba:description author="Zorba Team">math:pow</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="pow" prefix="fn-zorba-math">
+      <zorba:param>xs:double</zorba:param>
+      <zorba:param>xs:double</zorba:param>
+      <zorba:output>xs:double</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+* math:sinh
+********************************************************************************/
+-->
+<zorba:iterator name="SinhIterator" arity="unary">
+
+  <zorba:description author="Zorba Team">math:sinh</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="sinh" prefix="fn-zorba-math">
+      <zorba:param>xs:double</zorba:param>
+      <zorba:output>xs:double</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+* math:asinh
+********************************************************************************/
+-->
+<zorba:iterator name="AsinhIterator" arity="unary">
+
+  <zorba:description author="Zorba Team">math:asinh</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="asinh" prefix="fn-zorba-math">
+      <zorba:param>xs:double</zorba:param>
+      <zorba:output>xs:double</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+* math:tanh
+********************************************************************************/
+-->
+<zorba:iterator name="TanhIterator" arity="unary">
+
+  <zorba:description author="Zorba Team">math:tanh</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="tanh" prefix="fn-zorba-math">
+      <zorba:param>xs:double</zorba:param>
+      <zorba:output>xs:double</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+* math:atanh
+********************************************************************************/
+-->
+<zorba:iterator name="AtanhIterator" arity="unary">
+
+  <zorba:description author="Zorba Team">math:atanh</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="atanh" prefix="fn-zorba-math">
+      <zorba:param>xs:double</zorba:param>
+      <zorba:output>xs:double</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+* math:pi
+********************************************************************************/
+-->
+<zorba:iterator name="PiNumberIterator" arity="noary">
+
+  <zorba:description author="Zorba Team">math:pi</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="pi" prefix="fn-zorba-math">
+      <zorba:output>xs:double</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+* math:isInf
+********************************************************************************/
+-->
+<zorba:iterator name="IsInfIterator" arity="unary">
+
+  <zorba:description author="Zorba Team">math:isInf</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="isInf" prefix="fn-zorba-math">
+      <zorba:param>xs:double</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+* math:isNaN
+********************************************************************************/
+-->
+<zorba:iterator name="IsNaNIterator" arity="unary">
+
+  <zorba:description author="Zorba Team">math:isNaN</zorba:description>
+  
+  <zorba:function>
+    <zorba:signature localname="isNaN" prefix="fn-zorba-math">
+      <zorba:param>xs:double</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+* math:modf
+********************************************************************************/
+-->
+<zorba:iterator name="ModfIterator" arity="unary">
+
+  <zorba:description author="Zorba Team">math:modf</zorba:description>
+
+  <zorba:state generateInit="true" generateReset="true">
+    <zorba:member type="xqp_double" name="theDoubInteger" defaultValue="xqp_double::zero()"
+                  brief=""/>
+  </zorba:state>
+  
+  <zorba:function>
+    <zorba:signature localname="modf" prefix="fn-zorba-math">
+      <zorba:param>xs:double</zorba:param>
+      <zorba:output>xs:double+</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+* math:frexp
+********************************************************************************/
+-->
+<zorba:iterator name="FrexpIterator" arity="unary">
+
+  <zorba:description author="Zorba Team">math:frexp</zorba:description>
+
+  <zorba:state generateInit="true" generateReset="true">
+    <zorba:member type="xqp_integer" name="theIntExponent" defaultValue="xqp_integer::zero()"
+                  brief=""/>
+  </zorba:state>
+  
+  <zorba:function>
+    <zorba:signature localname="frexp" prefix="fn-zorba-math">
+      <zorba:param>xs:double</zorba:param>
+      <zorba:output>xs:double+</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+</zorba:iterators>

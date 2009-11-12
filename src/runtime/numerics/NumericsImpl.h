@@ -196,52 +196,6 @@ public:
 
 NOARY_ITER_STATE(ZorNumGen, ZorNumGenState);
  
-
-/*******************************************************************************
-  Math functions
-********************************************************************************/
-//UNARY_ITER (FnSQRTIterator);
-UNARY_ITER (FnExpIterator);
-UNARY_ITER (FnLogIterator);
-UNARY_ITER (FnSinIterator);
-UNARY_ITER (FnCosIterator);
-UNARY_ITER (FnTanIterator);
-UNARY_ITER (FnArcSinIterator);
-UNARY_ITER (FnArcCosIterator);
-UNARY_ITER (FnArcTanIterator);
-
-//BINARY_ITER (FnAtan2Iterator);
-UNARY_ITER (FnCoshIterator);
-UNARY_ITER (FnAcoshIterator);
-BINARY_ITER (FnFmodIterator);
-BINARY_ITER (FnLdexpIterator);
-UNARY_ITER (FnLog10Iterator);
-BINARY_ITER (FnPowIterator);
-UNARY_ITER (FnSinhIterator);
-UNARY_ITER (FnAsinhIterator);
-UNARY_ITER (FnTanhIterator);
-UNARY_ITER (FnAtanhIterator);
-NOARY_ITER (FnPiIterator);
-UNARY_ITER (FnIsInfIterator);
-UNARY_ITER (FnIsNaNIterator);
-
-class FnModfState : public PlanIteratorState
-{
-public:
-  xqp_double doub_integer;
-};
-  
-
-UNARY_ITER_STATE(FnModfIterator, FnModfState);
-
-class FnFrexpState : public PlanIteratorState
-{
-public:
-  xqp_integer int_exponent;
-};
-  
-
-UNARY_ITER_STATE(FnFrexpIterator, FnFrexpState);
 }
 #endif
 

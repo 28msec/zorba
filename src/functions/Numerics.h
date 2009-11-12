@@ -23,8 +23,6 @@ namespace zorba
 
 void populateContext_Numerics(static_context* sctx);
 
-void populateContext_Math (static_context* sctx);
-
 }
 #endif
 

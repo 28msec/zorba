@@ -83,31 +83,7 @@
   class DeclaredIndexesIterator;
 
   class OpNumericUnaryIterator;
-  class FnSQRTIterator;
-  class FnExpIterator;
-  class FnLogIterator;
-  class FnSinIterator;
-  class FnCosIterator;
-  class FnTanIterator;
-  class FnArcSinIterator;
-  class FnArcCosIterator;
-  class FnArcTanIterator;
-  class FnAtan2Iterator;
-  class FnCoshIterator;
-  class FnAcoshIterator;
-  class FnFmodIterator;
-  class FnFrexpIterator;
-  class FnLdexpIterator;
-  class FnLog10Iterator;
-  class FnModfIterator;
-  class FnPowIterator;
-  class FnSinhIterator;
-  class FnAsinhIterator;
-  class FnTanhIterator;
-  class FnAtanhIterator;
-  class FnPiIterator;
-  class FnIsInfIterator;
-  class FnIsNaNIterator;
+
   class FnIdIterator;
   class FnIdRefIterator;
   class FnDistinctValuesIterator;
