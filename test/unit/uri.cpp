@@ -603,11 +603,15 @@ int uri(int argc, char* argv[])
           std::cerr << "relativized uri " << relativized.toString() << std::endl;
         }
       }
+#if UNIX
+      // don't test on Windows because expected result of the path notation
+      // should contain backslashes
       if (uri.toPathNotation() != tests[i].path_notation) {
         std::cerr << "path notation " << uri.toPathNotation() << " is not equal to " 
                   << tests[i].path_notation << std::endl;
         return 12;
       }
+#endif
       std::cout << "result: " << uri.toString() << std::endl;
       std::cout << "path notation: " << uri.toPathNotation() << std::endl;
       std::cout << "--------------------------------------------------" << std::endl;
