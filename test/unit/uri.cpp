@@ -603,7 +603,7 @@ int uri(int argc, char* argv[])
           std::cerr << "relativized uri " << relativized.toString() << std::endl;
         }
       }
-#if UNIX
+#ifdef UNIX
       // don't test on Windows because expected result of the path notation
       // should contain backslashes
       if (uri.toPathNotation() != tests[i].path_notation) {
