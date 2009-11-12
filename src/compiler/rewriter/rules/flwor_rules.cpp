@@ -487,6 +487,7 @@ static bool var_in_try_block_or_in_loop(
       {
         return true;
       }
+      ++i;
     }
     return false;
   }
