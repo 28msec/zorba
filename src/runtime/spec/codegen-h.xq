@@ -47,80 +47,86 @@ declare function local:create-function($iter) as xs:string?
     if(count($iter/zorba:function/zorba:signature) = 0) then 
       (: TODO user fn:error :)
       'Error: could not find "prefix" and "localname" attributes for "zorba:function" element'
-    else
-      string-join(
-        ($gen:newline, $gen:newline,
-         local:description($iter),
-         $gen:newline,
+    else (
+      string-join (
+       (
+        if ( exists($iter/@preprocessorGuard) )
+        then
+          $iter/@preprocessorGuard
+        else "",
 
-         'class ', $name, ' : public ', local:base-class($iter),
-         $gen:newline,
-         '{',
-         $gen:newline,
-         'public:',
-         $gen:newline, $gen:indent,
+        $gen:newline, $gen:newline,
+        local:description($iter),
+        $gen:newline,
 
-         (: Generate the class constructor :)
-         let $signatures := $iter/zorba:function/zorba:signature
-         let $argCounts := for $sig in $signatures
-                           return count($sig/zorba:param)
-         let $numSignatures := count($argCounts)
-         return 
-         if ($numSignatures eq 1)
-         then
-           string-join(($name,
-                        '(const signature&amp; sig)',
-                        $gen:newline, $gen:indent,  $gen:indent,
-                        ':',
-                        $gen:newline, $gen:indent,  $gen:indent,
-                        local:base-class($iter),
-                        '(sig, FunctionConsts::',
-                        gen:function-kind($signatures[1]),
-                        ')',
-                        $gen:newline, $gen:indent,
-                        '{',
-                        $gen:newline, $gen:indent,
-                        '}'),
-                       '')
-         else if ($numSignatures eq 2)
-         then
-           string-join(($name,
-                        '(const signature&amp; sig) : ',
-                        local:base-class($iter),
-                        '(sig)',
-                        $gen:newline, $gen:indent,
-                        '{',
-                        $gen:newline, $gen:indent,  $gen:indent,
-                        'theKind = (sig.arg_count() == ',
-                        xs:string($argCounts[1]),
-                        ' ?',
-                        $gen:newline,
-                        '                FunctionConsts::',
-                        gen:function-kind($signatures[1]),
-                        ' :',
-                        $gen:newline,
-                        '                FunctionConsts::',
-                        gen:function-kind($signatures[2]),
-                        ');',
-                        $gen:newline, $gen:indent,
-                        '}'),
-                       '')
-         else
-           (: User must provide implementation of constructor :)
-           string-join(($name,
-                        '(const signature&amp; sig);'),
-                       ''),
+        'class ', $name, ' : public ', local:base-class($iter),
+        $gen:newline,
+        '{',
+        $gen:newline,
+        'public:',
+        $gen:newline, $gen:indent,
 
-         $gen:newline,
-         local:add-annotations($iter),
-         local:add-specialization($iter),
-         local:add-unfoldable($iter),
-         local:add-is-source($iter),
-         local:add-is-fn-error($iter),
-         local:add-is-updating($iter),
-         local:add-is-vacuous($iter),
-         local:add-is-sequential($iter),
-         $gen:newline,$gen:indent,'CODEGEN_DECL();',$gen:newline,
+        (: Generate the class constructor :)
+        let $signatures := $iter/zorba:function/zorba:signature
+        let $argCounts := for $sig in $signatures
+                          return count($sig/zorba:param)
+        let $numSignatures := count($argCounts)
+        return 
+        if ($numSignatures eq 1)
+        then
+          string-join(($name,
+                       '(const signature&amp; sig)',
+                       $gen:newline, $gen:indent,  $gen:indent,
+                       ':',
+                       $gen:newline, $gen:indent,  $gen:indent,
+                       local:base-class($iter),
+                       '(sig, FunctionConsts::',
+                       gen:function-kind($signatures[1]),
+                       ')',
+                       $gen:newline, $gen:indent,
+                       '{',
+                       $gen:newline, $gen:indent,
+                       '}'),
+                      '')
+        else if ($numSignatures eq 2)
+        then
+          string-join(($name,
+                       '(const signature&amp; sig) : ',
+                       local:base-class($iter),
+                       '(sig)',
+                       $gen:newline, $gen:indent,
+                       '{',
+                       $gen:newline, $gen:indent,  $gen:indent,
+                       'theKind = (sig.arg_count() == ',
+                       xs:string($argCounts[1]),
+                       ' ?',
+                       $gen:newline,
+                       '                FunctionConsts::',
+                       gen:function-kind($signatures[1]),
+                       ' :',
+                       $gen:newline,
+                       '                FunctionConsts::',
+                       gen:function-kind($signatures[2]),
+                       ');',
+                       $gen:newline, $gen:indent,
+                       '}'),
+                      '')
+        else
+          (: User must provide implementation of constructor :)
+          string-join(($name,
+                       '(const signature&amp; sig);'),
+                      ''),
+
+        $gen:newline,
+        local:add-annotations($iter),
+        local:add-specialization($iter),
+        local:add-unfoldable($iter),
+        local:add-is-source($iter),
+        local:add-is-fn-error($iter),
+        local:add-is-updating($iter),
+        local:add-is-vacuous($iter),
+        local:add-is-sequential($iter),
+        $gen:newline,$gen:indent,'CODEGEN_DECL();',$gen:newline,
 
         (: generate the return type function or not 
          : if true, the user has to provide his own implementation
@@ -150,10 +156,14 @@ declare function local:create-function($iter) as xs:string?
           string-join(($gen:newline,$gen:indent,
           'bool propagatesInputToOutput(uint32_t aProducer) const;',$gen:newline),'')
         else (),
-      '};'),
-    '')
-  else
-    ()
+      '};',
+      if ( exists($iter/@preprocessorGuard) )
+      then
+        concat($gen:newline, "#endif")
+      else ""
+      )
+     , ''))
+  else ()
 };
 
 

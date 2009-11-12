@@ -30,6 +30,7 @@
 #include "functions/func_context.h"
 #include "functions/func_durations_dates_times.h"
 #include "functions/durations_dates_times_impl.h"
+#include "functions/func_schema.h"
 #include "functions/func_strings.h"
 #include "functions/func_sequences.h"
 #include "functions/sequences_impl.h"
@@ -90,6 +91,7 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_misc(sctx);
   populate_context_nodes(sctx);
   populate_context_numerics(sctx);
+  populate_context_schema(sctx);
   populate_context_strings(sctx);
   populate_context_sequences(sctx);
   populate_context_sequences_impl(sctx);

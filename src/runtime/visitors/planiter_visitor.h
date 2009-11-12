@@ -29,117 +29,234 @@
 
 namespace zorba{
     class NodeNameIterator;
+
     class NilledIterator;
+
     class FnStringIterator;
+
     class FnDataIterator;
+
     class BaseUriIterator;
+
     class DocumentUriIterator;
+
     class RootIterator;
+
     class IsSameNodeIterator;
+
     class NodeBeforeIterator;
+
     class NodeAfterIterator;
+
     class CurrentDateTimeIterator;
+
     class CurrentDateIterator;
+
     class CurrentTimeIterator;
+
     class ImplicitTimezoneIterator;
+
     class DefaultCollationIterator;
+
     class ZorbaJsonParseIterator;
+
     class ZorbaJsonSerializeIterator;
+
     class ZorbaJsonMLParseIterator;
+
     class ZorbaJsonMLSerializeIterator;
+
     class YearsFromDurationIterator;
+
     class MonthsFromDurationIterator;
+
     class DaysFromDurationIterator;
+
     class HoursFromDurationIterator;
+
     class MinutesFromDurationIterator;
+
     class SecondsFromDurationIterator;
+
     class YearFromDatetimeIterator;
+
     class MonthFromDatetimeIterator;
+
     class DayFromDatetimeIterator;
+
     class HoursFromDatetimeIterator;
+
     class MinutesFromDatetimeIterator;
+
     class SecondsFromDatetimeIterator;
+
     class TimezoneFromDatetimeIterator;
+
     class YearFromDateIterator;
+
     class MonthFromDateIterator;
+
     class DayFromDateIterator;
+
     class TimezoneFromDateIterator;
+
     class HoursFromTimeIterator;
+
     class MinutesFromTimeIterator;
+
     class SecondsFromTimeIterator;
+
     class TimezoneFromTimeIterator;
+
     class EvalIterator;
+
     class FnPutIterator;
+
     class FnSQRTIterator;
+
     class FnAtan2Iterator;
+
     class TraceIterator;
+
     class ReadLineIterator;
+
     class PrintIterator;
+
     class ResolveUriIterator;
+
     class ErrorIterator;
+
     class NodeReferenceIterator;
+
     class NodeByReferenceIterator;
+
     class FnLocalNameIterator;
+
     class FnNamespaceUriIterator;
+
     class FnLangIterator;
+
     class AbsIterator;
+
     class CeilingIterator;
+
     class FloorIterator;
+
     class RoundIterator;
+
     class RoundHalfToEvenIterator;
+
     class FormatNumberIterator;
+
+#ifndef ZORBA_NO_XMLSCHEMA
+    class ValidateIterator;
+#endif
+    class ZorbaSchemaTypeIterator;
+
     class SequentialIterator;
+
     class LoopIterator;
+
     class FlowCtlIterator;
+
     class FnConcatIterator;
+
     class FnIndexOfIterator;
+
     class FnEmptyIterator;
+
     class FnExistsIterator;
+
     class FnInsertBeforeIterator;
+
     class FnRemoveIterator;
+
     class FnReverseIterator;
+
     class FnSubsequenceIterator;
+
     class FnZeroOrOneIterator;
+
     class FnOneOrMoreIterator;
+
     class FnExactlyOneIterator;
+
     class FnDeepEqualIterator;
+
     class HashSemiJoinIterator;
+
     class SortSemiJoinIterator;
+
     class FnCountIterator;
+
     class FnAvgIterator;
+
     class FnSumIterator;
+
     class FnSumDoubleIterator;
+
     class FnSumFloatIterator;
+
     class FnSumDecimalIterator;
+
     class FnSumIntegerIterator;
+
     class OpToIterator;
+
     class FnDocIterator;
+
     class FnDocAvailableIterator;
+
     class FnParseIterator;
+
     class CodepointsToStringIterator;
+
     class StringToCodepointsIterator;
+
     class CompareStrIterator;
+
     class CodepointEqualIterator;
+
     class ConcatStrIterator;
+
     class StringJoinIterator;
+
     class SubstringIterator;
+
     class StringLengthIterator;
+
     class NormalizeSpaceIterator;
+
     class NormalizeUnicodeIterator;
+
     class UpperCaseIterator;
+
     class LowerCaseIterator;
+
     class TranslateIterator;
+
     class EncodeForUriIterator;
+
     class IriToUriIterator;
+
     class EscapeHtmlUriIterator;
+
     class ContainsIterator;
+
     class StartsWithIterator;
+
     class EndsWithIterator;
+
     class SubstringBeforeIterator;
+
     class SubstringAfterIterator;
+
     class FnMatchesIterator;
+
     class FnReplaceIterator;
+
     class FnTokenizeIterator;
+
 
 #include "runtime/visitors/planiter_visitor_impl_include.h"
 /**
@@ -329,6 +446,13 @@ public:
 
     virtual void beginVisit ( const FormatNumberIterator& ) = 0;
     virtual void endVisit   ( const FormatNumberIterator& ) = 0;
+
+#ifndef ZORBA_NO_XMLSCHEMA
+    virtual void beginVisit ( const ValidateIterator& ) = 0;
+    virtual void endVisit   ( const ValidateIterator& ) = 0;
+#endif
+    virtual void beginVisit ( const ZorbaSchemaTypeIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaSchemaTypeIterator& ) = 0;
 
     virtual void beginVisit ( const SequentialIterator& ) = 0;
     virtual void endVisit   ( const SequentialIterator& ) = 0;

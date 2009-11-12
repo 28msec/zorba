@@ -66,7 +66,7 @@
 #include "runtime/core/gflwor/count_iterator.h"
 #include "runtime/core/gflwor/tuplesource_iterator.h"
 #include "runtime/core/gflwor/orderby_iterator.h"
-#include "runtime/validate/validate.h"
+#include "runtime/schema/schema.h"
 #include "runtime/scripting/scripting.h"
 #include "runtime/util/flowctl_exception.h"
 #include "runtime/update/update.h"
@@ -2009,9 +2009,9 @@ void end_visit (validate_expr& v)
   push_itstack (new ValidateIterator(sctx,
                                      qloc,
                                      lChild,
+                                     v.get_valmode(),
                                      v.get_typemgr(),
-                                     v.get_type_name(),
-                                     v.get_valmode()));
+                                     const_cast<store::Item*>(v.get_type_name())));
 #else
   //no schema support
   ZORBA_ERROR_LOC(XQST0009, qloc);

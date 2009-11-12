@@ -27,7 +27,6 @@
 #include "runtime/qnames/QNamesImpl.h"
 #include "runtime/core/sequencetypes.h"
 #include "runtime/booleans/BooleanImpl.h"
-#include "runtime/validate/validate.h"
 #include "runtime/core/gflwor/let_iterator.h"
 #include "runtime/core/gflwor/for_iterator.h"
 #include "runtime/core/gflwor/outerfor_iterator.h"
@@ -1050,9 +1049,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
 
 #undef TYPED_VAL_CMP
 
-#ifndef ZORBA_NO_XMLSCHEMA
-  PRINTER_VISITOR_DEFINITION (ValidateIterator)
-#endif
 #ifdef ZORBA_WITH_TIDY
   PRINTER_VISITOR_DEFINITION(ZorbaTidyIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaTDocIterator);
@@ -1182,7 +1178,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION(IndexEntryBuilderIterator);
   PRINTER_VISITOR_DEFINITION(IndexPointProbeIterator);
   PRINTER_VISITOR_DEFINITION(IndexRangeProbeIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaSchemaTypeIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaBase64EncodeIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaBase64DecodeIterator);
   PRINTER_VISITOR_DEFINITION(XQDocIterator);

@@ -22,15 +22,42 @@
 // ******************************************
 
 
-#include "runtime/scripting/scripting.h"
-#include "functions/func_scripting.h"
+#ifndef ZORBA_FUNCTIONS_SCHEMA_H
+#define ZORBA_FUNCTIONS_SCHEMA_H
+
+
+#include "common/shared_types.h"
+#include "functions/function_impl.h"
 
 
 namespace zorba{
 
 
+void populate_context_schema(static_context* sctx);
 
-void populate_context_scripting(static_context* sctx) {}
 
 
-}
+
+//fn-zorba-util:schema-type
+class fn_zorba_util_schema_type : public function
+{
+public:
+  fn_zorba_util_schema_type(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_UTIL_SCHEMA_TYPE_1)
+  {
+  }
+
+  CODEGEN_DECL();
+};
+
+
+} //namespace zorba
+
+
+#endif
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */ 

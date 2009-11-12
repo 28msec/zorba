@@ -238,7 +238,6 @@
   DECLARE_VISITOR (AvailableIndexesIterator);
   DECLARE_VISITOR (IsDeclaredIndexIterator);
   DECLARE_VISITOR (DeclaredIndexesIterator);
-  DECLARE_VISITOR (ZorbaSchemaTypeIterator);
   DECLARE_VISITOR (ZorbaBase64EncodeIterator);
   DECLARE_VISITOR (ZorbaBase64DecodeIterator);
   DECLARE_VISITOR (XQDocIterator);
@@ -264,9 +263,6 @@
   DECLARE_VISITOR (PrecedingReverseAxisIterator)
   DECLARE_VISITOR (FollowingAxisIterator)
 
-#ifndef ZORBA_NO_XMLSCHEMA
-  DECLARE_VISITOR (ValidateIterator)
-#endif
 #ifdef ZORBA_WITH_TIDY
   DECLARE_VISITOR (ZorbaTidyIterator);
   DECLARE_VISITOR (ZorbaTDocIterator);

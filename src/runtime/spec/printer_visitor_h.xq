@@ -6,24 +6,42 @@ import module namespace file = "http://www.zorba-xquery.com/modules/file";
 declare function local:get-files($files as xs:string) as xs:string
 {
   let $xml-files as xs:string* := tokenize($files,';') 
-  return string-join(for $file in $xml-files return local:process-file($file),$gen:newline)
+  return
+  string-join(
+    for $file in $xml-files
+    return local:process-file($file),
+  concat($gen:newline, $gen:newline))
 };
 
 declare function local:process-file($file) as xs:string
 {
   let $doc := file:read-xml($file)/zorba:iterators
-  
-  return string-join(for $iter in $doc//zorba:iterator return 
-  if(fn:not($iter/@generateVisitor) or $iter/@generateVisitor eq "true") then
-    local:process-iter($iter)
-  else ()
-  ,string-join(($gen:newline,$gen:newline),''))
+  return
+    string-join (
+      for $iter in $doc//zorba:iterator
+      return 
+        if( fn:not($iter/@generateVisitor) or
+            $iter/@generateVisitor eq "true")
+         then
+          local:process-iter($iter)
+        else (),
+    concat($gen:newline, $gen:newline))
 };
 
 declare function local:process-iter($iter) as xs:string
 {
-  string-join((gen:indent(2),'void beginVisit( const ',$iter/@name,'&amp; );',$gen:newline,
-  gen:indent(2),'void endVisit  ( const ',$iter/@name,'&amp; );'),'')
+  concat (
+    if ( exists($iter/@preprocessorGuard) )
+    then concat($iter/@preprocessorGuard, $gen:newline)
+    else '',
+
+    string-join((gen:indent(2),'void beginVisit( const ',$iter/@name,'&amp; );',$gen:newline,
+    gen:indent(2),'void endVisit  ( const ',$iter/@name,'&amp; );'),''),
+
+    if ( exists($iter/@preprocessorGuard) )
+    then concat($gen:newline, '#endif')
+    else ''
+  )
 };
 
 declare function local:create-class() as xs:string

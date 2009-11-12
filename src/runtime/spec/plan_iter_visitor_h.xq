@@ -43,11 +43,22 @@ declare function local:process-file($file, $type as xs:string) as xs:string
 
 declare function local:process-iter($iter, $type as xs:string) as xs:string
 {
-  if($type = 'class') then
-    string-join((gen:indent(2),'virtual void beginVisit ( const ',$iter/@name,'&amp; ) = 0;',$gen:newline,
-    gen:indent(2),'virtual void endVisit   ( const ',$iter/@name,'&amp; ) = 0;',$gen:newline),'')
-  else
-    string-join((gen:indent(2),'class ',$iter/@name,';'),'')
+  concat (
+    if ( exists($iter/@preprocessorGuard) )
+    then concat($iter/@preprocessorGuard, $gen:newline)
+    else '',
+
+    if($type = 'class') then
+      string-join((gen:indent(2),'virtual void beginVisit ( const ',$iter/@name,'&amp; ) = 0;',$gen:newline,
+      gen:indent(2),'virtual void endVisit   ( const ',$iter/@name,'&amp; ) = 0;'),'')
+    else
+      string-join((gen:indent(2),'class ',$iter/@name,';'),''),
+
+    $gen:newline,
+    if ( exists($iter/@preprocessorGuard) )
+    then '#endif'
+    else ''
+  )
 };
 
 declare function local:create-fwd-decl($files as xs:string) as xs:string

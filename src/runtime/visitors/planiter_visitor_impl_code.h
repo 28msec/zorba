@@ -2,10 +2,6 @@
 
   PLAN_ITER_VISITOR (FnBooleanIterator);
 
-#ifndef ZORBA_NO_XMLSCHEMA
-  PLAN_ITER_VISITOR (ValidateIterator);
-#endif
-       
   PLAN_ITER_VISITOR (LogicIterator);
        
   PLAN_ITER_VISITOR (CompareIterator);
@@ -378,7 +374,6 @@
   PLAN_ITER_VISITOR(ZorbaRemoveNodeAtIterator);
   PLAN_ITER_VISITOR(ZorbaIndexOfIterator);
 
-  PLAN_ITER_VISITOR(ZorbaSchemaTypeIterator);
   PLAN_ITER_VISITOR(ZorbaBase64EncodeIterator);
   PLAN_ITER_VISITOR(ZorbaBase64DecodeIterator);
   PLAN_ITER_VISITOR(XQDocIterator);

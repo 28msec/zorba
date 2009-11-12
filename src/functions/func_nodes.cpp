@@ -40,9 +40,6 @@ PlanIter_t fn_zorba_ref_node_reference::codegen(
   return new NodeReferenceIterator ( sctx, loc, argv);
 }
 
-
-
-
 PlanIter_t fn_zorba_ref_node_by_reference::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -52,9 +49,6 @@ PlanIter_t fn_zorba_ref_node_by_reference::codegen(
 {
   return new NodeByReferenceIterator ( sctx, loc, argv);
 }
-
-
-
 
 PlanIter_t fn_local_name::codegen(
   CompilerCB*,
@@ -66,9 +60,6 @@ PlanIter_t fn_local_name::codegen(
   return new FnLocalNameIterator ( sctx, loc, argv);
 }
 
-
-
-
 PlanIter_t fn_namespace_uri::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -78,9 +69,6 @@ PlanIter_t fn_namespace_uri::codegen(
 {
   return new FnNamespaceUriIterator ( sctx, loc, argv);
 }
-
-
-
 
 PlanIter_t fn_lang::codegen(
   CompilerCB*,
@@ -92,35 +80,37 @@ PlanIter_t fn_lang::codegen(
   return new FnLangIterator ( sctx, loc, argv);
 }
 
-
-
 void populate_context_nodes(static_context* sctx) {
-
   DECL(sctx, fn_zorba_ref_node_reference,
       (createQName("http://www.zorba-xquery.com/zorba/node-ref-functions","fn-zorba-ref","node-reference"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
+
 
   DECL(sctx, fn_zorba_ref_node_by_reference,
       (createQName("http://www.zorba-xquery.com/zorba/node-ref-functions","fn-zorba-ref","node-by-reference"),
       GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE));
 
+
   DECL(sctx, fn_local_name,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","local-name"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
+
 
   DECL(sctx, fn_namespace_uri,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","namespace-uri"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
 
+
   DECL(sctx, fn_lang,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","lang"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+
 }
 
 

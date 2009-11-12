@@ -19,7 +19,6 @@
 
 #include "runtime/base/plan_iterator.h"
 #include "runtime/api/runtimecb.h"
-// #include "runtime/misc/MiscImpl.h"
 
 
 namespace zorba

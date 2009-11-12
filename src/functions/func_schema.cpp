@@ -22,46 +22,29 @@
 // ******************************************
 
 
-#include "runtime/maths/maths.h"
-#include "functions/func_maths.h"
+#include "runtime/schema/schema.h"
+#include "functions/func_schema.h"
 
 
 namespace zorba{
 
 
 
-PlanIter_t fn_zorba_math_sqrt::codegen(
+PlanIter_t fn_zorba_util_schema_type::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new FnSQRTIterator ( sctx, loc, argv[0]);
+  return new ZorbaSchemaTypeIterator ( sctx, loc, argv);
 }
 
-PlanIter_t fn_zorba_math_atan2::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new FnAtan2Iterator ( sctx, loc, argv[0], argv[1]);
-}
-
-void populate_context_maths(static_context* sctx) {
-  DECL(sctx, fn_zorba_math_sqrt,
-      (createQName("http://www.zorba-xquery.com/modules/math","fn-zorba-math","sqrt"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
-
-
-  DECL(sctx, fn_zorba_math_atan2,
-      (createQName("http://www.zorba-xquery.com/modules/math","fn-zorba-math","atan2"),
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-      GENV_TYPESYSTEM.DOUBLE_TYPE_PLUS));
+void populate_context_schema(static_context* sctx) {
+  DECL(sctx, fn_zorba_util_schema_type,
+      (createQName("http://www.zorba-xquery.com/zorba/util-functions","fn-zorba-util","schema-type"),
+      GENV_TYPESYSTEM.ITEM_TYPE_ONE,
+      GENV_TYPESYSTEM.QNAME_TYPE_ONE));
 
 }
 

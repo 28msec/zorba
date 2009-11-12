@@ -30,8 +30,7 @@ namespace zorba{
 
 
 
-void populate_context_eval(static_context* sctx) {
-}
+void populate_context_eval(static_context* sctx) {}
 
 
 }

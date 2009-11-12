@@ -9,41 +9,53 @@ declare function local:get-iterators($XMLdoc) as xs:string
 
 declare function local:process-iterator($iter) as xs:string
 {
-  string-join(('// &lt;',$iter/@name,'&gt;',$gen:newline,
-  local:serializable-class-versions($iter/@name),
-  local:end-serializable-class-versions($iter/@name),
-
-  (: generate the visitor if requested :)
-  if(fn:not($iter/@generateAccept) or $iter/@generateAccept eq "true") 
-  then
-    concat(local:generate-accept($iter), $gen:newline)
-  else
-    (),
-
-  (: generate the destructor if requested :)
-  if(fn:not($iter/@generateDestructor) or $iter/@generateDestructor eq "true") 
-  then 
-    local:generate-destructor($iter)
-  else (),
-
-  if (exists($iter/zorba:state))
-  then
-    (
-    (: generate the state's init and reset functions if requested :)
-    if (fn:not($iter/zorba:state/@generateInit) or $iter/zorba:state/@generateInit eq "true")
+  string-join ((
+    if ( exists($iter/@preprocessorGuard) )
     then
-      local:generate-init($iter) 
+      concat($iter/@preprocessorGuard, $gen:newline)
+    else '',
+
+    '// &lt;',$iter/@name,'&gt;',$gen:newline,
+    local:serializable-class-versions($iter/@name),
+    local:end-serializable-class-versions($iter/@name),
+
+    (: generate the visitor if requested :)
+    if(fn:not($iter/@generateAccept) or $iter/@generateAccept eq "true") 
+    then
+      concat(local:generate-accept($iter), $gen:newline)
+    else
+      (),
+
+    (: generate the destructor if requested :)
+    if(fn:not($iter/@generateDestructor) or $iter/@generateDestructor eq "true") 
+    then 
+      local:generate-destructor($iter)
     else (),
 
-    if (fn:not($iter/zorba:state/@generateReset) or $iter/zorba:state/@generateReset eq "true")
+    if (exists($iter/zorba:state))
     then
-      local:generate-reset($iter)
-    else ()
-    )
-  else (),
+      (
+      (: generate the state's init and reset functions if requested :)
+      if (fn:not($iter/zorba:state/@generateInit) or $iter/zorba:state/@generateInit eq "true")
+      then
+        local:generate-init($iter) 
+      else (),
 
-  (: finish iterator implementation with a closing comment :)
-  '// &lt;/',$iter/@name,'&gt;',$gen:newline,$gen:newline),'')
+      if (fn:not($iter/zorba:state/@generateReset) or $iter/zorba:state/@generateReset eq "true")
+      then
+        local:generate-reset($iter)
+      else ()
+      )
+    else (),
+
+    (: finish iterator implementation with a closing comment :)
+    '// &lt;/',$iter/@name,'&gt;',$gen:newline,$gen:newline,
+
+    if ( exists($iter/@preprocessorGuard) )
+    then
+      '#endif'
+    else ''),
+  '')
 };
 
 declare function local:generate-init-values($state) 

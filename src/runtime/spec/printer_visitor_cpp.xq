@@ -100,15 +100,26 @@ declare function local:get-include-quoted($include) as xs:string
 
 declare function local:printer-visitor-definition($iter) as xs:string
 {
-  string-join(('// &lt;',$iter/@name,'&gt;',$gen:newline,
-  'void PrinterVisitor::beginVisit ( const ',$iter/@name,'&amp; a) {',$gen:newline,
-  $gen:indent,'thePrinter.startBeginVisit("',$iter/@name,'", ++theId);',$gen:newline,
-  $gen:indent,'printCommons( &amp;a, theId );',$gen:newline,
-  $gen:indent,'thePrinter.endBeginVisit( theId );',$gen:newline,'}',$gen:newline,
-  $gen:newline,'void PrinterVisitor::endVisit ( const ',$iter/@name,'&amp; ) {',$gen:newline,
-  $gen:indent,'thePrinter.startEndVisit();',$gen:newline,
-  $gen:indent,'thePrinter.endEndVisit();',$gen:newline,'}',$gen:newline,
-  '// &lt;/',$iter/@name,'&gt;',$gen:newline),'')
+  concat (
+    if ( exists($iter/@preprocessorGuard) )
+    then $iter/@preprocessorGuard
+    else '',
+    $gen:newline,
+
+    string-join(('// &lt;',$iter/@name,'&gt;',$gen:newline,
+    'void PrinterVisitor::beginVisit ( const ',$iter/@name,'&amp; a) {',$gen:newline,
+    $gen:indent,'thePrinter.startBeginVisit("',$iter/@name,'", ++theId);',$gen:newline,
+    $gen:indent,'printCommons( &amp;a, theId );',$gen:newline,
+    $gen:indent,'thePrinter.endBeginVisit( theId );',$gen:newline,'}',$gen:newline,
+    $gen:newline,'void PrinterVisitor::endVisit ( const ',$iter/@name,'&amp; ) {',$gen:newline,
+    $gen:indent,'thePrinter.startEndVisit();',$gen:newline,
+    $gen:indent,'thePrinter.endEndVisit();',$gen:newline,'}',$gen:newline,
+    '// &lt;/',$iter/@name,'&gt;',$gen:newline),''),
+
+    if ( exists($iter/@preprocessorGuard) )
+    then concat($gen:newline, '#endif')
+    else ''
+  )
 };
 
 declare variable $files as xs:string external;

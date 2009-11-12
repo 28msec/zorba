@@ -67,6 +67,7 @@ namespace zorba {
 
     void beginVisit( const RootIterator& );
     void endVisit  ( const RootIterator& );
+
     void beginVisit( const IsSameNodeIterator& );
     void endVisit  ( const IsSameNodeIterator& );
 
@@ -75,6 +76,7 @@ namespace zorba {
 
     void beginVisit( const NodeAfterIterator& );
     void endVisit  ( const NodeAfterIterator& );
+
     void beginVisit( const CurrentDateTimeIterator& );
     void endVisit  ( const CurrentDateTimeIterator& );
 
@@ -89,6 +91,7 @@ namespace zorba {
 
     void beginVisit( const DefaultCollationIterator& );
     void endVisit  ( const DefaultCollationIterator& );
+
     void beginVisit( const ZorbaJsonParseIterator& );
     void endVisit  ( const ZorbaJsonParseIterator& );
 
@@ -100,6 +103,7 @@ namespace zorba {
 
     void beginVisit( const ZorbaJsonMLSerializeIterator& );
     void endVisit  ( const ZorbaJsonMLSerializeIterator& );
+
     void beginVisit( const YearsFromDurationIterator& );
     void endVisit  ( const YearsFromDurationIterator& );
 
@@ -162,15 +166,19 @@ namespace zorba {
 
     void beginVisit( const TimezoneFromTimeIterator& );
     void endVisit  ( const TimezoneFromTimeIterator& );
+
     void beginVisit( const EvalIterator& );
     void endVisit  ( const EvalIterator& );
+
     void beginVisit( const FnPutIterator& );
     void endVisit  ( const FnPutIterator& );
+
     void beginVisit( const FnSQRTIterator& );
     void endVisit  ( const FnSQRTIterator& );
 
     void beginVisit( const FnAtan2Iterator& );
     void endVisit  ( const FnAtan2Iterator& );
+
     void beginVisit( const TraceIterator& );
     void endVisit  ( const TraceIterator& );
 
@@ -185,6 +193,7 @@ namespace zorba {
 
     void beginVisit( const ErrorIterator& );
     void endVisit  ( const ErrorIterator& );
+
     void beginVisit( const NodeReferenceIterator& );
     void endVisit  ( const NodeReferenceIterator& );
 
@@ -199,6 +208,7 @@ namespace zorba {
 
     void beginVisit( const FnLangIterator& );
     void endVisit  ( const FnLangIterator& );
+
     void beginVisit( const AbsIterator& );
     void endVisit  ( const AbsIterator& );
 
@@ -216,6 +226,15 @@ namespace zorba {
 
     void beginVisit( const FormatNumberIterator& );
     void endVisit  ( const FormatNumberIterator& );
+
+#ifndef ZORBA_NO_XMLSCHEMA
+    void beginVisit( const ValidateIterator& );
+    void endVisit  ( const ValidateIterator& );
+#endif
+
+    void beginVisit( const ZorbaSchemaTypeIterator& );
+    void endVisit  ( const ZorbaSchemaTypeIterator& );
+
     void beginVisit( const SequentialIterator& );
     void endVisit  ( const SequentialIterator& );
 
@@ -224,6 +243,7 @@ namespace zorba {
 
     void beginVisit( const FlowCtlIterator& );
     void endVisit  ( const FlowCtlIterator& );
+
     void beginVisit( const FnConcatIterator& );
     void endVisit  ( const FnConcatIterator& );
 
@@ -298,6 +318,7 @@ namespace zorba {
 
     void beginVisit( const FnParseIterator& );
     void endVisit  ( const FnParseIterator& );
+
     void beginVisit( const CodepointsToStringIterator& );
     void endVisit  ( const CodepointsToStringIterator& );
 

@@ -22,6 +22,11 @@ declare function local:process-iterator($iter) as xs:string
     else
       'PlanIteratorState'
   return concat(
+    if ( exists($iter/@preprocessorGuard) )
+    then
+      concat($iter/@preprocessorGuard, $gen:newline)
+    else "",
+
     (: preceding comment :)
     '/**', $gen:newline,
     ' * ', fn:normalize-space($iter/zorba:description/text()), $gen:newline,
@@ -37,7 +42,13 @@ declare function local:process-iterator($iter) as xs:string
     else (),
 
     (: generate the iterator declaration :)
-    local:iterator($iter, $iter/@name, $stateName)
+    local:iterator($iter, $iter/@name, $stateName),
+
+    if ( exists($iter/@preprocessorGuard) )
+    then
+      concat("#endif", $gen:newline)
+    else ""
+
   ) (: concat :)
 };
 

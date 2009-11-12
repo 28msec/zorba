@@ -42,9 +42,6 @@ PlanIter_t zorba_json_parse::codegen(
   return new ZorbaJsonParseIterator ( sctx, loc, argv);
 }
 
-
-
-
 PlanIter_t zorba_json_serialize::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -54,9 +51,6 @@ PlanIter_t zorba_json_serialize::codegen(
 {
   return new ZorbaJsonSerializeIterator ( sctx, loc, argv);
 }
-
-
-
 
 PlanIter_t zorba_json_ml_parse::codegen(
   CompilerCB*,
@@ -68,9 +62,6 @@ PlanIter_t zorba_json_ml_parse::codegen(
   return new ZorbaJsonMLParseIterator ( sctx, loc, argv);
 }
 
-
-
-
 PlanIter_t zorba_json_ml_serialize::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -81,29 +72,30 @@ PlanIter_t zorba_json_ml_serialize::codegen(
   return new ZorbaJsonMLSerializeIterator ( sctx, loc, argv);
 }
 
-
-
 void populate_context_convertors(static_context* sctx) {
-
   DECL(sctx, zorba_json_parse,
       (createQName("http://www.zorba-xquery.com/zorba/json-functions","zorba-json","parse"),
       GENV_TYPESYSTEM.STRING_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
+
 
   DECL(sctx, zorba_json_serialize,
       (createQName("http://www.zorba-xquery.com/zorba/json-functions","zorba-json","serialize"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
       GENV_TYPESYSTEM.STRING_TYPE_STAR));
 
+
   DECL(sctx, zorba_json_ml_parse,
       (createQName("http://www.zorba-xquery.com/zorba/json-ml-functions","zorba-json-ml","parse"),
       GENV_TYPESYSTEM.STRING_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
+
   DECL(sctx, zorba_json_ml_serialize,
       (createQName("http://www.zorba-xquery.com/zorba/json-ml-functions","zorba-json-ml","serialize"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
       GENV_TYPESYSTEM.STRING_TYPE_STAR));
+
 }
 
 

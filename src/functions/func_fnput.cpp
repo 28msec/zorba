@@ -39,18 +39,16 @@ PlanIter_t fn_put::codegen(
 {
   return new FnPutIterator ( sctx, loc, argv);
 }
-
-
 bool fn_put::propagatesInputToOutput ( uint32_t ) const {
   return false;
 }
 void populate_context_fnput(static_context* sctx) {
-
   DECL(sctx, fn_put,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","put"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.EMPTY_TYPE));
+
 }
 
 

@@ -40,9 +40,6 @@ PlanIter_t fn_abs::codegen(
   return new AbsIterator ( sctx, loc, argv);
 }
 
-
-
-
 PlanIter_t fn_ceiling::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -52,9 +49,6 @@ PlanIter_t fn_ceiling::codegen(
 {
   return new CeilingIterator ( sctx, loc, argv);
 }
-
-
-
 
 PlanIter_t fn_floor::codegen(
   CompilerCB*,
@@ -66,9 +60,6 @@ PlanIter_t fn_floor::codegen(
   return new FloorIterator ( sctx, loc, argv);
 }
 
-
-
-
 PlanIter_t fn_round::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -78,9 +69,6 @@ PlanIter_t fn_round::codegen(
 {
   return new RoundIterator ( sctx, loc, argv);
 }
-
-
-
 
 PlanIter_t fn_round_half_to_even::codegen(
   CompilerCB*,
@@ -92,9 +80,6 @@ PlanIter_t fn_round_half_to_even::codegen(
   return new RoundHalfToEvenIterator ( sctx, loc, argv);
 }
 
-
-
-
 PlanIter_t fn_format_number::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -105,34 +90,36 @@ PlanIter_t fn_format_number::codegen(
   return new FormatNumberIterator ( sctx, loc, argv);
 }
 
-
-
 void populate_context_numerics(static_context* sctx) {
-
   DECL(sctx, fn_abs,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","abs"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
 
   DECL(sctx, fn_ceiling,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","ceiling"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
+
   DECL(sctx, fn_floor,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","floor"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
 
   DECL(sctx, fn_round,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","round"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
+
   DECL(sctx, fn_round_half_to_even,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","round-half-to-even"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
 
   DECL(sctx, fn_round_half_to_even,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","round-half-to-even"),
@@ -140,11 +127,13 @@ void populate_context_numerics(static_context* sctx) {
       GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
+
   DECL(sctx, fn_format_number,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","format-number"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
+
 
   DECL(sctx, fn_format_number,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","format-number"),
@@ -152,6 +141,7 @@ void populate_context_numerics(static_context* sctx) {
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
+
 }
 
 

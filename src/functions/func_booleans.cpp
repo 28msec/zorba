@@ -40,9 +40,6 @@ PlanIter_t op_is_same_node::codegen(
   return new IsSameNodeIterator ( sctx, loc, argv);
 }
 
-
-
-
 PlanIter_t op_node_before::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -52,9 +49,6 @@ PlanIter_t op_node_before::codegen(
 {
   return new NodeBeforeIterator ( sctx, loc, argv);
 }
-
-
-
 
 PlanIter_t op_node_after::codegen(
   CompilerCB*,
@@ -66,15 +60,13 @@ PlanIter_t op_node_after::codegen(
   return new NodeAfterIterator ( sctx, loc, argv);
 }
 
-
-
 void populate_context_booleans(static_context* sctx) {
-
   DECL(sctx, op_is_same_node,
       (createQName("http://www.w3.org/2005/xpath-functions","op","is-same-node"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
+
 
   DECL(sctx, op_node_before,
       (createQName("http://www.w3.org/2005/xpath-functions","op","node-before"),
@@ -82,11 +74,13 @@ void populate_context_booleans(static_context* sctx) {
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
 
+
   DECL(sctx, op_node_after,
       (createQName("http://www.w3.org/2005/xpath-functions","op","node-after"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION));
+
 }
 
 

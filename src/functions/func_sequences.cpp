@@ -42,9 +42,6 @@ PlanIter_t op_concatenate::codegen(
   return new FnConcatIterator ( sctx, loc, argv, ann.is_updating() );
 }
 
-
-
-
 PlanIter_t fn_index_of::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -54,9 +51,6 @@ PlanIter_t fn_index_of::codegen(
 {
   return new FnIndexOfIterator ( sctx, loc, argv);
 }
-
-
-
 
 PlanIter_t fn_empty::codegen(
   CompilerCB*,
@@ -68,9 +62,6 @@ PlanIter_t fn_empty::codegen(
   return new FnEmptyIterator ( sctx, loc, argv);
 }
 
-
-
-
 PlanIter_t fn_exists::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -80,9 +71,6 @@ PlanIter_t fn_exists::codegen(
 {
   return new FnExistsIterator ( sctx, loc, argv);
 }
-
-
-
 
 PlanIter_t fn_insert_before::codegen(
   CompilerCB*,
@@ -94,9 +82,6 @@ PlanIter_t fn_insert_before::codegen(
   return new FnInsertBeforeIterator ( sctx, loc, argv);
 }
 
-
-
-
 PlanIter_t fn_remove::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -106,9 +91,6 @@ PlanIter_t fn_remove::codegen(
 {
   return new FnRemoveIterator ( sctx, loc, argv);
 }
-
-
-
 
 PlanIter_t fn_reverse::codegen(
   CompilerCB*,
@@ -122,15 +104,6 @@ PlanIter_t fn_reverse::codegen(
 
 
 
-
-
-
-
-
-
-
-
-
 PlanIter_t fn_one_or_more::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -140,9 +113,6 @@ PlanIter_t fn_one_or_more::codegen(
 {
   return new FnOneOrMoreIterator ( sctx, loc, argv);
 }
-
-
-
 
 PlanIter_t fn_deep_equal::codegen(
   CompilerCB*,
@@ -154,9 +124,6 @@ PlanIter_t fn_deep_equal::codegen(
   return new FnDeepEqualIterator ( sctx, loc, argv);
 }
 
-
-
-
 PlanIter_t fn_count::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -166,9 +133,6 @@ PlanIter_t fn_count::codegen(
 {
   return new FnCountIterator ( sctx, loc, argv);
 }
-
-
-
 
 PlanIter_t fn_avg::codegen(
   CompilerCB*,
@@ -180,9 +144,6 @@ PlanIter_t fn_avg::codegen(
   return new FnAvgIterator ( sctx, loc, argv);
 }
 
-
-
-
 PlanIter_t fn_sum::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -192,9 +153,6 @@ PlanIter_t fn_sum::codegen(
 {
   return new FnSumIterator ( sctx, loc, argv);
 }
-
-
-
 
 PlanIter_t fn_sum_double::codegen(
   CompilerCB*,
@@ -206,9 +164,6 @@ PlanIter_t fn_sum_double::codegen(
   return new FnSumDoubleIterator ( sctx, loc, argv);
 }
 
-
-
-
 PlanIter_t fn_sum_float::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -218,9 +173,6 @@ PlanIter_t fn_sum_float::codegen(
 {
   return new FnSumFloatIterator ( sctx, loc, argv);
 }
-
-
-
 
 PlanIter_t fn_sum_decimal::codegen(
   CompilerCB*,
@@ -232,9 +184,6 @@ PlanIter_t fn_sum_decimal::codegen(
   return new FnSumDecimalIterator ( sctx, loc, argv);
 }
 
-
-
-
 PlanIter_t fn_sum_integer::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -244,9 +193,6 @@ PlanIter_t fn_sum_integer::codegen(
 {
   return new FnSumIntegerIterator ( sctx, loc, argv);
 }
-
-
-
 
 PlanIter_t op_to::codegen(
   CompilerCB*,
@@ -258,9 +204,6 @@ PlanIter_t op_to::codegen(
   return new OpToIterator ( sctx, loc, argv);
 }
 
-
-
-
 PlanIter_t fn_doc::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -270,12 +213,9 @@ PlanIter_t fn_doc::codegen(
 {
   return new FnDocIterator ( sctx, loc, argv);
 }
-
-
 bool fn_doc::propagatesInputToOutput ( uint32_t ) const {
   return false;
 }
-
 PlanIter_t fn_doc_available::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -285,9 +225,6 @@ PlanIter_t fn_doc_available::codegen(
 {
   return new FnDocAvailableIterator ( sctx, loc, argv);
 }
-
-
-
 
 PlanIter_t fn_zorba_util_parse::codegen(
   CompilerCB*,
@@ -299,21 +236,20 @@ PlanIter_t fn_zorba_util_parse::codegen(
   return new FnParseIterator ( sctx, loc, argv);
 }
 
-
-
 void populate_context_sequences(static_context* sctx) {
-
   DECL(sctx, op_concatenate,
       (createQName("http://www.w3.org/2005/xpath-functions","op","concatenate"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       true,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
+
   DECL(sctx, fn_index_of,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","index-of"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
       GENV_TYPESYSTEM.INTEGER_TYPE_STAR));
+
 
   DECL(sctx, fn_index_of,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","index-of"),
@@ -322,15 +258,18 @@ void populate_context_sequences(static_context* sctx) {
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.INTEGER_TYPE_STAR));
 
+
   DECL(sctx, fn_empty,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","empty"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
+
   DECL(sctx, fn_exists,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","exists"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+
 
   DECL(sctx, fn_insert_before,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","insert-before"),
@@ -339,22 +278,26 @@ void populate_context_sequences(static_context* sctx) {
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
+
   DECL(sctx, fn_remove,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","remove"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
+
   DECL(sctx, fn_reverse,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","reverse"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
+
   DECL(sctx, fn_subsequence,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","subsequence"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
 
   DECL(sctx, fn_subsequence,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","subsequence"),
@@ -362,22 +305,26 @@ void populate_context_sequences(static_context* sctx) {
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
 
   DECL(sctx, fn_zero_or_one,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","zero-or-one"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.ITEM_TYPE_QUESTION));
 
+
   DECL(sctx, fn_one_or_more,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","one-or-more"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.ITEM_TYPE_PLUS));
+
 
   DECL(sctx, fn_deep_equal,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","deep-equal"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+
 
   DECL(sctx, fn_deep_equal,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","deep-equal"),
@@ -386,70 +333,83 @@ void populate_context_sequences(static_context* sctx) {
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
+
   DECL(sctx, fn_count,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","count"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
+
 
   DECL(sctx, fn_avg,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","avg"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
+
   DECL(sctx, fn_sum,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","sum"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE));
+
 
   DECL(sctx, fn_sum,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","sum"),
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
 
   DECL(sctx, fn_sum_double,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","sum_double"),
       GENV_TYPESYSTEM.DOUBLE_TYPE_STAR,
       GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
 
+
   DECL(sctx, fn_sum_double,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","sum_double"),
       GENV_TYPESYSTEM.DOUBLE_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
+
   DECL(sctx, fn_sum_float,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","sum_float"),
       GENV_TYPESYSTEM.FLOAT_TYPE_STAR,
       GENV_TYPESYSTEM.FLOAT_TYPE_ONE));
+
 
   DECL(sctx, fn_sum_float,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","sum_float"),
       GENV_TYPESYSTEM.FLOAT_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
 
   DECL(sctx, fn_sum_decimal,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","sum_decimal"),
       GENV_TYPESYSTEM.DECIMAL_TYPE_STAR,
       GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
 
+
   DECL(sctx, fn_sum_decimal,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","sum_decimal"),
       GENV_TYPESYSTEM.DECIMAL_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
+
   DECL(sctx, fn_sum_integer,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","sum_integer"),
       GENV_TYPESYSTEM.INTEGER_TYPE_STAR,
       GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
+
 
   DECL(sctx, fn_sum_integer,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","sum_integer"),
       GENV_TYPESYSTEM.INTEGER_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
+
 
   DECL(sctx, op_to,
       (createQName("http://www.w3.org/2005/xpath-functions","op","to"),
@@ -457,20 +417,24 @@ void populate_context_sequences(static_context* sctx) {
       GENV_TYPESYSTEM.INTEGER_TYPE_QUESTION,
       GENV_TYPESYSTEM.INTEGER_TYPE_STAR));
 
+
   DECL(sctx, fn_doc,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","doc"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.DOCUMENT_UNTYPED_TYPE_QUESTION));
+
 
   DECL(sctx, fn_doc_available,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","doc-available"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
+
   DECL(sctx, fn_zorba_util_parse,
       (createQName("http://www.zorba-xquery.com/zorba/util-functions","fn-zorba-util","parse"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.DOCUMENT_UNTYPED_TYPE_ONE));
+
 }
 
 

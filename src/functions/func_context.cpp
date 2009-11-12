@@ -40,9 +40,6 @@ PlanIter_t fn_current_dateTime::codegen(
   return new CurrentDateTimeIterator ( sctx, loc, argv);
 }
 
-
-
-
 PlanIter_t fn_current_date::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -52,9 +49,6 @@ PlanIter_t fn_current_date::codegen(
 {
   return new CurrentDateIterator ( sctx, loc, argv);
 }
-
-
-
 
 PlanIter_t fn_current_time::codegen(
   CompilerCB*,
@@ -66,9 +60,6 @@ PlanIter_t fn_current_time::codegen(
   return new CurrentTimeIterator ( sctx, loc, argv);
 }
 
-
-
-
 PlanIter_t fn_implicit_timezone::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -78,9 +69,6 @@ PlanIter_t fn_implicit_timezone::codegen(
 {
   return new ImplicitTimezoneIterator ( sctx, loc, argv);
 }
-
-
-
 
 PlanIter_t fn_default_collation::codegen(
   CompilerCB*,
@@ -92,29 +80,31 @@ PlanIter_t fn_default_collation::codegen(
   return new DefaultCollationIterator ( sctx, loc, argv);
 }
 
-
-
 void populate_context_context(static_context* sctx) {
-
   DECL(sctx, fn_current_dateTime,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","current-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_ONE));
+
 
   DECL(sctx, fn_current_date,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","current-date"),
       GENV_TYPESYSTEM.DATE_TYPE_ONE));
 
+
   DECL(sctx, fn_current_time,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","current-time"),
       GENV_TYPESYSTEM.TIME_TYPE_ONE));
+
 
   DECL(sctx, fn_implicit_timezone,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","implicit-timezone"),
       GENV_TYPESYSTEM.DT_DURATION_TYPE_ONE));
 
+
   DECL(sctx, fn_default_collation,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","default-collation"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
+
 }
 
 

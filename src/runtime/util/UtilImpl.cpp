@@ -46,8 +46,6 @@ using namespace std;
 
 namespace zorba {
 
-SERIALIZABLE_CLASS_VERSIONS(ZorbaSchemaTypeIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ZorbaSchemaTypeIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(ZorbaBase64DecodeIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(ZorbaBase64DecodeIterator)
@@ -74,9 +72,6 @@ END_SERIALIZABLE_CLASS_VERSIONS(ZorbaTimestampIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(XQDocIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(XQDocIterator)
-
-
-NARY_ACCEPT (ZorbaSchemaTypeIterator);
 
 NARY_ACCEPT (ZorbaBase64DecodeIterator);
 
@@ -157,22 +152,6 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END(state);
 }
 
-bool
-ZorbaSchemaTypeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Item_t       item;
-
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  if (consumeNext(item, theChildren[0].getp(), planState))
-  {
-    result = item->getType();
-    STACK_PUSH(true, state );
-  }
-
-  STACK_END (state);
-}
 
 bool
 ZorbaBase64DecodeIterator::nextImpl(store::Item_t& result, PlanState& planState) const

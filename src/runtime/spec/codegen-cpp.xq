@@ -59,17 +59,30 @@ declare function local:process($doc,
           if( fn:not ( $iter/@generateCodegen ) or 
               $iter/@generateCodegen eq "true" ) 
           then (
+            if ( exists($iter/@preprocessorGuard) )
+            then
+              $iter/@preprocessorGuard
+            else "",
             local:create-function($iter),
             $gen:newline,
-            local:propagateInputToOutput($iter)
+            local:propagateInputToOutput($iter),
+            if ( exists($iter/@preprocessorGuard) )
+            then
+              concat($gen:newline, "#endif")
+            else ""
           ) else ()
         ),
-        $gen:newline
+        ""
       )
     )
   else (: 'context' :)
-    string-join(('void populate_context_',$name,'(static_context* sctx) {',$gen:newline,
-    string-join(for $iter in $doc//zorba:iterator return local:create-context($iter,$mapping),''),
+    string-join(('void populate_context_',$name,'(static_context* sctx) {',
+    string-join(
+      for $iter in $doc//zorba:iterator
+      return (
+        local:create-context($iter,$mapping)
+      ),
+      ''),
     '}'),'')
 };
 
@@ -186,10 +199,24 @@ declare function local:create-context($iter,$mapping) as xs:string?
   if($iter/zorba:function/@generateDECL = 'false') then ()
   else
     string-join(for $sig in $iter//zorba:signature return 
-      string-join(($gen:newline,$gen:indent,'DECL(sctx, ',local:function-name($iter),',',$gen:newline,
-      gen:indent(3),'(createQName("',local:get-zorba-ns($sig/@prefix,$mapping),'","',$sig/@prefix,'","',$sig/@localname,'")',
-      for $param in $sig/zorba:param return local:create-zorba-type($param,$mapping),
-      local:create-zorba-type($sig/zorba:output,$mapping),'));',$gen:newline),''),'')
+      string-join(($gen:newline,
+        if ( exists($iter/@preprocessorGuard) )
+        then
+          concat($gen:newline, $iter/@preprocessorGuard)
+        else "",
+        $gen:indent,
+        'DECL(sctx, ',local:function-name($iter),',',$gen:newline,
+        gen:indent(3),'(createQName("',local:get-zorba-ns($sig/@prefix,$mapping),'","',$sig/@prefix,'","',$sig/@localname,'")',
+        for $param in $sig/zorba:param return local:create-zorba-type($param,$mapping),
+        local:create-zorba-type($sig/zorba:output,$mapping),'));',$gen:newline,
+        if ( exists($iter/@preprocessorGuard) )
+        then
+          concat($gen:newline, "#endif")
+        else "",
+        $gen:newline
+        ),'')
+      
+      ,'')
 };
 
 declare function local:get-zorba-ns($prefix as xs:string,$mapping) as xs:string
