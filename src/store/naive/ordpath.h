@@ -73,8 +73,11 @@ protected:
   static const uint16_t      theNegV2EVMap[DEFAULT_FAN_OUT];
 
 protected:
-  unsigned char  theBuffer[MAX_EMBEDDED_BYTE_LEN];
-
+  union
+  {
+    unsigned char    local[MAX_EMBEDDED_BYTE_LEN];
+    unsigned char  * remote;
+  } theBuffer;
 
 public:
   static void insertBefore(
@@ -134,7 +137,7 @@ protected:
 public:
   OrdPath() 
   {
-    memset(theBuffer, 0, MAX_EMBEDDED_BYTE_LEN);
+    memset(theBuffer.local, 0, MAX_EMBEDDED_BYTE_LEN);
     markLocal();
   }
 
@@ -169,18 +172,18 @@ public:
 
 protected:
 
-  bool isLocal() const   {  return theBuffer[MAX_EMBEDDED_BYTE] & 0x1; }
-  void markLocal()       { theBuffer[MAX_EMBEDDED_BYTE] |= 0x1; }
-  void markRemote()      { theBuffer[MAX_EMBEDDED_BYTE] &= 0xFE; }
+  bool isLocal() const   {  return theBuffer.local[MAX_EMBEDDED_BYTE] & 0x1; }
+  void markLocal()       { theBuffer.local[MAX_EMBEDDED_BYTE] |= 0x1; }
+  void markRemote()      { theBuffer.local[MAX_EMBEDDED_BYTE] &= 0xFE; }
 
   unsigned char* getRemoteBuffer() const 
   {
-    return *(unsigned char**)(theBuffer); 
+    return theBuffer.remote; 
   }
 
   void setRemoteBuffer(unsigned char* b)
   {
-    *(unsigned char**)(theBuffer) = b; 
+    theBuffer.remote = b; 
   }
 
 
@@ -189,7 +192,7 @@ protected:
     if (!isLocal())
       delete [] getRemoteBuffer();
 
-    memset(theBuffer, 0, MAX_EMBEDDED_BYTE_LEN);
+    memset(theBuffer.local, 0, MAX_EMBEDDED_BYTE_LEN);
     markLocal();
   }
 
@@ -199,7 +202,7 @@ protected:
     if (!isLocal())
       delete [] getRemoteBuffer();
 
-    memset(theBuffer, 0, MAX_EMBEDDED_BYTE_LEN);
+    memset(theBuffer.local, 0, MAX_EMBEDDED_BYTE_LEN);
 
     setRemoteBuffer(new unsigned char[byteLen + 1]);
     memset(getRemoteBuffer(), 0, byteLen+1);
@@ -230,7 +233,7 @@ protected:
 
   unsigned char* getLocalData() const
   {
-    return const_cast<unsigned char*>(theBuffer);
+    return const_cast<unsigned char*>(theBuffer.local);
   }
 
 
@@ -249,12 +252,12 @@ protected:
 
   ulong getLocalByteLength() const
   {
-    if (theBuffer[MAX_EMBEDDED_BYTE] != 1)
+    if (theBuffer.local[MAX_EMBEDDED_BYTE] != 1)
       return MAX_EMBEDDED_BYTE_LEN;
 
     for (long i = MAX_EMBEDDED_BYTE-1; i >= 0; i--)
     {
-      if (theBuffer[i] != 0)
+      if (theBuffer.local[i] != 0)
         return i+1;
     }
 
