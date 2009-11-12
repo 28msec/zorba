@@ -37,7 +37,7 @@
   PLAN_ITER_VISITOR (TryCatchIterator);
 
   PLAN_ITER_VISITOR (NodeDistinctIterator);
-  
+
   PLAN_ITER_VISITOR (NodeSortIterator);
 
   //PLAN_ITER_VISITOR (PathIterator);
@@ -200,8 +200,6 @@
   PLAN_ITER_VISITOR (FnIdIterator);
 
   PLAN_ITER_VISITOR (FnIdRefIterator);
-
-  PLAN_ITER_VISITOR (FnDistinctValuesIterator);
 
   PLAN_ITER_VISITOR (FnMinMaxIterator);
 

@@ -37,6 +37,7 @@ namespace zorba {
 namespace store{
   class NodeHashSet;
 }
+class ItemValueCollHandleHashSet;
 /**
  * op:concatenate
  * 
@@ -194,6 +195,50 @@ public:
     (sctx, loc, aChildren) {}
 
   virtual ~FnExistsIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * Returns the sequence that results from removing from arg all but one of a set of values that are eq to one other. The order in which the sequence of values is returned is implementation dependent. Here, we return the first item that is not a duplicate and throw away the remaining ones.
+ * 
+ * Author: Zorba Team * 
+ */
+class FnDistinctValuesIteratorState : public PlanIteratorState
+{
+public:
+  bool theHasNaN; //indicates whether NaN was found in the sequence
+  std::auto_ptr<ItemValueCollHandleHashSet> theAlreadySeenMap; //hashmap for doing the duplicate elimination
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class FnDistinctValuesIterator : public NaryBaseIterator <FnDistinctValuesIterator, FnDistinctValuesIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FnDistinctValuesIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnDistinctValuesIterator,
+    NaryBaseIterator <FnDistinctValuesIterator, FnDistinctValuesIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator <FnDistinctValuesIterator, FnDistinctValuesIteratorState>*)this);
+  }
+
+  FnDistinctValuesIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <FnDistinctValuesIterator, FnDistinctValuesIteratorState>
+    (sctx, loc, aChildren) {}
+
+  virtual ~FnDistinctValuesIterator();
 
   void accept(PlanIterVisitor& v) const;
 

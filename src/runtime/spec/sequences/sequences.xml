@@ -13,6 +13,7 @@
     <zorba:include form="Quoted">runtime/base/narybase.h</zorba:include>
     <zorba:include form="Quoted">runtime/core/path_iterators.h</zorba:include>
     <zorba:fwd-decl ns="store">NodeHashSet</zorba:fwd-decl>
+    <zorba:fwd-decl ns="zorba">ItemValueCollHandleHashSet</zorba:fwd-decl>
 </zorba:header>
   
 <zorba:codegen>
@@ -155,6 +156,47 @@
     <zorba:signature localname="exists" prefix="fn">
       <zorba:param>item()*</zorba:param>
       <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+  15.1.6 fn:distinct-values
+********************************************************************************/
+-->
+<zorba:iterator name="FnDistinctValuesIterator">
+    
+  <zorba:description author="Zorba Team">
+  Returns the sequence that results from removing from arg all but one of a 
+  set of values that are eq to one other. The order in which the sequence of
+  values is returned is implementation dependent. Here, we return the first
+  item that is not a duplicate and throw away the remaining ones.
+  </zorba:description>
+
+  <zorba:state generateInit="true" generateReset="false">
+    <zorba:member type="bool" name="theHasNaN"
+                  defaultValue="false"
+                  brief="indicates whether NaN was found in the sequence"/>
+
+    <zorba:member name="theAlreadySeenMap"
+                  type="std::auto_ptr&lt;ItemValueCollHandleHashSet>"
+                  brief="hashmap for doing the duplicate elimination"/>
+
+  </zorba:state>
+  
+  <zorba:function generateProducesDuplicateDecl="true"
+                  generateProducesNodeIdSortedDecl="true"
+                  base="single_seq_function">
+    <zorba:signature localname="distinct-values" prefix="fn">
+      <zorba:param>xs:anyAtomicType*</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:anyAtomicType*</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="distinct-values" prefix="fn">
+      <zorba:param>xs:anyAtomicType*</zorba:param>
+      <zorba:output>xs:anyAtomicType*</zorba:output>
     </zorba:signature>
   </zorba:function>
 </zorba:iterator>

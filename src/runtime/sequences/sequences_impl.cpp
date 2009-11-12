@@ -228,6 +228,61 @@ FnExistsIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   STACK_END (state);
 }
 
+/*******************************************************************************
+  15.1.6 fn:distinct-values
+********************************************************************************/
+void
+FnDistinctValuesIteratorState::reset(PlanState& planState) 
+{
+  PlanIteratorState::reset(planState);
+  theHasNaN = false;
+  if (theAlreadySeenMap.get () != NULL)
+    theAlreadySeenMap->clear();
+}
+
+
+bool 
+FnDistinctValuesIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+{
+  store::Item_t lItem;
+  xqtref_t lItemType;
+  XQPCollator* lCollator;
+  ValueCompareParam* theValueCompare;
+  
+  FnDistinctValuesIteratorState* state;
+  DEFAULT_STACK_INIT(FnDistinctValuesIteratorState, state, planState);
+
+  if (theChildren.size() == 2) 
+  {
+    lCollator = getCollator(planState.theRuntimeCB, theSctx, loc,
+                            planState, theChildren[1].getp());
+
+    theValueCompare = new ValueCompareParam(planState.theRuntimeCB, theSctx);
+    theValueCompare->theCollator = lCollator;
+  }
+  else
+  {
+    theValueCompare = new ValueCompareParam(planState.theRuntimeCB, theSctx);
+  }
+  // theValueCompare managed by state->theAlreadySeenMap
+  state->theAlreadySeenMap.reset (new ItemValueCollHandleHashSet (theValueCompare));
+
+  while (consumeNext(result, theChildren[0].getp(), planState)) 
+  {
+    if (result->isNaN ()) {
+      if (! state->theHasNaN) {
+        state->theHasNaN = true;
+        STACK_PUSH(true, state);
+      }
+    } else if ( ! state->theAlreadySeenMap->find(result) ) {
+      // check if the item is already in the map
+      state->theAlreadySeenMap->insert(result);
+      STACK_PUSH(true, state);
+    }
+  }
+    
+  STACK_END (state);
+}
 
 /*******************************************************************************
   15.1.7 fn:insert-before

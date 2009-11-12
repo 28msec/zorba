@@ -1111,7 +1111,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION (FnIsNaNIterator);
   PRINTER_VISITOR_DEFINITION (FnIdIterator)
   PRINTER_VISITOR_DEFINITION (FnIdRefIterator)
-  PRINTER_VISITOR_DEFINITION (FnDistinctValuesIterator)
   PRINTER_VISITOR_DEFINITION (ResolveQNameIterator)
   PRINTER_VISITOR_DEFINITION (QNameIterator)
   PRINTER_VISITOR_DEFINITION (QNameEqualIterator)

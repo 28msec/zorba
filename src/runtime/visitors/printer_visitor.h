@@ -256,6 +256,9 @@ namespace zorba {
     void beginVisit( const FnExistsIterator& );
     void endVisit  ( const FnExistsIterator& );
 
+    void beginVisit( const FnDistinctValuesIterator& );
+    void endVisit  ( const FnDistinctValuesIterator& );
+
     void beginVisit( const FnInsertBeforeIterator& );
     void endVisit  ( const FnInsertBeforeIterator& );
 

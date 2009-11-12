@@ -122,28 +122,6 @@ public:
 
 
 /*******************************************************************************
-  15.1.6 fn:distinct-values
-********************************************************************************/
-class fn_distinct_values : public single_seq_function
-{
-public:
-  fn_distinct_values(const signature& sig)
-    :
-    single_seq_function(sig)
-  {
-    theKind = (sig.arg_count() == 1 ?
-               FunctionConsts::FN_DISTINCT_VALUES_1 :
-               FunctionConsts::FN_DISTINCT_VALUES_2);
-  }
-
-  ZORBA_PRODUCES_SORTED;
-  ZORBA_PRODUCES_DISTINCT;
-
-  CODEGEN_DECL();
-};
-
-
-/*******************************************************************************
   15.4.3 fn:max
 ********************************************************************************/
 class fn_max : public function

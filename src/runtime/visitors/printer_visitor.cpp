@@ -1060,6 +1060,20 @@ void PrinterVisitor::endVisit ( const FnExistsIterator& ) {
 // </FnExistsIterator>
 
 
+// <FnDistinctValuesIterator>
+void PrinterVisitor::beginVisit ( const FnDistinctValuesIterator& a) {
+  thePrinter.startBeginVisit("FnDistinctValuesIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FnDistinctValuesIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FnDistinctValuesIterator>
+
+
 // <FnInsertBeforeIterator>
 void PrinterVisitor::beginVisit ( const FnInsertBeforeIterator& a) {
   thePrinter.startBeginVisit("FnInsertBeforeIterator", ++theId);

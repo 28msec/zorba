@@ -72,6 +72,16 @@ PlanIter_t fn_exists::codegen(
   return new FnExistsIterator ( sctx, loc, argv);
 }
 
+PlanIter_t fn_distinct_values::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new FnDistinctValuesIterator ( sctx, loc, argv);
+}
+
 PlanIter_t fn_insert_before::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -269,6 +279,19 @@ void populate_context_sequences(static_context* sctx) {
       (createQName("http://www.w3.org/2005/xpath-functions","fn","exists"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+
+
+  DECL(sctx, fn_distinct_values,
+      (createQName("http://www.w3.org/2005/xpath-functions","fn","distinct-values"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR));
+
+
+  DECL(sctx, fn_distinct_values,
+      (createQName("http://www.w3.org/2005/xpath-functions","fn","distinct-values"),
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR));
 
 
   DECL(sctx, fn_insert_before,

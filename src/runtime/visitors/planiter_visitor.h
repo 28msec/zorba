@@ -167,6 +167,8 @@ namespace zorba{
 
     class FnExistsIterator;
 
+    class FnDistinctValuesIterator;
+
     class FnInsertBeforeIterator;
 
     class FnRemoveIterator;
@@ -474,6 +476,9 @@ public:
 
     virtual void beginVisit ( const FnExistsIterator& ) = 0;
     virtual void endVisit   ( const FnExistsIterator& ) = 0;
+
+    virtual void beginVisit ( const FnDistinctValuesIterator& ) = 0;
+    virtual void endVisit   ( const FnDistinctValuesIterator& ) = 0;
 
     virtual void beginVisit ( const FnInsertBeforeIterator& ) = 0;
     virtual void endVisit   ( const FnInsertBeforeIterator& ) = 0;

@@ -301,16 +301,17 @@ fn_zero_or_one::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t
-fn_distinct_values::codegen(CompilerCB* /* cb */,
-                   static_context* sctx,
-                   const QueryLoc& loc,
-                   std::vector<PlanIter_t>& argv,
-                   AnnotationHolder &/*ann*/) const
+FunctionConsts::AnnotationValue
+fn_distinct_values::producesDuplicates() const
 {
-  return new FnDistinctValuesIterator(sctx, loc, argv);
+  return FunctionConsts::YES;
 }
 
+FunctionConsts::AnnotationValue
+fn_distinct_values::producesNodeIdSorted() const
+{
+  return FunctionConsts::YES;
+}
 
 /*******************************************************************************
 

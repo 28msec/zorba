@@ -171,7 +171,6 @@
   DECLARE_VISITOR (FnIsNaNIterator);
   DECLARE_VISITOR (FnIdIterator)
   DECLARE_VISITOR (FnIdRefIterator)
-  DECLARE_VISITOR (FnDistinctValuesIterator)
   DECLARE_VISITOR (ResolveQNameIterator)
   DECLARE_VISITOR (QNameIterator)
   DECLARE_VISITOR (QNameEqualIterator)

@@ -102,6 +102,25 @@ public:
 };
 
 
+//fn:distinct-values
+class fn_distinct_values : public function
+{
+public:
+  fn_distinct_values(const signature& sig) : function(sig)
+  {
+    theKind = (sig.arg_count() == 2 ?
+                FunctionConsts::FN_DISTINCT_VALUES_2 :
+                FunctionConsts::FN_DISTINCT_VALUES_1);
+  }
+
+  CODEGEN_DECL();
+
+  zorba::FunctionConsts::AnnotationValue producesDuplicates() const;
+
+  zorba::FunctionConsts::AnnotationValue producesNodeIdSorted() const;
+};
+
+
 //fn:insert-before
 class fn_insert_before : public function
 {

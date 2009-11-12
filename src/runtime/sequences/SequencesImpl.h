@@ -38,7 +38,6 @@ namespace store
   class NodeHashSet;
 }
 
-class ItemValueCollHandleHashSet;
 class ValueCollCompareParam;
 
 
@@ -48,31 +47,6 @@ class ValueCollCompareParam;
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-
-/*******************************************************************************
-  15.1.6 fn:distinct-values
-
-  Returns the sequence that results from removing from arg all but one of a 
-  set of values that are eq to one other. The order in which the sequence of
-  values is returned is implementation dependent. Here, we return the first
-  item that is not a duplicate and throw away the remaining ones.
-********************************************************************************/
-class FnDistinctValuesIteratorState : public PlanIteratorState 
-{
-public:  
-  bool theHasNaN;
-  std::auto_ptr<ItemValueCollHandleHashSet> theAlreadySeenMap;
-
-  FnDistinctValuesIteratorState();
-
-  ~FnDistinctValuesIteratorState();
-
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-  
-
-NARY_ITER_STATE(FnDistinctValuesIterator, FnDistinctValuesIteratorState);
 
 
 /*******************************************************************************

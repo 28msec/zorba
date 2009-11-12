@@ -165,6 +165,39 @@ FnExistsIterator::~FnExistsIterator() {}
 // </FnExistsIterator>
 
 
+// <FnDistinctValuesIterator>
+const char* FnDistinctValuesIterator::class_name_str = "FnDistinctValuesIterator";
+FnDistinctValuesIterator::class_factory<FnDistinctValuesIterator>
+FnDistinctValuesIterator::g_class_factory;
+
+const serialization::ClassVersion 
+FnDistinctValuesIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int FnDistinctValuesIterator::class_versions_count =
+sizeof(FnDistinctValuesIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void FnDistinctValuesIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FnDistinctValuesIterator::~FnDistinctValuesIterator() {}
+
+
+void FnDistinctValuesIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+  theHasNaN = false;
+}
+// </FnDistinctValuesIterator>
+
+
 // <FnInsertBeforeIterator>
 const char* FnInsertBeforeIterator::class_name_str = "FnInsertBeforeIterator";
 FnInsertBeforeIterator::class_factory<FnInsertBeforeIterator>

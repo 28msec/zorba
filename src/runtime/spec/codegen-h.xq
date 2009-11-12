@@ -156,6 +156,17 @@ declare function local:create-function($iter) as xs:string?
           string-join(($gen:newline,$gen:indent,
           'bool propagatesInputToOutput(uint32_t aProducer) const;',$gen:newline),'')
         else (),
+
+        if ($iter/zorba:function/@generateProducesDuplicateDecl = 'true') then
+          string-join(($gen:newline,$gen:indent,
+          'zorba::FunctionConsts::AnnotationValue producesDuplicates() const;',$gen:newline),'') 
+        else (),
+
+        if ($iter/zorba:function/@generateProducesNodeIdSortedDecl = 'true') then
+          string-join(($gen:newline,$gen:indent,
+          'zorba::FunctionConsts::AnnotationValue producesNodeIdSorted() const;',$gen:newline),'') 
+        else (),
+             
       '};',
       if ( exists($iter/@preprocessorGuard) )
       then
