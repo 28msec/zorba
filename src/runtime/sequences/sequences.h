@@ -213,6 +213,8 @@ public:
   bool theHasNaN; //indicates whether NaN was found in the sequence
   std::auto_ptr<ItemValueCollHandleHashSet> theAlreadySeenMap; //hashmap for doing the duplicate elimination
 
+  ~FnDistinctValuesIteratorState();
+
   void init(PlanState&);
   void reset(PlanState&);
 };

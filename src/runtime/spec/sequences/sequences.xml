@@ -174,7 +174,8 @@
   item that is not a duplicate and throw away the remaining ones.
   </zorba:description>
 
-  <zorba:state generateInit="true" generateReset="false">
+  <zorba:state generateInit="true" generateReset="false"
+               generateDestructor="false">
     <zorba:member type="bool" name="theHasNaN"
                   defaultValue="false"
                   brief="indicates whether NaN was found in the sequence"/>

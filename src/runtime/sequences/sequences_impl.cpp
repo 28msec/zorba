@@ -231,6 +231,9 @@ FnExistsIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
 /*******************************************************************************
   15.1.6 fn:distinct-values
 ********************************************************************************/
+FnDistinctValuesIteratorState::~FnDistinctValuesIteratorState()
+{}
+
 void
 FnDistinctValuesIteratorState::reset(PlanState& planState) 
 {
