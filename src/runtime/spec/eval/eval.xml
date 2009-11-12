@@ -26,7 +26,8 @@
   <zorba:member type="checked_vector&lt;xqtref_t>"      name="vartypes"
                 accessorName="getVarTypes"/>
 
-  <zorba:state generateInit="true" generateReset="true">
+  <zorba:state generateInit="true" generateReset="true"
+               generateDestructor="false"> <!-- explicit instantiation to avoid memory leak -->
     <zorba:member type="PlanWrapperHolder" name="eval_plan"
                   brief="the plan to execute"/>
     <zorba:member type="std::auto_ptr&lt;CompilerCB>" name="ccb"

@@ -47,6 +47,8 @@ public:
   std::auto_ptr<CompilerCB> ccb; //the CompilerCB used to compile the eval plan
   std::auto_ptr<dynamic_context> dctx; //the dynamic context used to during execution of the eval plan
 
+  ~EvalIteratorState();
+
   void init(PlanState&);
   void reset(PlanState&);
 };

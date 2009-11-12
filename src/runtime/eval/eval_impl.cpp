@@ -60,7 +60,10 @@ PlanIter_t compile(
     // TODO: give eval'ed code the types of the variables (for optimization)
 
     return compiler.compile (ast);
-  }
+}
+
+EvalIteratorState::~EvalIteratorState()
+{}
 
 bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
