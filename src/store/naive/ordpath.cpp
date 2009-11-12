@@ -200,12 +200,12 @@ OrdPath::OrdPath(const unsigned char* str, ulong strLen)
                           << " bytes", "");
   }
 
-  memset(theBuffer, 0, MAX_EMBEDDED_BYTE_LEN);
+  memset(theBuffer.local, 0, MAX_EMBEDDED_BYTE_LEN);
 
   if ((byteLen < MAX_EMBEDDED_BYTE_LEN) ||
       (byteLen == MAX_EMBEDDED_BYTE_LEN && ((str[MAX_EMBEDDED_BYTE] & 0x1) == 0)))
   {
-    buf = theBuffer;
+    buf = theBuffer.local;
     isLocal = true;
   } 
   else
@@ -274,7 +274,7 @@ void OrdPath::setAsRoot()
 {
   reset();
 
-  theBuffer[0] = 0x40;
+  theBuffer.local[0] = 0x40;
 }
 
 
@@ -325,7 +325,7 @@ OrdPath& OrdPath::operator=(const OrdPathStack& ops)
     reset();
 
     for (ulong i = 0; i < len; i++)
-      theBuffer[i] = ops.theBuffer[i];
+      theBuffer.local[i] = ops.theBuffer[i];
 
     markLocal();
   }
@@ -1257,7 +1257,7 @@ void OrdPath::decompress(
   if (isLocal)
   {
     len = getLocalByteLength();
-    memcpy(tmpbuf, theBuffer, MAX_EMBEDDED_BYTE_LEN);
+    memcpy(tmpbuf, theBuffer.local, MAX_EMBEDDED_BYTE_LEN);
     data = tmpbuf;
     tmpbuf[MAX_EMBEDDED_BYTE] &= 0xFE;
   }
