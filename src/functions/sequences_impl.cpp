@@ -377,16 +377,6 @@ populate_context_sequences_impl(static_context* sctx)
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
-  DECL(sctx, fn_distinct_values,
-       (createQName(XQUERY_FN_NS,"fn","distinct-values"),
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR));
-
-  DECL(sctx, fn_distinct_values,
-       (createQName(XQUERY_FN_NS,"fn","distinct-values"),
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
-        GENV_TYPESYSTEM.STRING_TYPE_ONE,
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR));
   DECL(sctx, fn_max,
        (createQName(XQUERY_FN_NS,"fn","max"),
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR, 
