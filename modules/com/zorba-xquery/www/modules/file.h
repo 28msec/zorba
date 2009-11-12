@@ -178,6 +178,22 @@ namespace zorba {
 
 //*****************************************************************************
 
+  class PathToUriFunction : public FileFunction
+  {
+    public:
+      PathToUriFunction(const FileModule* aModule);
+
+      virtual String
+      getLocalName() const { return "path-to-uri"; }
+  
+      virtual ItemSequence_t 
+      evaluate(const StatelessExternalFunction::Arguments_t& args,
+               const StaticContext* aSctxCtx,
+               const DynamicContext* aDynCtx) const;
+  };
+
+//*****************************************************************************
+
   class ReadFunction : public FileFunction
   {
     public:

@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+#include "file.h"
+
+#include <fstream>
+#include <sstream>
+
 #include <zorba/file.h>
 #include <zorba/empty_sequence.h>
 #include <zorba/singleton_item_sequence.h>
@@ -21,11 +26,8 @@
 #include <zorba/store_consts.h>
 #include <zorba/base64.h>
 
-#include "file.h"
 #include "file_module.h"
 
-#include <fstream>
-#include <sstream>
 
 namespace zorba { namespace filemodule {
 
@@ -38,22 +40,22 @@ CopyFunction::CopyFunction(const FileModule* aModule)
   
 ItemSequence_t
 CopyFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& args,
+  const StatelessExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
   bool lResult = false;
 
-  String lSrcFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
+  String lSrcFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
   File_t lSrcFile = File::createFile(lSrcFileStr.c_str());
-  String lDstFileStr = FileFunction::getFilePathString(aSctxCtx, args, 1);
+  String lDstFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 1);
   File_t lDstFile = File::createFile(lDstFileStr.c_str());
 
   // do we have overwrite existing files?
   bool lOverwrite = false;
-  if (args.size() == 3) {
+  if (aArgs.size() == 3) {
     Item lOverwriteItem;
-    args[2]->next(lOverwriteItem);
+    aArgs[2]->next(lOverwriteItem);
     lOverwrite = lOverwriteItem.getBooleanValue();
   }
 
@@ -98,12 +100,12 @@ ExistsFunction::ExistsFunction(const FileModule* aModule)
   
 ItemSequence_t
 ExistsFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& args,
+  const StatelessExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
   bool   lFileExists = false;
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
 
   File_t lFile = File::createFile(lFileStr.c_str());
   if (lFile->exists()) {
@@ -123,11 +125,11 @@ FilesFunction::FilesFunction(const FileModule* aModule)
   
 ItemSequence_t
 FilesFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& args,
+  const StatelessExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
   if (!lFile->isDirectory()) {
@@ -171,12 +173,12 @@ IsDirectoryFunction::IsDirectoryFunction(const FileModule* aModule)
   
 ItemSequence_t
 IsDirectoryFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& args,
+  const StatelessExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
   bool   lResult = false;
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
 
   File_t lFile = File::createFile(lFileStr.c_str());
   if (lFile->isDirectory()) {
@@ -195,12 +197,12 @@ IsFileFunction::IsFileFunction(const FileModule* aModule)
   
 ItemSequence_t
 IsFileFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& args,
+  const StatelessExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
   bool   lResult = false;
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
 
   File_t lFile = File::createFile(lFileStr.c_str());
   if (lFile->isFile()) {
@@ -219,11 +221,11 @@ LastModifiedFunction::LastModifiedFunction(const FileModule* aModule)
   
 ItemSequence_t
 LastModifiedFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& args,
+  const StatelessExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
   if(!lFile->exists()) {
@@ -264,12 +266,20 @@ MkdirFunction::MkdirFunction(const FileModule* aModule)
   
 ItemSequence_t
 MkdirFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& args,
+  const StatelessExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
+
+  bool lCreate = true;
+  if (aArgs.size() == 2) {
+    Item lCreateItem;
+    if (aArgs[1]->next(lCreateItem)) {
+      lCreate = lCreateItem.getBooleanValue();
+    }
+  }
 
   bool lStatus = lFile->mkdir();
 
@@ -286,17 +296,44 @@ MkdirsFunction::MkdirsFunction(const FileModule* aModule)
 
 ItemSequence_t
 MkdirsFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& args,
+  const StatelessExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
-  bool lStatus = lFile->mkdirs();
+  bool lCreate = true;
+  if (aArgs.size() == 2) {
+    Item lCreateItem;
+    if (aArgs[1]->next(lCreateItem)) {
+      lCreate = lCreateItem.getBooleanValue();
+    }
+  }
+
+  bool lStatus = lFile->mkdirs(lCreate);
 
   return ItemSequence_t(new SingletonItemSequence(
     theModule->getItemFactory()->createBoolean(lStatus)));
+}
+
+//*****************************************************************************
+
+PathToUriFunction::PathToUriFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+  
+ItemSequence_t
+PathToUriFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
+{
+  String lPathStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
+  String lResult = FileFunction::pathToUriString(lPathStr);
+
+  return ItemSequence_t(new SingletonItemSequence(theModule->getItemFactory()->createAnyURI(lResult)));
 }
 
 //*****************************************************************************
@@ -308,11 +345,11 @@ ReadFunction::ReadFunction(const FileModule* aModule)
   
 ItemSequence_t
 ReadFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& args,
+  const StatelessExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
   std::ifstream lInStream;
@@ -345,11 +382,11 @@ ReadTextFunction::ReadTextFunction(const FileModule* aModule)
   
 ItemSequence_t
 ReadTextFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& args,
+  const StatelessExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
   std::ifstream lInStream;
@@ -377,11 +414,11 @@ ReadXmlFunction::ReadXmlFunction(const FileModule* aModule)
   
 ItemSequence_t
 ReadXmlFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& args,
+  const StatelessExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
   std::ifstream lInStream;
@@ -402,11 +439,11 @@ RemoveFunction::RemoveFunction(const FileModule* aModule)
   
 ItemSequence_t
 RemoveFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& args,
+  const StatelessExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
   bool lStatus = lFile->remove();
@@ -424,24 +461,24 @@ WriteFunction::WriteFunction(const FileModule* aModule)
   
 ItemSequence_t
 WriteFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& args,
+  const StatelessExternalFunction::Arguments_t& aArgs,
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-  String lFileStr = FileFunction::getFilePathString(aSctxCtx, args, 0);
+  String lFileStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
   File_t lFile = File::createFile(lFileStr.c_str());
 
   // do we have an "append" or a "write new" operation?
   bool lAppend = false;
-  if (args.size() == 4) {
+  if (aArgs.size() == 4) {
     Item lAppendItem;
-    args[3]->next(lAppendItem);
+    aArgs[3]->next(lAppendItem);
     lAppend = lAppendItem.getBooleanValue();
   }
   
   // initialize serializer
   Item lItem;
-  if (!args[2]->next(lItem)) {
+  if (!aArgs[2]->next(lItem)) {
     std::stringstream lErrorMessage;
     lErrorMessage << "The serialization options parameter cannot be empty-sequence";
     throwError(lErrorMessage.str(), XPTY0004);
@@ -454,7 +491,7 @@ WriteFunction::evaluate(
   lFile->openOutputStream(lOutStream, lAppend);
 
   // serialize the content
-  s->serialize((Serializable*)args[1], lOutStream);
+  s->serialize((Serializable*)aArgs[1], lOutStream);
 
   lOutStream.close();
 

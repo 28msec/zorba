@@ -86,9 +86,8 @@ declare sequential function file:is-file($file as xs:string) as xs:boolean exter
 declare sequential function file:last-modified($fileOrDir as xs:string) as xs:dateTime external;
 
 (:~
- : Creates a directory. The operation fails if the path/URI already denotes an
- : existing file sytem item or if the parent directory does not exist. This
- : function is not recursive.
+ : Creates a directory. The operation is equivalent to calling:
+ : file:mkdir($dir, true()).
  :
  : @param dir The path/URI denoting the directory to be created.
  : @return true if the operation succeeds.
@@ -98,14 +97,52 @@ declare sequential function file:last-modified($fileOrDir as xs:string) as xs:da
 declare sequential function file:mkdir($dir as xs:string) as xs:boolean external;
 
 (:~
+ : Creates a directory. This function is not recursive. The $create flag
+ : controls the behavior of this function in case the provided path/URI points
+ : to an already existing directory.
+ :
+ : @param dir The path/URI denoting the directory to be created.
+ : @param create Flag indicating whether the directory must be created or not.
+ : @return When $create is true, this operation returns true only when the
+ :         directory is created. If $create is false, this operation succeeds
+ :         even if $dir points to an existing directory.
+ : @error An error is thrown if a recursive directory creation is attempted,
+ :        or if IO or Security problems occur.
+ :)
+declare sequential function file:mkdir($dir as xs:string, $create as xs:boolean) as xs:boolean external;
+
+(:~
  : Creates directories recursively. All the missing parent directories from the
  : path/URI are created.
  :
  : @param dir The path/URI denoting the directories to be created.
- : @return true if the operation succeeds.
+ : @return true if the directory was successfully created.
  : @error An error is thrown if IO or Security problems occur.
  :)
 declare sequential function file:mkdirs($dir as xs:string) as xs:boolean external;
+
+(:~
+ : Creates directories recursively. The $create flag controls the behavior of
+ : this function in case the provided path/URI points to an already existing
+ : directory.
+ :
+ : @param dir The path/URI denoting the directories to be created.
+ : @param create Flag indicating whether the directory must be created or not.
+ : @return When $create is true, this operation returns true only when the
+ :         directory is created. If $create is false, this operation succeeds
+ :         even if $dir points to an existing directory.
+ : @error An error is thrown if IO or Security problems occur.
+ :)
+declare sequential function file:mkdirs($dir as xs:string, $create as xs:boolean) as xs:boolean external;
+
+(:~
+ : Transforms a file system path into a URI with the file:// scheme. No checks
+ : are performed redarding the existence of the provided file system path.
+ :
+ : @param path The path to transform.
+ : @return the file URI corresponding to the provided path.
+ :)
+declare sequential function file:path-to-uri($file as xs:string) as xs:anyURI external;
 
 (:~
  : Reads the content of a file and returns a Base64 representation of the

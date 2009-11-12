@@ -61,6 +61,9 @@ namespace zorba {
 
     public: // public methods
 
+      virtual const std::string getFilePath() const = 0;
+      virtual const std::string getFileUri() const = 0;
+
       virtual bool isDirectory() const = 0;
       virtual bool isFile() const = 0;
       virtual bool isLink() const = 0;
@@ -74,8 +77,8 @@ namespace zorba {
 
       virtual FileSize_t getSize() const = 0;
 
-      virtual bool mkdir() = 0;
-      virtual bool mkdirs() = 0;
+      virtual bool mkdir(bool create = true) = 0;
+      virtual bool mkdirs(bool create = true) = 0;
 
       virtual DirectoryIterator_t files() const = 0;
 

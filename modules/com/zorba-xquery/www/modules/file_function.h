@@ -31,7 +31,7 @@ namespace zorba { namespace filemodule {
 #ifdef WIN32
       static bool
       isValidDriveSegment(
-          String& aString);
+          String& value);
 #endif
 
     protected:
@@ -39,22 +39,25 @@ namespace zorba { namespace filemodule {
 
       static void
       throwError(
-          const std::string aErrorMessage,
-          const XQUERY_ERROR& aErrorType);
+          const std::string errorMessage,
+          const XQUERY_ERROR& errorType);
 
       static String
       getOneStringArg(
-          const StatelessExternalFunction::Arguments_t& aArgs,
-          int aPos);
+          const StatelessExternalFunction::Arguments_t& args,
+          int pos);
 
       static String
       getFilePathString(
-          const StaticContext* aSctxCtx,
-          const StatelessExternalFunction::Arguments_t& aArgs,
-          int aPos);
+          const StaticContext* context,
+          const StatelessExternalFunction::Arguments_t& args,
+          int pos);
+
+      static String
+      pathToUriString(const String& path);
 
     public:
-      FileFunction(const FileModule* aModule);
+      FileFunction(const FileModule* module);
       ~FileFunction();
 
       virtual String

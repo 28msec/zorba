@@ -59,6 +59,9 @@ namespace zorba {
 
     public: // public methods
 
+      const std::string getFilePath() const;
+      const std::string getFileUri() const;
+
       bool isDirectory() const;
       bool isFile() const;
       bool isLink() const;
@@ -72,8 +75,8 @@ namespace zorba {
 
       FileSize_t getSize() const;
 
-      bool mkdir();
-      bool mkdirs();
+      bool mkdir(bool create = true);
+      bool mkdirs(bool create = true);
 
       DirectoryIterator_t files() const;
 

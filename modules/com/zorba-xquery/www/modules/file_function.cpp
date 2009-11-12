@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
+#include "file_function.h"
+
 #include <sstream>
 
 #include <zorba/zorba.h>
+#include <zorba/file.h>
 
-#include "file_function.h"
 #include "file_module.h"
 
 namespace zorba { namespace filemodule {
@@ -185,11 +187,25 @@ FileFunction::getFilePathString(
     // simply pass it further
 
   }
-
-std::string ms(lFileArg.c_str());
   return lFileArg;
 }
 
+String
+FileFunction::pathToUriString(const String& aPath) {
+  std::stringstream lErrorMessage;
+
+  if(aPath.startsWith(FILE_SCHEMA.c_str())) {
+    lErrorMessage << "Please provide a path, not a URI";
+    throwError(lErrorMessage.str(), XPTY0004);
+  }
+
+  File_t lFile = File::createFile(aPath.c_str());
+
+  std::string lPath = lFile->getFileUri();
+
+
+  return String(lPath);
+}
 
 void
 FileFunction::throwError(

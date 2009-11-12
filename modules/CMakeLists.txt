@@ -32,7 +32,7 @@ MACRO(GENERATE_MODULE_LIBRARY MODULE_NAME FILES LINK_LIBRARIES)
       # if we change something in the project generating this target, make
       # sure we don't have a zombie DLL hanging around from an older build
       ADD_CUSTOM_COMMAND(TARGET ${MODULE_NAME} PRE_BUILD COMMAND
-          del "\"$(ProjectDir)\\$(TargetFileName)\"")
+          if exist "\"$(ProjectDir)\\$(TargetFileName)\"" del "\"$(ProjectDir)\\$(TargetFileName)\"")
       ADD_CUSTOM_COMMAND(TARGET ${MODULE_NAME} POST_BUILD COMMAND
           copy "\"$(TargetPath)\"" "\"$(ProjectDir)\"")
     ENDIF (MSVC_IDE)

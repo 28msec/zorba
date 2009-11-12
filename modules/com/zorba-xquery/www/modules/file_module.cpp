@@ -55,6 +55,8 @@ FileModule::getExternalFunction(String aLocalname) const
       lFunc = new MkdirFunction(this);
     } else if (aLocalname.equals("mkdirs")) {
       lFunc = new MkdirsFunction(this);
+    } else if (aLocalname.equals("path-to-uri")) {
+      lFunc = new PathToUriFunction(this);
     } else if (aLocalname.equals("read")) {
       lFunc = new ReadFunction(this);
     } else if (aLocalname.equals("read-html")) {

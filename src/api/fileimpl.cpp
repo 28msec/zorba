@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-#include "api/fileimpl.h"
-#include "api/zorbaimpl.h"
-#include "zorba/default_error_handler.h"
-#include "runtime/util/flowctl_exception.h"
-
-#include "zorbaerrors/errors.h"
-#include "zorbaerrors/error_manager.h"
-
-#include <zorba/util/file.h>
-#include "util/dir.h"
+#include "fileimpl.h"
 
 #include <fstream>
+
+#include <zorba/default_error_handler.h>
+#include <zorba/util/file.h>
+
+#include <runtime/util/flowctl_exception.h>
+
+#include <zorbaerrors/errors.h>
+#include <zorbaerrors/error_manager.h>
+
+#include <zorbautils/strutil.h>
+
+#include <util/dir.h>
+
+#include "zorbaimpl.h"
 
 namespace zorba {
 
@@ -72,17 +77,62 @@ FileImpl::~FileImpl()
 }
 
 File_t
-File::createFile(const std::string& path) {
+File::createFile(const std::string& path)
+{
   return new FileImpl(path);
 }
 
+const std::string
+FileImpl::getFilePath() const
+{
+  std::string lResult;
+
+  ZORBA_TRY
+    lResult = theInternalFile->get_path();
+  ZORBA_CATCH
+
+  return lResult;
+};
+
+const std::string
+FileImpl::getFileUri() const
+{
+  std::string lPath;
+
+  ZORBA_TRY
+    lPath = theInternalFile->get_path();
+#ifdef WIN32
+    str_replace_all(lPath, "\\", "/");
+#endif
+
+    std::stringstream lEncodedResult;
+    lEncodedResult << "file:///";
+
+    int lCurrentPos = 0;
+    int lNextSlashPos = lPath.find_first_of("/");
+    while (lNextSlashPos > 0) {
+      String lEncodedSegment(lPath.substr(lCurrentPos, lNextSlashPos - lCurrentPos));
+      lEncodedResult << lEncodedSegment.encodeForUri() << "/";
+      lCurrentPos = lNextSlashPos + 1;
+      lNextSlashPos = lPath.find_first_of("/", lNextSlashPos + 1);
+    }
+
+    String lEncodedSegment(lPath.substr(lCurrentPos));
+    lEncodedResult << lEncodedSegment.encodeForUri();
+
+    lPath = lEncodedResult.str();
+  ZORBA_CATCH
+
+  return lPath;
+};
 
 bool
-FileImpl::isDirectory() const {
+FileImpl::isDirectory() const
+{
   bool lResult = false;
 
   ZORBA_TRY
-    lResult = theInternalFile->is_directory() || theInternalFile->is_volume() || theInternalFile->is_root() ;
+    lResult = theInternalFile->is_directory() || theInternalFile->is_volume() || theInternalFile->is_root();
   ZORBA_CATCH
 
   return lResult;
@@ -240,14 +290,14 @@ FileImpl::getSize() const
 }
 
 bool
-FileImpl::mkdir()
+FileImpl::mkdir(bool aCreate)
 {
   bool lResult = false;
 
   ZORBA_TRY
     // if the dir/file already exists, return false
     if (theInternalFile->exists()) {
-      return false;
+      return aCreate ? false : theInternalFile->is_directory();
     }
 
     theInternalFile->mkdir();
@@ -259,14 +309,14 @@ FileImpl::mkdir()
 }
 
 bool
-FileImpl::mkdirs()
+FileImpl::mkdirs(bool aCreate)
 {
   bool lResult = false;
 
   ZORBA_TRY
     // if the dir/file already exists, return false
     if (theInternalFile->exists()) {
-      return false;
+      return aCreate ? false : theInternalFile->is_directory();
     }
 
     theInternalFile->deep_mkdir();
