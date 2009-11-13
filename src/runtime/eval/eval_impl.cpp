@@ -62,9 +62,6 @@ PlanIter_t compile(
     return compiler.compile (ast);
 }
 
-EvalIteratorState::~EvalIteratorState()
-{}
-
 bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
   store::Item_t item;
@@ -73,13 +70,13 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   DEFAULT_STACK_INIT(EvalIteratorState, state, planState);
 
   // set up eval state's ccb
-  state->ccb.reset (new CompilerCB (*planState.theCompilerCB));
+  state->ccb.reset(new CompilerCB (*planState.theCompilerCB));
   state->ccb->theRootSctx = getStaticContext(planState)->create_child_context();
   (*state->ccb->theSctxMap)[++state->ccb->m_cur_sctx] = state->ccb->theRootSctx; 
   CONSUME (item, 0);
 
   {
-    state->dctx.reset (new dynamic_context (planState.dctx ()));
+    state->dctx.reset(new dynamic_context (planState.dctx ()));
     
     state->eval_plan.reset (new PlanWrapper (compile (state->ccb.get (),
                                                       &*item->getStringValue (),

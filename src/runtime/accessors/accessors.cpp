@@ -115,6 +115,10 @@ void FnStringIterator::accept(PlanIterVisitor& v) const {
 
 FnStringIterator::~FnStringIterator() {}
 
+FnStringIteratorState::FnStringIteratorState() {}
+
+FnStringIteratorState::~FnStringIteratorState() {}
+
 
 void FnStringIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
@@ -152,6 +156,10 @@ void FnDataIterator::accept(PlanIterVisitor& v) const {
 }
 
 FnDataIterator::~FnDataIterator() {}
+
+FnDataIteratorState::FnDataIteratorState() {}
+
+FnDataIteratorState::~FnDataIteratorState() {}
 
 
 void FnDataIteratorState::init(PlanState& planState) {

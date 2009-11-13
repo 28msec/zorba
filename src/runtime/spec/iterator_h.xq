@@ -60,16 +60,9 @@ declare function local:process-state($state, $stateName as xs:string) as xs:stri
   string-join(($gen:indent,string($member/@type),' ',string($member/@name),'; //',string($member/@brief),$gen:newline),''))
   ,''),$gen:newline,
 
-  (: generate constructor decl only if the user wants to implement it :)
-  if ($state/@generateConstructor and $state/@generateConstructor eq "false")
-  then
-    concat($gen:indent, $stateName, '();', $gen:newline, $gen:newline)
-  else (),
+  concat($gen:indent, $stateName, '();', $gen:newline, $gen:newline),
 
-  if ($state/@generateDestructor and $state/@generateDestructor eq "false")
-  then
-    concat($gen:indent, '~', $stateName, '();', $gen:newline, $gen:newline)
-  else (),
+  concat($gen:indent, '~', $stateName, '();', $gen:newline, $gen:newline),
 
   (: generate init and reset decl :)
   concat($gen:indent,'void init(PlanState&amp;);',$gen:newline,

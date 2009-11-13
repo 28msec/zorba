@@ -56,6 +56,10 @@ void ZorbaJsonParseIterator::accept(PlanIterVisitor& v) const {
 
 ZorbaJsonParseIterator::~ZorbaJsonParseIterator() {}
 
+ZorbaJsonParseIteratorState::ZorbaJsonParseIteratorState() {}
+
+ZorbaJsonParseIteratorState::~ZorbaJsonParseIteratorState() {}
+
 
 void ZorbaJsonParseIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
@@ -121,6 +125,10 @@ void ZorbaJsonMLParseIterator::accept(PlanIterVisitor& v) const {
 }
 
 ZorbaJsonMLParseIterator::~ZorbaJsonMLParseIterator() {}
+
+ZorbaJsonMLParseIteratorState::ZorbaJsonMLParseIteratorState() {}
+
+ZorbaJsonMLParseIteratorState::~ZorbaJsonMLParseIteratorState() {}
 
 
 void ZorbaJsonMLParseIteratorState::init(PlanState& planState) {

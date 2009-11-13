@@ -26,6 +26,7 @@
 #include "system/globalenv.h"
 
 
+#include "runtime/util/handle_hashset_item_value.h"
 
 namespace zorba {
 
@@ -53,6 +54,10 @@ void FnConcatIterator::accept(PlanIterVisitor& v) const {
 }
 
 FnConcatIterator::~FnConcatIterator() {}
+
+FnConcatIteratorState::FnConcatIteratorState() {}
+
+FnConcatIteratorState::~FnConcatIteratorState() {}
 
 
 void FnConcatIteratorState::init(PlanState& planState) {
@@ -91,6 +96,10 @@ void FnIndexOfIterator::accept(PlanIterVisitor& v) const {
 }
 
 FnIndexOfIterator::~FnIndexOfIterator() {}
+
+FnIndexOfIteratorState::FnIndexOfIteratorState() {}
+
+FnIndexOfIteratorState::~FnIndexOfIteratorState() {}
 
 
 void FnIndexOfIteratorState::init(PlanState& planState) {
@@ -190,6 +199,10 @@ void FnDistinctValuesIterator::accept(PlanIterVisitor& v) const {
 
 FnDistinctValuesIterator::~FnDistinctValuesIterator() {}
 
+FnDistinctValuesIteratorState::FnDistinctValuesIteratorState() {}
+
+FnDistinctValuesIteratorState::~FnDistinctValuesIteratorState() {}
+
 
 void FnDistinctValuesIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
@@ -222,6 +235,10 @@ void FnInsertBeforeIterator::accept(PlanIterVisitor& v) const {
 }
 
 FnInsertBeforeIterator::~FnInsertBeforeIterator() {}
+
+FnInsertBeforeIteratorState::FnInsertBeforeIteratorState() {}
+
+FnInsertBeforeIteratorState::~FnInsertBeforeIteratorState() {}
 
 
 void FnInsertBeforeIteratorState::init(PlanState& planState) {
@@ -265,6 +282,10 @@ void FnRemoveIterator::accept(PlanIterVisitor& v) const {
 
 FnRemoveIterator::~FnRemoveIterator() {}
 
+FnRemoveIteratorState::FnRemoveIteratorState() {}
+
+FnRemoveIteratorState::~FnRemoveIteratorState() {}
+
 
 void FnRemoveIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
@@ -307,6 +328,10 @@ void FnReverseIterator::accept(PlanIterVisitor& v) const {
 
 FnReverseIterator::~FnReverseIterator() {}
 
+FnReverseIteratorState::FnReverseIteratorState() {}
+
+FnReverseIteratorState::~FnReverseIteratorState() {}
+
 // </FnReverseIterator>
 
 
@@ -334,6 +359,10 @@ void FnSubsequenceIterator::accept(PlanIterVisitor& v) const {
 }
 
 FnSubsequenceIterator::~FnSubsequenceIterator() {}
+
+FnSubsequenceIteratorState::FnSubsequenceIteratorState() {}
+
+FnSubsequenceIteratorState::~FnSubsequenceIteratorState() {}
 
 
 void FnSubsequenceIteratorState::init(PlanState& planState) {
@@ -736,6 +765,10 @@ void OpToIterator::accept(PlanIterVisitor& v) const {
 }
 
 OpToIterator::~OpToIterator() {}
+
+OpToIteratorState::OpToIteratorState() {}
+
+OpToIteratorState::~OpToIteratorState() {}
 
 
 void OpToIteratorState::init(PlanState& planState) {

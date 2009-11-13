@@ -45,6 +45,10 @@ public:
   uint32_t theIndex; //
   std::ostream* theOS; //
 
+  TraceIteratorState();
+
+  ~TraceIteratorState();
+
   void init(PlanState&);
   void reset(PlanState&);
 };

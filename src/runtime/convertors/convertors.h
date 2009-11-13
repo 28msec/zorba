@@ -45,6 +45,10 @@ class ZorbaJsonParseIteratorState : public PlanIteratorState
 public:
   xqp_string theBaseUri; //the base URI
 
+  ZorbaJsonParseIteratorState();
+
+  ~ZorbaJsonParseIteratorState();
+
   void init(PlanState&);
   void reset(PlanState&);
 };
@@ -121,6 +125,10 @@ class ZorbaJsonMLParseIteratorState : public PlanIteratorState
 {
 public:
   xqp_string theBaseUri; //the base URI
+
+  ZorbaJsonMLParseIteratorState();
+
+  ~ZorbaJsonMLParseIteratorState();
 
   void init(PlanState&);
   void reset(PlanState&);

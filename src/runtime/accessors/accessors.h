@@ -111,6 +111,10 @@ class FnStringIteratorState : public PlanIteratorState
 public:
   bool hasOutput; //
 
+  FnStringIteratorState();
+
+  ~FnStringIteratorState();
+
   void init(PlanState&);
   void reset(PlanState&);
 };
@@ -161,6 +165,10 @@ class FnDataIteratorState : public PlanIteratorState
 {
 public:
   store::Iterator_t theTypedValueIter; //
+
+  FnDataIteratorState();
+
+  ~FnDataIteratorState();
 
   void init(PlanState&);
   void reset(PlanState&);

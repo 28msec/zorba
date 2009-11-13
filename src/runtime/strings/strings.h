@@ -80,6 +80,10 @@ public:
   xqp_uint theIterator; //the current iterator
   checked_vector<xqp_uint> theResult; //the resulting vector
 
+  StringToCodepointsIteratorState();
+
+  ~StringToCodepointsIteratorState();
+
   void init(PlanState&);
   void reset(PlanState&);
 };
@@ -840,6 +844,10 @@ public:
   xqp_string theFlags; //the tokenizing flags
   xqp_int start_pos; //the start position
   xqp_boolean hasmatched; //flag indicating whether a match was found
+
+  FnTokenizeIteratorState();
+
+  ~FnTokenizeIteratorState();
 
   void init(PlanState&);
   void reset(PlanState&);

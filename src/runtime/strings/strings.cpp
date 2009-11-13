@@ -82,6 +82,10 @@ void StringToCodepointsIterator::accept(PlanIterVisitor& v) const {
 
 StringToCodepointsIterator::~StringToCodepointsIterator() {}
 
+StringToCodepointsIteratorState::StringToCodepointsIteratorState() {}
+
+StringToCodepointsIteratorState::~StringToCodepointsIteratorState() {}
+
 // </StringToCodepointsIterator>
 
 
@@ -697,6 +701,10 @@ void FnTokenizeIterator::accept(PlanIterVisitor& v) const {
 }
 
 FnTokenizeIterator::~FnTokenizeIterator() {}
+
+FnTokenizeIteratorState::FnTokenizeIteratorState() {}
+
+FnTokenizeIteratorState::~FnTokenizeIteratorState() {}
 
 
 void FnTokenizeIteratorState::init(PlanState& planState) {

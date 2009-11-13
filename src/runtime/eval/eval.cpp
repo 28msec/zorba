@@ -26,6 +26,8 @@
 #include "system/globalenv.h"
 
 
+#include "context/dynamic_context.h"
+#include "compiler/api/compilercb.h"
 
 namespace zorba {
 
@@ -53,6 +55,10 @@ void EvalIterator::accept(PlanIterVisitor& v) const {
 }
 
 EvalIterator::~EvalIterator() {}
+
+EvalIteratorState::EvalIteratorState() {}
+
+EvalIteratorState::~EvalIteratorState() {}
 
 
 void EvalIteratorState::init(PlanState& planState) {

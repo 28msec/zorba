@@ -826,6 +826,10 @@ class ModfIteratorState : public PlanIteratorState
 public:
   xqp_double theDoubInteger; //
 
+  ModfIteratorState();
+
+  ~ModfIteratorState();
+
   void init(PlanState&);
   void reset(PlanState&);
 };
@@ -868,6 +872,10 @@ class FrexpIteratorState : public PlanIteratorState
 {
 public:
   xqp_integer theIntExponent; //
+
+  FrexpIteratorState();
+
+  ~FrexpIteratorState();
 
   void init(PlanState&);
   void reset(PlanState&);

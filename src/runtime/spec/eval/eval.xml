@@ -6,10 +6,10 @@
   <zorba:include form="Quoted">runtime/util/plan_wrapper_holder.h</zorba:include>
   <zorba:include form="Quoted">types/typeimpl.h</zorba:include>
 </zorba:header>
-<zorba:cpp>
-  <zorba:include form="Quoted">runtime/api/runtimecb.h</zorba:include>
-  <zorba:include form="Quoted">system/globalenv.h</zorba:include>
-</zorba:cpp>
+<zorba:source>
+  <zorba:include form="Quoted">context/dynamic_context.h</zorba:include>
+  <zorba:include form="Quoted">compiler/api/compilercb.h</zorba:include>
+</zorba:source>
 
 <!--
 /*******************************************************************************
@@ -26,8 +26,7 @@
   <zorba:member type="checked_vector&lt;xqtref_t>"      name="vartypes"
                 accessorName="getVarTypes"/>
 
-  <zorba:state generateInit="true" generateReset="true"
-               generateDestructor="false"> <!-- explicit instantiation to avoid memory leak -->
+  <zorba:state generateInit="true" generateReset="true">
     <zorba:member type="PlanWrapperHolder" name="eval_plan"
                   brief="the plan to execute"/>
     <zorba:member type="std::auto_ptr&lt;CompilerCB>" name="ccb"

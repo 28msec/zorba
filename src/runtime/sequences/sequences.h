@@ -48,6 +48,10 @@ class FnConcatIteratorState : public PlanIteratorState
 public:
   uint32_t theCurIter; //the current iterator
 
+  FnConcatIteratorState();
+
+  ~FnConcatIteratorState();
+
   void init(PlanState&);
   void reset(PlanState&);
 };
@@ -100,6 +104,10 @@ public:
   uint32_t theCurrentPos; //the current position in the sequence
   store::Item_t theSearchItem; //the item to search for
   XQPCollator* theCollator; //the collator
+
+  FnIndexOfIteratorState();
+
+  ~FnIndexOfIteratorState();
 
   void init(PlanState&);
   void reset(PlanState&);
@@ -213,6 +221,8 @@ public:
   bool theHasNaN; //indicates whether NaN was found in the sequence
   std::auto_ptr<ItemValueCollHandleHashSet> theAlreadySeenMap; //hashmap for doing the duplicate elimination
 
+  FnDistinctValuesIteratorState();
+
   ~FnDistinctValuesIteratorState();
 
   void init(PlanState&);
@@ -260,6 +270,10 @@ public:
   xqp_integer thePosition; //
   store::Item_t theTargetItem; //
 
+  FnInsertBeforeIteratorState();
+
+  ~FnInsertBeforeIteratorState();
+
   void init(PlanState&);
   void reset(PlanState&);
 };
@@ -305,6 +319,10 @@ public:
   xqp_integer thePosition; //the position to delete
   XQPCollator* theCollator; //the collator
 
+  FnRemoveIteratorState();
+
+  ~FnRemoveIteratorState();
+
   void init(PlanState&);
   void reset(PlanState&);
 };
@@ -348,6 +366,10 @@ class FnReverseIteratorState : public PlanIteratorState
 public:
   std::stack<store::Item_t> theStack; //
 
+  FnReverseIteratorState();
+
+  ~FnReverseIteratorState();
+
   void init(PlanState&);
   void reset(PlanState&);
 };
@@ -390,6 +412,10 @@ class FnSubsequenceIteratorState : public PlanIteratorState
 {
 public:
   xqp_integer theRemaining; //
+
+  FnSubsequenceIteratorState();
+
+  ~FnSubsequenceIteratorState();
 
   void init(PlanState&);
   void reset(PlanState&);
@@ -912,6 +938,10 @@ public:
   xqp_integer theCurInt; //the current integer
   xqp_integer theFirstVal; //first integer
   xqp_integer theLastVal; //last integer
+
+  OpToIteratorState();
+
+  ~OpToIteratorState();
 
   void init(PlanState&);
   void reset(PlanState&);

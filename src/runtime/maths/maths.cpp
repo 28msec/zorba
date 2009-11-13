@@ -606,6 +606,10 @@ void ModfIterator::accept(PlanIterVisitor& v) const {
 
 ModfIterator::~ModfIterator() {}
 
+ModfIteratorState::ModfIteratorState() {}
+
+ModfIteratorState::~ModfIteratorState() {}
+
 
 void ModfIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
@@ -639,6 +643,10 @@ void FrexpIterator::accept(PlanIterVisitor& v) const {
 }
 
 FrexpIterator::~FrexpIterator() {}
+
+FrexpIteratorState::FrexpIteratorState() {}
+
+FrexpIteratorState::~FrexpIteratorState() {}
 
 
 void FrexpIteratorState::init(PlanState& planState) {

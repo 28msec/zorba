@@ -59,6 +59,10 @@ void TraceIterator::accept(PlanIterVisitor& v) const {
 
 TraceIterator::~TraceIterator() {}
 
+TraceIteratorState::TraceIteratorState() {}
+
+TraceIteratorState::~TraceIteratorState() {}
+
 
 void TraceIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);

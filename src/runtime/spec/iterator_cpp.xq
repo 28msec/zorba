@@ -35,6 +35,20 @@ declare function local:process-iterator($iter) as xs:string
     if (exists($iter/zorba:state))
     then
       (
+      (: explicitly instantiate the state's con- and destructor to avoid potential memory leaks and
+         remove unnecessary includes :)
+      if (fn:not($iter/zorba:state/@generateConstructor) or
+          $iter/zorba:state/@generateConstructor eq "true")
+      then
+        local:state-constructor($iter) 
+      else (),
+
+      if (fn:not($iter/zorba:state/@generateDestructor) or
+          $iter/zorba:state/@generateDestructor eq "true")
+      then
+        local:state-destructor($iter) 
+      else (),
+
       (: generate the state's init and reset functions if requested :)
       if (fn:not($iter/zorba:state/@generateInit) or $iter/zorba:state/@generateInit eq "true")
       then
@@ -66,6 +80,18 @@ declare function local:generate-init-values($state)
     then
       concat($gen:indent, string($member/@name), ' = ', string($member/@defaultValue), ';', $gen:newline)
     else ()
+};
+
+declare function local:state-destructor($iter) as xs:string
+{
+  let $name := fn:concat($iter/@name, "State")
+  return fn:concat($name, "::~", $name, "() {}", $gen:newline, $gen:newline)
+};
+
+declare function local:state-constructor($iter) as xs:string
+{
+  let $name := fn:concat($iter/@name, "State")
+  return fn:concat($name, "::", $name, "() {}", $gen:newline, $gen:newline)
 };
 
 declare function local:generate-destructor($iter) as xs:string
