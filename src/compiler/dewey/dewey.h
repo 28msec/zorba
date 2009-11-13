@@ -382,6 +382,7 @@ class DeweyClassification: public parsenode_visitor
   	DECL_CONCRETE_VISIT (IndexDecl);
   	DECL_CONCRETE_VISIT (IndexKeySpec);
   	DECL_CONCRETE_VISIT (IndexKeyList);
+    DECL_CONCRETE_VISIT (IntegrityConstraintDecl);
   	DECL_CONCRETE_VISIT (VarDecl);
   	DECL_CONCRETE_VISIT (VarGetsDeclList);
   	//DECL_CONCRETE_VISIT (VarInDecl);

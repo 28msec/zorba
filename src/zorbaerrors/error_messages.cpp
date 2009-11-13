@@ -316,6 +316,37 @@ DEF_ERR_CODE(XQP0041_INDEX_HAS_INVALID_DATA_SOURCE, XQP0041,
 DEF_ERR_CODE(XQP0042_INDEX_NOT_DETERMINISTIC, XQP0042,
              "The index with URI /s has a non deterministic definition.")
 
+DEF_ERR_CODE(XQP0043_IC_DOES_NOT_EXIST, XQP0043,
+             "An integrity constraint with URI /s does not exists.")
+
+DEF_ERR_CODE(XQP0044_IC_ALREADY_EXISTS, XQP0044,
+             "An integrity constraint with URI /s exists already.")
+
+DEF_ERR_CODE(XQP0045_MULTI_VALUED_IC_KEY, XQP0045,
+             "An integrity constraint key has multiple values.")
+
+DEF_ERR_CODE(XQP0046_NON_ATOMIC_IC_KEY, XQP0046,
+             "An integrity constraint key has a non-atomic value.")
+
+DEF_ERR_CODE(XQP0047_IC_IS_NOT_DECLARED, XQP0047,
+             "An integrity constraint with URI /s is not declared.")
+
+DEF_ERR_CODE(XQP0048_IC_IS_ALREADY_DECLARED, XQP0048,
+             "An integrity constraint with URI /s is declared already.")
+
+DEF_ERR_CODE(XQP0049_IC_IN_NON_DATA_MODULE, XQP0049,
+             "The integrity constraint with URI /s is declared in a non data module.")
+
+DEF_ERR_CODE(XQP0050_IC_HAS_FREE_VARS, XQP0050,
+             "The integrity constraint with URI /s has free variables in its definition.")
+
+DEF_ERR_CODE(XQP0051_IC_HAS_INVALID_DATA_SOURCE, XQP0051,
+             "The integrity constraint with URI /s references a data source that is not a collection among the statically known collections.")
+
+DEF_ERR_CODE(XQP0052_IC_NOT_DETERMINISTIC, XQP0052,
+             "The integrity constraint with URI /s has a non deterministic definition.")
+
+
 //
 // XPDY
 //

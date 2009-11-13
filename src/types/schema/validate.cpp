@@ -49,6 +49,8 @@
 #include "context/namespace_context.h"
 
 
+//using namespace std;
+
 namespace zorba
 {
 
@@ -252,9 +254,10 @@ store::Item_t Validator::processElement(
   // namespace declarations must go first
   processNamespaces( schemaValidator, element);
 
-  // since the type of an element is determined only after the validator receives all 
-  // of it's attributes, and an attribute node needs it's parent when created 
-  // we need to go through the attributes twice: once for validation and once for creation
+  // since the type of an element is determined only after the validator 
+  // receives all of it's attributes, and an attribute node needs it's parent 
+  // when created we need to go through the attributes twice: once for 
+  // validation and once for creation
   validateAttributes(schemaValidator, element->getAttributes());
   
   // not required since getTypeQName will trigger processElement in validator

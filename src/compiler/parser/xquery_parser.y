@@ -131,6 +131,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
   std::vector<std::pair<std::string, std::string> >* pair_vector;
   std::pair<std::string, std::string>* pair;
   CatchExpr::NameTestList *name_test_list;
+  int intval;
 };
 
 
@@ -485,6 +486,22 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token AUTOMATIC           "'automatic'"
 %token ON                  "'on'"
 
+%token CHECKED             "'checked'"
+%token UNCHECKED           "'unchecked'"
+%token ASYNCHRONOUS        "'asynchronous'"
+%token SYNCHRONOUS         "'synchronous'"
+%token INTEGRITY           "'integrity'"
+%token CONSTRAINT          "'constraint'"
+%token CHECK               "'check'"
+%token KEY                 "'key'"
+%token FOREACH             "'foreach'"
+%token TYPE                "'type'"
+%token FOREIGN             "'foreign'"
+%token KEYS                "'keys'"
+
+
+
+
 /* Byte Order Marks                  */
 /* --------------------------------- */    
 %token BYTE_ORDER_MARK_UTF8       "'BOM_UTF8'"
@@ -727,6 +744,13 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> IndexKeySpec
 %type <node> IndexKeyList
 
+/* integrityconstraint-related */
+/* --------------------------- */
+%type <node> IntegrityConstraintDecl
+%type <intval> IntgCnstOptions
+%type <intval> IntgCnstUnchecked
+%type <intval> IntgCnstAsynch
+
 /* full-text-related */
 /* ----------------- */
 %type <node> FTAnd
@@ -782,7 +806,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 // (not <= 0); but Bison never increments the refcount, so we do it manually...
 
 // parsenodes
-%destructor { if ($$ != NULL) { RCHelper::addReference ($$); RCHelper::removeReference ($$); } } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDecl3 FunctionDecl4 Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl CollectionModifier NodeModifier IndexDecl IndexProperties IndexProperties2 IndexProperties3 IndexKeySpec IndexKeyList CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard DecimalFormatDecl // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
+%destructor { if ($$ != NULL) { RCHelper::addReference ($$); RCHelper::removeReference ($$); } } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDecl3 FunctionDecl4 Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl CollectionModifier NodeModifier IndexDecl IndexProperties IndexProperties2 IndexProperties3 IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard DecimalFormatDecl // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
 // exprnodes
 %destructor { if ($$ != NULL) { RCHelper::addReference ($$); RCHelper::removeReference ($$); } } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockExpr EnclosedExpr Expr ConcatExpr ApplyExpr ExprSingle ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignExpr ExitExpr WhileExpr FlowCtlStatement QNAME FTContainsExpr
 // internal non-terminals with values
@@ -1132,6 +1156,9 @@ VFO_Decl :
 
   /* Index */
   | IndexDecl
+
+  /* Integrity Constraint */
+  | IntegrityConstraintDecl
 
   | DecimalFormatDecl
 	;
@@ -1711,7 +1738,7 @@ IndexDecl :
                          dynamic_cast<IndexKeyList*>($7),
                          dynamic_cast<IndexProperties*>($9));
     }
-;
+  ;
 
 
 IndexProperties :
@@ -1812,6 +1839,116 @@ IndexKeySpec :
                             dynamic_cast<OrderModifierPN*>($3));
     }
   ;
+
+
+IntegrityConstraintDecl :
+    DECLARE IntgCnstOptions INTEGRITY CONSTRAINT QNAME ON COLLECTION QNAME 
+    DOLLAR QNAME CHECK ExprSingle
+    {
+      $$ = new ICCollSimpleCheck(LOC(@$),
+                            $2 & IntegrityConstraintDecl::IC_OPTION_UNCHECKED,
+                            $2 & IntegrityConstraintDecl::IC_OPTION_ASYNCH,
+                                 static_cast<QName*>($5),
+                                 static_cast<QName*>($8),
+                                 static_cast<QName*>($10),
+                                 $12);
+    }
+  |
+    DECLARE IntgCnstOptions INTEGRITY CONSTRAINT QNAME ON COLLECTION QNAME 
+    DOLLAR QNAME CHECK UNIQUE KEY LPAR Expr RPAR
+    {
+      $$ = new ICCollUniqueKeyCheck(LOC(@$),
+                            $2 & IntegrityConstraintDecl::IC_OPTION_UNCHECKED,
+                            $2 & IntegrityConstraintDecl::IC_OPTION_ASYNCH,
+                                    static_cast<QName*>($5),
+                                    static_cast<QName*>($8),
+                                    static_cast<QName*>($10),
+                                    $15);
+    }  
+  |
+    DECLARE IntgCnstOptions INTEGRITY CONSTRAINT QNAME ON COLLECTION QNAME 
+    FOREACH NODE DOLLAR QNAME CHECK ExprSingle
+    {
+      $$ = new ICCollUniqueKeyCheck(LOC(@$),
+                            $2 & IntegrityConstraintDecl::IC_OPTION_UNCHECKED,
+                            $2 & IntegrityConstraintDecl::IC_OPTION_ASYNCH,
+                                    static_cast<QName*>($5),
+                                    static_cast<QName*>($8),
+                                    static_cast<QName*>($12),
+                                    $14);
+    }
+  |
+    DECLARE IntgCnstOptions INTEGRITY CONSTRAINT QNAME ON NODE DOLLAR QNAME 
+     OF TYPE KindTest CHECK ExprSingle
+    {
+      $$ = new ICNodeOfType(LOC(@$),
+                            $2 & IntegrityConstraintDecl::IC_OPTION_UNCHECKED,
+                            $2 & IntegrityConstraintDecl::IC_OPTION_ASYNCH,
+                            static_cast<QName*>($5),
+                            static_cast<QName*>($9),
+                            $12,
+                            $14);
+    }
+  |
+    DECLARE IntgCnstOptions INTEGRITY CONSTRAINT QNAME FOREIGN KEY 
+      FROM COLLECTION QNAME NODE DOLLAR QNAME KEYS LPAR Expr RPAR
+      TO   COLLECTION QNAME NODE DOLLAR QNAME KEYS LPAR Expr RPAR
+    {
+      $$ = new ICForeignKey(LOC(@$),
+                            $2 & IntegrityConstraintDecl::IC_OPTION_UNCHECKED,
+                            $2 & IntegrityConstraintDecl::IC_OPTION_ASYNCH,
+                            static_cast<QName*>($5),
+                            static_cast<QName*>($10),
+                            static_cast<QName*>($13),
+                            $16,
+                            static_cast<QName*>($20),
+                            static_cast<QName*>($23),
+                            $26); 
+    }
+  ;
+
+IntgCnstOptions:
+    /*   {
+      $$ = IntegrityConstraintDecl::IC_OPTION_CHECKED &  // checked
+        IntegrityConstraintDecl::IC_OPTION_SYNCH; // synchronous  
+    }
+    | */
+    IntgCnstUnchecked IntgCnstAsynch 
+    { $$ = $1 | $2; }
+  | 
+    IntgCnstAsynch IntgCnstUnchecked
+    { $$ = $1 | $2; }
+
+IntgCnstUnchecked :
+    {
+      $$ = IntegrityConstraintDecl::IC_OPTION_CHECKED; // checked 
+    }
+  | 
+    CHECKED
+    {
+      $$ = IntegrityConstraintDecl::IC_OPTION_CHECKED; // checked 
+    }
+  | UNCHECKED
+    {
+      $$ = IntegrityConstraintDecl::IC_OPTION_UNCHECKED;  // unchecked 
+    }
+  ;
+
+IntgCnstAsynch :
+    {
+      $$ = IntegrityConstraintDecl::IC_OPTION_SYNCH; // synchronous  
+    }
+  | 
+    SYNCHRONOUS
+    {
+      $$ = IntegrityConstraintDecl::IC_OPTION_SYNCH; // synchronous 
+    }
+  | ASYNCHRONOUS
+    {
+      $$ = IntegrityConstraintDecl::IC_OPTION_ASYNCH;  // asynchronous
+    }
+  ;
+
 
 
 // [25] ConstructionDecl
@@ -5521,6 +5658,18 @@ KEYWORD :
   | QUEUE { $$ = SYMTAB_PUT ("queue"); }
   | MUTABLE { $$ = SYMTAB_PUT ("mutable"); }
   | READ_ONLY { $$ = SYMTAB_PUT ("read-only"); }
+  | CHECKED { $$ = SYMTAB_PUT ("checked"); }
+  | UNCHECKED { $$ = SYMTAB_PUT ("unchecked"); }
+  | ASYNCHRONOUS { $$ = SYMTAB_PUT ("asynchronous"); }
+  | SYNCHRONOUS { $$ = SYMTAB_PUT ("synchronous"); }
+  | INTEGRITY { $$ = SYMTAB_PUT ("integrity"); }
+  | CONSTRAINT { $$ = SYMTAB_PUT ("constraint"); }
+  | CHECK { $$ = SYMTAB_PUT ("check"); }
+  | KEY { $$ = SYMTAB_PUT ("key"); }
+  | FOREACH { $$ = SYMTAB_PUT ("foreach"); }
+  | TYPE { $$ = SYMTAB_PUT ("type"); }
+  | FOREIGN { $$ = SYMTAB_PUT ("foreign"); }
+  | KEYS { $$ = SYMTAB_PUT ("keys"); }
     ;
 
 

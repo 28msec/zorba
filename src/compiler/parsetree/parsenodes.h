@@ -1325,9 +1325,202 @@ public:
 };
 
 
+/***************************************************************************//**
+  IntegrityConstraintDecl ::= "declare" "unchecked"? "integrity" "constraint" 
+      QName ICType
+  ICType ::= ICCollSimpleCheck | ICCollUniqueKey | ICCollForeachNode |
+             ICNodeOfType | ICForeighKey
+  ICCollSimpleCheck ::= "on" "collection" QName "$" QName "check" ExprSimple
+  ICCollUniqueKey   ::= "on" "collection" QNAME "$" QName "check" "unique" 
+                        "key" "(" Expr ")"
+  ICCollForeachNode ::= "on" "collection" QNAME "foreach" "node" "$" QName
+                        "check" ExprSingle
+  ICNodeOfType      ::= "on" "node" QName "of""type" KindTest "check" ExprSingle
+  ICForeighKey      ::= "on" "foreign" "key" 
+                        "from" "collection" QName "node" "$" QName "keys" 
+                           "(" Expr ")"
+                        "to" "collection" QName "node" "$" QName "keys" 
+                           "(" Expr ")"                        
+*******************************************************************************/
+class IntegrityConstraintDecl : public parsenode 
+{
+public:
+  enum ICKind
+    { coll_check_simple, coll_check_unique_key, coll_foreach_node,
+      node_of_type, foreign_key };
+
+  static const int IC_OPTION_CHECKED   = 0x0;
+  static const int IC_OPTION_UNCHECKED = 0x1;
+  static const int IC_OPTION_SYNCH     = 0x0;
+  static const int IC_OPTION_ASYNCH    = 0x2;
+
+protected:
+  bool                   theIsUnchecked;
+  bool                   theIsAsync;
+  rchandle<QName>        theICName;
+  ICKind                 theICKind;
+
+public:
+  IntegrityConstraintDecl ( const QueryLoc& loc, 
+                            bool isUnchecked,
+                            bool isAsync,
+                            QName* name, 
+                            ICKind icKind);
+
+  bool         isUnchecked() const { return theIsUnchecked; }
+  bool         isAsync() const { return theIsUnchecked; }
+  const QName* getName()     const { return theICName.getp(); }
+  ICKind       getICKind()   const { return theICKind; }
+
+  virtual void accept(parsenode_visitor&) const;
+};
+
+class ICColl : public IntegrityConstraintDecl
+{
+protected:
+  rchandle<QName>        theCollName;
+public:
+  ICColl ( const QueryLoc& loc, 
+           bool isUnchecked,
+           bool isAsync,
+           QName* name, 
+           ICKind icKind,
+           QName* collName) :
+    IntegrityConstraintDecl(loc, isUnchecked, isAsync, name, icKind), 
+    theCollName(collName) {}
+  
+  const QName* getCollName() const { return theCollName.getp(); }
+};
+
+class ICCollSimpleCheck : public ICColl
+{
+protected:
+  rchandle<QName>        theCollVarName;
+  exprnode*              theExprSingle;
+
+public:
+  ICCollSimpleCheck ( const QueryLoc& loc, 
+                      bool isUnchecked,
+                      bool isAsync,
+                      QName* name, 
+                      QName* collName,
+                      QName* collVarName,
+                      exprnode* exprSingle) :
+    ICColl(loc, isUnchecked, isAsync, name, 
+           IntegrityConstraintDecl::coll_check_simple, collName), 
+      theCollVarName(collVarName), theExprSingle(exprSingle) {}
+  
+  const QName* getCollVarName() const { return theCollVarName.getp(); }
+  const exprnode* getExpr() const { return theExprSingle; }
+};
+
+class ICCollUniqueKeyCheck : public ICColl
+{
+protected:
+  rchandle<QName>        theCollVarName;
+  rchandle<exprnode>     theExpr;
+
+public:
+  ICCollUniqueKeyCheck ( const QueryLoc& loc, 
+                         bool isUnchecked,
+                         bool isAsync,
+                         QName* name, 
+                         QName* collName,
+                         QName* collVarName,
+                         rchandle<exprnode> expr) :
+    ICColl(loc, isUnchecked, isAsync, name, 
+           IntegrityConstraintDecl::coll_check_unique_key, collName), 
+      theCollVarName(collVarName), theExpr(expr) {}
+  
+  const QName* getCollVarName() const { return theCollVarName.getp(); }
+  const exprnode* getExpr() const { return theExpr.getp(); }
+};
+
+class ICCollForeachNode : public ICColl
+{
+protected:
+  rchandle<QName>        theCollVarName;
+  exprnode*              theExprSingle;
+
+public:
+  ICCollForeachNode ( const QueryLoc& loc, 
+                      bool isUnchecked,
+                      bool isAsync,
+                      QName* name, 
+                      QName* collName,
+                      QName* collVarName,
+                      exprnode* exprSingle) :
+    ICColl(loc, isUnchecked, isAsync, name, 
+           IntegrityConstraintDecl::coll_foreach_node, collName), 
+      theCollVarName(collVarName), theExprSingle(exprSingle) {}
+  
+  const QName* getCollVarName() const { return theCollVarName.getp(); }
+  const exprnode* getExpr() const { return theExprSingle; }
+};
+
+class ICNodeOfType : public IntegrityConstraintDecl
+{
+protected:
+  rchandle<QName>        theNodeVarName;
+  rchandle<parsenode>    theTypeExpr;
+  exprnode*              theExprSingle;
+
+public:
+  ICNodeOfType ( const QueryLoc& loc, 
+                 bool isUnchecked,
+                 bool isAsync,
+                 QName* name, 
+                 QName* nodeVarName,
+                 rchandle<parsenode> typeExpr,
+                 exprnode* exprSingle) :
+    IntegrityConstraintDecl(loc, isUnchecked, isAsync, name, 
+           IntegrityConstraintDecl::node_of_type), 
+      theNodeVarName(nodeVarName), theTypeExpr(typeExpr), 
+      theExprSingle(exprSingle) {}
+  
+  const QName* getNodeVarName() const { return theNodeVarName.getp(); }
+  const parsenode* getTypeExpr() const { return theTypeExpr; }
+  const exprnode* getExpr() const { return theExprSingle; }
+};
+
+
+class ICForeignKey : public IntegrityConstraintDecl
+{
+protected:
+  rchandle<QName>        theFromCollName;
+  rchandle<QName>        theFromNodeVarName;
+  rchandle<exprnode>     theFromExpr;
+  rchandle<QName>        theToCollName;
+  rchandle<QName>        theToNodeVarName;
+  rchandle<exprnode>     theToExpr;
+
+public:
+  ICForeignKey ( const QueryLoc& loc, 
+                 bool isUnchecked,
+                 bool isAsync,
+                 QName* name, 
+                 QName* fromCollName,
+                 QName* fromNodeVarName,
+                 rchandle<exprnode> fromExpr,
+                 QName* toCollName,
+                 QName* toNodeVarName,
+                 rchandle<exprnode> toExpr) :
+    IntegrityConstraintDecl(loc, isUnchecked, isAsync, name, 
+                            IntegrityConstraintDecl::foreign_key), 
+    theFromCollName(fromCollName), theFromNodeVarName(fromNodeVarName),
+    theFromExpr(fromExpr), theToCollName(toCollName), theToExpr(toExpr) {}
+  
+  const QName* getFromCollName() const { return theFromCollName; }
+  const QName* getFromNodeVarName() const { return theFromNodeVarName; }
+  const exprnode* getFromExpr() const { return theFromExpr.getp(); }
+  const QName* getToCollName() const { return theToCollName; }
+  const QName* getToNodeVarName() const { return theToNodeVarName; }
+  const exprnode* getToExpr() const { return theToExpr.getp(); }
+};
+
 /*******************************************************************************
   [36] EnclosedExpr ::= "{" Expr "}"
-********************************************************************************/
+*******************************************************************************/
 class EnclosedExpr : public exprnode
 {
 protected:

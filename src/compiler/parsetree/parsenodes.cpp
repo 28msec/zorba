@@ -905,6 +905,35 @@ void IndexKeyList::accept(parsenode_visitor& v) const
   END_VISITOR();
 }
 
+/***************************************************************************//**
+  IntegrityConstraintDecl ::= "declare" "unchecked"? "integrity" "constraint" 
+                          "on" "collection" QNAME
+*******************************************************************************/
+IntegrityConstraintDecl::IntegrityConstraintDecl (
+    const QueryLoc& loc, 
+    bool isUnchecked,
+    bool isAsync,
+    QName* name,
+    ICKind icKind)
+  :
+  parsenode(loc),
+  theIsUnchecked(isUnchecked),
+  theIsAsync(isAsync),
+  theICName(name),
+  theICKind(icKind)
+{
+}
+
+
+void IntegrityConstraintDecl::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR ();
+  std::cout << "ICDecl::accept: " << 
+    ( theIsUnchecked ? "unchecked" : "" ) << " " << 
+    ( theIsAsync ? "asynchronous" : "" ) << std::endl;
+  END_VISITOR ();
+}
+
 
 /***************************************************************************//**
   IndexKeySpec ::= ExprSingle TypeDeclaration? 

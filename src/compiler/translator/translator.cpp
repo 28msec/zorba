@@ -3215,6 +3215,59 @@ void end_visit(const IndexKeySpec& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 }
 
+/***************************************************************************//**
+  IntegrityConstraintDecl ::= "declare" "unchecked"? "integrity" "constraint"
+
+  Translation of an integrity constraint declaration involves the creation and 
+  setting-up of a ValueIndex obj (see indexing/value_index.h) and the creation
+  in the current sctx (which is the root sctx of the current module) of a
+  binding between the index uri and this ValueIndex obj.
+*******************************************************************************/
+void* begin_visit(const IntegrityConstraintDecl& v) 
+{
+  TRACE_VISIT();
+
+  const QName* qname = v.getName();
+
+  if (!theIsDataModule)
+  {
+    ZORBA_ERROR_LOC_PARAM(XQP0039_INDEX_IN_NON_DATA_MODULE, v.get_location(), 
+                          qname->get_qname(), "");
+  }
+
+  // Expand the index qname (error is raised if qname resolution fails).
+  store::Item_t qnameItem = sctx_p->lookup_fn_qname(qname->get_prefix(),
+                                                    qname->get_localname(),
+                                                    qname->get_location());
+
+  /*ValueIndex_t index = new ValueIndex(theCCB, loc, qnameItem);
+  index->setUnique(v.isUnique());
+  index->setMethod(v.isOrdered() ? ValueIndex::BTREE : ValueIndex::HASH);
+
+  indexstack.push(index);
+  */
+  return no_state;
+}
+
+void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT();
+  /*
+  ValueIndex_t index = indexstack.top();
+  indexstack.pop();
+
+  IndexTools::inferIndexCreators(index);
+
+  // Register the index in the sctx of the current module. Raise error if such
+  // a binding exists already in the sctx.
+  sctx_p->bind_index(index->getName(), index, loc);
+
+  // If this is a library module, register the index in the exported sctx as well.
+  if (export_sctx != NULL)
+    export_sctx->bind_index(index->getName(), index, loc);
+  */
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //

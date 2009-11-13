@@ -927,6 +927,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
     DEFAULT_VISIT (IndexDecl)
   	DEFAULT_VISIT (IndexKeySpec)
   	DEFAULT_VISIT (IndexKeyList)
+    DEFAULT_VISIT (IntegrityConstraintDecl)
   	
     void* begin_visit(const VarDecl& n)
     {
