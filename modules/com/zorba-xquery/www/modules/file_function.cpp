@@ -87,10 +87,13 @@ FileFunction::getFilePathString(
 
     if (lIndex > 0) { // if the file URI has a host
                       // e.g.: file://localhost/C:/my%20file.txt
-      String lHostString = lFileArg.substring(0, lIndex);
-      // only allow "localhost" as the host
-      if (!lHostString.compare("localhost") == 0 ) {
-        lErrorMessage << "Invalid host: \"" << lHostString
+      String lAuthorityString = lFileArg.substring(0, lIndex);
+      // only allow "localhost" as the authoriry
+      // This makes this implementation the same with the Zorba URI type.
+      // If this functionality is changed, please make the same changes
+      // in the Zorba URI type.
+      if (!lAuthorityString.compare("localhost") == 0 ) {
+        lErrorMessage << "Invalid host: \"" << lAuthorityString
             << "\". Only \"localhost\" is allowed as host in a file URI.";
         throwError(lErrorMessage.str(), XPTY0004);
       }

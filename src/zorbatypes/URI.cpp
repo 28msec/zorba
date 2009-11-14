@@ -32,14 +32,12 @@ namespace zorba {
 xqpStringStore_t  URI::decode_file_URI(const xqpStringStore_t& uri)
 {
   // TODO: file://localhost/
-#if defined(WIN32)
+#ifdef WIN32
   if ((uri->byteCompare(0, 8, "file:///") == 0) && 
-        ((uri->byteCompare(9, 1, ":") == 0) || (uri->byteCompare(9, 4, "%3A/") == 0)))
-  {
+      ((uri->byteCompare(9, 1, ":") == 0) || (uri->byteCompare(9, 4, "%3A/") == 0))) {
     xqp_string res(uri->c_str() + 8);
     return res.decodeFromUri().getStore();
-  }
-  else
+  } else
 #endif
     if (uri->byteCompare(0, 8, "file:///") == 0) {
       xqp_string res(uri->c_str() + 7);
@@ -60,7 +58,7 @@ xqpStringStore_t  URI::encode_file_URI(const xqpStringStore_t& uri)
   if (result.indexOf("://") != -1)
     return uri;
 
-#if !defined(UNIX)
+#ifdef WIN32
   result = result.replace("\\\\","/","");
 #endif
   result = xqpString ("/") + result;
@@ -221,7 +219,6 @@ URI::initialize(const xqpString& uri, bool have_base)
   int32_t  lQueryIdx    = lTrimmedURI.indexOf("?");
   int32_t  lFragmentIdx = lTrimmedURI.indexOf("#");
 
-
 #ifdef WIN32
   // on WIN32 we might have a drive specification ("C:")
   // and we don't want to consider this as scheme
@@ -247,7 +244,7 @@ URI::initialize(const xqpString& uri, bool have_base)
       (lColonIdx > lFragmentIdx && lFragmentIdx != -1)) {
 
     // A standalone base is a valid URI
-    if ( (valid) && (lColonIdx == 0 || (!have_base && lFragmentIdx != 0)) ) {
+    if (valid && (lColonIdx == 0 || (!have_base && lFragmentIdx != 0))) {
       ZORBA_ERROR_DESC_OSS(XQST0046, "URI \"" << lTrimmedURI << "\" doesn't have an URI scheme");
     }
 
@@ -261,51 +258,49 @@ URI::initialize(const xqpString& uri, bool have_base)
    * two slashes means generic URI syntax, so we get the authority
    */
   xqpString lAuthUri = lTrimmedURI.substr(lIndex, lTrimmedURILength - lIndex);
-
-  if (lAuthUri.indexOf("//") == 0)
-  {
-    if((lIndex + 2) >= lTrimmedURILength) {
+  if (lAuthUri.substr(0, 2).byteEqual("//", 2)) {
+    lIndex += 2;
+    if (lIndex >= lTrimmedURILength) {
       ZORBA_ERROR_DESC_OSS(XQST0046, "Authority is misssing in URI \"" << lTrimmedURI << "\" .");
-    }
-    else {
-      lIndex += 2;
-
+    } else {
       int lStartPos = lIndex;
 
-      // get authority - everything up to path, query or fragment
+      // get authority
+      // (everything up to path, query, fragment or the end of the URI)
+      // RFC3986, 3.2, par. 2
       char c;
-      while ( lIndex < lTrimmedURILength ) {
+      while (lIndex < lTrimmedURILength) {
         c = lTrimmedURI.getStore()->str().at(lIndex);
-        if ( c == '/' || c == '?' || c == '#' ) {
+        if (c == '/' || c == '?' || c == '#') {
           break;
         }
         ++lIndex;
       }
 
-      #ifdef WIN32
-      if (theScheme.byteEqual("file", 4))
-      {
-        if((lIndex > lStartPos) || (c != '/'))
-        {//WIN32 special case
-          //found authority after file:// ... it must be an error
-          ZORBA_ERROR_DESC_OSS(XQST0046, "On Windows the \"file\" scheme must be specified with \"file:///\" followed by absolute file path.");
-        }
-        else
-        {
-          lStartPos++;
-          lIndex++;//jump over the third '/'
-        }
-      }
-      #endif
       // if we found authority, parse it out, otherwise we set the
       // host to empty string
       if (lIndex > lStartPos) {
         lAuthUri = lTrimmedURI.substr(lStartPos, lIndex - lStartPos);
+
+        // For "file" scheme only allow "localhost" as authority.
+        // This makes this implementation the same with the file module.
+        // If this functionality is changed, please make the same changes
+        // in the file module.
+        if (theScheme.byteEqual("file", 4) &&
+            !lAuthUri.byteEqual("localhost", 9)) {
+          ZORBA_ERROR_DESC_OSS(XQST0046, "Invalid authority value for the \"file\" scheme: \"" << lAuthUri << "\". The only accepted values are empty string (file:///) and \"localhost\" (file://localhost/).");
+        }
+
         initializeAuthority(lAuthUri);
       } else {
         set_host("");
       }
     }
+  // do not allow constructs like: file:D:/myFile or http:myFile
+  } else if (theScheme.byteEqual("file", 4) ||
+      theScheme.byteEqual("http", 4) ||
+      theScheme.byteEqual("https", 5)) {
+        ZORBA_ERROR_DESC_OSS(XQST0046, "Invalid URI syntax for the \"" << theScheme << "\" scheme.");
   }
 
   // stop, if we're done here
@@ -1039,20 +1034,21 @@ URI::build_path_notation() const
   std::ostringstream lPathNotation;
 
   std::string lToTokenize;
-  if ( is_set(Host) ) {
+  if (is_set(Host)) {
     lToTokenize = theHost.c_str();
   } else {
     lToTokenize = theRegBasedAuthority.c_str();
   }
 
-  std::string::size_type lastPos = lToTokenize.find_last_not_of(".", lToTokenize.length());
+  std::string::size_type lastPos = 
+      lToTokenize.find_last_not_of(".", lToTokenize.length());
   std::string::size_type pos = lToTokenize.find_last_of(".", lastPos);
-  if (pos == std::string::npos)
+  if (pos == std::string::npos) {
     lPathNotation << lToTokenize;
+  }
 
   while (std::string::npos != pos) {
-    lPathNotation << lToTokenize.substr(pos+1, lastPos-pos) 
-                  << filesystem_path::get_path_separator();
+    lPathNotation << lToTokenize.substr(pos + 1, lastPos - pos) << "/";
 
     lastPos = pos - 1;
     pos = lToTokenize.find_last_of(".", lastPos);
@@ -1061,10 +1057,7 @@ URI::build_path_notation() const
     }
   }
 
-  if ( is_set(Path) ) {
-    if (thePath.indexOf("/") !=0 && thePath.length() != 0) {
-      lPathNotation << filesystem_path::get_path_separator();
-    }
+  if (is_set(Path)) {
     lPathNotation << thePath;
   } 
   thePathNotation = lPathNotation.str();
@@ -1088,10 +1081,6 @@ URI::build_full_text() const
         lURI << theUserInfo << "@";
 
       lURI << theHost;
-#ifdef WIN32
-      if(theScheme.byteEqual("file"))
-        lURI << "/";
-#endif
 
       if ( is_set(Port) )
         lURI << ":" << thePort;

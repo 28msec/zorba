@@ -324,16 +324,30 @@ StandardModuleURIResolver::computeLibraryName(const URI aURI)
 {
   xqpString lPathNotation(aURI.toPathNotation());
 
-  // get the branching path and the name of the file
-  file lPotentialFileName(lPathNotation.getStore()->str());
-  file lBranchPath = lPotentialFileName.branch_path();
-  std::string lFilename = 
-      lPathNotation.getStore()->str().substr(lBranchPath.get_path().length()+1);
+  // get the module file name
+  std::string lRelativePath(lPathNotation.c_str());
+  size_t lIndexOfLastSlash = lRelativePath.find_last_of("/");
 
-  // remove .xq from the end of the file
-  size_t lIndexOfXQ = lFilename.find_last_of(".xq");
-  if (lIndexOfXQ != std::string::npos) {
-    lFilename.erase(lIndexOfXQ - 2);
+  std::string lFileName = "";
+  std::string lBranchPath = "";
+  
+  // is the URI ends in '/'
+  if (lIndexOfLastSlash == lRelativePath.length()) {
+    lBranchPath = lRelativePath;
+  } else {
+    // is '/' is not found
+    if (lIndexOfLastSlash == std::string::npos) {
+      lFileName = lRelativePath;
+    } else {
+      lFileName = lRelativePath.substr(lIndexOfLastSlash + 1);
+      lBranchPath = lRelativePath.substr(0, lIndexOfLastSlash + 1);
+    }
+
+    // remove .xq from the end of the file if present
+    size_t lIndexOfXQ = lFileName.find_last_of(".xq");
+    if (lIndexOfXQ != std::string::npos) {
+      lFileName.erase(lIndexOfXQ - 2);
+    }
   }
 
   // create the name of the file
@@ -341,17 +355,17 @@ StandardModuleURIResolver::computeLibraryName(const URI aURI)
   // apple: libmodule.dylib
   // other unix: libmodule.so
   std::ostringstream lLibraryName;
-  lLibraryName << lBranchPath.get_path()
+  lLibraryName << lBranchPath
 #ifdef WIN32
-      << "\\" << lFilename << ".dll";
+      << lFileName << ".dll";
+#else
+#ifdef APPLE
+      << "lib" << lFileName << ".dylib";
+#else 
+      << "lib" << lFileName << ".so";
 #endif
-#ifdef UNIX
-#  ifdef APPLE
-      << "/lib" << lFilename << ".dylib";
-#  else 
-      << "/lib" << lFilename << ".so";
-#  endif
 #endif
+
   return lLibraryName.str();
 }
 

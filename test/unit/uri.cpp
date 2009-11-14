@@ -53,6 +53,20 @@ int uri(int argc, char* argv[])
   {
     {
       "",
+      "http:///",
+      "http:///",
+      "http",
+      0,
+      "",
+      "",
+      "",
+      "/",
+      "",
+      "",
+      "/" // path notation
+    },
+    {
+      "",
       "http://www.zorba-xquery.com/",
       "http://www.zorba-xquery.com/",
       "http",
@@ -488,33 +502,6 @@ int uri(int argc, char* argv[])
     },
     {
       "",
-      "file://d:/a/b/c",
-      "file://d:/a/b/c",
-      "file",
-      0,
-      "",
-      "",
-      "d:",
-      "/a/b/c",
-      "",
-      "",
-      "d:/a/b/c" // path notation
-    },
-//     {
-//       "file://a",
-//       "/a/b/c",
-//       "file://a/a/b/c",
-//       "file",
-//       0,
-//       "",
-//       "a",
-//       "",
-//       "/a/b/c",
-//       "",
-//       ""
-//     },
-    {
-      "",
       "http://www.msb.de",
       "http://www.msb.de",
       "http",
@@ -540,6 +527,48 @@ int uri(int argc, char* argv[])
       "",
       "",
       "de/msb/www/lib/helpers" // path notation
+    },
+    {
+      "",
+      "file:///d:/a/b/c",
+      "file:///d:/a/b/c",
+      "file",
+      0,
+      "",
+      "",
+      "",
+      "/d:/a/b/c",
+      "",
+      "",
+      "/d:/a/b/c" // path notation
+    },
+    {
+      "",
+      "file://localhost/d:/a/b/c",
+      "file://localhost/d:/a/b/c",
+      "file",
+      0,
+      "",
+      "localhost",
+      "",
+      "/d:/a/b/c",
+      "",
+      "",
+      "localhost/d:/a/b/c" // path notation
+    },
+    {
+      "file://localhost",
+      "/a/b/c",
+      "file://localhost/a/b/c",
+      "file",
+      0,
+      "",
+      "localhost",
+      "",
+      "/a/b/c",
+      "",
+      "",
+      "localhost/a/b/c" // path notation
     }
   }; // URITestEntry tests[]
 
@@ -548,7 +577,7 @@ int uri(int argc, char* argv[])
   try {
     for (unsigned int i = 0; i < test_count; ++i) {
       std::cout << "executing test number " << i << " with uri " << tests[i].uri << std::endl;
-      
+
       zorba::URI uri;
       zorba::URI relativized;
       zorba::URI base;
@@ -603,15 +632,11 @@ int uri(int argc, char* argv[])
           std::cerr << "relativized uri " << relativized.toString() << std::endl;
         }
       }
-#ifdef UNIX
-      // don't test on Windows because expected result of the path notation
-      // should contain backslashes
       if (uri.toPathNotation() != tests[i].path_notation) {
         std::cerr << "path notation " << uri.toPathNotation() << " is not equal to " 
                   << tests[i].path_notation << std::endl;
         return 12;
       }
-#endif
       std::cout << "result: " << uri.toString() << std::endl;
       std::cout << "path notation: " << uri.toPathNotation() << std::endl;
       std::cout << "--------------------------------------------------" << std::endl;
