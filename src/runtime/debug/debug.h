@@ -20,8 +20,8 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
-#ifndef ZORBA_RUNTIME_MISC_MISC_H
-#define ZORBA_RUNTIME_MISC_MISC_H
+#ifndef ZORBA_RUNTIME_DEBUG_DEBUG_H
+#define ZORBA_RUNTIME_DEBUG_DEBUG_H
 
 
 #include "common/shared_types.h"
@@ -149,74 +149,6 @@ public:
     thePrintToConsole(aPrintToConsole) {}
 
   virtual ~PrintIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * fn:resolve-uri
- * 
- * Author: Zorba Team * 
- */
-class ResolveUriIterator : public NaryBaseIterator <ResolveUriIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(ResolveUriIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ResolveUriIterator,
-    NaryBaseIterator <ResolveUriIterator, PlanIteratorState>);
-
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator <ResolveUriIterator, PlanIteratorState>*)this);
-  }
-
-  ResolveUriIterator(
-    static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <ResolveUriIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
-
-  virtual ~ResolveUriIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * fn:error
- * 
- * Author: Zorba Team * 
- */
-class ErrorIterator : public NaryBaseIterator <ErrorIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(ErrorIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ErrorIterator,
-    NaryBaseIterator <ErrorIterator, PlanIteratorState>);
-
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator <ErrorIterator, PlanIteratorState>*)this);
-  }
-
-  ErrorIterator(
-    static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <ErrorIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
-
-  virtual ~ErrorIterator();
 
   void accept(PlanIterVisitor& v) const;
 

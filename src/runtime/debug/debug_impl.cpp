@@ -18,15 +18,11 @@
 
 #include "api/serialization/serializer.h"
 
-#include "zorbatypes/URI.h"
-#include "zorbaerrors/error_manager.h"
-#include "errors/user_error.h"
-
 #include "context/static_context.h"
 
 #include "compiler/api/compilercb.h"
 
-#include "runtime/misc/misc.h"
+#include "runtime/debug/debug.h"
 #include "runtime/util/iterator_impl.h"
 
 #include "store/api/item.h"
@@ -128,120 +124,6 @@ bool PrintIterator::nextImpl (store::Item_t& result, PlanState& planState) const
     resString = new xqpStringStore(os.str());
     STACK_PUSH(GENV_ITEMFACTORY->createString(result, resString) , state);
   }
-  STACK_END (state);
-}
-
-// 8.1 fn:resolve-uri
-bool
-ResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Item_t item;
-  xqpStringStore_t strRelative;
-  xqpStringStore_t strBase;
-  xqpStringStore_t strResult;
-  URI              baseURI;
-  URI              resolvedURI;
-
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  if (consumeNext(item, theChildren[0], planState ))
-  {
-    strRelative = item->getStringValue();
-
-    //If first param is an absolute URI reference, it is returned unchanged.
-    try{
-      resolvedURI = URI(&*strRelative);
-    } catch (error::ZorbaError&) {}
-
-    if (resolvedURI.is_absolute()) {
-      strResult = strRelative;
-    }
-    else 
-    {
-      try 
-      {
-        if (theChildren.size() == 1) 
-        {
-          // use base-uri from static context
-          strBase = theSctx->baseuri().getStore();
-          if (strBase->empty()) 
-          {
-            ZORBA_ERROR_LOC_DESC(FONS0005, loc,
-                                 "base-uri is not initialized in the static context");
-          }
-        }
-        else if (consumeNext(item, theChildren[1], planState )) 
-        {
-          // two parameters => get baseuri from the second argument
-          strBase = item->getStringValue();
-        } 
-        else
-        {
-          ZORBA_ERROR_LOC_DESC(FORG0009, loc, "Can't treat empty-sequence as base-uri");
-        }
-        baseURI = URI(&*strBase, true);
-      } 
-      catch (error::ZorbaError& e) 
-      {
-        ZORBA_ERROR_LOC_DESC(FORG0002, loc,
-                             "String {" + strBase->str() +  "} is not a valid URI: " + e.theDescription);
-      }
-
-      try 
-      {
-        resolvedURI = URI(baseURI, &*strRelative, true); // resolve with baseURI or return strRelative if it's a valid absolute URI
-        strResult = resolvedURI.toString().getStore();
-      }
-      catch (error::ZorbaError& e) 
-      {
-        ZORBA_ERROR_LOC_DESC(FORG0002, loc, e.theDescription);
-      }
-    }
-    STACK_PUSH(GENV_ITEMFACTORY->createString(result, strResult), state);
-  } // else return empty sequence if the first argument is the empty sequence
-
-  STACK_END (state);
-}
-
-
-// 3 The Error Function
-bool
-ErrorIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  static const char *err_ns = "http://www.w3.org/2005/xqt-errors";
-  store::Item_t err_qname;
-  GENV_ITEMFACTORY->createQName (err_qname, err_ns, "err", "FOER0000");
-  store::Item_t lTmpQName;
-  store::Item_t lTmpErrorObject;
-  store::Item_t lTmpDescr;
-  xqp_string ns;
-  xqp_string description;
-  std::vector<store::Item_t> lErrorObject; 
-
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  if (theChildren.size () >= 1) {
-    if (consumeNext(lTmpQName, theChildren[0].getp(), planState))
-      err_qname = lTmpQName;
-  }
-  if (theChildren.size () >= 2) {
-    consumeNext(lTmpDescr, theChildren[1].getp(), planState);
-    description = lTmpDescr->getStringValue ().getp();
-  }
-  if (theChildren.size() == 3) {
-    while (consumeNext(lTmpErrorObject, theChildren[2].getp(), planState)) {
-      lErrorObject.push_back(lTmpErrorObject);
-    }
-  }
-
-  {
-    error::ZorbaUserError lError(err_qname, description, loc, 
-                                 __FILE__, __LINE__, lErrorObject);
-    throw lError;
-  }
-
   STACK_END (state);
 }
 

@@ -23,13 +23,16 @@
 #include "functions/signature.h"
 
 #include "functions/func_accessors.h"
+#include "functions/func_any_uri.h"
 #include "functions/accessors_impl.h"
 #include "functions/func_booleans.h"
 #include "functions/booleans_impl.h"
 #include "functions/func_convertors.h"
 #include "functions/func_context.h"
+#include "functions/func_debug.h"
 #include "functions/func_durations_dates_times.h"
 #include "functions/durations_dates_times_impl.h"
+#include "functions/func_fnerror.h"
 #include "functions/func_schema.h"
 #include "functions/func_strings.h"
 #include "functions/func_sequences.h"
@@ -38,8 +41,6 @@
 #include "functions/func_nodes.h"
 #include "functions/func_numerics.h"
 #include "functions/func_maths.h"
-
-#include "functions/func_misc.h"
 
 #include "functions/Collections.h"
 #include "functions/DataDefinitionLanguage.h"
@@ -80,22 +81,24 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   theFunctions = new function*[FunctionConsts::FN_MAX_FUNC];
 
   populate_context_accessors(sctx);
+  populate_context_any_uri(sctx);
   populate_context_accessors_impl(sctx);
   populate_context_booleans(sctx);
   populate_context_booleans_impl(sctx);
   populate_context_context(sctx);
   populate_context_convertors(sctx);
+  populate_context_debug(sctx);
   populate_context_durations_dates_times(sctx);
   populate_context_durations_dates_times_impl(sctx);
+  populate_context_fnerror(sctx);
+  populate_context_fnput(sctx);
   populate_context_maths(sctx);
-  populate_context_misc(sctx);
   populate_context_nodes(sctx);
   populate_context_numerics(sctx);
   populate_context_schema(sctx);
   populate_context_strings(sctx);
   populate_context_sequences(sctx);
   populate_context_sequences_impl(sctx);
-  populate_context_fnput(sctx);
 
   populateContext_Arithmetics(sctx);
   populateContext_Numerics(sctx);

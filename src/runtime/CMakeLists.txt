@@ -95,7 +95,7 @@ LIST(APPEND RUNTIME_SRCS
     core/tuple_iterators.cpp
     core/internal_operators.cpp
     durations_dates_times/DurationsDatesTimesImpl.cpp
-#     debug/debug_iterators.cpp
+    debug/debug_impl.cpp
     debug/zorba_debug_iterator.cpp
     indexing/value_index_impl.cpp
     indexing/context_index_impl.cpp

@@ -42,6 +42,8 @@ namespace zorba{
 
     class RootIterator;
 
+    class ResolveUriIterator;
+
     class IsSameNodeIterator;
 
     class NodeBeforeIterator;
@@ -65,6 +67,12 @@ namespace zorba{
     class ZorbaJsonMLParseIterator;
 
     class ZorbaJsonMLSerializeIterator;
+
+    class TraceIterator;
+
+    class ReadLineIterator;
+
+    class PrintIterator;
 
     class YearsFromDurationIterator;
 
@@ -109,6 +117,8 @@ namespace zorba{
     class TimezoneFromTimeIterator;
 
     class EvalIterator;
+
+    class ErrorIterator;
 
     class FnPutIterator;
 
@@ -161,16 +171,6 @@ namespace zorba{
     class ModfIterator;
 
     class FrexpIterator;
-
-    class TraceIterator;
-
-    class ReadLineIterator;
-
-    class PrintIterator;
-
-    class ResolveUriIterator;
-
-    class ErrorIterator;
 
     class NodeReferenceIterator;
 
@@ -336,6 +336,9 @@ public:
     virtual void beginVisit ( const RootIterator& ) = 0;
     virtual void endVisit   ( const RootIterator& ) = 0;
 
+    virtual void beginVisit ( const ResolveUriIterator& ) = 0;
+    virtual void endVisit   ( const ResolveUriIterator& ) = 0;
+
     virtual void beginVisit ( const IsSameNodeIterator& ) = 0;
     virtual void endVisit   ( const IsSameNodeIterator& ) = 0;
 
@@ -371,6 +374,15 @@ public:
 
     virtual void beginVisit ( const ZorbaJsonMLSerializeIterator& ) = 0;
     virtual void endVisit   ( const ZorbaJsonMLSerializeIterator& ) = 0;
+
+    virtual void beginVisit ( const TraceIterator& ) = 0;
+    virtual void endVisit   ( const TraceIterator& ) = 0;
+
+    virtual void beginVisit ( const ReadLineIterator& ) = 0;
+    virtual void endVisit   ( const ReadLineIterator& ) = 0;
+
+    virtual void beginVisit ( const PrintIterator& ) = 0;
+    virtual void endVisit   ( const PrintIterator& ) = 0;
 
     virtual void beginVisit ( const YearsFromDurationIterator& ) = 0;
     virtual void endVisit   ( const YearsFromDurationIterator& ) = 0;
@@ -437,6 +449,9 @@ public:
 
     virtual void beginVisit ( const EvalIterator& ) = 0;
     virtual void endVisit   ( const EvalIterator& ) = 0;
+
+    virtual void beginVisit ( const ErrorIterator& ) = 0;
+    virtual void endVisit   ( const ErrorIterator& ) = 0;
 
     virtual void beginVisit ( const FnPutIterator& ) = 0;
     virtual void endVisit   ( const FnPutIterator& ) = 0;
@@ -515,21 +530,6 @@ public:
 
     virtual void beginVisit ( const FrexpIterator& ) = 0;
     virtual void endVisit   ( const FrexpIterator& ) = 0;
-
-    virtual void beginVisit ( const TraceIterator& ) = 0;
-    virtual void endVisit   ( const TraceIterator& ) = 0;
-
-    virtual void beginVisit ( const ReadLineIterator& ) = 0;
-    virtual void endVisit   ( const ReadLineIterator& ) = 0;
-
-    virtual void beginVisit ( const PrintIterator& ) = 0;
-    virtual void endVisit   ( const PrintIterator& ) = 0;
-
-    virtual void beginVisit ( const ResolveUriIterator& ) = 0;
-    virtual void endVisit   ( const ResolveUriIterator& ) = 0;
-
-    virtual void beginVisit ( const ErrorIterator& ) = 0;
-    virtual void endVisit   ( const ErrorIterator& ) = 0;
 
     virtual void beginVisit ( const NodeReferenceIterator& ) = 0;
     virtual void endVisit   ( const NodeReferenceIterator& ) = 0;

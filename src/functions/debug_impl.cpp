@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-#include "functions/func_misc.h"
-#include "functions/misc_impl.h"
+#include "functions/func_debug.h"
 
 #include "context/static_context.h"
 
 #include "compiler/api/compilercb.h"
 
-#include "runtime/misc/misc.h"
+#include "runtime/debug/debug.h"
 
 namespace zorba 
 {
@@ -48,7 +47,5 @@ PlanIter_t fn_trace::codegen(
     return argv[0];
   }
 }
-
-fn_error::fn_error(const signature& sig) : function (sig) {}
 
 } // namespace zorba

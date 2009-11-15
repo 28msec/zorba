@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/*******************************************************************************
+* 3 The Error Function
+********************************************************************************/
+-->
+
+<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+    
+<!--
+/*******************************************************************************
+ * 3 The Error Function
+********************************************************************************/
+-->
+  
+  <zorba:iterator name="ErrorIterator">
+    
+    <zorba:description author="Zorba Team">fn:error</zorba:description>
+    
+    <zorba:function isVacuous="true" isFnError="true">
+      <zorba:signature localname="error" prefix="fn">
+        <zorba:output>none</zorba:output>
+      </zorba:signature>
+      <zorba:signature localname="error" prefix="fn">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:output>none</zorba:output>
+      </zorba:signature>
+      <zorba:signature localname="error" prefix="fn">
+        <zorba:param>xs:QName?</zorba:param>
+        <zorba:param>xs:string</zorba:param>
+        <zorba:output>none</zorba:output>
+      </zorba:signature>
+      <zorba:signature localname="error" prefix="fn">
+        <zorba:param>xs:QName?</zorba:param>
+        <zorba:param>xs:string</zorba:param>
+        <zorba:param>item()*</zorba:param>
+        <zorba:output>none</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+    
+  </zorba:iterator>
+</zorba:iterators>

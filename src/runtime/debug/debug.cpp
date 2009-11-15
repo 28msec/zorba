@@ -22,15 +22,11 @@
 // ******************************************
 
 #include "runtime/visitors/planiter_visitor.h"
-#include "runtime/misc/misc.h"
+#include "runtime/debug/debug.h"
 #include "system/globalenv.h"
 
 
-#include "system/globalenv.h"
-#include "runtime/visitors/planiter_visitor.h"
 #include "store/api/item.h"
-#include "store/api/iterator.h"
-#include "store/api/item_factory.h"
 
 namespace zorba {
 
@@ -134,62 +130,6 @@ void PrintIterator::accept(PlanIterVisitor& v) const {
 PrintIterator::~PrintIterator() {}
 
 // </PrintIterator>
-
-
-// <ResolveUriIterator>
-const char* ResolveUriIterator::class_name_str = "ResolveUriIterator";
-ResolveUriIterator::class_factory<ResolveUriIterator>
-ResolveUriIterator::g_class_factory;
-
-const serialization::ClassVersion 
-ResolveUriIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int ResolveUriIterator::class_versions_count =
-sizeof(ResolveUriIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void ResolveUriIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-ResolveUriIterator::~ResolveUriIterator() {}
-
-// </ResolveUriIterator>
-
-
-// <ErrorIterator>
-const char* ErrorIterator::class_name_str = "ErrorIterator";
-ErrorIterator::class_factory<ErrorIterator>
-ErrorIterator::g_class_factory;
-
-const serialization::ClassVersion 
-ErrorIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int ErrorIterator::class_versions_count =
-sizeof(ErrorIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void ErrorIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-ErrorIterator::~ErrorIterator() {}
-
-// </ErrorIterator>
 
 
 

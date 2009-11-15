@@ -22,8 +22,8 @@
 // ******************************************
 
 
-#include "runtime/misc/misc.h"
-#include "functions/func_misc.h"
+#include "runtime/debug/debug.h"
+#include "functions/func_debug.h"
 
 
 namespace zorba{
@@ -51,27 +51,7 @@ PlanIter_t op_zorba_print::codegen(
   return new PrintIterator ( sctx, loc, argv);
 }
 
-PlanIter_t fn_resolve_uri::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new ResolveUriIterator ( sctx, loc, argv);
-}
-
-PlanIter_t fn_error::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new ErrorIterator ( sctx, loc, argv);
-}
-
-void populate_context_misc(static_context* sctx) {
+void populate_context_debug(static_context* sctx) {
   DECL(sctx, fn_trace,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","trace"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
@@ -88,39 +68,6 @@ void populate_context_misc(static_context* sctx) {
       (createQName("http://www.zorba-xquery.com/zorba/internal-functions","op-zorba","print"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.EMPTY_TYPE));
-
-
-  DECL(sctx, fn_resolve_uri,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","resolve-uri"),
-      GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
-      GENV_TYPESYSTEM.STRING_TYPE_ONE,
-      GENV_TYPESYSTEM.ANY_URI_TYPE_QUESTION));
-
-
-  DECL(sctx, fn_error,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","error"),
-      GENV_TYPESYSTEM.NONE_TYPE));
-
-
-  DECL(sctx, fn_error,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","error"),
-      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
-      GENV_TYPESYSTEM.NONE_TYPE));
-
-
-  DECL(sctx, fn_error,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","error"),
-      GENV_TYPESYSTEM.QNAME_TYPE_QUESTION,
-      GENV_TYPESYSTEM.STRING_TYPE_ONE,
-      GENV_TYPESYSTEM.NONE_TYPE));
-
-
-  DECL(sctx, fn_error,
-      (createQName("http://www.w3.org/2005/xpath-functions","fn","error"),
-      GENV_TYPESYSTEM.QNAME_TYPE_QUESTION,
-      GENV_TYPESYSTEM.STRING_TYPE_ONE,
-      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-      GENV_TYPESYSTEM.NONE_TYPE));
 
 }
 

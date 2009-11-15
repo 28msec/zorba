@@ -85,20 +85,6 @@ UNARY_ITER(FnAdjustToTimeZoneIterator_1);
 /*
 10.7.2 fn:adjust-date-to-timezone
 10.7.3 fn:adjust-time-to-timezone
-10.8 Arithmetic Operators on Durations, Dates and Times
-10.8.1 op:subtract-dateTimes
-10.8.2 op:subtract-dates
-10.8.3 op:subtract-times
-10.8.4 op:add-yearMonthDuration-to-dateTime
-10.8.5 op:add-dayTimeDuration-to-dateTime
-10.8.6 op:subtract-yearMonthDuration-from-dateTime
-10.8.7 op:subtract-dayTimeDuration-from-dateTime
-10.8.8 op:add-yearMonthDuration-to-date
-10.8.9 op:add-dayTimeDuration-to-date
-10.8.10 op:subtract-yearMonthDuration-from-date
-10.8.11 op:subtract-dayTimeDuration-from-date
-10.8.12 op:add-dayTimeDuration-to-time
-10.8.13 op:subtract-dayTimeDuration-from-time
 */
 BINARY_ITER(FnAdjustToTimeZoneIterator_2);
 

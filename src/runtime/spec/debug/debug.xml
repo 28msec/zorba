@@ -3,19 +3,13 @@
 <!--
 /*******************************************************************************
 * Debug iterators (trace, read-line, print)
-* 8.1 fn:resolve-uri
-* 3 The Error Function
 ********************************************************************************/
 -->
 
 <zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
     
 <zorba:source>
-    <zorba:include form="Quoted">system/globalenv.h</zorba:include>
-    <zorba:include form="Quoted">runtime/visitors/planiter_visitor.h</zorba:include>
     <zorba:include form="Quoted">store/api/item.h</zorba:include>
-    <zorba:include form="Quoted">store/api/iterator.h</zorba:include>
-    <zorba:include form="Quoted">store/api/item_factory.h</zorba:include>
 </zorba:source>
     
 <!--
@@ -89,58 +83,4 @@
   
 </zorba:iterator>
   
-
-<!--
-/*******************************************************************************
- * 8.1 fn:resolve-uri
-********************************************************************************/
--->
-  
-  <zorba:iterator name="ResolveUriIterator">
-    
-    <zorba:description author="Zorba Team">fn:resolve-uri</zorba:description>
-    
-    <zorba:function requiresDynamicContext="true">
-      <zorba:signature localname="resolve-uri" prefix="fn">
-        <zorba:param>xs:string?</zorba:param>
-        <zorba:param>xs:string</zorba:param>
-        <zorba:output>xs:anyURI?</zorba:output>
-      </zorba:signature>
-    </zorba:function>
-    
-  </zorba:iterator>
-
-
-<!--
-/*******************************************************************************
- * 3 The Error Function
-********************************************************************************/
--->
-  
-  <zorba:iterator name="ErrorIterator">
-    
-    <zorba:description author="Zorba Team">fn:error</zorba:description>
-    
-    <zorba:function isVacuous="true" isFnError="true">
-      <zorba:signature localname="error" prefix="fn">
-        <zorba:output>none</zorba:output>
-      </zorba:signature>
-      <zorba:signature localname="error" prefix="fn">
-        <zorba:param>xs:QName</zorba:param>
-        <zorba:output>none</zorba:output>
-      </zorba:signature>
-      <zorba:signature localname="error" prefix="fn">
-        <zorba:param>xs:QName?</zorba:param>
-        <zorba:param>xs:string</zorba:param>
-        <zorba:output>none</zorba:output>
-      </zorba:signature>
-      <zorba:signature localname="error" prefix="fn">
-        <zorba:param>xs:QName?</zorba:param>
-        <zorba:param>xs:string</zorba:param>
-        <zorba:param>item()*</zorba:param>
-        <zorba:output>none</zorba:output>
-      </zorba:signature>
-    </zorba:function>
-    
-  </zorba:iterator>
 </zorba:iterators>

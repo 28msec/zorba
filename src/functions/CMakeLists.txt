@@ -51,9 +51,10 @@ LIST(APPEND FUNCTIONS_SRCS
     # computeAnnotation, and specialize
     accessors_impl.cpp
     booleans_impl.cpp
+    debug_impl.cpp
     durations_dates_times_impl.cpp
     sequences_impl.cpp
-    misc_impl.cpp
+    fnerror_impl.cpp
     Alexis.cpp
     arithmetic.cpp
     Collections.cpp

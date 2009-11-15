@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/*******************************************************************************
+* 8.1 fn:resolve-uri
+********************************************************************************/
+-->
+
+<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+    
+<!--
+/*******************************************************************************
+ * 8.1 fn:resolve-uri
+********************************************************************************/
+-->
+  
+<zorba:iterator name="ResolveUriIterator">
+  
+  <zorba:description author="Zorba Team">fn:resolve-uri</zorba:description>
+  
+  <zorba:function requiresDynamicContext="true">
+    <zorba:signature localname="resolve-uri" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:anyURI?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+
+</zorba:iterators>

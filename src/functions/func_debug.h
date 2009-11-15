@@ -22,8 +22,8 @@
 // ******************************************
 
 
-#ifndef ZORBA_FUNCTIONS_MISC_H
-#define ZORBA_FUNCTIONS_MISC_H
+#ifndef ZORBA_FUNCTIONS_DEBUG_H
+#define ZORBA_FUNCTIONS_DEBUG_H
 
 
 #include "common/shared_types.h"
@@ -33,7 +33,7 @@
 namespace zorba{
 
 
-void populate_context_misc(static_context* sctx);
+void populate_context_debug(static_context* sctx);
 
 
 
@@ -79,36 +79,6 @@ public:
   }
 
   bool requires_dyn_ctx() const { return true; }
-
-  CODEGEN_DECL();
-};
-
-
-//fn:resolve-uri
-class fn_resolve_uri : public function
-{
-public:
-  fn_resolve_uri(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_RESOLVE_URI_2)
-  {
-  }
-
-  bool requires_dyn_ctx() const { return true; }
-
-  CODEGEN_DECL();
-};
-
-
-//fn:error
-class fn_error : public function
-{
-public:
-  fn_error(const signature& sig);
-
-  bool isFnError() const { return true; }
-
-  expr_script_kind_t getUpdateType() const { return VACUOUS_EXPR; }
 
   CODEGEN_DECL();
 };
