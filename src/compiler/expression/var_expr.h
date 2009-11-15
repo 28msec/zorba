@@ -103,7 +103,9 @@ public:
   };
 
 protected:
-  static int var_expr_count;
+  static ulong   theVarCounter;
+
+  ulong          theUniqueId;
 
   var_kind       theKind;
   store::Item_t  theName;
@@ -111,8 +113,6 @@ protected:
 
   flwor_clause * theFlworClause;
   copy_clause  * theCopyClause;
-  
-  int            unique_id;
 
 public:
   SERIALIZABLE_CLASS(var_expr)
@@ -127,13 +127,13 @@ public:
         short sctx,
         const QueryLoc& loc,
         var_kind k,
-        store::Item_t name);
+        store::Item* name);
 
   expr_kind_t get_expr_kind() const { return var_expr_kind; }
 
-  int get_unique_id() const { return unique_id; }
+  ulong get_unique_id() const { return theUniqueId; }
 
-  store::Item_t get_varname() const;
+  store::Item* get_name() const;
 
   var_kind get_kind() const { return theKind; }
 

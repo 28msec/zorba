@@ -129,11 +129,21 @@ bool HashIndex::CompareFunction::equal(
     const store::IndexKey* key1,
     const store::IndexKey* key2) const
 {
-  for (ulong i = 0; i < theNumColumns; i++)
+  for (ulong i = 0; i < theNumColumns; ++i)
   {
+    const store::Item_t& i1 = (*key1)[i];
+    const store::Item_t& i2 = (*key2)[i];
+
+    if (i1 == NULL && i2 == NULL)
+      continue;
+
+    if (i1 == NULL || i2 == NULL)
+      return false;
+
     if (! (*key1)[i]->equals((*key2)[i].getp(), theTimezone, theCollators[i]))
       return false;
   }
+
   return true;
 }
 
@@ -181,40 +191,35 @@ void HashIndex::clear()
 
 
 /*******************************************************************************
-
+  Insert the given item in the value set of the given key. If the key is not
+  in the index already, then the key itself is inserted as well. Return true
+  if the key was already in the index, false otherwise
 ********************************************************************************/
-bool HashIndex::insert(store::IndexKey& key, store::Item_t& value)
+bool HashIndex::insert(const store::IndexKey* key, store::Item_t& value)
 {
-  if (key.size() != theNumColumns)
+  if (key->size() != theNumColumns)
   {
     ZORBA_ERROR_PARAM(STR0003_INDEX_PARTIAL_KEY_INSERT,
-                      theQname->getStringValue()->c_str(), key.toString());
+                      theQname->getStringValue()->c_str(), key->toString());
   }
 
-  ValueSet* valueSet = NULL;
+  store::IndexValue* valueSet = NULL;
 
   if (!isUnique() &&
-      theMap.get(&key, valueSet))
+      theMap.get(key, valueSet))
   {
     valueSet->resize(valueSet->size() + 1);
     (*valueSet)[valueSet->size()-1].transfer(value);
     return true;
   }
 
-  store::IndexKey* keycopy = new store::IndexKey(key.size());
-
-  for (ulong i = 0; i < theNumColumns; i++)
-    (*keycopy)[i].transfer(key[i]);
-
-  valueSet = new ValueSet(1);
+  valueSet = new store::IndexValue(1);
   (*valueSet)[0].transfer(value);
   
-  const store::IndexKey* constkey = keycopy;
-
   //  std::cout << "Index Entry Insert [" << constkey << "," 
   //          << valueSet << "]" << std::endl;
 
-  theMap.insert(constkey, valueSet);
+  theMap.insert(key, valueSet);
 
   return false;
 } 
@@ -222,26 +227,29 @@ bool HashIndex::insert(store::IndexKey& key, store::Item_t& value)
 
 
 /******************************************************************************
-
+  Remove the given item from the value set of the given key. If the value set
+  of the key becomes empty, then the key itself is removed from the index.
+  Retrun false if the item is not in the value set of the key, or if the key 
+  itself is not in the index; true otherwise.
 ********************************************************************************/
-bool HashIndex::remove(const store::IndexKey& key, store::Item_t& value)
+bool HashIndex::remove(const store::IndexKey* key, store::Item_t& value)
 {
-  if (key.size() != theNumColumns)
+  if (key->size() != theNumColumns)
   {
     ZORBA_ERROR_PARAM(STR0004_INDEX_PARTIAL_KEY_REMOVE,
-                      theQname->getStringValue()->c_str(), key.toString());
+                      theQname->getStringValue()->c_str(), key->toString());
   }
 
-  IndexMap::iterator pos = theMap.get(&key);
+  IndexMap::iterator pos = theMap.get(key);
 
   if (pos != theMap.end())
   {
     const store::IndexKey* keyp = (*pos).first;
-    ValueSet* valueSet = (*pos).second;
+    store::IndexValue* valueSet = (*pos).second;
 
-    ValueSet::iterator valIte = std::find(valueSet->begin(),
-                                          valueSet->end(),
-                                          value);
+    store::IndexValue::iterator valIte = std::find(valueSet->begin(),
+                                                   valueSet->end(),
+                                                   value);
 
     if (valIte != valueSet->end())
       valueSet->theItems.erase(valIte);
@@ -277,7 +285,7 @@ bool HashIndex::probe(const store::IndexKey& key, store::Item_t& result)
 /////////////////////////////////////////////////////////////////////////////////
 
 
-/******************************************************************************
+/*******************************************************************************
 
 ********************************************************************************/
 long STLMapIndex::CompareFunction::compare(
@@ -375,12 +383,12 @@ void STLMapIndex::clear()
 /******************************************************************************
 
 ********************************************************************************/
-bool STLMapIndex::insert(store::IndexKey& key, store::Item_t& value)
+bool STLMapIndex::insert(const store::IndexKey* key, store::Item_t& value)
 {
-  if (key.size() != theNumColumns)
+  if (key->size() != theNumColumns)
   {
     ZORBA_ERROR_PARAM(STR0003_INDEX_PARTIAL_KEY_INSERT,
-                      theQname->getStringValue()->c_str(), key.toString());
+                      theQname->getStringValue()->c_str(), key->toString());
   }
 
   SYNC_CODE(AutoMutex lock((isThreadSafe() ? &theMapMutex : NULL));)
@@ -402,7 +410,7 @@ bool STLMapIndex::insert(store::IndexKey& key, store::Item_t& value)
   if (!isUnique())
   {
     // TODO: optimize this using the lower_bound() method.
-    IndexMap::iterator pos = theMap.find(&key);
+    IndexMap::iterator pos = theMap.find(key);
 
     if (pos != theMap.end())
     {
@@ -411,15 +419,10 @@ bool STLMapIndex::insert(store::IndexKey& key, store::Item_t& value)
     }
   }
 
-  store::IndexKey* keycopy = new store::IndexKey(key.size());
-
-  for (ulong i = 0; i < theNumColumns; i++)
-    (*keycopy)[i].transfer(key[i]);
-
-  ValueSet* valueSet = new ValueSet(1);
+  store::IndexValue* valueSet = new store::IndexValue(1);
   (*valueSet)[0].transfer(value);
 
-  theMap.insert(STLMapPair(keycopy, valueSet));
+  theMap.insert(STLMapPair(key, valueSet));
 
   return false;
 }
@@ -428,9 +431,9 @@ bool STLMapIndex::insert(store::IndexKey& key, store::Item_t& value)
 /******************************************************************************
 
 ********************************************************************************/
-bool STLMapIndex::remove(const store::IndexKey& key, store::Item_t& value)
+bool STLMapIndex::remove(const store::IndexKey* key, store::Item_t& value)
 {
-  if (key.size() != theNumColumns)
+  if (key->size() != theNumColumns)
   {
     ZORBA_ERROR_PARAM(STR0004_INDEX_PARTIAL_KEY_REMOVE,
                       theQname->getStringValue()->c_str(), "");
@@ -438,16 +441,16 @@ bool STLMapIndex::remove(const store::IndexKey& key, store::Item_t& value)
 
   SYNC_CODE(AutoMutex lock((isThreadSafe() ? &theMapMutex : NULL));)
 
-  IndexMap::iterator pos = theMap.find(&key);
+  IndexMap::iterator pos = theMap.find(key);
 
   if (pos != theMap.end())
   {
     const store::IndexKey* keyp = pos->first;
-    ValueSet* valueSet = (*pos).second;
+    store::IndexValue* valueSet = (*pos).second;
 
-    ValueSet::iterator valIte = std::find(valueSet->begin(),
-                                          valueSet->end(),
-                                          value);
+    store::IndexValue::iterator valIte = std::find(valueSet->begin(),
+                                                   valueSet->end(),
+                                                   value);
 
     if (valIte != valueSet->end())
       valueSet->theItems.erase(valIte);

@@ -27,6 +27,10 @@
 #include "compiler/codegen/plan_visitor.h"
 
 #include "runtime/base/plan_iterator.h"
+#include "runtime/indexing/doc_indexer.h"
+
+#include "store/api/item_factory.h"
+
 
 namespace zorba 
 {
@@ -44,8 +48,8 @@ ValueIndex::ValueIndex(
   theName(name),
   theIsUnique(false),
   theIsTemp(false),
-  theIsAutomatic(false),
-  theMethod(HASH),
+  theMaintenanceMode(MANUAL),
+  theContainerKind(HASH),
   theDomainClause(new for_clause(ccb->m_cur_sctx, loc, NULL, NULL))
 { 
 }
@@ -64,13 +68,12 @@ void ValueIndex::serialize(::zorba::serialization::Archiver& ar)
   ar & theName;
   ar & theIsUnique;
   ar & theIsTemp;
-  ar & theIsAutomatic;
-  SERIALIZE_ENUM(index_method_t, theMethod);
+  SERIALIZE_ENUM(MaintenanceMode, theMaintenanceMode);
+  SERIALIZE_ENUM(ContainerKind, theContainerKind);
   ar & theDomainClause;
   ar & theKeyExprs;
   ar & theKeyTypes;
   ar & theOrderModifiers;
-  ar & m_creatorPatterns;
 }
 
 
@@ -109,7 +112,7 @@ void ValueIndex::setDomainVariable(var_expr_t domainVar)
 }
 
 
-const var_expr* ValueIndex::getDomainPositionVariable() const 
+var_expr* ValueIndex::getDomainPositionVariable() const 
 {
   return theDomainClause->get_pos_var();
 }
@@ -166,29 +169,42 @@ void ValueIndex::setOrderModifiers(const std::vector<OrderModifier>& modifiers)
 ********************************************************************************/
 void ValueIndex::analyze()
 {
-  std::vector<const var_expr*> varExprs;
+  std::vector<var_expr*> varExprs;
 
-  analyzeExprInternal(getDomainExpr(), theSources, varExprs);
+  analyzeExprInternal(getDomainExpr(),
+                      theSourceNames,
+                      theDomainSourceExprs,
+                      varExprs);
 
   varExprs.clear();
+
+  std::vector<expr*> keySources;
 
   ulong numKeys = theKeyExprs.size();
 
   for (ulong i = 0; i < numKeys; ++i)
   {
-    analyzeExprInternal(theKeyExprs[i].getp(), theSources, varExprs);
+    analyzeExprInternal(theKeyExprs[i].getp(), theSourceNames, keySources, varExprs);
+  }
+
+  if (keySources.empty() &&
+      theDomainSourceExprs.size() == 1 &&
+      theMaintenanceMode != MANUAL)
+  {
+    theMaintenanceMode = DOC_MAP;
   }
 }
 
 
 void ValueIndex::analyzeExprInternal(
-    const expr* e,
-    std::vector<const store::Item*>& sources,
-    std::vector<const var_expr*>& varExprs)
+    expr* e,
+    std::vector<store::Item*>& sourceNames,
+    std::vector<expr*>& sourceExprs,
+    std::vector<var_expr*>& varExprs)
 {
   if (e->get_expr_kind() == fo_expr_kind)
   {
-    const fo_expr* foExpr = static_cast<const fo_expr*>(e);
+    fo_expr* foExpr = static_cast<const fo_expr*>(e);
     const function* func = foExpr->get_func();
 
     if (!func->isDeterministic())
@@ -215,12 +231,15 @@ void ValueIndex::analyzeExprInternal(
           if (TypeOps::is_subtype(*valueType, *GENV_TYPESYSTEM.QNAME_TYPE_ONE) &&
               theSctx->lookup_collection(qnameExpr->get_val()))
           {
-            sources.push_back(qnameExpr->get_val());
+            sourceNames.push_back(qnameExpr->get_val());
+            sourceExprs.push_back(foExpr);
             valid = true;
           }
         }
         else if (argExpr->get_expr_kind() == promote_expr_kind)
         {
+          // We get here if the optimizer is turned off.
+
           const promote_expr* promoteExpr = static_cast<const promote_expr*>(argExpr);
 
           argExpr = promoteExpr->get_input();
@@ -239,7 +258,8 @@ void ValueIndex::analyzeExprInternal(
               if (TypeOps::is_subtype(*valueType, *GENV_TYPESYSTEM.QNAME_TYPE_ONE) &&
                   theSctx->lookup_collection(qnameExpr->get_val()))
               {
-                sources.push_back(qnameExpr->get_val());
+                sourceNames.push_back(qnameExpr->get_val());
+                sourceExprs.push_back(foExpr);
                 valid = true;
               }
             }
@@ -257,9 +277,9 @@ void ValueIndex::analyzeExprInternal(
     {
       const const_expr* qnameExpr = dynamic_cast<const const_expr*>(foExpr->get_arg(0));
       ZORBA_ASSERT(qnameExpr != NULL);
-      const store::Item* qname = qnameExpr->get_val();
+      store::Item* qname = qnameExpr->get_val();
 
-      const var_expr* varExpr = static_cast<const var_expr*>(theSctx->lookup_var(qname));
+      var_expr* varExpr = static_cast<var_expr*>(theSctx->lookup_var(qname));
       ZORBA_ASSERT(varExpr->get_kind() == var_expr::local_var);
 
       varExprs.push_back(varExpr);
@@ -280,9 +300,9 @@ void ValueIndex::analyzeExprInternal(
     }
   }
 
-  for(const_expr_iterator i = e->expr_begin_const(); !i.done(); ++i) 
+  for(expr_iterator i = e->expr_begin(); !i.done(); ++i) 
   {
-    analyzeExprInternal((*i), sources, varExprs);
+    analyzeExprInternal((*i), sourceNames, sourceExprs, varExprs);
   }
 }
 
@@ -291,7 +311,7 @@ void ValueIndex::analyzeExprInternal(
 /*******************************************************************************
 
 ********************************************************************************/
-expr* ValueIndex::getBuildExpr(CompilerCB* topCCB, const QueryLoc& loc)
+expr* ValueIndex::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
 { 
   if (theBuildExpr != NULL)
     return theBuildExpr.getp();
@@ -301,69 +321,67 @@ expr* ValueIndex::getBuildExpr(CompilerCB* topCCB, const QueryLoc& loc)
   const var_expr* pos = getDomainPositionVariable();
 
   short sctxid = domainExpr->get_sctx_id();
-  static_context* sctx = topCCB->getStaticContext(sctxid);
+
+  const QueryLoc& dotloc = dot->get_loc();
+
+  ulong numKeys = theKeyExprs.size();
+  std::vector<expr_t> clonedExprs(numKeys + 1);
 
   //
-  // Create FOR clause:
-  // for $$dot at $$pos in domain_expr
+  // Clone the domain expr.
   //
   expr::substitution_t subst;
   
   expr_t newdom = domainExpr->clone(subst);
   
-  var_expr_t newdot = new var_expr(sctxid,
-                                   dot->get_loc(),
-                                   dot->get_kind(),
-                                   dot->get_varname());
-  var_expr_t newpos = new var_expr(sctxid,
-                                   pos->get_loc(),
-                                   pos->get_kind(),
-                                   pos->get_varname());
+  //
+  // Clone the domain variable and the domain pos variable. These vars are
+  // referenced by the key exprs.
+  //
+  var_expr_t newdot = new var_expr(sctxid, dotloc, dot->get_kind(), dot->get_name());
+  var_expr_t newpos = new var_expr(sctxid, dotloc, pos->get_kind(), pos->get_name());
+
+  //
+  // Clone the key exprs, replacing their references to the 2 domain variables
+  // with the clones of these variables.
+  //
   subst[dot] = newdot;
   subst[pos] = newpos;
 
-  for_clause* fc = new for_clause(sctxid,
-                                  dot->get_loc(),
-                                  newdot,
-                                  newdom,
-                                  newpos);
-  newdot->set_flwor_clause(fc);
-  newpos->set_flwor_clause(fc);
-  
+  for(ulong i = 0; i < numKeys; ++i) 
+  {
+    clonedExprs[i+1] = theKeyExprs[i]->clone(subst);
+  }
+
   //
-  // Create RETURN clause:
-  // return index-entry-builder($$dot, field1_expr, ..., fieldN_expr)
+  // Create flwor expr:
   //
-  function* f = sctx->lookup_resolved_fn(ZORBA_DDL_FN_NS,
-                                         "index-entry-builder",
-                                         VARIADIC_SIG_SIZE);
+  // for $newdot at $newpos in new_domain_expr
+  // return index-entry-builder($$newdot, new_key1_expr, ..., new_keyN_expr) 
+  //
+
+  for_clause* fc = new for_clause(sctxid, dotloc, newdot, newdom, newpos);
 
   expr_t domainVarExpr(new wrapper_expr(sctxid, loc, newdot.getp()));
 
-  ulong n = theKeyExprs.size();
-  std::vector<expr_t> foArgs(n+1);
+  clonedExprs[0] = domainVarExpr;
   
-  foArgs[0] = domainVarExpr;
+ function* f = theSctx->lookup_resolved_fn(ZORBA_DDL_FN_NS,
+                                           "index-entry-builder",
+                                           VARIADIC_SIG_SIZE);
 
-  for(ulong i = 0; i < n; ++i) 
-  {
-    foArgs[i+1] = theKeyExprs[i]->clone(subst);
-  }
-  
-  fo_expr_t returnExpr =  new fo_expr(sctxid, loc, f, foArgs);
+  fo_expr_t returnExpr =  new fo_expr(sctxid, loc, f, clonedExprs);
 
-  //
-  // Create flwor_expr with the above FOR and RETURN clauses.
-  //
   flwor_expr* flworExpr = new flwor_expr(sctxid, loc, false);
-  theBuildExpr = flworExpr;
   flworExpr->set_return_expr(returnExpr.getp());
   flworExpr->add_clause(fc);
 
+  theBuildExpr = flworExpr;
+
   std::string msg = "build expr for index " + theName->getStringValue()->str();
 
-  if (topCCB->theConfig.optimize_cb != NULL)
-    topCCB->theConfig.optimize_cb(theBuildExpr.getp(), msg);
+  if (ccb->theConfig.optimize_cb != NULL)
+    ccb->theConfig.optimize_cb(theBuildExpr.getp(), msg);
 
   return theBuildExpr.getp();
 }
@@ -372,16 +390,122 @@ expr* ValueIndex::getBuildExpr(CompilerCB* topCCB, const QueryLoc& loc)
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIterator* ValueIndex::getBuildPlan(CompilerCB* topCCB, const QueryLoc& loc)
+PlanIterator* ValueIndex::getBuildPlan(CompilerCB* ccb, const QueryLoc& loc)
 { 
   if (theBuildPlan != NULL)
     return theBuildPlan.getp();
 
-  expr* buildExpr = getBuildExpr(topCCB, loc);
+  expr* buildExpr = getBuildExpr(ccb, loc);
 
-  theBuildPlan = codegen("index", buildExpr, topCCB);
+  theBuildPlan = codegen("index", buildExpr, ccb);
 
   return theBuildPlan.getp();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+DocIndexer* ValueIndex::getDocIndexer(CompilerCB* ccb, const QueryLoc& loc)
+{ 
+  if (theDocIndexer != NULL)
+    return theDocIndexer.getp();
+
+  if (theMaintenanceMode != DOC_MAP)
+    return NULL;
+
+  expr* domainExpr = getDomainExpr();
+  const var_expr* dot = getDomainVariable();
+  const var_expr* pos = getDomainPositionVariable();
+
+  short sctxid = domainExpr->get_sctx_id();
+
+  const QueryLoc& dotloc = dot->get_loc();
+
+  ulong numKeys = theKeyExprs.size();
+  std::vector<expr_t> clonedExprs(numKeys + 1);
+
+  //
+  // Clone the domain expr and replace the reference to the collection with a
+  // reference to a new temp variable that will be bound to a set of docs
+  // during the apply-updates.
+  //
+  
+  std::stringstream ss;
+  ss << "$$idx_temp_" << this;
+  std::string varname = ss.str();
+  store::Item_t qname;
+  GENV_ITEMFACTORY->createQName(qname, "", "", varname.c_str());
+  var_expr_t tempVar = new var_expr(sctxid, dot->get_loc(), var_expr::prolog_var, qname);
+  expr_t wrapperExpr = new wrapper_expr(sctxid, dot->get_loc(), tempVar);
+
+  expr::substitution_t subst;
+
+  subst[theDomainSourceExprs[0]] = wrapperExpr;
+
+  expr_t newdom = domainExpr->clone(subst);
+
+  //
+  // Clone the domain variable and the domain pos variable. These vars are
+  // referenced by the key exprs.
+  //
+  var_expr_t newdot = new var_expr(sctxid, dotloc, dot->get_kind(), dot->get_name());
+  var_expr_t newpos = new var_expr(sctxid, dotloc, pos->get_kind(), pos->get_name());
+
+  //
+  // Clone the key exprs, replacing their references to the 2 domain variables
+  // with the clones of these variables.
+  //
+  for(ulong i = 0; i < numKeys; ++i) 
+  {
+    subst.clear();
+    subst[dot] = newdot;
+    subst[pos] = newpos;
+
+    clonedExprs[i+1] = theKeyExprs[i]->clone(subst);
+  }
+
+  //
+  // Create flwor expr:
+  //
+  // for $newdot at $newpos in new_domain_expr
+  // return index-entry-builder($$newdot, new_key1_expr, ..., new_keyN_expr) 
+  //
+
+  for_clause* fc = new for_clause(sctxid, dotloc, newdot, newdom, newpos);
+
+  expr_t domainVarExpr = new wrapper_expr(sctxid, loc, newdot.getp());
+
+  clonedExprs[0] = domainVarExpr;
+
+  function* f = theSctx->lookup_resolved_fn(ZORBA_DDL_FN_NS,
+                                            "index-entry-builder",
+                                            VARIADIC_SIG_SIZE);
+  
+  fo_expr_t returnExpr =  new fo_expr(sctxid, loc, f, clonedExprs);
+
+  flwor_expr_t flworExpr = new flwor_expr(sctxid, loc, false);
+  flworExpr->set_return_expr(returnExpr.getp());
+  flworExpr->add_clause(fc);
+
+  std::string msg = "entry-creator expr for index " + theName->getStringValue()->str();
+
+  if (ccb->theConfig.optimize_cb != NULL)
+    ccb->theConfig.optimize_cb(flworExpr.getp(), msg);
+
+  theDocIndexerExpr = flworExpr;
+
+  //
+  // Generate the runtime plan for theDocIndexerExpr
+  //
+  theDocIndexerPlan = codegen("doc indexer", flworExpr, ccb);
+
+  //
+  // Create theDocIndexer obj
+  //
+  theDocIndexer = new DocIndexer(numKeys, theDocIndexerPlan, tempVar);
+
+  return theDocIndexer.getp();
 }
 
 

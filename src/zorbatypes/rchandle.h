@@ -294,26 +294,6 @@ template<class T> class rchandle
 protected:
   T  * p;
 
-protected:
-  void init()
-  {
-    if (p == 0) return;
-    p->addReference(p->getSharedRefCounter() SYNC_PARAM2(p->getRCLock()));
-  }
-
-
-  template <class otherT> rchandle& assign(const rchandle<otherT>& rhs)
-  {
-		if (p != rhs.getp())
-    {
-			if (p) p->removeReference(p->getSharedRefCounter()
-                                SYNC_PARAM2(p->getRCLock()));
-			p = static_cast<T*>(rhs.getp());
-			init();
-		}
-		return *this;
-  }
-
 public:
   union union_T
   {
@@ -322,7 +302,7 @@ public:
   };
 
 public:
-  rchandle(T* realPtr = 0) : p(realPtr)
+  rchandle(T* ptr = 0) : p(ptr)
   {
     init(); 
   }
@@ -339,18 +319,22 @@ public:
     p = 0;
   }
 
-  bool isNull () const        { return p == NULL; }
-  void setNull()              { p = NULL;}
+  bool isNull () const { return p == NULL; }
 
-  T* getp() const             { return p; }
-  union_T getp_ref()             { union_T u_t; u_t.t = &p; return u_t;}
+  void setNull() { p = NULL;}
+
+  T* getp() const { return p; }
+
+  union_T getp_ref() { union_T u_t; u_t.t = &p; return u_t;}
 
   // rchandle const-ness is unclear. The implicit operators are more
   // restrictive than the explicit cast() and getp() methods.
   operator T* ()              { return getp(); }
+
   operator const T * () const { return getp(); }
 
   T* operator->() const       { return p; } 
+
   T& operator*() const        { return *p; } 
 
 	bool operator==(rchandle const& h) const  { return p == h.p; }
@@ -451,6 +435,26 @@ public:
     std::ostringstream oss;
     oss << "rchandle[refcount=" << p->getRefCount() << ']';
     return oss.str();
+  }
+
+protected:
+  void init()
+  {
+    if (p == 0) return;
+    p->addReference(p->getSharedRefCounter() SYNC_PARAM2(p->getRCLock()));
+  }
+
+
+  template <class otherT> rchandle& assign(const rchandle<otherT>& rhs)
+  {
+		if (p != rhs.getp())
+    {
+			if (p) p->removeReference(p->getSharedRefCounter()
+                                SYNC_PARAM2(p->getRCLock()));
+			p = static_cast<T*>(rhs.getp());
+			init();
+		}
+		return *this;
   }
 
 };

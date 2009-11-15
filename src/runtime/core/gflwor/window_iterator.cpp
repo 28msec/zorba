@@ -418,7 +418,7 @@ WindowIterator::WindowIterator (
     WindowType windowType,
     PlanIter_t tupleIter,
     PlanIter_t domainIterator,
-    const store::Item_t& varName,
+    store::Item* varName,
     const std::vector<PlanIter_t >& varRefs,
     StartClause& startClause,
     EndClause& endClause,

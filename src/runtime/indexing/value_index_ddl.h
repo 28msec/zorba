@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_RUNTIME_VALUE_INDEX
-#define ZORBA_RUNTIME_VALUE_INDEX
+#ifndef ZORBA_RUNTIME_VALUE_INDEX_DDL
+#define ZORBA_RUNTIME_VALUE_INDEX_DDL
 
 #include "runtime/base/unarybase.h"
 #include "runtime/base/narybase.h"
+
+#include "store/api/index.h"
 
 
 namespace zorba 
@@ -139,29 +141,29 @@ public:
 /***************************************************************************//**
   Implements the refresh-index function.
 ********************************************************************************/
-class RefreshIndexIterator : public UnaryBaseIterator<RefreshIndexIterator,
+class RebuildIndexIterator : public UnaryBaseIterator<RebuildIndexIterator,
                                                       PlanIteratorState>
 {
 public:
-  SERIALIZABLE_CLASS(RefreshIndexIterator)
+  SERIALIZABLE_CLASS(RebuildIndexIterator)
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(
-  RefreshIndexIterator,
-  UnaryBaseIterator<RefreshIndexIterator, PlanIteratorState >)
+  RebuildIndexIterator,
+  UnaryBaseIterator<RebuildIndexIterator, PlanIteratorState >)
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (UnaryBaseIterator<RefreshIndexIterator, PlanIteratorState >*)this);
+    (UnaryBaseIterator<RebuildIndexIterator, PlanIteratorState >*)this);
   }
 
 public:
-  RefreshIndexIterator(
+  RebuildIndexIterator(
         static_context* sctx,
         const QueryLoc& loc,
         PlanIter_t& arg)
     :
-    UnaryBaseIterator<RefreshIndexIterator, PlanIteratorState>(sctx, loc, arg)
+    UnaryBaseIterator<RebuildIndexIterator, PlanIteratorState>(sctx, loc, arg)
   {
   }
 
@@ -186,45 +188,6 @@ public:
 
 
 NARY_ITER_STATE(IndexEntryBuilderIterator, IndexEntryBuilderIteratorState);
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-class IndexPointProbeState : public PlanIteratorState 
-{
-public:
-  const store::Item           * theQname;
-  store::Index                * theIndex;
-  store::IndexProbeIterator_t   theIterator;
-
-public:
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-
-NARY_ITER_STATE(IndexPointProbeIterator, IndexPointProbeState);
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-class IndexRangeProbeState : public PlanIteratorState 
-{
-public:
-  const store::Item           * theQname;
-  store::Index                * theIndex;
-  store::IndexProbeIterator_t   theIterator;
-
-public:
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-
-NARY_ITER_STATE(IndexRangeProbeIterator, IndexRangeProbeState);
-
 
 }
 

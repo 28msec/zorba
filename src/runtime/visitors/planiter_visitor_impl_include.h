@@ -72,7 +72,7 @@
 
   class CreateInternalIndexIterator;
   class CreateIndexIterator;
-  class RefreshIndexIterator;
+  class RebuildIndexIterator;
   class DropIndexIterator;
   class IndexEntryBuilderIterator;
   class IndexPointProbeIterator;

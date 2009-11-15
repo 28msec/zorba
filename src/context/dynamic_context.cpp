@@ -20,10 +20,12 @@
 #ifdef UNIX
 #include <sys/time.h>
 #endif
+
 #include "store/api/iterator.h"
 #include "store/api/temp_seq.h"
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
+#include "store/api/index.h"
 
 #include "system/globalenv.h"
 
@@ -55,7 +57,7 @@ std::string dynamic_context::var_key(const void* var)
 
   const var_expr *ve = static_cast<const var_expr *> (var);
 
-  return xqpString::concat(to_string(ve->get_unique_id()), ":", ve->get_varname()->getStringValue());
+  return xqpString::concat(to_string(ve->get_unique_id()), ":", ve->get_name()->getStringValue());
 }
 
 

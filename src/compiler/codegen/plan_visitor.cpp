@@ -70,7 +70,7 @@
 #include "runtime/scripting/scripting.h"
 #include "runtime/util/flowctl_exception.h"
 #include "runtime/update/update.h"
-#include "runtime/indexing/value_index_impl.h"
+#include "runtime/indexing/value_index_ddl.h"
 #include "runtime/debug/zorba_debug_iterator.h"
 #include "runtime/eval/eval.h"
 
@@ -417,17 +417,18 @@ void end_visit(sequential_expr& v)
   VarRef expr
 ********************************************************************************/
 
-bool begin_visit (var_expr& v) 
+bool begin_visit(var_expr& v) 
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
 
 
-void end_visit (var_expr& v) 
+void end_visit(var_expr& v) 
 {
   CODEGEN_TRACE_OUT("");
-  general_var_codegen (v);
+
+  general_var_codegen(v);
 }
 
 
@@ -442,7 +443,7 @@ PlanIter_t base_var_codegen(
 
   Iter* iter = new Iter(get_sctx(var.get_sctx_id()),
                         var.get_loc(),
-                        var.get_varname());
+                        var.get_name());
 
   varRefs->push_back(iter);
 
@@ -457,19 +458,19 @@ PlanIter_t create_var_iter(const var_expr& var, bool forvar)
   {
     iter = new ForVarIterator(get_sctx(var.get_sctx_id()),
                               var.get_loc(),
-                              var.get_varname());
+                              var.get_name());
   }
   else
   {
     iter = new LetVarIterator(get_sctx(var.get_sctx_id()),
                               var.get_loc(),
-                              var.get_varname());
+                              var.get_name());
   }
   return iter;
 }
 
 
-void general_var_codegen (const var_expr& var)
+void general_var_codegen(const var_expr& var)
 {
   const QueryLoc& qloc = var.get_loc();
   static_context* sctx = get_sctx(var.get_sctx_id());
@@ -572,7 +573,7 @@ void general_var_codegen (const var_expr& var)
   case var_expr::prolog_var: 
   case var_expr::local_var: 
   {
-    xqpString varname = var.get_varname()->getStringValue().getp();
+    xqpString varname = var.get_name()->getStringValue().getp();
     if (varname == DOT_VAR) 
     {
       vector<PlanIter_t> ctx_args;
@@ -602,7 +603,7 @@ void general_var_codegen (const var_expr& var)
                                        new const_expr(var.get_sctx_id(),
                                                       qloc,
                                                       dynamic_context::var_key(&var)));
-      lookup_expr->accept (*this);
+      lookup_expr->accept(*this);
     }
  
     break;
@@ -1064,7 +1065,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
     {
       return new flwor::ForIterator(sctx,
                                     var->get_loc(),
-                                    var->get_varname(),
+                                    var->get_name(),
                                     PREV_ITER,
                                     domainIter,
                                     varRefs,
@@ -1076,7 +1077,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 
       return new flwor::OuterForIterator(sctx,
                                          var->get_loc(),
-                                         var->get_varname(),
+                                         var->get_name(),
                                          PREV_ITER,
                                          domainIter,
                                          varRefs);
@@ -1100,7 +1101,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 
     return new flwor::LetIterator(sctx,
                                   var->get_loc(),
-                                  var->get_varname(),
+                                  var->get_name(),
                                   PREV_ITER,
                                   domainIter,
                                   varRefs,
@@ -1153,7 +1154,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
                                      wc->get_winkind() == window_clause::tumbling_window ? flwor::WindowIterator::TUMBLING : flwor::WindowIterator::SLIDING,
                                      PREV_ITER,
                                      domainIter,
-                                     var->get_varname(),
+                                     var->get_name(),
                                      varRefs,
                                      *start_clause,
                                      *end_clause);
@@ -1172,7 +1173,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 
     return new flwor::CountIterator(sctx,
                                     var->get_loc(),
-                                    var->get_varname(),
+                                    var->get_name(),
                                     PREV_ITER,
                                     var_iters);
   }
@@ -1371,7 +1372,7 @@ void flwor_codegen(const flwor_expr& flworExpr)
         
         vector<PlanIter_t>& posVarRefs = clauseVarMap->theVarRebinds[1]->theOutputVarRefs;
 
-        forletClauses.push_back(flwor::ForLetClause(var->get_varname(),
+        forletClauses.push_back(flwor::ForLetClause(var->get_name(),
                                                     varRefs,
                                                     posVarRefs,
                                                     domainIter));
@@ -1380,7 +1381,7 @@ void flwor_codegen(const flwor_expr& flworExpr)
       {
         ZORBA_ASSERT(clauseVarMap->theVarRebinds.size() == 1);
 
-        forletClauses.push_back(flwor::ForLetClause(var->get_varname(),
+        forletClauses.push_back(flwor::ForLetClause(var->get_name(),
                                                     varRefs,
                                                     domainIter));
       }
@@ -1401,7 +1402,7 @@ void flwor_codegen(const flwor_expr& flworExpr)
 
       vector<PlanIter_t>& varRefs = clauseVarMap->theVarRebinds[0]->theOutputVarRefs;
  
-      forletClauses.push_back(flwor::ForLetClause(var->get_varname(),
+      forletClauses.push_back(flwor::ForLetClause(var->get_name(),
                                                   varRefs,
                                                   domainIter,
                                                   true));

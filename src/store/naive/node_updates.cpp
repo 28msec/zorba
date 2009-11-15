@@ -23,14 +23,17 @@
 #include "zorbatypes/duration.h"
 
 #include "store/api/copymode.h"
+#include "store/api/collection.h"
+#include "store/api/update_consts.h"
+
 #include "store/naive/store_defs.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/nsbindings.h"
 #include "store/naive/node_items.h"
+#include "store/naive/pul_primitives.h"
 #include "store/naive/simple_pul.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/basic_item_factory.h"
-#include "store/api/collection.h"
 
 
 namespace zorba { namespace simplestore {

@@ -219,6 +219,14 @@ xqtref_t fo_expr::return_type_impl(static_context* sctx) const
 
 expr_t fo_expr::clone(substitution_t& subst) const
 {
+  if (get_func()->getKind() == FunctionConsts::FN_ZORBA_COLLECTION_1)
+  {
+    expr::subst_iter_t i = subst.find(this);
+
+     if (i != subst.end())
+       return i->second;
+  }
+
   std::auto_ptr<fo_expr> fo(new fo_expr(theSctxId, get_loc(), get_func()));
 
   for (unsigned i = 0; i < theArgs.size(); ++i)

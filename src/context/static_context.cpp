@@ -1074,14 +1074,6 @@ xqtref_t static_context::lookup_type2( const char *key1, xqp_string key2)
 }
 
 
-xqtref_t static_context::get_variable_type(store::Item *var_name)
-{
-  return lookup_type2("type:var:", qname_internal_key("",
-                                                      var_name->getPrefix(),
-                                                      var_name->getLocalName()));
-}
-
-
 void static_context::set_context_item_static_type(xqtref_t t)
 {
   bind_type("type:context:", t);

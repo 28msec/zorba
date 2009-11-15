@@ -887,7 +887,7 @@ long flwor_expr::defines_variable(const var_expr* v, const flwor_clause* limit) 
 /*******************************************************************************
 
 ********************************************************************************/
-void flwor_expr::get_vars_defined(std::vector<const var_expr*>& varExprs) const
+void flwor_expr::get_vars_defined(std::vector<var_expr*>& varExprs) const
 {
   // put in the given the var_exprs for the variables defined by this flwor expr
 

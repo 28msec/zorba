@@ -39,11 +39,13 @@ namespace store
 class XmlNode;
 class Iterator;
 class IndexSpecification;
+class IndexEntryCreator;
+class Index;
 
 
 /*******************************************************************************
 
-************************************** ******************************************/
+********************************************************************************/
 class PUL : public Item
 {
 public:
@@ -189,7 +191,7 @@ public:
   virtual void addDropIndex(
         const Item_t& qname) = 0;
 
-  virtual void addRefreshIndex(
+  virtual void addRebuildIndex(
         const Item_t& qname,
         Iterator* sourceIter) = 0;
 
@@ -199,7 +201,10 @@ public:
 
   virtual void checkTransformUpdates(const std::vector<Item*>& rootNodes) const = 0;
 
-  virtual void getIndicesToRefresh(std::vector<const Item*>& indices) const = 0;
+  // utils
+  virtual void getIndicesToRefresh(std::vector<Index*>& indices) = 0;
+
+  virtual void addIndexEntryCreator(Index* idx, IndexEntryCreator* creator) = 0;
 };
 
 

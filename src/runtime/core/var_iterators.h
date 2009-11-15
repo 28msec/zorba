@@ -174,7 +174,7 @@ public:
   ForVarIterator(
         static_context* sctx,
         const QueryLoc& loc,
-        const store::Item_t& name);
+        store::Item* name);
 
   ~ForVarIterator() { }
   
@@ -234,7 +234,7 @@ public:
   LetVarIterator(
         static_context* sctx,
         const QueryLoc& loc, 
-        const store::Item_t& name);
+        store::Item* name);
 
   ~LetVarIterator() {}
   

@@ -13,21 +13,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_VALUE_INDEX_PROBE_H
-#define ZORBA_VALUE_INDEX_PROBE_H
+#ifndef ZORBA_RUNTIME_VALUE_INDEX_PROBE
+#define ZORBA_RUNTIME_VALUE_INDEX_PROBE
 
-#include "runtime/base/unarybase.h"
 #include "runtime/base/narybase.h"
-#include "indexing/value_index.h"
-#include "store/api/store.h"
-#include "store/api/iterator.h"
-#include "store/api/iterator_factory.h"
-#include "store/api/index.h"
 
-namespace zorba {
+namespace zorba 
+{
 
 
-=
+/***************************************************************************//**
+
+********************************************************************************/
+class IndexPointProbeState : public PlanIteratorState 
+{
+public:
+  const store::Item           * theQname;
+  store::Index                * theIndex;
+  store::IndexProbeIterator_t   theIterator;
+
+public:
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+
+NARY_ITER_STATE(IndexPointProbeIterator, IndexPointProbeState);
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+class IndexRangeProbeState : public PlanIteratorState 
+{
+public:
+  const store::Item           * theQname;
+  store::Index                * theIndex;
+  store::IndexProbeIterator_t   theIterator;
+
+public:
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+
+NARY_ITER_STATE(IndexRangeProbeIterator, IndexRangeProbeState);
+
+
 
 }
 

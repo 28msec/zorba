@@ -21,9 +21,11 @@
 
 #include "zorbaserialization/serialization_engine.h"
 
-namespace zorba {
+namespace zorba 
+{
 
-class StaticallyKnownCollection : public SimpleRCObject {
+class StaticallyKnownCollection : public SimpleRCObject 
+{
 private:
   store::Item_t                              theName;
   xqtref_t                                   theNodeType; 
@@ -44,18 +46,31 @@ public:
     SERIALIZE_ENUM(StaticContextConsts::collection_modifier_t, theCollectionModifier);
     SERIALIZE_ENUM(StaticContextConsts::node_modifier_t, theNodeModifier);
   }
+
 public:
-  StaticallyKnownCollection(store::Item_t&                             aName,
-                            xqtref_t&                                  aNodeType,
-                            StaticContextConsts::collection_modifier_t aCollectionModifier,
-                            StaticContextConsts::node_modifier_t       aNodeModifier);
+  StaticallyKnownCollection(
+        store::Item_t&                             aName,
+        xqtref_t&                                  aNodeType,
+        StaticContextConsts::collection_modifier_t aCollectionModifier,
+        StaticContextConsts::node_modifier_t       aNodeModifier);
+
   ~StaticallyKnownCollection();
 
-  const store::Item*                         getName() const               { return theName.getp(); }
-  const XQType*                              getNodeType() const           { return theNodeType.getp(); }
-  StaticContextConsts::collection_modifier_t getCollectionModifier() const { return theCollectionModifier; }
-  StaticContextConsts::node_modifier_t       getNodeModifier() const       { return theNodeModifier; }
+  const store::Item* getName() const { return theName.getp(); }
+
+  const XQType* getNodeType() const { return theNodeType.getp(); }
+
+  StaticContextConsts::collection_modifier_t getCollectionModifier() const 
+  {
+    return theCollectionModifier;
+  }
+
+  StaticContextConsts::node_modifier_t getNodeModifier() const 
+  {
+    return theNodeModifier;
+  }
 };
+
 
 typedef rchandle<StaticallyKnownCollection> StaticallyKownCollection_t;
 

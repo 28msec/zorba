@@ -14,24 +14,22 @@
  * limitations under the License.
  */
 
+#include <algorithm>
+
 #include <zorba/exception.h>
 
 #include "zorbaerrors/error_manager.h"
 
 #include "store/naive/store_defs.h"
 #include "store/naive/simple_store.h"
-#include "store/naive/simple_pul.h"
-#include "store/naive/node_items.h"
-#include "store/naive/atomic_items.h"
 #include "store/naive/simple_collection.h"
 #include "store/naive/simple_index.h"
+#include "store/naive/simple_pul.h"
+#include "store/naive/pul_primitives.h"
+#include "store/naive/node_items.h"
 
-#include "store/api/collection.h"
 #include "store/api/iterator.h"
 #include "store/api/item_factory.h"
-#include "store/api/index.h"
-
-#include "system/globalenv.h"
 
 
 namespace zorba { namespace simplestore {
@@ -57,12 +55,37 @@ NodeToUpdatesMap::~NodeToUpdatesMap()
 ********************************************************************************/
 inline void cleanList(std::vector<UpdatePrimitive*> aVector)
 {
-  for ( std::vector<UpdatePrimitive*>::iterator lIter = aVector.begin();
-        lIter != aVector.end();
-        ++lIter ) 
+  std::vector<UpdatePrimitive*>::iterator ite = aVector.begin();
+  std::vector<UpdatePrimitive*>::iterator end = aVector.end();
+
+  for (; ite != end; ++ite) 
   {
-    delete (*lIter);
+    delete (*ite);
   }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+inline void cleanIndexDelta(PULImpl::IndexDelta& delta)
+{
+  PULImpl::IndexDelta::iterator ite = delta.begin();
+  PULImpl::IndexDelta::iterator end = delta.end();
+
+  for (; ite != end; ++ite)
+  {
+    if ((*ite).second)
+      delete (*ite).second;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PULImpl::PULImpl() : theValidationNodes(NULL) 
+{
 }
 
 
@@ -82,6 +105,20 @@ PULImpl::~PULImpl()
   cleanList(theInsertIntoCollectionList);
   cleanList(theDeleteFromCollectionList);
   cleanList(theDropCollectionList);
+
+  ulong numDeltas = theBeforeIndexDeltas.size();
+
+  for (ulong i = 0; i < numDeltas; ++i)
+  {
+    cleanIndexDelta(theBeforeIndexDeltas[i]);
+  }
+
+  numDeltas = theAfterIndexDeltas.size();
+
+  for (ulong i = 0; i < numDeltas; ++i)
+  {
+    cleanIndexDelta(theAfterIndexDeltas[i]);
+  }
 }
 
 
@@ -485,13 +522,13 @@ void PULImpl::addRename(store::Item_t& target, store::Item_t& newName)
 
 ********************************************************************************/
 void PULImpl::addSetElementType(
-    store::Item_t&              target,
-    store::Item_t&              typeName,
-    store::Item_t&              value,
-    bool                        haveValue,
-    bool                        haveEmptyValue,
-    bool                        haveTypedValue,
-    bool                        isInSubstitutionGroup)
+    store::Item_t& target,
+    store::Item_t& typeName,
+    store::Item_t& value,
+    bool haveValue,
+    bool haveEmptyValue,
+    bool haveTypedValue,
+    bool isInSubstitutionGroup)
 {
   UpdatePrimitive* upd = 
   new UpdSetElementType(this,
@@ -509,13 +546,13 @@ void PULImpl::addSetElementType(
 
 
 void PULImpl::addSetElementType(
-    store::Item_t&              target,
-    store::Item_t&              typeName,
+    store::Item_t& target,
+    store::Item_t& typeName,
     std::vector<store::Item_t>& valueV,
-    bool                        haveValue,
-    bool                        haveEmptyValue,
-    bool                        haveTypedValue,
-    bool                        isInSubstitutionGroup)
+    bool haveValue,
+    bool haveEmptyValue,
+    bool haveTypedValue,
+    bool isInSubstitutionGroup)
 {
   store::Item_t typedValue = new ItemVector(valueV);
 
@@ -535,9 +572,9 @@ void PULImpl::addSetElementType(
 
 
 void PULImpl::addSetAttributeType(
-    store::Item_t&              target,
-    store::Item_t&              typeName,
-    store::Item_t&              typedValue)
+    store::Item_t& target,
+    store::Item_t& typeName,
+    store::Item_t& typedValue)
 {
   UpdatePrimitive* upd = 
   new UpdSetAttributeType(this, target, typeName, typedValue, false);
@@ -646,8 +683,8 @@ void PULImpl::addInsertBeforeIntoCollection(
 
 
 void PULImpl::addInsertAfterIntoCollection(
-    store::Item_t&              name,
-    store::Item_t&              target,
+    store::Item_t& name,
+    store::Item_t& target,
     std::vector<store::Item_t>& nodes)
 {
   theInsertIntoCollectionList.push_back(
@@ -657,8 +694,8 @@ void PULImpl::addInsertAfterIntoCollection(
 
 
 void PULImpl::addInsertAtIntoCollection(
-    store::Item_t&              name,
-    ulong                       pos,
+    store::Item_t& name,
+    ulong pos,
     std::vector<store::Item_t>& nodes)
 {
   theInsertIntoCollectionList.push_back(
@@ -668,7 +705,7 @@ void PULImpl::addInsertAtIntoCollection(
 
 
 void PULImpl::addRemoveFromCollection(
-    store::Item_t&            name,
+    store::Item_t& name,
     std::vector<store::Item_t>& nodes)
 {
   theDeleteFromCollectionList.push_back(
@@ -678,8 +715,8 @@ void PULImpl::addRemoveFromCollection(
 
 
 void PULImpl::addRemoveAtFromCollection(
-    store::Item_t&            name,
-    ulong              pos)
+    store::Item_t& name,
+    ulong pos)
 {
   theDeleteFromCollectionList.push_back(
     new UpdRemoveNodeAtFromCollection(this, name, pos)
@@ -707,12 +744,12 @@ void PULImpl::addDropIndex(const store::Item_t& qname)
 }
 
 
-void PULImpl::addRefreshIndex(
+void PULImpl::addRebuildIndex(
     const store::Item_t& qname,
     store::Iterator* sourceIter)
 {
-  UpdatePrimitive* upd = new UpdRefreshIndex(this, qname, sourceIter);
-  theRefreshIndexList.push_back(upd);
+  UpdatePrimitive* upd = new UpdRebuildIndex(this, qname, sourceIter);
+  theRebuildIndexList.push_back(upd);
 }
 
 
@@ -760,7 +797,7 @@ void PULImpl::mergeUpdates(store::Item* other)
 
   mergeUpdateList(theDropIndexList, otherp->theDropIndexList, UP_LIST_NONE);
 
-  mergeUpdateList(theRefreshIndexList, otherp->theRefreshIndexList, UP_LIST_NONE);
+  mergeUpdateList(theRebuildIndexList, otherp->theRebuildIndexList, UP_LIST_NONE);
 }
 
 
@@ -960,57 +997,22 @@ void PULImpl::checkTransformUpdates(const std::vector<store::Item*>& rootNodes) 
 
 
 /*******************************************************************************
+  Find all the indices that may require maintenance. A index is a candidate for
+  maintenance if it references at least one collection that has been modified
+  (either by adding/removing docs to/from it, or by modifying at least one of
+  the docs that belong to that collection already).
 
+  As a side-effect, the method will also collect in theModifiedDocs all the
+  collection docs that are modified by this pul.
 ********************************************************************************/
-void PULImpl::getIndicesToRefresh(std::vector<const store::Item*>& indices) const
+void PULImpl::getIndicesToRefresh(std::vector<store::Index*>& indices)
 {
   SimpleStore* store = SimpleStoreManager::getStore();
 
-  std::vector<const store::Item*> modifiedCollections;
+  // First, find all the collections that are modified. We also gather all the
+  // modified collection docs, because they will be need later to maintain indices.
+  std::set<SimpleCollection*> collections;
 
-  getModifiedCollections(modifiedCollections);
-
-  ulong numModifiedCollections = modifiedCollections.size();
-
-  IndexSet::iterator ite = store->getIndices().begin();
-  IndexSet::iterator end = store->getIndices().end();
-
-  for (; ite != end; ++ite)
-  {
-    IndexImpl* index = static_cast<IndexImpl*>((*ite).second.getp());
-    const store::IndexSpecification& indexSpec = index->getSpecification();
-
-    if (!indexSpec.theIsAutomatic)
-      continue;
-
-    const std::vector<store::Item_t>& indexSources = indexSpec.theSources;
-    ulong numIndexSources = indexSources.size();
-
-    for (ulong i = 0; i < numIndexSources; ++i)
-    {
-      ulong j = 0;
-
-      for (; j < numModifiedCollections; ++j)
-      {
-        if (indexSources[i]->equals(modifiedCollections[j]))
-        {
-          indices.push_back(index->getName());
-          break;
-        }
-      }
-
-      if (j < numModifiedCollections)
-        break;
-    }
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void PULImpl::getModifiedCollections(std::vector<const store::Item*>& collections) const
-{
   NodeToUpdatesMap::iterator ite = theNodeToUpdatesMap.begin();
   NodeToUpdatesMap::iterator end = theNodeToUpdatesMap.end();
 
@@ -1021,7 +1023,186 @@ void PULImpl::getModifiedCollections(std::vector<const store::Item*>& collection
     SimpleCollection* collection = node->getCollection();
 
     if (collection != NULL)
-      collections.push_back(collection->getName());
+    {
+      collections.insert(collection);
+
+      theModifiedDocs.insert(node->getRoot());
+    }
+  }
+
+  // Now go through each index, and check if its sources intersect with the
+  // modified collections.
+  IndexSet::iterator idxIte = store->getIndices().begin();
+  IndexSet::iterator idxEnd = store->getIndices().end();
+
+  for (; idxIte != idxEnd; ++idxIte)
+  {
+    IndexImpl* index = static_cast<IndexImpl*>((*idxIte).second.getp());
+    const store::IndexSpecification& indexSpec = index->getSpecification();
+
+    if (!indexSpec.theIsAutomatic)
+      continue;
+
+    const std::vector<store::Item_t>& indexSources = indexSpec.theSources;
+    ulong numIndexSources = indexSources.size();
+
+    for (ulong i = 0; i < numIndexSources; ++i)
+    {
+      std::set<SimpleCollection*>::const_iterator colIte = collections.begin();
+      std::set<SimpleCollection*>::const_iterator colEnd = collections.end();
+
+      for (; colIte != colEnd; ++colIte)
+      {
+        if (indexSources[i]->equals((*colIte)->getName()))
+        {
+          indices.push_back(index);
+          break;
+        }
+      }
+
+      if (colIte != colEnd)
+        break;
+    }
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::addIndexEntryCreator(
+    store::Index* idx,
+    store::IndexEntryCreator* creator)
+{
+  theIncrementalIndices.push_back(static_cast<IndexImpl*>(idx));
+  theIndexEntryCreators.push_back(creator);
+}
+
+
+static bool cmp(const std::pair<store::Item_t, store::IndexKey*>& e1,
+                const std::pair<store::Item_t, store::IndexKey*>& e2)
+{
+  return e1.first.getp() < e2.first.getp();
+}
+
+
+/*******************************************************************************
+  For each incrementally maintained index I and each collection doc D that is
+  modified by this pul, compute the index entries for I and D, and insert them
+  into the given deltas vector
+********************************************************************************/
+void PULImpl::computeIndexDeltas(std::vector<IndexDelta>& deltas)
+{
+  ulong numIncrementalIndices = theIncrementalIndices.size();
+
+  if (numIncrementalIndices == 0)
+    return;
+
+  deltas.resize(numIncrementalIndices);
+
+  std::set<XmlNode*>::const_iterator docIte = theModifiedDocs.begin();
+  std::set<XmlNode*>::const_iterator docEnd = theModifiedDocs.end();
+
+  for (; docIte != docEnd; ++docIte)
+  {
+    for (ulong i = 0; i < numIncrementalIndices; ++i)
+    {
+      store::IndexEntryCreator* docIndexer = theIndexEntryCreators[i].getp();
+      IndexDelta& indexDelta = deltas[i];
+
+      std::vector<store::Item_t> domainNodes;
+      std::vector<store::IndexKey*> keys;
+
+      docIndexer->createIndexEntries((*docIte), domainNodes, keys);
+
+      ulong numEntries = domainNodes.size();
+
+      indexDelta.resize(numEntries);
+
+      for (ulong j = 0; j < numEntries; ++j)
+      {
+        indexDelta[j].first.transfer(domainNodes[j]);
+        indexDelta[j].second = keys[j];
+      }
+    }
+  }
+
+  for (ulong i = 0; i < numIncrementalIndices; ++i)
+  {
+    IndexDelta& indexDelta = deltas[i];
+
+    std::sort(indexDelta.begin(), indexDelta.end(), cmp);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void PULImpl::refreshIndices()
+{
+  ulong numIncrementalIndices = theIncrementalIndices.size();
+
+  for (ulong i = 0; i < numIncrementalIndices; ++i)
+  {
+    IndexImpl* index = theIncrementalIndices[i];
+
+    HashIndex::CompareFunction keyCmp(index->getNumColumns(),
+                                      index->getTimezone(),
+                                      index->getCollators());
+
+    IndexDelta& beforeDelta = theBeforeIndexDeltas[i];
+    IndexDelta& afterDelta = theAfterIndexDeltas[i];
+
+    IndexDelta::iterator beforeIte = beforeDelta.begin();
+    IndexDelta::iterator beforeEnd = beforeDelta.end();
+    IndexDelta::iterator afterIte = afterDelta.begin();
+    IndexDelta::iterator afterEnd = afterDelta.end();
+
+    while (beforeIte != beforeEnd && afterIte != afterEnd)
+    {
+      store::Item_t& beforeNode = (*beforeIte).first;
+      store::Item_t& afterNode = (*afterIte).first;
+      store::IndexKey* beforeKey = (*beforeIte).second;
+      store::IndexKey* afterKey = (*afterIte).second;
+
+      if (beforeNode == afterNode)
+      {
+        if (!keyCmp.equal(beforeKey, afterKey))
+        {
+          index->remove(beforeKey, beforeNode);
+          index->insert(afterKey, afterNode);
+          (*afterIte).second = NULL; // ownership of the key was passed to the index
+        }
+
+        ++beforeIte;
+        ++afterIte;
+      }
+      else if (beforeNode < afterNode)
+      {
+        index->remove(beforeKey, beforeNode);
+        ++beforeIte;
+      }
+      else
+      {
+        index->insert(afterKey, afterNode);
+        (*afterIte).second = NULL; // ownership of the key was passed to the index
+        ++afterIte;
+      }
+    }
+
+    while (beforeIte != beforeEnd)
+    {
+      index->remove((*beforeIte).second, (*beforeIte).first);
+      ++beforeIte;
+    }
+
+    while (afterIte != afterEnd)
+    {
+      index->insert((*afterIte).second, (*afterIte).first);
+      (*afterIte).second = NULL; // ownership of the key was passed to the index
+      ++afterIte;
+    }
   }
 }
 
@@ -1039,8 +1220,13 @@ inline void applyList(std::vector<UpdatePrimitive*> aVector)
   }
 }
 
+
 void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
 {
+  // Compute the before-delta for each incrementally maintained index.
+  computeIndexDeltas(theBeforeIndexDeltas);
+
+  // Apply all the update primitives
   try
   {
     theValidationNodes = &validationNodes;
@@ -1062,7 +1248,7 @@ void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
     applyList(theInsertIntoCollectionList);
     applyList(theDeleteFromCollectionList);
 
-    applyList(theRefreshIndexList);
+    applyList(theRebuildIndexList);
 
     applyList(theCreateIndexList);
     applyList(theDropIndexList);
@@ -1105,6 +1291,13 @@ void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
     throw;
   }
 
+  // Compute the after-delta for each incrementally maintained index.
+  computeIndexDeltas(theAfterIndexDeltas);
+
+  // Refresh each incrementally maintained index using its before and after deltas
+  refreshIndices();
+
+  // Detach nodes that were deleted from their trees.
   try
   {
     ulong numUpdates = theReplaceNodeList.size();
@@ -1181,7 +1374,7 @@ void PULImpl::undoUpdates()
     undoList(theDropIndexList);
     undoList(theCreateIndexList);
 
-    undoList(theRefreshIndexList);
+    undoList(theRebuildIndexList);
 
     undoList(theDeleteFromCollectionList);
     undoList(theInsertIntoCollectionList);
@@ -1198,991 +1391,6 @@ void PULImpl::undoUpdates()
   catch (...)
   {
     ZORBA_FATAL(0, "Unexpected error during pul undo");
-  }
-}
-
-
-/*******************************************************************************
-  For now, just disconnect the current target from its parent (if any). The
-  actual deletion of the target node and its subtree is done after all update
-  primitives have been applied without errors (see PULImpl::applyUpdates()
-  method). This way, to undo a delete, we just need to reconnect the target node
-  at its original position under its original parent.
-********************************************************************************/
-void UpdDelete::apply()
-{
-  XmlNode* target = BASE_NODE(theTarget);
-
-  theParent = target->theParent;
-
-  if (theParent != NULL)
-  {
-    theParent->deleteChild(*this);
-  }
-}
-
-
-void UpdDelete::undo()
-{
-  if (theParent != NULL)
-  {
-    theParent->restoreChild(*this);
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-UpdInsertChildren::UpdInsertChildren(
-    PULImpl*                         pul,
-    store::UpdateConsts::UpdPrimKind kind,
-    store::Item_t&                   target,
-    store::Item_t&                   sibling,
-    std::vector<store::Item_t>&      children,
-    const store::CopyMode&           copymode)
-  :
-  UpdatePrimitive(pul, target),
-  theKind(kind),
-  theCopyMode(copymode),
-  theNumApplied(0)
-{
-  theSibling.transfer(sibling);
-
-  ulong numNewChildren = 0;
-  ulong numChildren = children.size();
-  theNewChildren.resize(numChildren);
-
-  for (ulong i = 0; i < numChildren; i++)
-  {
-    if (i > 0 &&
-        children[i]->getNodeKind() == store::StoreConsts::textNode &&
-        theNewChildren[i-1]->getNodeKind() == store::StoreConsts::textNode)
-    {
-      TextNode* node1 = reinterpret_cast<TextNode*>(theNewChildren[i-1].getp());
-      TextNode* node2 = reinterpret_cast<TextNode*>(children[i].getp());
-
-      xqpStringStore_t newText = node1->getText()->append(node2->getText());
-      node1->setText(newText);
-    }
-    else
-    {
-      theNewChildren[i].transfer(children[i]);
-      ++numNewChildren;
-    }
-
-    if (theRemoveType == false)
-    {
-      store::StoreConsts::NodeKind childKind = theNewChildren[i]->getNodeKind();
-      if (childKind == store::StoreConsts::elementNode ||
-          childKind == store::StoreConsts::textNode)
-        theRemoveType = true;
-    }
-  }
-
-  theNewChildren.resize(numNewChildren);
-}
-
-
-void UpdInsertChildren::apply()
-{
-  theIsApplied = true;
-
-  switch (theKind)
-  {
-  case store::UpdateConsts::UP_INSERT_INTO:
-  {
-    InternalNode* target = INTERNAL_NODE(theTarget);
-    target->insertChildren(*this, target->numChildren());
-    break;
-  }
-  case store::UpdateConsts::UP_INSERT_INTO_FIRST:
-  {
-    INTERNAL_NODE(theTarget)->insertChildren(*this, 0);
-    break;
-  }
-  case store::UpdateConsts::UP_INSERT_INTO_LAST:
-  {
-    InternalNode* target = INTERNAL_NODE(theTarget);
-    target->insertChildren(*this, target->numChildren());
-    break;
-  }
-  case store::UpdateConsts::UP_INSERT_BEFORE:
-  {
-    BASE_NODE(theSibling)->insertSiblingsBefore(*this);
-    break;
-  }
-  case store::UpdateConsts::UP_INSERT_AFTER:
-  {
-    BASE_NODE(theSibling)->insertSiblingsAfter(*this);
-    break;
-  }
-  default:
-    ZORBA_FATAL(0, "");
-  }
-}
-
-
-void UpdInsertChildren::undo()
-{
-  if (theKind == store::UpdateConsts::UP_INSERT_BEFORE ||
-      theKind == store::UpdateConsts::UP_INSERT_AFTER)
-  {
-    reinterpret_cast<InternalNode*>(theSibling->getParent())->
-    undoInsertChildren(*this);
-  }
-  else
-  {
-    INTERNAL_NODE(theTarget)->undoInsertChildren(*this);
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-UpdInsertAttributes::UpdInsertAttributes(
-    PULImpl*                     pul,
-    store::Item_t&               target,
-    std::vector<store::Item_t>&  attrs,
-    const store::CopyMode&       copymode)
-  :
-  UpdatePrimitive(pul, target),
-  theCopyMode(copymode),
-  theNumApplied(0)
-{
-  ulong numAttrs = attrs.size();
-  theNewAttrs.resize(numAttrs);
-  for (ulong i = 0; i < numAttrs; i++)
-    theNewAttrs[i].transfer(attrs[i]);
-}
-
-
-void UpdInsertAttributes::apply()
-{
-  theIsApplied = true;
-  ELEM_NODE(theTarget)->insertAttributes(*this);
-}
-
-
-void UpdInsertAttributes::undo()
-{
-  ELEM_NODE(theTarget)->undoInsertAttributes(*this);
-}
-
-
-void UpdInsertAttributes::check()
-{
-  ElementNode* target = ELEM_NODE(theTarget);
-  target->checkUniqueAttrs();
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-UpdReplaceAttribute::UpdReplaceAttribute(
-    PULImpl*                    pul,
-    store::Item_t&              target,
-    store::Item_t&              attr,
-    std::vector<store::Item_t>& newAttrs,
-    const store::CopyMode&      copymode)
-  :
-  UpdatePrimitive(pul, target),
-  theCopyMode(copymode),
-  theNumApplied(0)
-{
-  theAttr.transfer(attr);
-
-  ulong numAttrs = newAttrs.size();
-  theNewAttrs.resize(numAttrs);
-  for (ulong i = 0; i < numAttrs; i++)
-      theNewAttrs[i].transfer(newAttrs[i]);
-}
-
-
-void UpdReplaceAttribute::apply()
-{
-  theIsApplied = true;
-  ELEM_NODE(theTarget)->replaceAttribute(*this);
-}
-
-
-void UpdReplaceAttribute::undo()
-{
-  ELEM_NODE(theTarget)->restoreAttribute(*this);
-}
-
-
-void UpdReplaceAttribute::check()
-{
-  ElementNode* target = ELEM_NODE(theTarget);
-  target->checkUniqueAttrs();
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-UpdReplaceChild::UpdReplaceChild(
-    PULImpl*                    pul,
-    store::Item_t&              target,
-    store::Item_t&              child,
-    std::vector<store::Item_t>& newChildren,
-    const store::CopyMode&      copymode)
-  :
-  UpdatePrimitive(pul, target),
-  theCopyMode(copymode),
-  theNumApplied(0),
-  theIsTyped(false)
-{
-  theChild.transfer(child);
-
-  store::StoreConsts::NodeKind targetKind = theTarget->getNodeKind();
-
-  store::StoreConsts::NodeKind childKind = theChild->getNodeKind();
-  if (targetKind == store::StoreConsts::elementNode &&
-      (childKind == store::StoreConsts::elementNode ||
-       childKind == store::StoreConsts::textNode))
-    theRemoveType = true;
-
-  ulong numChildren = newChildren.size();
-  theNewChildren.resize(numChildren);
-  for (ulong i = 0; i < numChildren; i++)
-  {
-    theNewChildren[i].transfer(newChildren[i]);
-
-    if (theRemoveType == false)
-    {
-      store::StoreConsts::NodeKind childKind = theNewChildren[i]->getNodeKind();
-      if (targetKind == store::StoreConsts::elementNode &&
-          (childKind == store::StoreConsts::elementNode ||
-           childKind == store::StoreConsts::textNode))
-        theRemoveType = true;
-    }
-  }
-}
-
-
-void UpdReplaceChild::apply()
-{
-  theIsApplied = true;
-  INTERNAL_NODE(theTarget)->replaceChild(*this);
-}
-
-
-void UpdReplaceChild::undo()
-{
-  INTERNAL_NODE(theTarget)->restoreChild(*this);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void UpdReplaceElemContent::apply()
-{
-  ELEM_NODE(theTarget)->replaceContent(*this);
-  theIsApplied = true;
-}
-
-
-void UpdReplaceElemContent::undo()
-{
-  ELEM_NODE(theTarget)->restoreContent(*this);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void UpdRenameElem::apply()
-{
-  ELEM_NODE(theTarget)->replaceName(*this);
-  theIsApplied = true;
-}
-
-
-void UpdRenameElem::undo()
-{
-  ELEM_NODE(theTarget)->restoreName(*this);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void UpdSetElementType::apply()
-{
-  ElementNode* target = ELEM_NODE(theTarget);
-
-  target->theTypeName.transfer(theTypeName);
-
-  if(target->haveTypedTypedValue())
-  {
-    TextNode* textChild = reinterpret_cast<TextNode*>(target->getChild(0));
-
-    xqpStringStore_t textValue;
-    textChild->getStringValue(textValue);
-    textChild->setValue(NULL);
-
-    textChild->theFlags &= ~XmlNode::IsTyped;
-    textChild->setText(textValue);
-  }
-
-  if (theHaveValue)
-  {
-    target->setHaveValue();
-
-    if (theHaveEmptyValue)
-      target->setHaveEmptyValue();
-
-    if (theHaveTypedValue)
-    {
-      ZORBA_FATAL(target->numChildren() == 1, "");
-      ZORBA_FATAL(target->getChild(0)->getNodeKind() == store::StoreConsts::textNode, "");
-
-      TextNode* textChild = reinterpret_cast<TextNode*>(target->getChild(0));
-
-      textChild->setTyped(theTypedValue);
-      if (theHaveListValue)
-        textChild->setHaveListValue();
-    }
-  }
-  else
-  {
-    target->resetHaveValue();
-  }
-
-  if (theIsInSubstitutionGroup)
-    target->setInSubstGroup();
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void UpdReplaceAttrValue::apply()
-{
-  ATTR_NODE(theTarget)->replaceValue(*this);
-  theIsApplied = true;
-}
-
-
-void UpdReplaceAttrValue::undo()
-{
-  ATTR_NODE(theTarget)->restoreValue(*this);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void UpdRenameAttr::apply()
-{
-  ATTR_NODE(theTarget)->replaceName(*this);
-  theIsApplied = true;
-}
-
-
-void UpdRenameAttr::undo()
-{
-  ATTR_NODE(theTarget)->restoreName(*this);
-}
-
-
-void UpdRenameAttr::check()
-{
-  AttributeNode* attr = ATTR_NODE(theTarget);
-  if (attr->getParent() != NULL)
-  {
-    ElementNode* parent = reinterpret_cast<ElementNode*>(attr->getParent());
-    parent->checkUniqueAttrs();
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void UpdSetAttributeType::apply()
-{
-  AttributeNode* target = ATTR_NODE(theTarget);
-
-  target->theTypeName.transfer(theTypeName);
-  target->theTypedValue.transfer(theTypedValue);
-
-  if (theHaveListValue)
-    target->setHaveListValue();
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-UpdReplaceTextValue::~UpdReplaceTextValue()
-{
-  if (theIsTyped)
-    theOldContent.setValue(NULL);
-  else
-    theOldContent.setText(NULL);
-}
-
-
-void UpdReplaceTextValue::apply()
-{
-  TEXT_NODE(theTarget)->replaceValue(*this);
-  theIsApplied = true;
-}
-
-
-void UpdReplaceTextValue::undo()
-{
-  TEXT_NODE(theTarget)->restoreValue(*this);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void UpdReplacePiValue::apply()
-{
-  PI_NODE(theTarget)->replaceValue(*this);
-  theIsApplied = true;
-}
-
-
-void UpdReplacePiValue::undo()
-{
-  PI_NODE(theTarget)->restoreValue(*this);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void UpdRenamePi::apply()
-{
-  PI_NODE(theTarget)->replaceName(*this);
-  theIsApplied = true;
-}
-
-
-void UpdRenamePi::undo()
-{
-  PI_NODE(theTarget)->restoreName(*this);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void UpdReplaceCommentValue::apply()
-{
-  COMMENT_NODE(theTarget)->replaceValue(*this);
-  theIsApplied = true;
-}
-
-
-void UpdReplaceCommentValue::undo()
-{
-  COMMENT_NODE(theTarget)->restoreValue(*this);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void UpdPut::apply()
-{
-  SimpleStore* store = SimpleStoreManager::getStore();
-
-  try
-  {
-    // Have to copy because addNode() will set the doc uri of target tree to
-    // the uri passed as an arg to fn:put, but the target tree may already
-    // have a doc uri, which we should not overwrite. Another reason that we
-    // have to copy is that if the target node is an element node, we wrap it
-    // with a doc node, but thi not be possible would if the target node
-    // has a parent already.
-    store::CopyMode copymode;
-    copymode.set(true, true, true, true);
-    theTarget = theTarget->copy(NULL, 0, copymode);
-
-    if (theTarget->getNodeKind() != store::StoreConsts::documentNode)
-    {
-      assert(theTarget->getNodeKind() == store::StoreConsts::elementNode);
-
-      ElementNode* elem =  static_cast<ElementNode*>(theTarget.getp());
-
-      DocumentNode* doc = new DocumentNode();
-      doc->setTree(elem->getTree());
-      doc->setOrdPath(NULL, 1, store::StoreConsts::documentNode);
-      
-      doc->insertChild(elem, 0);
-
-      store::Item_t docItem(doc);
-
-      theTarget = docItem;
-    }
-
-    store->addNode(theTargetUri->getStringValue(), theTarget);
-  }
-  catch(error::ZorbaError& e)
-  {
-    if (e.theErrorCode == API0020_DOCUMENT_ALREADY_EXISTS)
-    {
-      theOldDocument = store->getDocument(theTargetUri->getStringValue());
-      store->deleteDocument(theTargetUri->getStringValue());
-      store->addNode(theTargetUri->getStringValue(), theTarget);
-    }
-    else
-    {
-      throw;
-    }
-  }
-
-  theIsApplied = true;
-}
-
-
-void UpdPut::undo()
-{
-  SimpleStore* store = SimpleStoreManager::getStore();
-
-  store->deleteDocument(theTargetUri->getStringValue());
-  store->addNode(theTargetUri->getStringValue(), theOldDocument);
-}
-
-
-/*******************************************************************************
-  UpdatePrimitives for collection functions
-********************************************************************************/
-
-
-/*******************************************************************************
-  UpdCreateCollection
-********************************************************************************/
-void UpdCreateCollection::apply()
-{
-  GET_STORE().createCollection(theCollectionName);
-  theIsApplied = true;
-}
-
-
-void UpdCreateCollection::undo()
-{
-  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
-  if (lColl) 
-  {
-    GET_STORE().deleteCollection(theCollectionName);
-  }
-}
-
-
-/*******************************************************************************
-  UpdDropCollection
-********************************************************************************/
-void UpdDropCollection::apply()
-{
-  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
-  assert(lColl);
-
-  // save nodes for potential undo
-  store::Item_t lTmp = NULL;
-  store::Iterator_t lIter = lColl->getIterator(true);
-  assert(lIter);
-
-  lIter->open();
-  while (lIter->next(lTmp))
-    theSavedItems.push_back(lTmp);
-  lIter->close();
-
-  GET_STORE().deleteCollection(theCollectionName);
-  theIsApplied = true;
-}
-
-
-void UpdDropCollection::undo()
-{
-  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
-  if (!lColl) {
-    GET_STORE().createCollection(theCollectionName); 
-#ifndef NDEBUG
-    lColl = GENV_STORE.getCollection(theCollectionName);
-    assert(lColl);
-#endif
-  }
-
-
-  long lIndex;
-  for (std::vector<store::Item_t>::iterator lIter = theSavedItems.begin();
-       lIter != theSavedItems.end(); ++lIter) {
-    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) {
-#ifndef NDEBUG
-      dynamic_cast<SimpleCollection*>(lColl.getp())->addNode(lIter->getp());
-#else
-      static_cast<SimpleCollection*>(lColl.getp())->addNode(lIter->getp());
-#endif
-    }
-  }
-}
-
-
-/*******************************************************************************
-  UpdInsertIntoCollection
-********************************************************************************/
-void UpdInsertIntoCollection::apply()
-{
-  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
-  assert(lColl);
-
-  lColl->addNode(theNode);
-
-  theIsApplied = true;
-}
-
-
-void UpdInsertIntoCollection::undo()
-{
-  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
-  assert(lColl);
-
-  // remove the node if it exists
-  long lIndex;
-  if ( (lIndex = lColl->indexOf(theNode.getp())) != -1 ) 
-  {
-    lColl->removeNode(lIndex);
-  }
-}
-
-
-/*******************************************************************************
-  UpdInsertFirstIntoCollection
-********************************************************************************/
-void UpdInsertFirstIntoCollection::apply()
-{
-  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
-  assert(lColl);
-
-  for (std::vector<store::Item_t>::reverse_iterator lIter = theNodes.rbegin();
-       lIter != theNodes.rend();
-       ++lIter) 
-  {
-    lColl->addNode(*lIter, 1);
-  }
-}
-
-void UpdInsertFirstIntoCollection::undo()
-{
-  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
-  assert(lColl);
-
-  long lIndex;
-  for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
-       lIter != theNodes.end();
-       ++lIter) 
-  {
-    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) 
-    {
-      lColl->removeNode(lIndex);
-    }
-  }
-}
-
-
-/*******************************************************************************
-  UpdInsertLastIntoCollection
-********************************************************************************/
-void UpdInsertLastIntoCollection::apply()
-{
-  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
-  assert(lColl);
-
-  for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
-       lIter != theNodes.end();
-       ++lIter) 
-  {
-    lColl->addNode(*lIter, -1);
-  }
-}
-
-void UpdInsertLastIntoCollection::undo()
-{
-  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
-  assert(lColl);
-
-  long lIndex;
-  for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
-       lIter != theNodes.end();
-       ++lIter) 
-  {
-    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) 
-    {
-      lColl->removeNode(lIndex);
-    }
-  }
-}
-
-
-/*******************************************************************************
-  UpdInsertBeforeIntoCollection
-********************************************************************************/
-void UpdInsertBeforeIntoCollection::apply()
-{
-  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
-  assert(lColl);
-
-  for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
-       lIter != theNodes.end();
-       ++lIter)
-  {
-    lColl->addNode(*lIter, theTarget, true);
-  }
-}
-
-void UpdInsertBeforeIntoCollection::undo()
-{
-  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
-  assert(lColl);
-
-  long lIndex;
-  for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
-       lIter != theNodes.end();
-       ++lIter)
-  {
-    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) 
-    {
-      lColl->removeNode(lIndex);
-    }
-  }
-}
-
-
-/*******************************************************************************
-  UpdInsertAfterIntoCollection
-********************************************************************************/
-void UpdInsertAfterIntoCollection::apply()
-{
-  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
-  assert(lColl);
-
-  for (std::vector<store::Item_t>::reverse_iterator lIter = theNodes.rbegin();
-       lIter != theNodes.rend();
-       ++lIter) 
-  {
-    lColl->addNode(*lIter, theTarget, false);
-  }
-}
-
-
-void UpdInsertAfterIntoCollection::undo()
-{
-  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
-  assert(lColl);
-
-  long lIndex;
-  for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
-       lIter != theNodes.end();
-       ++lIter)
-  {
-    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) 
-    {
-      lColl->removeNode(lIndex);
-    }
-  }
-}
-
-
-/*******************************************************************************
-  UpdInsertAtIntoCollection
-********************************************************************************/
-void UpdInsertAtIntoCollection::apply()
-{
-  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
-  assert(lColl);
-
-  ulong lPos = thePos;
-  for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
-       lIter != theNodes.end();
-       ++lIter) 
-  {
-    lColl->addNode(*lIter, lPos++);
-  }
-}
-
-void UpdInsertAtIntoCollection::undo()
-{
-  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
-  assert(lColl);
-
-  long lIndex;
-  for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
-       lIter != theNodes.end();
-       ++lIter) 
-  {
-    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) 
-    {
-      lColl->removeNode(lIndex);
-    }
-  }
-}
-
-
-/*******************************************************************************
-  UpdRemoveNodesFromCollection
-********************************************************************************/
-void UpdRemoveNodesFromCollection::apply()
-{
-  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
-  assert(lColl);
-
-  for (std::vector<store::Item_t>::iterator lIter = theNodesToDelete.begin();
-       lIter != theNodesToDelete.end();
-       ++lIter) 
-  {
-    lColl->removeNode(lIter->getp());
-  }
-}
-
-void UpdRemoveNodesFromCollection::undo()
-{
-  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
-  assert(lColl);
-
-  long lIndex;
-  for (std::vector<store::Item_t>::iterator lIter = theNodesToDelete.begin();
-       lIter != theNodesToDelete.end();
-       ++lIter) 
-  {
-    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) 
-    {
-#ifndef NDEBUG
-      dynamic_cast<SimpleCollection*>(lColl.getp())->addNode(lIter->getp());
-#else
-      static_cast<SimpleCollection*>(lColl.getp())->addNode(lIter->getp());
-#endif
-    }
-  }
-}
-
-
-/*******************************************************************************
-  UpdRemoveNodeAtFromCollection
-********************************************************************************/
-void UpdRemoveNodeAtFromCollection::apply()
-{
-  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
-  assert(lColl);
-
-  theNode = lColl->nodeAt(thePos);
-  assert(theNode);
-  lColl->removeNode(thePos);
-}
-
-void UpdRemoveNodeAtFromCollection::undo()
-{
-  store::Collection_t lColl = GENV_STORE.getCollection(theCollectionName);
-  assert(lColl);
-
-#ifndef NDEBUG
-  dynamic_cast<SimpleCollection*>(lColl.getp())->addNode(theNode);
-#else
-  static_cast<SimpleCollection*>(lColl.getp())->addNode(theNode);
-#endif
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void UpdCreateIndex::apply()
-{
-  SimpleStore* store = SimpleStoreManager::getStore();
-
-  theIndex = store->createIndex(theQName, theSpec, theSourceIter);
-
-  theIsApplied = true;
-}
-
-
-void UpdCreateIndex::undo()
-{
-  if (theIsApplied)
-  {
-    SimpleStore* store = SimpleStoreManager::getStore();
-
-    store->deleteIndex(theQName);
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void UpdDropIndex::apply()
-{
-  SimpleStore* store = SimpleStoreManager::getStore();
-
-  if ((theIndex = store->getIndex(theQName)) == NULL)
-  {
-    ZORBA_ERROR_PARAM(STR0002_INDEX_DOES_NOT_EXIST,
-                      theQName->getStringValue()->c_str(), "");
-  }
-
-  store->deleteIndex(theQName);
-
-  theIsApplied = true;
-}
-
-
-void UpdDropIndex::undo()
-{
-  if (theIsApplied)
-  {
-    SimpleStore* store = SimpleStoreManager::getStore();
-
-    store->addIndex(theIndex);
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void UpdRefreshIndex::apply()
-{
-  SimpleStore* store = SimpleStoreManager::getStore();
-
-  if ((theIndex = store->getIndex(theQName)) == NULL)
-  {
-    ZORBA_ERROR_PARAM(STR0002_INDEX_DOES_NOT_EXIST,
-                      theQName->getStringValue()->c_str(), "");
-  }
-
-  store->deleteIndex(theQName);
-
-  try
-  {
-    store->createIndex(theQName, theIndex->getSpecification(), theSourceIter);
-  }
-  catch (...)
-  {
-    store->addIndex(theIndex);
-    throw;
-  }
-
-  theIsApplied = true;
-}
-
-
-void UpdRefreshIndex::undo()
-{
-  if (theIsApplied)
-  {
-    SimpleStore* store = SimpleStoreManager::getStore();
-    store->deleteIndex(theQName);
-    store->addIndex(theIndex);
   }
 }
 

@@ -38,9 +38,6 @@ class Iterator;
 typedef rchandle<IndexEntryCreator> IndexEntryCreator_t;
 
 
-typedef std::pair<xqpStringStore_t, IndexEntryCreator_t> PatternIECreatorPair;
-
-
 /***************************************************************************//**
   Specification for creating a value index.
 
@@ -62,9 +59,6 @@ typedef std::pair<xqpStringStore_t, IndexEntryCreator_t> PatternIECreatorPair;
 
   theSources      : The qnames of the collections accessed by the defining exprs
                     of this index.
-
-  theIECreators   : A vector of pattern-creator pairs that the store can use to
-                    compute index entries.
 ********************************************************************************/
 class IndexSpecification
 {
@@ -81,8 +75,6 @@ public:
   bool                                      theIsAutomatic;
 
   std::vector<store::Item_t>                theSources;
-
-  std::vector<PatternIECreatorPair>         theIECreators;
 
 public:
   IndexSpecification()
@@ -114,7 +106,6 @@ public:
     theCollations.clear();
     theTimezone = 0;
     theIsUnique = theIsSorted = theIsTemp = theIsThreadSafe = false;
-    theIECreators.clear();
   }
 
   void resize(ulong numColumns)
@@ -122,29 +113,54 @@ public:
     theKeyTypes.resize(numColumns);
     theCollations.resize(numColumns);
   }
-
 };
 
+
+/***************************************************************************//**
+  Class IndexKey represents an index key as a vector of item handles. 
+********************************************************************************/
+class IndexKey : public ItemVector
+{
+public:
+  IndexKey(ulong size = 0) : ItemVector(size) {}
+};
+
+
+/***************************************************************************//**
+  Class ValueSet represents a value set as a vector of item handles.
+********************************************************************************/
+class IndexValue : public store::ItemVector
+{
+public:
+  IndexValue(ulong size = 0) : store::ItemVector(size) {}
+};
 
 
 /***************************************************************************//**
 
   Abstract value index class.
 
-  Class Index represents indices that implement a 1:1 mapping from item tuples
-  to item sets. All tuples in such an index have the same fixed number of items,
-  and the items in the i-th column of each tuple must all have the same data
-  type (for i = 0, 1, ..., N-1). Such tuples are refered to as "index keys". For
-  any given index, its keys are unique. Each such index key is associated with
-  a set of items, which is refered to as the "value set" of the key. Value sets
-  can shrink or grow over time independently from each other. It is possible for
-  an item to appear in the value set of multiple keys. It is also possible
-  for the same item to appear multiple times in the same value set (so,
-  technically, value sets are actually multisets).
+  From the store's point of view, a "value index" is a container that implements
+  an N:1 mapping (i.e., a function) from item tuples to item bags. (In practice,
+  the mapping is 1:1, but the store does not enforce this). 
 
-  Index instances are created (but not populated) via the store::createIndex()
-  method; they are populated via the Index::insert() and Index::remove() methods,
-  and are probed via IndexProbeIterators (see iterator.h and iterator_factory.h).
+  The tuples that appear in an index are referred to as "key tuples", and they
+  satisfy the following constraints:
+
+  1. All key tuples in a value index have the same fixed number of items, say M.
+     Given this constraint, we can define the i-th "key column" of a value index
+     as the set of items that appear in the i-th position of each key tuple. If
+     an index has N tuples, then there are M key columns, each containing N items. 
+  2. All items in a key tuple are atomic items.
+  3. The items in each key column must be comparable with each other using the
+     Item::equals() method and/or the Item::compare() method. This implies that
+     all items in a key column must belong to the same branch of the XMLSchema
+     type hierarchy.
+
+
+  The bag of items associated with each key tuple is referred to as an "index 
+  value". The number of items in each index value can shrink or grow over time
+  independently from other index values. 
 
 ********************************************************************************/
 class Index : public RCObject
@@ -160,6 +176,11 @@ public:
 public:
 
   virtual ~Index() {}
+
+  /**
+   * Return the qname of the index.
+   */
+  virtual Item* getName() const = 0;
 
   /**
    *  Return a reference to the specification object that describes this index. 
@@ -190,28 +211,6 @@ public:
   virtual IndexBoxCondition_t createBoxCondition() = 0;
 
   /**
-   *  Insert the given item in the value set of the given key. If the key
-   *  is not in the index already, then the key itself is inserted as well.
-   *
-   *  @param  key The key to insert (if not already in the index).
-   *  @param  item The item to insert in the value set of the key.
-   *  @return True if the key was already in the index, false otherwise.
-   */
-  virtual bool insert(IndexKey& key, Item_t& item) = 0;
-
-  /**
-   *  Remove the given item from the value set of the given key. If the
-   *  value set of the key becomes empty, then the key itself is removed
-   *  from the index.
-   *
-   *  @param  key The key to remove (if its value set becomes empty).
-   *  @param  item The item to from the value set of the key.
-   *  @retrun False if the item is not in the value set of the key, or if
-   *          key itself is not in the index; true otherwise.
-   */
-  virtual bool remove(const IndexKey& key, Item_t& item) = 0;
-
-  /**
    *  Fast-track probing method. Given an index key, return the first item in
    *  the associated value set. This method is most useful in the case of unique
    *  indices (i.e., when the value set of each key consists of a single item),
@@ -227,81 +226,11 @@ public:
 
 
 /***************************************************************************//**
-  Class IndexKey represents an index key as a vector of item handles. 
-********************************************************************************/
-class IndexKey : public ItemVector
-{
-public:
-  IndexKey(ulong size = 0) : ItemVector(size) {}
-};
-
-
-/***************************************************************************//**
-  Class IndexEntryReceiver is used to perform index bulk load. It allows an
-  index to be populated in ways that may be more efficient than a series of
-  invidual (stateless) insertions. This is done by explicitly stating the 
-  start and the end of a bulk load session, and implemententing a receive()
-  method as a way to do deferred insertions.
-********************************************************************************/
-class IndexEntryReceiver : public SimpleRCObject 
-{
-protected:
-  Index_t  theIndex;
-
-public:
-  virtual ~IndexEntryReceiver() {}
-
-  /**
-   *  Receive an index entry to be inserted in the associated index. The 
-   *  implementation of this method may choose to insert the given entry to
-   *  the index immediately, or store it on the side and insert it at a
-   *  later time.
-   *
-   *  @param  key The key to insert (if not already in the index).
-   *  @param  item The item to insert in the value set of the key.
-   */
-  virtual void receive(store::IndexKey& key, store::Item_t& value) = 0;
-
-  /**
-   * Marks the end of the bulk load. Any deferred insertions must be performed
-   * before the method returns.
-   */
-  virtual void commit() = 0;
-
-  /**
-   *  Discard any deferred insertions and remove from the index any entries
-   *  that have already been inserted by this bulk load session. 
-   */
-  virtual void abort() = 0;
-};
-
-
-/*******************************************************************************
- Class IndexEntryCreator is used to compute (key, domain_expr) pairs for a
- given node that has a certain relationship to the domain expression.
-********************************************************************************/
-class IndexEntryCreator : public SimpleRCObject
-{
-public:
-  typedef std::pair<store::IndexKey, store::Item_t> IndexEntry;
-
-  virtual ~IndexEntryCreator() { }
-
-  /**
-   * Generate index entries for the given item.
-   */
-  virtual void appendIndexEntries(
-        store::Item_t& item,
-        std::vector<IndexEntry>& entries) = 0;
-};
-
-
-/***************************************************************************//**
 
   Class IndexCondition represents a condition on the keys of an index. An
   instance of IndexCondition is given as a parameter to the init() method of
   an IndexProbeIterator (see iterator.h), which can then iterate over the
-  items in the value set of each index key that satisfies the condition.
+  items in the value of each index key that satisfies the condition.
 
 ********************************************************************************/
 class IndexCondition : public SimpleRCObject 
@@ -382,10 +311,10 @@ public:
   Class IndexBoxCondition represents a condition that is satisfied by the index
   keys inside a user-specified "box". 
 
-  Let N be the number of key columns. Then, an M-dimensional box is defined as
-  a conjuction of M range conditions on columns 0 to M-1, for some M <= N. Each
-  range condition specifies a range of acceptable values for some key column.
-  Specifically, A range is defined as the set of all values X such that 
+  Let M be the number of key columns. Then, an M-dimensional box is defined as
+  a conjuction of M range conditions on columns 0 to M-1. Each range condition
+  specifies a range of acceptable values for some key column. Specifically, a
+  range is defined as the set of all values X such that 
 
   lower_bound <? X <? upper_bound, where <? is either < or <=.
 
@@ -425,6 +354,26 @@ public:
         bool haveUpper,
         bool lowerIncl,
         bool upperIncl) = 0;
+};
+
+
+
+/*******************************************************************************
+ Class IndexEntryCreator is used to compute (key, domain_expr) pairs for a
+ given node that has a certain relationship to the domain expression.
+********************************************************************************/
+class IndexEntryCreator : public SimpleRCObject
+{
+public:
+  virtual ~IndexEntryCreator() { }
+
+  /**
+   * Generate index entries for the given item.
+   */
+  virtual void createIndexEntries(
+        store::Item* node,
+        std::vector<Item_t>& domainNodes,
+        std::vector<IndexKey*>& keyTuples) = 0;
 };
 
 

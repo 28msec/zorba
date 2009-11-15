@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-#include "runtime/indexing/context_index_impl.h"
+#include "runtime/indexing/value_index_context.h"
 #include "runtime/visitors/planiter_visitor.h"
-#include "api/serialization/serializer.h"
+
 #include "context/static_context.h"
+
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
 #include "store/api/index.h"
@@ -42,6 +43,7 @@ NARY_ACCEPT(AvailableIndexesIterator);
 NARY_ACCEPT(IsDeclaredIndexIterator);
 NARY_ACCEPT(DeclaredIndexesIterator);
 
+
 bool
 IsDeclaredIndexIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
 {
@@ -59,6 +61,7 @@ IsDeclaredIndexIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState)
   STACK_END (lState);
 }
 
+
 IndexNamesListState::~IndexNamesListState()
 {
   if ( nameItState != NULL ) {
@@ -66,6 +69,7 @@ IndexNamesListState::~IndexNamesListState()
     nameItState = NULL;
   }
 }
+
 
 void IndexNamesListState::init(PlanState& planState)
 {
@@ -82,6 +86,7 @@ void IndexNamesListState::reset(PlanState& planState)
     nameItState = NULL;
   }
 }
+
 
 bool
 DeclaredIndexesIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
@@ -124,6 +129,7 @@ IsAvailableIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
   STACK_END (state);
 }
+
 
 bool
 AvailableIndexesIterator::nextImpl(store::Item_t& result, PlanState& planState) const

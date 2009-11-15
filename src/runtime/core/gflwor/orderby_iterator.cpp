@@ -316,7 +316,7 @@ bool OrderByIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     {
       std::sort(iterState->theSortTable.begin(),
                 iterState->theSortTable.end(),
-              cmp);
+                cmp);
     }
   }
 

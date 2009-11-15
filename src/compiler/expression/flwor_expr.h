@@ -197,9 +197,9 @@ public:
 
   void set_outer(bool outer) { theIsOuter = outer; }
 
-  const var_expr* get_pos_var() const { return thePosVarExpr.getp(); }
+  var_expr* get_pos_var() const { return thePosVarExpr.getp(); }
 
-  const var_expr* get_score_var() const { return theScoreVarExpr.getp(); }
+  var_expr* get_score_var() const { return theScoreVarExpr.getp(); }
 
   void set_pos_var(var_expr_t v) 
   {
@@ -657,7 +657,7 @@ public:
 
   long defines_variable(const var_expr* v, const flwor_clause* limit) const;
 
-  void get_vars_defined(std::vector<const var_expr*>& varExprs) const;
+  void get_vars_defined(std::vector<var_expr*>& varExprs) const;
 
   expr_iterator_data* make_iter();
 

@@ -19,9 +19,9 @@
 
 #include <zorba/error.h>
 
-#include "common/shared_types.h"
-#include "zorbamisc/config/platform.h"
 #include "zorbautils/fatal.h"
+
+#include "store/naive/shared_types.h"
 
 #include "store/api/item.h"
 #include "store/naive/item_vector.h"
@@ -449,9 +449,11 @@ public:
 
   void setTree(const XmlTree* t);
 
-  XmlTree* getTree() const          { return (XmlTree*)theTreeRCPtr; }
+  XmlTree* getTree() const { return (XmlTree*)theTreeRCPtr; }
 
-  ulong getTreeId() const           { return getTree()->getId(); }
+  ulong getTreeId() const { return getTree()->getId(); }
+
+  XmlNode* getRoot() const { return getTree()->getRoot(); }
 
   SimpleCollection* getCollection() const { return getTree()->getCollection(); }
 

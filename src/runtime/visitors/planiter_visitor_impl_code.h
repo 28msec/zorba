@@ -160,7 +160,7 @@
 
   PLAN_ITER_VISITOR (CreateInternalIndexIterator);
   PLAN_ITER_VISITOR (CreateIndexIterator);
-  PLAN_ITER_VISITOR (RefreshIndexIterator);
+  PLAN_ITER_VISITOR (RebuildIndexIterator);
   PLAN_ITER_VISITOR (DropIndexIterator);
   PLAN_ITER_VISITOR (IndexEntryBuilderIterator);
   PLAN_ITER_VISITOR (IndexPointProbeIterator);

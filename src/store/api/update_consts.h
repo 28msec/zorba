@@ -100,7 +100,7 @@ public:
     // index primitives
     UP_CREATE_INDEX,
     UP_DROP_INDEX,
-    UP_REFRESH_INDEX
+    UP_REBUILD_INDEX
   };
 
   static bool isRename(UpdPrimKind k)
@@ -219,7 +219,7 @@ static std::string toString(UpdPrimKind k)
     return "create index";
   case UP_DROP_INDEX:
     return "drop index";
-  case UP_REFRESH_INDEX:
+  case UP_REBUILD_INDEX:
     return "refresh index";
   default:
     return "<unknown UpdPrimKind>";

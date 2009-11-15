@@ -31,14 +31,16 @@
 #include "compiler/indexing/value_index.h"
 
 #include "runtime/update/update.h"
-#include "runtime/api/plan_wrapper.h"
+#include "runtime/indexing/doc_indexer.h"
 #include "runtime/core/var_iterators.h"
+#include "runtime/api/plan_wrapper.h"
 #include "runtime/visitors/planiter_visitor.h"
 
 #include "store/api/pul.h"
 #include "store/api/update_consts.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
+#include "store/api/index.h"
 #include "store/api/store.h"
 #include "store/api/copymode.h"
 
@@ -820,7 +822,7 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   rchandle<store::PUL> validationPul;
   std::set<zorba::store::Item*> validationNodes;
   rchandle<store::PUL> indexPul;
-  std::vector<const store::Item*> indexNames;
+  std::vector<store::Index*> indexes;
 
   dynamic_context* dctx = planState.dctx();
   CompilerCB* ccb = planState.theCompilerCB;
@@ -843,6 +845,41 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                            "Expression returns more than one pending update lists");
     }
 
+
+    // Get all the indexes that are associated with any of the collections that
+    // are going to be updated by this pul. Check which of those indices can be
+    // maintained incrementally, and pass this info back to the pul.
+    pul->getIndicesToRefresh(indexes);
+
+    ulong numIndices = indexes.size();
+
+    std::vector<ValueIndex*> zorbaIndexes(numIndices); 
+
+    for (ulong i = 0; i < numIndices; ++i)
+    {
+      ValueIndex* zorbaIndex = theSctx->lookup_index(indexes[i]->getName());
+      
+      if (zorbaIndex == NULL)
+      {
+        ZORBA_ERROR_LOC_PARAM(XQP0037_INDEX_IS_NOT_DECLARED, loc,
+                              indexes[i]->getName()->getStringValue()->c_str(), "");
+      }
+
+      if (zorbaIndex->getMaintenanceMode() == ValueIndex::DOC_MAP)
+      {
+        DocIndexer* docIndexer = zorbaIndex->getDocIndexer(ccb, loc);
+        assert(docIndexer != NULL);
+
+        docIndexer->setup(ccb, dctx);
+
+        pul->addIndexEntryCreator(indexes[i], docIndexer);
+      }
+
+      zorbaIndexes[i] = zorbaIndex;
+    }
+
+
+    // Apply updates
     pul->applyUpdates(validationNodes);
 
     // Revalidate
@@ -854,32 +891,23 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     validationPul->applyUpdates(validationNodes);
 #endif
 
-    // Refresh indices
-    pul->getIndicesToRefresh(indexNames);
-
-    ulong numIndices = indexNames.size();
-
+    // Rebuild the indices that must be rebuilt from scratch
     if (numIndices > 0)
     {
       indexPul = GENV_ITEMFACTORY->createPendingUpdateList();
 
       for (ulong i = 0; i < numIndices; ++i)
       {
-        ValueIndex* zorbaIndex = theSctx->lookup_index(indexNames[i]);
+        ValueIndex* zorbaIndex = zorbaIndexes[i];
         
-        if (zorbaIndex == NULL)
+        if (zorbaIndex->getMaintenanceMode() == ValueIndex::REBUILD)
         {
-          ZORBA_ERROR_LOC_PARAM(XQP0037_INDEX_IS_NOT_DECLARED, loc,
-                                indexNames[i]->getStringValue()->c_str(), "");
+          PlanIter_t buildPlan = zorbaIndex->getBuildPlan(ccb, loc);
+
+          PlanWrapper_t planWrapper = new PlanWrapper(buildPlan, ccb, dctx, NULL);
+
+          indexPul->addRebuildIndex(zorbaIndex->getName(), planWrapper);
         }
-
-        ZORBA_ASSERT(zorbaIndex->isAutomatic());
-
-        PlanIterator* buildPlan = zorbaIndex->getBuildPlan(ccb, loc);
-
-        store::Iterator_t planWrapper = new PlanWrapper(buildPlan, ccb, dctx, NULL);
-
-        indexPul->addRefreshIndex(const_cast<store::Item*>(indexNames[i]), planWrapper);
       }
 
       indexPul->applyUpdates(validationNodes);

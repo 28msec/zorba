@@ -678,7 +678,7 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
   
   TypeManager* tm = rCtx.getStaticContext(&fo)->get_typemanager();
 
-  store::Item_t val = val_expr->get_val(false);
+  store::Item* val = val_expr->get_val();
 
   if (TypeOps::is_subtype(*tm->create_named_type(val->getType()),
                           *GENV_TYPESYSTEM.INTEGER_TYPE_ONE)) 
@@ -706,7 +706,8 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
     else 
     {
       store::Item_t pVal;
-      GenericCast::promote(pVal, val, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, *tm);
+      store::Item_t iVal = val;
+      GenericCast::promote(pVal, iVal, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, *tm);
       expr_t dpos = new const_expr(val_expr->get_sctx_id(), LOC(val_expr), pVal);
 
       std::vector<expr_t> args(3);

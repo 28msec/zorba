@@ -324,7 +324,7 @@ store::Index_t SimpleStore::createIndex(
 
   store::Index_t index;
   store::Item_t domainItem;
-  store::IndexKey key(numColumns);
+  store::IndexKey* key = NULL;
 
   if (!spec.theIsTemp && theIndices.get(qname, index))
   {
@@ -347,19 +347,25 @@ store::Index_t SimpleStore::createIndex(
   {
     while (sourceIter->next(domainItem))
     {
+      key = new store::IndexKey(numColumns);
+
       for (ulong i = 0; i < numColumns; ++i)
       {
-        if (!sourceIter->next(key[i]))
+        if (!sourceIter->next((*key)[i]))
         {
           ZORBA_ERROR_DESC(XQP0019_INTERNAL_ERROR, "Incomplete key during index build");
         }
       }
       
-      index->insert(key, domainItem);
+      static_cast<IndexImpl*>(index.getp())->insert(key, domainItem);
+      key = NULL; // ownership of the key obj passes to the index.
     }
   }
   catch(...)
   {
+    if (key != NULL)
+      delete key;
+
     sourceIter->close();
     throw;
   }

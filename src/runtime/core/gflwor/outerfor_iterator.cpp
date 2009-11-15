@@ -39,7 +39,7 @@ END_SERIALIZABLE_CLASS_VERSIONS(OuterForIterator)
 OuterForIterator::OuterForIterator (
     static_context* sctx,
     const QueryLoc& loc,
-    const store::Item_t& aVarName,
+    store::Item* aVarName,
     PlanIter_t aTupleIterator,
     PlanIter_t aInput,
     const std::vector<PlanIter_t>& aOuterForVars) 

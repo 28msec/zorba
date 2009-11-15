@@ -31,7 +31,7 @@ SERIALIZABLE_CLASS_VERSIONS(var_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(var_expr)
 
 
-int var_expr::var_expr_count = 0;//used for giving var_exprs unique ids
+ulong var_expr::theVarCounter = 0; //used for giving var_exprs unique ids
 
 
 /*******************************************************************************
@@ -66,7 +66,11 @@ std::string var_expr::decode_var_kind(enum var_kind k)
 /*******************************************************************************
 
 ********************************************************************************/
-var_expr::var_expr(short sctx, const QueryLoc& loc, var_kind k, store::Item_t name)
+var_expr::var_expr(
+    short sctx,
+    const QueryLoc& loc,
+    var_kind k,
+    store::Item* name)
   :
   expr(sctx, loc),
   theKind(k),
@@ -75,7 +79,7 @@ var_expr::var_expr(short sctx, const QueryLoc& loc, var_kind k, store::Item_t na
   theFlworClause(NULL),
   theCopyClause(NULL)
 {
-  unique_id = var_expr_count++;
+  theUniqueId = theVarCounter++;
 }
 
 
@@ -95,16 +99,16 @@ void var_expr::serialize(::zorba::serialization::Archiver& ar)
     theFlworClause = NULL;
     theCopyClause = NULL;
   }
-  ar & unique_id;
+  ar & theUniqueId;
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-store::Item_t var_expr::get_varname() const 
+store::Item* var_expr::get_name() const 
 {
-  return theName;
+  return theName.getp();
 }
 
 
@@ -289,7 +293,7 @@ expr::expr_t var_expr::clone(expr::substitution_t& subst) const
   if (i == subst.end()) 
     return const_cast<var_expr*>(this);
 
-  return i->second->clone(subst);
+  return i->second;
 }
 
 

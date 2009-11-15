@@ -93,7 +93,6 @@ protected:
 public:
   SERIALIZABLE_CLASS(ForLetClause)
   SERIALIZABLE_CLASS_CONSTRUCTOR(ForLetClause)
-  ForLetClause() {}
   void serialize(::zorba::serialization::Archiver &ar)
   {
     ar & theVarName;
@@ -104,23 +103,27 @@ public:
     ar & theInput;
     ar & theMaterialize;
   }
+
 public:
+  ForLetClause() {}
+
   ForLetClause(
-        const store::Item_t& varName,
+        store::Item* varName,
         const std::vector<PlanIter_t>& forVars,
         PlanIter_t& input);
 
   ForLetClause(
-        const store::Item_t& varName,
+        store::Item* varName,
         const std::vector<PlanIter_t>& forVars,
         const std::vector<PlanIter_t>& posVars,
         PlanIter_t& input);
 
   ForLetClause(
-        const store::Item_t& varName,
+        store::Item* varName,
         const std::vector<PlanIter_t>& letVars,
         PlanIter_t& input,
         bool needsMaterialization);
+
   virtual ~ForLetClause() {}
           
   void accept (PlanIterVisitor&) const;
@@ -161,7 +164,6 @@ public:
 public:
   SERIALIZABLE_CLASS(OrderByClause)
   SERIALIZABLE_CLASS_CONSTRUCTOR(OrderByClause)
-  OrderByClause() {}
   void serialize(::zorba::serialization::Archiver &ar)
   {
     ar & theOrderSpecs;
@@ -169,6 +171,8 @@ public:
   }
 
 public:
+  OrderByClause() {}
+
   OrderByClause(const std::vector<OrderSpec>& orderSpecs, bool stable);
 
   ~OrderByClause() {}

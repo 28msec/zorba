@@ -53,7 +53,7 @@ public:
   OuterForIterator(
         static_context* sctx,
         const QueryLoc& aLoc,
-        const store::Item_t& aVarName,
+        store::Item* aVarName,
         PlanIter_t aTupleIterator,
         PlanIter_t aInput,
         const std::vector<PlanIter_t>& aOuterForVars);

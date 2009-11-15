@@ -762,18 +762,18 @@ void pop_elem_scope()
   Create a name to be used for an internally generated variable. The name is
   unique within this translator.
 ********************************************************************************/
-xqpString tempname () 
+xqpString tempname() 
 {
   return "$$temp" + to_string(tempvar_counter++);
-  }
+}
   
     
 /*******************************************************************************
   Create a var_expr for a variable with a given qname item, kind, and type
 ********************************************************************************/
-varref_t create_var(
+var_expr_t create_var(
     const QueryLoc& loc,
-    store::Item_t qname,
+    store::Item* qname,
     var_expr::var_kind kind,
     xqtref_t type = NULL) 
 {
@@ -787,7 +787,7 @@ varref_t create_var(
     type = GENV_TYPESYSTEM.POSITIVE_INTEGER_TYPE_ONE;
   }
 
-  e->set_type (type);
+  e->set_type(type);
   return e;
 }
 
@@ -811,9 +811,9 @@ varref_t create_var(
 /*******************************************************************************
   Create a var_expr for an internal variable with a given kind.
 ********************************************************************************/
-  varref_t tempvar(const QueryLoc& loc, var_expr::var_kind kind)
+varref_t tempvar(const QueryLoc& loc, var_expr::var_kind kind)
 {
-  xqpString lname (tempname ());
+  xqpString lname(tempname());
   return create_var(loc, lname, kind);
 }
 
@@ -823,21 +823,21 @@ varref_t create_var(
   Raise error if a var with the same expanded qname item is already in the given
   sctx obj.
 ********************************************************************************/
-void bind_var (varref_t e, static_context *sctx) 
+void bind_var(var_expr_t e, static_context* sctx) 
 {
-  assert (sctx != NULL);
+  assert(sctx != NULL);
 
-  store::Item_t qname = e->get_varname ();
+  const store::Item* qname = e->get_name();
 
   if (! sctx->bind_var(qname, e.getp()))
   {
-    if(e->get_kind () == var_expr::let_var)
+    if(e->get_kind() == var_expr::let_var)
     {
-      ZORBA_ERROR_LOC_PARAM (XQST0039, e->get_loc (), qname->getStringValue (), "");
+      ZORBA_ERROR_LOC_PARAM(XQST0039, e->get_loc (), qname->getStringValue (), "");
     }
     else
     {
-      ZORBA_ERROR_LOC_PARAM (XQST0049, e->get_loc (), qname->getStringValue (), "");
+      ZORBA_ERROR_LOC_PARAM(XQST0049, e->get_loc (), qname->getStringValue (), "");
     }
   }
 }
@@ -849,25 +849,25 @@ void bind_var (varref_t e, static_context *sctx)
   var_expr. Raise error if a var with the same expanded qname item is already
   in the given sctx obj.
 ********************************************************************************/
-varref_t bind_var (
+var_expr_t bind_var(
     const QueryLoc& loc,
     string varname,
     var_expr::var_kind kind,
     xqtref_t type = NULL) 
 {
-  varref_t e = create_var (loc, varname, kind, type);
-  bind_var (e, sctx_p);
+  var_expr_t e = create_var(loc, varname, kind, type);
+  bind_var(e, sctx_p);
   return e;
 }
 
 
-varref_t bind_var (
+var_expr_t bind_var(
     const QueryLoc& loc,
-    store::Item_t varname,
+    store::Item* varname,
     var_expr::var_kind kind,
     xqtref_t type = NULL) 
 {
-  varref_t e = create_var (loc, varname, kind, type);
+  varref_t e = create_var(loc, varname, kind, type);
   bind_var (e, sctx_p);
   return e;
 }
@@ -881,11 +881,11 @@ varref_t bind_var (
 ********************************************************************************/
 varref_t bind_var_and_push (
     const QueryLoc& loc,
-    store::Item_t varname,
+    store::Item* varname,
     var_expr::var_kind kind,
     xqtref_t type = NULL) 
 {
-  varref_t e = bind_var (loc, varname, kind, type);
+  varref_t e = bind_var(loc, varname, kind, type);
   nodestack.push (&*e);
   return e;
 }
@@ -924,7 +924,7 @@ var_expr* lookup_var(string varname)
 }
 
 
-var_expr* lookup_var(store::Item_t varname) 
+var_expr* lookup_var(const store::Item* varname) 
 {
   return static_cast<var_expr *>(sctx_p->lookup_var(varname));
 }
@@ -1316,17 +1316,18 @@ void wrap_in_debugger_expr(expr_t& aExpr)
          lIter != lAllInScopeVars.end(); 
          ++lIter) 
     {
-      store::Item_t lVarname = (*lIter)->get_varname();
-      if (std::string(lVarname->getStringValue()->c_str()) == "$$dot") {
+      store::Item* lVarname = (*lIter)->get_name();
+      if (std::string(lVarname->getStringValue()->c_str()) == "$$dot") 
+      {
         continue;
       }
 
-      varref_t ve = create_var(lLocation.theQueryLocation,
-                               lVarname,
-                               var_expr::eval_var,
-                               NULL).dyn_cast<var_expr>();
+      var_expr_t ve = create_var(lLocation.theQueryLocation,
+                                 lVarname,
+                                 var_expr::eval_var,
+                                 NULL).dyn_cast<var_expr>();
 
-      var_expr *lVe = lookup_var(ve->get_varname());
+      var_expr* lVe = lookup_var(ve->get_name());
 
       expr_t val = new wrapper_expr(theCCB->m_cur_sctx,
                                     lLocation.theQueryLocation,
@@ -1523,7 +1524,7 @@ void declare_var(const global_binding& b, std::vector<expr_t>& stmts)
 
   expr_t qnameExpr = new const_expr(sctxid,
                                     loc,
-                                    var->get_varname()->getStringValue()->equals(&dot) ?
+                                    var->get_name()->getStringValue()->equals(&dot) ?
                                     "." : dynamic_context::var_key(&*var));
 
   expr_t declExpr = new fo_expr(sctxid, loc, var_decl, qnameExpr->clone());
@@ -2612,8 +2613,8 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
 
     // All vars declared in a module must be in the same namespace as the module
     if (! theModuleNamespace.empty() &&
-        ve->get_varname()->getNamespace()->str() != theModuleNamespace)
-      ZORBA_ERROR_LOC (XQST0048, loc);
+        ve->get_name()->getNamespace()->str() != theModuleNamespace)
+      ZORBA_ERROR_LOC(XQST0048, loc);
 
     // Make sure that there is no other prolog var with the same name in any of
     // modules transalted so far.
@@ -3031,8 +3032,9 @@ void* begin_visit(const IndexDecl& v)
 
   ValueIndex_t index = new ValueIndex(theCCB, loc, qnameItem);
   index->setUnique(v.isUnique());
-  index->setMethod(v.isOrdered() ? ValueIndex::BTREE : ValueIndex::HASH);
-  index->setAutomatic(v.isAutomatic());
+  index->setMethod(v.isOrdered() ? ValueIndex::TREE : ValueIndex::HASH);
+  if (v.isAutomatic())
+    index->setMaintenanceMode(ValueIndex::REBUILD);
 
   indexstack.push(index);
 
@@ -4148,14 +4150,14 @@ void *begin_visit(const GroupByClause& v)
 
     push_scope();
 
-    bind_var_and_push(loc, (*i)->get_varname(), var_expr::non_groupby_var);
+    bind_var_and_push(loc, (*i)->get_name(), var_expr::non_groupby_var);
   }
 
   return no_state;
 }
 
 
-void end_visit (const GroupByClause& v, void* /*visit_state*/) 
+void end_visit(const GroupByClause& v, void* /*visit_state*/) 
 {
   TRACE_VISIT_OUT();
 
@@ -6612,7 +6614,7 @@ void end_visit (const VarRef& v, void* /*visit_state*/)
 
   if (ve->get_kind() == var_expr::prolog_var && ! prolog_vf_key.empty()) 
   {
-    string key = "V" + static_context::qname_internal_key (ve->get_varname ());
+    string key = "V" + static_context::qname_internal_key(ve->get_name());
     add_multimap_value(thePrologDeps, prolog_vf_key, key);
   }
 
@@ -7884,13 +7886,14 @@ void reorder_globals ()
   for (list<global_binding>::iterator i = thePrologVars.begin ();
        i != thePrologVars.end (); i++)
   {
-    store::Item_t qname = (*i).first->get_varname ();
-    gvmap [static_context::qname_internal_key (qname)] = *i;
+    const store::Item* qname = (*i).first->get_name();
+    gvmap [static_context::qname_internal_key(qname)] = *i;
   }
   thePrologVars.clear ();
-  for (list<string>::iterator i = topsorted_vars.begin ();
-       i != topsorted_vars.end (); i++) {
-    map<string, global_binding>::iterator p = gvmap.find (*i);
+  for (list<string>::iterator i = topsorted_vars.begin();
+       i != topsorted_vars.end (); i++) 
+  {
+    map<string, global_binding>::iterator p = gvmap.find(*i);
     if (p != gvmap.end ())
       thePrologVars.push_back ((*p).second);
   }
@@ -7906,7 +7909,8 @@ void reorder_globals ()
 ********************************************************************************/
 
 
-void *begin_visit (const SingleType& v) {
+void *begin_visit (const SingleType& v) 
+{
   TRACE_VISIT ();
   return no_state;
 }

@@ -33,7 +33,7 @@ END_SERIALIZABLE_CLASS_VERSIONS(LetIterator)
 LetIterator::LetIterator (
     static_context* sctx,
     const QueryLoc& aLoc,
-    store::Item_t aVarName, 
+    store::Item* aVarName, 
     PlanIter_t aTupleIter,
     PlanIter_t aInput,
     const std::vector<PlanIter_t>& aLetVars,

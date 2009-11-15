@@ -74,7 +74,7 @@ END_SERIALIZABLE_CLASS_VERSIONS(FLWORIterator)
   @param aInput The iterator computing the domain expr of this variable.
 ********************************************************************************/
 ForLetClause::ForLetClause (
-    const store::Item_t& aVarName,
+    store::Item* aVarName,
     const std::vector<PlanIter_t>& varRefs,
     PlanIter_t& aInput)
   :
@@ -97,7 +97,7 @@ ForLetClause::ForLetClause (
   @param aInput The iterator computing the value of this variable.
 ********************************************************************************/
 ForLetClause::ForLetClause (
-    const store::Item_t& aVarName,
+    store::Item* aVarName,
     const std::vector<PlanIter_t>& varRefs,
     const std::vector<PlanIter_t>& aPosVars,
     PlanIter_t& aInput)
@@ -123,7 +123,7 @@ ForLetClause::ForLetClause (
          LET variable. 
 ********************************************************************************/
 ForLetClause::ForLetClause (
-    const store::Item_t& aVarName,
+    store::Item* aVarName,
     const std::vector<PlanIter_t>& aLetVars,
     PlanIter_t& aInput,
     bool aNeedsMaterialization )

@@ -53,7 +53,7 @@ public:
   LetIterator ( 
         static_context* sctx,
         const QueryLoc& aLoc,  
-        store::Item_t aVarName, 
+        store::Item* aVarName, 
         PlanIter_t aTupleIter, 
         PlanIter_t aInputIter, 
         const std::vector<PlanIter_t>& aLetVars, 

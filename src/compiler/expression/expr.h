@@ -984,7 +984,7 @@ public:
 
   expr* get_expr(bool invalidate);
 
-  void set_expr(expr* e) { invalidate(); theWrappedExpr = e; }
+  void set_expr(const expr* e) { invalidate(); theWrappedExpr = e; }
 
   void compute_scripting_kind() const;
 
@@ -1032,10 +1032,8 @@ public:
 
   bool cache_compliant() const { return true; }
 
-  const store::Item* get_val() const { return theValue; }
+  store::Item* get_val() const { return theValue.getp(); }
 
-  store::Item* get_val(bool invalidate);
- 
   void compute_scripting_kind() const;
 
   xqtref_t return_type_impl(static_context*) const;
@@ -1133,7 +1131,7 @@ public:
 
     eval_var() {}
 
-    eval_var (var_expr *ve, expr_t val);
+    eval_var(var_expr* ve, expr_t val);
 
     virtual ~eval_var() {}
   };

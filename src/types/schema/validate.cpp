@@ -118,9 +118,9 @@ bool Validator::effectiveValidationValue(
                 
   EventSchemaValidator schemaValidator = 
   EventSchemaValidator(typeManager,
-      schema->getGrammarPool(),
-      validationMode == ParseConstants::val_lax,
-      loc);  
+                       schema->getGrammarPool(),
+                       validationMode == ParseConstants::val_lax,
+                       loc);
     
   switch (sourceNode->getNodeKind())
   {

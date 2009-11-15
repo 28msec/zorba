@@ -334,9 +334,6 @@ public:
   xqtref_t
   lookup_type2(const char* key1, xqp_string key2);
 
-  xqtref_t
-  get_variable_type(store::Item* var_name);
-
 	void
   set_context_item_static_type(xqtref_t t);
 

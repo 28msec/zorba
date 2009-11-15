@@ -34,38 +34,6 @@ class IndexPointConditionImpl;
 class IndexBoxConditionImpl;
 
 
-/***************************************************************************//**
-  Class ValueSet represents a value set as a vector of item handles.
-********************************************************************************/
-class ValueSet : public store::ItemVector
-{
-public:
-  ValueSet(ulong size = 0) : store::ItemVector(size) {}
-};
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-class IndexEntryReceiverImpl : public store::IndexEntryReceiver
-{
-protected:
-  store::Index_t   theIndex;
-
-public:
-  IndexEntryReceiverImpl(store::Index* idx) : theIndex(idx) {}
-
-  void receive(store::IndexKey& key, store::Item_t& value)
-  {
-    theIndex->insert(key, value);
-  }
-
-  void commit() {}
-
-  void abort() {}
-};
-
-
 /******************************************************************************
 
 ********************************************************************************/
@@ -92,6 +60,8 @@ public:
 
   long getTimezone() const { return theSpec.theTimezone; }
 
+  const std::vector<XQPCollator*>& getCollators() const { return theCollators; }
+
   const XQPCollator* getCollator(ulong i) const { return theCollators[i]; }
  
   bool isUnique() const { return theSpec.theIsUnique; }
@@ -105,6 +75,10 @@ public:
   store::IndexPointCondition_t createPointCondition();
 
   store::IndexBoxCondition_t createBoxCondition();
+
+  virtual bool insert(const store::IndexKey* key, store::Item_t& item) = 0;
+
+  virtual bool remove(const store::IndexKey* key, store::Item_t& item) = 0;
 };
 
 
@@ -117,7 +91,7 @@ class HashIndex : public IndexImpl
   friend class SimpleStore;
   friend class HashProbeIterator;
 
-protected:
+public:
 
   class CompareFunction
   {
@@ -147,7 +121,7 @@ protected:
 
 
 public:
-  typedef  HashMap<const store::IndexKey*, ValueSet*, CompareFunction> IndexMap;
+  typedef HashMap<const store::IndexKey*, store::IndexValue*, CompareFunction> IndexMap;
 
 
 private:
@@ -157,11 +131,11 @@ private:
 public:
   void clear();
 
-  bool insert(store::IndexKey& key, store::Item_t& value);
-
-  bool remove(const store::IndexKey& key, store::Item_t& value);
-
   bool probe(const store::IndexKey& key, store::Item_t& result);
+
+  bool insert(const store::IndexKey* key, store::Item_t& item);
+
+  bool remove(const store::IndexKey* key, store::Item_t& item);
 
 protected:
   HashIndex(
@@ -180,7 +154,7 @@ class STLMapIndex : public IndexImpl
   friend class SimpleStore;
   friend class STLMapProbeIterator;
 
-  typedef std::pair<store::IndexKey*, ValueSet*> STLMapPair;
+  typedef std::pair<const store::IndexKey*, store::IndexValue*> STLMapPair;
 
 protected:
 
@@ -215,7 +189,7 @@ protected:
 
 
 public:
-  typedef std::map<const store::IndexKey*, ValueSet*, CompareFunction> IndexMap;
+  typedef std::map<const store::IndexKey*, store::IndexValue*, CompareFunction> IndexMap;
 
 private:
   CompareFunction   theCompFunction;
@@ -225,11 +199,11 @@ private:
 public:
   void clear();
 
-  bool insert(store::IndexKey& key, store::Item_t& value);
-
-  bool remove(const store::IndexKey& key, store::Item_t& value);
-
   bool probe(const store::IndexKey& key, store::Item_t& result);
+
+  bool insert(const store::IndexKey* key, store::Item_t& item);
+
+  bool remove(const store::IndexKey* key, store::Item_t& item);
 
 protected:
   STLMapIndex(
@@ -250,9 +224,9 @@ protected:
 
   rchandle<IndexPointConditionImpl>      theCondition;
 
-  ValueSet                             * theResultSet;
-  ValueSet::const_iterator               theIte;
-  ValueSet::const_iterator               theEnd;
+  store::IndexValue                    * theResultSet;
+  store::IndexValue::const_iterator      theIte;
+  store::IndexValue::const_iterator      theEnd;
 
 public:
   HashProbeIterator(const store::Index_t& index) : theResultSet(NULL)
@@ -289,9 +263,9 @@ protected:
   STLMapIndex::IndexMap::const_iterator    theMapEnd;
   STLMapIndex::IndexMap::const_iterator    theMapIte;
 
-  ValueSet                               * theResultSet;
-  ValueSet::const_iterator                 theIte;
-  ValueSet::const_iterator                 theEnd;
+  store::IndexValue                      * theResultSet;
+  store::IndexValue::const_iterator        theIte;
+  store::IndexValue::const_iterator        theEnd;
 
 public:
   STLMapProbeIterator(const store::Index_t& index) 
@@ -409,7 +383,8 @@ public:
 };
 
 
-std::ostream& operator<<(std::ostream& os, const IndexBoxConditionImpl& cond);
+std::ostream& operator<<(std::ostream& os, const IndexBoxConditionImpl& cond); 
+
 
 
 }

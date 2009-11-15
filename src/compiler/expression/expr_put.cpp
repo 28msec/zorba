@@ -116,7 +116,7 @@ ostream& var_expr::put(ostream& os) const
   if (theName != NULL)
   {
     os << " name=";
-    put_qname(get_varname(), os);
+    put_qname(get_name(), os);
   }
 
   if (theDeclaredType != NULL) 
@@ -261,7 +261,7 @@ ostream& flwor_expr::put( ostream& os) const
     else if (c.get_kind() == flwor_clause::count_clause) 
     {
       os << DENT << "COUNT $"; 
-      put_qname(static_cast<const count_clause *>(&c)->get_var()->get_varname(), os);
+      put_qname(static_cast<const count_clause *>(&c)->get_var()->get_name(), os);
       os << endl;
     }
     else if (c.get_kind() == flwor_clause::for_clause) 

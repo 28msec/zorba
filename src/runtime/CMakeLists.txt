@@ -97,8 +97,10 @@ LIST(APPEND RUNTIME_SRCS
     durations_dates_times/DurationsDatesTimesImpl.cpp
     debug/debug_impl.cpp
     debug/zorba_debug_iterator.cpp
-    indexing/value_index_impl.cpp
-    indexing/context_index_impl.cpp
+    indexing/value_index_ddl.cpp
+    indexing/value_index_probe.cpp
+    indexing/value_index_context.cpp
+    indexing/doc_indexer.cpp
     numerics/NumericsImpl.cpp
     qnames/QNamesImpl.cpp
     sequences/SequencesImpl.cpp

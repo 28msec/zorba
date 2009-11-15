@@ -16,8 +16,9 @@
 #include "functions/Index.h"
 #include "functions/function_impl.h"
 
-#include "runtime/indexing/value_index_impl.h"
-#include "runtime/indexing/context_index_impl.h"
+#include "runtime/indexing/value_index_ddl.h"
+#include "runtime/indexing/value_index_probe.h"
+#include "runtime/indexing/value_index_context.h"
 
 
 namespace zorba
@@ -68,17 +69,15 @@ CODEGEN_DEF(FunctionCreateInternalIndex)
   create-index($indexName as xs:QName) as pul()
 
   This is an updating function. During normal runtime (see CreateIndexIterator),
-  it checks that index does not exist already (in the dynamic context) and 
-  generates an update primitive. During applyUpdates(), it creates the index
-  container in the store and populates it according to the index definition.
-  Also creates in the dynamic context an entry that maps the index qname and
-  an index object that is returned by the store to act as a handle to the index. 
+  it checks that index does not exist already (in the store) and generates an
+  update primitive. During applyUpdates(), it creates the index container in
+  the store and populates it according to the index definition.
 
   The specification for the index to create is taken from the static context,
   which stores a mapping from the index uri to ValueIndex obj (defined in
   indexing/value_index.h).
 
-  Note: the population of the index is done by a runtime plan that implements
+  The population of the index is done by a runtime plan that implements
   the following flwor expr:
 
     for $$dot at $$pos in domainExpr
@@ -151,7 +150,7 @@ public:
 
  expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
-  DEFAULT_UNARY_CODEGEN(RefreshIndexIterator);
+  DEFAULT_UNARY_CODEGEN(RebuildIndexIterator);
 };
 
 

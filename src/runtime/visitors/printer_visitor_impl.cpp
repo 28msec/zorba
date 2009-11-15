@@ -41,8 +41,9 @@
 #include "runtime/core/trycatch.h"
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/core/internal_operators.h"
-#include "runtime/indexing/value_index_impl.h"
-#include "runtime/indexing/context_index_impl.h"
+#include "runtime/indexing/value_index_ddl.h"
+#include "runtime/indexing/value_index_probe.h"
+#include "runtime/indexing/value_index_context.h"
 #include "runtime/numerics/NumericsImpl.h"
 #include "runtime/core/arithmetic_impl.h"
 #include "runtime/sequences/SequencesImpl.h"
@@ -1145,7 +1146,7 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION(ZorbaIndexOfIterator);
   PRINTER_VISITOR_DEFINITION(CreateInternalIndexIterator);
   PRINTER_VISITOR_DEFINITION(CreateIndexIterator);
-  PRINTER_VISITOR_DEFINITION(RefreshIndexIterator);
+  PRINTER_VISITOR_DEFINITION(RebuildIndexIterator);
   PRINTER_VISITOR_DEFINITION(DropIndexIterator);
   PRINTER_VISITOR_DEFINITION(IsDeclaredIndexIterator);
   PRINTER_VISITOR_DEFINITION(DeclaredIndexesIterator);

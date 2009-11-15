@@ -55,7 +55,7 @@ void ForState::reset(PlanState& planState)
 ForIterator::ForIterator (
     static_context* sctx,
     const QueryLoc& loc,
-    const store::Item_t& varName,
+    store::Item* varName,
     PlanIter_t tupleIter,
     PlanIter_t domainIter,
     const std::vector<PlanIter_t>& varRefs)
@@ -71,7 +71,7 @@ ForIterator::ForIterator (
 ForIterator::ForIterator (
     static_context* sctx,
     const QueryLoc& loc,
-    const store::Item_t& varName,
+    store::Item* varName,
     PlanIter_t tupleIter,
     PlanIter_t domainIter,
     const std::vector<PlanIter_t>& varRefs,

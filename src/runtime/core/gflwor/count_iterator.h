@@ -58,7 +58,7 @@ public:
   CountIterator (
         static_context* sctx,
         const QueryLoc& aLoc,
-        const store::Item_t& aVarName,
+        store::Item* aVarName,
         PlanIter_t aTupleIterator,
         const std::vector<PlanIter_t>& aCountVars );
   

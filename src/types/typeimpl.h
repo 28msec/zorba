@@ -277,7 +277,7 @@ protected:
 public:
   SERIALIZABLE_ABSTRACT_CLASS(XQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(XQType, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver &ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     //serialize_baseclass(ar, (SimpleRCObject*)this);
     SERIALIZE_TYPEMANAGER(TypeManager, m_manager);
@@ -307,7 +307,7 @@ public:
 
   virtual content_kind_t content_kind() const { return MIXED_CONTENT_KIND; };
 
-  virtual store::Item_t get_qname() const { return NULL; }
+  virtual store::Item_t get_qname() const { return rchandle<store::Item>(); }
 
   bool get_isBuiltin() const { return theIsBuiltin; }
 

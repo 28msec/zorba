@@ -1690,13 +1690,6 @@ void const_expr::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-store::Item* const_expr::get_val(bool invalidate) 
-{
-  if (invalidate) this->invalidate();
-  return theValue;
-}
-
-
 void const_expr::compute_scripting_kind() const
 {
   theCache.scripting_kind.kind = SIMPLE_EXPR;
@@ -1825,7 +1818,7 @@ void eval_expr::next_iter(expr_iterator_data& v)
 
 eval_expr::eval_var::eval_var(var_expr* ve, expr_t val_)
   :
-  varname (ve->get_varname()),
+  varname(ve->get_name()),
   var_key(dynamic_context::var_key(ve)),
   type(ve->get_type()),
   val(val_)
@@ -1838,15 +1831,18 @@ eval_expr::eval_var::eval_var(var_expr* ve, expr_t val_)
 ********************************************************************************/
 void debugger_expr::store_local_variables(checked_vector<varref_t>& aScopedVariables)
 {
-  std::set<store::Item_t> lQNames;
+  std::set<const store::Item*> lQNames;
   checked_vector<varref_t>::reverse_iterator it;
   for ( it = aScopedVariables.rbegin(); it != aScopedVariables.rend(); ++it )
   {
-    if ( lQNames.find( (*it)->get_varname() ) == lQNames.end() )
+    if ( lQNames.find((*it)->get_name()) == lQNames.end() )
     {
-      lQNames.insert( (*it)->get_varname() );
+      lQNames.insert( (*it)->get_name() );
       varref_t lValue = (*it);
-      varref_t lVariable(new var_expr(theSctxId, theLoc, var_expr::eval_var, lValue->get_varname() ) );
+      varref_t lVariable(new var_expr(theSctxId,
+                                      theLoc,
+                                      var_expr::eval_var,
+                                      lValue->get_name() ) );
       lVariable->set_type( lValue->get_type() );
       add_var(eval_expr::eval_var(&*lVariable, lValue.getp()));
     }

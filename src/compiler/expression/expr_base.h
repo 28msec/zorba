@@ -165,7 +165,7 @@ class expr : public AnnotationHolder
 public:
   typedef rchandle<expr> expr_t;
 
-  typedef std::map<const var_expr *, expr_t> substitution_t;
+  typedef std::map<const expr *, expr_t> substitution_t;
 
   typedef substitution_t::iterator subst_iter_t;
 
@@ -223,8 +223,6 @@ public:
 
   short get_sctx_id() const { return theSctxId; }
 
-  bool is_constant() const;
-
   expr_script_kind_t get_scripting_kind() const;
 
   bool is_updating() const;
@@ -258,6 +256,11 @@ public:
   virtual std::ostream& put(std::ostream&) const = 0;
 
   std::string toString() const;
+
+public:
+  bool is_constant() const;
+
+  void replace_expr(const expr* oldExpr, const expr* newExpr);
 
 protected:
   void invalidate() 

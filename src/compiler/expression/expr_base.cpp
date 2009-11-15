@@ -189,6 +189,7 @@ expr::expr(short sctx, const QueryLoc& loc)
   theLoc(loc) 
 {
   invalidate();
+  theCache.type.valid = false;
   theCache.scripting_kind.valid = false;
   theCache.scripting_kind.kind = VACUOUS_EXPR;
 }
@@ -509,6 +510,28 @@ std::string expr::toString() const
   std::ostringstream oss;
   put(oss);
   return oss.str();
+}
+
+
+/*******************************************************************************
+  Replace all references to "oldExpr" inside "e" with references to "newExpr".
+********************************************************************************/
+void expr::replace_expr(const expr* oldExpr, const expr* newExpr)
+{
+  expr_iterator iter = expr_begin();
+  while (!iter.done())
+  {
+    if ((*iter).getp() == oldExpr)
+    {
+      (*iter) = newExpr;
+    }
+    else
+    {
+      (*iter)->replace_expr(oldExpr, newExpr);
+    }
+
+    ++iter;
+  }
 }
 
 

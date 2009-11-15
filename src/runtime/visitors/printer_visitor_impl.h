@@ -205,7 +205,7 @@
   DECLARE_VISITOR (ZorbaIndexOfIterator);
   DECLARE_VISITOR (CreateInternalIndexIterator);
   DECLARE_VISITOR (CreateIndexIterator);
-  DECLARE_VISITOR (RefreshIndexIterator);
+  DECLARE_VISITOR (RebuildIndexIterator);
   DECLARE_VISITOR (DropIndexIterator);
   DECLARE_VISITOR (IndexEntryBuilderIterator);
   DECLARE_VISITOR (IndexPointProbeIterator);

@@ -239,7 +239,7 @@ NARY_ACCEPT(CtxVariableIterator);
 ForVarIterator::ForVarIterator(
     static_context* sctx,
     const QueryLoc& loc,
-    const store::Item_t& name)
+    store::Item* name)
   : 
   NoaryBaseIterator<ForVarIterator, ForVarState >(sctx, loc), 
   theVarName(name)
@@ -301,7 +301,7 @@ void LetVarState::reset(PlanState& planState)
 LetVarIterator::LetVarIterator(
     static_context* sctx,
     const QueryLoc& loc,
-    const store::Item_t& name)
+    store::Item* name)
   :
   NoaryBaseIterator<LetVarIterator, LetVarState>(sctx, loc),
   theVarName(name)

@@ -62,7 +62,7 @@ void CountState::reset ( PlanState& planState )
 CountIterator::CountIterator (
     static_context* sctx,
     const QueryLoc& loc,
-    const store::Item_t& aVarName,
+    store::Item* aVarName,
     PlanIter_t aTupleIterator,
     const std::vector<PlanIter_t>& aCountVars ) 
   :

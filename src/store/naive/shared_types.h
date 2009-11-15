@@ -14,20 +14,33 @@
  * limitations under the License.
  */
 
-#include "zorbamisc/config/platform.h"
-
-#include "zorbatypes/rchandle.h"
+#include "store/api/shared_types.h"
 
 namespace zorba 
 {
+
+namespace store
+{
+  class IndexEntryCreator;
+}
+
   
 namespace simplestore 
 {
-  class XmlTree;
-  typedef rchandle<XmlTree> XmlTree_t;
 
-  class XmlNode;
-  typedef rchandle<class XmlNode> XmlNode_t;
+class XmlTree;
+typedef rchandle<XmlTree> XmlTree_t;
+
+class XmlNode;
+typedef rchandle<class XmlNode> XmlNode_t;
+
+class IndexImpl;
+typedef rchandle<IndexImpl> IndexImpl_t;
+
+
+typedef rchandle<store::IndexEntryCreator> IndexEntryCreator_t;
+
+
 }
 
 }

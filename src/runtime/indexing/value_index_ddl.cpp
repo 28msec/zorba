@@ -24,14 +24,13 @@
 
 #include "compiler/indexing/value_index.h"
 
-#include "runtime/indexing/value_index_impl.h"
+#include "runtime/indexing/value_index_ddl.h"
 #include "runtime/visitors/planiter_visitor.h"
 #include "runtime/api/plan_wrapper.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 
-#include "store/api/store.h"
-#include "store/api/iterator_factory.h"
-#include "store/api/item_factory.h"
+#include "store/api/store.h"        // for checking if index exists
+#include "store/api/item_factory.h" // for creating pul
 #include "store/api/pul.h"
 
 
@@ -44,8 +43,8 @@ END_SERIALIZABLE_CLASS_VERSIONS(CreateInternalIndexIterator)
 SERIALIZABLE_CLASS_VERSIONS(CreateIndexIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(CreateIndexIterator)
 
-SERIALIZABLE_CLASS_VERSIONS(RefreshIndexIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(RefreshIndexIterator)
+SERIALIZABLE_CLASS_VERSIONS(RebuildIndexIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(RebuildIndexIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(DropIndexIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(DropIndexIterator)
@@ -53,25 +52,16 @@ END_SERIALIZABLE_CLASS_VERSIONS(DropIndexIterator)
 SERIALIZABLE_CLASS_VERSIONS(IndexEntryBuilderIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(IndexEntryBuilderIterator)
 
-SERIALIZABLE_CLASS_VERSIONS(IndexPointProbeIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(IndexPointProbeIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(IndexRangeProbeIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(IndexRangeProbeIterator)
 
 UNARY_ACCEPT(CreateInternalIndexIterator);
 
 UNARY_ACCEPT(CreateIndexIterator);
 
-UNARY_ACCEPT(RefreshIndexIterator);
+UNARY_ACCEPT(RebuildIndexIterator);
 
 UNARY_ACCEPT(DropIndexIterator);
 
 NARY_ACCEPT(IndexEntryBuilderIterator);
-
-NARY_ACCEPT(IndexPointProbeIterator);
-
-NARY_ACCEPT(IndexRangeProbeIterator);
 
 
 /*******************************************************************************
@@ -95,18 +85,18 @@ static void createIndexSpec(
   }
 
   spec.theIsUnique = zorbaIndex->getUnique();
-  spec.theIsSorted = zorbaIndex->getMethod() == ValueIndex::BTREE;
+  spec.theIsSorted = zorbaIndex->getMethod() == ValueIndex::TREE;
   spec.theIsTemp = zorbaIndex->isTemp();
   spec.theIsThreadSafe = true;
-  spec.theIsAutomatic = zorbaIndex->isAutomatic();
+  spec.theIsAutomatic = zorbaIndex->getMaintenanceMode() != ValueIndex::MANUAL;
 
-  ulong numSources = zorbaIndex->num_sources();
+  ulong numSources = zorbaIndex->numSources();
 
   spec.theSources.resize(numSources);
 
   for (ulong i = 0; i < numSources; ++i)
   {
-    spec.theSources[i] = const_cast<store::Item*>(zorbaIndex->get_source(i));
+    spec.theSources[i] = const_cast<store::Item*>(zorbaIndex->getSourceName(i));
   }
 }
 
@@ -167,9 +157,10 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   store::Item_t qname;
   ValueIndex_t zorbaIndex;
   store::IndexSpecification spec;
-  PlanIterator* buildPlan;
+  PlanIter_t buildPlan;
   store::Iterator_t planWrapper;
 
+  CompilerCB* ccb = planState.theCompilerCB;
   dynamic_context* dctx = planState.dctx();
 
   PlanIteratorState* state;
@@ -184,16 +175,15 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
                           qname->getStringValue()->c_str(), "");
   }
 
-  if (dctx->getIndex(qname) != NULL)
+  if (GENV_STORE.getIndex(qname) != NULL)
   {
     ZORBA_ERROR_LOC_PARAM(XQP0034_INDEX_ALREADY_EXISTS, loc,
                           qname->getStringValue()->c_str(), "");
   }
 
-  buildPlan = zorbaIndex->getBuildPlan(planState.theCompilerCB, loc);
-
-  planWrapper = new PlanWrapper(buildPlan, planState.theCompilerCB, dctx,
-                                0); // no query, yet and hence no external functions
+  buildPlan = zorbaIndex->getBuildPlan(ccb, loc); 
+  
+  planWrapper = new PlanWrapper(buildPlan, ccb, dctx, NULL); 
 
   createIndexSpec(zorbaIndex, spec);
 
@@ -245,14 +235,15 @@ bool DropIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 /***************************************************************************//**
 
 ********************************************************************************/
-bool RefreshIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool RebuildIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t qname;
   ValueIndex_t zorbaIndex;
-  PlanIterator* buildPlan;
+  PlanIter_t buildPlan;
   store::Iterator_t planWrapper;
 
   dynamic_context* dctx = planState.dctx();
+  CompilerCB* ccb = planState.theCompilerCB;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -272,13 +263,13 @@ bool RefreshIndexIterator::nextImpl(store::Item_t& result, PlanState& planState)
                           qname->getStringValue()->c_str(), "");
   }
 
-  buildPlan = zorbaIndex->getBuildPlan(planState.theCompilerCB, loc);
-
-  planWrapper = new PlanWrapper(buildPlan, planState.theCompilerCB, dctx, NULL); 
+  buildPlan = zorbaIndex->getBuildPlan(ccb, loc); 
   
+  planWrapper = new PlanWrapper(buildPlan, ccb, dctx, NULL); 
+
   result = GENV_ITEMFACTORY->createPendingUpdateList();
 
-  reinterpret_cast<store::PUL*>(result.getp())->addRefreshIndex(qname, planWrapper);
+  reinterpret_cast<store::PUL*>(result.getp())->addRebuildIndex(qname, planWrapper);
 
   STACK_PUSH(true, state);
 
@@ -322,195 +313,7 @@ bool IndexEntryBuilderIterator::nextImpl(
 }
 
 
-/***************************************************************************//**
 
-********************************************************************************/
-void IndexPointProbeState::init(PlanState& state)
-{
-  PlanIteratorState::init(state);
-  theQname = NULL;
-  theIndex = NULL;
-  theIterator = NULL;
-}
-
-void IndexPointProbeState::reset(PlanState& state)
-{
-  PlanIteratorState::reset(state);
-  if (theIterator != NULL) {
-    theIterator->close();
-  }
-}
-
-
-bool IndexPointProbeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Item_t qname;
-  ValueIndex_t zorbaIndex;
-  store::IndexPointCondition_t cond;
-  int numChildren;
-  bool status;
-
-  IndexPointProbeState* state;
-  DEFAULT_STACK_INIT(IndexPointProbeState, state, planState);
-
-  status = consumeNext(qname, theChildren[0], planState);
-  ZORBA_ASSERT(status);
-
-  if (state->theQname == NULL || !state->theQname->equals(qname)) 
-  {
-    state->theQname = qname;
-
-    if ((zorbaIndex = theSctx->lookup_index(qname)) == NULL)
-    {
-      ZORBA_ERROR_LOC_PARAM(XQP0037_INDEX_IS_NOT_DECLARED, loc,
-                            qname->getStringValue()->c_str(), "");
-    }
-
-    state->theIndex = (zorbaIndex->isTemp() ?
-                       planState.dctx()->getIndex(qname) :
-                       GENV_STORE.getIndex(state->theQname));
-
-    if (state->theIndex == NULL)
-    {
-      ZORBA_ERROR_LOC_PARAM(XQP0033_INDEX_DOES_NOT_EXIST, loc,
-                            qname->getStringValue()->c_str(), "");
-    }
-
-    state->theIterator = GENV_STORE.getIteratorFactory()->
-                         createIndexProbeIterator(state->theIndex);
-  }
-
-  cond = state->theIndex->createPointCondition();
-
-  numChildren = theChildren.size();
-  for(int i = 1; i < numChildren; ++i) 
-  {
-    store::Item_t temp;
-    if (!consumeNext(temp, theChildren[i], planState)) 
-    {
-      temp = NULL;
-    }
-    cond->pushItem(temp);
-  }
-
-  state->theIterator->init((const zorba::store::IndexPointCondition_t&)cond);
-  state->theIterator->open();
-
-  while(state->theIterator->next(result)) 
-  {
-    STACK_PUSH(true, state);
-  }
-
-  STACK_END(state);
-}
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-void IndexRangeProbeState::init(PlanState& state)
-{
-  PlanIteratorState::init(state);
-  theQname = NULL;
-  theIndex = NULL;
-  theIterator = NULL;
-}
-
-
-void IndexRangeProbeState::reset(PlanState& state)
-{
-  PlanIteratorState::reset(state);
-  if (theIterator != NULL) {
-    theIterator->close();
-  }
-}
-
-
-bool IndexRangeProbeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Item_t qname;
-  ValueIndex_t zorbaIndex;
-  store::IndexBoxCondition_t cond;
-  int numChildren;
-  bool status;
- 
-  IndexRangeProbeState* state;
-  DEFAULT_STACK_INIT(IndexRangeProbeState, state, planState);
-
-  status = consumeNext(qname, theChildren[0], planState);
-  ZORBA_ASSERT(status);
-
-  if (state->theQname == NULL || !state->theQname->equals(qname)) 
-  {
-    state->theQname = qname;
-
-    if ((zorbaIndex = theSctx->lookup_index(qname)) == NULL)
-    {
-      ZORBA_ERROR_LOC_PARAM(XQP0037_INDEX_IS_NOT_DECLARED, loc,
-                            qname->getStringValue()->c_str(), "");
-    }
-
-    state->theIndex = (zorbaIndex->isTemp() ?
-                       planState.dctx()->getIndex(qname) :
-                       GENV_STORE.getIndex(state->theQname));
-
-    if (state->theIndex == NULL)
-    {
-      ZORBA_ERROR_LOC_PARAM(XQP0033_INDEX_DOES_NOT_EXIST, loc,
-                            qname->getStringValue()->c_str(), "");
-    }
-
-    state->theIterator = GENV_STORE.getIteratorFactory()->
-                         createIndexProbeIterator(state->theIndex);
-  }
-
-  cond = state->theIndex->createBoxCondition();
-
-  numChildren = theChildren.size();
-  for(int i = 1; i < numChildren; i += 6) 
-  {
-    store::Item_t tempLeft;
-    store::Item_t tempRight;
-    store::Item_t tempHaveLeft;
-    store::Item_t tempHaveRight;
-    store::Item_t tempInclLeft;
-    store::Item_t tempInclRight;
-
-    if (!consumeNext(tempLeft, theChildren[i], planState))
-      tempLeft = NULL;
- 
-    if (!consumeNext(tempRight, theChildren[i + 1], planState))
-      tempRight = NULL;
-    if (!consumeNext(tempHaveLeft, theChildren[i + 2], planState))
-      tempHaveLeft = NULL;
-
-    if (!consumeNext(tempHaveRight, theChildren[i + 3], planState))
-      tempHaveRight = NULL;
-
-    if (!consumeNext(tempInclLeft, theChildren[i + 4], planState))
-      tempInclLeft = NULL;
- 
-    if (!consumeNext(tempInclRight, theChildren[i + 5], planState))
-      tempInclRight = NULL;
-
-    bool haveLeft = tempHaveLeft != NULL && tempHaveLeft->getBooleanValue();
-    bool haveRight = tempHaveRight != NULL && tempHaveRight->getBooleanValue();
-    bool inclLeft = tempInclLeft != NULL && tempInclLeft->getBooleanValue();
-    bool inclRight = tempInclRight != NULL && tempInclRight->getBooleanValue();
-
-    cond->pushRange(tempLeft, tempRight, haveLeft, haveRight, inclLeft, inclRight);
-  }
-
-  state->theIterator->init((const zorba::store::IndexBoxCondition_t&)cond);
-  state->theIterator->open();
-
-  while(state->theIterator->next(result)) 
-  {
-    STACK_PUSH(true, state);
-  }
-
-  STACK_END(state);
-}
 
 
 }

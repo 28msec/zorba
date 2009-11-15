@@ -94,7 +94,7 @@ XQueryImpl::PlanProxy::PlanProxy(PlanIter_t& root)
 
 XQueryImpl::XQueryImpl()
   :
-  thePlan(0),
+  thePlan(),
   theStaticContext(0),
   theDynamicContext(0),
   theDynamicContextWrapper(0),
