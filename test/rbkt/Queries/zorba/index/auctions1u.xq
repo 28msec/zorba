@@ -5,8 +5,8 @@ import module namespace ddl = "http://www.zorba-xquery.com/module/ddl";
 import datamodule namespace auctions = "http://www.w3.org/TestModules/auctions" at
                                        "auctions_module1.xqlib";
 
-declare variable $emp-id := $auctions:EmpId;
-declare variable $emp-city := $auctions:EmpCity;
+declare variable $emp-id := $auctions:PersonId;
+declare variable $emp-city := $auctions:PersonCity;
 
 block
 {

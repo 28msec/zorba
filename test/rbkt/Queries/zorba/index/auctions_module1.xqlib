@@ -5,28 +5,28 @@ import module namespace dc = "http://www.zorba-xquery.com/module/dynamic-context
 import module namespace ddl = "http://www.zorba-xquery.com/module/ddl";
 
 declare variable $auctions:auctions := xs:QName("auctions:auctions");
-declare variable $auctions:EmpId := xs:QName("auctions:EmpId");
-declare variable $auctions:EmpCity := xs:QName("auctions:EmpCity");
+declare variable $auctions:PersonId := xs:QName("auctions:PersonId");
+declare variable $auctions:PersonCity := xs:QName("auctions:PersonCity");
 
 declare collection auctions:auctions;
 
 
 (:
-  The EmpId index maps each id to the employee with that id.
+  The PersonId index maps each id to the person with that id.
 :)
 
-declare index auctions:EmpId
+declare index auctions:PersonId
 on dc:collection(xs:QName("auctions:auctions"))/site/people/person
 by (fn:data(./@id))
 unique ordered;
 
 
 (:
-  The EmpCity index maps each city to the employees that live in that city.
-  The EmpCity index contains some NULL keys because not all emps have a city 
+  The PersonCity index maps each city to the persons that live in that city.
+  The PersonCity index contains some NULL keys because not all persons have a city 
 :)
 
-declare index auctions:EmpCity
+declare index auctions:PersonCity
 on dc:collection(xs:QName("auctions:auctions"))/site/people/person
 by ((.//city))
 ordered automatic;
@@ -42,9 +42,9 @@ declare sequential function auctions:create-db()
 
   ddl:insert-nodes-last($auctions:auctions, doc("auctions1.xml"));
 
-  ddl:create-index($auctions:EmpId);
+  ddl:create-index($auctions:PersonId);
 
-  ddl:create-index($auctions:EmpCity);
+  ddl:create-index($auctions:PersonCity);
 };
 
 
