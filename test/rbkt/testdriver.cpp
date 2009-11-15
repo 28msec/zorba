@@ -282,10 +282,10 @@ main(int argc, char** argv)
     std::string lQueryString;
     slurp_file(lQueryFile.get_path().c_str(), lQueryString, rbkt_src_dir, rbkt_bin_dir);
 
-    lQuery = engine->createQuery (&errHandler);
-    lQuery->setFileName (lQueryFile.get_path ());
+    lQuery = engine->createQuery(&errHandler);
+    lQuery->setFileName(lQueryFile.get_path());
 #if 1
-    lQuery->compile (lQueryString.c_str(), lContext, getCompilerHints());
+    lQuery->compile(lQueryString.c_str(), lContext, getCompilerHints());
 #else
     Zorba_CompilerHints lHints;
     lHints.opt_level = ZORBA_OPT_LEVEL_O0;
