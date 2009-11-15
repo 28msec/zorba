@@ -45,8 +45,7 @@
         <zorba:parameter type="bool" name="aIsUpdating" />
     </zorba:constructor>
 
-    <zorba:member type="bool" name="theIsUpdating" generateAccessor="true"
-                  accessorName="isUpdating" brief=""/>
+    <zorba:member type="bool" name="theIsUpdating" getterName="isUpdating" brief=""/>
 
     <zorba:state generateInit="true" generateReset="true">
       <zorba:member type="uint32_t" name="theCurIter" defaultValue="0"
@@ -346,8 +345,7 @@
         <zorba:parameter type="bool" name="doDistinct" defaultValue="false"/>
     </zorba:constructor>
     
-    <zorba:member type="bool" name="theDoDistinct"
-                  generateAccessor="false" brief=""/>
+    <zorba:member type="bool" name="theDoDistinct" brief=""/>
 
     <zorba:function generateReturnTypeDecl="true" generateCodegen="false">
       <zorba:signature localname="zero-or-one" prefix="fn">
@@ -392,8 +390,8 @@
         <zorba:parameter type="bool" name="doDistinct" defaultValue="false"/>
     </zorba:constructor>
     
-    <zorba:member type="bool" name="theRaiseError" generateAccessor="false" brief=""/>
-    <zorba:member type="bool" name="theDoDistinct" generateAccessor="false" brief=""/>
+    <zorba:member type="bool" name="theRaiseError" brief=""/>
+    <zorba:member type="bool" name="theDoDistinct" brief=""/>
   
 </zorba:iterator>
 
@@ -444,7 +442,7 @@
       <zorba:parameter type="bool" name="antijoin" defaultValue="false"/>
     </zorba:constructor>
     
-    <zorba:member type="bool" name="theAntijoin" generateAccessor="false" brief=""/>
+    <zorba:member type="bool" name="theAntijoin" brief=""/>
     
     <zorba:state generateInit="false" generateReset="false"
                  generateConstructor="false" generateDestructor="false">

@@ -172,7 +172,8 @@ declare function local:iterator($iter, $name as xs:string, $state as xs:string) 
     local:constructor($iter, $name, $base),
 
     local:add-destructor($iter),
-    local:add-accessor($iter),
+    local:add-getter($iter),
+    local:add-setter($iter),
     $gen:indent,'void accept(PlanIterVisitor&amp; v) const;',$gen:newline,$gen:newline,
     $gen:indent,'bool nextImpl(store::Item_t&amp; result, PlanState&amp; aPlanState) const;',$gen:newline,'};',$gen:newline,$gen:newline
     )
@@ -183,12 +184,21 @@ declare function local:add-destructor($iter) as xs:string?
   fn:concat($gen:indent, "virtual ~", $iter/@name, "();", $gen:newline, $gen:newline)
 };
 
-declare function local:add-accessor($iter) as xs:string?
+declare function local:add-getter($iter) as xs:string?
 {
   if (count($iter/zorba:member) > 0) then 
   string-join(for $member in $iter/zorba:member return
-  if($member/@generateAccessor = true()) then
-  string-join(($gen:indent,'virtual bool ',$member/@accessorName,'() const { return ',$member/@name,'; }',$gen:newline,$gen:newline),'')
+  if(exists($member/@getterName)) then
+  string-join(($gen:indent,$member/@type,' ',$member/@getterName,'() const { return ',$member/@name,'; }',$gen:newline,$gen:newline),'')
+  else () ,'') else ()
+};
+
+declare function local:add-setter($iter) as xs:string?
+{
+  if (count($iter/zorba:member) > 0) then 
+  string-join(for $member in $iter/zorba:member return
+  if(exists($member/@setterName)) then
+  string-join(($gen:indent,'void ',$member/@setterName,'(',$member/@type,' aValue) const { ',$member/@name,'= aValue; }',$gen:newline,$gen:newline),'')
   else () ,'') else ()
 };
 

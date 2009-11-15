@@ -85,7 +85,7 @@ public:
 
   virtual ~FnConcatIterator();
 
-  virtual bool isUpdating() const { return theIsUpdating; }
+  bool isUpdating() const { return theIsUpdating; }
 
   void accept(PlanIterVisitor& v) const;
 

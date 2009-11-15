@@ -148,7 +148,7 @@ public:
 
   virtual ~FnStringIterator();
 
-  virtual bool isUpdating() const { return theEmptyStringOnNULL; }
+  bool isUpdating() const { return theEmptyStringOnNULL; }
 
   void accept(PlanIterVisitor& v) const;
 

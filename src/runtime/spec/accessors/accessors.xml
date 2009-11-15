@@ -89,8 +89,7 @@
         <zorba:parameter type="bool" name="emptyStringOnNULL" />
     </zorba:constructor>
     
-    <zorba:member type="bool" name="theEmptyStringOnNULL" generateAccessor="true"
-        accessorName="isUpdating" brief=""/>
+    <zorba:member type="bool" name="theEmptyStringOnNULL" getterName="isUpdating" brief=""/>
     
     <zorba:state generateInit="true" generateReset="true"
         generateConstructor="true" generateDestructor="true">
