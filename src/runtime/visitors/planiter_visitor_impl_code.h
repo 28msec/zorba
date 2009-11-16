@@ -178,22 +178,6 @@
 
   PLAN_ITER_VISITOR (FnMinMaxIterator);
 
-  PLAN_ITER_VISITOR (ResolveQNameIterator);
-
-  PLAN_ITER_VISITOR (QNameIterator);
-      
-  PLAN_ITER_VISITOR (QNameEqualIterator);
-
-  PLAN_ITER_VISITOR (PrefixFromQNameIterator);
-
-  PLAN_ITER_VISITOR (LocalNameFromQNameIterator);
-
-  PLAN_ITER_VISITOR (NamespaceUriFromQNameIterator);
-
-  PLAN_ITER_VISITOR (InScopePrefixesIterator);
-
-  PLAN_ITER_VISITOR (NamespaceUriForPrefixIterator);
-
   PLAN_ITER_VISITOR (TextIterator);
 
   PLAN_ITER_VISITOR (CreateTupleIterator);

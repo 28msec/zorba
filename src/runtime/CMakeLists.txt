@@ -103,7 +103,7 @@ LIST(APPEND RUNTIME_SRCS
     indexing/value_index_context.cpp
     indexing/doc_indexer.cpp
     numerics/NumericsImpl.cpp
-    qnames/QNamesImpl.cpp
+    qnames/qnames_impl.cpp
     sequences/SequencesImpl.cpp
     visitors/iterprinter.cpp
     update/update.cpp

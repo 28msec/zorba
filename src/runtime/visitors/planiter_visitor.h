@@ -200,6 +200,22 @@ namespace zorba{
 
     class FormatNumberIterator;
 
+    class ResolveQNameIterator;
+
+    class QNameIterator;
+
+    class QNameEqualIterator;
+
+    class PrefixFromQNameIterator;
+
+    class LocalNameFromQNameIterator;
+
+    class NamespaceUriFromQNameIterator;
+
+    class NamespaceUriForPrefixIterator;
+
+    class InScopePrefixesIterator;
+
     class NumGenIterator;
 
     class RandomIterator;
@@ -586,6 +602,30 @@ public:
 
     virtual void beginVisit ( const FormatNumberIterator& ) = 0;
     virtual void endVisit   ( const FormatNumberIterator& ) = 0;
+
+    virtual void beginVisit ( const ResolveQNameIterator& ) = 0;
+    virtual void endVisit   ( const ResolveQNameIterator& ) = 0;
+
+    virtual void beginVisit ( const QNameIterator& ) = 0;
+    virtual void endVisit   ( const QNameIterator& ) = 0;
+
+    virtual void beginVisit ( const QNameEqualIterator& ) = 0;
+    virtual void endVisit   ( const QNameEqualIterator& ) = 0;
+
+    virtual void beginVisit ( const PrefixFromQNameIterator& ) = 0;
+    virtual void endVisit   ( const PrefixFromQNameIterator& ) = 0;
+
+    virtual void beginVisit ( const LocalNameFromQNameIterator& ) = 0;
+    virtual void endVisit   ( const LocalNameFromQNameIterator& ) = 0;
+
+    virtual void beginVisit ( const NamespaceUriFromQNameIterator& ) = 0;
+    virtual void endVisit   ( const NamespaceUriFromQNameIterator& ) = 0;
+
+    virtual void beginVisit ( const NamespaceUriForPrefixIterator& ) = 0;
+    virtual void endVisit   ( const NamespaceUriForPrefixIterator& ) = 0;
+
+    virtual void beginVisit ( const InScopePrefixesIterator& ) = 0;
+    virtual void endVisit   ( const InScopePrefixesIterator& ) = 0;
 
     virtual void beginVisit ( const NumGenIterator& ) = 0;
     virtual void endVisit   ( const NumGenIterator& ) = 0;

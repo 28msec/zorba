@@ -24,7 +24,6 @@
 #include "runtime/core/constructors.h"
 #include "runtime/core/path_iterators.h"
 #include "runtime/core/fncall_iterator.h"
-#include "runtime/qnames/QNamesImpl.h"
 #include "runtime/core/sequencetypes.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/core/gflwor/let_iterator.h"
@@ -1086,14 +1085,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION (OpNumericUnaryIterator)
   PRINTER_VISITOR_DEFINITION (FnIdIterator)
   PRINTER_VISITOR_DEFINITION (FnIdRefIterator)
-  PRINTER_VISITOR_DEFINITION (ResolveQNameIterator)
-  PRINTER_VISITOR_DEFINITION (QNameIterator)
-  PRINTER_VISITOR_DEFINITION (QNameEqualIterator)
-  PRINTER_VISITOR_DEFINITION (PrefixFromQNameIterator)
-  PRINTER_VISITOR_DEFINITION (LocalNameFromQNameIterator)
-  PRINTER_VISITOR_DEFINITION (NamespaceUriFromQNameIterator)
-  PRINTER_VISITOR_DEFINITION (NamespaceUriForPrefixIterator)
-  PRINTER_VISITOR_DEFINITION (InScopePrefixesIterator)
   PRINTER_VISITOR_DEFINITION (TextIterator)
   PRINTER_VISITOR_DEFINITION (FnDateTimeConstructorIterator)
   PRINTER_VISITOR_DEFINITION (CreateTupleIterator)

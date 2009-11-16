@@ -305,6 +305,30 @@ namespace zorba {
     void beginVisit( const FormatNumberIterator& );
     void endVisit  ( const FormatNumberIterator& );
 
+    void beginVisit( const ResolveQNameIterator& );
+    void endVisit  ( const ResolveQNameIterator& );
+
+    void beginVisit( const QNameIterator& );
+    void endVisit  ( const QNameIterator& );
+
+    void beginVisit( const QNameEqualIterator& );
+    void endVisit  ( const QNameEqualIterator& );
+
+    void beginVisit( const PrefixFromQNameIterator& );
+    void endVisit  ( const PrefixFromQNameIterator& );
+
+    void beginVisit( const LocalNameFromQNameIterator& );
+    void endVisit  ( const LocalNameFromQNameIterator& );
+
+    void beginVisit( const NamespaceUriFromQNameIterator& );
+    void endVisit  ( const NamespaceUriFromQNameIterator& );
+
+    void beginVisit( const NamespaceUriForPrefixIterator& );
+    void endVisit  ( const NamespaceUriForPrefixIterator& );
+
+    void beginVisit( const InScopePrefixesIterator& );
+    void endVisit  ( const InScopePrefixesIterator& );
+
     void beginVisit( const NumGenIterator& );
     void endVisit  ( const NumGenIterator& );
 

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/////////////////////////////////////////////////////////////////////////////////
+// 11 Functions Related to QNames                                              //
+/////////////////////////////////////////////////////////////////////////////////
+-->
+<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+
+<zorba:header>
+    <zorba:include form="Angle-bracket">vector</zorba:include>
+</zorba:header>
+
+<!--
+/*******************************************************************************
+ 11.1.1 fn:resolve-QName
+********************************************************************************/
+-->
+<zorba:iterator name="ResolveQNameIterator" arity="binary">
+
+  <zorba:description author="Zorba Team">fn:resolve-QName</zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="resolve-QName" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>element()</zorba:param> <!-- was node() -->
+      <zorba:output>xs:QName?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+ 11.1.2 fn:QName
+********************************************************************************/
+-->
+<zorba:iterator name="QNameIterator" arity="binary">
+
+  <zorba:description author="Zorba Team">fn:QName</zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="QName" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:QName</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+ 11.2.1 op:QName-equal
+********************************************************************************/
+-->
+<zorba:iterator name="QNameEqualIterator" arity="binary">
+
+  <zorba:description author="Zorba Team">op:QName-equal</zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname=":QName-equal" prefix="fn">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+ 11.2.2 fn:prefix-from-QName
+********************************************************************************/
+-->
+<zorba:iterator name="PrefixFromQNameIterator" arity="unary">
+
+  <zorba:description author="Zorba Team">fn:prefix-from-QName</zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="prefix-from-QName" prefix="fn">
+      <zorba:param>xs:QName?</zorba:param>
+      <zorba:output>xs:NCName?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+ 11.2.3 fn:local-name-from-QName
+********************************************************************************/
+-->
+<zorba:iterator name="LocalNameFromQNameIterator" arity="unary">
+
+  <zorba:description author="Zorba Team">fn:local-name-from-QName</zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="local-name-from-QName" prefix="fn">
+      <zorba:param>xs:QName?</zorba:param>
+      <zorba:output>xs:NCName?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+ 11.2.4 fn:namespace-uri-from-QName
+********************************************************************************/
+-->
+<zorba:iterator name="NamespaceUriFromQNameIterator" arity="unary">
+
+  <zorba:description author="Zorba Team">fn:namespace-uri-from-QName</zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="namespace-uri-from-QName" prefix="fn">
+      <zorba:param>xs:QName?</zorba:param>
+      <zorba:output>xs:anyURI?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+ 11.2.5 fn:namespace-uri-for-prefix
+********************************************************************************/
+-->
+<zorba:iterator name="NamespaceUriForPrefixIterator" arity="nary">
+
+  <zorba:description author="Zorba Team">fn:namespace-uri-for-prefix</zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="namespace-uri-for-prefix" prefix="fn">
+      <zorba:param>xs:string?</zorba:param>
+      <zorba:param>element()</zorba:param> <!-- was node()  -->
+      <zorba:output>xs:anyURI?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+ 11.2.6 fn:in-scope-prefixes
+********************************************************************************/
+-->
+<zorba:iterator name="InScopePrefixesIterator" arity="unary">
+
+  <zorba:description author="Zorba Team">fn:in-scope-prefixes</zorba:description>
+
+  <zorba:state generateInit="false" generateReset="false">
+    <zorba:member type="std::vector&lt;std::pair&lt;xqpStringStore_t, xqpStringStore_t&gt; &gt;" name="theBindings"
+                  brief=""/>
+    <zorba:member type="unsigned long" name="theCurrentPos" brief=""/>
+  </zorba:state>
+
+  <zorba:function>
+    <zorba:signature localname="in-scope-prefixes" prefix="fn">
+      <zorba:param>element()</zorba:param> <!-- was node() -->
+      <zorba:output>xs:string*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+</zorba:iterators>

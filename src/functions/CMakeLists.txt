@@ -66,7 +66,6 @@ LIST(APPEND FUNCTIONS_SRCS
     single_seq_func.cpp
     library.cpp
     Numerics.cpp
-    QNames.cpp
     signature.cpp
     tuple_functions.cpp
     InternalOperators.cpp

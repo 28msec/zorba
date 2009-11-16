@@ -41,6 +41,7 @@
 #include "functions/func_fnput.h"
 #include "functions/func_nodes.h"
 #include "functions/func_numerics.h"
+#include "functions/func_qnames.h"
 #include "functions/func_random.h"
 #include "functions/func_maths.h"
 #include "functions/func_xqdoc.h"
@@ -48,7 +49,6 @@
 #include "functions/Collections.h"
 #include "functions/DataDefinitionLanguage.h"
 #include "functions/Numerics.h"
-#include "functions/QNames.h"
 #include "functions/nodeid_internal.h"
 #include "functions/EnclosedExpr.h"
 #include "functions/VarDecl.h"
@@ -98,6 +98,7 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_maths(sctx);
   populate_context_nodes(sctx);
   populate_context_numerics(sctx);
+  populate_context_qnames(sctx);
   populate_context_random(sctx);
   populate_context_schema(sctx);
   populate_context_strings(sctx);
@@ -107,7 +108,6 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
 
   populateContext_Arithmetics(sctx);
   populateContext_Numerics(sctx);
-  populateContext_QNames(sctx);
   populateContext_DocOrder(sctx);
   populateContext_Comparison(sctx);
   populateContext_Constructors(sctx);

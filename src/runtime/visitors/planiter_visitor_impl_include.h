@@ -88,14 +88,6 @@
   class FnIdRefIterator;
   class FnDistinctValuesIterator;
   class FnMinMaxIterator;
-  class ResolveQNameIterator;
-  class QNameIterator;
-  class QNameEqualIterator;
-  class PrefixFromQNameIterator;
-  class LocalNameFromQNameIterator;
-  class NamespaceUriFromQNameIterator;
-  class NamespaceUriForPrefixIterator;
-  class InScopePrefixesIterator;
   class TextIterator;
   class DocumentIterator;
   class DocumentContentIterator;

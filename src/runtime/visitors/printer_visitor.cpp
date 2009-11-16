@@ -47,6 +47,7 @@
 #include "runtime/maths/maths.h"
 #include "runtime/nodes/nodes.h"
 #include "runtime/numerics/numerics.h"
+#include "runtime/qnames/qnames.h"
 #include "runtime/random/random.h"
 #include "runtime/schema/schema.h"
 #include "runtime/scripting/scripting.h"
@@ -1300,6 +1301,118 @@ void PrinterVisitor::endVisit ( const FormatNumberIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FormatNumberIterator>
+
+
+// <ResolveQNameIterator>
+void PrinterVisitor::beginVisit ( const ResolveQNameIterator& a) {
+  thePrinter.startBeginVisit("ResolveQNameIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ResolveQNameIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ResolveQNameIterator>
+
+
+// <QNameIterator>
+void PrinterVisitor::beginVisit ( const QNameIterator& a) {
+  thePrinter.startBeginVisit("QNameIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const QNameIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </QNameIterator>
+
+
+// <QNameEqualIterator>
+void PrinterVisitor::beginVisit ( const QNameEqualIterator& a) {
+  thePrinter.startBeginVisit("QNameEqualIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const QNameEqualIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </QNameEqualIterator>
+
+
+// <PrefixFromQNameIterator>
+void PrinterVisitor::beginVisit ( const PrefixFromQNameIterator& a) {
+  thePrinter.startBeginVisit("PrefixFromQNameIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const PrefixFromQNameIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </PrefixFromQNameIterator>
+
+
+// <LocalNameFromQNameIterator>
+void PrinterVisitor::beginVisit ( const LocalNameFromQNameIterator& a) {
+  thePrinter.startBeginVisit("LocalNameFromQNameIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const LocalNameFromQNameIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </LocalNameFromQNameIterator>
+
+
+// <NamespaceUriFromQNameIterator>
+void PrinterVisitor::beginVisit ( const NamespaceUriFromQNameIterator& a) {
+  thePrinter.startBeginVisit("NamespaceUriFromQNameIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const NamespaceUriFromQNameIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </NamespaceUriFromQNameIterator>
+
+
+// <NamespaceUriForPrefixIterator>
+void PrinterVisitor::beginVisit ( const NamespaceUriForPrefixIterator& a) {
+  thePrinter.startBeginVisit("NamespaceUriForPrefixIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const NamespaceUriForPrefixIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </NamespaceUriForPrefixIterator>
+
+
+// <InScopePrefixesIterator>
+void PrinterVisitor::beginVisit ( const InScopePrefixesIterator& a) {
+  thePrinter.startBeginVisit("InScopePrefixesIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const InScopePrefixesIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </InScopePrefixesIterator>
 
 
 // <NumGenIterator>

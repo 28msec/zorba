@@ -22,7 +22,7 @@
 
 #include "compiler/api/compilercb.h"
 
-#include "runtime/qnames/QNamesImpl.h"
+#include "runtime/qnames/qnames.h"
 #include "runtime/api/runtimecb.h"
 #include "runtime/visitors/planiter_visitor.h"
 
@@ -32,55 +32,9 @@
 
 
 namespace zorba {
-SERIALIZABLE_CLASS_VERSIONS(ResolveQNameIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ResolveQNameIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(QNameIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(QNameIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(QNameEqualIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(QNameEqualIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(PrefixFromQNameIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(PrefixFromQNameIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(LocalNameFromQNameIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(LocalNameFromQNameIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(NamespaceUriFromQNameIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(NamespaceUriFromQNameIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(NamespaceUriForPrefixIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(NamespaceUriForPrefixIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(InScopePrefixesIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(InScopePrefixesIterator)
-
-
 #define GENV_GCAST (*GenericCast::instance ())
 
-/**
- *______________________________________________________________________
- *
- * 11.1.1 fn:resolve-QName
- *
- * fn:resolve-QName($qname as xs:string?, $element as element()) as xs:QName?
- *
- *Summary: Returns an xs:QName value (that is, an expanded-QName) by taking an
- *xs:string that has the lexical form of an xs:QName (a string in the form
- *"prefix:local-name" or "local-name") and resolving it using the in-scope
- *namespaces for a given element.
- *If $qname does not have the correct lexical form for xs:QName
- *an error is raised [err:FOCA0002].
- *If $qname is the empty sequence, returns the empty sequence.
- *If the $qname has a prefix and if there is no namespace binding for $element
- *that matches this prefix, then an error is raised [err:FONS0004].
- *If the $qname has no prefix, and there is no namespace binding for $element
- *corresponding to the default (unnamed) namespace, then the resulting
- *expanded-QName has no namespace part.
- *The prefix (or absence of a prefix) in the supplied $qname argument is retained
- *in the returned expanded-QName
- *_______________________________________________________________________*/
+//11.1.1 fn:resolve-QName
 bool
 ResolveQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -142,27 +96,7 @@ ResolveQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 }
 
 
-BINARY_ACCEPT(ResolveQNameIterator);
-
-
-/**
- *______________________________________________________________________
- *
- * 11.1.2 fn:QName
- *
- * fn:QName($paramURI as xs:string?, $paramQName as xs:string) as xs:QName
- *
- *Summary: Returns an xs:QName with the namespace URI given in $paramURI.
- *If $paramURI is the zero-length string or the empty sequence, it represents
- *"no namespace"; in this case, if the value of $paramQName contains a colon (:),
- *an error is raised [err:FOCA0002]. The prefix (or absence of a prefix)
- *in $paramQName is retained in the returned xs:QName value.
- *The local name in the result is taken from the local part of $paramQName.
- *If $paramQName does not have the correct lexical form for xs:QName
- *an error is raised [err:FOCA0002].
- *Note that unlike xs:QName this function does not require a xs:string literal as
- *the argument.
- *_______________________________________________________________________*/
+//11.1.2 fn:QName
 bool
 QNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -210,25 +144,7 @@ QNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 
-
-BINARY_ACCEPT(QNameIterator);
-
-
-/**
- *______________________________________________________________________
- *
- * 11.2.1 op:QName-equal
- *
- *  op:QName-equal($arg1 as xs:QName,
- *                            $arg2 as xs:QName) as xs:boolean
- *
- *Summary: Returns true if the namespace URIs of $arg1 and $arg2 are equal and
- *the local names of $arg1 and $arg2 are identical based on the
- *Unicode code point collation. Otherwise, returns false.
- *Two namespace URIs are considered equal if they are either both absent or
- *both present and identical based on the Unicode code point collation. The prefix
- *parts of $arg1 and $arg2, if any, are ignored.
- *_______________________________________________________________________*/
+//11.2.1 op:QName-equal
 bool
 QNameEqualIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -244,7 +160,7 @@ QNameEqualIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       arg1 = arg1->getAtomizationValue();
       arg2 = arg2->getAtomizationValue();
-    
+
       if(arg1->getLocalName()->equals(arg2->getLocalName()))
       {
         if((arg1->getNamespace()->empty() && arg2->getNamespace()->empty()) ||
@@ -263,19 +179,7 @@ QNameEqualIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 }
 
 
-BINARY_ACCEPT(QNameEqualIterator);
-
-
-/**
- *______________________________________________________________________
- *
- * 11.2.2 fn:prefix-from-QName
- *
- * fn:prefix-from-QName($arg as xs:QName?) as xs:NCName?
- *
- *Summary: Returns an xs:NCName representing the prefix of $arg. The empty sequence
- *is returned if $arg is the empty sequence or if the value of $arg contains no prefix.
- *_______________________________________________________________________*/
+//11.2.2 fn:prefix-from-QName
 bool
 PrefixFromQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -298,20 +202,7 @@ PrefixFromQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   STACK_END (state);
 }
 
-
-UNARY_ACCEPT(PrefixFromQNameIterator);
-
-
-/**
- *______________________________________________________________________
- *
- * 11.2.3 fn:local-name-from-QName
- *
- * fn:local-name-from-QName($arg as xs:QName?) as xs:NCName?
- *
- *Summary: Returns an xs:NCName representing the local part of $arg.
- *If $arg is the empty sequence, returns the empty sequence.
- *_______________________________________________________________________*/
+//11.2.3 fn:local-name-from-QName
 bool
 LocalNameFromQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
@@ -328,21 +219,7 @@ LocalNameFromQNameIterator::nextImpl(store::Item_t& result, PlanState& planState
   STACK_END (state);
 }
 
-
-UNARY_ACCEPT(LocalNameFromQNameIterator);
-
-
-/**
- *______________________________________________________________________
- *
- * 11.2.4 fn:namespace-uri-from-QName
- *
- * fn:namespace-uri-from-QName($arg as xs:QName?) as xs:anyURI?
- *
- *Summary: Returns the namespace URI for $arg as an xs:string.
- *If $arg is the empty sequence, the empty sequence is returned.
- *If $arg is in no namespace, the zero-length string is returned.
- *_______________________________________________________________________*/
+//11.2.4 fn:namespace-uri-from-QName
 bool
 NamespaceUriFromQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
@@ -351,7 +228,7 @@ NamespaceUriFromQNameIterator::nextImpl(store::Item_t& result, PlanState& planSt
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-    
+
   if (consumeNext(item, theChild.getp(), planState))
   {
     ns = item->getNamespace();
@@ -360,27 +237,7 @@ NamespaceUriFromQNameIterator::nextImpl(store::Item_t& result, PlanState& planSt
   STACK_END (state);
 }
 
-
-UNARY_ACCEPT(NamespaceUriFromQNameIterator);
-
-
-/**
- *______________________________________________________________________
- *
- * 11.2.5 fn:namespace-uri-for-prefix
- *
- * fn:namespace-uri-for-prefix($prefix as xs:string?,
- *                             $element as element()) as xs:anyURI?
- *
- *Summary: Returns the namespace URI of one of the in-scope namespaces for
- *$element, identified by its namespace prefix.
- *If $element has an in-scope namespace whose namespace prefix is equal to $prefix,
- *it returns the namespace URI of that namespace. If $prefix is the zero-length string or
- *the empty sequence, it returns the namespace URI of the
- *default (unnamed) namespace. Otherwise, it returns the empty sequence.
- *Prefixes are equal only if their Unicode code points match exactly.
- *_______________________________________________________________________*/
-
+//11.2.5 fn:namespace-uri-for-prefix
 bool
 NamespaceUriForPrefixIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -419,36 +276,20 @@ NamespaceUriForPrefixIterator::nextImpl(store::Item_t& result, PlanState& planSt
   STACK_END (state);
 }
 
-
-NARY_ACCEPT(NamespaceUriForPrefixIterator);
-
-
-/**
- *______________________________________________________________________
- *
- * 11.2.6 fn:in-scope-prefixes
- *
- * fn:in-scope-prefixes($element as element()) as xs:string*
- *
- *Summary: Returns the prefixes of the in-scope namespaces for $element.
- *For namespaces that have a prefix, it returns the prefix as an xs:NCName.
- *For the default namespace, which has no prefix, it returns the zero-length string.
- *_______________________________________________________________________*/
-void InScopePrefixesState::init(PlanState& planState)
+//11.2.6 fn:in-scope-prefixes
+void InScopePrefixesIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
   theBindings.clear();
   theCurrentPos = 0;
 }
 
-
-void InScopePrefixesState::reset(PlanState& planState)
+void InScopePrefixesIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   theBindings.clear();
   theCurrentPos = 0;
 }
-
 
 bool
 InScopePrefixesIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -456,8 +297,8 @@ InScopePrefixesIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   store::Item_t itemElem;
   xqpStringStore_t ncname = new xqpStringStore ("xml");
 
-  InScopePrefixesState* state;
-  DEFAULT_STACK_INIT(InScopePrefixesState, state, planState);
+  InScopePrefixesIteratorState* state;
+  DEFAULT_STACK_INIT(InScopePrefixesIteratorState, state, planState);
 
   STACK_PUSH(GENV_ITEMFACTORY->createNCName(result, ncname), state);
 
@@ -474,9 +315,5 @@ InScopePrefixesIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
   STACK_END (state);
 }
-
-
-UNARY_ACCEPT(InScopePrefixesIterator);
-
 
 } /* namespace zorba */
