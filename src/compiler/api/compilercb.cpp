@@ -17,11 +17,11 @@
 #include "compiler/api/compilercb.h"
 #include "compiler/expression/expr_base.h"
 
-//#include "api/xqueryimpl.h"
-
 #include "context/static_context.h"
 
 #include "util/properties.h"
+
+#include "zorbaserialization/serialization_engine.h"
 
 
 namespace zorba 
@@ -49,15 +49,56 @@ DEF_PRINT_EXPR_TREE(normalization);
 DEF_PRINT_EXPR_TREE(optimization);
 
 
+CompilerCB::config::config()
+  :
+  opt_level(O1),
+  lib_module(false),
+  parse_cb(NULL)
+{
+  translate_cb = normalize_cb = optimize_cb = NULL;
+  // TODO: move these out
+  print_item_flow = Properties::instance()->printItemFlow();
+
+  if (Properties::instance()->printTranslated())
+    translate_cb = print_expr_tree_translation;
+
+  if (Properties::instance()->printNormalized())
+    normalize_cb = print_expr_tree_normalization;
+
+  if (Properties::instance()->printOptimized())
+    optimize_cb = print_expr_tree_optimization;
+
+  force_gflwor = Properties::instance()->forceGflwor();
+}
+
+
+CompilerCB::config::config(::zorba::serialization::Archiver& ar) 
+  :
+  parse_cb(NULL),
+  translate_cb(NULL),
+  normalize_cb(NULL),
+  optimize_cb(NULL)
+{
+}
+
+
+void CompilerCB::config::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & force_gflwor;
+  SERIALIZE_ENUM(opt_level_t, opt_level);
+  ar & lib_module;
+  ar & print_item_flow;
+}
+
+
 CompilerCB::CompilerCB(std::map<short, static_context_t>& sctx_map)
   :
-  theIsLoadProlog(false),
-  theIsUpdating(false),
   theRootSctx(0),
-  m_cur_sctx(0),
   theSctxMap(&sctx_map),
   theErrorManager(0),
-  theDebuggerCommons(0)
+  theDebuggerCommons(0),
+  theIsLoadProlog(false),
+  theIsUpdating(false)
 {
 }
 
@@ -65,14 +106,13 @@ CompilerCB::CompilerCB(std::map<short, static_context_t>& sctx_map)
 CompilerCB::CompilerCB(const CompilerCB& cb)
   :
   zorba::serialization::SerializeBaseClass(cb),
-  theIsLoadProlog(false),
-  theIsUpdating(false),
+  theConfig(cb.theConfig),
   theRootSctx(NULL),
-  m_cur_sctx(cb.m_cur_sctx),
   theSctxMap(cb.theSctxMap),
   theErrorManager(cb.theErrorManager),
-  theConfig(cb.theConfig),
-  theDebuggerCommons(cb.theDebuggerCommons)
+  theDebuggerCommons(cb.theDebuggerCommons),
+  theIsLoadProlog(false),
+  theIsUpdating(false)
 {
 }
 
@@ -93,10 +133,8 @@ void CompilerCB::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theIsLoadProlog;
   ar & theIsUpdating;
-  ar & m_cur_sctx;
   ar & theSctxMap;
   ar & theRootSctx;
-  ar & m_sctx_list;
   if(!ar.is_serializing_out())
   {
     theErrorManager = NULL;//don't serialize this
@@ -107,8 +145,7 @@ void CompilerCB::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-static_context*
-CompilerCB::getStaticContext(short c)
+static_context* CompilerCB::getStaticContext(short c)
 {
   std::map<short, static_context_t>::iterator lIter;
   lIter = theSctxMap->find(c);
@@ -117,22 +154,5 @@ CompilerCB::getStaticContext(short c)
 }
 
 
-CompilerCB::config::config()
-  :
-  opt_level (O1),
-  lib_module(false),
-  parse_cb (NULL)
-{
-  translate_cb = normalize_cb = optimize_cb = NULL;
-  // TODO: move these out
-  print_item_flow = Properties::instance()->printItemFlow();
-  if (Properties::instance()->printTranslated())
-    translate_cb = print_expr_tree_translation;
-  if (Properties::instance()->printNormalized())
-    normalize_cb = print_expr_tree_normalization;
-  if (Properties::instance()->printOptimized())
-    optimize_cb = print_expr_tree_optimization;
-  force_gflwor = Properties::instance()->forceGflwor();
-}
   
 } /* namespace zorba */

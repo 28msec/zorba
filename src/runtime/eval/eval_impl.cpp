@@ -32,64 +32,77 @@ using namespace std;
 namespace zorba {
 
 PlanIter_t compile(
-    CompilerCB *ccb,
+    CompilerCB* ccb,
     xqp_string query, 
-    checked_vector<store::Item_t> varnames,    checked_vector<xqtref_t> vartypes) 
+    checked_vector<store::Item_t> varnames, checked_vector<xqtref_t> vartypes) 
 {
-    XQueryCompiler compiler (ccb);
-    istringstream os (query);
-    parsenode_t ast = compiler.parse (os);
-    QueryLoc loc;
+  XQueryCompiler compiler(ccb);
+  istringstream os(query);
+  parsenode_t ast = compiler.parse(os);
+  QueryLoc loc;
 
-    rchandle<MainModule> mm = ast.dyn_cast<MainModule> ();
-    if (mm == NULL)
-      ZORBA_ERROR_LOC (XPST0003, loc);
-    rchandle<Prolog> prolog = mm->get_prolog ();
-    if (prolog == NULL) {
-      prolog = new Prolog (loc, NULL, NULL);
-      mm->set_prolog (prolog);
-    }
-    rchandle<VFO_DeclList> vfo = prolog->get_vfo_list ();
-    if (vfo == NULL) {
-      vfo = new VFO_DeclList (loc);
-      prolog->set_vfo_list (vfo);
-    }
+  rchandle<MainModule> mm = ast.dyn_cast<MainModule> ();
+  if (mm == NULL)
+    ZORBA_ERROR_LOC(XPST0003, loc);
 
-    for (int i = (int) varnames.size () - 1; i >= 0; i--)
-      vfo->push_front (new VarDecl (loc, xqp_string (varnames [i]->getStringValue ()), NULL, NULL, true));
-    // TODO: give eval'ed code the types of the variables (for optimization)
+  rchandle<Prolog> prolog = mm->get_prolog();
+  if (prolog == NULL) 
+  {
+    prolog = new Prolog(loc, NULL, NULL);
+    mm->set_prolog(prolog);
+  }
 
-    return compiler.compile (ast);
+  rchandle<VFO_DeclList> vfo = prolog->get_vfo_list();
+  if (vfo == NULL) 
+  {
+    vfo = new VFO_DeclList(loc);
+    prolog->set_vfo_list(vfo);
+  }
+
+  for (int i = (int) varnames.size() - 1; i >= 0; i--)
+    vfo->push_front(new VarDecl(loc,
+                                xqp_string(varnames[i]->getStringValue()),
+                                NULL,
+                                NULL,
+                                true));
+  // TODO: give eval'ed code the types of the variables (for optimization)
+  
+  return compiler.compile(ast);
 }
+
 
 bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
   store::Item_t item;
+  short sctxid;
   EvalIteratorState* state;
 
   DEFAULT_STACK_INIT(EvalIteratorState, state, planState);
 
   // set up eval state's ccb
-  state->ccb.reset(new CompilerCB (*planState.theCompilerCB));
+  state->ccb.reset(new CompilerCB(*planState.theCompilerCB));
   state->ccb->theRootSctx = getStaticContext(planState)->create_child_context();
-  (*state->ccb->theSctxMap)[++state->ccb->m_cur_sctx] = state->ccb->theRootSctx; 
-  CONSUME (item, 0);
+  sctxid = state->ccb->theSctxMap->size() + 1;
+  (*state->ccb->theSctxMap)[sctxid] = state->ccb->theRootSctx; 
+
+  CONSUME(item, 0);
 
   {
-    state->dctx.reset(new dynamic_context (planState.dctx ()));
+    state->dctx.reset(new dynamic_context(planState.dctx()));
     
-    state->eval_plan.reset (new PlanWrapper (compile (state->ccb.get (),
-                                                      &*item->getStringValue (),
-                                                      varnames,
-                                                      vartypes),
-                                             state->ccb.get (),
-                                             state->dctx.get (),
-                                             0, // no query, yet and hence no no external functions in eval plans
-                                             planState.theStackDepth + 1));
-    state->eval_plan->checkDepth (loc);
+    state->eval_plan.reset(new PlanWrapper(compile(state->ccb.get(),
+                                                   &*item->getStringValue(),
+                                                   varnames,
+                                                   vartypes),
+                                           state->ccb.get(),
+                                           state->dctx.get(),
+                                           0, // no query, yet and hence no no external functions in eval plans
+                                           planState.theStackDepth + 1));
+    state->eval_plan->checkDepth(loc);
     
-    for (unsigned i = 0; i < theChildren.size () - 1; i++) {
-      store::Iterator_t lIter = new PlanIteratorWrapper (theChildren [i + 1], planState);
+    for (unsigned i = 0; i < theChildren.size() - 1; i++) 
+    {
+      store::Iterator_t lIter = new PlanIteratorWrapper(theChildren[i + 1], planState);
       // TODO: is saving an open iterator efficient?
       // Then again if we close theChildren [1] here,
       // we won't be able to re-open it later via the PlanIteratorWrapper
@@ -97,12 +110,13 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
   }
 
-  while (state->eval_plan->next (result)) {
-    STACK_PUSH (true, state);
+  while (state->eval_plan->next (result)) 
+  {
+    STACK_PUSH(true, state);
   }
 
-  state->eval_plan.reset (NULL);
+  state->eval_plan.reset(NULL);
 
-  STACK_END (state);
+  STACK_END(state);
 }
 }

@@ -94,11 +94,11 @@ XQueryImpl::PlanProxy::PlanProxy(PlanIter_t& root)
 
 XQueryImpl::XQueryImpl()
   :
-  thePlan(),
   theStaticContext(0),
+  theStaticContextWrapper(0),
+  thePlan(),
   theDynamicContext(0),
   theDynamicContextWrapper(0),
-  theStaticContextWrapper(0),
   theUserErrorHandler(false),
   theSAX2Handler(0),
   theIsClosed(false),
@@ -438,29 +438,55 @@ XQueryImpl::parse(std::istream& aQuery)
  * various ways to compile a query
  */
 
-void
-XQueryImpl::compile(const String& aQuery)
+/*******************************************************************************
+
+********************************************************************************/
+void XQueryImpl::compile(const String& aQuery)
 {
   Zorba_CompilerHints_t lHints;
-  return compile( aQuery, lHints ); 
+  return compile(aQuery, lHints); 
 }
 
 
-void
-XQueryImpl::compile(const String& aQuery, const Zorba_CompilerHints_t& aHints)
+/*******************************************************************************
+
+********************************************************************************/
+void XQueryImpl::compile(const String& aQuery, const Zorba_CompilerHints_t& aHints)
 {
   ZORBA_TRY
     checkNotClosed();
     checkNotCompiled();
+
     xqpString lQuery = Unmarshaller::getInternalString(aQuery);
     std::istringstream lQueryStream(lQuery);
+
     doCompile(lQueryStream, aHints);
+
   ZORBA_CATCH
 }
 
 
-void
-XQueryImpl::compile(
+/*******************************************************************************
+
+********************************************************************************/
+void XQueryImpl::compile(
+    std::istream& aQuery,
+    const Zorba_CompilerHints_t& aHints)
+{
+  ZORBA_TRY
+    checkNotClosed();
+    checkNotCompiled();
+
+    doCompile(aQuery, aHints);
+
+  ZORBA_CATCH
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void XQueryImpl::compile(
     const String& aQuery,
     const StaticContext_t& aStaticContext, 
     const Zorba_CompilerHints_t& aHints)
@@ -468,32 +494,26 @@ XQueryImpl::compile(
   ZORBA_TRY
     checkNotClosed();
     checkNotCompiled();
+
     theStaticContext = Unmarshaller::getInternalStaticContext(aStaticContext);
     xqpString lQuery = Unmarshaller::getInternalString(aQuery);
 
     // if the static context results from loadProlog, we need all the contexts
     // that were created when compiling the query
-    theSctxMap = static_cast<StaticContextImpl*>(aStaticContext.get())->theCtxMap;
+    theSctxMap = static_cast<StaticContextImpl*>(aStaticContext.get())->theSctxMap;
     theCompilerCB->theSctxMap = &theSctxMap;
 
     std::istringstream lQueryStream(lQuery);
+
     doCompile(lQueryStream, aHints);
+
   ZORBA_CATCH
 }
 
 
-void XQueryImpl::compile(
-    std::istream& aQuery,
-    const Zorba_CompilerHints_t& aHints)
-{
-  ZORBA_TRY
-    checkNotClosed();
-    checkNotCompiled();
-    doCompile(aQuery, aHints);
-  ZORBA_CATCH
-}
+/*******************************************************************************
 
-
+********************************************************************************/
 void XQueryImpl::compile(
     std::istream& aQuery,
     const StaticContext_t& aStaticContext, 
@@ -502,18 +522,25 @@ void XQueryImpl::compile(
   ZORBA_TRY
     checkNotClosed();
     checkNotCompiled();
+
     theStaticContext = Unmarshaller::getInternalStaticContext(aStaticContext);
 
     // if the static context results from loadProlog, we need all the context
     // that were created when compiling the query
-    theSctxMap = static_cast<StaticContextImpl*>(aStaticContext.get())->theCtxMap;
+    theSctxMap = static_cast<StaticContextImpl*>(aStaticContext.get())->theSctxMap;
     theCompilerCB->theSctxMap = &theSctxMap;
 
     doCompile(aQuery, aHints);
+
   ZORBA_CATCH
 }
 
 
+/*******************************************************************************
+  This method is not part of the XQuery public API. Instead it is invoked from
+  the StaticContextImpl::loadProlog() method, which is also the one that creates
+  "this" XQuery obj.
+********************************************************************************/
 void XQueryImpl::loadProlog(
     const String& aQuery,
     const StaticContext_t& aStaticContext, 
@@ -531,10 +558,14 @@ void XQueryImpl::loadProlog(
     theCompilerCB->setLoadPrologQuery();
 
     doCompile(lQueryStream, aHints, false);
+
   ZORBA_CATCH
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void XQueryImpl::doCompile(
     std::istream& aQuery,
     const Zorba_CompilerHints_t& aHints,
@@ -555,18 +586,19 @@ void XQueryImpl::doCompile(
     if (theStaticContext->get_local_typemanager() == NULL)
       theStaticContext->set_typemanager(new TypeManagerImpl(&GENV_TYPESYSTEM));
 
-    // otherwise create a child and we have ownership over that one
+    // otherwise, unless this is a load-prolog query, create a child and we have
+    // ownership over that one
     if (fork_sctx)
       theStaticContext = theStaticContext->create_child_context();
   }
 
-  RCHelper::addReference (theStaticContext);
+  RCHelper::addReference(theStaticContext);
 
   theStaticContext->set_entity_retrieval_url(xqp_string(&*URI::encode_file_URI(theFileName)));
 
   theCompilerCB->theRootSctx = theStaticContext;
-  theCompilerCB->m_cur_sctx = theCompilerCB->theSctxMap->size() + 1;
-  (*theCompilerCB->theSctxMap)[theCompilerCB->m_cur_sctx] = theStaticContext;
+  ulong sctxid = theCompilerCB->theSctxMap->size() + 1;
+  (*theCompilerCB->theSctxMap)[sctxid] = theStaticContext;
 
   // set the compiler config
   theCompilerCB->theConfig = getCompilerConfig(aHints);
@@ -575,12 +607,14 @@ void XQueryImpl::doCompile(
 
   //theCompilerCB->m_debugger = theDebugger;
   //if the debug mode is set, we force the gflwor, we set the query input stream
-  if ( theIsDebugMode){
+  if ( theIsDebugMode)
+  {
     theCompilerCB->theConfig.force_gflwor = true;
     theCompilerCB->theDebuggerCommons =
       new ZorbaDebuggerCommons(theCompilerCB->theRootSctx);
     theCompilerCB->theConfig.opt_level = CompilerCB::config_t::O0;
   }
+
   // let's compile
   PlanIter_t planRoot = lCompiler.compile(aQuery, theFileName); 
 

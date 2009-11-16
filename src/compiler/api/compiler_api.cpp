@@ -131,11 +131,12 @@ parsenode_t
 XQueryCompiler::parse(std::istream& aXQuery, const xqpString & aFileName)
 {
   // TODO: move these out
-  if (Properties::instance()->printAst()) {
+  if (Properties::instance()->printAst()) 
+  {
     theCompilerCB->theConfig.parse_cb = print_ast_tree;
   }
   
-  std::istream  *xquery_stream = &aXQuery;
+  std::istream* xquery_stream = &aXQuery;
 
 #ifdef ZORBA_XQUERYX
   char  *converted_xquery_str = NULL;
@@ -152,8 +153,9 @@ XQueryCompiler::parse(std::istream& aXQuery, const xqpString & aFileName)
       xquery_str += strtemp;
     }while(aXQuery.gcount() == (sizeof(strtemp)-1));
   }
-  XQueryXConvertor    *xqxconvertor = GENV.getXQueryXConvertor();
-  //if(theCompilerCB->xqformat == XQUERYX_2005)
+
+  XQueryXConvertor* xqxconvertor = GENV.getXQueryXConvertor();
+
   if(xqxconvertor->isXQueryX((char*)xquery_str.c_str()))//identify XQueryX by content: root tag = "<prefix:module ... xmlns:prefix="http://www.w3.org/2005/XQueryX" ... > "
   {
     is_xqueryx = true;
@@ -180,15 +182,17 @@ XQueryCompiler::parse(std::istream& aXQuery, const xqpString & aFileName)
   delete xquery_stream;
   if(is_xqueryx)
   {
-    //XQueryXConvertor    *xqxconvertor = GENV.getXQueryXConvertor();
     xqxconvertor->freeResult(converted_xquery_str);
   }
 #endif
   parsenode_t node = lDriver.get_expr();
-  if (typeid (*node) == typeid (ParseErrorNode)) {
+
+  if (typeid (*node) == typeid (ParseErrorNode)) 
+  {
     ParseErrorNode *err = static_cast<ParseErrorNode *> (&*node);
     ZORBA_ERROR_LOC_DESC( XPST0003, err->get_location (), err->msg);
   }
+
   return node;
 }
 

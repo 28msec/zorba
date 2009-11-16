@@ -49,8 +49,7 @@ ValueIndex::ValueIndex(
   theIsUnique(false),
   theIsTemp(false),
   theMaintenanceMode(MANUAL),
-  theContainerKind(HASH),
-  theDomainClause(new for_clause(ccb->m_cur_sctx, loc, NULL, NULL))
+  theContainerKind(HASH)
 { 
 }
   
@@ -96,6 +95,12 @@ expr* ValueIndex::getDomainExpr() const
 
 void ValueIndex::setDomainExpr(expr_t domainExpr) 
 {
+  if (theDomainClause == NULL)
+    theDomainClause = new for_clause(domainExpr->get_sctx_id(),
+                                     domainExpr->get_loc(),
+                                     NULL,
+                                     NULL);
+
   theDomainClause->set_expr(domainExpr);
 }
 
@@ -108,6 +113,12 @@ var_expr* ValueIndex::getDomainVariable() const
 
 void ValueIndex::setDomainVariable(var_expr_t domainVar)
 {
+  if (theDomainClause == NULL)
+    theDomainClause = new for_clause(domainVar->get_sctx_id(),
+                                     domainVar->get_loc(),
+                                     NULL,
+                                     NULL);
+
   theDomainClause->set_var(domainVar);
 }
 

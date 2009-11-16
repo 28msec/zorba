@@ -32,7 +32,7 @@ namespace zorba {
 
 /*******************************************************************************
 
-  theCtx               : Pointer to the internal static_context obj that is
+  theCtx               : rchandle to the internal static_context obj that is
                          wrapped by "this".
   theUserStaticContext : If true, "this" does not own the static_context obj
                          that is pointed to by theCtx, and so, during destruction,
@@ -43,15 +43,15 @@ namespace zorba {
 class StaticContextImpl : public StaticContext
 {
   friend class Unmarshaller; // needs to get the context out of this class
-  friend class XQueryImpl; // needed for accessing theCtxMap
+  friend class XQueryImpl;   // needed for accessing theSctxMap
 
  protected:
-  static_context*  theCtx;
-  std::map<short, static_context_t> theCtxMap;
-  bool             theUserStaticContext;
+  static_context                    * theCtx;
+  std::map<short, static_context_t>   theSctxMap;
+  bool                                theUserStaticContext;
 
-  ErrorHandler*    theErrorHandler;
-  bool             theUserErrorHandler;
+  ErrorHandler                      * theErrorHandler;
+  bool                                theUserErrorHandler;
 
   // remeber all the resolver wrappers that this
   // context has created

@@ -145,7 +145,7 @@ void end_visit(flwor_expr& node)
                                 create_type(*vartype, TypeConstants::QUANT_STAR);
 
         expr_t e = fc->get_expr();
-        fc->set_expr(wrap_in_typematch(m_cb->m_cur_sctx, e, promote_type));
+        fc->set_expr(wrap_in_typematch(node.get_sctx_id(), e, promote_type));
       }
     }
     else if (c.get_kind() == flwor_clause::let_clause)
@@ -156,7 +156,7 @@ void end_visit(flwor_expr& node)
       if (vartype != NULL) 
       {
         expr_t e = lc->get_expr();
-        lc->set_expr(wrap_in_typematch(m_cb->m_cur_sctx, e, vartype));
+        lc->set_expr(wrap_in_typematch(node.get_sctx_id(), e, vartype));
       }
     }
     else if (c.get_kind() == flwor_clause::window_clause)
@@ -167,7 +167,7 @@ void end_visit(flwor_expr& node)
       if (vartype != NULL) 
       {
         expr_t e = wc->get_expr();
-        wc->set_expr(wrap_in_typematch(m_cb->m_cur_sctx, e, vartype));
+        wc->set_expr(wrap_in_typematch(node.get_sctx_id(), e, vartype));
       }
     }
   }
@@ -378,7 +378,7 @@ void normalize_expr_tree(
     expr_t& root,
     const XQType* rType) 
 {
-  normalizer n (aCompilerCB);
+  normalizer n(aCompilerCB);
 
   root->accept(n);
 
@@ -386,12 +386,12 @@ void normalize_expr_tree(
   {
     if (TypeOps::is_builtin_simple(*rType)) 
     {
-      root = wrap_in_atomization(aCompilerCB->m_cur_sctx, aCompilerCB->theRootSctx, root);
-      root = wrap_in_type_conversion(aCompilerCB->m_cur_sctx, root, rType);
+      root = wrap_in_atomization(root->get_sctx_id(), aCompilerCB->theRootSctx, root);
+      root = wrap_in_type_conversion(root->get_sctx_id(), root, rType);
     }
     else 
     {
-      root = wrap_in_typematch (aCompilerCB->m_cur_sctx, root, rType);
+      root = wrap_in_typematch(root->get_sctx_id(), root, rType);
     }
   }
 

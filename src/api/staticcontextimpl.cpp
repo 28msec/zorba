@@ -49,7 +49,8 @@ namespace zorba {
   Create a StaticContextImpl obj as well as an internal static_context obj S.
   S is created as a child of the zorba root sctx. The new StaticContextImpl obj
   owns S, and should delete it during destruction. This constructor is used
-  when the application wants to create a new static context.
+  when the application wants to create its own static context to pass it as
+  input to one or more queries.
 ********************************************************************************/
 StaticContextImpl::StaticContextImpl(ErrorHandler* aErrorHandler)
   :
@@ -71,7 +72,7 @@ StaticContextImpl::StaticContextImpl(ErrorHandler* aErrorHandler)
   Create a StaticContextImpl obj to wrap a given internal static_context obj S.
   The new StaticContextImpl obj does not own S, and should not delete it during
   destruction. This constructor is used when the static context of a query is
-  returned to the application.
+  returned to the application (see XQueryImpl::getStaticContext()).
 ********************************************************************************/
 StaticContextImpl::StaticContextImpl(static_context* aCtx, ErrorHandler* aErrorHandler)
   :
@@ -863,13 +864,17 @@ StaticContextImpl::declareOption( const Item& aQName, const String& aOptionValue
 }
 
 void
-StaticContextImpl::loadProlog(const String& prolog, const Zorba_CompilerHints_t &hints)
+StaticContextImpl::loadProlog(const String& prolog, const Zorba_CompilerHints_t& hints)
 {
+  // Create and compile an internal query whose prolog is the given prolog and
+  // its body is just the emtpy sequence expression: "()".
   XQueryImpl impl;
-
   impl.loadProlog(prolog, this, hints);
 
-  theCtxMap = impl.theSctxMap;
+  // Copy theSctxMap of the internal query into "this". When "this" is then passed
+  // as an input to a user query Q, theSctxMap of Q will be initialized as a copy
+  // of this->theSctxMap. 
+  theSctxMap = impl.theSctxMap;
 }
 
 void

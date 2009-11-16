@@ -45,7 +45,32 @@ class dynamic_context;
 /*******************************************************************************
 
   - theFileName :
-  The filename of the query
+  The filename of the query.
+
+  - theStaticContext : 
+  rchandle to the root static context for this xquery. This sctx may be (a) a
+  child of the zorba root sctx, or (b) a child of an sctx that was created by
+  the application, or (c) if this XQuery obj is a clone of another XQuery obj,
+  a child of the root sctx of the other XQuery obj, or (d) if this XQuery obj
+  is one that is created internally by StaticContextImpl::loadProlog(), the
+  sctx that was created by the application. In cases (a), (b), and (c), the
+  root sctx of the query is owned by the query, and will be deleted during
+  the desctruction of the query.
+
+  - theStaticContextWrapper :
+  Pointer to a StaticContextImpl obj that wraps theStaticContext and which is
+  created when the application asks for the static context of the query (see
+  getStaticContext() method). The pointer is cached, so that it is returned
+  if the application askes for the static context again.
+
+  - theSctxMap :
+  A query-level map that stores the sctx objs that need to be kept around for
+  the whole duration of a query (including runtime). In non-DEBUGGER mode,
+  the map stores only for root sctx of each module. In DEBUGGER mode, it
+  stores all the sctxs created by each module. Each sctx stored in this map
+  has an associated numeric id, and theSctxMap actually maps these numeric
+  ids to their associated sctx objs. The map is modified by the methods
+  TranslatorImpl::end_visit(ModuleImport) and TranslatorImpl::push_scope().
 
   - theCompilerCB :
 
@@ -60,19 +85,6 @@ class dynamic_context;
   - theIsClosed :
   Set to true when the query has been closed. Used to check that after closing
   a query, no operations can be performed on that query anymore.
-
-  - theStaticContext : 
-  Pointer to the static context for this xquery. This sctx is a child of the
-  zorba root sctx, or a child of an sctx that was created by the application.
-  In both cases, the sctx of the query is owned by the query, and is deleted
-  during the desctruction of the query. Note: after a query is compiled, its
-  sctx cannot be changed.
-
-  - theStaticContextWrapper :
-  Pointer to a StaticContextImpl obj that wraps theStaticContext and which is
-  created when the application asks for the static context of the query (see
-  getStaticContext() method). The pointer is cached, so that it is returned
-  if the application askes for the static context again.
 
   - theDynamicContext :
   The dynamic context for this query. Always belongs to the query.
@@ -114,6 +126,8 @@ class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseC
   friend class StaticContextImpl;  // StaticContextImpl::loadProlog() needs this
   friend class DynamicContextImpl;
   friend class CompilerCB;
+  friend class ZorbaDebugger;
+  friend class ZorbaDebuggerRuntime;
 
  protected:
 
@@ -142,46 +156,51 @@ class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseC
  protected:
 
   // static stuff
-  xqpString                        theFileName;
+  xqpString                          theFileName;
+
+  static_context                   * theStaticContext;
+
+  mutable StaticContextImpl        * theStaticContextWrapper;
 
   std::map<short, static_context_t>  theSctxMap;
 
-  CompilerCB                     * theCompilerCB;
+  CompilerCB                       * theCompilerCB;
 
-  PlanProxy_t                      thePlan; 
-
-  static_context                 * theStaticContext;
+  PlanProxy_t                        thePlan; 
   
   // dynamic stuff
-  dynamic_context                * theDynamicContext;
+  dynamic_context                  * theDynamicContext;
 
-  mutable DynamicContextImpl     * theDynamicContextWrapper;
-  mutable StaticContextImpl      * theStaticContextWrapper;
+  mutable DynamicContextImpl       * theDynamicContextWrapper;
 
-  std::vector<ResultIteratorImpl*> theResultIterators;
+  std::vector<ResultIteratorImpl*>   theResultIterators;
 
   // utility stuff
-  bool                             theUserErrorHandler; 
-  ErrorHandler                   * theErrorHandler; 
+  bool                               theUserErrorHandler; 
+  ErrorHandler                     * theErrorHandler; 
     
-  error::ErrorManager            * theErrorManager; 
+  error::ErrorManager              * theErrorManager; 
 
-  SAX2_ContentHandler            * theSAX2Handler; 
+  SAX2_ContentHandler              * theSAX2Handler; 
     
-  bool                             theIsClosed;
+  bool                               theIsClosed;
 
 
-  SYNC_CODE(mutable Mutex          theCloningMutex;)
+  SYNC_CODE(mutable Mutex            theCloningMutex;)
 
-  double                           theDocLoadingUserTime;
-  long                             theDocLoadingTime;
+  double                             theDocLoadingUserTime;
+  long                               theDocLoadingTime;
 
-  long                             theTimeout;
+  long                               theTimeout;
+
+private:
+  bool                               theIsDebugMode;
+  std::string                        theProfileName;
 
 public:
   SERIALIZABLE_CLASS(XQueryImpl)
   SERIALIZABLE_CLASS_CONSTRUCTOR(XQueryImpl)
-  void serialize(::zorba::serialization::Archiver &ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
   // static stuff
     ar & theFileName;
@@ -259,19 +278,19 @@ public:
   printPlan( std::ostream& aStream, bool aDotFormat = false ) const;
 
   void
-  loadProlog (const String&, const StaticContext_t&, const Zorba_CompilerHints_t& aHints);
+  loadProlog(const String&, const StaticContext_t&, const Zorba_CompilerHints_t& aHints);
 
   void
-  setFileName( const String& );
+  setFileName(const String&);
 
   String
   getFileName();
 
   void
-  registerSAXHandler( SAX2_ContentHandler *  aSAXHandler );
+  registerSAXHandler(SAX2_ContentHandler *  aSAXHandler);
     
   void
-  executeSAX( SAX2_ContentHandler *  aSAXHandler );
+  executeSAX(SAX2_ContentHandler *  aSAXHandler);
 
   void executeSAX();
 
@@ -294,10 +313,30 @@ public:
   isUpdating() const;
 
   bool
-  saveExecutionPlan(std::ostream &os, Zorba_binary_plan_format_t archive_format);
+  saveExecutionPlan(std::ostream& os, Zorba_binary_plan_format_t archive_format);
 
   bool
-  loadExecutionPlan(std::istream &is, SerializationCallback* aCallback = 0);
+  loadExecutionPlan(std::istream& is, SerializationCallback* aCallback = 0);
+
+  void
+  setDebugMode( bool aDebugMode );
+
+  bool
+  isDebugMode() const;
+
+  void
+  setProfileName(std::string aProfileName);
+
+  std::string
+  getProfileName() const;
+  
+  void
+  debug( unsigned short aCommandPort, unsigned short anEventPort );
+
+  void
+  debug(std::ostream& aOutStream,
+        Zorba_SerializerOptions& aSerOptions,
+        unsigned short aCommandPort, unsigned short anEventPort);
 
 protected:
     
@@ -312,8 +351,6 @@ protected:
   PlanWrapper_t
   generateWrapper();
 
-  friend class ZorbaDebugger;
-  friend class ZorbaDebuggerRuntime;
   // special serialize and applyUpdate function that is used by debugger 
   // and by the public serialize and applyUpdate functions, respectively.
   // they are passed an opened PlanWrapper
@@ -342,36 +379,10 @@ protected:
   // check whether the query has not been compiled, and if not, fire an error
   void
   checkNotCompiled() const;
-
- private:
-  bool theIsDebugMode;
-  std::string theProfileName;
  
- protected:
   void
   checkIsDebugMode() const;
-
- public:
-  void
-  setDebugMode( bool aDebugMode );
-
-  bool
-  isDebugMode() const;
-
-  void
-  setProfileName(std::string aProfileName);
-
-  std::string
-  getProfileName() const;
-  
-  void
-  debug( unsigned short aCommandPort, unsigned short anEventPort );
-
-  void
-  debug(std::ostream& aOutStream,
-        Zorba_SerializerOptions& aSerOptions,
-        unsigned short aCommandPort, unsigned short anEventPort);
-}; /* class XQueryImpl */
+};
 
 
   std::ostream& operator<< (std::ostream& os, const XQuery_t& aQuery);

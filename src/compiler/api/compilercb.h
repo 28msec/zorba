@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef XQP_COMPILERCB_H
-#define XQP_COMPILERCB_H
+#ifndef COMPILER_COMPILERCB_H
+#define COMPILER_COMPILERCB_H
 
 #include <vector>
 #include <map>
@@ -25,7 +25,7 @@
 
 #include "context/static_context.h"
 
-#include "zorbaserialization/serialization_engine.h"
+#include "zorbaserialization/class_serializer.h"
 
 namespace zorba {
 
@@ -41,32 +41,23 @@ class static_context;
   The CompilerCBs of imported modules are created and stay alive only during the
   translation of their associated modules.
 
-  theIsLoadProlog :
+  theConfig       :
 
   theRootSctx     : The root static ctx for the associated module. For each
                     module, this is a child of either a user provided static
                     ctx or the zorba default root context.
-  m_cur_sctx      : The numeric id of the last sctx that was added to the 
-                    m_context_map. Every time an expr is created, the current
-                    value of m_cur_sctx is stored in the expr obj, so that each
-                    expr will be executed in the appropriate sctx.
+
   theSctxMap      : A reference to the query-level map that maps sctx numeric ids
-                    to sctx objs. In non-DEBUGGER mode, the map stores entries 
-                    only for the root sctx of each module. In DEBUGGER mode, it
-                    stores entries for all sctxs created by each module. By 
-                    registering an sctx in this map, we make sure that it will
-                    stay alive for the whole duration on the query. The map
-                    is modified by the translator methods end_visit(ModuleImport)
-                    and push_scope().
-  m_sctx_list:    : A list of static contexts which need to be kept alive during
-                    the translation of a module. This is different from the
-                    query-level sctx map. The contexts in the query-level map are
-                    used during runtime. Those in this list go away after the
-                    translation process. It's managed in push_scope and pop_scope.
-                    If the debugger is used, this list remains empty.
-  m_error_manager : Pointer to an ErrorManager obj. In fact, all CompilerCBs
+                    to sctx objs. (see api/xqueryimpl.h)
+
+  theErrorManager : Pointer to an ErrorManager obj. In fact, all CompilerCBs
                     share the same ErrorManager.
-  m_config        :
+
+  theDebuggerCommons :
+
+  theIsLoadProlog :
+
+  theIsUpdating   :
 ********************************************************************************/
 class ZORBA_DLL_PUBLIC CompilerCB : public zorba::serialization::SerializeBaseClass
 {
@@ -91,49 +82,32 @@ public:
     expr_callback optimize_cb;
     bool print_item_flow;  // TODO: move to RuntimeCB
 
-    config();
-
    public:
     SERIALIZABLE_CLASS(config)
-    config(::zorba::serialization::Archiver &ar) 
-      :
-      parse_cb(NULL),
-      translate_cb(NULL),
-      normalize_cb(NULL),
-      optimize_cb(NULL)
-    {
-    }
+    config(::zorba::serialization::Archiver& ar);
+
+    config();
 
     ~config() {}
 
-    void serialize(::zorba::serialization::Archiver &ar)
-    {
-      ar & force_gflwor;
-      SERIALIZE_ENUM(opt_level_t, opt_level);
-	    ar & lib_module;
-      ar & print_item_flow;
-    }
-  } config_t;
-
-  void
-  setIsUpdating(bool aIsUpdating) { theIsUpdating = aIsUpdating; }
-
-  bool
-  isUpdating() const { return theIsUpdating; }
+    void serialize(::zorba::serialization::Archiver& ar);
+  }
+  config_t;
 
 public:  
+  config_t                            theConfig;
+
+  static_context_t                    theRootSctx;
+
+  std::map<short, static_context_t> * theSctxMap;
+
+  error::ErrorManager               * theErrorManager;
+
+  ZorbaDebuggerCommons              * theDebuggerCommons;
+
   bool                                theIsLoadProlog;
 
   bool                                theIsUpdating;
-  
-  static_context_t                    theRootSctx;
-  short                               m_cur_sctx;
-  std::map<short, static_context_t> * theSctxMap;
-  std::vector<static_context_t>       m_sctx_list;
-
-  error::ErrorManager               * theErrorManager;
-  config_t                            theConfig;
-  ZorbaDebuggerCommons              * theDebuggerCommons;
 
 public:
   SERIALIZABLE_CLASS(CompilerCB);
@@ -150,6 +124,10 @@ public:
   bool isLoadPrologQuery() const { return theIsLoadProlog; }
 
   void setLoadPrologQuery() { theIsLoadProlog = true; }
+
+  void setIsUpdating(bool aIsUpdating) { theIsUpdating = aIsUpdating; }
+
+  bool isUpdating() const { return theIsUpdating; }
 
   static_context* getStaticContext(short c);
 };
