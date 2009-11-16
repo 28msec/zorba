@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/////////////////////////////////////////////////////////////////////////////////
+// Zorba Base64Decode                                                          //
+// Zorba Base64Encode                                                          //
+/////////////////////////////////////////////////////////////////////////////////
+-->
+<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+
+<!--
+/*******************************************************************************
+ Zorba Base64Decode
+********************************************************************************/
+-->
+<zorba:iterator name="Base64DecodeIterator" arity="nary">
+
+  <zorba:description author="Zorba Team">zorba:Base64Decode</zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="base64Decode" prefix="fn-zorba-util">
+      <zorba:param>xs:base64Binary</zorba:param>
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+ Zorba Base64Encode
+********************************************************************************/
+-->
+<zorba:iterator name="Base64EncodeIterator" arity="nary">
+
+  <zorba:description author="Zorba Team">zorba:base64Encode</zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="base64Encode" prefix="fn-zorba-util">
+      <zorba:param>item()</zorba:param>
+      <zorba:output>xs:base64Binary</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+</zorba:iterators>

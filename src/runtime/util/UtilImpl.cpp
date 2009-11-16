@@ -21,7 +21,6 @@
 
 #include "system/globalenv.h"
 #include "zorbatypes/URI.h"
-#include "zorbatypes/binary.h"
 
 #include "runtime/util/UtilImpl.h"
 #include "runtime/api/runtimecb.h"
@@ -44,13 +43,6 @@ using namespace std;
 
 namespace zorba {
 
-
-SERIALIZABLE_CLASS_VERSIONS(ZorbaBase64DecodeIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ZorbaBase64DecodeIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(ZorbaBase64EncodeIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ZorbaBase64EncodeIterator)
-
 #ifdef ZORBA_WITH_TIDY
 SERIALIZABLE_CLASS_VERSIONS(ZorbaTidyIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(ZorbaTidyIterator)
@@ -64,10 +56,6 @@ END_SERIALIZABLE_CLASS_VERSIONS(ZorbaTimestampIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(XQDocIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(XQDocIterator)
-
-NARY_ACCEPT (ZorbaBase64DecodeIterator);
-
-NARY_ACCEPT (ZorbaBase64EncodeIterator);
 
 NARY_ACCEPT(XQDocIterator);
 
@@ -140,48 +128,6 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END(state);
 }
 
-
-bool
-ZorbaBase64DecodeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Item_t        lItem;
-  Base64               lDecodedData;
-  xqpStringStore_t     lResultString;
-
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  if (consumeNext(lItem, theChildren[0].getp(), planState)) {
-    lDecodedData = lItem->getBase64BinaryValue();
-    lResultString = lDecodedData.decode().getStore();
-    GENV_ITEMFACTORY->createString(result, lResultString);
-    STACK_PUSH (true, state);
-  }
-
-  STACK_END (state);
-}
-
-bool
-ZorbaBase64EncodeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Item_t lItem;
-  Base64        lBase64;
-  xqpStringStore* lTmpString;
-
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  if (consumeNext(lItem, theChildren[0].getp(), planState)) {
-    lTmpString = lItem->getStringValueP();
-    Base64::encode(lTmpString, lBase64);
-    if (GENV_ITEMFACTORY->createBase64Binary(result, lBase64)) {
-      STACK_PUSH (true, state);
-    } else {
-      ZORBA_ERROR_LOC(XQP0025_COULD_NOT_CREATE_ITEM, loc);
-    } 
-  }
-  STACK_END (state);
-}
 
 #ifdef ZORBA_WITH_TIDY
 bool

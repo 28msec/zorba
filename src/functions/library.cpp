@@ -25,6 +25,7 @@
 #include "functions/func_accessors.h"
 #include "functions/func_any_uri.h"
 #include "functions/accessors_impl.h"
+#include "functions/func_base64.h"
 #include "functions/func_booleans.h"
 #include "functions/booleans_impl.h"
 #include "functions/func_convertors.h"
@@ -84,6 +85,7 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_accessors(sctx);
   populate_context_any_uri(sctx);
   populate_context_accessors_impl(sctx);
+  populate_context_base64(sctx);
   populate_context_booleans(sctx);
   populate_context_booleans_impl(sctx);
   populate_context_context(sctx);

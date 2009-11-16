@@ -345,8 +345,6 @@
   PLAN_ITER_VISITOR(ZorbaRemoveNodeAtIterator);
   PLAN_ITER_VISITOR(ZorbaIndexOfIterator);
 
-  PLAN_ITER_VISITOR(ZorbaBase64EncodeIterator);
-  PLAN_ITER_VISITOR(ZorbaBase64DecodeIterator);
   PLAN_ITER_VISITOR(XQDocIterator);
 #ifdef ZORBA_WITH_TIDY
   PLAN_ITER_VISITOR(ZorbaTidyIterator);

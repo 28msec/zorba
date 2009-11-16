@@ -44,6 +44,10 @@ namespace zorba{
 
     class ResolveUriIterator;
 
+    class Base64DecodeIterator;
+
+    class Base64EncodeIterator;
+
     class IsSameNodeIterator;
 
     class NodeBeforeIterator;
@@ -344,6 +348,12 @@ public:
 
     virtual void beginVisit ( const ResolveUriIterator& ) = 0;
     virtual void endVisit   ( const ResolveUriIterator& ) = 0;
+
+    virtual void beginVisit ( const Base64DecodeIterator& ) = 0;
+    virtual void endVisit   ( const Base64DecodeIterator& ) = 0;
+
+    virtual void beginVisit ( const Base64EncodeIterator& ) = 0;
+    virtual void endVisit   ( const Base64EncodeIterator& ) = 0;
 
     virtual void beginVisit ( const IsSameNodeIterator& ) = 0;
     virtual void endVisit   ( const IsSameNodeIterator& ) = 0;

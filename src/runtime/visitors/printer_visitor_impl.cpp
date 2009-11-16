@@ -1151,8 +1151,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION(IndexEntryBuilderIterator);
   PRINTER_VISITOR_DEFINITION(IndexPointProbeIterator);
   PRINTER_VISITOR_DEFINITION(IndexRangeProbeIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaBase64EncodeIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaBase64DecodeIterator);
   PRINTER_VISITOR_DEFINITION(XQDocIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaTimestampIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaDebugIterator);

@@ -9,12 +9,6 @@
 -->
 <zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
 
-<!--     
-<zorba:source>
-    <zorba:include form="Quoted">store/api/iterator.h</zorba:include>
-</zorba:source>
- -->
-
 <!--
 /*******************************************************************************
  Zorba numeric generation:  produces a defined amount of integer items

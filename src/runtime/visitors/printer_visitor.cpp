@@ -35,6 +35,7 @@
 
 #include "runtime/accessors/accessors.h"
 #include "runtime/any_uri/any_uri.h"
+#include "runtime/base64/base64.h"
 #include "runtime/booleans/booleans.h"
 #include "runtime/context/context.h"
 #include "runtime/convertors/convertors.h"
@@ -206,6 +207,34 @@ void PrinterVisitor::endVisit ( const ResolveUriIterator& ) {
   thePrinter.endEndVisit();
 }
 // </ResolveUriIterator>
+
+
+// <Base64DecodeIterator>
+void PrinterVisitor::beginVisit ( const Base64DecodeIterator& a) {
+  thePrinter.startBeginVisit("Base64DecodeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const Base64DecodeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </Base64DecodeIterator>
+
+
+// <Base64EncodeIterator>
+void PrinterVisitor::beginVisit ( const Base64EncodeIterator& a) {
+  thePrinter.startBeginVisit("Base64EncodeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const Base64EncodeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </Base64EncodeIterator>
 
 
 // <IsSameNodeIterator>

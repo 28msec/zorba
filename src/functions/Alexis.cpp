@@ -25,12 +25,6 @@ using namespace std;
 namespace zorba 
 {
 
-typedef function_impl<ZorbaBase64DecodeIterator> zorba_decode_base64;
-
-
-typedef function_impl<ZorbaBase64EncodeIterator> zorba_encode_base64;
-
-
 #ifdef ZORBA_WITH_TIDY
 /*******************************************************************************
   zorba:tidy
@@ -71,16 +65,6 @@ public:
 
 void populateContext_Alexis(static_context* sctx)
 {
-DECL(sctx, zorba_decode_base64,
-     (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "base64Decode"),
-      GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE,
-      GENV_TYPESYSTEM.STRING_TYPE_ONE));
-
-DECL(sctx, zorba_encode_base64,
-     (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "base64Encode"),
-      GENV_TYPESYSTEM.ITEM_TYPE_ONE,
-      GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE));
-
 #ifdef ZORBA_WITH_TIDY
   DECL(sctx, zorba_tidy,
        (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "tidy"),

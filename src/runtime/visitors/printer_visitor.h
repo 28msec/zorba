@@ -71,6 +71,12 @@ namespace zorba {
     void beginVisit( const ResolveUriIterator& );
     void endVisit  ( const ResolveUriIterator& );
 
+    void beginVisit( const Base64DecodeIterator& );
+    void endVisit  ( const Base64DecodeIterator& );
+
+    void beginVisit( const Base64EncodeIterator& );
+    void endVisit  ( const Base64EncodeIterator& );
+
     void beginVisit( const IsSameNodeIterator& );
     void endVisit  ( const IsSameNodeIterator& );
 
