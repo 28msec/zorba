@@ -27,8 +27,6 @@
 
 #include "util/web/web.h"
 
-#include <time.h>
-
 using namespace std;
 
 namespace zorba {
@@ -41,16 +39,11 @@ SERIALIZABLE_CLASS_VERSIONS(ZorbaTDocIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(ZorbaTDocIterator)
 #endif
 
-SERIALIZABLE_CLASS_VERSIONS(ZorbaTimestampIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ZorbaTimestampIterator)
-
 #ifdef ZORBA_WITH_TIDY
 NARY_ACCEPT(ZorbaTidyIterator);
 
 NARY_ACCEPT(ZorbaTDocIterator);
 #endif  /* ZORBA_WITH_TIDY */
-
-NARY_ACCEPT (ZorbaTimestampIterator);
 
 #ifdef ZORBA_WITH_TIDY
 bool
@@ -139,17 +132,5 @@ ZorbaTDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 #endif  /* ZORBA_WITH_TIDY */
-
-bool
-ZorbaTimestampIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  result = planState.dctx()->get_current_time_millis();
-  STACK_PUSH (true, state);
-
-  STACK_END (state);
-}
 
 } /* namespace zorba */

@@ -185,6 +185,9 @@ namespace zorba {
     void beginVisit( const TimezoneFromTimeIterator& );
     void endVisit  ( const TimezoneFromTimeIterator& );
 
+    void beginVisit( const TimestampIterator& );
+    void endVisit  ( const TimestampIterator& );
+
     void beginVisit( const EvalIterator& );
     void endVisit  ( const EvalIterator& );
 

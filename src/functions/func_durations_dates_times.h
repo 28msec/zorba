@@ -332,6 +332,22 @@ public:
 };
 
 
+//fn-zorba-util:timestamp
+class fn_zorba_util_timestamp : public function
+{
+public:
+  fn_zorba_util_timestamp(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_UTIL_TIMESTAMP_0)
+  {
+  }
+
+  bool requires_dyn_ctx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

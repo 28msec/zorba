@@ -120,6 +120,8 @@ namespace zorba{
 
     class TimezoneFromTimeIterator;
 
+    class TimestampIterator;
+
     class EvalIterator;
 
     class ErrorIterator;
@@ -464,6 +466,9 @@ public:
 
     virtual void beginVisit ( const TimezoneFromTimeIterator& ) = 0;
     virtual void endVisit   ( const TimezoneFromTimeIterator& ) = 0;
+
+    virtual void beginVisit ( const TimestampIterator& ) = 0;
+    virtual void endVisit   ( const TimestampIterator& ) = 0;
 
     virtual void beginVisit ( const EvalIterator& ) = 0;
     virtual void endVisit   ( const EvalIterator& ) = 0;

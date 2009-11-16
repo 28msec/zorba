@@ -747,6 +747,40 @@ public:
 };
 
 
+/**
+ * zorba:timestamp
+ * 
+ * Author: Zorba Team * 
+ */
+class TimestampIterator : public NaryBaseIterator <TimestampIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(TimestampIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(TimestampIterator,
+    NaryBaseIterator <TimestampIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator <TimestampIterator, PlanIteratorState>*)this);
+  }
+
+  TimestampIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <TimestampIterator, PlanIteratorState>
+    (sctx, loc, aChildren) {}
+
+  virtual ~TimestampIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 }
 #endif
 /*

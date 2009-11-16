@@ -617,5 +617,33 @@ TimezoneFromTimeIterator::~TimezoneFromTimeIterator() {}
 // </TimezoneFromTimeIterator>
 
 
+// <TimestampIterator>
+const char* TimestampIterator::class_name_str = "TimestampIterator";
+TimestampIterator::class_factory<TimestampIterator>
+TimestampIterator::g_class_factory;
+
+const serialization::ClassVersion 
+TimestampIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int TimestampIterator::class_versions_count =
+sizeof(TimestampIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void TimestampIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+TimestampIterator::~TimestampIterator() {}
+
+// </TimestampIterator>
+
+
 
 }

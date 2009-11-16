@@ -52,17 +52,6 @@ public:
 #endif/* ZORBA_WITH_TIDY */
 
 
-class zorba_timestamp : public function
-{
-public:
-  zorba_timestamp(const signature& sig) : function(sig) {}
-
-  bool requires_dyn_ctx() const { return true; }
-
-  DEFAULT_NARY_CODEGEN(ZorbaTimestampIterator);
-};
-
-
 void populateContext_Alexis(static_context* sctx)
 {
 #ifdef ZORBA_WITH_TIDY
@@ -89,9 +78,6 @@ void populateContext_Alexis(static_context* sctx)
         GENV_TYPESYSTEM.DOCUMENT_TYPE_QUESTION));
 #endif
 
-  DECL(sctx, zorba_timestamp,
-       (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "timestamp"),
-        GENV_TYPESYSTEM.LONG_TYPE_ONE));
 }
 
 

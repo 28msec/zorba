@@ -4,7 +4,7 @@
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  10 Functions and Operators on Durations, Dates and Times                   //
-//                                                                             //
+//  Zorba: TimestampIterator                                                   //
 /////////////////////////////////////////////////////////////////////////////////
 -->
 <zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
@@ -14,7 +14,7 @@
   10.5.1 fn:years-from-duration
 ********************************************************************************/
 -->
-<zorba:iterator name="YearsFromDurationIterator">
+<zorba:iterator name="YearsFromDurationIterator" arity="nary">
   
   <zorba:description author="Zorba Team">fn:years-from-duration</zorba:description>
   
@@ -32,7 +32,7 @@
   10.5.2 fn:months-from-duration
 ********************************************************************************/
 -->
-<zorba:iterator name="MonthsFromDurationIterator">
+<zorba:iterator name="MonthsFromDurationIterator" arity="nary">
   
   <zorba:description author="Zorba Team">fn:months-from-duration</zorba:description>
   
@@ -50,7 +50,7 @@
   10.5.3 fn:days-from-duration
 ********************************************************************************/
 -->
-<zorba:iterator name="DaysFromDurationIterator">
+<zorba:iterator name="DaysFromDurationIterator" arity="nary">
   
   <zorba:description author="Zorba Team">fn:days-from-duration</zorba:description>
   
@@ -68,7 +68,7 @@
   10.5.4 fn:hours-from-duration
 ********************************************************************************/
 -->
-<zorba:iterator name="HoursFromDurationIterator">
+<zorba:iterator name="HoursFromDurationIterator" arity="nary">
   
   <zorba:description author="Zorba Team">fn:hours-from-duration</zorba:description>
   
@@ -86,7 +86,7 @@
   10.5.5 fn:minutes-from-duration
 ********************************************************************************/
 -->
-<zorba:iterator name="MinutesFromDurationIterator">
+<zorba:iterator name="MinutesFromDurationIterator" arity="nary">
   
   <zorba:description author="Zorba Team">fn:minutes-from-duration</zorba:description>
   
@@ -104,7 +104,7 @@
   10.5.6 fn:seconds-from-duration
 ********************************************************************************/
 -->
-<zorba:iterator name="SecondsFromDurationIterator">
+<zorba:iterator name="SecondsFromDurationIterator" arity="nary">
   
   <zorba:description author="Zorba Team">fn:seconds-from-duration</zorba:description>
   
@@ -122,7 +122,7 @@
   10.5.7 fn:year-from-dateTime
 ********************************************************************************/
 -->
-<zorba:iterator name="YearFromDatetimeIterator">
+<zorba:iterator name="YearFromDatetimeIterator" arity="nary">
   
   <zorba:description author="Zorba Team">fn:year-from-dateTime</zorba:description>
   
@@ -140,7 +140,7 @@
   10.5.8 fn:month-from-dateTime
 ********************************************************************************/
 -->
-<zorba:iterator name="MonthFromDatetimeIterator">
+<zorba:iterator name="MonthFromDatetimeIterator" arity="nary">
   
   <zorba:description author="Zorba Team">fn:month-from-dateTime</zorba:description>
   
@@ -158,7 +158,7 @@
   10.5.9 fn:day-from-dateTime
 ********************************************************************************/
 -->
-<zorba:iterator name="DayFromDatetimeIterator">
+<zorba:iterator name="DayFromDatetimeIterator" arity="nary">
   
   <zorba:description author="Zorba Team">fn:day-from-dateTime</zorba:description>
   
@@ -176,7 +176,7 @@
   10.5.10 fn:hours-from-dateTime
 ********************************************************************************/
 -->
-<zorba:iterator name="HoursFromDatetimeIterator">
+<zorba:iterator name="HoursFromDatetimeIterator" arity="nary">
   
   <zorba:description author="Zorba Team">fn:hours-from-dateTime</zorba:description>
   
@@ -194,7 +194,7 @@
   10.5.11 fn:minutes-from-dateTime
 ********************************************************************************/
 -->
-<zorba:iterator name="MinutesFromDatetimeIterator">
+<zorba:iterator name="MinutesFromDatetimeIterator" arity="nary">
   
   <zorba:description author="Zorba Team">fn:minutes-from-dateTime</zorba:description>
   
@@ -212,7 +212,7 @@
   10.5.12 fn:seconds-from-dateTime
 ********************************************************************************/
 -->
-<zorba:iterator name="SecondsFromDatetimeIterator">
+<zorba:iterator name="SecondsFromDatetimeIterator" arity="nary">
   
   <zorba:description author="Zorba Team">fn:seconds-from-dateTime</zorba:description>
   
@@ -230,7 +230,7 @@
   10.5.13 fn:timezone-from-dateTime
 ********************************************************************************/
 -->
-<zorba:iterator name="TimezoneFromDatetimeIterator">
+<zorba:iterator name="TimezoneFromDatetimeIterator" arity="nary">
   
   <zorba:description author="Zorba Team">fn:timezone-from-dateTime</zorba:description>
   
@@ -248,7 +248,7 @@
   10.5.14 fn:year-from-date
 ********************************************************************************/
 -->
-<zorba:iterator name="YearFromDateIterator">
+<zorba:iterator name="YearFromDateIterator" arity="nary">
   
   <zorba:description author="Zorba Team">fn:year-from-date</zorba:description>
   
@@ -266,7 +266,7 @@
   10.5.15 fn:month-from-date
 ********************************************************************************/
 -->
-<zorba:iterator name="MonthFromDateIterator">
+<zorba:iterator name="MonthFromDateIterator" arity="nary">
   
   <zorba:description author="Zorba Team">fn:month-from-date</zorba:description>
   
@@ -284,7 +284,7 @@
   10.5.16 fn:day-from-date
 ********************************************************************************/
 -->
-<zorba:iterator name="DayFromDateIterator">
+<zorba:iterator name="DayFromDateIterator" arity="nary">
   
   <zorba:description author="Zorba Team">fn:day-from-date</zorba:description>
   
@@ -302,7 +302,7 @@
   10.5.17 fn:timezone-from-date
 ********************************************************************************/
 -->
-<zorba:iterator name="TimezoneFromDateIterator">
+<zorba:iterator name="TimezoneFromDateIterator" arity="nary">
   
   <zorba:description author="Zorba Team">fn:timezone-from-date</zorba:description>
   
@@ -320,7 +320,7 @@
   10.5.18 fn:hours-from-time
 ********************************************************************************/
 -->
-<zorba:iterator name="HoursFromTimeIterator">
+<zorba:iterator name="HoursFromTimeIterator" arity="nary">
   
   <zorba:description author="Zorba Team">fn:hours-from-time</zorba:description>
   
@@ -338,7 +338,7 @@
   10.5.19 fn:minutes-from-time
 ********************************************************************************/
 -->
-<zorba:iterator name="MinutesFromTimeIterator">
+<zorba:iterator name="MinutesFromTimeIterator" arity="nary">
   
   <zorba:description author="Zorba Team">fn:minutes-from-time</zorba:description>
   
@@ -356,7 +356,7 @@
   10.5.20 fn:seconds-from-time
 ********************************************************************************/
 -->
-<zorba:iterator name="SecondsFromTimeIterator">
+<zorba:iterator name="SecondsFromTimeIterator" arity="nary">
   
   <zorba:description author="Zorba Team">fn:seconds-from-time</zorba:description>
   
@@ -374,7 +374,7 @@
   10.5.21 fn:timezone-from-time
 ********************************************************************************/
 -->
-<zorba:iterator name="TimezoneFromTimeIterator">
+<zorba:iterator name="TimezoneFromTimeIterator" arity="nary">
   
   <zorba:description author="Zorba Team">fn:timezone-from-time</zorba:description>
   
@@ -382,6 +382,23 @@
     <zorba:signature localname="timezone-from-time" prefix="fn">
       <zorba:param>xs:time?</zorba:param>
       <zorba:output>xs:dayTimeDuration?</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+  
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+  Zorba: timestamp
+********************************************************************************/
+-->
+<zorba:iterator name="TimestampIterator" arity="nary">
+  
+  <zorba:description author="Zorba Team">zorba:timestamp</zorba:description>
+  
+  <zorba:function requiresDynamicContext="true">
+    <zorba:signature localname="timestamp" prefix="fn-zorba-util">
+      <zorba:output>xs:long</zorba:output>
     </zorba:signature>
   </zorba:function>
   

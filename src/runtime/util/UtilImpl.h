@@ -26,8 +26,6 @@ namespace zorba {
   NARY_ITER(ZorbaTDocIterator);
 #endif  /* ZORBA_WITH_TIDY */
 
-  NARY_ITER (ZorbaTimestampIterator);
-
 }/*namespace zorba*/
 
 #endif /* ZORBA_UTIL_IMPL_H */

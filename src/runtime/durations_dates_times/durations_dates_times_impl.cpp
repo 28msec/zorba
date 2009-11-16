@@ -624,4 +624,16 @@ TimezoneFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   STACK_END (state);
 }
 
+bool
+TimestampIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  result = planState.dctx()->get_current_time_millis();
+  STACK_PUSH (true, state);
+
+  STACK_END (state);
+}
+
 }

@@ -742,6 +742,20 @@ void PrinterVisitor::endVisit ( const TimezoneFromTimeIterator& ) {
 // </TimezoneFromTimeIterator>
 
 
+// <TimestampIterator>
+void PrinterVisitor::beginVisit ( const TimestampIterator& a) {
+  thePrinter.startBeginVisit("TimestampIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const TimestampIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </TimestampIterator>
+
+
 // <EvalIterator>
 void PrinterVisitor::beginVisit ( const EvalIterator& a) {
   thePrinter.startBeginVisit("EvalIterator", ++theId);

@@ -213,7 +213,6 @@
   DECLARE_VISITOR (AvailableIndexesIterator);
   DECLARE_VISITOR (IsDeclaredIndexIterator);
   DECLARE_VISITOR (DeclaredIndexesIterator);
-  DECLARE_VISITOR (ZorbaTimestampIterator);
   DECLARE_VISITOR (ZorbaDebugIterator);
   DECLARE_VISITOR (DebuggerSingletonIterator);
   DECLARE_VISITOR (HoistIterator);

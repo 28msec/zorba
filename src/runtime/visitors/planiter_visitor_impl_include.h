@@ -149,8 +149,6 @@
   class ZorbaFopIterator;
 #endif
 
-  class ZorbaTimestampIterator;
-
   namespace flwor
   {
     class FLWORIterator;
