@@ -185,10 +185,11 @@ declare sequential function file:read-html($file as xs:string, $tidyOptions as x
 declare sequential function file:read-text($file as xs:string) as xs:string external;
 
 (:~
- : Reads a file as a XML file. The file content must be a valid XML.
+ : Reads a file as an XML file and returns an XML document. The file content
+ : must be a valid XML otherwise an error will be thrown.
  :
  : @param file The file path/URI to be read.
- : @return A node havind as content the parsed content of te file.
+ : @return an XML document containing the content of the file.
  : @error An error is thrown if the does not contain a valid XML, or if IO or
  :        Security problems occur.
  :)

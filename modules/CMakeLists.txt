@@ -17,8 +17,16 @@
 # from which the macro was invoked. Also, it will generate
 # an install command which installs the library in the corresponding
 # module directory of the installation directory
-MACRO(GENERATE_MODULE_LIBRARY MODULE_NAME FILES LINK_LIBRARIES)
-  ADD_LIBRARY(${MODULE_NAME} SHARED ${FILES})
+MACRO(GENERATE_MODULE_LIBRARY MODULE_NAME LINK_LIBRARIES)
+
+#SET(FILE_SRCS file.cpp file_function.cpp file_module.cpp)
+#SET(SERIALIZE_SRCS serialize_function.cpp serialize_module.cpp)
+
+  # all the cpp files found in the ${MODULE_NAME}.xq.src
+  # directory are added to the sources list
+  FILE(GLOB_RECURSE SRC_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}.xq.src/*.cpp")
+
+  ADD_LIBRARY(${MODULE_NAME} SHARED ${SRC_FILES})
   TARGET_LINK_LIBRARIES(${MODULE_NAME} zorba_simplestore ${LINK_LIBRARIES})
   # the shared libraries are considered RUNTIME on WIN32 platforms
   # and LIBRARY on UNIX-based platforms

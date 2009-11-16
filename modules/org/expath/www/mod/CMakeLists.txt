@@ -12,16 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# all external module libraries are generated in the directory
-# of the corresponding .xq file
-SET(SRCS 
-      httpimpl/http_client.cpp
-      httpimpl/request_parser.cpp
-      httpimpl/request_handler.cpp
-      httpimpl/http_request_handler.cpp
-      httpimpl/http_response_handler.cpp
-      httpimpl/http_response_parser.cpp
-      httpimpl/curl_stream_buffer.cpp
-      httpimpl/inform_data_read.cpp)
-
-GENERATE_MODULE_LIBRARY(httpclientimpl "${SRCS}" "")
+GENERATE_MODULE_LIBRARY(http-client "")
