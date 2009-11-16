@@ -43,6 +43,7 @@
 #include "functions/func_numerics.h"
 #include "functions/func_random.h"
 #include "functions/func_maths.h"
+#include "functions/func_xqdoc.h"
 
 #include "functions/Collections.h"
 #include "functions/DataDefinitionLanguage.h"
@@ -56,7 +57,6 @@
 #include "functions/InternalOperators.h"
 #include "functions/Index.h"
 #include "functions/Alexis.h"
-#include "functions/XQDocFunctions.h"
 #include "functions/Rest.h"
 #include "functions/Fop.h"
 
@@ -103,6 +103,7 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_strings(sctx);
   populate_context_sequences(sctx);
   populate_context_sequences_impl(sctx);
+  populate_context_xqdoc(sctx);
 
   populateContext_Arithmetics(sctx);
   populateContext_Numerics(sctx);
@@ -118,7 +119,6 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populateContext_Alexis(sctx);
   populateContext_Rest(sctx);
   populateContext_FOP(sctx);
-  populateContext_XQDOC(sctx);
 
   ar.set_loading_hardcoded_objects(false);
 }

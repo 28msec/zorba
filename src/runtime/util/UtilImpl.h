@@ -21,8 +21,6 @@
 
 namespace zorba {
 
-  NARY_ITER(XQDocIterator);
-
 #ifdef ZORBA_WITH_TIDY
   NARY_ITER(ZorbaTidyIterator);
   NARY_ITER(ZorbaTDocIterator);

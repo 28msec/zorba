@@ -478,6 +478,9 @@ namespace zorba {
     void beginVisit( const FnTokenizeIterator& );
     void endVisit  ( const FnTokenizeIterator& );
 
+    void beginVisit( const XQDocIterator& );
+    void endVisit  ( const XQDocIterator& );
+
   }; //class PrinterVisitor
 } //namespace zorba
 

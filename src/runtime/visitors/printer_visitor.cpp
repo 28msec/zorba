@@ -52,6 +52,7 @@
 #include "runtime/scripting/scripting.h"
 #include "runtime/sequences/sequences.h"
 #include "runtime/strings/strings.h"
+#include "runtime/xqdoc/xqdoc.h"
 
 namespace zorba{
 
@@ -2098,6 +2099,20 @@ void PrinterVisitor::endVisit ( const FnTokenizeIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FnTokenizeIterator>
+
+
+// <XQDocIterator>
+void PrinterVisitor::beginVisit ( const XQDocIterator& a) {
+  thePrinter.startBeginVisit("XQDocIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const XQDocIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </XQDocIterator>
 
 
 }

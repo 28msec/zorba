@@ -192,6 +192,7 @@ typedef enum {
   FN_REPLACE_4,
   FN_TOKENIZE_2,
   FN_TOKENIZE_3,
+  XQDOC_XQDOC_1,
   FN_MAX_FUNC
 } FunctionKind;
 

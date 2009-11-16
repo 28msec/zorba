@@ -69,7 +69,6 @@ LIST(APPEND FUNCTIONS_SRCS
     QNames.cpp
     signature.cpp
     tuple_functions.cpp
-    XQDocFunctions.cpp
     InternalOperators.cpp
     Index.cpp
     nodeid_internal.cpp)

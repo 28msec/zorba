@@ -111,6 +111,7 @@ LIST(APPEND RUNTIME_SRCS
     util/UtilImpl.cpp
     util/timeout.cpp
     util/flowctl_exception.cpp
+    xqdoc/xqdoc_impl.cpp
 )
 
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS debug)

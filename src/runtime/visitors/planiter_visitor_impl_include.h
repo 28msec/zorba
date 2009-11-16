@@ -140,7 +140,6 @@
   class ZorbaIndexOfIterator;
 
   class ZorbaSchemaTypeIterator;
-  class XQDocIterator;
 #ifdef ZORBA_WITH_TIDY
   class ZorbaTidyIterator;
   class ZorbaTDocIterator;

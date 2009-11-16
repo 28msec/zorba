@@ -13,31 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "compiler/api/compiler_api.h"
-#include "compiler/api/compilercb.h"
 
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
 
 #include "system/globalenv.h"
-#include "zorbatypes/URI.h"
 
 #include "runtime/util/UtilImpl.h"
-#include "runtime/api/runtimecb.h"
 #include "runtime/visitors/planiter_visitor.h"
 
 #include "context/static_context.h"
-#include "context/standard_uri_resolvers.h"
 #include "context/dynamic_context.h"
 
 #include "util/web/web.h"
 
-#include <stdlib.h>
 #include <time.h>
-#include <iostream>
-#include <sstream>
-#include <fstream>
-#include <memory>
 
 using namespace std;
 
@@ -54,11 +44,6 @@ END_SERIALIZABLE_CLASS_VERSIONS(ZorbaTDocIterator)
 SERIALIZABLE_CLASS_VERSIONS(ZorbaTimestampIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(ZorbaTimestampIterator)
 
-SERIALIZABLE_CLASS_VERSIONS(XQDocIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(XQDocIterator)
-
-NARY_ACCEPT(XQDocIterator);
-
 #ifdef ZORBA_WITH_TIDY
 NARY_ACCEPT(ZorbaTidyIterator);
 
@@ -66,68 +51,6 @@ NARY_ACCEPT(ZorbaTDocIterator);
 #endif  /* ZORBA_WITH_TIDY */
 
 NARY_ACCEPT (ZorbaTimestampIterator);
-
-
-bool
-XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  xqpStringStore_t lURI;
-  xqpString lFileName;
-  store::Item_t lItem;
-  store::Item_t lURIItem = 0;
-  auto_ptr<istream> lFile;
-  stringstream lOutput;
-  istringstream lInput;
-  static_context* lSctx;
-  StandardModuleURIResolver* lModuleResolver = 0;
-
-  // setup a new CompilerCB and a new XQueryCompiler 
-  CompilerCB     lCompilerCB(*planState.theCompilerCB);
-  lCompilerCB.theRootSctx = GENV.getRootStaticContext().create_child_context();
-
-  // the XQueryCompiler's constructor destroys the existing type manager 
-  // in the static context. Hence, we create a new one
-  XQueryCompiler lCompiler(&lCompilerCB);
-
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  // retrieve the URI of the module to generate xqdoc for
-  if(consumeNext(lItem, theChildren[0].getp(), planState))
-  {
-    lFileName = xqpString(lItem->getStringValue());
-  }
-
-  // resolve the uri in the surrounding static context and use
-  // the URI resolver to retrieve the module
-  lSctx = theSctx;
-  lURI = lSctx->resolve_relative_uri(lItem->getStringValueP(), xqp_string()).getStore();
-  if (!GENV_ITEMFACTORY->createAnyURI(lURIItem, lURI))
-      ZORBA_ERROR_LOC_DESC_OSS(XQST0046, loc, "URI is not valid " << lURI);
-
-  lModuleResolver = GENV.getModuleURIResolver();
-  // we get the ownership of the input stream
-  // TODO: we have to find a way to tell user defined resolvers when their input stream
-  // can be freed. The current solution might leed to problems on Windows.
-  lFile.reset(lModuleResolver->resolve(lURIItem, lSctx));
-
-  // now, do the real work
-  if(lFile.get() && lFile->good())
-  {
-    // retrieve the xqdoc elements as string and parse them
-    // TODO: this could be done more efficiently if Items are returned immediately
-    lCompiler.xqdoc(*lFile.get(), lFileName.theStrStore->str(), lOutput, planState.dctx()->get_current_date_time());
-    lInput.str(lOutput.str());
-    result = GENV_STORE.loadDocument(lFileName.theStrStore, lInput, false);
-    STACK_PUSH(true, state);
-  }
-  else
-  {
-    ZORBA_ERROR_LOC_DESC_OSS(XQST0046, loc, "No module could be found at " << lURI);
-  }
-  STACK_END(state);
-}
-
 
 #ifdef ZORBA_WITH_TIDY
 bool
