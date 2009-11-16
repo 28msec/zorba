@@ -5,7 +5,7 @@ using namespace json;
 namespace json{
 	
 	/* IMPORTED & MANGLED FROM WINUNI.H. */
-	void UNI_NG_SEARCH_REPLACE(std::wstring &srcstr,wchar_t *search, wchar_t *replace){
+	void UNI_NG_SEARCH_REPLACE(std::wstring &srcstr,const wchar_t *search, const wchar_t *replace){
 		size_t searchlen=wcslen(search);
 		size_t replacelen=wcslen(replace);
 		size_t fnd=0;

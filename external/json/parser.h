@@ -6,7 +6,7 @@
 
 namespace json{
 	
-	void UNI_NG_SEARCH_REPLACE(std::wstring &srcstr,wchar_t *search, wchar_t *replace);
+	void UNI_NG_SEARCH_REPLACE(std::wstring &srcstr,const wchar_t *search,const wchar_t *replace);
 	namespace tt{
 		enum tokens{
 			_name,
