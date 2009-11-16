@@ -156,7 +156,6 @@
   DECLARE_VISITOR (NamespaceUriFromQNameIterator)
   DECLARE_VISITOR (NamespaceUriForPrefixIterator)
   DECLARE_VISITOR (InScopePrefixesIterator)
-  DECLARE_VISITOR (ZorNumGen)
   DECLARE_VISITOR (TextIterator)
   DECLARE_VISITOR (FnDateTimeConstructorIterator)
   DECLARE_VISITOR (CreateTupleIterator)
@@ -243,9 +242,6 @@
   DECLARE_VISITOR (ZorbaTidyIterator);
   DECLARE_VISITOR (ZorbaTDocIterator);
 #endif  // ZORBA_WITH_TIDY
-  DECLARE_VISITOR (ZorbaRandomIterator);
-  DECLARE_VISITOR (ZorbaUUIDIterator);
-
 #ifdef ZORBA_WITH_REST
   DECLARE_VISITOR (ZorbaRestGetIterator);
   DECLARE_VISITOR (ZorbaRestPostIterator);

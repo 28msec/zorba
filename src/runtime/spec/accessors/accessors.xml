@@ -10,11 +10,7 @@
 <zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
     
 <zorba:source>
-    <zorba:include form="Quoted">system/globalenv.h</zorba:include>
-    <zorba:include form="Quoted">runtime/visitors/planiter_visitor.h</zorba:include>
-    <zorba:include form="Quoted">store/api/item.h</zorba:include>
     <zorba:include form="Quoted">store/api/iterator.h</zorba:include>
-    <zorba:include form="Quoted">store/api/item_factory.h</zorba:include>
 </zorba:source>
 
 <zorba:codegen>

@@ -46,6 +46,7 @@
 #include "runtime/maths/maths.h"
 #include "runtime/nodes/nodes.h"
 #include "runtime/numerics/numerics.h"
+#include "runtime/random/random.h"
 #include "runtime/schema/schema.h"
 #include "runtime/scripting/scripting.h"
 #include "runtime/sequences/sequences.h"
@@ -1255,6 +1256,48 @@ void PrinterVisitor::endVisit ( const FormatNumberIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FormatNumberIterator>
+
+
+// <NumGenIterator>
+void PrinterVisitor::beginVisit ( const NumGenIterator& a) {
+  thePrinter.startBeginVisit("NumGenIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const NumGenIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </NumGenIterator>
+
+
+// <RandomIterator>
+void PrinterVisitor::beginVisit ( const RandomIterator& a) {
+  thePrinter.startBeginVisit("RandomIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const RandomIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </RandomIterator>
+
+
+// <UuidIterator>
+void PrinterVisitor::beginVisit ( const UuidIterator& a) {
+  thePrinter.startBeginVisit("UuidIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const UuidIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </UuidIterator>
 
 #ifndef ZORBA_NO_XMLSCHEMA
 // <ValidateIterator>

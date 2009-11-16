@@ -26,11 +26,7 @@
 #include "system/globalenv.h"
 
 
-#include "system/globalenv.h"
-#include "runtime/visitors/planiter_visitor.h"
-#include "store/api/item.h"
 #include "store/api/iterator.h"
-#include "store/api/item_factory.h"
 
 namespace zorba {
 

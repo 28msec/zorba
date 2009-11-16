@@ -79,9 +79,6 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumAr
 SERIALIZABLE_CLASS_VERSIONS(OpNumericUnaryIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(OpNumericUnaryIterator)
 
-SERIALIZABLE_CLASS_VERSIONS(ZorNumGen)
-END_SERIALIZABLE_CLASS_VERSIONS(ZorNumGen)
-
 /*******************************************************************************
   AddOperation (see runtime/core/arithmetic_impl.h/cpp)
 ********************************************************************************/
@@ -879,53 +876,5 @@ bool OpNumericUnaryIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
 
 UNARY_ACCEPT(OpNumericUnaryIterator);
-
-
-
-void ZorNumGenState::init(PlanState& planState)
-{
-  PlanIteratorState::init(planState);
-  this->curNumber = 0;
-}
-
-
-void ZorNumGenState::reset(PlanState& planState)
-{
-  PlanIteratorState::reset(planState);
-  this->curNumber = 0;
-}
-
-
-int32_t ZorNumGenState::getCurNumber()
-{
-  return this->curNumber;
-}
-
-
-void ZorNumGenState::setCurNumber ( int32_t value )
-{
-  this->curNumber = value;
-}
-
-
-bool
-ZorNumGen::nextImpl ( store::Item_t& result, PlanState& planState ) const
-{
-  ZorNumGenState* state;
-  DEFAULT_STACK_INIT ( ZorNumGenState, state, planState );
-  
-  while ( state->getCurNumber() < 100 )
-  {
-    STACK_PUSH (
-                GENV_ITEMFACTORY->createInteger (result, Integer::parseInt(state->getCurNumber()) ),
-                state );
-    state->setCurNumber ( state->getCurNumber() + 1 );
-  }
-  STACK_END (state);
-}
-
-
-NOARY_ACCEPT(ZorNumGen);
-
 
 } /* namespace zorba */

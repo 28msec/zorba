@@ -40,6 +40,7 @@
 #include "functions/func_fnput.h"
 #include "functions/func_nodes.h"
 #include "functions/func_numerics.h"
+#include "functions/func_random.h"
 #include "functions/func_maths.h"
 
 #include "functions/Collections.h"
@@ -95,6 +96,7 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_maths(sctx);
   populate_context_nodes(sctx);
   populate_context_numerics(sctx);
+  populate_context_random(sctx);
   populate_context_schema(sctx);
   populate_context_strings(sctx);
   populate_context_sequences(sctx);

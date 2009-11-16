@@ -1054,9 +1054,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION(ZorbaTidyIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaTDocIterator);
 #endif  // ZORBA_WITH_TIDY
-  PRINTER_VISITOR_DEFINITION(ZorbaRandomIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaUUIDIterator);
-
 #ifdef ZORBA_WITH_REST
   PRINTER_VISITOR_DEFINITION(ZorbaRestGetIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaRestPostIterator);
@@ -1097,7 +1094,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION (NamespaceUriFromQNameIterator)
   PRINTER_VISITOR_DEFINITION (NamespaceUriForPrefixIterator)
   PRINTER_VISITOR_DEFINITION (InScopePrefixesIterator)
-  PRINTER_VISITOR_DEFINITION (ZorNumGen)
   PRINTER_VISITOR_DEFINITION (TextIterator)
   PRINTER_VISITOR_DEFINITION (FnDateTimeConstructorIterator)
   PRINTER_VISITOR_DEFINITION (CreateTupleIterator)

@@ -96,6 +96,7 @@ LIST(APPEND RUNTIME_SRCS
     core/internal_operators.cpp
     durations_dates_times/DurationsDatesTimesImpl.cpp
     debug/debug_impl.cpp
+    random/random_impl.cpp
     debug/zorba_debug_iterator.cpp
     indexing/value_index_ddl.cpp
     indexing/value_index_probe.cpp

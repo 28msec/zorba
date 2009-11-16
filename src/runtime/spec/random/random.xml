@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/////////////////////////////////////////////////////////////////////////////////
+// Zorba numeric generation:  produces a defined amount of integer items       //
+// Zorba random: generates a random integer                                    //
+// Zorba UUID: generates UUID                                                  //
+/////////////////////////////////////////////////////////////////////////////////
+-->
+<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+
+<!--     
+<zorba:source>
+    <zorba:include form="Quoted">store/api/iterator.h</zorba:include>
+</zorba:source>
+ -->
+
+<!--
+/*******************************************************************************
+ Zorba numeric generation:  produces a defined amount of integer items
+********************************************************************************/
+-->
+<zorba:iterator name="NumGenIterator" arity="noary">
+
+  <zorba:description author="Zorba Team">
+Helper Iterator to produce a defined amount of integer items for testing purposes
+</zorba:description>
+
+  <zorba:state generateInit="true" generateReset="true">
+    <zorba:member type="int32_t" name="theCurNumber" defaultValue="0" brief="the current number"/>
+  </zorba:state>
+    
+  <zorba:function>
+    <zorba:signature localname="numgen" prefix="fn">
+      <zorba:output>xs:decimal</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+ Zorba random: generates a random integer
+********************************************************************************/
+-->
+<zorba:iterator name="RandomIterator" arity="nary">
+
+  <zorba:description author="Zorba Team">Function for generating a random integer.</zorba:description>
+
+  <zorba:function isDeterministic="false">
+    <zorba:signature localname="random" prefix="fn-zorba-util">
+      <zorba:output>xs:integer</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="random" prefix="fn-zorba-util">
+      <zorba:param>xs:integer</zorba:param>
+      <zorba:output>xs:integer</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+ Zorba UUID: generates UUID
+********************************************************************************/
+-->
+<zorba:iterator name="UuidIterator" arity="nary">
+
+  <zorba:description author="Zorba Team">generates UUID</zorba:description>
+
+  <zorba:function isDeterministic="false">
+    <zorba:signature localname="uuid" prefix="fn-zorba-util">
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+</zorba:iterators>

@@ -96,7 +96,6 @@
   class NamespaceUriFromQNameIterator;
   class NamespaceUriForPrefixIterator;
   class InScopePrefixesIterator;
-  class ZorNumGen;
   class TextIterator;
   class DocumentIterator;
   class DocumentContentIterator;
@@ -148,8 +147,7 @@
   class ZorbaTidyIterator;
   class ZorbaTDocIterator;
 #endif  /* ZORBA_WITH_TIDY */
-  class ZorbaRandomIterator;
-  class ZorbaUUIDIterator;
+//   class ZorbaRandomIterator;
 #ifdef ZORBA_WITH_FOP
   class ZorbaFopIterator;
 #endif

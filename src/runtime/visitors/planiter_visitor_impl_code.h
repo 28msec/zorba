@@ -194,8 +194,6 @@
 
   PLAN_ITER_VISITOR (NamespaceUriForPrefixIterator);
 
-  PLAN_ITER_VISITOR (ZorNumGen);
-      
   PLAN_ITER_VISITOR (TextIterator);
 
   PLAN_ITER_VISITOR (CreateTupleIterator);
@@ -354,8 +352,6 @@
   PLAN_ITER_VISITOR(ZorbaTidyIterator);
   PLAN_ITER_VISITOR(ZorbaTDocIterator);
 #endif
-  PLAN_ITER_VISITOR(ZorbaRandomIterator);
-  PLAN_ITER_VISITOR(ZorbaUUIDIterator);
 #ifdef ZORBA_WITH_FOP
 	PLAN_ITER_VISITOR(ZorbaFopIterator);
 #endif // ZORBA_WITH_FOP

@@ -194,6 +194,12 @@ namespace zorba{
 
     class FormatNumberIterator;
 
+    class NumGenIterator;
+
+    class RandomIterator;
+
+    class UuidIterator;
+
 #ifndef ZORBA_NO_XMLSCHEMA
     class ValidateIterator;
 #endif
@@ -563,6 +569,15 @@ public:
 
     virtual void beginVisit ( const FormatNumberIterator& ) = 0;
     virtual void endVisit   ( const FormatNumberIterator& ) = 0;
+
+    virtual void beginVisit ( const NumGenIterator& ) = 0;
+    virtual void endVisit   ( const NumGenIterator& ) = 0;
+
+    virtual void beginVisit ( const RandomIterator& ) = 0;
+    virtual void endVisit   ( const RandomIterator& ) = 0;
+
+    virtual void beginVisit ( const UuidIterator& ) = 0;
+    virtual void endVisit   ( const UuidIterator& ) = 0;
 
 #ifndef ZORBA_NO_XMLSCHEMA
     virtual void beginVisit ( const ValidateIterator& ) = 0;

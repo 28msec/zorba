@@ -32,12 +32,14 @@ typedef function_impl<ZorbaBase64EncodeIterator> zorba_encode_base64;
 
 
 #ifdef ZORBA_WITH_TIDY
-
+/*******************************************************************************
+  zorba:tidy
+********************************************************************************/
 typedef function_impl<ZorbaTidyIterator> zorba_tidy;
 
 
 /*******************************************************************************
-  15.5.4 fn:doc
+  zorba:tdoc
 ********************************************************************************/
 class zorba_tdoc : public function 
 {
@@ -54,28 +56,6 @@ public:
 };
 
 #endif/* ZORBA_WITH_TIDY */
-
-
-class zorba_random : public function
-{
-public:
-  zorba_random(const signature& sig): function(sig){}
-    
-  bool isDeterministic () const { return false; }
-
-  DEFAULT_NARY_CODEGEN(ZorbaRandomIterator);
-};
-
-
-class zorba_uuid : public function
-{
-public:
-  zorba_uuid(const signature& sig): function(sig){}
-    
-  bool isDeterministic () const { return false; }
-
-  DEFAULT_NARY_CODEGEN(ZorbaUUIDIterator);
-};
 
 
 class zorba_timestamp : public function
@@ -124,19 +104,6 @@ DECL(sctx, zorba_encode_base64,
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
         GENV_TYPESYSTEM.DOCUMENT_TYPE_QUESTION));
 #endif
-
-  DECL(sctx, zorba_random,
-       (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "random"),
-        GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
-
-  DECL(sctx, zorba_random,
-       (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "random"),
-        GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
-        GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
-
-  DECL(sctx, zorba_uuid,
-       (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "uuid"),
-        GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
   DECL(sctx, zorba_timestamp,
        (createQName(ZORBA_ALEXIS_FN_NS, "fn-zorba-util", "timestamp"),

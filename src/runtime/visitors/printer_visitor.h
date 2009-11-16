@@ -296,6 +296,15 @@ namespace zorba {
     void beginVisit( const FormatNumberIterator& );
     void endVisit  ( const FormatNumberIterator& );
 
+    void beginVisit( const NumGenIterator& );
+    void endVisit  ( const NumGenIterator& );
+
+    void beginVisit( const RandomIterator& );
+    void endVisit  ( const RandomIterator& );
+
+    void beginVisit( const UuidIterator& );
+    void endVisit  ( const UuidIterator& );
+
 #ifndef ZORBA_NO_XMLSCHEMA
     void beginVisit( const ValidateIterator& );
     void endVisit  ( const ValidateIterator& );

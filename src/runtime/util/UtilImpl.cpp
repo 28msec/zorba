@@ -22,7 +22,6 @@
 #include "system/globalenv.h"
 #include "zorbatypes/URI.h"
 #include "zorbatypes/binary.h"
-#include "zorbatypes/numconversions.h"
 
 #include "runtime/util/UtilImpl.h"
 #include "runtime/api/runtimecb.h"
@@ -33,7 +32,6 @@
 #include "context/dynamic_context.h"
 
 #include "util/web/web.h"
-#include "util/uuid/uuid.h"
 
 #include <stdlib.h>
 #include <time.h>
@@ -61,12 +59,6 @@ SERIALIZABLE_CLASS_VERSIONS(ZorbaTDocIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(ZorbaTDocIterator)
 #endif
 
-SERIALIZABLE_CLASS_VERSIONS(ZorbaRandomIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ZorbaRandomIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(ZorbaUUIDIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ZorbaUUIDIterator)
-
 SERIALIZABLE_CLASS_VERSIONS(ZorbaTimestampIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(ZorbaTimestampIterator)
 
@@ -84,10 +76,6 @@ NARY_ACCEPT(ZorbaTidyIterator);
 
 NARY_ACCEPT(ZorbaTDocIterator);
 #endif  /* ZORBA_WITH_TIDY */
-
-NARY_ACCEPT (ZorbaRandomIterator);
-
-NARY_ACCEPT (ZorbaUUIDIterator);
 
 NARY_ACCEPT (ZorbaTimestampIterator);
 
@@ -282,52 +270,6 @@ ZorbaTDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 #endif  /* ZORBA_WITH_TIDY */
-
-bool
-ZorbaRandomIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Item_t item;
-  xqp_string    seed;
-  xqp_uint      seedInt;
-
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  if((theChildren.size() == 1) &&
-      consumeNext(item, theChildren[0].getp(), planState))
-  {
-    seed = item->getIntegerValue().toString();
-    NumConversions::strToUInt(seed, seedInt);
-    std::srand((unsigned int)seedInt);
-  }
-  else
-    std::srand((unsigned int)(time(NULL)));
-
-  GENV_ITEMFACTORY->createInteger(result, Integer::parseInt (std::rand()));
-  STACK_PUSH (true, state);
-
-  STACK_END (state);
-}
-
-bool
-ZorbaUUIDIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Item_t     item;
-  uuid_t            u;
-  memset(&u, 0, sizeof(uuid_t));
-  xqpStringStore_t  uuidStr;
-
-  uuid_create(&u);
-  uuidStr = new xqpStringStore(uuidToString(u));
-
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  GENV_ITEMFACTORY->createString(result, uuidStr);
-  STACK_PUSH (true, state);
-
-  STACK_END (state);
-}
 
 bool
 ZorbaTimestampIterator::nextImpl(store::Item_t& result, PlanState& planState) const

@@ -121,6 +121,7 @@ declare function local:create-function($iter) as xs:string?
         local:add-annotations($iter),
         local:add-specialization($iter),
         local:add-unfoldable($iter),
+        local:add-isDeterministic($iter),
         local:add-is-source($iter),
         local:add-is-fn-error($iter),
         local:add-is-updating($iter),
@@ -228,6 +229,14 @@ declare function local:add-is-sequential($iter) as xs:string?
 };
 
 
+declare function local:add-isDeterministic($iter) as xs:string?
+{
+  if($iter/zorba:function/@isDeterministic = 'false') then
+    string-join(($gen:newline,$gen:indent,
+    'bool isDeterministic() const { return false; }',$gen:newline),'')
+  else ()
+};
+
 declare function local:add-unfoldable($iter) as xs:string?
 {
   if($iter/zorba:function/@requiresDynamicContext = 'true') then
@@ -235,7 +244,6 @@ declare function local:add-unfoldable($iter) as xs:string?
     'bool requires_dyn_ctx() const { return true; }',$gen:newline),'')
   else ()
 };
-
 
 declare function local:add-specialization($iter) as xs:string?
 {

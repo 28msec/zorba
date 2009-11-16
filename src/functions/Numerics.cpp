@@ -636,52 +636,6 @@ PlanIter_t op_numeric_unary_minus::codegen(
 
 
 /*******************************************************************************
-  Function to produce a fixed amount of integer for testing purposes.
-********************************************************************************/
-class zor_numgen : public function
-{
-public:
-	zor_numgen(const signature& sig) : function (sig) {}
-
-  DEFAULT_NOARY_CODEGEN(ZorNumGen);
-};
-
-
-/*******************************************************************************
-  Math functions
-********************************************************************************/
-
-//class fn_sqrt : public single_numeric_func
-//{
-//public:
-//  fn_sqrt(const signature& sig) : single_numeric_func (sig) {}
-//
-//  DEFAULT_NARY_CODEGEN(FnSQRTIterator);
-//};
-//
-
-#define DECL_DOUBLE_MATH_FUN_UNARY( name, iter )                              \
-class fn_##name : public function                                             \
-{                                                                             \
- public:                                                                      \
-  fn_##name(const signature& sig) : function(sig) {}                          \
-                                                                              \
-  DEFAULT_UNARY_CODEGEN (Fn##iter##Iterator)                                  \
-}
-
-#define DECL_DOUBLE_MATH_FUN_BINARY( name, iter )                             \
-class fn_##name : public function                                             \
-{                                                                             \
- public:                                                                      \
-  fn_##name(const signature& sig) : function(sig) {}                          \
-                                                                              \
-  DEFAULT_BINARY_CODEGEN (Fn##iter##Iterator)                                 \
-}
-
-#define DECL_DOUBLE_MATH_FUN_UNARY_2(name, iter) DECL_DOUBLE_MATH_FUN_UNARY(name, iter)
-
-
-/*******************************************************************************
   Register the rest of the numeric functions
 ********************************************************************************/
 #define DECL_ARITH( sctx, op, type, xqt )                              \
@@ -733,10 +687,6 @@ void populateContext_Numerics(static_context* sctx)
        (createQName (XQUERY_OP_NS,"op", "unary-plus"),
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE));
-
-  DECL(sctx, zor_numgen,
-       (createQName(XQUERY_FN_NS,"fn", "zorba:numgen"),
-        GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
 }
 
   

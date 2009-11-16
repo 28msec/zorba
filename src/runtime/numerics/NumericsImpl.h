@@ -18,7 +18,6 @@
 
 #include "common/shared_types.h"
 
-#include "runtime/base/noarybase.h" // TODO remove after iterator refactoring
 #include "runtime/base/unarybase.h" // TODO remove after iterator refactoring
 #include "runtime/base/binarybase.h" // TODO remove after iterator refactoring
 #include "runtime/base/narybase.h"
@@ -174,28 +173,6 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
-
-/*******************************************************************************
-  Helper Iterator to produce a defined amount of integer items
-********************************************************************************/
-class ZorNumGenState : public PlanIteratorState
-{
-private:
-  int32_t curNumber;
-
-public:
-  void init(PlanState&);
-
-  void reset(PlanState&);
-  
-  int32_t getCurNumber();
-
-  void setCurNumber(int32_t);
-};
-  
-
-NOARY_ITER_STATE(ZorNumGen, ZorNumGenState);
- 
 }
 #endif
 
