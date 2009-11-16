@@ -38,13 +38,13 @@ void populate_context_base64(static_context* sctx);
 
 
 
-//fn-zorba-util:base64Decode
-class fn_zorba_util_base64Decode : public function
+//base64:decode
+class base64_decode : public function
 {
 public:
-  fn_zorba_util_base64Decode(const signature& sig)
+  base64_decode(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_UTIL_BASE64DECODE_1)
+    function(sig, FunctionConsts::BASE64_DECODE_1)
   {
   }
 
@@ -52,13 +52,13 @@ public:
 };
 
 
-//fn-zorba-util:base64Encode
-class fn_zorba_util_base64Encode : public function
+//base64:encode
+class base64_encode : public function
 {
 public:
-  fn_zorba_util_base64Encode(const signature& sig)
+  base64_encode(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_UTIL_BASE64ENCODE_1)
+    function(sig, FunctionConsts::BASE64_ENCODE_1)
   {
   }
 

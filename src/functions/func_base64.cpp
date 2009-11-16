@@ -30,7 +30,7 @@ namespace zorba{
 
 
 
-PlanIter_t fn_zorba_util_base64Decode::codegen(
+PlanIter_t base64_decode::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -40,7 +40,7 @@ PlanIter_t fn_zorba_util_base64Decode::codegen(
   return new Base64DecodeIterator ( sctx, loc, argv);
 }
 
-PlanIter_t fn_zorba_util_base64Encode::codegen(
+PlanIter_t base64_encode::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -51,14 +51,14 @@ PlanIter_t fn_zorba_util_base64Encode::codegen(
 }
 
 void populate_context_base64(static_context* sctx) {
-  DECL(sctx, fn_zorba_util_base64Decode,
-      (createQName("http://www.zorba-xquery.com/zorba/util-functions","fn-zorba-util","base64Decode"),
+  DECL(sctx, base64_decode,
+      (createQName("http://www.zorba-xquery.com/modules/base64","base64","decode"),
       GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
 
-  DECL(sctx, fn_zorba_util_base64Encode,
-      (createQName("http://www.zorba-xquery.com/zorba/util-functions","fn-zorba-util","base64Encode"),
+  DECL(sctx, base64_encode,
+      (createQName("http://www.zorba-xquery.com/modules/base64","base64","encode"),
       GENV_TYPESYSTEM.ITEM_TYPE_ONE,
       GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE));
 

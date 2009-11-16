@@ -42,6 +42,7 @@
 #define ZORBA_FOP_FN_NS             "http://www.zorba-xquery.com/zorba/fop-functions"
 
 #define ZORBA_XQDOC_FN_NS           "http://www.zorba-xquery.com/modules/xqdoc"
+#define ZORBA_BASE64_FN_NS           "http://www.zorba-xquery.com/modules/base64"
 
 
 #define ZORBA_COLLATION_NS_BASE "http://www.zorba-xquery.com/zorba/collations/"

@@ -9,7 +9,6 @@
     <zorba:namespace uri="http://www.zorba-xquery.com/zorba/util-functions" define="ZORBA_ALEXIS_FN_NS" prefix="fn-zorba-util"/>
     <zorba:namespace uri="http://www.zorba-xquery.com/zorba/internal-functions" define="ZORBA_FN_NS" prefix="fn-zorba"/>
     <zorba:namespace uri="http://www.zorba-xquery.com/zorba/rest-functions" define="ZORBA_REST_FN_NS" prefix="fn-zorba-rest"/>
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/math" define="ZORBA_MATH_FN_NS" prefix="fn-zorba-math"/>
     <zorba:namespace uri="http://www.zorba-xquery.com/zorba/node-ref-functions" define="ZORBA_NODEREF_FN_NS" prefix="fn-zorba-ref"/> 
     <zorba:namespace uri="http://www.zorba-xquery.com/zorba/internal-functions" define="ZORBA_OP_NS" prefix="op-zorba"/>
     <zorba:namespace uri="http://www.zorba-xquery.com/zorba/collection-functions" define="ZORBA_COLLECTION_FN_NS" prefix="fn-zorba-collection"/>
@@ -19,7 +18,10 @@
     <zorba:namespace uri="http://www.zorba-xquery.com/zorba/json-functions" define="ZORBA_JSON_FN_NS" prefix="zorba-json"/>
     <zorba:namespace uri="http://www.zorba-xquery.com/zorba/json-ml-functions" define="ZORBA_JSON_ML_FN_NS" prefix="zorba-json-ml"/>
     <zorba:namespace uri="http://www.zorba-xquery.com/zorba/fop-functions" define="ZORBA_FOP_FN_NS" prefix="fn-zorba-fop"/>    
+
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/xqdoc" define="ZORBA_XQDOC_FN_NS" prefix="xqdoc"/>
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/math" define="ZORBA_MATH_FN_NS" prefix="fn-zorba-math"/>
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/base64" define="ZORBA_BASE64_FN_NS" prefix="base64"/>
   </zorba:namespaces>
 
   <zorba:types>

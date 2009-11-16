@@ -10,15 +10,15 @@
 
 <!--
 /*******************************************************************************
- Zorba Base64Decode
+base64 decode
 ********************************************************************************/
 -->
 <zorba:iterator name="Base64DecodeIterator" arity="nary">
 
-  <zorba:description author="Zorba Team">zorba:Base64Decode</zorba:description>
+  <zorba:description author="Zorba Team">base64:decode</zorba:description>
 
   <zorba:function>
-    <zorba:signature localname="base64Decode" prefix="fn-zorba-util">
+    <zorba:signature localname="decode" prefix="base64">
       <zorba:param>xs:base64Binary</zorba:param>
       <zorba:output>xs:string</zorba:output>
     </zorba:signature>
@@ -28,15 +28,15 @@
 
 <!--
 /*******************************************************************************
- Zorba Base64Encode
+base64 encode
 ********************************************************************************/
 -->
 <zorba:iterator name="Base64EncodeIterator" arity="nary">
 
-  <zorba:description author="Zorba Team">zorba:base64Encode</zorba:description>
+  <zorba:description author="Zorba Team">base64:encode</zorba:description>
 
   <zorba:function>
-    <zorba:signature localname="base64Encode" prefix="fn-zorba-util">
+    <zorba:signature localname="encode" prefix="base64">
       <zorba:param>item()</zorba:param>
       <zorba:output>xs:base64Binary</zorba:output>
     </zorba:signature>

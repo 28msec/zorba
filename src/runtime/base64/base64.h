@@ -34,7 +34,7 @@
 namespace zorba {
 
 /**
- * zorba:Base64Decode
+ * base64:decode
  * 
  * Author: Zorba Team * 
  */
@@ -68,7 +68,7 @@ public:
 
 
 /**
- * zorba:base64Encode
+ * base64:encode
  * 
  * Author: Zorba Team * 
  */
