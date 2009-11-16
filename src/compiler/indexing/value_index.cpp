@@ -204,7 +204,7 @@ void ValueIndex::analyzeExprInternal(
 {
   if (e->get_expr_kind() == fo_expr_kind)
   {
-    fo_expr* foExpr = static_cast<const fo_expr*>(e);
+    fo_expr* foExpr = static_cast<fo_expr*>(e);
     const function* func = foExpr->get_func();
 
     if (!func->isDeterministic())
@@ -437,7 +437,7 @@ DocIndexer* ValueIndex::getDocIndexer(CompilerCB* ccb, const QueryLoc& loc)
   store::Item_t qname;
   GENV_ITEMFACTORY->createQName(qname, "", "", varname.c_str());
   var_expr_t tempVar = new var_expr(sctxid, dot->get_loc(), var_expr::prolog_var, qname);
-  expr_t wrapperExpr = new wrapper_expr(sctxid, dot->get_loc(), tempVar);
+  expr_t wrapperExpr = new wrapper_expr(sctxid, dot->get_loc(), tempVar.getp());
 
   expr::substitution_t subst;
 
