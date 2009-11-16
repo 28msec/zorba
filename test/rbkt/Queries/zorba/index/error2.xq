@@ -1,4 +1,7 @@
-(: Declaration of index in non data module :)
+(:
+  Check that index definition does not reference any input sources other
+  than dc:collection
+:)
 
 import module namespace ddl = "http://www.zorba-xquery.com/module/ddl";
 

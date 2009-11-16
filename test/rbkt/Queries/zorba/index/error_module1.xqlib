@@ -1,7 +1,7 @@
 
 (:
-  This is NOT a data module. It is used to make sure that indexes are declared
-  in data modules only.
+  Check that index definition does not reference any input sources other
+  than dc:collection
 :)
 
 module namespace idx = "http://www.w3.org/TestModules/idx";
