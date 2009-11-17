@@ -95,15 +95,12 @@ LIST(APPEND RUNTIME_SRCS
     core/tuple_iterators.cpp
     core/internal_operators.cpp
     durations_dates_times/DurationsDatesTimesImpl.cpp
-    debug/debug_impl.cpp
-    random/random_impl.cpp
     debug/zorba_debug_iterator.cpp
     indexing/value_index_ddl.cpp
     indexing/value_index_probe.cpp
     indexing/value_index_context.cpp
     indexing/doc_indexer.cpp
     numerics/NumericsImpl.cpp
-    qnames/qnames_impl.cpp
     sequences/SequencesImpl.cpp
     visitors/iterprinter.cpp
     update/update.cpp
@@ -111,7 +108,6 @@ LIST(APPEND RUNTIME_SRCS
     util/UtilImpl.cpp
     util/timeout.cpp
     util/flowctl_exception.cpp
-    xqdoc/xqdoc_impl.cpp
 )
 
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS debug)
