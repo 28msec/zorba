@@ -4,28 +4,59 @@ import schema namespace res = "http://www.w3.org/2005/02/query-test-XQTSResult" 
 (: Test.xml file from ctest :)
 declare variable $ctests as document-node() external;
 
+if(fn:empty($ctests)) then
+  fn:error()
+else
 validate lax {
-  <res:test-suite-result
-     xmlns:red="http://www.w3.org/2005/02/query-test-XQTSResult">
-     <res:implementation name="Zorba">
-        <res:organization name="FLWOR Foundation"/>
-        <res:submittor name="FLWOR Foundation team"/>
-        (: add implementation-defined-items and features elements here :)
-     </res:implementation>
-     <res:syntax>XQuery</res:syntax>
+  <test-suite-result
+     xmlns="http://www.w3.org/2005/02/query-test-XQTSResult">
+     <implementation name="Zorba" 
+            version='1.0 beta'
+            anonymous-result-column="false">
+
+          <organization
+             name='FLWOR Foundation'
+             website="http://zorba-xquery.com"
+             anonymous="false" />
+    
+          <submittor
+             name="Zorba team"
+             email="contact@zorba-xquery.com" />
+    
+          <description>
+             <p>An open source XQuery processor that is fast and spec compliant. 
+                Implements XQuery 1.0, XQuery Update, XQueryX, XQuery Script.</p>
+          </description>
+    
+          <implementation-defined-items>
+          </implementation-defined-items>
+          
+          <features>
+             <feature name='Minimum Conformance' supported='true' />
+             <feature name="Update Facility Static Typing Feature" supported='true' />
+          </features>
+          
+          <context-properties>
+          </context-properties>
+          
+     </implementation>
+     <syntax>XQuery</syntax>
      (: can we compute dateRun from $ctests/Site/Testing/StartTimeTime ? :)
-     <res:test-run dateRun="2009-11-16">
-        <res:test-suite version="1.0"/>
-     </res:test-run>
+     <test-run dateRun="2009-11-16">
+        <test-suite version="1.0.0"/>
+        <transformation><p>No transformations.</p></transformation>
+        <comparison><p>Text or xml comparison.</p></comparison>
+     </test-run>
+     <test-case name="not tested" result="not tested"></test-case>
      {
        for $test in $ctests/Site/Testing/Test
        let $testpath := fn:tokenize(fn:data($test/Name), "/")
        let $testname := $testpath[fn:count($testpath)]
        return
-         <res:test-case
+         <test-case
            name="{$testname}"
            result="{fn:substring(fn:data($test/@Status), 0, 5)}"
          />
      }
-  </res:test-suite-result>
+  </test-suite-result>
 }
