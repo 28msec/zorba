@@ -61,7 +61,7 @@ echo Importing XQUTS...
 mv Queries "$SRC/test/update/Queries/w3c_update_testsuite"
 mv ExpectedTestResults "$SRC/test/update/ExpectedTestResults/w3c_update_testsuite"
 mv TestSources "$SRC/test/update/Queries/w3c_update_testsuite"
-
+mv ReportingResults "$SRC/test/update/Scripts/w3c_update_reportingresults"
 
 q=`mktemp "$WORK/xq.XXXXXX"`
 cat >"$q" <<"EOF"
