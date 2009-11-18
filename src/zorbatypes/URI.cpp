@@ -300,7 +300,10 @@ URI::initialize(const xqpString& uri, bool have_base)
   } else if (theScheme.byteEqual("file", 4) ||
       theScheme.byteEqual("http", 4) ||
       theScheme.byteEqual("https", 5)) {
-        ZORBA_ERROR_DESC_OSS(XQST0046, "Invalid URI syntax for the \"" << theScheme << "\" scheme.");
+     if (valid) {
+       ZORBA_ERROR_DESC_OSS(XQST0046, "Invalid URI syntax for the \""
+          << theScheme << "\" scheme.");
+     }
   }
 
   // stop, if we're done here
