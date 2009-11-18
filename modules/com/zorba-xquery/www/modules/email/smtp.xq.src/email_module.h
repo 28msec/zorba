@@ -26,7 +26,7 @@ namespace zorba
 {
   namespace email
   {
-    class EmailModule : public ExternalModule
+    class SMTPModule : public ExternalModule
     {
       private:
         static ItemFactory* theFactory;
@@ -46,7 +46,7 @@ namespace zorba
         mutable FuncMap_t theFunctions;
 
       public:
-        virtual ~EmailModule();
+        virtual ~SMTPModule();
 
         virtual String
         getURI() const { return "http://www.zorba-xquery.com/modules/email/smtp"; }
@@ -64,6 +64,11 @@ namespace zorba
 
         virtual void
         destroy();
+
+        bool
+        getOption(const StaticContext* aSctxCtx,
+                  String aOptionName,
+                  String& aOptionValue) const;
     };
   } /* namespace email */
 } /* namespace zorba */

@@ -20,7 +20,7 @@
 #include <zorba/singleton_item_sequence.h>
 
 #include "smtp.h"
-#include "uw-imap.h"
+#include "uw_imap.h"
 #include "email_module.h"
 
 namespace zorba
@@ -28,8 +28,8 @@ namespace zorba
   namespace email
   {
   //SendFunction
-  SendFunction::SendFunction(const EmailModule* aModule)
-  : EmailFunction(aModule)
+  SendFunction::SendFunction(const SMTPModule* aModule)
+  : SMTPFunction(aModule)
   {
   }
 
@@ -43,18 +43,11 @@ namespace zorba
     bool          res = false, lSMTPServerFound = false;
     zorba::String SMTPServer, SMTPUser, SMTPPwd, diagnostics;
 
-    lSMTPServerFound = aSctxCtx->getOption(theModule->getItemFactory()->
-        createQName("http://www.zorba-xquery.com/modules/email/smtp","SMTPServer"),SMTPServer);
+    lSMTPServerFound = theModule->getOption(aSctxCtx,"SMTPServer",SMTPServer);
+    theModule->getOption(aSctxCtx,"SMTPUser",SMTPUser);
+    theModule->getOption(aSctxCtx,"SMTPPwd",SMTPPwd);
 
-    aSctxCtx->getOption(theModule->getItemFactory()->
-        createQName("http://www.zorba-xquery.com/modules/email/smtp","SMTPUser"),SMTPUser);
-
-    aSctxCtx->getOption(theModule->getItemFactory()->
-        createQName("http://www.zorba-xquery.com/modules/email/smtp","SMTPPwd"),SMTPPwd);
-
-
-    if( !lSMTPServerFound ||
-         (lSMTPServerFound && SMTPServer.empty()) )
+    if( !lSMTPServerFound || SMTPServer.empty() )
     {
       //TODO implement excenption handling via external_function_data
       std::stringstream lErrorMessage;
@@ -66,7 +59,7 @@ namespace zorba
       //TODO implement check for empty or sequence params
       args[0]->next(itemMessage);
 
-      res = mail( itemMessage,
+      res = CClient::Instance().send( itemMessage,
                   SMTPServer.c_str(),
                   SMTPUser.c_str(),
                   SMTPPwd.c_str(),
@@ -96,5 +89,5 @@ namespace zorba
 #endif
 
   extern "C" DLL_EXPORT zorba::ExternalModule* createModule() {
-    return new zorba::email::EmailModule();
+    return new zorba::email::SMTPModule();
   }

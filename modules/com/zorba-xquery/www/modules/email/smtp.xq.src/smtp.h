@@ -23,10 +23,10 @@ namespace zorba
 {
   namespace email
   {
-    class SendFunction : public EmailFunction
+    class SendFunction : public SMTPFunction
     {
     public:
-      SendFunction(const EmailModule* aModule);
+      SendFunction(const SMTPModule* aModule);
 
       virtual String
       getLocalName() const { return "send"; }

@@ -24,27 +24,28 @@ namespace zorba
 {
   namespace email
   {
-    EmailFunction::EmailFunction(const EmailModule* aModule)
+    SMTPFunction::SMTPFunction(const SMTPModule* aModule)
     : theModule(aModule)
     {
     }
 
-    EmailFunction::~EmailFunction()
+    SMTPFunction::~SMTPFunction()
     {
     }
 
     String
-    EmailFunction::getURI() const
+    SMTPFunction::getURI() const
     {
       return theModule->getURI();
     }
 
     void
-    EmailFunction::throwError( const std::string aErrorMessage,
+    SMTPFunction::throwError( const std::string aErrorMessage,
                               const XQUERY_ERROR& aErrorType)
     {
       throw zorba::ExternalFunctionData::createZorbaException(aErrorType,
           aErrorMessage.c_str(), __FILE__, __LINE__);
     }
+
   } // namespace email
 } // namespace zorba

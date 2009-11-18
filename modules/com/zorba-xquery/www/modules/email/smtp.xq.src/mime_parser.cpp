@@ -14,36 +14,25 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_EMAIL_EMAILFUNCTION_H
-#define ZORBA_EMAIL_EMAILFUNCTION_H
-
-#include <zorba/external_function.h>
+#include "mime_parser.h"
 
 namespace zorba
 {
   namespace email
   {
-    class SMTPModule;
-
-    class SMTPFunction : public NonePureStatelessExternalFunction
+    bool MimeParser::parse(const Item& aMimeItem, zorba::String& aDiagnostics)
     {
-      protected:
-        const SMTPModule*     theModule;
+      theHandler->begin(aMimeItem);
 
-        static void
-        throwError( const std::string aErrorMessage,
-                    const XQUERY_ERROR& aErrorType);
+      bool lRes = theHandler->envelope(aDiagnostics);
 
-      public:
-        SMTPFunction(const SMTPModule* aModule);
+      if(lRes)
+        lRes = theHandler->body(aDiagnostics);
 
-        ~SMTPFunction();
+      theHandler->end();
 
-        virtual String
-        getURI() const;
+      return lRes;
+    }
 
-    }; //class SMTPFunction
-  } // namespace email
-} // namespace zorba
-
-#endif // ZORBA_EMAIL_EMAILFUNCTION_H
+  }//namespace email
+}//namespace zorba

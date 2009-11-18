@@ -23,9 +23,9 @@ namespace zorba {
 
   namespace email {
 
-    ItemFactory* EmailModule::theFactory = 0;
+    ItemFactory* SMTPModule::theFactory = 0;
 
-    EmailModule::~EmailModule()
+    SMTPModule::~SMTPModule()
     {
       for (FuncMap_t::const_iterator lIter = theFunctions.begin();
           lIter != theFunctions.end(); ++lIter)
@@ -37,7 +37,7 @@ namespace zorba {
     }
 
     StatelessExternalFunction*
-    EmailModule::getExternalFunction(String aLocalname) const
+    SMTPModule::getExternalFunction(String aLocalname) const
     {
       StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
       if (!lFunc)
@@ -51,13 +51,22 @@ namespace zorba {
     }
 
     void
-    EmailModule::destroy()
+    SMTPModule::destroy()
     {
-      if (!dynamic_cast<EmailModule*>(this))
+      if (!dynamic_cast<SMTPModule*>(this))
       {
         return;
       }
       delete this;
+    }
+
+    bool
+    SMTPModule::getOption(const StaticContext* aSctxCtx,
+                          String aOptionName,
+                          String& aOptionValue) const
+    {
+      return aSctxCtx->getOption(getItemFactory()->
+          createQName(getURI(),aOptionName),aOptionValue);
     }
 
   } // namespace email
