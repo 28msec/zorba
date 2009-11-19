@@ -174,7 +174,6 @@ public:
 
 
 private:
-  CompilerCB                    * theCCB;
   static_context                * theSctx;
 
   store::Item_t                   theName;
@@ -206,7 +205,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  ValueIndex(CompilerCB* ccb, const QueryLoc& loc, const store::Item_t& name);
+  ValueIndex(static_context* sctx, const QueryLoc& loc, const store::Item_t& name);
 
   ~ValueIndex();
 
@@ -269,6 +268,8 @@ public:
   PlanIterator* getBuildPlan(CompilerCB* ccb, const QueryLoc& loc);
 
   DocIndexer* getDocIndexer(CompilerCB* ccb, const QueryLoc& loc);
+
+  std::string toString();
 
 private:
   void analyzeExprInternal(

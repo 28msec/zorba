@@ -24,24 +24,26 @@ namespace zorba
 {
 
 /***************************************************************************//**
-  Contains a vector V of other rewrites. SequentialRewriter::rewrite() simply
+  Contains a vector V of other rewriters. SequentialRewriter::rewrite() simply
   invokes the rewrtite() method on the rewriters in V, in the order that these
   rewriters appear in V.
 ********************************************************************************/
 class SequentialRewriter : public Rewriter 
 {
-public:
-  void rewrite(RewriterContext& rCtx);
-
 protected:
   typedef rchandle<Rewriter> rewriter_ptr_t;
   typedef std::vector<rewriter_ptr_t> rewriters_t;
 
+protected:
+  rewriters_t m_childRewriters;
+
+public:
+  void rewrite(RewriterContext& rCtx);
+
+protected:
   SequentialRewriter();
 
-  ~SequentialRewriter() throw ();
-
-  rewriters_t m_childRewriters;
+  ~SequentialRewriter() throw();
 };
 
 }

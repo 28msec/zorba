@@ -32,6 +32,14 @@ typedef std::map<const var_expr *, int> VarIdMap;
 typedef std::vector<const var_expr*> IdVarMap;
 typedef std::map<const expr *, DynamicBitset> ExprVarsMap;
 
+
+/*******************************************************************************
+
+  theFlworStack      : The current "in-scope" flwor exprs, ie., flwor exprs that
+                       the rule has entered but but not exited yet.
+  theIsModifiedStack : A stack of bools to remember whether a flwor expr in
+                       theFlworStack has been modified or replaced by the rule.
+********************************************************************************/
 class RewriterContext 
 {
 public:
@@ -43,7 +51,8 @@ public:
   VarIdMap             * m_varid_map;
   IdVarMap             * m_idvar_map;
   ExprVarsMap          * m_exprvars_map;
-  std::vector<expr_t>    m_flwor_exprs;
+  std::vector<expr_t>    theFlworStack;
+  std::vector<bool>      theIsModifiedStack;
 
 public:
   RewriterContext(CompilerCB* cb, expr_t root);

@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-#include "zorbaerrors/error_manager.h"
-#include "zorbaerrors/Assert.h"
+#include "compiler/expression/expr_base.h"
+#include "compiler/expression/fo_expr.h"
+#include "compiler/expression/expr_visitor.h"
 
-#include "system/globalenv.h"
+#include "functions/function.h"
 
 #include "types/root_typemanager.h"
 
-#include "compiler/expression/expr_base.h"
-#include "compiler/expression/expr_visitor.h"
+#include "system/globalenv.h"
+
+#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/Assert.h"
 
 #include "zorbaserialization/serialization_engine.h"
 
@@ -533,6 +536,21 @@ void expr::replace_expr(const expr* oldExpr, const expr* newExpr)
     ++iter;
   }
 }
+
+
+/*******************************************************************************
+
+********************************************************************************/
+FunctionConsts::FunctionKind expr::get_function_kind() const
+{
+  if (get_expr_kind() == fo_expr_kind)
+  {
+    return static_cast<const fo_expr*>(this)->get_func()->getKind();
+  }
+
+  return FunctionConsts::FN_UNKNOWN;
+}
+
 
 
 }

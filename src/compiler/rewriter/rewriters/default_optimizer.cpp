@@ -33,7 +33,7 @@ public:
     ADD_RULE(MarkImpureExprs);
     // Most rules try to update the freevars annotations, but for now let's stay on the safe side
     ADD_RULE(MarkFreeVars);
-    ADD_RULE(FoldConst (false));
+    ADD_RULE(FoldConst(false));
     ADD_RULE(PartialEval);      
     ADD_RULE(RefactorPredFLWOR);
     ADD_RULE(EliminateUnusedLetVars);
@@ -66,14 +66,14 @@ DefaultOptimizer::DefaultOptimizer()
   
   ADD_DRIVER(FoldRules);
 
-  if (Properties::instance ()->loopHoisting ())
+  if (Properties::instance()->loopHoisting())
     ADD_SINGLETON_DRIVER(HoistExprsOutOfLoops);
 
   // For UDFs, which need this annotation in udf::requires_dyn_ctx()
   // TODO: only do this for UDFs
   ADD_SINGLETON_DRIVER(MarkUnfoldableExprs);
 
-  if (Properties::instance ()->inferJoins ())
+  if (Properties::instance()->inferJoins())
     ADD_ONCE_DRIVER(IndexJoin);
 }
 

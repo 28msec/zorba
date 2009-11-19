@@ -53,6 +53,8 @@ typedef rchandle<flwor_expr> flwor_expr_t;
 ********************************************************************************/
 class flwor_clause : public SimpleRCObject 
 {
+  friend class flwor_expr;
+
 public:
   typedef std::vector<std::pair<expr_t, var_expr_t> > rebind_list_t;
 
@@ -72,6 +74,7 @@ protected:
   QueryLoc                  theLocation;
 
   ClauseKind                theKind;
+  flwor_expr              * theFlworExpr;
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(flwor_clause)
@@ -79,7 +82,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  flwor_clause (short sctx, const QueryLoc& loc, ClauseKind kind) 
+  flwor_clause(short sctx, const QueryLoc& loc, ClauseKind kind) 
     :
     theContext(sctx),
     theLocation(loc),
@@ -90,6 +93,8 @@ public:
   const QueryLoc& get_loc() const { return theLocation; }
 
   ClauseKind get_kind() const { return theKind; }
+
+  flwor_expr* get_flwor_expr() const { return theFlworExpr; }
 
   virtual flwor_clause_t clone(expr::substitution_t& substitution) const = 0;
 };
@@ -182,7 +187,8 @@ public:
 
 public:
   for_clause(
-        short sctx,
+        static_context* sctx,
+        short sctxid,
         const QueryLoc& loc,
         var_expr_t varExpr,
         expr_t domainExpr,
@@ -238,7 +244,8 @@ public:
 
 public:
   let_clause(
-        short sctx,
+        static_context* sctx,
+        short sctxid,
         const QueryLoc& loc,
         var_expr_t varExpr,
         expr_t domainExpr,
@@ -284,7 +291,8 @@ public:
 
 public:
   window_clause(
-        short sctx,
+        static_context* sctx,
+        short sctxid,
         const QueryLoc& loc,
         window_t winKind,
         var_expr_t varExpr,
@@ -655,7 +663,7 @@ public:
 
   clause_list_t::const_iterator clause_end() const { return theClauses.end(); }
 
-  long defines_variable(const var_expr* v, const flwor_clause* limit) const;
+  long defines_variable(const var_expr* v) const;
 
   void get_vars_defined(std::vector<var_expr*>& varExprs) const;
 

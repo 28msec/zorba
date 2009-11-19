@@ -319,17 +319,21 @@ static expr_t try_hoisting(
     return NULL;
 
   // Hoisting is possible ... Go ahead and hoist e: (a) we create an internal LET
-  // var: $$temp := opext:hoist(e) (b) we place the $$temp declaration right after
-  // variable V, and (c) we replace e with opext:unhoist($$temp).
+  // var: $$temp := op:hoist(e) (b) we place the $$temp declaration right after
+  // variable V, and (c) we replace e with op:unhoist($$temp).
 
-  rchandle<var_expr> letvar(rCtx.createTempVar(e->get_sctx_id(), e->get_loc(), var_expr::let_var));
+  var_expr_t letvar(rCtx.createTempVar(e->get_sctx_id(), e->get_loc(), var_expr::let_var));
 
   expr_t hoisted = new fo_expr(e->get_sctx_id(),
                                e->get_loc(),
                                GET_BUILTIN_FUNCTION(OP_HOIST_1),
                                e);
 
-  let_clause_t flref(new let_clause(e->get_sctx_id(), e->get_loc(), letvar, hoisted));
+  let_clause_t flref(new let_clause(NULL,
+                                    e->get_sctx_id(),
+                                    e->get_loc(),
+                                    letvar,
+                                    hoisted));
 
   letvar->set_flwor_clause(flref.getp());
 
@@ -350,7 +354,9 @@ static expr_t try_hoisting(
   expr_t unhoisted = new fo_expr(e->get_sctx_id(),
                                  e->get_loc(),
                                  GET_BUILTIN_FUNCTION(OP_UNHOIST_1),
-                                 letvar.getp());
+                                 new wrapper_expr(e->get_sctx_id(),
+                                                  e->get_loc(),
+                                                  letvar.getp()));
   return unhoisted.getp();
 }
 

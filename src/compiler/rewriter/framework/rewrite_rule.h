@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_REWRITE_RULE_H
-#define ZORBA_REWRITE_RULE_H
+#ifndef ZORBA_COMPILER_REWRITE_RULE_H
+#define ZORBA_COMPILER_REWRITE_RULE_H
 
 #include <string>
 #include "common/shared_types.h"
@@ -25,6 +25,7 @@ namespace zorba {
 class CompilerCB;
 class RewriterContext;
 
+
 class RewriteRule : public SimpleRCObject 
 {
 public:
@@ -32,8 +33,9 @@ public:
 
   virtual const std::string& getRuleName() const = 0;
 
-  virtual expr_t rewritePre(expr *node, RewriterContext& rCtx) = 0;
-  virtual expr_t rewritePost(expr *node, RewriterContext& rCtx) = 0;
+  virtual expr_t rewritePre(expr* node, RewriterContext& rCtx) = 0;
+
+  virtual expr_t rewritePost(expr* node, RewriterContext& rCtx) = 0;
 };
 
 }

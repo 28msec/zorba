@@ -35,13 +35,11 @@
 #include "compiler/parsetree/parsenodes.h" 
 #include "compiler/expression/expr_base.h"
 #include "compiler/translator/translator.h"
-#include "compiler/normalizer/normalizer.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/rewriter/framework/rewriter.h"
 #include "compiler/codegen/plan_visitor.h"
 #include "compiler/parsetree/parsenode_print_xml_visitor.h"
 #include "compiler/parsetree/parsenode_print_xqdoc_visitor.h"
-//#include "compiler/dewey/dewey.h"
 #ifdef ZORBA_XQUERYX
 #include "compiler/xqueryx/xqueryx_to_xquery.h"
 #endif
@@ -199,13 +197,15 @@ XQueryCompiler::parse(std::istream& aXQuery, const xqpString & aFileName)
 expr_t
 XQueryCompiler::normalize(parsenode_t aParsenode)
 {
-  expr_t lExpr = translate (*aParsenode, theCompilerCB);
+  expr_t lExpr = translate(*aParsenode, theCompilerCB);
+
   if ( lExpr == NULL ) 
-  { // TODO: can this happen?
-    ZORBA_ERROR( API0002_COMPILE_FAILED);
+  {
+    // TODO: can this happen?
+    ZORBA_ERROR(API0002_COMPILE_FAILED);
     return NULL;
   }
-  normalize_expr_tree ("query", theCompilerCB, lExpr, NULL);
+
   theCompilerCB->setIsUpdating(lExpr->is_updating());
   return lExpr;
 }

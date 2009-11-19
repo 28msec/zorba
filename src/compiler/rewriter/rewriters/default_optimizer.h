@@ -19,14 +19,17 @@
 #include "common/shared_types.h"
 #include "compiler/rewriter/framework/sequential_rewriter.h"
 
-namespace zorba {
+namespace zorba 
+{
 
 class DefaultOptimizer : public SequentialRewriter 
 {
 public:
   DefaultOptimizer();
+
   ~DefaultOptimizer() throw ();
 };
+
 
 }
 

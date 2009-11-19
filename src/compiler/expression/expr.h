@@ -75,21 +75,28 @@ public:
 
   bool cache_compliant() const { return true; }
 
-  unsigned size() const { return sequence.size (); }
+  unsigned size() const { return sequence.size(); }
 
-  const expr_t& operator[](int i) const { return sequence [i]; }
+  const expr_t& operator[](int i) const { return sequence[i]; }
 
-  void push_back(expr_t expr) 
+  void push_back(expr_t e) 
   {
     invalidate();
-    sequence.push_back(expr);
+    sequence.push_back(e);
     compute_scripting_kind();
   }
 
-  void push_front(expr_t front) 
+  void push_front(expr_t e) 
   {
     invalidate();
-    sequence.insert(sequence.begin(), front);
+    sequence.insert(sequence.begin(), e);
+    compute_scripting_kind();
+  }
+
+  void add_at(ulong pos, expr_t e)
+  {
+    invalidate();
+    sequence.insert(sequence.begin() + pos, e);
     compute_scripting_kind();
   }
 

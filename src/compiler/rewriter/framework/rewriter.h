@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_REWRITER_H
-#define ZORBA_REWRITER_H
+#ifndef ZORBA_COMPILER_REWRITER_H
+#define ZORBA_COMPILER_REWRITER_H
 
 #include "common/shared_types.h"
 #include "zorbatypes/rchandle.h"
 
-namespace zorba {
+namespace zorba 
+{
+
 
 class Rewriter : public SimpleRCObject 
 {

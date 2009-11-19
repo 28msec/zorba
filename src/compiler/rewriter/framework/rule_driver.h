@@ -69,7 +69,7 @@ template <class R>
 class SingletonRuleMajorDriver : public SingletonRuleMajorDriverBase 
 {
 public:
-  SingletonRuleMajorDriver() : SingletonRuleMajorDriverBase (rule_ptr_t (new R ())) {}
+  SingletonRuleMajorDriver() : SingletonRuleMajorDriverBase(rule_ptr_t(new R())) {}
 };
 
 

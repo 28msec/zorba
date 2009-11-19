@@ -13,19 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_EXPR_BASE_H
-#define ZORBA_EXPR_BASE_H
+#ifndef ZORBA_COMPILER_EXPR_BASE_H
+#define ZORBA_COMPILER_EXPR_BASE_H
 
 #include "common/shared_types.h"
-
-#include "context/static_context_consts.h"
-
-#include "types/typeimpl.h"
 
 #include "compiler/parser/query_loc.h"
 #include "compiler/parser/parse_constants.h"
 #include "compiler/expression/expr_consts.h"
 #include "compiler/semantic_annotations/annotation_holder.h"
+
+#include "functions/function_enum.h"
+
+#include "types/typeimpl.h"
+
+#include "context/static_context_consts.h"
+
 
 namespace zorba 
 {
@@ -261,6 +264,8 @@ public:
   bool is_constant() const;
 
   void replace_expr(const expr* oldExpr, const expr* newExpr);
+
+  FunctionConsts::FunctionKind get_function_kind() const;
 
 protected:
   void invalidate() 

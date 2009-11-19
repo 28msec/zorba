@@ -13,16 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "types/typeops.h"
-
-#include "functions/function.h"
-#include "functions/library.h"
 
 #include "compiler/api/compilercb.h"
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/rewriter/tools/expr_tools.h"
 #include "compiler/indexing/value_index.h"
+
+#include "functions/function.h"
+#include "functions/library.h"
+
+#include "types/typeops.h"
+
+#include "util/properties.h"
+
 
 namespace zorba 
 {
@@ -31,15 +35,16 @@ struct PredicateInfo;
 
 static bool isIndexJoinPredicate(RewriterContext&, PredicateInfo&);
 
-static void rewriteJoin(RewriterContext&, PredicateInfo&);
+static bool rewriteJoin(RewriterContext&, PredicateInfo&);
 
 static const var_expr* findForVar(RewriterContext&, const expr*, int&);
 
 static bool checkVarDependency(RewriterContext&, expr*, int);
 
-static void expandVars(RewriterContext&, expr*, int);
+  static bool expandVars(RewriterContext&, expr*, int, int&);
 
-static bool isAndExpr(expr* e);
+static void findFlworForVar(RewriterContext&, const var_expr*, flwor_expr*&,
+                            sequential_expr*&, ulong&, ulong&);
 
 
 struct PredicateInfo
@@ -64,7 +69,9 @@ expr_t IndexJoin::rewritePre(expr* node, RewriterContext& rCtx)
 
   flwor_expr* flworExpr = static_cast<flwor_expr *>(node);
 
-  rCtx.m_flwor_exprs.push_back(flworExpr);
+  // Push the flwor expr into the stack
+  rCtx.theFlworStack.push_back(flworExpr);
+  rCtx.theIsModifiedStack.push_back(false);
 
   expr* whereExpr = flworExpr->get_where();
 
@@ -77,20 +84,37 @@ expr_t IndexJoin::rewritePre(expr* node, RewriterContext& rCtx)
 
   if (isIndexJoinPredicate(rCtx, predInfo))
   {
-    rewriteJoin(rCtx, predInfo);
-    flworExpr->remove_where_clause();
+    if (rewriteJoin(rCtx, predInfo))
+    {
+      flworExpr->remove_where_clause();
+    }
   }
-  else if (isAndExpr(whereExpr))
+  else if (whereExpr->get_function_kind() == FunctionConsts::OP_AND_2)
   {
+    // TODO: Flatten the and-tree and test all conjuncts
+    // TODO: consider multi-key indices
     expr_iterator i = whereExpr->expr_begin();
     for(; !i.done(); ++i) 
     {
       PredicateInfo predInfo;
+      predInfo.theFlworExpr = flworExpr;
       predInfo.thePredicate = (*i);
 
       if (isIndexJoinPredicate(rCtx, predInfo))
       {
-        rewriteJoin(rCtx, predInfo);
+        if (rewriteJoin(rCtx, predInfo))
+        {
+          expr_t trueExpr = new const_expr(flworExpr->get_sctx_id(),
+                                           flworExpr->get_loc(),
+                                           true);
+          (*i) = trueExpr;
+
+          if (Properties::instance()->printIntermediateOpt())
+          {
+            std::cout << std::endl << "After HashJoin rewrite " << std::endl
+                      << rCtx.getRoot()->toString() << std::endl;
+          }
+        }
       }
     }
   }
@@ -103,13 +127,13 @@ expr_t IndexJoin::rewritePost(expr* node, RewriterContext& rCtx)
 {
   if (node->get_expr_kind() == flwor_expr_kind)
   { 
-    expr_t expr = rCtx.m_flwor_exprs[rCtx.m_flwor_exprs.size() - 1];
-    rCtx.m_flwor_exprs.resize(rCtx.m_flwor_exprs.size() - 1);
+    expr_t expr = rCtx.theFlworStack.back();
+    rCtx.theFlworStack.pop_back();
 
-    if (expr->get_expr_kind() == flwor_expr_kind)
-      return NULL;
-    else
-      return expr;
+    bool modified = rCtx.theIsModifiedStack.back();
+    rCtx.theIsModifiedStack.pop_back();
+
+    return (modified ? expr : NULL);
   }
 
   return NULL;
@@ -212,7 +236,7 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
 
   // The predicate must be in the same flwor that defines the inner var (this
   // way we can be sure that the pred acts as a filter over the inner var).
-  if (predInfo.theFlworExpr->defines_variable(predInfo.theInnerVar, NULL) < 0)
+  if (predInfo.theFlworExpr->defines_variable(predInfo.theInnerVar) < 0)
     return false;
     
   // Type checks
@@ -258,150 +282,8 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
 
 
 /*******************************************************************************
-
-********************************************************************************/
-static void rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
-{
-  //std::cout << "!!!!! Found Join Index Predicate !!!!!" << std::endl << std::endl;
-
-  const QueryLoc& loc = predInfo.thePredicate->get_loc();
-  short sctxid = predInfo.thePredicate->get_sctx_id();
-  static_context* sctx = rCtx.getStaticContext(predInfo.thePredicate);
-
-  for_clause* fc = predInfo.theInnerVar->get_for_clause();
-
-  // The index domain expr is the expr that defines the inner var, expanded so that
-  // it does not reference any variables defined after the outer var.
-  expr* domainExpr = fc->get_expr();
-  expandVars(rCtx, domainExpr, predInfo.theOuterVarId);
-
-  //
-  // Create the ValueIndex obj
-  //
-  std::ostringstream os;
-  os << "tempIndex" << rCtx.m_tempIndexCounter++;
-
-  store::Item_t qname;
-  GENV_ITEMFACTORY->createQName(qname, "", "", os.str().c_str());
-
-  ValueIndex_t idx = new ValueIndex(rCtx.theCCB, loc, qname);
-
-  idx->setDomainExpr(domainExpr);
-
-  idx->setDomainVariable(rCtx.createTempVar(sctxid, loc, var_expr::for_var));
-
-  idx->setDomainPositionVariable(rCtx.createTempVar(sctxid, loc, var_expr::pos_var));
-
-  idx->setTemp(true);
-
-  std::vector<expr_t> columnExprs(1);
-  std::vector<xqtref_t> columnTypes(1);
-  std::vector<OrderModifier> modifiers(1);
-
-  columnExprs[0] = predInfo.theInnerOp;
-  columnTypes[0] = predInfo.theInnerOp->return_type(sctx);
-  modifiers[0].theAscending = true;
-  modifiers[0].theEmptyLeast = true;
-  modifiers[0].theCollation = sctx->default_collation_uri().c_str();
-
-  replace_var(columnExprs[0], predInfo.theInnerVar, idx->getDomainVariable());
-
-  idx->setKeyExpressions(columnExprs);
-
-  idx->setKeyTypes(columnTypes);
-
-  idx->setOrderModifiers(modifiers);
-
-  sctx->bind_index(qname, idx, loc);
-
-  //
-  // Find the flwor expr defining the outer var
-  //
-  flwor_expr* outerFlworExpr = NULL;
-  expr_t outerSeqExpr;
-  long outerExprPos = -1;
-
-  for (long i = rCtx.m_flwor_exprs.size() - 1; i >= 0; --i)
-  {
-    if (rCtx.m_flwor_exprs[i]->get_expr_kind() == flwor_expr_kind)
-    {
-      outerFlworExpr = reinterpret_cast<flwor_expr*>(rCtx.m_flwor_exprs[i].getp());
-    }
-    else
-    {
-      assert(rCtx.m_flwor_exprs[i]->get_expr_kind() == fo_expr_kind);
-
-      outerSeqExpr = rCtx.m_flwor_exprs[i];
-      expr_iterator exprIter = outerSeqExpr->expr_begin();
-      while (!exprIter.done())
-      {
-        if ((*exprIter)->get_expr_kind() == flwor_expr_kind)
-        {
-          outerFlworExpr = reinterpret_cast<flwor_expr*>((*exprIter).getp());
-          break;
-        }
-      }
-    }
-
-    assert(outerFlworExpr != NULL);
-
-    if (outerFlworExpr->defines_variable(predInfo.theOuterVar, NULL) >= 0)
-    {
-      outerExprPos = i;
-      break;
-    }
-
-    outerFlworExpr = NULL;
-    outerSeqExpr = NULL;
-  }
-
-  assert(outerFlworExpr != NULL);
-
-  //
-  // create the "create index", and "build index" exprs
-  //
-  expr_t qnameExpr(new const_expr(sctxid, loc, qname));
-
-  fo_expr_t createExpr = new fo_expr(sctxid,
-                                     loc,
-                                     GET_BUILTIN_FUNCTION(OP_CREATE_INTERNAL_INDEX_1),
-                                     qnameExpr);
-  //
-  //  Build or adjust outer sequential expr 
-  //
-  if (outerSeqExpr == NULL)
-  {
-    sequential_expr* seqExpr = new sequential_expr(sctxid, loc);
-    
-    seqExpr->push_back(createExpr.getp());
-    seqExpr->push_back(outerFlworExpr);
-
-    outerSeqExpr = seqExpr;
-    assert(outerExprPos >= 0);
-    rCtx.m_flwor_exprs[outerExprPos] = outerSeqExpr;
-  }
-  else
-  {
-    sequential_expr* seqExpr = reinterpret_cast<sequential_expr*>(outerSeqExpr.getp());
-
-    seqExpr->push_front(createExpr.getp());
-  }
-
-  //
-  // Replace the expr defining the inner var with an index probe.
-  //
-  fo_expr_t probeExpr = new fo_expr(sctxid,
-                                    loc,
-                                    GET_BUILTIN_FUNCTION(FN_INDEX_PROBE_POINT_N),
-                                    qnameExpr,
-                                    const_cast<expr*>(predInfo.theOuterOp));
-
-  fc->set_expr(probeExpr.getp());
-}
-
-
-/*******************************************************************************
-
+  Check if "curExpr" references a single var and that var is a FOR var. If so,
+  return that FOR var and its prefix id; otherwise return NULL. 
 ********************************************************************************/
 static const var_expr* findForVar(
     RewriterContext& rCtx,
@@ -441,8 +323,11 @@ static const var_expr* findForVar(
   return var;
 }
 
-/*******************************************************************************
 
+/*******************************************************************************
+  Check if "curExpr" depends on the var V with the given prefix id. The method
+  returns true if "curExpr" references V or references another var whose domain
+  expr depends on V.
 ********************************************************************************/
 static bool checkVarDependency(
     RewriterContext& rCtx,
@@ -471,14 +356,204 @@ static bool checkVarDependency(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
+{
+  //std::cout << "!!!!! Found Join Index Predicate !!!!!" << std::endl << std::endl;
+
+  const QueryLoc& loc = predInfo.thePredicate->get_loc();
+  short sctxid = predInfo.thePredicate->get_sctx_id();
+  static_context* sctx = rCtx.getStaticContext(predInfo.thePredicate);
+
+  for_clause* fc = predInfo.theInnerVar->get_for_clause();
+
+  int maxInnerVarId = -1;
+
+  // The index domain expr is the expr that defines the inner var, expanded, if
+  // possible, so that it does not reference any variables defined after the outer
+  // var (because the index must be built ouside the loop of the outer FOR var).
+  // Note: must clone fc->get_expr() because expandVars modifies its input, but
+  // fc->get_expr should not be modified, because we may discover later that the
+  // rewrite is not possible after all, 
+  expr::substitution_t subst;
+  expr_t domainExpr = fc->get_expr()->clone(subst);
+  if (!expandVars(rCtx, domainExpr, predInfo.theOuterVarId, maxInnerVarId))
+    return false;
+
+  //
+  // Create the index name and the "create-index()" expr
+  //
+  std::ostringstream os;
+  os << "tempIndex" << rCtx.m_tempIndexCounter++;
+
+  store::Item_t qname;
+  GENV_ITEMFACTORY->createQName(qname, "", "", os.str().c_str());
+
+  expr_t qnameExpr(new const_expr(sctxid, loc, qname));
+
+  fo_expr_t createExpr = new fo_expr(sctxid,
+                                     loc,
+                                     GET_BUILTIN_FUNCTION(OP_CREATE_INTERNAL_INDEX_1),
+                                     qnameExpr);
+
+  //
+  // Find where to place the create-index expr
+  //
+  if (maxInnerVarId >= 0)
+  {
+    // Find the flwor expr defining the inner-most var referenced by the domain
+    // expr of the index. Then create the index in the return expr of that
+    // flwor expr.
+    const var_expr* mostInnerVar = (*rCtx.m_idvar_map)[maxInnerVarId];
+
+    flwor_expr* innerFlworExpr = NULL;
+    sequential_expr* innerSeqExpr;
+    ulong innerPosInStack;
+    ulong innerPosInSeq;
+
+    findFlworForVar(rCtx,
+                    mostInnerVar,
+                    innerFlworExpr,
+                    innerSeqExpr,
+                    innerPosInStack,
+                    innerPosInSeq);
+
+    if (innerFlworExpr->defines_variable(predInfo.theOuterVar) >= 0)
+    {
+      return false;
+    }
+
+    expr* returnExpr = innerFlworExpr->get_return_expr(false);
+
+    if (returnExpr->get_expr_kind() == sequential_expr_kind)
+    {
+      innerSeqExpr = static_cast<sequential_expr*>(returnExpr);
+
+      ulong numArgs = innerSeqExpr->size();
+      ulong arg;
+      for (arg = 0; arg < numArgs; ++arg)
+      {
+        if ((*innerSeqExpr)[arg]->get_function_kind() !=
+            FunctionConsts::OP_CREATE_INTERNAL_INDEX_1)
+        {
+          break;
+        }
+      }
+ 
+      innerSeqExpr->add_at(arg, createExpr);
+    }
+    else
+    {
+      innerSeqExpr = new sequential_expr(sctxid, loc);
+      
+      innerSeqExpr->push_back(createExpr.getp());
+      innerSeqExpr->push_back(returnExpr);
+
+      innerFlworExpr->set_return_expr(innerSeqExpr);
+    }
+
+    rCtx.theIsModifiedStack[innerPosInStack] = true;
+  }
+  else
+  {
+    // Find the flwor expr defining the outer var and create the index just
+    // before this flwor.
+    flwor_expr* outerFlworExpr = NULL;
+    sequential_expr* outerSeqExpr;
+    ulong outerPosInStack;
+    ulong outerPosInSeq;
+
+    findFlworForVar(rCtx,
+                    predInfo.theOuterVar,
+                    outerFlworExpr,
+                    outerSeqExpr,
+                    outerPosInStack,
+                    outerPosInSeq);
+
+    //  Build or adjust outer sequential expr 
+    if (outerSeqExpr == NULL)
+    {
+      outerSeqExpr = new sequential_expr(sctxid, loc);
+      
+      outerSeqExpr->push_back(createExpr.getp());
+      outerSeqExpr->push_back(outerFlworExpr);
+
+      rCtx.theFlworStack[outerPosInStack] = outerSeqExpr;
+    }
+    else
+    {
+      outerSeqExpr->add_at(outerPosInSeq, createExpr.getp());
+    }
+
+    rCtx.theIsModifiedStack[outerPosInStack] = true;
+  }
+
+  //
+  // Replace the expr defining the inner var with an index probe.
+  //
+  fo_expr_t probeExpr = new fo_expr(sctxid,
+                                    loc,
+                                    GET_BUILTIN_FUNCTION(FN_INDEX_PROBE_POINT_N),
+                                    qnameExpr,
+                                    const_cast<expr*>(predInfo.theOuterOp));
+
+  fc->set_expr(probeExpr.getp());
+
+  //
+  // Create the ValueIndex obj
+  //
+  ValueIndex_t idx = new ValueIndex(sctx, loc, qname);
+
+  idx->setDomainExpr(domainExpr);
+
+  idx->setDomainVariable(rCtx.createTempVar(sctxid, loc, var_expr::for_var));
+
+  idx->setDomainPositionVariable(rCtx.createTempVar(sctxid, loc, var_expr::pos_var));
+
+  idx->setTemp(true);
+
+  std::vector<expr_t> columnExprs(1);
+  std::vector<xqtref_t> columnTypes(1);
+  std::vector<OrderModifier> modifiers(1);
+
+  columnExprs[0] = predInfo.theInnerOp;
+  columnTypes[0] = predInfo.theInnerOp->return_type(sctx);
+  modifiers[0].theAscending = true;
+  modifiers[0].theEmptyLeast = true;
+  modifiers[0].theCollation = sctx->default_collation_uri().c_str();
+
+  replace_var(columnExprs[0], predInfo.theInnerVar, idx->getDomainVariable());
+
+  idx->setKeyExpressions(columnExprs);
+
+  idx->setKeyTypes(columnTypes);
+
+  idx->setOrderModifiers(modifiers);
+
+  sctx->bind_index(qname, idx, loc);
+
+  if (Properties::instance()->printIntermediateOpt())
+  {
+    std::cout << std::endl << idx->toString() << std::endl;
+  }
+
+  //std::cout << "!!!!! Applied Hash Join !!!!!" << std::endl << std::endl;
+
+  return true;
+}
+
+
 
 /*******************************************************************************
 
 ********************************************************************************/
-static void expandVars(
+static bool expandVars(
     RewriterContext& rCtx,
     expr* subExpr,
-    int outerVarId)
+    int outerVarId,
+    int& maxVarId)
 {
   if (subExpr->get_expr_kind() == wrapper_expr_kind)
   {
@@ -491,33 +566,109 @@ static void expandVars(
 
       if (varid > outerVarId)
       {
-        wrapper->set_expr(var->get_forletwin_clause()->get_expr());
-        expandVars(rCtx, wrapper->get_expr(true), outerVarId);
-        return;
+        if (var->get_kind() == var_expr::let_var)
+        {
+          wrapper->set_expr(var->get_forletwin_clause()->get_expr());
+
+          return expandVars(rCtx, wrapper, outerVarId, maxVarId);
+        }
+        else if (var->get_kind() == var_expr::for_var)
+        {
+#if 1
+          return false;
+#else
+          // TODO: to expand a FOR var, we must make sure that the expr is a
+          // map w.r.t. that var. 
+          wrapper->set_expr(var->get_forletwin_clause()->get_expr());
+
+          return expandVars(rCtx, wrapper, outerVarId, maxVarId);
+#endif
+        }
+        else 
+        {
+          return false;
+        }
+      }
+      else
+      {
+        if (varid > maxVarId)
+          maxVarId = varid;
+
+        return true;
       }
     }
   }
-  
+  else if (subExpr->get_expr_kind() == var_expr_kind)
+  {
+    ZORBA_ASSERT(false);
+  }
+
   expr_iterator iter = subExpr->expr_begin();
   while (!iter.done())
   {
-    expandVars(rCtx, *iter, outerVarId);
+    if (!expandVars(rCtx, *iter, outerVarId, maxVarId))
+      return false;
+
     ++iter;
   }
 
+  return true;
 }
 
 
 /*******************************************************************************
-
+  Find the flwor expr defining the given var. 
 ********************************************************************************/
-static bool isAndExpr(expr* e)
+static void findFlworForVar(
+    RewriterContext& rCtx,
+    const var_expr* var,
+    flwor_expr*& flworExpr,
+    sequential_expr*& seqExpr,
+    ulong& posInStack,
+    ulong& posInSeq)
 {
-  if (e->get_expr_kind() != fo_expr_kind)
-    return false;
+  posInSeq = 0;
+  flworExpr = NULL;
+  seqExpr = NULL;
 
-  const function* fn = static_cast<fo_expr *>(e)->get_func();
-  return (fn->getKind() == FunctionConsts::OP_AND_2);
+  for (long i = rCtx.theFlworStack.size() - 1; i >= 0; --i)
+  {
+    if (rCtx.theFlworStack[i]->get_expr_kind() == flwor_expr_kind)
+    {
+      flworExpr = static_cast<flwor_expr*>(rCtx.theFlworStack[i].getp());
+    }
+    else
+    {
+      assert(rCtx.theFlworStack[i]->get_expr_kind() == sequential_expr_kind);
+
+      seqExpr = static_cast<sequential_expr*>(rCtx.theFlworStack[i].getp());
+
+      expr_iterator exprIter = seqExpr->expr_begin();
+      while (!exprIter.done())
+      {
+        if ((*exprIter)->get_expr_kind() == flwor_expr_kind)
+        {
+          flworExpr = static_cast<flwor_expr*>((*exprIter).getp());
+          break;
+        }
+        ++exprIter;
+        ++posInSeq;
+      }
+    }
+
+    assert(flworExpr != NULL);
+
+    if (flworExpr->defines_variable(var) >= 0)
+    {
+      posInStack = i;
+      break;
+    }
+
+    flworExpr = NULL;
+    seqExpr = NULL;
+  }
+
+  assert(flworExpr != NULL);
 }
 
 

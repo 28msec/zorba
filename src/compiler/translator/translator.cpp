@@ -51,7 +51,6 @@
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/path_expr.h"
-#include "compiler/normalizer/normalizer.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/rewriter/framework/rewriter.h"
 #include "compiler/indexing/index_tools.h"
@@ -1166,7 +1165,8 @@ expr_t wrap_in_dos_and_dupelim(expr_t expr, bool atomics, bool reverse = false)
 let_clause_t wrap_in_letclause(expr_t e, varref_t lv) 
 {
   assert (lv->get_kind () == var_expr::let_var);
-  return new let_clause(sctxid(), e->get_loc(), lv, e.getp());
+
+  return new let_clause(sctx_p, sctxid(), e->get_loc(), lv, e.getp());
 }
 
 
@@ -1198,11 +1198,13 @@ let_clause_t wrap_in_letclause(expr_t e)
 ********************************************************************************/
 for_clause_t wrap_in_forclause(expr_t e, varref_t fv, varref_t pv) 
 {
-  assert (fv->get_kind () == var_expr::for_var);
+  assert(fv->get_kind () == var_expr::for_var);
   if (pv != NULL)
-    assert (pv->get_kind() == var_expr::pos_var);
+  {
+    assert(pv->get_kind() == var_expr::pos_var);
+  }
 
-  return new for_clause(sctxid(), e->get_loc(), fv, e, pv);
+  return new for_clause(sctx_p, sctxid(), e->get_loc(), fv, e, pv);
 }
 
 
@@ -2755,12 +2757,12 @@ void* begin_visit(const FunctionDecl& v)
 }
 
 
-void end_visit (const FunctionDecl& v, void* /*visit_state*/) 
+void end_visit(const FunctionDecl& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
   prolog_vf_key.clear();
-  pop_stack (fn_decl_stack);
+  pop_stack(fn_decl_stack);
 
   expr_t body;
   ParseConstants::function_type_t lFuncType = v.get_type();
@@ -2768,15 +2770,15 @@ void end_visit (const FunctionDecl& v, void* /*visit_state*/)
                       lFuncType == ParseConstants::fn_extern_update ||
                       lFuncType == ParseConstants::fn_extern_sequential);
   if (! is_external)
-    body = pop_nodestack ();
+    body = pop_nodestack();
 
-  if (v.get_return_type () != NULL)
-    pop_tstack ();
+  if (v.get_return_type() != NULL)
+    pop_tstack();
 
   // If function has any params, they have been wraped in a flwor expr. Set the
   // return clause of the flwor to the body expr of the function, and then make
   // this flwor be the actual body of the function.
-  int nargs = v.get_param_count ();
+  int nargs = v.get_param_count();
   vector<varref_t> args;
   if (nargs > 0) 
   {
@@ -2812,9 +2814,10 @@ void end_visit (const FunctionDecl& v, void* /*visit_state*/)
   {
     assert(body != NULL);
 
-    if (body->is_sequential() && lFuncType != ParseConstants::fn_sequential) {
-      ZORBA_ERROR_LOC_DESC (XPST0003, loc,
-                            "Only a sequential function can have a body that is sequential expression");
+    if (body->is_sequential() && lFuncType != ParseConstants::fn_sequential) 
+    {
+      ZORBA_ERROR_LOC_DESC(XPST0003, loc,
+                           "Only a sequential function can have a body that is sequential expression");
     }
 
     // Under section 2.2.2 "Category Rules", it states: If the body of a
@@ -2844,16 +2847,23 @@ void end_visit (const FunctionDecl& v, void* /*visit_state*/)
                                    nargs));
     ZORBA_ASSERT(udf != NULL);
 
-    // Normalize and optimize the function body. This has to be done here because
+    // Optimize the function body. This has to be done here because
     // we have the correct static context here (udfs declared in a library module
     // must be compiled in the contex tof that module).
+    xqtref_t returnType = udf->get_signature().return_type();
+
+    if (TypeOps::is_builtin_simple(*returnType)) 
+    {
+      body = wrap_in_atomization(body);
+      body = wrap_in_type_promotion(body, returnType);
+    }
+    else 
+    {
+      body = wrap_in_type_match(body, returnType);
+    }
+
     if (theTopCCB->theConfig.translate_cb != NULL)
       theTopCCB->theConfig.translate_cb(&*body, v.get_name()->get_qname());
-
-    normalize_expr_tree(v.get_name()->get_qname().c_str(),
-                        theTopCCB,
-                        body,
-                        *&(udf->get_signature().return_type()));
 
     if (theTopCCB->theConfig.opt_level == CompilerCB::config_t::O1) 
     {
@@ -3058,7 +3068,7 @@ void* begin_visit(const IndexDecl& v)
                                                     qname->get_localname(),
                                                     qname->get_location());
 
-  ValueIndex_t index = new ValueIndex(theCCB, loc, qnameItem);
+  ValueIndex_t index = new ValueIndex(sctx_p, loc, qnameItem);
   index->setUnique(v.isUnique());
   index->setMethod(v.isOrdered() ? ValueIndex::TREE : ValueIndex::HASH);
   if (v.isAutomatic())
@@ -3100,14 +3110,14 @@ void* begin_visit(const IndexKeyList& v)
 
   expr_t domainExpr = pop_nodestack();
 
+  domainExpr = wrap_in_type_match(domainExpr, theRTM.ANY_NODE_TYPE_STAR);
+
   std::string msg = "domain expr for index " + index->getName()->getStringValue()->str();
 
   if (theTopCCB->theConfig.translate_cb != NULL)
     theTopCCB->theConfig.translate_cb(domainExpr.getp(), msg);
 
-  // Normalize and optimize the domain expr
-  normalize_expr_tree(msg.c_str(), theCCB, domainExpr, &*theRTM.ANY_NODE_TYPE_STAR);
-
+  // Optimize the domain expr
   if (theTopCCB->theConfig.opt_level == CompilerCB::config_t::O1) 
   {
     RewriterContext rCtx(theCCB, domainExpr);
@@ -3206,7 +3216,7 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
       theTopCCB->theConfig.translate_cb(keyExpr.getp(), msg.str());
 
     // Normalize and optimize the key expr
-    normalize_expr_tree(msg.str().c_str(), theCCB, keyExpr, NULL);
+    //normalize_expr_tree(msg.str().c_str(), theTopCCB, keyExpr, NULL);
 
     if (theTopCCB->theConfig.opt_level == CompilerCB::config_t::O1) 
     {
@@ -3592,6 +3602,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
   flwor->set_return_expr(retExpr);
 
   ulong curClausePos = theFlworClausesStack.size() - 1;
+
   while(theFlworClausesStack[curClausePos] != NULL)
   {
     flwor_clause* curClause = theFlworClausesStack[curClausePos];
@@ -3694,9 +3705,9 @@ void* begin_visit(const ForClause& v)
 }
 
 
-void end_visit (const ForClause& v, void* /*visit_state*/) 
+void end_visit(const ForClause& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
   if (v.is_outer())
   {
@@ -3715,28 +3726,28 @@ void end_visit (const ForClause& v, void* /*visit_state*/)
 /*******************************************************************************
   VarInDeclList ::= VarInDecl | VarInDeclList  ","  "$"  VarInDecl
 ********************************************************************************/
-void *begin_visit (const VarInDeclList& v) 
+void* begin_visit(const VarInDeclList& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const VarInDeclList& v, void* /*visit_state*/) 
+void end_visit(const VarInDeclList& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
 /*******************************************************************************
   VarInDecl ::= VarName TypeDeclaration? PositionalVar? FTScoreVar? "in" ExprSingle
 ********************************************************************************/
-void *begin_visit (const VarInDecl& v) 
+void* begin_visit(const VarInDecl& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const VarInDecl& v, void* /*visit_state*/) 
+void end_visit(const VarInDecl& v, void* /*visit_state*/) 
 {
   TRACE_VISIT_OUT();
 
@@ -3768,7 +3779,8 @@ void end_visit (const VarInDecl& v, void* /*visit_state*/)
 
   wrap_in_debugger_expr(domainExpr);
 
-  for_clause* fc = new for_clause(sctxid(),
+  for_clause* fc = new for_clause(sctx_p,
+                                  sctxid(),
                                   v.get_location(),
                                   varExpr,
                                   domainExpr,
@@ -3853,7 +3865,8 @@ void end_visit (const VarGetsDecl& v, void* /*visit_state*/)
 
     wrap_in_debugger_expr(domainExpr);
 
-    let_clause* clause = new let_clause(sctxid(),
+    let_clause* clause = new let_clause(sctx_p,
+                                        sctxid(),
                                         v.get_location(),
                                         varExpr,
                                         domainExpr);
@@ -3903,7 +3916,8 @@ void intermediate_visit(const WindowClause& v, void* /*visit_state*/)
                                      window_clause::tumbling_window :
                                      window_clause::sliding_window);
 
-  window_clause* clause = new window_clause(sctxid(),
+  window_clause* clause = new window_clause(sctx_p,
+                                            sctxid(),
                                             v.get_location(),
                                             winKind,
                                             NULL,
@@ -6053,7 +6067,7 @@ void post_axis_visit(const AxisStep& v, void* /*visit_state*/)
   // The flworExpr as well as the $$predInput varExpr are pushed to the nodestack.
   const for_clause* fcOuterDot = reinterpret_cast<const for_clause*>((*flworExpr)[0]);
   rchandle<relpath_expr> predPathExpr = new relpath_expr(sctxid(), loc);
-  predPathExpr->add_back(fcOuterDot->get_var());
+  predPathExpr->add_back(new wrapper_expr(sctxid(), loc, fcOuterDot->get_var()));
   predPathExpr->add_back(axisExpr.getp());
     
   expr_t predInputExpr = predPathExpr;
@@ -6631,17 +6645,17 @@ void end_visit (const StringLiteral& v, void* /*visit_state*/)
   [110] VarRef ::= "$" VarName
   [111] VarName ::= QName
 ********************************************************************************/
-void *begin_visit (const VarRef& v) 
+void* begin_visit(const VarRef& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const VarRef& v, void* /*visit_state*/) 
+void end_visit(const VarRef& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
-  var_expr *ve = lookup_var (v.get_varname ());
+  var_expr* ve = lookup_var(v.get_varname());
 
   if (ve == NULL)
     ZORBA_ERROR_LOC_PARAM (XPST0008, loc, v.get_varname (), "");

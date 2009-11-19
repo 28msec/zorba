@@ -26,16 +26,26 @@ namespace zorba {
 static expr_t rewriteRec(RewriterContext&, RewriteRule*, expr*, bool&);
 
 
+
+/*******************************************************************************
+
+********************************************************************************/
 RuleMajorDriver::RuleMajorDriver() 
 { 
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 RuleMajorDriver::~RuleMajorDriver() 
 {
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void RuleMajorDriver::rewrite(RewriterContext& rCtx)
 {
   bool modified = false;
@@ -67,6 +77,9 @@ void RuleMajorDriver::rewrite(RewriterContext& rCtx)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void RuleOnceDriverBase::rewrite(RewriterContext& rCtx)
 {
   bool modified = false;
@@ -86,6 +99,13 @@ void RuleOnceDriverBase::rewrite(RewriterContext& rCtx)
 }
 
 
+/*******************************************************************************
+  Apply the given rule to the "curExpr" and, recursively, to each sub expression
+  of "curExpr". If any rewrite is done anywhere inside the expr sub tree rooted
+  at "curExpr", then "modified" will be set to true ("modified" is never set to
+  false by this method). If as part of a re-write, "curExpr" is rewriten into
+  another expr E, then E is returned to the caller.   
+********************************************************************************/
 static expr_t rewriteRec(
     RewriterContext& rCtx,
     RewriteRule* rule,
@@ -117,6 +137,7 @@ static expr_t rewriteRec(
     result = newExpr;
     modified = true;
   }
+
   return result;
 }
 

@@ -65,36 +65,38 @@ void IndexPointProbeState::reset(PlanState& state)
 
 bool IndexPointProbeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t qname;
+  store::Item_t qnameItem;
+  store::Item_t keyItem;
   ValueIndex_t zorbaIndex;
   store::IndexPointCondition_t cond;
-  int numChildren;
+  ulong numChildren;
+  ulong i;
   bool status;
 
   IndexPointProbeState* state;
   DEFAULT_STACK_INIT(IndexPointProbeState, state, planState);
 
-  status = consumeNext(qname, theChildren[0], planState);
+  status = consumeNext(qnameItem, theChildren[0], planState);
   ZORBA_ASSERT(status);
 
-  if (state->theQname == NULL || !state->theQname->equals(qname)) 
+  if (state->theQname == NULL || !state->theQname->equals(qnameItem)) 
   {
-    state->theQname = qname;
+    state->theQname = qnameItem;
 
-    if ((zorbaIndex = theSctx->lookup_index(qname)) == NULL)
+    if ((zorbaIndex = theSctx->lookup_index(qnameItem)) == NULL)
     {
       ZORBA_ERROR_LOC_PARAM(XQP0037_INDEX_IS_NOT_DECLARED, loc,
-                            qname->getStringValue()->c_str(), "");
+                            qnameItem->getStringValue()->c_str(), "");
     }
 
     state->theIndex = (zorbaIndex->isTemp() ?
-                       planState.dctx()->getIndex(qname) :
+                       planState.dctx()->getIndex(qnameItem) :
                        GENV_STORE.getIndex(state->theQname));
 
     if (state->theIndex == NULL)
     {
       ZORBA_ERROR_LOC_PARAM(XQP0033_INDEX_DOES_NOT_EXIST, loc,
-                            qname->getStringValue()->c_str(), "");
+                            qnameItem->getStringValue()->c_str(), "");
     }
 
     state->theIterator = GENV_STORE.getIteratorFactory()->
@@ -104,22 +106,24 @@ bool IndexPointProbeIterator::nextImpl(store::Item_t& result, PlanState& planSta
   cond = state->theIndex->createPointCondition();
 
   numChildren = theChildren.size();
-  for(int i = 1; i < numChildren; ++i) 
+  for(i = 1; i < numChildren; ++i) 
   {
-    store::Item_t temp;
-    if (!consumeNext(temp, theChildren[i], planState)) 
+    if (!consumeNext(keyItem, theChildren[i], planState)) 
     {
-      temp = NULL;
+      break;
     }
-    cond->pushItem(temp);
+    cond->pushItem(keyItem);
   }
 
-  state->theIterator->init((const zorba::store::IndexPointCondition_t&)cond);
-  state->theIterator->open();
-
-  while(state->theIterator->next(result)) 
+  if (i == numChildren)
   {
-    STACK_PUSH(true, state);
+    state->theIterator->init((const zorba::store::IndexPointCondition_t&)cond);
+    state->theIterator->open();
+
+    while(state->theIterator->next(result)) 
+    {
+      STACK_PUSH(true, state);
+    }
   }
 
   STACK_END(state);

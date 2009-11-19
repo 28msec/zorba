@@ -73,7 +73,7 @@ static inline ostream& put_qname(store::Item_t qname, ostream &os)
 }
 
 
-static inline string expr_addr(const void *e) 
+static inline string expr_addr(const void* e) 
 {
   if (Properties::instance()->noTreeIds ())
   {
@@ -97,8 +97,27 @@ std::ostream& debugger_expr::put(std::ostream& os) const
 
 std::ostream& wrapper_expr::put(std::ostream& os) const
 {
+#ifdef VERBOSE
   get_expr()->put(os);
   return os;
+#else
+  if (get_expr()->get_expr_kind() == var_expr_kind)
+  {
+    const var_expr* varExpr = static_cast<const var_expr*>(get_expr());
+
+    os << INDENT << "var_ref [ " << expr_addr(this) << " ";
+    put_qname(varExpr->get_name(), os);
+    os << expr_addr(varExpr) << " ]" << std::endl;
+    UNDENT;
+    return os;
+  }
+  else
+  {
+    BEGIN_EXPR(wrapper_expr);
+    get_expr()->put(os);
+    CLOSE_EXPR;
+  }
+#endif
 }
 
 ostream& sequential_expr::put( ostream& os) const
@@ -112,17 +131,19 @@ ostream& sequential_expr::put( ostream& os) const
 
 ostream& var_expr::put(ostream& os) const
 {
-  os << INDENT << "var kind=" << decode_var_kind(get_kind()) << expr_addr (this);
+  os << INDENT << "var kind=" << decode_var_kind(get_kind()) << expr_addr(this);
   if (theName != NULL)
   {
     os << " name=";
     put_qname(get_name(), os);
   }
 
+#if VERBOSE
   if (theDeclaredType != NULL) 
   {
     os << " type=" << theDeclaredType->toString ();
   }
+#endif
 
   os << endl;
   UNDENT;
@@ -132,6 +153,7 @@ ostream& var_expr::put(ostream& os) const
 
 ostream& for_clause::put(ostream& os) const
 {
+#if VERBOSE
   BEGIN_EXPR(FOR);
 
   theVarExpr->put(os);
@@ -140,18 +162,35 @@ ostream& for_clause::put(ostream& os) const
 
   PUT_SUB("IN", theDomainExpr);
 
+#else
+  os << INDENT << "FOR" << expr_addr(this) << " ";
+  put_qname(theVarExpr->get_name(), os);
+  os << expr_addr(theVarExpr.getp()) << std::endl << DENT << "[\n";
+
+  theDomainExpr->put(os);
+#endif
+
   CLOSE_EXPR;
 }
 
 
 ostream& let_clause::put(ostream& os) const
 {
+#if VERBOSE
   BEGIN_EXPR(LET);
 
   theVarExpr->put(os);
   PUT_SUB ("SCORE", theScoreVarExpr);
 
   PUT_SUB(":=", theDomainExpr);
+
+#else
+  os << INDENT << "LET" << expr_addr(this) << " ";
+  put_qname(theVarExpr->get_name(), os);
+  os << expr_addr(theVarExpr.getp()) << std::endl << DENT << "[\n";
+
+  theDomainExpr->put(os);
+#endif
 
   CLOSE_EXPR;
 }

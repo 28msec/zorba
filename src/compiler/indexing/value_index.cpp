@@ -39,12 +39,15 @@ SERIALIZABLE_CLASS_VERSIONS(ValueIndex)
 END_SERIALIZABLE_CLASS_VERSIONS(ValueIndex)
 
 
+/*******************************************************************************
+
+********************************************************************************/
 ValueIndex::ValueIndex(
-    CompilerCB* ccb,
+    static_context* sctx,
     const QueryLoc& loc,
     const store::Item_t& name)
   :
-  theSctx(ccb->theRootSctx),
+  theSctx(sctx),
   theName(name),
   theIsUnique(false),
   theIsTemp(false),
@@ -54,6 +57,9 @@ ValueIndex::ValueIndex(
 }
   
 
+/*******************************************************************************
+
+********************************************************************************/
 ValueIndex::ValueIndex(::zorba::serialization::Archiver& ar)
   :
   SimpleRCObject(ar)
@@ -61,6 +67,9 @@ ValueIndex::ValueIndex(::zorba::serialization::Archiver& ar)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void ValueIndex::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theSctx;
@@ -76,11 +85,17 @@ void ValueIndex::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 ValueIndex::~ValueIndex()
 {
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 store::Item* ValueIndex::getName() const
 {
   return theName.getp();
@@ -96,7 +111,8 @@ expr* ValueIndex::getDomainExpr() const
 void ValueIndex::setDomainExpr(expr_t domainExpr) 
 {
   if (theDomainClause == NULL)
-    theDomainClause = new for_clause(domainExpr->get_sctx_id(),
+    theDomainClause = new for_clause(NULL,
+                                     domainExpr->get_sctx_id(),
                                      domainExpr->get_loc(),
                                      NULL,
                                      NULL);
@@ -114,7 +130,8 @@ var_expr* ValueIndex::getDomainVariable() const
 void ValueIndex::setDomainVariable(var_expr_t domainVar)
 {
   if (theDomainClause == NULL)
-    theDomainClause = new for_clause(domainVar->get_sctx_id(),
+    theDomainClause = new for_clause(NULL,
+                                     domainVar->get_sctx_id(),
                                      domainVar->get_loc(),
                                      NULL,
                                      NULL);
@@ -371,7 +388,7 @@ expr* ValueIndex::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   // return index-entry-builder($$newdot, new_key1_expr, ..., new_keyN_expr) 
   //
 
-  for_clause* fc = new for_clause(sctxid, dotloc, newdot, newdom, newpos);
+  for_clause* fc = new for_clause(NULL, sctxid, dotloc, newdot, newdom, newpos);
 
   expr_t domainVarExpr(new wrapper_expr(sctxid, loc, newdot.getp()));
 
@@ -483,7 +500,7 @@ DocIndexer* ValueIndex::getDocIndexer(CompilerCB* ccb, const QueryLoc& loc)
   // return index-entry-builder($$newdot, new_key1_expr, ..., new_keyN_expr) 
   //
 
-  for_clause* fc = new for_clause(sctxid, dotloc, newdot, newdom, newpos);
+  for_clause* fc = new for_clause(NULL, sctxid, dotloc, newdot, newdom, newpos);
 
   expr_t domainVarExpr = new wrapper_expr(sctxid, loc, newdot.getp());
 
@@ -517,6 +534,31 @@ DocIndexer* ValueIndex::getDocIndexer(CompilerCB* ccb, const QueryLoc& loc)
   theDocIndexer = new DocIndexer(numKeys, theDocIndexerPlan, tempVar);
 
   return theDocIndexer.getp();
+}
+
+
+std::string ValueIndex::toString()
+{
+  std::ostringstream os;
+
+  os << "Index : " << theName->getStringValue()->c_str() << std::endl;
+
+  os << "Domain Expr : " << std::endl;
+
+  theDomainClause->get_expr()->put(os) << std::endl;
+
+  os << "Domain Variable : ";
+  getDomainVariable()->put(os);
+
+  ulong numColumns = theKeyExprs.size();
+
+  for (ulong i = 0; i < numColumns; ++i)
+  {
+    os << std::endl << "Key Expr " << i << " : " << std::endl;
+    theKeyExprs[i]->put(os);
+  }
+
+  return os.str();
 }
 
 

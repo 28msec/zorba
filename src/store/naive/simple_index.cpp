@@ -114,6 +114,9 @@ uint32_t HashIndex::CompareFunction::hash(const store::IndexKey* key) const
 
   for (ulong i = 0; i < theNumColumns; i++)
   {
+    if ((*key)[i] == NULL)
+      continue;
+
     hval = hashfun::h32<uint32_t>((*key)[i]->hash(theTimezone, theCollators[i]),
                                   hval);
   }

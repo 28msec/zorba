@@ -42,7 +42,6 @@ namespace zorba
 
 static inline expr::expr_t wrap_in_atomization(
     short context,
-    static_context *sctx,
     expr::expr_t e)
 {
   fo_expr_t fo = new fo_expr(context, e->get_loc(), GET_BUILTIN_FUNCTION(FN_DATA_1), e);
@@ -73,6 +72,8 @@ static inline expr::expr_t wrap_in_typematch(
     : new treat_expr(context, e->get_loc(), e, type, XPTY0004);
 }
 
+
+#if 0
 
 static inline void checkNonUpdating(const expr* lExpr)
 {
@@ -121,56 +122,6 @@ bool begin_visit(flwor_expr& node)
 
 void end_visit(flwor_expr& node)
 {
-  for (unsigned i = 0; i < node.num_clauses(); i++) 
-  {
-    flwor_clause& c = *node.get_clause(i, true);
-
-    if (c.get_kind() == flwor_clause::where_clause) 
-    {
-    }
-    else if (c.get_kind() == flwor_clause::order_clause)
-    {
-    }
-    else if (c.get_kind() == flwor_clause::for_clause)
-    {
-      for_clause* fc = static_cast<for_clause *> (&c);
-
-      xqtref_t vartype = fc->get_var()->get_type();
-      if (vartype != NULL) 
-      {
-        if (TypeOps::is_empty(*vartype))
-          ZORBA_ERROR_LOC_PARAM(XPTY0004, fc->get_loc(), "empty-sequence()", "");
-
-        xqtref_t promote_type = m_cb->theRootSctx->get_typemanager()->
-                                create_type(*vartype, TypeConstants::QUANT_STAR);
-
-        expr_t e = fc->get_expr();
-        fc->set_expr(wrap_in_typematch(node.get_sctx_id(), e, promote_type));
-      }
-    }
-    else if (c.get_kind() == flwor_clause::let_clause)
-    {
-      let_clause* lc = static_cast<let_clause *> (&c);
-
-      xqtref_t vartype = lc->get_var()->get_type();
-      if (vartype != NULL) 
-      {
-        expr_t e = lc->get_expr();
-        lc->set_expr(wrap_in_typematch(node.get_sctx_id(), e, vartype));
-      }
-    }
-    else if (c.get_kind() == flwor_clause::window_clause)
-    {
-      window_clause* wc = static_cast<window_clause *> (&c);
-
-      xqtref_t vartype = wc->get_var()->get_type();
-      if (vartype != NULL) 
-      {
-        expr_t e = wc->get_expr();
-        wc->set_expr(wrap_in_typematch(node.get_sctx_id(), e, vartype));
-      }
-    }
-  }
 }
 
 
@@ -371,6 +322,8 @@ DEF_VISIT_METHODS (function_def_expr)
 
 };
 
+#endif
+
 
 void normalize_expr_tree(
     const char* norm_descr,
@@ -378,15 +331,15 @@ void normalize_expr_tree(
     expr_t& root,
     const XQType* rType) 
 {
-  normalizer n(aCompilerCB);
+  //normalizer n(aCompilerCB);
 
-  root->accept(n);
+  //root->accept(n);
 
   if (rType != NULL)
   {
     if (TypeOps::is_builtin_simple(*rType)) 
     {
-      root = wrap_in_atomization(root->get_sctx_id(), aCompilerCB->theRootSctx, root);
+      root = wrap_in_atomization(root->get_sctx_id(), root);
       root = wrap_in_type_conversion(root->get_sctx_id(), root, rType);
     }
     else 
