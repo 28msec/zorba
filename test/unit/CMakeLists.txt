@@ -28,8 +28,8 @@ ELSE(WIN32)
  itemfactory.cpp
  xmldatamanager.cpp
  uri.cpp
- multithread_simple.cpp
- multithread_stress_test.cpp
+# multithread_simple.cpp
+# multithread_stress_test.cpp
 )
 ENDIF(WIN32)
 
