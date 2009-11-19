@@ -11,7 +11,6 @@
     <zorba:namespace uri="http://www.zorba-xquery.com/zorba/rest-functions" define="ZORBA_REST_FN_NS" prefix="fn-zorba-rest"/>
     <zorba:namespace uri="http://www.zorba-xquery.com/zorba/node-ref-functions" define="ZORBA_NODEREF_FN_NS" prefix="fn-zorba-ref"/> 
     <zorba:namespace uri="http://www.zorba-xquery.com/zorba/internal-functions" define="ZORBA_OP_NS" prefix="op-zorba"/>
-    <zorba:namespace uri="http://www.zorba-xquery.com/zorba/collection-functions" define="ZORBA_COLLECTION_FN_NS" prefix="fn-zorba-collection"/>
     <!--  empty prefix
       <zorba:namespace uri="http://www.zorba-xquery.com/zorba/index-functions" define="ZORBA_INDEX_FN_NS" prefix=""/> -->
     <zorba:namespace uri="http://www.zorba-xquery.com/zorba/email-functions" define="ZORBA_EMAIL_FN_NS" prefix="fn-zorba-email"/>
@@ -22,9 +21,17 @@
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/xqdoc" define="ZORBA_XQDOC_FN_NS" prefix="xqdoc"/>
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/math" define="ZORBA_MATH_FN_NS" prefix="fn-zorba-math"/>
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/base64" define="ZORBA_BASE64_FN_NS" prefix="base64"/>
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/introspection/dctx"
+                     define="ZORBA_INTROSPECT_DCTX_FN_NS" prefix="fn-zorba-introspect-dctx"/>
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/introspection/sctx"
+                     define="ZORBA_INTROSPECT_SCTX_FN_NS" prefix="fn-zorba-introspect-sctx"/>
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/ddl"
+                     define="ZORBA_COLLECTION_FN_NS" prefix="fn-zorba-ddl"/>
   </zorba:namespaces>
 
   <zorba:types>
+    <zorba:type zorbaType="NONE_TYPE">none</zorba:type>
+
     <!-- see http://www.w3.org/TR/xquery-operators/#datatypes -->
     <zorba:type zorbaType="ITEM">item()</zorba:type>
     <zorba:type zorbaType="DOCUMENT_UNTYPED">document-node()</zorba:type>

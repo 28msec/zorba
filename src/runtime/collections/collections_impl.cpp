@@ -35,7 +35,7 @@
 #include "compiler/api/compilercb.h"
 
 #include "runtime/api/runtimecb.h"
-#include "runtime/collections/CollectionsImpl.h"
+#include "runtime/collections/collections.h"
 #include "runtime/visitors/planiter_visitor.h"
 
 #include "store/api/pul.h"
@@ -46,94 +46,7 @@
 
 #include "types/typeops.h"
 
-
 namespace zorba {
-
-SERIALIZABLE_CLASS_VERSIONS(DcIsAvailableCollectionIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(DcIsAvailableCollectionIterator)
-
-
-SERIALIZABLE_CLASS_VERSIONS(ZorbaIndexOfIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ZorbaIndexOfIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(DcAvailableCollectionsIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(DcAvailableCollectionsIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(ScIsDeclaredCollectionIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ScIsDeclaredCollectionIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(ScDeclaredCollectionsIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ScDeclaredCollectionsIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(ZorbaCreateCollectionIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ZorbaCreateCollectionIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(ZorbaDropCollectionIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ZorbaDropCollectionIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(ZorbaDropAllCollectionsIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ZorbaDropAllCollectionsIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(ZorbaInsertNodesFirstIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ZorbaInsertNodesFirstIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(ZorbaInsertNodesLastIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ZorbaInsertNodesLastIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(ZorbaInsertNodesBeforeIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ZorbaInsertNodesBeforeIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(ZorbaInsertNodesAfterIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ZorbaInsertNodesAfterIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(ZorbaInsertNodesAtIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ZorbaInsertNodesAtIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(ZorbaRemoveNodesIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ZorbaRemoveNodesIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(ZorbaRemoveNodeAtIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ZorbaRemoveNodeAtIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(FnCollectionIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(FnCollectionIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(ZorbaCollectionIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ZorbaCollectionIterator)
-
-NARY_ACCEPT(FnCollectionIterator);
-
-NARY_ACCEPT(ZorbaCollectionIterator);
-
-NARY_ACCEPT(DcIsAvailableCollectionIterator);
-
-NARY_ACCEPT(ZorbaIndexOfIterator);
-
-NARY_ACCEPT(DcAvailableCollectionsIterator);
-
-NARY_ACCEPT(ScIsDeclaredCollectionIterator);
-
-NARY_ACCEPT(ScDeclaredCollectionsIterator);
-
-NARY_ACCEPT(ZorbaCreateCollectionIterator);
-
-NARY_ACCEPT(ZorbaDropCollectionIterator);
-
-NARY_ACCEPT(ZorbaDropAllCollectionsIterator);
-
-NARY_ACCEPT(ZorbaInsertNodesFirstIterator);
-
-NARY_ACCEPT(ZorbaInsertNodesLastIterator);
-
-NARY_ACCEPT(ZorbaInsertNodesBeforeIterator);
-
-NARY_ACCEPT(ZorbaInsertNodesAfterIterator);
-
-NARY_ACCEPT(ZorbaInsertNodesAtIterator);
-
-NARY_ACCEPT(ZorbaRemoveNodesIterator);
-
-NARY_ACCEPT(ZorbaRemoveNodeAtIterator);
 
 // Forward declarations
 store::Collection_t getCollection(const static_context* aSctx,
@@ -150,17 +63,10 @@ void checkNodeType(const store::Item_t& aNode,
                    const StaticallyKnownCollection* aColl,
                    const QueryLoc& aLoc);
 
-
 /*******************************************************************************
   fn:collection() as node()*
   fn:collection($uri as xs:string?) as node()*
 ********************************************************************************/
-FnCollectionIteratorState::FnCollectionIteratorState()
-  :
-  theIteratorOpened(false)
-{
-}
-
 FnCollectionIteratorState::~FnCollectionIteratorState()
 {
   if ( theIterator != NULL ) 
@@ -259,20 +165,11 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
   STACK_END (state);
 }
 
-
-
 /*******************************************************************************
   declare function collection() as xs:boolean
 
   TODO descrition
 ********************************************************************************/
-ZorbaCollectionIteratorState::ZorbaCollectionIteratorState()
-  :
-  theIteratorOpened(false)
-{
-}
-
-
 ZorbaCollectionIteratorState::~ZorbaCollectionIteratorState()
 {
   if ( theIterator != NULL ) 
@@ -342,50 +239,6 @@ bool ZorbaCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSta
 }
 
 
-/*******************************************************************************
-  declare function collection-exists() as xs:boolean
-
-  declare function collection-exists( $uri as xs:string?) as xs:boolean
-
-  Returns true if a collection with the requested $uri is found in the collection
-  pool, false otherwise.
-
-  Error conditions:
-  - If the collection URI is empty and the default collection
-    is not defined in the dynamic context, FODC0002 is raised
-  - XQST0046: could not resolve uri or given uri is not a valid uri
-********************************************************************************/
-
-bool
-DcIsAvailableCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  PlanIteratorState  *state;
-  store::Item_t       lName;
-  store::Collection_t lCollection;
-  bool                res = false;
-
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  consumeNext(lName, theChildren[0].getp(), planState);
-
-  res = true;
-  try {
-    lCollection = getCollection(theSctx, lName, loc);
-  }
-  catch (error::ZorbaError& e) {
-    if (e.theErrorCode != XDDY0009) {
-      throw;
-    }
-    // collection is not available if the getCollection helper function throws error XDDY0009
-    res = false;
-  }
-
-  GENV_ITEMFACTORY->createBoolean(result, res);
-  STACK_PUSH(true, state );
-
-  STACK_END (state);
-}
-
 
 /*******************************************************************************
   declare function index-of($target as node()) as xs:integer
@@ -434,95 +287,6 @@ ZorbaIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   }
 
   STACK_END (state);
-}
-
-
-/*******************************************************************************
-  declare function list-collections() as xs:anyURI*
-
-  The function will return a sequence of URIs of all currently known collections.
-********************************************************************************/
-CollectionNamesListState::~CollectionNamesListState()
-{
-  if ( nameItState != NULL ) {
-    nameItState->close();
-    nameItState = NULL;
-  }
-}
-
-
-void CollectionNamesListState::init(PlanState& planState)
-{
-  PlanIteratorState::init(planState);
-  nameItState = NULL;
-}
-
-
-void CollectionNamesListState::reset(PlanState& planState)
-{
-  PlanIteratorState::reset(planState);
-  if ( nameItState != NULL ) {
-    nameItState->close();
-    nameItState = NULL;
-  }
-}
-
-
-bool
-DcAvailableCollectionsIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  CollectionNamesListState * state;
-  store::Item_t              nameItem;
-
-  DEFAULT_STACK_INIT(CollectionNamesListState, state, planState);
-
-  for ((state->nameItState = GENV_STORE.listCollectionNames())->open ();
-       state->nameItState->next(nameItem); ) 
-  {
-    result = nameItem;
-    STACK_PUSH( true, state);
-  }
-
-  state->nameItState->close();
-
-  STACK_END (state);
-}
-
-bool
-ScIsDeclaredCollectionIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
-{
-  PlanIteratorState *lState;
-  store::Item_t      lName;
-
-  DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
-  consumeNext(lName, theChildren[0].getp(), aPlanState);
-  if (theSctx->lookup_collection(lName.getp()) == 0) {
-    STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( aResult, false ), lState);
-  }
-  else {
-    STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( aResult, true ), lState);   
-  }
-  STACK_END (lState);
-}
-
-bool
-ScDeclaredCollectionsIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
-{
-  CollectionNamesListState * lState;
-  store::Item_t              lName;
-
-  DEFAULT_STACK_INIT(CollectionNamesListState, lState, aPlanState);
-
-  for ((lState->nameItState = theSctx->list_collection_names())->open ();
-       lState->nameItState->next(lName); ) 
-  {
-    aResult = lName;
-    STACK_PUSH( true, lState);
-  }
-
-  lState->nameItState->close();
-
-  STACK_END (lState);
 }
 
 
@@ -1457,7 +1221,5 @@ void checkNodeType(const store::Item_t& aNode,
       << " as " << TypeOps::toString(*(aColl->getNodeType())));
   }
 }
-
-
 
 } /* namespace zorba */

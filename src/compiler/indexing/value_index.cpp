@@ -245,7 +245,7 @@ void ValueIndex::analyzeExprInternal(
     {
       bool valid = false;
 
-      if (func->getKind() == FunctionConsts::FN_ZORBA_COLLECTION_1)
+      if (func->getKind() == FunctionConsts::FN_ZORBA_DDL_COLLECTION_1)
       {
         TypeManager* tm = theSctx->get_typemanager();
 

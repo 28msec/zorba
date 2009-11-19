@@ -28,13 +28,16 @@
 #include "functions/func_base64.h"
 #include "functions/func_booleans.h"
 #include "functions/booleans_impl.h"
+#include "functions/func_collections.h"
 #include "functions/func_convertors.h"
 #include "functions/func_context.h"
+#include "functions/func_dctx.h"
 #include "functions/func_debug.h"
 #include "functions/func_durations_dates_times.h"
 #include "functions/durations_dates_times_impl.h"
 #include "functions/func_fnerror.h"
 #include "functions/func_schema.h"
+#include "functions/func_sctx.h"
 #include "functions/func_strings.h"
 #include "functions/func_sequences.h"
 #include "functions/sequences_impl.h"
@@ -46,8 +49,6 @@
 #include "functions/func_maths.h"
 #include "functions/func_xqdoc.h"
 
-#include "functions/Collections.h"
-#include "functions/DataDefinitionLanguage.h"
 #include "functions/Numerics.h"
 #include "functions/nodeid_internal.h"
 #include "functions/EnclosedExpr.h"
@@ -88,8 +89,10 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_base64(sctx);
   populate_context_booleans(sctx);
   populate_context_booleans_impl(sctx);
+  populate_context_collections(sctx);
   populate_context_context(sctx);
   populate_context_convertors(sctx);
+  populate_context_dctx(sctx);
   populate_context_debug(sctx);
   populate_context_durations_dates_times(sctx);
   populate_context_durations_dates_times_impl(sctx);
@@ -101,6 +104,7 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_qnames(sctx);
   populate_context_random(sctx);
   populate_context_schema(sctx);
+  populate_context_sctx(sctx);
   populate_context_strings(sctx);
   populate_context_sequences(sctx);
   populate_context_sequences_impl(sctx);
@@ -111,8 +115,6 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populateContext_DocOrder(sctx);
   populateContext_Comparison(sctx);
   populateContext_Constructors(sctx);
-  populateContext_Collections(sctx);
-  populateContext_DataDefinitionLanguage(sctx);
   populateContext_VarDecl(sctx);
   populateContext_Index(sctx);
   populateContext_Hoisting(sctx);

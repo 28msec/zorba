@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+-->
+<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+    
+<zorba:source>
+    <zorba:include  form="Quoted">store/api/iterator.h</zorba:include>
+</zorba:source>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="IsDeclaredCollectionIterator">
+
+    <zorba:description author="Zorba Team">
+      sc:is-declared-collection
+    </zorba:description>
+
+    <zorba:state generateInit="true" generateReset="true">
+      <zorba:member type="store::Iterator_t" name="nameItState"
+                    brief="the current iterator"/>
+    </zorba:state>
+
+    <zorba:function> 
+      <zorba:signature localname="is-declared-collection"
+                       prefix="fn-zorba-introspect-sctx">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="DeclaredCollectionsIterator">
+
+    <zorba:description author="Zorba Team">
+      sc:declared-collections
+    </zorba:description>
+
+    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
+      <zorba:member type="store::Iterator_t" name="nameItState"
+                    brief="the current iterator"/>
+    </zorba:state>
+
+    <zorba:function> 
+      <zorba:signature localname="declared-collections"
+                       prefix="fn-zorba-introspect-sctx">
+        <zorba:output>xs:QName*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+  
+</zorba:iterator>
+
+
+</zorba:iterators>

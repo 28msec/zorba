@@ -49,7 +49,6 @@
 #include "runtime/durations_dates_times/DurationsDatesTimesImpl.h"
 #include "runtime/debug/zorba_debug_iterator.h"
 #include "debugger/zorba_debugger_commons.h"
-#include "runtime/collections/CollectionsImpl.h"
 #include "runtime/util/UtilImpl.h"
 #include "context/static_context.h"
 #include "context/namespace_context.h"
@@ -1067,7 +1066,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
 
   PRINTER_VISITOR_DEFINITION (UDFunctionCallIterator)
   PRINTER_VISITOR_DEFINITION (StatelessExtFunctionCallIterator)
-  PRINTER_VISITOR_DEFINITION (FnCollectionIterator)
   PRINTER_VISITOR_DEFINITION (FnBooleanIterator)
   PRINTER_VISITOR_DEFINITION (LogicIterator)
   PRINTER_VISITOR_DEFINITION (CompareIterator)
@@ -1115,22 +1113,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION(RenameIterator);
   PRINTER_VISITOR_DEFINITION(TransformIterator);
   PRINTER_VISITOR_DEFINITION(ApplyIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaCollectionIterator);
-  PRINTER_VISITOR_DEFINITION(DcIsAvailableCollectionIterator);
-  PRINTER_VISITOR_DEFINITION(DcAvailableCollectionsIterator);
-  PRINTER_VISITOR_DEFINITION(ScIsDeclaredCollectionIterator);
-  PRINTER_VISITOR_DEFINITION(ScDeclaredCollectionsIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaCreateCollectionIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaDropCollectionIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaDropAllCollectionsIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaInsertNodesFirstIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaInsertNodesLastIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaInsertNodesBeforeIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaInsertNodesAfterIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaInsertNodesAtIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaRemoveNodesIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaRemoveNodeAtIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaIndexOfIterator);
   PRINTER_VISITOR_DEFINITION(CreateInternalIndexIterator);
   PRINTER_VISITOR_DEFINITION(CreateIndexIterator);
   PRINTER_VISITOR_DEFINITION(RebuildIndexIterator);

@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  15.1 General Functions and Operators on Sequences                          //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+-->
+<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+    
+<zorba:header>
+</zorba:header>
+
+<zorba:source>
+    <zorba:include  form="Quoted">store/api/iterator.h</zorba:include>
+</zorba:source>
+  
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="FnCollectionIterator">
+
+    <zorba:description author="Zorba Team">
+      fn:collection
+    </zorba:description>
+
+    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
+      <zorba:member type="store::Iterator_t" name="theIterator"
+                    brief="the current iterator"/>
+      <zorba:member type="bool" name="theIteratorOpened" defaultValue="false"
+                    brief="flag indicating whether theIterator was opened"/>
+    </zorba:state>
+
+    <zorba:function requiresDynamicContext="true" isSource="true">
+      <zorba:signature localname="collection" prefix="fn">
+        <zorba:output>node()*</zorba:output>
+      </zorba:signature>
+      <zorba:signature localname="collection" prefix="fn">
+        <zorba:param>xs:string</zorba:param>
+        <zorba:output>node()*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+  
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="ZorbaCollectionIterator" >
+
+    <zorba:description author="Zorba Team">
+      zorba:collection
+    </zorba:description>
+
+    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
+      <zorba:member type="store::Iterator_t" name="theIterator"
+                    brief="the current iterator"/>
+      <zorba:member type="bool" name="theIteratorOpened" defaultValue="false"
+                    brief="flag indicating whether theIterator was opened"/>
+    </zorba:state>
+
+    <zorba:function requiresDynamicContext="true" isSource="true">
+      <zorba:signature localname="collection" prefix="fn-zorba-ddl">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:output>document-node()*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+  
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="ZorbaIndexOfIterator" >
+
+    <zorba:description author="Zorba Team">
+      zorba:index-of
+    </zorba:description>
+
+    <zorba:function requiresDynamicContext="true">
+      <zorba:signature localname="index-of" prefix="fn-zorba-ddl">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>node()</zorba:param>
+        <zorba:output>xs:integer</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="ZorbaCreateCollectionIterator" >
+
+    <zorba:description author="Zorba Team">
+      zorba:create-collection
+    </zorba:description>
+
+    <zorba:function isUpdating="true" requiresDynamicContext="true"> 
+      <zorba:signature localname="create-collection" prefix="fn-zorba-ddl">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:output>item()*</zorba:output>
+      </zorba:signature>
+      <zorba:signature localname="create-collection" prefix="fn-zorba-ddl">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>node()*</zorba:param>
+        <zorba:output>item()*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="ZorbaDropCollectionIterator" >
+
+    <zorba:description author="Zorba Team">
+      zorba:drop-collection
+    </zorba:description>
+
+    <zorba:function isUpdating="true" requiresDynamicContext="true"> 
+      <zorba:signature localname="drop-collection" prefix="fn-zorba-ddl">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:output>item()*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="ZorbaDropAllCollectionsIterator" >
+
+    <zorba:description author="Zorba Team">
+      zorba:drop-all-collections
+    </zorba:description>
+
+    <zorba:function isUpdating="true" requiresDynamicContext="true"> 
+      <zorba:signature localname="drop-all-collections" prefix="fn-zorba-ddl">
+        <zorba:output>item()*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="ZorbaInsertNodesFirstIterator" >
+
+    <zorba:description author="Zorba Team">
+      zorba:insert-nodes-first
+    </zorba:description>
+
+    <zorba:function isUpdating="true" requiresDynamicContext="true"> 
+      <zorba:signature localname="insert-nodes-first" prefix="fn-zorba-ddl">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>node()*</zorba:param>
+        <zorba:output>item()*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="ZorbaInsertNodesLastIterator" >
+
+    <zorba:description author="Zorba Team">
+      zorba:insert-nodes-last
+    </zorba:description>
+
+    <zorba:function isUpdating="true" requiresDynamicContext="true"> 
+      <zorba:signature localname="insert-nodes-last" prefix="fn-zorba-ddl">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>node()*</zorba:param>
+        <zorba:output>item()*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="ZorbaInsertNodesAtIterator" >
+
+    <zorba:description author="Zorba Team">
+      zorba:insert-nodes-at
+    </zorba:description>
+
+    <zorba:function isUpdating="true" requiresDynamicContext="true"> 
+      <zorba:signature localname="insert-nodes-at" prefix="fn-zorba-ddl">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>xs:integer</zorba:param>
+        <zorba:param>node()*</zorba:param>
+        <zorba:output>item()*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="ZorbaInsertNodesBeforeIterator" >
+
+    <zorba:description author="Zorba Team">
+      zorba:insert-nodes-before
+    </zorba:description>
+
+    <zorba:function isUpdating="true" requiresDynamicContext="true"> 
+      <zorba:signature localname="insert-nodes-before" prefix="fn-zorba-ddl">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>node()+</zorba:param>
+        <zorba:param>node()*</zorba:param>
+        <zorba:output>item()*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="ZorbaInsertNodesAfterIterator" >
+
+    <zorba:description author="Zorba Team">
+      zorba:insert-nodes-after
+    </zorba:description>
+
+    <zorba:function isUpdating="true" requiresDynamicContext="true"> 
+      <zorba:signature localname="insert-nodes-after" prefix="fn-zorba-ddl">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>node()+</zorba:param>
+        <zorba:param>node()*</zorba:param>
+        <zorba:output>item()*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="ZorbaRemoveNodesIterator" >
+
+    <zorba:description author="Zorba Team">
+      zorba:remove-nodes
+    </zorba:description>
+
+    <zorba:function isUpdating="true" requiresDynamicContext="true"> 
+      <zorba:signature localname="remove-nodes" prefix="fn-zorba-ddl">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>node()+</zorba:param>
+        <zorba:output>item()*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="ZorbaRemoveNodeAtIterator" >
+
+    <zorba:description author="Zorba Team">
+      zorba:remove-node-at
+      TODO: deprecate
+    </zorba:description>
+
+    <zorba:function isUpdating="true" requiresDynamicContext="true"> 
+      <zorba:signature localname="remove-node-at" prefix="fn-zorba-ddl">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>xs:integer</zorba:param>
+        <zorba:output>item()*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+</zorba:iterator>
+
+</zorba:iterators>

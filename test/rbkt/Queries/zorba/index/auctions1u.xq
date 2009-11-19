@@ -1,6 +1,4 @@
-
-import module namespace dc = "http://www.zorba-xquery.com/module/dynamic-context";
-import module namespace ddl = "http://www.zorba-xquery.com/module/ddl";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/ddl";
 
 import datamodule namespace auctions = "http://www.w3.org/TestModules/auctions" at
                                        "auctions_module1.xqlib";
@@ -21,9 +19,10 @@ block
   insert node
     <person id="person50"><name>Some Name</name><city>Amsterdam</city></person>
   as first into
-    dc:collection($auctions:auctions)/site/people
+    ddl:collection($auctions:auctions)/site/people
   ,
   ddl:refresh-index($emp-id);
+  (: don't refresh the emp-city index manually because it's done automatically :)
 }
 ,
 "

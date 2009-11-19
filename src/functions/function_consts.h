@@ -1,10 +1,6 @@
  // include in function_enum.h 
  // this file is used until all functions
  // are generated
-  FN_COLLECTION_0,
-  FN_COLLECTION_1,
-  FN_ZORBA_COLLECTION_1,
-
   FN_CREATE_INDEX_1,
   FN_DROP_INDEX_1,
   FN_REFRESH_INDEX_1,

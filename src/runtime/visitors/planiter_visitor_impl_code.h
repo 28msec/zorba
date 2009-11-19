@@ -1,5 +1,3 @@
-  PLAN_ITER_VISITOR (FnCollectionIterator);
-
   PLAN_ITER_VISITOR (FnBooleanIterator);
 
   PLAN_ITER_VISITOR (LogicIterator);
@@ -311,23 +309,6 @@
   PLAN_ITER_VISITOR(TransformIterator);
 
   PLAN_ITER_VISITOR(ApplyIterator);
-
-  PLAN_ITER_VISITOR(ZorbaCollectionIterator);
-  PLAN_ITER_VISITOR(DcIsAvailableCollectionIterator);
-  PLAN_ITER_VISITOR(DcAvailableCollectionsIterator);
-  PLAN_ITER_VISITOR(ScIsDeclaredCollectionIterator);
-  PLAN_ITER_VISITOR(ScDeclaredCollectionsIterator);
-  PLAN_ITER_VISITOR(ZorbaCreateCollectionIterator);
-  PLAN_ITER_VISITOR(ZorbaDropCollectionIterator);
-  PLAN_ITER_VISITOR(ZorbaDropAllCollectionsIterator);
-  PLAN_ITER_VISITOR(ZorbaInsertNodesFirstIterator);
-  PLAN_ITER_VISITOR(ZorbaInsertNodesLastIterator);
-  PLAN_ITER_VISITOR(ZorbaInsertNodesBeforeIterator);
-  PLAN_ITER_VISITOR(ZorbaInsertNodesAfterIterator);
-  PLAN_ITER_VISITOR(ZorbaInsertNodesAtIterator);
-  PLAN_ITER_VISITOR(ZorbaRemoveNodesIterator);
-  PLAN_ITER_VISITOR(ZorbaRemoveNodeAtIterator);
-  PLAN_ITER_VISITOR(ZorbaIndexOfIterator);
 
 #ifdef ZORBA_WITH_TIDY
   PLAN_ITER_VISITOR(ZorbaTidyIterator);

@@ -1,10 +1,9 @@
-import module namespace ddl = "http://www.zorba-xquery.com/module/ddl";
-import module namespace dc = "http://www.zorba-xquery.com/module/dynamic-context";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/ddl";
 import datamodule namespace ns = "http://example.org/datamodule/" at "collections.xqdata";
 
 declare sequential function local:foo($collName as xs:QName) {
   ddl:create-collection($collName,<a/>);
-  let $a := dc:collection($collName)
+  let $a := ddl:collection($collName)
   return ddl:insert-nodes-last($collName, <b/>);
   exit returning ();
 };

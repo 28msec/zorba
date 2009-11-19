@@ -57,8 +57,6 @@ LIST(APPEND FUNCTIONS_SRCS
     fnerror_impl.cpp
     Alexis.cpp
     arithmetic.cpp
-    Collections.cpp
-    DataDefinitionLanguage.cpp
     EnclosedExpr.cpp
     external_function_adapters.cpp
     VarDecl.cpp

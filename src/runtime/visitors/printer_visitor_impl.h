@@ -130,7 +130,6 @@
 
   DECLARE_VISITOR (UDFunctionCallIterator)
   DECLARE_VISITOR (StatelessExtFunctionCallIterator)
-  DECLARE_VISITOR (FnCollectionIterator)
   DECLARE_VISITOR (FnBooleanIterator)
   DECLARE_VISITOR (LogicIterator)
   DECLARE_VISITOR (CompareIterator)
@@ -178,22 +177,6 @@
   DECLARE_VISITOR (RenameIterator);
   DECLARE_VISITOR (TransformIterator);
   DECLARE_VISITOR (ApplyIterator);
-  DECLARE_VISITOR (ZorbaCollectionIterator);
-  DECLARE_VISITOR (DcIsAvailableCollectionIterator);
-  DECLARE_VISITOR (DcAvailableCollectionsIterator);
-  DECLARE_VISITOR (ScIsDeclaredCollectionIterator);
-  DECLARE_VISITOR (ScDeclaredCollectionsIterator);
-  DECLARE_VISITOR (ZorbaCreateCollectionIterator);
-  DECLARE_VISITOR (ZorbaDropCollectionIterator);
-  DECLARE_VISITOR (ZorbaDropAllCollectionsIterator);
-  DECLARE_VISITOR (ZorbaInsertNodesFirstIterator);
-  DECLARE_VISITOR (ZorbaInsertNodesLastIterator);
-  DECLARE_VISITOR (ZorbaInsertNodesBeforeIterator);
-  DECLARE_VISITOR (ZorbaInsertNodesAfterIterator);
-  DECLARE_VISITOR (ZorbaInsertNodesAtIterator);
-  DECLARE_VISITOR (ZorbaRemoveNodesIterator);
-  DECLARE_VISITOR (ZorbaRemoveNodeAtIterator);
-  DECLARE_VISITOR (ZorbaIndexOfIterator);
   DECLARE_VISITOR (CreateInternalIndexIterator);
   DECLARE_VISITOR (CreateIndexIterator);
   DECLARE_VISITOR (RebuildIndexIterator);

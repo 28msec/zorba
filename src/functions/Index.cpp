@@ -315,39 +315,39 @@ void populateContext_Index(static_context* sctx)
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
   DECL(sctx, FunctionProbeIndexPoint,
-       (createQName(ZORBA_DYNAMICCONTEXT_FN_NS,
-                    "fn-zorba-dynamiccontext", "probe-index-point"),
+       (createQName(ZORBA_DDL_FN_NS,
+                    "fn-zorba-ddl", "probe-index-point"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         true,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
   DECL(sctx, FunctionProbeIndexRange,
-       (createQName(ZORBA_DYNAMICCONTEXT_FN_NS,
-                    "fn-zorba-dynamiccontext", "probe-index-range"),
+       (createQName(ZORBA_DDL_FN_NS,
+                    "fn-zorba-ddl", "probe-index-range"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         true,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
   DECL(sctx, FunctionIsDeclaredIndex,
-       (createQName(ZORBA_STATICCONTEXT_FN_NS,
-                    "fn-zorba-staticcontext", "is-declared-index"),
+       (createQName(ZORBA_INTROSPECT_SCTX_FN_NS,
+                    "fn-zorba-introspect-sctx", "is-declared-index"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
   DECL(sctx, FunctionDeclaredIndexes,
-       (createQName(ZORBA_STATICCONTEXT_FN_NS,
-                    "fn-zorba-staticcontext", "declared-indexes"),
+       (createQName(ZORBA_INTROSPECT_SCTX_FN_NS,
+                    "fn-zorba-introspect-sctx", "declared-indexes"),
         GENV_TYPESYSTEM.QNAME_TYPE_STAR));
 
   DECL(sctx, FunctionIsAvailableIndex,
-       (createQName(ZORBA_DYNAMICCONTEXT_FN_NS,
-                    "fn-zorba-dynamiccontext", "is-available-index"),
+       (createQName(ZORBA_INTROSPECT_DCTX_FN_NS,
+                    "fn-zorba-introspect-dctx", "is-available-index"),
         GENV_TYPESYSTEM.QNAME_TYPE_ONE,
         GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
   DECL(sctx, FunctionAvailableIndexes,
-       (createQName(ZORBA_DYNAMICCONTEXT_FN_NS,
-                    "fn-zorba-dynamiccontext", "available-indexes"),
+       (createQName(ZORBA_INTROSPECT_DCTX_FN_NS,
+                    "fn-zorba-introspect-dctx", "available-indexes"),
         GENV_TYPESYSTEM.QNAME_TYPE_STAR));
 }
 

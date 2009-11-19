@@ -1,5 +1,5 @@
-import module namespace dc = "http://www.zorba-xquery.com/module/dynamic-context";
-import module namespace ddl = "http://www.zorba-xquery.com/module/ddl";
+import module namespace dc = "http://www.zorba-xquery.com/modules/introspection/dctx";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/ddl";
 
 declare namespace ns = "http://www.unknown.com/";
 
@@ -18,7 +18,7 @@ declare sequential function local:testa() {
 declare sequential function local:testb() {
   try {
     block {
-      dc:collection($name);
+      ddl:collection($name);
     }
   } catch * ($error) {
     ("b",$error)
@@ -28,7 +28,7 @@ declare sequential function local:testb() {
 declare sequential function local:testc() {
   try {
     block {
-      dc:index-of($name, <a/>);
+      ddl:index-of($name, <a/>);
     }
   } catch * ($error) {
     ("c",$error)

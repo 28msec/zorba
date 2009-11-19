@@ -1,5 +1,4 @@
-import module namespace ddl = "http://www.zorba-xquery.com/module/ddl";
-import module namespace dc = "http://www.zorba-xquery.com/module/dynamic-context";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/ddl";
 import datamodule namespace ns = "http://example.org/datamodule/" at "modifier_1.xqdata";
 
 declare sequential function local:init() {
@@ -66,7 +65,7 @@ declare sequential function local:testb_3() {
 declare sequential function local:testc_1() {
   try {
     block {
-      ddl:insert-nodes-before($ns:coll_1, dc:collection($ns:coll_1)[1], <c/>);
+      ddl:insert-nodes-before($ns:coll_1, ddl:collection($ns:coll_1)[1], <c/>);
     }
   } catch * ($error) {
     ("c",$error)
@@ -77,7 +76,7 @@ declare sequential function local:testc_1() {
 declare sequential function local:testc_2() {
   try {
     block {
-      ddl:insert-nodes-before($ns:coll_2, dc:collection($ns:coll_2)[1], <c/>);
+      ddl:insert-nodes-before($ns:coll_2, ddl:collection($ns:coll_2)[1], <c/>);
     }
   } catch * ($error) {
     ("c",$error)
@@ -88,7 +87,7 @@ declare sequential function local:testc_2() {
 declare sequential function local:testc_3() {
   try {
     block {
-      ddl:insert-nodes-before($ns:coll_3, dc:collection($ns:coll_3)[1], <c/>);
+      ddl:insert-nodes-before($ns:coll_3, ddl:collection($ns:coll_3)[1], <c/>);
     }
   } catch * ($error) {
     ("c",$error)
@@ -99,7 +98,7 @@ declare sequential function local:testc_3() {
 declare sequential function local:testd_1() {
   try {
     block {
-      ddl:insert-nodes-after($ns:coll_1, dc:collection($ns:coll_1)[last()], <d/>);
+      ddl:insert-nodes-after($ns:coll_1, ddl:collection($ns:coll_1)[last()], <d/>);
     }
   } catch * ($error) {
     ("d",$error)
@@ -110,7 +109,7 @@ declare sequential function local:testd_1() {
 declare sequential function local:testd_2() {
   try {
     block {
-      ddl:insert-nodes-after($ns:coll_2, dc:collection($ns:coll_2)[last()], <d/>);
+      ddl:insert-nodes-after($ns:coll_2, ddl:collection($ns:coll_2)[last()], <d/>);
     }
   } catch * ($error) {
     ("d",$error)
@@ -121,7 +120,7 @@ declare sequential function local:testd_2() {
 declare sequential function local:testd_3() {
   try {
     block {
-      ddl:insert-nodes-after($ns:coll_3, dc:collection($ns:coll_3)[last()], <d/>);
+      ddl:insert-nodes-after($ns:coll_3, ddl:collection($ns:coll_3)[last()], <d/>);
     }
   } catch * ($error) {
     ("d",$error)
@@ -177,9 +176,9 @@ declare sequential function local:main() {
     local:teste_1(),
     local:teste_2(),
     local:teste_3(),
-    <coll_1>{dc:collection($ns:coll_1)}</coll_1>,
-    <coll_2>{dc:collection($ns:coll_2)}</coll_2>,
-    <coll_3>{dc:collection($ns:coll_3)}</coll_3>
+    <coll_1>{ddl:collection($ns:coll_1)}</coll_1>,
+    <coll_2>{ddl:collection($ns:coll_2)}</coll_2>,
+    <coll_3>{ddl:collection($ns:coll_3)}</coll_3>
   );
 };
 

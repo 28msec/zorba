@@ -110,26 +110,8 @@
   class RenameIterator;
   class TransformIterator;
   class ApplyIterator;
-  class FnCollectionIterator;
   class CreateTupleIterator;
   class GetTupleFieldIterator;
-
-  class ZorbaCollectionIterator;
-  class DcIsAvailableCollectionIterator;
-  class DcAvailableCollectionsIterator;
-  class ScIsDeclaredCollectionIterator;
-  class ScDeclaredCollectionsIterator;
-  class ZorbaCreateCollectionIterator;
-  class ZorbaDropCollectionIterator;
-  class ZorbaDropAllCollectionsIterator;
-  class ZorbaInsertNodesFirstIterator;
-  class ZorbaInsertNodesLastIterator;
-  class ZorbaInsertNodesBeforeIterator;
-  class ZorbaInsertNodesAfterIterator;
-  class ZorbaInsertNodesAtIterator;
-  class ZorbaRemoveNodesIterator;
-  class ZorbaRemoveNodeAtIterator;
-  class ZorbaIndexOfIterator;
 
   class ZorbaSchemaTypeIterator;
 #ifdef ZORBA_WITH_TIDY

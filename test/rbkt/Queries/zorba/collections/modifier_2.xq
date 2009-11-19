@@ -1,5 +1,5 @@
-import module namespace ddl = "http://www.zorba-xquery.com/module/ddl";
-import module namespace dc = "http://www.zorba-xquery.com/module/dynamic-context";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/ddl";
+import module namespace dc = "http://www.zorba-xquery.com/modules/introspection/dctx";
 import datamodule namespace ns = "http://example.org/datamodule/" at "modifier_1.xqdata";
 
 declare sequential function local:init() {
@@ -13,7 +13,7 @@ declare sequential function local:init() {
 declare sequential function local:testa_1() {
   try {
     block {
-      ddl:remove-nodes($ns:coll_1, subsequence(dc:collection($ns:coll_1), 1, 2));
+      ddl:remove-nodes($ns:coll_1, subsequence(ddl:collection($ns:coll_1), 1, 2));
     }
   } catch * ($error) {
     ("a",$error)
@@ -23,7 +23,7 @@ declare sequential function local:testa_1() {
 declare sequential function local:testa_2() {
   try {
     block {
-      ddl:remove-nodes($ns:coll_2, subsequence(dc:collection($ns:coll_2), 1, 2));
+      ddl:remove-nodes($ns:coll_2, subsequence(ddl:collection($ns:coll_2), 1, 2));
     }
   } catch * ($error) {
     ("a",$error)
@@ -33,7 +33,7 @@ declare sequential function local:testa_2() {
 declare sequential function local:testa_3() {
   try {
     block {
-      ddl:remove-nodes($ns:coll_3, subsequence(dc:collection($ns:coll_3), 2, 2));
+      ddl:remove-nodes($ns:coll_3, subsequence(ddl:collection($ns:coll_3), 2, 2));
     }
   } catch * ($error) {
     ("a",$error)
@@ -41,7 +41,7 @@ declare sequential function local:testa_3() {
 };
 
 declare sequential function local:testa_4() {
-  ddl:remove-nodes($ns:coll_3, subsequence(dc:collection($ns:coll_3), 1, 2));
+  ddl:remove-nodes($ns:coll_3, subsequence(ddl:collection($ns:coll_3), 1, 2));
 };
 
 declare sequential function local:testb_1() {
@@ -89,9 +89,9 @@ declare sequential function local:main() {
     local:testb_2(),
     local:testb_3(),
     local:testb_4(),
-    <coll_1>{dc:collection($ns:coll_1)}</coll_1>,
-    <coll_2>{dc:collection($ns:coll_2)}</coll_2>,
-    <coll_3>{dc:collection($ns:coll_3)}</coll_3>
+    <coll_1>{ddl:collection($ns:coll_1)}</coll_1>,
+    <coll_2>{ddl:collection($ns:coll_2)}</coll_2>,
+    <coll_3>{ddl:collection($ns:coll_3)}</coll_3>
   );
 };
 

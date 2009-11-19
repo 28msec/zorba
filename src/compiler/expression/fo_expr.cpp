@@ -219,7 +219,7 @@ xqtref_t fo_expr::return_type_impl(static_context* sctx) const
 
 expr_t fo_expr::clone(substitution_t& subst) const
 {
-  if (get_func()->getKind() == FunctionConsts::FN_ZORBA_COLLECTION_1)
+  if (get_func()->getKind() == FunctionConsts::FN_ZORBA_DDL_COLLECTION_1)
   {
     expr::subst_iter_t i = subst.find(this);
 

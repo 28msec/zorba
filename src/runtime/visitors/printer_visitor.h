@@ -86,6 +86,45 @@ namespace zorba {
     void beginVisit( const NodeAfterIterator& );
     void endVisit  ( const NodeAfterIterator& );
 
+    void beginVisit( const FnCollectionIterator& );
+    void endVisit  ( const FnCollectionIterator& );
+
+    void beginVisit( const ZorbaCollectionIterator& );
+    void endVisit  ( const ZorbaCollectionIterator& );
+
+    void beginVisit( const ZorbaIndexOfIterator& );
+    void endVisit  ( const ZorbaIndexOfIterator& );
+
+    void beginVisit( const ZorbaCreateCollectionIterator& );
+    void endVisit  ( const ZorbaCreateCollectionIterator& );
+
+    void beginVisit( const ZorbaDropCollectionIterator& );
+    void endVisit  ( const ZorbaDropCollectionIterator& );
+
+    void beginVisit( const ZorbaDropAllCollectionsIterator& );
+    void endVisit  ( const ZorbaDropAllCollectionsIterator& );
+
+    void beginVisit( const ZorbaInsertNodesFirstIterator& );
+    void endVisit  ( const ZorbaInsertNodesFirstIterator& );
+
+    void beginVisit( const ZorbaInsertNodesLastIterator& );
+    void endVisit  ( const ZorbaInsertNodesLastIterator& );
+
+    void beginVisit( const ZorbaInsertNodesAtIterator& );
+    void endVisit  ( const ZorbaInsertNodesAtIterator& );
+
+    void beginVisit( const ZorbaInsertNodesBeforeIterator& );
+    void endVisit  ( const ZorbaInsertNodesBeforeIterator& );
+
+    void beginVisit( const ZorbaInsertNodesAfterIterator& );
+    void endVisit  ( const ZorbaInsertNodesAfterIterator& );
+
+    void beginVisit( const ZorbaRemoveNodesIterator& );
+    void endVisit  ( const ZorbaRemoveNodesIterator& );
+
+    void beginVisit( const ZorbaRemoveNodeAtIterator& );
+    void endVisit  ( const ZorbaRemoveNodeAtIterator& );
+
     void beginVisit( const CurrentDateTimeIterator& );
     void endVisit  ( const CurrentDateTimeIterator& );
 
@@ -196,6 +235,18 @@ namespace zorba {
 
     void beginVisit( const FnPutIterator& );
     void endVisit  ( const FnPutIterator& );
+
+    void beginVisit( const IsAvailableCollectionIterator& );
+    void endVisit  ( const IsAvailableCollectionIterator& );
+
+    void beginVisit( const AvailableCollectionsIterator& );
+    void endVisit  ( const AvailableCollectionsIterator& );
+
+    void beginVisit( const IsDeclaredCollectionIterator& );
+    void endVisit  ( const IsDeclaredCollectionIterator& );
+
+    void beginVisit( const DeclaredCollectionsIterator& );
+    void endVisit  ( const DeclaredCollectionsIterator& );
 
     void beginVisit( const SqrtIterator& );
     void endVisit  ( const SqrtIterator& );

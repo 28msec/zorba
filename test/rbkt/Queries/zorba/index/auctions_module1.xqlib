@@ -1,8 +1,7 @@
 
 datamodule namespace auctions = "http://www.w3.org/TestModules/auctions";
 
-import module namespace dc = "http://www.zorba-xquery.com/module/dynamic-context";
-import module namespace ddl = "http://www.zorba-xquery.com/module/ddl";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/ddl";
 
 declare variable $auctions:auctions := xs:QName("auctions:auctions");
 declare variable $auctions:PersonId := xs:QName("auctions:PersonId");
@@ -16,7 +15,7 @@ declare collection auctions:auctions;
 :)
 
 declare index auctions:PersonId
-on dc:collection(xs:QName("auctions:auctions"))/site/people/person
+on ddl:collection(xs:QName("auctions:auctions"))/site/people/person
 by (fn:data(./@id))
 unique ordered;
 
@@ -27,7 +26,7 @@ unique ordered;
 :)
 
 declare index auctions:PersonCity
-on dc:collection(xs:QName("auctions:auctions"))/site/people/person
+on ddl:collection(xs:QName("auctions:auctions"))/site/people/person
 by ((.//city))
 ordered automatic;
 
@@ -50,13 +49,13 @@ declare sequential function auctions:create-db()
 
 declare function auctions:probe-point-id($indexName as xs:QName, $id as xs:string)
 {
-  dc:probe-index-point($indexName, $id)
+  ddl:probe-index-point($indexName, $id)
 };
 
 
 declare function auctions:probe-range-id($indexName as xs:QName, $id as xs:string)
 {
-  dc:probe-index-range($indexName,
+  ddl:probe-index-range($indexName,
                        $id,
                        1,
                        xs:boolean("true"), 
@@ -68,13 +67,13 @@ declare function auctions:probe-range-id($indexName as xs:QName, $id as xs:strin
 
 declare function auctions:probe-point-city($indexName as xs:QName, $city as xs:string?)
 {
-  dc:probe-index-point($indexName, $city)
+  ddl:probe-index-point($indexName, $city)
 };
 
 
 declare function auctions:probe-range-city($indexName as xs:QName, $city as xs:string)
 {
-  dc:probe-index-range($indexName,
+  ddl:probe-index-range($indexName,
                        $city,
                        1,
                        xs:boolean("true"),

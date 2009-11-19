@@ -1,5 +1,5 @@
-import module namespace ddl = "http://www.zorba-xquery.com/module/ddl";
-import module namespace dc = "http://www.zorba-xquery.com/module/dynamic-context";
+import module namespace ddl = "http://www.zorba-xquery.com/modules/ddl";
+import module namespace dc = "http://www.zorba-xquery.com/modules/introspection/dctx";
 import datamodule namespace ns = "http://example.org/datamodule/" at "collections.xqdata";
 
 declare sequential function local:test()
@@ -8,8 +8,8 @@ declare sequential function local:test()
   ddl:insert-nodes-last(xs:QName("ns:test1"), <a/>);
   ddl:insert-nodes-last(xs:QName("ns:test1"), <b/>);
   ddl:insert-nodes-last(xs:QName("ns:test1"), <c/>);
-  ddl:remove-nodes(xs:QName("ns:test1"), dc:collection(xs:QName("ns:test1"))[position()<3]);
-  exit returning dc:collection(xs:QName("ns:test1"));
+  ddl:remove-nodes(xs:QName("ns:test1"), ddl:collection(xs:QName("ns:test1"))[position()<3]);
+  exit returning ddl:collection(xs:QName("ns:test1"));
 };
 
 local:test()

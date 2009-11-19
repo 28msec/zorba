@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+-->
+<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+    
+<zorba:source>
+    <zorba:include  form="Quoted">store/api/iterator.h</zorba:include>
+</zorba:source>
+  
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="IsAvailableCollectionIterator">
+
+    <zorba:description author="Zorba Team">
+      dc:is-available-collection
+    </zorba:description>
+
+    <zorba:function requiresDynamicContext="true">
+      <zorba:signature localname="is-available-collection"
+                       prefix="fn-zorba-introspect-dctx">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="AvailableCollectionsIterator">
+
+    <zorba:description author="Zorba Team">
+      dc:available-collections
+    </zorba:description>
+
+    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
+      <zorba:member type="store::Iterator_t" name="nameItState"
+                    brief="the current iterator"/>
+    </zorba:state>
+  
+    <zorba:function requiresDynamicContext="true">
+      <zorba:signature localname="available-collections"
+                       prefix="fn-zorba-introspect-dctx">
+        <zorba:output>xs:QName*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+</zorba:iterator>
+
+</zorba:iterators>

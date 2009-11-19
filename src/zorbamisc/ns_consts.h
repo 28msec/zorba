@@ -30,10 +30,6 @@
 #define ZORBA_REST_FN_NS            "http://www.zorba-xquery.com/zorba/rest-functions"
 #define ZORBA_MATH_FN_NS            "http://www.zorba-xquery.com/modules/math"
 #define ZORBA_NODEREF_FN_NS         "http://www.zorba-xquery.com/zorba/node-ref-functions"
-#define ZORBA_COLLECTION_FN_NS      "http://www.zorba-xquery.com/zorba/collection-functions"
-#define ZORBA_STATICCONTEXT_FN_NS   "http://www.zorba-xquery.com/module/static-context"
-#define ZORBA_DYNAMICCONTEXT_FN_NS  "http://www.zorba-xquery.com/module/dynamic-context"
-#define ZORBA_DDL_FN_NS             "http://www.zorba-xquery.com/module/ddl"
 #define ZORBA_INDEX_FN_NS           "http://www.zorba-xquery.com/zorba/index-functions"
 #define ZORBA_ALEXIS_FN_NS          "http://www.zorba-xquery.com/zorba/util-functions"
 #define ZORBA_EMAIL_FN_NS           "http://www.zorba-xquery.com/zorba/email-functions"
@@ -42,8 +38,11 @@
 #define ZORBA_FOP_FN_NS             "http://www.zorba-xquery.com/zorba/fop-functions"
 
 #define ZORBA_XQDOC_FN_NS           "http://www.zorba-xquery.com/modules/xqdoc"
-#define ZORBA_BASE64_FN_NS           "http://www.zorba-xquery.com/modules/base64"
+#define ZORBA_BASE64_FN_NS          "http://www.zorba-xquery.com/modules/base64"
+#define ZORBA_INTROSPECT_DCTX_FN_NS "http://www.zorba-xquery.com/modules/introspection/dctx"
+#define ZORBA_INTROSPECT_SCTX_FN_NS "http://www.zorba-xquery.com/modules/introspection/sctx"
 
+#define ZORBA_DDL_FN_NS             "http://www.zorba-xquery.com/modules/ddl"
 
 #define ZORBA_COLLATION_NS_BASE "http://www.zorba-xquery.com/zorba/collations/"
 #define ZORBA_DEF_COLLATION_NS ZORBA_COLLATION_NS_BASE "IDENTICAL/en/US"
