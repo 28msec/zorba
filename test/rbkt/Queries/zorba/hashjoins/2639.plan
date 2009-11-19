@@ -1,0 +1,163 @@
+<result>{
+for $product in doc("products.xml")/*/product
+for $store in doc("stores.xml")/*/store
+for $sale in doc("sales-records.xml")/*/record[
+     store-number eq $store/store-number and product-name eq $product/name]
+return 
+  <store number="{$store/store-number}" product="{$sale/product-name}"/>
+}</result>
+
+
+LET $opt_temp_0 := doc(stores)/*/store
+
+LET $opt_temp_1 := doc(sales)/*
+
+RETURN <result>
+       {
+         FOR $product in doc(products)/*/product
+
+         LET $opt_temp_3 := xs:string(data($product/name))
+
+         FOR $store in $temp_0
+
+         LET $opt_temp_4 := data($store/store-number)
+
+         LET $opt_temp_2 := xs:string(data($store/store-number))
+
+         FOR $sale in FOR $dot-1 in $opt_temp_1
+
+                      RETURN FOR $dot-2 in $dot-1/record
+
+                             WHERE xs:string(data($dot-2/store-number)) eq $opt_temp_2
+                                   and
+                                   xs:string(data($dot-2/product-namer)) eq $opt_temp_3
+
+                             RETURN $dot-2
+
+         RETURN <store .... />
+       }
+       </result>
+
+************************************************************************************
+
+innderVar = $dot-2 , outerVar = $store
+
+domainExpr = $dot-1/record  ---> $opt_temp_1/record
+
+
+LET $opt_temp_0 := doc(stores)/*/store
+
+LET $opt_temp_1 := doc(sales)/*
+
+RETURN 
+       create-index(index0, )
+
+       <result>
+       {
+         FOR $product in doc(products)/*/product
+
+         LET $opt_temp_3 := xs:string(data($product/name))
+
+         FOR $store in $temp_0
+
+         LET $opt_temp_4 := data($store/store-number)
+
+         LET $opt_temp_2 := xs:string(data($store/store-number))
+
+         FOR $sale in FOR $dot-1 in $opt_temp_1
+
+                      RETURN FOR $dot-2 in PROBE(index0, $opt_temp_2)
+
+                             WHERE xs:string(data($dot-2/product-namer)) eq $opt_temp_3
+
+                             RETURN $dot-2
+
+         RETURN <store .... />
+       }
+       </result>
+
+************************************************************************************
+
+innderVar = $dot-2 , outerVar = $product
+
+domainExpr = PROBE(index0, $opt_temp_2) ---> 
+
+             PROBE(index0, xs:string(data($store/store-number))
+
+Between 
+
+************************************************************************************
+
+
+LET $opt_temp_0 := doc(stores)/*/store
+
+LET $opt_temp_1 := doc(sales)/*
+
+RETURN 
+       create-index(index0, )
+
+       <result>
+       {
+         FOR $store in $temp_0
+
+         LET $opt_temp_4 := data($store/store-number)
+
+         LET $opt_temp_2 := xs:string(data($store/store-number))
+
+         FOR $product in doc(products)/*/product
+
+         LET $opt_temp_3 := xs:string(data($product/name))
+
+         FOR $sale in FOR $dot-1 in $opt_temp_1
+
+                      RETURN FOR $dot-2 in PROBE(index0, $opt_temp_2)
+
+                             WHERE xs:string(data($dot-2/product-namer)) eq $opt_temp_3
+
+                             RETURN $dot-2
+
+         RETURN <store .... />
+       }
+       </result>
+
+************************************************************************************
+
+innderVar = $dot-2 , outerVar = $product
+
+domainExpr = PROBE(index0, $opt_temp_2) ---> 
+
+             PROBE(index0, xs:string(data($store/store-number))
+
+
+LET $opt_temp_0 := doc(stores)/*/store
+
+LET $opt_temp_1 := doc(sales)/*
+
+RETURN 
+       create-index(index0, )
+
+       <result>
+       {
+         FOR $store in $temp_0
+
+         LET $opt_temp_4 := data($store/store-number)
+
+         LET $opt_temp_2 := xs:string(data($store/store-number))
+
+         RETURN
+
+           create-index(index1, );
+
+           FOR $product in doc(products)/*/product
+
+           LET $opt_temp_3 := xs:string(data($product/name))
+
+           FOR $sale in FOR $dot-1 in $opt_temp_1
+
+                        RETURN FOR $dot-2 in PROBE(index1, $opt_temp_3)
+
+                               RETURN $dot-2
+
+           RETURN <store .... />
+       }
+       </result>
