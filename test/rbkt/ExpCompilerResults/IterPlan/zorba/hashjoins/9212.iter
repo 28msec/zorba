@@ -1,0 +1,84 @@
+Iterator tree for main query:
+<flwor::FLWORIterator>
+  <LetVariable name="$$opt_temp_0" materialize="true">
+    <HoistIterator>
+      <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,book)" typename="*" nill allowed="0">
+        <FnDocIterator>
+          <SingletonIterator value="xs:string(books.xml)"/>
+        </FnDocIterator>
+      </DescendantAxisIterator>
+    </HoistIterator>
+  </LetVariable>
+  <ReturnClause>
+    <SequentialIterator>
+      <CreateInternalIndexIterator>
+        <flwor::FLWORIterator>
+          <ForVariable name="$$opt_temp_1">
+            <UnhoistIterator>
+              <LetVarIterator varname="$$opt_temp_0"/>
+            </UnhoistIterator>
+          </ForVariable>
+          <ReturnClause>
+            <IndexEntryBuilderIterator>
+              <ForVarIterator varname="$$opt_temp_1"/>
+              <FnCountIterator>
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,author)" typename="*" nill allowed="0">
+                  <ForVarIterator varname="$$opt_temp_1"/>
+                </ChildAxisIterator>
+              </FnCountIterator>
+            </IndexEntryBuilderIterator>
+          </ReturnClause>
+        </flwor::FLWORIterator>
+      </CreateInternalIndexIterator>
+      <ElementIterator>
+        <SingletonIterator value="xs:QName(,,karteikasten)"/>
+        <EnclosedIterator attr_cont="false">
+          <flwor::FLWORIterator>
+            <ForVariable name="book">
+              <DescendantAxisIterator test kind="match_name_test" qname="xs:QName(,,book)" typename="*" nill allowed="0">
+                <FnDocIterator>
+                  <SingletonIterator value="xs:string(books.xml)"/>
+                </FnDocIterator>
+              </DescendantAxisIterator>
+            </ForVariable>
+            <LetVariable name="anzahl" materialize="true">
+              <FnCountIterator>
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,author)" typename="*" nill allowed="0">
+                  <ForVarIterator varname="book"/>
+                </ChildAxisIterator>
+              </FnCountIterator>
+            </LetVariable>
+            <OrderByClause>
+              <LetVarIterator varname="anzahl"/>
+            </OrderByClause>
+            <ReturnClause>
+              <ElementIterator>
+                <SingletonIterator value="xs:QName(,,gruppe)"/>
+                <AttributeIterator>
+                  <SingletonIterator value="xs:QName(,,anzahl)"/>
+                  <EnclosedIterator attr_cont="true">
+                    <LetVarIterator varname="anzahl"/>
+                  </EnclosedIterator>
+                </AttributeIterator>
+                <EnclosedIterator attr_cont="false">
+                  <flwor::FLWORIterator>
+                    <ForVariable name="book">
+                      <IndexPointProbeIterator>
+                        <SingletonIterator value="xs:QName(,,tempIndex0)"/>
+                        <LetVarIterator varname="anzahl"/>
+                      </IndexPointProbeIterator>
+                    </ForVariable>
+                    <ReturnClause>
+                      <ForVarIterator varname="book"/>
+                    </ReturnClause>
+                  </flwor::FLWORIterator>
+                </EnclosedIterator>
+              </ElementIterator>
+            </ReturnClause>
+          </flwor::FLWORIterator>
+        </EnclosedIterator>
+      </ElementIterator>
+    </SequentialIterator>
+  </ReturnClause>
+</flwor::FLWORIterator>
+
