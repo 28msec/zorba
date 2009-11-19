@@ -7,9 +7,11 @@ Iterator tree for main query:
   </LetVariable>
   <LetVariable name="$$opt_temp_0" materialize="true">
     <HoistIterator>
-      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,closed_auctions)" typename="*" nill allowed="0">
-        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
-          <LetVarIterator varname="auction"/>
+      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,closed_auction)" typename="*" nill allowed="0">
+        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,closed_auctions)" typename="*" nill allowed="0">
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
+            <LetVarIterator varname="auction"/>
+          </ChildAxisIterator>
         </ChildAxisIterator>
       </ChildAxisIterator>
     </HoistIterator>
@@ -19,11 +21,9 @@ Iterator tree for main query:
       <CreateInternalIndexIterator>
         <flwor::FLWORIterator>
           <ForVariable name="$$opt_temp_3">
-            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,closed_auction)" typename="*" nill allowed="0">
-              <UnhoistIterator>
-                <LetVarIterator varname="$$opt_temp_0"/>
-              </UnhoistIterator>
-            </ChildAxisIterator>
+            <UnhoistIterator>
+              <LetVarIterator varname="$$opt_temp_0"/>
+            </UnhoistIterator>
           </ForVariable>
           <ReturnClause>
             <IndexEntryBuilderIterator>
@@ -76,11 +76,6 @@ Iterator tree for main query:
           </HoistIterator>
         </LetVariable>
         <ForVariable name="a">
-          <UnhoistIterator>
-            <LetVarIterator varname="$$opt_temp_0"/>
-          </UnhoistIterator>
-        </ForVariable>
-        <ForVariable name="t">
           <IndexPointProbeIterator>
             <SingletonIterator value="xs:QName(,,tempIndex0)"/>
             <UnhoistIterator>
@@ -100,7 +95,7 @@ Iterator tree for main query:
               </EnclosedIterator>
             </AttributeIterator>
             <EnclosedIterator attr_cont="false">
-              <ForVarIterator varname="t"/>
+              <ForVarIterator varname="a"/>
             </EnclosedIterator>
           </ElementIterator>
         </ReturnClause>
