@@ -1,0 +1,1 @@
+<karteikasten><gruppe anzahl="2"/><gruppe anzahl="1"/><gruppe anzahl="1"/><gruppe anzahl="2"/><gruppe anzahl="2"/></karteikasten>
