@@ -15,47 +15,38 @@ return <item person="{$p/name/text()}">{count($a)}</item>
 
 HOIST --> HASHJOIN
 
-flwor_expr (0x80d3130) [
-  LET (0x80d3198) [
-    var kind=LET (0x80c6318) name=auction type=[NodeXQType documentNode? content=[XQType UNTYPED_KIND*]]
-  :=
-    fn:doc/1 (0x80c6410) [
-      const_expr (0x80b6598) [AtomicXQType XS_STRING] [ auction.xml ]
-    ]
+flwor_expr 
+[
+  LET  auction (0x80c6318) 
+  [
+    fn:doc/1 [ const_expr [ auction.xml ] ]
   ]
-  LET (0x80ae490) [
-    var kind=LET (0x80cbd38) name=$$opt_temp_0
-  :=
-    fn::hoist/1 (0x80ae428) [
-      relpath_expr (0x80cb8d8) [
-        var kind=LET (0x80c6318) name=auction type=[NodeXQType documentNode? content=[XQType UNTYPED_KIND*]]
-        REL STEP child::match_expr [name_test(site)]
-        REL STEP child::match_expr [name_test(closed_auctions)]
-        REL STEP child::match_expr [name_test(closed_auction)]
-      ]
-    ]
+  LET $$opt_temp_0 (0x80cbd38)
+  [
+    fn::hoist/1 [ relpath_expr [ auction / site/closes_auctions/closed_auction ] ]
   ]
 RETURN
-  sequential_expr (0x80aed08) [
-    op-extensions:create-index/1 (0x80aec10) [
-      const_expr (0x80ae1c8) [AtomicXQType XS_ANY_URI] [ tempIndex0 ]
+  sequential_expr 
+  [
+    op-extensions:create-index/1 
+    [
+      const_expr [ tempIndex0 ]
     ]
-    sequential_expr (0x80af0b8) [
-      fn::index-session-opener/1 (0x80adc88) [
-        const_expr (0x80b0f80) [AtomicXQType XS_ANY_URI] [ tempIndex0 ]
+    sequential_expr 
+    [
+      fn::index-session-opener/1 
+      [
+        const_expr [ tempIndex0 ]
       ]
-      flwor_expr (0x80aef90) [
-        FOR (0x80ae288) [
-          var kind=FOR (0x80ae220) name=$$opt_temp_2
-        AT
-          var kind=POS (0x80ce608) name=$$opt_temp_3
-        IN
-          fn::unhoist/1 (0x80aed78) [
-            var kind=LET (0x80cbd38) name=$$opt_temp_0
-          ]
+      flwor_expr (0x80aef90) 
+      [
+        FOR $$opt_temp_2 (0x80ae220) AT $$opt_temp_3 (0x80ce608) 
+        [
+          fn::unhoist/1 [ (0x80cbd38) $$opt_temp_0 ]
         ]
       RETURN
-        fn::index-builder/3 (0x80aef28) [
+        fn::index-builder/3 (0x80aef28) 
+        [
           const_expr (0x80ce670) [AtomicXQType XS_ANY_URI] [ tempIndex0 ]
           var kind=FOR (0x80ae220) name=$$opt_temp_2
           cast_expr [AtomicXQType XS_STRING?] (0x80aee88) [
