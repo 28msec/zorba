@@ -1,0 +1,129 @@
+body {
+    font-family:"Arial";
+    color: #000000;
+    font-size: 11pt;
+}
+
+img {
+    border: 0
+}
+
+h1 {
+    font-size: 20pt
+}
+h2 {
+    background-color: #B93333;
+    margin-bottom: 12px;
+    padding-left: 10px;
+    color: white;
+    font-size: 16pt;
+}
+h3 {
+    font-size: 12pt;
+}
+h4 {
+    margin-bottom: 5px;
+    font-size: 11pt;
+}
+
+p.annotationText {
+    margin-top: 0;
+    margin-bottom: 5px;
+    padding-left: 40px;
+}
+
+p.subcat { margin-top: 1px }
+p.breadcrumbs { color: #000000; font-size: 8pt; margin-bottom: 0 }
+p.oreillycopy { color: red; font-size: 9pt }
+p.breadcrumbs a:link { color: #000000; }
+p.breadcrumbs a:visited { color: #000000; }
+p.footer {
+     font-size: 8pt;
+     text-align: center;
+     margin-top: 0;
+     margin-bottom: 0
+}
+
+.sitehead {
+    width: 100%;
+    background-color: #8FBC8F
+}
+.sitename {
+    text-align: right;
+    font-size: 18.0pt;
+    font-weight:bold
+}
+.sitename2 {
+    margin-bottom: 0
+}
+
+table {
+    font-size: 11pt
+}
+table.funclist {
+    width: 100%;
+    border-style: solid;
+    border-width: 1px;
+    border-collapse: collapse;
+}
+table.parameter {
+    border: none;
+    border-collapse: collapse;
+    margin-left: 40px;
+}
+td {
+    border-style: solid;
+    border-width: 1px;
+    padding: 5px;
+    margin: 0;
+}
+td.type {
+    width: 50pt;
+    text-align: center;
+}
+td.parameter {
+    border: none;
+    margin-left: 0px;
+    vertical-align: top;
+    text-align: left;
+    padding-left: 0;
+    padding-bottom: 0;
+}
+
+hr {
+   color:#333333
+}
+
+.label {
+    width: 35%;
+}
+td.rightCol {
+    width: 220px; vertical-align: top
+}
+td.spacer {
+    width: 10px
+}
+
+h2.cat a:link { color: #254117; text-decoration: none }
+h2.cat a:visited { color: #254117; text-decoration: none }
+
+table.sitehead a:link { color: #000000; text-decoration: none }
+table.sitehead a:visited { color: #000000; text-decoration: none }
+
+tr.shaded { background-color: #FAF0E6 }
+.adt { border: 2px solid #8FBC8F; }
+.adc { text-align: center; }
+.ad1 { font-size: 16pt }
+.ad2 { font-size: 18pt; font-weight: bold; color: #CC3333 }
+.ad3 { font-size: 8pt; font-weight: bold}
+td.adc a:link { color: #000000; text-decoration: none; }
+td.adc a:visited { color: #000000; text-decoration: none; }
+
+pre {
+    margin-bottom: 0;
+}
+
+pre.signature {
+    background-color: #DDDDDD;
+    padding: 10px;
+}

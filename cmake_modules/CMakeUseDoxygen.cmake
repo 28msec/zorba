@@ -18,9 +18,6 @@
 # author Jan Woetzel 2004-2006
 # www.mip.informatik.uni-kiel.de/~jw
 
-
-FIND_PACKAGE(Doxygen)
-
 IF (DOXYGEN_FOUND)
 # the FindDoxygen module doesn't set DOXYGEN_DOT_FOUND like it is
 # supposed to, so here we have a workaround.
@@ -77,7 +74,7 @@ IF (DOXYGEN_FOUND)
   
   SET(DOXY_CONFIG_NATIVE)
   FILE(TO_NATIVE_PATH ${DOXY_CONFIG} DOXY_CONFIG_NATIVE)
-  ADD_CUSTOM_TARGET(doc "${DOXYGEN_EXECUTABLE}" "${DOXY_CONFIG_NATIVE}")
+  ADD_CUSTOM_TARGET(docs "${DOXYGEN_EXECUTABLE}" "${DOXY_CONFIG_NATIVE}")
   
   # create a windows help .chm file using hhc.exe
   # HTMLHelp DLL must be in path!

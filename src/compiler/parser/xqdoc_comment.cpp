@@ -34,7 +34,9 @@ XQDocComment::XQDocComment(const std::string& aComment)
   std::string lAnntotation;
   std::stringstream lComment;
   
-  // add one column to the comment such that all the lines are treated the same
+  // because the parser already digests the "(:~" token, in case the first line
+  // already contains text, we prefix it with ":" such that all the lines will
+  // be treated the same
   lComment << ":" << aComment;
 
   while(std::getline(lComment, lLine, '\n'))

@@ -14,15 +14,15 @@
 
 INCLUDE(${CMAKE_MODULE_PATH}/AddSrcSubfolder.cmake)
 
-INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
+INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE_DIRECTORIES(BEFORE ${CMAKE_SOURCE_DIR}/external) 
 
 INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaRuntimeGenerator.cmake)
 
 # look for all spec files and generate the header and cpp files if out of date
 # the cpp files and the according _impl.cpp files are added to the RUNTIME_SRCS list
-FILE(GLOB_RECURSE SPEC_FILES RELATIVE ${CMAKE_SOURCE_DIR}/src/runtime/spec ${CMAKE_SOURCE_DIR}/src/runtime/spec "*.xml")
+FILE(GLOB_RECURSE SPEC_FILES RELATIVE ${CMAKE_SOURCE_DIR}/src/runtime/spec "${CMAKE_SOURCE_DIR}/src/runtime/spec/*.xml")
 
 # mappings.xml is only a helper xml file => don't generate any code for it
 LIST(REMOVE_ITEM SPEC_FILES "mappings.xml")

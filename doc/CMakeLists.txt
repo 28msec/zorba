@@ -11,7 +11,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+FIND_PACKAGE(Doxygen)
+
+IF (NOT DOXYGEN_FOUND)
+  ADD_CUSTOM_TARGET(doc)
+ENDIF (NOT DOXYGEN_FOUND)
+
 ADD_SUBDIRECTORY(zorba)
+
 FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/zorba/html)
 
 IF (BUILDING_SIMPLESTORE)

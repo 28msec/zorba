@@ -19,7 +19,7 @@ import module namespace excel-text = "http://www.zorba-xquery.com/modules/excel/
 (:~
  : Helper function: returns the day of the week as a number, where from 0 (Sunday) to 6 (Saturday), given a $date.
  : 
- : @param   $date the date
+ : @param $date the date
  :) 
 declare function excel-datetime:day-of-week 
   ( $date as xs:anyAtomicType? )  as xs:integer? {
@@ -33,7 +33,7 @@ declare function excel-datetime:day-of-week
 (:~
  : Helper function: returns true if the year part of the supplied $date is a leap year, false otherwise.
  :
- : @param   $date the date 
+ : @param $date the date 
  :)  
 declare function excel-datetime:is-leap-year 
   ( $date as xs:date )  as xs:boolean {
@@ -50,9 +50,9 @@ declare function excel-datetime:is-leap-year
  : The metod used is U.S. (NASD). If the starting date is the last day of a month, it becomes equal to the 30th of the same month. 
  : If the ending date is the last day of a month and the starting date is earlier than the 30th of a month, the ending date becomes equal to the 1st of the next month; otherwise the ending date becomes equal to the 30th of the same month.
  :
- : @see     http://office.microsoft.com/en-us/excel/HP052090471033.aspx 
- : @param   $start_date the start date
- : @param   $end_date the end date
+ : @see http://office.microsoft.com/en-us/excel/HP052090471033.aspx 
+ : @param $start_date the start date
+ : @param $end_date the end date
  :) 
 declare function excel-datetime:days360
   ( $start_date as xs:date,
@@ -75,10 +75,10 @@ declare function excel-datetime:days360
  : - If date A falls on the 30th of a month after applying (2) above and date B falls on the 31st of a month, 
  : then date B will be changed to the 30th.
  :
- : @see     http://office.microsoft.com/en-us/excel/HP052090471033.aspx
- : @param   $start_date the start date
- : @param   $end_date the end date
- : @param   $method if false then US/NASD Method is used, otherwise the European Method is used.
+ : @see http://office.microsoft.com/en-us/excel/HP052090471033.aspx
+ : @param $start_date the start date
+ : @param $end_date the end date
+ : @param $method if false then US/NASD Method is used, otherwise the European Method is used.
  :)  
 declare function excel-datetime:days360
   ( $start_date as xs:date,
@@ -124,8 +124,8 @@ declare function excel-datetime:days360
 (:~
  : Returns the hour of a $time value. The hour is given as an integer, ranging from 0 (12:00 A.M.) to 23 (11:00 P.M.).
  :
- : @see     http://office.microsoft.com/en-us/excel/HP052091151033.aspx
- : @param   $time the time
+ : @see http://office.microsoft.com/en-us/excel/HP052091151033.aspx
+ : @param $time the time
  :)  
 declare function excel-datetime:hour
     ($time      as xs:time)     as xs:integer?  {
@@ -136,8 +136,8 @@ declare function excel-datetime:hour
 (:~
  : Returns the minutes of a $time value. The minute is given as an integer, ranging from 0 to 59.
  :
- : @see     http://office.microsoft.com/en-us/excel/HP052091781033.aspx
- : @param   $time the time 
+ : @see http://office.microsoft.com/en-us/excel/HP052091781033.aspx
+ : @param $time the time 
  :)  
 declare function excel-datetime:minute
     ($time      as xs:time)     as xs:integer?  {
@@ -148,8 +148,8 @@ declare function excel-datetime:minute
 (:~
  : Returns the month of a $date.
  :
- : @see     http://office.microsoft.com/en-us/excel/HP052091841033.aspx
- : @param   $date the date 
+ : @see http://office.microsoft.com/en-us/excel/HP052091841033.aspx
+ : @param $date the date 
  : @return  the month of a $date. The month is given as an integer, ranging from 1 (January) to 12 (December).
  :)  
 declare function excel-datetime:month
@@ -161,8 +161,8 @@ declare function excel-datetime:month
 (:~
  : Returns the seconds of a $time value. The second is given as an integer in the range 0 (zero) to 59.
  :
- : @see     http://office.microsoft.com/en-us/excel/HP052092511033.aspx
- : @param   $time the time 
+ : @see http://office.microsoft.com/en-us/excel/HP052092511033.aspx
+ : @param $time the time 
  :)  
 declare function excel-datetime:second
     ($time      as xs:time)     as xs:decimal   ?  {
@@ -173,8 +173,8 @@ declare function excel-datetime:second
 (:~
  : Returns the day of a $date, represented by a serial number. The day is given as an integer ranging from 1 to 31. 
  :
- : @see     http://office.microsoft.com/en-us/excel/HP052090461033.aspx
- : @param   $date the date
+ : @see http://office.microsoft.com/en-us/excel/HP052090461033.aspx
+ : @param $date the date
  :) 
 declare function excel-datetime:day
     ($date      as xs:date)     as xs:integer?  {
@@ -185,8 +185,8 @@ declare function excel-datetime:day
 (:~
  : Returns the year corresponding to a date. 
  :
- : @see     http://office.microsoft.com/en-us/excel/HP052093431033.aspx
- : @param   $date the date
+ : @see http://office.microsoft.com/en-us/excel/HP052093431033.aspx
+ : @param $date the date
  :)  
 declare function excel-datetime:year
     ($date      as xs:date)     as xs:integer?  {
@@ -197,7 +197,7 @@ declare function excel-datetime:year
 (:~
  : Returns the current date.
  :
- : @see     http://www.w3.org/TR/xquery-operators/#func-current-date
+ : @see http://www.w3.org/TR/xquery-operators/#func-current-date
  :)  
 declare function excel-datetime:today
     ()     as xs:date?  {
@@ -208,7 +208,7 @@ declare function excel-datetime:today
 (:~
  : Returns the current date and time. 
  :
- : @see     http://www.w3.org/TR/xquery-operators/#func-current-dateTime
+ : @see http://www.w3.org/TR/xquery-operators/#func-current-dateTime
  :)  
 declare function excel-datetime:now
     ()     as xs:dateTime?  {
@@ -220,10 +220,10 @@ declare function excel-datetime:now
 (:~
  : Returns a date given the hours, months and days
  :
- : @see     http://office.microsoft.com/en-us/excel/HP052090421033.aspxs
- : @param   $year the year
- : @param   $month the month 
- : @param   $day the day 
+ : @see http://office.microsoft.com/en-us/excel/HP052090421033.aspxs
+ : @param $year the year
+ : @param $month the month 
+ : @param $day the day 
  :) 
 declare function excel-datetime:date
     ($year      as xs:integer,
@@ -241,10 +241,10 @@ declare function excel-datetime:date
 (:~
  : Returns the time given the hours, minutes and seconds 
  :
- : @see     http://office.microsoft.com/en-us/excel/HP052093151033.aspx
- : @param   $hour the hour
- : @param   $minute the minute 
- : @param   $second the second  
+ : @see http://office.microsoft.com/en-us/excel/HP052093151033.aspx
+ : @param $hour the hour
+ : @param $minute the minute 
+ : @param $second the second  
  :)  
 declare function excel-datetime:time
     ($hour      as xs:integer,
@@ -261,8 +261,8 @@ declare function excel-datetime:time
 (:~
  : Returns the day of the week corresponding to a $date. The day is given as an integer, ranging from 1 (Sunday) to 7 (Saturday).
  :
- : @see     http://office.microsoft.com/en-us/excel/HP052093151033.aspx
- : @param   $date the date
+ : @see http://office.microsoft.com/en-us/excel/HP052093151033.aspx
+ : @param $date the date
  :)  
 declare function excel-datetime:weekday
     ($date      as xs:date)      as xs:integer? {
@@ -273,9 +273,9 @@ declare function excel-datetime:weekday
 (:~
  : Returns the day of the week corresponding to a $date depending on @return_type.
  :
- : @see     http://office.microsoft.com/en-us/excel/HP052093361033.aspx
- : @param   $date the date
- : @param   $return_type 1 for Numbers 1 (Sunday) through 7 (Saturday). 2 for Numbers 1 (Monday) through 7 (Sunday). 3 for Numbers 0 (Monday) through 6 (Sunday).
+ : @see http://office.microsoft.com/en-us/excel/HP052093361033.aspx
+ : @param $date the date
+ : @param $return_type 1 for Numbers 1 (Sunday) through 7 (Saturday). 2 for Numbers 1 (Monday) through 7 (Sunday). 3 for Numbers 0 (Monday) through 6 (Sunday).
  : @error   XQP0021(errValue) if $return_type is outside the range [1,3]
  :) 
 declare function excel-datetime:weekday
@@ -299,9 +299,9 @@ declare function excel-datetime:weekday
  : Working days exclude weekends and any dates identified in holidays. 
  : Use NETWORKDAYS to calculate employee benefits that accrue based on the number of days worked during a specific term.
  :
- : @see     http://office.microsoft.com/en-us/excel/HP052091901033.aspx
- : @param   $start_date the start date
- : @param   $end_date the end date 
+ : @see http://office.microsoft.com/en-us/excel/HP052091901033.aspx
+ : @param $start_date the start date
+ : @param $end_date the end date 
  :)  
 declare function excel-datetime:networkdays
     ($start_date        as xs:date,
@@ -315,10 +315,10 @@ declare function excel-datetime:networkdays
  : Working days exclude weekends and any dates identified in holidays. 
  : Use NETWORKDAYS to calculate employee benefits that accrue based on the number of days worked during a specific term.
  :
- : @see     http://office.microsoft.com/en-us/excel/HP052091901033.aspx
- : @param   $start_date the start date
- : @param   $end_date the end date
- : @param   $holidays one or more dates to exclude from the working calendar, such as state and federal holidays and floating holidays.  
+ : @see http://office.microsoft.com/en-us/excel/HP052091901033.aspx
+ : @param $start_date the start date
+ : @param $end_date the end date
+ : @param $holidays one or more dates to exclude from the working calendar, such as state and federal holidays and floating holidays.  
  :)  
 declare function excel-datetime:networkdays
     ($start_date        as xs:date,
