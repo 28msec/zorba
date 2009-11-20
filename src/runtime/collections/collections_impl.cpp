@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <fstream>
+#include "runtime/collections/collections.h"
 
 #include "zorbaerrors/Assert.h"
 #include "zorbaerrors/error_messages.h"
 
-#include "zorbatypes/zorbatypesError.h"
 #include "zorbatypes/URI.h"
 #include "zorbatypes/numconversions.h"
-
-#include "api/serialization/serializer.h"
 
 #include "system/globalenv.h"
 
@@ -32,11 +29,7 @@
 #include "context/statically_known_collection.h"
 #include "context/static_context_consts.h"
 
-#include "compiler/api/compilercb.h"
-
 #include "runtime/api/runtimecb.h"
-#include "runtime/collections/collections.h"
-#include "runtime/visitors/planiter_visitor.h"
 
 #include "store/api/pul.h"
 #include "store/api/copymode.h"
