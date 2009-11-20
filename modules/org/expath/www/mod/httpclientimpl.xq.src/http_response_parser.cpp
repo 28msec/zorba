@@ -1,5 +1,5 @@
 #include <string>
-#include <strstream>
+#include <sstream>
 #include <assert.h>
 
 #include <zorba/item_factory.h>
@@ -41,7 +41,7 @@ namespace zorba { namespace http_client {
   {
     theStreamBuffer->setInformer(this);
     theHandler.begin();
-    int code = theStreamBuffer->multi_perform();
+    theStreamBuffer->multi_perform();
     std::istream lStream(theStreamBuffer);
     Item lItem;
     if (theCurrentContentType == "text/xml" ||
@@ -117,7 +117,7 @@ namespace zorba { namespace http_client {
     {
       std::string::size_type lPosition = lValue.size() - 1;
       while (true) {
-        if (lPosition < 0) {
+        if (lPosition != std::string::npos) {
           break;
         }
         if (lValue[lPosition] == '\n' || lValue[lPosition] == '\r') {
@@ -149,7 +149,7 @@ namespace zorba { namespace http_client {
     {
       std::string::size_type lPosition = theMessage.size() - 1;
       while (true) {
-        if (lPosition < 0) {
+        if (lPosition != std::string::npos) {
           break;
         }
         if (theMessage[lPosition] == '\n' || theMessage[lPosition] == '\r') {

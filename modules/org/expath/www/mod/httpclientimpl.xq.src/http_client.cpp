@@ -126,6 +126,6 @@ namespace http_client {
 #  define DLL_EXPORT __attribute__ ((visibility("default")))
 #endif
 
-extern "C" __declspec(dllexport) zorba::ExternalModule* createModule() {
+extern "C" DLL_EXPORT zorba::ExternalModule* createModule() {
   return new zorba::http_client::HttpClientModule();
 }
