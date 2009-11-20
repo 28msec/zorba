@@ -442,7 +442,7 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
         }
       }
  
-      innerSeqExpr->add_at(arg, createExpr);
+      innerSeqExpr->add_at(arg, createExpr.getp());
     }
     else
     {

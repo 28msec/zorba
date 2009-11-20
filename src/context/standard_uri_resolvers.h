@@ -22,6 +22,11 @@ namespace zorba {
 
   class URI;
 
+  class InternalResolver {
+    public:
+
+  };
+
   class StandardDocumentURIResolver : public InternalDocumentURIResolver
   {
     public:
@@ -50,10 +55,16 @@ namespace zorba {
     public:
       virtual ~StandardSchemaURIResolver() {}
       
-      virtual store::Item_t
-      resolve(const store::Item_t& aURI,
-              const std::vector<store::Item_t>& aLocationHints,
-              static_context* aStaticContext);
+      virtual std::string
+        resolve(const store::Item_t& aURI,
+        static_context* aStaticContext,
+        xqpStringStore* aFileUri = 0);
+
+  protected:
+    static std::string
+    checkSchemaPath(const std::vector<std::string>& aSchemaPath,
+                    const store::Item_t& aUri,
+                    xqpStringStore* aResultFile);
   };
 
   class StandardModuleURIResolver : public InternalModuleURIResolver

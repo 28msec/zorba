@@ -185,7 +185,7 @@ main(int argc, char** argv)
 
       cresolver.reset(new zorba::TestCollectionURIResolver(col_map_file.c_str(),
                                                            rbkt_src_dir));
-      lContext->setSchemaURIResolver ( resolver.get() );
+      lContext->addSchemaURIResolver ( resolver.get() );
       lContext->addModuleURIResolver ( mresolver.get() );
       lContext->setCollectionURIResolver ( cresolver.get() );
 

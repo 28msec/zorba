@@ -36,7 +36,7 @@ TestSchemaURIResolverResult::~TestSchemaURIResolverResult()
 }
 
 
-Item TestSchemaURIResolverResult::getSchema () const
+String TestSchemaURIResolverResult::getSchema () const
 {
   return theSchema;
 }
@@ -87,8 +87,8 @@ void TestSchemaURIResolver::initialize ()
 std::auto_ptr<SchemaURIResolverResult>
 TestSchemaURIResolver::resolve (
     const Item & aURI,
-    const std::vector <Item> & aLocationHint,
-    StaticContext * aStaticContext)
+    StaticContext * aStaticContext,
+    String* aFileURI)
 {
   if ( uri_map.empty () ) {
     initialize ();
@@ -98,14 +98,11 @@ TestSchemaURIResolver::resolve (
   std::map <String, String >::iterator it = uri_map.find ( request );
   if ( it != uri_map.end () ) {
     const String  target = uri_map [ request ];
-    Zorba * zorba = Zorba::getInstance ( 0 );
-    ItemFactory * factory = zorba -> getItemFactory ();
-    Item item = factory -> createAnyURI ( target );
-    result -> theSchema = item;
+    result -> theSchema = target;
 
     if (theVerbose)
       std::cout << "Resolved schema " << aURI.getStringValue () << " -> " 
-                << result->theSchema.getStringValue () << std::endl;
+                << result->theSchema << std::endl;
   } else {
     // todo Location hint is not used at all
     result -> setError ( URIResolverResult::UR_XQST0059 );

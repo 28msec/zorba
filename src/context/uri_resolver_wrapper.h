@@ -60,10 +60,10 @@ namespace zorba {
       SchemaURIResolverWrapper(SchemaURIResolver*);
       virtual ~SchemaURIResolverWrapper() {}
       
-      virtual store::Item_t
+      virtual std::string
       resolve(const store::Item_t& aURI,
-              const std::vector<store::Item_t>& aLocationHints,
-              static_context* aStaticContext);
+              static_context* aStaticContext,
+              xqpStringStore* aFileUri = 0);
 
     protected:
       friend class StaticContextImpl;

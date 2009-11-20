@@ -115,26 +115,21 @@ namespace zorba {
   SchemaURIResolverWrapper::SchemaURIResolverWrapper(SchemaURIResolver* aSchemaResolver)
     : theSchemaResolver(aSchemaResolver) {}
 
-  store::Item_t
+  std::string
   SchemaURIResolverWrapper::resolve(const store::Item_t& aURI,
-                                    const std::vector<store::Item_t>& aLocationHints,
-                                    static_context* aStaticContext)
+                                    static_context* aStaticContext,
+                                    xqpStringStore* aFileUri)
   {
     StaticContextImpl  lOuterStaticContext(aStaticContext, 0);
     Item               lURIItem(aURI.getp());  
-    std::vector<Item>  lLocationHints;
-    for (std::vector<store::Item_t>::const_iterator lIter = aLocationHints.begin();
-         lIter != aLocationHints.end(); ++lIter) {
-      lLocationHints.push_back(Item((*lIter).getp()));
-    }
 
     // we have the ownership; it will be destroyed automatically once we leave this function
-    std::auto_ptr<SchemaURIResolverResult> lResult = theSchemaResolver->resolve(lURIItem, 
-                                                                                lLocationHints,
-                                                                                &lOuterStaticContext);
+    std::auto_ptr<SchemaURIResolverResult> lResult =
+      theSchemaResolver->resolve(lURIItem, 
+      &lOuterStaticContext);
 
     if (lResult->getError() == URIResolverResult::UR_NOERROR) {
-      return Unmarshaller::getInternalItem(lResult->getSchema());
+      return Unmarshaller::getInternalString(lResult->getSchema())->c_str();
     } else {
       // handle errors
       handle_resolver_error(lResult.get());

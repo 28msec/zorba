@@ -54,10 +54,10 @@ namespace zorba {
     public:
       virtual ~InternalSchemaURIResolver() {}
       
-      virtual store::Item_t
+      virtual std::string
       resolve(const store::Item_t& aURI,
-              const std::vector<store::Item_t>& aLocationHints,
-              static_context* aStaticContext) = 0;
+              static_context* aStaticContext,
+              xqpStringStore* aFileUri = 0) = 0;
   };
 
   class InternalModuleURIResolver

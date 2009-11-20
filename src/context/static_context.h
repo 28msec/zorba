@@ -108,9 +108,9 @@ protected:
 
   InternalDocumentURIResolver   * theDocResolver;
   InternalCollectionURIResolver * theColResolver;
-  InternalSchemaURIResolver     * theSchemaResolver;
 
   std::vector<InternalModuleURIResolver*> theModuleResolvers;
+  std::vector<InternalSchemaURIResolver*> theSchemaResolvers;
 
   CollectionMap                 * theCollectionMap;
 
@@ -482,10 +482,10 @@ public:
   get_collection_uri_resolver();
 
   void
-  set_schema_uri_resolver(InternalSchemaURIResolver*);
+  add_schema_uri_resolver(InternalSchemaURIResolver*);
 
-  InternalSchemaURIResolver*
-  get_schema_uri_resolver();
+  void
+  get_schema_uri_resolvers(std::vector<InternalSchemaURIResolver*>& lResolvers);
 
   void
   add_module_uri_resolver(InternalModuleURIResolver*);

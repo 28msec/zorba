@@ -381,10 +381,10 @@ namespace zorba {
       getCollectionType(const String& aCollectionUri) const = 0;
 
       virtual void
-      setSchemaURIResolver(SchemaURIResolver* aSchemaUriResolver) = 0;
+      addSchemaURIResolver(SchemaURIResolver* aSchemaUriResolver) = 0;
 
-      virtual SchemaURIResolver*
-      getSchemaURIResolver() const = 0;
+      virtual std::vector<SchemaURIResolver*>
+      getSchemaURIResolvers() const = 0;
 
       virtual void
       addModuleURIResolver(ModuleURIResolver* aModuleUriResolver) = 0;

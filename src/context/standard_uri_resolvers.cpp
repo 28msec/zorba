@@ -211,16 +211,82 @@ StandardCollectionURIResolver::resolve(
 }
 
 
-store::Item_t
+std::string
 StandardSchemaURIResolver::resolve(
     const store::Item_t& aURI,
-    const std::vector<store::Item_t>& aLocationHints,
-    static_context* aStaticContext)
+    static_context* aStaticContext,
+    xqpStringStore* aFileUri)
 {
-  if (aLocationHints.size() == 0)
-    return aURI;
-  else 
-    return aLocationHints[0];
+  // 1. check using module paths => return if good stream is found
+  std::vector<std::string> lModulePaths;
+  aStaticContext->get_full_module_paths(lModulePaths);
+
+  if (lModulePaths.size() != 0) {
+    std::string lResult;
+    lResult = checkSchemaPath(lModulePaths, aURI, 0);
+    if (lResult != "") {
+      return URI::encode_file_URI(lResult)->c_str();
+    }
+  }
+
+  // 2. check the user's resolvers
+  std::vector<InternalSchemaURIResolver*> lResolvers;
+  aStaticContext->get_schema_uri_resolvers(lResolvers);
+  for (std::vector<InternalSchemaURIResolver*>::const_iterator lIter
+    = lResolvers.begin() + 1;
+    lIter != lResolvers.end(); ++lIter) {
+      std::string lResult = (*lIter)->resolve(aURI, aStaticContext, aFileUri);
+      if (lResult != "") {
+        return lResult;
+      }
+  }
+
+  // 3. treat the URI as URL and check if a file is in the
+  // filesystem or on the web
+  // TODO register other interal resolvers for each of the tasks
+  xqpStringStore_t  lResolvedURI = aURI->getStringValue();
+  if (lResolvedURI->byteStartsWith ("file://")) {
+    // maybe we don't want to allow file access for security reasons (e.g. in a webapp)
+#ifdef ZORBA_WITH_FILE_ACCESS
+    std::auto_ptr<std::ifstream> modfile(new std::ifstream(
+      URI::decode_file_URI (lResolvedURI)->c_str()));
+    if (modfile.get()) {
+      return lResolvedURI->c_str();
+    }
+#endif
+  }
+  return aURI->getStringValue()->c_str();
+}
+
+std::string StandardSchemaURIResolver::checkSchemaPath(
+    const std::vector<std::string>& aSchemaPath,
+    const store::Item_t& aUri,
+    xqpStringStore* aResultFile)
+{
+  URI lURI(aUri->getStringValueP());
+  // compute path notation of the uri with a .xq at the end
+  // TODO: we might extend that to other file exentsions
+  xqpString lPathNotation(lURI.toPathNotation());
+  if (!lPathNotation.endsWith(".xsd")) {
+    lPathNotation = lPathNotation + ".xsd";
+  }
+
+  // check all module path in the according order
+  // the higher in the hirarchy the static context is
+  // the higher the priority of its module paths
+  for (std::vector<std::string>::const_iterator lIter = aSchemaPath.begin();
+    lIter != aSchemaPath.end(); ++lIter) {
+      xqpString lPotentialModuleFile = (*lIter) + lPathNotation;
+      std::auto_ptr<std::istream> modfile(
+        new std::ifstream(lPotentialModuleFile.c_str()));
+      if (modfile->good()) {
+        if (aResultFile) {
+          *aResultFile = *(lPotentialModuleFile.getStore());
+        }
+        return lPotentialModuleFile.c_str();
+      } 
+  }
+  return "";
 }
 
 std::istream*

@@ -734,21 +734,32 @@ StaticContextImpl::removeModuleURIResolver(ModuleURIResolver* aModuleUriResolver
 }
 
 
-SchemaURIResolver*
-StaticContextImpl::getSchemaURIResolver() const
+std::vector<SchemaURIResolver*>
+StaticContextImpl::getSchemaURIResolvers() const
 {
-  SchemaURIResolverWrapper* lWrapper = dynamic_cast<SchemaURIResolverWrapper*>(theCtx->get_schema_uri_resolver());
-  if (lWrapper) { // if it's the user's resolver
-    return lWrapper->theSchemaResolver;
+  std::vector<SchemaURIResolver*> lResult;
+  std::vector<InternalSchemaURIResolver*> lResolvers;
+  try {
+    theCtx->get_schema_uri_resolvers(lResolvers);
+    std::vector<InternalSchemaURIResolver*>::iterator lIter;
+    for (lResolvers.begin(); lIter != lResolvers.end(); ++lIter) {
+      SchemaURIResolverWrapper* lWrapper =
+        dynamic_cast<SchemaURIResolverWrapper*>(*lIter);
+      if (lWrapper) { // if it's the user's resolver
+        lResult.push_back(lWrapper->theSchemaResolver);
+      }
+    }
+  } catch (error::ZorbaError& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e);
   }
-  return 0;
+  return lResult;
 }
 
 void
-StaticContextImpl::setSchemaURIResolver(SchemaURIResolver* aSchemaUriResolver)
+StaticContextImpl::addSchemaURIResolver(SchemaURIResolver* aSchemaUriResolver)
 {
   try {
-    theCtx->set_schema_uri_resolver(new SchemaURIResolverWrapper(aSchemaUriResolver));
+    theCtx->add_schema_uri_resolver(new SchemaURIResolverWrapper(aSchemaUriResolver));
   } catch (error::ZorbaError& e) {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }

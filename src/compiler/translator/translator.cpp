@@ -2093,26 +2093,30 @@ void *begin_visit (const SchemaImport& v)
     }
   }
   
-  InternalSchemaURIResolver* lSchemaResolver = sctx_p->get_schema_uri_resolver();
+  std::vector<InternalSchemaURIResolver*> lResolvers;
+  sctx_p->get_schema_uri_resolvers(lResolvers);
+  InternalSchemaURIResolver* lSchemaResolver = lResolvers[0];
   
   try 
   {
-    // If lAtURIList is empty, return lTargetNamespace, else return the 1st
-    // uri item from lAtURIList.
-    store::Item_t lSchemaUri = lSchemaResolver->resolve(lTargetNamespace,
-                                                        lAtURIList,
+    std::string lSchemaUri;
+    // If lAtURIList is empty, return lTargetNamespace, else call the resolver
+    if (lAtURIList.empty()) {
+      lSchemaUri = lSchemaResolver->resolve(lTargetNamespace,
                                                         sctx_p);
+    } else {
+      lSchemaUri = lAtURIList[0]->getStringValue()->c_str();
+    }
 
     // Create a Schema obj and register it in the typemanger, if the typemanager
     // does not have a schema obj already
     CTXTS->initializeSchema();
     Schema* schema_p = CTXTS->getSchema();
 
-    std::string lTmp(lSchemaUri->getStringValue()->c_str());
-
     // Make Xerxes load and parse the xsd file and create a Xerces
     // representaton of it.
-    schema_p->registerXSD(lTargetNamespace->getStringValue()->c_str(), lTmp, loc);
+    schema_p->registerXSD(lTargetNamespace->getStringValue()->c_str(),
+      lSchemaUri, loc);
   }
   catch (error::ZorbaError& e) 
   {

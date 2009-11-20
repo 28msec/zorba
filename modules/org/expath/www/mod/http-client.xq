@@ -26,7 +26,7 @@ module namespace http = "http://www.expath.org/mod/http-client";
 
 import module namespace httpclientimpl = "http://www.expath.org/mod/httpclientimpl";
 
-import schema namespace https = "http://www.expath.org/mod/http-client" at "file:///C:/Projects/zorba_current/modules/org/expath/www/mod/http-client.xsd";
+import schema namespace https = "http://www.expath.org/mod/http-client";
 
 (:~
  : This function sends an HTTP request and returns the corresponding 

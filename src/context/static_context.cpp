@@ -379,7 +379,6 @@ static_context::static_context()
   context(NULL),
   theDocResolver(0),
   theColResolver(0),
-  theSchemaResolver(0),
   theCollectionMap(0),
   theIndexMap(NULL),
   theTraceStream(0),
@@ -395,7 +394,6 @@ static_context::static_context (static_context* parent)
   context(parent),
   theDocResolver(0),
   theColResolver(0),
-  theSchemaResolver(0),
   theCollectionMap(0),
   theIndexMap(NULL),
   theTraceStream(0),
@@ -411,7 +409,6 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   context(ar),
   theDocResolver(0),
   theColResolver(0),
-  theSchemaResolver(0),
   theCollectionMap(0),
   theIndexMap(0),
   theTraceStream(0),
@@ -464,7 +461,6 @@ static_context::~static_context()
 
   set_document_uri_resolver(0);
   set_collection_uri_resolver(0);
-  set_schema_uri_resolver(0);
 
   if (theCollectionMap) {
     delete theCollectionMap; theCollectionMap = 0;
@@ -1644,19 +1640,21 @@ static_context::get_collection_uri_resolver()
 }
 
 void
-static_context::set_schema_uri_resolver(InternalSchemaURIResolver* aSchemaResolver)
+static_context::add_schema_uri_resolver(InternalSchemaURIResolver* aSchemaResolver)
 {
-  delete theSchemaResolver;
-
-  theSchemaResolver = aSchemaResolver;
+  theSchemaResolvers.push_back(aSchemaResolver);
 }
 
-InternalSchemaURIResolver*
-static_context::get_schema_uri_resolver()
+void
+static_context::get_schema_uri_resolvers(std::vector<InternalSchemaURIResolver*>&
+                                         aResolvers)
 {
-  if ( theSchemaResolver != 0 )
-    return theSchemaResolver;
-  return parent!=NULL?dynamic_cast<static_context*>(parent)->get_schema_uri_resolver():0;
+  if (parent!=NULL) {
+    static_cast<static_context*>(parent)->get_schema_uri_resolvers(aResolvers);
+  }
+  aResolvers.insert(aResolvers.end(),
+    theSchemaResolvers.begin(),
+    theSchemaResolvers.end());
 }
 
 void

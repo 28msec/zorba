@@ -27,12 +27,12 @@ class TestSchemaURIResolverResult : public SchemaURIResolverResult
 protected:
   friend class TestSchemaURIResolver;
 
-  Item theSchema;
+  String theSchema;
 
 public:
   virtual ~TestSchemaURIResolverResult();
 
-  virtual Item getSchema () const;
+  virtual String getSchema () const;
 };
 
 
@@ -50,8 +50,8 @@ public:
 
   virtual std::auto_ptr<SchemaURIResolverResult>
   resolve(const Item & aURI,
-          const std::vector <Item> & aLocationHint,
-          StaticContext * aStaticContext );
+          StaticContext * aStaticContext,
+          String* aFileUri = 0);
 
 private:
   void initialize ();

@@ -190,10 +190,10 @@ class StaticContextImpl : public StaticContext
   getCollectionType(const String& aCollectionUri) const;
 
   virtual void
-  setSchemaURIResolver(SchemaURIResolver* aSchemaUriResolver);
+  addSchemaURIResolver(SchemaURIResolver* aSchemaUriResolver);
 
-  virtual SchemaURIResolver*
-  getSchemaURIResolver() const;
+  virtual std::vector<SchemaURIResolver*>
+  getSchemaURIResolvers() const;
 
   virtual void
   addModuleURIResolver(ModuleURIResolver* aModuleUriResolver);

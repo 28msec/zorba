@@ -23,7 +23,7 @@
 :)
 module namespace httpclientimpl = 'http://www.expath.org/mod/httpclientimpl';
 
-import schema namespace http = "http://www.expath.org/mod/http-client" at "file:///C:/Projects/zorba_current/modules/org/expath/www/mod/http-client.xsd";
+import schema namespace http = "http://www.expath.org/mod/http-client";
 
 declare function httpclientimpl:http-send-request-impl (
     $request as element(http:request, http:requestType)?,

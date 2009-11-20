@@ -117,7 +117,7 @@ namespace zorba {
     public:
       virtual ~SchemaURIResolverResult() {}
 
-      virtual Item
+      virtual String
       getSchema() const = 0;
   };
 
@@ -128,8 +128,8 @@ namespace zorba {
       
       virtual std::auto_ptr<SchemaURIResolverResult>
       resolve(const Item& aURI,
-              const std::vector<Item>& aLocationHints,
-              StaticContext* aStaticContext) = 0;
+              StaticContext* aStaticContext,
+              String* aFileUri = 0) = 0;
   };
 
   class ZORBA_DLL_PUBLIC ModuleURIResolverResult : public URIResolverResult
