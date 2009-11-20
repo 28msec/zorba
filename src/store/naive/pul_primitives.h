@@ -180,7 +180,6 @@ protected:
   store::UpdateConsts::UpdPrimKind theKind;
   std::vector<store::Item_t>       theNewChildren;
   store::Item_t                    theSibling;
-  store::CopyMode                  theCopyMode;
 
   long                             theNumApplied;
   store::Item_t                    theMergedNode;

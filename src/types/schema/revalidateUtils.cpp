@@ -13,36 +13,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "common/common.h"
-#include "system/globalenv.h"
 #include "common/shared_types.h"
+
 #include <zorbatypes/xerces_xmlcharray.h>
+
 #include "store/api/item_factory.h"
 #include "store/api/pul.h"
 #include "store/api/copymode.h"
+
+#include "compiler/parser/query_loc.h"
 
 #include "types/casting.h"
 #include "types/schema/schema.h"
 #include "types/schema/EventSchemaValidator.h"
 #include "types/schema/StrX.h"
+#include "types/schema/revalidateUtils.h"
 #include "types/typeimpl.h"
 #include "types/typeops.h"
 
 #include "context/static_context.h"
 #include "context/collation_cache.h"
 #include "context/namespace_context.h"
-#include "compiler/parser/query_loc.h"
+
+#include "system/globalenv.h"
 
 #include "zorbaerrors/error_messages.h"
 #include "zorbaerrors/errors.h"
 
-//using namespace std;
 
 namespace zorba
 {
 
 #ifndef ZORBA_NO_XMLSCHEMA
     
+void validateAfterUpdate(
+    const std::set<store::Item*>& nodes,
+    zorba::store::PUL* pul,
+    static_context* staticContext, 
+    const QueryLoc& loc);
+
 void validateAfterUpdate(
     store::Item* item,
     store::PUL* pul,
@@ -100,6 +111,18 @@ bool typeHasEmptyValue(xqtref_t t);
 
 #endif //ZORBA_NO_XMLSCHEMA
     
+
+/*******************************************************************************
+
+********************************************************************************/
+void SchemaValidatorImpl::validate(
+    const std::set<store::Item*>& nodes,
+    store::PUL& pul)
+{
+#ifndef ZORBA_NO_XMLSCHEMA
+  validateAfterUpdate(nodes, &pul, theSctx, theLoc);
+#endif
+}
 
 
 /**

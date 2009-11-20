@@ -20,25 +20,45 @@
 
 #include "common/shared_types.h"
 
+#include "store/api/validator.h"
+
+
 namespace zorba
 {
-
-namespace store
-{
-class PUL;
-}
 
 class QueryLoc;
 class static_context;
 
 
-void validateAfterUpdate(
-    const std::set<zorba::store::Item*>& nodes,
-    store::PUL* pul,
-    static_context* staticContext,
-    const QueryLoc& loc);
+/***************************************************************************//**
+  An implementation of the abstract store::Validator class, which provides a
+  callback method for the store to call in order to preform revalidation after
+  applying a PUL. 
+********************************************************************************/
+class SchemaValidatorImpl : public store::SchemaValidator
+{
+protected:
+  const QueryLoc & theLoc;
+  static_context * theSctx;
+
+public:
+  SchemaValidatorImpl(const QueryLoc& loc, static_context* sctx) 
+    :
+    theLoc(loc),
+    theSctx(sctx)
+  {
+  }
+
+  void validate(const std::set<store::Item*>& nodes, store::PUL& pul);
+};
+
 
 }
 
 #endif
 
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

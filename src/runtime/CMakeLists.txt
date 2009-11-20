@@ -70,6 +70,7 @@ LIST(APPEND RUNTIME_SRCS
     api/plan_wrapper.cpp
     base/plan_iterator.cpp
     booleans/BooleanImpl.cpp
+    core/apply_updates.cpp
     core/arithmetic_impl.cpp
     core/constructors.cpp
     core/flwor_iterator.cpp

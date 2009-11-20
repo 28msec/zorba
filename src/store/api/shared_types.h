@@ -16,8 +16,6 @@
 #ifndef ZORBA_STORE_API_SHARED_TYPES
 #define ZORBA_STORE_API_SHARED_TYPES
 
-#include <vector>
-
 #include "zorbamisc/config/platform.h"
 
 #include "zorbatypes/rchandle.h"

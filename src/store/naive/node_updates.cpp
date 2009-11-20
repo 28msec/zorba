@@ -642,10 +642,11 @@ void XmlNode::restoreType(TypeUndoList& undoList)
   if (undoList.empty())
     return;
 
+  ulong pos = 0;
+  ulong numNodes = undoList.size();
   XmlNode* currNode = this;
-  long pos = undoList.size() - 1;
 
-  while(currNode != NULL && pos >= 0)
+  while(currNode != NULL && pos < numNodes)
   {
     ZORBA_FATAL(currNode == undoList[pos].theNode, "");
  
@@ -700,7 +701,7 @@ void XmlNode::restoreType(TypeUndoList& undoList)
     }
 
     currNode = currNode->theParent;
-    pos--;
+    ++pos;
   }
 }
 

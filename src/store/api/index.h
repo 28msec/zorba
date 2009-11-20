@@ -359,7 +359,8 @@ public:
 
 
 /*******************************************************************************
- Class IndexEntryCreator is used to compute (key, domain_expr) pairs for a
+ An abstract class that provides callback methods for the store to call in order
+ to perform index maintenance.  is used to compute (key, domain_item) pairs for a
  given node that has a certain relationship to the domain expression.
 ********************************************************************************/
 class IndexEntryCreator : public SimpleRCObject
@@ -371,7 +372,7 @@ public:
    * Generate index entries for the given item.
    */
   virtual void createIndexEntries(
-        store::Item* node,
+        store::Item* item,
         std::vector<Item_t>& domainNodes,
         std::vector<IndexKey*>& keyTuples) = 0;
 };

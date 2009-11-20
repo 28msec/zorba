@@ -40,7 +40,7 @@ namespace zorba { namespace simplestore {
 ********************************************************************************/
 void UpdatePrimitive::addNodeForValidation(zorba::store::Item* node)
 {
-  thePul->theValidationNodes->insert(node);
+  thePul->theValidationNodes.insert(node);
 }
 
 
@@ -86,7 +86,6 @@ UpdInsertChildren::UpdInsertChildren(
   :
   UpdatePrimitive(pul, target),
   theKind(kind),
-  theCopyMode(copymode),
   theNumApplied(0)
 {
   theSibling.transfer(sibling);

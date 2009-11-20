@@ -41,6 +41,7 @@ class Iterator;
 class IndexSpecification;
 class IndexEntryCreator;
 class Index;
+class SchemaValidator;
 
 
 /*******************************************************************************
@@ -197,7 +198,7 @@ public:
 
   virtual void mergeUpdates(Item* other) = 0;
 
-  virtual void applyUpdates(std::set<Item*>& validationNodes) = 0;
+  virtual void applyUpdates() = 0;
 
   virtual void checkTransformUpdates(const std::vector<Item*>& rootNodes) const = 0;
 
@@ -205,6 +206,8 @@ public:
   virtual void getIndicesToRefresh(std::vector<Index*>& indices) = 0;
 
   virtual void addIndexEntryCreator(Index* idx, IndexEntryCreator* creator) = 0;
+
+  virtual void setValidator(SchemaValidator* validator) = 0;
 };
 
 
@@ -212,3 +215,9 @@ public:
 }
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

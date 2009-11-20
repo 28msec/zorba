@@ -38,6 +38,7 @@
 #include "runtime/core/flwor_iterator.h"
 #include "runtime/core/tuple_iterators.h"
 #include "runtime/core/trycatch.h"
+#include "runtime/core/apply_updates.h"
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/core/internal_operators.h"
 #include "runtime/indexing/value_index_ddl.h"

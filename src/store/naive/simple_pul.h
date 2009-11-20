@@ -26,10 +26,20 @@
 
 #include "store/naive/shared_types.h"
 #include "store/naive/node_vector.h"
-//#include "store/naive/pul_primitives.h"
 
 
-namespace zorba { namespace simplestore {
+
+namespace zorba 
+{ 
+
+namespace store
+{
+  class SchemaValidator;
+}
+
+
+namespace simplestore 
+{
 
 class UpdatePrimitive;
 class IndexKey;
@@ -126,32 +136,30 @@ public:
 
 
 protected:
+  // Bookeeping
+  NodeToUpdatesMap                   theNodeToUpdatesMap;
+
+  std::vector<UpdatePrimitive*>      thePrimitivesToRecheck;
+
+  // XQUF update primitives
   std::vector<UpdatePrimitive*>      theDoFirstList;
   std::vector<UpdatePrimitive*>      theInsertList;
   std::vector<UpdatePrimitive*>      theReplaceNodeList;
   std::vector<UpdatePrimitive*>      theReplaceContentList;
   std::vector<UpdatePrimitive*>      theDeleteList;
 
-  std::vector<UpdatePrimitive*>      theValidationList;
-
   std::vector<UpdatePrimitive*>      thePutList;
 
-  // update primitives for collection functions
+  // Update primitives for collection functions
   std::vector<UpdatePrimitive*>      theCreateCollectionList;
   std::vector<UpdatePrimitive*>      theInsertIntoCollectionList;
   std::vector<UpdatePrimitive*>      theDeleteFromCollectionList;
   std::vector<UpdatePrimitive*>      theDropCollectionList;
 
-  // index primitives
+  // Update primitives for indexes
   std::vector<UpdatePrimitive*>      theCreateIndexList;
   std::vector<UpdatePrimitive*>      theDropIndexList;
   std::vector<UpdatePrimitive*>      theRebuildIndexList;
-
-  NodeToUpdatesMap                   theNodeToUpdatesMap;
-
-  std::set<zorba::store::Item*>    * theValidationNodes;
-
-  std::vector<UpdatePrimitive*>      thePrimitivesToRecheck;
 
   // Index Maintenance
   std::set<XmlNode*>                 theModifiedDocs;
@@ -163,11 +171,18 @@ protected:
   std::vector<IndexDelta>            theBeforeIndexDeltas;
   std::vector<IndexDelta>            theAfterIndexDeltas;
 
+  // Revalidation
+  store::SchemaValidator           * theValidator;
+  std::set<store::Item*>             theValidationNodes;
+
+  std::vector<UpdatePrimitive*>      theValidationList;
+
 public:
   PULImpl();
 
   ~PULImpl();
 
+  // XQUF primitives
   void addDelete(store::Item_t& n);
 
   void addInsertInto(
@@ -218,6 +233,11 @@ public:
         store::Item_t&              target,
         store::Item_t&              newName);
 
+  void addPut(
+        store::Item_t& node,
+        store::Item_t& uri);
+
+  // Revalidation primitives
   void addSetElementType(
         store::Item_t&               target,
         store::Item_t&               typeName,
@@ -245,10 +265,6 @@ public:
         store::Item_t&              target,
         store::Item_t&              typeName,
         std::vector<store::Item_t>& typedValue);
-
-  void addPut(
-        store::Item_t& node,
-        store::Item_t& uri);
 
   // collection functions
   void addCreateCollection(
@@ -306,7 +322,7 @@ public:
         store::Iterator* sourceIter);
 
   // apply
-  void applyUpdates(std::set<zorba::store::Item*>& validationNodes);
+  void applyUpdates();
 
   void mergeUpdates(store::Item* other);
 
@@ -316,6 +332,8 @@ public:
   void getIndicesToRefresh(std::vector<store::Index*>& indices);
 
   void addIndexEntryCreator(store::Index* idx, store::IndexEntryCreator* creator);
+
+  void setValidator(store::SchemaValidator* validator);
 
 protected:
   void undoUpdates();

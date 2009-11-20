@@ -50,6 +50,7 @@
 #include "runtime/core/item_iterator.h"
 #include "runtime/core/var_iterators.h"
 #include "runtime/core/constructors.h"
+#include "runtime/core/apply_updates.h"
 #include "runtime/core/path_iterators.h"
 //#include "runtime/core/path.h"
 #include "runtime/core/nodeid_iterators.h"

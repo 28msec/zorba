@@ -30,6 +30,7 @@
 
 #include "store/api/iterator.h"
 #include "store/api/item_factory.h"
+#include "store/api/validator.h"
 
 
 namespace zorba { namespace simplestore {
@@ -84,7 +85,7 @@ inline void cleanIndexDelta(PULImpl::IndexDelta& delta)
 /*******************************************************************************
 
 ********************************************************************************/
-PULImpl::PULImpl() : theValidationNodes(NULL) 
+PULImpl::PULImpl() : theValidator(NULL) 
 {
 }
 
@@ -962,6 +963,15 @@ void PULImpl::mergeUpdateList(
 
 
 /*******************************************************************************
+
+********************************************************************************/
+void PULImpl::setValidator(store::SchemaValidator* validator)
+{
+  theValidator = validator;
+}
+
+
+/*******************************************************************************
   Check that each target node of this pul is inside one of the trees rooted at
   the given root nodes (the root nodes are the copies of the nodes produced by
   the source expr of a transform expr).
@@ -1221,16 +1231,14 @@ inline void applyList(std::vector<UpdatePrimitive*> aVector)
 }
 
 
-void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
+void PULImpl::applyUpdates()
 {
   // Compute the before-delta for each incrementally maintained index.
   computeIndexDeltas(theBeforeIndexDeltas);
 
-  // Apply all the update primitives
   try
   {
-    theValidationNodes = &validationNodes;
-
+    // Apply all the XQUF update primitives
     applyList(theDoFirstList);
     applyList(theInsertList);
     applyList(theReplaceNodeList);
@@ -1238,12 +1246,36 @@ void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
     applyList(theDeleteList);
     applyList(theValidationList);
 
+    // Check if any inconsistencies that were detected during the application
+    // of XQUF primitives were only temporary and have been resolved by now.
+    // If not, an exception will be raised, and the updates will be undone
+    // in the "catch" clause below.
     ulong numToRecheck = thePrimitivesToRecheck.size();
     for (ulong i = 0; i < numToRecheck; ++i)
       thePrimitivesToRecheck[i]->check();
 
     applyList(thePutList);
 
+#ifndef ZORBA_NO_XMLSCHEMA
+    // Revalidate the updated docs
+    if (theValidator != NULL)
+    {
+      rchandle<store::PUL> validationPul = new PULImpl();
+      
+      theValidator->validate(theValidationNodes, *validationPul.getp());
+
+      try
+      {
+        validationPul->applyUpdates();
+      }
+      catch (...)
+      {
+        ZORBA_FATAL(0, "Error during the application of the validation PUL");
+      }
+    }
+#endif
+
+    // Apply collection and index primitives
     applyList(theCreateCollectionList);
     applyList(theInsertIntoCollectionList);
     applyList(theDeleteFromCollectionList);
@@ -1255,28 +1287,10 @@ void PULImpl::applyUpdates(std::set<zorba::store::Item*>& validationNodes)
 
     applyList(theDropCollectionList);
   }
-  catch (error::ZorbaError& e)
-  {
-#ifndef NDEBUG
-    std::cerr << "Exception thrown during pul::applyUpdates: "
-              << std::endl <<  e.theDescription << std::endl;
-#endif
-
-    try
-    {
-      undoUpdates();
-    }
-    catch (...)
-    {
-      ZORBA_FATAL(0, "Error during pul::undoUpdates()");
-    }
-
-    throw e;
-  }
   catch(...)
   {
 #ifndef NDEBUG
-    std::cerr << "Unknown exception thrown during pul::applyUpdates " << std::endl;
+    std::cerr << "Exception thrown during pul::applyUpdates " << std::endl;
 #endif
 
     try

@@ -377,6 +377,9 @@ static bool is_trivial_expr(const expr* e)
   switch (e->get_expr_kind()) 
   {
   case const_expr_kind: // ????
+  {
+    return true;
+  }
   case var_expr_kind: 
   {
     enum var_expr::var_kind vk = static_cast<const var_expr*>(e)->get_kind();

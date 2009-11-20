@@ -18,35 +18,30 @@
 
 #include "common/shared_types.h"
 
-#include "system/globalenv.h"
+#include "store/api/pul.h"
+#include "store/api/update_consts.h"
+#include "store/api/item.h"
+#include "store/api/item_factory.h"
+#include "store/api/store.h"
+#include "store/api/copymode.h"
+
+#include "runtime/update/update.h"
+#include "runtime/core/var_iterators.h"
+#include "runtime/visitors/planiter_visitor.h"
 
 #include "types/root_typemanager.h"
-#include "types/schema/revalidateUtils.h"
 
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
 #include "context/statically_known_collection.h"
 #include "context/static_context_consts.h"
 
-#include "compiler/indexing/value_index.h"
-
-#include "runtime/update/update.h"
-#include "runtime/indexing/doc_indexer.h"
-#include "runtime/core/var_iterators.h"
-#include "runtime/api/plan_wrapper.h"
-#include "runtime/visitors/planiter_visitor.h"
-
-#include "store/api/pul.h"
-#include "store/api/update_consts.h"
-#include "store/api/item.h"
-#include "store/api/item_factory.h"
-#include "store/api/index.h"
-#include "store/api/store.h"
-#include "store/api/copymode.h"
+#include "system/globalenv.h"
 
 
 namespace zorba 
 {
+
 SERIALIZABLE_CLASS_VERSIONS(InsertIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(InsertIterator)
 
@@ -65,8 +60,6 @@ END_SERIALIZABLE_CLASS_VERSIONS(CopyClause)
 SERIALIZABLE_CLASS_VERSIONS(TransformIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(TransformIterator)
 
-SERIALIZABLE_CLASS_VERSIONS(ApplyIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(ApplyIterator)
 
 void areNodeModifiersViolated(
     const static_context* aSctx,
@@ -756,7 +749,7 @@ TransformIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
 
 void 
-TransformIterator::openImpl ( PlanState& planState, uint32_t& offset ) 
+TransformIterator::openImpl(PlanState& planState, uint32_t& offset) 
 {
   StateTraitsImpl<PlanIteratorState>::createState(planState, theStateOffset, offset);
 
@@ -775,7 +768,7 @@ TransformIterator::openImpl ( PlanState& planState, uint32_t& offset )
 
 
 void 
-TransformIterator::resetImpl ( PlanState& planState ) const
+TransformIterator::resetImpl(PlanState& planState) const
 {
   StateTraitsImpl<PlanIteratorState>::reset(planState, theStateOffset);
   
@@ -794,7 +787,7 @@ TransformIterator::resetImpl ( PlanState& planState ) const
 
 
 void 
-TransformIterator::closeImpl ( PlanState& planState ) const
+TransformIterator::closeImpl(PlanState& planState) const
 {
   CopyClause::const_iter_t lIter = theCopyClauses.begin();
   CopyClause::const_iter_t lEnd = theCopyClauses.end();
@@ -811,114 +804,6 @@ TransformIterator::closeImpl ( PlanState& planState ) const
 }
 
 
-/*******************************************************************************
-
-********************************************************************************/
-bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{ 
-  store::Item_t tmp;
-  store::Item_t pulItem;
-  store::PUL* pul;
-  rchandle<store::PUL> validationPul;
-  std::set<zorba::store::Item*> validationNodes;
-  rchandle<store::PUL> indexPul;
-  std::vector<store::Index*> indexes;
-
-  dynamic_context* dctx = planState.dctx();
-  CompilerCB* ccb = planState.theCompilerCB;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  // Note: updating expr might not return a pul because of vacuous exprs
-  if (consumeNext(pulItem, theChild, planState))
-  {
-    if (!pulItem->isPul())
-      ZORBA_ERROR_LOC_DESC(XQP0019_INTERNAL_ERROR, loc,
-                           "Expression does not return a pending update list");
-
-    pul = static_cast<store::PUL*>(pulItem.getp());
-
-    if (consumeNext(tmp, theChild, planState))
-    {
-      ZORBA_ERROR_LOC_DESC(XQP0019_INTERNAL_ERROR, loc,
-                           "Expression returns more than one pending update lists");
-    }
-
-
-    // Get all the indexes that are associated with any of the collections that
-    // are going to be updated by this pul. Check which of those indices can be
-    // maintained incrementally, and pass this info back to the pul.
-    pul->getIndicesToRefresh(indexes);
-
-    ulong numIndices = indexes.size();
-
-    std::vector<ValueIndex*> zorbaIndexes(numIndices); 
-
-    for (ulong i = 0; i < numIndices; ++i)
-    {
-      ValueIndex* zorbaIndex = theSctx->lookup_index(indexes[i]->getName());
-      
-      if (zorbaIndex == NULL)
-      {
-        ZORBA_ERROR_LOC_PARAM(XQP0037_INDEX_IS_NOT_DECLARED, loc,
-                              indexes[i]->getName()->getStringValue()->c_str(), "");
-      }
-
-      if (zorbaIndex->getMaintenanceMode() == ValueIndex::DOC_MAP)
-      {
-        DocIndexer* docIndexer = zorbaIndex->getDocIndexer(ccb, loc);
-        assert(docIndexer != NULL);
-
-        docIndexer->setup(ccb, dctx);
-
-        pul->addIndexEntryCreator(indexes[i], docIndexer);
-      }
-
-      zorbaIndexes[i] = zorbaIndex;
-    }
-
-
-    // Apply updates
-    pul->applyUpdates(validationNodes);
-
-    // Revalidate
-#ifndef ZORBA_NO_XMLSCHEMA
-    validationPul = GENV_ITEMFACTORY->createPendingUpdateList();
-
-    validateAfterUpdate(validationNodes, validationPul, theSctx, loc);
-
-    validationPul->applyUpdates(validationNodes);
-#endif
-
-    // Rebuild the indices that must be rebuilt from scratch
-    if (numIndices > 0)
-    {
-      indexPul = GENV_ITEMFACTORY->createPendingUpdateList();
-
-      for (ulong i = 0; i < numIndices; ++i)
-      {
-        ValueIndex* zorbaIndex = zorbaIndexes[i];
-        
-        if (zorbaIndex->getMaintenanceMode() == ValueIndex::REBUILD)
-        {
-          PlanIter_t buildPlan = zorbaIndex->getBuildPlan(ccb, loc);
-
-          PlanWrapper_t planWrapper = new PlanWrapper(buildPlan, ccb, dctx, NULL);
-
-          indexPul->addRebuildIndex(zorbaIndex->getName(), planWrapper);
-        }
-      }
-
-      indexPul->applyUpdates(validationNodes);
-    }
-  }
-
-  STACK_END(state);
-}
-
-
-UNARY_ACCEPT(ApplyIterator);
 
 
 } // namespace zorba
