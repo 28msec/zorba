@@ -38,4 +38,17 @@ return <person id = "{$x/@id}">{$x/name}</person>
 ,
 for $x in auctions:probe-point-city($emp-city, "Amsterdam")
 return <person id = "{$x/@id}">{$x/name}</person>
+,
+block
+{
+  ddl:insert-nodes-first($auctions:auctions, doc("auctions2.xml"));
+}
+,
+"
+
+"
+,
+for $x in auctions:probe-range-city($emp-city, "T")
+return <person id = "{$x/@id}">{$x/name}</person>
+
 

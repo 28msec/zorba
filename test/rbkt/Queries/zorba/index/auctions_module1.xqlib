@@ -53,15 +53,19 @@ declare function auctions:probe-point-id($indexName as xs:QName, $id as xs:strin
 };
 
 
+(:
+  Look for persons whose id is >= than the given id
+:)
+
 declare function auctions:probe-range-id($indexName as xs:QName, $id as xs:string)
 {
   ddl:probe-index-range($indexName,
-                       $id,
-                       1,
-                       xs:boolean("true"), 
-                       xs:boolean("false"),
-                       xs:boolean("true"),
-                       xs:boolean("false"))
+                        $id,
+                        1,
+                        xs:boolean("true"), 
+                        xs:boolean("false"),
+                        xs:boolean("true"),
+                        xs:boolean("false"))
 };
 
 
@@ -71,14 +75,18 @@ declare function auctions:probe-point-city($indexName as xs:QName, $city as xs:s
 };
 
 
+(:
+  Look for persons whose city is >= than the given city
+:)
+
 declare function auctions:probe-range-city($indexName as xs:QName, $city as xs:string)
 {
   ddl:probe-index-range($indexName,
-                       $city,
-                       1,
-                       xs:boolean("true"),
-                       xs:boolean("false"),
-                       xs:boolean("true"),
-                       xs:boolean("false"))
+                        $city,
+                        1,
+                        xs:boolean("true"),
+                        xs:boolean("false"),
+                        xs:boolean("true"),
+                        xs:boolean("false"))
 };
 
