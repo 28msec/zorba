@@ -515,7 +515,7 @@ store::Collection_t SimpleStore::createUriCollection(const xqpStringStore_t& uri
   Return an rchandle to the Collection object corresponding to the given QName,
   or NULL if there is no collection with that QName.
 ********************************************************************************/
-store::Collection_t SimpleStore::getCollection(const store::Item_t& aName)
+store::Collection_t SimpleStore::getCollection(const store::Item* aName)
 {
   if (aName == NULL)
     return NULL;
@@ -545,7 +545,7 @@ store::Collection_t SimpleStore::getUriCollection(const xqpStringStore_t& uri)
   Delete the collection with the given QName. If there is no collection with
   that QName, this method is a NOOP.
 ********************************************************************************/
-void SimpleStore::deleteCollection(const store::Item_t& aName)
+void SimpleStore::deleteCollection(const store::Item* aName)
 {
   if (aName == NULL)
     return;

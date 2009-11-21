@@ -134,7 +134,6 @@ public:
 
   typedef std::vector<std::pair<store::Item_t, store::IndexKey*> > IndexDelta;
 
-
 protected:
   // Bookeeping
   NodeToUpdatesMap                   theNodeToUpdatesMap;
@@ -163,6 +162,8 @@ protected:
 
   // Index Maintenance
   std::set<XmlNode*>                 theModifiedDocs;
+  std::vector<XmlNode*>              theInsertedDocs;
+  std::vector<XmlNode*>              theDeletedDocs;
 
   std::vector<IndexImpl*>            theIncrementalIndices;
 

@@ -837,12 +837,16 @@ void PULImpl::mergeUpdateList(
       continue;
     }
 
-    if (listKind == UP_LIST_CREATE_COLLECTION) {
+    if (listKind == UP_LIST_CREATE_COLLECTION) 
+    {
       UpdCreateCollection* otherUpd = static_cast<UpdCreateCollection*>(otherList[i]);
-      for (size_t j = 0; j < theCreateCollectionList.size(); ++j) {
-        if (myList[j]->getKind() == store::UpdateConsts::UP_CREATE_COLLECTION) {
+      for (size_t j = 0; j < theCreateCollectionList.size(); ++j) 
+      {
+        if (myList[j]->getKind() == store::UpdateConsts::UP_CREATE_COLLECTION) 
+        {
           UpdCreateCollection* upd = static_cast<UpdCreateCollection*>(theCreateCollectionList[j]);
-          if (upd->getCollectionName()->equals(otherUpd->getCollectionName())) {
+          if (upd->getName()->equals(otherUpd->getName())) 
+{
             ZORBA_ERROR(XDDY0013);
           }
         }
@@ -1013,7 +1017,10 @@ void PULImpl::checkTransformUpdates(const std::vector<store::Item*>& rootNodes) 
   the docs that belong to that collection already).
 
   As a side-effect, the method will also collect in theModifiedDocs all the
-  collection docs that are modified by this pul.
+  exisiting collection docs that are modified by this pul.
+
+  This method is invoked by the ApplyIterator before any of the pul primitives
+  is applied.
 ********************************************************************************/
 void PULImpl::getIndicesToRefresh(std::vector<store::Index*>& indices)
 {
@@ -1021,7 +1028,8 @@ void PULImpl::getIndicesToRefresh(std::vector<store::Index*>& indices)
 
   // First, find all the collections that are modified. We also gather all the
   // modified collection docs, because they will be need later to maintain indices.
-  std::set<SimpleCollection*> collections;
+  std::set<store::Collection*> collections;
+  store::Collection* collection;
 
   NodeToUpdatesMap::iterator ite = theNodeToUpdatesMap.begin();
   NodeToUpdatesMap::iterator end = theNodeToUpdatesMap.end();
@@ -1030,13 +1038,49 @@ void PULImpl::getIndicesToRefresh(std::vector<store::Index*>& indices)
   {
     XmlNode* node = (*ite).first;
 
-    SimpleCollection* collection = node->getCollection();
+    collection = node->getCollection();
 
     if (collection != NULL)
     {
       collections.insert(collection);
 
       theModifiedDocs.insert(node->getRoot());
+    }
+  }
+
+  ulong numCollUpdates = theInsertIntoCollectionList.size();
+
+  for (ulong i = 0; i < numCollUpdates; ++i)
+  {
+    UpdCollection* upd = static_cast<UpdCollection*>(theInsertIntoCollectionList[i]);
+
+    collection = store->getCollection(upd->getName());
+
+    if (collection)
+    {
+      collections.insert(collection);
+
+      ulong numDocs = upd->numNodes();
+      for (ulong j = 0; j < numDocs; ++j)
+        theInsertedDocs.push_back(static_cast<XmlNode*>(upd->getNode(j)));
+    }
+  }
+
+  numCollUpdates = theDeleteFromCollectionList.size();
+
+  for (ulong i = 0; i < numCollUpdates; ++i)
+  {
+    UpdCollection* upd = static_cast<UpdCollection*>(theDeleteFromCollectionList[i]);
+
+    collection = store->getCollection(upd->getName());
+
+    if (collection)
+    {
+      collections.insert(collection);
+
+      ulong numDocs = upd->numNodes();
+      for (ulong j = 0; j < numDocs; ++j)
+        theDeletedDocs.push_back(static_cast<XmlNode*>(upd->getNode(j)));
     }
   }
 
@@ -1058,8 +1102,8 @@ void PULImpl::getIndicesToRefresh(std::vector<store::Index*>& indices)
 
     for (ulong i = 0; i < numIndexSources; ++i)
     {
-      std::set<SimpleCollection*>::const_iterator colIte = collections.begin();
-      std::set<SimpleCollection*>::const_iterator colEnd = collections.end();
+      std::set<store::Collection*>::const_iterator colIte = collections.begin();
+      std::set<store::Collection*>::const_iterator colEnd = collections.end();
 
       for (; colIte != colEnd; ++colIte)
       {
@@ -1089,6 +1133,9 @@ void PULImpl::addIndexEntryCreator(
 }
 
 
+/*******************************************************************************
+  The comparison function for sorting the entries of an IndexDelta by the doc node
+********************************************************************************/
 static bool cmp(const std::pair<store::Item_t, store::IndexKey*>& e1,
                 const std::pair<store::Item_t, store::IndexKey*>& e2)
 {
@@ -1153,16 +1200,20 @@ void PULImpl::refreshIndices()
 {
   ulong numIncrementalIndices = theIncrementalIndices.size();
 
-  for (ulong i = 0; i < numIncrementalIndices; ++i)
+  for (ulong idx = 0; idx < numIncrementalIndices; ++idx)
   {
-    IndexImpl* index = theIncrementalIndices[i];
+    IndexImpl* index = theIncrementalIndices[idx];
+    store::IndexEntryCreator* docIndexer = theIndexEntryCreators[idx].getp();
 
+    //
+    // Referesh the index w.r.t. modified docs.
+    //
     HashIndex::CompareFunction keyCmp(index->getNumColumns(),
                                       index->getTimezone(),
                                       index->getCollators());
 
-    IndexDelta& beforeDelta = theBeforeIndexDeltas[i];
-    IndexDelta& afterDelta = theAfterIndexDeltas[i];
+    IndexDelta& beforeDelta = theBeforeIndexDeltas[idx];
+    IndexDelta& afterDelta = theAfterIndexDeltas[idx];
 
     IndexDelta::iterator beforeIte = beforeDelta.begin();
     IndexDelta::iterator beforeEnd = beforeDelta.end();
@@ -1213,6 +1264,46 @@ void PULImpl::refreshIndices()
       (*afterIte).second = NULL; // ownership of the key was passed to the index
       ++afterIte;
     }
+
+    //
+    // Referesh the index w.r.t. newly inserted docs.
+    //
+    ulong numDocs = theInsertedDocs.size();
+
+    for (ulong i = 0; i < numDocs; i++)
+    {
+      std::vector<store::Item_t> domainNodes;
+      std::vector<store::IndexKey*> keys;
+
+      docIndexer->createIndexEntries(theInsertedDocs[i], domainNodes, keys);
+
+      ulong numEntries = domainNodes.size();
+
+      for (ulong j = 0; j < numEntries; ++j)
+      {
+        index->insert(keys[j], domainNodes[j]);
+      }
+    }
+
+    //
+    // Referesh the index w.r.t. deleted docs,
+    //
+    numDocs = theDeletedDocs.size();
+
+    for (ulong i = 0; i < numDocs; i++)
+    {
+      std::vector<store::Item_t> domainNodes;
+      std::vector<store::IndexKey*> keys;
+
+      docIndexer->createIndexEntries(theDeletedDocs[i], domainNodes, keys);
+
+      ulong numEntries = domainNodes.size();
+
+      for (ulong j = 0; j < numEntries; ++j)
+      {
+        index->remove(keys[j], domainNodes[j]);
+      }
+    }
   }
 }
 
@@ -1233,11 +1324,11 @@ inline void applyList(std::vector<UpdatePrimitive*> aVector)
 
 void PULImpl::applyUpdates()
 {
-  // Compute the before-delta for each incrementally maintained index.
-  computeIndexDeltas(theBeforeIndexDeltas);
-
   try
   {
+    // Compute the before-delta for each incrementally maintained index.
+    computeIndexDeltas(theBeforeIndexDeltas);
+
     // Apply all the XQUF update primitives
     applyList(theDoFirstList);
     applyList(theInsertList);
@@ -1286,6 +1377,9 @@ void PULImpl::applyUpdates()
     applyList(theDropIndexList);
 
     applyList(theDropCollectionList);
+
+    // Compute the after-delta for each incrementally maintained index.
+    computeIndexDeltas(theAfterIndexDeltas);
   }
   catch(...)
   {
@@ -1305,15 +1399,13 @@ void PULImpl::applyUpdates()
     throw;
   }
 
-  // Compute the after-delta for each incrementally maintained index.
-  computeIndexDeltas(theAfterIndexDeltas);
-
-  // Refresh each incrementally maintained index using its before and after deltas
-  refreshIndices();
-
-  // Detach nodes that were deleted from their trees.
   try
   {
+    // Refresh each incrementally maintained index using its before and after deltas.
+    // TODO: implement undo for index maintenance.
+    refreshIndices();
+
+    // Detach nodes that were deleted from their trees.
     ulong numUpdates = theReplaceNodeList.size();
     for (ulong i = 0; i < numUpdates; i++)
     {

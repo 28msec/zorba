@@ -154,9 +154,9 @@ public:
 
   store::Collection_t createCollection(store::Item_t& aName);
 
-  void deleteCollection(const store::Item_t& aName);
+  void deleteCollection(const store::Item* aName);
 
-  store::Collection_t getCollection(const store::Item_t& aName);
+  store::Collection_t getCollection(const store::Item* aName);
 
   store::Iterator_t listCollectionNames();
 

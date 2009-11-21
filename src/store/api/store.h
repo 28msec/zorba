@@ -203,13 +203,6 @@ public:
   /* ------------------------ Collection Management ---------------------------*/
 
   /**
-   * Creates a new unique URI which can be used as an ID for a collection.
-   *
-   * @return URI
-   */
-  virtual Item_t createUri() = 0;
-	
-  /**
    * Creates a collection in the store.
    * 
    * @param QName The QName of the collection to create.
@@ -226,14 +219,14 @@ public:
    * @return handle object of the collection. Returns NULL if the collection
    *         does not exist
    */
-  virtual Collection_t getCollection(const Item_t& name) = 0;
+  virtual Collection_t getCollection(const Item* name) = 0;
   virtual Collection_t getUriCollection(const xqpStringStore_t& uri) = 0;
 		
   /** Deletes a collection.
    *
    * @param QName to identify the collection to delete.
    */
-  virtual void deleteCollection(const Item_t& name) = 0;
+  virtual void deleteCollection(const Item* name) = 0;
   virtual void deleteUriCollection(const xqpStringStore_t& uri) = 0;
 
   /** 
