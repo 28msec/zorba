@@ -9,7 +9,7 @@ if(fn:empty($ctests)) then
 else
 validate lax {
   <test-suite-result
-     xmlns="http://www.w3.org/2005/02/query-test-XQTSResult">
+     xmlns:xqts="http://www.w3.org/2005/02/query-test-XQTSResult">
      <implementation name="Zorba" 
             version='1.0 beta'
             anonymous-result-column="false">
