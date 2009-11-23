@@ -110,7 +110,7 @@ FileImpl::getFileUri() const
 
     int lCurrentPos = 0;
     int lNextSlashPos = lPath.find_first_of("/");
-    while (lNextSlashPos > 0) {
+    while (lNextSlashPos != std::string::npos) {
       String lEncodedSegment(lPath.substr(lCurrentPos, lNextSlashPos - lCurrentPos));
       lEncodedResult << lEncodedSegment.encodeForUri() << "/";
       lCurrentPos = lNextSlashPos + 1;
