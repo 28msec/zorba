@@ -5,11 +5,12 @@
 
 macro (find_prereqs)
   # Definitely need svn here.
-  find_package (Subversion)
-  if (NOT Subversion_FOUND)
+  FIND_PROGRAM(SVN_EXECUTABLE svn
+  DOC "subversion command line client")
+  IF(NOT SVN_EXECUTABLE)
     message (FATAL_ERROR "Subversion is required; not found")
-  endif ()
-  set (svn "${Subversion_SVN_EXECUTABLE}")
+  ENDIF(NOT SVN_EXECUTABLE)
+  set (svn "${SVN_EXECUTABLE}")
 
   # We also want zorba itself (you HAVE built it, right?).
   find_program(zorba NAMES zorba zorba.exe
@@ -17,7 +18,7 @@ macro (find_prereqs)
                PATH_SUFFIXES bin)
   if (NOT zorba)
     message (FATAL_ERROR "Zorba is required; not found. Specify -DZORBA_BUILD_DIR to point to your build directory if necessary.")
-  endif ()
+  endif (NOT zorba)
 endmacro (find_prereqs)
 
 
@@ -27,17 +28,17 @@ macro (get_files_with_status filelist svnstatusxml changelist)
   # Which element to look at?
   if ("${changelist}" STREQUAL "")
     set (elem "target")
-  else ()
+  else ("${changelist}" STREQUAL "")
     set (elem "changelist[@name=\"${changelist}\"]")
-  endif ()
+  endif ("${changelist}" STREQUAL "")
 
   # Which statuses to look at?
   set (whereclause "")
-  set (prefix "where")  
+  set (prefix "where")
   foreach (status ${ARGN})
     set (whereclause "${whereclause}${prefix} $status=\"${status}\"")
     set (prefix " or")
-  endforeach ()
+  endforeach (status ${ARGN})
   set (query
     "fn:string-join(
       for $entry in status/${elem}/entry
@@ -50,7 +51,7 @@ macro (get_files_with_status filelist svnstatusxml changelist)
   execute_process (COMMAND "${zorba}" --omit-xml-declaration
                    --query "${query}" --context-item "${svnstatusxml}"
                    OUTPUT_VARIABLE "${filelist}")
-endmacro ()
+endmacro (get_files_with_status)
 
 
 # Args:
@@ -91,7 +92,7 @@ macro (svn_package srcdir outdir changelist resultfile)
       file (MAKE_DIRECTORY "${chgdir}/files/${reldir}")
       execute_process (COMMAND "${CMAKE_COMMAND}" -E copy
                        "${filepath}" "${chgdir}/files/${reldir}")
-    endif ()
+    endif (NOT IS_DIRECTORY "${filepath}")
   endforeach (filepath)
 
   # Package up for delivery to remote queue - name the archive after
@@ -107,7 +108,7 @@ macro (svn_package srcdir outdir changelist resultfile)
                    WORKING_DIRECTORY "${outdir}")
   set (${resultfile} "${changefile}")
   file (REMOVE_RECURSE "${chgdir}")
-endmacro ()
+endmacro (svn_package)
 
 
 # Args:
@@ -152,7 +153,7 @@ macro (svn_unpackage changefile svndir tmpdir)
     # These are absolute paths from the client; convert to relative paths
     file (RELATIVE_PATH relpath "${clientroot}" "${filepath}")
     execute_process (COMMAND "${svn}" delete "${svndir}/${relpath}")
-  endforeach ()
+  endforeach (filepath ${deletefiles})
 
   # Now add any new files, using the local output of "svn status" to
   # find "unversioned" files.  (We could read the svn-status.xml from
@@ -163,9 +164,9 @@ macro (svn_unpackage changefile svndir tmpdir)
   get_files_with_status (addfiles "${chgdir}/svn-status.xml" "" unversioned)
   foreach (filepath ${addfiles})
     execute_process (COMMAND "${svn}" add "${filepath}")
-  endforeach ()
+  endforeach (filepath ${addfiles})
 
   # Remove temporary unpackaged workingset
   file (REMOVE_RECURSE "${chgdir}")
 
-endmacro ()
+endmacro (svn_unpackage)

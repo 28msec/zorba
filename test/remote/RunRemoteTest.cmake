@@ -9,11 +9,12 @@
 
 
 # We'll need Subversion.
-find_package (Subversion)
-if (NOT Subversion_FOUND)
+find_program(SVN_EXECUTABLE svn
+  DOC "subversion command line client")
+if(NOT SVN_EXECUTABLE)
   message (FATAL_ERROR "Subversion is required; not found")
-endif ()
-set (svn "${Subversion_SVN_EXECUTABLE}")
+endif(NOT SVN_EXECUTABLE)
+set (svn "${SVN_EXECUTABLE}")
 
 # SVN path for submissions
 set (svn_path "svn://zorbatest.lambda.nu/zorbatest/remotequeue")
@@ -23,15 +24,15 @@ get_filename_component (cwd ${CMAKE_CURRENT_LIST_FILE} PATH)
 
 # Compute top of Zorba source tree
 get_filename_component (srcdir "${cwd}/../.." ABSOLUTE)
-message ("Zorba source dir: ${srcdir}")
+message (STATUS "Zorba source dir: ${srcdir}")
 
 # Ensure build directory exists
 if (NOT ZORBA_BUILD_DIR)
   set (ZORBA_BUILD_DIR "${srcdir}/build")
-endif ()
+endif (NOT ZORBA_BUILD_DIR)
 if (NOT IS_DIRECTORY "${ZORBA_BUILD_DIR}")
   message (FATAL_ERROR "Build directory ${builddir} does not exist! Specify with -DZORBA_BUILD_DIR='build dir'")
-endif ()
+endif (NOT IS_DIRECTORY "${ZORBA_BUILD_DIR}")
 
 # Package up local changes
 include ("${cwd}/SvnPackage.cmake")
@@ -49,6 +50,6 @@ execute_process (COMMAND
 
 if (NOT result STREQUAL 0)
   message ("Job failed to submit!")
-else ()
+else (NOT result STREQUAL 0)
   message ("Job ${changefile} submitted to remote queue.")
-endif ()
+endif (NOT result STREQUAL 0)
