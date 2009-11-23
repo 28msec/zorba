@@ -443,7 +443,7 @@ void* thread_main(void* param)
       mresolver.reset(new zorba::TestModuleURIResolver(mod_map_file.c_str(),
                                                        testName,
                                                        false));
-      sctx->setSchemaURIResolver(resolver.get());
+      sctx->addSchemaURIResolver(resolver.get());
       sctx->addModuleURIResolver(mresolver.get());
       sctx->setCollectionURIResolver(cresolver.get());
       sctx->setXQueryVersion( xquery_version_1_0 );
