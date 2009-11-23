@@ -18,3 +18,4 @@ The primary authors are:
   * Sam Rehman
   * Daniel Turcanu
   * Markos Zaharioudakis
+  * Gabriel Petrovay
