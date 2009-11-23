@@ -45,4 +45,4 @@ ADD_CUSTOM_TARGET(xqdoc
   SOURCES ${CMAKE_CURRENT_BINARY_DIR}/xhtml/index.html
 )
 
-ADD_DEPENDENCIES(docs xqdoc)
+ADD_DEPENDENCIES(doc xqdoc)
