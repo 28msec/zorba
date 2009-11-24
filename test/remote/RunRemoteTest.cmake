@@ -30,13 +30,16 @@ message (STATUS "Zorba source dir: ${srcdir}")
 if (NOT ZORBA_BUILD_DIR)
   set (ZORBA_BUILD_DIR "${srcdir}/build")
 endif (NOT ZORBA_BUILD_DIR)
-if (NOT IS_DIRECTORY "${ZORBA_BUILD_DIR}")
+
+file(TO_CMAKE_PATH "${ZORBA_BUILD_DIR}" CMAKE_ZORBA_BUILD_DIR)
+
+if (NOT IS_DIRECTORY "${CMAKE_ZORBA_BUILD_DIR}")
   message (FATAL_ERROR "Build directory ${builddir} does not exist! Specify with -DZORBA_BUILD_DIR='build dir'")
-endif (NOT IS_DIRECTORY "${ZORBA_BUILD_DIR}")
+endif (NOT IS_DIRECTORY "${CMAKE_ZORBA_BUILD_DIR}")
 
 # Package up local changes
 include ("${cwd}/SvnPackage.cmake")
-svn_package ("${srcdir}" "${ZORBA_BUILD_DIR}/remotequeue"
+svn_package ("${srcdir}" "${CMAKE_ZORBA_BUILD_DIR}/remotequeue"
              "${changelist}" changefile)
 
 # Copy the local changes to the remotequeue svn repository.  In
@@ -44,7 +47,7 @@ svn_package ("${srcdir}" "${ZORBA_BUILD_DIR}/remotequeue"
 # to run, etc.) with properties on the checkin.
 message ("Submitting job ${changefile}....")
 execute_process (COMMAND
-                 "${svn}" import "${ZORBA_BUILD_DIR}/remotequeue/${changefile}"
+                 "${svn}" import "${CMAKE_ZORBA_BUILD_DIR}/remotequeue/${changefile}"
                  "${svn_path}/workingsets/${changefile}"
                  TIMEOUT 300 RESULT_VARIABLE result)
 
