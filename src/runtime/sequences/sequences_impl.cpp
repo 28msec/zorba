@@ -1427,7 +1427,7 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       try 
       {
-        resolvedURIString = theSctx->resolve_relative_uri(uriString, xqp_string(), false).getStore();
+        resolvedURIString = theSctx->resolve_relative_uri(uriString, xqp_string(), true).getStore();
         GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
       }
       catch (error::ZorbaError& e) 
