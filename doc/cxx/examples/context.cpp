@@ -325,7 +325,9 @@ class PrologModuleURIResolver : public ModuleURIResolver
     virtual ~PrologModuleURIResolver() {}
 
     virtual std::auto_ptr<ModuleURIResolverResult>
-    resolve(const Item& aURI, StaticContext* aStaticContext, String* aFileUri = 0)
+    resolve(const Item& aURI,
+            StaticContext* aStaticContext,
+            String* aFileUri = 0)
     {
       std::auto_ptr<PrologModuleURIResolverResult> lResult(new PrologModuleURIResolverResult());
       if (aURI.getStringValue() == "http://www.zorba-xquery.com/mymodule") {

@@ -215,6 +215,7 @@ std::string
 StandardSchemaURIResolver::resolve(
     const store::Item_t& aURI,
     static_context* aStaticContext,
+    std::vector<store::Item_t>& aAtList,
     xqpStringStore* aFileUri)
 {
   // 1. check using module paths => return if good stream is found
@@ -235,7 +236,8 @@ StandardSchemaURIResolver::resolve(
   for (std::vector<InternalSchemaURIResolver*>::const_iterator lIter
     = lResolvers.begin() + 1;
     lIter != lResolvers.end(); ++lIter) {
-      std::string lResult = (*lIter)->resolve(aURI, aStaticContext, aFileUri);
+      std::string lResult = (*lIter)->resolve(aURI, aStaticContext, aAtList,
+        aFileUri);
       if (lResult != "") {
         return lResult;
       }
@@ -244,7 +246,12 @@ StandardSchemaURIResolver::resolve(
   // 3. treat the URI as URL and check if a file is in the
   // filesystem or on the web
   // TODO register other interal resolvers for each of the tasks
-  xqpStringStore_t  lResolvedURI = aURI->getStringValue();
+  xqpStringStore_t  lResolvedURI;
+  if (aAtList.size() > 0) {
+    lResolvedURI = aAtList[0]->getStringValue();
+  } else {
+    lResolvedURI = aURI->getStringValue();
+  }
   if (lResolvedURI->byteStartsWith ("file://")) {
     // maybe we don't want to allow file access for security reasons (e.g. in a webapp)
 #ifdef ZORBA_WITH_FILE_ACCESS

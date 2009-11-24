@@ -51,6 +51,7 @@ public:
   virtual std::auto_ptr<SchemaURIResolverResult>
   resolve(const Item & aURI,
           StaticContext * aStaticContext,
+          std::vector<Item>& aAtList,
           String* aFileUri = 0);
 
 private:

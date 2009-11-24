@@ -88,6 +88,7 @@ std::auto_ptr<SchemaURIResolverResult>
 TestSchemaURIResolver::resolve (
     const Item & aURI,
     StaticContext * aStaticContext,
+    std::vector<Item>& aAtList,
     String* aFileURI)
 {
   if ( uri_map.empty () ) {
@@ -210,7 +211,9 @@ void TestModuleURIResolver::initialize ()
 
 
 std::auto_ptr < ModuleURIResolverResult >
-TestModuleURIResolver::resolve ( const Item & aURI, StaticContext* aStaticContext, String* aFileUri )
+TestModuleURIResolver::resolve ( const Item & aURI,
+                                StaticContext* aStaticContext,
+                                String* aFileUri )
 {
   if ( uri_map.empty () ) {
     initialize ();

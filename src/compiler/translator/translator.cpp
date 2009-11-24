@@ -2100,13 +2100,8 @@ void *begin_visit (const SchemaImport& v)
   try 
   {
     std::string lSchemaUri;
-    // If lAtURIList is empty, return lTargetNamespace, else call the resolver
-    if (lAtURIList.empty()) {
-      lSchemaUri = lSchemaResolver->resolve(lTargetNamespace,
-                                                        sctx_p);
-    } else {
-      lSchemaUri = lAtURIList[0]->getStringValue()->c_str();
-    }
+    lSchemaUri = lSchemaResolver->resolve(lTargetNamespace, sctx_p,
+      lAtURIList);
 
     // Create a Schema obj and register it in the typemanger, if the typemanager
     // does not have a schema obj already

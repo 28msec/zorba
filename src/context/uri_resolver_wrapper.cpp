@@ -118,15 +118,22 @@ namespace zorba {
   std::string
   SchemaURIResolverWrapper::resolve(const store::Item_t& aURI,
                                     static_context* aStaticContext,
+                                    std::vector<store::Item_t>& aAtList,
                                     xqpStringStore* aFileUri)
   {
     StaticContextImpl  lOuterStaticContext(aStaticContext, 0);
-    Item               lURIItem(aURI.getp());  
+    Item               lURIItem(aURI.getp());
+    std::vector<Item>  lAtList;
+
+    std::vector<store::Item_t>::iterator lIter;
+    for (lIter = aAtList.begin(); lIter != aAtList.end(); ++lIter){
+      lAtList.push_back(Item(*lIter));
+    }
 
     // we have the ownership; it will be destroyed automatically once we leave this function
     std::auto_ptr<SchemaURIResolverResult> lResult =
-      theSchemaResolver->resolve(lURIItem, 
-      &lOuterStaticContext);
+      theSchemaResolver->resolve(lURIItem,
+      &lOuterStaticContext, lAtList);
 
     if (lResult->getError() == URIResolverResult::UR_NOERROR) {
       return Unmarshaller::getInternalString(lResult->getSchema())->c_str();
@@ -149,13 +156,14 @@ namespace zorba {
                                     xqpStringStore* aFileUri)
   {
     StaticContextImpl  lOuterStaticContext(aStaticContext, 0);
-    Item               lURIItem(aURI.getp());  
+    Item               lURIItem(aURI.getp());
 
     String lFileUri;
     // we have the ownership; it will be destroyed automatically once we leave this function
-    std::auto_ptr<ModuleURIResolverResult> lResult = theModuleResolver->resolve(lURIItem, 
-                                                                                &lOuterStaticContext,
-                                                                                aFileUri ? &lFileUri : 0);
+    std::auto_ptr<ModuleURIResolverResult> lResult =
+      theModuleResolver->resolve(lURIItem, 
+                                 &lOuterStaticContext,
+                                 aFileUri ? &lFileUri : 0);
 
     if (lResult->getError() == URIResolverResult::UR_NOERROR) {
       if (aFileUri) {
