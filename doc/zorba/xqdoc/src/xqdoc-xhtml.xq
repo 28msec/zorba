@@ -130,9 +130,11 @@ declare function xhtml:module-function-summary($functions)
                 let $type := normalize-space(substring-after(substring-before($signature, "function"), "declare")),
                     $isExternal := ends-with($signature, "external"),    
                     $paramsAndReturn :=
-                        if ($isExternal)
-                            then normalize-space(substring-before(substring-after($signature, $name), "external"))
-                            else normalize-space(substring-after($signature, $name))
+                        let $searchCrit := concat(":", $name)
+                        return
+                            if ($isExternal)
+                                then normalize-space(substring-before(substring-after($signature, $searchCrit), "external"))
+                                else normalize-space(substring-after($signature, $searchCrit))
                 return
                     <tr>
                         <td class="type">{$type}</td>
