@@ -1,7 +1,7 @@
 <xs:schema
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  targetNamespace="zorba/test/substitution.xsd"
-  xmlns="zorba/test/substitution.xsd"
+  targetNamespace="http://www.zorba-xquery.com/zorba/test/substitution.xsd"
+  xmlns="http://www.zorba-xquery.com/zorba/test/substitution.xsd"
   elementFormDefault="qualified">
 
   <xs:element name="basket" type="BasketType"/>

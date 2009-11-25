@@ -1,5 +1,5 @@
 import schema namespace 
-  s = "simple.xsd" 
+  s = "http://www.zorba-xquery.com/simple.xsd" 
   at "simple.xsd";
 
 validate 

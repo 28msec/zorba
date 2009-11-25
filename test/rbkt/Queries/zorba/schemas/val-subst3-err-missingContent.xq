@@ -1,10 +1,10 @@
 import schema namespace
-  s = "zorba/test/substitution.xsd"
+  s = "http://www.zorba-xquery.com/zorba/test/substitution.xsd"
   at "substitution.xsd";
 
 validate 
 {
-    <basket xmlns='zorba/test/substitution.xsd'>
+    <basket xmlns='http://www.zorba-xquery.com/zorba/test/substitution.xsd'>
     	<fruit name="banana" />
         <apple/>
         <berry></berry>

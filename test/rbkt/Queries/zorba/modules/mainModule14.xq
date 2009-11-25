@@ -8,7 +8,7 @@
 import module namespace math = "http://example.org/math-functions" at
 "libraryModule12.xqlib";
 
-import schema namespace geometry = "triangle_schema.xsd" at 
+import schema namespace geometry = "http://www.zorba-xquery.com/schema/test/triangle_schema" at 
 "triangle_schema.xsd";
 
 <result>{math:area(geometry:triangle("Right"))}</result>

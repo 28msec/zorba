@@ -7,7 +7,7 @@
 
 module namespace math = "http://example.org/math-functions";
 
-import schema namespace geometry = "triangle_schema.xsd" at "triangle_schema.xsd";
+import schema namespace geometry = "http://www.zorba-xquery.com/schema/test/triangle_schema" at "triangle_schema.xsd";
 
 declare function math:area($t as geometry:triangle) as xs:double
 {

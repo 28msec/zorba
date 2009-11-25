@@ -1,6 +1,6 @@
 <xs:schema
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  targetNamespace="triangle_schema.xsd"
+  targetNamespace="http://www.zorba-xquery.com/schema/test/triangle_schema"
   xmlns="triangle_schema.xsd"
   elementFormDefault="qualified">
 
