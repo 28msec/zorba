@@ -250,7 +250,7 @@ void populate_context_collections(static_context* sctx) {
   DECL(sctx, fn_zorba_ddl_remove_nodes,
       (createQName("http://www.zorba-xquery.com/modules/ddl","fn-zorba-ddl","remove-nodes"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
-      GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 

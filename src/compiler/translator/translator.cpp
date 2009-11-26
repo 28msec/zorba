@@ -2482,8 +2482,9 @@ void* begin_visit(const VFO_DeclList& v)
               << "declared in the module.");
         }
 #endif
-
-        return no_state;
+        // return because we don't add already built-in functions to the
+        // static context
+        continue;
       }
 
       // 2. if no built-in function is there, we check the static context
@@ -2500,7 +2501,7 @@ void* begin_visit(const VFO_DeclList& v)
                              loc, e.theDescription);
       }
       // The external function must be registered already in the static context
-      // via the StaticContextImpl::registerStatelessExternalFunction() user api.
+      // via the StaticContextImpl::registerExternalModule() user api.
       if (ef == NULL) 
       {
         ZORBA_ERROR_LOC_PARAM(XQP0028_FUNCTION_IMPL_NOT_FOUND,

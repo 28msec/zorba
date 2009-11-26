@@ -269,7 +269,7 @@
     <zorba:function isUpdating="true" requiresDynamicContext="true"> 
       <zorba:signature localname="remove-nodes" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
-        <zorba:param>node()+</zorba:param>
+        <zorba:param>node()*</zorba:param>
         <zorba:output>item()*</zorba:output>
       </zorba:signature>
     </zorba:function>
