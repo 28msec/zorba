@@ -15,7 +15,7 @@ ENDIF (ICONV_INCLUDE_DIR AND ICONV_LIBRARY)
 FIND_PATH(ICONV_INCLUDE_DIR iconv.h
   /usr/include
   /usr/local/include
-  DOC "Include directory for the Iconv library linkage (the path to 'iconv.h' file)")
+  DOC "Include directory for the Iconv library linkage (the path to iconv.h file)")
 )
 
 FIND_LIBRARY(ICONV_LIBRARY NAMES iconv
