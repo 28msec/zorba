@@ -15,12 +15,15 @@ ENDIF (ICONV_INCLUDE_DIR AND ICONV_LIBRARY)
 FIND_PATH(ICONV_INCLUDE_DIR iconv.h
   /usr/include
   /usr/local/include
+  DOC "Include directory for the Iconv library linkage (the path to 'iconv.h' file)")
 )
 
 FIND_LIBRARY(ICONV_LIBRARY NAMES iconv
   PATHS
   /usr/${LIB_DESTINATION}
-  /usr/local/${LIB_DESTINATION})
+  /usr/local/${LIB_DESTINATION}
+  DOC "Iconv library that used by Libxml2 (iconv)")
+)
 
 IF (ICONV_INCLUDE_DIR AND ICONV_LIBRARY)
    SET(Iconv_FOUND TRUE)
