@@ -27,9 +27,9 @@
  * Example that shows HTML serialization of the results.
  */
 int
-cserialization_example_1(XQC_Implementation impl)
+cserialization_example_1(XQC_Implementation* impl)
 {
-  XQC_Query      lXQuery;
+  XQC_Query*      lXQuery;
   FILE*          lOutFile = stdout;
   Zorba_SerializerOptions_t* lSerOptions = Zorba_SerializerOptions_default();
 
@@ -56,9 +56,9 @@ cserialization_example_1(XQC_Implementation impl)
  * omit the xml declaration when serializing the query result.
  */
 int
-cserialization_example_2(XQC_Implementation impl)
+cserialization_example_2(XQC_Implementation* impl)
 {
-  XQC_Query      lXQuery;
+  XQC_Query*      lXQuery;
   FILE*          lOutFile = stdout;
   Zorba_SerializerOptions_t* lSerOptions = Zorba_SerializerOptions_default();
 
@@ -95,9 +95,9 @@ free_writer(XQC_OutputStream stream)
 }
 
 int
-cserialization_example_3(XQC_Implementation impl)
+cserialization_example_3(XQC_Implementation* impl)
 {
-  XQC_Query      lXQuery;
+  XQC_Query*      lXQuery;
   XQC_OutputStream lStream = (XQC_OutputStream) malloc(sizeof(struct XQC_OutputStream_s));
 
   lStream->write  = stream_writer;
@@ -119,7 +119,7 @@ int
 cserialization(int argc, char** argv)
 {
   int res = 0; 
-  XQC_Implementation impl;
+  XQC_Implementation* impl;
 
   void* store = create_simple_store();
 

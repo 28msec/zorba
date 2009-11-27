@@ -24,12 +24,12 @@
 /**
  */
 int
-cdatamanager_example_1(XQC_Implementation impl, XQC_DataManager mgr)
+cdatamanager_example_1(XQC_Implementation* impl, XQC_DataManager mgr)
 {
   XQC_Collection     lCollection;
   XQC_Item           lURIItem;
-  XQC_Query          lXQuery;
-  XQC_DynamicContext lDynContext;
+  XQC_Query*          lXQuery;
+  XQC_DynamicContext* lDynContext;
   const char*        lStringBuffer;
   FILE*              lOutput = stdout;
   int                i;
@@ -68,7 +68,7 @@ int
 cdatamanager(int argc, char** argv)
 {
   int res = 0; 
-  XQC_Implementation impl;
+  XQC_Implementation* impl;
   XQC_DataManager mgr;
 
   void* store = create_simple_store();

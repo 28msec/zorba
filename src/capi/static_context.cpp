@@ -34,13 +34,13 @@ using namespace zorba;
 namespace zorbac {
 
   zorba::StaticContext*
-  getStaticContext(XQC_StaticContext context)
+  getStaticContext(XQC_StaticContext* context)
   {
     return (static_cast<zorbac::StaticContext*>(context->data))->theContext.get();
   }
 
   XQUERY_ERROR
-  StaticContext::create_child_context(XQC_StaticContext context, XQC_StaticContext_Ref child_context)
+  StaticContext::create_child_context(XQC_StaticContext* context, XQC_StaticContext** child_context)
   {
     SC_TRY
       std::auto_ptr<XQC_StaticContext_s> lContext(new XQC_StaticContext_s());
@@ -58,7 +58,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  StaticContext::declare_ns(XQC_StaticContext context, const char* prefix, const char* uri)
+  StaticContext::declare_ns(XQC_StaticContext* context, const char* prefix, const char* uri)
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);
@@ -69,7 +69,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  StaticContext::get_ns_by_prefix(XQC_StaticContext context, const char* prefix, 
+  StaticContext::get_ns_by_prefix(XQC_StaticContext* context, const char* prefix, 
                                          const char** result_ns)
   {
     SC_TRY
@@ -85,7 +85,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  StaticContext::set_default_element_and_type_ns(XQC_StaticContext context, const char* uri)
+  StaticContext::set_default_element_and_type_ns(XQC_StaticContext* context, const char* uri)
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);
@@ -95,7 +95,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  StaticContext::get_default_element_and_type_ns(XQC_StaticContext context, const char** uri)
+  StaticContext::get_default_element_and_type_ns(XQC_StaticContext* context, const char** uri)
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);
@@ -109,7 +109,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  StaticContext::set_default_function_ns(XQC_StaticContext context, const char* uri)
+  StaticContext::set_default_function_ns(XQC_StaticContext* context, const char* uri)
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);
@@ -119,7 +119,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  StaticContext::get_default_function_ns(XQC_StaticContext context, const char** uri)
+  StaticContext::get_default_function_ns(XQC_StaticContext* context, const char** uri)
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);;
@@ -133,7 +133,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  StaticContext::add_collation(XQC_StaticContext context, const char* uri)
+  StaticContext::add_collation(XQC_StaticContext* context, const char* uri)
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);
@@ -143,7 +143,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  StaticContext::set_default_collation(XQC_StaticContext context, const char* uri)
+  StaticContext::set_default_collation(XQC_StaticContext* context, const char* uri)
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);
@@ -153,7 +153,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  StaticContext::get_default_collation(XQC_StaticContext context, const char** uri)
+  StaticContext::get_default_collation(XQC_StaticContext* context, const char** uri)
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);;
@@ -167,7 +167,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  StaticContext::set_xquery_version(XQC_StaticContext context, xquery_version_t mode )
+  StaticContext::set_xquery_version(XQC_StaticContext* context, xquery_version_t mode )
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);
@@ -177,7 +177,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR 
-  StaticContext::get_xquery_version(XQC_StaticContext context, xquery_version_t* mode)
+  StaticContext::get_xquery_version(XQC_StaticContext* context, xquery_version_t* mode)
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);;
@@ -187,7 +187,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  StaticContext::set_xpath1_0_mode(XQC_StaticContext context, xpath1_0compatib_mode_t mode )
+  StaticContext::set_xpath1_0_mode(XQC_StaticContext* context, xpath1_0compatib_mode_t mode )
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);
@@ -197,7 +197,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR 
-  StaticContext::get_xpath1_0_mode(XQC_StaticContext context, xpath1_0compatib_mode_t* mode)
+  StaticContext::get_xpath1_0_mode(XQC_StaticContext* context, xpath1_0compatib_mode_t* mode)
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);;
@@ -207,7 +207,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  StaticContext::set_construction_mode(XQC_StaticContext context, construction_mode_t mode )
+  StaticContext::set_construction_mode(XQC_StaticContext* context, construction_mode_t mode )
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);
@@ -217,7 +217,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  StaticContext::get_construction_mode(XQC_StaticContext context, construction_mode_t* mode)
+  StaticContext::get_construction_mode(XQC_StaticContext* context, construction_mode_t* mode)
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);;
@@ -227,7 +227,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  StaticContext::set_ordering_mode(XQC_StaticContext context, ordering_mode_t mode )
+  StaticContext::set_ordering_mode(XQC_StaticContext* context, ordering_mode_t mode )
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);
@@ -237,7 +237,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  StaticContext::get_ordering_mode(XQC_StaticContext context, ordering_mode_t* mode )
+  StaticContext::get_ordering_mode(XQC_StaticContext* context, ordering_mode_t* mode )
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);;
@@ -247,7 +247,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  StaticContext::set_default_order_empty_sequences(XQC_StaticContext context,
+  StaticContext::set_default_order_empty_sequences(XQC_StaticContext* context,
                                                    order_empty_mode_t mode )
   {
     SC_TRY
@@ -258,7 +258,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  StaticContext::get_default_order_empty_sequences(XQC_StaticContext context,
+  StaticContext::get_default_order_empty_sequences(XQC_StaticContext* context,
                                                    order_empty_mode_t* mode )
   {
     SC_TRY
@@ -269,7 +269,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR  
-  StaticContext::set_boundary_space_policy(XQC_StaticContext context, boundary_space_mode_t mode)
+  StaticContext::set_boundary_space_policy(XQC_StaticContext* context, boundary_space_mode_t mode)
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);
@@ -279,7 +279,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  StaticContext::get_boundary_space_policy(XQC_StaticContext context, boundary_space_mode_t* mode )
+  StaticContext::get_boundary_space_policy(XQC_StaticContext* context, boundary_space_mode_t* mode )
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);;
@@ -289,7 +289,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR 
-  StaticContext::set_copy_ns_mode(XQC_StaticContext context,  
+  StaticContext::set_copy_ns_mode(XQC_StaticContext* context,  
                                           preserve_mode_t preserve,
                                           inherit_mode_t inherit )
   {
@@ -301,7 +301,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  StaticContext::get_copy_ns_mode(XQC_StaticContext context,
+  StaticContext::get_copy_ns_mode(XQC_StaticContext* context,
                                           preserve_mode_t* aPreserve, 
                                           inherit_mode_t* aInherit )
   {
@@ -313,7 +313,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  StaticContext::set_base_uri(XQC_StaticContext context, const char* base_uri )
+  StaticContext::set_base_uri(XQC_StaticContext* context, const char* base_uri )
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);
@@ -323,7 +323,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  StaticContext::get_base_uri(XQC_StaticContext context, const char** base_uri)
+  StaticContext::get_base_uri(XQC_StaticContext* context, const char** base_uri)
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);;
@@ -337,7 +337,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  StaticContext::set_revalidation_enabled(XQC_StaticContext context, bool enabled)
+  StaticContext::set_revalidation_enabled(XQC_StaticContext* context, bool enabled)
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);
@@ -347,7 +347,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  StaticContext::get_revalidation_enabled(XQC_StaticContext context, bool *enabled)
+  StaticContext::get_revalidation_enabled(XQC_StaticContext* context, bool *enabled)
   {
     SC_TRY
       zorba::StaticContext* lContext = getStaticContext(context);;
@@ -357,7 +357,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  StaticContext::register_external_function(XQC_StaticContext context, 
+  StaticContext::register_external_function(XQC_StaticContext* context, 
                                             const char* uri,
                                             const char* localname,
                                             external_function_init init,
@@ -391,7 +391,7 @@ namespace zorbac {
   }
 
   void
-  StaticContext::free(XQC_StaticContext context)
+  StaticContext::free(XQC_StaticContext* context)
   {
     try {
       zorbac::StaticContext* lWrapper = static_cast<zorbac::StaticContext*>(context->data);
@@ -405,7 +405,7 @@ namespace zorbac {
   }
 
   void
-  StaticContext::assign_functions(XQC_StaticContext context)
+  StaticContext::assign_functions(XQC_StaticContext* context)
   {
     context->create_child_context              = StaticContext::create_child_context;
     context->declare_ns                        = StaticContext::declare_ns;

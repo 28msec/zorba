@@ -25,41 +25,41 @@ namespace zorbac {
   {
     public:
 	    static XQUERY_ERROR
-      get_dynamic_context(XQC_Query query, XQC_DynamicContext_Ref context);
+      get_dynamic_context(XQC_Query* query, XQC_DynamicContext** context);
 
       static XQUERY_ERROR
-      get_static_context(XQC_Query, XQC_StaticContext_Ref context);
+      get_static_context(XQC_Query*, XQC_StaticContext** context);
 
 	    static XQUERY_ERROR 
-      execute(XQC_Query query, FILE* file);
+      execute(XQC_Query* query, FILE* file);
 
       static XQUERY_ERROR
-      serialize_file(XQC_Query query, 
+      serialize_file(XQC_Query* query, 
                      const Zorba_SerializerOptions_t* options, 
                      FILE* file);
 
       static XQUERY_ERROR
-      serialize_stream(XQC_Query query, 
+      serialize_stream(XQC_Query* query, 
                        const Zorba_SerializerOptions_t* options, 
                        XQC_OutputStream stream);
 
 	    static XQUERY_ERROR 
-      sequence(XQC_Query query, XQC_Sequence_Ref sequence);
+      sequence(XQC_Query* query, XQC_Sequence** sequence);
 
       static void
-      set_error_handler(XQC_Query query, XQC_ErrorHandler handler);
+      set_error_handler(XQC_Query* query, XQC_ErrorHandler* handler);
 
 	    static void 
-      free(XQC_Query query);
+      free(XQC_Query* query);
 
       // private use
       static void
-      assign_functions(XQC_Query query);
+      assign_functions(XQC_Query* query);
 
       Query();
 
       zorba::XQuery_t   theQuery;
-      XQC_ErrorHandler  theErrorHandler;
+      XQC_ErrorHandler*  theErrorHandler;
 
   };
 

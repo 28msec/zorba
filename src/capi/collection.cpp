@@ -82,7 +82,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  Collection::add_sequence(XQC_Collection collection, XQC_Sequence sequence)
+  Collection::add_sequence(XQC_Collection collection, XQC_Sequence* sequence)
   {
     ZORBAC_COLLECTION_TRY
       zorba::Collection* lCollection = getCollection(collection);

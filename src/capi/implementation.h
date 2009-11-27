@@ -24,43 +24,43 @@ namespace zorbac {
   {
     public:
       static XQUERY_ERROR
-      create_context(XQC_Implementation impl, XQC_StaticContext_Ref context);
+      create_context(XQC_Implementation* impl, XQC_StaticContext** context);
 
 	    static XQUERY_ERROR 
-      prepare(XQC_Implementation implementation, 
+      prepare(XQC_Implementation* implementation, 
               const char *query_string,
-	    	      XQC_StaticContext context, 
-              XQC_ErrorHandler handler,
-              XQC_Query_Ref query);
+              XQC_StaticContext* context, 
+              XQC_ErrorHandler* handler,
+              XQC_Query **query);
 
 	    static XQUERY_ERROR 
-      prepare_file(XQC_Implementation implementation, 
+      prepare_file(XQC_Implementation* implementation, 
                    FILE *query_file,
-	    	           XQC_StaticContext context, 
-                   XQC_ErrorHandler handler,
-                   XQC_Query_Ref query);
+                   XQC_StaticContext* context, 
+                   XQC_ErrorHandler* handler,
+                   XQC_Query **query);
 
       static XQUERY_ERROR
-      prepare_stream(XQC_Implementation implementation, 
-                     XQC_InputStream stream,
-                     XQC_StaticContext context, 
-                     XQC_ErrorHandler handler,
-                     XQC_Query_Ref query);
+      prepare_stream(XQC_Implementation* implementation, 
+                     XQC_InputStream* stream,
+                     XQC_StaticContext* context, 
+                     XQC_ErrorHandler* handler,
+                     XQC_Query **query);
 
-	    static void 
-      free(XQC_Implementation implementation);
-
-      static XQUERY_ERROR
-      create_item(XQC_Implementation implementation, XQC_Item_Ref item);
+      static void 
+      free(XQC_Implementation* implementation);
 
       static XQUERY_ERROR
-      item_factory(XQC_Implementation implementation, XQC_ItemFactory_Ref factory);  
+      create_item(XQC_Implementation* implementation, XQC_Item_Ref item);
 
       static XQUERY_ERROR
-      data_manager(XQC_Implementation implementation, XQC_DataManager_Ref data_manager);
+      item_factory(XQC_Implementation* implementation, XQC_ItemFactory_Ref factory);  
+
+      static XQUERY_ERROR
+      data_manager(XQC_Implementation* implementation, XQC_DataManager_Ref data_manager);
 
       static void
-      assign_functions(XQC_Implementation implementation);
+      assign_functions(XQC_Implementation* implementation);
 
   };
 } /* namespace zorbac */

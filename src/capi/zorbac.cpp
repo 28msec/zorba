@@ -23,7 +23,7 @@
 
 
 XQUERY_ERROR
-zorba_implementation(XQC_Implementation_Ref impl, void* store)
+zorba_implementation(XQC_Implementation** impl, void* store)
 {
   try {
     std::auto_ptr<XQC_Implementation_s> lImpl(new XQC_Implementation_s());

@@ -24,13 +24,13 @@ using namespace zorba;
 namespace zorbac {
 
   zorba::ResultIterator*
-  getResultIterator(XQC_Sequence sequence)
+  getResultIterator(XQC_Sequence* sequence)
   {
     return (static_cast<zorbac::Sequence*>(sequence->data))->theSequence.get();
   }
 
   XQUERY_ERROR
-  Sequence::next(XQC_Sequence seq, XQC_Item item)
+  Sequence::next(XQC_Sequence* seq, XQC_Item item)
   {
      ResultIterator* lIter = 0;
      try {
@@ -61,7 +61,7 @@ namespace zorbac {
   }
 
   void
-  Sequence::free(XQC_Sequence seq)
+  Sequence::free(XQC_Sequence* seq)
   {
      try {
        ResultIterator* lIter = getResultIterator(seq);
@@ -76,7 +76,7 @@ namespace zorbac {
   }
 
   void
-  Sequence::assign_functions(XQC_Sequence seq)
+  Sequence::assign_functions(XQC_Sequence* seq)
   {
     seq->next = Sequence::next;
     seq->free = Sequence::free;

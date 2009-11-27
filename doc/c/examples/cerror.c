@@ -24,7 +24,7 @@
 // define a callback function that is called if an error occurs
 // during preparing or executing the query
 void
-error_handler(XQC_ErrorHandler handler,
+error_handler(XQC_ErrorHandler* handler,
               XQUERY_ERROR error,
               const char   *local_name,
               const char   *description,
@@ -41,11 +41,11 @@ error_handler(XQC_ErrorHandler handler,
  * Use an error handler and test it by preparing a syntactically wrong query.
  */
 int
-cerror_example_1(XQC_Implementation impl)
+cerror_example_1(XQC_Implementation* impl)
 {
   XQUERY_ERROR     lError = XQ_NO_ERROR;
-  XQC_Query        lXQuery;
-  XQC_ErrorHandler lErrorHandler = (XQC_ErrorHandler) malloc(sizeof(struct XQC_ErrorHandler_s));
+  XQC_Query*        lXQuery;
+  XQC_ErrorHandler* lErrorHandler = (XQC_ErrorHandler*) malloc(sizeof(struct XQC_ErrorHandler_s));
   lErrorHandler->error = error_handler;
 
   // compile the query
@@ -62,12 +62,12 @@ cerror_example_1(XQC_Implementation impl)
  * Use an error handler and test it by executing a query that raises an error.
  */
 int
-cerror_example_2(XQC_Implementation impl)
+cerror_example_2(XQC_Implementation* impl)
 {
   XQUERY_ERROR     lError = XQ_NO_ERROR;
-  XQC_Query        lXQuery;
+  XQC_Query*        lXQuery;
   FILE*            lOutFile = stdout;
-  XQC_ErrorHandler lErrorHandler = (XQC_ErrorHandler) malloc(sizeof(struct XQC_ErrorHandler_s));
+  XQC_ErrorHandler* lErrorHandler = (XQC_ErrorHandler*) malloc(sizeof(struct XQC_ErrorHandler_s));
   lErrorHandler->error = error_handler;
 
   // compile the query
@@ -88,14 +88,14 @@ cerror_example_2(XQC_Implementation impl)
 }
 
 int
-cerror_example_3(XQC_Implementation impl) 
+cerror_example_3(XQC_Implementation* impl) 
 {
   XQUERY_ERROR   lError = XQ_NO_ERROR;
-  XQC_Query      lXQuery;
+  XQC_Query*      lXQuery;
   XQC_Item       lItem;
   const char*    lStringValue;
-  XQC_Sequence   lResult;
-  XQC_ErrorHandler lErrorHandler = (XQC_ErrorHandler) malloc(sizeof(struct XQC_ErrorHandler_s));
+  XQC_Sequence*   lResult;
+  XQC_ErrorHandler* lErrorHandler = (XQC_ErrorHandler*) malloc(sizeof(struct XQC_ErrorHandler_s));
   lErrorHandler->error = error_handler;
 
   impl->create_item(impl, &lItem);
@@ -125,7 +125,7 @@ int
 cerror(int argc, char** argv)
 {
   int res = 0; 
-  XQC_Implementation impl;
+  XQC_Implementation* impl;
 
   void* store = create_simple_store();
 

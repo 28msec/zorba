@@ -27,10 +27,10 @@
  * No error checking is done.
  */
 int
-ccontext_example_1(XQC_Implementation impl)
+ccontext_example_1(XQC_Implementation* impl)
 {
-  XQC_Query          lXQuery;
-  XQC_DynamicContext lContext;
+  XQC_Query*          lXQuery;
+  XQC_DynamicContext* lContext;
   XQC_ItemFactory    lFactory;
   FILE*              lOutFile = stdout;
   XQC_Item           lItem = 0;
@@ -62,10 +62,10 @@ ccontext_example_1(XQC_Implementation impl)
  * No error checking is done.
  */
 int
-ccontext_example_2(XQC_Implementation impl)
+ccontext_example_2(XQC_Implementation* impl)
 {
-  XQC_Query          lXQuery;
-  XQC_StaticContext  lContext;
+  XQC_Query*          lXQuery;
+  XQC_StaticContext*  lContext;
   FILE*              lOutFile = stdout;
   const char*        lStringValue;
 
@@ -94,12 +94,12 @@ ccontext_example_2(XQC_Implementation impl)
  * No error checking is done.
  */
 int
-ccontext_example_3(XQC_Implementation impl)
+ccontext_example_3(XQC_Implementation* impl)
 {
   XQUERY_ERROR       lError = XQ_NO_ERROR;
-  XQC_Query          lXQuery;
-  XQC_StaticContext  lProvidedContext;
-  XQC_StaticContext  lQueryContext;
+  XQC_Query*          lXQuery;
+  XQC_StaticContext*  lProvidedContext;
+  XQC_StaticContext*  lQueryContext;
   FILE*              lOutFile = stdout;
   ordering_mode_t    lOrderingMode;
 
@@ -129,15 +129,15 @@ ccontext_example_3(XQC_Implementation impl)
  * No error checking is done.
  */
 int
-ccontext_example_4(XQC_Implementation impl)
+ccontext_example_4(XQC_Implementation* impl)
 {
-  XQC_Query          lXQuery1;
-  XQC_Query          lXQuery2;
+  XQC_Query*          lXQuery1;
+  XQC_Query*          lXQuery2;
 
-  XQC_DynamicContext lContext;
-  XQC_Sequence       lSequence1;
+  XQC_DynamicContext* lContext;
+  XQC_Sequence*       lSequence1;
 
-  XQC_Sequence       lSequence2;
+  XQC_Sequence*       lSequence2;
   XQC_Item           lItem = 0;
   const char*        lStringValue;
 
@@ -182,7 +182,7 @@ int
 ccontext(int argc, char** argv)
 {
   int res = 0; 
-  XQC_Implementation impl;
+  XQC_Implementation* impl;
 
   void* store = create_simple_store();
 

@@ -31,7 +31,7 @@
 int 
 citemfactory(int argc, char* argv[])
 {
-  XQC_Implementation impl = 0;
+  XQC_Implementation* impl = 0;
   XQC_ItemFactory    lFactory = 0;
   XQC_Item           lItem = 0;
   int                lTmpInt = 0;

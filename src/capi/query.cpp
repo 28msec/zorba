@@ -64,13 +64,13 @@ namespace zorbac {
   }
 
   zorba::XQuery*
-  getXQuery(XQC_Query query)
+  getXQuery(XQC_Query* query)
   {
     return (static_cast<zorbac::Query*>(query->data))->theQuery.get();
   }
       
   XQUERY_ERROR
-  Query::get_dynamic_context(XQC_Query query, XQC_DynamicContext_Ref context)
+  Query::get_dynamic_context(XQC_Query* query, XQC_DynamicContext** context)
   {
     ZORBA_XQUERY_TRY
       XQuery* lQuery = getXQuery(query);
@@ -86,7 +86,7 @@ namespace zorbac {
 
 
   XQUERY_ERROR
-  Query::get_static_context(XQC_Query query, XQC_StaticContext_Ref context)
+  Query::get_static_context(XQC_Query* query, XQC_StaticContext** context)
   {
     ZORBA_XQUERY_TRY
       XQuery* lQuery = getXQuery(query);
@@ -104,7 +104,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR 
-  Query::execute(XQC_Query query, FILE* file)
+  Query::execute(XQC_Query* query, FILE* file)
   {
     XQuery* lQuery = 0;
     ZORBA_XQUERY_TRY
@@ -126,7 +126,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR 
-  Query::serialize_file(XQC_Query query, const Zorba_SerializerOptions_t* options, FILE* file)
+  Query::serialize_file(XQC_Query* query, const Zorba_SerializerOptions_t* options, FILE* file)
   {
     XQuery* lQuery = 0;
     ZORBA_XQUERY_TRY
@@ -155,7 +155,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR 
-  Query::serialize_stream(XQC_Query query, 
+  Query::serialize_stream(XQC_Query* query, 
                           const Zorba_SerializerOptions_t* options, 
                           XQC_OutputStream stream)
   {
@@ -188,7 +188,7 @@ namespace zorbac {
 
 
   XQUERY_ERROR 
-  Query::sequence(XQC_Query query, XQC_Sequence_Ref sequence)
+  Query::sequence(XQC_Query* query, XQC_Sequence** sequence)
   {
     XQuery* lQuery = 0;
     ZORBA_XQUERY_TRY
@@ -211,13 +211,13 @@ namespace zorbac {
   }
 
   void
-  Query::set_error_handler(XQC_Query query, XQC_ErrorHandler handler)
+  Query::set_error_handler(XQC_Query* query, XQC_ErrorHandler* handler)
   {
     (static_cast<zorbac::Query*>(query->data))->theErrorHandler = handler;
   }
 
   void
-  Query::free(XQC_Query query)
+  Query::free(XQC_Query* query)
   {
     try {
       delete static_cast<zorbac::Query*>(query->data);
@@ -230,7 +230,7 @@ namespace zorbac {
   }
 
   void
-  Query::assign_functions(XQC_Query query)
+  Query::assign_functions(XQC_Query* query)
   {
     query->get_dynamic_context   = Query::get_dynamic_context;
     query->get_static_context    = Query::get_static_context;

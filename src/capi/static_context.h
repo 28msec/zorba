@@ -32,96 +32,96 @@ namespace zorbac {
 
     public:
       static XQUERY_ERROR
-      create_child_context(XQC_StaticContext context, XQC_StaticContext_Ref child_context);
+      create_child_context(XQC_StaticContext* context, XQC_StaticContext** child_context);
 
       static XQUERY_ERROR
-      declare_ns(XQC_StaticContext context, const char* prefix, const char* uri);
+      declare_ns(XQC_StaticContext* context, const char* prefix, const char* uri);
 
       static XQUERY_ERROR
-      get_ns_by_prefix(XQC_StaticContext context, const char* prefix, const char** result_ns);
+      get_ns_by_prefix(XQC_StaticContext* context, const char* prefix, const char** result_ns);
 
       static XQUERY_ERROR
-      set_default_element_and_type_ns(XQC_StaticContext context, const char* uri);
+      set_default_element_and_type_ns(XQC_StaticContext* context, const char* uri);
 
       static XQUERY_ERROR
-      get_default_element_and_type_ns(XQC_StaticContext context, const char** uri);
+      get_default_element_and_type_ns(XQC_StaticContext* context, const char** uri);
 
       static XQUERY_ERROR
-      set_default_function_ns(XQC_StaticContext context, const char* uri);
+      set_default_function_ns(XQC_StaticContext* context, const char* uri);
 
       static XQUERY_ERROR
-      get_default_function_ns(XQC_StaticContext context, const char** uri);
+      get_default_function_ns(XQC_StaticContext* context, const char** uri);
 
       static XQUERY_ERROR
-      add_collation(XQC_StaticContext context, const char* uri);
+      add_collation(XQC_StaticContext* context, const char* uri);
 
       static XQUERY_ERROR
-      set_default_collation(XQC_StaticContext context, const char* uri);
+      set_default_collation(XQC_StaticContext* context, const char* uri);
 
       static XQUERY_ERROR
-      get_default_collation(XQC_StaticContext context, const char** uri);
+      get_default_collation(XQC_StaticContext* context, const char** uri);
 
       static XQUERY_ERROR
-      set_xquery_version(XQC_StaticContext context, xquery_version_t mode );
+      set_xquery_version(XQC_StaticContext* context, xquery_version_t mode );
 
       static XQUERY_ERROR 
-      get_xquery_version(XQC_StaticContext context, xquery_version_t* mode);
+      get_xquery_version(XQC_StaticContext* context, xquery_version_t* mode);
 
       static XQUERY_ERROR
-      set_xpath1_0_mode(XQC_StaticContext context, xpath1_0compatib_mode_t mode );
+      set_xpath1_0_mode(XQC_StaticContext* context, xpath1_0compatib_mode_t mode );
 
       static XQUERY_ERROR 
-      get_xpath1_0_mode(XQC_StaticContext context, xpath1_0compatib_mode_t* mode);
+      get_xpath1_0_mode(XQC_StaticContext* context, xpath1_0compatib_mode_t* mode);
 
       static XQUERY_ERROR
-      set_construction_mode(XQC_StaticContext context, construction_mode_t mode );
+      set_construction_mode(XQC_StaticContext* context, construction_mode_t mode );
 
       static XQUERY_ERROR
-      get_construction_mode(XQC_StaticContext context, construction_mode_t* mode);
+      get_construction_mode(XQC_StaticContext* context, construction_mode_t* mode);
 
       static XQUERY_ERROR
-      set_ordering_mode(XQC_StaticContext context, ordering_mode_t mode );
+      set_ordering_mode(XQC_StaticContext* context, ordering_mode_t mode );
 
       static XQUERY_ERROR
-      get_ordering_mode(XQC_StaticContext context, ordering_mode_t* mode );
+      get_ordering_mode(XQC_StaticContext* context, ordering_mode_t* mode );
 
       static XQUERY_ERROR
-      set_default_order_empty_sequences(XQC_StaticContext context, order_empty_mode_t mode );
+      set_default_order_empty_sequences(XQC_StaticContext* context, order_empty_mode_t mode );
 
       static XQUERY_ERROR
-      get_default_order_empty_sequences(XQC_StaticContext context, order_empty_mode_t* mode );
+      get_default_order_empty_sequences(XQC_StaticContext* context, order_empty_mode_t* mode );
 
       static XQUERY_ERROR  
-      set_boundary_space_policy(XQC_StaticContext context, boundary_space_mode_t mode);
+      set_boundary_space_policy(XQC_StaticContext* context, boundary_space_mode_t mode);
 
       static XQUERY_ERROR
-      get_boundary_space_policy(XQC_StaticContext context, boundary_space_mode_t* mode );
+      get_boundary_space_policy(XQC_StaticContext* context, boundary_space_mode_t* mode );
 
       static XQUERY_ERROR 
-      set_copy_ns_mode(XQC_StaticContext context,  
-                               preserve_mode_t preserve,
-                               inherit_mode_t inherit );
+        set_copy_ns_mode(XQC_StaticContext* context,  
+                         preserve_mode_t preserve,
+                         inherit_mode_t inherit );
 
       static XQUERY_ERROR
-      get_copy_ns_mode(XQC_StaticContext context,
-                               preserve_mode_t* aPreserve, 
-                               inherit_mode_t* aInherit );
+        get_copy_ns_mode(XQC_StaticContext* context,
+                         preserve_mode_t* aPreserve, 
+                         inherit_mode_t* aInherit );
 
       static XQUERY_ERROR
-      set_base_uri(XQC_StaticContext context, const char* base_uri );
+      set_base_uri(XQC_StaticContext* context, const char* base_uri );
 
       static XQUERY_ERROR
-      get_base_uri(XQC_StaticContext context, const char** base_uri);
+      get_base_uri(XQC_StaticContext* context, const char** base_uri);
 
       static XQUERY_ERROR
-      set_revalidation_enabled(XQC_StaticContext context, bool enabled);
+      set_revalidation_enabled(XQC_StaticContext* context, bool enabled);
 
       static XQUERY_ERROR
-      get_revalidation_enabled(XQC_StaticContext context, bool* enabled);
+      get_revalidation_enabled(XQC_StaticContext* context, bool* enabled);
 
       
       static XQUERY_ERROR
-      register_external_function(XQC_StaticContext context, 
+      register_external_function(XQC_StaticContext* context, 
                                 const char* uri,
                                 const char* localname,
                                 external_function_init init,
@@ -130,11 +130,11 @@ namespace zorbac {
                                 void* global_user_data);
 
       static void
-      free(XQC_StaticContext context);
+      free(XQC_StaticContext* context);
 
       // private use
       static void
-      assign_functions(XQC_StaticContext context);
+      assign_functions(XQC_StaticContext* context);
 
       ~StaticContext();
 

@@ -24,16 +24,16 @@ namespace zorbac {
   class Sequence {
     public:
       static XQUERY_ERROR
-      next(XQC_Sequence sequence, XQC_Item item);
+      next(XQC_Sequence* sequence, XQC_Item item);
 
       static void
-      free(XQC_Sequence sequence);
+      free(XQC_Sequence* sequence);
 
       static void
-      assign_functions(XQC_Sequence sequence);
+      assign_functions(XQC_Sequence* sequence);
 
       zorba::ResultIterator_t theSequence;
-      XQC_ErrorHandler        theErrorHandler;
+      XQC_ErrorHandler*        theErrorHandler;
   }; /* class Sequence */
 
 } /* namespace zorbac */

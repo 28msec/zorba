@@ -25,7 +25,7 @@ namespace zorbac {
   class ExternalFunctionSequence {
   public:
     static XQUERY_ERROR
-    next(XQC_Sequence sequence, XQC_Item item)
+    next(XQC_Sequence* sequence, XQC_Item item)
     {
       try {
         ItemSequence* lSeq = static_cast<ItemSequence*>(sequence->data);  
@@ -44,12 +44,12 @@ namespace zorbac {
     }
 
     static void
-    free(XQC_Sequence sequence)
+    free(XQC_Sequence* sequence)
     {
     }
 
     static void
-    assign_functions(XQC_Sequence sequence)
+    assign_functions(XQC_Sequence* sequence)
     {
       sequence->next = ExternalFunctionSequence::next;
       sequence->free = ExternalFunctionSequence::free;

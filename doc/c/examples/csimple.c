@@ -27,9 +27,9 @@
  * Compile a query and print the result.  No error checking is done.
  */
 int
-example_1(XQC_Implementation impl)
+example_1(XQC_Implementation* impl)
 {
-  XQC_Query      lXQuery;
+  XQC_Query*      lXQuery;
   FILE*          lOutFile = stdout;
 
   // compile the query
@@ -50,13 +50,13 @@ example_1(XQC_Implementation impl)
  * No error checking is done.
  */ 
 int
-example_2(XQC_Implementation impl) 
+example_2(XQC_Implementation* impl) 
 {
   XQUERY_ERROR   lError = XQ_NO_ERROR;
-  XQC_Query      lXQuery;
+  XQC_Query*      lXQuery;
   XQC_Item       lItem;
   const char*    lStringValue;
-  XQC_Sequence   lResult;
+  XQC_Sequence*   lResult;
 
   impl->create_item(impl, &lItem);
 
@@ -82,10 +82,10 @@ example_2(XQC_Implementation impl)
  * Compile a syntactically wrong query and check the expected error
  */
 int
-example_3(XQC_Implementation impl)
+example_3(XQC_Implementation* impl)
 {
   XQUERY_ERROR   lError = XQ_NO_ERROR;
-  XQC_Query      lXQuery;
+  XQC_Query*      lXQuery;
 
   // compile the query
   lError = impl->prepare(impl, "for $x in (1, 2, 3, 4)", 0, 0, &lXQuery);
@@ -97,10 +97,10 @@ example_3(XQC_Implementation impl)
  * Compile a query which does division by 0 and check the expected error
  */
 int
-example_4(XQC_Implementation impl)
+example_4(XQC_Implementation* impl)
 {
   XQUERY_ERROR   lError = XQ_NO_ERROR;
-  XQC_Query      lXQuery;
+  XQC_Query*      lXQuery;
   FILE*          lOutFile = stdout;
 
   // compile the query
@@ -118,25 +118,25 @@ example_4(XQC_Implementation impl)
 
 // define the callback functions fot the input stream
 int
-read_stream(XQC_InputStream stream, char* buf, unsigned int length) 
+read_stream(XQC_InputStream* stream, char* buf, unsigned int length) 
 {
   strcpy(buf, "for $i in (1 to 10) return $i");
   return 29;
 }
 
 void
-free_stream(XQC_InputStream stream) 
+free_stream(XQC_InputStream* stream) 
 {
   free(stream);
 }
 
 
 int
-example_5(XQC_Implementation impl)
+example_5(XQC_Implementation* impl)
 {
-  XQC_Query       lXQuery;
+  XQC_Query*       lXQuery;
   FILE*           lOutFile = stdout;
-  XQC_InputStream lStream = (XQC_InputStream) malloc(sizeof(struct XQC_InputStream_s));
+  XQC_InputStream* lStream = (XQC_InputStream*) malloc(sizeof(struct XQC_InputStream_s));
   lStream->read = read_stream;
   lStream->free = free_stream;
 
@@ -158,7 +158,7 @@ int
 csimple(int argc, char** argv)
 {
   int res = 0; 
-  XQC_Implementation impl;
+  XQC_Implementation* impl;
 
   void* store = create_simple_store();
 

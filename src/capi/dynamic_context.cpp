@@ -36,13 +36,13 @@ using namespace zorba;
 namespace zorbac {
 
   zorba::DynamicContext*
-  getDynamicContext(XQC_DynamicContext context)
+  getDynamicContext(XQC_DynamicContext* context)
   {
     return static_cast<zorba::DynamicContext*>(context->data);
   }
 
   XQUERY_ERROR 
-  DynamicContext::set_context_item (XQC_DynamicContext context, XQC_Item value)
+  DynamicContext::set_context_item (XQC_DynamicContext* context, XQC_Item value)
   {
     DC_TRY
       zorba::DynamicContext* lContext = getDynamicContext(context);
@@ -54,7 +54,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  DynamicContext::set_context_document(XQC_DynamicContext context, const char* doc_uri, FILE* document)
+  DynamicContext::set_context_document(XQC_DynamicContext* context, const char* doc_uri, FILE* document)
   {
     DC_TRY
       zorba::DynamicContext* lContext = getDynamicContext(context);
@@ -68,7 +68,7 @@ namespace zorbac {
   
 
   XQUERY_ERROR
-  DynamicContext::set_variable_item(XQC_DynamicContext context, const char* qname, XQC_Item item)
+  DynamicContext::set_variable_item(XQC_DynamicContext* context, const char* qname, XQC_Item item)
   {
     DC_TRY
       zorba::DynamicContext* lContext = getDynamicContext(context);
@@ -80,7 +80,7 @@ namespace zorbac {
   }
   
   XQUERY_ERROR
-  DynamicContext::set_variable_sequence(XQC_DynamicContext context, const char* qname, XQC_Sequence seq)
+  DynamicContext::set_variable_sequence(XQC_DynamicContext* context, const char* qname, XQC_Sequence* seq)
   {
     DC_TRY
       zorba::DynamicContext* lContext = getDynamicContext(context);
@@ -91,7 +91,7 @@ namespace zorbac {
   }
   
   XQUERY_ERROR
-  DynamicContext::set_variable_document(XQC_DynamicContext context, 
+  DynamicContext::set_variable_document(XQC_DynamicContext* context, 
                                         const char* var_qname,
                                         const char* doc_uri, 
                                         FILE* document)
@@ -108,7 +108,7 @@ namespace zorbac {
   }
   
   XQUERY_ERROR 
-  DynamicContext::set_implicit_timezone(XQC_DynamicContext context, int timezone)
+  DynamicContext::set_implicit_timezone(XQC_DynamicContext* context, int timezone)
   {
     DC_TRY
       zorba::DynamicContext* lContext = getDynamicContext(context);
@@ -118,7 +118,7 @@ namespace zorbac {
   }
   
   XQUERY_ERROR
-  DynamicContext::set_default_collection(XQC_DynamicContext context, XQC_Item collection_uri)
+  DynamicContext::set_default_collection(XQC_DynamicContext* context, XQC_Item collection_uri)
   {
     DC_TRY
       zorba::DynamicContext* lContext = getDynamicContext(context);
@@ -130,7 +130,7 @@ namespace zorbac {
   }
 
   void
-  DynamicContext::free(XQC_DynamicContext context)
+  DynamicContext::free(XQC_DynamicContext* context)
   {
     try {
       //zorba::DynamicContext* lContext = getDynamicContext(context);
@@ -143,7 +143,7 @@ namespace zorbac {
   }
 
   void
-  DynamicContext::assign_functions(XQC_DynamicContext context)
+  DynamicContext::assign_functions(XQC_DynamicContext* context)
   {
     context->set_context_item       = DynamicContext::set_context_item;
     context->set_context_document   = DynamicContext::set_context_document;

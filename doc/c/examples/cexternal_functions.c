@@ -27,7 +27,7 @@ typedef struct
 {
   XQC_Item        item;
   XQC_ItemFactory factory;
-  XQC_Sequence    seq;
+  XQC_Sequence*    seq;
   int             i;
 } my_ext_data;
 
@@ -39,7 +39,7 @@ typedef struct
 void
 my_ext_fct_init(void** user_data, void* global_user_data)
 {
-  XQC_Implementation impl = (XQC_Implementation) global_user_data;
+  XQC_Implementation* impl = (XQC_Implementation*) global_user_data;
   my_ext_data* data;
 
   *user_data = malloc(sizeof(my_ext_data));
@@ -53,7 +53,7 @@ my_ext_fct_init(void** user_data, void* global_user_data)
 
 // callback function called for each invocation of the external function in the query
 XQUERY_ERROR
-my_ext_fct_next(XQC_Sequence args, // arguments
+my_ext_fct_next(XQC_Sequence* args, // arguments
                 int argc, // number of arguments two this function
                 XQC_Item_Ref result,
                 void* user_data,
@@ -91,10 +91,10 @@ my_ext_fct_release(void* user_data,
  * register an external function in the static context and execute a query with it
  */
 int
-external_function_example_1(XQC_Implementation impl)
+external_function_example_1(XQC_Implementation* impl)
 {
-  XQC_Query          lXQuery;
-  XQC_StaticContext  lContext;
+  XQC_Query*          lXQuery;
+  XQC_StaticContext*  lContext;
 
   impl->create_context(impl, &lContext);
 
@@ -120,7 +120,7 @@ int
 cexternal_functions(int argc, char** argv)
 {
   int res = 0; 
-  XQC_Implementation impl;
+  XQC_Implementation* impl;
 
   void* store = create_simple_store();
 

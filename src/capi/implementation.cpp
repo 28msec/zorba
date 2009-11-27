@@ -57,7 +57,7 @@ using namespace zorba;
 namespace zorbac {
 
   XQUERY_ERROR
-  Implementation::create_context(XQC_Implementation impl, XQC_StaticContext_Ref context)
+  Implementation::create_context(XQC_Implementation* impl, XQC_StaticContext** context)
   {
     try {
       Zorba* lZorba = static_cast<Zorba*>(impl->data);
@@ -81,11 +81,11 @@ namespace zorbac {
   }
 
   XQUERY_ERROR 
-  Implementation::prepare(XQC_Implementation impl, 
-                          const char *query_string,
-                          XQC_StaticContext context, 
-                          XQC_ErrorHandler handler,
-                          XQC_Query_Ref query)
+  Implementation::prepare(XQC_Implementation* impl, 
+                          const char* query_string,
+                          XQC_StaticContext* context, 
+                          XQC_ErrorHandler* handler,
+                          XQC_Query** query)
   {
     ZORBA_IMPLEMENTATION_TRY
       Zorba* lZorba = static_cast<Zorba*>(impl->data);
@@ -113,11 +113,11 @@ namespace zorbac {
   }
 
   XQUERY_ERROR 
-  Implementation::prepare_file(XQC_Implementation impl, 
-                               FILE *query_file,
-                               XQC_StaticContext context, 
-                               XQC_ErrorHandler handler,
-                               XQC_Query_Ref query)
+  Implementation::prepare_file(XQC_Implementation* impl, 
+                               FILE* query_file,
+                               XQC_StaticContext* context, 
+                               XQC_ErrorHandler* handler,
+                               XQC_Query** query)
   {
     ZORBA_IMPLEMENTATION_TRY 
       Zorba* lZorba = static_cast<Zorba*>(impl->data);
@@ -148,11 +148,11 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  Implementation::prepare_stream(XQC_Implementation impl, 
-                                 XQC_InputStream stream,
-                                 XQC_StaticContext context, 
-                                 XQC_ErrorHandler handler,
-                                 XQC_Query_Ref query)
+  Implementation::prepare_stream(XQC_Implementation* impl, 
+                                 XQC_InputStream* stream,
+                                 XQC_StaticContext* context, 
+                                 XQC_ErrorHandler* handler,
+                                 XQC_Query **query)
   {
     ZORBA_IMPLEMENTATION_TRY 
       Zorba* lZorba = static_cast<Zorba*>(impl->data);
@@ -198,7 +198,7 @@ namespace zorbac {
   }
 
   void
-  Implementation::free(XQC_Implementation impl)
+  Implementation::free(XQC_Implementation* impl)
   {
     try {
       Zorba* lZorba = static_cast<Zorba*>(impl->data);
@@ -213,7 +213,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  Implementation::create_item(XQC_Implementation impl, XQC_Item_Ref item)
+  Implementation::create_item(XQC_Implementation* impl, XQC_Item_Ref item)
   {
     try {
       std::auto_ptr<XQC_Item_s> lItem(new XQC_Item_s());
@@ -232,7 +232,7 @@ namespace zorbac {
 
 
   XQUERY_ERROR
-  Implementation::item_factory(XQC_Implementation impl, XQC_ItemFactory_Ref factory)
+  Implementation::item_factory(XQC_Implementation* impl, XQC_ItemFactory_Ref factory)
   {
     try {
       std::auto_ptr<XQC_ItemFactory_s> lFactory(new XQC_ItemFactory_s());
@@ -254,7 +254,7 @@ namespace zorbac {
   }
 
   XQUERY_ERROR
-  Implementation::data_manager(XQC_Implementation impl, XQC_DataManager_Ref data_manager)
+  Implementation::data_manager(XQC_Implementation* impl, XQC_DataManager_Ref data_manager)
   {
     try {
       std::auto_ptr<XQC_DataManager_s> lDataManager(new XQC_DataManager_s());
@@ -275,7 +275,7 @@ namespace zorbac {
   }
 
   void
-  Implementation::assign_functions(XQC_Implementation impl)
+  Implementation::assign_functions(XQC_Implementation* impl)
   {
     impl->create_context = Implementation::create_context;
     impl->prepare        = Implementation::prepare;

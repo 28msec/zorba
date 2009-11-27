@@ -33,7 +33,7 @@ namespace zorbac {
       delete_node(XQC_Collection collection, XQC_Item node);
   
       static XQUERY_ERROR
-      add_sequence(XQC_Collection collection, XQC_Sequence sequence);
+      add_sequence(XQC_Collection collection, XQC_Sequence* sequence);
   
       static XQUERY_ERROR
       add_document(XQC_Collection collection, FILE* doc);
