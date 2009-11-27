@@ -19,9 +19,6 @@
 #include <vector>
 
 #include <signal.h>
-#ifdef WIN32
-#include <windows.h>
-#endif
 
 #include "uw_imap.h"
 #include "mime_parser.h"
