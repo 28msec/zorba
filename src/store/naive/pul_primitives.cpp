@@ -620,9 +620,9 @@ void UpdCreateCollection::undo()
 
 
 /*******************************************************************************
-  UpdDropCollection
+  UpdDeleteCollection
 ********************************************************************************/
-void UpdDropCollection::apply()
+void UpdDeleteCollection::apply()
 {
   store::Collection_t lColl = GET_STORE().getCollection(theCollectionName);
   assert(lColl);
@@ -642,7 +642,7 @@ void UpdDropCollection::apply()
 }
 
 
-void UpdDropCollection::undo()
+void UpdDeleteCollection::undo()
 {
   store::Collection_t lColl = GET_STORE().getCollection(theCollectionName);
   if (!lColl) {
@@ -978,7 +978,7 @@ void UpdCreateIndex::undo()
 /*******************************************************************************
 
 ********************************************************************************/
-void UpdDropIndex::apply()
+void UpdDeleteIndex::apply()
 {
   SimpleStore* store = SimpleStoreManager::getStore();
 
@@ -994,7 +994,7 @@ void UpdDropIndex::apply()
 }
 
 
-void UpdDropIndex::undo()
+void UpdDeleteIndex::undo()
 {
   if (theIsApplied)
   {

@@ -13,22 +13,22 @@
 # limitations under the License.
 
 FIND_PACKAGE(SWIG)
-IF (SWIG_FOUND AND BUILDING_SIMPLESTORE)
-  INCLUDE(${SWIG_USE_FILE})
-  ADD_SUBDIRECTORY(python)
-  ADD_SUBDIRECTORY(php)
-  ADD_SUBDIRECTORY(java)
-  
-  # ruby module on Mac OS doesn't link because cmake is generating
-  # -framework ruby instead of -framework Ruby
-  IF (APPLE AND UNIVERSAL )
-    MESSAGE ( STATUS "Ruby module can't be built Universal" )
-  ELSE( APPLE AND UNIVERSAL )
-    MESSAGE ( STATUS "Ruby module being built non-Universal" )
-    ADD_SUBDIRECTORY(ruby)
-  ENDIF ( APPLE AND UNIVERSAL )
-
-  ELSE(SWIG_FOUND)
-    MESSAGE(STATUS "SWIG not installed => no language bindings are generated.")
-
-ENDIF (SWIG_FOUND AND BUILDING_SIMPLESTORE)
+#IF (SWIG_FOUND AND BUILDING_SIMPLESTORE)
+#  INCLUDE(${SWIG_USE_FILE})
+#  ADD_SUBDIRECTORY(python)
+#  ADD_SUBDIRECTORY(php)
+#  ADD_SUBDIRECTORY(java)
+#  
+#  # ruby module on Mac OS doesn't link because cmake is generating
+#  # -framework ruby instead of -framework Ruby
+#  IF (APPLE AND UNIVERSAL )
+#    MESSAGE ( STATUS "Ruby module can't be built Universal" )
+#  ELSE( APPLE AND UNIVERSAL )
+#    MESSAGE ( STATUS "Ruby module being built non-Universal" )
+#    ADD_SUBDIRECTORY(ruby)
+#  ENDIF ( APPLE AND UNIVERSAL )
+#
+#  ELSE(SWIG_FOUND)
+#    MESSAGE(STATUS "SWIG not installed => no language bindings are generated.")
+#
+#ENDIF (SWIG_FOUND AND BUILDING_SIMPLESTORE)

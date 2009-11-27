@@ -146,7 +146,7 @@ public:
   virtual void addCreateCollection(
         Item_t&                     name) = 0;
 
-  virtual void addDropCollection(
+  virtual void addDeleteCollection(
         Item_t&                     name) = 0;
 
   virtual void addInsertIntoCollection(
@@ -189,7 +189,7 @@ public:
         const IndexSpecification& spec,
         Iterator* sourceIter) = 0;
 
-  virtual void addDropIndex(
+  virtual void addDeleteIndex(
         const Item_t& qname) = 0;
 
   virtual void addRebuildIndex(

@@ -178,9 +178,7 @@
   DECLARE_VISITOR (TransformIterator);
   DECLARE_VISITOR (ApplyIterator);
   DECLARE_VISITOR (CreateInternalIndexIterator);
-  DECLARE_VISITOR (CreateIndexIterator);
   DECLARE_VISITOR (RebuildIndexIterator);
-  DECLARE_VISITOR (DropIndexIterator);
   DECLARE_VISITOR (IndexEntryBuilderIterator);
   DECLARE_VISITOR (IndexPointProbeIterator);
   DECLARE_VISITOR (IndexRangeProbeIterator);

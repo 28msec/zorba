@@ -98,11 +98,8 @@ namespace zorba {
     void beginVisit( const ZorbaCreateCollectionIterator& );
     void endVisit  ( const ZorbaCreateCollectionIterator& );
 
-    void beginVisit( const ZorbaDropCollectionIterator& );
-    void endVisit  ( const ZorbaDropCollectionIterator& );
-
-    void beginVisit( const ZorbaDropAllCollectionsIterator& );
-    void endVisit  ( const ZorbaDropAllCollectionsIterator& );
+    void beginVisit( const ZorbaDeleteCollectionIterator& );
+    void endVisit  ( const ZorbaDeleteCollectionIterator& );
 
     void beginVisit( const ZorbaInsertNodesFirstIterator& );
     void endVisit  ( const ZorbaInsertNodesFirstIterator& );
@@ -235,6 +232,12 @@ namespace zorba {
 
     void beginVisit( const FnPutIterator& );
     void endVisit  ( const FnPutIterator& );
+
+    void beginVisit( const CreateIndexIterator& );
+    void endVisit  ( const CreateIndexIterator& );
+
+    void beginVisit( const DeleteIndexIterator& );
+    void endVisit  ( const DeleteIndexIterator& );
 
     void beginVisit( const IsAvailableCollectionIterator& );
     void endVisit  ( const IsAvailableCollectionIterator& );

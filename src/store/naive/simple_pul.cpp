@@ -105,7 +105,7 @@ PULImpl::~PULImpl()
   cleanList(theCreateCollectionList);
   cleanList(theInsertIntoCollectionList);
   cleanList(theDeleteFromCollectionList);
-  cleanList(theDropCollectionList);
+  cleanList(theDeleteCollectionList);
 
   ulong numDeltas = theBeforeIndexDeltas.size();
 
@@ -633,11 +633,11 @@ void PULImpl::addCreateCollection(
 }
 
 
-void PULImpl::addDropCollection(
+void PULImpl::addDeleteCollection(
     store::Item_t& name)
 {
-  theDropCollectionList.push_back(
-    new UpdDropCollection(this, name)
+  theDeleteCollectionList.push_back(
+    new UpdDeleteCollection(this, name)
   );
 }
 
@@ -738,10 +738,10 @@ void PULImpl::addCreateIndex(
 }
 
 
-void PULImpl::addDropIndex(const store::Item_t& qname)
+void PULImpl::addDeleteIndex(const store::Item_t& qname)
 {
-  UpdatePrimitive* upd = new UpdDropIndex(this, qname);
-  theDropIndexList.push_back(upd);
+  UpdatePrimitive* upd = new UpdDeleteIndex(this, qname);
+  theDeleteIndexList.push_back(upd);
 }
 
 
@@ -790,13 +790,13 @@ void PULImpl::mergeUpdates(store::Item* other)
                   otherp->theDeleteFromCollectionList,
                   UP_LIST_NONE);
 
-  mergeUpdateList(theDropCollectionList,
-                  otherp->theDropCollectionList,
+  mergeUpdateList(theDeleteCollectionList,
+                  otherp->theDeleteCollectionList,
                   UP_LIST_NONE);
 
   mergeUpdateList(theCreateIndexList, otherp->theCreateIndexList, UP_LIST_NONE);
 
-  mergeUpdateList(theDropIndexList, otherp->theDropIndexList, UP_LIST_NONE);
+  mergeUpdateList(theDeleteIndexList, otherp->theDeleteIndexList, UP_LIST_NONE);
 
   mergeUpdateList(theRebuildIndexList, otherp->theRebuildIndexList, UP_LIST_NONE);
 }
@@ -1374,9 +1374,9 @@ void PULImpl::applyUpdates()
     applyList(theRebuildIndexList);
 
     applyList(theCreateIndexList);
-    applyList(theDropIndexList);
+    applyList(theDeleteIndexList);
 
-    applyList(theDropCollectionList);
+    applyList(theDeleteCollectionList);
 
     // Compute the after-delta for each incrementally maintained index.
     computeIndexDeltas(theAfterIndexDeltas);
@@ -1475,9 +1475,9 @@ void PULImpl::undoUpdates()
 {
   try
   {
-    undoList(theDropCollectionList);
+    undoList(theDeleteCollectionList);
 
-    undoList(theDropIndexList);
+    undoList(theDeleteIndexList);
     undoList(theCreateIndexList);
 
     undoList(theRebuildIndexList);

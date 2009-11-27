@@ -70,24 +70,14 @@ PlanIter_t fn_zorba_ddl_create_collection::codegen(
   return new ZorbaCreateCollectionIterator ( sctx, loc, argv);
 }
 
-PlanIter_t fn_zorba_ddl_drop_collection::codegen(
+PlanIter_t fn_zorba_ddl_delete_collection::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ZorbaDropCollectionIterator ( sctx, loc, argv);
-}
-
-PlanIter_t fn_zorba_ddl_drop_all_collections::codegen(
-  CompilerCB*,
-  static_context* sctx,
-  const QueryLoc& loc,
-  std::vector<PlanIter_t>& argv,
-  AnnotationHolder& ann) const
-{
-  return new ZorbaDropAllCollectionsIterator ( sctx, loc, argv);
+  return new ZorbaDeleteCollectionIterator ( sctx, loc, argv);
 }
 
 PlanIter_t fn_zorba_ddl_insert_nodes_first::codegen(
@@ -198,14 +188,9 @@ void populate_context_collections(static_context* sctx) {
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 
-  DECL(sctx, fn_zorba_ddl_drop_collection,
-      (createQName("http://www.zorba-xquery.com/modules/ddl","fn-zorba-ddl","drop-collection"),
+  DECL(sctx, fn_zorba_ddl_delete_collection,
+      (createQName("http://www.zorba-xquery.com/modules/ddl","fn-zorba-ddl","delete-collection"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
-      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
-
-
-  DECL(sctx, fn_zorba_ddl_drop_all_collections,
-      (createQName("http://www.zorba-xquery.com/modules/ddl","fn-zorba-ddl","drop-all-collections"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 

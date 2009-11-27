@@ -18,8 +18,8 @@ declare sequential function local:test_create() {
   );
 };
 
-declare sequential function local:test_drop() {
-  ddl:drop-index(xs:QName("decl:coll1_index"));
+declare sequential function local:test_delete() {
+  ddl:delete-index(xs:QName("decl:coll1_index"));
   (
     dc:is-available-index(xs:QName("decl:coll1_index")),
     dc:is-available-index(xs:QName("decl:coll2_index")),
@@ -28,4 +28,4 @@ declare sequential function local:test_drop() {
   );
 };
 
-local:test_create(),local:test_drop()
+local:test_create(),local:test_delete()

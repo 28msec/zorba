@@ -394,7 +394,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
     (API0006_COLLECTION_NOT_FOUND - collection does not exist).
 ********************************************************************************/
 bool
-ZorbaDropCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
+ZorbaDeleteCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 {
   PlanIteratorState         *state;
   store::Item_t             item;
@@ -409,40 +409,7 @@ ZorbaDropCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanSta
 
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addDropCollection(item);
-
-  result = pul.release();
-  STACK_PUSH( result != NULL, state);
-
-  STACK_END (state);
-}
-
-
-/*******************************************************************************
-  declare updating function delete-all-collections() as none
-
-  The function will delete all existing collections.
-********************************************************************************/
-bool ZorbaDropAllCollectionsIterator::nextImpl(
-    store::Item_t& result,
-    PlanState& planState) const
-{
-  store::Iterator_t             lNameIter;
-  store::Item_t                 lName;
-  std::auto_ptr<store::PUL>     pul;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
-
-  for ((lNameIter = GENV_STORE.listCollectionNames())->open ();
-        lNameIter->next(lName);) 
-  {
-    pul->addDropCollection(lName);
-  }
-
-  lNameIter->close();
+  pul->addDeleteCollection(item);
 
   result = pul.release();
   STACK_PUSH( result != NULL, state);

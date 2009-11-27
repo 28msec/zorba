@@ -3,7 +3,6 @@
 <!--
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  15.1 General Functions and Operators on Sequences                          //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 -->
@@ -120,33 +119,15 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-<zorba:iterator name="ZorbaDropCollectionIterator" >
+<zorba:iterator name="ZorbaDeleteCollectionIterator" >
 
     <zorba:description author="Zorba Team">
-      zorba:drop-collection
+      zorba:delete-collection
     </zorba:description>
 
     <zorba:function isUpdating="true" requiresDynamicContext="true"> 
-      <zorba:signature localname="drop-collection" prefix="fn-zorba-ddl">
+      <zorba:signature localname="delete-collection" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
-        <zorba:output>item()*</zorba:output>
-      </zorba:signature>
-    </zorba:function>
-
-</zorba:iterator>
-
-<!--
-/*******************************************************************************
-********************************************************************************/
--->
-<zorba:iterator name="ZorbaDropAllCollectionsIterator" >
-
-    <zorba:description author="Zorba Team">
-      zorba:drop-all-collections
-    </zorba:description>
-
-    <zorba:function isUpdating="true" requiresDynamicContext="true"> 
-      <zorba:signature localname="drop-all-collections" prefix="fn-zorba-ddl">
         <zorba:output>item()*</zorba:output>
       </zorba:signature>
     </zorba:function>

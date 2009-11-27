@@ -71,9 +71,7 @@
   template < TypeConstants::atomic_type_code_t > class TypedValueCompareIterator;
 
   class CreateInternalIndexIterator;
-  class CreateIndexIterator;
   class RebuildIndexIterator;
-  class DropIndexIterator;
   class IndexEntryBuilderIterator;
   class IndexPointProbeIterator;
   class IndexRangeProbeIterator;

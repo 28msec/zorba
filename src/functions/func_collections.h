@@ -110,31 +110,13 @@ public:
 };
 
 
-//fn-zorba-ddl:drop-collection
-class fn_zorba_ddl_drop_collection : public function
+//fn-zorba-ddl:delete-collection
+class fn_zorba_ddl_delete_collection : public function
 {
 public:
-  fn_zorba_ddl_drop_collection(const signature& sig)
+  fn_zorba_ddl_delete_collection(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_DROP_COLLECTION_1)
-  {
-  }
-
-  bool requires_dyn_ctx() const { return true; }
-
-  expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
-
-  CODEGEN_DECL();
-};
-
-
-//fn-zorba-ddl:drop-all-collections
-class fn_zorba_ddl_drop_all_collections : public function
-{
-public:
-  fn_zorba_ddl_drop_all_collections(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_DROP_ALL_COLLECTIONS_0)
+    function(sig, FunctionConsts::FN_ZORBA_DDL_DELETE_COLLECTION_1)
   {
   }
 

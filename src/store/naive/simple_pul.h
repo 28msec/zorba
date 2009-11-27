@@ -153,11 +153,11 @@ protected:
   std::vector<UpdatePrimitive*>      theCreateCollectionList;
   std::vector<UpdatePrimitive*>      theInsertIntoCollectionList;
   std::vector<UpdatePrimitive*>      theDeleteFromCollectionList;
-  std::vector<UpdatePrimitive*>      theDropCollectionList;
+  std::vector<UpdatePrimitive*>      theDeleteCollectionList;
 
   // Update primitives for indexes
   std::vector<UpdatePrimitive*>      theCreateIndexList;
-  std::vector<UpdatePrimitive*>      theDropIndexList;
+  std::vector<UpdatePrimitive*>      theDeleteIndexList;
   std::vector<UpdatePrimitive*>      theRebuildIndexList;
 
   // Index Maintenance
@@ -271,7 +271,7 @@ public:
   void addCreateCollection(
         store::Item_t&              name);
 
-  void addDropCollection(
+  void addDeleteCollection(
         store::Item_t&              name);
 
   void addInsertIntoCollection(
@@ -315,7 +315,7 @@ public:
         const store::IndexSpecification& spec,
         store::Iterator* sourceIter);
 
-  void addDropIndex(
+  void addDeleteIndex(
         const store::Item_t& qname);
 
   void addRebuildIndex(

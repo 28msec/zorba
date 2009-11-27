@@ -146,18 +146,18 @@ ZorbaCreateCollectionIterator::~ZorbaCreateCollectionIterator() {}
 // </ZorbaCreateCollectionIterator>
 
 
-// <ZorbaDropCollectionIterator>
-const char* ZorbaDropCollectionIterator::class_name_str = "ZorbaDropCollectionIterator";
-ZorbaDropCollectionIterator::class_factory<ZorbaDropCollectionIterator>
-ZorbaDropCollectionIterator::g_class_factory;
+// <ZorbaDeleteCollectionIterator>
+const char* ZorbaDeleteCollectionIterator::class_name_str = "ZorbaDeleteCollectionIterator";
+ZorbaDeleteCollectionIterator::class_factory<ZorbaDeleteCollectionIterator>
+ZorbaDeleteCollectionIterator::g_class_factory;
 
 const serialization::ClassVersion 
-ZorbaDropCollectionIterator::class_versions[] ={{ 1, 0x000905, false}};
+ZorbaDeleteCollectionIterator::class_versions[] ={{ 1, 0x000905, false}};
 
-const int ZorbaDropCollectionIterator::class_versions_count =
-sizeof(ZorbaDropCollectionIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+const int ZorbaDeleteCollectionIterator::class_versions_count =
+sizeof(ZorbaDeleteCollectionIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void ZorbaDropCollectionIterator::accept(PlanIterVisitor& v) const {
+void ZorbaDeleteCollectionIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -169,37 +169,9 @@ void ZorbaDropCollectionIterator::accept(PlanIterVisitor& v) const {
   v.endVisit(*this);
 }
 
-ZorbaDropCollectionIterator::~ZorbaDropCollectionIterator() {}
+ZorbaDeleteCollectionIterator::~ZorbaDeleteCollectionIterator() {}
 
-// </ZorbaDropCollectionIterator>
-
-
-// <ZorbaDropAllCollectionsIterator>
-const char* ZorbaDropAllCollectionsIterator::class_name_str = "ZorbaDropAllCollectionsIterator";
-ZorbaDropAllCollectionsIterator::class_factory<ZorbaDropAllCollectionsIterator>
-ZorbaDropAllCollectionsIterator::g_class_factory;
-
-const serialization::ClassVersion 
-ZorbaDropAllCollectionsIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int ZorbaDropAllCollectionsIterator::class_versions_count =
-sizeof(ZorbaDropAllCollectionsIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void ZorbaDropAllCollectionsIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-ZorbaDropAllCollectionsIterator::~ZorbaDropAllCollectionsIterator() {}
-
-// </ZorbaDropAllCollectionsIterator>
+// </ZorbaDeleteCollectionIterator>
 
 
 // <ZorbaInsertNodesFirstIterator>

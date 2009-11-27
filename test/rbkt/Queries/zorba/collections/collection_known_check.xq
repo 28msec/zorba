@@ -48,7 +48,7 @@ declare sequential function local:testd() {
 declare sequential function local:teste() {
   try {
     block {
-      ddl:drop-collection($name);
+      ddl:delete-collection($name);
     }
   } catch * ($error) {
     ("e",$error)

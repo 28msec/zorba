@@ -40,14 +40,8 @@ namespace zorba
 SERIALIZABLE_CLASS_VERSIONS(CreateInternalIndexIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(CreateInternalIndexIterator)
 
-SERIALIZABLE_CLASS_VERSIONS(CreateIndexIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(CreateIndexIterator)
-
 SERIALIZABLE_CLASS_VERSIONS(RebuildIndexIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(RebuildIndexIterator)
-
-SERIALIZABLE_CLASS_VERSIONS(DropIndexIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(DropIndexIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(IndexEntryBuilderIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(IndexEntryBuilderIterator)
@@ -55,11 +49,7 @@ END_SERIALIZABLE_CLASS_VERSIONS(IndexEntryBuilderIterator)
 
 UNARY_ACCEPT(CreateInternalIndexIterator);
 
-UNARY_ACCEPT(CreateIndexIterator);
-
 UNARY_ACCEPT(RebuildIndexIterator);
-
-UNARY_ACCEPT(DropIndexIterator);
 
 NARY_ACCEPT(IndexEntryBuilderIterator);
 
@@ -67,7 +57,7 @@ NARY_ACCEPT(IndexEntryBuilderIterator);
 /*******************************************************************************
 
 ********************************************************************************/
-static void createIndexSpec(
+void createIndexSpec(
     ValueIndex* zorbaIndex,
     store::IndexSpecification& spec)
 {
@@ -145,90 +135,6 @@ bool CreateInternalIndexIterator::nextImpl(
   }
 
   STACK_END (state);
-}
-
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Item_t qname;
-  ValueIndex_t zorbaIndex;
-  store::IndexSpecification spec;
-  PlanIter_t buildPlan;
-  store::Iterator_t planWrapper;
-
-  CompilerCB* ccb = planState.theCompilerCB;
-  dynamic_context* dctx = planState.dctx();
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  if (!consumeNext(qname, theChild, planState))
-    ZORBA_ASSERT(false);
-
-  if ((zorbaIndex = theSctx->lookup_index(qname)) == NULL)
-  {
-    ZORBA_ERROR_LOC_PARAM(XQP0037_INDEX_IS_NOT_DECLARED, loc,
-                          qname->getStringValue()->c_str(), "");
-  }
-
-  if (GENV_STORE.getIndex(qname) != NULL)
-  {
-    ZORBA_ERROR_LOC_PARAM(XQP0034_INDEX_ALREADY_EXISTS, loc,
-                          qname->getStringValue()->c_str(), "");
-  }
-
-  buildPlan = zorbaIndex->getBuildPlan(ccb, loc); 
-  
-  planWrapper = new PlanWrapper(buildPlan, ccb, dctx, NULL); 
-
-  createIndexSpec(zorbaIndex, spec);
-
-  result = GENV_ITEMFACTORY->createPendingUpdateList();
-
-  reinterpret_cast<store::PUL*>(result.getp())->addCreateIndex(qname, spec, planWrapper);
-
-  STACK_PUSH(true, state);
-
-  STACK_END(state);
-}
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-bool DropIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Item_t qname;
-
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  if (!consumeNext(qname, theChild, planState))
-    ZORBA_ASSERT(false);
-
-  if (theSctx->lookup_index(qname) == NULL)
-  {
-    ZORBA_ERROR_LOC_PARAM(XQP0037_INDEX_IS_NOT_DECLARED, loc,
-                          qname->getStringValue()->c_str(), "");
-  }
-
-  if (GENV_STORE.getIndex(qname) == NULL)
-  {
-    ZORBA_ERROR_LOC_PARAM(XQP0033_INDEX_DOES_NOT_EXIST, loc,
-                          qname->getStringValue()->c_str(), "");
-  }
-
-  result = GENV_ITEMFACTORY->createPendingUpdateList();
-
-  reinterpret_cast<store::PUL*>(result.getp())->addDropIndex(qname);
-
-  STACK_PUSH(true, state);
-
-  STACK_END(state);
 }
 
 

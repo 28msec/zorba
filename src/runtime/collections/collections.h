@@ -198,66 +198,32 @@ public:
 
 
 /**
- * zorba:drop-collection
+ * zorba:delete-collection
  * 
  * Author: Zorba Team * 
  */
-class ZorbaDropCollectionIterator : public NaryBaseIterator <ZorbaDropCollectionIterator, PlanIteratorState>
+class ZorbaDeleteCollectionIterator : public NaryBaseIterator <ZorbaDeleteCollectionIterator, PlanIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(ZorbaDropCollectionIterator);
+  SERIALIZABLE_CLASS(ZorbaDeleteCollectionIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaDropCollectionIterator,
-    NaryBaseIterator <ZorbaDropCollectionIterator, PlanIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaDeleteCollectionIterator,
+    NaryBaseIterator <ZorbaDeleteCollectionIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <ZorbaDropCollectionIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator <ZorbaDeleteCollectionIterator, PlanIteratorState>*)this);
   }
 
-  ZorbaDropCollectionIterator(
+  ZorbaDeleteCollectionIterator(
     static_context* sctx,
     const QueryLoc& loc
     , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <ZorbaDropCollectionIterator, PlanIteratorState>
+    : NaryBaseIterator <ZorbaDeleteCollectionIterator, PlanIteratorState>
     (sctx, loc, aChildren) {}
 
-  virtual ~ZorbaDropCollectionIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * zorba:drop-all-collections
- * 
- * Author: Zorba Team * 
- */
-class ZorbaDropAllCollectionsIterator : public NaryBaseIterator <ZorbaDropAllCollectionsIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(ZorbaDropAllCollectionsIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaDropAllCollectionsIterator,
-    NaryBaseIterator <ZorbaDropAllCollectionsIterator, PlanIteratorState>);
-
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator <ZorbaDropAllCollectionsIterator, PlanIteratorState>*)this);
-  }
-
-  ZorbaDropAllCollectionsIterator(
-    static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <ZorbaDropAllCollectionsIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
-
-  virtual ~ZorbaDropAllCollectionsIterator();
+  virtual ~ZorbaDeleteCollectionIterator();
 
   void accept(PlanIterVisitor& v) const;
 

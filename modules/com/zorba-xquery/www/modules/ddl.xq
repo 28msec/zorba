@@ -16,11 +16,7 @@ declare updating function ddl:create-collection($name as xs:QName,
 
 (:~
  :)
-declare updating function ddl:drop-collection($name as xs:QName) external;
-
-(:~
- :)
-declare updating function ddl:drop-all-collections() external;
+declare updating function ddl:delete-collection($name as xs:QName) external;
 
 (:~
  :)
@@ -59,3 +55,11 @@ declare updating function ddl:remove-nodes($name as xs:QName,
  :)
 declare updating function ddl:remove-node-at($name as xs:QName,
                                              $pos as xs:integer) external;
+
+(:~
+ :)
+declare updating function ddl:create-index($name as xs:QName) external;
+
+(:~
+ :)
+declare updating function ddl:delete-index($name as xs:QName) external;

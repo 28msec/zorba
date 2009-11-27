@@ -26,7 +26,7 @@ declare function local:testb() {
 declare sequential function local:testc() {
   try {
     block {
-      ddl:drop-collection($ns:http);
+      ddl:delete-collection($ns:http);
     }
   } catch * ($error) {
     ("c",$error)

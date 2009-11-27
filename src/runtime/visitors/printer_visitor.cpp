@@ -45,6 +45,7 @@
 #include "runtime/eval/eval.h"
 #include "runtime/fnerror/fnerror.h"
 #include "runtime/fnput/fnput.h"
+#include "runtime/indexing/index_ddl.h"
 #include "runtime/introspection/dctx.h"
 #include "runtime/introspection/sctx.h"
 #include "runtime/maths/maths.h"
@@ -340,32 +341,18 @@ void PrinterVisitor::endVisit ( const ZorbaCreateCollectionIterator& ) {
 // </ZorbaCreateCollectionIterator>
 
 
-// <ZorbaDropCollectionIterator>
-void PrinterVisitor::beginVisit ( const ZorbaDropCollectionIterator& a) {
-  thePrinter.startBeginVisit("ZorbaDropCollectionIterator", ++theId);
+// <ZorbaDeleteCollectionIterator>
+void PrinterVisitor::beginVisit ( const ZorbaDeleteCollectionIterator& a) {
+  thePrinter.startBeginVisit("ZorbaDeleteCollectionIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const ZorbaDropCollectionIterator& ) {
+void PrinterVisitor::endVisit ( const ZorbaDeleteCollectionIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </ZorbaDropCollectionIterator>
-
-
-// <ZorbaDropAllCollectionsIterator>
-void PrinterVisitor::beginVisit ( const ZorbaDropAllCollectionsIterator& a) {
-  thePrinter.startBeginVisit("ZorbaDropAllCollectionsIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const ZorbaDropAllCollectionsIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </ZorbaDropAllCollectionsIterator>
+// </ZorbaDeleteCollectionIterator>
 
 
 // <ZorbaInsertNodesFirstIterator>
@@ -982,6 +969,34 @@ void PrinterVisitor::endVisit ( const FnPutIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FnPutIterator>
+
+
+// <CreateIndexIterator>
+void PrinterVisitor::beginVisit ( const CreateIndexIterator& a) {
+  thePrinter.startBeginVisit("CreateIndexIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const CreateIndexIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </CreateIndexIterator>
+
+
+// <DeleteIndexIterator>
+void PrinterVisitor::beginVisit ( const DeleteIndexIterator& a) {
+  thePrinter.startBeginVisit("DeleteIndexIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const DeleteIndexIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </DeleteIndexIterator>
 
 
 // <IsAvailableCollectionIterator>

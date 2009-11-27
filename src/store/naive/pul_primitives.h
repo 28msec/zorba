@@ -786,13 +786,13 @@ public:
 };
 
 
-class UpdDropCollection : public UpdCollection
+class UpdDeleteCollection : public UpdCollection
 {
 protected:
   std::vector<store::Item_t> theSavedItems; // only used for undo
 
 public:
-  UpdDropCollection(
+  UpdDeleteCollection(
         PULImpl* pul,
         store::Item_t& name)
     :
@@ -1031,7 +1031,7 @@ public:
 };
 
 
-class UpdDropIndex : public  UpdatePrimitive
+class UpdDeleteIndex : public  UpdatePrimitive
 {
   friend class PULImpl;
 
@@ -1041,7 +1041,7 @@ protected:
   store::Index_t       theIndex;
 
 public:
-  UpdDropIndex(PULImpl* pul, const store::Item_t& qname)
+  UpdDeleteIndex(PULImpl* pul, const store::Item_t& qname)
     :
     UpdatePrimitive(pul),
     theQName(qname)

@@ -1,2 +1,0 @@
-import module namespace dc = "http://www.zorba-xquery.com/modules/introspection/dctx";
-dc:available-collections()

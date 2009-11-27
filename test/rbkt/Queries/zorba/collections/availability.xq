@@ -17,10 +17,10 @@ declare sequential function local:create() {
   );
 };
 
-declare sequential function local:drop() {
-  ddl:drop-collection($ns:collection_1);
+declare sequential function local:delete() {
+  ddl:delete-collection($ns:collection_1);
   ( 
-    "drop",
+    "delete",
     dc:is-available-collection($ns:collection_1),
     for $x in dc:available-collections()
     order by xs:string($x)
@@ -28,16 +28,10 @@ declare sequential function local:drop() {
   );
 };
 
-declare sequential function local:drop-all() {
-  ddl:drop-all-collections();
-  ("afterdropall",dc:available-collections());
-};
-
 declare sequential function local:main() {
   (
     local:create(),
-    local:drop(),
-    local:drop-all()
+    local:delete()
   );
 };
 

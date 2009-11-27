@@ -1,8 +1,0 @@
-import module namespace ddl = "http://www.zorba-xquery.com/modules/ddl";
-
-declare sequential function local:foo() {
-  ddl:drop-all-collections();
-  exit returning ();
-};
-
-local:foo()
