@@ -37,7 +37,7 @@ base64 encode
 
   <zorba:function>
     <zorba:signature localname="encode" prefix="base64">
-      <zorba:param>item()</zorba:param>
+      <zorba:param>xs:string</zorba:param>
       <zorba:output>xs:base64Binary</zorba:output>
     </zorba:signature>
   </zorba:function>

@@ -59,7 +59,7 @@ void populate_context_base64(static_context* sctx) {
 
   DECL(sctx, base64_encode,
       (createQName("http://www.zorba-xquery.com/modules/base64","base64","encode"),
-      GENV_TYPESYSTEM.ITEM_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE));
 
 }
