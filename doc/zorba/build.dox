@@ -200,9 +200,8 @@ In order to add XQueryX support you have to add ZORBA_XQUERYX=ON and add the pat
 -D LIBXSLT_LIBRARIES="path_to_libxslt\lib\libxslt.lib"
 \endcode
 
-For using the mail function you have to add the cclient lib:
+For using the email functionality you have to add the cclient lib:
 \code
--D ZORBA_WITH_EMAIL=ON
 -D CCLIENT_INCLUDE="path_to_imap_2007e\c-client"
 -D CCLIENT_LIBRARY="path_to_imap_2007e\c-client\release\cclient.lib"
 \endcode

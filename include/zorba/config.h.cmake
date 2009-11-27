@@ -75,9 +75,6 @@
 /* tidy support*/
 #cmakedefine ZORBA_WITH_TIDY
 
-/* email support*/
-#cmakedefine ZORBA_WITH_EMAIL
-
 /* fop support */
 #cmakedefine ZORBA_WITH_FOP
 

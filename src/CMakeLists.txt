@@ -34,12 +34,12 @@ SET(ABSOLUTE_SPEC_FILES)
 # create the corresponding directories in the src/runtime/ build directory
 IF (NOT EXISTS "${CMAKE_BINARY_DIR}/src/runtime/visitors")
   FILE(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/src/runtime/visitors")
-  MESSAGE(STATUS "created directory ${CMAKE_BINARY_DIR}/src/runtime/visitors}")
+  MESSAGE(STATUS "created directory ${CMAKE_BINARY_DIR}/src/runtime/visitors")
 ENDIF (NOT EXISTS "${CMAKE_BINARY_DIR}/src/runtime/visitors")
 
 IF (NOT EXISTS "${CMAKE_BINARY_DIR}/src/functions")
   FILE(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/src/functions")
-  MESSAGE(STATUS "created directory ${CMAKE_BINARY_DIR}/src/functions}")
+  MESSAGE(STATUS "created directory ${CMAKE_BINARY_DIR}/src/functions")
 ENDIF (NOT EXISTS "${CMAKE_BINARY_DIR}/src/functions")
 
 FOREACH (SPEC_FILE ${SPEC_FILES})
