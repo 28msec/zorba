@@ -22,7 +22,7 @@ FIND_LIBRARY(ICONV_LIBRARY NAMES iconv
   PATHS
   /usr/${LIB_DESTINATION}
   /usr/local/${LIB_DESTINATION}
-  DOC "Iconv library that used by Libxml2 (iconv)")
+  DOC "Iconv library that used by Libxml2 (iconv)"
 )
 
 IF (ICONV_INCLUDE_DIR AND ICONV_LIBRARY)
