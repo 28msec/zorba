@@ -14,7 +14,7 @@ find_path(
   CCLIENT_INCLUDE
   NAMES linkage.c
   PATHS ${CCLIENT_LIBRARY_DIRS} /usr/include/imap
-  DOC "Include directory for the CCLient library linkage")
+  DOC "Include directory for the CCLient library linkage (the path to 'linkage.c' file)")
 mark_as_advanced(CCLIENT_INCLUDE)
 
 # Look for the library.
@@ -22,7 +22,7 @@ find_file(
   CCLIENT_LIBRARY
   NAMES libc-client.a libc-client4.a
   PATHS ${CCLIENT_LIBRARY_DIRS} /opt/local/lib /usr/lib
-  DOC "Library to link against for the email support")
+  DOC "Library to link against for the email support (libc-client.a, libc-client4.a or cclient.lib)")
 
 if (CCLIENT_LIBRARY)
   MESSAGE(STATUS "Found CCLIENT library -- " ${CCLIENT_LIBRARY})
