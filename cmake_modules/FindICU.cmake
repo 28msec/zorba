@@ -26,7 +26,7 @@ find_library(
 	ICU_LIBRARY
 	NAMES icuuc cygicuuc cygicuuc32 cygicuuc38
 	PATHS ${ICU_LIBRARY_DIR}
-	DOC "Libraries to link against for the common parts of ICU")
+	DOC "Libraries to link against for the common parts of ICU (icuuc, cygicuuc, cygicuuc32 or cygicuuc38)")
 mark_as_advanced(ICU_LIBRARY)
 
 if (ICU_LIBRARY)
@@ -47,7 +47,7 @@ if(ICU_INCLUDE AND ICU_LIBRARY)
 		ICU_I18N_LIBRARY
 		NAMES icuin icui18n cygicuin cygicuin32 cygicuin38
 		PATHS ${ICU_LIBRARY_DIR}
-		DOC "Libraries to link against for ICU internationalization")
+		DOC "Libraries to link against for ICU internationalization (icuin, icui18n, cygicuin, cygicuin32 or cygicuin38)")
 	mark_as_advanced(ICU_I18N_LIBRARY)
 	if (ICU_I18N_LIBRARY)
 		MESSAGE("-- Found ICU internationalization library -- " ${ICU_I18N_LIBRARY})
@@ -71,7 +71,7 @@ if(ICU_INCLUDE AND ICU_LIBRARY)
 		ICU_DATA_LIBRARY
 		NAMES ${ICU_DATA_NAMES}
 		PATHS ${ICU_LIBRARY_DIR}
-		DOC "icudata library")
+		DOC "icudata library (icudt, cygicudt or cygicudt38)")
 	mark_as_advanced(ICU_DATA_LIBRARY)
 	if (ICU_DATA_LIBRARY)
 		MESSAGE("-- Found ICU data library -- " ${ICU_DATA_LIBRARY})
