@@ -61,79 +61,79 @@ public:
   virtual void addDelete(Item_t& node) = 0;
 
   virtual void addInsertInto(
-        Item_t&              target,
+        Item_t& target,
         std::vector<Item_t>& children,
-        const CopyMode&      copymode) = 0;
+        const CopyMode& copymode) = 0;
 
   virtual void addInsertFirst(
-        Item_t&              target,
+        Item_t& target,
         std::vector<Item_t>& children,
-        const CopyMode&      copymode) = 0;
+        const CopyMode& copymode) = 0;
 
   virtual void addInsertLast(
-        Item_t&              target,
+        Item_t& target,
         std::vector<Item_t>& children,
-        const CopyMode&      copymode) = 0;
+        const CopyMode& copymode) = 0;
 
   virtual void addInsertBefore(
-        Item_t&              target,
+        Item_t& target,
         std::vector<Item_t>& siblings,
-        const CopyMode&      copymode) = 0;
+        const CopyMode& copymode) = 0;
 
   virtual void addInsertAfter(
-        Item_t&              target,
+        Item_t& target,
         std::vector<Item_t>& siblings,
-        const CopyMode&      copymode) = 0;
+        const CopyMode& copymode) = 0;
   
   virtual void addInsertAttributes(
-        Item_t&              target,
+        Item_t& target,
         std::vector<Item_t>& attrs,
-        const CopyMode&      copymode) = 0;
+        const CopyMode& copymode) = 0;
 
   virtual void addReplaceNode(
-        Item_t&              target,
+        Item_t& target,
         std::vector<Item_t>& replacementNodes,
-        const CopyMode&      copymode) = 0;
+        const CopyMode& copymode) = 0;
 
   virtual void addReplaceContent(
-        Item_t&              target,
-        Item_t&              newTextChild,
-        const CopyMode&      copymode) = 0;
+        Item_t& target,
+        Item_t& newTextChild,
+        const CopyMode& copymode) = 0;
 
   virtual void addReplaceValue(
-        Item_t&              target,
-        xqpStringStore_t&    newValue) = 0;
+        Item_t& target,
+        xqpStringStore_t& newValue) = 0;
 
   virtual void addRename(
-        Item_t&              target,
-        Item_t&              newName) = 0;
+        Item_t& target,
+        Item_t& newName) = 0;
 
   virtual void addSetElementType(
-        Item_t&              target,
-        Item_t&              typeName,
-        Item_t&              typedValue,
-        bool                 haveValue,
-        bool                 haveEmptyValue,
-        bool                 haveTypedValue,
-        bool                 isInSubstitutionGroup) = 0;
+        Item_t& target,
+        Item_t& typeName,
+        Item_t& typedValue,
+        bool haveValue,
+        bool haveEmptyValue,
+        bool haveTypedValue,
+        bool isInSubstitutionGroup) = 0;
 
   virtual void addSetElementType(
-        Item_t&              target,
-        Item_t&              typeName,
+        Item_t& target,
+        Item_t& typeName,
         std::vector<Item_t>& typedValue,
-        bool                 haveValue,
-        bool                 haveEmptyValue,
-        bool                 haveTypedValue,
-        bool                 isInSubstitutionGroup) = 0;
+        bool haveValue,
+        bool haveEmptyValue,
+        bool haveTypedValue,
+        bool isInSubstitutionGroup) = 0;
 
   virtual void addSetAttributeType(
-        Item_t&              target,
-        Item_t&              typeName,
-        Item_t&              typedValue) = 0;
+        Item_t& target,
+        Item_t& typeName,
+        Item_t& typedValue) = 0;
 
   virtual void addSetAttributeType(
-        Item_t&              target,
-        Item_t&              typeName,
+        Item_t& target,
+        Item_t& typeName,
         std::vector<Item_t>& typedValue) = 0;
 
 
@@ -158,31 +158,31 @@ public:
         std::vector<store::Item_t>& nodes) = 0;
 
   virtual void addInsertLastIntoCollection(
-        Item_t&                     name,
+        Item_t& name,
         std::vector<store::Item_t>& nodes) = 0;
 
   virtual void addInsertBeforeIntoCollection(
-        Item_t&                     name,
-        Item_t&                     target,
+        Item_t& name,
+        Item_t& target,
         std::vector<store::Item_t>& nodes) = 0;
 
   virtual void addInsertAfterIntoCollection(
-        Item_t&                     name,
-        Item_t&                     target,
+        Item_t& name,
+        Item_t& target,
         std::vector<store::Item_t>& nodes) = 0;
 
   virtual void addInsertAtIntoCollection(
-        Item_t&                     name,
-        ulong                       pos,
+        Item_t& name,
+        ulong pos,
         std::vector<store::Item_t>& nodes) = 0;
 
   virtual void addRemoveFromCollection(
-        Item_t&                     name,
+        Item_t& name,
         std::vector<store::Item_t>& nodes) = 0;
 
   virtual void addRemoveAtFromCollection(
-        Item_t&                     name,
-        ulong                       pos) = 0;
+        Item_t& name,
+        ulong pos) = 0;
 
   virtual void addCreateIndex(
         const Item_t& qname,
@@ -200,14 +200,20 @@ public:
 
   virtual void applyUpdates() = 0;
 
-  virtual void checkTransformUpdates(const std::vector<Item*>& rootNodes) const = 0;
+  virtual void checkTransformUpdates(
+        const std::vector<Item*>& rootNodes) const = 0;
 
   // utils
-  virtual void getIndicesToRefresh(std::vector<Index*>& indices) = 0;
+  virtual void getIndicesToRefresh(
+        std::vector<Index*>& indices) = 0;
 
-  virtual void addIndexEntryCreator(Index* idx, IndexEntryCreator* creator) = 0;
+  virtual void addIndexEntryCreator(
+        Item* collectionName, 
+        Index* idx,
+        IndexEntryCreator* creator) = 0;
 
-  virtual void setValidator(SchemaValidator* validator) = 0;
+  virtual void setValidator(
+        SchemaValidator* validator) = 0;
 };
 
 

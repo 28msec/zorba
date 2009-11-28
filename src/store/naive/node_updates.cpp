@@ -942,7 +942,7 @@ void ElementNode::insertAttributes(UpdInsertAttributes& upd)
     catch (error::ZorbaError& e)
     {
       if (e.theErrorCode == XQDY0025)
-        upd.thePul->thePrimitivesToRecheck.push_back(&upd);
+        upd.theCollectionPul->thePrimitivesToRecheck.push_back(&upd);
       else
         throw e;
     }
@@ -1001,7 +1001,7 @@ void ElementNode::replaceAttribute(UpdReplaceAttribute& upd)
     catch (error::ZorbaError& e)
     {
       if (e.theErrorCode == XQDY0025)
-        upd.thePul->thePrimitivesToRecheck.push_back(&upd);
+        upd.theCollectionPul->thePrimitivesToRecheck.push_back(&upd);
       else
         throw e;
     }
@@ -1280,7 +1280,7 @@ void AttributeNode::replaceName(UpdRenameAttr& upd)
     catch (error::ZorbaError& e)
     {
       if (e.theErrorCode == XQDY0025)
-        upd.thePul->thePrimitivesToRecheck.push_back(&upd);
+        upd.theCollectionPul->thePrimitivesToRecheck.push_back(&upd);
       else
         throw e;
     }

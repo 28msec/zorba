@@ -34,13 +34,63 @@
 namespace zorba { namespace simplestore {
 
 
+/*******************************************************************************
+
+********************************************************************************/
+UpdatePrimitive::UpdatePrimitive(PULImpl* pul, store::Item_t& target)
+  :
+  thePul(pul),
+  theCollectionPul(NULL),
+  theIsApplied(false),
+  theRemoveType(false)
+{
+  theTarget.transfer(target);
+}
+    
+    
+UpdatePrimitive::UpdatePrimitive(CollectionPul* pul, store::Item_t& target)
+  :
+  thePul(pul->thePul),
+  theCollectionPul(pul),
+  theIsApplied(false),
+  theRemoveType(false)
+{
+  theTarget.transfer(target);
+}
+
+
+UpdatePrimitive::UpdatePrimitive(PULImpl* pul)
+  :
+  thePul(pul),
+  theCollectionPul(NULL),
+  theTarget(NULL),
+  theIsApplied(false),
+  theRemoveType(false)
+{
+}
+
+
+UpdatePrimitive::UpdatePrimitive(CollectionPul* pul)
+  :
+  thePul(pul->thePul),
+  theCollectionPul(pul),
+  theIsApplied(false),
+  theRemoveType(false)
+{
+}
+
+
+UpdatePrimitive::~UpdatePrimitive()
+{ 
+}
+    
 
 /*******************************************************************************
 
 ********************************************************************************/
 void UpdatePrimitive::addNodeForValidation(zorba::store::Item* node)
 {
-  thePul->theValidationNodes.insert(node);
+  theCollectionPul->theValidationNodes.insert(node);
 }
 
 
@@ -77,12 +127,11 @@ void UpdDelete::undo()
 
 ********************************************************************************/
 UpdInsertChildren::UpdInsertChildren(
-    PULImpl*                         pul,
+    CollectionPul* pul,
     store::UpdateConsts::UpdPrimKind kind,
-    store::Item_t&                   target,
-    store::Item_t&                   sibling,
-    std::vector<store::Item_t>&      children,
-    const store::CopyMode&           copymode)
+    store::Item_t& target,
+    store::Item_t& sibling,
+    std::vector<store::Item_t>& children)
   :
   UpdatePrimitive(pul, target),
   theKind(kind),
@@ -183,13 +232,11 @@ void UpdInsertChildren::undo()
 
 ********************************************************************************/
 UpdInsertAttributes::UpdInsertAttributes(
-    PULImpl*                     pul,
-    store::Item_t&               target,
-    std::vector<store::Item_t>&  attrs,
-    const store::CopyMode&       copymode)
+    CollectionPul* pul,
+    store::Item_t& target,
+    std::vector<store::Item_t>&  attrs)
   :
   UpdatePrimitive(pul, target),
-  theCopyMode(copymode),
   theNumApplied(0)
 {
   ulong numAttrs = attrs.size();
@@ -222,14 +269,12 @@ void UpdInsertAttributes::check()
 
 ********************************************************************************/
 UpdReplaceAttribute::UpdReplaceAttribute(
-    PULImpl*                    pul,
-    store::Item_t&              target,
-    store::Item_t&              attr,
-    std::vector<store::Item_t>& newAttrs,
-    const store::CopyMode&      copymode)
+    CollectionPul* pul,
+    store::Item_t& target,
+    store::Item_t& attr,
+    std::vector<store::Item_t>& newAttrs)
   :
   UpdatePrimitive(pul, target),
-  theCopyMode(copymode),
   theNumApplied(0)
 {
   theAttr.transfer(attr);
@@ -266,14 +311,12 @@ void UpdReplaceAttribute::check()
 
 ********************************************************************************/
 UpdReplaceChild::UpdReplaceChild(
-    PULImpl*                    pul,
-    store::Item_t&              target,
-    store::Item_t&              child,
-    std::vector<store::Item_t>& newChildren,
-    const store::CopyMode&      copymode)
+    CollectionPul* pul,
+    store::Item_t& target,
+    store::Item_t& child,
+    std::vector<store::Item_t>& newChildren)
   :
   UpdatePrimitive(pul, target),
-  theCopyMode(copymode),
   theNumApplied(0),
   theIsTyped(false)
 {
@@ -604,17 +647,17 @@ void UpdPut::undo()
 ********************************************************************************/
 void UpdCreateCollection::apply()
 {
-  GET_STORE().createCollection(theCollectionName);
+  GET_STORE().createCollection(theName);
   theIsApplied = true;
 }
 
 
 void UpdCreateCollection::undo()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theCollectionName);
+  store::Collection_t lColl = GET_STORE().getCollection(theName);
   if (lColl) 
   {
-    GET_STORE().deleteCollection(theCollectionName);
+    GET_STORE().deleteCollection(theName);
   }
 }
 
@@ -624,7 +667,7 @@ void UpdCreateCollection::undo()
 ********************************************************************************/
 void UpdDeleteCollection::apply()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theCollectionName);
+  store::Collection_t lColl = GET_STORE().getCollection(theName);
   assert(lColl);
 
   // save nodes for potential undo
@@ -637,18 +680,18 @@ void UpdDeleteCollection::apply()
     theSavedItems.push_back(lTmp);
   lIter->close();
 
-  GET_STORE().deleteCollection(theCollectionName);
+  GET_STORE().deleteCollection(theName);
   theIsApplied = true;
 }
 
 
 void UpdDeleteCollection::undo()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theCollectionName);
+  store::Collection_t lColl = GET_STORE().getCollection(theName);
   if (!lColl) {
-    GET_STORE().createCollection(theCollectionName); 
+    GET_STORE().createCollection(theName); 
 #ifndef NDEBUG
-    lColl = GET_STORE().getCollection(theCollectionName);
+    lColl = GET_STORE().getCollection(theName);
     assert(lColl);
 #endif
   }
@@ -675,7 +718,7 @@ void UpdDeleteCollection::undo()
 ********************************************************************************/
 void UpdInsertIntoCollection::apply()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theCollectionName);
+  store::Collection_t lColl = GET_STORE().getCollection(theName);
   assert(lColl);
 
   lColl->addNode(theNodes[0]);
@@ -686,7 +729,7 @@ void UpdInsertIntoCollection::apply()
 
 void UpdInsertIntoCollection::undo()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theCollectionName);
+  store::Collection_t lColl = GET_STORE().getCollection(theName);
   assert(lColl);
 
   // remove the node if it exists
@@ -703,7 +746,7 @@ void UpdInsertIntoCollection::undo()
 ********************************************************************************/
 void UpdInsertFirstIntoCollection::apply()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theCollectionName);
+  store::Collection_t lColl = GET_STORE().getCollection(theName);
   assert(lColl);
 
   for (std::vector<store::Item_t>::reverse_iterator lIter = theNodes.rbegin();
@@ -716,7 +759,7 @@ void UpdInsertFirstIntoCollection::apply()
 
 void UpdInsertFirstIntoCollection::undo()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theCollectionName);
+  store::Collection_t lColl = GET_STORE().getCollection(theName);
   assert(lColl);
 
   long lIndex;
@@ -737,7 +780,7 @@ void UpdInsertFirstIntoCollection::undo()
 ********************************************************************************/
 void UpdInsertLastIntoCollection::apply()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theCollectionName);
+  store::Collection_t lColl = GET_STORE().getCollection(theName);
   assert(lColl);
 
   for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
@@ -750,7 +793,7 @@ void UpdInsertLastIntoCollection::apply()
 
 void UpdInsertLastIntoCollection::undo()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theCollectionName);
+  store::Collection_t lColl = GET_STORE().getCollection(theName);
   assert(lColl);
 
   long lIndex;
@@ -771,7 +814,7 @@ void UpdInsertLastIntoCollection::undo()
 ********************************************************************************/
 void UpdInsertBeforeIntoCollection::apply()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theCollectionName);
+  store::Collection_t lColl = GET_STORE().getCollection(theName);
   assert(lColl);
 
   for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
@@ -784,7 +827,7 @@ void UpdInsertBeforeIntoCollection::apply()
 
 void UpdInsertBeforeIntoCollection::undo()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theCollectionName);
+  store::Collection_t lColl = GET_STORE().getCollection(theName);
   assert(lColl);
 
   long lIndex;
@@ -805,7 +848,7 @@ void UpdInsertBeforeIntoCollection::undo()
 ********************************************************************************/
 void UpdInsertAfterIntoCollection::apply()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theCollectionName);
+  store::Collection_t lColl = GET_STORE().getCollection(theName);
   assert(lColl);
 
   for (std::vector<store::Item_t>::reverse_iterator lIter = theNodes.rbegin();
@@ -819,7 +862,7 @@ void UpdInsertAfterIntoCollection::apply()
 
 void UpdInsertAfterIntoCollection::undo()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theCollectionName);
+  store::Collection_t lColl = GET_STORE().getCollection(theName);
   assert(lColl);
 
   long lIndex;
@@ -840,7 +883,7 @@ void UpdInsertAfterIntoCollection::undo()
 ********************************************************************************/
 void UpdInsertAtIntoCollection::apply()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theCollectionName);
+  store::Collection_t lColl = GET_STORE().getCollection(theName);
   assert(lColl);
 
   ulong lPos = thePos;
@@ -854,7 +897,7 @@ void UpdInsertAtIntoCollection::apply()
 
 void UpdInsertAtIntoCollection::undo()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theCollectionName);
+  store::Collection_t lColl = GET_STORE().getCollection(theName);
   assert(lColl);
 
   long lIndex;
@@ -875,7 +918,7 @@ void UpdInsertAtIntoCollection::undo()
 ********************************************************************************/
 void UpdRemoveNodesFromCollection::apply()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theCollectionName);
+  store::Collection_t lColl = GET_STORE().getCollection(theName);
   assert(lColl);
 
   for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
@@ -888,7 +931,7 @@ void UpdRemoveNodesFromCollection::apply()
 
 void UpdRemoveNodesFromCollection::undo()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theCollectionName);
+  store::Collection_t lColl = GET_STORE().getCollection(theName);
   assert(lColl);
 
   long lIndex;
@@ -909,7 +952,7 @@ void UpdRemoveNodesFromCollection::undo()
 ********************************************************************************/
 void UpdRemoveNodeAtFromCollection::apply()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theCollectionName);
+  store::Collection_t lColl = GET_STORE().getCollection(theName);
   assert(lColl);
 
   theNode = lColl->nodeAt(thePos);
@@ -919,7 +962,7 @@ void UpdRemoveNodeAtFromCollection::apply()
 
 void UpdRemoveNodeAtFromCollection::undo()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theCollectionName);
+  store::Collection_t lColl = GET_STORE().getCollection(theName);
   assert(lColl);
 
 #ifndef NDEBUG

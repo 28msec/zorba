@@ -319,6 +319,7 @@ class XmlNode : public store::Item
   friend class CommentNode;
 
   friend class PULImpl;
+  friend class CollectionPul;
   friend class UpdDelete;
   friend class UpdInsertSiblings;
   friend class UpdReplaceChild;

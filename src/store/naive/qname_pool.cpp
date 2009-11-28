@@ -35,7 +35,7 @@ namespace zorba { namespace simplestore {
 ********************************************************************************/
 QNamePool::QNamePool(ulong size, StringPool* nspool) 
   :
-  theCache(new QNameItemImpl[size]),
+  theCache(new QNameItem[size]),
   theCacheSize(size),
   theFirstFree(1),
   theNumFree(size - 1),
@@ -43,8 +43,8 @@ QNamePool::QNamePool(ulong size, StringPool* nspool)
   theNamespacePool(nspool)
 {
   // Put all the preallocated slots in the free list of the cahce.
-  QNameItemImpl* qn = &theCache[1];
-  QNameItemImpl* last = qn + size - 1;
+  QNameItem* qn = &theCache[1];
+  QNameItem* last = qn + size - 1;
 
   for (uint16_t i = 1; qn < last; qn++, i++)
   {
@@ -66,7 +66,7 @@ QNamePool::~QNamePool()
   {
     if (!theHashSet.theHashTab[i].isFree())
     {
-      QNameItemImpl* qn = theHashSet.theHashTab[i].theItem;
+      QNameItem* qn = theHashSet.theHashTab[i].theItem;
 
       // Make sure that the associated normalized QN will not be destroyed here
       if (!qn->isNormalized())
@@ -88,7 +88,7 @@ QNamePool::~QNamePool()
 /*******************************************************************************
 
 ********************************************************************************/
-void QNamePool::remove(QNameItemImpl* qn)
+void QNamePool::remove(QNameItem* qn)
 {
   SYNC_CODE(AutoMutex lock(&theHashSet.theMutex);)
 
@@ -130,11 +130,11 @@ store::Item_t QNamePool::insert(
     const char* ln,
     bool        sync)
 {
-  QNameItemImpl* qn;
-  QNameItemImpl* normVictim = NULL;
+  QNameItem* qn;
+  QNameItem* normVictim = NULL;
   SYNC_CODE(bool haveLock = false;)
   store::Item_t normItem;
-  QNameItemImpl* normQName = NULL;
+  QNameItem* normQName = NULL;
 
   bool normalized = (pre == NULL || *pre == '\0');
 
@@ -163,7 +163,7 @@ retry:
         qn = cacheInsert(normVictim);
 
         qn->theNamespace.transfer(pooledNs);
-        qn->thePrefix = QNameItemImpl::theEmptyPrefix;
+        qn->thePrefix = QNameItem::theEmptyPrefix;
         qn->setLocal(new xqpStringStore(ln));
       }
       else
@@ -175,7 +175,7 @@ retry:
 
           normItem = insert(ns, NULL, ln, false);
 
-          normQName = reinterpret_cast<QNameItemImpl*>(normItem.getp());
+          normQName = reinterpret_cast<QNameItem*>(normItem.getp());
 
           goto retry;
         }
@@ -229,11 +229,11 @@ store::Item_t QNamePool::insert(
     const xqpStringStore_t& ln,
     bool                    sync)
 {
-  QNameItemImpl* qn = NULL;
-  QNameItemImpl* normVictim = NULL;
+  QNameItem* qn = NULL;
+  QNameItem* normVictim = NULL;
   SYNC_CODE(bool haveLock = false;)
   store::Item_t normItem;
-  QNameItemImpl* normQName = NULL;
+  QNameItem* normQName = NULL;
 
   bool normalized = pre->empty();
 
@@ -259,7 +259,7 @@ retry:
         qn = cacheInsert(normVictim);
 
         qn->theNamespace.transfer(pooledNs);
-        qn->thePrefix = QNameItemImpl::theEmptyPrefix;
+        qn->thePrefix = QNameItem::theEmptyPrefix;
         qn->setLocal(ln.getp());
       }
       else
@@ -270,11 +270,11 @@ retry:
           haveLock = false;)
 
           normItem = insert(pooledNs,
-                            QNameItemImpl::theEmptyPrefix,
+                            QNameItem::theEmptyPrefix,
                             ln,
                             false);
 
-          normQName = reinterpret_cast<QNameItemImpl*>(normItem.getp());
+          normQName = reinterpret_cast<QNameItem*>(normItem.getp());
 
           goto retry;
         }
@@ -323,13 +323,13 @@ retry:
   slot (if any) is removed from the pool. If the cache free list is empty a new
   QNameItem is allocated from the heap.
 ********************************************************************************/
-QNameItemImpl* QNamePool::cacheInsert(QNameItemImpl*& normVictim)
+QNameItem* QNamePool::cacheInsert(QNameItem*& normVictim)
 {
   normVictim = NULL;
 
   if (theFirstFree != 0)
   {
-    QNameItemImpl* qn = &theCache[theFirstFree];
+    QNameItem* qn = &theCache[theFirstFree];
 
     theFirstFree = qn->theNextFree;
     theCache[theFirstFree].thePrevFree = 0;
@@ -366,7 +366,7 @@ QNameItemImpl* QNamePool::cacheInsert(QNameItemImpl*& normVictim)
   }
   else
   {
-    return new QNameItemImpl();
+    return new QNameItem();
   }
 }
 
@@ -375,7 +375,7 @@ QNameItemImpl* QNamePool::cacheInsert(QNameItemImpl*& normVictim)
   If the given qname slot is in the free list of the cache, remove it from that
   list.
 ********************************************************************************/
-void QNamePool::cachePin(QNameItemImpl* qn)
+void QNamePool::cachePin(QNameItem* qn)
 {
   if (qn->isInCache() && (qn->theNextFree != 0 || qn->thePrevFree != 0))
   {
@@ -400,7 +400,7 @@ void QNamePool::cachePin(QNameItemImpl* qn)
 /*******************************************************************************
 
 ********************************************************************************/
-HashEntry<QNameItemImpl*, DummyHashValue>* QNamePool::hashFind(
+HashEntry<QNameItem*, DummyHashValue>* QNamePool::hashFind(
     const char* ns,
     const char* pre,
     const char* ln,
@@ -416,7 +416,7 @@ HashEntry<QNameItemImpl*, DummyHashValue>* QNamePool::hashFind(
 
   while (entry != NULL)
   {
-    QNameItemImpl* qn = entry->theItem;
+    QNameItem* qn = entry->theItem;
 
     if (qn->getLocalName()->byteEqual(ln, lnlen) &&
         qn->getNamespace()->byteEqual(ns, nslen) &&

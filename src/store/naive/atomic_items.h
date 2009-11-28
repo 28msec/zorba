@@ -231,7 +231,7 @@ public:
 /*******************************************************************************
   class QNameItem
 ********************************************************************************/
-class QNameItemImpl : public AtomicItem
+class QNameItem : public AtomicItem
 {
   friend class QNamePool;
 
@@ -245,7 +245,7 @@ private:
   union
   {
     xqpStringStore  * theLocal;
-    QNameItemImpl   * theNormQN;
+    QNameItem       * theNormQN;
   }                   theUnion;
 
   uint16_t            thePosition;
@@ -253,40 +253,34 @@ private:
   uint16_t            thePrevFree;
 
 protected:
- QNameItemImpl() 
-   :
-  thePosition(0),
-  theNextFree(0),
-  thePrevFree(0) 
+  QNameItem() 
+    :
+    thePosition(0),
+    theNextFree(0),
+    thePrevFree(0) 
   {
     theUnion.theLocal = NULL;
   }
-
+  
   void free();
 
-  bool isValid() const      { return theUnion.theLocal != NULL; }
+  bool isValid() const { return theUnion.theLocal != NULL; }
 
-  bool isInCache() const    { return thePosition != 0; }
-  bool isOverflow() const   { return thePosition == 0; }
+  bool isInCache() const { return thePosition != 0; }
+
+  bool isOverflow() const { return thePosition == 0; }
 
   bool isNormalized() const { return thePrefix->empty(); }
 
-  QNameItemImpl* getNormalized() const
-  {
-    return (isNormalized() ?
-            const_cast<QNameItemImpl*>(this) :
-            theUnion.theNormQN);
-  }
-
-  QNameItemImpl* detachNormalized() 
+  QNameItem* detachNormalized() 
   {
     assert(!isNormalized());
-    QNameItemImpl* qn = theUnion.theNormQN;
+    QNameItem* qn = theUnion.theNormQN;
     theUnion.theNormQN = NULL;
     return qn;
   }
 
-  void setNormalized(QNameItemImpl* qn);  
+  void setNormalized(QNameItem* qn);  
 
   void unsetNormalized();
 
@@ -295,7 +289,7 @@ protected:
   void unsetLocal();
 
 public:
-  virtual ~QNameItemImpl();
+  virtual ~QNameItem();
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
@@ -304,15 +298,17 @@ public:
         long timezone = 0,
         const XQPCollator* aCollation = 0) const
   {
-    return (getNormalized() == 
-            reinterpret_cast<const QNameItemImpl*>(item)->getNormalized());
+    return (getNormalized() == static_cast<const QNameItem*>(item)->getNormalized());
   }
 
   xqpStringStore* getNamespace() const { return theNamespace.getp(); }
+
   xqpStringStore* getPrefix() const    { return thePrefix.getp(); }
+
   xqpStringStore* getLocalName() const { return getNormalized()->theUnion.theLocal; }
 
   store::Item* getType() const;
+
   store::Item_t getEBV() const;
 
   xqpStringStore_t getStringValue() const;
@@ -322,6 +318,13 @@ public:
   bool isIdQName() const;
 
   bool isBaseUri() const;
+
+  QNameItem* getNormalized() const
+  {
+    return (isNormalized() ?
+            const_cast<QNameItem*>(this) :
+            theUnion.theNormQN);
+  }
 
   xqp_string show() const;
 };

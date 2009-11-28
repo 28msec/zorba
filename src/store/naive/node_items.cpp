@@ -1719,7 +1719,7 @@ void ElementNode::checkNamespaceConflict(
     const store::Item*  qname,
     XQUERY_ERROR        ecode) const
 {
-  const QNameItemImpl* qn = reinterpret_cast<const QNameItemImpl*>(qname);
+  const QNameItem* qn = reinterpret_cast<const QNameItem*>(qname);
 
   xqpStringStore* prefix = qn->getPrefix();
   xqpStringStore* ns = qn->getNamespace();
@@ -1966,7 +1966,7 @@ AttributeNode::AttributeNode(store::Item_t& attrName)
 {
   theName.transfer(attrName);
 
-  QNameItemImpl* qn = reinterpret_cast<QNameItemImpl*>(theName.getp());
+  QNameItem* qn = reinterpret_cast<QNameItem*>(theName.getp());
 
   if (qn->isBaseUri())
     theFlags |= IsBaseUri;
@@ -2017,7 +2017,7 @@ AttributeNode::AttributeNode(
     if (isListValue)
       setHaveListValue();
 
-    QNameItemImpl* qn = reinterpret_cast<QNameItemImpl*>(theName.getp());
+    QNameItem* qn = reinterpret_cast<QNameItem*>(theName.getp());
 
     if (qn->isBaseUri())
       theFlags |= IsBaseUri;
@@ -2223,7 +2223,7 @@ store::Item_t AttributeNode::getAtomizationValue() const
 ********************************************************************************/
 bool AttributeNode::isId() const
 {
-  QNameItemImpl* qn = reinterpret_cast<QNameItemImpl*>(theName.getp());
+  QNameItem* qn = reinterpret_cast<QNameItem*>(theName.getp());
 
   if (qn->isIdQName())
     return true;

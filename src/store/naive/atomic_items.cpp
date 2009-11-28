@@ -93,10 +93,10 @@ xqp_string UntypedAtomicItemImpl::show() const
   class QNameItemImpl
 ********************************************************************************/
 
-xqpStringStore_t QNameItemImpl::theEmptyPrefix(new xqpStringStore(""));
+xqpStringStore_t QNameItem::theEmptyPrefix(new xqpStringStore(""));
 
 
-QNameItemImpl::~QNameItemImpl() 
+QNameItem::~QNameItem() 
 {
   if (isValid())
   {
@@ -112,13 +112,13 @@ QNameItemImpl::~QNameItemImpl()
 }
 
 
-void QNameItemImpl::free()
+void QNameItem::free()
 {
   GET_STORE().getQNamePool().remove(this);
 }
 
 
-void QNameItemImpl::setLocal(xqpStringStore* local)  
+void QNameItem::setLocal(xqpStringStore* local)  
 {
   assert(theUnion.theLocal == NULL);
 
@@ -127,7 +127,7 @@ void QNameItemImpl::setLocal(xqpStringStore* local)
 }
 
 
-void QNameItemImpl::unsetLocal()  
+void QNameItem::unsetLocal()  
 {
   assert(theUnion.theLocal != NULL && isNormalized());
 
@@ -136,7 +136,7 @@ void QNameItemImpl::unsetLocal()
 }
 
 
-void QNameItemImpl::setNormalized(QNameItemImpl* qn)  
+void QNameItem::setNormalized(QNameItem* qn)  
 {
   assert(theUnion.theNormQN == NULL);
 
@@ -145,7 +145,7 @@ void QNameItemImpl::setNormalized(QNameItemImpl* qn)
 }
 
 
-void QNameItemImpl::unsetNormalized()  
+void QNameItem::unsetNormalized()  
 {
   assert(theUnion.theNormQN != NULL && !isNormalized());
 
@@ -154,27 +154,27 @@ void QNameItemImpl::unsetNormalized()
 }
 
 
-uint32_t QNameItemImpl::hash(long timezone, const XQPCollator* aCollation) const
+uint32_t QNameItem::hash(long timezone, const XQPCollator* aCollation) const
 {
   const void* tmp = getNormalized();
   return hashfun::h32(tmp, FNV_32_INIT);
 }
 
 
-store::Item* QNameItemImpl::getType() const
+store::Item* QNameItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_QNAME];
 }
 
 
-store::Item_t QNameItemImpl::getEBV( ) const
+store::Item_t QNameItem::getEBV( ) const
 {
   ZORBA_ERROR_DESC(FORG0006, "Effective Boolean Value is not defined for QName!");
   return NULL;
 }
 
 
-xqpStringStore_t QNameItemImpl::getStringValue( ) const
+xqpStringStore_t QNameItem::getStringValue( ) const
 {
   if (thePrefix->empty()) 
   {
@@ -187,7 +187,7 @@ xqpStringStore_t QNameItemImpl::getStringValue( ) const
 }
 
 
-void QNameItemImpl::getStringValue(xqpStringStore_t& strval) const
+void QNameItem::getStringValue(xqpStringStore_t& strval) const
 {
   if (thePrefix->empty()) 
   {
@@ -200,7 +200,7 @@ void QNameItemImpl::getStringValue(xqpStringStore_t& strval) const
 }
 
 
-void QNameItemImpl::getStringValue(std::string& buf) const
+void QNameItem::getStringValue(std::string& buf) const
 {
   if (thePrefix->empty()) 
   {
@@ -215,7 +215,7 @@ void QNameItemImpl::getStringValue(std::string& buf) const
 }
 
 
-bool QNameItemImpl::isIdQName() const
+bool QNameItem::isIdQName() const
 {
   if (getLocalName()->byteEqual("id", 2))
   {
@@ -228,7 +228,7 @@ bool QNameItemImpl::isIdQName() const
 }
 
 
-bool QNameItemImpl::isBaseUri() const
+bool QNameItem::isBaseUri() const
 {
   if (getLocalName()->byteEqual("base", 4))
   {
@@ -241,7 +241,7 @@ bool QNameItemImpl::isBaseUri() const
 }
 
 
-xqp_string QNameItemImpl::show() const
+xqp_string QNameItem::show() const
 {
   return "xs:QName(" + getNamespace()->str() + "," + getPrefix()->str() + "," +
                        getLocalName()->str() + ")";

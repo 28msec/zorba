@@ -57,14 +57,14 @@ protected:
   class CompareFunction
   {
   public:
-    static bool equal(const QNameItemImpl* t1, const QNameItemImpl* t2)
+    static bool equal(const QNameItem* t1, const QNameItem* t2)
     {
       return (t1->getLocalName()->byteEqual(*t2->getLocalName()) &&
               t1->getNamespace()->byteEqual(*t2->getNamespace()) &&
               t1->getPrefix()->byteEqual(*t2->getPrefix()));
     }
 
-    static uint32_t hash(const QNameItemImpl* t)
+    static uint32_t hash(const QNameItem* t)
     {
       return  hashfun::h32(t->getPrefix()->c_str(),
                            hashfun::h32(t->getNamespace()->c_str(),
@@ -73,26 +73,26 @@ protected:
   };
 
 
-  class QNamePoolHashSet : public HashSet<QNameItemImpl*, CompareFunction>
+  class QNamePoolHashSet : public HashSet<QNameItem*, CompareFunction>
   {
     friend class QNamePool;
 
   public:
     QNamePoolHashSet(ulong size) 
       :
-      HashSet<QNameItemImpl*, CompareFunction>(size, true)
+      HashSet<QNameItem*, CompareFunction>(size, true)
     {
     }
   };
 
 
- typedef HashEntry<QNameItemImpl*, DummyHashValue> QNHashEntry;
+ typedef HashEntry<QNameItem*, DummyHashValue> QNHashEntry;
 
 public:
   static const ulong MAX_CACHE_SIZE = 65536;
 
 protected:
-  QNameItemImpl     * theCache;
+  QNameItem         * theCache;
   ulong               theCacheSize;
 	ulong               theFirstFree;
   ulong               theNumFree;
@@ -118,12 +118,12 @@ public:
         const xqpStringStore_t& ln,
         bool                    sync = true);
 
-  void remove(QNameItemImpl* qn);
+  void remove(QNameItem* qn);
 
 protected:
-  QNameItemImpl* cacheInsert(QNameItemImpl*& normVictim);
+  QNameItem* cacheInsert(QNameItem*& normVictim);
 
-  void cachePin(QNameItemImpl* qn);
+  void cachePin(QNameItem* qn);
 
   QNHashEntry* hashFind(
         const char* ns,

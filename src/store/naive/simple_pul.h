@@ -43,6 +43,8 @@ namespace simplestore
 
 class UpdatePrimitive;
 class IndexKey;
+class PULImpl;
+class QNameItem;
 
 
 typedef std::vector<UpdatePrimitive*> NodeUpdates;
@@ -111,34 +113,32 @@ public:
 
 
 /*******************************************************************************
+  Class storing all update primitives involving a single collection, or no
+  collection at all.
+
   theDoFirstList : insertInto, insertAttributes, replaceValue, rename
   theInsertList  : insertBefore, insertAfter, insertIntoFirst, insertIntoLast 
 ********************************************************************************/
-class PULImpl : public store::PUL
+class CollectionPul
 {
+  friend class PULImpl;
   friend class UpdatePrimitive;
   friend class ElementNode;
   friend class AttributeNode;
 
 public:
-  enum UpdListKind
-  {
-    UP_LIST_NONE,
-    UP_LIST_DO_FIRST,
-    UP_LIST_REPLACE_NODE,
-    UP_LIST_REPLACE_CONTENT,
-    UP_LIST_DELETE,
-    UP_LIST_PUT,
-    UP_LIST_CREATE_COLLECTION
-  };
 
   typedef std::vector<std::pair<store::Item_t, store::IndexKey*> > IndexDelta;
 
 protected:
   // Bookeeping
+  PULImpl                          * thePul;
+
   NodeToUpdatesMap                   theNodeToUpdatesMap;
 
   std::vector<UpdatePrimitive*>      thePrimitivesToRecheck;
+
+  std::set<store::Item*>             theValidationNodes;
 
   // XQUF update primitives
   std::vector<UpdatePrimitive*>      theDoFirstList;
@@ -147,18 +147,11 @@ protected:
   std::vector<UpdatePrimitive*>      theReplaceContentList;
   std::vector<UpdatePrimitive*>      theDeleteList;
 
-  std::vector<UpdatePrimitive*>      thePutList;
-
   // Update primitives for collection functions
   std::vector<UpdatePrimitive*>      theCreateCollectionList;
   std::vector<UpdatePrimitive*>      theInsertIntoCollectionList;
   std::vector<UpdatePrimitive*>      theDeleteFromCollectionList;
   std::vector<UpdatePrimitive*>      theDeleteCollectionList;
-
-  // Update primitives for indexes
-  std::vector<UpdatePrimitive*>      theCreateIndexList;
-  std::vector<UpdatePrimitive*>      theDeleteIndexList;
-  std::vector<UpdatePrimitive*>      theRebuildIndexList;
 
   // Index Maintenance
   std::set<XmlNode*>                 theModifiedDocs;
@@ -172,11 +165,63 @@ protected:
   std::vector<IndexDelta>            theBeforeIndexDeltas;
   std::vector<IndexDelta>            theAfterIndexDeltas;
 
+public:
+  CollectionPul(PULImpl* pul);
+
+  ~CollectionPul();
+
+protected:
+  void applyUpdates();
+
+  void undoUpdates();
+
+  void computeIndexDeltas(std::vector<IndexDelta>& deltas);
+
+  void refreshIndices();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class PULImpl : public store::PUL
+{
+  friend class CollectionPul;
+
+public:
+  enum UpdListKind
+  {
+    UP_LIST_NONE,
+    UP_LIST_DO_FIRST,
+    UP_LIST_REPLACE_NODE,
+    UP_LIST_REPLACE_CONTENT,
+    UP_LIST_DELETE,
+    UP_LIST_PUT,
+    UP_LIST_CREATE_COLLECTION
+  };
+
+  typedef std::map<const QNameItem*, CollectionPul*> CollectionPulMap;
+
+protected:
+  // XQUF and collection primitives, grouped by the collection that is being updated.
+  CollectionPulMap                   theCollectionPuls;
+  CollectionPul                    * theNoCollectionPul;
+  CollectionPul                    * theLastPul;
+  const QNameItem                  * theLastCollection;
+
+  // fn:put primitives
+  std::vector<UpdatePrimitive*>      thePutList;
+
+  // Index primitives
+  std::vector<UpdatePrimitive*>      theCreateIndexList;
+  std::vector<UpdatePrimitive*>      theDeleteIndexList;
+  std::vector<UpdatePrimitive*>      theRebuildIndexList;
+
   // Revalidation
   store::SchemaValidator           * theValidator;
-  std::set<store::Item*>             theValidationNodes;
 
   std::vector<UpdatePrimitive*>      theValidationList;
+
 
 public:
   PULImpl();
@@ -187,52 +232,52 @@ public:
   void addDelete(store::Item_t& n);
 
   void addInsertInto(
-        store::Item_t&              target,
+        store::Item_t& target,
         std::vector<store::Item_t>& children,
-        const store::CopyMode&      copymode);
+        const store::CopyMode& copymode);
 
   void addInsertFirst(
-        store::Item_t&              target,
+        store::Item_t& target,
         std::vector<store::Item_t>& children,
-        const store::CopyMode&      copymode);
+        const store::CopyMode& copymode);
 
   void addInsertLast(
-        store::Item_t&              target,
+        store::Item_t& target,
         std::vector<store::Item_t>& children,
-        const store::CopyMode&      copymode);
+        const store::CopyMode& copymode);
 
   void addInsertBefore(
-        store::Item_t&              target,
+        store::Item_t& target,
         std::vector<store::Item_t>& siblings,
-        const store::CopyMode&      copymode);
+        const store::CopyMode& copymode);
 
   void addInsertAfter(
-        store::Item_t&              target,
+        store::Item_t& target,
         std::vector<store::Item_t>& siblings,
-        const store::CopyMode&      copymode);
-  
+        const store::CopyMode& copymode);
+
   void addInsertAttributes(
-        store::Item_t&              target,
+        store::Item_t& target,
         std::vector<store::Item_t>& attrs,
-        const store::CopyMode&      copymode);
+        const store::CopyMode& copymode);
 
   void addReplaceNode(
-        store::Item_t&              target,
+        store::Item_t& target,
         std::vector<store::Item_t>& replacementNodes,
-        const store::CopyMode&      copymode);
+        const store::CopyMode& copymode);
 
   void addReplaceContent(
-        store::Item_t&              target,
-        store::Item_t&              newTextChild,
-        const store::CopyMode&      copymode);
+        store::Item_t& target,
+        store::Item_t& newTextChild,
+        const store::CopyMode& copymode);
 
   void addReplaceValue(
-        store::Item_t&              target,
-        xqpStringStore_t&           newValue);
+        store::Item_t& target,
+        xqpStringStore_t& newValue);
 
   void addRename(
-        store::Item_t&              target,
-        store::Item_t&              newName);
+        store::Item_t& target,
+        store::Item_t& newName);
 
   void addPut(
         store::Item_t& node,
@@ -267,47 +312,47 @@ public:
         store::Item_t&              typeName,
         std::vector<store::Item_t>& typedValue);
 
-  // collection functions
+  // Collection primitives
   void addCreateCollection(
-        store::Item_t&              name);
+        store::Item_t& name);
 
   void addDeleteCollection(
-        store::Item_t&              name);
+        store::Item_t& name);
 
   void addInsertIntoCollection(
-        store::Item_t&              name,
-        store::Item_t&              node);
+        store::Item_t& name,
+        store::Item_t& node);
 
   void addInsertFirstIntoCollection(
-        store::Item_t&              name,
+        store::Item_t& name,
         std::vector<store::Item_t>& nodes);
 
   void addInsertLastIntoCollection(
-        store::Item_t&              name,
+        store::Item_t& name,
         std::vector<store::Item_t>& nodes);
 
   void addInsertBeforeIntoCollection(
-        store::Item_t&              name,
-        store::Item_t&              target,
+        store::Item_t& name,
+        store::Item_t& target,
         std::vector<store::Item_t>& nodes);
 
   void addInsertAfterIntoCollection(
-        store::Item_t&              name,
-        store::Item_t&              target,
+        store::Item_t& name,
+        store::Item_t& target,
         std::vector<store::Item_t>& nodes);
 
   void addInsertAtIntoCollection(
-        store::Item_t&              name,
-        ulong                       pos,
+        store::Item_t& name,
+        ulong pos,
         std::vector<store::Item_t>& nodes);
 
   void addRemoveFromCollection(
-        store::Item_t&              name,
+        store::Item_t& name,
         std::vector<store::Item_t>& nodes);
 
   void addRemoveAtFromCollection(
-        store::Item_t&              name,
-        ulong                       pos);
+        store::Item_t& name,
+        ulong pos);
 
   // Index primitives
   void addCreateIndex(
@@ -322,39 +367,43 @@ public:
         const store::Item_t& qname,
         store::Iterator* sourceIter);
 
+  // merge
+  void mergeUpdates(store::Item* other);
+
   // apply
   void applyUpdates();
 
-  void mergeUpdates(store::Item* other);
-
+  // utils
   void checkTransformUpdates(const std::vector<store::Item*>& rootNodes) const;
 
-  // utils
   void getIndicesToRefresh(std::vector<store::Index*>& indices);
 
-  void addIndexEntryCreator(store::Index* idx, store::IndexEntryCreator* creator);
+  void addIndexEntryCreator(
+        store::Item* collectionName,
+        store::Index* idx,
+        store::IndexEntryCreator* creator);
 
   void setValidator(store::SchemaValidator* validator);
 
 protected:
-  void undoUpdates();
+  void mergeUpdateList(
+        CollectionPul* myPul,
+        std::vector<UpdatePrimitive*>& myList,
+        std::vector<UpdatePrimitive*>& otherList,
+        UpdListKind listKind);
 
   void addInsertChildren(
         store::UpdateConsts::UpdPrimKind kind,
-        store::Item_t&                   target,
-        store::Item_t&                   sibling,
-        std::vector<store::Item_t>&      children,
-        const store::CopyMode&           copymode);
+        store::Item_t& target,
+        store::Item_t& sibling,
+        std::vector<store::Item_t>& children);
 
-  void mergeUpdateList(
-        std::vector<UpdatePrimitive*>& myList,
-        std::vector<UpdatePrimitive*>& otherList,
-        UpdListKind                    listKind);
+  CollectionPul* getCollectionPul(const store::Item* target);
 
-  void computeIndexDeltas(std::vector<IndexDelta>& deltas);
-
-  void refreshIndices();
+  void undoUpdates();
 };
+
+
 
 
 }

@@ -103,7 +103,7 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
         docIndexer->setup(ccb, dctx);
 
-        pul->addIndexEntryCreator(indexes[i], docIndexer);
+        pul->addIndexEntryCreator(zorbaIndex->getSourceName(0), indexes[i], docIndexer);
       }
 
       zorbaIndexes[i] = zorbaIndex;
