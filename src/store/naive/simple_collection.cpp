@@ -316,7 +316,7 @@ int SimpleCollection::nodePositionInCollection(const store::Item* newNode)
   return -1;
 }
 
-// Has been move to this place to avoid simple_collection.h incode in node_items.cpp
+// Has been move to this place to avoid simple_collection.h include in node_items.cpp
 const store::Item* XmlNode::getCollectionName() const
 {
   SimpleCollection* lCollection = getCollection();

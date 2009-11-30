@@ -997,11 +997,11 @@ bool ZorbaRestGetIterator::nextImpl(store::Item_t& result, PlanState& planState)
   //tested with https://www.npr.org/rss/rss.php?id=1001
   //about using ssl certs in curl: http://curl.haxx.se/docs/sslcerts.html
 #else
-  #if defined WIN32
+#  if defined WIN32
   //set the root CA certificates file path
   if(GENV.g_curl_root_CA_certificates_path[0])
     curl_easy_setopt(state->EasyHandle, CURLOPT_CAINFO, GENV.g_curl_root_CA_certificates_path);
-  #endif
+#  endif
 #endif
   code = state->theStreamBuffer->multi_perform();
   processReply(loc,

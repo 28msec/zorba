@@ -389,6 +389,8 @@ StandardModuleURIResolver::resolve(
     }
     modfile.reset (code.release());
   }
+
+  // we transfer ownership to the caller
   return modfile.release();
 }
 

@@ -47,20 +47,20 @@ void RCObject::addReference(long* sharedCounter SYNC_PARAM2(RCLock* lock)) const
     if (sharedCounter) ++(*sharedCounter);
     ++theRefCount;
   }
-  
+
 #else
 
   SYNC_CODE(if (lock) lock->acquire());
-  
+
   if (sharedCounter) ++(*sharedCounter);
   ++theRefCount;
-  
+
   SYNC_CODE(if (lock) lock->release());
-  
+
 #endif
 }
-  
- 
+
+
 void RCObject::removeReference(long* sharedCounter SYNC_PARAM2(RCLock* lock))
 {
 #if defined WIN32 && !defined CYGWIN &&!defined ZORBA_FOR_ONE_THREAD_ONLY
@@ -98,11 +98,11 @@ void RCObject::removeReference(long* sharedCounter SYNC_PARAM2(RCLock* lock))
       return; 
     }
   }
-  
+
 #else
-  
+
   SYNC_CODE(if (lock) lock->acquire());
-  
+
   if (sharedCounter)
   {
     --theRefCount;
@@ -119,9 +119,9 @@ void RCObject::removeReference(long* sharedCounter SYNC_PARAM2(RCLock* lock))
     free();
     return; 
   }
-  
+
   SYNC_CODE(if (lock) lock->release());
-  
+
 #endif
 }
 

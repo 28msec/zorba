@@ -570,10 +570,6 @@ void SimpleStore::deleteUriCollection(const xqpStringStore_t& uri)
   }
 }
 
-
-/*******************************************************************************
-  Resturn an iterator that lists the QName's of all the available collections.
-********************************************************************************/
 class CollectionNameIterator : public store::Iterator
 {
 private:
@@ -610,6 +606,9 @@ public:
   virtual void close() {}
 };
 
+/*******************************************************************************
+  Returns an iterator that lists the QName's of all the available collections.
+********************************************************************************/
 store::Iterator_t SimpleStore::listCollectionNames()
 {
   return new NameIterator<CollectionSet>(theCollections);
