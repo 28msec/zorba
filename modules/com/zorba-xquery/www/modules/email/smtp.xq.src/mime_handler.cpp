@@ -38,20 +38,19 @@ namespace zorba
   //helper function for retrieving the string value of a Text Node
   static void
   get_text_value(const Item aElement,
-                  zorba::String& value)
+                  zorba::String& aValue)
   {
     Iterator_t lChildrenIt;
     Item       lChild;
 
+    aValue = String();
+
     lChildrenIt = aElement.getChildren();
     lChildrenIt->open();
     while (lChildrenIt->next(lChild))
-    {
       if (lChild.getNodeKind() == store::StoreConsts::textNode)
-        value = lChild.getStringValue();
-      else
-        value = String();
-    }
+        aValue = lChild.getStringValue();
+
     lChildrenIt->close();
   }
 
@@ -297,22 +296,30 @@ namespace zorba
           if(aBody->type == TYPEOTHER)
             lRes = set_content_type_value(aBody, lValue);
         }
-        else if(lNname.lowercase().equals("charset"))
+        else if(lNname.lowercase().equals("charset") ||
+                lNname.lowercase().equals("name"))
         {
           lRoot = create_param((char*)lNname.c_str(), (char*)lValue.uppercase().c_str(), NIL);
           lPrev = lRoot;
         }
         else if(lNname.lowercase().equals("contenttransferencoding"))
           set_encoding(aBody, lValue);
-        //TODO: also parse the serialization attribute
         else if(lNname.lowercase().equals("body"))
           set_text_body(aBody, lValue.c_str());
+        else if(lNname.lowercase().equals("content-id"))
+          aBody->id = cpystr((char*)lValue.lowercase().c_str());
+        else if(lNname.lowercase().equals("content-disposition"))
+          //defined at http://tools.ietf.org/html/rfc2183 ,only FILENAME is parsed
+          aBody->disposition.type = cpystr((char*)lValue.uppercase().c_str());
+        else if(lNname.lowercase().equals("filename"))
+        {
+          PARAMETER* lfilename = NIL;
+          lfilename = create_param((char*)lNname.c_str(), (char*)lValue.c_str(), NIL);
+          aBody->disposition.parameter = lfilename;
+        }
         else
         {
-          if(lNname.lowercase().equals("contentdisposition"))
-            lNname = zorba::String("Content-Disposition");
-
-          PARAMETER* lParam;
+          PARAMETER* lParam = NIL;
           lParam = create_param((char*)lNname.c_str(), (char*)lValue.lowercase().c_str(), lPrev);
 
           if(lPrev)
@@ -441,21 +448,6 @@ namespace zorba
   {
     if( theEnvelope )
       mail_free_envelope( &theEnvelope );
-
-    switch (theBody->type)
-    {
-      case TYPEMULTIPART:
-        if(theBody->nested.part->body.parameter)
-          mail_free_body_parameter(&theBody->nested.part->body.parameter);
-
-        mail_free_body_part (&theBody->nested.part);
-        break;
-      default:
-        break;
-    }
-
-    if(theBody->parameter)
-      mail_free_body_parameter(&theBody->parameter);
 
     mail_free_body(&theBody);
   }
