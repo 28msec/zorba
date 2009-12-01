@@ -51,10 +51,16 @@ MACRO(GENERATE_MODULE_LIBRARY MODULE_NAME LINK_LIBRARIES)
 
   # install to include/zorba/modules/com/zorba-xquery/www/modules
   # the include/zorba/modules directory needs to belong to the set of Zorba Module Paths
-  FILE(RELATIVE_PATH RELATIVE_MODULE_PATH "${CMAKE_SOURCE_DIR}/modules"
-        "${CMAKE_CURRENT_SOURCE_DIR}")
-  INSTALL(TARGETS ${MODULE_NAME} DESTINATION
-           "include/zorba/modules/${RELATIVE_MODULE_PATH}")
+  FILE(RELATIVE_PATH RELATIVE_MODULE_PATH "${CMAKE_SOURCE_DIR}/modules" "${CMAKE_CURRENT_SOURCE_DIR}")
+  IF (WIN32)
+    INSTALL(TARGETS ${MODULE_NAME}
+            RUNTIME
+            DESTINATION "include/zorba/modules/${RELATIVE_MODULE_PATH}")
+  ELSE (WIN32)
+    INSTALL(TARGETS ${MODULE_NAME}
+            LIBRARY
+            DESTINATION "include/zorba/modules/${RELATIVE_MODULE_PATH}")
+  ENDIF (WIN32)
 ENDMACRO(GENERATE_MODULE_LIBRARY)
 
 # all external module libraries are generated in the directory
