@@ -3747,6 +3747,18 @@ void end_visit(const VarInDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
+  // debugger bugfix
+  // it's important to insert the debugger before
+  // the scope is pushed. Otherwise, the variable in
+  // question would already be in scope for the debugger
+  // but no value would be bound
+  expr_t domainExpr = pop_nodestack();
+
+  if (domainExpr->is_updating())
+    ZORBA_ERROR_LOC(XUST0001, loc);
+
+  wrap_in_debugger_expr(domainExpr);
+
   push_scope();
 
   xqp_string varname = v.get_varname();
@@ -3767,13 +3779,6 @@ void end_visit(const VarInDecl& v, void* /*visit_state*/)
 
     posVarExpr = bind_var(pv->get_location(), pvarQName, var_expr::pos_var);
   }
-
-  expr_t domainExpr = pop_nodestack();
-
-  if (domainExpr->is_updating())
-    ZORBA_ERROR_LOC(XUST0001, loc);
-
-  wrap_in_debugger_expr(domainExpr);
 
   for_clause* fc = new for_clause(sctx_p,
                                   sctxid(),
@@ -3847,19 +3852,25 @@ void end_visit (const VarGetsDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  push_scope();
-
   xqtref_t type = (v.get_typedecl() == NULL ? NULL : pop_tstack());
 
   if (v.get_kind() == VarGetsDecl::let_var)
   {
-    var_expr_t varExpr = bind_var(loc, v.get_varname(), var_expr::let_var, type);
+    // debugger bugfix
+    // it's important to insert the debugger before
+    // the scope is pushed. Otherwise, the variable in
+    // question would already be in scope for the debugger
+    // but no value would be bound
     expr_t domainExpr = pop_nodestack();
 
     if (domainExpr->is_updating())
       ZORBA_ERROR_LOC(XUST0001, loc);
 
     wrap_in_debugger_expr(domainExpr);
+
+    push_scope();
+
+    var_expr_t varExpr = bind_var(loc, v.get_varname(), var_expr::let_var, type);
 
     let_clause* clause = new let_clause(sctx_p,
                                         sctxid(),
@@ -3871,6 +3882,7 @@ void end_visit (const VarGetsDecl& v, void* /*visit_state*/)
   }
   else
   {
+    push_scope();
     nodestack.push(&*create_var(loc, v.get_varname(), var_expr::let_var, type));
   }
 }

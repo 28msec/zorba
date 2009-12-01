@@ -267,7 +267,7 @@ namespace zorba {
 
   } // int test_resume
 
-  int test_vars(Zorba* aZorba) {
+  int test_vars1(Zorba* aZorba) {
     std::stringstream qs;
     qs << "declare function local:test() {" << std::endl;
     qs << "  let $x := 1" << std::endl;
@@ -334,6 +334,124 @@ namespace zorba {
     return 0;
   }
 
+  int test_vars2(Zorba* aZorba) {
+    std::stringstream qs;
+    qs << "let $i := 1 to 10" << std::endl
+       << "return $i" << std::endl;
+
+    std::ostringstream lRes;
+    XQuery_t lQuery = createDebuggableQuery(aZorba, qs);
+
+    std::pair<short, short> lPorts = getRandomPorts();
+    Zorba_SerializerOptions lSerOptions;
+    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+    DebuggerServerRunnable lServer(lQuery, lRes, lPorts.first, lPorts.second,
+      lSerOptions);
+    lServer.start();
+
+    sleep(1);
+
+    {
+      DebuggerTestClient client(lPorts.first, lPorts.second, qs);
+
+      QueryLocation_t loc = client.addBreakpoint("test.xq", 1);
+      if (loc == NULL) {
+        return -1;
+      }
+      std::cout << "Breakpoint set at location " << loc << std::endl;
+
+      client.run();
+
+      sleep(1); // wait for the query to start
+
+      DebuggerTestHandler::DebugEvent evt = client.getNextEvent();
+
+      if (evt != DebuggerTestHandler::SUSPENDED) {
+        std::cerr << "Query did not suspend at breakpoint" << std::endl;
+        return 2;
+      }
+
+      std::vector<std::string> lVars = client.getVariableNames();
+      for (std::vector<std::string>::const_iterator lIter = lVars.begin();
+           lIter != lVars.end(); ++lIter) {
+        std::cout << "received var " << *lIter << std::endl;
+      }
+
+      if (lVars.size() != 1 || lVars[0] != "$$dot") {
+        std::cerr << "vars did not return correct variables" << std::endl;
+        client.terminate();
+        lServer.join();
+        return 3;
+      } else {
+        client.terminate();
+        lServer.join();
+        return 0;
+      }
+
+    }
+    lServer.join();
+    return 4;
+  }
+
+  int test_vars3(Zorba* aZorba) {
+    std::stringstream qs;
+    qs << "for $i in 1 to 10" << std::endl
+       << "return $i" << std::endl;
+
+    std::ostringstream lRes;
+    XQuery_t lQuery = createDebuggableQuery(aZorba, qs);
+
+    std::pair<short, short> lPorts = getRandomPorts();
+    Zorba_SerializerOptions lSerOptions;
+    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+    DebuggerServerRunnable lServer(lQuery, lRes, lPorts.first, lPorts.second,
+      lSerOptions);
+    lServer.start();
+
+    sleep(1);
+
+    {
+      DebuggerTestClient client(lPorts.first, lPorts.second, qs);
+
+      QueryLocation_t loc = client.addBreakpoint("test.xq", 1);
+      if (loc == NULL) {
+        return -1;
+      }
+      std::cout << "Breakpoint set at location " << loc << std::endl;
+
+      client.run();
+
+      sleep(1); // wait for the query to start
+
+      DebuggerTestHandler::DebugEvent evt = client.getNextEvent();
+
+      if (evt != DebuggerTestHandler::SUSPENDED) {
+        std::cerr << "Query did not suspend at breakpoint" << std::endl;
+        return 2;
+      }
+
+      std::vector<std::string> lVars = client.getVariableNames();
+      for (std::vector<std::string>::const_iterator lIter = lVars.begin();
+           lIter != lVars.end(); ++lIter) {
+        std::cout << "received var " << *lIter << std::endl;
+      }
+
+      if (lVars.size() != 1 || lVars[0] != "$$dot") {
+        std::cerr << "vars did not return correct variables" << std::endl;
+        client.terminate();
+        lServer.join();
+        return 3;
+      } else {
+        client.terminate();
+        lServer.join();
+        return 0;
+      }
+
+    }
+    lServer.join();
+    return 4;
+  }
+
   int test_clear(Zorba* lZorba) {
 
     std::stringstream qs;
@@ -396,6 +514,7 @@ namespace zorba {
     return 0;
 
   } // int test_clear
+
 } /* namespace zorba */
 
 int test_debugger_server (int argc, char* argv[]) {
@@ -427,8 +546,18 @@ int test_debugger_server (int argc, char* argv[]) {
 
   std::cout << std::endl;
 
-  std::cout << "executing test_vars" << std::endl;
-  if (zorba::test_vars(lZorba) != 0) {
+  std::cout << "executing test_vars1" << std::endl;
+  if (zorba::test_vars1(lZorba) != 0) {
+    return 1;
+  }
+
+  std::cout << "executing test_vars2" << std::endl;
+  if (zorba::test_vars2(lZorba) != 0) {
+    return 1;
+  }
+
+  std::cout << "executing test_vars3" << std::endl;
+  if (zorba::test_vars3(lZorba) != 0) {
     return 1;
   }
 
