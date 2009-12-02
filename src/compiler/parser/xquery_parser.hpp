@@ -40,17 +40,31 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-#line 30 "/home/fx/dev/zorba/src/compiler/parser/xquery_parser.y"
+#line 30 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
 
 #include "compiler/parsetree/parsenodes.h"
+
+#ifdef __GNUC__
+  // disable a warning in location.hh which comes with bison
+  // position.hh:141: warning: suggest parentheses around && within ||
+#  pragma GCC diagnostic ignored "-Wparentheses"
+#endif
+
+#include "location.hh"
+
+#ifdef __GNUC__
+#  pragma GCC diagnostic warning "-Wparentheses"
+#endif
+
 namespace zorba {
 class xquery_driver;
 }
 
 
 
+
 /* Line 35 of lalr1.cc  */
-#line 54 "/home/fx/dev/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 68 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -64,7 +78,7 @@ class xquery_driver;
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 68 "/home/fx/dev/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 82 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
   class position;
   class location;
 
@@ -74,7 +88,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 78 "/home/fx/dev/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 92 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -122,7 +136,7 @@ do {							\
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 126 "/home/fx/dev/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 140 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -134,7 +148,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 120 "/home/fx/dev/zorba/src/compiler/parser/xquery_parser.y"
+#line 134 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
 
   zorba::parsenode * node;
   zorba::exprnode * expr;
@@ -154,7 +168,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-#line 158 "/home/fx/dev/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 172 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -655,7 +669,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 659 "/home/fx/dev/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 673 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
 
 
 

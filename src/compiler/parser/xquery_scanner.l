@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,7 +32,19 @@
 
 using namespace std;
 
+
+#ifdef __GNUC__
+  // disable a warning in location.hh which comes with bison
+  // position.hh:141: warning: suggest parentheses around && within ||
+#  pragma GCC diagnostic ignored "-Wparentheses"
+#endif
+
 #include "compiler/parser/xquery_parser.hpp"
+
+#ifdef __GNUC__
+#  pragma GCC diagnostic warning "-Wparentheses"
+#endif
+
 #include "compiler/parser/xquery_scanner.h"
 #include "compiler/parser/xquery_driver.h"
 
@@ -138,7 +150,7 @@ std::string start_state(int);   /* forward declaration, used by YY_USER_ACTION *
 %option nounistd
 %option c++
 %option prefix="Zorba"
-      
+
   /*_____________________________________________________________________
    |
    |  UTF-8 characters definitions
@@ -146,14 +158,14 @@ std::string start_state(int);   /* forward declaration, used by YY_USER_ACTION *
 
 
   /* UTF8_1Byte    [\x00-\x7F] -- not used anywhere */
-  
+
 BaseChar_1Byte  ([\x41-\x5A]|[\x61-\x7A])
 UTF8_2Bytes     ([\xC0-\xDF][\x80-\xBF])
 UTF8_3Bytes     ([\xE0-\xEF][\x80-\xBF][\x80-\xBF])
 UTF8_4Bytes     ([\xF0-\xF7][\x80-\xBF][\x80-\xBF][\x80-\xBF])
 
 UTF8_MultiByte  ({UTF8_2Bytes}|{UTF8_3Bytes}|{UTF8_4Bytes})
-      
+
 
   /*_____________________________________________________________________
    |
@@ -194,7 +206,7 @@ NCNameChar            ({Letter}|{Digit}|[._-])
 
 NCName                ({NCNameStartChar}{NCNameChar}*)
 
-    
+
   /*_____________________________________________________________________
    |
    |  QName definition
@@ -248,7 +260,7 @@ NonSharpPragmaChar                  [\x09\x0A\x0D\x20-\x22\x24-\xFD]
 NonSharpNonParPragmaChar            [\x09\x0A\x0D\x20-\x28\x2A-\xFD]
 PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPragmaChar})*"#"*
 
-    
+
   /*______________________________________________________________________
    |
    |  Exclusive start states
@@ -386,7 +398,7 @@ typedef zorba::xquery_parser::token token;
 }
 
 "base-uri" { return token::BASE_URI; }
-"import" { 
+"import" {
   return token::IMPORT;
 }
 "schema" { return token::SCHEMA; }
@@ -431,7 +443,7 @@ typedef zorba::xquery_parser::token token;
 
   /*______________________________________________________________________
    |
-   |  Data Definition Facility tokens 
+   |  Data Definition Facility tokens
    |______________________________________________________________________*/
 
 "datamodule" {
@@ -470,13 +482,13 @@ typedef zorba::xquery_parser::token token;
 "foreach" { return token::FOREACH; }
   /* "node" { return token::NODE; } */
   /* "of" { return token::OF; } */
-"type" { return token::TYPE; } 
+"type" { return token::TYPE; }
 "foreign" { return token::FOREIGN; }
   /* "from" { return token::FROM; } */
   /* "to" { return token::TO; } */
 "keys" { return token::KEYS; }
 
- 
+
     /*______________________________________________________________________
      |
      | FT tokens
@@ -560,7 +572,7 @@ typedef zorba::xquery_parser::token token;
 "preserve" { return token::PRESERVE; }
 "strip" { return token::STRIP; }
 
-  
+
   /*______________________________________________________________________
    |
    | Update rules
@@ -647,7 +659,7 @@ typedef zorba::xquery_parser::token token;
   TRY_SVAL_TOKEN (PREFIX_WILDCARD, put_ncname(yytext+2, yyleng-2));
 }
 
-{StringLiteral} { 
+{StringLiteral} {
   TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
 }
 
@@ -703,16 +715,20 @@ typedef zorba::xquery_parser::token token;
 
   /* pop previous state */
   /* ------------------ */
-"}" { POP_STATE(); return token::RBRACE; }
+"}" {
+  if (yy_get_start_stack_ptr() > 0)   // The lexer will catch the unexpected right brace and generate a syntax error
+    POP_STATE();
+  return token::RBRACE;
+}
 
-  
+
 {S} {
   /* eat up whitespace */
 }
 
   /* END <MODE INITIAL> */
 
-  
+
 
   /*______________________________________________________________________
    |
@@ -765,8 +781,8 @@ typedef zorba::xquery_parser::token token;
 <MODE_PRAGMA>{QName}{SPNoComment} { BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(QNAME_SVAL, put_qname(yytext, yyleng, true, true)); }
 <MODE_PRAGMA>{QName}"#)" { BEGIN INITIAL; TRY_SVAL_TOKEN(QNAME_SVAL_AND_END_PRAGMA, put_qname(yytext, yyleng-2)); }
 <MODE_PRAGMA>{S} { /* continue lexing */ }
-  
-  
+
+
   /*______________________________________________________________________
    |
    | PRAGMACONTENTS State
@@ -845,7 +861,7 @@ typedef zorba::xquery_parser::token token;
    | token marks the end. This allows no special interpretation of other
    | characters in this state.
    |______________________________________________________________________*/
-  
+
 <MODE_XML_COMMENT>"-->" { POP_STATE(); return token::XML_COMMENT_END; }
 <MODE_XML_COMMENT>{XMLCommentChar}* { TRY_SVAL_TOKEN (XML_COMMENT_LITERAL, put(yytext, yyleng)); }
 
@@ -984,7 +1000,7 @@ typedef zorba::xquery_parser::token token;
 
   /* END OF FLEX RULES */
 
-  
+
 %%
 
 
@@ -1048,6 +1064,11 @@ int xquery_scanner::interpretAsLessThan()
   BEGIN INITIAL;
   POP_STATE();
   return 0;
+}
+
+int xquery_scanner::yy_get_start_stack_ptr() const
+{
+  return yy_start_stack_ptr;
 }
 
 } /* namespace zorba */

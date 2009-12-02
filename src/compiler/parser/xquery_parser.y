@@ -1,12 +1,12 @@
  /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,32 +14,46 @@
  * limitations under the License.
  */
 /*
-**	The parser definition file starts by asking for the C++ LALR(1) 
-**	skeleton, the creation of the parser header file, and specifies the 
+**	The parser definition file starts by asking for the C++ LALR(1)
+**	skeleton, the creation of the parser header file, and specifies the
 **	name of the parser class.  Because the C++ skeleton changes, it is
-**	safer to require the version. 
+**	safer to require the version.
 */
 
 %skeleton "lalr1.cc"  /*  -*- C++ -*- */
 %require "2.4"
-%defines 
+%defines
 %name-prefix="zorba"
 %define "parser_class_name" "xquery_parser"
 %error-verbose
 
 %code requires {
 #include "compiler/parsetree/parsenodes.h"
+
+#ifdef __GNUC__
+  // disable a warning in location.hh which comes with bison
+  // position.hh:141: warning: suggest parentheses around && within ||
+#  pragma GCC diagnostic ignored "-Wparentheses"
+#endif
+
+#include "location.hh"
+
+#ifdef __GNUC__
+#  pragma GCC diagnostic warning "-Wparentheses"
+#endif
+
 namespace zorba {
 class xquery_driver;
 }
+
 }
 
 /*
-**	Because the parser uses the xquery_driver and reciprocally, both 
-**	cannot include the header of the other. Because the driver's header 
-**	needs detailed knowledge about the parser class (in particular its 
+**	Because the parser uses the xquery_driver and reciprocally, both
+**	cannot include the header of the other. Because the driver's header
+**	needs detailed knowledge about the parser class (in particular its
 **	inner types), it is the parser's header which will use a forward
-**	declaration of the driver. 
+**	declaration of the driver.
 */
 
 %{
@@ -61,7 +75,7 @@ class xquery_driver;
 #define SYMTAB_PUT( s ) driver.symtab.put (s)
 #define LOC( p ) driver.createQueryLoc(p)
 
-namespace zorba 
+namespace zorba
 {
 namespace parser
 {
@@ -76,18 +90,18 @@ namespace parser
 %pure-parser
 
 /*
-**	The driver is passed by reference to the parser and to the scanner. 
-**	This provides a simple but effective pure interface, not relying on 
-**	global variables. 
+**	The driver is passed by reference to the parser and to the scanner.
+**	This provides a simple but effective pure interface, not relying on
+**	global variables.
 */
 %parse-param { xquery_driver& driver }
 
 
 /*
-**	Request the location tracking feature, and initialize the 
-**	first location's file name. Afterwards new locations are computed 
-**	relatively to the previous locations: the file name will be 
-**	automatically propagated. 
+**	Request the location tracking feature, and initialize the
+**	first location's file name. Afterwards new locations are computed
+**	relatively to the previous locations: the file name will be
+**	automatically propagated.
 */
 %locations
 %initial-action
@@ -96,9 +110,9 @@ namespace parser
 };
 
 
-/* 
-**	The two following directives to enable parser tracing and verbose 
-**	error messages. 
+/*
+**	The two following directives to enable parser tracing and verbose
+**	error messages.
 */
 /*
 %debug
@@ -136,8 +150,8 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 
 /*
-**	The token numbered as 0 corresponds to end of file; the following line 
-**	allows for nicer error messages referring to end of file instead of 
+**	The token numbered as 0 corresponds to end of file; the following line
+**	allows for nicer error messages referring to end of file instead of
 **	$end. Similarly user friendly names are provided for each symbol.
 */
 
@@ -155,7 +169,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
     /* %token <sval> ELEMENT_QNAME_LBRACE    "'<QName {>'" */
     /* %token <sval> AT_URI_LITERAL         "'<at URI>'" */
     /* %token <sval> VARNAME                  "'variable name'" */
-      
+
 %token <err>  UNRECOGNIZED                  "'unrecognized'"
 
 %token <sval> APOS_ATTR_CONTENT             "'apos attribute content'"
@@ -253,7 +267,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <pair_vector> DecimalFormatParamList
 
 %type <name_test_list> NameTestList
-    
+
 %token ANCESTOR_AXIS							"'ancestor::'"
 %token ANCESTOR_OR_SELF_AXIS			"'ancestor-or-self::'"
 %token AND												"'and'"
@@ -503,14 +517,14 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 
 /* Byte Order Marks                  */
-/* --------------------------------- */    
+/* --------------------------------- */
 %token BYTE_ORDER_MARK_UTF8       "'BOM_UTF8'"
-    
+
 
 /* Leading slash handling expression */
 /* --------------------------------- */
 %type <expr> LeadingSlash
-    
+
 /* left-hand sides: syntax only */
 /* ---------------------------- */
 %type <node> AbbrevForwardStep
@@ -553,7 +567,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> KindTest
 %type <node> LetClause
 %type <node> LibraryModule
-%type <node> MainModule 
+%type <node> MainModule
 %type <node> Module
 %type <node> ModuleWithoutBOM
 %type <node> ModuleDecl
@@ -823,7 +837,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
  * [48a] FTContainsExpr ::= RangeExpr ( "ftcontains" FTSelection FTIgnoreOption? )?
  *_____________________________________________________________________*/
 %nonassoc FTCONTAINS_REDUCE
-%left FTCONTAINS 
+%left FTCONTAINS
 
 /*_____________________________________________________________________
  *
@@ -872,7 +886,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
  *_____________________________________________________________________*/
 %nonassoc QVARINDECLLIST_REDUCE
 // FIXME COMMA_DOLLAR is not defined anymore
-%left COMMA_DOLLAR 
+%left COMMA_DOLLAR
 %nonassoc UNARY_PREC
 
 /*_____________________________________________________________________
@@ -897,7 +911,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
  *_____________________________________________________________________*/
 
 // %right VALIDATE EXIT WITH
-// %right DIV EXCEPT    
+// %right DIV EXCEPT
 
 
 
@@ -910,9 +924,9 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 
 /*
-**	The code between `%{' and `%}' after the introduction of the `%union' 
-**	is output in the *.cc file; it needs detailed knowledge about the 
-**	driver. 
+**	The code between `%{' and `%}' after the introduction of the `%union'
+**	is output in the *.cc file; it needs detailed knowledge about the
+**	driver.
 */
 %{
 #include "compiler/parser/xquery_driver.h"
@@ -929,14 +943,14 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %start Module;
 
 
-Module : 
+Module :
     ModuleWithoutBOM
   | BYTE_ORDER_MARK_UTF8 ModuleWithoutBOM
     {
       $$ = $2;
     }
   ;
-    
+
 
 // [1] Module
 // ----------
@@ -952,7 +966,7 @@ ModuleWithoutBOM :
 			$$ = $2;
 			driver.set_expr ($$);
 		}
-  | LibraryModule 
+  | LibraryModule
 		{
        $$ = $1;
        driver.set_expr ($$);
@@ -994,7 +1008,7 @@ VersionDecl :
 
 // [3] MainModule
 // --------------
-MainModule : 
+MainModule :
     Prolog  QueryBody
 		{
 			$$ = new MainModule(LOC (@$),
@@ -1035,7 +1049,7 @@ ModuleDecl :
 		MODULE NAMESPACE  NCNAME  EQUALS  URI_LITERAL  SEMI
 		{
 			$$ = new ModuleDecl(LOC (@$),
-								SYMTAB ($3), 
+								SYMTAB ($3),
 								SYMTAB ($5));
       dynamic_cast<ModuleDecl *>($$)->setComment(SYMTAB($1));
 		}
@@ -1089,7 +1103,7 @@ Prolog :
                       static_cast<VFO_DeclList*>($3));
 		}
 	;
-  
+
 
 // [6a] SIDN_DeclList
 // ------------------
@@ -1173,7 +1187,7 @@ DecimalFormatDecl :
     }
   | DECLARE  DECIMAL_FORMAT  QNAME  DecimalFormatParamList
     {
-      $$ = new DecimalFormatNode(LOC(@$), static_cast<QName*>($3)->get_qname(), $4); 
+      $$ = new DecimalFormatNode(LOC(@$), static_cast<QName*>($3)->get_qname(), $4);
       delete $3;
       delete $4;
     }
@@ -1181,7 +1195,7 @@ DecimalFormatDecl :
 
 DecimalFormatParamList :
     DecimalFormatParam
-    { 
+    {
       $$ = new std::vector<std::pair<std::string, std::string> > ();
       $$->push_back(*$1);
       delete $1;
@@ -1195,7 +1209,7 @@ DecimalFormatParamList :
     ;
 
 DecimalFormatParam :
-    DecimalFormatParamName  EQUALS  StringLiteral 
+    DecimalFormatParamName  EQUALS  StringLiteral
     {
       StringLiteral *s = static_cast<StringLiteral *>($3);
       $$ = new std::pair<std::string, std::string>($1, s->get_strval());
@@ -1215,7 +1229,7 @@ DecimalFormatParamName :
     | DIGIT { $$ = "digit"; }
     | PATTERN_SEPARATOR { $$ = "pattern-separator"; }
     ;
-    
+
 
 // [7] Setter
 // ----------
@@ -1644,55 +1658,55 @@ CollectionDecl :
     {
       $$ = new CollectionDecl( LOC(@$),
                                static_cast<QName*>($3),
-                               $5, 
+                               $5,
                                0, 0);
     }
   | DECLARE COLLECTION QNAME CollectionModifier
     {
       $$ = new CollectionDecl( LOC(@$),
                                static_cast<QName*>($3),
-                               0, 
-                               static_cast<CollectionModifier*>($4), 
+                               0,
+                               static_cast<CollectionModifier*>($4),
                                0);
     }
   | DECLARE COLLECTION QNAME NODE_TYPE KindTest CollectionModifier
     {
       $$ = new CollectionDecl( LOC(@$),
                                static_cast<QName*>($3),
-                               $5, 
-                               static_cast<CollectionModifier*>($6), 
+                               $5,
+                               static_cast<CollectionModifier*>($6),
                                0);
     }
   | DECLARE COLLECTION QNAME NodeModifier
     {
       $$ = new CollectionDecl( LOC(@$),
                                static_cast<QName*>($3),
-                               0, 
-                               0, 
+                               0,
+                               0,
                                static_cast<NodeModifier*>($4));
     }
   | DECLARE COLLECTION QNAME NODE_TYPE KindTest NodeModifier
     {
       $$ = new CollectionDecl( LOC(@$),
                                static_cast<QName*>($3),
-                               $5, 
-                               0, 
+                               $5,
+                               0,
                                static_cast<NodeModifier*>($6));
     }
   | DECLARE COLLECTION QNAME CollectionModifier NodeModifier
     {
       $$ = new CollectionDecl( LOC(@$),
                                static_cast<QName*>($3),
-                               0, 
-                               static_cast<CollectionModifier*>($4), 
+                               0,
+                               static_cast<CollectionModifier*>($4),
                                static_cast<NodeModifier*>($5));
     }
   | DECLARE COLLECTION QNAME NODE_TYPE KindTest CollectionModifier NodeModifier
     {
       $$ = new CollectionDecl( LOC(@$),
                                static_cast<QName*>($3),
-                               $5, 
-                               static_cast<CollectionModifier*>($6), 
+                               $5,
+                               static_cast<CollectionModifier*>($6),
                                static_cast<NodeModifier*>($7));
     }
   ;
@@ -1842,7 +1856,7 @@ IndexKeySpec :
 
 
 IntegrityConstraintDecl :
-    DECLARE IntgCnstOptions INTEGRITY CONSTRAINT QNAME ON COLLECTION QNAME 
+    DECLARE IntgCnstOptions INTEGRITY CONSTRAINT QNAME ON COLLECTION QNAME
     DOLLAR QNAME CHECK ExprSingle
     {
       $$ = new ICCollSimpleCheck(LOC(@$),
@@ -1854,7 +1868,7 @@ IntegrityConstraintDecl :
                                  $12);
     }
   |
-    DECLARE IntgCnstOptions INTEGRITY CONSTRAINT QNAME ON COLLECTION QNAME 
+    DECLARE IntgCnstOptions INTEGRITY CONSTRAINT QNAME ON COLLECTION QNAME
     DOLLAR QNAME CHECK UNIQUE KEY LPAR Expr RPAR
     {
       $$ = new ICCollUniqueKeyCheck(LOC(@$),
@@ -1864,9 +1878,9 @@ IntegrityConstraintDecl :
                                     static_cast<QName*>($8),
                                     static_cast<QName*>($10),
                                     $15);
-    }  
+    }
   |
-    DECLARE IntgCnstOptions INTEGRITY CONSTRAINT QNAME ON COLLECTION QNAME 
+    DECLARE IntgCnstOptions INTEGRITY CONSTRAINT QNAME ON COLLECTION QNAME
     FOREACH NODE DOLLAR QNAME CHECK ExprSingle
     {
       $$ = new ICCollUniqueKeyCheck(LOC(@$),
@@ -1878,7 +1892,7 @@ IntegrityConstraintDecl :
                                     $14);
     }
   |
-    DECLARE IntgCnstOptions INTEGRITY CONSTRAINT QNAME ON NODE DOLLAR QNAME 
+    DECLARE IntgCnstOptions INTEGRITY CONSTRAINT QNAME ON NODE DOLLAR QNAME
      OF TYPE KindTest CHECK ExprSingle
     {
       $$ = new ICNodeOfType(LOC(@$),
@@ -1890,7 +1904,7 @@ IntegrityConstraintDecl :
                             $14);
     }
   |
-    DECLARE IntgCnstOptions INTEGRITY CONSTRAINT QNAME FOREIGN KEY 
+    DECLARE IntgCnstOptions INTEGRITY CONSTRAINT QNAME FOREIGN KEY
       FROM COLLECTION QNAME NODE DOLLAR QNAME KEYS LPAR Expr RPAR
       TO   COLLECTION QNAME NODE DOLLAR QNAME KEYS LPAR Expr RPAR
     {
@@ -1903,45 +1917,45 @@ IntegrityConstraintDecl :
                             $16,
                             static_cast<QName*>($20),
                             static_cast<QName*>($23),
-                            $26); 
+                            $26);
     }
   ;
 
 IntgCnstOptions:
     /*   {
       $$ = IntegrityConstraintDecl::IC_OPTION_CHECKED &  // checked
-        IntegrityConstraintDecl::IC_OPTION_SYNCH; // synchronous  
+        IntegrityConstraintDecl::IC_OPTION_SYNCH; // synchronous
     }
     | */
-    IntgCnstUnchecked IntgCnstAsynch 
+    IntgCnstUnchecked IntgCnstAsynch
     { $$ = $1 | $2; }
-  | 
+  |
     IntgCnstAsynch IntgCnstUnchecked
     { $$ = $1 | $2; }
 
 IntgCnstUnchecked :
     {
-      $$ = IntegrityConstraintDecl::IC_OPTION_CHECKED; // checked 
+      $$ = IntegrityConstraintDecl::IC_OPTION_CHECKED; // checked
     }
-  | 
+  |
     CHECKED
     {
-      $$ = IntegrityConstraintDecl::IC_OPTION_CHECKED; // checked 
+      $$ = IntegrityConstraintDecl::IC_OPTION_CHECKED; // checked
     }
   | UNCHECKED
     {
-      $$ = IntegrityConstraintDecl::IC_OPTION_UNCHECKED;  // unchecked 
+      $$ = IntegrityConstraintDecl::IC_OPTION_UNCHECKED;  // unchecked
     }
   ;
 
 IntgCnstAsynch :
     {
-      $$ = IntegrityConstraintDecl::IC_OPTION_SYNCH; // synchronous  
+      $$ = IntegrityConstraintDecl::IC_OPTION_SYNCH; // synchronous
     }
-  | 
+  |
     SYNCHRONOUS
     {
-      $$ = IntegrityConstraintDecl::IC_OPTION_SYNCH; // synchronous 
+      $$ = IntegrityConstraintDecl::IC_OPTION_SYNCH; // synchronous
     }
   | ASYNCHRONOUS
     {
@@ -2003,16 +2017,16 @@ Block :
       {
         $$ = $3;
       }
-      else 
+      else
       {
         BlockBody* b = dynamic_cast<BlockBody *>($3);
         VFO_DeclList* vfo = dynamic_cast<VFO_DeclList *>($2);
-        if (b == NULL) 
+        if (b == NULL)
         {
           b = new BlockBody($3->get_location(), vfo);
           b->add($3);
         }
-        else 
+        else
         {
           b->set_decls(vfo);
         }
@@ -2095,9 +2109,9 @@ WhileExpr :
     WHILE LPAR ExprSingle RPAR Block
     {
       BlockBody* b = dynamic_cast<BlockBody *>($5);
-      if (b == NULL) 
+      if (b == NULL)
       {
-        b = new BlockBody($5->get_location()); 
+        b = new BlockBody($5->get_location());
         b->add($5);
       }
 
@@ -2118,7 +2132,7 @@ FlowCtlStatement :
 
 FunctionDecl :
     DECLARE FunctionDecl2
-    { 
+    {
       dynamic_cast<FunctionDecl *>($2)->setComment(SYMTAB($1));
       $$ = $2;
     }
@@ -2312,14 +2326,14 @@ ApplyExpr :
   ;
 
 ConcatExpr :
-		ExprSingle 
+		ExprSingle
 		{
 			$$ = $1;
 		}
 	|	ConcatExpr COMMA ExprSingle
 		{
 			Expr* expr_p = dynamic_cast<Expr*>($1);
-			if (expr_p == NULL) 
+			if (expr_p == NULL)
       {
         expr_p = new Expr(LOC(@$));
         expr_p->push_back($1);
@@ -2481,7 +2495,7 @@ ForDollar :
       $$ = parser::the_ofor;
     }
   ;
-    
+
 
 // [34] ForClause
 // --------------
@@ -2629,7 +2643,7 @@ LetClause :
 		{
 			$$ = new LetClause(LOC (@$),
 								dynamic_cast<VarGetsDeclList*>($3));
-			
+
 		}
 	;
 
@@ -2789,7 +2803,7 @@ EvalVarDecl :
                            new VarRef (LOC (@$), name),
                            VarGetsDecl::eval_var);
       delete $1;
-                           
+
     }
     ;
 
@@ -2838,9 +2852,9 @@ GroupSpec :
     }
   | DOLLAR QNAME GroupCollationSpec
     {
-      $$ = new GroupSpec(LOC(@$), 
-                 static_cast<QName*>($2)->get_qname(), 
-                 dynamic_cast<GroupCollationSpec*>($3)); 
+      $$ = new GroupSpec(LOC(@$),
+                 static_cast<QName*>($2)->get_qname(),
+                 dynamic_cast<GroupCollationSpec*>($3));
       delete $2;
     }
   ;
@@ -2873,7 +2887,7 @@ OrderByClause :
 // [39] OrderSpecList
 // ------------------
 OrderSpecList :
-		OrderSpec 
+		OrderSpec
 		{
 			OrderSpecList* osl_p = new OrderSpecList(LOC (@$));
 			osl_p->push_back(dynamic_cast<OrderSpec*>($1));
@@ -3002,7 +3016,7 @@ OrderCollationSpec :
 	;
 
 
-// [42] QuantifiedExpr 	   
+// [42] QuantifiedExpr
 // -------------------
 QuantifiedExpr :
 		SOME DOLLAR  QVarInDeclList  SATISFIES  ExprSingle
@@ -3030,7 +3044,7 @@ QVarInDeclList :
 			QVarInDeclList* qvid_list_p = new QVarInDeclList(LOC (@$));
 			qvid_list_p->push_back(dynamic_cast<QVarInDecl*>($1));
 			$$ = qvid_list_p;
-				
+
 		}
 	|	QVarInDeclList  COMMA DOLLAR  QVarInDecl
 		{
@@ -3193,7 +3207,7 @@ ComparisonExpr :
                 dynamic_cast<NodeComp*>($2),
                 $1,
                 $3);
-    }  
+    }
 	| FTContainsExpr EQUALS FTContainsExpr
 		{
 			/* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
@@ -3209,7 +3223,7 @@ ComparisonExpr :
                 new GeneralComp(LOC (@$), ParseConstants::op_ne),
                 $1,
                 $3);
-    }  
+    }
   | FTContainsExpr LT_OR_START_TAG { /* this call is needed */  driver.lexer->interpretAsLessThan(); } FTContainsExpr
     {
       /* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
@@ -3241,7 +3255,7 @@ ComparisonExpr :
                 new GeneralComp(LOC (@$), ParseConstants::op_ge),
                 $1,
                 $3);
-    }  
+    }
 	;
 
 
@@ -3252,7 +3266,7 @@ FTContainsExpr :
 		{
 			$$ = $1;
 		}
-	|	RangeExpr  FTCONTAINS  FTSelection 
+	|	RangeExpr  FTCONTAINS  FTSelection
 		{
 			$$ = new FTContainsExpr(LOC (@$),
 								$1,
@@ -3414,7 +3428,7 @@ CastableExpr :
 	;
 
 
-// [57] CastExpr 	   
+// [57] CastExpr
 // -------------
 CastExpr :
 		UnaryExpr
@@ -3535,7 +3549,7 @@ NodeComp :
 		}
 	;
 
-    
+
 // [63] ValidateExpr
 // -----------------
 ValidateExpr :
@@ -3611,8 +3625,8 @@ Pragma :
   | PRAGMA_BEGIN QNAME_SVAL_AND_END_PRAGMA {
 			$$ = new Pragma(LOC (@$),
 								new QName(LOC (@$), SYMTAB($2)),
-								"");      
-    } 
+								"");
+    }
 	;	/* ws: explicit */
 
 
@@ -3623,26 +3637,26 @@ Pragma :
 /*______________________________________________________________________
 |
 | Constraint: leading-lone-slash
-|	
-|	A single slash may appear either as a complete path expression or as 
-|	the first part of a path expression in which it is followed by a 
-|	RelativePathExpr, which can take the form of a NameTest ("*" or a 
-|	QName). In contexts where operators like "*", "union", etc., can 
-|	occur, parsers may have difficulty distinguishing operators from 
-|	NameTests. For example, without lookahead the first part of the 
-|	expression "/ * 5", for example is easily taken to be a complete 
-|	expression, "/ *", which has a very different interpretation (the 
-|	child nodes of "/"). 
-|	
-|	To reduce the need for lookahead, therefore, if the token immediately 
-|	following a slash is "*" or a keyword, then the slash must be the 
-|	beginning, but not the entirety, of a PathExpr (and the following 
-|	token must be a NameTest, not an operator). 
-|	
-|	A single slash may be used as the left-hand argument of an operator by 
-|	parenthesizing it: (/) * 5. The expression 5 * /, on the other hand, 
-|	is legal without parentheses. 
-|	
+|
+|	A single slash may appear either as a complete path expression or as
+|	the first part of a path expression in which it is followed by a
+|	RelativePathExpr, which can take the form of a NameTest ("*" or a
+|	QName). In contexts where operators like "*", "union", etc., can
+|	occur, parsers may have difficulty distinguishing operators from
+|	NameTests. For example, without lookahead the first part of the
+|	expression "/ * 5", for example is easily taken to be a complete
+|	expression, "/ *", which has a very different interpretation (the
+|	child nodes of "/").
+|
+|	To reduce the need for lookahead, therefore, if the token immediately
+|	following a slash is "*" or a keyword, then the slash must be the
+|	beginning, but not the entirety, of a PathExpr (and the following
+|	token must be a NameTest, not an operator).
+|
+|	A single slash may be used as the left-hand argument of an operator by
+|	parenthesizing it: (/) * 5. The expression 5 * /, on the other hand,
+|	is legal without parentheses.
+|
 |_______________________________________________________________________*/
 
 
@@ -3679,7 +3693,7 @@ LeadingSlash :
     }
   ;
 
-    
+
 // [68] RelativePathExpr
 // ---------------------
 RelativePathExpr :
@@ -3694,7 +3708,7 @@ RelativePathExpr :
              $1);
 		}
 
-	|	StepExpr  SLASH  RelativePathExpr 
+	|	StepExpr  SLASH  RelativePathExpr
 		{
 			$$ = new RelativePathExpr(LOC(@$), ParseConstants::st_slash, $1, $3);
 		}
@@ -3723,7 +3737,7 @@ StepExpr :
 // [70] AxisStep
 // -------------
 AxisStep :
-		ForwardStep 
+		ForwardStep
 		{
 			$$ = new AxisStep(LOC (@$),
 								dynamic_cast<ForwardStep*>($1),
@@ -3873,7 +3887,7 @@ NodeTest :
 			$$ = $1;
 		}
 	;
- 
+
 
 // [78] NameTest
 // -------------
@@ -3919,7 +3933,7 @@ Wildcard :
 // [80] FilterExpr
 // ---------------
 FilterExpr :
-		PrimaryExpr 
+		PrimaryExpr
 		{
        $$ = $1;
 		}
@@ -4059,7 +4073,7 @@ ParenthesizedExpr :
 			$$ = new ParenthesizedExpr(LOC (@$),
 								$2);
 		}
-	;	
+	;
 
 
 // [88] ContextItemExpr
@@ -4069,7 +4083,7 @@ ContextItemExpr :
 		{
 			$$ = new ContextItemExpr(LOC (@$));
 		}
-	;	
+	;
 
 
 // [89] OrderedExpr
@@ -4099,11 +4113,11 @@ UnorderedExpr :
 /*___________________________________________________________________
 |	gn: reserved-function-namesXQ
 |	Constraint: reserved-function-names
-|	
-|	Unprefixed function names spelled the same way as language keywords 
-|	could make the language harder to recognize. For instance, if(foo) 
-|	could be taken either as a FunctionCall or as the beginning of an 
-|	IfExpr. Therefore it is not legal syntax for a user to invoke 
+|
+|	Unprefixed function names spelled the same way as language keywords
+|	could make the language harder to recognize. For instance, if(foo)
+|	could be taken either as a FunctionCall or as the beginning of an
+|	IfExpr. Therefore it is not legal syntax for a user to invoke
 |	functions with unprefixed names which match any of the names:
 |		attribute
 |		comment
@@ -4118,27 +4132,27 @@ UnorderedExpr :
 |		schema-element
 |		text
 |		typeswitch
-|	
-|	A function named "if" can be called by binding its namespace to a 
-|	prefix and using the prefixed form: "library:if(foo)" instead of 
-|	"if(foo)". 
+|
+|	A function named "if" can be called by binding its namespace to a
+|	prefix and using the prefixed form: "library:if(foo)" instead of
+|	"if(foo)".
 |____________________________________________________________________*/
 
 /*___________________________________________________________________
 |	gn: parensXQ
 |	Grammar-note: parens
-|	
-|	Look-ahead is required to distinguish FunctionCall from a QName or 
+|
+|	Look-ahead is required to distinguish FunctionCall from a QName or
 |	keyword followed by a Pragma or Comment. For example:
 |
 |		address (: this may be empty :)
 |
-|	may be mistaken for a call to a function named 
+|	may be mistaken for a call to a function named
 |	"address" unless this lookahead is employed. Another example is
 |
 |		for (: whom the bell :) $tolls in 3 return $tolls,
 |
-|	where the keyword "for" must not be mistaken for a function name. 
+|	where the keyword "for" must not be mistaken for a function name.
 |
 |____________________________________________________________________*/
 FunctionCall :
@@ -4162,7 +4176,7 @@ FunctionCall :
 ArgList :
 		ExprSingle
 		{
-			ArgList* a_list_p = new ArgList(LOC (@$)); 
+			ArgList* a_list_p = new ArgList(LOC (@$));
 			a_list_p->push_back($1);
 			$$ = a_list_p;
 		}
@@ -4206,7 +4220,7 @@ DirectConstructor :
 		}
 	;
 
- 
+
 // [94] DirElemConstructor
 // -----------------------
 DirElemConstructor :
@@ -4223,7 +4237,7 @@ DirElemConstructor :
 			$$ = new DirElemConstructor(LOC (@$),
 								static_cast<QName*>($2),
 								NULL,
-								dynamic_cast<DirAttributeList*>($3), 
+								dynamic_cast<DirAttributeList*>($3),
 								NULL);
 		}
   | LT_OR_START_TAG  QNAME  OptionalBlank  TAG_END  START_TAG_END  QNAME OptionalBlank TAG_END
@@ -4255,7 +4269,7 @@ DirElemConstructor :
 			$$ = new DirElemConstructor(LOC (@$),
 								static_cast<QName*>($2),
 								static_cast<QName*>($8),
-								dynamic_cast<DirAttributeList*>($3), 
+								dynamic_cast<DirAttributeList*>($3),
 								dynamic_cast<DirElemContentList*>($6));
 		}
 			/* ws: explicitXQ */
@@ -4345,7 +4359,7 @@ Opt_QuoteAttrContentList :
 		}
 	;
 
-QuoteAttrContentList :	
+QuoteAttrContentList :
 		ESCAPE_QUOTE
 		{
 			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList(LOC (@$));
@@ -4754,7 +4768,7 @@ TypeDeclaration :
 // ------------------
 SequenceType :
 		// ItemType  %prec SEQUENCE_TYPE_REDUCE
-    ItemType  
+    ItemType
 		{
 			$$ = new SequenceType(LOC (@$),
 								$1,
@@ -4781,26 +4795,26 @@ SequenceType :
 |
 |	Constraint: occurrence-indicators
 |
-|	As written, the grammar in A XQuery Grammar is ambiguous for some 
-|	forms using the '+' and '*' Kleene operators. The ambiguity is 
-|	resolved as follows: these operators are tightly bound to the 
-|	SequenceType expression, and have higher precedence than other uses of 
-|	these symbols. Any occurrence of '+' and '*', as well as '?', 
-|	following a sequence type is assumed to be an occurrence indicator. 
-|	That is, a "+", "*", or "?" immediately following an ItemType must be 
-|	an OccurrenceIndicator. Thus, 4 treat as item() + - 5 must be 
-|	interpreted as (4 treat as item()+) - 5, taking the '+' as an 
-|	OccurrenceIndicator and the '-' as a subtraction operator. To force 
-|	the interpretation of "+" as an addition operator (and the 
-|	corresponding interpretation of the "-" as a unary minus), parentheses 
-|	may be used: the form (4 treat as item()) + -5 surrounds the 
-|	SequenceType expression with parentheses and leads to the desired 
-|	interpretation. 
+|	As written, the grammar in A XQuery Grammar is ambiguous for some
+|	forms using the '+' and '*' Kleene operators. The ambiguity is
+|	resolved as follows: these operators are tightly bound to the
+|	SequenceType expression, and have higher precedence than other uses of
+|	these symbols. Any occurrence of '+' and '*', as well as '?',
+|	following a sequence type is assumed to be an occurrence indicator.
+|	That is, a "+", "*", or "?" immediately following an ItemType must be
+|	an OccurrenceIndicator. Thus, 4 treat as item() + - 5 must be
+|	interpreted as (4 treat as item()+) - 5, taking the '+' as an
+|	OccurrenceIndicator and the '-' as a subtraction operator. To force
+|	the interpretation of "+" as an addition operator (and the
+|	corresponding interpretation of the "-" as a unary minus), parentheses
+|	may be used: the form (4 treat as item()) + -5 surrounds the
+|	SequenceType expression with parentheses and leads to the desired
+|	interpretation.
 |
-|	This rule has as a consequence that certain forms which would 
-|	otherwise be legal and unambiguous are not recognized: in "4 treat as 
-|	item() + 5", the "+" is taken as an OccurrenceIndicator, and not as an 
-|	operator, which means this is not a legal expression. 
+|	This rule has as a consequence that certain forms which would
+|	otherwise be legal and unambiguous are not recognized: in "4 treat as
+|	item() + 5", the "+" is taken as an OccurrenceIndicator, and not as an
+|	operator, which means this is not a legal expression.
 |_________________________________________________________________________*/
 OccurrenceIndicator :
 		HOOK
@@ -4900,7 +4914,7 @@ AnyKindTest :
 			$$ = new AnyKindTest(LOC (@$));
 		}
 	;
- 
+
 
 // [123] DocumentTest
 // ------------------
@@ -4940,7 +4954,7 @@ CommentTest :
 			$$ = new CommentTest(LOC (@$));
 		}
 	;
- 
+
 
 // [126] PITest
 // ------------
@@ -5091,7 +5105,7 @@ TypeName :
 			$$ = new TypeName(LOC (@$),
 								static_cast<QName*>($1));
 		};
-    
+
 TypeName_WITH_HOOK :
 	  QNAME  HOOK
 		{
@@ -5107,7 +5121,7 @@ TypeName_WITH_HOOK :
 // [138] IntegerLiteral
 // [139] DecimalLiteral
 // [140] DoubleLiteral
-// [141] URILiteral 
+// [141] URILiteral
 
 
 // [142] StringLiteral
@@ -5313,7 +5327,7 @@ VarNameList :
        lList->push_back (dynamic_cast<VarBinding*> ($1));
        $$ = lList;
 		}
-	|	VarNameList  COMMA  DOLLAR  VarNameDecl 
+	|	VarNameList  COMMA  DOLLAR  VarNameDecl
 		{
        CopyVarList* lList = dynamic_cast<CopyVarList*>($1);
        VarBinding* lBinding = dynamic_cast<VarBinding*>($4);
@@ -5328,10 +5342,10 @@ VarNameList :
 VarNameDecl :
     QNAME GETS ExprSingle
     {
-       $$ = new VarBinding(LOC(@$), static_cast<QName*>($1)->get_qname(), $3);  
+       $$ = new VarBinding(LOC(@$), static_cast<QName*>($1)->get_qname(), $3);
        delete $1;
     }
-  ; 
+  ;
 
 /*_______________________________________________________________________
  *                                                                       *
@@ -5453,13 +5467,13 @@ NCNAME :
  *                                                                       *
  *_______________________________________________________________________*/
 QNAME :
-    QNAME_SVAL 
-    { 
-      $$ = new QName(LOC (@$),SYMTAB ($1)); 
+    QNAME_SVAL
+    {
+      $$ = new QName(LOC (@$),SYMTAB ($1));
     }
-    | KEYWORD 
-    { 
-      $$ = new QName(LOC (@$),SYMTAB ($1)); 
+    | KEYWORD
+    {
+      $$ = new QName(LOC (@$),SYMTAB ($1));
     }
   ;
 
@@ -5629,7 +5643,7 @@ KEYWORD :
   | TRY { $$ = SYMTAB_PUT ("try"); }
   | CATCH { $$ = SYMTAB_PUT ("catch"); }
   | EVAL { $$ = SYMTAB_PUT ("eval"); }
-  | USING { $$ = SYMTAB_PUT ("using"); }  
+  | USING { $$ = SYMTAB_PUT ("using"); }
   | SET { $$ = SYMTAB_PUT ("set"); }
   | INDEX { $$ = SYMTAB_PUT ("index"); }
   | UNIQUE { $$ = SYMTAB_PUT ("unique"); }
@@ -5806,7 +5820,7 @@ FTWordsSelection :
 //[350]	FTWords
 //-------------
 FTWords :
-		FTWordsValue 
+		FTWordsValue
 		{
 		}
 	|	FTWordsValue  FTAnyallOption
@@ -5859,7 +5873,7 @@ FTOrderedIndicator :
 	;
 
 
-//[354] FTMatchOption 	
+//[354] FTMatchOption
 //-------------------
 FTMatchOption :
 		FTCaseOption
@@ -6037,7 +6051,7 @@ FTRefOrList :
 		AT  STRING_LITERAL
 		{
 		}
-	| LPAR  FTStringLiteralList  RPAR 
+	| LPAR  FTStringLiteralList  RPAR
 		{
 		}
 	;
