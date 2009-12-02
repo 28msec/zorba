@@ -75,11 +75,13 @@ namespace zorba {
 
     json::vector_list_t::iterator vectIter;
     json::vector_list_t *vect = lValue->getchildrenlist();
+
+    create_Node_Helper(NULL, baseUri, new xqpStringStore("json"), &element);
+    create_Attribute_Helper(element, new xqpStringStore("type"),
+                            new xqpStringStore("object"));
+
     if(vect != 0)
     {
-      create_Node_Helper(NULL, baseUri, new xqpStringStore("json"), &element);
-      create_Attribute_Helper(element, new xqpStringStore("type"), new xqpStringStore("object"));
-
       for ( vectIter=vect->begin(); vectIter != vect->end(); ++vectIter )
       {
         store::Item_t new_node = NULL;

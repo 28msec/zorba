@@ -51,7 +51,7 @@ namespace json{
 		wchar_t curchar;
 
 		datatype::dt findval();
-		value *readvalue();
+		value *readvalue(bool aValidate=true);
 
 		void readnumber(value *val);
 		void readstring(value *val);

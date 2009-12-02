@@ -11,6 +11,14 @@ using namespace json;
 		#define _wtof(x) wcstod((x),NULL)
 #endif
 
+// define for {}
+#define OBJECT_START 123
+#define OBJECT_END 125
+
+// define for []
+#define ARRAY_START 91
+#define ARRAY_END 93
+
 namespace json{
 	
 	//Whitespace = \u0009 \u000B \u000C \u0020 \u00A0 (Other Unicode cat Zs char)
@@ -221,25 +229,26 @@ void parser::getnextchar(bool skipWS, bool doBS,bool doC,bool nonext){
 		if (doC && eatcomment()){ again=true; continue;}
 		if (doBS && cursor==L'\\'){wchar_t ech=escapechar(); if (ech!=0){isescaped=true; curchar=ech; return;}}
 	}
-	curchar=cursor;
+  si.eof = (cursor == 0);
+	curchar = cursor;
 }
 
 
 
 datatype::dt parser::findval(){	
-	getnextchar(true,false,true);
-	if (isescaped) return datatype::_undefined;//No datatypes should start with escaped chars.
-	switch(curchar){
-	case L'{':
-		return datatype::_object;
-	case L'[':	
-		return datatype::_array;
-	case L'"':
-		return datatype::_string;
-	case L',':
-	case L':':
-		return datatype::_undefined;
-	}
+  getnextchar(true,false,true);
+  if (isescaped) return datatype::_undefined;//No datatypes should start with escaped chars.
+  switch(curchar){
+    case OBJECT_START: // L'{'
+      return datatype::_object;
+    case ARRAY_START://L'['
+      return datatype::_array;
+    case L'"':
+      return datatype::_string;
+    case L',':
+    case L':':
+      return datatype::_undefined;
+  }
 	if (charStartsNumber(curchar)) return datatype::_number;
 	if (curchar==L't' || curchar==L'f' || curchar==L'n') return datatype::_literal;
 	return datatype::_undefined;
@@ -312,15 +321,25 @@ void parser::readlit(value *val){
 }
 
 void parser::readarray(value *val){
+  bool isFirst = true;
 	val->setarray();
 	while (!si.eof){
-    std::auto_ptr<value> tmpval(readvalue());
-		if (tmpval->getdatatype()!=datatype::_undefined){
+    //if the array is empty the 'readvalue' should not return an error
+    std::auto_ptr<value> tmpval(readvalue(!isFirst));
+    isFirst = false;
+    if (tmpval->getdatatype()!=datatype::_undefined)
+    {
 			val->addarrayvalue(tmpval.get());
       tmpval.release();
-		}else{
-			adderror(6);
 		}
+    else if(curchar == ARRAY_END) // L']''
+    {
+      getnextchar(true,true,true);
+      return;
+    }
+    else
+			adderror(6);
+		
 		if (curchar!=L','){
  			if (curchar!=L']'){
 				adderror(2);
@@ -375,7 +394,8 @@ void parser::readobject(value *val){
 	val->setobject();
 	while (!si.eof){
 		getnextchar(true,true,true);
-		if (curchar==L'}'){
+		if (curchar == OBJECT_END) // L'}''
+    {
 			getnextchar(true,true,true);
 			return;
 		}
@@ -399,9 +419,9 @@ void parser::readobject(value *val){
 	}
 }
 
-value *parser::readvalue(){
+value *parser::readvalue(bool aValidate){
 	datatype::dt obdt=findval();
-	if (obdt==datatype::_undefined){
+	if (obdt==datatype::_undefined && aValidate){
 		adderror(6);
 	}
 	value *nval=new value;
@@ -501,3 +521,7 @@ value *parser::parse(std::wistream &stream){
 	return newval;
 }
 
+  #undef OBJECT_START
+  #undef OBJECT_END
+  #undef ARRAY_START
+  #undef ARRAY_END
