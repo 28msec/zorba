@@ -96,6 +96,8 @@ namespace zorba{
 
     class ZorbaJsonMLSerializeIterator;
 
+    class ZorbaCSV2XMLIterator;
+
     class TraceIterator;
 
     class ReadLineIterator;
@@ -482,6 +484,9 @@ public:
 
     virtual void beginVisit ( const ZorbaJsonMLSerializeIterator& ) = 0;
     virtual void endVisit   ( const ZorbaJsonMLSerializeIterator& ) = 0;
+
+    virtual void beginVisit ( const ZorbaCSV2XMLIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaCSV2XMLIterator& ) = 0;
 
     virtual void beginVisit ( const TraceIterator& ) = 0;
     virtual void endVisit   ( const TraceIterator& ) = 0;

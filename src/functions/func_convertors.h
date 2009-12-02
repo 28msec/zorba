@@ -94,6 +94,20 @@ public:
 };
 
 
+//zorba-csv:csv2xml
+class zorba_csv_csv2xml : public function
+{
+public:
+  zorba_csv_csv2xml(const signature& sig)
+    :
+    function(sig, FunctionConsts::ZORBA_CSV_CSV2XML_7)
+  {
+  }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

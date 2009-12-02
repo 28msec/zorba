@@ -23,6 +23,7 @@ MACRO(GENERATE_MODULE_LIBRARY MODULE_NAME LINK_LIBRARIES)
   # directory are added to the sources list
   FILE(GLOB_RECURSE SRC_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} "${CMAKE_CURRENT_SOURCE_DIR}/${MODULE_NAME}.xq.src/*.cpp")
 
+  MESSAGE(STATUS "Add library " ${MODULE_NAME})
   ADD_LIBRARY(${MODULE_NAME} SHARED ${SRC_FILES})
   TARGET_LINK_LIBRARIES(${MODULE_NAME} zorba_simplestore ${LINK_LIBRARIES})
   # the shared libraries are considered RUNTIME on WIN32 platforms
@@ -65,7 +66,9 @@ ENDMACRO(GENERATE_MODULE_LIBRARY)
 
 # all external module libraries are generated in the directory
 # of the corresponding .xq file
+MESSAGE(STATUS "Add com")
 ADD_SUBDIRECTORY(com)
+MESSAGE(STATUS "Add org")
 ADD_SUBDIRECTORY(org)
 
 IF (CMAKE_MINOR_VERSION STREQUAL "4")
@@ -82,3 +85,5 @@ ELSE (CMAKE_MINOR_VERSION STREQUAL "4")
           PATTERN "*.xq.src" EXCLUDE
           PATTERN "*.xq")
 ENDIF (CMAKE_MINOR_VERSION STREQUAL "4")
+
+MESSAGE(STATUS "End modules")

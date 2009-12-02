@@ -149,6 +149,9 @@ namespace zorba {
     void beginVisit( const ZorbaJsonMLSerializeIterator& );
     void endVisit  ( const ZorbaJsonMLSerializeIterator& );
 
+    void beginVisit( const ZorbaCSV2XMLIterator& );
+    void endVisit  ( const ZorbaCSV2XMLIterator& );
+
     void beginVisit( const TraceIterator& );
     void endVisit  ( const TraceIterator& );
 

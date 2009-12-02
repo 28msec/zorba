@@ -197,6 +197,63 @@ public:
 };
 
 
+/**
+ * Parse a Comma Separated Values text and generate an XML.
+ * 
+ * Author: Zorba Team * 
+ */
+class ZorbaCSV2XMLIteratorState : public PlanIteratorState
+{
+public:
+  xqp_string theBaseUri; //the base URI
+  xqp_string csv; //csv text
+  xqpString::codepoints_iterator csv_it; //iterator over csv codepoints
+  bool first_row_is_header; //if the first line of csv describe the name of the columns
+  checked_vector<uint32_t> separator_cp; //separator codepoint
+  checked_vector <uint32_t> quote_char_cp; //quote char codepoint
+  checked_vector <uint32_t> quote_escape_cp; //quote escape codepoints
+  store::Item_t row_node_name; //qname of the row element
+  store::Item_t default_column_node_name; //default qname of the column element
+  xqp_string baseUri; //keep the base uri from static context
+  checked_vector <store::Item_t> header_qnames; //names of headers
+
+  ZorbaCSV2XMLIteratorState();
+
+  ~ZorbaCSV2XMLIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class ZorbaCSV2XMLIterator : public NaryBaseIterator <ZorbaCSV2XMLIterator, ZorbaCSV2XMLIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(ZorbaCSV2XMLIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaCSV2XMLIterator,
+    NaryBaseIterator <ZorbaCSV2XMLIterator, ZorbaCSV2XMLIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator <ZorbaCSV2XMLIterator, ZorbaCSV2XMLIteratorState>*)this);
+  }
+
+  ZorbaCSV2XMLIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <ZorbaCSV2XMLIterator, ZorbaCSV2XMLIteratorState>
+    (sctx, loc, aChildren) {}
+
+  virtual ~ZorbaCSV2XMLIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 }
 #endif
 /*

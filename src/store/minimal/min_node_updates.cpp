@@ -117,7 +117,8 @@ void NodeTypeInfo::transfer(NodeTypeInfo& other)
 
 
 /*******************************************************************************
-
+  Make the tree rooted at "this" node a subtree of the given parent node at the
+  given position among the children of the parent node.
 ********************************************************************************/
 void XmlNode::attach(
     InternalNode*   parent,
@@ -175,14 +176,13 @@ void XmlNode::attach(
   }
   case store::StoreConsts::elementNode:
   {
+    ElementNode* elemRoot = reinterpret_cast<ElementNode*>(this);
+
     setOrdPath(parent, pos, getNodeKind());
     
     parent->children().insert(this, pos);
 
     std::stack<XmlNode*> nodes;
-
-    XmlNode* root = this;
-
     nodes.push(this);
 
     while (!nodes.empty())
@@ -195,6 +195,23 @@ void XmlNode::attach(
 
       ElementNode* elem = reinterpret_cast<ElementNode*>(node);
 
+      // Maintain recursiveness info: check if the current node is a descendant
+      // of another node with the same name.
+      XmlNode* ancestor = parent;
+      while (ancestor != NULL &&
+             ancestor->getNodeKind() == store::StoreConsts::elementNode)
+      {
+        ElementNode* elemAncestor = reinterpret_cast<ElementNode*>(ancestor);
+        if (elemAncestor->theName->equals(elem->theName))
+        {
+          elemAncestor->setRecursive();
+          break;
+        }
+
+        ancestor = ancestor->theParent;
+      }
+
+      // Attach the attributes of this node to the new tree.
       AttributeNode* baseUriAttr = NULL;
       AttributeNode* hiddenBaseUriAttr = NULL;
       ulong numAttrs = elem->numAttributes();
@@ -233,13 +250,14 @@ void XmlNode::attach(
         // its local base uri must be removed.
         else
         {
-          ZORBA_ASSERT(elem == root);
+          ZORBA_ASSERT(elem == elemRoot);
           hiddenBaseUriAttr->disconnect();
           hiddenBaseUriAttr->destroy();
           elem->resetHaveBaseUri();
         }
       }
 
+      // Attach the children of this node to the new tree.
       ulong numChildren = elem->numChildren();
       for (ulong i = 0; i < numChildren; i++)
       {

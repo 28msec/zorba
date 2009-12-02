@@ -171,5 +171,47 @@ ZorbaJsonMLSerializeIterator::~ZorbaJsonMLSerializeIterator() {}
 // </ZorbaJsonMLSerializeIterator>
 
 
+// <ZorbaCSV2XMLIterator>
+const char* ZorbaCSV2XMLIterator::class_name_str = "ZorbaCSV2XMLIterator";
+ZorbaCSV2XMLIterator::class_factory<ZorbaCSV2XMLIterator>
+ZorbaCSV2XMLIterator::g_class_factory;
+
+const serialization::ClassVersion 
+ZorbaCSV2XMLIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int ZorbaCSV2XMLIterator::class_versions_count =
+sizeof(ZorbaCSV2XMLIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void ZorbaCSV2XMLIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaCSV2XMLIterator::~ZorbaCSV2XMLIterator() {}
+
+ZorbaCSV2XMLIteratorState::ZorbaCSV2XMLIteratorState() {}
+
+ZorbaCSV2XMLIteratorState::~ZorbaCSV2XMLIteratorState() {}
+
+
+void ZorbaCSV2XMLIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+  first_row_is_header = false;
+}
+
+void ZorbaCSV2XMLIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+  first_row_is_header = false;
+}
+// </ZorbaCSV2XMLIterator>
+
+
 
 }

@@ -2,7 +2,7 @@ module namespace math = "http://www.zorba-xquery.com/modules/math";
 
 (:~
  : Computes the square root of the value passed as argument.
- : 
+ :
  : @param $arg the argument to compute the sqrt of.
  : @return The sqrt of the $arg value.
  :)

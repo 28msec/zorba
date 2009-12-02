@@ -26,6 +26,9 @@
 #endif
 
 #include "zorba/api_shared_types.h"
+#ifdef WIN32
+#include <windows.h>
+#endif
 
 #include "c-client.h"
 

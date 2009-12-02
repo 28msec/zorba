@@ -1156,6 +1156,29 @@ std::ostream& operator<<(std::ostream& os, const xqpStringStore& src)
   return os;
 }
 
+  xqpString::codepoints_iterator& xqpString::codepoints_iterator::operator++()
+  {
+    pos += sequence_length(str+pos);
+    return *this;
+  }
+  const uint32_t xqpString::codepoints_iterator::operator*()
+  {
+    const char  *str_pos = str+pos;
+    return UTF8Decode(str_pos);
+  }
+  unsigned int xqpString::codepoints_iterator::compare_cp(checked_vector<uint32_t> &cp)
+  {
+    const char *strtemp = str+pos;
+    unsigned int i;
+    for(i=0;i<cp.size(); i++)
+    {
+      if(UTF8Decode(strtemp) != cp[i])
+        break;
+      operator++();
+    }
+    return i;
+  }
+
   void xqpString::serialize(serialization::Archiver &ar)
   {
     ar & theStrStore;

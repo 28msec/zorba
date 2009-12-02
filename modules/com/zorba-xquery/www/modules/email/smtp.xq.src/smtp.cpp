@@ -15,6 +15,9 @@
  */
 #include <iostream>
 #include <sstream>
+#ifdef WIN32
+#include <windows.h>
+#endif
 
 #include <zorba/empty_sequence.h>
 #include <zorba/singleton_item_sequence.h>

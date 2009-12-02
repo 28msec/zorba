@@ -146,6 +146,55 @@ signature::signature(
   argv.push_back(arg6);
 }
 
+  signature::signature(
+  store::Item_t name,
+  xqtref_t arg1,
+  xqtref_t arg2,
+  xqtref_t arg3,
+  xqtref_t arg4,
+  xqtref_t arg5,
+  xqtref_t arg6,
+  xqtref_t arg7,
+  xqtref_t return_type)
+:
+  qname_p(name)
+{
+  argv.push_back(return_type);
+  argv.push_back(arg1);
+  argv.push_back(arg2);
+  argv.push_back(arg3);
+  argv.push_back(arg4);
+  argv.push_back(arg5);
+  argv.push_back(arg6);
+  argv.push_back(arg7);
+}
+
+
+signature::signature(
+  store::Item_t name,
+  xqtref_t arg1,
+  xqtref_t arg2,
+  xqtref_t arg3,
+  xqtref_t arg4,
+  xqtref_t arg5,
+  xqtref_t arg6,
+  xqtref_t arg7,
+  xqtref_t arg8,
+  xqtref_t return_type)
+:
+  qname_p(name)
+{
+  argv.push_back(return_type);
+  argv.push_back(arg1);
+  argv.push_back(arg2);
+  argv.push_back(arg3);
+  argv.push_back(arg4);
+  argv.push_back(arg5);
+  argv.push_back(arg6);
+  argv.push_back(arg7);
+  argv.push_back(arg8);
+}
+
 
 signature::signature(
   store::Item_t name,

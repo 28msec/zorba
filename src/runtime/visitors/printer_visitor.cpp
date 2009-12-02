@@ -579,6 +579,20 @@ void PrinterVisitor::endVisit ( const ZorbaJsonMLSerializeIterator& ) {
 // </ZorbaJsonMLSerializeIterator>
 
 
+// <ZorbaCSV2XMLIterator>
+void PrinterVisitor::beginVisit ( const ZorbaCSV2XMLIterator& a) {
+  thePrinter.startBeginVisit("ZorbaCSV2XMLIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ZorbaCSV2XMLIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ZorbaCSV2XMLIterator>
+
+
 // <TraceIterator>
 void PrinterVisitor::beginVisit ( const TraceIterator& a) {
   thePrinter.startBeginVisit("TraceIterator", ++theId);

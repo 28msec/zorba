@@ -120,6 +120,27 @@ public:
             xqtref_t return_type);
   
   signature(store::Item_t name,
+            xqtref_t arg1,
+            xqtref_t arg2,
+            xqtref_t arg3,
+            xqtref_t arg4,
+            xqtref_t arg5,
+            xqtref_t arg6,
+            xqtref_t arg7,
+            xqtref_t return_type);
+
+  signature(store::Item_t name,
+            xqtref_t arg1,
+            xqtref_t arg2,
+            xqtref_t arg3,
+            xqtref_t arg4,
+            xqtref_t arg5,
+            xqtref_t arg6,
+            xqtref_t arg7,
+            xqtref_t arg8,
+            xqtref_t return_type);
+
+  signature(store::Item_t name,
             const std::vector<xqtref_t>& argv,
             xqtref_t return_type);
 
