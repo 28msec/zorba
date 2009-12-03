@@ -82,36 +82,34 @@ TypeConstants::quantifier_t TypeOps::union_quant(
 /*******************************************************************************
 
 ********************************************************************************/
-int TypeOps::type_max_cnt (const XQType& type) 
+int TypeOps::type_max_cnt(const XQType& type) 
 {
-  return is_empty (type)
-    ? 0
-    :  RootTypeManager::QUANT_MAX_CNT [quantifier (type)];
+  return (is_empty(type) ? 0 : RootTypeManager::QUANT_MAX_CNT[quantifier(type)]);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-int TypeOps::type_min_cnt (const XQType& type) 
+int TypeOps::type_min_cnt(const XQType& type)
 {
-  return is_empty (type)
-    ? 0
-    :  RootTypeManager::QUANT_MIN_CNT [quantifier (type)];
+  return (is_empty(type) ? 0 : RootTypeManager::QUANT_MIN_CNT[quantifier(type)]);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-int TypeOps::type_cnt (const XQType& type) 
+int TypeOps::type_cnt(const XQType& type)
 {
   if (is_empty(type) || is_none(type))
     return 0;
 
-  TypeConstants::quantifier_t q = quantifier (type);
-  if ( RootTypeManager::QUANT_MIN_CNT [q] ==  RootTypeManager::QUANT_MAX_CNT [q])
-    return  RootTypeManager::QUANT_MIN_CNT [q];
+  TypeConstants::quantifier_t q = quantifier(type);
+
+  if ( RootTypeManager::QUANT_MIN_CNT[q] ==  RootTypeManager::QUANT_MAX_CNT[q])
+    return  RootTypeManager::QUANT_MIN_CNT[q];
+
   return -1;
 }
 

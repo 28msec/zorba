@@ -330,15 +330,16 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
         TSVAnnotationValue::update_annotation (arg,
                                                Annotations::IGNORES_SORTED_NODES,
                                                TSVAnnotationValue::TRUE_VAL);
-        TSVAnnotationValue::update_annotation (arg,
-                                               Annotations::IGNORES_DUP_NODES,
-                                               TSVAnnotationValue::TRUE_VAL);
+        TSVAnnotationValue::update_annotation(arg,
+                                              Annotations::IGNORES_DUP_NODES,
+                                              TSVAnnotationValue::TRUE_VAL);
       }
     }
     else
     {
       std::vector <AnnotationHolder *> args;
       ulong numArgs = fo->num_args();
+
       for (ulong i = 0; i < numArgs; ++i)
         args.push_back(static_cast<AnnotationHolder*>(fo->get_arg(i, false)));
 

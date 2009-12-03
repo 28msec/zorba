@@ -13,42 +13,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_SINGLE_SEQ_FUNC_H
-#define ZORBA_SINGLE_SEQ_FUNC_H
+#ifndef ZORBA_FUNCTIONS_SINGLE_SEQ_FUNC_H
+#define ZORBA_FUNCTIONS_SINGLE_SEQ_FUNC_H
 
 #include "functions/function.h"
 
-namespace zorba {
+namespace zorba 
+{
 
 /*******************************************************************************
-  A function that processes a single sequence. Assumptions:
-  - Return type is the same as type of the sequence argument.
+  A function that processes a single input sequence.
+
+  Assumptions:
+  - Return type is the same as type of the input expr.
   - Preserves sorted/disctinct node annotations from children.
   - Propagates IGNORES_* properties downward.
   - Only propagates sequence arg to output.
+
+  Note: The function may have more than 1 params, but only one its params is
+  the "real" input; the others are like "config" params that affect how the
+  function processes its real input.
+
+  theInput : The position of the function's "real" input among the function's
+             params. 
 *******************************************************************************/
 class single_seq_function : public function 
 {
 protected:
-  unsigned src;
+  unsigned theInput;
   
 public:
   single_seq_function(
         const signature& sig,
-        unsigned src_ = 0)
+        unsigned src = 0)
     :
     function(sig),
-    src(src_)
+    theInput(src)
   {
   }
 
   single_seq_function(
         const signature& sig,
         FunctionConsts::FunctionKind kind,
-        unsigned src_ = 0)
+        unsigned src = 0)
     :
     function(sig, kind),
-    src(src_)
+    theInput(src)
   {
   }
 
@@ -59,9 +69,17 @@ public:
         std::vector<AnnotationHolder *>& kids,
         Annotations::Key k) const;
 
-  ZORBA_PROPAGATES_ONE_I2O (src);
-  ZORBA_PRESERVES_SORTED
-  ZORBA_PRESERVES_DISTINCT
+  ZORBA_PROPAGATES_ONE_I2O(theInput);
+
+  FunctionConsts::AnnotationValue producesNodeIdSorted() const
+  {
+    return FunctionConsts::PRESERVE;
+  }
+
+  FunctionConsts::AnnotationValue producesDuplicates() const
+  {
+    return FunctionConsts::PRESERVE;
+  }
 };
 
 
@@ -71,25 +89,25 @@ public:
 class single_seq_opt_function : public function 
 {
 protected:
-  unsigned src;
+  unsigned theInput;
   
 public:
   single_seq_opt_function(
         const signature& sig,
-        unsigned src_ = 0)
+        unsigned src = 0)
     :
     function(sig),
-    src(src_)
+    theInput(src)
   {
   }
 
   single_seq_opt_function(
         const signature& sig,
         FunctionConsts::FunctionKind kind,
-        unsigned src_ = 0) 
+        unsigned src = 0) 
     :
     function(sig, kind),
-    src(src_)
+    theInput(src)
   {
   }
 

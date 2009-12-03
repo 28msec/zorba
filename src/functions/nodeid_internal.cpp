@@ -157,7 +157,7 @@ void op_node_sort_distinct::compute_annotation(
     (parent->get_annotation(k).getp() == TSV_TRUE_P ||
      (k == Annotations::IGNORES_SORTED_NODES ? A_SORT : A_DISTINCT));
 
-    TSVAnnotationValue::update_annotation(kids[src],
+    TSVAnnotationValue::update_annotation(kids[theInput],
                                           k,
                                           TSVAnnotationValue::from_bool(ignores));
     break;
@@ -482,10 +482,10 @@ void fn_unordered::compute_annotation(
   switch (k)
   {
   case Annotations::IGNORES_SORTED_NODES:
-    TSVAnnotationValue::update_annotation (kids [src], k, TSVAnnotationValue::TRUE_VAL);
+    TSVAnnotationValue::update_annotation(kids[theInput], k, TSVAnnotationValue::TRUE_VAL);
     break;
   case Annotations::IGNORES_DUP_NODES:
-    TSVAnnotationValue::update_annotation (kids [src], k, parent->get_annotation (k));
+    TSVAnnotationValue::update_annotation(kids[theInput], k, parent->get_annotation(k));
     break;
   default:
     break;

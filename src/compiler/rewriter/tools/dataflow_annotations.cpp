@@ -31,21 +31,30 @@
 #include "functions/function.h"
 #include "functions/library.h"
 
-namespace zorba {
+namespace zorba 
+{
 
-#define SORTED_NODES(e) e->put_annotation(Annotations::PRODUCES_SORTED_NODES, TSVAnnotationValue::TRUE_VAL)
+#define SORTED_NODES(e)                                 \
+e->put_annotation(Annotations::PRODUCES_SORTED_NODES,   \
+                  TSVAnnotationValue::TRUE_VAL)
 
-#define DISTINCT_NODES(e) e->put_annotation(Annotations::PRODUCES_DISTINCT_NODES, TSVAnnotationValue::TRUE_VAL)
+#define DISTINCT_NODES(e)                               \
+e->put_annotation(Annotations::PRODUCES_DISTINCT_NODES, \
+                  TSVAnnotationValue::TRUE_VAL)
 
-#define PROPOGATE_SORTED_NODES(src, tgt) tgt->put_annotation(Annotations::PRODUCES_SORTED_NODES, src->get_annotation(Annotations::PRODUCES_SORTED_NODES))
+#define PROPOGATE_SORTED_NODES(src, tgt)                                      \
+tgt->put_annotation(Annotations::PRODUCES_SORTED_NODES,                       \
+                    src->get_annotation(Annotations::PRODUCES_SORTED_NODES))
 
-#define PROPOGATE_DISTINCT_NODES(src, tgt) tgt->put_annotation(Annotations::PRODUCES_DISTINCT_NODES, src->get_annotation(Annotations::PRODUCES_DISTINCT_NODES))
+#define PROPOGATE_DISTINCT_NODES(src, tgt)                                    \
+tgt->put_annotation(Annotations::PRODUCES_DISTINCT_NODES,                     \
+                    src->get_annotation(Annotations::PRODUCES_DISTINCT_NODES))
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void DataflowAnnotationsComputer::compute(expr *e)
+void DataflowAnnotationsComputer::compute(expr* e)
 {
   switch(e->get_expr_kind()) 
   {
@@ -159,13 +168,14 @@ void DataflowAnnotationsComputer::compute(expr *e)
 /*******************************************************************************
 
 ********************************************************************************/
-void DataflowAnnotationsComputer::default_walk(expr *e)
+void DataflowAnnotationsComputer::default_walk(expr* e)
 {
   expr_iterator i = e->expr_begin();
   while(!i.done()) 
   {
-    expr *child = (*i).getp();
-    if (child != NULL) {
+    expr* child = (*i).getp();
+    if (child != NULL) 
+    {
       compute(child);
     }
     ++i;
@@ -174,19 +184,26 @@ void DataflowAnnotationsComputer::default_walk(expr *e)
 
 
 /*******************************************************************************
-  Checks if the expression has a return type with a quantifier of ONE or QUESTION.
-  If so, the expression cannot have dup nodes or nodes out of sorted order.
+  Return true if the given expr does not produce duplicate nodes and returns
+  all nodes in document order.
+
+  Without any info about the kind of the expr, the only thing we can do here
+  is checks whether the expression has a return type with a quantifier of ONE
+  or QUESTION. If so, the expression cannot have dup nodes or nodes out of sorted
+  order.
 ********************************************************************************/
-bool DataflowAnnotationsComputer::generic_compute(expr *e)
+bool DataflowAnnotationsComputer::generic_compute(expr* e)
 {
   xqtref_t rt = e->return_type(m_ctx);
   TypeConstants::quantifier_t quant = TypeOps::quantifier(*rt);
+
   if (quant == TypeConstants::QUANT_ONE || quant == TypeConstants::QUANT_QUESTION) 
   {
     SORTED_NODES(e);
     DISTINCT_NODES(e);
     return true;
   }
+
   return false;
 }
 
@@ -254,48 +271,67 @@ void DataflowAnnotationsComputer::compute_if_expr(if_expr *e)
 }
 
 
-void DataflowAnnotationsComputer::compute_fo_expr(fo_expr *e)
+void DataflowAnnotationsComputer::compute_fo_expr(fo_expr* e)
 {
   default_walk(e);
+
   if (!generic_compute(e)) 
   {
-    const function *f = e->get_func();
+    const function* f = e->get_func();
 #if 0
     // VRB
     // This code has been commented until we phase out the old
     // "compute_annotation" code. temporarily for this release
     uint32_t nArgs = e->size();
+
     function::AnnotationProperty_t sorted = f->producesNodeIdSorted();
+
     if (sorted == function::YES) 
     {
       SORTED_NODES(e);
     }
-    else if (sorted == function::NO) 
+    else if (sorted == function::NO)
     {
       // do nothing
     } 
     else 
     {
       AnnotationValue_t sortedAnnot = TSVAnnotationValue::TRUE_VAL;
-      for(uint32_t i = 0; i < nArgs; ++i) {
-        if (f->propagatesInputToOutput(i)) {
-          sortedAnnot = TSVAnnotationValue::and3(sortedAnnot, (*e)[i]->get_annotation(Annotations::PRODUCES_SORTED_NODES));
+
+      for(uint32_t i = 0; i < nArgs; ++i) 
+      {
+        if (f->propagatesInputToOutput(i)) 
+        {
+          sortedAnnot = TSVAnnotationValue::and3(sortedAnnot, 
+                                                 (*e)[i]->get_annotation(Annotations::PRODUCES_SORTED_NODES));
         }
       }
+
       e->put_annotation(Annotations::PRODUCES_SORTED_NODES, sortedAnnot);
     }
+
     function::AnnotationProperty_t duplicates = f->producesDuplicates();
-    if (duplicates == function::NO) {
+
+    if (duplicates == function::NO) 
+    {
       DISTINCT_NODES(e);
-    } else if (duplicates == function::YES) {
+    }
+    else if (duplicates == function::YES) 
+    {
       // do nothing
-    } else {
+    }
+    else
+    {
       AnnotationValue_t distinctAnnot = TSVAnnotationValue::TRUE_VAL;
-      for(uint32_t i = 0; i < nArgs; ++i) {
-        if (f->propagatesInputToOutput(i)) {
-          distinctAnnot = TSVAnnotationValue::and3(distinctAnnot, (*e)[i]->get_annotation(Annotations::PRODUCES_DISTINCT_NODES));
+      for(uint32_t i = 0; i < nArgs; ++i) 
+      {
+        if (f->propagatesInputToOutput(i)) 
+        {
+          distinctAnnot = TSVAnnotationValue::and3(distinctAnnot,
+                                                   (*e)[i]->get_annotation(Annotations::PRODUCES_DISTINCT_NODES));
         }
       }
+
       e->put_annotation(Annotations::PRODUCES_DISTINCT_NODES, distinctAnnot);
     }
 #else

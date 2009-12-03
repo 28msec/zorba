@@ -38,38 +38,8 @@ class CompilerCB;
 class AnnotationHolder;
 
 
-#define ZORBA_PRESERVES_SORTED                               \
+#define FUNCTION_PRODUCES_SORTED_NODES                       \
 FunctionConsts::AnnotationValue producesNodeIdSorted() const \
-{                                                            \
-  return FunctionConsts::PRESERVE;                           \
-}
-
-#define ZORBA_PRESERVES_DISTINCT                             \
-FunctionConsts::AnnotationValue producesDuplicates() const   \
-{                                                            \
-  return FunctionConsts::PRESERVE;                           \
-}
-
-#define ZORBA_NOT_PRODUCES_SORTED                            \
-FunctionConsts::AnnotationValue producesNodeIdSorted() const \
-{                                                            \
-  return FunctionConsts::NO;                                 \
-}
-
-#define ZORBA_NOT_PRODUCES_DISTINCT                         \
-FunctionConsts::AnnotationValue producesDuplicates() const  \
-{                                                           \
-  return FunctionConsts::NO;                                \
-}
-
-#define ZORBA_PRODUCES_SORTED                                \
-FunctionConsts::AnnotationValue producesNodeIdSorted() const \
-{                                                            \
-  return FunctionConsts::YES;                                \
-}
-
-#define ZORBA_PRODUCES_DISTINCT                              \
-FunctionConsts::AnnotationValue producesDuplicates() const   \
 {                                                            \
   return FunctionConsts::YES;                                \
 }
@@ -216,8 +186,8 @@ public:
   virtual FunctionConsts::AnnotationValue producesNodeIdSorted() const;
 
   virtual void compute_annotation(
-        AnnotationHolder *,
-        std::vector<AnnotationHolder *> &,
+        AnnotationHolder* foExpr,
+        std::vector<AnnotationHolder*>& args,
         Annotations::Key) const;
 
   virtual PlanIter_t codegen(

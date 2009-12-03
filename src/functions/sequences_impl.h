@@ -69,9 +69,12 @@ public:
   {
   }
 
-  ZORBA_PRODUCES_SORTED;
+  FUNCTION_PRODUCES_SORTED_NODES;
 
-  ZORBA_PRODUCES_DISTINCT;
+  FunctionConsts::AnnotationValue producesDuplicates() const
+  {
+    return FunctionConsts::NO;
+  }
 
   CODEGEN_DECL();
 };
@@ -96,8 +99,12 @@ public:
   {
   }
 
-  ZORBA_PRODUCES_SORTED;
-  ZORBA_PRODUCES_DISTINCT;
+  FUNCTION_PRODUCES_SORTED_NODES;
+
+  FunctionConsts::AnnotationValue producesDuplicates() const
+  {
+    return FunctionConsts::NO;
+  }
 
   CODEGEN_DECL();
 };
@@ -115,9 +122,13 @@ public:
   {
   }
 
-  ZORBA_PRODUCES_SORTED;
-  ZORBA_PRODUCES_DISTINCT;
-  
+  FUNCTION_PRODUCES_SORTED_NODES;
+
+  FunctionConsts::AnnotationValue producesDuplicates() const
+  {
+    return FunctionConsts::NO;
+  }
+
   CODEGEN_DECL();
 };
 

@@ -119,10 +119,10 @@ bool function::validate_args(std::vector<PlanIter_t>& argv) const
 
 
 /*******************************************************************************
-  Push a property of this function down to the inputs of the function.
+  Propagate a property of this function down to its inputs, or up to its caller.
 ********************************************************************************/
 void function::compute_annotation(
-    AnnotationHolder* e,
+    AnnotationHolder* parent,
     std::vector<AnnotationHolder *>& kids,
     Annotations::Key k) const 
 {
@@ -154,7 +154,7 @@ void function::compute_annotation(
 
 
 /*******************************************************************************
-
+  Check whether this function produces, preserves, or eliminates duplicate nodes.
 ********************************************************************************/
 FunctionConsts::AnnotationValue function::producesDuplicates() const 
 {
@@ -168,13 +168,16 @@ FunctionConsts::AnnotationValue function::producesDuplicates() const
 
 
 /*******************************************************************************
-
+  Check whether this function produces nodes in document order, preserves the
+  doc order of its input, or produces nodes out of doc order.
 ********************************************************************************/
 FunctionConsts::AnnotationValue function::producesNodeIdSorted() const 
 {
-  xqtref_t rt = theSignature.return_type ();
-  if (TypeOps::type_max_cnt (*rt) <= 1 || TypeOps::is_builtin_simple (*rt))
+  xqtref_t rt = theSignature.return_type();
+
+  if (TypeOps::type_max_cnt(*rt) <= 1 || TypeOps::is_builtin_simple(*rt))
     return FunctionConsts::YES;
+
   return FunctionConsts::NO;
 }
 
