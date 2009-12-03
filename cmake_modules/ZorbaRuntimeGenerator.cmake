@@ -50,7 +50,7 @@ MACRO(RUNTIME_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILE OUTPUT PARAM1 PARAM2 ZO
   SET(H_OUTPUT_SOURCE_DIR   "${CMAKE_SOURCE_DIR}/${OUTPUT}.h")
 
   IF (ZORBA_WORKS) # only try to generate if zorbacmd is working 
-     MESSAGE(STATUS "Generating ${CPP_OUTPUT_BINARY_DIR}")
+     MESSAGE(STATUS "Added for generation: ${CPP_OUTPUT_BINARY_DIR}")
      ADD_CUSTOM_COMMAND(OUTPUT "${CPP_OUTPUT_BINARY_DIR}"
                         COMMAND ${ZORBA_RUNTIME_GENERATOR} 
                            "-q" "\"${CPP_QUERY}\"" "-f" 
@@ -64,7 +64,7 @@ MACRO(RUNTIME_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILE OUTPUT PARAM1 PARAM2 ZO
                                  "${H_OUTPUT_BINARY_DIR}"
                                  "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq") # cpp always depends on .h
 
-     MESSAGE(STATUS "Generating ${H_OUTPUT_BINARY_DIR}")
+     MESSAGE(STATUS "Added for generation: ${H_OUTPUT_BINARY_DIR}")
      ADD_CUSTOM_COMMAND(OUTPUT "${H_OUTPUT_BINARY_DIR}"
                         COMMAND ${ZORBA_RUNTIME_GENERATOR} 
                            "-q" "\"${HEADER_QUERY}\"" "-f" 
@@ -88,7 +88,7 @@ MACRO(PRINTER_VISITOR_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILES OUTPUT PARAM1 
   SET(CPP_OUTPUT_SOURCE_DIR "${CMAKE_SOURCE_DIR}/${OUTPUT}.cpp")
   SET(H_OUTPUT_SOURCE_DIR   "${CMAKE_SOURCE_DIR}/${OUTPUT}.h")
   IF (ZORBA_WORKS) # only try to generate if zorbacmd is working 
-     MESSAGE(STATUS "Generating ${CPP_OUTPUT_BINARY_DIR}")
+     MESSAGE(STATUS "Added for generation: ${CPP_OUTPUT_BINARY_DIR}")
      ADD_CUSTOM_COMMAND(OUTPUT "${CPP_OUTPUT_BINARY_DIR}"
                         COMMAND ${ZORBA_RUNTIME_GENERATOR} 
                            "-q" "\"${CPP_QUERY}\"" "-f" 
@@ -103,7 +103,7 @@ MACRO(PRINTER_VISITOR_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILES OUTPUT PARAM1 
                                  "${CMAKE_BINARY_DIR}/src/runtime/visitors/planiter_visitor.h"
                                  "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq")
 
-     MESSAGE(STATUS "Generating ${H_OUTPUT_BINARY_DIR}")
+     MESSAGE(STATUS "Added for generation: ${H_OUTPUT_BINARY_DIR}")
      ADD_CUSTOM_COMMAND(OUTPUT "${H_OUTPUT_BINARY_DIR}"
                         COMMAND ${ZORBA_RUNTIME_GENERATOR} 
                            "-q" "\"${HEADER_QUERY}\"" "-f" 
@@ -126,7 +126,7 @@ MACRO(PLANINTER_VISITOR_GENERATOR HEADER_QUERY SPEC_FILES OUTPUT PARAM1 ZORBA_WO
   SET(H_OUTPUT_BINARY_DIR   "${CMAKE_BINARY_DIR}/${OUTPUT}.h")
   SET(H_OUTPUT_SOURCE_DIR   "${CMAKE_SOURCE_DIR}/${OUTPUT}.h")
   IF (ZORBA_WORKS) # only try to generate if zorbacmd is working 
-     MESSAGE(STATUS "Generating planvisitor ${H_OUTPUT_BINARY_DIR}")
+     MESSAGE(STATUS "Added for generation: ${H_OUTPUT_BINARY_DIR}")
      ADD_CUSTOM_COMMAND(OUTPUT "${H_OUTPUT_BINARY_DIR}"
                         COMMAND ${ZORBA_RUNTIME_GENERATOR} 
                            "-q" "\"${HEADER_QUERY}\"" "-f" 
@@ -149,7 +149,7 @@ MACRO(CODEGEN_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILE  OUTPUT PARAM1 PARAM2 Z
   SET(CPP_OUTPUT_SOURCE_DIR "${CMAKE_SOURCE_DIR}/${OUTPUT}.cpp")
   SET(H_OUTPUT_SOURCE_DIR   "${CMAKE_SOURCE_DIR}/${OUTPUT}.h")
   IF (ZORBA_WORKS) # only try to generate if zorbacmd is working 
-     MESSAGE(STATUS "Generating ${CPP_OUTPUT_BINARY_DIR}")
+     MESSAGE(STATUS "Added for generation: ${CPP_OUTPUT_BINARY_DIR}")
      ADD_CUSTOM_COMMAND(OUTPUT "${CPP_OUTPUT_BINARY_DIR}"
                         COMMAND ${ZORBA_RUNTIME_GENERATOR} 
                            "-q" "\"${CPP_QUERY}\"" "-f" 
@@ -165,7 +165,7 @@ MACRO(CODEGEN_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILE  OUTPUT PARAM1 PARAM2 Z
                                  "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq"
                        )
 
-     MESSAGE(STATUS "Generating ${H_OUTPUT_BINARY_DIR}")
+     MESSAGE(STATUS "Added for generation: ${H_OUTPUT_BINARY_DIR}")
      ADD_CUSTOM_COMMAND(OUTPUT "${H_OUTPUT_BINARY_DIR}"
                         COMMAND ${ZORBA_RUNTIME_GENERATOR} 
                            "-q" "\"${HEADER_QUERY}\"" "-f" 
@@ -187,7 +187,7 @@ MACRO(FUNCTION_ENUM_GENERATOR HEADER_QUERY SPEC_FILES OUTPUT PARAM1 ZORBA_WORKS)
   SET(OUTPUT_BINARY_DIR   "${CMAKE_BINARY_DIR}/${OUTPUT}")
   SET(OUTPUT_SOURCE_DIR   "${CMAKE_SOURCE_DIR}/${OUTPUT}")
   IF (ZORBA_WORKS) # only try to generate if zorbacmd is working 
-     MESSAGE(STATUS "Generating ${OUTPUT_BINARY_DIR}")
+     MESSAGE(STATUS "Added for generation: ${OUTPUT_BINARY_DIR}")
      ADD_CUSTOM_COMMAND(OUTPUT "${OUTPUT_BINARY_DIR}"
                         COMMAND ${ZORBA_RUNTIME_GENERATOR} 
                            "-q" "\"${HEADER_QUERY}\"" "-f" 
