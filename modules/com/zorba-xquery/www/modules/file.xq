@@ -1,10 +1,10 @@
 (:~
- : Module Name: File I/O
- : Module Overview: This library module provides simple file system I/O operations.
- : Date: October 23, 2009
- : Copyright: 2006-2009 The FLWOR Foundation. Licensed under the Apache License, Version 2.0.
+ : Module Name: File I/O<br/>
+ : Module Overview: This library module provides simple file system I/O operations.<br/>
+ : Date: October 23, 2009<br/>
+ : Copyright: 2006-2009 <b>The FLWOR Foundation</b>. Licensed under the Apache License, Version 2.0. <br/>
  : @author Gabriel Petrovay
- : @version 1.0
+ : @version 1.0 
  :)
 module namespace file = "http://www.zorba-xquery.com/modules/file";
 

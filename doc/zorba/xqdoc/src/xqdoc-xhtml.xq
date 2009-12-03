@@ -44,7 +44,7 @@ declare function xhtml:parameters($comment) {
         if (exists($params)) then (
             <h4>Parameters:</h4>,
             for $param in $params
-            let $text := data($param/text())
+            let $text := data($param)
             return
                 if (starts-with($text, "$")) then
                     let $name := substring-before($text, " ")
@@ -90,7 +90,7 @@ declare function xhtml:description($comment)
 {
      <p>{
         if($comment/xqdoc:description) then
-            <span>{replace($comment/xqdoc:description/text(), "\n", "&lt;br /&gt;")}</span>
+           <span>{$comment/xqdoc:description/node()}</span>
         else
             "No description available."
      }</p>

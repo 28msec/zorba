@@ -65,16 +65,34 @@ private:
       os << "<xqdoc:comment>" << endl;
        
       if (!aComment->getDescription().empty()) {
-        zorba::String lDescription(aComment->getDescription());
-        os << "<xqdoc:description><![CDATA[" << lDescription.trim();
-        os << "]]></xqdoc:description>" << endl ;
+        // wrap all text (except tags) into CDATA sections
+        xqpString lDescription(aComment->getDescription().c_str());
+        xqpString lRes = lDescription.replace("(.*?)(<.*?>)", "<![CDATA[$1]]>$2", "");  
+        os << "<xqdoc:description>";
+        // if the description didn't contain tags
+        if (lRes.size() == lDescription.size()) {
+          os << "<![CDATA[";
+        }
+        os << lRes.trim();
+        if (lRes.size() == lDescription.size()) {
+          os << "]]>";
+        }
+        os << "</xqdoc:description>" << endl ;
       }
       for (lIt = lAnnotations.begin(); lIt != lAnnotations.end(); ++lIt) {
         const XQDocAnnotation lAnnotation = *lIt;
         string lNamespace = "xqdoc";
-        String lValue(lAnnotation.getValue());
-        os << "<" << lNamespace << ":" << lAnnotation.getName() << "><![CDATA[" << lValue.trim();
-        os << "]]></" << lNamespace << ":" << lAnnotation.getName() << '>' << endl;  
+        xqpString lValue(lAnnotation.getValue().c_str());
+        os << "<" << lNamespace << ":" << lAnnotation.getName() << ">";
+        xqpString lRes = lValue.replace("(.*?)(<.*?>)", "<![CDATA[$1]]>$2", "");  
+        if (lRes.size() == lValue.size()) {
+          os << "<![CDATA[";
+        }
+        os << lValue.trim();
+        if (lRes.size() == lValue.size()) {
+          os << "]]>";
+        }
+        os << "</" << lNamespace << ":" << lAnnotation.getName() << '>' << endl;  
       }
       
       if (aComment->hasVersion()) {
