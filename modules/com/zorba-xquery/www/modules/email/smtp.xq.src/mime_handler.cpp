@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 #include <vector>
+#include <cstdio>
 
 #include "mime_handler.h"
 
