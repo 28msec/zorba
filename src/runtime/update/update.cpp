@@ -201,7 +201,7 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
       for (ulong i = 0; i < numAttrs; ++i)
         attrs[i] = attrs[i]->copy(NULL, 0, lCopyMode);
 
-      pul->addInsertAttributes(parent, attrs, lCopyMode);
+      pul->addInsertAttributes(parent, attrs);
     }
 
     if (numNodes > 0)
@@ -212,9 +212,9 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
         nodes[i] = nodes[i]->copy(NULL, 0, lCopyMode);
 
       if (theType == store::UpdateConsts::BEFORE)
-        pul->addInsertBefore(target, nodes, lCopyMode);
+        pul->addInsertBefore(target, nodes);
       else
-        pul->addInsertAfter(target, nodes, lCopyMode);
+        pul->addInsertAfter(target, nodes);
     }
 
     result = pul.release();
@@ -274,7 +274,7 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
       for (ulong i = 0; i < numAttrs; ++i)
         attrs[i] = attrs[i]->copy(NULL, 0, lCopyMode);
 
-      pul->addInsertAttributes(target, attrs, lCopyMode);
+      pul->addInsertAttributes(target, attrs);
     }
 
     if (numNodes > 0)
@@ -285,11 +285,11 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
         nodes[i] = nodes[i]->copy(NULL, 0, lCopyMode);
 
       if (theType == store::UpdateConsts::INTO)
-        pul->addInsertInto(target, nodes, lCopyMode);
+        pul->addInsertInto(target, nodes);
       else if (theType == store::UpdateConsts::AS_FIRST_INTO)
-        pul->addInsertFirst(target, nodes, lCopyMode);
+        pul->addInsertFirst(target, nodes);
       else
-        pul->addInsertLast(target, nodes, lCopyMode);
+        pul->addInsertLast(target, nodes);
     }
 
     result = pul.release();
@@ -472,7 +472,7 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
     lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
     lNodes.resize(lNumNodes);
-    lPul->addReplaceNode(lTarget, lNodes, lCopyMode);
+    lPul->addReplaceNode(lTarget, lNodes);
   }
   else // replace value of node ...
   {
@@ -505,8 +505,7 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
       else
         lWith = NULL;
 
-      lCopyMode.theDoCopy = false;
-      lPul->addReplaceContent(lTarget, lWith, lCopyMode);
+      lPul->addReplaceContent(lTarget, lWith);
     }
     else
     {
