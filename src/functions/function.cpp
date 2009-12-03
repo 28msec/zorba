@@ -64,6 +64,9 @@ function::function(const signature& sig)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 function::function(const signature& sig, FunctionConsts::FunctionKind kind) 
   :
   theSignature(sig),
@@ -84,6 +87,9 @@ function::function(const signature& sig, FunctionConsts::FunctionKind kind)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void function::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theSignature;
@@ -92,12 +98,18 @@ void function::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 xqtref_t function::return_type(const std::vector<xqtref_t> &) const 
 {
   return theSignature.return_type();
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool function::validate_args(std::vector<PlanIter_t>& argv) const 
 {
   uint32_t n = theSignature.arg_count ();
@@ -105,33 +117,59 @@ bool function::validate_args(std::vector<PlanIter_t>& argv) const
 }
 
 
-void function::compute_annotation (
-    AnnotationHolder *,
-    std::vector<AnnotationHolder *> &kids,
+
+/*******************************************************************************
+  Push a property of this function down to the inputs of the function.
+********************************************************************************/
+void function::compute_annotation(
+    AnnotationHolder* e,
+    std::vector<AnnotationHolder *>& kids,
     Annotations::Key k) const 
 {
   switch (k) 
   {
   case Annotations::IGNORES_SORTED_NODES:
   case Annotations::IGNORES_DUP_NODES:
-    for (unsigned src = 0; src < kids.size (); src++)
-      if (kids [src] != NULL)
-        TSVAnnotationValue::update_annotation (kids [src], k, TSVAnnotationValue::MAYBE_VAL);
+  {
+    for (unsigned src = 0; src < kids.size(); ++src)
+    {
+      if (kids[src] != NULL)
+      {
+        // Unless this method is redefined by a specific function, a function
+        // is considered as "potentially interested" in sorted and/or duplicate
+        // nodes. In this case, each of its input exprs must also be marked as
+        // "potentially interested", even if the input expr by itself is not
+        // interested. 
+        TSVAnnotationValue::update_annotation(kids[src],
+                                              k,
+                                              TSVAnnotationValue::MAYBE_VAL);
+      }
+    }
     break;
-  default: break;
+  }
+  default:
+    break;
   }
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 FunctionConsts::AnnotationValue function::producesDuplicates() const 
 {
-  xqtref_t rt = theSignature.return_type ();
-  if (TypeOps::type_max_cnt (*rt) <= 1 || TypeOps::is_builtin_simple (*rt))
+  xqtref_t rt = theSignature.return_type();
+
+  if (TypeOps::type_max_cnt(*rt) <= 1 || TypeOps::is_builtin_simple(*rt))
     return FunctionConsts::NO;
+
   return FunctionConsts::YES;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 FunctionConsts::AnnotationValue function::producesNodeIdSorted() const 
 {
   xqtref_t rt = theSignature.return_type ();
@@ -164,6 +202,9 @@ user_function::user_function(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 user_function::user_function(::zorba::serialization::Archiver& ar)
   :
   function(ar)
@@ -171,11 +212,17 @@ user_function::user_function(::zorba::serialization::Archiver& ar)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 user_function::~user_function()
 {
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void user_function::serialize(::zorba::serialization::Archiver& ar)
 {
   if(ar.is_serializing_out())
@@ -191,37 +238,55 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 const QueryLoc& user_function::get_location() const
 {
   return m_loc;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void user_function::set_body(expr_t body)
 {
   m_expr_body = body;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 expr_t user_function::get_body() const
 {
   return m_expr_body;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void user_function::set_args(std::vector<var_expr_t>& args)
 {
   m_args = args;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 const std::vector<var_expr_t>& user_function::get_args() const
 {
   return m_args;
 }
   
 
-bool user_function::requires_dyn_ctx () const
+/*******************************************************************************
+
+********************************************************************************/
+bool user_function::requires_dyn_ctx() const
 {
   // All undeclared functions unfoldable. TODO: better analysis
   return (m_expr_body == NULL ||
@@ -229,12 +294,18 @@ bool user_function::requires_dyn_ctx () const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 std::vector<LetVarIter_t>& user_function::get_param_iters() const
 {
   return m_param_iters;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 PlanIter_t user_function::get_plan(CompilerCB *ccb) const
 {
   if (m_plan == NULL) 
@@ -274,6 +345,9 @@ PlanIter_t user_function::get_plan(CompilerCB *ccb) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 CODEGEN_DEF(user_function)
 {
   return new UDFunctionCallIterator(aSctx, aLoc, aArgs, this);
