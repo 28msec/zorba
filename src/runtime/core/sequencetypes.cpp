@@ -216,8 +216,9 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     //--
     if (consumeNext(lItem, theChild.getp(), planState))
     {
-      ZORBA_ERROR_LOC_DESC( XPTY0004, loc, 
-                        "Sequence with more than one item cannot be cast to a type with quantifier ONE or QUESTION.");
+      ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc, 
+                               "Sequence with more than one item cannot be cast"
+                               << " to a type with quantifier ONE or QUESTION.");
     }
     
     STACK_PUSH(valid, state);
