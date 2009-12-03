@@ -33,7 +33,7 @@
 #include "store/naive/pul_primitives.h"
 #include "store/naive/simple_pul.h"
 #include "store/naive/atomic_items.h"
-#include "store/naive/basic_item_factory.h"
+#include "store/naive/simple_item_factory.h"
 
 
 namespace zorba { namespace simplestore {

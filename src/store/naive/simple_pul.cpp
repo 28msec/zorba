@@ -269,8 +269,7 @@ void PULImpl::addDelete(store::Item_t& target)
 ********************************************************************************/
 void PULImpl::addInsertInto(
     store::Item_t& target,
-    std::vector<store::Item_t>& children,
-    const store::CopyMode& copymode)
+    std::vector<store::Item_t>& children)
 {
   store::Item_t sibling;
   addInsertChildren(store::UpdateConsts::UP_INSERT_INTO, target, sibling, children);
@@ -279,8 +278,7 @@ void PULImpl::addInsertInto(
 
 void PULImpl::addInsertFirst(
     store::Item_t& target,
-    std::vector<store::Item_t>& children,
-    const store::CopyMode& copymode)
+    std::vector<store::Item_t>& children)
 {
   store::Item_t sibling;
   addInsertChildren(store::UpdateConsts::UP_INSERT_INTO_FIRST,
@@ -290,8 +288,7 @@ void PULImpl::addInsertFirst(
 
 void PULImpl::addInsertLast(
     store::Item_t& target,
-    std::vector<store::Item_t>& children,
-    const store::CopyMode& copymode)
+    std::vector<store::Item_t>& children)
 {
   store::Item_t sibling;
   addInsertChildren(store::UpdateConsts::UP_INSERT_INTO_LAST,
@@ -301,8 +298,7 @@ void PULImpl::addInsertLast(
 
 void PULImpl::addInsertBefore(
     store::Item_t& target,
-    std::vector<store::Item_t>& siblings,
-    const store::CopyMode& copymode)
+    std::vector<store::Item_t>& siblings)
 {
   store::Item_t p = target->getParent();
   addInsertChildren(store::UpdateConsts::UP_INSERT_BEFORE, p, target, siblings);
@@ -311,8 +307,7 @@ void PULImpl::addInsertBefore(
 
 void PULImpl::addInsertAfter(
     store::Item_t& target,
-    std::vector<store::Item_t>& siblings,
-    const store::CopyMode& copymode)
+    std::vector<store::Item_t>& siblings)
 {
   store::Item_t p = target->getParent();
   addInsertChildren(store::UpdateConsts::UP_INSERT_AFTER, p, target, siblings);
@@ -358,8 +353,7 @@ void PULImpl::addInsertChildren(
 ********************************************************************************/
 void PULImpl::addInsertAttributes(
     store::Item_t&              target,
-    std::vector<store::Item_t>& attrs,
-    const store::CopyMode&      copymode)
+    std::vector<store::Item_t>& attrs)
 {
   CollectionPul* pul = getCollectionPul(target.getp());
 
@@ -396,8 +390,7 @@ void PULImpl::addInsertAttributes(
 ********************************************************************************/
 void PULImpl::addReplaceNode(
     store::Item_t&              target,
-    std::vector<store::Item_t>& newNodes,
-    const store::CopyMode&      copymode)
+    std::vector<store::Item_t>& newNodes)
 {
   CollectionPul* pul = getCollectionPul(target.getp());
 
@@ -463,8 +456,7 @@ void PULImpl::addReplaceNode(
 ********************************************************************************/
 void PULImpl::addReplaceContent(
     store::Item_t&         target,
-    store::Item_t&         newChild,
-    const store::CopyMode& copymode)
+    store::Item_t&         newChild)
 {
   CollectionPul* pul = getCollectionPul(target.getp());
 

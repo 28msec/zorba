@@ -22,7 +22,6 @@ SET(ZORBA_STORE_LIB_EXTENSION "simplestore" CACHE STRING "store name" FORCE)
 # Source Files
 #
 SET(ZORBA_STORE_IMPL_SRCS
-    basic_item_factory.cpp
     item.cpp
     item_vector.cpp
     node_vector.cpp
@@ -33,13 +32,14 @@ SET(ZORBA_STORE_IMPL_SRCS
     atomic_items.cpp
     item_iterator.cpp
     node_iterators.cpp
+    simple_item_factory.cpp
     simple_store.cpp
     simple_iterator_factory.cpp
     simple_collection.cpp
     simple_index.cpp
     simple_temp_seq.cpp
     simple_lazy_temp_seq.cpp
-    fast_loader.cpp
+    loader_fast.cpp
     qname_pool.cpp
     string_pool.cpp
     ordpath.cpp

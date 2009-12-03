@@ -14,12 +14,6 @@
  * limitations under the License.
  */
 
-#include <zorba/exception.h>
-
-#include "zorbaerrors/error_manager.h"
-
-#include "store/api/iterator.h"
-
 #include "store/naive/shared_types.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/simple_store.h"
@@ -28,7 +22,13 @@
 #include "store/naive/node_items.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/simple_collection.h"
-//#include "store/naive/simple_index.h"
+
+#include "store/api/iterator.h"
+#include "store/api/copymode.h"
+
+#include "zorbaerrors/error_manager.h"
+
+#include <zorba/exception.h>
 
 
 namespace zorba { namespace simplestore {
@@ -1051,6 +1051,11 @@ void UpdDeleteIndex::undo()
 /*******************************************************************************
 
 ********************************************************************************/
+UpdRebuildIndex::~UpdRebuildIndex()
+{
+}
+
+
 void UpdRebuildIndex::apply()
 {
   SimpleStore* store = SimpleStoreManager::getStore();

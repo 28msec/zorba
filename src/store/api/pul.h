@@ -62,43 +62,35 @@ public:
 
   virtual void addInsertInto(
         Item_t& target,
-        std::vector<Item_t>& children,
-        const CopyMode& copymode) = 0;
+        std::vector<Item_t>& children) = 0;
 
   virtual void addInsertFirst(
         Item_t& target,
-        std::vector<Item_t>& children,
-        const CopyMode& copymode) = 0;
+        std::vector<Item_t>& children) = 0;
 
   virtual void addInsertLast(
         Item_t& target,
-        std::vector<Item_t>& children,
-        const CopyMode& copymode) = 0;
+        std::vector<Item_t>& children) = 0;
 
   virtual void addInsertBefore(
         Item_t& target,
-        std::vector<Item_t>& siblings,
-        const CopyMode& copymode) = 0;
+        std::vector<Item_t>& siblings) = 0;
 
   virtual void addInsertAfter(
         Item_t& target,
-        std::vector<Item_t>& siblings,
-        const CopyMode& copymode) = 0;
+        std::vector<Item_t>& siblings) = 0;
   
   virtual void addInsertAttributes(
         Item_t& target,
-        std::vector<Item_t>& attrs,
-        const CopyMode& copymode) = 0;
+        std::vector<Item_t>& attrs) = 0;
 
   virtual void addReplaceNode(
         Item_t& target,
-        std::vector<Item_t>& replacementNodes,
-        const CopyMode& copymode) = 0;
+        std::vector<Item_t>& replacementNodes) = 0;
 
   virtual void addReplaceContent(
         Item_t& target,
-        Item_t& newTextChild,
-        const CopyMode& copymode) = 0;
+        Item_t& newTextChild) = 0;
 
   virtual void addReplaceValue(
         Item_t& target,
@@ -144,17 +136,17 @@ public:
   // functions to add primitives for updating collection functions (e.g. create-collection)
 
   virtual void addCreateCollection(
-        Item_t&                     name) = 0;
+        Item_t& name) = 0;
 
   virtual void addDeleteCollection(
-        Item_t&                     name) = 0;
+        Item_t& name) = 0;
 
   virtual void addInsertIntoCollection(
-        Item_t&                     name,
-        Item_t&                     nodes) = 0;            
+        Item_t& name,
+        Item_t& nodes) = 0;            
 
   virtual void addInsertFirstIntoCollection(
-        Item_t&                     name,
+        Item_t& name,
         std::vector<store::Item_t>& nodes) = 0;
 
   virtual void addInsertLastIntoCollection(

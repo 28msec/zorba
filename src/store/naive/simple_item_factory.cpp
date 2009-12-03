@@ -20,12 +20,9 @@
 #include "zorbaerrors/Assert.h"
 #include "zorbatypes/datetime.h"
 
-#include "store/api/collection.h"
-#include "store/api/copymode.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/simple_store.h"
-#include "store/naive/basic_item_factory.h"
-#include "store/naive/query_context.h"
+#include "store/naive/simple_item_factory.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/node_items.h"
 #include "store/naive/node_iterators.h"

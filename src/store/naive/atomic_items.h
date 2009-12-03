@@ -16,11 +16,13 @@
 #ifndef ZORBA_STORE_ATOMIC_ITEMS_H
 #define ZORBA_STORE_ATOMIC_ITEMS_H
 
+#include "store/api/item.h"
+
 #include "zorbatypes/xqpstring.h"
 #include "zorbatypes/representations.h"
 #include "zorbatypes/datetime.h"
 
-#include "store/api/item.h"
+#include "zorbaerrors/errors.h"
 
 
 namespace zorba

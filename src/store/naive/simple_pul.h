@@ -18,15 +18,12 @@
 
 #include <vector>
 
-#include "zorbautils/hashfun.h"
-#include "zorbautils/hashmap.h"
+#include "store/naive/shared_types.h"
 
 #include "store/api/pul.h"
-#include "store/api/copymode.h"
 
-#include "store/naive/shared_types.h"
-#include "store/naive/node_vector.h"
-
+#include "zorbautils/hashfun.h"
+#include "zorbautils/hashmap.h"
 
 
 namespace zorba 
@@ -233,43 +230,35 @@ public:
 
   void addInsertInto(
         store::Item_t& target,
-        std::vector<store::Item_t>& children,
-        const store::CopyMode& copymode);
+        std::vector<store::Item_t>& children);
 
   void addInsertFirst(
         store::Item_t& target,
-        std::vector<store::Item_t>& children,
-        const store::CopyMode& copymode);
+        std::vector<store::Item_t>& children);
 
   void addInsertLast(
         store::Item_t& target,
-        std::vector<store::Item_t>& children,
-        const store::CopyMode& copymode);
+        std::vector<store::Item_t>& children);
 
   void addInsertBefore(
         store::Item_t& target,
-        std::vector<store::Item_t>& siblings,
-        const store::CopyMode& copymode);
+        std::vector<store::Item_t>& siblings);
 
   void addInsertAfter(
         store::Item_t& target,
-        std::vector<store::Item_t>& siblings,
-        const store::CopyMode& copymode);
+        std::vector<store::Item_t>& siblings);
 
   void addInsertAttributes(
         store::Item_t& target,
-        std::vector<store::Item_t>& attrs,
-        const store::CopyMode& copymode);
+        std::vector<store::Item_t>& attrs);
 
   void addReplaceNode(
         store::Item_t& target,
-        std::vector<store::Item_t>& replacementNodes,
-        const store::CopyMode& copymode);
+        std::vector<store::Item_t>& replacementNodes);
 
   void addReplaceContent(
         store::Item_t& target,
-        store::Item_t& newTextChild,
-        const store::CopyMode& copymode);
+        store::Item_t& newTextChild);
 
   void addReplaceValue(
         store::Item_t& target,

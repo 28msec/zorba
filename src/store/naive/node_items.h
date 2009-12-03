@@ -24,6 +24,7 @@
 #include "store/naive/shared_types.h"
 
 #include "store/api/item.h"
+
 #include "store/naive/item_vector.h"
 #include "store/naive/ordpath.h"
 #include "store/naive/node_vector.h"

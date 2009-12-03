@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_SIMPLE_STORE_LOADER_H
-#define ZORBA_SIMPLE_STORE_LOADER_H
+#ifndef ZORBA_SIMPLE_STORE_LOADER
+#define ZORBA_SIMPLE_STORE_LOADER
 
 #include <stack>
 #include <libxml/parser.h>
 #include <libxml/xmlstring.h>
 
-#include "zorbautils/stack.h"
-
 #include "store/api/item.h"
 
 #include "store/naive/ordpath.h"
 
+#include "zorbautils/stack.h"
 
-namespace zorba { 
+
+namespace zorba 
+{ 
   
 namespace error
 {
@@ -291,7 +292,7 @@ public:
 } // namespace store
 } // namespace zorba
 
-#endif /* ZORBA_SIMPLE_LOADER_H */
+#endif /* ZORBA_SIMPLE_STORE_LOADER */
 
 
 /*

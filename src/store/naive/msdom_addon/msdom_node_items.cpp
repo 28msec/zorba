@@ -28,7 +28,7 @@
 #include "store/naive/msdom_addon/msdom_node_items.h"
 #include "store/naive/node_iterators.h"
 #include "store/naive/simple_store.h"
-#include "store/naive/basic_item_factory.h"
+#include "store/naive/simple_item_factory.h"
 #include "store/naive/qname_pool.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/nsbindings.h"

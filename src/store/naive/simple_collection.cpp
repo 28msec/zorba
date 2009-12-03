@@ -18,7 +18,7 @@
 #include "zorbaerrors/error_manager.h"
 #include "system/globalenv.h"
 #include "store/naive/simple_collection.h"
-#include "store/naive/sax_loader.h"
+#include "store/naive/loader.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/store_defs.h"
 #include "store/naive/node_items.h"

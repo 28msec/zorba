@@ -21,11 +21,6 @@
 
 #include <zorba/store_consts.h>
 
-#include "zorbamisc/config/platform.h"
-#include "zorbatypes/datetime.h"
-#include "zorbaerrors/error_manager.h"
-#include "zorbaerrors/Assert.h"
-
 #include "store/naive/store_defs.h"
 #include "store/naive/string_pool.h"
 #include "store/naive/qname_pool.h"
@@ -34,7 +29,12 @@
 #include "store/naive/node_items.h"
 #include "store/naive/dataguide.h"
 #include "store/naive/nsbindings.h"
-#include "store/naive/sax_loader.h"
+#include "store/naive/loader.h"
+
+#include "zorbatypes/datetime.h"
+
+#include "zorbaerrors/error_manager.h"
+#include "zorbaerrors/Assert.h"
 
 
 namespace zorba { namespace simplestore {

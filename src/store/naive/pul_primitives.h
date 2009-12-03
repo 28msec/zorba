@@ -18,16 +18,13 @@
 
 #include "store/naive/shared_types.h"
 
-#include "store/naive/node_items.h"
-
-//#include "store/api/index.h"
-
 
 namespace zorba { namespace simplestore {
 
 
 class PULImpl;
 class CollectionPul;
+class XmlNode;
 
 
 /*******************************************************************************
@@ -1111,11 +1108,11 @@ class UpdCreateIndex : public  UpdatePrimitive
   friend class PULImpl;
 
 protected:
-  const store::Item_t               theQName;
-  const store::IndexSpecification   theSpec;
-  store::Iterator_t                 theSourceIter;
+  store::Item_t              theQName;
+  store::IndexSpecification   theSpec;
+  store::Iterator_t          theSourceIter;
 
-  store::Index_t                    theIndex;
+  store::Index_t             theIndex;
 
 public:
   UpdCreateIndex(
@@ -1188,6 +1185,8 @@ public:
     theSourceIter(sourceIter)
   {
   }
+
+  ~UpdRebuildIndex();
 
   store::UpdateConsts::UpdPrimKind getKind() const
   { 
