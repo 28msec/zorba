@@ -21,7 +21,6 @@
 
 #include "store/api/item_factory.h"
 #include "store/api/pul.h"
-#include "store/api/copymode.h"
 
 #include "compiler/parser/query_loc.h"
 
@@ -412,14 +411,8 @@ void processAttributes(
   
   if ( defaultAtts.size()>0 )
   {
-    store::CopyMode lCopyMode;
-    bool typePreserve = true; //(sctx->construction_mode() == StaticContextConsts::cons_preserve ? true : false);
-    bool nsPreserve = true; //(sctx->preserve_mode() == StaticContextConsts::preserve_ns ? true : false);
-    bool nsInherit = true; //(sctx->inherit_mode() == StaticContextConsts::inherit_ns ? true : false);
-    lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
-    
     store::Item_t parentElem = store::Item_t(parent);
-    pul->addInsertAttributes(parentElem, defaultAtts, lCopyMode);
+    pul->addInsertAttributes(parentElem, defaultAtts);
   }
 }
 
