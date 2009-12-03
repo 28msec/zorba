@@ -127,6 +127,17 @@
         </documentation>
       </annotation>
     </attribute>
+    <attribute name="auth-method" type="string" use="optional">
+      <annotation xml:lang="en">
+        <documentation>
+          HTTP authentication when sending a request is controlled by the
+          attributes username, password, auth-method and send-authorization
+          on the element http:request. If username has a value, password and
+          auth-method must have a value too. And if any one of the three other
+          attributes have been set, username must be set too.
+        </documentation>
+      </annotation>
+    </attribute>
     <attribute name="override-content-type" type="string"
       use="optional">
       <annotation xml:lang="en">
@@ -136,7 +147,7 @@
         </documentation>
       </annotation>
     </attribute>
-    <attribute name="follow-redirect" type="string" use="optional">
+    <attribute name="follow-redirect" type="boolean" use="optional">
       <annotation xml:lang="en">
         <documentation>
           Control whether an http redirect is automatically followed or not. If

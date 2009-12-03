@@ -15,6 +15,7 @@ namespace http_client {
   private:
     std::vector<Item> theItems;
     std::vector<Item>::size_type theIndex;
+    bool theResponseSet;
   public:
     HttpResponseIterator();
     virtual ~HttpResponseIterator();

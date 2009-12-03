@@ -31,7 +31,7 @@ namespace http_client {
   public:
     HttpResponseParser(RequestHandler& aHandler, CURL* aCurl);
     virtual ~HttpResponseParser();
-    void parse();
+    int parse();
     virtual void beforeRead();
     virtual void afterRead();
   private:

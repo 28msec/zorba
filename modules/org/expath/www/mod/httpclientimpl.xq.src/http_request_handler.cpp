@@ -82,6 +82,18 @@ namespace zorba { namespace http_client {
     if (aTimeout != -1) {
       curl_easy_setopt(theCurl, CURLOPT_TIMEOUT, aTimeout);
     }
+    if (aUsername != "" && !aSendAuthorization) {
+      String lUserPw = aUsername + ":" + aPassword;
+      curl_easy_setopt(theCurl, CURLOPT_USERPWD, lUserPw.c_str());
+      if (aAuthMethod == "Basic") {
+        curl_easy_setopt(theCurl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+      } else if (aAuthMethod == "Digest") {
+        curl_easy_setopt(theCurl, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST);
+      }
+    }
+    if (aUsername != "" && aSendAuthorization) {
+      // Todo: implement adding header here.
+    }
   }
 
   void HttpRequestHandler::endRequest()

@@ -37,11 +37,11 @@ namespace zorba { namespace http_client {
     curl_multi_cleanup(theMulti);
   }
 
-  void HttpResponseParser::parse()
+  int HttpResponseParser::parse()
   {
     theStreamBuffer->setInformer(this);
     theHandler.begin();
-    theStreamBuffer->multi_perform();
+    int lCode = theStreamBuffer->multi_perform();
     std::istream lStream(theStreamBuffer);
     Item lItem;
     if (theCurrentContentType == "text/xml" ||
@@ -63,6 +63,7 @@ namespace zorba { namespace http_client {
     }
     theHandler.endResponse();
     theHandler.end();
+    return lCode;
   }
 
   void HttpResponseParser::beforeRead()
@@ -96,21 +97,25 @@ namespace zorba { namespace http_client {
                                             void *stream)
   {
     size_t lSize = size*nmemb;
+    size_t lResult = lSize;
     HttpResponseParser* lParser = static_cast<HttpResponseParser*>(stream);
     if (lParser->theInsideRead) {
       lParser->theHandler.endBody();
     }
     lParser->theInsideRead = false;
     const char* lDataChar = (const char*) ptr;
+    while (lDataChar[lSize - 1] == 10 || lDataChar[lSize - 1] == 13) {
+      lSize--;
+    }
     std::string lData(lDataChar, lSize);
 
     if (lData.find("HTTP") == 0) {
       lParser->parseStatusAndMessage(lData);
-      return lSize;
+      return lResult;
     }
     std::string::size_type lPos = lData.find(':');
     if (lPos == std::string::npos) {
-      return lSize;
+      return lResult;
     }
     std::string lName = lData.substr(0, lPos);
     std::string lValue = lData.substr(lPos + 2);
@@ -137,7 +142,7 @@ namespace zorba { namespace http_client {
     }
     lParser->theHeaders.push_back(
       std::pair<std::string, std::string>(lName, lValue));
-    return lSize;
+    return lResult;
   }
 
   void HttpResponseParser::parseStatusAndMessage(std::string aHeader)

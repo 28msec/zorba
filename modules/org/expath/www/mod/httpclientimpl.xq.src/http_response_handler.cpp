@@ -11,7 +11,7 @@ namespace zorba { namespace http_client {
   //////////////////////////////////////////////////////////////////////////
 
   HttpResponseIterator::HttpResponseIterator()
-    : theIndex(0)
+    : theIndex(0), theResponseSet(false)
   {
     // Set an empty item as the response item
     theItems.push_back(Item());
@@ -23,6 +23,9 @@ namespace zorba { namespace http_client {
 
   bool HttpResponseIterator::next( Item& aItem )
   {
+    if (!theResponseSet) {
+      return false;
+    }
     if (theIndex < theItems.size()) {
       aItem = theItems[theIndex];
       ++theIndex;
@@ -39,6 +42,7 @@ namespace zorba { namespace http_client {
   void HttpResponseIterator::setResponseItem(const Item& aItem)
   {
     theItems[0] = aItem;
+    theResponseSet = true;
   }
   //////////////////////////////////////////////////////////////////////////
   // HttpResponseHandler
@@ -71,11 +75,11 @@ namespace zorba { namespace http_client {
     theFactory->createAttributeNode(theResponse,
       theFactory->createQName("", "message"), lNullType,
       theFactory->createString(aMessage));
+    theResult->setResponseItem(theResponse);
   }
 
   void HttpResponseHandler::endResponse()
   {
-    theResult->setResponseItem(theResponse);
   }
 
   // Since this class is only used to handle responses, beginRequest and
