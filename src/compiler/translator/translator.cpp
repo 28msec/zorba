@@ -53,7 +53,6 @@
 #include "compiler/expression/path_expr.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/rewriter/framework/rewriter.h"
-#include "compiler/indexing/index_tools.h"
 #include "compiler/indexing/value_index.h"
 
 #include "context/statically_known_collection.h"
@@ -837,7 +836,7 @@ varref_t create_var(
     xqtref_t type = NULL) 
 {
   store::Item_t qname = sctx_p->lookup_var_qname (varname, loc);
-  return create_var (loc, qname, kind, type);
+  return create_var(loc, qname, kind, type);
 }
   
 
@@ -901,7 +900,7 @@ var_expr_t bind_var(
     xqtref_t type = NULL) 
 {
   varref_t e = create_var(loc, varname, kind, type);
-  bind_var (e, sctx_p);
+  bind_var(e, sctx_p);
   return e;
 }
 
@@ -912,25 +911,25 @@ var_expr_t bind_var(
   var_expr. Finally, push the var_expr to the nodestack. Raise error if a var
   with the same expanded qname is already in the given context.
 ********************************************************************************/
-varref_t bind_var_and_push (
+varref_t bind_var_and_push(
     const QueryLoc& loc,
     store::Item* varname,
     var_expr::var_kind kind,
     xqtref_t type = NULL) 
 {
   varref_t e = bind_var(loc, varname, kind, type);
-  nodestack.push (&*e);
+  nodestack.push(&*e);
   return e;
 }
 
 
-varref_t bind_var_and_push (
+varref_t bind_var_and_push(
     const QueryLoc& loc,
     string varname,
     var_expr::var_kind kind,
     xqtref_t type = NULL) 
 {
-  return bind_var_and_push (loc, sctx_p->lookup_var_qname (varname, loc), kind, type);
+  return bind_var_and_push(loc, sctx_p->lookup_var_qname(varname, loc), kind, type);
 }
 
 
@@ -941,13 +940,13 @@ varref_t bind_var_and_push (
 
   The first method raises error if var not found, the other 2 methods return NULL.
 ********************************************************************************/
-varref_t lookup_ctx_var (xqp_string name, const QueryLoc &loc) 
+varref_t lookup_ctx_var(xqp_string name, const QueryLoc& loc) 
 {
-  expr *ve = sctx_p->lookup_var (name);
+  expr* ve = sctx_p->lookup_var(name);
   if (ve != NULL)
     return (var_expr *) ve;
 
-  ZORBA_ERROR_LOC_PARAM (XPDY0002, loc, name, "");
+  ZORBA_ERROR_LOC_PARAM(XPDY0002, loc, name, "");
 }
 
 
@@ -976,7 +975,7 @@ void bind_udf(
     static_context* sctx,
     const QueryLoc& loc) 
 {
-  if (! sctx->bind_fn (qname, f, nargs))
+  if (! sctx->bind_fn(qname, f, nargs))
   {
     ZORBA_ERROR_LOC_PARAM(XQST0034, loc,
                           qname->getStringValue(),
@@ -992,14 +991,14 @@ void bind_udf(
   variables from all modules, and (c) the export_sctx (if any). Raise error if 
   such a binding exists already in any of these sctxs.
 ********************************************************************************/
-void bind_udf (store::Item_t qname, function *f, int nargs, const QueryLoc& loc) 
+void bind_udf(store::Item_t qname, function* f, int nargs, const QueryLoc& loc) 
 {
-  bind_udf (qname, f, nargs, sctx_p, loc);
-  bind_udf (qname, f, nargs, minfo->globals.get (), loc);
+  bind_udf(qname, f, nargs, sctx_p, loc);
+  bind_udf(qname, f, nargs, minfo->globals.get (), loc);
 
   if (export_sctx != NULL) 
   {
-    bind_udf (qname, f, nargs, export_sctx, loc);
+    bind_udf(qname, f, nargs, export_sctx, loc);
   }
 }
   
@@ -1073,10 +1072,32 @@ void normalize_fo(fo_expr* foExpr)
 ********************************************************************************/
 expr_t wrap_in_atomization(expr* e) 
 {
-  return new fo_expr(sctxid(),
-                     e->get_loc(),
-                     GET_BUILTIN_FUNCTION(FN_DATA_1),
-                     e);
+  if (e->is_sequential())
+  {
+    const QueryLoc& loc = e->get_loc();
+
+    rchandle<flwor_expr> flworExpr = new flwor_expr(sctxid(), loc, false);
+
+    let_clause_t lc = wrap_in_letclause(e);
+
+    expr_t retExpr = new fo_expr(sctxid(),
+                                 loc,
+                                 GET_BUILTIN_FUNCTION(FN_DATA_1),
+                                 lc->get_var());
+
+    flworExpr->add_clause(lc);
+
+    flworExpr->set_return_expr(retExpr);
+
+    return flworExpr;
+  }
+  else
+  {
+    return new fo_expr(sctxid(),
+                       e->get_loc(),
+                       GET_BUILTIN_FUNCTION(FN_DATA_1),
+                       e);
+  }
 }
 
 
@@ -1158,7 +1179,7 @@ expr_t wrap_in_dos_and_dupelim(expr_t expr, bool atomics, bool reverse = false)
   Create a LET clause for the given LET variable "lv", with the given expr "e" as
   its defining expression.
 ********************************************************************************/
-let_clause_t wrap_in_letclause(expr_t e, varref_t lv) 
+let_clause_t wrap_in_letclause(expr_t e, var_expr_t lv) 
 {
   assert (lv->get_kind () == var_expr::let_var);
 
@@ -1239,7 +1260,7 @@ for_clause_t wrap_in_forclause(expr_t expr, bool add_posvar)
 
 /*******************************************************************************
   Create a flwor expr with a single let clause and a return expr. In particular,
-  is built:
+  the following flwor expr is built:
 
   let $lv := domExpr
   return retExpr
@@ -2436,18 +2457,18 @@ void* begin_visit(const VFO_DeclList& v)
     {
       xqp_string ns = qname->getNamespace();
 
-      //function must be declared in a non-NULL namespace
+      // function must be declared in a non-NULL namespace
       if(ns.empty())
         ZORBA_ERROR_LOC (XQST0060, loc);
 
+      // Function must not be in any of the reserved namespaces
       if (ns == XQUERY_FN_NS || ns == XML_NS || ns == XML_SCHEMA_NS || ns == XSI_NS)
-        ZORBA_ERROR_LOC_PARAM (XQST0045,
-                               func_decl->get_location(),
-                               qname->getLocalName()->str(), "");
+        ZORBA_ERROR_LOC_PARAM(XQST0045, func_decl->get_location(),
+                              qname->getLocalName()->str(), "");
 
       // In a module, all exports must be inside the target ns
-      if (! theModuleNamespace.empty () && ns != theModuleNamespace)
-        ZORBA_ERROR_LOC (XQST0048, loc);
+      if (! theModuleNamespace.empty() && ns != theModuleNamespace)
+        ZORBA_ERROR_LOC(XQST0048, loc);
     }
 
     // Create the function object.
@@ -2463,7 +2484,8 @@ void* begin_visit(const VFO_DeclList& v)
     {
       // 1. lookup if the function is a built-in function
       f = sctx_p->lookup_resolved_fn(qname->getNamespace(),
-                                     qname->getLocalName(), nargs);
+                                     qname->getLocalName(),
+                                     nargs);
       if (f.getp() != 0) 
       {
         // in debug mode, we make sure that the types of the functions
@@ -2542,9 +2564,9 @@ void* begin_visit(const VFO_DeclList& v)
 }
 
 
-void end_visit (const VFO_DeclList& v, void* /*visit_state*/) 
+void end_visit(const VFO_DeclList& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
   if (Properties::instance()->reorderGlobals())
     reorder_globals();
@@ -2555,9 +2577,10 @@ void end_visit (const VFO_DeclList& v, void* /*visit_state*/)
 /*******************************************************************************
   [13] OptionDecl ::= DECLARE_OPTION  QNAME  STRING_LITERAL
 ********************************************************************************/
-void *begin_visit(const OptionDecl& v) 
+void* begin_visit(const OptionDecl& v) 
 {
   TRACE_VISIT();
+
   //check if namespace for option is valid
   rchandle<QName>   qn = v.get_qname();
   xqpString   option_ns = sctx_p->lookup_ns(qn->get_prefix(), loc);
@@ -2568,9 +2591,9 @@ void *begin_visit(const OptionDecl& v)
   return no_state;
 }
 
-void end_visit (const OptionDecl& v, void* /*visit_state*/) 
+void end_visit(const OptionDecl& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
@@ -2669,9 +2692,9 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
                            ((":=" VarValue) |
                             ("external" (":=" VarDefaultValue)?))
 ********************************************************************************/
-void *begin_visit (const CtxItemDecl& v) 
+void* begin_visit(const CtxItemDecl& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
 
   if (sctx_p->xquery_version() <= StaticContextConsts::xquery_version_1_0)
     ZORBA_ERROR_LOC (XPST0003, loc);
@@ -2679,9 +2702,9 @@ void *begin_visit (const CtxItemDecl& v)
   return no_state;
 }
 
-void end_visit (const CtxItemDecl& v, void* /*visit_state*/) 
+void end_visit(const CtxItemDecl& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
   expr_t ctx_item_default;
   if (v.get_expr() != NULL)
@@ -2778,10 +2801,10 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
   vector<varref_t> args;
   if (nargs > 0) 
   {
-    rchandle<flwor_expr> flwor = pop_nodestack().dyn_cast<flwor_expr> ();
+    rchandle<flwor_expr> flwor = pop_nodestack().dyn_cast<flwor_expr>();
     ZORBA_ASSERT(flwor != NULL);
 
-    for(int i = 0; i < nargs; ++i) 
+    for(int i = 0; i < nargs; ++i)
     {
       const let_clause* lc = dynamic_cast<const let_clause*>((*flwor)[i]);
       var_expr* arg_var = dynamic_cast<var_expr*>(lc->get_expr());
@@ -2812,8 +2835,9 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
     if (body->is_sequential() && lFuncType != ParseConstants::fn_sequential) 
     {
-      ZORBA_ERROR_LOC_DESC(XPST0003, loc,
-                           "Only a sequential function can have a body that is sequential expression");
+      ZORBA_ERROR_LOC_DESC_OSS(XPST0003, loc,
+                               "Only a sequential function can have a body that "
+                               << "is sequential expression");
     }
 
     // Under section 2.2.2 "Category Rules", it states: If the body of a
@@ -2822,8 +2846,9 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     // TODO: the error code has not yet been decided by the w3c
     if ( lFuncType == ParseConstants::fn_sequential && body->is_updating() ) 
     {
-      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-                           "A sequential function cannot have a body that returns a pending update list");
+      ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
+                               "A sequential function cannot have a body that "
+                               << "returns a pending update list");
     }
 
     if (lFuncType == ParseConstants::fn_read) 
@@ -3500,14 +3525,12 @@ void end_visit(const BlockBody& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  // Vector to hold the init exprs for the local vars.
-  // constructed in reverse... maybe not the best choice
   vector<expr_t> stmts;
-
-  rchandle<VFO_DeclList> decls = v.get_decls();
 
   for (int i = 0; i < v.size(); i++)
     stmts.push_back(pop_nodestack());
+
+  rchandle<VFO_DeclList> decls = v.get_decls();
 
   if (decls != NULL)
   {
@@ -5274,7 +5297,7 @@ void* begin_visit(const CastableExpr& v)
 
 void end_visit(const CastableExpr& v, void* /*visit_state*/)
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
   nodestack.push(create_cast_expr(loc, pop_nodestack(), pop_tstack(), false));
 }
