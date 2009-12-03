@@ -221,8 +221,10 @@ namespace zorba { namespace http_client {
       lInput[pos++] = *lIter;
     }
     lInput[pos] = '\0';
-    TidyBuffer output = {0};
-    TidyBuffer errbuf = {0};
+    TidyBuffer output;
+    tidyBufInit(&output);
+    TidyBuffer errbuf;
+    tidyBufInit(&errbuf);
     TidyDoc tDoc = tidyCreate();
     tidyOptSetBool(tDoc, TidyXmlOut, yes);
     tidyOptSetInt(tDoc, TidyDoctypeMode, TidyDoctypeOmit);

@@ -1161,7 +1161,7 @@ std::ostream& operator<<(std::ostream& os, const xqpStringStore& src)
     pos += sequence_length(str+pos);
     return *this;
   }
-  const uint32_t xqpString::codepoints_iterator::operator*()
+  uint32_t xqpString::codepoints_iterator::operator*() const
   {
     const char  *str_pos = str+pos;
     return UTF8Decode(str_pos);
