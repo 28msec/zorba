@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_ANNOTATION_HOLDER_H
-#define ZORBA_ANNOTATION_HOLDER_H
+#ifndef ZORBA_COMPILER_ANNOTATION_HOLDER
+#define ZORBA_COMPILER_ANNOTATION_HOLDER
 
 #include <map>
 #include "compiler/semantic_annotations/annotations.h"
@@ -26,26 +26,23 @@ namespace zorba {
 class AnnotationHolder : public SimpleRCObject
 {
 protected:
-  typedef std::map<Annotations::Key, Annotation::value_ref_t> annotations_t;
+  typedef std::map<Annotations::Key, AnnotationValue_t> annotations_t;
 
   annotations_t m_annotations;
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(AnnotationHolder)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(AnnotationHolder, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-	  //ar & m_annotations;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   AnnotationHolder() {}
 
   virtual ~AnnotationHolder() {}
 
-  void put_annotation(Annotations::Key key, Annotation::value_ref_t annot);
+  void put_annotation(Annotations::Key key, AnnotationValue_t annot);
 
-  const Annotation::value_ref_t get_annotation(Annotations::Key key) const;
+  const AnnotationValue_t get_annotation(Annotations::Key key) const;
 
   void remove_annotation(Annotations::Key key);
 

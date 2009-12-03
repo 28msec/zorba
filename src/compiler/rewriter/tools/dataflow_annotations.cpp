@@ -276,7 +276,7 @@ void DataflowAnnotationsComputer::compute_fo_expr(fo_expr *e)
     } 
     else 
     {
-      Annotation::value_ref_t sortedAnnot = TSVAnnotationValue::TRUE_VAL;
+      AnnotationValue_t sortedAnnot = TSVAnnotationValue::TRUE_VAL;
       for(uint32_t i = 0; i < nArgs; ++i) {
         if (f->propagatesInputToOutput(i)) {
           sortedAnnot = TSVAnnotationValue::and3(sortedAnnot, (*e)[i]->get_annotation(Annotations::PRODUCES_SORTED_NODES));
@@ -290,7 +290,7 @@ void DataflowAnnotationsComputer::compute_fo_expr(fo_expr *e)
     } else if (duplicates == function::YES) {
       // do nothing
     } else {
-      Annotation::value_ref_t distinctAnnot = TSVAnnotationValue::TRUE_VAL;
+      AnnotationValue_t distinctAnnot = TSVAnnotationValue::TRUE_VAL;
       for(uint32_t i = 0; i < nArgs; ++i) {
         if (f->propagatesInputToOutput(i)) {
           distinctAnnot = TSVAnnotationValue::and3(distinctAnnot, (*e)[i]->get_annotation(Annotations::PRODUCES_DISTINCT_NODES));
@@ -423,7 +423,7 @@ void DataflowAnnotationsComputer::compute_relpath_expr(relpath_expr* e)
 
     if (only_child_axes) 
     {
-      Annotation::value_ref_t sortedAnnot =
+      AnnotationValue_t sortedAnnot =
       (*e)[0]->get_annotation(Annotations::PRODUCES_SORTED_NODES);
 
       if (sortedAnnot != NULL) 
@@ -431,7 +431,7 @@ void DataflowAnnotationsComputer::compute_relpath_expr(relpath_expr* e)
         e->put_annotation(Annotations::PRODUCES_SORTED_NODES, sortedAnnot);
       }
 
-      Annotation::value_ref_t distinctAnnot =
+      AnnotationValue_t distinctAnnot =
       (*e)[0]->get_annotation(Annotations::PRODUCES_DISTINCT_NODES);
 
       if (distinctAnnot != NULL) 

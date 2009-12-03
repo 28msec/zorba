@@ -61,11 +61,11 @@ expr_t fix_annotations(expr_t new_expr, const expr* old_expr)
                      inserter(s, s.begin()));
 
       new_expr->put_annotation(static_cast<Annotations::Key>(k),
-                               Annotation::value_ref_t(new VarSetAnnVal(s)));
+                               AnnotationValue_t(new VarSetAnnVal(s)));
     }
     else if (k != Annotations::CONCAT_EXPR)
     {
-      Annotation::value_ref_t v = 
+      AnnotationValue_t v = 
       old_expr->get_annotation(static_cast<Annotations::Key>(k));
       
       if (v != NULL)

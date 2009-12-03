@@ -64,7 +64,7 @@ static void mark_for_vars_ignoring_sort(flwor_expr* flwor)
 {
   Annotations::Key k = Annotations::IGNORES_SORTED_NODES;
 
-  Annotation::value_ref_t v = flwor->get_annotation(k);
+  AnnotationValue_t v = flwor->get_annotation(k);
 
   for (flwor_expr::clause_list_t::const_iterator it = flwor->clause_begin();
        it != flwor->clause_end();
@@ -115,7 +115,7 @@ static void init_let_vars_consumer_props (flwor_expr* flwor)
                              Annotations::IGNORES_SORTED_NODES :
                              Annotations::IGNORES_DUP_NODES);
 
-      Annotation::value_ref_t v = var->get_annotation(k);
+      AnnotationValue_t v = var->get_annotation(k);
 
       TSVAnnotationValue::update_annotation(lc->get_expr(), k, v);
 
@@ -128,7 +128,7 @@ static void init_let_vars_consumer_props (flwor_expr* flwor)
 
     if (todo != 0)
       var->put_annotation(Annotations::LET_VAR_NODEID_ANALYSIS,
-                           Annotation::value_ref_t(new IntAnnotationValue(todo)));
+                           AnnotationValue_t(new IntAnnotationValue(todo)));
   }
 }
 
@@ -162,12 +162,12 @@ static bool analyze_let_vars_consumer_props (flwor_expr* flwor)
                              Annotations::IGNORES_SORTED_NODES :
                              Annotations::IGNORES_DUP_NODES);
       
-      Annotation::value_ref_t analysisVal = var->get_annotation(analysisKey);
+      AnnotationValue_t analysisVal = var->get_annotation(analysisKey);
 
       if (analysisVal != NULL &&
-          0 != ((1 << j) & static_cast<IntAnnotationValue *>(analysisVal.getp())->n))
+          0 != ((1 << j) & static_cast<IntAnnotationValue*>(analysisVal.getp())->theValue))
       {
-        Annotation::value_ref_t v = var->get_annotation(k);
+        AnnotationValue_t v = var->get_annotation(k);
 
         TSVAnnotationValue::update_annotation(lc->get_expr(), k, v);
 

@@ -17,8 +17,10 @@
 
 namespace zorba {
 
-Annotation::value_ref_t TSVAnnotationValue::TRUE_VAL = Annotation::value_ref_t(new TSVAnnotationValue(TSV_TRUE));
-Annotation::value_ref_t TSVAnnotationValue::FALSE_VAL = Annotation::value_ref_t(new TSVAnnotationValue(TSV_FALSE));
-Annotation::value_ref_t TSVAnnotationValue::MAYBE_VAL = Annotation::value_ref_t(new TSVAnnotationValue(TSV_MAYBE));
+AnnotationValue_t TSVAnnotationValue::TRUE_VAL = AnnotationValue_t(new TSVAnnotationValue(TSV_TRUE));
+
+AnnotationValue_t TSVAnnotationValue::FALSE_VAL = AnnotationValue_t(new TSVAnnotationValue(TSV_FALSE));
+
+AnnotationValue_t TSVAnnotationValue::MAYBE_VAL = AnnotationValue_t(new TSVAnnotationValue(TSV_MAYBE));
 
 }

@@ -134,7 +134,7 @@ RULE_REWRITE_PRE(MarkFreeVars)
 RULE_REWRITE_POST(MarkFreeVars) 
 {
   VarSetAnnVal *freevars = new VarSetAnnVal;
-  Annotation::value_ref_t new_ann = Annotation::value_ref_t (freevars);
+  AnnotationValue_t new_ann = AnnotationValue_t (freevars);
   
   if (node->get_expr_kind () == var_expr_kind) 
   {

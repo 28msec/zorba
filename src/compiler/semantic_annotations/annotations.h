@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_ANNOTATIONS_H
-#define ZORBA_ANNOTATIONS_H
+#ifndef ZORBA_COMPILER_ANNOTATIONS_H
+#define ZORBA_COMPILER_ANNOTATIONS_H
 
 #include "zorbatypes/rchandle.h"
 
@@ -22,34 +22,33 @@ namespace zorba {
 
 class AnnotationValue;
 
-namespace Annotation 
-{
-  typedef rchandle<AnnotationValue> value_ref_t;
-};
+typedef rchandle<AnnotationValue> AnnotationValue_t;
 
 
 class AnnotationValue : public SimpleRCObject 
 {
 public:
   virtual ~AnnotationValue() {}
-  virtual bool equals (const AnnotationValue &other) { 
-    return this == &other;
-  }
+
+  virtual bool equals(const AnnotationValue& other) { return this == &other; }
 };
 
 
 class IntAnnotationValue : public AnnotationValue 
 {
 public:
-  int n;
+  int theValue;
   
-  IntAnnotationValue (int n_) : n (n_) {}
+  IntAnnotationValue(int n) : theValue(n) {}
 };
 
-inline bool operator== (Annotation::value_ref_t v1, Annotation::value_ref_t v2) {
+
+inline bool operator==(const AnnotationValue_t& v1, const AnnotationValue_t& v2) 
+{
   if (v2 == NULL || v1 == NULL)
     return v2 == NULL && v1 == NULL;
-  return v2->equals (*v1.getp());
+
+  return v2->equals(*v1.getp());
 }
 
 }

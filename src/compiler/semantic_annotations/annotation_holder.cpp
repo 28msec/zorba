@@ -17,20 +17,27 @@
 
 namespace zorba {
 
+
+void AnnotationHolder::serialize(::zorba::serialization::Archiver& ar)
+{
+  //ar & m_annotations;
+}
+
+
 void AnnotationHolder::put_annotation(
     Annotations::Key key,
-    Annotation::value_ref_t value)
+    AnnotationValue_t value)
 {
   m_annotations[key] = value;
 }
 
 
-const Annotation::value_ref_t AnnotationHolder::get_annotation(
+const AnnotationValue_t AnnotationHolder::get_annotation(
     Annotations::Key key) const
 {
   annotations_t::const_iterator i = m_annotations.find(key);
   if (i == m_annotations.end()) {
-    return Annotation::value_ref_t();
+    return AnnotationValue_t();
   }
   return i->second;
 }

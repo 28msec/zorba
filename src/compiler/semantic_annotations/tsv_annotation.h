@@ -13,79 +13,91 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include "compiler/semantic_annotations/annotations.h"
 #include "compiler/semantic_annotations/annotation_holder.h"
 
-namespace zorba {
+namespace zorba 
+{
+
 
 class TSVAnnotationValue : public AnnotationValue 
 {
-public:
-  static Annotation::value_ref_t TRUE_VAL;
-  static Annotation::value_ref_t FALSE_VAL;
-  static Annotation::value_ref_t MAYBE_VAL;
+  // Dummy to make the compiler happy
+  friend class Foo;
 
-  typedef enum {
+public:
+  typedef enum 
+  {
     TSV_TRUE,
     TSV_FALSE,
     TSV_MAYBE
   } tsv_t;
 
+
+  static AnnotationValue_t TRUE_VAL;
+  static AnnotationValue_t FALSE_VAL;
+  static AnnotationValue_t MAYBE_VAL;
+
+private:
+  tsv_t  m_value;
+
+public:
   tsv_t getValue() const { return m_value; }
 
   // pessimistic
   static void update_annotation(
-        AnnotationHolder *e,
+        AnnotationHolder* e,
         Annotations::Key k,
-        Annotation::value_ref_t v) 
+        AnnotationValue_t v) 
   {
-    Annotation::value_ref_t oldv = e->get_annotation (k);
+    AnnotationValue_t oldv = e->get_annotation(k);
+
     if (oldv.getp() == FALSE_VAL.getp())
       v = FALSE_VAL;
+
     else if (oldv.getp() == MAYBE_VAL.getp() || v == NULL)
       v = MAYBE_VAL;
         
-    e->put_annotation (k, v);
+    e->put_annotation(k, v);
   }
 
-  static Annotation::value_ref_t from_bool (bool x) 
+
+  static AnnotationValue_t from_bool(bool x) 
   {
     return x ? TRUE_VAL : FALSE_VAL;
   }
 
-  static Annotation::value_ref_t and3(
-        Annotation::value_ref_t v1,
-        Annotation::value_ref_t v2)
+
+  static AnnotationValue_t and3(
+        AnnotationValue_t v1,
+        AnnotationValue_t v2)
   {
-    if (v1.getp() == FALSE_VAL.getp() || v2.getp() == FALSE_VAL.getp()) {
+    if (v1.getp() == FALSE_VAL.getp() || v2.getp() == FALSE_VAL.getp()) 
       return FALSE_VAL;
-    }
-    if (v1.getp() == MAYBE_VAL.getp() || v2.getp() == MAYBE_VAL.getp()) {
+
+    if (v1.getp() == MAYBE_VAL.getp() || v2.getp() == MAYBE_VAL.getp()) 
       return MAYBE_VAL;
-    }
+
     return TRUE_VAL;
   }
 
-  static Annotation::value_ref_t or3(
-        Annotation::value_ref_t v1,
-        Annotation::value_ref_t v2)
+
+  static AnnotationValue_t or3(
+        AnnotationValue_t v1,
+        AnnotationValue_t v2)
   {
-    if (v1.getp() == TRUE_VAL.getp() || v2.getp() == TRUE_VAL.getp()) {
+    if (v1.getp() == TRUE_VAL.getp() || v2.getp() == TRUE_VAL.getp()) 
       return TRUE_VAL;
-    }
-    if (v1.getp() == MAYBE_VAL.getp() || v2.getp() == MAYBE_VAL.getp()) {
+
+    if (v1.getp() == MAYBE_VAL.getp() || v2.getp() == MAYBE_VAL.getp())
       return MAYBE_VAL;
-    }
+
     return FALSE_VAL;
   }
 
 private:
   TSVAnnotationValue(tsv_t value) : m_value(value) { }
-
-  // Dummy to make the compiler happy
-  friend class Foo;
-  
-  tsv_t m_value;
 };
 
 }

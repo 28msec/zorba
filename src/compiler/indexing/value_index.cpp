@@ -189,7 +189,7 @@ void ValueIndex::setOrderModifiers(const std::vector<OrderModifier>& modifiers)
 
 
 /*******************************************************************************
-  Check that the doman expr 
+  Check that the domain expr 
   (a) is deterministic,
   (b) does not have any free variables,
   (c) does not reference any input functions other than dc:collection()
@@ -219,7 +219,8 @@ void ValueIndex::analyze()
       theDomainSourceExprs.size() == 1 &&
       theMaintenanceMode != MANUAL)
   {
-    theMaintenanceMode = DOC_MAP;
+    if (getDomainExpr()->is_map(theDomainSourceExprs[0], theSctx))
+      theMaintenanceMode = DOC_MAP;
   }
 }
 
