@@ -45,7 +45,6 @@ enum expr_kind_t
   gflwor_expr_kind,
   trycatch_expr_kind,
   promote_expr_kind,
-  typeswitch_expr_kind,
   if_expr_kind,
   fo_expr_kind,
   instanceof_expr_kind,
@@ -265,6 +264,10 @@ public:
 
   void replace_expr(const expr* oldExpr, const expr* newExpr);
 
+  bool contains_expr(const expr* e) const;
+
+  bool is_map(const expr* e, static_context* sctx) const;
+
   FunctionConsts::FunctionKind get_function_kind() const;
 
 protected:
@@ -282,6 +285,8 @@ protected:
   virtual void compute_scripting_kind() const = 0;
 
   virtual expr_iterator_data* make_iter();
+
+  bool is_map_internal(const expr* e, bool& found) const;
 };
 
 

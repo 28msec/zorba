@@ -15,7 +15,9 @@
  */
 
 #include "compiler/expression/expr_base.h"
+#include "compiler/expression/expr.h"
 #include "compiler/expression/fo_expr.h"
+#include "compiler/expression/path_expr.h"
 #include "compiler/expression/expr_visitor.h"
 
 #include "functions/function.h"
@@ -535,6 +537,190 @@ void expr::replace_expr(const expr* oldExpr, const expr* newExpr)
 
     ++iter;
   }
+}
+
+
+/*******************************************************************************
+  Return true if the given expr is a subexpr of "this".
+********************************************************************************/
+bool expr::contains_expr(const expr* e) const
+{
+  const_expr_iterator iter = expr_begin_const();
+  while (!iter.done())
+  {
+    if ((*iter) == e)
+    {
+      return true;
+    }
+    else if ((*iter)->contains_expr(e))
+    {
+      return true;
+    }
+
+    ++iter;
+  }
+
+  return false;
+}
+
+
+/*******************************************************************************
+  This method tries to see if "this" is a map with respect to the given expr.
+
+  Let E1 be an expr, R1 be the result of E1, E2 be a sub-expr of E1, R2 be the 
+  result of E2, and N be the cardinality of R2. Then, E1 is a map w.r.t. E2 iff 
+
+  R1 == CONCATENATE { R1i, i = 1, ..., N },
+
+  where R1i is the result of expr E1i and E1i is the expr derived from E1 by 
+  replacing E2 with a variable bound to the i-th item in R2.
+ 
+  If the method returns true, then "this" is guaranteed to be a map. If it
+  returns false, it may still be a map, but this algorithm could not determine
+  that.
+********************************************************************************/
+bool expr::is_map(const expr* e, static_context* sctx) const
+{
+  xqtref_t type = e->return_type(sctx);
+  TypeConstants::quantifier_t q = type->get_quantifier();
+
+  if (q == TypeConstants::QUANT_ONE || q == TypeConstants::QUANT_QUESTION)
+    return true;
+
+  bool found = false;
+
+  return is_map_internal(e, found);
+}
+
+
+bool expr::is_map_internal(const expr* e, bool& found) const
+{
+  if (found)
+    return true;
+
+  if (this == e)
+  {
+    found = true;
+    return true;
+  }
+
+  switch(e->get_expr_kind()) 
+  {
+  case debugger_expr_kind:
+  {
+    const debugger_expr* debugExpr = static_cast<const debugger_expr *>(this);
+    return debugExpr->get_expr()->is_map_internal(e, found);
+  }
+
+  case wrapper_expr_kind:
+  {
+    const wrapper_expr* wrapperExpr = static_cast<const wrapper_expr *>(this);
+    return wrapperExpr->get_expr()->is_map_internal(e, found);
+  }
+
+  case const_expr_kind:
+  case var_expr_kind:
+    return true;
+
+  case flwor_expr_kind:
+  case gflwor_expr_kind:
+  case trycatch_expr_kind:
+    ZORBA_ASSERT(false); // TODO
+
+  case fo_expr_kind:
+    return true; // TODO
+
+  case if_expr_kind:
+  {
+    const if_expr* ifExpr = static_cast<const if_expr*>(this);
+
+    if (ifExpr->get_cond_expr()->contains_expr(e))
+      return false;
+
+    if (ifExpr->get_then_expr()->is_map_internal(e, found) &&
+        ifExpr->get_else_expr()->is_map_internal(e, found))
+      return true;
+
+    return false;
+  }
+
+  case relpath_expr_kind:
+  {
+    const relpath_expr* pathExpr = static_cast<const relpath_expr*>(this);
+    return (*pathExpr)[0]->is_map_internal(e, found);
+  }
+
+  case order_expr_kind:
+    ZORBA_ASSERT(false); // TODO
+
+  case treat_expr_kind:
+  {
+    const treat_expr* treatExpr = static_cast<const treat_expr*>(this);
+    TypeConstants::quantifier_t q = treatExpr->get_target_type()->get_quantifier();
+
+    if (q == TypeConstants::QUANT_STAR || q == TypeConstants::QUANT_PLUS)
+    {
+      const expr* argExpr = treatExpr->get_input();
+      return argExpr->is_map_internal(e, found);
+    }
+
+    return false;
+  }
+
+  case promote_expr_kind:
+  {
+    const promote_expr* promoteExpr = static_cast<const promote_expr*>(this);
+    TypeConstants::quantifier_t q = promoteExpr->get_target_type()->get_quantifier();
+
+    if (q == TypeConstants::QUANT_STAR || q == TypeConstants::QUANT_PLUS)
+    {
+      const expr* argExpr = promoteExpr->get_input();
+      return argExpr->is_map_internal(e, found);
+    }
+
+    return false;
+  }
+
+  case instanceof_expr_kind:
+  case castable_expr_kind:
+  case name_cast_expr_kind:
+  case cast_expr_kind:
+  case validate_expr_kind:
+    return false;
+
+  case doc_expr_kind:
+  case elem_expr_kind:
+  case attr_expr_kind:
+  case text_expr_kind:
+  case pi_expr_kind:
+    return false;
+
+  case extension_expr_kind:
+   return false;
+
+  case transform_expr_kind:
+    ZORBA_ASSERT(false); // TODO
+
+  case insert_expr_kind:
+  case delete_expr_kind:
+  case rename_expr_kind:
+  case replace_expr_kind:
+    return false;
+
+  case eval_expr_kind:
+    return false; // TODO
+
+  case sequential_expr_kind:
+  case exit_expr_kind:
+  case flowctl_expr_kind:
+  case while_expr_kind:
+   ZORBA_ASSERT(false);
+
+  default:
+    ZORBA_ASSERT(false);
+  }
+
+  return true;
 }
 
 
