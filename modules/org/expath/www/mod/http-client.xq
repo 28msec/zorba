@@ -1,5 +1,5 @@
 (:
- : Copyright 2006-2008 The FLWOR Foundation.
+ : Copyright 2006-2009 The FLWOR Foundation.
  :
  : Licensed under the Apache License, Version 2.0 (the "License");
  : you may not use this file except in compliance with the License.
@@ -19,9 +19,10 @@
  : and handle responses. This is quite a low-level functionality, allowing
  : one to deal with most aspects of the HTTP protocol.
  :
- : @see http://www.expath.org/modules/http-client/
+ : @see <a href="http://www.expath.org/modules/http-client/">http://www.expath.org/modules/http-client/</a>
  : @version Candidate 13 April 2009
-:)
+ : @author Markus Pilman
+ :)
 module namespace http = "http://www.expath.org/mod/http-client";
 
 import module namespace httpclientimpl = "http://www.expath.org/mod/httpclientimpl";

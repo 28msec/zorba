@@ -1,16 +1,28 @@
-(:~
- : Module Name: eXcel-math
- : Module Version: 0.1
- : Date: August 1, 2009
- : Copyright:  2006-2008 The FLWOR Foundation. Licensed under the Apache License, Version 2.0.
- : Proprietary XQuery Extensions Used: None
- : XQuery Specification: January 2007
- : Module Overview: This is a library module offering the same set of functions
- : defined by Microsoft Excel into 
- : @see http://office.microsoft.com/en-us/excel/CH062528291033.aspx
- : @author  Daniel Turcanu
- :)
+(:
+ : Copyright 2006-2009 The FLWOR Foundation.
+ :
+ : Licensed under the Apache License, Version 2.0 (the "License");
+ : you may not use this file except in compliance with the License.
+ : You may obtain a copy of the License at
+ :
+ : http://www.apache.org/licenses/LICENSE-2.0
+ :
+ : Unless required by applicable law or agreed to in writing, software
+ : distributed under the License is distributed on an "AS IS" BASIS,
+ : WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ : See the License for the specific language governing permissions and
+ : limitations under the License.
+:)
 
+(:~
+ : This is a library module offering the same set of functions
+ : defined by Microsoft Excel.
+
+ : @see <a href="http://office.microsoft.com/en-us/excel/CH062528291033.aspx">Excel Documentation</a>
+ : @spec XQuery Specification: January 2007
+ : @author Daniel Turcanu
+ : @version 1.0 
+ :)
 module namespace  excel = "http://www.zorba-xquery.com/modules/excel/math" ;
 
 import module namespace excel-err="http://www.zorba-xquery.com/modules/excel/errors";

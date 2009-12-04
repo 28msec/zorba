@@ -1,20 +1,30 @@
-
 (:
- : --------------------------------
- : The eXcel XQuery Function Library - Math
- : --------------------------------
- : @version 1.0
- : @author  Daniel Turcanu
- :)
+ : Copyright 2006-2009 The FLWOR Foundation.
+ :
+ : Licensed under the Apache License, Version 2.0 (the "License");
+ : you may not use this file except in compliance with the License.
+ : You may obtain a copy of the License at
+ :
+ : http://www.apache.org/licenses/LICENSE-2.0
+ :
+ : Unless required by applicable law or agreed to in writing, software
+ : distributed under the License is distributed on an "AS IS" BASIS,
+ : WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ : See the License for the specific language governing permissions and
+ : limitations under the License.
+:)
 
 (:~
-  Module implementing the sumproduct functions from Excel math library.
-  There are 30 functions defined, implementing the same function
-  but with 1 to 30 parameters.
-  Each parameter can be a sequence of infinite length.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-:)
+ : Module implementing the sumproduct functions from Excel math library.
+ : There are 30 functions defined, implementing the same function
+ : but with 1 to 30 parameters.
+ : Each parameter can be a sequence of infinite length.
+ :
+ : @see <a href="http://office.microsoft.com/en-us/excel/HP052092931033.aspx">Excel Documentation</a>
+ : @spec XQuery Specification: January 2007
+ : @author Daniel Turcanu
+ : @version 1.0 
+ :)
 module namespace  excel = "http://www.zorba-xquery.com/modules/excel/math-sumproduct";
 
 import module namespace excel-math = "http://www.zorba-xquery.com/modules/excel/math";

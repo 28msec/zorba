@@ -1,5 +1,5 @@
 (:
- : Copyright 2006-2008 The FLWOR Foundation.
+ : Copyright 2006-2009 The FLWOR Foundation.
  :
  : Licensed under the Apache License, Version 2.0 (the "License");
  : you may not use this file except in compliance with the License.
@@ -20,7 +20,8 @@
  : module http://www.expath.org/mod/http-client instead.
  :
  : @see http://www.expath.org/mod/http-client
-:)
+ : @author Markus Pilman
+ :)
 module namespace httpclientimpl = 'http://www.expath.org/mod/httpclientimpl';
 
 import schema namespace http = "http://www.expath.org/mod/http-client";

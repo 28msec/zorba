@@ -72,7 +72,7 @@ declare function xhtml:annotations($comment) {
                         then "Errors:"
                         else concat(upper-case(substring($annName, 1, 1)), substring($annName, 2), ":")
             }</h4>,
-            <p class="annotationText">{$annotation/text()}</p>
+            <p class="annotationText">{$annotation}</p>
         )
 };
 
@@ -82,7 +82,7 @@ declare function xhtml:return($comment) {
     return
         if (exists($return)) then (
             <h4>Returns:</h4>,
-            <p class="annotationText">{$return/text()}</p>
+            <p class="annotationText">{$return}</p>
         ) else ()
 };
 
