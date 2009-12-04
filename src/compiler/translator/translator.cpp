@@ -6771,15 +6771,15 @@ void end_visit (const OrderedExpr& v, void* /*visit_state*/)
 /*******************************************************************************
   [115] UnorderedExpr ::= "unordered" "{" Expr "}"
 ********************************************************************************/
-void *begin_visit (const UnorderedExpr& v) 
+void* begin_visit(const UnorderedExpr& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
 void end_visit (const UnorderedExpr& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
   nodestack.push(new order_expr(sctxid(),
                                 loc,
