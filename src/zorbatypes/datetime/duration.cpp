@@ -421,9 +421,11 @@ void Duration::adjustToFacet()
   if (facet == YEARMONTHDURATION_FACET)
     for (int i=FRACSECONDS_DATA; i>=DAY_DATA; i--)
     {
-      if (data[i] >= max_value[i]/2 && !is_negative)
+      if ((data[i] >= max_value[i]/2 && !is_negative)
+          ||
+          (data[i] > max_value[i]/2 && is_negative))
         data[i-1] += 1;
-      
+
       data[i] = 0;
     }
 
