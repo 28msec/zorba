@@ -56,4 +56,48 @@
 
 </zorba:iterator>
 
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="IsAvailableIndexIterator">
+
+    <zorba:description author="Zorba Team">
+      dc:is-available-index
+    </zorba:description>
+
+    <zorba:function requiresDynamicContext="true">
+      <zorba:signature localname="is-available-index"
+                       prefix="fn-zorba-introspect-dctx">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="AvailableIndexesIterator">
+
+    <zorba:description author="Zorba Team">
+      dc:available-indexes
+    </zorba:description>
+
+    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
+      <zorba:member type="store::Iterator_t" name="nameItState"
+                    brief="the current iterator"/>
+    </zorba:state>
+  
+    <zorba:function requiresDynamicContext="true">
+      <zorba:signature localname="available-indexes"
+                       prefix="fn-zorba-introspect-dctx">
+        <zorba:output>xs:QName*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+</zorba:iterator>
+
 </zorba:iterators>

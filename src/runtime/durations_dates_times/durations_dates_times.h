@@ -35,8 +35,7 @@ namespace zorba {
 
 /**
  * fn:years-from-duration
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class YearsFromDurationIterator : public NaryBaseIterator <YearsFromDurationIterator, PlanIteratorState>
 { 
@@ -69,8 +68,7 @@ public:
 
 /**
  * fn:months-from-duration
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class MonthsFromDurationIterator : public NaryBaseIterator <MonthsFromDurationIterator, PlanIteratorState>
 { 
@@ -103,8 +101,7 @@ public:
 
 /**
  * fn:days-from-duration
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class DaysFromDurationIterator : public NaryBaseIterator <DaysFromDurationIterator, PlanIteratorState>
 { 
@@ -137,8 +134,7 @@ public:
 
 /**
  * fn:hours-from-duration
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class HoursFromDurationIterator : public NaryBaseIterator <HoursFromDurationIterator, PlanIteratorState>
 { 
@@ -171,8 +167,7 @@ public:
 
 /**
  * fn:minutes-from-duration
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class MinutesFromDurationIterator : public NaryBaseIterator <MinutesFromDurationIterator, PlanIteratorState>
 { 
@@ -205,8 +200,7 @@ public:
 
 /**
  * fn:seconds-from-duration
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class SecondsFromDurationIterator : public NaryBaseIterator <SecondsFromDurationIterator, PlanIteratorState>
 { 
@@ -239,8 +233,7 @@ public:
 
 /**
  * fn:year-from-dateTime
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class YearFromDatetimeIterator : public NaryBaseIterator <YearFromDatetimeIterator, PlanIteratorState>
 { 
@@ -273,8 +266,7 @@ public:
 
 /**
  * fn:month-from-dateTime
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class MonthFromDatetimeIterator : public NaryBaseIterator <MonthFromDatetimeIterator, PlanIteratorState>
 { 
@@ -307,8 +299,7 @@ public:
 
 /**
  * fn:day-from-dateTime
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class DayFromDatetimeIterator : public NaryBaseIterator <DayFromDatetimeIterator, PlanIteratorState>
 { 
@@ -341,8 +332,7 @@ public:
 
 /**
  * fn:hours-from-dateTime
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class HoursFromDatetimeIterator : public NaryBaseIterator <HoursFromDatetimeIterator, PlanIteratorState>
 { 
@@ -375,8 +365,7 @@ public:
 
 /**
  * fn:minutes-from-dateTime
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class MinutesFromDatetimeIterator : public NaryBaseIterator <MinutesFromDatetimeIterator, PlanIteratorState>
 { 
@@ -409,8 +398,7 @@ public:
 
 /**
  * fn:seconds-from-dateTime
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class SecondsFromDatetimeIterator : public NaryBaseIterator <SecondsFromDatetimeIterator, PlanIteratorState>
 { 
@@ -443,8 +431,7 @@ public:
 
 /**
  * fn:timezone-from-dateTime
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class TimezoneFromDatetimeIterator : public NaryBaseIterator <TimezoneFromDatetimeIterator, PlanIteratorState>
 { 
@@ -477,8 +464,7 @@ public:
 
 /**
  * fn:year-from-date
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class YearFromDateIterator : public NaryBaseIterator <YearFromDateIterator, PlanIteratorState>
 { 
@@ -511,8 +497,7 @@ public:
 
 /**
  * fn:month-from-date
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class MonthFromDateIterator : public NaryBaseIterator <MonthFromDateIterator, PlanIteratorState>
 { 
@@ -545,8 +530,7 @@ public:
 
 /**
  * fn:day-from-date
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class DayFromDateIterator : public NaryBaseIterator <DayFromDateIterator, PlanIteratorState>
 { 
@@ -579,8 +563,7 @@ public:
 
 /**
  * fn:timezone-from-date
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class TimezoneFromDateIterator : public NaryBaseIterator <TimezoneFromDateIterator, PlanIteratorState>
 { 
@@ -613,8 +596,7 @@ public:
 
 /**
  * fn:hours-from-time
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class HoursFromTimeIterator : public NaryBaseIterator <HoursFromTimeIterator, PlanIteratorState>
 { 
@@ -647,8 +629,7 @@ public:
 
 /**
  * fn:minutes-from-time
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class MinutesFromTimeIterator : public NaryBaseIterator <MinutesFromTimeIterator, PlanIteratorState>
 { 
@@ -681,8 +662,7 @@ public:
 
 /**
  * fn:seconds-from-time
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class SecondsFromTimeIterator : public NaryBaseIterator <SecondsFromTimeIterator, PlanIteratorState>
 { 
@@ -715,8 +695,7 @@ public:
 
 /**
  * fn:timezone-from-time
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class TimezoneFromTimeIterator : public NaryBaseIterator <TimezoneFromTimeIterator, PlanIteratorState>
 { 
@@ -749,8 +728,7 @@ public:
 
 /**
  * zorba:timestamp
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class TimestampIterator : public NaryBaseIterator <TimestampIterator, PlanIteratorState>
 { 

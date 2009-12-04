@@ -55,6 +55,7 @@ LIST(APPEND FUNCTIONS_SRCS
     durations_dates_times_impl.cpp
     sequences_impl.cpp
     fnerror_impl.cpp
+    index_ddl_impl.cpp
     Alexis.cpp
     arithmetic.cpp
     EnclosedExpr.cpp
@@ -67,7 +68,6 @@ LIST(APPEND FUNCTIONS_SRCS
     signature.cpp
     tuple_functions.cpp
     InternalOperators.cpp
-    Index.cpp
     nodeid_internal.cpp)
 
 IF (ZORBA_WITH_REST)

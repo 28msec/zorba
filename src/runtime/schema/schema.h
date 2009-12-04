@@ -37,8 +37,7 @@ namespace zorba {
 #ifndef ZORBA_NO_XMLSCHEMA
 /**
  * iterator backing the validate expression
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class ValidateIterator : public UnaryBaseIterator <ValidateIterator, PlanIteratorState>
 { 
@@ -78,8 +77,7 @@ public:
 
 /**
  * iterator backing the validate expression
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class ZorbaSchemaTypeIterator : public NaryBaseIterator <ZorbaSchemaTypeIterator, PlanIteratorState>
 { 

@@ -34,9 +34,10 @@
 namespace zorba {
 
 /**
- * Helper Iterator to produce a defined amount of integer items for testing purposes
  * 
- * Author: Zorba Team * 
+ *Helper Iterator to produce a defined amount of integer items for testing purposes
+ *
+ * Author: Zorba Team
  */
 class NumGenIteratorState : public PlanIteratorState
 {
@@ -82,8 +83,7 @@ public:
 
 /**
  * Function for generating a random integer.
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class RandomIterator : public NaryBaseIterator <RandomIterator, PlanIteratorState>
 { 
@@ -116,8 +116,7 @@ public:
 
 /**
  * generates UUID
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class UuidIterator : public NaryBaseIterator <UuidIterator, PlanIteratorState>
 { 

@@ -34,9 +34,10 @@
 namespace zorba {
 
 /**
- * fn:collection
  * 
- * Author: Zorba Team * 
+ *      fn:collection
+ *    
+ * Author: Zorba Team
  */
 class FnCollectionIteratorState : public PlanIteratorState
 {
@@ -82,9 +83,10 @@ public:
 
 
 /**
- * zorba:collection
  * 
- * Author: Zorba Team * 
+ *      zorba:collection
+ *    
+ * Author: Zorba Team
  */
 class ZorbaCollectionIteratorState : public PlanIteratorState
 {
@@ -130,9 +132,10 @@ public:
 
 
 /**
- * zorba:index-of
  * 
- * Author: Zorba Team * 
+ *      zorba:index-of
+ *    
+ * Author: Zorba Team
  */
 class ZorbaIndexOfIterator : public NaryBaseIterator <ZorbaIndexOfIterator, PlanIteratorState>
 { 
@@ -164,9 +167,10 @@ public:
 
 
 /**
- * zorba:create-collection
  * 
- * Author: Zorba Team * 
+ *      zorba:create-collection
+ *    
+ * Author: Zorba Team
  */
 class ZorbaCreateCollectionIterator : public NaryBaseIterator <ZorbaCreateCollectionIterator, PlanIteratorState>
 { 
@@ -198,9 +202,10 @@ public:
 
 
 /**
- * zorba:delete-collection
  * 
- * Author: Zorba Team * 
+ *      zorba:delete-collection
+ *    
+ * Author: Zorba Team
  */
 class ZorbaDeleteCollectionIterator : public NaryBaseIterator <ZorbaDeleteCollectionIterator, PlanIteratorState>
 { 
@@ -232,9 +237,10 @@ public:
 
 
 /**
- * zorba:insert-nodes-first
  * 
- * Author: Zorba Team * 
+ *      zorba:insert-nodes-first
+ *    
+ * Author: Zorba Team
  */
 class ZorbaInsertNodesFirstIterator : public NaryBaseIterator <ZorbaInsertNodesFirstIterator, PlanIteratorState>
 { 
@@ -266,9 +272,10 @@ public:
 
 
 /**
- * zorba:insert-nodes-last
  * 
- * Author: Zorba Team * 
+ *      zorba:insert-nodes-last
+ *    
+ * Author: Zorba Team
  */
 class ZorbaInsertNodesLastIterator : public NaryBaseIterator <ZorbaInsertNodesLastIterator, PlanIteratorState>
 { 
@@ -300,43 +307,10 @@ public:
 
 
 /**
- * zorba:insert-nodes-at
  * 
- * Author: Zorba Team * 
- */
-class ZorbaInsertNodesAtIterator : public NaryBaseIterator <ZorbaInsertNodesAtIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(ZorbaInsertNodesAtIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaInsertNodesAtIterator,
-    NaryBaseIterator <ZorbaInsertNodesAtIterator, PlanIteratorState>);
-
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator <ZorbaInsertNodesAtIterator, PlanIteratorState>*)this);
-  }
-
-  ZorbaInsertNodesAtIterator(
-    static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <ZorbaInsertNodesAtIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
-
-  virtual ~ZorbaInsertNodesAtIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * zorba:insert-nodes-before
- * 
- * Author: Zorba Team * 
+ *      zorba:insert-nodes-before
+ *    
+ * Author: Zorba Team
  */
 class ZorbaInsertNodesBeforeIterator : public NaryBaseIterator <ZorbaInsertNodesBeforeIterator, PlanIteratorState>
 { 
@@ -368,9 +342,10 @@ public:
 
 
 /**
- * zorba:insert-nodes-after
  * 
- * Author: Zorba Team * 
+ *      zorba:insert-nodes-after
+ *    
+ * Author: Zorba Team
  */
 class ZorbaInsertNodesAfterIterator : public NaryBaseIterator <ZorbaInsertNodesAfterIterator, PlanIteratorState>
 { 
@@ -402,66 +377,33 @@ public:
 
 
 /**
- * zorba:remove-nodes
  * 
- * Author: Zorba Team * 
+ *      zorba:delete-nodes
+ *    
+ * Author: Zorba Team
  */
-class ZorbaRemoveNodesIterator : public NaryBaseIterator <ZorbaRemoveNodesIterator, PlanIteratorState>
+class ZorbaDeleteNodesIterator : public NaryBaseIterator <ZorbaDeleteNodesIterator, PlanIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(ZorbaRemoveNodesIterator);
+  SERIALIZABLE_CLASS(ZorbaDeleteNodesIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaRemoveNodesIterator,
-    NaryBaseIterator <ZorbaRemoveNodesIterator, PlanIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaDeleteNodesIterator,
+    NaryBaseIterator <ZorbaDeleteNodesIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <ZorbaRemoveNodesIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator <ZorbaDeleteNodesIterator, PlanIteratorState>*)this);
   }
 
-  ZorbaRemoveNodesIterator(
+  ZorbaDeleteNodesIterator(
     static_context* sctx,
     const QueryLoc& loc
     , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <ZorbaRemoveNodesIterator, PlanIteratorState>
+    : NaryBaseIterator <ZorbaDeleteNodesIterator, PlanIteratorState>
     (sctx, loc, aChildren) {}
 
-  virtual ~ZorbaRemoveNodesIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * zorba:remove-node-at TODO: deprecate
- * 
- * Author: Zorba Team * 
- */
-class ZorbaRemoveNodeAtIterator : public NaryBaseIterator <ZorbaRemoveNodeAtIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(ZorbaRemoveNodeAtIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaRemoveNodeAtIterator,
-    NaryBaseIterator <ZorbaRemoveNodeAtIterator, PlanIteratorState>);
-
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator <ZorbaRemoveNodeAtIterator, PlanIteratorState>*)this);
-  }
-
-  ZorbaRemoveNodeAtIterator(
-    static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <ZorbaRemoveNodeAtIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
-
-  virtual ~ZorbaRemoveNodeAtIterator();
+  virtual ~ZorbaDeleteNodesIterator();
 
   void accept(PlanIterVisitor& v) const;
 

@@ -36,8 +36,7 @@ namespace zorba {
 
 /**
  * math:sqrt
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class SqrtIterator : public UnaryBaseIterator <SqrtIterator, PlanIteratorState>
 { 
@@ -70,8 +69,7 @@ public:
 
 /**
  * math:exp
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class ExpIterator : public UnaryBaseIterator <ExpIterator, PlanIteratorState>
 { 
@@ -104,8 +102,7 @@ public:
 
 /**
  * math:log
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class LogIterator : public UnaryBaseIterator <LogIterator, PlanIteratorState>
 { 
@@ -138,8 +135,7 @@ public:
 
 /**
  * math:sin
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class SinIterator : public UnaryBaseIterator <SinIterator, PlanIteratorState>
 { 
@@ -172,8 +168,7 @@ public:
 
 /**
  * math:cos
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class CosIterator : public UnaryBaseIterator <CosIterator, PlanIteratorState>
 { 
@@ -206,8 +201,7 @@ public:
 
 /**
  * math:tan
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class TanIterator : public UnaryBaseIterator <TanIterator, PlanIteratorState>
 { 
@@ -240,8 +234,7 @@ public:
 
 /**
  * math:asin
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class ArcSinIterator : public UnaryBaseIterator <ArcSinIterator, PlanIteratorState>
 { 
@@ -274,8 +267,7 @@ public:
 
 /**
  * math:acos
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class ArcCosIterator : public UnaryBaseIterator <ArcCosIterator, PlanIteratorState>
 { 
@@ -308,8 +300,7 @@ public:
 
 /**
  * math:atan
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class ArcTanIterator : public UnaryBaseIterator <ArcTanIterator, PlanIteratorState>
 { 
@@ -342,8 +333,7 @@ public:
 
 /**
  * math:atan2
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class Atan2Iterator : public BinaryBaseIterator <Atan2Iterator, PlanIteratorState>
 { 
@@ -376,8 +366,7 @@ public:
 
 /**
  * math:cosh
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class CoshIterator : public UnaryBaseIterator <CoshIterator, PlanIteratorState>
 { 
@@ -410,8 +399,7 @@ public:
 
 /**
  * math:acosh
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class AcoshIterator : public UnaryBaseIterator <AcoshIterator, PlanIteratorState>
 { 
@@ -444,8 +432,7 @@ public:
 
 /**
  * math:fmod
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class FmodIterator : public BinaryBaseIterator <FmodIterator, PlanIteratorState>
 { 
@@ -478,8 +465,7 @@ public:
 
 /**
  * math:ldexp
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class LdexpIterator : public BinaryBaseIterator <LdexpIterator, PlanIteratorState>
 { 
@@ -512,8 +498,7 @@ public:
 
 /**
  * math:log10
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class Log10Iterator : public UnaryBaseIterator <Log10Iterator, PlanIteratorState>
 { 
@@ -546,8 +531,7 @@ public:
 
 /**
  * math:pow
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class PowIterator : public BinaryBaseIterator <PowIterator, PlanIteratorState>
 { 
@@ -580,8 +564,7 @@ public:
 
 /**
  * math:sinh
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class SinhIterator : public UnaryBaseIterator <SinhIterator, PlanIteratorState>
 { 
@@ -614,8 +597,7 @@ public:
 
 /**
  * math:asinh
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class AsinhIterator : public UnaryBaseIterator <AsinhIterator, PlanIteratorState>
 { 
@@ -648,8 +630,7 @@ public:
 
 /**
  * math:tanh
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class TanhIterator : public UnaryBaseIterator <TanhIterator, PlanIteratorState>
 { 
@@ -682,8 +663,7 @@ public:
 
 /**
  * math:atanh
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class AtanhIterator : public UnaryBaseIterator <AtanhIterator, PlanIteratorState>
 { 
@@ -716,8 +696,7 @@ public:
 
 /**
  * math:pi
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class PiNumberIterator : public NoaryBaseIterator <PiNumberIterator, PlanIteratorState>
 { 
@@ -750,8 +729,7 @@ public:
 
 /**
  * math:isInf
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class IsInfIterator : public UnaryBaseIterator <IsInfIterator, PlanIteratorState>
 { 
@@ -784,8 +762,7 @@ public:
 
 /**
  * math:isNaN
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class IsNaNIterator : public UnaryBaseIterator <IsNaNIterator, PlanIteratorState>
 { 
@@ -818,8 +795,7 @@ public:
 
 /**
  * math:modf
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class ModfIteratorState : public PlanIteratorState
 {
@@ -865,8 +841,7 @@ public:
 
 /**
  * math:frexp
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class FrexpIteratorState : public PlanIteratorState
 {

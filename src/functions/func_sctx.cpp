@@ -50,6 +50,26 @@ PlanIter_t fn_zorba_introspect_sctx_declared_collections::codegen(
   return new DeclaredCollectionsIterator ( sctx, loc, argv);
 }
 
+PlanIter_t fn_zorba_introspect_sctx_is_declared_index::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new IsDeclaredIndexIterator ( sctx, loc, argv);
+}
+
+PlanIter_t fn_zorba_introspect_sctx_declared_indexes::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new DeclaredIndexesIterator ( sctx, loc, argv);
+}
+
 void populate_context_sctx(static_context* sctx) {
   DECL(sctx, fn_zorba_introspect_sctx_is_declared_collection,
       (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","is-declared-collection"),
@@ -59,6 +79,17 @@ void populate_context_sctx(static_context* sctx) {
 
   DECL(sctx, fn_zorba_introspect_sctx_declared_collections,
       (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","declared-collections"),
+      GENV_TYPESYSTEM.QNAME_TYPE_STAR));
+
+
+  DECL(sctx, fn_zorba_introspect_sctx_is_declared_index,
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","is-declared-index"),
+      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+
+
+  DECL(sctx, fn_zorba_introspect_sctx_declared_indexes,
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","declared-indexes"),
       GENV_TYPESYSTEM.QNAME_TYPE_STAR));
 
 }

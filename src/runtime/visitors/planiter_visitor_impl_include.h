@@ -70,16 +70,6 @@
   template < class DivideOperation, TypeConstants::atomic_type_code_t > class SpecificNumArithIterator;
   template < TypeConstants::atomic_type_code_t > class TypedValueCompareIterator;
 
-  class CreateInternalIndexIterator;
-  class RebuildIndexIterator;
-  class IndexEntryBuilderIterator;
-  class IndexPointProbeIterator;
-  class IndexRangeProbeIterator;
-  class IsAvailableIndexIterator;
-  class AvailableIndexesIterator;
-  class IsDeclaredIndexIterator;
-  class DeclaredIndexesIterator;
-
   class OpNumericUnaryIterator;
 
   class FnIdIterator;

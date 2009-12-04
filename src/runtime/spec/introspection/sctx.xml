@@ -60,5 +60,53 @@
   
 </zorba:iterator>
 
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="IsDeclaredIndexIterator">
+
+    <zorba:description author="Zorba Team">
+      sc:is-declared-index
+    </zorba:description>
+
+    <zorba:state generateInit="true" generateReset="true">
+      <zorba:member type="store::Iterator_t" name="nameItState"
+                    brief="the current iterator"/>
+    </zorba:state>
+
+    <zorba:function> 
+      <zorba:signature localname="is-declared-index"
+                       prefix="fn-zorba-introspect-sctx">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="DeclaredIndexesIterator">
+
+    <zorba:description author="Zorba Team">
+      sc:declared-indexes
+    </zorba:description>
+
+    <zorba:state generateInit="true" generateReset="false" generateDestructor="false">
+      <zorba:member type="store::Iterator_t" name="nameItState" defaultValue="NULL"
+                    brief="the current iterator"/>
+    </zorba:state>
+
+    <zorba:function> 
+      <zorba:signature localname="declared-indexes"
+                       prefix="fn-zorba-introspect-sctx">
+        <zorba:output>xs:QName*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+  
+</zorba:iterator>
 
 </zorba:iterators>

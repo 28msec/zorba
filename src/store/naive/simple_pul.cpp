@@ -135,7 +135,7 @@ PULImpl::~PULImpl()
   cleanList(thePutList);
 
   cleanList(theCreateIndexList);
-  cleanList(theRebuildIndexList);
+  cleanList(theRefreshIndexList);
   cleanList(theDeleteIndexList);
 
   cleanList(theValidationList);
@@ -812,25 +812,14 @@ void PULImpl::addInsertAtIntoCollection(
 }
 
 
-void PULImpl::addRemoveFromCollection(
+void PULImpl::addDeleteFromCollection(
     store::Item_t& name,
     std::vector<store::Item_t>& nodes)
 {
   CollectionPul* pul = getCollectionPul(name.getp());
 
   pul->theDeleteFromCollectionList.push_back(
-  new UpdRemoveNodesFromCollection(pul, name, nodes));
-}
-
-
-void PULImpl::addRemoveAtFromCollection(
-    store::Item_t& name,
-    ulong pos)
-{
-  CollectionPul* pul = getCollectionPul(name.getp());
-
-  pul->theDeleteFromCollectionList.push_back(
-  new UpdRemoveNodeAtFromCollection(pul, name, pos));
+  new UpdDeleteNodesFromCollection(pul, name, nodes));
 }
 
 
@@ -854,12 +843,12 @@ void PULImpl::addDeleteIndex(const store::Item_t& qname)
 }
 
 
-void PULImpl::addRebuildIndex(
+void PULImpl::addRefreshIndex(
     const store::Item_t& qname,
     store::Iterator* sourceIter)
 {
-  UpdatePrimitive* upd = new UpdRebuildIndex(this, qname, sourceIter);
-  theRebuildIndexList.push_back(upd);
+  UpdatePrimitive* upd = new UpdRefreshIndex(this, qname, sourceIter);
+  theRefreshIndexList.push_back(upd);
 }
 
 
@@ -988,8 +977,8 @@ void PULImpl::mergeUpdates(store::Item* other)
                   UP_LIST_NONE);
 
   mergeUpdateList(NULL,
-                  theRebuildIndexList,
-                  otherp->theRebuildIndexList,
+                  theRefreshIndexList,
+                  otherp->theRefreshIndexList,
                   UP_LIST_NONE);
 }
 
@@ -1325,7 +1314,7 @@ void PULImpl::applyUpdates()
 
   applyList(thePutList);
 
-  applyList(theRebuildIndexList);
+  applyList(theRefreshIndexList);
   applyList(theCreateIndexList);
   applyList(theDeleteIndexList);
 
@@ -1360,7 +1349,7 @@ void PULImpl::undoUpdates()
 
     undoList(theDeleteIndexList);
     undoList(theCreateIndexList);
-    undoList(theRebuildIndexList);
+    undoList(theRefreshIndexList);
 
     //theNoCollectionPul.undoUpdates();
 

@@ -50,6 +50,26 @@ PlanIter_t fn_zorba_introspect_dctx_available_collections::codegen(
   return new AvailableCollectionsIterator ( sctx, loc, argv);
 }
 
+PlanIter_t fn_zorba_introspect_dctx_is_available_index::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new IsAvailableIndexIterator ( sctx, loc, argv);
+}
+
+PlanIter_t fn_zorba_introspect_dctx_available_indexes::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new AvailableIndexesIterator ( sctx, loc, argv);
+}
+
 void populate_context_dctx(static_context* sctx) {
   DECL(sctx, fn_zorba_introspect_dctx_is_available_collection,
       (createQName("http://www.zorba-xquery.com/modules/introspection/dctx","fn-zorba-introspect-dctx","is-available-collection"),
@@ -59,6 +79,17 @@ void populate_context_dctx(static_context* sctx) {
 
   DECL(sctx, fn_zorba_introspect_dctx_available_collections,
       (createQName("http://www.zorba-xquery.com/modules/introspection/dctx","fn-zorba-introspect-dctx","available-collections"),
+      GENV_TYPESYSTEM.QNAME_TYPE_STAR));
+
+
+  DECL(sctx, fn_zorba_introspect_dctx_is_available_index,
+      (createQName("http://www.zorba-xquery.com/modules/introspection/dctx","fn-zorba-introspect-dctx","is-available-index"),
+      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+
+
+  DECL(sctx, fn_zorba_introspect_dctx_available_indexes,
+      (createQName("http://www.zorba-xquery.com/modules/introspection/dctx","fn-zorba-introspect-dctx","available-indexes"),
       GENV_TYPESYSTEM.QNAME_TYPE_STAR));
 
 }

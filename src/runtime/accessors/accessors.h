@@ -35,8 +35,7 @@ namespace zorba {
 
 /**
  * fn:node-name
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class NodeNameIterator : public NaryBaseIterator <NodeNameIterator, PlanIteratorState>
 { 
@@ -69,8 +68,7 @@ public:
 
 /**
  * fn:nilled
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class NilledIterator : public NaryBaseIterator <NilledIterator, PlanIteratorState>
 { 
@@ -103,8 +101,7 @@ public:
 
 /**
  * fn:string
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class FnStringIteratorState : public PlanIteratorState
 {
@@ -158,8 +155,7 @@ public:
 
 /**
  * fn:data
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class FnDataIteratorState : public PlanIteratorState
 {
@@ -205,8 +201,7 @@ public:
 
 /**
  * fn:base-uri
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class BaseUriIterator : public NaryBaseIterator <BaseUriIterator, PlanIteratorState>
 { 
@@ -239,8 +234,7 @@ public:
 
 /**
  * fn:document-uri
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class DocumentUriIterator : public NaryBaseIterator <DocumentUriIterator, PlanIteratorState>
 { 
@@ -273,8 +267,7 @@ public:
 
 /**
  * fn:root
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class RootIterator : public NaryBaseIterator <RootIterator, PlanIteratorState>
 { 

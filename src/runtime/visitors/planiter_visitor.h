@@ -68,15 +68,11 @@ namespace zorba{
 
     class ZorbaInsertNodesLastIterator;
 
-    class ZorbaInsertNodesAtIterator;
-
     class ZorbaInsertNodesBeforeIterator;
 
     class ZorbaInsertNodesAfterIterator;
 
-    class ZorbaRemoveNodesIterator;
-
-    class ZorbaRemoveNodeAtIterator;
+    class ZorbaDeleteNodesIterator;
 
     class CurrentDateTimeIterator;
 
@@ -158,13 +154,31 @@ namespace zorba{
 
     class DeleteIndexIterator;
 
+    class CreateInternalIndexIterator;
+
+    class RefreshIndexIterator;
+
+    class IndexEntryBuilderIterator;
+
+    class IndexPointProbeIterator;
+
+    class IndexRangeProbeIterator;
+
     class IsAvailableCollectionIterator;
 
     class AvailableCollectionsIterator;
 
+    class IsAvailableIndexIterator;
+
+    class AvailableIndexesIterator;
+
     class IsDeclaredCollectionIterator;
 
     class DeclaredCollectionsIterator;
+
+    class IsDeclaredIndexIterator;
+
+    class DeclaredIndexesIterator;
 
     class SqrtIterator;
 
@@ -443,20 +457,14 @@ public:
     virtual void beginVisit ( const ZorbaInsertNodesLastIterator& ) = 0;
     virtual void endVisit   ( const ZorbaInsertNodesLastIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaInsertNodesAtIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaInsertNodesAtIterator& ) = 0;
-
     virtual void beginVisit ( const ZorbaInsertNodesBeforeIterator& ) = 0;
     virtual void endVisit   ( const ZorbaInsertNodesBeforeIterator& ) = 0;
 
     virtual void beginVisit ( const ZorbaInsertNodesAfterIterator& ) = 0;
     virtual void endVisit   ( const ZorbaInsertNodesAfterIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaRemoveNodesIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaRemoveNodesIterator& ) = 0;
-
-    virtual void beginVisit ( const ZorbaRemoveNodeAtIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaRemoveNodeAtIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaDeleteNodesIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaDeleteNodesIterator& ) = 0;
 
     virtual void beginVisit ( const CurrentDateTimeIterator& ) = 0;
     virtual void endVisit   ( const CurrentDateTimeIterator& ) = 0;
@@ -578,17 +586,44 @@ public:
     virtual void beginVisit ( const DeleteIndexIterator& ) = 0;
     virtual void endVisit   ( const DeleteIndexIterator& ) = 0;
 
+    virtual void beginVisit ( const CreateInternalIndexIterator& ) = 0;
+    virtual void endVisit   ( const CreateInternalIndexIterator& ) = 0;
+
+    virtual void beginVisit ( const RefreshIndexIterator& ) = 0;
+    virtual void endVisit   ( const RefreshIndexIterator& ) = 0;
+
+    virtual void beginVisit ( const IndexEntryBuilderIterator& ) = 0;
+    virtual void endVisit   ( const IndexEntryBuilderIterator& ) = 0;
+
+    virtual void beginVisit ( const IndexPointProbeIterator& ) = 0;
+    virtual void endVisit   ( const IndexPointProbeIterator& ) = 0;
+
+    virtual void beginVisit ( const IndexRangeProbeIterator& ) = 0;
+    virtual void endVisit   ( const IndexRangeProbeIterator& ) = 0;
+
     virtual void beginVisit ( const IsAvailableCollectionIterator& ) = 0;
     virtual void endVisit   ( const IsAvailableCollectionIterator& ) = 0;
 
     virtual void beginVisit ( const AvailableCollectionsIterator& ) = 0;
     virtual void endVisit   ( const AvailableCollectionsIterator& ) = 0;
 
+    virtual void beginVisit ( const IsAvailableIndexIterator& ) = 0;
+    virtual void endVisit   ( const IsAvailableIndexIterator& ) = 0;
+
+    virtual void beginVisit ( const AvailableIndexesIterator& ) = 0;
+    virtual void endVisit   ( const AvailableIndexesIterator& ) = 0;
+
     virtual void beginVisit ( const IsDeclaredCollectionIterator& ) = 0;
     virtual void endVisit   ( const IsDeclaredCollectionIterator& ) = 0;
 
     virtual void beginVisit ( const DeclaredCollectionsIterator& ) = 0;
     virtual void endVisit   ( const DeclaredCollectionsIterator& ) = 0;
+
+    virtual void beginVisit ( const IsDeclaredIndexIterator& ) = 0;
+    virtual void endVisit   ( const IsDeclaredIndexIterator& ) = 0;
+
+    virtual void beginVisit ( const DeclaredIndexesIterator& ) = 0;
+    virtual void endVisit   ( const DeclaredIndexesIterator& ) = 0;
 
     virtual void beginVisit ( const SqrtIterator& ) = 0;
     virtual void endVisit   ( const SqrtIterator& ) = 0;

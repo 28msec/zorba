@@ -35,8 +35,7 @@ namespace zorba {
 
 /**
  * base64:decode
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class Base64DecodeIterator : public NaryBaseIterator <Base64DecodeIterator, PlanIteratorState>
 { 
@@ -69,8 +68,7 @@ public:
 
 /**
  * base64:encode
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class Base64EncodeIterator : public NaryBaseIterator <Base64EncodeIterator, PlanIteratorState>
 { 

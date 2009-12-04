@@ -1041,10 +1041,10 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class UpdRemoveNodesFromCollection: public  UpdCollection
+class UpdDeleteNodesFromCollection: public  UpdCollection
 {
 public:
-  UpdRemoveNodesFromCollection(
+  UpdDeleteNodesFromCollection(
         CollectionPul* pul,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes)
@@ -1056,36 +1056,6 @@ public:
   store::UpdateConsts::UpdPrimKind getKind() const
   { 
     return store::UpdateConsts::UP_REMOVE_FROM_COLLECTION;
-  }
-
-  void apply();
-  void undo();
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class UpdRemoveNodeAtFromCollection: public  UpdCollection
-{
-protected:
-  ulong         thePos;
-  store::Item_t theNode; // used for undo only
-
-public:
-  UpdRemoveNodeAtFromCollection(
-      CollectionPul* pul,
-      store::Item_t& name,
-      ulong pos)
-    :
-    UpdCollection(pul, name),
-    thePos(pos)
-  {
-  }
-
-  store::UpdateConsts::UpdPrimKind getKind() const
-  { 
-    return store::UpdateConsts::UP_REMOVE_AT_FROM_COLLECTION;
   }
 
   void apply();
@@ -1164,7 +1134,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class UpdRebuildIndex : public  UpdatePrimitive
+class UpdRefreshIndex : public  UpdatePrimitive
 {
   friend class PULImpl;
 
@@ -1175,7 +1145,7 @@ protected:
   store::Index_t       theIndex;
 
 public:
-  UpdRebuildIndex(
+  UpdRefreshIndex(
         PULImpl* pul,
         const store::Item_t& qname,
         store::Iterator* sourceIter)
@@ -1186,7 +1156,7 @@ public:
   {
   }
 
-  ~UpdRebuildIndex();
+  ~UpdRefreshIndex();
 
   store::UpdateConsts::UpdPrimKind getKind() const
   { 

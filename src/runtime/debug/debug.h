@@ -35,8 +35,7 @@ namespace zorba {
 
 /**
  * fn:trace
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class TraceIteratorState : public PlanIteratorState
 {
@@ -84,8 +83,7 @@ public:
 
 /**
  * op-zorba:read-line
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class ReadLineIterator : public NaryBaseIterator <ReadLineIterator, PlanIteratorState>
 { 
@@ -118,8 +116,7 @@ public:
 
 /**
  * op-zorba:print
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class PrintIterator : public NaryBaseIterator <PrintIterator, PlanIteratorState>
 { 

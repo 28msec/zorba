@@ -830,125 +830,6 @@ ZorbaInsertNodesAfterIterator::nextImpl(store::Item_t& result, PlanState& planSt
 
 
 /*******************************************************************************
-  declare updating function
-  insert-nodes-at($name as xs:QName,
-                  $position as xs:integer,
-                  $newnode  as node()*) as none
-
-  Inserts the node(s) into the given collection, at the specified position.
-  If $position is negative, the node(s) will be inserted at the beginning of
-  the collection. If $position is greater or equal to the number of nodes in
-  the collection, the node(s) will be inserted as the last node(s) of the
-  collection.
-
-  Error conditions:
-  - If the collection URI is empty and the default collection
-    is not defined in the dynamic context, FODC0002 is raised
-  - If the specified collection does not exist, an error is raised
-    (API0006_COLLECTION_NOT_FOUND - collection does not exist).
-  - If the node is already part of the collection an error is raised
-    (API0031_NODE_ALREADY_IN_COLLECTION).
-********************************************************************************/
-bool
-ZorbaInsertNodesAtIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  store::Collection_t              coll;
-  const StaticallyKnownCollection* lDeclColl;
-  store::Item_t                    lName, itemPos, tmpItem;
-  store::Item_t                    node;
-  store::Item_t                    copyNode;
-  std::vector<store::Item_t>       nodes;
-  std::auto_ptr<store::PUL>        pul;
-  xqp_uint                         pos;
-
-  store::CopyMode lCopyMode;
-  bool typePreserve;
-  bool nsPreserve;
-  bool nsInherit;
-
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  typePreserve = (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
-                  true : false);
-  nsPreserve = (theSctx->preserve_mode() == StaticContextConsts::preserve_ns ?
-                true : false);
-  nsInherit = (theSctx->inherit_mode() == StaticContextConsts::inherit_ns ?
-               true : false);
-
-  lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
-
-  consumeNext(lName, theChildren[0].getp(), planState);
-
-  lDeclColl = getDeclColl(theSctx, lName, loc);
-  coll = getCollection(theSctx, lName, loc);
-
-  // checking collection modifiers
-  switch(lDeclColl->getCollectionModifier()) {
-  case StaticContextConsts::const_:
-    ZORBA_ERROR_LOC_DESC_OSS(XDDY0003, loc, 
-      "insert-nodes-at has a const collection as first argument.");
-    break;
-  case StaticContextConsts::append_only:
-    ZORBA_ERROR_LOC_DESC_OSS(XDDY0004, loc, 
-      "insert-nodes-at has a append-only collection as first argument.");
-    break;
-  case StaticContextConsts::queue:
-    ZORBA_ERROR_LOC_DESC_OSS(XDDY0005, loc, 
-      "insert-nodes-at has a queue collection as first argument.");
-    break;
-  case StaticContextConsts::mutable_coll:
-    // good to go
-    break;
-  }
-
-  if(!consumeNext(itemPos, theChildren[theChildren.size()-2].getp(), planState)) 
-  {
-    ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
-                         "The empty-sequence is not allowed as second argument to insert-nodes-at");
-  }
-
-  if(consumeNext(tmpItem, theChildren[theChildren.size()-2].getp(), planState)) 
-  {
-    ZORBA_ERROR_LOC_DESC(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
-                         "A sequence with more then one item is not allowed as second argument to insert-nodes-at");
-  }
-
-  if(itemPos->getIntegerValue() < Integer::zero())
-  {
-    ZORBA_ERROR_LOC_DESC_OSS(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
-                             "The target position passed as second argument to insert-nodes-at (" 
-                              << itemPos->getStringValue() << ") must be positive");
-  }
-
-  NumConversions::strToUInt(itemPos->getIntegerValue().toString(), pos);
-
-  // create the pul and add the primitive
-  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
-
-  while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState))
-  {
-    checkNodeType(node, theSctx, lDeclColl, loc);
-    copyNode = node->copy(NULL, 0, lCopyMode);
-    nodes.push_back(copyNode);
-  }
-
-  pul->addInsertAtIntoCollection(lName,
-                                 pos,
-                                 nodes);
-
-  // this should not be necessary. we reset everything in the sequential iterator
-  theChildren[theChildren.size()-2]->reset(planState);
-  theChildren[theChildren.size()-1]->reset(planState);
-
-  result = pul.release();
-  STACK_PUSH( result != NULL, state);
-
-  STACK_END (state);
-}
-
-
-/*******************************************************************************
   declare updating function remove-nodes($name     as xs:QName,
                                          $target  as node()+) as none
 
@@ -967,7 +848,7 @@ ZorbaInsertNodesAtIterator::nextImpl(store::Item_t& result, PlanState& planState
     does not belong to the given collection). 
 ********************************************************************************/
 bool
-ZorbaRemoveNodesIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+ZorbaDeleteNodesIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Collection_t              coll;
   const StaticallyKnownCollection* lDeclColl;
@@ -1023,7 +904,7 @@ ZorbaRemoveNodesIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addRemoveFromCollection(lName, nodes);
+  pul->addDeleteFromCollection(lName, nodes);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-1]->reset(planState);
@@ -1033,101 +914,6 @@ ZorbaRemoveNodesIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
   STACK_END (state);
 }
-
-
-/*******************************************************************************
-  declare updating function
-  remove-node-at($name as xs:QName, $position as xs:integer) as none
-
-  The function will remove from the given collection the node positioned at
-  $position.
-
-  Error conditions:
-  - If the collection URI is empty and the default collection
-    is not defined in the dynamic context, FODC0002 is raised
-  - If the specified collection does not exist, an error is raised 
-    (API0006_COLLECTION_NOT_FOUND - collection does not exist).
-  - If the collection has fewer nodes than $position + 1, nothing is removed
-    and an error is raised (API0030_NO_NODE_AT_GIVEN_POSITION - there is no
-    node at the given position, the collection has fewer nodes). 
-********************************************************************************/
-bool ZorbaRemoveNodeAtIterator::nextImpl(
-    store::Item_t& result,
-    PlanState& planState) const
-{
-  store::Collection_t              coll;
-  const StaticallyKnownCollection* lDeclColl;
-  store::Item_t                    lName;
-  store::Item_t                    posItem;
-  store::Item_t                    tmpItem;
-  uint32_t                         lpos;
-  std::auto_ptr<store::PUL>        pul;
-
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  consumeNext(lName, theChildren[0].getp(), planState);
-
-  lDeclColl = getDeclColl(theSctx, lName, loc);
-  coll = getCollection(theSctx, lName, loc);
-
-  consumeNext(posItem, theChildren[theChildren.size()-1].getp(), planState);
-
-  if(posItem->getIntegerValue() <= Integer::zero())
-  {
-    ZORBA_ERROR_LOC_DESC(XDDY0014, loc, 
-                         "The position parameter of remove-node-at must be positive.");
-  }
-
-  NumConversions::strToUInt(posItem->getIntegerValue().toString(),lpos);
-
-  if (coll->size() < lpos)
-  {
-    ZORBA_ERROR_LOC_DESC(XDDY0014, loc, 
-                         "The size of the collection is smaller then the parameter passed as second argument to remove-node-at");
-  }
-
-
-  // checking collection modifiers
-  switch(lDeclColl->getCollectionModifier()) {
-  case StaticContextConsts::const_:
-    ZORBA_ERROR_LOC_DESC_OSS(XDDY0003, loc, 
-      "remove-node-at has a const collection as first argument.");
-    break;
-  case StaticContextConsts::append_only:
-    ZORBA_ERROR_LOC_DESC_OSS(XDDY0004, loc, 
-      "remove-node-at has a append-only collection as first argument.");
-    break;
-  case StaticContextConsts::queue:
-    if (lpos != 1) {
-      ZORBA_ERROR_LOC_DESC_OSS(XDDY0005, loc, 
-        "remove-node-at has a queue collection as first argument and an "
-        << "integer different than 1 as second argument.");
-    }
-    break;
-  case StaticContextConsts::mutable_coll:
-    // good to go
-    break;
-  }
-
-
-
-  // create the pul and add the primitive
-  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
-
-  pul->addRemoveAtFromCollection(lName, lpos);
-
-  // this should not be necessary. we reset everything in the sequential iterator
-  theChildren[theChildren.size()-1]->reset(planState);
-
-  result = pul.release();
-  STACK_PUSH( result != NULL, state);
-
-  STACK_END (state);
-}
-
-
-
 
 store::Collection_t getCollection(
     const static_context* aSctx,

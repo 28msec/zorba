@@ -95,33 +95,13 @@ declare sequential function local:testi() {
   }
 };
 
-declare sequential function local:testj() {
-  try {
-    block {
-      ddl:insert-nodes-at($name, 1, <a/>);
-    }
-  } catch * ($error) {
-    ("j",$error)
-  }
-};
-
 declare sequential function local:testk() {
   try {
     block {
-      ddl:remove-nodes($name, <a/>);
+      ddl:delete-nodes($name, <a/>);
     }
   } catch * ($error) {
     ("k",$error)
-  }
-};
-
-declare sequential function local:testl() {
-  try {
-    block {
-      ddl:remove-node-at($name, 1);
-    }
-  } catch * ($error) {
-    ("l",$error)
   }
 };
 
@@ -136,9 +116,7 @@ declare sequential function local:main() {
     local:testg(),
     local:testh(),
     local:testi(),
-    local:testj(),
-    local:testk(),
-    local:testl()
+    local:testk()
   );
 };
 

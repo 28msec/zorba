@@ -230,34 +230,6 @@ ZorbaInsertNodesLastIterator::~ZorbaInsertNodesLastIterator() {}
 // </ZorbaInsertNodesLastIterator>
 
 
-// <ZorbaInsertNodesAtIterator>
-const char* ZorbaInsertNodesAtIterator::class_name_str = "ZorbaInsertNodesAtIterator";
-ZorbaInsertNodesAtIterator::class_factory<ZorbaInsertNodesAtIterator>
-ZorbaInsertNodesAtIterator::g_class_factory;
-
-const serialization::ClassVersion 
-ZorbaInsertNodesAtIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int ZorbaInsertNodesAtIterator::class_versions_count =
-sizeof(ZorbaInsertNodesAtIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void ZorbaInsertNodesAtIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-ZorbaInsertNodesAtIterator::~ZorbaInsertNodesAtIterator() {}
-
-// </ZorbaInsertNodesAtIterator>
-
-
 // <ZorbaInsertNodesBeforeIterator>
 const char* ZorbaInsertNodesBeforeIterator::class_name_str = "ZorbaInsertNodesBeforeIterator";
 ZorbaInsertNodesBeforeIterator::class_factory<ZorbaInsertNodesBeforeIterator>
@@ -314,18 +286,18 @@ ZorbaInsertNodesAfterIterator::~ZorbaInsertNodesAfterIterator() {}
 // </ZorbaInsertNodesAfterIterator>
 
 
-// <ZorbaRemoveNodesIterator>
-const char* ZorbaRemoveNodesIterator::class_name_str = "ZorbaRemoveNodesIterator";
-ZorbaRemoveNodesIterator::class_factory<ZorbaRemoveNodesIterator>
-ZorbaRemoveNodesIterator::g_class_factory;
+// <ZorbaDeleteNodesIterator>
+const char* ZorbaDeleteNodesIterator::class_name_str = "ZorbaDeleteNodesIterator";
+ZorbaDeleteNodesIterator::class_factory<ZorbaDeleteNodesIterator>
+ZorbaDeleteNodesIterator::g_class_factory;
 
 const serialization::ClassVersion 
-ZorbaRemoveNodesIterator::class_versions[] ={{ 1, 0x000905, false}};
+ZorbaDeleteNodesIterator::class_versions[] ={{ 1, 0x000905, false}};
 
-const int ZorbaRemoveNodesIterator::class_versions_count =
-sizeof(ZorbaRemoveNodesIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+const int ZorbaDeleteNodesIterator::class_versions_count =
+sizeof(ZorbaDeleteNodesIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void ZorbaRemoveNodesIterator::accept(PlanIterVisitor& v) const {
+void ZorbaDeleteNodesIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -337,37 +309,9 @@ void ZorbaRemoveNodesIterator::accept(PlanIterVisitor& v) const {
   v.endVisit(*this);
 }
 
-ZorbaRemoveNodesIterator::~ZorbaRemoveNodesIterator() {}
+ZorbaDeleteNodesIterator::~ZorbaDeleteNodesIterator() {}
 
-// </ZorbaRemoveNodesIterator>
-
-
-// <ZorbaRemoveNodeAtIterator>
-const char* ZorbaRemoveNodeAtIterator::class_name_str = "ZorbaRemoveNodeAtIterator";
-ZorbaRemoveNodeAtIterator::class_factory<ZorbaRemoveNodeAtIterator>
-ZorbaRemoveNodeAtIterator::g_class_factory;
-
-const serialization::ClassVersion 
-ZorbaRemoveNodeAtIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int ZorbaRemoveNodeAtIterator::class_versions_count =
-sizeof(ZorbaRemoveNodeAtIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void ZorbaRemoveNodeAtIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-ZorbaRemoveNodeAtIterator::~ZorbaRemoveNodeAtIterator() {}
-
-// </ZorbaRemoveNodeAtIterator>
+// </ZorbaDeleteNodesIterator>
 
 
 

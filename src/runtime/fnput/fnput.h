@@ -35,8 +35,7 @@ namespace zorba {
 
 /**
  * fn:put
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class FnPutIterator : public NaryBaseIterator <FnPutIterator, PlanIteratorState>
 { 

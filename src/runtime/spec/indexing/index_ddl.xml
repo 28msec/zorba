@@ -84,4 +84,184 @@
 
 </zorba:iterator>
 
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="CreateInternalIndexIterator" arity="unary">
+
+    <zorba:description author="Zorba Team">
+  create-internal-index($indexName as xs:QName) as ()
+
+  This is an intenal function that is used by the hashjoins rule to create and
+  populate a temp index. There are 3 reasons why we need a different function
+  than the regular create-index, which is defined below:
+
+  1. create-index assumes that the domain and key expressions do not reference
+     any free variables. This is not true for the temp index created by the
+     hashjoin rule.
+  2. The argument to create-index can be any arbitrary expression that returns
+     a QName. In the case of create-internal-index we know that the arg is a
+     const expr holding a qname item.
+  3. create-internal-index is a "simple" function, whereas create-index is an
+     updating function.
+    </zorba:description>
+
+    <zorba:member type="store::Item_t" name="theQName"
+      getterName="getName" brief="the name of the index to create"/>
+
+    <zorba:constructor>
+        <zorba:parameter type="const store::Item_t" name="aName"/>
+    </zorba:constructor>
+
+    <zorba:function requiresDynamicContext="true"
+                    generateCodegen="false"> 
+      <zorba:signature localname="create-internal-index" prefix="op">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:output>item()*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="RefreshIndexIterator" arity="unary">
+
+    <zorba:description author="Zorba Team">
+  refresh-index($indexName as xs:QName) as pul()
+
+  This is an updating function. During normal runtime (see RefreshIndexIterator),
+  it checks that index exists (in the dynamic context) and generates an update
+  primitive. During applyUpdates(), it clears the index of its contents and then
+  rebuilds the index the same way as the create-index() function.
+    </zorba:description>
+
+    <zorba:function isUpdating="true" requiresDynamicContext="true">
+      <zorba:signature localname="refresh-index" prefix="fn-zorba-ddl">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:output>item()*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+  This is a helper function for creating index entries (it constitutes the 
+  return expr of the flwor expr that populates the index; see the create-index
+  function above). Its first arg is a reference to the domain var, and its next
+  N args evaluate and return the key expressions for each domain node. The 
+  function simply evaluates each of its children in turn, and returns the
+  resulting items one-by-one. This is similar to fn:concatenate, but contrary
+  to concatenate, this function also returns NULL items.
+
+  index-entry-builder($domainNode as node(),
+                      $key1  as anyAtomic?,
+                      ...,
+                      $keyN  as anyAtomic?) as item()*
+********************************************************************************/
+-->
+<zorba:iterator name="IndexEntryBuilderIterator" arity="nary">
+
+    <zorba:description author="Zorba Team">
+    </zorba:description>
+
+    <zorba:state generateInit="true" generateReset="true">
+      <zorba:member type="uint32_t" name="theCurChild" defaultValue="0"
+                    brief="the current child"/>
+    </zorba:state>
+
+    <zorba:function requiresDynamicContext="true">
+      <zorba:signature localname="index-entry-builder" prefix="op">
+        <zorba:param>node()</zorba:param>
+        <zorba:param>true</zorba:param> <!-- variadic function -->
+        <zorba:output>item()*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="IndexPointProbeIterator" arity="nary">
+
+    <zorba:description author="Zorba Team">
+  probe-index-point($indexName as xs:QName,
+                    $key1      as anyAtomic?,
+                    ...,
+                    $keyN      as anyAtomic?) as node()*
+    </zorba:description>
+
+    <zorba:state generateInit="true" generateReset="false">
+      <zorba:member type="const store::Item*" name="theQname" defaultValue="0"
+                    brief="the name of the index"/>
+
+      <zorba:member type="store::Index*" name="theIndex" defaultValue="0"
+                    brief="the index to probe"/>
+
+      <zorba:member type="store::IndexProbeIterator_t" name="theIterator"
+                    defaultValue="NULL"
+                    brief="the index probe iterator"/>
+    </zorba:state>
+
+    <zorba:function requiresDynamicContext="true">
+      <zorba:signature localname="probe-index-point" prefix="fn-zorba-ddl">
+        <zorba:param>xs:QName()</zorba:param>
+        <zorba:param>true</zorba:param> <!-- variadic function -->
+        <zorba:output>node()*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="IndexRangeProbeIterator" arity="nary">
+
+    <zorba:description author="Zorba Team">
+  probe-index-range($indexName               as xs:QName,
+                    $range1LowerBound         as anyAtomic?,
+                    $range1UpperBound         as anyAtomic?,
+                    $range1HaveLowerBound     as boolean?,
+                    $range1HaveupperBound     as boolean?,
+                    $range1LowerBoundIncluded as boolean?,
+                    $range1upperBoundIncluded as boolean?,
+                    ....,
+                    $rangeNLowerBound         as anyAtomic?,
+                    $rangeNUpperBound         as anyAtomic?,
+                    $rangeNHaveLowerBound     as boolean?,
+                    $rangeNHaveupperBound     as boolean?,
+                    $rangeNLowerBoundIncluded as boolean?,
+                    $rangeNupperBoundIncluded as boolean?) as node()*
+    </zorba:description>
+
+    <zorba:state generateInit="true" generateReset="false">
+      <zorba:member type="const store::Item*" name="theQname" defaultValue="0"
+                    brief="the name of the index"/>
+
+      <zorba:member type="store::Index*" name="theIndex" defaultValue="0"
+                    brief="the index to probe"/>
+
+      <zorba:member type="store::IndexProbeIterator_t" name="theIterator"
+                    defaultValue="NULL"
+                    brief="the index probe iterator"/>
+    </zorba:state>
+
+    <zorba:function requiresDynamicContext="true">
+      <zorba:signature localname="probe-index-range" prefix="fn-zorba-ddl">
+        <zorba:param>xs:QName()</zorba:param>
+        <zorba:param>true</zorba:param> <!-- variadic function -->
+        <zorba:output>node()*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+</zorba:iterator>
+
 </zorba:iterators>

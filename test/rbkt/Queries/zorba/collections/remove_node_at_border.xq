@@ -6,32 +6,34 @@ declare sequential function local:init() {
   ddl:create-collection($ns:collection_1, (<x/>,<y/>));
 };
 
+(:
 declare sequential function local:testa() {
   try {
     block {
-      ddl:remove-node-at($ns:collection_1, 0);
+      ddl:delete-node-first($ns:collection_1);
     }
-  } catch * ($error) {
-    ("a",$error)
+  } catch * ($error, $desc) {
+    ("a",$error, $desc)
   }
 };
 
 declare sequential function local:testb() {
   try {
     block {
-      ddl:remove-node-at($ns:collection_1, 3);
+      ddl:delete-node-last($ns:collection_1);
     }
-  } catch * ($error) {
-    ("b",$error)
+  } catch * ($error, $desc) {
+    ("b",$error, $desc)
   }
 };
+:)
 
 declare sequential function local:main() {
   local:init();
-  (
+ (: (
     local:testa(),
     local:testb()
-  );
+  ); :)
 };
 
 local:main()

@@ -41,9 +41,6 @@
 #include "runtime/core/apply_updates.h"
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/core/internal_operators.h"
-#include "runtime/indexing/value_index_ddl.h"
-#include "runtime/indexing/value_index_probe.h"
-#include "runtime/indexing/value_index_context.h"
 #include "runtime/numerics/NumericsImpl.h"
 #include "runtime/core/arithmetic_impl.h"
 #include "runtime/sequences/SequencesImpl.h"
@@ -1114,15 +1111,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION(RenameIterator);
   PRINTER_VISITOR_DEFINITION(TransformIterator);
   PRINTER_VISITOR_DEFINITION(ApplyIterator);
-  PRINTER_VISITOR_DEFINITION(CreateInternalIndexIterator);
-  PRINTER_VISITOR_DEFINITION(RebuildIndexIterator);
-  PRINTER_VISITOR_DEFINITION(IsDeclaredIndexIterator);
-  PRINTER_VISITOR_DEFINITION(DeclaredIndexesIterator);
-  PRINTER_VISITOR_DEFINITION(IsAvailableIndexIterator);
-  PRINTER_VISITOR_DEFINITION(AvailableIndexesIterator);
-  PRINTER_VISITOR_DEFINITION(IndexEntryBuilderIterator);
-  PRINTER_VISITOR_DEFINITION(IndexPointProbeIterator);
-  PRINTER_VISITOR_DEFINITION(IndexRangeProbeIterator);
   PRINTER_VISITOR_DEFINITION(ZorbaDebugIterator);
   PRINTER_VISITOR_DEFINITION(DebuggerSingletonIterator);
   PRINTER_VISITOR_DEFINITION(HoistIterator);

@@ -177,15 +177,6 @@
   DECLARE_VISITOR (RenameIterator);
   DECLARE_VISITOR (TransformIterator);
   DECLARE_VISITOR (ApplyIterator);
-  DECLARE_VISITOR (CreateInternalIndexIterator);
-  DECLARE_VISITOR (RebuildIndexIterator);
-  DECLARE_VISITOR (IndexEntryBuilderIterator);
-  DECLARE_VISITOR (IndexPointProbeIterator);
-  DECLARE_VISITOR (IndexRangeProbeIterator);
-  DECLARE_VISITOR (IsAvailableIndexIterator);
-  DECLARE_VISITOR (AvailableIndexesIterator);
-  DECLARE_VISITOR (IsDeclaredIndexIterator);
-  DECLARE_VISITOR (DeclaredIndexesIterator);
   DECLARE_VISITOR (ZorbaDebugIterator);
   DECLARE_VISITOR (DebuggerSingletonIterator);
   DECLARE_VISITOR (HoistIterator);

@@ -37,8 +37,7 @@ namespace zorba {
 
 /**
  * Parsing a sequence of valid JSON strings into a sequence of XDM elements.
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class ZorbaJsonParseIteratorState : public PlanIteratorState
 {
@@ -84,8 +83,7 @@ public:
 
 /**
  * The serialize function takes a sequence of elements as parameter and transforms each element into a valid JSON string.
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class ZorbaJsonSerializeIterator : public NaryBaseIterator <ZorbaJsonSerializeIterator, PlanIteratorState>
 { 
@@ -118,8 +116,7 @@ public:
 
 /**
  * Parsing a sequence of valid JsonML strings into a sequence of XDM elements.
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class ZorbaJsonMLParseIteratorState : public PlanIteratorState
 {
@@ -165,8 +162,7 @@ public:
 
 /**
  * The serialize function takes a sequence of elements as parameter and transforms each element into a valid JsonML string.
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class ZorbaJsonMLSerializeIterator : public NaryBaseIterator <ZorbaJsonMLSerializeIterator, PlanIteratorState>
 { 
@@ -199,8 +195,7 @@ public:
 
 /**
  * Parse a Comma Separated Values text and generate an XML.
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class ZorbaCSV2XMLIteratorState : public PlanIteratorState
 {

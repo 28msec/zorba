@@ -35,8 +35,7 @@ namespace zorba {
 
 /**
  * fn:abs
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class AbsIterator : public NaryBaseIterator <AbsIterator, PlanIteratorState>
 { 
@@ -69,8 +68,7 @@ public:
 
 /**
  * fn:ceiling
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class CeilingIterator : public NaryBaseIterator <CeilingIterator, PlanIteratorState>
 { 
@@ -103,8 +101,7 @@ public:
 
 /**
  * fn:floor
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class FloorIterator : public NaryBaseIterator <FloorIterator, PlanIteratorState>
 { 
@@ -137,8 +134,7 @@ public:
 
 /**
  * fn:round
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class RoundIterator : public NaryBaseIterator <RoundIterator, PlanIteratorState>
 { 
@@ -171,8 +167,7 @@ public:
 
 /**
  * fn:round-half-to-even
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class RoundHalfToEvenIterator : public NaryBaseIterator <RoundHalfToEvenIterator, PlanIteratorState>
 { 
@@ -205,8 +200,7 @@ public:
 
 /**
  * fn:format-number
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class FormatNumberIterator : public NaryBaseIterator <FormatNumberIterator, PlanIteratorState>
 { 

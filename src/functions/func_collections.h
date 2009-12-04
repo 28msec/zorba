@@ -164,24 +164,6 @@ public:
 };
 
 
-//fn-zorba-ddl:insert-nodes-at
-class fn_zorba_ddl_insert_nodes_at : public function
-{
-public:
-  fn_zorba_ddl_insert_nodes_at(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_INSERT_NODES_AT_3)
-  {
-  }
-
-  bool requires_dyn_ctx() const { return true; }
-
-  expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
-
-  CODEGEN_DECL();
-};
-
-
 //fn-zorba-ddl:insert-nodes-before
 class fn_zorba_ddl_insert_nodes_before : public function
 {
@@ -218,31 +200,13 @@ public:
 };
 
 
-//fn-zorba-ddl:remove-nodes
-class fn_zorba_ddl_remove_nodes : public function
+//fn-zorba-ddl:delete-nodes
+class fn_zorba_ddl_delete_nodes : public function
 {
 public:
-  fn_zorba_ddl_remove_nodes(const signature& sig)
+  fn_zorba_ddl_delete_nodes(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_REMOVE_NODES_2)
-  {
-  }
-
-  bool requires_dyn_ctx() const { return true; }
-
-  expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
-
-  CODEGEN_DECL();
-};
-
-
-//fn-zorba-ddl:remove-node-at
-class fn_zorba_ddl_remove_node_at : public function
-{
-public:
-  fn_zorba_ddl_remove_node_at(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_REMOVE_NODE_AT_2)
+    function(sig, FunctionConsts::FN_ZORBA_DDL_DELETE_NODES_2)
   {
   }
 

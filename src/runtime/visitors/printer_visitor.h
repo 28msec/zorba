@@ -107,20 +107,14 @@ namespace zorba {
     void beginVisit( const ZorbaInsertNodesLastIterator& );
     void endVisit  ( const ZorbaInsertNodesLastIterator& );
 
-    void beginVisit( const ZorbaInsertNodesAtIterator& );
-    void endVisit  ( const ZorbaInsertNodesAtIterator& );
-
     void beginVisit( const ZorbaInsertNodesBeforeIterator& );
     void endVisit  ( const ZorbaInsertNodesBeforeIterator& );
 
     void beginVisit( const ZorbaInsertNodesAfterIterator& );
     void endVisit  ( const ZorbaInsertNodesAfterIterator& );
 
-    void beginVisit( const ZorbaRemoveNodesIterator& );
-    void endVisit  ( const ZorbaRemoveNodesIterator& );
-
-    void beginVisit( const ZorbaRemoveNodeAtIterator& );
-    void endVisit  ( const ZorbaRemoveNodeAtIterator& );
+    void beginVisit( const ZorbaDeleteNodesIterator& );
+    void endVisit  ( const ZorbaDeleteNodesIterator& );
 
     void beginVisit( const CurrentDateTimeIterator& );
     void endVisit  ( const CurrentDateTimeIterator& );
@@ -242,17 +236,44 @@ namespace zorba {
     void beginVisit( const DeleteIndexIterator& );
     void endVisit  ( const DeleteIndexIterator& );
 
+    void beginVisit( const CreateInternalIndexIterator& );
+    void endVisit  ( const CreateInternalIndexIterator& );
+
+    void beginVisit( const RefreshIndexIterator& );
+    void endVisit  ( const RefreshIndexIterator& );
+
+    void beginVisit( const IndexEntryBuilderIterator& );
+    void endVisit  ( const IndexEntryBuilderIterator& );
+
+    void beginVisit( const IndexPointProbeIterator& );
+    void endVisit  ( const IndexPointProbeIterator& );
+
+    void beginVisit( const IndexRangeProbeIterator& );
+    void endVisit  ( const IndexRangeProbeIterator& );
+
     void beginVisit( const IsAvailableCollectionIterator& );
     void endVisit  ( const IsAvailableCollectionIterator& );
 
     void beginVisit( const AvailableCollectionsIterator& );
     void endVisit  ( const AvailableCollectionsIterator& );
 
+    void beginVisit( const IsAvailableIndexIterator& );
+    void endVisit  ( const IsAvailableIndexIterator& );
+
+    void beginVisit( const AvailableIndexesIterator& );
+    void endVisit  ( const AvailableIndexesIterator& );
+
     void beginVisit( const IsDeclaredCollectionIterator& );
     void endVisit  ( const IsDeclaredCollectionIterator& );
 
     void beginVisit( const DeclaredCollectionsIterator& );
     void endVisit  ( const DeclaredCollectionsIterator& );
+
+    void beginVisit( const IsDeclaredIndexIterator& );
+    void endVisit  ( const IsDeclaredIndexIterator& );
+
+    void beginVisit( const DeclaredIndexesIterator& );
+    void endVisit  ( const DeclaredIndexesIterator& );
 
     void beginVisit( const SqrtIterator& );
     void endVisit  ( const SqrtIterator& );

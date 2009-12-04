@@ -212,7 +212,7 @@ protected:
   // Index primitives
   std::vector<UpdatePrimitive*>      theCreateIndexList;
   std::vector<UpdatePrimitive*>      theDeleteIndexList;
-  std::vector<UpdatePrimitive*>      theRebuildIndexList;
+  std::vector<UpdatePrimitive*>      theRefreshIndexList;
 
   // Revalidation
   store::SchemaValidator           * theValidator;
@@ -335,13 +335,9 @@ public:
         ulong pos,
         std::vector<store::Item_t>& nodes);
 
-  void addRemoveFromCollection(
+  void addDeleteFromCollection(
         store::Item_t& name,
         std::vector<store::Item_t>& nodes);
-
-  void addRemoveAtFromCollection(
-        store::Item_t& name,
-        ulong pos);
 
   // Index primitives
   void addCreateIndex(
@@ -352,7 +348,7 @@ public:
   void addDeleteIndex(
         const store::Item_t& qname);
 
-  void addRebuildIndex(
+  void addRefreshIndex(
         const store::Item_t& qname,
         store::Iterator* sourceIter);
 

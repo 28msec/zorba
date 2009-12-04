@@ -1,1 +1,1 @@
-a err:XDDY0003 a err:XDDY0004 a err:XDDY0005 b err:XDDY0003 c err:XDDY0003 c err:XDDY0004 c err:XDDY0005 d err:XDDY0003 d err:XDDY0004 d err:XDDY0005 e err:XDDY0003 e err:XDDY0004 e err:XDDY0005<coll_1><x></x><y></y></coll_1><coll_2><x></x><y></y><b></b></coll_2><coll_3><x></x><y></y><b></b></coll_3>
+a err:XDDY0003 a err:XDDY0004 a err:XDDY0005 b err:XDDY0003 c err:XDDY0003 c err:XDDY0004 c err:XDDY0005 d err:XDDY0003 d err:XDDY0004 d err:XDDY0005<coll_1><x/><y/></coll_1><coll_2><x/><y/><b/></coll_2><coll_3><x/><y/><b/></coll_3>

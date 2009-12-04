@@ -39,9 +39,10 @@ namespace store{
 }
 class ItemValueCollHandleHashSet;
 /**
- * op:concatenate
  * 
- * Author: Zorba Team * 
+ *      op:concatenate
+ *    
+ * Author: Zorba Team
  */
 class FnConcatIteratorState : public PlanIteratorState
 {
@@ -94,9 +95,33 @@ public:
 
 
 /**
- * Summary: Returns a sequence of positive integers giving the positions within the sequence $seqParam of items that are equal to $srchParam. The collation used by the invocation of this function is determined according to the rules in 7.3.1 Collations. The collation is used when string comparison is required. The items in the sequence $seqParam are compared with $srchParam under the rules for the 'eq' operator. Values that cannot be compared, i.e. the 'eq' operator is not defined for their types, are considered to be distinct. If an item compares equal, then the position of that item in the sequence $seqParam is included in the result. If the value of $seqParam is the empty sequence, or if no item in $seqParam matches $srchParam, then the empty sequence is returned. The first item in a sequence is at position 1, not position 0. The result sequence is in ascending numeric order. fn:index-of($seqParam as xs:anyAtomicType*, $srchParam as xs:anyAtomicType) as xs:integer* fn:index-of($seqParam as xs:anyAtomicType*, $srchParam as xs:anyAtomicType, $collation as xs:string) as xs:integer*
  * 
- * Author: Zorba Team * 
+ *      Summary: Returns a sequence of positive integers giving the positions 
+ *      within the sequence $seqParam of items that are equal to $srchParam. 
+ *      
+ *      The collation used by the invocation of this function is determined 
+ *      according to the rules in 7.3.1 Collations. The collation is used when 
+ *      string comparison is required. 
+ *      
+ *      The items in the sequence $seqParam are compared with $srchParam under 
+ *      the rules for the 'eq' operator. Values that cannot be compared, i.e. 
+ *      the 'eq' operator is not defined for their types, are considered to be 
+ *      distinct. If an item compares equal, then the position of that item in 
+ *      the sequence $seqParam is included in the result. 
+ *      
+ *      If the value of $seqParam is the empty sequence, or if no item in 
+ *      $seqParam matches $srchParam, then the empty sequence is returned. 
+ *      
+ *      The first item in a sequence is at position 1, not position 0.
+ *      The result sequence is in ascending numeric order.
+ *      fn:index-of($seqParam as xs:anyAtomicType*,
+ *                  $srchParam as xs:anyAtomicType) as xs:integer*
+ *      
+ *      fn:index-of($seqParam as xs:anyAtomicType*,
+ *                  $srchParam as xs:anyAtomicType,
+ *                  $collation as xs:string) as xs:integer*
+ *    
+ * Author: Zorba Team
  */
 class FnIndexOfIteratorState : public PlanIteratorState
 {
@@ -143,9 +168,11 @@ public:
 
 
 /**
- * If the value of $arg is the empty sequence, the function returns true; otherwise, the function returns false.
  * 
- * Author: Zorba Team * 
+ *      If the value of $arg is the empty sequence, the function returns true;
+ *      otherwise, the function returns false.
+ *    
+ * Author: Zorba Team
  */
 class FnEmptyIterator : public NaryBaseIterator <FnEmptyIterator, PlanIteratorState>
 { 
@@ -177,9 +204,11 @@ public:
 
 
 /**
- * If the value of $arg is not the empty sequence, the function returns true; otherwise, the function returns false.
  * 
- * Author: Zorba Team * 
+ *      If the value of $arg is not the empty sequence, the function returns true; 
+ *      otherwise, the function returns false.
+ *    
+ * Author: Zorba Team
  */
 class FnExistsIterator : public NaryBaseIterator <FnExistsIterator, PlanIteratorState>
 { 
@@ -211,9 +240,13 @@ public:
 
 
 /**
- * Returns the sequence that results from removing from arg all but one of a set of values that are eq to one other. The order in which the sequence of values is returned is implementation dependent. Here, we return the first item that is not a duplicate and throw away the remaining ones.
  * 
- * Author: Zorba Team * 
+ *  Returns the sequence that results from removing from arg all but one of a 
+ *  set of values that are eq to one other. The order in which the sequence of
+ *  values is returned is implementation dependent. Here, we return the first
+ *  item that is not a duplicate and throw away the remaining ones.
+ *  
+ * Author: Zorba Team
  */
 class FnDistinctValuesIteratorState : public PlanIteratorState
 {
@@ -259,9 +292,12 @@ public:
 
 
 /**
- * Returns a new sequence constructed from the value of the first parameter with the value of third parameter inserted at the position specified by the value of the second parameter.
  * 
- * Author: Zorba Team * 
+ *      Returns a new sequence constructed from the value of the first parameter with
+ *      the value of third parameter inserted at the position specified by the value
+ *      of the second parameter.
+ *    
+ * Author: Zorba Team
  */
 class FnInsertBeforeIteratorState : public PlanIteratorState
 {
@@ -308,9 +344,11 @@ public:
 
 
 /**
- * Returns a new sequence constructed from the value of aTarget with the item at the position specified by the value of aPosition removed.
  * 
- * Author: Zorba Team * 
+ *    Returns a new sequence constructed from the value of aTarget with the item at
+ *    the position specified by the value of aPosition removed.
+ *  
+ * Author: Zorba Team
  */
 class FnRemoveIteratorState : public PlanIteratorState
 {
@@ -357,9 +395,10 @@ public:
 
 
 /**
- * fn:reverse
  * 
- * Author: Zorba Team * 
+ *    fn:reverse
+ *  
+ * Author: Zorba Team
  */
 class FnReverseIteratorState : public PlanIteratorState
 {
@@ -404,9 +443,10 @@ public:
 
 
 /**
- * fn:subsequence
  * 
- * Author: Zorba Team * 
+ *    fn:subsequence
+ *  
+ * Author: Zorba Team
  */
 class FnSubsequenceIteratorState : public PlanIteratorState
 {
@@ -451,9 +491,10 @@ public:
 
 
 /**
- * fn:zero-or-one
  * 
- * Author: Zorba Team * 
+ *      fn:zero-or-one
+ *    
+ * Author: Zorba Team
  */
 class FnZeroOrOneIterator : public NaryBaseIterator <FnZeroOrOneIterator, PlanIteratorState>
 { 
@@ -491,9 +532,10 @@ public:
 
 
 /**
- * fn:one-or-more
  * 
- * Author: Zorba Team * 
+ *      fn:one-or-more
+ *    
+ * Author: Zorba Team
  */
 class FnOneOrMoreIterator : public NaryBaseIterator <FnOneOrMoreIterator, PlanIteratorState>
 { 
@@ -526,8 +568,7 @@ public:
 
 /**
  * fn:exactly-one
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class FnExactlyOneIterator : public NaryBaseIterator <FnExactlyOneIterator, PlanIteratorState>
 { 
@@ -570,8 +611,7 @@ public:
 
 /**
  * fn:deep-equal
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class FnDeepEqualIterator : public NaryBaseIterator <FnDeepEqualIterator, PlanIteratorState>
 { 
@@ -603,9 +643,18 @@ public:
 
 
 /**
- * op:union : implemented using concat and sort op:intersect : implemented by the HashSemiJoinIterator below op:except : implemented by the HashSemiJoinIterator below Hashing semi/anti join iterator. First producer goes in the result if a match in the second producer is found/not found. The order of the first producer is retained. No duplicate elimination is performed.
  * 
- * Author: Zorba Team * 
+ *      op:union : implemented using concat and sort
+ *      op:intersect : implemented by the HashSemiJoinIterator below
+ *      op:except : implemented by the HashSemiJoinIterator below
+ *
+ *      Hashing semi/anti join iterator.
+ *      
+ *      First producer goes in the result if a match in the second producer is 
+ *      found/not found. The order of the first producer is retained. No duplicate
+ *      elimination is performed.
+ *    
+ * Author: Zorba Team
  */
 class HashSemiJoinIteratorState : public PlanIteratorState
 {
@@ -656,9 +705,17 @@ public:
 
 
 /**
- * Sortmerge based semijoin iterator. First producer goes in the result if a match in the second producer is found. Precondition: both inputs must be sorted. Postcondition: the order of the first producer is retained. If either of the inputs is guaranteed to contain no duplicates, then the output will be duplicate-free. Otherwise the output may contain duplicates.
  * 
- * Author: Zorba Team * 
+ *      Sortmerge based semijoin iterator.
+ *
+ *      First producer goes in the result if a match in the second producer is found.
+ *      Precondition: both inputs must be sorted.
+ *      Postcondition: the order of the first producer is retained.
+ *      
+ *      If either of the inputs is guaranteed to contain no duplicates, then the
+ *      output will be duplicate-free. Otherwise the output may contain duplicates.
+ *    
+ * Author: Zorba Team
  */
 class SortSemiJoinIterator : public NaryBaseIterator <SortSemiJoinIterator, PlanIteratorState>
 { 
@@ -691,8 +748,7 @@ public:
 
 /**
  * fn:count
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class FnCountIterator : public NaryBaseIterator <FnCountIterator, PlanIteratorState>
 { 
@@ -724,9 +780,10 @@ public:
 
 
 /**
- * fn:avg
  * 
- * Author: Zorba Team * 
+ *      fn:avg
+ *    
+ * Author: Zorba Team
  */
 class FnAvgIterator : public NaryBaseIterator <FnAvgIterator, PlanIteratorState>
 { 
@@ -758,9 +815,10 @@ public:
 
 
 /**
- * fn:sum
  * 
- * Author: Zorba Team * 
+ *      fn:sum
+ *    
+ * Author: Zorba Team
  */
 class FnSumIterator : public NaryBaseIterator <FnSumIterator, PlanIteratorState>
 { 
@@ -792,9 +850,10 @@ public:
 
 
 /**
- * fn:sum with arguments xs:double
  * 
- * Author: Zorba Team * 
+ *      fn:sum with arguments xs:double
+ *    
+ * Author: Zorba Team
  */
 class FnSumDoubleIterator : public NaryBaseIterator <FnSumDoubleIterator, PlanIteratorState>
 { 
@@ -826,9 +885,10 @@ public:
 
 
 /**
- * fn:sum with arguments xs:float
  * 
- * Author: Zorba Team * 
+ *      fn:sum with arguments xs:float
+ *    
+ * Author: Zorba Team
  */
 class FnSumFloatIterator : public NaryBaseIterator <FnSumFloatIterator, PlanIteratorState>
 { 
@@ -860,9 +920,10 @@ public:
 
 
 /**
- * fn:sum with arguments xs:decimal
  * 
- * Author: Zorba Team * 
+ *      fn:sum with arguments xs:decimal
+ *    
+ * Author: Zorba Team
  */
 class FnSumDecimalIterator : public NaryBaseIterator <FnSumDecimalIterator, PlanIteratorState>
 { 
@@ -894,9 +955,10 @@ public:
 
 
 /**
- * fn:sum with arguments xs:integer
  * 
- * Author: Zorba Team * 
+ *      fn:sum with arguments xs:integer
+ *    
+ * Author: Zorba Team
  */
 class FnSumIntegerIterator : public NaryBaseIterator <FnSumIntegerIterator, PlanIteratorState>
 { 
@@ -929,8 +991,7 @@ public:
 
 /**
  * op:to
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class OpToIteratorState : public PlanIteratorState
 {
@@ -978,8 +1039,7 @@ public:
 
 /**
  * fn:doc
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class FnDocIterator : public NaryBaseIterator <FnDocIterator, PlanIteratorState>
 { 
@@ -1012,8 +1072,7 @@ public:
 
 /**
  * fn:doc-available
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class FnDocAvailableIterator : public NaryBaseIterator <FnDocAvailableIterator, PlanIteratorState>
 { 
@@ -1046,8 +1105,7 @@ public:
 
 /**
  * Zorba-defined parse function
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class FnParseIterator : public NaryBaseIterator <FnParseIterator, PlanIteratorState>
 { 

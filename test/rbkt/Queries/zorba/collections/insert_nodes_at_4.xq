@@ -4,7 +4,6 @@ import datamodule namespace ns = "http://example.org/datamodule/" at "collection
 declare sequential function local:test()
 {
   ddl:create-collection(xs:QName("ns:test1"));
-  ddl:insert-nodes-at(xs:QName("ns:test1"), 0, <a />);
   ddl:collection(xs:QName("ns:test1"));
 };
 

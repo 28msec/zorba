@@ -70,6 +70,38 @@ public:
 };
 
 
+//fn-zorba-introspect-dctx:is-available-index
+class fn_zorba_introspect_dctx_is_available_index : public function
+{
+public:
+  fn_zorba_introspect_dctx_is_available_index(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_INTROSPECT_DCTX_IS_AVAILABLE_INDEX_1)
+  {
+  }
+
+  bool requires_dyn_ctx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-introspect-dctx:available-indexes
+class fn_zorba_introspect_dctx_available_indexes : public function
+{
+public:
+  fn_zorba_introspect_dctx_available_indexes(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_INTROSPECT_DCTX_AVAILABLE_INDEXES_0)
+  {
+  }
+
+  bool requires_dyn_ctx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

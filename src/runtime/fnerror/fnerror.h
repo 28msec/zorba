@@ -35,8 +35,7 @@ namespace zorba {
 
 /**
  * fn:error
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class ErrorIterator : public NaryBaseIterator <ErrorIterator, PlanIteratorState>
 { 

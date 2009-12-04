@@ -7,8 +7,6 @@ declare sequential function local:test()
 
   replace value of node ddl:collection(xs:QName("ns:test1"))[1]/b with "Bar";
 
-  ddl:insert-nodes-at(xs:QName("ns:test1"), 2, <a />);
-
   ();
 };
 

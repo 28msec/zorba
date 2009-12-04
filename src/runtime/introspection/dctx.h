@@ -34,9 +34,10 @@
 namespace zorba {
 
 /**
- * dc:is-available-collection
  * 
- * Author: Zorba Team * 
+ *      dc:is-available-collection
+ *    
+ * Author: Zorba Team
  */
 class IsAvailableCollectionIterator : public NaryBaseIterator <IsAvailableCollectionIterator, PlanIteratorState>
 { 
@@ -68,9 +69,10 @@ public:
 
 
 /**
- * dc:available-collections
  * 
- * Author: Zorba Team * 
+ *      dc:available-collections
+ *    
+ * Author: Zorba Team
  */
 class AvailableCollectionsIteratorState : public PlanIteratorState
 {
@@ -107,6 +109,89 @@ public:
     (sctx, loc, aChildren) {}
 
   virtual ~AvailableCollectionsIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *      dc:is-available-index
+ *    
+ * Author: Zorba Team
+ */
+class IsAvailableIndexIterator : public NaryBaseIterator <IsAvailableIndexIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(IsAvailableIndexIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsAvailableIndexIterator,
+    NaryBaseIterator <IsAvailableIndexIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator <IsAvailableIndexIterator, PlanIteratorState>*)this);
+  }
+
+  IsAvailableIndexIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <IsAvailableIndexIterator, PlanIteratorState>
+    (sctx, loc, aChildren) {}
+
+  virtual ~IsAvailableIndexIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *      dc:available-indexes
+ *    
+ * Author: Zorba Team
+ */
+class AvailableIndexesIteratorState : public PlanIteratorState
+{
+public:
+  store::Iterator_t nameItState; //the current iterator
+
+  AvailableIndexesIteratorState();
+
+  ~AvailableIndexesIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class AvailableIndexesIterator : public NaryBaseIterator <AvailableIndexesIterator, AvailableIndexesIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(AvailableIndexesIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(AvailableIndexesIterator,
+    NaryBaseIterator <AvailableIndexesIterator, AvailableIndexesIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator <AvailableIndexesIterator, AvailableIndexesIteratorState>*)this);
+  }
+
+  AvailableIndexesIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <AvailableIndexesIterator, AvailableIndexesIteratorState>
+    (sctx, loc, aChildren) {}
+
+  virtual ~AvailableIndexesIterator();
 
   void accept(PlanIterVisitor& v) const;
 

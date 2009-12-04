@@ -27,12 +27,16 @@ declare function local:process-iterator($iter) as xs:string
       concat($iter/@preprocessorGuard, $gen:newline)
     else "",
 
-    (: preceding comment :)
+    (: preceding comment; prefixed with *'s :)
     '/**', $gen:newline,
-    ' * ', fn:normalize-space($iter/zorba:description/text()), $gen:newline,
-    ' * ', $gen:newline, 
+    ' * ',
+    fn:replace($iter/zorba:description/text(), 
+               "\n",
+               "
+ *"),
+    $gen:newline, 
     ' * ', "Author: ", fn:normalize-space($iter/zorba:description/@author),
-    ' * ', $gen:newline,
+    $gen:newline,
     ' */', $gen:newline,
 
     (: generate an explicit state if required :)

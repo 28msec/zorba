@@ -76,20 +76,6 @@ declare sequential function local:testd_2() {
 };
 
 
-declare sequential function local:teste_1() {
-  try {
-    block {
-      ddl:insert-nodes-at($ns:collection, 1, <e/>);
-    }
-  } catch * ($error) {
-    ("e",$error)
-  }
-};
-
-declare sequential function local:teste_2() {
-  ddl:insert-nodes-at($ns:collection, 1, local:create-person("eee"));
-};
-
 declare sequential function local:testf_1() {
   try {
     block {
@@ -119,8 +105,6 @@ declare sequential function local:main() {
     local:testc_2(),
     local:testd_1(),
     local:testd_2(),
-    local:teste_1(),
-    local:teste_2(),
     local:testf_1(),
     local:testf_2(),
     <collection>{ddl:collection($ns:collection)}</collection>

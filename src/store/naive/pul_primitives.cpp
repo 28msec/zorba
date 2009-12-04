@@ -916,7 +916,7 @@ void UpdInsertAtIntoCollection::undo()
 /*******************************************************************************
   UpdRemoveNodesFromCollection
 ********************************************************************************/
-void UpdRemoveNodesFromCollection::apply()
+void UpdDeleteNodesFromCollection::apply()
 {
   store::Collection_t lColl = GET_STORE().getCollection(theName);
   assert(lColl);
@@ -929,7 +929,7 @@ void UpdRemoveNodesFromCollection::apply()
   }
 }
 
-void UpdRemoveNodesFromCollection::undo()
+void UpdDeleteNodesFromCollection::undo()
 {
   store::Collection_t lColl = GET_STORE().getCollection(theName);
   assert(lColl);
@@ -949,7 +949,6 @@ void UpdRemoveNodesFromCollection::undo()
 
 /*******************************************************************************
   UpdRemoveNodeAtFromCollection
-********************************************************************************/
 void UpdRemoveNodeAtFromCollection::apply()
 {
   store::Collection_t lColl = GET_STORE().getCollection(theName);
@@ -971,6 +970,7 @@ void UpdRemoveNodeAtFromCollection::undo()
   static_cast<SimpleCollection*>(lColl.getp())->addNode(theNode);
 #endif
 }
+********************************************************************************/
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -1051,12 +1051,12 @@ void UpdDeleteIndex::undo()
 /*******************************************************************************
 
 ********************************************************************************/
-UpdRebuildIndex::~UpdRebuildIndex()
+UpdRefreshIndex::~UpdRefreshIndex()
 {
 }
 
 
-void UpdRebuildIndex::apply()
+void UpdRefreshIndex::apply()
 {
   SimpleStore* store = SimpleStoreManager::getStore();
 
@@ -1082,7 +1082,7 @@ void UpdRebuildIndex::apply()
 }
 
 
-void UpdRebuildIndex::undo()
+void UpdRefreshIndex::undo()
 {
   if (theIsApplied)
   {

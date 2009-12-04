@@ -35,8 +35,7 @@ namespace zorba {
 
 /**
  * fn:current-dateTime
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class CurrentDateTimeIterator : public NaryBaseIterator <CurrentDateTimeIterator, PlanIteratorState>
 { 
@@ -69,8 +68,7 @@ public:
 
 /**
  * fn:current-date
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class CurrentDateIterator : public NaryBaseIterator <CurrentDateIterator, PlanIteratorState>
 { 
@@ -103,8 +101,7 @@ public:
 
 /**
  * fn:current-time
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class CurrentTimeIterator : public NaryBaseIterator <CurrentTimeIterator, PlanIteratorState>
 { 
@@ -137,8 +134,7 @@ public:
 
 /**
  * fn:implicit-timezone
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class ImplicitTimezoneIterator : public NaryBaseIterator <ImplicitTimezoneIterator, PlanIteratorState>
 { 
@@ -171,8 +167,7 @@ public:
 
 /**
  * fn:default-collation
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class DefaultCollationIterator : public NaryBaseIterator <DefaultCollationIterator, PlanIteratorState>
 { 

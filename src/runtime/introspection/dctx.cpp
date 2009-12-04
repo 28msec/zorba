@@ -88,5 +88,63 @@ AvailableCollectionsIteratorState::AvailableCollectionsIteratorState() {}
 // </AvailableCollectionsIterator>
 
 
+// <IsAvailableIndexIterator>
+const char* IsAvailableIndexIterator::class_name_str = "IsAvailableIndexIterator";
+IsAvailableIndexIterator::class_factory<IsAvailableIndexIterator>
+IsAvailableIndexIterator::g_class_factory;
+
+const serialization::ClassVersion 
+IsAvailableIndexIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int IsAvailableIndexIterator::class_versions_count =
+sizeof(IsAvailableIndexIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void IsAvailableIndexIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+IsAvailableIndexIterator::~IsAvailableIndexIterator() {}
+
+// </IsAvailableIndexIterator>
+
+
+// <AvailableIndexesIterator>
+const char* AvailableIndexesIterator::class_name_str = "AvailableIndexesIterator";
+AvailableIndexesIterator::class_factory<AvailableIndexesIterator>
+AvailableIndexesIterator::g_class_factory;
+
+const serialization::ClassVersion 
+AvailableIndexesIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int AvailableIndexesIterator::class_versions_count =
+sizeof(AvailableIndexesIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void AvailableIndexesIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+AvailableIndexesIterator::~AvailableIndexesIterator() {}
+
+AvailableIndexesIteratorState::AvailableIndexesIteratorState() {}
+
+// </AvailableIndexesIterator>
+
+
 
 }

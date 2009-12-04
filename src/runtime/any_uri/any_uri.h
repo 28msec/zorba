@@ -35,8 +35,7 @@ namespace zorba {
 
 /**
  * fn:resolve-uri
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class ResolveUriIterator : public NaryBaseIterator <ResolveUriIterator, PlanIteratorState>
 { 

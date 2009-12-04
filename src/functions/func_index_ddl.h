@@ -74,6 +74,88 @@ public:
 };
 
 
+//op:create-internal-index
+class op_create_internal_index : public function
+{
+public:
+  op_create_internal_index(const signature& sig)
+    :
+    function(sig, FunctionConsts::OP_CREATE_INTERNAL_INDEX_1)
+  {
+  }
+
+  bool requires_dyn_ctx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-ddl:refresh-index
+class fn_zorba_ddl_refresh_index : public function
+{
+public:
+  fn_zorba_ddl_refresh_index(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_DDL_REFRESH_INDEX_1)
+  {
+  }
+
+  bool requires_dyn_ctx() const { return true; }
+
+  expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+
+  CODEGEN_DECL();
+};
+
+
+//op:index-entry-builder
+class op_index_entry_builder : public function
+{
+public:
+  op_index_entry_builder(const signature& sig)
+    :
+    function(sig, FunctionConsts::OP_INDEX_ENTRY_BUILDER_N)
+  {
+  }
+
+  bool requires_dyn_ctx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-ddl:probe-index-point
+class fn_zorba_ddl_probe_index_point : public function
+{
+public:
+  fn_zorba_ddl_probe_index_point(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_POINT_N)
+  {
+  }
+
+  bool requires_dyn_ctx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-ddl:probe-index-range
+class fn_zorba_ddl_probe_index_range : public function
+{
+public:
+  fn_zorba_ddl_probe_index_range(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_RANGE_N)
+  {
+  }
+
+  bool requires_dyn_ctx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

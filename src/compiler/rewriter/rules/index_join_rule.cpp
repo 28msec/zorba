@@ -495,7 +495,7 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   //
   fo_expr_t probeExpr = new fo_expr(sctxid,
                                     loc,
-                                    GET_BUILTIN_FUNCTION(FN_INDEX_PROBE_POINT_N),
+                                    GET_BUILTIN_FUNCTION(FN_ZORBA_DDL_PROBE_INDEX_POINT_N),
                                     qnameExpr,
                                     const_cast<expr*>(predInfo.theOuterOp));
 

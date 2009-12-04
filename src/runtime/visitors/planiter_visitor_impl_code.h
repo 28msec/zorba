@@ -156,16 +156,6 @@
   virtual void beginVisit ( const TypedValueCompareIterator<TypeConstants::XS_STRING>& ) = 0;
   virtual void endVisit ( const TypedValueCompareIterator<TypeConstants::XS_STRING>& ) = 0;
 
-  PLAN_ITER_VISITOR (CreateInternalIndexIterator);
-  PLAN_ITER_VISITOR (RebuildIndexIterator);
-  PLAN_ITER_VISITOR (IndexEntryBuilderIterator);
-  PLAN_ITER_VISITOR (IndexPointProbeIterator);
-  PLAN_ITER_VISITOR (IndexRangeProbeIterator);
-  PLAN_ITER_VISITOR (IsAvailableIndexIterator);
-  PLAN_ITER_VISITOR (AvailableIndexesIterator);
-  PLAN_ITER_VISITOR (IsDeclaredIndexIterator);
-  PLAN_ITER_VISITOR (DeclaredIndexesIterator);
-  
   PLAN_ITER_VISITOR (OpNumericUnaryIterator);
     
   PLAN_ITER_VISITOR (FnIdIterator);

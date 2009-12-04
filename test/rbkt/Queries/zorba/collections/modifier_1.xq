@@ -128,36 +128,6 @@ declare sequential function local:testd_3() {
 };
 
 
-declare sequential function local:teste_1() {
-  try {
-    block {
-      ddl:insert-nodes-at($ns:coll_1, 1, <e/>);
-    }
-  } catch * ($error) {
-    ("e",$error)
-  }
-};
-
-declare sequential function local:teste_2() {
-  try {
-    block {
-      ddl:insert-nodes-at($ns:coll_2, 1, <e/>);
-    }
-  } catch * ($error) {
-    ("e",$error)
-  }
-};
-
-declare sequential function local:teste_3() {
-  try {
-    block {
-      ddl:insert-nodes-at($ns:coll_3, 1, <e/>);
-    }
-  } catch * ($error) {
-    ("e",$error)
-  }
-};
-
 declare sequential function local:main() {
   local:init();
   (
@@ -173,9 +143,6 @@ declare sequential function local:main() {
     local:testd_1(),
     local:testd_2(),
     local:testd_3(),
-    local:teste_1(),
-    local:teste_2(),
-    local:teste_3(),
     <coll_1>{ddl:collection($ns:coll_1)}</coll_1>,
     <coll_2>{ddl:collection($ns:coll_2)}</coll_2>,
     <coll_3>{ddl:collection($ns:coll_3)}</coll_3>

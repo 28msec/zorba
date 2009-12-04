@@ -395,9 +395,10 @@ expr* ValueIndex::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
 
   clonedExprs[0] = domainVarExpr;
   
- function* f = theSctx->lookup_resolved_fn(ZORBA_DDL_FN_NS,
-                                           "index-entry-builder",
-                                           VARIADIC_SIG_SIZE);
+  function* f = theSctx->lookup_resolved_fn(XQUERY_OP_NS,
+                                            "index-entry-builder",
+                                            VARIADIC_SIG_SIZE);
+  ZORBA_ASSERT(f!=NULL);
 
   fo_expr_t returnExpr =  new fo_expr(sctxid, loc, f, clonedExprs);
 
@@ -507,9 +508,10 @@ DocIndexer* ValueIndex::getDocIndexer(CompilerCB* ccb, const QueryLoc& loc)
 
   clonedExprs[0] = domainVarExpr;
 
-  function* f = theSctx->lookup_resolved_fn(ZORBA_DDL_FN_NS,
+  function* f = theSctx->lookup_resolved_fn(XQUERY_OP_NS,
                                             "index-entry-builder",
                                             VARIADIC_SIG_SIZE);
+  ZORBA_ASSERT(f!=NULL);
   
   fo_expr_t returnExpr =  new fo_expr(sctxid, loc, f, clonedExprs);
 

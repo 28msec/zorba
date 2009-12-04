@@ -128,7 +128,7 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
           PlanWrapper_t planWrapper = new PlanWrapper(buildPlan, ccb, dctx, NULL);
 
-          indexPul->addRebuildIndex(zorbaIndex->getName(), planWrapper);
+          indexPul->addRefreshIndex(zorbaIndex->getName(), planWrapper);
         }
       }
 

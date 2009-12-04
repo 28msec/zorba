@@ -1,12 +1,6 @@
  // include in function_enum.h 
  // this file is used until all functions
  // are generated
-  FN_CREATE_INDEX_1,
-  FN_DROP_INDEX_1,
-  FN_REFRESH_INDEX_1,
-  FN_INDEX_PROBE_POINT_N,
-  FN_INDEX_PROBE_RANGE_N,
-
   FN_UNORDERED_1,
 
   FN_EXACTLY_ONE_1,
@@ -124,8 +118,6 @@
   OP_SORT_DISTINCT_NODES_DESC_OR_ATOMICS_1,
 
   OP_ENCLOSED_1,
-
-  OP_CREATE_INTERNAL_INDEX_1,
 
   OP_HOIST_1,
   OP_UNHOIST_1,

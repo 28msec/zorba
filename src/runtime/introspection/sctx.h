@@ -34,9 +34,10 @@
 namespace zorba {
 
 /**
- * sc:is-declared-collection
  * 
- * Author: Zorba Team * 
+ *      sc:is-declared-collection
+ *    
+ * Author: Zorba Team
  */
 class IsDeclaredCollectionIteratorState : public PlanIteratorState
 {
@@ -81,9 +82,10 @@ public:
 
 
 /**
- * sc:declared-collections
  * 
- * Author: Zorba Team * 
+ *      sc:declared-collections
+ *    
+ * Author: Zorba Team
  */
 class DeclaredCollectionsIteratorState : public PlanIteratorState
 {
@@ -120,6 +122,102 @@ public:
     (sctx, loc, aChildren) {}
 
   virtual ~DeclaredCollectionsIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *      sc:is-declared-index
+ *    
+ * Author: Zorba Team
+ */
+class IsDeclaredIndexIteratorState : public PlanIteratorState
+{
+public:
+  store::Iterator_t nameItState; //the current iterator
+
+  IsDeclaredIndexIteratorState();
+
+  ~IsDeclaredIndexIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class IsDeclaredIndexIterator : public NaryBaseIterator <IsDeclaredIndexIterator, IsDeclaredIndexIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(IsDeclaredIndexIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsDeclaredIndexIterator,
+    NaryBaseIterator <IsDeclaredIndexIterator, IsDeclaredIndexIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator <IsDeclaredIndexIterator, IsDeclaredIndexIteratorState>*)this);
+  }
+
+  IsDeclaredIndexIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <IsDeclaredIndexIterator, IsDeclaredIndexIteratorState>
+    (sctx, loc, aChildren) {}
+
+  virtual ~IsDeclaredIndexIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *      sc:declared-indexes
+ *    
+ * Author: Zorba Team
+ */
+class DeclaredIndexesIteratorState : public PlanIteratorState
+{
+public:
+  store::Iterator_t nameItState; //the current iterator
+
+  DeclaredIndexesIteratorState();
+
+  ~DeclaredIndexesIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class DeclaredIndexesIterator : public NaryBaseIterator <DeclaredIndexesIterator, DeclaredIndexesIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(DeclaredIndexesIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(DeclaredIndexesIterator,
+    NaryBaseIterator <DeclaredIndexesIterator, DeclaredIndexesIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator <DeclaredIndexesIterator, DeclaredIndexesIteratorState>*)this);
+  }
+
+  DeclaredIndexesIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <DeclaredIndexesIterator, DeclaredIndexesIteratorState>
+    (sctx, loc, aChildren) {}
+
+  virtual ~DeclaredIndexesIterator();
 
   void accept(PlanIterVisitor& v) const;
 

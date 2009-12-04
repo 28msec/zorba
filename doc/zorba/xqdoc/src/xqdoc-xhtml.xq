@@ -60,19 +60,32 @@ declare function xhtml:parameters($comment) {
         ) else ()
 };
 
+declare function xhtml:errors($comment) {
+    let $errors := $comment/xqdoc:error
+    return
+        if (exists($errors)) then (
+            <h4>Errors</h4>,
+            for $error in $errors
+            return
+                <table class="parameter">
+                    <tr>
+                        <td class="parameter">{$error/node()}</td>
+                    </tr>
+                </table> 
+        ) else ()
+};
+
 declare function xhtml:annotations($comment) {
-    let $annotations := $comment/xqdoc:*[not((local-name(.) = ("description", "param", "return")))]
+    let $annotations := $comment/xqdoc:*[not((local-name(.) = ("description", "param", "return", "error")))]
     return
         for $annotation in $annotations
         return (
             <h4>{
                 let $annName := local-name($annotation)
                 return
-                    if ($annName = "error")
-                        then "Errors:"
-                        else concat(upper-case(substring($annName, 1, 1)), substring($annName, 2), ":")
+                    concat(upper-case(substring($annName, 1, 1)), substring($annName, 2), ":")
             }</h4>,
-            <p class="annotationText">{$annotation}</p>
+            <p class="annotationText">{$annotation/node()}</p>
         )
 };
 
@@ -82,7 +95,7 @@ declare function xhtml:return($comment) {
     return
         if (exists($return)) then (
             <h4>Returns:</h4>,
-            <p class="annotationText">{$return}</p>
+            <p class="annotationText">{$return/node()}</p>
         ) else ()
 };
 
@@ -105,15 +118,15 @@ declare function xhtml:module-description($module)
 
 declare function xhtml:module-variables($variables)
 {
-    (<h2>Variables</h2>,
-    if(count($variables/xqdoc:variable)) then
+    if($variables/xqdoc:variable) then
+        (<h2>Variables</h2>,
         for $variable in $variables/xqdoc:variable
         return (<h3>{$variable/xqdoc:uri}</h3>,
                 xhtml:description($variable/xqdoc:comment),
                 xhtml:annotations($variable/xqdoc:comment))
+        )
     else
-        <p>No variables declared.</p>
-    )
+        ()
 };
 
 declare function xhtml:module-function-summary($functions)
@@ -161,6 +174,7 @@ declare function xhtml:module-functions($functions) {
             xhtml:description($comment),
             xhtml:parameters($comment),
             xhtml:return($comment),
+            xhtml:errors($comment),
             xhtml:annotations($comment),
             <hr />)                
          )

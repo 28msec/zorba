@@ -35,8 +35,7 @@ namespace zorba {
 
 /**
  * op:is-same-node
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class IsSameNodeIterator : public NaryBaseIterator <IsSameNodeIterator, PlanIteratorState>
 { 
@@ -69,8 +68,7 @@ public:
 
 /**
  * op:node-before
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class NodeBeforeIterator : public NaryBaseIterator <NodeBeforeIterator, PlanIteratorState>
 { 
@@ -103,8 +101,7 @@ public:
 
 /**
  * op:node-after
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class NodeAfterIterator : public NaryBaseIterator <NodeAfterIterator, PlanIteratorState>
 { 

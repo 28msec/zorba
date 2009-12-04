@@ -36,8 +36,7 @@ namespace zorba {
 
 /**
  * fn:resolve-QName
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class ResolveQNameIterator : public BinaryBaseIterator <ResolveQNameIterator, PlanIteratorState>
 { 
@@ -70,8 +69,7 @@ public:
 
 /**
  * fn:QName
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class QNameIterator : public BinaryBaseIterator <QNameIterator, PlanIteratorState>
 { 
@@ -104,8 +102,7 @@ public:
 
 /**
  * op:QName-equal
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class QNameEqualIterator : public BinaryBaseIterator <QNameEqualIterator, PlanIteratorState>
 { 
@@ -138,8 +135,7 @@ public:
 
 /**
  * fn:prefix-from-QName
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class PrefixFromQNameIterator : public UnaryBaseIterator <PrefixFromQNameIterator, PlanIteratorState>
 { 
@@ -172,8 +168,7 @@ public:
 
 /**
  * fn:local-name-from-QName
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class LocalNameFromQNameIterator : public UnaryBaseIterator <LocalNameFromQNameIterator, PlanIteratorState>
 { 
@@ -206,8 +201,7 @@ public:
 
 /**
  * fn:namespace-uri-from-QName
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class NamespaceUriFromQNameIterator : public UnaryBaseIterator <NamespaceUriFromQNameIterator, PlanIteratorState>
 { 
@@ -240,8 +234,7 @@ public:
 
 /**
  * fn:namespace-uri-for-prefix
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class NamespaceUriForPrefixIterator : public NaryBaseIterator <NamespaceUriForPrefixIterator, PlanIteratorState>
 { 
@@ -274,8 +267,7 @@ public:
 
 /**
  * fn:in-scope-prefixes
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class InScopePrefixesIteratorState : public PlanIteratorState
 {

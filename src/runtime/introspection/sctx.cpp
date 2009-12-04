@@ -100,5 +100,80 @@ DeclaredCollectionsIteratorState::DeclaredCollectionsIteratorState() {}
 // </DeclaredCollectionsIterator>
 
 
+// <IsDeclaredIndexIterator>
+const char* IsDeclaredIndexIterator::class_name_str = "IsDeclaredIndexIterator";
+IsDeclaredIndexIterator::class_factory<IsDeclaredIndexIterator>
+IsDeclaredIndexIterator::g_class_factory;
+
+const serialization::ClassVersion 
+IsDeclaredIndexIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int IsDeclaredIndexIterator::class_versions_count =
+sizeof(IsDeclaredIndexIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void IsDeclaredIndexIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+IsDeclaredIndexIterator::~IsDeclaredIndexIterator() {}
+
+IsDeclaredIndexIteratorState::IsDeclaredIndexIteratorState() {}
+
+IsDeclaredIndexIteratorState::~IsDeclaredIndexIteratorState() {}
+
+
+void IsDeclaredIndexIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void IsDeclaredIndexIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
+// </IsDeclaredIndexIterator>
+
+
+// <DeclaredIndexesIterator>
+const char* DeclaredIndexesIterator::class_name_str = "DeclaredIndexesIterator";
+DeclaredIndexesIterator::class_factory<DeclaredIndexesIterator>
+DeclaredIndexesIterator::g_class_factory;
+
+const serialization::ClassVersion 
+DeclaredIndexesIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int DeclaredIndexesIterator::class_versions_count =
+sizeof(DeclaredIndexesIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void DeclaredIndexesIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+DeclaredIndexesIterator::~DeclaredIndexesIterator() {}
+
+DeclaredIndexesIteratorState::DeclaredIndexesIteratorState() {}
+
+
+void DeclaredIndexesIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+  nameItState = NULL;
+}
+// </DeclaredIndexesIterator>
+
+
 
 }

@@ -34,9 +34,10 @@
 namespace zorba {
 
 /**
- * Iterator to implement the zorba:node-reference function.
  * 
- * Author: Zorba Team * 
+ *      Iterator to implement the zorba:node-reference function.
+ *    
+ * Author: Zorba Team
  */
 class NodeReferenceIterator : public NaryBaseIterator <NodeReferenceIterator, PlanIteratorState>
 { 
@@ -68,9 +69,10 @@ public:
 
 
 /**
- * Iterator to implement the zorba:node-by-reference function.
  * 
- * Author: Zorba Team * 
+ *      Iterator to implement the zorba:node-by-reference function.
+ *    
+ * Author: Zorba Team
  */
 class NodeByReferenceIterator : public NaryBaseIterator <NodeByReferenceIterator, PlanIteratorState>
 { 
@@ -102,9 +104,10 @@ public:
 
 
 /**
- * fn:local-name
  * 
- * Author: Zorba Team * 
+ *      fn:local-name
+ *    
+ * Author: Zorba Team
  */
 class FnLocalNameIterator : public NaryBaseIterator <FnLocalNameIterator, PlanIteratorState>
 { 
@@ -136,9 +139,10 @@ public:
 
 
 /**
- * fn:namespace-uri
  * 
- * Author: Zorba Team * 
+ *      fn:namespace-uri
+ *    
+ * Author: Zorba Team
  */
 class FnNamespaceUriIterator : public NaryBaseIterator <FnNamespaceUriIterator, PlanIteratorState>
 { 
@@ -170,9 +174,10 @@ public:
 
 
 /**
- * fn:lang
  * 
- * Author: Zorba Team * 
+ *      fn:lang
+ *    
+ * Author: Zorba Team
  */
 class FnLangIterator : public NaryBaseIterator <FnLangIterator, PlanIteratorState>
 { 

@@ -57,7 +57,6 @@
 #include "functions/arithmetic.h"
 #include "functions/tuple_functions.h"
 #include "functions/InternalOperators.h"
-#include "functions/Index.h"
 #include "functions/Alexis.h"
 #include "functions/Rest.h"
 #include "functions/Fop.h"
@@ -118,7 +117,6 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populateContext_Comparison(sctx);
   populateContext_Constructors(sctx);
   populateContext_VarDecl(sctx);
-  populateContext_Index(sctx);
   populateContext_Hoisting(sctx);
   populateContext_Alexis(sctx);
   populateContext_Rest(sctx);

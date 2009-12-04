@@ -26,6 +26,7 @@
 #include "store/api/iterator.h"
 #include "store/api/store.h"
 #include "store/api/collection.h"
+#include "store/api/index.h"
 
 namespace zorba {
 
@@ -35,17 +36,6 @@ store::Collection_t getCollection(const static_context* aSctx,
                                   const QueryLoc&);
 
 /*******************************************************************************
-  declare function collection-exists() as xs:boolean
-
-  declare function collection-exists( $uri as xs:string?) as xs:boolean
-
-  Returns true if a collection with the requested $uri is found in the collection
-  pool, false otherwise.
-
-  Error conditions:
-  - If the collection URI is empty and the default collection
-    is not defined in the dynamic context, FODC0002 is raised
-  - XQST0046: could not resolve uri or given uri is not a valid uri
 ********************************************************************************/
 
 bool
@@ -80,9 +70,6 @@ IsAvailableCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSt
 
 
 /*******************************************************************************
-  declare function list-collections() as xs:anyURI*
-
-  The function will return a sequence of URIs of all currently known collections.
 ********************************************************************************/
 AvailableCollectionsIteratorState::~AvailableCollectionsIteratorState()
 {
@@ -131,5 +118,77 @@ AvailableCollectionsIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
   STACK_END (state);
 }
+
+/*******************************************************************************
+********************************************************************************/
+bool
+IsAvailableIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState  *state;
+  store::Item_t       lName;
+  bool                res = false;
+
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(lName, theChildren[0].getp(), planState);
+
+  {
+    store::Index_t lIndex = GENV_STORE.getIndex(lName);
+    res = (lIndex != 0);
+  }
+
+  GENV_ITEMFACTORY->createBoolean(result, res);
+  STACK_PUSH(true, state );
+
+  STACK_END (state);
+}
+
+/*******************************************************************************
+********************************************************************************/
+AvailableIndexesIteratorState::~AvailableIndexesIteratorState()
+{
+  if ( nameItState != NULL ) {
+    nameItState->close();
+    nameItState = NULL;
+  }
+}
+
+void
+AvailableIndexesIteratorState::init(PlanState& planState)
+{
+  PlanIteratorState::init(planState);
+  nameItState = NULL;
+}
+
+void
+AvailableIndexesIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  if ( nameItState != NULL ) {
+    nameItState->close();
+    nameItState = NULL;
+  }
+}
+
+bool
+AvailableIndexesIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t              nameItem;
+
+  AvailableIndexesIteratorState * state;
+  DEFAULT_STACK_INIT(AvailableIndexesIteratorState, state, planState);
+
+  for ((state->nameItState = GENV_STORE.listIndexNames())->open ();
+       state->nameItState->next(nameItem); ) 
+  {
+    result = nameItem;
+    STACK_PUSH( true, state);
+  }
+
+  state->nameItState->close();
+
+  STACK_END (state);
+}
+
 
 } /* namespace zorba */

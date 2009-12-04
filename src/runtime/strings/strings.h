@@ -36,9 +36,10 @@
 namespace zorba {
 
 /**
- * fn:codepoints-to-string
  * 
- * Author: Zorba Team * 
+ *        fn:codepoints-to-string
+ *    
+ * Author: Zorba Team
  */
 class CodepointsToStringIterator : public NaryBaseIterator <CodepointsToStringIterator, PlanIteratorState>
 { 
@@ -70,9 +71,10 @@ public:
 
 
 /**
- * fn:string-to-codepoints
  * 
- * Author: Zorba Team * 
+ *        fn:string-to-codepoints
+ *    
+ * Author: Zorba Team
  */
 class StringToCodepointsIteratorState : public PlanIteratorState
 {
@@ -118,9 +120,10 @@ public:
 
 
 /**
- * fn:compare
  * 
- * Author: Zorba Team * 
+ *        fn:compare
+ *    
+ * Author: Zorba Team
  */
 class CompareStrIterator : public NaryBaseIterator <CompareStrIterator, PlanIteratorState>
 { 
@@ -152,9 +155,10 @@ public:
 
 
 /**
- * fn:codepoint-equal
  * 
- * Author: Zorba Team * 
+ *        fn:codepoint-equal
+ *    
+ * Author: Zorba Team
  */
 class CodepointEqualIterator : public NaryBaseIterator <CodepointEqualIterator, PlanIteratorState>
 { 
@@ -186,9 +190,10 @@ public:
 
 
 /**
- * fn:concat
  * 
- * Author: Zorba Team * 
+ *        fn:concat
+ *    
+ * Author: Zorba Team
  */
 class ConcatStrIterator : public NaryBaseIterator <ConcatStrIterator, PlanIteratorState>
 { 
@@ -220,9 +225,10 @@ public:
 
 
 /**
- * fn:string-join
  * 
- * Author: Zorba Team * 
+ *        fn:string-join
+ *    
+ * Author: Zorba Team
  */
 class StringJoinIterator : public NaryBaseIterator <StringJoinIterator, PlanIteratorState>
 { 
@@ -254,9 +260,10 @@ public:
 
 
 /**
- * fn:substring
  * 
- * Author: Zorba Team * 
+ *        fn:substring
+ *    
+ * Author: Zorba Team
  */
 class SubstringIterator : public NaryBaseIterator <SubstringIterator, PlanIteratorState>
 { 
@@ -288,9 +295,10 @@ public:
 
 
 /**
- * fn:string-length
  * 
- * Author: Zorba Team * 
+ *        fn:string-length
+ *    
+ * Author: Zorba Team
  */
 class StringLengthIterator : public NaryBaseIterator <StringLengthIterator, PlanIteratorState>
 { 
@@ -322,9 +330,10 @@ public:
 
 
 /**
- * fn:normalize-space
  * 
- * Author: Zorba Team * 
+ *        fn:normalize-space
+ *    
+ * Author: Zorba Team
  */
 class NormalizeSpaceIterator : public NaryBaseIterator <NormalizeSpaceIterator, PlanIteratorState>
 { 
@@ -356,9 +365,10 @@ public:
 
 
 /**
- * fn:normalize-unicode
  * 
- * Author: Zorba Team * 
+ *        fn:normalize-unicode
+ *    
+ * Author: Zorba Team
  */
 class NormalizeUnicodeIterator : public NaryBaseIterator <NormalizeUnicodeIterator, PlanIteratorState>
 { 
@@ -390,9 +400,10 @@ public:
 
 
 /**
- * fn:upper-case
  * 
- * Author: Zorba Team * 
+ *        fn:upper-case
+ *    
+ * Author: Zorba Team
  */
 class UpperCaseIterator : public NaryBaseIterator <UpperCaseIterator, PlanIteratorState>
 { 
@@ -424,9 +435,10 @@ public:
 
 
 /**
- * fn:lower-case
  * 
- * Author: Zorba Team * 
+ *        fn:lower-case
+ *    
+ * Author: Zorba Team
  */
 class LowerCaseIterator : public NaryBaseIterator <LowerCaseIterator, PlanIteratorState>
 { 
@@ -458,9 +470,10 @@ public:
 
 
 /**
- * fn:translate
  * 
- * Author: Zorba Team * 
+ *        fn:translate
+ *    
+ * Author: Zorba Team
  */
 class TranslateIterator : public NaryBaseIterator <TranslateIterator, PlanIteratorState>
 { 
@@ -492,9 +505,10 @@ public:
 
 
 /**
- * fn:encode-for-uri
  * 
- * Author: Zorba Team * 
+ *        fn:encode-for-uri
+ *    
+ * Author: Zorba Team
  */
 class EncodeForUriIterator : public NaryBaseIterator <EncodeForUriIterator, PlanIteratorState>
 { 
@@ -526,9 +540,10 @@ public:
 
 
 /**
- * fn:iri-to-uri
  * 
- * Author: Zorba Team * 
+ *        fn:iri-to-uri
+ *    
+ * Author: Zorba Team
  */
 class IriToUriIterator : public NaryBaseIterator <IriToUriIterator, PlanIteratorState>
 { 
@@ -560,9 +575,10 @@ public:
 
 
 /**
- * fn:escape-html-uri
  * 
- * Author: Zorba Team * 
+ *        fn:escape-html-uri
+ *    
+ * Author: Zorba Team
  */
 class EscapeHtmlUriIterator : public NaryBaseIterator <EscapeHtmlUriIterator, PlanIteratorState>
 { 
@@ -594,9 +610,10 @@ public:
 
 
 /**
- * fn:contains
  * 
- * Author: Zorba Team * 
+ *        fn:contains
+ *    
+ * Author: Zorba Team
  */
 class ContainsIterator : public NaryBaseIterator <ContainsIterator, PlanIteratorState>
 { 
@@ -628,9 +645,10 @@ public:
 
 
 /**
- * fn:starts-with
  * 
- * Author: Zorba Team * 
+ *        fn:starts-with
+ *    
+ * Author: Zorba Team
  */
 class StartsWithIterator : public NaryBaseIterator <StartsWithIterator, PlanIteratorState>
 { 
@@ -662,9 +680,10 @@ public:
 
 
 /**
- * fn:ends-with
  * 
- * Author: Zorba Team * 
+ *        fn:ends-with
+ *    
+ * Author: Zorba Team
  */
 class EndsWithIterator : public NaryBaseIterator <EndsWithIterator, PlanIteratorState>
 { 
@@ -696,9 +715,10 @@ public:
 
 
 /**
- * fn:substring-before
  * 
- * Author: Zorba Team * 
+ *        fn:substring-before
+ *    
+ * Author: Zorba Team
  */
 class SubstringBeforeIterator : public NaryBaseIterator <SubstringBeforeIterator, PlanIteratorState>
 { 
@@ -730,9 +750,10 @@ public:
 
 
 /**
- * fn:substring-after
  * 
- * Author: Zorba Team * 
+ *        fn:substring-after
+ *    
+ * Author: Zorba Team
  */
 class SubstringAfterIterator : public NaryBaseIterator <SubstringAfterIterator, PlanIteratorState>
 { 
@@ -764,9 +785,10 @@ public:
 
 
 /**
- * fn:matches
  * 
- * Author: Zorba Team * 
+ *        fn:matches
+ *    
+ * Author: Zorba Team
  */
 class FnMatchesIterator : public NaryBaseIterator <FnMatchesIterator, PlanIteratorState>
 { 
@@ -798,9 +820,10 @@ public:
 
 
 /**
- * fn:replace
  * 
- * Author: Zorba Team * 
+ *        fn:replace
+ *    
+ * Author: Zorba Team
  */
 class FnReplaceIterator : public NaryBaseIterator <FnReplaceIterator, PlanIteratorState>
 { 
@@ -832,9 +855,10 @@ public:
 
 
 /**
- * fn:tokenize
  * 
- * Author: Zorba Team * 
+ *        fn:tokenize
+ *    
+ * Author: Zorba Team
  */
 class FnTokenizeIteratorState : public PlanIteratorState
 {

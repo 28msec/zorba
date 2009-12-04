@@ -37,8 +37,7 @@ namespace zorba {
 
 /**
  * eval iterator
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class EvalIteratorState : public PlanIteratorState
 {

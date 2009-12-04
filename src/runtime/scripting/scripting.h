@@ -36,8 +36,7 @@ namespace zorba {
 
 /**
  * Sequential Iterator
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class SequentialIterator : public NaryBaseIterator <SequentialIterator, PlanIteratorState>
 { 
@@ -70,8 +69,7 @@ public:
 
 /**
  * Loop Iterator
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class LoopIterator : public NaryBaseIterator <LoopIterator, PlanIteratorState>
 { 
@@ -104,8 +102,7 @@ public:
 
 /**
  * FlowCtlIterator
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class FlowCtlIterator : public NaryBaseIterator <FlowCtlIterator, PlanIteratorState>
 { 

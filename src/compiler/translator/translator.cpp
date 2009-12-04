@@ -1029,14 +1029,14 @@ void normalize_fo(fo_expr* foExpr)
 
     xqtref_t paramType;
 
-    if (func->getKind() == FunctionConsts::FN_INDEX_PROBE_POINT_N)
+    if (func->getKind() == FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_POINT_N)
     {
       if (i == 0)
         paramType = sign[i];
       else
         paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
     }
-    else if (func->getKind() == FunctionConsts::FN_INDEX_PROBE_RANGE_N)
+    else if (func->getKind() == FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_RANGE_N)
     {
       if (i == 0)
         paramType = sign[i];

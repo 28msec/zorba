@@ -66,6 +66,34 @@ public:
 };
 
 
+//fn-zorba-introspect-sctx:is-declared-index
+class fn_zorba_introspect_sctx_is_declared_index : public function
+{
+public:
+  fn_zorba_introspect_sctx_is_declared_index(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_INTROSPECT_SCTX_IS_DECLARED_INDEX_1)
+  {
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-introspect-sctx:declared-indexes
+class fn_zorba_introspect_sctx_declared_indexes : public function
+{
+public:
+  fn_zorba_introspect_sctx_declared_indexes(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_INTROSPECT_SCTX_DECLARED_INDEXES_0)
+  {
+  }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

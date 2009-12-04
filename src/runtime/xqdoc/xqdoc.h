@@ -35,8 +35,7 @@ namespace zorba {
 
 /**
  * zorba:XQDoc
- * 
- * Author: Zorba Team * 
+ * Author: Zorba Team
  */
 class XQDocIterator : public NaryBaseIterator <XQDocIterator, PlanIteratorState>
 { 

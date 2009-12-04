@@ -32,6 +32,8 @@
 
 namespace zorba {
 
+/*******************************************************************************
+********************************************************************************/
 bool
 IsDeclaredCollectionIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
 {
@@ -49,6 +51,8 @@ IsDeclaredCollectionIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanS
   STACK_END (lState);
 }
 
+/*******************************************************************************
+********************************************************************************/
 DeclaredCollectionsIteratorState::~DeclaredCollectionsIteratorState()
 {
   if ( nameItState != NULL ) {
@@ -74,6 +78,8 @@ void DeclaredCollectionsIteratorState::reset(PlanState& planState)
   }
 }
 
+/*******************************************************************************
+********************************************************************************/
 bool
 DeclaredCollectionsIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
 {
@@ -94,6 +100,64 @@ DeclaredCollectionsIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanSt
   STACK_END (lState);
 }
 
+/*******************************************************************************
+********************************************************************************/
+bool
+IsDeclaredIndexIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
+{
+  PlanIteratorState *lState;
+  store::Item_t      lName;
 
+  DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
+  consumeNext(lName, theChildren[0].getp(), aPlanState);
+  if (theSctx->lookup_index(lName.getp()) == 0) {
+    STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( aResult, false ), lState);
+  }
+  else {
+    STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( aResult, true ), lState);   
+  }
+  STACK_END (lState);
+}
+
+
+/*******************************************************************************
+********************************************************************************/
+bool
+DeclaredIndexesIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
+{
+  DeclaredIndexesIteratorState * lState;
+  store::Item_t              lName;
+
+  DEFAULT_STACK_INIT(DeclaredIndexesIteratorState, lState, aPlanState);
+
+  for ((lState->nameItState = theSctx->list_index_names())->open ();
+       lState->nameItState->next(lName); ) 
+  {
+    aResult = lName;
+    STACK_PUSH( true, lState);
+  }
+
+  lState->nameItState->close();
+
+  STACK_END (lState);
+}
+
+DeclaredIndexesIteratorState::~DeclaredIndexesIteratorState()
+{
+  if ( nameItState != NULL ) {
+    nameItState->close();
+    nameItState = NULL;
+  }
+}
+
+
+void DeclaredIndexesIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  if ( nameItState != NULL ) {
+    nameItState->close();
+    nameItState = NULL;
+  }
+}
 
 } /* namespace zorba */

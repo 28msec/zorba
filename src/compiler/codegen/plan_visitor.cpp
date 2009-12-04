@@ -71,7 +71,7 @@
 #include "runtime/scripting/scripting.h"
 #include "runtime/util/flowctl_exception.h"
 #include "runtime/update/update.h"
-#include "runtime/indexing/value_index_ddl.h"
+#include "runtime/indexing/index_ddl.h"
 #include "runtime/debug/zorba_debug_iterator.h"
 #include "runtime/eval/eval.h"
 
@@ -1887,7 +1887,8 @@ void end_visit(fo_expr& v)
       buildExpr->accept(*this);
 
       PlanIter_t buildIter = pop_itstack();
-      PlanIter_t iter = new CreateInternalIndexIterator(sctx, loc, buildIter, qname);
+      PlanIter_t iter = new CreateInternalIndexIterator(sctx, loc, buildIter,
+                                                        const_cast<store::Item*>(qname));
       push_itstack(iter);
     }
     else

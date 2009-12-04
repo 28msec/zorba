@@ -8,7 +8,7 @@ declare sequential function local:test()
   ddl:insert-nodes-last(xs:QName("ns:test1"), <a/>);
   ddl:insert-nodes-last(xs:QName("ns:test1"), <b/>);
   ddl:insert-nodes-last(xs:QName("ns:test1"), <c/>);
-  ddl:remove-nodes(xs:QName("ns:test1"), ddl:collection(xs:QName("ns:test1"))[position()<3]);
+  ddl:delete-nodes(xs:QName("ns:test1"), ddl:collection(xs:QName("ns:test1"))[position()<3]);
   exit returning ddl:collection(xs:QName("ns:test1"));
 };
 

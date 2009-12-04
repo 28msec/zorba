@@ -168,13 +168,9 @@ public:
         ulong pos,
         std::vector<store::Item_t>& nodes) = 0;
 
-  virtual void addRemoveFromCollection(
+  virtual void addDeleteFromCollection(
         Item_t& name,
         std::vector<store::Item_t>& nodes) = 0;
-
-  virtual void addRemoveAtFromCollection(
-        Item_t& name,
-        ulong pos) = 0;
 
   virtual void addCreateIndex(
         const Item_t& qname,
@@ -184,7 +180,7 @@ public:
   virtual void addDeleteIndex(
         const Item_t& qname) = 0;
 
-  virtual void addRebuildIndex(
+  virtual void addRefreshIndex(
         const Item_t& qname,
         Iterator* sourceIter) = 0;
 
