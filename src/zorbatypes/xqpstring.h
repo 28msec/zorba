@@ -27,6 +27,7 @@
 #include <cstring>
 
 #include "zorbatypes/zorbatypes_decl.h"
+#include "zorbatypes/codepoint_iterator.h"
 #include "zorbautils/checked_vector.h"
 
 #include "zorbaserialization/serialization_engine.h"
@@ -350,22 +351,6 @@ public:
 
   virtual ~xqpString(){};
 
-public:
-  class codepoints_iterator
-  {
-    const char  *str;
-    int   pos;
-    public:
-      codepoints_iterator() {str=NULL;pos=0;}
-      codepoints_iterator(const char *str) {this->str = str; this->pos = 0;}
-      codepoints_iterator& operator++();
-      bool operator!=(codepoints_iterator &other) {return (str!=other.str)||(pos!=other.pos);}
-      uint32_t operator*() const;
-      bool is_end() {return !str[pos];}
-      unsigned int compare_cp(checked_vector<uint32_t> &cp);
-  };
-
-  codepoints_iterator   get_codepoints_iterator() {return codepoints_iterator(c_str());}
 public:
   xqpStringStore* 
   getStore() const { return theStrStore.getp(); }

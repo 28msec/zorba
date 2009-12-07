@@ -31,6 +31,8 @@
 #include "runtime/base/narybase.h"
 #include "store/api/iterator.h"
 #include "store/api/iterator_factory.h"
+#include "fstream"
+#include "zorbatypes/codepoint_iterator.h"
 
 
 namespace zorba {
@@ -200,9 +202,8 @@ public:
 class ZorbaCSV2XMLIteratorState : public PlanIteratorState
 {
 public:
-  xqp_string theBaseUri; //the base URI
   xqp_string csv; //csv text
-  xqpString::codepoints_iterator csv_it; //iterator over csv codepoints
+  string_codepoints_iterator csv_it; //iterator over csv codepoints
   bool first_row_is_header; //if the first line of csv describe the name of the columns
   checked_vector<uint32_t> separator_cp; //separator codepoint
   checked_vector <uint32_t> quote_char_cp; //quote char codepoint
@@ -242,6 +243,167 @@ public:
     (sctx, loc, aChildren) {}
 
   virtual ~ZorbaCSV2XMLIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * Parse a Column Separated Values text and generate an XML.
+ * Author: Zorba Team
+ */
+class ZorbaTXT2XMLIteratorState : public PlanIteratorState
+{
+public:
+  xqp_string csv; //csv text
+  string_codepoints_iterator csv_it; //iterator over csv codepoints
+  bool first_row_is_header; //if the first line of csv describe the name of the columns
+  checked_vector<int> columns_positions; //separator codepoint
+  store::Item_t row_node_name; //qname of the row element
+  store::Item_t default_column_node_name; //default qname of the column element
+  xqp_string baseUri; //keep the base uri from static context
+  checked_vector <store::Item_t> header_qnames; //names of headers
+
+  ZorbaTXT2XMLIteratorState();
+
+  ~ZorbaTXT2XMLIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class ZorbaTXT2XMLIterator : public NaryBaseIterator <ZorbaTXT2XMLIterator, ZorbaTXT2XMLIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(ZorbaTXT2XMLIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaTXT2XMLIterator,
+    NaryBaseIterator <ZorbaTXT2XMLIterator, ZorbaTXT2XMLIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator <ZorbaTXT2XMLIterator, ZorbaTXT2XMLIteratorState>*)this);
+  }
+
+  ZorbaTXT2XMLIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <ZorbaTXT2XMLIterator, ZorbaTXT2XMLIteratorState>
+    (sctx, loc, aChildren) {}
+
+  virtual ~ZorbaTXT2XMLIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * Parse a Comma Separated Values text file and generate an XML.
+ * Author: Zorba Team
+ */
+class ZorbaCSV2XMLFromFileIteratorState : public PlanIteratorState
+{
+public:
+  std::ifstream csv_stream; //csv text
+  ifstream_codepoints_iterator csv_it; //csv codepoints iterator
+  bool first_row_is_header; //if the first line of csv describe the name of the columns
+  checked_vector<uint32_t> separator_cp; //separator codepoint
+  checked_vector <uint32_t> quote_char_cp; //quote char codepoint
+  checked_vector <uint32_t> quote_escape_cp; //quote escape codepoints
+  store::Item_t row_node_name; //qname of the row element
+  store::Item_t default_column_node_name; //default qname of the column element
+  xqp_string baseUri; //keep the base uri from static context
+  checked_vector <store::Item_t> header_qnames; //names of headers
+
+  ZorbaCSV2XMLFromFileIteratorState();
+
+  ~ZorbaCSV2XMLFromFileIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class ZorbaCSV2XMLFromFileIterator : public NaryBaseIterator <ZorbaCSV2XMLFromFileIterator, ZorbaCSV2XMLFromFileIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(ZorbaCSV2XMLFromFileIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaCSV2XMLFromFileIterator,
+    NaryBaseIterator <ZorbaCSV2XMLFromFileIterator, ZorbaCSV2XMLFromFileIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator <ZorbaCSV2XMLFromFileIterator, ZorbaCSV2XMLFromFileIteratorState>*)this);
+  }
+
+  ZorbaCSV2XMLFromFileIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <ZorbaCSV2XMLFromFileIterator, ZorbaCSV2XMLFromFileIteratorState>
+    (sctx, loc, aChildren) {}
+
+  virtual ~ZorbaCSV2XMLFromFileIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * Parse a Column Separated Values text file and generate an XML.
+ * Author: Zorba Team
+ */
+class ZorbaTXT2XMLFromFileIteratorState : public PlanIteratorState
+{
+public:
+  std::ifstream csv_stream; //csv text
+  ifstream_codepoints_iterator csv_it; //csv codepoints iterator
+  bool first_row_is_header; //if the first line of csv describe the name of the columns
+  checked_vector<int> columns_positions; //separator codepoint
+  store::Item_t row_node_name; //qname of the row element
+  store::Item_t default_column_node_name; //default qname of the column element
+  xqp_string baseUri; //keep the base uri from static context
+  checked_vector <store::Item_t> header_qnames; //names of headers
+
+  ZorbaTXT2XMLFromFileIteratorState();
+
+  ~ZorbaTXT2XMLFromFileIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class ZorbaTXT2XMLFromFileIterator : public NaryBaseIterator <ZorbaTXT2XMLFromFileIterator, ZorbaTXT2XMLFromFileIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(ZorbaTXT2XMLFromFileIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaTXT2XMLFromFileIterator,
+    NaryBaseIterator <ZorbaTXT2XMLFromFileIterator, ZorbaTXT2XMLFromFileIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator <ZorbaTXT2XMLFromFileIterator, ZorbaTXT2XMLFromFileIteratorState>*)this);
+  }
+
+  ZorbaTXT2XMLFromFileIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <ZorbaTXT2XMLFromFileIterator, ZorbaTXT2XMLFromFileIteratorState>
+    (sctx, loc, aChildren) {}
+
+  virtual ~ZorbaTXT2XMLFromFileIterator();
 
   void accept(PlanIterVisitor& v) const;
 

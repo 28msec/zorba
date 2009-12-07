@@ -347,16 +347,22 @@ main(int argc, char** argv)
       if(!ifbinary.is_open())
       {
         std::cout << "cannot open plan " << binary_path << std::endl;
-        return 0;
+        return 15;
       }
+      bool load_ret;
       if ( isW3Ctest ) 
       {
         zorba::TestSerializationCallback   serl_callback(cresolver.get());
-        lQuery->loadExecutionPlan(ifbinary, &serl_callback);//, NULL, cresolver.get(), resolver.get(), mresolver.get());
+        load_ret = lQuery->loadExecutionPlan(ifbinary, &serl_callback);//, NULL, cresolver.get(), resolver.get(), mresolver.get());
       }
       else
       {
-        lQuery->loadExecutionPlan(ifbinary);
+        load_ret = lQuery->loadExecutionPlan(ifbinary);
+      }
+      if(!load_ret)
+      {
+        std::cout << "cannot load plan " << binary_path << std::endl;
+        return 16;
       }
       t1 = clock();
       printf("load execution plan in %f sec\n", (float)(t1-t0)/CLOCKS_PER_SEC);

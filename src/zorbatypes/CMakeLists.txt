@@ -21,6 +21,7 @@ SET(ZORBATYPES_SRCS
   URI.cpp
   transcoder.cpp
   utf8/Unicode_util.cpp
+  codepoint_iterator.cpp
   collation_manager.cpp
   chartype.cpp
   rchandle.cpp)

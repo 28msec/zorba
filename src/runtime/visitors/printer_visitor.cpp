@@ -565,6 +565,48 @@ void PrinterVisitor::endVisit ( const ZorbaCSV2XMLIterator& ) {
 // </ZorbaCSV2XMLIterator>
 
 
+// <ZorbaTXT2XMLIterator>
+void PrinterVisitor::beginVisit ( const ZorbaTXT2XMLIterator& a) {
+  thePrinter.startBeginVisit("ZorbaTXT2XMLIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ZorbaTXT2XMLIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ZorbaTXT2XMLIterator>
+
+
+// <ZorbaCSV2XMLFromFileIterator>
+void PrinterVisitor::beginVisit ( const ZorbaCSV2XMLFromFileIterator& a) {
+  thePrinter.startBeginVisit("ZorbaCSV2XMLFromFileIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ZorbaCSV2XMLFromFileIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ZorbaCSV2XMLFromFileIterator>
+
+
+// <ZorbaTXT2XMLFromFileIterator>
+void PrinterVisitor::beginVisit ( const ZorbaTXT2XMLFromFileIterator& a) {
+  thePrinter.startBeginVisit("ZorbaTXT2XMLFromFileIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ZorbaTXT2XMLFromFileIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ZorbaTXT2XMLFromFileIterator>
+
+
 // <TraceIterator>
 void PrinterVisitor::beginVisit ( const TraceIterator& a) {
   thePrinter.startBeginVisit("TraceIterator", ++theId);

@@ -213,5 +213,131 @@ void ZorbaCSV2XMLIteratorState::reset(PlanState& planState) {
 // </ZorbaCSV2XMLIterator>
 
 
+// <ZorbaTXT2XMLIterator>
+const char* ZorbaTXT2XMLIterator::class_name_str = "ZorbaTXT2XMLIterator";
+ZorbaTXT2XMLIterator::class_factory<ZorbaTXT2XMLIterator>
+ZorbaTXT2XMLIterator::g_class_factory;
+
+const serialization::ClassVersion 
+ZorbaTXT2XMLIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int ZorbaTXT2XMLIterator::class_versions_count =
+sizeof(ZorbaTXT2XMLIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void ZorbaTXT2XMLIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaTXT2XMLIterator::~ZorbaTXT2XMLIterator() {}
+
+ZorbaTXT2XMLIteratorState::ZorbaTXT2XMLIteratorState() {}
+
+ZorbaTXT2XMLIteratorState::~ZorbaTXT2XMLIteratorState() {}
+
+
+void ZorbaTXT2XMLIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+  first_row_is_header = false;
+}
+
+void ZorbaTXT2XMLIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+  first_row_is_header = false;
+}
+// </ZorbaTXT2XMLIterator>
+
+
+// <ZorbaCSV2XMLFromFileIterator>
+const char* ZorbaCSV2XMLFromFileIterator::class_name_str = "ZorbaCSV2XMLFromFileIterator";
+ZorbaCSV2XMLFromFileIterator::class_factory<ZorbaCSV2XMLFromFileIterator>
+ZorbaCSV2XMLFromFileIterator::g_class_factory;
+
+const serialization::ClassVersion 
+ZorbaCSV2XMLFromFileIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int ZorbaCSV2XMLFromFileIterator::class_versions_count =
+sizeof(ZorbaCSV2XMLFromFileIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void ZorbaCSV2XMLFromFileIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaCSV2XMLFromFileIterator::~ZorbaCSV2XMLFromFileIterator() {}
+
+ZorbaCSV2XMLFromFileIteratorState::ZorbaCSV2XMLFromFileIteratorState() {}
+
+ZorbaCSV2XMLFromFileIteratorState::~ZorbaCSV2XMLFromFileIteratorState() {}
+
+
+void ZorbaCSV2XMLFromFileIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+  first_row_is_header = false;
+}
+
+void ZorbaCSV2XMLFromFileIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+  first_row_is_header = false;
+}
+// </ZorbaCSV2XMLFromFileIterator>
+
+
+// <ZorbaTXT2XMLFromFileIterator>
+const char* ZorbaTXT2XMLFromFileIterator::class_name_str = "ZorbaTXT2XMLFromFileIterator";
+ZorbaTXT2XMLFromFileIterator::class_factory<ZorbaTXT2XMLFromFileIterator>
+ZorbaTXT2XMLFromFileIterator::g_class_factory;
+
+const serialization::ClassVersion 
+ZorbaTXT2XMLFromFileIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int ZorbaTXT2XMLFromFileIterator::class_versions_count =
+sizeof(ZorbaTXT2XMLFromFileIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void ZorbaTXT2XMLFromFileIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaTXT2XMLFromFileIterator::~ZorbaTXT2XMLFromFileIterator() {}
+
+ZorbaTXT2XMLFromFileIteratorState::ZorbaTXT2XMLFromFileIteratorState() {}
+
+ZorbaTXT2XMLFromFileIteratorState::~ZorbaTXT2XMLFromFileIteratorState() {}
+
+
+void ZorbaTXT2XMLFromFileIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+  first_row_is_header = false;
+}
+
+void ZorbaTXT2XMLFromFileIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+  first_row_is_header = false;
+}
+// </ZorbaTXT2XMLFromFileIterator>
+
+
 
 }

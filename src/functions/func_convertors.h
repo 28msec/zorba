@@ -108,6 +108,48 @@ public:
 };
 
 
+//zorba-csv:txt2xml
+class zorba_csv_txt2xml : public function
+{
+public:
+  zorba_csv_txt2xml(const signature& sig)
+    :
+    function(sig, FunctionConsts::ZORBA_CSV_TXT2XML_5)
+  {
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//zorba-csv:csv2xmlFromFile
+class zorba_csv_csv2xmlFromFile : public function
+{
+public:
+  zorba_csv_csv2xmlFromFile(const signature& sig)
+    :
+    function(sig, FunctionConsts::ZORBA_CSV_CSV2XMLFROMFILE_7)
+  {
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//zorba-csv:txt2xmlFromFile
+class zorba_csv_txt2xmlFromFile : public function
+{
+public:
+  zorba_csv_txt2xmlFromFile(const signature& sig)
+    :
+    function(sig, FunctionConsts::ZORBA_CSV_TXT2XMLFROMFILE_5)
+  {
+  }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

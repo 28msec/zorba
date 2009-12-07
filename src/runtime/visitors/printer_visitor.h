@@ -146,6 +146,15 @@ namespace zorba {
     void beginVisit( const ZorbaCSV2XMLIterator& );
     void endVisit  ( const ZorbaCSV2XMLIterator& );
 
+    void beginVisit( const ZorbaTXT2XMLIterator& );
+    void endVisit  ( const ZorbaTXT2XMLIterator& );
+
+    void beginVisit( const ZorbaCSV2XMLFromFileIterator& );
+    void endVisit  ( const ZorbaCSV2XMLFromFileIterator& );
+
+    void beginVisit( const ZorbaTXT2XMLFromFileIterator& );
+    void endVisit  ( const ZorbaTXT2XMLFromFileIterator& );
+
     void beginVisit( const TraceIterator& );
     void endVisit  ( const TraceIterator& );
 

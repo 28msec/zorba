@@ -94,6 +94,12 @@ namespace zorba{
 
     class ZorbaCSV2XMLIterator;
 
+    class ZorbaTXT2XMLIterator;
+
+    class ZorbaCSV2XMLFromFileIterator;
+
+    class ZorbaTXT2XMLFromFileIterator;
+
     class TraceIterator;
 
     class ReadLineIterator;
@@ -495,6 +501,15 @@ public:
 
     virtual void beginVisit ( const ZorbaCSV2XMLIterator& ) = 0;
     virtual void endVisit   ( const ZorbaCSV2XMLIterator& ) = 0;
+
+    virtual void beginVisit ( const ZorbaTXT2XMLIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaTXT2XMLIterator& ) = 0;
+
+    virtual void beginVisit ( const ZorbaCSV2XMLFromFileIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaCSV2XMLFromFileIterator& ) = 0;
+
+    virtual void beginVisit ( const ZorbaTXT2XMLFromFileIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaTXT2XMLFromFileIterator& ) = 0;
 
     virtual void beginVisit ( const TraceIterator& ) = 0;
     virtual void endVisit   ( const TraceIterator& ) = 0;
