@@ -29,6 +29,9 @@ message (STATUS "Zorba source dir: ${srcdir}")
 # Ensure build directory exists
 if (NOT ZORBA_BUILD_DIR)
   set (ZORBA_BUILD_DIR "${srcdir}/build")
+else (NOT ZORBA_BUILD_DIR)
+  get_filename_component (ZORBA_BUILD_DIR_TEMP "${ZORBA_BUILD_DIR}" ABSOLUTE)
+  set(ZORBA_BUILD_DIR "${ZORBA_BUILD_DIR_TEMP}")
 endif (NOT ZORBA_BUILD_DIR)
 
 file(TO_CMAKE_PATH "${ZORBA_BUILD_DIR}" CMAKE_ZORBA_BUILD_DIR)

@@ -2,6 +2,7 @@
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/serializer.h>
 #include <zorba/api_shared_types.h>
+#include <zorba/base64.h>
 
 #include "http_request_handler.h"
 
@@ -92,7 +93,16 @@ namespace zorba { namespace http_client {
       }
     }
     if (aUsername != "" && aSendAuthorization) {
-      // Todo: implement adding header here.
+      if (aAuthMethod == "Basic") {
+        String lAuthString = aUsername + ":" + aPassword;
+        String lAuth = "Authorization: Basic ";
+        lAuth += encoding::Base64::encode(lAuthString);
+        curl_slist_append(theHeaderLists[0], lAuth.c_str());
+      } else if (aAuthMethod == "Digest") {
+        String lUserPw = aUsername + ":" + aPassword;
+        curl_easy_setopt(theCurl, CURLOPT_USERPWD, lUserPw.c_str());
+        curl_easy_setopt(theCurl, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST);
+      }
     }
   }
 
