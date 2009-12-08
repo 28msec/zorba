@@ -21,9 +21,10 @@
 
 #include "common/shared_types.h"
 
-#include "functions/function.h"
+#include "functions/udf.h"
 
-namespace zorba {
+namespace zorba 
+{
 
 class stateless_external_function_adapter : public external_function 
 {

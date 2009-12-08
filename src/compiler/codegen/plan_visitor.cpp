@@ -720,7 +720,7 @@ bool begin_visit(flwor_expr& v)
     case flwor_clause::where_clause: 
     {
       const where_clause* wc = reinterpret_cast<const where_clause*>(c);
-      wc->get_where()->accept(*this);
+      wc->get_expr()->accept(*this);
       break;
     }
     default:

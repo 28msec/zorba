@@ -44,8 +44,6 @@ public:
 
   bool requires_dyn_ctx() const { return true; }
 
-  ZORBA_NOT_PROPAGATES_I2O;
-
   DEFAULT_NARY_CODEGEN(ZorbaTDocIterator);
 };
 

@@ -794,7 +794,7 @@ void flwor_expr::set_where(expr* e)
   if (theClauses[i]->get_kind() == flwor_clause::where_clause) 
   {
     where_clause* wc = reinterpret_cast<where_clause*>(theClauses[i].getp());
-    wc->set_where(e);
+    wc->set_expr(e);
     return;
   }
 
@@ -835,7 +835,7 @@ expr* flwor_expr::get_where() const
   for (unsigned i = 0; i < numClauses; ++i)
   {
     if (theClauses[i]->get_kind() == flwor_clause::where_clause)
-      return reinterpret_cast<where_clause*>(theClauses[i].getp())->get_where();
+      return reinterpret_cast<where_clause*>(theClauses[i].getp())->get_expr();
   }
 
   return NULL;

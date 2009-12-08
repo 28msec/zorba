@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "runtime/indexing/index_ddl.h"
-
-#include "context/static_context.h"
-#include "context/dynamic_context.h"
-
-#include "compiler/indexing/value_index.h"
-
-#include "runtime/api/plan_wrapper.h"
-#include "runtime/api/plan_iterator_wrapper.h"
-
 #include "store/api/store.h"        // for checking if index exists
 #include "store/api/item_factory.h" // for creating pul
 #include "store/api/iterator_factory.h" // for creating the probe iterator
 #include "store/api/pul.h"
 #include "store/api/index.h"
 
-namespace zorba {
+#include "runtime/indexing/index_ddl.h"
+#include "runtime/api/plan_wrapper.h"
+#include "runtime/api/plan_iterator_wrapper.h"
+
+#include "compiler/indexing/value_index.h"
+
+#include "context/static_context.h"
+#include "context/dynamic_context.h"
+
+
+namespace zorba 
+{
 
 /*******************************************************************************
 
@@ -67,7 +68,8 @@ void createIndexSpec(
   }
 }
 
-/******************************************************************************
+
+/*******************************************************************************
 
 ********************************************************************************/
 bool CreateInternalIndexIterator::nextImpl(
@@ -113,7 +115,8 @@ bool CreateInternalIndexIterator::nextImpl(
   STACK_END (state);
 }
 
-/***************************************************************************//**
+
+/*******************************************************************************
 
 ********************************************************************************/
 bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -160,7 +163,8 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   STACK_END(state);
 }
 
-/***************************************************************************//**
+
+/*******************************************************************************
 
 ********************************************************************************/
 bool DeleteIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -194,11 +198,13 @@ bool DeleteIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   STACK_END(state);
 }
 
-/*****************************************************************************
+
+/*******************************************************************************
 
 ********************************************************************************/
-bool RefreshIndexIterator::nextImpl(store::Item_t& result,
-                                    PlanState& planState) const
+bool RefreshIndexIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t qname;
   ValueIndex_t zorbaIndex;
@@ -239,6 +245,7 @@ bool RefreshIndexIterator::nextImpl(store::Item_t& result,
   STACK_END(state);
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -271,6 +278,7 @@ void IndexPointProbeIteratorState::reset(PlanState& state)
     theIterator->close();
   }
 }
+
 
 bool IndexPointProbeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -349,6 +357,7 @@ void IndexRangeProbeIteratorState::reset(PlanState& state)
     theIterator->close();
   }
 }
+
 
 bool IndexRangeProbeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -435,5 +444,6 @@ bool IndexRangeProbeIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
   STACK_END(state);
 }
+
 
 } /* namespace zorba */

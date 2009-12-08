@@ -30,7 +30,7 @@
 
 #include "compiler/api/compilercb.h"
 
-#include "functions/function.h"
+#include "functions/udf.h"
 
 #include "runtime/core/var_iterators.h"
 #include "runtime/util/flowctl_exception.h"  // for ExitException

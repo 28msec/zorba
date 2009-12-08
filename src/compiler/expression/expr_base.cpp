@@ -17,6 +17,7 @@
 #include "compiler/expression/expr_base.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/fo_expr.h"
+#include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/path_expr.h"
 #include "compiler/expression/expr_visitor.h"
 
@@ -567,13 +568,14 @@ bool expr::contains_expr(const expr* e) const
 /*******************************************************************************
   This method tries to see if "this" is a map with respect to the given expr.
 
-  Let E1 be an expr, R1 be the result of E1, E2 be a sub-expr of E1, R2 be the 
-  result of E2, and N be the cardinality of R2. Then, E1 is a map w.r.t. E2 iff 
+  Let E1 be an expr and E2 be a sub-expr of E1, Then, E1 is a map w.r.t. E2 iff
 
-  R1 == CONCATENATE { R1i, i = 1, ..., N },
+  for each value v2 of E2 with a cardinality N >= 1:
 
-  where R1i is the result of expr E1i and E1i is the expr derived from E1 by 
-  replacing E2 with a variable bound to the i-th item in R2.
+  v1 == CONCATENATE { v1i, i = 1, ..., N }, where
+
+  v1 is the value of E1 when E2 is bound to v2 and
+  v1i is the value of E1 when E2 is bound to the i-th item in v2 
  
   If the method returns true, then "this" is guaranteed to be a map. If it
   returns false, it may still be a map, but this algorithm could not determine
@@ -581,6 +583,9 @@ bool expr::contains_expr(const expr* e) const
 ********************************************************************************/
 bool expr::is_map(const expr* e, static_context* sctx) const
 {
+  if (is_updating())
+    return false;
+
   xqtref_t type = e->return_type(sctx);
   TypeConstants::quantifier_t q = type->get_quantifier();
 
@@ -604,12 +609,18 @@ bool expr::is_map_internal(const expr* e, bool& found) const
     return true;
   }
 
-  switch(e->get_expr_kind()) 
+  switch(get_expr_kind()) 
   {
   case debugger_expr_kind:
   {
     const debugger_expr* debugExpr = static_cast<const debugger_expr *>(this);
     return debugExpr->get_expr()->is_map_internal(e, found);
+  }
+
+  case order_expr_kind:
+  {
+    const order_expr* orderExpr = static_cast<const order_expr *>(this);
+    return orderExpr->get_expr()->is_map_internal(e, found);
   }
 
   case wrapper_expr_kind:
@@ -622,13 +633,150 @@ bool expr::is_map_internal(const expr* e, bool& found) const
   case var_expr_kind:
     return true;
 
+  case fo_expr_kind:
+  {
+    const fo_expr* foExpr = static_cast<const fo_expr *>(this);
+    const function* func = foExpr->get_func();
+    ulong numArgs = foExpr->num_args();
+    
+    for (ulong i = 0; i < numArgs; ++i)
+    {
+      const expr* argExpr = foExpr->get_arg(i);
+
+      if (func->propagatesInputToOutput(i))
+      {
+        if (argExpr->is_map_internal(e, found) && found)
+        {
+          return true;
+        }
+        else if (found)
+        {
+          return false;
+        }
+      }
+      else if (argExpr->contains_expr(e))
+      {
+        return false; // TODO
+      }
+    }
+
+    return true;
+  }
+
   case flwor_expr_kind:
   case gflwor_expr_kind:
-  case trycatch_expr_kind:
-    ZORBA_ASSERT(false); // TODO
+  {
+    const flwor_expr* flworExpr = static_cast<const flwor_expr *>(this);
+    bool haveOrderBy = false;
+    ulong numClauses = flworExpr->num_clauses();
 
-  case fo_expr_kind:
-    return true; // TODO
+    for (ulong i = 0; i < numClauses; ++i)
+    {
+      const flwor_clause* clause = (*flworExpr)[i];
+
+      switch (clause->get_kind())
+      {
+      case flwor_clause::for_clause:
+      {
+        if (found)
+          break;
+
+        if (clause->get_expr()->is_map_internal(e, found) && found)
+        {
+          break;
+        }
+        else if (found)
+        {
+          return false;
+        }
+
+        break;
+      }
+      case flwor_clause::let_clause:
+      case flwor_clause::where_clause:
+      {
+        if (found)
+          break;
+
+        if (clause->get_expr()->contains_expr(e))
+          return false;
+
+        break;
+      }
+      case flwor_clause::window_clause:
+      {
+        if (found)
+          break;
+
+        if (clause->get_expr()->contains_expr(e))
+          return false;
+
+        const window_clause* wc = static_cast<const window_clause*>(clause);
+        flwor_wincond* startCond = wc->get_win_start();
+        flwor_wincond* stopCond = wc->get_win_stop();
+
+        if (startCond && startCond->get_cond()->contains_expr(e))
+          return false;
+        
+        if (stopCond && stopCond->get_cond()->contains_expr(e))
+          return false;
+
+        break;
+      }
+      case flwor_clause::group_clause:
+      case flwor_clause::count_clause:
+      {
+        if (found)
+          return false;
+
+        break;
+      }
+      case flwor_clause::order_clause:
+      {
+        if (found)
+          return false;
+
+        const orderby_clause* obc = static_cast<const orderby_clause*>(clause);
+
+        ulong numColumns = obc->num_columns();
+        for (ulong k = 0; k < numColumns; ++k)
+        {
+          if (obc->get_column_expr(k)->contains_expr(e))
+            return false;
+        }
+
+        haveOrderBy = true;
+        break;
+      }
+      default:
+        ZORBA_ASSERT(false);
+      }
+    }
+
+    if (found)
+    {
+      return true;
+    }
+    else
+    {
+      const expr* retExpr = flworExpr->get_return_expr();
+
+      if (retExpr->is_map_internal(e, found) && found && !haveOrderBy)
+      {
+        // TODO: actually we should return true only if the ordering mode for
+        // the return expr is unordered.
+        return true;
+      }
+      else if (!found)
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
+    }
+  }
 
   case if_expr_kind:
   {
@@ -649,9 +797,6 @@ bool expr::is_map_internal(const expr* e, bool& found) const
     const relpath_expr* pathExpr = static_cast<const relpath_expr*>(this);
     return (*pathExpr)[0]->is_map_internal(e, found);
   }
-
-  case order_expr_kind:
-    ZORBA_ASSERT(false); // TODO
 
   case treat_expr_kind:
   {
@@ -686,26 +831,34 @@ bool expr::is_map_internal(const expr* e, bool& found) const
   case name_cast_expr_kind:
   case cast_expr_kind:
   case validate_expr_kind:
-    return false;
+  {
+    return !contains_expr(e);
+  }
 
   case doc_expr_kind:
   case elem_expr_kind:
   case attr_expr_kind:
   case text_expr_kind:
   case pi_expr_kind:
-    return false;
+  {
+    return !contains_expr(e);
+  }
 
+  case trycatch_expr_kind:
   case extension_expr_kind:
-   return false;
+  {
+    return !contains_expr(e);
+  }
 
   case transform_expr_kind:
-    ZORBA_ASSERT(false); // TODO
+  {
+    const transform_expr* transformExpr = static_cast<const transform_expr*>(this);
 
-  case insert_expr_kind:
-  case delete_expr_kind:
-  case rename_expr_kind:
-  case replace_expr_kind:
-    return false;
+    if (transformExpr->getReturnExpr()->is_map_internal(e, found) && found)
+      return true;
+
+    return !contains_expr(e);
+  }
 
   case eval_expr_kind:
     return false; // TODO
@@ -714,7 +867,13 @@ bool expr::is_map_internal(const expr* e, bool& found) const
   case exit_expr_kind:
   case flowctl_expr_kind:
   case while_expr_kind:
-   ZORBA_ASSERT(false);
+    return false; // TODO
+
+  case insert_expr_kind:
+  case delete_expr_kind:
+  case rename_expr_kind:
+  case replace_expr_kind:
+    ZORBA_ASSERT(false);
 
   default:
     ZORBA_ASSERT(false);

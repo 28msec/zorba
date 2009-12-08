@@ -304,7 +304,7 @@ fn_zero_or_one::codegen(
 FunctionConsts::AnnotationValue
 fn_distinct_values::producesDuplicates() const
 {
-  return FunctionConsts::YES;
+  return FunctionConsts::NO;
 }
 
 FunctionConsts::AnnotationValue

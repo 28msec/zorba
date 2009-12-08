@@ -71,10 +71,7 @@ public:
 
   FUNCTION_PRODUCES_SORTED_NODES;
 
-  FunctionConsts::AnnotationValue producesDuplicates() const
-  {
-    return FunctionConsts::NO;
-  }
+  FUNCTION_PRODUCES_DISTINCT_NODES;
 
   CODEGEN_DECL();
 };
@@ -101,10 +98,7 @@ public:
 
   FUNCTION_PRODUCES_SORTED_NODES;
 
-  FunctionConsts::AnnotationValue producesDuplicates() const
-  {
-    return FunctionConsts::NO;
-  }
+  FUNCTION_PRODUCES_DISTINCT_NODES;
 
   CODEGEN_DECL();
 };
@@ -124,10 +118,7 @@ public:
 
   FUNCTION_PRODUCES_SORTED_NODES;
 
-  FunctionConsts::AnnotationValue producesDuplicates() const
-  {
-    return FunctionConsts::NO;
-  }
+  FUNCTION_PRODUCES_DISTINCT_NODES;
 
   CODEGEN_DECL();
 };
@@ -146,8 +137,6 @@ public:
                FunctionConsts::FN_MAX_2);
   }
 
-  ZORBA_PROPAGATES_ONE_I2O(0);
-
   CODEGEN_DECL();
 };
 
@@ -164,8 +153,6 @@ public:
                FunctionConsts::FN_MIN_1 :
                FunctionConsts::FN_MIN_2);
   }
-
-  ZORBA_PROPAGATES_ONE_I2O(0);
 
   CODEGEN_DECL();
 };

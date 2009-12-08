@@ -62,21 +62,21 @@ public:
   {
   }
 
-  xqtref_t return_type (const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
 
   void compute_annotation(
         AnnotationHolder* parent,
         std::vector<AnnotationHolder *>& kids,
         Annotations::Key k) const;
 
-  ZORBA_PROPAGATES_ONE_I2O(theInput);
+  FUNCTION_PROPAGATES_ONE_I2O(theInput);
 
-  FunctionConsts::AnnotationValue producesNodeIdSorted() const
+  virtual FunctionConsts::AnnotationValue producesNodeIdSorted() const
   {
     return FunctionConsts::PRESERVE;
   }
 
-  FunctionConsts::AnnotationValue producesDuplicates() const
+  virtual FunctionConsts::AnnotationValue producesDuplicates() const
   {
     return FunctionConsts::PRESERVE;
   }

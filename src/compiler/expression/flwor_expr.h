@@ -96,6 +96,8 @@ public:
 
   flwor_expr* get_flwor_expr() const { return theFlworExpr; }
 
+  virtual expr* get_expr() const { return NULL; }
+
   virtual flwor_clause_t clone(expr::substitution_t& substitution) const = 0;
 };
 
@@ -582,9 +584,9 @@ public:
   {
   }
 
-  expr* get_where() const { return theWhereExpr.getp(); }
+  expr* get_expr() const { return theWhereExpr.getp(); }
 
-  void set_where(expr_t where) { theWhereExpr = where; }
+  void set_expr(expr_t where) { theWhereExpr = where; }
 
   flwor_clause_t clone(expr::substitution_t& substitution) const;
 };

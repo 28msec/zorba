@@ -45,9 +45,13 @@ public:
         nodes_or_atomics_t noa);
 
 public:
-  op_node_sort_distinct(const signature& sig,
-                        FunctionConsts::FunctionKind kind)
-    : single_seq_function (sig, kind) {}
+  op_node_sort_distinct(
+        const signature& sig,
+        FunctionConsts::FunctionKind kind)
+    :
+    single_seq_function(sig, kind)
+  {
+  }
 
   // (sort?, atomics?, distinct?, ascending?)
   virtual const bool* action() const = 0;
@@ -57,9 +61,9 @@ public:
   bool isNodeDistinctFunction() const { return action()[2]; }
 
   virtual function* min_action(
-        const static_context *sctx,
-        const AnnotationHolder *self,
-        const AnnotationHolder *child,
+        const static_context* sctx,
+        const AnnotationHolder* self,
+        const AnnotationHolder* child,
         nodes_or_atomics_t noa) const;
 
   COMPUTE_ANNOTATION_DECL();

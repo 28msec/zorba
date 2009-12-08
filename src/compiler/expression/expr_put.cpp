@@ -295,7 +295,7 @@ ostream& flwor_expr::put( ostream& os) const
 
     if (c.get_kind() == flwor_clause::where_clause)
     {
-      PUT_SUB ("WHERE", static_cast<const where_clause *>(&c)->get_where());
+      PUT_SUB ("WHERE", static_cast<const where_clause *>(&c)->get_expr());
     }
     else if (c.get_kind() == flwor_clause::count_clause) 
     {

@@ -63,6 +63,7 @@ LIST(APPEND FUNCTIONS_SRCS
     VarDecl.cpp
     function.cpp
     single_seq_func.cpp
+    udf.cpp
     library.cpp
     Numerics.cpp
     signature.cpp

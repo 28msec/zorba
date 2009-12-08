@@ -30,7 +30,7 @@
 #include "types/typeops.h"
 #include "types/casting.h"
 
-#include "functions/function.h"
+#include "functions/udf.h"
 #include "functions/library.h"
 
 #include "runtime/util/plan_wrapper_holder.h"

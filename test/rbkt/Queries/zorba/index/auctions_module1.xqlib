@@ -1,5 +1,5 @@
 
-datamodule namespace auctions = "http://www.w3.org/TestModules/auctions";
+module namespace auctions = "http://www.w3.org/TestModules/auctions";
 
 import module namespace ddl = "http://www.zorba-xquery.com/modules/ddl";
 

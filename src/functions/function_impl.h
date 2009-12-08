@@ -42,7 +42,8 @@
 
 
 #define DECL(sctx, type, sig)                                             \
-  do {                                                                    \
+  do                                                                      \
+  {                                                                       \
     std::auto_ptr<function> type##_ptr(new type(signature sig));          \
     const store::Item* fname = type##_ptr->getName();                     \
     unsigned cnt = type##_ptr->get_signature().arg_count();               \
@@ -80,7 +81,7 @@ PlanIter_t codegen(CompilerCB* /* cb */,                  \
                    std::vector<PlanIter_t>& argv,         \
                    AnnotationHolder &/*ann*/) const       \
 {                                                         \
-  return new Iter (sctx, loc, argv);                      \
+  return new Iter(sctx, loc, argv);                       \
 }
 
 
@@ -91,7 +92,7 @@ PlanIter_t codegen(CompilerCB* /* cb */,                  \
                    std::vector<PlanIter_t>& argv,         \
                    AnnotationHolder &/*ann*/) const       \
 {                                                         \
-  return new Iter (sctx, loc, argv[0], argv[1]);          \
+  return new Iter(sctx, loc, argv[0], argv[1]);           \
 }
 
 
@@ -102,7 +103,7 @@ PlanIter_t codegen(CompilerCB* /* cb */,                  \
                    std::vector<PlanIter_t>& argv,         \
                    AnnotationHolder &/*ann*/) const       \
 {                                                         \
-  return new Iter (sctx, loc, argv[0]);                   \
+  return new Iter(sctx, loc, argv[0]);                    \
 }
 
 
@@ -113,16 +114,18 @@ PlanIter_t codegen(CompilerCB* /* cb */,                  \
                    std::vector<PlanIter_t>& argv,         \
                    AnnotationHolder &/*ann*/) const       \
 {                                                         \
-  return new Iter (sctx, loc);                            \
+  return new Iter(sctx, loc);                             \
 }
 
 
-namespace zorba {
+
+namespace zorba 
+{
 
 static inline store::Item_t createQName(
-    const char *ns,
-    const char *pre,
-    const char *local)
+    const char* ns,
+    const char* pre,
+    const char* local)
 {
   store::Item_t res;
   GENV_ITEMFACTORY->createQName(res, ns, pre, local);
@@ -130,12 +133,13 @@ static inline store::Item_t createQName(
 }
 
 
+
 template <class Iter> class function_impl : public function 
 {
 public:
-  function_impl ( const signature& sig) : function (sig) {}
+  function_impl(const signature& sig) : function(sig) {}
 
-  DEFAULT_NARY_CODEGEN (Iter)
+  DEFAULT_NARY_CODEGEN(Iter)
 };
 
 

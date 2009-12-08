@@ -27,10 +27,10 @@
 #include "compiler/parser/query_loc.h"
 #include "compiler/semantic_annotations/annotation_keys.h"
 #include "compiler/expression/expr_consts.h"
-#include "compiler/expression/expr_base.h"
 
 
-namespace zorba {
+namespace zorba 
+{
 
 
 class fo_expr;
@@ -44,14 +44,26 @@ FunctionConsts::AnnotationValue producesNodeIdSorted() const \
   return FunctionConsts::YES;                                \
 }
 
-#define ZORBA_NOT_PROPAGATES_I2O \
-bool propagatesInputToOutput(uint32_t aProducer) const { return false; }
 
-#define ZORBA_PROPAGATES_I2O \
-bool propagatesInputToOutput(uint32_t aProducer) const { return true; }
+#define FUNCTION_PRODUCES_DISTINCT_NODES                     \
+FunctionConsts::AnnotationValue producesDuplicates() const   \
+{                                                            \
+  return FunctionConsts::NO;                                 \
+}
 
-#define ZORBA_PROPAGATES_ONE_I2O( n ) \
-bool propagatesInputToOutput(uint32_t aProducer) const { return n == aProducer; }
+
+#define FUNCTION_PROPAGATES_I2O                              \
+bool propagatesInputToOutput(uint32_t aProducer) const       \
+{                                                            \
+  return true;                                               \
+}
+
+
+#define FUNCTION_PROPAGATES_ONE_I2O( n )                     \
+bool propagatesInputToOutput(uint32_t aProducer) const       \
+{                                                            \
+  return n == aProducer;                                     \
+}
 
 
 /*******************************************************************************
@@ -117,6 +129,21 @@ public:
 
   virtual xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
 
+  void setFlag(FunctionConsts::AnnotationFlags flag) 
+  {
+    theFlags |= flag;
+  }
+
+  void resetFlag(FunctionConsts::AnnotationFlags flag)
+  {
+    theFlags &= ~flag;
+  }
+
+  bool testFlag(FunctionConsts::AnnotationFlags flag) const 
+  {
+    return (theFlags & flag) != 0;
+  }
+
 	virtual bool validate_args(std::vector<PlanIter_t>& argv) const;
 
   virtual bool requires_dyn_ctx() const { return false; }
@@ -130,8 +157,6 @@ public:
   bool isUpdating() const { return getUpdateType() == UPDATE_EXPR; }
 
   bool isSequential() const { return getUpdateType() == SEQUENTIAL_EXPR; }
-
-  virtual bool propagatesInputToOutput(uint32_t aProducer) const { return true; }
 
   virtual function* specialize(
         static_context* sctx,
@@ -166,20 +191,7 @@ public:
 
   virtual bool isNodeDistinctFunction() const { return false; }
 
-  bool testFlag(FunctionConsts::AnnotationFlags flag) const 
-  {
-    return (theFlags & flag) != 0;
-  }
-
-  void setFlag(FunctionConsts::AnnotationFlags flag) 
-  {
-    theFlags |= flag;
-  }
-
-  void resetFlag(FunctionConsts::AnnotationFlags flag)
-  {
-    theFlags &= ~flag;
-  }
+  virtual bool propagatesInputToOutput(uint32_t aProducer) const { return false; }
 
   virtual FunctionConsts::AnnotationValue producesDuplicates() const;
 
@@ -199,115 +211,6 @@ public:
 };
 
 
-/*******************************************************************************
-  A udf with params $x1, $x2, ..., $xn and a body_expr is translated into a
-  flwor expr:
-
-  let $x1 := $x1_, $x2 := $x2_, ..., $xn := $xn_
-  return body_expr
-
-  The internally generated vars $x1_, ..., $xn_ are not registered in any sctx,
-  but they are registered in the udf obj instead (m_args data member).
-
-  A call to a udf is translated the same way as a call to a built-in function,
-  i.e., an fo_expr is created that points to the udf obj and also has a vector
-  of pointers to the arg exprs appearing in the function call.
-
-  m_loc         : The query location where this udf is declared at.
-  m_expr_body   : The expr tree representing what this function is doing. It is
-                  the result of translating the udf declaration (so for a udf
-                  with one or more params, it is the flwor expr described above).
-                  Note: translation of udf declarations includes normalization
-                  and optimization of the expr tree.
-  m_args        : The internally generated arg vars (the $xi_ vars described above)
-
-  theUpdateType : The update type of this udf.
-  sequential    :
-  deterministic :
-  leaf          :
-
-  m_plan        :
-  m_param_itrers:
-  m_state_size  :
-********************************************************************************/
-class user_function : public function 
-{
-private:
-  QueryLoc                m_loc;
-
-  expr_t                  m_expr_body;
-  std::vector<var_expr_t> m_args;
-
-  expr_script_kind_t      theUpdateType;
-  bool                    deterministic;
-  bool                    leaf;  // does not call other UDF's
-  
-  mutable PlanIter_t                m_plan;
-  mutable std::vector<LetVarIter_t> m_param_iters;
-  mutable int32_t                   m_state_size;
-
-public:
-  SERIALIZABLE_CLASS(user_function)
-
-  user_function(::zorba::serialization::Archiver& ar);
-
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  user_function(
-        const QueryLoc& loc,
-        const signature& sig,
-        expr_t expr_body, 
-        ParseConstants::function_type_t,
-        bool deterministic);
-
-  virtual ~user_function();
-
-  const QueryLoc& get_location() const;
-
-  virtual expr_script_kind_t getUpdateType() const { return theUpdateType; }
-
-  virtual bool is_builtin_fn_named(const char *local, int local_len,int arg_count) const {return false;}
-
-  bool isDeterministic() const { return deterministic; }
-
-  void setLeaf (bool leaf_) { leaf = leaf_; }
-
-  bool isLeaf() const { return leaf; }
-
-  void set_body(expr_t body);
-
-  expr_t get_body() const;
-
-  void set_args(std::vector<var_expr_t>& args);
-
-  const std::vector<var_expr_t>& get_args() const;
-
-  bool requires_dyn_ctx () const;
-
-  virtual PlanIter_t get_plan(CompilerCB *) const;
-  
-  virtual std::vector<LetVarIter_t>& get_param_iters() const;
-
-  PlanIter_t codegen(
-        CompilerCB* cb,
-        static_context* sctx,
-        const QueryLoc& loc,
-        std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const; 
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class external_function : public function 
-{
-public:
-  external_function(const signature& sig) : function(sig) { }
-
-  virtual ~external_function() { }
-};
 
 
 } /* namespace zorba */
