@@ -5355,7 +5355,8 @@ VarNameDecl :
  *_______________________________________________________________________*/
 
 TryExpr :
-    TRY LBRACE ExprSingle RBRACE CatchListExpr
+// TRY LBRACE ExprSingle RBRACE CatchListExpr
+    TRY LBRACE Expr RBRACE CatchListExpr
     {
        $$ = new TryExpr(LOC (@$),
 								       $3, $5);
