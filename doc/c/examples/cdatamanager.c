@@ -73,7 +73,7 @@ cdatamanager(int argc, char** argv)
 
   void* store = create_simple_store();
 
-  if ( zorba_implementation(&impl, store) != XQ_NO_ERROR)
+  if ( zorba_implementation(&impl, store) != XQC_NO_ERROR)
     return 1;
  
   impl->data_manager(impl, &mgr);

@@ -24,26 +24,26 @@ namespace zorbac {
   class Query
   {
     public:
-	    static XQUERY_ERROR
+	    static XQC_Error
       get_dynamic_context(XQC_Query* query, XQC_DynamicContext** context);
 
-      static XQUERY_ERROR
+      static XQC_Error
       get_static_context(XQC_Query*, XQC_StaticContext** context);
 
-	    static XQUERY_ERROR 
+	    static XQC_Error 
       execute(XQC_Query* query, FILE* file);
 
-      static XQUERY_ERROR
+      static XQC_Error
       serialize_file(XQC_Query* query, 
                      const Zorba_SerializerOptions_t* options, 
                      FILE* file);
 
-      static XQUERY_ERROR
+      static XQC_Error
       serialize_stream(XQC_Query* query, 
                        const Zorba_SerializerOptions_t* options, 
                        XQC_OutputStream stream);
 
-	    static XQUERY_ERROR 
+	    static XQC_Error 
       sequence(XQC_Query* query, XQC_Sequence** sequence);
 
       static void

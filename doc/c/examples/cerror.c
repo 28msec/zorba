@@ -25,7 +25,7 @@
 // during preparing or executing the query
 void
 error_handler(XQC_ErrorHandler* handler,
-              XQUERY_ERROR error,
+              XQC_Error    error,
               const char   *local_name,
               const char   *description,
               const char   *query_uri,
@@ -43,7 +43,7 @@ error_handler(XQC_ErrorHandler* handler,
 int
 cerror_example_1(XQC_Implementation* impl)
 {
-  XQUERY_ERROR     lError = XQ_NO_ERROR;
+  XQC_Error         lError = XQC_NO_ERROR;
   XQC_Query*        lXQuery;
   XQC_ErrorHandler* lErrorHandler = (XQC_ErrorHandler*) malloc(sizeof(struct XQC_ErrorHandler_s));
   lErrorHandler->error = error_handler;
@@ -55,7 +55,7 @@ cerror_example_1(XQC_Implementation* impl)
   // because it was not successfully created
   free(lErrorHandler);
 
-  return lError == XPST0003?1:0;
+  return lError == XQC_STATIC_ERROR ? 1 : 0;
 }
 
 /**
@@ -64,9 +64,9 @@ cerror_example_1(XQC_Implementation* impl)
 int
 cerror_example_2(XQC_Implementation* impl)
 {
-  XQUERY_ERROR     lError = XQ_NO_ERROR;
+  XQC_Error         lError = XQC_NO_ERROR;
   XQC_Query*        lXQuery;
-  FILE*            lOutFile = stdout;
+  FILE*             lOutFile = stdout;
   XQC_ErrorHandler* lErrorHandler = (XQC_ErrorHandler*) malloc(sizeof(struct XQC_ErrorHandler_s));
   lErrorHandler->error = error_handler;
 
@@ -84,17 +84,17 @@ cerror_example_2(XQC_Implementation* impl)
   lXQuery->free(lXQuery);
   free(lErrorHandler);
 
-  return lError == FOAR0001?1:0;
+  return lError == XQC_DYNAMIC_ERROR ? 1 : 0;
 }
 
 int
 cerror_example_3(XQC_Implementation* impl) 
 {
-  XQUERY_ERROR   lError = XQ_NO_ERROR;
-  XQC_Query*      lXQuery;
+  XQC_Error      lError = XQC_NO_ERROR;
+  XQC_Query*     lXQuery;
   XQC_Item       lItem;
   const char*    lStringValue;
-  XQC_Sequence*   lResult;
+  XQC_Sequence*  lResult;
   XQC_ErrorHandler* lErrorHandler = (XQC_ErrorHandler*) malloc(sizeof(struct XQC_ErrorHandler_s));
   lErrorHandler->error = error_handler;
 
@@ -107,7 +107,7 @@ cerror_example_3(XQC_Implementation* impl)
 
   // an error is reported during the last for iteration
   // the error callback function is called and the loop terminates
-  while ( lResult->next(lResult, lItem) == XQ_NO_ERROR ) {
+  while ( lResult->next(lResult, lItem) == XQC_NO_ERROR ) {
     lItem->string_value(lItem, &lStringValue);
     printf("%s ", lStringValue);
   }
@@ -129,7 +129,7 @@ cerror(int argc, char** argv)
 
   void* store = create_simple_store();
 
-  if ( zorba_implementation(&impl, store) != XQ_NO_ERROR)
+  if ( zorba_implementation(&impl, store) != XQC_NO_ERROR)
     return 1;
 
   printf("executing C example 1\n");

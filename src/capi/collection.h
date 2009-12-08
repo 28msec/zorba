@@ -23,22 +23,22 @@ namespace zorbac {
   class Collection {
 
     public:
-      static XQUERY_ERROR
+      static XQC_Error
       get_name(XQC_Collection collection, XQC_Item_Ref uri_item);
   
-      static XQUERY_ERROR
+      static XQC_Error
       add_node(XQC_Collection collection, XQC_Item node);
   
-      static XQUERY_ERROR
+      static XQC_Error
       delete_node(XQC_Collection collection, XQC_Item node);
   
-      static XQUERY_ERROR
+      static XQC_Error
       add_sequence(XQC_Collection collection, XQC_Sequence* sequence);
   
-      static XQUERY_ERROR
+      static XQC_Error
       add_document(XQC_Collection collection, FILE* doc);
 
-      static XQUERY_ERROR
+      static XQC_Error
       add_document_char(XQC_Collection collection, const char* doc);
 
       static void

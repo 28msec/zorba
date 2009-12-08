@@ -21,16 +21,17 @@
 #include "capi/capi_util.h"
 #include "capi/item.h"
 #include "capi/sequence.h"
+#include "capi/error.h"
 
 using namespace zorba;
 
 #define DC_TRY try {
 #define DC_CATCH \
-    return XQ_NO_ERROR;              \
+    return XQC_NO_ERROR;              \
   } catch (ZorbaException &e) {     \
-    return e.getErrorCode();        \
+    return Error::convert_xquery_error(e.getErrorCode()); \
   } catch (...) {                   \
-    return XQP0019_INTERNAL_ERROR;  \
+    return XQC_INTERNAL_ERROR;  \
   }
 
 namespace zorbac {
@@ -41,7 +42,7 @@ namespace zorbac {
     return static_cast<zorba::DynamicContext*>(context->data);
   }
 
-  XQUERY_ERROR 
+  XQC_Error 
   DynamicContext::set_context_item (XQC_DynamicContext* context, XQC_Item value)
   {
     DC_TRY
@@ -53,7 +54,7 @@ namespace zorbac {
     DC_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   DynamicContext::set_context_document(XQC_DynamicContext* context, const char* doc_uri, FILE* document)
   {
     DC_TRY
@@ -67,7 +68,7 @@ namespace zorbac {
   }
   
 
-  XQUERY_ERROR
+  XQC_Error
   DynamicContext::set_variable_item(XQC_DynamicContext* context, const char* qname, XQC_Item item)
   {
     DC_TRY
@@ -79,7 +80,7 @@ namespace zorbac {
     DC_CATCH
   }
   
-  XQUERY_ERROR
+  XQC_Error
   DynamicContext::set_variable_sequence(XQC_DynamicContext* context, const char* qname, XQC_Sequence* seq)
   {
     DC_TRY
@@ -90,7 +91,7 @@ namespace zorbac {
     DC_CATCH
   }
   
-  XQUERY_ERROR
+  XQC_Error
   DynamicContext::set_variable_document(XQC_DynamicContext* context, 
                                         const char* var_qname,
                                         const char* doc_uri, 
@@ -107,7 +108,7 @@ namespace zorbac {
     DC_CATCH
   }
   
-  XQUERY_ERROR 
+  XQC_Error 
   DynamicContext::set_implicit_timezone(XQC_DynamicContext* context, int timezone)
   {
     DC_TRY
@@ -117,7 +118,7 @@ namespace zorbac {
     DC_CATCH
   }
   
-  XQUERY_ERROR
+  XQC_Error
   DynamicContext::set_default_collection(XQC_DynamicContext* context, XQC_Item collection_uri)
   {
     DC_TRY

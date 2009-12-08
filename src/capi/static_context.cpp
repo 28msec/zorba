@@ -19,16 +19,17 @@
 #include <zorba/zorba.h>
 #include "capi/external_module.h"
 #include "capi/external_function.h"
+#include "capi/error.h"
 
 using namespace zorba;
 
 #define SC_TRY try {
 #define SC_CATCH \
-    return XQ_NO_ERROR;              \
+    return XQC_NO_ERROR;              \
   } catch (ZorbaException &e) {     \
-    return e.getErrorCode();        \
+    return Error::convert_xquery_error(e.getErrorCode()); \
   } catch (...) {                   \
-    return XQP0019_INTERNAL_ERROR;  \
+    return XQC_INTERNAL_ERROR;  \
   }
 
 namespace zorbac {
@@ -39,7 +40,7 @@ namespace zorbac {
     return (static_cast<zorbac::StaticContext*>(context->data))->theContext.get();
   }
 
-  XQUERY_ERROR
+  XQC_Error
   StaticContext::create_child_context(XQC_StaticContext* context, XQC_StaticContext** child_context)
   {
     SC_TRY
@@ -57,7 +58,7 @@ namespace zorbac {
     SC_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   StaticContext::declare_ns(XQC_StaticContext* context, const char* prefix, const char* uri)
   {
     SC_TRY
@@ -68,7 +69,7 @@ namespace zorbac {
     SC_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   StaticContext::get_ns_by_prefix(XQC_StaticContext* context, const char* prefix, 
                                          const char** result_ns)
   {
@@ -84,7 +85,7 @@ namespace zorbac {
     SC_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   StaticContext::set_default_element_and_type_ns(XQC_StaticContext* context, const char* uri)
   {
     SC_TRY
@@ -94,7 +95,7 @@ namespace zorbac {
     SC_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   StaticContext::get_default_element_and_type_ns(XQC_StaticContext* context, const char** uri)
   {
     SC_TRY
@@ -108,7 +109,7 @@ namespace zorbac {
     SC_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   StaticContext::set_default_function_ns(XQC_StaticContext* context, const char* uri)
   {
     SC_TRY
@@ -118,7 +119,7 @@ namespace zorbac {
     SC_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   StaticContext::get_default_function_ns(XQC_StaticContext* context, const char** uri)
   {
     SC_TRY
@@ -132,7 +133,7 @@ namespace zorbac {
     SC_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   StaticContext::add_collation(XQC_StaticContext* context, const char* uri)
   {
     SC_TRY
@@ -142,7 +143,7 @@ namespace zorbac {
     SC_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   StaticContext::set_default_collation(XQC_StaticContext* context, const char* uri)
   {
     SC_TRY
@@ -152,7 +153,7 @@ namespace zorbac {
     SC_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   StaticContext::get_default_collation(XQC_StaticContext* context, const char** uri)
   {
     SC_TRY
@@ -166,7 +167,7 @@ namespace zorbac {
     SC_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   StaticContext::set_xquery_version(XQC_StaticContext* context, xquery_version_t mode )
   {
     SC_TRY
@@ -176,7 +177,7 @@ namespace zorbac {
     SC_CATCH
   }
 
-  XQUERY_ERROR 
+  XQC_Error 
   StaticContext::get_xquery_version(XQC_StaticContext* context, xquery_version_t* mode)
   {
     SC_TRY
@@ -186,7 +187,7 @@ namespace zorbac {
     SC_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   StaticContext::set_xpath1_0_mode(XQC_StaticContext* context, xpath1_0compatib_mode_t mode )
   {
     SC_TRY
@@ -196,7 +197,7 @@ namespace zorbac {
     SC_CATCH
   }
 
-  XQUERY_ERROR 
+  XQC_Error 
   StaticContext::get_xpath1_0_mode(XQC_StaticContext* context, xpath1_0compatib_mode_t* mode)
   {
     SC_TRY
@@ -206,7 +207,7 @@ namespace zorbac {
     SC_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   StaticContext::set_construction_mode(XQC_StaticContext* context, construction_mode_t mode )
   {
     SC_TRY
@@ -216,7 +217,7 @@ namespace zorbac {
     SC_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   StaticContext::get_construction_mode(XQC_StaticContext* context, construction_mode_t* mode)
   {
     SC_TRY
@@ -226,7 +227,7 @@ namespace zorbac {
     SC_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   StaticContext::set_ordering_mode(XQC_StaticContext* context, ordering_mode_t mode )
   {
     SC_TRY
@@ -236,7 +237,7 @@ namespace zorbac {
     SC_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   StaticContext::get_ordering_mode(XQC_StaticContext* context, ordering_mode_t* mode )
   {
     SC_TRY
@@ -246,7 +247,7 @@ namespace zorbac {
     SC_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   StaticContext::set_default_order_empty_sequences(XQC_StaticContext* context,
                                                    order_empty_mode_t mode )
   {
@@ -257,7 +258,7 @@ namespace zorbac {
     SC_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   StaticContext::get_default_order_empty_sequences(XQC_StaticContext* context,
                                                    order_empty_mode_t* mode )
   {
@@ -268,7 +269,7 @@ namespace zorbac {
     SC_CATCH
   }
 
-  XQUERY_ERROR  
+  XQC_Error  
   StaticContext::set_boundary_space_policy(XQC_StaticContext* context, boundary_space_mode_t mode)
   {
     SC_TRY
@@ -278,7 +279,7 @@ namespace zorbac {
     SC_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   StaticContext::get_boundary_space_policy(XQC_StaticContext* context, boundary_space_mode_t* mode )
   {
     SC_TRY
@@ -288,7 +289,7 @@ namespace zorbac {
     SC_CATCH
   }
 
-  XQUERY_ERROR 
+  XQC_Error 
   StaticContext::set_copy_ns_mode(XQC_StaticContext* context,  
                                           preserve_mode_t preserve,
                                           inherit_mode_t inherit )
@@ -300,7 +301,7 @@ namespace zorbac {
     SC_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   StaticContext::get_copy_ns_mode(XQC_StaticContext* context,
                                           preserve_mode_t* aPreserve, 
                                           inherit_mode_t* aInherit )
@@ -312,7 +313,7 @@ namespace zorbac {
     SC_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   StaticContext::set_base_uri(XQC_StaticContext* context, const char* base_uri )
   {
     SC_TRY
@@ -322,7 +323,7 @@ namespace zorbac {
     SC_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   StaticContext::get_base_uri(XQC_StaticContext* context, const char** base_uri)
   {
     SC_TRY
@@ -336,7 +337,7 @@ namespace zorbac {
     SC_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   StaticContext::set_revalidation_enabled(XQC_StaticContext* context, bool enabled)
   {
     SC_TRY
@@ -346,7 +347,7 @@ namespace zorbac {
     SC_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   StaticContext::get_revalidation_enabled(XQC_StaticContext* context, bool *enabled)
   {
     SC_TRY
@@ -356,7 +357,7 @@ namespace zorbac {
     SC_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   StaticContext::register_external_function(XQC_StaticContext* context, 
                                             const char* uri,
                                             const char* localname,
@@ -379,8 +380,8 @@ namespace zorbac {
       lFunc.reset(new ExternalFunctionWrapper(uri, localname, init, next,
                                               release, global_user_data));
 
-      XQUERY_ERROR lErr = lModule->registerFunction(lFunc.get());
-      if (lErr == XQ_NO_ERROR) {
+      XQC_Error lErr = lModule->registerFunction(lFunc.get());
+      if (lErr == XQC_NO_ERROR) {
         // deletion is done when releasing the static context
         lFunc.release();
       } else {

@@ -37,7 +37,7 @@ namespace zorbac {
       virtual zorba::StatelessExternalFunction*
       getExternalFunction(zorba::String aLocalname) const;
 
-      virtual XQUERY_ERROR
+      virtual XQC_Error
       registerFunction(ExternalFunctionWrapper*);
 
     protected:

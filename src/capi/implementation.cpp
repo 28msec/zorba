@@ -25,6 +25,7 @@
 #include "capi/static_context.h"
 #include "capi/data_manager.h"
 #include "capi/capi_util.h"
+#include "capi/error.h"
 
 #include "api/staticcontextimpl.h"
 #include "api/xqueryimpl.h"
@@ -37,26 +38,26 @@ using namespace zorba;
 #define ZORBA_IMPLEMENTATION_TRY try {
 
 #define ZORBA_IMPLEMENTATION_CATCH_NOTIFY \
-    return XQ_NO_ERROR; \
+    return XQC_NO_ERROR; \
     } catch (QueryException& qe) { \
       if (handler) { \
-        handler->error(handler, qe.getErrorCode(), \
+        handler->error(handler, Error::convert_xquery_error(qe.getErrorCode()), \
                        ZorbaException::getErrorCodeAsString(qe.getErrorCode()).c_str(), \
                        qe.getDescription().c_str(), \
                        qe.getQueryURI().c_str(), \
                        qe.getLineBegin(), \
                        qe.getColumnBegin()); \
       } \
-      return qe.getErrorCode(); \
+      return Error::convert_xquery_error(qe.getErrorCode());      \
     } catch (ZorbaException &ze) { \
-      return ze.getErrorCode(); \
+      return Error::convert_xquery_error(ze.getErrorCode());  \
     } catch (...) { \
-      return XQP0019_INTERNAL_ERROR; \
+      return XQC_INTERNAL_ERROR; \
     }
 
 namespace zorbac {
 
-  XQUERY_ERROR
+  XQC_Error
   Implementation::create_context(XQC_Implementation* impl, XQC_StaticContext** context)
   {
     try {
@@ -72,15 +73,15 @@ namespace zorbac {
       (*context) = lContext.release();
       (*context)->data = lInnerContext.release();
 
-      return XQ_NO_ERROR;
+      return XQC_NO_ERROR;
     } catch (ZorbaException& e) {
-      return e.getErrorCode(); 
+      return Error::convert_xquery_error(e.getErrorCode());
     } catch (...) {
-      return XQP0019_INTERNAL_ERROR; 
+      return XQC_INTERNAL_ERROR; 
     }
   }
 
-  XQUERY_ERROR 
+  XQC_Error 
   Implementation::prepare(XQC_Implementation* impl, 
                           const char* query_string,
                           XQC_StaticContext* context, 
@@ -112,7 +113,7 @@ namespace zorbac {
     ZORBA_IMPLEMENTATION_CATCH_NOTIFY
   }
 
-  XQUERY_ERROR 
+  XQC_Error 
   Implementation::prepare_file(XQC_Implementation* impl, 
                                FILE* query_file,
                                XQC_StaticContext* context, 
@@ -143,11 +144,11 @@ namespace zorbac {
       *query   = lQuery.release();
       (*query)->data = lInnerQuery.release();
 
-      return XQ_NO_ERROR;
+      return XQC_NO_ERROR;
     ZORBA_IMPLEMENTATION_CATCH_NOTIFY
   }
 
-  XQUERY_ERROR
+  XQC_Error
   Implementation::prepare_stream(XQC_Implementation* impl, 
                                  XQC_InputStream* stream,
                                  XQC_StaticContext* context, 
@@ -177,7 +178,8 @@ namespace zorbac {
 
         stream->free(stream);
         if (lRead == -1) {
-          return API0002_COMPILE_FAILED; 
+          // QQQ right error?
+          return XQC_STATIC_ERROR; 
         }
       }
 
@@ -212,7 +214,7 @@ namespace zorbac {
     }
   }
 
-  XQUERY_ERROR
+  XQC_Error
   Implementation::create_item(XQC_Implementation* impl, XQC_Item_Ref item)
   {
     try {
@@ -224,14 +226,14 @@ namespace zorbac {
       (*item) = lItem.release();
       (*item)->data = lInnerItem.release();
 
-      return XQ_NO_ERROR;
+      return XQC_NO_ERROR;
     } catch (...) {
-      return XQP0019_INTERNAL_ERROR;
+      return XQC_INTERNAL_ERROR;
     }
   }
 
 
-  XQUERY_ERROR
+  XQC_Error
   Implementation::item_factory(XQC_Implementation* impl, XQC_ItemFactory_Ref factory)
   {
     try {
@@ -244,16 +246,16 @@ namespace zorbac {
       (*factory) = lFactory.release();
       (*factory)->data = lZorba->getItemFactory();
 
-      return XQ_NO_ERROR;
+      return XQC_NO_ERROR;
     } catch (ZorbaException& e) {
-      return e.getErrorCode(); 
+      return Error::convert_xquery_error(e.getErrorCode());
     } catch (...) {
-      return XQP0019_INTERNAL_ERROR; 
+      return XQC_INTERNAL_ERROR; 
     }
     
   }
 
-  XQUERY_ERROR
+  XQC_Error
   Implementation::data_manager(XQC_Implementation* impl, XQC_DataManager_Ref data_manager)
   {
     try {
@@ -266,11 +268,11 @@ namespace zorbac {
       (*data_manager) = lDataManager.release();
       (*data_manager)->data = lZorba->getXmlDataManager();
 
-      return XQ_NO_ERROR;
+      return XQC_NO_ERROR;
     } catch (ZorbaException& e) {
-      return e.getErrorCode(); 
+      return Error::convert_xquery_error(e.getErrorCode());
     } catch (...) {
-      return XQP0019_INTERNAL_ERROR; 
+      return XQC_INTERNAL_ERROR; 
     }
   }
 

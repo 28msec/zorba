@@ -52,8 +52,8 @@ example_1(XQC_Implementation* impl)
 int
 example_2(XQC_Implementation* impl) 
 {
-  XQUERY_ERROR   lError = XQ_NO_ERROR;
-  XQC_Query*      lXQuery;
+  XQC_Error      lError = XQC_NO_ERROR;
+  XQC_Query*     lXQuery;
   XQC_Item       lItem;
   const char*    lStringValue;
   XQC_Sequence*   lResult;
@@ -65,7 +65,7 @@ example_2(XQC_Implementation* impl)
 
   lXQuery->sequence(lXQuery, &lResult);
 
-  while ( lResult->next(lResult, lItem) == XQ_NO_ERROR ) {
+  while ( lResult->next(lResult, lItem) == XQC_NO_ERROR ) {
     lItem->string_value(lItem, &lStringValue);
     printf("%s ", lStringValue);
   }
@@ -84,13 +84,13 @@ example_2(XQC_Implementation* impl)
 int
 example_3(XQC_Implementation* impl)
 {
-  XQUERY_ERROR   lError = XQ_NO_ERROR;
-  XQC_Query*      lXQuery;
+  XQC_Error    lError = XQC_NO_ERROR;
+  XQC_Query*   lXQuery;
 
   // compile the query
   lError = impl->prepare(impl, "for $x in (1, 2, 3, 4)", 0, 0, &lXQuery);
-
-  return lError == XPST0003?1:0;
+  printf("%d", lError);
+  return lError == XQC_STATIC_ERROR ? 1 : 0;
 }
 
 /**
@@ -99,8 +99,8 @@ example_3(XQC_Implementation* impl)
 int
 example_4(XQC_Implementation* impl)
 {
-  XQUERY_ERROR   lError = XQ_NO_ERROR;
-  XQC_Query*      lXQuery;
+  XQC_Error      lError = XQC_NO_ERROR;
+  XQC_Query*     lXQuery;
   FILE*          lOutFile = stdout;
 
   // compile the query
@@ -112,7 +112,7 @@ example_4(XQC_Implementation* impl)
   // release the query
   lXQuery->free(lXQuery);
 
-  return lError == FOAR0001?1:0;
+  return lError == XQC_DYNAMIC_ERROR ? 1 : 0;
 
 }
 
@@ -135,7 +135,7 @@ int
 example_5(XQC_Implementation* impl)
 {
   XQC_Query*       lXQuery;
-  FILE*           lOutFile = stdout;
+  FILE*            lOutFile = stdout;
   XQC_InputStream* lStream = (XQC_InputStream*) malloc(sizeof(struct XQC_InputStream_s));
   lStream->read = read_stream;
   lStream->free = free_stream;
@@ -162,7 +162,7 @@ csimple(int argc, char** argv)
 
   void* store = create_simple_store();
 
-  if ( zorba_implementation(&impl, store) != XQ_NO_ERROR)
+  if ( zorba_implementation(&impl, store) != XQC_NO_ERROR)
     return 1;
 
   printf("executing C example 1\n");

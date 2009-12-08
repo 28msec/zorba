@@ -49,17 +49,17 @@ namespace zorbac {
     }
   }
 
-  XQUERY_ERROR
+  XQC_Error
   ExternalModuleWrapper::registerFunction(ExternalFunctionWrapper* aFunc)
   {
     String lLocalName = aFunc->getLocalName();
     FunctionMap_t::iterator lIter = theFunctionMap.find(lLocalName.c_str());
     if (lIter != theFunctionMap.end()) {
-      return API0019_FUNCTION_ALREADY_REGISTERED;
+      return XQC_INVALID_ARGUMENT; // was: API0019_FUNCTION_ALREADY_REGISTERED;
     }
 
     theFunctionMap[lLocalName.c_str()] = aFunc;
-    return XQ_NO_ERROR;
+    return XQC_NO_ERROR;
   }
 
 } /* namespace zorbac */

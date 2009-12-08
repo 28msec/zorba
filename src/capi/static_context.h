@@ -31,96 +31,96 @@ namespace zorbac {
   class StaticContext {
 
     public:
-      static XQUERY_ERROR
+      static XQC_Error
       create_child_context(XQC_StaticContext* context, XQC_StaticContext** child_context);
 
-      static XQUERY_ERROR
+      static XQC_Error
       declare_ns(XQC_StaticContext* context, const char* prefix, const char* uri);
 
-      static XQUERY_ERROR
+      static XQC_Error
       get_ns_by_prefix(XQC_StaticContext* context, const char* prefix, const char** result_ns);
 
-      static XQUERY_ERROR
+      static XQC_Error
       set_default_element_and_type_ns(XQC_StaticContext* context, const char* uri);
 
-      static XQUERY_ERROR
+      static XQC_Error
       get_default_element_and_type_ns(XQC_StaticContext* context, const char** uri);
 
-      static XQUERY_ERROR
+      static XQC_Error
       set_default_function_ns(XQC_StaticContext* context, const char* uri);
 
-      static XQUERY_ERROR
+      static XQC_Error
       get_default_function_ns(XQC_StaticContext* context, const char** uri);
 
-      static XQUERY_ERROR
+      static XQC_Error
       add_collation(XQC_StaticContext* context, const char* uri);
 
-      static XQUERY_ERROR
+      static XQC_Error
       set_default_collation(XQC_StaticContext* context, const char* uri);
 
-      static XQUERY_ERROR
+      static XQC_Error
       get_default_collation(XQC_StaticContext* context, const char** uri);
 
-      static XQUERY_ERROR
+      static XQC_Error
       set_xquery_version(XQC_StaticContext* context, xquery_version_t mode );
 
-      static XQUERY_ERROR 
+      static XQC_Error 
       get_xquery_version(XQC_StaticContext* context, xquery_version_t* mode);
 
-      static XQUERY_ERROR
+      static XQC_Error
       set_xpath1_0_mode(XQC_StaticContext* context, xpath1_0compatib_mode_t mode );
 
-      static XQUERY_ERROR 
+      static XQC_Error 
       get_xpath1_0_mode(XQC_StaticContext* context, xpath1_0compatib_mode_t* mode);
 
-      static XQUERY_ERROR
+      static XQC_Error
       set_construction_mode(XQC_StaticContext* context, construction_mode_t mode );
 
-      static XQUERY_ERROR
+      static XQC_Error
       get_construction_mode(XQC_StaticContext* context, construction_mode_t* mode);
 
-      static XQUERY_ERROR
+      static XQC_Error
       set_ordering_mode(XQC_StaticContext* context, ordering_mode_t mode );
 
-      static XQUERY_ERROR
+      static XQC_Error
       get_ordering_mode(XQC_StaticContext* context, ordering_mode_t* mode );
 
-      static XQUERY_ERROR
+      static XQC_Error
       set_default_order_empty_sequences(XQC_StaticContext* context, order_empty_mode_t mode );
 
-      static XQUERY_ERROR
+      static XQC_Error
       get_default_order_empty_sequences(XQC_StaticContext* context, order_empty_mode_t* mode );
 
-      static XQUERY_ERROR  
+      static XQC_Error  
       set_boundary_space_policy(XQC_StaticContext* context, boundary_space_mode_t mode);
 
-      static XQUERY_ERROR
+      static XQC_Error
       get_boundary_space_policy(XQC_StaticContext* context, boundary_space_mode_t* mode );
 
-      static XQUERY_ERROR 
+      static XQC_Error 
         set_copy_ns_mode(XQC_StaticContext* context,  
                          preserve_mode_t preserve,
                          inherit_mode_t inherit );
 
-      static XQUERY_ERROR
+      static XQC_Error
         get_copy_ns_mode(XQC_StaticContext* context,
                          preserve_mode_t* aPreserve, 
                          inherit_mode_t* aInherit );
 
-      static XQUERY_ERROR
+      static XQC_Error
       set_base_uri(XQC_StaticContext* context, const char* base_uri );
 
-      static XQUERY_ERROR
+      static XQC_Error
       get_base_uri(XQC_StaticContext* context, const char** base_uri);
 
-      static XQUERY_ERROR
+      static XQC_Error
       set_revalidation_enabled(XQC_StaticContext* context, bool enabled);
 
-      static XQUERY_ERROR
+      static XQC_Error
       get_revalidation_enabled(XQC_StaticContext* context, bool* enabled);
 
       
-      static XQUERY_ERROR
+      static XQC_Error
       register_external_function(XQC_StaticContext* context, 
                                 const char* uri,
                                 const char* localname,

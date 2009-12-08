@@ -18,6 +18,7 @@
 #include <cassert>
 #include <zorba/zorba.h>
 #include "capi/item.h"
+#include "capi/error.h"
 
 using namespace zorba;
 
@@ -29,34 +30,34 @@ namespace zorbac {
     return (static_cast<zorbac::Sequence*>(sequence->data))->theSequence.get();
   }
 
-  XQUERY_ERROR
+  XQC_Error
   Sequence::next(XQC_Sequence* seq, XQC_Item item)
   {
-     ResultIterator* lIter = 0;
-     try {
-       lIter = getResultIterator(seq);
-       zorbac::Item* lInnerItem = static_cast<zorbac::Item*>(item->data);
-       lInnerItem->theStrings.clear();
+    ResultIterator* lIter = 0;
+    try {
+      lIter = getResultIterator(seq);
+      zorbac::Item* lInnerItem = static_cast<zorbac::Item*>(item->data);
+      lInnerItem->theStrings.clear();
  
-       if ( lIter->next(lInnerItem->theItem) )
-         return XQ_NO_ERROR;
+      if ( lIter->next(lInnerItem->theItem) )
+        return XQC_NO_ERROR;
  
-       return API0025_END_OF_SEQUENCE;
+      return XQC_END_OF_SEQUENCE;
     } catch (QueryException& qe) {
       zorbac::Sequence* lSeq = static_cast<zorbac::Sequence*>(seq->data);
-      if (lSeq->theErrorHandler) {\
-        lSeq->theErrorHandler->error(lSeq->theErrorHandler, qe.getErrorCode(),
-                                 ZorbaException::getErrorCodeAsString(qe.getErrorCode()).c_str(),
-                                 qe.getDescription().c_str(),
-                                 qe.getQueryURI().c_str(),
-                                 qe.getLineBegin(),
-                                 qe.getColumnBegin());
+      if (lSeq->theErrorHandler) {                                      \
+        lSeq->theErrorHandler->error(lSeq->theErrorHandler, Error::convert_xquery_error(qe.getErrorCode()),
+        ZorbaException::getErrorCodeAsString(qe.getErrorCode()).c_str(),
+        qe.getDescription().c_str(),
+        qe.getQueryURI().c_str(),
+        qe.getLineBegin(),
+        qe.getColumnBegin());
       }
-      return qe.getErrorCode();
+      return Error::convert_xquery_error(qe.getErrorCode());
     } catch (ZorbaException &ze) {
-      return ze.getErrorCode();
+      return Error::convert_xquery_error(ze.getErrorCode());
     } catch (...) {
-      return XQP0019_INTERNAL_ERROR;
+      return XQC_INTERNAL_ERROR;
     }
   }
 

@@ -25,28 +25,28 @@ namespace zorbac {
 
   class Item {
     public:
-      static XQUERY_ERROR
+      static XQC_Error
       create(XQC_Item_Ref item);
 
-      static XQUERY_ERROR
+      static XQC_Error
       string_value(XQC_Item item, const char** str);
 
-      static XQUERY_ERROR
+      static XQC_Error
       prefix(XQC_Item item, const char** prefix);
 
-      static XQUERY_ERROR
+      static XQC_Error
       ns(XQC_Item item, const char** ns);
 
-      static XQUERY_ERROR
+      static XQC_Error
       localname(XQC_Item item, const char** localname);
 
-      static XQUERY_ERROR
+      static XQC_Error
       boolean_value(XQC_Item item, int*);
 
-      static XQUERY_ERROR
+      static XQC_Error
       nan(XQC_Item item, int*);
 
-      static XQUERY_ERROR
+      static XQC_Error
       pos_or_neg_inf(XQC_Item item, int*);
 
       static void

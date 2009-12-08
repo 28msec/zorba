@@ -20,16 +20,17 @@
 #include <zorba/zorba.h>
 #include "capi/capi_util.h"
 #include "capi/collection.h"
+#include "capi/error.h"
 
 using namespace zorba;
 
 #define ZORBAC_DATAMANAGER_TRY try {
 #define ZORBAC_DATAMANAGER_CATCH \
-    return XQ_NO_ERROR;          \
+    return XQC_NO_ERROR;          \
   } catch (ZorbaException &e) {     \
-    return e.getErrorCode();        \
+    return Error::convert_xquery_error(e.getErrorCode()); \
   } catch (...) {                   \
-    return XQP0019_INTERNAL_ERROR;  \
+    return XQC_INTERNAL_ERROR;  \
   }
 
 
@@ -41,7 +42,7 @@ namespace zorbac {
     return static_cast<zorba::XmlDataManager*>(data_manager->data);
   }
 
-  XQUERY_ERROR
+  XQC_Error
   DataManager::load_document(XQC_DataManager data_manager, const char* doc_uri, FILE* document)
   {
     ZORBAC_DATAMANAGER_TRY
@@ -55,7 +56,7 @@ namespace zorbac {
     ZORBAC_DATAMANAGER_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   DataManager::load_document_uri(XQC_DataManager data_manager, const char* location)
   {
     ZORBAC_DATAMANAGER_TRY
@@ -65,7 +66,7 @@ namespace zorbac {
     ZORBAC_DATAMANAGER_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   DataManager::get_document(XQC_DataManager data_manager, const char* doc_uri, XQC_Item_Ref doc)
   {
     ZORBAC_DATAMANAGER_TRY
@@ -80,7 +81,7 @@ namespace zorbac {
     ZORBAC_DATAMANAGER_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   DataManager::delete_document(XQC_DataManager data_manager, const char* doc_uri)
   {
     ZORBAC_DATAMANAGER_TRY
@@ -90,7 +91,7 @@ namespace zorbac {
     ZORBAC_DATAMANAGER_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   DataManager::create_collection(XQC_DataManager data_manager, const char* col_uri,
                                  XQC_Collection_Ref col)
   {
@@ -110,7 +111,7 @@ namespace zorbac {
     ZORBAC_DATAMANAGER_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   DataManager::get_collection(XQC_DataManager data_manager, const char* col_uri, 
                               XQC_Collection_Ref col)
   {
@@ -129,7 +130,7 @@ namespace zorbac {
     ZORBAC_DATAMANAGER_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   DataManager::delete_collection(XQC_DataManager data_manager, const char* col_uri)
   {
     ZORBAC_DATAMANAGER_TRY

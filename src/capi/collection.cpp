@@ -20,16 +20,17 @@
 #include <zorba/zorba.h>
 #include "capi/capi_util.h"
 #include "capi/item.h"
+#include "capi/error.h"
 
 using namespace zorba;
 
 #define ZORBAC_COLLECTION_TRY try {
 #define ZORBAC_COLLECTION_CATCH \
-    return XQ_NO_ERROR;              \
+    return XQC_NO_ERROR;              \
   } catch (ZorbaException &e) {     \
-    return e.getErrorCode();        \
+      return Error::convert_xquery_error(e.getErrorCode()); \
   } catch (...) {                   \
-    return XQP0019_INTERNAL_ERROR;  \
+    return XQC_INTERNAL_ERROR;  \
   }
 
 
@@ -41,7 +42,7 @@ namespace zorbac {
     return static_cast<zorba::Collection*>(collection->data);
   }
 
-  XQUERY_ERROR
+  XQC_Error
   Collection::get_name(XQC_Collection collection, XQC_Item_Ref name_item)
   {
     ZORBAC_COLLECTION_TRY
@@ -59,7 +60,7 @@ namespace zorbac {
     ZORBAC_COLLECTION_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   Collection::add_node(XQC_Collection collection, XQC_Item node)
   {
     ZORBAC_COLLECTION_TRY
@@ -70,7 +71,7 @@ namespace zorbac {
     ZORBAC_COLLECTION_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   Collection::delete_node(XQC_Collection collection, XQC_Item node)
   {
     ZORBAC_COLLECTION_TRY
@@ -81,7 +82,7 @@ namespace zorbac {
     ZORBAC_COLLECTION_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   Collection::add_sequence(XQC_Collection collection, XQC_Sequence* sequence)
   {
     ZORBAC_COLLECTION_TRY
@@ -92,7 +93,7 @@ namespace zorbac {
     ZORBAC_COLLECTION_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   Collection::add_document(XQC_Collection collection, FILE* doc)
   {
     ZORBAC_COLLECTION_TRY
@@ -106,7 +107,7 @@ namespace zorbac {
     ZORBAC_COLLECTION_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   Collection::add_document_char(XQC_Collection collection, const char* doc)
   {
     ZORBAC_COLLECTION_TRY

@@ -22,6 +22,7 @@
 #include "capi/dynamic_context.h"
 #include "capi/static_context.h"
 #include "capi/sequence.h"
+#include "capi/error.h"
 #include "zorbaerrors/errors.h"
 
 using namespace zorba;
@@ -29,30 +30,30 @@ using namespace zorba;
 #define ZORBA_XQUERY_TRY try {
 
 #define ZORBA_XQUERY_CATCH      \
-     return XQ_NO_ERROR;             \
+     return XQC_NO_ERROR;             \
    } catch (ZorbaException& e) {  \
-     return e.getErrorCode();       \
+     return Error::convert_xquery_error(e.getErrorCode()); \
    } catch (...) {                \
-     return XQP0019_INTERNAL_ERROR; \
+     return XQC_INTERNAL_ERROR; \
    }
 
 #define ZORBA_XQUERY_CATCH_NOTIFY \
-    return XQ_NO_ERROR; \
+    return XQC_NO_ERROR; \
     } catch (QueryException& qe) { \
       zorbac::Query* lInnerQuery = static_cast<zorbac::Query*>(query->data); \
       if (lInnerQuery->theErrorHandler) { \
-        lInnerQuery->theErrorHandler->error(lInnerQuery->theErrorHandler, qe.getErrorCode(), \
+        lInnerQuery->theErrorHandler->error(lInnerQuery->theErrorHandler, Error::convert_xquery_error(qe.getErrorCode()), \
                                  ZorbaException::getErrorCodeAsString(qe.getErrorCode()).c_str(), \
                                  qe.getDescription().c_str(), \
                                  qe.getQueryURI().c_str(), \
                                  qe.getLineBegin(), \
                                  qe.getColumnBegin()); \
       } \
-      return qe.getErrorCode(); \
+      return Error::convert_xquery_error(qe.getErrorCode()); \
     } catch (ZorbaException &ze) { \
-      return ze.getErrorCode(); \
+      return Error::convert_xquery_error(ze.getErrorCode()); \
     } catch (...) { \
-      return XQP0019_INTERNAL_ERROR; \
+      return XQC_INTERNAL_ERROR; \
     }
 
 namespace zorbac {
@@ -69,7 +70,7 @@ namespace zorbac {
     return (static_cast<zorbac::Query*>(query->data))->theQuery.get();
   }
       
-  XQUERY_ERROR
+  XQC_Error
   Query::get_dynamic_context(XQC_Query* query, XQC_DynamicContext** context)
   {
     ZORBA_XQUERY_TRY
@@ -85,7 +86,7 @@ namespace zorbac {
   }
 
 
-  XQUERY_ERROR
+  XQC_Error
   Query::get_static_context(XQC_Query* query, XQC_StaticContext** context)
   {
     ZORBA_XQUERY_TRY
@@ -103,7 +104,7 @@ namespace zorbac {
     ZORBA_XQUERY_CATCH
   }
 
-  XQUERY_ERROR 
+  XQC_Error 
   Query::execute(XQC_Query* query, FILE* file)
   {
     XQuery* lQuery = 0;
@@ -125,7 +126,7 @@ namespace zorbac {
     ZORBA_XQUERY_CATCH_NOTIFY
   }
 
-  XQUERY_ERROR 
+  XQC_Error 
   Query::serialize_file(XQC_Query* query, const Zorba_SerializerOptions_t* options, FILE* file)
   {
     XQuery* lQuery = 0;
@@ -154,7 +155,7 @@ namespace zorbac {
     ZORBA_XQUERY_CATCH_NOTIFY
   }
 
-  XQUERY_ERROR 
+  XQC_Error 
   Query::serialize_stream(XQC_Query* query, 
                           const Zorba_SerializerOptions_t* options, 
                           XQC_OutputStream stream)
@@ -187,7 +188,7 @@ namespace zorbac {
   }
 
 
-  XQUERY_ERROR 
+  XQC_Error 
   Query::sequence(XQC_Query* query, XQC_Sequence** sequence)
   {
     XQuery* lQuery = 0;

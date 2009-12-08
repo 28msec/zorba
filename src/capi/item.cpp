@@ -14,6 +14,7 @@
  * limitations under the License.
  */ 
 #include "capi/item.h"
+#include "capi/error.h"
 
 #include <cassert>
 #include <zorba/zorba.h>
@@ -23,16 +24,16 @@ using namespace zorba;
 #define ITEM_TRY  try {
 
 #define ITEM_CATCH  \
-      return XQ_NO_ERROR; \
+      return XQC_NO_ERROR; \
     } catch (ZorbaException &e) { \
-      return e.getErrorCode(); \
+      return Error::convert_xquery_error(e.getErrorCode()); \
     } catch (...) { \
-      return XQP0019_INTERNAL_ERROR; \
+      return XQC_INTERNAL_ERROR; \
     }
 
 namespace zorbac {
 
-  XQUERY_ERROR
+  XQC_Error
   Item::string_value(XQC_Item item, const char** str)
   {
     ITEM_TRY
@@ -46,7 +47,7 @@ namespace zorbac {
     ITEM_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   Item::prefix(XQC_Item item, const char** str)
   {
     ITEM_TRY
@@ -59,7 +60,7 @@ namespace zorbac {
     ITEM_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   Item::ns(XQC_Item item, const char** str)
   {
     ITEM_TRY
@@ -72,7 +73,7 @@ namespace zorbac {
     ITEM_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   Item::localname(XQC_Item item, const char** str)
   {
     ITEM_TRY
@@ -85,7 +86,7 @@ namespace zorbac {
     ITEM_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   Item::boolean_value(XQC_Item item, int* res)
   {
     ITEM_TRY
@@ -95,7 +96,7 @@ namespace zorbac {
     ITEM_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   Item::nan(XQC_Item item, int* res)
   {
     ITEM_TRY
@@ -104,7 +105,7 @@ namespace zorbac {
     ITEM_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   Item::pos_or_neg_inf(XQC_Item item, int* res)
   {
     ITEM_TRY

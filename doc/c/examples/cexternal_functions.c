@@ -52,7 +52,7 @@ my_ext_fct_init(void** user_data, void* global_user_data)
 }
 
 // callback function called for each invocation of the external function in the query
-XQUERY_ERROR
+XQC_Error
 my_ext_fct_next(XQC_Sequence* args, // arguments
                 int argc, // number of arguments two this function
                 XQC_Item_Ref result,
@@ -63,14 +63,14 @@ my_ext_fct_next(XQC_Sequence* args, // arguments
 
   // concat the input sequence
   while ( data->i < argc ) {
-    if ( args[data->i].next(&(args[data->i]), data->item) != API0025_END_OF_SEQUENCE ) {
+    if ( args[data->i].next(&(args[data->i]), data->item) != XQC_END_OF_SEQUENCE ) {
       *result = data->item;
-      return XQ_NO_ERROR;
+      return XQC_NO_ERROR;
     }
     ++(data->i);
   }
 
-  return API0025_END_OF_SEQUENCE;
+  return XQC_END_OF_SEQUENCE;
   
 
 }
@@ -124,7 +124,7 @@ cexternal_functions(int argc, char** argv)
 
   void* store = create_simple_store();
 
-  if ( zorba_implementation(&impl, store) != XQ_NO_ERROR)
+  if ( zorba_implementation(&impl, store) != XQC_NO_ERROR)
       return 1;
 
   printf("executing C example 1\n");

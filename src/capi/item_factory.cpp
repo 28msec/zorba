@@ -15,6 +15,7 @@
  */ 
 #include "capi/item_factory.h"
 #include "capi/item.h"
+#include "capi/error.h"
 #include <zorba/zorba.h>
 #include "zorbaerrors/error_manager.h"
 
@@ -22,18 +23,18 @@ using namespace zorba;
 
 #define ITEMFACTORY_TRY try {
 #define ITEMFACTORY_CATCH \
-    return XQ_NO_ERROR;              \
+    return XQC_NO_ERROR;              \
   } catch (ZorbaException &e) {     \
-    return e.getErrorCode();        \
+    return Error::convert_xquery_error(e.getErrorCode()); \
   } catch (...) {                   \
-    return XQP0019_INTERNAL_ERROR;  \
+    return XQC_INTERNAL_ERROR;  \
   }
  
 #define FF static_cast<zorba::ItemFactory*>(factory->data)
 
 namespace zorbac {
 
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_string(XQC_ItemFactory factory, const char* str, XQC_Item_Ref item)
   {
     ITEMFACTORY_TRY
@@ -56,7 +57,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
  
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_anyuri(XQC_ItemFactory factory, const char* str, XQC_Item_Ref item)
   {
     ITEMFACTORY_TRY
@@ -74,7 +75,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
  
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_qname2(XQC_ItemFactory factory, 
                              const char* uri, 
                              const char* localname, 
@@ -95,7 +96,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
   
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_qname3(XQC_ItemFactory factory,
                              const char* uri, 
                              const char* prefix, 
@@ -117,7 +118,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
  
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_boolean(XQC_ItemFactory factory, int boolean, XQC_Item_Ref item) 
   {
     ITEMFACTORY_TRY
@@ -135,7 +136,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_ncname(XQC_ItemFactory factory, const char* ncname, XQC_Item_Ref item) 
   {
     ITEMFACTORY_TRY
@@ -153,7 +154,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
 
-  XQUERY_ERROR 
+  XQC_Error 
   ItemFactory::create_base64binary(XQC_ItemFactory factory, const char* binary_data, size_t length, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -171,7 +172,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
   
-  XQUERY_ERROR 
+  XQC_Error 
   ItemFactory::create_decimal(XQC_ItemFactory factory, double value, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -189,7 +190,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
 
-  XQUERY_ERROR 
+  XQC_Error 
   ItemFactory::create_decimal_char(XQC_ItemFactory factory, const char* value, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -207,7 +208,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_integer(XQC_ItemFactory factory, long long integer_value, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -225,7 +226,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_integer_char(XQC_ItemFactory factory, const char* integer_value, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -243,7 +244,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
   
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_long(XQC_ItemFactory factory, long long long_value, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -261,7 +262,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
   
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_int(XQC_ItemFactory factory, int int_value, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -279,7 +280,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
   
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_short(XQC_ItemFactory factory, short short_value, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -297,7 +298,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
   
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_byte(XQC_ItemFactory factory, char byte_value, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -315,7 +316,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
   
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_date_char(XQC_ItemFactory factory, const char* date_value, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -333,7 +334,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_date(XQC_ItemFactory factory, short year, short month, short day, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -351,7 +352,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
   
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_datetime(XQC_ItemFactory factory, short year, short month, short day, 
                      short hour, short minute, double second, short timezone_hours, XQC_Item_Ref item )
   {
@@ -370,7 +371,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_datetime_char(XQC_ItemFactory factory, const char* datetime_value, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -388,7 +389,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_double(XQC_ItemFactory factory, double value, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -406,7 +407,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_double_char(XQC_ItemFactory factory, const char* value, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -424,7 +425,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
   
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_duration(XQC_ItemFactory factory, short year, short months, short days, 
                       short hours, short minutes, double seconds, XQC_Item_Ref item )
   {
@@ -443,7 +444,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
   
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_float(XQC_ItemFactory factory, const char* value, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -461,7 +462,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
   
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_gday(XQC_ItemFactory factory, short day, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -479,7 +480,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
   
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_gmonth(XQC_ItemFactory factory, short month, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -497,7 +498,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
   
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_gmonthday(XQC_ItemFactory factory, short month, short day, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -515,7 +516,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
   
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_gyear(XQC_ItemFactory factory, short year, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -533,7 +534,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
   
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_gyearmonth(XQC_ItemFactory factory, short year, short month, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -551,7 +552,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
   
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_hexbinary(XQC_ItemFactory factory, const char* hex_data, size_t size, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -569,7 +570,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
   
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_negativeinteger(XQC_ItemFactory factory, long long value, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -587,7 +588,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_nonnegativeinteger(XQC_ItemFactory factory, unsigned long long value, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -605,7 +606,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_nonpositiveinteger(XQC_ItemFactory factory, long long value, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -623,7 +624,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_positiveinteger(XQC_ItemFactory factory, unsigned long long value, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -641,7 +642,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
 
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_time_char(XQC_ItemFactory factory, const char* value, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -659,7 +660,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
   
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_time(XQC_ItemFactory factory, short hour, short minute, double second, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -677,7 +678,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
   
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_time_timezone(XQC_ItemFactory factory, short hour, short minute, double second, short timezone_hours, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -695,7 +696,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
   
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_unsignedbyte(XQC_ItemFactory factory, const unsigned char value, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -713,7 +714,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
   
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_unsignedint(XQC_ItemFactory factory, unsigned int value, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -731,7 +732,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
   
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_unsignedlong(XQC_ItemFactory factory, unsigned long long value, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY
@@ -749,7 +750,7 @@ namespace zorbac {
     ITEMFACTORY_CATCH
   }
   
-  XQUERY_ERROR
+  XQC_Error
   ItemFactory::create_unsignedshort(XQC_ItemFactory factory, unsigned short value, XQC_Item_Ref item )
   {
     ITEMFACTORY_TRY

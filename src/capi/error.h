@@ -12,30 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
-#ifndef ZORBAC_SEQUENCE_H
-#define ZORBAC_SEQUENCE_H
+ */
+#ifndef ZORBAC_ERROR_CAPI_H
+#define ZORBAC_ERROR_CAPI_H
 
 #include <zorba/zorbac.h>
-#include <zorba/result_iterator.h>
+#include <zorba/error.h>
 
 namespace zorbac {
 
-  class Sequence {
+  class Error
+  {
     public:
       static XQC_Error
-      next(XQC_Sequence* sequence, XQC_Item item);
-
-      static void
-      free(XQC_Sequence* sequence);
-
-      static void
-      assign_functions(XQC_Sequence* sequence);
-
-      zorba::ResultIterator_t theSequence;
-      XQC_ErrorHandler*        theErrorHandler;
-  }; /* class Sequence */
+      convert_xquery_error(XQUERY_ERROR error);
+  };
 
 } /* namespace zorbac */
-
 #endif

@@ -18,11 +18,12 @@
 #include <zorba/zorbac.h> 
 
 #include "capi/implementation.h"
+#include "capi/error.h"
 
 #include "store/api/store.h"
 
 
-XQUERY_ERROR
+XQC_Error
 zorba_implementation(XQC_Implementation** impl, void* store)
 {
   try {
@@ -35,11 +36,11 @@ zorba_implementation(XQC_Implementation** impl, void* store)
 
     (*impl) = lImpl.release();
     (*impl)->data =  lZorba;
-    return XQ_NO_ERROR;
+    return XQC_NO_ERROR;
   } catch (zorba::ZorbaException &e) {
-    return e.getErrorCode();
+    return zorbac::Error::convert_xquery_error(e.getErrorCode());
   } catch (...) {
-    return XQP0019_INTERNAL_ERROR;
+    return XQC_INTERNAL_ERROR;
   }
 }
 

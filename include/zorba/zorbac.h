@@ -17,7 +17,6 @@
 #define ZORBA_ZORBAC_API_H
 
 #include <stdio.h>
-#include <zorba/error.h>
 #include <zorba/config.h>
 #include <zorba/static_context_consts.h>
 #include <zorba/options.h>
@@ -48,11 +47,38 @@ typedef struct XQC_OutputStream_s* XQC_OutputStream;
 typedef struct XQC_InputStream_s XQC_InputStream;
 typedef struct XQC_ErrorHandler_s XQC_ErrorHandler;
 
+// XQC_Error
+/**
+ * The error enumeration used by all XQC functions to designate error condition.
+ * All XQC functions return a value of type ::XQC_Error.
+ */
+typedef enum {
+  XQC_NO_ERROR = 0,          ///< No error.
+  XQC_END_OF_SEQUENCE,       ///< The end of the XQC_Sequence has been reached.
+  XQC_NO_CURRENT_ITEM,
+  XQC_PARSE_ERROR,
+  XQC_INVALID_ARGUMENT,
+  XQC_NOT_NODE,
+
+  XQC_INTERNAL_ERROR,        ///< An implementation specific error has occurred.
+  XQC_NOT_IMPLEMENTED,       ///< The implementation does not implement that function.
+  /**
+   * The encoding of the query has not been recognized, or is not supported by the
+   * implementation. All implementations must support queries in UTF-8.
+   */
+  XQC_UNRECOGNIZED_ENCODING,
+
+  XQC_STATIC_ERROR,          ///< A static error has occured while preparing the query
+  XQC_TYPE_ERROR,            ///< A type error has occured while preparing or executing the query
+  XQC_DYNAMIC_ERROR,         ///< A dynamic error has occured while preparing or executing the query
+  XQC_SERIALIZATION_ERROR    ///< A serialization error has occured while serializing the output of a query
+} XQC_Error;
+
 
 // external functions
 typedef void (*external_function_init)(void** user_data, void* global_user_data);
 
-typedef XQUERY_ERROR (*external_function_next) (XQC_Sequence* args,
+typedef XQC_Error (*external_function_next) (XQC_Sequence* args,
                                                 int argc,
                                                 XQC_Item_Ref result,
                                                 void* user_data,
@@ -78,7 +104,7 @@ extern "C" {
    * \retval ::XQC_NO_ERROR
    * \retval ::XQP0019_INTERNAL_ERROR
    */
-  ZORBA_DLL_PUBLIC XQUERY_ERROR
+  ZORBA_DLL_PUBLIC XQC_Error
   zorba_implementation(XQC_Implementation **impl, void* store);
 
 
@@ -107,7 +133,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQP0019_INTERNAL_ERROR
      */
-    XQUERY_ERROR 
+    XQC_Error 
     (*create_context)(XQC_Implementation *impl, XQC_StaticContext **context);
 
     /**
@@ -127,7 +153,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval An XQuery static or type error (e.g. XPST*, XPTY*)
      */
-    XQUERY_ERROR 
+    XQC_Error 
     (*prepare)(XQC_Implementation* implementation, 
                const char* query_string,
                XQC_StaticContext* context, 
@@ -152,7 +178,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval An XQuery static or type error (e.g. XPST*, XPTY*)
      */
-    XQUERY_ERROR 
+    XQC_Error 
     (*prepare_file)(XQC_Implementation* implementation, 
                     FILE* query_file,
                     XQC_StaticContext* context, 
@@ -177,7 +203,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval An XQuery static or type error (e.g. XPST*, XPTY*)
      */
-    XQUERY_ERROR
+    XQC_Error
     (*prepare_stream)(XQC_Implementation* implementation, 
                       XQC_InputStream* stream,
                       XQC_StaticContext* context, 
@@ -196,7 +222,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQP0019_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_item)(XQC_Implementation *implementation, XQC_Item_Ref item);
 
     /**
@@ -211,7 +237,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQP0019_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*item_factory)(XQC_Implementation *implementation, XQC_ItemFactory_Ref factory);  
 
     /**
@@ -225,7 +251,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQP0019_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*data_manager)(XQC_Implementation *implementation, XQC_DataManager_Ref data_manager);
 
 
@@ -270,7 +296,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQP0019_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*get_dynamic_context)(XQC_Query *query, XQC_DynamicContext** context);
 
     /**
@@ -287,7 +313,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQP0019_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*get_static_context)(XQC_Query*, XQC_StaticContext **context);
 
     /**
@@ -303,7 +329,7 @@ extern "C" {
      * \retval ::API0023_CANNOT_SERIALIZE_UPDATE_QUERY
      * \retval An XQuery dynamic or type error (e.g. XPDY*, XPTY*)
      */
-    XQUERY_ERROR 
+    XQC_Error 
     (*execute)(XQC_Query* query, FILE* file);
 
     /**
@@ -320,7 +346,7 @@ extern "C" {
      * \retval ::API0023_CANNOT_SERIALIZE_UPDATE_QUERY
      * \retval An XQuery dynamic or type error (e.g. XPDY*, XPTY*)
      */
-    XQUERY_ERROR
+    XQC_Error
     (*serialize_file)(XQC_Query* query, const Zorba_SerializerOptions_t* options, FILE* file); 
 
     /**
@@ -337,7 +363,7 @@ extern "C" {
      * \retval ::API0023_CANNOT_SERIALIZE_UPDATE_QUERY
      * \retval An XQuery dynamic or type error (e.g. XPDY*, XPTY*)
      */
-    XQUERY_ERROR
+    XQC_Error
     (*serialize_stream)(XQC_Query* query, const Zorba_SerializerOptions_t* options, XQC_OutputStream stream); 
 
     /** 
@@ -360,7 +386,7 @@ extern "C" {
      * \retval ::API0023_CANNOT_SERIALIZE_UPDATE_QUERY
      * \retval An XQuery dynamic or type error (e.g. XPDY*, XPTY*)
      */
-    XQUERY_ERROR 
+    XQC_Error 
     (*apply_updates)(XQC_Query* query);
 
     /**
@@ -377,7 +403,7 @@ extern "C" {
      * \retval ::API0024_CANNOT_ITERATE_OVER_UPDATE_QUERY
      * \retval An XQuery dynamic or type error (e.g. XPDY*, XPTY*)
      */
-    XQUERY_ERROR 
+    XQC_Error 
     (*sequence)(XQC_Query* query, XQC_Sequence** sequence);
 
     /**
@@ -430,7 +456,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQP0019_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_child_context)(XQC_StaticContext *context, XQC_StaticContext **child_context);
 
     /**
@@ -444,7 +470,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*declare_ns)(XQC_StaticContext *context, const char* prefix, const char* uri);
 
     /**
@@ -457,7 +483,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*get_ns_by_prefix)(XQC_StaticContext *context, const char* prefix, const char** result_ns);
 
     /**
@@ -469,7 +495,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*set_default_element_and_type_ns)(XQC_StaticContext *context, const char* uri);
 
     /**
@@ -481,7 +507,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*get_default_element_and_type_ns)(XQC_StaticContext *context, const char** uri);
 
     /**
@@ -493,7 +519,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*set_default_function_ns)(XQC_StaticContext *context, const char* uri);
 
     /**
@@ -505,7 +531,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*get_default_function_ns)(XQC_StaticContext *context, const char** uri);
 
     /**
@@ -530,7 +556,7 @@ extern "C" {
      * \retval ::XQST0038
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*add_collation)(XQC_StaticContext *context, const char* uri);
 
     /** 
@@ -544,7 +570,7 @@ extern "C" {
      * \retval ::XQST0038
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*set_default_collation)(XQC_StaticContext *context, const char* uri);
 
     /** 
@@ -554,7 +580,7 @@ extern "C" {
      * \param context The XQC_StaticContext that this function pointer is a member of
      * \param[out] uri The URI of the default collation that is currently set in the given context.
      */
-    XQUERY_ERROR
+    XQC_Error
     (*get_default_collation)(XQC_StaticContext *context, const char** uri);
 
     /**
@@ -566,7 +592,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*set_xquery_version)(XQC_StaticContext* context, xquery_version_t mode );
 
     /**
@@ -578,7 +604,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR 
+    XQC_Error 
     (*get_xquery_version)(XQC_StaticContext* context, xquery_version_t* mode);
  
     /**
@@ -590,7 +616,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*set_xpath1_0_mode)(XQC_StaticContext* context, xpath1_0compatib_mode_t mode );
 
     /**
@@ -602,7 +628,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR 
+    XQC_Error 
     (*get_xpath1_0_mode)(XQC_StaticContext* context, xpath1_0compatib_mode_t* mode);
 
     /**
@@ -614,7 +640,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*set_construction_mode)(XQC_StaticContext* context, construction_mode_t mode );
 
     /**
@@ -626,7 +652,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*get_construction_mode)(XQC_StaticContext* context, construction_mode_t* mode);
 
     /**
@@ -638,7 +664,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*set_ordering_mode)(XQC_StaticContext* context, ordering_mode_t mode );
 
     /**
@@ -650,7 +676,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*get_ordering_mode)(XQC_StaticContext* context, ordering_mode_t* mode );
 
     /**
@@ -663,7 +689,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*set_default_order_empty_sequences)(XQC_StaticContext* context, order_empty_mode_t mode );
 
     /**
@@ -676,7 +702,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*get_default_order_empty_sequences)(XQC_StaticContext* context, order_empty_mode_t* mode );
 
     /**
@@ -688,7 +714,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR  
+    XQC_Error  
     (*set_boundary_space_policy)(XQC_StaticContext* context, boundary_space_mode_t mode);
 
     /**
@@ -700,7 +726,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*get_boundary_space_policy)(XQC_StaticContext* context, boundary_space_mode_t* mode );
 
     /**
@@ -713,7 +739,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR 
+    XQC_Error 
     (*set_copy_ns_mode)(XQC_StaticContext* context,  
                         preserve_mode_t preserve,
                         inherit_mode_t inherit );
@@ -729,7 +755,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*get_copy_ns_mode)(XQC_StaticContext* context,
                         preserve_mode_t* aPreserve,
                         inherit_mode_t* aInherit );
@@ -743,7 +769,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*set_base_uri)(XQC_StaticContext* context, const char* base_uri );
 
     /**
@@ -757,7 +783,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*get_base_uri)(XQC_StaticContext* context, const char** base_uri);
 
     /**
@@ -780,7 +806,7 @@ extern "C" {
      * \retval ::API0019_FUNCTION_ALREADY_REGISTERED,
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*register_external_function)(XQC_StaticContext* context, 
                                   const char* uri,
                                   const char* localname,
@@ -821,7 +847,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR 
+    XQC_Error 
     (*set_context_item) (XQC_DynamicContext* context, XQC_Item value);
 
     /**
@@ -837,7 +863,7 @@ extern "C" {
      * \retval ::XQP0017_LOADER_PARSING_ERROR, 
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*set_context_document)(XQC_DynamicContext* context, const char* doc_uri, FILE* document);
 
     /**
@@ -850,7 +876,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*set_variable_item)(XQC_DynamicContext* context, const char* qname, XQC_Item value);
 
     /**
@@ -863,7 +889,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*set_variable_sequence)(XQC_DynamicContext* context, const char* qname, XQC_Sequence* value);
 
     /**
@@ -879,7 +905,7 @@ extern "C" {
      * \retval ::XQP0017_LOADER_PARSING_ERROR, 
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*set_variable_document)(XQC_DynamicContext* context, const char* var_qname, const char* doc_uri, FILE* document);
 
     /**
@@ -891,7 +917,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR 
+    XQC_Error 
     (*set_implicit_timezone)(XQC_DynamicContext* context, int timezone);
 
     /** 
@@ -903,7 +929,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*set_default_collection)(XQC_DynamicContext* context, XQC_Item collection_uri);
 
     /**
@@ -951,7 +977,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE
      */
-    XQUERY_ERROR
+    XQC_Error
     (*string_value)(XQC_Item item, const char** string_value);
 
     /**
@@ -966,7 +992,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE
      */
-    XQUERY_ERROR
+    XQC_Error
     (*prefix)(XQC_Item item, const char** prefix);
 
     /**
@@ -981,7 +1007,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE
      */
-    XQUERY_ERROR
+    XQC_Error
     (*ns)(XQC_Item item, const char** ns);
 
     /**
@@ -996,7 +1022,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE
      */
-    XQUERY_ERROR
+    XQC_Error
     (*localname)(XQC_Item item, const char** local_name);
 
     /** 
@@ -1010,7 +1036,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE
      */
-    XQUERY_ERROR
+    XQC_Error
     (*boolean_value)(XQC_Item item, int* bool_value);
 
     /**
@@ -1025,7 +1051,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE
      */
-    XQUERY_ERROR
+    XQC_Error
     (*nan)(XQC_Item item, int* is_nan);
 
     /**
@@ -1039,7 +1065,7 @@ extern "C" {
        * \retval ::XQP0019_INTERNAL_ERROR
        * \retval ::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE
        */
-    XQUERY_ERROR
+    XQC_Error
     (*pos_or_neg_inf)(XQC_Item item, int* inf);
 
     /**
@@ -1079,7 +1105,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_string)(XQC_ItemFactory factory, const char* str, XQC_Item_Ref item); 
 
     /** 
@@ -1094,7 +1120,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_anyuri)(XQC_ItemFactory factory, const char* str, XQC_Item_Ref item); 
 
     /**
@@ -1110,7 +1136,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_qname2)(XQC_ItemFactory factory, 
                      const char* uri,
                      const char* localname,
@@ -1130,7 +1156,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_qname3)(XQC_ItemFactory factory, 
                      const char* uri,
                      const char* prefix,
@@ -1149,7 +1175,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_boolean)(XQC_ItemFactory factory, int boolean, XQC_Item_Ref item); 
 
     /**
@@ -1164,7 +1190,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_ncname)(XQC_ItemFactory factory, const char* ncname, XQC_Item_Ref item); 
 
 
@@ -1181,7 +1207,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR 
+    XQC_Error 
     (*create_base64binary)(XQC_ItemFactory factory, const char* binary_data, size_t length, XQC_Item_Ref item );
   
     /**
@@ -1196,7 +1222,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR 
+    XQC_Error 
     (*create_decimal)(XQC_ItemFactory factory, double value, XQC_Item_Ref item );
 
     /**
@@ -1211,7 +1237,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR 
+    XQC_Error 
     (*create_decimal_char)(XQC_ItemFactory factory, const char* value, XQC_Item_Ref item );
 
     /**
@@ -1226,7 +1252,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_integer)(XQC_ItemFactory factory, long long integer_value, XQC_Item_Ref item );
 
     /**
@@ -1241,7 +1267,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_integer_char)(XQC_ItemFactory factory, const char* integer_value, XQC_Item_Ref item );
   
     /**
@@ -1256,7 +1282,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_long)(XQC_ItemFactory factory, long long long_value, XQC_Item_Ref item );
   
     /**
@@ -1271,7 +1297,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_int)(XQC_ItemFactory factory, int int_value, XQC_Item_Ref item );
   
     /**
@@ -1286,7 +1312,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_short)(XQC_ItemFactory factory, short short_value, XQC_Item_Ref item );
   
     /**
@@ -1301,7 +1327,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_byte)(XQC_ItemFactory factory, char byte_value, XQC_Item_Ref item );
   
     /**
@@ -1316,7 +1342,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_date_char)(XQC_ItemFactory factory, const char* date_value, XQC_Item_Ref item );
 
     /**
@@ -1333,7 +1359,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_date)(XQC_ItemFactory factory, short year, short month, short day, XQC_Item_Ref item );
   
     /**
@@ -1354,7 +1380,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_datetime)(XQC_ItemFactory factory, short year, short month, short day, 
                        short hour, short minute, double seconds, short timezone_hours, XQC_Item_Ref item );
 
@@ -1371,7 +1397,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_datetime_char)(XQC_ItemFactory factory, const char* datetime_value, XQC_Item_Ref item );
 
     /**
@@ -1385,7 +1411,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_double)(XQC_ItemFactory factory, double value, XQC_Item_Ref item );
 
     /**
@@ -1400,7 +1426,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_double_char)(XQC_ItemFactory factory, const char* value, XQC_Item_Ref item );
   
     /**
@@ -1420,7 +1446,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_duration)(XQC_ItemFactory factory, short year, short months, short days, 
                        short hours, short minutes, double seconds, XQC_Item_Ref item );
   
@@ -1436,7 +1462,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_float)(XQC_ItemFactory factory, const char* value, XQC_Item_Ref item );
   
     /**
@@ -1451,7 +1477,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_gday)(XQC_ItemFactory factory, short day, XQC_Item_Ref item );
   
     /**
@@ -1466,7 +1492,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_gmonth)(XQC_ItemFactory factory, short month, XQC_Item_Ref item );
   
     /**
@@ -1482,7 +1508,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_gmonthday)(XQC_ItemFactory factory, short month, short day, XQC_Item_Ref item );
   
     /**
@@ -1497,7 +1523,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_gyear)(XQC_ItemFactory factory, short year, XQC_Item_Ref item );
   
     /**
@@ -1513,7 +1539,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_gyearmonth)(XQC_ItemFactory factory, short year, short month, XQC_Item_Ref item );
   
     /**
@@ -1529,7 +1555,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_hexbinary)(XQC_ItemFactory factory, const char* hex_data, size_t size, XQC_Item_Ref item );
   
     /**
@@ -1544,7 +1570,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_negativeinteger)(XQC_ItemFactory factory, long long value, XQC_Item_Ref item );
 
     /**
@@ -1559,7 +1585,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_nonnegativeinteger)(XQC_ItemFactory factory, unsigned long long value, XQC_Item_Ref item );
 
     /**
@@ -1574,7 +1600,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_nonpositiveinteger)(XQC_ItemFactory factory, long long value, XQC_Item_Ref item );
 
     /**
@@ -1589,7 +1615,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_positiveinteger)(XQC_ItemFactory factory, unsigned long long value, XQC_Item_Ref item );
 
     /**
@@ -1604,7 +1630,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_time_char)(XQC_ItemFactory factory, const char* value, XQC_Item_Ref item );
   
     /**
@@ -1621,7 +1647,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_time)(XQC_ItemFactory factory, short hour, short minute, double second, XQC_Item_Ref item );
   
     /**
@@ -1639,7 +1665,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_time_timezone)(XQC_ItemFactory factory, 
                             short hour,
                             short minute,
@@ -1659,7 +1685,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_unsignedbyte)(XQC_ItemFactory factory, const unsigned char value, XQC_Item_Ref item );
   
     /**
@@ -1674,7 +1700,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_unsignedint)(XQC_ItemFactory factory, unsigned int value, XQC_Item_Ref item );
   
     /**
@@ -1689,7 +1715,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_unsignedlong)(XQC_ItemFactory factory, unsigned long long value, XQC_Item_Ref item );
   
     /**
@@ -1704,7 +1730,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::XQP0025_COULD_NOT_CREATE_ITEM
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_unsignedshort)(XQC_ItemFactory factory, unsigned short value, XQC_Item_Ref item );
 
     /**
@@ -1741,7 +1767,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval any XQuery type or dynamic error
      */
-    XQUERY_ERROR
+    XQC_Error
     (*next)(XQC_Sequence* sequence, XQC_Item item);
 
     /**
@@ -1776,7 +1802,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQP0019_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*get_name)(XQC_Collection collection, XQC_Item_Ref name_item);
 
     /** 
@@ -1789,7 +1815,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::API0007_COLLECTION_ITEM_MUST_BE_A_NODE
      */
-    XQUERY_ERROR
+    XQC_Error
     (*add_node)(XQC_Collection collection, XQC_Item node);
 
     /** 
@@ -1802,7 +1828,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::API0007_COLLECTION_ITEM_MUST_BE_A_NODE
      */
-    XQUERY_ERROR
+    XQC_Error
     (*delete_node)(XQC_Collection collection, XQC_Item node);
 
     /** 
@@ -1815,7 +1841,7 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval ::API0007_COLLECTION_ITEM_MUST_BE_A_NODE
      */
-    XQUERY_ERROR
+    XQC_Error
     (*add_sequence)(XQC_Collection collection, XQC_Sequence* sequence);
 
     /**
@@ -1829,7 +1855,7 @@ extern "C" {
      * \retval ::XQP0017_LOADER_PARSING_ERROR, 
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*add_document)(XQC_Collection collection, FILE* doc);
 
     /**
@@ -1843,7 +1869,7 @@ extern "C" {
      * \retval ::XQP0017_LOADER_PARSING_ERROR, 
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*add_document_char)(XQC_Collection collection, const char* doc);
 
     /**
@@ -1881,7 +1907,7 @@ extern "C" {
      * \retval ::XQP0017_LOADER_PARSING_ERROR, 
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*load_document)(XQC_DataManager data_manager, const char* doc_uri, FILE* document);
 
     /** 
@@ -1896,7 +1922,7 @@ extern "C" {
      * \retval ::XQP0017_LOADER_PARSING_ERROR, 
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*load_document_uri)(XQC_DataManager data_manager, const char* location);
 
     /** 
@@ -1910,7 +1936,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*get_document)(XQC_DataManager data_manager, const char* document_uri, XQC_Item_Ref doc);
 
     /*
@@ -1922,7 +1948,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*delete_document)(XQC_DataManager data_manager, const char* document_uri);
 
     /**
@@ -1936,7 +1962,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*create_collection)(XQC_DataManager data_manager,
                          const char* collection_uri,
                          XQC_Collection_Ref col);
@@ -1952,7 +1978,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*get_collection)(XQC_DataManager data_manager,
                       const char* collection_uri, 
                       XQC_Collection_Ref collection);
@@ -1966,7 +1992,7 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
-    XQUERY_ERROR
+    XQC_Error
     (*delete_collection)(XQC_DataManager data_manager, const char* collection_uri);
 
     /**
@@ -2072,7 +2098,7 @@ extern "C" {
      * execution with the error enumeration value passed as an argument.
      *
      * \param handler The XQC_ErrorHandler that this function pointer is a member of
-     * \param error The error as a value of the XQUERY_ERROR enum.
+     * \param error The error as a value of the XQC_Error enum.
      * \param local_name The local name of the error or an empty string if no local_name is given 
      *                   (e.g. for errors not defined in the spec).
      * \param description A detailed description of the error or an empty string if no description is available.
@@ -2081,7 +2107,7 @@ extern "C" {
      * \param components The column number in the line in the query where the error occured.
      */
     void (*error)(XQC_ErrorHandler* handler, 
-                  XQUERY_ERROR error,
+                  XQC_Error error,
                   const char   *local_name,
                   const char   *description,
                   const char   *query_uri,

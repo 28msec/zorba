@@ -96,10 +96,10 @@ ccontext_example_2(XQC_Implementation* impl)
 int
 ccontext_example_3(XQC_Implementation* impl)
 {
-  XQUERY_ERROR       lError = XQ_NO_ERROR;
-  XQC_Query*          lXQuery;
-  XQC_StaticContext*  lProvidedContext;
-  XQC_StaticContext*  lQueryContext;
+  XQC_Error          lError = XQC_NO_ERROR;
+  XQC_Query*         lXQuery;
+  XQC_StaticContext* lProvidedContext;
+  XQC_StaticContext* lQueryContext;
   FILE*              lOutFile = stdout;
   ordering_mode_t    lOrderingMode;
 
@@ -160,7 +160,7 @@ ccontext_example_4(XQC_Implementation* impl)
   impl->create_item(impl, &lItem);
 
   // iterate over the result two times
-  while ( lSequence2->next(lSequence2, lItem) != API0025_END_OF_SEQUENCE ) {
+  while ( lSequence2->next(lSequence2, lItem) != XQC_END_OF_SEQUENCE ) {
     lItem->string_value(lItem, &lStringValue);
     printf("%s ", lStringValue);
   }
@@ -186,7 +186,7 @@ ccontext(int argc, char** argv)
 
   void* store = create_simple_store();
 
-  if ( zorba_implementation(&impl, store) != XQ_NO_ERROR)
+  if ( zorba_implementation(&impl, store) != XQC_NO_ERROR)
     return 1;
 
   printf("executing C example 1\n");

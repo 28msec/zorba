@@ -22,26 +22,26 @@ namespace zorbac {
 
   class DataManager {
     public:
-      static XQUERY_ERROR
+      static XQC_Error
       load_document(XQC_DataManager data_manager, const char* doc_uri, FILE* document);
 
-      static XQUERY_ERROR
+      static XQC_Error
       load_document_uri(XQC_DataManager data_manager, const char* location);
 
-      static XQUERY_ERROR
+      static XQC_Error
       get_document(XQC_DataManager data_manager, const char* document_uri, XQC_Item_Ref doc);
 
-      static XQUERY_ERROR
+      static XQC_Error
       delete_document(XQC_DataManager data_manager, const char* document_uri);
 
-      static XQUERY_ERROR
+      static XQC_Error
       create_collection(XQC_DataManager data_manager, const char* collection_uri, 
                         XQC_Collection_Ref col);
 
-      static XQUERY_ERROR
+      static XQC_Error
       get_collection(XQC_DataManager data_manager, const char* collection_uri, XQC_Collection_Ref collection);
 
-      static XQUERY_ERROR
+      static XQC_Error
       delete_collection(XQC_DataManager data_manager, const char* collection_uri);
 
       static void

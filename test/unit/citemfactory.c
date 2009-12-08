@@ -43,25 +43,25 @@ citemfactory(int argc, char* argv[])
   const char* lPrefix = "zorba";
   const char* lString = "1";
 
-  if ( zorba_implementation(&impl, store) != XQ_NO_ERROR)
+  if ( zorba_implementation(&impl, store) != XQC_NO_ERROR)
       return 1;
 
   impl->item_factory(impl, &lFactory);
 
   /* String */
-  UNIT_ASSERT ( lFactory->create_string(lFactory, lString, &lItem) == XQ_NO_ERROR );
+  UNIT_ASSERT ( lFactory->create_string(lFactory, lString, &lItem) == XQC_NO_ERROR );
   lItem->string_value(lItem, &lStringValue);
   UNIT_ASSERT ( strcmp(lStringValue, "1") == 0 );
   lItem->free(lItem);
 
   /* AnyURI */
-  UNIT_ASSERT ( lFactory->create_anyuri(lFactory, lURI, &lItem) == XQ_NO_ERROR );
+  UNIT_ASSERT ( lFactory->create_anyuri(lFactory, lURI, &lItem) == XQC_NO_ERROR );
   lItem->string_value(lItem, &lStringValue);
   UNIT_ASSERT ( strcmp(lStringValue, "http://www.zorba-xquery.com/") == 0 );
   lItem->free(lItem);
 
   /* QName */
-  UNIT_ASSERT ( lFactory->create_qname2(lFactory, lURI, lString, &lItem) == XQ_NO_ERROR );
+  UNIT_ASSERT ( lFactory->create_qname2(lFactory, lURI, lString, &lItem) == XQC_NO_ERROR );
   lItem->string_value(lItem, &lStringValue);
   UNIT_ASSERT ( strcmp(lStringValue, "1") == 0 );
   lItem->ns(lItem, &lStringValue);
@@ -70,7 +70,7 @@ citemfactory(int argc, char* argv[])
   UNIT_ASSERT ( strcmp(lStringValue, "1") == 0 );
   lItem->free(lItem);
   
-  UNIT_ASSERT ( lFactory->create_qname3(lFactory, lURI, lPrefix, lString, &lItem) == XQ_NO_ERROR );
+  UNIT_ASSERT ( lFactory->create_qname3(lFactory, lURI, lPrefix, lString, &lItem) == XQC_NO_ERROR );
   lItem->string_value(lItem, &lStringValue);
   UNIT_ASSERT ( strcmp(lStringValue, "zorba:1") == 0 );
   lItem->ns(lItem, &lStringValue);
@@ -82,18 +82,18 @@ citemfactory(int argc, char* argv[])
   lItem->free(lItem);
 
   /* Boolean */
-  UNIT_ASSERT ( lFactory->create_boolean(lFactory, 1, &lItem) == XQ_NO_ERROR );
+  UNIT_ASSERT ( lFactory->create_boolean(lFactory, 1, &lItem) == XQC_NO_ERROR );
   lItem->string_value(lItem, &lStringValue);
   UNIT_ASSERT ( strcmp(lStringValue, "true") == 0 );
   lItem->boolean_value(lItem, &lTmpInt);
   UNIT_ASSERT ( lTmpInt  == 1 );
 //  UNIT_ASSERT (lItem->nan(lItem, &lTmpInt) == XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE );
-  UNIT_ASSERT (lItem->ns(lItem, &lStringValue) == STR0040_TYPE_ERROR);
-  UNIT_ASSERT (lItem->localname(lItem, &lStringValue) == STR0040_TYPE_ERROR);
-  UNIT_ASSERT (lItem->prefix(lItem, &lStringValue) == STR0040_TYPE_ERROR);
+  UNIT_ASSERT (lItem->ns(lItem, &lStringValue) == XQC_INVALID_ARGUMENT);
+  UNIT_ASSERT (lItem->localname(lItem, &lStringValue) == XQC_INVALID_ARGUMENT);
+  UNIT_ASSERT (lItem->prefix(lItem, &lStringValue) == XQC_INVALID_ARGUMENT);
   lItem->free(lItem);
 
-  UNIT_ASSERT ( lFactory->create_boolean(lFactory, 0, &lItem) == XQ_NO_ERROR );
+  UNIT_ASSERT ( lFactory->create_boolean(lFactory, 0, &lItem) == XQC_NO_ERROR );
   lItem->string_value(lItem, &lStringValue);
   UNIT_ASSERT ( strcmp(lStringValue, "false") == 0 );
   lItem->boolean_value(lItem, &lTmpInt);
@@ -101,13 +101,13 @@ citemfactory(int argc, char* argv[])
   lItem->free(lItem);
 
   /* Decimal */
-  UNIT_ASSERT ( lFactory->create_decimal(lFactory, 1, &lItem) == XQ_NO_ERROR );
+  UNIT_ASSERT ( lFactory->create_decimal(lFactory, 1, &lItem) == XQC_NO_ERROR );
   lItem->string_value(lItem, &lStringValue);
   UNIT_ASSERT ( strcmp(lStringValue, "1") == 0 );
   UNIT_ASSERT (lItem->nan(lItem, &lTmpInt) == 0 );
-  UNIT_ASSERT (lItem->ns(lItem, &lStringValue) == STR0040_TYPE_ERROR);                  
-  UNIT_ASSERT (lItem->localname(lItem, &lStringValue) == STR0040_TYPE_ERROR);            
-  UNIT_ASSERT (lItem->prefix(lItem, &lStringValue) == STR0040_TYPE_ERROR);               
+  UNIT_ASSERT (lItem->ns(lItem, &lStringValue) == XQC_INVALID_ARGUMENT);                  
+  UNIT_ASSERT (lItem->localname(lItem, &lStringValue) == XQC_INVALID_ARGUMENT);            
+  UNIT_ASSERT (lItem->prefix(lItem, &lStringValue) == XQC_INVALID_ARGUMENT);               
   lItem->free(lItem);
 
   lFactory->free(lFactory);

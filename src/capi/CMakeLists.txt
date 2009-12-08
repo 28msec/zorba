@@ -16,6 +16,7 @@ SET(CAPI_SRCS
     collection.cpp
     data_manager.cpp
     dynamic_context.cpp
+    error.cpp
     external_function.cpp
     external_module.cpp
     implementation.cpp
