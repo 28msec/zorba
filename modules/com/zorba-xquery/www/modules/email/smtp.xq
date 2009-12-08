@@ -14,15 +14,13 @@
  : limitations under the License.
 :)
 
+
 (:~
-  : Module Name: email<br/>
-  : Module Version: 0.1<br/>
-  : Date: October 29, 2009<br/>
-  : Copyright:  2006-2009 The FLWOR Foundation. Licensed under the Apache License, Version 2.0.<br/>
-  : Proprietary XQuery Extensions Used: None<br/>
-  : XQuery Specification: January 2007<br/>
-  : Module Overview: This library module provides the functions used to send emails.<br/>
-  : @author Sorin Nasoi<br/><br/>
+  : This is a library module that provides functions for sending emails.
+  :
+  : @author Sorin Nasoi
+  : @version 1.0
+  :
   :<ul>
   :  <li>Table of Contents 
   :    <ul>
@@ -34,13 +32,7 @@
   :        </ul>
   :      </li>
   :      <li><a href="#function_summary">3 Function Summary</a></li>
-  :      <li><a href="#functions">4 Functions</a> 
-  :        <ul>
-  :          <li><a href="#send-5">4.1 smtp:send($to as xs:string?, $cc as xs:string?, $bcc as xs:string?, $subject  as xs:string?, $body as xs:string) as xs:boolean</a></li>
-  :          <li><a href="#send-3">4.2 smtp:send($to as xs:string, $subject as xs:string, $body as xs:string) as xs:boolean</a></li>
-  :          <li><a href="#send-1">4.3 smtp:send($arg as node()) as xs:boolean</a></li>
-  :        </ul>
-  :      </li>
+  :      <li><a href="#functions">4 Functions</a></li>
   :    </ul>
   :  </li>
   :  <li><a href="#apendix_naming">Appendix A: SMTP server naming conventions</a></li>
