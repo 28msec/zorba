@@ -53,46 +53,17 @@ FunctionConsts::AnnotationValue producesDuplicates() const   \
 
 
 #define FUNCTION_PROPAGATES_I2O                              \
-bool propagatesInputToOutput(uint32_t aProducer) const       \
+bool propagatesInputToOutput(ulong aProducer) const          \
 {                                                            \
   return true;                                               \
 }
 
 
 #define FUNCTION_PROPAGATES_ONE_I2O( n )                     \
-bool propagatesInputToOutput(uint32_t aProducer) const       \
+bool propagatesInputToOutput(ulong aProducer) const          \
 {                                                            \
   return n == aProducer;                                     \
 }
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class function_typechecker 
-{
-public:
-  function_typechecker() {}
-
-  virtual ~function_typechecker() {}
-  
-  virtual xqtref_t return_type(const fo_expr *fo) = 0;
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class function_codegenerator 
-{
-public:
-  function_codegenerator() {}
-
-  virtual ~function_codegenerator() {}
-
-  virtual PlanIter_t codegen(const fo_expr *fo) = 0;
-};
-
 
 
 /*******************************************************************************
@@ -191,7 +162,9 @@ public:
 
   virtual bool isNodeDistinctFunction() const { return false; }
 
-  virtual bool propagatesInputToOutput(uint32_t aProducer) const { return false; }
+  virtual bool propagatesInputToOutput(ulong input) const { return false; }
+
+  virtual bool isMap(ulong input) const { return false; }
 
   virtual FunctionConsts::AnnotationValue producesDuplicates() const;
 

@@ -115,7 +115,8 @@
       <zorba:member type="store::Iterator_t" name="theTypedValueIter" defaultValue="NULL" brief=""/>
   </zorba:state>
 
-  <zorba:function generateReturnTypeDecl="true" baseSig="single_seq_opt_function">
+  <zorba:function generateReturnTypeDecl="true"
+                  isMap="0">
     <zorba:signature localname="data" prefix="fn">
       <zorba:param>item()*</zorba:param>
       <zorba:output>xs:anyAtomicType*</zorba:output>

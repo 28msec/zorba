@@ -82,18 +82,20 @@ public:
 
 
 //fn:data
-class fn_data : public single_seq_opt_function
+class fn_data : public function
 {
 public:
   fn_data(const signature& sig)
     :
-    single_seq_opt_function(sig, FunctionConsts::FN_DATA_1)
+    function(sig, FunctionConsts::FN_DATA_1)
   {
   }
 
   CODEGEN_DECL();
 
   xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
+
+  bool isMap(ulong input) const { return input == 0; }
 };
 
 

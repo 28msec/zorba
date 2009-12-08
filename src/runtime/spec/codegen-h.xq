@@ -155,8 +155,10 @@ declare function local:create-function($iter) as xs:string?
               fn:exists ($iter/zorba:function/@propagesOne) )
         then
           string-join(($gen:newline,$gen:indent,
-          'bool propagatesInputToOutput(uint32_t aProducer) const;',$gen:newline),'')
+          'bool propagatesInputToOutput(ulong aProducer) const;',$gen:newline),'')
         else (),
+
+        local:add-isMap($iter),
 
         if ($iter/zorba:function/@generateProducesDuplicateDecl = 'true') then
           string-join(($gen:newline,$gen:indent,
@@ -231,11 +233,27 @@ declare function local:add-is-sequential($iter) as xs:string?
 
 declare function local:add-isDeterministic($iter) as xs:string?
 {
-  if($iter/zorba:function/@isDeterministic = 'false') then
+  if ($iter/zorba:function/@isDeterministic = 'false') then
     string-join(($gen:newline,$gen:indent,
     'bool isDeterministic() const { return false; }',$gen:newline),'')
   else ()
 };
+
+
+declare function local:add-isMap($iter) as xs:string?
+{
+  let $input := data($iter/zorba:function/@isMap)
+  return 
+  if (empty($input))
+  then
+    ()
+  else
+    string-join(($gen:newline, 
+                 $gen:indent,
+                 'bool isMap(ulong input) const { return input == ', $input,  '; }',
+                 $gen:newline), '')
+};
+
 
 declare function local:add-unfoldable($iter) as xs:string?
 {

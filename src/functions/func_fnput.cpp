@@ -39,7 +39,7 @@ PlanIter_t fn_put::codegen(
 {
   return new FnPutIterator ( sctx, loc, argv);
 }
-bool fn_put::propagatesInputToOutput ( uint32_t ) const {
+bool fn_put::propagatesInputToOutput ( ulong ) const {
   return false;
 }
 void populate_context_fnput(static_context* sctx) {

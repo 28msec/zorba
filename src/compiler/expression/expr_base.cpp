@@ -643,7 +643,7 @@ bool expr::is_map_internal(const expr* e, bool& found) const
     {
       const expr* argExpr = foExpr->get_arg(i);
 
-      if (func->propagatesInputToOutput(i))
+      if (func->isMap(i))
       {
         if (argExpr->is_map_internal(e, found) && found)
         {
@@ -656,7 +656,7 @@ bool expr::is_map_internal(const expr* e, bool& found) const
       }
       else if (argExpr->contains_expr(e))
       {
-        return false; // TODO
+        return false;
       }
     }
 

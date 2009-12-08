@@ -141,7 +141,7 @@ void function::compute_annotation(
     break;
   }
   default:
-    break;
+    ZORBA_ASSERT(false);
   }
 }
 

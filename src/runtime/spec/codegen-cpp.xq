@@ -122,7 +122,7 @@ declare function local:propagateInputToOutput($iter) as xs:string
               fn:exists ($iter/zorba:function/@propagesOne) )
         then
           concat (
-            'bool ', $name, '::propagatesInputToOutput ( uint32_t ', $param, ') const {',
+            'bool ', $name, '::propagatesInputToOutput ( ulong ', $param, ') const {',
             $gen:newline,
             $gen:indent, $body,
             $gen:newline,

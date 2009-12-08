@@ -38,7 +38,21 @@ namespace zorba
 
 
 /*******************************************************************************
+  Static method that finds and returns the appropriate function to wrap an
+  expression E (the "child" param) with in order to sort its result in doc order
+  (if needed) and/or eliminated duplicate nodes from that result (if needed).
 
+  The "a" param is an array of 4 bools that describe what kind of wrapper 
+  function we want: the 1st bool says whether we want doc ordering, the 2nd bool
+  says if we want to allow a result consisting of atomic values instead of nodes,
+  the 3rd bool says whether we want duplicate node elimination, and the 4th bool
+  says whether the nodes in the result should be in ascendig doc order (assuming
+  the 1st bool is true).
+
+  Whether the operations specified by the "a" param are actually needed or not,
+  depends of the parent and of expression E and on E itself. For example, if
+  the parent of E does not care about duplicates, then we don't need a wrapper
+  function that does duplicate elimination.
 ********************************************************************************/
 function* op_node_sort_distinct::op_for_action(
     const static_context* sctx,
@@ -58,6 +72,9 @@ function* op_node_sort_distinct::op_for_action(
                    (child == NULL ||
                     child->get_annotation(producesDistinctNodes) != TSV_TRUE));
 
+  // If results consisting of atomic values only are allowed, and we actually
+  // know that all possible results will actually consists of atomic values
+  // only, then there is nothing to do here.
   if (A_ATOMICS && noa == ATOMICS)
     return NULL;
 
@@ -144,7 +161,7 @@ function* op_node_sort_distinct::min_action(
 void op_node_sort_distinct::compute_annotation(
     AnnotationHolder* parent,
     std::vector<AnnotationHolder *>& kids,
-    Annotations::Key k) const 
+    Annotations::Key k) const
 {
   const bool* a  = action();
 
@@ -157,7 +174,7 @@ void op_node_sort_distinct::compute_annotation(
     (parent->get_annotation(k).getp() == TSV_TRUE_P ||
      (k == Annotations::IGNORES_SORTED_NODES ? A_SORT : A_DISTINCT));
 
-    TSVAnnotationValue::update_annotation(kids[theInput],
+    TSVAnnotationValue::update_annotation(kids[0],
                                           k,
                                           TSVAnnotationValue::from_bool(ignores));
     break;
@@ -174,7 +191,8 @@ void op_node_sort_distinct::compute_annotation(
     break;
   }
 
-  default: break;
+  default:
+    ZORBA_ASSERT(false);
   }
 }
 
@@ -199,7 +217,9 @@ PlanIter_t op_node_sort_distinct::codegen(
             (A_ATOMICS ? new EitherNodesOrAtomicsIterator(sctx, loc, argv) : argv[0]));
   }
   else
+  {
     return new NodeSortIterator(sctx, loc, argv[0], A_ASCENDING, distinct, A_ATOMICS);
+  }
 }
 
 
@@ -218,11 +238,21 @@ public:
   const bool* action() const 
   {
     //                         sort   atomics  distinct  ascendig
-    static const bool a [] = { false, true,    false,    false };
+    static const bool a[] = { false, true,    false,    false };
     return a;
   }
 
   bool is_doc_order_func() const { return false; }
+
+  virtual FunctionConsts::AnnotationValue producesNodeIdSorted() const
+  {
+    return FunctionConsts::PRESERVE;
+  }
+
+  virtual FunctionConsts::AnnotationValue producesDuplicates() const
+  {
+    return FunctionConsts::PRESERVE;
+  }
 };
 
 
@@ -242,12 +272,19 @@ public:
 
   virtual bool is_node_distinct_func() const { return true; }
 
-  const bool *action () const 
+  const bool* action() const 
   {
     //                         sort   atomics  distinct  ascendig
-    static const bool a [] = { false, false,   true,     false };
+    static const bool a[] = { false, false,   true,     false };
     return a;
   }
+
+  virtual FunctionConsts::AnnotationValue producesNodeIdSorted() const
+  {
+    return FunctionConsts::PRESERVE;
+  }
+
+  FUNCTION_PRODUCES_DISTINCT_NODES;
 };
 
 
@@ -271,6 +308,13 @@ public:
     static const bool a[] = { false, true,     true,    false };
     return a;
   }
+
+  virtual FunctionConsts::AnnotationValue producesNodeIdSorted() const
+  {
+    return FunctionConsts::PRESERVE;
+  }
+
+  FUNCTION_PRODUCES_DISTINCT_NODES;
 };
   
 
@@ -291,6 +335,8 @@ public:
     static const bool a[] = { true, false, false, true };
     return a;
   }
+
+  FUNCTION_PRODUCES_SORTED_NODES;
 };
   
 
@@ -314,6 +360,8 @@ public:
     static const bool a[] = { true,  true,    false,    true };
     return a;
   }
+
+  FUNCTION_PRODUCES_SORTED_NODES;
 };
   
 
@@ -334,6 +382,8 @@ public:
     static const bool a[] = { true, false, false, false };
     return a;
   }
+
+  FUNCTION_PRODUCES_SORTED_NODES;
 };
 
 
@@ -357,6 +407,8 @@ public:
     static const bool a[] = { true,  true,    false,    false };
     return a;
   }
+
+  FUNCTION_PRODUCES_SORTED_NODES;
 };
   
 
@@ -380,6 +432,10 @@ public:
     static const bool a[] = { true, false, true, true };
     return a;
   }
+
+  FUNCTION_PRODUCES_SORTED_NODES;
+
+  FUNCTION_PRODUCES_DISTINCT_NODES;
 };
 
 
@@ -403,6 +459,10 @@ public:
     static const bool a[] = { true,  true,    true,     true };
     return a;
   }
+
+  FUNCTION_PRODUCES_SORTED_NODES;
+
+  FUNCTION_PRODUCES_DISTINCT_NODES;
 };
   
 
@@ -425,6 +485,10 @@ public:
     static const bool a[] = { true,  false,   true,     false };
     return a;
   }
+
+  FUNCTION_PRODUCES_SORTED_NODES;
+
+  FUNCTION_PRODUCES_DISTINCT_NODES;
 };
 
 
@@ -447,6 +511,10 @@ public:
     static const bool a[] = { true,  true,   true,     false };
     return a;
   }
+
+  FUNCTION_PRODUCES_SORTED_NODES;
+
+  FUNCTION_PRODUCES_DISTINCT_NODES;
 };
 
 
@@ -488,7 +556,7 @@ void fn_unordered::compute_annotation(
     TSVAnnotationValue::update_annotation(kids[theInput], k, parent->get_annotation(k));
     break;
   default:
-    break;
+    ZORBA_ASSERT(false);
   }
 }
 

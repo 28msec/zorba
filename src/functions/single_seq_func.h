@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_FUNCTIONS_SINGLE_SEQ_FUNC_H
-#define ZORBA_FUNCTIONS_SINGLE_SEQ_FUNC_H
+#ifndef ZORBA_FUNCTIONS_SINGLE_SEQ_FUNC
+#define ZORBA_FUNCTIONS_SINGLE_SEQ_FUNC
 
-#include "functions/function.h"
+#include "functions/function_impl.h"
 
 namespace zorba 
 {
@@ -62,12 +62,7 @@ public:
   {
   }
 
-  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
-
-  void compute_annotation(
-        AnnotationHolder* parent,
-        std::vector<AnnotationHolder *>& kids,
-        Annotations::Key k) const;
+  virtual xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
 
   FUNCTION_PROPAGATES_ONE_I2O(theInput);
 
@@ -80,6 +75,8 @@ public:
   {
     return FunctionConsts::PRESERVE;
   }
+
+  COMPUTE_ANNOTATION_DECL();
 };
 
 
@@ -111,7 +108,7 @@ public:
   {
   }
 
-  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
+  virtual xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
 };
 
 }

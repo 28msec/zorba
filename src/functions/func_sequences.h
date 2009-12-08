@@ -203,12 +203,12 @@ public:
 
 
 //fn:one-or-more
-class fn_one_or_more : public single_seq_opt_function
+class fn_one_or_more : public function
 {
 public:
   fn_one_or_more(const signature& sig)
     :
-    single_seq_opt_function(sig, FunctionConsts::FN_ONE_OR_MORE_1)
+    function(sig, FunctionConsts::FN_ONE_OR_MORE_1)
   {
   }
 
@@ -369,7 +369,7 @@ public:
 
   CODEGEN_DECL();
 
-  bool propagatesInputToOutput(uint32_t aProducer) const;
+  bool propagatesInputToOutput(ulong aProducer) const;
 };
 
 

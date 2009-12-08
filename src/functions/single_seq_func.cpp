@@ -41,12 +41,14 @@ void single_seq_function::compute_annotation(
   case Annotations::IGNORES_DUP_NODES:
     TSVAnnotationValue::update_annotation(kids[theInput], k, parent->get_annotation(k));
     break;
+#if 0
   case Annotations::PRODUCES_DISTINCT_NODES:
   case Annotations::PRODUCES_SORTED_NODES:
     parent->put_annotation(k, kids[theInput]->get_annotation(k));
     break;
-  default: 
-    break;
+#endif
+  default:
+    ZORBA_ASSERT(false);
   }
 }
 

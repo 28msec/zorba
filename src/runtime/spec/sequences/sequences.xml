@@ -368,7 +368,7 @@
       fn:one-or-more
     </zorba:description>
   
-  <zorba:function baseSig="single_seq_opt_function">
+  <zorba:function>
     <zorba:signature localname="one-or-more" prefix="fn">
       <zorba:param>item()*</zorba:param>
       <zorba:output>item()+</zorba:output>  

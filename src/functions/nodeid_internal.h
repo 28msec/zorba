@@ -30,9 +30,10 @@ void populateContext_DocOrder(static_context* sctx);
 
 
 /*******************************************************************************
-
+  Base class for all function that perform document ordering and/or duplicate
+  node elimination.
 ********************************************************************************/
-class op_node_sort_distinct : public single_seq_function 
+class op_node_sort_distinct : public function 
 {
 public:
   typedef enum { NODES, ATOMICS, MIXED } nodes_or_atomics_t;
@@ -49,7 +50,7 @@ public:
         const signature& sig,
         FunctionConsts::FunctionKind kind)
     :
-    single_seq_function(sig, kind)
+    function(sig, kind)
   {
   }
 
@@ -65,6 +66,11 @@ public:
         const AnnotationHolder* self,
         const AnnotationHolder* child,
         nodes_or_atomics_t noa) const;
+
+  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const
+  {
+    return arg_types[0]; 
+  }
 
   COMPUTE_ANNOTATION_DECL();
 

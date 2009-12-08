@@ -52,7 +52,7 @@ public:
 
   CODEGEN_DECL();
 
-  bool propagatesInputToOutput(uint32_t aProducer) const;
+  bool propagatesInputToOutput(ulong aProducer) const;
 };
 
 
