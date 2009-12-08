@@ -1,3 +1,16 @@
+A {
+	color: #cc0000;
+	background-color: white;
+}
+
+A:link , A:visited { 
+  text-decoration: none;
+}
+
+A:active, A:hover { 
+  text-decoration: underline;
+}
+
 body {
     font-family:"Arial";
     color: #000000;
@@ -12,10 +25,9 @@ h1 {
     font-size: 20pt
 }
 h2 {
-    background-color: #B93333;
+    color: #B93333;
     margin-bottom: 12px;
     padding-left: 10px;
-    color: white;
     font-size: 16pt;
 }
 h3 {
@@ -24,6 +36,19 @@ h3 {
 h4 {
     margin-bottom: 5px;
     font-size: 11pt;
+}
+
+PRE.fragment {
+	border: 1px solid #CCCCCC;
+	background-color: #f5f5f5;
+	margin-top: 4px;
+	margin-bottom: 4px;
+	margin-left: 2px;
+	margin-right: 8px;
+	padding-left: 6px;
+	padding-right: 6px;
+	padding-top: 4px;
+	padding-bottom: 4px;
 }
 
 p.annotationText {
@@ -120,10 +145,11 @@ td.adc a:link { color: #000000; text-decoration: none; }
 td.adc a:visited { color: #000000; text-decoration: none; }
 
 pre {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 pre.signature {
-    background-color: #DDDDDD;
-    padding: 10px;
+	border: 1px solid #CCCCCC;
+	background-color: #f5f5f5;
+  padding: 10px;
 }

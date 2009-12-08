@@ -111,7 +111,7 @@ declare function xhtml:description($comment)
 
 declare function xhtml:module-description($module)
 {
-    (<h2>Module Description</h2>,
+    (<h2><a name="module_description">Module Description</a></h2>,
      xhtml:description($module/xqdoc:comment),
      xhtml:annotations($module/xqdoc:comment))
 };
@@ -119,7 +119,7 @@ declare function xhtml:module-description($module)
 declare function xhtml:module-variables($variables)
 {
     if($variables/xqdoc:variable) then
-        (<h2>Variables</h2>,
+        (<h2><a name="variables">Variables</a></h2>,
         for $variable in $variables/xqdoc:variable
         return (<h3>{$variable/xqdoc:uri}</h3>,
                 xhtml:description($variable/xqdoc:comment),
@@ -131,7 +131,7 @@ declare function xhtml:module-variables($variables)
 
 declare function xhtml:module-function-summary($functions)
 {
-    <h2>Function Summary</h2>,
+    <h2><a name="function_summary">Function Summary</a></h2>,
     if(count($functions/xqdoc:function)) then
         <table class="funclist">{
             for $function in $functions/xqdoc:function
@@ -162,7 +162,7 @@ declare function xhtml:module-function-summary($functions)
 
 declare function xhtml:module-functions($functions) {
     if(count($functions/xqdoc:function)) then (
-        <h2>Functions</h2>,
+        <h2><a name="functions">Functions</a></h2>,
         for $function in $functions/xqdoc:function
         let $name := $function/xqdoc:name/text(),
             $signature := $function/xqdoc:signature/text(),
