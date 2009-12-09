@@ -233,14 +233,13 @@ StandardSchemaURIResolver::resolve(
   // 2. check the user's resolvers
   std::vector<InternalSchemaURIResolver*> lResolvers;
   aStaticContext->get_schema_uri_resolvers(lResolvers);
-  for (std::vector<InternalSchemaURIResolver*>::const_iterator lIter
-    = lResolvers.begin() + 1;
-    lIter != lResolvers.end(); ++lIter) {
-      std::string lResult = (*lIter)->resolve(aURI, aStaticContext, aAtList,
+  for (std::vector<InternalSchemaURIResolver*>::const_iterator lIter =
+      lResolvers.begin() + 1; lIter != lResolvers.end(); ++lIter) {
+    std::string lResult = (*lIter)->resolve(aURI, aStaticContext, aAtList,
         aFileUri);
-      if (lResult != "") {
-        return lResult;
-      }
+    if (lResult != "") {
+      return lResult;
+    }
   }
 
   // 3. treat the URI as URL and check if a file is in the
@@ -255,10 +254,13 @@ StandardSchemaURIResolver::resolve(
   if (lResolvedURI->byteStartsWith ("file://")) {
     // maybe we don't want to allow file access for security reasons (e.g. in a webapp)
 #ifdef ZORBA_WITH_FILE_ACCESS
-    std::auto_ptr<std::ifstream> modfile(new std::ifstream(
-      URI::decode_file_URI (lResolvedURI)->c_str()));
-    if (modfile.get()) {
+    std::auto_ptr<std::ifstream> lSchemaFile(new std::ifstream(
+        URI::decode_file_URI(lResolvedURI)->c_str()));
+ 
+    if (lSchemaFile->good()) {
       return lResolvedURI->c_str();
+    } else {
+      ZORBA_ERROR_PARAM(XQST0059, lResolvedURI, aURI->getStringValue());
     }
 #endif
   }
