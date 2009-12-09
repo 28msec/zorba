@@ -203,8 +203,9 @@ DEF_ERR_CODE(API0065_CONV_JSON_ML_PARAM, API0065, "Parameter with string represe
 DEF_ERR_CODE(API0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED, API0066, "Cannot serialize a sequence with more than one element if the 'json' or 'jsonml' method was selected.")
 DEF_ERR_CODE(API0070_INVALID_SERIALIZATION_METHOD_FOR_SAX, API0070, "Invalid serialization method. Only XML output can issue SAX event notifications. Therefore, only the following serialization methods are allowed: xml, xhtml, jsonml")
 
-DEF_ERR_CODE(API0071_CONV_CSV2XML_PARAM, API0071, "Invalid parameter in csv convertion: /s /s")
+DEF_ERR_CODE(API0071_CONV_CSV2XML_PARAM, API0071, "Invalid parameter in csv import: /s /s")
 DEF_ERR_CODE(API0072_CONV_CSV2XML_TOO_MANY_FIELDS, API0072, "CSV import error: first row is header but one of the subsequent rows contains more fields than the header")
+DEF_ERR_CODE(API0073_CONV_XML2CSV_PARAM, API0071, "Invalid parameter in csv export: /s /s")
 //
 // Store Errors
 //

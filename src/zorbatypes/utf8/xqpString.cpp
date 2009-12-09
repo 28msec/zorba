@@ -564,6 +564,13 @@ void xqpStringStore::append_in_place(const char c)
   theString += c;
 }
 
+void xqpStringStore::append_in_place(uint32_t cp)
+{
+  char seq[5] = {0,0,0,0,0};
+  UTF8Encode(cp, seq);
+  theString += seq;
+}
+
 void xqpStringStore::append_in_place(const xqpStringStore* suffix)
 {
   theString += suffix->theString;
@@ -1566,6 +1573,11 @@ wchar_t * xqpString::getWCS(xqpString source) const
 void xqpString::append_in_place(const char c)
 {
   theStrStore->append_in_place(c);
+}
+
+void xqpString::append_in_place(uint32_t cp)
+{
+  theStrStore->append_in_place(cp);
 }
 
 void xqpString::append_in_place(const xqpStringStore *suffix)

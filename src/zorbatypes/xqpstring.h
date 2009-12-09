@@ -288,6 +288,8 @@ public:
 
   void append_in_place(const char c);
 
+  void append_in_place(uint32_t c);
+
   void append_in_place(const xqpStringStore *suffix);
 
   void append_in_place(const xqpStringStore *suffix, const char *s2);
@@ -391,6 +393,8 @@ public:
   operator+=(char c);
 
   void append_in_place(const char c);
+
+  void append_in_place(uint32_t c);
 
   void append_in_place(const xqpStringStore *suffix);
 

@@ -67,3 +67,30 @@ declare function zorba-csv:csv2xmlFromFile($csv_file as xs:string) as node()*
                     
 };
 :)
+
+declare function zorba-csv:xml2csv($xml as node()*, 
+																	 $xpaths as xs:string*,
+																	 $first_row_is_header as xs:boolean,
+																	 $separator as xs:string,
+																	 $quote_char as xs:string,
+																	 $quote_escape as xs:string) as xs:string external;
+
+declare function zorba-csv:xml2csvFile($xml as node()*, 
+																	 $output_file as xs:string,
+																	 $xpaths as xs:string*,
+																	 $first_row_is_header as xs:boolean,
+																	 $separator as xs:string,
+																	 $quote_char as xs:string,
+																	 $quote_escape as xs:string) as xs:boolean external;
+
+declare function zorba-csv:xml2txt($xml as node()*, 
+																	 $xpaths as xs:string*,
+																	 $first_row_is_header as xs:boolean,
+																	 $field_lengths as xs:integer+) as xs:string external;
+
+declare function zorba-csv:xml2txtFile($xml as node()*, 
+																	 $output_file as xs:string,
+																	 $xpaths as xs:string*,
+																	 $first_row_is_header as xs:boolean,
+																	 $field_lengths as xs:integer+) as xs:boolean external;
+																	 																	 

@@ -162,7 +162,7 @@
         brief="iterator over csv codepoints"/>
 			<zorba:member type="bool" name="first_row_is_header" defaultValue="false"
         brief="if the first line of csv describe the name of the columns"/>
-			<zorba:member type="checked_vector&lt;int&gt;" name="columns_positions"
+			<zorba:member type="checked_vector&lt;unsigned int&gt;" name="columns_positions"
         brief="separator codepoint"/>
 			<zorba:member type="store::Item_t" name="row_node_name"
         brief="qname of the row element"/>
@@ -250,7 +250,7 @@
 				brief="csv codepoints iterator"/>
 			<zorba:member type="bool" name="first_row_is_header" defaultValue="false"
 				brief="if the first line of csv describe the name of the columns"/>
-			<zorba:member type="checked_vector&lt;int&gt;" name="columns_positions"
+			<zorba:member type="checked_vector&lt;unsigned int&gt;" name="columns_positions"
 				brief="separator codepoint"/>
 			<zorba:member type="store::Item_t" name="row_node_name"
 				brief="qname of the row element"/>
@@ -270,6 +270,96 @@
 				<zorba:param name="row_node">xs:QName</zorba:param>
 				<zorba:param name="default_column_node">xs:QName</zorba:param>
 				<zorba:output>node()*</zorba:output>
+			</zorba:signature>
+		</zorba:function>
+	</zorba:iterator>
+
+	<!--
+/*******************************************************************************
+  zorba-csv:xml2csv export xml to csv string
+********************************************************************************/
+-->
+
+	<zorba:iterator name="ZorbaXML2CSVIterator">
+
+		<zorba:description author="Zorba Team">Export XML to a Comma Separated Values text string.</zorba:description>
+
+		<zorba:function>
+			<zorba:signature localname="xml2csv" prefix="zorba-csv">
+				<zorba:param name="xml">node()*</zorba:param>
+				<zorba:param name="xpaths">xs:string*</zorba:param>
+				<zorba:param name="first_row_is_header">xs:boolean</zorba:param>
+				<zorba:param name="separator">xs:string</zorba:param>
+				<zorba:param name="quote_char">xs:string</zorba:param>
+				<zorba:param name="quote_escape">xs:string</zorba:param>
+				<zorba:output>xs:string</zorba:output>
+			</zorba:signature>
+		</zorba:function>
+	</zorba:iterator>
+
+	<!--
+/*******************************************************************************
+  zorba-csv:xml2csvFile export xml to csv file
+********************************************************************************/
+-->
+
+	<zorba:iterator name="ZorbaXML2CSVFILEIterator">
+
+		<zorba:description author="Zorba Team">Export XML to a Comma Separated Values text file.</zorba:description>
+
+		<zorba:function>
+			<zorba:signature localname="xml2csvFile" prefix="zorba-csv">
+				<zorba:param name="xml">node()*</zorba:param>
+				<zorba:param name="output_file">xs:string</zorba:param>
+				<zorba:param name="xpaths">xs:string*</zorba:param>
+				<zorba:param name="first_row_is_header">xs:boolean</zorba:param>
+				<zorba:param name="separator">xs:string</zorba:param>
+				<zorba:param name="quote_char">xs:string</zorba:param>
+				<zorba:param name="quote_escape">xs:string</zorba:param>
+				<zorba:output>xs:string</zorba:output>
+			</zorba:signature>
+		</zorba:function>
+	</zorba:iterator>
+
+	<!--
+/*******************************************************************************
+  zorba-csv:xml2txt export xml to txt string
+********************************************************************************/
+-->
+
+	<zorba:iterator name="ZorbaXML2TXTIterator">
+
+		<zorba:description author="Zorba Team">Export XML to a Column Separated Values text string.</zorba:description>
+
+		<zorba:function>
+			<zorba:signature localname="xml2txt" prefix="zorba-csv">
+				<zorba:param name="xml">node()*</zorba:param>
+				<zorba:param name="xpaths">xs:string*</zorba:param>
+				<zorba:param name="first_row_is_header">xs:boolean</zorba:param>
+				<zorba:param name="field_lengths">xs:integer+</zorba:param>
+				<zorba:output>xs:string</zorba:output>
+			</zorba:signature>
+		</zorba:function>
+	</zorba:iterator>
+
+	<!--
+/*******************************************************************************
+  zorba-csv:xml2txtFile export xml to txt file
+********************************************************************************/
+-->
+
+	<zorba:iterator name="ZorbaXML2TXTFILEIterator">
+
+		<zorba:description author="Zorba Team">Export XML to a Column Separated Values text file.</zorba:description>
+
+		<zorba:function>
+			<zorba:signature localname="xml2txtFile" prefix="zorba-csv">
+				<zorba:param name="xml">node()*</zorba:param>
+				<zorba:param name="output_file">xs:string</zorba:param>
+				<zorba:param name="xpaths">xs:string*</zorba:param>
+				<zorba:param name="first_row_is_header">xs:boolean</zorba:param>
+				<zorba:param name="field_lengths">xs:integer+</zorba:param>
+				<zorba:output>xs:string</zorba:output>
 			</zorba:signature>
 		</zorba:function>
 	</zorba:iterator>

@@ -29,6 +29,9 @@
 #include "runtime/convertors/convertors.h"
 #include "zorbautils/checked_vector.h"
 #include "types/root_typemanager.h"
+#include "api/unmarshaller.h"
+
+#include <zorba/zorba.h>
 
 
 namespace zorba {
@@ -255,6 +258,38 @@ bool   csv_read_line(unicode_codepoint_iterator *csv_it, //IN-OUT
   return line.size() > 00;
 }
 
+xqpString compute_absolute_filename(xqpString csv_filename, xqpString query_path)
+{
+  xqpString abs_filename;
+  //compute the absolute file name from csv file name and xq location
+  const char  *fnstring = csv_filename.c_str();
+#ifdef WIN32
+  if((strlen(fnstring) > 3) && isalnum(fnstring[0]) && (fnstring[1] == ':') && ((fnstring[2] == '\\') || (fnstring[2] == '/')))
+#else
+  if(fnstring[0] == '/')
+#endif
+  {
+    abs_filename = csv_filename;
+  }
+  else
+  {
+    abs_filename = query_path;
+    int   slash_index = abs_filename.lastIndexOf("/");//look for last slash or backslash
+    int   bslash_index = abs_filename.lastIndexOf("\\");
+    if(slash_index != -1)
+    {
+      if(bslash_index > slash_index)
+        abs_filename = abs_filename.substr(0, bslash_index+1);
+      else
+        abs_filename = abs_filename.substr(0, slash_index+1);
+    }
+    else
+      abs_filename = abs_filename.substr(0, bslash_index+1);
+    abs_filename += csv_filename;
+  }
+  return abs_filename;
+}
+
 
 bool
 ZorbaCSV2XMLIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -446,33 +481,8 @@ ZorbaCSV2XMLFromFileIterator::nextImpl(store::Item_t& result, PlanState& planSta
     }
     csv_filename = result->getStringValue().getp();
     //compute the absolute file name from csv file name and xq location
-    const char  *fnstring = csv_filename.c_str();
     xqpString   abs_filename;
-#ifdef WIN32
-    if((strlen(fnstring) > 3) && isalnum(fnstring[0]) && (fnstring[1] == ':') && ((fnstring[2] == '\\') || (fnstring[2] == '/')))
-#else
-    if(fnstring[0] == '/')
-#endif
-    {
-      abs_filename = csv_filename;
-    }
-    else
-    {
-      abs_filename = loc.getFilename();
-      int   slash_index = abs_filename.lastIndexOf("/");//look for last slash or backslash
-      int   bslash_index = abs_filename.lastIndexOf("\\");
-      if(slash_index != -1)
-      {
-        if(bslash_index > slash_index)
-          abs_filename = abs_filename.substr(0, bslash_index+1);
-        else
-          abs_filename = abs_filename.substr(0, slash_index+1);
-      }
-      else
-        abs_filename = abs_filename.substr(0, bslash_index+1);
-      abs_filename += csv_filename;
-
-    }
+    abs_filename = compute_absolute_filename(csv_filename, loc.getFilename());
     state->csv_stream.open(abs_filename.c_str(), std::ios_base::in | std::ios_base::binary);
     if(!state->csv_stream.is_open())
     {
@@ -624,6 +634,7 @@ ZorbaCSV2XMLFromFileIterator::nextImpl(store::Item_t& result, PlanState& planSta
     STACK_PUSH (true, state);
   }
 
+  state->csv_stream.close();
   STACK_END (state);
 
 }
@@ -632,7 +643,7 @@ ZorbaCSV2XMLFromFileIterator::nextImpl(store::Item_t& result, PlanState& planSta
 /////////////TXT2XML convertor
 
 bool   txt_read_line(unicode_codepoint_iterator *csv_it, //IN-OUT
-                     checked_vector<int> &columns_positions, //IN
+                     checked_vector<unsigned int> &columns_positions, //IN
                      checked_vector<xqpString>   &line)//OUT
 {
   line.clear();
@@ -674,7 +685,6 @@ bool   txt_read_line(unicode_codepoint_iterator *csv_it, //IN-OUT
   return line.size() > 00;
 }
 
-
 bool
 ZorbaTXT2XMLIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -712,7 +722,13 @@ ZorbaTXT2XMLIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     {
       strpos = result->getStringValue();
       sscanf(strpos->c_str(), "%d", &pos);
-      state->columns_positions.push_back(pos);
+      if(pos <= 0)
+      {
+        ZORBA_ERROR_LOC_PARAM(API0071_CONV_CSV2XML_PARAM,
+                            loc,
+                            "Columns positions must have values greater than 1", pos);
+      }
+      state->columns_positions.push_back((unsigned int)pos);
     }
     if(state->columns_positions.size() < 1)
     {
@@ -840,33 +856,8 @@ ZorbaTXT2XMLFromFileIterator::nextImpl(store::Item_t& result, PlanState& planSta
     }
     csv_filename = result->getStringValue().getp();
     //compute the absolute file name from csv file name and xq location
-    const char  *fnstring = csv_filename.c_str();
     xqpString   abs_filename;
-#ifdef WIN32
-    if((strlen(fnstring) > 3) && isalnum(fnstring[0]) && (fnstring[1] == ':') && ((fnstring[2] == '\\') || (fnstring[2] == '/')))
-#else
-    if(fnstring[0] == '/')
-#endif
-    {
-      abs_filename = csv_filename;
-    }
-    else
-    {
-      abs_filename = loc.getFilename();
-      int   slash_index = abs_filename.lastIndexOf("/");//look for last slash or backslash
-      int   bslash_index = abs_filename.lastIndexOf("\\");
-      if(slash_index != -1)
-      {
-        if(bslash_index > slash_index)
-          abs_filename = abs_filename.substr(0, bslash_index+1);
-        else
-          abs_filename = abs_filename.substr(0, slash_index+1);
-      }
-      else
-        abs_filename = abs_filename.substr(0, bslash_index+1);
-      abs_filename += csv_filename;
-
-    }
+    abs_filename = compute_absolute_filename(csv_filename, loc.getFilename());
     state->csv_stream.open(abs_filename.c_str(), std::ios_base::in | std::ios_base::binary);
     if(!state->csv_stream.is_open())
     {
@@ -892,7 +883,13 @@ ZorbaTXT2XMLFromFileIterator::nextImpl(store::Item_t& result, PlanState& planSta
     {
       strpos = result->getStringValue();
       sscanf(strpos->c_str(), "%d", &pos);
-      state->columns_positions.push_back(pos);
+      if(pos <= 0)
+      {
+        ZORBA_ERROR_LOC_PARAM(API0071_CONV_CSV2XML_PARAM,
+                            loc,
+                            "Columns positions must have values greater than 1", pos);
+      }
+      state->columns_positions.push_back((unsigned int)pos);
     }
     if(state->columns_positions.size() < 1)
     {
@@ -992,6 +989,600 @@ ZorbaTXT2XMLFromFileIterator::nextImpl(store::Item_t& result, PlanState& planSta
     }
     STACK_PUSH (true, state);
   }
+
+  state->csv_stream.close();
+  STACK_END (state);
+
+}
+
+/*************************** CSV Export ************
+******************************************************/
+
+bool csv_write_line(store::Item_t node, 
+                    checked_vector<xqpString> &xpaths, 
+                    bool write_header, 
+                    checked_vector<xqpString>  &line,
+                    checked_vector<xqpString>  &header)
+{
+  line.clear();
+  header.clear();
+
+  if(xpaths.size())
+  {
+    //select columns based on xpaths relative to the node
+    checked_vector<xqpString>::iterator xpaths_it;
+    zorba::Zorba * engine = zorba::Zorba::getInstance(&GENV_STORE);
+    zorba::XQuery_t xQuery;
+    zorba::Item     node_item(node.getp());
+    zorba::Item     column_item;
+    store::Item*    store_column;
+    zorba::ResultIterator_t   result_it;
+    //zorba::StaticContext_t lContext = engine->createStaticContext();
+    for(xpaths_it = xpaths.begin(); xpaths_it != xpaths.end(); xpaths_it++)
+    {
+      xQuery = engine->createQuery();
+      zorba::String   qString((*xpaths_it).getStore());
+      xQuery->compile(qString);
+      zorba::DynamicContext* dctx = xQuery->getDynamicContext();
+      dctx->setContextItem(node_item);
+      result_it = xQuery->iterator();
+      result_it->open();
+      while(result_it->next(column_item))
+      {
+        store_column = Unmarshaller::getInternalItem(column_item);
+        if(write_header)
+        {
+          xqpStringStore_t    column_name;
+          store::NodeKind   column_kind = store_column->getNodeKind();
+          if((column_kind == store::StoreConsts::elementNode) ||
+            (column_kind == store::StoreConsts::attributeNode))
+          {
+            store::Item_t       element_name = store_column->getNodeName();
+            column_name = element_name->getLocalName();
+          }
+          header.push_back(xqpString(column_name));
+        }
+        xqpStringStore_t    column_value = store_column->getStringValue();
+        line.push_back(xqpString(column_value));
+      }
+      result_it->close();
+      result_it = NULL;
+      xQuery = NULL;
+    }
+  }
+  else
+  {
+    //iterate through all children of the node and get the string values
+    store::Iterator_t   children = node->getChildren();
+    store::Item_t       store_column;
+    while(children->next(store_column))
+    {
+      store::NodeKind   column_kind = store_column->getNodeKind();
+      if(column_kind != store::StoreConsts::elementNode)
+        continue;
+      if(write_header)
+      {
+        store::Item_t       element_name = store_column->getNodeName();
+        xqpStringStore_t    column_name = element_name->getLocalName();
+        header.push_back(xqpString(column_name));
+      }
+      xqpStringStore_t    column_value = store_column->getStringValue();
+      line.push_back(xqpString(column_value));
+    }
+  }
+  return true;
+}
+
+xqpString csv_quote_field(xqpString &field, 
+                          xqpString &separator,
+                          xqpString &quote_char, xqpString &quote_escape)
+{
+  if((field.indexOf(separator) >= 0) || (field.indexOf(quote_char) >= 0) ||
+     (field.indexOf("\n") >= 0) || (field.indexOf("\r") >= 0))
+  {
+    xqpString   result;
+    string_codepoints_iterator    field_cp(field.c_str());
+    checked_vector<uint32_t>      quote_cp(quote_char.getCodepoints());
+    result = new xqpStringStore(*quote_char.getStore());
+    while(!field_cp.is_end())
+    {
+      if((*field_cp) == quote_cp[0])
+        result.append_in_place(quote_escape.getStore());
+      else
+        result.append_in_place(*field_cp);
+      ++field_cp;
+    }
+    result.append_in_place(quote_char);
+    return result;
+  }
+  else
+    return field;
+}
+
+void csv_write_line_to_string(checked_vector<xqpString> &line, 
+                         xqpString &separator, xqpString &quote_char, xqpString &quote_escape,
+                         xqpString &result_string)
+{
+  checked_vector<xqpString>::iterator   line_it;
+  xqpString   quoted_string;
+  for(line_it = line.begin(); line_it != line.end(); line_it++)
+  {
+    if(line_it != line.begin())
+      result_string.append_in_place(separator.getStore());
+    quoted_string = csv_quote_field(*line_it, separator, quote_char, quote_escape);
+    result_string.append_in_place(quoted_string.getStore());
+  }
+  result_string.append_in_place('\n');
+}
+
+void csv_write_line_to_file(checked_vector<xqpString> &line, 
+                         xqpString &separator, xqpString &quote_char, xqpString &quote_escape,
+                         std::ofstream &output_stream)
+{
+  checked_vector<xqpString>::iterator   line_it;
+  xqpString   quoted_string;
+  for(line_it = line.begin(); line_it != line.end(); line_it++)
+  {
+    if(line_it != line.begin())
+      output_stream << separator;
+    quoted_string = csv_quote_field(*line_it, separator, quote_char, quote_escape);
+    output_stream << quoted_string;
+  }
+  output_stream << '\n';
+}
+
+void txt_write_line_to_string(checked_vector<xqpString> &line, 
+                              checked_vector<unsigned int> &field_lengths,
+                              xqpString &result_string)
+{
+  unsigned int i;
+  for(i=0;i<field_lengths.size();i++)
+  {
+    if(i >= line.size())
+      break;
+    xqpString   field = line[i];
+    xqpString::size_type    field_length = field.length();
+    unsigned int            column_length = field_lengths[i];
+    if(field_length < column_length)
+    {
+      std::string padded_field(field.c_str());
+      padded_field.append(column_length - field_length, ' ');
+      result_string.append_in_place(padded_field);
+    }
+    else if(field_length == column_length)
+      result_string.append_in_place(field);
+    else
+      result_string.append_in_place(field.substr(0, column_length));
+  }
+  result_string.append_in_place('\n');
+}
+
+void txt_write_line_to_file(checked_vector<xqpString> &line, 
+                              checked_vector<unsigned int> &field_lengths,
+                              std::ofstream &output_stream)      
+{
+  unsigned int i;
+  for(i=0;i<field_lengths.size();i++)
+  {
+    if(i >= line.size())
+      break;
+    xqpString   field = line[i];
+    xqpString::size_type    field_length = field.length();
+    unsigned int            column_length = field_lengths[i];
+    if(field_length < column_length)
+    {
+      std::string padded_field(field.c_str());
+      padded_field.append(column_length - field_length, ' ');
+      output_stream << padded_field;
+    }
+    else if(field_length == column_length)
+      output_stream << field;
+    else
+      output_stream << field.substr(0, column_length);
+  }
+  output_stream << '\n';
+}
+
+
+bool
+ZorbaXML2CSVIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  {
+    xqpString                  result_string;
+    checked_vector<xqpString>  line;
+    checked_vector<xqpString>  header;
+    checked_vector<xqpString>  xpaths;
+    bool                       first_row_is_header;
+    xqpString                  separator;
+    xqpString                  quote_char;
+    xqpString                  quote_escape;
+
+    //read xpaths
+    {
+      xqpStringStore_t  strxpath;
+      while(consumeNext(result, theChildren[1].getp(), planState))
+      {
+        strxpath = result->getStringValue();
+        xpaths.push_back(xqpString(strxpath));
+      }
+    }
+    //read first_row_is_header
+    if(!consumeNext(result, theChildren[2].getp(), planState))
+    {
+      ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
+                            loc,
+                            "Missing param first_row_is_header", "");
+    }
+    first_row_is_header = result->getBooleanValue();
+    //read separator
+    if(!consumeNext(result, theChildren[3].getp(), planState))
+    {
+      ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
+                            loc,
+                            "Missing param separator", "");
+    }
+    separator = result->getStringValue().getp();
+    if(separator.empty())
+    {
+      ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
+                            loc,
+                            "Empty param separator", "");
+    }
+    //read quote_char
+    if(!consumeNext(result, theChildren[4].getp(), planState))
+    {
+      ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
+                            loc,
+                            "Missing param quote_escape", "");
+    }
+    quote_char = result->getStringValue().getp();
+    //read quote_escape
+    if(!consumeNext(result, theChildren[5].getp(), planState))
+    {
+      ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
+                            loc,
+                            "Missing param quote_char", "");
+    }
+    quote_escape = result->getStringValue().getp();
+
+    int   line_index = 0;
+
+    while(consumeNext(result, theChildren[0].getp(), planState))
+    {
+      if(!csv_write_line(result, xpaths, 
+                         (line_index == 0) && first_row_is_header, 
+                         line, header))
+      {
+       ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
+                            loc,
+                            "Cannot transform node into csv line ", (line_index+1));
+      }
+      if((line_index == 0) && first_row_is_header)
+        csv_write_line_to_string(header, 
+                                 separator, quote_char, quote_escape,
+                                 result_string);
+      csv_write_line_to_string(line, 
+                               separator, quote_char, quote_escape,
+                               result_string);
+      line_index++;
+    }
+
+
+    xqpStringStore_t    result_str_t = result_string.getStore();
+    GENV_ITEMFACTORY->createString(result, result_str_t);
+  }
+  STACK_PUSH (true, state);
+
+  STACK_END (state);
+
+}
+
+bool
+ZorbaXML2CSVFILEIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  {
+    checked_vector<xqpString>  line;
+    checked_vector<xqpString>  header;
+    checked_vector<xqpString>  xpaths;
+    bool                       first_row_is_header;
+    xqpString                  separator;
+    xqpString                  quote_char;
+    xqpString                  quote_escape;
+    std::ofstream              output_stream;
+
+    {
+      xqpString   csv_filename;
+      //read csv file name
+      if(!consumeNext(result, theChildren[1].getp(), planState))
+      {
+        ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
+                              loc,
+                              "Missing param output file name", "");
+      }
+      csv_filename = result->getStringValue().getp();
+      xqpString   abs_filename;
+      //compute the absolute file name from csv file name and xq location
+      abs_filename = compute_absolute_filename(csv_filename, loc.getFilename());
+      output_stream.open(abs_filename.c_str(), std::ios_base::out | std::ios_base::trunc | std::ios_base::binary);
+      if(!output_stream.is_open())
+      {
+        ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
+                              loc,
+                              "Cannot open file for writing ", abs_filename);
+      }
+    }
+    //read xpaths
+    {
+      xqpStringStore_t  strxpath;
+      while(consumeNext(result, theChildren[2].getp(), planState))
+      {
+        strxpath = result->getStringValue();
+        xpaths.push_back(xqpString(strxpath));
+      }
+    }
+    //read first_row_is_header
+    if(!consumeNext(result, theChildren[3].getp(), planState))
+    {
+      ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
+                            loc,
+                            "Missing param first_row_is_header", "");
+    }
+    first_row_is_header = result->getBooleanValue();
+    //read separator
+    if(!consumeNext(result, theChildren[4].getp(), planState))
+    {
+      ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
+                            loc,
+                            "Missing param separator", "");
+    }
+    separator = result->getStringValue().getp();
+    if(separator.empty())
+    {
+      ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
+                            loc,
+                            "Empty param separator", "");
+    }
+    //read quote_char
+    if(!consumeNext(result, theChildren[5].getp(), planState))
+    {
+      ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
+                            loc,
+                            "Missing param quote_escape", "");
+    }
+    quote_char = result->getStringValue().getp();
+    //read quote_escape
+    if(!consumeNext(result, theChildren[6].getp(), planState))
+    {
+      ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
+                            loc,
+                            "Missing param quote_char", "");
+    }
+    quote_escape = result->getStringValue().getp();
+
+    int   line_index = 0;
+
+    while(consumeNext(result, theChildren[0].getp(), planState))
+    {
+      if(!csv_write_line(result, xpaths, 
+                         (line_index == 0) && first_row_is_header, 
+                         line, header))
+      {
+       ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
+                            loc,
+                            "Cannot transform node into csv line ", (line_index+1));
+      }
+      if((line_index == 0) && first_row_is_header)
+        csv_write_line_to_file(header, 
+                                 separator, quote_char, quote_escape,
+                                 output_stream);
+      csv_write_line_to_file(line, 
+                               separator, quote_char, quote_escape,
+                               output_stream);
+      line_index++;
+    }
+
+    GENV_ITEMFACTORY->createBoolean(result, true);
+  }
+  STACK_PUSH (true, state);
+
+  STACK_END (state);
+
+}
+
+bool
+ZorbaXML2TXTIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  {
+    xqpString                  result_string;
+    checked_vector<xqpString>  line;
+    checked_vector<xqpString>  header;
+    checked_vector<xqpString>  xpaths;
+    bool                       first_row_is_header;
+    checked_vector<unsigned int>        field_lengths;
+
+    //read xpaths
+    {
+      xqpStringStore_t  strxpath;
+      while(consumeNext(result, theChildren[1].getp(), planState))
+      {
+        strxpath = result->getStringValue();
+        xpaths.push_back(xqpString(strxpath));
+      }
+    }
+    //read first_row_is_header
+    if(!consumeNext(result, theChildren[2].getp(), planState))
+    {
+      ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
+                            loc,
+                            "Missing param first_row_is_header", "");
+    }
+    first_row_is_header = result->getBooleanValue();
+    {
+      xqpStringStore_t  strpos;
+      int         pos;
+      while(consumeNext(result, theChildren[3].getp(), planState))
+      {
+        strpos = result->getStringValue();
+        sscanf(strpos->c_str(), "%d", &pos);
+        if(pos <= 0)
+        {
+          ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
+                                loc,
+                                "Field lengths must be positive integers ", pos);
+        }
+        field_lengths.push_back((unsigned int)pos);
+      }
+      if(field_lengths.size() < 1)
+      {
+        ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
+                              loc,
+                              "Empty sequence for field lengths", "");
+      }
+    }
+
+    int   line_index = 0;
+
+    while(consumeNext(result, theChildren[0].getp(), planState))
+    {
+      if(!csv_write_line(result, xpaths, 
+                         (line_index == 0) && first_row_is_header, 
+                         line, header))
+      {
+       ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
+                            loc,
+                            "Cannot transform node into csv line ", (line_index+1));
+      }
+      if((line_index == 0) && first_row_is_header)
+        txt_write_line_to_string(header, 
+                                 field_lengths,
+                                 result_string);
+      txt_write_line_to_string(line, 
+                               field_lengths,
+                               result_string);
+      line_index++;
+    }
+
+
+    xqpStringStore_t    result_str_t = result_string.getStore();
+    GENV_ITEMFACTORY->createString(result, result_str_t);
+  }
+  STACK_PUSH (true, state);
+
+  STACK_END (state);
+
+}
+
+bool
+ZorbaXML2TXTFILEIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  {
+    checked_vector<xqpString>  line;
+    checked_vector<xqpString>  header;
+    checked_vector<xqpString>  xpaths;
+    bool                       first_row_is_header;
+    checked_vector<unsigned int>        field_lengths;
+    std::ofstream              output_stream;
+
+    {
+      xqpString   csv_filename;
+      //read csv file name
+      if(!consumeNext(result, theChildren[1].getp(), planState))
+      {
+        ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
+                              loc,
+                              "Missing param output file name", "");
+      }
+      csv_filename = result->getStringValue().getp();
+      xqpString   abs_filename;
+      //compute the absolute file name from csv file name and xq location
+      abs_filename = compute_absolute_filename(csv_filename, loc.getFilename());
+      output_stream.open(abs_filename.c_str(), std::ios_base::out | std::ios_base::trunc | std::ios_base::binary);
+      if(!output_stream.is_open())
+      {
+        ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
+                              loc,
+                              "Cannot open file for writing ", abs_filename);
+      }
+    }
+
+    //read xpaths
+    {
+      xqpStringStore_t  strxpath;
+      while(consumeNext(result, theChildren[2].getp(), planState))
+      {
+        strxpath = result->getStringValue();
+        xpaths.push_back(xqpString(strxpath));
+      }
+    }
+    //read first_row_is_header
+    if(!consumeNext(result, theChildren[3].getp(), planState))
+    {
+      ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
+                            loc,
+                            "Missing param first_row_is_header", "");
+    }
+    first_row_is_header = result->getBooleanValue();
+    {
+      xqpStringStore_t  strpos;
+      int         pos;
+      while(consumeNext(result, theChildren[4].getp(), planState))
+      {
+        strpos = result->getStringValue();
+        sscanf(strpos->c_str(), "%d", &pos);
+        if(pos <= 0)
+        {
+          ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
+                                loc,
+                                "Field lengths must be positive integers ", pos);
+        }
+        field_lengths.push_back((unsigned int)pos);
+      }
+      if(field_lengths.size() < 1)
+      {
+        ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
+                              loc,
+                              "Empty sequence for field lengths", "");
+      }
+    }
+
+    int   line_index = 0;
+
+    while(consumeNext(result, theChildren[0].getp(), planState))
+    {
+      if(!csv_write_line(result, xpaths, 
+                         (line_index == 0) && first_row_is_header, 
+                         line, header))
+      {
+       ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
+                            loc,
+                            "Cannot transform node into csv line ", (line_index+1));
+      }
+      if((line_index == 0) && first_row_is_header)
+        txt_write_line_to_file(header, 
+                                 field_lengths,
+                                 output_stream);
+      txt_write_line_to_file(line, 
+                               field_lengths,
+                               output_stream);
+      line_index++;
+    }
+
+
+    GENV_ITEMFACTORY->createBoolean(result, true);
+  }
+  STACK_PUSH (true, state);
 
   STACK_END (state);
 

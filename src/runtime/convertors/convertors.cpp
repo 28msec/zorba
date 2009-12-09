@@ -339,5 +339,117 @@ void ZorbaTXT2XMLFromFileIteratorState::reset(PlanState& planState) {
 // </ZorbaTXT2XMLFromFileIterator>
 
 
+// <ZorbaXML2CSVIterator>
+const char* ZorbaXML2CSVIterator::class_name_str = "ZorbaXML2CSVIterator";
+ZorbaXML2CSVIterator::class_factory<ZorbaXML2CSVIterator>
+ZorbaXML2CSVIterator::g_class_factory;
+
+const serialization::ClassVersion 
+ZorbaXML2CSVIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int ZorbaXML2CSVIterator::class_versions_count =
+sizeof(ZorbaXML2CSVIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void ZorbaXML2CSVIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaXML2CSVIterator::~ZorbaXML2CSVIterator() {}
+
+// </ZorbaXML2CSVIterator>
+
+
+// <ZorbaXML2CSVFILEIterator>
+const char* ZorbaXML2CSVFILEIterator::class_name_str = "ZorbaXML2CSVFILEIterator";
+ZorbaXML2CSVFILEIterator::class_factory<ZorbaXML2CSVFILEIterator>
+ZorbaXML2CSVFILEIterator::g_class_factory;
+
+const serialization::ClassVersion 
+ZorbaXML2CSVFILEIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int ZorbaXML2CSVFILEIterator::class_versions_count =
+sizeof(ZorbaXML2CSVFILEIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void ZorbaXML2CSVFILEIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaXML2CSVFILEIterator::~ZorbaXML2CSVFILEIterator() {}
+
+// </ZorbaXML2CSVFILEIterator>
+
+
+// <ZorbaXML2TXTIterator>
+const char* ZorbaXML2TXTIterator::class_name_str = "ZorbaXML2TXTIterator";
+ZorbaXML2TXTIterator::class_factory<ZorbaXML2TXTIterator>
+ZorbaXML2TXTIterator::g_class_factory;
+
+const serialization::ClassVersion 
+ZorbaXML2TXTIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int ZorbaXML2TXTIterator::class_versions_count =
+sizeof(ZorbaXML2TXTIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void ZorbaXML2TXTIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaXML2TXTIterator::~ZorbaXML2TXTIterator() {}
+
+// </ZorbaXML2TXTIterator>
+
+
+// <ZorbaXML2TXTFILEIterator>
+const char* ZorbaXML2TXTFILEIterator::class_name_str = "ZorbaXML2TXTFILEIterator";
+ZorbaXML2TXTFILEIterator::class_factory<ZorbaXML2TXTFILEIterator>
+ZorbaXML2TXTFILEIterator::g_class_factory;
+
+const serialization::ClassVersion 
+ZorbaXML2TXTFILEIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int ZorbaXML2TXTFILEIterator::class_versions_count =
+sizeof(ZorbaXML2TXTFILEIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void ZorbaXML2TXTFILEIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaXML2TXTFILEIterator::~ZorbaXML2TXTFILEIterator() {}
+
+// </ZorbaXML2TXTFILEIterator>
+
+
 
 }

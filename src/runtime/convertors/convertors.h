@@ -260,7 +260,7 @@ public:
   xqp_string csv; //csv text
   string_codepoints_iterator csv_it; //iterator over csv codepoints
   bool first_row_is_header; //if the first line of csv describe the name of the columns
-  checked_vector<int> columns_positions; //separator codepoint
+  checked_vector<unsigned int> columns_positions; //separator codepoint
   store::Item_t row_node_name; //qname of the row element
   store::Item_t default_column_node_name; //default qname of the column element
   xqp_string baseUri; //keep the base uri from static context
@@ -368,7 +368,7 @@ public:
   std::ifstream csv_stream; //csv text
   ifstream_codepoints_iterator csv_it; //csv codepoints iterator
   bool first_row_is_header; //if the first line of csv describe the name of the columns
-  checked_vector<int> columns_positions; //separator codepoint
+  checked_vector<unsigned int> columns_positions; //separator codepoint
   store::Item_t row_node_name; //qname of the row element
   store::Item_t default_column_node_name; //default qname of the column element
   xqp_string baseUri; //keep the base uri from static context
@@ -404,6 +404,138 @@ public:
     (sctx, loc, aChildren) {}
 
   virtual ~ZorbaTXT2XMLFromFileIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * Export XML to a Comma Separated Values text string.
+ * Author: Zorba Team
+ */
+class ZorbaXML2CSVIterator : public NaryBaseIterator <ZorbaXML2CSVIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(ZorbaXML2CSVIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaXML2CSVIterator,
+    NaryBaseIterator <ZorbaXML2CSVIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator <ZorbaXML2CSVIterator, PlanIteratorState>*)this);
+  }
+
+  ZorbaXML2CSVIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <ZorbaXML2CSVIterator, PlanIteratorState>
+    (sctx, loc, aChildren) {}
+
+  virtual ~ZorbaXML2CSVIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * Export XML to a Comma Separated Values text file.
+ * Author: Zorba Team
+ */
+class ZorbaXML2CSVFILEIterator : public NaryBaseIterator <ZorbaXML2CSVFILEIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(ZorbaXML2CSVFILEIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaXML2CSVFILEIterator,
+    NaryBaseIterator <ZorbaXML2CSVFILEIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator <ZorbaXML2CSVFILEIterator, PlanIteratorState>*)this);
+  }
+
+  ZorbaXML2CSVFILEIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <ZorbaXML2CSVFILEIterator, PlanIteratorState>
+    (sctx, loc, aChildren) {}
+
+  virtual ~ZorbaXML2CSVFILEIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * Export XML to a Column Separated Values text string.
+ * Author: Zorba Team
+ */
+class ZorbaXML2TXTIterator : public NaryBaseIterator <ZorbaXML2TXTIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(ZorbaXML2TXTIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaXML2TXTIterator,
+    NaryBaseIterator <ZorbaXML2TXTIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator <ZorbaXML2TXTIterator, PlanIteratorState>*)this);
+  }
+
+  ZorbaXML2TXTIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <ZorbaXML2TXTIterator, PlanIteratorState>
+    (sctx, loc, aChildren) {}
+
+  virtual ~ZorbaXML2TXTIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * Export XML to a Column Separated Values text file.
+ * Author: Zorba Team
+ */
+class ZorbaXML2TXTFILEIterator : public NaryBaseIterator <ZorbaXML2TXTFILEIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(ZorbaXML2TXTFILEIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaXML2TXTFILEIterator,
+    NaryBaseIterator <ZorbaXML2TXTFILEIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator <ZorbaXML2TXTFILEIterator, PlanIteratorState>*)this);
+  }
+
+  ZorbaXML2TXTFILEIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <ZorbaXML2TXTFILEIterator, PlanIteratorState>
+    (sctx, loc, aChildren) {}
+
+  virtual ~ZorbaXML2TXTFILEIterator();
 
   void accept(PlanIterVisitor& v) const;
 
