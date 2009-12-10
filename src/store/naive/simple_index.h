@@ -17,12 +17,10 @@
 #define ZORBA_SIMPLE_STORE_INDEX
 
 #include "store/api/shared_types.h"
-
-#include "zorbautils/hashmap.h"
-
 #include "store/api/index.h"
 #include "store/api/iterator.h"
 
+#include "zorbautils/hashmap.h"
 
 namespace zorba 
 { 

@@ -38,7 +38,7 @@ PlanIter_t op_zorba_read_line::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ReadLineIterator ( sctx, loc, argv);
+  return new ReadLineIterator(sctx, loc, argv);
 }
 
 PlanIter_t op_zorba_print::codegen(
@@ -48,10 +48,11 @@ PlanIter_t op_zorba_print::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new PrintIterator ( sctx, loc, argv);
+  return new PrintIterator(sctx, loc, argv);
 }
 
-void populate_context_debug(static_context* sctx) {
+void populate_context_debug(static_context* sctx)
+{
   DECL(sctx, fn_trace,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","trace"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,

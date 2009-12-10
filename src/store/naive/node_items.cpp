@@ -26,6 +26,7 @@
 #include "store/naive/node_items.h"
 #include "store/naive/node_iterators.h"
 #include "store/naive/simple_store.h"
+#include "store/naive/simple_collection.h"
 #include "store/naive/simple_item_factory.h"
 #include "store/naive/qname_pool.h"
 #include "store/naive/store_defs.h"
@@ -46,6 +47,9 @@ namespace zorba { namespace simplestore {
 /////////////////////////////////////////////////////////////////////////////////
 
 
+/*******************************************************************************
+
+********************************************************************************/
 XmlTree::XmlTree(XmlNode* root, ulong id)
   :
   theRefCount(0),
@@ -59,14 +63,35 @@ XmlTree::XmlTree(XmlNode* root, ulong id)
 }
 
 
-void XmlTree::setCollection(SimpleCollection* coll) 
-{
-  ZORBA_ASSERT(coll == NULL || theCollection == NULL);
+/*******************************************************************************
 
-  theCollection = coll; 
+********************************************************************************/
+void XmlTree::setCollection(SimpleCollection* collection) 
+{
+  ZORBA_ASSERT(collection == NULL || theCollection == NULL);
+
+  theCollection = collection;
+
+  if (collection != NULL)
+    theId = collection->createTreeId();
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+ulong XmlTree::getCollectionId() const
+{
+  if (theCollection != NULL)
+    return theCollection->getId();
+  else
+    return 0;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void XmlTree::free() throw()
 {
   // std::cout << "Deleting Xml Tree: " << this << std::endl;
@@ -682,7 +707,7 @@ XmlNode* DocumentNode::copyInternal(
 
   try
   {
-    tree = new XmlTree(NULL, GET_STORE().getTreeId());
+    tree = new XmlTree(NULL, GET_STORE().createTreeId());
 
     copyNode = new DocumentNode(tree, getBaseUri(), getDocUri());
 
@@ -1031,7 +1056,7 @@ XmlNode* ElementNode::copyInternal(
   try
   {
     if (parent == NULL)
-      tree = new XmlTree(NULL, GET_STORE().getTreeId());
+      tree = new XmlTree(NULL, GET_STORE().createTreeId());
 
     pos = (parent == rootParent ? pos : -1);
 
@@ -2136,7 +2161,7 @@ XmlNode* AttributeNode::copyInternal(
   try
   {
     if (parent == NULL)
-      tree = new XmlTree(NULL, store.getTreeId());
+      tree = new XmlTree(NULL, store.createTreeId());
     
     else if (parent == rootParent)
       reinterpret_cast<ElementNode*>(parent)->checkUniqueAttr(nodeName);
@@ -2430,7 +2455,7 @@ XmlNode* TextNode::copyInternal(
   {
     if (parent == NULL)
     {
-      tree = new XmlTree(NULL, GET_STORE().getTreeId());
+      tree = new XmlTree(NULL, GET_STORE().createTreeId());
 
       textContent = getStringValue();
       copyNode = new TextNode(tree, NULL, pos, textContent);
@@ -2782,7 +2807,7 @@ XmlNode* PiNode::copyInternal(
   {
     if (parent == NULL)
     {
-      tree = new XmlTree(NULL, GET_STORE().getTreeId());
+      tree = new XmlTree(NULL, GET_STORE().createTreeId());
 
       target = theTarget;
       content = theContent;
@@ -2911,7 +2936,7 @@ XmlNode* CommentNode::copyInternal(
   {
     if (parent == NULL)
     {
-      tree = new XmlTree(NULL, GET_STORE().getTreeId());
+      tree = new XmlTree(NULL, GET_STORE().createTreeId());
 
       content = theContent;
       copyNode = new CommentNode(tree, NULL, pos, content);

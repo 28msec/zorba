@@ -34,7 +34,8 @@ namespace zorba
 {
 
 /*******************************************************************************
-  class GenericOpComparison
+  Glass GenericOpComparison is the base class for both value and general
+  comparisons.
 ********************************************************************************/
 class GenericOpComparison : public function 
 {
@@ -89,7 +90,8 @@ void GenericOpComparison::compute_annotation(
     for (std::vector<AnnotationHolder *>::iterator i = kids.begin(); i < kids.end(); i++)
       TSVAnnotationValue::update_annotation ((*i), k, TSVAnnotationValue::TRUE_VAL);
     break;
-  default: break;
+  default:
+    ZORBA_ASSERT(false);
   }
 }
 
@@ -579,7 +581,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder &ann) const
+        AnnotationHolder& ann) const
   {
     return new LogicIterator(sctx, loc, argv[0], argv[1], LogicIterator::AND);
   }
@@ -600,7 +602,7 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder &ann) const
+        AnnotationHolder& ann) const
   {
     return new LogicIterator(sctx, loc, argv[0], argv[1], LogicIterator::OR);
   }

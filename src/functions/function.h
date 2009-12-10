@@ -38,20 +38,6 @@ class CompilerCB;
 class AnnotationHolder;
 
 
-#define FUNCTION_PRODUCES_SORTED_NODES                       \
-FunctionConsts::AnnotationValue producesNodeIdSorted() const \
-{                                                            \
-  return FunctionConsts::YES;                                \
-}
-
-
-#define FUNCTION_PRODUCES_DISTINCT_NODES                     \
-FunctionConsts::AnnotationValue producesDuplicates() const   \
-{                                                            \
-  return FunctionConsts::NO;                                 \
-}
-
-
 #define FUNCTION_PROPAGATES_I2O                              \
 bool propagatesInputToOutput(ulong aProducer) const          \
 {                                                            \
@@ -117,12 +103,6 @@ public:
 
 	virtual bool validate_args(std::vector<PlanIter_t>& argv) const;
 
-  virtual bool requires_dyn_ctx() const { return false; }
-
-  virtual bool isSource() const { return false; }
-
-  virtual bool isDeterministic() const { return true; }
-
   virtual expr_script_kind_t getUpdateType() const { return SIMPLE_EXPR; }
 
   bool isUpdating() const { return getUpdateType() == UPDATE_EXPR; }
@@ -158,17 +138,21 @@ public:
 
   virtual bool isFnError() const { return false; }
 
-  virtual bool isNodeSortFunction() const { return false; }
-
   virtual bool isNodeDistinctFunction() const { return false; }
+
+  virtual bool requires_dyn_ctx() const { return false; }
+
+  virtual bool isSource() const { return false; }
+
+  virtual bool isDeterministic() const { return true; }
 
   virtual bool propagatesInputToOutput(ulong input) const { return false; }
 
-  virtual bool isMap(ulong input) const { return false; }
+  virtual bool isMap(ulong input) const;
 
-  virtual FunctionConsts::AnnotationValue producesDuplicates() const;
+  virtual FunctionConsts::AnnotationValue producesDistinctNodes() const;
 
-  virtual FunctionConsts::AnnotationValue producesNodeIdSorted() const;
+  virtual FunctionConsts::AnnotationValue producesSortedNodes() const;
 
   virtual void compute_annotation(
         AnnotationHolder* foExpr,

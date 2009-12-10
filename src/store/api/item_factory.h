@@ -21,12 +21,18 @@
 #include <zorba/config.h>
 #include "zorbatypes/representations.h"
 
-#include "common/shared_types.h"
-
-#include "store/api/iterator.h"
+#include "store/api/shared_types.h"
 
 
-namespace zorba { namespace store {
+namespace zorba { 
+
+namespace error
+{
+  class ZorbaError;
+}
+
+
+namespace store {
 
 class CopyMode;
 class PUL;
@@ -623,6 +629,7 @@ public:
    */
   virtual PUL* createPendingUpdateList() = 0;
 
+#if 0
   /**
    * Create a new tuple.
    */
@@ -637,6 +644,7 @@ public:
           store::Item_t& result,
           store::Item *inTuple,
           std::vector<int>& permutation) = 0;
+#endif
 
   /**
    * Create an ErrorItem encapsulating a pointer to a ZorbaError obj (or to

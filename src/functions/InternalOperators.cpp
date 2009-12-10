@@ -29,6 +29,21 @@ public:
 
   xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
 
+  bool isMap(ulong input) const
+  {
+    return true;
+  }
+
+  FunctionConsts::AnnotationValue producesSortedNodes() const
+  {
+    return FunctionConsts::PRESERVE;
+  }
+
+  FunctionConsts::AnnotationValue producesDistinctNodes() const
+  {
+    return FunctionConsts::PRESERVE;
+  }
+
   DEFAULT_NARY_CODEGEN(HoistIterator);
 };
 
@@ -45,6 +60,21 @@ public:
   zop_unhoist(const signature& sig) : function(sig, FunctionConsts::OP_UNHOIST_1) {}
 
   xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
+
+  bool isMap(ulong input) const
+  {
+    return true;
+  }
+
+  FunctionConsts::AnnotationValue producesSortedNodes() const
+  {
+    return FunctionConsts::PRESERVE;
+  }
+
+  FunctionConsts::AnnotationValue producesDistinctNodes() const
+  {
+    return FunctionConsts::PRESERVE;
+  }
 
   DEFAULT_NARY_CODEGEN(UnhoistIterator);
 };

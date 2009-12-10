@@ -116,9 +116,43 @@ declare function local:create-function($iter) as xs:string?
           string-join(($name,
                        '(const signature&amp; sig);'),
                       ''),
-
         $gen:newline,
+
+        (: 
+           Check whether to generate the signature for the return_type function.
+           If true, the user has to provide his own implementation.
+        :)
+        if($iter/zorba:function/@generateReturnTypeDecl = 'true') then 
+          string-join(($gen:newline,$gen:indent,
+          'xqtref_t return_type(const std::vector&lt;xqtref_t&gt;&amp; arg_types) const;',
+          $gen:newline),'') 
+        else (),
+
+        (: 
+          Check whether to generate the computeAnnotation function.
+          If true, the user has to provide his own implementation.
+        :)
+        if($iter/zorba:function/@generateComputeAnnotationDecl = 'true') then
+          string-join(($gen:indent,
+                       'COMPUTE_ANNOTATION_DECL();', 
+                       $gen:newline, $gen:newline), '') 
+        else (),
+
+        (: 
+           Check whether to generate the propagatesInputToOutput function.
+           If any of the propagatesInputToOutput or propagesOne attributes is
+           present, the function declaration is generated, and the has to provide
+           his own implementation.
+        :)
+        if ( fn:exists($iter/zorba:function/@propagatesInputToOutput) or
+              fn:exists($iter/zorba:function/@propagesOne) )
+        then
+          string-join(($gen:newline,$gen:indent,
+          'bool propagatesInputToOutput(ulong aProducer) const;',$gen:newline),'')
+        else (),
+
         local:add-annotations($iter),
+        local:add-isMap($iter),
         local:add-specialization($iter),
         local:add-unfoldable($iter),
         local:add-isDeterministic($iter),
@@ -127,54 +161,16 @@ declare function local:create-function($iter) as xs:string?
         local:add-is-updating($iter),
         local:add-is-vacuous($iter),
         local:add-is-sequential($iter),
-        $gen:newline,$gen:indent,'CODEGEN_DECL();',$gen:newline,
+        $gen:newline,
 
-        (: generate the return type function or not 
-         : if true, the user has to provide his own implementation
-         :)
-        if($iter/zorba:function/@generateReturnTypeDecl = 'true') then 
-          string-join(($gen:newline,$gen:indent,
-          'xqtref_t return_type(const std::vector&lt;xqtref_t&gt;&amp; arg_types) const;',
-          $gen:newline),'') 
-        else (),
+        $gen:indent, 'CODEGEN_DECL();', $gen:newline,
 
-        (: generate the computeAnnotation function
-         : if true, the user has to provide his own implementation
-         :)
-        if($iter/zorba:function/@generateComputeAnnotationDecl = 'true') then 
-          string-join(($gen:newline,$gen:indent,
-          'void compute_annotation(AnnotationHolder* parent,',$gen:newline,
-          gen:indent(13),'std::vector&lt;AnnotationHolder *&gt;&amp; kids,',$gen:newline,
-          gen:indent(13),'Annotations::Key k) const;',$gen:newline),'') 
-        else (),
+        '};',
 
-        (: generate a declaration for propagatesInputToOutput if
-           any of the propagatesInputToOutput or propagesOne
-           attributes is present :)
-        if ( fn:exists ($iter/zorba:function/@propagatesInputToOutput) or
-              fn:exists ($iter/zorba:function/@propagesOne) )
+        if ( exists($iter/@preprocessorGuard) )
         then
-          string-join(($gen:newline,$gen:indent,
-          'bool propagatesInputToOutput(ulong aProducer) const;',$gen:newline),'')
-        else (),
-
-        local:add-isMap($iter),
-
-        if ($iter/zorba:function/@generateProducesDuplicateDecl = 'true') then
-          string-join(($gen:newline,$gen:indent,
-          'zorba::FunctionConsts::AnnotationValue producesDuplicates() const;',$gen:newline),'') 
-        else (),
-
-        if ($iter/zorba:function/@generateProducesNodeIdSortedDecl = 'true') then
-          string-join(($gen:newline,$gen:indent,
-          'zorba::FunctionConsts::AnnotationValue producesNodeIdSorted() const;',$gen:newline),'') 
-        else (),
-             
-      '};',
-      if ( exists($iter/@preprocessorGuard) )
-      then
-        concat($gen:newline, "#endif")
-      else ""
+          concat($gen:newline, "#endif")
+        else ""
       )
      , ''))
   else ()
@@ -244,8 +240,7 @@ declare function local:add-isMap($iter) as xs:string?
 {
   let $input := data($iter/zorba:function/@isMap)
   return 
-  if (empty($input))
-  then
+  if (empty($input)) then
     ()
   else
     string-join(($gen:newline, 
@@ -263,26 +258,33 @@ declare function local:add-unfoldable($iter) as xs:string?
   else ()
 };
 
+
 declare function local:add-specialization($iter) as xs:string?
 {
   if($iter/zorba:function/@specializable = 'true') then    
-    string-join(($gen:newline,$gen:indent,
-    'bool specializable() const { return true; }',$gen:newline,
-    $gen:newline,$gen:indent,
-    'function* specialize( static_context* sctx,',$gen:newline,
-    gen:indent(12),'const std::vector&lt;xqtref_t&gt;&amp; argTypes) const;',$gen:newline),'')
+    string-join(($gen:newline, $gen:indent,
+                 'bool specializable() const { return true; }',
+                 $gen:newline, $gen:newline, $gen:indent,
+                 'function* specialize( static_context* sctx,',
+                 $gen:newline, gen:indent(12),
+                 'const std::vector&lt;xqtref_t&gt;&amp; argTypes) const;',
+                 $gen:newline),'')
   else ()
 };
 
 
-declare function local:add-annotations($iter) as xs:string?
+declare function local:add-annotations($iter) as xs:string*
 {
   if(count($iter/zorba:function//zorba:annotation) > 0) then
-    for $ann in $iter/zorba:function//zorba:annotation return
-      string-join(($gen:newline,$gen:indent,
-      'FunctionConsts::AnnotationValue ',$ann/@name,'() const {',$gen:newline,
-      gen:indent(2),'return FunctionConsts::',$ann/text(),';',$gen:newline,
-      $gen:indent,'}',$gen:newline),'')
+    for $ann in $iter/zorba:function//zorba:annotation
+    return
+      string-join(($gen:newline, $gen:indent,
+                   'FunctionConsts::AnnotationValue ', $ann/@name, '() const ',
+                   $gen:newline, $gen:indent, '{',
+                   $gen:newline, gen:indent(2),
+                   'return FunctionConsts::', $ann/text(), ';', 
+                   $gen:newline, $gen:indent,
+                   '}', $gen:newline), '')
   else ()
 };
 
@@ -329,7 +331,8 @@ declare variable $doc := "";
 let $pieces as xs:string* := tokenize($file,'/')
 let $name := substring($pieces[count($pieces)],1,string-length($pieces[count($pieces)])-4)
 return
-  block {
+  block 
+  {
     set $doc := file:read-xml($file)/zorba:iterators;
     string-join((gen:add-copyright(),
           $gen:newline,
@@ -337,7 +340,7 @@ return
           $gen:newline,
           local:includes($doc),
           $gen:newline,
-          'namespace zorba{',
+          'namespace zorba {',
           $gen:newline,
           local:add-populate($name),
           $gen:newline,

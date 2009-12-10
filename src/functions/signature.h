@@ -47,11 +47,13 @@ class signature_base: public SimpleRCObject
     //serialize_baseclass(ar, (SimpleRCObject*)this);
     ar & variadic;
   }
-public:
-  signature_base () : variadic (false) {}
-  signature_base (bool _variadic) : variadic (_variadic) {}
 
-  bool is_variadic () const { return variadic; }
+public:
+  signature_base() : variadic(false) {}
+
+  signature_base(bool _variadic) : variadic(_variadic) {}
+
+  bool is_variadic() const { return variadic; }
 };
 
 
@@ -71,11 +73,12 @@ public:
     ar & qname_p;
     ar & argv;
   }
+
 public:
-  signature (store::Item_t name,
-             xqtref_t arg1,
-             bool variadic,
-             xqtref_t return_type);
+  signature(store::Item_t name,
+            xqtref_t arg1,
+            bool variadic,
+            xqtref_t return_type);
   
   signature(store::Item_t name,
             xqtref_t return_type);
@@ -152,14 +155,15 @@ public:
     return is_variadic () ? VARIADIC_SIG_SIZE : argv.size() - 1;
   }
 
-  bool
-  equals(const signature& s) const;
+  bool equals(const signature& s) const;
 
-  xqtref_t const& operator[](int i) const { return argv [variadic ? 1 : (i + 1)]; }
-  xqtref_t & operator[](int i)            { return argv [variadic ? 1 : (i + 1)]; }
-  xqtref_t const& return_type() const     { return argv [0]; }
-  xqtref_t & return_type()                { return argv [0]; }
+  xqtref_t const& operator[](int i) const { return argv[variadic ? 1 : (i + 1)]; }
 
+  xqtref_t & operator[](int i)            { return argv[variadic ? 1 : (i + 1)]; }
+
+  xqtref_t const& return_type() const     { return argv[0]; }
+
+  xqtref_t & return_type()                { return argv[0]; }
 };
 
 } /* namespace zorba */

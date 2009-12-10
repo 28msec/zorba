@@ -235,11 +235,11 @@ public:
    *  getXValue functions:
    *  @return  value of type X
    *
-   *  Assuming that the item is an AtomicValue of a particular kind X, return the value
-   *  of the item. Implementations of X, e.g., a specific DoubleValue implementation, will override
-   *  its specific getXValue method (i.e., getDoubleValue) and not change any of the other methods.
-   *  Implementations of the seven kinds of nodes should not override the definition of these
-   *  methods.
+   * Assuming that the item is an AtomicValue of a particular kind X, return the
+   * value of the item. Implementations of X, e.g., a specific DoubleValue
+   * implementation, will override its specific getXValue method (i.e., 
+   * getDoubleValue) and not change any of the other methods. Implementations of
+   * the seven kinds of nodes should not override the definition of these methods.
    */
 
   /** Accessor for xs:string and its subtypes
@@ -509,12 +509,15 @@ public:
   virtual Item*
   getNodeName() const;
 
-  /** Returns the name of the collection if the item belongs to one. 
-   *  Otherwise, returns 0.
-   *  @return qname?
+  /**
+   * If this item is a node and it belongs to a collection, return that
+   * collection. Otherwise, return 0.
+   *
+   * @return The collection this item belongs to, or NULL if item does not
+   *         belong to any collection.
    */
-  virtual const Item*
-  getCollectionName() const;
+  virtual const Collection*
+  getCollection() const;
 
   /**
    * Accessor for element, attribute, processing instruction, comment, text nodes
@@ -579,8 +582,8 @@ public:
    *                 node if no copy was actually done. 
    */
   virtual Item* copy(
-        Item*           parent,
-        long           pos,
+        Item* parent,
+        long pos,
         const CopyMode& copymode) const;
 
   /**
@@ -595,12 +598,13 @@ public:
   virtual void finalizeNode();
 
   /* -------------------- Methods for tuples --------------------- */
-
+#if 0
   virtual const std::vector<zorba::store::TupleField>& getTupleFields() const;
 
   virtual int getTupleFieldCount() const;
 
   virtual const TupleField& getTupleField(int index) const;
+#endif
 
   /* -------------------- Methods for ErrorItem --------------------- */
 

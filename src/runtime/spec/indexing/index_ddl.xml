@@ -118,7 +118,7 @@
                     generateCodegen="false"> 
       <zorba:signature localname="create-internal-index" prefix="op">
         <zorba:param>xs:QName</zorba:param>
-        <zorba:output>item()*</zorba:output>
+        <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
     </zorba:function>
 
@@ -215,6 +215,7 @@
         <zorba:param>true</zorba:param> <!-- variadic function -->
         <zorba:output>node()*</zorba:output>
       </zorba:signature>
+      <zorba:annotation name="producesDistinctNodes">YES</zorba:annotation>
     </zorba:function>
 
 </zorba:iterator>
@@ -260,6 +261,7 @@
         <zorba:param>true</zorba:param> <!-- variadic function -->
         <zorba:output>node()*</zorba:output>
       </zorba:signature>
+      <zorba:annotation name="producesDistinctNodes">YES</zorba:annotation>
     </zorba:function>
 
 </zorba:iterator>

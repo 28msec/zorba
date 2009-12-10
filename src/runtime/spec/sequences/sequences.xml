@@ -60,6 +60,8 @@
         <zorba:param>true</zorba:param> <!-- variadic function -->
         <zorba:output>item()*</zorba:output>
       </zorba:signature>
+      <zorba:annotation name="producesSortedNodes">PRESERVE</zorba:annotation>
+      <zorba:annotation name="producesDistinctNodes">PRESERVE</zorba:annotation>
     </zorba:function>
 </zorba:iterator>
 
@@ -188,9 +190,7 @@
 
   </zorba:state>
   
-  <zorba:function generateProducesDuplicateDecl="true"
-                  generateProducesNodeIdSortedDecl="true"
-                  base="single_seq_function">
+  <zorba:function generateReturnTypeDecl = "true">
     <zorba:signature localname="distinct-values" prefix="fn">
       <zorba:param>xs:anyAtomicType*</zorba:param>
       <zorba:param>xs:string</zorba:param>
@@ -262,11 +262,13 @@
   </zorba:state>
   
   <zorba:function baseSig="single_seq_opt_function">
-   <zorba:signature localname="remove" prefix="fn">
-     <zorba:param>item()*</zorba:param>
-     <zorba:param>xs:integer</zorba:param>
-     <zorba:output>item()*</zorba:output>
-   </zorba:signature>
+    <zorba:signature localname="remove" prefix="fn">
+      <zorba:param>item()*</zorba:param>
+      <zorba:param>xs:integer</zorba:param>
+      <zorba:output>item()*</zorba:output>
+    </zorba:signature>
+    <zorba:annotation name="producesSortedNodes">PRESERVE</zorba:annotation>
+    <zorba:annotation name="producesDistinctNodes">PRESERVE</zorba:annotation>
   </zorba:function>
 </zorba:iterator>
 
@@ -287,11 +289,11 @@
   </zorba:state>
   
   <zorba:function baseSig="single_seq_opt_function">
-    <zorba:annotation name="producesNodeIdSorted">NO</zorba:annotation>
     <zorba:signature localname="reverse" prefix="fn"> 
       <zorba:param>item()*</zorba:param>
       <zorba:output>item()*</zorba:output>      
     </zorba:signature>
+    <zorba:annotation name="producesDistinctNodes">PRESERVE</zorba:annotation>
   </zorba:function>
 </zorba:iterator>
 
@@ -326,6 +328,9 @@
       <zorba:param>xs:double</zorba:param>
       <zorba:output>item()*</zorba:output>
     </zorba:signature>
+
+    <zorba:annotation name="producesSortredNodes">PRESERVE</zorba:annotation>
+    <zorba:annotation name="producesDistinctNodes">PRESERVE</zorba:annotation>
   </zorba:function>
   
 </zorba:iterator>
@@ -347,7 +352,8 @@
     
     <zorba:member type="bool" name="theDoDistinct" brief=""/>
 
-    <zorba:function generateReturnTypeDecl="true" generateCodegen="false">
+    <zorba:function generateReturnTypeDecl="true" 
+                    generateCodegen="false">
       <zorba:signature localname="zero-or-one" prefix="fn">
         <zorba:param>item()*</zorba:param>
         <zorba:output>item()?</zorba:output>
@@ -368,11 +374,14 @@
       fn:one-or-more
     </zorba:description>
   
-  <zorba:function>
+  <zorba:function generateReturnTypeDecl="true"
+                  isMap="0">
     <zorba:signature localname="one-or-more" prefix="fn">
       <zorba:param>item()*</zorba:param>
       <zorba:output>item()+</zorba:output>  
     </zorba:signature>
+    <zorba:annotation name="producesSortredNodes">PRESERVE</zorba:annotation>
+    <zorba:annotation name="producesDistinctNodes">PRESERVE</zorba:annotation>
   </zorba:function>
 </zorba:iterator>
 

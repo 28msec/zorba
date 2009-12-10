@@ -672,7 +672,7 @@ void UpdDeleteCollection::apply()
 
   // save nodes for potential undo
   store::Item_t lTmp = NULL;
-  store::Iterator_t lIter = lColl->getIterator(true);
+  store::Iterator_t lIter = lColl->getIterator();
   assert(lIter);
 
   lIter->open();
@@ -688,7 +688,8 @@ void UpdDeleteCollection::apply()
 void UpdDeleteCollection::undo()
 {
   store::Collection_t lColl = GET_STORE().getCollection(theName);
-  if (!lColl) {
+  if (!lColl) 
+  {
     GET_STORE().createCollection(theName); 
 #ifndef NDEBUG
     lColl = GET_STORE().getCollection(theName);
@@ -1021,6 +1022,14 @@ void UpdCreateIndex::undo()
 /*******************************************************************************
 
 ********************************************************************************/
+UpdDeleteIndex::UpdDeleteIndex(PULImpl* pul, const store::Item_t& qname)
+  :
+  UpdatePrimitive(pul),
+  theQName(qname)
+{
+}
+
+
 void UpdDeleteIndex::apply()
 {
   SimpleStore* store = SimpleStoreManager::getStore();
@@ -1051,6 +1060,18 @@ void UpdDeleteIndex::undo()
 /*******************************************************************************
 
 ********************************************************************************/
+UpdRefreshIndex::UpdRefreshIndex(
+    PULImpl* pul,
+    const store::Item_t& qname,
+    store::Iterator* sourceIter)
+  :
+  UpdatePrimitive(pul),
+  theQName(qname),
+  theSourceIter(sourceIter)
+{
+}
+
+
 UpdRefreshIndex::~UpdRefreshIndex()
 {
 }

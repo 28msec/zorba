@@ -37,11 +37,12 @@ class XmlNode;
 ********************************************************************************/
 class NodeVector
 {
-protected:
+public:
   std::vector<XmlNode*> theNodes;
 
 public:
   NodeVector() { }
+
   NodeVector(ulong size) : theNodes(size) { }
 
   bool empty() const { return theNodes.empty(); }
@@ -65,8 +66,6 @@ public:
   void remove(ulong pos);
 
   bool remove(XmlNode* n);
-
-  void copy(NodeVector& dest) const;
 
   void compact();
 

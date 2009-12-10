@@ -61,11 +61,14 @@
                     brief="flag indicating whether theIterator was opened"/>
     </zorba:state>
 
-    <zorba:function requiresDynamicContext="true" isSource="true">
+    <zorba:function requiresDynamicContext="true"
+                    isSource="true">
       <zorba:signature localname="collection" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>document-node()*</zorba:output>
       </zorba:signature>
+      <zorba:annotation name="producesSortedNodes">YES</zorba:annotation>
+      <zorba:annotation name="producesDistinctNodes">YES</zorba:annotation>
     </zorba:function>
   
 </zorba:iterator>

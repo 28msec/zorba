@@ -30,7 +30,7 @@
 #include "functions/function_impl.h"
 
 
-namespace zorba{
+namespace zorba {
 
 
 void populate_context_fnput(static_context* sctx);
@@ -48,11 +48,11 @@ public:
   {
   }
 
+  bool propagatesInputToOutput(ulong aProducer) const;
+
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
   CODEGEN_DECL();
-
-  bool propagatesInputToOutput(ulong aProducer) const;
 };
 
 

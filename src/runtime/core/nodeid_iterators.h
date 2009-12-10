@@ -31,6 +31,8 @@ class NodeDistinctState : public PlanIteratorState
 public:
   store::Iterator_t  theStoreIterator;
 
+  ~NodeDistinctState();
+
   void init(PlanState&);
   void reset(PlanState&);
 };
@@ -86,6 +88,9 @@ class NodeSortState : public PlanIteratorState
 {
 public:
   store::Iterator_t  theStoreIterator;
+
+  ~NodeSortState();
+
   void init(PlanState&);
   void reset(PlanState&);
 };
@@ -105,13 +110,7 @@ public:
   NodeSortIterator,
   UnaryBaseIterator<NodeSortIterator, NodeSortState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (UnaryBaseIterator<NodeSortIterator, NodeSortState>*)this);
-    ar & theAscendant;
-    ar & theDistinct;
-    ar & theAcceptAtomics;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   NodeSortIterator(

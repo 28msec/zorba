@@ -37,7 +37,7 @@ PlanIter_t fn_zorba_ddl_create_index::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new CreateIndexIterator ( sctx, loc, argv[0]);
+  return new CreateIndexIterator(sctx, loc, argv[0]);
 }
 
 PlanIter_t fn_zorba_ddl_delete_index::codegen(
@@ -47,7 +47,7 @@ PlanIter_t fn_zorba_ddl_delete_index::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new DeleteIndexIterator ( sctx, loc, argv[0]);
+  return new DeleteIndexIterator(sctx, loc, argv[0]);
 }
 
 
@@ -58,7 +58,7 @@ PlanIter_t fn_zorba_ddl_refresh_index::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new RefreshIndexIterator ( sctx, loc, argv[0]);
+  return new RefreshIndexIterator(sctx, loc, argv[0]);
 }
 
 PlanIter_t op_index_entry_builder::codegen(
@@ -68,7 +68,7 @@ PlanIter_t op_index_entry_builder::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new IndexEntryBuilderIterator ( sctx, loc, argv);
+  return new IndexEntryBuilderIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_zorba_ddl_probe_index_point::codegen(
@@ -78,7 +78,7 @@ PlanIter_t fn_zorba_ddl_probe_index_point::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new IndexPointProbeIterator ( sctx, loc, argv);
+  return new IndexPointProbeIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_zorba_ddl_probe_index_range::codegen(
@@ -88,10 +88,11 @@ PlanIter_t fn_zorba_ddl_probe_index_range::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new IndexRangeProbeIterator ( sctx, loc, argv);
+  return new IndexRangeProbeIterator(sctx, loc, argv);
 }
 
-void populate_context_index_ddl(static_context* sctx) {
+void populate_context_index_ddl(static_context* sctx)
+{
   DECL(sctx, fn_zorba_ddl_create_index,
       (createQName("http://www.zorba-xquery.com/modules/ddl","fn-zorba-ddl","create-index"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
@@ -107,7 +108,7 @@ void populate_context_index_ddl(static_context* sctx) {
   DECL(sctx, op_create_internal_index,
       (createQName("http://www.w3.org/2005/xpath-functions","op","create-internal-index"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
-      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+      GENV_TYPESYSTEM.EMPTY_TYPE));
 
 
   DECL(sctx, fn_zorba_ddl_refresh_index,

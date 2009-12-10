@@ -75,14 +75,6 @@ bool NodeVector::remove(XmlNode* n)
 }
 
 
-void NodeVector::copy(NodeVector& dest) const
-{
-  ZORBA_FATAL(dest.empty(), "");
-
-  dest.theNodes = this->theNodes;
-}
-
-
 void NodeVector::compact()
 {
   if (theNodes.capacity() > theNodes.size())

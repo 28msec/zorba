@@ -30,7 +30,7 @@
 #include "functions/function_impl.h"
 
 
-namespace zorba{
+namespace zorba {
 
 
 void populate_context_collections(static_context* sctx);
@@ -65,6 +65,16 @@ public:
     :
     function(sig, FunctionConsts::FN_ZORBA_DDL_COLLECTION_1)
   {
+  }
+
+  FunctionConsts::AnnotationValue producesSortedNodes() const 
+  {
+    return FunctionConsts::YES;
+  }
+
+  FunctionConsts::AnnotationValue producesDistinctNodes() const 
+  {
+    return FunctionConsts::YES;
   }
 
   bool requires_dyn_ctx() const { return true; }

@@ -37,7 +37,7 @@ PlanIter_t op_is_same_node::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new IsSameNodeIterator ( sctx, loc, argv);
+  return new IsSameNodeIterator(sctx, loc, argv);
 }
 
 PlanIter_t op_node_before::codegen(
@@ -47,7 +47,7 @@ PlanIter_t op_node_before::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new NodeBeforeIterator ( sctx, loc, argv);
+  return new NodeBeforeIterator(sctx, loc, argv);
 }
 
 PlanIter_t op_node_after::codegen(
@@ -57,10 +57,11 @@ PlanIter_t op_node_after::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new NodeAfterIterator ( sctx, loc, argv);
+  return new NodeAfterIterator(sctx, loc, argv);
 }
 
-void populate_context_booleans(static_context* sctx) {
+void populate_context_booleans(static_context* sctx)
+{
   DECL(sctx, op_is_same_node,
       (createQName("http://www.w3.org/2005/xpath-functions","op","is-same-node"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,

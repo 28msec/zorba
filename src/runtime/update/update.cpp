@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-#include "zorbautils/fatal.h"
-
 #include "common/shared_types.h"
 
 #include "store/api/pul.h"
 #include "store/api/update_consts.h"
 #include "store/api/item.h"
+#include "store/api/collection.h"
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
 #include "store/api/copymode.h"
@@ -37,6 +36,8 @@
 #include "context/static_context_consts.h"
 
 #include "system/globalenv.h"
+
+#include "zorbautils/fatal.h"
 
 
 namespace zorba 
@@ -66,10 +67,12 @@ void areNodeModifiersViolated(
     const store::Item* aTarget,
     const QueryLoc& aLoc)
 {
-  const store::Item* lCollName = aTarget->getCollectionName();
-  if (lCollName != 0) 
+  const store::Collection* lColl = aTarget->getCollection();
+  if (lColl != 0) 
   {
-    const StaticallyKnownCollection* lDeclColl = aSctx->lookup_collection(lCollName);
+    const StaticallyKnownCollection* lDeclColl = 
+      aSctx->lookup_collection(lColl->getName());
+
     ZORBA_ASSERT(lDeclColl != 0);
 
     switch(lDeclColl->getNodeModifier()) 
@@ -140,8 +143,6 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
     ZORBA_ERROR_LOC(XUDY0027, loc);
   }
 
-  areNodeModifiersViolated(theSctx, target, loc);
-
   if (theType == store::UpdateConsts::BEFORE ||
       theType == store::UpdateConsts::AFTER)
   {
@@ -191,6 +192,8 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
           nodes.resize(2 * numNodes);
       }
     }
+
+    areNodeModifiersViolated(theSctx, target, loc);
 
     pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
@@ -264,6 +267,8 @@ bool InsertIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) cons
           nodes.resize(2 * numNodes);
       }
     }
+
+    areNodeModifiersViolated(theSctx, target, loc);
 
     pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
@@ -387,8 +392,6 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   if (!consumeNext(lTarget, theChild0, aPlanState))
     ZORBA_ERROR_LOC(XUDY0027, loc);
 
-  areNodeModifiersViolated(theSctx, lTarget, loc);
-
   if (consumeNext(temp, theChild0, aPlanState))
     ZORBA_ERROR_LOC(XUTY0008, loc);
 
@@ -469,6 +472,8 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
       }
     }
 
+    areNodeModifiersViolated(theSctx, lTarget, loc);
+
     lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
     lNodes.resize(lNumNodes);
@@ -505,6 +510,8 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
       else
         lWith = NULL;
 
+      areNodeModifiersViolated(theSctx, lTarget, loc);
+
       lPul->addReplaceContent(lTarget, lWith);
     }
     else
@@ -522,6 +529,8 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
       {
         ZORBA_ERROR_LOC(XQDY0026, loc);
       }
+
+      areNodeModifiersViolated(theSctx, lTarget, loc);
 
       if (content->empty() && lTargetKind == store::StoreConsts::textNode)
       {
@@ -565,8 +574,6 @@ RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   {
     ZORBA_ERROR_LOC(XUDY0027, loc);
   }
-
-  areNodeModifiersViolated(theSctx, lTarget, loc);
   
   if (!lTarget->isNode())
     ZORBA_ERROR_LOC(XUTY0012, loc);
@@ -584,6 +591,8 @@ RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
   {
     ZORBA_ERROR_LOC(XUTY0012, loc);
   }
+
+  areNodeModifiersViolated(theSctx, lTarget, loc);
 
   // because of codegen, it can be assumed that newname is already a qname 
   consumeNext(lNewname, theChild1, aPlanState);

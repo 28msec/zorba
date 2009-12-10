@@ -16,26 +16,19 @@
 #ifndef ZORBA_SIMPLE_STORE
 #define ZORBA_SIMPLE_STORE
 
+#include "store/naive/store_config.h"
+#include "store/naive/shared_types.h"
+
+#include "store/util/hashmap_stringp.h"
+
+#include "store/api/store.h"
+
 #include "zorbautils/mutex.h"
 #include "zorbautils/lock.h"
 #include "zorbautils/hashmap_itemp.h"
 
-#include "common/shared_types.h"
-
-#include "store/api/store.h"
-#include "store/api/collection.h"
-#include "store/api/index.h"
-
-#include "store/util/hashmap_stringp.h"
-
-#include "store/naive/shared_types.h"
-#include "store/naive/node_items.h"
-
-#include "store/naive/store_config.h"
-
-namespace zorba { 
-
-class GlobalEnvironment;
+namespace zorba 
+{ 
 
 namespace error 
 {
@@ -68,12 +61,22 @@ typedef ItemPointerHashMap<store::Index_t> IndexSet;
 
 
 /*******************************************************************************
-  theSchemaTypeNames : Maps each enum value from SchemaTypeNames (see 
-                       store_defs.h) to its associated QName item.
+  theSchemaTypeNames   : Maps each enum value from SchemaTypeNames (see 
+                         store_defs.h) to its associated QName item.
+  theCollectionCounter : Incremented every time a new collection is created. The
+                         current value of the counter is then assigned as the
+                         id of the new collection.
+  theDocuments         : A hashmap that for each xml tree that does not belong
+                         to any collection, maps the URI of the tree to the root
+                         node of the tree.
+  theCollections       : A hashmap that for each DDF collection, maps the qname
+                         of the collection to the collection container object.
+  theUriCollections    : A hashmap that for each XQUERY collection, maps the URI
+                         of the collection to the collection container object.
+  theIndices           :
 ********************************************************************************/
 class SimpleStore : public store::Store
 {
-  friend class zorba::GlobalEnvironment;
   friend class simplestore::SimpleStoreManager;
  
 public:
@@ -98,6 +101,9 @@ protected:
 
   ulong                         theUriCounter;
   SYNC_CODE(Mutex               theUriCounterMutex;)
+
+  ulong                         theCollectionCounter;
+  SYNC_CODE(Mutex               theCollectionCounterMutex;)
 
   ulong                         theTreeCounter;
   SYNC_CODE(Mutex               theTreeCounterMutex;)
@@ -132,19 +138,19 @@ public:
 
   store::IteratorFactory* getIteratorFactory() const { return theIteratorFactory; }
 
-  StringPool& getNamespacePool() const    { return *theNamespacePool; }
+  StringPool& getNamespacePool() const { return *theNamespacePool; }
 
-  QNamePool& getQNamePool() const         { return *theQNamePool; }
+  QNamePool& getQNamePool() const { return *theQNamePool; }
 
-  SYNC_CODE(Lock& getGlobalLock()         { return theGlobalLock; })
+  SYNC_CODE(Lock& getGlobalLock() { return theGlobalLock; })
 
-  long getTraceLevel() const              { return theTraceLevel; }
+  long getTraceLevel() const { return theTraceLevel; }
 
   XmlLoader* getXmlLoader(error::ErrorManager*);
 
-  ulong getTreeId();
+  ulong createCollectionId();
 
-  store::Item_t createUri();
+  ulong createTreeId();
 
   store::Collection_t createUriCollection(const xqpStringStore_t& uri);
 
@@ -197,21 +203,22 @@ public:
 
   store::Iterator_t sortNodes(
         store::Iterator* iterator,
-        bool             ascendent,
-        bool             duplicateElemination,
-        bool             aAllowAtomics = false);
+        bool ascendent,
+        bool duplicateElemination,
+        bool aAllowAtomics = false);
 
   store::Iterator_t distinctNodes(store::Iterator*, bool aAllowAtomics = false);
 
   bool getPathInfo(
-    const store::Item*               docUri,
+    const store::Item* docUri,
     std::vector<const store::Item*>& contextPath,
     std::vector<const store::Item*>& relativePath,
-    bool                             isAttrPath,
-    bool&                            found,
-    bool&                            unique);
+    bool isAttrPath,
+    bool& found,
+    bool& unique);
 
   bool getReference(store::Item_t& result, const store::Item* node);
+
   bool getNodeByReference(store::Item_t& result, const store::Item* uri);
 
   store::TempSeq_t createTempSeq();
@@ -224,10 +231,12 @@ public:
   store::TempSeq_t createTempSeq(const std::vector<store::Item_t>& item_v);
 
 #ifdef ZORBA_STORE_MSDOM
-  IXMLDOMNode   *exportItemAsMSDOM(store::Item_t it);
-  store::Item_t  importMSDOM(IXMLDOMNode* domNode,
-                            xqpStringStore_t docUri,
-                            xqpStringStore_t baseUri);
+  IXMLDOMNode* exportItemAsMSDOM(store::Item_t it);
+
+  store::Item_t importMSDOM(
+        IXMLDOMNode* domNode,
+        xqpStringStore_t docUri,
+        xqpStringStore_t baseUri);
 #endif
 };
 

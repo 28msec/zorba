@@ -37,7 +37,7 @@ PlanIter_t base64_decode::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new Base64DecodeIterator ( sctx, loc, argv);
+  return new Base64DecodeIterator(sctx, loc, argv);
 }
 
 PlanIter_t base64_encode::codegen(
@@ -47,10 +47,11 @@ PlanIter_t base64_encode::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new Base64EncodeIterator ( sctx, loc, argv);
+  return new Base64EncodeIterator(sctx, loc, argv);
 }
 
-void populate_context_base64(static_context* sctx) {
+void populate_context_base64(static_context* sctx)
+{
   DECL(sctx, base64_decode,
       (createQName("http://www.zorba-xquery.com/modules/base64","base64","decode"),
       GENV_TYPESYSTEM.BASE64BINARY_TYPE_ONE,

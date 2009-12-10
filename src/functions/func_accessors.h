@@ -31,7 +31,7 @@
 #include "functions/single_seq_func.h"
 
 
-namespace zorba{
+namespace zorba {
 
 
 void populate_context_accessors(static_context* sctx);
@@ -91,11 +91,11 @@ public:
   {
   }
 
-  CODEGEN_DECL();
-
   xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
 
   bool isMap(ulong input) const { return input == 0; }
+
+  CODEGEN_DECL();
 };
 
 

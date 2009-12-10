@@ -92,7 +92,6 @@ LIST(APPEND RUNTIME_SRCS
     core/gflwor/window_iterator.cpp
     core/gflwor/orderby_iterator.cpp
     core/gflwor/outerfor_iterator.cpp
-    core/tuple_iterators.cpp
     core/internal_operators.cpp
     durations_dates_times/DurationsDatesTimesImpl.cpp
     debug/zorba_debug_iterator.cpp

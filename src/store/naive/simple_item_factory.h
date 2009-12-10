@@ -16,22 +16,19 @@
 #ifndef ZORBA_SIMPLE_STORE_ITEM_FACTORY
 #define ZORBA_SIMPLE_STORE_ITEM_FACTORY
 
-#include "zorbatypes/xqpstring.h"
-#include "zorbatypes/representations.h"
-
-
-#include "common/shared_types.h"
+#include "store/naive/shared_types.h"
 
 #include "store/api/item_factory.h"
-#include "store/api/iterator.h"
-#include "store/api/tuples.h"
+//#include "store/api/tuples.h"
+
+#include "zorbatypes/representations.h"
+
 
 namespace zorba 
 {
 
 namespace store
 {
-  class CopyMode;
   class PUL;
 }
 
@@ -278,6 +275,7 @@ public:
 
   store::PUL* createPendingUpdateList();
 
+#if 0
   virtual bool createTuple(
           store::Item_t& result,
           std::vector<store::TupleField>& fields);
@@ -286,6 +284,7 @@ public:
           store::Item_t& result,
           store::Item *inTuple,
           std::vector<int>& permutation);
+#endif
 
   bool createError(
           store::Item_t& result,

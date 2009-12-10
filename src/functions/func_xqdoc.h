@@ -30,7 +30,7 @@
 #include "functions/function_impl.h"
 
 
-namespace zorba{
+namespace zorba {
 
 
 void populate_context_xqdoc(static_context* sctx);

@@ -14,23 +14,26 @@
  * limitations under the License.
  */
  
-#include "functions/accessors_impl.h"
-
 #include <vector>
 
-#include "system/globalenv.h"
-
-#include "types/typeops.h"
+#include "functions/accessors_impl.h"
 #include "functions/single_seq_func.h"
 #include "functions/function_impl.h"
 #include "runtime/accessors/accessors.h"
 #include "functions/func_accessors.h"
 
+#include "types/typeops.h"
 
-namespace zorba {
+#include "system/globalenv.h"
 
-xqtref_t
-fn_data::return_type(const std::vector<xqtref_t>& arg_types) const
+
+namespace zorba 
+{
+
+/*******************************************************************************
+  
+********************************************************************************/
+xqtref_t fn_data::return_type(const std::vector<xqtref_t>& arg_types) const
 {
   RootTypeManager& RTM = GENV_TYPESYSTEM;
 
@@ -82,8 +85,11 @@ fn_data::return_type(const std::vector<xqtref_t>& arg_types) const
                                         TypeConstants::QUANT_STAR);
 }
 
-PlanIter_t
-fn_name_func::codegen(
+
+/*******************************************************************************
+  
+********************************************************************************/
+PlanIter_t fn_name_func::codegen(
     CompilerCB* /*cb*/,
     static_context* sctx,
     const QueryLoc& loc,
@@ -97,8 +103,10 @@ fn_name_func::codegen(
 }
 
 
-PlanIter_t
-fn_string::codegen(
+/*******************************************************************************
+  
+********************************************************************************/
+PlanIter_t fn_string::codegen(
       CompilerCB* /*cb*/,
       static_context* sctx,
       const QueryLoc& loc,
@@ -107,6 +115,7 @@ fn_string::codegen(
 {
   return new FnStringIterator(sctx, loc, argv, true);
 }
+
 
 /*******************************************************************************
   

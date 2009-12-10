@@ -227,7 +227,7 @@ store::Item_t FastXmlLoader::loadXml(
 {
   xmlParserCtxtPtr ctxt = NULL;
 
-  theTree = new XmlTree(NULL, GET_STORE().getTreeId());
+  theTree = new XmlTree(NULL, GET_STORE().createTreeId());
 
   if (uri == NULL)
   {

@@ -30,7 +30,7 @@
 #include "functions/function_impl.h"
 
 
-namespace zorba{
+namespace zorba {
 
 
 void populate_context_debug(static_context* sctx);
@@ -47,6 +47,18 @@ public:
     function(sig, FunctionConsts::FN_TRACE_2)
   {
   }
+
+  FunctionConsts::AnnotationValue producesSortedNodes() const 
+  {
+    return FunctionConsts::PRESERVE;
+  }
+
+  FunctionConsts::AnnotationValue producesDistinctNodes() const 
+  {
+    return FunctionConsts::PRESERVE;
+  }
+
+  bool isMap(ulong input) const { return input == 0; }
 
   CODEGEN_DECL();
 };

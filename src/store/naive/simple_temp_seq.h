@@ -131,3 +131,9 @@ class SimpleTempSeqIter : public store::TempSeqIterator
 } // namespace zorba
 
 #endif /* ZORBA_STORE_SIIMPLE_TEMP_SEQ_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

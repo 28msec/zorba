@@ -16,21 +16,21 @@
 #ifndef ZORBA_STORE_SIMPLE_COLLECTION
 #define ZORBA_STORE_SIMPLE_COLLECTION
 
-#include <set>
-
-#include "zorbautils/latch.h"
-#include "zorbautils/checked_vector.h"
-
-#include "common/common.h"
+#include "store/naive/shared_types.h"
 
 #include "store/api/iterator.h"
 #include "store/api/collection.h"
+
+#include "zorbautils/latch.h"
+#include "zorbautils/checked_vector.h"
 
 
 namespace zorba { namespace simplestore {
 
 /*******************************************************************************
-
+  theTreeCounter : Incremented every time a new tree is added to the collection.
+                   The current value of the counter is then assigned as the id
+                   the new tree.
 ********************************************************************************/
 class SimpleCollection : public store::Collection
 {
@@ -57,8 +57,12 @@ public:
 
 
 protected:
+  ulong                         theId;
   store::Item_t                 theName;
   checked_vector<store::Item_t> theXmlTrees;
+
+  ulong                         theTreeCounter;
+
   SYNC_CODE(Latch               theLatch;)
 
 public:
@@ -66,11 +70,15 @@ public:
 
   virtual ~SimpleCollection();
 
-  store::Item* getName() const { return theName.getp(); }
+  ulong getId() const { return theId; }
+
+  const store::Item* getName() const { return theName.getp(); }
 
   ulong size() const { return theXmlTrees.size(); }
 
-  store::Iterator_t getIterator(bool idsNeeded);
+  ulong createTreeId() { return theTreeCounter++; }
+
+  store::Iterator_t getIterator();
 
   store::Item_t loadDocument(
         std::istream& stream,
@@ -105,3 +113,9 @@ protected:
 } // namespace zorba
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

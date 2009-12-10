@@ -22,8 +22,9 @@
 #include "system/globalenv.h"
 
 #include "store/api/item.h"
+#include "store/api/iterator.h"
 #include "store/api/item_factory.h"
-#include "store/api/tuples.h"
+//#include "store/api/tuples.h"
 
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/collation_manager.h"
@@ -949,11 +950,13 @@ EndAtomicItem:;
       SERIALIZE_FIELD(error::ZorbaError*, value, getError());
       FINALIZE_SERIALIZE(createError, (result, value));
     }
+#if 0
     else if(is_tuple)
     {
       SERIALIZE_REF_FIELD(std::vector<zorba::store::TupleField>, tuple_fields, getTupleFields());
       FINALIZE_SERIALIZE(createTuple, (result, tuple_fields_in));
     }
+#endif
     else
     {
       ZORBA_SER_ERROR_DESC_OSS(SRL0010_ITEM_TYPE_NOT_SERIALIZABLE, "Not atomic, node, tuple, pul or error");

@@ -13,16 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "system/globalenv.h"
+#include "runtime/core/constructors.h"
 
 #include "functions/function_impl.h"
 
-#include "runtime/core/constructors.h"
+#include "system/globalenv.h"
+
 
 namespace zorba
 {
 
 
+/*******************************************************************************
+   Used to concatenate adjacent atomic values in the input sequence into a 
+   text node. Concatenation inserts a single space between each pair of atomic
+   values.
+********************************************************************************/
 class op_enclosed_expr : public function 
 {
 public:
@@ -33,6 +39,16 @@ public:
   }
 
   xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
+
+  FunctionConsts::AnnotationValue producesDistinctNodes() const
+  {
+    return FunctionConsts::PRESERVE;
+  }
+
+  FunctionConsts::AnnotationValue producesSortedNodes() const
+  {
+    return FunctionConsts::PRESERVE;
+  }
 
   DEFAULT_UNARY_CODEGEN(EnclosedIterator);
 };

@@ -55,6 +55,7 @@
 
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
+#include "store/api/iterator.h"
 
 
 using namespace std;

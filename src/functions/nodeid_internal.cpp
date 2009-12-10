@@ -242,8 +242,6 @@ public:
     return a;
   }
 
-  bool is_doc_order_func() const { return false; }
-
   virtual FunctionConsts::AnnotationValue producesNodeIdSorted() const
   {
     return FunctionConsts::PRESERVE;
@@ -268,10 +266,6 @@ public:
   {
   }
 
-  virtual bool is_node_sort_func() const { return true; }
-
-  virtual bool is_node_distinct_func() const { return true; }
-
   const bool* action() const 
   {
     //                         sort   atomics  distinct  ascendig
@@ -279,12 +273,15 @@ public:
     return a;
   }
 
-  virtual FunctionConsts::AnnotationValue producesNodeIdSorted() const
+  virtual FunctionConsts::AnnotationValue producesSortedNodes() const
   {
     return FunctionConsts::PRESERVE;
   }
 
-  FUNCTION_PRODUCES_DISTINCT_NODES;
+  virtual FunctionConsts::AnnotationValue producesDistinctNodes() const
+  {
+    return FunctionConsts::YES;
+  }
 };
 
 
@@ -309,12 +306,15 @@ public:
     return a;
   }
 
-  virtual FunctionConsts::AnnotationValue producesNodeIdSorted() const
+  virtual FunctionConsts::AnnotationValue producesSortedNodes() const
   {
     return FunctionConsts::PRESERVE;
   }
 
-  FUNCTION_PRODUCES_DISTINCT_NODES;
+  virtual FunctionConsts::AnnotationValue producesDistinctNodes() const
+  {
+    return FunctionConsts::YES;
+  }
 };
   
 
@@ -336,7 +336,15 @@ public:
     return a;
   }
 
-  FUNCTION_PRODUCES_SORTED_NODES;
+  virtual FunctionConsts::AnnotationValue producesSortedNodes() const
+  {
+    return FunctionConsts::YES;
+  }
+
+  virtual FunctionConsts::AnnotationValue producesDistinctNodes() const
+  {
+    return FunctionConsts::PRESERVE;
+  }
 };
   
 
@@ -361,7 +369,15 @@ public:
     return a;
   }
 
-  FUNCTION_PRODUCES_SORTED_NODES;
+  virtual FunctionConsts::AnnotationValue producesSortedNodes() const
+  {
+    return FunctionConsts::YES;
+  }
+
+  virtual FunctionConsts::AnnotationValue producesDistinctNodes() const
+  {
+    return FunctionConsts::PRESERVE;
+  }
 };
   
 
@@ -383,7 +399,15 @@ public:
     return a;
   }
 
-  FUNCTION_PRODUCES_SORTED_NODES;
+  virtual FunctionConsts::AnnotationValue producesSortedNodes() const
+  {
+    return FunctionConsts::YES;
+  }
+
+  virtual FunctionConsts::AnnotationValue producesDistinctNodes() const
+  {
+    return FunctionConsts::PRESERVE;
+  }
 };
 
 
@@ -408,7 +432,15 @@ public:
     return a;
   }
 
-  FUNCTION_PRODUCES_SORTED_NODES;
+  virtual FunctionConsts::AnnotationValue producesSortedNodes() const
+  {
+    return FunctionConsts::YES;
+  }
+
+  virtual FunctionConsts::AnnotationValue producesDistinctNodes() const
+  {
+    return FunctionConsts::PRESERVE;
+  }
 };
   
 
@@ -433,9 +465,15 @@ public:
     return a;
   }
 
-  FUNCTION_PRODUCES_SORTED_NODES;
+  virtual FunctionConsts::AnnotationValue producesSortedNodes() const
+  {
+    return FunctionConsts::YES;
+  }
 
-  FUNCTION_PRODUCES_DISTINCT_NODES;
+  virtual FunctionConsts::AnnotationValue producesDistinctNodes() const
+  {
+    return FunctionConsts::YES;
+  }
 };
 
 
@@ -460,9 +498,15 @@ public:
     return a;
   }
 
-  FUNCTION_PRODUCES_SORTED_NODES;
+  virtual FunctionConsts::AnnotationValue producesSortedNodes() const
+  {
+    return FunctionConsts::YES;
+  }
 
-  FUNCTION_PRODUCES_DISTINCT_NODES;
+  virtual FunctionConsts::AnnotationValue producesDistinctNodes() const
+  {
+    return FunctionConsts::YES;
+  }
 };
   
 
@@ -486,9 +530,15 @@ public:
     return a;
   }
 
-  FUNCTION_PRODUCES_SORTED_NODES;
+  virtual FunctionConsts::AnnotationValue producesSortedNodes() const
+  {
+    return FunctionConsts::YES;
+  }
 
-  FUNCTION_PRODUCES_DISTINCT_NODES;
+  virtual FunctionConsts::AnnotationValue producesDistinctNodes() const
+  {
+    return FunctionConsts::YES;
+  }
 };
 
 
@@ -512,9 +562,15 @@ public:
     return a;
   }
 
-  FUNCTION_PRODUCES_SORTED_NODES;
+  virtual FunctionConsts::AnnotationValue producesSortedNodes() const
+  {
+    return FunctionConsts::YES;
+  }
 
-  FUNCTION_PRODUCES_DISTINCT_NODES;
+  virtual FunctionConsts::AnnotationValue producesDistinctNodes() const
+  {
+    return FunctionConsts::YES;
+  }
 };
 
 
@@ -527,6 +583,18 @@ public:
   fn_unordered(const signature& sig)
     :
     single_seq_function(sig, FunctionConsts::FN_UNORDERED_1) {}
+
+  bool isMap() const { return true; }
+
+  FunctionConsts::AnnotationValue producesSortedNodes() const
+  {
+    return FunctionConsts::PRESERVE;
+  }
+
+  FunctionConsts::AnnotationValue producesDistinctNodes() const
+  {
+    return FunctionConsts::PRESERVE;
+  }
 
   COMPUTE_ANNOTATION_DECL();
 
@@ -621,7 +689,6 @@ void populateContext_DocOrder(static_context* sctx)
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,
         GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
-  // TODO: separate function
   DECL(sctx, op_sort_distinct_nodes_descending_or_atomics,
        (createQName(ZORBA_OP_NS, "op", "sort-distinct-nodes-desc-or-atomics"),
         GENV_TYPESYSTEM.ITEM_TYPE_STAR,

@@ -66,12 +66,12 @@ public:
 
   FUNCTION_PROPAGATES_ONE_I2O(theInput);
 
-  virtual FunctionConsts::AnnotationValue producesNodeIdSorted() const
+  virtual FunctionConsts::AnnotationValue producesSortedNodes() const
   {
     return FunctionConsts::PRESERVE;
   }
 
-  virtual FunctionConsts::AnnotationValue producesDuplicates() const
+  virtual FunctionConsts::AnnotationValue producesDuplicateNodes() const
   {
     return FunctionConsts::PRESERVE;
   }

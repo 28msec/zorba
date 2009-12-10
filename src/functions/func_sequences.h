@@ -31,7 +31,7 @@
 #include "functions/single_seq_func.h"
 
 
-namespace zorba{
+namespace zorba {
 
 
 void populate_context_sequences(static_context* sctx);
@@ -49,13 +49,21 @@ public:
   {
   }
 
-  CODEGEN_DECL();
-
   xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
+  COMPUTE_ANNOTATION_DECL();
 
-  void compute_annotation(AnnotationHolder* parent,
-                          std::vector<AnnotationHolder *>& kids,
-                          Annotations::Key k) const;
+
+  FunctionConsts::AnnotationValue producesSortedNodes() const 
+  {
+    return FunctionConsts::PRESERVE;
+  }
+
+  FunctionConsts::AnnotationValue producesDistinctNodes() const 
+  {
+    return FunctionConsts::PRESERVE;
+  }
+
+  CODEGEN_DECL();
 };
 
 
@@ -113,11 +121,9 @@ public:
                 FunctionConsts::FN_DISTINCT_VALUES_1);
   }
 
+  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
+
   CODEGEN_DECL();
-
-  zorba::FunctionConsts::AnnotationValue producesDuplicates() const;
-
-  zorba::FunctionConsts::AnnotationValue producesNodeIdSorted() const;
 };
 
 
@@ -145,6 +151,16 @@ public:
   {
   }
 
+  FunctionConsts::AnnotationValue producesSortedNodes() const 
+  {
+    return FunctionConsts::PRESERVE;
+  }
+
+  FunctionConsts::AnnotationValue producesDistinctNodes() const 
+  {
+    return FunctionConsts::PRESERVE;
+  }
+
   CODEGEN_DECL();
 };
 
@@ -159,8 +175,9 @@ public:
   {
   }
 
-  FunctionConsts::AnnotationValue producesNodeIdSorted() const {
-    return FunctionConsts::NO;
+  FunctionConsts::AnnotationValue producesDistinctNodes() const 
+  {
+    return FunctionConsts::PRESERVE;
   }
 
   CODEGEN_DECL();
@@ -177,12 +194,20 @@ public:
                 FunctionConsts::FN_SUBSEQUENCE_2 :
                 FunctionConsts::FN_SUBSEQUENCE_3);
   }
+  COMPUTE_ANNOTATION_DECL();
+
+
+  FunctionConsts::AnnotationValue producesSortredNodes() const 
+  {
+    return FunctionConsts::PRESERVE;
+  }
+
+  FunctionConsts::AnnotationValue producesDistinctNodes() const 
+  {
+    return FunctionConsts::PRESERVE;
+  }
 
   CODEGEN_DECL();
-
-  void compute_annotation(AnnotationHolder* parent,
-                          std::vector<AnnotationHolder *>& kids,
-                          Annotations::Key k) const;
 };
 
 
@@ -196,9 +221,9 @@ public:
   {
   }
 
-  CODEGEN_DECL();
-
   xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
+
+  CODEGEN_DECL();
 };
 
 
@@ -211,6 +236,20 @@ public:
     function(sig, FunctionConsts::FN_ONE_OR_MORE_1)
   {
   }
+
+  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
+
+  FunctionConsts::AnnotationValue producesSortredNodes() const 
+  {
+    return FunctionConsts::PRESERVE;
+  }
+
+  FunctionConsts::AnnotationValue producesDistinctNodes() const 
+  {
+    return FunctionConsts::PRESERVE;
+  }
+
+  bool isMap(ulong input) const { return input == 0; }
 
   CODEGEN_DECL();
 };
@@ -363,13 +402,13 @@ public:
   {
   }
 
+  bool propagatesInputToOutput(ulong aProducer) const;
+
   bool requires_dyn_ctx() const { return true; }
 
   virtual bool isSource() const { return true; }
 
   CODEGEN_DECL();
-
-  bool propagatesInputToOutput(ulong aProducer) const;
 };
 
 

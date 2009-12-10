@@ -37,7 +37,7 @@ PlanIter_t fn_resolve_QName::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ResolveQNameIterator ( sctx, loc, argv[0], argv[1]);
+  return new ResolveQNameIterator(sctx, loc, argv[0], argv[1]);
 }
 
 PlanIter_t fn_QName::codegen(
@@ -47,7 +47,7 @@ PlanIter_t fn_QName::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new QNameIterator ( sctx, loc, argv[0], argv[1]);
+  return new QNameIterator(sctx, loc, argv[0], argv[1]);
 }
 
 PlanIter_t op_QName_equal::codegen(
@@ -57,7 +57,7 @@ PlanIter_t op_QName_equal::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new QNameEqualIterator ( sctx, loc, argv[0], argv[1]);
+  return new QNameEqualIterator(sctx, loc, argv[0], argv[1]);
 }
 
 PlanIter_t fn_prefix_from_QName::codegen(
@@ -67,7 +67,7 @@ PlanIter_t fn_prefix_from_QName::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new PrefixFromQNameIterator ( sctx, loc, argv[0]);
+  return new PrefixFromQNameIterator(sctx, loc, argv[0]);
 }
 
 PlanIter_t fn_local_name_from_QName::codegen(
@@ -77,7 +77,7 @@ PlanIter_t fn_local_name_from_QName::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new LocalNameFromQNameIterator ( sctx, loc, argv[0]);
+  return new LocalNameFromQNameIterator(sctx, loc, argv[0]);
 }
 
 PlanIter_t fn_namespace_uri_from_QName::codegen(
@@ -87,7 +87,7 @@ PlanIter_t fn_namespace_uri_from_QName::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new NamespaceUriFromQNameIterator ( sctx, loc, argv[0]);
+  return new NamespaceUriFromQNameIterator(sctx, loc, argv[0]);
 }
 
 PlanIter_t fn_namespace_uri_for_prefix::codegen(
@@ -97,7 +97,7 @@ PlanIter_t fn_namespace_uri_for_prefix::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new NamespaceUriForPrefixIterator ( sctx, loc, argv);
+  return new NamespaceUriForPrefixIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_in_scope_prefixes::codegen(
@@ -107,10 +107,11 @@ PlanIter_t fn_in_scope_prefixes::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new InScopePrefixesIterator ( sctx, loc, argv[0]);
+  return new InScopePrefixesIterator(sctx, loc, argv[0]);
 }
 
-void populate_context_qnames(static_context* sctx) {
+void populate_context_qnames(static_context* sctx)
+{
   DECL(sctx, fn_resolve_QName,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","resolve-QName"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,

@@ -37,7 +37,7 @@ PlanIter_t fn_collection::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new FnCollectionIterator ( sctx, loc, argv);
+  return new FnCollectionIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_zorba_ddl_collection::codegen(
@@ -47,7 +47,7 @@ PlanIter_t fn_zorba_ddl_collection::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ZorbaCollectionIterator ( sctx, loc, argv);
+  return new ZorbaCollectionIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_zorba_ddl_index_of::codegen(
@@ -57,7 +57,7 @@ PlanIter_t fn_zorba_ddl_index_of::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ZorbaIndexOfIterator ( sctx, loc, argv);
+  return new ZorbaIndexOfIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_zorba_ddl_create_collection::codegen(
@@ -67,7 +67,7 @@ PlanIter_t fn_zorba_ddl_create_collection::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ZorbaCreateCollectionIterator ( sctx, loc, argv);
+  return new ZorbaCreateCollectionIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_zorba_ddl_delete_collection::codegen(
@@ -77,7 +77,7 @@ PlanIter_t fn_zorba_ddl_delete_collection::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ZorbaDeleteCollectionIterator ( sctx, loc, argv);
+  return new ZorbaDeleteCollectionIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_zorba_ddl_insert_nodes_first::codegen(
@@ -87,7 +87,7 @@ PlanIter_t fn_zorba_ddl_insert_nodes_first::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ZorbaInsertNodesFirstIterator ( sctx, loc, argv);
+  return new ZorbaInsertNodesFirstIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_zorba_ddl_insert_nodes_last::codegen(
@@ -97,7 +97,7 @@ PlanIter_t fn_zorba_ddl_insert_nodes_last::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ZorbaInsertNodesLastIterator ( sctx, loc, argv);
+  return new ZorbaInsertNodesLastIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_zorba_ddl_insert_nodes_before::codegen(
@@ -107,7 +107,7 @@ PlanIter_t fn_zorba_ddl_insert_nodes_before::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ZorbaInsertNodesBeforeIterator ( sctx, loc, argv);
+  return new ZorbaInsertNodesBeforeIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_zorba_ddl_insert_nodes_after::codegen(
@@ -117,7 +117,7 @@ PlanIter_t fn_zorba_ddl_insert_nodes_after::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ZorbaInsertNodesAfterIterator ( sctx, loc, argv);
+  return new ZorbaInsertNodesAfterIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_zorba_ddl_delete_nodes::codegen(
@@ -127,10 +127,11 @@ PlanIter_t fn_zorba_ddl_delete_nodes::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ZorbaDeleteNodesIterator ( sctx, loc, argv);
+  return new ZorbaDeleteNodesIterator(sctx, loc, argv);
 }
 
-void populate_context_collections(static_context* sctx) {
+void populate_context_collections(static_context* sctx)
+{
   DECL(sctx, fn_collection,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","collection"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));

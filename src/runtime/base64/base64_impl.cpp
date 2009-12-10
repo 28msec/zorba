@@ -20,6 +20,8 @@
 
 #include "runtime/base64/base64.h"
 
+
+#include "store/api/item.h"
 #include "store/api/item_factory.h"
 
 namespace zorba {

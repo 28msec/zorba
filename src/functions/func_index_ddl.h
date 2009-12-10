@@ -30,7 +30,7 @@
 #include "functions/function_impl.h"
 
 
-namespace zorba{
+namespace zorba {
 
 
 void populate_context_index_ddl(static_context* sctx);
@@ -134,6 +134,11 @@ public:
   {
   }
 
+  FunctionConsts::AnnotationValue producesDistinctNodes() const 
+  {
+    return FunctionConsts::YES;
+  }
+
   bool requires_dyn_ctx() const { return true; }
 
   CODEGEN_DECL();
@@ -148,6 +153,11 @@ public:
     :
     function(sig, FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_RANGE_N)
   {
+  }
+
+  FunctionConsts::AnnotationValue producesDistinctNodes() const 
+  {
+    return FunctionConsts::YES;
   }
 
   bool requires_dyn_ctx() const { return true; }

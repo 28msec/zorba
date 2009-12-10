@@ -37,7 +37,7 @@ PlanIter_t fn_zorba_introspect_sctx_is_declared_collection::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new IsDeclaredCollectionIterator ( sctx, loc, argv);
+  return new IsDeclaredCollectionIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_zorba_introspect_sctx_declared_collections::codegen(
@@ -47,7 +47,7 @@ PlanIter_t fn_zorba_introspect_sctx_declared_collections::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new DeclaredCollectionsIterator ( sctx, loc, argv);
+  return new DeclaredCollectionsIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_zorba_introspect_sctx_is_declared_index::codegen(
@@ -57,7 +57,7 @@ PlanIter_t fn_zorba_introspect_sctx_is_declared_index::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new IsDeclaredIndexIterator ( sctx, loc, argv);
+  return new IsDeclaredIndexIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_zorba_introspect_sctx_declared_indexes::codegen(
@@ -67,10 +67,11 @@ PlanIter_t fn_zorba_introspect_sctx_declared_indexes::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new DeclaredIndexesIterator ( sctx, loc, argv);
+  return new DeclaredIndexesIterator(sctx, loc, argv);
 }
 
-void populate_context_sctx(static_context* sctx) {
+void populate_context_sctx(static_context* sctx)
+{
   DECL(sctx, fn_zorba_introspect_sctx_is_declared_collection,
       (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","is-declared-collection"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,

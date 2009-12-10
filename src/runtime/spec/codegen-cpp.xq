@@ -76,14 +76,13 @@ declare function local:process($doc,
       )
     )
   else (: 'context' :)
-    string-join(('void populate_context_',$name,'(static_context* sctx) {',
-    string-join(
-      for $iter in $doc//zorba:iterator
-      return (
-        local:create-context($iter,$mapping)
-      ),
-      ''),
-    '}'),'')
+    string-join(('void populate_context_',$name,'(static_context* sctx)',
+                 $gen:newline, '{',
+                 string-join(for $iter in $doc//zorba:iterator
+                             return (local:create-context($iter,$mapping)),
+                             ''),
+                 '}'),
+                '')
 };
 
 (:
@@ -176,7 +175,7 @@ declare function local:iterator-call($iter) as xs:string
 {
   concat (
     $iter/@name,
-    ' ( sctx, loc',
+    '(sctx, loc',
     let $arity := lower-case($iter/@arity)
     return (
       if ( $arity eq "unary" )

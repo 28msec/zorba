@@ -69,9 +69,15 @@ public:
   {
   }
 
-  FUNCTION_PRODUCES_SORTED_NODES;
+  FunctionConsts::AnnotationValue producesSortedNodes() const
+  {
+    return FunctionConsts::YES;
+  }
 
-  FUNCTION_PRODUCES_DISTINCT_NODES;
+  FunctionConsts::AnnotationValue producesDistinctNodes() const
+  {
+    return FunctionConsts::YES;
+  }
 
   CODEGEN_DECL();
 };
@@ -96,9 +102,15 @@ public:
   {
   }
 
-  FUNCTION_PRODUCES_SORTED_NODES;
+  FunctionConsts::AnnotationValue producesSortedNodes() const
+  {
+    return FunctionConsts::YES;
+  }
 
-  FUNCTION_PRODUCES_DISTINCT_NODES;
+  FunctionConsts::AnnotationValue producesDistinctNodes() const
+  {
+    return FunctionConsts::YES;
+  }
 
   CODEGEN_DECL();
 };
@@ -116,9 +128,15 @@ public:
   {
   }
 
-  FUNCTION_PRODUCES_SORTED_NODES;
+  FunctionConsts::AnnotationValue producesSortedNodes() const
+  {
+    return FunctionConsts::YES;
+  }
 
-  FUNCTION_PRODUCES_DISTINCT_NODES;
+  FunctionConsts::AnnotationValue producesDistinctNodes() const
+  {
+    return FunctionConsts::YES;
+  }
 
   CODEGEN_DECL();
 };

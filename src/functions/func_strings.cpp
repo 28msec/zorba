@@ -37,7 +37,7 @@ PlanIter_t fn_codepoints_to_string::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new CodepointsToStringIterator ( sctx, loc, argv);
+  return new CodepointsToStringIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_string_to_codepoints::codegen(
@@ -47,7 +47,7 @@ PlanIter_t fn_string_to_codepoints::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new StringToCodepointsIterator ( sctx, loc, argv);
+  return new StringToCodepointsIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_compare::codegen(
@@ -57,7 +57,7 @@ PlanIter_t fn_compare::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new CompareStrIterator ( sctx, loc, argv);
+  return new CompareStrIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_codepoint_equal::codegen(
@@ -67,7 +67,7 @@ PlanIter_t fn_codepoint_equal::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new CodepointEqualIterator ( sctx, loc, argv);
+  return new CodepointEqualIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_concat::codegen(
@@ -77,7 +77,7 @@ PlanIter_t fn_concat::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ConcatStrIterator ( sctx, loc, argv);
+  return new ConcatStrIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_string_join::codegen(
@@ -87,7 +87,7 @@ PlanIter_t fn_string_join::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new StringJoinIterator ( sctx, loc, argv);
+  return new StringJoinIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_substring::codegen(
@@ -97,7 +97,7 @@ PlanIter_t fn_substring::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new SubstringIterator ( sctx, loc, argv);
+  return new SubstringIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_string_length::codegen(
@@ -107,7 +107,7 @@ PlanIter_t fn_string_length::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new StringLengthIterator ( sctx, loc, argv);
+  return new StringLengthIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_normalize_space::codegen(
@@ -117,7 +117,7 @@ PlanIter_t fn_normalize_space::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new NormalizeSpaceIterator ( sctx, loc, argv);
+  return new NormalizeSpaceIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_normalize_unicode::codegen(
@@ -127,7 +127,7 @@ PlanIter_t fn_normalize_unicode::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new NormalizeUnicodeIterator ( sctx, loc, argv);
+  return new NormalizeUnicodeIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_upper_case::codegen(
@@ -137,7 +137,7 @@ PlanIter_t fn_upper_case::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new UpperCaseIterator ( sctx, loc, argv);
+  return new UpperCaseIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_lower_case::codegen(
@@ -147,7 +147,7 @@ PlanIter_t fn_lower_case::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new LowerCaseIterator ( sctx, loc, argv);
+  return new LowerCaseIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_translate::codegen(
@@ -157,7 +157,7 @@ PlanIter_t fn_translate::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new TranslateIterator ( sctx, loc, argv);
+  return new TranslateIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_encode_for_uri::codegen(
@@ -167,7 +167,7 @@ PlanIter_t fn_encode_for_uri::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new EncodeForUriIterator ( sctx, loc, argv);
+  return new EncodeForUriIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_iri_to_uri::codegen(
@@ -177,7 +177,7 @@ PlanIter_t fn_iri_to_uri::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new IriToUriIterator ( sctx, loc, argv);
+  return new IriToUriIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_escape_html_uri::codegen(
@@ -187,7 +187,7 @@ PlanIter_t fn_escape_html_uri::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new EscapeHtmlUriIterator ( sctx, loc, argv);
+  return new EscapeHtmlUriIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_contains::codegen(
@@ -197,7 +197,7 @@ PlanIter_t fn_contains::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ContainsIterator ( sctx, loc, argv);
+  return new ContainsIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_starts_with::codegen(
@@ -207,7 +207,7 @@ PlanIter_t fn_starts_with::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new StartsWithIterator ( sctx, loc, argv);
+  return new StartsWithIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_ends_with::codegen(
@@ -217,7 +217,7 @@ PlanIter_t fn_ends_with::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new EndsWithIterator ( sctx, loc, argv);
+  return new EndsWithIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_substring_before::codegen(
@@ -227,7 +227,7 @@ PlanIter_t fn_substring_before::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new SubstringBeforeIterator ( sctx, loc, argv);
+  return new SubstringBeforeIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_substring_after::codegen(
@@ -237,7 +237,7 @@ PlanIter_t fn_substring_after::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new SubstringAfterIterator ( sctx, loc, argv);
+  return new SubstringAfterIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_matches::codegen(
@@ -247,7 +247,7 @@ PlanIter_t fn_matches::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new FnMatchesIterator ( sctx, loc, argv);
+  return new FnMatchesIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_replace::codegen(
@@ -257,7 +257,7 @@ PlanIter_t fn_replace::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new FnReplaceIterator ( sctx, loc, argv);
+  return new FnReplaceIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_tokenize::codegen(
@@ -267,10 +267,11 @@ PlanIter_t fn_tokenize::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new FnTokenizeIterator ( sctx, loc, argv);
+  return new FnTokenizeIterator(sctx, loc, argv);
 }
 
-void populate_context_strings(static_context* sctx) {
+void populate_context_strings(static_context* sctx)
+{
   DECL(sctx, fn_codepoints_to_string,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","codepoints-to-string"),
       GENV_TYPESYSTEM.INTEGER_TYPE_STAR,

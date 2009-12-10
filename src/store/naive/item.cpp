@@ -668,8 +668,10 @@ store::Item* Item::getNodeName() const
   return NULL;
 }
 
-const store::Item* Item::getCollectionName() const
+const store::Collection* Item::getCollection() const
 {
+  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+                        __FUNCTION__, getType()->getStringValue());
   return NULL;
 }
 
@@ -745,11 +747,13 @@ Item* Item::copy(
 }
 
 
+#if 0
 const std::vector<zorba::store::TupleField>& Item::getTupleFields() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
 }
+
 
 int Item::getTupleFieldCount() const
 {
@@ -762,6 +766,7 @@ const TupleField& Item::getTupleField(int index) const
   ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
 }
+#endif
 
 
 error::ZorbaError* Item::getError() const

@@ -16,7 +16,7 @@
 
 #include "zorbaerrors/Assert.h"
 #include "zorbaerrors/error_manager.h"
-#include "system/globalenv.h"
+
 #include "store/naive/simple_collection.h"
 #include "store/naive/loader.h"
 #include "store/naive/simple_store.h"
@@ -29,7 +29,11 @@ namespace zorba { namespace simplestore {
 
 ********************************************************************************/
 SimpleCollection::SimpleCollection(store::Item_t& aName)
+  : 
+  theTreeCounter(1)
 {
+  theId = GET_STORE().createCollectionId();
+
   theName.transfer(aName);
 }
 
@@ -45,15 +49,10 @@ SimpleCollection::~SimpleCollection()
 /*******************************************************************************
   Return an iterator over the nodes of this collection.
 
-  Note: it is allowed to have several concurrent iterators on the same
-        collection.
-
-  The "idsNeeded" param tell whether the returned nodes should contain node
-  ids (e.g. for document-order sorting) or not. idsNeeded == false is likely
-  to be faster. 'idsNeeded' should only be set to true if clients wants to
-  sort or compare the items or sub-items generated from the returned iterator.
+  Note: it is allowed to have several concurrent iterators on the same collection
+  but each iterator should be used by a single thread only.
 ********************************************************************************/
-store::Iterator_t SimpleCollection::getIterator(bool idsNeeded)
+store::Iterator_t SimpleCollection::getIterator()
 {
   return new CollectionIter(this);
 }
@@ -316,17 +315,6 @@ int SimpleCollection::nodePositionInCollection(const store::Item* newNode)
   return -1;
 }
 
-// Has been move to this place to avoid simple_collection.h include in node_items.cpp
-const store::Item* XmlNode::getCollectionName() const
-{
-  SimpleCollection* lCollection = getCollection();
-  if (lCollection != 0) {
-    return lCollection->getName(); 
-  }
-  else {
-    return 0;
-  }
-}
 
 /*******************************************************************************
 

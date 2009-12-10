@@ -57,8 +57,6 @@ public:
   // (sort?, atomics?, distinct?, ascending?)
   virtual const bool* action() const = 0;
 
-  bool isNodeSortFunction() const { return action()[0]; }
-
   bool isNodeDistinctFunction() const { return action()[2]; }
 
   virtual function* min_action(

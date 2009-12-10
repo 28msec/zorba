@@ -37,10 +37,11 @@ PlanIter_t xqdoc_xqdoc::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new XQDocIterator ( sctx, loc, argv);
+  return new XQDocIterator(sctx, loc, argv);
 }
 
-void populate_context_xqdoc(static_context* sctx) {
+void populate_context_xqdoc(static_context* sctx)
+{
   DECL(sctx, xqdoc_xqdoc,
       (createQName("http://www.zorba-xquery.com/modules/xqdoc","xqdoc","xqdoc"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,

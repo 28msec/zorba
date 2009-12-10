@@ -37,7 +37,7 @@ PlanIter_t fn_node_name::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new NodeNameIterator ( sctx, loc, argv);
+  return new NodeNameIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_nilled::codegen(
@@ -47,7 +47,7 @@ PlanIter_t fn_nilled::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new NilledIterator ( sctx, loc, argv);
+  return new NilledIterator(sctx, loc, argv);
 }
 
 
@@ -58,7 +58,7 @@ PlanIter_t fn_data::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new FnDataIterator ( sctx, loc, argv);
+  return new FnDataIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_base_uri::codegen(
@@ -68,7 +68,7 @@ PlanIter_t fn_base_uri::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new BaseUriIterator ( sctx, loc, argv);
+  return new BaseUriIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_document_uri::codegen(
@@ -78,7 +78,7 @@ PlanIter_t fn_document_uri::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new DocumentUriIterator ( sctx, loc, argv);
+  return new DocumentUriIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_root::codegen(
@@ -88,10 +88,11 @@ PlanIter_t fn_root::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new RootIterator ( sctx, loc, argv);
+  return new RootIterator(sctx, loc, argv);
 }
 
-void populate_context_accessors(static_context* sctx) {
+void populate_context_accessors(static_context* sctx)
+{
   DECL(sctx, fn_node_name,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","node-name"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_QUESTION,

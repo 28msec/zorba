@@ -39,6 +39,7 @@
 #include "compiler/parser/query_loc.h"
 
 #include "store/api/item.h"
+#include "store/api/iterator.h"
 #include "store/api/item_factory.h"
 #include "store/api/copymode.h"
 #include "store/api/store.h"

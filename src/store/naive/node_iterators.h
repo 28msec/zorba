@@ -404,14 +404,47 @@ protected:
 
     bool operator()(const XmlNode* n1, const XmlNode* n2) const
     {
-      return (theAscending ?
-              n1->getTreeId() < n2->getTreeId() ||
-              (n1->getTreeId() == n2->getTreeId() &&
-              n1->getOrdPath() < n2->getOrdPath())
-              : 
-              n1->getTreeId() > n2->getTreeId() ||
-              (n1->getTreeId() == n2->getTreeId() &&
-              n1->getOrdPath() > n2->getOrdPath()));
+      ulong col1 = n1->getCollectionId();
+      ulong col2 = n2->getCollectionId();
+
+      if (theAscending)
+      {
+        if (col1 < col2)
+        {
+          return true;
+        }
+        else if (col1 == col2)
+        {
+          ulong tree1 = n1->getTreeId();
+          ulong tree2 = n2->getTreeId();
+
+          return (tree1 < tree2 ||
+                  (tree1 == tree2 && n1->getOrdPath() < n2->getOrdPath()));
+        }
+        else
+        {
+          return false;
+        }
+      }
+      else
+      {
+        if (col1 > col2)
+        {
+          return true;
+        }
+        else if (col1 == col2)
+        {
+          ulong tree1 = n1->getTreeId();
+          ulong tree2 = n2->getTreeId();
+
+          return (tree1 > tree2 ||
+                  (tree1 == tree2 && n1->getOrdPath() > n2->getOrdPath()));
+        }
+        else
+        {
+          return false;
+        }
+      }
     }
   };
 

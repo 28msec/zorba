@@ -33,7 +33,9 @@
 
 #include "store/api/pul.h"
 #include "store/api/copymode.h"
+#include "store/api/item.h"
 #include "store/api/item_factory.h"
+#include "store/api/iterator.h"
 #include "store/api/store.h"
 #include "store/api/collection.h"
 
@@ -143,7 +145,7 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
   }
 
   /** return the nodes of the collection */
-  state->theIterator = coll->getIterator(false);
+  state->theIterator = coll->getIterator();
   ZORBA_ASSERT(state->theIterator!=NULL);
   state->theIterator->open();
   state->theIteratorOpened = true;
@@ -216,7 +218,7 @@ bool ZorbaCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSta
   coll = getCollection(theSctx, lName, loc);
 
   /** return the nodes of the collection */
-  state->theIterator = coll->getIterator(false);
+  state->theIterator = coll->getIterator();
   ZORBA_ASSERT(state->theIterator!=NULL);
   state->theIterator->open();
   state->theIteratorOpened = true;
@@ -312,13 +314,12 @@ bool ZorbaCreateCollectionIterator::nextImpl(
   consumeNext(lName, theChildren[0].getp(), aPlanState);
 
   // check a collection is in the set of statically known collection with this name
-  if ( theSctx->lookup_collection(lName.getp()) == 0 ) {
-    ZORBA_ERROR_LOC_DESC_OSS(
-      XDST0010, loc,
-      "collection "
-      << lName->getStringValue()
-      << " is not declared."
-    );
+  if ( theSctx->lookup_collection(lName.getp()) == 0 ) 
+  {
+    ZORBA_ERROR_LOC_DESC_OSS(XDST0010, loc,
+                             "collection "
+                             << lName->getStringValue()
+                             << " is not declared.");
   }
 
   // check if the collection already exists
@@ -328,7 +329,8 @@ bool ZorbaCreateCollectionIterator::nextImpl(
   }
   catch (error::ZorbaError& e)
   {
-    if (e.theErrorCode != XDDY0009) {
+    if (e.theErrorCode != XDDY0009)
+    {
       throw;
     }
     // we come here if the collection is not available (but is declared)
@@ -370,8 +372,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
     {
       checkNodeType(node, theSctx, lDeclColl, loc);
       copyNode = node->copy(NULL, 0, lCopyMode);
-      pul->addInsertIntoCollection(lName,
-                                   copyNode);
+      pul->addInsertIntoCollection(lName, copyNode);
     }
   }
 

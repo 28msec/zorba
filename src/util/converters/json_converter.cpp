@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
+#include "store/api/iterator.h"
+
 #include "util/converters/json_converter.h"
 
 #include "json/parser.h"
 #include "json/value.h"
 
-#include "system/globalenv.h"
 #include "context/namespace_context.h"
 #include "context/static_context.h"
 
-namespace zorba {
+#include "system/globalenv.h"
+
+
+namespace zorba 
+{
+
   json::value* getValue(const char* aJSON, const unsigned int aLen, xqp_string& error_log);
   std::string  WStringToString(const std::wstring& s);
 

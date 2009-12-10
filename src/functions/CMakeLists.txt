@@ -67,7 +67,6 @@ LIST(APPEND FUNCTIONS_SRCS
     library.cpp
     Numerics.cpp
     signature.cpp
-    tuple_functions.cpp
     InternalOperators.cpp
     nodeid_internal.cpp)
 

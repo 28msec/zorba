@@ -16,7 +16,12 @@
 #ifndef ZORBA_SIMPLE_STORE_PUL_PRIMITIVES
 #define ZORBA_SIMPLE_STORE_PUL_PRIMITIVES
 
+#include <vector>
+
 #include "store/naive/shared_types.h"
+#include "store/naive/text_node_content.h"
+
+#include "store/api/index.h" // for index spec obj
 
 
 namespace zorba { namespace simplestore {
@@ -25,6 +30,7 @@ namespace zorba { namespace simplestore {
 class PULImpl;
 class CollectionPul;
 class XmlNode;
+class InternalNode;
 
 
 /*******************************************************************************
@@ -346,10 +352,10 @@ class UpdReplaceElemContent : public UpdatePrimitive
   friend class ElementNode;
 
 protected:
-  store::Item_t  theNewChild;
+  store::Item_t         theNewChild;
 
-  NodeVector     theOldChildren;
-  bool           theIsTyped;
+  std::vector<XmlNode*> theOldChildren;
+  bool                  theIsTyped;
 
 public:
   UpdReplaceElemContent(
@@ -1079,7 +1085,7 @@ class UpdCreateIndex : public  UpdatePrimitive
 
 protected:
   store::Item_t              theQName;
-  store::IndexSpecification   theSpec;
+  store::IndexSpecification  theSpec;
   store::Iterator_t          theSourceIter;
 
   store::Index_t             theIndex;
@@ -1114,12 +1120,7 @@ protected:
   store::Index_t       theIndex;
 
 public:
-  UpdDeleteIndex(PULImpl* pul, const store::Item_t& qname)
-    :
-    UpdatePrimitive(pul),
-    theQName(qname)
-  {
-  }
+  UpdDeleteIndex(PULImpl* pul, const store::Item_t& qname);
 
   store::UpdateConsts::UpdPrimKind getKind() const
   { 
@@ -1148,13 +1149,7 @@ public:
   UpdRefreshIndex(
         PULImpl* pul,
         const store::Item_t& qname,
-        store::Iterator* sourceIter)
-    :
-    UpdatePrimitive(pul),
-    theQName(qname),
-    theSourceIter(sourceIter)
-  {
-  }
+        store::Iterator* sourceIter);
 
   ~UpdRefreshIndex();
 

@@ -39,7 +39,7 @@ PlanIter_t zorba_json_parse::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ZorbaJsonParseIterator ( sctx, loc, argv);
+  return new ZorbaJsonParseIterator(sctx, loc, argv);
 }
 
 PlanIter_t zorba_json_serialize::codegen(
@@ -49,7 +49,7 @@ PlanIter_t zorba_json_serialize::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ZorbaJsonSerializeIterator ( sctx, loc, argv);
+  return new ZorbaJsonSerializeIterator(sctx, loc, argv);
 }
 
 PlanIter_t zorba_json_ml_parse::codegen(
@@ -59,7 +59,7 @@ PlanIter_t zorba_json_ml_parse::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ZorbaJsonMLParseIterator ( sctx, loc, argv);
+  return new ZorbaJsonMLParseIterator(sctx, loc, argv);
 }
 
 PlanIter_t zorba_json_ml_serialize::codegen(
@@ -69,7 +69,7 @@ PlanIter_t zorba_json_ml_serialize::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ZorbaJsonMLSerializeIterator ( sctx, loc, argv);
+  return new ZorbaJsonMLSerializeIterator(sctx, loc, argv);
 }
 
 PlanIter_t zorba_csv_csv2xml::codegen(
@@ -79,7 +79,7 @@ PlanIter_t zorba_csv_csv2xml::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ZorbaCSV2XMLIterator ( sctx, loc, argv);
+  return new ZorbaCSV2XMLIterator(sctx, loc, argv);
 }
 
 PlanIter_t zorba_csv_txt2xml::codegen(
@@ -89,7 +89,7 @@ PlanIter_t zorba_csv_txt2xml::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ZorbaTXT2XMLIterator ( sctx, loc, argv);
+  return new ZorbaTXT2XMLIterator(sctx, loc, argv);
 }
 
 PlanIter_t zorba_csv_csv2xmlFromFile::codegen(
@@ -99,7 +99,7 @@ PlanIter_t zorba_csv_csv2xmlFromFile::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ZorbaCSV2XMLFromFileIterator ( sctx, loc, argv);
+  return new ZorbaCSV2XMLFromFileIterator(sctx, loc, argv);
 }
 
 PlanIter_t zorba_csv_txt2xmlFromFile::codegen(
@@ -109,7 +109,7 @@ PlanIter_t zorba_csv_txt2xmlFromFile::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ZorbaTXT2XMLFromFileIterator ( sctx, loc, argv);
+  return new ZorbaTXT2XMLFromFileIterator(sctx, loc, argv);
 }
 
 PlanIter_t zorba_csv_xml2csv::codegen(
@@ -119,7 +119,7 @@ PlanIter_t zorba_csv_xml2csv::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ZorbaXML2CSVIterator ( sctx, loc, argv);
+  return new ZorbaXML2CSVIterator(sctx, loc, argv);
 }
 
 PlanIter_t zorba_csv_xml2csvFile::codegen(
@@ -129,7 +129,7 @@ PlanIter_t zorba_csv_xml2csvFile::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ZorbaXML2CSVFILEIterator ( sctx, loc, argv);
+  return new ZorbaXML2CSVFILEIterator(sctx, loc, argv);
 }
 
 PlanIter_t zorba_csv_xml2txt::codegen(
@@ -139,7 +139,7 @@ PlanIter_t zorba_csv_xml2txt::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ZorbaXML2TXTIterator ( sctx, loc, argv);
+  return new ZorbaXML2TXTIterator(sctx, loc, argv);
 }
 
 PlanIter_t zorba_csv_xml2txtFile::codegen(
@@ -149,10 +149,11 @@ PlanIter_t zorba_csv_xml2txtFile::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ZorbaXML2TXTFILEIterator ( sctx, loc, argv);
+  return new ZorbaXML2TXTFILEIterator(sctx, loc, argv);
 }
 
-void populate_context_convertors(static_context* sctx) {
+void populate_context_convertors(static_context* sctx)
+{
   DECL(sctx, zorba_json_parse,
       (createQName("http://www.zorba-xquery.com/zorba/json-functions","zorba-json","parse"),
       GENV_TYPESYSTEM.STRING_TYPE_STAR,

@@ -35,13 +35,9 @@ void populate_context_accessors_impl(static_context* sctx);
 class fn_name_func : public function
 {
 public:
-  fn_name_func(const signature& s) : function (s) {}
+  fn_name_func(const signature& s) : function(s) {}
 
-  PlanIter_t codegen(CompilerCB* cb,
-                     static_context* sctx,
-                     const QueryLoc& loc,
-                     std::vector<PlanIter_t>& argv,
-                     AnnotationHolder& ann) const;
+  CODEGEN_DECL();
 };
 
 } //namespace zorba

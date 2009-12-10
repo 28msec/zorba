@@ -77,6 +77,7 @@ SimpleStore::SimpleStore()
   :
   theIsInitialized(false),
   theUriCounter(0),
+  theCollectionCounter(1),
   theTreeCounter(1),
   theNamespacePool(NULL),
   theQNamePool(NULL),
@@ -107,6 +108,7 @@ void SimpleStore::init()
     store::Properties::load (0, NULL);
 
     theUriCounter = 0;
+    theCollectionCounter = 1;
     theTreeCounter = 1;
 
     theNamespacePool = new StringPool(NAMESPACE_POOL_SIZE);
@@ -267,9 +269,19 @@ void SimpleStore::shutdown()
 
 
 /*******************************************************************************
-
+  Create an id for a new collection
 ********************************************************************************/
-ulong SimpleStore::getTreeId()
+ulong SimpleStore::createCollectionId()
+{
+  SYNC_CODE(AutoMutex lock(&theCollectionCounterMutex);)
+  return theCollectionCounter++;
+}
+
+
+/*******************************************************************************
+  create a tree id for a new tree that does not belong to any collection.
+********************************************************************************/
+ulong SimpleStore::createTreeId()
 {
   SYNC_CODE(AutoMutex lock(&theTreeCounterMutex);)
   return theTreeCounter++;
@@ -291,22 +303,6 @@ XmlLoader* SimpleStore::getXmlLoader(error::ErrorManager* aErrorManager)
                             aErrorManager, 
                             (store::Properties::instance())->buildDataguide());
 #endif
-}
-
-
-/*******************************************************************************
-  Create an internal URI and return an rchandle to it. 
-********************************************************************************/
-store::Item_t SimpleStore::createUri()
-{
-  SYNC_CODE(theUriCounterMutex.lock();)
-  std::ostringstream uristream;
-  uristream << "zorba://internalURI-" << SimpleStore::theUriCounter++;
-  SYNC_CODE(theUriCounterMutex.unlock();)
-
-  store::Item_t val;
-  theItemFactory->createAnyURI(val, uristream.str().c_str());
-  return val;
 }
 
 
@@ -473,7 +469,7 @@ store::Collection_t SimpleStore::createCollection(store::Item_t& aName)
 
   store::Collection_t collection(new SimpleCollection(aName));
 
-  store::Item* lName = collection->getName();
+  const store::Item* lName = collection->getName();
 
   bool inserted = theCollections.insert(lName, collection);
 
@@ -762,9 +758,23 @@ short SimpleStore::compareNodes(store::Item* node1, store::Item* node2) const
   XmlNode* n1 = static_cast<XmlNode*>(node1);
   XmlNode* n2 = static_cast<XmlNode*>(node2);
 
-  if ((n1->getTreeId() < n2->getTreeId()) ||
-      ((n1->getTreeId() == n2->getTreeId()) && (n1->getOrdPath() < n2->getOrdPath())))
+  ulong col1 = n1->getCollectionId();
+  ulong col2 = n2->getCollectionId();
+
+  if (col1 < col2)
     return -1;
+
+  if (col1 == col2)
+  {
+    ulong tree1 = n1->getTreeId();
+    ulong tree2 = n2->getTreeId();
+
+    if (tree1 < tree2)
+      return -1;
+
+    if (tree1 == tree2 && n1->getOrdPath() < n2->getOrdPath())
+      return -1;
+  }
 
   return 1;
 }
@@ -908,7 +918,7 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
     {
       store::Collection_t col = (*it).second.getp();
 
-      store::Iterator_t colIter = col->getIterator(true);
+      store::Iterator_t colIter = col->getIterator();
 
       colIter->open();
 

@@ -20,6 +20,7 @@
 
 #include "zorbatypes/numconversions.h"
 
+#include "store/api/item.h"
 #include "store/api/item_factory.h"
 
 #include "util/uuid/uuid.h"

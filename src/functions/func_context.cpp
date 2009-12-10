@@ -37,7 +37,7 @@ PlanIter_t fn_current_dateTime::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new CurrentDateTimeIterator ( sctx, loc, argv);
+  return new CurrentDateTimeIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_current_date::codegen(
@@ -47,7 +47,7 @@ PlanIter_t fn_current_date::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new CurrentDateIterator ( sctx, loc, argv);
+  return new CurrentDateIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_current_time::codegen(
@@ -57,7 +57,7 @@ PlanIter_t fn_current_time::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new CurrentTimeIterator ( sctx, loc, argv);
+  return new CurrentTimeIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_implicit_timezone::codegen(
@@ -67,7 +67,7 @@ PlanIter_t fn_implicit_timezone::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ImplicitTimezoneIterator ( sctx, loc, argv);
+  return new ImplicitTimezoneIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_default_collation::codegen(
@@ -77,10 +77,11 @@ PlanIter_t fn_default_collation::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new DefaultCollationIterator ( sctx, loc, argv);
+  return new DefaultCollationIterator(sctx, loc, argv);
 }
 
-void populate_context_context(static_context* sctx) {
+void populate_context_context(static_context* sctx)
+{
   DECL(sctx, fn_current_dateTime,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","current-dateTime"),
       GENV_TYPESYSTEM.DATETIME_TYPE_ONE));

@@ -37,7 +37,7 @@ PlanIter_t fn_numgen::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new NumGenIterator ( sctx, loc);
+  return new NumGenIterator(sctx, loc);
 }
 
 PlanIter_t fn_zorba_util_random::codegen(
@@ -47,7 +47,7 @@ PlanIter_t fn_zorba_util_random::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new RandomIterator ( sctx, loc, argv);
+  return new RandomIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_zorba_util_uuid::codegen(
@@ -57,10 +57,11 @@ PlanIter_t fn_zorba_util_uuid::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new UuidIterator ( sctx, loc, argv);
+  return new UuidIterator(sctx, loc, argv);
 }
 
-void populate_context_random(static_context* sctx) {
+void populate_context_random(static_context* sctx)
+{
   DECL(sctx, fn_numgen,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","numgen"),
       GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));

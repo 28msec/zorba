@@ -171,11 +171,11 @@ CollectionPul* PULImpl::getCollectionPul(const store::Item* target)
   {
     const XmlNode* n = static_cast<const XmlNode*>(target);
 
-    store::Collection* collection = n->getCollection();
+    const store::Collection* collection = n->getCollection();
 
     if (collection != NULL)
     {
-      collName = static_cast<QNameItem*>(collection->getName())->getNormalized();
+      collName = static_cast<const QNameItem*>(collection->getName())->getNormalized();
 
       if (collName == theLastCollection)
         return theLastPul;
@@ -1687,7 +1687,7 @@ void CollectionPul::applyUpdates()
       ulong numChildren = upd->theOldChildren.size();
       for (ulong j = 0; j < numChildren; ++j)
       {
-        XmlNode* node = upd->theOldChildren.get(j);
+        XmlNode* node = upd->theOldChildren[j];
         node->theParent = INTERNAL_NODE(upd->theTarget);
         node->detach();
       }

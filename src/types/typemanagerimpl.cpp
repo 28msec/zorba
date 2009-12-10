@@ -28,6 +28,7 @@
 #include "types/root_typemanager.h"
 #include "types/schema/schema.h"
 
+#include "store/api/iterator.h"
 #include "store/api/item_factory.h"
 
 

@@ -30,7 +30,7 @@
 #include "store/naive/simple_pul.h"
 #include "store/naive/qname_pool.h"
 #include "store/naive/string_pool.h"
-#include "store/naive/tupleimpl.h"
+//#include "store/naive/tupleimpl.h"
 
 
 namespace zorba { namespace simplestore {
@@ -854,7 +854,7 @@ bool BasicItemFactory::createDocumentNode(
 
   try
   {
-    xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
+    xmlTree = new XmlTree(NULL, GET_STORE().createTreeId());
 
     n = new DocumentNode(xmlTree, baseUri, docUri);
   }
@@ -929,7 +929,7 @@ bool BasicItemFactory::createElementNode(
   try
   {
     if (parent == NULL)
-      xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
+      xmlTree = new XmlTree(NULL, GET_STORE().createTreeId());
 
     n = new ElementNode(xmlTree,
                         pnode,
@@ -989,7 +989,7 @@ bool BasicItemFactory::createAttributeNode(
   {
     if (parent == NULL)
     {
-      xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
+      xmlTree = new XmlTree(NULL, GET_STORE().createTreeId());
     }
     else
     {
@@ -1049,7 +1049,7 @@ bool BasicItemFactory::createAttributeNode(
   {
     if (parent == NULL)
     {
-      xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
+      xmlTree = new XmlTree(NULL, GET_STORE().createTreeId());
     }
     else
     {
@@ -1106,7 +1106,7 @@ bool BasicItemFactory::createTextNode(
   {
     if (parent == NULL)
     {
-      xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
+      xmlTree = new XmlTree(NULL, GET_STORE().createTreeId());
 
       n = new TextNode(xmlTree, pnode, pos, content);
     }
@@ -1229,7 +1229,7 @@ bool BasicItemFactory::createPiNode(
   try
   {
     if (parent == NULL)
-      xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
+      xmlTree = new XmlTree(NULL, GET_STORE().createTreeId());
 
     n = new PiNode(xmlTree, pnode, pos, target, content);
   }
@@ -1273,7 +1273,7 @@ bool BasicItemFactory::createCommentNode(
   try
   {
     if (parent == NULL)
-      xmlTree = new XmlTree(NULL, GET_STORE().getTreeId());
+      xmlTree = new XmlTree(NULL, GET_STORE().createTreeId());
 
     n = new CommentNode(xmlTree, pnode, pos, content);
   }
@@ -1296,7 +1296,7 @@ store::PUL* BasicItemFactory::createPendingUpdateList()
   return new PULImpl();
 }
 
-
+#if 0
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1326,7 +1326,7 @@ bool BasicItemFactory::createTuple(
   result = new TupleItem(newFields);
   return true;
 }
-
+#endif
 
 /*******************************************************************************
 

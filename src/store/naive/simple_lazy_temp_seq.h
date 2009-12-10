@@ -162,3 +162,9 @@ class SimpleLazyTempSeqIter : public store::Iterator
 } // namespace zorba
 
 #endif /* ZORBA_STORE_SIMPLE_LAZY_TEMP_SEQ_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

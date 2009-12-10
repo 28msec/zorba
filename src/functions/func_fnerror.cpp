@@ -37,10 +37,11 @@ PlanIter_t fn_error::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ErrorIterator ( sctx, loc, argv);
+  return new ErrorIterator(sctx, loc, argv);
 }
 
-void populate_context_fnerror(static_context* sctx) {
+void populate_context_fnerror(static_context* sctx)
+{
   DECL(sctx, fn_error,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","error"),
       GENV_TYPESYSTEM.NONE_TYPE));

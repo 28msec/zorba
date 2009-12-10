@@ -16,7 +16,6 @@
 
 #include "system/globalenv.h"
 
-//#include "compiler/expression/expr.h"
 #include "compiler/semantic_annotations/tsv_annotation.h"
 #include "compiler/semantic_annotations/annotation_keys.h"
 
@@ -147,16 +146,34 @@ void function::compute_annotation(
 
 
 /*******************************************************************************
+  Check whether this function is a map with respect to the given input
+********************************************************************************/
+bool function::isMap(ulong input) const
+{
+  if (!theSignature.is_variadic() &&
+      theSignature.arg_count() > 0 &&
+      (theSignature[input]->get_quantifier() == TypeConstants::QUANT_ONE ||
+       theSignature[input]->get_quantifier() == TypeConstants::QUANT_QUESTION))
+    return true;
+
+  return false;
+}
+
+
+/*******************************************************************************
   Check whether this function produces, preserves, or eliminates duplicate nodes.
 ********************************************************************************/
-FunctionConsts::AnnotationValue function::producesDuplicates() const 
+FunctionConsts::AnnotationValue function::producesDistinctNodes() const 
 {
   xqtref_t rt = theSignature.return_type();
 
-  if (TypeOps::type_max_cnt(*rt) <= 1 || TypeOps::is_builtin_simple(*rt))
-    return FunctionConsts::NO;
+  if (TypeOps::type_max_cnt(*rt) <= 1 ||
+      TypeOps::is_subtype(*rt, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR))
+  {
+    return FunctionConsts::YES;
+  }
 
-  return FunctionConsts::YES;
+  return FunctionConsts::NO;
 }
 
 
@@ -164,12 +181,15 @@ FunctionConsts::AnnotationValue function::producesDuplicates() const
   Check whether this function produces nodes in document order, preserves the
   doc order of its input, or produces nodes out of doc order.
 ********************************************************************************/
-FunctionConsts::AnnotationValue function::producesNodeIdSorted() const 
+FunctionConsts::AnnotationValue function::producesSortedNodes() const 
 {
   xqtref_t rt = theSignature.return_type();
 
-  if (TypeOps::type_max_cnt(*rt) <= 1 || TypeOps::is_builtin_simple(*rt))
+  if (TypeOps::type_max_cnt(*rt) <= 1 || 
+      TypeOps::is_subtype(*rt, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR))
+  {
     return FunctionConsts::YES;
+  }
 
   return FunctionConsts::NO;
 }

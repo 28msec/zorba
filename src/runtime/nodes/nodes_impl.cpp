@@ -16,8 +16,10 @@
 #include "runtime/nodes/nodes.h"
 
 #include "system/globalenv.h"
-#include "store/api/item_factory.h"
 
+#include "store/api/item.h"
+#include "store/api/iterator.h"
+#include "store/api/item_factory.h"
 #include "store/api/store.h"
 
 using namespace std;

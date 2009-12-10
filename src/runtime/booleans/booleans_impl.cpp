@@ -19,6 +19,7 @@
 #include "runtime/booleans/booleans.h"
 #include "runtime/util/iterator_impl.h"
 
+#include "store/api/item.h"
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
 

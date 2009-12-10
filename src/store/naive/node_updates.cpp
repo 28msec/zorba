@@ -306,7 +306,7 @@ void XmlNode::detach() throw()
     ulong refcount = 0;
 
     XmlTree* oldTree = getTree();
-    XmlTree* newTree = new XmlTree(this, GET_STORE().getTreeId());
+    XmlTree* newTree = new XmlTree(this, GET_STORE().createTreeId());
 
     store::StoreConsts::NodeKind nodeKind = getNodeKind();
 
@@ -1146,8 +1146,8 @@ void InternalNode::restoreChild(UpdReplaceChild& upd)
 ********************************************************************************/
 void ElementNode::replaceContent(UpdReplaceElemContent& upd)
 {
-  children().copy(upd.theOldChildren);
-  children().clear();
+  upd.theOldChildren = theChildren.theNodes;
+  theChildren.clear();
 
   if (upd.theNewChild == NULL || upd.theNewChild->getStringValue()->empty())
     return;
@@ -1184,7 +1184,7 @@ void ElementNode::restoreContent(UpdReplaceElemContent& upd)
   }
 
   ElementNode* target1 = reinterpret_cast<ElementNode*>(this);
-  upd.theOldChildren.copy(target1->theChildren); 
+  target1->theChildren.theNodes = upd.theOldChildren; 
 
   restoreType(upd.theTypeUndoList);
 }

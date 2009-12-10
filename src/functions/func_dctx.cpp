@@ -37,7 +37,7 @@ PlanIter_t fn_zorba_introspect_dctx_is_available_collection::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new IsAvailableCollectionIterator ( sctx, loc, argv);
+  return new IsAvailableCollectionIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_zorba_introspect_dctx_available_collections::codegen(
@@ -47,7 +47,7 @@ PlanIter_t fn_zorba_introspect_dctx_available_collections::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new AvailableCollectionsIterator ( sctx, loc, argv);
+  return new AvailableCollectionsIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_zorba_introspect_dctx_is_available_index::codegen(
@@ -57,7 +57,7 @@ PlanIter_t fn_zorba_introspect_dctx_is_available_index::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new IsAvailableIndexIterator ( sctx, loc, argv);
+  return new IsAvailableIndexIterator(sctx, loc, argv);
 }
 
 PlanIter_t fn_zorba_introspect_dctx_available_indexes::codegen(
@@ -67,10 +67,11 @@ PlanIter_t fn_zorba_introspect_dctx_available_indexes::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new AvailableIndexesIterator ( sctx, loc, argv);
+  return new AvailableIndexesIterator(sctx, loc, argv);
 }
 
-void populate_context_dctx(static_context* sctx) {
+void populate_context_dctx(static_context* sctx)
+{
   DECL(sctx, fn_zorba_introspect_dctx_is_available_collection,
       (createQName("http://www.zorba-xquery.com/modules/introspection/dctx","fn-zorba-introspect-dctx","is-available-collection"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,

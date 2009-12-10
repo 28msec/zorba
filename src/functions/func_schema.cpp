@@ -37,10 +37,11 @@ PlanIter_t fn_zorba_util_schema_type::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ZorbaSchemaTypeIterator ( sctx, loc, argv);
+  return new ZorbaSchemaTypeIterator(sctx, loc, argv);
 }
 
-void populate_context_schema(static_context* sctx) {
+void populate_context_schema(static_context* sctx)
+{
   DECL(sctx, fn_zorba_util_schema_type,
       (createQName("http://www.zorba-xquery.com/zorba/util-functions","fn-zorba-util","schema-type"),
       GENV_TYPESYSTEM.ITEM_TYPE_ONE,

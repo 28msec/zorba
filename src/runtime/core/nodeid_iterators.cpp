@@ -35,6 +35,11 @@ END_SERIALIZABLE_CLASS_VERSIONS(NodeSortIterator)
 /*******************************************************************************
 
 ********************************************************************************/
+NodeDistinctState::~NodeDistinctState()
+{
+}
+
+
 void NodeDistinctState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
@@ -78,6 +83,11 @@ UNARY_ACCEPT(NodeDistinctIterator);
 /*******************************************************************************
 
 ********************************************************************************/
+NodeSortState::~NodeSortState()
+{
+}
+
+
 void NodeSortState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
@@ -88,6 +98,15 @@ void NodeSortState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   theStoreIterator->reset();
+}
+
+
+void NodeSortIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (UnaryBaseIterator<NodeSortIterator, NodeSortState>*)this);
+  ar & theAscendant;
+  ar & theDistinct;
+  ar & theAcceptAtomics;
 }
 
 

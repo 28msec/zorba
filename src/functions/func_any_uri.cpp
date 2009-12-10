@@ -37,10 +37,11 @@ PlanIter_t fn_resolve_uri::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new ResolveUriIterator ( sctx, loc, argv);
+  return new ResolveUriIterator(sctx, loc, argv);
 }
 
-void populate_context_any_uri(static_context* sctx) {
+void populate_context_any_uri(static_context* sctx)
+{
   DECL(sctx, fn_resolve_uri,
       (createQName("http://www.w3.org/2005/xpath-functions","fn","resolve-uri"),
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION,

@@ -33,6 +33,10 @@
 namespace zorba 
 {
 
+
+/*******************************************************************************
+
+********************************************************************************/
 xqtref_t op_concatenate::return_type(const std::vector<xqtref_t>& arg_types) const 
 {
   int sz = arg_types.size();
@@ -125,6 +129,17 @@ function* fn_sum::specialize(
   {
     return NULL;
   }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqtref_t fn_one_or_more::return_type(
+    const std::vector<xqtref_t>& arg_types) const
+{
+  return GENV_TYPESYSTEM.create_type(*TypeOps::prime_type(*arg_types[0]),
+                                     TypeConstants::QUANT_PLUS);
 }
 
 
@@ -301,17 +316,11 @@ fn_zero_or_one::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-FunctionConsts::AnnotationValue
-fn_distinct_values::producesDuplicates() const
+xqtref_t fn_distinct_values::return_type(const std::vector<xqtref_t>& arg_types) const
 {
-  return FunctionConsts::NO;
+  return arg_types[0];
 }
 
-FunctionConsts::AnnotationValue
-fn_distinct_values::producesNodeIdSorted() const
-{
-  return FunctionConsts::YES;
-}
 
 /*******************************************************************************
 
@@ -342,12 +351,51 @@ fn_min::codegen(
   return new FnMinMaxIterator(aSctx, aLoc, aArgs, FnMinMaxIterator::MIN);
 }
 
-//15.5.2 fn:id
-typedef function_impl<FnIdIterator> fn_id;
+
+/*******************************************************************************
+  15.5.2 fn:id
+********************************************************************************/
+class fn_id : public function
+{
+public:
+  fn_id(const signature& sig) : function(sig) {}
+
+  FunctionConsts::AnnotationValue producesSortedNodes() const
+  {
+    return FunctionConsts::YES;
+  }
+
+  FunctionConsts::AnnotationValue producesDistinctNodes() const
+  {
+    return FunctionConsts::YES;
+  }
+
+  DEFAULT_NARY_CODEGEN(FnIdIterator);
+};
 
 
-//15.5.3 fn:idref
-typedef function_impl<FnIdRefIterator> fn_id_ref;
+/*******************************************************************************
+  15.5.3 fn:idref
+********************************************************************************/
+class fn_id_ref : public function
+{
+public:
+  fn_id_ref(const signature& sig) : function(sig) {}
+
+  FunctionConsts::AnnotationValue producesSortedNodes() const
+  {
+    return FunctionConsts::YES;
+  }
+
+  FunctionConsts::AnnotationValue producesDistinctNodes() const
+  {
+    return FunctionConsts::YES;
+  }
+
+  DEFAULT_NARY_CODEGEN(FnIdRefIterator);
+};
+
+
 
 void
 populate_context_sequences_impl(static_context* sctx)
@@ -364,17 +412,20 @@ populate_context_sequences_impl(static_context* sctx)
 
   DECL(sctx, fn_union,
        (createQName(XQUERY_OP_NS,"op","union"),
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
   DECL(sctx, fn_intersect,
        (createQName(XQUERY_OP_NS,"op","intersect"),
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
   DECL(sctx, fn_except,
        (createQName(XQUERY_OP_NS,"op","except"),
-        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR, GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
   DECL(sctx, fn_max,

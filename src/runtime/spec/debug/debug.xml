@@ -29,12 +29,15 @@
     <zorba:member type="std::ostream*" name="theOS" defaultValue="0" brief=""/>
   </zorba:state>
   
-  <zorba:function generateCodegen="false">
+  <zorba:function generateCodegen="false"
+                  isMap="0">
     <zorba:signature localname="trace" prefix="fn">
       <zorba:param>item()*</zorba:param>
       <zorba:param>xs:string</zorba:param>
       <zorba:output>item()*</zorba:output>
     </zorba:signature>
+    <zorba:annotation name="producesSortedNodes">PRESERVE</zorba:annotation>
+    <zorba:annotation name="producesDistinctNodes">PRESERVE</zorba:annotation>
   </zorba:function>
   
 </zorba:iterator>

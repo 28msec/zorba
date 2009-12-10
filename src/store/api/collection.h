@@ -37,10 +37,10 @@ public:
 
   /**
    * Returns the Name of the collection.
-   * @return Name
    *
+   * @return Name
    */
-  virtual Item* getName() const = 0;
+  virtual const Item* getName() const = 0;
 
   /**
    * Returns the number of items in the collection.
@@ -52,15 +52,8 @@ public:
    *
    * It is allowed to have several concurrent iterators on the same Collection,
    * but each iterator should be used by a single thread only.
-   * 
-   * @param idsNeeded whether the returned items contain ids, e.g. for sorting
-   * @return Iterator which iterates over the complete Collection
-   * 
-   * Ids == false is likely to be faster. 'idsNeeded' should only be set to
-   * true if clients wants to sort or compare the items or sub-items generated
-   * from the returned iterator.
    */
-  virtual Iterator_t getIterator(bool idsNeeded) = 0;
+  virtual Iterator_t getIterator() = 0;
 
   /**
    * Loads and inserts into the collection an xml document or fragment given
