@@ -2444,10 +2444,15 @@ void* begin_visit(const VFO_DeclList& v)
     }
 
     xqtref_t return_type = GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+
     if (func_decl->get_return_type() != NULL)  
     {
       func_decl->get_return_type()->accept(*this);
       return_type = pop_tstack();
+    }
+    else if (func_decl->get_type() == ParseConstants::fn_extern_update)
+    {
+      return_type = theRTM.EMPTY_TYPE;
     }
 
     // Expand the function qname (error is raised if qname resolution fails).
@@ -2665,7 +2670,7 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
 
     // Make sure that there is no other prolog var with the same name in any of
     // modules transalted so far.
-    bind_var(ve, minfo->globals.get());
+    // bind_var(ve, minfo->globals.get());
 
     // If this is a library module, register the var in the exported sctx as well.
     if (export_sctx != NULL)
