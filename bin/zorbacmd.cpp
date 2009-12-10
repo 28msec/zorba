@@ -703,14 +703,14 @@ int _tmain(int argc, _TCHAR* argv[])
 
   // parse the command line and/or the properties file
   ZorbaCMDProperties lProperties;
-  if (! lProperties.loadProperties(argc, argv)) {
+  if (!lProperties.loadProperties(argc, argv)) {
     return 1;
   }
 
   TimingInfo timing(lProperties.multiple());
 
   bool doTiming = lProperties.timing();
-  bool debug = (lProperties.debugServer() || lProperties.debugClient());
+  bool debug = (lProperties.debugServer() || lProperties.debug());
 
   // libModule assumes compileOnly even if compileOnly is false
   bool compileOnly = (lProperties.compileOnly() || lProperties.libModule() );
@@ -838,122 +838,98 @@ int _tmain(int argc, _TCHAR* argv[])
     //
     // Parse the query
     //
-    if (lProperties.parseOnly()) 
-    {
-      try 
-      {
+    if (lProperties.parseOnly()) {
+      try {
         zorba::XQuery_t lQuery = lZorbaInstance->createQuery();
-        if (asFile)
+        if (asFile) {
           lQuery->setFileName(path.get_path());
+        }
 
         lQuery->parse (*qfile);
       }
-      catch (zorba::ZorbaException& ze) 
-      {
+      catch (zorba::ZorbaException& ze) {
         std::cerr << ze << std::endl;
         return 6;
       }
     }
 
     //
-    // Compile and run the query N times and print timing info
+    // Compile and run it if necessary.
+    // Print timing information if requested.
     //
-    else if (!debug && doTiming) 
-    {
-      if( compileOnly ) 
-      {
-        try 
-        {
+    else if (!debug) {
+
+      if(compileOnly) {
+        try {
           zorba::XQuery_t aQuery = lZorbaInstance->createQuery();
-          if (asFile)
+          if (asFile) {
             aQuery->setFileName(path.get_path());
-          aQuery->parse (*qfile);
+          }
+          aQuery->parse(*qfile);
           qfile->clear();
           qfile->seekg(0); // go back to the beginning
         }
-        catch (zorba::QueryException& qe) 
-        {
+        catch (zorba::QueryException& qe) {
           ErrorPrinter::print(qe, std::cerr, lProperties.printErrorsAsXml(), lProperties.indent());
           return 6;
         }
+      } 
+
+      int status = 0;
+
+      if (doTiming) {
+        status = executeQueryWithTiming(lZorbaInstance,
+                                        lProperties,
+                                        lStaticContext,
+                                        path.get_path(),
+                                        *qfile,
+                                        *lOutputStream,
+                                        timing);
+      } else {
+        zorba::XQuery_t lQuery = lZorbaInstance->createQuery();
+        lQuery->setTimeout(lProperties.timeout());
+
+        if (asFile) {
+          lQuery->setFileName (path.get_path ());
+        }
+
+        status = executeQuery(lProperties,
+                              lQuery,
+                              lStaticContext,
+                              *qfile,
+                              *lOutputStream);
       }
 
-      int status = executeQueryWithTiming(lZorbaInstance,
-                                          lProperties,
-                                          lStaticContext,
-                                          path.get_path(),
-                                          *qfile,
-                                          *lOutputStream,
-                                          timing);
-      if (status != 0)
+      if (status != 0) {
         return status;
+      }
 
-      timing.print(std::cout);
+      if (doTiming) {
+        timing.print(std::cout);
+      }
     }
 
     //
-    // Compile the query once and then run it N times
+    // Debug the query. Do not allow "compileOnly" flags and inline queries
     //
-    else if (!debug) 
-    {
-      if( compileOnly ) 
-      {
-        try 
-        {
-          zorba::XQuery_t aQuery = lZorbaInstance->createQuery();
-          if (asFile)
-            aQuery->setFileName(path.get_path());
-          aQuery->parse (*qfile);
-          qfile->clear();
-          qfile->seekg(0); // go back to the beginning
-        }
-        catch (zorba::QueryException& qe) 
-        {
-          ErrorPrinter::print(qe, std::cerr, lProperties.printErrorsAsXml(), lProperties.indent());
-          return 6;
-        }
-      }
-
-
-      zorba::XQuery_t lQuery = lZorbaInstance->createQuery();
-      lQuery->setTimeout(lProperties.timeout());
-
-      if (asFile)
-        lQuery->setFileName (path.get_path ());
-
-      int status = executeQuery(lProperties,
-                                lQuery,
-                                lStaticContext,
-                                *qfile,
-                                *lOutputStream);
-      if (status != 0)
-        return status;
-    }
-
-    //
-    //
-    //
-    else if (debug) 
-    {
-      if (compileOnly) 
-      {
+    else if (debug) {
+      if (compileOnly) {
         std::cerr << "cannot debug a query if the compileOnly option is specified"
                   << std::endl;
         return 7;
       }
 
-      if (! asFile) {
+      if (!asFile) {
         std::cerr << "Cannot debug inline queries." << std::endl;
-        return 0;
+        return 8;
       }
 
       std::auto_ptr<std::istream> lXQ(new std::ifstream(path.c_str()));
-      std::string lFileName(path.get_path ());
+      std::string lFileName(path.get_path());
       
       zorba::XQuery_t lQuery;
 
-      try 
-      {
+      try {
         lQuery = lZorbaInstance->createQuery();
         lQuery->setFileName(lFileName);
         lQuery->setDebugMode(true);
@@ -964,42 +940,43 @@ int _tmain(int argc, _TCHAR* argv[])
         lQuery->compile(*lXQ.get(), lHints);
         zorba::DynamicContext* lDynamicContext = lQuery->getDynamicContext();
         if (!populateDynamicContext(lDynamicContext, lProperties)) {
-          lProperties.printHelp(std::cout);
-          return 0;
+          return 9;
         }
+
         std::auto_ptr<zorba::DebuggerServerRunnable> lServer;
         std::auto_ptr<ZorbaDebuggerClient>           lClient;
         std::auto_ptr<DebuggerHandler>               lHandler;
 
         if (lProperties.getRequestPort() == lProperties.getEventPort()) {
-          std::cout << "Command and event port have to be different" <<
-            std::endl;
-          return -1;
+          std::cout << "Command and event ports have to be different"
+                    << std::endl;
+          return 10;
         }
 
-        if (lProperties.debugServer()) 
-        {
+        if (lProperties.debugServer() || lProperties.debug()) {
           Zorba_SerializerOptions lSerOptions = 
-            Zorba_SerializerOptions::SerializerOptionsFromStringParams(
-            lProperties.getSerializerParameters());
+              Zorba_SerializerOptions::SerializerOptionsFromStringParams(
+              lProperties.getSerializerParameters());
           createSerializerOptions(lSerOptions, lProperties);
-          lServer.reset(new zorba::DebuggerServerRunnable(lQuery,
-                                                          *lOutputStream,                                                          
-                                                          lProperties.getRequestPort(),
-                                                          lProperties.getEventPort(),
-                                                          lSerOptions));
-          if (!lProperties.hasNoLogo())
-            std::cout << "Zorba XQuery debugger server.\n" << copyright_str << std::endl;
+          lServer.reset(new zorba::DebuggerServerRunnable(
+                            lQuery,
+                            *lOutputStream,                                                          
+                            lProperties.getRequestPort(),
+                            lProperties.getEventPort(),
+                            lSerOptions));
+          if (!lProperties.hasNoLogo() && !lProperties.debug()) {
+            std::cout << "Zorba XQuery Debugger Server\n" << copyright_str << std::endl;
+          }
           lServer->start();
         }
         
-        if (lProperties.debugClient()) 
-        {
-          if (!lProperties.hasNoLogo() )
-            std::cout << "Zorba XQuery debugger client.\n" << copyright_str << std::endl;
+        if (lProperties.debug()) {
+          if (!lProperties.hasNoLogo() ) {
+            std::cout << "Zorba XQuery Debugger\n" << copyright_str << std::endl;
+          }
           
           // Try to connect 3 times on the server thread
-          for ( unsigned int i = 0; i < 3; i++ ) {
+          for (unsigned int i = 0; i < 3; i++) {
             try {
               // wait 1 second before trying to reconnect
               sleep(1);
@@ -1009,18 +986,17 @@ int _tmain(int argc, _TCHAR* argv[])
               break;
             } catch( std::exception &e ) {
               if ( i < 2 ){ continue; }
-              std::cerr << "Could not start the debugger client: {" << e.what() << "}" << std::endl;
+              std::cerr << "Could not start the debugger: {" << e.what() << "}" << std::endl;
             }
             return 1;
           }
         }
 
-        // important to destroy the client first
-        // and before joining the server
+        // important to destroy the client before joining the server
         lClient.reset(0);
         lHandler.reset(0);
 
-        if (lProperties.debugServer()) {
+        if (lProperties.debugServer() || lProperties.debug()) {
           lServer->join();
           lServer.reset(0);
         }

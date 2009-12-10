@@ -81,8 +81,18 @@ class DebuggerHandler: public DefaultDebuggerEventHandler
     //List a query file
     bool list(const zorba::String& aNamespace) const;
 
-    //List a query file and highlight the current location
+    //List the query file arround the current location (+/- 5 lines)
     bool list(const zorba::QueryLocation& aLocation) const;
+
+    //List the query file arround the current location (+/- 5 lines)
+    bool list(const zorba::QueryLocation& aLocation, int aLines) const;
+
+    // Try to parse the string value as an integer
+    bool
+    readInteger(const std::string& stringValue, int& result) const;
+
+    bool
+    canStep() const;
 
     //Clear a breakpoint
     bool clear(const std::vector<std::string>& args);
@@ -108,8 +118,8 @@ class DebuggerHandler: public DefaultDebuggerEventHandler
     //Deals with the input stream
     void handle();
 
-    //Resolve the namespace
-    std::istream* resolve(const String& aNamespace) const;
+    //Get the source code corresponding to the given namespace
+    std::istream* getSource(const String& aNamespace) const;
 
   public:
     DebuggerHandler(Zorba* aZorba, ZorbaDebuggerClient* aClient, std::string aFileName);

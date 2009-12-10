@@ -246,7 +246,7 @@ ReplyMessage *ZorbaDebuggerClientImpl::send( AbstractCommandMessage * aMessage )
 bool ZorbaDebuggerClientImpl::run()
 {
   RunMessage lMessage;
-  std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+  std::auto_ptr<ReplyMessage> lReply(send((&lMessage)));
   //TODO: check reply message
   return true;
 }
@@ -255,7 +255,7 @@ bool ZorbaDebuggerClientImpl::suspend()
 {
   SuspendMessage lMessage;
   //TODO: check reply message
-  std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+  std::auto_ptr<ReplyMessage> lReply(send((&lMessage)));
   return true;
 }
 
@@ -263,7 +263,7 @@ bool ZorbaDebuggerClientImpl::resume()
 {
   ResumeMessage lMessage;
   //TODO: check reply message
-  std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+  std::auto_ptr<ReplyMessage> lReply(send((&lMessage)));
   return true;
 }
 
@@ -271,7 +271,7 @@ bool ZorbaDebuggerClientImpl::terminate()
 {
   TerminateMessage lMessage;
   //TODO: check reply message
-  std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+  std::auto_ptr<ReplyMessage> lReply(send((&lMessage)));
   return true;
 }
 
@@ -279,7 +279,7 @@ bool ZorbaDebuggerClientImpl::stepInto()
 {
   StepMessage lMessage( STEP_INTO );
   //TODO: check reply message
-  std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+  std::auto_ptr<ReplyMessage> lReply(send((&lMessage)));
   return true;
 }
 
@@ -287,7 +287,7 @@ bool ZorbaDebuggerClientImpl::stepOver()
 {
   StepMessage lMessage( STEP_OVER );
   //TODO: check reply message
-  std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+  std::auto_ptr<ReplyMessage> lReply(send((&lMessage)));
   return true;
 }
 
@@ -295,7 +295,7 @@ bool ZorbaDebuggerClientImpl::stepOut()
 {
   StepMessage lMessage( STEP_OUT );
   //TODO: check reply message
-  std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+  std::auto_ptr<ReplyMessage> lReply(send((&lMessage)));
   return true;
 }
 
@@ -306,7 +306,7 @@ bool ZorbaDebuggerClientImpl::addBreakpoint( const String &anExpr )
   theLastId++;
   lMessage.addExpr( theLastId, lExpr );
   theBreakpoints.insert( std::make_pair( theLastId, lExpr ) );
-  std::auto_ptr<ReplyMessage> lReply(send( &lMessage )); 
+  std::auto_ptr<ReplyMessage> lReply(send((&lMessage))); 
   return true;
 }
 
@@ -323,18 +323,23 @@ QueryLocation_t ZorbaDebuggerClientImpl::addBreakpoint( const unsigned int aLine
   return lLocation;
 }
 
-QueryLocation_t ZorbaDebuggerClientImpl::addBreakpoint( const String &aFileName, const unsigned int aLineNo )
+QueryLocation_t
+ZorbaDebuggerClientImpl::addBreakpoint(const String &aFileName, const unsigned int aLineNo)
 {
-  xqpString lFilename = Unmarshaller::getInternalString( aFileName );
+  xqpString lFilename = Unmarshaller::getInternalString(aFileName);
   QueryLoc loc;
   std::string lTmp(lFilename);
-  loc.setFilenameBegin( &lTmp );
-  loc.setLineBegin( aLineNo );
+  loc.setFilenameBegin(&lTmp);
+  loc.setLineBegin(aLineNo);
   theLastId++;
   QueryLocation_t lLocation = addBreakpoint(loc);
+	if(lLocation->getLineBegin() == 0) {
+    theLastId--;
+    return 0;
+  }
   std::stringstream lB;
   lB << lLocation;
-  theBreakpoints.insert( std::make_pair( theLastId, lB.str() ) );
+  theBreakpoints.insert(std::make_pair(theLastId, lB.str()));
   return lLocation;
 }
 
@@ -342,7 +347,7 @@ QueryLocation_t ZorbaDebuggerClientImpl::addBreakpoint(QueryLoc& aLocation)
 {
   SetMessage lMessage;
   lMessage.addLocation( theLastId, aLocation );
-  std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+  std::auto_ptr<ReplyMessage> lReply(send((&lMessage)));
   SetReply* lSetReply = dynamic_cast<SetReply*>(lReply.get());
   if(lSetReply)
   {
@@ -369,7 +374,7 @@ bool ZorbaDebuggerClientImpl::clearBreakpoint( unsigned int anId )
   } else {
     return false;
   }
-  std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+  std::auto_ptr<ReplyMessage> lReply(send((&lMessage)));
   return true;
 }
 
@@ -382,7 +387,7 @@ bool ZorbaDebuggerClientImpl::clearBreakpoints( std::list<unsigned int> &Ids )
     lMessage.addId( *it );
     theBreakpoints.erase( theBreakpoints.find( *it ) );
   }
-  std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+  std::auto_ptr<ReplyMessage> lReply(send((&lMessage)));
   return true;
 }
 
@@ -394,7 +399,7 @@ bool ZorbaDebuggerClientImpl::clearBreakpoints()
   {
     lMessage.addId( it->first );
   }
-  std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+  std::auto_ptr<ReplyMessage> lReply(send((&lMessage)));
   theBreakpoints.clear();
   return true;
 }
@@ -414,7 +419,7 @@ bool ZorbaDebuggerClientImpl::eval( String &anExpr ) const
   xqpString lExpr = Unmarshaller::getInternalString( anExpr );
   xqpString expr = lExpr.replace("\"", "&quot;", "");
   EvalMessage lMessage( expr );
-  std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+  std::auto_ptr<ReplyMessage> lReply(send((&lMessage)));
   return true;
 }
 
@@ -422,7 +427,7 @@ std::list<Variable> ZorbaDebuggerClientImpl::getAllVariables(bool data) const
 {
   std::list<Variable> lVariables;
   VariableMessage lMessage(data);
-  std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+  std::auto_ptr<ReplyMessage> lReply(send((&lMessage)));
   VariableReply *lVariableReply = dynamic_cast<VariableReply *>( lReply.get() );
   if ( lVariableReply )
   {
@@ -449,7 +454,7 @@ std::list<Variable> ZorbaDebuggerClientImpl::getLocalVariables(bool data) const
 {
   std::list<Variable> lVariables;
   VariableMessage lMessage(data);
-  std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+  std::auto_ptr<ReplyMessage> lReply(send((&lMessage)));
   VariableReply *lVariableReply = dynamic_cast<VariableReply *>( lReply.get() );
   if ( lVariableReply )
   {
@@ -479,7 +484,7 @@ std::list<Variable> ZorbaDebuggerClientImpl::getGlobalVariables(bool data) const
     //throw std::exception("Query not suspended");
   }
   VariableMessage lMessage(data);
-  std::auto_ptr<ReplyMessage> lReply(send( &lMessage ));
+  std::auto_ptr<ReplyMessage> lReply(send((&lMessage)));
   VariableReply *lVariableReply = dynamic_cast<VariableReply *>( lReply.get() );
   if ( lVariableReply )
   {

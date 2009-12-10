@@ -57,7 +57,7 @@ public:
   
   bool hasNoSyntaxHighlighting(){ return theNoColors; }
 
-  bool isDebugClient(){ return theDebugClient; }
+  bool isDebug(){ return theDebug; }
 
   bool isDebugServer(){ return theDebugServer; }
 

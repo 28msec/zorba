@@ -33,7 +33,7 @@ namespace zorbacmd {
 class ZorbaCMDPropertiesBase : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--lib-module", "--parse-only", "--compile-only", "--no-serializer", "--debug-ports", "--debug-client", "--debug-server", "--no-colors", "--no-logo", "--timeout", "--module-path", NULL };
+    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--lib-module", "--parse-only", "--compile-only", "--no-serializer", "--debug-ports", "--debug", "--debug-server", "--no-colors", "--no-logo", "--timeout", "--module-path", NULL };
     return result;
   }
   bool theTiming;
@@ -62,7 +62,7 @@ protected:
   bool theCompileOnly;
   bool theNoSerializer;
   std::string theDebugPorts;
-  bool theDebugClient;
+  bool theDebug;
   bool theDebugServer;
   bool theNoColors;
   bool theNoLogo;
@@ -85,8 +85,8 @@ protected:
     theParseOnly = false;
     theCompileOnly = false;
     theNoSerializer = false;
-    theDebugPorts = "8000:9000";
-    theDebugClient = false;
+    theDebugPorts = "28028:28029";
+    theDebug = false;
     theDebugServer = false;
     theNoColors = false;
     theNoLogo = false;
@@ -119,7 +119,7 @@ public:
   const bool &compileOnly () const { return theCompileOnly; }
   const bool &noSerializer () const { return theNoSerializer; }
   const std::string &debugPorts () const { return theDebugPorts; }
-  const bool &debugClient () const { return theDebugClient; }
+  const bool &debug () const { return theDebug; }
   const bool &debugServer () const { return theDebugServer; }
   const bool &noColors () const { return theNoColors; }
   const bool &noLogo () const { return theNoLogo; }
@@ -154,7 +154,7 @@ public:
       else if (strcmp (*argv, "--serialize-text") == 0) {
         theSerializeText = true;
       }
-      else if (strcmp (*argv, "--indent") == 0) {
+      else if (strcmp (*argv, "--indent") == 0 || strncmp (*argv, "-i", 2) == 0) {
         theIndent = true;
       }
       else if (strcmp (*argv, "--print-query") == 0) {
@@ -166,7 +166,7 @@ public:
       else if (strcmp (*argv, "--byte-order-mark") == 0) {
         theByteOrderMark = true;
       }
-      else if (strcmp (*argv, "--omit-xml-declaration") == 0 || strncmp (*argv, "-i", 2) == 0) {
+      else if (strcmp (*argv, "--omit-xml-declaration") == 0) {
         theOmitXmlDeclaration = true;
       }
       else if (strcmp (*argv, "--base-uri") == 0) {
@@ -239,10 +239,10 @@ public:
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL) { result = "No value given for --debug-ports option"; break; }        init_val (*argv, theDebugPorts, d);
       }
-      else if (strcmp (*argv, "--debug-client") == 0 || strncmp (*argv, "-c", 2) == 0) {
-        theDebugClient = true;
+      else if (strcmp (*argv, "--debug") == 0 || strncmp (*argv, "-d", 2) == 0) {
+        theDebug = true;
       }
-      else if (strcmp (*argv, "--debug-server") == 0 || strncmp (*argv, "-s", 2) == 0) {
+      else if (strcmp (*argv, "--debug-server") == 0) {
         theDebugServer = true;
       }
       else if (strcmp (*argv, "--no-colors") == 0) {
@@ -282,11 +282,11 @@ public:
 "--serialization-parameter, -z\nSet serialization parameter in the form of a parameter=value pair (see http://www.w3.org/TR/xslt-xquery-serialization/#serparam, e.g. -z method=xhtml, -z doctype-system='DTD/xhtml1-strict.dtd', -z indent=yes).\n\n"
 "--serialize-html\nSerialize the result as HTML.\n\n"
 "--serialize-text\nSerialize the result as Text.\n\n"
-"--indent\nIndent output.\n\n"
+"--indent, -i\nIndent output.\n\n"
 "--print-query\nPrint the queries.\n\n"
 "--print-errors-as-xml, -x\nPrint the errors as XML.\n\n"
 "--byte-order-mark\nSet the byte-order-mark for the serializer.\n\n"
-"--omit-xml-declaration, -i\nOmit the XML declaration from the result.\n\n"
+"--omit-xml-declaration\nOmit the XML declaration from the result.\n\n"
 "--base-uri\nSet the base URI property of the static context.\n\n"
 "--boundary-space\nSet the boundary-space policy ('strip' or 'preserve') in the static context.\n\n"
 "--default-collation\nAdd the given collation and set the value of the default collation in the static context to the given collation.\n\n"
@@ -303,8 +303,8 @@ public:
 "--compile-only\nOnly compile (don't execute)\n\n"
 "--no-serializer\nDo not serialize (discard) result.\n\n"
 "--debug-ports, -p\nSpecify the ports for zorba debugger. The format is requestPort:eventPort.\n\n"
-"--debug-client, -c\nLaunch the debugger command line client.\n\n"
-"--debug-server, -s\nLaunch queries on the debugger server.\n\n"
+"--debug, -d\nLaunch the Zorba command line debugger.\n\n"
+"--debug-server\nLaunch the Zorba debugger server and wait for incomming client connections.\n\n"
 "--no-colors\nUse no colors in the debugger client.\n\n"
 "--no-logo\nPrint no logo when starting the debugger client or server.\n\n"
 "--timeout\nSpecify a timeout in seconds. After the specified time, the execution of the query will be aborted.\n\n"
