@@ -1095,7 +1095,7 @@ unsigned int SchemaValidatorFilter::resolveQName(
 
   if(prefixColonPos == -1) 
   {
-    unsigned int uriId;
+    unsigned int uriId = 0; // fUnknownNamespaceId
 
 #if _XERCES_VERSION < 30000
     bool unknown = false;
