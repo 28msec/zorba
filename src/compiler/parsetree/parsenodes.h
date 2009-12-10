@@ -1103,58 +1103,88 @@ public:
 };
 
 /*******************************************************************************
-  [*] CollectionDecl ::=   "declare" "collection" QName CollProperties
-  [*] CollProperties ::=   ("node-type" KindTest)? 
-                           ("collection-modifier" CollModifier)? 
-                           ("node-modifier" NodeModifier)?
+  [*] CollProperty   ::=   ("const" | "append-only" | "queue" | "mutable" | "ordered" | "unordered")
 ********************************************************************************/
-class CollectionDecl : public parsenode
+class CollProperty : public parsenode
 {
 protected:
-  rchandle<QName> theName;
-  rchandle<parsenode> theKindTest;
-  rchandle<CollectionModifier> theCollectionModifier;
-  rchandle<NodeModifier> theNodeModifier;
+  union {
+    StaticContextConsts::collection_property_t coll;
+    StaticContextConsts::ordering_mode_t       order;
+  } theProperty;
+  bool theIsOrderProperty;
 
 public:
-  CollectionDecl(
-    const QueryLoc&              aLoc,
-    QName*                       aName,
-    rchandle<parsenode>          aKindTest,
-    rchandle<CollectionModifier> aCollectionModifier,
-    rchandle<NodeModifier>       aNodeModifier)
+  CollProperty (
+    const QueryLoc&                            aLoc,
+    StaticContextConsts::collection_property_t aCollProperty)
   : parsenode(aLoc),
-    theName(aName),
-    theKindTest(aKindTest),
-    theCollectionModifier(aCollectionModifier),
-    theNodeModifier(aNodeModifier)
-  {}
+    theIsOrderProperty(false)
+  { theProperty.coll = aCollProperty; }
 
-  const QName* getName() const { return theName.getp(); }
-  const parsenode* getKindTest() const { return theKindTest.getp(); }
-  const CollectionModifier* getCollectionModifier() const { return theCollectionModifier.getp(); }
-  const NodeModifier* getNodeModifier() const { return theNodeModifier.getp(); }
+  CollProperty (
+    const QueryLoc&                      aLoc,
+    StaticContextConsts::ordering_mode_t aOrderProperty)
+  : parsenode(aLoc),
+    theIsOrderProperty(true)
+  { theProperty.order = aOrderProperty; }
+
+  StaticContextConsts::collection_property_t getCollProperty() const { return theProperty.coll; }
+  StaticContextConsts::ordering_mode_t getOrderProperty() const { return theProperty.order; }
+
+  bool isOrderProperty() const { return theIsOrderProperty; }
 
   void accept(parsenode_visitor&) const;
 };
 
 /*******************************************************************************
-  [*] CollModifier   ::=   ("const" | "append-only" | "queue" | "mutable")
+  [*] CollPropertyList   ::=   CollProperty*
 ********************************************************************************/
-class CollectionModifier : public parsenode
+class CollPropertyList : public parsenode
 {
 protected:
-  StaticContextConsts::collection_modifier_t theModifier;
+  std::vector<rchandle<CollProperty> > theCollProps;
 
 public:
-  CollectionModifier (
-    const QueryLoc&                            aLoc,
-    StaticContextConsts::collection_modifier_t aModifier)
+  CollPropertyList(const QueryLoc& aLoc) : parsenode(aLoc) { }
+
+  void addProperty(CollProperty* aProp) { theCollProps.push_back(aProp); }
+  size_t size() const { return theCollProps.size(); }
+  const CollProperty* getProperty(size_t i) const { return theCollProps[i].getp(); }
+  void accept(parsenode_visitor&) const;
+};
+
+/*******************************************************************************
+  [*] CollectionDecl ::= ’declare’ CollProperties ’collection’ QName (’node’ NodeModifier)? (’as’ KindTest)?
+  [*] CollProperties ::= (’const’ | ’mutable’ | ’append-only’ | ’queue’ |  ’ordered’ | ’unordered’)*
+  [*] NodeModifier   ::= (’read-only’ | ’mutable’)
+********************************************************************************/
+class CollectionDecl : public parsenode
+{
+protected:
+  rchandle<QName> theName;
+  rchandle<CollPropertyList> theCollPropertyList;
+  rchandle<NodeModifier> theNodeModifier;
+  rchandle<parsenode> theKindTest;
+
+public:
+  CollectionDecl(
+    const QueryLoc&              aLoc,
+    QName*                       aName,
+    rchandle<CollPropertyList>   aCollPropertyList,
+    rchandle<NodeModifier>       aNodeModifier,
+    rchandle<parsenode>          aKindTest)
   : parsenode(aLoc),
-    theModifier(aModifier)
+    theName(aName),
+    theCollPropertyList(aCollPropertyList),
+    theNodeModifier(aNodeModifier),
+    theKindTest(aKindTest)
   {}
 
-  StaticContextConsts::collection_modifier_t getModifier() const { return theModifier; }
+  const QName* getName() const { return theName.getp(); }
+  const CollPropertyList* getCollPropertyList() const { return theCollPropertyList.getp(); }
+  const NodeModifier* getNodeModifier() const { return theNodeModifier.getp(); }
+  const parsenode* getKindTest() const { return theKindTest.getp(); }
 
   void accept(parsenode_visitor&) const;
 };

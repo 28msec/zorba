@@ -484,10 +484,10 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token <sval> DATAMODULE "'datamodule'"
 
 %token COLLECTION          "'collection'"
-%token NODE_TYPE           "'node-type'"
-%token COLLECTION_MODIFIER "'collection-modifier'"
-%token NODE_MODIFIER       "'node-modifier'"
-%token CONST_               "'const'"
+// Why is it not possible to delete the following two nodes??
+//%token NODE_TYPE           "'node-type'"
+//%token NODE_MODIFIER       "'node-modifier'"
+%token CONST_              "'const'"
 %token APPEND_ONLY         "'append-only'"
 %token QUEUE               "'queue'"
 %token MUTABLE             "'mutable'"
@@ -746,7 +746,8 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 /* collection-reladed */
 %type <node> CollectionDecl
-%type <node> CollectionModifier
+%type <node> CollProperty
+%type <node> CollPropertyList
 %type <node> NodeModifier
 
 /* index-related     */
@@ -820,7 +821,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 // (not <= 0); but Bison never increments the refcount, so we do it manually...
 
 // parsenodes
-%destructor { if ($$ != NULL) { RCHelper::addReference ($$); RCHelper::removeReference ($$); } } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDecl3 FunctionDecl4 Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl CollectionModifier NodeModifier IndexDecl IndexProperties IndexProperties2 IndexProperties3 IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard DecimalFormatDecl // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
+%destructor { if ($$ != NULL) { RCHelper::addReference ($$); RCHelper::removeReference ($$); } } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDecl3 FunctionDecl4 Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl CollProperty CollPropertyList NodeModifier IndexDecl IndexProperties IndexProperties2 IndexProperties3 IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard DecimalFormatDecl // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
 // exprnodes
 %destructor { if ($$ != NULL) { RCHelper::addReference ($$); RCHelper::removeReference ($$); } } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockExpr EnclosedExpr Expr ConcatExpr ApplyExpr ExprSingle ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignExpr ExitExpr WhileExpr FlowCtlStatement QNAME FTContainsExpr
 // internal non-terminals with values
@@ -1651,92 +1652,115 @@ CollectionDecl :
     {
       $$ = new CollectionDecl( LOC(@$),
                                static_cast<QName*>($3),
-                               0, 0, 0);
-    }
-  |
-    DECLARE COLLECTION QNAME NODE_TYPE KindTest
-    {
-      $$ = new CollectionDecl( LOC(@$),
-                               static_cast<QName*>($3),
-                               $5,
-                               0, 0);
-    }
-  | DECLARE COLLECTION QNAME CollectionModifier
-    {
-      $$ = new CollectionDecl( LOC(@$),
-                               static_cast<QName*>($3),
-                               0,
-                               static_cast<CollectionModifier*>($4),
-                               0);
-    }
-  | DECLARE COLLECTION QNAME NODE_TYPE KindTest CollectionModifier
-    {
-      $$ = new CollectionDecl( LOC(@$),
-                               static_cast<QName*>($3),
-                               $5,
-                               static_cast<CollectionModifier*>($6),
+                               0, 
+                               0, 
                                0);
     }
   | DECLARE COLLECTION QNAME NodeModifier
     {
       $$ = new CollectionDecl( LOC(@$),
                                static_cast<QName*>($3),
-                               0,
-                               0,
-                               static_cast<NodeModifier*>($4));
+                               0, 
+                               static_cast<NodeModifier*>($4), 
+                               0);
     }
-  | DECLARE COLLECTION QNAME NODE_TYPE KindTest NodeModifier
+  | DECLARE COLLECTION QNAME AS KindTest
     {
       $$ = new CollectionDecl( LOC(@$),
                                static_cast<QName*>($3),
-                               $5,
-                               0,
+                               0, 
+                               0, 
+                               static_cast<parsenode*>($5));
+    }
+  | DECLARE COLLECTION QNAME NodeModifier AS KindTest
+    {
+      $$ = new CollectionDecl( LOC(@$),
+                               static_cast<QName*>($3),
+                               0, 
+                               static_cast<NodeModifier*>($4), 
                                static_cast<NodeModifier*>($6));
     }
-  | DECLARE COLLECTION QNAME CollectionModifier NodeModifier
+  | DECLARE CollPropertyList COLLECTION QNAME
     {
       $$ = new CollectionDecl( LOC(@$),
-                               static_cast<QName*>($3),
-                               0,
-                               static_cast<CollectionModifier*>($4),
-                               static_cast<NodeModifier*>($5));
+                               static_cast<QName*>($4),
+                               static_cast<CollPropertyList*>($2), 0, 0);
     }
-  | DECLARE COLLECTION QNAME NODE_TYPE KindTest CollectionModifier NodeModifier
+  | DECLARE CollPropertyList COLLECTION QNAME NodeModifier
     {
       $$ = new CollectionDecl( LOC(@$),
-                               static_cast<QName*>($3),
-                               $5,
-                               static_cast<CollectionModifier*>($6),
+                               static_cast<QName*>($4),
+                               static_cast<CollPropertyList*>($2), 
+                               static_cast<NodeModifier*>($5), 
+                               0);
+    }
+  | DECLARE CollPropertyList COLLECTION QNAME AS KindTest
+    {
+      $$ = new CollectionDecl( LOC(@$),
+                               static_cast<QName*>($4),
+                               static_cast<CollPropertyList*>($2), 
+                               0, 
+                               static_cast<parsenode*>($6));
+    }
+  | DECLARE CollPropertyList COLLECTION QNAME NodeModifier AS KindTest
+    {
+      $$ = new CollectionDecl( LOC(@$),
+                               static_cast<QName*>($4),
+                               static_cast<CollPropertyList*>($2), 
+                               static_cast<NodeModifier*>($5), 
                                static_cast<NodeModifier*>($7));
     }
   ;
 
-CollectionModifier :
-    COLLECTION_MODIFIER CONST_
+CollPropertyList :
+    CollProperty
     {
-      $$ = new CollectionModifier(LOC(@$), StaticContextConsts::const_);
+      CollPropertyList* l = new CollPropertyList(LOC(@$));
+      l->addProperty(dynamic_cast<CollProperty*>($1));
+      $$ = l;
     }
-  | COLLECTION_MODIFIER APPEND_ONLY
+  | CollPropertyList CollProperty
     {
-      $$ = new CollectionModifier(LOC(@$), StaticContextConsts::append_only);
+      dynamic_cast<CollPropertyList*>($1)->addProperty(static_cast<CollProperty*>($2));
+      $$ = $1;
     }
-  | COLLECTION_MODIFIER QUEUE
+  ;
+
+CollProperty :
+    CONST_
     {
-      $$ = new CollectionModifier(LOC(@$), StaticContextConsts::queue);
+      $$ = new CollProperty(LOC(@$), StaticContextConsts::const_);
     }
-  | COLLECTION_MODIFIER MUTABLE
+  | APPEND_ONLY
     {
-      $$ = new CollectionModifier(LOC(@$), StaticContextConsts::mutable_coll);
+      $$ = new CollProperty(LOC(@$), StaticContextConsts::append_only);
+    }
+  | QUEUE
+    {
+      $$ = new CollProperty(LOC(@$), StaticContextConsts::queue);
+    }
+  | MUTABLE
+    {
+      $$ = new CollProperty(LOC(@$), StaticContextConsts::mutable_coll);
+    }
+  | ORDERED
+    {
+      $$ = new CollProperty(LOC(@$), StaticContextConsts::ordered);
+    }
+  | UNORDERED
+    {
+      $$ = new CollProperty(LOC(@$), StaticContextConsts::unordered);
     }
   ;
 
 
+
 NodeModifier :
-    NODE_MODIFIER READ_ONLY
+    NODE READ_ONLY
     {
       $$ = new NodeModifier(LOC(@$), StaticContextConsts::read_only);
     }
-  | NODE_MODIFIER MUTABLE
+  | NODE MUTABLE
     {
       $$ = new NodeModifier(LOC(@$), StaticContextConsts::mutable_node);
     }
@@ -5665,11 +5689,8 @@ KEYWORD :
   | PATTERN_SEPARATOR { $$ = SYMTAB_PUT ("pattern-separator"); }
   | COLLECTION { $$ = SYMTAB_PUT ("collection"); }
   | DATAMODULE { $$ = SYMTAB_PUT ("datamodule"); }
-  | NODE_TYPE { $$ = SYMTAB_PUT ("node-type"); }
-  | COLLECTION_MODIFIER { $$ = SYMTAB_PUT ("collection-modifier"); }
-  | NODE_MODIFIER { $$ = SYMTAB_PUT ("node-modifier"); }
   | CONST_ { $$ = SYMTAB_PUT ("const"); }
-  | APPEND_ONLY { $$ = SYMTAB_PUT ("append-only"); }
+//  | APPEND_ONLY { $$ = SYMTAB_PUT ("append-only"); }
   | QUEUE { $$ = SYMTAB_PUT ("queue"); }
   | MUTABLE { $$ = SYMTAB_PUT ("mutable"); }
   | READ_ONLY { $$ = SYMTAB_PUT ("read-only"); }

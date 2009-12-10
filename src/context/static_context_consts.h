@@ -48,12 +48,12 @@ namespace StaticContextConsts
     xquery_version_1_1 = 110
   };
 
-  enum collection_modifier_t
+  enum collection_property_t
   {
     const_,
     append_only,
     queue,
-    mutable_coll 
+    mutable_coll
   };
   
   enum node_modifier_t

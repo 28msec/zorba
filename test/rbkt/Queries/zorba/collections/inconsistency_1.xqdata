@@ -1,0 +1,3 @@
+module namespace ns = "http://example.org/datamodule/";
+
+declare queue append-only collection ns:collection_1;

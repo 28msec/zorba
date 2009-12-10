@@ -906,6 +906,7 @@ typedef enum
   XDST0007,
   XDST0008,
   XDST0010,
+  XDST0015,
 
   XDDY0003,
   XDDY0004,

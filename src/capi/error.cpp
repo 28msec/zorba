@@ -965,6 +965,7 @@ namespace zorbac {
       case XDST0007:
       case XDST0008:
       case XDST0010:
+      case XDST0015:
 
       case XDDY0003:
       case XDDY0004:

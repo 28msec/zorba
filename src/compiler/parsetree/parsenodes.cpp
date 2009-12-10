@@ -828,17 +828,34 @@ void CollectionDecl::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
   ACCEPT(theKindTest);
-  ACCEPT(theCollectionModifier);
+  ACCEPT(theCollPropertyList);
   ACCEPT(theNodeModifier);
   END_VISITOR();
 }
 
 /*******************************************************************************
-  [*] CollModifier   ::=   ("const" | "append-only" | "queue" | "mutable")
+  [*] CollProperty   ::=   ("const" | "append-only" | "queue" | "mutable" | "ordered" | "unordered")
 ********************************************************************************/
-void CollectionModifier::accept(parsenode_visitor& v) const
+void CollProperty::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
+  END_VISITOR();
+}
+
+/*******************************************************************************
+  [*] CollPropertyList   ::=   CollProperty*
+********************************************************************************/
+void CollPropertyList::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+
+  for (vector<rchandle<CollProperty> >::const_iterator i = theCollProps.begin();
+       i != theCollProps.end();
+       ++i)
+  {
+    ACCEPT(*i);
+  }
+
   END_VISITOR();
 }
 

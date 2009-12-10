@@ -656,7 +656,9 @@ DEF_ERR_CODE(XDDY0012, XDDY0012, "It is a dynamic error if Available collections
 
 DEF_ERR_CODE(XDDY0013, XDDY0013, "It is a dynamic error if multiple calls to create-collection in the same snapshot have the same QName as first parameter.")
 
-DEF_ERR_CODE(XDDY0014, XDDY0013, "It is a dynamic error if the position parameter of remove-node-at is smaller than 1 or bigger than the size of the collection sequence identified by the passed QName.")
+DEF_ERR_CODE(XDDY0014, XDDY0014, "It is a dynamic error if the position parameter of remove-node-at is smaller than 1 or bigger than the size of the collection sequence identified by the passed QName.")
+
+DEF_ERR_CODE(XDST0015, XDST0015, "It is static error if a collection declaration contains one of the following inconsistencies: two or more modifier properties specified, two or more order properties specified, or queue or append-only together with unordered is specified.")
 
 #undef DEF_ERR_CODE
 

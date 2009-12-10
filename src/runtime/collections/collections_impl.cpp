@@ -466,7 +466,7 @@ ZorbaInsertNodesFirstIterator::nextImpl(store::Item_t& result, PlanState& planSt
   coll = getCollection(theSctx, lName, loc);
 
   // checking collection modifiers
-  switch(lDeclColl->getCollectionModifier()) {
+  switch(lDeclColl->getCollProperty()) {
   case StaticContextConsts::const_:
     ZORBA_ERROR_LOC_DESC_OSS(XDDY0003, loc, 
       "insert-nodes-first has a const collection as first argument.");
@@ -556,7 +556,7 @@ ZorbaInsertNodesLastIterator::nextImpl(store::Item_t& result, PlanState& planSta
   coll = getCollection(theSctx, lName, loc);
 
   // checking collection modifiers
-  switch(lDeclColl->getCollectionModifier()) {
+  switch(lDeclColl->getCollProperty()) {
   case StaticContextConsts::const_:
     ZORBA_ERROR_LOC_DESC_OSS(XDDY0003, loc, 
       "insert-nodes-last has a const collection as first argument.");
@@ -650,7 +650,7 @@ ZorbaInsertNodesBeforeIterator::nextImpl(store::Item_t& result, PlanState& planS
   coll = getCollection(theSctx, lName, loc);
 
   // checking collection modifiers
-  switch(lDeclColl->getCollectionModifier()) {
+  switch(lDeclColl->getCollProperty()) {
   case StaticContextConsts::const_:
     ZORBA_ERROR_LOC_DESC_OSS(XDDY0003, loc, 
       "insert-nodes-before has a const collection as first argument.");
@@ -767,7 +767,7 @@ ZorbaInsertNodesAfterIterator::nextImpl(store::Item_t& result, PlanState& planSt
   coll = getCollection(theSctx, lName, loc);
 
   // checking collection modifiers
-  switch(lDeclColl->getCollectionModifier()) {
+  switch(lDeclColl->getCollProperty()) {
   case StaticContextConsts::const_:
     ZORBA_ERROR_LOC_DESC_OSS(XDDY0003, loc, 
       "insert-nodes-after has a const collection as first argument.");
@@ -876,7 +876,7 @@ ZorbaDeleteNodesIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   }
 
   // checking collection modifiers
-  switch(lDeclColl->getCollectionModifier()) {
+  switch(lDeclColl->getCollProperty()) {
   case StaticContextConsts::const_:
     ZORBA_ERROR_LOC_DESC_OSS(XDDY0003, loc, 
       "remove-nodes has a const collection as first argument.");

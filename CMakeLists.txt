@@ -323,8 +323,8 @@ INCLUDE ("CMakeUser.txt" OPTIONAL)
 MESSAGE(STATUS "Build type -- " ${CMAKE_BUILD_TYPE})
 
 # add the include dir (i.e. the library) to the include path
-INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include)
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_BINARY_DIR}/include)
+INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # zorba versioning
 SET(ZORBA_MAJOR_NUMBER "0")

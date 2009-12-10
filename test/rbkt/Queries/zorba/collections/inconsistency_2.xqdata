@@ -1,0 +1,4 @@
+module namespace ns = "http://example.org/datamodule/";
+
+declare ordered unordered collection ns:collection_1;
+

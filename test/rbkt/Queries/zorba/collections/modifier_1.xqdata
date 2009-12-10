@@ -1,8 +1,8 @@
 module namespace ns = "http://example.org/datamodule/";
 
 declare variable $ns:coll_1 as xs:QName := xs:QName("ns:coll_1");
-declare collection ns:coll_1 collection-modifier const;
+declare const collection ns:coll_1;
 declare variable $ns:coll_2 as xs:QName := xs:QName("ns:coll_2");
-declare collection ns:coll_2 collection-modifier append-only;
+declare append-only collection ns:coll_2;
 declare variable $ns:coll_3 as xs:QName := xs:QName("ns:coll_3");
-declare collection ns:coll_3 collection-modifier queue;
+declare queue collection ns:coll_3;

@@ -3010,10 +3010,38 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
   xqtref_t lNodeType = ( v.getKindTest() == 0 ?
                          theRTM.ANY_NODE_TYPE_ONE :
                          pop_tstack());
-  StaticContextConsts::collection_modifier_t lCollectionModifier
-    = ( v.getCollectionModifier() == 0 ?
-        StaticContextConsts::mutable_coll :
-        v.getCollectionModifier()->getModifier());
+  StaticContextConsts::collection_property_t lCollProperty = StaticContextConsts::mutable_coll;
+  StaticContextConsts::ordering_mode_t lOrderProperty = StaticContextConsts::ordered;
+  if (v.getCollPropertyList() != 0) {
+    // helper vars to check for inconsistencies
+    bool lCollPropertyDeclared = false;
+    bool lOrderPropertyDeclared = false;
+    const CollPropertyList* lList = v.getCollPropertyList();
+    for (size_t i=0; i<lList->size(); ++i) {
+      const CollProperty* lProp = lList->getProperty(i);
+      if (!lProp->isOrderProperty()) {
+        if (lCollPropertyDeclared) {
+          ZORBA_ERROR_LOC_DESC_OSS(XDST0015, loc, "More than one collection modifier properties are declared.");
+        }
+        lCollPropertyDeclared = true;
+        lCollProperty = lProp->getCollProperty();
+      }
+      else {
+        if (lOrderPropertyDeclared) {
+          ZORBA_ERROR_LOC_DESC_OSS(XDST0015, loc, "More than one collection order properties are declared.");
+        }
+        lOrderPropertyDeclared = true;
+        lOrderProperty = lProp->getOrderProperty();
+      }
+    }
+    if ( lOrderProperty == StaticContextConsts::unordered 
+      && (lCollProperty == StaticContextConsts::queue || lCollProperty == StaticContextConsts::append_only)
+      ) {
+      ZORBA_ERROR_LOC_DESC_OSS(XDST0015, loc, "queue or append-only collection property together with unordered is specified.");
+    }
+  }
+
+
   StaticContextConsts::node_modifier_t lNodeModifier
     = ( v.getNodeModifier() == 0 ?
         StaticContextConsts::mutable_node :
@@ -3021,9 +3049,10 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
 
   StaticallyKnownCollection_t lColl = new StaticallyKnownCollection(
                                             lExpandedQName,
-                                            lNodeType,
-                                            lCollectionModifier,
-                                            lNodeModifier);
+                                            lCollProperty,
+                                            lOrderProperty,
+                                            lNodeModifier,
+                                            lNodeType);
 
   sctx_p->bind_collection(lColl, v.get_location());
   // a collection declaration must allways be in a data module
@@ -3031,17 +3060,30 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
   export_sctx->bind_collection(lColl, v.get_location());
 }
 
-
-/***************************************************************************//**
-  CollModifier ::=  ("const" | "append-only" | "queue" | "mutable")
+/*******************************************************************************
+  CollPropertyList ::=  CollProperty*
 ********************************************************************************/
-void* begin_visit(const CollectionModifier& v)
+void* begin_visit(const CollPropertyList& v)
 { 
   TRACE_VISIT();
   return no_state; 
 }
 
-void end_visit(const CollectionModifier& v, void* /*visit_state*/) 
+void end_visit(const CollPropertyList& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT ();
+}
+
+/*******************************************************************************
+  CollProperty ::=  ("const" | "append-only" | "queue" | "mutable" | "ordered" | "unordered")
+********************************************************************************/
+void* begin_visit(const CollProperty& v)
+{ 
+  TRACE_VISIT();
+  return no_state; 
+}
+
+void end_visit(const CollProperty& v, void* /*visit_state*/) 
 {
   TRACE_VISIT_OUT ();
 }

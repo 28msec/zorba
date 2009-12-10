@@ -922,7 +922,8 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
     DEFAULT_END_VISIT (CtxItemDecl);
   	
     DEFAULT_VISIT (CollectionDecl)
-    DEFAULT_VISIT (CollectionModifier)
+    DEFAULT_VISIT (CollProperty)
+    DEFAULT_VISIT (CollPropertyList)
     DEFAULT_VISIT (NodeModifier)
     DEFAULT_VISIT (IndexDecl)
   	DEFAULT_VISIT (IndexKeySpec)

@@ -75,10 +75,12 @@ bool xquery_driver::parse_stream(std::istream& in, const xqpString& aFilename)
 
   xquery_scanner scanner(this, &in);
   scanner.set_yy_flex_debug(Properties::instance()->traceScanning());
+//  scanner.set_yy_flex_debug(true);
   this->lexer = &scanner;
 
   zorba::xquery_parser parser(*this);
   parser.set_debug_level(Properties::instance()->traceParsing());
+//  parser.set_debug_level(true);
   return (parser.parse() == 0);
 }
 

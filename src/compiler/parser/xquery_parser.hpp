@@ -40,7 +40,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-#line 30 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 30 "/Users/dagraf/work/28msec/software/zorba/trunk/src/compiler/parser/xquery_parser.y"
 
 #include "compiler/parsetree/parsenodes.h"
 
@@ -64,7 +64,7 @@ class xquery_driver;
 
 
 /* Line 35 of lalr1.cc  */
-#line 68 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
+#line 68 "/Users/dagraf/work/28msec/software/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -78,7 +78,7 @@ class xquery_driver;
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 82 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
+#line 82 "/Users/dagraf/work/28msec/software/zorba/build/src/compiler/parser/xquery_parser.hpp"
   class position;
   class location;
 
@@ -88,7 +88,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 92 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
+#line 92 "/Users/dagraf/work/28msec/software/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -136,7 +136,7 @@ do {							\
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 140 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
+#line 140 "/Users/dagraf/work/28msec/software/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -148,7 +148,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 134 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 134 "/Users/dagraf/work/28msec/software/zorba/trunk/src/compiler/parser/xquery_parser.y"
 
   zorba::parsenode * node;
   zorba::exprnode * expr;
@@ -168,7 +168,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-#line 172 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
+#line 172 "/Users/dagraf/work/28msec/software/zorba/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -452,47 +452,44 @@ namespace zorba {
      WILDCARDS = 529,
      DATAMODULE = 530,
      COLLECTION = 531,
-     NODE_TYPE = 532,
-     COLLECTION_MODIFIER = 533,
-     NODE_MODIFIER = 534,
-     CONST_ = 535,
-     APPEND_ONLY = 536,
-     QUEUE = 537,
-     MUTABLE = 538,
-     READ_ONLY = 539,
-     UNIQUE = 540,
-     NON = 541,
-     INDEX = 542,
-     MANUAL = 543,
-     AUTOMATIC = 544,
-     ON = 545,
-     CHECKED = 546,
-     UNCHECKED = 547,
-     ASYNCHRONOUS = 548,
-     SYNCHRONOUS = 549,
-     INTEGRITY = 550,
-     CONSTRAINT = 551,
-     CHECK = 552,
-     KEY = 553,
-     FOREACH = 554,
-     TYPE = 555,
-     FOREIGN = 556,
-     KEYS = 557,
-     BYTE_ORDER_MARK_UTF8 = 558,
-     FTCONTAINS_REDUCE = 559,
-     RANGE_REDUCE = 560,
-     ADDITIVE_REDUCE = 561,
-     MULTIPLICATIVE_REDUCE = 562,
-     UNION_REDUCE = 563,
-     INTERSECT_EXCEPT_REDUCE = 564,
-     QVARINDECLLIST_REDUCE = 565,
-     COMMA_DOLLAR = 566,
-     UNARY_PREC = 567,
-     SEQUENCE_TYPE_REDUCE = 568,
-     OCCURS_STAR = 569,
-     OCCURS_PLUS = 570,
-     OCCURS_HOOK = 571,
-     STEP_REDUCE = 572
+     CONST_ = 532,
+     APPEND_ONLY = 533,
+     QUEUE = 534,
+     MUTABLE = 535,
+     READ_ONLY = 536,
+     UNIQUE = 537,
+     NON = 538,
+     INDEX = 539,
+     MANUAL = 540,
+     AUTOMATIC = 541,
+     ON = 542,
+     CHECKED = 543,
+     UNCHECKED = 544,
+     ASYNCHRONOUS = 545,
+     SYNCHRONOUS = 546,
+     INTEGRITY = 547,
+     CONSTRAINT = 548,
+     CHECK = 549,
+     KEY = 550,
+     FOREACH = 551,
+     TYPE = 552,
+     FOREIGN = 553,
+     KEYS = 554,
+     BYTE_ORDER_MARK_UTF8 = 555,
+     FTCONTAINS_REDUCE = 556,
+     RANGE_REDUCE = 557,
+     ADDITIVE_REDUCE = 558,
+     MULTIPLICATIVE_REDUCE = 559,
+     UNION_REDUCE = 560,
+     INTERSECT_EXCEPT_REDUCE = 561,
+     QVARINDECLLIST_REDUCE = 562,
+     COMMA_DOLLAR = 563,
+     UNARY_PREC = 564,
+     SEQUENCE_TYPE_REDUCE = 565,
+     OCCURS_STAR = 566,
+     OCCURS_PLUS = 567,
+     OCCURS_HOOK = 568,
+     STEP_REDUCE = 569
    };
 
     };
@@ -669,7 +666,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 673 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
+#line 670 "/Users/dagraf/work/28msec/software/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 
 

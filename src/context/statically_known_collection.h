@@ -28,9 +28,10 @@ class StaticallyKnownCollection : public SimpleRCObject
 {
 private:
   store::Item_t                              theName;
-  xqtref_t                                   theNodeType; 
-  StaticContextConsts::collection_modifier_t theCollectionModifier;
+  StaticContextConsts::collection_property_t theCollProperty;
+  StaticContextConsts::ordering_mode_t       theOrderProperty;
   StaticContextConsts::node_modifier_t       theNodeModifier;
+  xqtref_t                                   theNodeType; 
 
 public:
   SERIALIZABLE_CLASS(StaticallyKnownCollection);
@@ -42,33 +43,31 @@ public:
     serialize_baseclass(ar, (SimpleRCObject*)this);
 
     ar & theName;
-    ar & theNodeType;
-    SERIALIZE_ENUM(StaticContextConsts::collection_modifier_t, theCollectionModifier);
+    SERIALIZE_ENUM(StaticContextConsts::collection_property_t, theCollProperty);
+    SERIALIZE_ENUM(StaticContextConsts::ordering_mode_t, theOrderProperty);
     SERIALIZE_ENUM(StaticContextConsts::node_modifier_t, theNodeModifier);
+    ar & theNodeType;
   }
 
 public:
   StaticallyKnownCollection(
         store::Item_t&                             aName,
-        xqtref_t&                                  aNodeType,
-        StaticContextConsts::collection_modifier_t aCollectionModifier,
-        StaticContextConsts::node_modifier_t       aNodeModifier);
+        StaticContextConsts::collection_property_t aCollProperty,
+        StaticContextConsts::ordering_mode_t       aOrderProperty,
+        StaticContextConsts::node_modifier_t       aNodeModifier,
+        xqtref_t&                                  aNodeType);
 
   ~StaticallyKnownCollection();
 
   const store::Item* getName() const { return theName.getp(); }
 
+  StaticContextConsts::collection_property_t getCollProperty() const { return theCollProperty; }
+
+  StaticContextConsts::ordering_mode_t getOrderProperty() const { return theOrderProperty; }
+
+  StaticContextConsts::node_modifier_t getNodeModifier() const { return theNodeModifier; }
+
   const XQType* getNodeType() const { return theNodeType.getp(); }
-
-  StaticContextConsts::collection_modifier_t getCollectionModifier() const 
-  {
-    return theCollectionModifier;
-  }
-
-  StaticContextConsts::node_modifier_t getNodeModifier() const 
-  {
-    return theNodeModifier;
-  }
 };
 
 

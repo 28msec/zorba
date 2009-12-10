@@ -23,14 +23,16 @@ SERIALIZABLE_CLASS_VERSIONS(StaticallyKnownCollection)
 END_SERIALIZABLE_CLASS_VERSIONS(StaticallyKnownCollection)
 
 StaticallyKnownCollection::StaticallyKnownCollection(
-                             store::Item_t&                             aName,
-                             xqtref_t&                                  aNodeType,
-                             StaticContextConsts::collection_modifier_t aCollectionModifier,
-                             StaticContextConsts::node_modifier_t       aNodeModifier)
-: theName(aName),
-  theNodeType(aNodeType),
-  theCollectionModifier(aCollectionModifier),
-  theNodeModifier(aNodeModifier)
+  store::Item_t&                             aName,
+  StaticContextConsts::collection_property_t aCollProperty,
+  StaticContextConsts::ordering_mode_t       aOrderProperty,
+  StaticContextConsts::node_modifier_t       aNodeModifier,
+  xqtref_t&                                  aNodeType)
+  : theName(aName),
+    theCollProperty(aCollProperty),
+    theOrderProperty(aOrderProperty),
+    theNodeModifier(aNodeModifier),
+    theNodeType(aNodeType)
 {}
 
 StaticallyKnownCollection::~StaticallyKnownCollection() {}

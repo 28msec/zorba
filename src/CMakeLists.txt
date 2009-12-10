@@ -14,8 +14,11 @@
 
 INCLUDE(${CMAKE_MODULE_PATH}/AddSrcSubfolder.cmake)
 
-INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
 INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
+# the current binary dir must be before the current source dir in the list of included directories.
+# Otherwise, the parser doesn't work correclty. Files like xquery_driver.cpp must depend on the 
+# generated files if they exist!
+INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
 INCLUDE_DIRECTORIES(BEFORE ${CMAKE_SOURCE_DIR}/external) 
 
 INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaRuntimeGenerator.cmake)
