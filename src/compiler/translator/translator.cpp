@@ -2496,7 +2496,6 @@ void* begin_visit(const VFO_DeclList& v)
         // in debug mode, we make sure that the types of the functions
         // and the return type are equal to the one that is declared in
         // the module
-#ifndef NDEBUG
         const signature& s = f->get_signature();
         if (!sig.equals(s)) 
         {
@@ -2508,7 +2507,6 @@ void* begin_visit(const VFO_DeclList& v)
               << ") does not match the signature of the function that is "
               << "declared in the module.");
         }
-#endif
         // return because we don't add already built-in functions to the
         // static context
         continue;

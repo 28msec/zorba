@@ -95,13 +95,13 @@ void populate_context_index_ddl(static_context* sctx) {
   DECL(sctx, fn_zorba_ddl_create_index,
       (createQName("http://www.zorba-xquery.com/modules/ddl","fn-zorba-ddl","create-index"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
-      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+      GENV_TYPESYSTEM.EMPTY_TYPE));
 
 
   DECL(sctx, fn_zorba_ddl_delete_index,
       (createQName("http://www.zorba-xquery.com/modules/ddl","fn-zorba-ddl","delete-index"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
-      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+      GENV_TYPESYSTEM.EMPTY_TYPE));
 
 
   DECL(sctx, op_create_internal_index,
@@ -113,7 +113,7 @@ void populate_context_index_ddl(static_context* sctx) {
   DECL(sctx, fn_zorba_ddl_refresh_index,
       (createQName("http://www.zorba-xquery.com/modules/ddl","fn-zorba-ddl","refresh-index"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
-      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+      GENV_TYPESYSTEM.EMPTY_TYPE));
 
 
   DECL(sctx, op_index_entry_builder,

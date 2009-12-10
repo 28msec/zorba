@@ -104,12 +104,12 @@
     <zorba:function isUpdating="true" requiresDynamicContext="true"> 
       <zorba:signature localname="create-collection" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
-        <zorba:output>item()*</zorba:output>
+        <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
       <zorba:signature localname="create-collection" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
-        <zorba:output>item()*</zorba:output>
+        <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
     </zorba:function>
 
@@ -128,7 +128,7 @@
     <zorba:function isUpdating="true" requiresDynamicContext="true"> 
       <zorba:signature localname="delete-collection" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
-        <zorba:output>item()*</zorba:output>
+        <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
     </zorba:function>
 
@@ -148,7 +148,7 @@
       <zorba:signature localname="insert-nodes-first" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
-        <zorba:output>item()*</zorba:output>
+        <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
     </zorba:function>
 
@@ -168,7 +168,7 @@
       <zorba:signature localname="insert-nodes-last" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
-        <zorba:output>item()*</zorba:output>
+        <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
     </zorba:function>
 
@@ -189,7 +189,7 @@
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()</zorba:param>
         <zorba:param>node()*</zorba:param>
-        <zorba:output>item()*</zorba:output>
+        <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
     </zorba:function>
 
@@ -210,7 +210,7 @@
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()</zorba:param>
         <zorba:param>node()*</zorba:param>
-        <zorba:output>item()*</zorba:output>
+        <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
     </zorba:function>
 
@@ -230,7 +230,7 @@
       <zorba:signature localname="delete-nodes" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
-        <zorba:output>item()*</zorba:output>
+        <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
     </zorba:function>
 

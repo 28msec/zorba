@@ -81,7 +81,7 @@ declare function zorba-csv:xml2csvFile($xml as node()*,
 																	 $first_row_is_header as xs:boolean,
 																	 $separator as xs:string,
 																	 $quote_char as xs:string,
-																	 $quote_escape as xs:string) as xs:boolean external;
+																	 $quote_escape as xs:string) as xs:string external;
 
 declare function zorba-csv:xml2txt($xml as node()*, 
 																	 $xpaths as xs:string*,
@@ -92,5 +92,5 @@ declare function zorba-csv:xml2txtFile($xml as node()*,
 																	 $output_file as xs:string,
 																	 $xpaths as xs:string*,
 																	 $first_row_is_header as xs:boolean,
-																	 $field_lengths as xs:integer+) as xs:boolean external;
+																	 $field_lengths as xs:integer+) as xs:string external;
 																	 																	 

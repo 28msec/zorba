@@ -54,7 +54,7 @@
     <zorba:function isUpdating="true" requiresDynamicContext="true"> 
       <zorba:signature localname="create-index" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
-        <zorba:output>item()*</zorba:output>
+        <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
     </zorba:function>
 
@@ -78,7 +78,7 @@
     <zorba:function isUpdating="true" requiresDynamicContext="true"> 
       <zorba:signature localname="delete-index" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
-        <zorba:output>item()*</zorba:output>
+        <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
     </zorba:function>
 
@@ -142,7 +142,7 @@
     <zorba:function isUpdating="true" requiresDynamicContext="true">
       <zorba:signature localname="refresh-index" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
-        <zorba:output>item()*</zorba:output>
+        <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
     </zorba:function>
 
