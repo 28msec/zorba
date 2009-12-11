@@ -584,7 +584,7 @@ public:
     :
     single_seq_function(sig, FunctionConsts::FN_UNORDERED_1) {}
 
-  bool isMap() const { return true; }
+  bool isMap(ulong) const { return true; }
 
   FunctionConsts::AnnotationValue producesSortedNodes() const
   {
