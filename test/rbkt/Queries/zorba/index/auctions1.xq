@@ -1,5 +1,5 @@
 
-import datamodule namespace auctions = "http://www.w3.org/TestModules/auctions" at
+import module namespace auctions = "http://www.w3.org/TestModules/auctions" at
                                        "auctions_module1.xqlib";
 
 auctions:create-db();

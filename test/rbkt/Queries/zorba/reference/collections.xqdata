@@ -1,3 +1,3 @@
-datamodule namespace ns = "http://example.org/datamodule/";
+module namespace ns = "http://example.org/datamodule/";
 
 declare collection ns:test;

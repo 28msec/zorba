@@ -1,6 +1,6 @@
 import module namespace ddl = "http://www.zorba-xquery.com/modules/ddl";
 
-import datamodule namespace auctions = "http://www.w3.org/TestModules/auctions" at
+import module namespace auctions = "http://www.w3.org/TestModules/auctions" at
                                        "auctions_module1.xqlib";
 
 declare variable $emp-id := $auctions:PersonId;

@@ -1,4 +1,4 @@
-datamodule namespace ns = "http://example.org/datamodule/";
+module namespace ns = "http://example.org/datamodule/";
 
 import schema namespace s = "http://www.zorba-xquery.org/schema" at "node_type.xsd";
 

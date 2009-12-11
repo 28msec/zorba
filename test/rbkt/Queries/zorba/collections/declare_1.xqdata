@@ -1,4 +1,4 @@
-datamodule namespace ns = "http://example.org/error/";
+module namespace ns = "http://example.org/error/";
 
 declare collection ns:collection;
 declare collection ns:collection;

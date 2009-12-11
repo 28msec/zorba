@@ -1,4 +1,4 @@
-datamodule namespace ns = "http://example.org/datamodule/";
+module namespace ns = "http://example.org/datamodule/";
 
 declare variable $ns:coll_1 as xs:QName := xs:QName("ns:coll_1");
 

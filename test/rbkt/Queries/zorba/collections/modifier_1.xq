@@ -1,5 +1,5 @@
 import module namespace ddl = "http://www.zorba-xquery.com/modules/ddl";
-import datamodule namespace ns = "http://example.org/datamodule/" at "modifier_1.xqdata";
+import module namespace ns = "http://example.org/datamodule/" at "modifier_1.xqdata";
 
 declare sequential function local:init() {
   (

@@ -1,4 +1,4 @@
-datamodule namespace decl = "http://www.test.com/";
+module namespace decl = "http://www.test.com/";
 
 import module namespace ddl = "http://www.zorba-xquery.com/modules/ddl";
 

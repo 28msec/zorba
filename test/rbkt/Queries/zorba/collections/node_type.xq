@@ -1,7 +1,7 @@
 import module namespace ddl = "http://www.zorba-xquery.com/modules/ddl";
 import module namespace dc = "http://www.zorba-xquery.com/modules/introspection/dctx";
 import schema namespace s = "http://www.zorba-xquery.org/schema" at "node_type.xsd";
-import datamodule namespace ns = "http://example.org/datamodule/" at "node_type.xqdata";
+import module namespace ns = "http://example.org/datamodule/" at "node_type.xqdata";
 
 declare function local:create-person($name as xs:string) as schema-element(s:person) {
   validate { <s:person><s:name>{$name}</s:name></s:person> }

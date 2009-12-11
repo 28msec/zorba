@@ -1,5 +1,5 @@
 import module namespace ddl = "http://www.zorba-xquery.com/modules/ddl";
-import datamodule namespace ns = "http://example.org/datamodule/" at "collections.xqdata";
+import module namespace ns = "http://example.org/datamodule/" at "collections.xqdata";
 
 import module namespace zorba = "http://www.zorba-xquery.com/zorba/node-ref-functions";
 

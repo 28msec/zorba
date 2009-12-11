@@ -481,8 +481,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 /* Data Definition Facility */
 
-%token <sval> DATAMODULE "'datamodule'"
-
 %token COLLECTION          "'collection'"
 // Why is it not possible to delete the following two nodes??
 //%token NODE_TYPE           "'node-type'"
@@ -739,11 +737,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 /* ----------------- */
 %type <expr> EvalExpr
 
-/* datamodules-related */
-/* ------------------- */
-%type <node> DataModule
-%type <node> DataModuleDecl
-
 /* collection-reladed */
 %type <node> CollectionDecl
 %type <node> CollProperty
@@ -978,17 +971,6 @@ ModuleWithoutBOM :
        $$ = $2;
        driver.set_expr ($$);
 		}
-  | DataModule
-    {
-       $$ = $1;
-       driver.set_expr ($$);
-    }
-  | VersionDecl DataModule
-    {
-       dynamic_cast<LibraryModule *> ($2)->set_version_decl (static_cast<VersionDecl *> ($1));
-       $$ = $2;
-       driver.set_expr ($$);
-    }
   ;
 
 
@@ -1031,13 +1013,13 @@ MainModule :
 LibraryModule :
     ModuleDecl
     {
-      $$ = new LibraryModule(LOC (@$), false,
+      $$ = new LibraryModule(LOC (@$),
                              static_cast<ModuleDecl*>($1),
                              NULL);
     }
 	|	ModuleDecl  Prolog
 		{
-			$$ = new LibraryModule(LOC (@$), false,
+			$$ = new LibraryModule(LOC (@$),
 								static_cast<ModuleDecl*>($1),
 								static_cast<Prolog*>($2));
 		}
@@ -1055,35 +1037,6 @@ ModuleDecl :
       dynamic_cast<ModuleDecl *>($$)->setComment(SYMTAB($1));
 		}
 ;
-
-
-// [*] DataModule
-// -----------------
-DataModule :
-    DataModuleDecl
-    {
-      $$ = new LibraryModule(LOC (@$), true,
-                             static_cast<ModuleDecl*>($1),
-                             NULL);
-    }
-	|	DataModuleDecl  Prolog
-		{
-			$$ = new LibraryModule(LOC (@$), true,
-								static_cast<ModuleDecl*>($1),
-								static_cast<Prolog*>($2));
-		}
-	;
-
-
-// [*] DataModuleDecl
-// ------------------
-DataModuleDecl :
-		DATAMODULE NAMESPACE  NCNAME  EQUALS  URI_LITERAL  SEMI
-		{
-			$$ = new ModuleDecl(LOC(@$), SYMTAB($3), SYMTAB($5));
-      // dynamic_cast<ModuleDecl *>($$)->setComment(SYMTAB($1));
-		}
-	;
 
 
 // [6] Prolog
@@ -1520,36 +1473,6 @@ ModuleImport :
 	|	IMPORT MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL  AT  URILiteralList
 		{
 			$$ = new ModuleImport(LOC (@$), false,
-								SYMTAB ($4),
-								SYMTAB ($6),
-								dynamic_cast<URILiteralList*>($8));
-      dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
-		}
-  | IMPORT DATAMODULE  URI_LITERAL
-		{
-			$$ = new ModuleImport(LOC (@$), true,
-								SYMTAB ($3),
-								NULL);
-      dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
-		}
-	|	IMPORT DATAMODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL
-		{
-			$$ = new ModuleImport(LOC (@$), true,
-								SYMTAB ($4),
-								SYMTAB ($6),
-								NULL);
-      dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
-		}
-	|	IMPORT DATAMODULE  URI_LITERAL  AT  URILiteralList
-		{
-			$$ = new ModuleImport(LOC (@$), true,
-								SYMTAB ($3),
-								dynamic_cast<URILiteralList*>($5));
-      dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
-		}
-	|	IMPORT DATAMODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL  AT  URILiteralList
-		{
-			$$ = new ModuleImport(LOC (@$), true,
 								SYMTAB ($4),
 								SYMTAB ($6),
 								dynamic_cast<URILiteralList*>($8));
@@ -5688,9 +5611,8 @@ KEYWORD :
   | DIGIT { $$ = SYMTAB_PUT ("digit"); }
   | PATTERN_SEPARATOR { $$ = SYMTAB_PUT ("pattern-separator"); }
   | COLLECTION { $$ = SYMTAB_PUT ("collection"); }
-  | DATAMODULE { $$ = SYMTAB_PUT ("datamodule"); }
   | CONST_ { $$ = SYMTAB_PUT ("const"); }
-//  | APPEND_ONLY { $$ = SYMTAB_PUT ("append-only"); }
+  | APPEND_ONLY { $$ = SYMTAB_PUT ("append-only"); }
   | QUEUE { $$ = SYMTAB_PUT ("queue"); }
   | MUTABLE { $$ = SYMTAB_PUT ("mutable"); }
   | READ_ONLY { $$ = SYMTAB_PUT ("read-only"); }

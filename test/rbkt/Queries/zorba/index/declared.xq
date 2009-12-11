@@ -1,4 +1,4 @@
-import datamodule namespace decl = "http://www.test.com/" at "declared.xqlib";
+import module namespace decl = "http://www.test.com/" at "declared.xqlib";
 
 import module namespace sc = "http://www.zorba-xquery.com/modules/introspection/sctx";
 
