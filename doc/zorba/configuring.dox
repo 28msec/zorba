@@ -14,12 +14,6 @@ External dependency: none
 By default Zorba is built as a dynamic library.
 You can use this option to compile Zorba as static library.
 
-\subsection ZORBA_DEBUGGER ZORBA_DEBUGGER
-Default ON
-External dependency: none
-
-This options enables Zorba to be used in XQDT Eclipse plugin for xquery development and debugging.
-
 \subsection ZORBA_FOR_ONE_THREAD_ONLY ZORBA_FOR_ONE_THREAD_ONLY
 Default OFF
 External dependency: none

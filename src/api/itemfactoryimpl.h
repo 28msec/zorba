@@ -29,7 +29,7 @@ namespace zorba {
   class ItemFactoryImpl : public ItemFactory
   {
     private:
-      friend class Loki::CreateUsingNew<ItemFactoryImpl>;
+      friend struct Loki::CreateUsingNew<ItemFactoryImpl>;
       ItemFactoryImpl();
 
       virtual ~ItemFactoryImpl();

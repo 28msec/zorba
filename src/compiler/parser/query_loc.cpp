@@ -52,9 +52,6 @@ void QueryLoc::serialize(::zorba::serialization::Archiver &ar)
   ar & theFilenameEnd;
   ar & theLineEnd;
   ar & theColumnEnd;
-//#ifdef ZORBA_DEBUGGER
-//    SERIALIZE_OPTIONAL_FIELD(theFunctionName)
-//#endif
 }
 
 std::ostream& operator<< (std::ostream& aOstr, const QueryLoc& aQueryLoc) {

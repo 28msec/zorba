@@ -38,7 +38,7 @@ namespace store {
 class XmlDataManagerImpl : public XmlDataManager
 {
 private:
-  friend class Loki::CreateUsingNew<XmlDataManagerImpl>;
+  friend struct Loki::CreateUsingNew<XmlDataManagerImpl>;
   XmlDataManagerImpl();
 
   virtual ~XmlDataManagerImpl();

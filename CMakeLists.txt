@@ -245,8 +245,6 @@ LIST(APPEND requiredlibs ${requiredlibs-store})
 # Setup Compiler Options
 # Note that this needs to be done after all packages are found because
 # it sets variables based on whether packages have been found or not.
-# Also, it needs to be done before the first variable (e.g. ZORBA_DEBUGGER) 
-# is used.
 INCLUDE(CMakeConfiguration.txt)
 INCLUDE(CMakeCompiler.txt)
 
