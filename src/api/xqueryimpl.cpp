@@ -653,6 +653,33 @@ XQueryImpl::execute(std::ostream& os, const Zorba_SerializerOptions_t* opt)
   theDocLoadingTime = lPlan->getRuntimeCB()->docLoadingTime;
 }
 
+void XQueryImpl::execute(std::ostream& aOutStream,
+                         itemHandler aCallbackFunction,
+                         void* aCallbackData,
+                         const Zorba_SerializerOptions_t* aSerOptions /*= NULL*/)
+{
+  ZORBA_TRY
+    checkNotClosed();
+    checkCompiled();
+  ZORBA_CATCH
+
+  PlanWrapper_t lPlan = generateWrapper();
+
+  SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+  try {
+    lPlan->open();
+    serialize(aOutStream, lPlan, aCallbackFunction, aCallbackData, aSerOptions);
+  } catch (...) {
+    lPlan->close();
+    throw;
+  }
+
+  lPlan->close();
+  theDocLoadingUserTime = lPlan->getRuntimeCB()->docLoadingUserTime;
+  theDocLoadingTime = lPlan->getRuntimeCB()->docLoadingTime;
+}
+
 void
 XQueryImpl::execute()
 {
@@ -698,6 +725,22 @@ XQueryImpl::serialize(
   ZORBA_CATCH
 }
 
+void XQueryImpl::serialize(std::ostream& os,
+                           PlanWrapper_t& aWrapper,
+                           itemHandler aHandler,
+                           void* aHandlerData,
+                           const Zorba_SerializerOptions_t* opt /*= NULL*/)
+{
+  ZORBA_TRY
+    serializer lSerializer(theErrorManager);
+    if (opt != NULL) {
+      const Zorba_SerializerOptions_t lOptions = *opt;
+      SerializerImpl::setSerializationParameters(lSerializer, lOptions);
+    }
+    lSerializer.serialize((intern::Serializable*)aWrapper,
+      os, aHandler, aHandlerData);
+  ZORBA_CATCH
+}
 
 ResultIterator_t
 XQueryImpl::iterator()

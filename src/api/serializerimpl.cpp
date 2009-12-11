@@ -65,6 +65,8 @@ SerializerImpl::setSerializationParameters(
     aInternalSerializer.setParameter("method", "json"); break;
   case ZORBA_SERIALIZATION_METHOD_JSONML:
     aInternalSerializer.setParameter("method", "jsonml"); break;
+  case ZORBA_SERIALIZATION_METHOD_BINARY:
+    aInternalSerializer.setParameter("method", "binary"); break;
   }
 
   switch (aSerializerOptions.byte_order_mark) 
@@ -128,6 +130,9 @@ SerializerImpl::setSerializationParameters(
   
   if (aSerializerOptions.cdata_section_elements != "")
     aInternalSerializer.setParameter("cdata-section-elements", aSerializerOptions.cdata_section_elements.c_str());
+
+  if (aSerializerOptions.version != "")
+    aInternalSerializer.setParameter("version", aSerializerOptions.version.c_str());
 }
 
 

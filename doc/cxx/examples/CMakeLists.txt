@@ -26,6 +26,7 @@ SET (API_EXAMPLES
   datamanager.cpp
   uri_resolvers.cpp
   execution_plans.cpp
+  item_handler.cpp
   )
 
 SET(API_EXAMPLES ${API_EXAMPLES} debugger.cpp)

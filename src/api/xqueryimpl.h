@@ -244,6 +244,12 @@ public:
   void
   execute(std::ostream&, const Zorba_SerializerOptions_t* = NULL);
 
+  virtual void
+  execute(std::ostream& aOutStream,
+    itemHandler aCallbackFunction,
+    void* aCallbackData,
+    const Zorba_SerializerOptions_t* aSerOptions = NULL);
+
   void
   execute();
 
@@ -363,6 +369,13 @@ protected:
   // closed by the caller
   void
   serialize(std::ostream&, PlanWrapper_t& aWrapper, const Zorba_SerializerOptions_t* = NULL);
+
+  void
+  serialize(std::ostream&,
+    PlanWrapper_t& aWrapper,
+    itemHandler aHandler,
+    void* aHandlerData,
+    const Zorba_SerializerOptions_t* = NULL);
 
   void
   removeResultIterator(const ResultIterator* iter);

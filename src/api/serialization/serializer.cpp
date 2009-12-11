@@ -1714,6 +1714,8 @@ void serializer::setParameter(const char* aName, const char* aValue)
       method = PARAMETER_VALUE_JSON;
     else if (!strcmp(aValue, "jsonml"))
       method = PARAMETER_VALUE_JSONML;
+    else if (!strcmp(aValue, "binary"))
+      method = PARAMETER_VALUE_BINARY;
     else
     {
       ZORBA_ERROR( SEPM0016);
@@ -1819,6 +1821,8 @@ bool serializer::setup(ostream& os)
     e = new json_emitter(this, *tr);
   else if (method == PARAMETER_VALUE_JSONML)
     e = new jsonml_emitter(this, *tr);
+  else if (method == PARAMETER_VALUE_BINARY)
+    e = new binary_emitter(this, *tr);
   else
   {
     ZORBA_ASSERT(0);
@@ -1895,5 +1899,78 @@ serializer::serialize(
   e->emit_declaration_end();
 }
 
+void serializer::serialize(intern::Serializable* object,
+                           std::ostream& stream,
+                           itemHandler aHandler,
+                           void* aHandlerData)
+{
+  // used for JSON serialization only
+  bool firstItem = true;
+
+  validate_parameters();
+  if (!setup(stream)) {
+    return;
+  }
+
+  e->emit_declaration();
+
+  store::Item_t lItem;
+  while (object->nextSerializableItem(lItem)) {
+    // JSON serialization only alows one single item to be serialized
+    // so throw an error if we get to a second item
+    if (!firstItem && (
+      method == PARAMETER_VALUE_JSON ||
+      method == PARAMETER_VALUE_JSONML)) {
+        ZORBA_ERROR(API0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED);
+    }
+
+    // PUL's cannot be serialized
+    if (lItem->isPul()) {
+      ZORBA_ERROR(API0023_CANNOT_SERIALIZE_UPDATE_QUERY);
+    }
+
+    Zorba_SerializerOptions_t* lOptions = aHandler(aHandlerData);
+    if (lOptions != NULL) {
+      SerializerImpl::setSerializationParameters(*this, *lOptions);
+      if (!setup(stream)) {
+        return;
+      }
+    }
+    e->emit_item(&*lItem);
+
+    // used for JSON serialization only
+    firstItem = false;
+  }
+
+  e->emit_declaration_end();
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  binary emitter                                                             //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+serializer::binary_emitter::binary_emitter(
+  serializer* the_serializer,
+  transcoder& the_transcoder)
+  :
+emitter(the_serializer, the_transcoder)
+{}
+
+void serializer::binary_emitter::emit_item(const store::Item* item)
+{
+  xqp_base64Binary lValue = item->getBase64BinaryValue(); 
+  std::vector<char> lDecodedData;
+  lValue.decode(lDecodedData);
+
+  for (std::vector<char>::const_iterator lIter = lDecodedData.begin();
+    lIter != lDecodedData.end();
+    ++lIter) {
+      tr << *lIter;
+  }
+}
+
 
 } // namespace zorba
+

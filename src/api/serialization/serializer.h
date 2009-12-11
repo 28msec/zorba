@@ -19,6 +19,7 @@
 #include <vector>
 
 #include <zorba/sax2.h>
+#include <zorba/options.h>
 
 #include "zorbatypes/representations.h"
 #include "zorbatypes/transcoder.h"
@@ -26,6 +27,7 @@
 
 namespace zorba
 {
+  typedef Zorba_SerializerOptions_t* (*itemHandler)(void* aUserData);
 
   namespace store
   {
@@ -65,6 +67,12 @@ namespace zorba
       serialize(
         intern::Serializable* object,
         std::ostream&         stream);
+
+      void
+      serialize(intern::Serializable* object,
+                std::ostream& stream,
+                itemHandler aHandler,
+                void* aHandlerData);
 
       /**
        * Serializes the object that implements the Serializale interface to the
@@ -107,6 +115,7 @@ namespace zorba
         PARAMETER_VALUE_TEXT,
         PARAMETER_VALUE_JSON,
         PARAMETER_VALUE_JSONML,
+        PARAMETER_VALUE_BINARY,
 
         PARAMETER_VALUE_UTF_8
 #ifndef ZORBA_NO_UNICODE
@@ -412,6 +421,20 @@ namespace zorba
           
       virtual void emit_item( const store::Item* item );
     };
+
+    ///////////////////////////////////////////////////////////
+    //                                                       //
+    //  class binary_emitter                                 //
+    //                                                       //
+    ///////////////////////////////////////////////////////////
+
+    class binary_emitter : public emitter
+    {
+    public:
+      binary_emitter(serializer* the_serializer, transcoder& the_transcoder);
+
+      virtual void emit_item(const store::Item* item);
+    };
   };
 } // namespace zorba
 
@@ -422,3 +445,4 @@ namespace zorba
  * mode: c++
  * End:
  */
+

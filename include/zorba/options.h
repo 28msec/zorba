@@ -68,7 +68,8 @@ typedef enum {
   ZORBA_SERIALIZATION_METHOD_XHTML,
   ZORBA_SERIALIZATION_METHOD_TEXT,
   ZORBA_SERIALIZATION_METHOD_JSON,
-  ZORBA_SERIALIZATION_METHOD_JSONML
+  ZORBA_SERIALIZATION_METHOD_JSONML,
+  ZORBA_SERIALIZATION_METHOD_BINARY
 } Zorba_serialization_method_t;
 
 typedef enum {
@@ -147,6 +148,7 @@ typedef struct ZORBA_DLL_PUBLIC Zorba_SerializerOptions
   zorba::String                 doctype_system;
   zorba::String                 doctype_public;
   zorba::String                 cdata_section_elements;
+  zorba::String                 version;
   
 
   /** \brief Default constructor for SerializerOptions which assigns default values to all 

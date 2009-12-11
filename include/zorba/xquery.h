@@ -26,6 +26,8 @@
 
 namespace zorba {
 
+  typedef Zorba_SerializerOptions_t* (*itemHandler)(void* aUserData);
+
   /** \brief This class is the representation of an %XQuery in the %Zorba engine.
    *
    * To compile and execute an XQuery, an instance of this class must be created. 
@@ -108,7 +110,26 @@ namespace zorba {
        * @throw ZorbaException if an error occurs (e.g. the query is closed or has not been compiled)
        */
       virtual void
-      execute(std::ostream& aOutStream, 
+      execute(std::ostream& aOutStream,
+              const Zorba_SerializerOptions_t* aSerOptions = NULL) = 0;
+
+      /**
+       * \brief Execute the query and write the result to the given output stream.
+       *        A handler function gets called before the serialization of each
+       *        item.
+       *
+       * @param aOutStream the output stream on which the result is written.
+       * @param aCallbackFunction a call back function which is called every time,
+       *        before the serialization of an item.
+       * @param aCallbackData data which is passed to the call back function.
+       * @see isUpdating
+       * @throw ZorbaException if an error occurs (e.g. the query is closed or
+       *        has not been compiled)
+       */
+      virtual void
+      execute(std::ostream& aOutStream,
+              itemHandler aCallbackFunction,
+              void* aCallbackData,
               const Zorba_SerializerOptions_t* aSerOptions = NULL) = 0;
 
       /** \brief Execute the (updating) query. The query can only be execute
