@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef ZORBA_STORE_SHARED_TYPES_H
+#define ZORBA_STORE_SHARED_TYPES_H
 
 #include "store/api/shared_types.h"
 
@@ -44,3 +46,4 @@ typedef rchandle<store::IndexEntryCreator> IndexEntryCreator_t;
 }
 
 }
+#endif /* ZORBA_STORE_SHARED_TYPES_H */

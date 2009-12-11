@@ -18,10 +18,13 @@
 
 #include "store/naive/store_config.h"
 #include "store/naive/shared_types.h"
+#include "store/naive/node_items.h"
 
 #include "store/util/hashmap_stringp.h"
 
 #include "store/api/store.h"
+#include "store/api/collection.h"
+#include "store/api/index.h"
 
 #include "zorbautils/mutex.h"
 #include "zorbautils/lock.h"
