@@ -138,6 +138,7 @@ class IfExpr;
 class InsertExpr;
 class InstanceofExpr;
 class IntersectExceptExpr;
+class IntegrityConstraintDecl;
 class ItemType;
 class ModuleDecl;
 class MultiplicativeExpr;

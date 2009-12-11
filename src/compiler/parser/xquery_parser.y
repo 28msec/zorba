@@ -1816,7 +1816,7 @@ IntegrityConstraintDecl :
     }
   |
     DECLARE IntgCnstOptions INTEGRITY CONSTRAINT QNAME ON COLLECTION QNAME
-    DOLLAR QNAME CHECK UNIQUE KEY LPAR Expr RPAR
+    DOLLAR QNAME CHECK UNIQUE KEY PathExpr 
     {
       $$ = new ICCollUniqueKeyCheck(LOC(@$),
                             $2 & IntegrityConstraintDecl::IC_OPTION_UNCHECKED,
@@ -1824,7 +1824,7 @@ IntegrityConstraintDecl :
                                     static_cast<QName*>($5),
                                     static_cast<QName*>($8),
                                     static_cast<QName*>($10),
-                                    $15);
+                                    $14);
     }
   |
     DECLARE IntgCnstOptions INTEGRITY CONSTRAINT QNAME ON COLLECTION QNAME
@@ -1852,8 +1852,8 @@ IntegrityConstraintDecl :
     }
   |
     DECLARE IntgCnstOptions INTEGRITY CONSTRAINT QNAME FOREIGN KEY
-      FROM COLLECTION QNAME NODE DOLLAR QNAME KEYS LPAR Expr RPAR
-      TO   COLLECTION QNAME NODE DOLLAR QNAME KEYS LPAR Expr RPAR
+      FROM COLLECTION QNAME NODE DOLLAR QNAME KEYS PathExpr
+      TO   COLLECTION QNAME NODE DOLLAR QNAME KEYS PathExpr
     {
       $$ = new ICForeignKey(LOC(@$),
                             $2 & IntegrityConstraintDecl::IC_OPTION_UNCHECKED,
@@ -1861,10 +1861,10 @@ IntegrityConstraintDecl :
                             static_cast<QName*>($5),
                             static_cast<QName*>($10),
                             static_cast<QName*>($13),
-                            $16,
-                            static_cast<QName*>($20),
-                            static_cast<QName*>($23),
-                            $26);
+                            $15,
+                            static_cast<QName*>($18),
+                            static_cast<QName*>($21),
+                            $23); 
     }
   ;
 

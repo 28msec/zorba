@@ -3323,7 +3323,10 @@ void end_visit(const IndexKeySpec& v, void* /*visit_state*/)
 
 
 /***************************************************************************//**
-  IntegrityConstraintDecl ::= "declare" "unchecked"? "integrity" "constraint"
+  IntegrityConstraintDecl ::= "declare" ICOptions "integrity" "constraint"
+  ICOptions ::= ICOptUnchecked ICOptAsynch | ICOptAsynch ICOptUnchecked
+  ICOptUnchecked ::= "unchecked"? | "checked"?
+  ICOptAsynch ::= "asynchronous"? | "synchronous"?
 
   Translation of an integrity constraint declaration involves the creation and 
   setting-up of a ValueIndex obj (see indexing/value_index.h) and the creation
@@ -3336,45 +3339,160 @@ void* begin_visit(const IntegrityConstraintDecl& v)
 
   const QName* qname = v.getName();
 
+  /*
   if (!inLibraryModule())
   {
     ZORBA_ERROR_LOC_PARAM(XQP0039_INDEX_IN_NON_DATA_MODULE, v.get_location(), 
                           qname->get_qname(), "");
-  }
+                          }*/
 
-  // Expand the index qname (error is raised if qname resolution fails).
-  store::Item_t qnameItem = sctx_p->lookup_fn_qname(qname->get_prefix(),
-                                                    qname->get_localname(),
-                                                    qname->get_location());
+  // create a function which will be used for checking the integrity 
+  // constraint at runtime
+  xqp_string fnLocalName = "ic_check_" + qname->get_localname();
 
-  /*ValueIndex_t index = new ValueIndex(theCCB, loc, qnameItem);
-  index->setUnique(v.isUnique());
-  index->setMethod(v.isOrdered() ? ValueIndex::BTREE : ValueIndex::HASH);
+  // Expand the ic qname (error is raised if qname resolution fails).
+  store::Item_t fnQName = sctx_p->lookup_fn_qname(qname->get_prefix(),
+                                                  fnLocalName,
+                                                  loc);
 
-  indexstack.push(index);
-  */
+  vector<xqtref_t> arg_types;
+  xqtref_t return_type = GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
+
+  signature sig(fnQName, arg_types, return_type);
+  rchandle<function> f = new user_function(loc,
+                                           sig,
+                                           NULL, // no body for now
+                                           ParseConstants::fn_read,
+                                           true /* isDeterministic */);
+
+  int nargs = 0;
+  bind_udf(fnQName, f, nargs, loc);    
+
   return no_state;
 }
 
 void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/) 
 {
   TRACE_VISIT_OUT();
-  /*
-  ValueIndex_t index = indexstack.top();
-  indexstack.pop();
 
-  IndexTools::inferIndexCreators(index);
+  //fill in the body of the function
+  expr_t body;
+  int nargs = 0;
+  vector<varref_t> args;
+  const QName* qname = v.getName();
+  xqp_string fnLocalName = "ic_check_" + qname->get_localname();
+  store::Item_t fnQName = sctx_p->lookup_fn_qname(qname->get_prefix(),
+                                                  fnLocalName,
+                                                  loc);
 
-  // Register the index in the sctx of the current module. Raise error if such
-  // a binding exists already in the sctx.
-  sctx_p->bind_index(index->getName(), index, loc);
+  user_function* icf = dynamic_cast<user_function *>(
+      LOOKUP_FN(qname->get_prefix(),
+                fnLocalName,
+                nargs));
 
-  // If this is a library module, register the index in the exported sctx as well.
-  if (export_sctx != NULL)
-    export_sctx->bind_index(index->getName(), index, loc);
-  */
+  ZORBA_ASSERT(icf != NULL);
+
+  // todo cezar: error if user expresions are sequential
+
+  // for each type of IC a different function body is needed
+  switch( v.getICKind() )
+  {
+  case IntegrityConstraintDecl::coll_check_simple:
+    {
+      /**********************
+       declare integrity constraint example:ic1 
+         on collection example:coll1 $x check sum($x/size) le 1000;
+
+       sum( dc:collection(example:coll1)/size ) le 1000
+
+       let $x := dc:collection(example:coll1)
+       return sum($x/size) le 1000;
+       **********************/
+
+      
+      function* f = LOOKUP_FN("fn", "true", 0);
+      /*function* fn_dc_collection = sctx_p->lookup_resolved_fn(
+          "http://www.zorba-xquery.com/module/dynamic-context", "collection", 
+          loc);
+      */
+      std::vector<expr_t> arguments;
+      //arguments.push_back();
+
+      fo_expr_t foExpr = new fo_expr(sctxid(), loc, f, arguments);
+      body = foExpr;
+    }
+    break;
+
+  case IntegrityConstraintDecl::coll_check_unique_key:
+    {
+      store::Item_t fn_true_qname = sctx_p->lookup_fn_qname("fn", "true", loc);
+      function* f = LOOKUP_FN("fn", "true", 0);
+      std::vector<expr_t> arguments;
+      fo_expr_t foExpr = new fo_expr(sctxid(), loc, f, arguments);
+      body = foExpr;
+    }
+    break;
+
+  case IntegrityConstraintDecl::coll_foreach_node:
+    {
+      store::Item_t fn_true_qname = sctx_p->lookup_fn_qname("fn", "true", loc);
+      function* f = LOOKUP_FN("fn", "true", 0);
+      std::vector<expr_t> arguments;
+      fo_expr_t foExpr = new fo_expr(sctxid(), loc, f, arguments);
+      body = foExpr;
+    }
+    break;
+
+  case IntegrityConstraintDecl::node_of_type:
+    {
+      store::Item_t fn_true_qname = sctx_p->lookup_fn_qname("fn", "true", loc);
+      function* f = LOOKUP_FN("fn", "true", 0);
+      std::vector<expr_t> arguments;
+      fo_expr_t foExpr = new fo_expr(sctxid(), loc, f, arguments);
+      body = foExpr;
+    }
+    break;
+
+  case IntegrityConstraintDecl::foreign_key:
+    {
+      store::Item_t fn_true_qname = sctx_p->lookup_fn_qname("fn", "true", loc);
+      function* f = LOOKUP_FN("fn", "true", 0);
+      std::vector<expr_t> arguments;
+      fo_expr_t foExpr = new fo_expr(sctxid(), loc, f, arguments);
+      body = foExpr;
+    }
+    break;
+
+  default:
+    ZORBA_ASSERT(false);
+  }
+
+
+/*
+  // Normalize and optimize the function body. This has to be done here because
+  // we have the correct static context here (udfs declared in a library module
+  // must be compiled in the contex tof that module).
+  if (theCCB->theConfig.translate_cb != NULL)
+    theCCB->theConfig.translate_cb(&*body, v.get_name()->get_qname());
+  
+  normalize_expr_tree(v.get_name()->get_qname().c_str(),
+                      theCCB,
+                      body,
+                      *&(icf->get_signature().return_type()));
+  
+  if (theCCB->theConfig.opt_level == CompilerCB::config_t::O1) 
+  {
+    RewriterContext rCtx(theCCB, body);
+    GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
+    body = rCtx.getRoot();
+    
+    if (theCCB->theConfig.optimize_cb != NULL)
+      theCCB->theConfig.optimize_cb(&*body, v.get_name ()->get_qname ());
+  }
+*/
+  icf->set_body(body);
+  icf->set_args(args);
 }
-
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
