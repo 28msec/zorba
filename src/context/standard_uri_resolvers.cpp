@@ -421,9 +421,10 @@ StandardModuleURIResolver::computeLibraryName(const URI aURI)
     }
 
     // remove .xq from the end of the file if present
-    size_t lIndexOfXQ = lFileName.find_last_of(".xq");
-    if (lIndexOfXQ != std::string::npos) {
-      lFileName.erase(lIndexOfXQ - 2);
+    // bugfix: find_last_of didn't do the right thing
+    size_t lIndexOfXQ = lFileName.find(".xq");
+    if (lIndexOfXQ == lFileName.size() - 3) {
+      lFileName.erase(lIndexOfXQ );
     }
   }
 
