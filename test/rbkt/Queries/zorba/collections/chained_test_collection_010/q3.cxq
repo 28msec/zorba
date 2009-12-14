@@ -1,4 +1,4 @@
-import module namespace ddl = "http://www.zorba-xquery.com/modules/ddl";
+import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
 import module namespace ns = "http://example.org/datamodule/" at "../collections.xqdata";
 
-ddl:delete-collection(xs:QName('ns:collection_333'))
+xqddf:delete-collection(xs:QName('ns:collection_333'))

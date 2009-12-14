@@ -101,6 +101,9 @@ namespace zorba {
     void beginVisit( const ZorbaDeleteCollectionIterator& );
     void endVisit  ( const ZorbaDeleteCollectionIterator& );
 
+    void beginVisit( const ZorbaInsertNodesIterator& );
+    void endVisit  ( const ZorbaInsertNodesIterator& );
+
     void beginVisit( const ZorbaInsertNodesFirstIterator& );
     void endVisit  ( const ZorbaInsertNodesFirstIterator& );
 
@@ -115,6 +118,12 @@ namespace zorba {
 
     void beginVisit( const ZorbaDeleteNodesIterator& );
     void endVisit  ( const ZorbaDeleteNodesIterator& );
+
+    void beginVisit( const ZorbaDeleteNodeFirstIterator& );
+    void endVisit  ( const ZorbaDeleteNodeFirstIterator& );
+
+    void beginVisit( const ZorbaDeleteNodeLastIterator& );
+    void endVisit  ( const ZorbaDeleteNodeLastIterator& );
 
     void beginVisit( const CurrentDateTimeIterator& );
     void endVisit  ( const CurrentDateTimeIterator& );

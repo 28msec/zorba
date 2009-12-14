@@ -1,8 +1,8 @@
-import module namespace ddl = "http://www.zorba-xquery.com/modules/ddl";
+import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
 import module namespace ns = "http://example.org/datamodule/" at "../collections.xqdata";
 
 declare sequential function local:foo() {
-  ddl:insert-nodes-first(xs:QName("ns:http"), <book>One Thousand and One Nights</book>);
+  xqddf:insert-nodes-first(xs:QName("ns:http"), <book>One Thousand and One Nights</book>);
   exit returning ();
 };
 

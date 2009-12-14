@@ -216,6 +216,9 @@ signature::equals(const signature& s) const
   if (!qname_p->equals(s.qname_p.getp()))
     return false;
 
+  std::cout << return_type()->toString() << std::endl;
+  std::cout << s.return_type()->toString() << std::endl;
+
   if (!TypeOps::is_equal(*return_type().getp(), *s.return_type().getp())) {
     return false;
   }

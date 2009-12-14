@@ -355,6 +355,20 @@ void PrinterVisitor::endVisit ( const ZorbaDeleteCollectionIterator& ) {
 // </ZorbaDeleteCollectionIterator>
 
 
+// <ZorbaInsertNodesIterator>
+void PrinterVisitor::beginVisit ( const ZorbaInsertNodesIterator& a) {
+  thePrinter.startBeginVisit("ZorbaInsertNodesIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ZorbaInsertNodesIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ZorbaInsertNodesIterator>
+
+
 // <ZorbaInsertNodesFirstIterator>
 void PrinterVisitor::beginVisit ( const ZorbaInsertNodesFirstIterator& a) {
   thePrinter.startBeginVisit("ZorbaInsertNodesFirstIterator", ++theId);
@@ -423,6 +437,34 @@ void PrinterVisitor::endVisit ( const ZorbaDeleteNodesIterator& ) {
   thePrinter.endEndVisit();
 }
 // </ZorbaDeleteNodesIterator>
+
+
+// <ZorbaDeleteNodeFirstIterator>
+void PrinterVisitor::beginVisit ( const ZorbaDeleteNodeFirstIterator& a) {
+  thePrinter.startBeginVisit("ZorbaDeleteNodeFirstIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ZorbaDeleteNodeFirstIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ZorbaDeleteNodeFirstIterator>
+
+
+// <ZorbaDeleteNodeLastIterator>
+void PrinterVisitor::beginVisit ( const ZorbaDeleteNodeLastIterator& a) {
+  thePrinter.startBeginVisit("ZorbaDeleteNodeLastIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ZorbaDeleteNodeLastIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ZorbaDeleteNodeLastIterator>
 
 
 // <CurrentDateTimeIterator>

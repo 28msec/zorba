@@ -1,4 +1,4 @@
-import module namespace dc = "http://www.zorba-xquery.com/modules/ddl";
+import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
 import module namespace ns = "http://example.org/datamodule/" at "../collections.xqdata";
 
-dc:index-of(xs:QName('ns:http'), <a/>)
+xqddf:index-of(xs:QName('ns:http'), <a/>)

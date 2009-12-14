@@ -174,6 +174,34 @@ ZorbaDeleteCollectionIterator::~ZorbaDeleteCollectionIterator() {}
 // </ZorbaDeleteCollectionIterator>
 
 
+// <ZorbaInsertNodesIterator>
+const char* ZorbaInsertNodesIterator::class_name_str = "ZorbaInsertNodesIterator";
+ZorbaInsertNodesIterator::class_factory<ZorbaInsertNodesIterator>
+ZorbaInsertNodesIterator::g_class_factory;
+
+const serialization::ClassVersion 
+ZorbaInsertNodesIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int ZorbaInsertNodesIterator::class_versions_count =
+sizeof(ZorbaInsertNodesIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void ZorbaInsertNodesIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaInsertNodesIterator::~ZorbaInsertNodesIterator() {}
+
+// </ZorbaInsertNodesIterator>
+
+
 // <ZorbaInsertNodesFirstIterator>
 const char* ZorbaInsertNodesFirstIterator::class_name_str = "ZorbaInsertNodesFirstIterator";
 ZorbaInsertNodesFirstIterator::class_factory<ZorbaInsertNodesFirstIterator>
@@ -312,6 +340,62 @@ void ZorbaDeleteNodesIterator::accept(PlanIterVisitor& v) const {
 ZorbaDeleteNodesIterator::~ZorbaDeleteNodesIterator() {}
 
 // </ZorbaDeleteNodesIterator>
+
+
+// <ZorbaDeleteNodeFirstIterator>
+const char* ZorbaDeleteNodeFirstIterator::class_name_str = "ZorbaDeleteNodeFirstIterator";
+ZorbaDeleteNodeFirstIterator::class_factory<ZorbaDeleteNodeFirstIterator>
+ZorbaDeleteNodeFirstIterator::g_class_factory;
+
+const serialization::ClassVersion 
+ZorbaDeleteNodeFirstIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int ZorbaDeleteNodeFirstIterator::class_versions_count =
+sizeof(ZorbaDeleteNodeFirstIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void ZorbaDeleteNodeFirstIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaDeleteNodeFirstIterator::~ZorbaDeleteNodeFirstIterator() {}
+
+// </ZorbaDeleteNodeFirstIterator>
+
+
+// <ZorbaDeleteNodeLastIterator>
+const char* ZorbaDeleteNodeLastIterator::class_name_str = "ZorbaDeleteNodeLastIterator";
+ZorbaDeleteNodeLastIterator::class_factory<ZorbaDeleteNodeLastIterator>
+ZorbaDeleteNodeLastIterator::g_class_factory;
+
+const serialization::ClassVersion 
+ZorbaDeleteNodeLastIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int ZorbaDeleteNodeLastIterator::class_versions_count =
+sizeof(ZorbaDeleteNodeLastIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void ZorbaDeleteNodeLastIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ZorbaDeleteNodeLastIterator::~ZorbaDeleteNodeLastIterator() {}
+
+// </ZorbaDeleteNodeLastIterator>
 
 
 

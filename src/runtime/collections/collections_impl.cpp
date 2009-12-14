@@ -418,6 +418,81 @@ ZorbaDeleteCollectionIterator::nextImpl(store::Item_t& result, PlanState& aPlanS
   STACK_END (state);
 }
 
+/*******************************************************************************
+  declare updating function
+  insert-nodes($name as xs:QName, $newnode as node()*) as none
+
+  The function will insert the given node(s) to the given collection.
+********************************************************************************/
+bool
+ZorbaInsertNodesIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Collection_t              coll;
+  const StaticallyKnownCollection* lDeclColl;
+  store::Item_t                    lName;
+  store::Item_t                    node;
+  store::Item_t                    copyNode;
+  std::vector<store::Item_t>       nodes;
+  std::auto_ptr<store::PUL>        pul;
+
+  store::CopyMode lCopyMode;
+  bool typePreserve;
+  bool nsPreserve;
+  bool nsInherit;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  typePreserve = (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
+                  true : false);
+  nsPreserve = (theSctx->preserve_mode() == StaticContextConsts::preserve_ns ?
+                true : false);
+  nsInherit = (theSctx->inherit_mode() == StaticContextConsts::inherit_ns ?
+               true : false);
+
+  lCopyMode.set(true, typePreserve, nsPreserve, nsInherit);
+
+  consumeNext(lName, theChildren[0].getp(), planState);
+
+  lDeclColl = getDeclColl(theSctx, lName, loc);
+  coll = getCollection(theSctx, lName, loc);
+
+  // checking collection modifiers
+  switch(lDeclColl->getCollProperty()) {
+  case StaticContextConsts::const_:
+    ZORBA_ERROR_LOC_DESC_OSS(XDDY0003, loc, 
+      "insert-nodes-first has a const collection as first argument.");
+    break;
+  case StaticContextConsts::append_only:
+    ZORBA_ERROR_LOC_DESC_OSS(XDDY0004, loc, 
+      "insert-nodes-first has a append-only collection as first argument.");
+    break;
+  case StaticContextConsts::queue:
+    ZORBA_ERROR_LOC_DESC_OSS(XDDY0005, loc, 
+      "insert-nodes-first has a queue collection as first argument.");
+    break;
+  case StaticContextConsts::mutable_coll:
+    // good to go
+    break;
+  }
+
+  while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState))
+  {
+    checkNodeType(node, theSctx, lDeclColl, loc);
+    copyNode = node->copy(NULL, 0, lCopyMode);
+    nodes.push_back(copyNode);
+  }
+
+  // create the pul and add the primitive
+  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+
+  pul->addInsertLastIntoCollection(lName, nodes);
+
+  result = pul.release();
+  STACK_PUSH( result != NULL, state);
+
+  STACK_END (state);
+}
 
 /*******************************************************************************
   declare updating function
@@ -831,7 +906,7 @@ ZorbaInsertNodesAfterIterator::nextImpl(store::Item_t& result, PlanState& planSt
 
 
 /*******************************************************************************
-  declare updating function remove-nodes($name     as xs:QName,
+  declare updating function delete-nodes($name     as xs:QName,
                                          $target  as node()+) as none
 
   The function will remove the node(s) identified by the $target expression
@@ -909,6 +984,104 @@ ZorbaDeleteNodesIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-1]->reset(planState);
+
+  result = pul.release();
+  STACK_PUSH( result != NULL, state);
+
+  STACK_END (state);
+}
+
+/*******************************************************************************
+********************************************************************************/
+bool
+ZorbaDeleteNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Collection_t              coll;
+  const StaticallyKnownCollection* lDeclColl;
+  store::Item_t                    lName;
+  std::vector<store::Item_t>       lNodes;
+  std::auto_ptr<store::PUL>        pul;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(lName, theChildren[0].getp(), planState);
+
+  lDeclColl = getDeclColl(theSctx, lName, loc);
+  coll = getCollection(theSctx, lName, loc);
+
+  // checking collection modifiers
+  switch(lDeclColl->getCollProperty()) {
+  case StaticContextConsts::const_:
+  case StaticContextConsts::append_only:
+    ZORBA_ERROR_LOC_DESC_OSS(XDDY0003, loc, 
+      "The delete-node-first function is not allowed "
+      << "on a collection declared as 'const' or 'append-only'.");
+  case StaticContextConsts::queue:
+  case StaticContextConsts::mutable_coll:
+    // good to go
+    break;
+  }
+
+  if (coll->size() == 0) {
+    ZORBA_ERROR_LOC_DESC_OSS(XDDY0003, loc, 
+      "The collection passed as argument to the delete-node-first function is empty.");
+  }
+
+  // create the pul and add the primitive
+  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+
+  lNodes.push_back(coll->nodeAt(1));
+  pul->addDeleteFromCollection(lName, lNodes);
+
+  result = pul.release();
+  STACK_PUSH( result != NULL, state);
+
+  STACK_END (state);
+}
+
+/*******************************************************************************
+********************************************************************************/
+bool
+ZorbaDeleteNodeLastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Collection_t              coll;
+  const StaticallyKnownCollection* lDeclColl;
+  store::Item_t                    lName;
+  std::vector<store::Item_t>       lNodes;
+  std::auto_ptr<store::PUL>        pul;
+
+  PlanIteratorState *state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(lName, theChildren[0].getp(), planState);
+
+  lDeclColl = getDeclColl(theSctx, lName, loc);
+  coll = getCollection(theSctx, lName, loc);
+
+  // checking collection modifiers
+  switch(lDeclColl->getCollProperty()) {
+  case StaticContextConsts::const_:
+  case StaticContextConsts::append_only:
+  case StaticContextConsts::queue:
+    ZORBA_ERROR_LOC_DESC_OSS(XDDY0003, loc, 
+      "The delete-node-last function is not allowed "
+      << "on a collection declared as 'const', 'append-only', or 'queue'.");
+  case StaticContextConsts::mutable_coll:
+    // good to go
+    break;
+  }
+
+  if (coll->size() == 0) {
+    ZORBA_ERROR_LOC_DESC_OSS(XDDY0003, loc, 
+      "The collection passed as argument to the delete-node-first function is empty.");
+  }
+
+  // create the pul and add the primitive
+  pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+
+  lNodes.push_back(coll->nodeAt(coll->size()));
+  pul->addDeleteFromCollection(lName, lNodes);
 
   result = pul.release();
   STACK_PUSH( result != NULL, state);

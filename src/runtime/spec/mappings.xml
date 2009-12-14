@@ -25,7 +25,7 @@
                      define="ZORBA_INTROSPECT_DCTX_FN_NS" prefix="fn-zorba-introspect-dctx"/>
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/introspection/sctx"
                      define="ZORBA_INTROSPECT_SCTX_FN_NS" prefix="fn-zorba-introspect-sctx"/>
-    <zorba:namespace uri="http://www.zorba-xquery.com/modules/ddl"
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/xqddf"
                      define="ZORBA_COLLECTION_FN_NS" prefix="fn-zorba-ddl"/>
     <zorba:namespace uri="http://www.zorba-xquery.com/modules/csv2xml" define="ZORBA_CSV" prefix="zorba-csv"/>
   </zorba:namespaces>

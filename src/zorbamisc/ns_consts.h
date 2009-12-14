@@ -42,7 +42,7 @@
 #define ZORBA_INTROSPECT_DCTX_FN_NS "http://www.zorba-xquery.com/modules/introspection/dctx"
 #define ZORBA_INTROSPECT_SCTX_FN_NS "http://www.zorba-xquery.com/modules/introspection/sctx"
 
-#define ZORBA_DDL_FN_NS             "http://www.zorba-xquery.com/modules/ddl"
+#define ZORBA_DDL_FN_NS             "http://www.zorba-xquery.com/modules/xqddf"
 #define ZORBA_CSV                   "http://www.zorba-xquery.com/modules/csv2xml"
 
 #define ZORBA_COLLATION_NS_BASE "http://www.zorba-xquery.com/zorba/collations/"

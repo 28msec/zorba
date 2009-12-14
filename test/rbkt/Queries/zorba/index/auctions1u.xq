@@ -1,4 +1,4 @@
-import module namespace ddl = "http://www.zorba-xquery.com/modules/ddl";
+import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
 
 import module namespace auctions = "http://www.w3.org/TestModules/auctions" at
                                        "auctions_module1.xqlib";
@@ -19,9 +19,9 @@ block
   insert node
     <person id="person50"><name>Some Name</name><city>Amsterdam</city></person>
   as first into
-    ddl:collection($auctions:auctions)/site/people
+    xqddf:collection($auctions:auctions)/site/people
   ,
-  ddl:refresh-index($emp-id);
+  xqddf:refresh-index($emp-id);
   (: don't refresh the emp-city index manually because it's done automatically :)
 }
 ,
@@ -41,7 +41,7 @@ return <person id = "{$x/@id}">{$x/name}</person>
 ,
 block
 {
-  ddl:insert-nodes-first($auctions:auctions, doc("auctions2.xml"));
+  xqddf:insert-nodes-first($auctions:auctions, doc("auctions2.xml"));
 }
 ,
 "

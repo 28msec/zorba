@@ -238,6 +238,41 @@ public:
 
 /**
  * 
+ *      zorba:insert-nodes
+ *    
+ * Author: Zorba Team
+ */
+class ZorbaInsertNodesIterator : public NaryBaseIterator <ZorbaInsertNodesIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(ZorbaInsertNodesIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaInsertNodesIterator,
+    NaryBaseIterator <ZorbaInsertNodesIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator <ZorbaInsertNodesIterator, PlanIteratorState>*)this);
+  }
+
+  ZorbaInsertNodesIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <ZorbaInsertNodesIterator, PlanIteratorState>
+    (sctx, loc, aChildren) {}
+
+  virtual ~ZorbaInsertNodesIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
  *      zorba:insert-nodes-first
  *    
  * Author: Zorba Team
@@ -404,6 +439,76 @@ public:
     (sctx, loc, aChildren) {}
 
   virtual ~ZorbaDeleteNodesIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *      zorba:delete-node-first
+ *    
+ * Author: Zorba Team
+ */
+class ZorbaDeleteNodeFirstIterator : public NaryBaseIterator <ZorbaDeleteNodeFirstIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(ZorbaDeleteNodeFirstIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaDeleteNodeFirstIterator,
+    NaryBaseIterator <ZorbaDeleteNodeFirstIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator <ZorbaDeleteNodeFirstIterator, PlanIteratorState>*)this);
+  }
+
+  ZorbaDeleteNodeFirstIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <ZorbaDeleteNodeFirstIterator, PlanIteratorState>
+    (sctx, loc, aChildren) {}
+
+  virtual ~ZorbaDeleteNodeFirstIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *      zorba:delete-node-last
+ *    
+ * Author: Zorba Team
+ */
+class ZorbaDeleteNodeLastIterator : public NaryBaseIterator <ZorbaDeleteNodeLastIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(ZorbaDeleteNodeLastIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaDeleteNodeLastIterator,
+    NaryBaseIterator <ZorbaDeleteNodeLastIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator <ZorbaDeleteNodeLastIterator, PlanIteratorState>*)this);
+  }
+
+  ZorbaDeleteNodeLastIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , std::vector<PlanIter_t>& aChildren)
+    : NaryBaseIterator <ZorbaDeleteNodeLastIterator, PlanIteratorState>
+    (sctx, loc, aChildren) {}
+
+  virtual ~ZorbaDeleteNodeLastIterator();
 
   void accept(PlanIterVisitor& v) const;
 

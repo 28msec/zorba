@@ -1,10 +1,10 @@
-import module namespace ddl = "http://www.zorba-xquery.com/modules/ddl";
+import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
 import module namespace ns = "http://example.org/datamodule/" at "collections.xqdata";
 
 declare sequential function local:foo($collName as xs:QName) {
-  ddl:create-collection($collName,<a/>);
-  let $a := ddl:collection($collName)
-  return ddl:insert-nodes-last($collName, <b/>);
+  xqddf:create-collection($collName,<a/>);
+  let $a := xqddf:collection($collName)
+  return xqddf:insert-nodes-last($collName, <b/>);
   exit returning ();
 };
 

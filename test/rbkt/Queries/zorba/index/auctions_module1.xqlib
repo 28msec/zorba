@@ -1,7 +1,7 @@
 
 module namespace auctions = "http://www.w3.org/TestModules/auctions";
 
-import module namespace ddl = "http://www.zorba-xquery.com/modules/ddl";
+import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
 
 declare variable $auctions:auctions := xs:QName("auctions:auctions");
 declare variable $auctions:PersonId := xs:QName("auctions:PersonId");
@@ -15,7 +15,7 @@ declare collection auctions:auctions;
 :)
 
 declare index auctions:PersonId
-on ddl:collection(xs:QName("auctions:auctions"))/site/people/person
+on xqddf:collection(xs:QName("auctions:auctions"))/site/people/person
 by (fn:data(./@id))
 unique ordered;
 
@@ -26,7 +26,7 @@ unique ordered;
 :)
 
 declare index auctions:PersonCity
-on ddl:collection(xs:QName("auctions:auctions"))/site/people/person
+on xqddf:collection(xs:QName("auctions:auctions"))/site/people/person
 by ((.//city))
 ordered automatic;
 
@@ -37,19 +37,19 @@ ordered automatic;
 
 declare sequential function auctions:create-db()
 {
-  ddl:create-collection($auctions:auctions);
+  xqddf:create-collection($auctions:auctions);
 
-  ddl:insert-nodes-last($auctions:auctions, doc("auctions1.xml"));
+  xqddf:insert-nodes-last($auctions:auctions, doc("auctions1.xml"));
 
-  ddl:create-index($auctions:PersonId);
+  xqddf:create-index($auctions:PersonId);
 
-  ddl:create-index($auctions:PersonCity);
+  xqddf:create-index($auctions:PersonCity);
 };
 
 
 declare function auctions:probe-point-id($indexName as xs:QName, $id as xs:string)
 {
-  ddl:probe-index-point($indexName, $id)
+  xqddf:probe-index-point($indexName, $id)
 };
 
 
@@ -59,7 +59,7 @@ declare function auctions:probe-point-id($indexName as xs:QName, $id as xs:strin
 
 declare function auctions:probe-range-id($indexName as xs:QName, $id as xs:string)
 {
-  ddl:probe-index-range($indexName,
+  xqddf:probe-index-range($indexName,
                         $id,
                         1,
                         xs:boolean("true"), 
@@ -71,7 +71,7 @@ declare function auctions:probe-range-id($indexName as xs:QName, $id as xs:strin
 
 declare function auctions:probe-point-city($indexName as xs:QName, $city as xs:string?)
 {
-  ddl:probe-index-point($indexName, $city)
+  xqddf:probe-index-point($indexName, $city)
 };
 
 
@@ -81,7 +81,7 @@ declare function auctions:probe-point-city($indexName as xs:QName, $city as xs:s
 
 declare function auctions:probe-range-city($indexName as xs:QName, $city as xs:string)
 {
-  ddl:probe-index-range($indexName,
+  xqddf:probe-index-range($indexName,
                         $city,
                         1,
                         xs:boolean("true"),

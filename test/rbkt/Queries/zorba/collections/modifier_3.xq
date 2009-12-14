@@ -1,15 +1,15 @@
-import module namespace ddl = "http://www.zorba-xquery.com/modules/ddl";
+import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
 import module namespace dc = "http://www.zorba-xquery.com/modules/introspection/dctx";
 import module namespace ns = "http://example.org/datamodule/" at "modifier_3.xqdata";
 
 declare sequential function local:init() {
-    ddl:create-collection(xs:QName("ns:coll_1"), (<a><x/></a>,<b/>,<c/>,<d/>,<e/>,<f/>,<g/>,<h/>,<i/>,<j/>,<k/>));
+    xqddf:create-collection(xs:QName("ns:coll_1"), (<a><x/></a>,<b/>,<c/>,<d/>,<e/>,<f/>,<g/>,<h/>,<i/>,<j/>,<k/>));
 };
 
 declare sequential function local:test1() {
   try {
     block {
-      let $x as element() := ddl:collection($ns:coll_1)[1]
+      let $x as element() := xqddf:collection($ns:coll_1)[1]
       return
         insert node <x/> into $x;
     }
@@ -21,7 +21,7 @@ declare sequential function local:test1() {
 declare sequential function local:test2() {
   try {
     block {
-      let $x as element() := ddl:collection($ns:coll_1)[1]
+      let $x as element() := xqddf:collection($ns:coll_1)[1]
       return
         delete node $x;
     }
@@ -33,7 +33,7 @@ declare sequential function local:test2() {
 declare sequential function local:test3() {
   try {
     block {
-      let $x as element() := ddl:collection($ns:coll_1)[1]
+      let $x as element() := xqddf:collection($ns:coll_1)[1]
       return
         rename node $x as "blabla";
     }
@@ -45,7 +45,7 @@ declare sequential function local:test3() {
 declare sequential function local:test4() {
   try {
     block {
-      let $x as element() := ddl:collection($ns:coll_1)[1]
+      let $x as element() := xqddf:collection($ns:coll_1)[1]
       return
         replace node $x/x with <y/>;
     }

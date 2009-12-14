@@ -19,32 +19,30 @@
  :
  : @version 1.0 
  :)
-module namespace ddl = "http://www.zorba-xquery.com/modules/ddl";
+module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
 
 declare namespace err = "http://www.w3.org/2005/xqt-errors";
 
-declare variable $ddl:XDDY0014 as xs:QName := xs:QName("err:XDDY0014");
-
 (:~
- : The create-collection function is an updating function that adds
+ : The <tt>create-collection</tt> function is an updating function that adds
  : a mapping from the expanded QName <tt>$name</tt> to an empty sequence
  : to the map of available collections.
  :
  : @param $name The QName of the collection to add to the map of available
  :        collections.
- : @error <tt>XDST0010</tt> if the expanded QName of <tt>$name</tt> is not equal
+ : @error <tt></tt> if the expanded QName of <tt>$name</tt> is not equal
  :       (as defined by the eq operator) to the name of any resource
  :       in the statically known collections.
- : @error <tt>XDDY0012</tt> if available collections already provides a mapping
+ : @error <tt></tt> if available collections already provides a mapping
  :        for the expaned QName <tt>$name</tt>.
  : @return The result of the function is an empty XDM instance and a 
  :         pending update list that consists the <tt>upd:createCollection($name)</tt>
  :         primitive.
  :)
-declare updating function ddl:create-collection($name as xs:QName) external;
+declare updating function xqddf:create-collection($name as xs:QName) external;
 
 (:~
- : The create-collection function is an updating function that adds a new
+ : The <tt>create-collection</tt> function is an updating function that adds a new
  : mapping from the expanded QName <tt>$name</tt> to the map of available
  : collections.
  : Moreover, it adds copies (see below) of the sequence <tt>$content</tt> to
@@ -54,13 +52,13 @@ declare updating function ddl:create-collection($name as xs:QName) external;
  :        collections.
  : @param $content The sequences of nodes that should be added to the new
           collection.
- : @error <tt>XDST0010</tt> if the expanded QName of <tt>$name</tt> is not equal
+ : @error <tt></tt> if the expanded QName of <tt>$name</tt> is not equal
  :       (as defined by the
  :       <a href="http://www.w3.org/TR/xquery/#id-value-comparisons">eq operator</a>) 
  :       to the name of any resource in the statically known collections.
- : @error <tt>XDDY0012</tt> if available collections already provides a mapping
+ : @error <tt></tt> if available collections already provides a mapping
  :        for the expaned QName <tt>$name</tt>.
- : @error <tt>XPTY0004</tt> If $content does not match the expected type according
+ : @error <tt></tt> If $content does not match the expected type according
  :        to the rules for SequenceType Matching.
  : @return The variable <tt>$content</tt> is evaluated as though it were an
  :         enclosed expression in an element constructor (see Rule 1e in
@@ -77,41 +75,72 @@ declare updating function ddl:create-collection($name as xs:QName) external;
  :           <li><tt>upd:insertNodesFirst($name, $list)</tt></li>
  :         </ul>
  :)
-declare updating function ddl:create-collection($name as xs:QName,
+declare updating function xqddf:create-collection($name as xs:QName,
                                                 $content as node()*) external;
 
 (:~
- : The delete-collection function is an updating function that removes a
+ : The <tt>delete-collection</tt> function is an updating function that removes a
  : resource from the map of available collections. The QName <tt>$name</tt>
  : is the name of the resource.
  :
  : @param $name The QName of the collection to remove from the map of available
  :        collections.
- : @error XDST0010 If the expanded QName of <tt>$name</tt> is not equal
- :        (as defined by the eq operator) to the name of any resource in the
- :        statically known collections.
- : @error XDDY0009 If available collections does not provide a mapping for
+ : @error <tt></tt> If available collections does not provide a mapping for
  :        the expaned QName <tt>$name</tt>.
+ : @error <tt></tt> If If any of the in-scope variables references a node that
+ :        belongs to the collection with QName <tt>$name</tt>.
+ : @error <tt></tt> If the domain or key expression of any of the available
+ :        indexes access the collection with name <tt>$name</tt>.
  : @return The result of the function is an empty XDM instance and a pending
  :         update list that contains the <tt>upd:deleteCollection($name)</tt>
  :         update primitive.
  :)
-declare updating function ddl:delete-collection($name as xs:QName) external;
+declare updating function xqddf:delete-collection($name as xs:QName) external;
 
 (:~
- : The insert-nodes-first function is an updating function that inserts
+ : The <tt>insert-nodes</tt> function is an updating function that inserts
+ : copies (see below) of zero or more nodes into a collection. 
+ : Note that the insertion position of the nodes in the collection is not
+ : defined.
+ :
+ : @param <tt>$name</tt> The name of the collection to which the nodes should
+ :        be added.
+ : @param <tt>$content</tt> The sequences of nodes that should be added to the
+ :        collection.
+ : @error <tt></tt> If available collections does not provide a mapping for
+ :        the expanded QName <tt>$name</tt>.
+ : @error <tt></tt> If the modifier property of the collection <tt>$name</tt>
+ :        is <tt>append-only</tt>, <tt>const</tt>, or <tt>queue</tt>.
+ : @error <tt></tt> If <tt>$content</tt> does not match the expected type
+ :        according to the rules for SequenceType Matching.
+ : @return The variable <tt>$content</tt> is evaluated as though it were
+ :         an enclosed expression in an element constructor
+ :         (see Rule 1e in Section 3.7.1.3 ContentXQ of the
+ :         XQuery Update Facility 1.0 specification).
+ :         The result of this step is a sequence of nodes to be inserted,
+ :         called the insertion sequence. Let <tt>$list</tt> be the insertion sequence.
+ :         The result of the function is an empty XDM instance and a pending update list
+ :         that contains the <tt>upd:insertNodes($name, $list)</tt>
+ :         update primitive.
+ :)
+declare updating function xqddf:insert-nodes($name as xs:QName,
+                                             $content as node()*) external;
+
+(:~
+ : The <tt>insert-nodes-first</tt> function is an updating function that inserts
  : copies (see below) of zero or more nodes as first nodes into a collection. 
  :
  : @param <tt>$name</tt> The name of the collection to which the nodes should
  :        be added.
- : @param <tt>$content</tt> The sequences of nodes that should be added to the new
+ : @param <tt>$content</tt> The sequences of nodes that should be added to the
  :        collection.
- : @error XDST0010 If the expanded QName of <tt>$name</tt> is not equal
- :        (as defined by the eq operator) to the name of any resource in
- :        the statically known collections.
- : @error XDDY0009 If available collections does not provide a mapping for
+ : @error <tt></tt> If available collections does not provide a mapping for
  :        the expanded QName <tt>$name</tt>.
- : @error XPTY0004 If <tt>$content</tt> does not match the expected type
+ : @error <tt></tt> If the modifier property of the collection <tt>$name</tt>
+ :        is <tt>append-only</tt>, <tt>const</tt>, or <tt>queue</tt>.
+ : @error <tt></tt> If the order property of the collection <tt>$name</tt>
+ :        is <tt>unordered</tt>.
+ : @error <tt></tt> If <tt>$content</tt> does not match the expected type
  :        according to the rules for SequenceType Matching.
  : @return The variable <tt>$content</tt> is evaluated as though it were
  :         an enclosed expression in an element constructor
@@ -123,23 +152,24 @@ declare updating function ddl:delete-collection($name as xs:QName) external;
  :         that contains the <tt>upd:insertNodesFirst($name, $list)</tt>
  :         update primitive.
  :)
-declare updating function ddl:insert-nodes-first($name as xs:QName,
+declare updating function xqddf:insert-nodes-first($name as xs:QName,
                                                  $content as node()*) external;
 
 (:~
- : The insert-nodes-last function is an updating function that inserts copies
+ : The <tt>insert-nodes-last</tt> function is an updating function that inserts copies
  : (see below) of zero or more nodes as last nodes into a collection.
  :
  : @param <tt>$name</tt> The name of the collection to which the nodes should
  :        be added.
  : @param <tt>$content</tt> The sequences of nodes that should be added to the new
  :        collection.
- : @error XDST0010 If the expanded QName of <tt>$name</tt> is not equal
- :        (as defined by the eq operator) to the name of any resource in
- :        the statically known collections.
- : @error XDDY0009 If available collections does not provide a mapping for
+ : @error <tt></tt> If available collections does not provide a mapping for
  :        the expanded QName <tt>$name</tt>.
- : @error XPTY0004 If <tt>$content</tt> does not match the expected type
+ : @error <tt></tt> If the modifier property of the collection <tt>$name</tt>
+ :        is <tt>const</tt>.
+ : @error <tt></tt> If the order property of the collection <tt>$name</tt>
+ :        is <tt>unordered</tt>.
+ : @error <tt></tt> If <tt>$content</tt> does not match the expected type
  :        according to the rules for SequenceType Matching.
  : @return The variable <tt>$content</tt> is evaluated as though it were
  :         an enclosed expression in an element constructor
@@ -151,11 +181,11 @@ declare updating function ddl:insert-nodes-first($name as xs:QName,
  :         that contains the <tt>upd:insertNodesLast($name, $list)</tt>
  :         update primitive.
  :)
-declare updating function ddl:insert-nodes-last($name as xs:QName,
+declare updating function xqddf:insert-nodes-last($name as xs:QName,
                                                 $content as node()*) external;
 
 (:~
- : The insert-nodes-before function is an updating function that inserts
+ : The <tt>insert-nodes-before</tt> function is an updating function that inserts
  : copies of zero or more nodes as preceding siblings of <tt>$target</tt>
  : into a collection.
  :
@@ -165,15 +195,16 @@ declare updating function ddl:insert-nodes-last($name as xs:QName,
  :        sequence should be inserted.
  : @param <tt>$content</tt> The sequences of nodes that should be added to the new
  :        collection.
- : @error XDST0010 If the expanded QName of <tt>$name</tt> is not equal
- :        (as defined by the eq operator) to the name of any resource in
- :        the statically known collections.
- : @error XDDY0009 If available collections does not provide a mapping for
+ : @error <tt></tt> If available collections does not provide a mapping for
  :        the expanded QName <tt>$name</tt>.
- : @error XPTY0004 If <tt>$content</tt> does not match the expected type
+ : @error <tt></tt> If the modifier property of the collection <tt>$name</tt>
+ :        is <tt>const</tt>, <tt>append-only</tt>, or <tt>queue</tt>.
+ : @error <tt></tt> If the order property of the collection <tt>$name</tt>
+ :        is <tt>unordered</tt>.
+ : @error <tt></tt> If <tt>$content</tt> does not match the expected type
  :        according to the rules for SequenceType Matching.
- : @error XDDY0011 If the result is not a node that is contained in the sequence
- :        identified by <tt>$name</tt> in the available collections. 
+ : @error <tt></tt> If the <tt>$target</tt> node is not a node that is
+ :        contained in the collection <tt>$name</tt>.
  : @return The variable <tt>$content</tt> is evaluated as though it were
  :         an enclosed expression in an element constructor
  :         (see Rule 1e in Section 3.7.1.3 ContentXQ of the
@@ -184,12 +215,12 @@ declare updating function ddl:insert-nodes-last($name as xs:QName,
  :         that contains the <tt>upd:insertNodesBefore($name, $target, $list)</tt>
  :         update primitive.
  :)
-declare updating function ddl:insert-nodes-before($name as xs:QName,
-                                                  $target as node(),
-                                                  $content as node()*) external;
+declare updating function xqddf:insert-nodes-before($name as xs:QName,
+                                                    $target as node(),
+                                                    $content as node()*) external;
 
 (:~
- : The insert-nodes-after function is an updating function that inserts
+ : The <tt>insert-nodes-after</tt> function is an updating function that inserts
  : copies of zero or more nodes as following siblings of <tt>$target</tt>
  : into a collection.
  :
@@ -199,15 +230,16 @@ declare updating function ddl:insert-nodes-before($name as xs:QName,
  :        sequence should be inserted.
  : @param <tt>$content</tt> The sequences of nodes that should be added to the new
  :        collection.
- : @error XDST0010 If the expanded QName of <tt>$name</tt> is not equal
- :        (as defined by the eq operator) to the name of any resource in
- :        the statically known collections.
- : @error XDDY0009 If available collections does not provide a mapping for
+ : @error <tt></tt> If available collections does not provide a mapping for
  :        the expanded QName <tt>$name</tt>.
- : @error XPTY0004 If <tt>$content</tt> does not match the expected type
+ : @error <tt></tt> If <tt>$content</tt> does not match the expected type
  :        according to the rules for SequenceType Matching.
- : @error XDDY0011 If the result is not a node that is contained in the sequence
- :        identified by <tt>$name</tt> in the available collections. 
+ : @error <tt></tt> If the modifier property of the collection <tt>$name</tt>
+ :        is <tt>const</tt>, <tt>append-only</tt>, or <tt>queue</tt>.
+ : @error <tt></tt> If the order property of the collection <tt>$name</tt>
+ :        is <tt>unordered</tt>.
+ : @error <tt></tt> If the <tt>$target</tt> node is not a node that is
+ :        contained in the collection <tt>$name</tt>.
  : @return The variable <tt>$content</tt> is evaluated as though it were
  :         an enclosed expression in an element constructor
  :         (see Rule 1e in Section 3.7.1.3 ContentXQ of the
@@ -218,27 +250,24 @@ declare updating function ddl:insert-nodes-before($name as xs:QName,
  :         that contains the <tt>upd:insertNodesAfter($name, $target, $list)</tt>
  :         update primitive.
  :)
-declare updating function ddl:insert-nodes-after($name as xs:QName,
+declare updating function xqddf:insert-nodes-after($name as xs:QName,
                                                   $pos as node(),
                                                   $content as node()*) external;
 
 (:~
- : The delete-nodes function is an updating function that deletes zero of more
+ : The <tt>delete-nodes</tt> function is an updating function that deletes zero of more
  : nodes from a collections. The keywords node and nodes may be used
  : interchangeably, regardless of how many nodes are actually deleted.
  :
  : @param <tt>$name</tt> The name of the collection from which the nodes
  :        should be deleted.
  : @param <tt>$target</tt> The nodes in the collection that should be deleted.
- : @error <tt>XDST0010</tt> If the expanded QName of <tt>$name</tt> is not equal
- :        (as defined by the eq operator) to the name of any resource in the
- :        statically known collections.
- : @error <tt>XDST0011</tt> If the modifier property of the statically known
+ : @error <tt></tt> If available collections does not provide a mapping
+ :        for the expaned QName <tt>$name</tt>.
+ : @error <tt></tt> If the modifier property of the statically known
  :        collection identified by QName <tt>$name</tt> is <tt>const</tt>,
  :        <tt>queue</tt>, or <tt>append-only</tt>.
- : @error <tt>XDDY0009</tt> If available collections does not provide a mapping
- :        for the expaned QName <tt>$name</tt>.
- : @error <tt>XDDY0011</tt> If any node from resulting sequence is not part of
+ : @error <tt></tt> If any node of the <tt>$target</tt> sequence is not a member of
  :        the sequence that is mapped from the expanded QName <tt>$name</tt>.
  : @return  For each node <tt>$tnode</tt> in the target sequence <tt>$target</tt>,
  :          the following update primitive is appended to the pending update list:
@@ -248,24 +277,22 @@ declare updating function ddl:insert-nodes-after($name as xs:QName,
  :          The resulting pending update list (together with an empty XDM instance)
  :          is the result of the delete-nodes function.
  :)
-declare updating function ddl:delete-nodes($name as xs:QName,
+declare updating function xqddf:delete-nodes($name as xs:QName,
                                            $target as node()*) external;
 
 (:~
- : The delete-node-first function is an updating function that deletes the
+ : The <tt>delete-node-first</tt> function is an updating function that deletes the
  : first node from an ordered collection.
  :
  : @param <tt>$name</tt> The name of the collection from which the first node
  :        should be deleted.
- : @error <tt>XDST0010</tt> If the expanded QName of <tt>$name</tt> is not equal
- :        (as defined by the eq operator) to the name of any resource
- :        in the statically known collections.
- : @error <tt>XDST0011</tt> If the modifier property of the statically known
- :        collection identified by the QName <tt>$name</tt> is not <tt>queue</tt>
- :        or the order property is not <tt>ordered</tt>.
  : @error <tt>XDDY0009</tt> If available collections does not provide a mapping
  :        for the expaned QName <tt>$name</tt>.
- : @error <tt>XDDY0014</tt> If the sequences mapped by the expanded QName
+ : @error <tt></tt> If the modifier property of the collection <tt>$name</tt>
+ :        is <tt>const</tt> or <tt>append-only</tt>.
+ : @error <tt></tt> If the order property of the collection <tt>$name</tt>
+ :        is <tt>unordered</tt>.
+ : @error <tt></tt> If the sequences mapped by the expanded QName
  :        <tt>$name</tt> doesn't contain any nodes.
  : @return Let <tt>$tnode</tt> be the first node of the sequence in the map
  :         of available collections identified by QName <tt>$name</tt>.
@@ -273,31 +300,20 @@ declare updating function ddl:delete-nodes($name as xs:QName,
  :         update list containing the <tt>upd:deleteNode($name, $tnode)</tt>
  :         update primitive.
  :)
-declare updating function ddl:delete-node-first($name as xs:QName) {
-  (: TODO implement in C++ :)
-  if (fn:empty(ddl:collection($name))) 
-  then
-    fn:error($ddl:XDDY0014,
-             "Cannot delete the first node of a collection that is empty")
-  else
-    (: raises XDDY0009 or deletes the last node :)
-    ddl:delete-nodes($name, ddl:collection($name)[last()])
-};
+declare updating function xqddf:delete-node-first($name as xs:QName) external;
 
 (:~
- : The delete-node-last function is an updating function that deletes the
+ : The <tt>delete-node-last</tt> function is an updating function that deletes the
  : last node from an ordered collection.
  :
  : @param <tt>$name</tt> The name of the collection from which the last node
  :        should be deleted.
- : @error <tt>XDST0010</tt> If the expanded QName of <tt>$name</tt> is not equal
- :        (as defined by the eq operator) to the name of any resource
- :        in the statically known collections.
- : @error <tt>XDST0011</tt> If the modifier property of the statically known
- :        collection identified by the QName <tt>$name</tt> is not <tt>queue</tt>
- :        or the order property is not <tt>ordered</tt>.
- : @error <tt>XDDY0009</tt> If available collections does not provide a mapping
+ : @error <tt></tt> If available collections does not provide a mapping
  :        for the expaned QName <tt>$name</tt>.
+ : @error <tt></tt> If the modifier property of the collection <tt>$name</tt>
+ :        is <tt>const</tt>, <tt>append-only</tt>, or <tt>queue</tt>.
+ : @error <tt></tt> If the order property of the collection <tt>$name</tt>
+ :        is <tt>unordered</tt>.
  : @error <tt>XDDY0014</tt> If the sequences mapped by the expanded QName
  :        <tt>$name</tt> doesn't contain any nodes.
  : @return Let <tt>$tnode</tt> be the last node of the sequence in the map
@@ -306,57 +322,83 @@ declare updating function ddl:delete-node-first($name as xs:QName) {
  :         update list containing the <tt>upd:deleteNode($name, $tnode)</tt>
  :         update primitive.
  :)
-declare updating function ddl:delete-node-last($name as xs:QName) {
-  (: TODO implement in C++ :)
-  if (fn:empty(ddl:collection($name))) 
-  then
-    fn:error($ddl:XDDY0014,
-             "Cannot delete the last node of a collection that is empty")
-  else
-    (: raises XDDY0009 or deletes the first node :)
-    ddl:delete-nodes($name, ddl:collection($name)[1])
-};
+declare updating function xqddf:delete-node-last($name as xs:QName) external;
 
 (:~
- : The create-index function is an updating function that adds a mapping from
- : the expanded QName <tt>$name</tt> to an empty map of index entries to the map of
- : available indexes.
+ : The <tt>index-of</tt> function is simple function that returns the
+ : index of the node <tt>$node</tt> in the sequence of nodes belonging to
+ : the entry with QName $name in the map of available collections.
+ :
+ : @param <tt>$name</tt> The name of the collection
+ : @param <tt>node</tt> The node to retrieve the index from.
+ : @error <tt></tt> If available collections does not provide a mapping
+ :        for the expaned QName <tt>$name</tt>.
+ : @error <tt></tt> If the order property of the collection <tt>$name</tt>
+ :        is <tt>unordered</tt>.
+ : @error <tt></tt> If the node <tt>$node</tt> is not contained in the collection.
+ : @return The result of this function is the position as xs:integer of
+ :         the node <tt>$node</tt> in the sequence belonging to the entry
+ :         with QName $name in the map of available collections.
+ :)
+declare function xqddf:index-of($name as xs:QName, $node as node()) as xs:integer external;
+
+(:~
+ : The <tt>collection</tt> function is simple function that returns the
+ : the sequence of nodes belonging to the entry with QName <tt>$name</tt>
+ : in the map of available collections.
+ :
+ : @param <tt>$name</tt> The name of the collection
+ : @error <tt></tt> If available collections does not provide a mapping
+ :        for the expaned QName <tt>$name</tt>.
+ : @return The result of this function is the sequence of nodes
+ :         belonging to the entry with QName <tt>$name</tt> in the map
+ :         of available collections.
+ :)
+(:declare function xqddf:collection($name as xs:QName) as document-node()* external;:)
+
+(:~
+ : The <tt>create-index</tt> function is an updating function that adds a
+ : mapping from the expanded QName <tt>$name</tt> to a map of index entries
+ : to the map of available indexes.
  :
  : @param $name The QName of the index to add to the map of available
  :        indexes.
- : @error <tt>XDST0010</tt> if the expanded QName of <tt>$name</tt> is not equal
+ : @error <tt></tt> if the expanded QName of <tt>$name</tt> is not equal
  :       (as defined by the
  :       <a href="http://www.w3.org/TR/xquery/#id-value-comparisons">eq operator</a>) 
  :       to the name of any resource in the statically known indexes.
- : @error <tt>XDDY0012</tt> if available indexes already provides a mapping
+ : @error <tt></tt> if available indexes already provides a mapping
  :        for the expaned QName <tt>$name</tt>.
  : @return The result of the function is an empty XDM instance and a pending
  :         update list that contains the <tt>upd:createIndex($name)</tt>
  :         update primitive.
  :)
-declare updating function ddl:create-index($name as xs:QName) external;
+declare updating function xqddf:create-index($name as xs:QName) external;
 
 (:~
- : The delete-index function is an updating function that removes a resource
+ : The <tt>delete-index</tt> function is an updating function that removes a resource
  : from the map of available indexes. The QName <tt>$name</tt> is the name
  : of the resource.
  :
  : @param $name The QName of the index to delete from the map of available
  :        indexes.
- : @error <tt>XDST0010</tt> if the expanded QName of <tt>$name</tt> is not equal
- :       (as defined by the
- :       <a href="http://www.w3.org/TR/xquery/#id-value-comparisons">eq operator</a>) 
- :       to the name of any resource in the statically known indexes.
  : @error XDDY0009 If available indexes does not provide a mapping for
  :        the expaned QName <tt>$name</tt>.
  : @return The result of the function is an empty XDM instance and a pending
  :         update list that contains the <tt>upd:deleteIndex($name)</tt>
  :         update primitive.
  :)
-declare updating function ddl:delete-index($name as xs:QName) external;
+declare updating function xqddf:delete-index($name as xs:QName) external;
 
 (:~
-  TODO documentation
+ : The <tt>refresh-index</tt> function is an updating function that populates
+ : the map of index entries indentified by the expanded QName <tt>$name</tt>
+ : in the map of available indexes.
+ : Note that if the maintenance property of the index in question is automatic,
+ : this function is a NOP.
+ :
+ : @param $name The QName of the index to refresh.
+ : @error <tt></tt> If available indexes does not provide a mapping for
+ :       the expanded QName <tt>$name</tt>.
  :)
-declare updating function ddl:refresh-index($name as xs:QName) external;
-
+declare updating function xqddf:refresh-index($name as xs:QName) external;
