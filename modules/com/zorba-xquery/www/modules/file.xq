@@ -32,7 +32,10 @@ module namespace file = "http://www.zorba-xquery.com/modules/file";
  : @return true if the copy operation was successful.
  : @error An error is thrown if IO or Security problems occur.
  :)
-declare sequential function file:copy($sourceFile as xs:string, $destinationFile as xs:string) as xs:boolean external;
+declare sequential function file:copy(
+  $sourceFile as xs:string,
+  $destinationFile as xs:string
+) as xs:boolean external;
 
 (:~
  : Copies a file given a source and a destination paths/uris. The operation
@@ -46,7 +49,11 @@ declare sequential function file:copy($sourceFile as xs:string, $destinationFile
  : @return true if the copy operation was successful
  : @error An error is thrown if IO or Security problems occur.
  :)
-declare sequential function file:copy($sourceFile as xs:string, $destinationFile as xs:string, $overwrite as xs:boolean) as xs:boolean external;
+declare sequential function file:copy(
+  $sourceFile as xs:string,
+  $destinationFile as xs:string,
+  $overwrite as xs:boolean
+) as xs:boolean external;
 
 (:~
  : Tests if a path/URI is already used.
@@ -55,7 +62,9 @@ declare sequential function file:copy($sourceFile as xs:string, $destinationFile
  : @return true if the path/URI points to an existing file system item.
  : @error An error is thrown if IO or Security problems occur.
  :)
-declare sequential function file:exists($fileOrDir as xs:string) as xs:boolean external;
+declare sequential function file:exists(
+  $fileOrDir as xs:string
+) as xs:boolean external;
 
 (:~
  : Lists the file system items in a certain directory. No assumption should be
@@ -65,7 +74,61 @@ declare sequential function file:exists($fileOrDir as xs:string) as xs:boolean e
  : @return The sequence of names of the direct children. 
  : @error An error is thrown if IO or Security problems occur.
  :)
-declare sequential function file:files($path as xs:string) as xs:string external;
+declare sequential function file:files(
+  $path as xs:string
+) as xs:string external;
+
+(:~
+ : Lists all files matching the given pattern in a given directory.
+ : The order of the result is not defined.
+ : The "." and ".." items are not considered for the match.
+ : The result of this function is equivalent to the following call:
+ : <pre>
+ :  file:files($path, $pattern, fn:false)
+ : </pre>
+ : 
+ : @param $path The path/URI to list the files of.
+ : @param $pattern The filename condition to be checked.
+ : @return A sequence of filenames matching the pattern.
+ :)
+declare sequential function file:files(
+  $path as xs:string,
+  $pattern as xs:string
+) as xs:string* {
+  file:files($path, $pattern, fn:false())
+};
+
+(:~
+ : Lists all files matching the given pattern in a given directory
+ : and all subdirectories if $recursive is specified.
+ : The order of the result is not defined.
+ : The "." and ".." items are not considered for the match.
+ : 
+ : @param $path The path/URI to list the files of.
+ : @param $pattern The filename condition to be checked.
+ : @param $recursive A boolean indicating whether directories should
+ :        be searched recursively.
+ : @return A sequence of filenames matching the pattern.
+ :
+ :)
+declare sequential function file:files(
+  $path as xs:string,
+  $pattern as xs:string,
+  $recursive as xs:boolean
+) as xs:string* {
+  for $f in file:files($path)
+  let $full := fn:concat($path, "///", $f)
+  return
+    if ($recursive and file:is-directory($full))
+    then
+      file:files($full, $pattern, $recursive)
+    else
+      if (fn:matches($f, $pattern))
+      then 
+        $f
+      else
+        ()
+};
 
 (:~
  : Tests if a path/URI points to a directory. On UNIX-based systems, the root
@@ -75,7 +138,9 @@ declare sequential function file:files($path as xs:string) as xs:string external
  : @return true if the path/URI points to a directory.
  : @error An error is thrown if IO or Security problems occur.
  :)
-declare sequential function file:is-directory($dir as xs:string) as xs:boolean external;
+declare sequential function file:is-directory(
+  $dir as xs:string
+) as xs:boolean external;
 
 (:~
  : Tests if a path/URI points to a file.
@@ -84,7 +149,9 @@ declare sequential function file:is-directory($dir as xs:string) as xs:boolean e
  : @return true if the path/URI points to a file.
  : @error An error is thrown if IO or Security problems occur.
  :)
-declare sequential function file:is-file($file as xs:string) as xs:boolean external;
+declare sequential function file:is-file(
+  $file as xs:string
+) as xs:boolean external;
 
 (:~
  : Retrieves the timestamp of the last modification of the file system item
@@ -96,7 +163,9 @@ declare sequential function file:is-file($file as xs:string) as xs:boolean exter
  : @error An error is thrown if the provided path does not point to an existing
  :        item or if IO or Security problems occur.
  :)
-declare sequential function file:last-modified($fileOrDir as xs:string) as xs:dateTime external;
+declare sequential function file:last-modified(
+  $fileOrDir as xs:string
+) as xs:dateTime external;
 
 (:~
  : Creates a directory. The operation is equivalent to calling:
@@ -107,7 +176,9 @@ declare sequential function file:last-modified($fileOrDir as xs:string) as xs:da
  : @error An error is thrown if a recursive directory creation is attempted,
  :        or if IO or Security problems occur.
  :)
-declare sequential function file:mkdir($dir as xs:string) as xs:boolean external;
+declare sequential function file:mkdir(
+  $dir as xs:string
+) as xs:boolean external;
 
 (:~
  : Creates a directory. This function is not recursive. The $create flag
@@ -122,7 +193,10 @@ declare sequential function file:mkdir($dir as xs:string) as xs:boolean external
  : @error An error is thrown if a recursive directory creation is attempted,
  :        or if IO or Security problems occur.
  :)
-declare sequential function file:mkdir($dir as xs:string, $create as xs:boolean) as xs:boolean external;
+declare sequential function file:mkdir(
+  $dir as xs:string,
+  $create as xs:boolean
+) as xs:boolean external;
 
 (:~
  : Creates directories recursively. All the missing parent directories from the
@@ -132,7 +206,9 @@ declare sequential function file:mkdir($dir as xs:string, $create as xs:boolean)
  : @return true if the directory was successfully created.
  : @error An error is thrown if IO or Security problems occur.
  :)
-declare sequential function file:mkdirs($dir as xs:string) as xs:boolean external;
+declare sequential function file:mkdirs(
+  $dir as xs:string
+) as xs:boolean external;
 
 (:~
  : Creates directories recursively. The $create flag controls the behavior of
@@ -146,7 +222,10 @@ declare sequential function file:mkdirs($dir as xs:string) as xs:boolean externa
  :         even if $dir points to an existing directory.
  : @error An error is thrown if IO or Security problems occur.
  :)
-declare sequential function file:mkdirs($dir as xs:string, $create as xs:boolean) as xs:boolean external;
+declare sequential function file:mkdirs(
+  $dir as xs:string,
+  $create as xs:boolean
+) as xs:boolean external;
 
 (:~
  : Transforms a file system path into a URI with the file:// scheme. No checks
@@ -155,7 +234,9 @@ declare sequential function file:mkdirs($dir as xs:string, $create as xs:boolean
  : @param $path The path to transform.
  : @return the file URI corresponding to the provided path.
  :)
-declare sequential function file:path-to-uri($file as xs:string) as xs:anyURI external;
+declare sequential function file:path-to-uri(
+  $file as xs:string
+) as xs:anyURI external;
 
 (:~
  : Reads the content of a file and returns a Base64 representation of the
@@ -165,7 +246,9 @@ declare sequential function file:path-to-uri($file as xs:string) as xs:anyURI ex
  : @return the content of the file as Base64.
  : @error An error is thrown if IO or Security problems occur.
  :)
-declare sequential function file:read($file as xs:string) as xs:base64Binary external;
+declare sequential function file:read(
+  $file as xs:string
+) as xs:base64Binary external;
 
 (:~
  : NOT IMPLEMENTED YET!
@@ -179,7 +262,10 @@ declare sequential function file:read($file as xs:string) as xs:base64Binary ext
  :        after trying to "tidy" the file content. An error is also thrown if
  :        IO or Security problems occur.
  :)
-declare sequential function file:read-html($file as xs:string, $tidyOptions as xs:string) as xs:string external;
+declare sequential function file:read-html(
+  $file as xs:string,
+  $tidyOptions as xs:string
+) as xs:string external;
 
 (:~
  : Reads the content of a file and returns a string representation of the
@@ -189,7 +275,9 @@ declare sequential function file:read-html($file as xs:string, $tidyOptions as x
  : @return the content of the file as string.
  : @error An error is thrown if IO or Security problems occur.
  :)
-declare sequential function file:read-text($file as xs:string) as xs:string external;
+declare sequential function file:read-text(
+  $file as xs:string
+) as xs:string external;
 
 (:~
  : Reads a file as an XML file and returns an XML document. The file content
@@ -200,7 +288,9 @@ declare sequential function file:read-text($file as xs:string) as xs:string exte
  : @error An error is thrown if the does not contain a valid XML, or if IO or
  :        Security problems occur.
  :)
-declare sequential function file:read-xml($file as xs:string) as node() external;
+declare sequential function file:read-xml(
+  $file as xs:string
+) as node() external;
 
 (:~
  : Delete a file or a directory from the file system.
@@ -209,7 +299,9 @@ declare sequential function file:read-xml($file as xs:string) as node() external
  : @return true is the operation is succeeds.
  : @error An error is thrown if IO or Security problems occur.
  :)
-declare sequential function file:remove($fileOrDir as xs:string) as xs:boolean external;
+declare sequential function file:remove(
+  $fileOrDir as xs:string
+) as xs:boolean external;
 
 (:~
  : Write a sequence of items to a file. This operation creates a new file
@@ -222,7 +314,11 @@ declare sequential function file:remove($fileOrDir as xs:string) as xs:boolean e
  : @return emprty sequence
  : @error An error is thrown if IO or Security problems occur.
  :)
-declare sequential function file:write($file as xs:string, $content as item()*, $serializer-params as item()) external;
+declare sequential function file:write(
+  $file as xs:string,
+  $content as item()*,
+  $serializer-params as item()
+) external;
 
 (:~
  : Write a sequence of items to a file. This operation creates a new file or
@@ -238,4 +334,9 @@ declare sequential function file:write($file as xs:string, $content as item()*, 
  : @return emprty sequence
  : @error An error is thrown if IO or Security problems occur.
  :)
-declare sequential function file:write($file as xs:string, $content as item()*, $serializer-params as item(), $append as xs:boolean) external;
+declare sequential function file:write(
+  $file as xs:string,
+  $content as item()*,
+  $serializer-params as item(),
+  $append as xs:boolean
+) external;

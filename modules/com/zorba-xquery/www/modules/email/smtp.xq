@@ -18,9 +18,6 @@
 (:~
   : This is a library module that provides functions for sending emails.
   :
-  : @author Sorin Nasoi
-  : @version 1.0
-  :
   :<ul>
   :<test type="inline">test/rbkt/Queries/zorba/aleXis/q1.xq</test>
   :<test type="link">test/rbkt/Queries/zorba/aleXis/q1.xq</test>
@@ -129,6 +126,10 @@
   :  <li>smtp.gmail.com:587/tls/novalidate-cert</li>
   :  <li>[209.85.129.111]:587/tls/novalidate-cert</li>
   :</ul>
+  :
+  : @author Sorin Nasoi
+  : @version 1.0
+  :
   : 
   :)
 
