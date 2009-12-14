@@ -131,12 +131,35 @@ declare sequential function local:collectModule ($module, $relativeFileName as x
     ();
 };    
 
+declare function local:getFilePath ($relativePath as xs:string) as xs:string
+{
+  let $zorbaPath := replace($modulesPath,"/modules","")
+  let $test := concat($zorbaPath,'/',$relativePath)
+  return if(file:exists($test)) then
+     $test
+  else
+     concat("File: ",$test," was not found")
+};
+
 declare sequential function local:configure-xhtml ($xhtml, $pathToIndex as xs:string, $cssFileName as xs:string) {
     (: add a stypesheet :)
     let $cssPath := concat($pathToIndex, $cssFileName)
     return    
         replace value of node $xhtml/*:head/*:link/@href with $cssPath
     ;    
+    (: replace the <test> nodes with eiter links to the actual files or inline the actual files based on the 'type' attribute value :)
+    for $file in $xhtml//*:test
+    let $type := $file/@type
+    let $path := local:getFilePath($file/text())
+    return block {
+        if (matches($type, "link")) then 
+            replace node $file with 
+              <a href="{$path}">{$path}</a> 
+        else if (matches($type, "inline")) then
+            replace node $file with
+              <pre class="fragment">{file:read-text($path)}</pre>
+        else () 
+    };
     (: replace the function type description with images :)
     let $xquSpec := "http://www.w3.org/TR/xquery-update-10/",
         $xqsSpec := "http://www.w3.org/TR/xquery-sx-10/#dt-sequential-function"

@@ -22,6 +22,8 @@
   : @version 1.0
   :
   :<ul>
+  :<test type="inline">test/rbkt/Queries/zorba/aleXis/q1.xq</test>
+  :<test type="link">test/rbkt/Queries/zorba/aleXis/q1.xq</test>
   :  <li>Table of Contents 
   :    <ul>
   :      <li><a href="#intro_mail">1 Introduction</a></li>
