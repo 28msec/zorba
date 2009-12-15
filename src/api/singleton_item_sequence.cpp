@@ -34,7 +34,7 @@ SingletonItemSequence::next(Item& aItem)
   }
   aItem = theItem;
   theFirstCall = false;
-  return true;
+  return !aItem.isNull();
 }
 
 
