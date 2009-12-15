@@ -75,6 +75,45 @@ typedef enum {
 } XQC_Error;
 
 
+// XQC_ItemType
+typedef enum {
+  XQC_EMPTY_TYPE = 0,
+
+  XQC_DOCUMENT_TYPE,
+  XQC_ELEMENT_TYPE,
+  XQC_ATTRIBUTE_TYPE,
+  XQC_TEXT_TYPE,
+  XQC_PROCESSING_INSTRUCTION_TYPE,
+  XQC_COMMENT_TYPE,
+  XQC_NAMESPACE_TYPE,
+
+  XQC_ANY_SIMPLE_TYPE,
+  XQC_ANY_URI_TYPE,
+  XQC_BASE_64_BINARY_TYPE,
+  XQC_BOOLEAN_TYPE,
+  XQC_DATE_TYPE,
+  XQC_DATE_TIME_TYPE,
+  XQC_DAY_TIME_DURATION_TYPE,
+  XQC_DECIMAL_TYPE,
+  XQC_DOUBLE_TYPE,
+  XQC_DURATION_TYPE,
+  XQC_FLOAT_TYPE,
+  XQC_G_DAY_TYPE,
+  XQC_G_MONTH_TYPE,
+  XQC_G_MONTH_DAY_TYPE,
+  XQC_G_YEAR_TYPE,
+  XQC_G_YEAR_MONTH_TYPE,
+  XQC_HEX_BINARY_TYPE,
+  XQC_NOTATION_TYPE,
+  XQC_QNAME_TYPE,
+  XQC_STRING_TYPE,
+  XQC_TIME_TYPE,
+  XQC_UNTYPED_ATOMIC_TYPE,
+  XQC_YEAR_MONTH_DURATION_TYPE
+	
+} XQC_ItemType;
+
+
 // external functions
 typedef void (*external_function_init)(void** user_data, void* global_user_data);
 
@@ -121,7 +160,6 @@ extern "C" {
    */
   struct XQC_Implementation_s 
   {
-
     /**
      * Creates a static context suitable for use in the parse() and parse_file()
      * functions. The user is responsible for freeing the ::XQC_StaticContext object returned by calling
@@ -946,39 +984,10 @@ extern "C" {
     void* data;
   };
 
-  /**
-   * This struct is Zorba's representation of an Item as defined in the
-   * XQuery 1.0 and XPath 2.0 Data Model (XDM); see http://www.w3.org/TR/xpath-datamodel/. 
-   * 
-   * Instances of the XDM are a sequence, i.e. an ordered collection of zero or more items.
-   * In the Zorba API, a sequence is represented by the XQC_Sequence struct.
-   *
-   * The Item class is the union of all XQuery node and atomic types.
-   * The class provides functions to access the information of an Item. Note that not
-   * all functions are defined on every Item kind. If a function is called on an Item that
-   * does not provide the function called, an XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE error
-   * is raised.
-   *
-   * A new atomic Item can be created using the ItemFactory. A new node Item should be created
-   * by the result of a query.
-   */
-  struct XQC_Item_s 
-  {
-    /**
-     * The string value is the string that is extracted by calling the fn:string function
-     * on the Item (see http://www.w3.org/TR/xpath-functions/#func-string).
-     * Note that this function is available for all types of Items.
-     *
-     * \param item The XQC_Item that this function pointer is a member of
-     * \param[out] string_value The string-value of the given item.
-     *             This string is valid as long as the given item is valid.
-     *
-     * \retval ::XQC_NO_ERROR
-     * \retval ::XQP0019_INTERNAL_ERROR
-     * \retval ::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE
-     */
+
+  struct XQC_Item_s {
     XQC_Error
-    (*string_value)(XQC_Item item, const char** string_value);
+    (*string_value)(XQC_Item, const char** value);
 
     /**
      * Get the (optional) value of a QName's prefix.
@@ -1761,14 +1770,89 @@ extern "C" {
      * Get the next item of the sequence.
      *
      * \param sequence The XQC_Sequence_s that this function pointer is a member of
-     * \param[out] item The item wrapper that should contain the next item if XQ_NO_ERROR is returned
      *
      * \retval ::XQC_NO_ERROR
      * \retval ::XQP0019_INTERNAL_ERROR
      * \retval any XQuery type or dynamic error
      */
     XQC_Error
-    (*next)(XQC_Sequence* sequence, XQC_Item item);
+    (*next)(XQC_Sequence* sequence);
+
+    /**
+     * Returns an item type enumeration for the type of the current item.
+     *
+     * \param sequence The XQC_Sequence that this function pointer is a member of
+     * \param[out] type the XQC_ItemType of the current item
+     *
+     * \retval ::XQC_NO_ERROR
+     * \retval ::XQC_NO_CURRENT_ITEM if there is no current item, either because next()
+     *   has not been called yet, or because the end of the sequence has been reached.
+     */
+    XQC_Error
+    (*item_type)(const XQC_Sequence *sequence, XQC_ItemType *type);
+
+    /**
+     * The string value is the string that is extracted by calling the fn:string function
+     * on the Item (see http://www.w3.org/TR/xpath-functions/#func-string).
+     * Note that this function is available for all types of Items.
+     *
+     * \param item The XQC_Item that this function pointer is a member of
+     * \param[out] string_value The string-value of the given item.
+     *             This string is valid as long as the given item is valid.
+     *
+     * \retval ::XQC_NO_ERROR
+     * \retval ::XQP0019_INTERNAL_ERROR
+     * \retval ::XQP0024_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE
+     */
+    XQC_Error
+    (*string_value)(const XQC_Sequence* sequence, const char** string_value);
+
+    /**
+     * Returns the value of the current item in the sequence as an integer - this is equivalent to calling
+     * <code>fn:number()</code> (http://www.w3.org/TR/xpath-functions/#func-number) on the current item, and
+     * casting the result to an int. This is available for all item types.
+     *
+     * \param sequence The XQC_Sequence that this function pointer is a member of
+     * \param[out] value The value of the current item as an int.
+     *
+     * \retval ::XQC_NO_ERROR
+     * \retval ::XQC_NO_CURRENT_ITEM if there is no current item, either because next()
+     *   has not been called yet, or because the end of the sequence has been reached.
+     */
+    XQC_Error
+    (*integer_value)(const XQC_Sequence *sequence, int *value);
+
+    /**
+     * Returns the value of the current item in the sequence as a double - this is equivalent to calling
+     * <code>fn:number()</code> (http://www.w3.org/TR/xpath-functions/#func-number) on the current item.
+     * This is available for all item types.
+     *
+     * \param sequence The XQC_Sequence that this function pointer is a member of
+     * \param[out] value The value of the current item as a double.
+     *
+     * \retval ::XQC_NO_ERROR
+     * \retval ::XQC_NO_CURRENT_ITEM if there is no current item, either because next()
+     *   has not been called yet, or because the end of the sequence has been reached.
+     */
+    XQC_Error
+    (*double_value)(const XQC_Sequence *sequence, double *value);
+
+    /**
+     * Returns the name for the current node as a (URI, localname) pair.
+     *
+     * \param sequence The XQC_Sequence that this function pointer is a member of
+     * \param[out] uri The URI of the name of the current node. The memory for the string will be valid
+     * until a subsequent call to XQC_Sequence::next().
+     * \param[out] name The localname of the name of the current node. The memory for the string will be valid
+     * until a subsequent call to XQC_Sequence::next().
+     *
+     * \retval ::XQC_NO_ERROR
+     * \retval ::XQC_NO_CURRENT_ITEM if there is no current item, either because next()
+     *   has not been called yet, or because the end of the sequence has been reached.
+     * \retval ::XQC_NOT_NODE if the current item is not a node.
+     */
+    XQC_Error
+    (*node_name)(const XQC_Sequence *sequence, const char **uri, const char **name);
 
     /**
      * called to free the resources associated with the xqc_itemfactory.

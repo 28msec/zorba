@@ -17,35 +17,49 @@
 
 #include <cassert>
 #include <zorba/zorba.h>
-#include "capi/item.h"
+#include <zorba/store_consts.h>
+#include <zorbamisc/ns_consts.h>
 #include "capi/error.h"
+
+
+
+#define SEQ_CATCH \
+  catch (ZorbaException &e) {                               \
+    return Error::convert_xquery_error(e.getErrorCode());   \
+  } catch (...) {                                           \
+    return XQC_INTERNAL_ERROR;                              \
+  }
+
 
 using namespace zorba;
 
 namespace zorbac {
 
-  zorba::ResultIterator*
-  getResultIterator(XQC_Sequence* sequence)
+  zorba::ItemSequence*
+  getItemSequence(XQC_Sequence* seq)
   {
-    return (static_cast<zorbac::Sequence*>(sequence->data))->theSequence.get();
+    zorbac::Sequence* lSeq = static_cast<zorbac::Sequence*>(seq->data);
+    zorba::ItemSequence* lRetval = lSeq->theSequence.get();
+    if ( ! lRetval) {
+      lRetval = lSeq->theItemSequence;
+    }
+    return lRetval;
   }
 
   XQC_Error
-  Sequence::next(XQC_Sequence* seq, XQC_Item item)
+  Sequence::next(XQC_Sequence* seq)
   {
-    ResultIterator* lIter = 0;
+    zorbac::Sequence* lSeq = static_cast<zorbac::Sequence*>(seq->data);
     try {
-      lIter = getResultIterator(seq);
-      zorbac::Item* lInnerItem = static_cast<zorbac::Item*>(item->data);
-      lInnerItem->theStrings.clear();
- 
-      if ( lIter->next(lInnerItem->theItem) )
+      lSeq->theStrings.clear();
+
+      ItemSequence* lIter = getItemSequence(seq);
+      if ( lIter->next(lSeq->theItem) )
         return XQC_NO_ERROR;
  
       return XQC_END_OF_SEQUENCE;
     } catch (QueryException& qe) {
-      zorbac::Sequence* lSeq = static_cast<zorbac::Sequence*>(seq->data);
-      if (lSeq->theErrorHandler) {                                      \
+      if (lSeq->theErrorHandler) {
         lSeq->theErrorHandler->error(lSeq->theErrorHandler, Error::convert_xquery_error(qe.getErrorCode()),
         ZorbaException::getErrorCodeAsString(qe.getErrorCode()).c_str(),
         qe.getDescription().c_str(),
@@ -54,32 +68,250 @@ namespace zorbac {
         qe.getColumnBegin());
       }
       return Error::convert_xquery_error(qe.getErrorCode());
-    } catch (ZorbaException &ze) {
-      return Error::convert_xquery_error(ze.getErrorCode());
-    } catch (...) {
-      return XQC_INTERNAL_ERROR;
     }
+    SEQ_CATCH;
+  }
+
+  XQC_Error
+  Sequence::item_type(const XQC_Sequence* seq, XQC_ItemType* type)
+  {
+    try {
+      zorbac::Sequence* lSeq = static_cast<zorbac::Sequence*>(seq->data);
+      zorba::Item lItem = lSeq->theItem;
+      if (lItem.isNull()) {
+        return XQC_NO_CURRENT_ITEM;
+      }
+
+      XQC_ItemType lRetval;
+      if (lItem.isNode()) {
+        switch (lItem.getNodeKind()) {
+          case store::StoreConsts::documentNode:
+            lRetval = XQC_DOCUMENT_TYPE;
+            break;
+          case store::StoreConsts::elementNode:
+            lRetval = XQC_ELEMENT_TYPE;
+            break;
+          case store::StoreConsts::attributeNode:
+            lRetval = XQC_ATTRIBUTE_TYPE;
+            break;
+          case store::StoreConsts::textNode:
+            lRetval = XQC_TEXT_TYPE;
+            break;
+          case store::StoreConsts::piNode:
+            lRetval = XQC_PROCESSING_INSTRUCTION_TYPE;
+            break;
+          case store::StoreConsts::commentNode:
+            lRetval = XQC_NAMESPACE_TYPE;
+            break;
+          default:
+            return XQC_INTERNAL_ERROR;
+        }
+      }
+      else /* not isNode() */ {
+        zorba::Item lType = lItem.getType();
+        zorba::String lUri = lType.getNamespace();
+        if (lUri != XML_SCHEMA_NS) {
+          // We can only identify non-derived atomic types
+          return XQC_INTERNAL_ERROR;
+        }
+        zorba::String lName = lType.getLocalName();
+        if (lName == "anySimpleType") {
+          lRetval = XQC_ANY_SIMPLE_TYPE;
+        }
+        else if (lName == "anyURI") {
+          lRetval = XQC_ANY_URI_TYPE;
+        }
+        else if (lName == "anyURI") {
+          lRetval = XQC_ANY_URI_TYPE;
+        }
+        else if (lName == "base64Binary") {
+          lRetval = XQC_BASE_64_BINARY_TYPE;
+        }
+        else if (lName == "boolean") {
+          lRetval = XQC_BOOLEAN_TYPE;
+        }
+        else if (lName == "date") {
+          lRetval = XQC_DATE_TYPE;
+        }
+        else if (lName == "dateTime") {
+          lRetval = XQC_DATE_TIME_TYPE;
+        }
+        else if (lName == "dayTimeDuration") {
+          lRetval = XQC_DAY_TIME_DURATION_TYPE;
+        }
+        // All these built-in types derive from decimal
+        else if ( (lName == "decimal") || (lName == "integer") ||
+            (lName == "int") || (lName == "long") || (lName == "short") ||
+            (lName == "byte") || (lName == "nonNegativeInteger") ||
+            (lName == "negativeInteger") || (lName == "nonPositiveInteger") ||
+            (lName == "positiveInteger") || (lName == "unsignedLong") ||
+            (lName == "unsignedInt") || (lName == "unsignedShort") ||
+            (lName == "unsignedByte") ) {         
+          lRetval = XQC_DECIMAL_TYPE;
+        }
+        else if (lName == "double") {
+          lRetval = XQC_DOUBLE_TYPE;
+        }
+        else if (lName == "duration") {
+          lRetval = XQC_DURATION_TYPE;
+        }
+        else if (lName == "float") {
+          lRetval = XQC_FLOAT_TYPE;
+        }
+        else if (lName == "gDay") {
+          lRetval = XQC_G_DAY_TYPE;
+        }
+        else if (lName == "gMonth") {
+          lRetval = XQC_G_MONTH_TYPE;
+        }
+        else if (lName == "gMonthDay") {
+          lRetval = XQC_G_MONTH_DAY_TYPE;
+        }
+        else if (lName == "gYear") {
+          lRetval = XQC_G_YEAR_TYPE;
+        }
+        else if (lName == "gYearMonth") {
+          lRetval = XQC_G_YEAR_MONTH_TYPE;
+        }
+        else if (lName == "hexBinary") {
+          lRetval = XQC_HEX_BINARY_TYPE;
+        }
+        else if (lName == "NOTATION") {
+          lRetval = XQC_NOTATION_TYPE;
+        }
+        else if (lName == "QName") {
+          lRetval = XQC_QNAME_TYPE;
+        }
+        // All these types are derived from xs:string
+        else if ( (lName == "string") || (lName == "normalizedString") ||
+            (lName == "token") || (lName == "language") ||
+            (lName == "Name") || (lName == "NCName") ||
+            (lName == "ENTITY") || (lName == "ENTITIES") ||
+            (lName == "ID") || (lName == "IDREF") || (lName == "IDREF") ||
+            (lName == "NMTOKEN") || (lName == "NMTOKENS") ) {
+          lRetval = XQC_STRING_TYPE;
+        }
+        else if (lName == "time") {
+          lRetval = XQC_TIME_TYPE;
+        }
+        else if (lName == "untypedAtomic") {
+          lRetval = XQC_UNTYPED_ATOMIC_TYPE;
+        }
+        else if (lName == "yearMonthDuragion") {
+          lRetval = XQC_YEAR_MONTH_DURATION_TYPE;
+        }
+        else {
+          // Anything else, there's no XQC_ItemType for. Integer seems
+          // like a hole...
+          return XQC_INTERNAL_ERROR;
+        }
+
+        (*type) = lRetval;
+      }
+      return XQC_NO_ERROR;
+    }
+    SEQ_CATCH;
+  }
+
+  XQC_Error
+  Sequence::string_value(const XQC_Sequence* seq, const char** value)
+  {
+    try {
+      zorbac::Sequence* lSeq = static_cast<zorbac::Sequence*>(seq->data);
+      if (lSeq->theItem.isNull()) {
+        return XQC_NO_CURRENT_ITEM;
+      }
+      zorba::String lString = lSeq->theItem.getStringValue();
+      lSeq->theStrings.push_back(lString);
+      (*value) = lString.c_str();
+      return XQC_NO_ERROR;
+    }
+    SEQ_CATCH;
+  }
+
+  XQC_Error
+  Sequence::integer_value(const XQC_Sequence* seq, int* value)
+  {
+    try {
+      zorbac::Sequence* lSeq = static_cast<zorbac::Sequence*>(seq->data);
+      if (lSeq->theItem.isNull()) {
+        return XQC_NO_CURRENT_ITEM;
+      }
+      (*value) = static_cast<int> (lSeq->theItem.getIntValue());
+      return XQC_NO_ERROR;
+    }
+    SEQ_CATCH;
+  }
+
+  XQC_Error
+  Sequence::double_value(const XQC_Sequence* seq, double* value)
+  {
+    try {
+      zorbac::Sequence* lSeq = static_cast<zorbac::Sequence*>(seq->data);
+      if (lSeq->theItem.isNull()) {
+        return XQC_NO_CURRENT_ITEM;
+      }
+      (*value) = static_cast<double>(lSeq->theItem.getDoubleValue());
+      return XQC_NO_ERROR;
+    }
+    SEQ_CATCH;
+  }
+
+  XQC_Error
+  Sequence::node_name(const XQC_Sequence* seq, const char** uri,
+  const char** name)
+  {
+    try {
+      zorbac::Sequence* lSeq = static_cast<zorbac::Sequence*>(seq->data);
+      zorba::Item lItem = lSeq->theItem;
+      if (lItem.isNull()) {
+        return XQC_NO_CURRENT_ITEM;
+      }
+      if ( ! lItem.isNode() ) {
+        return XQC_NOT_NODE;
+      }
+      std::auto_ptr<zorba::Item> lNodeName(new zorba::Item());
+      if ( ! lItem.getNodeName(*lNodeName) ) {
+        return XQC_INTERNAL_ERROR;
+      }
+      zorba::String lUri = lNodeName->getNamespace();
+      lSeq->theStrings.push_back(lUri);
+      zorba::String lName = lNodeName->getLocalName();
+      lSeq->theStrings.push_back(lName);
+      (*uri) = lUri.c_str();
+      (*name) = lName.c_str();
+
+      return XQC_NO_ERROR;
+    }
+    SEQ_CATCH;
   }
 
   void
   Sequence::free(XQC_Sequence* seq)
   {
-     try {
-       ResultIterator* lIter = getResultIterator(seq);
-       lIter->close();
-       delete static_cast<zorbac::Sequence*>(seq->data);
-       delete seq;
-     } catch (ZorbaException&) {
-       assert(false);
-     } catch (...) {
-       assert(false);
-     }
+    try {
+      zorbac::Sequence* lSeq = static_cast<zorbac::Sequence*>(seq->data);
+      if (lSeq->theSequence) {
+        lSeq->theSequence.get()->close();
+      }
+      delete lSeq;
+      delete seq;
+    } catch (ZorbaException&) {
+      assert(false);
+    } catch (...) {
+      assert(false);
+    }
   }
 
   void
   Sequence::assign_functions(XQC_Sequence* seq)
   {
     seq->next = Sequence::next;
+    seq->item_type = Sequence::item_type;
+    seq->string_value = Sequence::string_value;
+    seq->integer_value = Sequence::integer_value;
+    seq->double_value = Sequence::double_value;
+    seq->node_name = Sequence::node_name;
     seq->free = Sequence::free;
   }
 

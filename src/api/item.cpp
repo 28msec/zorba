@@ -223,6 +223,17 @@ uint32_t Item::getUnsignedIntValue() const
   return 0;
 }
 
+double Item::getDoubleValue() const
+{
+  ITEM_TRY
+
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+    return m_item->getDoubleValue().getNumber();
+
+  ITEM_CATCH
+  return 0;
+}
 
 Item Item::getEBV() const
 {

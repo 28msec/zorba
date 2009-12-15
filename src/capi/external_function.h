@@ -20,6 +20,8 @@
 #include <zorba/external_function.h>
 #include <zorba/zorbac.h>
 
+#include "capi/item.h"
+
 namespace zorbac {
 
   class ExternalFunctionWrapper : public zorba::PureStatelessExternalFunction {
@@ -43,6 +45,7 @@ namespace zorbac {
     protected:
       zorba::String theURI;
       zorba::String theLocalName;
+      Item* theItem;
       external_function_init    theInitFunction;
       external_function_next    theNextFunction;
       external_function_release theReleaseFunction;

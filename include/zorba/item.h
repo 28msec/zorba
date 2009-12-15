@@ -125,6 +125,14 @@ public:
   uint32_t
   getUnsignedIntValue() const;
 
+  /** \brief Get the int value of the Item.
+   *
+   * @return Item the int value of the Item.
+   * @throw ZorbaException if an error occured.
+   */
+  double
+  getDoubleValue() const;
+
   /** \brief Get the effective boolean value of the Item.
    *
    * The effective boolean value is the result of applying the fn:boolean function on 

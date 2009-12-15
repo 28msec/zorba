@@ -92,13 +92,10 @@ cerror_example_3(XQC_Implementation* impl)
 {
   XQC_Error      lError = XQC_NO_ERROR;
   XQC_Query*     lXQuery;
-  XQC_Item       lItem;
   const char*    lStringValue;
   XQC_Sequence*  lResult;
   XQC_ErrorHandler* lErrorHandler = (XQC_ErrorHandler*) malloc(sizeof(struct XQC_ErrorHandler_s));
   lErrorHandler->error = error_handler;
-
-  impl->create_item(impl, &lItem);
 
   // compile the query and get the result as a sequence
   lError = impl->prepare(impl, "for $i in (3, 2, 1, 0) return 3 div $i", 0, lErrorHandler, &lXQuery);
@@ -107,14 +104,13 @@ cerror_example_3(XQC_Implementation* impl)
 
   // an error is reported during the last for iteration
   // the error callback function is called and the loop terminates
-  while ( lResult->next(lResult, lItem) == XQC_NO_ERROR ) {
-    lItem->string_value(lItem, &lStringValue);
+  while ( lResult->next(lResult) == XQC_NO_ERROR ) {
+    lResult->string_value(lResult, &lStringValue);
     printf("%s ", lStringValue);
   }
 
   // release all aquired resources
   free(lErrorHandler);
-  lItem->free(lItem);
   lResult->free(lResult);
   lXQuery->free(lXQuery);
 

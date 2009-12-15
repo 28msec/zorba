@@ -18,13 +18,30 @@
 
 #include <zorba/zorbac.h>
 #include <zorba/result_iterator.h>
+#include <zorba/item.h>
 
 namespace zorbac {
 
   class Sequence {
     public:
       static XQC_Error
-      next(XQC_Sequence* sequence, XQC_Item item);
+      next(XQC_Sequence* sequence);
+
+      static XQC_Error
+      item_type(const XQC_Sequence* sequence, XQC_ItemType* type);
+
+      static XQC_Error
+      string_value(const XQC_Sequence* sequence, const char** string_value);
+
+      static XQC_Error
+      integer_value(const XQC_Sequence* sequence, int* int_value);
+
+      static XQC_Error
+      double_value(const XQC_Sequence* sequence, double* double_value);
+
+      static XQC_Error
+      node_name(const XQC_Sequence* sequence, const char** uri,
+      const char** name);
 
       static void
       free(XQC_Sequence* sequence);
@@ -32,8 +49,13 @@ namespace zorbac {
       static void
       assign_functions(XQC_Sequence* sequence);
 
+      // buffer to store strings that we return
+      // they are valid until next() is called
+      std::vector<zorba::String> theStrings;
+      zorba::Item             theItem;
       zorba::ResultIterator_t theSequence;
-      XQC_ErrorHandler*        theErrorHandler;
+      zorba::ItemSequence*    theItemSequence;
+      XQC_ErrorHandler*       theErrorHandler;
   }; /* class Sequence */
 
 } /* namespace zorbac */

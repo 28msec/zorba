@@ -138,7 +138,6 @@ ccontext_example_4(XQC_Implementation* impl)
   XQC_Sequence*       lSequence1;
 
   XQC_Sequence*       lSequence2;
-  XQC_Item           lItem = 0;
   const char*        lStringValue;
 
   // compile the first query and get its result sequence
@@ -156,17 +155,13 @@ ccontext_example_4(XQC_Implementation* impl)
 
   lXQuery2->sequence(lXQuery2, &lSequence2);
 
-  // create an Item and a String holder
-  impl->create_item(impl, &lItem);
-
   // iterate over the result two times
-  while ( lSequence2->next(lSequence2, lItem) != XQC_END_OF_SEQUENCE ) {
-    lItem->string_value(lItem, &lStringValue);
+  while ( lSequence2->next(lSequence2) != XQC_END_OF_SEQUENCE ) {
+    lSequence2->string_value(lSequence2, &lStringValue);
     printf("%s ", lStringValue);
   }
 
   // free all resources
-  lItem->free(lItem);
 
   lSequence2->free(lSequence2);
   lXQuery2->free(lXQuery2);
