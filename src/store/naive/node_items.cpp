@@ -54,6 +54,7 @@ XmlTree::XmlTree(XmlNode* root, ulong id)
   :
   theRefCount(0),
   theId(id),
+  thePos(0),
   theCollection(NULL),
   theRootNode(root),
   theDataGuideRootNode(NULL),
@@ -66,11 +67,12 @@ XmlTree::XmlTree(XmlNode* root, ulong id)
 /*******************************************************************************
 
 ********************************************************************************/
-void XmlTree::setCollection(SimpleCollection* collection) 
+void XmlTree::setCollection(SimpleCollection* collection, ulong pos) 
 {
   ZORBA_ASSERT(collection == NULL || theCollection == NULL);
 
   theCollection = collection;
+  thePos = pos;
 
   if (collection != NULL)
     theId = collection->createTreeId();

@@ -135,14 +135,16 @@ public:
   nodeAt(long aPosition) = 0;
 
   /**
-   * Get the position of a given node within the collection.
+   * Check if a given node belongs to this collection, and if so return its
+   * position within the collection.
    *
    * @param aNode The node whose position we are looking for.
-   * @return The position of the node in the collection, or -1 if the node is
-   * not part of the collection.
+   * @param aPosition The position of the node within the collection, if the
+   *        node is indeed in the collection.
+   * @return True if the node is in the collection; false otherwise.
    */
-  virtual long
-  indexOf(const Item* aNode) = 0;
+  virtual bool
+  findNode(const Item* aNode, ulong& position) const = 0;
 };
 
 } // namespace store

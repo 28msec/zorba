@@ -282,7 +282,8 @@ void createDynamicContext(
     dctx->setImplicitTimezone(lTimezone);
   }
 
-  if (spec.getDefaultCollection().size() != 0) {   
+  if (spec.getDefaultCollection().size() != 0) 
+  {   
     zorba::Item lDefaultCollection = factory.createAnyURI(spec.getDefaultCollection());   
     dctx->setDefaultCollection(lDefaultCollection);   
   }

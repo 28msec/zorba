@@ -191,7 +191,7 @@ CollectionPul* PULImpl::getCollectionPul(const store::Item* target)
     }
     else
     {
-      theNoCollectionPul = new CollectionPul(this);
+      theNoCollectionPul = new CollectionPul(this, NULL);
       theCollectionPuls[NULL] = theNoCollectionPul;
       return theNoCollectionPul;
     }
@@ -218,7 +218,9 @@ CollectionPul* PULImpl::getCollectionPul(const store::Item* target)
   else
   {
     theLastCollection = collName;
-    theLastPul = new CollectionPul(this);
+    SimpleCollection* collection = static_cast<SimpleCollection*>
+                                   (GET_STORE().getCollection(collName).getp());
+    theLastPul = new CollectionPul(this, collection);
     theCollectionPuls[collName] = theLastPul;
     return theLastPul;
   }
@@ -800,18 +802,6 @@ void PULImpl::addInsertAfterIntoCollection(
 }
 
 
-void PULImpl::addInsertAtIntoCollection(
-    store::Item_t& name,
-    ulong pos,
-    std::vector<store::Item_t>& nodes)
-{
-  CollectionPul* pul = getCollectionPul(name.getp());
-
-  pul->theInsertIntoCollectionList.push_back(
-  new UpdInsertAtIntoCollection(pul, name, pos, nodes));
-}
-
-
 void PULImpl::addDeleteFromCollection(
     store::Item_t& name,
     std::vector<store::Item_t>& nodes)
@@ -1303,31 +1293,54 @@ void PULImpl::applyUpdates()
   CollectionPulMap::iterator collIte = theCollectionPuls.begin();
   CollectionPulMap::iterator collEnd = theCollectionPuls.end();
 
-  for (; collIte != collEnd; ++collIte)
+  try
   {
-    CollectionPul* pul = collIte->second;
+    // For each collection C, apply XQUF and collection primitives (except
+    // delete-collection primitives). Also, refresh any indexes that can be
+    // maintained incrementally w.r.t. updates in C.
+    for (; collIte != collEnd; ++collIte)
+    {
+      CollectionPul* pul = collIte->second;
+      pul->applyUpdates();
+    }
 
-    pul->applyUpdates();
+    // apply fn:put primitives
+    applyList(thePutList);
+
+    // Apply index primitives
+    applyList(theRefreshIndexList);
+    applyList(theCreateIndexList);
+    applyList(theDeleteIndexList);
+
+    // Apply delete-collection primitives
+    for (collIte = theCollectionPuls.begin(); collIte != collEnd; ++collIte)
+    {
+      CollectionPul* pul = collIte->second;
+      applyList(pul->theDeleteCollectionList);
+    }
+  }
+  catch (...)
+  {
+    undoUpdates();
+    throw;
   }
 
-  // theNoCollectionPul.applyUpdates();
-
-  applyList(thePutList);
-
-  applyList(theRefreshIndexList);
-  applyList(theCreateIndexList);
-  applyList(theDeleteIndexList);
-
-  collIte = theCollectionPuls.begin();
-
-  for (; collIte != collEnd; ++collIte)
+  //
+  for (collIte = theCollectionPuls.begin(); collIte != collEnd; ++collIte)
   {
     CollectionPul* pul = collIte->second;
-
-    applyList(pul->theDeleteCollectionList);
+    pul->finalizeUpdates();
   }
 
-  applyList(theValidationList);
+  // Apply validation primitives, if this is a revalidation pul.
+  try
+  {
+    applyList(theValidationList);
+  }
+  catch (...)
+  {
+    ZORBA_FATAL(0, "Unexpected error during pul undo");
+  }
 }
 
 
@@ -1351,8 +1364,6 @@ void PULImpl::undoUpdates()
     undoList(theCreateIndexList);
     undoList(theRefreshIndexList);
 
-    //theNoCollectionPul.undoUpdates();
-
     undoList(thePutList);
 
     for (collIte = theCollectionPuls.begin(); collIte != collEnd; ++collIte)
@@ -1371,9 +1382,12 @@ void PULImpl::undoUpdates()
 /*******************************************************************************
 
 ********************************************************************************/
-CollectionPul::CollectionPul(PULImpl* pul) 
+CollectionPul::CollectionPul(PULImpl* pul, SimpleCollection* collection) 
   :
-  thePul(pul)
+  theCollection(collection),
+  thePul(pul),
+  theAdjustTreePositions(false),
+  theIsApplied(false)
 {
 }
 
@@ -1547,7 +1561,7 @@ void CollectionPul::refreshIndices()
     //
     ulong numDocs = theInsertedDocs.size();
 
-    for (ulong i = 0; i < numDocs; i++)
+    for (ulong i = 0; i < numDocs; ++i)
     {
       std::vector<store::Item_t> domainNodes;
       std::vector<store::IndexKey*> keys;
@@ -1567,7 +1581,7 @@ void CollectionPul::refreshIndices()
     //
     numDocs = theDeletedDocs.size();
 
-    for (ulong i = 0; i < numDocs; i++)
+    for (ulong i = 0; i < numDocs; ++i)
     {
       std::vector<store::Item_t> domainNodes;
       std::vector<store::IndexKey*> keys;
@@ -1590,10 +1604,16 @@ void CollectionPul::refreshIndices()
 ********************************************************************************/
 void CollectionPul::applyUpdates()
 {
+  // Don't apply anything if the collection is going to be deleted. 
+  if (!theDeleteCollectionList.empty())
+    return;
+
   try
   {
     // Compute the before-delta for each incrementally maintained index.
     computeIndexDeltas(theBeforeIndexDeltas);
+
+    theIsApplied = true;
 
     // Apply all the XQUF update primitives
     applyList(theDoFirstList);
@@ -1636,32 +1656,41 @@ void CollectionPul::applyUpdates()
 
     // Compute the after-delta for each incrementally maintained index.
     computeIndexDeltas(theAfterIndexDeltas);
+
+    // Refresh each incrementally maintained index using its before and after
+    // deltas. 
+    refreshIndices();
   }
   catch(...)
   {
 #ifndef NDEBUG
     std::cerr << "Exception thrown during pul::applyUpdates " << std::endl;
 #endif
-
-    try
-    {
-      undoUpdates();
-    }
-    catch (...)
-    {
-      ZORBA_FATAL(0, "Error during pul::undoUpdates()");
-    }
-
     throw;
   }
+}
 
+
+/*******************************************************************************
+  Actions performed in this method are not expected to raise any error, and
+  the method itself is called after all other actions that may raise errors
+  have been executed already. This separation of actions into ones that may 
+  raise errors and other that never raise errors makes it easier to implement
+  the undo actions for certain operations.
+********************************************************************************/
+void CollectionPul::finalizeUpdates()
+{
   try
   {
-    // Refresh each incrementally maintained index using its before and after deltas.
-    // TODO: implement undo for index maintenance.
-    refreshIndices();
+    // If necessary, adjust the position of trees inside this collection.
+    if (theAdjustTreePositions)
+    {
+      theCollection->adjustNodePositions();
+    }
 
-    // Detach nodes that were deleted from their trees.
+    // Detach nodes that were deleted from their trees due to replace-node,
+    // replace-content, or delete-node XQUF primitives.
+
     ulong numUpdates = theReplaceNodeList.size();
     for (ulong i = 0; i < numUpdates; ++i)
     {
@@ -1718,8 +1747,13 @@ void CollectionPul::applyUpdates()
 ********************************************************************************/
 void CollectionPul::undoUpdates()
 {
+  if (!theIsApplied)
+    return;
+
   try
   {
+    // TODO: implement undo for incrementally maintained indexes.
+
     undoList(theDeleteFromCollectionList);
     undoList(theInsertIntoCollectionList);
     undoList(theCreateCollectionList);

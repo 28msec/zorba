@@ -73,11 +73,11 @@ CollectionImpl::size() const
 
 
 bool
-CollectionImpl::addDocument(std::istream& lInStream, long aPosition)
+CollectionImpl::addDocument(std::istream& lInStream)
 {
   ZORBA_TRY
 
-    theCollection->loadDocument(lInStream, aPosition);
+    theCollection->loadDocument(lInStream);
     return true;
 
   ZORBA_CATCH
@@ -86,7 +86,7 @@ CollectionImpl::addDocument(std::istream& lInStream, long aPosition)
 
 
 bool
-CollectionImpl::addNode(Item& aNode, long aPosition)
+CollectionImpl::addNode(Item& aNode)
 {
   ZORBA_TRY
 
@@ -98,30 +98,7 @@ CollectionImpl::addNode(Item& aNode, long aPosition)
     store::CopyMode lCopyMode;
     store::Item* lCopy = lItem->copy(0, 0, lCopyMode);
 
-    theCollection->addNode(lCopy, aPosition);
-
-    return true;
-
-  ZORBA_CATCH
-  return false;
-}
-
-
-bool
-CollectionImpl::addNode(Item& aNode, const Item& aTargetNode, bool before)
-{
-  ZORBA_TRY
-
-    store::Item* lItem = Unmarshaller::getInternalItem(aNode);
-    store::Item* targetItem = Unmarshaller::getInternalItem(aTargetNode);
-
-    // Get the store lock to protect the node. 
-    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
-
-    store::CopyMode lCopyMode;
-    store::Item* lCopy = lItem->copy(0, 0, lCopyMode);
-
-    theCollection->addNode(lCopy, targetItem, before);
+    theCollection->addNode(lCopy);
 
     return true;
 
@@ -202,14 +179,14 @@ CollectionImpl::nodeAt(long aPosition)
 }
 
 
-long
-CollectionImpl::indexOf(const Item& aNode)
+bool
+CollectionImpl::findNode(const Item& aNode, ulong& position)
 {
   ZORBA_TRY
     store::Item* lItem = Unmarshaller::getInternalItem(aNode);
 
-    theCollection->indexOf(lItem);
-    return true;
+  bool found = theCollection->findNode(lItem, position);
+  return found;
 
   ZORBA_CATCH
   return false;

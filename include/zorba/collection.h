@@ -59,50 +59,27 @@ class ZORBA_DLL_PUBLIC Collection : public SmartObject
    * \brief Adds the document retrieved from the given input stream to the Collection.
    *
    * @param aInStream The input stream from which to parse the document.
-   * @param aPosition The position where the node will be inserted at. Positions
-   * are numbered starting from 1. If a non-positive position is given, the
-   * document will be appended at the end.
    * @return True if the document was added to the collection (e.g. was a
-   * valid document), false otherwise.
+   *         valid document), false otherwise.
    */
   virtual bool
-  addDocument(std::istream& aInStream, long aPosition = -1) = 0;
+  addDocument(std::istream& aInStream) = 0;
     
   /**
    * \brief Adds a copy of a node to the collection. The node must be the root
    * of an xml tree (i.e., it must not have a parent). The copy is deep, i.e.,
-   * the whole tree rooted at the given node is copied.
+   * the whole tree rooted at the given node is copied. The new node is added
+   * as the last node in the collection.
    *
    * Default copy behavior is used: 
    * - construction mode == preserve, 
    * - copy-namespace modes == preserve & inherit
    *
    * @param aNode The node to add.
-   * @param aPosition The position where the node will be inserted. Positions
-   * are numbered starting from 1. If a non-positive position is given, the
-   * document will be appended at the end.
    * @return True if the node was added to the collection, false otherwise.
    */
   virtual bool
-  addNode(Item& aNode, long aPosition = -1) = 0;
-  
-  /** \brief Adds a copy of a node to the Collection before or after another
-   * targetNode, which must be in the collection already. The node to add
-   * must be the root of an xml tree (i.e., it must not have a parent). The
-   * copy is deep, i.e., the whole tree rooted at the given node is copied.
-   *
-   * Default copy behavior is used:
-   * - construction mode == preserve,
-   * - copy-namespace modes == preserve & inherit
-   *
-   * @param aNode The node to add.
-   * @param aTargetNode The new node will be added before or after the target node.
-   * @param aBefore If true, the new node will be inserted before the target node.
-   * Otherwise the new node will be inserted after the target node.
-   * @return True if the node was added to the collection, false otherwise.
-   */
-  virtual bool
-  addNode(Item& aNode, const Item& aTargetNode, bool aBefore) = 0;
+  addNode(Item& aNode) = 0;
   
   /** 
    * \brief Adds copies of the nodes retrieved from the given ResultIterator to

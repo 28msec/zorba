@@ -19,12 +19,7 @@
 
 #include <zorba/error.h>
 
-#include "zorbautils/fatal.h"
-
 #include "store/naive/shared_types.h"
-
-#include "store/api/item.h"
-
 #include "store/naive/text_node_content.h"
 #include "store/naive/item_vector.h"
 #include "store/naive/ordpath.h"
@@ -34,6 +29,11 @@
 #ifdef ZORBA_STORE_MSDOM
 #include "msdom_addon/msdom_node_items.h"
 #else
+
+#include "store/api/item.h"
+
+#include "zorbautils/fatal.h"
+#include "zorbaerrors/Assert.h"
 
 
 namespace zorba 
@@ -115,13 +115,32 @@ extern NodeVector dummyVector;
                    destroyed together when theRefCount of the tree goes to 0
                    (i.e. when there are no refs to any of the nodes in the tree).
   theRCLock      : Protects theRefCount
-  theId          : An internally generated id for the tree
+
+  theId          : An internally generated id for the tree. The id uniquely
+                   identifies the tree within its containing collection (see
+                   SimpleCollection::createTreeId() method). Trees that do not
+                   belong to any collection, are considered to belong to a
+                   "virtual" collection (with collection id equal to 0), and
+                   their id is created by the SimpleStore::createId() method.
+                   theId it is guaranteed to be stable during the lifetime of
+                   the tree, but may be reused after the tree is destroyed. 
+                   theId is used in building node URIs that are returned to
+                   the application. It is not meant to be used (at least not
+                   directly) to sort nodes in doc order.
+  thePos         : The position of this tree within its containing collection.
+                   After inserting/deleting one or more nodes in/from the middle
+               
   theBaseUri     : The base uri property of the tree's root node.
-  theDocUri      : A user provided uri for the tree (may be NULL)
+  theDocUri      : A user provided uri for the tree (may be NULL).
+
   theCollection  : The collection where this xml tree belongs to, if any. An xml
                    tree may belong to at most one collection at a time.
   theRootNode    : The root node of the tree.
+
   theIsValidated : True if the tree has ever undergone schema validation.
+  theIsRecursive : True if the tree contains at least one pair of element nodes
+                   that have the same tag name and are in an ancestor-descendant
+                   relationship with each other.
 ********************************************************************************/
 class XmlTree
 {
@@ -130,6 +149,8 @@ protected:
   SYNC_CODE(mutable RCLock  theRCLock;)
 
   ulong                     theId;
+  ulong                     thePos;
+
   xqpStringStore_t          theDocUri;
   xqpStringStore_t          theBaseUri;
 
@@ -170,7 +191,11 @@ public:
 
   const SimpleCollection* getCollection() const { return theCollection; }
 
-  void setCollection(SimpleCollection* coll);
+  void setCollection(SimpleCollection* coll, ulong pos);
+
+  void setPosition(ulong pos) { thePos = pos; }
+
+  ulong getPosition() const { return thePos; }
 
   XmlNode* getRoot() const { return theRootNode; }
 
@@ -193,6 +218,9 @@ public:
 
 /*******************************************************************************
 
+  Node identification: A node is uniquelly and globally identified by a composite
+  key consisting of: the id of the containing collection, the id of the containing
+  tree, and the ordpath of the node within its containing tree.
 
 ********************************************************************************/
 class XmlNode : public store::Item
@@ -314,6 +342,8 @@ public:
         long timezone = 0,
         const XQPCollator* aCollation = 0) const;
 
+  inline long compare2(const XmlNode* other) const;
+
   store::Item_t getEBV() const;
 
   store::Item* copy(
@@ -345,7 +375,10 @@ public:
 
   XmlNode* getRoot() const { return getTree()->getRoot(); }
 
-  void setCollection(SimpleCollection* coll) { getTree()->setCollection(coll); }
+  void setCollection(SimpleCollection* coll, ulong pos) 
+  {
+    getTree()->setCollection(coll, pos);
+  }
 
   ulong getCollectionId() const { return getTree()->getCollectionId(); }
 
@@ -990,6 +1023,51 @@ public:
   void restoreValue(UpdReplaceCommentValue& upd);
 };
 
+
+
+/*******************************************************************************
+  Do a doc-order comparison of "this" nodes and the "other" node. Return -1 if
+  this < other, 0, if this == other, or 1 if this > other.
+********************************************************************************/
+inline long XmlNode::compare2(const XmlNode* other) const
+{
+  if (this == other)
+    return 0;
+
+  ulong col1 = this->getCollectionId();
+  ulong col2 = other->getCollectionId();
+
+  if (col1 < col2)
+    return -1;
+
+  if (col1 == col2)
+  {
+    if (col1 == 0)
+    {
+      ulong tree1 = this->getTreeId();
+      ulong tree2 = other->getTreeId();
+
+      if (tree1 < tree2)
+        return -1;
+
+      if (tree1 == tree2 && this->getOrdPath() < other->getOrdPath())
+        return -1;
+    }
+    else
+    {
+      ulong pos1 = this->getTree()->getPosition();
+      ulong pos2 = other->getTree()->getPosition();
+
+      if (pos1 < pos2)
+        return -1;
+
+      if (pos1 == pos2 && this->getOrdPath() < other->getOrdPath())
+        return -1;
+    }
+  }
+
+  return 1;
+}
 
 
 } // namespace store

@@ -42,6 +42,7 @@ class UpdatePrimitive;
 class IndexKey;
 class PULImpl;
 class QNameItem;
+class SimpleCollection;
 
 
 typedef std::vector<UpdatePrimitive*> NodeUpdates;
@@ -129,6 +130,8 @@ public:
 
 protected:
   // Bookeeping
+  SimpleCollection                 * theCollection;
+
   PULImpl                          * thePul;
 
   NodeToUpdatesMap                   theNodeToUpdatesMap;
@@ -136,6 +139,10 @@ protected:
   std::vector<UpdatePrimitive*>      thePrimitivesToRecheck;
 
   std::set<store::Item*>             theValidationNodes;
+
+  bool                               theAdjustTreePositions;
+
+  bool                               theIsApplied;
 
   // XQUF update primitives
   std::vector<UpdatePrimitive*>      theDoFirstList;
@@ -163,23 +170,42 @@ protected:
   std::vector<IndexDelta>            theAfterIndexDeltas;
 
 public:
-  CollectionPul(PULImpl* pul);
+  CollectionPul(PULImpl* pul, SimpleCollection* collection);
 
   ~CollectionPul();
 
-protected:
   void applyUpdates();
+
+  void finalizeUpdates();
 
   void undoUpdates();
 
   void computeIndexDeltas(std::vector<IndexDelta>& deltas);
 
   void refreshIndices();
+
+  void setAdjustTreePositions() { theAdjustTreePositions = true; }
 };
 
 
 /*******************************************************************************
+  theCollectionPuls  :
+  theNoCollectionPul : Pointer to the CollectionPul that contains the XQUF
+                       primitives for the trees that do not belong to any
+                       collection. Note: theCollectionPuls contains a pointer
+                       to this CollectionPul as well, with NULL as the associated
+                       QName item.
+  theLastPul         :
+  theLastCollection  :
 
+  thePutList         :
+  theCreateIndexList :
+  theDeleteIndexList :
+  theRefreshIndexList:
+
+  theValidator       :
+  theValidationList  : If this list is non-empty, then all the other lists are
+                       empty and vice-versa.
 ********************************************************************************/
 class PULImpl : public store::PUL
 {
@@ -328,11 +354,6 @@ public:
   void addInsertAfterIntoCollection(
         store::Item_t& name,
         store::Item_t& target,
-        std::vector<store::Item_t>& nodes);
-
-  void addInsertAtIntoCollection(
-        store::Item_t& name,
-        ulong pos,
         std::vector<store::Item_t>& nodes);
 
   void addDeleteFromCollection(

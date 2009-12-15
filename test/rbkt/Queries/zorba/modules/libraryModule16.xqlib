@@ -1,0 +1,8 @@
+module namespace mod16 = "http://example16.com";
+
+declare variable $mod16:x := 1;
+
+declare function mod16:foo() as xs:string
+{
+  fn:string($mod16:x)
+};

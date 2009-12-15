@@ -19,6 +19,8 @@
 
 #include "store/naive/shared_types.h"
 
+#include "store/api/item.h"
+
 namespace zorba 
 { 
 

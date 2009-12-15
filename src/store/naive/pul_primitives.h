@@ -1017,36 +1017,6 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class UpdInsertAtIntoCollection : public  UpdCollection
-{
-protected:
-  ulong  thePos;
-
-public:
-  UpdInsertAtIntoCollection(
-        CollectionPul* pul,
-        store::Item_t& name,
-        ulong pos,
-        std::vector<store::Item_t>& nodes)
-    :
-    UpdCollection(pul, name, nodes),
-    thePos(pos)
-  {
-  }
-
-  store::UpdateConsts::UpdPrimKind getKind() const
-  { 
-    return store::UpdateConsts::UP_INSERT_AT_INTO_COLLECTION;
-  }
-
-  void apply();
-  void undo();
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
 class UpdDeleteNodesFromCollection: public  UpdCollection
 {
 public:

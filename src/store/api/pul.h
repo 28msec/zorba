@@ -163,11 +163,6 @@ public:
         Item_t& target,
         std::vector<store::Item_t>& nodes) = 0;
 
-  virtual void addInsertAtIntoCollection(
-        Item_t& name,
-        ulong pos,
-        std::vector<store::Item_t>& nodes) = 0;
-
   virtual void addDeleteFromCollection(
         Item_t& name,
         std::vector<store::Item_t>& nodes) = 0;

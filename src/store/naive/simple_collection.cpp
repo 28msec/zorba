@@ -85,11 +85,15 @@ store::Item_t SimpleCollection::loadDocument(
     SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
     if(position <= 0 || position > static_cast<long>(theXmlTrees.size()))
+    {
       theXmlTrees.push_back(root);
+      BASE_NODE(root)->setCollection(this, theXmlTrees.size()-1);
+    }
     else
+    {
       theXmlTrees.insert(theXmlTrees.begin() + (position - 1), root);
-
-    BASE_NODE(root)->setCollection(this);
+      BASE_NODE(root)->setCollection(this, position-1);
+    }
   }
 
   return root;
@@ -125,7 +129,7 @@ void SimpleCollection::addNode(
 
   if (node->getCollection() != NULL)
   {
-    ZORBA_ERROR_PARAM(API0031_NODE_ALREADY_IN_COLLECTION, 
+    ZORBA_ERROR_PARAM(API0031_NODE_ALREADY_IN_COLLECTION,
                       node->getCollection()->getName()->getStringValue()->c_str(), "");
   }
 
@@ -138,11 +142,15 @@ void SimpleCollection::addNode(
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE););
 
   if (position <= 0 || position > static_cast<long>(theXmlTrees.size()))
+  {
     theXmlTrees.push_back(nodeItem);
+    node->setCollection(this, theXmlTrees.size() - 1);
+  }
   else
+  {
     theXmlTrees.insert(theXmlTrees.begin() + (position - 1), nodeItem);
-
-  node->setCollection(this);
+    node->setCollection(this, position - 1);
+  }
 }
 
 
@@ -176,23 +184,24 @@ void SimpleCollection::addNode(
 
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
-  long targetPos = nodePositionInCollection((store::Item*)aTargetNode);
-  if(targetPos == -1)
+  ulong targetPos;
+  bool found = findNode((store::Item*)aTargetNode, targetPos);
+  if (!found)
   {
     ZORBA_ERROR(API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION);
   }
 
-  if(before) 
+  if (before) 
   {
     ZORBA_ASSERT(targetPos != 0);
     theXmlTrees.insert(theXmlTrees.begin() + (targetPos-1), nodeItem);
+    node->setCollection(this, targetPos - 1);
   }
   else
   {
     theXmlTrees.insert(theXmlTrees.begin() + targetPos, nodeItem);
+    node->setCollection(this, targetPos);
   }
-
-  node->setCollection(this);
 }
 
 
@@ -210,15 +219,16 @@ bool SimpleCollection::removeNode(store::Item* nodeItem)
 
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
-  long position = nodePositionInCollection(nodeItem);
+  ulong position;
+  bool found = findNode(nodeItem, position);
 
-  if (position != -1)
+  if (found)
   {
     ZORBA_ASSERT(position > 0);
     ZORBA_ASSERT(node->getCollection() == this);
 
     theXmlTrees.erase(theXmlTrees.begin() + (position - 1));
-    node->setCollection(NULL);
+    node->setCollection(NULL, 0);
     return true;
   }
   else
@@ -242,7 +252,7 @@ bool SimpleCollection::removeNode(long position)
 
     XmlNode* node = static_cast<XmlNode*>(theXmlTrees.back().getp());
     ZORBA_ASSERT(node->getCollection() == this);
-    node->setCollection(NULL);
+    node->setCollection(NULL, 0);
 
     theXmlTrees.erase(theXmlTrees.end() - 1);
     return true;
@@ -255,7 +265,7 @@ bool SimpleCollection::removeNode(long position)
   {
     XmlNode* node = static_cast<XmlNode*>(theXmlTrees[position - 1].getp());
     ZORBA_ASSERT(node->getCollection() == this);
-    node->setCollection(NULL);
+    node->setCollection(NULL, 0);
 
     theXmlTrees.erase(theXmlTrees.begin() + (position - 1));
     return true;
@@ -278,41 +288,54 @@ store::Item_t SimpleCollection::nodeAt(long position)
 
 
 /*******************************************************************************
-  Return position of the given node in the collection.
+
 ********************************************************************************/
-long SimpleCollection::indexOf(const store::Item* node)
+bool SimpleCollection::findNode(const store::Item* node, ulong& position) const
 {
-  if (!node->isNode())
+  if( theXmlTrees.empty() )
+    return false;
+
+  if (node->getCollection() != this)
+    return false;
+
+  const XmlNode* n = static_cast<const XmlNode*>(node);
+
+  position = n->getTree()->getPosition();
+
+  if (BASE_NODE(theXmlTrees[position])->getTreeId() == n->getTreeId())
   {
-    ZORBA_ERROR(API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
+    ++position;
+    return true;
   }
 
-  return nodePositionInCollection(node);
+  ulong numTrees = theXmlTrees.size();
+
+  for (ulong i = 0; i < numTrees; ++i)
+  {
+    //check if the nodes are the same
+    if (node->equals(theXmlTrees[i]))
+    {
+      ZORBA_ASSERT(BASE_NODE(theXmlTrees[i])->getCollection() == this);
+      position = (i + 1);
+      return true;
+    }
+  }
+
+  return false;
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-int SimpleCollection::nodePositionInCollection(const store::Item* newNode)
+void SimpleCollection::adjustNodePositions()
 {
-  if( theXmlTrees.empty() )
-    return -1;
+  ulong numTrees = theXmlTrees.size();
 
-  checked_vector<store::Item_t>::const_iterator it = theXmlTrees.begin();
-  checked_vector<store::Item_t>::const_iterator end = theXmlTrees.end();
-
-  for (; it != end; ++it)
+  for (ulong i = 0; i < numTrees; ++i)
   {
-    //check if the nodes are the same
-    if (newNode->equals(*it))
-    {
-      ZORBA_ASSERT(BASE_NODE(*it)->getCollection() == this);
-      return (it - theXmlTrees.begin() + 1);
-    }
+    BASE_NODE(theXmlTrees[i])->getTree()->setPosition(i);
   }
-
-  return -1;
 }
 
 

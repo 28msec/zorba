@@ -758,25 +758,7 @@ short SimpleStore::compareNodes(store::Item* node1, store::Item* node2) const
   XmlNode* n1 = static_cast<XmlNode*>(node1);
   XmlNode* n2 = static_cast<XmlNode*>(node2);
 
-  ulong col1 = n1->getCollectionId();
-  ulong col2 = n2->getCollectionId();
-
-  if (col1 < col2)
-    return -1;
-
-  if (col1 == col2)
-  {
-    ulong tree1 = n1->getTreeId();
-    ulong tree2 = n2->getTreeId();
-
-    if (tree1 < tree2)
-      return -1;
-
-    if (tree1 == tree2 && n1->getOrdPath() < n2->getOrdPath())
-      return -1;
-  }
-
-  return 1;
+  return n1->compare2(n2);
 }
 
 
@@ -825,12 +807,18 @@ bool SimpleStore::getReference(store::Item_t& result, const store::Item* node)
 
   if (n->getNodeKind() == store::StoreConsts::attributeNode)
   {
-    stream << "zorba://node_reference/" << n->getTreeId() << "/a/"
+    stream << "zorba://node_reference/" 
+           << n->getCollectionId() << "/" 
+           << n->getTreeId() << "/"
+           << n->getTree()->getPosition() + 1 << "/a/"
            << n->getOrdPath().serialize();
   }
   else
   {
-    stream << "zorba://node_reference/" << n->getTreeId() << "/c/"
+    stream << "zorba://node_reference/" 
+           << n->getCollectionId() << "/" 
+           << n->getTreeId() << "/"
+           << n->getTree()->getPosition() + 1 << "/c/"
            << n->getOrdPath().serialize();
   }
 
@@ -856,13 +844,32 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
   if (strncmp(str->c_str(), "zorba://node_reference/", prefixlen))
     ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str->c_str(), "");
 
+  const char* start;
+  long tmp = 0;
+
+  //
+  // Decode collection id
+  //
+  start = str->c_str() + prefixlen;
+  char* next = const_cast<char*>(start);
+
+  tmp = strtol(start, &next, 10);
+
+  if (tmp < 0 || tmp == LONG_MAX)
+    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str->c_str(), "");
+
+  start = next;
+
+  if (*start != '/')
+    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str->c_str(), "");
+
+  ++start;
+
+  ulong collectionId = (ulong)tmp;
+
   //
   // Decode tree id
   //
-  const char* start = str->c_str() + prefixlen;
-  char* next = const_cast<char*>(start);
-
-  long tmp = 0;
   tmp = strtol(start, &next, 10);
 
   if (tmp <= 0 || tmp == LONG_MAX)
@@ -873,14 +880,34 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
   if (*start != '/')
     ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str->c_str(), "");
 
-  ulong treeid = (ulong)tmp;
+  ++start;
+
+  ulong treeId = (ulong)tmp;
+
+  //
+  // Decode tree position within collection
+  //
+  tmp = strtol(start, &next, 10);
+
+  if (tmp <= 0 || tmp == LONG_MAX)
+    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str->c_str(), "");
+
+  start = next;
+
+  if (*start != '/')
+    ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str->c_str(), "");
+
+  ++start;
+
+  ulong treePos = (ulong)tmp;
+
+  std::cout << "tree pos = " << treePos << std::endl;
 
   //
   // Check if the uri specifies attribute node or not
   //
   bool attributeNode;
 
-  start++;
   if (*start == 'a')
     attributeNode = true;
   else if (*start == 'c')
@@ -888,67 +915,77 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
   else
     ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str->c_str(), "");
 
-  start++;
+  ++start;
   if (*start != '/')
     ZORBA_ERROR_PARAM_OSS(API0028_INVALID_NODE_URI, str->c_str(), "");
 
-  start++;
+  ++start;
 
   //
   // Search for the tree
   //
   XmlNode* rootNode = NULL;
-  DocumentSet::iterator it = theDocuments.begin();
-  DocumentSet::iterator end = theDocuments.end();
 
-  for (; it != end; ++it)
+  if (collectionId == 0)
   {
-    rootNode = (*it).second.getp();
+    DocumentSet::iterator it = theDocuments.begin();
+    DocumentSet::iterator end = theDocuments.end();
 
-    if (rootNode->getTreeId() == treeid)
-      break;
+    for (; it != end; ++it)
+    {
+      rootNode = (*it).second.getp();
+
+      if (rootNode->getTreeId() == treeId)
+        break;
+    }
   }
-
-  if (rootNode == NULL)
+  else
   {
+    // Look for the collection
+    SimpleCollection* collection;
+
     CollectionSet::iterator it = theCollections.begin();
     CollectionSet::iterator end = theCollections.end();
 
     for (; it != end; ++it)
     {
-      store::Collection_t col = (*it).second.getp();
+      collection = static_cast<SimpleCollection*>((*it).second.getp());
 
-      store::Iterator_t colIter = col->getIterator();
-
-      colIter->open();
-
-      store::Item_t rootItem;
-      if (!colIter->next(rootItem)) 
-      {
-        rootItem = NULL;
-      }
-
-      while (rootItem != NULL)
-      {
-        rootNode = BASE_NODE(rootItem);
-        if (rootNode->getTreeId() == treeid)
-          break;
-
-        if (!colIter->next(rootItem))
-          break;
-      }
-
-      colIter->close();
-
-      if (rootNode != NULL)
+      if (collection->getId() == collectionId)
         break;
     }
 
-    if (rootNode == NULL) 
+    // If collection found, look for the tree
+    if (it != end)
     {
-      result = NULL;
-      return false;
+      store::Item_t rootItem = collection->nodeAt(treePos);
+
+      rootNode = BASE_NODE(rootItem);
+
+      if (rootNode == NULL || rootNode->getTreeId() != treeId)
+      {
+        store::Iterator_t treeIter = collection->getIterator();
+
+        treeIter->open();
+
+        while (treeIter->next(rootItem))
+        {
+          rootNode = BASE_NODE(rootItem);
+          if (rootNode->getTreeId() == treeId)
+            break;
+        }
+
+        treeIter->close();
+
+        rootNode = BASE_NODE(rootItem);
+      }
     }
+  }
+
+  if (rootNode == NULL) 
+  {
+    result = NULL;
+    return false;
   }
 
   //

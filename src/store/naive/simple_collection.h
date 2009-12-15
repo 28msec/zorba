@@ -101,12 +101,11 @@ public:
 
   bool removeNode(long position = -1);
 
+  bool findNode(const store::Item* node, ulong& position) const;
+
   store::Item_t nodeAt(long position);
 
-  long indexOf(const store::Item* node);
-
-protected:
-  int nodePositionInCollection(const store::Item* newNode);
+  void adjustNodePositions();
 };
 
 } // namespace store

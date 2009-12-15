@@ -265,6 +265,7 @@ void UpdInsertAttributes::check()
   target->checkUniqueAttrs();
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -304,7 +305,6 @@ void UpdReplaceAttribute::check()
   ElementNode* target = ELEM_NODE(theTarget);
   target->checkUniqueAttrs();
 }
-
 
 
 /*******************************************************************************
@@ -639,9 +639,13 @@ void UpdPut::undo()
 }
 
 
-/*******************************************************************************
-  UpdatePrimitives for collection functions
-********************************************************************************/
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Collection Primitives                                                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
 /*******************************************************************************
   UpdCreateCollection
 ********************************************************************************/
@@ -698,11 +702,11 @@ void UpdDeleteCollection::undo()
   }
 
 
-  long lIndex;
+  ulong lIndex;
   for (std::vector<store::Item_t>::iterator lIter = theSavedItems.begin();
        lIter != theSavedItems.end(); ++lIter) 
   {
-    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) 
+    if (lColl->findNode(lIter->getp(), lIndex)) 
     {
 #ifndef NDEBUG
       dynamic_cast<SimpleCollection*>(lColl.getp())->addNode(lIter->getp());
@@ -734,8 +738,8 @@ void UpdInsertIntoCollection::undo()
   assert(lColl);
 
   // remove the node if it exists
-  long lIndex;
-  if ( (lIndex = lColl->indexOf(theNodes[0].getp())) != -1 ) 
+  ulong lIndex;
+  if (lColl->findNode(theNodes[0].getp(), lIndex)) 
   {
     lColl->removeNode(lIndex);
   }
@@ -750,6 +754,8 @@ void UpdInsertFirstIntoCollection::apply()
   store::Collection_t lColl = GET_STORE().getCollection(theName);
   assert(lColl);
 
+  theCollectionPul->setAdjustTreePositions();
+
   for (std::vector<store::Item_t>::reverse_iterator lIter = theNodes.rbegin();
        lIter != theNodes.rend();
        ++lIter) 
@@ -763,12 +769,12 @@ void UpdInsertFirstIntoCollection::undo()
   store::Collection_t lColl = GET_STORE().getCollection(theName);
   assert(lColl);
 
-  long lIndex;
+  ulong lIndex;
   for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
        lIter != theNodes.end();
        ++lIter) 
   {
-    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) 
+    if (lColl->findNode(lIter->getp(), lIndex)) 
     {
       lColl->removeNode(lIndex);
     }
@@ -797,12 +803,12 @@ void UpdInsertLastIntoCollection::undo()
   store::Collection_t lColl = GET_STORE().getCollection(theName);
   assert(lColl);
 
-  long lIndex;
+  ulong lIndex;
   for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
        lIter != theNodes.end();
        ++lIter) 
   {
-    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) 
+    if (lColl->findNode(lIter->getp(), lIndex)) 
     {
       lColl->removeNode(lIndex);
     }
@@ -818,6 +824,8 @@ void UpdInsertBeforeIntoCollection::apply()
   store::Collection_t lColl = GET_STORE().getCollection(theName);
   assert(lColl);
 
+  theCollectionPul->setAdjustTreePositions();
+
   for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
        lIter != theNodes.end();
        ++lIter)
@@ -831,12 +839,12 @@ void UpdInsertBeforeIntoCollection::undo()
   store::Collection_t lColl = GET_STORE().getCollection(theName);
   assert(lColl);
 
-  long lIndex;
+  ulong lIndex;
   for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
        lIter != theNodes.end();
        ++lIter)
   {
-    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) 
+    if (lColl->findNode(lIter->getp(), lIndex))
     {
       lColl->removeNode(lIndex);
     }
@@ -852,6 +860,8 @@ void UpdInsertAfterIntoCollection::apply()
   store::Collection_t lColl = GET_STORE().getCollection(theName);
   assert(lColl);
 
+  theCollectionPul->setAdjustTreePositions();
+
   for (std::vector<store::Item_t>::reverse_iterator lIter = theNodes.rbegin();
        lIter != theNodes.rend();
        ++lIter) 
@@ -866,47 +876,12 @@ void UpdInsertAfterIntoCollection::undo()
   store::Collection_t lColl = GET_STORE().getCollection(theName);
   assert(lColl);
 
-  long lIndex;
+  ulong lIndex;
   for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
        lIter != theNodes.end();
        ++lIter)
   {
-    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) 
-    {
-      lColl->removeNode(lIndex);
-    }
-  }
-}
-
-
-/*******************************************************************************
-  UpdInsertAtIntoCollection
-********************************************************************************/
-void UpdInsertAtIntoCollection::apply()
-{
-  store::Collection_t lColl = GET_STORE().getCollection(theName);
-  assert(lColl);
-
-  ulong lPos = thePos;
-  for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
-       lIter != theNodes.end();
-       ++lIter) 
-  {
-    lColl->addNode(*lIter, lPos++);
-  }
-}
-
-void UpdInsertAtIntoCollection::undo()
-{
-  store::Collection_t lColl = GET_STORE().getCollection(theName);
-  assert(lColl);
-
-  long lIndex;
-  for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
-       lIter != theNodes.end();
-       ++lIter) 
-  {
-    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) 
+    if (lColl->findNode(lIter->getp(), lIndex)) 
     {
       lColl->removeNode(lIndex);
     }
@@ -922,6 +897,8 @@ void UpdDeleteNodesFromCollection::apply()
   store::Collection_t lColl = GET_STORE().getCollection(theName);
   assert(lColl);
 
+  theCollectionPul->setAdjustTreePositions();
+
   for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
        lIter != theNodes.end();
        ++lIter) 
@@ -935,43 +912,18 @@ void UpdDeleteNodesFromCollection::undo()
   store::Collection_t lColl = GET_STORE().getCollection(theName);
   assert(lColl);
 
-  long lIndex;
+  ulong lIndex;
   for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
        lIter != theNodes.end();
        ++lIter) 
   {
-    if ( ( lIndex = lColl->indexOf(lIter->getp())) != -1) 
+    if (lColl->findNode(lIter->getp(), lIndex))
     {
       static_cast<SimpleCollection*>(lColl.getp())->addNode(lIter->getp());
     }
   }
 }
 
-
-/*******************************************************************************
-  UpdRemoveNodeAtFromCollection
-void UpdRemoveNodeAtFromCollection::apply()
-{
-  store::Collection_t lColl = GET_STORE().getCollection(theName);
-  assert(lColl);
-
-  theNode = lColl->nodeAt(thePos);
-  assert(theNode);
-  lColl->removeNode(thePos);
-}
-
-void UpdRemoveNodeAtFromCollection::undo()
-{
-  store::Collection_t lColl = GET_STORE().getCollection(theName);
-  assert(lColl);
-
-#ifndef NDEBUG
-  dynamic_cast<SimpleCollection*>(lColl.getp())->addNode(theNode);
-#else
-  static_cast<SimpleCollection*>(lColl.getp())->addNode(theNode);
-#endif
-}
-********************************************************************************/
 
 
 /////////////////////////////////////////////////////////////////////////////////

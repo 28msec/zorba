@@ -36,13 +36,13 @@ TestSchemaURIResolverResult::~TestSchemaURIResolverResult()
 }
 
 
-String TestSchemaURIResolverResult::getSchema () const
+String TestSchemaURIResolverResult::getSchema() const
 {
   return theSchema;
 }
 
 
-TestSchemaURIResolver::TestSchemaURIResolver( const char* file, bool verbose) 
+TestSchemaURIResolver::TestSchemaURIResolver(const char* file, bool verbose) 
   :
   map_file ( file ),
   theVerbose(verbose)  
@@ -55,7 +55,7 @@ TestSchemaURIResolver::~TestSchemaURIResolver()
 }
 
 
-void TestSchemaURIResolver::initialize ()
+void TestSchemaURIResolver::initialize()
 {
   std::string path ( map_file );
   for (int i = 0; i < 2; i++) {
@@ -317,26 +317,33 @@ void TestCollectionURIResolver::initialize ()
 }
 
 
-std::auto_ptr < CollectionURIResolverResult >
-TestCollectionURIResolver::
-resolve ( const Item & aURI, StaticContext* aStaticContext, XmlDataManager* aXmlDataManager )
+std::auto_ptr<CollectionURIResolverResult>
+TestCollectionURIResolver::resolve(
+    const Item & aURI,
+    StaticContext* aStaticContext,
+    XmlDataManager* aXmlDataManager)
 {
-  if ( uri_map.empty () ) {
+  if ( uri_map.empty () ) 
+  {
     initialize ();
   }
-  std::auto_ptr < TestCollectionURIResolverResult >
-    lResult ( new TestCollectionURIResolverResult () );
 
-  std::string request = aURI.getStringValue ().c_str();
+  std::auto_ptr<TestCollectionURIResolverResult>
+    lResult ( new TestCollectionURIResolverResult() );
+
+  std::string request = aURI.getStringValue().c_str();
   std::string search  = request.substr(request.find_last_of('/')+1);
-  std::map < std::string, std::vector<std::string> > :: iterator it = uri_map.find ( search );
-  if ( it != uri_map.end () ) {
+  std::map<std::string, std::vector<std::string> >::iterator it = uri_map.find(search);
+  if ( it != uri_map.end() ) 
+  {
     const std::vector<std::string>& target = it->second;
     Collection_t lCol = aXmlDataManager->getCollection(request);
-    if (lCol.isNull())  {
+    if (lCol.isNull())
+    {
       lCol = aXmlDataManager->createCollection(request);
       for (std::vector<std::string>::const_iterator lIter = target.begin();
-          lIter != target.end(); ++lIter) {
+          lIter != target.end(); ++lIter)
+      {
         std::ifstream lIn(lIter->c_str());
         assert(lIn.good());
   
@@ -345,7 +352,9 @@ resolve ( const Item & aURI, StaticContext* aStaticContext, XmlDataManager* aXml
     }
     lResult -> theCollection = lCol;
     lResult -> setError ( URIResolverResult::UR_NOERROR );
-  } else {
+  }
+  else
+  {
     lResult -> setError ( URIResolverResult::UR_FODC0004 );
     std::stringstream lErrorStream;
     lErrorStream << "Collection not found " << aURI.getStringValue();

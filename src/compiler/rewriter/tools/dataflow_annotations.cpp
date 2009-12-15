@@ -335,7 +335,8 @@ void DataflowAnnotationsComputer::compute_fo_expr(fo_expr* e)
       e->put_annotation(Annotations::PRODUCES_DISTINCT_NODES, distinctAnnot);
     }
 #else
-    if (f->getKind() == FunctionConsts::FN_DOC_1) 
+    if (f->getKind() == FunctionConsts::FN_DOC_1 ||
+        f->getKind() == FunctionConsts::FN_ZORBA_DDL_COLLECTION_1) 
     {
       SORTED_NODES(e);
       DISTINCT_NODES(e);

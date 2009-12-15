@@ -259,9 +259,10 @@ ZorbaIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 {
   store::Collection_t theColl;
   store::Item_t       item;
-  int                 pos = 1;
+  ulong               pos = 1;
+  bool                found;
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   consumeNext(item, theChildren[0].getp(), planState);
@@ -269,16 +270,15 @@ ZorbaIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
   if (consumeNext(item, theChildren[theChildren.size()-1].getp(), planState))
   {
-    pos = theColl->indexOf(item);
+    found = theColl->findNode(item, pos);
 
-    if( -1 == pos)
-      ZORBA_ERROR_LOC_DESC (API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION,
-                            loc,
-                            "The node does not belong to collection.");
+    if (!found)
+      ZORBA_ERROR_LOC_DESC(API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION,
+                           loc,
+                           "The node does not belong to collection.");
 
-    STACK_PUSH(GENV_ITEMFACTORY->createInteger(
-              result,
-              Integer::parseInt(pos)), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, Integer::parseInt(pos)),
+               state);
   }
 
   STACK_END (state);
@@ -756,8 +756,9 @@ ZorbaInsertNodesBeforeIterator::nextImpl(store::Item_t& result, PlanState& planS
                          "A sequence with more then one item is not allowed as second argument to insert-nodes-before");
   }
 
+  ulong targetPos;
 
-  if (coll->indexOf(targetNode.getp()) == -1) 
+  if (!coll->findNode(targetNode.getp(), targetPos)) 
   {
     ZORBA_ERROR_LOC_DESC_OSS(XQP0000_DYNAMIC_RUNTIME_ERROR, loc,
                          "The target node passed as second parameter to insert-nodes-before does not exist in the given collection "
@@ -873,7 +874,9 @@ ZorbaInsertNodesAfterIterator::nextImpl(store::Item_t& result, PlanState& planSt
                          "A sequence with more then one item is not allowed as second argument to insert-nodes-after");
   }
 
-  if (coll->indexOf(targetNode.getp()) == -1) 
+  ulong targetPos;
+
+  if (!coll->findNode(targetNode.getp(), targetPos)) 
   {
     ZORBA_ERROR_LOC_DESC_OSS(XQP0000_DYNAMIC_RUNTIME_ERROR, loc, 
                          "The target node passed as second parameter to insert-nodes-before does not exist in the given collection "
@@ -933,7 +936,7 @@ ZorbaDeleteNodesIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   std::vector<store::Item_t>       nodes;
   std::auto_ptr<store::PUL>        pul;
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   consumeNext(lName, theChildren[0].getp(), planState);
@@ -943,16 +946,19 @@ ZorbaDeleteNodesIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
   while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState)) 
   {
-    if (coll->indexOf(node.getp()) == -1)
+    ulong pos;
+    if (!coll->findNode(node.getp(), pos))
       ZORBA_ERROR_LOC_DESC_OSS(API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION, loc, 
-                           "The node passed as second parameter to remove-nodes does not exist in the given collection "
-                           << lName->getStringValue());
+                               "The node passed as second parameter to remove-nodes "
+                               << "does not exist in the given collection "
+                               << lName->getStringValue());
 
     nodes.push_back(node);
   }
 
   // checking collection modifiers
-  switch(lDeclColl->getCollProperty()) {
+  switch(lDeclColl->getCollProperty()) 
+  {
   case StaticContextConsts::const_:
     ZORBA_ERROR_LOC_DESC_OSS(XDDY0003, loc, 
       "remove-nodes has a const collection as first argument.");

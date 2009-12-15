@@ -41,13 +41,10 @@ class CollectionImpl : public Collection
   size() const;
 
   bool
-  addDocument(std::istream& lInStream, long aPosition = -1);
+  addDocument(std::istream& lInStream);
 
   bool
-  addNode(Item& aNode, long aPosition = -1);
-
-  bool
-  addNode(Item& aNode, const Item& aTargetNode, bool before);
+  addNode(Item& aNode);
 
   bool
   addNodes(const ResultIterator* aResultIterator);
@@ -61,8 +58,8 @@ class CollectionImpl : public Collection
   Item
   nodeAt(long aPosition);
 
-  long
-  indexOf(const Item& aNode);
+  bool
+  findNode(const Item& aNode, ulong& position);
 };
 
 } /* namespace zorba */

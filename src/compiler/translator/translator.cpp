@@ -2518,7 +2518,7 @@ void* begin_visit(const VFO_DeclList& v)
       try 
       {
         ef = sctx_p->lookup_stateless_external_function(qname->getNamespace(),
-                qname->getLocalName());
+                                                        qname->getLocalName());
       }
       catch (error::ZorbaError& e) 
       {

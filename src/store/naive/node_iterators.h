@@ -16,13 +16,13 @@
 #ifndef ZORBA_SIMPLE_STORE_NODE_ITERATORS
 #define ZORBA_SIMPLE_STORE_NODE_ITERATORS
 
-#include "zorbautils/hashfun.h"
-#include "zorbautils/hashset.h"
-
 #include "store/api/iterator.h"
 #include "store/naive/shared_types.h"
 #include "store/naive/node_items.h"
-#include "store/naive/ordpath.h"
+//#include "store/naive/ordpath.h"
+
+#include "zorbautils/hashfun.h"
+#include "zorbautils/hashset.h"
 
 
 namespace zorba { namespace simplestore {
@@ -404,46 +404,13 @@ protected:
 
     bool operator()(const XmlNode* n1, const XmlNode* n2) const
     {
-      ulong col1 = n1->getCollectionId();
-      ulong col2 = n2->getCollectionId();
-
       if (theAscending)
       {
-        if (col1 < col2)
-        {
-          return true;
-        }
-        else if (col1 == col2)
-        {
-          ulong tree1 = n1->getTreeId();
-          ulong tree2 = n2->getTreeId();
-
-          return (tree1 < tree2 ||
-                  (tree1 == tree2 && n1->getOrdPath() < n2->getOrdPath()));
-        }
-        else
-        {
-          return false;
-        }
+        return (n1->compare2(n2) < 0);
       }
       else
       {
-        if (col1 > col2)
-        {
-          return true;
-        }
-        else if (col1 == col2)
-        {
-          ulong tree1 = n1->getTreeId();
-          ulong tree2 = n2->getTreeId();
-
-          return (tree1 > tree2 ||
-                  (tree1 == tree2 && n1->getOrdPath() > n2->getOrdPath()));
-        }
-        else
-        {
-          return false;
-        }
+        return (n2->compare2(n1) < 0);
       }
     }
   };
@@ -492,9 +459,9 @@ protected:
   bool theNodeMode;
 
 public:
-  StoreNodeSortOrAtomicIterator(const store::Iterator_t& aInput, bool aAsc, bool aDistinct)
+  StoreNodeSortOrAtomicIterator(const store::Iterator_t& input, bool asc, bool distinct)
     :
-    StoreNodeSortIterator(aInput, aAsc, aDistinct),
+    StoreNodeSortIterator(input, asc, distinct),
     theAtomicMode(false),
     theNodeMode(false)
   {
