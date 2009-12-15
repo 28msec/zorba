@@ -160,7 +160,8 @@ MACRO(CODEGEN_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILE  OUTPUT PARAM1 PARAM2 Z
                         COMMAND "${CMAKE_COMMAND}" "-E" "copy_if_different"
                         "${CPP_OUTPUT_BINARY_DIR}"
                         "${CPP_OUTPUT_SOURCE_DIR}"
-                         DEPENDS ${CPP_QUERY} ${SPEC_FILE}
+                         DEPENDS ${CPP_QUERY} ${SPEC_FILE} 
+                                 ${CMAKE_SOURCE_DIR}/src/runtime/spec/mappings.xml
                                  "${H_OUTPUT_BINARY_DIR}" # cpp always depends on .h
                                  "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq"
                        )
@@ -176,6 +177,7 @@ MACRO(CODEGEN_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILE  OUTPUT PARAM1 PARAM2 Z
                         "${H_OUTPUT_BINARY_DIR}"
                         "${H_OUTPUT_SOURCE_DIR}"
                          DEPENDS ${HEADER_QUERY} ${SPEC_FILE}
+                                 ${CMAKE_SOURCE_DIR}/src/runtime/spec/mappings.xml
                                  "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq")
   ELSE (ZORBA_WORKS)
     CHECK_OUTPUT_EXISTS("${CPP_OUTPUT_SOURCE_DIR}" "${CPP_OUTPUT_BINARY_DIR}")
