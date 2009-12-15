@@ -41,12 +41,13 @@ IF (ZORBA_MINIMAL_STORE)
     "Path to the store directories. Must contain CMakeLists.txt defining the variables ZORBA_STORE_IMPL_SRCS and ZORBA_STORE_LIB_EXTENSION." FORCE)
 ELSE (ZORBA_MINIMAL_STORE)
   IF(ZORBA_NATIVE_STORE)
-    SET(ZORBA_STORE_DIRS "${CMAKE_SOURCE_DIR}/src/store/naive" CACHE PATHS
-      "Path to the store directories. Must contain CMakeLists.txt defining the variables ZORBA_STORE_IMPL_SRCS and ZORBA_STORE_LIB_EXTENSION." FORCE)
+    SET(ZORBA_STORE_DIRS "${CMAKE_SOURCE_DIR}/src/store/naive" CACHE PATH "Path to the store directories. Must contain CMakeLists.txt defining the variable ZORBA_STORE_IMPL_SRCS.") 
+    SET(ZORBA_STORE_NAMES "simplestore" CACHE STRING "Names of the stores. Must have be in sync with ZORBA_STORE_DIRS")
   ENDIF (ZORBA_NATIVE_STORE)
 ENDIF (ZORBA_MINIMAL_STORE)
 
 MESSAGE(STATUS "ZORBA_STORE_DIRS " ${ZORBA_STORE_DIRS})
+MESSAGE(STATUS "ZORBA_STORE_NAMES " ${ZORBA_STORE_NAMES})
 
 # how should batching in the runtime system be done
 SET(ZORBA_BATCHING_TYPE 0 CACHE STRING 

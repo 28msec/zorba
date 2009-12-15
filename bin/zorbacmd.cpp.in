@@ -13,6 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+// telling the compiler where the original file is
+#line __LINE__ "@CMAKE_CURRENT_SOURCE_DIR@/zorbacmd.cpp.in"
+
 #include "zorbacmdproperties.h"
 
 #include <memory>
@@ -30,7 +34,7 @@
 #include <zorba/zorba.h>
 
 #ifndef ZORBA_MINIMAL_STORE
-#include <simplestore/simplestore.h>
+#include <@ZORBA_STORE_NAME@/@ZORBA_STORE_NAME@.h>
 #else
 #include "store/minimal/min_store.h"
 #endif
@@ -744,8 +748,8 @@ int _tmain(int argc, _TCHAR* argv[])
   timing.startTimer(TimingInfo::INIT_TIMER, 2);
 
 #ifndef ZORBA_MINIMAL_STORE
-  zorba::simplestore::SimpleStore* store = 
-  zorba::simplestore::SimpleStoreManager::getStore();
+  zorba::@ZORBA_STORE_NAME@::SimpleStore* store = 
+  zorba::@ZORBA_STORE_NAME@::SimpleStoreManager::getStore();
 #else
   zorba::storeminimal::SimpleStore* store =
   zorba::storeminimal::SimpleStoreManager::getStore();
@@ -1018,7 +1022,7 @@ int _tmain(int argc, _TCHAR* argv[])
     timing.startTimer(TimingInfo::DEINIT_TIMER, 2);
 
   lZorbaInstance->shutdown();
-  zorba::simplestore::SimpleStoreManager::shutdownStore(store);
+  zorba::@ZORBA_STORE_NAME@::SimpleStoreManager::shutdownStore(store);
 
   if (doTiming)
   {

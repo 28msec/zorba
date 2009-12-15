@@ -13,6 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+// telling the compiler where the original file is
+#line __LINE__ "@CMAKE_CURRENT_SOURCE_DIR@/apitest.cpp.in"
+
 #include <zorba/zorba.h>
 
 #include <fstream>
@@ -31,8 +35,7 @@
 #include "store/api/item.h"
 #include "zorba_test_setting.h"
 #ifndef ZORBA_MINIMAL_STORE
-#include <simplestore/simplestore.h>
-#include "store/naive/simple_store.h"
+#include <@ZORBA_STORE_NAME@/@ZORBA_STORE_NAME@.h>
 #else
 #include "store/minimal/min_store.h"
 #endif
@@ -125,8 +128,8 @@ int _tmain(int argc, _TCHAR* argv[])
   zorba::storeminimal::SimpleStore* store = 
         zorba::storeminimal::SimpleStore::getInstance();
 #else
-  zorba::simplestore::SimpleStore* store = 
-        zorba::simplestore::SimpleStoreManager::getStore();
+  zorba::@ZORBA_STORE_NAME@::SimpleStore* store = 
+        zorba::@ZORBA_STORE_NAME@::SimpleStoreManager::getStore();
 #endif
 
   // start processing
@@ -190,7 +193,7 @@ int _tmain(int argc, _TCHAR* argv[])
     } catch (ZorbaException &e) {
       query->close();
       zengine->shutdown();
-      store->shutdown();
+      zorba::@ZORBA_STORE_NAME@::SimpleStoreManager::shutdownStore(store);
       cerr << "Execution error: ";
       if (dynamic_cast<QueryException *> (&e) != NULL)
         cerr << (QueryException &) e;
@@ -203,6 +206,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
   query->close();
   zengine->shutdown();
-  store->shutdown();
+  zorba::@ZORBA_STORE_NAME@::SimpleStoreManager::shutdownStore(store);
   return 0;
 }
