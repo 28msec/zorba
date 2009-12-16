@@ -7,6 +7,10 @@ import schema namespace xqdoc = "http://www.xqdoc.org/1.0" at "xqdoc-1.0.xsd";
 
 declare copy-namespaces preserve, inherit;
 
+(:~
+ : This variable contains the relative paths to directories that contain example code fragments that are included
+ :)
+declare variable $examplePath  as xs:string* := ('test/rbkt/Queries/zorba','test/update/Queries','test/rbkt/ExpQueryResults/zorba','test/update/ExpectedTestResults');
 
 (:~
  : This variable contains the modules directory path in the source directory
@@ -131,14 +135,17 @@ declare sequential function local:collectModule ($module, $relativeFileName as x
     ();
 };    
 
-declare function local:getFilePath ($relativePath as xs:string) as xs:string
+declare function local:getFilePath ($filename as xs:string) as xs:string*
 {
   let $zorbaPath := replace($modulesPath,"/modules","")
-  let $test := concat($zorbaPath,'/',$relativePath)
-  return if(file:exists($test)) then
-     $test
-  else
-     concat("File: ",$test," was not found")
+  for $relPath in $examplePath
+  let $path := concat($zorbaPath,'/',$relPath)
+  let $test := file:files($path,concat("^",$filename,"$"),fn:true())[1]
+  return
+  if (fn:exists($test)) then
+    $test
+  else 
+    ()
 };
 
 declare sequential function local:configure-xhtml ($xhtml, $pathToIndex as xs:string, $cssFileName as xs:string) {
@@ -148,17 +155,23 @@ declare sequential function local:configure-xhtml ($xhtml, $pathToIndex as xs:st
         replace value of node $xhtml/*:head/*:link/@href with $cssPath
     ;    
     (: replace the <test> nodes with eiter links to the actual files or inline the actual files based on the 'type' attribute value :)
-    for $file in $xhtml//*:test
+    for $file in $xhtml//*:include
     let $type := $file/@type
     let $path := local:getFilePath($file/text())
     return block {
-        if (matches($type, "link")) then 
-            replace node $file with 
-              <a href="{$path}">{$path}</a> 
-        else if (matches($type, "inline")) then
-            replace node $file with
-              <pre class="fragment">{file:read-text($path)}</pre>
-        else () 
+    (: at the moment there is no way to ship the files defined as links with the packages/installers
+      if (matches($type, "link")) then 
+        replace node $file with 
+          <a href="{$path}">{$path}</a> 
+      else :)if (matches($type, "inline")) then
+        replace node $file with
+          if (fn:exists($path)) then
+            <pre> {$path}:<br />
+            <pre class="fragment">{file:read-text($path)}</pre>
+            </pre>
+          else
+            <pre class="fragment">No example matching pattern '{$file/text()}' was found. Please update 'examplePath' variable.</pre>
+      else () 
     };
     (: replace the function type description with images :)
     let $xquSpec := "http://www.w3.org/TR/xquery-update-10/",
