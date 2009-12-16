@@ -125,7 +125,7 @@ declare sequential function file:files(
     else
       if (fn:matches($f, $pattern))
       then 
-        $f
+        $full
       else
         ()
 };
