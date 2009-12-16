@@ -435,12 +435,12 @@ StandardModuleURIResolver::computeLibraryName(const URI aURI)
   std::ostringstream lLibraryName;
   lLibraryName << lBranchPath
 #ifdef WIN32
-      << lFileName << ".dll";
+      << lFileName << ZORBA_DYNMODULELIB_SUFFIX << ".dll";
 #else
 #ifdef APPLE
-      << "lib" << lFileName << ".dylib";
+      << "lib" << lFileName << ZORBA_DYNMODULELIB_SUFFIX << ".dylib";
 #else 
-      << "lib" << lFileName << ".so";
+      << "lib" << lFileName << ZORBA_DYNMODULELIB_SUFFIX << ".so";
 #endif
 #endif
 
