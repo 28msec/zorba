@@ -45,6 +45,7 @@ class  Condition
   ~Condition();
 
   void wait();
+  void timedWait(unsigned long aTimeInsMs);
   void signal();
   void broadcast();
 };

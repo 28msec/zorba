@@ -18,6 +18,7 @@
 #include "zorbautils/mutex.h"
 #include "zorbautils/condition.h"
 #include <cassert>
+#include <time.h>
 
 namespace zorba { 
 
@@ -45,6 +46,17 @@ void Condition::wait()
   int ret = pthread_cond_wait(&theCondition, theMutex.getMutex());
 
   ZORBA_FATAL(!ret, "Failed to wait on condition variable. Error code = " << ret);
+}
+
+void Condition::timedWait(unsigned long aTimeInsMs)
+{
+  struct timespec lTimespec;
+  clock_gettime(CLOCK_REALTIME, &lTimespec);
+  lTimespec.tv_sec += aTimeInsMs/1000;
+  int ret = pthread_cond_timedwait(&theCondition, theMutex.getMutex(), &lTimespec);
+
+  // error other than ETIMEDOUT
+  ZORBA_FATAL(!ret || ret == 110, "Failed to wait on condition variable. Error code = " << ret);
 }
 
 

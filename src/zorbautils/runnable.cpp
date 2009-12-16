@@ -100,7 +100,10 @@ void zorba::Runnable::suspend(unsigned long aTimeInMs /*= 0*/)
   pthread_cleanup_push(mutexCleanupHandler, &theMutex);
 
   theStatus = SUSPENDED;
-  theCondition.wait();
+  if (aTimeInMs != 0)
+    theCondition.timedWait(aTimeInMs);
+  else
+    theCondition.wait();
 
   theStatus = RUNNING;
   pthread_testcancel();
