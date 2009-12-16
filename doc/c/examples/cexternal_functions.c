@@ -25,8 +25,6 @@
 // released in my_ext_fct_release
 typedef struct
 {
-  XQC_Item        item;
-  XQC_ItemFactory factory;
   XQC_Sequence*    seq;
   int             i;
 } my_ext_data;
@@ -39,40 +37,12 @@ typedef struct
 void
 my_ext_fct_init(void** user_data, void* global_user_data)
 {
-  XQC_Implementation* impl = (XQC_Implementation*) global_user_data;
   my_ext_data* data;
 
   *user_data = malloc(sizeof(my_ext_data));
 
   data = (my_ext_data*)(*user_data);
   data->i = 0;
-
-  impl->item_factory(impl, &(data->factory));  
-  impl->create_item(impl, &(data->item));
-}
-
-// callback function called for each invocation of the external function in the query
-XQC_Error
-my_ext_fct_next(XQC_Sequence* args, // arguments
-                int argc, // number of arguments two this function
-                XQC_Item_Ref result,
-                void* user_data,
-                void* global_user_data)
-{
-/*   my_ext_data* data = (my_ext_data*)(user_data); */
-
-/*   // concat the input sequence */
-/*   while ( data->i < argc ) { */
-/*     if ( args[data->i].next(&(args[data->i]), data->item) != XQC_END_OF_SEQUENCE ) { */
-/*       *result = data->item; */
-/*       return XQC_NO_ERROR; */
-/*     } */
-/*     ++(data->i); */
-/*   } */
-
-  return XQC_END_OF_SEQUENCE;
-  
-
 }
 
 // called after the execution of the query has finished

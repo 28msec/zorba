@@ -50,15 +50,6 @@ namespace zorbac {
       static void 
       free(XQC_Implementation* implementation);
 
-      static XQC_Error
-      create_item(XQC_Implementation* implementation, XQC_Item_Ref item);
-
-      static XQC_Error
-      item_factory(XQC_Implementation* implementation, XQC_ItemFactory_Ref factory);  
-
-      static XQC_Error
-      data_manager(XQC_Implementation* implementation, XQC_DataManager_Ref data_manager);
-
       static void
       assign_functions(XQC_Implementation* implementation);
 

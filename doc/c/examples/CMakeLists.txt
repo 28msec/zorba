@@ -19,7 +19,6 @@ INCLUDE_DIRECTORIES(AFTER ${CMAKE_SOURCE_DIR}/src/)
 SET (CAPI_EXAMPLES
 	csimple.c
   ccontext.c
-  cdatamanager.c
   cerror.c
   cexternal_functions.c 
   cserialization.c

@@ -20,8 +20,6 @@
 #include <zorba/external_function.h>
 #include <zorba/zorbac.h>
 
-#include "capi/item.h"
-
 namespace zorbac {
 
   class ExternalFunctionWrapper : public zorba::PureStatelessExternalFunction {
@@ -29,7 +27,6 @@ namespace zorbac {
       ExternalFunctionWrapper(const char* uri, 
                               const char* localname,
                               external_function_init init,
-                              external_function_next next,
                               external_function_release release,
                               void* global_user_data);
 
@@ -45,9 +42,8 @@ namespace zorbac {
     protected:
       zorba::String theURI;
       zorba::String theLocalName;
-      Item* theItem;
+      zorba::Item* theItem;
       external_function_init    theInitFunction;
-      external_function_next    theNextFunction;
       external_function_release theReleaseFunction;
       void* theGlobalUserData;
       void* theUserData;

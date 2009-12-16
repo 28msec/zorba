@@ -125,7 +125,6 @@ namespace zorbac {
                                 const char* uri,
                                 const char* localname,
                                 external_function_init init,
-                                external_function_next next,
                                 external_function_release release,
                                 void* global_user_data);
 

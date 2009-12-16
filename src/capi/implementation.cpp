@@ -20,10 +20,7 @@
 #include <zorba/zorba.h>
 
 #include "capi/query.h"
-#include "capi/item.h"
-#include "capi/item_factory.h"
 #include "capi/static_context.h"
-#include "capi/data_manager.h"
 #include "capi/capi_util.h"
 #include "capi/error.h"
 
@@ -214,68 +211,6 @@ namespace zorbac {
     }
   }
 
-  XQC_Error
-  Implementation::create_item(XQC_Implementation* impl, XQC_Item_Ref item)
-  {
-    try {
-      std::auto_ptr<XQC_Item_s> lItem(new XQC_Item_s());
-      std::auto_ptr<zorbac::Item> lInnerItem(new zorbac::Item());
-
-      Item::assign_functions(lItem.get());
-
-      (*item) = lItem.release();
-      (*item)->data = lInnerItem.release();
-
-      return XQC_NO_ERROR;
-    } catch (...) {
-      return XQC_INTERNAL_ERROR;
-    }
-  }
-
-
-  XQC_Error
-  Implementation::item_factory(XQC_Implementation* impl, XQC_ItemFactory_Ref factory)
-  {
-    try {
-      std::auto_ptr<XQC_ItemFactory_s> lFactory(new XQC_ItemFactory_s());
-
-      zorba::Zorba* lZorba = static_cast<zorba::Zorba*>(impl->data);
-      
-      ItemFactory::assign_functions(lFactory.get());
-
-      (*factory) = lFactory.release();
-      (*factory)->data = lZorba->getItemFactory();
-
-      return XQC_NO_ERROR;
-    } catch (ZorbaException& e) {
-      return Error::convert_xquery_error(e.getErrorCode());
-    } catch (...) {
-      return XQC_INTERNAL_ERROR; 
-    }
-    
-  }
-
-  XQC_Error
-  Implementation::data_manager(XQC_Implementation* impl, XQC_DataManager_Ref data_manager)
-  {
-    try {
-      std::auto_ptr<XQC_DataManager_s> lDataManager(new XQC_DataManager_s());
-
-      zorba::Zorba* lZorba = static_cast<zorba::Zorba*>(impl->data);
-      
-      DataManager::assign_functions(lDataManager.get());
-
-      (*data_manager) = lDataManager.release();
-      (*data_manager)->data = lZorba->getXmlDataManager();
-
-      return XQC_NO_ERROR;
-    } catch (ZorbaException& e) {
-      return Error::convert_xquery_error(e.getErrorCode());
-    } catch (...) {
-      return XQC_INTERNAL_ERROR; 
-    }
-  }
-
   void
   Implementation::assign_functions(XQC_Implementation* impl)
   {
@@ -284,9 +219,6 @@ namespace zorbac {
     impl->prepare_file   = Implementation::prepare_file;
     impl->prepare_stream = Implementation::prepare_stream;
     impl->free           = Implementation::free;
-    impl->create_item    = Implementation::create_item;
-    impl->item_factory   = Implementation::item_factory;
-    impl->data_manager   = Implementation::data_manager;
   }
 
 } /* namespace zorbac */

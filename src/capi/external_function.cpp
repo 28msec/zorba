@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 #include "capi/external_function.h"
-#include "capi/item.h"
 #include "capi/error.h"
 #include "capi/sequence.h"
 #include "zorbaerrors/error_manager.h"
@@ -28,15 +27,12 @@ namespace zorbac {
     public:
       ExternalFunctionWrapperSequence(StatelessExternalFunction::Arguments_t args,
       external_function_init init,
-      external_function_next next,
       external_function_release release,
       void* global_user_data)
         : theArgs(args),
           theInitFunction(init),
-          theNextFunction(next),
           theReleaseFunction(release),
           theUserData(0),
-          theItem(0),
           theGlobalUserData(global_user_data)
       {
         if (theInitFunction)
@@ -73,21 +69,22 @@ namespace zorbac {
       virtual 
       bool next(zorba::Item& i)
       {
-        XQC_Error lRes = theNextFunction(theSequences, theArgs.size(), 
-        &theItem, theUserData, theGlobalUserData);
-        if ( lRes == XQC_END_OF_SEQUENCE)
-          return false;
+// TODO commented out pending rewrite of external function API
+//         XQC_Error lRes = theNextFunction(theSequences, theArgs.size(), 
+//         &theItem, theUserData, theGlobalUserData);
+//         if ( lRes == XQC_END_OF_SEQUENCE)
+//           return false;
 
-        if ( lRes != XQC_NO_ERROR ) {
-          // TODO external_function_next returns XQC_Error for now,
-          // but ZORBA_ERROR wants XQUERY_ERROR. Someday this
-          // disparity should be cleaned up. For now toss a
-          // general-purpose XQUERY_ERROR.
-          ZORBA_ERROR(XQP0019_INTERNAL_ERROR);
-        }
+//         if ( lRes != XQC_NO_ERROR ) {
+//           // TODO external_function_next returns XQC_Error for now,
+//           // but ZORBA_ERROR wants XQUERY_ERROR. Someday this
+//           // disparity should be cleaned up. For now toss a
+//           // general-purpose XQUERY_ERROR.
+//           ZORBA_ERROR(XQP0019_INTERNAL_ERROR);
+//         }
 
-        i = static_cast<zorbac::Item*>(theItem->data)->theItem;
-        assert (!i.isNull());
+//         i = static_cast<zorbac::Item*>(theItem->data)->theItem;
+//         assert (!i.isNull());
 
         return true;
       }
@@ -95,10 +92,8 @@ namespace zorbac {
     private:
       StatelessExternalFunction::Arguments_t theArgs; 
       external_function_init                 theInitFunction;
-      external_function_next                 theNextFunction;
       external_function_release              theReleaseFunction;
       void*                                  theUserData;
-      XQC_Item                               theItem;
       XQC_Sequence_s*                        theSequences;
       void*                                  theGlobalUserData;
   };
@@ -107,13 +102,11 @@ namespace zorbac {
   ExternalFunctionWrapper::ExternalFunctionWrapper(const char* uri, 
   const char* localname,
   external_function_init init,
-  external_function_next next,
   external_function_release release,
   void* global_user_data)
     : theURI(uri),
       theLocalName(localname),
       theInitFunction(init),
-      theNextFunction(next),
       theReleaseFunction(release),
       theGlobalUserData(global_user_data) {}
 
@@ -134,7 +127,6 @@ namespace zorbac {
   {
     return ItemSequence_t(new ExternalFunctionWrapperSequence(args, 
     theInitFunction, 
-    theNextFunction,
     theReleaseFunction,
     theGlobalUserData));
   }

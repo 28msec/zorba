@@ -362,7 +362,6 @@ namespace zorbac {
                                             const char* uri,
                                             const char* localname,
                                             external_function_init init,
-                                            external_function_next next,
                                             external_function_release release,
                                             void* global_user_data)
   {
@@ -377,7 +376,7 @@ namespace zorbac {
       }
 
       std::auto_ptr<ExternalFunctionWrapper> lFunc;
-      lFunc.reset(new ExternalFunctionWrapper(uri, localname, init, next,
+      lFunc.reset(new ExternalFunctionWrapper(uri, localname, init, 
                                               release, global_user_data));
 
       XQC_Error lErr = lModule->registerFunction(lFunc.get());

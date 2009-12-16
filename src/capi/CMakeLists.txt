@@ -13,15 +13,11 @@
 # limitations under the License.
 #
 SET(CAPI_SRCS
-    collection.cpp
-    data_manager.cpp
     dynamic_context.cpp
     error.cpp
     external_function.cpp
     external_module.cpp
     implementation.cpp
-    item.cpp
-    item_factory.cpp
     query.cpp
     sequence.cpp
     static_context.cpp

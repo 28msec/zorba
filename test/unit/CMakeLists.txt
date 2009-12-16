@@ -62,39 +62,4 @@ FOREACH (test ${TestsToRun})
   ADD_TEST(${TestName} ${UNITTESTS_EXE_PATH} ${TName})
 ENDFOREACH(test)
 
-
-# CAPI Unit test
-CREATE_TEST_SOURCELIST(CAPIUnitTests
-   CAPIUnitTests.c
-   citemfactory.c
- )
- 
-# add the executable
-ADD_EXECUTABLE(CAPIUnitTests ${CAPIUnitTests})
-TARGET_LINK_LIBRARIES(CAPIUnitTests zorba_simplestore)
-
-# building a C executable statically is an open issue
-IF (ZORBA_BUILD_STATIC_LIBRARY)
-  ADD_EXECUTABLE(CAPIUnitTests_static ${CAPIUnitTests})
-  SET_TARGET_PROPERTIES(CAPIUnitTests_static PROPERTIES COMPILE_DEFINITIONS BUILDING_ZORBA_STATIC)
-  TARGET_LINK_LIBRARIES(CAPIUnitTests_static zorba_simplestore_static)
-ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
-
-IF(WIN32)
-SET(CAPIUnitTests_EXE_PATH    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/CAPIUnitTests)
-ELSE(WIN32)
-SET(CAPIUnitTests_EXE_PATH    CAPIUnitTests)
-ENDIF(WIN32)
-
-# remove the test driver source file
-SET (CAPITestsToRun ${CAPIUnitTests})
-REMOVE (CAPITestsToRun CAPIUnitTests.cpp)
-
-# add all the ADD_TEST for each testing
-FOREACH (test ${CTestsToRun})
-  GET_FILENAME_COMPONENT(TName ${test} NAME_WE)
-  MESSAGE(STATUS ${TName})
-  ADD_TEST(${TName} ${CAPIUnitTests_EXE_PATH} ${TName})
-ENDFOREACH(test)
-
 ADD_SUBDIRECTORY(debugger)

@@ -19,7 +19,6 @@
 #include <sstream>
 #include <zorba/zorba.h>
 #include "capi/capi_util.h"
-#include "capi/item.h"
 #include "capi/sequence.h"
 #include "capi/error.h"
 
@@ -43,13 +42,17 @@ namespace zorbac {
   }
 
   XQC_Error 
-  DynamicContext::set_context_item (XQC_DynamicContext* context, XQC_Item value)
+  DynamicContext::set_context_item (XQC_DynamicContext* context, XQC_Sequence* value)
   {
     DC_TRY
       zorba::DynamicContext* lContext = getDynamicContext(context);
-      zorbac::Item* lItem = static_cast<zorbac::Item*>(value->data);
+      zorbac::Sequence* lSeq = static_cast<zorbac::Sequence*>(value->data);
+      zorba::Item lItem = lSeq->theItem;
+      if (lItem.isNull()) {
+        return XQC_NO_CURRENT_ITEM;
+      }
 
-      lContext->setContextItem(lItem->theItem);
+      lContext->setContextItem(lItem);
 
     DC_CATCH
   }
@@ -69,19 +72,7 @@ namespace zorbac {
   
 
   XQC_Error
-  DynamicContext::set_variable_item(XQC_DynamicContext* context, const char* qname, XQC_Item item)
-  {
-    DC_TRY
-      zorba::DynamicContext* lContext = getDynamicContext(context);
-      zorbac::Item* lItem = static_cast<zorbac::Item*>(item->data);
-
-      lContext->setVariable(qname, lItem->theItem);
-
-    DC_CATCH
-  }
-  
-  XQC_Error
-  DynamicContext::set_variable_sequence(XQC_DynamicContext* context, const char* qname, XQC_Sequence* seq)
+  DynamicContext::set_variable(XQC_DynamicContext* context, const char* qname, XQC_Sequence* seq)
   {
     DC_TRY
       zorba::DynamicContext* lContext = getDynamicContext(context);
@@ -118,18 +109,6 @@ namespace zorbac {
     DC_CATCH
   }
   
-  XQC_Error
-  DynamicContext::set_default_collection(XQC_DynamicContext* context, XQC_Item collection_uri)
-  {
-    DC_TRY
-      zorba::DynamicContext* lContext = getDynamicContext(context);
-
-      zorbac::Item* lItem = static_cast<zorbac::Item*>(collection_uri->data);
-
-      lContext->setDefaultCollection(lItem->theItem);
-    DC_CATCH
-  }
-
   void
   DynamicContext::free(XQC_DynamicContext* context)
   {
@@ -148,11 +127,9 @@ namespace zorbac {
   {
     context->set_context_item       = DynamicContext::set_context_item;
     context->set_context_document   = DynamicContext::set_context_document;
-    context->set_variable_item      = DynamicContext::set_variable_item;
-    context->set_variable_sequence  = DynamicContext::set_variable_sequence;
+    context->set_variable           = DynamicContext::set_variable;
     context->set_variable_document  = DynamicContext::set_variable_document;
     context->set_implicit_timezone  = DynamicContext::set_implicit_timezone;
-    context->set_default_collection = DynamicContext::set_default_collection;
     context->free                   = DynamicContext::free;
   }
 

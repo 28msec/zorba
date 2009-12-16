@@ -29,30 +29,31 @@
 int
 ccontext_example_1(XQC_Implementation* impl)
 {
-  XQC_Query*          lXQuery;
-  XQC_DynamicContext* lContext;
-  XQC_ItemFactory    lFactory;
-  FILE*              lOutFile = stdout;
-  XQC_Item           lItem = 0;
+/* QQQ */
+/*   XQC_Query*          lXQuery; */
+/*   XQC_DynamicContext* lContext; */
+/*   XQC_ItemFactory    lFactory; */
+/*   FILE*              lOutFile = stdout; */
+/*   XQC_Item           lItem = 0; */
 
-  impl->item_factory(impl, &lFactory);
-  lFactory->create_string(lFactory, "Zorba", &lItem);
+/*   impl->item_factory(impl, &lFactory); */
+/*   lFactory->create_string(lFactory, "Zorba", &lItem); */
 
-  impl->prepare(impl, "(., ., .)", 0, 0, &lXQuery);
+/*   impl->prepare(impl, "(., ., .)", 0, 0, &lXQuery); */
 
-  // get the dynmamic context and set the context item
-  lXQuery->get_dynamic_context(lXQuery, &lContext);
+/*   // get the dynmamic context and set the context item */
+/*   lXQuery->get_dynamic_context(lXQuery, &lContext); */
 
-  lContext->set_context_item(lContext, lItem);
+/*   lContext->set_context_item(lContext, lItem); */
 
-  // execute the query
-  lXQuery->execute(lXQuery, lOutFile);
+/*   // execute the query */
+/*   lXQuery->execute(lXQuery, lOutFile); */
 
-  // free all resources
-  lContext->free(lContext);
-  lItem->free(lItem);
-  lXQuery->free(lXQuery);
-  lFactory->free(lFactory);
+/*   // free all resources */
+/*   lContext->free(lContext); */
+/*   lItem->free(lItem); */
+/*   lXQuery->free(lXQuery); */
+/*   lFactory->free(lFactory); */
 
   return 1;
 }
@@ -148,10 +149,10 @@ ccontext_example_4(XQC_Implementation* impl)
   // compile the sequence query
   impl->prepare(impl, "declare variable $var external; ($var, $var)", 0, 0, &lXQuery2);
 
-  // get the dynmamic context and set the context item
+  // get the dynamic context and set the external variable
   lXQuery2->get_dynamic_context(lXQuery2, &lContext);
 
-  lContext->set_variable_sequence(lContext, "var", lSequence1);
+  lContext->set_variable(lContext, "var", lSequence1);
 
   lXQuery2->sequence(lXQuery2, &lSequence2);
 
