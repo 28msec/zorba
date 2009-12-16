@@ -19,6 +19,9 @@
 #include "zorbautils/condition.h"
 #include <cassert>
 #include <time.h>
+#ifdef APPLE
+#  include <sys/time.h>
+#endif
 
 namespace zorba { 
 
@@ -51,12 +54,15 @@ void Condition::wait()
 void Condition::timedWait(unsigned long aTimeInsMs)
 {
   struct timespec lTimespec;
+#ifdef APPLE
+  struct timeval tv; 
+  gettimeofday(&tv, NULL);
+  lTimespec.tv_sec = tv.tv_sec + aTimeInsMs/1000;
+#else
   clock_gettime(CLOCK_REALTIME, &lTimespec);
   lTimespec.tv_sec += aTimeInsMs/1000;
-  int ret = pthread_cond_timedwait(&theCondition, theMutex.getMutex(), &lTimespec);
-
-  // error other than ETIMEDOUT
-  ZORBA_FATAL(!ret || ret == 110, "Failed to wait on condition variable. Error code = " << ret);
+#endif
+  pthread_cond_timedwait(&theCondition, theMutex.getMutex(), &lTimespec);
 }
 
 
