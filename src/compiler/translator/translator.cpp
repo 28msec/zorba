@@ -2114,9 +2114,7 @@ void *begin_visit (const SchemaImport& v)
     }
   }
   
-  std::vector<InternalSchemaURIResolver*> lResolvers;
-  sctx_p->get_schema_uri_resolvers(lResolvers);
-  InternalSchemaURIResolver* lSchemaResolver = lResolvers[0];
+  InternalSchemaURIResolver* lSchemaResolver = GENV.getSchemaURIResolver();
   
   try 
   {

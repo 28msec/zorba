@@ -234,7 +234,7 @@ StandardSchemaURIResolver::resolve(
   std::vector<InternalSchemaURIResolver*> lResolvers;
   aStaticContext->get_schema_uri_resolvers(lResolvers);
   for (std::vector<InternalSchemaURIResolver*>::const_iterator lIter =
-      lResolvers.begin() + 1; lIter != lResolvers.end(); ++lIter) {
+      lResolvers.begin(); lIter != lResolvers.end(); ++lIter) {
     std::string lResult = (*lIter)->resolve(aURI, aStaticContext, aAtList,
         aFileUri);
     if (lResult != "") {

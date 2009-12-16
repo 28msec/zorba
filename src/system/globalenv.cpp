@@ -200,6 +200,7 @@ void GlobalEnvironment::init(store::Store* store)
   m_globalEnv->m_compilerSubSys = lSubSystem.release();
 
   m_globalEnv->m_module_resolver = new StandardModuleURIResolver();
+  m_globalEnv->m_schema_resolver = new StandardSchemaURIResolver();
 }
 
 
@@ -207,6 +208,7 @@ void GlobalEnvironment::init(store::Store* store)
 // note: destruction must be done in reverse initialization order
 void GlobalEnvironment::destroy()
 {
+  delete m_globalEnv->m_schema_resolver;
   delete m_globalEnv->m_module_resolver;
 
   serialization::ClassSerializer::getInstance()->destroyArchiverForHardcodedObjects();

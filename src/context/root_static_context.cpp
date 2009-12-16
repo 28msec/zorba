@@ -74,7 +74,6 @@ void root_static_context::init()
   // TODO move into globalenv
   set_document_uri_resolver(new StandardDocumentURIResolver());
   set_collection_uri_resolver(new StandardCollectionURIResolver());
-  add_schema_uri_resolver(new StandardSchemaURIResolver());
   set_validation_mode(StaticContextConsts::lax_validation);
 
   std::vector<std::string> lRootModulePaths;
