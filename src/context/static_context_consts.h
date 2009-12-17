@@ -55,6 +55,16 @@ namespace StaticContextConsts
     queue,
     mutable_coll
   };
+
+  enum index_property_t
+  {
+    idx_unique,
+    idx_non_unique,
+    idx_ordered,
+    idx_unordered,
+    idx_automatic,
+    idx_manual
+  };
   
   enum node_modifier_t
   {

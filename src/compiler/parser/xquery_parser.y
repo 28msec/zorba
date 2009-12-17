@@ -746,9 +746,8 @@ static void print_token_value(FILE *, int, YYSTYPE);
 /* index-related     */
 /* ----------------- */
 %type <node> IndexDecl
-%type <node> IndexProperties
-%type <node> IndexProperties2
-%type <node> IndexProperties3
+%type <node> IndexPropertyList
+%type <node> IndexProperty
 %type <node> IndexKeySpec
 %type <node> IndexKeyList
 
@@ -814,7 +813,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 // (not <= 0); but Bison never increments the refcount, so we do it manually...
 
 // parsenodes
-%destructor { if ($$ != NULL) { RCHelper::addReference ($$); RCHelper::removeReference ($$); } } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDecl3 FunctionDecl4 Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl CollProperty CollPropertyList NodeModifier IndexDecl IndexProperties IndexProperties2 IndexProperties3 IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard DecimalFormatDecl // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
+%destructor { if ($$ != NULL) { RCHelper::addReference ($$); RCHelper::removeReference ($$); } } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDecl3 FunctionDecl4 Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl CollProperty CollPropertyList NodeModifier IndexDecl IndexPropertyList IndexProperty IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard DecimalFormatDecl // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
 // exprnodes
 %destructor { if ($$ != NULL) { RCHelper::addReference ($$); RCHelper::removeReference ($$); } } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockExpr EnclosedExpr Expr ConcatExpr ApplyExpr ExprSingle ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignExpr ExitExpr WhileExpr FlowCtlStatement QNAME FTContainsExpr
 // internal non-terminals with values
@@ -1679,11 +1678,11 @@ CollProperty :
 
 
 NodeModifier :
-    NODE READ_ONLY
+    WITH READ_ONLY NODES
     {
       $$ = new NodeModifier(LOC(@$), StaticContextConsts::read_only);
     }
-  | NODE MUTABLE
+  | WITH MUTABLE NODES
     {
       $$ = new NodeModifier(LOC(@$), StaticContextConsts::mutable_node);
     }
@@ -1691,78 +1690,74 @@ NodeModifier :
 
 
 IndexDecl :
-    DECLARE INDEX QNAME ON Expr BY IndexKeyList RPAR IndexProperties
+    DECLARE INDEX QNAME ON PathExpr BY IndexKeyList
     {
       $$ = new IndexDecl(LOC(@$),
                          static_cast<QName*>($3),
                          $5,
                          dynamic_cast<IndexKeyList*>($7),
-                         dynamic_cast<IndexProperties*>($9));
+                         new IndexPropertyList(LOC(@$)));
+    }
+  | DECLARE IndexPropertyList INDEX QNAME ON PathExpr BY IndexKeyList
+    {
+      $$ = new IndexDecl(LOC(@$),
+                         static_cast<QName*>($4),
+                         $6,
+                         dynamic_cast<IndexKeyList*>($8),
+                         dynamic_cast<IndexPropertyList*>($2));
     }
   ;
 
 
-IndexProperties :
-    IndexProperties2
+IndexPropertyList :
+    IndexProperty
     {
+      IndexPropertyList* l = new IndexPropertyList(LOC(@$));
+      l->addProperty(dynamic_cast<IndexProperty*>($1));
+      $$ = l;
+    }
+  | IndexPropertyList IndexProperty
+    {
+      dynamic_cast<IndexPropertyList*>($1)->addProperty(static_cast<IndexProperty*>($2));
       $$ = $1;
-    }
-
-  | UNIQUE IndexProperties2
-    {
-      IndexProperties* p = dynamic_cast<IndexProperties*>($2);
-      p->setUnique();
-      $$ = $2;
-    }
-
-  | NON UNIQUE IndexProperties2
-    {
-      $$ = $3;
     }
   ;
 
-IndexProperties2 :
-    IndexProperties3
-    {
-      $$ = $1;
-    }
 
-  | ORDERED IndexProperties3
+IndexProperty :
+    ORDERED
     {
-      IndexProperties* p = dynamic_cast<IndexProperties*>($2);
-      p->setOrdered();
-      $$ = $2;
+      $$ = new IndexProperty(LOC(@$), StaticContextConsts::idx_ordered);
     }
-
-  | UNORDERED IndexProperties3
+  | UNORDERED
     {
-      $$ = $2;
+      $$ = new IndexProperty(LOC(@$), StaticContextConsts::idx_unordered);
     }
-;
-
-IndexProperties3:
+  | UNIQUE
     {
-      // default properties: non-unique, non-ordered, manual
-      $$ = new IndexProperties(LOC(@$), false, false, false);
+      $$ = new IndexProperty(LOC(@$), StaticContextConsts::idx_unique);
+    }
+  | NON UNIQUE
+    {
+      $$ = new IndexProperty(LOC(@$), StaticContextConsts::idx_non_unique);
+    }
+  | AUTOMATIC
+    {
+      $$ = new IndexProperty(LOC(@$), StaticContextConsts::idx_automatic);
     }
   | MANUAL
     {
-      $$ = new IndexProperties(LOC(@$), false, false, false);
-    }
-
-  | AUTOMATIC
-    {
-      $$ = new IndexProperties(LOC(@$), false, false, true);
+      $$ = new IndexProperty(LOC(@$), StaticContextConsts::idx_manual);
     }
 ;
 
 
 IndexKeyList :
-    LPAR IndexKeySpec
+    IndexKeySpec
     {
-      IndexKeyList* l = new IndexKeyList(LOC(@$));
-      l->addKeySpec(dynamic_cast<IndexKeySpec*>($2));
-      $$ = l;
+      IndexKeyList* keyList = new IndexKeyList(LOC(@$));
+      keyList->addKeySpec(dynamic_cast<IndexKeySpec*>($1));
+      $$ = keyList;
     }
   | IndexKeyList COMMA IndexKeySpec
     {
@@ -1773,31 +1768,19 @@ IndexKeyList :
 
 
 IndexKeySpec :
-    ExprSingle
-    {
-      $$ = new IndexKeySpec(LOC(@$), $1, NULL, NULL);
-    }
-  |
-    ExprSingle OrderModifier
+    PathExpr AS SingleType
     {
       $$ = new IndexKeySpec(LOC(@$),
                             $1,
-                            NULL,
-                            dynamic_cast<OrderModifierPN*>($2));
-    }
-  | ExprSingle TypeDeclaration
-    {
-      $$ = new IndexKeySpec(LOC(@$),
-                            $1,
-                            dynamic_cast<SequenceType*>($2),
+                            dynamic_cast<SequenceType*>($3),
                             NULL);
     }
-  | ExprSingle TypeDeclaration OrderModifier
+  | PathExpr AS SingleType OrderModifier
     {
       $$ = new IndexKeySpec(LOC(@$),
                             $1,
-                            dynamic_cast<SequenceType*>($2),
-                            dynamic_cast<OrderModifierPN*>($3));
+                            dynamic_cast<SequenceType*>($3),
+                            dynamic_cast<OrderModifierPN*>($4));
     }
   ;
 

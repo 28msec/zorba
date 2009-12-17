@@ -866,29 +866,42 @@ void NodeModifier::accept(parsenode_visitor& v) const
   END_VISITOR();
 }
 
+
 /***************************************************************************//**
-  IndexDecl ::= "declare" "unique"? 
-                          ("ordered" | "unordered")?
-                          ("automatic" | "manual")?
-                          "index" UriLiteral
-                          "on" IndexDomainExpr
-                          "by" "(" IndexKeyList ")"
+  IndexDecl ::= "declare" IndexPropertyList "index" QName
+                "on" IndexDomainExpr "by" IndexKeyList
+
+  IndexPropertyList := ("unique" | "non" "unique" |
+                        "ordered" | "unordered" | 
+                        "automatic" | "manual")*
+
+  IndexDomainExpr := PathExpr
+
+  IndexKeyList := IndexKeySpec+
+
+  IndexKeySpec := PathExpr SingleType OrderModifier
+
+  SingleType := AtomicType ("?")?
 ********************************************************************************/
 IndexDecl::IndexDecl (
     const QueryLoc& loc,
     QName* name,
     exprnode* domainExpr,
     IndexKeyList* key,
-    IndexProperties* props)
+    IndexPropertyList* props)
   :
   parsenode(loc),
   theName(name),
   theDomainExpr(domainExpr),
   theKey(key)
 {
+  assert(props);
+
   theIsUnique = props->isUnique();
   theIsOrdered = props->isOrdered();
   theIsAutomatic = props->isAutomatic();
+
+  delete props;
 }
 
 
@@ -902,6 +915,54 @@ void IndexDecl::accept(parsenode_visitor& v) const
   END_VISITOR ();
 }
 
+
+/*******************************************************************************
+  IndexPropertyList := ("unique" | "non" "unique" |
+                        "ordered" | "unordered" | 
+                        "automatic" | "manual")*
+********************************************************************************/
+void IndexPropertyList::addProperty(IndexProperty* property)
+{
+  StaticContextConsts::index_property_t prop = property->getProperty();
+
+  delete property;
+
+  switch (prop)
+  {
+  case StaticContextConsts::idx_unique:
+  case StaticContextConsts::idx_non_unique:
+    if (theSetUnique)
+      ZORBA_ERROR_LOC_DESC_OSS(XDST0015, loc,
+                               "More than one value declared for an index property.");
+
+    theSetUnique = true;
+    theIsUnique = (prop == StaticContextConsts::idx_unique);
+    break;
+
+  case StaticContextConsts::idx_ordered:
+  case StaticContextConsts::idx_unordered:
+    if (theSetOrdered)
+      ZORBA_ERROR_LOC_DESC_OSS(XDST0015, loc,
+                               "More than one value declared for an index property.");
+
+    theSetOrdered = true;
+    theIsOrdered = (prop == StaticContextConsts::idx_ordered);
+    break;
+
+  case StaticContextConsts::idx_manual:
+  case StaticContextConsts::idx_automatic:
+    if (theSetAutomatic)
+      ZORBA_ERROR_LOC_DESC_OSS(XDST0015, loc,
+                               "More than one value declared for an index property.");
+
+    theSetAutomatic = true;
+    theIsAutomatic = (prop == StaticContextConsts::idx_automatic);
+    break;
+
+  default:
+    ZORBA_ASSERT(false);
+  }
+}
 
 /***************************************************************************//**
   IndexKeyList ::= IndexKeySpec ("," IndexKeySpec)*
@@ -943,9 +1004,11 @@ IntegrityConstraintDecl::IntegrityConstraintDecl (
 void IntegrityConstraintDecl::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
+
   std::cout << "ICDecl::accept: " << 
     ( theIsUnchecked ? "unchecked" : "" ) << " " << 
     ( theIsAsync ? "asynchronous" : "" ) << std::endl;
+
   END_VISITOR ();
 }
 

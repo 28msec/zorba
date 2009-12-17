@@ -133,7 +133,8 @@ class CollectionModifier;
 class NodeModifier;
 class IndexKeyList;
 class IndexKeySpec;
-class IndexProperties;
+class IndexPropertyList;
+class IndexProperty;
 class IfExpr;
 class InsertExpr;
 class InstanceofExpr;
@@ -1134,6 +1135,7 @@ public:
   void accept(parsenode_visitor&) const;
 };
 
+
 /*******************************************************************************
   [*] CollPropertyList   ::=   CollProperty*
 ********************************************************************************/
@@ -1146,13 +1148,19 @@ public:
   CollPropertyList(const QueryLoc& aLoc) : parsenode(aLoc) { }
 
   void addProperty(CollProperty* aProp) { theCollProps.push_back(aProp); }
+
   size_t size() const { return theCollProps.size(); }
+
   const CollProperty* getProperty(size_t i) const { return theCollProps[i].getp(); }
+
   void accept(parsenode_visitor&) const;
 };
 
+
 /*******************************************************************************
-  [*] CollectionDecl ::= ’declare’ CollProperties ’collection’ QName (’node’ NodeModifier)? (’as’ KindTest)?
+  [*] CollectionDecl ::= "declare" CollProperties "collection" QName 
+                         ("node" NodeModifier)? ("as" KindTest)?
+
   [*] CollProperties ::= (’const’ | ’mutable’ | ’append-only’ | ’queue’ |  ’ordered’ | ’unordered’)*
   [*] NodeModifier   ::= (’read-only’ | ’mutable’)
 ********************************************************************************/
@@ -1166,25 +1174,30 @@ protected:
 
 public:
   CollectionDecl(
-    const QueryLoc&              aLoc,
-    QName*                       aName,
-    rchandle<CollPropertyList>   aCollPropertyList,
-    rchandle<NodeModifier>       aNodeModifier,
-    rchandle<parsenode>          aKindTest)
-  : parsenode(aLoc),
-    theName(aName),
-    theCollPropertyList(aCollPropertyList),
-    theNodeModifier(aNodeModifier),
-    theKindTest(aKindTest)
-  {}
+        const QueryLoc&              aLoc,
+        QName*                       aName,
+        rchandle<CollPropertyList>   aCollPropertyList,
+        rchandle<NodeModifier>       aNodeModifier,
+        rchandle<parsenode>          aKindTest)
+    : parsenode(aLoc),
+      theName(aName),
+      theCollPropertyList(aCollPropertyList),
+      theNodeModifier(aNodeModifier),
+      theKindTest(aKindTest)
+  {
+  }
 
   const QName* getName() const { return theName.getp(); }
+
   const CollPropertyList* getCollPropertyList() const { return theCollPropertyList.getp(); }
+
   const NodeModifier* getNodeModifier() const { return theNodeModifier.getp(); }
+
   const parsenode* getKindTest() const { return theKindTest.getp(); }
 
   void accept(parsenode_visitor&) const;
 };
+
 
 /*******************************************************************************
   [*] NodeModifier   ::=   ("read-only" | "mutable " )
@@ -1209,10 +1222,20 @@ public:
 
 
 /***************************************************************************//**
-  IndexDecl ::= "declare" "index" QName
-                "on" IndexDomainExpr
-                "by" "(" IndexKeyList ")"
-                 IndexProperties
+  IndexDecl ::= "declare" IndexPropertyList "index" QName
+                "on" IndexDomainExpr "by" IndexKeyList
+
+  IndexPropertyList := ("unique" | "non" "unique" |
+                        "ordered" | "unordered" | 
+                        "automatic" | "manual")*
+
+  IndexDomainExpr := PathExpr
+
+  IndexKeyList := IndexKeySpec+
+
+  IndexKeySpec := PathExpr SingleType OrderModifier
+
+  SingleType := AtomicType ("?")?
 ********************************************************************************/
 class IndexDecl : public parsenode 
 {
@@ -1231,7 +1254,7 @@ public:
         QName* name,
         exprnode* domainExpr,
         IndexKeyList* key,
-        IndexProperties* props);
+        IndexPropertyList* props);
 
   const QName* getName() const { return theName.getp(); }
 
@@ -1252,24 +1275,27 @@ public:
                       ("ordered" | "unordered")?
                       ("automatic" | "manual")?
 ********************************************************************************/
-class IndexProperties : public parsenode 
+class IndexPropertyList : public parsenode 
 {
 protected:
   bool   theIsUnique;
   bool   theIsOrdered;
   bool   theIsAutomatic;
 
+  bool   theSetUnique;
+  bool   theSetOrdered;
+  bool   theSetAutomatic;
+
 public:
-  IndexProperties(
-        const QueryLoc& loc,
-        bool isUnique,
-        bool isOrdered,
-        bool isAutomatic)
+  IndexPropertyList(const QueryLoc& loc)
     :
     parsenode(loc),
-    theIsUnique(isUnique),
-    theIsOrdered(isOrdered),
-    theIsAutomatic(isAutomatic)
+    theIsUnique(false),
+    theIsOrdered(false),
+    theIsAutomatic(false),
+    theSetUnique(false),
+    theSetOrdered(false),
+    theSetAutomatic(false)
   {
   }
 
@@ -1284,6 +1310,30 @@ public:
   bool isAutomatic() const { return theIsAutomatic; }
 
   void setAutomatic() { theIsAutomatic = true; }
+
+  void addProperty(IndexProperty* prop);
+
+  void accept(parsenode_visitor&) const { }
+};
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+class IndexProperty : public parsenode 
+{
+protected:
+  StaticContextConsts::index_property_t theProperty;
+
+public:
+  IndexProperty(const QueryLoc& loc, StaticContextConsts::index_property_t p) 
+    :
+    parsenode(loc),
+    theProperty(p) 
+  {
+  }
+
+  StaticContextConsts::index_property_t getProperty() const { return theProperty; }
 
   void accept(parsenode_visitor&) const { }
 };

@@ -3010,22 +3010,28 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
                          pop_tstack());
   StaticContextConsts::collection_property_t lCollProperty = StaticContextConsts::mutable_coll;
   StaticContextConsts::ordering_mode_t lOrderProperty = StaticContextConsts::ordered;
-  if (v.getCollPropertyList() != 0) {
+  if (v.getCollPropertyList() != 0) 
+  {
     // helper vars to check for inconsistencies
     bool lCollPropertyDeclared = false;
     bool lOrderPropertyDeclared = false;
     const CollPropertyList* lList = v.getCollPropertyList();
-    for (size_t i=0; i<lList->size(); ++i) {
+    for (size_t i = 0; i < lList->size(); ++i) 
+    {
       const CollProperty* lProp = lList->getProperty(i);
-      if (!lProp->isOrderProperty()) {
-        if (lCollPropertyDeclared) {
+      if (!lProp->isOrderProperty()) 
+      {
+        if (lCollPropertyDeclared) 
+        {
           ZORBA_ERROR_LOC_DESC_OSS(XDST0015, loc, "More than one collection modifier properties are declared.");
         }
         lCollPropertyDeclared = true;
         lCollProperty = lProp->getCollProperty();
       }
-      else {
-        if (lOrderPropertyDeclared) {
+      else
+      {
+        if (lOrderPropertyDeclared)
+        {
           ZORBA_ERROR_LOC_DESC_OSS(XDST0015, loc, "More than one collection order properties are declared.");
         }
         lOrderPropertyDeclared = true;

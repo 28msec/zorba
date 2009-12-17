@@ -6,7 +6,6 @@
 
 module namespace idx = "http://www.w3.org/TestModules/idx";
 
-declare index idx:foo
+declare ordered index idx:foo 
 on doc("auction.xml")/site/people/person
-by (fn:data(./@id))
-ordered;
+by fn:data(./@id) as xs:string;
