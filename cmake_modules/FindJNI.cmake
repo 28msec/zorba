@@ -16,9 +16,6 @@ GET_FILENAME_COMPONENT(java_install_version
   "[HKEY_LOCAL_MACHINE\\SOFTWARE\\JavaSoft\\Java Development Kit;CurrentVersion]" NAME)
 
 SET(JAVA_AWT_LIBRARY_DIRECTORIES
-  "[HKEY_LOCAL_MACHINE\\SOFTWARE\\JavaSoft\\Java Development Kit\\1.4;JavaHome]/lib"
-  "[HKEY_LOCAL_MACHINE\\SOFTWARE\\JavaSoft\\Java Development Kit\\1.3;JavaHome]/lib"
-  "[HKEY_LOCAL_MACHINE\\SOFTWARE\\JavaSoft\\Java Development Kit\\${java_install_version};JavaHome]/lib"
   $ENV{JAVA_HOME}/jre/lib/i386
   $ENV{JAVA_HOME}/jre/lib/amd64
   $ENV{JAVA_HOME}/jre/lib/ppc
@@ -46,6 +43,9 @@ SET(JAVA_AWT_LIBRARY_DIRECTORIES
   /usr/lib/j2sdk1.5-sun/jre/lib/ppc
   /usr/lib/jvm/java-6-openjdk/jre/lib
   /usr/lib/jvm/java-6-openjdk/jre/lib/i386
+  "[HKEY_LOCAL_MACHINE\\SOFTWARE\\JavaSoft\\Java Development Kit\\1.4;JavaHome]/lib"
+  "[HKEY_LOCAL_MACHINE\\SOFTWARE\\JavaSoft\\Java Development Kit\\1.3;JavaHome]/lib"
+  "[HKEY_LOCAL_MACHINE\\SOFTWARE\\JavaSoft\\Java Development Kit\\${java_install_version};JavaHome]/lib"
   )
 
 SET(JAVA_JVM_LIBRARY_DIRECTORIES)
@@ -60,9 +60,6 @@ ENDFOREACH(dir)
 
 
 SET(JAVA_AWT_INCLUDE_DIRECTORIES
-  "[HKEY_LOCAL_MACHINE\\SOFTWARE\\JavaSoft\\Java Development Kit\\1.4;JavaHome]/include"
-  "[HKEY_LOCAL_MACHINE\\SOFTWARE\\JavaSoft\\Java Development Kit\\1.3;JavaHome]/include"
-  "[HKEY_LOCAL_MACHINE\\SOFTWARE\\JavaSoft\\Java Development Kit\\${java_install_version};JavaHome]/include"
   $ENV{JAVA_HOME}/include
   /usr/include 
   /usr/local/include
@@ -76,6 +73,9 @@ SET(JAVA_AWT_INCLUDE_DIRECTORIES
   /usr/lib/j2sdk1.5-sun/include
   /opt/sun-jdk-1.5.0.04/include
   /usr/lib/jvm/java-6-openjdk/include
+  "[HKEY_LOCAL_MACHINE\\SOFTWARE\\JavaSoft\\Java Development Kit\\1.4;JavaHome]/include"
+  "[HKEY_LOCAL_MACHINE\\SOFTWARE\\JavaSoft\\Java Development Kit\\1.3;JavaHome]/include"
+  "[HKEY_LOCAL_MACHINE\\SOFTWARE\\JavaSoft\\Java Development Kit\\${java_install_version};JavaHome]/include"
   )
 
 FOREACH(JAVA_PROG "${JAVA_RUNTIME}" "${JAVA_COMPILE}" "${JAVA_ARCHIVE}")
