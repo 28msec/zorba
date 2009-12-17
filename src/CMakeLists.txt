@@ -111,6 +111,34 @@ IF (NOT ${ZORBA_STORE_DIRS_LENGTH} EQUAL ${ZORBA_STORE_NAMES_LENGTH})
 ENDIF (NOT ${ZORBA_STORE_DIRS_LENGTH} EQUAL ${ZORBA_STORE_NAMES_LENGTH})
 MATH(EXPR BOUNDARY ${ZORBA_STORE_DIRS_LENGTH}-1)
 
+# The standard uri resolver must know the store suffix that is added to the dynamically loaded
+# module libs. This is done with the helper header file src/context/get_current_lib_suffix.h.in.
+# This file contains the function get_current_lib_suffix. Its body is filed by the following cmake code:
+SET(GET_CURRENT_LIB_SUFFIX_CODE "")
+SET(EOL)
+IF (WIN32)
+  SET(EOL "\r\n")
+ELSE (WIN32)
+  SET(EOL "\n")
+ENDIF (WIN32)
+FOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
+  # adding an ifdef zorba_*_EXPRTS for each registered store
+  IF (${ZORBA_STORE_NAME} STREQUAL "simplestore")
+    SET(GET_CURRENT_LIB_SUFFIX_CODE 
+          "${GET_CURRENT_LIB_SUFFIX_CODE}\#ifdef zorba_${ZORBA_STORE_NAME}_EXPORTS${EOL}return \"\";${EOL}\#endif")
+  ELSE (${ZORBA_STORE_NAME} STREQUAL "simplestore")
+    SET(GET_CURRENT_LIB_SUFFIX_CODE 
+          "${GET_CURRENT_LIB_SUFFIX_CODE}\#ifdef zorba_${ZORBA_STORE_NAME}_EXPORTS${EOL}return \"_${ZORBA_STORE_NAME}\";${EOL}\#endif")
+  ENDIF (${ZORBA_STORE_NAME} STREQUAL "simplestore")
+ENDFOREACH(ZORBA_STORE_NAME)
+
+
+CONFIGURE_FILE(
+  ${CMAKE_CURRENT_SOURCE_DIR}/context/get_current_lib_suffix.h.in 
+  ${CMAKE_CURRENT_BINARY_DIR}/context/get_current_lib_suffix.h 
+  @ONLY
+)
+
 FOREACH(INDEX RANGE ${BOUNDARY})
   LIST(GET ZORBA_STORE_DIRS ${INDEX} ZORBA_STORE_DIR)
   LIST(GET ZORBA_STORE_NAMES ${INDEX} ZORBA_STORE_NAME)
@@ -133,16 +161,6 @@ FOREACH(INDEX RANGE ${BOUNDARY})
 
   SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_NAME} PROPERTIES VERSION ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
   SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_NAME} PROPERTIES CLEAN_DIRECT_OUTPUT 0)
-
-  # The standard uri resolver must know the store suffix that is added to the dynamically loaded
-  # module libs. This is done with the preprocessor variable ZORBA_DYNMODULELIB_SUFFIX
-  IF (${ZORBA_STORE_NAME} STREQUAL "simplestore")
-    SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_NAME} PROPERTIES 
-      COMPILE_DEFINITIONS "ZORBA_DYNMODULELIB_SUFFIX=\"\"")
-  ELSE (${ZORBA_STORE_NAME} STREQUAL "simplestore")
-    SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_NAME} PROPERTIES 
-      COMPILE_DEFINITIONS "ZORBA_DYNMODULELIB_SUFFIX=\"_${ZORBA_STORE_NAME}\"")
-  ENDIF (${ZORBA_STORE_NAME} STREQUAL "simplestore")
 
   #
   # Build the Zorba STATIC library

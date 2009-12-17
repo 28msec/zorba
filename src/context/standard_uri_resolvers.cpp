@@ -33,6 +33,7 @@
 #include "zorbaerrors/error_manager.h"
 #include "context/static_context.h"
 #include "context/dynamic_loader.h"
+#include "context/get_current_lib_suffix.h"
 
 namespace zorba {
 
@@ -435,12 +436,12 @@ StandardModuleURIResolver::computeLibraryName(const URI aURI)
   std::ostringstream lLibraryName;
   lLibraryName << lBranchPath
 #ifdef WIN32
-      << lFileName << ZORBA_DYNMODULELIB_SUFFIX << ".dll";
+      << lFileName << get_current_lib_suffix() << ".dll";
 #else
 #ifdef APPLE
-      << "lib" << lFileName << ZORBA_DYNMODULELIB_SUFFIX << ".dylib";
+      << "lib" << lFileName << get_current_lib_suffix() << ".dylib";
 #else 
-      << "lib" << lFileName << ZORBA_DYNMODULELIB_SUFFIX << ".so";
+      << "lib" << lFileName << get_current_lib_suffix() << ".so";
 #endif
 #endif
 
