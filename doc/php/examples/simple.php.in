@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-require '@phpPath@/zorba_api.php';
+require '@phpPath@/zorba_api_wrapper.php';
 
 function example_1(Zorba $aZorba)
 {
@@ -81,10 +81,7 @@ function example_6(Zorba $aZorba)
   $lDataManager = $aZorba->getXmlDataManager();
   $lDataManager->loadDocument("books.xml", "<books><book>Book 1</book><book>Book 2</book></books>");
   $lQuery1 = $aZorba->compileQuery("insert node <book>Book 3</book> into doc('books.xml')/books");
-  if($lQuery1->isUpdateQuery())
-  {
-    $lQuery1->applyUpdates();
-  }
+  $lQuery1->execute();
   $lQuery2 = $aZorba->compileQuery("doc('books.xml')//book");
   echo $lQuery2->execute();
   $lQuery1->destroy();
