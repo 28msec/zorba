@@ -135,6 +135,7 @@ main(int argc, char** argv)
   DriverContext driverContext;
   driverContext.theEngine = engine;
   driverContext.theRbktSourceDir = rbkt_src_dir;
+  driverContext.theRbktBinaryDir = rbkt_bin_dir;
   driverContext.theSpec = &lSpec;
 
   for (int testcnt = 1; i < argc; ++i, ++testcnt)

@@ -29,12 +29,14 @@ static void set_var(
     std::string name,
     std::string val,
     zorba::DynamicContext* dctx,
-    const std::string& rbkt_src_dir);
+    const std::string& rbkt_src_dir,
+    const std::string& rbkt_bin_dir);
 
 static void set_vars(
     Specification& aSpec,
     zorba::DynamicContext* dctx,
-    const std::string& rbkt_src_dir);
+    const std::string& rbkt_src_dir,
+    const std::string& rbkt_bin_dir);
 
 
 /*******************************************************************************
@@ -289,7 +291,7 @@ void createDynamicContext(
   }
   
   // Set external vars
-  set_vars(spec, dctx, driverCtx.theRbktSourceDir);
+  set_vars(spec, dctx, driverCtx.theRbktSourceDir, driverCtx.theRbktBinaryDir);
 
   if (spec.hasInputQuery()) 
   {
@@ -319,7 +321,8 @@ void createDynamicContext(
 void set_vars(
     Specification& aSpec,
     zorba::DynamicContext* dctx,
-    const std::string& rbkt_src_dir)
+    const std::string& rbkt_src_dir,
+    const std::string& rbkt_bin_dir)
 {
   std::vector<Specification::Variable>::const_iterator lIter;
   for (lIter = aSpec.variablesBegin(); lIter != aSpec.variablesEnd(); ++lIter)
@@ -328,7 +331,8 @@ void set_vars(
             (*lIter).theVarName,
             (*lIter).theVarValue,
             dctx,
-            rbkt_src_dir);
+            rbkt_src_dir,
+            rbkt_bin_dir);
   }
 }
 
@@ -343,9 +347,11 @@ void set_var(
     std::string name,
     std::string val,
     zorba::DynamicContext* dctx,
-    const std::string& rbkt_src_dir) 
+    const std::string& rbkt_src_dir,
+    const std::string& rbkt_bin_dir) 
 {
   zorba::str_replace_all (val, "$RBKT_SRC_DIR", rbkt_src_dir);
+  zorba::str_replace_all (val, "$RBKT_BINARY_DIR", rbkt_bin_dir);
 #ifdef MY_D_WIN32
   zorba::str_replace_all(val, "rbkt/Queries/w3c_testsuite/", "w3c_testsuite/Queries/");
   //zorba::str_replace_all(val, "/", "\\");

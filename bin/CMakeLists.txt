@@ -20,13 +20,6 @@ SET( SRCS
   debugger_handler.cpp debugger_server_runnable.cpp
 )
 
-# We need to change the CMAKE_CFG_INTDIR from the default value (a VS macro)
-# otherwise this will make CMake fail when searching for the zorba.exe, because
-# it does not know how to expand VS macros like $(OutDir).
-IF (MSVC_IDE)
-  SET(CMAKE_CFG_INTDIR ${CMAKE_BUILD_TYPE})
-ENDIF (MSVC_IDE)
-
 ZORBA_GENERATE_STORE_SPECIFIC_EXES("zorbacmd" "${SRCS}" "" "zorba")
 
 

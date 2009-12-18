@@ -101,7 +101,7 @@
 
   <!--
 /*******************************************************************************
-  zorba-csv:csv2xml
+  zorba-csv:csv-to-xml
 ********************************************************************************/
 -->
 
@@ -133,7 +133,7 @@
       </zorba:state>
 
     <zorba:function>
-      <zorba:signature localname="csv2xml" prefix="zorba-csv">
+      <zorba:signature localname="csv-to-xml" prefix="zorba-csv">
         <zorba:param name="csv">xs:string</zorba:param>
         <zorba:param name="first_row_is_header">xs:boolean</zorba:param>
         <zorba:param name="separator">xs:string</zorba:param>
@@ -148,7 +148,7 @@
 
 	<!--
 /*******************************************************************************
-  zorba-csv:txt2xml
+  zorba-csv:txt-to-xml
 ********************************************************************************/
 -->
 	<zorba:iterator name="ZorbaTXT2XMLIterator">
@@ -175,7 +175,7 @@
 		</zorba:state>
 
 		<zorba:function>
-			<zorba:signature localname="txt2xml" prefix="zorba-csv">
+			<zorba:signature localname="txt-to-xml" prefix="zorba-csv">
 				<zorba:param name="csv">xs:string</zorba:param>
 				<zorba:param name="first_row_is_header">xs:boolean</zorba:param>
 				<zorba:param name="columns_positions">xs:integer+</zorba:param>
@@ -188,7 +188,7 @@
 
 <!--
 /*******************************************************************************
-  zorba-csv:csv2xml from file
+  zorba-csv:csv-file-to-xml from file
 ********************************************************************************/
 -->
 
@@ -220,7 +220,7 @@
   </zorba:state>
 
   <zorba:function>
-    <zorba:signature localname="csv2xmlFromFile" prefix="zorba-csv">
+    <zorba:signature localname="csv-file-to-xml" prefix="zorba-csv">
       <zorba:param name="csv_file">xs:string</zorba:param>
       <zorba:param name="first_row_is_header">xs:boolean</zorba:param>
       <zorba:param name="separator">xs:string</zorba:param>
@@ -235,7 +235,7 @@
 
 <!--
 /*******************************************************************************
-  zorba-csv:txt2xml from file
+  zorba-csv:txt-file-to-xml from file
 ********************************************************************************/
 -->
 
@@ -263,7 +263,7 @@
 		</zorba:state>
 
 		<zorba:function>
-			<zorba:signature localname="txt2xmlFromFile" prefix="zorba-csv">
+			<zorba:signature localname="txt-file-to-xml" prefix="zorba-csv">
 				<zorba:param name="csv_file">xs:string</zorba:param>
 				<zorba:param name="first_row_is_header">xs:boolean</zorba:param>
 				<zorba:param name="columns_positions">xs:integer+</zorba:param>
@@ -276,7 +276,7 @@
 
 	<!--
 /*******************************************************************************
-  zorba-csv:xml2csv export xml to csv string
+  zorba-csv:xml-to-csv export xml to csv string
 ********************************************************************************/
 -->
 
@@ -285,7 +285,7 @@
 		<zorba:description author="Zorba Team">Export XML to a Comma Separated Values text string.</zorba:description>
 
 		<zorba:function>
-			<zorba:signature localname="xml2csv" prefix="zorba-csv">
+			<zorba:signature localname="xml-to-csv" prefix="zorba-csv">
 				<zorba:param name="xml">node()*</zorba:param>
 				<zorba:param name="xpaths">xs:string*</zorba:param>
 				<zorba:param name="first_row_is_header">xs:boolean</zorba:param>
@@ -299,7 +299,7 @@
 
 	<!--
 /*******************************************************************************
-  zorba-csv:xml2csvFile export xml to csv file
+  zorba-csv:xml-to-csv-file export xml to csv file
 ********************************************************************************/
 -->
 
@@ -308,7 +308,7 @@
 		<zorba:description author="Zorba Team">Export XML to a Comma Separated Values text file.</zorba:description>
 
 		<zorba:function>
-			<zorba:signature localname="xml2csvFile" prefix="zorba-csv">
+			<zorba:signature localname="xml-to-csv-file" prefix="zorba-csv">
 				<zorba:param name="xml">node()*</zorba:param>
 				<zorba:param name="output_file">xs:string</zorba:param>
 				<zorba:param name="xpaths">xs:string*</zorba:param>
@@ -316,14 +316,14 @@
 				<zorba:param name="separator">xs:string</zorba:param>
 				<zorba:param name="quote_char">xs:string</zorba:param>
 				<zorba:param name="quote_escape">xs:string</zorba:param>
-				<zorba:output>xs:string</zorba:output>
+				<zorba:output>xs:boolean</zorba:output>
 			</zorba:signature>
 		</zorba:function>
 	</zorba:iterator>
 
 	<!--
 /*******************************************************************************
-  zorba-csv:xml2txt export xml to txt string
+  zorba-csv:xml-to-txt export xml to txt string
 ********************************************************************************/
 -->
 
@@ -332,7 +332,7 @@
 		<zorba:description author="Zorba Team">Export XML to a Column Separated Values text string.</zorba:description>
 
 		<zorba:function>
-			<zorba:signature localname="xml2txt" prefix="zorba-csv">
+			<zorba:signature localname="xml-to-txt" prefix="zorba-csv">
 				<zorba:param name="xml">node()*</zorba:param>
 				<zorba:param name="xpaths">xs:string*</zorba:param>
 				<zorba:param name="first_row_is_header">xs:boolean</zorba:param>
@@ -344,7 +344,7 @@
 
 	<!--
 /*******************************************************************************
-  zorba-csv:xml2txtFile export xml to txt file
+  zorba-csv:xml-to-txt-file export xml to txt file
 ********************************************************************************/
 -->
 
@@ -353,13 +353,13 @@
 		<zorba:description author="Zorba Team">Export XML to a Column Separated Values text file.</zorba:description>
 
 		<zorba:function>
-			<zorba:signature localname="xml2txtFile" prefix="zorba-csv">
+			<zorba:signature localname="xml-to-txt-file" prefix="zorba-csv">
 				<zorba:param name="xml">node()*</zorba:param>
 				<zorba:param name="output_file">xs:string</zorba:param>
 				<zorba:param name="xpaths">xs:string*</zorba:param>
 				<zorba:param name="first_row_is_header">xs:boolean</zorba:param>
 				<zorba:param name="field_lengths">xs:integer+</zorba:param>
-				<zorba:output>xs:string</zorba:output>
+				<zorba:output>xs:boolean</zorba:output>
 			</zorba:signature>
 		</zorba:function>
 	</zorba:iterator>

@@ -94,13 +94,13 @@ public:
 };
 
 
-//zorba-csv:csv2xml
-class zorba_csv_csv2xml : public function
+//zorba-csv:csv-to-xml
+class zorba_csv_csv_to_xml : public function
 {
 public:
-  zorba_csv_csv2xml(const signature& sig)
+  zorba_csv_csv_to_xml(const signature& sig)
     :
-    function(sig, FunctionConsts::ZORBA_CSV_CSV2XML_7)
+    function(sig, FunctionConsts::ZORBA_CSV_CSV_TO_XML_7)
   {
   }
 
@@ -108,13 +108,13 @@ public:
 };
 
 
-//zorba-csv:txt2xml
-class zorba_csv_txt2xml : public function
+//zorba-csv:txt-to-xml
+class zorba_csv_txt_to_xml : public function
 {
 public:
-  zorba_csv_txt2xml(const signature& sig)
+  zorba_csv_txt_to_xml(const signature& sig)
     :
-    function(sig, FunctionConsts::ZORBA_CSV_TXT2XML_5)
+    function(sig, FunctionConsts::ZORBA_CSV_TXT_TO_XML_5)
   {
   }
 
@@ -122,13 +122,13 @@ public:
 };
 
 
-//zorba-csv:csv2xmlFromFile
-class zorba_csv_csv2xmlFromFile : public function
+//zorba-csv:csv-file-to-xml
+class zorba_csv_csv_file_to_xml : public function
 {
 public:
-  zorba_csv_csv2xmlFromFile(const signature& sig)
+  zorba_csv_csv_file_to_xml(const signature& sig)
     :
-    function(sig, FunctionConsts::ZORBA_CSV_CSV2XMLFROMFILE_7)
+    function(sig, FunctionConsts::ZORBA_CSV_CSV_FILE_TO_XML_7)
   {
   }
 
@@ -136,13 +136,13 @@ public:
 };
 
 
-//zorba-csv:txt2xmlFromFile
-class zorba_csv_txt2xmlFromFile : public function
+//zorba-csv:txt-file-to-xml
+class zorba_csv_txt_file_to_xml : public function
 {
 public:
-  zorba_csv_txt2xmlFromFile(const signature& sig)
+  zorba_csv_txt_file_to_xml(const signature& sig)
     :
-    function(sig, FunctionConsts::ZORBA_CSV_TXT2XMLFROMFILE_5)
+    function(sig, FunctionConsts::ZORBA_CSV_TXT_FILE_TO_XML_5)
   {
   }
 
@@ -150,13 +150,13 @@ public:
 };
 
 
-//zorba-csv:xml2csv
-class zorba_csv_xml2csv : public function
+//zorba-csv:xml-to-csv
+class zorba_csv_xml_to_csv : public function
 {
 public:
-  zorba_csv_xml2csv(const signature& sig)
+  zorba_csv_xml_to_csv(const signature& sig)
     :
-    function(sig, FunctionConsts::ZORBA_CSV_XML2CSV_6)
+    function(sig, FunctionConsts::ZORBA_CSV_XML_TO_CSV_6)
   {
   }
 
@@ -164,13 +164,13 @@ public:
 };
 
 
-//zorba-csv:xml2csvFile
-class zorba_csv_xml2csvFile : public function
+//zorba-csv:xml-to-csv-file
+class zorba_csv_xml_to_csv_file : public function
 {
 public:
-  zorba_csv_xml2csvFile(const signature& sig)
+  zorba_csv_xml_to_csv_file(const signature& sig)
     :
-    function(sig, FunctionConsts::ZORBA_CSV_XML2CSVFILE_7)
+    function(sig, FunctionConsts::ZORBA_CSV_XML_TO_CSV_FILE_7)
   {
   }
 
@@ -178,13 +178,13 @@ public:
 };
 
 
-//zorba-csv:xml2txt
-class zorba_csv_xml2txt : public function
+//zorba-csv:xml-to-txt
+class zorba_csv_xml_to_txt : public function
 {
 public:
-  zorba_csv_xml2txt(const signature& sig)
+  zorba_csv_xml_to_txt(const signature& sig)
     :
-    function(sig, FunctionConsts::ZORBA_CSV_XML2TXT_4)
+    function(sig, FunctionConsts::ZORBA_CSV_XML_TO_TXT_4)
   {
   }
 
@@ -192,13 +192,13 @@ public:
 };
 
 
-//zorba-csv:xml2txtFile
-class zorba_csv_xml2txtFile : public function
+//zorba-csv:xml-to-txt-file
+class zorba_csv_xml_to_txt_file : public function
 {
 public:
-  zorba_csv_xml2txtFile(const signature& sig)
+  zorba_csv_xml_to_txt_file(const signature& sig)
     :
-    function(sig, FunctionConsts::ZORBA_CSV_XML2TXTFILE_5)
+    function(sig, FunctionConsts::ZORBA_CSV_XML_TO_TXT_FILE_5)
   {
   }
 

@@ -19,8 +19,9 @@
 #include "zorbautils/condition.h"
 #include <cassert>
 #include <time.h>
-#ifdef APPLE
-#  include <sys/time.h>
+#ifndef WIN32
+#include <sys/time.h>
+#include <string.h>
 #endif
 
 namespace zorba { 
@@ -54,14 +55,10 @@ void Condition::wait()
 void Condition::timedWait(unsigned long aTimeInsMs)
 {
   struct timespec lTimespec;
-#ifdef APPLE
   struct timeval tv; 
   gettimeofday(&tv, NULL);
+  memset(&lTimespec, 0, sizeof(lTimespec));
   lTimespec.tv_sec = tv.tv_sec + aTimeInsMs/1000;
-#else
-  clock_gettime(CLOCK_REALTIME, &lTimespec);
-  lTimespec.tv_sec += aTimeInsMs/1000;
-#endif
   pthread_cond_timedwait(&theCondition, theMutex.getMutex(), &lTimespec);
 }
 

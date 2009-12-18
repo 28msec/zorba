@@ -25,6 +25,13 @@
 #
 #
 MACRO(ZORBA_GENERATE_STORE_SPECIFIC_EXES EXE_NAME DEPEND_SRCS DEPEND_LIBS NEW_NAME)
+	# We need to change the CMAKE_CFG_INTDIR from the default value (a VS macro)
+	# otherwise this will make CMake fail when searching for the zorba.exe, because
+	# it does not know how to expand VS macros like $(OutDir).
+	IF (MSVC_IDE)
+		SET(CMAKE_CFG_INTDIR ${CMAKE_BUILD_TYPE})
+	ENDIF (MSVC_IDE)
+
   FOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
     SET(SUFFIX)
     # simplestore executable doesn't need an extension
@@ -62,5 +69,6 @@ MACRO(ZORBA_GENERATE_STORE_SPECIFIC_EXES EXE_NAME DEPEND_SRCS DEPEND_LIBS NEW_NA
 
   ENDFOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
 ENDMACRO(ZORBA_GENERATE_STORE_SPECIFIC_EXES)
+
 
 

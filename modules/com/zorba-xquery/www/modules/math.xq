@@ -15,7 +15,7 @@
 :)
 
 (:~
- : Put description here
+ : Extensive math library.
  :
  : @author Daniel Turcanu, Dan Muresan
  : @version 1.0 
@@ -30,6 +30,9 @@ module namespace math = "http://www.zorba-xquery.com/modules/math";
  :)
 declare function math:sqrt ($arg as xs:double) as xs:double external;
 
+(:~
+ : Compute e^arg .
+:)
 declare function math:exp ($arg as xs:double) as xs:double external;
 
 (:~
@@ -44,10 +47,29 @@ declare function math:cos ($arg as xs:double) as xs:double external;
 
 declare function math:tan ($arg as xs:double) as xs:double external;
 
+(:~
+ : Compute arcsine of arg.
+ :
+ : @param $arg a value between -1 and 1
+ : @return a value between -PI/2 and PI/2
+:)
 declare function math:asin ($arg as xs:double) as xs:double external;
 
+(:~
+ : Compute arccosine of arg.
+ :
+ : @param $arg a value between -1 and 1
+ : @return a value between 0 and PI
+:)
 declare function math:acos ($arg as xs:double) as xs:double external;
 
+(:~
+ : Compute arctangent of arg.
+ : If arg is 0, atan returns 0.
+ :
+ : @param $arg any value
+ : @return a value between -PI/2 and PI/2
+:)
 declare function math:atan ($arg as xs:double) as xs:double external;
 
 

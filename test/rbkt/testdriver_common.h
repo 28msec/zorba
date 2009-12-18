@@ -128,6 +128,7 @@ public:
   zorba::Zorba  * theEngine;
   Specification * theSpec;
   std::string     theRbktSourceDir;
+  std::string     theRbktBinaryDir;
 };
 
 
