@@ -19,9 +19,10 @@ namespace zorba {
   private:
     long theTimeout;
     StateWrapper theWrapper;
+    Mutex* theTimeoutMutex; // shared with PlanWrapper
 
   public:
-    Timeout(long aTimeout, const StateWrapper& aWrapper);
+    Timeout(long aTimeout, const StateWrapper& aWrapper, Mutex* aMutex);
 
     virtual void run();
     // Note: this method is not allowd to throw an exception!

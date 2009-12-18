@@ -46,20 +46,25 @@ SequentialIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
 bool
 LoopIterator::nextImpl (store::Item_t& result, PlanState& planState) const {
+  bool lBreakLoop = false;
+
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-  for (;;) {
+  while (!lBreakLoop) {
     try {
       while (! CONSUME (result, 0)) {
-        if (planState.theHasToQuit) {
-          goto done;
-        }
+        // bugfix: removed a goto in case
+        // planState.theHasToQuit was true
+        // this should not be needed because
+        // the FlowCtlException::INTERRUPT 
+        // exception is rethrown below
         theChildren [0]->reset (planState);
       }
     } catch (FlowCtlException &e) {
       switch (e.act) {
       case FlowCtlException::BREAK:
-        goto done;
+        lBreakLoop = true;
+        break;
       case FlowCtlException::CONTINUE:
         theChildren [0]->reset (planState);
         continue;
@@ -67,10 +72,10 @@ LoopIterator::nextImpl (store::Item_t& result, PlanState& planState) const {
         throw;
       }
     }
-    STACK_PUSH (true, state);
+    if (!lBreakLoop) {
+      STACK_PUSH (true, state);
+    } 
   }
-
-done:
   STACK_END (state);
 }
 

@@ -43,7 +43,8 @@ PlanWrapper::PlanWrapper(
 #ifndef NDEBUG
   theIsOpened(false),
 #endif
-  theTimeout(0)
+  theTimeout(0),
+  theTimeoutMutex(0)
 {
   assert (aCompilerCB);
 
@@ -65,7 +66,8 @@ PlanWrapper::PlanWrapper(
   theStateBlock->theDebuggerCommons = aCompilerCB->theDebuggerCommons;
   if (aTimeout != -1) {
     StateWrapper lWrapper(*theStateBlock);
-    theTimeout = new Timeout(aTimeout, lWrapper);
+    theTimeoutMutex = new Mutex();
+    theTimeout = new Timeout(aTimeout, lWrapper, theTimeoutMutex);
   }
 }
 
@@ -76,11 +78,16 @@ PlanWrapper::~PlanWrapper()
   assert(!theIsOpened);
 #endif
   if (theTimeout) {
+    // we wait for the timeout thread to terminate
+    // in case the timeout killed us
+    theTimeoutMutex->lock();
     // Terminate could throw an exception
     // but does not for this particular implementation
     theTimeout->terminate();
+    theTimeoutMutex->unlock();
   }
   delete theTimeout;
+  delete theTimeoutMutex;
 
   // we created it
   delete theStateBlock->theRuntimeCB; 

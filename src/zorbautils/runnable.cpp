@@ -173,15 +173,13 @@ zorba::Runnable::startImpl( void* params )
 // or terminate is requested
 void zorba::Runnable::finishImpl()
 {
-#ifndef NDEBUG
   theMutex.lock();
+#ifndef NDEBUG
   assert (!theFinishCalled);
-  theMutex.unlock();
 #endif
 
   finish();
 
-  theMutex.lock();
   theFinishCalled = true;
   theStatus = TERMINATED;
   theMutex.unlock();

@@ -32,6 +32,7 @@ class ZorbaDebuggerCommons;
 class ZorbaDebuggerRuntime;
 class Timeout;
 class XQueryImpl;
+class Mutex;
 
 /*******************************************************************************
   Wrapper used to drive the evaluation of an iterator (sub)tree.
@@ -56,6 +57,7 @@ protected:
   bool		          theIsOpened;
 #endif
   Timeout*          theTimeout;
+  Mutex*            theTimeoutMutex;
 
 public:
 
