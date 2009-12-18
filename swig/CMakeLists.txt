@@ -14,6 +14,10 @@
 
 FIND_PACKAGE(SWIG)
 IF (SWIG_FOUND AND BUILDING_SIMPLESTORE)
+  IF (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+    SET ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-strict-aliasing" )
+    SET ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing" )
+  ENDIF (CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
   INCLUDE(${SWIG_USE_FILE})
 
   # Adding all *.i files of the current directory to swig dependencies
