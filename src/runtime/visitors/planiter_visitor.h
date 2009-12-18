@@ -170,6 +170,10 @@ namespace zorba{
 
     class FnPutIterator;
 
+    class ActivateICIterator;
+
+    class DeactivateICIterator;
+
     class CreateIndexIterator;
 
     class DeleteIndexIterator;
@@ -629,6 +633,12 @@ public:
 
     virtual void beginVisit ( const FnPutIterator& ) = 0;
     virtual void endVisit   ( const FnPutIterator& ) = 0;
+
+    virtual void beginVisit ( const ActivateICIterator& ) = 0;
+    virtual void endVisit   ( const ActivateICIterator& ) = 0;
+
+    virtual void beginVisit ( const DeactivateICIterator& ) = 0;
+    virtual void endVisit   ( const DeactivateICIterator& ) = 0;
 
     virtual void beginVisit ( const CreateIndexIterator& ) = 0;
     virtual void endVisit   ( const CreateIndexIterator& ) = 0;

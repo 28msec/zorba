@@ -357,7 +357,6 @@ public:
 };
 
 
-
 /*******************************************************************************
  An abstract class that provides callback methods for the store to call in order
  to perform index maintenance.  is used to compute (key, domain_item) pairs for a

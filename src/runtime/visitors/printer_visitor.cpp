@@ -45,6 +45,7 @@
 #include "runtime/eval/eval.h"
 #include "runtime/fnerror/fnerror.h"
 #include "runtime/fnput/fnput.h"
+#include "runtime/indexing/ic_ddl.h"
 #include "runtime/indexing/index_ddl.h"
 #include "runtime/introspection/dctx.h"
 #include "runtime/introspection/sctx.h"
@@ -1095,6 +1096,34 @@ void PrinterVisitor::endVisit ( const FnPutIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FnPutIterator>
+
+
+// <ActivateICIterator>
+void PrinterVisitor::beginVisit ( const ActivateICIterator& a) {
+  thePrinter.startBeginVisit("ActivateICIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ActivateICIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ActivateICIterator>
+
+
+// <DeactivateICIterator>
+void PrinterVisitor::beginVisit ( const DeactivateICIterator& a) {
+  thePrinter.startBeginVisit("DeactivateICIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const DeactivateICIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </DeactivateICIterator>
 
 
 // <CreateIndexIterator>

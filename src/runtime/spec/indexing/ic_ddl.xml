@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+-->
+<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+    
+<zorba:header>
+</zorba:header>
+
+<zorba:source>
+  <zorba:include  form="Quoted">store/api/iterator.h</zorba:include>
+</zorba:source>
+
+<zorba:codegen>
+  <zorba:cpp>
+    <!--    <zorba:include form="Quoted">functions/Index.h</zorba:include>-->
+  </zorba:cpp>
+</zorba:codegen>
+
+
+<!--
+/*******************************************************************************
+*******************************************************************************/
+-->
+<zorba:iterator name="ActivateICIterator" arity="unary">
+
+    <zorba:description author="Zorba Team">
+  activate-integrity-constraint($icName as xs:QName) as ()
+
+  Activates a staticaly declared integrity constraint for runtime
+  check durring apply updates. After activation, the integrity
+  constraint will become available in the dynamic context.
+
+  Error XXX is risen if $icName is not available in the static context.
+    </zorba:description>
+
+    <zorba:function isUpdating="false" requiresDynamicContext="true"> 
+      <zorba:signature localname="activate-integrity-constraint" 
+		       prefix="fn-zorba-ddl">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="DeactivateICIterator" arity="unary">
+
+    <zorba:description author="Zorba Team">
+  deactivate-integrity-constraint($icName as xs:QName) as ()
+
+  Deactivates the runtime check of the $icName integrity constraint
+  and it also removes it from dynamic context.
+
+  Error XXX is risen if $icName is not activated, i.e. available in 
+  dynamic context.
+    </zorba:description>
+
+    <zorba:function isUpdating="false" requiresDynamicContext="true"> 
+      <zorba:signature localname="deactivate-integrity-constraint" 
+		       prefix="fn-zorba-ddl">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+</zorba:iterator>
+
+
+</zorba:iterators>

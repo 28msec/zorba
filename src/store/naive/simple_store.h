@@ -63,6 +63,7 @@ typedef store::StringHashMap<XmlNode_t> DocumentSet;
 typedef ItemPointerHashMap<store::Collection_t> CollectionSet;
 typedef store::StringHashMap<store::Collection_t> UriCollectionSet;
 typedef ItemPointerHashMap<store::Index_t> IndexSet;
+typedef ItemPointerHashMap<store::IC_t> ICSet;
 
 
 
@@ -124,10 +125,12 @@ protected:
   CollectionSet                 theCollections;
   UriCollectionSet              theUriCollections;
   IndexSet                      theIndices;
+  ICSet                         theICs;
 
   SYNC_CODE(Lock                theGlobalLock;)
 
   long                          theTraceLevel;
+  
 
 private:
   SimpleStore();
@@ -186,6 +189,19 @@ public:
   store::Iterator_t listIndexNames();
 
   const IndexSet& getIndices() const { return theIndices; }
+
+  store::IC_t activateIC(const store::Item_t& icQName, 
+                         const store::Item_t& collectionQName);
+
+  store::IC_t activateForeignKeyIC(const store::Item_t& icQName, 
+                                   const store::Item_t& fromCollectionQName,
+                                   const store::Item_t& toCollectionQName);
+
+  void deactivateIC(const store::Item* icQName);
+
+  store::Iterator_t listActiveICNames();
+
+  store::IC* getIC(const store::Item* icQName);
 
   store::Item_t loadDocument(
         const xqpStringStore_t& uri,

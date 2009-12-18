@@ -282,7 +282,6 @@ private:
 
 typedef rchandle<ValueIndex> ValueIndex_t;
 
-
 }
 
 #endif

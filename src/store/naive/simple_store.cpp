@@ -36,6 +36,7 @@
 #include "store/naive/simple_lazy_temp_seq.h"
 #include "store/naive/simple_collection.h"
 #include "store/naive/simple_index.h"
+#include "store/naive/simple_ic.h"
 #include "store/naive/qname_pool.h"
 #include "store/naive/loader.h"
 #include "store/naive/store_defs.h"
@@ -87,6 +88,7 @@ SimpleStore::SimpleStore()
   theCollections(0, NULL, DEFAULT_COLLECTION_MAP_SIZE, true),
   theUriCollections(DEFAULT_COLLECTION_MAP_SIZE, true),
   theIndices(0, NULL, DEFAULT_COLLECTION_MAP_SIZE, true),
+  theICs(0, NULL, DEFAULT_COLLECTION_MAP_SIZE, true),
   theTraceLevel(0)
 {
 }
@@ -455,6 +457,74 @@ public:
 store::Iterator_t SimpleStore::listIndexNames()
 {
   return new NameIterator<IndexSet>(theIndices);
+}
+
+
+
+store::IC_t SimpleStore::activateIC(const store::Item_t& icQName, 
+                                    const store::Item_t& collectionQName)
+{
+  ZORBA_ASSERT(icQName != NULL);
+
+  store::IC_t ic;
+
+  if (theICs.get(icQName, ic))
+  {
+    ZORBA_ERROR_PARAM(STR0010_IC_ALREADY_EXISTS,
+                      icQName->getStringValue()->c_str(), "");
+  }
+
+  ic = new ICCollectionImpl(icQName, collectionQName);
+
+  theICs.insert(static_cast<ICCollectionImpl*>(ic.getp())->getICName(), ic);
+
+  return ic;
+}
+
+store::IC_t SimpleStore::activateForeignKeyIC(const store::Item_t& icQName, 
+                                   const store::Item_t& fromCollectionQName,
+                                   const store::Item_t& toCollectionQName)
+{
+  ZORBA_ASSERT(icQName != NULL);
+
+  store::IC_t ic;
+
+  if (theICs.get(icQName, ic))
+  {
+    ZORBA_ERROR_PARAM(STR0010_IC_ALREADY_EXISTS,
+                      icQName->getStringValue()->c_str(), "");
+  }
+
+  ic = new ICForeignKeyImpl(icQName, fromCollectionQName, toCollectionQName);
+
+  theICs.insert(static_cast<ICForeignKeyImpl*>(ic.getp())->getICName(), ic);
+
+  return ic;
+}
+
+void SimpleStore::deactivateIC(const store::Item* icQName)
+{
+  ZORBA_ASSERT(icQName != NULL);
+
+  /*if (!theICs.get(icQName, ic))
+  {
+    ZORBA_ERROR_PARAM(STR0011_IC_DOES_NOT_EXIST,
+                      qname->getStringValue()->c_str(), "");
+                      }*/
+  theICs.remove(icQName);
+}
+
+store::Iterator_t SimpleStore::listActiveICNames()
+{
+  return new NameIterator<ICSet>(theICs);
+}
+
+store::IC* SimpleStore::getIC(const store::Item* icQName)
+{
+  store::IC_t ic;
+  theICs.get(icQName, ic);
+
+  return ic.getp();
 }
 
 /*******************************************************************************

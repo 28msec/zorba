@@ -32,6 +32,7 @@
 #include "compiler/expression/expr_base.h"
 #include "compiler/expression/var_expr.h"
 #include "compiler/indexing/value_index.h"
+#include "compiler/indexing/value_ic.h"
 
 #include "zorbautils/strutil.h"
 #define ZORBA_ZORBAUTILS_ITEM_POINTER_HASHMAP_WITH_SERIALIZATION
@@ -382,6 +383,7 @@ static_context::static_context()
   theColResolver(0),
   theCollectionMap(0),
   theIndexMap(NULL),
+  theICMap(NULL),
   theTraceStream(0),
   theCollationCache(0)
 {
@@ -397,6 +399,7 @@ static_context::static_context (static_context* parent)
   theColResolver(0),
   theCollectionMap(0),
   theIndexMap(NULL),
+  theICMap(NULL),
   theTraceStream(0),
   theCollationCache(0)
 {
@@ -412,6 +415,7 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theColResolver(0),
   theCollectionMap(0),
   theIndexMap(0),
+  theICMap(0),
   theTraceStream(0),
   theCollationCache(0)
 {
@@ -469,6 +473,9 @@ static_context::~static_context()
 
   if (theIndexMap)
     delete theIndexMap;
+
+  if (theICMap)
+    delete theICMap;
 
   if (parent)
     RCHelper::removeReference(parent);
@@ -589,6 +596,7 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
 
   ar & theCollectionMap;
   ar & theIndexMap;
+  ar & theICMap;
   ar & theCollationCache;
 }
 
@@ -1250,6 +1258,41 @@ ValueIndex* static_context::lookup_index(const store::Item* qname) const
 
 store::Iterator_t static_context::list_index_names() const {
   return new NameIterator<ValueIndex>(theIndexMap);
+}
+
+/*******************************************************************************
+
+  integrity constraint management
+
+********************************************************************************/
+void static_context::bind_ic(
+    const store::Item* qname,
+    ValueIC_t& vic,
+    const QueryLoc& loc)
+{
+  if (theICMap == NULL)
+    theICMap = new ICMap(0, NULL, 8, false);
+
+  if (!theICMap->insert((store::Item*)qname, vic))
+  {
+    ZORBA_ERROR_LOC_PARAM(XQP0048_IC_IS_ALREADY_DECLARED, loc,
+                          qname->getStringValue(),  "");
+  }
+}
+
+
+ValueIC* static_context::lookup_ic(const store::Item* qname) const
+{
+  ValueIC_t vic;
+
+  if (theICMap->get(qname, vic))
+    return vic.getp();
+  else
+    return NULL;
+}
+
+store::Iterator_t static_context::list_ic_names() const {
+  return new NameIterator<ValueIC>(theICMap);
 }
 
 /*******************************************************************************

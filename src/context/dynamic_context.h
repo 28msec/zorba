@@ -155,6 +155,15 @@ public:
 
   void unbindIndex(const store::Item* qname);
 
+  void activateIC(const store::Item_t& qname, 
+                  const store::Item_t& collectionQName);
+
+  void activateForeignKeyIC(const store::Item_t& qname,
+                            const store::Item_t& fromCollectionQName,
+                            const store::Item_t& toCollectionQName);
+
+  void deactivateIC(const store::Item* qname);
+
   bool
   addExternalFunctionParam ( const std::string& aName, void* aValue );
   

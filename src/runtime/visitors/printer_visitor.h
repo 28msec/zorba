@@ -260,6 +260,12 @@ namespace zorba {
     void beginVisit( const FnPutIterator& );
     void endVisit  ( const FnPutIterator& );
 
+    void beginVisit( const ActivateICIterator& );
+    void endVisit  ( const ActivateICIterator& );
+
+    void beginVisit( const DeactivateICIterator& );
+    void endVisit  ( const DeactivateICIterator& );
+
     void beginVisit( const CreateIndexIterator& );
     void endVisit  ( const CreateIndexIterator& );
 

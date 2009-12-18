@@ -51,6 +51,9 @@ template <class V> class serializable_ItemPointerHashMap;
 class ValueIndex;
 typedef rchandle<ValueIndex> ValueIndex_t;
 
+class ValueIC;
+typedef rchandle<ValueIC> ValueIC_t;
+
 class StaticallyKnownCollection;
 typedef rchandle<StaticallyKnownCollection> StaticallyKnownCollection_t;
 
@@ -103,6 +106,8 @@ class ZORBA_DLL_PUBLIC static_context : public context
 
   typedef ItemPointerHashMap<ValueIndex_t> IndexMap;
 
+  typedef ItemPointerHashMap<ValueIC_t> ICMap;
+
 protected:
   rchandle<TypeManager>           theTypemgr;
 
@@ -115,6 +120,7 @@ protected:
   CollectionMap                 * theCollectionMap;
 
   IndexMap                      * theIndexMap;
+  ICMap                         * theICMap;
 
   expr_t                          theQueryExpr;
 
@@ -375,6 +381,16 @@ public:
   ValueIndex* lookup_index(const store::Item* qname) const;
 
   store::Iterator_t list_index_names() const;
+
+
+  //
+  // Integrity Constraint
+  //
+  void bind_ic(const store::Item* qname, ValueIC_t& vic, const QueryLoc& loc);
+
+  ValueIC* lookup_ic(const store::Item* qname) const;
+
+  store::Iterator_t list_ic_names() const;
 
 
   //

@@ -54,6 +54,7 @@
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/rewriter/framework/rewriter.h"
 #include "compiler/indexing/value_index.h"
+#include "compiler/indexing/value_ic.h"
 
 #include "context/statically_known_collection.h"
 
@@ -3424,6 +3425,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
 
       fo_expr_t foExpr = new fo_expr(sctxid(), loc, f, arguments);
       body = foExpr;
+
     }
     break;
 
@@ -3496,6 +3498,13 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
 */
   icf->set_body(body);
   icf->set_args(args);
+
+  // Update static context
+  store::Item_t qnameItem = sctx_p->lookup_fn_qname(qname->get_prefix(),
+                                                    qname->get_localname(),
+                                                    qname->get_location());
+  ValueIC_t vic = new ValueIC(sctx_p, loc, qnameItem);
+  sctx_p->bind_ic(qnameItem, vic, loc);     
 }
 
 /////////////////////////////////////////////////////////////////////////////////

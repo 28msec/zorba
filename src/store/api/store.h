@@ -274,6 +274,39 @@ public:
    * Returns an iterator that lists the names of all the available indexes.
    */
   virtual Iterator_t listIndexNames() = 0;
+
+
+  /* ------------------ Integrity Constraints Management ------------------- */
+
+  /**
+   * Activates the icQname integrity constraint pointing to collection 
+   * collectionQName.
+   */
+  virtual IC_t activateIC(const Item_t& icQName, 
+                          const Item_t& collectionQName)  = 0;
+
+  /**
+   * Activates the icQName foreigh key integrity constraint using
+   * from and to collections.
+   */
+  virtual IC_t activateForeignKeyIC(const Item_t& icQName, 
+                                    const Item_t& fromCollectionQName,
+                                    const Item_t& toCollectionQName)  = 0;
+
+  /**
+   * Deactivates icQName integrity constraint.
+   */
+  virtual void deactivateIC(const Item* icQName) = 0;
+
+  /**
+   * Lists all active integrity constraints.
+   */
+  virtual Iterator_t listActiveICNames() = 0;
+
+  /**
+   * Returns integrity constraint  for this name, NULL if not active.
+   */
+  virtual IC* getIC(const Item* icQName)  = 0;
 };
 
 
