@@ -205,18 +205,20 @@ bool   csv_read_line(unicode_codepoint_iterator *csv_it, //IN-OUT
   int quote_escape_size = quote_escape_cp.size();
   if(!quote_size)
     quote_escape_size = 0;
+  field.getStore()->str().reserve(100);
   for(;!csv_it->is_end(); ++(*csv_it))
   {
     if(!is_within_quotes && ((**csv_it) == separator_cp[0]))
     {
       line.push_back(field);
       field = new xqpStringStore();
+      field.getStore()->str().reserve(100);
     }
     else if(quote_escape_size && ((**csv_it) == quote_escape_cp[0]))
     {
       ++(*csv_it);
       if((**csv_it) == quote_escape_cp[1])
-        field += quote_char_cp[0];
+        field.append_in_place(quote_char_cp[0]);
       else if(quote_escape_cp[0] == quote_char_cp[0])
       {
         is_within_quotes = !is_within_quotes;
@@ -225,7 +227,7 @@ bool   csv_read_line(unicode_codepoint_iterator *csv_it, //IN-OUT
       }
       else
       {
-        field += quote_escape_cp[0];
+        field.append_in_place(quote_escape_cp[0]);
         csv_it->unread_last_codepoint();
         continue;
       }
@@ -237,7 +239,7 @@ bool   csv_read_line(unicode_codepoint_iterator *csv_it, //IN-OUT
     else if(((**csv_it) == '\n') || ((**csv_it) == '\r'))
     {
       if(is_within_quotes)
-        field += (**csv_it);
+        field.append_in_place((**csv_it));
       else
       {
         ++(*csv_it);
@@ -251,7 +253,7 @@ bool   csv_read_line(unicode_codepoint_iterator *csv_it, //IN-OUT
     }
     else
     {
-      field += (**csv_it);
+      field.append_in_place(**csv_it);
     }
   }
 
@@ -668,6 +670,7 @@ bool   txt_read_line(unicode_codepoint_iterator *csv_it, //IN-OUT
   xqpString    field;
   unsigned int   pos = 1;
   unsigned int   column = 0;
+  field.getStore()->str().reserve(100);
   for(;!csv_it->is_end(); ++(*csv_it),pos++)
   {
     if((column < columns_positions.size()) && 
@@ -677,6 +680,7 @@ bool   txt_read_line(unicode_codepoint_iterator *csv_it, //IN-OUT
       {
         line.push_back(field.trim());
         field = new xqpStringStore();
+        field.getStore()->str().reserve(100);
       }
       column++;
     }
@@ -693,7 +697,7 @@ bool   txt_read_line(unicode_codepoint_iterator *csv_it, //IN-OUT
     }
     else
     {
-      field += (**csv_it);
+      field.append_in_place(**csv_it);
     }
   }
 
@@ -1100,6 +1104,7 @@ xqpString csv_quote_field(xqpString &field,
     string_codepoints_iterator    field_cp(field.c_str());
     checked_vector<uint32_t>      quote_cp(quote_char.getCodepoints());
     result = new xqpStringStore(*quote_char.getStore());
+    result.getStore()->str().reserve(field.bytes() + 10);
     while(!field_cp.is_end())
     {
       if((*field_cp) == quote_cp[0])
