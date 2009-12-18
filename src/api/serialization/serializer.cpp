@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -81,7 +81,7 @@ static void tokenize(
       }
     }
   }
-  
+
   if (start < str.bytes())
   {
     tokens.push_back(str.substr(start, str.bytes()-start));
@@ -119,7 +119,7 @@ serializer::emitter::~emitter()
 
   delete theAttrIter;
 }
- 
+
 
 store::ChildrenIterator* serializer::emitter::getChildIter()
 {
@@ -156,16 +156,16 @@ std::string serializer::emitter::expand_string(
     bool emit_attribute_value = false)
 {
   std::stringstream lStringStream;
-  transcoder lTranscoder( lStringStream ); 
+  transcoder lTranscoder( lStringStream );
 	const unsigned char* chars = (const unsigned char*)str->c_str();
   const unsigned char* chars_end  = chars + str->bytes();
 
 	int skip = 0;
-  
+
 	for (; chars < chars_end; chars++ )
-	{       
+	{
     // the input string is UTF-8
-#ifndef ZORBA_NO_UNICODE    
+#ifndef ZORBA_NO_UNICODE
     if (*chars < 0x80)
       skip = 0;
     else if ((*chars >> 5) == 0x6)
@@ -179,7 +179,7 @@ std::string serializer::emitter::expand_string(
     {
       const unsigned char* temp = chars;
       unsigned int cp = UTF8Decode(temp);
-      
+
       if (cp >= 0x10000 && cp <= 0x10FFFF)
       {
         temp = chars;
@@ -231,26 +231,26 @@ std::string serializer::emitter::expand_string(
       if (ser && ser->method == PARAMETER_VALUE_HTML && emit_attribute_value)
         lTranscoder << *chars;
       else
-        lTranscoder << "&lt;";             
+        lTranscoder << "&lt;";
 			break;
-      
+
 		case '>':
 			lTranscoder << "&gt;";
 			break;
-			
+
     case '"':
       if (emit_attribute_value)
         lTranscoder << "&quot;";
       else
         lTranscoder << *chars;
 			break;
-			
+
 		case '&':
       /*
         The HTML output method MUST NOT escape a & character occurring in an
         attribute value immediately followed by a { character (see Section
         B.7.1 of the HTML Recommendation [HTML]).
-      */      
+      */
       if (ser && ser->method == PARAMETER_VALUE_HTML && emit_attribute_value)
       {
         if (chars_end - chars > 1
@@ -261,13 +261,13 @@ std::string serializer::emitter::expand_string(
           lTranscoder << "&amp;";
       }
       else
-      { 
+      {
         int is_quote = 0;
         for (int j = 1; j < chars_end - chars; j++)
         {
           if (j == 1 && *(chars+j) != '#')
             break;
-          
+
 				  if ( ! ((*(chars+j) >= 'a' && *(chars+j) <= 'f')
             ||
             (*(chars+j) >= 'A' && *(chars+j) <= 'F')
@@ -278,17 +278,17 @@ std::string serializer::emitter::expand_string(
             ||
             *(chars+j) == ';'))
 				  {
-            break;				
+            break;
 				  }
-				
+
 				  if (*(chars+j) == ';')
 		  		{
             if (j>1)
               is_quote = 1;
-            break;				
+            break;
 				  }
 			 }
-			
+
 			 if (is_quote)
 			   lTranscoder << *chars;
           //{
@@ -298,8 +298,8 @@ std::string serializer::emitter::expand_string(
 			 else
 				 lTranscoder << "&amp;";
       }
-      break;      
-			
+      break;
+
 		default:
 			lTranscoder << *chars;
 			break;
@@ -316,14 +316,14 @@ void serializer::emitter::emit_text_node(const store::Item* node)
   node->getStringValue(text);
 
   const store::Item* parent = node->getParent();
-  
+
   if (parent == NULL ||
       parent->getNodeKind() != store::StoreConsts::elementNode)
   {
     emit_expanded_string(text.getp());
     return;
   }
-  
+
   if (!ser->cdata_section_elements_tokens.empty())
   {
     xqpStringStore_t name;
@@ -342,7 +342,7 @@ void serializer::emitter::emit_text_node(const store::Item* node)
             text = text->substr(pos+2);
           }
           else
-          {          
+          {
             tr << "<![CDATA[" << text->c_str() << "]]>";
             return;
           }
@@ -371,16 +371,16 @@ int serializer::emitter::emit_node_children(
   store::Item* child;
   store::Item* attr;
   int closed_parent_tag = 0;
-    
+
   if (item->getNodeKind() == store::StoreConsts::elementNode)
   {
     // emit attributes
     store::AttributesIterator* iter = theAttrIter;
     store::Item_t tmp = const_cast<store::Item*>(item);
     iter->init(tmp);
-    iter->open(); 
+    iter->open();
     while ((attr = iter->next()) != NULL)
-    {		
+    {
       emit_node(attr, depth);
     }
     iter->close();
@@ -389,7 +389,7 @@ int serializer::emitter::emit_node_children(
   {
     closed_parent_tag = 1;
   }
-	
+
 	// output all the other nodes
   store::StoreConsts::NodeKind prev_node_kind = store::StoreConsts::anyNode;
   store::ChildrenIterator* iter = getChildIter();
@@ -426,7 +426,7 @@ int serializer::emitter::emit_node_children(
     tr << ser->END_OF_LINE;
     emit_indentation(depth-1);
   }
-  
+
   iter->close();
   releaseChildIter(iter);
 
@@ -490,7 +490,7 @@ bool serializer::emitter::haveBinding(
   for (ulong i = 0; i < theBindings.size(); ++i)
   {
     const NsBindings& nsBindings = theBindings[i];
-    
+
     for (ulong j = 0; j < nsBindings.size(); ++j)
     {
       if (nsBindings[j].first->byteEqual(*nsBinding.first.getp()) &&
@@ -508,7 +508,7 @@ bool serializer::emitter::havePrefix(const xqpStringStore* pre) const
   for (unsigned long i = 0; i < theBindings.size(); ++i)
   {
     NsBindings nsBindings = theBindings[i];
-    
+
     for (unsigned long j = 0; j < nsBindings.size(); ++j)
     {
       if (nsBindings[j].first->byteEqual(*pre))
@@ -525,8 +525,8 @@ void serializer::emitter::emit_node(
     int depth)
 {
 	if( item->getNodeKind() == store::StoreConsts::documentNode )
-	{		
-		emit_node_children(item, depth);    
+	{
+		emit_node_children(item, depth);
 	}
 	else if (item->getNodeKind() == store::StoreConsts::elementNode)
 	{
@@ -554,7 +554,7 @@ void serializer::emitter::emit_node(
       theBindings.pop_back();
 
     if (closed_parent_tag)
-    {		
+    {
       if (prefix->empty())
         tr << "</" << qname->getLocalName()->c_str() << ">";
       else
@@ -584,7 +584,7 @@ void serializer::emitter::emit_node(
 	  previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
 	else if (item->getNodeKind() == store::StoreConsts::textNode)
-	{		
+	{
     emit_text_node(item);
     previous_item = PREVIOUS_ITEM_WAS_TEXT;
 	}
@@ -600,9 +600,9 @@ void serializer::emitter::emit_node(
 
     previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
-	else 
+	else
 	{
-		tr << "node of type: " << item->getNodeKind();		
+		tr << "node of type: " << item->getNodeKind();
 	}
 }
 
@@ -622,9 +622,9 @@ void serializer::emitter::emit_item(const store::Item* item)
   {
     if (item->getNodeKind() == store::StoreConsts::attributeNode)
       ZORBA_ERROR(SENR0001);
-    else        
+    else
       emit_node(item, 0);
-  }  
+  }
 }
 
 
@@ -671,7 +671,7 @@ serializer::xml_emitter::xml_emitter(
     transcoder& the_transcoder)
   :
   emitter(the_serializer, the_transcoder)
-{   
+{
 }
 
 void serializer::xml_emitter::emit_declaration()
@@ -688,7 +688,7 @@ void serializer::xml_emitter::emit_declaration()
       tr << "UTF-16";
 #endif
     tr << "\"";
-      
+
     if ( ser->standalone != PARAMETER_VALUE_OMIT )
     {
       tr << "standalone=\"";
@@ -719,7 +719,7 @@ void serializer::xml_emitter::emit_doctype(const xqpStringStore* elementName)
    */
   if (!ser->doctype_public->empty())
     tr << " PUBLIC \"" << ser->doctype_public->c_str() << "\"";
-  else 
+  else
     tr << " SYSTEM";
 
   tr << " \"" << ser->doctype_system->c_str() << "\">";
@@ -740,7 +740,7 @@ serializer::html_emitter::html_emitter(
     transcoder& the_transcoder)
   :
   emitter(the_serializer, the_transcoder)
-{   
+{
 }
 
 void serializer::html_emitter::emit_declaration()
@@ -768,7 +768,7 @@ void serializer::html_emitter::emit_doctype(const xqpStringStore* elementName)
     if (!ser->doctype_system->empty())
       tr << " \"" << ser->doctype_system->c_str() << "\">";
   }
-  else 
+  else
     tr << " SYSTEM" << " \"" << ser->doctype_system->c_str() << "\">";
 
   if (ser->indent)
@@ -780,7 +780,7 @@ void serializer::html_emitter::emit_doctype(const xqpStringStore* elementName)
 int is_content_type_meta(const store::Item* item, const store::Item* element_parent)
 {
   store::Item_t child;
-  
+
   if (element_parent == NULL)
     return 0;
 
@@ -789,21 +789,21 @@ int is_content_type_meta(const store::Item* item, const store::Item* element_par
 
   if (pname->lowercase()->byteEqual("head") &&
       iname->lowercase()->byteEqual("meta"))
-  {    
+  {
     // iterate through attributes
     store::Iterator_t it = item->getAttributes();
     it->open();
     store::Item_t child;
     while (it->next(child))
-    { 
+    {
       xqpStringStore_t cname = child->getNodeName()->getStringValue();
       xqpStringStore_t cvalue = child->getStringValue();
       if (cname->lowercase()->byteEqual("http-equiv") &&
           cvalue->lowercase()->byteEqual("content-type"))
         return 1;
-    }    
+    }
   }
-  
+
   return 0;
 }
 
@@ -812,7 +812,7 @@ static bool is_html_empty_content_model_element(const store::Item* item)
 {
   if (item == NULL)
     return false;
-  
+
   xqpStringStore_t str = item->getNodeName()->getStringValue()->lowercase();
 
   if (str->byteEqual("area") ||
@@ -880,7 +880,7 @@ void serializer::html_emitter::emit_node(
     int depth)
 {
   const store::Item* element_parent = item->getParent();
-      
+
   if( item->getNodeKind() == store::StoreConsts::documentNode )
   {
     emit_node_children(item, depth);
@@ -896,34 +896,34 @@ void serializer::html_emitter::emit_node(
       emit_doctype(item->getNodeName()->getStringValue());
       isFirstElementNode = false;
     }
-    
+
     /*
-      If a meta element has been added to the head element as described above, then any existing 
-      meta element child of the head element having an http-equiv attribute with the value "Content-Type" 
+      If a meta element has been added to the head element as described above, then any existing
+      meta element child of the head element having an http-equiv attribute with the value "Content-Type"
       MUST be discarded.
     */
-    if (ser->include_content_type == PARAMETER_VALUE_YES 
+    if (ser->include_content_type == PARAMETER_VALUE_YES
         &&
         element_parent != NULL
         &&
         is_content_type_meta(item, element_parent))
     {
       // do not emit this element
-      return;      
+      return;
     }
 
     if (prefix->empty())
       tr << "<" << qname->getLocalName()->c_str();
     else
       tr << "<" << prefix->c_str() << ":" << qname->getLocalName()->c_str();
-    
+
     previous_item = PREVIOUS_ITEM_WAS_NODE;
 
     bool should_remove_binding = emit_bindings(item);
-    
+
     /*
-      If there is a head element, and the include-content-type parameter has the value yes, the 
-      HTML output method MUST add a meta element as the first child element of the head element 
+      If there is a head element, and the include-content-type parameter has the value yes, the
+      HTML output method MUST add a meta element as the first child element of the head element
       specifying the character encoding actually used.
     */
     if (ser->include_content_type == PARAMETER_VALUE_YES
@@ -944,7 +944,7 @@ void serializer::html_emitter::emit_node(
 #ifndef ZORBA_NO_UNICODE
       else if (ser->encoding == PARAMETER_VALUE_UTF_16)
         tr << "UTF-16";
-#endif      
+#endif
       tr << "\"";
       // closed_parent_tag = 1;
     }
@@ -952,8 +952,8 @@ void serializer::html_emitter::emit_node(
     closed_parent_tag |= emit_node_children(item, depth+1);
 
     if (should_remove_binding)
-      theBindings.pop_back(); 
-        
+      theBindings.pop_back();
+
     if (closed_parent_tag)
     {
       if (prefix->empty())
@@ -963,7 +963,7 @@ void serializer::html_emitter::emit_node(
     }
     else
     {
-      /* 
+      /*
         The HTML 4.01 spec says that both tags (begin and end tags) are REQUIRED
         for script, textarea and div tags.
        */
@@ -971,7 +971,7 @@ void serializer::html_emitter::emit_node(
           ||
           (ser->include_content_type == PARAMETER_VALUE_YES
           &&
-          item->getNodeName()->getStringValue()->lowercase()->str() == "head")) 
+          item->getNodeName()->getStringValue()->lowercase()->str() == "head"))
       {
         tr << ">";
         if (prefix->empty())
@@ -981,20 +981,20 @@ void serializer::html_emitter::emit_node(
       }
       else
       {
-        /* 
-          The HTML output method MUST NOT output an end-tag for empty elements. For HTML 4.0, the 
-          empty elements are area, base, basefont, br, col, frame, hr, img, input, isindex, link, 
-          meta and param. For example, an element written as <br/> or <br></br> in an XSLT stylesheet 
+        /*
+          The HTML output method MUST NOT output an end-tag for empty elements. For HTML 4.0, the
+          empty elements are area, base, basefont, br, col, frame, hr, img, input, isindex, link,
+          meta and param. For example, an element written as <br/> or <br></br> in an XSLT stylesheet
           MUST be output as <br>.
         */
         if (is_html_empty_content_model_element(item) &&
             ser->version->byteEqual("4.0"))
-          tr << ">";      
+          tr << ">";
         else
           tr << "/>";
       }
     }
-    
+
     previous_item = PREVIOUS_ITEM_WAS_NODE;
   }
   else if (item->getNodeKind() == store::StoreConsts::attributeNode)
@@ -1019,7 +1019,7 @@ void serializer::html_emitter::emit_node(
   else if (item->getNodeKind() == store::StoreConsts::textNode)
   {
     bool expand = true;
-    
+
     /*
       The HTML output method MUST NOT perform escaping for the content of the script and style elements.
     */
@@ -1031,7 +1031,7 @@ void serializer::html_emitter::emit_node(
       if (iname->byteEqual("script") || iname->byteEqual("style"))
         expand = false;
     }
-    
+
     /* commented out
       if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
         tr << " ";
@@ -1040,7 +1040,7 @@ void serializer::html_emitter::emit_node(
       emit_expanded_string(item->getStringValue());
     else
       tr << item->getStringValue()->c_str();  // no character expansion
-    
+
     previous_item = PREVIOUS_ITEM_WAS_TEXT;
   }
   else if (item->getNodeKind() == store::StoreConsts::commentNode)
@@ -1073,7 +1073,7 @@ serializer::xhtml_emitter::xhtml_emitter(
     transcoder& the_transcoder)
   :
   xml_emitter(the_serializer, the_transcoder)
-{   
+{
 }
 
 void serializer::xhtml_emitter::emit_node(
@@ -1081,7 +1081,7 @@ void serializer::xhtml_emitter::emit_node(
     int depth)
 {
 	if (item->getNodeKind() == store::StoreConsts::elementNode)
-	{		
+	{
     const store::Item* element_parent = item->getParent();
     unsigned closed_parent_tag = 0;
 
@@ -1090,28 +1090,28 @@ void serializer::xhtml_emitter::emit_node(
       emit_doctype(item->getNodeName()->getStringValue());
       isFirstElementNode = false;
     }
-    
+
     /*
-      If a meta element has been added to the head element as described above, then any existing 
-      meta element child of the head element having an http-equiv attribute with the value "Content-Type" 
+      If a meta element has been added to the head element as described above, then any existing
+      meta element child of the head element having an http-equiv attribute with the value "Content-Type"
       MUST be discarded.
     */
-    if (ser->include_content_type == PARAMETER_VALUE_YES 
+    if (ser->include_content_type == PARAMETER_VALUE_YES
         &&
         element_parent != NULL
         &&
         is_content_type_meta(item, element_parent))
     {
       // do not emit this element
-      return;      
-    }        
-    
+      return;
+    }
+
     tr << "<" << item->getNodeName()->getStringValue()->c_str();
     previous_item = PREVIOUS_ITEM_WAS_NODE;
-    
+
     /*
-      If there is a head element, and the include-content-type parameter has the value yes, the 
-      HTML output method MUST add a meta element as the first child element of the head element 
+      If there is a head element, and the include-content-type parameter has the value yes, the
+      HTML output method MUST add a meta element as the first child element of the head element
       specifying the character encoding actually used.
     */
     if (ser->include_content_type == PARAMETER_VALUE_YES
@@ -1132,27 +1132,27 @@ void serializer::xhtml_emitter::emit_node(
 #ifndef ZORBA_NO_UNICODE
       else if (ser->encoding == PARAMETER_VALUE_UTF_16)
         tr << "UTF-16";
-#endif      
+#endif
       tr << "\"/";
       //closed_parent_tag = 1;
     }
-    
+
     bool should_remove_binding = emit_bindings(item);
 
     closed_parent_tag |= emit_node_children(item, depth+1);
-    
+
     if (should_remove_binding)
       theBindings.pop_back();
-    
+
     /*
      * [Definition: The following XHTML elements have an EMPTY content model:
      * area, base, br, col, hr, img, input, link, meta, basefont, frame, isindex
-     *, and param.] 
+     *, and param.]
      *
      * Given an empty instance of an XHTML element whose content model is not
      * EMPTY (for example, an empty title or paragraph) the serializer MUST NOT
      * use the minimized form. That is, it MUST output <p></p> and not <p />.
-     */ 
+     */
 
     /*
      * Given an XHTML element whose content model is EMPTY, the serializer MUST
@@ -1171,7 +1171,7 @@ void serializer::xhtml_emitter::emit_node(
       else
         tr << ">" << "</" << item->getNodeName()->getStringValue()->c_str() << ">";
     }
-    
+
     previous_item = PREVIOUS_ITEM_WAS_NODE;
   }
   else
@@ -1189,7 +1189,7 @@ serializer::sax2_emitter::sax2_emitter(
     serializer * the_serializer,
     transcoder & the_transcoder,
     SAX2_ContentHandler * aSAX2ContentHandler )
-  : 
+  :
   emitter(the_serializer, the_transcoder),
   theSAX2ContentHandler( aSAX2ContentHandler ),
   theSAX2LexicalHandler( 0 )
@@ -1201,7 +1201,7 @@ serializer::sax2_emitter::sax2_emitter(
 void serializer::sax2_emitter::emit_node_children( const store::Item* item )
 {
   store::Iterator_t it;
-  store::Item_t child;	
+  store::Item_t child;
 	// output all the other nodes
 	it = item->getChildren();
   it->open();
@@ -1251,13 +1251,13 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
 {
 	if( item->getNodeKind() == store::StoreConsts::documentNode )
 	{
-		emit_node_children(item);    
+		emit_node_children(item);
 	}
 	else if (item->getNodeKind() == store::StoreConsts::elementNode)
 	{
     NsBindings local_nsBindings;
     store::Item_t item_qname;
-    std::vector<xqpStringStore_t> aNSList; 
+    std::vector<xqpStringStore_t> aNSList;
     NsBindings::size_type ns_size = 0;
 
     if (isFirstElementNode)
@@ -1265,7 +1265,7 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
       // TODO: emit doctype declaration
       // emit_doctype(qname->getLocalName());
       isFirstElementNode = false;
-    }    
+    }
 
     if(theSAX2ContentHandler)
     {
@@ -1273,7 +1273,7 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
                                  store::StoreConsts::ONLY_LOCAL_NAMESPACES);//only local namespaces
 
       SAX2AttributesImpl attrs(item);
-      ns_size = local_nsBindings.size(); 
+      ns_size = local_nsBindings.size();
       std::vector<xqpStringStore_t>::size_type ans_size = theNameSpaces.size();
       for ( unsigned long i = 0; i < ns_size; i++ )
       {
@@ -1286,7 +1286,7 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
             break;
           }
         }
-    
+
         if ( ! is_declared )
         {
           aNSList.push_back(local_nsBindings[i].second);
@@ -1296,8 +1296,8 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
           String lSecond( local_nsBindings[i].second );
           theSAX2ContentHandler->startPrefixMapping( lFirst, lSecond );
         }
-      }       
-      
+      }
+
       //emit_startPrefixMapping( item, local_nsBindings );
 
       item_qname = item->getNodeName();
@@ -1306,7 +1306,7 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
       String lStringValue( item_qname->getStringValue().getp() );
       theSAX2ContentHandler->startElement( lNS, lLocalName, lStringValue, attrs );
     }
-      
+
 		emit_node_children(item);
 
     if(theSAX2ContentHandler)
@@ -1332,7 +1332,7 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
     }
 	}
 	else if (item->getNodeKind() == store::StoreConsts::textNode)
-	{		
+	{
 		//TODO: if CDATA
     emit_expanded_string(item->getStringValue().getp());
 	  //TODO: if CDATA
@@ -1340,9 +1340,9 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
 	else if (item->getNodeKind() == store::StoreConsts::commentNode)
 	{
     if ( theSAX2LexicalHandler )
-    { 
+    {
       String lComment ( item->getStringValue().getp() );
-      theSAX2LexicalHandler->comment( lComment ); 
+      theSAX2LexicalHandler->comment( lComment );
     }
 	}
 	else if (item->getNodeKind() == store::StoreConsts::piNode )
@@ -1354,9 +1354,9 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
     }
 	}
 //TODO: unimplemented error handling
-//	else 
+//	else
 	//{
-//		tr << "node of type: " << item->getNodeKind();		
+//		tr << "node of type: " << item->getNodeKind();
     //SAX2_ParseException   saxx("Unknown node type", &theLocator);
     //if(error_handler)
     //  error_handler->fatalError(saxx);
@@ -1381,9 +1381,9 @@ void serializer::sax2_emitter::emit_item(const store::Item* item)
       //  error_handler->fatalError(saxx);
       //throw saxx;
     }
-    else        
+    else
       emit_node( const_cast< store::Item * >( item ) );
-  }  
+  }
 }
 
 
@@ -1412,11 +1412,11 @@ serializer::text_emitter::text_emitter(
     transcoder& the_transcoder)
   :
   emitter(the_serializer, the_transcoder)
-{   
+{
 }
 
 void serializer::text_emitter::emit_declaration()
-{  
+{
 }
 
 void serializer::text_emitter::emit_item(const store::Item* item)
@@ -1425,9 +1425,9 @@ void serializer::text_emitter::emit_item(const store::Item* item)
   {
     if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
       tr << " ";
-    
+
     tr << item->getStringValue()->c_str();
-    
+
     previous_item = PREVIOUS_ITEM_WAS_TEXT;
   }
   else
@@ -1444,15 +1444,15 @@ void serializer::text_emitter::emit_node(
     int depth)
 {
   if( item->getNodeKind() == store::StoreConsts::documentNode )
-  {		
-    emit_node_children(item, depth+1);    
+  {
+    emit_node_children(item, depth+1);
   }
   else if (item->getNodeKind() == store::StoreConsts::elementNode)
   {
     previous_item = PREVIOUS_ITEM_WAS_NODE;
 
     emit_node_children(item, depth);
-    
+
     previous_item = PREVIOUS_ITEM_WAS_NODE;
   }
   else if (item->getNodeKind() == store::StoreConsts::attributeNode )
@@ -1472,7 +1472,7 @@ void serializer::text_emitter::emit_node(
   {
     previous_item = PREVIOUS_ITEM_WAS_NODE;
   }
-  else 
+  else
   {
     assert(0);
   }
@@ -1484,7 +1484,7 @@ int serializer::text_emitter::emit_node_children(
                                             bool perform_escaping)
 {
   store::Item* child;
-  
+
   // output all the other nodes
   store::ChildrenIterator* iter = getChildIter();
   store::Item_t parent = const_cast<store::Item*>(item);
@@ -1581,7 +1581,7 @@ const char serializer::END_OF_LINE = '\n';
 int serializer::get_utf8_length(char ch)
 {
   unsigned char lead = (unsigned char)ch;
-  
+
   if (lead < 0x80)
     return 1;
   else if ((lead >> 5) == 0x6)
@@ -1642,7 +1642,6 @@ void serializer::reset()
 
 void serializer::setParameter(const char* aName, const char* aValue)
 {
-  // TODO: add handled parameters translation
   if (!strcmp(aName, "indent"))
   {
     if (!strcmp(aValue, "yes"))
@@ -1672,7 +1671,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
     if (!strcmp(aValue, "yes"))
       omit_xml_declaration = PARAMETER_VALUE_YES;
     else if (!strcmp(aValue, "no"))
-      omit_xml_declaration = PARAMETER_VALUE_NO;    
+      omit_xml_declaration = PARAMETER_VALUE_NO;
     else
     {
       ZORBA_ERROR( SEPM0016);
@@ -1776,17 +1775,23 @@ void serializer::setParameter(const char* aName, const char* aValue)
 void serializer::validate_parameters(void)
 {
   if (omit_xml_declaration == PARAMETER_VALUE_YES)
-  {   
+  {
     if (standalone != PARAMETER_VALUE_OMIT)
     {
       // TODO: throw SEPM0009
     }
   }
 
-  if (method == PARAMETER_VALUE_HTML && version_has_default_value == true)
+  if (method == PARAMETER_VALUE_HTML)
   {
     // Default value for "version" when method is HTML is "4.0"
-    version = new xqpStringStore("4.0");
+    if (version_has_default_value)
+      version = new xqpStringStore("4.0");
+    else if ( !(version->byteEqual("4.0") || version->byteEqual("4.01")) )
+    {
+      // Only HTML versions 4.0 and 4.01 are supported
+      ZORBA_ERROR_DESC(SESU0013, "Unsupported HTML serialization version.");
+    }
   }
 }
 
@@ -1808,7 +1813,7 @@ bool serializer::setup(ostream& os)
     ZORBA_ASSERT(0);
     return false;
   }
-    
+
   if (method == PARAMETER_VALUE_XML)
     e = new xml_emitter(this, *tr);
   else if (method == PARAMETER_VALUE_HTML)
@@ -1828,14 +1833,14 @@ bool serializer::setup(ostream& os)
     ZORBA_ASSERT(0);
     return false;
   }
-  
+
   if (!cdata_section_elements->empty())
   {
     tokenize(*cdata_section_elements.getp(),
              xqpStringStore("; "),
              cdata_section_elements_tokens);
   }
-  
+
   return true;
 }
 
@@ -1870,7 +1875,7 @@ serializer::serialize(
       ZORBA_ERROR(API0070_INVALID_SERIALIZATION_METHOD_FOR_SAX);
     }
     // it's OK now, build a SAX emmiter
-    e = new sax2_emitter(this, *tr, aHandler); 
+    e = new sax2_emitter(this, *tr, aHandler);
   }
 
   e->emit_declaration();
@@ -1960,7 +1965,7 @@ emitter(the_serializer, the_transcoder)
 
 void serializer::binary_emitter::emit_item(const store::Item* item)
 {
-  xqp_base64Binary lValue = item->getBase64BinaryValue(); 
+  xqp_base64Binary lValue = item->getBase64BinaryValue();
   std::vector<char> lDecodedData;
   lValue.decode(lDecodedData);
 

@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -103,7 +103,7 @@ namespace zorba
 
     protected:
 
-      typedef enum 
+      typedef enum
       {
         PARAMETER_VALUE_NO,
         PARAMETER_VALUE_YES,
@@ -137,10 +137,10 @@ namespace zorba
       short int method;                         // an expanded QName: "xml", "html", "xhtml", "text", "json" and "jsonml"  are handled
       xqpStringStore_t normalization_form;      // TODO:   requires unicode normalization
       short int omit_xml_declaration;           // "yes" or "no", implemented
-      short int standalone;                     // implemented, TODO: add some validity checks
+      short int standalone;                     // implemented
       short int undeclare_prefixes;             // "yes" or "no", implemented
       void* use_character_maps;                 // TODO: list of pairs
-      xqpStringStore_t version;                 // "1.1"
+      xqpStringStore_t version;                 // "1.0"
       short int indent;                         // "yes" or "no", implemented
       bool version_has_default_value;           // Used during validation to set version to "4.0" when output method is "html"
 
@@ -180,42 +180,42 @@ namespace zorba
        * method, can be the XML declaration, the HTML declaration, etc.
        */
       virtual void emit_declaration();
-      
+
       /**
        * Outputs the end of the serialized document.
        */
       virtual void emit_declaration_end();
 
 	    /**
-       * Outputs the doctype declaration. This function is not used by the 
-	     * default emitter, it is intended to be defined by the XML, HTML and XHTML 
+       * Outputs the doctype declaration. This function is not used by the
+	     * default emitter, it is intended to be defined by the XML, HTML and XHTML
 	     * serializers.
        */
 	    virtual void emit_doctype(const xqpStringStore* elementName);
-      
+
       /**
        *  The root function that performs the serialization
        *  of a normalized sequence.
        */
       virtual void emit_node(const store::Item* item,int depth);
-      
+
       /**
        *  Serializes the given string, performing character expansion
        *  if necessary.
-       */   
+       */
       virtual void emit_expanded_string(const xqpStringStore* str, bool emit_attribute_value);
-      
+
       /**
        *  Serializes a given text node. Also performs the processing of
        *  cdata-section-elements parameter, if set.
        */
       virtual void emit_text_node(const store::Item* item);
-      
+
       /**
        *  Serializes the children of the given node, without the node itself.
-       * 
+       *
        *  @return  returns 1 if the functions has closed parent's tag with ">"
-       */ 
+       */
       virtual int emit_node_children(
           const store::Item* item,
           int depth,
@@ -226,9 +226,9 @@ namespace zorba
        *
        *  @return  returns true if the function has added a set of bindings to the list,
        *           which should be removed when the elememnt is out of the scope.
-       */ 
+       */
       virtual bool emit_bindings(const store::Item* item);
-          
+
       /**
        * Serializes the given item, depending on its type, and its children.
        *
@@ -237,14 +237,14 @@ namespace zorba
       virtual void emit_item(const store::Item* item);
 
       /**
-       * Outputs indentation whitespace, depending on depth. 
+       * Outputs indentation whitespace, depending on depth.
        *
        * @param depth the level of indentation
        */
       virtual void emit_indentation(int depth);
-      
+
       virtual ~emitter();
-    
+
     protected:
       bool haveBinding(std::pair<xqpStringStore_t, xqpStringStore_t>& nsBinding) const;
       bool havePrefix(const xqpStringStore* pre) const;
@@ -262,10 +262,10 @@ namespace zorba
       transcoder                          & tr;
       std::vector<NsBindings>               theBindings;
 
-      enum ItemState 
+      enum ItemState
       {
-        INVALID_ITEM,   
-        PREVIOUS_ITEM_WAS_TEXT,      
+        INVALID_ITEM,
+        PREVIOUS_ITEM_WAS_TEXT,
         PREVIOUS_ITEM_WAS_NODE
       }                                     previous_item;
 
@@ -276,19 +276,19 @@ namespace zorba
       bool                                  isFirstElementNode;
     };
 
-    
+
     ///////////////////////////////////////////////////////////
     //                                                       //
     //  class xml_emitter                                    //
     //                                                       //
     ///////////////////////////////////////////////////////////
-    
+
     class xml_emitter : public emitter
     {
     public:
       xml_emitter(serializer* the_serializer, transcoder& the_transcoder);
 
-      virtual void emit_declaration();    
+      virtual void emit_declaration();
       virtual void emit_doctype(const xqpStringStore* elementName);
     };
 
@@ -298,12 +298,12 @@ namespace zorba
     //  class html_emitter                                   //
     //                                                       //
     ///////////////////////////////////////////////////////////
-    
+
     class html_emitter : public emitter
     {
     public:
       html_emitter(serializer* the_serializer, transcoder& the_transcoder);
-      
+
       virtual void emit_declaration();
       virtual void emit_declaration_end();
       virtual void emit_doctype(const xqpStringStore* elementName);
@@ -315,7 +315,7 @@ namespace zorba
     //  class xhtml_emitter                                  //
     //                                                       //
     ///////////////////////////////////////////////////////////
-    
+
     class xhtml_emitter : public xml_emitter
     {
     public:
@@ -324,25 +324,25 @@ namespace zorba
       virtual void emit_node(const store::Item* item, int depth);
     };
 
-    
+
     ///////////////////////////////////////////////////////////
     //                                                       //
     //  class text_emitter                                   //
     //                                                       //
     ///////////////////////////////////////////////////////////
-    
+
     class text_emitter : public emitter
     {
     public:
       text_emitter(serializer* the_serializer, transcoder& the_transcoder);
-      
-      virtual void emit_declaration();        
+
+      virtual void emit_declaration();
       virtual void emit_node(const store::Item* item, int depth);
       virtual int emit_node_children(const store::Item* item, int depth, bool perform_escaping = true);
       virtual void emit_item(const store::Item* item);
     };
 
-    
+
     ///////////////////////////////////////////////////////////
     //                                                       //
     //  class json_emitter                                   //
@@ -403,13 +403,13 @@ namespace zorba
       virtual void emit_declaration_end();
 
       virtual void emit_node(const store::Item* item, int depth);
-     
+
       void emit_node(store::Item* item);
 
       virtual void emit_expanded_string(
           const xqpStringStore * aStrStore,
           bool aEmitAttributeValue = false );
-      
+
       virtual int emit_node_children(
           const store::Item* item,
           int depth,
@@ -418,7 +418,7 @@ namespace zorba
       void emit_node_children(const store::Item* item);
 
       virtual bool emit_bindings(const store::Item* item);
-          
+
       virtual void emit_item( const store::Item* item );
     };
 
