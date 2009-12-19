@@ -40,7 +40,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-#line 30 "/home/sausalito/Desktop/david/zorba/trunk/src/compiler/parser/xquery_parser.y"
+#line 30 "/home/fx/dev/zorba/src/compiler/parser/xquery_parser.y"
 
 #include "compiler/parsetree/parsenodes.h"
 
@@ -64,7 +64,7 @@ class xquery_driver;
 
 
 /* Line 35 of lalr1.cc  */
-#line 68 "/home/sausalito/Desktop/david/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 68 "/home/fx/dev/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -78,7 +78,7 @@ class xquery_driver;
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 82 "/home/sausalito/Desktop/david/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 82 "/home/fx/dev/zorba/build/src/compiler/parser/xquery_parser.hpp"
   class position;
   class location;
 
@@ -88,7 +88,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 92 "/home/sausalito/Desktop/david/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 92 "/home/fx/dev/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -136,7 +136,7 @@ do {							\
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 140 "/home/sausalito/Desktop/david/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 140 "/home/fx/dev/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -148,7 +148,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 134 "/home/sausalito/Desktop/david/zorba/trunk/src/compiler/parser/xquery_parser.y"
+#line 134 "/home/fx/dev/zorba/src/compiler/parser/xquery_parser.y"
 
   zorba::parsenode * node;
   zorba::exprnode * expr;
@@ -168,7 +168,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-#line 172 "/home/sausalito/Desktop/david/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 172 "/home/fx/dev/zorba/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -462,33 +462,28 @@ namespace zorba {
      MANUAL = 539,
      AUTOMATIC = 540,
      ON = 541,
-     CHECKED = 542,
-     UNCHECKED = 543,
-     ASYNCHRONOUS = 544,
-     SYNCHRONOUS = 545,
-     INTEGRITY = 546,
-     CONSTRAINT = 547,
-     CHECK = 548,
-     KEY = 549,
-     FOREACH = 550,
-     TYPE = 551,
-     FOREIGN = 552,
-     KEYS = 553,
-     BYTE_ORDER_MARK_UTF8 = 554,
-     FTCONTAINS_REDUCE = 555,
-     RANGE_REDUCE = 556,
-     ADDITIVE_REDUCE = 557,
-     MULTIPLICATIVE_REDUCE = 558,
-     UNION_REDUCE = 559,
-     INTERSECT_EXCEPT_REDUCE = 560,
-     QVARINDECLLIST_REDUCE = 561,
-     COMMA_DOLLAR = 562,
-     UNARY_PREC = 563,
-     SEQUENCE_TYPE_REDUCE = 564,
-     OCCURS_STAR = 565,
-     OCCURS_PLUS = 566,
-     OCCURS_HOOK = 567,
-     STEP_REDUCE = 568
+     INTEGRITY = 542,
+     CONSTRAINT = 543,
+     CHECK = 544,
+     KEY = 545,
+     FOREACH = 546,
+     FOREIGN = 547,
+     KEYS = 548,
+     BYTE_ORDER_MARK_UTF8 = 549,
+     FTCONTAINS_REDUCE = 550,
+     RANGE_REDUCE = 551,
+     ADDITIVE_REDUCE = 552,
+     MULTIPLICATIVE_REDUCE = 553,
+     UNION_REDUCE = 554,
+     INTERSECT_EXCEPT_REDUCE = 555,
+     QVARINDECLLIST_REDUCE = 556,
+     COMMA_DOLLAR = 557,
+     UNARY_PREC = 558,
+     SEQUENCE_TYPE_REDUCE = 559,
+     OCCURS_STAR = 560,
+     OCCURS_PLUS = 561,
+     OCCURS_HOOK = 562,
+     STEP_REDUCE = 563
    };
 
     };
@@ -583,7 +578,7 @@ namespace zorba {
     /// - if negative, reduce the rule which number is the opposite.
     /// - if zero, do what YYDEFACT says.
     static const short int yytable_[];
-    static const short int yytable_ninf_;
+    static const signed char yytable_ninf_;
 
     static const short int yycheck_[];
 
@@ -665,7 +660,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 669 "/home/sausalito/Desktop/david/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 664 "/home/fx/dev/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 
 

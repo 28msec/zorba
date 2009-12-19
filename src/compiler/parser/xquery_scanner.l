@@ -460,10 +460,10 @@ typedef zorba::xquery_parser::token token;
 "automatic" { return token::AUTOMATIC; }
 "on" { return token::ON; }
 
-"checked"   { return token::CHECKED; }
-"unchecked" { return token::UNCHECKED; }
-"asynchronous" {return token::ASYNCHRONOUS; }
-"synchronous" {return token::SYNCHRONOUS; }
+  /* "checked"   { return token::CHECKED; }
+     "unchecked" { return token::UNCHECKED; }
+     "asynchronous" {return token::ASYNCHRONOUS; }
+     "synchronous" {return token::SYNCHRONOUS; } */
 "integrity" { return token::INTEGRITY; }
 "constraint" { return token::CONSTRAINT; }
 "check" { return token::CHECK; }
@@ -472,7 +472,7 @@ typedef zorba::xquery_parser::token token;
 "foreach" { return token::FOREACH; }
   /* "node" { return token::NODE; } */
   /* "of" { return token::OF; } */
-"type" { return token::TYPE; }
+  /* "type" { return token::TYPE; } */
 "foreign" { return token::FOREIGN; }
   /* "from" { return token::FROM; } */
   /* "to" { return token::TO; } */

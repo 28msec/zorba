@@ -25,8 +25,8 @@
   The Latest Version
   ------------------
 
-  The latest version can be found on the Zorba server project 
-  page at <http://www.zorba-xquery.org/>.
+  The latest version can be found on the Zorba server project page at 
+  <http://www.zorba-xquery.org/>.
 
   VERSIONING
   ----------

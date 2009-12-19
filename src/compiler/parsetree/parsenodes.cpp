@@ -987,14 +987,10 @@ void IndexKeyList::accept(parsenode_visitor& v) const
 *******************************************************************************/
 IntegrityConstraintDecl::IntegrityConstraintDecl (
     const QueryLoc& loc, 
-    bool isUnchecked,
-    bool isAsync,
     QName* name,
     ICKind icKind)
   :
   parsenode(loc),
-  theIsUnchecked(isUnchecked),
-  theIsAsync(isAsync),
   theICName(name),
   theICKind(icKind)
 {

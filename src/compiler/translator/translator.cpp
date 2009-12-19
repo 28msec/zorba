@@ -3449,7 +3449,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
     }
     break;
 
-  case IntegrityConstraintDecl::node_of_type:
+    /*  case IntegrityConstraintDecl::node_of_type:
     {
       store::Item_t fn_true_qname = sctx_p->lookup_fn_qname("fn", "true", loc);
       function* f = LOOKUP_FN("fn", "true", 0);
@@ -3458,7 +3458,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       body = foExpr;
     }
     break;
-
+    */
   case IntegrityConstraintDecl::foreign_key:
     {
       store::Item_t fn_true_qname = sctx_p->lookup_fn_qname("fn", "true", loc);

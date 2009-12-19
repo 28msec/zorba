@@ -498,16 +498,16 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token AUTOMATIC           "'automatic'"
 %token ON                  "'on'"
 
-%token CHECKED             "'checked'"
-%token UNCHECKED           "'unchecked'"
-%token ASYNCHRONOUS        "'asynchronous'"
-%token SYNCHRONOUS         "'synchronous'"
+ // %token CHECKED             "'checked'"
+ // %token UNCHECKED           "'unchecked'"
+ // %token ASYNCHRONOUS        "'asynchronous'"
+ // %token SYNCHRONOUS         "'synchronous'"
 %token INTEGRITY           "'integrity'"
 %token CONSTRAINT          "'constraint'"
 %token CHECK               "'check'"
 %token KEY                 "'key'"
 %token FOREACH             "'foreach'"
-%token TYPE                "'type'"
+ // %token TYPE                "'type'"
 %token FOREIGN             "'foreign'"
 %token KEYS                "'keys'"
 
@@ -754,9 +754,9 @@ static void print_token_value(FILE *, int, YYSTYPE);
 /* integrityconstraint-related */
 /* --------------------------- */
 %type <node> IntegrityConstraintDecl
-%type <intval> IntgCnstOptions
-%type <intval> IntgCnstUnchecked
-%type <intval> IntgCnstAsynch
+ // %type <intval> IntgCnstOptions
+ // %type <intval> IntgCnstUnchecked
+ // %type <intval> IntgCnstAsynch
 
 /* full-text-related */
 /* ----------------- */
@@ -1786,110 +1786,58 @@ IndexKeySpec :
 
 
 IntegrityConstraintDecl :
-    DECLARE IntgCnstOptions INTEGRITY CONSTRAINT QNAME ON COLLECTION QNAME
+    DECLARE INTEGRITY CONSTRAINT QNAME ON COLLECTION QNAME
     DOLLAR QNAME CHECK ExprSingle
     {
       $$ = new ICCollSimpleCheck(LOC(@$),
-                            $2 & IntegrityConstraintDecl::IC_OPTION_UNCHECKED,
-                            $2 & IntegrityConstraintDecl::IC_OPTION_ASYNCH,
-                                 static_cast<QName*>($5),
-                                 static_cast<QName*>($8),
-                                 static_cast<QName*>($10),
-                                 $12);
+                                 static_cast<QName*>($4),
+                                 static_cast<QName*>($7),
+                                 static_cast<QName*>($9),
+                                 $11);
     }
   |
-    DECLARE IntgCnstOptions INTEGRITY CONSTRAINT QNAME ON COLLECTION QNAME
+    DECLARE INTEGRITY CONSTRAINT QNAME ON COLLECTION QNAME
     DOLLAR QNAME CHECK UNIQUE KEY PathExpr 
     {
       $$ = new ICCollUniqueKeyCheck(LOC(@$),
-                            $2 & IntegrityConstraintDecl::IC_OPTION_UNCHECKED,
-                            $2 & IntegrityConstraintDecl::IC_OPTION_ASYNCH,
-                                    static_cast<QName*>($5),
-                                    static_cast<QName*>($8),
-                                    static_cast<QName*>($10),
-                                    $14);
+                                    static_cast<QName*>($4),
+                                    static_cast<QName*>($7),
+                                    static_cast<QName*>($9),
+                                    $13);
     }
   |
-    DECLARE IntgCnstOptions INTEGRITY CONSTRAINT QNAME ON COLLECTION QNAME
+    DECLARE INTEGRITY CONSTRAINT QNAME ON COLLECTION QNAME
     FOREACH NODE DOLLAR QNAME CHECK ExprSingle
     {
       $$ = new ICCollUniqueKeyCheck(LOC(@$),
-                            $2 & IntegrityConstraintDecl::IC_OPTION_UNCHECKED,
-                            $2 & IntegrityConstraintDecl::IC_OPTION_ASYNCH,
-                                    static_cast<QName*>($5),
-                                    static_cast<QName*>($8),
-                                    static_cast<QName*>($12),
-                                    $14);
+                                    static_cast<QName*>($4),
+                                    static_cast<QName*>($7),
+                                    static_cast<QName*>($11),
+                                    $13);
     }
+//  |
+//    DECLARE INTEGRITY CONSTRAINT QNAME ON NODE DOLLAR QNAME
+//     OF TYPE KindTest CHECK ExprSingle
+//    {
+//      $$ = new ICNodeOfType(LOC(@$),
+//                            static_cast<QName*>($4),
+//                            static_cast<QName*>($8),
+//                            $11,
+//                            $13);
+//    }
   |
-    DECLARE IntgCnstOptions INTEGRITY CONSTRAINT QNAME ON NODE DOLLAR QNAME
-     OF TYPE KindTest CHECK ExprSingle
-    {
-      $$ = new ICNodeOfType(LOC(@$),
-                            $2 & IntegrityConstraintDecl::IC_OPTION_UNCHECKED,
-                            $2 & IntegrityConstraintDecl::IC_OPTION_ASYNCH,
-                            static_cast<QName*>($5),
-                            static_cast<QName*>($9),
-                            $12,
-                            $14);
-    }
-  |
-    DECLARE IntgCnstOptions INTEGRITY CONSTRAINT QNAME FOREIGN KEY
+    DECLARE INTEGRITY CONSTRAINT QNAME FOREIGN KEY
       FROM COLLECTION QNAME NODE DOLLAR QNAME KEYS PathExpr
       TO   COLLECTION QNAME NODE DOLLAR QNAME KEYS PathExpr
     {
       $$ = new ICForeignKey(LOC(@$),
-                            $2 & IntegrityConstraintDecl::IC_OPTION_UNCHECKED,
-                            $2 & IntegrityConstraintDecl::IC_OPTION_ASYNCH,
-                            static_cast<QName*>($5),
-                            static_cast<QName*>($10),
-                            static_cast<QName*>($13),
-                            $15,
-                            static_cast<QName*>($18),
-                            static_cast<QName*>($21),
-                            $23); 
-    }
-  ;
-
-IntgCnstOptions:
-    /*   {
-      $$ = IntegrityConstraintDecl::IC_OPTION_CHECKED &  // checked
-        IntegrityConstraintDecl::IC_OPTION_SYNCH; // synchronous
-    }
-    | */
-    IntgCnstUnchecked IntgCnstAsynch
-    { $$ = $1 | $2; }
-  |
-    IntgCnstAsynch IntgCnstUnchecked
-    { $$ = $1 | $2; }
-
-IntgCnstUnchecked :
-    {
-      $$ = IntegrityConstraintDecl::IC_OPTION_CHECKED; // checked
-    }
-  |
-    CHECKED
-    {
-      $$ = IntegrityConstraintDecl::IC_OPTION_CHECKED; // checked
-    }
-  | UNCHECKED
-    {
-      $$ = IntegrityConstraintDecl::IC_OPTION_UNCHECKED;  // unchecked
-    }
-  ;
-
-IntgCnstAsynch :
-    {
-      $$ = IntegrityConstraintDecl::IC_OPTION_SYNCH; // synchronous
-    }
-  |
-    SYNCHRONOUS
-    {
-      $$ = IntegrityConstraintDecl::IC_OPTION_SYNCH; // synchronous
-    }
-  | ASYNCHRONOUS
-    {
-      $$ = IntegrityConstraintDecl::IC_OPTION_ASYNCH;  // asynchronous
+                            static_cast<QName*>($4),
+                            static_cast<QName*>($9),
+                            static_cast<QName*>($12),
+                            $14,
+                            static_cast<QName*>($17),
+                            static_cast<QName*>($20),
+                            $22); 
     }
   ;
 
@@ -5599,16 +5547,16 @@ KEYWORD :
   | QUEUE { $$ = SYMTAB_PUT ("queue"); }
   | MUTABLE { $$ = SYMTAB_PUT ("mutable"); }
   | READ_ONLY { $$ = SYMTAB_PUT ("read-only"); }
-  | CHECKED { $$ = SYMTAB_PUT ("checked"); }
-  | UNCHECKED { $$ = SYMTAB_PUT ("unchecked"); }
-  | ASYNCHRONOUS { $$ = SYMTAB_PUT ("asynchronous"); }
-  | SYNCHRONOUS { $$ = SYMTAB_PUT ("synchronous"); }
+//  | CHECKED { $$ = SYMTAB_PUT ("checked"); }
+//  | UNCHECKED { $$ = SYMTAB_PUT ("unchecked"); }
+//  | ASYNCHRONOUS { $$ = SYMTAB_PUT ("asynchronous"); }
+//  | SYNCHRONOUS { $$ = SYMTAB_PUT ("synchronous"); }
   | INTEGRITY { $$ = SYMTAB_PUT ("integrity"); }
   | CONSTRAINT { $$ = SYMTAB_PUT ("constraint"); }
   | CHECK { $$ = SYMTAB_PUT ("check"); }
   | KEY { $$ = SYMTAB_PUT ("key"); }
   | FOREACH { $$ = SYMTAB_PUT ("foreach"); }
-  | TYPE { $$ = SYMTAB_PUT ("type"); }
+//  | TYPE { $$ = SYMTAB_PUT ("type"); }
   | FOREIGN { $$ = SYMTAB_PUT ("foreign"); }
   | KEYS { $$ = SYMTAB_PUT ("keys"); }
     ;
