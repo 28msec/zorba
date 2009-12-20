@@ -35,9 +35,10 @@ store::Collection_t getCollection(const static_context* aSctx,
                                   const store::Item_t,
                                   const QueryLoc&);
 
-/*******************************************************************************
-********************************************************************************/
 
+/*******************************************************************************
+
+********************************************************************************/
 bool
 IsAvailableCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -51,14 +52,19 @@ IsAvailableCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSt
   consumeNext(lName, theChildren[0].getp(), planState);
 
   res = true;
-  try {
+  try 
+  {
     lCollection = getCollection(theSctx, lName, loc);
   }
-  catch (error::ZorbaError& e) {
-    if (e.theErrorCode != XDDY0009) {
+  catch (error::ZorbaError& e)
+  {
+    if (e.theErrorCode != XDDY0003_COLLECTION_DOES_NOT_EXIST)
+    {
       throw;
     }
-    // collection is not available if the getCollection helper function throws error XDDY0009
+
+    // collection is not available if the getCollection helper function throws
+    // error XDDY0003_COLLECTION_DOES_NOT_EXIST
     res = false;
   }
 

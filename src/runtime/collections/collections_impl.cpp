@@ -44,19 +44,22 @@
 namespace zorba {
 
 // Forward declarations
-store::Collection_t getCollection(const static_context* aSctx,
-                                  const store::Item_t,
-                                  const QueryLoc&);
+store::Collection_t getCollection(
+    const static_context* aSctx,
+    const store::Item_t,
+    const QueryLoc&);
 
 const StaticallyKnownCollection* getDeclColl(
     const static_context* aSctx,
     const store::Item_t aName,
     const QueryLoc& aLoc);
 
-void checkNodeType(const store::Item_t& aNode, 
-                   const static_context* aSctx,
-                   const StaticallyKnownCollection* aColl,
-                   const QueryLoc& aLoc);
+void checkNodeType(
+    const store::Item_t& aNode, 
+    const static_context* aSctx,
+    const StaticallyKnownCollection* aColl,
+    const QueryLoc& aLoc);
+
 
 /*******************************************************************************
   fn:collection() as node()*
@@ -77,11 +80,13 @@ FnCollectionIteratorState::~FnCollectionIteratorState()
   }
 }
 
+
 void FnCollectionIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
   theIterator = NULL;
 }
+
 
 void FnCollectionIteratorState::reset(PlanState& planState)
 {
@@ -99,6 +104,7 @@ void FnCollectionIteratorState::reset(PlanState& planState)
     theIterator = NULL;
   }
 }
+
 
 bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -160,8 +166,9 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
   STACK_END (state);
 }
 
+
 /*******************************************************************************
-  declare function collection() as xs:boolean
+  declare function xqddf:collection($name as xs:QName) as node()*
 
   TODO descrition
 ********************************************************************************/
@@ -196,7 +203,8 @@ void ZorbaCollectionIteratorState::reset(PlanState& planState)
   {
     // closing the iterator is necessary here if an exception occurs
     // in the producer or if the iterator is not fully consumed
-    if (theIteratorOpened) {
+    if (theIteratorOpened) 
+    {
       theIterator->close();
       theIteratorOpened = false;
     }
@@ -210,7 +218,7 @@ bool ZorbaCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSta
   store::Item_t       lName;
   store::Collection_t coll;
 
-  ZorbaCollectionIteratorState *state;
+  ZorbaCollectionIteratorState* state;
   DEFAULT_STACK_INIT(ZorbaCollectionIteratorState, state, planState);
 
   consumeNext(lName, theChildren[0].getp(), planState);
@@ -219,18 +227,18 @@ bool ZorbaCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
   /** return the nodes of the collection */
   state->theIterator = coll->getIterator();
-  ZORBA_ASSERT(state->theIterator!=NULL);
+  ZORBA_ASSERT(state->theIterator != NULL);
   state->theIterator->open();
   state->theIteratorOpened = true;
 
   while(state->theIterator->next(result))
-    STACK_PUSH (true, state);
+    STACK_PUSH(true, state);
 
   // close as early as possible
   state->theIterator->close();
   state->theIteratorOpened = false;
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
@@ -253,7 +261,6 @@ bool ZorbaCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSta
     (API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION - the node does not belong
     to the given collection).
 ********************************************************************************/
-
 bool
 ZorbaIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -287,7 +294,10 @@ ZorbaIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
 /*******************************************************************************
   declare updating function
-  create-collection($name as xs:QName,$nodes as node()*) as none
+  create-collection($name as xs:QName) as empty-sequence()
+
+  declare updating function
+  create-collection($name as xs:QName, $nodes as node()*) as empty-sequence()
 
   The first function will create a new, empty, collection. The second function
   will create a new collection and will add the given nodes to it.
@@ -308,7 +318,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
   store::Collection_t       coll;
   std::auto_ptr<store::PUL> pul;
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
   consumeNext(lName, theChildren[0].getp(), aPlanState);
@@ -316,10 +326,8 @@ bool ZorbaCreateCollectionIterator::nextImpl(
   // check a collection is in the set of statically known collection with this name
   if ( theSctx->lookup_collection(lName.getp()) == 0 ) 
   {
-    ZORBA_ERROR_LOC_DESC_OSS(XDST0010, loc,
-                             "collection "
-                             << lName->getStringValue()
-                             << " is not declared.");
+    ZORBA_ERROR_LOC_PARAM(XDDY0001_COLLECTION_NOT_DECLARED, loc,
+                          lName->getStringValue(), "");
   }
 
   // check if the collection already exists
@@ -329,7 +337,7 @@ bool ZorbaCreateCollectionIterator::nextImpl(
   }
   catch (error::ZorbaError& e)
   {
-    if (e.theErrorCode != XDDY0009)
+    if (e.theErrorCode != XDDY0003_COLLECTION_DOES_NOT_EXIST)
     {
       throw;
     }
@@ -338,10 +346,8 @@ bool ZorbaCreateCollectionIterator::nextImpl(
 
   if (coll != NULL)
   {
-    ZORBA_ERROR_LOC_DESC_OSS(XDDY0012, loc,
-                             "The collection "
-                             << lName->getStringValue()
-                             << "is already available.");
+    ZORBA_ERROR_LOC_PARAM(XDDY0002_COLLECTION_EXISTS_ALREADY, loc,
+                          lName->getStringValue(), "");
   }
 
   // create the pul and add the primitive
@@ -458,22 +464,29 @@ ZorbaInsertNodesIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   coll = getCollection(theSctx, lName, loc);
 
   // checking collection modifiers
-  switch(lDeclColl->getCollProperty()) {
-  case StaticContextConsts::const_:
-    ZORBA_ERROR_LOC_DESC_OSS(XDDY0003, loc, 
-      "insert-nodes-first has a const collection as first argument.");
+  switch(lDeclColl->getUpdateProperty())
+  {
+  case StaticContextConsts::decl_const:
+    ZORBA_ERROR_LOC_PARAM(XDDY0004_COLLECTION_CONST_UPDATE, loc, 
+                          lName->getStringValue()->c_str(), "");
     break;
-  case StaticContextConsts::append_only:
-    ZORBA_ERROR_LOC_DESC_OSS(XDDY0004, loc, 
-      "insert-nodes-first has a append-only collection as first argument.");
+
+  case StaticContextConsts::decl_append_only:
+    ZORBA_ERROR_LOC_PARAM(XDDY0005_COLLECTION_APPEND_BAD_INSERT, loc, 
+                          lName->getStringValue()->c_str(), "");
     break;
-  case StaticContextConsts::queue:
-    ZORBA_ERROR_LOC_DESC_OSS(XDDY0005, loc, 
-      "insert-nodes-first has a queue collection as first argument.");
+
+  case StaticContextConsts::decl_queue:
+    ZORBA_ERROR_LOC_PARAM(XDDY0006_COLLECTION_QUEUE_BAD_INSERT, loc, 
+                          lName->getStringValue()->c_str(), "");
     break;
-  case StaticContextConsts::mutable_coll:
+
+  case StaticContextConsts::decl_mutable:
     // good to go
     break;
+
+  default:
+    ZORBA_ASSERT(false);
   }
 
   while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState))
@@ -542,22 +555,29 @@ ZorbaInsertNodesFirstIterator::nextImpl(store::Item_t& result, PlanState& planSt
   coll = getCollection(theSctx, lName, loc);
 
   // checking collection modifiers
-  switch(lDeclColl->getCollProperty()) {
-  case StaticContextConsts::const_:
-    ZORBA_ERROR_LOC_DESC_OSS(XDDY0003, loc, 
-      "insert-nodes-first has a const collection as first argument.");
+  switch(lDeclColl->getUpdateProperty())
+  {
+  case StaticContextConsts::decl_const:
+    ZORBA_ERROR_LOC_PARAM(XDDY0004_COLLECTION_CONST_UPDATE, loc, 
+                          lName->getStringValue()->c_str(), "");
     break;
-  case StaticContextConsts::append_only:
-    ZORBA_ERROR_LOC_DESC_OSS(XDDY0004, loc, 
-      "insert-nodes-first has a append-only collection as first argument.");
+
+  case StaticContextConsts::decl_append_only:
+    ZORBA_ERROR_LOC_PARAM(XDDY0005_COLLECTION_APPEND_BAD_INSERT, loc, 
+                          lName->getStringValue()->c_str(), "");
     break;
-  case StaticContextConsts::queue:
-    ZORBA_ERROR_LOC_DESC_OSS(XDDY0005, loc, 
-      "insert-nodes-first has a queue collection as first argument.");
+
+  case StaticContextConsts::decl_queue:
+    ZORBA_ERROR_LOC_PARAM(XDDY0006_COLLECTION_QUEUE_BAD_INSERT, loc, 
+                          lName->getStringValue()->c_str(), "");
     break;
-  case StaticContextConsts::mutable_coll:
+
+  case StaticContextConsts::decl_mutable:
     // good to go
     break;
+
+  default:
+    ZORBA_ASSERT(false);
   }
 
   while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState))
@@ -632,16 +652,21 @@ ZorbaInsertNodesLastIterator::nextImpl(store::Item_t& result, PlanState& planSta
   coll = getCollection(theSctx, lName, loc);
 
   // checking collection modifiers
-  switch(lDeclColl->getCollProperty()) {
-  case StaticContextConsts::const_:
-    ZORBA_ERROR_LOC_DESC_OSS(XDDY0003, loc, 
-      "insert-nodes-last has a const collection as first argument.");
+  switch(lDeclColl->getUpdateProperty()) 
+  {
+  case StaticContextConsts::decl_const:
+    ZORBA_ERROR_LOC_PARAM(XDDY0004_COLLECTION_CONST_UPDATE, loc, 
+                          lName->getStringValue()->c_str(), "");
     break;
-  case StaticContextConsts::append_only:
-  case StaticContextConsts::queue:
-  case StaticContextConsts::mutable_coll:
+
+  case StaticContextConsts::decl_append_only:
+  case StaticContextConsts::decl_queue:
+  case StaticContextConsts::decl_mutable:
     // good to go
     break;
+
+  default:
+    ZORBA_ASSERT(false);
   }
 
   while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState))
@@ -726,22 +751,29 @@ ZorbaInsertNodesBeforeIterator::nextImpl(store::Item_t& result, PlanState& planS
   coll = getCollection(theSctx, lName, loc);
 
   // checking collection modifiers
-  switch(lDeclColl->getCollProperty()) {
-  case StaticContextConsts::const_:
-    ZORBA_ERROR_LOC_DESC_OSS(XDDY0003, loc, 
-      "insert-nodes-before has a const collection as first argument.");
+  switch(lDeclColl->getUpdateProperty()) 
+  {
+  case StaticContextConsts::decl_const:
+    ZORBA_ERROR_LOC_PARAM(XDDY0004_COLLECTION_CONST_UPDATE, loc, 
+                          lName->getStringValue()->c_str(), "");
     break;
-  case StaticContextConsts::append_only:
-    ZORBA_ERROR_LOC_DESC_OSS(XDDY0004, loc, 
-      "insert-nodes-before has a append-only collection as first argument.");
+
+  case StaticContextConsts::decl_append_only:
+    ZORBA_ERROR_LOC_PARAM(XDDY0005_COLLECTION_APPEND_BAD_INSERT, loc, 
+                          lName->getStringValue()->c_str(), "");
     break;
-  case StaticContextConsts::queue:
-    ZORBA_ERROR_LOC_DESC_OSS(XDDY0005, loc, 
-      "insert-nodes-before has a queue collection as first argument.");
+
+  case StaticContextConsts::decl_queue:
+    ZORBA_ERROR_LOC_PARAM(XDDY0006_COLLECTION_QUEUE_BAD_INSERT, loc, 
+                          lName->getStringValue()->c_str(), "");
     break;
-  case StaticContextConsts::mutable_coll:
+
+  case StaticContextConsts::decl_mutable:
     // good to go
     break;
+
+  default:
+    ZORBA_ASSERT(false);
   }
 
   if(!consumeNext(targetNode, theChildren[theChildren.size()-2].getp(), planState)) 
@@ -844,22 +876,29 @@ ZorbaInsertNodesAfterIterator::nextImpl(store::Item_t& result, PlanState& planSt
   coll = getCollection(theSctx, lName, loc);
 
   // checking collection modifiers
-  switch(lDeclColl->getCollProperty()) {
-  case StaticContextConsts::const_:
-    ZORBA_ERROR_LOC_DESC_OSS(XDDY0003, loc, 
-      "insert-nodes-after has a const collection as first argument.");
+  switch(lDeclColl->getUpdateProperty())
+  {
+  case StaticContextConsts::decl_const:
+    ZORBA_ERROR_LOC_PARAM(XDDY0004_COLLECTION_CONST_UPDATE, loc, 
+                          lName->getStringValue()->c_str(), "");
     break;
-  case StaticContextConsts::append_only:
-    ZORBA_ERROR_LOC_DESC_OSS(XDDY0004, loc, 
-      "insert-nodes-after has a append-only collection as first argument.");
+
+  case StaticContextConsts::decl_append_only:
+    ZORBA_ERROR_LOC_PARAM(XDDY0005_COLLECTION_APPEND_BAD_INSERT, loc, 
+                          lName->getStringValue()->c_str(), "");
     break;
-  case StaticContextConsts::queue:
-    ZORBA_ERROR_LOC_DESC_OSS(XDDY0005, loc, 
-      "insert-nodes-after has a queue collection as first argument.");
+
+  case StaticContextConsts::decl_queue:
+    ZORBA_ERROR_LOC_PARAM(XDDY0006_COLLECTION_QUEUE_BAD_INSERT, loc, 
+                          lName->getStringValue()->c_str(), "");
     break;
-  case StaticContextConsts::mutable_coll:
+
+  case StaticContextConsts::decl_mutable:
     // good to go
     break;
+
+  default:
+    ZORBA_ASSERT(false);
   }
 
   if(!consumeNext(targetNode, theChildren[theChildren.size()-2].getp(), planState)) 
@@ -893,9 +932,7 @@ ZorbaInsertNodesAfterIterator::nextImpl(store::Item_t& result, PlanState& planSt
     nodes.push_back(copyNode);
   }
 
-  pul->addInsertAfterIntoCollection(lName,
-                                    targetNode,
-                                    nodes);
+  pul->addInsertAfterIntoCollection(lName, targetNode, nodes);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-2]->reset(planState);
@@ -957,30 +994,36 @@ ZorbaDeleteNodesIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   }
 
   // checking collection modifiers
-  switch(lDeclColl->getCollProperty()) 
+  switch(lDeclColl->getUpdateProperty()) 
   {
-  case StaticContextConsts::const_:
-    ZORBA_ERROR_LOC_DESC_OSS(XDDY0003, loc, 
-      "remove-nodes has a const collection as first argument.");
+  case StaticContextConsts::decl_const:
+    ZORBA_ERROR_LOC_PARAM(XDDY0004_COLLECTION_CONST_UPDATE, loc, 
+                          lName->getStringValue()->c_str(), "");
     break;
-  case StaticContextConsts::append_only:
-    ZORBA_ERROR_LOC_DESC_OSS(XDDY0004, loc, 
-      "remove-nodes has a append-only collection as first argument.");
+
+  case StaticContextConsts::decl_append_only:
+    ZORBA_ERROR_LOC_PARAM(XDDY0007_COLLECTION_APPEND_BAD_DELETE, loc, 
+                          lName->getStringValue()->c_str(), "");
     break;
-  case StaticContextConsts::queue:
+
+  case StaticContextConsts::decl_queue:
     // checks if the deleted items are a prefix of the collection
-    for (size_t i = 0; i < nodes.size(); ++i) {
+    for (size_t i = 0; i < nodes.size(); ++i) 
+    {
       store::Item* lCurToDelete = nodes[i].getp();
       store::Item* lNodeAtPos = coll->nodeAt(i+1).getp();
       if (lCurToDelete != lNodeAtPos)
-        ZORBA_ERROR_LOC_DESC_OSS(XDDY0005, loc, 
-          "remove-nodes has a queue collection as first argument "
-          << "and a sequence as second argument that is not a prefix of the collection.");
+        ZORBA_ERROR_LOC_PARAM(XDDY0009_COLLECTION_QUEUE_BAD_DELETE, loc, 
+                              lName->getStringValue()->c_str(), "");
     }
     break;
-  case StaticContextConsts::mutable_coll:
+
+  case StaticContextConsts::decl_mutable:
     // good to go
     break;
+
+  default:
+    ZORBA_ASSERT(false);
   }
 
   // create the pul and add the primitive
@@ -997,7 +1040,9 @@ ZorbaDeleteNodesIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   STACK_END (state);
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
 bool
 ZorbaDeleteNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -1017,21 +1062,31 @@ ZorbaDeleteNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planSta
   coll = getCollection(theSctx, lName, loc);
 
   // checking collection modifiers
-  switch(lDeclColl->getCollProperty()) {
-  case StaticContextConsts::const_:
-  case StaticContextConsts::append_only:
-    ZORBA_ERROR_LOC_DESC_OSS(XDDY0003, loc, 
-      "The delete-node-first function is not allowed "
-      << "on a collection declared as 'const' or 'append-only'.");
-  case StaticContextConsts::queue:
-  case StaticContextConsts::mutable_coll:
+  switch(lDeclColl->getUpdateProperty()) 
+  {
+  case StaticContextConsts::decl_const:
+    ZORBA_ERROR_LOC_PARAM(XDDY0004_COLLECTION_CONST_UPDATE, loc, 
+                          lName->getStringValue()->c_str(), "");
+    break;
+
+  case StaticContextConsts::decl_append_only:
+    ZORBA_ERROR_LOC_PARAM(XDDY0007_COLLECTION_APPEND_BAD_DELETE, loc, 
+                          lName->getStringValue()->c_str(), "");
+    break;
+
+  case StaticContextConsts::decl_queue:
+  case StaticContextConsts::decl_mutable:
     // good to go
     break;
+
+  default:
+    ZORBA_ASSERT(false);
   }
 
-  if (coll->size() == 0) {
-    ZORBA_ERROR_LOC_DESC_OSS(XDDY0003, loc, 
-      "The collection passed as argument to the delete-node-first function is empty.");
+  if (coll->size() == 0) 
+  {
+    ZORBA_ERROR_LOC_PARAM(XDDY0011_COLLECTION_NODE_NOT_FOUND, loc,
+                          lName->getStringValue()->c_str(), "");
   }
 
   // create the pul and add the primitive
@@ -1046,7 +1101,9 @@ ZorbaDeleteNodeFirstIterator::nextImpl(store::Item_t& result, PlanState& planSta
   STACK_END (state);
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
 bool
 ZorbaDeleteNodeLastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
@@ -1066,21 +1123,35 @@ ZorbaDeleteNodeLastIterator::nextImpl(store::Item_t& result, PlanState& planStat
   coll = getCollection(theSctx, lName, loc);
 
   // checking collection modifiers
-  switch(lDeclColl->getCollProperty()) {
-  case StaticContextConsts::const_:
-  case StaticContextConsts::append_only:
-  case StaticContextConsts::queue:
-    ZORBA_ERROR_LOC_DESC_OSS(XDDY0003, loc, 
-      "The delete-node-last function is not allowed "
-      << "on a collection declared as 'const', 'append-only', or 'queue'.");
-  case StaticContextConsts::mutable_coll:
+  switch(lDeclColl->getUpdateProperty()) 
+  {
+  case StaticContextConsts::decl_const:
+    ZORBA_ERROR_LOC_PARAM(XDDY0004_COLLECTION_CONST_UPDATE, loc, 
+                          lName->getStringValue()->c_str(), "");
+    break;
+
+  case StaticContextConsts::decl_append_only:
+    ZORBA_ERROR_LOC_PARAM(XDDY0007_COLLECTION_APPEND_BAD_DELETE, loc, 
+                          lName->getStringValue()->c_str(), "");
+    break;
+
+  case StaticContextConsts::decl_queue:
+    ZORBA_ERROR_LOC_PARAM(XDDY0008_COLLECTION_QUEUE_BAD_DELETE, loc, 
+                          lName->getStringValue()->c_str(), "");
+    break;
+
+  case StaticContextConsts::decl_mutable:
     // good to go
     break;
+
+  default:
+    ZORBA_ASSERT(false);
   }
 
-  if (coll->size() == 0) {
-    ZORBA_ERROR_LOC_DESC_OSS(XDDY0003, loc, 
-      "The collection passed as argument to the delete-node-first function is empty.");
+  if (coll->size() == 0) 
+  {
+    ZORBA_ERROR_LOC_PARAM(XDDY0011_COLLECTION_NODE_NOT_FOUND, loc,
+                          lName->getStringValue()->c_str(), "");
   }
 
   // create the pul and add the primitive
@@ -1095,29 +1166,28 @@ ZorbaDeleteNodeLastIterator::nextImpl(store::Item_t& result, PlanState& planStat
   STACK_END (state);
 }
 
+
 store::Collection_t getCollection(
     const static_context* aSctx,
     const store::Item_t aName,
     const QueryLoc& aLoc)
 {
-  if (aSctx->lookup_collection(aName.getp()) == 0) {
-    ZORBA_ERROR_LOC_PARAM_OSS(XDST0010, aLoc, aName->getStringValue(),
-                              "The collection with name " 
-                              << aName->getStringValue() 
-                              << " is not declared.");
+  if (aSctx->lookup_collection(aName.getp()) == 0) 
+  {
+    ZORBA_ERROR_LOC_PARAM(XDDY0001_COLLECTION_NOT_DECLARED, aLoc,
+                          aName->getStringValue(), "");
   }
 
   store::Collection_t lCollection = GENV_STORE.getCollection(aName);
   if (lCollection == NULL) 
   {
-    ZORBA_ERROR_LOC_PARAM_OSS(XDDY0009, aLoc, aName->getStringValue(),
-                              "The collection with name " 
-                              << aName->getStringValue() 
-                              << " is not available.");
+    ZORBA_ERROR_LOC_PARAM(XDDY0003_COLLECTION_DOES_NOT_EXIST, aLoc, 
+                          aName->getStringValue(), "");
   }
 
   return lCollection;
 }
+
 
 const StaticallyKnownCollection* getDeclColl(
     const static_context* aSctx,
@@ -1125,27 +1195,31 @@ const StaticallyKnownCollection* getDeclColl(
     const QueryLoc& aLoc)
 {
   const StaticallyKnownCollection* lDeclColl = aSctx->lookup_collection(aName);
-  if (lDeclColl == 0) {
-    ZORBA_ERROR_LOC_DESC_OSS(XDST0010, aLoc,
-                             "The requested collection with name "
-                             << aName->getStringValue()
-                             << " is not declared.");
+  if (lDeclColl == 0) 
+  {
+    ZORBA_ERROR_LOC_PARAM(XDDY0001_COLLECTION_NOT_DECLARED, aLoc,
+                          aName->getStringValue(), "");
   }
   return lDeclColl;
 }
 
-void checkNodeType(const store::Item_t& aNode, 
-                   const static_context* aSctx,
-                   const StaticallyKnownCollection* aColl,
-                   const QueryLoc& aLoc)
+
+void checkNodeType(
+    const store::Item_t& aNode, 
+    const static_context* aSctx,
+    const StaticallyKnownCollection* aColl,
+    const QueryLoc& aLoc)
 {
   const TypeManager* lTypeManager = aSctx->get_typemanager();
-  if (!TypeOps::is_treatable(aNode, *(aColl->getNodeType()), lTypeManager)) {
+  if (!TypeOps::is_treatable(aNode, *(aColl->getNodeType()), lTypeManager)) 
+  {
     ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, aLoc, 
       "Cannot treat "
       << TypeOps::toString(*lTypeManager->create_value_type(aNode))
       << " as " << TypeOps::toString(*(aColl->getNodeType())));
   }
 }
+
+
 
 } /* namespace zorba */

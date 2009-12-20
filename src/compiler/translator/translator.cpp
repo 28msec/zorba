@@ -1726,20 +1726,20 @@ void end_visit(const LibraryModule& v, void* /*visit_state*/)
 /******************************************************************************
   [5] ModuleDecl ::= MODULE NAMESPACE  NCNAME  EQ  URI_LITERAL  SEMI
 ********************************************************************************/
-void *begin_visit (const ModuleDecl& v) 
+void* begin_visit(const ModuleDecl& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const ModuleDecl& v, void* /*visit_state*/) 
+void end_visit(const ModuleDecl& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
-  theModulePrefix = v.get_prefix ();
-  theModuleNamespace = v.get_target_namespace ();
+  theModulePrefix = v.get_prefix();
+  theModuleNamespace = v.get_target_namespace();
 
-  if (theModuleNamespace.empty ())
+  if (theModuleNamespace.empty())
     ZORBA_ERROR_LOC (XQST0088, loc);
 
   if (theModulePrefix == "xml" || theModulePrefix == "xmlns")
@@ -2203,15 +2203,15 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   // The namespace prefix specified in a module import must not be xml or xmlns
   // [err:XQST0070]
   if (pfx == "xml" || pfx == "xmlns")
-    ZORBA_ERROR_LOC (XQST0070, loc);
+    ZORBA_ERROR_LOC(XQST0070, loc);
 
   // The first URILiteral in a module import must be of nonzero length [err:XQST0088]
-  if (target_ns.empty ())
-    ZORBA_ERROR_LOC (XQST0088, loc);
+  if (target_ns.empty())
+    ZORBA_ERROR_LOC(XQST0088, loc);
 
   // It is a static error [err:XQST0047] if more than one module import in a
   // Prolog specifies the same target namespace
-  if (! mod_import_ns_set.insert (target_ns).second)
+  if (! mod_import_ns_set.insert(target_ns).second)
     ZORBA_ERROR_LOC (XQST0047, loc);
 
   // The namespace prefix specified in a module import must not be the same as
@@ -2320,6 +2320,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // Create the root sctx for the imported module as a child of the
       // query-level sctx. Register this sctx in the query-level sctx map.
       mod_ccb.theRootSctx = independent_sctx->create_child_context();
+      mod_ccb.theRootSctx->set_module_namespace(imported_ns);
       mod_ccb.theRootSctx->set_entity_retrieval_url(resolveduri->str());
       ulong moduleRootSctxId = theTopCCB->theSctxMap->size() + 1;
       (*theTopCCB->theSctxMap)[moduleRootSctxId] = mod_ccb.theRootSctx;
@@ -2329,6 +2330,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // translation of the imported module is done, this sctx will be merged
       // with the sctx of the importing module.
       imported_sctx = independent_sctx->create_child_context();
+      imported_sctx->set_module_namespace(imported_ns);
 
       // Register the imported_sctx in minfo->mod_sctx_map so that it is
       // accessible by both the importing and the imported modules.
@@ -2976,11 +2978,15 @@ void end_visit (const Param& v, void* /*visit_state*/)
   }
 }
 
-/***************************************************************************//**
-  CollectionDecl   ::=  "declare" "collection" QName CollProperties
-  CollProperties   ::=  ("node-type" KindTest)? 
-                        ("collection-modifier" CollModifier)? 
-                        ("node-modifier" NodeModifier)?
+
+/*******************************************************************************
+  [*] CollectionDecl ::= "declare" CollProperties "collection" QName 
+                         ("as" KindTest)? ("with" NodeModifier "nodes")? 
+
+  [*] CollProperties ::= ("const" | "mutable" | "append-only" | "queue" |
+                          "ordered" | "unordered")*
+
+  [*] NodeModifier   ::= ("read-only" | "mutable")
 ********************************************************************************/
 void* begin_visit(const CollectionDecl& v)
 {
@@ -2991,106 +2997,60 @@ void* begin_visit(const CollectionDecl& v)
 
 void end_visit(const CollectionDecl& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
+
+  // a collection declaration must allways be in a library module
+  if (!inLibraryModule())
+  {
+    ZORBA_ERROR_LOC(XDST0003_COLLECTION_DECL_IN_MAIN_MODULE, v.get_location());
+  }
 
   const QName* lName = v.getName();
 
-  if (!inLibraryModule())
-  {
-    ZORBA_ERROR_LOC_PARAM(XQP0039_INDEX_IN_NON_DATA_MODULE, v.get_location(), 
-                          lName->get_qname(), "");
-  }
-
-  // Expand the index qname (error is raised if qname resolution fails).
+  // Expand the collection qname (error is raised if qname resolution fails).
   store::Item_t lExpandedQName = sctx_p->lookup_fn_qname(lName->get_prefix(),
                                                          lName->get_localname(),
                                                          lName->get_location());
-  
-  xqtref_t lNodeType = ( v.getKindTest() == 0 ?
-                         theRTM.ANY_NODE_TYPE_ONE :
-                         pop_tstack());
-  StaticContextConsts::collection_property_t lCollProperty = StaticContextConsts::mutable_coll;
-  StaticContextConsts::ordering_mode_t lOrderProperty = StaticContextConsts::ordered;
-  if (v.getCollPropertyList() != 0) 
+  // Get the static type of the root nodes  
+  xqtref_t lNodeType;
+  if (v.getKindTest() == 0)
   {
-    // helper vars to check for inconsistencies
-    bool lCollPropertyDeclared = false;
-    bool lOrderPropertyDeclared = false;
-    const CollPropertyList* lList = v.getCollPropertyList();
-    for (size_t i = 0; i < lList->size(); ++i) 
-    {
-      const CollProperty* lProp = lList->getProperty(i);
-      if (!lProp->isOrderProperty()) 
-      {
-        if (lCollPropertyDeclared) 
-        {
-          ZORBA_ERROR_LOC_DESC_OSS(XDST0015, loc, "More than one collection modifier properties are declared.");
-        }
-        lCollPropertyDeclared = true;
-        lCollProperty = lProp->getCollProperty();
-      }
-      else
-      {
-        if (lOrderPropertyDeclared)
-        {
-          ZORBA_ERROR_LOC_DESC_OSS(XDST0015, loc, "More than one collection order properties are declared.");
-        }
-        lOrderPropertyDeclared = true;
-        lOrderProperty = lProp->getOrderProperty();
-      }
-    }
-    if ( lOrderProperty == StaticContextConsts::unordered 
-      && (lCollProperty == StaticContextConsts::queue || lCollProperty == StaticContextConsts::append_only)
-      ) {
-      ZORBA_ERROR_LOC_DESC_OSS(XDST0015, loc, "queue or append-only collection property together with unordered is specified.");
-    }
+    lNodeType = theRTM.ANY_NODE_TYPE_ONE;
+  }
+  else
+  {
+    lNodeType = TypeOps::prime_type(*pop_tstack());
+  }
+
+  // Get the order and update properties of the collection
+  StaticContextConsts::declaration_property_t lUpdateMode = v.getUpdateMode();
+  StaticContextConsts::declaration_property_t lOrderMode = v.getOrderMode();
+
+  if (lOrderMode == StaticContextConsts::decl_unordered &&
+      (lUpdateMode == StaticContextConsts::decl_queue ||
+       lUpdateMode == StaticContextConsts::decl_append_only))
+  {
+    ZORBA_ERROR_LOC_PARAM(XDST0005_COLLECTION_PROPERTIES_CONFLICT, loc,
+                          lName->get_qname(), "");
   }
 
 
-  StaticContextConsts::node_modifier_t lNodeModifier
-    = ( v.getNodeModifier() == 0 ?
-        StaticContextConsts::mutable_node :
-        v.getNodeModifier()->getModifier());
+  StaticContextConsts::node_modifier_t lNodeModifier = 
+    (v.getNodeModifier() == 0 ?
+     StaticContextConsts::mutable_node :
+     v.getNodeModifier()->getModifier());
 
   StaticallyKnownCollection_t lColl = new StaticallyKnownCollection(
                                             lExpandedQName,
-                                            lCollProperty,
-                                            lOrderProperty,
+                                            lUpdateMode,
+                                            lOrderMode,
                                             lNodeModifier,
                                             lNodeType);
 
   sctx_p->bind_collection(lColl, v.get_location());
-  // a collection declaration must allways be in a data module
+
   assert(export_sctx);
   export_sctx->bind_collection(lColl, v.get_location());
-}
-
-/*******************************************************************************
-  CollPropertyList ::=  CollProperty*
-********************************************************************************/
-void* begin_visit(const CollPropertyList& v)
-{ 
-  TRACE_VISIT();
-  return no_state; 
-}
-
-void end_visit(const CollPropertyList& v, void* /*visit_state*/) 
-{
-  TRACE_VISIT_OUT ();
-}
-
-/*******************************************************************************
-  CollProperty ::=  ("const" | "append-only" | "queue" | "mutable" | "ordered" | "unordered")
-********************************************************************************/
-void* begin_visit(const CollProperty& v)
-{ 
-  TRACE_VISIT();
-  return no_state; 
-}
-
-void end_visit(const CollProperty& v, void* /*visit_state*/) 
-{
-  TRACE_VISIT_OUT ();
 }
 
 
@@ -3105,7 +3065,7 @@ void* begin_visit(const NodeModifier& v)
 
 void end_visit(const NodeModifier& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
@@ -3130,7 +3090,7 @@ void* begin_visit(const IndexDecl& v)
 
   if (!inLibraryModule())
   {
-    ZORBA_ERROR_LOC_PARAM(XQP0039_INDEX_IN_NON_DATA_MODULE, v.get_location(), 
+    ZORBA_ERROR_LOC_PARAM(XDST0023_INDEX_DECL_IN_MAIN_MODULE, v.get_location(), 
                           qname->get_qname(), "");
   }
 

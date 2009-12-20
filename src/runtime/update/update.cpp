@@ -78,9 +78,10 @@ void areNodeModifiersViolated(
     switch(lDeclColl->getNodeModifier()) 
     {
     case StaticContextConsts::read_only:
-      ZORBA_ERROR_LOC_DESC_OSS(XDDY0006, aLoc, 
-        "A node from a read-only collection is the target of an updating expression.");
+      ZORBA_ERROR_LOC_PARAM(XDDY0010_COLLECTION_CONST_NODE_UPDATE, aLoc, 
+                            lColl->getName()->getStringValue(), "");
       break;
+
     case StaticContextConsts::mutable_node:
       // good to go
       break;

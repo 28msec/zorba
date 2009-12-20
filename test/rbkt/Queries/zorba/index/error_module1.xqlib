@@ -6,6 +6,6 @@
 
 module namespace idx = "http://www.w3.org/TestModules/idx";
 
-declare ordered index idx:foo 
-on doc("auction.xml")/site/people/person
+declare value range index idx:foo 
+on nodes doc("auction.xml")/site/people/person
 by fn:data(./@id) as xs:string;

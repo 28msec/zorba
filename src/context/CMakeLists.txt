@@ -22,6 +22,7 @@ SET(CONTEXT_SRCS
     decimal_format.cpp
     dynamic_context.cpp
     static_context.cpp
+    static_context_consts.cpp
     namespace_context.cpp
     root_static_context.cpp
     standard_uri_resolvers.cpp

@@ -27,11 +27,11 @@ namespace zorba
 class StaticallyKnownCollection : public SimpleRCObject 
 {
 private:
-  store::Item_t                              theName;
-  StaticContextConsts::collection_property_t theCollProperty;
-  StaticContextConsts::ordering_mode_t       theOrderProperty;
-  StaticContextConsts::node_modifier_t       theNodeModifier;
-  xqtref_t                                   theNodeType; 
+  store::Item_t                                theName;
+  StaticContextConsts::declaration_property_t  theUpdateProperty;
+  StaticContextConsts::declaration_property_t  theOrderProperty;
+  StaticContextConsts::node_modifier_t         theNodeModifier;
+  xqtref_t                                     theNodeType; 
 
 public:
   SERIALIZABLE_CLASS(StaticallyKnownCollection);
@@ -43,31 +43,43 @@ public:
     serialize_baseclass(ar, (SimpleRCObject*)this);
 
     ar & theName;
-    SERIALIZE_ENUM(StaticContextConsts::collection_property_t, theCollProperty);
-    SERIALIZE_ENUM(StaticContextConsts::ordering_mode_t, theOrderProperty);
+    SERIALIZE_ENUM(StaticContextConsts::declaration_property_t, theUpdateProperty);
+    SERIALIZE_ENUM(StaticContextConsts::declaration_property_t, theOrderProperty);
     SERIALIZE_ENUM(StaticContextConsts::node_modifier_t, theNodeModifier);
     ar & theNodeType;
   }
 
 public:
   StaticallyKnownCollection(
-        store::Item_t&                             aName,
-        StaticContextConsts::collection_property_t aCollProperty,
-        StaticContextConsts::ordering_mode_t       aOrderProperty,
-        StaticContextConsts::node_modifier_t       aNodeModifier,
-        xqtref_t&                                  aNodeType);
+        store::Item_t&                              aName,
+        StaticContextConsts::declaration_property_t aUpdateProperty,
+        StaticContextConsts::declaration_property_t aOrderProperty,
+        StaticContextConsts::node_modifier_t        aNodeModifier,
+        xqtref_t&                                   aNodeType);
 
   ~StaticallyKnownCollection();
 
   const store::Item* getName() const { return theName.getp(); }
 
-  StaticContextConsts::collection_property_t getCollProperty() const { return theCollProperty; }
+  StaticContextConsts::declaration_property_t getUpdateProperty() const
+  {
+    return theUpdateProperty;
+  }
 
-  StaticContextConsts::ordering_mode_t getOrderProperty() const { return theOrderProperty; }
+  StaticContextConsts::declaration_property_t getOrderProperty() const 
+  {
+    return theOrderProperty;
+  }
 
-  StaticContextConsts::node_modifier_t getNodeModifier() const { return theNodeModifier; }
+  StaticContextConsts::node_modifier_t getNodeModifier() const
+  {
+    return theNodeModifier;
+  }
 
-  const XQType* getNodeType() const { return theNodeType.getp(); }
+  const XQType* getNodeType() const
+  {
+    return theNodeType.getp();
+  }
 };
 
 
@@ -76,3 +88,10 @@ typedef rchandle<StaticallyKnownCollection> StaticallyKownCollection_t;
 }
 
 #endif
+
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

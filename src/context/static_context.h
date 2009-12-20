@@ -109,6 +109,8 @@ class ZORBA_DLL_PUBLIC static_context : public context
   typedef ItemPointerHashMap<ValueIC_t> ICMap;
 
 protected:
+  std::string                     theModuleNamespace;
+
   rchandle<TypeManager>           theTypemgr;
 
   InternalDocumentURIResolver   * theDocResolver;
@@ -143,6 +145,10 @@ public:
   ~static_context();
 
   static_context* create_child_context();
+
+  void set_module_namespace(std::string& ns) { theModuleNamespace = ns; }
+
+  const std::string& get_module_namespace() const { return theModuleNamespace; }
 
   TypeManager* get_typemanager() const;
 

@@ -22,19 +22,26 @@ namespace zorba {
 SERIALIZABLE_CLASS_VERSIONS(StaticallyKnownCollection)
 END_SERIALIZABLE_CLASS_VERSIONS(StaticallyKnownCollection)
 
-StaticallyKnownCollection::StaticallyKnownCollection(
-  store::Item_t&                             aName,
-  StaticContextConsts::collection_property_t aCollProperty,
-  StaticContextConsts::ordering_mode_t       aOrderProperty,
-  StaticContextConsts::node_modifier_t       aNodeModifier,
-  xqtref_t&                                  aNodeType)
-  : theName(aName),
-    theCollProperty(aCollProperty),
-    theOrderProperty(aOrderProperty),
-    theNodeModifier(aNodeModifier),
-    theNodeType(aNodeType)
-{}
 
-StaticallyKnownCollection::~StaticallyKnownCollection() {}
+StaticallyKnownCollection::StaticallyKnownCollection(
+    store::Item_t&                              aName,
+    StaticContextConsts::declaration_property_t aUpdateProperty,
+    StaticContextConsts::declaration_property_t aOrderProperty,
+    StaticContextConsts::node_modifier_t        aNodeModifier,
+    xqtref_t&                                   aNodeType)
+  :
+  theName(aName),
+  theUpdateProperty(aUpdateProperty),
+  theOrderProperty(aOrderProperty),
+  theNodeModifier(aNodeModifier),
+  theNodeType(aNodeType)
+{
+}
+
+
+StaticallyKnownCollection::~StaticallyKnownCollection() 
+{
+}
+
 
 }

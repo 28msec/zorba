@@ -780,23 +780,25 @@ xqtref_t TypeOps::arithmetic_type(
 /*******************************************************************************
 
 ********************************************************************************/
-static inline IdentTypes::quantifier_t get_typeident_quant(TypeConstants::quantifier_t quant)
+static inline IdentTypes::quantifier_t get_typeident_quant(
+    TypeConstants::quantifier_t quant)
 {
-  switch(quant) {
-    case TypeConstants::QUANT_ONE:
-      return IdentTypes::QUANT_ONE;
+  switch(quant) 
+  {
+  case TypeConstants::QUANT_ONE:
+    return IdentTypes::QUANT_ONE;
 
-    case TypeConstants::QUANT_QUESTION:
-      return IdentTypes::QUANT_QUESTION;
+  case TypeConstants::QUANT_QUESTION:
+    return IdentTypes::QUANT_QUESTION;
 
-    case TypeConstants::QUANT_STAR:
-      return IdentTypes::QUANT_STAR;
+  case TypeConstants::QUANT_STAR:
+    return IdentTypes::QUANT_STAR;
 
-    case TypeConstants::QUANT_PLUS:
-      return IdentTypes::QUANT_PLUS;
+  case TypeConstants::QUANT_PLUS:
+    return IdentTypes::QUANT_PLUS;
 
-    default:
-      break;
+  default:
+    break;
   }
 
   return IdentTypes::QUANT_ONE;

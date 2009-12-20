@@ -447,7 +447,7 @@ typedef zorba::xquery_parser::token token;
    |______________________________________________________________________*/
 
 "collection" { return token::COLLECTION; }
-"const" { return token::CONST_; }
+"const" { return token::CONST; }
 "append-only" { return token::APPEND_ONLY; }
 "queue" { return token::QUEUE; }
 "mutable" { return token::MUTABLE; }
@@ -456,8 +456,11 @@ typedef zorba::xquery_parser::token token;
 "index" { return token::INDEX; }
 "unique" { return token::UNIQUE; }
 "non" { return token::NON; }
-"manual" { return token::MANUAL; }
-"automatic" { return token::AUTOMATIC; }
+"manually" { return token::MANUALLY; }
+"automatically" { return token::AUTOMATICALLY; }
+"maintained" { return token::MAINTAINED; }
+"range" { return token::RANGE; }
+"equality" { return token::EQUALITY; }
 "on" { return token::ON; }
 
   /* "checked"   { return token::CHECKED; }

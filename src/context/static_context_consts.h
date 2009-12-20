@@ -16,10 +16,15 @@
 #ifndef ZORBA_STATIC_CONTEXT_CONSTS_H
 #define ZORBA_STATIC_CONTEXT_CONSTS_H
 
-namespace zorba {
+#include <string>
 
-namespace StaticContextConsts 
+namespace zorba 
 {
+
+class StaticContextConsts 
+{
+ public:
+
   enum xpath1_0compatib_mode_t { xpath2_0, xpath1_0_only     };
 
   enum construction_mode_t     { cons_preserve, cons_strip   };
@@ -48,22 +53,29 @@ namespace StaticContextConsts
     xquery_version_1_1 = 110
   };
 
-  enum collection_property_t
+  enum declaration_property_t
   {
-    const_,
-    append_only,
-    queue,
-    mutable_coll
-  };
+    // Collection update mode
+    decl_const,        
+    decl_append_only,
+    decl_queue,
+    decl_mutable,
 
-  enum index_property_t
-  {
-    idx_unique,
-    idx_non_unique,
-    idx_ordered,
-    idx_unordered,
-    idx_automatic,
-    idx_manual
+    // Collection ordering
+    decl_ordered,
+    decl_unordered,
+
+    // Index Ordering
+    decl_value_equality,
+    decl_value_range,
+
+    // Index uniqueness
+    decl_unique,       
+    decl_non_unique,
+
+    // index maintenance mode
+    decl_automatic,    
+    decl_manual
   };
   
   enum node_modifier_t
@@ -73,8 +85,17 @@ namespace StaticContextConsts
   };
   
 
+  static std::string toString(declaration_property_t prop);
+
 }; /* namespace StaticContextConsts */
 
 } /* namespace zorba */
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
+

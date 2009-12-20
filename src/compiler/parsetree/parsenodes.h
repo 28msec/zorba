@@ -68,6 +68,7 @@ class CompTextConstructor;
 class ComparisonExpr;
 class ConstructionDecl;
 class ContextItemExpr;
+class DeclProperty;
 class CopyNamespacesDecl;
 class DefaultCollationDecl;
 class DefaultNamespaceDecl;
@@ -858,6 +859,52 @@ public:
 
 
 /*******************************************************************************
+  [*] DeclPropertyList   ::=   DeclProperty*
+********************************************************************************/
+class DeclPropertyList : public parsenode
+{
+protected:
+  std::vector<rchandle<DeclProperty> > theProperties;
+
+public:
+  DeclPropertyList(const QueryLoc& aLoc) : parsenode(aLoc) { }
+
+  void addProperty(DeclProperty* aProp) { theProperties.push_back(aProp); }
+
+  size_t size() const { return theProperties.size(); }
+
+  const DeclProperty* getProperty(size_t i) const { return theProperties[i].getp(); }
+
+  void accept(parsenode_visitor&) const {}
+};
+
+
+/*******************************************************************************
+  [*] DeclProperty  ::=  ("const" | "append-only" | "queue" | "mutable" | 
+                          "ordered" | "unordered" |
+                          "unique" | "non" "unique" |
+                          "automatic | "manual")
+********************************************************************************/
+class DeclProperty : public parsenode
+{
+protected:
+  StaticContextConsts::declaration_property_t theProperty;
+
+public:
+  DeclProperty(const QueryLoc& loc, StaticContextConsts::declaration_property_t p)
+    :
+    parsenode(loc),
+    theProperty(p)
+  { 
+  }
+
+  StaticContextConsts::declaration_property_t getProperty() const { return theProperty; }
+
+  void accept(parsenode_visitor&) const {}
+};
+
+
+/*******************************************************************************
   [13] OptionDecl ::= DECLARE_OPTION  QNAME  STRING_LITERAL
 ********************************************************************************/
 class OptionDecl : public parsenode
@@ -1100,98 +1147,50 @@ public:
   void accept(parsenode_visitor&) const;
 };
 
-/*******************************************************************************
-  [*] CollProperty   ::=   ("const" | "append-only" | "queue" | "mutable" | "ordered" | "unordered")
-********************************************************************************/
-class CollProperty : public parsenode
-{
-protected:
-  union {
-    StaticContextConsts::collection_property_t coll;
-    StaticContextConsts::ordering_mode_t       order;
-  } theProperty;
-  bool theIsOrderProperty;
-
-public:
-  CollProperty (
-    const QueryLoc&                            aLoc,
-    StaticContextConsts::collection_property_t aCollProperty)
-  : parsenode(aLoc),
-    theIsOrderProperty(false)
-  { theProperty.coll = aCollProperty; }
-
-  CollProperty (
-    const QueryLoc&                      aLoc,
-    StaticContextConsts::ordering_mode_t aOrderProperty)
-  : parsenode(aLoc),
-    theIsOrderProperty(true)
-  { theProperty.order = aOrderProperty; }
-
-  StaticContextConsts::collection_property_t getCollProperty() const { return theProperty.coll; }
-  StaticContextConsts::ordering_mode_t getOrderProperty() const { return theProperty.order; }
-
-  bool isOrderProperty() const { return theIsOrderProperty; }
-
-  void accept(parsenode_visitor&) const;
-};
-
-
-/*******************************************************************************
-  [*] CollPropertyList   ::=   CollProperty*
-********************************************************************************/
-class CollPropertyList : public parsenode
-{
-protected:
-  std::vector<rchandle<CollProperty> > theCollProps;
-
-public:
-  CollPropertyList(const QueryLoc& aLoc) : parsenode(aLoc) { }
-
-  void addProperty(CollProperty* aProp) { theCollProps.push_back(aProp); }
-
-  size_t size() const { return theCollProps.size(); }
-
-  const CollProperty* getProperty(size_t i) const { return theCollProps[i].getp(); }
-
-  void accept(parsenode_visitor&) const;
-};
 
 
 /*******************************************************************************
   [*] CollectionDecl ::= "declare" CollProperties "collection" QName 
-                         ("node" NodeModifier)? ("as" KindTest)?
+                         ("as" KindTest)? ("with" NodeModifier "nodes")? 
 
-  [*] CollProperties ::= (’const’ | ’mutable’ | ’append-only’ | ’queue’ |  ’ordered’ | ’unordered’)*
-  [*] NodeModifier   ::= (’read-only’ | ’mutable’)
+  [*] CollProperties ::= ("const" | "mutable" | "append-only" | "queue" |
+                          "ordered" | "unordered")*
+
+  [*] NodeModifier   ::= ("read-only" | "mutable")
 ********************************************************************************/
 class CollectionDecl : public parsenode
 {
 protected:
-  rchandle<QName> theName;
-  rchandle<CollPropertyList> theCollPropertyList;
-  rchandle<NodeModifier> theNodeModifier;
-  rchandle<parsenode> theKindTest;
+  rchandle<QName>                             theName;
+  rchandle<NodeModifier>                      theNodeModifier;
+  rchandle<parsenode>                         theKindTest;
+  StaticContextConsts::declaration_property_t theOrderMode;
+  StaticContextConsts::declaration_property_t theUpdateMode;
 
 public:
   CollectionDecl(
-        const QueryLoc&              aLoc,
-        QName*                       aName,
-        rchandle<CollPropertyList>   aCollPropertyList,
-        rchandle<NodeModifier>       aNodeModifier,
-        rchandle<parsenode>          aKindTest)
-    : parsenode(aLoc),
-      theName(aName),
-      theCollPropertyList(aCollPropertyList),
-      theNodeModifier(aNodeModifier),
-      theKindTest(aKindTest)
-  {
-  }
+        const QueryLoc&        aLoc,
+        QName*                 aName,
+        DeclPropertyList*      aPropertyList,
+        rchandle<NodeModifier> aNodeModifier,
+        rchandle<parsenode>    aKindTest);
 
   const QName* getName() const { return theName.getp(); }
 
-  const CollPropertyList* getCollPropertyList() const { return theCollPropertyList.getp(); }
+  StaticContextConsts::declaration_property_t getUpdateMode() const
+  {
+    return theUpdateMode;
+  }
 
-  const NodeModifier* getNodeModifier() const { return theNodeModifier.getp(); }
+  StaticContextConsts::declaration_property_t getOrderMode() const
+  {
+    return theOrderMode;
+  }
+
+  const NodeModifier* getNodeModifier() const 
+  {
+    return theNodeModifier.getp();
+  }
 
   const parsenode* getKindTest() const { return theKindTest.getp(); }
 
@@ -1209,9 +1208,10 @@ protected:
 
 public:
   NodeModifier (
-    const QueryLoc&                      aLoc,
-    StaticContextConsts::node_modifier_t aModifier)
-  : parsenode(aLoc),
+        const QueryLoc&                      aLoc,
+        StaticContextConsts::node_modifier_t aModifier)
+    : 
+    parsenode(aLoc),
     theModifier(aModifier)
   {}
 
@@ -1254,7 +1254,7 @@ public:
         QName* name,
         exprnode* domainExpr,
         IndexKeyList* key,
-        IndexPropertyList* props);
+        DeclPropertyList* props);
 
   const QName* getName() const { return theName.getp(); }
 
@@ -1269,74 +1269,6 @@ public:
   void accept(parsenode_visitor&) const;
 };
 
-
-/***************************************************************************//**
-  IndexProperties ::= ("unique" | "non" "unique")? 
-                      ("ordered" | "unordered")?
-                      ("automatic" | "manual")?
-********************************************************************************/
-class IndexPropertyList : public parsenode 
-{
-protected:
-  bool   theIsUnique;
-  bool   theIsOrdered;
-  bool   theIsAutomatic;
-
-  bool   theSetUnique;
-  bool   theSetOrdered;
-  bool   theSetAutomatic;
-
-public:
-  IndexPropertyList(const QueryLoc& loc)
-    :
-    parsenode(loc),
-    theIsUnique(false),
-    theIsOrdered(false),
-    theIsAutomatic(false),
-    theSetUnique(false),
-    theSetOrdered(false),
-    theSetAutomatic(false)
-  {
-  }
-
-  bool isUnique() const { return theIsUnique; }
-
-  void setUnique() { theIsUnique = true; }
-
-  bool isOrdered() const { return theIsOrdered; }
-
-  void setOrdered() { theIsOrdered = true; }
-
-  bool isAutomatic() const { return theIsAutomatic; }
-
-  void setAutomatic() { theIsAutomatic = true; }
-
-  void addProperty(IndexProperty* prop);
-
-  void accept(parsenode_visitor&) const { }
-};
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-class IndexProperty : public parsenode 
-{
-protected:
-  StaticContextConsts::index_property_t theProperty;
-
-public:
-  IndexProperty(const QueryLoc& loc, StaticContextConsts::index_property_t p) 
-    :
-    parsenode(loc),
-    theProperty(p) 
-  {
-  }
-
-  StaticContextConsts::index_property_t getProperty() const { return theProperty; }
-
-  void accept(parsenode_visitor&) const { }
-};
 
 
 /***************************************************************************//**
@@ -1433,30 +1365,37 @@ protected:
   ICKind                 theICKind;
 
 public:
-  IntegrityConstraintDecl ( const QueryLoc& loc, 
-                            QName* name, 
-                            ICKind icKind);
+  IntegrityConstraintDecl(
+        const QueryLoc& loc, 
+        QName* name, 
+        ICKind icKind);
 
-  const QName* getName()     const { return theICName.getp(); }
-  ICKind       getICKind()   const { return theICKind; }
+  const QName* getName() const { return theICName.getp(); }
+  ICKind       getICKind() const { return theICKind; }
 
   virtual void accept(parsenode_visitor&) const;
 };
+
 
 class ICColl : public IntegrityConstraintDecl
 {
 protected:
   rchandle<QName>        theCollName;
+
 public:
   ICColl ( const QueryLoc& loc, 
            QName* name, 
            ICKind icKind,
-           QName* collName) :
+           QName* collName)
+    :
     IntegrityConstraintDecl(loc, name, icKind), 
-    theCollName(collName) {}
+    theCollName(collName) 
+  {
+  }
   
   const QName* getCollName() const { return theCollName.getp(); }
 };
+
 
 class ICCollSimpleCheck : public ICColl
 {
@@ -1469,13 +1408,21 @@ public:
                       QName* name, 
                       QName* collName,
                       QName* collVarName,
-                      exprnode* exprSingle) :
-    ICColl(loc, name, IntegrityConstraintDecl::coll_check_simple, collName), 
-    theCollVarName(collVarName), theExprSingle(exprSingle) {}
+                      exprnode* exprSingle)
+    :
+    ICColl(loc,
+           name, 
+           IntegrityConstraintDecl::coll_check_simple,
+           collName), 
+    theCollVarName(collVarName),
+    theExprSingle(exprSingle)
+  {
+  }
   
   const QName* getCollVarName() const { return theCollVarName.getp(); }
   const exprnode* getExpr() const { return theExprSingle; }
 };
+
 
 class ICCollUniqueKeyCheck : public ICColl
 {
@@ -1488,14 +1435,21 @@ public:
                          QName* name, 
                          QName* collName,
                          QName* collVarName,
-                         rchandle<exprnode> expr) :
-    ICColl(loc, name, 
-           IntegrityConstraintDecl::coll_check_unique_key, collName), 
-    theCollVarName(collVarName), theExpr(expr) {}
+                         rchandle<exprnode> expr)
+    :
+    ICColl(loc, 
+           name, 
+           IntegrityConstraintDecl::coll_check_unique_key,
+           collName), 
+    theCollVarName(collVarName),
+    theExpr(expr)
+  {
+  }
   
   const QName* getCollVarName() const { return theCollVarName.getp(); }
   const exprnode* getExpr() const { return theExpr.getp(); }
 };
+
 
 class ICCollForeachNode : public ICColl
 {
@@ -1508,16 +1462,24 @@ public:
                       QName* name, 
                       QName* collName,
                       QName* collVarName,
-                      exprnode* exprSingle) :
-    ICColl(loc, name, 
-           IntegrityConstraintDecl::coll_foreach_node, collName), 
-    theCollVarName(collVarName), theExprSingle(exprSingle) {}
+                      exprnode* exprSingle) 
+    :
+    ICColl(loc,
+           name, 
+           IntegrityConstraintDecl::coll_foreach_node,
+           collName), 
+    theCollVarName(collVarName),
+    theExprSingle(exprSingle)
+  {
+  }
   
   const QName* getCollVarName() const { return theCollVarName.getp(); }
   const exprnode* getExpr() const { return theExprSingle; }
 };
 
-/*class ICNodeOfType : public IntegrityConstraintDecl
+
+/*
+class ICNodeOfType : public IntegrityConstraintDecl
 {
 protected:
   rchandle<QName>        theNodeVarName;
@@ -1529,15 +1491,22 @@ public:
                  QName* name, 
                  QName* nodeVarName,
                  rchandle<parsenode> typeExpr,
-                 exprnode* exprSingle) :
-    IntegrityConstraintDecl(loc, name, IntegrityConstraintDecl::node_of_type), 
-    theNodeVarName(nodeVarName), theTypeExpr(typeExpr), 
-    theExprSingle(exprSingle) {}
+                 exprnode* exprSingle)
+    :
+    IntegrityConstraintDecl(loc,
+                            name, 
+                            IntegrityConstraintDecl::node_of_type), 
+    theNodeVarName(nodeVarName),
+    theTypeExpr(typeExpr), 
+    theExprSingle(exprSingle) 
+  {
+  }
   
   const QName* getNodeVarName() const { return theNodeVarName.getp(); }
   const parsenode* getTypeExpr() const { return theTypeExpr; }
   const exprnode* getExpr() const { return theExprSingle; }
-  };*/
+};
+*/
 
 
 class ICForeignKey : public IntegrityConstraintDecl
@@ -1558,11 +1527,18 @@ public:
                  rchandle<exprnode> fromExpr,
                  QName* toCollName,
                  QName* toNodeVarName,
-                 rchandle<exprnode> toExpr) :
-    IntegrityConstraintDecl(loc, name, 
+                 rchandle<exprnode> toExpr) 
+    :
+    IntegrityConstraintDecl(loc,
+                            name, 
                             IntegrityConstraintDecl::foreign_key), 
-    theFromCollName(fromCollName), theFromNodeVarName(fromNodeVarName),
-    theFromExpr(fromExpr), theToCollName(toCollName), theToExpr(toExpr) {}
+    theFromCollName(fromCollName),
+    theFromNodeVarName(fromNodeVarName),
+    theFromExpr(fromExpr),
+    theToCollName(toCollName),
+    theToExpr(toExpr) 
+  {
+  }
   
   const QName* getFromCollName() const { return theFromCollName; }
   const QName* getFromNodeVarName() const { return theFromNodeVarName; }
@@ -1571,6 +1547,7 @@ public:
   const QName* getToNodeVarName() const { return theToNodeVarName; }
   const exprnode* getToExpr() const { return theToExpr.getp(); }
 };
+
 
 /*******************************************************************************
   [36] EnclosedExpr ::= "{" Expr "}"

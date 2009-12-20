@@ -306,9 +306,6 @@ DEF_ERR_CODE(XQP0037_INDEX_IS_NOT_DECLARED, XQP0037,
 DEF_ERR_CODE(XQP0038_INDEX_IS_ALREADY_DECLARED, XQP0038,
              "An index with URI /s is declared already.")
 
-DEF_ERR_CODE(XQP0039_INDEX_IN_NON_DATA_MODULE, XQP0039,
-             "The index with URI /s is declared in a non data module.")
-
 DEF_ERR_CODE(XQP0040_INDEX_HAS_FREE_VARS, XQP0040,
              "The index with URI /s has free variables in its definition.")
 
@@ -627,38 +624,90 @@ DEF_ERR_CODE(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE, SRL0011, "Plan serializati
 DEF_ERR_CODE(SRL0012_INCOMPATIBLE_ARCHIVE_VERSION, SRL0012, "Plan serialization error: Incompatible archive version: /s")
 
 //
-// XQuery Data Definition Facility
+// XQuery Data Definition Facility - Static Errors
 //
 
-DEF_ERR_CODE(XDST0001, XDST0001, "It is a static error if the expanded QName of the collection is equal (as defined by the eq operator) to the name of another collection in the set of statically known collections.")
+DEF_ERR_CODE(XDST0001_COLLECTION_ALREADY_DECLARED, XDST0001,
+"A collection with name /s is already declared in the same module")
 
-DEF_ERR_CODE(XDST0002, XDST0002, "It is a static error if a collection declaration is used in a module other than a data module.")
+DEF_ERR_CODE(XDST0002_COLLECTION_ALREADY_IMPORTED, XDST0002, 
+"A collection with name /s that is imported from module /s is already declared in the importing module.")
 
-DEF_ERR_CODE(XDDY0003, XDDY0003, "It is a dynamic error if an updating collection function other than create-collection or drop-collection has the QName of a const collection as first argument.")
+DEF_ERR_CODE(XDST0003_COLLECTION_DECL_IN_MAIN_MODULE, XDST0003, 
+"A collection declaration cannot appear in a main module.")
 
-DEF_ERR_CODE(XDDY0004, XDDY0004, "It is a dynamic error if an updating collection function other than create-collection, drop-collection, or insert-nodes-last has a QName of a append-only collection as first argument.")
+DEF_ERR_CODE(XDST0004_COLLECTION_MULTIPLE_PROPERTY_VALUES, XDST0004,
+"The declaration for collection /s specifies multiple values for the same property.")
 
-DEF_ERR_CODE(XDDY0005, XDDY0005, "It is a dynamic error if an updating collection function other than one among the following list has a QName of a queue collection as first argument: create-collection, drop-collection, insert-nodes-last, remove-nodes having a prefix of the collection as second argument, remove-node-at having the integer 1 as the second argument.")
+DEF_ERR_CODE(XDST0005_COLLECTION_PROPERTIES_CONFLICT, XDST0005,
+"The declaration for collection /s specifies conflicting property values.")
 
-DEF_ERR_CODE(XDDY0006, XDDY0006, "It is a dynamic error if a node from a read-only collection is the target of an updating expression.")
+DEF_ERR_CODE(XDST0006_COLLECTION_INVALID_PROPERTY_VALUE, XDST0006,
+"The declaratrion for collection /s contains an invalid property value: /s")
 
-DEF_ERR_CODE(XDST0007, XDST0007, "It is a static error if a data module import imports a library module or if a library module import imports a data module.")
 
-DEF_ERR_CODE(XDST0008, XDST0008, "It is a static error if the expanded QName of a collection declared in an imported module is equal (as defined by the eq operator) to the expanded QName of a collection declared in the importing module or in another imported module (even if the declarations are consistent).")
+DEF_ERR_CODE(XDST0021_INDEX_ALREADY_DECLARED, XDST0021,
+"An index with name /s is already declared in the same module")
 
-DEF_ERR_CODE(XDDY0009, XDDY0009, "It is a dynamic error if a collection function from the dynamic-context or ddl module other than create-collection and is-avaible-collection has a QName as first parameter for which the Available collections does not contain a mapping.")
+DEF_ERR_CODE(XDST0022_INDEX_ALREADY_IMPORTED, XDST0022, 
+"An index with name /s that is imported from module /s is already declared in the importing module.")
 
-DEF_ERR_CODE(XDST0010, XDST0010, "It is a static error if a collection function from the static-context, dynamic-context, or ddl module other than is-declared-collection has a QName as first parameter for which the Statically known collections does not contain a resource.")
+DEF_ERR_CODE(XDST0023_INDEX_DECL_IN_MAIN_MODULE, XDST0023, 
+"An index declaration cannot appear in a main module.")
+
+DEF_ERR_CODE(XDST0024_INDEX_MULTIPLE_PROPERTY_VALUES, XDST0024,
+"The declaration for index /s specifies multiple values for the same property.")
+
+DEF_ERR_CODE(XDST0025_INDEX_PROPERTIES_CONFLICT, XDST0025,
+"The declaration for index /s specifies conflicting property values.")
+
+DEF_ERR_CODE(XDST0026_INDEX_INVALID_PROPERTY_VALUE, XDST0026,
+"The declaration for index /s contains an invalid property value: /s")
+
+
+//
+// XQuery Data Definition Facility - Dynamic Errors
+//
+
+DEF_ERR_CODE(XDDY0001_COLLECTION_NOT_DECLARED, XDDY0001, 
+"Collection /s is not in the static context.")
+
+DEF_ERR_CODE(XDDY0002_COLLECTION_EXISTS_ALREADY, XDDY0002, 
+"Collection /s exists already.")
+
+DEF_ERR_CODE(XDDY0003_COLLECTION_DOES_NOT_EXIST, XDDY0003, 
+"Collection /s does not exist.")
+
+DEF_ERR_CODE(XDDY0004_COLLECTION_CONST_UPDATE, XDDY0004, 
+"Cannot update const collection /s.")
+
+DEF_ERR_CODE(XDDY0005_COLLECTION_APPEND_BAD_INSERT, XDDY0005, 
+"Illegal insert in append-only collection /s.")
+
+DEF_ERR_CODE(XDDY0006_COLLECTION_QUEUE_BAD_INSERT, XDDY0006, 
+"Illegal insert in queue collection /s.")
+
+DEF_ERR_CODE(XDDY0007_COLLECTION_APPEND_BAD_DELETE, XDDY0007, 
+"Illegal delete from append-only collection /s.")
+
+DEF_ERR_CODE(XDDY0008_COLLECTION_QUEUE_BAD_DELETE, XDDY0008, 
+"Illegal delete from queue collection /s.")
+
+DEF_ERR_CODE(XDDY0009_COLLECTION_QUEUE_BAD_DELETE, XDDY0009, 
+"Not all the nodes to delete are at the beginning of queue collection /s.")
+
+DEF_ERR_CODE(XDDY0010_COLLECTION_CONST_NODE_UPDATE, XDDY0010,
+"Illegal update of node in collection /s, whose nodes are read-only.")
+
+DEF_ERR_CODE(XDDY0011_COLLECTION_NODE_NOT_FOUND, XDDY0011, 
+"A node to delete is not contained in collection /s.")
 
 DEF_ERR_CODE(XDDY0011, XDDY0011, "It is a dynamic error if the target of a collection function does not belong to the collection that is identified by the first parameter (QName).")
-
-DEF_ERR_CODE(XDDY0012, XDDY0012, "It is a dynamic error if Available collections already contain mapping for a QName that is passed to create-collection as first parameter.")
 
 DEF_ERR_CODE(XDDY0013, XDDY0013, "It is a dynamic error if multiple calls to create-collection in the same snapshot have the same QName as first parameter.")
 
 DEF_ERR_CODE(XDDY0014, XDDY0014, "It is a dynamic error if the position parameter of remove-node-at is smaller than 1 or bigger than the size of the collection sequence identified by the passed QName.")
 
-DEF_ERR_CODE(XDST0015, XDST0015, "It is static error if a collection declaration contains one of the following inconsistencies: two or more modifier properties specified, two or more order properties specified, or queue or append-only together with unordered is specified.")
 
 #undef DEF_ERR_CODE
 

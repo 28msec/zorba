@@ -40,7 +40,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-#line 30 "/home/fx/dev/zorba/src/compiler/parser/xquery_parser.y"
+#line 30 "/home/markos/zorba/zorba/src/compiler/parser/xquery_parser.y"
 
 #include "compiler/parsetree/parsenodes.h"
 
@@ -64,7 +64,7 @@ class xquery_driver;
 
 
 /* Line 35 of lalr1.cc  */
-#line 68 "/home/fx/dev/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 68 "/home/markos/zorba/zorba/build-gdb/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -78,7 +78,7 @@ class xquery_driver;
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 82 "/home/fx/dev/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 82 "/home/markos/zorba/zorba/build-gdb/src/compiler/parser/xquery_parser.hpp"
   class position;
   class location;
 
@@ -88,7 +88,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 92 "/home/fx/dev/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 92 "/home/markos/zorba/zorba/build-gdb/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -136,7 +136,7 @@ do {							\
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 140 "/home/fx/dev/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 140 "/home/markos/zorba/zorba/build-gdb/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -148,7 +148,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 134 "/home/fx/dev/zorba/src/compiler/parser/xquery_parser.y"
+#line 134 "/home/markos/zorba/zorba/src/compiler/parser/xquery_parser.y"
 
   zorba::parsenode * node;
   zorba::exprnode * expr;
@@ -168,7 +168,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-#line 172 "/home/fx/dev/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 172 "/home/markos/zorba/zorba/build-gdb/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -451,7 +451,7 @@ namespace zorba {
      THESAURUS = 528,
      WILDCARDS = 529,
      COLLECTION = 530,
-     CONST_ = 531,
+     CONST = 531,
      APPEND_ONLY = 532,
      QUEUE = 533,
      MUTABLE = 534,
@@ -459,31 +459,34 @@ namespace zorba {
      UNIQUE = 536,
      NON = 537,
      INDEX = 538,
-     MANUAL = 539,
-     AUTOMATIC = 540,
-     ON = 541,
-     INTEGRITY = 542,
-     CONSTRAINT = 543,
-     CHECK = 544,
-     KEY = 545,
-     FOREACH = 546,
-     FOREIGN = 547,
-     KEYS = 548,
-     BYTE_ORDER_MARK_UTF8 = 549,
-     FTCONTAINS_REDUCE = 550,
-     RANGE_REDUCE = 551,
-     ADDITIVE_REDUCE = 552,
-     MULTIPLICATIVE_REDUCE = 553,
-     UNION_REDUCE = 554,
-     INTERSECT_EXCEPT_REDUCE = 555,
-     QVARINDECLLIST_REDUCE = 556,
-     COMMA_DOLLAR = 557,
-     UNARY_PREC = 558,
-     SEQUENCE_TYPE_REDUCE = 559,
-     OCCURS_STAR = 560,
-     OCCURS_PLUS = 561,
-     OCCURS_HOOK = 562,
-     STEP_REDUCE = 563
+     MANUALLY = 539,
+     AUTOMATICALLY = 540,
+     MAINTAINED = 541,
+     ON = 542,
+     RANGE = 543,
+     EQUALITY = 544,
+     INTEGRITY = 545,
+     CONSTRAINT = 546,
+     CHECK = 547,
+     KEY = 548,
+     FOREACH = 549,
+     FOREIGN = 550,
+     KEYS = 551,
+     BYTE_ORDER_MARK_UTF8 = 552,
+     FTCONTAINS_REDUCE = 553,
+     RANGE_REDUCE = 554,
+     ADDITIVE_REDUCE = 555,
+     MULTIPLICATIVE_REDUCE = 556,
+     UNION_REDUCE = 557,
+     INTERSECT_EXCEPT_REDUCE = 558,
+     QVARINDECLLIST_REDUCE = 559,
+     COMMA_DOLLAR = 560,
+     UNARY_PREC = 561,
+     SEQUENCE_TYPE_REDUCE = 562,
+     OCCURS_STAR = 563,
+     OCCURS_PLUS = 564,
+     OCCURS_HOOK = 565,
+     STEP_REDUCE = 566
    };
 
     };
@@ -577,7 +580,7 @@ namespace zorba {
     /// - if positive, shift that token.
     /// - if negative, reduce the rule which number is the opposite.
     /// - if zero, do what YYDEFACT says.
-    static const short int yytable_[];
+    static const unsigned short int yytable_[];
     static const signed char yytable_ninf_;
 
     static const short int yycheck_[];
@@ -660,7 +663,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 664 "/home/fx/dev/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 667 "/home/markos/zorba/zorba/build-gdb/src/compiler/parser/xquery_parser.hpp"
 
 
 

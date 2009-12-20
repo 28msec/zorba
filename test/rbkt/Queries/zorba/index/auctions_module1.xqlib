@@ -14,8 +14,8 @@ declare collection auctions:auctions;
   The PersonId index maps each id to the person with that id.
 :)
 
-declare unique ordered index auctions:PersonId
-on xqddf:collection(xs:QName("auctions:auctions"))/site/people/person
+declare unique value range index auctions:PersonId
+on nodes xqddf:collection(xs:QName("auctions:auctions"))/site/people/person
 by (fn:data(./@id)) as xs:string;
 
 
@@ -24,8 +24,8 @@ by (fn:data(./@id)) as xs:string;
   The PersonCity index contains some NULL keys because not all persons have a city 
 :)
 
-declare ordered automatic index auctions:PersonCity
-on xqddf:collection(xs:QName("auctions:auctions"))/site/people/person
+declare value range automatically maintained index auctions:PersonCity
+on nodes xqddf:collection(xs:QName("auctions:auctions"))/site/people/person
 by ((.//city)) as xs:string?;
 
 

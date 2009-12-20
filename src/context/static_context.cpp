@@ -1158,13 +1158,8 @@ void static_context::bind_collection(
 
   if (!theCollectionMap->insert(aCollection->getName(), aCollection))
   {
-    ZORBA_ERROR_LOC_DESC_OSS(XDST0001, aLoc,
-                             "It is a static error if the expanded QName ("
-                             << aCollection->getName()->getStringValue()
-                             << ") of a collection"
-                             << " is equal (as defined by the eq operator) to the name of "
-                             << "another collection in the set of statically known collections."
-                            );
+    ZORBA_ERROR_LOC_PARAM(XDST0001_COLLECTION_ALREADY_DECLARED, aLoc,
+                          aCollection->getName()->getStringValue(), "");
   }
 }
 
@@ -1563,7 +1558,7 @@ xqp_string static_context::make_absolute_uri(
 
 
 /*******************************************************************************
-  Merge the ststic context of a module with this static context. Only functions
+  Merge the static context of a module with this static context. Only functions
   and variables defined in te module are included in this static context. If
   a module variable or function already appears in this context, the method
   returns false.
@@ -1611,14 +1606,9 @@ bool static_context::import_module(const static_context* module, const QueryLoc&
 
       if (!theCollectionMap->insert(pair.first, pair.second)) 
       {
-        ZORBA_ERROR_LOC_DESC_OSS(XDST0008, loc,
-                                 "It is a static error if the expanded QName ("
-                                 << pair.second->getName()->getStringValue()
-                                 << ") of a collection declared in an imported module is equal "
-                                 << "(as defined by the eq operator) to the expanded QName of a "
-                                 << "collection declared in the importing module or in another "
-                                 << "imported module (even if the declarations are consistent)."
-                                );
+        ZORBA_ERROR_LOC_PARAM(XDST0002_COLLECTION_ALREADY_IMPORTED, loc,
+                              pair.second->getName()->getStringValue(),
+                              module->get_module_namespace().c_str());
       }
     }
   }
