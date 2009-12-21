@@ -149,7 +149,7 @@ class UserException : public QueryException
 %javaconst(1);
 #endif
 %rename(XQueryErrorEnum) XQUERY_ERROR;
-%include <zorba/error.h>
+#include <zorba/error.h>
 
 
 class ZorbaException 

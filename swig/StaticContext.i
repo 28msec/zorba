@@ -249,7 +249,7 @@ public:
 %rename(VALIDATE_LAX) validate_lax;
 %rename(VALIDATE_STRICT) validate_strict;
 
-%include <zorba/static_context_consts.h>
+#include <zorba/static_context_consts.h>
 
 
 class StaticContext 

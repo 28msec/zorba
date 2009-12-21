@@ -26,7 +26,6 @@ ELSE(${PYTHON_LIBS_NOT_FOUND} OR ${PYTHON_INCL_NOT_FOUND})
   INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
   SWIG_ADD_MODULE(zorba_api python zorba_api.i)
   SWIG_LINK_LIBRARIES(zorba_api zorba_simplestore ${PYTHON_LIBRARIES})
-  SET_SOURCE_FILES_PROPERTIES(zorba_apiPYTHON_wrap OBJECT_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/../zorba_api.i)
 
 
 EXECUTE_PROCESS ( COMMAND ${PYTHON_EXECUTABLE} -c "from distutils import sysconfig;print sysconfig.get_python_lib(0)"
