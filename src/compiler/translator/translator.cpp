@@ -42,6 +42,7 @@
 #include "compiler/translator/translator.h"
 #include "compiler/api/compilercb.h"
 #include "compiler/api/compiler_api.h"
+#include "compiler/codegen/plan_visitor.h"
 #include "compiler/parser/util.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parser/parse_constants.h"
@@ -68,6 +69,7 @@
 #include "store/api/update_consts.h"
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
+#include "runtime/api/plan_wrapper.h"
 
 #include "debugger/zorba_debugger_commons.h"
 
@@ -3342,9 +3344,9 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
 
   //fill in the body of the function
   expr_t body;
-  int nargs = 0;
-  vector<varref_t> args;
   const QName* qname = v.getName();
+  /*int nargs = 0;
+  vector<varref_t> args;
   xqp_string fnLocalName = "ic_check_" + qname->get_localname();
   store::Item_t fnQName = sctx_p->lookup_fn_qname(qname->get_prefix(),
                                                   fnLocalName,
@@ -3356,6 +3358,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
                 nargs));
 
   ZORBA_ASSERT(icf != NULL);
+  */
 
   // todo cezar: error if user expresions are sequential
 
@@ -3384,8 +3387,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       //arguments.push_back();
 
       fo_expr_t foExpr = new fo_expr(sctxid(), loc, f, arguments);
-      body = foExpr;
-
+      body = foExpr;     
     }
     break;
 
@@ -3409,16 +3411,6 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
     }
     break;
 
-    /*  case IntegrityConstraintDecl::node_of_type:
-    {
-      store::Item_t fn_true_qname = sctx_p->lookup_fn_qname("fn", "true", loc);
-      function* f = LOOKUP_FN("fn", "true", 0);
-      std::vector<expr_t> arguments;
-      fo_expr_t foExpr = new fo_expr(sctxid(), loc, f, arguments);
-      body = foExpr;
-    }
-    break;
-    */
   case IntegrityConstraintDecl::foreign_key:
     {
       store::Item_t fn_true_qname = sctx_p->lookup_fn_qname("fn", "true", loc);
@@ -3456,14 +3448,27 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       theCCB->theConfig.optimize_cb(&*body, v.get_name ()->get_qname ());
   }
 */
-  icf->set_body(body);
-  icf->set_args(args);
+
+  //icf->set_body(body);
+  //icf->set_args(args);
+
+  std::string msg = "entry-creator expr for integrity constraint " + 
+    qname->get_localname();
+  
+  if (theCCB->theConfig.optimize_cb != NULL)
+    theCCB->theConfig.optimize_cb(body.getp(), msg);
+ 
+  PlanIter_t icIter = codegen("integrity constraint", body, theCCB);
+
+  store::Iterator_t icPlanWrapper = 
+    new PlanWrapper(icIter, theCCB, NULL /*dctx*/, NULL);
 
   // Update static context
   store::Item_t qnameItem = sctx_p->lookup_fn_qname(qname->get_prefix(),
                                                     qname->get_localname(),
                                                     qname->get_location());
-  ValueIC_t vic = new ValueIC(sctx_p, loc, qnameItem);
+  ValueIC_t vic = new ValueIC(sctx_p, loc, qnameItem, icPlanWrapper);
+
   sctx_p->bind_ic(qnameItem, vic, loc);     
 }
 

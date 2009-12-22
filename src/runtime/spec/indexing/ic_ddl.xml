@@ -50,7 +50,7 @@
 
 <!--
 /*******************************************************************************
-********************************************************************************/
+*******************************************************************************/
 -->
 <zorba:iterator name="DeactivateICIterator" arity="unary">
 
@@ -69,6 +69,32 @@
 		       prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+*******************************************************************************/
+-->
+<zorba:iterator name="CheckICIterator" arity="unary">
+
+    <zorba:description author="Zorba Team">
+  check-integrity-constraint($icName as xs:QName) as ()
+
+  Calls the runtime check of the $icName integrity constraint.
+
+  Error XXX is risen if $icName is not activated, i.e. available in 
+  dynamic context.
+    </zorba:description>
+
+    <zorba:function isUpdating="false" requiresDynamicContext="true"> 
+      <zorba:signature localname="check-integrity-constraint" 
+		       prefix="fn-zorba-ddl">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
       </zorba:signature>
     </zorba:function>
 

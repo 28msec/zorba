@@ -121,6 +121,45 @@ bool DeactivateICIterator::nextImpl(store::Item_t& result, PlanState& planState)
   STACK_END(state);
 }
 
+/*******************************************************************************
+ Implementation for:
+   check-integrity-constraint($icName as xs:QName) as xs:boolean
+******************************************************************************/
+bool CheckICIterator::nextImpl(store::Item_t& result, PlanState& planState)
+  const
+{
+  store::Item_t qname;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if (!consumeNext(qname, theChild, planState))
+    ZORBA_ASSERT(false);
+
+  if (theSctx->lookup_ic(qname) == NULL)
+  {
+    ZORBA_ERROR_LOC_PARAM(XQP0047_IC_IS_NOT_DECLARED, loc,
+                          qname->getStringValue()->c_str(), "");
+  }
+
+  if (GENV_STORE.getIC(qname) == NULL)
+  {
+    ZORBA_ERROR_LOC_PARAM(XQP0043_IC_DOES_NOT_EXIST, loc,
+                          qname->getStringValue()->c_str(), "");
+  } 
+
+
+  // call the function
+  // return result
+  xqp_boolean icFuncResult;
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, icFuncResult),
+               state);
+
+  STACK_PUSH(true, state);
+
+  STACK_END(state);
+}
+
 
 
 } // namespace zorba

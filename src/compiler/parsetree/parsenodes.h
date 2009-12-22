@@ -1377,7 +1377,8 @@ public:
 };
 
 
-class ICColl : public IntegrityConstraintDecl
+class ICColl
+  : public IntegrityConstraintDecl
 {
 protected:
   rchandle<QName>        theCollName;
@@ -1397,7 +1398,8 @@ public:
 };
 
 
-class ICCollSimpleCheck : public ICColl
+class ICCollSimpleCheck
+  : public ICColl
 {
 protected:
   rchandle<QName>        theCollVarName;
@@ -1424,7 +1426,8 @@ public:
 };
 
 
-class ICCollUniqueKeyCheck : public ICColl
+class ICCollUniqueKeyCheck 
+  : public ICColl
 {
 protected:
   rchandle<QName>        theCollVarName;
@@ -1451,7 +1454,8 @@ public:
 };
 
 
-class ICCollForeachNode : public ICColl
+class ICCollForeachNode 
+  : public ICColl
 {
 protected:
   rchandle<QName>        theCollVarName;
@@ -1477,39 +1481,8 @@ public:
   const exprnode* getExpr() const { return theExprSingle; }
 };
 
-
-/*
-class ICNodeOfType : public IntegrityConstraintDecl
-{
-protected:
-  rchandle<QName>        theNodeVarName;
-  rchandle<parsenode>    theTypeExpr;
-  exprnode*              theExprSingle;
-
-public:
-  ICNodeOfType ( const QueryLoc& loc, 
-                 QName* name, 
-                 QName* nodeVarName,
-                 rchandle<parsenode> typeExpr,
-                 exprnode* exprSingle)
-    :
-    IntegrityConstraintDecl(loc,
-                            name, 
-                            IntegrityConstraintDecl::node_of_type), 
-    theNodeVarName(nodeVarName),
-    theTypeExpr(typeExpr), 
-    theExprSingle(exprSingle) 
-  {
-  }
-  
-  const QName* getNodeVarName() const { return theNodeVarName.getp(); }
-  const parsenode* getTypeExpr() const { return theTypeExpr; }
-  const exprnode* getExpr() const { return theExprSingle; }
-};
-*/
-
-
-class ICForeignKey : public IntegrityConstraintDecl
+class ICForeignKey 
+  : public IntegrityConstraintDecl
 {
 protected:
   rchandle<QName>        theFromCollName;

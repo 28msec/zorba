@@ -1126,6 +1126,20 @@ void PrinterVisitor::endVisit ( const DeactivateICIterator& ) {
 // </DeactivateICIterator>
 
 
+// <CheckICIterator>
+void PrinterVisitor::beginVisit ( const CheckICIterator& a) {
+  thePrinter.startBeginVisit("CheckICIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const CheckICIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </CheckICIterator>
+
+
 // <CreateIndexIterator>
 void PrinterVisitor::beginVisit ( const CreateIndexIterator& a) {
   thePrinter.startBeginVisit("CreateIndexIterator", ++theId);

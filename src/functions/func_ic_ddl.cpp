@@ -50,6 +50,16 @@ PlanIter_t fn_zorba_ddl_deactivate_integrity_constraint::codegen(
   return new DeactivateICIterator(sctx, loc, argv[0]);
 }
 
+PlanIter_t fn_zorba_ddl_check_integrity_constraint::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new CheckICIterator(sctx, loc, argv[0]);
+}
+
 void populate_context_ic_ddl(static_context* sctx)
 {
   DECL(sctx, fn_zorba_ddl_activate_integrity_constraint,
@@ -62,6 +72,12 @@ void populate_context_ic_ddl(static_context* sctx)
       (createQName("http://www.zorba-xquery.com/modules/xqddf","fn-zorba-ddl","deactivate-integrity-constraint"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.EMPTY_TYPE));
+
+
+  DECL(sctx, fn_zorba_ddl_check_integrity_constraint,
+      (createQName("http://www.zorba-xquery.com/modules/xqddf","fn-zorba-ddl","check-integrity-constraint"),
+      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 }
 

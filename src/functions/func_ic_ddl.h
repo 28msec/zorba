@@ -70,6 +70,22 @@ public:
 };
 
 
+//fn-zorba-ddl:check-integrity-constraint
+class fn_zorba_ddl_check_integrity_constraint : public function
+{
+public:
+  fn_zorba_ddl_check_integrity_constraint(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_DDL_CHECK_INTEGRITY_CONSTRAINT_1)
+  {
+  }
+
+  bool requires_dyn_ctx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

@@ -26,6 +26,7 @@
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
 #include "store/api/index.h"
+#include "store/api/ic.h"
 
 #include "system/globalenv.h"
 
@@ -464,7 +465,7 @@ void dynamic_context::unbindIndex(const store::Item* qname)
 void dynamic_context::activateIC(const store::Item_t& qname, 
                                  const store::Item_t& collectionQName)
 {
-  //todo cezar: GENV_STORE.activateIC(qname, collectionQName);
+  GENV_STORE.activateIC(qname, collectionQName);
 }
 
 
@@ -473,14 +474,14 @@ void dynamic_context::activateForeignKeyIC(
     const store::Item_t& fromCollectionQName,
     const store::Item_t& toCollectionQName)
 {
-  //GENV_STORE.activateForeignKeyIC(qname, fromCollectionQName, 
-  //                                toCollectionQName);
+  GENV_STORE.activateForeignKeyIC(qname, fromCollectionQName, 
+                                  toCollectionQName);
 }
 
 
 void dynamic_context::deactivateIC(const store::Item* qname)
 {
-  //GENV_STORE.deactivateIC(qname);
+  GENV_STORE.deactivateIC(qname);
 }
 
 

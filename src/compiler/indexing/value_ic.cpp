@@ -13,23 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <algorithm>
-
-#include "types/typeops.h"
-
-#include "functions/function.h"
 
 #include "compiler/indexing/value_ic.h"
-#include "compiler/api/compilercb.h"
-#include "compiler/expression/flwor_expr.h"
-#include "compiler/expression/fo_expr.h"
-#include "compiler/expression/expr.h"
-#include "compiler/codegen/plan_visitor.h"
-
-#include "runtime/base/plan_iterator.h"
-#include "runtime/indexing/doc_indexer.h"
-
-#include "store/api/item_factory.h"
+#include "context/static_context.h"
+#include "store/api/iterator.h"
+#include "zorbaserialization/class_serializer.h"
 
 
 namespace zorba 
@@ -44,10 +32,12 @@ END_SERIALIZABLE_CLASS_VERSIONS(ValueIC)
 ValueIC::ValueIC(
     static_context* sctx,
     const QueryLoc& loc,
-    const store::Item_t& name)
+    const store::Item_t& name,
+    store::Iterator_t icPlanWrapper)
   :
   theSctx(sctx),
-  theName(name)
+  theName(name),
+  thePlanWrapper(icPlanWrapper)
 { 
 }
   
@@ -112,6 +102,12 @@ const store::Item_t& ValueIC::getFromCollectionName() const
 }
 
 
+/*******************************************************************************
+*******************************************************************************/
+store::Iterator_t ValueIC::getIterator() const 
+{
+  return thePlanWrapper; 
+}
 
 
 /*******************************************************************************

@@ -501,16 +501,11 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token RANGE               "'range'"
 %token EQUALITY            "'equality'"
 
- // %token CHECKED             "'checked'"
- // %token UNCHECKED           "'unchecked'"
- // %token ASYNCHRONOUS        "'asynchronous'"
- // %token SYNCHRONOUS         "'synchronous'"
 %token INTEGRITY           "'integrity'"
 %token CONSTRAINT          "'constraint'"
 %token CHECK               "'check'"
 %token KEY                 "'key'"
 %token FOREACH             "'foreach'"
- // %token TYPE                "'type'"
 %token FOREIGN             "'foreign'"
 %token KEYS                "'keys'"
 
@@ -755,9 +750,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 /* integrityconstraint-related */
 /* --------------------------- */
 %type <node> IntegrityConstraintDecl
- // %type <intval> IntgCnstOptions
- // %type <intval> IntgCnstUnchecked
- // %type <intval> IntgCnstAsynch
 
 /* full-text-related */
 /* ----------------- */
@@ -1798,16 +1790,6 @@ IntegrityConstraintDecl :
                                     static_cast<QName*>($11),
                                     $13);
     }
-//  |
-//    DECLARE INTEGRITY CONSTRAINT QNAME ON NODE DOLLAR QNAME
-//     OF TYPE KindTest CHECK ExprSingle
-//    {
-//      $$ = new ICNodeOfType(LOC(@$),
-//                            static_cast<QName*>($4),
-//                            static_cast<QName*>($8),
-//                            $11,
-//                            $13);
-//    }
   |
     DECLARE INTEGRITY CONSTRAINT QNAME FOREIGN KEY
       FROM COLLECTION QNAME NODE DOLLAR QNAME KEYS PathExpr
@@ -5552,16 +5534,11 @@ KEYWORD :
   | QUEUE { $$ = SYMTAB_PUT ("queue"); }
   | MUTABLE { $$ = SYMTAB_PUT ("mutable"); }
   | READ_ONLY { $$ = SYMTAB_PUT ("read-only"); }
-//  | CHECKED { $$ = SYMTAB_PUT ("checked"); }
-//  | UNCHECKED { $$ = SYMTAB_PUT ("unchecked"); }
-//  | ASYNCHRONOUS { $$ = SYMTAB_PUT ("asynchronous"); }
-//  | SYNCHRONOUS { $$ = SYMTAB_PUT ("synchronous"); }
   | INTEGRITY { $$ = SYMTAB_PUT ("integrity"); }
   | CONSTRAINT { $$ = SYMTAB_PUT ("constraint"); }
   | CHECK { $$ = SYMTAB_PUT ("check"); }
   | KEY { $$ = SYMTAB_PUT ("key"); }
   | FOREACH { $$ = SYMTAB_PUT ("foreach"); }
-//  | TYPE { $$ = SYMTAB_PUT ("type"); }
   | FOREIGN { $$ = SYMTAB_PUT ("foreign"); }
   | KEYS { $$ = SYMTAB_PUT ("keys"); }
     ;

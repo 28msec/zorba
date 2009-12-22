@@ -115,6 +115,46 @@ public:
 };
 
 
+/**
+ * 
+ *  check-integrity-constraint($icName as xs:QName) as ()
+ *
+ *  Calls the runtime check of the $icName integrity constraint.
+ *
+ *  Error XXX is risen if $icName is not activated, i.e. available in 
+ *  dynamic context.
+ *    
+ * Author: Zorba Team
+ */
+class CheckICIterator : public UnaryBaseIterator <CheckICIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(CheckICIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(CheckICIterator,
+    UnaryBaseIterator <CheckICIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (UnaryBaseIterator <CheckICIterator, PlanIteratorState>*)this);
+  }
+
+  CheckICIterator(
+    static_context* sctx,
+    const QueryLoc& loc
+    , PlanIter_t& aChild)
+    : UnaryBaseIterator <CheckICIterator, PlanIteratorState>
+    (sctx, loc, aChild) {}
+
+  virtual ~CheckICIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 }
 #endif
 /*

@@ -19,6 +19,7 @@
 #include "common/shared_types.h"
 
 #include "compiler/expression/expr_utils.h"
+#include "runtime/base/plan_iterator.h"
 #include "store/api/ic.h"
 
 
@@ -49,6 +50,7 @@ private:
   store::Item_t                   theCollectionName;
   store::Item_t                   theToCollectionName;
   store::Item_t                   theFromCollectionName;
+  store::Iterator_t               thePlanWrapper;
 
 public:
   SERIALIZABLE_CLASS(ValueIC)
@@ -56,7 +58,8 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  ValueIC(static_context* sctx, const QueryLoc& loc, const store::Item_t& name);
+  ValueIC(static_context* sctx, const QueryLoc& loc, const store::Item_t& name,
+          store::Iterator_t icPlanWrapper);
 
   ~ValueIC();
 
@@ -68,6 +71,7 @@ public:
   const store::Item_t& getFromCollectionName() const;
 
   store::IC::ICKind getICKind() const { return theICKind; }
+  store::Iterator_t getIterator() const;
 
   //void analyze();
 

@@ -174,6 +174,8 @@ namespace zorba{
 
     class DeactivateICIterator;
 
+    class CheckICIterator;
+
     class CreateIndexIterator;
 
     class DeleteIndexIterator;
@@ -639,6 +641,9 @@ public:
 
     virtual void beginVisit ( const DeactivateICIterator& ) = 0;
     virtual void endVisit   ( const DeactivateICIterator& ) = 0;
+
+    virtual void beginVisit ( const CheckICIterator& ) = 0;
+    virtual void endVisit   ( const CheckICIterator& ) = 0;
 
     virtual void beginVisit ( const CreateIndexIterator& ) = 0;
     virtual void endVisit   ( const CreateIndexIterator& ) = 0;
