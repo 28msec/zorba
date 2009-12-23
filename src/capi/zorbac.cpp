@@ -17,25 +17,25 @@
 #include <zorba/zorba.h>
 #include <zorba/zorbac.h> 
 
-#include "capi/implementation.h"
+#include "capi/cimplementation.h"
 #include "capi/error.h"
 
 #include "store/api/store.h"
 
+using namespace zorba;
+using namespace zorbac;
 
 XQC_Error
 zorba_implementation(XQC_Implementation** impl, void* store)
 {
   try {
-    std::auto_ptr<XQC_Implementation_s> lImpl(new XQC_Implementation_s());
+    Zorba* lZorba =
+      Zorba::getInstance(static_cast<zorba::store::Store*>(store));
 
-    zorba::Zorba* lZorba = 
-      zorba::Zorba::getInstance(static_cast<zorba::store::Store*>(store));
+    std::auto_ptr<CImplementation> lImpl(new CImplementation(lZorba));
 
-    zorbac::Implementation::assign_functions(lImpl.get());
-
-    (*impl) = lImpl.release();
-    (*impl)->data =  lZorba;
+    // Don't call anything that might throw an exception after this point
+    (*impl) = lImpl.release()->getXQC();
     return XQC_NO_ERROR;
   } catch (zorba::ZorbaException &e) {
     return zorbac::Error::convert_xquery_error(e.getErrorCode());

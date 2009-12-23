@@ -13,36 +13,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */ 
-#ifndef ZORBAC_DYNAMIC_CONTEXT_H
-#define ZORBAC_DYNAMIC_CONTEXT_H
+#ifndef ZORBAC_CDYNAMIC_CONTEXT_H
+#define ZORBAC_CDYNAMIC_CONTEXT_H
 
 #include <zorba/zorbac.h>
+#include <zorba/dynamic_context.h>
+
+using namespace zorba;
 
 namespace zorbac {
 
-  class DynamicContext {
+  class CDynamicContext {
     public:
       static XQC_Error 
       set_context_item (XQC_DynamicContext* context, XQC_Sequence* value);
 
       static XQC_Error
-      set_context_document(XQC_DynamicContext* context, const char* doc_uri, FILE* document);
-
-      static XQC_Error
-      set_variable(XQC_DynamicContext* context, const char* qname, XQC_Sequence* value);
-      
-      static XQC_Error
-      set_variable_document(XQC_DynamicContext* context, const char* var_qname, const char* doc_uri, FILE* document);
+      set_variable(XQC_DynamicContext* context, const char* qname,
+        XQC_Sequence* value);
       
       static XQC_Error 
       set_implicit_timezone(XQC_DynamicContext* context, int timezone);
-      
+
+      static XQC_Error
+      set_error_handler(XQC_DynamicContext* context, XQC_ErrorHandler* handler);
+
+      static XQC_Error
+      get_error_handler(const XQC_DynamicContext* context, XQC_ErrorHandler** handler);
+
       static void
       free(XQC_DynamicContext* context);
 
-      static void
-      assign_functions(XQC_DynamicContext* context);
+      CDynamicContext(DynamicContext* ctx, XQC_ErrorHandler* handler);
 
+      ~CDynamicContext();
+
+      static CDynamicContext*
+      get(const XQC_DynamicContext* ctx);
+
+      DynamicContext*
+      getCPP();
+
+      XQC_DynamicContext*
+      getXQC();
+
+    private:
+      XQC_DynamicContext                  theXQCDynamic;
+      DynamicContext*                     theContext;
+      XQC_ErrorHandler*                   theErrorHandler;
   }; /* class DynamicContext */
 
 } /* namespace zorbac */

@@ -13,46 +13,58 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */ 
-#ifndef ZORBAC_IMPLEMENTATION_H
-#define ZORBAC_IMPLEMENTATION_H
+#ifndef ZORBAC_CIMPLEMENTATION_H
+#define ZORBAC_CIMPLEMENTATION_H
 
 #include <zorba/zorbac.h>
+#include <zorba/zorba.h>
+
+using namespace zorba;
 
 namespace zorbac {
 
-  class Implementation
+  class CImplementation
   {
     public:
+      CImplementation(Zorba* aZorba);
+      ~CImplementation();
+
       static XQC_Error
       create_context(XQC_Implementation* impl, XQC_StaticContext** context);
 
-	    static XQC_Error 
+      static XQC_Error 
       prepare(XQC_Implementation* implementation, 
               const char *query_string,
               XQC_StaticContext* context, 
-              XQC_ErrorHandler* handler,
-              XQC_Query **query);
+              XQC_Expression **expr);
 
-	    static XQC_Error 
+      static XQC_Error 
       prepare_file(XQC_Implementation* implementation, 
                    FILE *query_file,
                    XQC_StaticContext* context, 
-                   XQC_ErrorHandler* handler,
-                   XQC_Query **query);
+                   XQC_Expression **expr);
 
       static XQC_Error
       prepare_stream(XQC_Implementation* implementation, 
                      XQC_InputStream* stream,
                      XQC_StaticContext* context, 
-                     XQC_ErrorHandler* handler,
-                     XQC_Query **query);
+                     XQC_Expression **expr);
 
       static void 
       free(XQC_Implementation* implementation);
 
-      static void
-      assign_functions(XQC_Implementation* implementation);
+      static CImplementation*
+      get(const XQC_Implementation* xqc);
 
+      Zorba*
+      getCPP();
+
+      XQC_Implementation*
+      getXQC();
+
+    private:
+      XQC_Implementation theXQCImpl;
+      Zorba*             theZorba;
   };
 } /* namespace zorbac */
 

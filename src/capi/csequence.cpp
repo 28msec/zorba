@@ -13,71 +13,110 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */ 
-#include "capi/sequence.h"
+#include "capi/csequence.h"
 
 #include <cassert>
+#include <string.h>
 #include <zorba/zorba.h>
 #include <zorba/store_consts.h>
 #include <zorbamisc/ns_consts.h>
 #include "capi/error.h"
+#include "capi/capi_util.h"
 
+#define SEQ_TRY                                 \
+  CSequence* me = CSequence::get(seq);          \
+  try
 
-
-#define SEQ_CATCH \
-  catch (ZorbaException &e) {                               \
-    return Error::convert_xquery_error(e.getErrorCode());   \
-  } catch (...) {                                           \
-    return XQC_INTERNAL_ERROR;                              \
-  }
+#define SEQ_CATCH                                                       \
+  catch (QueryException &qe) {                                          \
+    if (me->theErrorHandler) {                                          \
+      me->theErrorHandler->error(me->theErrorHandler,                   \
+        Error::convert_xquery_error(qe.getErrorCode()),                 \
+        ZorbaException::getErrorCodeAsString(qe.getErrorCode()).c_str(), \
+        qe.getDescription().c_str(),                                    \
+        qe.getQueryURI().c_str(),                                       \
+        qe.getLineBegin(),                                              \
+        qe.getColumnBegin());                                           \
+    }                                                                   \
+    return Error::convert_xquery_error(qe.getErrorCode());              \
+  }                                                                     \
+  catch (ZorbaException &e) {                                           \
+    return Error::convert_xquery_error(e.getErrorCode());               \
+  } catch (...) {                                                       \
+    return XQC_INTERNAL_ERROR;                                          \
+  }                                                                     \
+  return XQC_NO_ERROR;
 
 
 using namespace zorba;
 
 namespace zorbac {
 
-  zorba::ItemSequence*
-  getItemSequence(XQC_Sequence* seq)
+  CSequence::CSequence(ResultIterator_t iter, XQC_ErrorHandler* handler)
+    : theIterator(iter), theErrorHandler(handler)
   {
-    zorbac::Sequence* lSeq = static_cast<zorbac::Sequence*>(seq->data);
-    zorba::ItemSequence* lRetval = lSeq->theSequence.get();
-    if ( ! lRetval) {
-      lRetval = lSeq->theItemSequence;
+    memset(&theXQCSeq, 0, sizeof (XQC_Sequence));
+    theXQCSeq.next = CSequence::next;
+    theXQCSeq.item_type = CSequence::item_type;
+    theXQCSeq.string_value = CSequence::string_value;
+    theXQCSeq.integer_value = CSequence::integer_value;
+    theXQCSeq.double_value = CSequence::double_value;
+    theXQCSeq.node_name = CSequence::node_name;
+    theXQCSeq.free = CSequence::free;
+  }
+
+  CSequence::~CSequence()
+  {
+    if (theIterator.get()) {
+      theIterator.get()->close();
     }
-    return lRetval;
+  }
+
+  CSequence*
+  CSequence::get(const XQC_Sequence* xqc)
+  {
+    return (CSequence*)
+      (((char*)xqc) - CLASS_OFFSET(CSequence, theXQCSeq));
+  }
+
+  ResultIterator_t
+  CSequence::getCPPIterator()
+  {
+    // QQQ This won't work if theItemSequence is set!
+    return theIterator;
+  }
+
+  Item
+  CSequence::getCPPItem()
+  {
+    return theItem;
+  }
+
+  XQC_Sequence*
+  CSequence::getXQC()
+  {
+    return &theXQCSeq;
   }
 
   XQC_Error
-  Sequence::next(XQC_Sequence* seq)
+  CSequence::next(XQC_Sequence* seq)
   {
-    zorbac::Sequence* lSeq = static_cast<zorbac::Sequence*>(seq->data);
-    try {
-      lSeq->theStrings.clear();
+    SEQ_TRY {
+      me->theStrings.clear();
 
-      ItemSequence* lIter = getItemSequence(seq);
-      if ( lIter->next(lSeq->theItem) )
-        return XQC_NO_ERROR;
- 
-      return XQC_END_OF_SEQUENCE;
-    } catch (QueryException& qe) {
-      if (lSeq->theErrorHandler) {
-        lSeq->theErrorHandler->error(lSeq->theErrorHandler, Error::convert_xquery_error(qe.getErrorCode()),
-        ZorbaException::getErrorCodeAsString(qe.getErrorCode()).c_str(),
-        qe.getDescription().c_str(),
-        qe.getQueryURI().c_str(),
-        qe.getLineBegin(),
-        qe.getColumnBegin());
+      ResultIterator_t lIter = me->getCPPIterator();
+      if ( ! lIter->next(me->theItem) ) {
+        return XQC_END_OF_SEQUENCE;
       }
-      return Error::convert_xquery_error(qe.getErrorCode());
     }
     SEQ_CATCH;
   }
 
   XQC_Error
-  Sequence::item_type(const XQC_Sequence* seq, XQC_ItemType* type)
+  CSequence::item_type(const XQC_Sequence* seq, XQC_ItemType* type)
   {
-    try {
-      zorbac::Sequence* lSeq = static_cast<zorbac::Sequence*>(seq->data);
-      zorba::Item lItem = lSeq->theItem;
+    SEQ_TRY {
+      Item lItem = me->theItem;
       if (lItem.isNull()) {
         return XQC_NO_CURRENT_ITEM;
       }
@@ -108,7 +147,7 @@ namespace zorbac {
         }
       }
       else /* not isNode() */ {
-        zorba::Item lType = lItem.getType();
+        Item lType = lItem.getType();
         zorba::String lUri = lType.getNamespace();
         if (lUri != XML_SCHEMA_NS) {
           // We can only identify non-derived atomic types
@@ -201,118 +240,91 @@ namespace zorbac {
           lRetval = XQC_YEAR_MONTH_DURATION_TYPE;
         }
         else {
-          // Anything else, there's no XQC_ItemType for. Integer seems
-          // like a hole...
+          // Anything else, there's no XQC_ItemType for.
           return XQC_INTERNAL_ERROR;
         }
 
         (*type) = lRetval;
       }
-      return XQC_NO_ERROR;
     }
     SEQ_CATCH;
   }
 
   XQC_Error
-  Sequence::string_value(const XQC_Sequence* seq, const char** value)
+  CSequence::string_value(const XQC_Sequence* seq, const char** value)
   {
-    try {
-      zorbac::Sequence* lSeq = static_cast<zorbac::Sequence*>(seq->data);
-      if (lSeq->theItem.isNull()) {
+    SEQ_TRY {
+      if (me->theItem.isNull()) {
         return XQC_NO_CURRENT_ITEM;
       }
-      zorba::String lString = lSeq->theItem.getStringValue();
-      lSeq->theStrings.push_back(lString);
+      zorba::String lString = me->theItem.getStringValue();
+      me->theStrings.push_back(lString);
       (*value) = lString.c_str();
-      return XQC_NO_ERROR;
     }
     SEQ_CATCH;
   }
 
   XQC_Error
-  Sequence::integer_value(const XQC_Sequence* seq, int* value)
+  CSequence::integer_value(const XQC_Sequence* seq, int* value)
   {
-    try {
-      zorbac::Sequence* lSeq = static_cast<zorbac::Sequence*>(seq->data);
-      if (lSeq->theItem.isNull()) {
+    SEQ_TRY {
+      if (me->theItem.isNull()) {
         return XQC_NO_CURRENT_ITEM;
       }
-      (*value) = static_cast<int> (lSeq->theItem.getIntValue());
-      return XQC_NO_ERROR;
+      (*value) = static_cast<int> (me->theItem.getIntValue());
     }
     SEQ_CATCH;
   }
 
   XQC_Error
-  Sequence::double_value(const XQC_Sequence* seq, double* value)
+  CSequence::double_value(const XQC_Sequence* seq, double* value)
   {
-    try {
-      zorbac::Sequence* lSeq = static_cast<zorbac::Sequence*>(seq->data);
-      if (lSeq->theItem.isNull()) {
+    SEQ_TRY {
+      if (me->theItem.isNull()) {
         return XQC_NO_CURRENT_ITEM;
       }
-      (*value) = static_cast<double>(lSeq->theItem.getDoubleValue());
-      return XQC_NO_ERROR;
+      (*value) = static_cast<double>(me->theItem.getDoubleValue());
     }
     SEQ_CATCH;
   }
 
   XQC_Error
-  Sequence::node_name(const XQC_Sequence* seq, const char** uri,
-  const char** name)
+  CSequence::node_name
+  (const XQC_Sequence* seq, const char** uri, const char** name)
   {
-    try {
-      zorbac::Sequence* lSeq = static_cast<zorbac::Sequence*>(seq->data);
-      zorba::Item lItem = lSeq->theItem;
+    SEQ_TRY {
+      Item lItem = me->theItem;
       if (lItem.isNull()) {
         return XQC_NO_CURRENT_ITEM;
       }
       if ( ! lItem.isNode() ) {
         return XQC_NOT_NODE;
       }
-      std::auto_ptr<zorba::Item> lNodeName(new zorba::Item());
+      std::auto_ptr<Item> lNodeName(new Item());
       if ( ! lItem.getNodeName(*lNodeName) ) {
         return XQC_INTERNAL_ERROR;
       }
       zorba::String lUri = lNodeName->getNamespace();
-      lSeq->theStrings.push_back(lUri);
+      me->theStrings.push_back(lUri);
       zorba::String lName = lNodeName->getLocalName();
-      lSeq->theStrings.push_back(lName);
+      me->theStrings.push_back(lName);
       (*uri) = lUri.c_str();
       (*name) = lName.c_str();
-
-      return XQC_NO_ERROR;
     }
     SEQ_CATCH;
   }
 
   void
-  Sequence::free(XQC_Sequence* seq)
+  CSequence::free(XQC_Sequence* seq)
   {
     try {
-      zorbac::Sequence* lSeq = static_cast<zorbac::Sequence*>(seq->data);
-      if (lSeq->theSequence) {
-        lSeq->theSequence.get()->close();
-      }
-      delete lSeq;
-      delete seq;
+      CSequence* me = CSequence::get(seq);
+      delete me;
     } catch (ZorbaException&) {
       assert(false);
     } catch (...) {
       assert(false);
     }
-  }
-
-  void
-  Sequence::assign_functions(XQC_Sequence* seq)
-  {
-    seq->next = Sequence::next;
-    seq->item_type = Sequence::item_type;
-    seq->string_value = Sequence::string_value;
-    seq->integer_value = Sequence::integer_value;
-    seq->double_value = Sequence::double_value;
-    seq->node_name = Sequence::node_name;
-    seq->free = Sequence::free;
   }
 
 } /* namespace zorbac */

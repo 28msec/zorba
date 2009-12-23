@@ -21,7 +21,6 @@ namespace zorbac {
 
   XQC_Error
   Error::convert_xquery_error(XQUERY_ERROR error) {
-    printf("Converting error #%d", error);
     switch (error) {
       case XQ_NO_ERROR:
         return XQC_NO_ERROR;

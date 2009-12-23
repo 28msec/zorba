@@ -30,7 +30,7 @@ int
 ccontext_example_1(XQC_Implementation* impl)
 {
 /* QQQ */
-/*   XQC_Query*          lXQuery; */
+/*   XQC_Expression*          lExpr; */
 /*   XQC_DynamicContext* lContext; */
 /*   XQC_ItemFactory    lFactory; */
 /*   FILE*              lOutFile = stdout; */
@@ -39,20 +39,20 @@ ccontext_example_1(XQC_Implementation* impl)
 /*   impl->item_factory(impl, &lFactory); */
 /*   lFactory->create_string(lFactory, "Zorba", &lItem); */
 
-/*   impl->prepare(impl, "(., ., .)", 0, 0, &lXQuery); */
+/*   impl->prepare(impl, "(., ., .)", NULL, &lExpr); */
 
 /*   // get the dynmamic context and set the context item */
-/*   lXQuery->get_dynamic_context(lXQuery, &lContext); */
+/*   lExpr->get_dynamic_context(lExpr, &lContext); */
 
 /*   lContext->set_context_item(lContext, lItem); */
 
 /*   // execute the query */
-/*   lXQuery->execute(lXQuery, lOutFile); */
+/*   lExpr->execute(lExpr, lOutFile); */
 
 /*   // free all resources */
 /*   lContext->free(lContext); */
 /*   lItem->free(lItem); */
-/*   lXQuery->free(lXQuery); */
+/*   lExpr->free(lExpr); */
 /*   lFactory->free(lFactory); */
 
   return 1;
@@ -65,27 +65,28 @@ ccontext_example_1(XQC_Implementation* impl)
 int
 ccontext_example_2(XQC_Implementation* impl)
 {
-  XQC_Query*          lXQuery;
-  XQC_StaticContext*  lContext;
-  FILE*              lOutFile = stdout;
-  const char*        lStringValue;
+/* QQQ no collations */
+/*   XQC_Expression*          lExpr; */
+/*   XQC_StaticContext*  lContext; */
+/*   FILE*              lOutFile = stdout; */
+/*   const char*        lStringValue; */
 
-  impl->create_context(impl, &lContext);
+/*   impl->create_context(impl, &lContext); */
 
-  lContext->set_base_uri(lContext, "http://www.zorba-xquery.com/");
-  lContext->add_collation(lContext, "http://www.zorba-xquery.com/collations/PRIMARY/de/DE");
+/*   lContext->set_base_uri(lContext, "http://www.zorba-xquery.com/"); */
+/*   lContext->add_collation(lContext, "http://www.zorba-xquery.com/collations/PRIMARY/de/DE"); */
 
-  lContext->get_base_uri(lContext, &lStringValue);
-  if ( strcmp (lStringValue, "http://www.zorba-xquery.com/") != 0) return 0;
+/*   lContext->get_base_uri(lContext, &lStringValue); */
+/*   if ( strcmp (lStringValue, "http://www.zorba-xquery.com/") != 0) return 0; */
 
-  impl->prepare(impl, 
-                "fn:compare('Strasse', 'Straße', 'http://www.zorba-xquery.com/collations/PRIMARY/de/DE')",
-                lContext, 0, &lXQuery);
+/*   impl->prepare(impl,  */
+/*                 "fn:compare('Strasse', 'Straße', 'http://www.zorba-xquery.com/collations/PRIMARY/de/DE')", */
+/*                 lContext, &lExpr); */
 
-  lXQuery->execute(lXQuery, lOutFile);
+/*   lExpr->execute(lExpr, NULL, lOutFile); */
 
-  lContext->free(lContext);
-  lXQuery->free(lXQuery);
+/*   lContext->free(lContext); */
+/*   lExpr->free(lExpr); */
   return 1;
 }
 
@@ -97,31 +98,32 @@ ccontext_example_2(XQC_Implementation* impl)
 int
 ccontext_example_3(XQC_Implementation* impl)
 {
-  XQC_Error          lError = XQC_NO_ERROR;
-  XQC_Query*         lXQuery;
-  XQC_StaticContext* lProvidedContext;
-  XQC_StaticContext* lQueryContext;
-  FILE*              lOutFile = stdout;
-  ordering_mode_t    lOrderingMode;
+/* QQQ no get_static_context() */
+/*   XQC_Error          lError = XQC_NO_ERROR; */
+/*   XQC_Expression*         lExpr; */
+/*   XQC_StaticContext* lProvidedContext; */
+/*   XQC_StaticContext* lQueryContext; */
+/*   FILE*              lOutFile = stdout; */
+/*   ordering_mode_t    lOrderingMode; */
 
-  impl->create_context(impl, &lProvidedContext);
+/*   impl->create_context(impl, &lProvidedContext); */
 
-  // get the ordering mode and print it
-  lProvidedContext->get_ordering_mode(lProvidedContext, &lOrderingMode);
-  printf("%s %i", "ordering mode ", lOrderingMode);
+/*   // get the ordering mode and print it */
+/*   lProvidedContext->get_ordering_mode(lProvidedContext, &lOrderingMode); */
+/*   printf("%s %i", "ordering mode ", lOrderingMode); */
   
-  // compile and execute the query and get the new static context after executing the query
-  impl->prepare(impl, "declare ordering unordered; 1", lProvidedContext, 0, &lXQuery);
-  lError = lXQuery->execute(lXQuery, lOutFile);
-  lXQuery->get_static_context(lXQuery, &lQueryContext);
+/*   // compile and execute the query and get the new static context after executing the query */
+/*   impl->prepare(impl, "declare ordering unordered; 1", lProvidedContext, 0, &lExpr); */
+/*   lError = lExpr->execute(lExpr, lOutFile); */
+/*   lExpr->get_static_context(lExpr, &lQueryContext); */
 
-  // get the ordering mode and print it
-  lProvidedContext->get_ordering_mode(lQueryContext, &lOrderingMode);
-  printf("%s %i", "ordering mode ", lOrderingMode);
+/*   // get the ordering mode and print it */
+/*   lProvidedContext->get_ordering_mode(lQueryContext, &lOrderingMode); */
+/*   printf("%s %i", "ordering mode ", lOrderingMode); */
 
-  lProvidedContext->free(lProvidedContext);
-  lQueryContext->free(lQueryContext);
-  lXQuery->free(lXQuery);
+/*   lProvidedContext->free(lProvidedContext); */
+/*   lQueryContext->free(lQueryContext); */
+/*   lExpr->free(lExpr); */
   return 1;
 }
 
@@ -132,8 +134,8 @@ ccontext_example_3(XQC_Implementation* impl)
 int
 ccontext_example_4(XQC_Implementation* impl)
 {
-  XQC_Query*          lXQuery1;
-  XQC_Query*          lXQuery2;
+  XQC_Expression*          lExpr1;
+  XQC_Expression*          lExpr2;
 
   XQC_DynamicContext* lContext;
   XQC_Sequence*       lSequence1;
@@ -142,19 +144,19 @@ ccontext_example_4(XQC_Implementation* impl)
   const char*        lStringValue;
 
   // compile the first query and get its result sequence
-  impl->prepare(impl, "for $i in (1, 2, 3) return $i", 0, 0, &lXQuery1);
+  impl->prepare(impl, "for $i in (1, 2, 3) return $i", NULL, &lExpr1);
 
-  lXQuery1->sequence(lXQuery1, &lSequence1);
+  lExpr1->execute(lExpr1, NULL, &lSequence1);
 
   // compile the sequence query
-  impl->prepare(impl, "declare variable $var external; ($var, $var)", 0, 0, &lXQuery2);
+  impl->prepare(impl, "declare variable $var external; ($var, $var)", NULL, &lExpr2);
 
   // get the dynamic context and set the external variable
-  lXQuery2->get_dynamic_context(lXQuery2, &lContext);
+  lExpr2->create_context(lExpr2, &lContext);
 
   lContext->set_variable(lContext, "var", lSequence1);
 
-  lXQuery2->sequence(lXQuery2, &lSequence2);
+  lExpr2->execute(lExpr2, lContext, &lSequence2);
 
   // iterate over the result two times
   while ( lSequence2->next(lSequence2) != XQC_END_OF_SEQUENCE ) {
@@ -165,11 +167,11 @@ ccontext_example_4(XQC_Implementation* impl)
   // free all resources
 
   lSequence2->free(lSequence2);
-  lXQuery2->free(lXQuery2);
+  lExpr2->free(lExpr2);
   lContext->free(lContext);
 
   lSequence1->free(lSequence1);
-  lXQuery1->free(lXQuery1);
+  lExpr1->free(lExpr1);
 
   return 1;
 }

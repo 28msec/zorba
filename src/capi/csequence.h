@@ -13,16 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */ 
-#ifndef ZORBAC_SEQUENCE_H
-#define ZORBAC_SEQUENCE_H
+#ifndef ZORBAC_CSEQUENCE_H
+#define ZORBAC_CSEQUENCE_H
 
 #include <zorba/zorbac.h>
 #include <zorba/result_iterator.h>
 #include <zorba/item.h>
 
+using namespace zorba;
+
 namespace zorbac {
 
-  class Sequence {
+  class CSequence {
     public:
       static XQC_Error
       next(XQC_Sequence* sequence);
@@ -46,16 +48,31 @@ namespace zorbac {
       static void
       free(XQC_Sequence* sequence);
 
-      static void
-      assign_functions(XQC_Sequence* sequence);
+      CSequence(ResultIterator_t iter, XQC_ErrorHandler* handler);
 
+      ~CSequence();
+
+      static CSequence*
+      get(const XQC_Sequence* sequence);
+
+      ResultIterator_t
+      getCPPIterator();
+
+      Item
+      getCPPItem();
+
+      XQC_Sequence*
+      getXQC();
+
+    private:
+      XQC_Sequence               theXQCSeq;
       // buffer to store strings that we return
       // they are valid until next() is called
-      std::vector<zorba::String> theStrings;
-      zorba::Item             theItem;
-      zorba::ResultIterator_t theSequence;
-      zorba::ItemSequence*    theItemSequence;
-      XQC_ErrorHandler*       theErrorHandler;
+      mutable std::vector<zorba::String> theStrings;
+      Item                       theItem;
+      ResultIterator_t           theIterator;
+      ItemSequence*              theItemSequence;
+      XQC_ErrorHandler*          theErrorHandler;
   }; /* class Sequence */
 
 } /* namespace zorbac */

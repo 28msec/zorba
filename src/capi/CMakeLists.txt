@@ -13,13 +13,13 @@
 # limitations under the License.
 #
 SET(CAPI_SRCS
-    dynamic_context.cpp
+    cdynamic_context.cpp
     error.cpp
-    external_function.cpp
-    external_module.cpp
-    implementation.cpp
-    query.cpp
-    sequence.cpp
-    static_context.cpp
+#    external_function.cpp
+#    external_module.cpp
+    cimplementation.cpp
+    cexpression.cpp
+    csequence.cpp
+    cstatic_context.cpp
     zorbac.cpp
    )

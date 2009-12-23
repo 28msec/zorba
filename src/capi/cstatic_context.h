@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */ 
-#ifndef ZORBAC_STATIC_CONTEXT_H
-#define ZORBAC_STATIC_CONTEXT_H
+#ifndef ZORBAC_CSTATIC_CONTEXT_H
+#define ZORBAC_CSTATIC_CONTEXT_H
 
 #include <vector>
 #include <map>
@@ -23,12 +23,13 @@
 #include <zorba/zorbastring.h>
 #include <zorba/static_context.h>
 
+using namespace zorba;
 
 namespace zorbac {
 
   class ExternalModuleWrapper;
 
-  class StaticContext {
+  class CStaticContext {
 
     public:
       static XQC_Error
@@ -98,14 +99,14 @@ namespace zorbac {
       get_boundary_space_policy(XQC_StaticContext* context, boundary_space_mode_t* mode );
 
       static XQC_Error 
-        set_copy_ns_mode(XQC_StaticContext* context,  
-                         preserve_mode_t preserve,
-                         inherit_mode_t inherit );
+      set_copy_ns_mode(XQC_StaticContext* context,  
+                       preserve_mode_t preserve,
+                       inherit_mode_t inherit );
 
       static XQC_Error
-        get_copy_ns_mode(XQC_StaticContext* context,
-                         preserve_mode_t* aPreserve, 
-                         inherit_mode_t* aInherit );
+      get_copy_ns_mode(XQC_StaticContext* context,
+                       preserve_mode_t* aPreserve, 
+                       inherit_mode_t* aInherit );
 
       static XQC_Error
       set_base_uri(XQC_StaticContext* context, const char* base_uri );
@@ -119,6 +120,11 @@ namespace zorbac {
       static XQC_Error
       get_revalidation_enabled(XQC_StaticContext* context, bool* enabled);
 
+      static XQC_Error
+      set_error_handler(XQC_StaticContext* context, XQC_ErrorHandler* handler);
+
+      static XQC_Error
+      get_error_handler(const XQC_StaticContext* context, XQC_ErrorHandler** handler);
       
       static XQC_Error
       register_external_function(XQC_StaticContext* context, 
@@ -131,16 +137,25 @@ namespace zorbac {
       static void
       free(XQC_StaticContext* context);
 
-      // private use
-      static void
-      assign_functions(XQC_StaticContext* context);
+      CStaticContext(StaticContext_t aContext, XQC_ErrorHandler* handler);
+      ~CStaticContext();
 
-      ~StaticContext();
+      static CStaticContext*
+      get(const XQC_StaticContext* xqc);
 
+      StaticContext_t
+      getCPP();
+
+      XQC_StaticContext*
+      getXQC();
+
+    private:
+      XQC_StaticContext                                       theXQCStatic;
+      StaticContext_t                                         theContext;
       std::vector<zorba::String>                              theStrings;
-      zorba::StaticContext_t                                  theContext;
       std::map<std::string, zorbac::ExternalModuleWrapper*>   theModules;
-  }; /* class StaticContext */
+      XQC_ErrorHandler*                                       theErrorHandler;
+  }; /* class CStaticContext */
 
 } /* namespace zorbac */
 

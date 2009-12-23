@@ -21,6 +21,8 @@
 #include <zorba/zorbac.h>
 #include <simplestore/simplestorec.h>
 
+XQC_Error gError;
+
 // define a callback function that is called if an error occurs
 // during preparing or executing the query
 void
@@ -32,10 +34,23 @@ error_handler(XQC_ErrorHandler* handler,
               unsigned int line,
               unsigned int column)
 {
-  printf("localname: %s\ndescription: %s\nline: %i\ncolumn: %i", 
-          local_name, description, line, column);
+  printf("query_uri: %s\nlocalname: %s\ndescription: %s\nline: %i\ncolumn: %i\n", 
+    query_uri, local_name, description, line, column);
+  // Remember the error code
+  gError = error;
 }
 
+// Convenience function
+XQC_ErrorHandler*
+create_error_handler()
+{
+  XQC_ErrorHandler* lErrorHandler =
+    (XQC_ErrorHandler*) malloc(sizeof(XQC_ErrorHandler));
+  lErrorHandler->error = error_handler;
+  // reset global error code
+  gError = XQC_NO_ERROR;
+  return lErrorHandler;
+}
 
 /**
  * Use an error handler and test it by preparing a syntactically wrong query.
@@ -44,18 +59,22 @@ int
 cerror_example_1(XQC_Implementation* impl)
 {
   XQC_Error         lError = XQC_NO_ERROR;
-  XQC_Query*        lXQuery;
-  XQC_ErrorHandler* lErrorHandler = (XQC_ErrorHandler*) malloc(sizeof(struct XQC_ErrorHandler_s));
-  lErrorHandler->error = error_handler;
+  XQC_Expression*   lExpr;
+  XQC_StaticContext* lCtx;
+  XQC_ErrorHandler* lErrorHandler = create_error_handler();
+
+  // Assign error handler to the static context
+  impl->create_context(impl, &lCtx);
+  lCtx->set_error_handler(lCtx, lErrorHandler);
 
   // compile the query
-  lError = impl->prepare(impl, "for $i in 1, 2, 3", 0, lErrorHandler, &lXQuery);
+  lError = impl->prepare(impl, "for $i in 1, 2, 3", lCtx, &lExpr);
 
   // no need to free the query
   // because it was not successfully created
   free(lErrorHandler);
 
-  return lError == XQC_STATIC_ERROR ? 1 : 0;
+  return gError == XQC_STATIC_ERROR ? 1 : 0;
 }
 
 /**
@@ -64,43 +83,50 @@ cerror_example_1(XQC_Implementation* impl)
 int
 cerror_example_2(XQC_Implementation* impl)
 {
-  XQC_Error         lError = XQC_NO_ERROR;
-  XQC_Query*        lXQuery;
-  FILE*             lOutFile = stdout;
-  XQC_ErrorHandler* lErrorHandler = (XQC_ErrorHandler*) malloc(sizeof(struct XQC_ErrorHandler_s));
-  lErrorHandler->error = error_handler;
+  XQC_Expression*   lExpr;
+  XQC_DynamicContext* lCtx;
+  XQC_ErrorHandler* lErrorHandler = create_error_handler();
+  XQC_Sequence*     lResult;
 
   // compile the query
-  impl->prepare(impl, "1 div 0", 0, 0, &lXQuery);
+  impl->prepare(impl, "1 div 0", NULL, &lExpr);
 
   // set the error handler for handling errors
   // during query execution
-  lXQuery->set_error_handler(lXQuery, lErrorHandler);
+  lExpr->create_context(lExpr, &lCtx);
+  lCtx->set_error_handler(lCtx, lErrorHandler);
 
-  // execute it and print the result on standard out
-  lError = lXQuery->execute(lXQuery, lOutFile);
-
-  // release the query
-  lXQuery->free(lXQuery);
+  // execute it and iterate results
+  lExpr->execute(lExpr, lCtx, &lResult);
+  while (lResult->next(lResult) == XQC_NO_ERROR);
+  
+  // release all resources
+  lResult->free(lResult);
+  lExpr->free(lExpr);
   free(lErrorHandler);
 
-  return lError == XQC_DYNAMIC_ERROR ? 1 : 0;
+  return gError == XQC_DYNAMIC_ERROR ? 1 : 0;
 }
 
 int
 cerror_example_3(XQC_Implementation* impl) 
 {
-  XQC_Error      lError = XQC_NO_ERROR;
-  XQC_Query*     lXQuery;
-  const char*    lStringValue;
-  XQC_Sequence*  lResult;
-  XQC_ErrorHandler* lErrorHandler = (XQC_ErrorHandler*) malloc(sizeof(struct XQC_ErrorHandler_s));
-  lErrorHandler->error = error_handler;
+  XQC_Error       lError = XQC_NO_ERROR;
+  XQC_Expression* lExpr;
+  XQC_StaticContext* lCtx;
+  const char*     lStringValue;
+  XQC_Sequence*   lResult;
+  XQC_ErrorHandler* lErrorHandler = create_error_handler();
+
+  // Assign error handler to the static context
+  impl->create_context(impl, &lCtx);
+  lCtx->set_error_handler(lCtx, lErrorHandler);
 
   // compile the query and get the result as a sequence
-  lError = impl->prepare(impl, "for $i in (3, 2, 1, 0) return 3 div $i", 0, lErrorHandler, &lXQuery);
+  lError = impl->prepare(impl, "for $i in (3, 2, 1, 0) return 3 div $i",
+    lCtx, &lExpr);
 
-  lXQuery->sequence(lXQuery, &lResult);
+  lExpr->execute(lExpr, NULL, &lResult);
 
   // an error is reported during the last for iteration
   // the error callback function is called and the loop terminates
@@ -112,9 +138,9 @@ cerror_example_3(XQC_Implementation* impl)
   // release all aquired resources
   free(lErrorHandler);
   lResult->free(lResult);
-  lXQuery->free(lXQuery);
+  lExpr->free(lExpr);
 
-  return 1;
+  return gError == XQC_DYNAMIC_ERROR ? 1 : 0;
 }
 
 int

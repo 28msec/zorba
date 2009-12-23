@@ -18,6 +18,13 @@
 
 #include <iostream>
 
+#if defined(_MSC_VER)
+#include <BaseTsd.h>
+#define ssize_t SSIZE_T
+#endif
+
+#define CLASS_OFFSET(class, impl) (((ssize_t)&(((class*)1000)->impl)) - 1000)
+
 namespace zorbac {
 
   class CAPIUtil {

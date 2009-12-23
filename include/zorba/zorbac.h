@@ -23,7 +23,7 @@
 
 typedef struct XQC_Implementation_s XQC_Implementation;
 
-typedef struct XQC_Query_s XQC_Query;
+typedef struct XQC_Expression_s XQC_Expression;
 
 typedef struct XQC_StaticContext_s XQC_StaticContext;
 
@@ -157,9 +157,9 @@ extern "C" {
     (*create_context)(XQC_Implementation *impl, XQC_StaticContext **context);
 
     /**
-     * Prepares a query from a string, returning an ::XQC_Query object. 
-     * The user is responsible for freeing the ::XQC_Query object
-     * returned by calling XQC_Query::free().
+     * Prepares a query from a string, returning an ::XQC_Expression object. 
+     * The user is responsible for freeing the ::XQC_Expression object
+     * returned by calling XQC_Expression::free().
      *
      * \param implementation The XQC_Implementation that this function pointer is a member of.
      * \param string The query to prepare as a string.
@@ -177,14 +177,13 @@ extern "C" {
     (*prepare)(XQC_Implementation* implementation, 
                const char* query_string,
                XQC_StaticContext* context, 
-               XQC_ErrorHandler* handler, 
-               XQC_Query** query);
+               XQC_Expression** query);
 
     /**
-     * Prepares a query from a FILE pointer, returning an ::XQC_Query object.
+     * Prepares a query from a FILE pointer, returning an ::XQC_Expression object.
      * The user remains responsible for closing the file after parsing. 
-     * The user is responsible for freeing the ::XQC_Query object returned by
-     * calling XQC_Query::free().
+     * The user is responsible for freeing the ::XQC_Expression object returned by
+     * calling XQC_Expression::free().
      *
      * \param implementation The XQC_Implementation that this function pointer is a member of.
      * \param file The file containing the query to prepare.
@@ -202,13 +201,12 @@ extern "C" {
     (*prepare_file)(XQC_Implementation* implementation, 
                     FILE* query_file,
                     XQC_StaticContext* context, 
-                    XQC_ErrorHandler* handler,
-                    XQC_Query** query);
+                    XQC_Expression** query);
 
     /**
-     * Prepares a query from a ::XQC_InputStream, returning an ::XQC_Query object.
-     * The user is responsible for freeing the ::XQC_Query object returned by
-     * calling XQC_Query::free().
+     * Prepares a query from a ::XQC_InputStream, returning an ::XQC_Expression object.
+     * The user is responsible for freeing the ::XQC_Expression object returned by
+     * calling XQC_Expression::free().
      *
      * \param implementation The XQC_Implementation that this function pointer is a member of.
      * \param stream The input stream returning the query to prepare.
@@ -227,8 +225,7 @@ extern "C" {
     (*prepare_stream)(XQC_Implementation* implementation, 
                       XQC_InputStream* stream,
                       XQC_StaticContext* context, 
-                      XQC_ErrorHandler* handler,
-                      XQC_Query** query);
+                      XQC_Expression** query);
 
     /**
      * Called to free the resources associated with the XQC_Implementation.
@@ -238,10 +235,6 @@ extern "C" {
     void
     (*free)(XQC_Implementation *implementation);
 
-    /**
-     * for internal use only
-     */
-    void* data;
   };
 
   /**
@@ -255,7 +248,7 @@ extern "C" {
    * The ::XQC_Expression object should be freed before the ::XQC_Implementation object
    * that created it.
    */
-  struct XQC_Query_s 
+  struct XQC_Expression_s 
   {
     /**
      * This function returns the dynamic context that belongs to this query and
@@ -272,105 +265,15 @@ extern "C" {
      * \retval ::XQP0019_INTERNAL_ERROR
      */
     XQC_Error
-    (*get_dynamic_context)(XQC_Query *query, XQC_DynamicContext** context);
+    (*create_context)(XQC_Expression *query, XQC_DynamicContext** context);
 
     /**
-     * This function returns the static context that belongs to this query.
-     * The static context is only available if the query has been compiled, otherwise
-     * an error is reported.
-     * The context has all the components and values that have been set by the either
-     * the static context that was passed when creating the query and and those that
-     * were set in the prolog of the query.
-     * Note that after compilation of the query the static context is a read only structure.
-     * The user is responsible for freeing the ::XQC_StaticContext object returned by calling
-     * XQC_StaticContext::free().
-     *
-     * \retval ::XQC_NO_ERROR
-     * \retval ::XQP0019_INTERNAL_ERROR
-     */
-    XQC_Error
-    (*get_static_context)(XQC_Query*, XQC_StaticContext **context);
-
-    /**
-     * Executes the query represented by the XQC_Query object and prints the serialized XML
-     * output to the given FILE pointer. The user remains responsible for closing
-     * the file.
-     *
-     * \param query The XQC_Query that this function pointer is a member of.
-     * \param file The FILE pointer to print the serialized result to.
-     *
-     * \retval ::XQC_NO_ERROR
-     * \retval ::XQP0019_INTERNAL_ERROR
-     * \retval ::API0023_CANNOT_SERIALIZE_UPDATE_QUERY
-     * \retval An XQuery dynamic or type error (e.g. XPDY*, XPTY*)
-     */
-    XQC_Error 
-    (*execute)(XQC_Query* query, FILE* file);
-
-    /**
-     * Executes the query represented by the XQC_Query object and prints the serialized
-     * output to the given FILE pointer. The target format of the serialization is 
-     * specified by the passed serializer options.
-     *
-     * \param query The XQC_Query that this function pointer is a member of.
-     * \param options The Zorba_SerializerOptions_t that specifies serializer options.
-     * \param file The FILE pointer to print the serialized result to.
-     *
-     * \retval ::XQC_NO_ERROR
-     * \retval ::XQP0019_INTERNAL_ERROR
-     * \retval ::API0023_CANNOT_SERIALIZE_UPDATE_QUERY
-     * \retval An XQuery dynamic or type error (e.g. XPDY*, XPTY*)
-     */
-    XQC_Error
-    (*serialize_file)(XQC_Query* query, const Zorba_SerializerOptions_t* options, FILE* file); 
-
-    /**
-     * Executes the query represented by the XQC_Query object and writes the serialized
-     * output to the given ::XQC_OutputStream. The target format of the serialization is 
-     * specified by the passed serializer options.
-     *
-     * \param query The XQC_Query that this function pointer is a member of.
-     * \param options The Zorba_SerializerOptions_t that specifies serializer options.
-     * \param file The XQC_OutputStream to print the serialized result to.
-     *
-     * \retval ::XQC_NO_ERROR
-     * \retval ::XQP0019_INTERNAL_ERROR
-     * \retval ::API0023_CANNOT_SERIALIZE_UPDATE_QUERY
-     * \retval An XQuery dynamic or type error (e.g. XPDY*, XPTY*)
-     */
-    XQC_Error
-    (*serialize_stream)(XQC_Query* query, const Zorba_SerializerOptions_t* options, XQC_OutputStream stream); 
-
-    /** 
-     * Checks if the query is an updating query.
-     *
-     * \param query The XQC_Query that this function pionter is a member of.
-     *
-     * \retval 1 if query is updating query, else 0
-     */
-    int
-    (*is_update_query)(XQC_Query* query);
-
-    /**
-     * Applies the updates declared in the query represented by the XQC_Query object.
-     *
-     * \param query The XQC_Query that this function pointer is a member of.
-     *
-     * \retval ::XQC_NO_ERROR
-     * \retval ::XQP0019_INTERNAL_ERROR
-     * \retval ::API0023_CANNOT_SERIALIZE_UPDATE_QUERY
-     * \retval An XQuery dynamic or type error (e.g. XPDY*, XPTY*)
-     */
-    XQC_Error 
-    (*apply_updates)(XQC_Query* query);
-
-    /**
-     * Executes the query represented by the XQC_Query object.
+     * Executes the query represented by the XQC_Expression object.
      * An ::XQC_Sequence object is returned which can be used to examine the results 
      * of the query execution. The user is responsible for freeing the
      * ::XQC_Sequence object returned by calling XQC_Sequence::free().
      *
-     * \param query The XQC_Query that this function pointer is a member of.
+     * \param query The XQC_Expression that this function pointer is a member of.
      * \param[out] sequence The newly created XQC_Sequence object.
      *
      * \retval ::XQC_NO_ERROR
@@ -379,29 +282,16 @@ extern "C" {
      * \retval An XQuery dynamic or type error (e.g. XPDY*, XPTY*)
      */
     XQC_Error 
-    (*sequence)(XQC_Query* query, XQC_Sequence** sequence);
+    (*execute)(XQC_Expression* query, XQC_DynamicContext* ctx, XQC_Sequence** sequence);
 
     /**
-     * Sets the error handler whose <code>error</code> function is called
-     * if an error occurs when executing the query.
-     * The user keeps the ownership of this object and is required to freeing
-     * the aquired resources.
-     */
-    void
-    (*set_error_handler)(XQC_Query* query, XQC_ErrorHandler* handler);
-
-    /**
-     * Called to free the resources associated with the XQC_Query.
+     * Called to free the resources associated with the XQC_Expression.
      * 
-     * \param query The XQC_Query that this function pointer is a member of.
+     * \param query The XQC_Expression that this function pointer is a member of.
      */
     void
-    (*free)(XQC_Query* query);
+    (*free)(XQC_Expression* query);
 
-    /**
-     * for internal use only
-     */
-    void* data;
   };
 
   /**
@@ -761,6 +651,9 @@ extern "C" {
     XQC_Error
     (*get_base_uri)(XQC_StaticContext* context, const char** base_uri);
 
+    XQC_Error (*set_error_handler)(XQC_StaticContext *context, XQC_ErrorHandler *handler);
+    XQC_Error (*get_error_handler)(const XQC_StaticContext *context, XQC_ErrorHandler **handler);
+
     /**
      * Register an external function that can be called within a query.
      * One external function consists of three function parameters, i.e. init, next, and release.
@@ -795,10 +688,6 @@ extern "C" {
     void
     (*free)(XQC_StaticContext* context);
 
-    /**
-     * for internal use only
-     */
-    void* data;
   };
 
   /**
@@ -806,7 +695,7 @@ extern "C" {
    * time the query is executed.  It contains the information that is defined in the %XQuery 
    * specification (see http://www.w3.org/TR/xquery/#eval_context).
    * An instance of this struct can be retrieved by calling the <code>get_dynamic_context</code> function
-   * of an ::XQC_Query object.
+   * of an ::XQC_Expression object.
    */
   struct XQC_DynamicContext_s 
   {
@@ -830,22 +719,6 @@ extern "C" {
     XQC_Error (*set_context_item)(XQC_DynamicContext *context, XQC_Sequence *value);
 
     /**
-     * Sets the context item to the document given by the FILE pointer.
-     * The provided document is accessible by the provided doc_uri.
-     *
-     * \param context The XQC_DynamicContext that this function pointer is a member of
-     * \param doc_uri The URI referencing the given document
-     * \param document The document to which the context item should be set as a FILE pointer.
-     *
-     * \retval ::XQC_NO_ERROR
-     * \retval ::XQP0016_LOADER_IO_ERROR,
-     * \retval ::XQP0017_LOADER_PARSING_ERROR, 
-     * \retval ::XQC_INTERNAL_ERROR
-     */
-    XQC_Error
-    (*set_context_document)(XQC_DynamicContext* context, const char* doc_uri, FILE* document);
-
-    /**
      * Sets the external variable to the sequence given.
      *
      * \param context The XQC_DynamicContext that this function pointer is a member of
@@ -859,22 +732,6 @@ extern "C" {
     (*set_variable)(XQC_DynamicContext* context, const char* qname, XQC_Sequence* value);
 
     /**
-     * Sets the external variable to the document given by the FILE pointer.
-     *
-     * \param context The XQC_DynamicContext that this function pointer is a member of
-     * \param var_qname The qname of the external variable to set
-     * \param doc_uri The URI referencing the given document
-     * \param document The document to which the context item should be set as a FILE pointer.
-     *
-     * \retval ::XQC_NO_ERROR
-     * \retval ::XQP0016_LOADER_IO_ERROR,
-     * \retval ::XQP0017_LOADER_PARSING_ERROR, 
-     * \retval ::XQC_INTERNAL_ERROR
-     */
-    XQC_Error
-    (*set_variable_document)(XQC_DynamicContext* context, const char* var_qname, const char* doc_uri, FILE* document);
-
-    /**
      * Sets the implicit timezone parameter.
      *
      * \param context The XQC_DynamicContext that this function pointer is a member of
@@ -885,6 +742,12 @@ extern "C" {
      */
     XQC_Error 
     (*set_implicit_timezone)(XQC_DynamicContext* context, int timezone);
+
+      
+    XQC_Error
+    (*set_error_handler)(XQC_DynamicContext *context, XQC_ErrorHandler *handler);
+    XQC_Error
+    (*get_error_handler)(const XQC_DynamicContext *context, XQC_ErrorHandler **handler);
 
     /** 
      * Defines the value of the default collection that is used when calling the
@@ -906,10 +769,6 @@ extern "C" {
     void
     (*free)(XQC_DynamicContext* context);
 
-    /**
-     * for internal use only
-     */
-    void* data;
   };
 
 
@@ -1018,10 +877,6 @@ extern "C" {
     void
     (*free)(XQC_Sequence* sequence);
 
-    /**
-     * for internal use only
-     */
-    void* data;
   };
 
   /**
@@ -1100,7 +955,7 @@ extern "C" {
   /**
    * The ::XQC_ErrorHandler struct is designed to be populated by users for the purpose
    * of collecting more detailed error messages from an XQC implementation. An XQC_ErrorHandler
-   * can be set for a query using the XQC_Query::set_error_handler() function.
+   * can be set for a query using the XQC_Expression::set_error_handler() function.
    *
    * The XQC_ErrorHandler struct has no free() function pointer because the user remains 
    * responsible for freeing the resources associated with this struct.

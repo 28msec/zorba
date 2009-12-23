@@ -29,24 +29,25 @@
 int
 cserialization_example_1(XQC_Implementation* impl)
 {
-  XQC_Query*      lXQuery;
-  FILE*          lOutFile = stdout;
-  Zorba_SerializerOptions_t* lSerOptions = Zorba_SerializerOptions_default();
+/* TODO implement serialization API for C */
+/*   XQC_Query*      lXQuery; */
+/*   FILE*          lOutFile = stdout; */
+/*   Zorba_SerializerOptions_t* lSerOptions = Zorba_SerializerOptions_default(); */
 
-  // compile the query
-  impl->prepare(impl, "(1+2, 3, 4)", 0, 0, &lXQuery);
+/*   // compile the query */
+/*   impl->prepare(impl, "(1+2, 3, 4)", 0, 0, &lXQuery); */
 
-  // Set serialization method to html
-  Zorba_SerializerOptions_set(lSerOptions, "method", "html");
+/*   // Set serialization method to html */
+/*   Zorba_SerializerOptions_set(lSerOptions, "method", "html"); */
 
-  // execute it and print the result on standard out
-  lXQuery->serialize_file(lXQuery, lSerOptions, lOutFile);
+/*   // execute it and print the result on standard out */
+/*   lXQuery->serialize_file(lXQuery, lSerOptions, lOutFile); */
 
-  // release the serialization options
-  Zorba_SerializerOptions_free(lSerOptions);
+/*   // release the serialization options */
+/*   Zorba_SerializerOptions_free(lSerOptions); */
   
-  // release the query
-  lXQuery->free(lXQuery);
+/*   // release the query */
+/*   lXQuery->free(lXQuery); */
 
   return 1;
 }
@@ -58,24 +59,25 @@ cserialization_example_1(XQC_Implementation* impl)
 int
 cserialization_example_2(XQC_Implementation* impl)
 {
-  XQC_Query*      lXQuery;
-  FILE*          lOutFile = stdout;
-  Zorba_SerializerOptions_t* lSerOptions = Zorba_SerializerOptions_default();
+/* TODO implement serialization API for C */
+/*   XQC_Query*      lXQuery; */
+/*   FILE*          lOutFile = stdout; */
+/*   Zorba_SerializerOptions_t* lSerOptions = Zorba_SerializerOptions_default(); */
 
-  // compile the query
-  impl->prepare(impl, "(1+2, 3, 4)", 0, 0, &lXQuery);
+/*   // compile the query */
+/*   impl->prepare(impl, "(1+2, 3, 4)", 0, 0, &lXQuery); */
 
-  // Omit the <?xml?> declaration
-  Zorba_SerializerOptions_set(lSerOptions, "omit-xml-declaration", "yes");
+/*   // Omit the <?xml?> declaration */
+/*   Zorba_SerializerOptions_set(lSerOptions, "omit-xml-declaration", "yes"); */
 
-  // execute it and print the result on standard out
-  lXQuery->serialize_file(lXQuery, lSerOptions, lOutFile);
+/*   // execute it and print the result on standard out */
+/*   lXQuery->serialize_file(lXQuery, lSerOptions, lOutFile); */
   
-  // release the serialization options
-  Zorba_SerializerOptions_free(lSerOptions);
+/*   // release the serialization options */
+/*   Zorba_SerializerOptions_free(lSerOptions); */
 
-  // release the query
-  lXQuery->free(lXQuery);
+/*   // release the query */
+/*   lXQuery->free(lXQuery); */
 
   return 1;
 }
@@ -97,20 +99,21 @@ free_writer(XQC_OutputStream stream)
 int
 cserialization_example_3(XQC_Implementation* impl)
 {
-  XQC_Query*      lXQuery;
-  XQC_OutputStream lStream = (XQC_OutputStream) malloc(sizeof(struct XQC_OutputStream_s));
+/* TODO implement serialization API for C */
+/*   XQC_Query*      lXQuery; */
+/*   XQC_OutputStream lStream = (XQC_OutputStream) malloc(sizeof(struct XQC_OutputStream_s)); */
 
-  lStream->write  = stream_writer;
-  lStream->free   = free_writer;
+/*   lStream->write  = stream_writer; */
+/*   lStream->free   = free_writer; */
 
-  // compile the query
-  impl->prepare(impl, "(1+2, 3, 4)", 0, 0, &lXQuery);
+/*   // compile the query */
+/*   impl->prepare(impl, "(1+2, 3, 4)", 0, 0, &lXQuery); */
 
-  // execute it and stream the result to the supplied XQC_OutputStream
-  lXQuery->serialize_stream(lXQuery, 0, lStream);
+/*   // execute it and stream the result to the supplied XQC_OutputStream */
+/*   lXQuery->serialize_stream(lXQuery, 0, lStream); */
 
-  // release the query
-  lXQuery->free(lXQuery);
+/*   // release the query */
+/*   lXQuery->free(lXQuery); */
 
   return 1;
 }

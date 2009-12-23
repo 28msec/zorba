@@ -29,17 +29,18 @@
 int
 example_1(XQC_Implementation* impl)
 {
-  XQC_Query*      lXQuery;
-  FILE*          lOutFile = stdout;
+/* QQQ this example is redundant now since the execute-to-stream functionality is gone */
+/*   XQC_Expression*   lExpr; */
+/*   FILE*             lOutFile = stdout; */
 
-  // compile the query
-  impl->prepare(impl, "(1+2, 3, 4)", 0, 0, &lXQuery);
+/*   // compile the query */
+/*   impl->prepare(impl, "(1+2, 3, 4)", NULL, &lExpr); */
 
-  // execute it and print the result on standard out
-  lXQuery->execute(lXQuery, lOutFile);
+/*   // execute it and print the result on standard out */
+/*   lExpr->execute(lExpr, NULL, lOutFile); */
 
-  // release the query
-  lXQuery->free(lXQuery);
+/*   // release the query */
+/*   lExpr->free(lExpr); */
 
   return 1;
 }
@@ -53,14 +54,14 @@ int
 example_2(XQC_Implementation* impl) 
 {
   XQC_Error      lError = XQC_NO_ERROR;
-  XQC_Query*     lXQuery;
+  XQC_Expression*     lExpr;
   const char*    lStringValue;
   XQC_Sequence*   lResult;
 
   // compile the query and get the result as a sequence
-  lError = impl->prepare(impl, "for $i in 1 to 10 return $i", 0, 0, &lXQuery);
+  lError = impl->prepare(impl, "for $i in 1 to 10 return $i", NULL, &lExpr);
 
-  lXQuery->sequence(lXQuery, &lResult);
+  lExpr->execute(lExpr, NULL, &lResult);
 
   while ( lResult->next(lResult) == XQC_NO_ERROR ) {
     lResult->string_value(lResult, &lStringValue);
@@ -69,7 +70,7 @@ example_2(XQC_Implementation* impl)
 
   // release all aquired resources
   lResult->free(lResult);
-  lXQuery->free(lXQuery);
+  lExpr->free(lExpr);
 
   return 1;
 }
@@ -81,10 +82,10 @@ int
 example_3(XQC_Implementation* impl)
 {
   XQC_Error    lError = XQC_NO_ERROR;
-  XQC_Query*   lXQuery;
+  XQC_Expression*   lExpr;
 
   // compile the query
-  lError = impl->prepare(impl, "for $x in (1, 2, 3, 4)", 0, 0, &lXQuery);
+  lError = impl->prepare(impl, "for $x in (1, 2, 3, 4)", NULL, &lExpr);
   printf("%d", lError);
   return lError == XQC_STATIC_ERROR ? 1 : 0;
 }
@@ -96,17 +97,19 @@ int
 example_4(XQC_Implementation* impl)
 {
   XQC_Error      lError = XQC_NO_ERROR;
-  XQC_Query*     lXQuery;
-  FILE*          lOutFile = stdout;
+  XQC_Expression*     lExpr;
+  XQC_Sequence*       lResult;
 
   // compile the query
-  impl->prepare(impl, "1 div 0", 0, 0, &lXQuery);
+  impl->prepare(impl, "1 div 0", NULL, &lExpr);
 
-  // execute it and print the result on standard out
-  lError = lXQuery->execute(lXQuery, lOutFile);
+  // execute it and iterate
+  lError = lExpr->execute(lExpr, NULL, &lResult);
+  while ( (lError = lResult->next(lResult)) == XQC_NO_ERROR);
 
-  // release the query
-  lXQuery->free(lXQuery);
+  // release resources
+  lResult->free(lResult);
+  lExpr->free(lExpr);
 
   return lError == XQC_DYNAMIC_ERROR ? 1 : 0;
 
@@ -130,20 +133,23 @@ free_stream(XQC_InputStream* stream)
 int
 example_5(XQC_Implementation* impl)
 {
-  XQC_Query*       lXQuery;
-  FILE*            lOutFile = stdout;
-  XQC_InputStream* lStream = (XQC_InputStream*) malloc(sizeof(struct XQC_InputStream_s));
+  XQC_Expression*       lExpr;
+  XQC_InputStream* lStream = (XQC_InputStream*) malloc(sizeof(XQC_InputStream));
+  XQC_Sequence*    lResult;
+
   lStream->read = read_stream;
   lStream->free = free_stream;
 
   // compile the query
-  impl->prepare_stream(impl, lStream, 0, 0, &lXQuery);
+  impl->prepare_stream(impl, lStream, NULL, &lExpr);
 
-  // execute it and print the result on standard out
-  lXQuery->execute(lXQuery, lOutFile);
+  // execute it and iterate
+  lExpr->execute(lExpr, NULL, &lResult);
+  while (lResult->next(lResult) == XQC_NO_ERROR);
 
-  // release the query
-  lXQuery->free(lXQuery);
+  // release resources
+  lResult->free(lResult);
+  lExpr->free(lExpr);
 
   // the stream is freed by calling the free_stream function after the query has been prepared
 
