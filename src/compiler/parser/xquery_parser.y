@@ -1747,14 +1747,14 @@ IndexKeySpec :
     {
       $$ = new IndexKeySpec(LOC(@$),
                             $1,
-                            dynamic_cast<SequenceType*>($3),
+                            dynamic_cast<SingleType*>($3),
                             NULL);
     }
   | PathExpr AS SingleType OrderModifier
     {
       $$ = new IndexKeySpec(LOC(@$),
                             $1,
-                            dynamic_cast<SequenceType*>($3),
+                            dynamic_cast<SingleType*>($3),
                             dynamic_cast<OrderModifierPN*>($4));
     }
   ;

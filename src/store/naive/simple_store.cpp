@@ -460,9 +460,12 @@ store::Iterator_t SimpleStore::listIndexNames()
 }
 
 
+/*******************************************************************************
 
-store::IC_t SimpleStore::activateIC(const store::Item_t& icQName, 
-                                    const store::Item_t& collectionQName)
+********************************************************************************/
+store::IC_t SimpleStore::activateIC(
+    const store::Item_t& icQName, 
+    const store::Item_t& collectionQName)
 {
   ZORBA_ASSERT(icQName != NULL);
 
@@ -481,9 +484,11 @@ store::IC_t SimpleStore::activateIC(const store::Item_t& icQName,
   return ic;
 }
 
-store::IC_t SimpleStore::activateForeignKeyIC(const store::Item_t& icQName, 
-                                   const store::Item_t& fromCollectionQName,
-                                   const store::Item_t& toCollectionQName)
+
+store::IC_t SimpleStore::activateForeignKeyIC(
+    const store::Item_t& icQName, 
+    const store::Item_t& fromCollectionQName,
+    const store::Item_t& toCollectionQName)
 {
   ZORBA_ASSERT(icQName != NULL);
 
@@ -502,6 +507,7 @@ store::IC_t SimpleStore::activateForeignKeyIC(const store::Item_t& icQName,
   return ic;
 }
 
+
 void SimpleStore::deactivateIC(const store::Item* icQName)
 {
   ZORBA_ASSERT(icQName != NULL);
@@ -514,10 +520,12 @@ void SimpleStore::deactivateIC(const store::Item* icQName)
   theICs.remove(icQName);
 }
 
+
 store::Iterator_t SimpleStore::listActiveICNames()
 {
   return new NameIterator<ICSet>(theICs);
 }
+
 
 store::IC* SimpleStore::getIC(const store::Item* icQName)
 {
@@ -529,8 +537,8 @@ store::IC* SimpleStore::getIC(const store::Item* icQName)
 
 /*******************************************************************************
   Create a collection with a given QName and return an rchandle to the new
-  collection object. If a collection with the given QName exists already, return
-  NULL and register an error.
+  collection object. If a collection with the given QName exists already, raise
+  an error.
 ********************************************************************************/
 store::Collection_t SimpleStore::createCollection(store::Item_t& aName)
 {
@@ -545,7 +553,7 @@ store::Collection_t SimpleStore::createCollection(store::Item_t& aName)
 
   if (!inserted)
   {
-    ZORBA_ERROR_PARAM(API0005_COLLECTION_ALREADY_EXISTS, lName->getStringValue(), "");
+    ZORBA_ERROR_PARAM(STR0008_COLLECTION_ALREADY_EXISTS, lName->getStringValue(), "");
     return NULL;
   }
 
@@ -569,7 +577,7 @@ store::Collection_t SimpleStore::createUriCollection(const xqpStringStore_t& uri
 
   if (!inserted)
   {
-    ZORBA_ERROR_PARAM(API0005_COLLECTION_ALREADY_EXISTS, uri->c_str(), "");
+    ZORBA_ERROR_PARAM(STR0008_COLLECTION_ALREADY_EXISTS, uri->c_str(), "");
     return 0;
   }
 
@@ -618,7 +626,7 @@ void SimpleStore::deleteCollection(const store::Item* aName)
 
   if (!theCollections.remove(aName)) 
   {
-    ZORBA_ERROR_PARAM(API0006_COLLECTION_NOT_FOUND, aName->getStringValue(), "");
+    ZORBA_ERROR_PARAM(STR0009_COLLECTION_NOT_FOUND, aName->getStringValue(), "");
   }
 }
 
@@ -632,7 +640,7 @@ void SimpleStore::deleteUriCollection(const xqpStringStore_t& uri)
 
   if (!deleted) 
   {
-    ZORBA_ERROR_PARAM(API0006_COLLECTION_NOT_FOUND, uri->c_str(), "");
+    ZORBA_ERROR_PARAM(STR0009_COLLECTION_NOT_FOUND, uri->c_str(), "");
   }
 }
 

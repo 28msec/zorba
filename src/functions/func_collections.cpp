@@ -176,7 +176,7 @@ void populate_context_collections(static_context* sctx)
   DECL(sctx, fn_zorba_ddl_collection,
       (createQName("http://www.zorba-xquery.com/modules/xqddf","fn-zorba-ddl","collection"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
-      GENV_TYPESYSTEM.DOCUMENT_UNTYPED_TYPE_STAR));
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
 
   DECL(sctx, fn_zorba_ddl_index_of,

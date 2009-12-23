@@ -136,17 +136,13 @@ DEF_ERR_CODE(XTDE1340, XTDE1340, "It is a non-recoverable dynamic error if the s
 DEF_ERR_CODE(XTDE1350, XTDE1350, "It is a non-recoverable dynamic error if a component specifier within the picture refers to components that are not available in the given type of $value.")
 
 //
-// ZORBA Errors
+// ZORBA API Errors
 //
 
 DEF_ERR_CODE(API0001_XQUERY_STRING_IS_EMPTY, API0001, "Empty query")
 DEF_ERR_CODE(API0002_COMPILE_FAILED, API0002, "Query compilation failed")
 DEF_ERR_CODE(API0003_XQUERY_NOT_COMPILED, API0003, "Query not compiled")
 DEF_ERR_CODE(API0004_XQUERY_ALREADY_COMPILED, API0004, "Query already compiled")
-
-DEF_ERR_CODE(API0005_COLLECTION_ALREADY_EXISTS, API0005, "A collection with URI {/s} exists already.")
-
-DEF_ERR_CODE(API0006_COLLECTION_NOT_FOUND, API0006, "A collection with URI {/s} does not exist.")
 
 DEF_ERR_CODE(API0007_COLLECTION_ITEM_MUST_BE_A_NODE, API0007, "Cannot insert to a collection an item that is not a node.")
 
@@ -166,8 +162,6 @@ DEF_ERR_CODE(API0026_CANNOT_CLOSE_QUERY_WITH_ITERATORS, API0026, "Query cannot b
 DEF_ERR_CODE(API0027_CANNOT_UPDATE_DCTX_WITH_ITERATORS, API0027, "The query dynamic context cannot be updated because there are result iterators on the query")
 
 DEF_ERR_CODE(API0028_INVALID_NODE_URI, API0028, "The uri {/s} is not a valid node reference")
-
-DEF_ERR_CODE(API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION, API0029, "The node does not belong to the given collection.")
 
 DEF_ERR_CODE(API0030_NO_NODE_AT_GIVEN_POSITION, API0030, "There is no node at the given position {/s}, the collection has fewer nodes.");
 
@@ -192,58 +186,85 @@ DEF_ERR_CODE(API0040_MAIL_NOT_SENT, API0040, "Mail could not be sent. Here is th
 DEF_ERR_CODE(API0050_REST_ERROR_HEADER, API0050, "Invalid value passed for header parameter.");
 DEF_ERR_CODE(API0051_REST_ERROR_PAYLOAD, API0051, "Invalid value passed for payload parameter.");
 
-DEF_ERR_CODE(API0060_CONV_JSON_PARSE, API0060, "Could not parse the Json string {/s}. Reason: {/s}.");
-DEF_ERR_CODE(API0061_CONV_JSON_SERIALIZE, API0061, "Could not serialize the element with string representation {/s}. Error: {/s}");
-DEF_ERR_CODE(API0062_CONV_JSON_PARAM, API0062, "Parameter with string representation {/s} is not an element node.");
+DEF_ERR_CODE(API0060_CONV_JSON_PARSE, API0060, 
+"Could not parse the Json string {/s}. Reason: {/s}.");
 
-DEF_ERR_CODE(API0063_CONV_JSON_ML_PARSE, API0063, "Could not parse the JsonML string {/s} reason: {/s}.");
-DEF_ERR_CODE(API0064_CONV_JSON_ML_SERIALIZE, API0064, "Could not serialize the element with string representation {/s}. Error: {/s}");
-DEF_ERR_CODE(API0065_CONV_JSON_ML_PARAM, API0065, "Parameter with string representation {/s} is not an element node.");
+DEF_ERR_CODE(API0061_CONV_JSON_SERIALIZE, API0061,
+"Could not serialize the element with string representation {/s}. Error: {/s}");
 
-DEF_ERR_CODE(API0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED, API0066, "Cannot serialize a sequence with more than one element if the 'json' or 'jsonml' method was selected.")
-DEF_ERR_CODE(API0070_INVALID_SERIALIZATION_METHOD_FOR_SAX, API0070, "Invalid serialization method. Only XML output can issue SAX event notifications. Therefore, only the following serialization methods are allowed: xml, xhtml, jsonml")
+DEF_ERR_CODE(API0062_CONV_JSON_PARAM, API0062, 
+"Parameter with string representation {/s} is not an element node.");
 
-DEF_ERR_CODE(API0071_CONV_CSV2XML_PARAM, API0071, "Invalid parameter in csv import: /s /s")
-DEF_ERR_CODE(API0072_CONV_CSV2XML_TOO_MANY_FIELDS, API0072, "CSV import error: first row is header but one of the subsequent rows contains more fields than the header")
-DEF_ERR_CODE(API0073_CONV_XML2CSV_PARAM, API0071, "Invalid parameter in csv export: /s /s")
+DEF_ERR_CODE(API0063_CONV_JSON_ML_PARSE, API0063, 
+"Could not parse the JsonML string {/s} reason: {/s}.");
+
+DEF_ERR_CODE(API0064_CONV_JSON_ML_SERIALIZE, API0064, 
+"Could not serialize the element with string representation {/s}. Error: {/s}");
+
+DEF_ERR_CODE(API0065_CONV_JSON_ML_PARAM, API0065, 
+"Parameter with string representation {/s} is not an element node.");
+
+DEF_ERR_CODE(API0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED, API0066, 
+"Cannot serialize a sequence with more than one element if the 'json' or 'jsonml' method was selected.")
+
+DEF_ERR_CODE(API0070_INVALID_SERIALIZATION_METHOD_FOR_SAX, API0070,
+"Invalid serialization method. Only XML output can issue SAX event notifications. Therefore, only the following serialization methods are allowed: xml, xhtml, jsonml")
+
+DEF_ERR_CODE(API0071_CONV_CSV2XML_PARAM, API0071, 
+"Invalid parameter in csv import: /s /s")
+
+DEF_ERR_CODE(API0072_CONV_CSV2XML_TOO_MANY_FIELDS, API0072, 
+"CSV import error: first row is header but one of the subsequent rows contains more fields than the header")
+
+DEF_ERR_CODE(API0073_CONV_XML2CSV_PARAM, API0071, 
+"Invalid parameter in csv export: /s /s")
+
 //
 // Store Errors
 //
 DEF_ERR_CODE(STR0001_INDEX_ALREADY_EXISTS, STR0001,
-             "An index with qname /s exists already.")
+"An index with qname /s exists already.")
 
 DEF_ERR_CODE(STR0002_INDEX_DOES_NOT_EXIST, STR0002,
-             "An index with qame /s does not exist.")
+"An index with qame /s does not exist.")
 
 DEF_ERR_CODE(STR0003_INDEX_PARTIAL_KEY_INSERT, STR0003,
-             "Partial key insertion in index \"/s\". Key = /s")
+"Partial key insertion in index \"/s\". Key = /s")
 
 DEF_ERR_CODE(STR0004_INDEX_PARTIAL_KEY_REMOVE, STR0004,
-             "Partial key deletion from index \"/s\"")
+"Partial key deletion from index \"/s\"")
 
 DEF_ERR_CODE(STR0005_INDEX_PARTIAL_KEY_PROBE, STR0005,
-             "Partial key probe into index \"/s\"")
+"Partial key probe into index \"/s\"")
 
 DEF_ERR_CODE(STR0006_INDEX_INVALID_BOX_PROBE, STR0006,
-             "Invalid box probe condition for index \"/s\" : /s")
+"Invalid box probe condition for index \"/s\" : /s")
 
 DEF_ERR_CODE(STR0007_INDEX_UNSUPPORTED_PROBE_CONDITION, STR0007,
-             "Index \"/s\" does not support probe conditions of kind /s")
+"Index \"/s\" does not support probe conditions of kind /s")
+
+DEF_ERR_CODE(STR0008_COLLECTION_ALREADY_EXISTS, STR0008,
+"A collection with URI {/s} exists already.")
+
+DEF_ERR_CODE(STR0009_COLLECTION_NOT_FOUND, STR0009,
+"A collection with URI {/s} does not exist.")
+
 
 DEF_ERR_CODE(STR0020_LOADER_IO_ERROR, STR0020, 
-             "Loader I/O error: /s")
+"Loader I/O error: /s")
 
 DEF_ERR_CODE(STR0021_LOADER_PARSING_ERROR, STR0021,
-             "Loader parsing error: /s")
+"Loader parsing error: /s")
 
 DEF_ERR_CODE(STR0030_NODEID_ERROR, STR0030,
-             "Nodeid error: /s")
+"Nodeid error: /s")
 
-DEF_ERR_CODE(STR0040_TYPE_ERROR, STR0040,
-             "Type error: /s")
+DEF_ERR_CODE(STR0040_TYPE_ERROR,  STR0040,
+"Type error: /s")
 
 DEF_ERR_CODE(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE, STR0050,
-             "The function called {/s} is not available for the given item type {/s}.")
+"The function called {/s} is not available for the given item type {/s}.")
+
 
 //
 // ZORBA-specific errors
@@ -700,7 +721,7 @@ DEF_ERR_CODE(XDDY0010_COLLECTION_CONST_NODE_UPDATE, XDDY0010,
 "Illegal update of node in collection /s, whose nodes are read-only.")
 
 DEF_ERR_CODE(XDDY0011_COLLECTION_NODE_NOT_FOUND, XDDY0011, 
-"A node to delete is not contained in collection /s.")
+"node is not contained in collection /s.")
 
 DEF_ERR_CODE(XDDY0011, XDDY0011, "It is a dynamic error if the target of a collection function does not belong to the collection that is identified by the first parameter (QName).")
 

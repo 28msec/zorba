@@ -188,7 +188,8 @@ void SimpleCollection::addNode(
   bool found = findNode((store::Item*)aTargetNode, targetPos);
   if (!found)
   {
-    ZORBA_ERROR(API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION);
+    ZORBA_ERROR_PARAM(XDDY0011_COLLECTION_NODE_NOT_FOUND,
+                      theName->getStringValue(), "");
   }
 
   if (before) 

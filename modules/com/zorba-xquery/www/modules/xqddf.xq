@@ -354,7 +354,7 @@ declare function xqddf:index-of($name as xs:QName, $node as node()) as xs:intege
  :         belonging to the entry with QName <tt>$name</tt> in the map
  :         of available collections.
  :)
-(:declare function xqddf:collection($name as xs:QName) as document-node()* external;:)
+declare function xqddf:collection($name as xs:QName) as node()* external;
 
 (:~
  : The <tt>create-index</tt> function is an updating function that adds a

@@ -225,7 +225,7 @@ bool ZorbaCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
   coll = getCollection(theSctx, lName, loc);
 
-  /** return the nodes of the collection */
+  // return the nodes of the collection
   state->theIterator = coll->getIterator();
   ZORBA_ASSERT(state->theIterator != NULL);
   state->theIterator->open();
@@ -273,6 +273,7 @@ ZorbaIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   consumeNext(item, theChildren[0].getp(), planState);
+
   theColl = getCollection(theSctx, item, loc);
 
   if (consumeNext(item, theChildren[theChildren.size()-1].getp(), planState))
@@ -280,7 +281,7 @@ ZorbaIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     found = theColl->findNode(item, pos);
 
     if (!found)
-      ZORBA_ERROR_LOC_DESC(API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION,
+      ZORBA_ERROR_LOC_DESC(XDDY0011_COLLECTION_NODE_NOT_FOUND,
                            loc,
                            "The node does not belong to collection.");
 
@@ -377,7 +378,9 @@ bool ZorbaCreateCollectionIterator::nextImpl(
     while (consumeNext(node, theChildren[1].getp(), aPlanState))
     {
       checkNodeType(node, theSctx, lDeclColl, loc);
+
       copyNode = node->copy(NULL, 0, lCopyMode);
+
       pul->addInsertIntoCollection(lName, copyNode);
     }
   }
@@ -985,10 +988,8 @@ ZorbaDeleteNodesIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   {
     ulong pos;
     if (!coll->findNode(node.getp(), pos))
-      ZORBA_ERROR_LOC_DESC_OSS(API0029_NODE_DOES_NOT_BELONG_TO_COLLECTION, loc, 
-                               "The node passed as second parameter to remove-nodes "
-                               << "does not exist in the given collection "
-                               << lName->getStringValue());
+      ZORBA_ERROR_LOC_PARAM(XDDY0011_COLLECTION_NODE_NOT_FOUND, loc, 
+                            lName->getStringValue(), "");
 
     nodes.push_back(node);
   }
@@ -1167,6 +1168,11 @@ ZorbaDeleteNodeLastIterator::nextImpl(store::Item_t& result, PlanState& planStat
 }
 
 
+/*******************************************************************************
+  Check that a collection with the given name appears both in the given static
+  context and in the store. If so, return the collection container. Otherwise,
+  raise an error.
+********************************************************************************/
 store::Collection_t getCollection(
     const static_context* aSctx,
     const store::Item_t aName,
@@ -1189,6 +1195,9 @@ store::Collection_t getCollection(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 const StaticallyKnownCollection* getDeclColl(
     const static_context* aSctx,
     const store::Item_t aName,
@@ -1204,6 +1213,9 @@ const StaticallyKnownCollection* getDeclColl(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void checkNodeType(
     const store::Item_t& aNode, 
     const static_context* aSctx,

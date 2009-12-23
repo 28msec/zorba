@@ -6932,9 +6932,9 @@ void end_visit (const UnorderedExpr& v, void* /*visit_state*/)
 /*******************************************************************************
   [116] FunctionCall ::= QName "(" ArgList? ")"
 ********************************************************************************/
-void *begin_visit (const FunctionCall& v) 
+void* begin_visit(const FunctionCall& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
 
   rchandle<QName> qn_h = v.get_fname();
   string prefix = qn_h->get_prefix();
@@ -6954,7 +6954,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  // Collect the arguments of this function 
+  // Collect the arguments of this function in reverse order
   std::vector<expr_t> arguments;
 
   while (true) 
@@ -7131,7 +7131,34 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       }
     }
   }
+#if 0
+  // normalization of DDL collection functions
+  else if (fn_ns->byteEqual(ZORBA_DDL_FN_NS))
+  {
+    function* f = LOOKUP_FN(prefix, fname, sz);
+    FunctionConsts::FunctionKind fkind = f->getKind();
 
+    switch (fkind)
+    {
+    case FunctionConsts::FN_ZORBA_DDL_CREATE_COLLECTION_2:
+    case FunctionConsts::FN_ZORBA_DDL_INSERT_NODES_2:
+    case FunctionConsts::FN_ZORBA_DDL_INSERT_NODES_FIRST_2:
+    case FunctionConsts::FN_ZORBA_DDL_INSERT_NODES_LAST_2:
+    {
+      arguments[0] = new fo_expr(sctxid(), loc, op_enclosed, arguments[0]);
+      break;
+    }
+    case FunctionConsts::FN_ZORBA_DDL_INSERT_NODES_BEFORE_3:
+    case FunctionConsts::FN_ZORBA_DDL_INSERT_NODES_AFTER_3:
+    {
+      arguments[0] = new fo_expr(sctxid(), loc, op_enclosed, arguments[0]);
+      break;
+    }
+    default:
+      break;
+    }
+  }
+#endif
   //  Some special processing is required for certain "zorba" functions
   else if (fn_ns->byteEqual(ZORBA_OP_NS)) 
   {
@@ -8129,27 +8156,30 @@ void reorder_globals ()
 ********************************************************************************/
 
 
-void *begin_visit (const SingleType& v) 
+void* begin_visit(const SingleType& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const SingleType& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-  if (v.get_hook_bit ())
-    tstack.push (CTXTS->create_type (*pop_tstack (), TypeConstants::QUANT_QUESTION));
+void end_visit(const SingleType& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT();
+  if (v.get_hook_bit())
+    tstack.push (CTXTS->create_type(*pop_tstack(), TypeConstants::QUANT_QUESTION));
   // else leave type as it is on tstack
 }
 
 
-void *begin_visit (const TypeName& v) {
-  TRACE_VISIT ();
+void* begin_visit(const TypeName& v) 
+{
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const TypeName& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
+void end_visit(const TypeName& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT();
 }
 
 
@@ -8964,18 +8994,18 @@ void end_visit(const CatchExpr& v, void* visit_state)
 
 
 
-void* begin_visit (const EvalExpr& v) 
+void* begin_visit(const EvalExpr& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   if (sctx_p->xquery_version() < StaticContextConsts::xquery_version_1_1)
     ZORBA_ERROR_LOC_DESC(XPST0003, loc,
                          "Eval is a feature that is only available in XQuery 1.1 or later.");
   return no_state;
 }
 
-void end_visit (const EvalExpr& v, void* visit_state) 
+void end_visit(const EvalExpr& v, void* visit_state) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
   rchandle<eval_expr> result =
     new eval_expr(sctxid(),

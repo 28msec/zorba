@@ -1307,14 +1307,14 @@ class IndexKeySpec : public parsenode
 {
 protected:
   rchandle<exprnode>        theExpr;
-  rchandle<SequenceType>    theType;
+  rchandle<SingleType>      theType;
   rchandle<OrderModifierPN> theOrderModifier;
 
 public:
   IndexKeySpec(
     const QueryLoc& loc,
     exprnode* expr,
-    SequenceType* type,
+    SingleType* type,
     OrderModifierPN* modifier)
     :
     parsenode(loc),
@@ -1326,7 +1326,7 @@ public:
 
   const exprnode* getExpr() const { return theExpr.getp(); }
 
-  const SequenceType* getType() const { return theType.getp(); }
+  const SingleType* getType() const { return theType.getp(); }
 
   const OrderModifierPN* getOrderModifier() const { return theOrderModifier.getp(); }
 

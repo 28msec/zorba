@@ -398,7 +398,7 @@ expr* ValueIndex::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   function* f = theSctx->lookup_resolved_fn(XQUERY_OP_NS,
                                             "index-entry-builder",
                                             VARIADIC_SIG_SIZE);
-  ZORBA_ASSERT(f!=NULL);
+  ZORBA_ASSERT(f != NULL);
 
   fo_expr_t returnExpr =  new fo_expr(sctxid, loc, f, clonedExprs);
 

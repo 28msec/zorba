@@ -65,7 +65,7 @@
                     isSource="true">
       <zorba:signature localname="collection" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
-        <zorba:output>document-node()*</zorba:output>
+        <zorba:output>node()*</zorba:output>
       </zorba:signature>
       <zorba:annotation name="producesSortedNodes">YES</zorba:annotation>
       <zorba:annotation name="producesDistinctNodes">YES</zorba:annotation>

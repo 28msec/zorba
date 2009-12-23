@@ -574,6 +574,13 @@ void UpdReplaceCommentValue::undo()
 }
 
 
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  fn:put Primitives                                                          //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -651,6 +658,7 @@ void UpdPut::undo()
 ********************************************************************************/
 void UpdCreateCollection::apply()
 {
+  // Error is raised if collection exists already.
   GET_STORE().createCollection(theName);
   theIsApplied = true;
 }
@@ -658,10 +666,15 @@ void UpdCreateCollection::apply()
 
 void UpdCreateCollection::undo()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theName);
-  if (lColl) 
+  try
   {
     GET_STORE().deleteCollection(theName);
+  }
+  catch (...)
+  {
+    // In general, GET_STORE().deleteCollection(theName) will raise an error if
+    // collection does not exists, but in this case, the collection should exist.
+    ZORBA_ASSERT(false);
   }
 }
 

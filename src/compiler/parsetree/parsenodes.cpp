@@ -1026,6 +1026,23 @@ void IndexKeyList::accept(parsenode_visitor& v) const
   END_VISITOR();
 }
 
+
+/***************************************************************************//**
+  IndexKeySpec ::= ExprSingle TypeDeclaration? 
+                              ("empty" ("greatest" | "least"))?
+                              ("collation" UriLiteral)?
+********************************************************************************/
+void IndexKeySpec::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+
+  ACCEPT(theExpr);
+  ACCEPT(theType);
+
+  END_VISITOR();
+}
+
+
 /***************************************************************************//**
   IntegrityConstraintDecl ::= "declare" "unchecked"? "integrity" "constraint" 
                           "on" "collection" QNAME
@@ -1053,22 +1070,6 @@ void IntegrityConstraintDecl::accept(parsenode_visitor& v) const
     ( theIsAsync ? "asynchronous" : "" ) << std::endl;
 
   END_VISITOR ();
-}
-
-
-/***************************************************************************//**
-  IndexKeySpec ::= ExprSingle TypeDeclaration? 
-                              ("empty" ("greatest" | "least"))?
-                              ("collation" UriLiteral)?
-********************************************************************************/
-void IndexKeySpec::accept(parsenode_visitor& v) const
-{
-  BEGIN_VISITOR();
-
-  ACCEPT(theExpr);
-  ACCEPT(theType);
-
-  END_VISITOR();
 }
 
 
