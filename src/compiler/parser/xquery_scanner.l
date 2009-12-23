@@ -447,7 +447,7 @@ typedef zorba::xquery_parser::token token;
    |______________________________________________________________________*/
 
 "collection" { return token::COLLECTION; }
-"const" { return token::CONST; }
+"const" { return token::CONSTOPT; }
 "append-only" { return token::APPEND_ONLY; }
 "queue" { return token::QUEUE; }
 "mutable" { return token::MUTABLE; }

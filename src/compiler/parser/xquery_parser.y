@@ -485,7 +485,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 // Why is it not possible to delete the following two nodes??
 //%token NODE_TYPE           "'node-type'"
 //%token NODE_MODIFIER       "'node-modifier'"
-%token CONST               "'const'"
+%token CONSTOPT            "'const'"
 %token APPEND_ONLY         "'append-only'"
 %token QUEUE               "'queue'"
 %token MUTABLE             "'mutable'"
@@ -1578,7 +1578,7 @@ DeclPropertyList :
 
 
 DeclProperty :
-    CONST
+    CONSTOPT
     {
       $$ = new DeclProperty(LOC(@$), StaticContextConsts::decl_const);
     }
@@ -5529,7 +5529,7 @@ KEYWORD :
   | DIGIT { $$ = SYMTAB_PUT ("digit"); }
   | PATTERN_SEPARATOR { $$ = SYMTAB_PUT ("pattern-separator"); }
   | COLLECTION { $$ = SYMTAB_PUT ("collection"); }
-  | CONST { $$ = SYMTAB_PUT ("const"); }
+  | CONSTOPT { $$ = SYMTAB_PUT ("const"); }
   | APPEND_ONLY { $$ = SYMTAB_PUT ("append-only"); }
   | QUEUE { $$ = SYMTAB_PUT ("queue"); }
   | MUTABLE { $$ = SYMTAB_PUT ("mutable"); }

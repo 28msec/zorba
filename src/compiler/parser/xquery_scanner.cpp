@@ -3869,7 +3869,7 @@ YY_RULE_SETUP
 case 106:
 YY_RULE_SETUP
 #line 450 "/home/sausalito/Desktop/david/zorba/trunk/src/compiler/parser/xquery_scanner.l"
-{ return token::CONST; }
+{ return token::CONSTOPT; }
 	YY_BREAK
 case 107:
 YY_RULE_SETUP
