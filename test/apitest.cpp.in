@@ -15,7 +15,7 @@
  */
 
 // telling the compiler where the original file is
-#line __LINE__ "@CMAKE_CURRENT_SOURCE_DIR@/apitest.cpp.in"
+#line 19 "@CMAKE_CURRENT_SOURCE_DIR@/apitest.cpp.in"
 
 #include <zorba/zorba.h>
 
