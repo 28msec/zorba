@@ -40,7 +40,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-#line 30 "/home/markos/zorba/zorba/src/compiler/parser/xquery_parser.y"
+#line 30 "/home/sausalito/Desktop/david/zorba/trunk/src/compiler/parser/xquery_parser.y"
 
 #include "compiler/parsetree/parsenodes.h"
 
@@ -64,7 +64,7 @@ class xquery_driver;
 
 
 /* Line 35 of lalr1.cc  */
-#line 68 "/home/markos/zorba/zorba/build-gdb/src/compiler/parser/xquery_parser.hpp"
+#line 68 "/home/sausalito/Desktop/david/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -78,7 +78,7 @@ class xquery_driver;
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 82 "/home/markos/zorba/zorba/build-gdb/src/compiler/parser/xquery_parser.hpp"
+#line 82 "/home/sausalito/Desktop/david/zorba/build/src/compiler/parser/xquery_parser.hpp"
   class position;
   class location;
 
@@ -88,7 +88,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 92 "/home/markos/zorba/zorba/build-gdb/src/compiler/parser/xquery_parser.hpp"
+#line 92 "/home/sausalito/Desktop/david/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -136,7 +136,7 @@ do {							\
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 140 "/home/markos/zorba/zorba/build-gdb/src/compiler/parser/xquery_parser.hpp"
+#line 140 "/home/sausalito/Desktop/david/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -148,7 +148,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 134 "/home/markos/zorba/zorba/src/compiler/parser/xquery_parser.y"
+#line 134 "/home/sausalito/Desktop/david/zorba/trunk/src/compiler/parser/xquery_parser.y"
 
   zorba::parsenode * node;
   zorba::exprnode * expr;
@@ -168,7 +168,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-#line 172 "/home/markos/zorba/zorba/build-gdb/src/compiler/parser/xquery_parser.hpp"
+#line 172 "/home/sausalito/Desktop/david/zorba/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -663,7 +663,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 667 "/home/markos/zorba/zorba/build-gdb/src/compiler/parser/xquery_parser.hpp"
+#line 667 "/home/sausalito/Desktop/david/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 
 
