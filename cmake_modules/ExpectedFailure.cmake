@@ -10,9 +10,9 @@ MACRO(expected_failure testname bugid)
   get_test_property ("${testname}" WILL_FAIL willfail)
   if (willfail)
     set (willfail 0)
-  else ()
+  else (willfail)
     set (willfail 1)
-  endif ()
+  endif (willfail)
   set_tests_properties ("${testname}" PROPERTIES WILL_FAIL ${willfail})
 
   # Also store the name and bug ID of this test in our output file
