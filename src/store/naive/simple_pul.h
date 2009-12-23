@@ -206,6 +206,8 @@ public:
   theValidator       :
   theValidationList  : If this list is non-empty, then all the other lists are
                        empty and vice-versa.
+
+  theICChecker       : The object that invokes the check Iterator
 ********************************************************************************/
 class PULImpl : public store::PUL
 {
@@ -239,6 +241,9 @@ protected:
   std::vector<UpdatePrimitive*>      theCreateIndexList;
   std::vector<UpdatePrimitive*>      theDeleteIndexList;
   std::vector<UpdatePrimitive*>      theRefreshIndexList;
+
+  // Integrity constrint
+  store::ICChecker                 * theICChecker;
 
   // Revalidation
   store::SchemaValidator           * theValidator;
@@ -390,6 +395,12 @@ public:
         store::IndexEntryCreator* creator);
 
   void setValidator(store::SchemaValidator* validator);
+
+  // integrity constraints related
+  void setICChecker(store::ICChecker* icChecker);
+
+  bool checkIC(const store::Item* collName);
+
 
 protected:
   void mergeUpdateList(

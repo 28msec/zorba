@@ -362,6 +362,9 @@ DEF_ERR_CODE(XQP0051_IC_HAS_INVALID_DATA_SOURCE, XQP0051,
 DEF_ERR_CODE(XQP0052_IC_NOT_DETERMINISTIC, XQP0052,
              "The integrity constraint with URI /s has a non deterministic definition.")
 
+DEF_ERR_CODE(XQP0053_IC_NOT_MET, XQP0053,
+             "Conditions for integrity constraint /s weren't met.")
+
 
 //
 // XPDY

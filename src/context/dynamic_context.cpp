@@ -485,6 +485,18 @@ void dynamic_context::deactivateIC(const store::Item* qname)
 }
 
 
+store::Iterator_t dynamic_context::listActiveICNames()
+{
+  return GENV_STORE.listActiveICNames();
+}
+
+
+store::IC* dynamic_context::getIC(const store::Item* qname)
+{ 
+  return GENV_STORE.getIC(qname);
+}
+
+
 bool
 dynamic_context::addExternalFunctionParam (
   const std::string& aName,

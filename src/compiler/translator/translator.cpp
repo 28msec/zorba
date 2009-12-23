@@ -3305,35 +3305,34 @@ void* begin_visit(const IntegrityConstraintDecl& v)
   TRACE_VISIT();
 
   const QName* qname = v.getName();
-
-  /*
+  
   if (!inLibraryModule())
   {
-    ZORBA_ERROR_LOC_PARAM(XQP0039_INDEX_IN_NON_DATA_MODULE, v.get_location(), 
+    ZORBA_ERROR_LOC_PARAM(XQP0049_IC_IN_NON_DATA_MODULE, v.get_location(), 
                           qname->get_qname(), "");
-                          }*/
+  }
 
   // create a function which will be used for checking the integrity 
   // constraint at runtime
-  xqp_string fnLocalName = "ic_check_" + qname->get_localname();
+  //xqp_string fnLocalName = "ic_check_" + qname->get_localname();
 
   // Expand the ic qname (error is raised if qname resolution fails).
-  store::Item_t fnQName = sctx_p->lookup_fn_qname(qname->get_prefix(),
-                                                  fnLocalName,
-                                                  loc);
+  //store::Item_t fnQName = sctx_p->lookup_fn_qname(qname->get_prefix(),
+  //                                                fnLocalName,
+  //                                                loc);
 
-  vector<xqtref_t> arg_types;
-  xqtref_t return_type = GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
+  //vector<xqtref_t> arg_types;
+  //xqtref_t return_type = GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
 
-  signature sig(fnQName, arg_types, return_type);
-  rchandle<function> f = new user_function(loc,
-                                           sig,
-                                           NULL, // no body for now
-                                           ParseConstants::fn_read,
-                                           true /* isDeterministic */);
+  //signature sig(fnQName, arg_types, return_type);
+  //rchandle<function> f = new user_function(loc,
+  //                                         sig,
+  //                                         NULL, // no body for now
+  //                                         ParseConstants::fn_read,
+  //                                         true /* isDeterministic */);
 
-  int nargs = 0;
-  bind_udf(fnQName, f, nargs, loc);    
+  //int nargs = 0;
+  //bind_udf(fnQName, f, nargs, loc);    
 
   return no_state;
 }

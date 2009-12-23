@@ -197,6 +197,8 @@ public:
 
   virtual void setValidator(
         SchemaValidator* validator) = 0;
+
+  virtual void setICChecker(ICChecker* icChecker) = 0;
 };
 
 

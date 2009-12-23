@@ -164,6 +164,17 @@ public:
 
   void deactivateIC(const store::Item* qname);
 
+  /**
+   * Lists all active integrity constraints.
+   */
+  virtual store::Iterator_t listActiveICNames();
+
+  /**
+   * Returns IC object representing the integriti constraint.
+   * NULL if IC is not active.
+   */
+  store::IC* getIC(const store::Item* qname);
+
   bool
   addExternalFunctionParam ( const std::string& aName, void* aValue );
   

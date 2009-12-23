@@ -841,6 +841,7 @@ namespace zorbac {
       case XQP0050_IC_HAS_FREE_VARS:
       case XQP0051_IC_HAS_INVALID_DATA_SOURCE:
       case XQP0052_IC_NOT_DETERMINISTIC:
+      case XQP0053_IC_NOT_MET:
 
         return XQC_INVALID_ARGUMENT;
 

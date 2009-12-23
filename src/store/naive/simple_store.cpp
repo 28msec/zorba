@@ -512,11 +512,14 @@ void SimpleStore::deactivateIC(const store::Item* icQName)
 {
   ZORBA_ASSERT(icQName != NULL);
 
-  /*if (!theICs.get(icQName, ic))
+  store::IC_t ic;
+  
+  if (!theICs.get(icQName, ic))
   {
     ZORBA_ERROR_PARAM(STR0011_IC_DOES_NOT_EXIST,
-                      qname->getStringValue()->c_str(), "");
-                      }*/
+                      icQName->getStringValue()->c_str(), "");
+  }
+
   theICs.remove(icQName);
 }
 

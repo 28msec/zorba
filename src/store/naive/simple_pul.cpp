@@ -32,6 +32,7 @@
 #include "store/api/iterator.h"
 #include "store/api/item_factory.h"
 #include "store/api/validator.h"
+#include "store/api/ic.h"
 
 
 namespace zorba { namespace simplestore {
@@ -122,6 +123,7 @@ PULImpl::PULImpl()
   theNoCollectionPul(NULL),
   theLastPul(NULL),
   theLastCollection(NULL),
+  theICChecker(NULL),
   theValidator(NULL) 
 {
 }
@@ -1318,6 +1320,26 @@ void PULImpl::applyUpdates()
       CollectionPul* pul = collIte->second;
       applyList(pul->theDeleteCollectionList);
     }
+
+    // check integrity constraints for involved collections
+    for (collIte = theCollectionPuls.begin(); collIte != collEnd; ++collIte)
+    {
+      CollectionPul* pul = collIte->second;      
+
+      if ( pul!=NULL && pul->theCollection != NULL )
+      {
+        // todo cezar:  how to get to the name of collections involved
+        //in update
+
+        //const store::Item* collName = pul->theCollection->getName();
+      
+        //if ( collName && !checkIC(collName) )
+        //{
+        //  ZORBA_ERROR_DESC(XQP0053_IC_NOT_MET, 
+        //                   collName->getLocalName()->c_str());
+        //}
+      }
+    }
   }
   catch (...)
   {
@@ -1341,6 +1363,21 @@ void PULImpl::applyUpdates()
   {
     ZORBA_FATAL(0, "Unexpected error during pul undo");
   }
+}
+
+
+/*******************************************************************************
+*******************************************************************************/
+void PULImpl::setICChecker(store::ICChecker* icChecker)
+{
+  theICChecker = icChecker;
+}
+
+/*******************************************************************************
+*******************************************************************************/
+bool PULImpl::checkIC(const store::Item* collName)
+{
+  return theICChecker->check(collName);
 }
 
 

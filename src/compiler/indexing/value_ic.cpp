@@ -15,6 +15,7 @@
  */
 
 #include "compiler/indexing/value_ic.h"
+#include "context/dynamic_context.h"
 #include "context/static_context.h"
 #include "store/api/iterator.h"
 #include "zorbaserialization/class_serializer.h"
@@ -104,9 +105,9 @@ const store::Item_t& ValueIC::getFromCollectionName() const
 
 /*******************************************************************************
 *******************************************************************************/
-store::Iterator_t ValueIC::getIterator() const 
+store::Iterator* ValueIC::getIterator() const 
 {
-  return thePlanWrapper; 
+  return thePlanWrapper.getp(); 
 }
 
 
@@ -132,6 +133,65 @@ std::string ValueIC::toString()
   return os.str();
 }
 
+
+/*******************************************************************************
+********************************************************************************/
+bool ICCheckerImpl::check(const store::Item* collName)
+{
+  //std::cout << "Checker::check : " << collName->getLocalName()->str() << " @ "
+  //         << collName->getNamespace()->str() << std::endl; std::cout.flush(); 
+
+  store::Iterator_t activeICNames = theDctx->listActiveICNames();
+
+  store::Item_t activeICName;
+
+  while ( activeICNames->next(activeICName) )
+  {
+    store::IC* ic = theDctx->getIC(activeICName);
+  
+    if ( ic == NULL ) 
+    {
+      // if icname in activelist but not available something went wrong
+      ZORBA_ASSERT(false);
+    }
+
+    store::Item_t icCollName;
+    switch ( ic->getICKind() )
+    {
+    case store::IC::ic_collection:
+      icCollName = ic->getCollectionName();
+      break;
+
+    case store::IC::ic_foreignkey:
+      icCollName = ic->getToCollectionName();
+      break;
+
+    default:
+      ZORBA_ASSERT(false);
+    }
+
+    if ( !collName->equals(icCollName) )
+      // if this ic doesn't have a dependency on current collection
+      // skip it
+      continue;
+
+    ValueIC* vic = theSctx->lookup_ic(activeICName);
+
+    store::Item_t partialRes;
+    store::Iterator* iter = vic->getIterator();
+  
+    iter->open();
+    iter->next(partialRes);
+    iter->close(); 
+  
+    if( !partialRes->getBooleanValue() )
+      return false;
+  }
+
+  activeICNames->close();
+  
+  return true;
+}
 
 }
 /* vim:set ts=2 sw=2: */

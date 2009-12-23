@@ -81,9 +81,12 @@ class XmlDataManager_Impl;
 class IC;
 typedef rchandle<IC> IC_t;
 
-}
+class ICChecker;
 
-}
+
+} // namespace store
+
+} // namespace zorba
 
 #endif
 

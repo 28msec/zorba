@@ -135,26 +135,31 @@ bool CheckICIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
   if (!consumeNext(qname, theChild, planState))
     ZORBA_ASSERT(false);
-
-  if (theSctx->lookup_ic(qname) == NULL)
+  else
   {
-    ZORBA_ERROR_LOC_PARAM(XQP0047_IC_IS_NOT_DECLARED, loc,
-                          qname->getStringValue()->c_str(), "");
+    ValueIC* vic = theSctx->lookup_ic(qname);
+    
+    if ( vic == NULL)
+    {
+      ZORBA_ERROR_LOC_PARAM(XQP0047_IC_IS_NOT_DECLARED, loc,
+                            qname->getStringValue()->c_str(), "");
+    }        
+    
+    // run iterator
+    store::Iterator* iter = vic->getIterator();
+    
+    iter->open();
+    iter->next(result);
+    iter->close();
+    
+    // return result
+    //xqp_boolean icFuncResult;
+    //STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, icFuncResult),
+    //             state);    
   }
 
-  if (GENV_STORE.getIC(qname) == NULL)
-  {
-    ZORBA_ERROR_LOC_PARAM(XQP0043_IC_DOES_NOT_EXIST, loc,
-                          qname->getStringValue()->c_str(), "");
-  } 
-
-
-  // call the function
-  // return result
-  xqp_boolean icFuncResult;
-  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, icFuncResult),
-               state);
-
+  STACK_PUSH(result, state);
+  
   STACK_PUSH(true, state);
 
   STACK_END(state);

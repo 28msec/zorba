@@ -58,8 +58,15 @@ public:
 };
 
 
-}
-}
+class ICChecker
+{
+public:
+  virtual bool check(const Item* collName) = 0;
+};
+
+
+} // namespace store
+} // namespace zorba
 
 #endif
 

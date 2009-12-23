@@ -71,7 +71,7 @@ public:
   const store::Item_t& getFromCollectionName() const;
 
   store::IC::ICKind getICKind() const { return theICKind; }
-  store::Iterator_t getIterator() const;
+  store::Iterator* getIterator() const;
 
   //void analyze();
 
@@ -80,8 +80,28 @@ public:
 private:
 };
 
-
 typedef rchandle<ValueIC> ValueIC_t;
+
+
+
+/**
+ *  Implementation of callback store::ICChecker interface
+ */
+class ICCheckerImpl
+  : public store::ICChecker
+{
+private:
+  static_context* theSctx;
+  dynamic_context* theDctx;
+
+public:
+  ICCheckerImpl(static_context* sctx, dynamic_context* dctx) : 
+    theSctx(sctx), theDctx(dctx) {}
+
+  ~ICCheckerImpl() {}
+
+  bool check(const store::Item* collName);
+};
 
 
 }

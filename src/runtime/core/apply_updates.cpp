@@ -24,6 +24,7 @@
 #include "runtime/indexing/doc_indexer.h"
 
 #include "compiler/indexing/value_index.h"
+#include "compiler/indexing/value_ic.h"
 
 #include "context/static_context.h"
 
@@ -58,6 +59,8 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   dynamic_context* dctx = planState.dctx();
   CompilerCB* ccb = planState.theCompilerCB;
 
+  ICCheckerImpl icChecker(theSctx, dctx);
+
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
@@ -69,6 +72,8 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                            "Expression does not return a pending update list");
 
     pul = static_cast<store::PUL*>(pulItem.getp());
+
+    pul->setICChecker(&icChecker);
 
     if (consumeNext(tmp, theChild, planState))
     {
