@@ -214,7 +214,7 @@ bool   csv_read_line(unicode_codepoint_iterator *csv_it, //IN-OUT
       field = new xqpStringStore();
       field.getStore()->str().reserve(100);
     }
-    else if(quote_escape_size && ((**csv_it) == quote_escape_cp[0]))
+    else if((quote_escape_size > 1) && ((**csv_it) == quote_escape_cp[0]))
     {
       ++(*csv_it);
       if((**csv_it) == quote_escape_cp[1])

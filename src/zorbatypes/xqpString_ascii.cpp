@@ -13,16 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "common/common.h"
+#include <zorba/config.h>
 #ifdef ZORBA_NO_UNICODE
 
-//#include <unicode/regex.h>
 #include "zorbatypes/xqpstring_ascii.h"
 
-//#include "zorbatypes/Unicode_util.h"
-//#include "zorbatypes/utf8.h"
 #include "zorbatypes/numconversions.h"
-//#include "zorbatypes/collation_manager.h"
 #include "zorbatypesError.h"
 
 #include "regex_ascii.h"
@@ -39,7 +35,18 @@ END_SERIALIZABLE_CLASS_VERSIONS(xqpStringStore)
 SERIALIZABLE_CLASS_VERSIONS(xqpString)
 END_SERIALIZABLE_CLASS_VERSIONS(xqpString)
 
-//UnicodeString getUnicodeString(xqpStringStore *strstore);
+xqpStringStore::xqpStringStore(serialization::Archiver &ar)
+: RCObject(ar) {}
+
+xqpStringStore::xqpStringStore(const std::string& other) : theString(other) {}
+
+xqpStringStore::~xqpStringStore() {}
+
+void xqpStringStore::serialize(serialization::Archiver &ar)
+{
+  ar & theString;
+}
+
 
 
 /*******************************************************************************
@@ -53,7 +60,7 @@ bool xqpStringStore::is_whitespace(uint32_t cp)
 }
 
 /*******************************************************************************
-  Returns true returns true if the characters given as 'start' and 'length'
+  Returns true if the characters given as 'start' and 'length'
   contain the codepoint 'cp'.
 ********************************************************************************/
 bool xqpStringStore::is_contained(const char* start, uint16_t length, uint32_t cp)
@@ -300,7 +307,7 @@ bool xqpStringStore::byteEqual(const char* src, uint32_t srclen) const
 bool xqpStringStore::byteEqual(const char* src) const
 {
   const char  *mystr = c_str();
-  int   i = 0;
+  unsigned int   i = 0;
   std::string::size_type  mylen = bytes();
 
   for(i=0;i<mylen;i++)
@@ -497,6 +504,11 @@ void xqpStringStore::append_in_place(const char c)
   theString += c;
 }
 
+void xqpStringStore::append_in_place(uint32_t cp)
+{
+  theString += (char)cp;
+}
+
 void xqpStringStore::append_in_place(const xqpStringStore* suffix)
 {
   theString += suffix->theString;
@@ -531,6 +543,26 @@ xqpStringStore_t xqpStringStore::substr(
     std::string::size_type length) const
 {
   return new xqpStringStore(theString.substr(index, length));
+}
+
+/*******************************************************************************
+  Returns a substring of the currents string starting at index and continues 
+  until the NULL termination. Doesn't use ICU4C.
+********************************************************************************/
+xqpStringStore_t xqpStringStore::substr(xqpStringStore::distance_type index) const
+{
+  if (index >= (int32_t)size())
+  {
+    index = size();
+  }
+  else if (index < 0)
+  {
+    return new xqpStringStore(theString);
+  }
+  
+  const char * d = c_str();
+  d += index;  
+  return new xqpStringStore(d);
 }
 
 /*******************************************************************************
@@ -1233,6 +1265,11 @@ std::ostream& operator<<(std::ostream& os, const xqpStringStore& src)
 }
 
 
+  void xqpString::serialize(serialization::Archiver &ar)
+  {
+    ar & theStrStore;
+  }
+
   xqpString::xqpString()
   {
     theStrStore = new xqpStringStore("");
@@ -1258,11 +1295,6 @@ std::ostream& operator<<(std::ostream& os, const xqpStringStore& src)
       theStrStore->theString.append(&c, 1);
       src++;
     }
-  }
-
-  xqpString::xqpString(long initial_len)
-  {
-    theStrStore = new xqpStringStore(initial_len);
   }
 
   xqpString& xqpString::operator=(const std::string& src)
@@ -1780,6 +1812,11 @@ void xqpString::append_in_place(const char c)
   theStrStore->append_in_place(c);
 }
 
+void xqpString::append_in_place(uint32_t cp)
+{
+  theStrStore->append_in_place(cp);
+}
+
 void xqpString::append_in_place(const xqpStringStore *suffix)
 {
   theStrStore->append_in_place(suffix);
@@ -1813,6 +1850,7 @@ xqpString xqpString::concat(const char *s1,
 //  int l2 = strlen(s2);
 
   xqpString   result;//(l1+l2+1);
+  result.theStrStore->theString.reserve(strlen(s1) + strlen(s2) + 1);
   result.append_in_place(s1);
   result.append_in_place(s2);
   return result;
@@ -1827,6 +1865,7 @@ xqpString xqpString::concat(const char *s1,
 //  int l3 = s3->bytes();
 
   xqpString   result;//(l1+l2+l3+1);
+  result.theStrStore->theString.reserve(strlen(s1) + strlen(s2) + s3->bytes() + 1);
   result.append_in_place(s1);
   result.append_in_place(s2);
   result.append_in_place(s3.getp());
@@ -1842,13 +1881,14 @@ xqpString xqpString::concat(const char *s1,
 //  int l3 = strlen(s3);
 
   xqpString   result;//(l1+l2+l3+1);
+  result.theStrStore->theString.reserve(strlen(s1) + strlen(s2) + strlen(s3) + 1);
   result.append_in_place(s1);
   result.append_in_place(s2);
   result.append_in_place(s3);
   return result;
 }
 
-xqpString xqpString::concat(const xqpString s1, 
+xqpString xqpString::concat(xqpString s1, 
                         const char *s2,
                         const xqpString s3)
 {
@@ -1857,8 +1897,23 @@ xqpString xqpString::concat(const xqpString s1,
 //  int l3 = s3.bytes();
 
   xqpString   result;//(l1+l2+l3+1);
+  result.theStrStore->theString.reserve(s1.bytes() + strlen(s2) + s3.bytes() + 1);
   result.append_in_place(s1.getStore());
   result.append_in_place(s2);
+  result.append_in_place(s3.getStore());
+  return result;
+}
+
+xqpString xqpString::concat(const xqpString s1, 
+                        const xqpString s3)
+{
+//  int l1 = s1.bytes();
+//  int l2 = strlen(s2);
+//  int l3 = s3.bytes();
+
+  xqpString   result;//(l1+l2+l3+1);
+  result.theStrStore->theString.reserve(s1.bytes() + s3.bytes() + 1);
+  result.append_in_place(s1.getStore());
   result.append_in_place(s3.getStore());
   return result;
 }
@@ -1872,6 +1927,7 @@ xqpString xqpString::concat(const std::string &s1,
 //  int l3 = s3->bytes();
 
   xqpString   result;//(l1+l2+l3+1);
+  result.theStrStore->theString.reserve(s1.length() + strlen(s2) + s3->bytes() + 1);
   result.append_in_place(s1);
   result.append_in_place(s2);
   result.append_in_place(s3.getp());
@@ -1889,6 +1945,7 @@ xqpString xqpString::concat(const xqpStringStore_t s1,
 //  int l4 = strlen(s4);
 
   xqpString   result;//(l1+l2+l3+l4+1);
+  result.theStrStore->theString.reserve(s1->bytes() + strlen(s2) + s3.bytes() + strlen(s4) + 1);
   result.append_in_place(s1.getp());
   result.append_in_place(s2);
   result.append_in_place(s3.getStore());
@@ -1909,6 +1966,7 @@ xqpString xqpString::concat(const char *s1,
 //  int l5 = strlen(s5);
 
   xqpString   result;//(l1+l2+l3+l4+l5+1);
+  result.theStrStore->theString.reserve(strlen(s1) + s2.length() + strlen(s3) + s4->bytes() + strlen(s5) + 1);
   result.append_in_place(s1);
   result.append_in_place(s2);
   result.append_in_place(s3);

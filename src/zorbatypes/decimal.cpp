@@ -355,8 +355,6 @@ MAPM Decimal::roundHalfToEven(MAPM aValue, int aPrecision)
       return (((long long)aValue)%2) ? ::ceil(aValue)*prec : ::floor(aValue)*prec;
     }
     aValue = ::floor(aValue+0.5);
-    if(bHalfVal && (((long long)aValue)%2))
-      aValue--;
     return aValue;
   }
 }

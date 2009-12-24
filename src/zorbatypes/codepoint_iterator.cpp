@@ -6,7 +6,11 @@ namespace zorba{
 
 string_codepoints_iterator& string_codepoints_iterator::operator++()
 {
+#ifndef ZORBA_NO_UNICODE
   this->last_seq_len = sequence_length(str+pos);
+#else
+  this->last_seq_len = 1;
+#endif
   pos += last_seq_len;
   return *this;
 }
@@ -17,7 +21,11 @@ void string_codepoints_iterator::unread_last_codepoint()
 uint32_t string_codepoints_iterator::operator*() const
 {
   const char  *str_pos = str+pos;
+#ifndef ZORBA_NO_UNICODE
   return UTF8Decode(str_pos);
+#else
+  return *str_pos;
+#endif
 }
 /*
 unsigned int string_codepoints_iterator::compare_cp(checked_vector<uint32_t> &cp)
@@ -49,7 +57,11 @@ uint32_t  ifstream_codepoints_iterator::read_cp()
   ifs->read(c, 1);
   if(ifs->gcount() < 1)
     return 0;
+#ifndef ZORBA_NO_UNICODE
   int  seq_len = sequence_length(c);
+#else
+  int seq_len = 1;
+#endif
   if(seq_len > 1)
   {
     ifs->read(c+1, seq_len-1);
@@ -57,7 +69,11 @@ uint32_t  ifstream_codepoints_iterator::read_cp()
       return 0;
   }
   char *pc = c;
+#ifndef ZORBA_NO_UNICODE
   return UTF8Decode(pc);
+#else
+  return *pc;
+#endif
 }
 unicode_codepoint_iterator& ifstream_codepoints_iterator::operator++()
 {

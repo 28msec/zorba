@@ -261,7 +261,7 @@ bool NumConversions::doubleToInt(const xqp_double& aDouble, xqp_int& aInt)
   xqpString lStr = aDouble.toIntegerString();
   return NumConversions::strToInt(lStr, aInt);
 #else
-  aInt = (xqp_int)aDouble.theFloatImpl;
+  aInt = (xqp_int)aDouble.theFloating;
   return true;
 #endif
 }
@@ -273,7 +273,7 @@ bool NumConversions::doubleToLongLong(const xqp_double& aDouble, xqp_long& aLong
     xqpString lStr = aDouble.toIntegerString();
     return NumConversions::strToLongLong(lStr, aLong);
 #else
-    aLong = (xqp_long)aDouble.theFloatImpl;
+    aLong = (xqp_long)aDouble.theFloating;
     return true;
 #endif
   }
@@ -284,7 +284,7 @@ bool NumConversions::doubleToLong(const xqp_double& aDouble, long& aLong) {
     xqpString lStr = aDouble.toIntegerString();
     return NumConversions::strToLong(lStr, aLong);
 #else
-    aLong = (long)aDouble.theFloatImpl;
+    aLong = (long)aDouble.theFloating;
     return true;
 #endif
   }
@@ -306,7 +306,7 @@ bool NumConversions::floatToInt(const xqp_float& aFloat, xqp_int& aInt) {
     xqpString lStr = aFloat.toIntegerString();
     return NumConversions::strToInt(lStr, aInt);
 #else
-    aInt = (xqp_int)aFloat.theFloatImpl;
+    aInt = (xqp_int)aFloat.theFloating;
     return true;
 #endif
   }

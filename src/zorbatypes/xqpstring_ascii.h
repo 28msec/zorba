@@ -45,17 +45,12 @@ public:
 protected:
   SYNC_CODE(mutable RCLock  theRCLock;)
 
-protected:
   std::string  theString;
 
 public:
-  SERIALIZABLE_CLASS(xqpStringStore)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(xqpStringStore, RCObject)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    //::zorba::serialization::serialize_baseclass(ar, (RCObject*)this);
-    ar & theString;
-  }
+  SERIALIZABLE_CLASS(xqpStringStore);
+  xqpStringStore(::zorba::serialization::Archiver &ar);
+  void serialize(::zorba::serialization::Archiver &ar);
 
 public:
   static bool
@@ -89,20 +84,20 @@ public:
 
   xqpStringStore(const char* start, long len) : theString(start, len) {}
 
-  xqpStringStore(const std::string& other) : theString(other) {}
+  xqpStringStore(const std::string& other);
 
   xqpStringStore(const xqpStringStore &other) 
     :
-    ::zorba::serialization::SerializeBaseClass(), 
     RCObject(other),
     theString(other.theString)
   {
   }
   
-  xqpStringStore(long initial_len) { theString.reserve(initial_len); }
+  ~xqpStringStore();
 
-  SYNC_CODE(virtual RCLock* getRCLock() const { return &theRCLock; })
+  SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
+  long* getSharedRefCounter() const { return NULL; } 
 
   const std::string& str() const { return theString; }
 
@@ -213,6 +208,9 @@ public:
   substr(std::string::size_type index, std::string::size_type length) const;
 
   xqpStringStore_t
+  substr(xqpStringStore::distance_type index) const;
+
+  xqpStringStore_t
   reverse() const;
 
   xqpStringStore_t
@@ -236,11 +234,20 @@ public:
   xqpStringStore_t
   trimR(const char* start, uint16_t len) const;
 
+  /** \brief Removes leading and trailing whitespace.
+   *
+   * @note whitespace is any of the following: ' ', '\n', '\r', '\t'
+   */  
   xqpStringStore_t
   trim() const;
 
+  /** \brief Removes leading and trailing characters from this string.
+   *
+   * @param chars An array containing the characters to be trimmed.
+   * @param lengthOfChars The length of the chars array.
+   */  
   xqpStringStore_t
-  trim(const char* start, uint16_t len) const;
+  trim(const char* chars, uint16_t lengthOfChars) const;
 
   xqpStringStore_t
   formatAsXML() const;
@@ -270,6 +277,8 @@ public:
 
   void append_in_place(const char c);
 
+  void append_in_place(uint32_t c);
+
   void append_in_place(const xqpStringStore *suffix);
 
   void append_in_place(const xqpStringStore *suffix, const char *s2);
@@ -298,10 +307,7 @@ public:
   SERIALIZABLE_CLASS(xqpString)
   //xqpString(::zorba::serialization::Archiver &ar) : theStrStore(ar) {}
   SERIALIZABLE_CLASS_CONSTRUCTOR(xqpString)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    ar & theStrStore;
-  }
+  void serialize(::zorba::serialization::Archiver &ar);
 public:
 
     //constructor/destructor
@@ -334,13 +340,8 @@ public:
      */
     xqpString(const wchar_t * src);
 
-    /**
-     * @param initial_len preallocates some bytes but the string is empty
-    */
-    xqpString(long initial_len);
-
     virtual ~xqpString(){};
-
+public:
     xqpStringStore* 
     getStore() const { return theStrStore.getp(); }
 
@@ -380,6 +381,8 @@ public:
     operator+=(char c);
 
     void append_in_place(const char c);
+
+    void append_in_place(uint32_t c);
 
     void append_in_place(const xqpStringStore *suffix);
 
@@ -688,6 +691,8 @@ public:
       static xqpString concat(const xqpString s1, 
                               const char *s2,
                               const xqpString s3);
+      static xqpString concat(const xqpString s1, 
+                            const xqpString s3);
       static xqpString concat(const std::string &s1, 
                               const char *s2,
                               const xqpStringStore_t s3);

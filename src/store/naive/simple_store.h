@@ -23,6 +23,7 @@
 #include "store/naive/node_items.h"
 #include "store/api/collection.h"
 #include "store/api/index.h"
+#include "store/api/ic.h"
 #endif
 
 #include "store/api/store.h"
