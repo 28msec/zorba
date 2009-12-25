@@ -85,7 +85,7 @@ class ModulesInfo;
 
 static expr_t translate_aux(
     const parsenode& root,
-    CompilerCB* aCompilerCB,
+    static_context* rootSctx,
     short rootSctxId,
     ModulesInfo* minfo,
     set<string> mod_stack,
@@ -98,7 +98,7 @@ static expr_t translate_aux(
                                                                    \
   if (Properties::instance()->traceTranslator())                   \
     cout << string(++print_depth, ' ') << TRACE << ", stk size "   \
-         << nodestack.size() << ", tstk size: " << tstack.size()   \
+         << nodestack.size() << ", tstk size: " << theTypeStack.size()   \
          << ", scope depth " << scope_depth << endl;
 
 
@@ -107,7 +107,7 @@ static expr_t translate_aux(
                                                                    \
   if (Properties::instance()->traceTranslator())                   \
     cout << string(print_depth--, ' ') << TRACE << ", stk size: "  \
-         << nodestack.size() << ", tstk size: " << tstack.size()   \
+         << nodestack.size() << ", tstk size: " << theTypeStack.size()   \
          << ", scope depth " << scope_depth << endl;
 
 #else
@@ -278,7 +278,7 @@ struct NodeSortInfo
   There is only one ModulesInfo instance per compilation. It is created on the
   stack by the translate() method.
 
-  theTopCCB     : The control block for the whole query. 
+  theCCB        : The control block for the whole query. 
                   (see compiler/api/compilercb.h). 
 
   mod_ns_map    : Maps resolved module location uris to target namespaces.
@@ -300,15 +300,16 @@ struct NodeSortInfo
 class ModulesInfo 
 {
 public:
-  CompilerCB                * theTopCCB;
+  CompilerCB                * theCCB;
   hashmap<static_context_t>   mod_sctx_map;
   hashmap<string>             mod_ns_map;
   checked_vector<expr_t>      init_exprs;
   auto_ptr<static_context>    globals;
 
+public:
   ModulesInfo(CompilerCB* topCompilerCB)
     :
-    theTopCCB(topCompilerCB),
+    theCCB(topCompilerCB),
     globals(static_cast<static_context *>
             (topCompilerCB->theRootSctx->get_parent())->create_child_context())
   {
@@ -323,16 +324,20 @@ public:
   module participating in a query. The instance is destroyed when the translation
   of the associated module is finished.
 
-  theTopCCB            : The control block for the whole query. (see
+  theCCB               : The control block for the whole query. (see
                          compiler/api/compilercb.h). 
 
-  minfo                : Pointer to the unique ModulesInfo instance (see class
+  theModulesInfo       : Pointer to the unique ModulesInfo instance (see class
                          ModulesInfo above).
 
-  mod_stack            : A set containing the ns uri of all the modules that have
-                         been imported so far by this module and its ancestor 
-                         modules in a chain of module imports. It is used to check
-                         that there are no cycles in a chain of module imports.
+  theModulesStack      : A set containing the ns uris of all the modules in the
+                         chain of module imports from this module up to the main
+                         module. It is used to check that there are no cycles
+                         in a chain of module imports.
+
+  theImportedModules   : A set containing the ns uris for all the modules 
+                         directly imported by this module. Used to check that
+                         the same module is not imported twice by this module.
 
   theModuleNamespace   : If this translator is working on a library module,
                          theModuleNamespace is the namespace uri of that module.
@@ -340,14 +345,12 @@ public:
                          theModulePrefix is the prefix associated with the ns
                          uri of that module.
 
-  zorba_predef_mod_ns  : Set of ns uris for all internal pre-defined modules. 
+  theBuiltInModules    : Set of ns uris for all internal pre-defined modules. 
                          If a module (i.e. a .xq file), containing external
                          function declarations, is shipped with Zorba, this
                          namespace must not be registered in this set.
-  mod_import_ns_set    : Set of ns uris for all the modules directly imported 
-                         by this module. Used to check that the same module is
-                         not imported twice by this module.
-  schema_import_ns_set : Set of ns uris for all schemas directly imported by
+
+  theImportedSchemas   : Set of ns uris for all schemas directly imported by
                          this module. Used to check that the same schema is not
                          imported twice by this module.
 
@@ -375,14 +378,14 @@ public:
                          populated by the imported module, and then merged by
                          the importing module into its own sctx. export_sctx is
                          "shared" between importing and imported modules via the
-                         minfo->mod_sctx_map. export_sctx is needed because module
-                         import is not transitive: If M1 imports M2 and M2 imports
-                         M3, then the vars and functions are seen by M2, but not
-                         by M3. This means, that the regular root sctx S2 of M2
-                         will contain the decls from both M2 and M3. So, M1 should
-                         not import S2 into its own sctx S1. Instead, we create
-                         ES2 for M2 and register in there the decls of M2 only;
-                         then, we import ES2 to S1.
+                         theModulesInfo->mod_sctx_map. export_sctx is needed
+                         because module import is not transitive: If M1 imports
+                         M2 and M2 imports M3, then the vars and functions are
+                         seen by M2, but not by M3. This means, that the regular
+                         root sctx S2 of M2 will contain the decls from both M2
+                         and M3. So, M1 should not import S2 into its own sctx
+                         S1. Instead, we create ES2 for M2 and register in there
+                         the decls of M2 only; then, we import ES2 to S1.
   ns_ctx               : The "current" namespace bindings node. It is initialized
                          with a newly allocated ns_ctx node, which points to the
                          initial sctx node. The initial sctx node stores all ns
@@ -408,9 +411,10 @@ public:
                          is NULL for vars without init expr). At the end of each
                          module translation, the method wrap_in_globalvar_assign()
                          creates appropriate initialization exprs for each var in 
-                         thePrologVars and registers them in minfo->init_exprs, so
-                         that they will be incorporated in the whole query plan at
-                         the end of the translation of the root module.
+                         thePrologVars and registers them in
+                         theModulesInfo->init_exprs, so that they will be
+                         incorporated in the whole query plan at the end of the
+                         translation of the root module.
 
   thePrologDeps        : A hashmap implementing the dependency graph among the
                          variables and udfs declared in the prolog of a module.
@@ -449,7 +453,7 @@ public:
                          nodestack contains all the ancestors (or ancestor
                          place-holdres) of E in the expr tree.
 
-  tstack               : Stack of the static types for some of the exprs in the
+  theTypeStack         : Stack of the static types for some of the exprs in the
                          nodestack.
 
   hadBSpaceDecl        : Set to true if prolog has boundary space decl. Used to
@@ -481,28 +485,23 @@ public:
 ********************************************************************************/
 class TranslatorImpl : public parsenode_visitor
 {
-public:
-  friend expr_t translate_aux(const parsenode&, CompilerCB*, short, ModulesInfo*, set<string>, bool);
-
 protected:
-
   RootTypeManager                    & theRTM;
 
-  CompilerCB                         * theTopCCB;
   CompilerCB                         * theCCB;
 
-  ModulesInfo                        * minfo;
-
-  set<string>                          mod_stack;
+  ModulesInfo                        * theModulesInfo;
+  set<string>                          theModulesStack;
+  set<string>                          theImportedModules;
   string                               theModuleNamespace;
   string                               theModulePrefix;
+  set<string>                          theBuiltInModules;
 
-  set<string>                          mod_import_ns_set;
-  set<string>                          zorba_predef_mod_ns;
-
-  set<string>                          schema_import_ns_set;
+  set<string>                          theImportedSchemas;
 
   short                                theCurrSctxId;
+
+  static_context                     * theRootSctx;
 
   static_context                     * sctx_p;
 
@@ -532,7 +531,7 @@ protected:
 
   stack<expr_t>                        nodestack;
 
-  stack<xqtref_t>                      tstack; 
+  stack<xqtref_t>                      theTypeStack; 
 
   std::vector<flwor_clause_t>          theFlworClausesStack;
 
@@ -563,21 +562,22 @@ protected:
   function                           * var_get;
   function                           * var_exists;
   
+public:
 
 TranslatorImpl(
-    CompilerCB* aCompilerCB,
+    static_context* rootSctx,
     short rootSctxId,
-    ModulesInfo* minfo_,
-    set<string> mod_stack_,
+    ModulesInfo* minfo,
+    set<string> mod_stack,
     bool isLibModule)
   :
   theRTM(GENV_TYPESYSTEM),
-  theTopCCB(minfo_->theTopCCB),
-  theCCB(aCompilerCB),
-  minfo(minfo_),
-  mod_stack(mod_stack_),
+  theCCB(minfo->theCCB),
+  theModulesInfo(minfo),
+  theModulesStack(mod_stack),
   theCurrSctxId(rootSctxId),
-  sctx_p(aCompilerCB->theRootSctx),
+  theRootSctx(rootSctx),
+  sctx_p(rootSctx),
   export_sctx(NULL),
   ns_ctx(new namespace_context(sctx_p)),
   print_depth(0),
@@ -613,14 +613,14 @@ TranslatorImpl(
   var_exists = GET_BUILTIN_FUNCTION(OP_VAR_EXISTS_1);
   assert(var_decl != NULL && var_set != NULL && var_get != NULL && var_exists != NULL);
 
-  zorba_predef_mod_ns.insert (ZORBA_OP_NS);
-  zorba_predef_mod_ns.insert (ZORBA_REST_FN_NS);
-  zorba_predef_mod_ns.insert (ZORBA_MATH_FN_NS);
-  zorba_predef_mod_ns.insert (ZORBA_NODEREF_FN_NS);
-  zorba_predef_mod_ns.insert (ZORBA_ALEXIS_FN_NS);
-  zorba_predef_mod_ns.insert (ZORBA_JSON_FN_NS);
-  zorba_predef_mod_ns.insert (ZORBA_JSON_ML_FN_NS);
-  zorba_predef_mod_ns.insert (ZORBA_FOP_FN_NS);
+  theBuiltInModules.insert (ZORBA_OP_NS);
+  theBuiltInModules.insert (ZORBA_REST_FN_NS);
+  theBuiltInModules.insert (ZORBA_MATH_FN_NS);
+  theBuiltInModules.insert (ZORBA_NODEREF_FN_NS);
+  theBuiltInModules.insert (ZORBA_ALEXIS_FN_NS);
+  theBuiltInModules.insert (ZORBA_JSON_FN_NS);
+  theBuiltInModules.insert (ZORBA_JSON_ML_FN_NS);
+  theBuiltInModules.insert (ZORBA_FOP_FN_NS);
   
   ctx_item_type = GENV_TYPESYSTEM.ITEM_TYPE_ONE;
 }
@@ -701,7 +701,7 @@ rchandle<axis_step_expr> expect_axis_step_top()
 ********************************************************************************/
 xqtref_t pop_tstack()
 {
-  return pop_stack(tstack); 
+  return pop_stack(theTypeStack); 
 }
 
 
@@ -732,14 +732,14 @@ void push_scope()
   // create a new static context for the new scope
   sctx_p = sctx_p->create_child_context(); 
  
-  if (theTopCCB->theDebuggerCommons != NULL) 
+  if (theCCB->theDebuggerCommons != NULL) 
   {
     // in debug mode, we remember all static contexts
     // this allows the debugger to introspect (during runtime)
     // all variables in scope
     theSctxIdStack.push(sctxid());
-    theCurrSctxId = theTopCCB->theSctxMap->size() + 1;
-    (*theTopCCB->theSctxMap)[sctxid()] = sctx_p; 
+    theCurrSctxId = theCCB->theSctxMap->size() + 1;
+    (*theCCB->theSctxMap)[sctxid()] = sctx_p; 
   }
   else
   {
@@ -759,10 +759,10 @@ void push_scope()
 ********************************************************************************/
 void pop_scope()
 {
-  if (theTopCCB->theDebuggerCommons != NULL) 
+  if (theCCB->theDebuggerCommons != NULL) 
   {
     theCurrSctxId = theSctxIdStack.top();
-    sctx_p = (*theTopCCB->theSctxMap)[sctxid()];
+    sctx_p = (*theCCB->theSctxMap)[sctxid()];
     theSctxIdStack.pop();
   }
   else
@@ -997,7 +997,7 @@ void bind_udf(
 void bind_udf(store::Item_t qname, function* f, int nargs, const QueryLoc& loc) 
 {
   bind_udf(qname, f, nargs, sctx_p, loc);
-  bind_udf(qname, f, nargs, minfo->globals.get (), loc);
+  bind_udf(qname, f, nargs, theModulesInfo->globals.get (), loc);
 
   if (export_sctx != NULL) 
   {
@@ -1351,7 +1351,7 @@ rchandle<flwor_expr> wrap_expr_in_flwor(expr* inputExpr, bool withContextSize)
 ********************************************************************************/
 void wrap_in_debugger_expr(expr_t& aExpr) 
 {
-  if (theTopCCB->theDebuggerCommons != NULL) 
+  if (theCCB->theDebuggerCommons != NULL) 
   {
     DebugLocation_t lLocation;
     std::auto_ptr<debugger_expr> lExpr(new debugger_expr(sctxid(),
@@ -1362,7 +1362,7 @@ void wrap_in_debugger_expr(expr_t& aExpr)
     lLocation.theFileName = aExpr->get_loc().getFilename();
     lLocation.theLineNumber = aExpr->get_loc().getLineno();
     lLocation.theQueryLocation = aExpr->get_loc();
-    theTopCCB->theDebuggerCommons->theLocationMap.insert(
+    theCCB->theDebuggerCommons->theLocationMap.insert(
       std::pair<DebugLocation_t, bool>(lLocation, false));
 
     // retrieve all variables that are in the current scope
@@ -1501,8 +1501,8 @@ void collect_flwor_vars (
 
 /*******************************************************************************
   Create declaration/initialization exprs for each prolog variable of this 
-  module and put these exprs in minfo->init_exprs. Then create a sequential
-  expr with its children being all the init exprs in minfo->init_exprs  plus
+  module and put these exprs in theModulesInfo->init_exprs. Then create a sequential
+  expr with its children being all the init exprs in theModulesInfo->init_exprs  plus
   the given expr "e" as its last child. 
 
   The method is called at the end of the translation of each module. The returned
@@ -1516,16 +1516,16 @@ expr_t wrap_in_globalvar_assign(expr_t e)
       i != thePrologVars.end();
       ++i)
   {
-    declare_var(*i, minfo->init_exprs);
+    declare_var(*i, theModulesInfo->init_exprs);
   }
 
   expr_t preloadedInitExpr = static_cast<static_context*>(sctx_p->get_parent())->
                              get_query_expr();
 
-  if (!minfo->init_exprs.empty() || preloadedInitExpr != NULL) 
+  if (!theModulesInfo->init_exprs.empty() || preloadedInitExpr != NULL) 
   {
     sequential_expr* seqExpr =
-    new sequential_expr(sctxid(), e->get_loc(), minfo->init_exprs, e);
+    new sequential_expr(sctxid(), e->get_loc(), theModulesInfo->init_exprs, e);
 
     if (preloadedInitExpr)
       seqExpr->push_front(preloadedInitExpr);
@@ -1750,7 +1750,7 @@ void end_visit(const ModuleDecl& v, void* /*visit_state*/)
   sctx_p->bind_ns(theModulePrefix, theModuleNamespace);
 
   static_context_t lTmpCtx;
-  bool found = minfo->mod_sctx_map.get(sctx_p->entity_retrieval_url(), lTmpCtx);
+  bool found = theModulesInfo->mod_sctx_map.get(sctx_p->entity_retrieval_url(), lTmpCtx);
   ZORBA_ASSERT (found);
 
   export_sctx = lTmpCtx.getp();
@@ -2067,7 +2067,7 @@ void *begin_visit (const SchemaImport& v)
   SchemaPrefix* prefix = &*v.get_prefix();
   string target_ns = v.get_uri();
 
-  if (! schema_import_ns_set.insert(target_ns).second)
+  if (! theImportedSchemas.insert(target_ns).second)
     ZORBA_ERROR_LOC (XQST0058, loc);
 
   if (prefix != NULL) 
@@ -2213,8 +2213,8 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
   // It is a static error [err:XQST0047] if more than one module import in a
   // Prolog specifies the same target namespace
-  if (! mod_import_ns_set.insert(target_ns).second)
-    ZORBA_ERROR_LOC (XQST0047, loc);
+  if (! theImportedModules.insert(target_ns).second)
+    ZORBA_ERROR_LOC(XQST0047, loc);
 
   // The namespace prefix specified in a module import must not be the same as
   // any namespace prefix bound  in the same module by another module import, 
@@ -2233,16 +2233,16 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     }
   }
 
-  rchandle<URILiteralList> ats = v.get_uri_list ();
+  rchandle<URILiteralList> ats = v.get_uri_list();
 
   // Handle pre-defined modules
-  if (ats == NULL && zorba_predef_mod_ns.find (target_ns) != zorba_predef_mod_ns.end ())
+  if (ats == NULL && theBuiltInModules.find(target_ns) != theBuiltInModules.end())
     return;
 
   // Create a list of absolute uris identifying the locations of modules in
   // the target ns. If there are no "at" clauses, use the target namespace.
   vector<xqpStringStore_t> lURIs;
-  if (ats == NULL || ats->size () == 0) 
+  if (ats == NULL || ats->size() == 0)
   {
     lURIs.push_back(xqp_string(target_ns).getStore());
   }
@@ -2272,7 +2272,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       ZORBA_ERROR_LOC_DESC_OSS(XQST0046, loc, "URI is not valid " << resolveduri);
 
     // Make sure that there are no cycles in a chain of module imports.
-    set<string> mod_stk1 = mod_stack;
+    set<string> mod_stk1 = theModulesStack;
     if (! mod_stk1.insert(resolveduri->str()).second)
       ZORBA_ERROR_LOC (XQST0073, loc);
     
@@ -2282,9 +2282,9 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     // Check whether we have already imported a module from the current location
     // uri. If so, check that the target ns of what we imported before is the
     // same as what we are trying to import now.
-    if (minfo->mod_ns_map.get(resolveduri->str(), imported_ns)) 
+    if (theModulesInfo->mod_ns_map.get(resolveduri->str(), imported_ns)) 
     {
-      bool found = minfo->mod_sctx_map.get(resolveduri->str(), imported_sctx);
+      bool found = theModulesInfo->mod_sctx_map.get(resolveduri->str(), imported_sctx);
       ZORBA_ASSERT (found);
 
       if (imported_ns != target_ns)
@@ -2309,23 +2309,18 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
         ZORBA_ERROR_LOC_PARAM (XQST0059, loc, resolveduri, target_ns);
       }
 
-      // Create a CompilerCB for the imported module as a copy of the importing
-      // module's CompilerCB. Copying is needed for configuration settings,
-      // error manager, and debugger
-      CompilerCB mod_ccb(*theCCB);
-
       // Get the query-level sctx. This is the user-specified sctx (if any) or
       // the zorba default (root) sctx (if no user-specified sctx).
       static_context_t independent_sctx = 
-      static_cast<static_context *>(theTopCCB->theRootSctx->get_parent());
+      static_cast<static_context *>(theCCB->theRootSctx->get_parent());
 
       // Create the root sctx for the imported module as a child of the
       // query-level sctx. Register this sctx in the query-level sctx map.
-      mod_ccb.theRootSctx = independent_sctx->create_child_context();
-      mod_ccb.theRootSctx->set_module_namespace(imported_ns);
-      mod_ccb.theRootSctx->set_entity_retrieval_url(resolveduri->str());
-      ulong moduleRootSctxId = theTopCCB->theSctxMap->size() + 1;
-      (*theTopCCB->theSctxMap)[moduleRootSctxId] = mod_ccb.theRootSctx;
+      static_context* moduleRootSctx = independent_sctx->create_child_context();
+      moduleRootSctx->set_module_namespace(imported_ns);
+      moduleRootSctx->set_entity_retrieval_url(resolveduri->str());
+      ulong moduleRootSctxId = theCCB->theSctxMap->size() + 1;
+      (*theCCB->theSctxMap)[moduleRootSctxId] = moduleRootSctx;
 
       // Create an sctx where the imported module is going to register all the
       // variable and function declarations that appear in its prolog. After the
@@ -2334,12 +2329,12 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       imported_sctx = independent_sctx->create_child_context();
       imported_sctx->set_module_namespace(imported_ns);
 
-      // Register the imported_sctx in minfo->mod_sctx_map so that it is
+      // Register the imported_sctx in theModulesInfo->mod_sctx_map so that it is
       // accessible by both the importing and the imported modules.
-      minfo->mod_sctx_map.put(resolveduri->str(), imported_sctx);
+      theModulesInfo->mod_sctx_map.put(resolveduri->str(), imported_sctx);
 
       // Parse the imported module
-      XQueryCompiler xqc(theTopCCB);
+      XQueryCompiler xqc(theCCB);
       xqpString lFileName(aturiitem->getStringValue());
       if (lFileUri.size() != 0) 
       {
@@ -2364,25 +2359,30 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
         ZORBA_ERROR_LOC_PARAM(XQST0059, loc, resolveduri, target_ns);
 
       // translate the imported module
-      translate_aux(*ast, &mod_ccb, moduleRootSctxId, minfo, mod_stk1, true);
+      translate_aux(*ast,
+                    moduleRootSctx, 
+                    moduleRootSctxId,
+                    theModulesInfo,
+                    mod_stk1,
+                    true);
 
       // Register the mapping between the current location uri and the
       // target namespace.
-      minfo->mod_ns_map.put(resolveduri->str(), imported_ns);
+      theModulesInfo->mod_ns_map.put(resolveduri->str(), imported_ns);
 
       // If we compile in debug mode, we add the namespace uri into a map, that
       // allows the debugger to set breakpoints at a namespace uri and line
       // number
-      if (theTopCCB->theDebuggerCommons) 
+      if (theCCB->theDebuggerCommons) 
       {
-        theTopCCB->theDebuggerCommons->addModuleUriMapping(imported_ns,
+        theCCB->theDebuggerCommons->addModuleUriMapping(imported_ns,
                                                            lFileUri.c_str());
       }
     }
 
     // Merge the exported sctx of the imported module into the sctx of the
     // current module. Note: We catch duplicate functions / vars in 
-    // minfo->globals. We can safely ignore the return value. We might even
+    // theModulesInfo->globals. We can safely ignore the return value. We might even
     // be able to assert() here (not sure though).
     sctx_p->import_module(imported_sctx.getp(), loc);
 
@@ -2671,7 +2671,7 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
 
     // Make sure that there is no other prolog var with the same name in any of
     // modules transalted so far.
-    // bind_var(ve, minfo->globals.get());
+    // bind_var(ve, theModulesInfo->globals.get());
 
     // If this is a library module, register the var in the exported sctx as well.
     if (export_sctx != NULL)
@@ -2725,7 +2725,7 @@ void end_visit(const CtxItemDecl& v, void* /*visit_state*/)
     varref_t var = create_var (loc, ".", var_expr::prolog_var, ctx_item_type);
     global_binding b (var, ctx_item_default, true);
 
-    declare_var(b, minfo->init_exprs);
+    declare_var(b, theModulesInfo->init_exprs);
   }
 }
 
@@ -2889,17 +2889,17 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
       body = wrap_in_type_match(body, returnType);
     }
 
-    if (theTopCCB->theConfig.translate_cb != NULL)
-      theTopCCB->theConfig.translate_cb(&*body, v.get_name()->get_qname());
+    if (theCCB->theConfig.translate_cb != NULL)
+      theCCB->theConfig.translate_cb(&*body, v.get_name()->get_qname());
 
-    if (theTopCCB->theConfig.opt_level == CompilerCB::config_t::O1) 
+    if (theCCB->theConfig.opt_level == CompilerCB::config::O1) 
     {
       RewriterContext rCtx(theCCB, body);
       GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
       body = rCtx.getRoot();
 
-      if (theTopCCB->theConfig.optimize_cb != NULL)
-        theTopCCB->theConfig.optimize_cb(&*body, v.get_name()->get_qname());
+      if (theCCB->theConfig.optimize_cb != NULL)
+        theCCB->theConfig.optimize_cb(&*body, v.get_name()->get_qname());
     }
 
     udf->set_body(body);
@@ -3120,7 +3120,6 @@ void end_visit(const IndexDecl& v, void* /*visit_state*/)
   indexstack.pop();
 
   index->analyze();
-  //IndexTools::inferIndexCreators(index);
 
   // Register the index in the sctx of the current module. Raise error if such
   // a binding exists already in the sctx.
@@ -3147,18 +3146,18 @@ void* begin_visit(const IndexKeyList& v)
 
   std::string msg = "domain expr for index " + index->getName()->getStringValue()->str();
 
-  if (theTopCCB->theConfig.translate_cb != NULL)
-    theTopCCB->theConfig.translate_cb(domainExpr.getp(), msg);
+  if (theCCB->theConfig.translate_cb != NULL)
+    theCCB->theConfig.translate_cb(domainExpr.getp(), msg);
 
   // Optimize the domain expr
-  if (theTopCCB->theConfig.opt_level == CompilerCB::config_t::O1) 
+  if (theCCB->theConfig.opt_level == CompilerCB::config::O1) 
   {
     RewriterContext rCtx(theCCB, domainExpr);
     GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
     domainExpr = rCtx.getRoot();
 
-    if (theTopCCB->theConfig.optimize_cb != NULL)
-      theTopCCB->theConfig.optimize_cb(&*domainExpr, msg);
+    if (theCCB->theConfig.optimize_cb != NULL)
+      theCCB->theConfig.optimize_cb(&*domainExpr, msg);
   }
 
   index->setDomainExpr(domainExpr);
@@ -3245,20 +3244,20 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
     std::ostringstream msg;
     msg << "key expr " << i << " for index " << index->getName()->getStringValue()->str();
 
-    if (theTopCCB->theConfig.translate_cb != NULL)
-      theTopCCB->theConfig.translate_cb(keyExpr.getp(), msg.str());
+    if (theCCB->theConfig.translate_cb != NULL)
+      theCCB->theConfig.translate_cb(keyExpr.getp(), msg.str());
 
     // Normalize and optimize the key expr
-    //normalize_expr_tree(msg.str().c_str(), theTopCCB, keyExpr, NULL);
+    //normalize_expr_tree(msg.str().c_str(), theCCB, keyExpr, NULL);
 
-    if (theTopCCB->theConfig.opt_level == CompilerCB::config_t::O1) 
+    if (theCCB->theConfig.opt_level == CompilerCB::config::O1) 
     {
-      RewriterContext rCtx(theTopCCB, keyExpr);
+      RewriterContext rCtx(theCCB, keyExpr);
       GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
       keyExpr = rCtx.getRoot();
       
-      if (theTopCCB->theConfig.optimize_cb != NULL)
-        theTopCCB->theConfig.optimize_cb(&*keyExpr, msg.str());
+      if (theCCB->theConfig.optimize_cb != NULL)
+        theCCB->theConfig.optimize_cb(&*keyExpr, msg.str());
     }
 
     keyExprs[i] = keyExpr;
@@ -3365,8 +3364,8 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
   switch( v.getICKind() )
   {
   case IntegrityConstraintDecl::coll_check_simple:
-    {
-      /**********************
+  {
+    /**********************
        declare integrity constraint example:ic1 
          on collection example:coll1 $x check sum($x/size) le 1000;
 
@@ -3374,52 +3373,52 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
 
        let $x := dc:collection(example:coll1)
        return sum($x/size) le 1000;
-       **********************/
+    **********************/
 
       
-      function* f = LOOKUP_FN("fn", "true", 0);
-      /*function* fn_dc_collection = sctx_p->lookup_resolved_fn(
-          "http://www.zorba-xquery.com/module/dynamic-context", "collection", 
-          loc);
-      */
-      std::vector<expr_t> arguments;
-      //arguments.push_back();
-
-      fo_expr_t foExpr = new fo_expr(sctxid(), loc, f, arguments);
-      body = foExpr;     
-    }
-    break;
-
+    function* f = LOOKUP_FN("fn", "true", 0);
+    /*function* fn_dc_collection = sctx_p->lookup_resolved_fn(
+      "http://www.zorba-xquery.com/module/dynamic-context", "collection", 
+      loc);
+    */
+    std::vector<expr_t> arguments;
+    //arguments.push_back();
+    
+    fo_expr_t foExpr = new fo_expr(sctxid(), loc, f, arguments);
+    body = foExpr;     
+  }
+  break;
+  
   case IntegrityConstraintDecl::coll_check_unique_key:
-    {
-      store::Item_t fn_true_qname = sctx_p->lookup_fn_qname("fn", "true", loc);
-      function* f = LOOKUP_FN("fn", "true", 0);
-      std::vector<expr_t> arguments;
-      fo_expr_t foExpr = new fo_expr(sctxid(), loc, f, arguments);
-      body = foExpr;
-    }
-    break;
-
+  {
+    store::Item_t fn_true_qname = sctx_p->lookup_fn_qname("fn", "true", loc);
+    function* f = LOOKUP_FN("fn", "true", 0);
+    std::vector<expr_t> arguments;
+    fo_expr_t foExpr = new fo_expr(sctxid(), loc, f, arguments);
+    body = foExpr;
+  }
+  break;
+  
   case IntegrityConstraintDecl::coll_foreach_node:
-    {
-      store::Item_t fn_true_qname = sctx_p->lookup_fn_qname("fn", "true", loc);
-      function* f = LOOKUP_FN("fn", "true", 0);
-      std::vector<expr_t> arguments;
-      fo_expr_t foExpr = new fo_expr(sctxid(), loc, f, arguments);
-      body = foExpr;
-    }
-    break;
+  {
+    store::Item_t fn_true_qname = sctx_p->lookup_fn_qname("fn", "true", loc);
+    function* f = LOOKUP_FN("fn", "true", 0);
+    std::vector<expr_t> arguments;
+    fo_expr_t foExpr = new fo_expr(sctxid(), loc, f, arguments);
+    body = foExpr;
+  }
+  break;
 
   case IntegrityConstraintDecl::foreign_key:
-    {
-      store::Item_t fn_true_qname = sctx_p->lookup_fn_qname("fn", "true", loc);
-      function* f = LOOKUP_FN("fn", "true", 0);
-      std::vector<expr_t> arguments;
-      fo_expr_t foExpr = new fo_expr(sctxid(), loc, f, arguments);
-      body = foExpr;
-    }
-    break;
-
+  {
+    store::Item_t fn_true_qname = sctx_p->lookup_fn_qname("fn", "true", loc);
+    function* f = LOOKUP_FN("fn", "true", 0);
+    std::vector<expr_t> arguments;
+    fo_expr_t foExpr = new fo_expr(sctxid(), loc, f, arguments);
+    body = foExpr;
+  }
+  break;
+  
   default:
     ZORBA_ASSERT(false);
   }
@@ -3519,7 +3518,7 @@ void end_visit(const QueryBody& v, void* /*visit_state*/)
 
   nodestack.push(resultExpr);
 
-  if (minfo->theTopCCB->isLoadPrologQuery())
+  if (theModulesInfo->theCCB->isLoadPrologQuery())
     sctx_p->set_query_expr(resultExpr);
 }
 
@@ -8165,7 +8164,7 @@ void end_visit(const SingleType& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
   if (v.get_hook_bit())
-    tstack.push (CTXTS->create_type(*pop_tstack(), TypeConstants::QUANT_QUESTION));
+    theTypeStack.push(CTXTS->create_type(*pop_tstack(), TypeConstants::QUANT_QUESTION));
   // else leave type as it is on tstack
 }
 
@@ -8196,7 +8195,7 @@ void end_visit(const TypeName& v, void* /*visit_state*/)
 void *begin_visit (const SequenceType& v) {
   TRACE_VISIT ();
   if (v.get_itemtype () == NULL && v.get_occur () == NULL) {
-    tstack.push (GENV_TYPESYSTEM.EMPTY_TYPE);
+    theTypeStack.push (GENV_TYPESYSTEM.EMPTY_TYPE);
     return NULL;
   }
   return no_state;
@@ -8224,7 +8223,7 @@ void *begin_visit (const OccurrenceIndicator& v) {
   }
 
   if (q != TypeConstants::QUANT_ONE)
-    tstack.push (CTXTS->create_type (*pop_tstack (), q));
+    theTypeStack.push (CTXTS->create_type (*pop_tstack (), q));
 
   return no_state;
 }
@@ -8255,7 +8254,7 @@ void end_visit (const AtomicType& v, void* /*visit_state*/)
   if (t == NULL)
     ZORBA_ERROR_LOC_PARAM (XPST0051, loc, qname->get_qname (), "");
   else
-    tstack.push (t);
+    theTypeStack.push (t);
 }
 
 
@@ -8266,7 +8265,7 @@ void *begin_visit (const ItemType& v) {
 
 void end_visit (const ItemType& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  tstack.push (GENV_TYPESYSTEM.ITEM_TYPE_ONE);
+  theTypeStack.push (GENV_TYPESYSTEM.ITEM_TYPE_ONE);
 }
 
 
@@ -8307,7 +8306,7 @@ void end_visit (const AnyKindTest& v, void* /*visit_state*/) {
     me->setTestKind(match_anykind_test);
     axisExpr->setTest(me);
   } else {
-    tstack.push(GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE);
+    theTypeStack.push(GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE);
   }
 }
 
@@ -8344,7 +8343,7 @@ void end_visit (const DocumentTest& v, void* /*visit_state*/)
     }
     else
     {
-      tstack.push(GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE);
+      theTypeStack.push(GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE);
     }
   }
   else if (axisExpr != NULL) 
@@ -8363,7 +8362,7 @@ void end_visit (const DocumentTest& v, void* /*visit_state*/)
                                                TypeConstants::QUANT_ONE,
                                                false,
                                                false);
-    tstack.push(docTest);
+    theTypeStack.push(docTest);
   }
 }
 
@@ -8430,7 +8429,7 @@ void end_visit (const ElementTest& v, void* /*visit_state*/)
                                                 TypeConstants::QUANT_ONE,
                                                 nillable,
                                                 false);
-    tstack.push(seqmatch);
+    theTypeStack.push(seqmatch);
   }
 }
 
@@ -8469,7 +8468,7 @@ void *begin_visit (const SchemaElementTest& v)
     try {
       xqtref_t seqmatch = CTXTS->create_schema_element_type(elemQNameItem,
           TypeConstants::QUANT_ONE);
-      tstack.push(seqmatch);
+      theTypeStack.push(seqmatch);
     } catch (error::ZorbaError& e) {
       ZORBA_ERROR_LOC_DESC(e.theErrorCode, v.get_location(), e.theDescription);
     }
@@ -8540,7 +8539,7 @@ void end_visit (const AttributeTest& v, void* /*visit_state*/)
                                                 false,
                                                 false);
 
-    tstack.push(seqmatch);
+    theTypeStack.push(seqmatch);
   }
 }
 
@@ -8573,7 +8572,7 @@ void *begin_visit (const SchemaAttributeTest& v)
     xqtref_t seqmatch = CTXTS->create_schema_attribute_type(attrQNameItem,
                                                             TypeConstants::QUANT_ONE);
 
-    tstack.push(seqmatch);
+    theTypeStack.push(seqmatch);
   }
 
 #else//ZORBA_NO_XMLSCHEMA
@@ -8610,7 +8609,7 @@ void end_visit (const TextTest& v, void* /*visit_state*/)
   }
   else 
   {
-    tstack.push(GENV_TYPESYSTEM.TEXT_TYPE_ONE);
+    theTypeStack.push(GENV_TYPESYSTEM.TEXT_TYPE_ONE);
   }
 }
 
@@ -8636,7 +8635,7 @@ void end_visit (const CommentTest& v, void* /*visit_state*/)
   }
   else 
   {
-    tstack.push(GENV_TYPESYSTEM.COMMENT_TYPE_ONE);
+    theTypeStack.push(GENV_TYPESYSTEM.COMMENT_TYPE_ONE);
   }
 }
 
@@ -8671,7 +8670,7 @@ void end_visit (const PITest& v, void* /*visit_state*/)
   {
     if (target == "")
     {
-      tstack.push(GENV_TYPESYSTEM.PI_TYPE_ONE);
+      theTypeStack.push(GENV_TYPESYSTEM.PI_TYPE_ONE);
     }
     else 
     {
@@ -8681,7 +8680,7 @@ void end_visit (const PITest& v, void* /*visit_state*/)
                                                     TypeConstants::QUANT_ONE,
                                                     false,
                                                     false);
-      tstack.push (t);
+      theTypeStack.push (t);
     }
   }
 }
@@ -9562,7 +9561,7 @@ expr_t result ()
     ZORBA_ASSERT (false);
   }
 
-  ZORBA_ASSERT (tstack.size () == 0);
+  ZORBA_ASSERT (theTypeStack.size () == 0);
 
   if (scope_depth != 0) 
   {
@@ -9576,15 +9575,18 @@ expr_t result ()
 };
 
 
+/*******************************************************************************
+  Translate a module.
+********************************************************************************/
 expr_t translate_aux(
     const parsenode& root,
-    CompilerCB* aCompilerCB,
+    static_context* rootSctx,
     short rootSctxId,
     ModulesInfo* minfo,
     set<string> mod_stack,
     bool isLibModule) 
 {
-  auto_ptr<TranslatorImpl> t(new TranslatorImpl(aCompilerCB,
+  auto_ptr<TranslatorImpl> t(new TranslatorImpl(rootSctx,
                                                 rootSctxId,
                                                 minfo,
                                                 mod_stack,
@@ -9594,27 +9596,30 @@ expr_t translate_aux(
 
   rchandle<expr> result = t->result();
 
-  if (aCompilerCB->theConfig.translate_cb != NULL)
-    aCompilerCB->theConfig.translate_cb (&*result, "XQuery program");
+  CompilerCB* ccb = minfo->theCCB;
+  if (ccb->theConfig.translate_cb != NULL)
+    ccb->theConfig.translate_cb(&*result, "XQuery program");
 
   return result;
 }
 
 
-expr_t translate(const parsenode& root, CompilerCB* aCompilerCB) 
+expr_t translate(const parsenode& root, CompilerCB* ccb) 
 {
   set<string> mod_stack;
 
   if (typeid(root) != typeid(MainModule))
+  {
     ZORBA_ERROR_LOC_DESC(XPST0003,
                          root.get_location(),
                          "Module declaration must not be used in a main module");
+  }
 
-  ModulesInfo minfo(aCompilerCB);
+  ModulesInfo minfo(ccb);
 
   return translate_aux(root,
-                       aCompilerCB,
-                       aCompilerCB->theSctxMap->size(),
+                       ccb->theRootSctx,
+                       ccb->theSctxMap->size(),
                        &minfo,
                        mod_stack,
                        false);

@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef XQP_XQUERY_IMPL_H
-#define XQP_XQUERY_IMPL_H
+#ifndef ZORBA_API_XQUERY_IMPL
+#define ZORBA_API_XQUERY_IMPL
 
+#include <map>
 #include <iostream>
 #include <zorba/xquery.h>
 #include <zorba/sax2.h>
@@ -23,10 +24,14 @@
 #include <zorba/api_shared_types.h>
 
 #include "zorbautils/mutex.h"
-#include "zorbatypes/xqpstring.h"
 
 #include "common/shared_types.h" 
-#include "compiler/api/compilercb.h"
+
+#include "zorbatypes/xqpstring.h"
+
+#include "zorbaserialization/class_serializer.h"
+
+//#include "compiler/api/compilercb.h"
 
 
 namespace zorba 
@@ -40,6 +45,7 @@ class DynamicContextImpl;
 class StaticContextImpl;
 class ResultIteratorImpl;
 class dynamic_context;
+class CompilerCB;
 
 
 /*******************************************************************************
@@ -99,11 +105,17 @@ class dynamic_context;
   XQuery. This way we can guarantee that no ResultIterator objs can exists when
   their associated XQuery is closed (see ~ResultIterator() and XQuery::close()).
 
+  - theErrorManager :
+  Each query has its own ErrorManager. The ErrorManager provides static methods
+  for throwing exceptions, and can also accumulate query errors/warnings that
+  need to be processed in some deferred fashion.
+
   - theErrorHandler :
   Normally, this is an object provided by the application to handle errors in
-  some specific way. If the application does not provide an error handler, a
-  default zorba error handler is created for the query (the default error
-  handler just throws a ZorbaException).
+  some specific way (see include/zorba/error_handler.h and src/api/zorbaimpl.cpp).
+  If the application does not provide an error handler, a default zorba error
+  handler is created for the query (the default error handler just throws a
+  ZorbaException).
 
   - theUserErrorHandler :
   True if the error handler was provided by the application (in which case it
@@ -111,9 +123,6 @@ class dynamic_context;
   case, theErrorHandler points to the same error handler obj as the orignal
   query. False otherwise (in which case the error handler is owned by the
   query).
-
-  - theErrorManager :
-  Currently, it always belongs to the query. See note in the constructor.
 
   - theSAX2Handler :
   sax content handler that provide event-based xml parser
@@ -176,10 +185,9 @@ class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseC
   std::vector<ResultIteratorImpl*>   theResultIterators;
 
   // utility stuff
-  bool                               theUserErrorHandler; 
-  ErrorHandler                     * theErrorHandler; 
-    
   error::ErrorManager              * theErrorManager; 
+  ErrorHandler                     * theErrorHandler; 
+  bool                               theUserErrorHandler; 
 
   SAX2_ContentHandler              * theSAX2Handler; 
     
@@ -200,34 +208,7 @@ private:
 public:
   SERIALIZABLE_CLASS(XQueryImpl)
   SERIALIZABLE_CLASS_CONSTRUCTOR(XQueryImpl)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-  // static stuff
-    ar & theFileName;
-    if(!ar.is_serializing_out())
-    {
-      delete theCompilerCB;
-      //ar.xquery_impl = this;
-    }
-    else
-      ar.compiler_cb = theCompilerCB;
-    ar & theCompilerCB;
-    ar & theSctxMap;
-    ar & thePlan; 
-    ar & theStaticContext;
-    if(!ar.is_serializing_out())
-    {
-      if(theStaticContext)
-        RCHelper::addReference (theStaticContext);
-      theDynamicContextWrapper = NULL; 
-      theStaticContextWrapper = NULL;//new StaticContextImpl(theStaticContext, theErrorHandler); 
-
-      theIsClosed = false;
-
-      theCompilerCB->theErrorManager = theErrorManager;
-    }
-    ar & theTimeout;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   virtual ~XQueryImpl();
@@ -245,10 +226,11 @@ public:
   execute(std::ostream&, const Zorba_SerializerOptions_t* = NULL);
 
   virtual void
-  execute(std::ostream& aOutStream,
-    itemHandler aCallbackFunction,
-    void* aCallbackData,
-    const Zorba_SerializerOptions_t* aSerOptions = NULL);
+  execute(
+        std::ostream& aOutStream,
+        itemHandler aCallbackFunction,
+        void* aCallbackData,
+        const Zorba_SerializerOptions_t* aSerOptions = NULL);
 
   void
   execute();
@@ -350,9 +332,6 @@ protected:
       
   void
   doCompile(std::istream&, const Zorba_CompilerHints_t& aHints, bool fork_sctx = true);
-
-  CompilerCB::config_t
-  getCompilerConfig(const Zorba_CompilerHints_t&);
 
   PlanWrapper_t
   generateWrapper();

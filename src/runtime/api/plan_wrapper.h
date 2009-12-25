@@ -63,7 +63,7 @@ public:
 
   PlanWrapper(
         const PlanIter_t& iter,
-        CompilerCB* give_another_name_to_this_parameter_if_you_dont_like_this_one,
+        CompilerCB*       ccb,
         dynamic_context*  dynamicContext,
         XQueryImpl*       query,
         uint32_t          stackDepth = 0,

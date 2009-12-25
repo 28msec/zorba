@@ -1841,7 +1841,7 @@ FunctionSig :
     }
   | LPAR ParamList RPAR AS SequenceType
     {
-      $$ = new FunctionSig (dynamic_cast<ParamList *> ($2), dynamic_cast<SequenceType *> ($5));
+      $$ = new FunctionSig(dynamic_cast<ParamList *>($2), dynamic_cast<SequenceType *>($5));
     }
   ;
 

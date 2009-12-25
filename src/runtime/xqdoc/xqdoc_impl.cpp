@@ -48,17 +48,20 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   std::stringstream lOutput;
   std::istringstream lInput;
   static_context* lSctx;
+  short sctxid;
   StandardModuleURIResolver* lModuleResolver = 0;
 
   // setup a new CompilerCB and a new XQueryCompiler 
-  CompilerCB     lCompilerCB(*planState.theCompilerCB);
+  CompilerCB lCompilerCB(*planState.theCompilerCB);
   lCompilerCB.theRootSctx = GENV.getRootStaticContext().create_child_context();
+  sctxid = planState.theCompilerCB->theSctxMap->size() + 1;
+  (*planState.theCompilerCB->theSctxMap)[sctxid] = lCompilerCB.theRootSctx; 
 
   // the XQueryCompiler's constructor destroys the existing type manager 
   // in the static context. Hence, we create a new one
   XQueryCompiler lCompiler(&lCompilerCB);
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   // retrieve the URI of the module to generate xqdoc for
@@ -85,9 +88,15 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     // retrieve the xqdoc elements as string and parse them
     // TODO: this could be done more efficiently if Items are returned immediately
-    lCompiler.xqdoc(*lFile.get(), lFileName.theStrStore->str(), lOutput, planState.dctx()->get_current_date_time());
+    lCompiler.xqdoc(*lFile.get(),
+                    lFileName.theStrStore->str(),
+                    lOutput,
+                    planState.dctx()->get_current_date_time());
+
     lInput.str(lOutput.str());
+
     result = GENV_STORE.loadDocument(lFileName.theStrStore, lInput, false);
+
     STACK_PUSH(true, state);
   }
   else

@@ -64,15 +64,17 @@ static expr_t partial_eval_eq (RewriterContext&, fo_expr&);
 static expr_t execute (
     CompilerCB* compilercb,
     expr_t node,
-    vector<store::Item_t> &result) 
+    vector<store::Item_t>& result) 
 {
   PlanIter_t plan = codegen ("const-folded expr", node, compilercb);
   QueryLoc loc = LOC (node);
   store::Item_t item;
   try 
   {
-    for (PlanWrapperHolder pw (new PlanWrapper (plan, compilercb, 0, NULL)); ; ) {
-      if (!pw->next(item)) {
+    for (PlanWrapperHolder pw(new PlanWrapper(plan, compilercb, 0, NULL)); ; ) 
+    {
+      if (!pw->next(item)) 
+      {
         break;
       }
       result.push_back (item);

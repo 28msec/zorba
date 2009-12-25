@@ -35,16 +35,18 @@ namespace store {
 }
 
 
-#define ZORBA_TRY try { 
-#define ZORBA_CATCH } catch (error::ZorbaError& e) { \
-    ZorbaImpl::notifyError(theErrorHandler, e); \
-  } catch (FlowCtlException&) { \
+#define ZORBA_TRY try {
+ 
+#define ZORBA_CATCH                                            \
+  } catch (error::ZorbaError& e) {                             \
+    ZorbaImpl::notifyError(theErrorHandler, e);                \
+  } catch (FlowCtlException&) {                                \
     ZorbaImpl::notifyError(theErrorHandler, "User interrupt"); \
-  } catch (std::exception& e) { \
-    ZorbaImpl::notifyError(theErrorHandler, e.what()); \
-  } catch (...) { \
-    ZorbaImpl::notifyError(theErrorHandler); \
-  } \
+  } catch (std::exception& e) {                                \
+    ZorbaImpl::notifyError(theErrorHandler, e.what());         \
+  } catch (...) {                                              \
+    ZorbaImpl::notifyError(theErrorHandler);                   \
+  }                                                            \
   
 
 /**

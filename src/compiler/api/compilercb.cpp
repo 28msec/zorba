@@ -15,7 +15,7 @@
  */
 
 #include "compiler/api/compilercb.h"
-#include "compiler/expression/expr_base.h"
+//#include "compiler/expression/expr_base.h"
 
 #include "context/static_context.h"
 
@@ -91,11 +91,13 @@ void CompilerCB::config::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-CompilerCB::CompilerCB(std::map<short, static_context_t>& sctx_map)
+CompilerCB::CompilerCB(
+    std::map<short, static_context_t>& sctx_map,
+    error::ErrorManager* errmgr)
   :
-  theRootSctx(0),
+  theErrorManager(errmgr),
   theSctxMap(&sctx_map),
-  theErrorManager(0),
+  theRootSctx(0),
   theDebuggerCommons(0),
   theIsLoadProlog(false),
   theIsUpdating(false)
@@ -106,13 +108,13 @@ CompilerCB::CompilerCB(std::map<short, static_context_t>& sctx_map)
 CompilerCB::CompilerCB(const CompilerCB& cb)
   :
   zorba::serialization::SerializeBaseClass(cb),
-  theConfig(cb.theConfig),
-  theRootSctx(NULL),
-  theSctxMap(cb.theSctxMap),
   theErrorManager(cb.theErrorManager),
+  theSctxMap(cb.theSctxMap),
+  theRootSctx(NULL),
   theDebuggerCommons(cb.theDebuggerCommons),
   theIsLoadProlog(false),
-  theIsUpdating(false)
+  theIsUpdating(false),
+  theConfig(cb.theConfig)
 {
 }
 

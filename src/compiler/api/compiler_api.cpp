@@ -68,7 +68,9 @@ static void print_xqdoc_tree(
 }
 
 
+/*******************************************************************************
 
+********************************************************************************/
 XQueryCompiler::XQueryCompiler(CompilerCB* aCompilerCB) 
   :
   theCompilerCB(aCompilerCB),
@@ -77,18 +79,27 @@ XQueryCompiler::XQueryCompiler(CompilerCB* aCompilerCB)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 XQueryCompiler::~XQueryCompiler()
 {
   delete theResolver;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void XQueryCompiler::parseOnly(std::istream& aXQuery, const xqpString& aFileName)
 {
   parsenode_t pn = parse(aXQuery, aFileName);
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 PlanIter_t XQueryCompiler::compile(parsenode_t ast) 
 {
   expr_t lExpr = normalize(ast);
@@ -106,27 +117,41 @@ PlanIter_t XQueryCompiler::compile(parsenode_t ast)
   return plan;
 }
 
-void XQueryCompiler::xqdoc(std::istream& aXQuery, const xqpString& aFileName, std::ostream& anOutput, const store::Item_t& aDateTime)
+
+/*******************************************************************************
+
+********************************************************************************/
+void XQueryCompiler::xqdoc(
+    std::istream& aXQuery,
+    const xqpString& aFileName,
+    std::ostream& anOutput,
+    const store::Item_t& aDateTime)
 {
   parsenode_t lAST = parse(aXQuery, aFileName);
+
   print_xqdoc_tree(lAST.getp(), aFileName, anOutput, aDateTime);
 }
 
-PlanIter_t
-XQueryCompiler::compile(std::istream& aXQuery, const xqpString & aFileName)
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t XQueryCompiler::compile(std::istream& aXQuery, const xqpString & aFileName)
 {
   parsenode_t lAST = parse(aXQuery, aFileName);
 
-  if(theCompilerCB->theConfig.lib_module &&
-     typeid (lAST) != typeid (LibraryModule))
+  if (theCompilerCB->theConfig.lib_module &&
+      dynamic_cast<LibraryModule*>(lAST.getp()) != NULL)
     lAST = createMainModule(lAST, aXQuery, aFileName);
 
-  return compile (lAST);
+  return compile(lAST);
 }
 
 
-parsenode_t
-XQueryCompiler::parse(std::istream& aXQuery, const xqpString & aFileName)
+/*******************************************************************************
+
+********************************************************************************/
+parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const xqpString & aFileName)
 {
   // TODO: move these out
   if (Properties::instance()->printAst()) 
@@ -187,15 +212,18 @@ XQueryCompiler::parse(std::istream& aXQuery, const xqpString & aFileName)
 
   if (typeid (*node) == typeid (ParseErrorNode)) 
   {
-    ParseErrorNode *err = static_cast<ParseErrorNode *> (&*node);
+    ParseErrorNode* err = static_cast<ParseErrorNode *> (&*node);
     ZORBA_ERROR_LOC_DESC( XPST0003, err->get_location (), err->msg);
   }
 
   return node;
 }
 
-expr_t
-XQueryCompiler::normalize(parsenode_t aParsenode)
+
+/*******************************************************************************
+
+********************************************************************************/
+expr_t XQueryCompiler::normalize(parsenode_t aParsenode)
 {
   expr_t lExpr = translate(*aParsenode, theCompilerCB);
 
@@ -211,10 +239,12 @@ XQueryCompiler::normalize(parsenode_t aParsenode)
 }
 
 
-expr_t
-XQueryCompiler::optimize(expr_t lExpr) 
+/*******************************************************************************
+
+********************************************************************************/
+expr_t XQueryCompiler::optimize(expr_t lExpr) 
 {
-  if (theCompilerCB->theConfig.opt_level > CompilerCB::config_t::O0) 
+  if (theCompilerCB->theConfig.opt_level > CompilerCB::config::O0) 
   {
     RewriterContext rCtx(theCompilerCB, lExpr);
     GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
@@ -228,6 +258,9 @@ XQueryCompiler::optimize(expr_t lExpr)
 }
 
 
+/*******************************************************************************
+  Create a dummy main module to wrap a library module.
+********************************************************************************/
 parsenode_t
 XQueryCompiler::createMainModule(
     parsenode_t aLibraryModule,
@@ -235,8 +268,8 @@ XQueryCompiler::createMainModule(
     const xqpString & aFileName)
 {
   //get the namespace from the LibraryModule
-  LibraryModule *mod_ast = dynamic_cast<LibraryModule *> (&*aLibraryModule);
-  if (!mod_ast) 
+  LibraryModule* mod_ast = dynamic_cast<LibraryModule *>(&*aLibraryModule);
+  if (mod_ast == NULL)
   {
     ZORBA_ERROR_DESC_OSS(API0002_COMPILE_FAILED,
                         "given library module is not a valid module, e.g. the module declaration is missing");
@@ -247,22 +280,28 @@ XQueryCompiler::createMainModule(
 
   //create a dummy main module
   std::stringstream lDocStream;
-  lDocStream << "import module namespace m = '"
-             << lib_namespace
-             << "'; 1";
+  lDocStream << "import module namespace m = '" << lib_namespace << "'; 1";
 
   aXQuery.clear();
   aXQuery.seekg(0);
 
-  theResolver = new StandardLibraryModuleURIResolver(aXQuery, lib_namespace, aFileName.c_str());
+  theResolver = new StandardLibraryModuleURIResolver(aXQuery,
+                                                     lib_namespace,
+                                                     aFileName.c_str());
+
   theCompilerCB->theRootSctx->add_module_uri_resolver(theResolver);
 
-  return  parse(lDocStream, aFileName);
+  return parse(lDocStream, aFileName);
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 XQueryCompilerSubsystem::XQueryCompilerSubsystem()
 {
 }
+
 
 XQueryCompilerSubsystem::~XQueryCompilerSubsystem() throw ()
 {

@@ -34,7 +34,8 @@ namespace zorba {
 PlanIter_t compile(
     CompilerCB* ccb,
     xqp_string query, 
-    checked_vector<store::Item_t> varnames, checked_vector<xqtref_t> vartypes) 
+    checked_vector<store::Item_t> varnames,
+    checked_vector<xqtref_t> vartypes) 
 {
   XQueryCompiler compiler(ccb);
   istringstream os(query);
@@ -83,7 +84,7 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   state->ccb.reset(new CompilerCB(*planState.theCompilerCB));
   state->ccb->theRootSctx = getStaticContext(planState)->create_child_context();
   sctxid = state->ccb->theSctxMap->size() + 1;
-  (*state->ccb->theSctxMap)[sctxid] = state->ccb->theRootSctx; 
+  (*planState.theCompilerCB->theSctxMap)[sctxid] = state->ccb->theRootSctx; 
 
   CONSUME(item, 0);
 

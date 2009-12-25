@@ -237,7 +237,7 @@ protected:
 
   std::vector<FlworClauseVarMap_t>       theClauseStack;
 
-  CompilerCB                           * ccb;
+  CompilerCB                           * theCCB;
 
   short                                  theLastSctxId;
   static_context                       * theLastSctx;
@@ -246,11 +246,11 @@ protected:
 
 public:
 
-plan_visitor(CompilerCB *ccb_, hash64map<vector<LetVarIter_t> *> *arg_var_map = NULL)
+plan_visitor(CompilerCB* ccb, hash64map<vector<LetVarIter_t> *>* arg_var_map = NULL)
   :
   depth(0),
   arg_var_iter_map(arg_var_map),
-  ccb(ccb_),
+  theCCB(ccb),
   theLastSctxId(-1),
   theLastSctx(NULL)
 {
@@ -293,7 +293,7 @@ static_context* get_sctx(short sctx)
   if (sctx != theLastSctxId)
   {
     theLastSctxId = sctx;
-    theLastSctx = ccb->getStaticContext(sctx);
+    theLastSctx = theCCB->getStaticContext(sctx);
   }
 
   return theLastSctx;
@@ -320,7 +320,8 @@ void end_visit (expr& v) {
   CODEGEN_TRACE_OUT("");
 }
 
-bool begin_visit (debugger_expr& v) {
+bool begin_visit (debugger_expr& v) 
+{
   CODEGEN_TRACE_IN("");
 
   // already create the debugger iterator here
@@ -331,7 +332,8 @@ bool begin_visit (debugger_expr& v) {
   return true;
 }
 
-void end_visit (debugger_expr& v) {
+void end_visit (debugger_expr& v) 
+{
   CODEGEN_TRACE_OUT(""); 
   checked_vector<store::Item_t> varnames;
   checked_vector<string> var_keys;
@@ -348,8 +350,9 @@ void end_visit (debugger_expr& v) {
 
   //create the eval iterator children
   argvEvalIter.push_back(new DebuggerSingletonIterator(sctx,
-    qloc, ccb->theDebuggerCommons->getEvalItem()));
-  reverse (argvEvalIter.begin (), argvEvalIter.end ());
+                                                       qloc,
+                                                       theCCB->theDebuggerCommons->getEvalItem()));
+  reverse (argvEvalIter.begin(), argvEvalIter.end());
 
   // get the debugger iterator from the debugger stack
   std::auto_ptr<ZorbaDebugIterator> aDebugIterator(theDebuggerStack.top());
@@ -1883,7 +1886,7 @@ void end_visit(fo_expr& v)
 
       ValueIndex* index = sctx->lookup_index(qname);
       
-      expr* buildExpr = index->getBuildExpr(ccb, loc);
+      expr* buildExpr = index->getBuildExpr(theCCB, loc);
       buildExpr->accept(*this);
 
       PlanIter_t buildIter = pop_itstack();
@@ -1893,7 +1896,7 @@ void end_visit(fo_expr& v)
     }
     else
     {
-      PlanIter_t iter = func->codegen(ccb, sctx, loc, argv, v);
+      PlanIter_t iter = func->codegen(theCCB, sctx, loc, argv, v);
       ZORBA_ASSERT(iter != NULL);
       push_itstack(iter);
 

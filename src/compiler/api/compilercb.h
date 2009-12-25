@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef COMPILER_COMPILERCB_H
-#define COMPILER_COMPILERCB_H
+#ifndef ZORBA_COMPILER_API_COMPILERCB
+#define ZORBA_COMPILER_API_COMPILERCB
 
 #include <vector>
 #include <map>
@@ -22,8 +22,6 @@
 #include <zorba/config.h>
 
 #include "common/shared_types.h"
-
-#include "context/static_context.h"
 
 #include "zorbaserialization/class_serializer.h"
 
@@ -35,34 +33,47 @@ class static_context;
 // exported for unit testing only
 
 /*******************************************************************************
-  There is one CompilerCB per module participating in a compilation. The
-  compilerCB for the root module is created by the constructor of the XQueryImpl
-  obj and remains alive for the whole duration of the query (including runtime).
-  The CompilerCBs of imported modules are created and stay alive only during the
-  translation of their associated modules.
+  There is one CompilerCB per query plus one CompilerCB per invocation of an
+  eval or xqdoc expression that appears in the query. The query-level ccb is
+  created by the constructor of the XQueryImpl obj and remains alive for the
+  whole duration of the query (including runtime). Each eval/xqdoc-level ccb is
+  created as a copy of the query-level ccb during the execution of the eval/xqdoc
+  expr.
 
-  theConfig       :
+  - theErrorManager :
+  Pointer to the query's ErrorManager obj. (see src/api/xqueryimpl.h). The eval
+  CompilerCBs share the query's ErrorManager.
 
-  theRootSctx     : The root static ctx for the associated module. For each
-                    module, this is a child of either a user provided static
-                    ctx or the zorba default root context.
+  - theSctxMap :
+  A reference to the query-level map that maps sctx numeric ids to sctx objs.
+  (see src/api/xqueryimpl.h). The eval CompilerCBs share the query's sctx map.
 
-  theSctxMap      : A reference to the query-level map that maps sctx numeric ids
-                    to sctx objs. (see api/xqueryimpl.h)
+  - theRootSctx :
+  The root static ctx for the query or for one of the query's eval exprs. For
+  an eval expr, its root sctx is a child of the query's root sctx. For the query,
+  its root sctx may be (a) a child of a user-provided sctx, or (b) if the query
+  is a load-prolog query, the user-provided sctx, or (c) if the user did not
+  provide any sctx, a child of zorba's root sctx.
 
-  theErrorManager : Pointer to an ErrorManager obj. In fact, all CompilerCBs
-                    share the same ErrorManager.
+  - theDebuggerCommons :
 
-  theDebuggerCommons :
+  - theIsLoadProlog :
+  Whether this is a load-prolog query or not (load-prolog queries are created
+  internally by the StaticContextImpl::loadProlog() method).
 
-  theIsLoadProlog :
+  - theIsUpdating :
+  Set to true if the root expr of the query or eval expr is an updating expr. 
 
-  theIsUpdating   :
+  - theConfig.lib_module :
+  If true, then if the query string that is given by the user is a library
+  module, zorba will wrap it in a dummy main module and compile/execute that
+  dummy module (see  XQueryCompiler::createMainModule() method). This flag is
+  a copy of the lib_module flag in Zorba_CompilerHints_t.
 ********************************************************************************/
 class ZORBA_DLL_PUBLIC CompilerCB : public zorba::serialization::SerializeBaseClass
 {
 public:
-  typedef struct config : public zorba::serialization::SerializeBaseClass
+  struct config : public zorba::serialization::SerializeBaseClass
   {
     typedef enum 
     {
@@ -73,14 +84,14 @@ public:
     typedef void (* expr_callback) (const expr *, const std::string& name);
     typedef void (* ast_callback) (const parsenode *, const std::string& name);
 
-    bool force_gflwor;
-    opt_level_t opt_level;
-    bool lib_module;
-    ast_callback parse_cb;
-    expr_callback translate_cb;
-    expr_callback normalize_cb;
-    expr_callback optimize_cb;
-    bool print_item_flow;  // TODO: move to RuntimeCB
+    bool           force_gflwor;
+    opt_level_t    opt_level;
+    bool           lib_module;
+    ast_callback   parse_cb;
+    expr_callback  translate_cb;
+    expr_callback  normalize_cb;
+    expr_callback  optimize_cb;
+    bool           print_item_flow;  // TODO: move to RuntimeCB
 
    public:
     SERIALIZABLE_CLASS(config)
@@ -91,17 +102,14 @@ public:
     ~config() {}
 
     void serialize(::zorba::serialization::Archiver& ar);
-  }
-  config_t;
+  };
 
 public:  
-  config_t                            theConfig;
-
-  static_context_t                    theRootSctx;
+  error::ErrorManager               * theErrorManager;
 
   std::map<short, static_context_t> * theSctxMap;
 
-  error::ErrorManager               * theErrorManager;
+  static_context                    * theRootSctx;
 
   ZorbaDebuggerCommons              * theDebuggerCommons;
 
@@ -109,15 +117,17 @@ public:
 
   bool                                theIsUpdating;
 
+  config                              theConfig;
+
 public:
   SERIALIZABLE_CLASS(CompilerCB);
   CompilerCB(::zorba::serialization::Archiver& ar);
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  CompilerCB(std::map<short, static_context_t>&);
+  CompilerCB(std::map<short, static_context_t>&, error::ErrorManager*);
 
-  CompilerCB(const CompilerCB&);
+  CompilerCB(const CompilerCB& ccb);
 
   virtual ~CompilerCB();
 

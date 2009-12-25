@@ -25,35 +25,46 @@ namespace zorba {
 
 class StandardLibraryModuleURIResolver;
 
+
 class XQueryCompiler 
 {
 public:
 
   CompilerCB* theCompilerCB;
 
+private:
+  // only needed for compile-checking library modules
+  StandardLibraryModuleURIResolver* theResolver;
+
 public:
-  XQueryCompiler(CompilerCB*  aCompilerCB);
+  XQueryCompiler(CompilerCB* aCompilerCB);
     
   virtual ~XQueryCompiler();
-    
-  parsenode_t parse(std::istream& aXQuery, const xqpString & aFileName = "");
 
   void parseOnly(std::istream& aXQuery, const xqpString& aFileName);
 
-  void xqdoc(std::istream& aXQuery, const xqpString& aFileName, std::ostream& anOutput, const store::Item_t& aDateTime);
+  void xqdoc(
+        std::istream& aXQuery,
+        const xqpString& aFileName,
+        std::ostream& anOutput,
+        const store::Item_t& aDateTime);
+
+  parsenode_t parse(std::istream& aXQuery, const xqpString & aFileName = "");
+
+  PlanIter_t compile(parsenode_t ast);
 
   PlanIter_t compile(std::istream& aXQuery, const xqpString & aFileName = "");
-  PlanIter_t compile(parsenode_t);
 
 protected:
-  expr_t normalize(parsenode_t);
+  expr_t normalize(parsenode_t ast);
 
   expr_t optimize(expr_t lExpr);
 
 private:
-  // only needed for compile-checking library modules
-  StandardLibraryModuleURIResolver* theResolver;
-  parsenode_t createMainModule(parsenode_t aLibraryModule, std::istream& aXQuery, const xqpString & aFileName = "");
+  parsenode_t createMainModule(
+        parsenode_t aLibraryModule,
+        std::istream& aXQuery,
+        const xqpString & aFileName = "");
 };
 
 
@@ -66,11 +77,12 @@ class XQueryCompilerSubsystem
 
   virtual ~XQueryCompilerSubsystem() throw ();
 
-  virtual Rewriter *getDefaultOptimizingRewriter() = 0;
+  virtual Rewriter* getDefaultOptimizingRewriter() = 0;
 
  private:
   static std::auto_ptr<XQueryCompilerSubsystem> create();
 };
+
 
 } /* namespace zorba */
 #endif /* ZORBA_COMPILER_API_H */
