@@ -2983,12 +2983,15 @@ void end_visit (const Param& v, void* /*visit_state*/)
 
 /*******************************************************************************
   [*] CollectionDecl ::= "declare" CollProperties "collection" QName 
-                         ("as" KindTest)? ("with" NodeModifier "nodes")? 
+                         ("as" CollectionTypeDecl)?
+                         ("with" NodeModifier "nodes")? 
 
   [*] CollProperties ::= ("const" | "mutable" | "append-only" | "queue" |
                           "ordered" | "unordered")*
 
-  [*] NodeModifier   ::= ("read-only" | "mutable")
+  [*] NodeModifier ::= ("read-only" | "mutable")
+
+  [*] CollectionTypeDecl ::= KindTest OccurenceIndicator? 
 ********************************************************************************/
 void* begin_visit(const CollectionDecl& v)
 {
@@ -3015,13 +3018,17 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
                                                          lName->get_location());
   // Get the static type of the root nodes  
   xqtref_t lNodeType;
-  if (v.getKindTest() == 0)
+  TypeConstants::quantifier_t quant;
+  if (v.getType() == 0)
   {
-    lNodeType = theRTM.ANY_NODE_TYPE_ONE;
+    lNodeType = theRTM.DOCUMENT_UNTYPED_TYPE_ONE;
+    quant = TypeConstants::QUANT_STAR;
   }
   else
   {
-    lNodeType = TypeOps::prime_type(*pop_tstack());
+    xqtref_t collectionType = pop_tstack();
+    lNodeType = TypeOps::prime_type(*collectionType);
+    quant = collectionType->get_quantifier();
   }
 
   // Get the order and update properties of the collection
@@ -3047,7 +3054,8 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
                                             lUpdateMode,
                                             lOrderMode,
                                             lNodeModifier,
-                                            lNodeType);
+                                            lNodeType,
+                                            quant);
 
   sctx_p->bind_collection(lColl, v.get_location());
 

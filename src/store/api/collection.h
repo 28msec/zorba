@@ -101,8 +101,7 @@ public:
    * @param before If true, the aNode will be inserted before the target node.
    * Otherwise it will be inserted after the target node.
    */
-  virtual void
-  addNode(Item* aNode, const Item* aTargetNode, bool before) = 0;
+  virtual void addNode(Item* aNode, const Item* aTargetNode, bool before) = 0;
 
   /**
    * Removes a node from the collection.
@@ -131,8 +130,7 @@ public:
    * @return The node at the given position, or NULL if the position is <= 0
    * or > than the number of nodes in the collection.
    */
-  virtual Item_t
-  nodeAt(long aPosition) = 0;
+  virtual Item_t nodeAt(long aPosition) = 0;
 
   /**
    * Check if a given node belongs to this collection, and if so return its
@@ -143,8 +141,7 @@ public:
    *        node is indeed in the collection.
    * @return True if the node is in the collection; false otherwise.
    */
-  virtual bool
-  findNode(const Item* aNode, ulong& position) const = 0;
+  virtual bool findNode(const Item* aNode, ulong& position) const = 0;
 };
 
 } // namespace store

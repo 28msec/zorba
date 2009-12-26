@@ -17,7 +17,10 @@
 #define ZORBA_CONTEXT_STATICALLY_KNOWN_COLLECTION_H
 
 #include "common/shared_types.h"
+
 #include "context/static_context_consts.h"
+
+#include "types/typeconstants.h"
 
 #include "zorbaserialization/serialization_engine.h"
 
@@ -32,22 +35,14 @@ private:
   StaticContextConsts::declaration_property_t  theOrderProperty;
   StaticContextConsts::node_modifier_t         theNodeModifier;
   xqtref_t                                     theNodeType; 
+  TypeConstants::quantifier_t                  theQuantifier;
 
 public:
   SERIALIZABLE_CLASS(StaticallyKnownCollection);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2(StaticallyKnownCollection, SimpleRCObject);
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (SimpleRCObject*)this);
-
-    ar & theName;
-    SERIALIZE_ENUM(StaticContextConsts::declaration_property_t, theUpdateProperty);
-    SERIALIZE_ENUM(StaticContextConsts::declaration_property_t, theOrderProperty);
-    SERIALIZE_ENUM(StaticContextConsts::node_modifier_t, theNodeModifier);
-    ar & theNodeType;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   StaticallyKnownCollection(
@@ -55,7 +50,8 @@ public:
         StaticContextConsts::declaration_property_t aUpdateProperty,
         StaticContextConsts::declaration_property_t aOrderProperty,
         StaticContextConsts::node_modifier_t        aNodeModifier,
-        xqtref_t&                                   aNodeType);
+        xqtref_t&                                   aNodeType,
+        TypeConstants::quantifier_t                 aQuant);
 
   ~StaticallyKnownCollection();
 

@@ -739,6 +739,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> CollectionDecl
 %type <node> DeclProperty
 %type <node> DeclPropertyList
+%type <node> CollectionTypeDecl
 %type <node> NodeModifier
 
 /* index-related     */
@@ -1632,35 +1633,35 @@ DeclProperty :
 CollectionDecl :
     DECLARE COLLECTION QNAME
     {
-      $$ = new CollectionDecl( LOC(@$),
-                               static_cast<QName*>($3),
-                               0, 
-                               0, 
-                               0);
+      $$ = new CollectionDecl(LOC(@$),
+                              static_cast<QName*>($3),
+                              0, 
+                              0, 
+                              0);
     }
   | DECLARE COLLECTION QNAME NodeModifier
     {
-      $$ = new CollectionDecl( LOC(@$),
-                               static_cast<QName*>($3),
-                               0, 
-                               static_cast<NodeModifier*>($4), 
-                               0);
+      $$ = new CollectionDecl(LOC(@$),
+                              static_cast<QName*>($3),
+                              0, 
+                              static_cast<NodeModifier*>($4), 
+                              0);
     }
-  | DECLARE COLLECTION QNAME AS KindTest
+  | DECLARE COLLECTION QNAME AS CollectionTypeDecl
     {
-      $$ = new CollectionDecl( LOC(@$),
-                               static_cast<QName*>($3),
-                               0, 
-                               0, 
-                               static_cast<parsenode*>($5));
+      $$ = new CollectionDecl(LOC(@$),
+                              static_cast<QName*>($3),
+                              0, 
+                              0, 
+                              static_cast<SequenceType*>($5));
     }
-  | DECLARE COLLECTION QNAME AS KindTest NodeModifier
+  | DECLARE COLLECTION QNAME AS CollectionTypeDecl NodeModifier
     {
-      $$ = new CollectionDecl( LOC(@$),
-                               static_cast<QName*>($3),
-                               0, 
-                               static_cast<NodeModifier*>($6), 
-                               $5);
+      $$ = new CollectionDecl(LOC(@$),
+                              static_cast<QName*>($3),
+                              0, 
+                              static_cast<NodeModifier*>($6), 
+                              static_cast<SequenceType*>($5));
     }
   | DECLARE DeclPropertyList COLLECTION QNAME
     {
@@ -1676,23 +1677,37 @@ CollectionDecl :
                                static_cast<NodeModifier*>($5), 
                                0);
     }
-  | DECLARE DeclPropertyList COLLECTION QNAME AS KindTest
+  | DECLARE DeclPropertyList COLLECTION QNAME AS CollectionTypeDecl
     {
       $$ = new CollectionDecl( LOC(@$),
                                static_cast<QName*>($4),
                                static_cast<DeclPropertyList*>($2), 
                                0, 
-                               static_cast<parsenode*>($6));
+                               static_cast<SequenceType*>($6));
     }
-  | DECLARE DeclPropertyList COLLECTION QNAME AS KindTest NodeModifier
+  | DECLARE DeclPropertyList COLLECTION QNAME AS CollectionTypeDecl NodeModifier
     {
       $$ = new CollectionDecl( LOC(@$),
                                static_cast<QName*>($4),
                                static_cast<DeclPropertyList*>($2), 
                                static_cast<NodeModifier*>($7), 
-                               $6);
+                               static_cast<SequenceType*>($6));
     }
   ;
+
+
+CollectionTypeDecl :
+    KindTest
+    {
+			$$ = static_cast<parsenode*>(
+           new SequenceType(LOC(@$), $1, NULL));
+    }
+  | KindTest OccurrenceIndicator
+    {
+			$$ = static_cast<parsenode*>(
+           new SequenceType(LOC(@$), $1, dynamic_cast<OccurrenceIndicator*>($2)));
+    }
+;
 
 
 NodeModifier :
@@ -4572,8 +4587,7 @@ CompPIConstructor :
 		}
 	|	PROCESSING_INSTRUCTION LBRACE  Expr  RBRACE LBRACE  Expr  RBRACE
 		{
-			$$ = new CompPIConstructor(LOC (@$),
-								$3, $6);
+			$$ = new CompPIConstructor(LOC(@$), $3, $6);
 		}
 	;
 
@@ -4583,15 +4597,11 @@ CompPIConstructor :
 SingleType :
 		AtomicType
 		{
-			$$ = new SingleType(LOC (@$),
-								dynamic_cast<AtomicType*>($1),
-								false);
+			$$ = new SingleType(LOC(@$), dynamic_cast<AtomicType*>($1), false);
 		}
 	|	AtomicType  HOOK
 		{
-			$$ = new SingleType(LOC (@$),
-								dynamic_cast<AtomicType*>($1),
-								true);
+			$$ = new SingleType(LOC(@$), dynamic_cast<AtomicType*>($1), true);
 		}
 	;
 
@@ -4612,19 +4622,15 @@ SequenceType :
 		// ItemType  %prec SEQUENCE_TYPE_REDUCE
     ItemType
 		{
-			$$ = new SequenceType(LOC (@$),
-								$1,
-								NULL);
+			$$ = new SequenceType(LOC(@$), $1, NULL);
 		}
-	|	ItemType  OccurrenceIndicator
+	|	ItemType OccurrenceIndicator
 		{
-			$$ = new SequenceType(LOC (@$),
-								$1,
-								dynamic_cast<OccurrenceIndicator*>($2));
+			$$ = new SequenceType(LOC(@$), $1, dynamic_cast<OccurrenceIndicator*>($2));
 		}
   |	EMPTY_SEQUENCE LPAR RPAR
 		{
-			$$ = new SequenceType(LOC (@$), NULL, NULL);
+			$$ = new SequenceType(LOC(@$), NULL, NULL);
 		}
 	;
 
@@ -4661,18 +4667,15 @@ SequenceType :
 OccurrenceIndicator :
 		HOOK
 		{
-			$$ = new OccurrenceIndicator(LOC (@$),
-								ParseConstants::occurs_optionally);
+			$$ = new OccurrenceIndicator(LOC(@$), ParseConstants::occurs_optionally);
 		}
 	|	STAR
 		{
-			$$ = new OccurrenceIndicator(LOC (@$),
-								ParseConstants::occurs_zero_or_more);
+			$$ = new OccurrenceIndicator(LOC(@$),	ParseConstants::occurs_zero_or_more);
 		}
 	|	PLUS 	/* gn: occurrence-indicatorsXQ */
 		{
-			$$ = new OccurrenceIndicator(LOC (@$),
-								ParseConstants::occurs_one_or_more);
+			$$ = new OccurrenceIndicator(LOC(@$), ParseConstants::occurs_one_or_more);
 		}
 	;
 
@@ -4700,8 +4703,7 @@ ItemType :
 AtomicType :
 		QNAME
 		{
-			$$ = new AtomicType(LOC (@$),
-								static_cast<QName*>($1));
+			$$ = new AtomicType(LOC(@$), static_cast<QName*>($1));
 		}
 	;
 
@@ -4767,13 +4769,11 @@ DocumentTest :
 		}
 	|	DOCUMENT_NODE LPAR  ElementTest  RPAR
 		{
-			$$ = new DocumentTest(LOC (@$),
-								dynamic_cast<ElementTest*>($3));
+			$$ = new DocumentTest(LOC(@$), dynamic_cast<ElementTest*>($3));
 		}
 	|	DOCUMENT_NODE LPAR  SchemaElementTest  RPAR
 		{
-			$$ = new DocumentTest(LOC (@$),
-								dynamic_cast<SchemaElementTest*>($3));
+			$$ = new DocumentTest(LOC(@$), dynamic_cast<SchemaElementTest*>($3));
 		}
 	;
 

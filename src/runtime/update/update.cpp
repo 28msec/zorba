@@ -93,7 +93,7 @@ void areNodeModifiersViolated(
 /*******************************************************************************
 
 ********************************************************************************/
-InsertIterator::InsertIterator (
+InsertIterator::InsertIterator(
     static_context*                 sctx,
     const QueryLoc&                 aLoc,
     store::UpdateConsts::InsertType aType,

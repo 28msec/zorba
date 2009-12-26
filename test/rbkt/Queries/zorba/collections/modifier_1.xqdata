@@ -1,10 +1,10 @@
 module namespace ns = "http://example.org/datamodule/";
 
 declare variable $ns:coll_1 as xs:QName := xs:QName("ns:coll_1");
-declare const collection ns:coll_1;
+declare const collection ns:coll_1 as node()*;
 
 declare variable $ns:coll_2 as xs:QName := xs:QName("ns:coll_2");
-declare ordered append-only collection ns:coll_2;
+declare ordered append-only collection ns:coll_2 as element(*);
 
 declare variable $ns:coll_3 as xs:QName := xs:QName("ns:coll_3");
-declare ordered queue collection ns:coll_3;
+declare ordered queue collection ns:coll_3 as element(*);

@@ -7,7 +7,7 @@ declare variable $auctions:auctions := xs:QName("auctions:auctions");
 declare variable $auctions:PersonId := xs:QName("auctions:PersonId");
 declare variable $auctions:PersonCity := xs:QName("auctions:PersonCity");
 
-declare collection auctions:auctions;
+declare collection auctions:auctions as node()*;
 
 
 (:

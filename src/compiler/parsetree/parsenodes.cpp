@@ -817,22 +817,28 @@ void Param::accept(parsenode_visitor& v) const
 
 
 /*******************************************************************************
-  [*] CollectionDecl ::=   "declare" "collection" QName CollProperties
-  [*] CollProperties ::=   ("node-type" KindTest)? 
-                           ("collection-modifier" CollModifier)? 
-                           ("node-modifier" NodeModifier)?
+  [*] CollectionDecl ::= "declare" CollProperties "collection" QName 
+                         ("as" CollectionTypeDecl)?
+                         ("with" NodeModifier "nodes")? 
+
+  [*] CollProperties ::= ("const" | "mutable" | "append-only" | "queue" |
+                          "ordered" | "unordered")*
+
+  [*] NodeModifier ::= ("read-only" | "mutable")
+
+  [*] CollectionTypeDecl ::= KindTest OccurenceIndicator? 
 ********************************************************************************/
 CollectionDecl::CollectionDecl(
-    const QueryLoc&         aLoc,
-    QName*                  aName,
-    DeclPropertyList*       aPropertyList,
-    rchandle<NodeModifier>  aNodeModifier,
-    rchandle<parsenode>     aKindTest)
+    const QueryLoc& aLoc,
+    QName* aName,
+    DeclPropertyList* aPropertyList,
+    NodeModifier*  aNodeModifier,
+    SequenceType* aTypeDecl)
   :
   parsenode(aLoc),
   theName(aName),
   theNodeModifier(aNodeModifier),
-  theKindTest(aKindTest),
+  theTypeDecl(aTypeDecl),
   theOrderMode(StaticContextConsts::decl_unordered),
   theUpdateMode(StaticContextConsts::decl_mutable)
 {
@@ -893,7 +899,7 @@ CollectionDecl::CollectionDecl(
 void CollectionDecl::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  ACCEPT(theKindTest);
+  ACCEPT(theTypeDecl);
   ACCEPT(theNodeModifier);
   END_VISITOR();
 }

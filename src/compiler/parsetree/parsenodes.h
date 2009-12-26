@@ -1151,29 +1151,32 @@ public:
 
 /*******************************************************************************
   [*] CollectionDecl ::= "declare" CollProperties "collection" QName 
-                         ("as" KindTest)? ("with" NodeModifier "nodes")? 
+                         ("as" CollectionTypeDecl)?
+                         ("with" NodeModifier "nodes")? 
 
   [*] CollProperties ::= ("const" | "mutable" | "append-only" | "queue" |
                           "ordered" | "unordered")*
 
-  [*] NodeModifier   ::= ("read-only" | "mutable")
+  [*] NodeModifier ::= ("read-only" | "mutable")
+
+  [*] CollectionTypeDecl ::= KindTest OccurenceIndicator? 
 ********************************************************************************/
 class CollectionDecl : public parsenode
 {
 protected:
   rchandle<QName>                             theName;
   rchandle<NodeModifier>                      theNodeModifier;
-  rchandle<parsenode>                         theKindTest;
+  rchandle<SequenceType>                      theTypeDecl;
   StaticContextConsts::declaration_property_t theOrderMode;
   StaticContextConsts::declaration_property_t theUpdateMode;
 
 public:
   CollectionDecl(
-        const QueryLoc&        aLoc,
-        QName*                 aName,
-        DeclPropertyList*      aPropertyList,
-        rchandle<NodeModifier> aNodeModifier,
-        rchandle<parsenode>    aKindTest);
+        const QueryLoc& aLoc,
+        QName* aName,
+        DeclPropertyList* aPropertyList,
+        NodeModifier* aNodeModifier,
+        SequenceType* aTypeDecl);
 
   const QName* getName() const { return theName.getp(); }
 
@@ -1192,7 +1195,7 @@ public:
     return theNodeModifier.getp();
   }
 
-  const parsenode* getKindTest() const { return theKindTest.getp(); }
+  const SequenceType* getType() const { return theTypeDecl.getp(); }
 
   void accept(parsenode_visitor&) const;
 };
