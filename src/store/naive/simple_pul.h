@@ -390,7 +390,7 @@ public:
   void getIndicesToRefresh(std::vector<store::Index*>& indices);
 
   void addIndexEntryCreator(
-        store::Item* collectionName,
+        const store::Item* collectionName,
         store::Index* idx,
         store::IndexEntryCreator* creator);
 

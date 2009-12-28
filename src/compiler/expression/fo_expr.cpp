@@ -15,13 +15,14 @@
  */
 #include <vector>
 
+#include "compiler/expression/fo_expr.h"
+#include "compiler/expression/expr_visitor.h"
+
 #include "context/static_context.h"
+#include "context/statically_known_collection.h"
 
 #include "functions/library.h"
 #include "functions/function.h"
-
-#include "compiler/expression/fo_expr.h"
-#include "compiler/expression/expr_visitor.h"
 
 namespace zorba 
 {
@@ -205,6 +206,27 @@ void fo_expr::compute_scripting_kind() const
 
 xqtref_t fo_expr::return_type_impl(static_context* sctx) const
 {
+  const function* func = get_func();
+
+  if (func->getKind() == FunctionConsts::FN_ZORBA_DDL_COLLECTION_1)
+  {
+    const store::Item* qname = theArgs[0]->getQName(sctx);
+
+    if (qname != NULL)
+    {
+      const StaticallyKnownCollection* collection = sctx->lookup_collection(qname);
+      if (collection != NULL)
+      {
+        return collection->getCollectionType();
+      }
+      else
+      {
+        ZORBA_ERROR_LOC_PARAM(XDDY0001_COLLECTION_NOT_DECLARED, get_loc(),
+                              qname->getStringValue(), "");
+      }
+    }
+  }
+
   std::vector<xqtref_t> types;
 
   std::vector<expr_t>::const_iterator i = theArgs.begin();

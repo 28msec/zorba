@@ -193,13 +193,13 @@ protected:
   };
 
 protected:
-  static expr_t iter_end_expr;
-  static expr_t* iter_done;
+  static expr_t    iter_end_expr;
+  static expr_t  * iter_done;
 
 protected:
-  short    theSctxId;
-  QueryLoc theLoc;
-  Cache    theCache;
+  short            theSctxId;
+  QueryLoc         theLoc;
+  Cache            theCache;
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(expr)
@@ -269,6 +269,8 @@ public:
   bool is_map(const expr* e, static_context* sctx) const;
 
   FunctionConsts::FunctionKind get_function_kind() const;
+
+  const store::Item* getQName(static_context* sctx) const;
 
 protected:
   void invalidate() 

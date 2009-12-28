@@ -23,29 +23,38 @@ SERIALIZABLE_CLASS_VERSIONS(StaticallyKnownCollection)
 END_SERIALIZABLE_CLASS_VERSIONS(StaticallyKnownCollection)
 
 
+/*******************************************************************************
+
+********************************************************************************/
 StaticallyKnownCollection::StaticallyKnownCollection(
     store::Item_t&                              aName,
     StaticContextConsts::declaration_property_t aUpdateProperty,
     StaticContextConsts::declaration_property_t aOrderProperty,
     StaticContextConsts::node_modifier_t        aNodeModifier,
     xqtref_t&                                   aNodeType,
-    TypeConstants::quantifier_t                 aQuant)
+    xqtref_t&                                   aCollectionType)
   :
   theName(aName),
   theUpdateProperty(aUpdateProperty),
   theOrderProperty(aOrderProperty),
   theNodeModifier(aNodeModifier),
   theNodeType(aNodeType),
-  theQuantifier(aQuant)
+  theCollectionType(aCollectionType)
 {
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 StaticallyKnownCollection::~StaticallyKnownCollection() 
 {
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void StaticallyKnownCollection::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (SimpleRCObject*)this);
@@ -55,8 +64,8 @@ void StaticallyKnownCollection::serialize(::zorba::serialization::Archiver& ar)
   SERIALIZE_ENUM(StaticContextConsts::declaration_property_t, theOrderProperty);
   SERIALIZE_ENUM(StaticContextConsts::node_modifier_t, theNodeModifier);
   ar & theNodeType;
-  SERIALIZE_ENUM(TypeConstants::quantifier_t, theQuantifier);
+  ar & theCollectionType;
 }
-
-
+  
+  
 }

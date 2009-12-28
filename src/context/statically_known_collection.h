@@ -35,7 +35,7 @@ private:
   StaticContextConsts::declaration_property_t  theOrderProperty;
   StaticContextConsts::node_modifier_t         theNodeModifier;
   xqtref_t                                     theNodeType; 
-  TypeConstants::quantifier_t                  theQuantifier;
+  xqtref_t                                     theCollectionType;
 
 public:
   SERIALIZABLE_CLASS(StaticallyKnownCollection);
@@ -51,7 +51,7 @@ public:
         StaticContextConsts::declaration_property_t aOrderProperty,
         StaticContextConsts::node_modifier_t        aNodeModifier,
         xqtref_t&                                   aNodeType,
-        TypeConstants::quantifier_t                 aQuant);
+        xqtref_t&                                   aCollectionType);
 
   ~StaticallyKnownCollection();
 
@@ -75,6 +75,11 @@ public:
   const XQType* getNodeType() const
   {
     return theNodeType.getp();
+  }
+
+  const XQType* getCollectionType() const
+  {
+    return theCollectionType.getp();
   }
 };
 

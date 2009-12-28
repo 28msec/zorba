@@ -1276,7 +1276,7 @@ void PULImpl::getIndicesToRefresh(std::vector<store::Index*>& indices)
 
 ********************************************************************************/
 void PULImpl::addIndexEntryCreator(
-    store::Item* collectionName,
+    const store::Item* collectionName,
     store::Index* idx,
     store::IndexEntryCreator* creator)
 {

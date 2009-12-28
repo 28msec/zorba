@@ -3018,17 +3018,19 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
                                                          lName->get_location());
   // Get the static type of the root nodes  
   xqtref_t lNodeType;
+  xqtref_t lCollectionType;
   TypeConstants::quantifier_t quant;
   if (v.getType() == 0)
   {
     lNodeType = theRTM.DOCUMENT_UNTYPED_TYPE_ONE;
+    lCollectionType = theRTM.DOCUMENT_UNTYPED_TYPE_STAR;
     quant = TypeConstants::QUANT_STAR;
   }
   else
   {
-    xqtref_t collectionType = pop_tstack();
-    lNodeType = TypeOps::prime_type(*collectionType);
-    quant = collectionType->get_quantifier();
+    lCollectionType = pop_tstack();
+    lNodeType = TypeOps::prime_type(*lCollectionType);
+    quant = lCollectionType->get_quantifier();
   }
 
   // Get the order and update properties of the collection
@@ -3043,24 +3045,32 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
                           lName->get_qname(), "");
   }
 
-
+  // Get the node modifier
   StaticContextConsts::node_modifier_t lNodeModifier = 
     (v.getNodeModifier() == 0 ?
      StaticContextConsts::mutable_node :
      v.getNodeModifier()->getModifier());
 
+  // Create the collection object and register it in the static context
   StaticallyKnownCollection_t lColl = new StaticallyKnownCollection(
                                             lExpandedQName,
                                             lUpdateMode,
                                             lOrderMode,
                                             lNodeModifier,
                                             lNodeType,
-                                            quant);
+                                            lCollectionType);
 
   sctx_p->bind_collection(lColl, v.get_location());
 
   assert(export_sctx);
   export_sctx->bind_collection(lColl, v.get_location());
+
+  // Create an IC to check that the cardinality of the collection matches its
+  // declared type.
+  if (quant != TypeConstants::QUANT_STAR)
+  {
+    // TODO
+  }
 }
 
 

@@ -102,6 +102,9 @@ store::Item* ValueIndex::getName() const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 expr* ValueIndex::getDomainExpr() const 
 {
   return theDomainClause->get_expr();
@@ -152,6 +155,9 @@ void ValueIndex::setDomainPositionVariable(var_expr_t domainPosVar)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 const std::vector<expr_t>& ValueIndex::getKeyExpressions() const 
 {
   return theKeyExprs; 
@@ -164,6 +170,9 @@ void ValueIndex::setKeyExpressions(const std::vector<expr_t>& keyExprs)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 const std::vector<xqtref_t>& ValueIndex::getKeyTypes() const 
 {
   return theKeyTypes; 
@@ -176,6 +185,9 @@ void ValueIndex::setKeyTypes(const std::vector<xqtref_t>& keyTypes)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 const std::vector<OrderModifier>& ValueIndex::getOrderModifiers() const
 {
   return theOrderModifiers;
@@ -227,7 +239,7 @@ void ValueIndex::analyze()
 
 void ValueIndex::analyzeExprInternal(
     expr* e,
-    std::vector<store::Item*>& sourceNames,
+    std::vector<const store::Item*>& sourceNames,
     std::vector<expr*>& sourceExprs,
     std::vector<var_expr*>& varExprs)
 {
@@ -248,51 +260,15 @@ void ValueIndex::analyzeExprInternal(
 
       if (func->getKind() == FunctionConsts::FN_ZORBA_DDL_COLLECTION_1)
       {
-        TypeManager* tm = theSctx->get_typemanager();
-
         const expr* argExpr = foExpr->get_arg(0);
-        const const_expr* qnameExpr = dynamic_cast<const const_expr*>(argExpr);
 
-        if (qnameExpr != NULL)
+        const store::Item* qname = argExpr->getQName(theSctx);
+
+        if (qname != NULL)
         {
-          xqtref_t valueType = tm->create_value_type(qnameExpr->get_val());
-
-          if (TypeOps::is_subtype(*valueType, *GENV_TYPESYSTEM.QNAME_TYPE_ONE) &&
-              theSctx->lookup_collection(qnameExpr->get_val()))
-          {
-            sourceNames.push_back(qnameExpr->get_val());
-            sourceExprs.push_back(foExpr);
-            valid = true;
-          }
-        }
-        else if (argExpr->get_expr_kind() == promote_expr_kind)
-        {
-          // We get here if the optimizer is turned off.
-
-          const promote_expr* promoteExpr = static_cast<const promote_expr*>(argExpr);
-
-          argExpr = promoteExpr->get_input();
-          const fo_expr* dataExpr = dynamic_cast<const fo_expr*>(argExpr);
-
-          if (dataExpr != NULL &&
-              dataExpr->get_func()->getKind() == FunctionConsts::FN_DATA_1)
-          {
-            argExpr = dataExpr->get_arg(0);
-            const const_expr* qnameExpr = dynamic_cast<const const_expr*>(argExpr);
-
-            if (qnameExpr != NULL)
-            {
-              xqtref_t valueType = tm->create_value_type(qnameExpr->get_val());
-
-              if (TypeOps::is_subtype(*valueType, *GENV_TYPESYSTEM.QNAME_TYPE_ONE) &&
-                  theSctx->lookup_collection(qnameExpr->get_val()))
-              {
-                sourceNames.push_back(qnameExpr->get_val());
-                sourceExprs.push_back(foExpr);
-                valid = true;
-              }
-            }
-          }
+          sourceNames.push_back(qname);
+          sourceExprs.push_back(foExpr);
+          valid = true;
         }
       }
 
@@ -334,7 +310,6 @@ void ValueIndex::analyzeExprInternal(
     analyzeExprInternal((*i), sourceNames, sourceExprs, varExprs);
   }
 }
-
 
 
 /*******************************************************************************

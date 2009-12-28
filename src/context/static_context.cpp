@@ -1090,24 +1090,6 @@ xqtref_t static_context::context_item_static_type()
   return lookup_type("type:context:");
 }
 
-#if 0
-void static_context::set_function_type(const store::Item *qname, xqtref_t t)
-{
-  bind_type("type:fun:" + qname_internal_key(default_function_ns(),
-                                             qname->getPrefix(),
-                                             qname->getLocalName()),
-            t);
-}
-
-
-xqtref_t static_context::get_function_type(const store::Item_t qname) 
-{
-  return lookup_type2("type:fun:", qname_internal_key(default_function_ns(),
-                                                      qname->getPrefix(),
-                                                      qname->getLocalName()));
-}
-#endif
-
 void static_context::set_document_type(xqp_string docURI, xqtref_t t)
 {
   bind_type("type:doc:" + docURI, t);
@@ -1164,14 +1146,17 @@ void static_context::bind_collection(
 }
 
 
-const StaticallyKnownCollection* static_context::lookup_collection(const store::Item* aName) const
+const StaticallyKnownCollection* static_context::lookup_collection(
+    const store::Item* aName) const
 {
   StaticallyKnownCollection_t lColl;
 
   if (theCollectionMap && theCollectionMap->get(aName, lColl))
     return lColl.getp();
   else
-    return 0;
+    return (parent == NULL ?
+            0 :
+            static_cast<static_context*>(parent)->lookup_collection(aName));
 }
 
 
@@ -1179,43 +1164,57 @@ template < typename T>
 class NameIterator : public store::Iterator
 {
 private:
-  ItemPointerHashMap<rchandle<T> >*          theItems;
+  ItemPointerHashMap<rchandle<T> >*                   theItems;
   typename ItemPointerHashMap<rchandle<T> >::iterator theIterator;
 
 public:
   NameIterator(ItemPointerHashMap<rchandle<T> >* aItems)
-  : theItems(aItems)
-  {}
+    :
+    theItems(aItems)
+  {
+  }
+
   virtual ~NameIterator() { close(); }
-  virtual void open() {
+
+  virtual void open() 
+  {
     if (theItems) {
       theIterator = theItems->begin();
     }
   }
-  virtual bool next(store::Item_t& aResult) {
+
+  virtual bool next(store::Item_t& aResult) 
+  {
     if (!theItems) {
       return false;
     }
 
-    if (theIterator == theItems->end()) {
-       aResult = NULL;
+    if (theIterator == theItems->end()) 
+    {
+      aResult = NULL;
       return false;
     }
-    else {
+    else 
+    {
       aResult = (*theIterator).first;
       ++theIterator;
       return true;
     }
   }
-  virtual void reset() {
+
+  virtual void reset() 
+  {
     if (theItems) {
       theIterator = theItems->begin();
     }
   }
+
   virtual void close() {}
 };
 
-store::Iterator_t static_context::list_collection_names() const {
+
+store::Iterator_t static_context::list_collection_names() const 
+{
   return new NameIterator<StaticallyKnownCollection>(theCollectionMap);
 }
 
@@ -1251,9 +1250,12 @@ ValueIndex* static_context::lookup_index(const store::Item* qname) const
     return NULL;
 }
 
-store::Iterator_t static_context::list_index_names() const {
+
+store::Iterator_t static_context::list_index_names() const 
+{
   return new NameIterator<ValueIndex>(theIndexMap);
 }
+
 
 /*******************************************************************************
 
@@ -1286,9 +1288,12 @@ ValueIC* static_context::lookup_ic(const store::Item* qname) const
     return NULL;
 }
 
-store::Iterator_t static_context::list_ic_names() const {
+
+store::Iterator_t static_context::list_ic_names() const 
+{
   return new NameIterator<ValueIC>(theICMap);
 }
+
 
 /*******************************************************************************
 

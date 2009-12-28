@@ -188,7 +188,7 @@ private:
   std::vector<xqtref_t>           theKeyTypes;
   std::vector<OrderModifier>      theOrderModifiers;
 
-  std::vector<store::Item*>       theSourceNames;
+  std::vector<const store::Item*> theSourceNames;
 
   std::vector<expr*>              theDomainSourceExprs;
 
@@ -257,7 +257,7 @@ public:
 
   ulong numSources() const { return theSourceNames.size(); }
 
-  store::Item* getSourceName(ulong i) const { return theSourceNames[i]; }
+  const store::Item* getSourceName(ulong i) const { return theSourceNames[i]; }
 
   expr* getDomainSourceExpr(ulong i) const { return theDomainSourceExprs[i]; }
 
@@ -274,7 +274,7 @@ public:
 private:
   void analyzeExprInternal(
         expr* e,
-        std::vector<store::Item*>& sourceNames,
+        std::vector<const store::Item*>& sourceNames,
         std::vector<expr*>& sourceExprs,
         std::vector<var_expr*>& varExprs);
 };

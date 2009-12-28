@@ -24,6 +24,7 @@
 #include "functions/function.h"
 
 #include "types/root_typemanager.h"
+#include "types/typeops.h"
 
 #include "system/globalenv.h"
 
@@ -42,9 +43,10 @@ namespace zorba
 #ifndef DEBUG_RT
 #define DEBUG_RT(e, t) print_expr_and_type(e, t)
 
-static xqtref_t print_expr_and_type(expr *e, xqtref_t t) 
+static xqtref_t print_expr_and_type(expr* e, xqtref_t t) 
 {
-  if (Properties::instance()->printStaticTypes ()) {
+  if (Properties::instance()->printStaticTypes ()) 
+  {
     std::cout << "Return type for " << e << ":\n";
     e->put(std::cout);
     std::cout << " => " << t->toString() << std::endl;
@@ -896,6 +898,56 @@ FunctionConsts::FunctionKind expr::get_function_kind() const
   return FunctionConsts::FN_UNKNOWN;
 }
 
+
+/*******************************************************************************
+  If "this" is a const expr that returns a qname, evaluate and return this
+  qname. This method is used to extract the qname from the expression that is
+  given as an arg to collection and index related functions.
+********************************************************************************/
+const store::Item* expr::getQName(static_context* sctx) const
+{
+  TypeManager* tm = sctx->get_typemanager();
+
+  const const_expr* qnameExpr = dynamic_cast<const const_expr*>(this);
+
+  if (qnameExpr != NULL)
+  {
+    xqtref_t valueType = tm->create_value_type(qnameExpr->get_val());
+
+    if (TypeOps::is_subtype(*valueType, *GENV_TYPESYSTEM.QNAME_TYPE_ONE))
+    {
+      return qnameExpr->get_val();
+    }
+  }
+  else if (get_expr_kind() == promote_expr_kind)
+  {
+    // We get here if the optimizer is turned off.
+    
+    const promote_expr* promoteExpr = static_cast<const promote_expr*>(this);
+    
+    const expr* argExpr = promoteExpr->get_input();
+    const fo_expr* dataExpr = dynamic_cast<const fo_expr*>(argExpr);
+    
+    if (dataExpr != NULL &&
+        dataExpr->get_func()->getKind() == FunctionConsts::FN_DATA_1)
+    {
+      argExpr = dataExpr->get_arg(0);
+      const const_expr* qnameExpr = dynamic_cast<const const_expr*>(argExpr);
+      
+      if (qnameExpr != NULL)
+      {
+        xqtref_t valueType = tm->create_value_type(qnameExpr->get_val());
+        
+        if (TypeOps::is_subtype(*valueType, *GENV_TYPESYSTEM.QNAME_TYPE_ONE))
+        {
+          return qnameExpr->get_val();
+        }
+      }
+    }
+  }
+
+  return NULL;
+}
 
 
 }

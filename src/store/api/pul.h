@@ -191,7 +191,7 @@ public:
         std::vector<Index*>& indices) = 0;
 
   virtual void addIndexEntryCreator(
-        Item* collectionName, 
+        const Item* collectionName, 
         Index* idx,
         IndexEntryCreator* creator) = 0;
 
