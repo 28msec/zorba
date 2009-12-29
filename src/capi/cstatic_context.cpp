@@ -25,28 +25,8 @@
 
 using namespace zorba;
 
-#define SC_TRY \
-  CStaticContext* me = CStaticContext::get(context);    \
-  try
-#define SC_CATCH                                                        \
-  catch (QueryException &qe) {                                          \
-    if (me->theErrorHandler) {                                          \
-      me->theErrorHandler->error(me->theErrorHandler,                   \
-        Error::convert_xquery_error(qe.getErrorCode()),                 \
-        ZorbaException::getErrorCodeAsString(qe.getErrorCode()).c_str(), \
-        qe.getDescription().c_str(),                                    \
-        qe.getQueryURI().c_str(),                                       \
-        qe.getLineBegin(),                                              \
-        qe.getColumnBegin());                                           \
-    }                                                                   \
-    return Error::convert_xquery_error(qe.getErrorCode());              \
-  } catch (ZorbaException &e) {                                         \
-    return Error::convert_xquery_error(e.getErrorCode());               \
-  }                                                                     \
-  catch (...) {                                                         \
-    return XQC_INTERNAL_ERROR;                                          \
-  }                                                                     \
-  return XQC_NO_ERROR
+#define SC_TRY CAPI_TRY(CStaticContext,context)
+#define SC_CATCH CAPI_CATCH
 
 namespace zorbac {
 
@@ -66,13 +46,10 @@ namespace zorbac {
       CStaticContext::set_default_function_ns;
     theXQCStatic.get_default_function_ns =
       CStaticContext::get_default_function_ns;
-    theXQCStatic.add_collation          = CStaticContext::add_collation;
-    theXQCStatic.set_default_collation  = CStaticContext::set_default_collation;
-    theXQCStatic.get_default_collation  = CStaticContext::get_default_collation;
-    theXQCStatic.set_xquery_version     = CStaticContext::set_xquery_version;
-    theXQCStatic.get_xquery_version     = CStaticContext::get_xquery_version;
-    theXQCStatic.set_xpath1_0_mode      = CStaticContext::set_xpath1_0_mode;
-    theXQCStatic.get_xpath1_0_mode      = CStaticContext::get_xpath1_0_mode;
+    theXQCStatic.set_xpath_compatib_mode =
+      CStaticContext::set_xpath_compatib_mode;
+    theXQCStatic.get_xpath_compatib_mode =
+      CStaticContext::get_xpath_compatib_mode;
     theXQCStatic.set_construction_mode  = CStaticContext::set_construction_mode;
     theXQCStatic.get_construction_mode  = CStaticContext::get_construction_mode;
     theXQCStatic.set_ordering_mode      = CStaticContext::set_ordering_mode;
@@ -89,11 +66,21 @@ namespace zorbac {
     theXQCStatic.get_copy_ns_mode       = CStaticContext::get_copy_ns_mode;
     theXQCStatic.set_base_uri           = CStaticContext::set_base_uri;
     theXQCStatic.get_base_uri           = CStaticContext::get_base_uri;
-    theXQCStatic.register_external_function =
-      CStaticContext::register_external_function;
     theXQCStatic.set_error_handler      = CStaticContext::set_error_handler;
     theXQCStatic.get_error_handler      = CStaticContext::get_error_handler;
+    theXQCStatic.get_interface          = CStaticContext::get_interface;
     theXQCStatic.free                   = CStaticContext::free;
+
+    // Zorba-specific extension functions.
+    theZorbaStatic.add_collation        = CStaticContext::add_collation;
+    theZorbaStatic.set_default_collation =
+      CStaticContext::set_default_collation;
+    theZorbaStatic.get_default_collation =
+      CStaticContext::get_default_collation;
+    theZorbaStatic.set_xquery_version   = CStaticContext::set_xquery_version;
+    theZorbaStatic.get_xquery_version   = CStaticContext::get_xquery_version;
+    theZorbaStatic.register_external_function =
+      CStaticContext::register_external_function;
   }
 
   CStaticContext::~CStaticContext()
@@ -259,122 +246,289 @@ namespace zorbac {
   }
 
   XQC_Error
-  CStaticContext::set_xpath1_0_mode
-  (XQC_StaticContext* context, xpath1_0compatib_mode_t mode )
+  CStaticContext::set_xpath_compatib_mode
+  (XQC_StaticContext* context, XQC_XPath1Mode mode)
   {
     SC_TRY {
-      me->theContext.get()->setXPath1_0CompatibMode(mode);
+      xpath1_0compatib_mode_t zmode;
+      switch (mode) {
+        default:
+          assert(false);
+          // Fall through - 2.0 is fallback default
+        case XQC_XPATH2_0:
+          zmode = xpath2_0;
+          break;
+        case XQC_XPATH1_0:
+          zmode = xpath1_0;
+          break;
+      }
+      me->theContext.get()->setXPath1_0CompatibMode(zmode);
     }
     SC_CATCH;
   }
 
   XQC_Error 
-  CStaticContext::get_xpath1_0_mode
-  (XQC_StaticContext* context, xpath1_0compatib_mode_t* mode)
+  CStaticContext::get_xpath_compatib_mode
+  (XQC_StaticContext* context, XQC_XPath1Mode* mode)
   {
     SC_TRY {
-      *mode = me->theContext.get()->getXPath1_0CompatibMode();
+      xpath1_0compatib_mode_t zmode =
+        me->theContext.get()->getXPath1_0CompatibMode();
+      switch (zmode) {
+        default:
+          assert(false);
+          // Fall through - 2.0 is fallback default
+        case xpath2_0:
+          (*mode) = XQC_XPATH2_0;
+          break;
+        case xpath1_0:
+          (*mode) = XQC_XPATH1_0;
+          break;
+      }
     }
     SC_CATCH;
   }
 
   XQC_Error
   CStaticContext::set_construction_mode
-  (XQC_StaticContext* context, construction_mode_t mode )
+  (XQC_StaticContext* context, XQC_ConstructionMode mode)
   {
     SC_TRY {
-      me->theContext.get()->setConstructionMode(mode);
+      construction_mode_t zmode;
+      switch (mode) {
+        default:
+          assert(false);
+          // Fall through - preserve is fallback default
+        case XQC_PRESERVE_CONS:
+          zmode = preserve_cons;
+          break;
+        case XQC_STRIP_CONS:
+          zmode = strip_cons;
+          break;
+      }
+      me->theContext.get()->setConstructionMode(zmode);
     }
     SC_CATCH;
   }
 
   XQC_Error
   CStaticContext::get_construction_mode
-  (XQC_StaticContext* context, construction_mode_t* mode)
+  (XQC_StaticContext* context, XQC_ConstructionMode* mode)
   {
     SC_TRY {
-      *mode = me->theContext.get()->getConstructionMode();
+      construction_mode_t zmode = me->theContext.get()->getConstructionMode();
+      switch (zmode) {
+        default:
+          assert(false);
+          // Fall through - preserve is fallback default
+        case preserve_cons:
+          (*mode) = XQC_PRESERVE_CONS;
+          break;
+        case strip_cons:
+          (*mode) = XQC_STRIP_CONS;
+          break;
+      }
     }
     SC_CATCH;
   }
 
   XQC_Error
   CStaticContext::set_ordering_mode
-  (XQC_StaticContext* context, ordering_mode_t mode)
+  (XQC_StaticContext* context, XQC_OrderingMode mode)
   {
     SC_TRY {
-      me->theContext.get()->setOrderingMode(mode);
+      ordering_mode_t zmode;
+      switch (mode) {
+        default:
+          assert(false);
+          // Fall through - ordered is fallback default
+        case XQC_ORDERED:
+          zmode = ordered;
+          break;
+        case XQC_UNORDERED:
+          zmode = unordered;
+          break;
+      }
+      me->theContext.get()->setOrderingMode(zmode);
     }
     SC_CATCH;
   }
 
   XQC_Error
   CStaticContext::get_ordering_mode
-  (XQC_StaticContext* context, ordering_mode_t* mode)
+  (XQC_StaticContext* context, XQC_OrderingMode* mode)
   {
     SC_TRY {
-      *mode = me->theContext.get()->getOrderingMode();
+      ordering_mode_t zmode = me->theContext.get()->getOrderingMode();
+      switch (zmode) {
+        default:
+          assert(false);
+          // Fall through - ordered is fallback default
+        case ordered:
+          (*mode) = XQC_ORDERED;
+          break;
+        case unordered:
+          (*mode) = XQC_UNORDERED;
+          break;
+      }
     }
     SC_CATCH;
   }
 
   XQC_Error
   CStaticContext::set_default_order_empty_sequences
-  (XQC_StaticContext* context, order_empty_mode_t mode)
+  (XQC_StaticContext* context, XQC_OrderEmptyMode mode)
   {
     SC_TRY {
-      me->theContext.get()->setDefaultOrderForEmptySequences(mode);
+      order_empty_mode_t zmode;
+      switch (mode) {
+        default:
+          assert(false);
+          // Fall through - empty_greatest is fallback default
+        case XQC_EMPTY_GREATEST:
+          zmode = empty_greatest;
+          break;
+        case XQC_EMPTY_LEAST:
+          zmode = empty_least;
+          break;
+      }
+      me->theContext.get()->setDefaultOrderForEmptySequences(zmode);
     }
     SC_CATCH;
   }
 
   XQC_Error
   CStaticContext::get_default_order_empty_sequences
-  (XQC_StaticContext* context, order_empty_mode_t* mode)
+  (XQC_StaticContext* context, XQC_OrderEmptyMode* mode)
   {
     SC_TRY {
-      *mode = me->theContext.get()->getDefaultOrderForEmptySequences();
+      order_empty_mode_t zmode =
+        me->theContext.get()->getDefaultOrderForEmptySequences();
+      switch (zmode) {
+        default:
+          assert(false);
+          // Fall through - empty_greatest is fallback default
+        case empty_greatest:
+          (*mode) = XQC_EMPTY_GREATEST;
+          break;
+        case empty_least:
+          (*mode) = XQC_EMPTY_LEAST;
+          break;
+      }
     }
     SC_CATCH;
   }
 
   XQC_Error
   CStaticContext::set_boundary_space_policy
-  (XQC_StaticContext* context, boundary_space_mode_t mode)
+  (XQC_StaticContext* context, XQC_BoundarySpaceMode mode)
   {
     SC_TRY {
-      me->theContext.get()->setBoundarySpacePolicy(mode);
+      boundary_space_mode_t zmode;
+      switch (mode) {
+        default:
+          assert(false);
+          // Fall through - preserve_space is fallback default
+        case XQC_PRESERVE_SPACE:
+          zmode = preserve_space;
+          break;
+        case XQC_STRIP_SPACE:
+          zmode = strip_space;
+          break;
+      }
+      me->theContext.get()->setBoundarySpacePolicy(zmode);
     }
     SC_CATCH;
   }
 
   XQC_Error
   CStaticContext::get_boundary_space_policy
-  (XQC_StaticContext* context, boundary_space_mode_t* mode)
+  (XQC_StaticContext* context, XQC_BoundarySpaceMode* mode)
   {
     SC_TRY {
-      *mode = me->theContext.get()->getBoundarySpacePolicy();
+      boundary_space_mode_t zmode =
+        me->theContext.get()->getBoundarySpacePolicy();
+      switch (zmode) {
+        default:
+          assert(false);
+          // Fall through - preserve_space is fallback default
+        case preserve_space:
+          (*mode) = XQC_PRESERVE_SPACE;
+          break;
+        case strip_space:
+          (*mode) = XQC_STRIP_SPACE;
+          break;
+      }
     }
     SC_CATCH;
   }
 
   XQC_Error
   CStaticContext::set_copy_ns_mode
-  (XQC_StaticContext* context, preserve_mode_t preserve, inherit_mode_t inherit)
+  (XQC_StaticContext* context, XQC_PreserveMode preserve,
+    XQC_InheritMode inherit)
   {
     SC_TRY {
-      me->theContext.get()->setCopyNamespacesMode(preserve, inherit);
+      preserve_mode_t zpreserve;
+      switch (preserve) {
+        default:
+          assert(false);
+          // Fall through - preserve_ns is fallback default
+        case XQC_PRESERVE_NS:
+          zpreserve = preserve_ns;
+          break;
+        case XQC_NO_PRESERVE_NS:
+          zpreserve = no_preserve_ns;
+          break;
+      }
+      inherit_mode_t zinherit;
+      switch (inherit) {
+        default:
+          assert(false);
+          // Fall through - inherit_ns is fallback default
+        case XQC_INHERIT_NS:
+          zinherit = inherit_ns;
+          break;
+        case XQC_NO_INHERIT_NS:
+          zinherit = no_inherit_ns;
+          break;
+      }
+      me->theContext.get()->setCopyNamespacesMode(zpreserve, zinherit);
     }
     SC_CATCH;
   }
 
   XQC_Error
   CStaticContext::get_copy_ns_mode
-  (XQC_StaticContext* context, preserve_mode_t* aPreserve, 
-    inherit_mode_t* aInherit)
+  (XQC_StaticContext* context, XQC_PreserveMode* preserve, 
+    XQC_InheritMode* inherit)
   {
     SC_TRY {
-      me->theContext.get()->getCopyNamespacesMode(*aPreserve, *aInherit);
+      preserve_mode_t zpreserve;
+      inherit_mode_t zinherit;
+      me->theContext.get()->getCopyNamespacesMode(zpreserve, zinherit);
+      switch (zpreserve) {
+        default:
+          assert(false);
+          // Fall through - preserve_ns is fallback default
+        case preserve_ns:
+          (*preserve) = XQC_PRESERVE_NS;
+          break;
+        case no_preserve_ns:
+          (*preserve) = XQC_NO_PRESERVE_NS;
+          break;
+      }
+      switch (zinherit) {
+        default:
+          assert(false);
+          // Fall through - inherit_ns is fallback default
+        case inherit_ns:
+          (*inherit) = XQC_INHERIT_NS;
+          break;
+        case no_inherit_ns:
+          (*inherit) = XQC_NO_INHERIT_NS;
+          break;
+      }
     }
     SC_CATCH;
   }
@@ -406,7 +560,7 @@ namespace zorbac {
   (XQC_StaticContext* context, bool enabled)
   {
     SC_TRY {
-      me->theContext.get()->setRevalidationEnabled (enabled);
+      me->theContext.get()->setRevalidationEnabled(enabled);
     }
     SC_CATCH;
   }
@@ -439,6 +593,14 @@ namespace zorbac {
       (*handler) = me->theErrorHandler;
     }
     SC_CATCH;
+  }
+
+  void*
+  CStaticContext::get_interface
+  (const XQC_StaticContext* context, const char* name)
+  {
+    // TODO No custom interfaces - yet
+    return NULL;
   }
 
   XQC_Error

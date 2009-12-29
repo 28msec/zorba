@@ -26,20 +26,34 @@ namespace zorbac {
   class CDynamicContext {
     public:
       static XQC_Error 
-      set_context_item (XQC_DynamicContext* context, XQC_Sequence* value);
+      set_context_item(XQC_DynamicContext* context, XQC_Sequence* value);
 
       static XQC_Error
-      set_variable(XQC_DynamicContext* context, const char* qname,
-        XQC_Sequence* value);
+      get_context_item(const XQC_DynamicContext* context, XQC_Sequence** value);
+
+      static XQC_Error
+      set_variable(XQC_DynamicContext* context, const char* uri,
+        const char* name, XQC_Sequence* value);
+      
+      static XQC_Error
+      get_variable(const XQC_DynamicContext* context, const char* uri,
+        const char* name, XQC_Sequence** value);
       
       static XQC_Error 
       set_implicit_timezone(XQC_DynamicContext* context, int timezone);
+
+      static XQC_Error 
+      get_implicit_timezone(const XQC_DynamicContext* context, int* timezone);
 
       static XQC_Error
       set_error_handler(XQC_DynamicContext* context, XQC_ErrorHandler* handler);
 
       static XQC_Error
-      get_error_handler(const XQC_DynamicContext* context, XQC_ErrorHandler** handler);
+      get_error_handler(const XQC_DynamicContext* context,
+        XQC_ErrorHandler** handler);
+
+      static void*
+      get_interface(const XQC_DynamicContext* context, const char* name);
 
       static void
       free(XQC_DynamicContext* context);

@@ -26,28 +26,9 @@
 using namespace zorba;
 using namespace std;
 
-#define DC_TRY                        \
-  CDynamicContext* me = get(context); \
-  try
+#define DC_TRY CAPI_TRY(CDynamicContext, context)
+#define DC_CATCH CAPI_CATCH
 
-#define DC_CATCH \
-  catch (QueryException &qe) {                                          \
-    if (me->theErrorHandler) {                                          \
-      me->theErrorHandler->error(me->theErrorHandler,                   \
-        Error::convert_xquery_error(qe.getErrorCode()),                 \
-        ZorbaException::getErrorCodeAsString(qe.getErrorCode()).c_str(), \
-        qe.getDescription().c_str(),                                    \
-        qe.getQueryURI().c_str(),                                       \
-        qe.getLineBegin(),                                              \
-        qe.getColumnBegin());                                           \
-    }                                                                   \
-    return Error::convert_xquery_error(qe.getErrorCode());              \
-  } catch (ZorbaException &e) {                                         \
-    return Error::convert_xquery_error(e.getErrorCode());               \
-  } catch (...) {                                                       \
-    return XQC_INTERNAL_ERROR;                                          \
-  }                                                                     \
-  return XQC_NO_ERROR
 
 namespace zorbac {
 
@@ -57,10 +38,14 @@ namespace zorbac {
   {
     memset(&theXQCDynamic, 0, sizeof (XQC_DynamicContext));
     theXQCDynamic.set_context_item     = CDynamicContext::set_context_item;
+    theXQCDynamic.get_context_item     = CDynamicContext::get_context_item;
     theXQCDynamic.set_variable         = CDynamicContext::set_variable;
+    theXQCDynamic.get_variable         = CDynamicContext::get_variable;
     theXQCDynamic.set_implicit_timezone= CDynamicContext::set_implicit_timezone;
+    theXQCDynamic.get_implicit_timezone= CDynamicContext::get_implicit_timezone;
     theXQCDynamic.set_error_handler    = CDynamicContext::set_error_handler;
     theXQCDynamic.get_error_handler    = CDynamicContext::get_error_handler;
+    theXQCDynamic.get_interface        = CDynamicContext::get_interface;
     theXQCDynamic.free                 = CDynamicContext::free;
   }
 
@@ -103,6 +88,14 @@ namespace zorbac {
     DC_CATCH;
   }
 
+  XQC_Error
+  CDynamicContext::get_context_item
+  (const XQC_DynamicContext* context, XQC_Sequence** value)
+  {
+    // TODO
+    return XQC_NOT_IMPLEMENTED;
+  }
+
 //   XQC_Error
 //   CDynamicContext::set_context_document
 //   (XQC_DynamicContext* context, const char* doc_uri, FILE* document)
@@ -120,15 +113,26 @@ namespace zorbac {
 
   XQC_Error
   CDynamicContext::set_variable
-  (XQC_DynamicContext* context, const char* qname, XQC_Sequence* seq)
+  (XQC_DynamicContext* context, const char* uri, const char* name,
+    XQC_Sequence* seq)
   {
     DC_TRY {
       CSequence* lSeq = CSequence::get(seq);
       ResultIterator_t lIter = lSeq->getCPPIterator();
 
-      me->theContext->setVariable(qname, lIter);
+      // TODO how can I use the uri here?
+      me->theContext->setVariable(name, lIter);
     }
     DC_CATCH;
+  }
+
+  XQC_Error
+  CDynamicContext::get_variable
+  (const XQC_DynamicContext* context, const char* uri, const char* name,
+    XQC_Sequence** seq)
+  {
+    // TODO
+    return XQC_NOT_IMPLEMENTED;
   }
   
 //   XQC_Error
@@ -167,7 +171,7 @@ namespace zorbac {
     DC_CATCH;
   }
   
-  XQC_Error 
+  XQC_Error
   CDynamicContext::set_implicit_timezone
   (XQC_DynamicContext* context, int timezone)
   {
@@ -176,7 +180,25 @@ namespace zorbac {
     }
     DC_CATCH;
   }
-  
+
+  XQC_Error
+  CDynamicContext::get_implicit_timezone
+  (const XQC_DynamicContext* context, int* timezone)
+  {
+    DC_TRY {
+      (*timezone) = me->theContext->getImplicitTimezone();
+    }
+    DC_CATCH;
+  }
+
+  void*
+  CDynamicContext::get_interface
+  (const XQC_DynamicContext* context, const char* name)
+  {
+    // No custom interfaces
+    return NULL;
+  }
+ 
   void
   CDynamicContext::free(XQC_DynamicContext* context)
   {

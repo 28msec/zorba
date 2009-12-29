@@ -991,4 +991,26 @@ namespace zorbac {
 
   } /* Error::convert_xquery_error() */
 
+  XQC_Error
+  Error::handle_and_convert_queryexception
+  (XQC_ErrorHandler* handler,QueryException& qe)
+  {
+    if (handler) {
+// QQQ This is how to call a Zorba_ErrorHandler
+//       handler->error(handler,
+//         Error::convert_xquery_error(qe.getErrorCode()),
+//         ZorbaException::getErrorCodeAsString(qe.getErrorCode()).c_str(),
+//         qe.getDescription().c_str(),
+//         qe.getQueryURI().c_str(),
+//         qe.getLineBegin(),
+//         qe.getColumnBegin());
+      handler->error(handler,
+        Error::convert_xquery_error(qe.getErrorCode()),
+        NULL, // QQQ no error code uri??
+        ZorbaException::getErrorCodeAsString(qe.getErrorCode()).c_str(),
+        qe.getDescription().c_str(),
+        NULL); // TODO no support for passing argument to fn:error()
+    }
+    return Error::convert_xquery_error(qe.getErrorCode());
+  }
 } /* namespace zorbac */

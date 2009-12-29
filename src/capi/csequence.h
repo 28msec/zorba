@@ -19,6 +19,7 @@
 #include <zorba/zorbac.h>
 #include <zorba/result_iterator.h>
 #include <zorba/item.h>
+#include <vector>
 
 using namespace zorba;
 
@@ -43,7 +44,10 @@ namespace zorbac {
 
       static XQC_Error
       node_name(const XQC_Sequence* sequence, const char** uri,
-      const char** name);
+        const char** name);
+
+      static void*
+      get_interface(const XQC_Sequence* sequence, const char* name);      
 
       static void
       free(XQC_Sequence* sequence);
@@ -68,7 +72,7 @@ namespace zorbac {
       XQC_Sequence               theXQCSeq;
       // buffer to store strings that we return
       // they are valid until next() is called
-      mutable std::vector<zorba::String> theStrings;
+      std::vector<zorba::String> theStrings;
       Item                       theItem;
       ResultIterator_t           theIterator;
       ItemSequence*              theItemSequence;

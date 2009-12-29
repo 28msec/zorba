@@ -31,22 +31,16 @@
 
 using namespace zorba;
 
+// These need to be slightly different than CAPI_TRY/CATCH because
+// there is no theErrorHandler member on CImplementation.
 #define CIMPL_TRY \
   XQC_ErrorHandler* handler = NULL;                     \
   CImplementation* me = CImplementation::get(impl);     \
   try
 
 #define CIMPL_CATCH \
-  catch (QueryException& qe) {             \
-    if (handler) {                                                      \
-      handler->error(handler, Error::convert_xquery_error(qe.getErrorCode()), \
-        ZorbaException::getErrorCodeAsString(qe.getErrorCode()).c_str(), \
-        qe.getDescription().c_str(),                                    \
-        qe.getQueryURI().c_str(),                                       \
-        qe.getLineBegin(),                                              \
-        qe.getColumnBegin());                                           \
-    }                                                                   \
-    return Error::convert_xquery_error(qe.getErrorCode());              \
+  catch (QueryException& qe) {                                          \
+    return Error::handle_and_convert_queryexception(handler, qe);       \
   } catch (ZorbaException &ze) {                                        \
     return Error::convert_xquery_error(ze.getErrorCode());              \
   } catch (...) {                                                       \
@@ -65,6 +59,19 @@ namespace zorbac {
     theXQCImpl.prepare        = CImplementation::prepare;
     theXQCImpl.prepare_file   = CImplementation::prepare_file;
     theXQCImpl.prepare_stream = CImplementation::prepare_stream;
+    theXQCImpl.parse_document = CImplementation::parse_document;
+    theXQCImpl.parse_document_file = CImplementation::parse_document_file;
+    theXQCImpl.parse_document_stream = CImplementation::parse_document_stream;
+    theXQCImpl.create_empty_sequence =
+      CImplementation::create_empty_sequence;
+    theXQCImpl.create_singleton_sequence =
+      CImplementation::create_singleton_sequence;
+    theXQCImpl.create_string_sequence =
+      CImplementation::create_string_sequence;
+    theXQCImpl.create_integer_sequence =
+      CImplementation::create_integer_sequence;
+    theXQCImpl.create_double_sequence =
+      CImplementation::create_double_sequence;
     theXQCImpl.free           = CImplementation::free;
   }
 
@@ -109,7 +116,7 @@ namespace zorbac {
   XQC_Error 
   CImplementation::prepare
   (XQC_Implementation* impl, const char* query_string,
-    XQC_StaticContext* context, XQC_Expression** expr)
+    const XQC_StaticContext* context, XQC_Expression** expr)
   {
     CIMPL_TRY {
       XQuery_t lQuery;
@@ -133,8 +140,8 @@ namespace zorbac {
 
   XQC_Error 
   CImplementation::prepare_file
-  (XQC_Implementation* impl, FILE* query_file, XQC_StaticContext* context, 
-    XQC_Expression** expr)
+  (XQC_Implementation* impl, FILE* query_file,
+    const XQC_StaticContext* context, XQC_Expression** expr)
   {
     CIMPL_TRY {
       XQuery_t lQuery;
@@ -161,7 +168,7 @@ namespace zorbac {
   XQC_Error
   CImplementation::prepare_stream
   (XQC_Implementation* impl, XQC_InputStream* stream,
-    XQC_StaticContext* context, XQC_Expression **expr)
+    const XQC_StaticContext* context, XQC_Expression **expr)
   {
     CIMPL_TRY { 
       XQuery_t lQuery;
@@ -201,6 +208,110 @@ namespace zorbac {
       (*expr) = lExpr.release()->getXQC();
     }
     CIMPL_CATCH; 
+  }
+      
+  XQC_Error
+  CImplementation::parse_document(XQC_Implementation* impl,
+    const char *string, XQC_Sequence** seq)
+  {
+    CIMPL_TRY {
+      // TODO implement
+      (*seq) = NULL;
+      me->getCPP();
+    }
+    CIMPL_CATCH;
+  }
+
+  XQC_Error
+  CImplementation::parse_document_file(XQC_Implementation* impl,
+    FILE *file, XQC_Sequence** seq)
+  {
+    CIMPL_TRY {
+      // TODO implement
+      (*seq) = NULL;
+      me->getCPP();
+    }
+    CIMPL_CATCH;
+  }
+
+  XQC_Error
+  CImplementation::parse_document_stream(XQC_Implementation* impl,
+    XQC_InputStream *stream, XQC_Sequence** seq)
+  {
+    CIMPL_TRY {
+      // TODO implement
+      (*seq) = NULL;
+      me->getCPP();
+    }
+    CIMPL_CATCH;
+  }
+
+  XQC_Error
+  CImplementation::create_empty_sequence(XQC_Implementation* impl,
+    XQC_Sequence** seq)
+  {
+    CIMPL_TRY {
+      // TODO implement
+      (*seq) = NULL;
+      me->getCPP();
+    }
+    CIMPL_CATCH;
+  }
+
+  XQC_Error
+  CImplementation::create_singleton_sequence(XQC_Implementation* impl,
+    XQC_ItemType type, const char *value, XQC_Sequence** seq)
+  {
+    CIMPL_TRY {
+      // TODO implement
+      (*seq) = NULL;
+      me->getCPP();
+    }
+    CIMPL_CATCH;
+  }
+
+  XQC_Error
+  CImplementation::create_string_sequence(XQC_Implementation* impl,
+    const char *values[], unsigned int count, XQC_Sequence** seq)
+  {
+    CIMPL_TRY {
+      // TODO implement
+      (*seq) = NULL;
+      me->getCPP();
+    }
+    CIMPL_CATCH;
+  }
+
+  XQC_Error
+  CImplementation::create_integer_sequence(XQC_Implementation* impl,
+    int values[], unsigned int count, XQC_Sequence** seq)
+  {
+    CIMPL_TRY {
+      // TODO implement
+      (*seq) = NULL;
+      me->getCPP();
+    }
+    CIMPL_CATCH;
+  }
+
+  XQC_Error
+  CImplementation::create_double_sequence(XQC_Implementation* impl,
+    double values[], unsigned int count, XQC_Sequence** seq)
+  {
+    CIMPL_TRY {
+      // TODO implement
+      (*seq) = NULL;
+      me->getCPP();
+    }
+    CIMPL_CATCH;
+  }
+
+  void *
+  CImplementation::get_interface
+  (const XQC_Implementation* impl, const char *name)
+  {
+    // No custom interfaces
+    return NULL;
   }
 
   void

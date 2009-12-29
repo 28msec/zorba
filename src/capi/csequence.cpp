@@ -23,32 +23,10 @@
 #include "capi/error.h"
 #include "capi/capi_util.h"
 
-#define SEQ_TRY                                 \
-  CSequence* me = CSequence::get(seq);          \
-  try
-
-#define SEQ_CATCH                                                       \
-  catch (QueryException &qe) {                                          \
-    if (me->theErrorHandler) {                                          \
-      me->theErrorHandler->error(me->theErrorHandler,                   \
-        Error::convert_xquery_error(qe.getErrorCode()),                 \
-        ZorbaException::getErrorCodeAsString(qe.getErrorCode()).c_str(), \
-        qe.getDescription().c_str(),                                    \
-        qe.getQueryURI().c_str(),                                       \
-        qe.getLineBegin(),                                              \
-        qe.getColumnBegin());                                           \
-    }                                                                   \
-    return Error::convert_xquery_error(qe.getErrorCode());              \
-  }                                                                     \
-  catch (ZorbaException &e) {                                           \
-    return Error::convert_xquery_error(e.getErrorCode());               \
-  } catch (...) {                                                       \
-    return XQC_INTERNAL_ERROR;                                          \
-  }                                                                     \
-  return XQC_NO_ERROR;
-
-
 using namespace zorba;
+
+#define SEQ_TRY CAPI_TRY(CSequence,seq)
+#define SEQ_CATCH CAPI_CATCH
 
 namespace zorbac {
 
@@ -62,6 +40,7 @@ namespace zorbac {
     theXQCSeq.integer_value = CSequence::integer_value;
     theXQCSeq.double_value = CSequence::double_value;
     theXQCSeq.node_name = CSequence::node_name;
+    theXQCSeq.get_interface = CSequence::get_interface;
     theXQCSeq.free = CSequence::free;
   }
 
@@ -312,6 +291,13 @@ namespace zorbac {
       (*name) = lName.c_str();
     }
     SEQ_CATCH;
+  }
+
+  void *
+  CSequence::get_interface(const XQC_Sequence* impl, const char *name)
+  {
+    // No custom interfaces
+    return NULL;
   }
 
   void

@@ -27,10 +27,14 @@ namespace zorbac {
   {
     public:
       static XQC_Error
-      create_context(XQC_Expression* expr, XQC_DynamicContext** context);
+      create_context(const XQC_Expression* expr, XQC_DynamicContext** context);
 
       static XQC_Error 
-      execute(XQC_Expression* expr, XQC_DynamicContext* ctx, XQC_Sequence** seq);
+      execute(const XQC_Expression* expr, const XQC_DynamicContext* ctx,
+        XQC_Sequence** seq);
+
+      static void*
+      get_interface(const XQC_Expression* expr, const char *name);
 
       static void 
       free(XQC_Expression* expr);

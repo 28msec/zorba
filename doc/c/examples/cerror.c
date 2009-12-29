@@ -24,9 +24,10 @@
 XQC_Error gError;
 
 // define a callback function that is called if an error occurs
-// during preparing or executing the query
+// during preparing or executing the query. This version is using
+// Zorba's extended error handler.
 void
-error_handler(XQC_ErrorHandler* handler,
+zerror_handler(XQC_ErrorHandler* handler,
               XQC_Error    error,
               const char   *local_name,
               const char   *description,
@@ -37,6 +38,15 @@ error_handler(XQC_ErrorHandler* handler,
   printf("query_uri: %s\nlocalname: %s\ndescription: %s\nline: %i\ncolumn: %i\n", 
     query_uri, local_name, description, line, column);
   // Remember the error code
+  gError = error;
+}
+
+// This version uses XQC's basic error handler.
+void error_handler(XQC_ErrorHandler* handler, XQC_Error error,
+  const char* error_uri, const char* error_name, const char* description,
+  XQC_Sequence* error_object)
+{
+  printf("error: %s:%s\ndescription: %s\n", error_uri, error_name, description);
   gError = error;
 }
 

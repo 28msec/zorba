@@ -16,8 +16,38 @@
 #ifndef ZORBAC_ERROR_CAPI_H
 #define ZORBAC_ERROR_CAPI_H
 
+#include <xqc.h>
 #include <zorba/zorbac.h>
 #include <zorba/error.h>
+#include <zorba/exception.h>
+
+
+/**
+ * Useful #defines for most C API methods. Provides a consistent
+ * quasi-OO approach by declaring "me" to be the C API class instance
+ * associated with an XQC variable. Catches QueryExceptions and passes
+ * them to the appropriate handler, and otherwise handles returning
+ * consistent return codes.
+ */
+
+// Can be further customized per-class
+#define CAPI_TRY(class,xqc)                        \
+  class* me = class::get(xqc);                     \
+  try
+
+#define CAPI_CATCH                                                      \
+  catch (QueryException &qe) {                                          \
+    return Error::handle_and_convert_queryexception(me->theErrorHandler, qe); \
+  }                                                                     \
+  catch (ZorbaException &e) {                                           \
+    return Error::convert_xquery_error(e.getErrorCode());               \
+  } catch (...) {                                                       \
+    return XQC_INTERNAL_ERROR;                                          \
+  }                                                                     \
+  return XQC_NO_ERROR;
+
+
+using namespace zorba;
 
 namespace zorbac {
 
@@ -26,6 +56,10 @@ namespace zorbac {
     public:
       static XQC_Error
       convert_xquery_error(XQUERY_ERROR error);
+
+      static XQC_Error
+      handle_and_convert_queryexception
+      (XQC_ErrorHandler* handler, QueryException &qe);
   };
 
 } /* namespace zorbac */

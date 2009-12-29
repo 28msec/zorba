@@ -82,16 +82,16 @@ cserialization_example_2(XQC_Implementation* impl)
   return 1;
 }
 
-// callback function used by the XQC_OutputStream
+// callback function used by the Zorba_OutputStream
 void
-stream_writer(XQC_OutputStream stream, const char* buf, unsigned int length)
+stream_writer(Zorba_OutputStream* stream, const char* buf, unsigned int length)
 {
   printf("%s", buf);
 }
 
 // callback function called after the query result has been completely serialized
 void
-free_writer(XQC_OutputStream stream)
+free_writer(Zorba_OutputStream* stream)
 {
   free(stream);
 }

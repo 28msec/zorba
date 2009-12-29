@@ -28,29 +28,8 @@
 
 using namespace zorba;
 
-#define CEXPR_TRY                               \
-  CExpression* me = CExpression::get(expr);     \
-  try
-
-#define CEXPR_CATCH                                                     \
-  catch (QueryException& qe) {                                          \
-    if (me->theErrorHandler) {                                          \
-      me->theErrorHandler->error(me->theErrorHandler,                   \
-        Error::convert_xquery_error(qe.getErrorCode()),                 \
-        ZorbaException::getErrorCodeAsString(qe.getErrorCode()).c_str(), \
-        qe.getDescription().c_str(),                                    \
-        qe.getQueryURI().c_str(),                                       \
-        qe.getLineBegin(),                                              \
-        qe.getColumnBegin());                                           \
-    }                                                                   \
-    return Error::convert_xquery_error(qe.getErrorCode());              \
-  } catch (ZorbaException &ze) {                                        \
-    return Error::convert_xquery_error(ze.getErrorCode());              \
-  } catch (...) {                                                       \
-    return XQC_INTERNAL_ERROR;                                          \
-  }                                                                     \
-  return XQC_NO_ERROR
-
+#define CEXPR_TRY CAPI_TRY(CExpression,expr)
+#define CEXPR_CATCH CAPI_CATCH
 
 namespace zorbac {
 
@@ -60,6 +39,7 @@ namespace zorbac {
     memset(&theXQCExpr, 0, sizeof (XQC_Expression));
     theXQCExpr.create_context        = CExpression::create_context;
     theXQCExpr.execute               = CExpression::execute;
+    theXQCExpr.get_interface         = CExpression::get_interface;
     theXQCExpr.free                  = CExpression::free;
   }
 
@@ -94,7 +74,7 @@ namespace zorbac {
 
   XQC_Error
   CExpression::create_context
-  (XQC_Expression* expr, XQC_DynamicContext** context)
+  (const XQC_Expression* expr, XQC_DynamicContext** context)
   {
     CEXPR_TRY {
       // Obtain the C++ DynamicContext, wrap in a CDynamicContext,
@@ -193,7 +173,8 @@ namespace zorbac {
 
   XQC_Error 
   CExpression::execute
-  (XQC_Expression* expr, XQC_DynamicContext* context, XQC_Sequence** sequence)
+  (const XQC_Expression* expr, const XQC_DynamicContext* context,
+    XQC_Sequence** sequence)
   {
     CEXPR_TRY {
       ResultIterator_t lIter= me->theQuery->iterator();
@@ -210,6 +191,13 @@ namespace zorbac {
       (*sequence) = lSeq.release()->getXQC();
     }
     CEXPR_CATCH;
+  }
+
+  void*
+  CExpression::get_interface(const XQC_Expression* expr, const char* name)
+  {
+    // No custom interfaces
+    return NULL;
   }
 
   void

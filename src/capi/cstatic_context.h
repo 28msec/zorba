@@ -54,59 +54,48 @@ namespace zorbac {
       get_default_function_ns(XQC_StaticContext* context, const char** uri);
 
       static XQC_Error
-      add_collation(XQC_StaticContext* context, const char* uri);
-
-      static XQC_Error
-      set_default_collation(XQC_StaticContext* context, const char* uri);
-
-      static XQC_Error
-      get_default_collation(XQC_StaticContext* context, const char** uri);
-
-      static XQC_Error
-      set_xquery_version(XQC_StaticContext* context, xquery_version_t mode );
+      set_xpath_compatib_mode(XQC_StaticContext* context, XQC_XPath1Mode mode);
 
       static XQC_Error 
-      get_xquery_version(XQC_StaticContext* context, xquery_version_t* mode);
+      get_xpath_compatib_mode(XQC_StaticContext* context, XQC_XPath1Mode* mode);
 
       static XQC_Error
-      set_xpath1_0_mode(XQC_StaticContext* context, xpath1_0compatib_mode_t mode );
-
-      static XQC_Error 
-      get_xpath1_0_mode(XQC_StaticContext* context, xpath1_0compatib_mode_t* mode);
+      set_construction_mode(XQC_StaticContext* context,
+        XQC_ConstructionMode mode);
 
       static XQC_Error
-      set_construction_mode(XQC_StaticContext* context, construction_mode_t mode );
+      get_construction_mode(XQC_StaticContext* context,
+        XQC_ConstructionMode* mode);
 
       static XQC_Error
-      get_construction_mode(XQC_StaticContext* context, construction_mode_t* mode);
+      set_ordering_mode(XQC_StaticContext* context, XQC_OrderingMode mode);
 
       static XQC_Error
-      set_ordering_mode(XQC_StaticContext* context, ordering_mode_t mode );
+      get_ordering_mode(XQC_StaticContext* context, XQC_OrderingMode* mode);
 
       static XQC_Error
-      get_ordering_mode(XQC_StaticContext* context, ordering_mode_t* mode );
+      set_default_order_empty_sequences(XQC_StaticContext* context,
+        XQC_OrderEmptyMode mode);
 
       static XQC_Error
-      set_default_order_empty_sequences(XQC_StaticContext* context, order_empty_mode_t mode );
-
-      static XQC_Error
-      get_default_order_empty_sequences(XQC_StaticContext* context, order_empty_mode_t* mode );
+      get_default_order_empty_sequences(XQC_StaticContext* context,
+        XQC_OrderEmptyMode* mode);
 
       static XQC_Error  
-      set_boundary_space_policy(XQC_StaticContext* context, boundary_space_mode_t mode);
+      set_boundary_space_policy(XQC_StaticContext* context,
+        XQC_BoundarySpaceMode mode);
 
       static XQC_Error
-      get_boundary_space_policy(XQC_StaticContext* context, boundary_space_mode_t* mode );
+      get_boundary_space_policy(XQC_StaticContext* context,
+        XQC_BoundarySpaceMode* mode);
 
       static XQC_Error 
       set_copy_ns_mode(XQC_StaticContext* context,  
-                       preserve_mode_t preserve,
-                       inherit_mode_t inherit );
+        XQC_PreserveMode preserve, XQC_InheritMode inherit);
 
       static XQC_Error
       get_copy_ns_mode(XQC_StaticContext* context,
-                       preserve_mode_t* aPreserve, 
-                       inherit_mode_t* aInherit );
+        XQC_PreserveMode* preserve, XQC_InheritMode* inherit);
 
       static XQC_Error
       set_base_uri(XQC_StaticContext* context, const char* base_uri );
@@ -125,7 +114,30 @@ namespace zorbac {
 
       static XQC_Error
       get_error_handler(const XQC_StaticContext* context, XQC_ErrorHandler** handler);
+
+      static void*
+      get_interface(const XQC_StaticContext* context, const char* name);
+
+      static void
+      free(XQC_StaticContext* context);
+
+      // The methods after this point are Zorba-specific extensions.
       
+      static XQC_Error
+      add_collation(XQC_StaticContext* context, const char* uri);
+
+      static XQC_Error
+      set_default_collation(XQC_StaticContext* context, const char* uri);
+
+      static XQC_Error
+      get_default_collation(XQC_StaticContext* context, const char** uri);
+
+      static XQC_Error
+      set_xquery_version(XQC_StaticContext* context, xquery_version_t mode );
+
+      static XQC_Error 
+      get_xquery_version(XQC_StaticContext* context, xquery_version_t* mode);
+
       static XQC_Error
       register_external_function(XQC_StaticContext* context, 
                                 const char* uri,
@@ -134,8 +146,7 @@ namespace zorbac {
                                 external_function_release release,
                                 void* global_user_data);
 
-      static void
-      free(XQC_StaticContext* context);
+      // Constructors and accessors.
 
       CStaticContext(StaticContext_t aContext, XQC_ErrorHandler* handler);
       ~CStaticContext();
@@ -151,6 +162,7 @@ namespace zorbac {
 
     private:
       XQC_StaticContext                                       theXQCStatic;
+      Zorba_StaticContext                                     theZorbaStatic;
       StaticContext_t                                         theContext;
       std::vector<zorba::String>                              theStrings;
       std::map<std::string, zorbac::ExternalModuleWrapper*>   theModules;

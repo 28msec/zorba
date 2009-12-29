@@ -16,6 +16,7 @@
 #ifndef ZORBAC_CIMPLEMENTATION_H
 #define ZORBAC_CIMPLEMENTATION_H
 
+#include <xqc.h>
 #include <zorba/zorbac.h>
 #include <zorba/zorba.h>
 
@@ -33,25 +34,53 @@ namespace zorbac {
       create_context(XQC_Implementation* impl, XQC_StaticContext** context);
 
       static XQC_Error 
-      prepare(XQC_Implementation* implementation, 
-              const char *query_string,
-              XQC_StaticContext* context, 
-              XQC_Expression **expr);
+      prepare(XQC_Implementation* impl, const char *query_string,
+        const XQC_StaticContext* context,  XQC_Expression** expr);
 
       static XQC_Error 
-      prepare_file(XQC_Implementation* implementation, 
-                   FILE *query_file,
-                   XQC_StaticContext* context, 
-                   XQC_Expression **expr);
+      prepare_file(XQC_Implementation* impl, FILE *query_file,
+        const XQC_StaticContext* context, XQC_Expression** expr);
 
       static XQC_Error
-      prepare_stream(XQC_Implementation* implementation, 
-                     XQC_InputStream* stream,
-                     XQC_StaticContext* context, 
-                     XQC_Expression **expr);
+      prepare_stream(XQC_Implementation* impl, XQC_InputStream* stream,
+        const XQC_StaticContext* context, XQC_Expression** expr);
+      
+      static XQC_Error
+      parse_document(XQC_Implementation* impl,
+        const char *string, XQC_Sequence** seq);
+
+      static XQC_Error
+      parse_document_file(XQC_Implementation* impl,
+        FILE *file, XQC_Sequence** seq);
+
+      static XQC_Error
+      parse_document_stream(XQC_Implementation* impl,
+        XQC_InputStream* stream, XQC_Sequence** seq);
+
+      static XQC_Error
+      create_empty_sequence(XQC_Implementation* impl, XQC_Sequence** seq);
+
+      static XQC_Error
+      create_singleton_sequence(XQC_Implementation* impl,
+        XQC_ItemType type, const char *value, XQC_Sequence** seq);
+
+      static XQC_Error
+      create_string_sequence(XQC_Implementation* impl,
+        const char *values[], unsigned int count, XQC_Sequence** seq);
+
+      static XQC_Error
+      create_integer_sequence(XQC_Implementation* impl,
+        int values[], unsigned int count, XQC_Sequence** seq);
+
+      static XQC_Error
+      create_double_sequence(XQC_Implementation* impl,
+        double values[], unsigned int count, XQC_Sequence** seq);
+
+      static void *
+      get_interface(const XQC_Implementation* impl, const char *name);
 
       static void 
-      free(XQC_Implementation* implementation);
+      free(XQC_Implementation* impl);
 
       static CImplementation*
       get(const XQC_Implementation* xqc);

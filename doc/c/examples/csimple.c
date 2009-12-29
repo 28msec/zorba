@@ -116,8 +116,8 @@ example_4(XQC_Implementation* impl)
 }
 
 // define the callback functions fot the input stream
-int
-read_stream(XQC_InputStream* stream, char* buf, unsigned int length) 
+unsigned int
+read_stream(XQC_InputStream* stream, void* buf, unsigned int length) 
 {
   strcpy(buf, "for $i in (1 to 10) return $i");
   return 29;

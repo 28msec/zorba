@@ -154,7 +154,7 @@ ccontext_example_4(XQC_Implementation* impl)
   // get the dynamic context and set the external variable
   lExpr2->create_context(lExpr2, &lContext);
 
-  lContext->set_variable(lContext, "var", lSequence1);
+  lContext->set_variable(lContext, NULL, "var", lSequence1);
 
   lExpr2->execute(lExpr2, lContext, &lSequence2);
 
