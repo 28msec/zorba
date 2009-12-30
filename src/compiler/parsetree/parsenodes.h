@@ -1433,26 +1433,26 @@ class ICCollUniqueKeyCheck
   : public ICColl
 {
 protected:
-  rchandle<QName>        theCollVarName;
+  rchandle<QName>        theNodeVarName;
   rchandle<exprnode>     theExpr;
 
 public:
   ICCollUniqueKeyCheck ( const QueryLoc& loc, 
                          QName* name, 
                          QName* collName,
-                         QName* collVarName,
+                         QName* nodeVarName,
                          rchandle<exprnode> expr)
     :
     ICColl(loc, 
            name, 
            IntegrityConstraintDecl::coll_check_unique_key,
            collName), 
-    theCollVarName(collVarName),
+    theNodeVarName(nodeVarName),
     theExpr(expr)
   {
   }
   
-  const QName* getCollVarName() const { return theCollVarName.getp(); }
+  const QName* getNodeVarName() const { return theNodeVarName.getp(); }
   const exprnode* getExpr() const { return theExpr.getp(); }
 };
 

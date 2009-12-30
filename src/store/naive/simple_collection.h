@@ -76,7 +76,10 @@ public:
 
   ulong getId() const { return theId; }
 
-  const store::Item* getName() const { return theName.getp(); }
+  const store::Item* getName() const 
+  {
+    return theName.getp(); 
+  }
 
   ulong size() const { return theXmlTrees.size(); }
 

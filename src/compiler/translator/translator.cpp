@@ -3382,61 +3382,404 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
   switch( v.getICKind() )
   {
   case IntegrityConstraintDecl::coll_check_simple:
-  {
-    /**********************
+    {
+      const ICCollSimpleCheck ic = dynamic_cast<const ICCollSimpleCheck&>(v);
+      /*function* f = LOOKUP_FN("fn", "true", 0);
+      std::vector<expr_t> arguments;
+
+      fo_expr_t foExpr = new fo_expr(sctxid(), loc, f, arguments);
+      body = foExpr;     */
+
+      /**********************
        declare integrity constraint example:ic1 
          on collection example:coll1 $x check sum($x/size) le 1000;
 
        sum( dc:collection(example:coll1)/size ) le 1000
 
-       let $x := dc:collection(example:coll1)
+       let $x := dc:collection(xs:QName("example:coll1"))
        return sum($x/size) le 1000;
     **********************/
 
+      // "example:coll1"
+      expr_t qnameStrErpr = new const_expr(sctxid(), loc, 
+                                           ic.getCollName()->get_qname() );
       
-    function* f = LOOKUP_FN("fn", "true", 0);
-    /*function* fn_dc_collection = sctx_p->lookup_resolved_fn(
-      "http://www.zorba-xquery.com/module/dynamic-context", "collection", 
-      loc);
-    */
-    std::vector<expr_t> arguments;
-    //arguments.push_back();
-    
-    fo_expr_t foExpr = new fo_expr(sctxid(), loc, f, arguments);
-    body = foExpr;     
-  }
-  break;
-  
+      // xs:QName("example:coll1")
+      function* fn_qname = sctx_p->lookup_resolved_fn(
+          xqp_string("http://www.w3.org/2001/XMLSchema"), 
+          xqp_string("QName"), 
+          1);
+      std::vector<expr_t> argQName;      
+      argQName.push_back(qnameStrErpr);      
+      fo_expr_t qnameExpr = new fo_expr(sctxid(), loc, fn_qname, argQName);      
+
+      // dc:collection(xs:QName("example:coll1"))
+      function* fn_collection = sctx_p->lookup_resolved_fn(
+          xqp_string("http://www.zorba-xquery.com/modules/xqddf"), 
+          xqp_string("collection"), 
+          1);
+      std::vector<expr_t> argColl;      
+      argColl.push_back(qnameExpr);
+      fo_expr_t collExpr = new fo_expr(sctxid(), loc, fn_collection, argColl);
+
+      // $x 
+      const QName* varQName = ic.getCollVarName();
+      store::Item_t varItem = sctx_p->lookup_fn_qname(varQName->get_prefix(),
+                                                      varQName->get_localname(),
+                                                      varQName->get_location());
+      
+      // let $x := dc:collection(xs:QName("example:coll1")) 
+      //   return sum($x/size) le 1000;      
+      var_expr_t varExpr = bind_var(loc, varItem.getp(), var_expr::let_var, 
+                                    NULL);
+
+      let_clause* lc = new let_clause(sctx_p,
+                                      sctxid(),
+                                      loc,
+                                      varExpr,
+                                      collExpr);
+      rchandle<flwor_expr> flworExpr = new flwor_expr(sctxid(), loc, false);
+
+      expr_t icExpr = pop_nodestack();
+      expr_t retExpr = icExpr;
+
+      flworExpr->add_clause(lc);      
+      flworExpr->set_return_expr(retExpr);
+
+      body = flworExpr;
+      
+    }
+    break;
+
   case IntegrityConstraintDecl::coll_check_unique_key:
-  {
-    store::Item_t fn_true_qname = sctx_p->lookup_fn_qname("fn", "true", loc);
-    function* f = LOOKUP_FN("fn", "true", 0);
-    std::vector<expr_t> arguments;
-    fo_expr_t foExpr = new fo_expr(sctxid(), loc, f, arguments);
-    body = foExpr;
-  }
-  break;
-  
+    {
+      /*store::Item_t fn_true_qname = sctx_p->lookup_fn_qname("fn", "true", loc);
+      function* f = LOOKUP_FN("fn", "true", 0);
+      std::vector<expr_t> arguments;
+      fo_expr_t foExpr = new fo_expr(sctxid(), loc, f, arguments);
+      body = foExpr;*/
+      
+      /**********************
+       declare integrity constraint org:icEmployeesIds
+         on collection org:employees node $x check unique key $x/@id ;
+
+       let $c := dc:collection( xs:QName("org:employees") )
+       return
+         (
+           every $i in $c
+           satisfies
+             exists( $i/@id )
+         )
+         and
+         ( functx:are-distinct-values( $c/@id ) )
+      **********************/
+
+      const ICCollUniqueKeyCheck ic = 
+        dynamic_cast<const ICCollUniqueKeyCheck&>(v);
+
+      // "org:employees"
+      expr_t qnameStrErpr = new const_expr(sctxid(), loc, 
+                                           ic.getCollName()->get_qname() );
+      
+      // xs:QName("org:employees")
+      function* fn_qname = sctx_p->lookup_resolved_fn(
+          xqp_string("http://www.w3.org/2001/XMLSchema"), 
+          xqp_string("QName"), 
+          1);
+      std::vector<expr_t> argQName;      
+      argQName.push_back(qnameStrErpr);      
+      fo_expr_t qnameExpr = new fo_expr(sctxid(), loc, fn_qname, argQName);      
+
+      // dc:collection(xs:QName("org:employees"))
+      function* fn_collection = sctx_p->lookup_resolved_fn(
+          xqp_string("http://www.zorba-xquery.com/modules/xqddf"), 
+          xqp_string("collection"), 
+          1);
+      std::vector<expr_t> argColl;      
+      argColl.push_back(qnameExpr);
+      fo_expr_t collExpr = new fo_expr(sctxid(), loc, fn_collection, argColl);
+
+      // $c 
+      const QName* varQName = ic.getNodeVarName();
+      store::Item_t varItem = sctx_p->lookup_fn_qname(varQName->get_prefix(),
+          varQName->get_localname() + "_external",
+          varQName->get_location());
+      
+      // $x/@id
+      expr_t uniKeyExpr = pop_nodestack();
+      
+      // exists( $x/@id )
+      expr_t existsExpr = new fo_expr(sctxid(), loc, var_exists, uniKeyExpr);
+
+      // every $i in $c satisfies exists ...
+      // every is implemented as a flowr expr
+      rchandle<flwor_expr> evFlworExpr(new flwor_expr(sctxid(), loc, false));
+      evFlworExpr->set_return_expr(new const_expr(sctxid(), loc, true));
+
+      rchandle<expr> evTestExpr = existsExpr;
+
+      rchandle<fo_expr> uw = new fo_expr(sctxid(),
+                                         loc,
+                                         GET_BUILTIN_FUNCTION(FN_NOT_1),
+                                         evTestExpr);
+      evTestExpr = uw.getp();
+
+      // todo
+      //for (int i = 0; i < v.get_decl_list()->size(); ++i) 
+      //{
+      //  pop_scope();
+      //}
+
+      evFlworExpr->add_where(evTestExpr);
+
+      rchandle<fo_expr> everyExpr = new fo_expr(sctxid(),
+                                                loc,
+                                                GET_BUILTIN_FUNCTION(FN_EMPTY_1),
+                                                evFlworExpr.getp());
+
+      // functx:are-distinct-values( $c/@id )
+      // implemented as: count(fn:distinct-values($seq)) = count($seq)
+      // todo
+
+      // (...) and (...)
+      //rchandle<fo_expr> andExpr = new fo_expr(sctxid(), loc, 
+      //                                        GET_BUILTIN_FUNCTION(OP_OR_2), 
+      //                                        everyExpr, );
+
+      // let $c := dc:collection(xs:QName("org:employees")) 
+      //   return 
+      var_expr_t varExpr = bind_var(loc, varItem.getp(), var_expr::let_var, 
+                                    NULL);
+
+      let_clause* letClause = new let_clause(sctx_p,
+                                      sctxid(),
+                                      loc,
+                                      varExpr,
+                                      collExpr);
+      rchandle<flwor_expr> flworExpr = new flwor_expr(sctxid(), loc, false);
+
+      expr_t retExpr = everyExpr;
+
+      flworExpr->add_clause(letClause);      
+      flworExpr->set_return_expr(retExpr);
+
+      body = flworExpr;      
+
+    }
+    break;
+
   case IntegrityConstraintDecl::coll_foreach_node:
-  {
-    store::Item_t fn_true_qname = sctx_p->lookup_fn_qname("fn", "true", loc);
-    function* f = LOOKUP_FN("fn", "true", 0);
-    std::vector<expr_t> arguments;
-    fo_expr_t foExpr = new fo_expr(sctxid(), loc, f, arguments);
-    body = foExpr;
-  }
-  break;
+    {
+      /*store::Item_t fn_true_qname = sctx_p->lookup_fn_qname("fn", "true", loc);
+      function* f = LOOKUP_FN("fn", "true", 0);
+      std::vector<expr_t> arguments;
+      fo_expr_t foExpr = new fo_expr(sctxid(), loc, f, arguments);
+      body = foExpr;*/
+
+      /**********************
+       declare integrity constraint org:icTransactionsSale
+         on collection org:transactions foreac node $x
+           check $x/sale gt 0 ;
+
+       every $x in dc:collection( xs:QName("org:transactions") )
+       satisfies $x/sale gt 0
+       **********************/
+
+      const ICCollForeachNode ic = 
+        dynamic_cast<const ICCollForeachNode&>(v);
+
+      // "org:transactions"
+      expr_t qnameStrExpr = new const_expr(sctxid(), loc, 
+                                           ic.getCollName()->get_qname() );
+      
+      // xs:QName("org:transactions")
+      function* fn_qname = sctx_p->lookup_resolved_fn(
+          xqp_string("http://www.w3.org/2001/XMLSchema"), 
+          xqp_string("QName"), 
+          1);
+      std::vector<expr_t> argQName;      
+      argQName.push_back(qnameStrExpr);      
+      fo_expr_t qnameExpr = new fo_expr(sctxid(), loc, fn_qname, argQName);      
+
+      // dc:collection(xs:QName("org:transactions"))
+      function* fn_collection = sctx_p->lookup_resolved_fn(
+          xqp_string("http://www.zorba-xquery.com/modules/xqddf"), 
+          xqp_string("collection"), 
+          1);
+      std::vector<expr_t> argColl;      
+      argColl.push_back(qnameExpr);
+      fo_expr_t collExpr = new fo_expr(sctxid(), loc, fn_collection, argColl);
+
+      // every $x in dc:colection(...) satisfies ...
+      // every is implemented as a flowr expr
+      rchandle<flwor_expr> evFlworExpr(new flwor_expr(sctxid(), loc, false));
+      evFlworExpr->set_return_expr(new const_expr(sctxid(), loc, true));
+
+      rchandle<expr> evTestExpr = pop_nodestack();
+
+      rchandle<fo_expr> uw = new fo_expr(sctxid(),
+                                         loc,
+                                         GET_BUILTIN_FUNCTION(FN_NOT_1),
+                                         evTestExpr);
+      evTestExpr = uw.getp();
+
+      // todo
+      //for (int i = 0; i < v.get_decl_list()->size(); ++i) 
+      //{
+      //  pop_scope();
+      //}
+
+      evFlworExpr->add_where(evTestExpr);
+
+      rchandle<fo_expr> everyExpr = new fo_expr(sctxid(),
+                                                loc,
+                                                GET_BUILTIN_FUNCTION(FN_EMPTY_1),
+                                                evFlworExpr.getp());
+      
+      body = everyExpr;
+
+    }
+    break;
 
   case IntegrityConstraintDecl::foreign_key:
-  {
-    store::Item_t fn_true_qname = sctx_p->lookup_fn_qname("fn", "true", loc);
-    function* f = LOOKUP_FN("fn", "true", 0);
-    std::vector<expr_t> arguments;
-    fo_expr_t foExpr = new fo_expr(sctxid(), loc, f, arguments);
-    body = foExpr;
-  }
-  break;
-  
+    {
+      /*store::Item_t fn_true_qname = sctx_p->lookup_fn_qname("fn", "true", loc);
+      function* f = LOOKUP_FN("fn", "true", 0);
+      std::vector<expr_t> arguments;
+      fo_expr_t foExpr = new fo_expr(sctxid(), loc, f, arguments);
+      body = foExpr;*/
+
+      /**********************
+       declare integrity constraint org:icEmpSalesForeignKey
+         foreign key
+           from collection org:transactions node $x key $x//sale/empid
+           to   collection org:employees node $y key $y/id
+
+       every $x in dc:collection( xs:QName("org:transactions") )
+       satisfies
+         some $y in dc:collection( xs:QName("org:employees") )
+         satisfies $y/id eq $x//sale/empid
+       **********************/
+      
+      const ICForeignKey ic = 
+        dynamic_cast<const ICForeignKey&>(v);
+
+      // TO part
+      // "org:employees"
+      expr_t toQnameStrExpr = new const_expr(sctxid(), loc, 
+                                           ic.getToCollName()->get_qname() );
+      
+      // xs:QName("org:employees")
+      function* toFnQname = sctx_p->lookup_resolved_fn(
+          xqp_string("http://www.w3.org/2001/XMLSchema"), 
+          xqp_string("QName"), 
+          1);
+      std::vector<expr_t> toArgQName;      
+      toArgQName.push_back(toQnameStrExpr);      
+      fo_expr_t toQnameExpr = new fo_expr(sctxid(), loc, toFnQname, toArgQName);
+
+      // dc:collection(xs:QName("org:employees"))
+      function* toFnCollection = sctx_p->lookup_resolved_fn(
+          xqp_string("http://www.zorba-xquery.com/modules/xqddf"), 
+          xqp_string("collection"), 
+          1);
+      std::vector<expr_t> toArgColl;      
+      toArgColl.push_back(toQnameExpr);
+      fo_expr_t toCollExpr = new fo_expr(sctxid(), loc, toFnCollection, 
+                                         toArgColl);
+      
+      // $y/id
+      expr_t toKeyExpr = pop_nodestack();
+      
+      // $x//sale/empid
+      expr_t fromKeyExpr = pop_nodestack();
+      
+      // $y/id eq $x//sale/empid
+      fo_expr_t eqExpr = new fo_expr(sctxid(),
+                                     loc,
+                                     GET_BUILTIN_FUNCTION(OP_VALUE_EQUAL_2),
+                                     toKeyExpr,
+                                     fromKeyExpr);
+      normalize_fo(eqExpr);    
+
+      // some $y in dc:collection( xs:QName("org:employees") )
+      // satisfies ... eq ...
+      // implemented using flowr
+      rchandle<flwor_expr> someFlworExpr(new flwor_expr(sctxid(), loc, false));
+      someFlworExpr->set_return_expr(new const_expr(sctxid(), loc, true));
+      rchandle<expr> someTestExpr = eqExpr;
+      
+      someTestExpr = wrap_in_bev(someTestExpr);
+            
+      // todo
+      //for (int i = 0; i < v.get_decl_list()->size(); ++i) 
+      //{
+      //  pop_scope();
+      //}
+      
+      someFlworExpr->add_where(someTestExpr);
+      
+      rchandle<fo_expr> someExpr = new fo_expr(sctxid(), loc,
+          GET_BUILTIN_FUNCTION(FN_EXISTS_1),
+          someFlworExpr.getp());
+      
+      // FROM part
+      // "org:transactions"
+      expr_t fromQnameStrExpr = new const_expr(sctxid(), loc, 
+                                           ic.getFromCollName()->get_qname() );
+      
+      // xs:QName("org:transactions")
+      function* fromFnQname = sctx_p->lookup_resolved_fn(
+          xqp_string("http://www.w3.org/2001/XMLSchema"), 
+          xqp_string("QName"), 
+          1);
+      std::vector<expr_t> fromArgQName;      
+      fromArgQName.push_back(fromQnameStrExpr);      
+      fo_expr_t fromQnameExpr = new fo_expr(sctxid(), loc, fromFnQname, 
+                                            fromArgQName);
+
+      // dc:collection(xs:QName("org:transactions"))
+      function* fromFnCollection = sctx_p->lookup_resolved_fn(
+          xqp_string("http://www.zorba-xquery.com/modules/xqddf"), 
+          xqp_string("collection"), 
+          1);
+      std::vector<expr_t> fromArgColl;      
+      toArgColl.push_back(fromQnameExpr);
+      fo_expr_t fromCollExpr = new fo_expr(sctxid(), loc, fromFnCollection, 
+                                           fromArgColl);
+
+      // every $x in dc:collection( xs:QName("org:transactions") )
+      // satisfies ...
+      // implemented using flowr
+      rchandle<flwor_expr> evFlworExpr(new flwor_expr(sctxid(), loc, false));
+      evFlworExpr->set_return_expr(new const_expr(sctxid(), loc, true));
+
+      rchandle<expr> evTestExpr = someExpr;
+
+      rchandle<fo_expr> uw = new fo_expr(sctxid(),
+                                         loc,
+                                         GET_BUILTIN_FUNCTION(FN_NOT_1),
+                                         evTestExpr);
+      evTestExpr = uw.getp();
+
+      // todo
+      //for (int i = 0; i < v.get_decl_list()->size(); ++i) 
+      //{
+      //  pop_scope();
+      //}
+
+      evFlworExpr->add_where(evTestExpr);
+
+      rchandle<fo_expr> everyExpr = new fo_expr(sctxid(),
+                                                loc,
+                                                GET_BUILTIN_FUNCTION(FN_EMPTY_1),
+                                                evFlworExpr.getp());
+      
+      body = everyExpr;
+
+    }
+    break;
+
   default:
     ZORBA_ASSERT(false);
   }
@@ -3486,6 +3829,10 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
   ValueIC_t vic = new ValueIC(sctx_p, loc, qnameItem, icPlanWrapper);
 
   sctx_p->bind_ic(qnameItem, vic, loc);     
+
+  // if this is a library module, register in exported module as well
+  if (export_sctx != NULL)
+    export_sctx->bind_ic(qnameItem, vic, loc);
 }
 
 /////////////////////////////////////////////////////////////////////////////////
