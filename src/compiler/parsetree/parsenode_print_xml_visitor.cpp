@@ -43,7 +43,7 @@ ParseNodePrintXMLVisitor(std::ostream &aStream)
 
 void print(const parsenode* p)
 {
-    os << "<?xml version='1.0'>" << std::endl;
+    os << "<?xml version='1.0' ?>" << std::endl;
     os << "<ParseNodeTree>" << std::endl;
     p->accept(*this);
     os << "</ParseNodeTree>" << std::endl;
@@ -510,7 +510,7 @@ void *begin_visit(const PathExpr &n)
 {
     INDENT;
 
-    os << "<PathExpr type=" << ParseConstants::decode_pathtype_t(n.get_type()) << " pos='" << n.get_location() << "'  "  << "ptr='" << &n << "'";
+    os << "<PathExpr type='" << ParseConstants::decode_pathtype_t(n.get_type()) << "' pos='" << n.get_location() << "'  "  << "ptr='" << &n << "'";
 
     os << ">";
 
@@ -522,7 +522,7 @@ void *begin_visit(const RelativePathExpr &n)
 {
   INDENT;
 
-  os << "<RelativePathExpr step_type=" << ParseConstants::decode_steptype_t(n.get_step_type()) << " pos='" << n.get_location() << "'  "  << "ptr='" << &n << "'";
+  os << "<RelativePathExpr step_type='" << ParseConstants::decode_steptype_t(n.get_step_type()) << "' pos='" << n.get_location() << "'  "  << "ptr='" << &n << "'";
 
   os << ">";
 
