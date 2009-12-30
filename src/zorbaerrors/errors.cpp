@@ -114,8 +114,7 @@ ZorbaError::ZorbaError(const ZorbaError& other)
 }
 
 
-std::string 
-ZorbaError::toString() 
+std::string ZorbaError::toString() 
 {
   std::ostringstream strstream;
 
@@ -125,17 +124,18 @@ ZorbaError::toString()
   return strstream.str();
 }
 
-const xqpString&
-ZorbaError::localName() const
+
+const xqpString& ZorbaError::localName() const
 {
   return theLocalName;
 }
 
-const xqpString&
-ZorbaError::ns() const
+
+const xqpString& ZorbaError::ns() const
 {
   return theNamespace;
 }
+
 
 const xqpString&
 ZorbaError::prefix() const
@@ -143,29 +143,26 @@ ZorbaError::prefix() const
   return thePrefix;
 }
 
-bool 
-ZorbaError::isXPathStaticError() const
+
+bool ZorbaError::isXPathStaticError() const
 {
   return (XPST0001 <= theErrorCode && theErrorCode <= XPST0083);
 }
 
       
-bool 
-ZorbaError::isXPathDynamicError() const
+bool ZorbaError::isXPathDynamicError() const
 {
   return (XPDY0002 <= theErrorCode && theErrorCode <= XPDY0050);
 }
 
       
-bool 
-ZorbaError::isXPathTypeError() const 
+bool ZorbaError::isXPathTypeError() const 
 {
   return XPTY0004 <= theErrorCode && theErrorCode <= XPTY0020;
 }
       
 
-bool
-ZorbaError::isXQueryDynamicError() const
+bool ZorbaError::isXQueryDynamicError() const
 {
   return ((XQDY0025 <= theErrorCode && theErrorCode <= XQDY0092) ||
           XUDY0009 == theErrorCode ||
@@ -175,86 +172,74 @@ ZorbaError::isXQueryDynamicError() const
           theErrorCode == XUDY0029 ||
           theErrorCode == XUDY0030 ||
           theErrorCode == XUDY0031 ||
+          (XDDY0000_MIN <= theErrorCode && theErrorCode <= XDDY0000_MAX) ||
           (XTDE1310 <= theErrorCode && theErrorCode <= XTDE1350));
 }
 
   
-bool 
-ZorbaError::isXQueryStaticError() const
+bool ZorbaError::isXQueryStaticError() const
 {
-  return ((XQST0009 <= theErrorCode && 
-           theErrorCode <= XQST0093) ||
-          (XUST0001 <= theErrorCode && 
-           theErrorCode <= XUST0003) ||
+  return ((XQST0009 <= theErrorCode && theErrorCode <= XQST0093) ||
+          (XUST0001 <= theErrorCode && theErrorCode <= XUST0003) ||
           theErrorCode == XUST0028 ||
-          (XDST0000_MIN <= theErrorCode &&
-           theErrorCode <= XDST0000_MAX));
+          (XDST0000_MIN <= theErrorCode && theErrorCode <= XDST0000_MAX));
 }
 
   
-bool 
-ZorbaError::isXQueryTypeError() const
+bool ZorbaError::isXQueryTypeError() const
 {
-  return ((XQTY0023 <= theErrorCode && 
-           theErrorCode <= XQTY0086) ||
-          (XUTY0004 <= theErrorCode && 
-           theErrorCode <= XUTY0008) ||
-          (XUTY0010 <= theErrorCode && 
-           theErrorCode <= XUTY0013) ||
+  return ((XQTY0023 <= theErrorCode && theErrorCode <= XQTY0086) ||
+          (XUTY0004 <= theErrorCode && theErrorCode <= XUTY0008) ||
+          (XUTY0010 <= theErrorCode && theErrorCode <= XUTY0013) ||
           theErrorCode == XUTY0022 ||
-          (XDDY0000_MIN <= theErrorCode &&
-           theErrorCode <= XDDY0000_MAX));
+          theErrorCode == XDTY0001_COLLECTION_INVALID_NODE_TYPE);
 }
     
 
-bool 
-ZorbaError::isFunctionError() const
+bool ZorbaError::isFunctionError() const
 {
   return FOER0000 <= theErrorCode && theErrorCode <= FOUP0002;
 }
   
 
-bool
-ZorbaError::isSerializationError() const
+
+bool ZorbaError::isSerializationError() const
 {
   return SENR0001 <= theErrorCode && theErrorCode <= SEPM0016;
 }
     
  
-bool 
-ZorbaError::isInternalError() const
+bool ZorbaError::isInternalError() const
 {
   return XQP0000_DYNAMIC_RUNTIME_ERROR <= theErrorCode && 
     theErrorCode <= MAX_ZORBA_ERROR_CODE;
 }
   
 
-bool
-ZorbaError::isStaticError() const
+bool ZorbaError::isStaticError() const
 {
   return isXPathStaticError() || isXQueryStaticError();
 }
     
   
-bool
-ZorbaError::isDynamicError() const
+bool ZorbaError::isDynamicError() const
 {
   return isXPathDynamicError() || isXQueryDynamicError() || isFunctionError();
 }
 
 
-bool
-ZorbaError::isTypeError() const
+bool ZorbaError::isTypeError() const
 {
   return isXPathTypeError() || isXQueryTypeError();
 }
 
-std::auto_ptr<ZorbaError>
-ZorbaError::clone() const
+
+std::auto_ptr<ZorbaError> ZorbaError::clone() const
 {
     std::auto_ptr<ZorbaError> err(new ZorbaError(*this));
     return err;
 }
+
 
 ZorbaWarning::ZorbaWarning(
     WarningCode        aWarningCode,

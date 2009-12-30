@@ -133,7 +133,7 @@ public:
         Item_t& target,
         Item_t& uri) = 0;
 
-  // functions to add primitives for updating collection functions (e.g. create-collection)
+  // functions to add primitives for updating collection functions
 
   virtual void addCreateCollection(
         Item_t& name) = 0;
@@ -143,25 +143,25 @@ public:
 
   virtual void addInsertIntoCollection(
         Item_t& name,
-        Item_t& nodes) = 0;            
+        std::vector<Item_t>& nodes) = 0;            
 
   virtual void addInsertFirstIntoCollection(
         Item_t& name,
-        std::vector<store::Item_t>& nodes) = 0;
+        std::vector<Item_t>& nodes) = 0;
 
   virtual void addInsertLastIntoCollection(
         Item_t& name,
-        std::vector<store::Item_t>& nodes) = 0;
+        std::vector<Item_t>& nodes) = 0;
 
   virtual void addInsertBeforeIntoCollection(
         Item_t& name,
         Item_t& target,
-        std::vector<store::Item_t>& nodes) = 0;
+        std::vector<Item_t>& nodes) = 0;
 
   virtual void addInsertAfterIntoCollection(
         Item_t& name,
         Item_t& target,
-        std::vector<store::Item_t>& nodes) = 0;
+        std::vector<Item_t>& nodes) = 0;
 
   virtual void addDeleteFromCollection(
         Item_t& name,

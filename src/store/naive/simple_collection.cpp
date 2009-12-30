@@ -104,7 +104,7 @@ store::Item_t SimpleCollection::loadDocument(
     std::istream* stream,
     long position)
 {
-  store::Item_t    docitem;
+  store::Item_t docitem;
   std::auto_ptr<std::istream> theStream(stream); // we take the ownership
   //do full loading for now
   docitem = loadDocument(*stream, position);
@@ -114,7 +114,9 @@ store::Item_t SimpleCollection::loadDocument(
 
 /*******************************************************************************
   Insert the given node to the collection. If the node is in any collection
-  already or if the node has a parent, this method raises an error.
+  already or if the node has a parent, this method raises an error. Otherwise,
+  the node is inserted into the given position (where the value for the first
+  position is 1).
 ********************************************************************************/
 void SimpleCollection::addNode(
     store::Item* nodeItem,
@@ -240,7 +242,9 @@ bool SimpleCollection::removeNode(store::Item* nodeItem)
 
 
 /*******************************************************************************
-  Delete the node at the given position from the collection.
+  Delete the node at the given position from the collection. If the given
+  position is <= 0, the last node is deleted. If the given position is > than
+  the number of nodes in the collection, this mothod is a noop.
 ********************************************************************************/
 bool SimpleCollection::removeNode(long position)
 {

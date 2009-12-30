@@ -41,7 +41,7 @@ return <person id = "{$x/@id}">{$x/name}</person>
 ,
 block
 {
-  xqddf:insert-nodes-first($auctions:auctions, doc("auctions2.xml"));
+  xqddf:insert-nodes($auctions:auctions, doc("auctions2.xml"));
 }
 ,
 "

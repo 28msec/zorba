@@ -749,12 +749,12 @@ void PULImpl::addDeleteCollection(
 
 void PULImpl::addInsertIntoCollection(
     store::Item_t& name,
-    store::Item_t& node)
+    std::vector<store::Item_t>& nodes)
 {
   CollectionPul* pul = getCollectionPul(name.getp());
 
   pul->theInsertIntoCollectionList.push_back(
-  new UpdInsertIntoCollection(pul, name, node));
+  new UpdInsertIntoCollection(pul, name, nodes));
 } 
 
 

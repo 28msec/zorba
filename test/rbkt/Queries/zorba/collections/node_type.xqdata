@@ -4,4 +4,4 @@ import schema namespace s = "http://www.zorba-xquery.org/schema" at "node_type.x
 
 declare variable $ns:collection as xs:QName := xs:QName("ns:collection");
 
-declare collection ns:collection as schema-element(s:person)*;
+declare ordered collection ns:collection as schema-element(s:person)*;

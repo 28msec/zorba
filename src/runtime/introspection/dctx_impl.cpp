@@ -28,25 +28,36 @@
 #include "store/api/collection.h"
 #include "store/api/index.h"
 
-namespace zorba {
+namespace zorba 
+{
+
+class StaticallyKnownCollection;
+
 
 // implemented in collections_impl.cpp
-store::Collection_t getCollection(const static_context* aSctx,
-                                  const store::Item_t,
-                                  const QueryLoc&);
+store::Collection_t getCollection(
+    const static_context* aSctx,
+    const store::Item_t,
+    const QueryLoc&);
+
+const StaticallyKnownCollection* getCollectionDecl(
+    const static_context* aSctx,
+    const store::Item_t aName,
+    const QueryLoc& aLoc);
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-bool
-IsAvailableCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool IsAvailableCollectionIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
-  PlanIteratorState  *state;
   store::Item_t       lName;
   store::Collection_t lCollection;
   bool                res = false;
 
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   consumeNext(lName, theChildren[0].getp(), planState);
@@ -54,6 +65,8 @@ IsAvailableCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSt
   res = true;
   try 
   {
+    (void)getCollectionDecl(theSctx, lName, loc);
+
     lCollection = getCollection(theSctx, lName, loc);
   }
   catch (error::ZorbaError& e)
@@ -76,26 +89,26 @@ IsAvailableCollectionIterator::nextImpl(store::Item_t& result, PlanState& planSt
 
 
 /*******************************************************************************
+
 ********************************************************************************/
 AvailableCollectionsIteratorState::~AvailableCollectionsIteratorState()
 {
-  if ( nameItState != NULL ) {
+  if ( nameItState != NULL ) 
+  {
     nameItState->close();
     nameItState = NULL;
   }
 }
 
 
-void
-AvailableCollectionsIteratorState::init(PlanState& planState)
+void AvailableCollectionsIteratorState::init(PlanState& planState)
 {
   PlanIteratorState::init(planState);
   nameItState = NULL;
 }
 
 
-void
-AvailableCollectionsIteratorState::reset(PlanState& planState)
+void AvailableCollectionsIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   if ( nameItState != NULL ) {

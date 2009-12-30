@@ -806,25 +806,13 @@ public:
   UpdCollection(
         CollectionPul* pul,
         store::Item_t& name,
-        std::vector<store::Item_t>& nodes)
-    :
-    UpdatePrimitive(pul),
-    theName(name),
-    theNodes(nodes)
-  {
-  }
+        std::vector<store::Item_t>& nodes);
 
   UpdCollection(
         CollectionPul* pul,
         store::Item_t& target,
         store::Item_t& name,
-        std::vector<store::Item_t>& nodes)
-    :
-    UpdatePrimitive(pul, target),
-    theName(name),
-    theNodes(nodes)
-  {
-  }
+        std::vector<store::Item_t>& nodes);
 
   const store::Item* getName() const { return theName.getp(); }
 
@@ -890,16 +878,18 @@ public:
 ********************************************************************************/
 class UpdInsertIntoCollection : public UpdCollection
 {
+protected:
+  ulong theNumApplied;
+
 public:
   UpdInsertIntoCollection(
         CollectionPul* pul,
         store::Item_t& name, 
-        store::Item_t& node)
+        std::vector<store::Item_t>& nodes)
       :
-      UpdCollection(pul, name)
+    UpdCollection(pul, name, nodes),
+    theNumApplied(0)
   {
-    theNodes.resize(1);
-    theNodes[0].transfer(node);
   }
 
   store::UpdateConsts::UpdPrimKind getKind() const
@@ -917,13 +907,17 @@ public:
 ********************************************************************************/
 class UpdInsertFirstIntoCollection : public  UpdCollection
 {
+protected:
+  ulong theNumApplied;
+
 public:
   UpdInsertFirstIntoCollection(
       CollectionPul* pul,
       store::Item_t& name,
       std::vector<store::Item_t>& nodes)
     :
-    UpdCollection(pul, name, nodes)
+    UpdCollection(pul, name, nodes),
+    theNumApplied(0)
   {
   }
 
@@ -942,13 +936,17 @@ public:
 ********************************************************************************/
 class UpdInsertLastIntoCollection : public  UpdCollection
 {
+protected:
+  ulong theNumApplied;
+
 public:
   UpdInsertLastIntoCollection(
         CollectionPul* pul,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes)
     :
-    UpdCollection(pul, name, nodes)
+    UpdCollection(pul, name, nodes),
+    theNumApplied(0)
   {
   }
 
@@ -967,6 +965,9 @@ public:
 ********************************************************************************/
 class UpdInsertBeforeIntoCollection : public  UpdCollection
 {
+protected:
+  ulong theNumApplied;
+
 public:
   UpdInsertBeforeIntoCollection(
         CollectionPul* pul,
@@ -974,7 +975,8 @@ public:
         store::Item_t& target,
         std::vector<store::Item_t>& nodes)
     :
-    UpdCollection(pul, target, name, nodes)
+    UpdCollection(pul, target, name, nodes),
+    theNumApplied(0)
   {
   }
 
@@ -993,6 +995,9 @@ public:
 ********************************************************************************/
 class UpdInsertAfterIntoCollection : public  UpdCollection
 {
+protected:
+  ulong theNumApplied;
+
 public:
   UpdInsertAfterIntoCollection(
         CollectionPul* pul,
@@ -1000,7 +1005,8 @@ public:
         store::Item_t& target,
         std::vector<store::Item_t>& nodes)
     :
-    UpdCollection(pul, target, name, nodes)
+    UpdCollection(pul, target, name, nodes),
+    theNumApplied(0)
   {
   }
 

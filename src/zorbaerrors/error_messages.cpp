@@ -665,7 +665,6 @@ DEF_ERR_CODE(XDST0005_COLLECTION_PROPERTIES_CONFLICT, XDST0005,
 DEF_ERR_CODE(XDST0006_COLLECTION_INVALID_PROPERTY_VALUE, XDST0006,
 "The declaratrion for collection /s contains an invalid property value: /s")
 
-
 DEF_ERR_CODE(XDST0021_INDEX_ALREADY_DECLARED, XDST0021,
 "An index with name /s is already declared in the same module")
 
@@ -684,6 +683,13 @@ DEF_ERR_CODE(XDST0025_INDEX_PROPERTIES_CONFLICT, XDST0025,
 DEF_ERR_CODE(XDST0026_INDEX_INVALID_PROPERTY_VALUE, XDST0026,
 "The declaration for index /s contains an invalid property value: /s")
 
+
+//
+// XQuery Data Definition Facility - Type Errors
+//
+
+DEF_ERR_CODE(XDTY0001_COLLECTION_INVALID_NODE_TYPE, XDTY0001,
+"Collection /s cannot contain a node of type: /s")
 
 //
 // XQuery Data Definition Facility - Dynamic Errors
@@ -721,6 +727,9 @@ DEF_ERR_CODE(XDDY0010_COLLECTION_CONST_NODE_UPDATE, XDDY0010,
 
 DEF_ERR_CODE(XDDY0011_COLLECTION_NODE_NOT_FOUND, XDDY0011, 
 "node is not contained in collection /s.")
+
+DEF_ERR_CODE(XDDY0012_COLLECTION_UNORDERED_BAD_INSERT, XDDY0012, 
+"Illegal insert in unordered collection /s.")
 
 DEF_ERR_CODE(XDDY0011, XDDY0011, "It is a dynamic error if the target of a collection function does not belong to the collection that is identified by the first parameter (QName).")
 

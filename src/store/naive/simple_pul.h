@@ -341,7 +341,7 @@ public:
 
   void addInsertIntoCollection(
         store::Item_t& name,
-        store::Item_t& node);
+        std::vector<store::Item_t>& nodes);
 
   void addInsertFirstIntoCollection(
         store::Item_t& name,

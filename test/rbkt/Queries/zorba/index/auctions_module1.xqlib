@@ -37,7 +37,7 @@ declare sequential function auctions:create-db()
 {
   xqddf:create-collection($auctions:auctions);
 
-  xqddf:insert-nodes-last($auctions:auctions, doc("auctions1.xml"));
+  xqddf:insert-nodes($auctions:auctions, doc("auctions1.xml"));
 
   xqddf:create-index($auctions:PersonId);
 
