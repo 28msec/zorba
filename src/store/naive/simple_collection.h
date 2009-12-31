@@ -76,10 +76,7 @@ public:
 
   ulong getId() const { return theId; }
 
-  const store::Item* getName() const 
-  {
-    return theName.getp(); 
-  }
+  const store::Item* getName() const { return theName.getp(); }
 
   ulong size() const { return theXmlTrees.size(); }
 
@@ -91,28 +88,26 @@ public:
         std::istream& stream,
         long position = -1);
 
-  store::Item_t loadDocument(
-        std::istream* stream,
-        long position = -1);
-
   void addNode(
         store::Item* node,
         long position = -1);
 
-  void addNode(
-        store::Item* node,
+  ulong addNodes(
+        std::vector<store::Item_t>& nodes,
         const store::Item* aTargetNode,
         bool before);
 
   bool removeNode(store::Item* node);
 
-  bool removeNode(long position = -1);
+  bool removeNode(ulong position);
+
+  ulong removeNodes(ulong position, ulong num);
 
   bool findNode(const store::Item* node, ulong& position) const;
 
-  store::Item_t nodeAt(long position);
+  store::Item_t nodeAt(ulong position);
 
-  void adjustNodePositions();
+  void adjustTreePositions();
 };
 
 } // namespace store

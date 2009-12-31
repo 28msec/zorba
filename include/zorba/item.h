@@ -74,6 +74,49 @@ public:
    */
   ~Item();
 
+  /** \brief Check if the Item is null.
+   *
+   * If this function returns true, the Item is not valid.
+   * Note that this function is available for all types of Items.
+   *
+   * @return true if the Item is null, false otherwise.
+   */
+  bool
+  isNull() const;
+
+  /** \brief Free all resources aquired by this Item.
+   *
+   * After calling close() on an Item the Item is invalidated, i.e. a subsequent
+   * call to isNull() will return true. 
+   *
+   * Note that calling this function is usually not necessary because close() is
+   * implicitly called by the destructor. Calling close() is only necessary if
+   * the resources aquired by an Item should be released before the Item goes out
+   * of scope, i.e. the destructor is called.
+   *
+   * Also note that this function is available for all types of Items.
+   */
+  void
+  close();
+
+  /** \brief Check if the Item is a node Item.
+   *
+   * Note that this function is available for all types of Items.
+   *
+   * @return true if the Item is of type node, false otherwise.
+   */
+  bool
+  isNode() const;
+
+  /** \brief Check if the Item is an atomic Item.
+   *
+   * Note that this function is available for all types of Items.
+   *
+   * @return true if the Item is an atomic Item, false otherwise.
+   */
+  bool
+  isAtomic() const;
+
   /** \brief Get the type of the Item.
    *
    * See http://www.w3.org/TR/xpath-datamodel/#types.
@@ -144,57 +187,6 @@ public:
    */
   Item
   getEBV() const;
-
-  /** \brief Check if the Item is a node Item.
-   *
-   * Note that this function is available for all types of Items.
-   *
-   * @return true if the Item is of type node, false otherwise.
-   */
-  bool
-  isNode() const;
-
-  /** \brief Check if the Item is an atomic Item.
-   *
-   * Note that this function is available for all types of Items.
-   *
-   * @return true if the Item is an atomic Item, false otherwise.
-   */
-  bool
-  isAtomic() const;
-
-  /** \brief Check if the Item is a numeric Item.
-   *
-   * Note that this function is available for all types of Items.
-   *
-   * @return true if the Item is a numeric Item, false otherwise
-   */
-  //bool
-  //isNumeric() const;
-
-  /** \brief Check if the Item is null.
-   *
-   * If this function returns true, the Item is not valid.
-   * Note that this function is available for all types of Items.
-   *
-   * @return true if the Item is null, false otherwise.
-   */
-  bool
-  isNull() const;
-
-  /** \brief Free all resources aquired by this Item.
-   *
-   * After calling close() on an Item the Item is invalidated, i.e. a subsequent call
-   * to isNull() will return true. 
-   *
-   * Note that calling this function is usually not necessary because close() is implicitly 
-   * called by the destructor. Calling close() is only necessary if the resources aquired by an
-   * Item should be released before the Item goes out of scope, i.e. the destructor is called.
-   *
-   * Also note that this function is available for all types of Items.
-   */
-  void
-  close();
 
   /** \brief Get the (optional) value of a QName's prefix.
    *

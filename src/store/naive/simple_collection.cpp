@@ -62,7 +62,7 @@ store::Iterator_t SimpleCollection::getIterator()
   Insert into the collection an xml document or fragment given as text via an
   input stream. The xml text is parsed into an xml tree and the root node of 
   this tree is inserted at a given position inside this collection, or at the
-  end of the collection if the position is <= 0. Return the root node of
+  end of the collection if the position is < 0. Return the root node of
   the new xml document or fragment.
 ********************************************************************************/
 store::Item_t SimpleCollection::loadDocument(
@@ -84,15 +84,15 @@ store::Item_t SimpleCollection::loadDocument(
   {
     SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
-    if(position <= 0 || position > static_cast<long>(theXmlTrees.size()))
+    if(position < 0 || position >= static_cast<long>(theXmlTrees.size()))
     {
       theXmlTrees.push_back(root);
       BASE_NODE(root)->setCollection(this, theXmlTrees.size()-1);
     }
     else
     {
-      theXmlTrees.insert(theXmlTrees.begin() + (position - 1), root);
-      BASE_NODE(root)->setCollection(this, position-1);
+      theXmlTrees.insert(theXmlTrees.begin() + position, root);
+      BASE_NODE(root)->setCollection(this, position);
     }
   }
 
@@ -100,23 +100,10 @@ store::Item_t SimpleCollection::loadDocument(
 }
 
 
-store::Item_t SimpleCollection::loadDocument(
-    std::istream* stream,
-    long position)
-{
-  store::Item_t docitem;
-  std::auto_ptr<std::istream> theStream(stream); // we take the ownership
-  //do full loading for now
-  docitem = loadDocument(*stream, position);
-  return docitem;
-}
-
-
 /*******************************************************************************
   Insert the given node to the collection. If the node is in any collection
   already or if the node has a parent, this method raises an error. Otherwise,
-  the node is inserted into the given position (where the value for the first
-  position is 1).
+  the node is inserted into the given position.
 ********************************************************************************/
 void SimpleCollection::addNode(
     store::Item* nodeItem,
@@ -124,98 +111,128 @@ void SimpleCollection::addNode(
 {
   if (!nodeItem->isNode())
   {
-    ZORBA_ERROR(API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
+    ZORBA_ERROR_PARAM(STR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
+                      getName()->getStringValue(), "");
   }
 
   XmlNode* node = static_cast<XmlNode*>(nodeItem);
 
   if (node->getCollection() != NULL)
   {
-    ZORBA_ERROR_PARAM(API0031_NODE_ALREADY_IN_COLLECTION,
-                      node->getCollection()->getName()->getStringValue()->c_str(), "");
+    ZORBA_ERROR_PARAM(STR0010_COLLECTION_NODE_ALREADY_IN_COLLECTION,
+                      node->getCollection()->getName()->getStringValue(),
+                      getName()->getStringValue());
   }
 
   if (node->getParent() != NULL)
   {
-    ZORBA_ERROR_PARAM(API0032_NON_ROOT_NODE_IN_COLLECTION,
-                      getName()->getStringValue()->c_str(), "");
+    ZORBA_ERROR_PARAM(STR0011_COLLECTION_NON_ROOT_NODE,
+                      getName()->getStringValue(), "");
   }
 
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE););
 
-  if (position <= 0 || position > static_cast<long>(theXmlTrees.size()))
+  if (position < 0 || position >= static_cast<long>(theXmlTrees.size()))
   {
     theXmlTrees.push_back(nodeItem);
     node->setCollection(this, theXmlTrees.size() - 1);
   }
   else
   {
-    theXmlTrees.insert(theXmlTrees.begin() + (position - 1), nodeItem);
-    node->setCollection(this, position - 1);
+    theXmlTrees.insert(theXmlTrees.begin() + position, nodeItem);
+    node->setCollection(this, position);
   }
 }
 
 
 /*******************************************************************************
-  Insert the given node to the collection before or after the aTargetNode. If
-  the node is in any collection already, this method raises an error.
+  Insert the given nodes to the collection before or after the given target node.
+  If any of the nodes is not a root node or is in any collection already, this
+  method raises an error. The moethod returns the position occupied by the first
+  new node after the insertion is done.
 ********************************************************************************/
-void SimpleCollection::addNode(
-    store::Item* nodeItem,
-    const store::Item* aTargetNode,
+ulong SimpleCollection::addNodes(
+    std::vector<store::Item_t>& nodes,
+    const store::Item* targetNode,
     bool before)
 {
-  if (!nodeItem->isNode() || !aTargetNode->isNode())
-  {
-    ZORBA_ERROR( API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
-  }
-
-  XmlNode* node = static_cast<XmlNode*>(nodeItem);
-
-  if (node->getCollection() != NULL)
-  {
-    ZORBA_ERROR_PARAM(API0031_NODE_ALREADY_IN_COLLECTION, 
-                      node->getCollection()->getName()->getStringValue()->c_str(), "");
-  }
-
-  if (node->getParent() != NULL)
-  {
-    ZORBA_ERROR_PARAM(API0032_NON_ROOT_NODE_IN_COLLECTION,
-                      getName()->getStringValue()->c_str(), "");
-  }
-
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
   ulong targetPos;
-  bool found = findNode((store::Item*)aTargetNode, targetPos);
+  bool found = findNode(targetNode, targetPos);
   if (!found)
   {
     ZORBA_ERROR_PARAM(XDDY0011_COLLECTION_NODE_NOT_FOUND,
                       theName->getStringValue(), "");
   }
 
-  if (before) 
+  if (!before)
+    ++targetPos;
+
+  ulong numNodes = theXmlTrees.size();
+  ulong numNewNodes = nodes.size();
+  
+  for (ulong i = 0; i < numNewNodes; ++i)
   {
-    ZORBA_ASSERT(targetPos != 0);
-    theXmlTrees.insert(theXmlTrees.begin() + (targetPos-1), nodeItem);
-    node->setCollection(this, targetPos - 1);
+    if (!nodes[i]->isNode())
+    {
+      ZORBA_ERROR_PARAM(STR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
+                        getName()->getStringValue(), "");
+    }
+
+    XmlNode* node = static_cast<XmlNode*>(nodes[i].getp());
+
+    if (node->getCollection() != NULL)
+    {
+      ZORBA_ERROR_PARAM(STR0010_COLLECTION_NODE_ALREADY_IN_COLLECTION, 
+                        node->getCollection()->getName()->getStringValue(),
+                        getName()->getStringValue());
+    }
+
+    if (node->getParent() != NULL)
+    {
+      ZORBA_ERROR_PARAM(STR0011_COLLECTION_NON_ROOT_NODE,
+                        getName()->getStringValue(), "");
+    }
+    
+    node->setCollection(this, targetPos + i);
   }
-  else
+
+  theXmlTrees.resize(numNodes + numNewNodes);
+
+#if 1
+  memmove(&theXmlTrees[targetPos + numNewNodes], 
+          &theXmlTrees[targetPos],
+          (numNodes-targetPos) * sizeof(store::Item_t));
+
+  for (ulong i = targetPos; i < targetPos + numNewNodes; ++i)
+    theXmlTrees[i].setNull();
+#else
+  for (long j = numNodes-1, i = theXmlTrees.size()-1; j >= targetPos; --j, --i)
   {
-    theXmlTrees.insert(theXmlTrees.begin() + targetPos, nodeItem);
-    node->setCollection(this, targetPos);
+    theXmlTrees[i].transfer(theXmlTrees[j]);
   }
+#endif
+
+  for (ulong i = 0; i < numNewNodes; ++i)
+  {
+    theXmlTrees[targetPos + i].transfer(nodes[i]);
+  }
+
+  return targetPos;
 }
 
 
 /*******************************************************************************
-  Delete the given node from the collection.
+  Remove the tree rooted at the given node, it the tree actually belongs to the
+  collection. Return true if the tree was found and removed; false otherwise.
 ********************************************************************************/
 bool SimpleCollection::removeNode(store::Item* nodeItem)
 {
   if (!nodeItem->isNode())
   {
-    ZORBA_ERROR(API0007_COLLECTION_ITEM_MUST_BE_A_NODE);
+    ZORBA_ERROR_PARAM(STR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
+                      getName()->getStringValue(), "");
   }
 
   XmlNode* node = static_cast<XmlNode*>(nodeItem);
@@ -227,10 +244,9 @@ bool SimpleCollection::removeNode(store::Item* nodeItem)
 
   if (found)
   {
-    ZORBA_ASSERT(position > 0);
     ZORBA_ASSERT(node->getCollection() == this);
 
-    theXmlTrees.erase(theXmlTrees.begin() + (position - 1));
+    theXmlTrees.erase(theXmlTrees.begin() + position);
     node->setCollection(NULL, 0);
     return true;
   }
@@ -242,61 +258,92 @@ bool SimpleCollection::removeNode(store::Item* nodeItem)
 
 
 /*******************************************************************************
-  Delete the node at the given position from the collection. If the given
-  position is <= 0, the last node is deleted. If the given position is > than
-  the number of nodes in the collection, this mothod is a noop.
+  Remove the tree at the given position. If the position is >= than the number
+  of trees in the collection, this mothod is a noop. The method returns true if
+  a tree is actually deleted, otherwise it returns false.
 ********************************************************************************/
-bool SimpleCollection::removeNode(long position)
+bool SimpleCollection::removeNode(ulong position)
 {
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
-  if (position <= 0) 
-  {
-    if (theXmlTrees.size() == 0)
-      return false;
-
-    XmlNode* node = static_cast<XmlNode*>(theXmlTrees.back().getp());
-    ZORBA_ASSERT(node->getCollection() == this);
-    node->setCollection(NULL, 0);
-
-    theXmlTrees.erase(theXmlTrees.end() - 1);
-    return true;
-  }
-  else if (static_cast<ulong>(position) > theXmlTrees.size())
+  if (position >= theXmlTrees.size())
   {
     return false;
   }
   else 
   {
-    XmlNode* node = static_cast<XmlNode*>(theXmlTrees[position - 1].getp());
+    XmlNode* node = static_cast<XmlNode*>(theXmlTrees[position].getp());
     ZORBA_ASSERT(node->getCollection() == this);
     node->setCollection(NULL, 0);
 
-    theXmlTrees.erase(theXmlTrees.begin() + (position - 1));
+    theXmlTrees.erase(theXmlTrees.begin() + position);
     return true;
   }
 }
 
 
 /*******************************************************************************
-  Return the node at the given position from the collection.
+  Remove a given number of trees starting with the tree at the given position.
+  If the given number is 0 or the given position is >= than the number of trees
+  in the collection, this mothod is a noop. The method returns the number of 
+  trees that are actually deleted.
 ********************************************************************************/
-store::Item_t SimpleCollection::nodeAt(long position)
+ulong SimpleCollection::removeNodes(ulong position, ulong num)
 {
-  if( position <= 0 || ((ulong)position) > theXmlTrees.size() )
-  {
-    return NULL;
-  }
+  SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
-  return theXmlTrees[position - 1];
+  if (num == 0 || position >= theXmlTrees.size())
+  {
+    return 0;
+  }
+  else 
+  {
+    ulong last = position + num;
+    if (last > theXmlTrees.size())
+      last = theXmlTrees.size();
+
+    for (ulong i = position; i < last; ++i)
+    { 
+      XmlNode* node = static_cast<XmlNode*>(theXmlTrees[position].getp());
+      ZORBA_ASSERT(node->getCollection() == this);
+      node->setCollection(NULL, 0);
+
+      theXmlTrees.erase(theXmlTrees.begin() + position);
+    }
+
+    return last-position;
+  }
 }
 
 
 /*******************************************************************************
+  Return the node at the given position within the collection, or NULL if the
+  given position is >= than the number of nodes in the collection.
+********************************************************************************/
+store::Item_t SimpleCollection::nodeAt(ulong position)
+{
+  if(position >= theXmlTrees.size())
+  {
+    return NULL;
+  }
 
+  return theXmlTrees[position];
+}
+
+
+/*******************************************************************************
+  Check if the tree rooted at the given node belongs to this collection. If yes,
+  return true and the position of the tree within the collection. Otherwise, 
+  return false.
 ********************************************************************************/
 bool SimpleCollection::findNode(const store::Item* node, ulong& position) const
 {
+  if (!node->isNode())
+  {
+    ZORBA_ERROR_PARAM(STR0012_COLLECTION_ITEM_MUST_BE_A_NODE,
+                      getName()->getStringValue(), "");
+  }
+
   if( theXmlTrees.empty() )
     return false;
 
@@ -309,7 +356,6 @@ bool SimpleCollection::findNode(const store::Item* node, ulong& position) const
 
   if (BASE_NODE(theXmlTrees[position])->getTreeId() == n->getTreeId())
   {
-    ++position;
     return true;
   }
 
@@ -321,7 +367,7 @@ bool SimpleCollection::findNode(const store::Item* node, ulong& position) const
     if (node->equals(theXmlTrees[i]))
     {
       ZORBA_ASSERT(BASE_NODE(theXmlTrees[i])->getCollection() == this);
-      position = (i + 1);
+      position = i;
       return true;
     }
   }
@@ -331,9 +377,9 @@ bool SimpleCollection::findNode(const store::Item* node, ulong& position) const
 
 
 /*******************************************************************************
-
+  For each tree in the collection, set its current position within the collection.
 ********************************************************************************/
-void SimpleCollection::adjustNodePositions()
+void SimpleCollection::adjustTreePositions()
 {
   ulong numTrees = theXmlTrees.size();
 

@@ -752,7 +752,6 @@ void UpdDeleteCollection::undo()
 #endif
   }
 
-
   ulong lIndex;
   for (std::vector<store::Item_t>::iterator lIter = theSavedItems.begin();
        lIter != theSavedItems.end(); ++lIter) 
@@ -774,7 +773,8 @@ void UpdDeleteCollection::undo()
 ********************************************************************************/
 void UpdInsertIntoCollection::apply()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theName);
+  SimpleCollection* lColl = static_cast<SimpleCollection*>
+                            (GET_STORE().getCollection(theName).getp());
   assert(lColl);
 
   theIsApplied = true;
@@ -790,14 +790,18 @@ void UpdInsertIntoCollection::apply()
 
 void UpdInsertIntoCollection::undo()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theName);
+  SimpleCollection* lColl = static_cast<SimpleCollection*>
+                            (GET_STORE().getCollection(theName).getp());
   assert(lColl);
+
+  ulong lastPos = lColl->size()-1;
 
   for (long i = theNumApplied-1; i >= 0; --i)
   {
-    ZORBA_ASSERT(theNodes[i] == lColl->nodeAt(lColl->size()));
+    ZORBA_ASSERT(theNodes[i] == lColl->nodeAt(lastPos));
 
-    lColl->removeNode(-1);
+    lColl->removeNode(lastPos);
+    --lastPos;
   }
 }
 
@@ -807,7 +811,8 @@ void UpdInsertIntoCollection::undo()
 ********************************************************************************/
 void UpdInsertFirstIntoCollection::apply()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theName);
+  SimpleCollection* lColl = static_cast<SimpleCollection*>
+                            (GET_STORE().getCollection(theName).getp());
   assert(lColl);
 
   theIsApplied = true;
@@ -817,7 +822,7 @@ void UpdInsertFirstIntoCollection::apply()
   ulong numNodes = theNodes.size();
   for (ulong i = 0; i < numNodes; ++i)
   {
-    lColl->addNode(theNodes[i], i+1);
+    lColl->addNode(theNodes[i], i);
     ++theNumApplied;
   }
 }
@@ -825,14 +830,15 @@ void UpdInsertFirstIntoCollection::apply()
 
 void UpdInsertFirstIntoCollection::undo()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theName);
+  SimpleCollection* lColl = static_cast<SimpleCollection*>
+                            (GET_STORE().getCollection(theName).getp());
   assert(lColl);
 
   for (ulong i = 0; i < theNumApplied; ++i)
   {
-    ZORBA_ASSERT(theNodes[i] == lColl->nodeAt(1));
+    ZORBA_ASSERT(theNodes[i] == lColl->nodeAt(0));
 
-    lColl->removeNode(1);
+    lColl->removeNode((ulong)0);
   }
 }
 
@@ -842,7 +848,8 @@ void UpdInsertFirstIntoCollection::undo()
 ********************************************************************************/
 void UpdInsertLastIntoCollection::apply()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theName);
+  SimpleCollection* lColl = static_cast<SimpleCollection*>
+                            (GET_STORE().getCollection(theName).getp());
   assert(lColl);
 
   theIsApplied = true;
@@ -857,14 +864,17 @@ void UpdInsertLastIntoCollection::apply()
 
 void UpdInsertLastIntoCollection::undo()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theName);
+  SimpleCollection* lColl = static_cast<SimpleCollection*>
+                            (GET_STORE().getCollection(theName).getp());
   assert(lColl);
+
+  ulong lastPos = lColl->size()-1;
 
   for (long i = theNumApplied-1; i >= 0; --i)
   {
-    ZORBA_ASSERT(theNodes[i] == lColl->nodeAt(lColl->size()));
+    ZORBA_ASSERT(theNodes[i] == lColl->nodeAt(lastPos));
 
-    lColl->removeNode(-1);
+    lColl->removeNode(lastPos);
   }
 }
 
@@ -874,34 +884,28 @@ void UpdInsertLastIntoCollection::undo()
 ********************************************************************************/
 void UpdInsertBeforeIntoCollection::apply()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theName);
+  SimpleCollection* lColl = static_cast<SimpleCollection*>
+                            (GET_STORE().getCollection(theName).getp());
   assert(lColl);
+
+  if (!theNodes.empty())
+    theFirstNode = theNodes[0];
 
   theCollectionPul->setAdjustTreePositions();
 
-  for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
-       lIter != theNodes.end();
-       ++lIter)
-  {
-    lColl->addNode(*lIter, theTarget, true);
-  }
+  theFirstPos = lColl->addNodes(theNodes, theTarget, true);
+
+  theIsApplied = true;
 }
 
 void UpdInsertBeforeIntoCollection::undo()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theName);
+  SimpleCollection* lColl = static_cast<SimpleCollection*>
+                            (GET_STORE().getCollection(theName).getp());
   assert(lColl);
+  ZORBA_ASSERT(theFirstNode == lColl->nodeAt(theFirstPos));
 
-  ulong lIndex;
-  for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
-       lIter != theNodes.end();
-       ++lIter)
-  {
-    if (lColl->findNode(lIter->getp(), lIndex))
-    {
-      lColl->removeNode(lIndex);
-    }
-  }
+  lColl->removeNodes(theFirstPos, theNodes.size());
 }
 
 
@@ -910,35 +914,29 @@ void UpdInsertBeforeIntoCollection::undo()
 ********************************************************************************/
 void UpdInsertAfterIntoCollection::apply()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theName);
+  SimpleCollection* lColl = static_cast<SimpleCollection*>
+                            (GET_STORE().getCollection(theName).getp());
   assert(lColl);
+
+  if (!theNodes.empty())
+    theFirstNode = theNodes[0];
 
   theCollectionPul->setAdjustTreePositions();
 
-  for (std::vector<store::Item_t>::reverse_iterator lIter = theNodes.rbegin();
-       lIter != theNodes.rend();
-       ++lIter) 
-  {
-    lColl->addNode(*lIter, theTarget, false);
-  }
+  theFirstPos = lColl->addNodes(theNodes, theTarget, false);
+
+  theIsApplied = true;
 }
 
 
 void UpdInsertAfterIntoCollection::undo()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theName);
+  SimpleCollection* lColl = static_cast<SimpleCollection*>
+                            (GET_STORE().getCollection(theName).getp());
   assert(lColl);
+  ZORBA_ASSERT(theFirstNode == lColl->nodeAt(theFirstPos));
 
-  ulong lIndex;
-  for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
-       lIter != theNodes.end();
-       ++lIter)
-  {
-    if (lColl->findNode(lIter->getp(), lIndex)) 
-    {
-      lColl->removeNode(lIndex);
-    }
-  }
+  lColl->removeNodes(theFirstPos, theNodes.size());
 }
 
 
@@ -947,7 +945,8 @@ void UpdInsertAfterIntoCollection::undo()
 ********************************************************************************/
 void UpdDeleteNodesFromCollection::apply()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theName);
+  SimpleCollection* lColl = static_cast<SimpleCollection*>
+                            (GET_STORE().getCollection(theName).getp());
   assert(lColl);
 
   theCollectionPul->setAdjustTreePositions();
@@ -962,7 +961,8 @@ void UpdDeleteNodesFromCollection::apply()
 
 void UpdDeleteNodesFromCollection::undo()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theName);
+  SimpleCollection* lColl = static_cast<SimpleCollection*>
+                            (GET_STORE().getCollection(theName).getp());
   assert(lColl);
 
   ulong lIndex;
@@ -972,7 +972,7 @@ void UpdDeleteNodesFromCollection::undo()
   {
     if (lColl->findNode(lIter->getp(), lIndex))
     {
-      static_cast<SimpleCollection*>(lColl.getp())->addNode(lIter->getp());
+      lColl->addNode(lIter->getp());
     }
   }
 }

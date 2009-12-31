@@ -151,45 +151,4 @@ CollectionImpl::deleteNode(Item& aNode)
 }
 
 
-bool
-CollectionImpl::deleteNode(long aPosition)
-{
-  ZORBA_TRY
-
-    // Make sure nobody else is accessing the node to delete. 
-    // Not sure if we really need this ????? 
-    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
-
-    return theCollection->removeNode(aPosition);
-
-  ZORBA_CATCH
-  return false;
-}
-
-
-Item
-CollectionImpl::nodeAt(long aPosition)
-{
-  ZORBA_TRY
-
-    return theCollection->nodeAt(aPosition).getp();
-
-  ZORBA_CATCH
-  return Item();
-}
-
-
-bool
-CollectionImpl::findNode(const Item& aNode, ulong& position)
-{
-  ZORBA_TRY
-    store::Item* lItem = Unmarshaller::getInternalItem(aNode);
-
-  bool found = theCollection->findNode(lItem, position);
-  return found;
-
-  ZORBA_CATCH
-  return false;
-}
-
 } /* namespace zorba */

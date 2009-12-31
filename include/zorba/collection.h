@@ -66,8 +66,7 @@ class ZORBA_DLL_PUBLIC Collection : public SmartObject
   addDocument(std::istream& aInStream) = 0;
     
   /**
-   * \brief Adds a copy of a node to the collection. The node must be the root
-   * of an xml tree (i.e., it must not have a parent). The copy is deep, i.e.,
+   * \brief Adds a copy of a node to the collection. The copy is deep, i.e., 
    * the whole tree rooted at the given node is copied. The new node is added
    * as the last node in the collection.
    *
@@ -83,9 +82,8 @@ class ZORBA_DLL_PUBLIC Collection : public SmartObject
   
   /** 
    * \brief Adds copies of the nodes retrieved from the given ResultIterator to
-   * the Collection. Each of the nodes to add must be root of an xml tree (i.e.,
-   * it must not have a parent). The copy is deep, i.e., the whole tree rooted
-   * at each retrieved node is copied.
+   * the Collection. The copy is deep, i.e., the whole tree rooted at each 
+   * retrieved node is copied.
    *
    * Default copy behavior is used:
    * - construction mode == preserve, 
@@ -106,25 +104,6 @@ class ZORBA_DLL_PUBLIC Collection : public SmartObject
    */
   virtual bool
   deleteNode(Item& aNode) = 0;
-  
-  /** 
-   * \brief Removes the node at the given position from the Collection.
-   *
-   * @param aPosition The position of the node that will be removed from collection.
-   * If a non-positive position is given, the last node is removed.
-   * @return true if the given Node Item was deleted, false otherwise.
-   */
-  virtual bool
-  deleteNode(long aPosition = -1) = 0;
-  
-  /** 
-   * \brief Get the node at the given position in the collection as a Node Item.
-   *
-   * @param aPosition The position of the node in the collection.
-   * @return the Node Item at the given position.
-   */
-  virtual Item
-  nodeAt(long aPosition) = 0;
 };
 
   

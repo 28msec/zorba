@@ -73,8 +73,6 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     pul = static_cast<store::PUL*>(pulItem.getp());
 
-    pul->setICChecker(&icChecker);
-
     if (consumeNext(tmp, theChild, planState))
     {
       ZORBA_ERROR_LOC_DESC(XQP0019_INTERNAL_ERROR, loc,
@@ -116,6 +114,7 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     // Apply updates
     pul->setValidator(&validator);
+    pul->setICChecker(&icChecker);
     pul->applyUpdates();
 
     // Rebuild the indices that must be rebuilt from scratch

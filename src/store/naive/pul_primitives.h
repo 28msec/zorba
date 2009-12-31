@@ -966,7 +966,8 @@ public:
 class UpdInsertBeforeIntoCollection : public  UpdCollection
 {
 protected:
-  ulong theNumApplied;
+  store::Item_t theFirstNode;
+  ulong         theFirstPos;
 
 public:
   UpdInsertBeforeIntoCollection(
@@ -975,8 +976,7 @@ public:
         store::Item_t& target,
         std::vector<store::Item_t>& nodes)
     :
-    UpdCollection(pul, target, name, nodes),
-    theNumApplied(0)
+    UpdCollection(pul, target, name, nodes)
   {
   }
 
@@ -996,7 +996,8 @@ public:
 class UpdInsertAfterIntoCollection : public  UpdCollection
 {
 protected:
-  ulong theNumApplied;
+  store::Item_t theFirstNode;
+  ulong         theFirstPos;
 
 public:
   UpdInsertAfterIntoCollection(
@@ -1005,8 +1006,7 @@ public:
         store::Item_t& target,
         std::vector<store::Item_t>& nodes)
     :
-    UpdCollection(pul, target, name, nodes),
-    theNumApplied(0)
+    UpdCollection(pul, target, name, nodes)
   {
   }
 

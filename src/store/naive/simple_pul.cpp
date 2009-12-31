@@ -1290,6 +1290,24 @@ void PULImpl::addIndexEntryCreator(
 /*******************************************************************************
 
 ********************************************************************************/
+void PULImpl::setICChecker(store::ICChecker* icChecker)
+{
+  theICChecker = icChecker;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool PULImpl::checkIC(const store::Item* collName)
+{
+  return theICChecker->check(collName);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void PULImpl::applyUpdates()
 {
   CollectionPulMap::iterator collIte = theCollectionPuls.begin();
@@ -1326,14 +1344,13 @@ void PULImpl::applyUpdates()
     {
       CollectionPul* pul = collIte->second;      
 
-      if ( pul!=NULL && pul->theCollection != NULL )
+      if (pul->theCollection != NULL)
       {
         // todo cezar:  how to get to the name of collections involved
         //in update
-
         //const store::Item* collName = pul->theCollection->getName();
       
-        //if ( collName && !checkIC(collName) )
+        //if ( collName && theICChecker && !checkIC(collName) )
         //{
         //  ZORBA_ERROR_DESC(XQP0053_IC_NOT_MET, 
         //                   collName->getLocalName()->c_str());
@@ -1363,21 +1380,6 @@ void PULImpl::applyUpdates()
   {
     ZORBA_FATAL(0, "Unexpected error during pul undo");
   }
-}
-
-
-/*******************************************************************************
-*******************************************************************************/
-void PULImpl::setICChecker(store::ICChecker* icChecker)
-{
-  theICChecker = icChecker;
-}
-
-/*******************************************************************************
-*******************************************************************************/
-bool PULImpl::checkIC(const store::Item* collName)
-{
-  return theICChecker->check(collName);
 }
 
 
@@ -1722,7 +1724,7 @@ void CollectionPul::finalizeUpdates()
     // If necessary, adjust the position of trees inside this collection.
     if (theAdjustTreePositions)
     {
-      theCollection->adjustNodePositions();
+      theCollection->adjustTreePositions();
     }
 
     // Detach nodes that were deleted from their trees due to replace-node,

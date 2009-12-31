@@ -61,86 +61,91 @@ catch (...)                                                    \
                                                                \
 } 
 
-  IteratorImpl::IteratorImpl(store::Iterator_t aIter, ErrorHandler* aErrorHandler)
-    : theIterator(aIter),
-      theErrorHandler(aErrorHandler),
-      theIsOpened(false),
-      theHaveLock(false)
-  {
-  }
 
-  IteratorImpl::~IteratorImpl()
-  {
-    if (theIsOpened)
-      theIterator->close();
+IteratorImpl::IteratorImpl(store::Iterator_t aIter, ErrorHandler* aErrorHandler)
+  :
+  theIterator(aIter),
+  theErrorHandler(aErrorHandler),
+  theIsOpened(false),
+  theHaveLock(false)
+{
+}
+
+
+IteratorImpl::~IteratorImpl()
+{
+  if (theIsOpened)
+    theIterator->close();
+
+  SYNC_CODE(
+    if (theHaveLock)
+      GENV_STORE.getGlobalLock().unlock();)
+}
+
+
+void IteratorImpl::open()
+{
+  RESULT_ITERATOR_TRY
+    SYNC_CODE(
+    if (!theHaveLock)
+    {
+      GENV_STORE.getGlobalLock().rlock();
+      theHaveLock = true;
+    })
+    
+    if ( ! theIsOpened )
+    {
+      theIterator->open();
+      theIsOpened = true;
+    }
+  RESULT_ITERATOR_CATCH
+}
+
+
+bool IteratorImpl::next(Item& aItem)
+{
+  RESULT_ITERATOR_TRY
+    if (!theIsOpened)  
+    {
+      ZORBA_ERROR_DESC(API0010_XQUERY_EXECUTION_NOT_STARTED,
+                       "Iterator has not been opened");
+    }
+
+    SYNC_CODE(
+    if (!theHaveLock)
+    {
+      GENV_STORE.getGlobalLock().rlock();
+      theHaveLock = true;
+    })
+
+    store::Item_t lItem;
+
+    if (!theIterator->next(lItem))
+      return false;
+      
+    aItem = &*lItem;
+    return true;
+
+  RESULT_ITERATOR_CATCH
+  return false;
+}
+
+
+void IteratorImpl::close()
+{
+  RESULT_ITERATOR_TRY
+    if (theIsOpened) {
+      theIterator->reset();
+    }
 
     SYNC_CODE(
     if (theHaveLock)
-      GENV_STORE.getGlobalLock().unlock();)
-  }
+    {
+      GENV_STORE.getGlobalLock().unlock();
+      theHaveLock = false;
+    })
+  RESULT_ITERATOR_CATCH
+}
 
-  void 
-  IteratorImpl::open()
-  {
-    RESULT_ITERATOR_TRY
-      SYNC_CODE(
-      if (!theHaveLock)
-      {
-        GENV_STORE.getGlobalLock().rlock();
-        theHaveLock = true;
-      })
-
-      if ( ! theIsOpened )
-      {
-        theIterator->open();
-        theIsOpened = true;
-      }
-    RESULT_ITERATOR_CATCH
-  }
-
-  bool
-  IteratorImpl::next(Item& aItem)
-  {
-    RESULT_ITERATOR_TRY
-      if (!theIsOpened)  
-      {
-        ZORBA_ERROR_DESC(API0010_XQUERY_EXECUTION_NOT_STARTED,
-                         "Iterator has not been opened");
-      }
-
-      SYNC_CODE(
-      if (!theHaveLock)
-      {
-        GENV_STORE.getGlobalLock().rlock();
-        theHaveLock = true;
-      })
-
-      store::Item_t lItem;
-
-      if (!theIterator->next(lItem))
-        return false;
-      
-      aItem = &*lItem;
-      return true;
-    RESULT_ITERATOR_CATCH
-    return false;
-  }
-
-  void 
-  IteratorImpl::close()
-  {
-    RESULT_ITERATOR_TRY
-      if (theIsOpened) {
-        theIterator->reset();
-      }
-
-      SYNC_CODE(
-      if (theHaveLock)
-      {
-        GENV_STORE.getGlobalLock().unlock();
-        theHaveLock = false;
-      })
-    RESULT_ITERATOR_CATCH
-  }
 
 } /* namespace zorba */

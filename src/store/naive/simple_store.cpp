@@ -473,7 +473,7 @@ store::IC_t SimpleStore::activateIC(
 
   if (theICs.get(icQName, ic))
   {
-    ZORBA_ERROR_PARAM(STR0010_IC_ALREADY_EXISTS,
+    ZORBA_ERROR_PARAM(STR0015_IC_ALREADY_EXISTS,
                       icQName->getStringValue()->c_str(), "");
   }
 
@@ -496,7 +496,7 @@ store::IC_t SimpleStore::activateForeignKeyIC(
 
   if (theICs.get(icQName, ic))
   {
-    ZORBA_ERROR_PARAM(STR0010_IC_ALREADY_EXISTS,
+    ZORBA_ERROR_PARAM(STR0015_IC_ALREADY_EXISTS,
                       icQName->getStringValue()->c_str(), "");
   }
 
@@ -516,7 +516,7 @@ void SimpleStore::deactivateIC(const store::Item* icQName)
   
   if (!theICs.get(icQName, ic))
   {
-    ZORBA_ERROR_PARAM(STR0011_IC_DOES_NOT_EXIST,
+    ZORBA_ERROR_PARAM(STR0016_IC_DOES_NOT_EXIST,
                       icQName->getStringValue()->c_str(), "");
   }
 

@@ -144,9 +144,6 @@ DEF_ERR_CODE(API0002_COMPILE_FAILED, API0002, "Query compilation failed")
 DEF_ERR_CODE(API0003_XQUERY_NOT_COMPILED, API0003, "Query not compiled")
 DEF_ERR_CODE(API0004_XQUERY_ALREADY_COMPILED, API0004, "Query already compiled")
 
-DEF_ERR_CODE(API0007_COLLECTION_ITEM_MUST_BE_A_NODE, API0007, "Cannot insert to a collection an item that is not a node.")
-
-
 DEF_ERR_CODE(API0020_DOCUMENT_ALREADY_EXISTS, API0020, "Another document with uri {/s} exists in the store already.")
 
 DEF_ERR_CODE(API0021_ITEM_TO_LOAD_IS_NOT_NODE, API0021, "The uri {/s} does not identify an XML node")
@@ -164,10 +161,6 @@ DEF_ERR_CODE(API0027_CANNOT_UPDATE_DCTX_WITH_ITERATORS, API0027, "The query dyna
 DEF_ERR_CODE(API0028_INVALID_NODE_URI, API0028, "The uri {/s} is not a valid node reference")
 
 DEF_ERR_CODE(API0030_NO_NODE_AT_GIVEN_POSITION, API0030, "There is no node at the given position {/s}, the collection has fewer nodes.");
-
-DEF_ERR_CODE(API0031_NODE_ALREADY_IN_COLLECTION, API0031, "Node is already part of the collection {/s}.");
-
-DEF_ERR_CODE(API0032_NON_ROOT_NODE_IN_COLLECTION, API0032, "Node cannot be added to collection {/s} because it is a non-root node.");
 
 DEF_ERR_CODE(API0033_FILE_OR_FOLDER_DOES_NOT_EXIST, API0033, "File or folder {/s} does not exist.");
 
@@ -239,12 +232,21 @@ DEF_ERR_CODE(STR0006_INDEX_INVALID_BOX_PROBE, STR0006,
 DEF_ERR_CODE(STR0007_INDEX_UNSUPPORTED_PROBE_CONDITION, STR0007,
 "Index \"/s\" does not support probe conditions of kind /s")
 
+
 DEF_ERR_CODE(STR0008_COLLECTION_ALREADY_EXISTS, STR0008,
 "A collection with URI {/s} exists already.")
 
 DEF_ERR_CODE(STR0009_COLLECTION_NOT_FOUND, STR0009,
 "A collection with URI {/s} does not exist.")
 
+DEF_ERR_CODE(STR0010_COLLECTION_NODE_ALREADY_IN_COLLECTION, STR0010,
+"Node cannot be inserted in collection /s because it belongs already to collection /s.");
+
+DEF_ERR_CODE(STR0011_COLLECTION_NON_ROOT_NODE, STR0011,
+"Node cannot be inserted in collection /s because it is a non-root node.");
+
+DEF_ERR_CODE(STR0012_COLLECTION_ITEM_MUST_BE_A_NODE, STR0012,
+"A non-node item is involved in an operation on collection /s.");
 
 DEF_ERR_CODE(STR0020_LOADER_IO_ERROR, STR0020, 
 "Loader I/O error: /s")
@@ -726,12 +728,10 @@ DEF_ERR_CODE(XDDY0010_COLLECTION_CONST_NODE_UPDATE, XDDY0010,
 "Illegal update of node in collection /s, whose nodes are read-only.")
 
 DEF_ERR_CODE(XDDY0011_COLLECTION_NODE_NOT_FOUND, XDDY0011, 
-"node is not contained in collection /s.")
+"Node is not contained in collection /s.")
 
 DEF_ERR_CODE(XDDY0012_COLLECTION_UNORDERED_BAD_INSERT, XDDY0012, 
 "Illegal insert in unordered collection /s.")
-
-DEF_ERR_CODE(XDDY0011, XDDY0011, "It is a dynamic error if the target of a collection function does not belong to the collection that is identified by the first parameter (QName).")
 
 DEF_ERR_CODE(XDDY0013, XDDY0013, "It is a dynamic error if multiple calls to create-collection in the same snapshot have the same QName as first parameter.")
 

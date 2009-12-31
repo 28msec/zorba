@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_COLLECTIONIMPL_H
-#define ZORBA_COLLECTIONIMPL_H
+#ifndef ZORBA_API_COLLECTIONIMPL
+#define ZORBA_API_COLLECTIONIMPL
 
 #include "common/shared_types.h"
 #include <zorba/collection.h>
@@ -51,16 +51,8 @@ class CollectionImpl : public Collection
 
   bool
   deleteNode(Item& aNode);
-
-  bool
-  deleteNode(long aPosition = -1);
-
-  Item
-  nodeAt(long aPosition);
-
-  bool
-  findNode(const Item& aNode, ulong& position);
 };
+
 
 } /* namespace zorba */
 
