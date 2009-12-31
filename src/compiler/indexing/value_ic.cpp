@@ -144,6 +144,7 @@ bool ICCheckerImpl::check(const store::Item* collName)
   store::Iterator_t activeICNames = theDctx->listActiveICNames();
 
   store::Item_t activeICName;
+  activeICNames->open();
 
   while ( activeICNames->next(activeICName) )
   {

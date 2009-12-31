@@ -1332,12 +1332,6 @@ void PULImpl::applyUpdates()
     applyList(theCreateIndexList);
     applyList(theDeleteIndexList);
 
-    // Apply delete-collection primitives
-    for (collIte = theCollectionPuls.begin(); collIte != collEnd; ++collIte)
-    {
-      CollectionPul* pul = collIte->second;
-      applyList(pul->theDeleteCollectionList);
-    }
 
     // check integrity constraints for involved collections
     for (collIte = theCollectionPuls.begin(); collIte != collEnd; ++collIte)
@@ -1346,16 +1340,22 @@ void PULImpl::applyUpdates()
 
       if (pul->theCollection != NULL)
       {
-        // todo cezar:  how to get to the name of collections involved
-        //in update
-        //const store::Item* collName = pul->theCollection->getName();
+        const store::Item* collName = pul->theCollection->getName();
       
-        //if ( collName && theICChecker && !checkIC(collName) )
-        //{
-        //  ZORBA_ERROR_DESC(XQP0053_IC_NOT_MET, 
-        //                   collName->getLocalName()->c_str());
-        //}
+        if ( collName && theICChecker && !checkIC(collName) )
+        {
+          ZORBA_ERROR_DESC(XQP0053_IC_NOT_MET, 
+                           collName->getLocalName()->c_str());
+        }
       }
+    }
+
+
+    // Apply delete-collection primitives
+    for (collIte = theCollectionPuls.begin(); collIte != collEnd; ++collIte)
+    {
+      CollectionPul* pul = collIte->second;
+      applyList(pul->theDeleteCollectionList);
     }
   }
   catch (...)
