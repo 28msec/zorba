@@ -3405,13 +3405,9 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
                                            ic.getCollName()->get_qname() );
       
       // xs:QName("example:coll1")
-      function* fn_qname = sctx_p->lookup_resolved_fn(
-          xqp_string("http://www.w3.org/2001/XMLSchema"), 
-          xqp_string("QName"), 
-          1);
-      std::vector<expr_t> argQName;      
-      argQName.push_back(qnameStrErpr);      
-      fo_expr_t qnameExpr = new fo_expr(sctxid(), loc, fn_qname, argQName);      
+      fo_expr_t qnameExpr = new fo_expr(sctxid(), loc,
+                                        GET_BUILTIN_FUNCTION(FN_QNAME_2),
+                                        qnameStrErpr);
 
       // dc:collection(xs:QName("example:coll1"))
       function* fn_collection = sctx_p->lookup_resolved_fn(
