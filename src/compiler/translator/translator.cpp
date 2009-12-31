@@ -3419,7 +3419,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
           xqp_string("collection"), 
           1);
       std::vector<expr_t> argColl;      
-      argColl.push_back(qnameExpr);
+      argColl.push_back(qnameExpr.getp());
       fo_expr_t collExpr = new fo_expr(sctxid(), loc, fn_collection, argColl);
 
       // $x 
@@ -3437,7 +3437,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
                                       sctxid(),
                                       loc,
                                       varExpr,
-                                      collExpr);
+                                      collExpr.getp());
       rchandle<flwor_expr> flworExpr = new flwor_expr(sctxid(), loc, false);
 
       expr_t icExpr = pop_nodestack();
@@ -3496,7 +3496,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
           xqp_string("collection"), 
           1);
       std::vector<expr_t> argColl;      
-      argColl.push_back(qnameExpr);
+      argColl.push_back(qnameExpr.getp());
       fo_expr_t collExpr = new fo_expr(sctxid(), loc, fn_collection, argColl);
 
       // $c 
@@ -3555,7 +3555,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
                                       sctxid(),
                                       loc,
                                       varExpr,
-                                      collExpr);
+                                      collExpr.getp());
       rchandle<flwor_expr> flworExpr = new flwor_expr(sctxid(), loc, false);
 
       expr_t retExpr = everyExpr;
@@ -3607,7 +3607,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
           xqp_string("collection"), 
           1);
       std::vector<expr_t> argColl;      
-      argColl.push_back(qnameExpr);
+      argColl.push_back(qnameExpr.getp());
       fo_expr_t collExpr = new fo_expr(sctxid(), loc, fn_collection, argColl);
 
       // every $x in dc:colection(...) satisfies ...
@@ -3684,7 +3684,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
           xqp_string("collection"), 
           1);
       std::vector<expr_t> toArgColl;      
-      toArgColl.push_back(toQnameExpr);
+      toArgColl.push_back(toQnameExpr.getp());
       fo_expr_t toCollExpr = new fo_expr(sctxid(), loc, toFnCollection, 
                                          toArgColl);
       
@@ -3744,7 +3744,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
           xqp_string("collection"), 
           1);
       std::vector<expr_t> fromArgColl;      
-      toArgColl.push_back(fromQnameExpr);
+      toArgColl.push_back(fromQnameExpr.getp());
       fo_expr_t fromCollExpr = new fo_expr(sctxid(), loc, fromFnCollection, 
                                            fromArgColl);
 

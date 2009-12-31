@@ -102,7 +102,8 @@ Archiver::Archiver(bool is_serializing_out, bool internal_archive)
     current_level(0),
     internal_archive(internal_archive),
     theUserCallback(0),
-    compiler_cb(0)
+    compiler_cb(0),
+    dont_allow_delay_for_plan_sctx(false)
 {
 
   if(is_serializing_out)
@@ -776,6 +777,19 @@ int Archiver::compute_field_depth(archive_field *field)
   return i;
 }
 
+int Archiver::get_only_for_eval(archive_field *field)
+{
+  if(field->only_for_eval)
+    return field->only_for_eval;
+  archive_field *child;
+  for(child = field->first_child; child; child = child->next)
+  {
+    if(child->only_for_eval)
+      return child->only_for_eval;
+  }
+  return 0;
+}
+
 archive_field* Archiver::find_top_most_eval_only_field(archive_field *parent_field)
 {
   int ref_depth = -1;
@@ -788,8 +802,7 @@ archive_field* Archiver::find_top_most_eval_only_field(archive_field *parent_fie
     {
     }
     else if((child->field_treat == ARCHIVE_FIELD_IS_REFERENCING) &&
-        child->refered->only_for_eval &&
-        (child->refered->field_treat != ARCHIVE_FIELD_NORMAL))
+        get_only_for_eval(child->refered))
     {
       int new_depth = compute_field_depth(child->refered);
       if(!refering_field || (ref_depth > new_depth))
@@ -859,7 +872,9 @@ void Archiver::check_compound_fields(archive_field *parent_field)
     if(!refering_field)
       break;
 
-    if(refering_field->refered->allow_delay2 != ALLOW_DELAY)
+    if((refering_field->refered->allow_delay2 != ALLOW_DELAY) ||
+      (refering_field->refered->field_treat == ARCHIVE_FIELD_NORMAL) ||
+      !refering_field->refered->only_for_eval)
     {
       //must preserve this serialization
       archive_field *temp_field = refering_field->refered->parent;
@@ -874,7 +889,7 @@ void Archiver::check_compound_fields(archive_field *parent_field)
       exchange_mature_fields(refering_field, refering_field->refered);
       refering_field->only_for_eval = refering_field->refered->only_for_eval;
     }
-    clean_only_for_eval(refering_field->refered, refering_field->refered->only_for_eval);
+    clean_only_for_eval(refering_field->refered, get_only_for_eval(refering_field->refered));
   }
   while(check_only_for_eval_nondelay_referencing(parent_field))
   {}
@@ -897,12 +912,13 @@ bool Archiver::check_only_for_eval_nondelay_referencing(archive_field   *parent_
       //  current_field->only_for_eval = false;
 
         //must preserve this serialization
-        archive_field *temp_field = current_field;
+        archive_field *temp_field = current_field->parent;
         while(temp_field)
         {
           temp_field->only_for_eval = 0;
           temp_field = temp_field->parent;
         }
+        clean_only_for_eval(current_field, current_field->only_for_eval);
         return true;
       }
     }
@@ -922,7 +938,9 @@ void Archiver::replace_only_for_eval_with_null(archive_field   *parent_field)
   archive_field   *current_field = parent_field->first_child;
   while(current_field)
   {
-    if(current_field->only_for_eval && (current_field->field_treat != ARCHIVE_FIELD_NORMAL))
+    if(current_field->only_for_eval && 
+      (current_field->field_treat != ARCHIVE_FIELD_NORMAL) &&
+      (current_field->field_treat != ARCHIVE_FIELD_IS_BASECLASS))
     {
     //don't save it, replace it with NULL if possible
       archive_field *null_field = replace_with_null(current_field);

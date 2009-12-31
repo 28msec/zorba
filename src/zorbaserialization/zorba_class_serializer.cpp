@@ -1009,8 +1009,11 @@ void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
     if(ar.is_serializing_out())
     {
       parent = obj->getParent();
-      while(parent->getParent())
-        parent = parent->getParent();
+      if(parent)
+      {
+        while(parent->getParent())
+          parent = parent->getParent();
+      }
       if(!parent)
       {
         parent = obj;

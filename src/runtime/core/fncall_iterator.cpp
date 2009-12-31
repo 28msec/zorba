@@ -311,10 +311,12 @@ StatelessExtFunctionCallIterator::~StatelessExtFunctionCallIterator()
 void
 StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
 {
+  ar.dont_allow_delay_for_plan_sctx = true;
   serialize_baseclass(ar,
                       static_cast<NaryBaseIterator<
                                   StatelessExtFunctionCallIterator,
                                   StatelessExtFunctionCallIteratorState>*>(this));
+  ar.dont_allow_delay_for_plan_sctx = false;
   if (ar.is_serializing_out()) {
     // serialize out: serialize prefix and localname of the function
     ar & thePrefix;
@@ -329,17 +331,22 @@ StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
     xqpStringStore_t lLocalname;
     ar & lLocalname;
     xqp_string lURI;
-    theSctx->lookup_ns(thePrefix, lURI);
-    m_function = theSctx->lookup_stateless_external_function(lURI,
-                                                             lLocalname.getp());
-    if (!m_function) {
-      ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
-                           "Couldn't load pre-compiled query because "
-                           << " the external function with URI " << lURI
-                           << " and local name " << lLocalname
-                           << " is not available through any of the"
-                           << " ExternalModules.");
-    } 
+    if(thePrefix.getStore())
+    {
+      theSctx->lookup_ns(thePrefix, lURI);
+      m_function = theSctx->lookup_stateless_external_function(lURI,
+                                                               lLocalname.getp());
+      if (!m_function) {
+        ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
+                             "Couldn't load pre-compiled query because "
+                             << " the external function with URI " << lURI
+                             << " and local name " << lLocalname
+                             << " is not available through any of the"
+                             << " ExternalModules.");
+      } 
+    }
+    else
+      m_function = NULL;
   }
   ar & theIsUpdating;
 }

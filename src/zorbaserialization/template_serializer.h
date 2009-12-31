@@ -512,6 +512,7 @@ void operator&(Archiver &ar, T *&obj)
     ar.check_class_field(retval, "", "", is_simple, is_class, field_treat, (ArchiveFieldTreat)-1, id);
     if(field_treat == ARCHIVE_FIELD_IS_NULL)
     {
+      assert(!ar.is_serialize_base_class());
       obj = NULL;
       ar.read_end_current_level();
       return;

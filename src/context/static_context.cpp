@@ -116,9 +116,9 @@ void context::serialize(::zorba::serialization::Archiver& ar)
     if(parent)
       parent->addReference(parent->getSharedRefCounter() SYNC_PARAM2(parent->getRCLock()));
   }
+  ar & str_keymap;
   ar & keymap;
   ar & modulemap;
-  ar & str_keymap;
   ar & module_paths;
   ar & theDefaultFunctionNamespace;
 }
@@ -264,7 +264,7 @@ void context::ctx_module_t::serialize(serialization::Archiver &ar)
         = GENV.getModuleURIResolver();
 
       module = lStandardModuleResolver->getExternalModule(
-                  lURIStore.getp(), 0);
+                  lURIStore.getp(), &GENV_ROOT_STATIC_CONTEXT);
 
       // no way to get the module
       if (!module) {
@@ -1029,7 +1029,8 @@ static_context::lookup_stateless_external_function(
   if (!lRes) {
     InternalModuleURIResolver* lStandardModuleResolver = GENV.getModuleURIResolver();
     lModule = lStandardModuleResolver->getExternalModule(
-                entity_retrieval_url().getStore(), this);
+                //entity_retrieval_url().getStore(), this);
+                aURI.getStore(), this);
 
     // no way to get the module
     if (!lModule) {

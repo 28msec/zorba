@@ -187,7 +187,7 @@ protected:
 
 public:
   CompilerCB  *compiler_cb;///to workaround user defined function compile-at-runtime
-
+  bool        dont_allow_delay_for_plan_sctx;
 public:
   Archiver(bool is_serializing_out, bool internal_archive=false);
   virtual ~Archiver();
@@ -276,6 +276,7 @@ protected:
   void prepare_serialize_out();
   archive_field* replace_with_null(archive_field *current_field);
   int compute_field_depth(archive_field *field);
+  int get_only_for_eval(archive_field *field);
   archive_field* find_top_most_eval_only_field(archive_field *parent_field);
   void check_compound_fields(archive_field   *parent_field);
   bool check_only_for_eval_nondelay_referencing(archive_field   *parent_field);
@@ -329,6 +330,7 @@ public:
     else
       serialize_base_class--;
     assert(serialize_base_class >= 0);
+    assert(serialize_base_class <= 1);
   }
   bool    is_serialize_base_class()
   {
