@@ -17,10 +17,11 @@
 namespace zorba { namespace http_client {
   
 
-  HttpResponseParser::HttpResponseParser(RequestHandler& aHandler, CURL* aCurl)
+  HttpResponseParser::HttpResponseParser(RequestHandler& aHandler, CURL* aCurl,
+    std::string aOverridenContentType)
     : 
   theHandler(aHandler), theCurl(aCurl), theStatus(-1), theStreamBuffer(0),
-    theInsideRead(false)
+    theInsideRead(false), theOverridenContentType(aOverridenContentType)
   {
     theMulti = curl_multi_init();
     curl_multi_add_handle(theMulti, theCurl);
@@ -44,6 +45,9 @@ namespace zorba { namespace http_client {
     int lCode = theStreamBuffer->multi_perform();
     std::istream lStream(theStreamBuffer);
     Item lItem;
+    if (theOverridenContentType != "") {
+      theCurrentContentType = theOverridenContentType;
+    }
     if (theCurrentContentType == "text/xml" ||
       theCurrentContentType == "application/xml" ||
       theCurrentContentType == "text/xml-external-parsed-entity" ||
@@ -52,7 +56,7 @@ namespace zorba { namespace http_client {
         lItem = createXmlItem(lStream);
     } else if (theCurrentContentType == "text/html") {
       lItem = createHtmlItem(lStream);
-    } else if (theCurrentContentType.find("/text") == 0) {
+    } else if (theCurrentContentType.find("text/") == 0) {
       lItem = createTextItem(lStream);
     } else {
       lItem = createBase64Item(lStream);

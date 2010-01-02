@@ -24,6 +24,7 @@ namespace zorba { namespace http_client {
     std::ostringstream* theSerStream;
     struct curl_httppost* thePost;
     struct curl_httppost* theLast;
+    String theCurrentContentType;
 
   public: //Constructions
     HttpRequestHandler(CURL* aCurl,
@@ -68,6 +69,8 @@ namespace zorba { namespace http_client {
       String aDescription,
       String aSrc);
     virtual void any(Item aItem);
+
+    void serializeItem( Item aItem );
     virtual void endBody();
     virtual void beginMultipart(String aContentType, String aBoundary);
     virtual void endMultipart();

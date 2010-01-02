@@ -22,6 +22,7 @@ namespace zorba { namespace http_client {
       theLast(NULL)
   {
     theHeaderLists.push_back(NULL);
+    struct curl_slist* l = theHeaderLists[0];
   }
 
   HttpRequestHandler::~HttpRequestHandler()
@@ -97,7 +98,7 @@ namespace zorba { namespace http_client {
         String lAuthString = aUsername + ":" + aPassword;
         String lAuth = "Authorization: Basic ";
         lAuth += encoding::Base64::encode(lAuthString);
-        curl_slist_append(theHeaderLists[0], lAuth.c_str());
+        theHeaderLists[0] = curl_slist_append(theHeaderLists[0], lAuth.c_str());
       } else if (aAuthMethod == "Digest") {
         String lUserPw = aUsername + ":" + aPassword;
         curl_easy_setopt(theCurl, CURLOPT_USERPWD, lUserPw.c_str());
@@ -112,12 +113,13 @@ namespace zorba { namespace http_client {
 
   void HttpRequestHandler::header(String aName, String aValue)
   {
-    String lValue = aName.append(":");
-    lValue += aValue;
+    std::string lValue = aName.c_str();
+    lValue += ":";
+    lValue += aValue.c_str();
     if (!theInsideMultipart) {
-      curl_slist_append(theHeaderLists[0], (lValue).c_str());
+      theHeaderLists[0] = curl_slist_append(theHeaderLists[0], lValue.c_str());
     } else {
-      curl_slist_append(theHeaderLists.back(), (lValue).c_str());
+      theHeaderLists.back() = curl_slist_append(theHeaderLists.back(), (lValue).c_str());
     }
   }
 
@@ -128,31 +130,28 @@ namespace zorba { namespace http_client {
                                      String aSrc)
   {
     theSerStream = new std::ostringstream();
-    String lValueId = "Content-ID: ";
-    lValueId += aId;
-    String lValueDescr = "Content-Description : ";
-    lValueDescr += aDescription;
+    std::string lValueId = "Content-ID: ";
+    lValueId += aId.c_str();
+    std::string lValueDescr = "Content-Description : ";
+    lValueDescr += aDescription.c_str();
+    theCurrentContentType = aContentType;
+    std::string lContentType = "Content-Type: ";
+    lContentType += aContentType.c_str();
     if (!theInsideMultipart) {
-      curl_slist_append(theHeaderLists[0], lValueId.c_str());
-      curl_slist_append(theHeaderLists[0], lValueDescr.c_str());
+      theHeaderLists[0] = curl_slist_append(theHeaderLists[0], lValueId.c_str());
+      theHeaderLists[0] = curl_slist_append(theHeaderLists[0], lValueDescr.c_str());
+      theHeaderLists[0] = curl_slist_append(theHeaderLists[0], lContentType.c_str());
     } else {
       theHeaderLists.push_back(NULL);
-      curl_slist_append(theHeaderLists.back(), lValueId.c_str());
-      curl_slist_append(theHeaderLists.back(), lValueDescr.c_str());
+      theHeaderLists.back() = curl_slist_append(theHeaderLists.back(), lValueId.c_str());
+      theHeaderLists.back() = curl_slist_append(theHeaderLists.back(), lValueDescr.c_str());
+      theHeaderLists.back() = curl_slist_append(theHeaderLists.back(), lContentType.c_str());
     }
   }
 
   void HttpRequestHandler::any(Item aItem)
   {
-    theLastBodyHadContent = true;
-    if (theSerial == "text") {
-      (*theSerStream) << aItem.getStringValue();
-    } else {
-      Zorba_SerializerOptions_t lOptions;
-      Serializer_t lSerializer = Serializer::createSerializer(lOptions);
-      SingletonItemSequence lSequence(aItem);
-      lSerializer->serialize(&lSequence, *theSerStream);
-    }
+    serializeItem(aItem);
   }
 
   void HttpRequestHandler::endBody()
@@ -164,14 +163,7 @@ namespace zorba { namespace http_client {
       }
       Item lItem;
       while (theContent->next(lItem)) {
-        if (theSerial == "text") {
-          (*theSerStream) << lItem.getStringValue();
-        } else {
-          Zorba_SerializerOptions_t lOptions;
-          Serializer_t lSerializer = Serializer::createSerializer(lOptions);
-          SingletonItemSequence lSequence(lItem);
-          lSerializer->serialize(&lSequence, *theSerStream);
-        }
+        serializeItem(lItem);
       }
     }
     std::string lData = theSerStream->str();
@@ -179,21 +171,21 @@ namespace zorba { namespace http_client {
       curl_easy_setopt(theCurl, CURLOPT_POSTFIELDSIZE, lData.length());
       curl_easy_setopt(theCurl, CURLOPT_POSTFIELDS, lData.c_str());
     } else {
-      curl_formadd(&thePost, &theLast, CURLFORM_COPYCONTENTS, lData.c_str(),
+      curl_formadd(&thePost, &theLast,
+        CURLFORM_COPYNAME, "blub",
+        CURLFORM_COPYCONTENTS, lData.c_str(),
         CURLFORM_CONTENTSLENGTH, lData.length(),
-        CURLFORM_CONTENTHEADER, theHeaderLists.back());
+        CURLFORM_CONTENTHEADER, theHeaderLists.back(),
+        CURLFORM_END);
     }
   }
 
   void HttpRequestHandler::beginMultipart(String aContentType, String aBoundary)
   {
     theInsideMultipart = true;
-    String lValue = "Content-type: ";
-    lValue += aContentType;
-    lValue += "; boundary=\"";
-    lValue += aBoundary;
-    lValue += "\"";
-    curl_slist_append(theHeaderLists[0], lValue.c_str());
+    std::string lValue = "Content-type: ";
+    lValue += aContentType.c_str();
+    theHeaderLists[0] = curl_slist_append(theHeaderLists[0], lValue.c_str());
   }
 
   void HttpRequestHandler::endMultipart()
@@ -222,5 +214,40 @@ namespace zorba { namespace http_client {
   {
     delete theSerStream;
     theLastBodyHadContent = false;
+  }
+
+  void HttpRequestHandler::serializeItem( Item aItem )
+  {
+    theLastBodyHadContent = true;
+    Zorba_SerializerOptions_t lOptions;
+    lOptions.version = "1.1";
+    lOptions.undeclare_prefixes = ZORBA_UNDECLARE_PREFIXES_YES;
+    if (theSerial == "") {
+      if (theCurrentContentType == "text/xml" ||
+        theCurrentContentType == "application/xml" ||
+        theCurrentContentType == "text/xml-external-parsed-entity" ||
+        theCurrentContentType == "application/xml-external-parsed-entity" ||
+        theCurrentContentType.endsWith("+xml"))
+      {
+        lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XML;
+        lOptions.version = "1.1"; 
+      } else if (theCurrentContentType == "text/html") {
+        lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_HTML;
+      } else if (theCurrentContentType.startsWith("text/")) {
+        lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_TEXT;
+      }
+    } else {
+      if (theSerial == "text")
+        lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_TEXT;
+      else if (theSerial == "xml")
+        lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XML;
+      else if (theSerial == "html")
+        lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_HTML;
+      else
+        lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_TEXT;
+    }
+    Serializer_t lSerializer = Serializer::createSerializer(lOptions);
+    SingletonItemSequence lSequence(aItem);
+    lSerializer->serialize(&lSequence, *theSerStream);
   }
 }}

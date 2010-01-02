@@ -53,11 +53,14 @@ namespace http_client {
 
       std::string lData;
 
+      std::auto_ptr<HttpRequestHandler> lHandler;
+      std::auto_ptr<RequestParser> lParser;
+
       if (lReqSet) {
         String lSerialString = lSerialSet ? lSerial.getStringValue() : "";
-        HttpRequestHandler lHandler(lCURL, args[2], lSerialString);
-        RequestParser lParser(&lHandler);
-        lParser.parse(lRequest);
+        lHandler.reset(new HttpRequestHandler(lCURL, args[2], lSerialString));
+        lParser.reset(new RequestParser(lHandler.get()));
+        lParser->parse(lRequest);
       } else if (lContentSet) {
         std::stringstream lSerStream;
         if (lSerialSet && lSerial.getStringValue() == "text") {
@@ -81,7 +84,11 @@ namespace http_client {
       curl_easy_setopt(lCURL, CURLOPT_USERAGENT, "libcurl-agent/1.0");
       HttpResponseHandler lRespHandler(theFactory);
       //This gives the ownership of lCurl to the HttpResponseParser
-      HttpResponseParser lRespParser(lRespHandler, lCURL);
+      String lOverrideContentType;
+      if (lHandler.get())
+        lHandler->getOverrideContentType(lOverrideContentType);
+      HttpResponseParser lRespParser(lRespHandler, lCURL,
+        lOverrideContentType.c_str());
       lRespParser.parse();
       return ItemSequence_t(lRespHandler.getResult());
     }

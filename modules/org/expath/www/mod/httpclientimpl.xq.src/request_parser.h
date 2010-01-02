@@ -16,6 +16,7 @@ public:
   bool parse(const Item& aItem);
 
 private:
+  bool parseItem(const Item& aItem);
   bool handleRequest(const Item& aItem);
   bool handleResponse(const Item aItem);
   bool handleHeader(const Item& aItem);

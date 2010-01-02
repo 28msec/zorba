@@ -28,8 +28,12 @@ namespace http_client {
     std::string theDescription;
     bool theInsideRead;
     std::map<std::string, std::string> theCodeMap;
+    std::string theOverridenContentType;
   public:
-    HttpResponseParser(RequestHandler& aHandler, CURL* aCurl);
+    HttpResponseParser(
+      RequestHandler& aHandler,
+      CURL* aCurl,
+      std::string aOverridenContentType = "");
     virtual ~HttpResponseParser();
     int parse();
     virtual void beforeRead();

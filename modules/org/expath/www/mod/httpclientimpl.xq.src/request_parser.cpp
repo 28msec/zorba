@@ -11,6 +11,13 @@ namespace zorba { namespace http_client {
   bool RequestParser::parse(const Item& aItem)
   {
     theHandler->begin();
+    bool lResult = parseItem(aItem);
+    theHandler->end();
+    return lResult;
+  }
+
+  bool RequestParser::parseItem(const Item& aItem)
+  {
     Item lQName;
     aItem.getNodeName(lQName);
     String lLocalName = lQName.getLocalName();
@@ -25,8 +32,6 @@ namespace zorba { namespace http_client {
     } else if (lLocalName == "body") {
       if (!handleBody(aItem)) return false;
     }
-    theHandler->end();
-    return true;
   }
 
   bool RequestParser::handleRequest( const Item& aItem )
@@ -78,7 +83,7 @@ namespace zorba { namespace http_client {
     lIter = aItem.getChildren();
     lIter->open();
     while (lIter->next(lItem)) {
-      if (!parse(lItem)) {
+      if (!parseItem(lItem)) {
         return false;
       }
     }
@@ -109,7 +114,7 @@ namespace zorba { namespace http_client {
     lIter = aItem.getChildren();
     lIter->open();
     while (lIter->next(lItem)) {
-      if (!parse(lItem)) return false;
+      if (!parseItem(lItem)) return false;
     }
     theHandler->endResponse();
     return true;
@@ -193,7 +198,7 @@ namespace zorba { namespace http_client {
     lIter = aItem.getChildren();
     lIter->open();
     while (lIter->next(lItem)) {
-      if (!parse(lItem)) return false;
+      if (!parseItem(lItem)) return false;
     }
     theHandler->endMultipart();
     return true;
