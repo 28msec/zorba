@@ -23,7 +23,7 @@
 
 namespace zorbac {
 
-  class ExternalFunctionWrapper;
+  class CExternalFunction;
 
   class ExternalModuleWrapper : public zorba::ExternalModule {
     public:
@@ -38,7 +38,7 @@ namespace zorbac {
       getExternalFunction(zorba::String aLocalname) const;
 
       virtual XQC_Error
-      registerFunction(ExternalFunctionWrapper*);
+      registerFunction(CExternalFunction*);
 
     protected:
       zorba::String                                   theURI;

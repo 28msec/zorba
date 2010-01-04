@@ -177,7 +177,7 @@ namespace zorbac {
     XQC_Sequence** sequence)
   {
     CEXPR_TRY {
-      ResultIterator_t lIter= me->theQuery->iterator();
+      ResultIterator_t lIter = me->theQuery->iterator();
       lIter->open();
       XQC_ErrorHandler* lHandler;
       if (context) {

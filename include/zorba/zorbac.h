@@ -24,15 +24,22 @@
 
 typedef struct Zorba_StaticContext_s Zorba_StaticContext;
 
+typedef struct Zorba_ItemSetter_s Zorba_ItemSetter;
+
 typedef struct Zorba_OutputStream_s Zorba_OutputStream;
 
 typedef struct Zorba_ErrorHandler_s Zorba_ErrorHandler;
 
 
 // external functions
-typedef void (*external_function_init)(void** user_data, void* global_user_data);
+typedef void (*external_function_init)(void** user_data,
+  void* function_user_data);
 
-typedef void (*external_function_release)(void* user_data, void* global_user_data);
+typedef XQC_Error (*external_function_next)(XQC_Sequence** args, int argc,
+  Zorba_ItemSetter* setter, void* user_data, void* function_data);
+
+typedef void (*external_function_free)(void* user_data,
+  void* function_user_data);
 
 
 #ifdef __cplusplus
@@ -79,8 +86,9 @@ extern "C" {
      * \retval ::XQST0038
      * \retval ::XQC_INTERNAL_ERROR
      */
+      // TODO add collation test cases
     XQC_Error
-    (*add_collation)(XQC_StaticContext *context, const char* uri);
+    (*add_collation)(Zorba_StaticContext *context, const char* uri);
 
     /** 
      * Set the URI of the default collation.
@@ -94,7 +102,7 @@ extern "C" {
      * \retval ::XQC_INTERNAL_ERROR
      */
     XQC_Error
-    (*set_default_collation)(XQC_StaticContext *context, const char* uri);
+    (*set_default_collation)(Zorba_StaticContext *context, const char* uri);
 
     /** 
      * Get the URI of the default collation. The uri returned is valid
@@ -104,7 +112,7 @@ extern "C" {
      * \param[out] uri The URI of the default collation that is currently set in the given context.
      */
     XQC_Error
-    (*get_default_collation)(XQC_StaticContext *context, const char** uri);
+    (*get_default_collation)(Zorba_StaticContext *context, const char** uri);
 
     /**
      * Sets the XQuery processor's version to either xquery_version_1_0 or xquery_version_1_1.
@@ -115,8 +123,9 @@ extern "C" {
      * \retval ::XQC_NO_ERROR
      * \retval ::XQC_INTERNAL_ERROR
      */
+      // TODO add xquery version test cases
     XQC_Error
-    (*set_xquery_version)(XQC_StaticContext* context, xquery_version_t mode );
+    (*set_xquery_version)(Zorba_StaticContext* context, xquery_version_t mode );
 
     /**
      * Returns the XQuery processor's version that is set in the given static context.
@@ -128,7 +137,7 @@ extern "C" {
      * \retval ::XQC_INTERNAL_ERROR
      */
     XQC_Error 
-    (*get_xquery_version)(XQC_StaticContext* context, xquery_version_t* mode);
+    (*get_xquery_version)(Zorba_StaticContext* context, xquery_version_t* mode);
  
     /**
      * Register an external function that can be called within a query.
@@ -149,12 +158,38 @@ extern "C" {
      * \retval ::XQC_INTERNAL_ERROR
      */
     XQC_Error
-    (*register_external_function)(XQC_StaticContext* context, 
-                                  const char* uri,
-                                  const char* localname,
-                                  external_function_init init,
-                                  external_function_release release,
-                                  void* global_user_data);
+    (*register_external_function)(Zorba_StaticContext* context, 
+      const char* uri, const char* localname, external_function_init init_fn,
+      external_function_next next_fn, external_function_free free_fn,
+      void* global_user_data);
+  };
+
+  /**
+   * ::Zorba_ItemSetter is designed to allow external functions to set the
+   * next XQuery data model item to be returned.
+   */
+  struct Zorba_ItemSetter_s
+  {
+      /**
+       * Call this to specify the next item as a string. The Zorba
+       * implementation will take ownership of the char* and free it
+       * at an appropriate time.
+       * QQQ is this true?
+       */
+      XQC_Error
+      (*set_string)(Zorba_ItemSetter* setter, const char* value);
+
+      /**
+       * Call this to specify the next item as an integer.
+       */
+      XQC_Error
+      (*set_integer)(Zorba_ItemSetter* setter, int value);
+
+      /**
+       * Call this to specify the next item as a double.
+       */
+      XQC_Error
+      (*set_double)(Zorba_ItemSetter* setter, double value);
   };
 
   /**
@@ -193,7 +228,7 @@ extern "C" {
 
   struct Zorba_ErrorHandler_s {
 
-    void (*error)(XQC_ErrorHandler* handler, 
+    void (*error)(Zorba_ErrorHandler* handler, 
                   XQC_Error error,
                   const char   *local_name,
                   const char   *description,

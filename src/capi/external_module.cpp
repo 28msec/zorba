@@ -16,7 +16,7 @@
 #include <zorba/zorba.h>
 #include <zorba/zorbac.h>
 #include "capi/external_module.h"
-#include "capi/external_function.h"
+#include "capi/cexternal_function.h"
 
 using namespace zorba;
 
@@ -50,7 +50,7 @@ namespace zorbac {
   }
 
   XQC_Error
-  ExternalModuleWrapper::registerFunction(ExternalFunctionWrapper* aFunc)
+  ExternalModuleWrapper::registerFunction(CExternalFunction* aFunc)
   {
     String lLocalName = aFunc->getLocalName();
     FunctionMap_t::iterator lIter = theFunctionMap.find(lLocalName.c_str());

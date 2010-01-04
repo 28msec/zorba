@@ -17,6 +17,7 @@
 
 #include <cassert>
 #include <string.h>
+#include <zorbatypes/numconversions.h>
 #include <zorba/zorba.h>
 #include <zorba/store_consts.h>
 #include <zorbamisc/ns_consts.h>
@@ -30,18 +31,42 @@ using namespace zorba;
 
 namespace zorbac {
 
+  /**
+   * Utility class to turn an ItemSequence into a ResultIterator;
+   * ignores open/close. Performs no memory-management on the
+   * ItemSequence it holds.
+   */
+  class ItemSequenceWrapper : public ResultIterator
+  {
+    public:
+      ItemSequenceWrapper(ItemSequence* items)
+        : theItems(items)
+      {
+      }
+
+      virtual void open() {}
+      virtual void close() {}
+
+      virtual bool next(Item& item)
+      {
+        return theItems->next(item);
+      }
+
+    private:
+      ItemSequence* theItems;
+  };
+
   CSequence::CSequence(ResultIterator_t iter, XQC_ErrorHandler* handler)
     : theIterator(iter), theErrorHandler(handler)
   {
-    memset(&theXQCSeq, 0, sizeof (XQC_Sequence));
-    theXQCSeq.next = CSequence::next;
-    theXQCSeq.item_type = CSequence::item_type;
-    theXQCSeq.string_value = CSequence::string_value;
-    theXQCSeq.integer_value = CSequence::integer_value;
-    theXQCSeq.double_value = CSequence::double_value;
-    theXQCSeq.node_name = CSequence::node_name;
-    theXQCSeq.get_interface = CSequence::get_interface;
-    theXQCSeq.free = CSequence::free;
+    init_xqc();
+  }
+
+  CSequence::CSequence(ItemSequence* items, XQC_ErrorHandler* handler)
+    : theErrorHandler(handler)
+  {
+    theIterator = ResultIterator_t(new ItemSequenceWrapper(items));
+    init_xqc();
   }
 
   CSequence::~CSequence()
@@ -49,6 +74,21 @@ namespace zorbac {
     if (theIterator.get()) {
       theIterator.get()->close();
     }
+  }
+
+  void
+  CSequence::init_xqc()
+  {
+    memset(&theXQCSeq, 0, sizeof (XQC_Sequence));
+    theXQCSeq.next = CSequence::next;
+    theXQCSeq.item_type = CSequence::item_type;
+    theXQCSeq.type_name = CSequence::type_name;
+    theXQCSeq.string_value = CSequence::string_value;
+    theXQCSeq.integer_value = CSequence::integer_value;
+    theXQCSeq.double_value = CSequence::double_value;
+    theXQCSeq.node_name = CSequence::node_name;
+    theXQCSeq.get_interface = CSequence::get_interface;
+    theXQCSeq.free = CSequence::free;
   }
 
   CSequence*
@@ -61,7 +101,6 @@ namespace zorbac {
   ResultIterator_t
   CSequence::getCPPIterator()
   {
-    // QQQ This won't work if theItemSequence is set!
     return theIterator;
   }
 
@@ -230,6 +269,18 @@ namespace zorbac {
   }
 
   XQC_Error
+  CSequence::type_name
+  (const XQC_Sequence* seq, const char** uri, const char** name)
+  {
+    SEQ_TRY {
+      // TODO needs implementation!
+      (*uri) = NULL;
+      (*name) = NULL;
+    }
+    SEQ_CATCH;
+  }
+
+  XQC_Error
   CSequence::string_value(const XQC_Sequence* seq, const char** value)
   {
     SEQ_TRY {
@@ -250,7 +301,26 @@ namespace zorbac {
       if (me->theItem.isNull()) {
         return XQC_NO_CURRENT_ITEM;
       }
-      (*value) = static_cast<int> (me->theItem.getIntValue());
+      try {
+        (*value) = static_cast<int> (me->theItem.getIntValue());
+      }
+      catch (ZorbaException &qe) {
+        // TODO test case for this conversion
+        // The store API only supports getIntValue() for xs:int and
+        // derivative types. For other types, we attempt to convert
+        // the string value to an int manually.
+        if (qe.getErrorCode() == STR0040_TYPE_ERROR) {
+          const char* strvalue = me->theItem.getStringValue().c_str();
+          xqp_int intvalue;
+          if ( ! NumConversions::starCharToInt(strvalue, intvalue)) {
+            return XQC_TYPE_ERROR;
+          }
+          (*value) = static_cast<int> (intvalue);
+        }
+        else {
+          throw qe;
+        }
+      }
     }
     SEQ_CATCH;
   }
@@ -262,7 +332,26 @@ namespace zorbac {
       if (me->theItem.isNull()) {
         return XQC_NO_CURRENT_ITEM;
       }
-      (*value) = static_cast<double>(me->theItem.getDoubleValue());
+      try {
+        (*value) = static_cast<double>(me->theItem.getDoubleValue());
+      }
+      catch (ZorbaException &qe) {
+        // TODO test case for this conversion
+        // The store API only supports getDoubleValue() for xs:double
+        // and derivative types. For other types, we attempt to
+        // convert the string value to a double manually.
+        if (qe.getErrorCode() == STR0040_TYPE_ERROR) {
+          const char* strvalue = me->theItem.getStringValue().c_str();
+          xqp_double doublevalue;
+          if ( ! NumConversions::starCharToDouble(strvalue, doublevalue)) {
+            return XQC_TYPE_ERROR;
+          }
+          (*value) = static_cast<double> (doublevalue.getNumber());
+        }
+        else {
+          throw qe;
+        }
+      }
     }
     SEQ_CATCH;
   }

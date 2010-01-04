@@ -107,7 +107,8 @@ namespace zorbac {
       // Create a C++ StaticContext, wrap in a CStaticContext, then
       // return the inner XQC_StaticContext
       StaticContext_t lContext = me->theZorba->createStaticContext();
-      std::auto_ptr<CStaticContext> lCCtx(new CStaticContext(lContext, NULL));
+      std::auto_ptr<CStaticContext> lCCtx
+        (new CStaticContext(lContext, me->theZorba, NULL));
       (*context) = lCCtx.release()->getXQC();
     }
     CIMPL_CATCH;

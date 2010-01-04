@@ -124,35 +124,37 @@ namespace zorbac {
       // The methods after this point are Zorba-specific extensions.
       
       static XQC_Error
-      add_collation(XQC_StaticContext* context, const char* uri);
+      add_collation(Zorba_StaticContext* context, const char* uri);
 
       static XQC_Error
-      set_default_collation(XQC_StaticContext* context, const char* uri);
+      set_default_collation(Zorba_StaticContext* context, const char* uri);
 
       static XQC_Error
-      get_default_collation(XQC_StaticContext* context, const char** uri);
+      get_default_collation(Zorba_StaticContext* context, const char** uri);
 
       static XQC_Error
-      set_xquery_version(XQC_StaticContext* context, xquery_version_t mode );
+      set_xquery_version(Zorba_StaticContext* context, xquery_version_t mode );
 
       static XQC_Error 
-      get_xquery_version(XQC_StaticContext* context, xquery_version_t* mode);
+      get_xquery_version(Zorba_StaticContext* context, xquery_version_t* mode);
 
       static XQC_Error
-      register_external_function(XQC_StaticContext* context, 
-                                const char* uri,
-                                const char* localname,
-                                external_function_init init,
-                                external_function_release release,
-                                void* global_user_data);
+      register_external_function(Zorba_StaticContext* context, 
+        const char* uri, const char* localname, external_function_init init,
+        external_function_next next_fn, external_function_free free_fn,
+        void* function_user_data);
 
       // Constructors and accessors.
 
-      CStaticContext(StaticContext_t aContext, XQC_ErrorHandler* handler);
+      CStaticContext(StaticContext_t aContext, Zorba* aZorba,
+        XQC_ErrorHandler* handler);
       ~CStaticContext();
 
       static CStaticContext*
       get(const XQC_StaticContext* xqc);
+ 
+      static CStaticContext*
+      get(const Zorba_StaticContext* zsc);
 
       StaticContext_t
       getCPP();
@@ -160,13 +162,17 @@ namespace zorbac {
       XQC_StaticContext*
       getXQC();
 
+      Zorba_StaticContext*
+      getZSC();
+
     private:
-      XQC_StaticContext                                       theXQCStatic;
-      Zorba_StaticContext                                     theZorbaStatic;
-      StaticContext_t                                         theContext;
-      std::vector<zorba::String>                              theStrings;
-      std::map<std::string, zorbac::ExternalModuleWrapper*>   theModules;
-      XQC_ErrorHandler*                                       theErrorHandler;
+      XQC_StaticContext                               theXQCStatic;
+      Zorba_StaticContext                             theZorbaStatic;
+      StaticContext_t                                 theContext;
+      Zorba*                                          theZorba;
+      std::vector<zorba::String>                      theStrings;
+      std::map<std::string, ExternalModuleWrapper*>   theExternalModules;
+      XQC_ErrorHandler*                               theErrorHandler;
   }; /* class CStaticContext */
 
 } /* namespace zorbac */

@@ -19,7 +19,7 @@
 #include <string.h>
 #include <zorba/zorba.h>
 #include "capi/external_module.h"
-#include "capi/external_function.h"
+#include "capi/cexternal_function.h"
 #include "capi/error.h"
 #include "capi/capi_util.h"
 
@@ -28,11 +28,14 @@ using namespace zorba;
 #define SC_TRY CAPI_TRY(CStaticContext,context)
 #define SC_CATCH CAPI_CATCH
 
+#define ZSC_TRY CAPI_TRY(CStaticContext,context)
+#define ZSC_CATCH CAPI_CATCH
+
 namespace zorbac {
 
   CStaticContext::CStaticContext
-  (StaticContext_t aContext, XQC_ErrorHandler* handler)
-    : theContext(aContext), theErrorHandler(handler)
+  (StaticContext_t aContext, Zorba* aZorba, XQC_ErrorHandler* handler)
+    : theContext(aContext), theZorba(aZorba), theErrorHandler(handler)
   {
     memset(&theXQCStatic, 0, sizeof (XQC_StaticContext));
     theXQCStatic.create_child_context   = CStaticContext::create_child_context;
@@ -86,8 +89,8 @@ namespace zorbac {
   CStaticContext::~CStaticContext()
   {
     for (std::map<std::string, ExternalModuleWrapper*>::iterator lIter =
-           theModules.begin();
-         lIter != theModules.end();
+           theExternalModules.begin();
+         lIter != theExternalModules.end();
          ++lIter) {
       delete lIter->second;
     }
@@ -98,6 +101,13 @@ namespace zorbac {
   {
     return (CStaticContext*)
       (((char*)xqc) - CLASS_OFFSET(CStaticContext, theXQCStatic));
+  }
+
+  CStaticContext*
+  CStaticContext::get(const Zorba_StaticContext* zsc)
+  {
+    return (CStaticContext*)
+      (((char*)zsc) - CLASS_OFFSET(CStaticContext, theZorbaStatic));
   }
 
   StaticContext_t
@@ -112,6 +122,12 @@ namespace zorbac {
     return &theXQCStatic;
   }
 
+  Zorba_StaticContext*
+  CStaticContext::getZSC()
+  {
+    return &theZorbaStatic;
+  }
+
   XQC_Error
   CStaticContext::create_child_context
   (XQC_StaticContext* context, XQC_StaticContext** child_context)
@@ -119,7 +135,7 @@ namespace zorbac {
     SC_TRY {
       StaticContext_t lChild = me->theContext.get()->createChildContext();
       std::auto_ptr<CStaticContext> lCtx
-        (new CStaticContext(lChild, me->theErrorHandler));
+        (new CStaticContext(lChild, me->theZorba, me->theErrorHandler));
       (*child_context) = lCtx.release()->getXQC();
     }
     SC_CATCH;
@@ -195,7 +211,8 @@ namespace zorbac {
   }
 
   XQC_Error
-  CStaticContext::add_collation(XQC_StaticContext* context, const char* uri)
+  CStaticContext::add_collation
+  (Zorba_StaticContext* context, const char* uri)
   {
     SC_TRY {
       me->theContext.get()->addCollation(uri);
@@ -205,7 +222,7 @@ namespace zorbac {
 
   XQC_Error
   CStaticContext::set_default_collation
-  (XQC_StaticContext* context, const char* uri)
+  (Zorba_StaticContext* context, const char* uri)
   {
     SC_TRY {
       me->theContext.get()->setDefaultCollation(uri);
@@ -215,7 +232,7 @@ namespace zorbac {
 
   XQC_Error
   CStaticContext::get_default_collation
-  (XQC_StaticContext* context, const char** uri)
+  (Zorba_StaticContext* context, const char** uri)
   {
     SC_TRY {
       zorba::String lURI = me->theContext.get()->getDefaultCollation();
@@ -227,7 +244,7 @@ namespace zorbac {
 
   XQC_Error
   CStaticContext::set_xquery_version
-  (XQC_StaticContext* context, xquery_version_t mode )
+  (Zorba_StaticContext* context, xquery_version_t mode )
   {
     SC_TRY {
       me->theContext.get()->setXQueryVersion(mode);
@@ -237,7 +254,7 @@ namespace zorbac {
 
   XQC_Error
   CStaticContext::get_xquery_version
-  (XQC_StaticContext* context, xquery_version_t* mode)
+  (Zorba_StaticContext* context, xquery_version_t* mode)
   {
     SC_TRY {
       *mode = me->theContext.get()->getXQueryVersion();
@@ -599,34 +616,38 @@ namespace zorbac {
   CStaticContext::get_interface
   (const XQC_StaticContext* context, const char* name)
   {
-    // TODO No custom interfaces - yet
+    // Zorba has its own extension of XQC_StaticContext
+    if ( (name != NULL) && (strcmp(name, "Zorba_StaticContext") == 0) ) {
+      return CStaticContext::get(context)->getZSC();
+    }
     return NULL;
   }
 
   XQC_Error
   CStaticContext::register_external_function
-  (XQC_StaticContext* context, const char* uri, const char* localname,
-    external_function_init init, external_function_release release,
-    void* global_user_data)
+  (Zorba_StaticContext* context, const char* uri, const char* localname,
+    external_function_init init_fn, external_function_next next_fn,
+    external_function_free free_fn, void* function_user_data)
   {
     SC_TRY {
-//       ExternalModuleWrapper*& lModule = me->theModules[uri];
-//       if (!lModule) {
-//         lModule = new ExternalModuleWrapper(uri);
-//         me->theContext.get()->registerModule(lModule);
-//       }
+      ExternalModuleWrapper*& lModule = me->theExternalModules[uri];
+      if (!lModule) {
+        lModule = new ExternalModuleWrapper(uri);
+        me->theContext.get()->registerModule(lModule);
+      }
 
-//       std::auto_ptr<ExternalFunctionWrapper> lFunc;
-//       lFunc.reset(new ExternalFunctionWrapper(uri, localname, init, 
-//                                               release, global_user_data));
+      std::auto_ptr<CExternalFunction> lFunc
+        (new CExternalFunction(uri, localname, init_fn, next_fn, free_fn,
+          function_user_data, me->theZorba->getItemFactory(),
+          me->theErrorHandler));
 
-//       XQC_Error lErr = lModule->registerFunction(lFunc.get());
-//       if (lErr == XQC_NO_ERROR) {
-//         // deletion is done when releasing the static context
-//         lFunc.release();
-//       } else {
-//         return lErr;
-//       }
+      XQC_Error lErr = lModule->registerFunction(lFunc.get());
+      if (lErr == XQC_NO_ERROR) {
+        // deletion is done when releasing the static context
+        lFunc.release();
+      } else {
+        return lErr;
+      }
     }
     SC_CATCH;
   }

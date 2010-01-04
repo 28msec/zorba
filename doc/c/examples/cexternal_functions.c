@@ -25,17 +25,17 @@
 // released in my_ext_fct_release
 typedef struct
 {
-  XQC_Sequence*    seq;
   int             i;
 } my_ext_data;
 
 // callback function called once when initializing the external function
 // The user_data parameter can be created in this function and is available
 // during the execution.
-// The global_user_data parameter can be supplied as a parameter to the
-// XQC_StaticContext::register_external_function function
+// The function_user_data parameter is supplied as a parameter to the
+// Zorba_StaticContext::register_external_function method and passed to
+// all callbacks.
 void
-my_ext_fct_init(void** user_data, void* global_user_data)
+my_ext_fct_init(void** user_data, void* function_user_data)
 {
   my_ext_data* data;
 
@@ -45,16 +45,60 @@ my_ext_fct_init(void** user_data, void* global_user_data)
   data->i = 0;
 }
 
+// callback function called to retrieve the next item in the external
+// function's result. The Zorba_ItemSetter struct is used to provide that
+// item. This function should return XQC_END_OF_SEQUENCE when it is done.
+XQC_Error
+my_ext_fct_next(XQC_Sequence** args, int argc, Zorba_ItemSetter* setter,
+  void* user_data, void* function_data)
+{
+  // Our function concantenates the input argument sequences
+  my_ext_data* data = (my_ext_data*) user_data;
+  while (data->i < argc) {
+    XQC_Sequence* lSeq = args[data->i];
+    if ( (lSeq->next(lSeq)) == XQC_END_OF_SEQUENCE) {
+      // Finished one of the arguments
+      data->i++;
+      continue;
+    }
+    XQC_ItemType lItemType;
+    lSeq->item_type(lSeq, &lItemType);
+    switch (lItemType) {
+      case XQC_DECIMAL_TYPE: {
+        int lValue;
+        lSeq->integer_value(lSeq, &lValue);
+        setter->set_integer(setter, lValue);
+        break;
+      }
+      case XQC_DOUBLE_TYPE: {
+        double lValue;
+        lSeq->double_value(lSeq, &lValue);
+        setter->set_double(setter, lValue);
+        break;
+      }
+      case XQC_STRING_TYPE: {
+        const char* lValue;
+        lSeq->string_value(lSeq, &lValue);
+        setter->set_string(setter, lValue);
+        break;
+      }
+      default:
+        printf("Unsupported type %d\n", lItemType);
+        break;
+    }
+    return XQC_NO_ERROR;
+  }
+
+  return XQC_END_OF_SEQUENCE;
+}
+
 // called after the execution of the query has finished
 // cleanup of the user_data should be done here
 void
-my_ext_fct_release(void* user_data,
-                   void* global_user_data)
+my_ext_fct_free(void* user_data, void* function_user_data)
 {
-/*   my_ext_data* data = (my_ext_data*)(user_data); */
-/*   data->item->free(data->item); */
-/*   data->factory->free(data->factory); */
-/*   free(user_data); */
+  my_ext_data* data = (my_ext_data*)(user_data);
+  free(data);
 }
 
 /**
@@ -63,26 +107,56 @@ my_ext_fct_release(void* user_data,
 int
 external_function_example_1(XQC_Implementation* impl)
 {
-/* TODO commented out for now pending rewrite of external function API */
-/*   XQC_Query*          lXQuery; */
-/*   XQC_StaticContext*  lContext; */
+  XQC_Expression*     lExpr;
+  XQC_StaticContext*  lContext;
+  Zorba_StaticContext* lZContext;
+  XQC_Sequence*       lSeq;
 
-/*   impl->create_context(impl, &lContext); */
+  impl->create_context(impl, &lContext);
+  lZContext = (Zorba_StaticContext*)
+    lContext->get_interface(lContext, "Zorba_StaticContext");
+  lZContext->register_external_function(lZContext, "urn:foo", "bar",
+    my_ext_fct_init, my_ext_fct_next, my_ext_fct_free, impl);
 
-/*   lContext->register_external_function(lContext, "urn:foo", "bar",  */
-/*                                        my_ext_fct_init,  */
-/*                                        my_ext_fct_next,  */
-/*                                        my_ext_fct_release, */
-/*                                        impl); */
+  impl->prepare(impl,
+    "declare namespace foo=\"urn:foo\"; declare function foo:bar($x, $y, $z) external; foo:bar((1, 2, 3), \"2.57\", xs:double(2.57))",
+    lContext, &lExpr);
 
-/*   impl->prepare(impl, "declare namespace foo=\"urn:foo\"; declare function foo:bar($x, $y, $z) external; foo:bar((1, 2, 3), 1, 2)", lContext, 0, &lXQuery); */
+  // execute it and print the result on standard out
+  lExpr->execute(lExpr, NULL, &lSeq);
+  while ( lSeq->next(lSeq) == XQC_NO_ERROR ) {
+    XQC_ItemType lItemType;
+    lSeq->item_type(lSeq, &lItemType);
+    switch (lItemType) {
+      case XQC_DECIMAL_TYPE: {
+        int lValue;
+        lSeq->integer_value(lSeq, &lValue);
+        printf("%d ", lValue);
+        break;
+      }
+      case XQC_DOUBLE_TYPE: {
+        double lValue;
+        lSeq->double_value(lSeq, &lValue);
+        printf("%f ", lValue);
+        break;
+      }
+      case XQC_STRING_TYPE: {
+        const char* lValue;
+        lSeq->string_value(lSeq, &lValue);
+        printf("%s ", lValue);
+        break;
+      }
+      default:
+        printf("Unsupported type %d\n", lItemType);
+        break;
+    }
+  }
+  printf("\n");
 
-/*   // execute it and print the result on standard out */
-/*   lXQuery->execute(lXQuery, stdout); */
-
-/*   // release resources */
-/*   lXQuery->free(lXQuery); */
-/*   lContext->free(lContext); */
+  // release resources
+  lSeq->free(lSeq);
+  lExpr->free(lExpr);
+  lContext->free(lContext);
 
   return 1;
 }

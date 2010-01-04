@@ -15,8 +15,8 @@
 SET(CAPI_SRCS
     cdynamic_context.cpp
     error.cpp
-#    external_function.cpp
-#    external_module.cpp
+    cexternal_function.cpp
+    external_module.cpp
     cimplementation.cpp
     cexpression.cpp
     csequence.cpp

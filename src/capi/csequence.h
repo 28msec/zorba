@@ -34,6 +34,10 @@ namespace zorbac {
       item_type(const XQC_Sequence* sequence, XQC_ItemType* type);
 
       static XQC_Error
+      type_name(const XQC_Sequence* sequence, const char** uri,
+        const char** name);
+
+      static XQC_Error
       string_value(const XQC_Sequence* sequence, const char** string_value);
 
       static XQC_Error
@@ -53,6 +57,7 @@ namespace zorbac {
       free(XQC_Sequence* sequence);
 
       CSequence(ResultIterator_t iter, XQC_ErrorHandler* handler);
+      CSequence(ItemSequence* items, XQC_ErrorHandler* handler);
 
       ~CSequence();
 
@@ -69,13 +74,15 @@ namespace zorbac {
       getXQC();
 
     private:
+      void
+      init_xqc();
+
       XQC_Sequence               theXQCSeq;
       // buffer to store strings that we return
       // they are valid until next() is called
       std::vector<zorba::String> theStrings;
       Item                       theItem;
       ResultIterator_t           theIterator;
-      ItemSequence*              theItemSequence;
       XQC_ErrorHandler*          theErrorHandler;
   }; /* class Sequence */
 

@@ -998,7 +998,7 @@ namespace zorbac {
   (XQC_ErrorHandler* handler,QueryException& qe)
   {
     if (handler) {
-// QQQ This is how to call a Zorba_ErrorHandler
+// TODO This is how to call a Zorba_ErrorHandler
 //       handler->error(handler,
 //         Error::convert_xquery_error(qe.getErrorCode()),
 //         ZorbaException::getErrorCodeAsString(qe.getErrorCode()).c_str(),

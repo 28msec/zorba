@@ -13,22 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBAC_EXTERNAL_FUNCTION_CAPI_H
-#define ZORBAC_EXTERNAL_FUNCTION_CAPI_H
+#ifndef ZORBAC_CEXTERNAL_FUNCTION_H
+#define ZORBAC_CEXTERNAL_FUNCTION_H
 
 #include <zorba/zorba.h>
 #include <zorba/external_function.h>
 #include <zorba/zorbac.h>
 
+using namespace zorba;
+
 namespace zorbac {
 
-  class ExternalFunctionWrapper : public zorba::PureStatelessExternalFunction {
+  class CExternalFunction : public PureStatelessExternalFunction {
     public:
-      ExternalFunctionWrapper(const char* uri, 
-                              const char* localname,
-                              external_function_init init,
-                              external_function_release release,
-                              void* global_user_data);
+      CExternalFunction(const char* uri, const char* localname,
+        external_function_init init_fn, external_function_next next_fn,
+        external_function_free free_fn, void* function_user_data,
+        ItemFactory* factory, XQC_ErrorHandler* handler);
+
+      virtual ~CExternalFunction();
 
       virtual zorba::String
       getURI() const;
@@ -37,19 +40,22 @@ namespace zorbac {
       getLocalName() const;
 
       zorba::ItemSequence_t
-      evaluate(const zorba::StatelessExternalFunction::Arguments_t& args) const;
+      evaluate(const StatelessExternalFunction::Arguments_t& args) const;
 
-    protected:
+    private:
+
+      friend class UserItemSequence;
+
       zorba::String theURI;
       zorba::String theLocalName;
-      zorba::Item* theItem;
       external_function_init    theInitFunction;
-      external_function_release theReleaseFunction;
-      void* theGlobalUserData;
-      void* theUserData;
+      external_function_next    theNextFunction;
+      external_function_free    theFreeFunction;
+      void* theFunctionUserData;
+      ItemFactory*  theFactory;
+      XQC_ErrorHandler* theErrorHandler;
                               
-  }; /* class ExternalFunctionWrapper */
-
+  }; /* class CExternalFunction */
 
 } /* namespace zorbac */
 
