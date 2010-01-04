@@ -1049,9 +1049,22 @@ void IndexKeySpec::accept(parsenode_visitor& v) const
 }
 
 
-/***************************************************************************//**
-  IntegrityConstraintDecl ::= "declare" "unchecked"? "integrity" "constraint" 
-                          "on" "collection" QNAME
+/*******************************************************************************
+  IntegrityConstraintDecl ::= "declare" "integrity" "constraint" 
+      QName ICType
+  ICType ::= ICCollSimpleCheck | ICCollUniqueKey | ICCollForeachNode |
+             ICNodeOfType | ICForeighKey
+  ICCollSimpleCheck ::= "on" "collection" QName "$" QName "check" ExprSimple
+  ICCollUniqueKey   ::= "on" "collection" QNAME "$" QName "check" "unique" 
+                        "key" "(" Expr ")"
+  ICCollForeachNode ::= "on" "collection" QNAME "foreach" "node" "$" QName
+                        "check" ExprSingle
+  ICNodeOfType      ::= "on" "node" QName "of""type" KindTest "check" ExprSingle
+  ICForeighKey      ::= "on" "foreign" "key" 
+                        "from" "collection" QName "node" "$" QName "keys" 
+                           "(" Expr ")"
+                        "to" "collection" QName "node" "$" QName "keys" 
+                           "(" Expr ")"                        
 *******************************************************************************/
 IntegrityConstraintDecl::IntegrityConstraintDecl (
     const QueryLoc& loc, 
@@ -1059,22 +1072,43 @@ IntegrityConstraintDecl::IntegrityConstraintDecl (
     ICKind icKind)
   :
   parsenode(loc),
-  theIsUnchecked(false),
-  theIsAsync(false),
   theICName(name),
   theICKind(icKind)
 {
 }
 
-
-void IntegrityConstraintDecl::accept(parsenode_visitor& v) const
+/*void IntegrityConstraintDecl::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
+  END_VISITOR ();
+  }*/
 
-  std::cout << "ICDecl::accept: " << 
-    ( theIsUnchecked ? "unchecked" : "" ) << " " << 
-    ( theIsAsync ? "asynchronous" : "" ) << std::endl;
+void ICCollSimpleCheck::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR ();
+  ACCEPT_CHK(getExpr());
+  END_VISITOR ();
+}
 
+void ICCollUniqueKeyCheck::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR ();
+  ACCEPT_CHK(getExpr());
+  END_VISITOR ();
+}
+
+void ICCollForeachNode::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR ();
+  ACCEPT_CHK(getExpr());
+  END_VISITOR ();
+}
+
+void ICForeignKey::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR ();
+  ACCEPT_CHK(getToExpr());
+  ACCEPT_CHK(getFromExpr());
   END_VISITOR ();
 }
 

@@ -1362,8 +1362,6 @@ public:
       foreign_key };
 
 protected:
-  bool                   theIsUnchecked;
-  bool                   theIsAsync;
   rchandle<QName>        theICName;
   ICKind                 theICKind;
 
@@ -1376,7 +1374,7 @@ public:
   const QName* getName() const { return theICName.getp(); }
   ICKind       getICKind() const { return theICKind; }
 
-  virtual void accept(parsenode_visitor&) const;
+  virtual void accept(parsenode_visitor&) const = 0;
 };
 
 
@@ -1406,7 +1404,7 @@ class ICCollSimpleCheck
 {
 protected:
   rchandle<QName>        theCollVarName;
-  exprnode*              theExprSingle;
+  exprnode*              theExprSingle;  // make type exprnode_t
 
 public:
   ICCollSimpleCheck ( const QueryLoc& loc, 
@@ -1426,6 +1424,8 @@ public:
   
   const QName* getCollVarName() const { return theCollVarName.getp(); }
   const exprnode* getExpr() const { return theExprSingle; }
+
+  virtual void accept(parsenode_visitor&) const;
 };
 
 
@@ -1454,6 +1454,8 @@ public:
   
   const QName* getNodeVarName() const { return theNodeVarName.getp(); }
   const exprnode* getExpr() const { return theExpr.getp(); }
+
+  virtual void accept(parsenode_visitor&) const;
 };
 
 
@@ -1482,6 +1484,8 @@ public:
   
   const QName* getCollVarName() const { return theCollVarName.getp(); }
   const exprnode* getExpr() const { return theExprSingle; }
+
+  virtual void accept(parsenode_visitor&) const;
 };
 
 class ICForeignKey 
@@ -1522,6 +1526,8 @@ public:
   const QName* getToCollName() const { return theToCollName; }
   const QName* getToNodeVarName() const { return theToNodeVarName; }
   const exprnode* getToExpr() const { return theToExpr.getp(); }
+
+  virtual void accept(parsenode_visitor&) const;
 };
 
 

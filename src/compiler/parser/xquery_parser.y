@@ -1799,6 +1799,7 @@ IntegrityConstraintDecl :
     DECLARE INTEGRITY CONSTRAINT QNAME ON COLLECTION QNAME
     FOREACH NODE DOLLAR QNAME CHECK ExprSingle
     {
+      //$$ = new ICCollForEachNode(LOC(@$),
       $$ = new ICCollUniqueKeyCheck(LOC(@$),
                                     static_cast<QName*>($4),
                                     static_cast<QName*>($7),

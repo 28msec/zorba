@@ -3307,10 +3307,21 @@ void end_visit(const IndexKeySpec& v, void* /*visit_state*/)
 
 
 /***************************************************************************//**
-  IntegrityConstraintDecl ::= "declare" ICOptions "integrity" "constraint"
-  ICOptions ::= ICOptUnchecked ICOptAsynch | ICOptAsynch ICOptUnchecked
-  ICOptUnchecked ::= "unchecked"? | "checked"?
-  ICOptAsynch ::= "asynchronous"? | "synchronous"?
+  IntegrityConstraintDecl ::= "declare" "integrity" "constraint" 
+      QName ICType
+  ICType ::= ICCollSimpleCheck | ICCollUniqueKey | ICCollForeachNode |
+             ICNodeOfType | ICForeighKey
+  ICCollSimpleCheck ::= "on" "collection" QName "$" QName "check" ExprSimple
+  ICCollUniqueKey   ::= "on" "collection" QNAME "$" QName "check" "unique" 
+                        "key" "(" Expr ")"
+  ICCollForeachNode ::= "on" "collection" QNAME "foreach" "node" "$" QName
+                        "check" ExprSingle
+  ICNodeOfType      ::= "on" "node" QName "of""type" KindTest "check" ExprSingle
+  ICForeighKey      ::= "on" "foreign" "key" 
+                        "from" "collection" QName "node" "$" QName "keys" 
+                           "(" Expr ")"
+                        "to" "collection" QName "node" "$" QName "keys" 
+                           "(" Expr ")"                        
 
   Translation of an integrity constraint declaration involves the creation and 
   setting-up of a ValueIndex obj (see indexing/value_index.h) and the creation
@@ -3329,27 +3340,84 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                           qname->get_qname(), "");
   }
 
-  // create a function which will be used for checking the integrity 
-  // constraint at runtime
-  //xqp_string fnLocalName = "ic_check_" + qname->get_localname();
+  switch( v.getICKind() )
+  {
+  case IntegrityConstraintDecl::coll_check_simple:
+    {
+      const ICCollSimpleCheck ic = dynamic_cast<const ICCollSimpleCheck&>(v);
+      // $x 
+      const QName* varQName = ic.getCollVarName();
+      store::Item_t varItem = sctx_p->lookup_fn_qname(varQName->get_prefix(),
+                                                      varQName->get_localname(),
+                                                      varQName->get_location());
+      
+      var_expr_t varExpr = bind_var(loc, varItem.getp(), var_expr::let_var, 
+                                    NULL);
+      nodestack.push(varExpr);
+    }
+    break;
 
-  // Expand the ic qname (error is raised if qname resolution fails).
-  //store::Item_t fnQName = sctx_p->lookup_fn_qname(qname->get_prefix(),
-  //                                                fnLocalName,
-  //                                                loc);
+  case IntegrityConstraintDecl::coll_check_unique_key:
+    {
+      const ICCollUniqueKeyCheck ic = 
+        dynamic_cast<const ICCollUniqueKeyCheck&>(v);
 
-  //vector<xqtref_t> arg_types;
-  //xqtref_t return_type = GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
+      // $c 
+      const QName* varQName = ic.getNodeVarName();
+      store::Item_t varItem = sctx_p->lookup_fn_qname(varQName->get_prefix(),
+                                                      varQName->get_localname(),
+                                                      varQName->get_location());
+      
+      var_expr_t varExpr = bind_var(loc, varItem.getp(), var_expr::let_var, 
+                                    NULL);
+      //nodestack.push(varExpr);
+    }
+    break;
+    
+  case IntegrityConstraintDecl::coll_foreach_node:
+    {
+      const ICCollForeachNode ic = 
+        dynamic_cast<const ICCollForeachNode&>(v);
 
-  //signature sig(fnQName, arg_types, return_type);
-  //rchandle<function> f = new user_function(loc,
-  //                                         sig,
-  //                                         NULL, // no body for now
-  //                                         ParseConstants::fn_read,
-  //                                         true /* isDeterministic */);
+      const QName* varQName = ic.getCollVarName();
+      store::Item_t varItem = sctx_p->lookup_fn_qname(varQName->get_prefix(),
+                                                      varQName->get_localname(),
+                                                      varQName->get_location());
+      
+      var_expr_t varExpr = bind_var(loc, varItem.getp(), var_expr::let_var, 
+                                    NULL);
+      //nodestack.push(varExpr);
+    }
+    break;
+    
+  case IntegrityConstraintDecl::foreign_key:
+    {
+      const ICForeignKey ic = 
+        dynamic_cast<const ICForeignKey&>(v);
 
-  //int nargs = 0;
-  //bind_udf(fnQName, f, nargs, loc);    
+      const QName* fromVarQName = ic.getFromNodeVarName();
+      store::Item_t fromVarItem = sctx_p->lookup_fn_qname(
+          fromVarQName->get_prefix(), fromVarQName->get_localname(),
+          fromVarQName->get_location());
+      
+      var_expr_t fromVarExpr = bind_var(loc, fromVarItem.getp(), 
+                                       var_expr::let_var, NULL);
+      //nodestack.push(fromVarExpr);
+
+      const QName* toVarQName = ic.getToNodeVarName();
+      store::Item_t toVarItem = sctx_p->lookup_fn_qname(
+          toVarQName->get_prefix(), toVarQName->get_localname(),
+          toVarQName->get_location());
+      
+      var_expr_t toVarExpr = bind_var(loc, toVarItem.getp(), var_expr::let_var, 
+                                      NULL);
+      //nodestack.push(toVarExpr);
+   }
+    break;
+    
+  default:
+    ZORBA_ASSERT(false);
+  }
 
   return no_state;
 }
@@ -3419,16 +3487,17 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       fo_expr_t collExpr = new fo_expr(sctxid(), loc, fn_collection, argColl);
 
       // $x 
-      const QName* varQName = ic.getCollVarName();
-      store::Item_t varItem = sctx_p->lookup_fn_qname(varQName->get_prefix(),
-                                                      varQName->get_localname(),
-                                                      varQName->get_location());
+      ///const QName* varQName = ic.getCollVarName();
+      ///store::Item_t varItem = sctx_p->lookup_fn_qname(varQName->get_prefix(),
+      ///                                            varQName->get_localname(),
+      ///                                            varQName->get_location());
       
+      ///var_expr_t varExpr = bind_var(loc, varItem.getp(), var_expr::let_var, 
+      ///                              NULL);
+      var_expr_t varExpr = pop_nodestack();
+
       // let $x := dc:collection(xs:QName("example:coll1")) 
       //   return sum($x/size) le 1000;      
-      var_expr_t varExpr = bind_var(loc, varItem.getp(), var_expr::let_var, 
-                                    NULL);
-
       let_clause* lc = new let_clause(sctx_p,
                                       sctxid(),
                                       loc,
@@ -3512,6 +3581,16 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       rchandle<flwor_expr> evFlworExpr(new flwor_expr(sctxid(), loc, false));
       evFlworExpr->set_return_expr(new const_expr(sctxid(), loc, true));
 
+      // $i in $c
+      xqtref_t evType;
+      var_expr_t evVarExpr = bind_var(loc, varQName->get_qname(), 
+                                    var_expr::for_var, evType);
+
+      var_expr_t exInExpr = create_var(loc, varItem, var_expr::let_var, NULL);
+      evFlworExpr->add_clause(wrap_in_forclause(exInExpr, evVarExpr, NULL));
+
+
+
       rchandle<expr> evTestExpr = existsExpr;
 
       rchandle<fo_expr> uw = new fo_expr(sctxid(),
@@ -3520,18 +3599,12 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
                                          evTestExpr);
       evTestExpr = uw.getp();
 
-      // todo
-      //for (int i = 0; i < v.get_decl_list()->size(); ++i) 
-      //{
-      //  pop_scope();
-      //}
-
       evFlworExpr->add_where(evTestExpr);
 
       rchandle<fo_expr> everyExpr = new fo_expr(sctxid(),
-                                                loc,
-                                                GET_BUILTIN_FUNCTION(FN_EMPTY_1),
-                                                evFlworExpr.getp());
+                                               loc,
+                                               GET_BUILTIN_FUNCTION(FN_EMPTY_1),
+                                               evFlworExpr.getp());
 
       // functx:are-distinct-values( $c/@id )
       // implemented as: count(fn:distinct-values($seq)) = count($seq)
@@ -3684,11 +3757,11 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       fo_expr_t toCollExpr = new fo_expr(sctxid(), loc, toFnCollection, 
                                          toArgColl);
       
-      // $y/id
-      expr_t toKeyExpr = pop_nodestack();
-      
       // $x//sale/empid
       expr_t fromKeyExpr = pop_nodestack();
+      
+      // $y/id
+      expr_t toKeyExpr = pop_nodestack();
       
       // $y/id eq $x//sale/empid
       fo_expr_t eqExpr = new fo_expr(sctxid(),
@@ -3767,9 +3840,9 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       evFlworExpr->add_where(evTestExpr);
 
       rchandle<fo_expr> everyExpr = new fo_expr(sctxid(),
-                                                loc,
-                                                GET_BUILTIN_FUNCTION(FN_EMPTY_1),
-                                                evFlworExpr.getp());
+                                               loc,
+                                               GET_BUILTIN_FUNCTION(FN_EMPTY_1),
+                                               evFlworExpr.getp());
       
       body = everyExpr;
 
