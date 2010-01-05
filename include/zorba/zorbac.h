@@ -32,14 +32,15 @@ typedef struct Zorba_ErrorHandler_s Zorba_ErrorHandler;
 
 
 // external functions
-typedef void (*external_function_init)(void** user_data,
-  void* function_user_data);
+typedef void (*external_function_init)
+(void** user_data, void* function_user_data);
 
-typedef XQC_Error (*external_function_next)(XQC_Sequence** args, int argc,
-  Zorba_ItemSetter* setter, void* user_data, void* function_data);
+typedef XQC_Error (*external_function_next)
+(XQC_Sequence** args, unsigned int argc, Zorba_ItemSetter* setter,
+  void* user_data, void* function_user_data);
 
-typedef void (*external_function_free)(void* user_data,
-  void* function_user_data);
+typedef void (*external_function_free)
+(void* user_data, void* function_user_data);
 
 
 #ifdef __cplusplus

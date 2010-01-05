@@ -24,6 +24,9 @@ using namespace zorba;
 
 namespace zorbac {
 
+  // Forward ref
+  class CrSeqData;
+
   class CImplementation
   {
     public:
@@ -92,6 +95,10 @@ namespace zorbac {
       getXQC();
 
     private:
+
+      void
+      create_sequence(std::auto_ptr<CrSeqData> data, XQC_Sequence** seq);
+
       XQC_Implementation theXQCImpl;
       Zorba*             theZorba;
   };

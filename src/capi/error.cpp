@@ -1008,7 +1008,7 @@ namespace zorbac {
 //         qe.getColumnBegin());
       handler->error(handler,
         Error::convert_xquery_error(qe.getErrorCode()),
-        NULL, // QQQ no error code uri??
+        NULL, // TODO no error code uri??
         ZorbaException::getErrorCodeAsString(qe.getErrorCode()).c_str(),
         qe.getDescription().c_str(),
         NULL); // TODO no support for passing argument to fn:error()

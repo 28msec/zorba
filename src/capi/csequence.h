@@ -57,7 +57,8 @@ namespace zorbac {
       free(XQC_Sequence* sequence);
 
       CSequence(ResultIterator_t iter, XQC_ErrorHandler* handler);
-      CSequence(ItemSequence* items, XQC_ErrorHandler* handler);
+      CSequence(ItemSequence* items, bool free_when_done,
+        XQC_ErrorHandler* handler);
 
       ~CSequence();
 

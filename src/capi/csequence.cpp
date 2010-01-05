@@ -34,13 +34,17 @@ namespace zorbac {
   /**
    * Utility class to turn an ItemSequence into a ResultIterator;
    * ignores open/close. Performs no memory-management on the
-   * ItemSequence it holds.
+   * ItemSequence it holds!
    */
   class ItemSequenceWrapper : public ResultIterator
   {
     public:
       ItemSequenceWrapper(ItemSequence* items)
         : theItems(items)
+      {
+      }
+
+      virtual ~ItemSequenceWrapper()
       {
       }
 
@@ -52,8 +56,21 @@ namespace zorbac {
         return theItems->next(item);
       }
 
-    private:
+    protected:
       ItemSequence* theItems;
+  };
+
+  class FreeingItemSequenceWrapper : public ItemSequenceWrapper
+  {
+    public:
+      FreeingItemSequenceWrapper(ItemSequence* items)
+        : ItemSequenceWrapper(items)
+      {
+      }
+      virtual ~FreeingItemSequenceWrapper()
+      {
+        delete theItems;
+      }
   };
 
   CSequence::CSequence(ResultIterator_t iter, XQC_ErrorHandler* handler)
@@ -62,10 +79,21 @@ namespace zorbac {
     init_xqc();
   }
 
-  CSequence::CSequence(ItemSequence* items, XQC_ErrorHandler* handler)
+  /**
+   * Create a CSequence around an ItemSequence.
+
+   * @param free_when_done If true, the ItemSequence will be deleted
+   * when the CSequence is deleted. If false, the ItemSequence will
+   * never be deleted; client code must arrange to free it at an
+   * appropriate time.
+   */
+  CSequence::CSequence
+  (ItemSequence* items, bool free_when_done, XQC_ErrorHandler* handler)
     : theErrorHandler(handler)
   {
-    theIterator = ResultIterator_t(new ItemSequenceWrapper(items));
+    theIterator = ResultIterator_t
+      (free_when_done ? new FreeingItemSequenceWrapper(items) :
+        new ItemSequenceWrapper(items));
     init_xqc();
   }
 

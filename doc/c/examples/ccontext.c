@@ -21,40 +21,54 @@
 #include <zorba/zorbac.h>
 #include <simplestore/simplestorec.h>
 
+#include "helpers.h"
 
 /**
- * An example that shows how to use the static and dynamic context.
- * No error checking is done.
+ * An example that shows how to use the dynamic context to set the context item.
  */
 int
 ccontext_example_1(XQC_Implementation* impl)
 {
-/* QQQ */
-/*   XQC_Expression*          lExpr; */
-/*   XQC_DynamicContext* lContext; */
-/*   XQC_ItemFactory    lFactory; */
-/*   FILE*              lOutFile = stdout; */
-/*   XQC_Item           lItem = 0; */
+  XQC_Error           lError;
+  XQC_Expression*     lExpr;
+  XQC_DynamicContext* lContext;
+  XQC_Sequence*       lSeq;
+  XQC_Sequence*       lResult;
+  const char*         lZorba[] = { "Zorba" };
 
-/*   impl->item_factory(impl, &lFactory); */
-/*   lFactory->create_string(lFactory, "Zorba", &lItem); */
+  // Create a sequence with a single string item, and advance to that item
+  lError = impl->create_string_sequence(impl, lZorba, 1, &lSeq);
+  if (check_error("create_string_sequence", lError)) return 0;
+  lError = lSeq->next(lSeq);
+  if (check_error("next", lError)) return 0;
 
-/*   impl->prepare(impl, "(., ., .)", NULL, &lExpr); */
+  lError = impl->prepare(impl, "(., ., .)", NULL, &lExpr);
+  if (check_error("prepare", lError)) return 0;
 
-/*   // get the dynmamic context and set the context item */
-/*   lExpr->get_dynamic_context(lExpr, &lContext); */
+  // get the dynamic context and set the context item
+  lError = lExpr->create_context(lExpr, &lContext);
+  if (check_error("create_context", lError)) return 0;
+  lError = lContext->set_context_item(lContext, lSeq);
+  if (check_error("set_context_item", lError)) return 0;
 
-/*   lContext->set_context_item(lContext, lItem); */
+  // execute the query
+  lError = lExpr->execute(lExpr, lContext, &lResult);
+  if (check_error("execute", lError)) return 0;
+  while ( (lResult->next(lResult)) == XQC_NO_ERROR) {
+    const char* lValue;
+    lResult->string_value(lResult, &lValue);
+    if ( (strcmp("Zorba", lValue)) != 0 ) {
+      printf("Incorrect value: %s\n", lValue);
+      break;
+    }
+  }
 
-/*   // execute the query */
-/*   lExpr->execute(lExpr, lOutFile); */
-
-/*   // free all resources */
-/*   lContext->free(lContext); */
-/*   lItem->free(lItem); */
-/*   lExpr->free(lExpr); */
-/*   lFactory->free(lFactory); */
-
+  // free all resources
+  lResult->free(lResult);
+  lContext->free(lContext);
+  lExpr->free(lExpr);
+  // Must free lSeq also since it was bound to the context item, not a variable
+  lSeq->free(lSeq);
   return 1;
 }
 
@@ -65,7 +79,7 @@ ccontext_example_1(XQC_Implementation* impl)
 int
 ccontext_example_2(XQC_Implementation* impl)
 {
-/* QQQ no collations */
+/* TODO reimplement with Zorba_StaticContext for collations */
 /*   XQC_Expression*          lExpr; */
 /*   XQC_StaticContext*  lContext; */
 /*   FILE*              lOutFile = stdout; */
@@ -98,7 +112,7 @@ ccontext_example_2(XQC_Implementation* impl)
 int
 ccontext_example_3(XQC_Implementation* impl)
 {
-/* QQQ no get_static_context() */
+/* TODO no get_static_context()? */
 /*   XQC_Error          lError = XQC_NO_ERROR; */
 /*   XQC_Expression*         lExpr; */
 /*   XQC_StaticContext* lProvidedContext; */

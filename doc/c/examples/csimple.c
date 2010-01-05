@@ -23,51 +23,27 @@
 
 
 /**
- * A simple C API example
- * Compile a query and print the result.  No error checking is done.
- */
-int
-example_1(XQC_Implementation* impl)
-{
-/* QQQ this example is redundant now since the execute-to-stream functionality is gone */
-/*   XQC_Expression*   lExpr; */
-/*   FILE*             lOutFile = stdout; */
-
-/*   // compile the query */
-/*   impl->prepare(impl, "(1+2, 3, 4)", NULL, &lExpr); */
-
-/*   // execute it and print the result on standard out */
-/*   lExpr->execute(lExpr, NULL, lOutFile); */
-
-/*   // release the query */
-/*   lExpr->free(lExpr); */
-
-  return 1;
-}
-
-/**
- * A simple C API example
- * Compile a query, iterate over the item sequence, and print the string value for each item.
- * No error checking is done.
+ * A simple C API example.
+ *
+ * Compile a query, iterate over the item sequence, and print the
+ * string value for each item.  No error checking is done.
  */ 
 int
-example_2(XQC_Implementation* impl) 
+example_1(XQC_Implementation* impl) 
 {
-  XQC_Error      lError = XQC_NO_ERROR;
   XQC_Expression*     lExpr;
   const char*    lStringValue;
   XQC_Sequence*   lResult;
 
   // compile the query and get the result as a sequence
-  lError = impl->prepare(impl, "for $i in 1 to 10 return $i", NULL, &lExpr);
-
+  impl->prepare(impl, "for $i in 1 to 10 return $i", NULL, &lExpr);
   lExpr->execute(lExpr, NULL, &lResult);
 
   while ( lResult->next(lResult) == XQC_NO_ERROR ) {
     lResult->string_value(lResult, &lStringValue);
     printf("%s ", lStringValue);
   }
-
+  printf("\n");
   // release all aquired resources
   lResult->free(lResult);
   lExpr->free(lExpr);
@@ -79,7 +55,7 @@ example_2(XQC_Implementation* impl)
  * Compile a syntactically wrong query and check the expected error
  */
 int
-example_3(XQC_Implementation* impl)
+example_2(XQC_Implementation* impl)
 {
   XQC_Error    lError = XQC_NO_ERROR;
   XQC_Expression*   lExpr;
@@ -94,7 +70,7 @@ example_3(XQC_Implementation* impl)
  * Compile a query which does division by 0 and check the expected error
  */
 int
-example_4(XQC_Implementation* impl)
+example_3(XQC_Implementation* impl)
 {
   XQC_Error      lError = XQC_NO_ERROR;
   XQC_Expression*     lExpr;
@@ -130,8 +106,11 @@ free_stream(XQC_InputStream* stream)
 }
 
 
+/**
+ * Compile a query by passing it in via an XQC_InputStream.
+ */
 int
-example_5(XQC_Implementation* impl)
+example_4(XQC_Implementation* impl)
 {
   XQC_Expression*       lExpr;
   XQC_InputStream* lStream = (XQC_InputStream*) malloc(sizeof(XQC_InputStream));
@@ -184,11 +163,6 @@ csimple(int argc, char** argv)
 
   printf("executing C example 4\n");
   res = example_4(impl);
-  if (!res) { impl->free(impl); return 1; };
-  printf("\n");
-
-  printf("executing C example 5\n");
-  res = example_5(impl);
   if (!res) { impl->free(impl); return 1; };
   printf("\n");
 

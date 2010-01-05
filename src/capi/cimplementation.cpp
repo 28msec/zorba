@@ -20,6 +20,8 @@
 
 #include "capi/cexpression.h"
 #include "capi/cstatic_context.h"
+#include "capi/csequence.h"
+#include "capi/user_item_sequence.h"
 #include "capi/capi_util.h"
 #include "capi/error.h"
 
@@ -50,6 +52,94 @@ using namespace zorba;
 
 
 namespace zorbac {
+
+  /**
+   * data for create_*_sequence() methods.
+   */
+  class CrSeqData {
+    public:
+      CrSeqData(unsigned int argc, XQC_ItemType type)
+        : theSize(argc),
+          theCount(0),
+          theType(type)
+      {
+      }
+
+      unsigned int theSize;
+      unsigned int theCount;
+      XQC_ItemType theType;
+      union {
+          double* theDoubles;
+          int* theInts;
+          const char** theStrings;
+      };
+  };
+
+  /**
+   * create_*_sequence() method callbacks.
+   */
+  void
+  crseq_init(void** user_data, void* sequence_data)
+  {
+    // No user-data to create, nothing to do
+  }
+
+  XQC_Error
+  crseq_next(XQC_Sequence** args, unsigned int argc,
+    Zorba_ItemSetter* setter, void* user_data, void* sequence_data)
+  {
+    CrSeqData* lData = static_cast<CrSeqData*> (sequence_data);
+    if (lData->theCount >= lData->theSize) {
+      return XQC_END_OF_SEQUENCE;
+    }
+    else {
+      switch (lData->theType) {
+        case XQC_DECIMAL_TYPE:
+          setter->set_integer(setter, lData->theInts[lData->theCount++]);
+          break;
+        case XQC_DOUBLE_TYPE:
+          setter->set_double(setter, lData->theDoubles[lData->theCount++]);
+          break;
+        case XQC_STRING_TYPE:
+          setter->set_string(setter, lData->theStrings[lData->theCount++]);
+          break;
+        default:
+          assert(false);
+          return XQC_TYPE_ERROR;
+      }
+    }
+    return XQC_NO_ERROR;
+  }
+
+  void
+  crseq_free(void* user_data, void* sequence_data)
+  {
+    // The UserItemSequence is being deleted, so delete the sequence data
+    CrSeqData* lData = static_cast<CrSeqData*> (sequence_data);
+    delete lData;
+  }
+
+  /**
+   * Utility method to create an XQC_Sequence based on a CrSeqData.
+   */
+  void
+  CImplementation::create_sequence
+  (std::auto_ptr<CrSeqData> data, XQC_Sequence** seq)
+  {
+    // Create a UserItemSequence to return the data in order as items.
+    std::auto_ptr<UserItemSequence> lItemSeq
+      (new UserItemSequence(NULL, 0, &crseq_init, &crseq_next, &crseq_free,
+        data.get(), theZorba->getItemFactory(), NULL));
+
+    // Wrap in a CSequence to produce an XQC_Sequence. We pass "true"
+    // to make CSequence assume memory-management responsibility for
+    // the UserItemSequence.
+    std::auto_ptr<CSequence> lSeq (new CSequence(lItemSeq.get(), true, NULL));
+
+    lItemSeq.release();
+    data.release();
+    (*seq) = lSeq.release()->getXQC();
+  }
 
   CImplementation::CImplementation(Zorba* aZorba)
     : theZorba(aZorba)
@@ -192,12 +282,12 @@ namespace zorbac {
 
         stream->free(stream);
         if (lRead == -1) {
-          // QQQ right error?
+          // TODO right error?
           return XQC_STATIC_ERROR; 
         }
       }
 
-      // QQQ refactor! duplicate code in three places!
+      // TODO refactor! duplicate code in three places!
       if (context) {
         StaticContext_t lContext = CStaticContext::get(context)->getCPP();
         lQuery = me->theZorba->compileQuery(lStream, lContext);
@@ -252,9 +342,10 @@ namespace zorbac {
     XQC_Sequence** seq)
   {
     CIMPL_TRY {
-      // TODO implement
-      (*seq) = NULL;
-      me->getCPP();
+      // Create a CrSeqData representing no data at all.
+      std::auto_ptr<CrSeqData> lData (new CrSeqData(0, XQC_DOUBLE_TYPE));
+      lData->theDoubles = NULL;
+      me->create_sequence(lData, seq);
     }
     CIMPL_CATCH;
   }
@@ -276,9 +367,10 @@ namespace zorbac {
     const char *values[], unsigned int count, XQC_Sequence** seq)
   {
     CIMPL_TRY {
-      // TODO implement
-      (*seq) = NULL;
-      me->getCPP();
+      // Create a CrSeqData to hold the user's data.
+      std::auto_ptr<CrSeqData> lData (new CrSeqData(count, XQC_STRING_TYPE));
+      lData->theStrings = values;
+      me->create_sequence(lData, seq);
     }
     CIMPL_CATCH;
   }
@@ -288,9 +380,10 @@ namespace zorbac {
     int values[], unsigned int count, XQC_Sequence** seq)
   {
     CIMPL_TRY {
-      // TODO implement
-      (*seq) = NULL;
-      me->getCPP();
+      // Create a CrSeqData to hold the user's data.
+      std::auto_ptr<CrSeqData> lData (new CrSeqData(count, XQC_DECIMAL_TYPE));
+      lData->theInts = values;
+      me->create_sequence(lData, seq);
     }
     CIMPL_CATCH;
   }
@@ -300,9 +393,10 @@ namespace zorbac {
     double values[], unsigned int count, XQC_Sequence** seq)
   {
     CIMPL_TRY {
-      // TODO implement
-      (*seq) = NULL;
-      me->getCPP();
+      // Create a CrSeqData to hold the user's data.
+      std::auto_ptr<CrSeqData> lData (new CrSeqData(count, XQC_DOUBLE_TYPE));
+      lData->theDoubles = values;
+      me->create_sequence(lData, seq);
     }
     CIMPL_CATCH;
   }

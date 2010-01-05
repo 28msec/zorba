@@ -22,6 +22,7 @@ SET (CAPI_EXAMPLES
   cerror.c
   cexternal_functions.c 
   cserialization.c
+  csequences.c
 )
 
 CREATE_TEST_SOURCELIST(cexamples
