@@ -1516,6 +1516,7 @@ public:
     theFromNodeVarName(fromNodeVarName),
     theFromExpr(fromExpr),
     theToCollName(toCollName),
+    theToNodeVarName(toNodeVarName),
     theToExpr(toExpr) 
   {
   }

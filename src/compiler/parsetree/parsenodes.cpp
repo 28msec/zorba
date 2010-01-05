@@ -1107,8 +1107,8 @@ void ICCollForeachNode::accept(parsenode_visitor& v) const
 void ICForeignKey::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
-  ACCEPT_CHK(getToExpr());
   ACCEPT_CHK(getFromExpr());
+  ACCEPT_CHK(getToExpr());
   END_VISITOR ();
 }
 
