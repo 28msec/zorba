@@ -138,8 +138,8 @@ std::string ValueIC::toString()
 ********************************************************************************/
 bool ICCheckerImpl::check(const store::Item* collName)
 {
-  //std::cout << "Checker::check : " << collName->getLocalName()->str() << " @ "
-  //         << collName->getNamespace()->str() << std::endl; std::cout.flush(); 
+  std::cout << "Checker::check : " << collName->getLocalName()->str() << " @ "
+           << collName->getNamespace()->str() << std::endl; std::cout.flush(); 
 
   store::Iterator_t activeICNames = theDctx->listActiveICNames();
 

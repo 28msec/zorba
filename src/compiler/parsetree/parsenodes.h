@@ -1404,14 +1404,14 @@ class ICCollSimpleCheck
 {
 protected:
   rchandle<QName>        theCollVarName;
-  exprnode*              theExprSingle;  // make type exprnode_t
+  rchandle<exprnode>     theExprSingle;  // make type exprnode_t
 
 public:
   ICCollSimpleCheck ( const QueryLoc& loc, 
                       QName* name, 
                       QName* collName,
                       QName* collVarName,
-                      exprnode* exprSingle)
+                      rchandle<exprnode> exprSingle)
     :
     ICColl(loc,
            name, 
@@ -1423,7 +1423,7 @@ public:
   }
   
   const QName* getCollVarName() const { return theCollVarName.getp(); }
-  const exprnode* getExpr() const { return theExprSingle; }
+  const exprnode* getExpr() const { return theExprSingle.getp(); }
 
   virtual void accept(parsenode_visitor&) const;
 };
@@ -1464,14 +1464,14 @@ class ICCollForeachNode
 {
 protected:
   rchandle<QName>        theCollVarName;
-  exprnode*              theExprSingle;
+  rchandle<exprnode>     theExprSingle;
 
 public:
   ICCollForeachNode ( const QueryLoc& loc, 
                       QName* name, 
                       QName* collName,
                       QName* collVarName,
-                      exprnode* exprSingle) 
+                      rchandle<exprnode> exprSingle) 
     :
     ICColl(loc,
            name, 
@@ -1483,7 +1483,7 @@ public:
   }
   
   const QName* getCollVarName() const { return theCollVarName.getp(); }
-  const exprnode* getExpr() const { return theExprSingle; }
+  const exprnode* getExpr() const { return theExprSingle.getp(); }
 
   virtual void accept(parsenode_visitor&) const;
 };
