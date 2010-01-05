@@ -621,7 +621,7 @@ void serializer::emitter::emit_item(const store::Item* item)
   else
   {
     if (item->getNodeKind() == store::StoreConsts::attributeNode)
-      ZORBA_ERROR(SENR0001);
+      ZORBA_ERROR_DESC_OSS(SENR0001,"Attribute <" << item->getStringValue()->c_str() << "> can not be serialized.");
     else
       emit_node(item, 0);
   }
@@ -1433,7 +1433,7 @@ void serializer::text_emitter::emit_item(const store::Item* item)
   else
   {
     if (item->getNodeKind() == store::StoreConsts::attributeNode)
-      ZORBA_ERROR(SENR0001);
+      ZORBA_ERROR_DESC_OSS(SENR0001,"Attribute <" << item->getStringValue()->c_str() << "> can not be serialized.");
     else
       emit_node(item, 0);
   }
@@ -1650,7 +1650,9 @@ void serializer::setParameter(const char* aName, const char* aValue)
       indent = PARAMETER_VALUE_NO;
     else
     {
-      ZORBA_ERROR( SEPM0016);
+      ZORBA_ERROR_DESC_OSS(SEPM0016,"Parameter <" << aName
+          << "> can not be set with value <" << aValue
+          << ">. Accepted values are yes/no.");
     }
   }
   else if (!strcmp(aName, "standalone"))
@@ -1663,7 +1665,9 @@ void serializer::setParameter(const char* aName, const char* aValue)
       standalone = PARAMETER_VALUE_OMIT;
     else
     {
-      ZORBA_ERROR( SEPM0016);
+      ZORBA_ERROR_DESC_OSS(SEPM0016,"Parameter <" << aName
+          << "> can not be set with value <" << aValue
+          << ">. Accepted values are yes/no/omit.");
     }
   }
   else if (!strcmp(aName, "omit-xml-declaration"))
@@ -1674,7 +1678,9 @@ void serializer::setParameter(const char* aName, const char* aValue)
       omit_xml_declaration = PARAMETER_VALUE_NO;
     else
     {
-      ZORBA_ERROR( SEPM0016);
+      ZORBA_ERROR_DESC_OSS(SEPM0016,"Parameter <" << aName
+          << "> can not be set with value <" << aValue
+          <<">. Accepted values are yes/no.");
     }
   }
   else if (!strcmp(aName, "byte-order-mark"))
@@ -1685,7 +1691,9 @@ void serializer::setParameter(const char* aName, const char* aValue)
       byte_order_mark = PARAMETER_VALUE_NO;
     else
     {
-      ZORBA_ERROR( SEPM0016);
+      ZORBA_ERROR_DESC_OSS(SEPM0016,"Parameter <" << aName
+          << "> can not be set with value <" << aValue
+          <<">. Accepted values are yes/no.");
     }
   }
   else if (!strcmp(aName, "undeclare-prefixes"))
@@ -1696,7 +1704,9 @@ void serializer::setParameter(const char* aName, const char* aValue)
       undeclare_prefixes = PARAMETER_VALUE_NO;
     else
     {
-      ZORBA_ERROR( SEPM0016);
+      ZORBA_ERROR_DESC_OSS(SEPM0016,"Parameter <" << aName
+          << "> can not be set with value <" << aValue
+          <<">. Accepted values are yes/no.");
     }
   }
   else if (!strcmp(aName, "method"))
@@ -1717,7 +1727,9 @@ void serializer::setParameter(const char* aName, const char* aValue)
       method = PARAMETER_VALUE_BINARY;
     else
     {
-      ZORBA_ERROR( SEPM0016);
+      ZORBA_ERROR_DESC_OSS(SEPM0016,"Parameter <" << aName
+          << "> can not be set with value <" << aValue
+          <<">. Accepted values are xml/html/xhtml/text/json/jsonml/binary.");
     }
   }
   else if (!strcmp(aName, "include-content-type"))
@@ -1728,7 +1740,9 @@ void serializer::setParameter(const char* aName, const char* aValue)
       include_content_type = PARAMETER_VALUE_NO;
     else
     {
-      ZORBA_ERROR( SEPM0016);
+       ZORBA_ERROR_DESC_OSS(SEPM0016,"Parameter <" << aName
+          << "> can not be set with value <" << aValue
+          <<">. Accepted values are yes/no.");
     }
   }
   else if (!strcmp(aName, "encoding"))
@@ -1741,7 +1755,9 @@ void serializer::setParameter(const char* aName, const char* aValue)
 #endif
     else
     {
-      ZORBA_ERROR( SEPM0016);
+      ZORBA_ERROR_DESC_OSS(SEPM0016,"Parameter <" << aName
+          << "> can not be set with value <" << aValue
+          <<">. Accepted values are UTF-8/UTF-16.");
     }
   }
   else if (!strcmp(aName, "media-type"))
@@ -1767,7 +1783,8 @@ void serializer::setParameter(const char* aName, const char* aValue)
   }
   else
   {
-    ZORBA_ERROR( SEPM0016);
+    ZORBA_ERROR_DESC_OSS(SEPM0016,"Parameter <" << aName
+          << "> can not be set with value <" << aValue <<">.");
   }
 }
 
@@ -1790,7 +1807,7 @@ void serializer::validate_parameters(void)
     else if ( !(version->byteEqual("4.0") || version->byteEqual("4.01")) )
     {
       // Only HTML versions 4.0 and 4.01 are supported
-      ZORBA_ERROR_DESC(SESU0013, "Unsupported HTML serialization version.");
+      ZORBA_ERROR_DESC(SESU0013, "Unsupported HTML serialization version. Accepted values are 4.0/4.01 .");
     }
   }
 }
@@ -1909,7 +1926,7 @@ void serializer::serialize(intern::Serializable* object,
                            itemHandler aHandler,
                            void* aHandlerData)
 {
-  // used for JSON serialization only
+  // used for Json and JsonML serialization only
   bool firstItem = true;
 
   validate_parameters();
@@ -1943,7 +1960,7 @@ void serializer::serialize(intern::Serializable* object,
     }
     e->emit_item(&*lItem);
 
-    // used for JSON serialization only
+    // used for Json and JsonML serialization only
     firstItem = false;
   }
 
