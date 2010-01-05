@@ -15,7 +15,7 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-<zorba:iterator name="EvalIterator" generateCodegen="false">
+<zorba:iterator name="EvalIterator" generateCodegen="false" generateSerialize="false">
 
   <zorba:description author="Zorba Team">eval iterator</zorba:description>
 

@@ -371,11 +371,12 @@ void operator&(Archiver &ar, XQType *&obj)
     ar.set_class_version(prev_class_version);
   }
 }
-*/
 #undef T
+*/
 void operator&(Archiver &ar, const XQType *&obj)
 {
   XQType *obj2 = (XQType*)obj;
+  ar.dont_allow_delay();
   operator&(ar, obj2);
   if(!ar.is_serializing_out())
     obj = (const XQType*)obj2;

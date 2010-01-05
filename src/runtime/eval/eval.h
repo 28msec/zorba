@@ -66,15 +66,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(EvalIterator,
     NaryBaseIterator<EvalIterator, EvalIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<EvalIterator, EvalIteratorState>*)this);
-
-    ar & varnames;
-    ar & var_keys;
-    ar & vartypes;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
   EvalIterator(
     static_context* sctx,

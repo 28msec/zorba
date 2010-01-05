@@ -655,7 +655,7 @@ void serialize_array(Archiver &ar, unsigned char *obj, int len)//like char p[20]
   if(ar.is_serializing_out())
   {
     char  *base64string;
-    base64string = (char*)malloc(8*len/6 + 8);
+    base64string = (char*)malloc(8*len/6 + 8 + 1);
     Base64Impl::Encode(obj, len, base64string);
     ar.add_simple_field("char[]", base64string, obj, ARCHIVE_FIELD_NORMAL);
     free(base64string);

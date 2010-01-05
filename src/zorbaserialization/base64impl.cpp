@@ -89,6 +89,7 @@ Base64Impl::Encode(const unsigned char *datain, unsigned int datalen,
 		dataout[0] = '=';
 		dataout++;
 	}
+  dataout[0] = 0;
 
 	return dataout - orig_dataout;
 }

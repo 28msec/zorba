@@ -962,7 +962,7 @@ void UpdDeleteNodesFromCollection::apply()
 
     for (ulong i = numNodes; i > 0; --i)
     {
-      if (theNodes[i] != lColl->nodeAt(size - i))
+      if (theNodes[i-1] != lColl->nodeAt(size - i))
       {
         isLast = false;
         break;

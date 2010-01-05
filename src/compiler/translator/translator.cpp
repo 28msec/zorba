@@ -3394,7 +3394,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
       flworExpr->add_clause(lc);     
       // flworExpr-> return clause to be set in end_visitor
 
-      nodestack.push(flworExpr);      
+      nodestack.push(flworExpr.getp());      
     }
     break;
 
@@ -3458,7 +3458,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                                     var_expr::for_var, evType);
 
       var_expr_t exInExpr = create_var(loc, varItem, var_expr::let_var, NULL);
-      evFlworExpr->add_clause(wrap_in_forclause(exInExpr, evVarExpr, NULL));
+      evFlworExpr->add_clause(wrap_in_forclause(exInExpr.getp(), evVarExpr, NULL));
 
 
       fo_expr_t everyExpr = new fo_expr(sctxid(),
@@ -3494,8 +3494,8 @@ void* begin_visit(const IntegrityConstraintDecl& v)
 
       
       // push evFlworExpr because where cluse must be set
-      nodestack.push(evFlworExpr);
-      nodestack.push(flworExpr);
+      nodestack.push(evFlworExpr.getp());
+      nodestack.push(flworExpr.getp());
     }
     break;
     
@@ -3566,8 +3566,8 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                                         evFlworExpr.getp());
       
       // where clause to be added in end_visit
-      nodestack.push(evFlworExpr);
-      nodestack.push(everyExpr);
+      nodestack.push(evFlworExpr.getp());
+      nodestack.push(everyExpr.getp());
     }
     break;
     
@@ -3704,8 +3704,8 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                                         GET_BUILTIN_FUNCTION(FN_EMPTY_1),
                                         evFlworExpr.getp());
 
-      nodestack.push(someFlworExpr);
-      nodestack.push(everyExpr);      
+      nodestack.push(someFlworExpr.getp());
+      nodestack.push(everyExpr.getp());      
     }
     break;
     
