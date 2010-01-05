@@ -363,7 +363,8 @@ public:
 
   void addDeleteFromCollection(
         store::Item_t& name,
-        std::vector<store::Item_t>& nodes);
+        std::vector<store::Item_t>& nodes,
+        bool isLast);
 
   // Index primitives
   void addCreateIndex(

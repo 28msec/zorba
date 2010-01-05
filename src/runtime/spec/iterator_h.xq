@@ -92,12 +92,12 @@ declare function local:children-decl($iter) as xs:string
   let $arity := lower-case($iter/@arity)
   return
     if ( $arity eq "unary" )
-    then ', PlanIter_t&amp; aChild'
+      then concat(',', $gen:newline, gen:indent(2), 'PlanIter_t&amp; child')
     else if ( $arity eq "binary" )
-    then ', PlanIter_t&amp; aChild1, PlanIter_t&amp; aChild2'
+      then concat(',', $gen:newline, gen:indent(2), 'PlanIter_t&amp; child1, PlanIter_t&amp; child2')
     else if ( $arity eq "noary" )
     then ''
-    else ', std::vector<PlanIter_t>&amp; aChildren'
+    else concat(',', $gen:newline, gen:indent(2), 'std::vector<PlanIter_t>&amp; children')
   
 };
 
@@ -106,12 +106,12 @@ declare function local:children-args($iter) as xs:string
   let $arity := lower-case($iter/@arity)
   return
     if ( $arity eq "unary" )
-    then ', aChild'
+    then ', child'
     else if ( $arity eq "binary" )
-    then ', aChild1, aChild2'
+    then ', child1, child2'
     else if ( $arity eq "noary" )
     then ''
-    else ', aChildren'
+    else ', children'
   
 };
 declare function local:constructor($iter, $name as xs:string, $base as xs:string) as xs:string
@@ -122,16 +122,13 @@ declare function local:constructor($iter, $name as xs:string, $base as xs:string
     gen:indent(2), 'static_context* sctx,',
     $gen:newline,
     gen:indent(2), 'const QueryLoc&amp; loc',
-    $gen:newline,
-    gen:indent(2), local:children-decl($iter),
+    local:children-decl($iter),
     local:add-constructor-param($iter),
     ')',
-    $gen:newline,
-    gen:indent(2), ': ', $base,
-    $gen:newline,
-    gen:indent(2), '(sctx, loc', local:children-args($iter),
+    $gen:newline, gen:indent(2), ': ',
+    $gen:newline, gen:indent(2), $base, '(sctx, loc', local:children-args($iter),
     local:add-constructor-param-2($iter),
-    ' {}',
+    $gen:newline, gen:indent(1), '{}',
     $gen:newline, $gen:newline
   )
 };
@@ -139,7 +136,7 @@ declare function local:constructor($iter, $name as xs:string, $base as xs:string
 
 declare function local:iterator($iter, $name as xs:string, $state as xs:string) as xs:string
 {
-  let $base := concat(local:arity($iter), 'BaseIterator <', $name, ', ', $state, '>')
+  let $base := concat(local:arity($iter), 'BaseIterator<', $name, ', ', $state, '>')
   return
     concat ( 'class ', $name, ' : ', 'public ', $base,
              $gen:newline, '{ ',
@@ -183,6 +180,7 @@ declare function local:iterator($iter, $name as xs:string, $state as xs:string) 
     )
 };
 
+
 declare function local:add-destructor($iter) as xs:string?
 {
   fn:concat($gen:indent, "virtual ~", $iter/@name, "();", $gen:newline, $gen:newline)
@@ -197,33 +195,68 @@ declare function local:add-getter($iter) as xs:string?
   else () ,'') else ()
 };
 
+
 declare function local:add-setter($iter) as xs:string?
 {
-  if (count($iter/zorba:member) > 0) then 
-  string-join(for $member in $iter/zorba:member return
-  if(exists($member/@setterName)) then
-  string-join(($gen:indent,'void ',$member/@setterName,'(',$member/@type,' aValue) const { ',$member/@name,'= aValue; }',$gen:newline,$gen:newline),'')
-  else () ,'') else ()
+  if (count($iter/zorba:member) > 0)
+  then 
+    string-join(for $member in $iter/zorba:member 
+                return
+                  if(exists($member/@setterName)) 
+                  then
+                    string-join(($gen:indent, 'void ', $member/@setterName,
+                                 '(', $member/@type, ' aValue) { ',
+                                 $member/@name, '= aValue; }', $gen:newline, 
+                                 $gen:newline),'')
+                  else
+                    () ,
+                '')
+  else
+    ()
 };
+
 
 declare function local:add-constructor-param-2($iter) as xs:string?
 {
   let $member := $iter/zorba:member
   let $param := $iter/zorba:constructor/zorba:parameter
-  return if (count($member) > 0) then string-join((')',for $i in (1 to count($member)) return
-  string-join((',',$gen:newline,gen:indent(2),$member[$i]/@name,'(',$param[$i]/@name,')'),'')),'')
-  else ')'
+  return 
+    if (count($member) > 0)
+    then
+      string-join((')',
+                   for $i in (1 to count($member)) 
+                   return
+                     string-join((',', $gen:newline, gen:indent(2),
+                                  $member[$i]/@name, '(', $param[$i]/@name, ')'
+                                 ),'')
+                  ),'')
+  else 
+    ')'
 };
+
 
 declare function local:add-constructor-param($iter) as xs:string?
 {
-  if(count($iter/zorba:constructor/zorba:parameter > 0)) then
-  string-join((for $param in $iter/zorba:constructor/zorba:parameter return 
-  string-join((',',$gen:newline,gen:indent(2),$param/@type,' ',$param/@name,
-  if(exists($param/@defaultValue) and ($param/@defaultValue ne '')) then string-join((' = ',$param/@defaultValue),'') else ()
-  ),'')),'')
-  else ()
+  if (count($iter/zorba:constructor/zorba:parameter > 0))
+  then
+    string-join((for 
+                   $param in
+                   $iter/zorba:constructor/zorba:parameter
+                 return
+                   string-join((',', $gen:newline, gen:indent(2),
+                                $param/@type, ' ', $param/@name,
+                                if (exists($param/@defaultValue) and
+                                    $param/@defaultValue ne '')
+                                then
+                                string-join((' = ',$param/@defaultValue),'')
+                                else
+                                ()
+                               ),'')
+                ),'')
+  else 
+    ()
 };
+
 
 declare function local:add-protected($iter) as xs:string?
 {

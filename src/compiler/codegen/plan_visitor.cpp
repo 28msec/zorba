@@ -74,6 +74,7 @@
 #include "runtime/indexing/index_ddl.h"
 #include "runtime/debug/zorba_debug_iterator.h"
 #include "runtime/eval/eval.h"
+#include "runtime/collections/collections.h"
 
 #include "debugger/zorba_debugger_commons.h"
 
@@ -1919,7 +1920,8 @@ void end_visit(fo_expr& v)
 }
 
 
-bool begin_visit (instanceof_expr& v) {
+bool begin_visit(instanceof_expr& v) 
+{
   CODEGEN_TRACE_IN("");
   return true;
 }

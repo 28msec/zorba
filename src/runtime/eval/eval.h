@@ -54,7 +54,7 @@ public:
   void reset(PlanState&);
 };
 
-class EvalIterator : public NaryBaseIterator <EvalIterator, EvalIteratorState>
+class EvalIterator : public NaryBaseIterator<EvalIterator, EvalIteratorState>
 { 
 protected:
   checked_vector<store::Item_t> varnames; //
@@ -64,12 +64,12 @@ public:
   SERIALIZABLE_CLASS(EvalIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(EvalIterator,
-    NaryBaseIterator <EvalIterator, EvalIteratorState>);
+    NaryBaseIterator<EvalIterator, EvalIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <EvalIterator, EvalIteratorState>*)this);
+    (NaryBaseIterator<EvalIterator, EvalIteratorState>*)this);
 
     ar & varnames;
     ar & var_keys;
@@ -78,16 +78,17 @@ public:
 
   EvalIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children,
     checked_vector<store::Item_t> aVarNames,
     checked_vector<std::string> aVarKeys,
     checked_vector<xqtref_t> aVarTypes)
-    : NaryBaseIterator <EvalIterator, EvalIteratorState>
-    (sctx, loc, aChildren),
+    : 
+    NaryBaseIterator<EvalIterator, EvalIteratorState>(sctx, loc, children),
     varnames(aVarNames),
     var_keys(aVarKeys),
-    vartypes(aVarTypes) {}
+    vartypes(aVarTypes)
+  {}
 
   virtual ~EvalIterator();
 

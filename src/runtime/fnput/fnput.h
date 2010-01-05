@@ -37,26 +37,27 @@ namespace zorba {
  * fn:put
  * Author: Zorba Team
  */
-class FnPutIterator : public NaryBaseIterator <FnPutIterator, PlanIteratorState>
+class FnPutIterator : public NaryBaseIterator<FnPutIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(FnPutIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnPutIterator,
-    NaryBaseIterator <FnPutIterator, PlanIteratorState>);
+    NaryBaseIterator<FnPutIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <FnPutIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<FnPutIterator, PlanIteratorState>*)this);
   }
 
   FnPutIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <FnPutIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnPutIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~FnPutIterator();
 

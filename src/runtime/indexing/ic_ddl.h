@@ -45,26 +45,27 @@ namespace zorba {
  *    
  * Author: Zorba Team
  */
-class ActivateICIterator : public UnaryBaseIterator <ActivateICIterator, PlanIteratorState>
+class ActivateICIterator : public UnaryBaseIterator<ActivateICIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(ActivateICIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ActivateICIterator,
-    UnaryBaseIterator <ActivateICIterator, PlanIteratorState>);
+    UnaryBaseIterator<ActivateICIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (UnaryBaseIterator <ActivateICIterator, PlanIteratorState>*)this);
+    (UnaryBaseIterator<ActivateICIterator, PlanIteratorState>*)this);
   }
 
   ActivateICIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , PlanIter_t& aChild)
-    : UnaryBaseIterator <ActivateICIterator, PlanIteratorState>
-    (sctx, loc, aChild) {}
+    const QueryLoc& loc,
+    PlanIter_t& child)
+    : 
+    UnaryBaseIterator<ActivateICIterator, PlanIteratorState>(sctx, loc, child)
+  {}
 
   virtual ~ActivateICIterator();
 
@@ -86,26 +87,27 @@ public:
  *    
  * Author: Zorba Team
  */
-class DeactivateICIterator : public UnaryBaseIterator <DeactivateICIterator, PlanIteratorState>
+class DeactivateICIterator : public UnaryBaseIterator<DeactivateICIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(DeactivateICIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(DeactivateICIterator,
-    UnaryBaseIterator <DeactivateICIterator, PlanIteratorState>);
+    UnaryBaseIterator<DeactivateICIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (UnaryBaseIterator <DeactivateICIterator, PlanIteratorState>*)this);
+    (UnaryBaseIterator<DeactivateICIterator, PlanIteratorState>*)this);
   }
 
   DeactivateICIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , PlanIter_t& aChild)
-    : UnaryBaseIterator <DeactivateICIterator, PlanIteratorState>
-    (sctx, loc, aChild) {}
+    const QueryLoc& loc,
+    PlanIter_t& child)
+    : 
+    UnaryBaseIterator<DeactivateICIterator, PlanIteratorState>(sctx, loc, child)
+  {}
 
   virtual ~DeactivateICIterator();
 
@@ -126,26 +128,27 @@ public:
  *    
  * Author: Zorba Team
  */
-class CheckICIterator : public UnaryBaseIterator <CheckICIterator, PlanIteratorState>
+class CheckICIterator : public UnaryBaseIterator<CheckICIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(CheckICIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(CheckICIterator,
-    UnaryBaseIterator <CheckICIterator, PlanIteratorState>);
+    UnaryBaseIterator<CheckICIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (UnaryBaseIterator <CheckICIterator, PlanIteratorState>*)this);
+    (UnaryBaseIterator<CheckICIterator, PlanIteratorState>*)this);
   }
 
   CheckICIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , PlanIter_t& aChild)
-    : UnaryBaseIterator <CheckICIterator, PlanIteratorState>
-    (sctx, loc, aChild) {}
+    const QueryLoc& loc,
+    PlanIter_t& child)
+    : 
+    UnaryBaseIterator<CheckICIterator, PlanIteratorState>(sctx, loc, child)
+  {}
 
   virtual ~CheckICIterator();
 

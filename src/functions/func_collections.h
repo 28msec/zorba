@@ -264,6 +264,24 @@ public:
 };
 
 
+//fn-zorba-ddl:delete-nodes-first
+class fn_zorba_ddl_delete_nodes_first : public function
+{
+public:
+  fn_zorba_ddl_delete_nodes_first(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_DDL_DELETE_NODES_FIRST_2)
+  {
+  }
+
+  bool requires_dyn_ctx() const { return true; }
+
+  expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+
+  CODEGEN_DECL();
+};
+
+
 //fn-zorba-ddl:delete-node-last
 class fn_zorba_ddl_delete_node_last : public function
 {
@@ -271,6 +289,24 @@ public:
   fn_zorba_ddl_delete_node_last(const signature& sig)
     :
     function(sig, FunctionConsts::FN_ZORBA_DDL_DELETE_NODE_LAST_1)
+  {
+  }
+
+  bool requires_dyn_ctx() const { return true; }
+
+  expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-ddl:delete-nodes-last
+class fn_zorba_ddl_delete_nodes_last : public function
+{
+public:
+  fn_zorba_ddl_delete_nodes_last(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_DDL_DELETE_NODES_LAST_2)
   {
   }
 

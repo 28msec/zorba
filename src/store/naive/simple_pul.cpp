@@ -806,12 +806,13 @@ void PULImpl::addInsertAfterIntoCollection(
 
 void PULImpl::addDeleteFromCollection(
     store::Item_t& name,
-    std::vector<store::Item_t>& nodes)
+    std::vector<store::Item_t>& nodes,
+    bool isLast)
 {
   CollectionPul* pul = getCollectionPul(name.getp());
 
   pul->theDeleteFromCollectionList.push_back(
-  new UpdDeleteNodesFromCollection(pul, name, nodes));
+  new UpdDeleteNodesFromCollection(pul, name, nodes, isLast));
 }
 
 
@@ -1332,7 +1333,6 @@ void PULImpl::applyUpdates()
     applyList(theCreateIndexList);
     applyList(theDeleteIndexList);
 
-
     // check integrity constraints for involved collections
     for (collIte = theCollectionPuls.begin(); collIte != collEnd; ++collIte)
     {
@@ -1341,7 +1341,7 @@ void PULImpl::applyUpdates()
       if (pul->theCollection != NULL)
       {
         const store::Item* collName = pul->theCollection->getName();
-      
+
         if ( collName && theICChecker && !checkIC(collName) )
         {
           ZORBA_ERROR_DESC(XQP0053_IC_NOT_MET, 
@@ -1349,7 +1349,6 @@ void PULImpl::applyUpdates()
         }
       }
     }
-
 
     // Apply delete-collection primitives
     for (collIte = theCollectionPuls.begin(); collIte != collEnd; ++collIte)
@@ -1378,7 +1377,7 @@ void PULImpl::applyUpdates()
   }
   catch (...)
   {
-    ZORBA_FATAL(0, "Unexpected error during pul undo");
+    ZORBA_FATAL(0, "Unexpected error during application of revalidation PUL");
   }
 }
 

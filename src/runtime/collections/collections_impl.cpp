@@ -936,13 +936,11 @@ bool ZorbaInsertNodesAfterIterator::nextImpl(
 
 /*******************************************************************************
   declare updating function 
-  delete-nodes($name as xs:QName,
-               $target as node()+)
+  delete-nodes($name as xs:QName, $target as node()*)
 
   The function will remove the node(s) identified by the $target expression
-  from the given collection. The nodes themselves will not be deleted and
-  they may remain as parts of other collections. If the expression identifies
-  more than one node, all of them will be removed from the collection. 
+  from the given collection. The nodes themselves will not be deleted until all
+  references to them have been removed.
 ********************************************************************************/
 bool ZorbaDeleteNodesIterator::nextImpl(
     store::Item_t& result,
@@ -964,16 +962,6 @@ bool ZorbaDeleteNodesIterator::nextImpl(
 
   collection = getCollection(theSctx, collectionName, loc);
 
-  while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState)) 
-  {
-    ulong pos;
-    if (!collection->findNode(node.getp(), pos))
-      ZORBA_ERROR_LOC_PARAM(XDDY0011_COLLECTION_NODE_NOT_FOUND, loc, 
-                            collectionName->getStringValue(), "");
-
-    nodes.push_back(node);
-  }
-
   // checking collection modifiers
   switch(collectionDecl->getUpdateProperty()) 
   {
@@ -988,15 +976,8 @@ bool ZorbaDeleteNodesIterator::nextImpl(
     break;
 
   case StaticContextConsts::decl_queue:
-    // checks if the deleted items are a prefix of the collection
-    for (size_t i = 0; i < nodes.size(); ++i) 
-    {
-      store::Item* lCurToDelete = nodes[i].getp();
-      store::Item* lNodeAtPos = collection->nodeAt(i).getp();
-      if (lCurToDelete != lNodeAtPos)
-        ZORBA_ERROR_LOC_PARAM(XDDY0009_COLLECTION_QUEUE_BAD_DELETE, loc, 
-                              collectionName->getStringValue()->c_str(), "");
-    }
+    ZORBA_ERROR_LOC_PARAM(XDDY0009_COLLECTION_QUEUE_BAD_DELETE, loc, 
+                          collectionName->getStringValue()->c_str(), "");
     break;
 
   case StaticContextConsts::decl_mutable:
@@ -1007,10 +988,20 @@ bool ZorbaDeleteNodesIterator::nextImpl(
     ZORBA_ASSERT(false);
   }
 
+  while (consumeNext(node, theChildren[theChildren.size()-1].getp(), planState)) 
+  {
+    ulong pos;
+    if (!collection->findNode(node.getp(), pos))
+      ZORBA_ERROR_LOC_PARAM(XDDY0011_COLLECTION_NODE_NOT_FOUND, loc, 
+                            collectionName->getStringValue(), "");
+
+    nodes.push_back(node);
+  }
+
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  pul->addDeleteFromCollection(collectionName, nodes);
+  pul->addDeleteFromCollection(collectionName, nodes, false);
 
   // this should not be necessary. we reset everything in the sequential iterator
   theChildren[theChildren.size()-1]->reset(planState);
@@ -1025,24 +1016,38 @@ bool ZorbaDeleteNodesIterator::nextImpl(
 /*******************************************************************************
 
 ********************************************************************************/
-bool ZorbaDeleteNodeFirstIterator::nextImpl(
+bool ZorbaDeleteNodesFirstIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
   store::Collection_t              collection;
   const StaticallyKnownCollection* collectionDecl;
   store::Item_t                    collectionName;
-  std::vector<store::Item_t>       lNodes;
+  ulong                            collectionSize;
+  store::Item_t                    numNodesItem;
+  ulong                            numNodes = 1;
+  std::vector<store::Item_t>       nodes;
   std::auto_ptr<store::PUL>        pul;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  consumeNext(collectionName, theChildren[0].getp(), planState);
+  if (!consumeNext(collectionName, theChildren[0].getp(), planState))
+    ZORBA_ASSERT(false);
+
+  if (theChildren.size() > 1)
+  {
+    if (!consumeNext(numNodesItem, theChildren[1].getp(), planState))
+      ZORBA_ASSERT(false);
+
+    numNodes = numNodesItem->getUnsignedLongValue();
+  }
 
   collectionDecl = getCollectionDecl(theSctx, collectionName, loc);
 
   collection = getCollection(theSctx, collectionName, loc);
+
+  collectionSize = collection->size();
 
   // checking collection modifiers
   switch(collectionDecl->getUpdateProperty()) 
@@ -1066,7 +1071,7 @@ bool ZorbaDeleteNodeFirstIterator::nextImpl(
     ZORBA_ASSERT(false);
   }
 
-  if (collection->size() == 0) 
+  if (collectionSize < numNodes)
   {
     ZORBA_ERROR_LOC_PARAM(XDDY0011_COLLECTION_NODE_NOT_FOUND, loc,
                           collectionName->getStringValue()->c_str(), "");
@@ -1075,8 +1080,10 @@ bool ZorbaDeleteNodeFirstIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  lNodes.push_back(collection->nodeAt(0));
-  pul->addDeleteFromCollection(collectionName, lNodes);
+  for (ulong i = 0; i < numNodes; ++i)
+    nodes.push_back(collection->nodeAt(i));
+
+  pul->addDeleteFromCollection(collectionName, nodes, false);
 
   result = pul.release();
   STACK_PUSH(result != NULL, state);
@@ -1088,14 +1095,17 @@ bool ZorbaDeleteNodeFirstIterator::nextImpl(
 /*******************************************************************************
 
 ********************************************************************************/
-bool ZorbaDeleteNodeLastIterator::nextImpl(
+bool ZorbaDeleteNodesLastIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
   store::Collection_t              collection;
   const StaticallyKnownCollection* collectionDecl;
   store::Item_t                    collectionName;
-  std::vector<store::Item_t>       lNodes;
+  ulong                            collectionSize;
+  store::Item_t                    numNodesItem;
+  ulong                            numNodes = 1;
+  std::vector<store::Item_t>       nodes;
   std::auto_ptr<store::PUL>        pul;
 
   PlanIteratorState* state;
@@ -1103,9 +1113,19 @@ bool ZorbaDeleteNodeLastIterator::nextImpl(
 
   consumeNext(collectionName, theChildren[0].getp(), planState);
 
+  if (theChildren.size() > 1)
+  {
+    if (!consumeNext(numNodesItem, theChildren[1].getp(), planState))
+      ZORBA_ASSERT(false);
+
+    numNodes = numNodesItem->getUnsignedLongValue();
+  }
+
   collectionDecl = getCollectionDecl(theSctx, collectionName, loc);
 
   collection = getCollection(theSctx, collectionName, loc);
+
+  collectionSize = collection->size();
 
   // checking collection modifiers
   switch(collectionDecl->getUpdateProperty()) 
@@ -1133,7 +1153,7 @@ bool ZorbaDeleteNodeLastIterator::nextImpl(
     ZORBA_ASSERT(false);
   }
 
-  if (collection->size() == 0) 
+  if (collectionSize < numNodes) 
   {
     ZORBA_ERROR_LOC_PARAM(XDDY0011_COLLECTION_NODE_NOT_FOUND, loc,
                           collectionName->getStringValue()->c_str(), "");
@@ -1142,8 +1162,10 @@ bool ZorbaDeleteNodeLastIterator::nextImpl(
   // create the pul and add the primitive
   pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  lNodes.push_back(collection->nodeAt(collection->size()-1));
-  pul->addDeleteFromCollection(collectionName, lNodes);
+  for (ulong i = numNodes; i > 0; --i)
+    nodes.push_back(collection->nodeAt(collectionSize - i));
+
+  pul->addDeleteFromCollection(collectionName, nodes, true);
 
   result = pul.release();
   STACK_PUSH( result != NULL, state);

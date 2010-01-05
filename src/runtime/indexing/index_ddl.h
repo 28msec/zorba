@@ -58,26 +58,27 @@ namespace zorba {
  *    
  * Author: Zorba Team
  */
-class CreateIndexIterator : public UnaryBaseIterator <CreateIndexIterator, PlanIteratorState>
+class CreateIndexIterator : public UnaryBaseIterator<CreateIndexIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(CreateIndexIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(CreateIndexIterator,
-    UnaryBaseIterator <CreateIndexIterator, PlanIteratorState>);
+    UnaryBaseIterator<CreateIndexIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (UnaryBaseIterator <CreateIndexIterator, PlanIteratorState>*)this);
+    (UnaryBaseIterator<CreateIndexIterator, PlanIteratorState>*)this);
   }
 
   CreateIndexIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , PlanIter_t& aChild)
-    : UnaryBaseIterator <CreateIndexIterator, PlanIteratorState>
-    (sctx, loc, aChild) {}
+    const QueryLoc& loc,
+    PlanIter_t& child)
+    : 
+    UnaryBaseIterator<CreateIndexIterator, PlanIteratorState>(sctx, loc, child)
+  {}
 
   virtual ~CreateIndexIterator();
 
@@ -98,26 +99,27 @@ public:
  *    
  * Author: Zorba Team
  */
-class DeleteIndexIterator : public UnaryBaseIterator <DeleteIndexIterator, PlanIteratorState>
+class DeleteIndexIterator : public UnaryBaseIterator<DeleteIndexIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(DeleteIndexIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(DeleteIndexIterator,
-    UnaryBaseIterator <DeleteIndexIterator, PlanIteratorState>);
+    UnaryBaseIterator<DeleteIndexIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (UnaryBaseIterator <DeleteIndexIterator, PlanIteratorState>*)this);
+    (UnaryBaseIterator<DeleteIndexIterator, PlanIteratorState>*)this);
   }
 
   DeleteIndexIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , PlanIter_t& aChild)
-    : UnaryBaseIterator <DeleteIndexIterator, PlanIteratorState>
-    (sctx, loc, aChild) {}
+    const QueryLoc& loc,
+    PlanIter_t& child)
+    : 
+    UnaryBaseIterator<DeleteIndexIterator, PlanIteratorState>(sctx, loc, child)
+  {}
 
   virtual ~DeleteIndexIterator();
 
@@ -146,7 +148,7 @@ public:
  *    
  * Author: Zorba Team
  */
-class CreateInternalIndexIterator : public UnaryBaseIterator <CreateInternalIndexIterator, PlanIteratorState>
+class CreateInternalIndexIterator : public UnaryBaseIterator<CreateInternalIndexIterator, PlanIteratorState>
 { 
 protected:
   store::Item_t theQName; //the name of the index to create
@@ -154,24 +156,25 @@ public:
   SERIALIZABLE_CLASS(CreateInternalIndexIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(CreateInternalIndexIterator,
-    UnaryBaseIterator <CreateInternalIndexIterator, PlanIteratorState>);
+    UnaryBaseIterator<CreateInternalIndexIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (UnaryBaseIterator <CreateInternalIndexIterator, PlanIteratorState>*)this);
+    (UnaryBaseIterator<CreateInternalIndexIterator, PlanIteratorState>*)this);
 
     ar & theQName;
   }
 
   CreateInternalIndexIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , PlanIter_t& aChild,
+    const QueryLoc& loc,
+    PlanIter_t& child,
     const store::Item_t aName)
-    : UnaryBaseIterator <CreateInternalIndexIterator, PlanIteratorState>
-    (sctx, loc, aChild),
-    theQName(aName) {}
+    : 
+    UnaryBaseIterator<CreateInternalIndexIterator, PlanIteratorState>(sctx, loc, child),
+    theQName(aName)
+  {}
 
   virtual ~CreateInternalIndexIterator();
 
@@ -194,26 +197,27 @@ public:
  *    
  * Author: Zorba Team
  */
-class RefreshIndexIterator : public UnaryBaseIterator <RefreshIndexIterator, PlanIteratorState>
+class RefreshIndexIterator : public UnaryBaseIterator<RefreshIndexIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(RefreshIndexIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(RefreshIndexIterator,
-    UnaryBaseIterator <RefreshIndexIterator, PlanIteratorState>);
+    UnaryBaseIterator<RefreshIndexIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (UnaryBaseIterator <RefreshIndexIterator, PlanIteratorState>*)this);
+    (UnaryBaseIterator<RefreshIndexIterator, PlanIteratorState>*)this);
   }
 
   RefreshIndexIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , PlanIter_t& aChild)
-    : UnaryBaseIterator <RefreshIndexIterator, PlanIteratorState>
-    (sctx, loc, aChild) {}
+    const QueryLoc& loc,
+    PlanIter_t& child)
+    : 
+    UnaryBaseIterator<RefreshIndexIterator, PlanIteratorState>(sctx, loc, child)
+  {}
 
   virtual ~RefreshIndexIterator();
 
@@ -241,26 +245,27 @@ public:
   void reset(PlanState&);
 };
 
-class IndexEntryBuilderIterator : public NaryBaseIterator <IndexEntryBuilderIterator, IndexEntryBuilderIteratorState>
+class IndexEntryBuilderIterator : public NaryBaseIterator<IndexEntryBuilderIterator, IndexEntryBuilderIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(IndexEntryBuilderIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IndexEntryBuilderIterator,
-    NaryBaseIterator <IndexEntryBuilderIterator, IndexEntryBuilderIteratorState>);
+    NaryBaseIterator<IndexEntryBuilderIterator, IndexEntryBuilderIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <IndexEntryBuilderIterator, IndexEntryBuilderIteratorState>*)this);
+    (NaryBaseIterator<IndexEntryBuilderIterator, IndexEntryBuilderIteratorState>*)this);
   }
 
   IndexEntryBuilderIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <IndexEntryBuilderIterator, IndexEntryBuilderIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<IndexEntryBuilderIterator, IndexEntryBuilderIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~IndexEntryBuilderIterator();
 
@@ -294,26 +299,27 @@ public:
   void reset(PlanState&);
 };
 
-class IndexPointProbeIterator : public NaryBaseIterator <IndexPointProbeIterator, IndexPointProbeIteratorState>
+class IndexPointProbeIterator : public NaryBaseIterator<IndexPointProbeIterator, IndexPointProbeIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(IndexPointProbeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IndexPointProbeIterator,
-    NaryBaseIterator <IndexPointProbeIterator, IndexPointProbeIteratorState>);
+    NaryBaseIterator<IndexPointProbeIterator, IndexPointProbeIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <IndexPointProbeIterator, IndexPointProbeIteratorState>*)this);
+    (NaryBaseIterator<IndexPointProbeIterator, IndexPointProbeIteratorState>*)this);
   }
 
   IndexPointProbeIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <IndexPointProbeIterator, IndexPointProbeIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<IndexPointProbeIterator, IndexPointProbeIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~IndexPointProbeIterator();
 
@@ -357,26 +363,27 @@ public:
   void reset(PlanState&);
 };
 
-class IndexRangeProbeIterator : public NaryBaseIterator <IndexRangeProbeIterator, IndexRangeProbeIteratorState>
+class IndexRangeProbeIterator : public NaryBaseIterator<IndexRangeProbeIterator, IndexRangeProbeIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(IndexRangeProbeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IndexRangeProbeIterator,
-    NaryBaseIterator <IndexRangeProbeIterator, IndexRangeProbeIteratorState>);
+    NaryBaseIterator<IndexRangeProbeIterator, IndexRangeProbeIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <IndexRangeProbeIterator, IndexRangeProbeIteratorState>*)this);
+    (NaryBaseIterator<IndexRangeProbeIterator, IndexRangeProbeIteratorState>*)this);
   }
 
   IndexRangeProbeIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <IndexRangeProbeIterator, IndexRangeProbeIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<IndexRangeProbeIterator, IndexRangeProbeIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~IndexRangeProbeIterator();
 

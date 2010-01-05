@@ -37,26 +37,27 @@ namespace zorba {
  * op:is-same-node
  * Author: Zorba Team
  */
-class IsSameNodeIterator : public NaryBaseIterator <IsSameNodeIterator, PlanIteratorState>
+class IsSameNodeIterator : public NaryBaseIterator<IsSameNodeIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(IsSameNodeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsSameNodeIterator,
-    NaryBaseIterator <IsSameNodeIterator, PlanIteratorState>);
+    NaryBaseIterator<IsSameNodeIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <IsSameNodeIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<IsSameNodeIterator, PlanIteratorState>*)this);
   }
 
   IsSameNodeIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <IsSameNodeIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<IsSameNodeIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~IsSameNodeIterator();
 
@@ -70,26 +71,27 @@ public:
  * op:node-before
  * Author: Zorba Team
  */
-class NodeBeforeIterator : public NaryBaseIterator <NodeBeforeIterator, PlanIteratorState>
+class NodeBeforeIterator : public NaryBaseIterator<NodeBeforeIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(NodeBeforeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(NodeBeforeIterator,
-    NaryBaseIterator <NodeBeforeIterator, PlanIteratorState>);
+    NaryBaseIterator<NodeBeforeIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <NodeBeforeIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<NodeBeforeIterator, PlanIteratorState>*)this);
   }
 
   NodeBeforeIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <NodeBeforeIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<NodeBeforeIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~NodeBeforeIterator();
 
@@ -103,26 +105,27 @@ public:
  * op:node-after
  * Author: Zorba Team
  */
-class NodeAfterIterator : public NaryBaseIterator <NodeAfterIterator, PlanIteratorState>
+class NodeAfterIterator : public NaryBaseIterator<NodeAfterIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(NodeAfterIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(NodeAfterIterator,
-    NaryBaseIterator <NodeAfterIterator, PlanIteratorState>);
+    NaryBaseIterator<NodeAfterIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <NodeAfterIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<NodeAfterIterator, PlanIteratorState>*)this);
   }
 
   NodeAfterIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <NodeAfterIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<NodeAfterIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~NodeAfterIterator();
 

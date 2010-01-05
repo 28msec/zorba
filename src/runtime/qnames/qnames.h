@@ -38,26 +38,27 @@ namespace zorba {
  * fn:resolve-QName
  * Author: Zorba Team
  */
-class ResolveQNameIterator : public BinaryBaseIterator <ResolveQNameIterator, PlanIteratorState>
+class ResolveQNameIterator : public BinaryBaseIterator<ResolveQNameIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(ResolveQNameIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ResolveQNameIterator,
-    BinaryBaseIterator <ResolveQNameIterator, PlanIteratorState>);
+    BinaryBaseIterator<ResolveQNameIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (BinaryBaseIterator <ResolveQNameIterator, PlanIteratorState>*)this);
+    (BinaryBaseIterator<ResolveQNameIterator, PlanIteratorState>*)this);
   }
 
   ResolveQNameIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , PlanIter_t& aChild1, PlanIter_t& aChild2)
-    : BinaryBaseIterator <ResolveQNameIterator, PlanIteratorState>
-    (sctx, loc, aChild1, aChild2) {}
+    const QueryLoc& loc,
+    PlanIter_t& child1, PlanIter_t& child2)
+    : 
+    BinaryBaseIterator<ResolveQNameIterator, PlanIteratorState>(sctx, loc, child1, child2)
+  {}
 
   virtual ~ResolveQNameIterator();
 
@@ -71,26 +72,27 @@ public:
  * fn:QName
  * Author: Zorba Team
  */
-class QNameIterator : public BinaryBaseIterator <QNameIterator, PlanIteratorState>
+class QNameIterator : public BinaryBaseIterator<QNameIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(QNameIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(QNameIterator,
-    BinaryBaseIterator <QNameIterator, PlanIteratorState>);
+    BinaryBaseIterator<QNameIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (BinaryBaseIterator <QNameIterator, PlanIteratorState>*)this);
+    (BinaryBaseIterator<QNameIterator, PlanIteratorState>*)this);
   }
 
   QNameIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , PlanIter_t& aChild1, PlanIter_t& aChild2)
-    : BinaryBaseIterator <QNameIterator, PlanIteratorState>
-    (sctx, loc, aChild1, aChild2) {}
+    const QueryLoc& loc,
+    PlanIter_t& child1, PlanIter_t& child2)
+    : 
+    BinaryBaseIterator<QNameIterator, PlanIteratorState>(sctx, loc, child1, child2)
+  {}
 
   virtual ~QNameIterator();
 
@@ -104,26 +106,27 @@ public:
  * op:QName-equal
  * Author: Zorba Team
  */
-class QNameEqualIterator : public BinaryBaseIterator <QNameEqualIterator, PlanIteratorState>
+class QNameEqualIterator : public BinaryBaseIterator<QNameEqualIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(QNameEqualIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(QNameEqualIterator,
-    BinaryBaseIterator <QNameEqualIterator, PlanIteratorState>);
+    BinaryBaseIterator<QNameEqualIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (BinaryBaseIterator <QNameEqualIterator, PlanIteratorState>*)this);
+    (BinaryBaseIterator<QNameEqualIterator, PlanIteratorState>*)this);
   }
 
   QNameEqualIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , PlanIter_t& aChild1, PlanIter_t& aChild2)
-    : BinaryBaseIterator <QNameEqualIterator, PlanIteratorState>
-    (sctx, loc, aChild1, aChild2) {}
+    const QueryLoc& loc,
+    PlanIter_t& child1, PlanIter_t& child2)
+    : 
+    BinaryBaseIterator<QNameEqualIterator, PlanIteratorState>(sctx, loc, child1, child2)
+  {}
 
   virtual ~QNameEqualIterator();
 
@@ -137,26 +140,27 @@ public:
  * fn:prefix-from-QName
  * Author: Zorba Team
  */
-class PrefixFromQNameIterator : public UnaryBaseIterator <PrefixFromQNameIterator, PlanIteratorState>
+class PrefixFromQNameIterator : public UnaryBaseIterator<PrefixFromQNameIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(PrefixFromQNameIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(PrefixFromQNameIterator,
-    UnaryBaseIterator <PrefixFromQNameIterator, PlanIteratorState>);
+    UnaryBaseIterator<PrefixFromQNameIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (UnaryBaseIterator <PrefixFromQNameIterator, PlanIteratorState>*)this);
+    (UnaryBaseIterator<PrefixFromQNameIterator, PlanIteratorState>*)this);
   }
 
   PrefixFromQNameIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , PlanIter_t& aChild)
-    : UnaryBaseIterator <PrefixFromQNameIterator, PlanIteratorState>
-    (sctx, loc, aChild) {}
+    const QueryLoc& loc,
+    PlanIter_t& child)
+    : 
+    UnaryBaseIterator<PrefixFromQNameIterator, PlanIteratorState>(sctx, loc, child)
+  {}
 
   virtual ~PrefixFromQNameIterator();
 
@@ -170,26 +174,27 @@ public:
  * fn:local-name-from-QName
  * Author: Zorba Team
  */
-class LocalNameFromQNameIterator : public UnaryBaseIterator <LocalNameFromQNameIterator, PlanIteratorState>
+class LocalNameFromQNameIterator : public UnaryBaseIterator<LocalNameFromQNameIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(LocalNameFromQNameIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(LocalNameFromQNameIterator,
-    UnaryBaseIterator <LocalNameFromQNameIterator, PlanIteratorState>);
+    UnaryBaseIterator<LocalNameFromQNameIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (UnaryBaseIterator <LocalNameFromQNameIterator, PlanIteratorState>*)this);
+    (UnaryBaseIterator<LocalNameFromQNameIterator, PlanIteratorState>*)this);
   }
 
   LocalNameFromQNameIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , PlanIter_t& aChild)
-    : UnaryBaseIterator <LocalNameFromQNameIterator, PlanIteratorState>
-    (sctx, loc, aChild) {}
+    const QueryLoc& loc,
+    PlanIter_t& child)
+    : 
+    UnaryBaseIterator<LocalNameFromQNameIterator, PlanIteratorState>(sctx, loc, child)
+  {}
 
   virtual ~LocalNameFromQNameIterator();
 
@@ -203,26 +208,27 @@ public:
  * fn:namespace-uri-from-QName
  * Author: Zorba Team
  */
-class NamespaceUriFromQNameIterator : public UnaryBaseIterator <NamespaceUriFromQNameIterator, PlanIteratorState>
+class NamespaceUriFromQNameIterator : public UnaryBaseIterator<NamespaceUriFromQNameIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(NamespaceUriFromQNameIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(NamespaceUriFromQNameIterator,
-    UnaryBaseIterator <NamespaceUriFromQNameIterator, PlanIteratorState>);
+    UnaryBaseIterator<NamespaceUriFromQNameIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (UnaryBaseIterator <NamespaceUriFromQNameIterator, PlanIteratorState>*)this);
+    (UnaryBaseIterator<NamespaceUriFromQNameIterator, PlanIteratorState>*)this);
   }
 
   NamespaceUriFromQNameIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , PlanIter_t& aChild)
-    : UnaryBaseIterator <NamespaceUriFromQNameIterator, PlanIteratorState>
-    (sctx, loc, aChild) {}
+    const QueryLoc& loc,
+    PlanIter_t& child)
+    : 
+    UnaryBaseIterator<NamespaceUriFromQNameIterator, PlanIteratorState>(sctx, loc, child)
+  {}
 
   virtual ~NamespaceUriFromQNameIterator();
 
@@ -236,26 +242,27 @@ public:
  * fn:namespace-uri-for-prefix
  * Author: Zorba Team
  */
-class NamespaceUriForPrefixIterator : public NaryBaseIterator <NamespaceUriForPrefixIterator, PlanIteratorState>
+class NamespaceUriForPrefixIterator : public NaryBaseIterator<NamespaceUriForPrefixIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(NamespaceUriForPrefixIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(NamespaceUriForPrefixIterator,
-    NaryBaseIterator <NamespaceUriForPrefixIterator, PlanIteratorState>);
+    NaryBaseIterator<NamespaceUriForPrefixIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <NamespaceUriForPrefixIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<NamespaceUriForPrefixIterator, PlanIteratorState>*)this);
   }
 
   NamespaceUriForPrefixIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <NamespaceUriForPrefixIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<NamespaceUriForPrefixIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~NamespaceUriForPrefixIterator();
 
@@ -283,26 +290,27 @@ public:
   void reset(PlanState&);
 };
 
-class InScopePrefixesIterator : public UnaryBaseIterator <InScopePrefixesIterator, InScopePrefixesIteratorState>
+class InScopePrefixesIterator : public UnaryBaseIterator<InScopePrefixesIterator, InScopePrefixesIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(InScopePrefixesIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(InScopePrefixesIterator,
-    UnaryBaseIterator <InScopePrefixesIterator, InScopePrefixesIteratorState>);
+    UnaryBaseIterator<InScopePrefixesIterator, InScopePrefixesIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (UnaryBaseIterator <InScopePrefixesIterator, InScopePrefixesIteratorState>*)this);
+    (UnaryBaseIterator<InScopePrefixesIterator, InScopePrefixesIteratorState>*)this);
   }
 
   InScopePrefixesIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , PlanIter_t& aChild)
-    : UnaryBaseIterator <InScopePrefixesIterator, InScopePrefixesIteratorState>
-    (sctx, loc, aChild) {}
+    const QueryLoc& loc,
+    PlanIter_t& child)
+    : 
+    UnaryBaseIterator<InScopePrefixesIterator, InScopePrefixesIteratorState>(sctx, loc, child)
+  {}
 
   virtual ~InScopePrefixesIterator();
 

@@ -144,7 +144,8 @@ CollectionImpl::deleteNode(Item& aNode)
     // Not sure if we really need this ????? 
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
 
-    return theCollection->removeNode(lItem);
+    ulong pos;
+    return theCollection->removeNode(lItem, pos);
 
   ZORBA_CATCH
   return false;

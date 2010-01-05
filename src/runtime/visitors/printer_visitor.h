@@ -119,11 +119,11 @@ namespace zorba {
     void beginVisit( const ZorbaDeleteNodesIterator& );
     void endVisit  ( const ZorbaDeleteNodesIterator& );
 
-    void beginVisit( const ZorbaDeleteNodeFirstIterator& );
-    void endVisit  ( const ZorbaDeleteNodeFirstIterator& );
+    void beginVisit( const ZorbaDeleteNodesFirstIterator& );
+    void endVisit  ( const ZorbaDeleteNodesFirstIterator& );
 
-    void beginVisit( const ZorbaDeleteNodeLastIterator& );
-    void endVisit  ( const ZorbaDeleteNodeLastIterator& );
+    void beginVisit( const ZorbaDeleteNodesLastIterator& );
+    void endVisit  ( const ZorbaDeleteNodesLastIterator& );
 
     void beginVisit( const CurrentDateTimeIterator& );
     void endVisit  ( const CurrentDateTimeIterator& );

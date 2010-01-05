@@ -39,7 +39,7 @@ namespace zorba {
  * iterator backing the validate expression
  * Author: Zorba Team
  */
-class ValidateIterator : public UnaryBaseIterator <ValidateIterator, PlanIteratorState>
+class ValidateIterator : public UnaryBaseIterator<ValidateIterator, PlanIteratorState>
 { 
 protected:
   enum ParseConstants::validation_mode_t validationMode; //
@@ -49,22 +49,23 @@ public:
   SERIALIZABLE_CLASS(ValidateIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ValidateIterator,
-    UnaryBaseIterator <ValidateIterator, PlanIteratorState>);
+    UnaryBaseIterator<ValidateIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar);
 
   ValidateIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , PlanIter_t& aChild,
+    const QueryLoc& loc,
+    PlanIter_t& child,
     enum ParseConstants::validation_mode_t aValidationMode,
     TypeManager* aTypemgr,
     store::Item* aTypeName)
-    : UnaryBaseIterator <ValidateIterator, PlanIteratorState>
-    (sctx, loc, aChild),
+    : 
+    UnaryBaseIterator<ValidateIterator, PlanIteratorState>(sctx, loc, child),
     validationMode(aValidationMode),
     typemgr(aTypemgr),
-    typeName(aTypeName) {}
+    typeName(aTypeName)
+  {}
 
   virtual ~ValidateIterator();
 
@@ -79,26 +80,27 @@ public:
  * iterator backing the validate expression
  * Author: Zorba Team
  */
-class ZorbaSchemaTypeIterator : public NaryBaseIterator <ZorbaSchemaTypeIterator, PlanIteratorState>
+class ZorbaSchemaTypeIterator : public NaryBaseIterator<ZorbaSchemaTypeIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(ZorbaSchemaTypeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaSchemaTypeIterator,
-    NaryBaseIterator <ZorbaSchemaTypeIterator, PlanIteratorState>);
+    NaryBaseIterator<ZorbaSchemaTypeIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <ZorbaSchemaTypeIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<ZorbaSchemaTypeIterator, PlanIteratorState>*)this);
   }
 
   ZorbaSchemaTypeIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <ZorbaSchemaTypeIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<ZorbaSchemaTypeIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~ZorbaSchemaTypeIterator();
 

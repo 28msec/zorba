@@ -52,26 +52,26 @@ public:
   void reset(PlanState&);
 };
 
-class NumGenIterator : public NoaryBaseIterator <NumGenIterator, NumGenIteratorState>
+class NumGenIterator : public NoaryBaseIterator<NumGenIterator, NumGenIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(NumGenIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(NumGenIterator,
-    NoaryBaseIterator <NumGenIterator, NumGenIteratorState>);
+    NoaryBaseIterator<NumGenIterator, NumGenIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NoaryBaseIterator <NumGenIterator, NumGenIteratorState>*)this);
+    (NoaryBaseIterator<NumGenIterator, NumGenIteratorState>*)this);
   }
 
   NumGenIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    )
-    : NoaryBaseIterator <NumGenIterator, NumGenIteratorState>
-    (sctx, loc) {}
+    const QueryLoc& loc)
+    : 
+    NoaryBaseIterator<NumGenIterator, NumGenIteratorState>(sctx, loc)
+  {}
 
   virtual ~NumGenIterator();
 
@@ -85,26 +85,27 @@ public:
  * Function for generating a random integer.
  * Author: Zorba Team
  */
-class RandomIterator : public NaryBaseIterator <RandomIterator, PlanIteratorState>
+class RandomIterator : public NaryBaseIterator<RandomIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(RandomIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(RandomIterator,
-    NaryBaseIterator <RandomIterator, PlanIteratorState>);
+    NaryBaseIterator<RandomIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <RandomIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<RandomIterator, PlanIteratorState>*)this);
   }
 
   RandomIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <RandomIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<RandomIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~RandomIterator();
 
@@ -118,26 +119,27 @@ public:
  * generates UUID
  * Author: Zorba Team
  */
-class UuidIterator : public NaryBaseIterator <UuidIterator, PlanIteratorState>
+class UuidIterator : public NaryBaseIterator<UuidIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(UuidIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(UuidIterator,
-    NaryBaseIterator <UuidIterator, PlanIteratorState>);
+    NaryBaseIterator<UuidIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <UuidIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<UuidIterator, PlanIteratorState>*)this);
   }
 
   UuidIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <UuidIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<UuidIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~UuidIterator();
 

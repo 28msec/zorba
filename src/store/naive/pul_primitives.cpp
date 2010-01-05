@@ -949,13 +949,37 @@ void UpdDeleteNodesFromCollection::apply()
                             (GET_STORE().getCollection(theName).getp());
   assert(lColl);
 
-  theCollectionPul->setAdjustTreePositions();
+  theIsApplied = true;
 
-  for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
-       lIter != theNodes.end();
-       ++lIter) 
+  ulong size = lColl->size();
+
+  ulong numNodes = theNodes.size();
+
+  bool isLast = theIsLast;
+
+  if (theIsLast)
   {
-    lColl->removeNode(lIter->getp());
+
+    for (ulong i = numNodes; i > 0; --i)
+    {
+      if (theNodes[i] != lColl->nodeAt(size - i))
+      {
+        isLast = false;
+        break;
+      }
+    }
+  }
+
+  if (!isLast)
+    theCollectionPul->setAdjustTreePositions();
+
+  theFound.resize(numNodes);
+  thePositions.resize(numNodes);
+
+  for (ulong i = 0; i < numNodes; ++i)
+  {
+    theFound[i] = lColl->removeNode(theNodes[i], thePositions[i]);
+    ++theNumApplied;
   }
 }
 
@@ -965,14 +989,11 @@ void UpdDeleteNodesFromCollection::undo()
                             (GET_STORE().getCollection(theName).getp());
   assert(lColl);
 
-  ulong lIndex;
-  for (std::vector<store::Item_t>::iterator lIter = theNodes.begin();
-       lIter != theNodes.end();
-       ++lIter) 
+  for (ulong i = 0; i < theNumApplied; ++i)
   {
-    if (lColl->findNode(lIter->getp(), lIndex))
+    if (theFound[i])
     {
-      lColl->addNode(lIter->getp());
+      lColl->addNode(theNodes[i], thePositions[i]);
     }
   }
 }

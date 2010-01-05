@@ -37,26 +37,27 @@ namespace zorba {
  * fn:years-from-duration
  * Author: Zorba Team
  */
-class YearsFromDurationIterator : public NaryBaseIterator <YearsFromDurationIterator, PlanIteratorState>
+class YearsFromDurationIterator : public NaryBaseIterator<YearsFromDurationIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(YearsFromDurationIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(YearsFromDurationIterator,
-    NaryBaseIterator <YearsFromDurationIterator, PlanIteratorState>);
+    NaryBaseIterator<YearsFromDurationIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <YearsFromDurationIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<YearsFromDurationIterator, PlanIteratorState>*)this);
   }
 
   YearsFromDurationIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <YearsFromDurationIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<YearsFromDurationIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~YearsFromDurationIterator();
 
@@ -70,26 +71,27 @@ public:
  * fn:months-from-duration
  * Author: Zorba Team
  */
-class MonthsFromDurationIterator : public NaryBaseIterator <MonthsFromDurationIterator, PlanIteratorState>
+class MonthsFromDurationIterator : public NaryBaseIterator<MonthsFromDurationIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(MonthsFromDurationIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(MonthsFromDurationIterator,
-    NaryBaseIterator <MonthsFromDurationIterator, PlanIteratorState>);
+    NaryBaseIterator<MonthsFromDurationIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <MonthsFromDurationIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<MonthsFromDurationIterator, PlanIteratorState>*)this);
   }
 
   MonthsFromDurationIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <MonthsFromDurationIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<MonthsFromDurationIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~MonthsFromDurationIterator();
 
@@ -103,26 +105,27 @@ public:
  * fn:days-from-duration
  * Author: Zorba Team
  */
-class DaysFromDurationIterator : public NaryBaseIterator <DaysFromDurationIterator, PlanIteratorState>
+class DaysFromDurationIterator : public NaryBaseIterator<DaysFromDurationIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(DaysFromDurationIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(DaysFromDurationIterator,
-    NaryBaseIterator <DaysFromDurationIterator, PlanIteratorState>);
+    NaryBaseIterator<DaysFromDurationIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <DaysFromDurationIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<DaysFromDurationIterator, PlanIteratorState>*)this);
   }
 
   DaysFromDurationIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <DaysFromDurationIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<DaysFromDurationIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~DaysFromDurationIterator();
 
@@ -136,26 +139,27 @@ public:
  * fn:hours-from-duration
  * Author: Zorba Team
  */
-class HoursFromDurationIterator : public NaryBaseIterator <HoursFromDurationIterator, PlanIteratorState>
+class HoursFromDurationIterator : public NaryBaseIterator<HoursFromDurationIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(HoursFromDurationIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(HoursFromDurationIterator,
-    NaryBaseIterator <HoursFromDurationIterator, PlanIteratorState>);
+    NaryBaseIterator<HoursFromDurationIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <HoursFromDurationIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<HoursFromDurationIterator, PlanIteratorState>*)this);
   }
 
   HoursFromDurationIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <HoursFromDurationIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<HoursFromDurationIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~HoursFromDurationIterator();
 
@@ -169,26 +173,27 @@ public:
  * fn:minutes-from-duration
  * Author: Zorba Team
  */
-class MinutesFromDurationIterator : public NaryBaseIterator <MinutesFromDurationIterator, PlanIteratorState>
+class MinutesFromDurationIterator : public NaryBaseIterator<MinutesFromDurationIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(MinutesFromDurationIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(MinutesFromDurationIterator,
-    NaryBaseIterator <MinutesFromDurationIterator, PlanIteratorState>);
+    NaryBaseIterator<MinutesFromDurationIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <MinutesFromDurationIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<MinutesFromDurationIterator, PlanIteratorState>*)this);
   }
 
   MinutesFromDurationIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <MinutesFromDurationIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<MinutesFromDurationIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~MinutesFromDurationIterator();
 
@@ -202,26 +207,27 @@ public:
  * fn:seconds-from-duration
  * Author: Zorba Team
  */
-class SecondsFromDurationIterator : public NaryBaseIterator <SecondsFromDurationIterator, PlanIteratorState>
+class SecondsFromDurationIterator : public NaryBaseIterator<SecondsFromDurationIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(SecondsFromDurationIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(SecondsFromDurationIterator,
-    NaryBaseIterator <SecondsFromDurationIterator, PlanIteratorState>);
+    NaryBaseIterator<SecondsFromDurationIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <SecondsFromDurationIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<SecondsFromDurationIterator, PlanIteratorState>*)this);
   }
 
   SecondsFromDurationIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <SecondsFromDurationIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<SecondsFromDurationIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~SecondsFromDurationIterator();
 
@@ -235,26 +241,27 @@ public:
  * fn:year-from-dateTime
  * Author: Zorba Team
  */
-class YearFromDatetimeIterator : public NaryBaseIterator <YearFromDatetimeIterator, PlanIteratorState>
+class YearFromDatetimeIterator : public NaryBaseIterator<YearFromDatetimeIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(YearFromDatetimeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(YearFromDatetimeIterator,
-    NaryBaseIterator <YearFromDatetimeIterator, PlanIteratorState>);
+    NaryBaseIterator<YearFromDatetimeIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <YearFromDatetimeIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<YearFromDatetimeIterator, PlanIteratorState>*)this);
   }
 
   YearFromDatetimeIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <YearFromDatetimeIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<YearFromDatetimeIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~YearFromDatetimeIterator();
 
@@ -268,26 +275,27 @@ public:
  * fn:month-from-dateTime
  * Author: Zorba Team
  */
-class MonthFromDatetimeIterator : public NaryBaseIterator <MonthFromDatetimeIterator, PlanIteratorState>
+class MonthFromDatetimeIterator : public NaryBaseIterator<MonthFromDatetimeIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(MonthFromDatetimeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(MonthFromDatetimeIterator,
-    NaryBaseIterator <MonthFromDatetimeIterator, PlanIteratorState>);
+    NaryBaseIterator<MonthFromDatetimeIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <MonthFromDatetimeIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<MonthFromDatetimeIterator, PlanIteratorState>*)this);
   }
 
   MonthFromDatetimeIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <MonthFromDatetimeIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<MonthFromDatetimeIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~MonthFromDatetimeIterator();
 
@@ -301,26 +309,27 @@ public:
  * fn:day-from-dateTime
  * Author: Zorba Team
  */
-class DayFromDatetimeIterator : public NaryBaseIterator <DayFromDatetimeIterator, PlanIteratorState>
+class DayFromDatetimeIterator : public NaryBaseIterator<DayFromDatetimeIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(DayFromDatetimeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(DayFromDatetimeIterator,
-    NaryBaseIterator <DayFromDatetimeIterator, PlanIteratorState>);
+    NaryBaseIterator<DayFromDatetimeIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <DayFromDatetimeIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<DayFromDatetimeIterator, PlanIteratorState>*)this);
   }
 
   DayFromDatetimeIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <DayFromDatetimeIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<DayFromDatetimeIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~DayFromDatetimeIterator();
 
@@ -334,26 +343,27 @@ public:
  * fn:hours-from-dateTime
  * Author: Zorba Team
  */
-class HoursFromDatetimeIterator : public NaryBaseIterator <HoursFromDatetimeIterator, PlanIteratorState>
+class HoursFromDatetimeIterator : public NaryBaseIterator<HoursFromDatetimeIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(HoursFromDatetimeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(HoursFromDatetimeIterator,
-    NaryBaseIterator <HoursFromDatetimeIterator, PlanIteratorState>);
+    NaryBaseIterator<HoursFromDatetimeIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <HoursFromDatetimeIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<HoursFromDatetimeIterator, PlanIteratorState>*)this);
   }
 
   HoursFromDatetimeIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <HoursFromDatetimeIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<HoursFromDatetimeIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~HoursFromDatetimeIterator();
 
@@ -367,26 +377,27 @@ public:
  * fn:minutes-from-dateTime
  * Author: Zorba Team
  */
-class MinutesFromDatetimeIterator : public NaryBaseIterator <MinutesFromDatetimeIterator, PlanIteratorState>
+class MinutesFromDatetimeIterator : public NaryBaseIterator<MinutesFromDatetimeIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(MinutesFromDatetimeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(MinutesFromDatetimeIterator,
-    NaryBaseIterator <MinutesFromDatetimeIterator, PlanIteratorState>);
+    NaryBaseIterator<MinutesFromDatetimeIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <MinutesFromDatetimeIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<MinutesFromDatetimeIterator, PlanIteratorState>*)this);
   }
 
   MinutesFromDatetimeIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <MinutesFromDatetimeIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<MinutesFromDatetimeIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~MinutesFromDatetimeIterator();
 
@@ -400,26 +411,27 @@ public:
  * fn:seconds-from-dateTime
  * Author: Zorba Team
  */
-class SecondsFromDatetimeIterator : public NaryBaseIterator <SecondsFromDatetimeIterator, PlanIteratorState>
+class SecondsFromDatetimeIterator : public NaryBaseIterator<SecondsFromDatetimeIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(SecondsFromDatetimeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(SecondsFromDatetimeIterator,
-    NaryBaseIterator <SecondsFromDatetimeIterator, PlanIteratorState>);
+    NaryBaseIterator<SecondsFromDatetimeIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <SecondsFromDatetimeIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<SecondsFromDatetimeIterator, PlanIteratorState>*)this);
   }
 
   SecondsFromDatetimeIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <SecondsFromDatetimeIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<SecondsFromDatetimeIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~SecondsFromDatetimeIterator();
 
@@ -433,26 +445,27 @@ public:
  * fn:timezone-from-dateTime
  * Author: Zorba Team
  */
-class TimezoneFromDatetimeIterator : public NaryBaseIterator <TimezoneFromDatetimeIterator, PlanIteratorState>
+class TimezoneFromDatetimeIterator : public NaryBaseIterator<TimezoneFromDatetimeIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(TimezoneFromDatetimeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(TimezoneFromDatetimeIterator,
-    NaryBaseIterator <TimezoneFromDatetimeIterator, PlanIteratorState>);
+    NaryBaseIterator<TimezoneFromDatetimeIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <TimezoneFromDatetimeIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<TimezoneFromDatetimeIterator, PlanIteratorState>*)this);
   }
 
   TimezoneFromDatetimeIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <TimezoneFromDatetimeIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<TimezoneFromDatetimeIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~TimezoneFromDatetimeIterator();
 
@@ -466,26 +479,27 @@ public:
  * fn:year-from-date
  * Author: Zorba Team
  */
-class YearFromDateIterator : public NaryBaseIterator <YearFromDateIterator, PlanIteratorState>
+class YearFromDateIterator : public NaryBaseIterator<YearFromDateIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(YearFromDateIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(YearFromDateIterator,
-    NaryBaseIterator <YearFromDateIterator, PlanIteratorState>);
+    NaryBaseIterator<YearFromDateIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <YearFromDateIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<YearFromDateIterator, PlanIteratorState>*)this);
   }
 
   YearFromDateIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <YearFromDateIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<YearFromDateIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~YearFromDateIterator();
 
@@ -499,26 +513,27 @@ public:
  * fn:month-from-date
  * Author: Zorba Team
  */
-class MonthFromDateIterator : public NaryBaseIterator <MonthFromDateIterator, PlanIteratorState>
+class MonthFromDateIterator : public NaryBaseIterator<MonthFromDateIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(MonthFromDateIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(MonthFromDateIterator,
-    NaryBaseIterator <MonthFromDateIterator, PlanIteratorState>);
+    NaryBaseIterator<MonthFromDateIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <MonthFromDateIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<MonthFromDateIterator, PlanIteratorState>*)this);
   }
 
   MonthFromDateIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <MonthFromDateIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<MonthFromDateIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~MonthFromDateIterator();
 
@@ -532,26 +547,27 @@ public:
  * fn:day-from-date
  * Author: Zorba Team
  */
-class DayFromDateIterator : public NaryBaseIterator <DayFromDateIterator, PlanIteratorState>
+class DayFromDateIterator : public NaryBaseIterator<DayFromDateIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(DayFromDateIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(DayFromDateIterator,
-    NaryBaseIterator <DayFromDateIterator, PlanIteratorState>);
+    NaryBaseIterator<DayFromDateIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <DayFromDateIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<DayFromDateIterator, PlanIteratorState>*)this);
   }
 
   DayFromDateIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <DayFromDateIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<DayFromDateIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~DayFromDateIterator();
 
@@ -565,26 +581,27 @@ public:
  * fn:timezone-from-date
  * Author: Zorba Team
  */
-class TimezoneFromDateIterator : public NaryBaseIterator <TimezoneFromDateIterator, PlanIteratorState>
+class TimezoneFromDateIterator : public NaryBaseIterator<TimezoneFromDateIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(TimezoneFromDateIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(TimezoneFromDateIterator,
-    NaryBaseIterator <TimezoneFromDateIterator, PlanIteratorState>);
+    NaryBaseIterator<TimezoneFromDateIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <TimezoneFromDateIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<TimezoneFromDateIterator, PlanIteratorState>*)this);
   }
 
   TimezoneFromDateIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <TimezoneFromDateIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<TimezoneFromDateIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~TimezoneFromDateIterator();
 
@@ -598,26 +615,27 @@ public:
  * fn:hours-from-time
  * Author: Zorba Team
  */
-class HoursFromTimeIterator : public NaryBaseIterator <HoursFromTimeIterator, PlanIteratorState>
+class HoursFromTimeIterator : public NaryBaseIterator<HoursFromTimeIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(HoursFromTimeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(HoursFromTimeIterator,
-    NaryBaseIterator <HoursFromTimeIterator, PlanIteratorState>);
+    NaryBaseIterator<HoursFromTimeIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <HoursFromTimeIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<HoursFromTimeIterator, PlanIteratorState>*)this);
   }
 
   HoursFromTimeIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <HoursFromTimeIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<HoursFromTimeIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~HoursFromTimeIterator();
 
@@ -631,26 +649,27 @@ public:
  * fn:minutes-from-time
  * Author: Zorba Team
  */
-class MinutesFromTimeIterator : public NaryBaseIterator <MinutesFromTimeIterator, PlanIteratorState>
+class MinutesFromTimeIterator : public NaryBaseIterator<MinutesFromTimeIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(MinutesFromTimeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(MinutesFromTimeIterator,
-    NaryBaseIterator <MinutesFromTimeIterator, PlanIteratorState>);
+    NaryBaseIterator<MinutesFromTimeIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <MinutesFromTimeIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<MinutesFromTimeIterator, PlanIteratorState>*)this);
   }
 
   MinutesFromTimeIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <MinutesFromTimeIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<MinutesFromTimeIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~MinutesFromTimeIterator();
 
@@ -664,26 +683,27 @@ public:
  * fn:seconds-from-time
  * Author: Zorba Team
  */
-class SecondsFromTimeIterator : public NaryBaseIterator <SecondsFromTimeIterator, PlanIteratorState>
+class SecondsFromTimeIterator : public NaryBaseIterator<SecondsFromTimeIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(SecondsFromTimeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(SecondsFromTimeIterator,
-    NaryBaseIterator <SecondsFromTimeIterator, PlanIteratorState>);
+    NaryBaseIterator<SecondsFromTimeIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <SecondsFromTimeIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<SecondsFromTimeIterator, PlanIteratorState>*)this);
   }
 
   SecondsFromTimeIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <SecondsFromTimeIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<SecondsFromTimeIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~SecondsFromTimeIterator();
 
@@ -697,26 +717,27 @@ public:
  * fn:timezone-from-time
  * Author: Zorba Team
  */
-class TimezoneFromTimeIterator : public NaryBaseIterator <TimezoneFromTimeIterator, PlanIteratorState>
+class TimezoneFromTimeIterator : public NaryBaseIterator<TimezoneFromTimeIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(TimezoneFromTimeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(TimezoneFromTimeIterator,
-    NaryBaseIterator <TimezoneFromTimeIterator, PlanIteratorState>);
+    NaryBaseIterator<TimezoneFromTimeIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <TimezoneFromTimeIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<TimezoneFromTimeIterator, PlanIteratorState>*)this);
   }
 
   TimezoneFromTimeIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <TimezoneFromTimeIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<TimezoneFromTimeIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~TimezoneFromTimeIterator();
 
@@ -730,26 +751,27 @@ public:
  * zorba:timestamp
  * Author: Zorba Team
  */
-class TimestampIterator : public NaryBaseIterator <TimestampIterator, PlanIteratorState>
+class TimestampIterator : public NaryBaseIterator<TimestampIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(TimestampIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(TimestampIterator,
-    NaryBaseIterator <TimestampIterator, PlanIteratorState>);
+    NaryBaseIterator<TimestampIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <TimestampIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<TimestampIterator, PlanIteratorState>*)this);
   }
 
   TimestampIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <TimestampIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<TimestampIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~TimestampIterator();
 

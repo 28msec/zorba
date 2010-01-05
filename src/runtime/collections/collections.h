@@ -53,26 +53,27 @@ public:
   void reset(PlanState&);
 };
 
-class FnCollectionIterator : public NaryBaseIterator <FnCollectionIterator, FnCollectionIteratorState>
+class FnCollectionIterator : public NaryBaseIterator<FnCollectionIterator, FnCollectionIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(FnCollectionIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnCollectionIterator,
-    NaryBaseIterator <FnCollectionIterator, FnCollectionIteratorState>);
+    NaryBaseIterator<FnCollectionIterator, FnCollectionIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <FnCollectionIterator, FnCollectionIteratorState>*)this);
+    (NaryBaseIterator<FnCollectionIterator, FnCollectionIteratorState>*)this);
   }
 
   FnCollectionIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <FnCollectionIterator, FnCollectionIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FnCollectionIterator, FnCollectionIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~FnCollectionIterator();
 
@@ -102,26 +103,27 @@ public:
   void reset(PlanState&);
 };
 
-class ZorbaCollectionIterator : public NaryBaseIterator <ZorbaCollectionIterator, ZorbaCollectionIteratorState>
+class ZorbaCollectionIterator : public NaryBaseIterator<ZorbaCollectionIterator, ZorbaCollectionIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(ZorbaCollectionIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaCollectionIterator,
-    NaryBaseIterator <ZorbaCollectionIterator, ZorbaCollectionIteratorState>);
+    NaryBaseIterator<ZorbaCollectionIterator, ZorbaCollectionIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <ZorbaCollectionIterator, ZorbaCollectionIteratorState>*)this);
+    (NaryBaseIterator<ZorbaCollectionIterator, ZorbaCollectionIteratorState>*)this);
   }
 
   ZorbaCollectionIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <ZorbaCollectionIterator, ZorbaCollectionIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<ZorbaCollectionIterator, ZorbaCollectionIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~ZorbaCollectionIterator();
 
@@ -137,26 +139,27 @@ public:
  *    
  * Author: Zorba Team
  */
-class ZorbaIndexOfIterator : public NaryBaseIterator <ZorbaIndexOfIterator, PlanIteratorState>
+class ZorbaIndexOfIterator : public NaryBaseIterator<ZorbaIndexOfIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(ZorbaIndexOfIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaIndexOfIterator,
-    NaryBaseIterator <ZorbaIndexOfIterator, PlanIteratorState>);
+    NaryBaseIterator<ZorbaIndexOfIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <ZorbaIndexOfIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<ZorbaIndexOfIterator, PlanIteratorState>*)this);
   }
 
   ZorbaIndexOfIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <ZorbaIndexOfIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<ZorbaIndexOfIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~ZorbaIndexOfIterator();
 
@@ -172,26 +175,27 @@ public:
  *    
  * Author: Zorba Team
  */
-class ZorbaCreateCollectionIterator : public NaryBaseIterator <ZorbaCreateCollectionIterator, PlanIteratorState>
+class ZorbaCreateCollectionIterator : public NaryBaseIterator<ZorbaCreateCollectionIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(ZorbaCreateCollectionIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaCreateCollectionIterator,
-    NaryBaseIterator <ZorbaCreateCollectionIterator, PlanIteratorState>);
+    NaryBaseIterator<ZorbaCreateCollectionIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <ZorbaCreateCollectionIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<ZorbaCreateCollectionIterator, PlanIteratorState>*)this);
   }
 
   ZorbaCreateCollectionIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <ZorbaCreateCollectionIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<ZorbaCreateCollectionIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~ZorbaCreateCollectionIterator();
 
@@ -207,26 +211,27 @@ public:
  *    
  * Author: Zorba Team
  */
-class ZorbaDeleteCollectionIterator : public NaryBaseIterator <ZorbaDeleteCollectionIterator, PlanIteratorState>
+class ZorbaDeleteCollectionIterator : public NaryBaseIterator<ZorbaDeleteCollectionIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(ZorbaDeleteCollectionIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaDeleteCollectionIterator,
-    NaryBaseIterator <ZorbaDeleteCollectionIterator, PlanIteratorState>);
+    NaryBaseIterator<ZorbaDeleteCollectionIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <ZorbaDeleteCollectionIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<ZorbaDeleteCollectionIterator, PlanIteratorState>*)this);
   }
 
   ZorbaDeleteCollectionIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <ZorbaDeleteCollectionIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<ZorbaDeleteCollectionIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~ZorbaDeleteCollectionIterator();
 
@@ -242,26 +247,27 @@ public:
  *    
  * Author: Zorba Team
  */
-class ZorbaInsertNodesIterator : public NaryBaseIterator <ZorbaInsertNodesIterator, PlanIteratorState>
+class ZorbaInsertNodesIterator : public NaryBaseIterator<ZorbaInsertNodesIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(ZorbaInsertNodesIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaInsertNodesIterator,
-    NaryBaseIterator <ZorbaInsertNodesIterator, PlanIteratorState>);
+    NaryBaseIterator<ZorbaInsertNodesIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <ZorbaInsertNodesIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<ZorbaInsertNodesIterator, PlanIteratorState>*)this);
   }
 
   ZorbaInsertNodesIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <ZorbaInsertNodesIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<ZorbaInsertNodesIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~ZorbaInsertNodesIterator();
 
@@ -277,26 +283,27 @@ public:
  *    
  * Author: Zorba Team
  */
-class ZorbaInsertNodesFirstIterator : public NaryBaseIterator <ZorbaInsertNodesFirstIterator, PlanIteratorState>
+class ZorbaInsertNodesFirstIterator : public NaryBaseIterator<ZorbaInsertNodesFirstIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(ZorbaInsertNodesFirstIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaInsertNodesFirstIterator,
-    NaryBaseIterator <ZorbaInsertNodesFirstIterator, PlanIteratorState>);
+    NaryBaseIterator<ZorbaInsertNodesFirstIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <ZorbaInsertNodesFirstIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<ZorbaInsertNodesFirstIterator, PlanIteratorState>*)this);
   }
 
   ZorbaInsertNodesFirstIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <ZorbaInsertNodesFirstIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<ZorbaInsertNodesFirstIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~ZorbaInsertNodesFirstIterator();
 
@@ -312,26 +319,27 @@ public:
  *    
  * Author: Zorba Team
  */
-class ZorbaInsertNodesLastIterator : public NaryBaseIterator <ZorbaInsertNodesLastIterator, PlanIteratorState>
+class ZorbaInsertNodesLastIterator : public NaryBaseIterator<ZorbaInsertNodesLastIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(ZorbaInsertNodesLastIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaInsertNodesLastIterator,
-    NaryBaseIterator <ZorbaInsertNodesLastIterator, PlanIteratorState>);
+    NaryBaseIterator<ZorbaInsertNodesLastIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <ZorbaInsertNodesLastIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<ZorbaInsertNodesLastIterator, PlanIteratorState>*)this);
   }
 
   ZorbaInsertNodesLastIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <ZorbaInsertNodesLastIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<ZorbaInsertNodesLastIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~ZorbaInsertNodesLastIterator();
 
@@ -347,26 +355,27 @@ public:
  *    
  * Author: Zorba Team
  */
-class ZorbaInsertNodesBeforeIterator : public NaryBaseIterator <ZorbaInsertNodesBeforeIterator, PlanIteratorState>
+class ZorbaInsertNodesBeforeIterator : public NaryBaseIterator<ZorbaInsertNodesBeforeIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(ZorbaInsertNodesBeforeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaInsertNodesBeforeIterator,
-    NaryBaseIterator <ZorbaInsertNodesBeforeIterator, PlanIteratorState>);
+    NaryBaseIterator<ZorbaInsertNodesBeforeIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <ZorbaInsertNodesBeforeIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<ZorbaInsertNodesBeforeIterator, PlanIteratorState>*)this);
   }
 
   ZorbaInsertNodesBeforeIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <ZorbaInsertNodesBeforeIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<ZorbaInsertNodesBeforeIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~ZorbaInsertNodesBeforeIterator();
 
@@ -382,26 +391,27 @@ public:
  *    
  * Author: Zorba Team
  */
-class ZorbaInsertNodesAfterIterator : public NaryBaseIterator <ZorbaInsertNodesAfterIterator, PlanIteratorState>
+class ZorbaInsertNodesAfterIterator : public NaryBaseIterator<ZorbaInsertNodesAfterIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(ZorbaInsertNodesAfterIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaInsertNodesAfterIterator,
-    NaryBaseIterator <ZorbaInsertNodesAfterIterator, PlanIteratorState>);
+    NaryBaseIterator<ZorbaInsertNodesAfterIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <ZorbaInsertNodesAfterIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<ZorbaInsertNodesAfterIterator, PlanIteratorState>*)this);
   }
 
   ZorbaInsertNodesAfterIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <ZorbaInsertNodesAfterIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<ZorbaInsertNodesAfterIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~ZorbaInsertNodesAfterIterator();
 
@@ -417,26 +427,27 @@ public:
  *    
  * Author: Zorba Team
  */
-class ZorbaDeleteNodesIterator : public NaryBaseIterator <ZorbaDeleteNodesIterator, PlanIteratorState>
+class ZorbaDeleteNodesIterator : public NaryBaseIterator<ZorbaDeleteNodesIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(ZorbaDeleteNodesIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaDeleteNodesIterator,
-    NaryBaseIterator <ZorbaDeleteNodesIterator, PlanIteratorState>);
+    NaryBaseIterator<ZorbaDeleteNodesIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <ZorbaDeleteNodesIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<ZorbaDeleteNodesIterator, PlanIteratorState>*)this);
   }
 
   ZorbaDeleteNodesIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <ZorbaDeleteNodesIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<ZorbaDeleteNodesIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~ZorbaDeleteNodesIterator();
 
@@ -452,28 +463,29 @@ public:
  *    
  * Author: Zorba Team
  */
-class ZorbaDeleteNodeFirstIterator : public NaryBaseIterator <ZorbaDeleteNodeFirstIterator, PlanIteratorState>
+class ZorbaDeleteNodesFirstIterator : public NaryBaseIterator<ZorbaDeleteNodesFirstIterator, PlanIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(ZorbaDeleteNodeFirstIterator);
+  SERIALIZABLE_CLASS(ZorbaDeleteNodesFirstIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaDeleteNodeFirstIterator,
-    NaryBaseIterator <ZorbaDeleteNodeFirstIterator, PlanIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaDeleteNodesFirstIterator,
+    NaryBaseIterator<ZorbaDeleteNodesFirstIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <ZorbaDeleteNodeFirstIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<ZorbaDeleteNodesFirstIterator, PlanIteratorState>*)this);
   }
 
-  ZorbaDeleteNodeFirstIterator(
+  ZorbaDeleteNodesFirstIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <ZorbaDeleteNodeFirstIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<ZorbaDeleteNodesFirstIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
-  virtual ~ZorbaDeleteNodeFirstIterator();
+  virtual ~ZorbaDeleteNodesFirstIterator();
 
   void accept(PlanIterVisitor& v) const;
 
@@ -487,28 +499,29 @@ public:
  *    
  * Author: Zorba Team
  */
-class ZorbaDeleteNodeLastIterator : public NaryBaseIterator <ZorbaDeleteNodeLastIterator, PlanIteratorState>
+class ZorbaDeleteNodesLastIterator : public NaryBaseIterator<ZorbaDeleteNodesLastIterator, PlanIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(ZorbaDeleteNodeLastIterator);
+  SERIALIZABLE_CLASS(ZorbaDeleteNodesLastIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaDeleteNodeLastIterator,
-    NaryBaseIterator <ZorbaDeleteNodeLastIterator, PlanIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaDeleteNodesLastIterator,
+    NaryBaseIterator<ZorbaDeleteNodesLastIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <ZorbaDeleteNodeLastIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<ZorbaDeleteNodesLastIterator, PlanIteratorState>*)this);
   }
 
-  ZorbaDeleteNodeLastIterator(
+  ZorbaDeleteNodesLastIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <ZorbaDeleteNodeLastIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<ZorbaDeleteNodesLastIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
-  virtual ~ZorbaDeleteNodeLastIterator();
+  virtual ~ZorbaDeleteNodesLastIterator();
 
   void accept(PlanIterVisitor& v) const;
 

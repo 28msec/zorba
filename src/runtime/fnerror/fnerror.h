@@ -37,26 +37,27 @@ namespace zorba {
  * fn:error
  * Author: Zorba Team
  */
-class ErrorIterator : public NaryBaseIterator <ErrorIterator, PlanIteratorState>
+class ErrorIterator : public NaryBaseIterator<ErrorIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(ErrorIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ErrorIterator,
-    NaryBaseIterator <ErrorIterator, PlanIteratorState>);
+    NaryBaseIterator<ErrorIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <ErrorIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<ErrorIterator, PlanIteratorState>*)this);
   }
 
   ErrorIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <ErrorIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<ErrorIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~ErrorIterator();
 

@@ -165,7 +165,8 @@ public:
 
   virtual void addDeleteFromCollection(
         Item_t& name,
-        std::vector<store::Item_t>& nodes) = 0;
+        std::vector<store::Item_t>& nodes,
+        bool isLast) = 0;
 
   virtual void addCreateIndex(
         const Item_t& qname,

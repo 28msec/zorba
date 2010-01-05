@@ -76,9 +76,9 @@ namespace zorba{
 
     class ZorbaDeleteNodesIterator;
 
-    class ZorbaDeleteNodeFirstIterator;
+    class ZorbaDeleteNodesFirstIterator;
 
-    class ZorbaDeleteNodeLastIterator;
+    class ZorbaDeleteNodesLastIterator;
 
     class CurrentDateTimeIterator;
 
@@ -495,11 +495,11 @@ public:
     virtual void beginVisit ( const ZorbaDeleteNodesIterator& ) = 0;
     virtual void endVisit   ( const ZorbaDeleteNodesIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaDeleteNodeFirstIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaDeleteNodeFirstIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaDeleteNodesFirstIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaDeleteNodesFirstIterator& ) = 0;
 
-    virtual void beginVisit ( const ZorbaDeleteNodeLastIterator& ) = 0;
-    virtual void endVisit   ( const ZorbaDeleteNodeLastIterator& ) = 0;
+    virtual void beginVisit ( const ZorbaDeleteNodesLastIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaDeleteNodesLastIterator& ) = 0;
 
     virtual void beginVisit ( const CurrentDateTimeIterator& ) = 0;
     virtual void endVisit   ( const CurrentDateTimeIterator& ) = 0;

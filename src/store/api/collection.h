@@ -79,12 +79,15 @@ public:
   virtual void addNode(Item* node, long position = -1) = 0;
 
   /**
-   * Removes a root node from the collection.
+   * Removes a root node from the collection, if the node does belong to the
+   * collection.
    *
-   * @param  node to be removed.
+   * @param  node The node to be removed.
+   * @param  pos If the node belongs to the collection, pos is set to the
+   *         node's position before it is removed. 
    * @return True if the node was in the collection, false otherwise.
    */
-  virtual bool removeNode(Item* node) = 0;
+  virtual bool removeNode(Item* node, ulong& pos) = 0;
 
   /**
    * Get the node at the given position in the collection.

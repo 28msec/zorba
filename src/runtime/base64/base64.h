@@ -37,26 +37,27 @@ namespace zorba {
  * base64:decode
  * Author: Zorba Team
  */
-class Base64DecodeIterator : public NaryBaseIterator <Base64DecodeIterator, PlanIteratorState>
+class Base64DecodeIterator : public NaryBaseIterator<Base64DecodeIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(Base64DecodeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(Base64DecodeIterator,
-    NaryBaseIterator <Base64DecodeIterator, PlanIteratorState>);
+    NaryBaseIterator<Base64DecodeIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <Base64DecodeIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<Base64DecodeIterator, PlanIteratorState>*)this);
   }
 
   Base64DecodeIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <Base64DecodeIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<Base64DecodeIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~Base64DecodeIterator();
 
@@ -70,26 +71,27 @@ public:
  * base64:encode
  * Author: Zorba Team
  */
-class Base64EncodeIterator : public NaryBaseIterator <Base64EncodeIterator, PlanIteratorState>
+class Base64EncodeIterator : public NaryBaseIterator<Base64EncodeIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(Base64EncodeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(Base64EncodeIterator,
-    NaryBaseIterator <Base64EncodeIterator, PlanIteratorState>);
+    NaryBaseIterator<Base64EncodeIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <Base64EncodeIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<Base64EncodeIterator, PlanIteratorState>*)this);
   }
 
   Base64EncodeIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <Base64EncodeIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<Base64EncodeIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~Base64EncodeIterator();
 

@@ -37,26 +37,27 @@ namespace zorba {
  * fn:resolve-uri
  * Author: Zorba Team
  */
-class ResolveUriIterator : public NaryBaseIterator <ResolveUriIterator, PlanIteratorState>
+class ResolveUriIterator : public NaryBaseIterator<ResolveUriIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(ResolveUriIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ResolveUriIterator,
-    NaryBaseIterator <ResolveUriIterator, PlanIteratorState>);
+    NaryBaseIterator<ResolveUriIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <ResolveUriIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<ResolveUriIterator, PlanIteratorState>*)this);
   }
 
   ResolveUriIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <ResolveUriIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<ResolveUriIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~ResolveUriIterator();
 

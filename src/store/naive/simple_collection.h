@@ -97,7 +97,7 @@ public:
         const store::Item* aTargetNode,
         bool before);
 
-  bool removeNode(store::Item* node);
+  bool removeNode(store::Item* node, ulong& pos);
 
   bool removeNode(ulong position);
 

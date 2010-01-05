@@ -1025,13 +1025,24 @@ public:
 ********************************************************************************/
 class UpdDeleteNodesFromCollection: public  UpdCollection
 {
+protected:
+  bool               theIsLast;
+
+  ulong              theNumApplied;
+  std::vector<bool>  theFound;
+  std::vector<ulong> thePositions;
+
+
 public:
   UpdDeleteNodesFromCollection(
         CollectionPul* pul,
         store::Item_t& name,
-        std::vector<store::Item_t>& nodes)
+        std::vector<store::Item_t>& nodes,
+        bool isLast)
     :
-    UpdCollection(pul, name, nodes)
+    UpdCollection(pul, name, nodes),
+    theIsLast(isLast),
+    theNumApplied(0)
   {
   }
 

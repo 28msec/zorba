@@ -224,10 +224,11 @@ ulong SimpleCollection::addNodes(
 
 
 /*******************************************************************************
-  Remove the tree rooted at the given node, it the tree actually belongs to the
-  collection. Return true if the tree was found and removed; false otherwise.
+  Remove the tree rooted at the given node, if the tree actually belongs to the
+  collection. If the tree was found return true and the position of the tree;
+  otherwise, return false.
 ********************************************************************************/
-bool SimpleCollection::removeNode(store::Item* nodeItem)
+bool SimpleCollection::removeNode(store::Item* nodeItem, ulong& position)
 {
   if (!nodeItem->isNode())
   {
@@ -239,15 +240,14 @@ bool SimpleCollection::removeNode(store::Item* nodeItem)
 
   SYNC_CODE(AutoLatch lock(theLatch, Latch::WRITE);)
 
-  ulong position;
   bool found = findNode(nodeItem, position);
 
   if (found)
   {
     ZORBA_ASSERT(node->getCollection() == this);
 
-    theXmlTrees.erase(theXmlTrees.begin() + position);
     node->setCollection(NULL, 0);
+    theXmlTrees.erase(theXmlTrees.begin() + position);
     return true;
   }
   else
@@ -274,8 +274,8 @@ bool SimpleCollection::removeNode(ulong position)
   {
     XmlNode* node = static_cast<XmlNode*>(theXmlTrees[position].getp());
     ZORBA_ASSERT(node->getCollection() == this);
-    node->setCollection(NULL, 0);
 
+    node->setCollection(NULL, 0);
     theXmlTrees.erase(theXmlTrees.begin() + position);
     return true;
   }

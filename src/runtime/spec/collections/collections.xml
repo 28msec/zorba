@@ -263,7 +263,7 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-<zorba:iterator name="ZorbaDeleteNodeFirstIterator" >
+<zorba:iterator name="ZorbaDeleteNodesFirstIterator" >
 
     <zorba:description author="Zorba Team">
       zorba:delete-node-first
@@ -276,13 +276,21 @@
       </zorba:signature>
     </zorba:function>
 
+    <zorba:function isUpdating="true" requiresDynamicContext="true"> 
+      <zorba:signature localname="delete-nodes-first" prefix="fn-zorba-ddl">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>xs:unsignedLong</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
 </zorba:iterator>
 
 <!--
 /*******************************************************************************
 ********************************************************************************/
 -->
-<zorba:iterator name="ZorbaDeleteNodeLastIterator" >
+<zorba:iterator name="ZorbaDeleteNodesLastIterator" >
 
     <zorba:description author="Zorba Team">
       zorba:delete-node-last
@@ -291,6 +299,14 @@
     <zorba:function isUpdating="true" requiresDynamicContext="true"> 
       <zorba:signature localname="delete-node-last" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
+        <zorba:output>empty-sequence()</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+    <zorba:function isUpdating="true" requiresDynamicContext="true"> 
+      <zorba:signature localname="delete-nodes-last" prefix="fn-zorba-ddl">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>xs:unsignedLong</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
     </zorba:function>

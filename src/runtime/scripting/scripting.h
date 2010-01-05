@@ -38,26 +38,27 @@ namespace zorba {
  * Sequential Iterator
  * Author: Zorba Team
  */
-class SequentialIterator : public NaryBaseIterator <SequentialIterator, PlanIteratorState>
+class SequentialIterator : public NaryBaseIterator<SequentialIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(SequentialIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(SequentialIterator,
-    NaryBaseIterator <SequentialIterator, PlanIteratorState>);
+    NaryBaseIterator<SequentialIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <SequentialIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<SequentialIterator, PlanIteratorState>*)this);
   }
 
   SequentialIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <SequentialIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<SequentialIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~SequentialIterator();
 
@@ -71,26 +72,27 @@ public:
  * Loop Iterator
  * Author: Zorba Team
  */
-class LoopIterator : public NaryBaseIterator <LoopIterator, PlanIteratorState>
+class LoopIterator : public NaryBaseIterator<LoopIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(LoopIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(LoopIterator,
-    NaryBaseIterator <LoopIterator, PlanIteratorState>);
+    NaryBaseIterator<LoopIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator <LoopIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<LoopIterator, PlanIteratorState>*)this);
   }
 
   LoopIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren)
-    : NaryBaseIterator <LoopIterator, PlanIteratorState>
-    (sctx, loc, aChildren) {}
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<LoopIterator, PlanIteratorState>(sctx, loc, children)
+  {}
 
   virtual ~LoopIterator();
 
@@ -104,7 +106,7 @@ public:
  * FlowCtlIterator
  * Author: Zorba Team
  */
-class FlowCtlIterator : public NaryBaseIterator <FlowCtlIterator, PlanIteratorState>
+class FlowCtlIterator : public NaryBaseIterator<FlowCtlIterator, PlanIteratorState>
 { 
 protected:
   enum FlowCtlException::action act; //
@@ -112,18 +114,19 @@ public:
   SERIALIZABLE_CLASS(FlowCtlIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FlowCtlIterator,
-    NaryBaseIterator <FlowCtlIterator, PlanIteratorState>);
+    NaryBaseIterator<FlowCtlIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar);
 
   FlowCtlIterator(
     static_context* sctx,
-    const QueryLoc& loc
-    , std::vector<PlanIter_t>& aChildren,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children,
     enum FlowCtlException::action aAction)
-    : NaryBaseIterator <FlowCtlIterator, PlanIteratorState>
-    (sctx, loc, aChildren),
-    act(aAction) {}
+    : 
+    NaryBaseIterator<FlowCtlIterator, PlanIteratorState>(sctx, loc, children),
+    act(aAction)
+  {}
 
   virtual ~FlowCtlIterator();
 

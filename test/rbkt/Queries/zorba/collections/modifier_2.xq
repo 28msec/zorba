@@ -10,7 +10,9 @@ declare sequential function local:init() {
   );
 };
 
-declare sequential function local:testa_1() {
+
+declare sequential function local:testa_1() 
+{
   try {
     block {
       xqddf:delete-nodes($ns:coll_1, subsequence(xqddf:collection($ns:coll_1), 1, 2));
@@ -20,7 +22,9 @@ declare sequential function local:testa_1() {
   }
 };
 
-declare sequential function local:testa_2() {
+
+declare sequential function local:testa_2() 
+{
   try {
     block {
       xqddf:delete-nodes($ns:coll_2, subsequence(xqddf:collection($ns:coll_2), 1, 2));
@@ -30,7 +34,9 @@ declare sequential function local:testa_2() {
   }
 };
 
-declare sequential function local:testa_3() {
+
+declare sequential function local:testa_3() 
+{
   try {
     block {
       xqddf:delete-nodes($ns:coll_3, subsequence(xqddf:collection($ns:coll_3), 2, 2));
@@ -40,8 +46,10 @@ declare sequential function local:testa_3() {
   }
 };
 
-declare sequential function local:testa_4() {
-  xqddf:delete-nodes($ns:coll_3, subsequence(xqddf:collection($ns:coll_3), 1, 2));
+
+declare sequential function local:testa_4() 
+{
+  xqddf:delete-nodes-first($ns:coll_3, 2 cast as xs:unsignedLong);
 };
 
 
