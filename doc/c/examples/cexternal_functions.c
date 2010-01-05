@@ -25,7 +25,7 @@
 // released in my_ext_fct_release
 typedef struct
 {
-  int             i;
+  unsigned int i;
 } my_ext_data;
 
 // callback function called once when initializing the external function
@@ -49,19 +49,19 @@ my_ext_fct_init(void** user_data, void* function_user_data)
 // function's result. The Zorba_ItemSetter struct is used to provide that
 // item. This function should return XQC_END_OF_SEQUENCE when it is done.
 XQC_Error
-my_ext_fct_next(XQC_Sequence** args, int argc, Zorba_ItemSetter* setter,
-  void* user_data, void* function_data)
+my_ext_fct_next(XQC_Sequence** args, unsigned int argc,
+  Zorba_ItemSetter* setter, void* user_data, void* function_data)
 {
   // Our function concantenates the input argument sequences
   my_ext_data* data = (my_ext_data*) user_data;
   while (data->i < argc) {
     XQC_Sequence* lSeq = args[data->i];
+    XQC_ItemType lItemType;
     if ( (lSeq->next(lSeq)) == XQC_END_OF_SEQUENCE) {
       // Finished one of the arguments
       data->i++;
       continue;
     }
-    XQC_ItemType lItemType;
     lSeq->item_type(lSeq, &lItemType);
     switch (lItemType) {
       case XQC_DECIMAL_TYPE: {

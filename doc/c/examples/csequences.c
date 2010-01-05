@@ -51,10 +51,10 @@ check_error(const char* func_name, XQC_Error error)
 #define CREATE_FOO_SEQUENCE_TEST(ctype, printftype, typename, xqctype)  \
   XQC_Error   lError = XQC_NO_ERROR;                                    \
   XQC_Sequence* lSeq;                                                   \
+  int i;                                                                \
   lError = impl->create_##typename##_sequence                           \
     (impl, typename##Array, 5, &lSeq);                                  \
   if (check_error("create_" #typename "_sequence", lError)) return 0;   \
-  int i;                                                                \
   for (i = 0; i <= 4; i++) {                                            \
     ctype lValue;                                                       \
     XQC_ItemType lType;                                                 \
