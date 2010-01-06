@@ -48,30 +48,76 @@ private:
   store::Item_t                   theName;
   store::IC::ICKind               theICKind;          
   store::Item_t                   theCollectionName;
-  store::Item_t                   theToCollectionName;
   store::Item_t                   theFromCollectionName;
+  store::Item_t                   theToCollectionName;
   store::Iterator_t               thePlanWrapper;
 
 public:
   SERIALIZABLE_CLASS(ValueIC)
-  ValueIC(::zorba::serialization::Archiver& ar);
+  ValueIC(::zorba::serialization::Archiver& ar) : SimpleRCObject(ar) {};
+
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  ValueIC(static_context* sctx, const QueryLoc& loc, const store::Item_t& name,
-          store::Iterator_t icPlanWrapper);
+  ValueIC(static_context* sctx, const store::Item_t& name,
+          const store::Item_t& collName, store::Iterator_t icPlanWrapper)
+  :
+    theSctx(sctx),
+    theName(name),
+    theICKind(store::IC::ic_collection),
+    theCollectionName(collName),
+    thePlanWrapper(icPlanWrapper)
+  {}
 
-  ~ValueIC();
+  ValueIC(static_context* sctx, const store::Item_t& name,
+          const store::Item_t& fromCollName, const store::Item_t& toCollName, 
+          store::Iterator_t icPlanWrapper)
+  :
+    theSctx(sctx),
+    theName(name),
+    theICKind(store::IC::ic_foreignkey),
+    theFromCollectionName(fromCollName),
+    theToCollectionName(toCollName),
+    thePlanWrapper(icPlanWrapper)
+  {}
 
-  static_context* getSctx() const { return theSctx; }
 
-  const store::Item_t& getName() const;
-  const store::Item_t& getCollectionName() const;
-  const store::Item_t& getToCollectionName() const;
-  const store::Item_t& getFromCollectionName() const;
+  virtual ~ValueIC() {}
 
-  store::IC::ICKind getICKind() const { return theICKind; }
-  store::Iterator* getIterator() const;
+  static_context* getSctx() const 
+  { 
+    return theSctx; 
+  }
+
+  const store::Item_t& getICName() const
+  {
+    return theName;
+  }
+
+  const store::Item_t& getCollectionName() const
+  {
+    return theCollectionName;
+  }
+
+  const store::Item_t& getFromCollectionName() const
+  {
+    return theFromCollectionName;
+  }
+
+  const store::Item_t& getToCollectionName() const
+  {
+    return theToCollectionName;
+  }
+
+  store::IC::ICKind getICKind() const 
+  {
+    return theICKind; 
+  }
+  
+  store::Iterator* getIterator() const
+  {
+    return thePlanWrapper.getp();
+  }
 
   //void analyze();
 

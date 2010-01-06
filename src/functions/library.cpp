@@ -37,6 +37,7 @@
 #include "functions/durations_dates_times_impl.h"
 #include "functions/func_fnerror.h"
 #include "functions/func_index_ddl.h"
+#include "functions/func_ic_ddl.h"
 #include "functions/func_schema.h"
 #include "functions/func_sctx.h"
 #include "functions/func_strings.h"
@@ -99,6 +100,7 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_fnerror(sctx);
   populate_context_fnput(sctx);
   populate_context_index_ddl(sctx);
+  populate_context_ic_ddl(sctx);
   populate_context_maths(sctx);
   populate_context_nodes(sctx);
   populate_context_numerics(sctx);

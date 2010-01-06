@@ -1279,12 +1279,12 @@ void static_context::bind_ic(
 }
 
 
-ValueIC* static_context::lookup_ic(const store::Item* qname) const
+ValueIC_t static_context::lookup_ic(const store::Item* qname) const
 {
   ValueIC_t vic;
 
-  if (theICMap->get(qname, vic))
-    return vic.getp();
+  if (theICMap != NULL && theICMap->get(qname, vic))
+    return vic;
   else
     return NULL;
 }
@@ -1635,6 +1635,27 @@ bool static_context::import_module(const static_context* module, const QueryLoc&
       if (!theIndexMap->insert((store::Item*)pair.first, pair.second))
       {
         ZORBA_ERROR_LOC_PARAM(XQP0038_INDEX_IS_ALREADY_DECLARED, loc,
+                              pair.first->getStringValue()->c_str(), "");
+      }
+    }
+  }
+
+  if (module->theICMap)
+  {
+    ICMap::iterator ic_iter = module->theICMap->begin();
+    ICMap::iterator ic_end = module->theICMap->end();
+    for (; ic_iter != ic_end; ++ic_iter)
+    {
+      std::pair<const store::Item*, rchandle<ValueIC> > pair = (*ic_iter);
+
+      if (theICMap == NULL)
+      {
+        theICMap = new ICMap(0, NULL, 8, false);
+      }
+
+      if (!theICMap->insert((store::Item*)pair.first, pair.second))
+      {
+        ZORBA_ERROR_LOC_PARAM(XQP0048_IC_IS_ALREADY_DECLARED, loc,
                               pair.first->getStringValue()->c_str(), "");
       }
     }

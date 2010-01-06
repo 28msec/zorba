@@ -3364,10 +3364,10 @@ void* begin_visit(const IntegrityConstraintDecl& v)
 
       expr_t uriStrExpr = new const_expr(sctxid(), loc, uriStr );
       
-      // xs:QName("example:coll1")
+      // fn:QName("uri", "example:coll1")
       fo_expr_t qnameExpr = new fo_expr(sctxid(), loc,
                                         GET_BUILTIN_FUNCTION(FN_QNAME_2),
-                                        qnameStrExpr, uriStrExpr);
+                                        uriStrExpr, qnameStrExpr);
 
       // dc:collection(xs:QName("example:coll1"))
       function* fn_collection = sctx_p->lookup_resolved_fn(
@@ -3427,10 +3427,10 @@ void* begin_visit(const IntegrityConstraintDecl& v)
 
       expr_t uriStrExpr = new const_expr(sctxid(), loc, uriStr );
 
-      // xs:QName("org:employees")
+      // fn:QName("org-uri", "org:employees")
       fo_expr_t qnameExpr = new fo_expr(sctxid(), loc,
                                         GET_BUILTIN_FUNCTION(FN_QNAME_2),
-                                        qnameStrExpr, uriStrExpr);
+                                        uriStrExpr, qnameStrExpr);
 
       // dc:collection(xs:QName("org:employees"))
       function* fn_collection = sctx_p->lookup_resolved_fn(
@@ -3528,10 +3528,10 @@ void* begin_visit(const IntegrityConstraintDecl& v)
 
       expr_t uriStrExpr = new const_expr(sctxid(), loc, uriStr );
       
-      // xs:QName("org:transactions")
+      // fn:QName("org-uri", "org:transactions")
       fo_expr_t qnameExpr = new fo_expr(sctxid(), loc,
                                         GET_BUILTIN_FUNCTION(FN_QNAME_2),
-                                        qnameStrExpr, uriStrExpr);
+                                        uriStrExpr, qnameStrExpr);
 
       // dc:collection(xs:QName("org:transactions"))
       function* fn_collection = sctx_p->lookup_resolved_fn(
@@ -3609,7 +3609,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
       // xs:QName("org:employees")
       fo_expr_t toQnameExpr = new fo_expr(sctxid(), loc,
                                         GET_BUILTIN_FUNCTION(FN_QNAME_2),
-                                        toQnameStrExpr, toUriStrExpr);
+                                          toUriStrExpr, toQnameStrExpr);
 
       // dc:collection(xs:QName("org:employees"))
       function* toFnCollection = sctx_p->lookup_resolved_fn(
@@ -3655,10 +3655,10 @@ void* begin_visit(const IntegrityConstraintDecl& v)
 
       expr_t fromUriStrExpr = new const_expr(sctxid(), loc, fromUriStr );
 
-      // xs:QName("org:transactions")
+      // fn:QName("org-uri", "org:transactions")
       fo_expr_t fromQnameExpr = new fo_expr(sctxid(), loc,
                                             GET_BUILTIN_FUNCTION(FN_QNAME_2),
-                                            fromQnameStrExpr, fromUriStrExpr);
+                                            fromUriStrExpr, fromQnameStrExpr);
 
       // dc:collection(xs:QName("org:transactions"))
       function* fromFnCollection = sctx_p->lookup_resolved_fn(
@@ -3826,10 +3826,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
     break;
 
   case IntegrityConstraintDecl::foreign_key:
-    {
-      //const ICForeignKey ic = 
-      //  dynamic_cast<const ICForeignKey&>(v);
-      
+    {      
       //////  Get data from stack
       // $x//sale/empid
       expr_t fromKeyExpr = pop_nodestack();
@@ -3883,7 +3880,40 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
   store::Item_t qnameItem = sctx_p->lookup_fn_qname(qname->get_prefix(),
                                                     qname->get_localname(),
                                                     qname->get_location());
-  ValueIC_t vic = new ValueIC(sctx_p, loc, qnameItem, icPlanWrapper);
+
+
+  ValueIC_t vic;
+  if ( v.getICKind() == IntegrityConstraintDecl::foreign_key )
+  {
+    const ICForeignKey ic = dynamic_cast<const ICForeignKey&>(v);
+
+    const QName* fromQname = ic.getFromCollName();
+    store::Item_t fromQnameItem = 
+      sctx_p->lookup_fn_qname(fromQname->get_prefix(), 
+                              fromQname->get_localname(),
+                              fromQname->get_location());
+
+    const QName* toQname = ic.getToCollName();
+    store::Item_t toQnameItem = 
+      sctx_p->lookup_fn_qname(toQname->get_prefix(), 
+                              toQname->get_localname(),
+                              toQname->get_location());
+
+    vic = new ValueIC(sctx_p, qnameItem, fromQnameItem, toQnameItem, 
+                      icPlanWrapper);
+  }
+  else
+  {
+    const ICColl* ic = dynamic_cast<const ICColl*>(&v);
+
+    const QName* collQname = ic->getCollName();
+    store::Item_t collQnameItem = 
+      sctx_p->lookup_fn_qname(collQname->get_prefix(), 
+                              collQname->get_localname(),
+                              collQname->get_location());
+
+    vic = new ValueIC(sctx_p, qnameItem, collQnameItem, icPlanWrapper);
+  }   
 
   sctx_p->bind_ic(qnameItem, vic, loc);     
 

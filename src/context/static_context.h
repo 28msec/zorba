@@ -394,7 +394,7 @@ public:
   //
   void bind_ic(const store::Item* qname, ValueIC_t& vic, const QueryLoc& loc);
 
-  ValueIC* lookup_ic(const store::Item* qname) const;
+  ValueIC_t lookup_ic(const store::Item* qname) const;
 
   store::Iterator_t list_ic_names() const;
 

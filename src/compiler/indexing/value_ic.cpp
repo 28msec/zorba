@@ -27,31 +27,6 @@ namespace zorba
 SERIALIZABLE_CLASS_VERSIONS(ValueIC)
 END_SERIALIZABLE_CLASS_VERSIONS(ValueIC)
 
-/*******************************************************************************
-
-*******************************************************************************/
-ValueIC::ValueIC(
-    static_context* sctx,
-    const QueryLoc& loc,
-    const store::Item_t& name,
-    store::Iterator_t icPlanWrapper)
-  :
-  theSctx(sctx),
-  theName(name),
-  thePlanWrapper(icPlanWrapper)
-{ 
-}
-  
-
-/*******************************************************************************
-
-*******************************************************************************/
-ValueIC::ValueIC(::zorba::serialization::Archiver& ar)
-  :
-  SimpleRCObject(ar)
-{
-}
-
 
 /*******************************************************************************
 
@@ -60,54 +35,8 @@ void ValueIC::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theSctx;
   ar & theName;
-}
-
-
-/*******************************************************************************
-
-*******************************************************************************/
-ValueIC::~ValueIC()
-{
-}
-
-
-/*******************************************************************************
-*******************************************************************************/
-const store::Item_t& ValueIC::getName() const
-{
-  return theName;
-}
-
-
-/*******************************************************************************
-*******************************************************************************/
-const store::Item_t& ValueIC::getCollectionName() const
-{
-  return theCollectionName;
-}
-
-
-/*******************************************************************************
-*******************************************************************************/
-const store::Item_t& ValueIC::getToCollectionName() const
-{
-  return theToCollectionName;
-}
-
-
-/*******************************************************************************
-*******************************************************************************/
-const store::Item_t& ValueIC::getFromCollectionName() const
-{
-  return theFromCollectionName;
-}
-
-
-/*******************************************************************************
-*******************************************************************************/
-store::Iterator* ValueIC::getIterator() const 
-{
-  return thePlanWrapper.getp(); 
+  //ar & theICKind;
+  ar & thePlanWrapper;
 }
 
 
@@ -128,8 +57,22 @@ std::string ValueIC::toString()
 {
   std::ostringstream os;
 
-  os << "IC : " << theName->getStringValue()->c_str() << std::endl;
+  os << "IC : " << theName->getStringValue()->c_str() << " " << 
+    (theICKind==store::IC::ic_collection) << " ";
+  
+  switch( theICKind )
+  {
+  case store::IC::ic_collection:
+    os << "Coll: " << theCollectionName->getStringValue()->c_str();
+    break;
+  
+  case store::IC::ic_foreignkey:
+    os << "ToColl: " << theToCollectionName->getStringValue()->c_str() << 
+      " FromColl: " << theFromCollectionName->getStringValue()->c_str() ;
+      }
 
+  os << std::endl;
+  
   return os.str();
 }
 

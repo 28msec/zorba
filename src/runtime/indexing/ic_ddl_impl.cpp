@@ -69,12 +69,17 @@ bool ActivateICIterator::nextImpl(store::Item_t& result, PlanState& planState)
   switch ( vic->getICKind() )
   {
   case store::IC::ic_collection:
-    dctx->activateIC(vic->getName(), vic->getCollectionName());
+    dctx->activateIC(vic->getICName(), vic->getCollectionName());
     break;
+
   case store::IC::ic_foreignkey:
-    dctx->activateForeignKeyIC(vic->getName(), 
+    dctx->activateForeignKeyIC(vic->getICName(), 
                                vic->getToCollectionName(),
                                vic->getFromCollectionName());
+    break;
+
+  default:
+    ZORBA_ASSERT(false);
     break;
   }
 
