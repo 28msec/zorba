@@ -183,7 +183,7 @@ namespace zorba { namespace http_client {
   void HttpRequestHandler::beginMultipart(String aContentType, String aBoundary)
   {
     theInsideMultipart = true;
-    std::string lValue = "Content-type: ";
+    std::string lValue = "Content-Type: ";
     lValue += aContentType.c_str();
     theHeaderLists[0] = curl_slist_append(theHeaderLists[0], lValue.c_str());
   }
@@ -230,8 +230,10 @@ namespace zorba { namespace http_client {
         theCurrentContentType.endsWith("+xml"))
       {
         lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XML;
-        lOptions.version = "1.1"; 
+        lOptions.version = "1.1";
+        lOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
       } else if (theCurrentContentType == "text/html") {
+        lOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
         lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_HTML;
       } else if (theCurrentContentType.startsWith("text/")) {
         lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_TEXT;
