@@ -22,7 +22,6 @@ namespace zorba { namespace http_client {
       theLast(NULL)
   {
     theHeaderLists.push_back(NULL);
-    struct curl_slist* l = theHeaderLists[0];
   }
 
   HttpRequestHandler::~HttpRequestHandler()
