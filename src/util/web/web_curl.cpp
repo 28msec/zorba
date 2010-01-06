@@ -15,7 +15,6 @@
  */
 #include <curl/curl.h>
 #include "util/web/web.h"
-// #include "zorbaerrors/error_manager.h"
 
 #ifdef ZORBA_WITH_TIDY
   #include <tidy.h>
@@ -44,7 +43,7 @@ int http_get(const char* url, std::iostream& result)
 {
   int result_code;
   CURL* curl_handle;
-  
+
   curl_handle = curl_easy_init();                                             /* init the curl session */
   curl_easy_setopt(curl_handle, CURLOPT_URL, url);                            /* specify URL to get */
   curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);  /* send all data to this function  */
@@ -130,7 +129,7 @@ Bool setZorbaOptions(TidyDoc& tdoc)
   return ok;
 }
 
-Bool setUserOptions(TidyDoc& tdoc, const char* options)  throw()
+Bool setUserOptions(TidyDoc& tdoc, const char* options, std::string& aOption)  throw()
 {
   Bool          ok = yes;
   std::string   option, value;
@@ -151,10 +150,14 @@ Bool setUserOptions(TidyDoc& tdoc, const char* options)  throw()
       }
 
       TidyOptionId toID = tidyOptGetIdForName(option.c_str());
-      ok = tidyOptSetValue(tdoc, toID, value.c_str());
 
-//       if(!ok)
-//         ZORBA_ERROR_PARAM(API0037_TIDY_ERROR_SET_OPTION, option.c_str(), value.c_str());
+      if(toID < N_TIDY_OPTIONS)
+        ok = tidyOptSetValue(tdoc, toID, value.c_str());
+      else
+      {
+        ok = no;
+        aOption = option;
+      }
      }
   }
   return ok;
@@ -172,6 +175,7 @@ int tidy(const char* input,
   tidyBufInit( &output );
   tidyBufInit( &errbuf );
   xqpStringStore_t    buf, err;
+  std::string option;
 
   tdoc = tidyCreate();
 
@@ -183,7 +187,7 @@ int tidy(const char* input,
   if ( rc >= 0 )
     ok = setZorbaOptions(tdoc);
   if(ok)
-    ok = setUserOptions(tdoc, userOpt);
+    ok = setUserOptions(tdoc, userOpt, option);
   if( ok )
   {
     rc = tidyCleanAndRepair( tdoc );                 // Tidy it up!
@@ -203,7 +207,7 @@ int tidy(const char* input,
   else
   {
     rc = -1;
-    diagnostics = new xqpStringStore("couldn't set the Tidy options");
+    diagnostics = new xqpStringStore("couldn't set the Tidy option <" + option + ">");
   }
 
   tidyBufFree( &output );
@@ -222,7 +226,8 @@ int tidy(const std::istream& stream,
   Bool            ok;
   std::streambuf* pbuf;
   uint            size;
-  
+  std::string option;
+
   if (stream == NULL || result == NULL)
     return rc;
 
@@ -254,7 +259,7 @@ int tidy(const std::istream& stream,
   if ( rc >= 0 )
     ok = setZorbaOptions(tdoc);
   if(ok)
-    ok = setUserOptions(tdoc, userOpt);
+    ok = setUserOptions(tdoc, userOpt, option);
   if( ok )
   {
     rc = tidyCleanAndRepair( tdoc );                 // Tidy it up!
@@ -274,7 +279,7 @@ int tidy(const std::istream& stream,
     else
   {
     rc = -1;
-    diagnostics = new xqpStringStore("couldn't set the Tidy options");
+    diagnostics = new xqpStringStore("couldn't set the Tidy option <" + option + ">");
   }
 
   tidyBufFree( &inputBuf );
