@@ -470,7 +470,7 @@ StandardModuleURIResolver::getExternalModule(xqpStringStore* aFileUri,
       std::auto_ptr<std::istream> modfile(new std::ifstream(lPotentialModuleFile.getStore()->str().c_str()));
       if (modfile->good()) {
         ExternalModule* lModule 
-          = DynamicLoader::getInstance()->getModule(lPotentialModuleFile.getStore()->c_str());
+          = DynamicLoader::getInstance()->getModule(lPotentialModuleFile);
         if (lModule) {
           if (!lModule->getURI().equals(aFileUri->c_str())) {
             ZORBA_ERROR_DESC_OSS(XQP0028_FUNCTION_IMPL_NOT_FOUND,

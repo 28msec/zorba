@@ -492,8 +492,8 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
   {
     // serialize out: remember whether a doc and collection
     //                resolver was registered by the user
-    lUserDocResolver = (dynamic_cast<StandardDocumentURIResolver*>(theDocResolver) != NULL); 
-    lUserColResolver = (dynamic_cast<StandardCollectionURIResolver*>(theColResolver) != NULL);
+    lUserDocResolver = ((theDocResolver != NULL) && (dynamic_cast<StandardDocumentURIResolver*>(theDocResolver) == NULL)); 
+    lUserColResolver = ((theColResolver != NULL) && (dynamic_cast<StandardCollectionURIResolver*>(theColResolver) == NULL));
 
 	  ar.set_is_temp_field_one_level(true);
     ar & lUserDocResolver;
