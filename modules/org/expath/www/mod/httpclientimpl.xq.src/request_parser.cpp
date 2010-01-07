@@ -1,6 +1,9 @@
 #include "request_parser.h"
 #include "request_handler.h"
 
+#include <cassert>
+#include <iostream>
+
 #include <zorba/zorba.h>
 #include <zorba/api_shared_types.h>
 #include <zorba/item.h>
@@ -32,6 +35,7 @@ namespace zorba { namespace http_client {
     } else if (lLocalName == "body") {
       if (!handleBody(aItem)) return false;
     }
+    return true;
   }
 
   bool RequestParser::handleRequest( const Item& aItem )
