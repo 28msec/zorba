@@ -219,6 +219,7 @@ SimpleStore::~SimpleStore()
 void SimpleStore::shutdown()
 {
   theIndices.clear();
+  theICs.clear();
 
   theCollections.clear();
   theUriCollections.clear();
