@@ -68,11 +68,13 @@ namespace zorba { namespace http_client {
       } else if (lLocalName == "auth-method") {
         lAuthMethod = lItem.getStringValue();
       } else if (lLocalName == "send-authorization") {
-        lSendAuthorization = lItem.getBooleanValue();
+        String lString = lItem.getStringValue();
+        lSendAuthorization = lString == "true";
       } else if (lLocalName == "override-content-type") {
         lOverrideContentType = lItem.getStringValue();
       } else if (lLocalName == "follow-redirect") {
-        lFollowRedirect = lItem.getBooleanValue();
+        String lString = lItem.getStringValue();
+        lFollowRedirect = lString == "true";
       } else if (lLocalName == "timeout") {
         lTimeout = lItem.getIntValue();
       }

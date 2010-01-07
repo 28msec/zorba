@@ -55,6 +55,7 @@ namespace http_client {
 
       std::auto_ptr<HttpRequestHandler> lHandler;
       std::auto_ptr<RequestParser> lParser;
+      struct curl_slist* lHeaderList = 0;
 
       if (lReqSet) {
         String lSerialString = lSerialSet ? lSerial.getStringValue() : "";
@@ -63,20 +64,41 @@ namespace http_client {
         lParser->parse(lRequest);
       } else if (lContentSet) {
         std::stringstream lSerStream;
+        Zorba_SerializerOptions_t lOptions;
+        std::string lContentType = "Content-Type: ";
         if (lSerialSet && lSerial.getStringValue() == "text") {
-          lSerStream << lContent.getStringValue();
+          lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_TEXT;
+          lContentType += "text/plain";
+        } else if (lSerialSet && lSerial.getStringValue() == "xml") {
+          lOptions.version = "1.1";
+          lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XML;
+          lContentType += "text/xml";
+        } else if (lSerialSet && lSerial.getStringValue() == "html") {
+          lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_HTML;
+          lContentType += "text/html";
+        } else if (lSerialSet && lSerial.getStringValue() == "xhtml") {
+          lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XHTML;
+          lContentType += "text/xhtml";
         } else {
-          Zorba_SerializerOptions_t lOptions;
-          Serializer_t lSerializer = Serializer::createSerializer(lOptions);
-
-          // Build a singleton item sequence which is also a Serializable.
-          // The new serializer interface only accepts Serializable objects.
-          SingletonItemSequence lSequence(lContent);
-          lSerializer->serialize((Serializable*)&lSequence, lSerStream);
+          lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_BINARY;
+          lContentType = "";
         }
+        if (lContentType != "") {
+          lHeaderList = curl_slist_append(lHeaderList, lContentType.c_str());
+        }
+        Serializer_t lSerializer = Serializer::createSerializer(lOptions);
+
+        // Build a singleton item sequence which is also a Serializable.
+        // The new serializer interface only accepts Serializable objects.
+        SingletonItemSequence lSequence(lContent);
+        lSerializer->serialize((Serializable*)&lSequence, lSerStream);
+
         lData = lSerStream.str();
         curl_easy_setopt(lCURL, CURLOPT_POSTFIELDSIZE, lData.length());
         curl_easy_setopt(lCURL, CURLOPT_POSTFIELDS, lData.c_str());
+        if (lHeaderList != 0) {
+          curl_easy_setopt(lCURL, CURLOPT_HTTPHEADER, lHeaderList);
+        }
       }
       if (lHrefSet) {
         curl_easy_setopt(lCURL, CURLOPT_URL, lHref.getStringValue().c_str());
@@ -90,6 +112,11 @@ namespace http_client {
       HttpResponseParser lRespParser(lRespHandler, lCURL,
         lOverrideContentType.c_str());
       lRespParser.parse();
+
+      if (lHeaderList) {
+        curl_slist_free_all(lHeaderList);
+      }
+
       return ItemSequence_t(lRespHandler.getResult());
     }
   }; // class http_request

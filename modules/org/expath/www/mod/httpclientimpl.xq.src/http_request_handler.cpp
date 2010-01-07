@@ -74,9 +74,17 @@ namespace zorba { namespace http_client {
       curl_easy_setopt(theCurl, CURLOPT_CUSTOMREQUEST, "TRACE");
     } else if (aMethod == "OPTIONS") {
       curl_easy_setopt(theCurl, CURLOPT_CUSTOMREQUEST, "OPTIONS");
+    } else if (aMethod == "HEAD") {
+      curl_easy_setopt(theCurl, CURLOPT_CUSTOMREQUEST, "HEAD");
+    } else {
+      aMethod.uppercase();
+      curl_easy_setopt(theCurl, CURLOPT_CUSTOMREQUEST, aMethod.c_str());
     }
     if (href != "") {
       curl_easy_setopt(theCurl, CURLOPT_URL, href.c_str());
+    }
+    if (aFollowRedirect) {
+      curl_easy_setopt(theCurl, CURLOPT_FOLLOWLOCATION, 1);
     }
     theStatusOnly = aStatusOnly;
     theOverrideContentType = aOverrideContentType;
@@ -168,7 +176,7 @@ namespace zorba { namespace http_client {
     std::string lData = theSerStream->str();
     if (!theInsideMultipart) {
       curl_easy_setopt(theCurl, CURLOPT_POSTFIELDSIZE, lData.length());
-      curl_easy_setopt(theCurl, CURLOPT_POSTFIELDS, lData.c_str());
+      curl_easy_setopt(theCurl, CURLOPT_COPYPOSTFIELDS, lData.c_str());
     } else {
       curl_formadd(&thePost, &theLast,
         CURLFORM_COPYNAME, "blub",

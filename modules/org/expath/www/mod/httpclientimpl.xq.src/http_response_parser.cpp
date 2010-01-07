@@ -61,8 +61,12 @@ namespace zorba { namespace http_client {
     } else {
       lItem = createBase64Item(lStream);
     }
-    theHandler.any(lItem);
-    if (theInsideRead) {
+    if (!lItem.isNull()) {
+      theHandler.any(lItem);
+    }
+    if (!theInsideRead) {
+      theHandler.beginResponse(theStatus, theMessage);
+    } else {
       theHandler.endBody();
     }
     theHandler.endResponse();
@@ -230,6 +234,9 @@ namespace zorba { namespace http_client {
       lInput[pos++] = *lIter;
     }
     lInput[pos] = '\0';
+    if (pos == 0) {
+      return NULL;
+    }
     TidyBuffer output;
     tidyBufInit(&output);
     TidyBuffer errbuf;
@@ -247,7 +254,11 @@ namespace zorba { namespace http_client {
     lResult = replaceCodes(lResult);
     std::istringstream lStream(lResult);
     XmlDataManager* lDM = Zorba::getInstance(0)->getXmlDataManager();
-    return lDM->parseDocument(lStream);
+    try {
+      return lDM->parseDocument(lStream);
+    } catch (ZorbaException& e) {
+      return Zorba::getInstance(0)->getItemFactory()->createString(lResult);
+    }
   }
 
   std::string HttpResponseParser::replaceCodes( std::string aStr )

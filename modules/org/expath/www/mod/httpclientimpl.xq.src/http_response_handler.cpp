@@ -29,7 +29,7 @@ namespace zorba { namespace http_client {
     if (theIndex < theItems.size()) {
       aItem = theItems[theIndex];
       ++theIndex;
-      return true;
+      return !aItem.isNull();
     }
     return false;
   }
