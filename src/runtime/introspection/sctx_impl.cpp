@@ -23,6 +23,7 @@
 #include "context/static_context.h"
 #include "context/statically_known_collection.h"
 #include "context/static_context_consts.h"
+#include "compiler/indexing/value_ic.h"
 
 #include "runtime/introspection/sctx.h"
 
