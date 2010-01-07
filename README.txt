@@ -20,7 +20,8 @@
 
   Zorba release 0.9 passes 97.6% of the W3C tests of XQuery 1.0 test suite
   and 99.4% of the XQuery Update Facility test suite. 
-  However, this release is not optimized for performance (e.g indexes are not supported yet).
+  However, this release is not optimized for performance (e.g indexes
+  are not supported yet).
 
   The Latest Version
   ------------------
