@@ -37,3 +37,11 @@ declare function dctx:is-available-index($name as xs:QName) as xs:boolean extern
 (:~
  :)
 declare function dctx:available-indexes() as xs:QName* external;
+
+(:~
+ :)
+declare function dctx:is-activated-integrity-constraint($name as xs:QName) as xs:boolean external;
+
+(:~
+ :)
+declare function dctx:activated-integrity-constraints() as xs:QName* external;

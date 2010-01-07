@@ -302,6 +302,12 @@ namespace zorba {
     void beginVisit( const AvailableIndexesIterator& );
     void endVisit  ( const AvailableIndexesIterator& );
 
+    void beginVisit( const IsActivatedICIterator& );
+    void endVisit  ( const IsActivatedICIterator& );
+
+    void beginVisit( const ActivatedICsIterator& );
+    void endVisit  ( const ActivatedICsIterator& );
+
     void beginVisit( const IsDeclaredCollectionIterator& );
     void endVisit  ( const IsDeclaredCollectionIterator& );
 
@@ -313,6 +319,12 @@ namespace zorba {
 
     void beginVisit( const DeclaredIndexesIterator& );
     void endVisit  ( const DeclaredIndexesIterator& );
+
+    void beginVisit( const IsDeclaredICIterator& );
+    void endVisit  ( const IsDeclaredICIterator& );
+
+    void beginVisit( const DeclaredICsIterator& );
+    void endVisit  ( const DeclaredICsIterator& );
 
     void beginVisit( const SqrtIterator& );
     void endVisit  ( const SqrtIterator& );

@@ -37,3 +37,11 @@ declare function sctx:is-declared-index($name as xs:QName) as xs:boolean externa
 (:~
  :)
 declare function sctx:declared-indexes() as xs:QName* external;
+
+(:~
+ :)
+declare function sctx:is-declared-integrity-constraint($name as xs:QName) as xs:boolean external;
+
+(:~
+ :)
+declare function sctx:declared-integrity-constraints() as xs:QName* external;

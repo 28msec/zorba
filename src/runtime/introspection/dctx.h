@@ -203,6 +203,91 @@ public:
 };
 
 
+/**
+ * 
+ *      dc:is-activated-integrity-constraint
+ *    
+ * Author: Zorba Team
+ */
+class IsActivatedICIterator : public NaryBaseIterator<IsActivatedICIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(IsActivatedICIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsActivatedICIterator,
+    NaryBaseIterator<IsActivatedICIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsActivatedICIterator, PlanIteratorState>*)this);
+  }
+
+  IsActivatedICIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<IsActivatedICIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~IsActivatedICIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *      dc:activated-integrity-constraints
+ *    
+ * Author: Zorba Team
+ */
+class ActivatedICsIteratorState : public PlanIteratorState
+{
+public:
+  store::Iterator_t nameItState; //the current iterator
+
+  ActivatedICsIteratorState();
+
+  ~ActivatedICsIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class ActivatedICsIterator : public NaryBaseIterator<ActivatedICsIterator, ActivatedICsIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(ActivatedICsIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ActivatedICsIterator,
+    NaryBaseIterator<ActivatedICsIterator, ActivatedICsIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<ActivatedICsIterator, ActivatedICsIteratorState>*)this);
+  }
+
+  ActivatedICsIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<ActivatedICsIterator, ActivatedICsIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~ActivatedICsIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 }
 #endif
 /*

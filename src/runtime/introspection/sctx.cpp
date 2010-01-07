@@ -175,5 +175,80 @@ void DeclaredIndexesIteratorState::init(PlanState& planState) {
 // </DeclaredIndexesIterator>
 
 
+// <IsDeclaredICIterator>
+const char* IsDeclaredICIterator::class_name_str = "IsDeclaredICIterator";
+IsDeclaredICIterator::class_factory<IsDeclaredICIterator>
+IsDeclaredICIterator::g_class_factory;
+
+const serialization::ClassVersion 
+IsDeclaredICIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int IsDeclaredICIterator::class_versions_count =
+sizeof(IsDeclaredICIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void IsDeclaredICIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+IsDeclaredICIterator::~IsDeclaredICIterator() {}
+
+IsDeclaredICIteratorState::IsDeclaredICIteratorState() {}
+
+IsDeclaredICIteratorState::~IsDeclaredICIteratorState() {}
+
+
+void IsDeclaredICIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void IsDeclaredICIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
+// </IsDeclaredICIterator>
+
+
+// <DeclaredICsIterator>
+const char* DeclaredICsIterator::class_name_str = "DeclaredICsIterator";
+DeclaredICsIterator::class_factory<DeclaredICsIterator>
+DeclaredICsIterator::g_class_factory;
+
+const serialization::ClassVersion 
+DeclaredICsIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int DeclaredICsIterator::class_versions_count =
+sizeof(DeclaredICsIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void DeclaredICsIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+DeclaredICsIterator::~DeclaredICsIterator() {}
+
+DeclaredICsIteratorState::DeclaredICsIteratorState() {}
+
+
+void DeclaredICsIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+  nameItState = NULL;
+}
+// </DeclaredICsIterator>
+
+
 
 }

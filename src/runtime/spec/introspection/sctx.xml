@@ -109,4 +109,54 @@
   
 </zorba:iterator>
 
+<!--
+/*******************************************************************************
+*******************************************************************************/
+-->
+<zorba:iterator name="IsDeclaredICIterator">
+
+    <zorba:description author="Zorba Team">
+      sc:is-declared-integrity-constraint
+    </zorba:description>
+
+    <zorba:state generateInit="true" generateReset="true">
+      <zorba:member type="store::Iterator_t" name="nameItState"
+                    brief="the current iterator"/>
+    </zorba:state>
+
+    <zorba:function> 
+      <zorba:signature localname="is-declared-integrity-constraint"
+                       prefix="fn-zorba-introspect-sctx">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+*******************************************************************************/
+-->
+<zorba:iterator name="DeclaredICsIterator">
+
+    <zorba:description author="Zorba Team">
+      sc:declared-integrity-constrints
+    </zorba:description>
+
+    <zorba:state generateInit="true" generateReset="false" 
+		 generateDestructor="false">
+      <zorba:member type="store::Iterator_t" name="nameItState" 
+		    defaultValue="NULL" brief="the current iterator"/>
+    </zorba:state>
+
+    <zorba:function> 
+      <zorba:signature localname="declared-integrity-constraints"
+                       prefix="fn-zorba-introspect-sctx">
+        <zorba:output>xs:QName*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+  
+</zorba:iterator>
+
 </zorba:iterators>

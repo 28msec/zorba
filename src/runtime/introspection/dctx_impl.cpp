@@ -27,6 +27,7 @@
 #include "store/api/store.h"
 #include "store/api/collection.h"
 #include "store/api/index.h"
+#include "store/api/ic.h"
 
 namespace zorba 
 {
@@ -198,6 +199,78 @@ AvailableIndexesIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   DEFAULT_STACK_INIT(AvailableIndexesIteratorState, state, planState);
 
   for ((state->nameItState = GENV_STORE.listIndexNames())->open ();
+       state->nameItState->next(nameItem); ) 
+  {
+    result = nameItem;
+    STACK_PUSH( true, state);
+  }
+
+  state->nameItState->close();
+
+  STACK_END (state);
+}
+
+/*******************************************************************************
+*******************************************************************************/
+bool IsActivatedICIterator::nextImpl(store::Item_t& result, 
+                                     PlanState& planState) const
+{
+  PlanIteratorState  *state;
+  store::Item_t       lName;
+  bool                res = false;
+
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext(lName, theChildren[0].getp(), planState);
+
+  {
+    store::IC_t lIc = GENV_STORE.getIC(lName);
+    res = (lIc != 0);
+  }
+
+  GENV_ITEMFACTORY->createBoolean(result, res);
+  STACK_PUSH(true, state );
+
+  STACK_END (state);
+}
+
+/*******************************************************************************
+*******************************************************************************/
+ActivatedICsIteratorState::~ActivatedICsIteratorState()
+{
+  if ( nameItState != NULL ) {
+    nameItState->close();
+    nameItState = NULL;
+  }
+}
+
+void
+ActivatedICsIteratorState::init(PlanState& planState)
+{
+  PlanIteratorState::init(planState);
+  nameItState = NULL;
+}
+
+void
+ActivatedICsIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  if ( nameItState != NULL ) {
+    nameItState->close();
+    nameItState = NULL;
+  }
+}
+
+bool
+ActivatedICsIterator::nextImpl(store::Item_t& result, 
+                               PlanState& planState) const
+{
+  store::Item_t              nameItem;
+
+  ActivatedICsIteratorState * state;
+  DEFAULT_STACK_INIT(ActivatedICsIteratorState, state, planState);
+
+  for ((state->nameItState = GENV_STORE.listActiveICNames())->open ();
        state->nameItState->next(nameItem); ) 
   {
     result = nameItem;

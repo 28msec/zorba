@@ -94,6 +94,34 @@ public:
 };
 
 
+//fn-zorba-introspect-sctx:is-declared-integrity-constraint
+class fn_zorba_introspect_sctx_is_declared_integrity_constraint : public function
+{
+public:
+  fn_zorba_introspect_sctx_is_declared_integrity_constraint(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_INTROSPECT_SCTX_IS_DECLARED_INTEGRITY_CONSTRAINT_1)
+  {
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-introspect-sctx:declared-integrity-constraints
+class fn_zorba_introspect_sctx_declared_integrity_constraints : public function
+{
+public:
+  fn_zorba_introspect_sctx_declared_integrity_constraints(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_INTROSPECT_SCTX_DECLARED_INTEGRITY_CONSTRAINTS_0)
+  {
+  }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

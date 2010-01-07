@@ -229,6 +229,104 @@ public:
 };
 
 
+/**
+ * 
+ *      sc:is-declared-integrity-constraint
+ *    
+ * Author: Zorba Team
+ */
+class IsDeclaredICIteratorState : public PlanIteratorState
+{
+public:
+  store::Iterator_t nameItState; //the current iterator
+
+  IsDeclaredICIteratorState();
+
+  ~IsDeclaredICIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class IsDeclaredICIterator : public NaryBaseIterator<IsDeclaredICIterator, IsDeclaredICIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(IsDeclaredICIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsDeclaredICIterator,
+    NaryBaseIterator<IsDeclaredICIterator, IsDeclaredICIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IsDeclaredICIterator, IsDeclaredICIteratorState>*)this);
+  }
+
+  IsDeclaredICIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<IsDeclaredICIterator, IsDeclaredICIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~IsDeclaredICIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *      sc:declared-integrity-constrints
+ *    
+ * Author: Zorba Team
+ */
+class DeclaredICsIteratorState : public PlanIteratorState
+{
+public:
+  store::Iterator_t nameItState; //the current iterator
+
+  DeclaredICsIteratorState();
+
+  ~DeclaredICsIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class DeclaredICsIterator : public NaryBaseIterator<DeclaredICsIterator, DeclaredICsIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(DeclaredICsIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(DeclaredICsIterator,
+    NaryBaseIterator<DeclaredICsIterator, DeclaredICsIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<DeclaredICsIterator, DeclaredICsIteratorState>*)this);
+  }
+
+  DeclaredICsIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<DeclaredICsIterator, DeclaredICsIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~DeclaredICsIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 }
 #endif
 /*

@@ -160,4 +160,66 @@ void DeclaredIndexesIteratorState::reset(PlanState& planState)
   }
 }
 
+/*******************************************************************************
+*******************************************************************************/
+bool
+IsDeclaredICIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) 
+  const
+{
+  PlanIteratorState *lState;
+  store::Item_t      lName;
+
+  DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
+  consumeNext(lName, theChildren[0].getp(), aPlanState);
+  if (theSctx->lookup_ic(lName.getp()) == 0) {
+    STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( aResult, false ), lState);
+  }
+  else {
+    STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( aResult, true ), lState);   
+  }
+  STACK_END (lState);
+}
+
+
+/*******************************************************************************
+********************************************************************************/
+bool
+DeclaredICsIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState)
+  const
+{
+  DeclaredICsIteratorState * lState;
+  store::Item_t              lName;
+
+  DEFAULT_STACK_INIT(DeclaredICsIteratorState, lState, aPlanState);
+
+  for ((lState->nameItState = theSctx->list_ic_names())->open ();
+       lState->nameItState->next(lName); ) 
+  {
+    aResult = lName;
+    STACK_PUSH( true, lState);
+  }
+
+  lState->nameItState->close();
+
+  STACK_END (lState);
+}
+
+DeclaredICsIteratorState::~DeclaredICsIteratorState()
+{
+  if ( nameItState != NULL ) {
+    nameItState->close();
+    nameItState = NULL;
+  }
+}
+
+
+void DeclaredICsIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  if ( nameItState != NULL ) {
+    nameItState->close();
+    nameItState = NULL;
+  }
+}
+
 } /* namespace zorba */

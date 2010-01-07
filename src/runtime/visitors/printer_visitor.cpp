@@ -1294,6 +1294,34 @@ void PrinterVisitor::endVisit ( const AvailableIndexesIterator& ) {
 // </AvailableIndexesIterator>
 
 
+// <IsActivatedICIterator>
+void PrinterVisitor::beginVisit ( const IsActivatedICIterator& a) {
+  thePrinter.startBeginVisit("IsActivatedICIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsActivatedICIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsActivatedICIterator>
+
+
+// <ActivatedICsIterator>
+void PrinterVisitor::beginVisit ( const ActivatedICsIterator& a) {
+  thePrinter.startBeginVisit("ActivatedICsIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ActivatedICsIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ActivatedICsIterator>
+
+
 // <IsDeclaredCollectionIterator>
 void PrinterVisitor::beginVisit ( const IsDeclaredCollectionIterator& a) {
   thePrinter.startBeginVisit("IsDeclaredCollectionIterator", ++theId);
@@ -1348,6 +1376,34 @@ void PrinterVisitor::endVisit ( const DeclaredIndexesIterator& ) {
   thePrinter.endEndVisit();
 }
 // </DeclaredIndexesIterator>
+
+
+// <IsDeclaredICIterator>
+void PrinterVisitor::beginVisit ( const IsDeclaredICIterator& a) {
+  thePrinter.startBeginVisit("IsDeclaredICIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IsDeclaredICIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IsDeclaredICIterator>
+
+
+// <DeclaredICsIterator>
+void PrinterVisitor::beginVisit ( const DeclaredICsIterator& a) {
+  thePrinter.startBeginVisit("DeclaredICsIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const DeclaredICsIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </DeclaredICsIterator>
 
 
 // <SqrtIterator>

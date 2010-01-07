@@ -198,6 +198,10 @@ namespace zorba{
 
     class AvailableIndexesIterator;
 
+    class IsActivatedICIterator;
+
+    class ActivatedICsIterator;
+
     class IsDeclaredCollectionIterator;
 
     class DeclaredCollectionsIterator;
@@ -205,6 +209,10 @@ namespace zorba{
     class IsDeclaredIndexIterator;
 
     class DeclaredIndexesIterator;
+
+    class IsDeclaredICIterator;
+
+    class DeclaredICsIterator;
 
     class SqrtIterator;
 
@@ -678,6 +686,12 @@ public:
     virtual void beginVisit ( const AvailableIndexesIterator& ) = 0;
     virtual void endVisit   ( const AvailableIndexesIterator& ) = 0;
 
+    virtual void beginVisit ( const IsActivatedICIterator& ) = 0;
+    virtual void endVisit   ( const IsActivatedICIterator& ) = 0;
+
+    virtual void beginVisit ( const ActivatedICsIterator& ) = 0;
+    virtual void endVisit   ( const ActivatedICsIterator& ) = 0;
+
     virtual void beginVisit ( const IsDeclaredCollectionIterator& ) = 0;
     virtual void endVisit   ( const IsDeclaredCollectionIterator& ) = 0;
 
@@ -689,6 +703,12 @@ public:
 
     virtual void beginVisit ( const DeclaredIndexesIterator& ) = 0;
     virtual void endVisit   ( const DeclaredIndexesIterator& ) = 0;
+
+    virtual void beginVisit ( const IsDeclaredICIterator& ) = 0;
+    virtual void endVisit   ( const IsDeclaredICIterator& ) = 0;
+
+    virtual void beginVisit ( const DeclaredICsIterator& ) = 0;
+    virtual void endVisit   ( const DeclaredICsIterator& ) = 0;
 
     virtual void beginVisit ( const SqrtIterator& ) = 0;
     virtual void endVisit   ( const SqrtIterator& ) = 0;

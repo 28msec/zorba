@@ -70,6 +70,26 @@ PlanIter_t fn_zorba_introspect_dctx_available_indexes::codegen(
   return new AvailableIndexesIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_zorba_introspect_dctx_is_activated_integrity_constraint::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new IsActivatedICIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_zorba_introspect_dctx_activated_integrity_constraints::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new ActivatedICsIterator(sctx, loc, argv);
+}
+
 void populate_context_dctx(static_context* sctx)
 {
   DECL(sctx, fn_zorba_introspect_dctx_is_available_collection,
@@ -91,6 +111,17 @@ void populate_context_dctx(static_context* sctx)
 
   DECL(sctx, fn_zorba_introspect_dctx_available_indexes,
       (createQName("http://www.zorba-xquery.com/modules/introspection/dctx","fn-zorba-introspect-dctx","available-indexes"),
+      GENV_TYPESYSTEM.QNAME_TYPE_STAR));
+
+
+  DECL(sctx, fn_zorba_introspect_dctx_is_activated_integrity_constraint,
+      (createQName("http://www.zorba-xquery.com/modules/introspection/dctx","fn-zorba-introspect-dctx","is-activated-integrity-constraint"),
+      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+
+
+  DECL(sctx, fn_zorba_introspect_dctx_activated_integrity_constraints,
+      (createQName("http://www.zorba-xquery.com/modules/introspection/dctx","fn-zorba-introspect-dctx","activated-integrity-constraints"),
       GENV_TYPESYSTEM.QNAME_TYPE_STAR));
 
 }

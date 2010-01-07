@@ -146,5 +146,63 @@ AvailableIndexesIteratorState::AvailableIndexesIteratorState() {}
 // </AvailableIndexesIterator>
 
 
+// <IsActivatedICIterator>
+const char* IsActivatedICIterator::class_name_str = "IsActivatedICIterator";
+IsActivatedICIterator::class_factory<IsActivatedICIterator>
+IsActivatedICIterator::g_class_factory;
+
+const serialization::ClassVersion 
+IsActivatedICIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int IsActivatedICIterator::class_versions_count =
+sizeof(IsActivatedICIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void IsActivatedICIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+IsActivatedICIterator::~IsActivatedICIterator() {}
+
+// </IsActivatedICIterator>
+
+
+// <ActivatedICsIterator>
+const char* ActivatedICsIterator::class_name_str = "ActivatedICsIterator";
+ActivatedICsIterator::class_factory<ActivatedICsIterator>
+ActivatedICsIterator::g_class_factory;
+
+const serialization::ClassVersion 
+ActivatedICsIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int ActivatedICsIterator::class_versions_count =
+sizeof(ActivatedICsIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void ActivatedICsIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+ActivatedICsIterator::~ActivatedICsIterator() {}
+
+ActivatedICsIteratorState::ActivatedICsIteratorState() {}
+
+// </ActivatedICsIterator>
+
+
 
 }

@@ -70,6 +70,26 @@ PlanIter_t fn_zorba_introspect_sctx_declared_indexes::codegen(
   return new DeclaredIndexesIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_zorba_introspect_sctx_is_declared_integrity_constraint::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new IsDeclaredICIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_zorba_introspect_sctx_declared_integrity_constraints::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new DeclaredICsIterator(sctx, loc, argv);
+}
+
 void populate_context_sctx(static_context* sctx)
 {
   DECL(sctx, fn_zorba_introspect_sctx_is_declared_collection,
@@ -91,6 +111,17 @@ void populate_context_sctx(static_context* sctx)
 
   DECL(sctx, fn_zorba_introspect_sctx_declared_indexes,
       (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","declared-indexes"),
+      GENV_TYPESYSTEM.QNAME_TYPE_STAR));
+
+
+  DECL(sctx, fn_zorba_introspect_sctx_is_declared_integrity_constraint,
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","is-declared-integrity-constraint"),
+      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+
+
+  DECL(sctx, fn_zorba_introspect_sctx_declared_integrity_constraints,
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","declared-integrity-constraints"),
       GENV_TYPESYSTEM.QNAME_TYPE_STAR));
 
 }
