@@ -7,7 +7,7 @@
 	<META NAME="AUTHOR" CONTENT="Daniel Turcanu">
 	<META NAME="CREATED" CONTENT="20090628;18151700">
 	<META NAME="CHANGEDBY" CONTENT="Daniel Turcanu">
-	<META NAME="CHANGED" CONTENT="20090628;20364600">
+	<META NAME="CHANGED" CONTENT="20100107;14002900">
 </HEAD>
 <BODY LANG="en-US" DIR="LTR">
 <P><FONT SIZE=5>Using and maintaining Zorba plan serialization</FONT></P>
@@ -38,14 +38,14 @@ cpp file where the class is defined.</P>
 <P>class Example : <B>public
 ::zorba::serialization::SerializeBaseClass</B></P>
 <P>{</P>
-<P>    int m1;</P>
-<P> public:</P>
-<P>     <B>SERIALIZABLE_CLASS(Example)</B></P>
-<P>     <B>SERIALIZABLE_CLASS_CONSTRUCTOR(Example)</B></P>
-<P>     <B>void serialize(::zorba::serialization::Archiver &amp;ar)</B></P>
-<P>     <B>{</B></P>
-<P>          <B>ar &amp; m1;</B></P>
-<P>     <B>}</B></P>
+<P>int m1;</P>
+<P>public:</P>
+<P><B>SERIALIZABLE_CLASS(Example)</B></P>
+<P><B>SERIALIZABLE_CLASS_CONSTRUCTOR(Example)</B></P>
+<P><B>void serialize(::zorba::serialization::Archiver &amp;ar)</B></P>
+<P><B>{</B></P>
+<P><B>ar &amp; m1;</B></P>
+<P><B>}</B></P>
 <P>}</P>
 <P><BR><BR>
 </P>
@@ -207,8 +207,8 @@ macros:</P>
 			class.</P>
 			<P>This operator is used for both out and in serialization.</P>
 			<P>There are three types of implementations for operator &amp;:
-			one is the template, defined for serializing classes. Other is 
-			the implementation for simple types. The third one is the
+			one is the template, defined for serializing classes. Other is the
+			implementation for simple types. The third one is the
 			implementation for Zorba special types. There are some Zorba types
 			that cannot be serialized in a normal way, so they had to be
 			processed in a special operator&amp;.</P>
@@ -220,8 +220,7 @@ macros:</P>
 			(base_class*)this);</P>
 		</TD>
 		<TD WIDTH=50%>
-			<P>Call this function to serialize the content of each  base
-			class.</P>
+			<P>Call this function to serialize the content of each base class.</P>
 			<P>This function is a global template function, specialized for
 			every base class you need.</P>
 			<P>It will set the Archiver in a special mode and then call the
@@ -244,16 +243,6 @@ macros:</P>
 		<TD WIDTH=50%>
 			<P>Call this function to serialize some binary data. The data is
 			converted first to text using base64 convertion.</P>
-		</TD>
-	</TR>
-	<TR VALIGN=TOP>
-		<TD WIDTH=50%>
-			<P>SERIALIZE_FUNCTION(f)</P>
-		</TD>
-		<TD WIDTH=50%>
-			<P>Call this macro to serialize function* objects. This macro will
-			serialize only objects of type user_function* and will ignore
-			others.</P>
 		</TD>
 	</TR>
 	<TR VALIGN=TOP>
@@ -285,15 +274,42 @@ macros:</P>
 		</TD>
 		<TD WIDTH=50%>
 			<P>Call Archiver's set_is_temp_field() to set it in a special mode
-			that tells it to not register the pointer of the upcomming object
+			that tells it to not register the pointer of the upcomming objects
 			into its internal pointer hashmap.</P>
 			<P>Sometimes there is a need to construct some temporary variables
 			inside serialize() function, and serialize those temporary
 			variables. You have to tell Archiver to not memorize the pointer
 			to that temporary variable, otherwise the pointer duplication
 			mechanism might be messed up.</P>
+			<P>All the members of the objects are serialized as temporary
+			objects.</P>
 			<P>After serializing the temporary variable you have to set the
 			temp mode to false.</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=50%>
+			<P>ar.set_is_temp_field_one_level( bool is_temp, bool also_for_ptr
+			= false);</P>
+		</TD>
+		<TD WIDTH=50%>
+			<P>Same as set_is_temp_field, but the members of the temporary
+			objects are not serialized as temporary objects.</P>
+			<P>For example, let's say you have to construct a xqpStringStore_t
+			on the stack and serialize it. The xqpStringStore_t is a temporary
+			object, but its pointer inside maybe not, maybe it is a pointer to
+			an already existing xqpStringStore. To deal with this case you
+			have to call set_is_temp_field_one_level(true) before serializing
+			the xqpStringStore_t and then set_is_temp_field_one_level(false)
+			after that.</P>
+			<P>Be careful, that set_is_temp_field and
+			set_is_temp_field_one_level should always be called in pairs, one
+			for true and one for false.</P>
+			<P>The second parameter tells the archiver that it must also treat
+			the pointers as temporary objects. The default is false, that is,
+			only the normal objects constructed on stack are to be dealed as
+			temporary when calling set_is_temp_field_one_level. 
+			</P>
 		</TD>
 	</TR>
 	<TR VALIGN=TOP>
@@ -315,6 +331,67 @@ macros:</P>
 			<P>This function is meaningfull only when serializing in.</P>
 		</TD>
 	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=50%>
+			<P>ar.set_xquery_with_eval()</P>
+		</TD>
+		<TD WIDTH=50%>
+			<P>Tells the Archiver that this xquery contains eval expressions. 
+			</P>
+			<P>The serializer engine tries to minimize the binary output by
+			removing unused function definitions and other parts. But these
+			must not be removed if the xquery contains an eval expression,
+			because that eval expression may try to use one of that function
+			or variable.</P>
+			<P>For now, this function is called in the serialize() of the
+			EvalIterator.</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=50%>
+			<P>ar.set_serialize_only_for_eval(true)</P>
+			<P>ar.set_serialize_only_for_eval(false)</P>
+		</TD>
+		<TD WIDTH=50%>
+			<P>Marks some objects as usefull only for xqueries with eval.</P>
+			<P>If xquery contains no eval expressions, those objects will be
+			removed from serialization, unless they are referenced from
+			non-eval-only objects.</P>
+		</TD>
+	</TR>
+	<TR VALIGN=TOP>
+		<TD WIDTH=50%>
+			<P>ar.dont_allow_delay(ENUM_ALLOW_DELAY d = DONT_ALLOW_DELAY)</P>
+		</TD>
+		<TD WIDTH=50%>
+			<P>Archiver has a mechanism for detecting duplicate pointers. It
+			will serialize the object only once, and set the other pointers as
+			references to it. There are cases when the loading of an object is
+			done after serializing the references, so those references will
+			stay empty until the whole process of serialization completes.
+			That is, the serialization of that object is delayed.</P>
+			<P>In some cases this is not desired. One example is serialization
+			of node items. When loading the children of a node item, the order
+			of loading is very important, so the serialization must be done
+			right there.</P>
+			<P>Other example is when using temporary pointers for seting up
+			the object in a custom way. You need to make sure that the pointer
+			is loaded right there and not delayed.</P>
+			<P>You have to call dont_allow_delay() before every object
+			serialization. Like:<BR>ar.dont_allow_delay()</P>
+			<P>ar &amp; object_ptr</P>
+			<P>There are two possible parameters:</P>
+			<P>DONT_ALLOW_DELAY &ndash; the default value &ndash; the object
+			loading cannot be delayed, but it is not mandatory that the object
+			is serialized right there. Maybe it is serialized before, by
+			another reference.</P>
+			<P>SERIALIZE_NOW &ndash; tells the Archiver to serialize now the
+			object. Of course, you cannot have two references to the same
+			object, both set to SERIALIZE_NOW.</P>
+			<P>Don't overuse this function, as this may lead to impossible to
+			solve circular dependencies.</P>
+		</TD>
+	</TR>
 </TABLE>
 <P><BR><BR>
 </P>
@@ -324,9 +401,9 @@ macros:</P>
 </P>
 <P>In the cpp file you have to define the class versions:</P>
 <P><B>SERIALIZABLE_CLASS_VERSIONS(Example)</B></P>
-<P><B>CLASS_VERSION( 2, ZORBA_VERSION_0_9_5,  BACKWARD_COMPATIBLE, 
+<P><B>CLASS_VERSION( 2, ZORBA_VERSION_0_9_5, BACKWARD_COMPATIBLE,
 &ldquo;added a new member m2 in class&rdquo;)</B></P>
-<P><B>CLASS_VERSION( 3, ZORBA_VERSION_0_9_6,  !BACKWARD_COMPATIBLE, 
+<P><B>CLASS_VERSION( 3, ZORBA_VERSION_0_9_6, !BACKWARD_COMPATIBLE,
 &ldquo;changed type of m1 and m2 from int to MAPM&rdquo;)</B></P>
 <P><B>END_SERIALIZABLE_CLASS_VERSIONS(Example)</B></P>
 <P><BR><BR>
@@ -362,7 +439,7 @@ serializable_hashmap&lt;xqp_string&gt;, 2)</B></P>
 serializable_hashmap&lt;xqtref_t&gt;, 3)</B></P>
 <P><BR><BR>
 </P>
-<P>The CLASS_VERSION macros are defined once for all template. After
+<P>The CLASS_VERSION macros are defined once for one template. After
 that you have to declare SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS for
 each of the template specializations in the code. The first parameter
 is the name of the template. The second parameter is the name of the
@@ -394,9 +471,9 @@ optimized but not human readable.</P>
 <P><BR><BR>
 </P>
 <P><B>Example ex1;</B></P>
-<P><B>std::ofstream     of(&ldquo;example.bin&rdquo;,
+<P><B>std::ofstream of(&ldquo;example.bin&rdquo;,
 std::ios_base::binary);</B></P>
-<P><B>BinArchiver    bin_ar_save(&amp;of);///create an archiver for
+<P><B>BinArchiver bin_ar_save(&amp;of);///create an archiver for
 saving</B></P>
 <P><B>bin_ar_save &amp; ex1;</B></P>
 <P><B>bin_ar_save.serialize_out();///only now the data is sent to
@@ -407,7 +484,7 @@ file</B></P>
 <P><B>Example ex2;</B></P>
 <P><B>std::ifstream if(&ldquo;example.bin&rdquo;,
 std::ios_base::binary);</B></P>
-<P><B>BinArchiver    bin_ar_load(&amp;if);//create an archiver for
+<P><B>BinArchiver bin_ar_load(&amp;if);//create an archiver for
 loading</B></P>
 <P><B>bin_ar_load &amp; ex2;</B></P>
 <P><B>bin_ar_load.finalize_input_serialization();///fix up all the

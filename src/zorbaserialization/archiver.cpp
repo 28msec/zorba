@@ -1039,6 +1039,7 @@ bool Archiver::check_allowed_delays(archive_field *parent_field)
         //impossible to solve situation
         //need to change the serialization order somewhere
         assert(false);
+        ZORBA_ERROR(SRL0014_INFINITE_CIRCULAR_DEPENDENCIES);
       }
       //exchange fields
       exchange_mature_fields(child, child->refered);

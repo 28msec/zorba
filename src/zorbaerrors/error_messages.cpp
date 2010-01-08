@@ -645,6 +645,9 @@ DEF_ERR_CODE(SRL0011_INPUT_ARCHIVE_NOT_ZORBA_ARCHIVE, SRL0011, "Plan serializati
 
 DEF_ERR_CODE(SRL0012_INCOMPATIBLE_ARCHIVE_VERSION, SRL0012, "Plan serialization error: Incompatible archive version: /s")
 
+DEF_ERR_CODE(SRL0013_UNABLE_TO_LOAD_QUERY, SRL0013, "Plan serialization error: Unable to load query plan: /s")
+
+DEF_ERR_CODE(SRL0014_INFINITE_CIRCULAR_DEPENDENCIES, SRL0014, "Plan serialization error: Unable to solve delayed serialization of object references")
 //
 // XQuery Data Definition Facility - Static Errors
 //

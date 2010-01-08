@@ -363,13 +363,15 @@ namespace zorba {
 
       /** \brief Save the compiled execution plan.
        *
-       * After compiling an XQuery code you can save the execution plan in a persistent format.
+       * After compiling an XQuery code you can save the execution plan in a persistent storage.
        * The execution plan is saved in a platform independent format.
-       * The default format for serializing plan iterators is XML.
        * You can later load this execution plan into a different XQuery object (potentially 
        * on a different machine) and execute it like it was compiled in place.
        *
        * @param os Reference to std::ostream.
+       * @param archive_format Specify which output format to use, either XML or binary.
+       *    Possible values are ZORBA_USE_BINARY_ARCHIVE and ZORBA_USE_XML_ARCHIVE.
+       *    The binary format is much smaller than XML format, but is not human readable.
        *
        * @return true if success.
        * @throw ZorbaException if the query has not been compiled or there are problems serializing
@@ -385,6 +387,7 @@ namespace zorba {
        specific versions for each class. Zorba does not quarantee that it can load execution plans
        saved with previous versions of Zorba. In general case there will be no problems, but the
        complete backward compatibility cannot be quaranteed.
+       The engine automatically detects the format of the input, either XML or binary.
        *
        * @param is Reference to std::istream.
        * @param aCallback optional callback handler (see SerializationCallback)
