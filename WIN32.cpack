@@ -3,3 +3,4 @@ INCLUDE(InstallRequiredSystemLibraries)
 FILE(GLOB Zorba_DLLS ${REQUIRED_FILES_DIR}/*.dll)
 INSTALL(PROGRAMS ${Zorba_DLLS} DESTINATION bin)
 
+

@@ -3360,7 +3360,8 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                                            ic.getCollName()->get_qname() );
       
       string prefixStr = ic.getCollName()->get_prefix();
-      xqp_string uriStr = sctx_p->lookup_ns(prefixStr);
+      string uriStr = sctx_p->lookup_ns(prefixStr);
+      
 
       expr_t uriStrExpr = new const_expr(sctxid(), loc, uriStr );
       
@@ -3373,7 +3374,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
       function* fn_collection = sctx_p->lookup_resolved_fn(
           xqp_string("http://www.zorba-xquery.com/modules/xqddf"), 
           xqp_string("collection"), 1);
-
+      ZORBA_ASSERT(fn_collection != NULL);
       std::vector<expr_t> argColl;      
       argColl.push_back(qnameExpr.getp());
       fo_expr_t collExpr = new fo_expr(sctxid(), loc, fn_collection, argColl);
@@ -3404,22 +3405,34 @@ void* begin_visit(const IntegrityConstraintDecl& v)
        declare integrity constraint org:icEmployeesIds
          on collection org:employees node $x check unique key $x/@id ;
 
-       let $c := dc:collection( xs:QName("org:employees") )
+       let $x := dc:collection( xs:QName("org:employees") )
        return
          (
-           every $i in $c
+           every $x_ in $x
            satisfies
-             exists( $i/@id )
+             exists( $x_/@id )
          )
          and
-         ( functx:are-distinct-values( $c/@id ) )
+         (  functx:are-distinct-values( $x/@id )  )
+
+      implemented as:
+       let $x := dc:collection( xs:QName("org:employees") )
+       return
+         (
+           fn:empty(
+             for $x_ in dc:collection( xs:QName("org:employees") )
+             where not( exists($x_/@id) )
+             return true)
+         )
+         and
+         (  count(distinct-values( $x/@id )) = count($x/@id)  )
       **********************/
 
-      const ICCollUniqueKeyCheck ic = 
+      const ICCollUniqueKeyCheck ic =
         dynamic_cast<const ICCollUniqueKeyCheck&>(v);
 
       // "org:employees"
-      expr_t qnameStrExpr = new const_expr(sctxid(), loc, 
+      expr_t qnameStrExpr = new const_expr(sctxid(), loc,
                                            ic.getCollName()->get_qname() );
       
       string prefixStr = ic.getCollName()->get_prefix();
@@ -3434,50 +3447,40 @@ void* begin_visit(const IntegrityConstraintDecl& v)
 
       // dc:collection(xs:QName("org:employees"))
       function* fn_collection = sctx_p->lookup_resolved_fn(
-          xqp_string("http://www.zorba-xquery.com/modules/xqddf"), 
-          xqp_string("collection"), 
+          xqp_string("http://www.zorba-xquery.com/modules/xqddf"),
+          xqp_string("collection"),
           1);
-      std::vector<expr_t> argColl;      
+      ZORBA_ASSERT(fn_collection != NULL);
+      std::vector<expr_t> argColl;
       argColl.push_back(qnameExpr.getp());
       fo_expr_t collExpr = new fo_expr(sctxid(), loc, fn_collection, argColl);
 
-      // $c 
+      // $x 
       const QName* varQName = ic.getNodeVarName();
       store::Item_t varItem = sctx_p->lookup_fn_qname(varQName->get_prefix(),
-          varQName->get_localname() + "_external",
-          varQName->get_location());
+          varQName->get_localname(), varQName->get_location());
       
-      // every $i in $c satisfies exists ...
+      // every $x_ in $x satisfies exists ...
       // every is implemented as a flowr expr
+      push_scope();
       flwor_expr_t evFlworExpr = new flwor_expr(sctxid(), loc, false);
       evFlworExpr->set_return_expr(new const_expr(sctxid(), loc, true));
 
-      // $i in $c
-      xqtref_t evType;
-      var_expr_t evVarExpr = bind_var(loc, varQName->get_qname(), 
-                                    var_expr::for_var, evType);
+      // $x_ in dc:collection( xs:QName("org:employees") )      
+      var_expr_t evVarExpr = bind_var(loc, 
+                                      varQName->get_qname()/*varItem.getp()*/, 
+                                      var_expr::for_var, NULL);
 
-      var_expr_t exInExpr = create_var(loc, varItem, var_expr::let_var, NULL);
-      evFlworExpr->add_clause(wrap_in_forclause(exInExpr.getp(), evVarExpr, NULL));
+      // maybe make one more collExpr?
+      evFlworExpr->add_clause(wrap_in_forclause(collExpr, evVarExpr, NULL));
 
+      pop_scope();
+      // end every
 
-      fo_expr_t everyExpr = new fo_expr(sctxid(),
-                                        loc,
-                                        GET_BUILTIN_FUNCTION(FN_EMPTY_1),
-                                        evFlworExpr.getp());
-
-      // functx:are-distinct-values( $c/@id )
-      // implemented as: count(fn:distinct-values($seq)) = count($seq)
-      // todo
-
-      // (...) and (...)
-      //rchandle<fo_expr> andExpr = new fo_expr(sctxid(), loc, 
-      //                                        GET_BUILTIN_FUNCTION(OP_OR_2), 
-      //                                        everyExpr, );
-
-      // let $c := dc:collection(xs:QName("org:employees")) 
+      // let $x := dc:collection(xs:QName("org:employees")) 
       //   return 
-      var_expr_t varExpr = bind_var(loc, varItem.getp(), var_expr::let_var, 
+      var_expr_t varExpr = bind_var(loc, varQName->get_qname()
+                                    /*varItem.getp()*/, var_expr::let_var, 
                                     NULL);
 
       let_clause* letClause = new let_clause(sctx_p,
@@ -3487,14 +3490,14 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                                              collExpr.getp());
       flwor_expr_t flworExpr = new flwor_expr(sctxid(), loc, false);
 
-      expr_t retExpr = everyExpr;
+    
 
       flworExpr->add_clause(letClause);      
-      flworExpr->set_return_expr(retExpr);
-
+      // flworExpr->set_return_expr( andExpr ); done in end_visit
       
-      // push evFlworExpr because where cluse must be set
+      // push evFlworExpr because where clause must be set
       nodestack.push(evFlworExpr.getp());
+      // push the top expresion
       nodestack.push(flworExpr.getp());
     }
     break;
@@ -3538,6 +3541,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
           xqp_string("http://www.zorba-xquery.com/modules/xqddf"), 
           xqp_string("collection"), 
           1);
+      ZORBA_ASSERT(fn_collection != NULL);
       std::vector<expr_t> argColl;      
       argColl.push_back(qnameExpr.getp());
       fo_expr_t collExpr = new fo_expr(sctxid(), loc, fn_collection, argColl);
@@ -3546,6 +3550,8 @@ void* begin_visit(const IntegrityConstraintDecl& v)
       const QName* varQName = ic.getCollVarName();
       var_expr_t varExpr = bind_var(loc, varQName->get_qname(), 
                                     var_expr::let_var, NULL);
+
+
 
       // let $x := dc:collection(xs:QName("example:coll1")) 
       let_clause* lc = new let_clause(sctx_p,
@@ -3557,7 +3563,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
       // every $x in dc:colection(...) satisfies ...
       // every is implemented as a flowr expr
       flwor_expr_t evFlworExpr(new flwor_expr(sctxid(), loc, false));
-      evFlworExpr->add_clause(lc);
+      //evFlworExpr->add_clause(lc);
       evFlworExpr->set_return_expr(new const_expr(sctxid(), loc, true));
 
       fo_expr_t everyExpr = new fo_expr(sctxid(),
@@ -3616,6 +3622,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
           xqp_string("http://www.zorba-xquery.com/modules/xqddf"), 
           xqp_string("collection"), 
           1);
+      ZORBA_ASSERT(toFnCollection != NULL);
       std::vector<expr_t> toArgColl;      
       toArgColl.push_back(toQnameExpr.getp());
       fo_expr_t toCollExpr = new fo_expr(sctxid(), loc, toFnCollection, 
@@ -3665,6 +3672,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
           xqp_string("http://www.zorba-xquery.com/modules/xqddf"), 
           xqp_string("collection"), 
           1);
+      ZORBA_ASSERT(fromFnCollection != NULL);
       std::vector<expr_t> fromArgColl;      
       toArgColl.push_back(fromQnameExpr.getp());
       fo_expr_t fromCollExpr = new fo_expr(sctxid(), loc, fromFnCollection, 
@@ -3746,25 +3754,33 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
     break;
 
   case IntegrityConstraintDecl::coll_check_unique_key:
-    {     
+    {
       /**********************
        declare integrity constraint org:icEmployeesIds
          on collection org:employees node $x check unique key $x/@id ;
 
-       let $c := dc:collection( xs:QName("org:employees") )
+       let $x := dc:collection( xs:QName("org:employees") )
        return
          (
-           every $i in $c
+           every $x_ in $x
            satisfies
-             exists( $i/@id )
+             exists( $x_/@id )
          )
          and
-         ( functx:are-distinct-values( $c/@id ) )
+         (  functx:are-distinct-values( $x/@id )  )
+
+      implemented as:
+       let $x := dc:collection( xs:QName("org:employees") )
+       return
+         (
+           fn:empty(
+             for $x_ in dc:collection( xs:QName("org:employees") )
+             where not( exists($x_/@id) )
+             return true)
+         )
+         and
+         (  count(distinct-values( $x/@id )) = count($x/@id)  )
       **********************/
-
-      //const ICCollUniqueKeyCheck ic = 
-      //  dynamic_cast<const ICCollUniqueKeyCheck&>(v);
-
       
       //////  Get data from stack
       // $x/@id
@@ -3781,18 +3797,50 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
 
       ////// Set latest details
       // exists( $x/@id )
-      expr_t existsExpr = new fo_expr(sctxid(), loc, var_exists, uniKeyExpr);
-
+      expr_t existsExpr = new fo_expr(sctxid(), loc, 
+                               GET_BUILTIN_FUNCTION(FN_EXISTS_1)/*var_exists*/, 
+                               uniKeyExpr);
 
       // every ... satisfies evTestExpr
-      expr_t evTestExpr = existsExpr;
-
       fo_expr_t fnNotExpr = new fo_expr(sctxid(),
                                          loc,
                                          GET_BUILTIN_FUNCTION(FN_NOT_1),
-                                         evTestExpr);
+                                         existsExpr);
 
       evFlworExpr->add_where(fnNotExpr.getp());
+
+      fo_expr_t everyExpr = new fo_expr(sctxid(),
+                                        loc,
+                                        GET_BUILTIN_FUNCTION(FN_EMPTY_1),
+                                        evFlworExpr.getp());
+
+      // functx:are-distinct-values( $x/@id )
+      // implemented as count(distinct-values($seq)) = count($seq)
+      
+      //distinct-values($seq)
+      fo_expr_t distinctValuesExpr = new fo_expr(sctxid(), loc, 
+                                 GET_BUILTIN_FUNCTION(FN_DISTINCT_VALUES_1), 
+                                                 uniKeyExpr);      
+      // count($sec)
+      fo_expr_t countSecExpr = new fo_expr(sctxid(), loc, 
+                                           GET_BUILTIN_FUNCTION(FN_COUNT_1), 
+                                           uniKeyExpr);
+      // count(distinct-values($sec))
+      fo_expr_t countDVExpr = new fo_expr(sctxid(), loc, 
+                                          GET_BUILTIN_FUNCTION(FN_COUNT_1), 
+                                          distinctValuesExpr);
+      // countDV = countSec
+      fo_expr_t equalExpr = new fo_expr(sctxid(), loc, 
+                                        GET_BUILTIN_FUNCTION(OP_EQUAL_2), 
+                                        countDVExpr, countSecExpr);      
+      expr_t areDistinctValuesExpr = equalExpr;
+
+      // (...) and (...)
+      fo_expr_t andExpr = new fo_expr(sctxid(), loc, 
+                                      GET_BUILTIN_FUNCTION(OP_AND_2), 
+                                      everyExpr, areDistinctValuesExpr);
+
+      flworExpr->set_return_expr(andExpr);
 
       body = flworExpr;
     }

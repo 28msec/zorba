@@ -36,6 +36,9 @@ void ValueIC::serialize(::zorba::serialization::Archiver& ar)
   ar & theSctx;
   ar & theName;
   //ar & theICKind;
+  ar & theCollectionName;
+  ar & theFromCollectionName;
+  ar & theToCollectionName;
   ar & thePlanWrapper;
 }
 
@@ -46,7 +49,7 @@ void ValueIC::serialize(::zorba::serialization::Archiver& ar)
   (b) does not have any free variables,
   (c) does not reference any input functions other than dc:collection()
   (d) the arg to each dc:collection is a const qname 
-********************************************************************************/
+*******************************************************************************/
 //void ValueIC::analyze()
 //{
 //}
@@ -81,9 +84,6 @@ std::string ValueIC::toString()
 ********************************************************************************/
 bool ICCheckerImpl::check(const store::Item* collName)
 {
-  std::cout << "Checker::check : " << collName->getLocalName()->str() << " @ "
-           << collName->getNamespace()->str() << std::endl; std::cout.flush(); 
-
   store::Iterator_t activeICNames = theDctx->listActiveICNames();
 
   store::Item_t activeICName;
@@ -118,6 +118,11 @@ bool ICCheckerImpl::check(const store::Item* collName)
       // if this ic doesn't have a dependency on current collection
       // skip it
       continue;
+
+    std::cout << "ic check : " << ic->getICName()->getLocalName()->str() <<
+      "@" << ic->getICName()->getNamespace()->str() << 
+      "  coll: " << collName->getLocalName()->str() << " @ " << 
+      collName->getNamespace()->str() << std::endl; std::cout.flush(); 
 
     ValueIC* vic = theSctx->lookup_ic(activeICName);
 
