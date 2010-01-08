@@ -3798,7 +3798,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       ////// Set latest details
       // exists( $x/@id )
       expr_t existsExpr = new fo_expr(sctxid(), loc, 
-                               GET_BUILTIN_FUNCTION(FN_EXISTS_1)/*var_exists*/, 
+                               GET_BUILTIN_FUNCTION(FN_EXISTS_1), 
                                uniKeyExpr);
 
       // every ... satisfies evTestExpr

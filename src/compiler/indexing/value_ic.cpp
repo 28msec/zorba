@@ -84,6 +84,7 @@ std::string ValueIC::toString()
 ********************************************************************************/
 bool ICCheckerImpl::check(const store::Item* collName)
 {
+  bool icConditionHolds = true;
   store::Iterator_t activeICNames = theDctx->listActiveICNames();
 
   store::Item_t activeICName;
@@ -133,13 +134,14 @@ bool ICCheckerImpl::check(const store::Item* collName)
     iter->next(partialRes);
     iter->close(); 
   
-    if( !partialRes->getBooleanValue() )
-      return false;
+    icConditionHolds = partialRes->getBooleanValue();
+    std::cout << "ic check : result = " << (icConditionHolds ? "true" : "false")
+              << std::endl; std::cout.flush(); 
   }
 
   activeICNames->close();
   
-  return true;
+  return icConditionHolds;
 }
 
 }
