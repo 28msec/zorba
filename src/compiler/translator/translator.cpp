@@ -3472,7 +3472,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                                       var_expr::for_var, NULL);
 
       // maybe make one more collExpr?
-      evFlworExpr->add_clause(wrap_in_forclause(collExpr, evVarExpr, NULL));
+      evFlworExpr->add_clause(wrap_in_forclause(collExpr.getp(), evVarExpr, NULL));
 
       pop_scope();
       // end every
@@ -3840,7 +3840,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
                                       GET_BUILTIN_FUNCTION(OP_AND_2), 
                                       everyExpr, areDistinctValuesExpr);
 
-      flworExpr->set_return_expr(andExpr);
+      flworExpr->set_return_expr(andExpr.getp());
 
       body = flworExpr;
     }
