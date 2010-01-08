@@ -307,6 +307,45 @@ XmlLoader* SimpleStore::getXmlLoader(error::ErrorManager* aErrorManager)
 #endif
 }
 
+void SimpleStore::populateIndex(
+    const store::Index_t& aIndex,
+    store::Iterator* aSourceIter,
+    ulong aNumColumns)
+{
+  store::Item_t domainItem;
+  store::IndexKey* key = NULL;
+
+  aSourceIter->open();
+
+  try
+  {
+    while (aSourceIter->next(domainItem))
+    {
+      key = new store::IndexKey(aNumColumns);
+
+      for (ulong i = 0; i < aNumColumns; ++i)
+      {
+        if (!aSourceIter->next((*key)[i]))
+        {
+          ZORBA_ERROR_DESC(XQP0019_INTERNAL_ERROR, "Incomplete key during index build");
+        }
+      }
+      
+      static_cast<IndexImpl*>(aIndex.getp())->insert(key, domainItem);
+      key = NULL; // ownership of the key obj passes to the index.
+    }
+  }
+  catch(...)
+  {
+    if (key != NULL)
+      delete key;
+
+    aSourceIter->close();
+    throw;
+  }
+
+  aSourceIter->close();
+}
 
 /*******************************************************************************
   Create an index with a given URI and return an rchandle to the index object. 
@@ -318,11 +357,7 @@ store::Index_t SimpleStore::createIndex(
     const store::IndexSpecification& spec,
     store::Iterator* sourceIter)
 {
-  ulong numColumns = spec.theKeyTypes.size();
-
   store::Index_t index;
-  store::Item_t domainItem;
-  store::IndexKey* key = NULL;
 
   if (!spec.theIsTemp && theIndices.get(qname, index))
   {
@@ -339,36 +374,7 @@ store::Index_t SimpleStore::createIndex(
     index = new HashIndex(qname, spec);
   }
 
-  sourceIter->open();
-
-  try
-  {
-    while (sourceIter->next(domainItem))
-    {
-      key = new store::IndexKey(numColumns);
-
-      for (ulong i = 0; i < numColumns; ++i)
-      {
-        if (!sourceIter->next((*key)[i]))
-        {
-          ZORBA_ERROR_DESC(XQP0019_INTERNAL_ERROR, "Incomplete key during index build");
-        }
-      }
-      
-      static_cast<IndexImpl*>(index.getp())->insert(key, domainItem);
-      key = NULL; // ownership of the key obj passes to the index.
-    }
-  }
-  catch(...)
-  {
-    if (key != NULL)
-      delete key;
-
-    sourceIter->close();
-    throw;
-  }
-
-  sourceIter->close();
+  populateIndex(index, sourceIter, spec.theKeyTypes.size());
 
   if (!spec.theIsTemp)
   {
