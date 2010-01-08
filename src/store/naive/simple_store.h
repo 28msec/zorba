@@ -18,6 +18,7 @@
 
 #include "store/naive/store_config.h"
 #include "store/naive/shared_types.h"
+#include "store/naive/collections.h"
 
 #if (defined (WIN32) || defined (WINCE))
 #include "store/naive/node_items.h"
@@ -61,7 +62,6 @@ class Index;
 typedef rchandle<XmlNode> XmlNode_t;
 
 typedef store::StringHashMap<XmlNode_t> DocumentSet;
-typedef ItemPointerHashMap<store::Collection_t> CollectionSet;
 typedef store::StringHashMap<store::Collection_t> UriCollectionSet;
 typedef ItemPointerHashMap<store::Index_t> IndexSet;
 typedef ItemPointerHashMap<store::IC_t> ICSet;
@@ -77,7 +77,7 @@ typedef ItemPointerHashMap<store::IC_t> ICSet;
   theDocuments         : A hashmap that for each xml tree that does not belong
                          to any collection, maps the URI of the tree to the root
                          node of the tree.
-  theCollections       : A hashmap that for each DDF collection, maps the qname
+  theCollections       : Container which contains the collections of the store
                          of the collection to the collection container object.
   theUriCollections    : A hashmap that for each XQUERY collection, maps the URI
                          of the collection to the collection container object.
@@ -95,7 +95,6 @@ public:
   static const ulong XML_URI_LEN;
 
 protected:
-  static const ulong DEFAULT_COLLECTION_MAP_SIZE;
   static const ulong NAMESPACE_POOL_SIZE;
 
 public:
@@ -123,7 +122,7 @@ protected:
   store::IteratorFactory      * theIteratorFactory;
 
   DocumentSet                   theDocuments;
-  CollectionSet                 theCollections;
+  Collections                   theCollections;
   UriCollectionSet              theUriCollections;
   IndexSet                      theIndices;
   ICSet                         theICs;

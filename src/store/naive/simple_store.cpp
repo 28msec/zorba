@@ -62,7 +62,6 @@ namespace simplestore
 typedef rchandle<store::TempSeq> TempSeq_t;
 
 const ulong SimpleStore::NAMESPACE_POOL_SIZE = 128;
-const ulong SimpleStore::DEFAULT_COLLECTION_MAP_SIZE = 32;
 
 const char* SimpleStore::XS_URI = "http://www.w3.org/2001/XMLSchema";
 const char* SimpleStore::XML_URI = "http://www.w3.org/2001/XML/1998/namespace";
@@ -84,11 +83,11 @@ SimpleStore::SimpleStore()
   theQNamePool(NULL),
   theItemFactory(NULL),
   theIteratorFactory(NULL),
-  theDocuments(DEFAULT_COLLECTION_MAP_SIZE, true),
-  theCollections(0, NULL, DEFAULT_COLLECTION_MAP_SIZE, true),
-  theUriCollections(DEFAULT_COLLECTION_MAP_SIZE, true),
-  theIndices(0, NULL, DEFAULT_COLLECTION_MAP_SIZE, true),
-  theICs(0, NULL, DEFAULT_COLLECTION_MAP_SIZE, true),
+  theDocuments(Collections::DEFAULT_COLLECTION_MAP_SIZE, true),
+  theCollections(),
+  theUriCollections(Collections::DEFAULT_COLLECTION_MAP_SIZE, true),
+  theIndices(0, NULL, Collections::DEFAULT_COLLECTION_MAP_SIZE, true),
+  theICs(0, NULL, Collections::DEFAULT_COLLECTION_MAP_SIZE, true),
   theTraceLevel(0)
 {
 }
@@ -648,48 +647,13 @@ void SimpleStore::deleteUriCollection(const xqpStringStore_t& uri)
   }
 }
 
-class CollectionNameIterator : public store::Iterator
-{
-private:
-  CollectionSet*          theCollections;
-  CollectionSet::iterator theIterator;
-
-public:
-  CollectionNameIterator(CollectionSet& aCollections) 
-  {
-    theCollections = &aCollections;
-  }
-
-  virtual ~CollectionNameIterator() { close(); }
-
-  virtual void open() { theIterator = theCollections->begin(); }
-
-  virtual bool next(store::Item_t& aResult) 
-  {
-    if (theIterator == theCollections->end()) 
-    {
-       aResult = NULL;
-      return false;
-    }
-    else
-    {
-      aResult = (*theIterator).first;
-      ++theIterator;
-      return true;
-    }
-  }
-
-  virtual void reset() { theIterator = theCollections->begin(); }
-
-  virtual void close() {}
-};
 
 /*******************************************************************************
   Returns an iterator that lists the QName's of all the available collections.
 ********************************************************************************/
 store::Iterator_t SimpleStore::listCollectionNames()
 {
-  return new NameIterator<CollectionSet>(theCollections);
+  return theCollections.names();
 }
 
 
@@ -1026,12 +990,12 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
     // Look for the collection
     SimpleCollection* collection;
 
-    CollectionSet::iterator it = theCollections.begin();
-    CollectionSet::iterator end = theCollections.end();
+    Collections::iterator it = theCollections.begin();
+    Collections::iterator end = theCollections.end();
 
     for (; it != end; ++it)
     {
-      collection = static_cast<SimpleCollection*>((*it).second.getp());
+      collection = static_cast<SimpleCollection*>((*it).getp());
 
       if (collection->getId() == collectionId)
         break;
