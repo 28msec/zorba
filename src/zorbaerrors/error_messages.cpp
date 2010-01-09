@@ -736,9 +736,18 @@ DEF_ERR_CODE(XDDY0011_COLLECTION_NODE_NOT_FOUND, XDDY0011,
 DEF_ERR_CODE(XDDY0012_COLLECTION_UNORDERED_BAD_INSERT, XDDY0012, 
 "Illegal insert in unordered collection /s.")
 
-DEF_ERR_CODE(XDDY0013, XDDY0013, "It is a dynamic error if multiple calls to create-collection in the same snapshot have the same QName as first parameter.")
+DEF_ERR_CODE(XDDY0013_COLLECTION_BAD_DESTROY_INDEXES, XDDY0013,
+"Cannot delete collection \s because there are indexes that reference it.")
 
-DEF_ERR_CODE(XDDY0014, XDDY0014, "It is a dynamic error if the position parameter of remove-node-at is smaller than 1 or bigger than the size of the collection sequence identified by the passed QName.")
+DEF_ERR_CODE(XDDY0014_COLLECTION_BAD_DESTROY_ICS, XDDY0014,
+"Cannot delete collection \s because there are integrity constraints that reference it.")
+
+DEF_ERR_CODE(XDDY0015_COLLECTION_BAD_DESTROY_NODES, XDDY0015,
+"Cannot delete collection \s because there are references on its nodes.")
+
+
+DEF_ERR_CODE(XDDY0013, XDDY0013, 
+"Multiple calls to create-collection in the same snapshot have the same QName as first parameter.")
 
 
 #undef DEF_ERR_CODE
@@ -780,7 +789,7 @@ DEF_ERR_CODE(XDDY0014, XDDY0014, "It is a dynamic error if the position paramete
     }
   }
 
-  const char *get_canonical_err_name(const XQUERY_ERROR& code) const
+  const char* get_canonical_err_name(const XQUERY_ERROR& code) const
   {
     return canonical_err_names[code];
   }

@@ -71,17 +71,28 @@ typedef ItemPointerHashMap<store::IC_t> ICSet;
 /*******************************************************************************
   theSchemaTypeNames   : Maps each enum value from SchemaTypeNames (see 
                          store_defs.h) to its associated QName item.
+
   theCollectionCounter : Incremented every time a new collection is created. The
                          current value of the counter is then assigned as the
                          id of the new collection.
+
+  theNamespacePool     :
+  theQNamePool         :
+
+  theItemFactory       : Factory to create items.
+  theIteratorFactory   : Factory to create iterators.
+
   theDocuments         : A hashmap that for each xml tree that does not belong
                          to any collection, maps the URI of the tree to the root
                          node of the tree.
-  theCollections       : Container which contains the collections of the store
+  theCollections       : Container which contains the collections of the store.
+                         It includes a map that maps the qname of each collection
+                         to the collection's container object.
+  theUriCollections    : A hashmap that for each W3C collection, maps the URI
                          of the collection to the collection container object.
-  theUriCollections    : A hashmap that for each XQUERY collection, maps the URI
-                         of the collection to the collection container object.
-  theIndices           :
+  theIndices           : A hashmap that for each index, maps the qname of the
+                         index to the index container object.
+  theICs               :
 ********************************************************************************/
 class SimpleStore : public store::Store
 {
@@ -130,7 +141,6 @@ protected:
   SYNC_CODE(Lock                theGlobalLock;)
 
   long                          theTraceLevel;
-  
 
 private:
   SimpleStore();
@@ -173,12 +183,9 @@ public:
 
   store::Collection_t getCollection(const store::Item* aName);
 
-  store::Iterator_t listCollectionNames();
+  void addCollection(store::Collection_t& collection);
 
-  static void populateIndex(
-      const store::Index_t& aIndex,
-      store::Iterator* aSourceIter,
-      ulong aNumColumns);
+  store::Iterator_t listCollectionNames();
 
   store::Index_t createIndex(
         const store::Item_t& qname,
@@ -195,12 +202,14 @@ public:
 
   const IndexSet& getIndices() const { return theIndices; }
 
-  store::IC_t activateIC(const store::Item_t& icQName, 
-                         const store::Item_t& collectionQName);
+  store::IC_t activateIC(
+        const store::Item_t& icQName, 
+        const store::Item_t& collectionQName);
 
-  store::IC_t activateForeignKeyIC(const store::Item_t& icQName, 
-                                   const store::Item_t& fromCollectionQName,
-                                   const store::Item_t& toCollectionQName);
+  store::IC_t activateForeignKeyIC(
+        const store::Item_t& icQName, 
+        const store::Item_t& fromCollectionQName,
+        const store::Item_t& toCollectionQName);
 
   void deactivateIC(const store::Item* icQName);
 
@@ -237,12 +246,12 @@ public:
   store::Iterator_t distinctNodes(store::Iterator*, bool aAllowAtomics = false);
 
   bool getPathInfo(
-    const store::Item* docUri,
-    std::vector<const store::Item*>& contextPath,
-    std::vector<const store::Item*>& relativePath,
-    bool isAttrPath,
-    bool& found,
-    bool& unique);
+        const store::Item* docUri,
+        std::vector<const store::Item*>& contextPath,
+        std::vector<const store::Item*>& relativePath,
+        bool isAttrPath,
+        bool& found,
+        bool& unique);
 
   bool getReference(store::Item_t& result, const store::Item* node);
 

@@ -27,6 +27,7 @@
 
 namespace zorba { namespace simplestore {
 
+
 /*******************************************************************************
   theId          : An internally generated unique id.
   theName        : The user provided qname of the collection.
@@ -108,6 +109,8 @@ public:
   store::Item_t nodeAt(ulong position);
 
   void adjustTreePositions();
+
+  void getIndexes(std::vector<store::Index*>& indexes);
 };
 
 } // namespace store

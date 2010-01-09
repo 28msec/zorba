@@ -852,7 +852,7 @@ public:
 class UpdDeleteCollection : public UpdCollection
 {
 protected:
-  std::vector<store::Item_t> theSavedItems; // only used for undo
+  store::Collection_t theCollection; // only used for undo
 
 public:
   UpdDeleteCollection(

@@ -18,6 +18,7 @@
 
 namespace zorba { namespace simplestore {
 
+
 class NamesIterator : public store::Iterator {
 private:
   Collections::CollectionSet*          theCollections;
@@ -53,40 +54,60 @@ public:
   virtual void close() {}
 };
 
+
 const ulong Collections::DEFAULT_COLLECTION_MAP_SIZE = 32;
 
-Collections::Collections()
-  : theCollections(0, NULL, DEFAULT_COLLECTION_MAP_SIZE, true)
-{}
 
-void Collections::clear() {
+Collections::Collections()
+  :
+  theCollections(0, NULL, DEFAULT_COLLECTION_MAP_SIZE, true)
+{
+}
+
+
+void Collections::clear() 
+{
   theCollections.clear();
 }
 
-bool Collections::insert ( const store::Item* aName, store::Collection_t& aCollection ) {
+
+bool Collections::insert(const store::Item* aName, store::Collection_t& aCollection )
+{
   return theCollections.insert(aName, aCollection);
 }
 
-bool Collections::get ( const store::Item* aName, store::Collection_t& aCollection ) {
+
+bool Collections::get(const store::Item* aName, store::Collection_t& aCollection ) 
+{
   return theCollections.get(aName, aCollection);
 }
 
-bool Collections::remove ( const store::Item* aName ) {
+
+bool Collections::remove(const store::Item* aName ) 
+{
   return theCollections.remove(aName);
 }
 
-store::Iterator_t Collections::names () {
+
+store::Iterator_t Collections::names() 
+{
   return new NamesIterator(theCollections);
 }
 
-Collections::iterator Collections::begin () {
-  Collections::iterator lIter (theCollections.begin());
+
+Collections::iterator Collections::begin() 
+{
+  Collections::iterator lIter(theCollections.begin());
   return lIter;
 }
 
-Collections::iterator Collections::end () {
-  Collections::iterator lIter (theCollections.end());
+
+Collections::iterator Collections::end()
+{
+  Collections::iterator lIter(theCollections.end());
   return lIter;
 }
 
-}}
+
+}
+}

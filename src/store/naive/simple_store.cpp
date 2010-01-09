@@ -59,8 +59,70 @@ namespace zorba
 namespace simplestore 
 {
 
+static void populateIndex(
+    const store::Index_t& aIndex,
+    store::Iterator* aSourceIter,
+    ulong aNumColumns);
+
+
 typedef rchandle<store::TempSeq> TempSeq_t;
 
+
+/*******************************************************************************
+  Iterator to return Index and Collection Names
+********************************************************************************/
+template < typename T >
+class NameIterator : public store::Iterator
+{
+private:
+  T*                   theItems;
+  typename T::iterator theIterator;
+
+public:
+  NameIterator(T& aItems)
+  {
+    theItems = &aItems;
+  }
+
+  virtual ~NameIterator() 
+  {
+    close();
+  }
+
+  virtual void open() 
+  {
+    theIterator = theItems->begin(); 
+  }
+
+  virtual bool next(store::Item_t& aResult) 
+  {
+    if (theIterator == theItems->end()) 
+    {
+       aResult = NULL;
+      return false;
+    }
+    else 
+    {
+      aResult = (*theIterator).first;
+      ++theIterator;
+      return true;
+    }
+  }
+
+  virtual void reset() 
+  {
+    theIterator = theItems->begin();
+  }
+
+  virtual void close()
+  {
+  }
+};
+
+
+/*******************************************************************************
+  SimpleStore static data
+********************************************************************************/
 const ulong SimpleStore::NAMESPACE_POOL_SIZE = 128;
 
 const char* SimpleStore::XS_URI = "http://www.w3.org/2001/XMLSchema";
@@ -307,7 +369,46 @@ XmlLoader* SimpleStore::getXmlLoader(error::ErrorManager* aErrorManager)
 #endif
 }
 
-void SimpleStore::populateIndex(
+
+/*******************************************************************************
+  Create an index with a given URI and return an rchandle to the index object. 
+  If an index with the given URI exists already and the index we want to create
+  is not a temporary one, raise an error.
+********************************************************************************/
+store::Index_t SimpleStore::createIndex(
+    const store::Item_t& qname,
+    const store::IndexSpecification& spec,
+    store::Iterator* sourceIter)
+{
+  store::Index_t index;
+
+  if (!spec.theIsTemp && theIndices.get(qname, index))
+  {
+    ZORBA_ERROR_PARAM(STR0001_INDEX_ALREADY_EXISTS,
+                      qname->getStringValue()->c_str(), "");
+  }
+
+  if (spec.theIsSorted)
+  {
+    index = new STLMapIndex(qname, spec);
+  }
+  else
+  {
+    index = new HashIndex(qname, spec);
+  }
+
+  populateIndex(index, sourceIter, spec.theKeyTypes.size());
+
+  if (!spec.theIsTemp)
+  {
+    theIndices.insert(qname.getp(), index);
+  }
+
+  return index;
+}
+
+
+void populateIndex(
     const store::Index_t& aIndex,
     store::Iterator* aSourceIter,
     ulong aNumColumns)
@@ -345,43 +446,6 @@ void SimpleStore::populateIndex(
   }
 
   aSourceIter->close();
-}
-
-/*******************************************************************************
-  Create an index with a given URI and return an rchandle to the index object. 
-  If an index with the given URI exists already and the index we want to create
-  is not a temporary one, raise an error.
-********************************************************************************/
-store::Index_t SimpleStore::createIndex(
-    const store::Item_t& qname,
-    const store::IndexSpecification& spec,
-    store::Iterator* sourceIter)
-{
-  store::Index_t index;
-
-  if (!spec.theIsTemp && theIndices.get(qname, index))
-  {
-    ZORBA_ERROR_PARAM(STR0001_INDEX_ALREADY_EXISTS,
-                      qname->getStringValue()->c_str(), "");
-  }
-
-  if (spec.theIsSorted)
-  {
-    index = new STLMapIndex(qname, spec);
-  }
-  else
-  {
-    index = new HashIndex(qname, spec);
-  }
-
-  populateIndex(index, sourceIter, spec.theKeyTypes.size());
-
-  if (!spec.theIsTemp)
-  {
-    theIndices.insert(qname.getp(), index);
-  }
-
-  return index;
 }
 
 
@@ -424,42 +488,10 @@ void SimpleStore::deleteIndex(const store::Item* qname)
   theIndices.remove(qname);
 }
 
+
 /*******************************************************************************
-  Iterator to return Index and Collection Names
+
 ********************************************************************************/
-template < typename T >
-class NameIterator : public store::Iterator
-{
-private:
-  T*                   theItems;
-  typename T::iterator theIterator;
-
-public:
-  NameIterator(T& aItems) {
-    theItems = &aItems;
-  }
-  virtual ~NameIterator() { close(); }
-  virtual void open() {
-    theIterator = theItems->begin();
-  }
-  virtual bool next(store::Item_t& aResult) {
-    if (theIterator == theItems->end()) {
-       aResult = NULL;
-      return false;
-    }
-    else {
-      aResult = (*theIterator).first;
-      ++theIterator;
-      return true;
-    }
-  }
-  virtual void reset() {
-    theIterator = theItems->begin();
-  }
-  virtual void close() {}
-};
-
-
 store::Iterator_t SimpleStore::listIndexNames()
 {
   return new NameIterator<IndexSet>(theIndices);
@@ -491,6 +523,9 @@ store::IC_t SimpleStore::activateIC(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 store::IC_t SimpleStore::activateForeignKeyIC(
     const store::Item_t& icQName, 
     const store::Item_t& fromCollectionQName,
@@ -544,6 +579,61 @@ store::IC* SimpleStore::getIC(const store::Item* icQName)
   return ic.getp();
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
+store::Collection_t SimpleStore::createUriCollection(const xqpStringStore_t& uri)
+{
+  if (uri == NULL)
+    return NULL;
+
+  store::Item_t uriItem;
+  xqpStringStore_t tmpuri(uri.getp());
+  theItemFactory->createAnyURI(uriItem, tmpuri);
+
+  store::Collection_t collection(new SimpleCollection(uriItem));
+
+  const xqpStringStore* urip = collection->getName()->getStringValueP();
+  bool inserted = theUriCollections.insert(urip, collection);
+
+  if (!inserted)
+  {
+    ZORBA_ERROR_PARAM(STR0008_COLLECTION_ALREADY_EXISTS, uri->c_str(), "");
+    return 0;
+  }
+
+  return collection;
+}
+
+
+store::Collection_t SimpleStore::getUriCollection(const xqpStringStore_t& uri)
+{
+  if (uri == NULL)
+    return NULL;
+
+  store::Collection_t collection;
+  if (theUriCollections.get(uri, collection))
+    return collection.getp();
+  else
+    return NULL;
+}
+
+
+void SimpleStore::deleteUriCollection(const xqpStringStore_t& uri)
+{
+  if (uri == NULL)
+    return;
+
+  bool deleted = theUriCollections.remove(uri);
+
+  if (!deleted) 
+  {
+    ZORBA_ERROR_PARAM(STR0009_COLLECTION_NOT_FOUND, uri->c_str(), "");
+  }
+}
+
+
 /*******************************************************************************
   Create a collection with a given QName and return an rchandle to the new
   collection object. If a collection with the given QName exists already, raise
@@ -570,27 +660,19 @@ store::Collection_t SimpleStore::createCollection(store::Item_t& aName)
 }
 
 
-store::Collection_t SimpleStore::createUriCollection(const xqpStringStore_t& uri)
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleStore::addCollection(store::Collection_t& collection)
 {
-  if (uri == NULL)
-    return NULL;
+  const store::Item* lName = collection->getName();
 
-  store::Item_t uriItem;
-  xqpStringStore_t tmpuri(uri.getp());
-  theItemFactory->createAnyURI(uriItem, tmpuri);
-
-  store::Collection_t collection(new SimpleCollection(uriItem));
-
-  const xqpStringStore* urip = collection->getName()->getStringValueP();
-  bool inserted = theUriCollections.insert(urip, collection);
+  bool inserted = theCollections.insert(lName, collection);
 
   if (!inserted)
   {
-    ZORBA_ERROR_PARAM(STR0008_COLLECTION_ALREADY_EXISTS, uri->c_str(), "");
-    return 0;
+    ZORBA_ERROR_PARAM(STR0008_COLLECTION_ALREADY_EXISTS, lName->getStringValue(), "");
   }
-
-  return collection;
 }
 
 
@@ -611,19 +693,6 @@ store::Collection_t SimpleStore::getCollection(const store::Item* aName)
 }
 
 
-store::Collection_t SimpleStore::getUriCollection(const xqpStringStore_t& uri)
-{
-  if (uri == NULL)
-    return NULL;
-
-  store::Collection_t collection;
-  if (theUriCollections.get(uri, collection) )
-    return collection.getp();
-  else
-    return NULL;
-}
-
-
 /*******************************************************************************
   Delete the collection with the given QName. If there is no collection with
   that QName, this method is a NOOP.
@@ -636,20 +705,6 @@ void SimpleStore::deleteCollection(const store::Item* aName)
   if (!theCollections.remove(aName)) 
   {
     ZORBA_ERROR_PARAM(STR0009_COLLECTION_NOT_FOUND, aName->getStringValue(), "");
-  }
-}
-
-
-void SimpleStore::deleteUriCollection(const xqpStringStore_t& uri)
-{
-  if (uri == NULL)
-    return;
-
-  bool deleted = theUriCollections.remove(uri);
-
-  if (!deleted) 
-  {
-    ZORBA_ERROR_PARAM(STR0009_COLLECTION_NOT_FOUND, uri->c_str(), "");
   }
 }
 
@@ -701,9 +756,11 @@ store::Item_t SimpleStore::loadDocument(
   return root.getp();
 }
 
+
 /*******************************************************************************
-For lazy loading...
-Param stream is a heap pointer to an input stream. This is to be deallocated by Zorba.
+  For lazy loading...
+  Param stream is a heap pointer to an input stream. This is to be deallocated
+  by Zorba.
 ********************************************************************************/
 store::Item_t SimpleStore::loadDocument(
     const xqpStringStore_t& uri, 
@@ -1206,7 +1263,8 @@ TempSeq_t SimpleStore::createTempSeq(const std::vector<store::Item_t>& item_v)
 /*******************************************************************************
   Export the Microsoft DOM tree representation of a Node Item.
   Exporting MS DOM tree is valid only for the MS DOM store.
-  Compile the simple store with ZORBA_STORE_MSDOM in order to use this feature on Windows machines.
+  Compile the simple store with ZORBA_STORE_MSDOM in order to use this feature
+  on Windows machines.
   For atomic items it returns NULL.
 ********************************************************************************/
 IXMLDOMNode*   SimpleStore::exportItemAsMSDOM(store::Item_t it)
@@ -1228,9 +1286,10 @@ IXMLDOMNode*   SimpleStore::exportItemAsMSDOM(store::Item_t it)
   Compile the simple store with ZORBA_STORE_MSDOM in order to use this feature
   on Windows machines.
 *******************************************************************************/
-store::Item_t  SimpleStore::importMSDOM(IXMLDOMNode* domNode,
-                                        xqpStringStore_t docUri,
-                                        xqpStringStore_t baseUri)
+store::Item_t  SimpleStore::importMSDOM(
+    IXMLDOMNode* domNode,
+    xqpStringStore_t docUri,
+    xqpStringStore_t baseUri)
 {
   ImportMSDOM   importer(theItemFactory);
 

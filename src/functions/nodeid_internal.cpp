@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "runtime/core/nodeid_iterators.h"
+#include "runtime/core/sequencetypes.h"
+
+#include "compiler/expression/expr_base.h"
+#include "compiler/semantic_annotations/annotation_keys.h"
+#include "compiler/semantic_annotations/tsv_annotation.h"
 
 #include "functions/nodeid_internal.h"
 #include "functions/function_impl.h"
 
-#include "compiler/semantic_annotations/annotation_keys.h"
-#include "compiler/semantic_annotations/tsv_annotation.h"
-
-#include "runtime/core/nodeid_iterators.h"
-#include "runtime/core/sequencetypes.h"
+#include "types/typeops.h"
 
 
 namespace zorba 
@@ -31,58 +33,34 @@ namespace zorba
 #define TSV_TRUE TSVAnnotationValue::TRUE_VAL
 #define TSV_TRUE_P TSVAnnotationValue::TRUE_VAL.getp()
 
-#define A_SORT ((a)[0])
-#define A_ATOMICS ((a)[1])
-#define A_DISTINCT ((a)[2])
-#define A_ASCENDING ((a)[3])
-
 
 /*******************************************************************************
-  Static method that finds and returns the appropriate function to wrap an
-  expression E (the "child" param) with in order to sort its result in doc order
-  (if needed) and/or eliminated duplicate nodes from that result (if needed).
+  Let f be "this" function, F be the fo expr representing a call to f, and E be
+  the arg of F. This method is used to optimize the exression F(E) by replacing
+  f with another op_node_sort_distinct function g, such that the action set of g
+  is a subset of the action set of f, or by completely eliminating F, if no 
+  op_node_sort_distinct action is needed on E.
 
-  The "a" param is an array of 4 bools that describe what kind of wrapper 
-  function we want: the 1st bool says whether we want doc ordering, the 2nd bool
-  says if we want to allow a result consisting of atomic values instead of nodes,
-  the 3rd bool says whether we want duplicate node elimination, and the 4th bool
-  says whether the nodes in the result should be in ascendig doc order (assuming
-  the 1st bool is true).
+  The optimization is based on :
+  (a) The PRODUCES_SORTED_NODES and PRODUCES_DISTINCT_NODES annotations of E,
+  (b) The IGNORES_SORTED_NODES and IGNORES_DUP_NODES annotations of F, and
+  (c) The "noa" param.
 
-  Whether the operations specified by the "a" param are actually needed or not,
-  depends of the parent and of expression E and on E itself. For example, if
-  the parent of E does not care about duplicates, then we don't need a wrapper
-  function that does duplicate elimination.
+  The "parent" param is the fo expr F, and the "child" param is the E expr.
 ********************************************************************************/
-function* op_node_sort_distinct::op_for_action(
-    const static_context* sctx,
-    const bool* a,
-    const AnnotationHolder* parent,
-    const AnnotationHolder* child,
-    nodes_or_atomics_t noa) 
+function* op_node_sort_distinct::optimize(
+    static_context* sctx,
+    const expr* parent,
+    const expr* child) const
 {
   Annotations::Key ignoresSortedNodes = Annotations::IGNORES_SORTED_NODES;
   Annotations::Key producesSortedNodes = Annotations::PRODUCES_SORTED_NODES;
   Annotations::Key ignoresDupNodes = Annotations::IGNORES_DUP_NODES;
   Annotations::Key producesDistinctNodes = Annotations::PRODUCES_DISTINCT_NODES;
 
-  bool distinct = (A_DISTINCT &&
-                   (parent == NULL ||
-                    parent->get_annotation(ignoresDupNodes) != TSV_TRUE) &&
-                   (child == NULL ||
-                    child->get_annotation(producesDistinctNodes) != TSV_TRUE));
-
-  // If results consisting of atomic values only are allowed, and we actually
-  // know that all possible results will actually consists of atomic values
-  // only, then there is nothing to do here.
-  if (A_ATOMICS && noa == ATOMICS)
-    return NULL;
-
-  bool atomics = A_ATOMICS && noa == MIXED;
-
 #if 0
   cout << "op_for_action parent " << parent << " child " << child
-       << " A_SORT " << A_SORT << " parent_ignores_sorted "
+       << " parent_ignores_sorted "
        << (parent != NULL && 
            parent->get_annotation(Annotations::IGNORES_SORTED_NODES) == TSV_TRUE)
        << " child_prod_sorted "
@@ -91,14 +69,57 @@ function* op_node_sort_distinct::op_for_action(
        << endl;
 #endif
 
-  if (! A_SORT ||
-      (parent != NULL &&
-       parent->get_annotation(ignoresSortedNodes).getp() == TSV_TRUE_P) ||
-      (child != NULL &&
-       child->get_annotation(producesSortedNodes).getp() == TSV_TRUE_P &&
-       A_ASCENDING))
+  // Get the acction set of "this" function
+  const bool* myActions = this->action();
+
+  // Check if the NOA action is really required.
+  bool noa = myActions[NOA];
+  if (noa)
   {
-    if (distinct && atomics)
+    xqtref_t inputType = child->return_type(sctx);
+
+    if (TypeOps::is_subtype(*inputType, *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE))
+    {
+      // No action is required at all in this case, because the result is sure
+      // to consist of atomic values only, and this is an allowed result given
+      // that the NOA action is in "this" action set.
+      return NULL;
+    }
+    else if (TypeOps::is_subtype(*inputType, *GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR))
+    {
+      noa = false;
+    }
+  }
+
+  // See if duplicate node elimination is really required
+  bool distinct = myActions[DISTINCT];
+  if (distinct)
+  {
+    if (parent != NULL &&
+        parent->get_annotation(ignoresDupNodes).getp() == TSV_TRUE_P)
+      distinct = false;
+
+    if (child != NULL &&
+        child->get_annotation(producesDistinctNodes).getp() == TSV_TRUE_P)
+      distinct = false;
+  }
+
+  bool sort = (myActions[SORT_ASC] || myActions[SORT_DESC]);
+  if (sort)
+  {
+    if (parent != NULL &&
+        parent->get_annotation(ignoresSortedNodes).getp() == TSV_TRUE_P)
+      sort = false;
+
+    if (child != NULL &&
+        child->get_annotation(producesSortedNodes).getp() == TSV_TRUE_P &&
+        myActions[SORT_ASC])
+      sort = false;
+  }
+
+  if (!sort)
+  {
+    if (distinct && noa)
     {
       return GET_BUILTIN_FUNCTION(OP_DISTINCT_NODES_OR_ATOMICS_1); 
     }
@@ -106,7 +127,7 @@ function* op_node_sort_distinct::op_for_action(
     {
       return GET_BUILTIN_FUNCTION(OP_DISTINCT_NODES_1); 
     }
-    else if (atomics)
+    else if (noa)
     {
       return GET_BUILTIN_FUNCTION(OP_EITHER_NODES_OR_ATOMICS_1);
     }
@@ -115,43 +136,30 @@ function* op_node_sort_distinct::op_for_action(
       return NULL;
     }
   }
-  else if (distinct && atomics)
+  else if (distinct && noa)
   {
-    return (A_ASCENDING ?
+    return (myActions[SORT_ASC] ?
             GET_BUILTIN_FUNCTION(OP_SORT_DISTINCT_NODES_ASC_OR_ATOMICS_1) :
             GET_BUILTIN_FUNCTION(OP_SORT_DISTINCT_NODES_DESC_OR_ATOMICS_1)); 
   }
   else if (distinct)
   {
-    return (A_ASCENDING ?
+    return (myActions[SORT_ASC] ?
             GET_BUILTIN_FUNCTION(OP_SORT_DISTINCT_NODES_ASC_1) :
             GET_BUILTIN_FUNCTION(OP_SORT_DISTINCT_NODES_DESC_1)); 
   }
-  else if (atomics)
+  else if (noa)
   {
-    return (A_ASCENDING ?
+    return (myActions[SORT_ASC] ?
             GET_BUILTIN_FUNCTION(OP_SORT_NODES_ASC_OR_ATOMICS_1) :
             GET_BUILTIN_FUNCTION(OP_SORT_NODES_DESC_OR_ATOMICS_1)); 
   }
   else
   {
-    return (A_ASCENDING ?
+    return (myActions[SORT_ASC] ?
             GET_BUILTIN_FUNCTION(OP_SORT_NODES_ASC_1) :
             GET_BUILTIN_FUNCTION(OP_SORT_NODES_DESC_1)); 
   }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-function* op_node_sort_distinct::min_action(
-    const static_context* sctx,
-    const AnnotationHolder* self,
-    const AnnotationHolder* child,
-    nodes_or_atomics_t noa) const 
-{
-  return op_for_action(sctx, action(), self, child, noa);
 }
 
 
@@ -163,31 +171,22 @@ void op_node_sort_distinct::compute_annotation(
     std::vector<AnnotationHolder *>& kids,
     Annotations::Key k) const
 {
-  const bool* a  = action();
+  const bool* myActions = action();
 
   switch (k) 
   {
   case Annotations::IGNORES_SORTED_NODES:
   case Annotations::IGNORES_DUP_NODES: 
   {
-    bool ignores = 
-    (parent->get_annotation(k).getp() == TSV_TRUE_P ||
-     (k == Annotations::IGNORES_SORTED_NODES ? A_SORT : A_DISTINCT));
+    bool sort = (myActions[SORT_ASC]  || myActions[SORT_DESC]);
+    bool distinct = myActions[DISTINCT];
+
+    bool ignores = (parent->get_annotation(k).getp() == TSV_TRUE_P ||
+                    (k == Annotations::IGNORES_SORTED_NODES ? sort : distinct));
 
     TSVAnnotationValue::update_annotation(kids[0],
                                           k,
                                           TSVAnnotationValue::from_bool(ignores));
-    break;
-  }
-
-  case Annotations::PRODUCES_SORTED_NODES:
-  case Annotations::PRODUCES_DISTINCT_NODES: 
-  {
-    bool produces =
-    (kids[0]->get_annotation(k).getp() == TSV_TRUE_P ||
-     (k == Annotations::PRODUCES_SORTED_NODES ? A_SORT : A_DISTINCT));
-
-    parent->put_annotation(k, TSVAnnotationValue::from_bool(produces));
     break;
   }
 
@@ -207,18 +206,26 @@ PlanIter_t op_node_sort_distinct::codegen(
     std::vector<PlanIter_t>& argv,
     AnnotationHolder& ann) const 
 {
-  const bool* a = action();
-  bool distinct = A_DISTINCT;
+  const bool* myActions = action();
+  bool sort = (myActions[SORT_ASC]  || myActions[SORT_DESC]);
+  bool distinct = myActions[DISTINCT];
+  bool noa = myActions[NOA];
 
-  if (! A_SORT)
+  if (! sort)
   {
-    return (distinct ?
-            new NodeDistinctIterator(sctx, loc, argv[0], A_ATOMICS) :
-            (A_ATOMICS ? new EitherNodesOrAtomicsIterator(sctx, loc, argv) : argv[0]));
+    if (distinct)
+      return new NodeDistinctIterator(sctx, loc, argv[0], noa);
+    else if (noa)
+      return new EitherNodesOrAtomicsIterator(sctx, loc, argv);
+    else
+      return argv[0];
   }
   else
   {
-    return new NodeSortIterator(sctx, loc, argv[0], A_ASCENDING, distinct, A_ATOMICS);
+    return new NodeSortIterator(sctx, loc, argv[0],
+                                myActions[SORT_ASC],
+                                distinct,
+                                noa);
   }
 }
 
@@ -237,8 +244,8 @@ public:
 
   const bool* action() const 
   {
-    //                         sort   atomics  distinct  ascendig
-    static const bool a[] = { false, true,    false,    false };
+    //                        sort_asc  sort_desc  distinct  noa
+    static const bool a[] = { false,    false,     false,    true };
     return a;
   }
 
@@ -268,8 +275,8 @@ public:
 
   const bool* action() const 
   {
-    //                         sort   atomics  distinct  ascendig
-    static const bool a[] = { false, false,   true,     false };
+    //                        sort_asc  sort_desc  distinct  noa
+    static const bool a[] = { false,    false,     true,     false };
     return a;
   }
 
@@ -301,8 +308,8 @@ public:
 
   const bool* action() const 
   {
-    //                        sort   atomics  distinct  ascendig
-    static const bool a[] = { false, true,     true,    false };
+    //                        sort_asc  sort_desc  distinct  noa
+    static const bool a[] = { false,    false,     true,     true };
     return a;
   }
 
@@ -332,7 +339,8 @@ public:
 
   const bool* action() const 
   {
-    static const bool a[] = { true, false, false, true };
+    //                        sort_asc  sort_desc  distinct  noa
+    static const bool a[] = { true,     false,     false,    false };
     return a;
   }
 
@@ -364,8 +372,8 @@ public:
 
   const bool* action() const 
   {
-    //                        sort   atomics  distinct  ascendig
-    static const bool a[] = { true,  true,    false,    true };
+    //                        sort_asc  sort_desc  distinct  noa
+    static const bool a[] = { true,     false,     false,    true };
     return a;
   }
 
@@ -395,7 +403,8 @@ public:
   
   const bool* action() const 
   {
-    static const bool a[] = { true, false, false, false };
+    //                        sort_asc  sort_desc  distinct  noa
+    static const bool a[] = { false,    true,      false,    false };
     return a;
   }
 
@@ -427,8 +436,8 @@ public:
   
   const bool* action() const 
   {
-    //                        sort   atomics  distinct  ascendig
-    static const bool a[] = { true,  true,    false,    false };
+    //                        sort_asc  sort_desc  distinct  noa
+    static const bool a[] = { false,    true,      false,    true };
     return a;
   }
 
@@ -461,7 +470,8 @@ public:
   
   const bool* action() const 
   {
-    static const bool a[] = { true, false, true, true };
+    //                        sort_asc  sort_desc  distinct  noa
+    static const bool a[] = { true,     false,     true,     false };
     return a;
   }
 
@@ -493,8 +503,8 @@ public:
 
   const bool* action() const 
   {
-    //                        sort   atomics  distinct  ascendig
-    static const bool a[] = { true,  true,    true,     true };
+    //                        sort_asc  sort_desc  distinct  noa
+    static const bool a[] = { true,     false,     true,     true };
     return a;
   }
 
@@ -525,8 +535,8 @@ public:
 
   const bool* action() const 
   {
-    //                        sort   atomics  distinct  ascendig
-    static const bool a[] = { true,  false,   true,     false };
+    //                        sort_asc  sort_desc  distinct  noa
+    static const bool a[] = { false,    true,      true,     false };
     return a;
   }
 
@@ -557,8 +567,8 @@ public:
 
   const bool* action() const 
   {
-    //                        sort   atomics  distinct  ascendig
-    static const bool a[] = { true,  true,   true,     false };
+    //                        sort_asc  sort_desc  distinct  noa
+    static const bool a[] = { false,    true,      true,     true };
     return a;
   }
 

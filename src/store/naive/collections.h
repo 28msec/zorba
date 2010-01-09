@@ -27,16 +27,18 @@ namespace zorba { namespace simplestore {
   a different kind of memory management. For the simplestore, the Collections
   is only a wrapper class around an ItemPointerHashMap.
 ********************************************************************************/
-class Collections {
+class Collections 
+{
 public:
   typedef ItemPointerHashMap<store::Collection_t> CollectionSet;
   static const ulong DEFAULT_COLLECTION_MAP_SIZE;
 
 private:
-  CollectionSet                                   theCollections;
+  CollectionSet  theCollections;
 
 public:
-  class iterator {
+  class iterator 
+  {
   private:
     CollectionSet::iterator theIterator;
 
@@ -44,21 +46,36 @@ public:
     iterator(CollectionSet::iterator aIterator) : theIterator(aIterator) {}
 
     bool operator!=(const iterator& aIter) { return theIterator != aIter.theIterator; }
+
     iterator& operator++() { ++theIterator; return *this; }
+
     store::Collection_t operator*() { return (*theIterator).second; }
   };
 
 public:
   Collections();
+
   void clear();
-  bool insert ( const store::Item* aName, store::Collection_t& aCollection );  
-  bool get ( const store::Item* aName, store::Collection_t& aCollection );
-  bool remove ( const store::Item* aName ); 
+
+  bool insert(const store::Item* aName, store::Collection_t& aCollection);
+
+  bool get(const store::Item* aName, store::Collection_t& aCollection);
+
+  bool remove(const store::Item* aName);
+
   store::Iterator_t names();
+
   iterator begin();
+
   iterator end();
 };
 
 }}
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

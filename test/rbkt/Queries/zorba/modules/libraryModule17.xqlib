@@ -3,7 +3,7 @@ module namespace mod17 = "http://example17.com";
 
 import module namespace mod16 = "http://example16.com" at "libraryModule16.xqlib";
 
-declare function mod17:foo() as xs:string
+declare function mod17:foo() as xs:string*
 {
   mod16:foo()
 };

@@ -31,18 +31,10 @@
 namespace zorba 
 {
 
-static op_node_sort_distinct::nodes_or_atomics_t nodes_or_atomics(xqtref_t type) 
-{
-  xqtref_t pt = TypeOps::prime_type (*type);
-  if (TypeOps::is_subtype (*pt, *GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE))
-    return op_node_sort_distinct::NODES;
-  else if (TypeOps::is_subtype (*pt, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE))
-    return op_node_sort_distinct::ATOMICS;
-  else
-    return op_node_sort_distinct::MIXED;
-}
 
+/*******************************************************************************
 
+********************************************************************************/
 static void propagate_down_nodeid_props(expr* src, expr* target) 
 {
   Annotations::Key k;
@@ -461,16 +453,17 @@ RULE_REWRITE_PRE(EliminateNodeOps)
   {
     const function* f = fo->get_func();
 
+    // ????
     if (f->getKind() == FunctionConsts::FN_UNORDERED_1)
       return fo->get_arg(0, true);
 
-    const op_node_sort_distinct* nsdf = dynamic_cast<const op_node_sort_distinct *> (f);
+    const op_node_sort_distinct* nsdf = dynamic_cast<const op_node_sort_distinct*>(f);
+
     if (nsdf != NULL) 
     {
-      function* fmin = nsdf->min_action(sctx,
-                                        node,
-                                        fo->get_arg(0),
-                                        nodes_or_atomics(fo->get_arg(0)->return_type(sctx)));
+      const expr* argExpr = fo->get_arg(0);
+
+      function* fmin = nsdf->optimize(sctx, node, argExpr);
       if (fmin != NULL) 
       {
         fo->set_func(fmin);
@@ -479,14 +472,20 @@ RULE_REWRITE_PRE(EliminateNodeOps)
       {
         // re-compute IGNORES_*
         fo->set_func(GET_BUILTIN_FUNCTION(FN_REVERSE_1)); // HACK: need fn:identity here
-        std::auto_ptr<Rewriter> rw(new SingletonRuleMajorDriverBase(rule_ptr_t(new MarkConsumerNodeProps())));
+
+        std::auto_ptr<Rewriter> rw(
+        new SingletonRuleMajorDriverBase(rule_ptr_t(new MarkConsumerNodeProps())));
+
         rw->rewrite(rCtx);
+
         return fo->get_arg(0, true);
       }
     }
   }
+
   return NULL;
 }
+
 
 RULE_REWRITE_POST(EliminateNodeOps) 
 {

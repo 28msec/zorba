@@ -54,11 +54,14 @@ public:
     AnnotationValue_t oldv = e->get_annotation(k);
 
     if (oldv.getp() == FALSE_VAL.getp())
-      v = FALSE_VAL;
+      return;
 
-    else if (oldv.getp() == MAYBE_VAL.getp() || v == NULL)
-      v = MAYBE_VAL;
-        
+    else if (oldv.getp() == MAYBE_VAL.getp())
+      return;
+
+    else if (v == NULL)
+      v =  MAYBE_VAL;
+
     e->put_annotation(k, v);
   }
 

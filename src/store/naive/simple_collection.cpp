@@ -18,6 +18,7 @@
 #include "zorbaerrors/error_manager.h"
 
 #include "store/naive/simple_collection.h"
+#include "store/naive/simple_index.h"
 #include "store/naive/loader.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/store_defs.h"
@@ -386,6 +387,37 @@ void SimpleCollection::adjustTreePositions()
   for (ulong i = 0; i < numTrees; ++i)
   {
     BASE_NODE(theXmlTrees[i])->getTree()->setPosition(i);
+  }
+}
+
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleCollection::getIndexes(std::vector<store::Index*>& indexes)
+{
+  const IndexSet& availableIndexes = GET_STORE().getIndices();
+
+  IndexSet::iterator idxIte = availableIndexes.begin();
+  IndexSet::iterator idxEnd = availableIndexes.end();
+
+  for (; idxIte != idxEnd; ++idxIte)
+  {
+    IndexImpl* index = static_cast<IndexImpl*>((*idxIte).second.getp());
+    const store::IndexSpecification& indexSpec = index->getSpecification();
+
+    const std::vector<store::Item_t>& indexSources = indexSpec.theSources;
+    ulong numIndexSources = indexSources.size();
+
+    for (ulong i = 0; i < numIndexSources; ++i)
+    {
+      if (indexSources[i]->equals(getName()))
+      {
+        indexes.push_back(index);
+        break;
+      }
+    }
   }
 }
 

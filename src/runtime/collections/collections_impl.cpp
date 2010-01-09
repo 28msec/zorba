@@ -415,9 +415,9 @@ bool ZorbaDeleteCollectionIterator::nextImpl(
   pul->addDeleteCollection(collectionName);
 
   result = pul.release();
-  STACK_PUSH( result != NULL, state);
+  STACK_PUSH(result != NULL, state);
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 

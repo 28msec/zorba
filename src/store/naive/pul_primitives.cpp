@@ -722,18 +722,26 @@ void UpdCreateCollection::undo()
 ********************************************************************************/
 void UpdDeleteCollection::apply()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theName);
-  assert(lColl);
+  theCollection = GET_STORE().getCollection(theName);
+  assert(theCollection);
+  SimpleCollection* collection = static_cast<SimpleCollection*>(theCollection.getp());
 
-  // save nodes for potential undo
-  store::Item_t lTmp = NULL;
-  store::Iterator_t lIter = lColl->getIterator();
-  assert(lIter);
+  std::vector<store::Index*> indexes;
+  collection->getIndexes(indexes);
 
-  lIter->open();
-  while (lIter->next(lTmp))
-    theSavedItems.push_back(lTmp);
-  lIter->close();
+  if (!indexes.empty())
+    ZORBA_ERROR_PARAM(XDDY0013_COLLECTION_BAD_DESTROY_INDEXES,
+                      collection->getName()->getStringValue(), "");
+
+  ulong size = collection->size();
+  for (ulong i = 0; i < size; ++i)
+  {
+    XmlNode* root = static_cast<XmlNode*>(collection->nodeAt(i).getp());
+    XmlTree* tree = root->getTree();
+    if (tree->getRefCount() > 1)
+      ZORBA_ERROR_PARAM(XDDY0015_COLLECTION_BAD_DESTROY_NODES,
+                        collection->getName()->getStringValue(), "");
+  }
 
   GET_STORE().deleteCollection(theName);
   theIsApplied = true;
@@ -742,29 +750,7 @@ void UpdDeleteCollection::apply()
 
 void UpdDeleteCollection::undo()
 {
-  store::Collection_t lColl = GET_STORE().getCollection(theName);
-  if (!lColl) 
-  {
-    GET_STORE().createCollection(theName); 
-#ifndef NDEBUG
-    lColl = GET_STORE().getCollection(theName);
-    assert(lColl);
-#endif
-  }
-
-  ulong lIndex;
-  for (std::vector<store::Item_t>::iterator lIter = theSavedItems.begin();
-       lIter != theSavedItems.end(); ++lIter) 
-  {
-    if (lColl->findNode(lIter->getp(), lIndex)) 
-    {
-#ifndef NDEBUG
-      dynamic_cast<SimpleCollection*>(lColl.getp())->addNode(lIter->getp());
-#else
-      static_cast<SimpleCollection*>(lColl.getp())->addNode(lIter->getp());
-#endif
-    }
-  }
+  GET_STORE().addCollection(theCollection);
 }
 
 
@@ -959,7 +945,6 @@ void UpdDeleteNodesFromCollection::apply()
 
   if (theIsLast)
   {
-
     for (ulong i = numNodes; i > 0; --i)
     {
       if (theNodes[i-1] != lColl->nodeAt(size - i))
