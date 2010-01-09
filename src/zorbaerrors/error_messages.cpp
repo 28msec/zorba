@@ -737,13 +737,13 @@ DEF_ERR_CODE(XDDY0012_COLLECTION_UNORDERED_BAD_INSERT, XDDY0012,
 "Illegal insert in unordered collection /s.")
 
 DEF_ERR_CODE(XDDY0013_COLLECTION_BAD_DESTROY_INDEXES, XDDY0013,
-"Cannot delete collection \s because there are indexes that reference it.")
+"Cannot delete collection /s because there are indexes that reference it.")
 
 DEF_ERR_CODE(XDDY0014_COLLECTION_BAD_DESTROY_ICS, XDDY0014,
-"Cannot delete collection \s because there are integrity constraints that reference it.")
+"Cannot delete collection /s because there are integrity constraints that reference it.")
 
 DEF_ERR_CODE(XDDY0015_COLLECTION_BAD_DESTROY_NODES, XDDY0015,
-"Cannot delete collection \s because there are references on its nodes.")
+"Cannot delete collection /s because there are references on its nodes.")
 
 
 DEF_ERR_CODE(XDDY0013, XDDY0013, 

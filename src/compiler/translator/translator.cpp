@@ -3360,7 +3360,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                                            ic.getCollName()->get_qname() );
       
       string prefixStr = ic.getCollName()->get_prefix();
-      string uriStr = sctx_p->lookup_ns(prefixStr);
+      xqp_string uriStr = sctx_p->lookup_ns(prefixStr);
       
 
       expr_t uriStrExpr = new const_expr(sctxid(), loc, uriStr );
@@ -3460,6 +3460,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
       store::Item_t varItem = sctx_p->lookup_fn_qname(varQName->get_prefix(),
           varQName->get_localname(), varQName->get_location());
       
+
       // every $x_ in $x satisfies exists ...
       // every is implemented as a flowr expr
       push_scope();
@@ -3507,15 +3508,15 @@ void* begin_visit(const IntegrityConstraintDecl& v)
       /**********************
        declare integrity constraint org:icTransactionsSale
          on collection org:transactions foreach node $x
-           check $x/sale gt 0 ;
+           check $x/sale > 0 ;
 
        every $x in dc:collection( xs:QName("org:transactions") )
-       satisfies $x/sale gt 0
+       satisfies $x/sale > 0
 
        implemented as:
          fn:empty(
            for $x in dc:collection( xs:QName("org:transactions") )
-           where not( $x/sale gt 0 )
+           where not( $x/sale > 0 )
            return true )
        **********************/
 
@@ -3548,32 +3549,25 @@ void* begin_visit(const IntegrityConstraintDecl& v)
 
       // $x 
       const QName* varQName = ic.getCollVarName();
-      var_expr_t varExpr = bind_var(loc, varQName->get_qname(), 
-                                    var_expr::let_var, NULL);
 
-
-
-      // let $x := dc:collection(xs:QName("example:coll1")) 
-      let_clause* lc = new let_clause(sctx_p,
-                                      sctxid(),
-                                      loc,
-                                      varExpr,
-                                      collExpr.getp());
-
-      // every $x in dc:colection(...) satisfies ...
+      // every $x_ in $x satisfies exists ...
       // every is implemented as a flowr expr
-      flwor_expr_t evFlworExpr(new flwor_expr(sctxid(), loc, false));
-      //evFlworExpr->add_clause(lc);
+      //push_scope();
+      flwor_expr_t evFlworExpr = new flwor_expr(sctxid(), loc, false);
       evFlworExpr->set_return_expr(new const_expr(sctxid(), loc, true));
 
-      fo_expr_t everyExpr = new fo_expr(sctxid(),
-                                        loc,
-                                        GET_BUILTIN_FUNCTION(FN_EMPTY_1),
-                                        evFlworExpr.getp());
-      
-      // where clause to be added in end_visit
+      // $x_ in dc:collection( xs:QName("org:employees") )      
+      var_expr_t evVarExpr = bind_var(loc, 
+                                      varQName->get_qname()/*varItem.getp()*/, 
+                                      var_expr::for_var, NULL);
+
+      // maybe make one more collExpr?
+      evFlworExpr->add_clause(wrap_in_forclause(collExpr.getp(), evVarExpr, 
+                                                NULL));
+
+      //pop_scope();
+      // end every
       nodestack.push(evFlworExpr.getp());
-      nodestack.push(everyExpr.getp());
     }
     break;
     
@@ -3796,16 +3790,38 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
 
 
       ////// Set latest details
+      
+      //fn:data( userExpr )
+      fo_expr_t fnDataExpr = new fo_expr(sctxid(), loc, 
+                                         GET_BUILTIN_FUNCTION(FN_DATA_1), 
+                                         uniKeyExpr);      
+
+      xqp_string coment1Str("#trace fnExistsInput");
+      expr_t coment1Expr = new const_expr(sctxid(), loc, coment1Str);
+      fo_expr_t fnTrace1Expr = new fo_expr(sctxid(),
+                                         loc,
+                                         GET_BUILTIN_FUNCTION(FN_TRACE_2),
+                                         uniKeyExpr, coment1Expr);
+      
+
       // exists( $x/@id )
       expr_t existsExpr = new fo_expr(sctxid(), loc, 
-                               GET_BUILTIN_FUNCTION(FN_EXISTS_1), 
-                               uniKeyExpr);
+                                      GET_BUILTIN_FUNCTION(FN_EXISTS_1), 
+                                      fnTrace1Expr /*uniKeyExpr*/);
+
+      xqp_string commentStr("#trace fnExists");
+      expr_t comentExpr = new const_expr(sctxid(), loc, commentStr);
+      fo_expr_t fnTraceExpr = new fo_expr(sctxid(),
+                                         loc,
+                                         GET_BUILTIN_FUNCTION(FN_TRACE_2),
+                                         existsExpr, comentExpr);
+      
 
       // every ... satisfies evTestExpr
       fo_expr_t fnNotExpr = new fo_expr(sctxid(),
-                                         loc,
-                                         GET_BUILTIN_FUNCTION(FN_NOT_1),
-                                         existsExpr);
+                                        loc,
+                                        GET_BUILTIN_FUNCTION(FN_NOT_1),
+                                        fnTraceExpr /*existsExpr*/);
 
       evFlworExpr->add_where(fnNotExpr.getp());
 
@@ -3815,30 +3831,29 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
                                         evFlworExpr.getp());
 
       // functx:are-distinct-values( $x/@id )
-      // implemented as count(distinct-values($seq)) = count($seq)
-      
+      // implemented as count(distinct-values($seq)) = count($seq)      
       //distinct-values($seq)
       fo_expr_t distinctValuesExpr = new fo_expr(sctxid(), loc, 
                                  GET_BUILTIN_FUNCTION(FN_DISTINCT_VALUES_1), 
-                                                 uniKeyExpr);      
+                                                 fnDataExpr);      
+
       // count($sec)
       fo_expr_t countSecExpr = new fo_expr(sctxid(), loc, 
                                            GET_BUILTIN_FUNCTION(FN_COUNT_1), 
-                                           uniKeyExpr);
+                                           fnDataExpr /*uniKeyExpr*/);
       // count(distinct-values($sec))
       fo_expr_t countDVExpr = new fo_expr(sctxid(), loc, 
                                           GET_BUILTIN_FUNCTION(FN_COUNT_1), 
                                           distinctValuesExpr);
+
       // countDV = countSec
       fo_expr_t equalExpr = new fo_expr(sctxid(), loc, 
                                         GET_BUILTIN_FUNCTION(OP_EQUAL_2), 
                                         countDVExpr, countSecExpr);      
-      expr_t areDistinctValuesExpr = equalExpr;
-
       // (...) and (...)
       fo_expr_t andExpr = new fo_expr(sctxid(), loc, 
                                       GET_BUILTIN_FUNCTION(OP_AND_2), 
-                                      everyExpr, areDistinctValuesExpr);
+                                      everyExpr, equalExpr);
 
       flworExpr->set_return_expr(andExpr.getp());
 
@@ -3848,28 +3863,45 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
 
   case IntegrityConstraintDecl::coll_foreach_node:
     {
+      /**********************
+       declare integrity constraint org:icTransactionsSale
+         on collection org:transactions foreach node $x
+           check $x/sale gt 0 ;
+
+       every $x in dc:collection( xs:QName("org:transactions") )
+       satisfies $x/sale gt 0
+
+       implemented as:
+         fn:empty(
+           for $x in dc:collection( xs:QName("org:transactions") )
+           where not( $x/sale gt 0 )
+           return true )
+       **********************/
+
       //////  Get data from stack
       // $x/sale gt 0
       expr_t evTestExpr = pop_nodestack();
 
-      // result expr
-      flwor_expr_t everyExpr = 
-        dynamic_cast<flwor_expr*>(pop_nodestack().getp());
-
       // flwor expr
       flwor_expr_t evFlworExpr = 
         dynamic_cast<flwor_expr*>(pop_nodestack().getp());
-      //todo cezar: NULL is returned ???
-
+      
       // fn:not
       fo_expr_t fnNotExpr = new fo_expr(sctxid(),
                                         loc,
                                         GET_BUILTIN_FUNCTION(FN_NOT_1),
                                         evTestExpr);
 
+      // where not( exists($x/sale gt 0) )
       evFlworExpr->add_where(fnNotExpr.getp());
 
-      body = everyExpr;
+      // fn:empty
+      fo_expr_t emptyExpr = new fo_expr(sctxid(),
+                                        loc,
+                                        GET_BUILTIN_FUNCTION(FN_EMPTY_1),
+                                        evFlworExpr.getp());
+      
+      body = emptyExpr;
     }
     break;
 
