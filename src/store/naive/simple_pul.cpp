@@ -87,15 +87,14 @@ inline void applyList(std::vector<UpdatePrimitive*> aVector)
 /*******************************************************************************
 
 ********************************************************************************/
-inline void undoList(std::vector<UpdatePrimitive*> aVector)
+inline void undoList(std::vector<UpdatePrimitive*> list)
 {
-  std::vector<UpdatePrimitive*>::iterator iter = aVector.begin();
-  std::vector<UpdatePrimitive*>::iterator end = aVector.end();
+  ulong size = list.size();
 
-  for (; iter != end; ++iter) 
+  for (ulong i = size; i > 0; --i) 
   {
-    if ((*iter)->isApplied())
-      (*iter)->undo();
+    if (list[i-1]->isApplied())
+      list[i-1]->undo();
   }
 }
 
