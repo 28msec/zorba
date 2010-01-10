@@ -44,7 +44,7 @@ ZORBA_GENERATE_STORE_SPECIFIC_EXES("testdriver" "${TESTDRIVER_SRCS}" "" "")
 # Compile and build the multi-threaded testdriver executable
 #
 
-SET(ZORBA_BUILD_MT_TESTDRIVER 1)
+#SET(ZORBA_BUILD_MT_TESTDRIVER 1)
 
 IF (ZORBA_BUILD_MT_TESTDRIVER)
 
