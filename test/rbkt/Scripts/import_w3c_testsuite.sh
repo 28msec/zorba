@@ -169,7 +169,20 @@ my $fullout = "$dstrespath/$name.xml.res";
 my $specfile = "$dstqpath/$name.spec";
 my $xqueryxspecfile = "$dstxqueryxqpath/$name.spec";
 `mkdir -p $dstqpath`; `mkdir -p $dstxqueryxqpath`; `mkdir -p $dstrespath`; `mkdir -p $inpqpath`;
- 
+
+sub change_doc {
+  my ($filename, $varname) = @_;
+  open (FILE, $filename);
+  open (OUT, ">$filename.new");
+  while (<FILE>) {
+    s/declare variable \$$varname external/declare variable \$$varname as document-node() external/;
+    print OUT;
+  }
+  close FILE;
+  close OUT;
+  move ("$filename.new", $filename);
+}
+
 copy ("$inpath/$query.xq", "$dstqpath/$name.xq");
 copy ("$inxqueryxpath/$query.xqx", "$dstxqueryxqpath/$name.xqx");
 
@@ -218,6 +231,10 @@ if ( $inlist ne "noinlist" || $urilist ne "nourilist" || $ctx ne "nocontext" ) {
       my ($var, $srcid) = split /=/;
       print SPEC " -x $var=$test_src_path/" . $sources {$srcid};
       print SPECX " -x $var=$test_src_path/" . $sources {$srcid};
+      # Rather ugly query post-processing; see bug 2788838
+      if (grep $_ eq "XPST0005", @errs) {
+        change_doc("$dstqpath/$name.xq", $var);
+      }
     }
   }
 
