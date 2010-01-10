@@ -66,6 +66,8 @@ INSTALL(DIRECTORY simplestore DESTINATION include/zorba
  PATTERN "*.svn" EXCLUDE
  PATTERN "*.txt" EXCLUDE)
 
+INSTALL(FILES xqc.h DESTINATION include) 
+
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba/config.h DESTINATION
 include/zorba/zorba)
 
