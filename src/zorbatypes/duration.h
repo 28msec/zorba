@@ -19,6 +19,7 @@
 #include <zorba/config.h>
 #include "zorbatypes/zorbatypes_decl.h"
 #include "zorbatypes/xqpstring.h"
+#include "zorbatypes/representations.h"
 
 #include "zorbaserialization/serialization_engine.h"
 
@@ -146,7 +147,7 @@ public:
   virtual long
   getMinutes() const;
       
-  virtual double
+  virtual xqp_decimal
   getSeconds() const;
 
   virtual long

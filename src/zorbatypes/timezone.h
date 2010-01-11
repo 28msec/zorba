@@ -67,7 +67,7 @@ public:
   virtual long
   getMinutes() const;
 
-  virtual double
+  virtual xqp_decimal
   getSeconds() const;
 
   virtual long

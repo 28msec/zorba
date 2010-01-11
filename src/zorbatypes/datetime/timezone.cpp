@@ -156,7 +156,7 @@ long TimeZone::getMinutes() const
   return Duration::getMinutes();
 }
 
-double TimeZone::getSeconds() const
+xqp_decimal TimeZone::getSeconds() const
 {
   return Duration::getSeconds();
 }

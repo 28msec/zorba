@@ -733,5 +733,12 @@ std::ostream& operator<<(std::ostream& os, const Decimal& aDecimal) {
   return os;
 }
 
+int Decimal::getValueAsInt()
+{
+  xqpString   strtemp;
+  strtemp = toIntegerString();
+  return atoi(strtemp.c_str());
+}
+
 } // namespace zorba
 

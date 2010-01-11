@@ -172,6 +172,8 @@ public:
   xqpString toString() const;
   xqpString toIntegerString() const;
   uint32_t hash() const;
+
+  int getValueAsInt();
 }; // class Decimal
 
   

@@ -280,7 +280,7 @@ public:
   int 
   getMinutes() const;
       
-  double 
+  xqp_decimal 
   getSeconds() const;
   
   int

@@ -145,9 +145,9 @@ long Duration::getMinutes() const
   return (is_negative? -1 : 1) * data[MINUTE_DATA];
 }
 
-double Duration::getSeconds() const
+xqp_decimal Duration::getSeconds() const
 {
-  return (is_negative? -1 : 1) * (data[SECONDS_DATA] + double(data[FRACSECONDS_DATA]) / FRAC_SECONDS_UPPER_LIMIT);
+  return Decimal::parseInt(is_negative? -1 : 1) * (Decimal::parseInt(data[SECONDS_DATA]) + Decimal::parseInt(data[FRACSECONDS_DATA]) / Decimal::parseInt(FRAC_SECONDS_UPPER_LIMIT));
 }
 
 long Duration::getFractionalSeconds() const

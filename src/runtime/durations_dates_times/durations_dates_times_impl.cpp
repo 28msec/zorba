@@ -194,7 +194,6 @@ SecondsFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planStat
 {
   store::Item_t itemArg;
   xqp_decimal lDecimal;
-  bool lBool;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -202,8 +201,7 @@ SecondsFromDurationIterator::nextImpl(store::Item_t& result, PlanState& planStat
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   {
     itemArg = itemArg->getAtomizationValue();
-    lBool = Decimal::parseNativeDouble(itemArg->getDurationValue().getSeconds(), lDecimal);
-    ZORBA_ASSERT(lBool);
+    lDecimal = itemArg->getDurationValue().getSeconds();
     STACK_PUSH( GENV_ITEMFACTORY->createDecimal(result, lDecimal), state );
   }
   STACK_END (state);
@@ -361,7 +359,6 @@ SecondsFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planStat
 {
   store::Item_t itemArg;
   xqp_decimal lDecimal;
-  bool lBool;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -369,8 +366,7 @@ SecondsFromDatetimeIterator::nextImpl(store::Item_t& result, PlanState& planStat
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   {
     itemArg = itemArg->getAtomizationValue();
-    lBool = Decimal::parseNativeDouble(itemArg->getDateTimeValue().getSeconds(), lDecimal);
-    ZORBA_ASSERT(lBool);
+    lDecimal = itemArg->getDateTimeValue().getSeconds();
     STACK_PUSH( GENV_ITEMFACTORY->createDecimal(result, lDecimal), state );
   }
   STACK_END (state);
@@ -582,7 +578,6 @@ SecondsFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 {
   store::Item_t itemArg;
   xqp_decimal lDecimal;
-  bool lBool;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -590,8 +585,7 @@ SecondsFromTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   if (consumeNext(itemArg, theChildren[0].getp(), planState))
   {
     itemArg = itemArg->getAtomizationValue();
-    lBool = Decimal::parseNativeDouble(itemArg->getTimeValue().getSeconds(), lDecimal);
-    ZORBA_ASSERT(lBool);
+    lDecimal = itemArg->getTimeValue().getSeconds();
     STACK_PUSH( GENV_ITEMFACTORY->createDecimal(result, lDecimal), state );
   }
   STACK_END (state);

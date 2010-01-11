@@ -95,8 +95,8 @@ int DateTime::createDateTime(
                            date->getDay(),
                            time->getHours(),
                            time->getMinutes(),
-                           floor<double>(time->getSeconds()),
-                           round(frac(time->getSeconds()) * FRAC_SECONDS_UPPER_LIMIT),
+                           time->getIntSeconds(),
+                           time->getFractionalSeconds(),
                            result);
 
   if (res == 0)
@@ -822,9 +822,9 @@ int DateTime::getMinutes() const
 }
 
 
-double DateTime::getSeconds() const
+xqp_decimal DateTime::getSeconds() const
 {
-  return data[SECONDS_DATA] + (1.0 * data[FRACSECONDS_DATA] / FRAC_SECONDS_UPPER_LIMIT);
+  return Decimal::parseInt(data[SECONDS_DATA]) + (Decimal::parseInt(data[FRACSECONDS_DATA]) / Integer::parseInt(FRAC_SECONDS_UPPER_LIMIT));
 }
 
 
@@ -943,7 +943,7 @@ DateTime* DateTime::addDuration(const Duration& d, bool adjust_facet) const
 {
   DateTime* new_dt = NULL;
   int years, months, days, hours, minutes, int_seconds, frac_seconds, temp_days, carry;
-  double temp_frac_seconds;
+  int temp_frac_seconds, total_seconds;
 
   // For the algorithm, see XML Schema 2 spec, Appendix E
   // http://www.w3.org/TR/xmlschema-2/#adding-durations-to-dateTimes
@@ -953,15 +953,14 @@ DateTime* DateTime::addDuration(const Duration& d, bool adjust_facet) const
   years = data[YEAR_DATA] + d.getYears() +
           quotient<int>(data[MONTH_DATA] + d.getMonths() - 1, 12);
 
-  int_seconds = modulo<int>(floor(getSeconds() + d.getSeconds()), 60);
+  //int_seconds = modulo<int>(floor(getSeconds() + d.getSeconds()), 60);
+  temp_frac_seconds = getFractionalSeconds() + d.getFractionalSeconds();
+  total_seconds = getIntSeconds() + d.getIntSeconds() + quotient<int>(temp_frac_seconds, DateTime::FRAC_SECONDS_UPPER_LIMIT);
+  int_seconds = modulo<int>(total_seconds, 60);
 
-  temp_frac_seconds = (getSeconds() + d.getSeconds() -
-                       floor(getSeconds() + d.getSeconds()));
-
-  frac_seconds = round(temp_frac_seconds * DateTime::FRAC_SECONDS_UPPER_LIMIT);
+  frac_seconds = modulo<int>(temp_frac_seconds, DateTime::FRAC_SECONDS_UPPER_LIMIT);
   
-  minutes = data[MINUTE_DATA] + d.getMinutes() +
-            quotient<int>(floor(getSeconds() + d.getSeconds()), 60);
+  minutes = data[MINUTE_DATA] + d.getMinutes() + quotient<int>(total_seconds, 60);
 
   hours = data[HOUR_DATA] + d.getHours() + quotient<int>(minutes, 60);
 
@@ -1082,7 +1081,7 @@ DateTime* DateTime::adjustToTimeZone(int tz_seconds) const
   // then the result is $arg with $timezone as the timezone component.
   if (the_time_zone.timeZoneNotSet())
   {
-    if (TimeZone::createTimeZone(context_tz->getHours(), context_tz->getMinutes(), int(context_tz->getSeconds()), dt->the_time_zone))
+    if (TimeZone::createTimeZone(context_tz->getHours(), context_tz->getMinutes(), context_tz->getIntSeconds(), dt->the_time_zone))
       assert(0);
   }
   else
@@ -1098,7 +1097,7 @@ DateTime* DateTime::adjustToTimeZone(int tz_seconds) const
 
     dtduration = std::auto_ptr<Duration>(*context_tz - *dtduration);
     dt = std::auto_ptr<DateTime>(dt->addDuration(*dtduration));
-    if (TimeZone::createTimeZone(context_tz->getHours(), context_tz->getMinutes(), int(context_tz->getSeconds()), dt->the_time_zone))
+    if (TimeZone::createTimeZone(context_tz->getHours(), context_tz->getMinutes(), context_tz->getIntSeconds(), dt->the_time_zone))
       assert(0);
   }
 
@@ -1127,7 +1126,7 @@ DateTime* DateTime::adjustToTimeZone(const Duration* d) const
     // validate timezone value (-14 .. +14 H)
     if (d->getYears() != 0 || d->getMonths() != 0 ||
         d->getDays() != 0 ||
-        d->getSeconds() != 0 ||
+        d->getSeconds() != Integer::parseInt(0) ||
         d->getHours()*3600 + d->getMinutes()*60 > 14*3600 ||
         d->getHours()*3600 + d->getMinutes()*60 < -14*3600)
       throw InvalidTimezoneException();
@@ -1137,7 +1136,7 @@ DateTime* DateTime::adjustToTimeZone(const Duration* d) const
     // component.
     if (the_time_zone.timeZoneNotSet())
     {
-      if (TimeZone::createTimeZone(d->getHours(), d->getMinutes(), int(d->getSeconds()), dt->the_time_zone))
+      if (TimeZone::createTimeZone(d->getHours(), d->getMinutes(), d->getIntSeconds(), dt->the_time_zone))
         assert(0);
     }
     else
@@ -1160,7 +1159,7 @@ DateTime* DateTime::adjustToTimeZone(const Duration* d) const
 
       if (TimeZone::createTimeZone(context_tz->getHours(),
                                    context_tz->getMinutes(),
-                                   int(context_tz->getSeconds()),
+                                   context_tz->getIntSeconds(),
                                    dt->the_time_zone))
         assert(0);
     }
