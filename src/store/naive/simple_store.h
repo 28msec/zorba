@@ -187,6 +187,11 @@ public:
 
   store::Iterator_t listCollectionNames();
 
+  static void populateIndex(
+      const store::Index_t& aIndex,
+      store::Iterator* aSourceIter,
+      ulong aNumColumns);
+
   store::Index_t createIndex(
         const store::Item_t& qname,
         const store::IndexSpecification& spec,

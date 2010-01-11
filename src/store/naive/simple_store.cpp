@@ -369,46 +369,7 @@ XmlLoader* SimpleStore::getXmlLoader(error::ErrorManager* aErrorManager)
 #endif
 }
 
-
-/*******************************************************************************
-  Create an index with a given URI and return an rchandle to the index object. 
-  If an index with the given URI exists already and the index we want to create
-  is not a temporary one, raise an error.
-********************************************************************************/
-store::Index_t SimpleStore::createIndex(
-    const store::Item_t& qname,
-    const store::IndexSpecification& spec,
-    store::Iterator* sourceIter)
-{
-  store::Index_t index;
-
-  if (!spec.theIsTemp && theIndices.get(qname, index))
-  {
-    ZORBA_ERROR_PARAM(STR0001_INDEX_ALREADY_EXISTS,
-                      qname->getStringValue()->c_str(), "");
-  }
-
-  if (spec.theIsSorted)
-  {
-    index = new STLMapIndex(qname, spec);
-  }
-  else
-  {
-    index = new HashIndex(qname, spec);
-  }
-
-  populateIndex(index, sourceIter, spec.theKeyTypes.size());
-
-  if (!spec.theIsTemp)
-  {
-    theIndices.insert(qname.getp(), index);
-  }
-
-  return index;
-}
-
-
-void populateIndex(
+void SimpleStore::populateIndex(
     const store::Index_t& aIndex,
     store::Iterator* aSourceIter,
     ulong aNumColumns)
@@ -446,6 +407,43 @@ void populateIndex(
   }
 
   aSourceIter->close();
+}
+
+/*******************************************************************************
+  Create an index with a given URI and return an rchandle to the index object. 
+  If an index with the given URI exists already and the index we want to create
+  is not a temporary one, raise an error.
+********************************************************************************/
+store::Index_t SimpleStore::createIndex(
+    const store::Item_t& qname,
+    const store::IndexSpecification& spec,
+    store::Iterator* sourceIter)
+{
+  store::Index_t index;
+
+  if (!spec.theIsTemp && theIndices.get(qname, index))
+  {
+    ZORBA_ERROR_PARAM(STR0001_INDEX_ALREADY_EXISTS,
+                      qname->getStringValue()->c_str(), "");
+  }
+
+  if (spec.theIsSorted)
+  {
+    index = new STLMapIndex(qname, spec);
+  }
+  else
+  {
+    index = new HashIndex(qname, spec);
+  }
+
+  populateIndex(index, sourceIter, spec.theKeyTypes.size());
+
+  if (!spec.theIsTemp)
+  {
+    theIndices.insert(qname.getp(), index);
+  }
+
+  return index;
 }
 
 
