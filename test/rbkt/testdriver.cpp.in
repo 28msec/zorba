@@ -277,9 +277,9 @@ main(int argc, char** argv)
 
 #ifndef ZORBA_TEST_PLAN_SERIALIZATION_EXECUTION_ONLY
     // print the query
-    std::cout << "Query:" << std::endl;
+    std::cout << "=== Query: ===" << std::endl;
     zorba::printFile(std::cout, lQueryFile.get_path());
-    std::cout << std::endl;
+    std::cout << "=== end of Query ===" << std::endl;
 
 
     // create and compile the query
@@ -436,7 +436,7 @@ main(int argc, char** argv)
     }
     else if( errors == -1 ) 
     {
-      std::cout << "Result:" << std::endl;
+      std::cout << "=== Result: ===" << std::endl;
       zorba::printFile(std::cout, lResultFile.get_path());
       std::cout << "=== end of result ===" << std::endl;
       std::cout.flush();
