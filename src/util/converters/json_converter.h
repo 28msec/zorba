@@ -25,27 +25,27 @@
 namespace zorba {
 
   //Json parse and serialize: http://www.json.org/
-  bool JSON_parse(const char* aJSON_string,
+  bool JSON_parse(const char* aJsonString,
                   const unsigned int aLength,
-                  store::Item_t& element,
-                  xqpStringStore_t baseUri,
-                  xqp_string& error_log);
+                  store::Item_t& aElement,
+                  xqpStringStore_t aBaseUri,
+                  xqp_string& aErrorLog);
 
-  bool JSON_serialize(const store::Item* element,
-                      xqpStringStore_t& json_string,
-                      xqpStringStore_t& error_log);
+  bool JSON_serialize(const store::Item* aElement,
+                      xqpStringStore_t& aJsonString,
+                      xqpStringStore_t& aErrorLog);
 
 
   //Json ML parse and serialize: http://jsonml.org/
-  bool JSON_ML_parse( const char* aJSON_string,
+  bool JSON_ML_parse( const char* aJsonString,
                       const unsigned int aLength,
-                      store::Item_t& element,
-                      xqpStringStore_t baseUri,
-                      xqp_string& error_log);
+                      store::Item_t& aElement,
+                      xqpStringStore_t aBaseUri,
+                      xqp_string& aErrorLog);
 
-  bool JSON_ML_serialize( const store::Item* element,
-                          xqpStringStore_t& json_string,
-                          xqpStringStore_t& error_log);
+  bool JSON_ML_serialize( const store::Item* aElement,
+                          xqpStringStore_t& aJsonString,
+                          xqpStringStore_t& aErrorLog);
 
 }/*namespace zorba*/
 
