@@ -166,7 +166,7 @@ public:
       else if (strcmp (*argv, "--byte-order-mark") == 0) {
         theByteOrderMark = true;
       }
-      else if (strcmp (*argv, "--omit-xml-declaration") == 0) {
+      else if (strcmp (*argv, "--omit-xml-declaration") == 0 || strncmp (*argv, "-r", 2) == 0) {
         theOmitXmlDeclaration = true;
       }
       else if (strcmp (*argv, "--base-uri") == 0) {
@@ -286,7 +286,7 @@ public:
 "--print-query\nPrint the queries.\n\n"
 "--print-errors-as-xml, -x\nPrint the errors as XML.\n\n"
 "--byte-order-mark\nSet the byte-order-mark for the serializer.\n\n"
-"--omit-xml-declaration\nOmit the XML declaration from the result.\n\n"
+"--omit-xml-declaration, -r\nOmit the XML declaration from the result.\n\n"
 "--base-uri\nSet the base URI property of the static context.\n\n"
 "--boundary-space\nSet the boundary-space policy ('strip' or 'preserve') in the static context.\n\n"
 "--default-collation\nAdd the given collation and set the value of the default collation in the static context to the given collation.\n\n"

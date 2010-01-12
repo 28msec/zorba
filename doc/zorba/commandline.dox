@@ -20,6 +20,8 @@
 \section commandLineHelp Help
 
 \verbatim
+Available options:
+
 --timing, -t
 Print timing information. In case of multiple queries the timing information is provided per each query. Both wallclock time and user time (which excludes I/O, network delays and other kernel waits) are shown.
 
@@ -35,7 +37,7 @@ Serialize the result as HTML.
 --serialize-text
 Serialize the result as Text.
 
---indent
+--indent, -i
 Indent output.
 
 --print-query
@@ -47,7 +49,7 @@ Print the errors as XML.
 --byte-order-mark
 Set the byte-order-mark for the serializer.
 
---omit-xml-declaration, -i
+--omit-xml-declaration, -r
 Omit the XML declaration from the result.
 
 --base-uri
@@ -98,17 +100,23 @@ Do not serialize (discard) result.
 --debug-ports, -p
 Specify the ports for zorba debugger. The format is requestPort:eventPort.
 
---debug-client, -c
-Launch the debugger command line client.
+--debug, -d
+Launch the Zorba command line debugger.
 
---debug-server, -s
-Launch queries on the debugger server.
+--debug-server
+Launch the Zorba debugger server and wait for incomming client connections.
 
 --no-colors
 Use no colors in the debugger client.
 
 --no-logo
 Print no logo when starting the debugger client or server.
+
+--timeout
+Specify a timeout in seconds. After the specified time, the execution of the query will be aborted.
+
+--module-path
+Module paths added to the built-in resolver, i.e. where module imports are looking for modules.
 \endverbatim
 
 \section commandlineexamples Examples

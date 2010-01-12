@@ -7,7 +7,7 @@
 ("print-query", "Print the queries.")
 ("print-errors-as-xml,x", "Print the errors as XML.")
 ("byte-order-mark", "Set the byte-order-mark for the serializer.")
-("omit-xml-declaration", "Omit the XML declaration from the result.")
+("omit-xml-declaration,r", "Omit the XML declaration from the result.")
 ("base-uri", po::value<std::string>(), "Set the base URI property of the static context.")
 ("boundary-space", po::value<std::string>(), "Set the boundary-space policy ('strip' or 'preserve') in the static context.")
 ("default-collation", po::value<std::string>(), "Add the given collation and set the value of the default collation in the static context to the given collation.")
