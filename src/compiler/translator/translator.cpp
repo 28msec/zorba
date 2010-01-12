@@ -3547,18 +3547,17 @@ void* begin_visit(const IntegrityConstraintDecl& v)
       argColl.push_back(qnameExpr.getp());
       fo_expr_t collExpr = new fo_expr(sctxid(), loc, fn_collection, argColl);
 
-      // $x 
-      const QName* varQName = ic.getCollVarName();
-
       // every $x_ in $x satisfies exists ...
       // every is implemented as a flowr expr
       //push_scope();
       flwor_expr_t evFlworExpr = new flwor_expr(sctxid(), loc, false);
       evFlworExpr->set_return_expr(new const_expr(sctxid(), loc, true));
 
+      // $x 
+      const QName* varQName = ic.getCollVarName();
+
       // $x_ in dc:collection( xs:QName("org:employees") )      
-      var_expr_t evVarExpr = bind_var(loc, 
-                                      varQName->get_qname()/*varItem.getp()*/, 
+      var_expr_t evVarExpr = bind_var(loc, varQName->get_qname(), 
                                       var_expr::for_var, NULL);
 
       // maybe make one more collExpr?
@@ -3600,7 +3599,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
       // TO part
       // "org:employees"
       expr_t toQnameStrExpr = new const_expr(sctxid(), loc, 
-                                           ic.getToCollName()->get_qname() );
+                                             ic.getToCollName()->get_qname() );
       string toPrefixStr = ic.getToCollName()->get_prefix();
       xqp_string toUriStr = sctx_p->lookup_ns(toPrefixStr);
 
@@ -3608,7 +3607,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
       
       // xs:QName("org:employees")
       fo_expr_t toQnameExpr = new fo_expr(sctxid(), loc,
-                                        GET_BUILTIN_FUNCTION(FN_QNAME_2),
+                                          GET_BUILTIN_FUNCTION(FN_QNAME_2),
                                           toUriStrExpr, toQnameStrExpr);
 
       // dc:collection(xs:QName("org:employees"))
@@ -3634,17 +3633,9 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                                       var_expr::for_var, NULL);
 
       // for $y in dc:collection(xs:QName("org:employees")) 
-      for_clause* someForClause = new for_clause(sctx_p,
-                                                 sctxid(),
-                                                 loc,
-                                                 toVarExpr,
-                                                 toCollExpr.getp());
-      someFlworExpr->add_clause(someForClause);
-      
-      fo_expr_t someExpr = new fo_expr(sctxid(), loc,
-                                       GET_BUILTIN_FUNCTION(FN_EXISTS_1),
-                                       someFlworExpr.getp());
-      
+      someFlworExpr->add_clause(wrap_in_forclause(toCollExpr.getp(), toVarExpr,
+                                                  NULL));
+
  
       // FROM part
       // "org:transactions"
@@ -3678,36 +3669,18 @@ void* begin_visit(const IntegrityConstraintDecl& v)
       flwor_expr_t evFlworExpr = new flwor_expr(sctxid(), loc, false);
       evFlworExpr->set_return_expr(new const_expr(sctxid(), loc, true));
 
-      expr_t evTestExpr = someExpr;
-
-      fo_expr_t evFnNotExpr = new fo_expr(sctxid(),
-                                          loc,
-                                          GET_BUILTIN_FUNCTION(FN_NOT_1),
-                                          evTestExpr);
-
-      evFlworExpr->add_where(evFnNotExpr.getp());
-
       // $x
       const QName* fromVarQName = ic.getFromNodeVarName();
       var_expr_t fromVarExpr = bind_var(loc, fromVarQName->get_qname(), 
                                       var_expr::for_var, NULL);
 
       // for $x in dc:collection(xs:QName("org:transactions")) 
-      for_clause* evForClause = new for_clause(sctx_p,
-                                               sctxid(),
-                                               loc,
-                                               fromVarExpr,
-                                               fromCollExpr.getp());
-      someFlworExpr->add_clause(evForClause);
+      evFlworExpr->add_clause(wrap_in_forclause(fromCollExpr.getp(), 
+                                                fromVarExpr, NULL));
 
-      // fn:empty
-      fo_expr_t everyExpr = new fo_expr(sctxid(),
-                                        loc,
-                                        GET_BUILTIN_FUNCTION(FN_EMPTY_1),
-                                        evFlworExpr.getp());
 
       nodestack.push(someFlworExpr.getp());
-      nodestack.push(everyExpr.getp());      
+      nodestack.push(evFlworExpr.getp());      
     }
     break;
     
@@ -3914,6 +3887,16 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       // $y/id
       expr_t toKeyExpr = pop_nodestack();
       
+      // result expr
+      flwor_expr_t evFlworExpr = 
+        dynamic_cast<flwor_expr*>(pop_nodestack().getp());
+
+      // some flwor expr
+      flwor_expr_t someFlworExpr = 
+        dynamic_cast<flwor_expr*>(pop_nodestack().getp());
+
+
+      // maybe add fn:data ?
       // $y/id eq $x//sale/empid
       fo_expr_t eqExpr = new fo_expr(sctxid(),
                                      loc,
@@ -3922,20 +3905,34 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
                                      fromKeyExpr);
       normalize_fo(eqExpr);    
 
-      // result expr
-      flwor_expr_t everyExpr = 
-        dynamic_cast<flwor_expr*>(pop_nodestack().getp());
-
-      // flwor expr
-      flwor_expr_t someFlworExpr = 
-        dynamic_cast<flwor_expr*>(pop_nodestack().getp());
-
       expr_t someTestExpr = eqExpr;      
       someTestExpr = wrap_in_bev(someTestExpr);            
       someFlworExpr->add_where(someTestExpr);
 
+      // fn:exists
+      fo_expr_t fnExistsExpr = new fo_expr(sctxid(), loc,
+                                           GET_BUILTIN_FUNCTION(FN_EXISTS_1),
+                                           someFlworExpr.getp());
+      
 
-      body = everyExpr;
+
+
+      // fn:not()
+      fo_expr_t evFnNotExpr = new fo_expr(sctxid(),
+                                          loc,
+                                          GET_BUILTIN_FUNCTION(FN_NOT_1),
+                                          fnExistsExpr);
+
+      evFlworExpr->add_where(evFnNotExpr.getp());
+
+      // fn:empty
+      fo_expr_t fnEmptyExpr = new fo_expr(sctxid(),
+                                        loc,
+                                        GET_BUILTIN_FUNCTION(FN_EMPTY_1),
+                                        evFlworExpr.getp());
+
+
+      body = fnEmptyExpr;
     }
     break;
 
