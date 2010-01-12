@@ -76,7 +76,7 @@ declare sequential function file:exists(
  :)
 declare sequential function file:files(
   $path as xs:string
-) as xs:string external;
+) as xs:string* external;
 
 (:~
  : Lists all files matching the given pattern in a given directory.
