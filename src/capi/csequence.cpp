@@ -300,9 +300,13 @@ namespace zorbac {
   (const XQC_Sequence* seq, const char** uri, const char** name)
   {
     SEQ_TRY {
-      // TODO needs implementation!
-      (*uri) = NULL;
-      (*name) = NULL;
+      Item lItem = me->theItem.getType();
+      zorba::String lUri = lItem.getNamespace();
+      me->theStrings.push_back(lUri);
+      zorba::String lLocal = lItem.getLocalName();
+      me->theStrings.push_back(lLocal);
+      (*uri) = lUri.c_str();
+      (*name) = lLocal.c_str();
     }
     SEQ_CATCH;
   }
