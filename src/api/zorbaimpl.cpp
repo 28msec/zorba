@@ -282,13 +282,11 @@ ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aError)
   }
   else if (aError.isSerializationError()) 
   {
-    SerializationException lSerException(aError.theErrorCode,
-                                         String(aError.theDescription.theStrStore),
-                                         String(aError.theFileName),
-                                         aError.theLineNumber,
-                                         aError.theQueryFileName,
-                                         aError.theQueryLine,
-                                         aError.theQueryColumn);
+    SerializationException lSerException(
+                            aError.theErrorCode,
+                            String(aError.theDescription.theStrStore),
+                            String(aError.theFileName),
+                            aError.theLineNumber);
     aErrorHandler->serializationError(lSerException);
   }
   else if (aError.isInternalError()) 

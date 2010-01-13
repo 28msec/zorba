@@ -88,13 +88,13 @@ class DynamicException : public QueryException
  public:
 };
 
-class SerializationException : public QueryException 
+class SerializationException : public ZorbaException 
 {
   friend class ErrorHandler;
 
  protected:
   SerializationException (const zorba::SerializationException *se) : 
-      QueryException(se) {}
+      ZorbaException(se) {}
   SerializationException() {}
 
  public:
@@ -187,7 +187,7 @@ class DynamicException : public ZorbaException
   DynamicException();
 };
 
-class SerializationException : public QueryException 
+class SerializationException : public ZorbaException 
 {
  private:
   SerializationException();

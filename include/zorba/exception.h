@@ -231,9 +231,9 @@ protected:
  *         XSLT 2.0 and XQuery 1.0 Serialization Specification 
  *         (see http://www.w3.org/TR/2005/CR-xslt-xquery-serialization-20051103/)
  */
-class ZORBA_DLL_PUBLIC SerializationException : public QueryException
+class ZORBA_DLL_PUBLIC SerializationException : public ZorbaException
 {
-  friend ZORBA_DLL_PUBLIC std::ostream& operator<<(std::ostream&, const SerializationException&);
+  friend ZORBA_DLL_PUBLIC std::ostream& operator<<(std::ostream&, const ZorbaException&);
   friend class ZorbaImpl;
 
 public:
@@ -246,13 +246,10 @@ protected:
    *         can construct and throw exceptions.
    */
   SerializationException(
-        const XQUERY_ERROR&,
-        const String& aDescription,
-        const String& afilename,
-        unsigned int afilelinenumber,
-        const String& queryuri,
-        unsigned int linebegin,
-        unsigned int columnbegin);
+    const XQUERY_ERROR&,
+    const String& aDescription,
+    const String& afilename,
+    unsigned int afilelinenumber);
 
 };
 

@@ -156,15 +156,12 @@ TypeException::~TypeException() throw()
 
 
 SerializationException::SerializationException(
-    const XQUERY_ERROR& aErrorCode,
+    const XQUERY_ERROR& aErrorCode, 
     const String& aDescription,
-    const String& afilename,
-    unsigned int afilelinenumber,
-    const String& queryuri,
-    unsigned int linebegin,
-    unsigned int columnbegin)
+    const String& aFilename,
+    unsigned int afilelinenumber)
   :
-  QueryException(aErrorCode, aDescription, afilename, afilelinenumber, queryuri, linebegin, columnbegin)
+  ZorbaException(aErrorCode, aDescription, aFilename, afilelinenumber)
 {
 }
 
@@ -275,7 +272,7 @@ std::ostream& operator<< (std::ostream& os, const TypeException& aException)
 
 std::ostream& operator<< (std::ostream& os, const SerializationException& aException)
 {
-  return os << (QueryException)aException;
+  return os << (ZorbaException)aException;
 }
 
 
