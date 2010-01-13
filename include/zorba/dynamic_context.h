@@ -50,7 +50,20 @@ class ZORBA_DLL_PUBLIC DynamicContext
   virtual bool
   setVariable( const String& aQName, const Item& aItem ) = 0;
   
-  /** \brief Defines the external variable identifies by aQName and assigns it the sequence
+  /** \brief Defines the external variable identified by an expanded QName and assigns it the sequence
+   *         that is returned by evaluating aResultIterator.
+   *
+   * @param aNamespace the namespace URI of the variable's expanded QName
+   * @param aLocalname the local name of the variable's expanded QName
+   * @param aResultIterator the ResultIterator producing the sequence that is assigned 
+   *        to the variable.
+   * @return true if the variable has been set successfully, false otherwise.
+   * @throw ZorbaException if an error occured (e.g. the given ResultIterator is not valid).
+   */
+  virtual bool
+  setVariable( const String& aNamespace, const String& aLocalname, const ResultIterator_t& aResultIterator ) = 0;
+  
+  /** \brief Defines the external variable identified by aQName and assigns it the sequence
    *         that is returned by evaluating aResultIterator.
    *
    * @param aQName the QName that identifies the external variable.
@@ -62,7 +75,7 @@ class ZORBA_DLL_PUBLIC DynamicContext
   virtual bool
   setVariable( const String& aQName, const ResultIterator_t& aResultIterator ) = 0;
   
-  /** \brief Defines the external variable identifies by aQName and assigns it the 
+  /** \brief Defines the external variable identified by aQName and assigns it the 
    *         the document that results from reading and parsing the given istream.
    *
    * @param aQName the QName that identifies the external variable.
@@ -83,7 +96,7 @@ class ZORBA_DLL_PUBLIC DynamicContext
                           std::auto_ptr<std::istream> aDocStream,
                           validation_mode_t aMode = validate_skip) = 0;
   
-  /** \brief Defines the external variable identifies by aQName and assigns it the 
+  /** \brief Defines the external variable identified by aQName and assigns it the 
    *         the document downloaded from Uri.
    *
    * @param aQName the QName that identifies the external variable.

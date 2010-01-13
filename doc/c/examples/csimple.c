@@ -115,6 +115,7 @@ example_4(XQC_Implementation* impl)
   XQC_Expression*       lExpr;
   XQC_InputStream* lStream = (XQC_InputStream*) malloc(sizeof(XQC_InputStream));
   XQC_Sequence*    lResult;
+  const char*      lStringValue;
 
   lStream->read = read_stream;
   lStream->free = free_stream;
@@ -124,7 +125,10 @@ example_4(XQC_Implementation* impl)
 
   // execute it and iterate
   lExpr->execute(lExpr, NULL, &lResult);
-  while (lResult->next(lResult) == XQC_NO_ERROR);
+  while (lResult->next(lResult) == XQC_NO_ERROR) {
+    lResult->string_value(lResult, &lStringValue);
+    printf("%s ", lStringValue);
+  }  
 
   // release resources
   lResult->free(lResult);

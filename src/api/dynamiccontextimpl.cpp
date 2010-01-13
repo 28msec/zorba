@@ -128,6 +128,36 @@ DynamicContextImpl::setVariable(
 
 
 bool
+DynamicContextImpl::setVariable(
+    const String& aNamespace, const String& aLocalname,
+    const ResultIterator_t& aResultIterator )
+{
+  ZORBA_DCTX_TRY
+  {
+    checkNoIterators();
+
+    ResultIterator* lIter = &*aResultIterator;
+    if (!lIter)
+      ZORBA_ERROR_DESC(API0014_INVALID_ARGUMENT,
+                       "Invalid ResultIterator given");
+        
+    store::Iterator_t lRes = new store::ResultIteratorChainer(lIter);
+
+    xqpString lNamespace (Unmarshaller::getInternalString(aNamespace));
+    xqpString lLocalname (Unmarshaller::getInternalString(aLocalname));
+    xqpString lExpandedName = theCtx->expand_varname
+      (theStaticContext, lNamespace, lLocalname);
+
+    theCtx->add_variable(lExpandedName, lRes);
+
+    return true;
+  }
+  ZORBA_DCTX_CATCH
+  return false;
+}
+
+
+bool
 DynamicContextImpl::setVariableAsDocument(
     const String& aVarName,
     const String& aDocUri,

@@ -90,6 +90,11 @@ public:
         const ResultIterator_t& aResultIterator );
 
   virtual bool
+  setVariable(
+    const String& aNamespace, const String& aLocalname,
+        const ResultIterator_t& aResultIterator );
+
+  virtual bool
   setVariableAsDocument(
         const String& aQName,
         const String& aDocURI,

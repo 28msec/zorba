@@ -78,6 +78,22 @@ xqp_string dynamic_context::expand_varname(
 }
 
 
+xqp_string dynamic_context::expand_varname(
+    static_context* sctx,
+    xqpString& ns, xqpString& localname)
+{
+  if(!sctx) 
+  {
+    ///actually the whole static context is missing
+    ZORBA_ERROR_PARAM( XPST0001, "entire static context", "");
+    return (const char*)NULL;
+  }
+
+  void* var = static_cast<void *> (sctx->lookup_var(ns, localname));
+  return var_key(var);
+}
+
+
 void dynamic_context::init()
 {
 	if (!dynamic_context::static_init) {

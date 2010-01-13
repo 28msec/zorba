@@ -120,8 +120,7 @@ namespace zorbac {
       CSequence* lSeq = CSequence::get(seq);
       ResultIterator_t lIter = lSeq->getCPPIterator();
 
-      // TODO how can I use the uri here?
-      me->theContext->setVariable(name, lIter);
+      me->theContext->setVariable(uri == NULL ? "" : uri, name, lIter);
     }
     DC_CATCH;
   }

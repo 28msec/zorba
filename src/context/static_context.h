@@ -291,6 +291,12 @@ public:
   }
 
   expr*
+  lookup_var(xqp_string ns, xqp_string localname) const
+  {
+    return lookup_expr2("var:", qname_internal_key(ns, "", localname));
+  }
+
+  expr*
   lookup_var(const store::Item* qname)
   {
     return lookup_expr2("var:", qname_internal_key(qname));

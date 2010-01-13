@@ -57,6 +57,7 @@ ccontext_example_1(XQC_Implementation* impl)
   while ( (lResult->next(lResult)) == XQC_NO_ERROR) {
     const char* lValue;
     lResult->string_value(lResult, &lValue);
+    printf("%s\n", lValue);
     if ( (strcmp("Zorba", lValue)) != 0 ) {
       printf("Incorrect value: %s\n", lValue);
       break;
@@ -190,6 +191,61 @@ ccontext_example_4(XQC_Implementation* impl)
   return 1;
 }
 
+/**
+ * Example showing how to bind a variable to a simple value.
+ */
+int
+ccontext_example_5(XQC_Implementation* impl)
+{
+  XQC_Error           lError;
+  XQC_Expression*     lExpr;
+  XQC_DynamicContext* lContext;
+  XQC_Sequence*       lSeq;
+  XQC_Sequence*       lResult;
+  const char*         lZorba[] = { "Zorba" };
+
+  // Create a sequence with a single string item, and advance to that item
+  lError = impl->create_string_sequence(impl, lZorba, 1, &lSeq);
+  if (check_error("create_string_sequence", lError)) return 0;
+/*   lError = lSeq->next(lSeq); */
+/*   if (check_error("next", lError)) return 0; */
+
+  lError = impl->prepare(impl,
+    "declare namespace ns=\"http://www.zorba-xquery.com/\";\n"
+    "declare variable $ns:foo as xs:string external;\n"
+    "($ns:foo, $ns:foo, $ns:foo)", NULL, &lExpr);
+  if (check_error("prepare", lError)) return 0;
+
+  // get the dynamic context and set the context item
+  lError = lExpr->create_context(lExpr, &lContext);
+  if (check_error("create_context", lError)) return 0;
+  lError = lContext->set_variable(lContext, "http://www.zorba-xquery.com/",
+    "foo", lSeq);
+  if (check_error("set_variable", lError)) return 0;
+
+  // execute the query
+  lError = lExpr->execute(lExpr, lContext, &lResult);
+  if (check_error("execute", lError)) return 0;
+  while ( (lResult->next(lResult)) == XQC_NO_ERROR) {
+    const char* lValue;
+    lResult->string_value(lResult, &lValue);
+    printf("%s\n", lValue);
+    if ( (strcmp("Zorba", lValue)) != 0 ) {
+      printf("Incorrect value: %s\n", lValue);
+      break;
+    }
+  }
+
+  // free all resources
+  lResult->free(lResult);
+  lContext->free(lContext);
+  lExpr->free(lExpr);
+  // Must free lSeq also since it was bound to the context item, not a variable
+  lSeq->free(lSeq);
+  return 1;
+}
+
+
 int
 ccontext(int argc, char** argv)
 {
@@ -218,6 +274,11 @@ ccontext(int argc, char** argv)
 
   printf("executing C example 4\n");
   res = ccontext_example_4(impl);
+  if (!res) { impl->free(impl); return 1; };
+  printf("\n");
+
+  printf("executing C example 5\n");
+  res = ccontext_example_5(impl);
   if (!res) { impl->free(impl); return 1; };
   printf("\n");
 
