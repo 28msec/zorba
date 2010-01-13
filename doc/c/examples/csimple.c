@@ -91,7 +91,7 @@ example_3(XQC_Implementation* impl)
 
 }
 
-// define the callback functions fot the input stream
+// define the callback functions for the input stream
 unsigned int
 read_stream(XQC_InputStream* stream, void* buf, unsigned int length) 
 {
@@ -138,6 +138,7 @@ example_4(XQC_Implementation* impl)
 
   return 1;
 }
+
 
 int
 csimple(int argc, char** argv)
