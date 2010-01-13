@@ -1060,6 +1060,8 @@ void Schema::checkForAnonymousTypes(const TypeManager* typeManager)
   {
     XSElementDeclaration* elemDecl = (XSElementDeclaration*)(elemDefs->item(i));
     checkForAnonymousTypesInType(typeManager, elemDecl->getTypeDefinition());
+    // only if typeDef is Anonymous will be added to the cache
+    addAnonymousTypeToCache(typeManager, elemDecl->getTypeDefinition());
   }
   
   XSNamedMap<XSObject> * attrDefs =
@@ -1069,6 +1071,8 @@ void Schema::checkForAnonymousTypes(const TypeManager* typeManager)
     XSAttributeDeclaration* attrDecl =
         (XSAttributeDeclaration*)(attrDefs->item(i));
     checkForAnonymousTypesInType(typeManager, attrDecl->getTypeDefinition());
+    // only if typeDef is Anonymous will be added to the cache
+    addAnonymousTypeToCache(typeManager, attrDecl->getTypeDefinition());
   }
 
   XSNamedMap<XSObject> * attrGroupDefs =
@@ -1113,7 +1117,7 @@ void Schema::checkForAnonymousTypesInType(const TypeManager* typeManager,
 {
     TRACE(" type: " << StrX(xsTypeDef->getName()) << "@" <<
         StrX(xsTypeDef->getNamespace()));
-
+    
     XSTypeDefinition *xsBaseTypeDef = xsTypeDef->getBaseType();
     if (xsBaseTypeDef)
     {
