@@ -207,8 +207,6 @@ ccontext_example_5(XQC_Implementation* impl)
   // Create a sequence with a single string item, and advance to that item
   lError = impl->create_string_sequence(impl, lZorba, 1, &lSeq);
   if (check_error("create_string_sequence", lError)) return 0;
-/*   lError = lSeq->next(lSeq); */
-/*   if (check_error("next", lError)) return 0; */
 
   lError = impl->prepare(impl,
     "declare namespace ns=\"http://www.zorba-xquery.com/\";\n"
