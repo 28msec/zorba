@@ -23,7 +23,6 @@
 #include "capi/cstatic_context.h"
 #include "capi/csequence.h"
 #include "capi/error.h"
-#include "capi/capi_util.h"
 #include "zorbaerrors/errors.h"
 
 using namespace zorba;

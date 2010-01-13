@@ -39,7 +39,7 @@ namespace zorbac {
       virtual zorba::String
       getLocalName() const;
 
-      zorba::ItemSequence_t
+      ItemSequence_t
       evaluate(const StatelessExternalFunction::Arguments_t& args) const;
 
     private:

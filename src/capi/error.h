@@ -21,6 +21,10 @@
 #include <zorba/error.h>
 #include <zorba/exception.h>
 
+#if defined(_MSC_VER)
+#include <BaseTsd.h>
+#define ssize_t SSIZE_T
+#endif
 
 /**
  * Useful #defines for most C API methods. Provides a consistent
@@ -46,6 +50,7 @@
   }                                                                     \
   return XQC_NO_ERROR;
 
+#define CLASS_OFFSET(class, impl) (((ssize_t)&(((class*)1000)->impl)) - 1000)
 
 using namespace zorba;
 

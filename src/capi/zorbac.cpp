@@ -37,8 +37,8 @@ zorba_implementation(XQC_Implementation** impl, void* store)
     // Don't call anything that might throw an exception after this point
     (*impl) = lImpl.release()->getXQC();
     return XQC_NO_ERROR;
-  } catch (zorba::ZorbaException &e) {
-    return zorbac::Error::convert_xquery_error(e.getErrorCode());
+  } catch (ZorbaException &e) {
+    return Error::convert_xquery_error(e.getErrorCode());
   } catch (...) {
     return XQC_INTERNAL_ERROR;
   }

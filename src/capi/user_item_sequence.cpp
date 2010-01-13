@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 #include "capi/error.h"
-#include "capi/capi_util.h"
 #include "capi/csequence.h"
 #include "capi/user_item_sequence.h"
 #include "zorbaerrors/error_manager.h"
@@ -70,7 +69,7 @@ namespace zorbac {
   }
 
   bool
-  UserItemSequence::next(zorba::Item& i)
+  UserItemSequence::next(Item& i)
   {
     XQC_Error lRes = theNextFunction(theArgs, theArgc, &theItemSetter,
       theUserData, theSequenceData);

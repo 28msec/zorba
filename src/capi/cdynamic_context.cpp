@@ -19,7 +19,6 @@
 #include <sstream>
 #include <string.h>
 #include <zorba/zorba.h>
-#include "capi/capi_util.h"
 #include "capi/csequence.h"
 #include "capi/error.h"
 

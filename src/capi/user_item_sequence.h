@@ -41,7 +41,7 @@ namespace zorbac {
       get(Zorba_ItemSetter* setter);
 
       virtual bool
-      next(zorba::Item& i);
+      next(Item& i);
 
       // Zorba_ItemSetter methods
 

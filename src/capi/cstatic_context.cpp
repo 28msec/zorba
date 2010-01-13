@@ -21,7 +21,6 @@
 #include "capi/external_module.h"
 #include "capi/cexternal_function.h"
 #include "capi/error.h"
-#include "capi/capi_util.h"
 
 using namespace zorba;
 

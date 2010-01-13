@@ -22,7 +22,6 @@
 #include "capi/cstatic_context.h"
 #include "capi/csequence.h"
 #include "capi/user_item_sequence.h"
-#include "capi/capi_util.h"
 #include "capi/error.h"
 
 #include "api/staticcontextimpl.h"
@@ -141,6 +140,85 @@ namespace zorbac {
     (*seq) = lSeq.release()->getXQC();
   }
 
+  /**
+   * Alternate custom ItemSequence for a singleton Item. This is used
+   * for the various parse_document() methods, not
+   * create_singleton_seqeunce().
+   */
+  class SingleItemSequence : public ItemSequence {
+    public:
+      SingleItemSequence(Item aItem) {
+        theItem = aItem;
+        done = false;
+      }
+
+      virtual bool
+      next(Item& i) {
+        if (done) {
+          return false;
+        }
+        i = theItem;
+        done = true;
+        return true;
+      }
+
+    private:
+      Item theItem;
+      bool done;
+  };
+
+
+  /**
+   * Utility method to read an XQC_InputStream to a std::stringstream.
+   * TODO don't eagerly consume?
+   */
+  XQC_Error
+  CImplementation::readXQCInputStream
+  (XQC_InputStream* aXQCStream, std::stringstream& aStream)
+  {
+    char lBuf[1024];
+    memset(lBuf, 0, 1024);
+
+    int lRead = 0;
+    while ( (lRead = aXQCStream->read(aXQCStream, lBuf, 1024)) >= 1024 ) {
+      aStream.write(lBuf, lRead);
+    }
+    if (lRead > 0) {
+      assert (lRead < 1024);
+      aStream.write(lBuf, lRead);
+    }
+
+    aXQCStream->free(aXQCStream);
+    if (lRead == -1) {
+      return XQC_INTERNAL_ERROR;
+    }
+    return XQC_NO_ERROR;
+  }
+
+
+  /**
+   * Utility method to read a FILE* to a std::stringstream.
+   * TODO don't eagerly consume?
+   */
+  XQC_Error
+  CImplementation::readFile
+  (FILE* aFile, std::stringstream& aStream)
+  {
+    char lBuf[1024];
+    memset(lBuf, 0, 1024);
+
+    int lRead = 0;
+    while ( (lRead = fread(lBuf, 1, 1024, aFile)) > 0 ) {
+      aStream.write(lBuf, lRead);
+    }
+    if (!feof(aFile)) {
+      return XQC_INTERNAL_ERROR;
+    }
+    return XQC_NO_ERROR;
+  }
+  
+
+
   CImplementation::CImplementation(Zorba* aZorba)
     : theZorba(aZorba)
   {
@@ -241,7 +319,10 @@ namespace zorbac {
       }
 
       std::stringstream lStream;
-      CAPIUtil::getIStream(query_file, lStream);
+      XQC_Error lError = readFile(query_file, lStream);
+      if (lError != XQC_NO_ERROR) {
+        return lError;
+      }
 
       if (context) {
         StaticContext_t lContext = CStaticContext::get(context)->getCPP();
@@ -268,26 +349,11 @@ namespace zorbac {
       }
 
       std::stringstream lStream;
-      {
-        char lBuf[1024];
-        memset(lBuf, 0, 1024);
-        int lRead = 0;
-        while ( (lRead = stream->read(stream, lBuf, 1024)) >= 1024 ) {
-          lStream.write(lBuf, lRead);
-        }
-        if (lRead > 0) {
-          assert (lRead < 1024);
-          lStream.write(lBuf, lRead);
-        }
-
-        stream->free(stream);
-        if (lRead == -1) {
-          // TODO right error?
-          return XQC_STATIC_ERROR; 
-        }
+      XQC_Error lError = readXQCInputStream(stream, lStream);
+      if (lError != XQC_NO_ERROR) {
+        return lError;
       }
 
-      // TODO refactor! duplicate code in three places!
       if (context) {
         StaticContext_t lContext = CStaticContext::get(context)->getCPP();
         lQuery = me->theZorba->compileQuery(lStream, lContext);
@@ -300,15 +366,35 @@ namespace zorbac {
     }
     CIMPL_CATCH; 
   }
-      
+
+  XQC_Error
+  CImplementation::parse_istream(std::istream& aStream, XQC_Sequence** seq) {
+    XmlDataManager* lXdm = theZorba->getXmlDataManager();
+    Item lDoc = lXdm->parseDocument(aStream);
+    if (lDoc.isNull()) {
+      // XmlDataManager doesn't throw exceptions, just passes them
+      // to a ErrorHandler, which we don't have.
+      return XQC_INTERNAL_ERROR;
+    }
+
+    std::auto_ptr<SingleItemSequence> lItemSeq(new SingleItemSequence(lDoc));
+    // Wrap in a CSequence to produce an XQC_Sequence. We pass "true"
+    // to make CSequence assume memory-management responsibility for
+    // the UserItemSequence.
+    std::auto_ptr<CSequence> lSeq(new CSequence(lItemSeq.get(), true, NULL));
+
+    lItemSeq.release();
+    (*seq) = lSeq.release()->getXQC();
+    return XQC_NO_ERROR;
+  }
+
   XQC_Error
   CImplementation::parse_document(XQC_Implementation* impl,
     const char *string, XQC_Sequence** seq)
   {
     CIMPL_TRY {
-      // TODO implement
-      (*seq) = NULL;
-      me->getCPP();
+      std::istringstream lStream(string);
+      return me->parse_istream(lStream, seq);
     }
     CIMPL_CATCH;
   }
@@ -318,9 +404,12 @@ namespace zorbac {
     FILE *file, XQC_Sequence** seq)
   {
     CIMPL_TRY {
-      // TODO implement
-      (*seq) = NULL;
-      me->getCPP();
+      std::stringstream lStream;
+      XQC_Error lError = readFile(file, lStream);
+      if (lError != XQC_NO_ERROR) {
+        return lError;
+      }
+      return me->parse_istream(lStream, seq);
     }
     CIMPL_CATCH;
   }
@@ -330,9 +419,12 @@ namespace zorbac {
     XQC_InputStream *stream, XQC_Sequence** seq)
   {
     CIMPL_TRY {
-      // TODO implement
-      (*seq) = NULL;
-      me->getCPP();
+      std::stringstream lStream;
+      XQC_Error lError = readXQCInputStream(stream, lStream);
+      if (lError != XQC_NO_ERROR) {
+        return lError;
+      }
+      return me->parse_istream(lStream, seq);
     }
     CIMPL_CATCH;
   }

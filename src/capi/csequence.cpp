@@ -22,7 +22,6 @@
 #include <zorba/store_consts.h>
 #include <zorbamisc/ns_consts.h>
 #include "capi/error.h"
-#include "capi/capi_util.h"
 
 using namespace zorba;
 

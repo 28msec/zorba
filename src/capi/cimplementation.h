@@ -99,6 +99,16 @@ namespace zorbac {
       void
       create_sequence(std::auto_ptr<CrSeqData> data, XQC_Sequence** seq);
 
+      XQC_Error
+      parse_istream(std::istream& aStream, XQC_Sequence** seq);
+
+      static XQC_Error
+      readXQCInputStream(XQC_InputStream* aXQCStream,
+        std::stringstream& aStream);
+
+      static XQC_Error
+      readFile(FILE* aFile, std::stringstream& aStream);
+
       XQC_Implementation theXQCImpl;
       Zorba*             theZorba;
   };

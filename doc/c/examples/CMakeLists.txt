@@ -17,16 +17,17 @@ INCLUDE_DIRECTORIES(AFTER ${CMAKE_SOURCE_DIR}/src/)
 
 
 SET (CAPI_EXAMPLES
-	csimple.c
+  csimple.c
   ccontext.c
   cerror.c
+  cparsing.c
   cexternal_functions.c 
   cserialization.c
   csequences.c
 )
 
 CREATE_TEST_SOURCELIST(cexamples
-	cexamples.c
+  cexamples.c
   ${CAPI_EXAMPLES}
 )
  
@@ -48,16 +49,23 @@ STRING (LENGTH "${CMAKE_SOURCE_DIR}/" SOURCE_DIR_LENGTH)
 
 # add all the ADD_TEST for each testing
 FOREACH (test ${TestsToRun})
-	GET_FILENAME_COMPONENT(NAME_WITHOUT_EXT ${test} NAME_WE)
+  GET_FILENAME_COMPONENT(NAME_WITHOUT_EXT ${test} NAME_WE)
   SET(FULL_TEST_NAME "${CMAKE_CURRENT_SOURCE_DIR}/${test}")
   STRING(LENGTH ${FULL_TEST_NAME} FULL_TEST_NAME_LENGTH)
   MATH(EXPR TEST_NAME_LENGTH "${FULL_TEST_NAME_LENGTH}-${SOURCE_DIR_LENGTH}")
   
   STRING(SUBSTRING ${FULL_TEST_NAME} ${SOURCE_DIR_LENGTH} ${TEST_NAME_LENGTH} TName)
-	MESSAGE(STATUS "Adding test for the C API's documentation: ${TName}")
-	ADD_TEST(${TName} ${cexamples_EXE_PATH} ${NAME_WITHOUT_EXT})
+  MESSAGE(STATUS "Adding test for the C API's documentation: ${TName}")
+  ADD_TEST(${TName} ${cexamples_EXE_PATH} ${NAME_WITHOUT_EXT})
 ENDFOREACH(test)
 
-INSTALL(FILES ${CAPI_EXAMPLES} ${CMAKE_CURRENT_BINARY_DIR}/cexamples.c
+# Copy cparsing.xml to binary dir, and install it
+CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/cparsing.xml"
+               "${CMAKE_CURRENT_BINARY_DIR}/cparsing.xml"
+               COPYONLY)
+
+INSTALL(FILES ${CAPI_EXAMPLES}
+        ${CMAKE_CURRENT_BINARY_DIR}/cexamples.c
+        ${CMAKE_CURRENT_BINARY_DIR}/cparsing.xml
         DESTINATION
         share/doc/zorba-${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER}/c/examples)
