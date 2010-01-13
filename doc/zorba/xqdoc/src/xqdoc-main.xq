@@ -35,7 +35,7 @@ declare variable $indexCollector := <modules/>;
  :
  : @param $modulePath where to search for modules recursively.
  : @param $targetPath where to generate the XQDoc XML documents.
-:)
+ :)
 declare sequential function local:generateXQDocXml($modulesPath as xs:string, $targetPath as xs:string) {
     for $file in file:files($modulesPath)
     let $filePath := concat($modulesPath, "/", $file)
@@ -77,7 +77,7 @@ FAILED: ", $moduleUri, " (", $xqdocFileName, ")")
  :
  : @param $xqdocPath where to search for XML XQDoc documents recursively.
  : @param $targetPath where to generate the XQDoc XHTML pages.
-:)
+ :)
 declare sequential function local:generateXQDocXhtml($xqdocPath as xs:string, $targetPath as xs:string, $pathToIndex as xs:string, $cssFileName as xs:string) {
     let $absoluteXqdocPath := concat($xqdocBuildPath, "/", $xqdocPath),
         $absoluteTargetPath := concat($xqdocBuildPath, "/", $targetPath)
@@ -149,7 +149,7 @@ declare function local:getFilePath ($filename as xs:string) as xs:string*
 };
 
 declare sequential function local:configure-xhtml ($xhtml, $pathToIndex as xs:string, $cssFileName as xs:string) {
-    (: add a stypesheet :)
+    (: add a stylesheet :)
     let $cssPath := concat($pathToIndex, $cssFileName)
     return    
         replace value of node $xhtml/*:head/*:link/@href with $cssPath
@@ -199,7 +199,7 @@ declare sequential function local:configure-xhtml ($xhtml, $pathToIndex as xs:st
  :
  : @param $xqdocPath where to search for XML XQDoc documents recursively.
  : @return the content of the new index.html
-:)
+ :)
 declare sequential function local:generateIndexHtml($indexPath as xs:string) as document-node() {
     let $indexHtmlDoc := file:read-xml($indexPath)
     return block {
