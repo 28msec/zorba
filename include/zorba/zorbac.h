@@ -191,6 +191,14 @@ extern "C" {
        */
       XQC_Error
       (*set_double)(Zorba_ItemSetter* setter, double value);
+
+      /**
+       * Call this to specify the next item as an arbitrary type,
+       * providing the value as a string.
+       */
+      XQC_Error
+      (*set_typed_value)(Zorba_ItemSetter* setter, XQC_ItemType type,
+        const char* value);
   };
 
   /**

@@ -82,6 +82,23 @@ my_ext_fct_next(XQC_Sequence** args, unsigned int argc,
         setter->set_string(setter, lValue);
         break;
       }
+      case XQC_ANY_URI_TYPE:
+      case XQC_DATE_TYPE:
+      case XQC_DATE_TIME_TYPE:
+      case XQC_DURATION_TYPE:
+      case XQC_FLOAT_TYPE:
+      case XQC_G_DAY_TYPE:
+      case XQC_G_MONTH_TYPE:
+      case XQC_G_MONTH_DAY_TYPE:
+      case XQC_G_YEAR_TYPE:
+      case XQC_G_YEAR_MONTH_TYPE:
+      case XQC_TIME_TYPE: {
+        const char* lValue;
+        lSeq->string_value(lSeq, &lValue);
+        setter->set_typed_value(setter, lItemType, lValue);
+        break;
+      }
+
       default:
         printf("Unsupported type %d\n", lItemType);
         break;
@@ -102,7 +119,8 @@ my_ext_fct_free(void* user_data, void* function_user_data)
 }
 
 /**
- * register an external function in the static context and execute a query with it
+ * register an external function in the static context and execute a
+ * query with it
  */
 int
 external_function_example_1(XQC_Implementation* impl)
@@ -119,7 +137,10 @@ external_function_example_1(XQC_Implementation* impl)
     my_ext_fct_init, my_ext_fct_next, my_ext_fct_free, impl);
 
   impl->prepare(impl,
-    "declare namespace foo=\"urn:foo\"; declare function foo:bar($x, $y, $z) external; foo:bar((1, 2, 3), \"2.57\", xs:double(2.57))",
+    "declare namespace foo=\"urn:foo\";\n"
+    "declare function foo:bar($x, $y, $z) external;\n"
+    "( foo:bar((1, 2, 3), \"2.57\", xs:double(2.57)),\n"
+    "  foo:bar(xs:date(\"2010-01-13\"), xs:gYear(\"1984\"), xs:float(2.57)) )",
     lContext, &lExpr);
 
   // execute it and print the result on standard out
@@ -131,21 +152,40 @@ external_function_example_1(XQC_Implementation* impl)
       case XQC_DECIMAL_TYPE: {
         int lValue;
         lSeq->integer_value(lSeq, &lValue);
-        printf("%d ", lValue);
+        printf("[int] %d\n", lValue);
         break;
       }
       case XQC_DOUBLE_TYPE: {
         double lValue;
         lSeq->double_value(lSeq, &lValue);
-        printf("%f ", lValue);
+        printf("[double] %f\n", lValue);
         break;
       }
       case XQC_STRING_TYPE: {
         const char* lValue;
         lSeq->string_value(lSeq, &lValue);
-        printf("%s ", lValue);
+        printf("[string] %s\n", lValue);
         break;
       }
+      case XQC_ANY_URI_TYPE:
+      case XQC_DATE_TYPE:
+      case XQC_DATE_TIME_TYPE:
+      case XQC_DURATION_TYPE:
+      case XQC_FLOAT_TYPE:
+      case XQC_G_DAY_TYPE:
+      case XQC_G_MONTH_TYPE:
+      case XQC_G_MONTH_DAY_TYPE:
+      case XQC_G_YEAR_TYPE:
+      case XQC_G_YEAR_MONTH_TYPE:
+      case XQC_TIME_TYPE: {
+        const char* lValue;
+        const char* lTypename;
+        lSeq->type_name(lSeq, &lValue, &lTypename);
+        lSeq->string_value(lSeq, &lValue);
+        printf("[typed_value %s] %s\n", lTypename, lValue);
+        break;
+      }
+
       default:
         printf("Unsupported type %d\n", lItemType);
         break;

@@ -24,7 +24,41 @@ using namespace zorba;
 #define ZIS_TRY CAPI_TRY(UserItemSequence,setter)
 #define ZIS_CATCH CAPI_CATCH
 
+// pointer-to-members are eeeevil
+typedef Item (ItemFactory::*ItemFactoryMemFn)(const String& aString);
+#define CALL_ITEMFACTORY_FN(object,ptrToMember) ((object).*(ptrToMember))
+
 namespace zorbac {
+
+  namespace FactoryCreators {
+
+    // Maps XQC_ItemTypes to from-string item create method
+    static std::map<XQC_ItemType, ItemFactoryMemFn> methods;
+
+    class CreatorInitializer {
+      public:
+        CreatorInitializer()
+        {
+          methods[XQC_ANY_URI_TYPE] = &ItemFactory::createAnyURI;
+          methods[XQC_DATE_TYPE] = &ItemFactory::createDate;
+          methods[XQC_DATE_TIME_TYPE] = &ItemFactory::createDateTime;
+          methods[XQC_DECIMAL_TYPE] = &ItemFactory::createDecimal;
+          methods[XQC_DOUBLE_TYPE] = &ItemFactory::createDouble;
+          methods[XQC_DURATION_TYPE] = &ItemFactory::createDuration;
+          methods[XQC_FLOAT_TYPE] = &ItemFactory::createFloat;
+          methods[XQC_G_DAY_TYPE] = &ItemFactory::createGDay;
+          methods[XQC_G_MONTH_TYPE] = &ItemFactory::createGMonth;
+          methods[XQC_G_MONTH_DAY_TYPE] = &ItemFactory::createGMonthDay;
+          methods[XQC_G_YEAR_TYPE] = &ItemFactory::createGYear;
+          methods[XQC_G_YEAR_MONTH_TYPE] = &ItemFactory::createGYearMonth;
+          methods[XQC_STRING_TYPE] = &ItemFactory::createString;
+          methods[XQC_TIME_TYPE] = &ItemFactory::createTime;
+        }
+    };
+
+    // Instance exists only to initialize methods
+    static CreatorInitializer initer;
+  } /* namespace FactoryCreators */
 
   UserItemSequence::UserItemSequence
   (XQC_Sequence** args, unsigned int argc,
@@ -41,9 +75,10 @@ namespace zorbac {
       theErrorHandler(handler)
   {
     memset(&theItemSetter, 0, sizeof(Zorba_ItemSetter));
-    theItemSetter.set_string  = UserItemSequence::set_string;
-    theItemSetter.set_integer = UserItemSequence::set_integer;
-    theItemSetter.set_double  = UserItemSequence::set_double;
+    theItemSetter.set_string      = UserItemSequence::set_string;
+    theItemSetter.set_integer     = UserItemSequence::set_integer;
+    theItemSetter.set_double      = UserItemSequence::set_double;
+    theItemSetter.set_typed_value = UserItemSequence::set_typed_value;
 
     if (theInitFunction) {
       theInitFunction(&theUserData, theSequenceData);
@@ -112,6 +147,40 @@ namespace zorbac {
   {
     ZIS_TRY {
       me->theItem = me->theFactory->createDouble(value);
+    }
+    ZIS_CATCH;
+  }
+
+  XQC_Error
+  UserItemSequence::set_typed_value(Zorba_ItemSetter* setter, XQC_ItemType type,
+    const char* value)
+  {
+    ZIS_TRY {
+      switch (type) {
+        case XQC_ANY_URI_TYPE:
+        case XQC_DATE_TYPE:
+        case XQC_DATE_TIME_TYPE:
+        case XQC_DECIMAL_TYPE:
+        case XQC_DOUBLE_TYPE:
+        case XQC_DURATION_TYPE:
+        case XQC_FLOAT_TYPE:
+        case XQC_G_DAY_TYPE:
+        case XQC_G_MONTH_TYPE:
+        case XQC_G_MONTH_DAY_TYPE:
+        case XQC_G_YEAR_TYPE:
+        case XQC_G_YEAR_MONTH_TYPE:
+        case XQC_STRING_TYPE:
+        case XQC_TIME_TYPE: {
+          zorba::String lValue(value);
+          me->theItem = CALL_ITEMFACTORY_FN
+            (*(me->theFactory), FactoryCreators::methods[type])
+            (lValue);
+          break;
+        }
+
+        default:
+          return XQC_NOT_IMPLEMENTED;
+      }
     }
     ZIS_CATCH;
   }

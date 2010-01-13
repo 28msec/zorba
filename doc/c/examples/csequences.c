@@ -93,7 +93,10 @@ check_error(const char* func_name, XQC_Error error)
   }                                                                     \
   lSeq->free(lSeq);                                                     \
   return 1
+  
 
+
+// Test create_integer_sequence().
 
 int integerArray[] = { 1, 25, 36, 49, 535631 };
 int integerCompare(int a, int b) { return (a == b) ? 0 : 1; }
@@ -104,6 +107,9 @@ csequences_1(XQC_Implementation* impl)
   CREATE_FOO_SEQUENCE_TEST(int, %d, integer, XQC_DECIMAL_TYPE, int);
 }
 
+
+// Test create_double_sequence().
+
 double doubleArray[] = { 1.0, 3.5, 86.9230985, 930.59, 3.1415926535 };
 int doubleCompare(double a, double b) { return (a == b) ? 0 : 1; }
 
@@ -112,6 +118,9 @@ csequences_2(XQC_Implementation* impl)
 {
   CREATE_FOO_SEQUENCE_TEST(double, %f, double, XQC_DOUBLE_TYPE, double);
 }
+
+
+// Test create_string_sequence().
 
 const char* stringArray[] = { "hello", "world", "are", "you", "there" };
 int stringCompare(const char* a, const char* b) { return (strcmp(a, b)); }
@@ -122,9 +131,9 @@ csequences_3(XQC_Implementation* impl)
   CREATE_FOO_SEQUENCE_TEST(const char*, %s, string, XQC_STRING_TYPE, string);
 }
 
-/**
- * Tests create_empty_sequence().
- */
+
+// Test create_empty_sequence().
+
 int
 csequences_4(XQC_Implementation* impl)
 {
@@ -139,6 +148,74 @@ csequences_4(XQC_Implementation* impl)
   }
   lSeq->free(lSeq);
   return 1;  
+}
+
+
+// Test create_singleton_sequence(), with several types.
+
+/**
+ * Test case for create_singleton_sequence. Args:
+ * @arg impl the XQC_Implementation.
+ * @arg xqctype the XQC_ItemType.
+ * @arg schematype the localname of the schema type.
+ * @arg value the (string) value to test with.
+ */
+int
+cr_sngl_test
+(XQC_Implementation* impl, XQC_ItemType xqctype, const char* schematype,
+  const char* value)
+{
+  XQC_Error lError = XQC_NO_ERROR;
+  XQC_Sequence *lSeq;
+  const char* lUri;
+  const char* lName;
+  const char* lValue;
+
+  lError = impl->create_singleton_sequence(impl, xqctype, value, &lSeq);
+  if (check_error("create_singleton_sequence", lError)) return 0;
+  lError = lSeq->next(lSeq);
+  if (check_error("next", lError)) return 0;
+  lError = lSeq->type_name(lSeq, &lUri, &lName);
+  if (check_error("type_name", lError)) return 0;
+  if (strcmp(lUri, "http://www.w3.org/2001/XMLSchema") != 0) {
+    printf("type_name returned wrong namespace %s for xqctype %d\n",
+      lUri, xqctype);
+    return 0;
+  }
+  if (strcmp(lName, schematype) != 0) {
+    printf("type_name returned wrong localname %s for xqctype %d\n",
+      lName, xqctype);
+    return 0;
+  }
+  lError = lSeq->string_value(lSeq, &lValue);
+  if (strcmp(lValue, value) != 0) {
+    printf("string_value returned wrong value %s for xqctype %d\n", lValue,
+      xqctype);
+    return 0;
+  }
+  lError = lSeq->next(lSeq);
+  if (lError != XQC_END_OF_SEQUENCE) {
+    printf("more than one value from singleton sequence!");
+    return 0;
+  }
+  // Leaks if test fails...
+  lSeq->free(lSeq);
+  return 1;
+}
+
+int csequences_5(XQC_Implementation* impl)
+{
+  int lI = 0;
+  lI += cr_sngl_test(impl, XQC_ANY_URI_TYPE, "anyURI",
+    "http://www.zorba-xquery.com/");
+  lI += cr_sngl_test(impl, XQC_DATE_TYPE, "date", "2010-01-13");
+  lI += cr_sngl_test(impl, XQC_FLOAT_TYPE, "float", "8.25");
+  lI += cr_sngl_test(impl, XQC_DOUBLE_TYPE, "double", "8.25123532152");
+  lI += cr_sngl_test(impl, XQC_STRING_TYPE, "string", "hello world!");
+  lI += cr_sngl_test(impl, XQC_DECIMAL_TYPE, "decimal", "2.35");
+  lI += cr_sngl_test(impl, XQC_G_YEAR_TYPE, "gYear", "1984");
+  lI += cr_sngl_test(impl, XQC_TIME_TYPE, "time", "18:55:32");
+  return (lI == 8) ? 1 : 0;
 }
 
 int
@@ -169,6 +246,11 @@ csequences(int argc, char** argv)
 
   printf("executing C csequences 4\n");
   res = csequences_4(impl);
+  if (!res) { impl->free(impl); return 1; };
+  printf("\n");
+
+  printf("executing C csequences 5\n");
+  res = csequences_5(impl);
   if (!res) { impl->free(impl); return 1; };
   printf("\n");
 

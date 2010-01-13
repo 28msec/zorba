@@ -57,20 +57,38 @@ namespace zorbac {
    */
   class CrSeqData {
     public:
-      CrSeqData(unsigned int argc, XQC_ItemType type)
-        : theSize(argc),
+      CrSeqData(unsigned int argc, XQC_ItemType type, bool typed_value)
+        : theIsTypedValue(typed_value),
+          theSize(argc),
           theCount(0),
           theType(type)
       {
       }
 
+      /**
+       * If true, this is a singleton sequence of typed data.
+       */
+      bool theIsTypedValue;
+      /**
+       * The number of entries.
+       */
       unsigned int theSize;
+      /**
+       * Which entry to return next.
+       */
       unsigned int theCount;
+      /**
+       * Type; will determine which member of the union to refer to.
+       */
       XQC_ItemType theType;
+      /**
+       * One of these will point to the user-supplied data.
+       */
       union {
           double* theDoubles;
           int* theInts;
           const char** theStrings;
+          const char* theString;
       };
   };
 
@@ -90,6 +108,11 @@ namespace zorbac {
     CrSeqData* lData = static_cast<CrSeqData*> (sequence_data);
     if (lData->theCount >= lData->theSize) {
       return XQC_END_OF_SEQUENCE;
+    }
+    else if (lData->theIsTypedValue) {
+      // Singleton sequence; increment count so we stop next time
+      lData->theCount++;
+      setter->set_typed_value(setter, lData->theType, lData->theString);
     }
     else {
       switch (lData->theType) {
@@ -435,7 +458,7 @@ namespace zorbac {
   {
     CIMPL_TRY {
       // Create a CrSeqData representing no data at all.
-      std::auto_ptr<CrSeqData> lData (new CrSeqData(0, XQC_DOUBLE_TYPE));
+      std::auto_ptr<CrSeqData> lData (new CrSeqData(0, XQC_DOUBLE_TYPE, false));
       lData->theDoubles = NULL;
       me->create_sequence(lData, seq);
     }
@@ -447,9 +470,10 @@ namespace zorbac {
     XQC_ItemType type, const char *value, XQC_Sequence** seq)
   {
     CIMPL_TRY {
-      // TODO implement
-      (*seq) = NULL;
-      me->getCPP();
+      // Create a CrSeqData to hold the user's data.
+      std::auto_ptr<CrSeqData> lData(new CrSeqData(1, type, true));
+      lData->theString = value;
+      me->create_sequence(lData, seq);
     }
     CIMPL_CATCH;
   }
@@ -460,7 +484,8 @@ namespace zorbac {
   {
     CIMPL_TRY {
       // Create a CrSeqData to hold the user's data.
-      std::auto_ptr<CrSeqData> lData (new CrSeqData(count, XQC_STRING_TYPE));
+      std::auto_ptr<CrSeqData> lData
+        (new CrSeqData(count, XQC_STRING_TYPE, false));
       lData->theStrings = values;
       me->create_sequence(lData, seq);
     }
@@ -473,7 +498,8 @@ namespace zorbac {
   {
     CIMPL_TRY {
       // Create a CrSeqData to hold the user's data.
-      std::auto_ptr<CrSeqData> lData (new CrSeqData(count, XQC_DECIMAL_TYPE));
+      std::auto_ptr<CrSeqData> lData
+        (new CrSeqData(count, XQC_DECIMAL_TYPE, false));
       lData->theInts = values;
       me->create_sequence(lData, seq);
     }
@@ -486,7 +512,8 @@ namespace zorbac {
   {
     CIMPL_TRY {
       // Create a CrSeqData to hold the user's data.
-      std::auto_ptr<CrSeqData> lData (new CrSeqData(count, XQC_DOUBLE_TYPE));
+      std::auto_ptr<CrSeqData> lData
+        (new CrSeqData(count, XQC_DOUBLE_TYPE, false));
       lData->theDoubles = values;
       me->create_sequence(lData, seq);
     }

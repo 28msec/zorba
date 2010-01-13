@@ -54,6 +54,10 @@ namespace zorbac {
       static XQC_Error
       set_double(Zorba_ItemSetter* setter, double value);
 
+      static XQC_Error
+      set_typed_value(Zorba_ItemSetter* setter, XQC_ItemType type,
+        const char* value);
+
     private:
       Zorba_ItemSetter                       theItemSetter;
       void*                                  theUserData;
