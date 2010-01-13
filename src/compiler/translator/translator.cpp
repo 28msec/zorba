@@ -3206,7 +3206,7 @@ void* begin_visit(const IndexKeyList& v)
 
   domainExpr = new fo_expr(sctxid(),
                            domainExpr->get_loc(),
-                           GET_BUILTIN_FUNCTION(FunctionConsts::OP_DISTINCT_NODES_1),
+                           GET_BUILTIN_FUNCTION(OP_DISTINCT_NODES_1),
                            domainExpr);
 
   std::string msg = "domain expr for index " + index->getName()->getStringValue()->str();
