@@ -138,13 +138,13 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
   if ((zorbaIndex = theSctx->lookup_index(qname)) == NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(XQP0037_INDEX_IS_NOT_DECLARED, loc,
+    ZORBA_ERROR_LOC_PARAM(XDDY0021_INDEX_IS_NOT_DECLARED, loc,
                           qname->getStringValue()->c_str(), "");
   }
 
   if (GENV_STORE.getIndex(qname) != NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(XQP0034_INDEX_ALREADY_EXISTS, loc,
+    ZORBA_ERROR_LOC_PARAM(XDDY0022_INDEX_EXISTS_ALREADY, loc,
                           qname->getStringValue()->c_str(), "");
   }
 
@@ -179,13 +179,13 @@ bool DeleteIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
   if (theSctx->lookup_index(qname) == NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(XQP0037_INDEX_IS_NOT_DECLARED, loc,
+    ZORBA_ERROR_LOC_PARAM(XDDY0021_INDEX_IS_NOT_DECLARED, loc,
                           qname->getStringValue()->c_str(), "");
   }
 
   if (GENV_STORE.getIndex(qname) == NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(XQP0033_INDEX_DOES_NOT_EXIST, loc,
+    ZORBA_ERROR_LOC_PARAM(XDDY0023_INDEX_DOES_NOT_EXIST, loc,
                           qname->getStringValue()->c_str(), "");
   }
 
@@ -222,13 +222,13 @@ bool RefreshIndexIterator::nextImpl(
 
   if ((zorbaIndex = theSctx->lookup_index(qname)) == NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(XQP0037_INDEX_IS_NOT_DECLARED, loc,
+    ZORBA_ERROR_LOC_PARAM(XDDY0021_INDEX_IS_NOT_DECLARED, loc,
                           qname->getStringValue()->c_str(), "");
   }
 
   if (GENV_STORE.getIndex(qname) == NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(XQP0033_INDEX_DOES_NOT_EXIST, loc,
+    ZORBA_ERROR_LOC_PARAM(XDDY0023_INDEX_DOES_NOT_EXIST, loc,
                           qname->getStringValue()->c_str(), "");
   }
 
@@ -302,7 +302,7 @@ bool IndexPointProbeIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
     if ((zorbaIndex = theSctx->lookup_index(qnameItem)) == NULL)
     {
-      ZORBA_ERROR_LOC_PARAM(XQP0037_INDEX_IS_NOT_DECLARED, loc,
+      ZORBA_ERROR_LOC_PARAM(XDDY0021_INDEX_IS_NOT_DECLARED, loc,
                             qnameItem->getStringValue()->c_str(), "");
     }
 
@@ -312,7 +312,7 @@ bool IndexPointProbeIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
     if (state->theIndex == NULL)
     {
-      ZORBA_ERROR_LOC_PARAM(XQP0033_INDEX_DOES_NOT_EXIST, loc,
+      ZORBA_ERROR_LOC_PARAM(XDDY0023_INDEX_DOES_NOT_EXIST, loc,
                             qnameItem->getStringValue()->c_str(), "");
     }
 
@@ -379,7 +379,7 @@ bool IndexRangeProbeIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
     if ((zorbaIndex = theSctx->lookup_index(qname)) == NULL)
     {
-      ZORBA_ERROR_LOC_PARAM(XQP0037_INDEX_IS_NOT_DECLARED, loc,
+      ZORBA_ERROR_LOC_PARAM(XDDY0021_INDEX_IS_NOT_DECLARED, loc,
                             qname->getStringValue()->c_str(), "");
     }
 
@@ -389,7 +389,7 @@ bool IndexRangeProbeIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
     if (state->theIndex == NULL)
     {
-      ZORBA_ERROR_LOC_PARAM(XQP0033_INDEX_DOES_NOT_EXIST, loc,
+      ZORBA_ERROR_LOC_PARAM(XDDY0023_INDEX_DOES_NOT_EXIST, loc,
                             qname->getStringValue()->c_str(), "");
     }
 

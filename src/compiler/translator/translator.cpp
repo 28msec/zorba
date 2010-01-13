@@ -159,7 +159,7 @@ do { if (state) ZORBA_ERROR(err); state = true; } while (0)
 #define DOT_POS_VARNAME "$$pos"
 #define LAST_IDX_VARNAME "$$last-idx"
 
-#define DOT_VAR lookup_ctx_var (DOT_VARNAME, loc).getp()
+#define DOT_VAR lookup_ctx_var(DOT_VARNAME, loc).getp()
 
 #define DOT_REF new wrapper_expr(this->sctxid(), loc, DOT_VAR)
 
@@ -456,6 +456,17 @@ public:
   theTypeStack         : Stack of the static types for some of the exprs in the
                          nodestack.
 
+  theFlworClausesStack :
+
+  theNodeSortStack     :
+
+  theIndexDecl         : Used during the translation of an index declaration to
+                         hold the ValueIndex obj.
+  theIsInIndexDomain   : Set to true just before translating the domain expr, and
+                         set back to false right after the translation of the
+                         domain expr is finished. It is used to check that the
+                         domain expr does not reference any external context item.
+
   hadBSpaceDecl        : Set to true if prolog has boundary space decl. Used to
                          check that such a decl does not appear more than once.
   hadBUriDecl          : Set to true if prolog has bas uri decl. Used to check
@@ -539,7 +550,8 @@ protected:
 
   list<function *>                     fn_decl_stack;
 
-  stack<ValueIndex_t>                  indexstack;
+  ValueIndex_t                         theIndexDecl;
+  bool                                 theIsInIndexDomain;
 
   bool                                 hadBSpaceDecl;
   bool                                 hadBUriDecl;
@@ -583,6 +595,7 @@ TranslatorImpl(
   print_depth(0),
   scope_depth(0),
   tempvar_counter(1),
+  theIsInIndexDomain(false),
   hadBSpaceDecl(false),
   hadBUriDecl(false),
   hadConstrDecl(false),
@@ -949,7 +962,15 @@ varref_t lookup_ctx_var(xqp_string name, const QueryLoc& loc)
   if (ve != NULL)
     return (var_expr *) ve;
 
-  ZORBA_ERROR_LOC_PARAM(XPDY0002, loc, name, "");
+  if (theIsInIndexDomain)
+  {
+    ZORBA_ERROR_LOC_PARAM(XDST0032_INDEX_REFERENCES_CTX_ITEM, loc, 
+                          theIndexDecl->getName()->getStringValue(), "");
+  }
+  else
+  {
+    ZORBA_ERROR_LOC_PARAM(XPDY0002, loc, name, "");
+  }
 }
 
 
@@ -1116,13 +1137,13 @@ expr_t wrap_in_type_promotion(expr_t e, xqtref_t type)
 /*******************************************************************************
 
 ********************************************************************************/
-expr_t wrap_in_type_match(expr_t e, xqtref_t type)
+expr_t wrap_in_type_match(expr_t e, xqtref_t type, XQUERY_ERROR errorCode = XPTY0004)
 {
   // treat_expr should be avoided for updating expressions too,
   // but in that case "type" will be item()* anyway
   return (TypeOps::is_subtype(*theRTM.ITEM_TYPE_STAR, *type) ?
           e :
-          new treat_expr(sctxid(), e->get_loc(), e, type, XPTY0004));
+          new treat_expr(sctxid(), e->get_loc(), e, type, errorCode));
 }
 
 
@@ -1667,9 +1688,9 @@ void end_visit (const Module& v, void* /*visit_state*/)
                       XQUERY VERSION STRING_LITERAL SEMI |
                       XQUERY VERSION STRING_LITERAL ENCODING STRING_LITERAL SEMI
 ********************************************************************************/
-void *begin_visit (const VersionDecl& v) 
+void* begin_visit(const VersionDecl& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   if (! xqp_string (v.get_encoding ()).matches ("^[A-Za-z]([A-Za-z0-9._]|[-])*$", ""))
     ZORBA_ERROR_LOC (XQST0087, loc);
 
@@ -1680,27 +1701,27 @@ void *begin_visit (const VersionDecl& v)
   return no_state;
 }
 
-void end_visit (const VersionDecl& v, void* /*visit_state*/) 
+void end_visit(const VersionDecl& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
 /*******************************************************************************
   [3] MainModule ::= Prolog  QueryBody | QueryBody
 ********************************************************************************/
-void *begin_visit (const MainModule & v) 
+void* begin_visit(const MainModule & v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
 
   theDotVar = bind_var(loc, DOT_VARNAME, var_expr::prolog_var, ctx_item_type);
   
   return no_state;
 }
 
-void end_visit (const MainModule & v, void* /*visit_state*/) 
+void end_visit(const MainModule & v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
@@ -3090,17 +3111,27 @@ void end_visit(const NodeModifier& v, void* /*visit_state*/)
 
 
 /***************************************************************************//**
-  IndexDecl ::= "declare" "unique"? 
-                          ("ordered" | "unordered")?
-                          ("manual" | "automatic)?
-                          "index" QName
-                          "on" Expr
-                          "by" "(" IndexKeyList ")"
+  IndexDecl ::= "declare" IndexPropertyList "index" QName
+                "on" "nodes" IndexDomainExpr "by" IndexKeyList
+
+  IndexPropertyList := ("unique" | "non" "unique" |
+                        "value" "range" | "value" "equality" | 
+                        "automatically" "maintained" | "manually" "maintained")*
+
+  IndexDomainExpr := PathExpr
+
+  IndexKeyList := IndexKeySpec+
+
+  IndexKeySpec := PathExpr AtomicType IndexKeyOrderModifier
+
+  AtomicType := QName
+
+  IndexKeyOrderModifier := ("ascending" | "descending")? ("collation" UriLiteral)?
 
   Translation of an index declaration involves the creation and setting-up of
-  a ValueIndex obj (see indexing/value_index.h) and the creation in the current
-  sctx (which is the root sctx of the current module) of a binding between the
-  index uri and this ValueIndex obj.
+  a ValueIndex obj (see compiler/indexing/value_index.h) and the creation in
+  the current sctx (which is the root sctx of the current module) of a binding
+  between the index uri and this ValueIndex obj.
 ********************************************************************************/
 void* begin_visit(const IndexDecl& v) 
 {
@@ -3125,7 +3156,8 @@ void* begin_visit(const IndexDecl& v)
   if (v.isAutomatic())
     index->setMaintenanceMode(ValueIndex::REBUILD);
 
-  indexstack.push(index);
+  theIndexDecl = index;
+  theIsInIndexDomain = true;
 
   return no_state;
 }
@@ -3134,8 +3166,8 @@ void end_visit(const IndexDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  ValueIndex_t index = indexstack.top();
-  indexstack.pop();
+  ValueIndex_t index = theIndexDecl;
+  theIndexDecl = NULL;
 
   index->analyze();
 
@@ -3156,11 +3188,26 @@ void* begin_visit(const IndexKeyList& v)
 {
   TRACE_VISIT();
 
-  ValueIndex* index = indexstack.top();
+  theIsInIndexDomain = false;
+
+  ValueIndex* index = theIndexDecl;
 
   expr_t domainExpr = pop_nodestack();
 
-  domainExpr = wrap_in_type_match(domainExpr, theRTM.ANY_NODE_TYPE_STAR);
+  if (!domainExpr->is_simple())
+  {
+    ZORBA_ERROR_LOC_PARAM(XDST0033_INDEX_NON_SIMPLE_EXPR, domainExpr->get_loc(),
+                          index->getName()->getStringValue(), "");
+  }
+
+  domainExpr = wrap_in_type_match(domainExpr, 
+                                  theRTM.ANY_NODE_TYPE_STAR,
+                                  XDTY0010_INDEX_DOMAIN_TYPE_ERROR);
+
+  domainExpr = new fo_expr(sctxid(),
+                           domainExpr->get_loc(),
+                           GET_BUILTIN_FUNCTION(FunctionConsts::OP_DISTINCT_NODES_1),
+                           domainExpr);
 
   std::string msg = "domain expr for index " + index->getName()->getStringValue()->str();
 
@@ -3199,65 +3246,57 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
   std::vector<xqtref_t> keyTypes(numColumns);
   std::vector<OrderModifier> keyModifiers(numColumns);
 
-  ValueIndex* index = indexstack.top();
+  ValueIndex* index = theIndexDecl;
 
   for(int i = numColumns - 1; i >= 0; --i) 
   {
     const IndexKeySpec* keySpec = v.getKeySpec(i);
-    const OrderModifierPN* ordmod = keySpec->getOrderModifier();
+    const OrderCollationSpec* collationSpec = keySpec->getCollationSpec();
 
-    xqtref_t type = (keySpec->getType() != NULL ?
-                     pop_tstack() :
-                     theRTM.ANY_ATOMIC_TYPE_QUESTION);
+    xqtref_t type = pop_tstack();
 
-    if (!TypeOps::is_subtype(*type, *theRTM.ANY_ATOMIC_TYPE_QUESTION))
+    if (TypeOps::is_equal(*type, *theRTM.ANY_ATOMIC_TYPE_ONE) ||
+        TypeOps::is_equal(*type, *theRTM.UNTYPED_ATOMIC_TYPE_ONE))
     {
-      ZORBA_ERROR_LOC_DESC_OSS(XQP0036_NON_ATOMIC_INDEX_KEY, keySpec->get_location(),
-                               "A key for index " 
-                               << index->getName()->getStringValue()->c_str() 
-                               << "has a non atomic value at position "
-                               << i << ".");
+      ZORBA_ERROR_LOC_PARAM(XDST0027_INDEX_BAD_KEY_TYPE, keySpec->get_location(),
+                            index->getName()->getStringValue(), "");
+    }
+
+    if (index->getMethod() == ValueIndex::TREE &&
+        (TypeOps::is_subtype(*type, *theRTM.QNAME_TYPE_ONE) ||
+         TypeOps::is_subtype(*type, *theRTM.NOTATION_TYPE_ONE) ||
+         TypeOps::is_subtype(*type, *theRTM.BASE64BINARY_TYPE_ONE) ||
+         TypeOps::is_subtype(*type, *theRTM.HEXBINARY_TYPE_ONE) ||
+         TypeOps::is_subtype(*type, *theRTM.GYEAR_MONTH_TYPE_ONE) ||
+         TypeOps::is_subtype(*type, *theRTM.GYEAR_TYPE_ONE) ||
+         TypeOps::is_subtype(*type, *theRTM.GMONTH_TYPE_ONE) ||
+         TypeOps::is_subtype(*type, *theRTM.GMONTH_DAY_TYPE_ONE) ||
+         TypeOps::is_subtype(*type, *theRTM.GDAY_TYPE_ONE)))
+    {
+      ZORBA_ERROR_LOC_PARAM(XDST0027_INDEX_BAD_KEY_TYPE, keySpec->get_location(),
+                            index->getName()->getStringValue(), "");
     }
 
     keyTypes[i] = type;
 
-    ParseConstants::dir_spec_t dirSpec = ParseConstants::dir_ascending;
-    StaticContextConsts::order_empty_mode_t emptySpec = sctx_p->order_empty_mode();
     string collation = sctx_p->default_collation_uri();
 
-    if (ordmod != NULL)
+    if (collationSpec != NULL)
     {
-      if (ordmod->get_dir_spec() != NULL)
-        dirSpec = ordmod->get_dir_spec()->getValue();
+      collation = collationSpec->get_uri();
 
-      if (ordmod->get_empty_spec() != NULL)
-        emptySpec = ordmod->get_empty_spec()->getValue();
-
-      if (ordmod->get_collation_spec() != NULL)
-      {
-        collation = ordmod->get_collation_spec()->get_uri();
-
-        if (! sctx_p->has_collation_uri(collation))
-         ZORBA_ERROR_LOC(XQST0076, keySpec->get_location());
-      }
+      if (! sctx_p->has_collation_uri(collation))
+        ZORBA_ERROR_LOC(XQST0076, keySpec->get_location());
     }
 
-    keyModifiers[i].theAscending = (dirSpec == ParseConstants::dir_ascending);
-    keyModifiers[i].theEmptyLeast = (emptySpec == StaticContextConsts::empty_least);
+    keyModifiers[i].theAscending = true;
+    keyModifiers[i].theEmptyLeast = true;
     keyModifiers[i].theCollation = collation;
 
     expr_t keyExpr = pop_nodestack();
 
     keyExpr = wrap_in_atomization(keyExpr);
-
-    if (TypeOps::is_equal(*type, *theRTM.ANY_ATOMIC_TYPE_QUESTION) &&
-        TypeOps::is_subtype(*keyExpr->return_type(sctx_p),
-                            *theRTM.UNTYPED_ATOMIC_TYPE_STAR))
-    {
-      type = theRTM.STRING_TYPE_QUESTION;
-    }
-
-    keyExpr = wrap_in_type_promotion(keyExpr, type);
+    keyExpr = wrap_in_type_match(keyExpr, type, XDTY0011_INDEX_KEY_TYPE_ERROR);
 
     std::ostringstream msg;
     msg << "key expr " << i << " for index " << index->getName()->getStringValue()->str();

@@ -203,14 +203,19 @@ bool HashIndex::insert(const store::IndexKey* key, store::Item_t& value)
   if (key->size() != theNumColumns)
   {
     ZORBA_ERROR_PARAM(STR0003_INDEX_PARTIAL_KEY_INSERT,
-                      theQname->getStringValue()->c_str(), key->toString());
+                      theQname->getStringValue(), key->toString());
   }
 
   store::IndexValue* valueSet = NULL;
 
-  if (!isUnique() &&
-      theMap.get(key, valueSet))
+  if (theMap.get(key, valueSet))
   {
+    if (isUnique())
+    {
+      ZORBA_ERROR_PARAM(XDDY0024_INDEX_UNIQUE_VIOLATION,
+                        theQname->getStringValue(), "");
+    }
+
     valueSet->resize(valueSet->size() + 1);
     (*valueSet)[valueSet->size()-1].transfer(value);
     return true;
@@ -410,16 +415,19 @@ bool STLMapIndex::insert(const store::IndexKey* key, store::Item_t& value)
   std::cout << "), " << value->getStringValue()->c_str() << "]" << std::endl;
 #endif
 
-  if (!isUnique())
-  {
-    // TODO: optimize this using the lower_bound() method.
-    IndexMap::iterator pos = theMap.find(key);
+  // TODO: optimize this using the lower_bound() method.
+  IndexMap::iterator pos = theMap.find(key);
 
-    if (pos != theMap.end())
+  if (pos != theMap.end())
+  {
+    if (isUnique())
     {
-      pos->second->transfer_back(value);
-      return true;
+      ZORBA_ERROR_PARAM(XDDY0024_INDEX_UNIQUE_VIOLATION,
+                        theQname->getStringValue(), "");
     }
+
+    pos->second->transfer_back(value);
+    return true;
   }
 
   store::IndexValue* valueSet = new store::IndexValue(1);

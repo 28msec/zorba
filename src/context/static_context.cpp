@@ -1235,7 +1235,7 @@ void static_context::bind_index(
 
   if (!theIndexMap->insert((store::Item*)qname, index))
   {
-    ZORBA_ERROR_LOC_PARAM(XQP0038_INDEX_IS_ALREADY_DECLARED, loc,
+    ZORBA_ERROR_LOC_PARAM(XDST0021_INDEX_ALREADY_DECLARED, loc,
                           qname->getStringValue(),  "");
   }
 }
@@ -1542,7 +1542,7 @@ void static_context::set_entity_retrieval_url(xqp_string val)
 }
 
 
-xqp_string static_context::resolve_relative_uri (
+xqp_string static_context::resolve_relative_uri(
     xqp_string uri,
     xqp_string abs_base_uri,
     bool validate) 
@@ -1634,8 +1634,9 @@ bool static_context::import_module(const static_context* module, const QueryLoc&
 
       if (!theIndexMap->insert((store::Item*)pair.first, pair.second))
       {
-        ZORBA_ERROR_LOC_PARAM(XQP0038_INDEX_IS_ALREADY_DECLARED, loc,
-                              pair.first->getStringValue()->c_str(), "");
+        ZORBA_ERROR_LOC_PARAM(XDST0022_INDEX_ALREADY_IMPORTED, loc,
+                              pair.first->getStringValue(), 
+                              module->get_module_namespace().c_str());
       }
     }
   }

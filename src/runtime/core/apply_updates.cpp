@@ -79,7 +79,6 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                            "Expression returns more than one pending update lists");
     }
 
-
     // Get all the indexes that are associated with any of the collections that
     // are going to be updated by this pul. Check which of those indices can be
     // maintained incrementally, and pass this info back to the pul.
@@ -95,7 +94,7 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       
       if (zorbaIndex == NULL)
       {
-        ZORBA_ERROR_LOC_PARAM(XQP0037_INDEX_IS_NOT_DECLARED, loc,
+        ZORBA_ERROR_LOC_PARAM(XDDY0021_INDEX_IS_NOT_DECLARED, loc,
                               indexes[i]->getName()->getStringValue()->c_str(), "");
       }
 

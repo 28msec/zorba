@@ -209,12 +209,15 @@ void ValueIndex::setOrderModifiers(const std::vector<OrderModifier>& modifiers)
 ********************************************************************************/
 void ValueIndex::analyze()
 {
+  expr* dotVar = theSctx->lookup_var("$$dot");
+
   std::vector<var_expr*> varExprs;
 
   analyzeExprInternal(getDomainExpr(),
                       theSourceNames,
                       theDomainSourceExprs,
-                      varExprs);
+                      varExprs,
+                      dotVar);
 
   varExprs.clear();
 
@@ -224,7 +227,11 @@ void ValueIndex::analyze()
 
   for (ulong i = 0; i < numKeys; ++i)
   {
-    analyzeExprInternal(theKeyExprs[i].getp(), theSourceNames, keySources, varExprs);
+    analyzeExprInternal(theKeyExprs[i].getp(),
+                        theSourceNames,
+                        keySources,
+                        varExprs,
+                        dotVar);
   }
 
   if (keySources.empty() &&
@@ -241,7 +248,8 @@ void ValueIndex::analyzeExprInternal(
     expr* e,
     std::vector<const store::Item*>& sourceNames,
     std::vector<expr*>& sourceExprs,
-    std::vector<var_expr*>& varExprs)
+    std::vector<var_expr*>& varExprs,
+    expr* dotVar)
 {
   if (e->get_expr_kind() == fo_expr_kind)
   {
@@ -250,14 +258,12 @@ void ValueIndex::analyzeExprInternal(
 
     if (!func->isDeterministic())
     {
-      ZORBA_ERROR_LOC_PARAM(XQP0042_INDEX_NOT_DETERMINISTIC, e->get_loc(),
+      ZORBA_ERROR_LOC_PARAM(XDST0028_INDEX_NOT_DETERMINISTIC, e->get_loc(),
                             theName->getStringValue()->c_str(), "");
     }
 
     if (func->isSource())
     {
-      bool valid = false;
-
       if (func->getKind() == FunctionConsts::FN_ZORBA_DDL_COLLECTION_1)
       {
         const expr* argExpr = foExpr->get_arg(0);
@@ -268,13 +274,16 @@ void ValueIndex::analyzeExprInternal(
         {
           sourceNames.push_back(qname);
           sourceExprs.push_back(foExpr);
-          valid = true;
+        }
+        else
+        {
+          ZORBA_ERROR_LOC_PARAM(XDST0030_INDEX_NON_CONST_DATA_SOURCE, e->get_loc(),
+                                theName->getStringValue()->c_str(), "");
         }
       }
-
-      if (!valid)
+      else
       {
-        ZORBA_ERROR_LOC_PARAM(XQP0041_INDEX_HAS_INVALID_DATA_SOURCE, e->get_loc(),
+        ZORBA_ERROR_LOC_PARAM(XDST0029_INDEX_INVALID_DATA_SOURCE, e->get_loc(),
                               theName->getStringValue()->c_str(), "");
       }
     }
@@ -297,17 +306,23 @@ void ValueIndex::analyzeExprInternal(
   }
   else if (e->get_expr_kind() == var_expr_kind)
   {
+    if (e == dotVar)
+    {
+      ZORBA_ERROR_LOC_PARAM(XDST0032_INDEX_REFERENCES_CTX_ITEM, e->get_loc(),
+                            theName->getStringValue()->c_str(), "");
+    }
+
     if (e != getDomainVariable() &&
         std::find(varExprs.begin(), varExprs.end(), e) == varExprs.end())
     {
-      ZORBA_ERROR_LOC_PARAM(XQP0040_INDEX_HAS_FREE_VARS, e->get_loc(),
+      ZORBA_ERROR_LOC_PARAM(XDST0031_INDEX_HAS_FREE_VARS, e->get_loc(),
                             theName->getStringValue()->c_str(), "");
     }
   }
 
   for(expr_iterator i = e->expr_begin(); !i.done(); ++i) 
   {
-    analyzeExprInternal((*i), sourceNames, sourceExprs, varExprs);
+    analyzeExprInternal((*i), sourceNames, sourceExprs, varExprs, dotVar);
   }
 }
 

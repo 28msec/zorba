@@ -307,32 +307,9 @@ DEF_ERR_CODE(XQP0032_ERROR_TRANSFORMING_XQUERYX_TO_XQUERY, XQP0031,
              "Error transforming XQueryX to XQuery using XSLT engine.")
 
 
-DEF_ERR_CODE(XQP0033_INDEX_DOES_NOT_EXIST, XQP0033,
-             "An index with URI /s does not exists.")
-
-DEF_ERR_CODE(XQP0034_INDEX_ALREADY_EXISTS, XQP0034,
-             "An index with URI /s exists already.")
-
 DEF_ERR_CODE(XQP0035_MULTI_VALUED_INDEX_KEY, XQP0035,
              "An index key has multiple values.")
 
-DEF_ERR_CODE(XQP0036_NON_ATOMIC_INDEX_KEY, XQP0036,
-             "An index key has a non-atomic value.")
-
-DEF_ERR_CODE(XQP0037_INDEX_IS_NOT_DECLARED, XQP0037,
-             "An index with URI /s is not declared.")
-
-DEF_ERR_CODE(XQP0038_INDEX_IS_ALREADY_DECLARED, XQP0038,
-             "An index with URI /s is declared already.")
-
-DEF_ERR_CODE(XQP0040_INDEX_HAS_FREE_VARS, XQP0040,
-             "The index with URI /s has free variables in its definition.")
-
-DEF_ERR_CODE(XQP0041_INDEX_HAS_INVALID_DATA_SOURCE, XQP0041,
-             "The index with URI /s references a data source that is not a collection among the statically known collections.")
-
-DEF_ERR_CODE(XQP0042_INDEX_NOT_DETERMINISTIC, XQP0042,
-             "The index with URI /s has a non deterministic definition.")
 
 DEF_ERR_CODE(XQP0043_IC_DOES_NOT_EXIST, XQP0043,
              "An integrity constraint with URI /s does not exists.")
@@ -648,6 +625,8 @@ DEF_ERR_CODE(SRL0012_INCOMPATIBLE_ARCHIVE_VERSION, SRL0012, "Plan serialization 
 DEF_ERR_CODE(SRL0013_UNABLE_TO_LOAD_QUERY, SRL0013, "Plan serialization error: Unable to load query plan: /s")
 
 DEF_ERR_CODE(SRL0014_INFINITE_CIRCULAR_DEPENDENCIES, SRL0014, "Plan serialization error: Unable to solve delayed serialization of object references")
+
+
 //
 // XQuery Data Definition Facility - Static Errors
 //
@@ -688,6 +667,26 @@ DEF_ERR_CODE(XDST0025_INDEX_PROPERTIES_CONFLICT, XDST0025,
 DEF_ERR_CODE(XDST0026_INDEX_INVALID_PROPERTY_VALUE, XDST0026,
 "The declaration for index /s contains an invalid property value: /s")
 
+DEF_ERR_CODE(XDST0027_INDEX_BAD_KEY_TYPE, XDST0027,
+"The index /s has an invalid index key type")
+
+DEF_ERR_CODE(XDST0028_INDEX_NOT_DETERMINISTIC, XDST0028,
+"The index /s has a non deterministic definition.")
+
+DEF_ERR_CODE(XDST0029_INDEX_INVALID_DATA_SOURCE, XDST0029,
+"The index /s references a data source that is not a XQDDF collection.")
+
+DEF_ERR_CODE(XDST0030_INDEX_NON_CONST_DATA_SOURCE, XDST0030,
+"The index /s references a collection with a non-const QName")
+
+DEF_ERR_CODE(XDST0031_INDEX_HAS_FREE_VARS, XDST0031,
+"The index /s has free variables in its definition.")
+
+DEF_ERR_CODE(XDST0032_INDEX_REFERENCES_CTX_ITEM, XDST0032,
+"The domain expression of index /s references the context item.")
+
+DEF_ERR_CODE(XDST0033_INDEX_NON_SIMPLE_EXPR, XDST0033,
+"The declaration of index /s contains a non-simple expression.")
 
 //
 // XQuery Data Definition Facility - Type Errors
@@ -696,12 +695,18 @@ DEF_ERR_CODE(XDST0026_INDEX_INVALID_PROPERTY_VALUE, XDST0026,
 DEF_ERR_CODE(XDTY0001_COLLECTION_INVALID_NODE_TYPE, XDTY0001,
 "Collection /s cannot contain a node of type: /s")
 
+DEF_ERR_CODE(XDTY0010_INDEX_DOMAIN_TYPE_ERROR, XDTY0010,
+"The domain expression of index /s produces an item that is not a node.")
+
+DEF_ERR_CODE(XDTY0011_INDEX_KEY_TYPE_ERROR, XDTY0011,
+"The result of some key expression of index /s does not match its declared type.")
+
 //
 // XQuery Data Definition Facility - Dynamic Errors
 //
 
 DEF_ERR_CODE(XDDY0001_COLLECTION_NOT_DECLARED, XDDY0001, 
-"Collection /s is not in the static context.")
+"Collection /s is not declared in the static context.")
 
 DEF_ERR_CODE(XDDY0002_COLLECTION_EXISTS_ALREADY, XDDY0002, 
 "Collection /s exists already.")
@@ -745,6 +750,21 @@ DEF_ERR_CODE(XDDY0014_COLLECTION_BAD_DESTROY_ICS, XDDY0014,
 DEF_ERR_CODE(XDDY0015_COLLECTION_BAD_DESTROY_NODES, XDDY0015,
 "Cannot delete collection /s because there are references on its nodes.")
 
+
+DEF_ERR_CODE(XDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION, XDDY0020,
+"The domain expression of index /s produces nodes that are not in collection.")
+
+DEF_ERR_CODE(XDDY0021_INDEX_IS_NOT_DECLARED, XDDY0021,
+"Index /s is not declared in the static context.")
+
+DEF_ERR_CODE(XDDY0022_INDEX_EXISTS_ALREADY, XDDY0022, 
+"Index /s exists already.")
+
+DEF_ERR_CODE(XDDY0023_INDEX_DOES_NOT_EXIST, XDDY0023, 
+"Index /s does not exist.")
+
+DEF_ERR_CODE(XDDY0024_INDEX_UNIQUE_VIOLATION, XDDY0024, 
+"The uniqueness property of index /s is violated.")
 
 DEF_ERR_CODE(XDDY0013, XDDY0013, 
 "Multiple calls to create-collection in the same snapshot have the same QName as first parameter.")

@@ -917,21 +917,23 @@ void NodeModifier::accept(parsenode_visitor& v) const
 
 /***************************************************************************//**
   IndexDecl ::= "declare" IndexPropertyList "index" QName
-                "on" IndexDomainExpr "by" IndexKeyList
+                "on" "nodes" IndexDomainExpr "by" IndexKeyList
 
   IndexPropertyList := ("unique" | "non" "unique" |
-                        "ordered" | "unordered" | 
-                        "automatic" | "manual")*
+                        "value" "range" | "value" "equality" | 
+                        "automatically" "maintained" | "manually" "maintained")*
 
   IndexDomainExpr := PathExpr
 
   IndexKeyList := IndexKeySpec+
 
-  IndexKeySpec := PathExpr SingleType OrderModifier
+  IndexKeySpec := PathExpr AtomicType IndexKeyOrderModifier
 
-  SingleType := AtomicType ("?")?
+  AtomicType := QName
+
+  IndexKeyOrderModifier := ("ascending" | "descending")? ("collation" UriLiteral)?
 ********************************************************************************/
-IndexDecl::IndexDecl (
+IndexDecl::IndexDecl(
     const QueryLoc& loc,
     QName* name,
     exprnode* domainExpr,
@@ -1034,9 +1036,13 @@ void IndexKeyList::accept(parsenode_visitor& v) const
 
 
 /***************************************************************************//**
-  IndexKeySpec ::= ExprSingle TypeDeclaration? 
-                              ("empty" ("greatest" | "least"))?
-                              ("collation" UriLiteral)?
+  IndexKeySpec ::= PathExpr "as" AtomicType IndexKeyOrderModifier
+
+  IndexKeyOrderModifier ::= OrderDirSpec? OrderCollationSpec?
+
+  OrderDirSpec ::= "ascending" | "descending"
+
+  OrderCollationSpec ::= "collation" URILiteral
 ********************************************************************************/
 void IndexKeySpec::accept(parsenode_visitor& v) const
 {

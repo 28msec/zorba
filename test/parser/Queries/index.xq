@@ -39,31 +39,4 @@ declare unique value range automatically maintained index foo:bar on nodes xqddf
   by ./@id as xs:string;
 
 
-(: --------------------------------------------------------------------- :)
-declare index foo:bar on nodes xqddf:collection(coll:foo)
-  by ./@id as xs:string ascending empty greatest;
-
-
-(: --------------------------------------------------------------------- :)
-declare index foo:bar on nodes xqddf:collection(coll:foo)
-  by ./@id as xs:string ascending empty least;
-
-
-(: --------------------------------------------------------------------- :)
-declare index foo:bar on nodes xqddf:collection(coll:foo)
-  by ./@id as xs:string ascending;
-
-
-(: --------------------------------------------------------------------- :)
-declare index foo:bar on nodes xqddf:collection(coll:foo)
-  by ./@id as xs:string ascending,
-     ./@id2 as xs:integer descending;
-
-
-(: --------------------------------------------------------------------- :)
-declare index foo:bar on nodes xqddf:collection(coll:foo)
-  by ./@id as xs:string ascending empty least collation "http://foo.com/bar",
-     ./@id2 as xs:integer descending;
-
-
 1

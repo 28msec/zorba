@@ -744,6 +744,7 @@ powerful evil language awhile importeth modern lip froth profession finger opini
 <name>Kawon Unni</name>
 <emailaddress>mailto:Unni@llnl.gov</emailaddress>
 <phone>+0 (866) 58076283</phone>
+<city>Paris</city>
 <watches>
 <watch open_auction="open_auction0"/>
 <watch open_auction="open_auction7"/>
@@ -754,6 +755,7 @@ powerful evil language awhile importeth modern lip froth profession finger opini
 <person id="person3">
 <name>Ewing Andrade</name>
 <emailaddress>mailto:Andrade@fsu.edu</emailaddress>
+<city>Palo Alto</city>
 <profile income="41889.41">
 <interest category="category0"/>
 <interest category="category0"/>
@@ -773,6 +775,7 @@ powerful evil language awhile importeth modern lip froth profession finger opini
 <person id="person4">
 <name>Jamaludin Kleiser</name>
 <emailaddress>mailto:Kleiser@edu.hk</emailaddress>
+<city>Madison</city>
 <phone>+0 (400) 25499686</phone>
 <homepage>http://www.edu.hk/~Kleiser</homepage>
 <profile income="9876.00">
@@ -790,6 +793,7 @@ powerful evil language awhile importeth modern lip froth profession finger opini
 <person id="person5">
 <name>Eliana Ruemmler</name>
 <emailaddress>mailto:Ruemmler@forth.gr</emailaddress>
+<city>San Jose</city>
 <phone>+0 (361) 10427629</phone>
 <homepage>http://www.forth.gr/~Ruemmler</homepage>
 <watches>
@@ -798,6 +802,7 @@ powerful evil language awhile importeth modern lip froth profession finger opini
 <person id="person6">
 <name>Bassem Nagasaki</name>
 <emailaddress>mailto:Nagasaki@panasonic.com</emailaddress>
+<city>Amsterdam</city>
 <phone>+0 (182) 62129440</phone>
 <homepage>http://www.panasonic.com/~Nagasaki</homepage>
 <creditcard>6012 3708 3300 9328</creditcard>
@@ -843,6 +848,7 @@ powerful evil language awhile importeth modern lip froth profession finger opini
 <person id="person9">
 <name>Jarkko Nozawa</name>
 <emailaddress>mailto:Nozawa@concordia.ca</emailaddress>
+<city>Iraklion</city>
 <phone>+0 (835) 5433372</phone>
 <homepage>http://www.concordia.ca/~Nozawa</homepage>
 <creditcard>2447 4672 2532 3021</creditcard>
@@ -936,6 +942,7 @@ powerful evil language awhile importeth modern lip froth profession finger opini
 <person id="person13">
 <name>Martti Halgason</name>
 <emailaddress>mailto:Halgason@bell-labs.com</emailaddress>
+<city>Havana</city>
 <phone>+0 (778) 41220156</phone>
 <profile income="41407.27">
 <interest category="category0"/>
@@ -1009,11 +1016,13 @@ powerful evil language awhile importeth modern lip froth profession finger opini
 <person id="person17">
 <name>Aloys Singleton</name>
 <emailaddress>mailto:Singleton@berkeley.edu</emailaddress>
+<city>Mendocino</city>
 <phone>+0 (735) 97531072</phone>
 </person>
 <person id="person18">
 <name>Maha DuBourdieux</name>
 <emailaddress>mailto:DuBourdieux@clustra.com</emailaddress>
+<city>Arcata</city>
 <phone>+0 (43) 57060411</phone>
 <homepage>http://www.clustra.com/~DuBourdieux</homepage>
 <profile income="32624.17">
@@ -1053,6 +1062,7 @@ powerful evil language awhile importeth modern lip froth profession finger opini
 <person id="person21">
 <name>Yechezkel Calmet</name>
 <emailaddress>mailto:Calmet@yorku.ca</emailaddress>
+<city>La Roche</city>
 <watches>
 <watch open_auction="open_auction3"/>
 <watch open_auction="open_auction9"/>
@@ -1065,6 +1075,7 @@ powerful evil language awhile importeth modern lip froth profession finger opini
 <person id="person22">
 <name>Slavian Usery</name>
 <emailaddress>mailto:Usery@rutgers.edu</emailaddress>
+<city>Marceille</city>
 <creditcard>7501 3122 6462 7866</creditcard>
 <watches>
 </watches>
@@ -1072,6 +1083,7 @@ powerful evil language awhile importeth modern lip froth profession finger opini
 <person id="person23">
 <name>Piere Schiex</name>
 <emailaddress>mailto:Schiex@sfu.ca</emailaddress>
+<city>Ruen</city>
 <homepage>http://www.sfu.ca/~Schiex</homepage>
 <creditcard>1536 3643 2092 5012</creditcard>
 <watches>
@@ -1082,6 +1094,7 @@ powerful evil language awhile importeth modern lip froth profession finger opini
 <person id="person24">
 <name>Shaoyun Morreau</name>
 <emailaddress>mailto:Morreau@ucsb.edu</emailaddress>
+<city>Los Gatos</city>
 <phone>+83 (890) 82752371</phone>
 <creditcard>6926 3703 6920 9765</creditcard>
 </person>

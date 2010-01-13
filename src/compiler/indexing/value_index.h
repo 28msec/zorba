@@ -49,22 +49,23 @@ typedef rchandle<DocIndexer> DocIndexer_t;
   The DECLARE INDEX syntax is the following:
   -------------------------------------------
 
-  IndexDecl ::= "declare" "index" QName
-                          "on" Expr
-                          "by" "(" IndexKeyList ")"
-                          IndexProperties
+  IndexDecl ::= "declare" IndexPropertyList "index" QName
+                "on" "nodes" IndexDomainExpr "by" IndexKeyList
 
-  IndexProperties ::= ("unique" | "non" "unique")? 
-                      ("ordered" | "unordered")?
-                      ("manual" | "automatic)?
+  IndexPropertyList := ("unique" | "non" "unique" |
+                        "value" "range" | "value" "equality" | 
+                        "automatically" "maintained" | "manually" "maintained")*
 
-  IndexKeyList ::= IndexKeySpec (COMMA IndexKeySpec)*
+  IndexDomainExpr := PathExpr
 
-  IndexKeySpec ::= ExprSingle TypeDeclaration? OrderModifier
+  IndexKeyList := IndexKeySpec+
 
-  OrderModifier ::= ("ascending" | "descending")?
-                    ("empty" ("greatest" | "least"))?
-                    ("collation" UriLiteral)?
+  IndexKeySpec := PathExpr AtomicType IndexKeyOrderModifier
+
+  AtomicType := QName
+
+  IndexKeyOrderModifier := ("ascending" | "descending")? ("collation" UriLiteral)?
+
 
   Constraints:
   ------------
@@ -276,7 +277,8 @@ private:
         expr* e,
         std::vector<const store::Item*>& sourceNames,
         std::vector<expr*>& sourceExprs,
-        std::vector<var_expr*>& varExprs);
+        std::vector<var_expr*>& varExprs,
+        expr* dotVar);
 };
 
 

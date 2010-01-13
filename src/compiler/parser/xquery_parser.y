@@ -1758,19 +1758,19 @@ IndexKeyList :
 
 
 IndexKeySpec :
-    PathExpr AS SingleType
+    PathExpr AS AtomicType
     {
       $$ = new IndexKeySpec(LOC(@$),
                             $1,
-                            dynamic_cast<SingleType*>($3),
+                            dynamic_cast<AtomicType*>($3),
                             NULL);
     }
-  | PathExpr AS SingleType OrderModifier
+  | PathExpr AS AtomicType OrderCollationSpec
     {
       $$ = new IndexKeySpec(LOC(@$),
                             $1,
-                            dynamic_cast<SingleType*>($3),
-                            dynamic_cast<OrderModifierPN*>($4));
+                            dynamic_cast<AtomicType*>($3),
+                            dynamic_cast<OrderCollationSpec*>($4));
     }
   ;
 
@@ -2867,8 +2867,7 @@ OrderEmptySpec:
 OrderCollationSpec :
 		COLLATION  URI_LITERAL
 		{
-			$$ = new OrderCollationSpec(LOC (@$),
-								SYMTAB ($2));
+			$$ = new OrderCollationSpec(LOC(@$),	SYMTAB($2));
 		}
 	;
 
@@ -2878,17 +2877,17 @@ OrderCollationSpec :
 QuantifiedExpr :
 		SOME DOLLAR  QVarInDeclList  SATISFIES  ExprSingle
 		{
-			$$ = new QuantifiedExpr(LOC (@$),
-								ParseConstants::quant_some,
-								dynamic_cast<QVarInDeclList*>($3),
-								$5);
+			$$ = new QuantifiedExpr(LOC(@$),
+                              ParseConstants::quant_some,
+                              dynamic_cast<QVarInDeclList*>($3),
+                              $5);
 		}
 	|	EVERY DOLLAR  QVarInDeclList  SATISFIES  ExprSingle
 		{
-			$$ = new QuantifiedExpr(LOC (@$),
-								ParseConstants::quant_every,
-								dynamic_cast<QVarInDeclList*>($3),
-								$5);
+			$$ = new QuantifiedExpr(LOC(@$),
+                              ParseConstants::quant_every,
+                              dynamic_cast<QVarInDeclList*>($3),
+                              $5);
 		}
 	;
 

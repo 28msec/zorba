@@ -377,6 +377,8 @@ void SimpleStore::populateIndex(
   store::Item_t domainItem;
   store::IndexKey* key = NULL;
 
+  IndexImpl* index = static_cast<IndexImpl*>(aIndex.getp());
+
   aSourceIter->open();
 
   try
@@ -393,7 +395,8 @@ void SimpleStore::populateIndex(
         }
       }
       
-      static_cast<IndexImpl*>(aIndex.getp())->insert(key, domainItem);
+      index->insert(key, domainItem);
+
       key = NULL; // ownership of the key obj passes to the index.
     }
   }

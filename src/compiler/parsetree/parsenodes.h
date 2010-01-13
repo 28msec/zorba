@@ -859,7 +859,7 @@ public:
 
 
 /*******************************************************************************
-  [*] DeclPropertyList   ::=   DeclProperty*
+  [*] DeclPropertyList ::= DeclProperty*
 ********************************************************************************/
 class DeclPropertyList : public parsenode
 {
@@ -880,10 +880,11 @@ public:
 
 
 /*******************************************************************************
-  [*] DeclProperty  ::=  ("const" | "append-only" | "queue" | "mutable" | 
-                          "ordered" | "unordered" |
-                          "unique" | "non" "unique" |
-                          "automatic | "manual")
+  [*] DeclProperty ::= ("const" | "append-only" | "queue" | "mutable" | 
+                        "ordered" | "unordered" |
+                        "unique" | "non" "unique" |
+                        "value" "range" | "value" "equality" |
+                        "automatically" "maintained" | "manually" "maintained")
 ********************************************************************************/
 class DeclProperty : public parsenode
 {
@@ -1210,7 +1211,7 @@ protected:
   StaticContextConsts::node_modifier_t theModifier;
 
 public:
-  NodeModifier (
+  NodeModifier(
         const QueryLoc&                      aLoc,
         StaticContextConsts::node_modifier_t aModifier)
     : 
@@ -1226,19 +1227,21 @@ public:
 
 /***************************************************************************//**
   IndexDecl ::= "declare" IndexPropertyList "index" QName
-                "on" IndexDomainExpr "by" IndexKeyList
+                "on" "nodes" IndexDomainExpr "by" IndexKeyList
 
   IndexPropertyList := ("unique" | "non" "unique" |
-                        "ordered" | "unordered" | 
-                        "automatic" | "manual")*
+                        "value" "range" | "value" "equality" | 
+                        "automatically" "maintained" | "manually" "maintained")*
 
   IndexDomainExpr := PathExpr
 
   IndexKeyList := IndexKeySpec+
 
-  IndexKeySpec := PathExpr SingleType OrderModifier
+  IndexKeySpec := PathExpr AtomicType IndexKeyOrderModifier
 
-  SingleType := AtomicType ("?")?
+  AtomicType := QName
+
+  IndexKeyOrderModifier := ("ascending" | "descending")? ("collation" UriLiteral)?
 ********************************************************************************/
 class IndexDecl : public parsenode 
 {
@@ -1296,42 +1299,40 @@ public:
 
 
 /*******************************************************************************
-  IndexKeySpec ::= ExprSingle TypeDeclaration? OrderModifier
+  IndexKeySpec ::= PathExpr "as" AtomicType IndexKeyOrderModifier
 
-  OrderModifier ::= OrderDirSpec? OrderEmptySpec? OrderCollationSpec?
+  IndexKeyOrderModifier ::= OrderDirSpec? OrderCollationSpec?
 
   OrderDirSpec ::= "ascending" | "descending"
-
-  OrderEmptySpec ::= "empty" ("greatest" | "least")
 
   OrderCollationSpec ::= "collation" URILiteral
 ********************************************************************************/
 class IndexKeySpec : public parsenode 
 {
 protected:
-  rchandle<exprnode>        theExpr;
-  rchandle<SingleType>      theType;
-  rchandle<OrderModifierPN> theOrderModifier;
+  rchandle<exprnode>           theExpr;
+  rchandle<AtomicType>         theType;
+  rchandle<OrderCollationSpec> theCollationSpec;
 
 public:
   IndexKeySpec(
     const QueryLoc& loc,
     exprnode* expr,
-    SingleType* type,
-    OrderModifierPN* modifier)
+    AtomicType* type,
+    OrderCollationSpec* collation)
     :
     parsenode(loc),
     theExpr(expr),
     theType(type),
-    theOrderModifier(modifier)
+    theCollationSpec(collation)
   {
   }
 
   const exprnode* getExpr() const { return theExpr.getp(); }
 
-  const SingleType* getType() const { return theType.getp(); }
+  const AtomicType* getType() const { return theType.getp(); }
 
-  const OrderModifierPN* getOrderModifier() const { return theOrderModifier.getp(); }
+  const OrderCollationSpec* getCollationSpec() const { return theCollationSpec.getp(); }
 
   void accept(parsenode_visitor&) const;
 };
