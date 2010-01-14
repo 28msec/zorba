@@ -1223,16 +1223,16 @@ XmlNode* ElementNode::copyInternal(
 
     if (hiddenBaseUriAttr)
     {
-      if (baseUriAttr)
-      {
-        xqpStringStore_t absuri = (parent ? parent->getBaseURI() : NULL);
-        xqpStringStore_t reluri = baseUriAttr->getBaseURI();
-        copyNode->addBaseUriProperty(absuri, reluri);
-      }
-      else if (parent == 0)
+      if (parent == 0)
       {
         xqpStringStore_t absuri = hiddenBaseUriAttr->getStringValue();
         xqpStringStore_t reluri;
+        copyNode->addBaseUriProperty(absuri, reluri);
+      }
+      else if (baseUriAttr)
+      {
+        xqpStringStore_t absuri = (parent ? parent->getBaseURI() : NULL);
+        xqpStringStore_t reluri = baseUriAttr->getBaseURI();
         copyNode->addBaseUriProperty(absuri, reluri);
       }
       else

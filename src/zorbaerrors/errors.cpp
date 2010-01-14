@@ -63,6 +63,8 @@ ZorbaError::ZorbaError(
   theLineNumber(aLineNumber),
   theDebug(false)
 {
+  //+debug
+  //printf("ZorbaError(%s %s: %s %d)\n", theLocalName.c_str(), theDescription, theFileName.c_str(), aLineNumber);
 }
 
 
@@ -93,6 +95,9 @@ ZorbaError::ZorbaError(
     theErrorCode = ErrorMessages::getErrorCodeForName(aErrLocalName.getStore()->c_str());
   else
     theErrorCode = XQP0021_USER_ERROR;
+
+  //+debug
+  //printf("ZorbaError(%s %s: %s %d)\n", theLocalName.c_str(), theDescription, theFileName.c_str(), aLineNumber);
 }
 
 
