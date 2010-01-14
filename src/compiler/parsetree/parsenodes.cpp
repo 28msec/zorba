@@ -946,7 +946,7 @@ IndexDecl::IndexDecl(
   theKey(key),
   theIsUnique(false),
   theIsOrdered(false),
-  theIsAutomatic(false)
+  theIsAutomatic(true)
 {
   if (properties == NULL)
     return;

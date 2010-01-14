@@ -1047,6 +1047,28 @@ void normalize_fo(fo_expr* foExpr)
 
   const function* func = foExpr->get_func();
 
+  if (func->getKind() == FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_RANGE_N &&
+      (n == 0 || (n - 1) % 6 != 0))
+  {
+    const store::Item* qname = NULL;
+
+    if (n > 0)
+      qname = foExpr->get_arg(0)->getQName(sctx_p);
+
+    if (qname != NULL)
+    {
+      ZORBA_ERROR_LOC_PARAM(XDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
+                            foExpr->get_loc(),
+                            qname->getStringValue()->c_str(), "");
+    }
+    else
+    {
+      ZORBA_ERROR_LOC_DESC(XDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
+                           foExpr->get_loc(),
+                           "Invalid number of arguments in index probe");
+    }
+  }
+
   for(ulong i = 0; i < n; ++i) 
   {
     expr::expr_t argExpr = foExpr->get_arg(i, true);
@@ -1058,7 +1080,7 @@ void normalize_fo(fo_expr* foExpr)
       if (i == 0)
         paramType = sign[i];
       else
-        paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
+        paramType = theRTM.ANY_ATOMIC_TYPE_ONE;
     }
     else if (func->getKind() == FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_RANGE_N)
     {
@@ -1067,7 +1089,7 @@ void normalize_fo(fo_expr* foExpr)
       else if (i % 6 == 1 || i % 6 == 2)
         paramType = theRTM.ANY_ATOMIC_TYPE_QUESTION;
       else
-        paramType = theRTM.BOOLEAN_TYPE_QUESTION;
+        paramType = theRTM.BOOLEAN_TYPE_ONE;
     }
     else
     {
@@ -7533,7 +7555,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     arguments.push_back(argExpr);
   }
 
-  int sz = arguments.size();
+  ulong numArgs = arguments.size();
 
   rchandle<QName> qn_h = v.get_fname();
   string prefix = qn_h->get_prefix();
@@ -7545,19 +7567,19 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   // Some special processing is required for certain "fn" functions
   if (fn_ns->byteEqual(XQUERY_FN_NS)) 
   {
-    if (fname == "position" && sz == 0)  
+    if (fname == "position" && numArgs == 0)  
     {
       nodestack.push(lookup_ctx_var(DOT_POS_VARNAME, loc).getp());
       return;
     }
-    else if (fname == "last" && sz == 0)
+    else if (fname == "last" && numArgs == 0)
     {
       nodestack.push(lookup_ctx_var(LAST_IDX_VARNAME, loc).getp());
       return;
     }
     else if (fname == "number") 
     {
-      switch (sz) 
+      switch (numArgs) 
       {
       case 0:
       {
@@ -7567,7 +7589,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       case 1:
         break;
       default:
-        ZORBA_ERROR_LOC_PARAM( XPST0017, loc, "fn:number", sz );
+        ZORBA_ERROR_LOC_PARAM(XPST0017, loc, "fn:number", numArgs);
       }
 
       varref_t tv = tempvar(loc, var_expr::let_var);
@@ -7591,14 +7613,15 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                                          ret));
       return;
     }
-    else if (sz == 0 && xquery_fns_def_dot.find(fname) != xquery_fns_def_dot.end()) 
+    else if (numArgs == 0 &&
+             xquery_fns_def_dot.find(fname) != xquery_fns_def_dot.end()) 
     {
       arguments.push_back(DOT_REF);
     }
     else if (fname == "static-base-uri") 
     {
-      if (sz != 0)
-        ZORBA_ERROR_LOC_PARAM( XPST0017, loc, "fn:static-base-uri", sz );
+      if (numArgs != 0)
+        ZORBA_ERROR_LOC_PARAM(XPST0017, loc, "fn:static-base-uri", numArgs);
 
       xqp_string baseuri = sctx_p->final_baseuri ();
       if (baseuri.empty())
@@ -7612,7 +7635,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     }
     else if (fname == "id")
     {
-      if (sz == 1)
+      if (numArgs == 1)
       {
         arguments.insert(arguments.begin(), DOT_REF);
       }
@@ -7647,30 +7670,30 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
       arguments[1] = flworExpr;
     }
-    else if (sz == 1 && fname == "idref")
+    else if (numArgs == 1 && fname == "idref")
     {
       arguments.insert(arguments.begin(), DOT_REF);
     } 
-    else if (sz == 1 && fname == "lang") 
+    else if (numArgs == 1 && fname == "lang") 
     {
       arguments.insert(arguments.begin(), DOT_REF);
     } 
-    else if (sz == 1 && fname == "resolve-uri") 
+    else if (numArgs == 1 && fname == "resolve-uri") 
     {
       arguments.insert(arguments.begin(), new const_expr(sctxid(), loc, sctx_p->final_baseuri()));
     }
-    else if (sz == 1 && fname == "parse") 
+    else if (numArgs == 1 && fname == "parse") 
     {
       arguments.insert(arguments.begin(), new const_expr(sctxid(), loc, sctx_p->final_baseuri()));
     }
     else if (fname == "concat")
     {
-      if (sz < 2)
-        ZORBA_ERROR_LOC_PARAM (XPST0017, loc, "concat", to_string (sz));
+      if (numArgs < 2)
+        ZORBA_ERROR_LOC_PARAM (XPST0017, loc, "concat", to_string(numArgs));
     }
     else if (fname == "doc")
     {
-      if (sz > 0) 
+      if (numArgs > 0) 
       {
         expr_t  doc_uri = arguments[0];
         //validate uri
@@ -7697,38 +7720,11 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       }
     }
   }
-#if 0
-  // normalization of DDL collection functions
-  else if (fn_ns->byteEqual(ZORBA_DDL_FN_NS))
-  {
-    function* f = LOOKUP_FN(prefix, fname, sz);
-    FunctionConsts::FunctionKind fkind = f->getKind();
 
-    switch (fkind)
-    {
-    case FunctionConsts::FN_ZORBA_DDL_CREATE_COLLECTION_2:
-    case FunctionConsts::FN_ZORBA_DDL_INSERT_NODES_2:
-    case FunctionConsts::FN_ZORBA_DDL_INSERT_NODES_FIRST_2:
-    case FunctionConsts::FN_ZORBA_DDL_INSERT_NODES_LAST_2:
-    {
-      arguments[0] = new fo_expr(sctxid(), loc, op_enclosed, arguments[0]);
-      break;
-    }
-    case FunctionConsts::FN_ZORBA_DDL_INSERT_NODES_BEFORE_3:
-    case FunctionConsts::FN_ZORBA_DDL_INSERT_NODES_AFTER_3:
-    {
-      arguments[0] = new fo_expr(sctxid(), loc, op_enclosed, arguments[0]);
-      break;
-    }
-    default:
-      break;
-    }
-  }
-#endif
   //  Some special processing is required for certain "zorba" functions
   else if (fn_ns->byteEqual(ZORBA_OP_NS)) 
   {
-    if (fname == "inline-xml" && sz == 1) 
+    if (fname == "inline-xml" && numArgs == 1) 
     {
       nodestack.push(new eval_expr(sctxid(),
                                    loc,
@@ -7740,7 +7736,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     }
   }
 
-  sz = arguments.size();  // recompute size
+  numArgs = arguments.size();  // recompute size
 
   // Check if this is a call to a builtin constructor function
   xqtref_t type = CTXTS->create_named_type(sctx_p->lookup_elem_qname(prefix, fname, loc),
@@ -7748,11 +7744,11 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
   if (type != NULL) 
   {
-    if (sz != 1 ||
+    if (numArgs != 1 ||
         TypeOps::is_equal(*type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION) ||
         TypeOps::is_equal(*type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
     {
-      ZORBA_ERROR_LOC_PARAM(XPST0017, loc, prefix + ":" + fname, sz);
+      ZORBA_ERROR_LOC_PARAM(XPST0017, loc, prefix + ":" + fname, numArgs);
     }
 
     nodestack.push(create_cast_expr(loc, arguments[0], type, true));
@@ -7761,13 +7757,13 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   // It is not a builtin constructor function
   else 
   {
-    function* f = LOOKUP_FN(prefix, fname, sz);
+    function* f = LOOKUP_FN(prefix, fname, numArgs);
     if (f == NULL)
     {
       ZORBA_ERROR_LOC_PARAM(XPST0017,
                             loc,
                             (prefix.empty () ? prefix : (prefix + ":")) + fname,
-                            to_string(sz));
+                            to_string(numArgs));
     }
 
     // If this is a udf that is invoked from another udf, mark that other udf
@@ -7788,6 +7784,17 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
     normalize_fo(foExpr);
 
+    if (f->getKind() == FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_RANGE_N ||
+        f->getKind() == FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_POINT_N)
+    {
+      FunctionConsts::FunctionKind fkind = FunctionConsts::OP_SORT_NODES_ASC_1;
+
+      foExpr = new fo_expr(sctxid(),
+                           foExpr->get_loc(),
+                           BuiltinFunctionLibrary::getFunction(fkind),
+                           foExpr);
+    }
+
     nodestack.push(foExpr.getp());
   }
 }
@@ -7796,15 +7803,15 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 /*******************************************************************************
   [116a] ArgList := ExprSingle ("," ExprSingle)*
 ********************************************************************************/
-void *begin_visit (const ArgList& v) 
+void* begin_visit(const ArgList& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const ArgList& v, void* /*visit_state*/) 
+void end_visit(const ArgList& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
@@ -7826,17 +7833,18 @@ void end_visit (const ArgList& v, void* /*visit_state*/)
                                 ("/>" |
                                  (">" DirElemContentList? "</" QName S? ">")) 
 ********************************************************************************/
-void *begin_visit (const DirElemConstructor& v) 
+void* begin_visit(const DirElemConstructor& v) 
 {
   TRACE_VISIT();
+
   push_scope();
   push_elem_scope();
   return no_state;
 }
 
-void end_visit (const DirElemConstructor& v, void* /*visit_state*/) 
+void end_visit(const DirElemConstructor& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
   expr_t nameExpr;
   expr_t attrExpr;

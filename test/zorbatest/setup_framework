@@ -19,6 +19,6 @@ if which cygpath &>/dev/null; then
   JARS=`find $sax/ -name '*.jar'`; echo jars $JARS
   echo 'exec java -cp '"'"`for f in $JARS; do cygpath -w $f; done | tr '\n' ';'`."'"' net.sf.saxon.Query $*' >>xquery
 else
-  echo 'exec java -cp '`find $sax/ -name *.jar | tr '\n' :`.' net.sf.saxon.Query $*' >>xquery
+  echo 'exec java -cp '`find $sax/ -name *.jar | tr '\n' :`.' net.sf.saxon.Query -q:$*' >>xquery
 fi
 chmod u+x xquery

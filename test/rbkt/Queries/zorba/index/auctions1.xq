@@ -20,7 +20,7 @@ return <person id = "{$x/@id}">{$x/name}</person>,
 
 ",
 
-for $x in auctions:probe-point-city(xs:QName("auctions:PersonCity"), ())
+for $x in auctions:probe-point-city(xs:QName("auctions:PersonCity"), "X")
 return <person id = "{$x/@id}">{$x//city}</person>,
 
 "

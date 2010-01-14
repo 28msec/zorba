@@ -274,7 +274,8 @@ bool IndexEntryBuilderIterator::nextImpl(
 void IndexPointProbeIteratorState::reset(PlanState& state)
 {
   PlanIteratorState::reset(state);
-  if (theIterator != NULL) {
+  if (theIterator != NULL) 
+  {
     theIterator->close();
   }
 }
@@ -284,9 +285,9 @@ bool IndexPointProbeIterator::nextImpl(store::Item_t& result, PlanState& planSta
 {
   store::Item_t qnameItem;
   store::Item_t keyItem;
-  ValueIndex_t zorbaIndex;
+  ValueIndex_t indexDecl;
   store::IndexPointCondition_t cond;
-  ulong numChildren;
+  ulong numChildren = theChildren.size();
   ulong i;
   bool status;
 
@@ -300,13 +301,19 @@ bool IndexPointProbeIterator::nextImpl(store::Item_t& result, PlanState& planSta
   {
     state->theQname = qnameItem;
 
-    if ((zorbaIndex = theSctx->lookup_index(qnameItem)) == NULL)
+    if ((indexDecl = theSctx->lookup_index(qnameItem)) == NULL)
     {
       ZORBA_ERROR_LOC_PARAM(XDDY0021_INDEX_IS_NOT_DECLARED, loc,
                             qnameItem->getStringValue()->c_str(), "");
     }
 
-    state->theIndex = (zorbaIndex->isTemp() ?
+    if (indexDecl->getKeyExpressions().size() != numChildren-1)
+    {
+      ZORBA_ERROR_LOC_PARAM(XDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+                            qnameItem->getStringValue()->c_str(), "");
+    }
+
+    state->theIndex = (indexDecl->isTemp() ?
                        planState.dctx()->getIndex(qnameItem) :
                        GENV_STORE.getIndex(state->theQname));
 
@@ -322,13 +329,14 @@ bool IndexPointProbeIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
   cond = state->theIndex->createPointCondition();
 
-  numChildren = theChildren.size();
-  for(i = 1; i < numChildren; ++i) 
+  for (i = 1; i < numChildren; ++i) 
   {
     if (!consumeNext(keyItem, theChildren[i], planState)) 
     {
+      // We may reach here in the case of internally-generated hashjoins
       break;
     }
+
     cond->pushItem(keyItem);
   }
 
@@ -353,7 +361,8 @@ bool IndexPointProbeIterator::nextImpl(store::Item_t& result, PlanState& planSta
 void IndexRangeProbeIteratorState::reset(PlanState& state)
 {
   PlanIteratorState::reset(state);
-  if (theIterator != NULL) {
+  if (theIterator != NULL) 
+  {
     theIterator->close();
   }
 }
@@ -362,9 +371,9 @@ void IndexRangeProbeIteratorState::reset(PlanState& state)
 bool IndexRangeProbeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t qname;
-  ValueIndex_t zorbaIndex;
+  ValueIndex_t indexDecl;
   store::IndexBoxCondition_t cond;
-  int numChildren;
+  ulong numChildren = theChildren.size();
   bool status;
  
   IndexRangeProbeIteratorState* state;
@@ -377,13 +386,31 @@ bool IndexRangeProbeIterator::nextImpl(store::Item_t& result, PlanState& planSta
   {
     state->theQname = qname;
 
-    if ((zorbaIndex = theSctx->lookup_index(qname)) == NULL)
+    if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
     {
       ZORBA_ERROR_LOC_PARAM(XDDY0021_INDEX_IS_NOT_DECLARED, loc,
                             qname->getStringValue()->c_str(), "");
     }
 
-    state->theIndex = (zorbaIndex->isTemp() ?
+    if (indexDecl->getMethod() != ValueIndex::TREE)
+    {
+      ZORBA_ERROR_LOC_PARAM(XDDY0026_INDEX_RANGE_PROBE_NOT_ALLOWED, loc,
+                            qname->getStringValue()->c_str(), "");
+    }
+
+    if ((numChildren-1) % 6 != 0)
+    {
+      ZORBA_ERROR_LOC_PARAM(XDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+                            qname->getStringValue()->c_str(), "");
+    }
+
+    if (indexDecl->getKeyExpressions().size() * 6 > numChildren-1)
+    {
+      ZORBA_ERROR_LOC_PARAM(XDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+                            qname->getStringValue()->c_str(), "");
+    }
+
+    state->theIndex = (indexDecl->isTemp() ?
                        planState.dctx()->getIndex(qname) :
                        GENV_STORE.getIndex(state->theQname));
 
@@ -399,8 +426,7 @@ bool IndexRangeProbeIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
   cond = state->theIndex->createBoxCondition();
 
-  numChildren = theChildren.size();
-  for(int i = 1; i < numChildren; i += 6) 
+  for(ulong i = 1; i < numChildren; i += 6) 
   {
     store::Item_t tempLeft;
     store::Item_t tempRight;
@@ -414,22 +440,23 @@ bool IndexRangeProbeIterator::nextImpl(store::Item_t& result, PlanState& planSta
  
     if (!consumeNext(tempRight, theChildren[i + 1], planState))
       tempRight = NULL;
+
     if (!consumeNext(tempHaveLeft, theChildren[i + 2], planState))
-      tempHaveLeft = NULL;
+      ZORBA_ASSERT(false);
 
     if (!consumeNext(tempHaveRight, theChildren[i + 3], planState))
-      tempHaveRight = NULL;
+     ZORBA_ASSERT(false);
 
     if (!consumeNext(tempInclLeft, theChildren[i + 4], planState))
-      tempInclLeft = NULL;
+     ZORBA_ASSERT(false);
  
     if (!consumeNext(tempInclRight, theChildren[i + 5], planState))
-      tempInclRight = NULL;
+     ZORBA_ASSERT(false);
 
-    bool haveLeft = tempHaveLeft != NULL && tempHaveLeft->getBooleanValue();
-    bool haveRight = tempHaveRight != NULL && tempHaveRight->getBooleanValue();
-    bool inclLeft = tempInclLeft != NULL && tempInclLeft->getBooleanValue();
-    bool inclRight = tempInclRight != NULL && tempInclRight->getBooleanValue();
+    bool haveLeft = tempHaveLeft->getBooleanValue();
+    bool haveRight = tempHaveRight->getBooleanValue();
+    bool inclLeft = tempInclLeft->getBooleanValue();
+    bool inclRight = tempInclRight->getBooleanValue();
 
     cond->pushRange(tempLeft, tempRight, haveLeft, haveRight, inclLeft, inclRight);
   }

@@ -766,6 +766,12 @@ DEF_ERR_CODE(XDDY0023_INDEX_DOES_NOT_EXIST, XDDY0023,
 DEF_ERR_CODE(XDDY0024_INDEX_UNIQUE_VIOLATION, XDDY0024, 
 "The uniqueness property of index /s is violated.")
 
+DEF_ERR_CODE(XDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, XDDY0025,
+"Invalid number of arguments in probe of index /s.")
+
+DEF_ERR_CODE(XDDY0026_INDEX_RANGE_PROBE_NOT_ALLOWED, XDDY0026,
+"Index /s does not support range probes.")
+
 DEF_ERR_CODE(XDDY0013, XDDY0013, 
 "Multiple calls to create-collection in the same snapshot have the same QName as first parameter.")
 
