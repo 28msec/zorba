@@ -1262,7 +1262,7 @@ store::Iterator_t static_context::list_index_names() const
 
   integrity constraint management
 
-********************************************************************************/
+*******************************************************************************/
 void static_context::bind_ic(
     const store::Item* qname,
     ValueIC_t& vic,
@@ -1273,7 +1273,7 @@ void static_context::bind_ic(
 
   if (!theICMap->insert((store::Item*)qname, vic))
   {
-    ZORBA_ERROR_LOC_PARAM(XQP0048_IC_IS_ALREADY_DECLARED, loc,
+    ZORBA_ERROR_LOC_PARAM(XDST0041_IC_IS_ALREADY_DECLARED, loc,
                           qname->getStringValue(),  "");
   }
 }
@@ -1656,7 +1656,7 @@ bool static_context::import_module(const static_context* module, const QueryLoc&
 
       if (!theICMap->insert((store::Item*)pair.first, pair.second))
       {
-        ZORBA_ERROR_LOC_PARAM(XQP0048_IC_IS_ALREADY_DECLARED, loc,
+        ZORBA_ERROR_LOC_PARAM(XDST0041_IC_IS_ALREADY_DECLARED, loc,
                               pair.first->getStringValue()->c_str(), "");
       }
     }

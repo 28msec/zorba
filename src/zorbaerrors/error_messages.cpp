@@ -311,39 +311,6 @@ DEF_ERR_CODE(XQP0035_MULTI_VALUED_INDEX_KEY, XQP0035,
              "An index key has multiple values.")
 
 
-DEF_ERR_CODE(XQP0043_IC_DOES_NOT_EXIST, XQP0043,
-             "An integrity constraint with URI /s does not exists.")
-
-DEF_ERR_CODE(XQP0044_IC_ALREADY_EXISTS, XQP0044,
-             "An integrity constraint with URI /s exists already.")
-
-DEF_ERR_CODE(XQP0045_MULTI_VALUED_IC_KEY, XQP0045,
-             "An integrity constraint key has multiple values.")
-
-DEF_ERR_CODE(XQP0046_NON_ATOMIC_IC_KEY, XQP0046,
-             "An integrity constraint key has a non-atomic value.")
-
-DEF_ERR_CODE(XQP0047_IC_IS_NOT_DECLARED, XQP0047,
-             "An integrity constraint with URI /s is not declared.")
-
-DEF_ERR_CODE(XQP0048_IC_IS_ALREADY_DECLARED, XQP0048,
-             "An integrity constraint with URI /s is declared already.")
-
-DEF_ERR_CODE(XQP0049_IC_IN_NON_DATA_MODULE, XQP0049,
-             "The integrity constraint with URI /s is declared in a non data module.")
-
-DEF_ERR_CODE(XQP0050_IC_HAS_FREE_VARS, XQP0050,
-             "The integrity constraint with URI /s has free variables in its definition.")
-
-DEF_ERR_CODE(XQP0051_IC_HAS_INVALID_DATA_SOURCE, XQP0051,
-             "The integrity constraint with URI /s references a data source that is not a collection among the statically known collections.")
-
-DEF_ERR_CODE(XQP0052_IC_NOT_DETERMINISTIC, XQP0052,
-             "The integrity constraint with URI /s has a non deterministic definition.")
-
-DEF_ERR_CODE(XQP0053_IC_NOT_MET, XQP0053,
-             "Conditions for integrity constraint /s weren't met.")
-
 
 //
 // XPDY
@@ -688,6 +655,30 @@ DEF_ERR_CODE(XDST0032_INDEX_REFERENCES_CTX_ITEM, XDST0032,
 DEF_ERR_CODE(XDST0033_INDEX_NON_SIMPLE_EXPR, XDST0033,
 "The declaration of index /s contains a non-simple expression.")
 
+
+DEF_ERR_CODE(XDST0041_IC_IS_ALREADY_DECLARED, XQP0041,
+             "An integrity constraint with URI /s is declared already.")
+
+DEF_ERR_CODE(XDST0042_MULTI_VALUED_IC_KEY, XDST0042,
+             "An integrity constraint key has multiple values.")
+
+DEF_ERR_CODE(XDST0043_NON_ATOMIC_IC_KEY, XQP0043,
+             "An integrity constraint key has a non-atomic value.")
+
+DEF_ERR_CODE(XDST0044_IC_DECL_IN_MAIN_MODULE, XDST0045,
+             "The integrity constraint /s cannot be declared in a main module.")
+
+DEF_ERR_CODE(XDST0045_IC_HAS_FREE_VARS, XDST0046,
+             "The integrity constraint with URI /s has free variables in its definition.")
+
+DEF_ERR_CODE(XDST0046_IC_HAS_INVALID_DATA_SOURCE, XDST0047,
+             "The integrity constraint with URI /s references a data source that is not a collection among the statically known collections.")
+
+DEF_ERR_CODE(XDST0047_IC_NOT_DETERMINISTIC, XDST0048,
+             "The integrity constraint with URI /s has a non deterministic definition.")
+
+
+
 //
 // XQuery Data Definition Facility - Type Errors
 //
@@ -771,6 +762,18 @@ DEF_ERR_CODE(XDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, XDDY0025,
 
 DEF_ERR_CODE(XDDY0026_INDEX_RANGE_PROBE_NOT_ALLOWED, XDDY0026,
 "Index /s does not support range probes.")
+
+
+DEF_ERR_CODE(XDDY0031_IC_IS_NOT_DECLARED, XDDY0031,
+             "An integrity constraint with URI /s is not declared.")
+
+DEF_ERR_CODE(XDDY0032_IC_IS_NOT_ACTIVATED, XDDY0032,
+             "An integrity constraint with URI /s is not declared.")
+
+DEF_ERR_CODE(XDDY0033_IC_NOT_MET, XQP0032,
+             "Conditions for integrity constraint /s were not met on collection /s.")
+
+
 
 DEF_ERR_CODE(XDDY0013, XDDY0013, 
 "Multiple calls to create-collection in the same snapshot have the same QName as first parameter.")

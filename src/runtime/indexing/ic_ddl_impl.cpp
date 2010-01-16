@@ -55,34 +55,29 @@ bool ActivateICIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
   if ((vic = theSctx->lookup_ic(qname)) == NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(XQP0047_IC_IS_NOT_DECLARED, loc,
+    ZORBA_ERROR_LOC_PARAM(XDDY0031_IC_IS_NOT_DECLARED, loc,
                           qname->getStringValue()->c_str(), "");
   }
 
-  if (GENV_STORE.getIC(qname) != NULL)
+  if (GENV_STORE.getIC(qname) == NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(XQP0044_IC_ALREADY_EXISTS, loc,
-                          qname->getStringValue()->c_str(), "");
+    switch ( vic->getICKind() )
+    {
+    case store::IC::ic_collection:
+      dctx->activateIC(vic->getICName(), vic->getCollectionName());
+      break;
+      
+    case store::IC::ic_foreignkey:
+      dctx->activateForeignKeyIC(vic->getICName(), 
+                                 vic->getToCollectionName(),
+                                 vic->getFromCollectionName());
+      break;
+      
+    default:
+      ZORBA_ASSERT(false);
+      break;
+    }
   }
-
-  
-  switch ( vic->getICKind() )
-  {
-  case store::IC::ic_collection:
-    dctx->activateIC(vic->getICName(), vic->getCollectionName());
-    break;
-
-  case store::IC::ic_foreignkey:
-    dctx->activateForeignKeyIC(vic->getICName(), 
-                               vic->getToCollectionName(),
-                               vic->getFromCollectionName());
-    break;
-
-  default:
-    ZORBA_ASSERT(false);
-    break;
-  }
-
 
   STACK_PUSH(true, state);
 
@@ -107,13 +102,13 @@ bool DeactivateICIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
   if (theSctx->lookup_ic(qname) == NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(XQP0047_IC_IS_NOT_DECLARED, loc,
+    ZORBA_ERROR_LOC_PARAM(XDDY0031_IC_IS_NOT_DECLARED, loc,
                           qname->getStringValue()->c_str(), "");
   }
 
   if (GENV_STORE.getIC(qname) == NULL)
   {
-    ZORBA_ERROR_LOC_PARAM(XQP0043_IC_DOES_NOT_EXIST, loc,
+    ZORBA_ERROR_LOC_PARAM(XDDY0032_IC_IS_NOT_ACTIVATED, loc,
                           qname->getStringValue()->c_str(), "");
   } 
 
@@ -146,7 +141,7 @@ bool CheckICIterator::nextImpl(store::Item_t& result, PlanState& planState)
     
     if ( vic == NULL)
     {
-      ZORBA_ERROR_LOC_PARAM(XQP0047_IC_IS_NOT_DECLARED, loc,
+      ZORBA_ERROR_LOC_PARAM(XDDY0031_IC_IS_NOT_DECLARED, loc,
                             qname->getStringValue()->c_str(), "");
     }        
     

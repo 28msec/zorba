@@ -81,10 +81,9 @@ std::string ValueIC::toString()
 
 
 /*******************************************************************************
-********************************************************************************/
-bool ICCheckerImpl::check(const store::Item* collName)
+*******************************************************************************/
+void ICCheckerImpl::check(const store::Item* collName)
 {
-  bool icConditionHolds = true;
   store::Iterator_t activeICNames = theDctx->listActiveICNames();
 
   store::Item_t activeICName;
@@ -104,45 +103,55 @@ bool ICCheckerImpl::check(const store::Item* collName)
     switch ( ic->getICKind() )
     {
     case store::IC::ic_collection:
-      icCollName = ic->getCollectionName();
+      actualCheck( collName, ic->getCollectionName(), ic->getICName() );
       break;
 
     case store::IC::ic_foreignkey:
-      icCollName = ic->getToCollectionName();
+      actualCheck( collName, ic->getFromCollectionName(), ic->getICName() );
+      actualCheck( collName, ic->getToCollectionName(), ic->getICName() );
       break;
 
     default:
       ZORBA_ASSERT(false);
     }
-
-    if ( !collName->equals(icCollName) )
-      // if this ic doesn't have a dependency on current collection
-      // skip it
-      continue;
-
-    std::cout << "ic check : " << ic->getICName()->getLocalName()->str() <<
-      "@" << ic->getICName()->getNamespace()->str() << 
-      "  coll: " << collName->getLocalName()->str() << " @ " << 
-      collName->getNamespace()->str() << std::endl; std::cout.flush(); 
-
-    ValueIC* vic = theSctx->lookup_ic(activeICName);
-
-    store::Item_t partialRes;
-    store::Iterator* iter = vic->getIterator();
-  
-    iter->open();
-    iter->next(partialRes);
-    iter->close(); 
-  
-    icConditionHolds = partialRes->getBooleanValue();
-    std::cout << "ic check : result = " << (icConditionHolds ? "true" : "false")
-              << std::endl; std::cout.flush(); 
   }
 
   activeICNames->close();
-  
-  return icConditionHolds;
 }
+
+void ICCheckerImpl::actualCheck(const store::Item* collName, 
+                                const store::Item* icCollName,
+                                const store::Item* icName)
+{
+  if ( collName->equals(icCollName) )
+  {
+    // if this ic has a dependency on current collection
+    
+    //std::cout << "ic check : " << icName->getStringValue() <<
+    //"  coll: " << collName->getStringValue() << std::endl; std::cout.flush(); 
+    
+    ValueIC* vic = theSctx->lookup_ic(icName);
+    
+    store::Item_t partialRes;
+    store::Iterator* iter = vic->getIterator();
+    
+    iter->open();
+    iter->next(partialRes);
+    iter->close(); 
+    
+    bool icConditionHolds = partialRes->getBooleanValue();
+    //std::cout << "ic check : result = " 
+    //          << (icConditionHolds ? "true" : "false")
+    //          << std::endl; std::cout.flush(); 
+    
+    if ( !icConditionHolds )
+    {
+      ZORBA_ERROR_PARAM(XDDY0033_IC_NOT_MET, 
+                        icName->getStringValue(),
+                        collName->getStringValue());
+    }
+  }
+} 
 
 }
 /* vim:set ts=2 sw=2: */

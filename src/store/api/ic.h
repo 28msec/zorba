@@ -61,7 +61,7 @@ public:
 class ICChecker
 {
 public:
-  virtual bool check(const Item* collName) = 0;
+  virtual void check(const Item* collName) = 0;
 };
 
 

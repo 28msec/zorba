@@ -400,7 +400,7 @@ public:
   // integrity constraints related
   void setICChecker(store::ICChecker* icChecker);
 
-  bool checkIC(const store::Item* collName);
+  void checkIC(const store::Item* collName);
 
 
 protected:

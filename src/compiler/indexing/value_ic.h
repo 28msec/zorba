@@ -123,7 +123,6 @@ public:
 
   std::string toString();
 
-private:
 };
 
 typedef rchandle<ValueIC> ValueIC_t;
@@ -146,7 +145,13 @@ public:
 
   ~ICCheckerImpl() {}
 
-  bool check(const store::Item* collName);
+  void check(const store::Item* collName);
+
+private:
+  void actualCheck(const store::Item* collName, 
+                   const store::Item* icCollName,
+                   const store::Item* icName);
+
 };
 
 

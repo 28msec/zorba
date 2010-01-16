@@ -1299,9 +1299,9 @@ void PULImpl::setICChecker(store::ICChecker* icChecker)
 /*******************************************************************************
 
 ********************************************************************************/
-bool PULImpl::checkIC(const store::Item* collName)
+void PULImpl::checkIC(const store::Item* collName)
 {
-  return theICChecker->check(collName);
+  theICChecker->check(collName);
 }
 
 
@@ -1341,10 +1341,10 @@ void PULImpl::applyUpdates()
       {
         const store::Item* collName = pul->theCollection->getName();
 
-        if ( collName && theICChecker && !checkIC(collName) )
+        if ( collName && theICChecker )
         {
-          ZORBA_ERROR_DESC(XQP0053_IC_NOT_MET, 
-                           collName->getLocalName()->c_str());
+          // throws error if IC not met
+          checkIC(collName);
         }
       }
     }

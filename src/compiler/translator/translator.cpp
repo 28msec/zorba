@@ -3393,12 +3393,10 @@ void* begin_visit(const IntegrityConstraintDecl& v)
 {
   TRACE_VISIT();
 
-  const QName* qname = v.getName();
-  
   if (!inLibraryModule())
   {
-    ZORBA_ERROR_LOC_PARAM(XQP0049_IC_IN_NON_DATA_MODULE, v.get_location(), 
-                          qname->get_qname(), "");
+    ZORBA_ERROR_LOC_PARAM(XDST0044_IC_DECL_IN_MAIN_MODULE, v.get_location(), 
+                          v.getName()->get_qname(), "");
   }
 
   switch( v.getICKind() )
@@ -3720,7 +3718,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
           1);
       ZORBA_ASSERT(fromFnCollection != NULL);
       std::vector<expr_t> fromArgColl;      
-      toArgColl.push_back(fromQnameExpr.getp());
+      fromArgColl.push_back(fromQnameExpr.getp());
       fo_expr_t fromCollExpr = new fo_expr(sctxid(), loc, fromFnCollection, 
                                            fromArgColl);
 
@@ -3942,11 +3940,11 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
   case IntegrityConstraintDecl::foreign_key:
     {      
       //////  Get data from stack
-      // $x//sale/empid
-      expr_t fromKeyExpr = pop_nodestack();
-      
       // $y/id
       expr_t toKeyExpr = pop_nodestack();
+      
+      // $x//sale/empid
+      expr_t fromKeyExpr = pop_nodestack();
       
       // result expr
       flwor_expr_t evFlworExpr = 
