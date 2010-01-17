@@ -51,11 +51,17 @@
   as an arg to the SimpleStore::createIndex() method. 
     </zorba:description>
 
-    <zorba:function isUpdating="true" requiresDynamicContext="true"> 
+    <zorba:function> 
       <zorba:signature localname="create-index" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
+
+      <zorba:methods>
+        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
     </zorba:function>
 
 </zorba:iterator>
@@ -75,11 +81,18 @@
   and removes the index entry from the dynamic context. 
     </zorba:description>
 
-    <zorba:function isUpdating="true" requiresDynamicContext="true"> 
+    <zorba:function>
+
       <zorba:signature localname="delete-index" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
+
+      <zorba:methods>
+        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
     </zorba:function>
 
 </zorba:iterator>
@@ -114,12 +127,17 @@
         <zorba:parameter type="const store::Item_t" name="aName"/>
     </zorba:constructor>
 
-    <zorba:function requiresDynamicContext="true"
-                    generateCodegen="false"> 
+    <zorba:function generateCodegen="false"> 
+
       <zorba:signature localname="create-internal-index" prefix="op">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
     </zorba:function>
 
 </zorba:iterator>
@@ -139,11 +157,18 @@
   rebuilds the index the same way as the create-index() function.
     </zorba:description>
 
-    <zorba:function isUpdating="true" requiresDynamicContext="true">
+    <zorba:function>
+
       <zorba:signature localname="refresh-index" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
+
+      <zorba:methods>
+        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
     </zorba:function>
 
 </zorba:iterator>
@@ -174,12 +199,18 @@
                     brief="the current child"/>
     </zorba:state>
 
-    <zorba:function requiresDynamicContext="true">
+    <zorba:function>
+
       <zorba:signature localname="index-entry-builder" prefix="op">
         <zorba:param>node()</zorba:param>
         <zorba:param>true</zorba:param> <!-- variadic function -->
         <zorba:output>item()*</zorba:output>
       </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
     </zorba:function>
 
 </zorba:iterator>
@@ -209,13 +240,17 @@
                     brief="the index probe iterator"/>
     </zorba:state>
 
-    <zorba:function requiresDynamicContext="true">
+    <zorba:function>
       <zorba:signature localname="probe-index-point" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName()</zorba:param>
         <zorba:param>true</zorba:param> <!-- variadic function -->
         <zorba:output>node()*</zorba:output>
       </zorba:signature>
-      <zorba:annotation name="producesDistinctNodes">YES</zorba:annotation>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:producesDistinctNodes returnValue="YES"/>
+      </zorba:methods>
     </zorba:function>
 
 </zorba:iterator>
@@ -255,13 +290,18 @@
                     brief="the index probe iterator"/>
     </zorba:state>
 
-    <zorba:function requiresDynamicContext="true">
+    <zorba:function>
       <zorba:signature localname="probe-index-range" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName()</zorba:param>
         <zorba:param>true</zorba:param> <!-- variadic function -->
         <zorba:output>node()*</zorba:output>
       </zorba:signature>
-      <zorba:annotation name="producesDistinctNodes">YES</zorba:annotation>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:producesDistinctNodes returnValue="YES"/>
+      </zorba:methods>
+
     </zorba:function>
 
 </zorba:iterator>

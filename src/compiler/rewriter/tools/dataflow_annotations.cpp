@@ -278,70 +278,62 @@ void DataflowAnnotationsComputer::compute_fo_expr(fo_expr* e)
   if (!generic_compute(e)) 
   {
     const function* f = e->get_func();
-#if 0
-    // VRB
-    // This code has been commented until we phase out the old
-    // "compute_annotation" code. temporarily for this release
-    uint32_t nArgs = e->size();
 
-    function::AnnotationProperty_t sorted = f->producesNodeIdSorted();
+    ulong nArgs = e->num_args();
 
-    if (sorted == function::YES) 
+    FunctionConsts::AnnotationValue sorted = f->producesSortedNodes();
+
+    if (sorted == FunctionConsts::YES)
     {
       SORTED_NODES(e);
     }
-    else if (sorted == function::NO)
+    else if (sorted == FunctionConsts::NO)
     {
-      // do nothing
+      e->put_annotation(Annotations::PRODUCES_SORTED_NODES,
+                        TSVAnnotationValue::FALSE_VAL);
     } 
     else 
     {
-      AnnotationValue_t sortedAnnot = TSVAnnotationValue::TRUE_VAL;
+      AnnotationValue_t sorted = TSVAnnotationValue::MAYBE_VAL;
 
-      for(uint32_t i = 0; i < nArgs; ++i) 
+      for (ulong i = 0; i < nArgs; ++i) 
       {
-        if (f->propagatesInputToOutput(i)) 
+        if (f->propagatesSortedNodes(i)) 
         {
-          sortedAnnot = TSVAnnotationValue::and3(sortedAnnot, 
-                                                 (*e)[i]->get_annotation(Annotations::PRODUCES_SORTED_NODES));
+          sorted = e->get_arg(i)->get_annotation(Annotations::PRODUCES_SORTED_NODES);
+          break;
         }
       }
 
-      e->put_annotation(Annotations::PRODUCES_SORTED_NODES, sortedAnnot);
+      e->put_annotation(Annotations::PRODUCES_SORTED_NODES, sorted);
     }
 
-    function::AnnotationProperty_t duplicates = f->producesDuplicates();
+    FunctionConsts::AnnotationValue distinct = f->producesDistinctNodes();
 
-    if (duplicates == function::NO) 
+    if (distinct == FunctionConsts::YES) 
     {
       DISTINCT_NODES(e);
     }
-    else if (duplicates == function::YES) 
+    else if (distinct == FunctionConsts::NO) 
     {
-      // do nothing
+      e->put_annotation(Annotations::PRODUCES_DISTINCT_NODES,
+                        TSVAnnotationValue::FALSE_VAL);
     }
     else
     {
-      AnnotationValue_t distinctAnnot = TSVAnnotationValue::TRUE_VAL;
-      for(uint32_t i = 0; i < nArgs; ++i) 
+      AnnotationValue_t distinct = TSVAnnotationValue::MAYBE_VAL;
+
+      for (ulong i = 0; i < nArgs; ++i) 
       {
-        if (f->propagatesInputToOutput(i)) 
+        if (f->propagatesDistinctNodes(i)) 
         {
-          distinctAnnot = TSVAnnotationValue::and3(distinctAnnot,
-                                                   (*e)[i]->get_annotation(Annotations::PRODUCES_DISTINCT_NODES));
+          distinct = e->get_arg(i)->get_annotation(Annotations::PRODUCES_DISTINCT_NODES);
+          break;
         }
       }
 
-      e->put_annotation(Annotations::PRODUCES_DISTINCT_NODES, distinctAnnot);
+      e->put_annotation(Annotations::PRODUCES_DISTINCT_NODES, distinct);
     }
-#else
-    if (f->getKind() == FunctionConsts::FN_DOC_1 ||
-        f->getKind() == FunctionConsts::FN_ZORBA_DDL_COLLECTION_1) 
-    {
-      SORTED_NODES(e);
-      DISTINCT_NODES(e);
-    }
-#endif
   }
 }
 
@@ -514,61 +506,58 @@ void DataflowAnnotationsComputer::compute_relpath_expr(relpath_expr* e)
 }
 
 
-void DataflowAnnotationsComputer::compute_axis_step_expr(axis_step_expr *e)
+void DataflowAnnotationsComputer::compute_axis_step_expr(axis_step_expr* e)
 {
-  default_walk(e);
-  if (!generic_compute(e)) {
-  }
+  return;
 }
 
 
-void DataflowAnnotationsComputer::compute_match_expr(match_expr *e)
+void DataflowAnnotationsComputer::compute_match_expr(match_expr* e)
 {
-  default_walk(e);
-  generic_compute(e);
+  ZORBA_ASSERT(false);
 }
 
-void DataflowAnnotationsComputer::compute_const_expr(const_expr *e)
+void DataflowAnnotationsComputer::compute_const_expr(const_expr* e)
 {
   default_walk(e);
   generic_compute(e);
 }
 
-void DataflowAnnotationsComputer::compute_order_expr(order_expr *e)
+void DataflowAnnotationsComputer::compute_order_expr(order_expr* e)
 {
   default_walk(e);
   generic_compute(e);
 }
 
-void DataflowAnnotationsComputer::compute_elem_expr(elem_expr *e)
+void DataflowAnnotationsComputer::compute_elem_expr(elem_expr* e)
 {
   default_walk(e);
   SORTED_NODES(e);
   DISTINCT_NODES(e);
 }
 
-void DataflowAnnotationsComputer::compute_doc_expr(doc_expr *e)
+void DataflowAnnotationsComputer::compute_doc_expr(doc_expr* e)
 {
   default_walk(e);
   SORTED_NODES(e);
   DISTINCT_NODES(e);
 }
 
-void DataflowAnnotationsComputer::compute_attr_expr(attr_expr *e)
+void DataflowAnnotationsComputer::compute_attr_expr(attr_expr* e)
 {
   default_walk(e);
   SORTED_NODES(e);
   DISTINCT_NODES(e);
 }
 
-void DataflowAnnotationsComputer::compute_text_expr(text_expr *e)
+void DataflowAnnotationsComputer::compute_text_expr(text_expr* e)
 {
   default_walk(e);
   SORTED_NODES(e);
   DISTINCT_NODES(e);
 }
 
-void DataflowAnnotationsComputer::compute_pi_expr(pi_expr *e)
+void DataflowAnnotationsComputer::compute_pi_expr(pi_expr* e)
 {
   default_walk(e);
   SORTED_NODES(e);

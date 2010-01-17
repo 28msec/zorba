@@ -139,15 +139,18 @@ AvailableCollectionsIterator::nextImpl(store::Item_t& result, PlanState& planSta
   STACK_END (state);
 }
 
-/*******************************************************************************
-********************************************************************************/
-bool
-IsAvailableIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) const
-{
-  PlanIteratorState  *state;
-  store::Item_t       lName;
-  bool                res = false;
 
+/*******************************************************************************
+
+********************************************************************************/
+bool IsAvailableIndexIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::Item_t lName;
+  bool res = false;
+
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   consumeNext(lName, theChildren[0].getp(), planState);
@@ -158,12 +161,14 @@ IsAvailableIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   }
 
   GENV_ITEMFACTORY->createBoolean(result, res);
-  STACK_PUSH(true, state );
+  STACK_PUSH(true, state);
 
   STACK_END (state);
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
 AvailableIndexesIteratorState::~AvailableIndexesIteratorState()
 {

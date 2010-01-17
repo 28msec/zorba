@@ -38,23 +38,23 @@ public:
   {
   }
 
-  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
 
-  FunctionConsts::AnnotationValue producesDistinctNodes() const
+  bool propagatesDistinctNodes(ulong producer) const
   {
-    return FunctionConsts::PRESERVE;
+    return producer == 0;
   }
 
-  FunctionConsts::AnnotationValue producesSortedNodes() const
+  bool propagatesSortedNodes(ulong producer) const
   {
-    return FunctionConsts::PRESERVE;
+    return producer == 0;
   }
 
   DEFAULT_UNARY_CODEGEN(EnclosedIterator);
 };
 
 
-xqtref_t op_enclosed_expr::return_type(const std::vector<xqtref_t>& arg_types) const
+xqtref_t op_enclosed_expr::getReturnType(const std::vector<xqtref_t>& arg_types) const
 {
   xqtref_t argType = arg_types[0];
 

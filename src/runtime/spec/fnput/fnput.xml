@@ -11,16 +11,21 @@
     
     <zorba:description author="Zorba Team">fn:put</zorba:description>
   
-  <zorba:function requiresDynamicContext="false"
-                  isSource="false"
-                  isUpdating="true"
-                  propagatesInputToOutput="false">
+  <zorba:function>
+
     <zorba:signature localname="put" prefix="fn">
       <zorba:param>node()</zorba:param>
       <zorba:param>xs:string</zorba:param>
       <zorba:output>empty-sequence()</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+    </zorba:methods>
+
   </zorba:function>
+
 </zorba:iterator>
 
 

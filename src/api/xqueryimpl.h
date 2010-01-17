@@ -330,11 +330,12 @@ protected:
     
   XQueryImpl();
       
-  void
-  doCompile(std::istream&, const Zorba_CompilerHints_t& aHints, bool fork_sctx = true);
+  void doCompile(
+        std::istream&,
+        const Zorba_CompilerHints_t& aHints,
+        bool fork_sctx = true);
 
-  PlanWrapper_t
-  generateWrapper();
+  PlanWrapper_t generateWrapper();
 
   // special serialize and applyUpdate function that is used by debugger 
   // and by the public serialize and applyUpdate functions, respectively.
@@ -346,34 +347,31 @@ protected:
   // there is currently no check that enforces this
   // after this function has finished, the PlanWrapper also needs to be
   // closed by the caller
-  void
-  serialize(std::ostream&, PlanWrapper_t& aWrapper, const Zorba_SerializerOptions_t* = NULL);
+  void serialize(
+        std::ostream&, 
+        PlanWrapper_t& aWrapper,
+        const Zorba_SerializerOptions_t* = NULL);
 
-  void
-  serialize(std::ostream&,
-    PlanWrapper_t& aWrapper,
-    itemHandler aHandler,
-    void* aHandlerData,
-    const Zorba_SerializerOptions_t* = NULL);
+  void serialize(
+        std::ostream&,
+        PlanWrapper_t& aWrapper,
+        itemHandler aHandler,
+        void* aHandlerData,
+        const Zorba_SerializerOptions_t* = NULL);
 
-  void
-  removeResultIterator(const ResultIterator* iter);
+  void removeResultIterator(const ResultIterator* iter);
 
   // check whether the query is open, and if not, fire an error
-  void
-  checkNotClosed() const;
+  void checkNotClosed() const;
 
   // check whether the query has been compiled (successfully), and
   // if not, fire an error
-  void
-  checkCompiled() const;
+  void checkCompiled() const;
 
   // check whether the query has not been compiled, and if not, fire an error
-  void
-  checkNotCompiled() const;
+  void checkNotCompiled() const;
  
-  void
-  checkIsDebugMode() const;
+  void checkIsDebugMode() const;
 };
 
 

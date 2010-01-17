@@ -42,7 +42,7 @@ public:
 
   bool isSource() const { return true; }
 
-  bool requires_dyn_ctx() const { return true; }
+  bool accessesDynCtx() const { return true; }
 
   DEFAULT_NARY_CODEGEN(ZorbaTDocIterator);
 };

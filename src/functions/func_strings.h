@@ -70,7 +70,7 @@ public:
 class fn_compare : public function
 {
 public:
-  fn_compare(const signature& sig) : function(sig)
+  fn_compare(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.arg_count() == 2 ?
                 FunctionConsts::FN_COMPARE_2 :
@@ -127,7 +127,7 @@ public:
 class fn_substring : public function
 {
 public:
-  fn_substring(const signature& sig) : function(sig)
+  fn_substring(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.arg_count() == 2 ?
                 FunctionConsts::FN_SUBSTRING_2 :
@@ -170,7 +170,7 @@ public:
 class fn_normalize_unicode : public function
 {
 public:
-  fn_normalize_unicode(const signature& sig) : function(sig)
+  fn_normalize_unicode(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.arg_count() == 1 ?
                 FunctionConsts::FN_NORMALIZE_UNICODE_1 :
@@ -269,7 +269,7 @@ public:
 class fn_contains : public function
 {
 public:
-  fn_contains(const signature& sig) : function(sig)
+  fn_contains(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.arg_count() == 2 ?
                 FunctionConsts::FN_CONTAINS_2 :
@@ -284,7 +284,7 @@ public:
 class fn_starts_with : public function
 {
 public:
-  fn_starts_with(const signature& sig) : function(sig)
+  fn_starts_with(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.arg_count() == 2 ?
                 FunctionConsts::FN_STARTS_WITH_2 :
@@ -299,7 +299,7 @@ public:
 class fn_ends_with : public function
 {
 public:
-  fn_ends_with(const signature& sig) : function(sig)
+  fn_ends_with(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.arg_count() == 2 ?
                 FunctionConsts::FN_ENDS_WITH_2 :
@@ -314,7 +314,7 @@ public:
 class fn_substring_before : public function
 {
 public:
-  fn_substring_before(const signature& sig) : function(sig)
+  fn_substring_before(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.arg_count() == 2 ?
                 FunctionConsts::FN_SUBSTRING_BEFORE_2 :
@@ -329,7 +329,7 @@ public:
 class fn_substring_after : public function
 {
 public:
-  fn_substring_after(const signature& sig) : function(sig)
+  fn_substring_after(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.arg_count() == 2 ?
                 FunctionConsts::FN_SUBSTRING_AFTER_2 :
@@ -344,7 +344,7 @@ public:
 class fn_matches : public function
 {
 public:
-  fn_matches(const signature& sig) : function(sig)
+  fn_matches(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.arg_count() == 2 ?
                 FunctionConsts::FN_MATCHES_2 :
@@ -359,7 +359,7 @@ public:
 class fn_replace : public function
 {
 public:
-  fn_replace(const signature& sig) : function(sig)
+  fn_replace(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.arg_count() == 3 ?
                 FunctionConsts::FN_REPLACE_3 :
@@ -374,7 +374,7 @@ public:
 class fn_tokenize : public function
 {
 public:
-  fn_tokenize(const signature& sig) : function(sig)
+  fn_tokenize(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.arg_count() == 2 ?
                 FunctionConsts::FN_TOKENIZE_2 :

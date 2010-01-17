@@ -115,12 +115,18 @@
       <zorba:member type="store::Iterator_t" name="theTypedValueIter" defaultValue="NULL" brief=""/>
   </zorba:state>
 
-  <zorba:function generateReturnTypeDecl="true"
-                  isMap="0">
+  <zorba:function>
+
     <zorba:signature localname="data" prefix="fn">
       <zorba:param>item()*</zorba:param>
       <zorba:output>xs:anyAtomicType*</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:getReturnType/>
+      <zorba:isMap producer="0"/>
+    </zorba:methods>
+
   </zorba:function>
     
 </zorba:iterator>

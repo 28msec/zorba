@@ -27,28 +27,28 @@ class zop_hoist : public function
 public:
   zop_hoist(const signature& sig) : function(sig, FunctionConsts::OP_HOIST_1) {}
 
-  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
 
   bool isMap(ulong input) const
   {
     return true;
   }
 
-  FunctionConsts::AnnotationValue producesSortedNodes() const
+  bool propagatesSortedNodes(ulong producer) const
   {
-    return FunctionConsts::PRESERVE;
+    return producer == 0;
   }
 
-  FunctionConsts::AnnotationValue producesDistinctNodes() const
+  bool propagatesDistinctNodes(ulong producer) const
   {
-    return FunctionConsts::PRESERVE;
+    return producer == 0;
   }
 
   DEFAULT_NARY_CODEGEN(HoistIterator);
 };
 
 
-xqtref_t zop_hoist::return_type(const std::vector<xqtref_t>& arg_types) const
+xqtref_t zop_hoist::getReturnType(const std::vector<xqtref_t>& arg_types) const
 {
   return arg_types[0];
 }
@@ -59,28 +59,28 @@ class zop_unhoist : public function
 public:
   zop_unhoist(const signature& sig) : function(sig, FunctionConsts::OP_UNHOIST_1) {}
 
-  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
 
   bool isMap(ulong input) const
   {
     return true;
   }
 
-  FunctionConsts::AnnotationValue producesSortedNodes() const
+  bool propagatesSortedNodes(ulong producer) const
   {
-    return FunctionConsts::PRESERVE;
+    return producer == 0;
   }
 
-  FunctionConsts::AnnotationValue producesDistinctNodes() const
+  bool propagatesDistinctNodes(ulong producer) const
   {
-    return FunctionConsts::PRESERVE;
+    return producer == 0;
   }
 
   DEFAULT_NARY_CODEGEN(UnhoistIterator);
 };
 
 
-xqtref_t zop_unhoist::return_type(const std::vector<xqtref_t>& arg_types) const
+xqtref_t zop_unhoist::getReturnType(const std::vector<xqtref_t>& arg_types) const
 {
   return arg_types[0];
 }

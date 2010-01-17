@@ -31,6 +31,7 @@
 #include "types/casting.h"
 
 #include "functions/udf.h"
+#include "functions/func_fnerror.h"
 #include "functions/library.h"
 
 #include "runtime/util/plan_wrapper_holder.h"
@@ -289,14 +290,14 @@ RULE_REWRITE_POST(MarkUnfoldableExprs)
   {
   case fo_expr_kind: 
   {
-    fo_expr *fo = static_cast<fo_expr *> (node);
-    const function *f = fo->get_func ();
+    fo_expr* fo = static_cast<fo_expr *> (node);
+    const function* f = fo->get_func();
 
     // Do not fold functions that always require access to the dynamic context,
     // or may need to access the implicit timezone (which is also in the dynamic
     // constext). 
-    if (f->requires_dyn_ctx () ||
-        f->isFnError() ||
+    if (f->accessesDynCtx () ||
+        dynamic_cast<const fn_error*>(f) != NULL ||
         maybe_needs_implicit_timezone(fo, rCtx.getStaticContext(node)) ||
         !f->isDeterministic())
       node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
@@ -450,8 +451,9 @@ RULE_REWRITE_POST(MarkImpureExprs)
     fo_expr* fo = static_cast<fo_expr *> (node);
     const function* f = fo->get_func();
 
-    if (f->getKind() == FunctionConsts::OP_VAR_ASSIGN_1 || f->isFnError())
-      node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
+    if (f->getKind() == FunctionConsts::OP_VAR_ASSIGN_1 || 
+        dynamic_cast<const fn_error*>(f) != NULL)
+      node->put_annotation(k, TSVAnnotationValue::TRUE_VAL);
 
     break;
   }

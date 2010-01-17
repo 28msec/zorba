@@ -32,7 +32,7 @@ FunctionImpl::isUpdating() const
 bool
 FunctionImpl::requiresDynamicContext() const
 {
-  return theFunction->requires_dyn_ctx();
+  return theFunction->accessesDynCtx();
 }
 
 Item

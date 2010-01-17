@@ -25,6 +25,31 @@
 namespace zorba 
 {
 
-fn_error::fn_error(const signature& sig) : function (sig) {}
+fn_error::fn_error(const signature& sig) 
+  :
+  function(sig, FunctionConsts::FN_UNKNOWN)
+{
+  switch (sig.arg_count())
+  {
+  case 0:
+    theKind = FunctionConsts::FN_ERROR_0;
+    break;
+
+  case 1:
+    theKind = FunctionConsts::FN_ERROR_1;
+    break;
+
+  case 2:
+    theKind = FunctionConsts::FN_ERROR_2;
+    break;
+
+  case 3:
+    theKind = FunctionConsts::FN_ERROR_3;
+    break;
+
+  default:
+    ZORBA_ASSERT(false);
+  }
+}
 
 } // namespace zorba

@@ -48,9 +48,9 @@ public:
   {
   }
 
-  bool requires_dyn_ctx() const { return true; }
-
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
 
   CODEGEN_DECL();
 };
@@ -66,9 +66,9 @@ public:
   {
   }
 
-  bool requires_dyn_ctx() const { return true; }
-
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
 
   CODEGEN_DECL();
 };
@@ -84,7 +84,7 @@ public:
   {
   }
 
-  bool requires_dyn_ctx() const { return true; }
+  bool accessesDynCtx() const { return true; }
 
   CODEGEN_DECL();
 };
@@ -100,9 +100,9 @@ public:
   {
   }
 
-  bool requires_dyn_ctx() const { return true; }
-
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
 
   CODEGEN_DECL();
 };
@@ -118,7 +118,7 @@ public:
   {
   }
 
-  bool requires_dyn_ctx() const { return true; }
+  bool accessesDynCtx() const { return true; }
 
   CODEGEN_DECL();
 };
@@ -134,12 +134,12 @@ public:
   {
   }
 
+  bool accessesDynCtx() const { return true; }
+
   FunctionConsts::AnnotationValue producesDistinctNodes() const 
   {
     return FunctionConsts::YES;
   }
-
-  bool requires_dyn_ctx() const { return true; }
 
   CODEGEN_DECL();
 };
@@ -155,12 +155,12 @@ public:
   {
   }
 
+  bool accessesDynCtx() const { return true; }
+
   FunctionConsts::AnnotationValue producesDistinctNodes() const 
   {
     return FunctionConsts::YES;
   }
-
-  bool requires_dyn_ctx() const { return true; }
 
   CODEGEN_DECL();
 };

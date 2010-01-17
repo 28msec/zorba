@@ -45,7 +45,7 @@ public:
   {
   }
 
-  bool requires_dyn_ctx() const { return true; }
+  bool accessesDynCtx() const { return true; }
 
   DEFAULT_NARY_CODEGEN(CtxVarDeclIterator);
 };
@@ -70,7 +70,7 @@ public:
   {
   }
 
-  bool requires_dyn_ctx() const { return true; }
+  bool accessesDynCtx() const { return true; }
 
  expr_script_kind_t getUpdateType() const { return SEQUENTIAL_EXPR; }
 
@@ -114,7 +114,7 @@ public:
   {
   }
 
-  bool requires_dyn_ctx() const { return true; }
+  bool accessesDynCtx() const { return true; }
 
   DEFAULT_NARY_CODEGEN(CtxVarExistsIterator);
 };
@@ -137,7 +137,7 @@ public:
   {
   }
 
-  bool requires_dyn_ctx() const { return true; }
+  bool accessesDynCtx() const { return true; }
 
   DEFAULT_NARY_CODEGEN(CtxVariableIterator);
 };

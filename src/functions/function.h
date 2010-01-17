@@ -38,20 +38,6 @@ class CompilerCB;
 class AnnotationHolder;
 
 
-#define FUNCTION_PROPAGATES_I2O                              \
-bool propagatesInputToOutput(ulong aProducer) const          \
-{                                                            \
-  return true;                                               \
-}
-
-
-#define FUNCTION_PROPAGATES_ONE_I2O( n )                     \
-bool propagatesInputToOutput(ulong aProducer) const          \
-{                                                            \
-  return n == aProducer;                                     \
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -84,8 +70,6 @@ public:
 
   int get_arity() const { return theSignature.arg_count(); }
 
-  virtual xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
-
   void setFlag(FunctionConsts::AnnotationFlags flag) 
   {
     theFlags |= flag;
@@ -103,11 +87,13 @@ public:
 
 	virtual bool validate_args(std::vector<PlanIter_t>& argv) const;
 
-  virtual expr_script_kind_t getUpdateType() const { return SIMPLE_EXPR; }
-
   bool isUpdating() const { return getUpdateType() == UPDATE_EXPR; }
 
   bool isSequential() const { return getUpdateType() == SEQUENTIAL_EXPR; }
+
+  virtual expr_script_kind_t getUpdateType() const { return SIMPLE_EXPR; }
+
+  virtual xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
 
   virtual function* specialize(
         static_context* sctx,
@@ -136,23 +122,23 @@ public:
     return CompareConsts::UNKNOWN;
   }
 
-  virtual bool isFnError() const { return false; }
-
   virtual bool isNodeDistinctFunction() const { return false; }
 
-  virtual bool requires_dyn_ctx() const { return false; }
+  virtual bool accessesDynCtx() const { return false; }
 
   virtual bool isSource() const { return false; }
 
   virtual bool isDeterministic() const { return true; }
-
-  virtual bool propagatesInputToOutput(ulong input) const { return false; }
 
   virtual bool isMap(ulong input) const;
 
   virtual FunctionConsts::AnnotationValue producesDistinctNodes() const;
 
   virtual FunctionConsts::AnnotationValue producesSortedNodes() const;
+
+  virtual bool propagatesSortedNodes(ulong input) const { return false; }
+
+  virtual bool propagatesDistinctNodes(ulong input) const { return false; }
 
   virtual void compute_annotation(
         AnnotationHolder* foExpr,

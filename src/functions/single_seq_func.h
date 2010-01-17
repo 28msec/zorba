@@ -45,15 +45,6 @@ protected:
 public:
   single_seq_function(
         const signature& sig,
-        unsigned src = 0)
-    :
-    function(sig),
-    theInput(src)
-  {
-  }
-
-  single_seq_function(
-        const signature& sig,
         FunctionConsts::FunctionKind kind,
         unsigned src = 0)
     :
@@ -62,9 +53,7 @@ public:
   {
   }
 
-  virtual xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
-
-  FUNCTION_PROPAGATES_ONE_I2O(theInput);
+  virtual xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
 
   virtual FunctionConsts::AnnotationValue producesSortedNodes() const
   {
@@ -79,37 +68,6 @@ public:
   COMPUTE_ANNOTATION_DECL();
 };
 
-
-/*******************************************************************************
-  Like single_seq_function, but may not return all items in the sequence arg.
-*******************************************************************************/
-class single_seq_opt_function : public function 
-{
-protected:
-  unsigned theInput;
-  
-public:
-  single_seq_opt_function(
-        const signature& sig,
-        unsigned src = 0)
-    :
-    function(sig),
-    theInput(src)
-  {
-  }
-
-  single_seq_opt_function(
-        const signature& sig,
-        FunctionConsts::FunctionKind kind,
-        unsigned src = 0) 
-    :
-    function(sig, kind),
-    theInput(src)
-  {
-  }
-
-  virtual xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
-};
 
 }
 

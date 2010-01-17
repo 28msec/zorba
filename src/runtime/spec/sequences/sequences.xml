@@ -37,32 +37,36 @@
 -->
 <zorba:iterator name="FnConcatIterator">
 
-    <zorba:description author="Zorba Team">
-      op:concatenate
-    </zorba:description>
+  <zorba:description author="Zorba Team">
+    op:concatenate
+  </zorba:description>
 
-    <zorba:constructor>
-        <zorba:parameter type="bool" name="aIsUpdating" />
-    </zorba:constructor>
+  <zorba:constructor>
+      <zorba:parameter type="bool" name="aIsUpdating" />
+  </zorba:constructor>
 
-    <zorba:member type="bool" name="theIsUpdating" getterName="isUpdating" brief=""/>
+  <zorba:member type="bool" name="theIsUpdating" getterName="isUpdating" brief=""/>
 
-    <zorba:state generateInit="true" generateReset="true">
-      <zorba:member type="uint32_t" name="theCurIter" defaultValue="0"
-                    brief="the current iterator"/>
-    </zorba:state>
+  <zorba:state generateInit="true" generateReset="true">
+    <zorba:member type="uint32_t" name="theCurIter" defaultValue="0"
+                  brief="the current iterator"/>
+  </zorba:state>
   
-    <zorba:function generateReturnTypeDecl="true"
-                    generateComputeAnnotationDecl="true"
-                    annIsUpdating="true">
-      <zorba:signature localname="concatenate" prefix="op">
-        <zorba:param>item()*</zorba:param>
-        <zorba:param>true</zorba:param> <!-- variadic function -->
-        <zorba:output>item()*</zorba:output>
-      </zorba:signature>
-      <zorba:annotation name="producesSortedNodes">PRESERVE</zorba:annotation>
-      <zorba:annotation name="producesDistinctNodes">PRESERVE</zorba:annotation>
-    </zorba:function>
+  <zorba:function annIsUpdating="true">
+
+    <zorba:signature localname="concatenate" prefix="op">
+      <zorba:param>item()*</zorba:param>
+      <zorba:param>true</zorba:param> <!-- variadic function -->
+      <zorba:output>item()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:getReturnType/>
+      <zorba:compute_annotation/>
+    </zorba:methods>
+
+  </zorba:function>
+
 </zorba:iterator>
 
 <!--
@@ -111,18 +115,22 @@
     </zorba:state>
 
   <zorba:function >
+
     <zorba:signature localname="index-of" prefix="fn">
       <zorba:param>xs:anyAtomicType*</zorba:param>
       <zorba:param>xs:anyAtomicType</zorba:param>
       <zorba:output>xs:integer*</zorba:output>
     </zorba:signature>
+
     <zorba:signature localname="index-of" prefix="fn">
       <zorba:param>xs:anyAtomicType*</zorba:param>
       <zorba:param>xs:anyAtomicType</zorba:param>
       <zorba:param>xs:string</zorba:param>
       <zorba:output>xs:integer*</zorba:output>
     </zorba:signature>
+
   </zorba:function>
+
 </zorba:iterator>
 
 <!--
@@ -137,12 +145,13 @@
       otherwise, the function returns false.
     </zorba:description>
   
-  <zorba:function >
+  <zorba:function>
     <zorba:signature localname="empty" prefix="fn">
       <zorba:param>item()*</zorba:param>
       <zorba:output>xs:boolean</zorba:output>
     </zorba:signature>
   </zorba:function>
+
 </zorba:iterator> 
 
 <!--
@@ -163,6 +172,7 @@
       <zorba:output>xs:boolean</zorba:output>
     </zorba:signature>
   </zorba:function>
+
 </zorba:iterator>
 
 <!--
@@ -201,7 +211,13 @@
       <zorba:param>xs:anyAtomicType*</zorba:param>
       <zorba:output>xs:anyAtomicType*</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:getReturnType/>
+    </zorba:methods>
+
   </zorba:function>
+
 </zorba:iterator>
 
 <!--
@@ -211,31 +227,32 @@
 -->
 <zorba:iterator name="FnInsertBeforeIterator">
     
-    <zorba:description author="Zorba Team">
+  <zorba:description author="Zorba Team">
       Returns a new sequence constructed from the value of the first parameter with
       the value of third parameter inserted at the position specified by the value
       of the second parameter.
-    </zorba:description>
+  </zorba:description>
     
-    <zorba:state generateInit="true" generateReset="true">
-      <zorba:member type="xqp_integer" name="theCurrentPos"
-                    defaultValue="xqp_integer::parseInt(0)" brief="the current position in the sequence"/>
+  <zorba:state generateInit="true" generateReset="true">
+    <zorba:member type="xqp_integer" name="theCurrentPos"
+                  defaultValue="xqp_integer::parseInt(0)" brief="the current position in the sequence"/>
 
-      <zorba:member type="xqp_integer" name="thePosition"
-                    defaultValue="xqp_integer::parseInt(0)" brief=""/>
+    <zorba:member type="xqp_integer" name="thePosition"
+                  defaultValue="xqp_integer::parseInt(0)" brief=""/>
 
-      <zorba:member type="store::Item_t" name="theTargetItem"
-                    defaultValue="NULL" brief=""/>
-    </zorba:state>
+    <zorba:member type="store::Item_t" name="theTargetItem"
+                  defaultValue="NULL" brief=""/>
+  </zorba:state>
   
-    <zorba:function>
-      <zorba:signature localname="insert-before" prefix="fn">
-        <zorba:param>item()*</zorba:param>
-        <zorba:param>xs:integer</zorba:param>
-        <zorba:param>item()*</zorba:param>
-        <zorba:output>item()*</zorba:output>
-      </zorba:signature>
-    </zorba:function>
+  <zorba:function>
+    <zorba:signature localname="insert-before" prefix="fn">
+      <zorba:param>item()*</zorba:param>
+      <zorba:param>xs:integer</zorba:param>
+      <zorba:param>item()*</zorba:param>
+      <zorba:output>item()*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+
 </zorba:iterator>
 
 <!--
@@ -261,15 +278,22 @@
                   defaultValue="0" brief="the collator"/>
   </zorba:state>
   
-  <zorba:function baseSig="single_seq_opt_function">
+  <zorba:function>
+
     <zorba:signature localname="remove" prefix="fn">
       <zorba:param>item()*</zorba:param>
       <zorba:param>xs:integer</zorba:param>
       <zorba:output>item()*</zorba:output>
     </zorba:signature>
-    <zorba:annotation name="producesSortedNodes">PRESERVE</zorba:annotation>
-    <zorba:annotation name="producesDistinctNodes">PRESERVE</zorba:annotation>
+
+    <zorba:methods>
+      <zorba:getReturnType/>
+      <zorba:propagatesSortedNodes producer="0"/>
+      <zorba:propagatesDistinctNodes producer="0"/>
+    </zorba:methods>
+
   </zorba:function>
+
 </zorba:iterator>
 
 <!--
@@ -288,13 +312,20 @@
                   name="theStack" brief=""/>
   </zorba:state>
   
-  <zorba:function baseSig="single_seq_opt_function">
+  <zorba:function>
+
     <zorba:signature localname="reverse" prefix="fn"> 
       <zorba:param>item()*</zorba:param>
       <zorba:output>item()*</zorba:output>      
     </zorba:signature>
-    <zorba:annotation name="producesDistinctNodes">PRESERVE</zorba:annotation>
+
+    <zorba:methods>
+      <zorba:getReturnType/>
+      <zorba:propagatesDistinctNodes producer="0"/>
+    </zorba:methods>
+
   </zorba:function>
+
 </zorba:iterator>
 
 <!--
@@ -313,9 +344,8 @@
                   defaultValue="xqp_integer::parseInt(0)" brief=""/>
   </zorba:state>
 
-  <zorba:function generateComputeAnnotationDecl="true"
-    baseSig="single_seq_opt_function"
-    generateCodegen="false">
+  <zorba:function generateCodegen="false">
+
     <zorba:signature localname="subsequence" prefix="fn">
       <zorba:param>item()*</zorba:param>
       <zorba:param>xs:double</zorba:param>
@@ -329,8 +359,13 @@
       <zorba:output>item()*</zorba:output>
     </zorba:signature>
 
-    <zorba:annotation name="producesSortredNodes">PRESERVE</zorba:annotation>
-    <zorba:annotation name="producesDistinctNodes">PRESERVE</zorba:annotation>
+    <zorba:methods>
+      <zorba:getReturnType/>
+      <zorba:propagatesSortedNodes producer="0"/>
+      <zorba:propagatesDistinctNodes producer="0"/>
+      <zorba:compute_annotation/>
+    </zorba:methods>
+
   </zorba:function>
   
 </zorba:iterator>
@@ -352,14 +387,18 @@
     
     <zorba:member type="bool" name="theDoDistinct" brief=""/>
 
-    <zorba:function generateReturnTypeDecl="true" 
-                    generateCodegen="false">
+    <zorba:function generateCodegen="false">
+
       <zorba:signature localname="zero-or-one" prefix="fn">
         <zorba:param>item()*</zorba:param>
         <zorba:output>item()?</zorba:output>
       </zorba:signature>
-   </zorba:function>
 
+    <zorba:methods>
+      <zorba:getReturnType/>
+    </zorba:methods>
+
+   </zorba:function>
   
 </zorba:iterator>
 
@@ -374,15 +413,21 @@
       fn:one-or-more
     </zorba:description>
   
-  <zorba:function generateReturnTypeDecl="true"
-                  isMap="0">
+  <zorba:function isMap="0">
+
     <zorba:signature localname="one-or-more" prefix="fn">
       <zorba:param>item()*</zorba:param>
       <zorba:output>item()+</zorba:output>  
     </zorba:signature>
-    <zorba:annotation name="producesSortredNodes">PRESERVE</zorba:annotation>
-    <zorba:annotation name="producesDistinctNodes">PRESERVE</zorba:annotation>
+
+    <zorba:methods>
+      <zorba:getReturnType/>
+      <zorba:propagatesSortedNodes producer="0"/>
+      <zorba:propagatesDistinctNodes producer="0"/>
+    </zorba:methods>
+
   </zorba:function>
+
 </zorba:iterator>
 
 <!--
@@ -411,21 +456,25 @@
 -->
 <zorba:iterator name="FnDeepEqualIterator">
     
-    <zorba:description author="Zorba Team">fn:deep-equal</zorba:description>
+  <zorba:description author="Zorba Team">fn:deep-equal</zorba:description>
   
   <zorba:function>
+
     <zorba:signature localname="deep-equal" prefix="fn">
       <zorba:param>item()*</zorba:param>
       <zorba:param>item()*</zorba:param>
       <zorba:output>xs:boolean</zorba:output>
     </zorba:signature>
+
     <zorba:signature localname="deep-equal" prefix="fn">
       <zorba:param>item()*</zorba:param>
       <zorba:param>item()*</zorba:param>
       <zorba:param>xs:string</zorba:param>
       <zorba:output>xs:boolean</zorba:output>
     </zorba:signature>
+
   </zorba:function>
+
 </zorba:iterator>
 
 <!--
@@ -488,6 +537,7 @@
       <zorba:output>xs:integer</zorba:output>
     </zorba:signature>
   </zorba:function>
+
 </zorba:iterator>
     
 <!--
@@ -507,6 +557,7 @@
       <zorba:output>xs:anyAtomicType?</zorba:output>
     </zorba:signature>
   </zorba:function>
+
 </zorba:iterator>
     
 <!--
@@ -521,17 +572,22 @@
     </zorba:description>
   
   <zorba:function specializable="true">
+
     <zorba:signature localname="sum" prefix="fn">
       <zorba:param>xs:anyAtomicType*</zorba:param>
       <zorba:output>xs:anyAtomicType</zorba:output>
     </zorba:signature>
+
     <zorba:signature localname="sum" prefix="fn">
       <zorba:param>xs:anyAtomicType*</zorba:param>
       <zorba:param>xs:anyAtomicType?</zorba:param>
       <zorba:output>xs:anyAtomicType?</zorba:output>
     </zorba:signature>
+
   </zorba:function>
+
 </zorba:iterator>
+
 
 <zorba:iterator name="FnSumDoubleIterator">
     
@@ -550,7 +606,9 @@
       <zorba:output>xs:anyAtomicType?</zorba:output>
     </zorba:signature>
   </zorba:function>
+
 </zorba:iterator>
+
 
 <zorba:iterator name="FnSumFloatIterator">
     
@@ -569,7 +627,9 @@
       <zorba:output>xs:anyAtomicType?</zorba:output>
     </zorba:signature>
   </zorba:function>
+
 </zorba:iterator>
+
 
 <zorba:iterator name="FnSumDecimalIterator">
     
@@ -588,7 +648,9 @@
       <zorba:output>xs:anyAtomicType?</zorba:output>
     </zorba:signature>
   </zorba:function>
+
 </zorba:iterator>
+
 
 <zorba:iterator name="FnSumIntegerIterator">
     
@@ -607,6 +669,7 @@
       <zorba:output>xs:anyAtomicType?</zorba:output>
     </zorba:signature>
   </zorba:function>
+
 </zorba:iterator>
 
 <!--
@@ -636,6 +699,7 @@
       <zorba:output>xs:integer*</zorba:output>
     </zorba:signature>
   </zorba:function>
+
 </zorba:iterator>
 
 
@@ -648,13 +712,20 @@
     
     <zorba:description author="Zorba Team">fn:doc</zorba:description>
   
-  <zorba:function requiresDynamicContext="true"
-    isSource="true" propagatesInputToOutput="false">
+  <zorba:function>
+
     <zorba:signature localname="doc" prefix="fn">
       <zorba:param>xs:string?</zorba:param>
       <zorba:output>document-node()?</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:isSource returnValue="true"/>
+    </zorba:methods>
+
   </zorba:function>
+
 </zorba:iterator>
 
 
@@ -665,7 +736,7 @@
 -->
 <zorba:iterator name="FnDocAvailableIterator">
     
-    <zorba:description author="Zorba Team">fn:doc-available</zorba:description>
+  <zorba:description author="Zorba Team">fn:doc-available</zorba:description>
   
   <zorba:function>
     <zorba:signature localname="doc-available" prefix="fn">
@@ -673,20 +744,33 @@
       <zorba:output>xs:boolean</zorba:output>
     </zorba:signature>
   </zorba:function>
+
 </zorba:iterator>
     
+
+<!--
+/*******************************************************************************
+  fn:parse
+********************************************************************************/
+-->
 <zorba:iterator name="FnParseIterator">
     
-    <zorba:description author="Zorba Team">Zorba-defined parse function</zorba:description>
+  <zorba:description author="Zorba Team">Zorba-defined parse function</zorba:description>
   
-  <zorba:function requiresDynamicContext="true"
-    isSource="true"
-    >
+  <zorba:function>
+
     <zorba:signature localname="parse" prefix="fn-zorba-util">
       <zorba:param>xs:string</zorba:param>
       <zorba:output>document-node()</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+      <zorba:isSource returnValue="true"/>
+    </zorba:methods>
+
   </zorba:function>
+
 </zorba:iterator>
 
 </zorba:iterators>

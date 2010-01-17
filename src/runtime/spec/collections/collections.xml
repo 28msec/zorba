@@ -32,14 +32,22 @@
                     brief="flag indicating whether theIterator was opened"/>
     </zorba:state>
 
-    <zorba:function requiresDynamicContext="true" isSource="true">
+    <zorba:function>
+
       <zorba:signature localname="collection" prefix="fn">
         <zorba:output>node()*</zorba:output>
       </zorba:signature>
+
       <zorba:signature localname="collection" prefix="fn">
         <zorba:param>xs:string</zorba:param>
         <zorba:output>node()*</zorba:output>
       </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:isSource returnValue="true"/>
+      </zorba:methods>
+
     </zorba:function>
   
 </zorba:iterator>
@@ -61,14 +69,20 @@
                     brief="flag indicating whether theIterator was opened"/>
     </zorba:state>
 
-    <zorba:function requiresDynamicContext="true"
-                    isSource="true">
+    <zorba:function>
+
       <zorba:signature localname="collection" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>node()*</zorba:output>
       </zorba:signature>
-      <zorba:annotation name="producesSortedNodes">YES</zorba:annotation>
-      <zorba:annotation name="producesDistinctNodes">YES</zorba:annotation>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:isSource returnValue="true"/>
+        <zorba:producesSortedNodes returnValue="YES"/>
+        <zorba:producesDistinctNodes returnValue="YES"/>
+      </zorba:methods>
+
     </zorba:function>
   
 </zorba:iterator>
@@ -83,12 +97,18 @@
       zorba:index-of
     </zorba:description>
 
-    <zorba:function requiresDynamicContext="true">
+    <zorba:function>
+
       <zorba:signature localname="index-of" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()</zorba:param>
         <zorba:output>xs:integer</zorba:output>
       </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
     </zorba:function>
 
 </zorba:iterator>
@@ -104,16 +124,24 @@
       zorba:create-collection
     </zorba:description>
 
-    <zorba:function isUpdating="true" requiresDynamicContext="true"> 
+    <zorba:function> 
+
       <zorba:signature localname="create-collection" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
+
       <zorba:signature localname="create-collection" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+      </zorba:methods>
+
     </zorba:function>
 
 </zorba:iterator>
@@ -128,11 +156,18 @@
       zorba:delete-collection
     </zorba:description>
 
-    <zorba:function isUpdating="true" requiresDynamicContext="true"> 
+    <zorba:function>
+
       <zorba:signature localname="delete-collection" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+      </zorba:methods>
+
     </zorba:function>
 
 </zorba:iterator>
@@ -147,12 +182,19 @@
       zorba:insert-nodes
     </zorba:description>
 
-    <zorba:function isUpdating="true" requiresDynamicContext="true"> 
+    <zorba:function> 
+
       <zorba:signature localname="insert-nodes" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+      </zorba:methods>
+
     </zorba:function>
 
 </zorba:iterator>
@@ -167,12 +209,19 @@
       zorba:insert-nodes-first
     </zorba:description>
 
-    <zorba:function isUpdating="true" requiresDynamicContext="true"> 
+    <zorba:function>
+
       <zorba:signature localname="insert-nodes-first" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+      </zorba:methods>
+
     </zorba:function>
 
 </zorba:iterator>
@@ -187,12 +236,19 @@
       zorba:insert-nodes-last
     </zorba:description>
 
-    <zorba:function isUpdating="true" requiresDynamicContext="true"> 
+    <zorba:function>
+
       <zorba:signature localname="insert-nodes-last" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+      </zorba:methods>
+
     </zorba:function>
 
 </zorba:iterator>
@@ -207,13 +263,20 @@
       zorba:insert-nodes-before
     </zorba:description>
 
-    <zorba:function isUpdating="true" requiresDynamicContext="true"> 
+    <zorba:function>
+
       <zorba:signature localname="insert-nodes-before" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+      </zorba:methods>
+
     </zorba:function>
 
 </zorba:iterator>
@@ -228,13 +291,20 @@
       zorba:insert-nodes-after
     </zorba:description>
 
-    <zorba:function isUpdating="true" requiresDynamicContext="true"> 
+    <zorba:function>
+
       <zorba:signature localname="insert-nodes-after" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+      </zorba:methods>
+
     </zorba:function>
 
 </zorba:iterator>
@@ -249,12 +319,19 @@
       zorba:delete-nodes
     </zorba:description>
 
-    <zorba:function isUpdating="true" requiresDynamicContext="true"> 
+    <zorba:function>
+
       <zorba:signature localname="delete-nodes" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>node()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+      </zorba:methods>
+
     </zorba:function>
 
 </zorba:iterator>
@@ -269,19 +346,33 @@
       zorba:delete-node-first
     </zorba:description>
 
-    <zorba:function isUpdating="true" requiresDynamicContext="true"> 
+    <zorba:function>
+
       <zorba:signature localname="delete-node-first" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+      </zorba:methods>
+
     </zorba:function>
 
-    <zorba:function isUpdating="true" requiresDynamicContext="true"> 
+    <zorba:function> 
+
       <zorba:signature localname="delete-nodes-first" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>xs:unsignedLong</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+      </zorba:methods>
+
     </zorba:function>
 
 </zorba:iterator>
@@ -296,19 +387,33 @@
       zorba:delete-node-last
     </zorba:description>
 
-    <zorba:function isUpdating="true" requiresDynamicContext="true"> 
+    <zorba:function> 
+
       <zorba:signature localname="delete-node-last" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+      </zorba:methods>
+
     </zorba:function>
 
-    <zorba:function isUpdating="true" requiresDynamicContext="true"> 
+    <zorba:function> 
+
       <zorba:signature localname="delete-nodes-last" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>xs:unsignedLong</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+      </zorba:methods>
+
     </zorba:function>
 
 </zorba:iterator>

@@ -13,39 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "runtime/rest/rest.h"
+
 #include "functions/Rest.h"
 #include "functions/function_impl.h"
 
 #include "system/globalenv.h"
 
-#include "runtime/rest/rest.h"
-
 namespace zorba {
 
 class rest_head : public function
 {
-  public:
-    rest_head(const signature& sig): function(sig){}
+public:
+  rest_head(const signature& sig): function(sig){}
 
-    bool isDeterministic() const { return false; }
+  bool isDeterministic() const { return false; }
 
-    PlanIter_t codegen(
+  bool isSource() const { return true; }
+
+  PlanIter_t codegen(
       CompilerCB*,
       static_context* sctx,
       const QueryLoc& loc,
       std::vector<PlanIter_t>& argv,
       AnnotationHolder& ann) const
-    {
-      return new ZorbaRestHeadIterator(sctx, loc, argv);
-    }
+  {
+    return new ZorbaRestHeadIterator(sctx, loc, argv);
+  }
 };
+
 
 class rest_get : public function
 {
 public:
   rest_get(const signature& sig) : function(sig) {}
 
-  bool isDeterministic () const { return false; }
+  bool isDeterministic() const { return false; }
+
+  bool isSource() const { return true; }
 
   PlanIter_t codegen(
         CompilerCB* /*cb*/,
@@ -64,7 +69,9 @@ class rest_get_tidy : public function
 public:
   rest_get_tidy(const signature& sig) : function(sig) {}
 
-  bool isDeterministic () const { return false; }
+  bool isDeterministic() const { return false; }
+
+  bool isSource() const { return true; }
 
   PlanIter_t codegen(
         CompilerCB* /*cb*/,
@@ -77,17 +84,15 @@ public:
   }
 };
 
+
 class rest_post : public function
 {
 public:
   rest_post(const signature& sig) : function(sig) {}
 
-  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const
-  {
-    return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-  }
+  bool isDeterministic() const { return false; }
 
-  bool isDeterministic () const { return false; }
+  bool isSource() const { return true; }
 
   PlanIter_t codegen(
         CompilerCB* /*cb*/,
@@ -106,12 +111,9 @@ class rest_post_tidy : public function
 public:
   rest_post_tidy(const signature& sig) : function(sig) {}
 
-  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const
-  {
-    return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-  }
+  bool isDeterministic() const { return false; }
 
-  bool isDeterministic () const { return false; }
+  bool isSource() const { return true; }
 
   PlanIter_t codegen(
         CompilerCB* /*cb*/,
@@ -130,12 +132,9 @@ class rest_put : public function
 public:
   rest_put(const signature& sig) : function(sig) {}
 
-  xqtref_t return_type (const std::vector<xqtref_t>& arg_types) const
-  {
-    return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-  }
+  bool isDeterministic() const { return false; }
 
-  bool isDeterministic () const { return false; }
+  bool isSource() const { return true; }
 
   DEFAULT_NARY_CODEGEN(ZorbaRestPutIterator);
 };
@@ -146,12 +145,9 @@ class rest_delete : public function
 public:
   rest_delete(const signature& sig) : function(sig) {}
 
-  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const
-  {
-    return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-  }
+  bool isDeterministic() const { return false; }
 
-  bool isDeterministic () const { return false; }
+  bool isSource() const { return true; }
 
   DEFAULT_NARY_CODEGEN(ZorbaRestDeleteIterator);
 };

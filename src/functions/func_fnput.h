@@ -48,7 +48,7 @@ public:
   {
   }
 
-  bool propagatesInputToOutput(ulong aProducer) const;
+  bool accessesDynCtx() const { return true; }
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 

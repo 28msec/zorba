@@ -48,20 +48,24 @@ using namespace std;
 namespace zorba 
 {
 
-bool dynamic_context::static_init = false;
 
+/*******************************************************************************
 
+********************************************************************************/
 std::string dynamic_context::var_key(const void* var) 
 {
   if (var == NULL)
     return "";
 
-  const var_expr *ve = static_cast<const var_expr *> (var);
+  const var_expr* ve = static_cast<const var_expr*>(var);
 
-  return xqpString::concat(to_string(ve->get_unique_id()), ":", ve->get_name()->getStringValue());
+  return to_string(ve->get_unique_id()) + ":" + ve->get_name()->getStringValue()->str();
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 xqp_string dynamic_context::expand_varname(
     static_context* sctx,
     xqpString& qname)
@@ -73,42 +77,42 @@ xqp_string dynamic_context::expand_varname(
     return (const char*)NULL;
   }
 
-  void* var = static_cast<void *> (sctx->lookup_var(qname));
+  void* var = static_cast<void*>(sctx->lookup_var(qname));
   return var_key(var);
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 xqp_string dynamic_context::expand_varname(
     static_context* sctx,
-    xqpString& ns, xqpString& localname)
+    xqpString& ns,
+    xqpString& localname)
 {
-  if(!sctx) 
+  if(!sctx)
   {
     ///actually the whole static context is missing
     ZORBA_ERROR_PARAM( XPST0001, "entire static context", "");
     return (const char*)NULL;
   }
 
-  void* var = static_cast<void *> (sctx->lookup_var(ns, localname));
+  var_expr* var = static_cast<var_expr*>(sctx->lookup_var(ns, localname));
   return var_key(var);
 }
 
 
-void dynamic_context::init()
-{
-	if (!dynamic_context::static_init) {
-		dynamic_context::static_init = true;
-	}
-}
+/*******************************************************************************
 
-
+********************************************************************************/
 dynamic_context::dynamic_context(dynamic_context* parent)
   :
+  theParent(NULL),
   theAvailableIndices(NULL)
 {
   theParent = parent;
 
-  if(!theParent)
+  if(parent == NULL)
   {
 #if defined (WIN32)
     struct _timeb timebuffer;
@@ -155,16 +159,19 @@ dynamic_context::dynamic_context(dynamic_context* parent)
 	}
 	else
 	{
-		current_date_time_item = theParent->current_date_time_item;
-		theTimezone = theParent->theTimezone;
-		default_collection_uri = theParent->default_collection_uri;
+		current_date_time_item = parent->current_date_time_item;
+		theTimezone = parent->theTimezone;
+		default_collection_uri = parent->default_collection_uri;
 
-		ctxt_item = theParent->ctxt_item;
-		ctxt_position = theParent->ctxt_position;
+		ctxt_item = parent->ctxt_item;
+		ctxt_position = parent->ctxt_position;
 	}
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 dynamic_context::~dynamic_context()
 {
 	///free the pointers from ctx_value_t from keymap
@@ -186,6 +193,9 @@ dynamic_context::~dynamic_context()
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 store::Item_t dynamic_context::get_default_collection()
 {
 	return default_collection_uri;
@@ -260,6 +270,33 @@ void dynamic_context::set_context_item_type(xqtref_t v)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+void dynamic_context::add_variable(
+    const std::string& varname,
+    store::Iterator_t& var_iterator) 
+{
+  declare_variable(varname);
+  set_variable(varname, var_iterator);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void dynamic_context::add_variable(
+    const std::string& varname,
+    store::Item_t& var_item) 
+{
+  declare_variable(varname);
+  set_variable(varname, var_item);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void dynamic_context::declare_variable(const std::string& var_name)
 {
   if (var_name.empty()) return;
@@ -276,10 +313,10 @@ void dynamic_context::declare_variable(const std::string& var_name)
 }
 
 
-/*
+/*******************************************************************************
   var_name is expanded name localname:nsURI
   constructed by static_context::qname_internal_key( .. )
-*/
+********************************************************************************/
 void dynamic_context::set_variable(
     const std::string& var_name,
     store::Iterator_t& var_iterator)
@@ -317,6 +354,9 @@ void dynamic_context::set_variable(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void dynamic_context::set_variable(
     const std::string& var_name,
     store::Item_t& var_item)
@@ -350,24 +390,9 @@ void dynamic_context::set_variable(
 }
 
 
-void dynamic_context::add_variable(
-    const std::string& varname,
-    store::Iterator_t& var_iterator) 
-{
-  declare_variable(varname);
-  set_variable(varname, var_iterator);
-}
+/*******************************************************************************
 
-
-void dynamic_context::add_variable(
-    const std::string& varname,
-    store::Item_t& var_item) 
-{
-  declare_variable(varname);
-  set_variable(varname, var_item);
-}
-
-
+********************************************************************************/
 bool dynamic_context::get_variable(
     const store::Item_t& varname,
     store::Item_t& var_item,
@@ -408,6 +433,9 @@ bool dynamic_context::lookup_var_value(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void dynamic_context::destroy_dctx_value(dctx_value_t* val) 
 {
   switch (val->type) 
@@ -430,6 +458,9 @@ void dynamic_context::destroy_dctx_value(dctx_value_t* val)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 store::Index* dynamic_context::getIndex(const store::Item* qname) const
 {
   if (theAvailableIndices == NULL)
@@ -452,6 +483,9 @@ store::Index* dynamic_context::getIndex(const store::Item* qname) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void dynamic_context::bindIndex(
     const store::Item* qname,
     store::Index_t& index)
@@ -466,6 +500,9 @@ void dynamic_context::bindIndex(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void dynamic_context::unbindIndex(const store::Item* qname)
 {
   if (!theAvailableIndices->remove(qname))
@@ -478,13 +515,20 @@ void dynamic_context::unbindIndex(const store::Item* qname)
 }
 
 
-void dynamic_context::activateIC(const store::Item_t& qname, 
-                                 const store::Item_t& collectionQName)
+/*******************************************************************************
+
+********************************************************************************/
+void dynamic_context::activateIC(
+    const store::Item_t& qname, 
+    const store::Item_t& collectionQName)
 {
   GENV_STORE.activateIC(qname, collectionQName);
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void dynamic_context::activateForeignKeyIC(
     const store::Item_t& qname, 
     const store::Item_t& fromCollectionQName,
@@ -495,24 +539,36 @@ void dynamic_context::activateForeignKeyIC(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void dynamic_context::deactivateIC(const store::Item* qname)
 {
   GENV_STORE.deactivateIC(qname);
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 store::Iterator_t dynamic_context::listActiveICNames()
 {
   return GENV_STORE.listActiveICNames();
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 store::IC* dynamic_context::getIC(const store::Item* qname)
 { 
   return GENV_STORE.getIC(qname);
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool
 dynamic_context::addExternalFunctionParam (
   const std::string& aName,
@@ -525,6 +581,10 @@ dynamic_context::addExternalFunctionParam (
   return keymap.put ( aName, val);
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 bool
 dynamic_context::getExternalFunctionParam (
   const std::string& aName,

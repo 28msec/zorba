@@ -16,10 +16,10 @@
  
 #include <vector>
 
-#include "functions/accessors_impl.h"
-#include "functions/single_seq_func.h"
-#include "functions/function_impl.h"
 #include "runtime/accessors/accessors.h"
+
+#include "functions/accessors_impl.h"
+#include "functions/function_impl.h"
 #include "functions/func_accessors.h"
 
 #include "types/typeops.h"
@@ -33,7 +33,7 @@ namespace zorba
 /*******************************************************************************
   
 ********************************************************************************/
-xqtref_t fn_data::return_type(const std::vector<xqtref_t>& arg_types) const
+xqtref_t fn_data::getReturnType(const std::vector<xqtref_t>& arg_types) const
 {
   RootTypeManager& RTM = GENV_TYPESYSTEM;
 

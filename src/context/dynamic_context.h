@@ -78,9 +78,6 @@ protected:
   typedef ItemPointerHashMap<store::Index_t> IndexMap;
 
 protected:
-  static bool                  static_init;
-
-protected:
   dynamic_context            * theParent;
 
   store::Item_t                current_date_time_item;
@@ -103,8 +100,6 @@ public:
 
   static xqp_string expand_varname(static_context* sctx, xqpString& ns,
     xqpString& localname);
-
-  static void init();
 
 public:
   dynamic_context(dynamic_context* parent = NULL);

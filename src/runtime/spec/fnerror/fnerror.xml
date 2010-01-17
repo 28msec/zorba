@@ -18,25 +18,34 @@
     
     <zorba:description author="Zorba Team">fn:error</zorba:description>
     
-    <zorba:function isVacuous="true" isFnError="true">
+    <zorba:function isVacuous="true">
+
       <zorba:signature localname="error" prefix="fn">
         <zorba:output>none</zorba:output>
       </zorba:signature>
+
       <zorba:signature localname="error" prefix="fn">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>none</zorba:output>
       </zorba:signature>
+
       <zorba:signature localname="error" prefix="fn">
         <zorba:param>xs:QName?</zorba:param>
         <zorba:param>xs:string</zorba:param>
         <zorba:output>none</zorba:output>
       </zorba:signature>
+
       <zorba:signature localname="error" prefix="fn">
         <zorba:param>xs:QName?</zorba:param>
         <zorba:param>xs:string</zorba:param>
         <zorba:param>item()*</zorba:param>
         <zorba:output>none</zorba:output>
       </zorba:signature>
+
+      <zorba:methods>
+        <zorba:getUpdateType returnValue="VACUOUS_EXPR"/>
+      </zorba:methods>
+
     </zorba:function>
     
   </zorba:iterator>

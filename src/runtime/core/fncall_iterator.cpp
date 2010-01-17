@@ -122,32 +122,43 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>::
   openImpl(planState, offset);
 
-  UDFunctionCallIteratorState *state = StateTraitsImpl<UDFunctionCallIteratorState>::getState(planState, theStateOffset);
+  UDFunctionCallIteratorState* state = 
+  StateTraitsImpl<UDFunctionCallIteratorState>::getState(planState, theStateOffset);
 
   state->thePlan = theUDF->get_plan(planState.theCompilerCB).getp();
   state->thePlanStateSize = state->thePlan->getStateSizeOfSubtree();
-  std::auto_ptr<PlanState> block(new PlanState(state->thePlanStateSize, planState.theStackDepth + 1));
-  block->theRuntimeCB = new RuntimeCB (*planState.theRuntimeCB);
-  block->theRuntimeCB->theDynamicContext = new dynamic_context (block->theRuntimeCB->theDynamicContext);
+
+  std::auto_ptr<PlanState> block(new PlanState(state->thePlanStateSize,
+                                               planState.theStackDepth + 1));
   block->theCompilerCB = planState.theCompilerCB;
   block->theDebuggerCommons = planState.theDebuggerCommons;
 
-  block->checkDepth (loc);
+  // Must allocate new dctx, as child of the "current" dctx, because the udf may
+  // declare local block vars, some of which may hide vars with the same name in 
+  // the scope of the caller. 
+  block->theRuntimeCB = new RuntimeCB(*planState.theRuntimeCB);
+  block->theRuntimeCB->theDynamicContext = new dynamic_context(block->theRuntimeCB->theDynamicContext);
+
+  block->checkDepth(loc);
+
   state->theFnBodyStateBlock = block.release();
 }
 
 
 void UDFunctionCallIterator::closeImpl(PlanState& planState)
 {
-  UDFunctionCallIteratorState *state = StateTraitsImpl<UDFunctionCallIteratorState>::getState(planState, theStateOffset);
+  UDFunctionCallIteratorState* state = 
+  StateTraitsImpl<UDFunctionCallIteratorState>::getState(planState, theStateOffset);
 
   state->closePlan();
-  if (state->theFnBodyStateBlock != NULL
-      && state->theFnBodyStateBlock->theRuntimeCB != NULL)
+
+  if (state->theFnBodyStateBlock != NULL &&
+      state->theFnBodyStateBlock->theRuntimeCB != NULL)
   {
     delete state->theFnBodyStateBlock->theRuntimeCB->theDynamicContext;
     delete state->theFnBodyStateBlock->theRuntimeCB;
   }
+
   delete state->theFnBodyStateBlock;
   state->resetChildIters();
 
@@ -161,7 +172,8 @@ void UDFunctionCallIterator::resetImpl(PlanState& planState) const
   NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>::
   resetImpl(planState);
 
-  UDFunctionCallIteratorState *state = StateTraitsImpl<UDFunctionCallIteratorState>::getState(planState, theStateOffset);
+  UDFunctionCallIteratorState* state =
+  StateTraitsImpl<UDFunctionCallIteratorState>::getState(planState, theStateOffset);
 
   state->resetPlan();
   state->resetChildIters();
@@ -181,9 +193,11 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
   {
     name << theUDF->getName()->getStringValue() << '(';
   }
+
   {
     // Bind the args.
     state->openPlan();
+
     std::vector<LetVarIter_t>& iters = theUDF->get_param_iters();
     for (uint32_t i = 0; i < iters.size (); ++i) 
     {
@@ -192,8 +206,10 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
       {
         state->theChildIterators.push_back(new PlanIteratorWrapper(theChildren[i], planState));
         state->theChildIterators.back()->open();
+
         ref->bind(state->theChildIterators.back(), *state->theFnBodyStateBlock);
-        if(lDebugger != 0)
+ 
+       if(lDebugger != 0)
         {
           store::Iterator_t it = state->theChildIterators.back();
           it->open();
@@ -216,7 +232,8 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
       }
     }
   }
-  if(lDebugger != 0)
+
+  if (lDebugger != 0)
   {
     name << ')';
     //lDebugger->theLastKnownStack = lDebugger->theStack;
@@ -224,17 +241,22 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
     //lDebugger->isFunctionExecution = true;
   }
   
-  for (;;) {
-    try {
+  for (;;) 
+  {
+    try
+    {
       success = consumeNext (result, state->thePlan, *state->theFnBodyStateBlock);
-    } catch (ExitException &e) {
+    }
+    catch (ExitException &e)
+    {
       state->exitValue = e.val;
       success = false;
     }
     
     if (success)
       STACK_PUSH(true, state);
-    else break;
+    else
+      break;
   }
 
   if (state->exitValue != NULL)
@@ -275,10 +297,14 @@ class ExtFuncArgItemSequence : public ItemSequence
 };
 
 
-StatelessExtFunctionCallIteratorState::StatelessExtFunctionCallIteratorState() { }
+StatelessExtFunctionCallIteratorState::StatelessExtFunctionCallIteratorState() 
+{ 
+}
 
 
-StatelessExtFunctionCallIteratorState::~StatelessExtFunctionCallIteratorState() { }
+StatelessExtFunctionCallIteratorState::~StatelessExtFunctionCallIteratorState() 
+{
+}
 
 
 void StatelessExtFunctionCallIteratorState::reset(PlanState& planState)
@@ -304,9 +330,11 @@ StatelessExtFunctionCallIterator::StatelessExtFunctionCallIterator(
 { 
 }
 
+
 StatelessExtFunctionCallIterator::~StatelessExtFunctionCallIterator()
 {
 }
+
 
 void
 StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
@@ -354,6 +382,7 @@ StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
   }
   ar & theIsUpdating;
 }
+
 
 void StatelessExtFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 {

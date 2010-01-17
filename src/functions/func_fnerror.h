@@ -44,8 +44,6 @@ class fn_error : public function
 public:
   fn_error(const signature& sig);
 
-  bool isFnError() const { return true; }
-
   expr_script_kind_t getUpdateType() const { return VACUOUS_EXPR; }
 
   CODEGEN_DECL();

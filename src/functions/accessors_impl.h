@@ -35,7 +35,7 @@ void populate_context_accessors_impl(static_context* sctx);
 class fn_name_func : public function
 {
 public:
-  fn_name_func(const signature& s) : function(s) {}
+ fn_name_func(const signature& s) : function(s, FunctionConsts::FN_NAME_1) {}
 
   CODEGEN_DECL();
 };

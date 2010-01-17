@@ -48,7 +48,7 @@ public:
   {
   }
 
-  bool requires_dyn_ctx() const { return true; }
+  bool accessesDynCtx() const { return true; }
 
   CODEGEN_DECL();
 };
@@ -64,7 +64,7 @@ public:
   {
   }
 
-  bool requires_dyn_ctx() const { return true; }
+  bool accessesDynCtx() const { return true; }
 
   CODEGEN_DECL();
 };
@@ -80,7 +80,7 @@ public:
   {
   }
 
-  bool requires_dyn_ctx() const { return true; }
+  bool accessesDynCtx() const { return true; }
 
   CODEGEN_DECL();
 };

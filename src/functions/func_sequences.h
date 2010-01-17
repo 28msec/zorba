@@ -49,19 +49,9 @@ public:
   {
   }
 
-  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
+
   COMPUTE_ANNOTATION_DECL();
-
-
-  FunctionConsts::AnnotationValue producesSortedNodes() const 
-  {
-    return FunctionConsts::PRESERVE;
-  }
-
-  FunctionConsts::AnnotationValue producesDistinctNodes() const 
-  {
-    return FunctionConsts::PRESERVE;
-  }
 
   CODEGEN_DECL();
 };
@@ -71,7 +61,7 @@ public:
 class fn_index_of : public function
 {
 public:
-  fn_index_of(const signature& sig) : function(sig)
+  fn_index_of(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.arg_count() == 2 ?
                 FunctionConsts::FN_INDEX_OF_2 :
@@ -114,14 +104,14 @@ public:
 class fn_distinct_values : public function
 {
 public:
-  fn_distinct_values(const signature& sig) : function(sig)
+  fn_distinct_values(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.arg_count() == 2 ?
                 FunctionConsts::FN_DISTINCT_VALUES_2 :
                 FunctionConsts::FN_DISTINCT_VALUES_1);
   }
 
-  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
 
   CODEGEN_DECL();
 };
@@ -142,70 +132,61 @@ public:
 
 
 //fn:remove
-class fn_remove : public single_seq_opt_function
+class fn_remove : public function
 {
 public:
   fn_remove(const signature& sig)
     :
-    single_seq_opt_function(sig, FunctionConsts::FN_REMOVE_2)
+    function(sig, FunctionConsts::FN_REMOVE_2)
   {
   }
 
-  FunctionConsts::AnnotationValue producesSortedNodes() const 
-  {
-    return FunctionConsts::PRESERVE;
-  }
+  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
 
-  FunctionConsts::AnnotationValue producesDistinctNodes() const 
-  {
-    return FunctionConsts::PRESERVE;
-  }
+  bool propagatesSortedNodes(ulong producer) const { return producer == 0; }
+
+  bool propagatesDistinctNodes(ulong producer) const { return producer == 0; }
 
   CODEGEN_DECL();
 };
 
 
 //fn:reverse
-class fn_reverse : public single_seq_opt_function
+class fn_reverse : public function
 {
 public:
   fn_reverse(const signature& sig)
     :
-    single_seq_opt_function(sig, FunctionConsts::FN_REVERSE_1)
+    function(sig, FunctionConsts::FN_REVERSE_1)
   {
   }
 
-  FunctionConsts::AnnotationValue producesDistinctNodes() const 
-  {
-    return FunctionConsts::PRESERVE;
-  }
+  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
+
+  bool propagatesDistinctNodes(ulong producer) const { return producer == 0; }
 
   CODEGEN_DECL();
 };
 
 
 //fn:subsequence
-class fn_subsequence : public single_seq_opt_function
+class fn_subsequence : public function
 {
 public:
-  fn_subsequence(const signature& sig) : single_seq_opt_function(sig)
+  fn_subsequence(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.arg_count() == 2 ?
                 FunctionConsts::FN_SUBSEQUENCE_2 :
                 FunctionConsts::FN_SUBSEQUENCE_3);
   }
+
+  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
+
+  bool propagatesSortedNodes(ulong producer) const { return producer == 0; }
+
+  bool propagatesDistinctNodes(ulong producer) const { return producer == 0; }
+
   COMPUTE_ANNOTATION_DECL();
-
-
-  FunctionConsts::AnnotationValue producesSortredNodes() const 
-  {
-    return FunctionConsts::PRESERVE;
-  }
-
-  FunctionConsts::AnnotationValue producesDistinctNodes() const 
-  {
-    return FunctionConsts::PRESERVE;
-  }
 
   CODEGEN_DECL();
 };
@@ -221,7 +202,7 @@ public:
   {
   }
 
-  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
 
   CODEGEN_DECL();
 };
@@ -237,19 +218,11 @@ public:
   {
   }
 
-  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
 
-  FunctionConsts::AnnotationValue producesSortredNodes() const 
-  {
-    return FunctionConsts::PRESERVE;
-  }
+  bool propagatesSortedNodes(ulong producer) const { return producer == 0; }
 
-  FunctionConsts::AnnotationValue producesDistinctNodes() const 
-  {
-    return FunctionConsts::PRESERVE;
-  }
-
-  bool isMap(ulong input) const { return input == 0; }
+  bool propagatesDistinctNodes(ulong producer) const { return producer == 0; }
 
   CODEGEN_DECL();
 };
@@ -259,7 +232,7 @@ public:
 class fn_deep_equal : public function
 {
 public:
-  fn_deep_equal(const signature& sig) : function(sig)
+  fn_deep_equal(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.arg_count() == 2 ?
                 FunctionConsts::FN_DEEP_EQUAL_2 :
@@ -302,7 +275,7 @@ public:
 class fn_sum : public function
 {
 public:
-  fn_sum(const signature& sig) : function(sig)
+  fn_sum(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.arg_count() == 1 ?
                 FunctionConsts::FN_SUM_1 :
@@ -322,7 +295,7 @@ public:
 class fn_sum_double : public function
 {
 public:
-  fn_sum_double(const signature& sig) : function(sig)
+  fn_sum_double(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.arg_count() == 1 ?
                 FunctionConsts::FN_SUM_DOUBLE_1 :
@@ -337,7 +310,7 @@ public:
 class fn_sum_float : public function
 {
 public:
-  fn_sum_float(const signature& sig) : function(sig)
+  fn_sum_float(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.arg_count() == 1 ?
                 FunctionConsts::FN_SUM_FLOAT_1 :
@@ -352,7 +325,7 @@ public:
 class fn_sum_decimal : public function
 {
 public:
-  fn_sum_decimal(const signature& sig) : function(sig)
+  fn_sum_decimal(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.arg_count() == 1 ?
                 FunctionConsts::FN_SUM_DECIMAL_1 :
@@ -367,7 +340,7 @@ public:
 class fn_sum_integer : public function
 {
 public:
-  fn_sum_integer(const signature& sig) : function(sig)
+  fn_sum_integer(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.arg_count() == 1 ?
                 FunctionConsts::FN_SUM_INTEGER_1 :
@@ -402,11 +375,9 @@ public:
   {
   }
 
-  bool propagatesInputToOutput(ulong aProducer) const;
+  bool accessesDynCtx() const { return true; }
 
-  bool requires_dyn_ctx() const { return true; }
-
-  virtual bool isSource() const { return true; }
+  bool isSource() const { return true; }
 
   CODEGEN_DECL();
 };
@@ -436,9 +407,9 @@ public:
   {
   }
 
-  bool requires_dyn_ctx() const { return true; }
+  bool accessesDynCtx() const { return true; }
 
-  virtual bool isSource() const { return true; }
+  bool isSource() const { return true; }
 
   CODEGEN_DECL();
 };

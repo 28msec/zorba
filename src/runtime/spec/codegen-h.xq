@@ -96,7 +96,7 @@ declare function local:create-function($iter, $function) as xs:string?
               string-join(($name,
                            '(const signature&amp; sig) : ',
                            local:base-class($function),
-                           '(sig)',
+                           '(sig, FunctionConsts::FN_UNKNOWN)',
                            $gen:newline, $gen:indent,
                            '{',
                            $gen:newline, $gen:indent,  $gen:indent,
@@ -121,56 +121,9 @@ declare function local:create-function($iter, $function) as xs:string?
                           ''),
           $gen:newline,
 
-        (: 
-           Check whether to generate the signature for the return_type function.
-           If true, the user has to provide his own implementation.
-        :)
-        if($function/@generateReturnTypeDecl = 'true')
-        then 
-          string-join(($gen:newline, $gen:indent,
-                       'xqtref_t return_type(const std::vector&lt;xqtref_t&gt;&amp; arg_types) const;',
-                       $gen:newline),
-                      '') 
-        else
-          (),
 
-        (: 
-          Check whether to generate the computeAnnotation function.
-          If true, the user has to provide his own implementation.
-        :)
-        if($function/@generateComputeAnnotationDecl = 'true')
-        then
-          string-join(($gen:indent,
-                       'COMPUTE_ANNOTATION_DECL();', 
-                       $gen:newline, $gen:newline), '') 
-        else 
-          (),
-
-        (: 
-           Check whether to generate the propagatesInputToOutput function.
-           If any of the propagatesInputToOutput or propagesOne attributes is
-           present, the function declaration is generated, and the has to provide
-           his own implementation.
-        :)
-        if ( fn:exists($function/@propagatesInputToOutput) or
-              fn:exists($function/@propagesOne) )
-        then
-          string-join(($gen:newline, $gen:indent,
-                       'bool propagatesInputToOutput(ulong aProducer) const;',
-                       $gen:newline),'')
-        else 
-          (),
-
-        local:add-annotations($function),
-        local:add-isMap($function),
         local:add-specialization($function),
-        local:add-unfoldable($function),
-        local:add-isDeterministic($function),
-        local:add-is-source($function),
-        local:add-is-fn-error($function),
-        local:add-is-updating($function),
-        local:add-is-vacuous($function),
-        local:add-is-sequential($function),
+        local:add-methods($function),
         $gen:newline,
 
         $gen:indent, 'CODEGEN_DECL();', $gen:newline,
@@ -231,102 +184,99 @@ declare function local:base-class($function)
 };
 
 
-declare function local:add-is-source($function) as xs:string?
+declare function local:add-methods($function) as xs:string*
 {
-  if($function/@isSource = 'true') 
+  if (count($function//zorba:methods) > 0) 
   then
-    string-join(($gen:newline, $gen:indent,
-                 'virtual bool isSource() const { return true; }',
-                 $gen:newline),'')
+    for $meth in $function//zorba:methods/child::*
+    return
+      if (name($meth) eq 'zorba:getReturnType')
+      then
+        string-join(($gen:newline, $gen:indent,
+                     'xqtref_t getReturnType(',
+                     'const std::vector&lt;xqtref_t&gt;&amp; arg_types) const;',
+                     $gen:newline), '')
+
+      else if (name($meth) eq 'zorba:getUpdateType')
+      then
+        string-join(($gen:newline, $gen:indent,
+                     'expr_script_kind_t getUpdateType() const ',
+                     '{ return ', $meth/@returnValue, '; }',
+                      $gen:newline),'')
+
+      else if (name($meth) eq 'zorba:accessesDynCtx')
+      then
+        string-join(($gen:newline, $gen:indent,
+                     'bool accessesDynCtx() const ',
+                     '{ return ', $meth/@returnValue, '; }',
+                     $gen:newline),'')
+
+      else if (name($meth) eq 'zorba:isSource')
+      then
+        string-join(($gen:newline, $gen:indent,
+                     'bool isSource() const ',
+                     '{ return ', $meth/@returnValue, '; }',
+                      $gen:newline),'')
+
+      else if (name($meth) eq 'zorba:isDeterministic')
+      then
+        string-join(($gen:newline, $gen:indent,
+                     'bool isDeterministic() const ',
+                     '{ return ', $meth/@returnValue, '; }',
+                      $gen:newline),'')
+
+      else if (name($meth) eq 'zorba:isMap')
+      then
+        string-join(($gen:newline, $gen:indent,
+                     'bool isMap(ulong producer) const ',
+                     '{ return producer == ', $meth/@producer, '; }',
+                      $gen:newline),'')
+
+      else if (name($meth) eq 'zorba:producesDistinctNodes')
+      then
+        string-join(($gen:newline, $gen:indent,
+                     'FunctionConsts::AnnotationValue producesDistinctNodes() const ',
+                     $gen:newline, $gen:indent, '{',
+                     $gen:newline, gen:indent(2),
+                     'return FunctionConsts::', $meth/@returnValue, ';',
+                     $gen:newline, $gen:indent, '}',
+                     $gen:newline),'')
+
+      else if (name($meth) eq 'zorba:producesSortedNodes')
+      then
+        string-join(($gen:newline, $gen:indent,
+                     'FunctionConsts::AnnotationValue producesSortedNodes() const ',
+                     $gen:newline, $gen:indent, '{',
+                     $gen:newline, gen:indent(2),
+                     'return FunctionConsts::', $meth/@returnValue, ';',
+                     $gen:newline, $gen:indent, '}',
+                     $gen:newline),'')
+
+      else if (name($meth) eq 'zorba:propagatesDistinctNodes')
+      then
+        string-join(($gen:newline, $gen:indent,
+                     'bool propagatesDistinctNodes(ulong producer) const ',
+                     '{ return producer == ', $meth/@producer, '; }',
+                      $gen:newline),'')
+
+      else if (name($meth) eq 'zorba:propagatesSortedNodes')
+      then
+        string-join(($gen:newline, $gen:indent,
+                     'bool propagatesSortedNodes(ulong producer) const ',
+                     '{ return producer == ', $meth/@producer, '; }',
+                      $gen:newline),'')
+
+      else if (name($meth) eq 'zorba:compute_annotation')
+      then
+        string-join(($gen:newline, $gen:indent,
+                     'COMPUTE_ANNOTATION_DECL();', 
+                     $gen:newline), '') 
+      else
+        ()
   else
     ()
 };
 
-
-declare function local:add-is-fn-error($function) as xs:string?
-{
-  if ($function/@isFnError = 'true')
-  then
-    string-join(($gen:newline, $gen:indent,
-                 'bool isFnError() const { return true; }',
-                 $gen:newline),'')
-  else 
-    ()
-};
-
-
-declare function local:add-is-updating($function) as xs:string?
-{
-  if ($function/@isUpdating = 'true') 
-  then
-    string-join(($gen:newline, $gen:indent,
-                 'expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }',
-                 $gen:newline),'')
-  else 
-    ()
-};
-
-
-declare function local:add-is-vacuous($function) as xs:string?
-{
-  if ($function/@isVacuous = 'true') 
-  then
-    string-join(($gen:newline, $gen:indent,
-                 'expr_script_kind_t getUpdateType() const { return VACUOUS_EXPR; }',
-                 $gen:newline),'')
-  else 
-    ()
-};
-
-
-declare function local:add-is-sequential($function) as xs:string?
-{
-  if ($function/@isSequential = 'true') 
-  then
-    string-join(($gen:newline, $gen:indent,
-                 'expr_script_kind_t getUpdateType() const { return SEQUENTIAL_EXPR; }',
-                 $gen:newline),'')
-  else 
-    ()
-};
-
-
-declare function local:add-isDeterministic($function) as xs:string?
-{
-  if ($function/@isDeterministic = 'false') 
-  then
-    string-join(($gen:newline,$gen:indent,
-                 'bool isDeterministic() const { return false; }',
-                 $gen:newline),'')
-  else 
-    ()
-};
-
-
-declare function local:add-isMap($function) as xs:string?
-{
-  let $input := data($function/@isMap)
-  return 
-    if (empty($input)) then
-      ()
-    else
-      string-join(($gen:newline, 
-                   $gen:indent,
-                   'bool isMap(ulong input) const { return input == ', $input,  '; }',
-                   $gen:newline), '')
-};
-
-
-declare function local:add-unfoldable($function) as xs:string?
-{
-  if ($function/@requiresDynamicContext = 'true')
-  then
-    string-join(($gen:newline, $gen:indent,
-                 'bool requires_dyn_ctx() const { return true; }',
-                 $gen:newline),'')
-  else 
-    ()
-};
 
 
 declare function local:add-specialization($function) as xs:string?
@@ -341,24 +291,6 @@ declare function local:add-specialization($function) as xs:string?
                  'const std::vector&lt;xqtref_t&gt;&amp; argTypes) const;',
                  $gen:newline),'')
   else 
-    ()
-};
-
-
-declare function local:add-annotations($function) as xs:string*
-{
-  if (count($function//zorba:annotation) > 0) 
-  then
-    for $ann in $function//zorba:annotation
-    return
-      string-join(($gen:newline, $gen:indent,
-                   'FunctionConsts::AnnotationValue ', $ann/@name, '() const ',
-                   $gen:newline, $gen:indent, '{',
-                   $gen:newline, gen:indent(2),
-                   'return FunctionConsts::', $ann/text(), ';', 
-                   $gen:newline, $gen:indent,
-                   '}', $gen:newline), '')
-  else
     ()
 };
 

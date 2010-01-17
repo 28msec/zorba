@@ -38,12 +38,18 @@
   Error XXX is risen if $icName is not available in the static context.
     </zorba:description>
 
-    <zorba:function isUpdating="false" requiresDynamicContext="true"> 
+    <zorba:function> 
+
       <zorba:signature localname="activate-integrity-constraint" 
 		       prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
     </zorba:function>
 
 </zorba:iterator>
@@ -64,12 +70,18 @@
   dynamic context.
     </zorba:description>
 
-    <zorba:function isUpdating="false" requiresDynamicContext="true"> 
+    <zorba:function>
+ 
       <zorba:signature localname="deactivate-integrity-constraint" 
 		       prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
     </zorba:function>
 
 </zorba:iterator>
@@ -90,12 +102,18 @@
   dynamic context.
     </zorba:description>
 
-    <zorba:function isUpdating="false" requiresDynamicContext="true"> 
+    <zorba:function> 
+
       <zorba:signature localname="check-integrity-constraint" 
 		       prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>xs:boolean</zorba:output>
       </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
     </zorba:function>
 
 </zorba:iterator>

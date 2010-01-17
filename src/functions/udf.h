@@ -93,11 +93,11 @@ public:
 
   virtual expr_script_kind_t getUpdateType() const { return theUpdateType; }
 
-  virtual bool is_builtin_fn_named(const char *local, int local_len,int arg_count) const {return false;}
+  virtual bool is_builtin_fn_named(const char* local, int local_len, int arg_count) const {return false;}
 
   bool isDeterministic() const { return deterministic; }
 
-  void setLeaf (bool leaf_) { leaf = leaf_; }
+  void setLeaf(bool leaf_) { leaf = leaf_; }
 
   bool isLeaf() const { return leaf; }
 
@@ -109,7 +109,7 @@ public:
 
   const std::vector<var_expr_t>& get_args() const;
 
-  bool requires_dyn_ctx () const;
+  bool accessesDynCtx() const;
 
   virtual PlanIter_t get_plan(CompilerCB *) const;
   
@@ -130,7 +130,11 @@ public:
 class external_function : public function 
 {
 public:
-  external_function(const signature& sig) : function(sig) { }
+  external_function(const signature& sig) 
+    :
+    function(sig, FunctionConsts::FN_UNKNOWN)
+  {
+  }
 
   virtual ~external_function() { }
 };

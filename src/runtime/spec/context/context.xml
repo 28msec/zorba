@@ -15,10 +15,16 @@
 
     <zorba:description author="Zorba Team">fn:current-dateTime</zorba:description>
     
-    <zorba:function requiresDynamicContext="true">
+    <zorba:function>
+
         <zorba:signature localname="current-dateTime" prefix="fn">
             <zorba:output>xs:dateTime</zorba:output>
         </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
     </zorba:function>
     
 </zorba:iterator>
@@ -37,10 +43,16 @@
 
     <zorba:description author="Zorba Team">fn:current-date</zorba:description>
     
-    <zorba:function requiresDynamicContext="true">
+    <zorba:function>
+
         <zorba:signature localname="current-date" prefix="fn">
             <zorba:output>xs:date</zorba:output>
         </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
     </zorba:function>
     
 </zorba:iterator>
@@ -59,10 +71,16 @@
 
     <zorba:description author="Zorba Team">fn:current-time</zorba:description>
     
-    <zorba:function requiresDynamicContext="true">
-        <zorba:signature localname="current-time" prefix="fn">
-            <zorba:output>xs:time</zorba:output>
-        </zorba:signature>
+    <zorba:function>
+
+      <zorba:signature localname="current-time" prefix="fn">
+          <zorba:output>xs:time</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
     </zorba:function>
     
 </zorba:iterator>
@@ -81,10 +99,16 @@
     
     <zorba:description author="Zorba Team">fn:implicit-timezone</zorba:description>
     
-    <zorba:function requiresDynamicContext="true">
-        <zorba:signature localname="implicit-timezone" prefix="fn">
-            <zorba:output>xs:dayTimeDuration</zorba:output>
-        </zorba:signature>
+    <zorba:function>
+
+      <zorba:signature localname="implicit-timezone" prefix="fn">
+          <zorba:output>xs:dayTimeDuration</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
     </zorba:function>
     
 </zorba:iterator>
@@ -104,10 +128,16 @@
     
     <zorba:description author="Zorba Team">fn:default-collation</zorba:description>
     
-    <zorba:function requiresDynamicContext="true">
-        <zorba:signature localname="default-collation" prefix="fn">
-            <zorba:output>xs:string</zorba:output>
-        </zorba:signature>
+    <zorba:function>
+
+      <zorba:signature localname="default-collation" prefix="fn">
+          <zorba:output>xs:string</zorba:output>
+      </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
     </zorba:function>
     
 </zorba:iterator>

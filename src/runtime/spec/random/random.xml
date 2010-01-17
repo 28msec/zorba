@@ -41,7 +41,8 @@ Helper Iterator to produce a defined amount of integer items for testing purpose
 
   <zorba:description author="Zorba Team">Function for generating a random integer.</zorba:description>
 
-  <zorba:function isDeterministic="false">
+  <zorba:function>
+
     <zorba:signature localname="random" prefix="fn-zorba-util">
       <zorba:output>xs:integer</zorba:output>
     </zorba:signature>
@@ -50,6 +51,11 @@ Helper Iterator to produce a defined amount of integer items for testing purpose
       <zorba:param>xs:integer</zorba:param>
       <zorba:output>xs:integer</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:isDeterministic returnValue="false"/>
+    </zorba:methods>
+
   </zorba:function>
     
 </zorba:iterator>
@@ -63,10 +69,16 @@ Helper Iterator to produce a defined amount of integer items for testing purpose
 
   <zorba:description author="Zorba Team">generates UUID</zorba:description>
 
-  <zorba:function isDeterministic="false">
+  <zorba:function>
+
     <zorba:signature localname="uuid" prefix="fn-zorba-util">
       <zorba:output>xs:string</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:isDeterministic returnValue="false"/>
+    </zorba:methods>
+
   </zorba:function>
     
 </zorba:iterator>

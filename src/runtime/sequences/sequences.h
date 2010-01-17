@@ -40,8 +40,8 @@ namespace store{
 class ItemValueCollHandleHashSet;
 /**
  * 
- *      op:concatenate
- *    
+ *    op:concatenate
+ *  
  * Author: Zorba Team
  */
 class FnConcatIteratorState : public PlanIteratorState
@@ -301,7 +301,7 @@ public:
  *      Returns a new sequence constructed from the value of the first parameter with
  *      the value of third parameter inserted at the position specified by the value
  *      of the second parameter.
- *    
+ *  
  * Author: Zorba Team
  */
 class FnInsertBeforeIteratorState : public PlanIteratorState

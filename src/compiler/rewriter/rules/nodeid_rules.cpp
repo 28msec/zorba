@@ -307,26 +307,6 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
                                             Annotations::IGNORES_DUP_NODES,
                                             TSVAnnotationValue::FALSE_VAL);
     }
-    else if (fkind == FunctionConsts::OP_UNION_2 ||
-             fkind == FunctionConsts::OP_INTERSECT_2 ||
-             fkind == FunctionConsts::OP_EXCEPT_2)
-    {
-      // Union, intersect and except CAN use sorted inputs, but do not require
-      // them. For intersect and except, it's ALWAYS more efficient to sort
-      // the output than to sort the inputs. For union, it's unclear.
-      // In any case, if a sort is eliminated, it won't be missed, as other
-      // stages can put it back in.
-      for (int i = 0; i < 2; ++i) 
-      {
-        expr_t arg = fo->get_arg(i, false);
-        TSVAnnotationValue::update_annotation (arg,
-                                               Annotations::IGNORES_SORTED_NODES,
-                                               TSVAnnotationValue::TRUE_VAL);
-        TSVAnnotationValue::update_annotation(arg,
-                                              Annotations::IGNORES_DUP_NODES,
-                                              TSVAnnotationValue::TRUE_VAL);
-      }
-    }
     else
     {
       std::vector <AnnotationHolder *> args;

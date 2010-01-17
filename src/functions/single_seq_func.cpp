@@ -24,7 +24,7 @@
 namespace zorba 
 {
 
-xqtref_t single_seq_function::return_type(const std::vector<xqtref_t>& arg_types) const
+xqtref_t single_seq_function::getReturnType(const std::vector<xqtref_t>& arg_types) const
 {
   return arg_types[theInput]; 
 }
@@ -41,25 +41,10 @@ void single_seq_function::compute_annotation(
   case Annotations::IGNORES_DUP_NODES:
     TSVAnnotationValue::update_annotation(kids[theInput], k, parent->get_annotation(k));
     break;
-#if 0
-  case Annotations::PRODUCES_DISTINCT_NODES:
-  case Annotations::PRODUCES_SORTED_NODES:
-    parent->put_annotation(k, kids[theInput]->get_annotation(k));
-    break;
-#endif
   default:
     ZORBA_ASSERT(false);
   }
 }
-
-
-xqtref_t single_seq_opt_function::return_type(
-    const std::vector<xqtref_t>& arg_types) const
-{
-  return arg_types[theInput]->get_manager()->
-         create_type_x_quant(*arg_types[theInput], TypeConstants::QUANT_QUESTION);
-}
-
 
 
 }

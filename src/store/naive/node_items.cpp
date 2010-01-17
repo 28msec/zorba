@@ -1231,7 +1231,7 @@ XmlNode* ElementNode::copyInternal(
       }
       else if (baseUriAttr)
       {
-        xqpStringStore_t absuri = (parent ? parent->getBaseURI() : NULL);
+        xqpStringStore_t absuri = parent->getBaseURI();
         xqpStringStore_t reluri = baseUriAttr->getBaseURI();
         copyNode->addBaseUriProperty(absuri, reluri);
       }

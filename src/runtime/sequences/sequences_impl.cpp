@@ -821,21 +821,20 @@ HashSemiJoinIteratorState::~HashSemiJoinIteratorState()
   theRightInput = 0;
 }
 
-void
-HashSemiJoinIteratorState::init(PlanState& planState) 
+
+void HashSemiJoinIteratorState::init(PlanState& planState) 
 {
   PlanIteratorState::init(planState);
 }
 
-void
-HashSemiJoinIteratorState::reset(PlanState& planState) 
+
+void HashSemiJoinIteratorState::reset(PlanState& planState) 
 {
   PlanIteratorState::reset(planState);
 }
 
 
-bool 
-HashSemiJoinIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+bool HashSemiJoinIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
   store::Item_t lItem;
   bool not_found;
@@ -863,8 +862,7 @@ HashSemiJoinIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 /*******************************************************************************
   Sortmerge based semijoin iterator.
 ********************************************************************************/
-bool 
-SortSemiJoinIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+bool SortSemiJoinIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
   store::Item_t item [2];
   short order;

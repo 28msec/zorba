@@ -42,16 +42,16 @@ void populate_context_collections(static_context* sctx);
 class fn_collection : public function
 {
 public:
-  fn_collection(const signature& sig) : function(sig)
+  fn_collection(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.arg_count() == 0 ?
                 FunctionConsts::FN_COLLECTION_0 :
                 FunctionConsts::FN_COLLECTION_1);
   }
 
-  bool requires_dyn_ctx() const { return true; }
+  bool accessesDynCtx() const { return true; }
 
-  virtual bool isSource() const { return true; }
+  bool isSource() const { return true; }
 
   CODEGEN_DECL();
 };
@@ -67,6 +67,10 @@ public:
   {
   }
 
+  bool accessesDynCtx() const { return true; }
+
+  bool isSource() const { return true; }
+
   FunctionConsts::AnnotationValue producesSortedNodes() const 
   {
     return FunctionConsts::YES;
@@ -76,10 +80,6 @@ public:
   {
     return FunctionConsts::YES;
   }
-
-  bool requires_dyn_ctx() const { return true; }
-
-  virtual bool isSource() const { return true; }
 
   CODEGEN_DECL();
 };
@@ -95,7 +95,7 @@ public:
   {
   }
 
-  bool requires_dyn_ctx() const { return true; }
+  bool accessesDynCtx() const { return true; }
 
   CODEGEN_DECL();
 };
@@ -105,14 +105,14 @@ public:
 class fn_zorba_ddl_create_collection : public function
 {
 public:
-  fn_zorba_ddl_create_collection(const signature& sig) : function(sig)
+  fn_zorba_ddl_create_collection(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.arg_count() == 1 ?
                 FunctionConsts::FN_ZORBA_DDL_CREATE_COLLECTION_1 :
                 FunctionConsts::FN_ZORBA_DDL_CREATE_COLLECTION_2);
   }
 
-  bool requires_dyn_ctx() const { return true; }
+  bool accessesDynCtx() const { return true; }
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
@@ -130,7 +130,7 @@ public:
   {
   }
 
-  bool requires_dyn_ctx() const { return true; }
+  bool accessesDynCtx() const { return true; }
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
@@ -148,7 +148,7 @@ public:
   {
   }
 
-  bool requires_dyn_ctx() const { return true; }
+  bool accessesDynCtx() const { return true; }
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
@@ -166,7 +166,7 @@ public:
   {
   }
 
-  bool requires_dyn_ctx() const { return true; }
+  bool accessesDynCtx() const { return true; }
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
@@ -184,7 +184,7 @@ public:
   {
   }
 
-  bool requires_dyn_ctx() const { return true; }
+  bool accessesDynCtx() const { return true; }
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
@@ -202,7 +202,7 @@ public:
   {
   }
 
-  bool requires_dyn_ctx() const { return true; }
+  bool accessesDynCtx() const { return true; }
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
@@ -220,7 +220,7 @@ public:
   {
   }
 
-  bool requires_dyn_ctx() const { return true; }
+  bool accessesDynCtx() const { return true; }
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
@@ -238,7 +238,7 @@ public:
   {
   }
 
-  bool requires_dyn_ctx() const { return true; }
+  bool accessesDynCtx() const { return true; }
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
@@ -256,7 +256,7 @@ public:
   {
   }
 
-  bool requires_dyn_ctx() const { return true; }
+  bool accessesDynCtx() const { return true; }
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
@@ -274,7 +274,7 @@ public:
   {
   }
 
-  bool requires_dyn_ctx() const { return true; }
+  bool accessesDynCtx() const { return true; }
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
@@ -292,7 +292,7 @@ public:
   {
   }
 
-  bool requires_dyn_ctx() const { return true; }
+  bool accessesDynCtx() const { return true; }
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
@@ -310,7 +310,7 @@ public:
   {
   }
 
-  bool requires_dyn_ctx() const { return true; }
+  bool accessesDynCtx() const { return true; }
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 

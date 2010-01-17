@@ -223,9 +223,7 @@ PlanIter_t fn_doc::codegen(
 {
   return new FnDocIterator(sctx, loc, argv);
 }
-bool fn_doc::propagatesInputToOutput ( ulong ) const {
-  return false;
-}
+
 PlanIter_t fn_doc_available::codegen(
   CompilerCB*,
   static_context* sctx,

@@ -24,7 +24,11 @@ namespace zorba
 class zorba_fop : public function 
 {
 public:
-  zorba_fop(const signature& sig) : function(sig) {}
+  zorba_fop(const signature& sig) 
+    :
+    function(sig, FunctionConsts::FN_FOP_1)
+  {
+  }
 
   DEFAULT_NARY_CODEGEN(ZorbaFopIterator);
 };

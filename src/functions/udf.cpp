@@ -139,7 +139,7 @@ const std::vector<var_expr_t>& user_function::get_args() const
 /*******************************************************************************
 
 ********************************************************************************/
-bool user_function::requires_dyn_ctx() const
+bool user_function::accessesDynCtx() const
 {
   // All undeclared functions unfoldable. TODO: better analysis
   return (m_expr_body == NULL ||

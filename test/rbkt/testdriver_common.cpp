@@ -323,7 +323,7 @@ void set_vars(
     const std::string& rbkt_src_dir,
     const std::string& rbkt_bin_dir)
 {
-  std::cout << "=== Setting variables from .spec file===" << std::endl;
+  //std::cout << "=== Setting variables from .spec file===" << std::endl;
   std::vector<Specification::Variable>::const_iterator lIter;
   for (lIter = aSpec.variablesBegin(); lIter != aSpec.variablesEnd(); ++lIter)
   {
@@ -334,7 +334,7 @@ void set_vars(
             rbkt_src_dir,
             rbkt_bin_dir);
   }
-  std::cout << "=== end of setting variables ==" << std::endl;
+  //std::cout << "=== end of setting variables ==" << std::endl;
 }
 
 
@@ -357,7 +357,7 @@ void set_var(
   zorba::str_replace_all(val, "rbkt/Queries/w3c_testsuite/", "w3c_testsuite/Queries/");
   //zorba::str_replace_all(val, "/", "\\");
 #endif
-  std::cout << "Setting variable " << name << " to value '" << val <<"'" << std::endl;
+  //std::cout << "Setting variable " << name << " to value '" << val <<"'" << std::endl;
   if (!inlineFile) 
   {
     zorba::Item lItem = createItem(val);

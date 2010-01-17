@@ -46,11 +46,11 @@ namespace zorba
   (b) The IGNORES_SORTED_NODES and IGNORES_DUP_NODES annotations of F, and
   (c) The "noa" param.
 
-  The "parent" param is the fo expr F, and the "child" param is the E expr.
+  The "self" param is the fo expr F, and the "child" param is the E expr.
 ********************************************************************************/
 function* op_node_sort_distinct::optimize(
     static_context* sctx,
-    const expr* parent,
+    const expr* self,
     const expr* child) const
 {
   Annotations::Key ignoresSortedNodes = Annotations::IGNORES_SORTED_NODES;
@@ -59,10 +59,10 @@ function* op_node_sort_distinct::optimize(
   Annotations::Key producesDistinctNodes = Annotations::PRODUCES_DISTINCT_NODES;
 
 #if 0
-  cout << "op_for_action parent " << parent << " child " << child
-       << " parent_ignores_sorted "
-       << (parent != NULL && 
-           parent->get_annotation(Annotations::IGNORES_SORTED_NODES) == TSV_TRUE)
+  cout << "optimize: self " << self << " child " << child
+       << " self_ignores_sorted "
+       << (self != NULL && 
+           self->get_annotation(Annotations::IGNORES_SORTED_NODES) == TSV_TRUE)
        << " child_prod_sorted "
        << (child != NULL &&
            child->get_annotation(Annotations::PRODUCES_SORTED_NODES) == TSV_TRUE)
@@ -95,8 +95,8 @@ function* op_node_sort_distinct::optimize(
   bool distinct = myActions[DISTINCT];
   if (distinct)
   {
-    if (parent != NULL &&
-        parent->get_annotation(ignoresDupNodes).getp() == TSV_TRUE_P)
+    if (self != NULL &&
+        self->get_annotation(ignoresDupNodes).getp() == TSV_TRUE_P)
       distinct = false;
 
     if (child != NULL &&
@@ -107,8 +107,8 @@ function* op_node_sort_distinct::optimize(
   bool sort = (myActions[SORT_ASC] || myActions[SORT_DESC]);
   if (sort)
   {
-    if (parent != NULL &&
-        parent->get_annotation(ignoresSortedNodes).getp() == TSV_TRUE_P)
+    if (self != NULL &&
+        self->get_annotation(ignoresSortedNodes).getp() == TSV_TRUE_P)
       sort = false;
 
     if (child != NULL &&
@@ -249,14 +249,14 @@ public:
     return a;
   }
 
-  virtual FunctionConsts::AnnotationValue producesNodeIdSorted() const
+  bool propagatesSortedNodes(ulong producer) const
   {
-    return FunctionConsts::PRESERVE;
+    return producer == 0;
   }
 
-  virtual FunctionConsts::AnnotationValue producesDuplicates() const
+  bool propagatesDistinctNodes(ulong producer) const
   {
-    return FunctionConsts::PRESERVE;
+    return producer == 0;
   }
 };
 
@@ -280,9 +280,9 @@ public:
     return a;
   }
 
-  virtual FunctionConsts::AnnotationValue producesSortedNodes() const
+  bool propagatesSortedNodes(ulong producer) const
   {
-    return FunctionConsts::PRESERVE;
+    return producer == 0;
   }
 
   virtual FunctionConsts::AnnotationValue producesDistinctNodes() const
@@ -313,9 +313,9 @@ public:
     return a;
   }
 
-  virtual FunctionConsts::AnnotationValue producesSortedNodes() const
+  bool propagatesSortedNodes(ulong producer) const
   {
-    return FunctionConsts::PRESERVE;
+    return producer == 0;
   }
 
   virtual FunctionConsts::AnnotationValue producesDistinctNodes() const
@@ -349,9 +349,9 @@ public:
     return FunctionConsts::YES;
   }
 
-  virtual FunctionConsts::AnnotationValue producesDistinctNodes() const
+  bool propagatesDistinctNodes(ulong producer) const
   {
-    return FunctionConsts::PRESERVE;
+    return producer == 0;
   }
 };
   
@@ -382,9 +382,9 @@ public:
     return FunctionConsts::YES;
   }
 
-  virtual FunctionConsts::AnnotationValue producesDistinctNodes() const
+  bool propagatesDistinctNodes(ulong producer) const
   {
-    return FunctionConsts::PRESERVE;
+    return producer == 0;
   }
 };
   
@@ -413,9 +413,9 @@ public:
     return FunctionConsts::YES;
   }
 
-  virtual FunctionConsts::AnnotationValue producesDistinctNodes() const
+  bool propagatesDistinctNodes(ulong producer) const
   {
-    return FunctionConsts::PRESERVE;
+    return producer == 0;
   }
 };
 
@@ -446,9 +446,9 @@ public:
     return FunctionConsts::YES;
   }
 
-  virtual FunctionConsts::AnnotationValue producesDistinctNodes() const
+  bool propagatesDistinctNodes(ulong producer) const
   {
-    return FunctionConsts::PRESERVE;
+    return producer == 0;
   }
 };
   

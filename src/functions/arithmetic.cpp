@@ -55,9 +55,7 @@ public:
 
   virtual bool isArithmeticFunction() const { return true; }
 
-  virtual const char* op_name() const = 0;
-
-  xqtref_t return_type (const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
   
   virtual bool specializable() const { return true; }
 
@@ -67,7 +65,7 @@ public:
 };
 
 
-xqtref_t binary_arith_func::return_type(const std::vector<xqtref_t>& arg_types) const 
+xqtref_t binary_arith_func::getReturnType(const std::vector<xqtref_t>& arg_types) const 
 {
   if (TypeOps::is_numeric(*arg_types[0]) && TypeOps::is_numeric(*arg_types[1])) 
   {
@@ -149,8 +147,6 @@ public:
   {
   }
 
-  const char* op_name() const { return "add"; }
-
   ArithmeticConsts::OperationKind arithmetic_kind() const 
   {
     return ArithmeticConsts::ADDITION;
@@ -171,8 +167,6 @@ public:
     binary_arith_func(sig, FunctionConsts::OP_SUBTRACT_2)
   {
   }
-
-  const char* op_name() const { return "subtract"; }
 
   ArithmeticConsts::OperationKind arithmetic_kind() const 
   {
@@ -195,8 +189,6 @@ public:
   {
   }
 
-  const char* op_name() const { return "multiply"; }
-
   ArithmeticConsts::OperationKind arithmetic_kind() const 
   {
     return ArithmeticConsts::MULTIPLICATION;
@@ -217,8 +209,6 @@ public:
     binary_arith_func(sig, FunctionConsts::OP_DIVIDE_2)
   {
   }
-
-  const char* op_name() const { return "divide"; }
 
   ArithmeticConsts::OperationKind arithmetic_kind() const 
   {
@@ -241,8 +231,6 @@ public:
   {
   }
 
-  const char* op_name() const { return "integer-divide"; }
-
   ArithmeticConsts::OperationKind arithmetic_kind() const 
   {
     return ArithmeticConsts::INTEGER_DIVISION;
@@ -263,8 +251,6 @@ public:
     binary_arith_func(sig, FunctionConsts::OP_MOD_2)
   {
   }
-
-  const char* op_name() const { return "mod"; }
 
   ArithmeticConsts::OperationKind arithmetic_kind() const 
   {

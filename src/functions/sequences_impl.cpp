@@ -37,7 +37,7 @@ namespace zorba
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t op_concatenate::return_type(const std::vector<xqtref_t>& arg_types) const 
+xqtref_t op_concatenate::getReturnType(const std::vector<xqtref_t>& arg_types) const 
 {
   int sz = arg_types.size();
 
@@ -135,7 +135,7 @@ function* fn_sum::specialize(
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t fn_one_or_more::return_type(
+xqtref_t fn_one_or_more::getReturnType(
     const std::vector<xqtref_t>& arg_types) const
 {
   return GENV_TYPESYSTEM.create_type(*TypeOps::prime_type(*arg_types[0]),
@@ -146,22 +146,22 @@ xqtref_t fn_one_or_more::return_type(
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t fn_exactly_one_noraise::return_type(
+xqtref_t fn_exactly_one_noraise::getReturnType(
     const std::vector<xqtref_t>& arg_types) const
 {
   if (theRaiseError)
     return TypeOps::prime_type(*arg_types[0]);
   else
-    return function::return_type(arg_types);
+    return function::getReturnType(arg_types);
 }
 
 
-PlanIter_t
-fn_exactly_one_noraise::codegen(CompilerCB* aCb,
-                                static_context* aSctx,
-                                const QueryLoc& aLoc,
-                                std::vector<PlanIter_t>& aArgs,
-                                AnnotationHolder& aAnn) const
+PlanIter_t fn_exactly_one_noraise::codegen(
+    CompilerCB* aCb,
+    static_context* aSctx,
+    const QueryLoc& aLoc,
+    std::vector<PlanIter_t>& aArgs,
+    AnnotationHolder& aAnn) const
 {
   return new FnExactlyOneIterator(aSctx,
                                   aLoc,
@@ -174,17 +174,20 @@ fn_exactly_one_noraise::codegen(CompilerCB* aCb,
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t
-fn_union::codegen (
-      CompilerCB* /*cb*/,
-      static_context* sctx,
-      const QueryLoc& loc,
-      std::vector<PlanIter_t>& argv,
-      AnnotationHolder &ann) const
+PlanIter_t fn_union::codegen(
+    CompilerCB* /*cb*/,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    AnnotationHolder &ann) const
 {
   return new FnConcatIterator(sctx, loc, argv, false);
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 PlanIter_t fn_intersect::codegen(
     CompilerCB* /*cb*/,
     static_context* sctx,
@@ -210,13 +213,12 @@ PlanIter_t fn_intersect::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t
-fn_except::codegen(
-      CompilerCB* /*cb*/,
-      static_context* sctx,
-      const QueryLoc& loc,
-      std::vector<PlanIter_t>& argv,
-      AnnotationHolder& ann) const
+PlanIter_t fn_except::codegen(
+    CompilerCB* /*cb*/,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    AnnotationHolder& ann) const
 {
   // TODO: use SortAntiJoinIterator when available (trac ticket 254)
   return new HashSemiJoinIterator(sctx, loc, argv, true);
@@ -237,18 +239,18 @@ void fn_subsequence::compute_annotation(
   case Annotations::IGNORES_DUP_NODES:
     // don't use single_seq_fun default propagation rule
     return;
-  default: single_seq_opt_function::compute_annotation (parent, kids, k);
+  default: 
+    ZORBA_ASSERT(false);
   }
 }
 
 
-PlanIter_t
-fn_subsequence::codegen(
-      CompilerCB* /*cb*/,
-      static_context* aSctx,
-      const QueryLoc& aLoc,
-      std::vector<PlanIter_t>& aArgs,
-      AnnotationHolder& aAnn) const
+PlanIter_t fn_subsequence::codegen(
+    CompilerCB* /*cb*/,
+    static_context* aSctx,
+    const QueryLoc& aLoc,
+    std::vector<PlanIter_t>& aArgs,
+    AnnotationHolder& aAnn) const
 {
   fo_expr& subseqExpr = static_cast<fo_expr&>(aAnn);
 
@@ -289,8 +291,7 @@ fn_subsequence::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t
-fn_zero_or_one::return_type(const std::vector<xqtref_t>& arg_types) const
+xqtref_t fn_zero_or_one::getReturnType(const std::vector<xqtref_t>& arg_types) const
 {
   xqtref_t srcType = arg_types[0];
 
@@ -298,13 +299,12 @@ fn_zero_or_one::return_type(const std::vector<xqtref_t>& arg_types) const
          create_type(*TypeOps::prime_type(*srcType), TypeConstants::QUANT_QUESTION);
 }
 
-PlanIter_t
-fn_zero_or_one::codegen(
-      CompilerCB* /*cb*/,
-      static_context* aSctx,
-      const QueryLoc& aLoc,
-      std::vector<PlanIter_t>& aArgs,
-      AnnotationHolder& aAnn) const
+PlanIter_t fn_zero_or_one::codegen(
+    CompilerCB* /*cb*/,
+    static_context* aSctx,
+    const QueryLoc& aLoc,
+    std::vector<PlanIter_t>& aArgs,
+    AnnotationHolder& aAnn) const
 {
   return new FnZeroOrOneIterator(aSctx,
                                  aLoc,
@@ -316,7 +316,7 @@ fn_zero_or_one::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t fn_distinct_values::return_type(const std::vector<xqtref_t>& arg_types) const
+xqtref_t fn_distinct_values::getReturnType(const std::vector<xqtref_t>& arg_types) const
 {
   return arg_types[0];
 }
@@ -325,13 +325,41 @@ xqtref_t fn_distinct_values::return_type(const std::vector<xqtref_t>& arg_types)
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t
-fn_max::codegen(
-        CompilerCB* /*cb*/,
-        static_context* aSctx,
-        const QueryLoc& aLoc,
-        std::vector<PlanIter_t>& aArgs,
-        AnnotationHolder& /*aAnn*/) const
+xqtref_t fn_reverse::getReturnType(const std::vector<xqtref_t>& arg_types) const
+{
+  return arg_types[0];
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqtref_t fn_remove::getReturnType(const std::vector<xqtref_t>& arg_types) const
+{
+  return arg_types[0]->get_manager()->
+         create_type_x_quant(*arg_types[0], TypeConstants::QUANT_QUESTION);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqtref_t fn_subsequence::getReturnType(const std::vector<xqtref_t>& arg_types) const
+{
+  return arg_types[0]->get_manager()->
+         create_type_x_quant(*arg_types[0], TypeConstants::QUANT_QUESTION);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+PlanIter_t fn_max::codegen(
+    CompilerCB* /*cb*/,
+    static_context* aSctx,
+    const QueryLoc& aLoc,
+    std::vector<PlanIter_t>& aArgs,
+    AnnotationHolder& /*aAnn*/) const
 {
   return new FnMinMaxIterator(aSctx, aLoc, aArgs, FnMinMaxIterator::MAX);
 }
@@ -340,13 +368,12 @@ fn_max::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t
-fn_min::codegen(
-        CompilerCB* /*cb*/,
-        static_context* aSctx,
-        const QueryLoc& aLoc,
-        std::vector<PlanIter_t>& aArgs,
-        AnnotationHolder& /*ann*/) const
+PlanIter_t fn_min::codegen(
+    CompilerCB* /*cb*/,
+    static_context* aSctx,
+    const QueryLoc& aLoc,
+    std::vector<PlanIter_t>& aArgs,
+    AnnotationHolder& /*ann*/) const
 {
   return new FnMinMaxIterator(aSctx, aLoc, aArgs, FnMinMaxIterator::MIN);
 }
@@ -397,8 +424,7 @@ public:
 
 
 
-void
-populate_context_sequences_impl(static_context* sctx)
+void populate_context_sequences_impl(static_context* sctx)
 {
   DECL(sctx, fn_exactly_one,
        (createQName(XQUERY_FN_NS,"fn","exactly-one"),

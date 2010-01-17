@@ -405,49 +405,60 @@ public:
 
   theDotVar            : var_expr for the context item var of the main module
 
-  thePrologVars        : thePrologVars vector contains one entry for each var V
-                         declared in the prolog of this module. The entry maps
-                         the var_expr for V to the expr E that initializes V (E
-                         is NULL for vars without init expr). At the end of each
-                         module translation, the method wrap_in_globalvar_assign()
-                         creates appropriate initialization exprs for each var in 
-                         thePrologVars and registers them in
-                         theModulesInfo->init_exprs, so that they will be
-                         incorporated in the whole query plan at the end of the
-                         translation of the root module.
+  thePrologVars :
+  ---------------
 
-  thePrologDeps        : A hashmap implementing the dependency graph among the
-                         variables and udfs declared in the prolog of a module.
-                         It maps the normalized qname of a var or udf X to a set
-                         containing the normalized qnames of all the vars and
-                         udfs that X depends on. Examples:
-                         - $x := $y + g($z)  :  $x --> ($y, g, $z)
-                         - f { $y + g($z) }  :  f  --> ($y, g, $z)
-                         Initially only direct dependencies are registered. The
-                         graph is later expanded by the reorder_globals() method
-                         to include transitive dependencies as well. Then, the
-                         graph is used to sort thePrologVars so that vars are
-                         initialized before they are referenced.
-  prolog_vf_key        : During the translation of a variable or function decl
-                         in the prolog, prolog_vf_key stores the normalized
-                         qname of that variable or function (the actual format is
-                         type_char + normalized_qname, where type_char is F or
-                         V). It is used in building the thePrologDeps: if the
-                         prolog_vf_key string is not the empty, then we know
-                         that we are in the scope of a var or function decl, and
-                         if that declaration references another var V or calls 
-                         another function F, then we create a dependency between
-                         the var or function specified by prolog_vf_key and V
-                         or F.
-  prolog_fn_decls      : List containing the normalized qname for each udf
-                         declared in the prolog of this module. It is used by 
-                         the reorder_globals() method.
-  prolog_var_decls     : List containing the normalized qname for each variable
-                         declared in the prolog of this module. It is used by 
-                         the reorder_globals() method.
+  thePrologVars vector contains one entry for each var V declared in the prolog
+  of this module. The entry maps the var_expr for V to the expr E that initializes
+  V (E is NULL for vars without init expr). At the end of each module translation,
+  the method wrap_in_globalvar_assign() creates appropriate initialization exprs
+  for each var in thePrologVars and registers them in theModulesInfo->init_exprs,
+  so that they will be incorporated in the whole query plan at the end of the
+  translation of the root module.
 
-  tempvar_counter      : Counter used to generate names for internally generated
-                         variables. The names are unique within this translator.
+  thePrologDeps :
+  ---------------
+
+  A hashmap implementing the dependency graph among the variables and udfs
+  declared in the prolog of a module. It maps the normalized qname of a var
+  or udf X to a set containing the normalized qnames of all the vars and udfs
+  that X depends on. Examples:
+  - $x := $y + g($z)  :  $x --> ($y, g, $z)
+  - f { $y + g($z) }  :  f  --> ($y, g, $z)
+  Initially only direct dependencies are registered. The graph is later expanded
+  by the reorder_globals() method to include transitive dependencies as well.
+  Then, the graph is used to sort thePrologVars so that vars are initialized
+  before they are referenced.
+
+  theCurrentPrologVFDecl :
+  ------------------------
+
+  During the translation of a variable or function declaration in the prolog,
+  theCurrentPrologVFDecl stores the normalized qname of that var or function
+  (the actual format is type_char + normalized_qname, where type_char is F or V).
+  It is used in building the thePrologDeps: if the theCurrentPrologVFDecl string
+  is not the empty, then the translator knows that it is in the scope of a var
+  or function decl, and if that declaration references another var V or calls
+  another function F, then it creates a dependency between the var or function
+  specified by theCurrentPrologVFDecl and V or F.
+
+  thePrologFDecls :
+  -----------------
+
+  List containing the normalized qname for each udf declared in the prolog of
+  this module. It is used by the reorder_globals() method.
+
+  thePrologVDecls :
+  -----------------
+
+  List containing the normalized qname for each variable declared in the prolog
+  of this module. It is used by the reorder_globals() method.
+
+  theTempVarCounter :
+  -----------------
+
+  Counter used to generate names for internally generated variables. The names
+  are unique within this translator.
 
   nodestack            : If E is the expr that is currently being built, then
                          nodestack contains all the ancestors (or ancestor
@@ -534,11 +545,11 @@ protected:
   list<global_binding>                 thePrologVars;
 
   hashmap<strset_t>                    thePrologDeps;
-  string                               prolog_vf_key;
-  list<string>                         prolog_var_decls;
-  list<function *>                     prolog_fn_decls;
+  string                               theCurrentPrologVFDecl;
+  list<string>                         thePrologVDecls;
+  list<function *>                     thePrologFDecls;
 
-  int                                  tempvar_counter;
+  int                                  theTempVarCounter;
 
   stack<expr_t>                        nodestack;
 
@@ -594,7 +605,7 @@ TranslatorImpl(
   ns_ctx(new namespace_context(sctx_p)),
   print_depth(0),
   scope_depth(0),
-  tempvar_counter(1),
+  theTempVarCounter(1),
   theIsInIndexDomain(false),
   hadBSpaceDecl(false),
   hadBUriDecl(false),
@@ -812,7 +823,7 @@ void pop_elem_scope()
 ********************************************************************************/
 xqpString tempname() 
 {
-  return "$$temp" + to_string(tempvar_counter++);
+  return "$$temp" + to_string(theTempVarCounter++);
 }
   
     
@@ -2673,10 +2684,10 @@ void* begin_visit(const VarDecl& v)
 
   if (v.is_global()) 
   {
-    prolog_var_decls.push_front(key);
+    thePrologVDecls.push_front(key);
 
     // TODO: local vars too
-    prolog_vf_key = string("V") + key;
+    theCurrentPrologVFDecl = string("V") + key;
   }
 
   return no_state;
@@ -2688,7 +2699,7 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
   if (v.is_global())
-    prolog_vf_key.clear();
+    theCurrentPrologVFDecl.clear();
 
   xqp_string varname = v.get_varname();
 
@@ -2816,9 +2827,9 @@ void* begin_visit(const FunctionDecl& v)
   const store::Item* qname = f->getName();
 
   string key = sctx_p->qname_internal_key(qname);
-  prolog_vf_key = string("F") + key;
+  theCurrentPrologVFDecl = string("F") + key;
 
-  prolog_fn_decls.push_front(f);
+  thePrologFDecls.push_front(f);
   fn_decl_stack.push_front(f);
 
   return no_state;
@@ -2829,7 +2840,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  prolog_vf_key.clear();
+  theCurrentPrologVFDecl.clear();
   pop_stack(fn_decl_stack);
 
   expr_t body;
@@ -5926,6 +5937,8 @@ void end_visit(const UnionExpr& v, void* /*visit_state*/)
 
   normalize_fo(foExpr);
 
+  // Union is implemented by a concat iterator, so we have to do node sorting
+  // and duplicate elimi
   nodestack.push(new fo_expr(sctxid(),
                              loc,
                              GET_BUILTIN_FUNCTION(OP_SORT_DISTINCT_NODES_ASC_1),
@@ -7418,10 +7431,10 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
   if (ve == NULL)
     ZORBA_ERROR_LOC_PARAM (XPST0008, loc, v.get_varname (), "");
 
-  if (ve->get_kind() == var_expr::prolog_var && ! prolog_vf_key.empty()) 
+  if (ve->get_kind() == var_expr::prolog_var && ! theCurrentPrologVFDecl.empty()) 
   {
     string key = "V" + static_context::qname_internal_key(ve->get_name());
-    add_multimap_value(thePrologDeps, prolog_vf_key, key);
+    add_multimap_value(thePrologDeps, theCurrentPrologVFDecl, key);
   }
 
   nodestack.push(new wrapper_expr(sctxid(), v.get_location(), rchandle<expr>(ve)));
@@ -7529,8 +7542,8 @@ void* begin_visit(const FunctionCall& v)
   store::Item_t qname = sctx_p->lookup_fn_qname(prefix, fname, loc);
   string key = "F" + static_context::qname_internal_key(qname);
 
-  if (! prolog_vf_key.empty())
-    add_multimap_value(thePrologDeps, prolog_vf_key, key);
+  if (! theCurrentPrologVFDecl.empty())
+    add_multimap_value(thePrologDeps, theCurrentPrologVFDecl, key);
 
   nodestack.push(NULL);
   return no_state;
@@ -8603,28 +8616,30 @@ void end_visit(const CompTextConstructor& v, void* /*visit_state*/)
 }
 
 
-void reorder_globals () 
+void reorder_globals() 
 {
   // STEP 1: Floyd-Warshall transitive closure of edges starting from functions
-  for (list<function *>::iterator k = prolog_fn_decls.begin ();
-       k != prolog_fn_decls.end (); k++)
+  for (list<function *>::iterator k = thePrologFDecls.begin();
+       k != thePrologFDecls.end();
+       ++k)
   {
-    string kkey = "F" + static_context::qname_internal_key ((*k)->getName());
+    string kkey = "F" + static_context::qname_internal_key((*k)->getName());
     strset_t kedges;    
-    if (! thePrologDeps.get (kkey, kedges))
+    if (! thePrologDeps.get(kkey, kedges))
       continue;
 
-    for (set<string>::iterator j = kedges->begin (); j != kedges->end (); j++) 
+    for (set<string>::iterator j = kedges->begin(); j != kedges->end(); j++) 
     {
       string jkey = *j;
-      for (list<function *>::iterator i = prolog_fn_decls.begin ();
-           i != prolog_fn_decls.end (); i++)
+      for (list<function *>::iterator i = thePrologFDecls.begin ();
+           i != thePrologFDecls.end(); i++)
       {
-        string ikey = "F" + static_context::qname_internal_key ((*i)->getName ());
+        string ikey = "F" + static_context::qname_internal_key((*i)->getName());
         strset_t iedges, new_iedges;
         if (thePrologDeps.get (ikey, iedges)
-            && iedges->find (kkey) != iedges->end ()
-            && iedges->find (jkey) == iedges->end ()) {
+            && iedges->find (kkey) != iedges->end()
+            && iedges->find (jkey) == iedges->end()) 
+        {
           // cout << "Added " << ikey << " -> " << kkey << " -> " << jkey << endl;
           iedges->insert (jkey);
         }
@@ -8633,8 +8648,9 @@ void reorder_globals ()
   }
 
   // STEP 2: add var -> fn -> var dependencies found above
-  for (list<string>::iterator i = prolog_var_decls.begin ();
-       i != prolog_var_decls.end (); i++)
+  for (list<string>::iterator i = thePrologVDecls.begin();
+       i != thePrologVDecls.end();
+       ++i)
   {
     string ikey = "V" + *i;
     strset_t iedges;
@@ -8665,8 +8681,8 @@ void reorder_globals ()
   list<string> topsorted_vars;  // dependencies first
   set<string> visited;
   stack<string> todo;  // format: action_char + var_key
-  for (list<string>::iterator i = prolog_var_decls.begin ();
-       i != prolog_var_decls.end (); i++)
+  for (list<string>::iterator i = thePrologVDecls.begin ();
+       i != thePrologVDecls.end (); i++)
     todo.push ("I" + (*i));
   
   while (! todo.empty ()) {

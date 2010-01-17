@@ -56,7 +56,7 @@ public:
 class fn_zorba_util_random : public function
 {
 public:
-  fn_zorba_util_random(const signature& sig) : function(sig)
+  fn_zorba_util_random(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
     theKind = (sig.arg_count() == 0 ?
                 FunctionConsts::FN_ZORBA_UTIL_RANDOM_0 :

@@ -91,9 +91,9 @@ public:
   {
   }
 
-  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
 
-  bool isMap(ulong input) const { return input == 0; }
+  bool isMap(ulong producer) const { return producer == 0; }
 
   CODEGEN_DECL();
 };

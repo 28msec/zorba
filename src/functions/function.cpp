@@ -93,7 +93,7 @@ void function::serialize(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t function::return_type(const std::vector<xqtref_t> &) const 
+xqtref_t function::getReturnType(const std::vector<xqtref_t> &) const 
 {
   return theSignature.return_type();
 }
@@ -111,7 +111,7 @@ bool function::validate_args(std::vector<PlanIter_t>& argv) const
 
 
 /*******************************************************************************
-  Propagate a property of this function down to its inputs, or up to its caller.
+  Propagate a property of this function down to its inputs.
 ********************************************************************************/
 void function::compute_annotation(
     AnnotationHolder* parent,
@@ -173,7 +173,7 @@ FunctionConsts::AnnotationValue function::producesDistinctNodes() const
     return FunctionConsts::YES;
   }
 
-  return FunctionConsts::NO;
+  return FunctionConsts::PRESERVE;
 }
 
 
@@ -191,7 +191,7 @@ FunctionConsts::AnnotationValue function::producesSortedNodes() const
     return FunctionConsts::YES;
   }
 
-  return FunctionConsts::NO;
+  return FunctionConsts::PRESERVE;
 }
 
 

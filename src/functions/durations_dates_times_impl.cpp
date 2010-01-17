@@ -27,7 +27,7 @@ namespace zorba
 class fn_datetime_ctor : public function
 {
 public:
-  fn_datetime_ctor(const signature& sig) : function (sig) {}
+  fn_datetime_ctor(const signature& sig) : function(sig) {}
 
   DEFAULT_BINARY_CODEGEN(FnDateTimeConstructorIterator);
 };
@@ -39,7 +39,7 @@ public:
 class op_ym_durations_add : public function
 {
 public:
-  op_ym_durations_add(const signature& sig) : function (sig) {}
+  op_ym_durations_add(const signature& sig) : function(sig) {}
   
   DEFAULT_BINARY_CODEGEN(NumArithIterator<AddOperation>);
 };
@@ -51,7 +51,7 @@ public:
 class op_ym_durations_subtract : public function
 {
 public:
-  op_ym_durations_subtract(const signature& sig) : function (sig) {}
+  op_ym_durations_subtract(const signature& sig) : function(sig) {}
 
   DEFAULT_BINARY_CODEGEN(NumArithIterator<SubtractOperation>);
 };
@@ -63,7 +63,7 @@ public:
 class op_ym_durations_multiply : public function
 {
 public:
-  op_ym_durations_multiply(const signature& sig) : function (sig) {}
+  op_ym_durations_multiply(const signature& sig) : function(sig) {}
 
   DEFAULT_BINARY_CODEGEN(NumArithIterator<MultiplyOperation>);
 };
@@ -75,7 +75,7 @@ public:
 class op_ym_durations_divide : public function
 {
 public:
-  op_ym_durations_divide(const signature& sig) : function (sig) {}
+  op_ym_durations_divide(const signature& sig) : function(sig) {}
   
   DEFAULT_BINARY_CODEGEN(NumArithIterator<DivideOperation>);
 };
@@ -87,7 +87,7 @@ public:
 class op_divide_ymd_by_ymd : public function
 {
 public:
-  op_divide_ymd_by_ymd(const signature& sig) : function (sig) {}
+  op_divide_ymd_by_ymd(const signature& sig) : function(sig) {}
   
   DEFAULT_BINARY_CODEGEN(NumArithIterator<DivideOperation>);
 };
@@ -99,7 +99,7 @@ public:
 class op_dt_durations_add : public function
 {
 public:
-  op_dt_durations_add(const signature& sig) : function (sig) {}
+  op_dt_durations_add(const signature& sig) : function(sig) {}
   
   DEFAULT_BINARY_CODEGEN(NumArithIterator<AddOperation>);
 };
@@ -111,7 +111,7 @@ public:
 class op_dt_durations_subtract : public function
 {
 public:
-  op_dt_durations_subtract(const signature& sig) : function (sig) {}
+  op_dt_durations_subtract(const signature& sig) : function(sig) {}
   
   DEFAULT_BINARY_CODEGEN(NumArithIterator<SubtractOperation>);
 };
@@ -123,7 +123,7 @@ public:
 class op_dt_durations_multiply : public function
 {
 public:
-  op_dt_durations_multiply(const signature& sig) : function (sig) {}
+  op_dt_durations_multiply(const signature& sig) : function(sig) {}
   
   DEFAULT_BINARY_CODEGEN(NumArithIterator<MultiplyOperation>);
 };
@@ -135,7 +135,7 @@ public:
 class op_dt_durations_divide : public function
 {
 public:
-  op_dt_durations_divide(const signature& sig) : function (sig) {}
+  op_dt_durations_divide(const signature& sig) : function(sig) {}
   
   DEFAULT_BINARY_CODEGEN(NumArithIterator<DivideOperation>);
 };
@@ -147,7 +147,7 @@ public:
 class op_divide_dtd_by_dtd : public function
 {
 public:
-  op_divide_dtd_by_dtd(const signature& sig) : function (sig) {}
+  op_divide_dtd_by_dtd(const signature& sig) : function(sig) {}
   
   DEFAULT_BINARY_CODEGEN(NumArithIterator<DivideOperation>);
 };
@@ -159,7 +159,7 @@ public:
 class op_sub_dt : public function
 {
 public:
-  op_sub_dt(const signature& sig) : function (sig) {}
+  op_sub_dt(const signature& sig) : function(sig) {}
   
   DEFAULT_BINARY_CODEGEN(NumArithIterator<SubtractOperation>);
 };
@@ -171,7 +171,7 @@ public:
 class op_sub_d : public function
 {
 public:
-  op_sub_d(const signature& sig) : function (sig) {}
+  op_sub_d(const signature& sig) : function(sig) {}
   
   DEFAULT_BINARY_CODEGEN(NumArithIterator<SubtractOperation>);
 };
@@ -183,7 +183,7 @@ public:
 class op_sub_t : public function
 {
 public:
-  op_sub_t(const signature& sig) : function (sig) {}
+  op_sub_t(const signature& sig) : function(sig) {}
   
   DEFAULT_BINARY_CODEGEN(NumArithIterator<SubtractOperation>);
 };
@@ -195,7 +195,7 @@ public:
 class op_add_ymd_to_dt : public function
 {
 public:
-  op_add_ymd_to_dt(const signature& sig) : function (sig) {}
+  op_add_ymd_to_dt(const signature& sig) : function(sig) {}
   
   DEFAULT_BINARY_CODEGEN(NumArithIterator<AddOperation>);
 };
@@ -207,7 +207,7 @@ public:
 class op_add_dtd_to_dt : public function
 {
 public:
-  op_add_dtd_to_dt(const signature& sig) : function (sig) {}
+  op_add_dtd_to_dt(const signature& sig) : function(sig) {}
   
   DEFAULT_BINARY_CODEGEN(NumArithIterator<AddOperation>);
 };
@@ -219,7 +219,7 @@ public:
 class op_sub_ymd_from_dt : public function
 {
 public:
-  op_sub_ymd_from_dt(const signature& sig) : function (sig) {}
+  op_sub_ymd_from_dt(const signature& sig) : function(sig) {}
   
   DEFAULT_BINARY_CODEGEN(NumArithIterator<SubtractOperation>);
 };
@@ -231,7 +231,7 @@ public:
 class op_sub_dtd_from_dt : public function
 {
 public:
-  op_sub_dtd_from_dt(const signature& sig) : function (sig) {}
+  op_sub_dtd_from_dt(const signature& sig) : function(sig) {}
   
   DEFAULT_BINARY_CODEGEN(NumArithIterator<SubtractOperation>);
 };
@@ -243,7 +243,7 @@ public:
 class op_add_ymd_to_d : public function
 {
 public:
-  op_add_ymd_to_d(const signature& sig) : function (sig) {}
+  op_add_ymd_to_d(const signature& sig) : function(sig) {}
   
   DEFAULT_BINARY_CODEGEN(NumArithIterator<AddOperation>);
 };
@@ -255,7 +255,7 @@ public:
 class op_add_dtd_to_d : public function
 {
 public:
-  op_add_dtd_to_d(const signature& sig) : function (sig) {}
+  op_add_dtd_to_d(const signature& sig) : function(sig) {}
 
   DEFAULT_BINARY_CODEGEN(NumArithIterator<AddOperation>);
 };
@@ -267,7 +267,7 @@ public:
 class op_sub_ymd_from_d : public function
 {
 public:
-  op_sub_ymd_from_d(const signature& sig) : function (sig) {}
+  op_sub_ymd_from_d(const signature& sig) : function(sig) {}
   
   DEFAULT_BINARY_CODEGEN(NumArithIterator<SubtractOperation>);
 };
@@ -279,7 +279,7 @@ public:
 class op_sub_dtd_from_d : public function
 {
 public:
-  op_sub_dtd_from_d(const signature& sig) : function (sig) {}
+  op_sub_dtd_from_d(const signature& sig) : function(sig) {}
 
   DEFAULT_BINARY_CODEGEN(NumArithIterator<SubtractOperation>);  
 };
@@ -291,7 +291,7 @@ public:
 class op_add_dtd_to_t : public function
 {
 public:
-  op_add_dtd_to_t(const signature& sig) : function (sig) {}
+  op_add_dtd_to_t(const signature& sig) : function(sig) {}
 
   DEFAULT_BINARY_CODEGEN(NumArithIterator<AddOperation>);
 };
@@ -303,7 +303,7 @@ public:
 class op_sub_dtd_from_t : public function
 {
 public:
-  op_sub_dtd_from_t(const signature& sig) : function (sig) {}
+  op_sub_dtd_from_t(const signature& sig) : function(sig) {}
 
   DEFAULT_BINARY_CODEGEN(NumArithIterator<SubtractOperation>);  
 };
@@ -315,9 +315,9 @@ public:
 class fn_adjust_dt_to_tz_1 : public function
 {
 public:
-  bool requires_dyn_ctx () const { return true; }
+  bool accessesDynCtx () const { return true; }
 
-  fn_adjust_dt_to_tz_1(const signature& sig) : function (sig) {}
+  fn_adjust_dt_to_tz_1(const signature& sig) : function(sig) {}
 
   DEFAULT_UNARY_CODEGEN(FnAdjustToTimeZoneIterator_1);
 };
@@ -326,7 +326,7 @@ public:
 class fn_adjust_dt_to_tz_2 : public function
 {
 public:
-  fn_adjust_dt_to_tz_2(const signature& sig) : function (sig) {}
+  fn_adjust_dt_to_tz_2(const signature& sig) : function(sig) {}
 
   DEFAULT_BINARY_CODEGEN(FnAdjustToTimeZoneIterator_2);
 };
@@ -338,9 +338,9 @@ public:
 class fn_adjust_d_to_tz_1 : public function
 {
 public:
-  fn_adjust_d_to_tz_1(const signature& sig) : function (sig) {}
+  fn_adjust_d_to_tz_1(const signature& sig) : function(sig) {}
 
-  bool requires_dyn_ctx () const { return true; }
+  bool accessesDynCtx () const { return true; }
 
   DEFAULT_UNARY_CODEGEN(FnAdjustToTimeZoneIterator_1);
 };
@@ -349,7 +349,7 @@ public:
 class fn_adjust_d_to_tz_2 : public function
 {
 public:
-  fn_adjust_d_to_tz_2(const signature& sig) : function (sig) {}
+  fn_adjust_d_to_tz_2(const signature& sig) : function(sig) {}
   
   DEFAULT_BINARY_CODEGEN(FnAdjustToTimeZoneIterator_2);
 };
@@ -361,9 +361,9 @@ public:
 class fn_adjust_t_to_tz_1 : public function
 {
 public:
-  fn_adjust_t_to_tz_1(const signature& sig) : function (sig) {}
+  fn_adjust_t_to_tz_1(const signature& sig) : function(sig) {}
   
-  bool requires_dyn_ctx () const { return true; }
+  bool accessesDynCtx () const { return true; }
 
   DEFAULT_UNARY_CODEGEN(FnAdjustToTimeZoneIterator_1);
 };
@@ -372,7 +372,7 @@ public:
 class fn_adjust_t_to_tz_2 : public function
 {
 public:
-  fn_adjust_t_to_tz_2(const signature& sig) : function (sig) {}
+  fn_adjust_t_to_tz_2(const signature& sig) : function(sig) {}
 
   DEFAULT_BINARY_CODEGEN(FnAdjustToTimeZoneIterator_2);
 };
@@ -385,7 +385,7 @@ public:
 class fn_format_datetime_4 : public function
 {
 public:
-  fn_format_datetime_4(const signature& sig) : function (sig) {}
+  fn_format_datetime_4(const signature& sig) : function(sig) {}
 
   PlanIter_t codegen(
         CompilerCB* /*cb*/,
@@ -402,7 +402,7 @@ public:
 class fn_format_datetime_2 : public function
 {
 public:
-  fn_format_datetime_2(const signature& sig) : function (sig) {}
+  fn_format_datetime_2(const signature& sig) : function(sig) {}
 
   PlanIter_t codegen(
         CompilerCB* /*cb*/,
@@ -419,7 +419,7 @@ public:
 class fn_format_date_4 : public function
 {
 public:
-  fn_format_date_4(const signature& sig) : function (sig) {}
+  fn_format_date_4(const signature& sig) : function(sig) {}
 
   PlanIter_t codegen(
         CompilerCB* /*cb*/,
@@ -436,7 +436,7 @@ public:
 class fn_format_date_2 : public function
 {
 public:
-  fn_format_date_2(const signature& sig) : function (sig) {}
+  fn_format_date_2(const signature& sig) : function(sig) {}
 
   PlanIter_t codegen(
         CompilerCB* /*cb*/,
@@ -453,7 +453,7 @@ public:
 class fn_format_time_4 : public function
 {
 public:
-  fn_format_time_4(const signature& sig) : function (sig) {}
+  fn_format_time_4(const signature& sig) : function(sig) {}
 
   PlanIter_t codegen(
         CompilerCB* /*cb*/,
@@ -470,7 +470,7 @@ public:
 class fn_format_time_2 : public function
 {
 public:
-  fn_format_time_2(const signature& sig) : function (sig) {}
+  fn_format_time_2(const signature& sig) : function(sig) {}
 
   PlanIter_t codegen(
         CompilerCB* /*cb*/,

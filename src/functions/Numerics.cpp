@@ -78,7 +78,7 @@ public:
 
   bool isArithmeticFunction() const { return true; }
 
-  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const
+  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const
   {
     return TypeOps::arithmetic_type(*arg_types[0],
                                     *arg_types[1],
@@ -558,7 +558,7 @@ public:
   {
   }
 
-  virtual xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const
+  virtual xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const
   {
     return arg_types[0];
   }

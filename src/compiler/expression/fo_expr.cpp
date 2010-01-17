@@ -235,7 +235,7 @@ xqtref_t fo_expr::return_type_impl(static_context* sctx) const
   for (; i != end; ++i)
     types.push_back((*i)->return_type(sctx));
 
-  return theFunction->return_type(types);
+  return theFunction->getReturnType(types);
 }
 
 

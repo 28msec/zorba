@@ -21,8 +21,8 @@
 
 namespace zorba {
 
-void
-populate_context_sequences_impl(static_context* sctx);
+void populate_context_sequences_impl(static_context* sctx);
+
 
 /*******************************************************************************
   15.2.3 fn:exactly-one
@@ -40,7 +40,7 @@ public:
   {
   }
 
-  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
 
   CODEGEN_DECL();
 };
@@ -69,16 +69,6 @@ public:
   {
   }
 
-  FunctionConsts::AnnotationValue producesSortedNodes() const
-  {
-    return FunctionConsts::YES;
-  }
-
-  FunctionConsts::AnnotationValue producesDistinctNodes() const
-  {
-    return FunctionConsts::YES;
-  }
-
   CODEGEN_DECL();
 };
 
@@ -102,14 +92,14 @@ public:
   {
   }
 
-  FunctionConsts::AnnotationValue producesSortedNodes() const
+  bool propagatesSortedNodes(ulong producer) const
   {
-    return FunctionConsts::YES;
+    return producer == 0;
   }
 
-  FunctionConsts::AnnotationValue producesDistinctNodes() const
+  bool propagatesDistinctNodes(ulong producer) const
   {
-    return FunctionConsts::YES;
+    return  producer == 0;
   }
 
   CODEGEN_DECL();
@@ -128,14 +118,14 @@ public:
   {
   }
 
-  FunctionConsts::AnnotationValue producesSortedNodes() const
+  bool propagatesSortedNodes(ulong producer) const
   {
-    return FunctionConsts::YES;
+    return producer == 0;
   }
 
-  FunctionConsts::AnnotationValue producesDistinctNodes() const
+  bool propagatesDistinctNodes(ulong producer) const
   {
-    return FunctionConsts::YES;
+    return  producer == 0;
   }
 
   CODEGEN_DECL();

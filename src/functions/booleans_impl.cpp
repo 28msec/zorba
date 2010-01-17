@@ -133,7 +133,7 @@ public:
 
   bool isValueComparisonFunction() const { return true; }
 
-  xqtref_t return_type(const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
 
   function* specialize(
         static_context* sctx,
@@ -141,7 +141,7 @@ public:
 };
 
 
-xqtref_t ValueOpComparison::return_type(const std::vector<xqtref_t>& arg_types) const
+xqtref_t ValueOpComparison::getReturnType(const std::vector<xqtref_t>& arg_types) const
 {
   xqtref_t empty = GENV_TYPESYSTEM.EMPTY_TYPE;
   TypeConstants::quantifier_t quant = TypeConstants::QUANT_ONE;
@@ -308,37 +308,37 @@ public:                                                                 \
 };
 
 
-#define DECL_SPECIFIC_OPS( cc, op, name )                               \
+#define DECL_SPECIFIC_OPS(OP, op)                                       \
 class op_value_##op :                                                   \
-public SpecificValueComparison<CompareConsts::VALUE_##cc>               \
+public SpecificValueComparison<CompareConsts::VALUE_##OP>               \
 {                                                                       \
 public:                                                                 \
   op_value_##op(const signature& sig)                                   \
     :                                                                   \
-    SpecificValueComparison<CompareConsts::VALUE_##cc>                  \
-    (sig, FunctionConsts::OP_VALUE_##cc##_2)                            \
+    SpecificValueComparison<CompareConsts::VALUE_##OP>                  \
+    (sig, FunctionConsts::OP_VALUE_##OP##_2)                            \
   {                                                                     \
   }                                                                     \
                                                                         \
   CompareConsts::CompareType comparison_kind() const                    \
   {                                                                     \
-    return CompareConsts::VALUE_##cc;                                   \
+    return CompareConsts::VALUE_##OP;                                   \
   }                                                                     \
 };                                                                      \
                                                                         \
-DECL_SPECIFIC_TYPED_OP (cc, op, double, DOUBLE);                        \
-DECL_SPECIFIC_TYPED_OP (cc, op, decimal, DECIMAL);                      \
-DECL_SPECIFIC_TYPED_OP (cc, op, float, FLOAT);                          \
-DECL_SPECIFIC_TYPED_OP (cc, op, integer, INTEGER);                      \
-DECL_SPECIFIC_TYPED_OP (cc, op, string, STRING)
+DECL_SPECIFIC_TYPED_OP (OP, op, double, DOUBLE);                        \
+DECL_SPECIFIC_TYPED_OP (OP, op, decimal, DECIMAL);                      \
+DECL_SPECIFIC_TYPED_OP (OP, op, float, FLOAT);                          \
+DECL_SPECIFIC_TYPED_OP (OP, op, integer, INTEGER);                      \
+DECL_SPECIFIC_TYPED_OP (OP, op, string, STRING)
   
 
-DECL_SPECIFIC_OPS (EQUAL, equal, "equal");
-DECL_SPECIFIC_OPS (NOT_EQUAL, not_equal, "not-equal");
-DECL_SPECIFIC_OPS (GREATER, greater, "greater");
-DECL_SPECIFIC_OPS (LESS, less, "less");
-DECL_SPECIFIC_OPS (GREATER_EQUAL, greater_equal, "greater-equal");
-DECL_SPECIFIC_OPS (LESS_EQUAL, less_equal, "less-equal");
+DECL_SPECIFIC_OPS (EQUAL, equal);
+DECL_SPECIFIC_OPS (NOT_EQUAL, not_equal);
+DECL_SPECIFIC_OPS (GREATER, greater);
+DECL_SPECIFIC_OPS (LESS, less);
+DECL_SPECIFIC_OPS (GREATER_EQUAL, greater_equal);
+DECL_SPECIFIC_OPS (LESS_EQUAL, less_equal);
 
 #undef DECL_ALL_SPECIFIC_OPS
 #undef DECL_SPECIFIC_OP

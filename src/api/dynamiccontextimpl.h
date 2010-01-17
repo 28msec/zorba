@@ -87,12 +87,12 @@ public:
   virtual bool
   setVariable(
         const String& aQName,
-        const ResultIterator_t& aResultIterator );
+        const ResultIterator_t& aResultIterator);
 
   virtual bool
   setVariable(
     const String& aNamespace, const String& aLocalname,
-        const ResultIterator_t& aResultIterator );
+        const ResultIterator_t& aResultIterator);
 
   virtual bool
   setVariableAsDocument(
@@ -102,20 +102,21 @@ public:
         validation_mode_t mode);
 
   virtual bool
-  setContextItem ( const Item& aItem );
+  setContextItem(const Item& aItem);
 
   virtual bool
-  setContextItemAsDocument ( const String& aDocURI, 
-                             std::auto_ptr<std::istream> aInStream );
+  setContextItemAsDocument(
+        const String& aDocURI, 
+        std::auto_ptr<std::istream> aInStream);
 
   virtual bool
-  setContextItemAsDocument ( const String& aDocURI );
+  setContextItemAsDocument(const String& aDocURI);
 
   virtual bool
   setCurrentDateTime( const Item& aDateTimeItem );
       
   virtual Item
-  getCurrentDateTime( ) const;
+  getCurrentDateTime() const;
 
   // In minutes
   virtual bool

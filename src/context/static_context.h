@@ -68,35 +68,43 @@ template <class V> class ItemPointerHashMap;
   Note: External API interface is in abstract class public StaticContext
         which is implemented in StaticContextImpl
 
-  theDocResolver    : URI resolver which is used for retrieving documents
-                      (used by fn:doc and fn:doc-available) 
-  theColResolver    : URI resolver which is used for retrieving collections
-                      (used by fn:collection and any of the updating
-                      collection functions)
-  theSchemaResolver : URI resolver which is used for retrieving a schema
-                      (used in the translator)
+  theModuleNamespace :
+
+  theTypemgr :
+
+  theDocResolver : 
+  URI resolver used for retrieving documents (used by fn:doc and fn:doc-available).
+
+  theColResolver :
+  URI resolver used for retrieving W3C collections (used by fn:collection)
+
+  theSchemaResolver :
+  URI resolver used for retrieving a schema (used in the translator)
+
   theModuleResolver : URI resolver which is used for retrieving a module
                       (used in the translator)
-  Note: All URI resolvers have standard implementations in the classes
-        Standard*URIResolver.
-        Optionally, the user can provide resolvers which are wrapped by the
-        *URIResolverWrapper classes.
-
-  Note: URI resolvers are not serialized if the plan is
-        serialized. Instead, they are set again if the query is loaded.
-        If the user has provided a resolver before, he needs to make sure
-        that the resolver is available using the SerializationCallback class.
-        The latter also yields for ExternalModules and the TraceStream.
 
   theQueryExpr      : If this sctx is the root sctx for a mainModule,
                       theQueryExpr is the resul of the translation of
                       that mainModule. It is used in implementing the
                       loadProlog api.
   theDecimalFormats :
+
   theTraceStream    : Output stream that is used by the fn:trace function.
                       std::cerr is the default if the user didn't provide one.
                       For serialization: see note above.
   theCollationCache :
+
+  Note: All URI resolvers have standard implementations in the classes
+  Standard*URIResolver. Optionally, the user can provide resolvers which are
+  wrapped by the *URIResolverWrapper classes.
+
+  Note: URI resolvers are not serialized if the plan is serialized. Instead,
+  they are set again if the query is loaded. If the user has provided a resolver
+  before, he needs to make sure that the resolver is available using the
+  SerializationCallback class. The latter also yields for ExternalModules and 
+  the TraceStream.
+
 ********************************************************************************/
 
 // exported for testing purposes only
@@ -188,20 +196,26 @@ public:
 
   void set_xquery_version(StaticContextConsts::xquery_version_t v);
 
-  // parse and set the xquery version
-  // StaticContextConsts::xquery_version_unknown is set
-  // if the persion could not be parsed
   void set_xquery_version(const std::string& v);
 
 	void set_xpath1_0compatib_mode(StaticContextConsts::xpath1_0compatib_mode_t v);
+
 	void set_construction_mode(StaticContextConsts::construction_mode_t v);
+
 	void set_order_empty_mode(StaticContextConsts::order_empty_mode_t v);
+
 	void set_boundary_space_mode(StaticContextConsts::boundary_space_mode_t v);
+
 	void set_inherit_mode(StaticContextConsts::inherit_mode_t v);
+
 	void set_preserve_mode(StaticContextConsts::preserve_mode_t v);
+
 	void set_ordering_mode(StaticContextConsts::ordering_mode_t v);
+
   void set_validation_mode(StaticContextConsts::validation_mode_t v);
+
   void set_revalidation_enabled (bool);
+
   void set_default_elem_type_ns (xqp_string);
 
 

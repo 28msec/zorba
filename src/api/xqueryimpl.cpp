@@ -243,10 +243,6 @@ XQueryImpl::clone() const
     lImpl->theCompilerCB->theRootSctx = lImpl->theStaticContext;
     lImpl->theCompilerCB->theSctxMap = theCompilerCB->theSctxMap;
 
-    // child dynamic context
-    delete lImpl->theDynamicContext;
-    lImpl->theDynamicContext = new dynamic_context(theDynamicContext);
-
     return lXQuery;
 
   ZORBA_CATCH
@@ -667,8 +663,13 @@ void XQueryImpl::doCompile(
  * various ways to execute a query
  */
 
-void
-XQueryImpl::execute(std::ostream& os, const Zorba_SerializerOptions_t* opt)
+
+/*******************************************************************************
+
+********************************************************************************/
+void XQueryImpl::execute(
+    std::ostream& os,
+    const Zorba_SerializerOptions_t* opt)
 {
   ZORBA_TRY
     checkNotClosed();
@@ -679,23 +680,32 @@ XQueryImpl::execute(std::ostream& os, const Zorba_SerializerOptions_t* opt)
 
   SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
-  try {
+  try 
+  {
     lPlan->open();
     serialize(os, lPlan, opt);
-  } catch (...) {
+  }
+  catch (...) 
+  {
     lPlan->close();
     throw;
   }
 
   lPlan->close();
+
   theDocLoadingUserTime = lPlan->getRuntimeCB()->docLoadingUserTime;
   theDocLoadingTime = lPlan->getRuntimeCB()->docLoadingTime;
 }
 
-void XQueryImpl::execute(std::ostream& aOutStream,
-                         itemHandler aCallbackFunction,
-                         void* aCallbackData,
-                         const Zorba_SerializerOptions_t* aSerOptions /*= NULL*/)
+
+/*******************************************************************************
+
+********************************************************************************/
+void XQueryImpl::execute(
+    std::ostream& aOutStream,
+    itemHandler aCallbackFunction,
+    void* aCallbackData,
+    const Zorba_SerializerOptions_t* aSerOptions /*= NULL*/)
 {
   ZORBA_TRY
     checkNotClosed();
@@ -706,15 +716,19 @@ void XQueryImpl::execute(std::ostream& aOutStream,
 
   SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
-  try {
+  try 
+  {
     lPlan->open();
     serialize(aOutStream, lPlan, aCallbackFunction, aCallbackData, aSerOptions);
-  } catch (...) {
+  }
+  catch (...) 
+  {
     lPlan->close();
     throw;
   }
 
   lPlan->close();
+
   theDocLoadingUserTime = lPlan->getRuntimeCB()->docLoadingUserTime;
   theDocLoadingTime = lPlan->getRuntimeCB()->docLoadingTime;
 }
@@ -723,31 +737,33 @@ void XQueryImpl::execute(std::ostream& aOutStream,
 /*******************************************************************************
 
 ********************************************************************************/
-void
-XQueryImpl::execute()
+void XQueryImpl::execute()
 {
   ZORBA_TRY
+
     checkNotClosed();
     checkCompiled();
-    if (!isUpdating()) {
+
+    if (!isUpdating()) 
+    {
       ZORBA_ERROR_DESC(API0024_CANNOT_ITERATE_OVER_UPDATE_QUERY,
-        "Can't execute a non-updating query.");
+                       "Can't execute a non-updating query.");
     }
 
-  PlanWrapper_t lPlan = generateWrapper();
+    PlanWrapper_t lPlan = generateWrapper();
 
-  SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
-  ResultIterator_t lIter(new ResultIteratorImpl(this, lPlan));
+    ResultIterator_t lIter(new ResultIteratorImpl(this, lPlan));
   
-  // call next once in order to apply updates
-  // close is called in the destructor
-  lIter->open();
-  Item lItem;
-  lIter->next(lItem);
+    // call next once in order to apply updates
+    // close is called in the destructor
+    lIter->open();
+    Item lItem;
+    lIter->next(lItem);
 
-  theDocLoadingUserTime = lPlan->getRuntimeCB()->docLoadingUserTime;
-  theDocLoadingTime = lPlan->getRuntimeCB()->docLoadingTime;
+    theDocLoadingUserTime = lPlan->getRuntimeCB()->docLoadingUserTime;
+    theDocLoadingTime = lPlan->getRuntimeCB()->docLoadingTime;
 
   ZORBA_CATCH
 }
@@ -756,8 +772,7 @@ XQueryImpl::execute()
 /*******************************************************************************
 
 ********************************************************************************/
-void
-XQueryImpl::serialize(
+void XQueryImpl::serialize(
     std::ostream& os,
     PlanWrapper_t& aWrapper,
     const Zorba_SerializerOptions_t* opt)

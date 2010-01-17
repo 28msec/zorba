@@ -82,12 +82,13 @@ void EvalIterator::serialize(::zorba::serialization::Archiver& ar)
   ar & vartypes;
 }
 
+
 bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
   store::Item_t item;
   short sctxid;
-  EvalIteratorState* state;
 
+  EvalIteratorState* state;
   DEFAULT_STACK_INIT(EvalIteratorState, state, planState);
 
   // set up eval state's ccb
@@ -121,7 +122,7 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
   }
 
-  while (state->eval_plan->next (result)) 
+  while (state->eval_plan->next(result)) 
   {
     STACK_PUSH(true, state);
   }

@@ -58,8 +58,10 @@ DefaultOptimizer::DefaultOptimizer()
   ADD_SINGLETON_DRIVER(MarkFreeVars);
   ADD_SINGLETON_DRIVER(EliminateUnusedLetVars);
 
-  ADD_SINGLETON_DRIVER(MarkConsumerNodeProps);
   ADD_SINGLETON_DRIVER(MarkProducerNodeProps);
+  ADD_SINGLETON_DRIVER(EliminateNodeOps);
+
+  ADD_SINGLETON_DRIVER(MarkConsumerNodeProps);
   ADD_SINGLETON_DRIVER(EliminateNodeOps);
 
   ADD_SINGLETON_DRIVER(SpecializeOperations);

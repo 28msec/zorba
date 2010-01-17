@@ -364,7 +364,7 @@ bool SimpleCollection::findNode(const store::Item* node, ulong& position) const
 
   for (ulong i = 0; i < numTrees; ++i)
   {
-    //check if the nodes are the same
+    // check if the nodes are the same
     if (node->equals(theXmlTrees[i]))
     {
       ZORBA_ASSERT(BASE_NODE(theXmlTrees[i])->getCollection() == this);

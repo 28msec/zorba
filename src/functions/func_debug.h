@@ -48,17 +48,11 @@ public:
   {
   }
 
-  FunctionConsts::AnnotationValue producesSortedNodes() const 
-  {
-    return FunctionConsts::PRESERVE;
-  }
+  bool isMap(ulong producer) const { return producer == 0; }
 
-  FunctionConsts::AnnotationValue producesDistinctNodes() const 
-  {
-    return FunctionConsts::PRESERVE;
-  }
+  bool propagatesSortedNodes(ulong producer) const { return producer == 0; }
 
-  bool isMap(ulong input) const { return input == 0; }
+  bool propagatesDistinctNodes(ulong producer) const { return producer == 0; }
 
   CODEGEN_DECL();
 };
@@ -74,7 +68,7 @@ public:
   {
   }
 
-  bool requires_dyn_ctx() const { return true; }
+  bool accessesDynCtx() const { return true; }
 
   CODEGEN_DECL();
 };
@@ -90,7 +84,7 @@ public:
   {
   }
 
-  bool requires_dyn_ctx() const { return true; }
+  bool accessesDynCtx() const { return true; }
 
   CODEGEN_DECL();
 };

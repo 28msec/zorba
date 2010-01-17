@@ -14,6 +14,8 @@
   FN_FALSE_0,
   FN_TRUE_0,
 
+  FN_NAME_1,
+
   OP_EXACTLY_ONE_NORAISE_1,
 
   OP_UNION_2,
@@ -121,3 +123,5 @@
 
   OP_HOIST_1,
   OP_UNHOIST_1,
+
+    FN_FOP_1,

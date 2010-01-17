@@ -29,15 +29,19 @@
     <zorba:member type="std::ostream*" name="theOS" defaultValue="0" brief=""/>
   </zorba:state>
   
-  <zorba:function generateCodegen="false"
-                  isMap="0">
+  <zorba:function generateCodegen="false">
+
     <zorba:signature localname="trace" prefix="fn">
       <zorba:param>item()*</zorba:param>
       <zorba:param>xs:string</zorba:param>
       <zorba:output>item()*</zorba:output>
     </zorba:signature>
-    <zorba:annotation name="producesSortedNodes">PRESERVE</zorba:annotation>
-    <zorba:annotation name="producesDistinctNodes">PRESERVE</zorba:annotation>
+
+      <zorba:methods>
+        <zorba:isMap producer="0"/>
+        <zorba:propagatesSortedNodes producer="0"/>
+        <zorba:propagatesDistinctNodes producer="0"/>
+      </zorba:methods>
   </zorba:function>
   
 </zorba:iterator>
@@ -52,10 +56,16 @@
   
   <zorba:description author="Zorba Team">op-zorba:read-line</zorba:description>
   
-  <zorba:function requiresDynamicContext="true">
+  <zorba:function>
+
     <zorba:signature localname="read-line" prefix="op-zorba">
       <zorba:output>xs:string</zorba:output>
     </zorba:signature>
+
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+      </zorba:methods>
+
   </zorba:function>
   
 </zorba:iterator>
@@ -77,11 +87,17 @@
   
   <zorba:member type="bool" name="thePrintToConsole" />
   
-  <zorba:function requiresDynamicContext="true">
+  <zorba:function>
+
     <zorba:signature localname="print" prefix="op-zorba">
       <zorba:param>item()*</zorba:param>
       <zorba:output>empty-sequence()</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+    </zorba:methods>
+
   </zorba:function>
   
 </zorba:iterator>
