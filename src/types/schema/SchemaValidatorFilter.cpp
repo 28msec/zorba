@@ -1519,7 +1519,8 @@ void SchemaValidatorFilter::error(
         errCode == XMLValid::NotEnoughElemsForCM ||
         errCode == XMLValid::EmptyNotValidForContent ||
         errCode == XMLValid::AttNotDefinedForElement ||
-        errCode == XMLValid::RequiredAttrNotProvided) )
+        errCode == XMLValid::RequiredAttrNotProvided ||
+        errCode == XMLValid::AttributeNotQualified) )
     return;
   
   theErrorOccurred = true;
