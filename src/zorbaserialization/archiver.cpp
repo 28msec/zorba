@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,7 +34,7 @@ namespace zorba{
 /////////////////////////////////////////
 //////////////////////////////////////////////////////
 
-archive_field::archive_field(const char *type, bool is_simple, bool is_class, 
+archive_field::archive_field(const char *type, bool is_simple, bool is_class,
               const void *value, const void *assoc_ptr,
               int version, enum ArchiveFieldTreat  field_treat,
               archive_field *refered,
@@ -135,7 +135,7 @@ Archiver::Archiver(bool is_serializing_out, bool internal_archive)
 
 Archiver::~Archiver()
 {
-  delete out_fields; 
+  delete out_fields;
   delete all_reference_list;
   delete simple_hashout_fields;
   delete hash_out_fields;
@@ -155,7 +155,7 @@ Archiver::~Archiver()
 }
 
 
-void Archiver::create_archive(const char *archive_name, 
+void Archiver::create_archive(const char *archive_name,
                             const char *archive_info,
                             int archive_version)
 {
@@ -165,7 +165,7 @@ void Archiver::create_archive(const char *archive_name,
 }
 
 //return true if field is not referencing
-bool Archiver::add_simple_field(const char *type, 
+bool Archiver::add_simple_field(const char *type,
                             const char *value,
                             const void *orig_ptr,
                             enum ArchiveFieldTreat field_treat
@@ -180,7 +180,7 @@ bool Archiver::add_simple_field(const char *type,
   {
     field_treat = ARCHIVE_FIELD_IS_NULL;
   }
-  else if((field_treat != ARCHIVE_FIELD_IS_BASECLASS) && orig_ptr && 
+  else if((field_treat != ARCHIVE_FIELD_IS_BASECLASS) && orig_ptr &&
     !get_is_temp_field() && (!get_is_temp_field_one_level() || ((field_treat == ARCHIVE_FIELD_IS_PTR) && !get_is_temp_field_also_for_ptr())))
     ref_field = check_nonclass_pointer(type, orig_ptr);
   if(ref_field)
@@ -201,7 +201,7 @@ bool Archiver::add_simple_field(const char *type,
 
   new_field = new archive_field(type, true, false, value, orig_ptr, 0, field_treat, ref_field, get_serialize_only_for_eval(), allow_delay2);
   allow_delay2 = ALLOW_DELAY;
-  if(!ref_field && (field_treat != ARCHIVE_FIELD_IS_BASECLASS) && orig_ptr && 
+  if(!ref_field && (field_treat != ARCHIVE_FIELD_IS_BASECLASS) && orig_ptr &&
     !get_is_temp_field() && (!get_is_temp_field_one_level() || ((field_treat == ARCHIVE_FIELD_IS_PTR) && !get_is_temp_field_also_for_ptr())))
   {
     SIMPLE_HASHOUT_FIELD  f(type, orig_ptr);
@@ -268,8 +268,8 @@ void Archiver::exchange_fields(archive_field  *new_field, archive_field  *ref_fi
   new_field->allow_delay2 = ref_field->allow_delay2;
 }
 
-bool Archiver::add_compound_field(const char *type, 
-                              int version, 
+bool Archiver::add_compound_field(const char *type,
+                              int version,
                               bool is_class,
                               const void *info,
                               const void *ptr,//for classes, pointer to SerializeBaseClass
@@ -286,7 +286,7 @@ bool Archiver::add_compound_field(const char *type,
     field_treat = ARCHIVE_FIELD_IS_NULL;
     current_level--;
   }
-  else if((field_treat != ARCHIVE_FIELD_IS_BASECLASS) && ptr && 
+  else if((field_treat != ARCHIVE_FIELD_IS_BASECLASS) && ptr &&
     !get_is_temp_field() && (!get_is_temp_field_one_level() || ((field_treat == ARCHIVE_FIELD_IS_PTR) && !get_is_temp_field_also_for_ptr())))
   {
     if(!is_class)
@@ -310,7 +310,7 @@ bool Archiver::add_compound_field(const char *type,
 
   new_field = new archive_field(type, false, is_class, info, ptr, version, field_treat, ref_field, get_serialize_only_for_eval(), allow_delay2);
   allow_delay2 = ALLOW_DELAY;
-  if(!ref_field && (field_treat != ARCHIVE_FIELD_IS_BASECLASS) && ptr && 
+  if(!ref_field && (field_treat != ARCHIVE_FIELD_IS_BASECLASS) && ptr &&
       !get_is_temp_field() && (!get_is_temp_field_one_level() || ((field_treat == ARCHIVE_FIELD_IS_PTR) && !get_is_temp_field_also_for_ptr())))
   {
     if(!is_class)
@@ -433,11 +433,11 @@ archive_field* Archiver::check_class_pointer_internal(const SerializeBaseClass *
 }
 */
 
-bool Archiver::read_next_field( char **type, 
+bool Archiver::read_next_field( char **type,
                               std::string *value,
-                              int *id, 
-                              int *version, 
-                              bool *is_simple, 
+                              int *id,
+                              int *version,
+                              bool *is_simple,
                               bool *is_class,
                               enum ArchiveFieldTreat *field_treat,
                               int *referencing)
@@ -455,10 +455,10 @@ void Archiver::read_end_current_level()
 }
 
 
-void Archiver::check_simple_field(bool retval, 
+void Archiver::check_simple_field(bool retval,
                                   const char *type,
-                                  const char *required_type, 
-                                  bool is_simple, 
+                                  const char *required_type,
+                                  bool is_simple,
                                   enum ArchiveFieldTreat  field_treat,
                                   enum ArchiveFieldTreat  required_field_treat,
                                   int id)
@@ -483,11 +483,11 @@ void Archiver::check_simple_field(bool retval,
   }
 }
 
-void Archiver::check_nonclass_field(bool retval, 
+void Archiver::check_nonclass_field(bool retval,
                                   const char *type,
-                                  const char *required_type, 
-                                  bool is_simple, 
-                                  bool is_class, 
+                                  const char *required_type,
+                                  bool is_simple,
+                                  bool is_class,
                                   enum ArchiveFieldTreat  field_treat,
                                   enum ArchiveFieldTreat  required_field_treat,
                                   int id)
@@ -512,11 +512,11 @@ void Archiver::check_nonclass_field(bool retval,
   }
 }
 
-void Archiver::check_class_field(bool retval, 
+void Archiver::check_class_field(bool retval,
                                   const char *type,
-                                  const char *required_type, 
-                                  bool is_simple, 
-                                  bool is_class, 
+                                  const char *required_type,
+                                  bool is_simple,
+                                  bool is_class,
                                   enum ArchiveFieldTreat  field_treat,
                                   enum ArchiveFieldTreat  required_field_treat,
                                   int id)
@@ -562,8 +562,8 @@ void Archiver::register_item(store::Item* i)
     registered_items.push_back(i);
 }
 
-void Archiver::register_delay_reference(void **ptr, 
-                                        bool is_class, 
+void Archiver::register_delay_reference(void **ptr,
+                                        bool is_class,
                                         const char *class_name,
                                         int referencing)
 {
@@ -703,8 +703,7 @@ void Archiver::finalize_input_serialization()
     }
     else
     {
-      long rc = (*item_it)->getRefCount();
-      assert(rc > 1);
+      assert((*item_it)->getRefCount() > 1);
     }
     (*item_it)->removeReference((*item_it)->getSharedRefCounter() SYNC_PARAM2((*item_it)->getRCLock()));
   }
@@ -740,7 +739,7 @@ void Archiver::prepare_serialize_out()
   {
     check_compound_fields(out_fields);
   }
-  while(check_allowed_delays(out_fields)) 
+  while(check_allowed_delays(out_fields))
   {}
 
 }
@@ -749,9 +748,9 @@ archive_field* Archiver::replace_with_null(archive_field *current_field)
 {
   if(current_field->parent)
   {
-    archive_field   *null_field = new archive_field("NULL", 
-                                                    current_field->is_simple, 
-                                                    current_field->is_class, "", NULL, 0, 
+    archive_field   *null_field = new archive_field("NULL",
+                                                    current_field->is_simple,
+                                                    current_field->is_class, "", NULL, 0,
                                                     ARCHIVE_FIELD_IS_NULL, NULL, false, ALLOW_DELAY);
     null_field->id = ++nr_ids;
     replace_field(null_field, current_field);
@@ -938,7 +937,7 @@ void Archiver::replace_only_for_eval_with_null(archive_field   *parent_field)
   archive_field   *current_field = parent_field->first_child;
   while(current_field)
   {
-    if(current_field->only_for_eval && 
+    if(current_field->only_for_eval &&
       (current_field->field_treat != ARCHIVE_FIELD_NORMAL) &&
       (current_field->field_treat != ARCHIVE_FIELD_IS_BASECLASS))
     {
