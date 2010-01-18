@@ -44,7 +44,7 @@ class SimpleCollection : public store::Collection
 public:
   class CollectionIter : public store::Iterator
 	{
-  private:
+  protected:
     rchandle<SimpleCollection>              theCollection;
     checked_vector<store::Item_t>::iterator theIterator;
     bool                                    theHaveLock;

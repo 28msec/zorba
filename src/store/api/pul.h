@@ -143,7 +143,7 @@ public:
 
   virtual void addInsertIntoCollection(
         Item_t& name,
-        std::vector<Item_t>& nodes) = 0;            
+        std::vector<Item_t>& nodes) = 0;
 
   virtual void addInsertFirstIntoCollection(
         Item_t& name,

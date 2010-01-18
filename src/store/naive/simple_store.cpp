@@ -59,12 +59,6 @@ namespace zorba
 namespace simplestore 
 {
 
-static void populateIndex(
-    const store::Index_t& aIndex,
-    store::Iterator* aSourceIter,
-    ulong aNumColumns);
-
-
 typedef rchandle<store::TempSeq> TempSeq_t;
 
 
