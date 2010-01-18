@@ -191,7 +191,10 @@ OrdPath::OrdPath(const unsigned char* str, ulong strLen)
   unsigned char* buf;
   bool isLocal;
 
-  ulong byteLen = (strLen + 1) / 2;
+  // bugfix
+  // The string length should always be even (each buffer entry is encoded in two digits)
+  ZORBA_FATAL(strLen % 2 == 0, "");
+  ulong byteLen = strLen / 2;
 
   if (byteLen > MAX_BYTE_LEN)
   {
@@ -1185,6 +1188,10 @@ std::string OrdPath::serialize() const
 
   for (ulong i = 0; i < len; i++)
   {
+    // bugfix: Add a leading 0 if one-digit
+    // Each output should always be two-digit
+    if((unsigned short)buf[i] < 0x10)
+      str << "0";
     str << std::hex << (unsigned short)buf[i];
   }
 
@@ -1212,6 +1219,10 @@ std::string OrdPath::show() const
 
   for (ulong i = 0; i < len; i++)
   {
+    // bugfix Add a leading 0 if one-digit
+    // Each output should always be two-digit
+    if((unsigned short)buf[i] < 0x10)
+         str << "0";
     str << std::hex << (unsigned short)buf[i] << '|';
   }
 
