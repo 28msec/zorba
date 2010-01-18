@@ -3843,7 +3843,7 @@ public:
 
 	rchandle<exprnode> operator[](int i) const { return arg_hv[i]; }
 
-  int size () const { return arg_hv.size (); }
+  int size() const { return arg_hv.size (); }
 
 	void accept(parsenode_visitor&) const;
 };

@@ -230,26 +230,395 @@ public:
 };
 
 
-typedef rchandle<RCSet<string> > strset_t;
+
+/*******************************************************************************
+  Class to represent a vertex in the dependency graph among var and udfs decls
+  in the prolog of a module. A vertex is represented as a pointer to either a
+  var_expr (if var decl) or a function obj (if udf decl).
+********************************************************************************/
+class PrologGraphVertex
+{
+public:
+  typedef enum { VAR, FUN } Kind;
+
+  typedef union
+  {
+    const var_expr* var;
+    const function* fun;
+  } Key;
+
+public:
+  Key   theKey;
+  Kind  theKind;
+
+public:
+  PrologGraphVertex() : theKind(VAR)
+  {
+    theKey.var = NULL;
+  }
+
+  PrologGraphVertex(const var_expr* v) : theKind(VAR)
+  {
+    theKey.var =v;
+  }
+
+  PrologGraphVertex(const function* f) : theKind(FUN)
+  {
+    theKey.fun = f;
+  }
+
+  bool isNull() const { return theKey.var == NULL; }
+
+  void setNull() { theKey.var = NULL; }
+
+  Kind getKind() const { return theKind; }
+
+  const function* getFunction() const { return theKey.fun; }
+
+  const var_expr* getVarExpr() const { return theKey.var; }
+
+  bool operator==(const PrologGraphVertex& other) const
+  {
+    return (theKey.var == other.theKey.var);
+  }
+};
 
 
 /*******************************************************************************
-  Given a hashmap that maps strings to set-of-strings, add a new string to
-  the value-set of a given key string.
+  Class to represent an edge in the dependency graph among var and udfs decls
+  in the prolog of a module. An edge is represented as a pair of vertices, where
+  the first vertex in the pair depends on the second vertex. 
 ********************************************************************************/
-void add_multimap_value(
-    hashmap<strset_t > &map,
-    const string &key,
-    const string &val) 
+class PrologGraphEdge
 {
-  strset_t result;
-  if (! map.get (key, result)) 
+public:
+  std::pair<PrologGraphVertex, PrologGraphVertex> theEdge;
+
+public:
+  PrologGraphEdge() : theEdge() { }
+
+  PrologGraphEdge(const PrologGraphVertex& v1, const PrologGraphVertex& v2)
+    :
+    theEdge(v1, v2)
   {
-    result = new RCSet<string> ();
-    map.put (key, result);
   }
-  result->insert (val);
+
+  bool operator==(const PrologGraphEdge& other) const
+  {
+    return (theEdge.first == other.theEdge.first &&
+            theEdge.second == other.theEdge.second);
+  }
+
+  bool startsAt(const PrologGraphVertex& v) const
+  {
+    return v == theEdge.first;
+  }
+
+  const PrologGraphVertex& getStart() const { return theEdge.first; }
+
+  const PrologGraphVertex& getEnd() const { return theEdge.second; }
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class PrologGraph
+{
+private:
+  static_context               * theModuleSctx;
+
+  std::vector<PrologGraphEdge>   theEdges;
+
+  std::vector<const var_expr*>   theVarDecls;
+  std::vector<const function*>   theFuncDecls;
+
+public:
+  PrologGraph(static_context* sctx) : theModuleSctx(sctx) { }
+
+  void addVarVertex(const var_expr* v) { theVarDecls.push_back(v); }
+
+  void addFuncVertex(const function* v) { theFuncDecls.push_back(v); }
+
+  void addEdge(const PrologGraphVertex& v1, const PrologGraphVertex& v2)
+  {
+    PrologGraphEdge edge(v1, v2);
+    if (std::find(theEdges.begin(), theEdges.end(), edge) == theEdges.end())
+      theEdges.push_back(edge);
+  }
+
+  void reorder_globals(std::list<global_binding>& prologVarBindings);
+};
+
+
+/*******************************************************************************
+  This method is part of the mechanism for detecting cycles in the dependency
+  graph among prolog variables. The method does not actually detect the cycles
+  but re-orders the declarations of prolog vars (i.e., reorders theGlobalVars
+  list) so that if var v2 depends on var v1, then v1 appears before v2 in the
+  list (and as a result, v1 will be evaluated before v2 during runtime).
+
+  Circular dependencies among prolog vars can appear only when udfs are invloved.
+  Here is an example:
+ 
+  declare variable $var := local:func1();
+
+  declare function local:func1()
+  {
+    local:func2()
+  };
+
+  declare function local:func2()
+  {
+    local:func3()
+  };
+
+  declare variable $var2 := local:func2();
+
+  declare function local:func3()
+  {
+    $var2
+  };
+
+  boolean($var)
+
+
+  In this query, the following cycle exists : var2 --> func2 --> func3 --> var2
+********************************************************************************/
+void PrologGraph::reorder_globals(std::list<global_binding>& prologVarBindings)
+{
+  std::string moduleNS = theModuleSctx->get_module_namespace();
+  std::string msg(" Cyclic dendencies found among the declaration in the prolog of ");
+  if (!moduleNS.empty())
+  {
+    msg += "module ";
+    msg += moduleNS;
+  }
+  else
+  {
+    msg += "the main module.";
+  }
+
+  // STEP 1: Floyd-Warshall transitive closure of edges starting from functions
+  // At each substep we are adding fn2 -> fn1 -> var/fn dependencies. The resulting
+  // graph has the following property: If there is a path P in the original graph
+  // such that P starts at a udf node F, ends at a var node V and contains only
+  // udf nodes in between, then in the augmented graph there is a direct edge
+  // F --> V. As a result, to go from one variable to another, we never need to
+  // cross 2 or more consequtive udf nodes.
+  std::vector<const function*>::const_iterator f1Ite = theFuncDecls.begin();
+  std::vector<const function*>::const_iterator f1End = theFuncDecls.end();
+  for (; f1Ite != f1End; ++f1Ite)
+  {
+    const function* f1 = *f1Ite;
+
+    std::vector<const function*>::const_iterator f2Ite = theFuncDecls.begin();
+    std::vector<const function*>::const_iterator f2End = theFuncDecls.end();
+    for (; f2Ite != f2End; ++f2Ite)
+    {
+      const function* f2 = *f2Ite;
+
+      // if f2 depends on f1, then f2 depends on every var/udf that f1 depends on.
+      ulong numEdges = theEdges.size();
+      for (ulong i = 0; i < numEdges; ++i)
+      {
+        const PrologGraphEdge& edge = theEdges[i];
+
+        if (edge.startsAt(f1))
+        {
+          addEdge(f2, edge.getEnd());
+        }
+      }
+    }
+  }
+
+  // STEP 2: Add "1-step" var -> fn -> var/fn dependencies. Steps 1 & 2 together
+  // guarantee that if there is a path P from variable v1 to variable v2 in the
+  // original graph, then in the augmented graph there is a path P' from v1 to
+  // v2 such that P' does not contain any udfs. Therefore, the augmented graph
+  // contains a subgraph VG that consists of edges among variables only and which
+  // which reflects the same (direct and transitive) dependencies among vars as
+  // the original graph.
+
+  ulong numEdges = theEdges.size();
+
+  std::vector<const var_expr*>::const_iterator vIte = theVarDecls.begin();
+  std::vector<const var_expr*>::const_iterator vEnd = theVarDecls.end();
+  for (; vIte != vEnd; ++vIte)
+  {
+    const var_expr* v1 = *vIte;
+
+    for (ulong i = 0; i < numEdges; ++i)
+    {
+      const PrologGraphEdge& edge1 = theEdges[i];
+
+      if (edge1.startsAt(v1))
+      {
+        const PrologGraphVertex& f = edge1.getEnd();
+
+        if (f.getKind() == PrologGraphVertex::FUN)
+        {
+          for (ulong j = 0; j < numEdges; ++j)
+          {
+            const PrologGraphEdge& edge2 = theEdges[j];
+
+            if (edge2.startsAt(f))
+            {
+              const PrologGraphVertex& v2 = edge2.getEnd();
+
+              if (v2.getKind() == PrologGraphVertex::VAR)
+              {
+                if (v2 == v1)
+                {
+                  ZORBA_ERROR_DESC(XQST0054, msg);
+                }
+
+                addEdge(v1, v2);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  numEdges = theEdges.size();
+
+  // STEP 3 Check for cycles (TODO: use faster algorithm)
+  std::vector<PrologGraphEdge> edges;
+  std::set<const var_expr*> varDecls;
+
+  for (ulong i = 0; i < numEdges; ++i)
+  {
+    const PrologGraphEdge& edge = theEdges[i];
+
+    if (edge.getStart().getKind() == PrologGraphVertex::VAR &&
+        edge.getEnd().getKind() == PrologGraphVertex::VAR)
+    {
+      edges.push_back(edge);
+      varDecls.insert(edge.getStart().getVarExpr());
+      varDecls.insert(edge.getEnd().getVarExpr());
+    }
+  }
+
+  while (!edges.empty())
+  {
+    ulong numEdges = edges.size();
+    const var_expr* var = NULL;
+
+    std::set<const var_expr*>::iterator vIte = varDecls.begin();
+    std::set<const var_expr*>::iterator vEnd = varDecls.end();
+   
+    for (; vIte != vEnd; ++vIte)
+    {
+      ulong j;
+      for (j = 0; j < numEdges; ++j)
+      {
+        if (edges[j].getStart() == *vIte)
+          break;
+      }
+
+      if (j == numEdges)
+      {
+        var = *vIte;
+        varDecls.erase(vIte);
+        break;
+      }
+    }
+
+    if (var == NULL)
+    {
+      ZORBA_ERROR_DESC(XQST0054, msg);
+    }
+
+    for (ulong j = 0; j < numEdges; ++j)
+    {
+      if (edges[j].getEnd() == var)
+      {
+        edges.erase(edges.begin() + j);
+        --numEdges;
+        --j;
+      }
+    }
+  }
+
+  // STEP 4: topologically sort global vars.
+  // Implemented using non-recursive (stack-based) DFS traversal. This algorithm
+  // unfortunately does not detect cycles.
+  // Note that steps 1 & 2 are required: we cannot sort the entire set of prolog
+  // vars + udfs, because functions are allowed to be mutually recursive.
+  std::vector<const var_expr*> topsorted_vars;  // dependencies first
+  std::set<const var_expr*> visited;
+
+  std::stack<std::pair<ulong, const var_expr*> > todo;  // format: action code + var_expr
+
+  vIte = theVarDecls.begin();
+  for (; vIte != vEnd; ++vIte)
+  {
+    todo.push(std::pair<ulong, const var_expr*>(1, (*vIte)));
+  }
+
+  while (! todo.empty()) 
+  {
+    const var_expr* var = todo.top().second;
+    ulong action = todo.top().first;
+    todo.pop();
+
+    switch (action) 
+    {
+    case 0:  // finish notification
+    {
+      topsorted_vars.push_back(var);
+      break;
+    }
+    case 1:  // visit request
+    {
+      if (visited.find(var) == visited.end()) 
+      {
+        visited.insert(var);
+        todo.push(std::pair<ulong, const var_expr*>(0, var));
+
+        for (ulong i = 0; i < numEdges; ++i)
+        {
+          const PrologGraphEdge& edge = theEdges[i];
+
+          if (edge.startsAt(var))
+          {
+            const PrologGraphVertex& v2 = edge.getEnd();
+
+            if (v2.getKind() == PrologGraphVertex::VAR)
+            {
+              todo.push(std::pair<ulong, const var_expr*>(1, v2.getVarExpr()));
+            }
+          }
+        }
+      }
+      break;
+    }
+    default: 
+      assert(false);
+    }
+  }
+
+  // STEP 5: reorder thePrologVars according to topological order
+  std::map<const var_expr*, global_binding> gvmap;
+  std::list<global_binding>::iterator bindIte = prologVarBindings.begin();
+  for (; bindIte != prologVarBindings.end(); ++bindIte)
+  {
+    gvmap[(*bindIte).first] = *bindIte;
+  }
+
+  prologVarBindings.clear();
+
+  for (std::vector<const var_expr*>::iterator i = topsorted_vars.begin();
+       i != topsorted_vars.end(); ++i) 
+  {
+    std::map<const var_expr*, global_binding>::iterator p = gvmap.find(*i);
+    if (p != gvmap.end())
+      prologVarBindings.push_back((*p).second);
+  }
 }
+
 
 
 /*******************************************************************************
@@ -416,13 +785,13 @@ public:
   so that they will be incorporated in the whole query plan at the end of the
   translation of the root module.
 
-  thePrologDeps :
+  thePrologGraph :
   ---------------
 
-  A hashmap implementing the dependency graph among the variables and udfs
-  declared in the prolog of a module. It maps the normalized qname of a var
-  or udf X to a set containing the normalized qnames of all the vars and udfs
-  that X depends on. Examples:
+  A data struct implementing the dependency graph among the variables and udfs
+  declared in the prolog of a module. An edge (v1, v2) in this graph indicates
+  that v1 depends on v2 (where v1 and v2 may represent either var or udf decls).
+  Examples:
   - $x := $y + g($z)  :  $x --> ($y, g, $z)
   - f { $y + g($z) }  :  f  --> ($y, g, $z)
   Initially only direct dependencies are registered. The graph is later expanded
@@ -434,25 +803,12 @@ public:
   ------------------------
 
   During the translation of a variable or function declaration in the prolog,
-  theCurrentPrologVFDecl stores the normalized qname of that var or function
-  (the actual format is type_char + normalized_qname, where type_char is F or V).
-  It is used in building the thePrologDeps: if the theCurrentPrologVFDecl string
+  theCurrentPrologVFDecl stores a ptr to associated var_expr or function obj,
+  respectively. It is used in building the thePrologGraph: if the theCurrentPrologVFDecl string
   is not the empty, then the translator knows that it is in the scope of a var
   or function decl, and if that declaration references another var V or calls
   another function F, then it creates a dependency between the var or function
   specified by theCurrentPrologVFDecl and V or F.
-
-  thePrologFDecls :
-  -----------------
-
-  List containing the normalized qname for each udf declared in the prolog of
-  this module. It is used by the reorder_globals() method.
-
-  thePrologVDecls :
-  -----------------
-
-  List containing the normalized qname for each variable declared in the prolog
-  of this module. It is used by the reorder_globals() method.
 
   theTempVarCounter :
   -----------------
@@ -544,10 +900,8 @@ protected:
 
   list<global_binding>                 thePrologVars;
 
-  hashmap<strset_t>                    thePrologDeps;
-  string                               theCurrentPrologVFDecl;
-  list<string>                         thePrologVDecls;
-  list<function *>                     thePrologFDecls;
+  PrologGraph                          thePrologGraph;
+  PrologGraphVertex                    theCurrentPrologVFDecl;
 
   int                                  theTempVarCounter;
 
@@ -605,6 +959,7 @@ TranslatorImpl(
   ns_ctx(new namespace_context(sctx_p)),
   print_depth(0),
   scope_depth(0),
+  thePrologGraph(rootSctx),
   theTempVarCounter(1),
   theIsInIndexDomain(false),
   hadBSpaceDecl(false),
@@ -892,11 +1247,11 @@ void bind_var(var_expr_t e, static_context* sctx)
   {
     if(e->get_kind() == var_expr::let_var)
     {
-      ZORBA_ERROR_LOC_PARAM(XQST0039, e->get_loc (), qname->getStringValue (), "");
+      ZORBA_ERROR_LOC_PARAM(XQST0039, e->get_loc(), qname->getStringValue(), "");
     }
     else
     {
-      ZORBA_ERROR_LOC_PARAM(XQST0049, e->get_loc (), qname->getStringValue (), "");
+      ZORBA_ERROR_LOC_PARAM(XQST0049, e->get_loc(), qname->getStringValue(), "");
     }
   }
 }
@@ -1682,15 +2037,15 @@ void declare_var(const global_binding& b, std::vector<expr_t>& stmts)
 /*******************************************************************************
 
 ********************************************************************************/
-void *begin_visit (const exprnode& v) 
+void* begin_visit(const exprnode& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const exprnode& v, void* /*visit_state*/) 
+void end_visit(const exprnode& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
@@ -1704,15 +2059,15 @@ void end_visit (const exprnode& v, void* /*visit_state*/)
 /*******************************************************************************
   [1] Module ::= 	VersionDecl? (LibraryModule | MainModule)
 ********************************************************************************/
-void *begin_visit (const Module& v) 
+void* begin_visit(const Module& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const Module& v, void* /*visit_state*/) 
+void end_visit(const Module& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
@@ -1830,30 +2185,30 @@ void end_visit(const ModuleDecl& v, void* /*visit_state*/)
   [6d] VFO_Decl ::= VarDecl | ContextItemDecl | FunctionDecl | CollectionDecl 
                   | IndexDecl | OptionDecl
 ********************************************************************************/
-void *begin_visit (const Prolog& v) 
+void* begin_visit(const Prolog& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
   }
 
-void end_visit (const Prolog& v, void* /*visit_state*/) 
+void end_visit(const Prolog& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
 /*******************************************************************************
   [6a] SIND_DeclList ::= SIND_Decl Separator | SIND_DeclList SIND_Decl Separator
 ********************************************************************************/
-void *begin_visit (const SIND_DeclList& v) 
+void* begin_visit(const SIND_DeclList& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const SIND_DeclList& v, void* /*visit_state*/) 
+void end_visit(const SIND_DeclList& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
@@ -1879,35 +2234,35 @@ void end_visit (const SIND_DeclList& v, void* /*visit_state*/)
 /*******************************************************************************
   [11] BoundarySpaceDecl ::= DECLARE_BOUNDARY_SPACE  ( PRESERVE | STRIP )
 ********************************************************************************/
-void *begin_visit (const BoundarySpaceDecl& v) 
+void* begin_visit(const BoundarySpaceDecl& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   CHK_SINGLE_DECL (hadBSpaceDecl, XQST0068);
   sctx_p->set_boundary_space_mode(v.get_boundary_space_mode());
   return NULL;
 }
 
-void end_visit (const BoundarySpaceDecl& v, void* /*visit_state*/) 
+void end_visit(const BoundarySpaceDecl& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
 /*******************************************************************************
   [14] OrderingModeDecl ::= DECLARE_ORDERING  ( ORDERED | UNORDERED )
 ********************************************************************************/
-void *begin_visit (const OrderingModeDecl& v) 
+void* begin_visit(const OrderingModeDecl& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   CHK_SINGLE_DECL (hadOrdModeDecl, XQST0065);
   sctx_p->set_ordering_mode(v.get_mode());
   return NULL;
 }
 
 
-void end_visit (const OrderingModeDecl& v, void* /*visit_state*/) 
+void end_visit(const OrderingModeDecl& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
@@ -1915,9 +2270,9 @@ void end_visit (const OrderingModeDecl& v, void* /*visit_state*/)
   [15] EmptyOrderDecl ::= DECLARE_DEFAULT_ORDER  EMPTY_GREATEST |
                           DECLARE_DEFAULT_ORDER  EMPTY_LEAST
 ********************************************************************************/
-void *begin_visit (const EmptyOrderDecl& v) 
+void* begin_visit(const EmptyOrderDecl& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   CHK_SINGLE_DECL (hadEmptyOrdDecl, XQST0069);
   sctx_p->set_order_empty_mode(v.get_mode());
   return no_state;
@@ -1925,7 +2280,7 @@ void *begin_visit (const EmptyOrderDecl& v)
 
 void end_visit (const EmptyOrderDecl& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
@@ -1935,18 +2290,18 @@ void end_visit (const EmptyOrderDecl& v, void* /*visit_state*/)
   [19] PreserveMode ::= "preserve" | "no-preserve"
   [20] InheritMode ::=  "inherit" | "no-inherit"
 ********************************************************************************/
-void *begin_visit (const CopyNamespacesDecl& v) 
+void* begin_visit(const CopyNamespacesDecl& v) 
 {
-  TRACE_VISIT ();
-  CHK_SINGLE_DECL (hadCopyNSDecl, XQST0055);
+  TRACE_VISIT();
+  CHK_SINGLE_DECL(hadCopyNSDecl, XQST0055);
   return no_state;
 }
 
-void end_visit (const CopyNamespacesDecl& v, void* /*visit_state*/) 
+void end_visit(const CopyNamespacesDecl& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
- sctx_p->set_inherit_mode  (v.get_inherit_mode ());
- sctx_p->set_preserve_mode (v.get_preserve_mode ());
+  TRACE_VISIT_OUT();
+ sctx_p->set_inherit_mode(v.get_inherit_mode ());
+ sctx_p->set_preserve_mode(v.get_preserve_mode ());
 }
 
 
@@ -1960,10 +2315,10 @@ void end_visit (const CopyNamespacesDecl& v, void* /*visit_state*/)
                           "per-mille" | "zero-digit" | "digit" |
                           "pattern-separator"
 ********************************************************************************/
-void *begin_visit (const DecimalFormatNode& v) 
+void* begin_visit(const DecimalFormatNode& v) 
 {
   // cout << "Got DecimalFormat declaration: " << std::endl;
-  TRACE_VISIT ();
+  TRACE_VISIT();
 
   store::Item_t qname;
   if (!v.is_default)
@@ -1987,25 +2342,26 @@ void *begin_visit (const DecimalFormatNode& v)
   return no_state;
 }
 
-void end_visit (const DecimalFormatNode& v, void* /*visit_state*/) 
+void end_visit(const DecimalFormatNode& v, void* /*visit_state*/) 
 {
   // std::cout << "end_visit() Got DecimalFormat declaration: " << std::endl;
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
 /*******************************************************************************
   [21] DefaultCollationDecl ::=	DECLARE_DEFAULT_COLLATION  URI_LITERAL
 ********************************************************************************/
-void *begin_visit (DefaultCollationDecl const& v) 
+void* begin_visit(DefaultCollationDecl const& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
+
   string uri = v.get_collation();
   sctx_p->set_default_collation_uri(uri);
   return NULL;
 }
 
-void end_visit (const DefaultCollationDecl& v, void* /*visit_state*/) 
+void end_visit(const DefaultCollationDecl& v, void* /*visit_state*/) 
 {
   TRACE_VISIT_OUT ();
 }
@@ -2360,7 +2716,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
       if (modfile.get () == NULL || ! *modfile) 
       {
-        ZORBA_ERROR_LOC_PARAM (XQST0059, loc, resolveduri, target_ns);
+        ZORBA_ERROR_LOC_PARAM(XQST0059, loc, resolveduri, target_ns);
       }
 
       // Get the query-level sctx. This is the user-specified sctx (if any) or
@@ -2371,7 +2727,6 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // Create the root sctx for the imported module as a child of the
       // query-level sctx. Register this sctx in the query-level sctx map.
       static_context* moduleRootSctx = independent_sctx->create_child_context();
-      moduleRootSctx->set_module_namespace(imported_ns);
       moduleRootSctx->set_entity_retrieval_url(resolveduri->str());
       ulong moduleRootSctxId = theCCB->theSctxMap->size() + 1;
       (*theCCB->theSctxMap)[moduleRootSctxId] = moduleRootSctx;
@@ -2411,6 +2766,8 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
       if (imported_ns != target_ns)
         ZORBA_ERROR_LOC_PARAM(XQST0059, loc, resolveduri, target_ns);
+
+      moduleRootSctx->set_module_namespace(imported_ns);
 
       // translate the imported module
       translate_aux(*ast,
@@ -2628,9 +2985,7 @@ void end_visit(const VFO_DeclList& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  if (Properties::instance()->reorderGlobals())
-    reorder_globals();
-  // else cout << "Warning: global var reordering disabled\n";
+  thePrologGraph.reorder_globals(thePrologVars);
 }
 
 
@@ -2642,8 +2997,8 @@ void* begin_visit(const OptionDecl& v)
   TRACE_VISIT();
 
   //check if namespace for option is valid
-  rchandle<QName>   qn = v.get_qname();
-  xqpString   option_ns = sctx_p->lookup_ns(qn->get_prefix(), loc);
+  rchandle<QName> qn = v.get_qname();
+  xqpString option_ns = sctx_p->lookup_ns(qn->get_prefix(), loc);
 
   // ignore if an error occurs
   sctx_p->bind_option(option_ns, qn->get_localname(), v.get_val());
@@ -2679,17 +3034,24 @@ void* begin_visit(const VarDecl& v)
 {
   TRACE_VISIT();
 
-  store::Item_t varQNameItem = sctx_p->lookup_var_qname(v.get_varname(), loc);
-  string key = static_context::qname_internal_key(varQNameItem);
+  store::Item_t qnameItem = sctx_p->lookup_var_qname(v.get_varname(), loc);
+  var_expr_t ve;
 
   if (v.is_global()) 
   {
-    thePrologVDecls.push_front(key);
+    ve = create_var(loc, qnameItem, var_expr::prolog_var);
 
-    // TODO: local vars too
-    theCurrentPrologVFDecl = string("V") + key;
+    thePrologGraph.addVarVertex(ve);
+    theCurrentPrologVFDecl = PrologGraphVertex(ve);
+  }
+  else
+  {
+    ve = create_var(loc, qnameItem, var_expr::local_var);
+
+    // TODO: create dep graph for local vars too
   }
 
+  nodestack.push(ve);
   return no_state;
 }
 
@@ -2699,25 +3061,28 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
   if (v.is_global())
-    theCurrentPrologVFDecl.clear();
+    theCurrentPrologVFDecl.setNull();
 
-  xqp_string varname = v.get_varname();
+  expr_t initExpr = (v.get_initexpr() == NULL ? expr_t(NULL) : pop_nodestack());
+
+  var_expr_t ve = pop_nodestack();
 
   // The declared type of a global or external is never tightened based on
   // type inference because globals are mutable.
   xqtref_t type;
   if (v.get_typedecl() != NULL)
+  {
     type = pop_tstack();
 
-  varref_t ve;
+    ve->set_type(type);
+  }
+
+  // Put a mapping between the var name and the var_expr in the local sctx.
+  // Raise error if var name exists already in local sctx obj.
+  bind_var(ve, sctx_p);
 
   if (v.is_global()) 
   {
-    // Create a var_expr for this var and put a mapping between the var name and
-    // the var_expr in the local sctx. Raise error if var name exists already in
-    // local sctx obj.
-    ve = bind_var(loc, varname, var_expr::prolog_var, type);
-
     // All vars declared in a module must be in the same namespace as the module
     if (! theModuleNamespace.empty() &&
         ve->get_name()->getNamespace()->str() != theModuleNamespace)
@@ -2725,22 +3090,16 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
 
     // Make sure that there is no other prolog var with the same name in any of
     // modules transalted so far.
-    // bind_var(ve, theModulesInfo->globals.get());
+    bind_var(ve, theModulesInfo->globals.get());
 
     // If this is a library module, register the var in the exported sctx as well.
     if (export_sctx != NULL)
       bind_var(ve, export_sctx);
 
-    expr_t initExpr = (v.get_initexpr () == NULL ? expr_t(NULL) : pop_nodestack());
-
     thePrologVars.push_back(global_binding(ve, initExpr, v.is_extern()));
   }
   else
   {
-    ve = bind_var(loc, varname, var_expr::local_var, type);
-
-    expr_t initExpr = (v.get_initexpr() == NULL ? expr_t(NULL) : pop_nodestack());
-
     nodestack.push(ve.cast<expr>());
     nodestack.push(initExpr);
   }
@@ -2768,7 +3127,7 @@ void end_visit(const CtxItemDecl& v, void* /*visit_state*/)
 
   expr_t ctx_item_default;
   if (v.get_expr() != NULL)
-    ctx_item_default = pop_nodestack ();
+    ctx_item_default = pop_nodestack();
 
   if (v.get_type () != NULL)
     ctx_item_type = pop_tstack();
@@ -2824,12 +3183,9 @@ void* begin_visit(const FunctionDecl& v)
                                   v.get_name()->get_localname(),
                                   v.get_param_count());
 
-  const store::Item* qname = f->getName();
+  thePrologGraph.addFuncVertex(f);
+  theCurrentPrologVFDecl = PrologGraphVertex(f);
 
-  string key = sctx_p->qname_internal_key(qname);
-  theCurrentPrologVFDecl = string("F") + key;
-
-  thePrologFDecls.push_front(f);
   fn_decl_stack.push_front(f);
 
   return no_state;
@@ -2840,7 +3196,8 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  theCurrentPrologVFDecl.clear();
+  theCurrentPrologVFDecl.setNull();
+
   pop_stack(fn_decl_stack);
 
   expr_t body;
@@ -3413,9 +3770,9 @@ void* begin_visit(const IntegrityConstraintDecl& v)
   switch( v.getICKind() )
   {
   case IntegrityConstraintDecl::coll_check_simple:
-    {
-      const ICCollSimpleCheck ic = dynamic_cast<const ICCollSimpleCheck&>(v);
-      /**********************
+  {
+    const ICCollSimpleCheck& ic = dynamic_cast<const ICCollSimpleCheck&>(v);
+    /**********************
        declare integrity constraint example:ic1 
          on collection example:coll1 $x check sum($x/size) le 1000;
 
@@ -3423,55 +3780,55 @@ void* begin_visit(const IntegrityConstraintDecl& v)
 
        let $x := dc:collection(xs:QName("example:coll1"))
        return sum($x/size) le 1000;
-      **********************/
-
-      // "example:coll1"
-      expr_t qnameStrExpr = new const_expr(sctxid(), loc, 
-                                           ic.getCollName()->get_qname() );
+    **********************/
+    
+    // "example:coll1"
+    expr_t qnameStrExpr = new const_expr(sctxid(), loc, 
+                                         ic.getCollName()->get_qname() );
       
-      string prefixStr = ic.getCollName()->get_prefix();
-      xqp_string uriStr = sctx_p->lookup_ns(prefixStr);
+    string prefixStr = ic.getCollName()->get_prefix();
+    xqp_string uriStr = sctx_p->lookup_ns(prefixStr);
       
 
-      expr_t uriStrExpr = new const_expr(sctxid(), loc, uriStr );
+    expr_t uriStrExpr = new const_expr(sctxid(), loc, uriStr );
       
-      // fn:QName("uri", "example:coll1")
-      fo_expr_t qnameExpr = new fo_expr(sctxid(), loc,
-                                        GET_BUILTIN_FUNCTION(FN_QNAME_2),
-                                        uriStrExpr, qnameStrExpr);
+    // fn:QName("uri", "example:coll1")
+    fo_expr_t qnameExpr = new fo_expr(sctxid(), loc,
+                                      GET_BUILTIN_FUNCTION(FN_QNAME_2),
+                                      uriStrExpr, qnameStrExpr);
 
-      // dc:collection(xs:QName("example:coll1"))
-      function* fn_collection = sctx_p->lookup_resolved_fn(
-          xqp_string("http://www.zorba-xquery.com/modules/xqddf"), 
-          xqp_string("collection"), 1);
-      ZORBA_ASSERT(fn_collection != NULL);
-      std::vector<expr_t> argColl;      
-      argColl.push_back(qnameExpr.getp());
-      fo_expr_t collExpr = new fo_expr(sctxid(), loc, fn_collection, argColl);
+    // dc:collection(xs:QName("example:coll1"))
+    function* fn_collection = sctx_p->lookup_resolved_fn(
+                                                         xqp_string("http://www.zorba-xquery.com/modules/xqddf"), 
+                                                         xqp_string("collection"), 1);
+    ZORBA_ASSERT(fn_collection != NULL);
+    std::vector<expr_t> argColl;      
+    argColl.push_back(qnameExpr.getp());
+    fo_expr_t collExpr = new fo_expr(sctxid(), loc, fn_collection, argColl);
+    
+    // $x 
+    const QName* varQName = ic.getCollVarName();
+    var_expr_t varExpr = bind_var(loc, varQName->get_qname(), 
+                                  var_expr::let_var, NULL);
 
-      // $x 
-      const QName* varQName = ic.getCollVarName();
-      var_expr_t varExpr = bind_var(loc, varQName->get_qname(), 
-                                    var_expr::let_var, NULL);
+    // let $x := dc:collection(xs:QName("example:coll1")) 
+    let_clause* lc = new let_clause(sctx_p,
+                                    sctxid(),
+                                    loc,
+                                    varExpr,
+                                    collExpr.getp());
 
-      // let $x := dc:collection(xs:QName("example:coll1")) 
-      let_clause* lc = new let_clause(sctx_p,
-                                      sctxid(),
-                                      loc,
-                                      varExpr,
-                                      collExpr.getp());
+    flwor_expr_t flworExpr = new flwor_expr(sctxid(), loc, false);
+    flworExpr->add_clause(lc);     
+    // flworExpr-> return clause to be set in end_visitor
 
-      flwor_expr_t flworExpr = new flwor_expr(sctxid(), loc, false);
-      flworExpr->add_clause(lc);     
-      // flworExpr-> return clause to be set in end_visitor
-
-      nodestack.push(flworExpr.getp());      
-    }
-    break;
+    nodestack.push(flworExpr.getp());      
+  }
+  break;
 
   case IntegrityConstraintDecl::coll_check_unique_key:
-    {
-      /**********************
+  {
+    /**********************
        declare integrity constraint org:icEmployeesIds
          on collection org:employees node $x check unique key $x/@id ;
 
@@ -3496,86 +3853,86 @@ void* begin_visit(const IntegrityConstraintDecl& v)
          )
          and
          (  count(distinct-values( $x/@id )) = count($x/@id)  )
-      **********************/
+    **********************/
 
-      const ICCollUniqueKeyCheck ic =
-        dynamic_cast<const ICCollUniqueKeyCheck&>(v);
+    const ICCollUniqueKeyCheck& ic =
+      dynamic_cast<const ICCollUniqueKeyCheck&>(v);
 
-      // "org:employees"
-      expr_t qnameStrExpr = new const_expr(sctxid(), loc,
-                                           ic.getCollName()->get_qname() );
-      
-      string prefixStr = ic.getCollName()->get_prefix();
-      xqp_string uriStr = sctx_p->lookup_ns(prefixStr);
-
-      expr_t uriStrExpr = new const_expr(sctxid(), loc, uriStr );
-
-      // fn:QName("org-uri", "org:employees")
-      fo_expr_t qnameExpr = new fo_expr(sctxid(), loc,
-                                        GET_BUILTIN_FUNCTION(FN_QNAME_2),
-                                        uriStrExpr, qnameStrExpr);
-
-      // dc:collection(xs:QName("org:employees"))
-      function* fn_collection = sctx_p->lookup_resolved_fn(
-          xqp_string("http://www.zorba-xquery.com/modules/xqddf"),
-          xqp_string("collection"),
-          1);
-      ZORBA_ASSERT(fn_collection != NULL);
-      std::vector<expr_t> argColl;
-      argColl.push_back(qnameExpr.getp());
-      fo_expr_t collExpr = new fo_expr(sctxid(), loc, fn_collection, argColl);
-
-      // $x 
-      const QName* varQName = ic.getNodeVarName();
-      store::Item_t varItem = sctx_p->lookup_fn_qname(varQName->get_prefix(),
-          varQName->get_localname(), varQName->get_location());
-      
-
-      // every $x_ in $x satisfies exists ...
-      // every is implemented as a flowr expr
-      push_scope();
-      flwor_expr_t evFlworExpr = new flwor_expr(sctxid(), loc, false);
-      evFlworExpr->set_return_expr(new const_expr(sctxid(), loc, true));
-
-      // $x_ in dc:collection( xs:QName("org:employees") )      
-      var_expr_t evVarExpr = bind_var(loc, 
-                                      varQName->get_qname()/*varItem.getp()*/, 
-                                      var_expr::for_var, NULL);
-
-      // maybe make one more collExpr?
-      evFlworExpr->add_clause(wrap_in_forclause(collExpr.getp(), evVarExpr, NULL));
-
-      pop_scope();
-      // end every
-
-      // let $x := dc:collection(xs:QName("org:employees")) 
-      //   return 
-      var_expr_t varExpr = bind_var(loc, varQName->get_qname()
-                                    /*varItem.getp()*/, var_expr::let_var, 
-                                    NULL);
-
-      let_clause* letClause = new let_clause(sctx_p,
-                                             sctxid(),
-                                             loc,
-                                             varExpr,
-                                             collExpr.getp());
-      flwor_expr_t flworExpr = new flwor_expr(sctxid(), loc, false);
-
+    // "org:employees"
+    expr_t qnameStrExpr = new const_expr(sctxid(), loc,
+                                         ic.getCollName()->get_qname() );
     
+    string prefixStr = ic.getCollName()->get_prefix();
+    xqp_string uriStr = sctx_p->lookup_ns(prefixStr);
 
-      flworExpr->add_clause(letClause);      
-      // flworExpr->set_return_expr( andExpr ); done in end_visit
-      
-      // push evFlworExpr because where clause must be set
-      nodestack.push(evFlworExpr.getp());
-      // push the top expresion
-      nodestack.push(flworExpr.getp());
-    }
-    break;
+    expr_t uriStrExpr = new const_expr(sctxid(), loc, uriStr );
+
+    // fn:QName("org-uri", "org:employees")
+    fo_expr_t qnameExpr = new fo_expr(sctxid(), loc,
+                                      GET_BUILTIN_FUNCTION(FN_QNAME_2),
+                                      uriStrExpr, qnameStrExpr);
+
+    // dc:collection(xs:QName("org:employees"))
+    function* fn_collection = sctx_p->lookup_resolved_fn(
+                                                         xqp_string("http://www.zorba-xquery.com/modules/xqddf"),
+                                                         xqp_string("collection"),
+                                                         1);
+    ZORBA_ASSERT(fn_collection != NULL);
+    std::vector<expr_t> argColl;
+    argColl.push_back(qnameExpr.getp());
+    fo_expr_t collExpr = new fo_expr(sctxid(), loc, fn_collection, argColl);
+    
+    // $x 
+    const QName* varQName = ic.getNodeVarName();
+    store::Item_t varItem = sctx_p->lookup_fn_qname(varQName->get_prefix(),
+                                                    varQName->get_localname(), varQName->get_location());
+    
+    
+    // every $x_ in $x satisfies exists ...
+    // every is implemented as a flowr expr
+    push_scope();
+    flwor_expr_t evFlworExpr = new flwor_expr(sctxid(), loc, false);
+    evFlworExpr->set_return_expr(new const_expr(sctxid(), loc, true));
+    
+    // $x_ in dc:collection( xs:QName("org:employees") )      
+    var_expr_t evVarExpr = bind_var(loc, 
+                                    varQName->get_qname()/*varItem.getp()*/, 
+                                    var_expr::for_var, NULL);
+    
+    // maybe make one more collExpr?
+    evFlworExpr->add_clause(wrap_in_forclause(collExpr.getp(), evVarExpr, NULL));
+    
+    pop_scope();
+    // end every
+    
+    // let $x := dc:collection(xs:QName("org:employees")) 
+    //   return 
+    var_expr_t varExpr = bind_var(loc, varQName->get_qname()
+                                  /*varItem.getp()*/, var_expr::let_var, 
+                                  NULL);
+    
+    let_clause* letClause = new let_clause(sctx_p,
+                                           sctxid(),
+                                           loc,
+                                           varExpr,
+                                           collExpr.getp());
+    flwor_expr_t flworExpr = new flwor_expr(sctxid(), loc, false);
+    
+    
+    
+    flworExpr->add_clause(letClause);      
+    // flworExpr->set_return_expr( andExpr ); done in end_visit
+    
+    // push evFlworExpr because where clause must be set
+    nodestack.push(evFlworExpr.getp());
+    // push the top expresion
+    nodestack.push(flworExpr.getp());
+  }
+  break;
     
   case IntegrityConstraintDecl::coll_foreach_node:
-    {
-      /**********************
+  {
+    /**********************
        declare integrity constraint org:icTransactionsSale
          on collection org:transactions foreach node $x
            check $x/sale > 0 ;
@@ -3588,61 +3945,61 @@ void* begin_visit(const IntegrityConstraintDecl& v)
            for $x in dc:collection( xs:QName("org:transactions") )
            where not( $x/sale > 0 )
            return true )
-       **********************/
+    **********************/
 
-      const ICCollForeachNode ic = 
-        dynamic_cast<const ICCollForeachNode&>(v);
+    const ICCollForeachNode& ic = 
+      dynamic_cast<const ICCollForeachNode&>(v);
 
-      // "org:transactions"
-      expr_t qnameStrExpr = new const_expr(sctxid(), loc, 
-                                           ic.getCollName()->get_qname() );
-      
-      string prefixStr = ic.getCollName()->get_prefix();
-      xqp_string uriStr = sctx_p->lookup_ns(prefixStr);
-
-      expr_t uriStrExpr = new const_expr(sctxid(), loc, uriStr );
-      
-      // fn:QName("org-uri", "org:transactions")
-      fo_expr_t qnameExpr = new fo_expr(sctxid(), loc,
-                                        GET_BUILTIN_FUNCTION(FN_QNAME_2),
-                                        uriStrExpr, qnameStrExpr);
-
-      // dc:collection(xs:QName("org:transactions"))
-      function* fn_collection = sctx_p->lookup_resolved_fn(
-          xqp_string("http://www.zorba-xquery.com/modules/xqddf"), 
-          xqp_string("collection"), 
-          1);
-      ZORBA_ASSERT(fn_collection != NULL);
-      std::vector<expr_t> argColl;      
-      argColl.push_back(qnameExpr.getp());
-      fo_expr_t collExpr = new fo_expr(sctxid(), loc, fn_collection, argColl);
-
-      // every $x_ in $x satisfies exists ...
-      // every is implemented as a flowr expr
-      //push_scope();
-      flwor_expr_t evFlworExpr = new flwor_expr(sctxid(), loc, false);
-      evFlworExpr->set_return_expr(new const_expr(sctxid(), loc, true));
-
-      // $x 
-      const QName* varQName = ic.getCollVarName();
-
-      // $x_ in dc:collection( xs:QName("org:employees") )      
-      var_expr_t evVarExpr = bind_var(loc, varQName->get_qname(), 
-                                      var_expr::for_var, NULL);
-
-      // maybe make one more collExpr?
-      evFlworExpr->add_clause(wrap_in_forclause(collExpr.getp(), evVarExpr, 
-                                                NULL));
-
-      //pop_scope();
-      // end every
-      nodestack.push(evFlworExpr.getp());
-    }
-    break;
+    // "org:transactions"
+    expr_t qnameStrExpr = new const_expr(sctxid(), loc, 
+                                         ic.getCollName()->get_qname() );
     
+    string prefixStr = ic.getCollName()->get_prefix();
+    xqp_string uriStr = sctx_p->lookup_ns(prefixStr);
+    
+    expr_t uriStrExpr = new const_expr(sctxid(), loc, uriStr );
+    
+    // fn:QName("org-uri", "org:transactions")
+    fo_expr_t qnameExpr = new fo_expr(sctxid(), loc,
+                                      GET_BUILTIN_FUNCTION(FN_QNAME_2),
+                                      uriStrExpr, qnameStrExpr);
+    
+    // dc:collection(xs:QName("org:transactions"))
+    function* fn_collection = sctx_p->lookup_resolved_fn(
+                                                         xqp_string("http://www.zorba-xquery.com/modules/xqddf"), 
+                                                         xqp_string("collection"), 
+                                                         1);
+    ZORBA_ASSERT(fn_collection != NULL);
+    std::vector<expr_t> argColl;      
+    argColl.push_back(qnameExpr.getp());
+    fo_expr_t collExpr = new fo_expr(sctxid(), loc, fn_collection, argColl);
+    
+    // every $x_ in $x satisfies exists ...
+    // every is implemented as a flowr expr
+    //push_scope();
+    flwor_expr_t evFlworExpr = new flwor_expr(sctxid(), loc, false);
+    evFlworExpr->set_return_expr(new const_expr(sctxid(), loc, true));
+    
+    // $x 
+    const QName* varQName = ic.getCollVarName();
+    
+    // $x_ in dc:collection( xs:QName("org:employees") )      
+    var_expr_t evVarExpr = bind_var(loc, varQName->get_qname(), 
+                                    var_expr::for_var, NULL);
+    
+    // maybe make one more collExpr?
+    evFlworExpr->add_clause(wrap_in_forclause(collExpr.getp(), evVarExpr, 
+                                              NULL));
+    
+    //pop_scope();
+    // end every
+    nodestack.push(evFlworExpr.getp());
+  }
+  break;
+  
   case IntegrityConstraintDecl::foreign_key:
-    {
-      /**********************
+  {
+    /**********************
        declare integrity constraint org:icEmpSalesForeignKey
          foreign key
            from collection org:transactions node $x key $x//sale/empid
@@ -3662,104 +4019,105 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                where $y/id eq $x//sale/empid
                return true) )
            return true)
-       **********************/
+    **********************/
       
-      const ICForeignKey ic = dynamic_cast<const ICForeignKey&>(v);
+    const ICForeignKey& ic = dynamic_cast<const ICForeignKey&>(v);
 
-      // TO part
-      // "org:employees"
-      expr_t toQnameStrExpr = new const_expr(sctxid(), loc, 
-                                             ic.getToCollName()->get_qname() );
-      string toPrefixStr = ic.getToCollName()->get_prefix();
-      xqp_string toUriStr = sctx_p->lookup_ns(toPrefixStr);
-
-      expr_t toUriStrExpr = new const_expr(sctxid(), loc, toUriStr );
-      
-      // xs:QName("org:employees")
-      fo_expr_t toQnameExpr = new fo_expr(sctxid(), loc,
-                                          GET_BUILTIN_FUNCTION(FN_QNAME_2),
-                                          toUriStrExpr, toQnameStrExpr);
-
-      // dc:collection(xs:QName("org:employees"))
-      function* toFnCollection = sctx_p->lookup_resolved_fn(
-          xqp_string("http://www.zorba-xquery.com/modules/xqddf"), 
-          xqp_string("collection"), 
-          1);
-      ZORBA_ASSERT(toFnCollection != NULL);
-      std::vector<expr_t> toArgColl;      
-      toArgColl.push_back(toQnameExpr.getp());
-      fo_expr_t toCollExpr = new fo_expr(sctxid(), loc, toFnCollection, 
-                                         toArgColl);
-      
-      // some $y in dc:collection( xs:QName("org:employees") )
-      // satisfies ... eq ...
-      // implemented using flowr
-      flwor_expr_t someFlworExpr = new flwor_expr(sctxid(), loc, false);
-      someFlworExpr->set_return_expr(new const_expr(sctxid(), loc, true));
-            
-      // $y 
-      const QName* toVarQName = ic.getToNodeVarName();
-      var_expr_t toVarExpr = bind_var(loc, toVarQName->get_qname(), 
-                                      var_expr::for_var, NULL);
-
-      // for $y in dc:collection(xs:QName("org:employees")) 
-      someFlworExpr->add_clause(wrap_in_forclause(toCollExpr.getp(), toVarExpr,
-                                                  NULL));
-
- 
-      // FROM part
-      // "org:transactions"
-      expr_t fromQnameStrExpr = new const_expr(sctxid(), loc, 
-          ic.getFromCollName()->get_qname() );
-      
-      string fromPrefixStr = ic.getFromCollName()->get_prefix();
-      xqp_string fromUriStr = sctx_p->lookup_ns(fromPrefixStr);
-
-      expr_t fromUriStrExpr = new const_expr(sctxid(), loc, fromUriStr );
-
-      // fn:QName("org-uri", "org:transactions")
-      fo_expr_t fromQnameExpr = new fo_expr(sctxid(), loc,
-                                            GET_BUILTIN_FUNCTION(FN_QNAME_2),
-                                            fromUriStrExpr, fromQnameStrExpr);
-
-      // dc:collection(xs:QName("org:transactions"))
-      function* fromFnCollection = sctx_p->lookup_resolved_fn(
-          xqp_string("http://www.zorba-xquery.com/modules/xqddf"), 
-          xqp_string("collection"), 
-          1);
-      ZORBA_ASSERT(fromFnCollection != NULL);
-      std::vector<expr_t> fromArgColl;      
-      fromArgColl.push_back(fromQnameExpr.getp());
-      fo_expr_t fromCollExpr = new fo_expr(sctxid(), loc, fromFnCollection, 
-                                           fromArgColl);
-
-      // every $x in dc:collection( xs:QName("org:transactions") )
-      // satisfies ...
-      // implemented using flowr
-      flwor_expr_t evFlworExpr = new flwor_expr(sctxid(), loc, false);
-      evFlworExpr->set_return_expr(new const_expr(sctxid(), loc, true));
-
-      // $x
-      const QName* fromVarQName = ic.getFromNodeVarName();
-      var_expr_t fromVarExpr = bind_var(loc, fromVarQName->get_qname(), 
-                                      var_expr::for_var, NULL);
-
-      // for $x in dc:collection(xs:QName("org:transactions")) 
-      evFlworExpr->add_clause(wrap_in_forclause(fromCollExpr.getp(), 
-                                                fromVarExpr, NULL));
-
-
-      nodestack.push(someFlworExpr.getp());
-      nodestack.push(evFlworExpr.getp());      
-    }
-    break;
+    // TO part
+    // "org:employees"
+    expr_t toQnameStrExpr = new const_expr(sctxid(), loc, 
+                                           ic.getToCollName()->get_qname() );
+    string toPrefixStr = ic.getToCollName()->get_prefix();
+    xqp_string toUriStr = sctx_p->lookup_ns(toPrefixStr);
     
+    expr_t toUriStrExpr = new const_expr(sctxid(), loc, toUriStr );
+      
+    // xs:QName("org:employees")
+    fo_expr_t toQnameExpr = new fo_expr(sctxid(), loc,
+                                        GET_BUILTIN_FUNCTION(FN_QNAME_2),
+                                        toUriStrExpr, toQnameStrExpr);
+    
+    // dc:collection(xs:QName("org:employees"))
+    function* toFnCollection = sctx_p->lookup_resolved_fn(
+                                                          xqp_string("http://www.zorba-xquery.com/modules/xqddf"), 
+                                                          xqp_string("collection"), 
+                                                          1);
+    ZORBA_ASSERT(toFnCollection != NULL);
+    std::vector<expr_t> toArgColl;      
+    toArgColl.push_back(toQnameExpr.getp());
+    fo_expr_t toCollExpr = new fo_expr(sctxid(), loc, toFnCollection, 
+                                       toArgColl);
+    
+    // some $y in dc:collection( xs:QName("org:employees") )
+    // satisfies ... eq ...
+    // implemented using flowr
+    flwor_expr_t someFlworExpr = new flwor_expr(sctxid(), loc, false);
+    someFlworExpr->set_return_expr(new const_expr(sctxid(), loc, true));
+    
+    // $y 
+    const QName* toVarQName = ic.getToNodeVarName();
+    var_expr_t toVarExpr = bind_var(loc, toVarQName->get_qname(), 
+                                    var_expr::for_var, NULL);
+    
+    // for $y in dc:collection(xs:QName("org:employees")) 
+    someFlworExpr->add_clause(wrap_in_forclause(toCollExpr.getp(), toVarExpr,
+                                                NULL));
+    
+    
+    // FROM part
+    // "org:transactions"
+    expr_t fromQnameStrExpr = new const_expr(sctxid(), loc, 
+                                             ic.getFromCollName()->get_qname() );
+    
+    string fromPrefixStr = ic.getFromCollName()->get_prefix();
+    xqp_string fromUriStr = sctx_p->lookup_ns(fromPrefixStr);
+    
+    expr_t fromUriStrExpr = new const_expr(sctxid(), loc, fromUriStr );
+    
+    // fn:QName("org-uri", "org:transactions")
+    fo_expr_t fromQnameExpr = new fo_expr(sctxid(), loc,
+                                          GET_BUILTIN_FUNCTION(FN_QNAME_2),
+                                          fromUriStrExpr, fromQnameStrExpr);
+    
+    // dc:collection(xs:QName("org:transactions"))
+    function* fromFnCollection = sctx_p->lookup_resolved_fn(
+                                                            xqp_string("http://www.zorba-xquery.com/modules/xqddf"), 
+                                                            xqp_string("collection"), 
+                                                            1);
+    ZORBA_ASSERT(fromFnCollection != NULL);
+    std::vector<expr_t> fromArgColl;      
+    fromArgColl.push_back(fromQnameExpr.getp());
+    fo_expr_t fromCollExpr = new fo_expr(sctxid(), loc, fromFnCollection, 
+                                         fromArgColl);
+    
+    // every $x in dc:collection( xs:QName("org:transactions") )
+    // satisfies ...
+    // implemented using flowr
+    flwor_expr_t evFlworExpr = new flwor_expr(sctxid(), loc, false);
+    evFlworExpr->set_return_expr(new const_expr(sctxid(), loc, true));
+    
+    // $x
+    const QName* fromVarQName = ic.getFromNodeVarName();
+    var_expr_t fromVarExpr = bind_var(loc, fromVarQName->get_qname(), 
+                                      var_expr::for_var, NULL);
+    
+    // for $x in dc:collection(xs:QName("org:transactions")) 
+    evFlworExpr->add_clause(wrap_in_forclause(fromCollExpr.getp(), 
+                                              fromVarExpr, NULL));
+    
+    
+    nodestack.push(someFlworExpr.getp());
+    nodestack.push(evFlworExpr.getp());      
+  }
+  break;
+  
   default:
     ZORBA_ASSERT(false);
   }
 
   return no_state;
 }
+
 
 void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/) 
 {
@@ -7431,10 +7789,9 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
   if (ve == NULL)
     ZORBA_ERROR_LOC_PARAM (XPST0008, loc, v.get_varname (), "");
 
-  if (ve->get_kind() == var_expr::prolog_var && ! theCurrentPrologVFDecl.empty()) 
+  if (ve->get_kind() == var_expr::prolog_var && !theCurrentPrologVFDecl.isNull()) 
   {
-    string key = "V" + static_context::qname_internal_key(ve->get_name());
-    add_multimap_value(thePrologDeps, theCurrentPrologVFDecl, key);
+    thePrologGraph.addEdge(theCurrentPrologVFDecl, ve);
   }
 
   nodestack.push(new wrapper_expr(sctxid(), v.get_location(), rchandle<expr>(ve)));
@@ -7539,11 +7896,17 @@ void* begin_visit(const FunctionCall& v)
   string prefix = qn_h->get_prefix();
   string fname = qn_h->get_localname();
 
-  store::Item_t qname = sctx_p->lookup_fn_qname(prefix, fname, loc);
-  string key = "F" + static_context::qname_internal_key(qname);
+  if (!theCurrentPrologVFDecl.isNull())
+  {
+    ulong numArgs = 0;
+    if (v.get_arg_list() != NULL)
+      numArgs = v.get_arg_list()->size();
 
-  if (! theCurrentPrologVFDecl.empty())
-    add_multimap_value(thePrologDeps, theCurrentPrologVFDecl, key);
+    function* f = LOOKUP_FN(prefix, fname, numArgs);
+
+    if (f != NULL)
+      thePrologGraph.addEdge(theCurrentPrologVFDecl, f);
+  }
 
   nodestack.push(NULL);
   return no_state;
@@ -8616,133 +8979,9 @@ void end_visit(const CompTextConstructor& v, void* /*visit_state*/)
 }
 
 
-void reorder_globals() 
-{
-  // STEP 1: Floyd-Warshall transitive closure of edges starting from functions
-  for (list<function *>::iterator k = thePrologFDecls.begin();
-       k != thePrologFDecls.end();
-       ++k)
-  {
-    string kkey = "F" + static_context::qname_internal_key((*k)->getName());
-    strset_t kedges;    
-    if (! thePrologDeps.get(kkey, kedges))
-      continue;
-
-    for (set<string>::iterator j = kedges->begin(); j != kedges->end(); j++) 
-    {
-      string jkey = *j;
-      for (list<function *>::iterator i = thePrologFDecls.begin ();
-           i != thePrologFDecls.end(); i++)
-      {
-        string ikey = "F" + static_context::qname_internal_key((*i)->getName());
-        strset_t iedges, new_iedges;
-        if (thePrologDeps.get (ikey, iedges)
-            && iedges->find (kkey) != iedges->end()
-            && iedges->find (jkey) == iedges->end()) 
-        {
-          // cout << "Added " << ikey << " -> " << kkey << " -> " << jkey << endl;
-          iedges->insert (jkey);
-        }
-      }
-    }
-  }
-
-  // STEP 2: add var -> fn -> var dependencies found above
-  for (list<string>::iterator i = thePrologVDecls.begin();
-       i != thePrologVDecls.end();
-       ++i)
-  {
-    string ikey = "V" + *i;
-    strset_t iedges;
-    if (! thePrologDeps.get (ikey, iedges))
-      continue;
-    set<string> new_iedges;
-    for (set<string>::iterator k = iedges->begin (); k != iedges->end (); k++) {
-      string kkey = *k;
-      strset_t kedges;
-      if (kkey [0] == 'F' && thePrologDeps.get (kkey, kedges))
-        new_iedges.insert (kedges->begin (), kedges->end ());
-    }
-    // after iteration on iedges is finished, enlarge it
-    #if 0
-    cout << "Adding to " << ikey << " ";
-    copy (new_iedges.begin (), new_iedges.end (),
-          ostream_iterator<string> (cout, " "));
-    cout << endl;
-    #endif
-    iedges->insert (new_iedges.begin (), new_iedges.end ());
-  }
-
-  // STEP 3: topologically sort global vars.
-  // Note that steps 1 & 2 are required: we cannot sort the entire set of
-  // global vars + fns, because functions are allowed to be mutually recursive.
-  // Implemented using non-recursive (stack-based) DFS traversal.
-  // This algorithm unfortunately does not detect cycles.
-  list<string> topsorted_vars;  // dependencies first
-  set<string> visited;
-  stack<string> todo;  // format: action_char + var_key
-  for (list<string>::iterator i = thePrologVDecls.begin ();
-       i != thePrologVDecls.end (); i++)
-    todo.push ("I" + (*i));
-  
-  while (! todo.empty ()) {
-    string ikey = todo.top ();
-    // cout << "Action " << ikey << endl;
-    char action = ikey [0];
-    ikey.replace (0, 1, "");
-    todo.pop ();
-
-    switch (action) {
-    case 'D':  // finish notification
-      topsorted_vars.push_back (ikey);
-      break;
-    case 'I':  // visit request
-      if (visited.find (ikey) == visited.end ()) {
-        visited.insert (ikey);
-        todo.push ("D" + ikey);
-        strset_t iedges;
-        if (thePrologDeps.get ("V" + ikey, iedges)) {
-          for (set<string>::iterator j = iedges->begin ();
-               j != iedges->end (); j++)
-          {
-            if ((*j) [0] == 'V')
-              todo.push ("I" + (*j).substr (1));
-          }
-        }
-      }
-      break;
-    default: assert (false);
-    }
-  }
-
-  // STEP 4: reorder thePrologVars according to topological order
-  #if 1
-  map<string, global_binding> gvmap;
-  for (list<global_binding>::iterator i = thePrologVars.begin ();
-       i != thePrologVars.end (); i++)
-  {
-    const store::Item* qname = (*i).first->get_name();
-    gvmap [static_context::qname_internal_key(qname)] = *i;
-  }
-  thePrologVars.clear ();
-  for (list<string>::iterator i = topsorted_vars.begin();
-       i != topsorted_vars.end (); i++) 
-  {
-    map<string, global_binding>::iterator p = gvmap.find(*i);
-    if (p != gvmap.end ())
-      thePrologVars.push_back ((*p).second);
-  }
-  #endif
-}
-
-
-
-
 /*******************************************************************************
 
-
 ********************************************************************************/
-
 
 void* begin_visit(const SingleType& v) 
 {
