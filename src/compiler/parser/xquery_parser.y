@@ -557,6 +557,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> FunctionDecl
 %type <node> FunctionDecl2
 %type <node> FunctionDecl3
+%type <node> FunctionDeclUpdating
 %type <node> FunctionDecl4
 %type <node> Import
 %type <node> ItemType
@@ -807,7 +808,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 // (not <= 0); but Bison never increments the refcount, so we do it manually...
 
 // parsenodes
-%destructor { if ($$ != NULL) { RCHelper::addReference ($$); RCHelper::removeReference ($$); } } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDecl3 FunctionDecl4 Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl DeclProperty DeclPropertyList NodeModifier IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard DecimalFormatDecl // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
+%destructor { if ($$ != NULL) { RCHelper::addReference ($$); RCHelper::removeReference ($$); } } AbbrevForwardStep AnyKindTest AposAttrContentList Opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDecl3 FunctionDeclUpdating FunctionDecl4 Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma PragmaList PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList Opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl DeclProperty DeclPropertyList NodeModifier IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard DecimalFormatDecl // RevalidationDecl FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTIgnoreOption FTInclExclStringLiteral FTInclExclStringLiteralList FTLanguageOption FTMatchOption FTMatchOptionProximityList FTMildnot FTOptionDecl FTOr FTOrderedIndicator FTProximity FTRange FTRefOrList FTScope FTScoreVar FTSelection FTStemOption FTStopwordOption FTStringLiteralList FTThesaurusID FTThesaurusList FTThesaurusOption FTTimes FTUnaryNot FTUnit FTWildcardOption FTWindow FTWords FTWordsSelection FTWordsValue
 // exprnodes
 %destructor { if ($$ != NULL) { RCHelper::addReference ($$); RCHelper::removeReference ($$); } } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockExpr EnclosedExpr Expr ConcatExpr ApplyExpr ExprSingle ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignExpr ExitExpr WhileExpr FlowCtlStatement QNAME FTContainsExpr
 // internal non-terminals with values
@@ -1635,32 +1636,32 @@ CollectionDecl :
     {
       $$ = new CollectionDecl(LOC(@$),
                               static_cast<QName*>($3),
-                              0, 
-                              0, 
+                              0,
+                              0,
                               0);
     }
   | DECLARE COLLECTION QNAME NodeModifier
     {
       $$ = new CollectionDecl(LOC(@$),
                               static_cast<QName*>($3),
-                              0, 
-                              static_cast<NodeModifier*>($4), 
+                              0,
+                              static_cast<NodeModifier*>($4),
                               0);
     }
   | DECLARE COLLECTION QNAME AS CollectionTypeDecl
     {
       $$ = new CollectionDecl(LOC(@$),
                               static_cast<QName*>($3),
-                              0, 
-                              0, 
+                              0,
+                              0,
                               static_cast<SequenceType*>($5));
     }
   | DECLARE COLLECTION QNAME AS CollectionTypeDecl NodeModifier
     {
       $$ = new CollectionDecl(LOC(@$),
                               static_cast<QName*>($3),
-                              0, 
-                              static_cast<NodeModifier*>($6), 
+                              0,
+                              static_cast<NodeModifier*>($6),
                               static_cast<SequenceType*>($5));
     }
   | DECLARE DeclPropertyList COLLECTION QNAME
@@ -1673,24 +1674,24 @@ CollectionDecl :
     {
       $$ = new CollectionDecl( LOC(@$),
                                static_cast<QName*>($4),
-                               static_cast<DeclPropertyList*>($2), 
-                               static_cast<NodeModifier*>($5), 
+                               static_cast<DeclPropertyList*>($2),
+                               static_cast<NodeModifier*>($5),
                                0);
     }
   | DECLARE DeclPropertyList COLLECTION QNAME AS CollectionTypeDecl
     {
       $$ = new CollectionDecl( LOC(@$),
                                static_cast<QName*>($4),
-                               static_cast<DeclPropertyList*>($2), 
-                               0, 
+                               static_cast<DeclPropertyList*>($2),
+                               0,
                                static_cast<SequenceType*>($6));
     }
   | DECLARE DeclPropertyList COLLECTION QNAME AS CollectionTypeDecl NodeModifier
     {
       $$ = new CollectionDecl( LOC(@$),
                                static_cast<QName*>($4),
-                               static_cast<DeclPropertyList*>($2), 
-                               static_cast<NodeModifier*>($7), 
+                               static_cast<DeclPropertyList*>($2),
+                               static_cast<NodeModifier*>($7),
                                static_cast<SequenceType*>($6));
     }
   ;
@@ -1787,7 +1788,7 @@ IntegrityConstraintDecl :
     }
   |
     DECLARE INTEGRITY CONSTRAINT QNAME ON COLLECTION QNAME
-    DOLLAR QNAME CHECK UNIQUE KEY PathExpr 
+    DOLLAR QNAME CHECK UNIQUE KEY PathExpr
     {
       $$ = new ICCollUniqueKeyCheck(LOC(@$),
                                     static_cast<QName*>($4),
@@ -1817,7 +1818,7 @@ IntegrityConstraintDecl :
                             $14,
                             static_cast<QName*>($17),
                             static_cast<QName*>($20),
-                            $22); 
+                            $22);
     }
   ;
 
@@ -2016,7 +2017,7 @@ FunctionDecl2 :
     {
       $$ = $2;
     }
-  | UPDATING FunctionDecl3
+  | UPDATING FunctionDeclUpdating
     {
       FunctionDecl *d = dynamic_cast<FunctionDecl *> ($2);
       d->type = (d->type == ParseConstants::fn_extern)
@@ -2047,6 +2048,27 @@ FunctionDecl3 :
                 &* $3->param, &* $3->ret,
 								NULL,
 								ParseConstants::fn_extern);
+      delete $3;
+    }
+  ;
+
+FunctionDeclUpdating :
+    FUNCTION QNAME FunctionSig LBRACE ConcatExpr RBRACE
+    {
+      $$ = new FunctionDecl(LOC (@$),
+                        static_cast<QName*>($2),
+                        &* $3->param, &* $3->ret,
+                        $5,
+                        ParseConstants::fn_read);
+      delete $3;
+    }
+  | FUNCTION QNAME FunctionSig EXTERNAL
+    {
+      $$ = new FunctionDecl(LOC (@$),
+                        static_cast<QName*>($2),
+                        &* $3->param, &* $3->ret,
+                        NULL,
+                        ParseConstants::fn_extern);
       delete $3;
     }
   ;
