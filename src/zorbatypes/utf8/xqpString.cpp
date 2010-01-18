@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -89,7 +89,7 @@ bool xqpStringStore::is_unreservedCP(uint32_t cp)
      cp == 0x2E || //.
      cp == 0x5F || //_
      cp == 0x7E)   //~
-  {  
+  {
     ret = true;
   }
   return ret;
@@ -166,7 +166,7 @@ bool xqpStringStore::is_Invalid_in_IRI(uint32_t cp)
 {
   bool ret = false;
   if(0x3C == cp || 0x3E == cp || 0x22 == cp ||
-     0x7B == cp || 0x7D == cp || 0x7C == cp || 
+     0x7B == cp || 0x7D == cp || 0x7C == cp ||
      0x5C == cp || 0X5E == cp || 0x60 == cp ||
      0x20 == cp)
   {
@@ -182,7 +182,7 @@ bool xqpStringStore::is_Invalid_in_IRI(uint32_t cp)
 static xqpStringStore_t getXqpString(UnicodeString source)
 {
   UErrorCode status = U_ZERO_ERROR;
-  
+
   //open a convertor to UTF-8
   UConverter* conv = ucnv_open("utf-8", &status);
 
@@ -263,14 +263,14 @@ uint32_t xqpStringStore::hash(const char* str)
 ********************************************************************************/
 uint32_t xqpStringStore::hash(const XQPCollator* coll) const
 {
-  if(!coll) 
+  if(!coll)
   {
     return hash(c_str());
   }
 
   CollationKey collKey;
   UErrorCode status = U_ZERO_ERROR;
-    
+
   ((Collator*)coll->theCollator)->getCollationKey(getUnicodeString(this),
                                                   collKey,
                                                   status);
@@ -279,7 +279,7 @@ uint32_t xqpStringStore::hash(const XQPCollator* coll) const
   {
     assert(false);
   }
-    
+
   return collKey.hashCode();
 }
 
@@ -334,7 +334,7 @@ bool xqpStringStore::byteEqual(const char* src, uint32_t srcBytes) const
 /*
   if(bytes() != srcBytes)
     return false;
-  
+
   //compare strings from back to front
   const char  *s1 = c_str();
   uint32_t    llen = srcBytes>>2;
@@ -424,7 +424,7 @@ int32_t xqpStringStore::indexOf(const xqpStringStore* pattern, XQPCollator* coll
   if (empty())
     return -1;
 
-  if ( ! coll ) 
+  if ( ! coll )
   {
     size_t lRes = theString.find(pattern->c_str());
     if (lRes == std::string::npos)
@@ -436,7 +436,7 @@ int32_t xqpStringStore::indexOf(const xqpStringStore* pattern, XQPCollator* coll
   UErrorCode status = U_ZERO_ERROR;
 
   StringSearch search(getUnicodeString(pattern),
-                      getUnicodeString(this), 
+                      getUnicodeString(this),
                       (RuleBasedCollator*)coll->theCollator, NULL, status);
 
   if(U_FAILURE(status))
@@ -491,7 +491,7 @@ int32_t xqpStringStore::lastIndexOf(const xqpStringStore* pattern, XQPCollator* 
   UErrorCode status = U_ZERO_ERROR;
 
   StringSearch search(getUnicodeString(pattern),
-                      getUnicodeString(this), 
+                      getUnicodeString(this),
                       (RuleBasedCollator *)coll->theCollator, NULL, status);
 
   if(U_FAILURE(status))
@@ -610,7 +610,7 @@ xqpStringStore_t xqpStringStore::substr(
 
 
 /*******************************************************************************
-  Returns a substring of the currents string starting at index and continues 
+  Returns a substring of the currents string starting at index and continues
   until the NULL termination. Doesn't use ICU4C.
 ********************************************************************************/
 xqpStringStore_t xqpStringStore::substr(xqpStringStore::distance_type index) const
@@ -623,10 +623,10 @@ xqpStringStore_t xqpStringStore::substr(xqpStringStore::distance_type index) con
   {
     return new xqpStringStore(theString);
   }
-  
+
   const char * d = c_str();
   advance(d, index, d + size());
-  
+
   return new xqpStringStore(d);
 }
 
@@ -729,7 +729,7 @@ xqpStringStore_t xqpStringStore::normalizeSpace() const
     {
       if(is_whitespace(cp))
         cp = 0x20;
-        
+
       memset(seq, 0, sizeof(seq));
       UTF8Encode(cp, seq);
       newStr->theString += seq;
@@ -747,7 +747,7 @@ xqpStringStore_t xqpStringStore::normalizeSpace() const
   Create a new xqpStringStore obj that is a suffix of "this". The suffix is
   defined by removing from "this" all of its leading chars that belong to a
   given set S of chars. S is defined as the 1st "len" chars in the "start"
-  string. 
+  string.
 ********************************************************************************/
 xqpStringStore_t xqpStringStore::trimL(const char* start, uint16_t len) const
 {
@@ -786,7 +786,7 @@ xqpStringStore_t xqpStringStore::trimL(const char* start, uint16_t len) const
   else
     return new xqpStringStore (c);
 }
-  
+
 
 /*******************************************************************************
 
@@ -795,7 +795,7 @@ xqpStringStore_t xqpStringStore::trimR(const char* start, uint16_t len) const
 {
   if(empty() || 0 == len )
     return const_cast<xqpStringStore *> (this);
-    
+
   uint32_t shortTrimCP [16];
   uint32_t* trimCP =
     (len <= 16) ? shortTrimCP : new uint32_t[len];
@@ -841,8 +841,8 @@ xqpStringStore::trim() const
 {
   if(empty())
     return new xqpStringStore("");
-  
-  char* lSeq = " \n\r\t";
+
+  const char* lSeq = " \n\r\t";
   xqpStringStore_t lTmpStr = trimL(lSeq, 4);
   return lTmpStr->trimR(lSeq, 4);
 }
@@ -904,7 +904,7 @@ xqpStringStore_t xqpStringStore::escapeHtmlUri() const
   distance_type length;
 
   std::auto_ptr<xqpStringStore> newStr(new xqpStringStore(""));
-    
+
   for(i = 0; i < len; ++i)
   {
     prev = c;
@@ -952,7 +952,7 @@ xqpStringStore_t xqpStringStore::iriToUri() const
   distance_type length;
 
   std::auto_ptr<xqpStringStore> newStr(new xqpStringStore(""));
-    
+
   for(i = 0; i < len; ++i)
   {
     prev = c;
@@ -1123,8 +1123,8 @@ xqpStringStore_t xqpStringStore::normalize(const xqpStringStore* normMode) const
   {
     assert(false);
   }
-    
-  return getXqpString( result ); 
+
+  return getXqpString( result );
 }
 
 
@@ -1144,7 +1144,7 @@ checked_vector<uint32_t> xqpStringStore::getCodepoints() const
 {
   checked_vector<uint32_t> tt;
   uint16_t vLength;
-  
+
   vLength = numChars() + 1;
   const char* c = c_str();
   while( --vLength > 0 )
@@ -1354,10 +1354,10 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
     xqpString ret(theStrStore->theString);
     return ret;
   }
-  
+
   const char * d = theStrStore->c_str();
   advance(d, index, d+length());
-  
+
   xqpString ret(d);
 
   return ret;
@@ -1368,7 +1368,7 @@ const char* xqpString::c_str() const
 {
   return theStrStore->c_str();
 }
-  
+
 
 xqpString xqpString::normalize(xqpString normMode)
 {
@@ -1383,10 +1383,10 @@ std::map<uint32_t,uint32_t> xqpString::createMapArray(xqpString mapString, xqpSt
   const char*   mapPtr    = mapString.theStrStore->c_str();
   const char*   transPtr  = transString.theStrStore->c_str();
   uint32_t      tmp0, tmp1;
-  
+
   std::map<uint32_t,uint32_t> mapArray;
   std::map<uint32_t,uint32_t>::iterator it;
-  
+
   if(mapLen >0)
   {
     while((mapLen > 0) && (transLen > 0))
@@ -1397,7 +1397,7 @@ std::map<uint32_t,uint32_t> xqpString::createMapArray(xqpString mapString, xqpSt
       --mapLen;
       --transLen;
     }
-    
+
     while(mapLen > 0)
     {
       tmp0 = UTF8Decode(mapPtr);
@@ -1407,7 +1407,7 @@ std::map<uint32_t,uint32_t> xqpString::createMapArray(xqpString mapString, xqpSt
   }
   return mapArray;
 }
-  
+
 
 xqpString xqpString::translate(xqpString mapString, xqpString transString) const
 {
@@ -1427,13 +1427,13 @@ xqpString xqpString::translate(xqpString mapString, xqpString transString) const
   for(i=0; i<len; ++i)
   {
     cp = UTF8Decode(c);
-    
+
     it= myMap.find(cp);
     if( it != myMap.end() )
     {
       cp = (*it).second;
     }
-    
+
     if(cp != 0xFFFFFFFF) //0xFFFFFFFF = unsigned long_MAX
     {
       memset(seq, 0, sizeof(seq));
@@ -1442,7 +1442,7 @@ xqpString xqpString::translate(xqpString mapString, xqpString transString) const
     }
   }
   tmp += "\0";
-  
+
   xqpString res(tmp.c_str());
   return res;
 }
@@ -1483,11 +1483,11 @@ uint32_t parse_regex_flags (const char *flag_cstr) {
 
 
 xqpString
-xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags) 
+xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags)
 {
     UErrorCode status = U_ZERO_ERROR;
     UnicodeString uspattern = getUnicodeString (pattern.getStore()),
-    us = getUnicodeString (this->getStore()); 
+    us = getUnicodeString (this->getStore());
 
     RegexMatcher matcher (uspattern, us, parse_regex_flags (flags.c_str ()), status);
     if (U_FAILURE(status)) {
@@ -1501,7 +1501,7 @@ xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags)
       throw zorbatypesException("", ZorbatypesError::FORX0004);
       return "";
     }
-    
+
     UnicodeString result = matcher.replaceAll (getUnicodeString(replacement.getStore()), status);
     if (U_FAILURE(status)) {
       return "";
@@ -1524,7 +1524,7 @@ xqpString::tokenize(
   UnicodeString us = getUnicodeString(this->getStore());
 
   RegexMatcher m (uspattern, us, parse_regex_flags (flags.c_str ()), status);
-  if (U_FAILURE(status)) 
+  if (U_FAILURE(status))
   {
     throw zorbatypesException(pattern.c_str(), ZorbatypesError::FORX0002);
     return "";
@@ -1552,20 +1552,20 @@ wchar_t * xqpString::getWCS(xqpString source) const
   wchar_t* destWCS;
   destWCS = new wchar_t[destCapacity];
   int32_t destLen;
-  
+
   UnicodeString unicodeStr = getUnicodeString(source.getStore());
   int32_t srcLen = unicodeStr.length();
   UChar* srcBuf = unicodeStr.getBuffer(srcLen);
   UErrorCode status = U_ZERO_ERROR;
-  
+
   wchar_t* ret =  u_strToWCS(destWCS, destCapacity, &destLen, srcBuf, srcLen, &status);
   unicodeStr.releaseBuffer (srcLen);
-  
+
   if(U_FAILURE(status))
   {
     assert(false);
   }
-  
+
   return ret;
 }
 
@@ -1606,7 +1606,7 @@ void xqpString::append_in_place(const std::string &str)
 }
 
 //static concat
-xqpString xqpString::concat(const char *s1, 
+xqpString xqpString::concat(const char *s1,
                             const char *s2)
 {
 //  int l1 = strlen(s1);
@@ -1619,7 +1619,7 @@ xqpString xqpString::concat(const char *s1,
   return result;
 }
 
-xqpString xqpString::concat(const char *s1, 
+xqpString xqpString::concat(const char *s1,
                         const char *s2,
                         const xqpStringStore_t s3)
 {
@@ -1635,7 +1635,7 @@ xqpString xqpString::concat(const char *s1,
   return result;
 }
 
-xqpString xqpString::concat(const char *s1, 
+xqpString xqpString::concat(const char *s1,
                         const char *s2,
                         const char *s3)
 {
@@ -1651,7 +1651,7 @@ xqpString xqpString::concat(const char *s1,
   return result;
 }
 
-xqpString xqpString::concat(xqpString s1, 
+xqpString xqpString::concat(xqpString s1,
                         const char *s2,
                         const xqpString s3)
 {
@@ -1667,7 +1667,7 @@ xqpString xqpString::concat(xqpString s1,
   return result;
 }
 
-xqpString xqpString::concat(const xqpString s1, 
+xqpString xqpString::concat(const xqpString s1,
                         const xqpString s3)
 {
 //  int l1 = s1.bytes();
@@ -1681,7 +1681,7 @@ xqpString xqpString::concat(const xqpString s1,
   return result;
 }
 
-xqpString xqpString::concat(const std::string &s1, 
+xqpString xqpString::concat(const std::string &s1,
                         const char *s2,
                         const xqpStringStore_t s3)
 {
@@ -1697,7 +1697,7 @@ xqpString xqpString::concat(const std::string &s1,
   return result;
 }
 
-xqpString xqpString::concat(const xqpStringStore_t s1, 
+xqpString xqpString::concat(const xqpStringStore_t s1,
                         const char *s2,
                         const xqpString s3,
                         const char *s4)
@@ -1716,7 +1716,7 @@ xqpString xqpString::concat(const xqpStringStore_t s1,
   return result;
 }
 
-xqpString xqpString::concat(const char *s1, 
+xqpString xqpString::concat(const char *s1,
                         const std::string &s2,
                         const char *s3,
                         const xqpStringStore_t s4,
