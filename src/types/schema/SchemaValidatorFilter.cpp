@@ -1520,7 +1520,8 @@ void SchemaValidatorFilter::error(
         errCode == XMLValid::EmptyNotValidForContent ||
         errCode == XMLValid::AttNotDefinedForElement ||
         errCode == XMLValid::RequiredAttrNotProvided ||
-        errCode == XMLValid::AttributeNotQualified) )
+        errCode == XMLValid::AttributeNotQualified ||
+        errCode == XMLValid::ElementNotQualified) )
     return;
   
   theErrorOccurred = true;
