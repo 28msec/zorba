@@ -281,6 +281,11 @@ public:
   {
     return (theKey.var == other.theKey.var);
   }
+
+  bool operator<(const PrologGraphVertex& other) const
+  {
+    return (theKey.var < other.theKey.var);
+  }
 };
 
 
@@ -325,26 +330,65 @@ public:
 ********************************************************************************/
 class PrologGraph
 {
+  typedef std::set<PrologGraphVertex> VSet;
+
+  typedef std::map<PrologGraphVertex, VSet*> GraphImpl;
+
 private:
   static_context               * theModuleSctx;
 
-  std::vector<PrologGraphEdge>   theEdges;
+  GraphImpl                      theGraph;
 
   std::vector<const var_expr*>   theVarDecls;
   std::vector<const function*>   theFuncDecls;
 
 public:
+  static void addEdge(
+        GraphImpl& graph,
+        const PrologGraphVertex& v1,
+        const PrologGraphVertex& v2)
+  {
+    GraphImpl::iterator ite = graph.find(v1);
+
+    if (ite == graph.end())
+    {
+      VSet* vset = new VSet;
+      vset->insert(v2);
+
+      graph[v1] = vset;
+    }
+    else
+    {
+      (*ite).second->insert(v2);
+    }
+  }
+
+public:
   PrologGraph(static_context* sctx) : theModuleSctx(sctx) { }
 
-  void addVarVertex(const var_expr* v) { theVarDecls.push_back(v); }
+  ~PrologGraph()
+  {
+    GraphImpl::iterator ite = theGraph.begin();
+    GraphImpl::iterator end = theGraph.end();
+    for (; ite != end; ++ite)
+    {
+      delete (*ite).second;
+    }
+  }
 
-  void addFuncVertex(const function* v) { theFuncDecls.push_back(v); }
+  void addVarVertex(const var_expr* v) 
+  {
+    theVarDecls.push_back(v);
+  }
+
+  void addFuncVertex(const function* v) 
+  {
+    theFuncDecls.push_back(v);
+  }
 
   void addEdge(const PrologGraphVertex& v1, const PrologGraphVertex& v2)
   {
-    PrologGraphEdge edge(v1, v2);
-    if (std::find(theEdges.begin(), theEdges.end(), edge) == theEdges.end())
-      theEdges.push_back(edge);
+    addEdge(theGraph, v1, v2);
   }
 
   void reorder_globals(std::list<global_binding>& prologVarBindings);
@@ -399,6 +443,14 @@ void PrologGraph::reorder_globals(std::list<global_binding>& prologVarBindings)
     msg += "the main module.";
   }
 
+  GraphImpl::const_iterator g_ite;
+  GraphImpl::const_iterator g_end = theGraph.end();
+
+  std::vector<const var_expr*>::const_iterator v_ite;
+  std::vector<const var_expr*>::const_iterator v_end = theVarDecls.end();
+
+  std::vector<const function*>::const_iterator fend = theFuncDecls.end();
+
   // STEP 1: Floyd-Warshall transitive closure of edges starting from functions
   // At each substep we are adding fn2 -> fn1 -> var/fn dependencies. The resulting
   // graph has the following property: If there is a path P in the original graph
@@ -406,29 +458,37 @@ void PrologGraph::reorder_globals(std::list<global_binding>& prologVarBindings)
   // udf nodes in between, then in the augmented graph there is a direct edge
   // F --> V. As a result, to go from one variable to another, we never need to
   // cross 2 or more consequtive udf nodes.
-  std::vector<const function*>::const_iterator f1Ite = theFuncDecls.begin();
-  std::vector<const function*>::const_iterator f1End = theFuncDecls.end();
-  for (; f1Ite != f1End; ++f1Ite)
-  {
-    const function* f1 = *f1Ite;
 
-    std::vector<const function*>::const_iterator f2Ite = theFuncDecls.begin();
-    std::vector<const function*>::const_iterator f2End = theFuncDecls.end();
-    for (; f2Ite != f2End; ++f2Ite)
+  std::vector<const function*>::const_iterator f1_ite;
+  std::vector<const function*>::const_iterator f2_ite;
+
+  for (f1_ite = theFuncDecls.begin(); f1_ite != fend; ++f1_ite)
+  {
+    const function* f1 = *f1_ite;
+    GraphImpl::iterator f1_graph_entry = theGraph.find(f1);
+
+    if (f1_graph_entry == g_end)
+      continue;
+
+    for (f2_ite = theFuncDecls.begin(); f2_ite != fend; ++f2_ite)
     {
-      const function* f2 = *f2Ite;
+      const function* f2 = *f2_ite;
+      GraphImpl::const_iterator f2_graph_entry = theGraph.find(f2);
 
       // if f2 depends on f1, then f2 depends on every var/udf that f1 depends on.
-      ulong numEdges = theEdges.size();
-      for (ulong i = 0; i < numEdges; ++i)
-      {
-        const PrologGraphEdge& edge = theEdges[i];
 
-        if (edge.startsAt(f1))
-        {
-          addEdge(f2, edge.getEnd());
-        }
-      }
+      // If f2 does not depend on anything, skip it
+      if (f2_graph_entry == g_end)
+        continue;
+
+      VSet* f1_vset = f1_graph_entry->second;
+      VSet* f2_vset = f2_graph_entry->second;
+
+      // If f2 does not depend on f1, skip it
+      if (f2_vset->find(f1) == f2_vset->end())
+        continue;
+
+      f2_vset->insert(f1_vset->begin(), f1_vset->end());
     }
   }
 
@@ -440,88 +500,103 @@ void PrologGraph::reorder_globals(std::list<global_binding>& prologVarBindings)
   // which reflects the same (direct and transitive) dependencies among vars as
   // the original graph.
 
-  ulong numEdges = theEdges.size();
-
-  std::vector<const var_expr*>::const_iterator vIte = theVarDecls.begin();
-  std::vector<const var_expr*>::const_iterator vEnd = theVarDecls.end();
-  for (; vIte != vEnd; ++vIte)
+  for (v_ite = theVarDecls.begin(); v_ite != v_end; ++v_ite)
   {
-    const var_expr* v1 = *vIte;
+    const var_expr* v1 = *v_ite;
+    GraphImpl::const_iterator v1_graph_entry = theGraph.find(v1);
 
-    for (ulong i = 0; i < numEdges; ++i)
+    if (v1_graph_entry == g_end)
+      continue;
+
+    VSet* v1_vset = v1_graph_entry->second;
+    VSet::const_iterator v1_vset_ite = v1_vset->begin();
+    VSet::const_iterator v1_vset_end = v1_vset->end();
+
+    for (; v1_vset_ite != v1_vset_end; ++v1_vset_ite)
     {
-      const PrologGraphEdge& edge1 = theEdges[i];
+      const PrologGraphVertex& f = *v1_vset_ite;
 
-      if (edge1.startsAt(v1))
+      if (f.getKind() == PrologGraphVertex::FUN)
       {
-        const PrologGraphVertex& f = edge1.getEnd();
+        GraphImpl::iterator f_graph_entry = theGraph.find(f);
 
-        if (f.getKind() == PrologGraphVertex::FUN)
+        if (f_graph_entry == g_end)
+          continue;
+
+        VSet* f_vset = f_graph_entry->second;
+        VSet::const_iterator f_vset_ite = f_vset->begin();
+        VSet::const_iterator f_vset_end = f_vset->end();
+
+        for (; f_vset_ite != f_vset_end; ++f_vset_ite)
         {
-          for (ulong j = 0; j < numEdges; ++j)
+          const PrologGraphVertex& v2 = *f_vset_ite;
+            
+          if (v2.getKind() == PrologGraphVertex::VAR)
           {
-            const PrologGraphEdge& edge2 = theEdges[j];
-
-            if (edge2.startsAt(f))
+            if (v2 == v1)
             {
-              const PrologGraphVertex& v2 = edge2.getEnd();
-
-              if (v2.getKind() == PrologGraphVertex::VAR)
-              {
-                if (v2 == v1)
-                {
-                  ZORBA_ERROR_DESC(XQST0054, msg);
-                }
-
-                addEdge(v1, v2);
-              }
+              ZORBA_ERROR_DESC(XQST0054, msg);
             }
+            
+            addEdge(v1, v2);
           }
         }
       }
     }
   }
 
-  numEdges = theEdges.size();
+  // STEP 3 Check for cycles. First we extract graph VG from the original graph.
+  // We also make a copy of theVarDecls vector into varDels. Then we repeat the
+  // following steps until varDecls gets empty:
+  // 1. We look for a var V in varDecls that does not depend on any other var.
+  // 2. If no such var is found, a cycle exists, and we raise an error.
+  // 3. We remove V from varDecls and from each dependency set that V appears in.
+  // (TODO: use faster algorithm)
 
-  // STEP 3 Check for cycles (TODO: use faster algorithm)
-  std::vector<PrologGraphEdge> edges;
+  GraphImpl v_graph;
   std::set<const var_expr*> varDecls;
 
-  for (ulong i = 0; i < numEdges; ++i)
+  for (g_ite = theGraph.begin(); g_ite != g_end; ++g_ite)
   {
-    const PrologGraphEdge& edge = theEdges[i];
+    const PrologGraphVertex& v1 = (*g_ite).first;
 
-    if (edge.getStart().getKind() == PrologGraphVertex::VAR &&
-        edge.getEnd().getKind() == PrologGraphVertex::VAR)
+    if (v1.getKind() == PrologGraphVertex::VAR)
     {
-      edges.push_back(edge);
-      varDecls.insert(edge.getStart().getVarExpr());
-      varDecls.insert(edge.getEnd().getVarExpr());
+      VSet* v1_vset = (*g_ite).second;
+      VSet::const_iterator v1_vset_ite = v1_vset->begin();
+      VSet::const_iterator v1_vset_end = v1_vset->end();
+
+      for (; v1_vset_ite != v1_vset_end; ++v1_vset_ite)
+      {
+        const PrologGraphVertex& v2 = *v1_vset_ite;
+
+        if (v2.getKind() == PrologGraphVertex::VAR)
+        {
+          PrologGraph::addEdge(v_graph, v1, v2);
+          varDecls.insert(v1.getVarExpr());
+          varDecls.insert(v2.getVarExpr());
+        }
+      }
     }
   }
 
-  while (!edges.empty())
+  g_end = v_graph.end();
+
+  while (!varDecls.empty())
   {
-    ulong numEdges = edges.size();
     const var_expr* var = NULL;
 
-    std::set<const var_expr*>::iterator vIte = varDecls.begin();
-    std::set<const var_expr*>::iterator vEnd = varDecls.end();
+    std::set<const var_expr*>::iterator v_ite = varDecls.begin();
+    std::set<const var_expr*>::iterator v_end = varDecls.end();
    
-    for (; vIte != vEnd; ++vIte)
+    for (; v_ite != v_end; ++v_ite)
     {
-      ulong j;
-      for (j = 0; j < numEdges; ++j)
+      GraphImpl::iterator v_graph_entry = v_graph.find(*v_ite);
+      if (v_graph_entry == g_end ||
+          v_graph_entry->second->empty())
       {
-        if (edges[j].getStart() == *vIte)
-          break;
-      }
-
-      if (j == numEdges)
-      {
-        var = *vIte;
-        varDecls.erase(vIte);
+        var = *v_ite;
+        varDecls.erase(v_ite);
         break;
       }
     }
@@ -531,15 +606,21 @@ void PrologGraph::reorder_globals(std::list<global_binding>& prologVarBindings)
       ZORBA_ERROR_DESC(XQST0054, msg);
     }
 
-    for (ulong j = 0; j < numEdges; ++j)
+    for (g_ite = v_graph.begin(); g_ite != g_end; ++g_ite)
     {
-      if (edges[j].getEnd() == var)
+      VSet* vset = (*g_ite).second;
+      VSet::iterator vset_entry = vset->find(var);
+
+      if (vset_entry != vset->end())
       {
-        edges.erase(edges.begin() + j);
-        --numEdges;
-        --j;
+        vset->erase(vset_entry);
       }
     }
+  }
+
+  for (g_ite = v_graph.begin(); g_ite != g_end; ++g_ite)
+  {
+    delete (*g_ite).second;
   }
 
   // STEP 4: topologically sort global vars.
@@ -547,15 +628,17 @@ void PrologGraph::reorder_globals(std::list<global_binding>& prologVarBindings)
   // unfortunately does not detect cycles.
   // Note that steps 1 & 2 are required: we cannot sort the entire set of prolog
   // vars + udfs, because functions are allowed to be mutually recursive.
+
+  g_end = theGraph.end();
+
   std::vector<const var_expr*> topsorted_vars;  // dependencies first
   std::set<const var_expr*> visited;
 
   std::stack<std::pair<ulong, const var_expr*> > todo;  // format: action code + var_expr
 
-  vIte = theVarDecls.begin();
-  for (; vIte != vEnd; ++vIte)
+  for (v_ite = theVarDecls.begin(); v_ite != v_end; ++v_ite)
   {
-    todo.push(std::pair<ulong, const var_expr*>(1, (*vIte)));
+    todo.push(std::pair<ulong, const var_expr*>(1, (*v_ite)));
   }
 
   while (! todo.empty()) 
@@ -578,17 +661,19 @@ void PrologGraph::reorder_globals(std::list<global_binding>& prologVarBindings)
         visited.insert(var);
         todo.push(std::pair<ulong, const var_expr*>(0, var));
 
-        for (ulong i = 0; i < numEdges; ++i)
+        GraphImpl::const_iterator var_graph_entry = theGraph.find(var);
+
+        if (var_graph_entry != g_end)
         {
-          const PrologGraphEdge& edge = theEdges[i];
+          VSet* var_vset = var_graph_entry->second;
 
-          if (edge.startsAt(var))
+          VSet::const_iterator var_vset_ite = var_vset->begin();
+          VSet::const_iterator var_vset_end = var_vset->end();
+          for (; var_vset_ite != var_vset_end; ++var_vset_ite)
           {
-            const PrologGraphVertex& v2 = edge.getEnd();
-
-            if (v2.getKind() == PrologGraphVertex::VAR)
+            if (var_vset_ite->getKind() == PrologGraphVertex::VAR)
             {
-              todo.push(std::pair<ulong, const var_expr*>(1, v2.getVarExpr()));
+              todo.push(std::pair<ulong, const var_expr*>(1, var_vset_ite->getVarExpr()));
             }
           }
         }
@@ -7902,10 +7987,17 @@ void* begin_visit(const FunctionCall& v)
     if (v.get_arg_list() != NULL)
       numArgs = v.get_arg_list()->size();
 
-    function* f = LOOKUP_FN(prefix, fname, numArgs);
+    store::Item_t fn_qname = sctx_p->lookup_fn_qname(prefix, fname, loc);
+    const xqpStringStore* fn_ns = fn_qname->getNamespace();
 
-    if (f != NULL)
-      thePrologGraph.addEdge(theCurrentPrologVFDecl, f);
+    // Some special processing is required for certain "fn" functions
+    if (!fn_ns->byteEqual(XQUERY_FN_NS)) 
+    {
+      function* f = LOOKUP_FN(prefix, fname, numArgs);
+
+      if (f != NULL)
+        thePrologGraph.addEdge(theCurrentPrologVFDecl, f);
+    }
   }
 
   nodestack.push(NULL);
