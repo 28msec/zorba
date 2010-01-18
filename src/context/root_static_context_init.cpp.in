@@ -4,8 +4,8 @@
 namespace zorba {
 
   const char* root_static_context::theBuiltInModulePaths[] = { 
-    "@CMAKE_BINARY_DIR@/modules/",
-    "@CMAKE_SOURCE_DIR@/modules/",
+    "@ZORBA_BINARY_DIR@/modules/",
+    "@ZORBA_SOURCE_DIR@/modules/",
     "@CMAKE_INSTALL_PREFIX@/include/modules/",
     0 };
 

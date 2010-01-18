@@ -15,7 +15,14 @@
 PROJECT(zorba)
 ENABLE_TESTING()
 INCLUDE(CTest)
-INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/CMakeCompareVersionStrings.cmake)
+
+# only those two variables should be used
+# they will help other zorba and store developers
+# to reuse zorba
+SET(ZORBA_SOURCE_DIR ${CMAKE_SOURCE_DIR})
+SET(ZORBA_BINARY_DIR ${CMAKE_BINARY_DIR})
+
+INCLUDE(${ZORBA_SOURCE_DIR}/cmake_modules/CMakeCompareVersionStrings.cmake)
 
 cmake_minimum_required(VERSION 2.4)
 IF (CMAKE_VERSION STREQUAL "2.6.3")
@@ -175,7 +182,7 @@ ENDIF(LIBTIDY_FOUND)
 # Java
 #
 FIND_PACKAGE(Java)
-INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/FindJNI.cmake)
+INCLUDE(${ZORBA_SOURCE_DIR}/cmake_modules/FindJNI.cmake)
 
 STRING (COMPARE NOTEQUAL ${JAVA_INCLUDE_PATH} "JAVA_INCLUDE_PATH-NOTFOUND" JNI_FOUND)
 
@@ -329,8 +336,8 @@ SET(ZORBA_MAJOR_NUMBER "0")
 SET(ZORBA_MINOR_NUMBER "9")
 SET(ZORBA_PATCH_NUMBER "9")
 
-CONFIGURE_FILE ( "${CMAKE_SOURCE_DIR}/zorba.spec.in"
-                 "${CMAKE_BINARY_DIR}/zorba.spec" @ONLY )
+CONFIGURE_FILE ( "${ZORBA_SOURCE_DIR}/zorba.spec.in"
+                 "${ZORBA_BINARY_DIR}/zorba.spec" @ONLY )
 
 MESSAGE(STATUS "Zorba version number: " ${ZORBA_MAJOR_NUMBER}.${ZORBA_MINOR_NUMBER}.${ZORBA_PATCH_NUMBER})
 
@@ -342,17 +349,17 @@ ADD_DEFINITIONS(${DEFINITIONS})
 # find all dylib files (i.e. transitive closure of the library files
 # that are linked)
 IF (APPLE )
-  EXECUTE_PROCESS(COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${ICU_LIBRARIES}
+  EXECUTE_PROCESS(COMMAND ${ZORBA_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${ICU_LIBRARIES}
                     OUTPUT_VARIABLE Zorba_ICUUC)
-  EXECUTE_PROCESS(COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${ICU_I18N_LIBRARIES}
+  EXECUTE_PROCESS(COMMAND ${ZORBA_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${ICU_I18N_LIBRARIES}
                     OUTPUT_VARIABLE Zorba_ICUI18N)
-  EXECUTE_PROCESS(COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${ICU_DATA_LIBRARIES}
+  EXECUTE_PROCESS(COMMAND ${ZORBA_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${ICU_DATA_LIBRARIES}
                     OUTPUT_VARIABLE Zorba_ICU_DATA)
-  EXECUTE_PROCESS(COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${XERCESC_LIBRARY}
+  EXECUTE_PROCESS(COMMAND ${ZORBA_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${XERCESC_LIBRARY}
                     OUTPUT_VARIABLE Zorba_XERCESC)
-  EXECUTE_PROCESS(COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${CURL_LIBRARIES}
+  EXECUTE_PROCESS(COMMAND ${ZORBA_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${CURL_LIBRARIES}
                     OUTPUT_VARIABLE Zorba_CURL)
-  EXECUTE_PROCESS(COMMAND ${CMAKE_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${LIBXML2_LIBRARIES}
+  EXECUTE_PROCESS(COMMAND ${ZORBA_SOURCE_DIR}/scripts/find_macosx_libraries.sh ${LIBXML2_LIBRARIES}
                     OUTPUT_VARIABLE Zorba_XML2)
 ENDIF (APPLE )
 
@@ -425,7 +432,7 @@ ENDIF( APPLE AND UNIVERSAL )
 INCLUDE(CMakeExportBuildSettings)
 CMAKE_EXPORT_BUILD_SETTINGS(${CMAKE_BINARY_DIR}/ZorbaBuildSettings.cmake)
 EXPORT_LIBRARY_DEPENDENCIES(${CMAKE_BINARY_DIR}/ZorbaLibraryDepends.cmake)
-CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/ZorbaConfig.cmake.in ${CMAKE_BINARY_DIR}/ZorbaConfig.cmake)
+CONFIGURE_FILE(${ZORBA_SOURCE_DIR}/ZorbaConfig.cmake.in ${ZORBA_SOURCE_DIR}/ZorbaConfig.cmake)
 
 # Close expected failures listing
 close_expected_failures ()

@@ -56,4 +56,4 @@ ELSE(ZORBA_STORE_MSDOM)
 #	LIST(APPEND ZORBA_STORE_IMPL_SRCS		node_items.cpp)
 ENDIF(ZORBA_STORE_MSDOM)
 
-CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/src/store/naive/store_config.h.cmake ${CMAKE_BINARY_DIR}/src/store/naive/store_config.h)
+CONFIGURE_FILE(${ZORBA_SOURCE_DIR}/src/store/naive/store_config.h.cmake ${ZORBA_BINARY_DIR}/src/store/naive/store_config.h)

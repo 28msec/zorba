@@ -13,11 +13,11 @@
 # limitations under the License.
 SET(FUNCTIONS_SRCS)
 
-STRING(LENGTH "${CMAKE_SOURCE_DIR}/src/runtime/spec/" RUNTIME_SPEC_LENGTH)
+STRING(LENGTH "${ZORBA_SOURCE_DIR}/src/runtime/spec/" RUNTIME_SPEC_LENGTH)
 
-SET(CODEGEN_HEADER_GENERATOR              "${CMAKE_SOURCE_DIR}/src/runtime/spec/codegen-h.xq")
-SET(CODEGEN_SOURCE_GENERATOR              "${CMAKE_SOURCE_DIR}/src/runtime/spec/codegen-cpp.xq")
-SET(FUNCTION_HEADER_GENERATOR             "${CMAKE_SOURCE_DIR}/src/runtime/spec/function-enum.xq")
+SET(CODEGEN_HEADER_GENERATOR              "${ZORBA_SOURCE_DIR}/src/runtime/spec/codegen-h.xq")
+SET(CODEGEN_SOURCE_GENERATOR              "${ZORBA_SOURCE_DIR}/src/runtime/spec/codegen-cpp.xq")
+SET(FUNCTION_HEADER_GENERATOR             "${ZORBA_SOURCE_DIR}/src/runtime/spec/function-enum.xq")
 
 FUNCTION_ENUM_GENERATOR(${FUNCTION_HEADER_GENERATOR}
                         "${ABSOLUTE_SPEC_FILES}"
@@ -25,8 +25,8 @@ FUNCTION_ENUM_GENERATOR(${FUNCTION_HEADER_GENERATOR}
                         "file-list:=${SPEC_FILES}"
                         ${ZORBA_WORKS})
 
-SET_SOURCE_FILES_PROPERTIES(${CMAKE_SOURCE_DIR}/src/functions/function.h
-                            PROPERTIES OBJECT_DEPENDS "${CMAKE_SOURCE_DIR}/src/functions/function_enum.h")
+SET_SOURCE_FILES_PROPERTIES(${ZORBA_SOURCE_DIR}/src/functions/function.h
+                            PROPERTIES OBJECT_DEPENDS "${ZORBA_SOURCE_DIR}/src/functions/function_enum.h")
 
 FOREACH(SPEC_FILE ${SPEC_FILES})
 
@@ -35,10 +35,10 @@ FOREACH(SPEC_FILE ${SPEC_FILES})
 
 
   CODEGEN_GENERATOR(${CODEGEN_SOURCE_GENERATOR}
-                    ${CODEGEN_HEADER_GENERATOR} "${CMAKE_SOURCE_DIR}/src/runtime/spec/${SPEC_FILE}"
+                    ${CODEGEN_HEADER_GENERATOR} "${ZORBA_SOURCE_DIR}/src/runtime/spec/${SPEC_FILE}"
                     "src/functions/func_${SPEC_PREFIX}"
-                    "file:=${CMAKE_SOURCE_DIR}/src/runtime/spec/${SPEC_FILE}"
-                    "mappings:=${CMAKE_SOURCE_DIR}/src/runtime/spec/mappings.xml"
+                    "file:=${ZORBA_SOURCE_DIR}/src/runtime/spec/${SPEC_FILE}"
+                    "mappings:=${ZORBA_SOURCE_DIR}/src/runtime/spec/mappings.xml"
                       ${ZORBA_WORKS})
   LIST(APPEND FUNCTIONS_SRCS
               "func_${SPEC_PREFIX}.cpp"

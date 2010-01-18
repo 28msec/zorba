@@ -19,13 +19,13 @@ INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_SOURCE_DIR})
 # Otherwise, the parser doesn't work correclty. Files like xquery_driver.cpp must depend on the 
 # generated files if they exist!
 INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_BINARY_DIR})
-INCLUDE_DIRECTORIES(BEFORE ${CMAKE_SOURCE_DIR}/external) 
+INCLUDE_DIRECTORIES(BEFORE ${ZORBA_SOURCE_DIR}/external) 
 
-INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaRuntimeGenerator.cmake)
+INCLUDE(${ZORBA_SOURCE_DIR}/cmake_modules/ZorbaRuntimeGenerator.cmake)
 
 # look for all spec files and generate the header and cpp files if out of date
 # the cpp files and the according _impl.cpp files are added to the RUNTIME_SRCS list
-FILE(GLOB_RECURSE SPEC_FILES RELATIVE ${CMAKE_SOURCE_DIR}/src/runtime/spec "${CMAKE_SOURCE_DIR}/src/runtime/spec/*.xml")
+FILE(GLOB_RECURSE SPEC_FILES RELATIVE ${ZORBA_SOURCE_DIR}/src/runtime/spec "${ZORBA_SOURCE_DIR}/src/runtime/spec/*.xml")
 
 # mappings.xml is only a helper xml file => don't generate any code for it
 LIST(REMOVE_ITEM SPEC_FILES "mappings.xml")
@@ -46,7 +46,7 @@ IF (NOT EXISTS "${CMAKE_BINARY_DIR}/src/functions")
 ENDIF (NOT EXISTS "${CMAKE_BINARY_DIR}/src/functions")
 
 FOREACH (SPEC_FILE ${SPEC_FILES})
-  LIST(APPEND ABSOLUTE_SPEC_FILES "${CMAKE_SOURCE_DIR}/src/runtime/spec/${SPEC_FILE}")
+  LIST(APPEND ABSOLUTE_SPEC_FILES "${ZORBA_SOURCE_DIR}/src/runtime/spec/${SPEC_FILE}")
   GET_FILENAME_COMPONENT(DIR ${SPEC_FILE} PATH)
   SET(FULL_DIR "${CMAKE_BINARY_DIR}/src/runtime/${DIR}")
   IF (NOT EXISTS "${FULL_DIR}")
