@@ -15,9 +15,13 @@
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_SOURCE_DIR}/src/)
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR})
 
-SET( SRCS
-  zorbacmdproperties.cpp error_printer.cpp util.cpp module_path.cpp
-  debugger_handler.cpp debugger_server_runnable.cpp
+SET(SRCS
+  zorbacmdproperties.cpp
+  error_printer.cpp
+  util.cpp
+  module_path.cpp
+  debugger_handler.cpp
+  debugger_server_runnable.cpp
 )
 
 ZORBA_GENERATE_STORE_SPECIFIC_EXES("zorbacmd" "${SRCS}" "" "zorba")
