@@ -1788,13 +1788,13 @@ IntegrityConstraintDecl :
     }
   |
     DECLARE INTEGRITY CONSTRAINT QNAME ON COLLECTION QNAME
-    DOLLAR QNAME CHECK UNIQUE KEY PathExpr
+    NODE DOLLAR QNAME CHECK UNIQUE KEY PathExpr
     {
       $$ = new ICCollUniqueKeyCheck(LOC(@$),
                                     static_cast<QName*>($4),
                                     static_cast<QName*>($7),
-                                    static_cast<QName*>($9),
-                                    $13);
+                                    static_cast<QName*>($10),
+                                    $14);
     }
   |
     DECLARE INTEGRITY CONSTRAINT QNAME ON COLLECTION QNAME
@@ -1808,8 +1808,8 @@ IntegrityConstraintDecl :
     }
   |
     DECLARE INTEGRITY CONSTRAINT QNAME FOREIGN KEY
-      FROM COLLECTION QNAME NODE DOLLAR QNAME KEYS PathExpr
-      TO   COLLECTION QNAME NODE DOLLAR QNAME KEYS PathExpr
+      FROM COLLECTION QNAME NODE DOLLAR QNAME KEY PathExpr
+      TO   COLLECTION QNAME NODE DOLLAR QNAME KEY PathExpr
     {
       $$ = new ICForeignKey(LOC(@$),
                             static_cast<QName*>($4),
