@@ -24,18 +24,25 @@
  :)
 module namespace  excel = "http://www.zorba-xquery.com/modules/excel/lookup" ;
 
+(:~
+ : Use excel-err module functions.
+ :
+ :)
 import module namespace excel-err="http://www.zorba-xquery.com/modules/excel/errors";
+(:~
+ : Use excel-math module functions.
+ :
+ :)
 import module namespace excel-math="http://www.zorba-xquery.com/modules/excel/math";
 
 (:~
-  Uses index_num to return a value from the sequence of value arguments. 
-  
-  @see http://office.microsoft.com/en-us/excel/HP052090131033.aspx
-  @param $index_num  the position in the sequence, 1 based
-  @param $values the sequence of values
-  @return the value at the index position
-  @error XQP0021(errValue) if index is smaller than 1 or bigger than the size of sequence
-  
+ : Uses index_num to return a value from the sequence of value arguments. 
+ :
+ : @see http://office.microsoft.com/en-us/excel/HP052090131033.aspx
+ : @param $index_num  the position in the sequence, 1 based
+ : @param $values the sequence of values
+ : @return the value at the index position
+ : @error XQP0021(errValue) if index is smaller than 1 or bigger than the size of sequence
 :)
 declare function excel:choose( $index_num as xs:integer, $values as xs:anyAtomicType*) as xs:anyAtomicType
 {
@@ -46,42 +53,42 @@ declare function excel:choose( $index_num as xs:integer, $values as xs:anyAtomic
 };
 
 (:~
-  Uses index_num to return a sequence from the list of sequences. 
-  Use CHOOSE to select one of up to 29 sequences based on the index number.
-   
-  @see http://office.microsoft.com/en-us/excel/HP052090131033.aspx
-  @param $index_num  the position in the sequence, 1 based
-  @param $value_sequence1 a sequence of values. Specify the empty sequence () if you don't need it. 
-  @param $value_sequence2 a sequence of values. Specify the empty sequence () if you don't need it. 
-  @param $value_sequence3 a sequence of values. Specify the empty sequence () if you don't need it. 
-  @param $value_sequence4 a sequence of values. Specify the empty sequence () if you don't need it. 
-  @param $value_sequence5 a sequence of values. Specify the empty sequence () if you don't need it. 
-  @param $value_sequence6 a sequence of values. Specify the empty sequence () if you don't need it. 
-  @param $value_sequence7 a sequence of values. Specify the empty sequence () if you don't need it. 
-  @param $value_sequence8 a sequence of values. Specify the empty sequence () if you don't need it. 
-  @param $value_sequence9 a sequence of values. Specify the empty sequence () if you don't need it. 
-  @param $value_sequence10 a sequence of values. Specify the empty sequence () if you don't need it. 
-  @param $value_sequence11 a sequence of values. Specify the empty sequence () if you don't need it. 
-  @param $value_sequence12 a sequence of values. Specify the empty sequence () if you don't need it. 
-  @param $value_sequence13 a sequence of values. Specify the empty sequence () if you don't need it. 
-  @param $value_sequence14 a sequence of values. Specify the empty sequence () if you don't need it. 
-  @param $value_sequence15 a sequence of values. Specify the empty sequence () if you don't need it. 
-  @param $value_sequence16 a sequence of values. Specify the empty sequence () if you don't need it. 
-  @param $value_sequence17 a sequence of values. Specify the empty sequence () if you don't need it. 
-  @param $value_sequence18 a sequence of values. Specify the empty sequence () if you don't need it. 
-  @param $value_sequence19 a sequence of values. Specify the empty sequence () if you don't need it. 
-  @param $value_sequence20 a sequence of values. Specify the empty sequence () if you don't need it. 
-  @param $value_sequence21 a sequence of values. Specify the empty sequence () if you don't need it. 
-  @param $value_sequence22 a sequence of values. Specify the empty sequence () if you don't need it. 
-  @param $value_sequence23 a sequence of values. Specify the empty sequence () if you don't need it. 
-  @param $value_sequence24 a sequence of values. Specify the empty sequence () if you don't need it. 
-  @param $value_sequence25 a sequence of values. Specify the empty sequence () if you don't need it. 
-  @param $value_sequence26 a sequence of values. Specify the empty sequence () if you don't need it. 
-  @param $value_sequence27 a sequence of values. Specify the empty sequence () if you don't need it. 
-  @param $value_sequence28 a sequence of values. Specify the empty sequence () if you don't need it. 
-  @param $value_sequence29 a sequence of values. Specify the empty sequence () if you don't need it. 
-  @return the value at the index position
-  @error XQP0021(errValue) if index is smaller than 1 or bigger than 29
+ : Uses index_num to return a sequence from the list of sequences. 
+ : Use CHOOSE to select one of up to 29 sequences based on the index number.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052090131033.aspx
+ : @param $index_num  the position in the sequence, 1 based
+ : @param $value_sequence1 a sequence of values. Specify the empty sequence () if you don't need it. 
+ : @param $value_sequence2 a sequence of values. Specify the empty sequence () if you don't need it. 
+ : @param $value_sequence3 a sequence of values. Specify the empty sequence () if you don't need it. 
+ : @param $value_sequence4 a sequence of values. Specify the empty sequence () if you don't need it. 
+ : @param $value_sequence5 a sequence of values. Specify the empty sequence () if you don't need it. 
+ : @param $value_sequence6 a sequence of values. Specify the empty sequence () if you don't need it. 
+ : @param $value_sequence7 a sequence of values. Specify the empty sequence () if you don't need it. 
+ : @param $value_sequence8 a sequence of values. Specify the empty sequence () if you don't need it. 
+ : @param $value_sequence9 a sequence of values. Specify the empty sequence () if you don't need it. 
+ : @param $value_sequence10 a sequence of values. Specify the empty sequence () if you don't need it. 
+ : @param $value_sequence11 a sequence of values. Specify the empty sequence () if you don't need it. 
+ : @param $value_sequence12 a sequence of values. Specify the empty sequence () if you don't need it. 
+ : @param $value_sequence13 a sequence of values. Specify the empty sequence () if you don't need it. 
+ : @param $value_sequence14 a sequence of values. Specify the empty sequence () if you don't need it. 
+ : @param $value_sequence15 a sequence of values. Specify the empty sequence () if you don't need it. 
+ : @param $value_sequence16 a sequence of values. Specify the empty sequence () if you don't need it. 
+ : @param $value_sequence17 a sequence of values. Specify the empty sequence () if you don't need it. 
+ : @param $value_sequence18 a sequence of values. Specify the empty sequence () if you don't need it. 
+ : @param $value_sequence19 a sequence of values. Specify the empty sequence () if you don't need it. 
+ : @param $value_sequence20 a sequence of values. Specify the empty sequence () if you don't need it. 
+ : @param $value_sequence21 a sequence of values. Specify the empty sequence () if you don't need it. 
+ : @param $value_sequence22 a sequence of values. Specify the empty sequence () if you don't need it. 
+ : @param $value_sequence23 a sequence of values. Specify the empty sequence () if you don't need it. 
+ : @param $value_sequence24 a sequence of values. Specify the empty sequence () if you don't need it. 
+ : @param $value_sequence25 a sequence of values. Specify the empty sequence () if you don't need it. 
+ : @param $value_sequence26 a sequence of values. Specify the empty sequence () if you don't need it. 
+ : @param $value_sequence27 a sequence of values. Specify the empty sequence () if you don't need it. 
+ : @param $value_sequence28 a sequence of values. Specify the empty sequence () if you don't need it. 
+ : @param $value_sequence29 a sequence of values. Specify the empty sequence () if you don't need it. 
+ : @return the value at the index position
+ : @error XQP0021(errValue) if index is smaller than 1 or bigger than 29
 :)
 declare function excel:choose($index_num as xs:integer,
                               $value_sequence1 as xs:anyAtomicType*,
@@ -208,7 +215,7 @@ declare function excel:choose($index_num as xs:integer,
 };
  
 (:~
-  Helper function for HLOOKUP, LOOKUP, MATCH, VLOOKUP.
+ : Helper function for HLOOKUP, LOOKUP, MATCH, VLOOKUP.
   It searches a lookup_value in table_header with three different algorithms
         specified by range_lookup.
         
@@ -335,37 +342,37 @@ declare function excel:lookup_column(  $lookup_value as xs:anyAtomicType,
 };
 
 (:~
-  Searches for a value in the top row of an array of values, 
-    and then returns a value in the same column from a row you specify in the array.  
-  Array is specified with 3 parameters:
-  table_array is a sequence of elements, first row first, then second row and so on
-  table_width specifies the number of elements in a row
-  table_height specifies the number of rows
-  The number of elements in table_array must be equal or more than table_width * table_height
-  
-  For wildchar matching, the XQuery regex matcher is used.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052091141033.aspx
-  @param $lookup_value the value to be searched. 
-        Allowed types are numeric, string, boolean. 
-        Boolean values are compared only with booleans.
-        Numbers are compared only with numbers, if range_lookup is not zero.
-        The other types are converted to string and compared to string value of all values.
-  @param $table_array the sequence of values, row after row
-  @param $table_width the number of values in a row
-  @param $table_height the number of rows
-  @param $row_index_num the row index, 1 based
-  @param $range_lookup specified the algorithm to use:
-        true = find approximative match. 
-               First row of array must be sorted in ascending order.
-        false = find exact match, using xquery regex
-               First row of array can be in any order.
-  @return the value found, with original type
-  @error XQP0021(errValue) if the array contains less elements than specified by table_height and table_width
-  @error XQP0021(errValue) if row_index_num is outside the range 1 .. table_height
-  @error XQP0021(errValue) if range_lookup is true and the value searched is smaller than
-        the first value in the header
-  @error XQP0021(errValue) if range_lookup=false and the value cannot be found
+ : <pre>Searches for a value in the top row of an array of values, 
+ :   and then returns a value in the same column from a row you specify in the array.  
+ : Array is specified with 3 parameters:
+ : table_array is a sequence of elements, first row first, then second row and so on
+ : table_width specifies the number of elements in a row
+ : table_height specifies the number of rows
+ : The number of elements in table_array must be equal or more than table_width * table_height
+ : 
+ : For wildchar matching, the XQuery regex matcher is used.
+ : </pre>
+ : @see http://office.microsoft.com/en-us/excel/HP052091141033.aspx
+ : @param $lookup_value <pre>the value to be searched. 
+ :       Allowed types are numeric, string, boolean. 
+ :       Boolean values are compared only with booleans.
+ :       Numbers are compared only with numbers, if range_lookup is not zero.
+ :       The other types are converted to string and compared to string value of all values.</pre>
+ : @param $table_array the sequence of values, row after row
+ : @param $table_width the number of values in a row
+ : @param $table_height the number of rows
+ : @param $row_index_num the row index, 1 based
+ : @param $range_lookup <dl>specified the algorithm to use:
+ :       <dt>true</dt> <dd>find approximative match. 
+ :              First row of array must be sorted in ascending order.</dd>
+ :       <dt>false</dt> <dd>find exact match, using xquery regex
+ :              First row of array can be in any order.	</dd></dl>
+ : @return the value found, with original type
+ : @error XQP0021(errValue) if the array contains less elements than specified by table_height and table_width
+ : @error XQP0021(errValue) if row_index_num is outside the range 1 .. table_height
+ : @error XQP0021(errValue) if range_lookup is true and the value searched is smaller than
+ :       the first value in the header
+ : @error XQP0021(errValue) if range_lookup=false and the value cannot be found
 :)        
 declare function excel:hlookup( $lookup_value as xs:anyAtomicType,
                                 $table_array as xs:anyAtomicType+,
@@ -393,9 +400,25 @@ declare function excel:hlookup( $lookup_value as xs:anyAtomicType,
 };
 
 (:~
-  Same as above, only that range_lookup is defaulted to true.
-  That is, this Hlookup looks for the approximate value 
-    and the first row must be ordered ascending. 
+ : Same as above, only that range_lookup is defaulted to true.
+ : That is, this Hlookup looks for the approximate value 
+ :   and the first row must be ordered ascending. 
+ : @see http://office.microsoft.com/en-us/excel/HP052091141033.aspx
+ : @param $lookup_value <pre>the value to be searched. 
+ :       Allowed types are numeric, string, boolean. 
+ :       Boolean values are compared only with booleans.
+ :       Numbers are compared only with numbers, if range_lookup is not zero.
+ :       The other types are converted to string and compared to string value of all values.</pre>
+ : @param $table_array the sequence of values, row after row
+ : @param $table_width the number of values in a row
+ : @param $table_height the number of rows
+ : @param $row_index_num the row index, 1 based
+ : @return the value found, with original type
+ : @error XQP0021(errValue) if the array contains less elements than specified by table_height and table_width
+ : @error XQP0021(errValue) if row_index_num is outside the range 1 .. table_height
+ : @error XQP0021(errValue) if range_lookup is true and the value searched is smaller than
+ :       the first value in the header
+ : @error XQP0021(errValue) if range_lookup=false and the value cannot be found
 :)
 declare function excel:hlookup( $lookup_value as xs:anyAtomicType,
                                 $table_array as xs:anyAtomicType+,
@@ -408,24 +431,24 @@ declare function excel:hlookup( $lookup_value as xs:anyAtomicType,
 };
 
 (:~
-  Returns a value from within an array.
-  This is the Array form of the Excel Index function.
-  
-  Array is specified with 3 parameters:
-  array is a sequence of elements, first row first, then second row and so on
-  array_height specifies the number of rows
-  array_width specifies the number of elements in a row
-  The number of elements in array must be equal or more than array_width * array_height
-  
-  @see http://office.microsoft.com/en-us/excel/HP052091381033.aspx
-  @param $array the sequence of values, row after row
-  @param $array_width the number of values in a row
-  @param $array_height the number of rows
-  @param $row_num the row position of the value, 1 based
-  @param $column_num the column position of the value, 1 based
-  @return the value from x-y in the array
-  @error XQP0021(errValue) if the array contains less elements than specified by table_height and table_width
-  @error XQP0021(errRef) if row_num is outside the range
+ : <pre>Returns a value from within an array.
+ : This is the Array form of the Excel Index function.
+ : 
+ : Array is specified with 3 parameters:
+ : array is a sequence of elements, first row first, then second row and so on
+ : array_height specifies the number of rows
+ : array_width specifies the number of elements in a row
+ : The number of elements in array must be equal or more than array_width * array_height
+ : </pre>
+ : @see http://office.microsoft.com/en-us/excel/HP052091381033.aspx
+ : @param $array the sequence of values, row after row
+ : @param $array_width the number of values in a row
+ : @param $array_height the number of rows
+ : @param $row_num the row position of the value, 1 based
+ : @param $column_num the column position of the value, 1 based
+ : @return the value from x-y in the array
+ : @error XQP0021(errValue) if the array contains less elements than specified by table_height and table_width
+ : @error XQP0021(errRef) if row_num is outside the range
 :)
 declare function excel:index($array as xs:anyAtomicType+,
                              $array_height as xs:integer,
@@ -466,19 +489,19 @@ declare function excel:index($array as xs:anyAtomicType+,
 };
 
 (:~
-  The Vector form
-  Look in a sequence for a value 
-    and return a value from the same position in a second sequence.
-  If the value is not found, then it matches the largest value in lookup_vector 
-    that is less than or equal to lookup_value.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052091631033.aspx
-  @param $lookup_value the value to be searched
-  @param $lookup_vector the sequence to be searched, in ascending order.
-  @param $result_vector the sequence containing the result values
-  @return a value from $result_vector
-  @error XQP0021(errNA) if lookup value is smaller than the first value in lookup_vector
-  @error XQP0021(errNA) if position found is outside the result range
+ : <pre>The Vector form.
+ : Look in a sequence for a value 
+ :   and return a value from the same position in a second sequence.
+ : If the value is not found, then it matches the largest value in lookup_vector 
+ :   that is less than or equal to lookup_value.
+ : </pre>
+ : @see http://office.microsoft.com/en-us/excel/HP052091631033.aspx
+ : @param $lookup_value the value to be searched
+ : @param $lookup_vector the sequence to be searched, in ascending order.
+ : @param $result_vector the sequence containing the result values
+ : @return a value from $result_vector
+ : @error XQP0021(errNA) if lookup value is smaller than the first value in lookup_vector
+ : @error XQP0021(errNA) if position found is outside the result range
 :)
 declare function excel:lookup($lookup_value as xs:anyAtomicType,
                               $lookup_vector as xs:anyAtomicType+,
@@ -495,27 +518,27 @@ declare function excel:lookup($lookup_value as xs:anyAtomicType,
 };
 
 (:~
-  Array form
-  It looks in the first row or column of an array for the specified value 
-    and returns a value from the same position in the last row or column of the array.
-  If array covers an area that is wider than it is tall (more columns than rows), 
-    LOOKUP searches for lookup_value in the first row.
-  If array is square or is taller than it is wide (more rows than columns), 
-    LOOKUP searches in the first column.
-
-  The values in the first row or first column must be in ascending order.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052091631033.aspx
-  @param $lookup_value the value to be searched.
-    If the value is not found, then it matches the largest value in lookup_vector 
-    that is less than or equal to lookup_value.
-  @param $array the array sequence, row after row
-  @param $array_width the number of values in a row
-  @param $array_height the number of rows in the array
-  @return the corresponding value in the last row or column
-  @error XQP0021(errValue) if array contains less values than specified by array_width and array_height
-            or array_width = 0 or array_height = 0
-  @error XQP0021(errNA) if the lookup_value is smaller than the first value in the row or column
+ : <pre>The Array form.
+ : It looks in the first row or column of an array for the specified value 
+ :   and returns a value from the same position in the last row or column of the array.
+ : If array covers an area that is wider than it is tall (more columns than rows), 
+ :   LOOKUP searches for lookup_value in the first row.
+ : If array is square or is taller than it is wide (more rows than columns), 
+ :   LOOKUP searches in the first column.
+ : 
+ : The values in the first row or first column must be in ascending order.
+ : </pre>
+ : @see http://office.microsoft.com/en-us/excel/HP052091631033.aspx
+ : @param $lookup_value the value to be searched.
+ :   If the value is not found, then it matches the largest value in lookup_vector 
+ :   that is less than or equal to lookup_value.
+ : @param $array the array sequence, row after row
+ : @param $array_width the number of values in a row
+ : @param $array_height the number of rows in the array
+ : @return the corresponding value in the last row or column
+ : @error XQP0021(errValue) if array contains less values than specified by array_width and array_height
+ :           or array_width = 0 or array_height = 0
+ : @error XQP0021(errNA) if the lookup_value is smaller than the first value in the row or column
 :)
 declare function excel:lookup($lookup_value as xs:anyAtomicType,
                               $array as xs:anyAtomicType+,
@@ -545,28 +568,28 @@ declare function excel:lookup($lookup_value as xs:anyAtomicType,
 };
 
 (:~
-  Returns the relative position of an item in a sequence that 
-    matches a specified value in a specified order.
-  Only for one dimensional vector.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052091681033.aspx
-  @param $lookup_value value to be searched.
-  @param $sequence the vector where to search the value
-  @param $match_type specifies the algorithm used for searching.
-        Possible values:
-        1  = finds the largest value that is less than or equal to lookup_value.
-                Sequence must be in ascending order.
-        0  = finds the first value that is exactly equal to lookup_value. 
-                Sequence can be in any order.
-                If lookup_value is boolean, then only booleans are compared.
-                For other types, they are casted to string and then compared using 
-                xquery regular expressions. Lookup_value can be a xquery regular expression.
-        -1 = finds the smallest value that is greater than or equal to lookup_value.
-                Sequence must be in descending order.
-  @return the position of found value
-  @error XQP0021(errNA) for match_type 1 or -1, the lookup_value is smaller or larger than
-                the first value in sequence
-  @error XQP0021(errValue) if range_lookup=0 and the value cannot be found
+ : Returns the relative position of an item in a sequence that 
+ :   matches a specified value in a specified order.
+ : Only for one dimensional vector.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052091681033.aspx
+ : @param $lookup_value value to be searched.
+ : @param $sequence the vector where to search the value
+ : @param $match_type <pre>specifies the algorithm used for searching.
+ :       Possible values:
+ :       1  = finds the largest value that is less than or equal to lookup_value.
+ :               Sequence must be in ascending order.
+ :       0  = finds the first value that is exactly equal to lookup_value. 
+ :               Sequence can be in any order.
+ :               If lookup_value is boolean, then only booleans are compared.
+ :               For other types, they are casted to string and then compared using 
+ :               xquery regular expressions. Lookup_value can be a xquery regular expression.
+ :       -1 = finds the smallest value that is greater than or equal to lookup_value.
+ :               Sequence must be in descending order.</pre>
+ : @return the position of found value
+ : @error XQP0021(errNA) for match_type 1 or -1, the lookup_value is smaller or larger than
+ :               the first value in sequence
+ : @error XQP0021(errValue) if range_lookup=0 and the value cannot be found
 :)
 declare function excel:match($lookup_value as xs:anyAtomicType,
                              $sequence as xs:anyAtomicType+,
@@ -580,8 +603,15 @@ declare function excel:match($lookup_value as xs:anyAtomicType,
 };
 
 (:~
-  Same as above, but match_type is defaulted to 1.
-  It finds the largest value that is less than or equal to lookup_value.
+ : Same as above, but match_type is defaulted to 1.
+ : It finds the largest value that is less than or equal to lookup_value.
+ : @see http://office.microsoft.com/en-us/excel/HP052091681033.aspx
+ : @param $lookup_value value to be searched.
+ : @param $sequence the vector where to search the value
+ : @return the position of found value
+ : @error XQP0021(errNA) for match_type 1 or -1, the lookup_value is smaller or larger than
+ :               the first value in sequence
+ : @error XQP0021(errValue) if range_lookup=0 and the value cannot be found
 :)
 declare function excel:match($lookup_value as xs:anyAtomicType,
                              $sequence as xs:anyAtomicType+) as xs:anyAtomicType
@@ -590,27 +620,27 @@ declare function excel:match($lookup_value as xs:anyAtomicType,
 };
 
 (:~
-  Returns a sub-array from an array.
-  The inner array must be within the reference array
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092081033.aspx
-  @param $reference the reference array
-  @param $reference_height the number of rows in the reference array
-  @param $reference_width the number of elements in the reference array row
-  @param $rows the relative row position where the sub-array starts.
-      It must be a positive value, zero relative.
-  @param $cols the relative column position where the sub-array starts.
-      It must be a positive value, zero relative.
-  @param $height the desired height of sub-array.
-      The sub-array must be inside the reference array.
-  @param $width the desired width of sub-array.
-      The sub-array must be inside the reference array.
-  @return the sequence specifying the sub-array, row after row
-  @error XQP0021(errNA) rows or cols are negative
-  @error XQP0021(errNA) height or width are smaller than 1
-  @error XQP0021(errValue) reference array contains less elements than specified
-         by reference_height and reference_width
-  @error XQP0021(errNA) the resulted sub-array is not completely contained inside reference array
+ : Returns a sub-array from an array.
+ : The inner array must be within the reference array
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052092081033.aspx
+ : @param $reference the reference array
+ : @param $reference_height the number of rows in the reference array
+ : @param $reference_width the number of elements in the reference array row
+ : @param $rows the relative row position where the sub-array starts.
+ :     It must be a positive value, zero relative.
+ : @param $cols the relative column position where the sub-array starts.
+ :     It must be a positive value, zero relative.
+ : @param $height the desired height of sub-array.
+ :     The sub-array must be inside the reference array.
+ : @param $width the desired width of sub-array.
+ :     The sub-array must be inside the reference array.
+ : @return the sequence specifying the sub-array, row after row
+ : @error XQP0021(errNA) rows or cols are negative
+ : @error XQP0021(errNA) height or width are smaller than 1
+ : @error XQP0021(errValue) reference array contains less elements than specified
+ :        by reference_height and reference_width
+ : @error XQP0021(errNA) the resulted sub-array is not completely contained inside reference array
 :)
 declare function excel:offset($reference as xs:anyAtomicType+,
                               $reference_height as xs:integer,
@@ -639,8 +669,23 @@ declare function excel:offset($reference as xs:anyAtomicType+,
 };
 
 (:~
-  Same as above, only that the sub-array is specified only by rows and cols relative position.
-  The sub-array height and width is computed to contain the remaining elements of the array.
+ : Same as above, only that the sub-array is specified only by rows and cols relative position.
+ : The sub-array height and width is computed to contain the remaining elements of the array.
+ :
+ : @see http://office.microsoft.com/en-us/excel/HP052092081033.aspx
+ : @param $reference the reference array
+ : @param $reference_height the number of rows in the reference array
+ : @param $reference_width the number of elements in the reference array row
+ : @param $rows the relative row position where the sub-array starts.
+ :     It must be a positive value, zero relative.
+ : @param $cols the relative column position where the sub-array starts.
+ :     It must be a positive value, zero relative.
+ : @return the sequence specifying the sub-array, row after row
+ : @error XQP0021(errNA) rows or cols are negative
+ : @error XQP0021(errNA) height or width are smaller than 1
+ : @error XQP0021(errValue) reference array contains less elements than specified
+ :        by reference_height and reference_width
+ : @error XQP0021(errNA) the resulted sub-array is not completely contained inside reference array
 :)
 declare function excel:offset($reference as xs:anyAtomicType+,
                               $reference_height as xs:integer,
@@ -654,16 +699,16 @@ declare function excel:offset($reference as xs:anyAtomicType+,
 };
 
 (:~
-  Transposes an array. The rows become columns and vice versa.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052093191033.aspx
-  @param $array the sequence specifying the array, row after row
-  @param $array_width the number of elements in a row
-  @param $array_height the number of rows in the array
-  @return the transposed array. It will be a sequence specifying an array, row after row.
-        The result width is the input height.
-        The result height is the input width.
-  @error XQP0021(errValue) the array contains less elements than specified by array_width and array_height
+ : Transposes an array. The rows become columns and vice versa.
+ :  
+ : @see http://office.microsoft.com/en-us/excel/HP052093191033.aspx
+ : @param $array the sequence specifying the array, row after row
+ : @param $array_width the number of elements in a row
+ : @param $array_height the number of rows in the array
+ : @return the transposed array. It will be a sequence specifying an array, row after row.
+ :       The result width is the input height.
+ :       The result height is the input width.
+ : @error XQP0021(errValue) the array contains less elements than specified by array_width and array_height
 :)
 declare function excel:transpose($array as xs:anyAtomicType+,
                                  $array_width as xs:integer,
@@ -678,37 +723,37 @@ declare function excel:transpose($array as xs:anyAtomicType+,
 };
 
 (:~
-  Searches for a value in the first column of a table array 
-    and returns a value in the same row from another column in the table array.
-  
-  Array is specified with 3 parameters:
-  table_array is a sequence of elements, first row first, then second row and so on
-  table_width specifies the number of elements in a row
-  table_height specifies the number of rows
-  
-  For wildchar matching, the XQuery regex matcher is used.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052093351033.aspx
-  @param $lookup_value the value to be searched. 
-        Allowed types are numeric, string, boolean. 
-        Boolean values are compared only with booleans.
-        Numbers are compared only with numbers, if range_lookup is not zero.
-        The other types are converted to string and compared to string value of all values.
-  @param $table_array the sequence of values, row after row
-  @param $table_width the number of values in a row
-  @param $table_height the number of rows
-  @param $col_index_num the row index, 1 based
-  @param $range_lookup specified the algorithm to use:
-        true = find approximative match. 
-               First column of array must be sorted in ascending order.
-        false = find exact match, using xquery regex
-               First column of array can be in any order.
-  @return the value found, with original type
-  @error XQP0021(errValue) if the array contains less elements than specified by table_height and table_width
-  @error XQP0021(errValue) if col_index_num is outside the range 1 .. table_height
-  @error XQP0021(errValue) if range_lookup is true and the value searched is smaller than
-        the first value in the first column
-  @error XQP0021(errValue) if range_lookup=false and the value cannot be found
+ : Searches for a value in the first column of a table array 
+ :   and returns a value in the same row from another column in the table array.
+ : 
+ : Array is specified with 3 parameters:
+ : table_array is a sequence of elements, first row first, then second row and so on
+ : table_width specifies the number of elements in a row
+ : table_height specifies the number of rows
+ : 
+ : For wildchar matching, the XQuery regex matcher is used.
+ :  
+ : @see http://office.microsoft.com/en-us/excel/HP052093351033.aspx
+ : @param $lookup_value the value to be searched. 
+ :       Allowed types are numeric, string, boolean. 
+ :       Boolean values are compared only with booleans.
+ :       Numbers are compared only with numbers, if range_lookup is not zero.
+ :       The other types are converted to string and compared to string value of all values.
+ : @param $table_array the sequence of values, row after row
+ : @param $table_width the number of values in a row
+ : @param $table_height the number of rows
+ : @param $col_index_num the row index, 1 based
+ : @param $range_lookup <pre>specified the algorithm to use:
+ :       true = find approximative match. 
+ :              First column of array must be sorted in ascending order.
+ :       false = find exact match, using xquery regex
+ :              First column of array can be in any order.</pre>
+ : @return the value found, with original type
+ : @error XQP0021(errValue) if the array contains less elements than specified by table_height and table_width
+ : @error XQP0021(errValue) if col_index_num is outside the range 1 .. table_height
+ : @error XQP0021(errValue) if range_lookup is true and the value searched is smaller than
+ :       the first value in the first column
+ : @error XQP0021(errValue) if range_lookup=false and the value cannot be found
 :)        
 declare function excel:vlookup( $lookup_value as xs:anyAtomicType,
                                 $table_array as xs:anyAtomicType+,
@@ -736,9 +781,26 @@ declare function excel:vlookup( $lookup_value as xs:anyAtomicType,
 };
 
 (:~
-  Same as above, with range_lookup defaulted to true.
-  It finds the largest value that is less than or equal to lookup_value.
-  First column must be in ascending order.
+ : Same as above, with range_lookup defaulted to true.
+ : It finds the largest value that is less than or equal to lookup_value.
+ : First column must be in ascending order.
+ :  
+ : @see http://office.microsoft.com/en-us/excel/HP052093351033.aspx
+ : @param $lookup_value the value to be searched. 
+ :       Allowed types are numeric, string, boolean. 
+ :       Boolean values are compared only with booleans.
+ :       Numbers are compared only with numbers, if range_lookup is not zero.
+ :       The other types are converted to string and compared to string value of all values.
+ : @param $table_array the sequence of values, row after row
+ : @param $table_width the number of values in a row
+ : @param $table_height the number of rows
+ : @param $col_index_num the row index, 1 based
+ : @return the value found, with original type
+ : @error XQP0021(errValue) if the array contains less elements than specified by table_height and table_width
+ : @error XQP0021(errValue) if col_index_num is outside the range 1 .. table_height
+ : @error XQP0021(errValue) if range_lookup is true and the value searched is smaller than
+ :       the first value in the first column
+ : @error XQP0021(errValue) if range_lookup=false and the value cannot be found
 :)
 declare function excel:vlookup( $lookup_value as xs:anyAtomicType,
                                 $table_array as xs:anyAtomicType+,

@@ -3136,7 +3136,7 @@ void* begin_visit(const VarDecl& v)
     // TODO: create dep graph for local vars too
   }
 
-  nodestack.push(ve);
+  nodestack.push(ve.getp());
   return no_state;
 }
 
@@ -3150,7 +3150,7 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
 
   expr_t initExpr = (v.get_initexpr() == NULL ? expr_t(NULL) : pop_nodestack());
 
-  var_expr_t ve = pop_nodestack();
+  var_expr_t ve = dynamic_cast<var_expr*>(pop_nodestack().getp());
 
   // The declared type of a global or external is never tightened based on
   // type inference because globals are mutable.

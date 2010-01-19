@@ -15,7 +15,7 @@
 :)
 
 (:~
- : This is a library module offering the same set of functions
+ : This is a library module offering the same set of statistical functions
  : defined by Microsoft Excel.
  :
  : @see <a href="http://office.microsoft.com/en-us/excel/CH062528311033.aspx">Excel Documentation</a>
@@ -25,11 +25,17 @@
  :)
 module namespace  excel = "http://www.zorba-xquery.com/modules/excel/statistical" ;
 
+(:~
+ : Import excel-math module functions.
+:)
 import module namespace excel-math="http://www.zorba-xquery.com/modules/excel/math";
+(:~
+ : Use excel-err module functions for throwing errors.
+:)
 import module namespace excel-err="http://www.zorba-xquery.com/modules/excel/errors";
 
 (:~
-  Helper function for average function.
+ : Helper function for average function.
   It counts all non-empty arguments from the sequence.
   The string value of every argument is used for checking.
   
@@ -48,15 +54,15 @@ declare function excel:count-non-empty( $numbers as xs:anyAtomicType* ) as xs:in
 };
 
 (:~
-  Returns the average (arithmetic mean) of the arguments.
-  Arguments can be empty values, otherwise must be castable to numeric.
-  If sequence is empty then zero is returned.
-  The sequence can be of any length.
-
-  @see http://office.microsoft.com/en-us/excel/HP052089941033.aspx
-  @param $numbers the sequence of numbers or empty values
-  @return the sum of all numbers divided by the number of non-empty values
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+ : Returns the average (arithmetic mean) of the arguments.
+ : Arguments can be empty values, otherwise must be castable to numeric.
+ : If sequence is empty then zero is returned.
+ : The sequence can be of any length.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052089941033.aspx
+ : @param $numbers the sequence of numbers or empty values
+ : @return the sum of all numbers divided by the number of non-empty values
+ : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
 declare function excel:average ( $numbers as xs:anyAtomicType* ) as xs:anyAtomicType
 {
@@ -68,11 +74,11 @@ declare function excel:average ( $numbers as xs:anyAtomicType* ) as xs:anyAtomic
 };
 
 (:~
-  Counts the number of cells that contain numbers or values castable to numeric.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052090261033.aspx
-  @param $numbers the sequence of values, of any length
-  @return the count of numbers
+ : Counts the number of cells that contain numbers or values castable to numeric.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052090261033.aspx
+ : @param $numbers the sequence of values, of any length
+ : @return the count of numbers
 :)
 declare function excel:count( $numbers as xs:anyAtomicType* )  as xs:integer
 {
@@ -86,13 +92,13 @@ declare function excel:count( $numbers as xs:anyAtomicType* )  as xs:integer
 };
 
 (:~
-  Counts the empty values in a sequence.
-  The empty values are the ones with string value "".
-  The value 0 is not counted.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052090281033.aspx
-  @param $cells the sequence of values, of any length
-  @return the count
+ : Counts the empty values in a sequence.
+ : The empty values are the ones with string value "".
+ : The value 0 is not counted.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052090281033.aspx
+ : @param $cells the sequence of values, of any length
+ : @return the count
 :)
 declare function excel:countblank( $cells as xs:anyAtomicType* ) as xs:integer
 {
@@ -106,13 +112,13 @@ declare function excel:countblank( $cells as xs:anyAtomicType* ) as xs:integer
 };
 
 (:~
-  Returns the largest number in a sequence.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052091701033.aspx
-  @param $numbers the sequence of numbers or values castable to numeric.
-            The sequence can be of any length.
-  @return the max
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type 
+ : Returns the largest number in a sequence.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052091701033.aspx
+ : @param $numbers the sequence of numbers or values castable to numeric.
+ :           The sequence can be of any length.
+ : @return the max
+ : @error XQP0021(errValue) if the parameters cannot be casted to numeric type 
 :)
 declare function excel:max ( $numbers as xs:anyAtomicType* ) as xs:anyAtomicType
 {
@@ -125,13 +131,13 @@ declare function excel:max ( $numbers as xs:anyAtomicType* ) as xs:anyAtomicType
 };
 
 (:~
-  Returns the smallest number in a sequence.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052091761033.aspx
-  @param $numbers the sequence of numbers or values castable to numeric.
-            The sequence can be of any length.
-  @return the min
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type 
+ : Returns the smallest number in a sequence.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052091761033.aspx
+ : @param $numbers the sequence of numbers or values castable to numeric.
+ :           The sequence can be of any length.
+ : @return the min
+ : @error XQP0021(errValue) if the parameters cannot be casted to numeric type 
 :)
 declare function excel:min ( $numbers as xs:anyAtomicType* ) as xs:anyAtomicType
 {
@@ -144,17 +150,17 @@ declare function excel:min ( $numbers as xs:anyAtomicType* ) as xs:anyAtomicType
 };
 
 (:~
-  Returns the median of the given numbers. 
-  The median is the number in the middle of a set of numbers.
-  Half the numbers have values that are greater than the median, 
-  and half the numbers have values that are less than the median. 
- 
-  
-  @see http://office.microsoft.com/en-us/excel/HP052091741033.aspx
-  @param $numbers the sequence of numbers, of any length
-  @return for odd count of numbers return the number in the middle of the sorted sequence.
-        For even count of numbers return the average of the two numbers in the middle.
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type 
+ : Returns the median of the given numbers. 
+ : The median is the number in the middle of a set of numbers.
+ : Half the numbers have values that are greater than the median, 
+ : and half the numbers have values that are less than the median. 
+ : 
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052091741033.aspx
+ : @param $numbers the sequence of numbers, of any length
+ : @return for odd count of numbers return the number in the middle of the sorted sequence.
+ :       For even count of numbers return the average of the two numbers in the middle.
+ : @error XQP0021(errValue) if the parameters cannot be casted to numeric type 
 :)
 declare function excel:median( $numbers as xs:anyAtomicType* ) as xs:anyAtomicType
 {
@@ -170,14 +176,14 @@ declare function excel:median( $numbers as xs:anyAtomicType* ) as xs:anyAtomicTy
 };
 
 (:~
-  Returns the most frequently occurring, or repetitive, value in a sequence.
-  Arguments must be castable to numeric.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052091831033.aspx
-  @param $numbers the sequence of numbers, of any length
-  @return the most occuring number
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
-  @error XQP0021(errNA) if there are no duplicate numbers
+ : Returns the most frequently occurring, or repetitive, value in a sequence.
+ : Arguments must be castable to numeric.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052091831033.aspx
+ : @param $numbers the sequence of numbers, of any length
+ : @return the most occuring number
+ : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+ : @error XQP0021(errNA) if there are no duplicate numbers
 :)
 declare function excel:mode( $numbers as xs:anyAtomicType* ) as xs:anyAtomicType
 {
@@ -199,17 +205,17 @@ declare function excel:mode( $numbers as xs:anyAtomicType* ) as xs:anyAtomicType
 };
 
 (:~
-  Returns the k-th percentile of values in a sequence.
-  If k is not a multiple of 1/(n - 1), 
-    PERCENTILE interpolates to determine the value at the k-th percentile.  
-  The function is computed by (max-min)*k + min
-  
-  #see http://office.microsoft.com/en-us/excel/HP052092111033.aspx
-  @param $numbers the sequence of numbers, of any length
-  @param $k_at the percentile, with value between 0 .. 1 inclusive
-  @return the computed percentile
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
-  @error XQP0021(errNum) if percentile is not between 0 .. 1
+ : Returns the k-th percentile of values in a sequence.
+ : If k is not a multiple of 1/(n - 1), 
+ :   PERCENTILE interpolates to determine the value at the k-th percentile.  
+ : The function is computed by (max-min)*k + min
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052092111033.aspx
+ : @param $numbers the sequence of numbers, of any length
+ : @param $k_at the percentile, with value between 0 .. 1 inclusive
+ : @return the computed percentile
+ : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+ : @error XQP0021(errNum) if percentile is not between 0 .. 1
 :)
 declare function excel:percentile( $numbers as xs:anyAtomicType*, $k_at as xs:anyAtomicType) as xs:anyAtomicType
 {
@@ -227,9 +233,9 @@ declare function excel:percentile( $numbers as xs:anyAtomicType*, $k_at as xs:an
 (: priority 1 :)
 
 (:~
-  Helper function for AVEDEV.
-  Computes formula sum(abs(x - average)) for every x in $numbers
-  
+ : Helper function for AVEDEV.
+ : Computes formula sum(abs(x - average)) for every x in $numbers
+ 
   @param $numbers the sequence of numbers or values castable to numeric.
       Sequence can be of any length.
   @param $average average of all numbers, computed with function AVERAGE
@@ -245,14 +251,14 @@ declare function excel:sum_deviations($numbers as xs:anyAtomicType*, $average as
 };
 
 (:~
-  Returns the average of the absolute deviations of data points from their mean.
-  The formula is sum(abs(x - average_x))/n, where n is the count of x in the sequence.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052089931033.aspx
-  @param $numbers the sequence of numbers or values castable to numeric.
-      Sequence can be of any length from 1 up.
-  @return the formula result
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+ : Returns the average of the absolute deviations of data points from their mean.
+ : The formula is sum(abs(x - average_x))/n, where n is the count of x in the sequence.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052089931033.aspx
+ : @param $numbers the sequence of numbers or values castable to numeric.
+ :     Sequence can be of any length from 1 up.
+ : @return the formula result
+ : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
 declare function excel:avedev($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 {
@@ -261,8 +267,8 @@ declare function excel:avedev($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 };
 
 (:~
-  Helper function for AVERAGEA.
-  This function adds all values that are castable to numeric.
+ : Helper function for AVERAGEA.
+ : This function adds all values that are castable to numeric.
   
   @param $numbers a sequence of any values, any length
   @return the sum of numbers
@@ -282,14 +288,14 @@ declare function excel:add-all-cells($numbers as xs:anyAtomicType*) as xs:anyAto
 };
 
 (:~
-  Calculates the average (arithmetic mean) of the values in the sequence of arguments.
-  Arguments can be of any type.
-  The numbers are added, and the sum is divided by the size of entire sequence.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052089951033.aspx
-  @param $numbers the sequence of values of any type.
-     The sequence can be of any length, from 1 up.
-  @return the result
+ : Calculates the average (arithmetic mean) of the values in the sequence of arguments.
+ : Arguments can be of any type.
+ : The numbers are added, and the sum is divided by the size of entire sequence.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052089951033.aspx
+ : @param $numbers the sequence of values of any type.
+ :    The sequence can be of any length, from 1 up.
+ : @return the result
 :)
 declare function excel:averagea($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 {
@@ -297,12 +303,12 @@ declare function excel:averagea($numbers as xs:anyAtomicType+) as xs:anyAtomicTy
 };
 
 (:~
-  Counts the number of values that are not empty.
-  Empty values are the one with string value "".
-  
-  @see http://office.microsoft.com/en-us/excel/HP052090271033.aspx
-  @param $numbers the sequence of values of any type, any length
-  @return the count of non-empty values
+ : Counts the number of values that are not empty.
+ : Empty values are the one with string value "".
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052090271033.aspx
+ : @param $numbers the sequence of values of any type, any length
+ : @return the count of non-empty values
 :)
 declare function excel:counta($numbers as xs:anyAtomicType*) as xs:integer
 {
@@ -316,19 +322,19 @@ declare function excel:counta($numbers as xs:anyAtomicType*) as xs:integer
 };
 
 (:~
-  Returns the k-th largest value in a data set. 
-  If n is the number of data points in a range, 
-    then LARGE(array,1) returns the largest value, 
-    and LARGE(array,n) returns the smallest value.
-
-  @see http://office.microsoft.com/en-us/excel/HP052091511033.aspx
-  @param $numbers the sequence of numbers or values castable to numeric.
-            The sequence can be of any length, from 1 up.
-  @param $k the position of largest value, with value from 1 to count of values
-  @return the k-th largest value as numeric type
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
-  @error XQP0021(errNum) if the sequence is empty
-  @error XQP0021(errNum) if k is not a value between 1 and the sequence size
+ : Returns the k-th largest value in a data set. 
+ : If n is the number of data points in a range, 
+ :   then LARGE(array,1) returns the largest value, 
+ :   and LARGE(array,n) returns the smallest value.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052091511033.aspx
+ : @param $numbers the sequence of numbers or values castable to numeric.
+ :           The sequence can be of any length, from 1 up.
+ : @param $k the position of largest value, with value from 1 to count of values
+ : @return the k-th largest value as numeric type
+ : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+ : @error XQP0021(errNum) if the sequence is empty
+ : @error XQP0021(errNum) if k is not a value between 1 and the sequence size
 :)
 declare function excel:large($numbers as xs:anyAtomicType*, $k as xs:integer) as xs:anyAtomicType
 {
@@ -347,14 +353,14 @@ declare function excel:large($numbers as xs:anyAtomicType*, $k as xs:integer) as
 };
 
 (:~
-  Returns the largest value in a list of arguments.
-  In this implementation there is no difference between MAX and MAXA.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052091711033.aspx
-  @param $numbers the sequence of numbers or values castable to numeric
-            The sequence can be of any length.
-  @return the max
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type 
+ : Returns the largest value in a list of arguments.
+ : In this implementation there is no difference between MAX and MAXA.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052091711033.aspx
+ : @param $numbers the sequence of numbers or values castable to numeric
+ :           The sequence can be of any length.
+ : @return the max
+ : @error XQP0021(errValue) if the parameters cannot be casted to numeric type 
 :)
 declare function excel:maxa($numbers as xs:anyAtomicType*) as xs:anyAtomicType
 {
@@ -362,14 +368,14 @@ declare function excel:maxa($numbers as xs:anyAtomicType*) as xs:anyAtomicType
 };
 
 (:~
-  Returns the smallest value in a list of arguments.
-  In this implementation there is no difference between MAX and MAXA.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052091771033.aspx
-  @param $numbers the sequence of numbers or values castable to numeric
-            The sequence can be of any length.
-  @return the min
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type 
+ : Returns the smallest value in a list of arguments.
+ : In this implementation there is no difference between MAX and MAXA.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052091771033.aspx
+ : @param $numbers the sequence of numbers or values castable to numeric
+ :           The sequence can be of any length.
+ : @return the min
+ : @error XQP0021(errValue) if the parameters cannot be casted to numeric type 
 :)
 declare function excel:mina($numbers as xs:anyAtomicType*) as xs:anyAtomicType
 {
@@ -377,19 +383,19 @@ declare function excel:mina($numbers as xs:anyAtomicType*) as xs:anyAtomicType
 };
 
 (:~
-  Returns the rank of a number in a list of numbers. 
-  The rank of a number is its size relative to other values in a list. 
-  (If you were to sort the list, the rank of the number would be its position.)
-  RANK gives duplicate numbers the same rank.
-
-  @see http://office.microsoft.com/en-us/excel/HP052092311033.aspx
-  @param $x is the number whose rank you want to find
-  @param $numbers the sequence of numbers or values castable to numbers
-    The sequence can be of any length
-  @param $order_ascending is boolean and its meaning is:
-     If false, then rank the number as if the sequence was sorted in descending order. 
-     If true, then rank the number as if the sequence was sorted in ascending order. 
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type    
+ : Returns the rank of a number in a list of numbers. 
+ : The rank of a number is its size relative to other values in a list. 
+ : (If you were to sort the list, the rank of the number would be its position.)
+ : RANK gives duplicate numbers the same rank.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052092311033.aspx
+ : @param $x is the number whose rank you want to find
+ : @param $numbers the sequence of numbers or values castable to numbers
+ :   The sequence can be of any length
+ : @param $order_ascending is boolean and its meaning is:
+ :    If false, then rank the number as if the sequence was sorted in descending order. 
+ :    If true, then rank the number as if the sequence was sorted in ascending order. 
+ : @error XQP0021(errValue) if the parameters cannot be casted to numeric type    
 :)
 declare function excel:rank($x as xs:anyAtomicType, 
                             $numbers as xs:anyAtomicType*, 
@@ -427,7 +433,16 @@ declare function excel:rank($x as xs:anyAtomicType,
 };
 
 (:~
-  This RANK function is same as the above, only that $order_ascending is set by default to false.
+ : This RANK function is same as the above, only that $order_ascending is set by default to false.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052092311033.aspx
+ : @param $x is the number whose rank you want to find
+ : @param $numbers the sequence of numbers or values castable to numbers
+ :   The sequence can be of any length
+ : @param $order_ascending is boolean and its meaning is:
+ :    If false, then rank the number as if the sequence was sorted in descending order. 
+ :    If true, then rank the number as if the sequence was sorted in ascending order. 
+ : @error XQP0021(errValue) if the parameters cannot be casted to numeric type    
 :)
 declare function excel:rank($x as xs:anyAtomicType, 
                             $numbers as xs:anyAtomicType*) as xs:decimal
@@ -436,18 +451,18 @@ declare function excel:rank($x as xs:anyAtomicType,
 };
 
 (:~
-  Returns the rank of a value in a data set as a percentage of the data set.
-  If x does not match one of the values in array, 
-    PERCENTRANK interpolates to return the correct percentage rank. 
-  The formula is uses: (RANK - 1) / (size - 1)
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092121033.aspx
-  @param $numbers the sequence of numbers or values castable to numbers.
-     The sequence can be of any length, from 1 up.
-  @param $x is the value for which you want to know the rank
-  @return the percentage of rank. 
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type 
-  @error XQP0021(errNum) if the sequence is zero length
+ : Returns the rank of a value in a data set as a percentage of the data set.
+ : If x does not match one of the values in array, 
+ :   PERCENTRANK interpolates to return the correct percentage rank. 
+ : The formula is uses: (RANK - 1) / (size - 1)
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052092121033.aspx
+ : @param $numbers the sequence of numbers or values castable to numbers.
+ :    The sequence can be of any length, from 1 up.
+ : @param $x is the value for which you want to know the rank
+ : @return the percentage of rank. 
+ : @error XQP0021(errValue) if the parameters cannot be casted to numeric type 
+ : @error XQP0021(errNum) if the sequence is zero length
 :)
 declare function excel:percentrank($numbers as xs:anyAtomicType*, $x as xs:anyAtomicType) as xs:decimal
 {
@@ -462,21 +477,21 @@ declare function excel:percentrank($numbers as xs:anyAtomicType*, $x as xs:anyAt
 };
 
 (:~
-  Returns the quartile of a data set. 
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092261033.aspx
-  @param $numbers sequence of numbers or values castable to numbers.
-       The sequence can be of any length, from 1 up.
-  @param $quart one of the values 0, 1, 2, 3, 4 with meaning:
-      0 = compute minimum value
-      1 = compute first quartile (25th percentile)
-      2 = compute median value (50th percentile)
-      3 = compute third quartile (75th percentile)
-      4 = compute maximum value
-   @return the computed quartile, as numeric type
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type 
-  @error XQP0021(errNum) if the sequence is zero length
-  @error XQP0021(errNum) if $quart is not one of the values 0, 1, 2, 3, 4
+ : Returns the quartile of a data set. 
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052092261033.aspx
+ : @param $numbers sequence of numbers or values castable to numbers.
+ :      The sequence can be of any length, from 1 up.
+ : @param $quart one of the values 0, 1, 2, 3, 4 with meaning:
+ :     0 = compute minimum value
+ :     1 = compute first quartile (25th percentile)
+ :     2 = compute median value (50th percentile)
+ :     3 = compute third quartile (75th percentile)
+ :     4 = compute maximum value
+ :  @return the computed quartile, as numeric type
+ : @error XQP0021(errValue) if the parameters cannot be casted to numeric type 
+ : @error XQP0021(errNum) if the sequence is zero length
+ : @error XQP0021(errNum) if $quart is not one of the values 0, 1, 2, 3, 4
 :)
 declare function excel:quartile($numbers as xs:anyAtomicType*, $quart as xs:integer) as xs:anyAtomicType
 {
@@ -510,19 +525,19 @@ declare function excel:quartile($numbers as xs:anyAtomicType*, $quart as xs:inte
 };
 
 (:~
-  Returns the k-th smallest value in a data set. 
-  Use this function to return values with a particular relative standing in a data set.
-  If n is the number of data points in array, SMALL(array,1) equals the smallest value, 
-    and SMALL(array,n) equals the largest value. 
-
-  @see http://office.microsoft.com/en-us/excel/HP052092661033.aspx
-  @param $numbers sequence of numbers or values castable to numeric.
-     The sequence can be of any length, from 1 up.
-  @param $k is the position (from the smallest) in the sequence of data to return.
-     Must have value between 1 and size of sequence.
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type 
-  @error XQP0021(errNum) if the sequence is zero length
-  @error XQP0021(errNum) if $k is not a value between 1 and the size of sequence
+ : Returns the k-th smallest value in a data set. 
+ : Use this function to return values with a particular relative standing in a data set.
+ : If n is the number of data points in array, SMALL(array,1) equals the smallest value, 
+ :   and SMALL(array,n) equals the largest value. 
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052092661033.aspx
+ : @param $numbers sequence of numbers or values castable to numeric.
+ :    The sequence can be of any length, from 1 up.
+ : @param $k is the position (from the smallest) in the sequence of data to return.
+ :    Must have value between 1 and size of sequence.
+ : @error XQP0021(errValue) if the parameters cannot be casted to numeric type 
+ : @error XQP0021(errNum) if the sequence is zero length
+ : @error XQP0021(errNum) if $k is not a value between 1 and the size of sequence
 :)
 declare function excel:small($numbers as xs:anyAtomicType*, $k as xs:integer) as xs:anyAtomicType
 {
@@ -542,8 +557,8 @@ declare function excel:small($numbers as xs:anyAtomicType*, $k as xs:integer) as
 };
 
 (:~
-  Not implemented in this module.
-  It is implemented in statistical-zorba module.
+ : Not implemented in this module.
+ : It is implemented in statistical-zorba module.
 :)
 declare function excel:stdev($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 {
@@ -551,8 +566,8 @@ declare function excel:stdev($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 };
 
 (:~
-  Not implemented in this module.
-  It is implemented in statistical-zorba module.
+ : Not implemented in this module.
+ : It is implemented in statistical-zorba module.
 :)
 declare function excel:stdevp($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 {
@@ -560,9 +575,9 @@ declare function excel:stdevp($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 };
 
 (:~
-  Helper function for VAR, VARA, VARP, VARPA and SLOPE.
-  It computes formula sum((x - average_x)^2) for all x in $numbers.
-  
+ : Helper function for VAR, VARA, VARP, VARPA and SLOPE.
+ : It computes formula sum((x - average_x)^2) for all x in $numbers.
+ 
   @param $numbers the sequence of numbers or values castable to numbers.
       The sequence can be of any length.
   @param $average the precomputed average over the sequence
@@ -579,16 +594,16 @@ declare function excel:sumsq_deviations($numbers as xs:anyAtomicType*, $average 
 };
 
 (:~
-  Estimates variance based on a sample.
-  The formula is sum(x - average_x)^2 / (n - 1)
-  average_x is computed with AVERAGE function.
-  n is the count of numbers from the sequence, excluding empty values
-  
-  @see http://office.microsoft.com/en-us/excel/HP052093301033.aspx
-  @param $numbers the sequence of numbers or values castable to numeric.
-        The sequence can be of any length, from 1 up.
-  @return the variance, as numeric type
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+ : Estimates variance based on a sample.
+ : The formula is sum(x - average_x)^2 / (n - 1)
+ : average_x is computed with AVERAGE function.
+ : n is the count of numbers from the sequence, excluding empty values
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052093301033.aspx
+ : @param $numbers the sequence of numbers or values castable to numeric.
+ :       The sequence can be of any length, from 1 up.
+ : @return the variance, as numeric type
+ : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
 declare function excel:var($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 {
@@ -597,16 +612,16 @@ declare function excel:var($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 };
 
 (:~
-  Estimates variance based on a sample.
-  The formula is sum(x - average_x)^2 / (n - 1)
-  average_x is computed with AVERAGE function.
-  n is the size of sequence, including empty values
-  
-  @see http://office.microsoft.com/en-us/excel/HP052093311033.aspx
-  @param $numbers the sequence of numbers or values castable to numeric.
-        The sequence can be of any length, from 1 up.
-  @return the variance, as numeric type
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+ : Estimates variance based on a sample.
+ : The formula is sum(x - average_x)^2 / (n - 1)
+ : average_x is computed with AVERAGE function.
+ : n is the size of sequence, including empty values
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052093311033.aspx
+ : @param $numbers the sequence of numbers or values castable to numeric.
+ :       The sequence can be of any length, from 1 up.
+ : @return the variance, as numeric type
+ : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
 declare function excel:vara($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 {
@@ -615,16 +630,16 @@ declare function excel:vara($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 };
 
 (:~
-  Calculates variance based on the entire population.
-  The formula is sum(x - average_x)^2 / n
-  average_x is computed with AVERAGE function.
-  n is the count of numbers from the sequence, excluding empty values
-  
-  @see http://office.microsoft.com/en-us/excel/HP052093321033.aspx
-  @param $numbers the sequence of numbers or values castable to numeric.
-        The sequence can be of any length, from 1 up.
-  @return the variance, as numeric type
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+ : Calculates variance based on the entire population.
+ : The formula is sum(x - average_x)^2 / n
+ : average_x is computed with AVERAGE function.
+ : n is the count of numbers from the sequence, excluding empty values
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052093321033.aspx
+ : @param $numbers the sequence of numbers or values castable to numeric.
+ :       The sequence can be of any length, from 1 up.
+ : @return the variance, as numeric type
+ : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
 declare function excel:varp($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 {
@@ -633,16 +648,16 @@ declare function excel:varp($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 };
 
 (:~
-  Calculates variance based on the entire population.
-  The formula is sum(x - average_x)^2 / n
-  average_x is computed with AVERAGE function.
-  n is the size of sequence, including empty values
-  
-  @see http://office.microsoft.com/en-us/excel/HP052093321033.aspx
-  @param $numbers the sequence of numbers or values castable to numeric.
-        The sequence can be of any length, from 1 up.
-  @return the variance, as numeric type
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+ : Calculates variance based on the entire population.
+ : The formula is sum(x - average_x)^2 / n
+ : average_x is computed with AVERAGE function.
+ : n is the size of sequence, including empty values
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052093321033.aspx
+ : @param $numbers the sequence of numbers or values castable to numeric.
+ :       The sequence can be of any length, from 1 up.
+ : @return the variance, as numeric type
+ : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
 declare function excel:varpa($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 {
@@ -651,31 +666,31 @@ declare function excel:varpa($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 };
 
 (:~ 
-  Moved from math module.
-  Returns a subtotal in a sequence of numbers.
-  The function applied is given by $function_num.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092881033.aspx
-  @param $function_num defines the function to be applied on sequence values.
-        The possible values are:
-        1 or 101 = AVERAGE
-        2 or 102 = COUNT
-        3 or 103 = COUNTA
-        4 or 104 = MAX
-        5 or 105 = MIN
-        6 or 106 = PRODUCT
-        7 or 107 = STDEV
-        8 or 108 = STDEVP
-        9 or 109 = SUM
-        10 or 110 = VAR
-        11 or 111 = VARP
-        
-        In this implementation there is no difference between x and 10x
-   @param %numbers the sequence of numbers or values castable to numeric.
-      The sequence can be of any length.
-   @return the function result, as numeric type
-   @error depends on the function called
-   @error XQP0021(errNum) if $function_num is not a value between 1 .. 11 or 101 .. 111
+ : Moved from math module.
+ : Returns a subtotal in a sequence of numbers.
+ : The function applied is given by $function_num.
+ :   
+ : @see http://office.microsoft.com/en-us/excel/HP052092881033.aspx
+ : @param $function_num defines the function to be applied on sequence values.
+ :       The possible values are:
+ :       1 or 101 = AVERAGE
+ :       2 or 102 = COUNT
+ :       3 or 103 = COUNTA
+ :       4 or 104 = MAX
+ :       5 or 105 = MIN
+ :       6 or 106 = PRODUCT
+ :       7 or 107 = STDEV
+ :       8 or 108 = STDEVP
+ :       9 or 109 = SUM
+ :       10 or 110 = VAR
+ :       11 or 111 = VARP
+ :       
+ :       In this implementation there is no difference between x and 10x
+ : @param %numbers the sequence of numbers or values castable to numeric.
+ :     The sequence can be of any length.
+ : @return the function result, as numeric type
+ : @error depends on the function called
+ : @error XQP0021(errNum) if $function_num is not a value between 1 .. 11 or 101 .. 111
 :)
 declare function excel:subtotal($function_num as xs:integer, $numbers as xs:anyAtomicType*) as xs:anyAtomicType
 {
@@ -718,8 +733,8 @@ declare function excel:subtotal($function_num as xs:integer, $numbers as xs:anyA
 (: priority 2 :)
 
 (:~
-  Helper function for PROB function.
-  Computes the sum over a sequence of numbers.
+ : Helper function for PROB function.
+ : Computes the sum over a sequence of numbers.
   Checks if the values are between 0 and 1.
   
   @param $prob_range the sequence of probabilities
@@ -740,8 +755,8 @@ declare function excel:sum_prob($prob_range as xs:anyAtomicType*) as xs:anyAtomi
 };
 
 (:~
-  Helper function for PROB function.
-  Checks the prob range and x range if they have the same number of values.
+ : Helper function for PROB function.
+ : Checks the prob range and x range if they have the same number of values.
   Adds all probabilities corresponding to values between range_lower_limit and upper_limit.
   
   @param $x_range the sequence of x values
@@ -780,19 +795,19 @@ declare function excel:sum_prob_x($x_range as xs:anyAtomicType*,
 };
 
 (:~
-  Returns the probability that values in a range are between two limits.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092221033.aspx
-  @param $x_range is the range of numeric values of x with which there are associated probabilities.
-        This does not need to be ordered.
-  @param $prob_range is a set of probabilities associated with values in x_range.
-  @param $range_lower_limit is the lower bound on the value for which you want a probability.
-  @param $upper_limit  is the upper bound on the value for which you want a probability.
-  @return the probability of the entire range
-  @error XQP0021(errNum) if any probability is not between 0 and 1
-  @error XQP0021(errNum) if the sum of probabilities is not equal to 1
-  @error XQP0021(errValue) if any parameter is not castable to numeric
-  @error XQP0021(errNum) if x_range and prob_range do not have the same number of values
+ : Returns the probability that values in a range are between two limits.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052092221033.aspx
+ : @param $x_range is the range of numeric values of x with which there are associated probabilities.
+ :       This does not need to be ordered.
+ : @param $prob_range is a set of probabilities associated with values in x_range.
+ : @param $range_lower_limit is the lower bound on the value for which you want a probability.
+ : @param $upper_limit  is the upper bound on the value for which you want a probability.
+ : @return the probability of the entire range
+ : @error XQP0021(errNum) if any probability is not between 0 and 1
+ : @error XQP0021(errNum) if the sum of probabilities is not equal to 1
+ : @error XQP0021(errValue) if any parameter is not castable to numeric
+ : @error XQP0021(errNum) if x_range and prob_range do not have the same number of values
 :)
 declare function excel:prob($x_range as xs:anyAtomicType+,
                             $prob_range as xs:anyAtomicType+,
@@ -809,8 +824,19 @@ declare function excel:prob($x_range as xs:anyAtomicType+,
 };
 
 (:~
-  This is the same as above, only that upper_limit is not specified.
-  The probability is computed only for range_lower_limit.
+ : This is the same as above, only that upper_limit is not specified.
+ : The probability is computed only for range_lower_limit.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052092221033.aspx
+ : @param $x_range is the range of numeric values of x with which there are associated probabilities.
+ :       This does not need to be ordered.
+ : @param $prob_range is a set of probabilities associated with values in x_range.
+ : @param $range_lower_limit is the value for which you want a probability.
+ : @return the probability of the range_lower_limit value
+ : @error XQP0021(errNum) if any probability is not between 0 and 1
+ : @error XQP0021(errNum) if the sum of probabilities is not equal to 1
+ : @error XQP0021(errValue) if any parameter is not castable to numeric
+ : @error XQP0021(errNum) if x_range and prob_range do not have the same number of values
 :)
 declare function excel:prob($x_range as xs:anyAtomicType+,
                             $prob_range as xs:anyAtomicType+,
@@ -820,10 +846,10 @@ declare function excel:prob($x_range as xs:anyAtomicType+,
 };
 
 (:~
-  Helper function for SLOPE function.
-  It computes the formula:
-  sum((x - average_x)(y - average_y))
-  where average_x and average_y are computed with AVERAGE function.
+ : Helper function for SLOPE function.
+ : It computes the formula:
+ : sum((x - average_x)(y - average_y))
+ : where average_x and average_y are computed with AVERAGE function.
   
   @param $x_numbers the sequence of x numbers
   @param $x_average the precomputed AVERAGE over the x_numbers
@@ -854,23 +880,23 @@ declare function excel:sum_x_y_deviations($x_numbers as xs:anyAtomicType*,
 };
 
 (:~
-  Returns the slope of the linear regression line through data points in known_y's and known_x's.
-  The slope is the vertical distance divided by the horizontal distance between 
-    any two points on the line, which is the rate of change along the regression line.
-  It computes the formula:
-  sum((x - average_x)(y - average_y)) / sum((x - average_x)^2)
-  where average_x and average_y are computed with AVERAGE function.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092641033.aspx
-  @param $known_y the sequence of y numbers.
-     The sequence can be of any length, from 1 up.  
-  @param $known_x the sequence of x numbers.
-     The sequence can be of any length, from 1 up.  
-  @return the slope value, as numeric type
-  @error XQP0021(errValues) if any parameter cannot be casted to numeric
-  @error XQP0021(errNA) if there are different numbers of x's and y's
-  @error XQP0021(errNA) if any sequence is empty
-  @error XQP0021(errDiv0) if all x's are equal
+ : Returns the slope of the linear regression line through data points in known_y's and known_x's.
+ : The slope is the vertical distance divided by the horizontal distance between 
+ :   any two points on the line, which is the rate of change along the regression line.
+ : It computes the formula:
+ : sum((x - average_x)(y - average_y)) / sum((x - average_x)^2)
+ : where average_x and average_y are computed with AVERAGE function.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052092641033.aspx
+ : @param $known_y the sequence of y numbers.
+ :    The sequence can be of any length, from 1 up.  
+ : @param $known_x the sequence of x numbers.
+ :    The sequence can be of any length, from 1 up.  
+ : @return the slope value, as numeric type
+ : @error XQP0021(errValues) if any parameter cannot be casted to numeric
+ : @error XQP0021(errNA) if there are different numbers of x's and y's
+ : @error XQP0021(errNA) if any sequence is empty
+ : @error XQP0021(errDiv0) if all x's are equal
 :)
 declare function excel:slope($known_y as xs:anyAtomicType+,
                        $known_x as xs:anyAtomicType+)
@@ -889,16 +915,16 @@ declare function excel:slope($known_y as xs:anyAtomicType+,
 };
 
 (:~
-  Returns a normalized value from a distribution characterized by mean and standard_dev.
-  The formula is (x - mean) / standard_dev
-
-  @see http://office.microsoft.com/en-us/excel/HP052092731033.aspx
-  @param $x is the value you want to normalize
-  @param $mean  is the arithmetic mean of the distribution.
-  @param $standard_dev is the standard deviation of the distribution.
-  @return the normalized x, as numeric type
-  @error XQP0021(errValues) if any parameter cannot be casted to numeric
-  @error XQP0021(errNum) if standard_dev is a value smaller than zero or equal
+ : Returns a normalized value from a distribution characterized by mean and standard_dev.
+ : The formula is (x - mean) / standard_dev
+ :
+ : @see http://office.microsoft.com/en-us/excel/HP052092731033.aspx
+ : @param $x is the value you want to normalize
+ : @param $mean  is the arithmetic mean of the distribution.
+ : @param $standard_dev is the standard deviation of the distribution.
+ : @return the normalized x, as numeric type
+ : @error XQP0021(errValues) if any parameter cannot be casted to numeric
+ : @error XQP0021(errNum) if standard_dev is a value smaller than zero or equal
 :)
 declare function excel:standardize($x as xs:anyAtomicType,
                                    $mean as xs:anyAtomicType,

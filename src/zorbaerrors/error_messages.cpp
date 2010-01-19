@@ -205,8 +205,8 @@ DEF_ERR_CODE(API0071_CONV_CSV2XML_PARAM, API0071,
 DEF_ERR_CODE(API0072_CONV_CSV2XML_TOO_MANY_FIELDS, API0072, 
 "CSV import error: first row is header but one of the subsequent rows contains more fields than the header")
 
-DEF_ERR_CODE(API0073_CONV_XML2CSV_PARAM, API0071, 
-"Invalid parameter in csv export: /s /s")
+DEF_ERR_CODE(API0073_CONV_XML2CSV_PARAM, API0073, 
+"CSV export error: /s /s")
 
 //
 // Store Errors

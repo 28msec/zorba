@@ -24,31 +24,31 @@
 module namespace  excel-err = "http://www.zorba-xquery.com/modules/excel/errors" ;
 
 (:~
-errors namespace URI
+ : Errors namespace URI.
 :)
 declare variable $excel-err:errNS as xs:string := "http://www.zorba-xquery.com/modules/excel/errors";
 
 (:~
-xs:QName with namespace URI="http://www.zorba-xquery.com/modules/excel/errors" and local name 'excel-err:Value" 
+ : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/excel/errors" and local name 'excel-err:Value" 
 :)
 declare variable $excel-err:errValue as xs:QName := fn:QName($excel-err:errNS, "excel-err:Value");
 
 (:~
-xs:QName with namespace URI="http://www.zorba-xquery.com/modules/excel/errors" and local name 'excel-err:Num"
+ : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/excel/errors" and local name 'excel-err:Num"
 :)
 declare variable $excel-err:errNum as xs:QName := fn:QName($excel-err:errNS, "excel-err:Num");
 
 (:~
-xs:QName with namespace URI="http://www.zorba-xquery.com/modules/excel/errors" and local name 'excel-err:Div0"
+ : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/excel/errors" and local name 'excel-err:Div0"
 :)
 declare variable $excel-err:errDiv0 as xs:QName := fn:QName($excel-err:errNS, "excel-err:Div0");
 
 (:~
-xs:QName with namespace URI="http://www.zorba-xquery.com/modules/excel/errors" and local name 'excel-err:NA"
+ : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/excel/errors" and local name 'excel-err:NA"
 :)
 declare variable $excel-err:errNA as xs:QName := fn:QName($excel-err:errNS, "excel-err:NA");
 
 (:~
-xs:QName with namespace URI="http://www.zorba-xquery.com/modules/excel/errors" and local name 'excel-err:Ref"
+ : xs:QName with namespace URI="http://www.zorba-xquery.com/modules/excel/errors" and local name 'excel-err:Ref"
 :)
 declare variable $excel-err:errRef as xs:QName := fn:QName($excel-err:errNS, "excel-err:Ref");

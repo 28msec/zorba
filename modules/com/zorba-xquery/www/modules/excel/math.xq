@@ -17,7 +17,7 @@
 (:~
  : This is a library module offering the same set of functions
  : defined by Microsoft Excel.
-
+ : 
  : @see <a href="http://office.microsoft.com/en-us/excel/CH062528291033.aspx">Excel Documentation</a>
  : @spec XQuery Specification: January 2007
  : @author Daniel Turcanu
@@ -25,14 +25,17 @@
  :)
 module namespace  excel = "http://www.zorba-xquery.com/modules/excel/math" ;
 
+(:~
+ : Use excel-err module functions for throwing errors.
+:)
 import module namespace excel-err="http://www.zorba-xquery.com/modules/excel/errors";
 
 (:~
-  Checks if the xs:anyAtomicType argument is actually a numeric type
-  or can be converted to numeric
-  
-  @param $value  parameter to be checked
-  @return boolean true if the value can be casted to numeric
+ : Checks if the xs:anyAtomicType argument is actually a numeric type
+ : or can be converted to numeric
+ : 
+ : @param $value  parameter to be checked
+ : @return boolean true if the value can be casted to numeric
 :)
 declare function excel:is-a-number   ( $value as xs:anyAtomicType )  as xs:boolean 
 {   
@@ -40,13 +43,13 @@ declare function excel:is-a-number   ( $value as xs:anyAtomicType )  as xs:boole
 } ;
 
 (:~
-  Cast the xs:anyAtomicType to a numeric type.
-  If the value is already of a numeric type then nothing is changed.
-  Otherwise the value is casted to the numeric type that is most appropriate.
-  
-  @param $number the parameter can be a number, string, boolean value
-  @return the casted value
-  @error XQP0021(errValue) if the value cannot be casted to numeric type
+ : Cast the xs:anyAtomicType to a numeric type.
+ : If the value is already of a numeric type then nothing is changed.
+ : Otherwise the value is casted to the numeric type that is most appropriate.
+ : 
+ : @param $number the parameter can be a number, string, boolean value
+ : @return the casted value
+ : @error XQP0021(errValue) if the value cannot be casted to numeric type
 :)
 declare function excel:cast-as-numeric( $number as xs:anyAtomicType) as xs:anyAtomicType
 {
@@ -71,13 +74,13 @@ declare function excel:cast-as-numeric( $number as xs:anyAtomicType) as xs:anyAt
 (: ---------------- Excel Math functions ----------------------- :)
 
 (:~
-  Compute the abs of a numeric value.
-  The value can also be a string and it will be casted to the appropriate numeric first.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052089781033.aspx
-  @param $arg the parameter can be a number, string, boolean value
-  @return the abs value as a numeric type
-  @error XQP0021(errValue) if arg cannot be casted to numeric type
+ : Compute the abs of a numeric value.
+ : The value can also be a string and it will be casted to the appropriate numeric first.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052089781033.aspx
+ : @param $arg the parameter can be a number, string, boolean value
+ : @return the abs value as a numeric type
+ : @error XQP0021(errValue) if arg cannot be casted to numeric type
 :)
 declare function excel:abs ( $arg as xs:anyAtomicType ) as xs:anyAtomicType
 {
@@ -85,17 +88,17 @@ declare function excel:abs ( $arg as xs:anyAtomicType ) as xs:anyAtomicType
 } ;
 
 (:~
-  Returns number rounded up, away from zero, to the nearest multiple of significance.
-  Significance must have the same sign as number.
-  Number and significance must be of a numeric type or castable to numeric.
-  Significance must not be zero.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052090071033.aspx
-  @param $number_at the value you want to round
-  @param $significance_at is the multiple to which you want to round.
-  @return the rounded value
-  @error XQP0021(errValue) if parameters cannot be casted to numeric type
-  @error XQP0021(errNum) if significance is zero or it doesn't have the same sign as number
+ : Returns number rounded up, away from zero, to the nearest multiple of significance.
+ : Significance must have the same sign as number.
+ : Number and significance must be of a numeric type or castable to numeric.
+ : Significance must not be zero.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052090071033.aspx
+ : @param $number_at the value you want to round
+ : @param $significance_at is the multiple to which you want to round.
+ : @return the rounded value
+ : @error XQP0021(errValue) if parameters cannot be casted to numeric type
+ : @error XQP0021(errNum) if significance is zero or it doesn't have the same sign as number
 :)
 declare function excel:ceiling( $number_at as xs:anyAtomicType, $significance_at as xs:anyAtomicType ) as xs:anyAtomicType
 {
@@ -111,13 +114,13 @@ declare function excel:ceiling( $number_at as xs:anyAtomicType, $significance_at
 };
 
 (:~
-  Returns number rounded up to the nearest even integer.
-  Regardless of the sign of number, a value is rounded up when adjusted away from zero. 
-  
-  @see http://office.microsoft.com/en-us/excel/HP052090801033.aspx
-  @param $number_at the value to round
-  @return the rounded value casted as numeric type
-  @error XQP0021(errValue) if parameters cannot be casted to numeric type
+ : Returns number rounded up to the nearest even integer.
+ : Regardless of the sign of number, a value is rounded up when adjusted away from zero. 
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052090801033.aspx
+ : @param $number_at the value to round
+ : @return the rounded value casted as numeric type
+ : @error XQP0021(errValue) if parameters cannot be casted to numeric type
 :)
 declare function excel:even( $number_at as xs:anyAtomicType) as xs:anyAtomicType
 {
@@ -136,7 +139,7 @@ declare function excel:even( $number_at as xs:anyAtomicType) as xs:anyAtomicType
 };
 
 (:~
-  Helper function for computing factorial.
+ : Helper function for computing factorial.
   It is a recursive function multiplying number with fact(number-1).
   
   @param $intnum the positive integer
@@ -151,12 +154,12 @@ declare function excel:fact-integer( $intnum as xs:integer ) as xs:integer
 };
 
 (:~
-  Returns the factorial of a number.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052090841033.aspx
-  @param $number_at number is casted to numeric and then to integer
-  @return factorial number as xs:integer
-  @error XQP0021(errNum) if the number is smaller than zero
+ : Returns the factorial of a number.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052090841033.aspx
+ : @param $number_at number is casted to numeric and then to integer
+ : @return factorial number as xs:integer
+ : @error XQP0021(errNum) if the number is smaller than zero
 :)
 declare function excel:fact( $number_at as xs:anyAtomicType) as xs:integer
 {
@@ -171,16 +174,16 @@ declare function excel:fact( $number_at as xs:anyAtomicType) as xs:integer
  };
 
 (:~
-  Rounds number down, toward zero, to the nearest multiple of significance.
-  Significance must have the same sign as number.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052090941033.aspx
-  @param $number_at the value you want to round. 
-            If it is string or boolean it will be casted to numeric.
-  @param $significance_at the multiple to which you want to round
-  @return the rounded value as numeric type
-  @error XQP0021(errValue) if parameters cannot be casted to numeric type
-  @error XQP0021(errNum) if significance is zero or it doesn't have the same sign as number  
+ : Rounds number down, toward zero, to the nearest multiple of significance.
+ : Significance must have the same sign as number.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052090941033.aspx
+ : @param $number_at the value you want to round. 
+ :           If it is string or boolean it will be casted to numeric.
+ : @param $significance_at the multiple to which you want to round
+ : @return the rounded value as numeric type
+ : @error XQP0021(errValue) if parameters cannot be casted to numeric type
+ : @error XQP0021(errNum) if significance is zero or it doesn't have the same sign as number  
 :)
  declare function excel:floor( $number_at as xs:anyAtomicType, $significance_at as xs:anyAtomicType  ) as xs:anyAtomicType
  {
@@ -196,13 +199,13 @@ declare function excel:fact( $number_at as xs:anyAtomicType) as xs:integer
  };
  
  (:~
-   Rounds a number down to the nearest integer.
-   Positive numbers are rounded toward zero, negative numbers are rounded away from zero.
-   
-   @see http://office.microsoft.com/en-us/excel/HP052091421033.aspx
-   @param $number parameter will be casted to numeric
-   @return the rounded integer
-   @error XQP0021(errValue) if parameter cannot be casted to numeric type
+  : Rounds a number down to the nearest integer.
+  : Positive numbers are rounded toward zero, negative numbers are rounded away from zero.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052091421033.aspx
+  : @param $number parameter will be casted to numeric
+  : @return the rounded integer
+  : @error XQP0021(errValue) if parameter cannot be casted to numeric type
  :)
  declare function excel:int( $number as xs:anyAtomicType ) as xs:integer
  {
@@ -210,16 +213,16 @@ declare function excel:fact( $number_at as xs:anyAtomicType) as xs:integer
  };
  
  (:~
-   Returns the remainder after number is divided by divisor.
-   The result has the same sign as divisor.
-   
-   @see http://office.microsoft.com/en-us/excel/HP052091821033.aspx
-   @param $number_at is the number for which you want to find the remainder.
-   @param $divisor_at is the number by which you want to divide number.
-            This cannot be zero.
-   @return the remainder from division as numeric type
-   @error XQP0021(errValue) if parameters cannot be casted to numeric type
-   @error XQP0021(errDiv0) if divisor is zero after casting to numeric
+  : Returns the remainder after number is divided by divisor.
+  : The result has the same sign as divisor.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052091821033.aspx
+  : @param $number_at is the number for which you want to find the remainder.
+  : @param $divisor_at is the number by which you want to divide number.
+  :          This cannot be zero.
+  : @return the remainder from division as numeric type
+  : @error XQP0021(errValue) if parameters cannot be casted to numeric type
+  : @error XQP0021(errDiv0) if divisor is zero after casting to numeric
  :)
  declare function excel:mod( $number_at as xs:anyAtomicType, $divisor_at as xs:anyAtomicType) as xs:anyAtomicType
  {
@@ -236,12 +239,12 @@ declare function excel:fact( $number_at as xs:anyAtomicType) as xs:integer
  };
  
  (:~
-   Returns number rounded up to the nearest odd integer, away from zero.
-
-   @see  http://office.microsoft.com/en-us/excel/HP052092031033.aspx
-   @param $number_at  is the value to round
-   @return the odd integer
-   @error XQP0021(errValue) if parameter cannot be casted to numeric type
+  : Returns number rounded up to the nearest odd integer, away from zero.
+  : 
+  : @see  http://office.microsoft.com/en-us/excel/HP052092031033.aspx
+  : @param $number_at  is the value to round
+  : @return the odd integer
+  : @error XQP0021(errValue) if parameter cannot be casted to numeric type
  :)
  declare function excel:odd( $number_at as xs:anyAtomicType ) as xs:integer
  {
@@ -260,9 +263,10 @@ declare function excel:fact( $number_at as xs:anyAtomicType) as xs:integer
  };
  
  (:~
-   Return the value of PI as decimal with 15 digits
-   
-   @see http://office.microsoft.com/en-us/excel/HP052092141033.aspx
+  : Return the value of PI as decimal with 15 digits
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092141033.aspx
+  : @return the value of PI with 15 digits
  :)
  declare function excel:pi() as xs:decimal
  {
@@ -270,15 +274,15 @@ declare function excel:fact( $number_at as xs:anyAtomicType) as xs:integer
  };
  
  (:~
-   Returns the result of a number raised to a power.
-   The result is computed through successive multiplications.
-   
-   @see http://office.microsoft.com/en-us/excel/HP052092171033.aspx
-   @param $number_at the base number
-   @param $power the exponent as integer (cannot be floating point like in Excel)
-   @return the result as numeric type
-   @error XQP0021(errValue) if parameter cannot be casted to numeric type
-   @error XQP0021(errValue) if power is smaller than zero
+  : Returns the result of a number raised to a power.
+  : The result is computed through successive multiplications.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092171033.aspx
+  : @param $number_at the base number
+  : @param $power the exponent as integer (cannot be floating point like in Excel)
+  : @return the result as numeric type
+  : @error XQP0021(errValue) if parameter cannot be casted to numeric type
+  : @error XQP0021(errValue) if power is smaller than zero
  :)
  declare function excel:power( $number_at as xs:anyAtomicType, $power as xs:integer) as xs:anyAtomicType
  {
@@ -298,7 +302,7 @@ declare function excel:fact( $number_at as xs:anyAtomicType) as xs:integer
  };
  
  (:~
-   Helper function for product.
+  : Helper function for product.
    Multiplies all numbers in the sequence.
    
    @param $numbers list of arguments to be casted to numeric and multiplied
@@ -315,13 +319,13 @@ declare function excel:fact( $number_at as xs:anyAtomicType) as xs:integer
  };
  
  (:~
-   Multiplies all the numbers given as arguments and returns the product.
-
-   @see http://office.microsoft.com/en-us/excel/HP052092231033.aspx
-   @param $numbers the sequence of arguments convertable to numeric types.
-       The sequence can be of any length.
-   @return the multiplication result as numeric type
-   @error XQP0021(errValue) if parameters cannot be casted to numeric type
+  : Multiplies all the numbers given as arguments and returns the product.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092231033.aspx
+  : @param $numbers the sequence of arguments convertable to numeric types.
+  :     The sequence can be of any length.
+  : @return the multiplication result as numeric type
+  : @error XQP0021(errValue) if parameters cannot be casted to numeric type
  :)
  declare function excel:product( $numbers as xs:anyAtomicType*)  as xs:anyAtomicType
  {
@@ -332,14 +336,14 @@ declare function excel:fact( $number_at as xs:anyAtomicType) as xs:integer
  };
  
  (:~
-   Returns the integer portion of a division.
-   
-   @see http://office.microsoft.com/en-us/excel/HP052092271033.aspx
-   @param $numerator_at is the divident
-   @param $denominator_at is the divisor. It cannot be zero.
-   @return the result value as numeric type
-   @error XQP0021(errValue) if parameters cannot be casted to numeric type
-   @error XQP0021(div0) if denominator casted as numeric type has value zero
+  : Returns the integer portion of a division.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092271033.aspx
+  : @param $numerator_at is the divident
+  : @param $denominator_at is the divisor. It cannot be zero.
+  : @return the result value as numeric type
+  : @error XQP0021(errValue) if parameters cannot be casted to numeric type
+  : @error XQP0021(div0) if denominator casted as numeric type has value zero
  :)
  declare function excel:quotient( $numerator_at as xs:anyAtomicType, $denominator_at as xs:anyAtomicType ) as xs:integer
  {
@@ -352,18 +356,18 @@ declare function excel:fact( $number_at as xs:anyAtomicType) as xs:integer
  };
  
  (:~
-   Rounds a number to a specified number of digits.
-   If precision is greater than 0 (zero), then number is rounded 
-   to the specified number of decimal places.
-   If num_digits is 0, then number is rounded to the nearest integer.
-   If num_digits is less than 0, then number is rounded to the left of the decimal point.
-   The 0.5 is rounded away from zero. 
-   
-   @see http://office.microsoft.com/en-us/excel/HP052092391033.aspx
-   @param $number_at the number to round, castable to a numeric type
-   @param $precision the number of decimal places to keep
-   @return the rounded number as numeric type 
-   @error XQP0021(errValue) if parameters cannot be casted to numeric type
+  : Rounds a number to a specified number of digits.
+  : If precision is greater than 0 (zero), then number is rounded 
+  : to the specified number of decimal places.
+  : If num_digits is 0, then number is rounded to the nearest integer.
+  : If num_digits is less than 0, then number is rounded to the left of the decimal point.
+  : The 0.5 is rounded away from zero. 
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092391033.aspx
+  : @param $number_at the number to round, castable to a numeric type
+  : @param $precision the number of decimal places to keep
+  : @return the rounded number as numeric type 
+  : @error XQP0021(errValue) if parameters cannot be casted to numeric type
  :)
  declare function excel:round( $number_at as xs:anyAtomicType, $precision as xs:integer ) as xs:anyAtomicType
  {
@@ -386,17 +390,17 @@ declare function excel:fact( $number_at as xs:anyAtomicType) as xs:integer
  };
   
 (:~
-  Rounds a number down, toward zero.
-  If num_digits is greater than 0 (zero), then number is rounded down 
-  to the specified number of decimal places. 
-  If num_digits is 0, then number is rounded down to the nearest integer. 
-  If num_digits is less than 0, then number is rounded down to the left of the decimal point. 
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092411033.aspx
-  @param $number_at number to round, castable to numeric type
-  @param $precision the number of decimal places to keep
-  @return the truncated number toward zero, as numeric type
-  @error XQP0021(errValue) if parameters cannot be casted to numeric type
+ : Rounds a number down, toward zero.
+ : If num_digits is greater than 0 (zero), then number is rounded down 
+ : to the specified number of decimal places. 
+ : If num_digits is 0, then number is rounded down to the nearest integer. 
+ : If num_digits is less than 0, then number is rounded down to the left of the decimal point. 
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052092411033.aspx
+ : @param $number_at number to round, castable to numeric type
+ : @param $precision the number of decimal places to keep
+ : @return the truncated number toward zero, as numeric type
+ : @error XQP0021(errValue) if parameters cannot be casted to numeric type
 :)
  declare function excel:rounddown( $number_at as xs:anyAtomicType, $precision as xs:integer) as xs:anyAtomicType
  {
@@ -419,17 +423,17 @@ declare function excel:fact( $number_at as xs:anyAtomicType) as xs:integer
  };
  
  (:~
-  Rounds a number up, away from 0 (zero).
-  If num_digits is greater than 0 (zero), then number is rounded down 
-  to the specified number of decimal places. 
-  If num_digits is 0, then number is rounded down to the nearest integer. 
-  If num_digits is less than 0, then number is rounded down to the left of the decimal point. 
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092421033.aspx
-  @param $number_at number to round, castable to numeric type
-  @param $precision the number of decimal places to keep
-  @return the truncated number away from zero, as numeric type
-  @error XQP0021(errValue) if parameters cannot be casted to numeric type
+  : Rounds a number up, away from 0 (zero).
+  : If num_digits is greater than 0 (zero), then number is rounded down 
+  : to the specified number of decimal places. 
+  : If num_digits is 0, then number is rounded down to the nearest integer. 
+  : If num_digits is less than 0, then number is rounded down to the left of the decimal point. 
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092421033.aspx
+  : @param $number_at number to round, castable to numeric type
+  : @param $precision the number of decimal places to keep
+  : @return the truncated number away from zero, as numeric type
+  : @error XQP0021(errValue) if parameters cannot be casted to numeric type
 :)
 declare function excel:roundup( $number_at as xs:anyAtomicType, $precision as xs:integer) as xs:anyAtomicType
  {
@@ -452,14 +456,14 @@ declare function excel:roundup( $number_at as xs:anyAtomicType, $precision as xs
  };
  
  (:~
-   Determines the sign of a number. 
-   Returns 1 if the number is positive, zero (0) if the number is 0, 
-   and -1 if the number is negative.
-
-   @see http://office.microsoft.com/en-us/excel/HP052092551033.aspx
-   @param $number_at the argument castable to numeric type
-   @return the sign as (-1, 0, 1)
-   @error XQP0021(errValue) if parameters cannot be casted to numeric type
+  : Determines the sign of a number. 
+  : Returns 1 if the number is positive, zero (0) if the number is 0, 
+  : and -1 if the number is negative.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092551033.aspx
+  : @param $number_at the argument castable to numeric type
+  : @return the sign as (-1, 0, 1)
+  : @error XQP0021(errValue) if parameters cannot be casted to numeric type
  :)
  declare function excel:sign( $number_at as xs:anyAtomicType) as xs:integer
  {
@@ -474,13 +478,13 @@ declare function excel:roundup( $number_at as xs:anyAtomicType, $precision as xs
  };
  
  (:~
-   Adds all the numbers in the sequence.
-   
-   @see http://office.microsoft.com/en-us/excel/HP052092901033.aspx
-   @param $numbers is the sequence of arguments castable to numeric types.
-       The sequence can be of any length
-   @return the sum as numeric type
-   @error XQP0021(errValue) if parameters cannot be casted to numeric type
+  : Adds all the numbers in the sequence.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092901033.aspx
+  : @param $numbers is the sequence of arguments castable to numeric types.
+  :     The sequence can be of any length
+  : @return the sum as numeric type
+  : @error XQP0021(errValue) if parameters cannot be casted to numeric type
  :)
  declare function excel:sum( $numbers as xs:anyAtomicType*)  as xs:anyAtomicType
  {
@@ -492,12 +496,12 @@ declare function excel:roundup( $number_at as xs:anyAtomicType, $precision as xs
  };
  
  (:~
-   Truncates a number to an integer by removing the fractional part of the number.
-
-   @see http://office.microsoft.com/en-us/excel/HP052093241033.aspx
-   @param $number the argument castable to numeric type
-   @return the integer value
-   @error XQP0021(errValue) if parameter cannot be casted to numeric type
+  : Truncates a number to an integer by removing the fractional part of the number.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052093241033.aspx
+  : @param $number the argument castable to numeric type
+  : @return the integer value
+  : @error XQP0021(errValue) if parameter cannot be casted to numeric type
  :)
  declare function excel:trunc( $number as xs:anyAtomicType ) as xs:integer
  {
@@ -505,14 +509,14 @@ declare function excel:roundup( $number_at as xs:anyAtomicType, $precision as xs
  };
  
  (:~
-   Truncates a number down to precision.
-   This behaves exactly like rounddown.
-
-   @see http://office.microsoft.com/en-us/excel/HP052093241033.aspx
-   @param $number the argument castable to numeric type
-   @param $precision the number of decimal places to keep 
-   @return the integer value
-   @error XQP0021(errValue) if parameter cannot be casted to numeric type
+  : Truncates a number down to precision.
+  : This behaves exactly like rounddown.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052093241033.aspx
+  : @param $number the argument castable to numeric type
+  : @param $precision the number of decimal places to keep 
+  : @return the integer value
+  : @error XQP0021(errValue) if parameter cannot be casted to numeric type
  :)
  declare function excel:trunc( $number as xs:anyAtomicType, $precision as xs:integer ) as xs:anyAtomicType
  {
@@ -520,8 +524,8 @@ declare function excel:roundup( $number_at as xs:anyAtomicType, $precision as xs
  };
  
 (:~
-  Helper function.
-  Sorts a sequence of numbers or arguments castable to numeric.
+ : Helper function.
+ : Sorts a sequence of numbers or arguments castable to numeric.
   It first casts all arguments to numeric and then sorts ascending.
   
   @param $numbers the sequence of arguments castable to numeric
@@ -544,11 +548,11 @@ declare function excel:sort-numbers ( $numbers as xs:anyAtomicType* ) as xs:anyA
 (: priority 1 :)
 
 (:~
-  Converts radians into degrees.
-
-  @see http://office.microsoft.com/en-us/excel/HP052090561033.aspx
-  @param $radian the value in radians
-  @return the value in degrees 0 .. 360 or 0 .. -360
+ : Converts radians into degrees.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052090561033.aspx
+ : @param $radian the value in radians
+ : @return the value in degrees 0 .. 360 or 0 .. -360
 :)
 declare function excel:degrees( $radian as xs:double ) as xs:integer
 {
@@ -556,13 +560,13 @@ declare function excel:degrees( $radian as xs:double ) as xs:integer
 };
 
 (:~
-  Returns the double factorial of a number.
-  Computes the double factorial of n as n(n-2)(n-4)...
-  
-  @see http://office.microsoft.com/en-us/excel/HP052090851033.aspx
-  @param $number the positive integer value
-  @return the result as integer
-  @error XQP0021(errNum) if the number is negative 
+ : Returns the double factorial of a number.
+ : Computes the double factorial of n as n(n-2)(n-4)...
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052090851033.aspx
+ : @param $number the positive integer value
+ : @return the result as integer
+ : @error XQP0021(errNum) if the number is negative 
 :)
 declare function excel:factdouble( $number as xs:integer ) as xs:integer
 {
@@ -577,9 +581,9 @@ declare function excel:factdouble( $number as xs:integer ) as xs:integer
 };
 
 (:~
-  Helper function for computing GCD.
-  It calculates the minimum value from a sequence of positive integers, 
-  not taking into account the zero value.
+ : Helper function for computing GCD.
+ : It calculates the minimum value from a sequence of positive integers, 
+ : not taking into account the zero value.
   
   @param $numbers the sequence of positive integers
   @return the minimum value. If the sequence contains only zero values, then zero is returned.
@@ -601,8 +605,8 @@ declare function excel:min-without-zero($numbers as xs:integer+) as xs:integer
 };
 
 (:~
-  Helper function for computing GCD.
-  Checks if all integer numbers from a sequence divide exactly to a divident.
+ : Helper function for computing GCD.
+ : Checks if all integer numbers from a sequence divide exactly to a divident.
   
   @param $numbers the positive integers
   @param $divident the divident to be tried
@@ -620,7 +624,7 @@ declare function excel:try-exact-divide($numbers as xs:integer*, $divident as xs
 };
 
 (:~
-  Helper function for computing GCD.
+ : Helper function for computing GCD.
   This function iterates through possible divisors and checks
   if the sequence divides exactly to any of those.
   It starts from the minimum value from the sequence
@@ -648,13 +652,13 @@ declare function excel:iterate-all-gcd($numbers as xs:integer*,
 };
 
 (:~
-  Returns the greatest common divisor GCD of a sequence of integers.
-  The sequence can have one or more positive integers.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052091041033.aspx
-  @param $numbers the sequence of positive integers
-  @return the GCD as integer
-  @error XQP0021(errNum) if any number is smaller than zero
+ : Returns the greatest common divisor GCD of a sequence of integers.
+ : The sequence can have one or more positive integers.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052091041033.aspx
+ : @param $numbers the sequence of positive integers
+ : @return the GCD as integer
+ : @error XQP0021(errNum) if any number is smaller than zero
 :)
 declare function excel:gcd($numbers as xs:integer+) as xs:integer
 {
@@ -671,13 +675,13 @@ declare function excel:gcd($numbers as xs:integer+) as xs:integer
 };
 
 (:~
-  Returns the least common multiple of integers.
-  LCM is computed by multiplying all the numbers and dividing with GCD.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052091521033.aspx
-  @param $numbers the sequence of one or more positive integers
-  @return the LCM as integer
-  @error XQP0021(errNum) if any number is smaller than zero
+ : Returns the least common multiple of integers.
+ : LCM is computed by multiplying all the numbers and dividing with GCD.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052091521033.aspx
+ : @param $numbers the sequence of one or more positive integers
+ : @return the LCM as integer
+ : @error XQP0021(errNum) if any number is smaller than zero
 :)
 declare function excel:lcm($numbers as xs:integer+) as xs:integer
 {
@@ -689,16 +693,16 @@ declare function excel:lcm($numbers as xs:integer+) as xs:integer
 };
 
 (:~
-  Returns a number rounded to the desired multiple.
-  MROUND rounds up, away from zero, if the remainder of dividing number by multiple
-   is greater than or equal to half the value of multiple.
-  MROUND is computed through floor function.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052091851033.aspx
-  @param $number_at the value to round, castable to numeric type
-  @param $multiple_at is the multiple to which you want to round number.
-  @return rounded number up to the desired multiple
-  @error XQP0021(errValue) if parameters cannot be casted to numeric type
+ : Returns a number rounded to the desired multiple.
+ : MROUND rounds up, away from zero, if the remainder of dividing number by multiple
+ :  is greater than or equal to half the value of multiple.
+ : MROUND is computed through floor function.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052091851033.aspx
+ : @param $number_at the value to round, castable to numeric type
+ : @param $multiple_at is the multiple to which you want to round number.
+ : @return rounded number up to the desired multiple
+ : @error XQP0021(errValue) if parameters cannot be casted to numeric type
 :)
 declare function excel:mround($number_at as xs:anyAtomicType, $multiple_at as xs:anyAtomicType) as xs:anyAtomicType
 {
@@ -718,11 +722,11 @@ declare function excel:mround($number_at as xs:anyAtomicType, $multiple_at as xs
 };
 
 (:~
-  Converts degrees to radians.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092281033.aspx
-  @degree the value in degrees
-  @return the value in radians
+ : Converts degrees to radians.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052092281033.aspx
+ : @degree the value in degrees
+ : @return the value in radians
 :)
 declare function excel:radians($degree as xs:integer) as xs:decimal
 {
@@ -730,16 +734,16 @@ declare function excel:radians($degree as xs:integer) as xs:decimal
 };
 
 (:~
-  Converts an arabic numeral to roman, as text.
-  Only the clasic format is supported (out of all formats Excel requires).
-  M is the largest digit, it represents 1000.
-  Numbers bigger than 2000 will be represented by a sequence of "M".
-  D = 500, C = 100, L = 50, X = 10, V = 5, I = 1.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092381033.aspx
-  @param $number the positive integer
-  @return the roman string representation
-  @error XQP0021(errNum) if the input integer is negative 
+ : Converts an arabic numeral to roman, as text.
+ : Only the clasic format is supported (out of all formats Excel requires).
+ : M is the largest digit, it represents 1000.
+ : Numbers bigger than 2000 will be represented by a sequence of "M".
+ : D = 500, C = 100, L = 50, X = 10, V = 5, I = 1.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052092381033.aspx
+ : @param $number the positive integer
+ : @return the roman string representation
+ : @error XQP0021(errNum) if the input integer is negative 
 :)
 declare function excel:roman($number as xs:integer) as xs:string
 {

@@ -27,17 +27,20 @@
  :)
 module namespace  excel = "http://www.zorba-xquery.com/modules/excel/math-sumproduct";
 
+(:~
+ : Import excel-math module functions.
+:)
 import module namespace excel-math = "http://www.zorba-xquery.com/modules/excel/math";
 
 
 (:~
-  Sums the values in the sequence.
-  The sequence can be of any length.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequence of numbers or arguments castable to numeric
-  @return the sum
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+ : Sums the values in the sequence.
+ : The sequence can be of any length.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+ : @param $array1 the sequence of numbers or arguments castable to numeric
+ : @return the sum
+ : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
 declare function excel:sumproduct( $array1 as xs:anyAtomicType*) as xs:anyAtomicType
  {
@@ -45,14 +48,14 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*) as xs:anyAtomic
  };
 
 (:~
-  Multiplies the elements on the same position in each sequence
-  and sums up the results.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequences of numbers or arguments castable to numeric
-  @param $array2 the sequences of numbers or arguments castable to numeric
-  @return the sum of products
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+ : Multiplies the elements on the same position in each sequence
+ : and sums up the results.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+ : @param $array1 the sequences of numbers or arguments castable to numeric
+ : @param $array2 the sequences of numbers or arguments castable to numeric
+ : @return the sum of products
+ : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
  declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*  ) as xs:anyAtomicType
@@ -68,15 +71,15 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*) as xs:anyAtomic
  };
  
  (:~
-  Multiplies the elements on the same position in each sequence
-  and sums up the results.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequences of numbers or arguments castable to numeric
-  @param $array2 the sequences of numbers or arguments castable to numeric
-  @param $array3 the sequences of numbers or arguments castable to numeric
-  @return the sum of products
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+  : Multiplies the elements on the same position in each sequence
+  : and sums up the results.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+  : @param $array1 the sequences of numbers or arguments castable to numeric
+  : @param $array2 the sequences of numbers or arguments castable to numeric
+  : @param $array3 the sequences of numbers or arguments castable to numeric
+  : @return the sum of products
+  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
 declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*,
@@ -97,16 +100,16 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
  };
  
  (:~
-  Multiplies the elements on the same position in each sequence
-  and sums up the results.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequences of numbers or arguments castable to numeric
-  @param $array2 the sequences of numbers or arguments castable to numeric
-  @param $array3 the sequences of numbers or arguments castable to numeric
-  @param $array4 the sequences of numbers or arguments castable to numeric
-  @return the sum of products
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+  : Multiplies the elements on the same position in each sequence
+  : and sums up the results.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+  : @param $array1 the sequences of numbers or arguments castable to numeric
+  : @param $array2 the sequences of numbers or arguments castable to numeric
+  : @param $array3 the sequences of numbers or arguments castable to numeric
+  : @param $array4 the sequences of numbers or arguments castable to numeric
+  : @return the sum of products
+  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
  declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*,
@@ -131,17 +134,17 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
  };
  
  (:~
-  Multiplies the elements on the same position in each sequence
-  and sums up the results.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequences of numbers or arguments castable to numeric
-  @param $array2 the sequences of numbers or arguments castable to numeric
-  @param $array3 the sequences of numbers or arguments castable to numeric
-  @param $array4 the sequences of numbers or arguments castable to numeric
-  @param $array5 the sequences of numbers or arguments castable to numeric
-  @return the sum of products
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+  : Multiplies the elements on the same position in each sequence
+  : and sums up the results.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+  : @param $array1 the sequences of numbers or arguments castable to numeric
+  : @param $array2 the sequences of numbers or arguments castable to numeric
+  : @param $array3 the sequences of numbers or arguments castable to numeric
+  : @param $array4 the sequences of numbers or arguments castable to numeric
+  : @param $array5 the sequences of numbers or arguments castable to numeric
+  : @return the sum of products
+  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
  declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*,
@@ -170,18 +173,18 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
  };
 
  (:~
-  Multiplies the elements on the same position in each sequence
-  and sums up the results.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequences of numbers or arguments castable to numeric
-  @param $array2 the sequences of numbers or arguments castable to numeric
-  @param $array3 the sequences of numbers or arguments castable to numeric
-  @param $array4 the sequences of numbers or arguments castable to numeric
-  @param $array5 the sequences of numbers or arguments castable to numeric
-  @param $array6 the sequences of numbers or arguments castable to numeric
-  @return the sum of products
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+  : Multiplies the elements on the same position in each sequence
+  : and sums up the results.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+  : @param $array1 the sequences of numbers or arguments castable to numeric
+  : @param $array2 the sequences of numbers or arguments castable to numeric
+  : @param $array3 the sequences of numbers or arguments castable to numeric
+  : @param $array4 the sequences of numbers or arguments castable to numeric
+  : @param $array5 the sequences of numbers or arguments castable to numeric
+  : @param $array6 the sequences of numbers or arguments castable to numeric
+  : @return the sum of products
+  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
  declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*,
@@ -214,19 +217,19 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
  };
 
  (:~
-  Multiplies the elements on the same position in each sequence
-  and sums up the results.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequences of numbers or arguments castable to numeric
-  @param $array2 the sequences of numbers or arguments castable to numeric
-  @param $array3 the sequences of numbers or arguments castable to numeric
-  @param $array4 the sequences of numbers or arguments castable to numeric
-  @param $array5 the sequences of numbers or arguments castable to numeric
-  @param $array6 the sequences of numbers or arguments castable to numeric
-  @param $array7 the sequences of numbers or arguments castable to numeric
-  @return the sum of products
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+  : Multiplies the elements on the same position in each sequence
+  : and sums up the results.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+  : @param $array1 the sequences of numbers or arguments castable to numeric
+  : @param $array2 the sequences of numbers or arguments castable to numeric
+  : @param $array3 the sequences of numbers or arguments castable to numeric
+  : @param $array4 the sequences of numbers or arguments castable to numeric
+  : @param $array5 the sequences of numbers or arguments castable to numeric
+  : @param $array6 the sequences of numbers or arguments castable to numeric
+  : @param $array7 the sequences of numbers or arguments castable to numeric
+  : @return the sum of products
+  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
  declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*,
@@ -263,20 +266,20 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
  };
 
  (:~
-  Multiplies the elements on the same position in each sequence
-  and sums up the results.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequences of numbers or arguments castable to numeric
-  @param $array2 the sequences of numbers or arguments castable to numeric
-  @param $array3 the sequences of numbers or arguments castable to numeric
-  @param $array4 the sequences of numbers or arguments castable to numeric
-  @param $array5 the sequences of numbers or arguments castable to numeric
-  @param $array6 the sequences of numbers or arguments castable to numeric
-  @param $array7 the sequences of numbers or arguments castable to numeric
-  @param $array8 the sequences of numbers or arguments castable to numeric
-  @return the sum of products
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+  : Multiplies the elements on the same position in each sequence
+  : and sums up the results.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+  : @param $array1 the sequences of numbers or arguments castable to numeric
+  : @param $array2 the sequences of numbers or arguments castable to numeric
+  : @param $array3 the sequences of numbers or arguments castable to numeric
+  : @param $array4 the sequences of numbers or arguments castable to numeric
+  : @param $array5 the sequences of numbers or arguments castable to numeric
+  : @param $array6 the sequences of numbers or arguments castable to numeric
+  : @param $array7 the sequences of numbers or arguments castable to numeric
+  : @param $array8 the sequences of numbers or arguments castable to numeric
+  : @return the sum of products
+  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
  declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*,
@@ -317,21 +320,21 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
  };
 
  (:~
-  Multiplies the elements on the same position in each sequence
-  and sums up the results.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequences of numbers or arguments castable to numeric
-  @param $array2 the sequences of numbers or arguments castable to numeric
-  @param $array3 the sequences of numbers or arguments castable to numeric
-  @param $array4 the sequences of numbers or arguments castable to numeric
-  @param $array5 the sequences of numbers or arguments castable to numeric
-  @param $array6 the sequences of numbers or arguments castable to numeric
-  @param $array7 the sequences of numbers or arguments castable to numeric
-  @param $array8 the sequences of numbers or arguments castable to numeric
-  @param $array9 the sequences of numbers or arguments castable to numeric
-  @return the sum of products
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+  : Multiplies the elements on the same position in each sequence
+  : and sums up the results.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+  : @param $array1 the sequences of numbers or arguments castable to numeric
+  : @param $array2 the sequences of numbers or arguments castable to numeric
+  : @param $array3 the sequences of numbers or arguments castable to numeric
+  : @param $array4 the sequences of numbers or arguments castable to numeric
+  : @param $array5 the sequences of numbers or arguments castable to numeric
+  : @param $array6 the sequences of numbers or arguments castable to numeric
+  : @param $array7 the sequences of numbers or arguments castable to numeric
+  : @param $array8 the sequences of numbers or arguments castable to numeric
+  : @param $array9 the sequences of numbers or arguments castable to numeric
+  : @return the sum of products
+  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
  declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*,
@@ -376,22 +379,22 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
  };
 
  (:~
-  Multiplies the elements on the same position in each sequence
-  and sums up the results.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequences of numbers or arguments castable to numeric
-  @param $array2 the sequences of numbers or arguments castable to numeric
-  @param $array3 the sequences of numbers or arguments castable to numeric
-  @param $array4 the sequences of numbers or arguments castable to numeric
-  @param $array5 the sequences of numbers or arguments castable to numeric
-  @param $array6 the sequences of numbers or arguments castable to numeric
-  @param $array7 the sequences of numbers or arguments castable to numeric
-  @param $array8 the sequences of numbers or arguments castable to numeric
-  @param $array9 the sequences of numbers or arguments castable to numeric
-  @param $array10 the sequences of numbers or arguments castable to numeric
-  @return the sum of products
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+  : Multiplies the elements on the same position in each sequence
+  : and sums up the results.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+  : @param $array1 the sequences of numbers or arguments castable to numeric
+  : @param $array2 the sequences of numbers or arguments castable to numeric
+  : @param $array3 the sequences of numbers or arguments castable to numeric
+  : @param $array4 the sequences of numbers or arguments castable to numeric
+  : @param $array5 the sequences of numbers or arguments castable to numeric
+  : @param $array6 the sequences of numbers or arguments castable to numeric
+  : @param $array7 the sequences of numbers or arguments castable to numeric
+  : @param $array8 the sequences of numbers or arguments castable to numeric
+  : @param $array9 the sequences of numbers or arguments castable to numeric
+  : @param $array10 the sequences of numbers or arguments castable to numeric
+  : @return the sum of products
+  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
  declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*,
@@ -440,23 +443,23 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
  };
 
  (:~
-  Multiplies the elements on the same position in each sequence
-  and sums up the results.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequences of numbers or arguments castable to numeric
-  @param $array2 the sequences of numbers or arguments castable to numeric
-  @param $array3 the sequences of numbers or arguments castable to numeric
-  @param $array4 the sequences of numbers or arguments castable to numeric
-  @param $array5 the sequences of numbers or arguments castable to numeric
-  @param $array6 the sequences of numbers or arguments castable to numeric
-  @param $array7 the sequences of numbers or arguments castable to numeric
-  @param $array8 the sequences of numbers or arguments castable to numeric
-  @param $array9 the sequences of numbers or arguments castable to numeric
-  @param $array10 the sequences of numbers or arguments castable to numeric
-  @param $array11 the sequences of numbers or arguments castable to numeric
-  @return the sum of products
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+  : Multiplies the elements on the same position in each sequence
+  : and sums up the results.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+  : @param $array1 the sequences of numbers or arguments castable to numeric
+  : @param $array2 the sequences of numbers or arguments castable to numeric
+  : @param $array3 the sequences of numbers or arguments castable to numeric
+  : @param $array4 the sequences of numbers or arguments castable to numeric
+  : @param $array5 the sequences of numbers or arguments castable to numeric
+  : @param $array6 the sequences of numbers or arguments castable to numeric
+  : @param $array7 the sequences of numbers or arguments castable to numeric
+  : @param $array8 the sequences of numbers or arguments castable to numeric
+  : @param $array9 the sequences of numbers or arguments castable to numeric
+  : @param $array10 the sequences of numbers or arguments castable to numeric
+  : @param $array11 the sequences of numbers or arguments castable to numeric
+  : @return the sum of products
+  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
  declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*,
@@ -509,24 +512,24 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
  };
  
  (:~
-  Multiplies the elements on the same position in each sequence
-  and sums up the results.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequences of numbers or arguments castable to numeric
-  @param $array2 the sequences of numbers or arguments castable to numeric
-  @param $array3 the sequences of numbers or arguments castable to numeric
-  @param $array4 the sequences of numbers or arguments castable to numeric
-  @param $array5 the sequences of numbers or arguments castable to numeric
-  @param $array6 the sequences of numbers or arguments castable to numeric
-  @param $array7 the sequences of numbers or arguments castable to numeric
-  @param $array8 the sequences of numbers or arguments castable to numeric
-  @param $array9 the sequences of numbers or arguments castable to numeric
-  @param $array10 the sequences of numbers or arguments castable to numeric
-  @param $array11 the sequences of numbers or arguments castable to numeric
-  @param $array12 the sequences of numbers or arguments castable to numeric
-  @return the sum of products
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+  : Multiplies the elements on the same position in each sequence
+  : and sums up the results.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+  : @param $array1 the sequences of numbers or arguments castable to numeric
+  : @param $array2 the sequences of numbers or arguments castable to numeric
+  : @param $array3 the sequences of numbers or arguments castable to numeric
+  : @param $array4 the sequences of numbers or arguments castable to numeric
+  : @param $array5 the sequences of numbers or arguments castable to numeric
+  : @param $array6 the sequences of numbers or arguments castable to numeric
+  : @param $array7 the sequences of numbers or arguments castable to numeric
+  : @param $array8 the sequences of numbers or arguments castable to numeric
+  : @param $array9 the sequences of numbers or arguments castable to numeric
+  : @param $array10 the sequences of numbers or arguments castable to numeric
+  : @param $array11 the sequences of numbers or arguments castable to numeric
+  : @param $array12 the sequences of numbers or arguments castable to numeric
+  : @return the sum of products
+  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
  declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*,
@@ -584,25 +587,25 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
  
 
  (:~
-  Multiplies the elements on the same position in each sequence
-  and sums up the results.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequences of numbers or arguments castable to numeric
-  @param $array2 the sequences of numbers or arguments castable to numeric
-  @param $array3 the sequences of numbers or arguments castable to numeric
-  @param $array4 the sequences of numbers or arguments castable to numeric
-  @param $array5 the sequences of numbers or arguments castable to numeric
-  @param $array6 the sequences of numbers or arguments castable to numeric
-  @param $array7 the sequences of numbers or arguments castable to numeric
-  @param $array8 the sequences of numbers or arguments castable to numeric
-  @param $array9 the sequences of numbers or arguments castable to numeric
-  @param $array10 the sequences of numbers or arguments castable to numeric
-  @param $array11 the sequences of numbers or arguments castable to numeric
-  @param $array12 the sequences of numbers or arguments castable to numeric
-  @param $array13 the sequences of numbers or arguments castable to numeric
-  @return the sum of products
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+  : Multiplies the elements on the same position in each sequence
+  : and sums up the results.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+  : @param $array1 the sequences of numbers or arguments castable to numeric
+  : @param $array2 the sequences of numbers or arguments castable to numeric
+  : @param $array3 the sequences of numbers or arguments castable to numeric
+  : @param $array4 the sequences of numbers or arguments castable to numeric
+  : @param $array5 the sequences of numbers or arguments castable to numeric
+  : @param $array6 the sequences of numbers or arguments castable to numeric
+  : @param $array7 the sequences of numbers or arguments castable to numeric
+  : @param $array8 the sequences of numbers or arguments castable to numeric
+  : @param $array9 the sequences of numbers or arguments castable to numeric
+  : @param $array10 the sequences of numbers or arguments castable to numeric
+  : @param $array11 the sequences of numbers or arguments castable to numeric
+  : @param $array12 the sequences of numbers or arguments castable to numeric
+  : @param $array13 the sequences of numbers or arguments castable to numeric
+  : @return the sum of products
+  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
  declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*,
@@ -663,26 +666,26 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
  };
 
  (:~
-  Multiplies the elements on the same position in each sequence
-  and sums up the results.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequences of numbers or arguments castable to numeric
-  @param $array2 the sequences of numbers or arguments castable to numeric
-  @param $array3 the sequences of numbers or arguments castable to numeric
-  @param $array4 the sequences of numbers or arguments castable to numeric
-  @param $array5 the sequences of numbers or arguments castable to numeric
-  @param $array6 the sequences of numbers or arguments castable to numeric
-  @param $array7 the sequences of numbers or arguments castable to numeric
-  @param $array8 the sequences of numbers or arguments castable to numeric
-  @param $array9 the sequences of numbers or arguments castable to numeric
-  @param $array10 the sequences of numbers or arguments castable to numeric
-  @param $array11 the sequences of numbers or arguments castable to numeric
-  @param $array12 the sequences of numbers or arguments castable to numeric
-  @param $array13 the sequences of numbers or arguments castable to numeric
-  @param $array14 the sequences of numbers or arguments castable to numeric
-  @return the sum of products
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+  : Multiplies the elements on the same position in each sequence
+  : and sums up the results.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+  : @param $array1 the sequences of numbers or arguments castable to numeric
+  : @param $array2 the sequences of numbers or arguments castable to numeric
+  : @param $array3 the sequences of numbers or arguments castable to numeric
+  : @param $array4 the sequences of numbers or arguments castable to numeric
+  : @param $array5 the sequences of numbers or arguments castable to numeric
+  : @param $array6 the sequences of numbers or arguments castable to numeric
+  : @param $array7 the sequences of numbers or arguments castable to numeric
+  : @param $array8 the sequences of numbers or arguments castable to numeric
+  : @param $array9 the sequences of numbers or arguments castable to numeric
+  : @param $array10 the sequences of numbers or arguments castable to numeric
+  : @param $array11 the sequences of numbers or arguments castable to numeric
+  : @param $array12 the sequences of numbers or arguments castable to numeric
+  : @param $array13 the sequences of numbers or arguments castable to numeric
+  : @param $array14 the sequences of numbers or arguments castable to numeric
+  : @return the sum of products
+  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
  declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*,
@@ -747,27 +750,27 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
  };
 
  (:~
-  Multiplies the elements on the same position in each sequence
-  and sums up the results.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequences of numbers or arguments castable to numeric
-  @param $array2 the sequences of numbers or arguments castable to numeric
-  @param $array3 the sequences of numbers or arguments castable to numeric
-  @param $array4 the sequences of numbers or arguments castable to numeric
-  @param $array5 the sequences of numbers or arguments castable to numeric
-  @param $array6 the sequences of numbers or arguments castable to numeric
-  @param $array7 the sequences of numbers or arguments castable to numeric
-  @param $array8 the sequences of numbers or arguments castable to numeric
-  @param $array9 the sequences of numbers or arguments castable to numeric
-  @param $array10 the sequences of numbers or arguments castable to numeric
-  @param $array11 the sequences of numbers or arguments castable to numeric
-  @param $array12 the sequences of numbers or arguments castable to numeric
-  @param $array13 the sequences of numbers or arguments castable to numeric
-  @param $array14 the sequences of numbers or arguments castable to numeric
-  @param $array15 the sequences of numbers or arguments castable to numeric
-  @return the sum of products
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+  : Multiplies the elements on the same position in each sequence
+  : and sums up the results.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+  : @param $array1 the sequences of numbers or arguments castable to numeric
+  : @param $array2 the sequences of numbers or arguments castable to numeric
+  : @param $array3 the sequences of numbers or arguments castable to numeric
+  : @param $array4 the sequences of numbers or arguments castable to numeric
+  : @param $array5 the sequences of numbers or arguments castable to numeric
+  : @param $array6 the sequences of numbers or arguments castable to numeric
+  : @param $array7 the sequences of numbers or arguments castable to numeric
+  : @param $array8 the sequences of numbers or arguments castable to numeric
+  : @param $array9 the sequences of numbers or arguments castable to numeric
+  : @param $array10 the sequences of numbers or arguments castable to numeric
+  : @param $array11 the sequences of numbers or arguments castable to numeric
+  : @param $array12 the sequences of numbers or arguments castable to numeric
+  : @param $array13 the sequences of numbers or arguments castable to numeric
+  : @param $array14 the sequences of numbers or arguments castable to numeric
+  : @param $array15 the sequences of numbers or arguments castable to numeric
+  : @return the sum of products
+  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
  declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*,
@@ -836,28 +839,28 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
  };
  
  (:~
-  Multiplies the elements on the same position in each sequence
-  and sums up the results.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequences of numbers or arguments castable to numeric
-  @param $array2 the sequences of numbers or arguments castable to numeric
-  @param $array3 the sequences of numbers or arguments castable to numeric
-  @param $array4 the sequences of numbers or arguments castable to numeric
-  @param $array5 the sequences of numbers or arguments castable to numeric
-  @param $array6 the sequences of numbers or arguments castable to numeric
-  @param $array7 the sequences of numbers or arguments castable to numeric
-  @param $array8 the sequences of numbers or arguments castable to numeric
-  @param $array9 the sequences of numbers or arguments castable to numeric
-  @param $array10 the sequences of numbers or arguments castable to numeric
-  @param $array11 the sequences of numbers or arguments castable to numeric
-  @param $array12 the sequences of numbers or arguments castable to numeric
-  @param $array13 the sequences of numbers or arguments castable to numeric
-  @param $array14 the sequences of numbers or arguments castable to numeric
-  @param $array15 the sequences of numbers or arguments castable to numeric
-  @param $array16 the sequences of numbers or arguments castable to numeric
-  @return the sum of products
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+  : Multiplies the elements on the same position in each sequence
+  : and sums up the results.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+  : @param $array1 the sequences of numbers or arguments castable to numeric
+  : @param $array2 the sequences of numbers or arguments castable to numeric
+  : @param $array3 the sequences of numbers or arguments castable to numeric
+  : @param $array4 the sequences of numbers or arguments castable to numeric
+  : @param $array5 the sequences of numbers or arguments castable to numeric
+  : @param $array6 the sequences of numbers or arguments castable to numeric
+  : @param $array7 the sequences of numbers or arguments castable to numeric
+  : @param $array8 the sequences of numbers or arguments castable to numeric
+  : @param $array9 the sequences of numbers or arguments castable to numeric
+  : @param $array10 the sequences of numbers or arguments castable to numeric
+  : @param $array11 the sequences of numbers or arguments castable to numeric
+  : @param $array12 the sequences of numbers or arguments castable to numeric
+  : @param $array13 the sequences of numbers or arguments castable to numeric
+  : @param $array14 the sequences of numbers or arguments castable to numeric
+  : @param $array15 the sequences of numbers or arguments castable to numeric
+  : @param $array16 the sequences of numbers or arguments castable to numeric
+  : @return the sum of products
+  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
  declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*,
@@ -930,29 +933,29 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
  };
 
  (:~
-  Multiplies the elements on the same position in each sequence
-  and sums up the results.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequences of numbers or arguments castable to numeric
-  @param $array2 the sequences of numbers or arguments castable to numeric
-  @param $array3 the sequences of numbers or arguments castable to numeric
-  @param $array4 the sequences of numbers or arguments castable to numeric
-  @param $array5 the sequences of numbers or arguments castable to numeric
-  @param $array6 the sequences of numbers or arguments castable to numeric
-  @param $array7 the sequences of numbers or arguments castable to numeric
-  @param $array8 the sequences of numbers or arguments castable to numeric
-  @param $array9 the sequences of numbers or arguments castable to numeric
-  @param $array10 the sequences of numbers or arguments castable to numeric
-  @param $array11 the sequences of numbers or arguments castable to numeric
-  @param $array12 the sequences of numbers or arguments castable to numeric
-  @param $array13 the sequences of numbers or arguments castable to numeric
-  @param $array14 the sequences of numbers or arguments castable to numeric
-  @param $array15 the sequences of numbers or arguments castable to numeric
-  @param $array16 the sequences of numbers or arguments castable to numeric
-  @param $array17 the sequences of numbers or arguments castable to numeric
-  @return the sum of products
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+  : Multiplies the elements on the same position in each sequence
+  : and sums up the results.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+  : @param $array1 the sequences of numbers or arguments castable to numeric
+  : @param $array2 the sequences of numbers or arguments castable to numeric
+  : @param $array3 the sequences of numbers or arguments castable to numeric
+  : @param $array4 the sequences of numbers or arguments castable to numeric
+  : @param $array5 the sequences of numbers or arguments castable to numeric
+  : @param $array6 the sequences of numbers or arguments castable to numeric
+  : @param $array7 the sequences of numbers or arguments castable to numeric
+  : @param $array8 the sequences of numbers or arguments castable to numeric
+  : @param $array9 the sequences of numbers or arguments castable to numeric
+  : @param $array10 the sequences of numbers or arguments castable to numeric
+  : @param $array11 the sequences of numbers or arguments castable to numeric
+  : @param $array12 the sequences of numbers or arguments castable to numeric
+  : @param $array13 the sequences of numbers or arguments castable to numeric
+  : @param $array14 the sequences of numbers or arguments castable to numeric
+  : @param $array15 the sequences of numbers or arguments castable to numeric
+  : @param $array16 the sequences of numbers or arguments castable to numeric
+  : @param $array17 the sequences of numbers or arguments castable to numeric
+  : @return the sum of products
+  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
  declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*,
@@ -1029,30 +1032,30 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
  };
 
  (:~
-  Multiplies the elements on the same position in each sequence
-  and sums up the results.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequences of numbers or arguments castable to numeric
-  @param $array2 the sequences of numbers or arguments castable to numeric
-  @param $array3 the sequences of numbers or arguments castable to numeric
-  @param $array4 the sequences of numbers or arguments castable to numeric
-  @param $array5 the sequences of numbers or arguments castable to numeric
-  @param $array6 the sequences of numbers or arguments castable to numeric
-  @param $array7 the sequences of numbers or arguments castable to numeric
-  @param $array8 the sequences of numbers or arguments castable to numeric
-  @param $array9 the sequences of numbers or arguments castable to numeric
-  @param $array10 the sequences of numbers or arguments castable to numeric
-  @param $array11 the sequences of numbers or arguments castable to numeric
-  @param $array12 the sequences of numbers or arguments castable to numeric
-  @param $array13 the sequences of numbers or arguments castable to numeric
-  @param $array14 the sequences of numbers or arguments castable to numeric
-  @param $array15 the sequences of numbers or arguments castable to numeric
-  @param $array16 the sequences of numbers or arguments castable to numeric
-  @param $array17 the sequences of numbers or arguments castable to numeric
-  @param $array18 the sequences of numbers or arguments castable to numeric
-  @return the sum of products
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+  : Multiplies the elements on the same position in each sequence
+  : and sums up the results.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+  : @param $array1 the sequences of numbers or arguments castable to numeric
+  : @param $array2 the sequences of numbers or arguments castable to numeric
+  : @param $array3 the sequences of numbers or arguments castable to numeric
+  : @param $array4 the sequences of numbers or arguments castable to numeric
+  : @param $array5 the sequences of numbers or arguments castable to numeric
+  : @param $array6 the sequences of numbers or arguments castable to numeric
+  : @param $array7 the sequences of numbers or arguments castable to numeric
+  : @param $array8 the sequences of numbers or arguments castable to numeric
+  : @param $array9 the sequences of numbers or arguments castable to numeric
+  : @param $array10 the sequences of numbers or arguments castable to numeric
+  : @param $array11 the sequences of numbers or arguments castable to numeric
+  : @param $array12 the sequences of numbers or arguments castable to numeric
+  : @param $array13 the sequences of numbers or arguments castable to numeric
+  : @param $array14 the sequences of numbers or arguments castable to numeric
+  : @param $array15 the sequences of numbers or arguments castable to numeric
+  : @param $array16 the sequences of numbers or arguments castable to numeric
+  : @param $array17 the sequences of numbers or arguments castable to numeric
+  : @param $array18 the sequences of numbers or arguments castable to numeric
+  : @return the sum of products
+  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
  declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*,
@@ -1133,31 +1136,31 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
  };
 
  (:~
-  Multiplies the elements on the same position in each sequence
-  and sums up the results.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequences of numbers or arguments castable to numeric
-  @param $array2 the sequences of numbers or arguments castable to numeric
-  @param $array3 the sequences of numbers or arguments castable to numeric
-  @param $array4 the sequences of numbers or arguments castable to numeric
-  @param $array5 the sequences of numbers or arguments castable to numeric
-  @param $array6 the sequences of numbers or arguments castable to numeric
-  @param $array7 the sequences of numbers or arguments castable to numeric
-  @param $array8 the sequences of numbers or arguments castable to numeric
-  @param $array9 the sequences of numbers or arguments castable to numeric
-  @param $array10 the sequences of numbers or arguments castable to numeric
-  @param $array11 the sequences of numbers or arguments castable to numeric
-  @param $array12 the sequences of numbers or arguments castable to numeric
-  @param $array13 the sequences of numbers or arguments castable to numeric
-  @param $array14 the sequences of numbers or arguments castable to numeric
-  @param $array15 the sequences of numbers or arguments castable to numeric
-  @param $array16 the sequences of numbers or arguments castable to numeric
-  @param $array17 the sequences of numbers or arguments castable to numeric
-  @param $array18 the sequences of numbers or arguments castable to numeric
-  @param $array19 the sequences of numbers or arguments castable to numeric
-  @return the sum of products
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+  : Multiplies the elements on the same position in each sequence
+  : and sums up the results.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+  : @param $array1 the sequences of numbers or arguments castable to numeric
+  : @param $array2 the sequences of numbers or arguments castable to numeric
+  : @param $array3 the sequences of numbers or arguments castable to numeric
+  : @param $array4 the sequences of numbers or arguments castable to numeric
+  : @param $array5 the sequences of numbers or arguments castable to numeric
+  : @param $array6 the sequences of numbers or arguments castable to numeric
+  : @param $array7 the sequences of numbers or arguments castable to numeric
+  : @param $array8 the sequences of numbers or arguments castable to numeric
+  : @param $array9 the sequences of numbers or arguments castable to numeric
+  : @param $array10 the sequences of numbers or arguments castable to numeric
+  : @param $array11 the sequences of numbers or arguments castable to numeric
+  : @param $array12 the sequences of numbers or arguments castable to numeric
+  : @param $array13 the sequences of numbers or arguments castable to numeric
+  : @param $array14 the sequences of numbers or arguments castable to numeric
+  : @param $array15 the sequences of numbers or arguments castable to numeric
+  : @param $array16 the sequences of numbers or arguments castable to numeric
+  : @param $array17 the sequences of numbers or arguments castable to numeric
+  : @param $array18 the sequences of numbers or arguments castable to numeric
+  : @param $array19 the sequences of numbers or arguments castable to numeric
+  : @return the sum of products
+  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
  declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*,
@@ -1242,32 +1245,32 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
  };
   
  (:~
-  Multiplies the elements on the same position in each sequence
-  and sums up the results.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequences of numbers or arguments castable to numeric
-  @param $array2 the sequences of numbers or arguments castable to numeric
-  @param $array3 the sequences of numbers or arguments castable to numeric
-  @param $array4 the sequences of numbers or arguments castable to numeric
-  @param $array5 the sequences of numbers or arguments castable to numeric
-  @param $array6 the sequences of numbers or arguments castable to numeric
-  @param $array7 the sequences of numbers or arguments castable to numeric
-  @param $array8 the sequences of numbers or arguments castable to numeric
-  @param $array9 the sequences of numbers or arguments castable to numeric
-  @param $array10 the sequences of numbers or arguments castable to numeric
-  @param $array11 the sequences of numbers or arguments castable to numeric
-  @param $array12 the sequences of numbers or arguments castable to numeric
-  @param $array13 the sequences of numbers or arguments castable to numeric
-  @param $array14 the sequences of numbers or arguments castable to numeric
-  @param $array15 the sequences of numbers or arguments castable to numeric
-  @param $array16 the sequences of numbers or arguments castable to numeric
-  @param $array17 the sequences of numbers or arguments castable to numeric
-  @param $array18 the sequences of numbers or arguments castable to numeric
-  @param $array19 the sequences of numbers or arguments castable to numeric
-  @param $array20 the sequences of numbers or arguments castable to numeric
-  @return the sum of products
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+  : Multiplies the elements on the same position in each sequence
+  : and sums up the results.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+  : @param $array1 the sequences of numbers or arguments castable to numeric
+  : @param $array2 the sequences of numbers or arguments castable to numeric
+  : @param $array3 the sequences of numbers or arguments castable to numeric
+  : @param $array4 the sequences of numbers or arguments castable to numeric
+  : @param $array5 the sequences of numbers or arguments castable to numeric
+  : @param $array6 the sequences of numbers or arguments castable to numeric
+  : @param $array7 the sequences of numbers or arguments castable to numeric
+  : @param $array8 the sequences of numbers or arguments castable to numeric
+  : @param $array9 the sequences of numbers or arguments castable to numeric
+  : @param $array10 the sequences of numbers or arguments castable to numeric
+  : @param $array11 the sequences of numbers or arguments castable to numeric
+  : @param $array12 the sequences of numbers or arguments castable to numeric
+  : @param $array13 the sequences of numbers or arguments castable to numeric
+  : @param $array14 the sequences of numbers or arguments castable to numeric
+  : @param $array15 the sequences of numbers or arguments castable to numeric
+  : @param $array16 the sequences of numbers or arguments castable to numeric
+  : @param $array17 the sequences of numbers or arguments castable to numeric
+  : @param $array18 the sequences of numbers or arguments castable to numeric
+  : @param $array19 the sequences of numbers or arguments castable to numeric
+  : @param $array20 the sequences of numbers or arguments castable to numeric
+  : @return the sum of products
+  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
  declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*,
@@ -1356,33 +1359,33 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
  };
 
  (:~
-  Multiplies the elements on the same position in each sequence
-  and sums up the results.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequences of numbers or arguments castable to numeric
-  @param $array2 the sequences of numbers or arguments castable to numeric
-  @param $array3 the sequences of numbers or arguments castable to numeric
-  @param $array4 the sequences of numbers or arguments castable to numeric
-  @param $array5 the sequences of numbers or arguments castable to numeric
-  @param $array6 the sequences of numbers or arguments castable to numeric
-  @param $array7 the sequences of numbers or arguments castable to numeric
-  @param $array8 the sequences of numbers or arguments castable to numeric
-  @param $array9 the sequences of numbers or arguments castable to numeric
-  @param $array10 the sequences of numbers or arguments castable to numeric
-  @param $array11 the sequences of numbers or arguments castable to numeric
-  @param $array12 the sequences of numbers or arguments castable to numeric
-  @param $array13 the sequences of numbers or arguments castable to numeric
-  @param $array14 the sequences of numbers or arguments castable to numeric
-  @param $array15 the sequences of numbers or arguments castable to numeric
-  @param $array16 the sequences of numbers or arguments castable to numeric
-  @param $array17 the sequences of numbers or arguments castable to numeric
-  @param $array18 the sequences of numbers or arguments castable to numeric
-  @param $array19 the sequences of numbers or arguments castable to numeric
-  @param $array20 the sequences of numbers or arguments castable to numeric
-  @param $array21 the sequences of numbers or arguments castable to numeric
-  @return the sum of products
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+  : Multiplies the elements on the same position in each sequence
+  : and sums up the results.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+  : @param $array1 the sequences of numbers or arguments castable to numeric
+  : @param $array2 the sequences of numbers or arguments castable to numeric
+  : @param $array3 the sequences of numbers or arguments castable to numeric
+  : @param $array4 the sequences of numbers or arguments castable to numeric
+  : @param $array5 the sequences of numbers or arguments castable to numeric
+  : @param $array6 the sequences of numbers or arguments castable to numeric
+  : @param $array7 the sequences of numbers or arguments castable to numeric
+  : @param $array8 the sequences of numbers or arguments castable to numeric
+  : @param $array9 the sequences of numbers or arguments castable to numeric
+  : @param $array10 the sequences of numbers or arguments castable to numeric
+  : @param $array11 the sequences of numbers or arguments castable to numeric
+  : @param $array12 the sequences of numbers or arguments castable to numeric
+  : @param $array13 the sequences of numbers or arguments castable to numeric
+  : @param $array14 the sequences of numbers or arguments castable to numeric
+  : @param $array15 the sequences of numbers or arguments castable to numeric
+  : @param $array16 the sequences of numbers or arguments castable to numeric
+  : @param $array17 the sequences of numbers or arguments castable to numeric
+  : @param $array18 the sequences of numbers or arguments castable to numeric
+  : @param $array19 the sequences of numbers or arguments castable to numeric
+  : @param $array20 the sequences of numbers or arguments castable to numeric
+  : @param $array21 the sequences of numbers or arguments castable to numeric
+  : @return the sum of products
+  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
  declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*,
@@ -1475,34 +1478,34 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
  };
  
  (:~
-  Multiplies the elements on the same position in each sequence
-  and sums up the results.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequences of numbers or arguments castable to numeric
-  @param $array2 the sequences of numbers or arguments castable to numeric
-  @param $array3 the sequences of numbers or arguments castable to numeric
-  @param $array4 the sequences of numbers or arguments castable to numeric
-  @param $array5 the sequences of numbers or arguments castable to numeric
-  @param $array6 the sequences of numbers or arguments castable to numeric
-  @param $array7 the sequences of numbers or arguments castable to numeric
-  @param $array8 the sequences of numbers or arguments castable to numeric
-  @param $array9 the sequences of numbers or arguments castable to numeric
-  @param $array10 the sequences of numbers or arguments castable to numeric
-  @param $array11 the sequences of numbers or arguments castable to numeric
-  @param $array12 the sequences of numbers or arguments castable to numeric
-  @param $array13 the sequences of numbers or arguments castable to numeric
-  @param $array14 the sequences of numbers or arguments castable to numeric
-  @param $array15 the sequences of numbers or arguments castable to numeric
-  @param $array16 the sequences of numbers or arguments castable to numeric
-  @param $array17 the sequences of numbers or arguments castable to numeric
-  @param $array18 the sequences of numbers or arguments castable to numeric
-  @param $array19 the sequences of numbers or arguments castable to numeric
-  @param $array20 the sequences of numbers or arguments castable to numeric
-  @param $array21 the sequences of numbers or arguments castable to numeric
-  @param $array22 the sequences of numbers or arguments castable to numeric
-  @return the sum of products
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+  : Multiplies the elements on the same position in each sequence
+  : and sums up the results.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+  : @param $array1 the sequences of numbers or arguments castable to numeric
+  : @param $array2 the sequences of numbers or arguments castable to numeric
+  : @param $array3 the sequences of numbers or arguments castable to numeric
+  : @param $array4 the sequences of numbers or arguments castable to numeric
+  : @param $array5 the sequences of numbers or arguments castable to numeric
+  : @param $array6 the sequences of numbers or arguments castable to numeric
+  : @param $array7 the sequences of numbers or arguments castable to numeric
+  : @param $array8 the sequences of numbers or arguments castable to numeric
+  : @param $array9 the sequences of numbers or arguments castable to numeric
+  : @param $array10 the sequences of numbers or arguments castable to numeric
+  : @param $array11 the sequences of numbers or arguments castable to numeric
+  : @param $array12 the sequences of numbers or arguments castable to numeric
+  : @param $array13 the sequences of numbers or arguments castable to numeric
+  : @param $array14 the sequences of numbers or arguments castable to numeric
+  : @param $array15 the sequences of numbers or arguments castable to numeric
+  : @param $array16 the sequences of numbers or arguments castable to numeric
+  : @param $array17 the sequences of numbers or arguments castable to numeric
+  : @param $array18 the sequences of numbers or arguments castable to numeric
+  : @param $array19 the sequences of numbers or arguments castable to numeric
+  : @param $array20 the sequences of numbers or arguments castable to numeric
+  : @param $array21 the sequences of numbers or arguments castable to numeric
+  : @param $array22 the sequences of numbers or arguments castable to numeric
+  : @return the sum of products
+  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
  declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*,
@@ -1599,35 +1602,35 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
  };
 
  (:~
-  Multiplies the elements on the same position in each sequence
-  and sums up the results.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequences of numbers or arguments castable to numeric
-  @param $array2 the sequences of numbers or arguments castable to numeric
-  @param $array3 the sequences of numbers or arguments castable to numeric
-  @param $array4 the sequences of numbers or arguments castable to numeric
-  @param $array5 the sequences of numbers or arguments castable to numeric
-  @param $array6 the sequences of numbers or arguments castable to numeric
-  @param $array7 the sequences of numbers or arguments castable to numeric
-  @param $array8 the sequences of numbers or arguments castable to numeric
-  @param $array9 the sequences of numbers or arguments castable to numeric
-  @param $array10 the sequences of numbers or arguments castable to numeric
-  @param $array11 the sequences of numbers or arguments castable to numeric
-  @param $array12 the sequences of numbers or arguments castable to numeric
-  @param $array13 the sequences of numbers or arguments castable to numeric
-  @param $array14 the sequences of numbers or arguments castable to numeric
-  @param $array15 the sequences of numbers or arguments castable to numeric
-  @param $array16 the sequences of numbers or arguments castable to numeric
-  @param $array17 the sequences of numbers or arguments castable to numeric
-  @param $array18 the sequences of numbers or arguments castable to numeric
-  @param $array19 the sequences of numbers or arguments castable to numeric
-  @param $array20 the sequences of numbers or arguments castable to numeric
-  @param $array21 the sequences of numbers or arguments castable to numeric
-  @param $array22 the sequences of numbers or arguments castable to numeric
-  @param $array23 the sequences of numbers or arguments castable to numeric
-  @return the sum of products
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+  : Multiplies the elements on the same position in each sequence
+  : and sums up the results.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+  : @param $array1 the sequences of numbers or arguments castable to numeric
+  : @param $array2 the sequences of numbers or arguments castable to numeric
+  : @param $array3 the sequences of numbers or arguments castable to numeric
+  : @param $array4 the sequences of numbers or arguments castable to numeric
+  : @param $array5 the sequences of numbers or arguments castable to numeric
+  : @param $array6 the sequences of numbers or arguments castable to numeric
+  : @param $array7 the sequences of numbers or arguments castable to numeric
+  : @param $array8 the sequences of numbers or arguments castable to numeric
+  : @param $array9 the sequences of numbers or arguments castable to numeric
+  : @param $array10 the sequences of numbers or arguments castable to numeric
+  : @param $array11 the sequences of numbers or arguments castable to numeric
+  : @param $array12 the sequences of numbers or arguments castable to numeric
+  : @param $array13 the sequences of numbers or arguments castable to numeric
+  : @param $array14 the sequences of numbers or arguments castable to numeric
+  : @param $array15 the sequences of numbers or arguments castable to numeric
+  : @param $array16 the sequences of numbers or arguments castable to numeric
+  : @param $array17 the sequences of numbers or arguments castable to numeric
+  : @param $array18 the sequences of numbers or arguments castable to numeric
+  : @param $array19 the sequences of numbers or arguments castable to numeric
+  : @param $array20 the sequences of numbers or arguments castable to numeric
+  : @param $array21 the sequences of numbers or arguments castable to numeric
+  : @param $array22 the sequences of numbers or arguments castable to numeric
+  : @param $array23 the sequences of numbers or arguments castable to numeric
+  : @return the sum of products
+  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
  declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*,
@@ -1728,36 +1731,36 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
  };
 
  (:~
-  Multiplies the elements on the same position in each sequence
-  and sums up the results.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequences of numbers or arguments castable to numeric
-  @param $array2 the sequences of numbers or arguments castable to numeric
-  @param $array3 the sequences of numbers or arguments castable to numeric
-  @param $array4 the sequences of numbers or arguments castable to numeric
-  @param $array5 the sequences of numbers or arguments castable to numeric
-  @param $array6 the sequences of numbers or arguments castable to numeric
-  @param $array7 the sequences of numbers or arguments castable to numeric
-  @param $array8 the sequences of numbers or arguments castable to numeric
-  @param $array9 the sequences of numbers or arguments castable to numeric
-  @param $array10 the sequences of numbers or arguments castable to numeric
-  @param $array11 the sequences of numbers or arguments castable to numeric
-  @param $array12 the sequences of numbers or arguments castable to numeric
-  @param $array13 the sequences of numbers or arguments castable to numeric
-  @param $array14 the sequences of numbers or arguments castable to numeric
-  @param $array15 the sequences of numbers or arguments castable to numeric
-  @param $array16 the sequences of numbers or arguments castable to numeric
-  @param $array17 the sequences of numbers or arguments castable to numeric
-  @param $array18 the sequences of numbers or arguments castable to numeric
-  @param $array19 the sequences of numbers or arguments castable to numeric
-  @param $array20 the sequences of numbers or arguments castable to numeric
-  @param $array21 the sequences of numbers or arguments castable to numeric
-  @param $array22 the sequences of numbers or arguments castable to numeric
-  @param $array23 the sequences of numbers or arguments castable to numeric
-  @param $array24 the sequences of numbers or arguments castable to numeric
-  @return the sum of products
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+  : Multiplies the elements on the same position in each sequence
+  : and sums up the results.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+  : @param $array1 the sequences of numbers or arguments castable to numeric
+  : @param $array2 the sequences of numbers or arguments castable to numeric
+  : @param $array3 the sequences of numbers or arguments castable to numeric
+  : @param $array4 the sequences of numbers or arguments castable to numeric
+  : @param $array5 the sequences of numbers or arguments castable to numeric
+  : @param $array6 the sequences of numbers or arguments castable to numeric
+  : @param $array7 the sequences of numbers or arguments castable to numeric
+  : @param $array8 the sequences of numbers or arguments castable to numeric
+  : @param $array9 the sequences of numbers or arguments castable to numeric
+  : @param $array10 the sequences of numbers or arguments castable to numeric
+  : @param $array11 the sequences of numbers or arguments castable to numeric
+  : @param $array12 the sequences of numbers or arguments castable to numeric
+  : @param $array13 the sequences of numbers or arguments castable to numeric
+  : @param $array14 the sequences of numbers or arguments castable to numeric
+  : @param $array15 the sequences of numbers or arguments castable to numeric
+  : @param $array16 the sequences of numbers or arguments castable to numeric
+  : @param $array17 the sequences of numbers or arguments castable to numeric
+  : @param $array18 the sequences of numbers or arguments castable to numeric
+  : @param $array19 the sequences of numbers or arguments castable to numeric
+  : @param $array20 the sequences of numbers or arguments castable to numeric
+  : @param $array21 the sequences of numbers or arguments castable to numeric
+  : @param $array22 the sequences of numbers or arguments castable to numeric
+  : @param $array23 the sequences of numbers or arguments castable to numeric
+  : @param $array24 the sequences of numbers or arguments castable to numeric
+  : @return the sum of products
+  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
  declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*,
@@ -1862,37 +1865,37 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
  };
 
  (:~
-  Multiplies the elements on the same position in each sequence
-  and sums up the results.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequences of numbers or arguments castable to numeric
-  @param $array2 the sequences of numbers or arguments castable to numeric
-  @param $array3 the sequences of numbers or arguments castable to numeric
-  @param $array4 the sequences of numbers or arguments castable to numeric
-  @param $array5 the sequences of numbers or arguments castable to numeric
-  @param $array6 the sequences of numbers or arguments castable to numeric
-  @param $array7 the sequences of numbers or arguments castable to numeric
-  @param $array8 the sequences of numbers or arguments castable to numeric
-  @param $array9 the sequences of numbers or arguments castable to numeric
-  @param $array10 the sequences of numbers or arguments castable to numeric
-  @param $array11 the sequences of numbers or arguments castable to numeric
-  @param $array12 the sequences of numbers or arguments castable to numeric
-  @param $array13 the sequences of numbers or arguments castable to numeric
-  @param $array14 the sequences of numbers or arguments castable to numeric
-  @param $array15 the sequences of numbers or arguments castable to numeric
-  @param $array16 the sequences of numbers or arguments castable to numeric
-  @param $array17 the sequences of numbers or arguments castable to numeric
-  @param $array18 the sequences of numbers or arguments castable to numeric
-  @param $array19 the sequences of numbers or arguments castable to numeric
-  @param $array20 the sequences of numbers or arguments castable to numeric
-  @param $array21 the sequences of numbers or arguments castable to numeric
-  @param $array22 the sequences of numbers or arguments castable to numeric
-  @param $array23 the sequences of numbers or arguments castable to numeric
-  @param $array24 the sequences of numbers or arguments castable to numeric
-  @param $array25 the sequences of numbers or arguments castable to numeric
-  @return the sum of products
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+  : Multiplies the elements on the same position in each sequence
+  : and sums up the results.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+  : @param $array1 the sequences of numbers or arguments castable to numeric
+  : @param $array2 the sequences of numbers or arguments castable to numeric
+  : @param $array3 the sequences of numbers or arguments castable to numeric
+  : @param $array4 the sequences of numbers or arguments castable to numeric
+  : @param $array5 the sequences of numbers or arguments castable to numeric
+  : @param $array6 the sequences of numbers or arguments castable to numeric
+  : @param $array7 the sequences of numbers or arguments castable to numeric
+  : @param $array8 the sequences of numbers or arguments castable to numeric
+  : @param $array9 the sequences of numbers or arguments castable to numeric
+  : @param $array10 the sequences of numbers or arguments castable to numeric
+  : @param $array11 the sequences of numbers or arguments castable to numeric
+  : @param $array12 the sequences of numbers or arguments castable to numeric
+  : @param $array13 the sequences of numbers or arguments castable to numeric
+  : @param $array14 the sequences of numbers or arguments castable to numeric
+  : @param $array15 the sequences of numbers or arguments castable to numeric
+  : @param $array16 the sequences of numbers or arguments castable to numeric
+  : @param $array17 the sequences of numbers or arguments castable to numeric
+  : @param $array18 the sequences of numbers or arguments castable to numeric
+  : @param $array19 the sequences of numbers or arguments castable to numeric
+  : @param $array20 the sequences of numbers or arguments castable to numeric
+  : @param $array21 the sequences of numbers or arguments castable to numeric
+  : @param $array22 the sequences of numbers or arguments castable to numeric
+  : @param $array23 the sequences of numbers or arguments castable to numeric
+  : @param $array24 the sequences of numbers or arguments castable to numeric
+  : @param $array25 the sequences of numbers or arguments castable to numeric
+  : @return the sum of products
+  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
  declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*,
@@ -2001,38 +2004,38 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
  };
  
  (:~
-  Multiplies the elements on the same position in each sequence
-  and sums up the results.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequences of numbers or arguments castable to numeric
-  @param $array2 the sequences of numbers or arguments castable to numeric
-  @param $array3 the sequences of numbers or arguments castable to numeric
-  @param $array4 the sequences of numbers or arguments castable to numeric
-  @param $array5 the sequences of numbers or arguments castable to numeric
-  @param $array6 the sequences of numbers or arguments castable to numeric
-  @param $array7 the sequences of numbers or arguments castable to numeric
-  @param $array8 the sequences of numbers or arguments castable to numeric
-  @param $array9 the sequences of numbers or arguments castable to numeric
-  @param $array10 the sequences of numbers or arguments castable to numeric
-  @param $array11 the sequences of numbers or arguments castable to numeric
-  @param $array12 the sequences of numbers or arguments castable to numeric
-  @param $array13 the sequences of numbers or arguments castable to numeric
-  @param $array14 the sequences of numbers or arguments castable to numeric
-  @param $array15 the sequences of numbers or arguments castable to numeric
-  @param $array16 the sequences of numbers or arguments castable to numeric
-  @param $array17 the sequences of numbers or arguments castable to numeric
-  @param $array18 the sequences of numbers or arguments castable to numeric
-  @param $array19 the sequences of numbers or arguments castable to numeric
-  @param $array20 the sequences of numbers or arguments castable to numeric
-  @param $array21 the sequences of numbers or arguments castable to numeric
-  @param $array22 the sequences of numbers or arguments castable to numeric
-  @param $array23 the sequences of numbers or arguments castable to numeric
-  @param $array24 the sequences of numbers or arguments castable to numeric
-  @param $array25 the sequences of numbers or arguments castable to numeric
-  @param $array26 the sequences of numbers or arguments castable to numeric
-  @return the sum of products
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+  : Multiplies the elements on the same position in each sequence
+  : and sums up the results.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+  : @param $array1 the sequences of numbers or arguments castable to numeric
+  : @param $array2 the sequences of numbers or arguments castable to numeric
+  : @param $array3 the sequences of numbers or arguments castable to numeric
+  : @param $array4 the sequences of numbers or arguments castable to numeric
+  : @param $array5 the sequences of numbers or arguments castable to numeric
+  : @param $array6 the sequences of numbers or arguments castable to numeric
+  : @param $array7 the sequences of numbers or arguments castable to numeric
+  : @param $array8 the sequences of numbers or arguments castable to numeric
+  : @param $array9 the sequences of numbers or arguments castable to numeric
+  : @param $array10 the sequences of numbers or arguments castable to numeric
+  : @param $array11 the sequences of numbers or arguments castable to numeric
+  : @param $array12 the sequences of numbers or arguments castable to numeric
+  : @param $array13 the sequences of numbers or arguments castable to numeric
+  : @param $array14 the sequences of numbers or arguments castable to numeric
+  : @param $array15 the sequences of numbers or arguments castable to numeric
+  : @param $array16 the sequences of numbers or arguments castable to numeric
+  : @param $array17 the sequences of numbers or arguments castable to numeric
+  : @param $array18 the sequences of numbers or arguments castable to numeric
+  : @param $array19 the sequences of numbers or arguments castable to numeric
+  : @param $array20 the sequences of numbers or arguments castable to numeric
+  : @param $array21 the sequences of numbers or arguments castable to numeric
+  : @param $array22 the sequences of numbers or arguments castable to numeric
+  : @param $array23 the sequences of numbers or arguments castable to numeric
+  : @param $array24 the sequences of numbers or arguments castable to numeric
+  : @param $array25 the sequences of numbers or arguments castable to numeric
+  : @param $array26 the sequences of numbers or arguments castable to numeric
+  : @return the sum of products
+  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
  declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*,
@@ -2145,39 +2148,39 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
  };
 
  (:~
-  Multiplies the elements on the same position in each sequence
-  and sums up the results.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequences of numbers or arguments castable to numeric
-  @param $array2 the sequences of numbers or arguments castable to numeric
-  @param $array3 the sequences of numbers or arguments castable to numeric
-  @param $array4 the sequences of numbers or arguments castable to numeric
-  @param $array5 the sequences of numbers or arguments castable to numeric
-  @param $array6 the sequences of numbers or arguments castable to numeric
-  @param $array7 the sequences of numbers or arguments castable to numeric
-  @param $array8 the sequences of numbers or arguments castable to numeric
-  @param $array9 the sequences of numbers or arguments castable to numeric
-  @param $array10 the sequences of numbers or arguments castable to numeric
-  @param $array11 the sequences of numbers or arguments castable to numeric
-  @param $array12 the sequences of numbers or arguments castable to numeric
-  @param $array13 the sequences of numbers or arguments castable to numeric
-  @param $array14 the sequences of numbers or arguments castable to numeric
-  @param $array15 the sequences of numbers or arguments castable to numeric
-  @param $array16 the sequences of numbers or arguments castable to numeric
-  @param $array17 the sequences of numbers or arguments castable to numeric
-  @param $array18 the sequences of numbers or arguments castable to numeric
-  @param $array19 the sequences of numbers or arguments castable to numeric
-  @param $array20 the sequences of numbers or arguments castable to numeric
-  @param $array21 the sequences of numbers or arguments castable to numeric
-  @param $array22 the sequences of numbers or arguments castable to numeric
-  @param $array23 the sequences of numbers or arguments castable to numeric
-  @param $array24 the sequences of numbers or arguments castable to numeric
-  @param $array25 the sequences of numbers or arguments castable to numeric
-  @param $array26 the sequences of numbers or arguments castable to numeric
-  @param $array27 the sequences of numbers or arguments castable to numeric
-  @return the sum of products
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+  : Multiplies the elements on the same position in each sequence
+  : and sums up the results.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+  : @param $array1 the sequences of numbers or arguments castable to numeric
+  : @param $array2 the sequences of numbers or arguments castable to numeric
+  : @param $array3 the sequences of numbers or arguments castable to numeric
+  : @param $array4 the sequences of numbers or arguments castable to numeric
+  : @param $array5 the sequences of numbers or arguments castable to numeric
+  : @param $array6 the sequences of numbers or arguments castable to numeric
+  : @param $array7 the sequences of numbers or arguments castable to numeric
+  : @param $array8 the sequences of numbers or arguments castable to numeric
+  : @param $array9 the sequences of numbers or arguments castable to numeric
+  : @param $array10 the sequences of numbers or arguments castable to numeric
+  : @param $array11 the sequences of numbers or arguments castable to numeric
+  : @param $array12 the sequences of numbers or arguments castable to numeric
+  : @param $array13 the sequences of numbers or arguments castable to numeric
+  : @param $array14 the sequences of numbers or arguments castable to numeric
+  : @param $array15 the sequences of numbers or arguments castable to numeric
+  : @param $array16 the sequences of numbers or arguments castable to numeric
+  : @param $array17 the sequences of numbers or arguments castable to numeric
+  : @param $array18 the sequences of numbers or arguments castable to numeric
+  : @param $array19 the sequences of numbers or arguments castable to numeric
+  : @param $array20 the sequences of numbers or arguments castable to numeric
+  : @param $array21 the sequences of numbers or arguments castable to numeric
+  : @param $array22 the sequences of numbers or arguments castable to numeric
+  : @param $array23 the sequences of numbers or arguments castable to numeric
+  : @param $array24 the sequences of numbers or arguments castable to numeric
+  : @param $array25 the sequences of numbers or arguments castable to numeric
+  : @param $array26 the sequences of numbers or arguments castable to numeric
+  : @param $array27 the sequences of numbers or arguments castable to numeric
+  : @return the sum of products
+  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
  declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*,
@@ -2294,40 +2297,40 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
  };
 
  (:~
-  Multiplies the elements on the same position in each sequence
-  and sums up the results.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequences of numbers or arguments castable to numeric
-  @param $array2 the sequences of numbers or arguments castable to numeric
-  @param $array3 the sequences of numbers or arguments castable to numeric
-  @param $array4 the sequences of numbers or arguments castable to numeric
-  @param $array5 the sequences of numbers or arguments castable to numeric
-  @param $array6 the sequences of numbers or arguments castable to numeric
-  @param $array7 the sequences of numbers or arguments castable to numeric
-  @param $array8 the sequences of numbers or arguments castable to numeric
-  @param $array9 the sequences of numbers or arguments castable to numeric
-  @param $array10 the sequences of numbers or arguments castable to numeric
-  @param $array11 the sequences of numbers or arguments castable to numeric
-  @param $array12 the sequences of numbers or arguments castable to numeric
-  @param $array13 the sequences of numbers or arguments castable to numeric
-  @param $array14 the sequences of numbers or arguments castable to numeric
-  @param $array15 the sequences of numbers or arguments castable to numeric
-  @param $array16 the sequences of numbers or arguments castable to numeric
-  @param $array17 the sequences of numbers or arguments castable to numeric
-  @param $array18 the sequences of numbers or arguments castable to numeric
-  @param $array19 the sequences of numbers or arguments castable to numeric
-  @param $array20 the sequences of numbers or arguments castable to numeric
-  @param $array21 the sequences of numbers or arguments castable to numeric
-  @param $array22 the sequences of numbers or arguments castable to numeric
-  @param $array23 the sequences of numbers or arguments castable to numeric
-  @param $array24 the sequences of numbers or arguments castable to numeric
-  @param $array25 the sequences of numbers or arguments castable to numeric
-  @param $array26 the sequences of numbers or arguments castable to numeric
-  @param $array27 the sequences of numbers or arguments castable to numeric
-  @param $array28 the sequences of numbers or arguments castable to numeric
-  @return the sum of products
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+  : Multiplies the elements on the same position in each sequence
+  : and sums up the results.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+  : @param $array1 the sequences of numbers or arguments castable to numeric
+  : @param $array2 the sequences of numbers or arguments castable to numeric
+  : @param $array3 the sequences of numbers or arguments castable to numeric
+  : @param $array4 the sequences of numbers or arguments castable to numeric
+  : @param $array5 the sequences of numbers or arguments castable to numeric
+  : @param $array6 the sequences of numbers or arguments castable to numeric
+  : @param $array7 the sequences of numbers or arguments castable to numeric
+  : @param $array8 the sequences of numbers or arguments castable to numeric
+  : @param $array9 the sequences of numbers or arguments castable to numeric
+  : @param $array10 the sequences of numbers or arguments castable to numeric
+  : @param $array11 the sequences of numbers or arguments castable to numeric
+  : @param $array12 the sequences of numbers or arguments castable to numeric
+  : @param $array13 the sequences of numbers or arguments castable to numeric
+  : @param $array14 the sequences of numbers or arguments castable to numeric
+  : @param $array15 the sequences of numbers or arguments castable to numeric
+  : @param $array16 the sequences of numbers or arguments castable to numeric
+  : @param $array17 the sequences of numbers or arguments castable to numeric
+  : @param $array18 the sequences of numbers or arguments castable to numeric
+  : @param $array19 the sequences of numbers or arguments castable to numeric
+  : @param $array20 the sequences of numbers or arguments castable to numeric
+  : @param $array21 the sequences of numbers or arguments castable to numeric
+  : @param $array22 the sequences of numbers or arguments castable to numeric
+  : @param $array23 the sequences of numbers or arguments castable to numeric
+  : @param $array24 the sequences of numbers or arguments castable to numeric
+  : @param $array25 the sequences of numbers or arguments castable to numeric
+  : @param $array26 the sequences of numbers or arguments castable to numeric
+  : @param $array27 the sequences of numbers or arguments castable to numeric
+  : @param $array28 the sequences of numbers or arguments castable to numeric
+  : @return the sum of products
+  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
  declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*,
@@ -2448,41 +2451,41 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
  };
 
  (:~
-  Multiplies the elements on the same position in each sequence
-  and sums up the results.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequences of numbers or arguments castable to numeric
-  @param $array2 the sequences of numbers or arguments castable to numeric
-  @param $array3 the sequences of numbers or arguments castable to numeric
-  @param $array4 the sequences of numbers or arguments castable to numeric
-  @param $array5 the sequences of numbers or arguments castable to numeric
-  @param $array6 the sequences of numbers or arguments castable to numeric
-  @param $array7 the sequences of numbers or arguments castable to numeric
-  @param $array8 the sequences of numbers or arguments castable to numeric
-  @param $array9 the sequences of numbers or arguments castable to numeric
-  @param $array10 the sequences of numbers or arguments castable to numeric
-  @param $array11 the sequences of numbers or arguments castable to numeric
-  @param $array12 the sequences of numbers or arguments castable to numeric
-  @param $array13 the sequences of numbers or arguments castable to numeric
-  @param $array14 the sequences of numbers or arguments castable to numeric
-  @param $array15 the sequences of numbers or arguments castable to numeric
-  @param $array16 the sequences of numbers or arguments castable to numeric
-  @param $array17 the sequences of numbers or arguments castable to numeric
-  @param $array18 the sequences of numbers or arguments castable to numeric
-  @param $array19 the sequences of numbers or arguments castable to numeric
-  @param $array20 the sequences of numbers or arguments castable to numeric
-  @param $array21 the sequences of numbers or arguments castable to numeric
-  @param $array22 the sequences of numbers or arguments castable to numeric
-  @param $array23 the sequences of numbers or arguments castable to numeric
-  @param $array24 the sequences of numbers or arguments castable to numeric
-  @param $array25 the sequences of numbers or arguments castable to numeric
-  @param $array26 the sequences of numbers or arguments castable to numeric
-  @param $array27 the sequences of numbers or arguments castable to numeric
-  @param $array28 the sequences of numbers or arguments castable to numeric
-  @param $array29 the sequences of numbers or arguments castable to numeric
-  @return the sum of products
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+  : Multiplies the elements on the same position in each sequence
+  : and sums up the results.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+  : @param $array1 the sequences of numbers or arguments castable to numeric
+  : @param $array2 the sequences of numbers or arguments castable to numeric
+  : @param $array3 the sequences of numbers or arguments castable to numeric
+  : @param $array4 the sequences of numbers or arguments castable to numeric
+  : @param $array5 the sequences of numbers or arguments castable to numeric
+  : @param $array6 the sequences of numbers or arguments castable to numeric
+  : @param $array7 the sequences of numbers or arguments castable to numeric
+  : @param $array8 the sequences of numbers or arguments castable to numeric
+  : @param $array9 the sequences of numbers or arguments castable to numeric
+  : @param $array10 the sequences of numbers or arguments castable to numeric
+  : @param $array11 the sequences of numbers or arguments castable to numeric
+  : @param $array12 the sequences of numbers or arguments castable to numeric
+  : @param $array13 the sequences of numbers or arguments castable to numeric
+  : @param $array14 the sequences of numbers or arguments castable to numeric
+  : @param $array15 the sequences of numbers or arguments castable to numeric
+  : @param $array16 the sequences of numbers or arguments castable to numeric
+  : @param $array17 the sequences of numbers or arguments castable to numeric
+  : @param $array18 the sequences of numbers or arguments castable to numeric
+  : @param $array19 the sequences of numbers or arguments castable to numeric
+  : @param $array20 the sequences of numbers or arguments castable to numeric
+  : @param $array21 the sequences of numbers or arguments castable to numeric
+  : @param $array22 the sequences of numbers or arguments castable to numeric
+  : @param $array23 the sequences of numbers or arguments castable to numeric
+  : @param $array24 the sequences of numbers or arguments castable to numeric
+  : @param $array25 the sequences of numbers or arguments castable to numeric
+  : @param $array26 the sequences of numbers or arguments castable to numeric
+  : @param $array27 the sequences of numbers or arguments castable to numeric
+  : @param $array28 the sequences of numbers or arguments castable to numeric
+  : @param $array29 the sequences of numbers or arguments castable to numeric
+  : @return the sum of products
+  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
  declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*,
@@ -2607,42 +2610,42 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
  };
 
  (:~
-  Multiplies the elements on the same position in each sequence
-  and sums up the results.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
-  @param $array1 the sequences of numbers or arguments castable to numeric
-  @param $array2 the sequences of numbers or arguments castable to numeric
-  @param $array3 the sequences of numbers or arguments castable to numeric
-  @param $array4 the sequences of numbers or arguments castable to numeric
-  @param $array5 the sequences of numbers or arguments castable to numeric
-  @param $array6 the sequences of numbers or arguments castable to numeric
-  @param $array7 the sequences of numbers or arguments castable to numeric
-  @param $array8 the sequences of numbers or arguments castable to numeric
-  @param $array9 the sequences of numbers or arguments castable to numeric
-  @param $array10 the sequences of numbers or arguments castable to numeric
-  @param $array11 the sequences of numbers or arguments castable to numeric
-  @param $array12 the sequences of numbers or arguments castable to numeric
-  @param $array13 the sequences of numbers or arguments castable to numeric
-  @param $array14 the sequences of numbers or arguments castable to numeric
-  @param $array15 the sequences of numbers or arguments castable to numeric
-  @param $array16 the sequences of numbers or arguments castable to numeric
-  @param $array17 the sequences of numbers or arguments castable to numeric
-  @param $array18 the sequences of numbers or arguments castable to numeric
-  @param $array19 the sequences of numbers or arguments castable to numeric
-  @param $array20 the sequences of numbers or arguments castable to numeric
-  @param $array21 the sequences of numbers or arguments castable to numeric
-  @param $array22 the sequences of numbers or arguments castable to numeric
-  @param $array23 the sequences of numbers or arguments castable to numeric
-  @param $array24 the sequences of numbers or arguments castable to numeric
-  @param $array25 the sequences of numbers or arguments castable to numeric
-  @param $array26 the sequences of numbers or arguments castable to numeric
-  @param $array27 the sequences of numbers or arguments castable to numeric
-  @param $array28 the sequences of numbers or arguments castable to numeric
-  @param $array29 the sequences of numbers or arguments castable to numeric
-  @param $array30 the sequences of numbers or arguments castable to numeric
-  @return the sum of products
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+  : Multiplies the elements on the same position in each sequence
+  : and sums up the results.
+  : 
+  : @see http://office.microsoft.com/en-us/excel/HP052092931033.aspx
+  : @param $array1 the sequences of numbers or arguments castable to numeric
+  : @param $array2 the sequences of numbers or arguments castable to numeric
+  : @param $array3 the sequences of numbers or arguments castable to numeric
+  : @param $array4 the sequences of numbers or arguments castable to numeric
+  : @param $array5 the sequences of numbers or arguments castable to numeric
+  : @param $array6 the sequences of numbers or arguments castable to numeric
+  : @param $array7 the sequences of numbers or arguments castable to numeric
+  : @param $array8 the sequences of numbers or arguments castable to numeric
+  : @param $array9 the sequences of numbers or arguments castable to numeric
+  : @param $array10 the sequences of numbers or arguments castable to numeric
+  : @param $array11 the sequences of numbers or arguments castable to numeric
+  : @param $array12 the sequences of numbers or arguments castable to numeric
+  : @param $array13 the sequences of numbers or arguments castable to numeric
+  : @param $array14 the sequences of numbers or arguments castable to numeric
+  : @param $array15 the sequences of numbers or arguments castable to numeric
+  : @param $array16 the sequences of numbers or arguments castable to numeric
+  : @param $array17 the sequences of numbers or arguments castable to numeric
+  : @param $array18 the sequences of numbers or arguments castable to numeric
+  : @param $array19 the sequences of numbers or arguments castable to numeric
+  : @param $array20 the sequences of numbers or arguments castable to numeric
+  : @param $array21 the sequences of numbers or arguments castable to numeric
+  : @param $array22 the sequences of numbers or arguments castable to numeric
+  : @param $array23 the sequences of numbers or arguments castable to numeric
+  : @param $array24 the sequences of numbers or arguments castable to numeric
+  : @param $array25 the sequences of numbers or arguments castable to numeric
+  : @param $array26 the sequences of numbers or arguments castable to numeric
+  : @param $array27 the sequences of numbers or arguments castable to numeric
+  : @param $array28 the sequences of numbers or arguments castable to numeric
+  : @param $array29 the sequences of numbers or arguments castable to numeric
+  : @param $array30 the sequences of numbers or arguments castable to numeric
+  : @return the sum of products
+  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
  declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
                                     $array2 as xs:anyAtomicType*,
@@ -2771,13 +2774,13 @@ declare function excel:sumproduct( $array1 as xs:anyAtomicType*,
  };
 
 (:~
-  Returns the sum of the squares of the arguments.
-  It used the sumproduct function.
-  
-  @see http://office.microsoft.com/en-us/excel/HP052092951033.aspx
-  @param $numbers the sequence of one or more numbers or arguments castable to numeric
-  @return the sum of squared values, as numeric type
-  @error XQP0021(errValue) if the parameters cannot be casted to numeric type
+ : Returns the sum of the squares of the arguments.
+ : It used the sumproduct function.
+ : 
+ : @see http://office.microsoft.com/en-us/excel/HP052092951033.aspx
+ : @param $numbers the sequence of one or more numbers or arguments castable to numeric
+ : @return the sum of squared values, as numeric type
+ : @error XQP0021(errValue) if the parameters cannot be casted to numeric type
 :)
  declare function excel:sumsq( $numbers as xs:anyAtomicType+) as xs:anyAtomicType
  {

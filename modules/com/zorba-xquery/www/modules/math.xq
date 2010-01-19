@@ -17,8 +17,8 @@
 (:~
  : Extensive math library.
  :
- : @author Daniel Turcanu, Dan Muresan
  : @version 1.0 
+ : @author Daniel Turcanu, Dan Muresan
  :)
 module namespace math = "http://www.zorba-xquery.com/modules/math";
 
@@ -32,19 +32,43 @@ declare function math:sqrt ($arg as xs:double) as xs:double external;
 
 (:~
  : Compute e^arg .
+ : @param $arg the arg
+ : @return the result of e^arg
 :)
 declare function math:exp ($arg as xs:double) as xs:double external;
 
 (:~
  : Natural logarithm. To generate logarithms for other bases, use the
  : mathematical relation: log base b of a == natural log (a) / natural log (b).
+ :
+ : @param $arg the arg
+ : @return the result of ln(arg)
  :)
 declare function math:log ($arg as xs:double) as xs:double external;
 
+(:~
+ : Compute sine.
+ :
+ : @param $arg the arg, in radians
+ : @return the result of sin(arg)
+ :)
 declare function math:sin ($arg as xs:double) as xs:double external;
 
+(:~
+ : Compute cosine.
+ :
+ : @param $arg the arg, in radians
+ : @return the result of cos(arg)
+ :)
 declare function math:cos ($arg as xs:double) as xs:double external;
 
+(:~
+ : Compute tangent.
+ :
+ : @param $arg the arg, in radians
+ : @return the result of tan(arg). If arg is multiple of PI/2 the result is 
+ :   pos or neg INF.
+ :)
 declare function math:tan ($arg as xs:double) as xs:double external;
 
 (:~
@@ -77,6 +101,8 @@ declare function math:atan ($arg as xs:double) as xs:double external;
  : Returns the arc tangent of y/x, in radians. The signs of both parameters are
  : used to determine the quadrant of the return value.
  : 
+ : @param $y the y
+ : @param $x the x
  : @return a value in range -PI/2 ... +PI/2
  :)
 declare function math:atan2 ($y as xs:double, $x as xs:double) as xs:double external;
@@ -86,17 +112,23 @@ declare function math:atan2 ($y as xs:double, $x as xs:double) as xs:double exte
  : If the result it too large, INF is returned.
  : 
  : @param $arg must be smaller than 7.104760e+002
+ : @return cosh(arg)
  :)
 declare function math:cosh ($arg as xs:double) as xs:double external;
 
 (:~
  : Inverse hyperbolic cosine.
+ :
+ : @param $arg the arg
+ : @return the result of acosh(arg)
  :)
 declare function math:acosh ($arg as xs:double) as xs:double external;
 
 (:~
  : Function performing the modulo operation between the two arguments.
  : 
+ : @param $x the x
+ : @param $y the y
  : @return The remainder of x/y.
  :)
 declare function math:fmod ($x as xs:double, $y as xs:double) as xs:double external;
@@ -105,6 +137,7 @@ declare function math:fmod ($x as xs:double, $y as xs:double) as xs:double exter
  : Returns the argument split as mantissa and exponent. 
  : The recombining formula is (mantissa * 2^exponent).
  : 
+ : @param $arg the double to be split.
  : @return A sequence of two doubles (mantissa, exponent)
  :)
 declare function math:frexp ($arg as xs:double) as xs:double+ external;
@@ -121,7 +154,10 @@ declare function math:ldexp ($x as xs:double, $i as xs:integer) as xs:double ext
 
 (:~
  : The base 10 logarithm.
- : To generate logarithms for other bases, use the mathematical relation: log base b of a == natural log (a) / natural log (b).
+ : To generate logarithms for other bases, use the mathematical relation: log base b of a == log10 (a) / log10 (b).
+ :
+ : @param $arg the arg
+ : @return the result of log10(arg)
  :)
 declare function math:log10 ($arg as xs:double) as xs:double external;
 
@@ -129,6 +165,7 @@ declare function math:log10 ($arg as xs:double) as xs:double external;
  : Splits a floating-point value into fractional and integer parts.
  : Both the fraction and integer keep the original sign of the value.
  : 
+ : @param $arg the double to be split.
  : @return A sequence of two doubles (fraction, integer)
  :)
 declare function math:modf ($arg as xs:double) as xs:double+ external;
@@ -138,21 +175,34 @@ declare function math:modf ($arg as xs:double) as xs:double+ external;
  : If y = 0 then result is 1.
  : If x = 0 and y < 0 then result is INF.
  : Arguments should not be greater than 264.
+ :
+ : @param $x the x
+ : @param $y the y
+ : @return the result of x^y
  :)
 declare function math:pow ($x as xs:double, $y as xs:double) as xs:double external;
 
 (:~
  : Calculate hyperbolic sine.
+ :
+ : @param $arg the arg
+ : @return the result of sinh(arg)
  :)
 declare function math:sinh ($arg as xs:double) as xs:double external;
 
 (:~
  : Inverse hyperbolic sine of the number.
+ :
+ : @param $arg the arg
+ : @return the result of asinh(arg)
  :)
 declare function math:asinh($arg as xs:double) as xs:double external;
 
 (:~
  : Calculate the hyperbolic tangent.
+ :
+ : @param $arg the arg
+ : @return the result of tanh(arg)
  :)
 declare function math:tanh($arg as xs:double) as xs:double external;
 
@@ -160,6 +210,7 @@ declare function math:tanh($arg as xs:double) as xs:double external;
  : Calculate the hyperbolic tangent.
  :
  : @param $arg must be in range -1 ... +1 (exclusive)
+ : @return the result of atanh(arg)
  :)
 declare function math:atanh($arg as xs:double) as xs:double external;
 
@@ -172,10 +223,16 @@ declare function math:pi() as xs:double external;
 
 (:~
  : Checks if the double value is positive or negative infinite.
+ :
+ : @param $arg the double to be checked
+ : @return boolean true if argument is pos INF or neg INF
  :)
 declare function math:is_inf($arg as xs:double) as xs:boolean external;
 
 (:~
  : Checks if the double value is Not a Number (NaN)
+ :
+ : @param $arg the arg
+ : @return boolean true if the double is NaN
  :)
 declare function math:is_nan($arg as xs:double) as xs:boolean external;
