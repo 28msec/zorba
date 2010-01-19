@@ -180,6 +180,7 @@ FOREACH(TESTFILE ${TESTFILES})
   IF(NOT ZORBA_WITH_TIDY)
     # These tests require only tidy
     STRING(REGEX MATCH "aleXis/q(10|5|6|8|9)" NEEDS_TIDY "${TESTNAME}")
+    STRING(REGEX MATCH "aleXis/tidy_wrong_options" NEEDS_TIDY "${TESTNAME}")
     # These tests require tidy and rest
     STRING(REGEX MATCH "rest/rest.*tidy" NEEDS_TIDY_AND_REST "${TESTNAME}")
     STRING(REGEX MATCH "http_client" HTTP_CLIENT "${TESTNAME}")
