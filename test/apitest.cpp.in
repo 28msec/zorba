@@ -40,6 +40,17 @@
 #include "store/minimal/min_store.h"
 #endif
 
+// Global variable g_abort_on_error is used to generate an abort() when an 
+// error is encountered, to aid debugging
+#ifndef NDEBUG
+#ifdef BUILDING_ZORBA_STATIC
+extern bool g_abort_on_error;
+#else
+ZORBA_DLL_PUBLIC bool g_abort_on_error;
+#endif
+#endif
+
+
 using namespace zorba;
 using namespace std;
 
@@ -67,7 +78,6 @@ void set_var (string name, string val, DynamicContext* dctx)
 }
 
 
-// TODO: for now apitest users expect 0 even for error results; this should change
 #ifndef _WIN32_WCE
 int main(int argc, char* argv[])
 #else
@@ -131,6 +141,12 @@ int _tmain(int argc, _TCHAR* argv[])
   zorba::@ZORBA_STORE_NAME@::SimpleStore* store = 
         zorba::@ZORBA_STORE_NAME@::SimpleStoreManager::getStore();
 #endif
+      
+  // Set the g_abort_on_exception flag in error_manager.cpp
+#ifndef NDEBUG
+  if (lProp->abort())
+    g_abort_on_error = true;
+#endif
 
   // start processing
   Zorba* zengine = Zorba::getInstance(store);
@@ -172,7 +188,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
   if (! lProp->compileOnly ()) {
     // output the result (either using xml serialization or using show)
-    // cout << "Running query and printing result..." << endl;
   
     try {
       if (lProp->useSerializer()) {

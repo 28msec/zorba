@@ -17,6 +17,13 @@
 #include "zorbaerrors/error_manager.h"
 #include "zorbaerrors/error_messages.h"
 
+#ifndef NDEBUG
+ZORBA_DLL_PUBLIC bool g_abort_on_error = false;
+#define ERROR_ABORT()   do { if (g_abort_on_error) abort(); } while(0)
+#else
+#define ERROR_ABORT()   ((void)0)
+#endif
+
 namespace zorba { namespace error {
 
 
@@ -36,6 +43,7 @@ ErrorManager::createException(
     const std::string&  aFileName,
     int                 aLineNumber)
 {
+  ERROR_ABORT();
   std::string lDesc = ErrorMessages::getMessageForErrorCode(aErrorCode);
 
   ZorbaError lError(aErrorCode, lDesc , 0, 0, "", aFileName, aLineNumber);
@@ -54,6 +62,7 @@ ErrorManager::createException(
     unsigned int        aQueryColumn,
     const std::string&  aQueryFileName)
 {
+  ERROR_ABORT();
   std::string lDesc = ErrorMessages::getMessageForErrorCode(aErrorCode);
 
   ZorbaError lError(aErrorCode, lDesc,
@@ -75,6 +84,7 @@ ErrorManager::createException(
     unsigned int        aQueryColumn,
     const std::string&  aQueryFileName)
 {
+  ERROR_ABORT();
   std::string lDesc = ErrorMessages::getMessageForErrorCode(aErrorCode);
   applyParams(&lDesc, &aParam1, &aParam2);
 
@@ -92,6 +102,7 @@ ErrorManager::createException(
     const std::string&  aFileName,
     int                 aLineNumber)
 {
+  ERROR_ABORT();
   ZorbaError lError(aErrorCode, aDesc, 0, 0, "", aFileName, aLineNumber);
 
   return ZorbaError(lError);
@@ -108,6 +119,7 @@ ErrorManager::createException(
     unsigned int        aQueryColumn,
     const std::string&  aQueryFileName)
 {
+  ERROR_ABORT();
   ZorbaError lError(aErrorCode, aDescription,
                     aQueryLine, aQueryColumn, aQueryFileName,
                     aFileName, aLineNumber);
