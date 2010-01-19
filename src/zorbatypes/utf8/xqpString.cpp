@@ -242,6 +242,28 @@ static UnicodeString getUnicodeString(const xqpStringStore* src)
   return ret;
 }
 
+/*******************************************************************************
+  Return an UnicodeString (UTF-16 encoded) version of the string.
+********************************************************************************/
+static UnicodeString getUnicodeString(const char * aSrc, const unsigned int aLen)
+{
+  UnicodeString lRet;
+  UErrorCode lStatus = U_ZERO_ERROR;
+  int32_t lLen = (int32_t)aLen;
+  UChar* buffer = lRet.getBuffer(lLen);
+
+  u_strFromUTF8(buffer, lRet.getCapacity(), &lLen, aSrc, lLen, &lStatus);
+
+  if(U_FAILURE(lStatus))
+  {
+    assert(false);
+  }
+
+  lRet.releaseBuffer(U_SUCCESS(lStatus) ? lLen : 0);
+
+  return lRet;
+}
+
 
 /*******************************************************************************
 
@@ -1546,7 +1568,7 @@ xqpString::tokenize(
 }
 
 
-wchar_t * xqpString::getWCS(xqpString source) const
+wchar_t * xqpString::getWCS(xqpString source)
 {
   int32_t destCapacity =  source.length()*2 + 1;
   wchar_t* destWCS;
@@ -1569,6 +1591,30 @@ wchar_t * xqpString::getWCS(xqpString source) const
   return ret;
 }
 
+wchar_t * xqpString::getWCS(const char * aSrc,
+                            const unsigned int aSrcLen,
+                            int32_t *aDestLen)
+{
+  int32_t destCapacity =  aSrcLen*2 + 1;
+  wchar_t* destWCS;
+  destWCS = new wchar_t[destCapacity];
+//   int32_t destLen;
+
+  UnicodeString unicodeStr = getUnicodeString(aSrc, aSrcLen);
+  int32_t srcLen = unicodeStr.length();
+  UChar* srcBuf = unicodeStr.getBuffer(srcLen);
+  UErrorCode status = U_ZERO_ERROR;
+
+  wchar_t* ret =  u_strToWCS(destWCS, destCapacity, aDestLen, srcBuf, aSrcLen, &status);
+  unicodeStr.releaseBuffer (aSrcLen);
+
+  if(U_FAILURE(status))
+  {
+    assert(false);
+  }
+
+  return ret;
+}
 
 void xqpString::append_in_place(const char c)
 {

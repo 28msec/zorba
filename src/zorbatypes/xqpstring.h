@@ -346,8 +346,8 @@ public:
    */
   xqpString(const char* src);
 
-  /**Construct a xqpString given a wchar_t.
-   * @param src %Source wchar_t string
+  /**Construct a xqpString(UTF-8 encoded) given a wchar_t(UCS-4 encoded).
+   * @param src %Source wchar_t string(UCS-4 encoded)
    */
   xqpString(const wchar_t * src);
 
@@ -684,10 +684,15 @@ public:
   xqpString
   tokenize(xqpString pattern, xqpString flags, int32_t *start_pos, bool *hasmatched) const;
 
-  /**  Return a sequence of wchar_t units given a xqpString (UTF-8 encoded)
+  /**  Transforms a string encoded as UTF-8 into UCS-4.
+   *  @param source UTF-8 encoded string.
+   *  @return a sequence of wchar_t units(UCS-4 encoded).
    */
-  wchar_t *
-  getWCS(xqpString source) const;
+  static wchar_t *
+  getWCS(xqpString source);
+
+  static wchar_t *
+  getWCS(const char * aSrc, const unsigned int aSrcLen, int32_t *aDestLen);
 
 public:
     static xqpString concat(const char *s1, 

@@ -227,13 +227,17 @@ namespace zorba
     return lRet;
   }
 
-  json::value* getValue(const char* aJSON, const unsigned int aLen, xqp_string& error_log)
+  json::value* getValue(const char* aJSON, const unsigned int aLen, xqp_string& aErrorLog)
   {
+    //transforn from UTF-8 to UCS-4 using ICU
+    int32_t lUCS4Len;
+    wchar_t * lUCS4 = xqpString::getWCS(aJSON, aLen, &lUCS4Len);
+
     json::parser lParser;
-    json::value* lValue = lParser.parse(aJSON, aLen);
-    std::wstring s = lParser.printerrors();
-    std::string temp = WStringToString(s);
-    error_log = new xqpStringStore(temp);
+    json::value* lValue = lParser.parse(lUCS4, lUCS4Len);
+    std::wstring lErr = lParser.printerrors();
+    //transform from UCS-4 to UTF-8
+    aErrorLog = xqpString(lErr.c_str()).getStore();
     return lValue;
   }
 
@@ -270,9 +274,11 @@ namespace zorba
           break;
         default:
           std::wstring * lWtmp = (*aValue)->getstring();
-          std::string lTemp = WStringToString(*lWtmp);
+
+          //transform from UCS-4 to UTF-8
+          xqpStringStore_t lVal = xqpString((*lWtmp).c_str()).getStore();
           delete lWtmp;
-          xqpStringStore_t lVal = xqpString(lTemp).getStore();
+
           xqpStringStore_t lType;
           if ((*aValue)->getdatatype() == json::datatype::_string)
             lType = new xqpStringStore("string");
@@ -319,9 +325,11 @@ namespace zorba
           if((*lArrIter)->getdatatype() == json::datatype::_string)
           {
             std::wstring * lWtmp = (*lArrIter)->getstring();
-            std::string lTmp = WStringToString(*lWtmp);
+
+            //transform from UCS-4 to UTF-8
+            xqpStringStore_t lName = xqpString((*lWtmp).c_str()).getStore();
             delete lWtmp;
-            xqpStringStore_t lName = xqpString(lTmp).getStore();
+
             create_Node_Helper(aParent, aBaseUri, lName, aResult);
             ++lArrIter;
 
@@ -337,18 +345,22 @@ namespace zorba
             {
               xqpStringStore_t lName = xqpString((*lVectIter)->getname().c_str()).getStore();
               std::wstring * lWtmp = (*lVectIter)->getstring();
-              std::string lTmp = WStringToString(*lWtmp);
+
+              //transform from UCS-4 to UTF-8
+              xqpStringStore_t lText = xqpString((*lWtmp).c_str()).getStore();
               delete lWtmp;
-              xqpStringStore_t lText = xqpString(lTmp).getStore();
+
               create_Attribute_Helper(aParent, lName, lText, NULL);
             }
           }
           break;
         default:
           std::wstring * lWtmp = (*aValue)->getstring();
-          std::string lTemp = WStringToString(*lWtmp);
+
+          //transform from UCS-4 to UTF-8
+          xqpStringStore_t lText = xqpString((*lWtmp).c_str()).getStore();
           delete lWtmp;
-          xqpStringStore_t lText = xqpString(lTemp).getStore();
+
           if( lText->byteCompare("null") != 0 )
             GENV_ITEMFACTORY->createTextNode(lTextValue, aParent, -1, lText);
           break;
@@ -567,9 +579,11 @@ namespace zorba
       if((*lArrIter)->getdatatype() == json::datatype::_string)
       {
         std::wstring * lWtmp = (*lArrIter)->getstring();
-        std::string lTmp = WStringToString(*lWtmp);
+
+        //transform from UCS-4 to UTF-8
+        xqpStringStore_t lName = xqpString((*lWtmp).c_str()).getStore();
         delete lWtmp;
-        xqpStringStore_t lName = xqpString(lTmp).getStore();
+
         create_Node_Helper(NULL, aBaseUri, lName, &aElement);
 
         ++lArrIter;
@@ -611,10 +625,11 @@ namespace zorba
     return lResult;
   }
 
-  std::string  WStringToString(const std::wstring& wstr)
+  std::string  WStringToString(const std::wstring& aWstr)
   {
-    std::string temp(wstr.length(), ' ');
-    std::copy(wstr.begin(), wstr.end(), temp.begin());
-    return temp;
+    std::string lTemp(aWstr.length(), ' ');
+    std::copy(aWstr.begin(), aWstr.end(), lTemp.begin());
+    return lTemp;
   }
+
 } /*namespace Zorba */
