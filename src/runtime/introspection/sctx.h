@@ -231,6 +231,629 @@ public:
 
 /**
  * 
+ *      sc:statically-known-namespaces
+ *    
+ * Author: Zorba Team
+ */
+class StaticNamespacesIteratorState : public PlanIteratorState
+{
+public:
+  std::auto_ptr<std::vector<xqpString> > string_keys; //vector of string keys
+  unsigned int position; //current position
+
+  StaticNamespacesIteratorState();
+
+  ~StaticNamespacesIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class StaticNamespacesIterator : public NaryBaseIterator<StaticNamespacesIterator, StaticNamespacesIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(StaticNamespacesIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(StaticNamespacesIterator,
+    NaryBaseIterator<StaticNamespacesIterator, StaticNamespacesIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<StaticNamespacesIterator, StaticNamespacesIteratorState>*)this);
+  }
+
+  StaticNamespacesIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<StaticNamespacesIterator, StaticNamespacesIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~StaticNamespacesIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *      sc:statically-known-namespace-binding
+ *    
+ * Author: Zorba Team
+ */
+class StaticNamespaceBindingIterator : public NaryBaseIterator<StaticNamespaceBindingIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(StaticNamespaceBindingIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(StaticNamespaceBindingIterator,
+    NaryBaseIterator<StaticNamespaceBindingIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<StaticNamespaceBindingIterator, PlanIteratorState>*)this);
+  }
+
+  StaticNamespaceBindingIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<StaticNamespaceBindingIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~StaticNamespaceBindingIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    sc:in-scope-variables
+ *  
+ * Author: Zorba Team
+ */
+class InscopeVariablesIteratorState : public PlanIteratorState
+{
+public:
+  std::auto_ptr<std::vector<xqpString> > keymap; //vector of keys
+  unsigned int position; //current position
+
+  InscopeVariablesIteratorState();
+
+  ~InscopeVariablesIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class InscopeVariablesIterator : public NaryBaseIterator<InscopeVariablesIterator, InscopeVariablesIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(InscopeVariablesIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(InscopeVariablesIterator,
+    NaryBaseIterator<InscopeVariablesIterator, InscopeVariablesIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<InscopeVariablesIterator, InscopeVariablesIteratorState>*)this);
+  }
+
+  InscopeVariablesIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<InscopeVariablesIterator, InscopeVariablesIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~InscopeVariablesIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    sc:default-collection-type
+ *  
+ * Author: Zorba Team
+ */
+class DefaultCollectionTypeIterator : public NaryBaseIterator<DefaultCollectionTypeIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(DefaultCollectionTypeIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(DefaultCollectionTypeIterator,
+    NaryBaseIterator<DefaultCollectionTypeIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<DefaultCollectionTypeIterator, PlanIteratorState>*)this);
+  }
+
+  DefaultCollectionTypeIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<DefaultCollectionTypeIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~DefaultCollectionTypeIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    sc:xpath10-compatibility-mode
+ *  
+ * Author: Zorba Team
+ */
+class XPath10CompatModeIterator : public NaryBaseIterator<XPath10CompatModeIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(XPath10CompatModeIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(XPath10CompatModeIterator,
+    NaryBaseIterator<XPath10CompatModeIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<XPath10CompatModeIterator, PlanIteratorState>*)this);
+  }
+
+  XPath10CompatModeIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<XPath10CompatModeIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~XPath10CompatModeIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    sc:statically-known-documents
+ *  
+ * Author: Zorba Team
+ */
+class StaticallyKnownDocumentsIterator : public NaryBaseIterator<StaticallyKnownDocumentsIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(StaticallyKnownDocumentsIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(StaticallyKnownDocumentsIterator,
+    NaryBaseIterator<StaticallyKnownDocumentsIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<StaticallyKnownDocumentsIterator, PlanIteratorState>*)this);
+  }
+
+  StaticallyKnownDocumentsIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<StaticallyKnownDocumentsIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~StaticallyKnownDocumentsIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    sc:statically-known-collations
+ *  
+ * Author: Zorba Team
+ */
+class StaticallyKnownCollationsIteratorState : public PlanIteratorState
+{
+public:
+  std::auto_ptr<std::vector<xqpString> > keymap; //vector of keys
+  unsigned int position; //current position
+
+  StaticallyKnownCollationsIteratorState();
+
+  ~StaticallyKnownCollationsIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class StaticallyKnownCollationsIterator : public NaryBaseIterator<StaticallyKnownCollationsIterator, StaticallyKnownCollationsIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(StaticallyKnownCollationsIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(StaticallyKnownCollationsIterator,
+    NaryBaseIterator<StaticallyKnownCollationsIterator, StaticallyKnownCollationsIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<StaticallyKnownCollationsIterator, StaticallyKnownCollationsIteratorState>*)this);
+  }
+
+  StaticallyKnownCollationsIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<StaticallyKnownCollationsIterator, StaticallyKnownCollationsIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~StaticallyKnownCollationsIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    sc:construction-mode
+ *  
+ * Author: Zorba Team
+ */
+class ConstructionModeIterator : public NaryBaseIterator<ConstructionModeIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(ConstructionModeIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ConstructionModeIterator,
+    NaryBaseIterator<ConstructionModeIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<ConstructionModeIterator, PlanIteratorState>*)this);
+  }
+
+  ConstructionModeIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<ConstructionModeIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~ConstructionModeIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    sc:ordering-mode
+ *  
+ * Author: Zorba Team
+ */
+class OrderingModeIterator : public NaryBaseIterator<OrderingModeIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(OrderingModeIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(OrderingModeIterator,
+    NaryBaseIterator<OrderingModeIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<OrderingModeIterator, PlanIteratorState>*)this);
+  }
+
+  OrderingModeIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<OrderingModeIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~OrderingModeIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    sc:default-order
+ *  
+ * Author: Zorba Team
+ */
+class DefaultOrderIterator : public NaryBaseIterator<DefaultOrderIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(DefaultOrderIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(DefaultOrderIterator,
+    NaryBaseIterator<DefaultOrderIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<DefaultOrderIterator, PlanIteratorState>*)this);
+  }
+
+  DefaultOrderIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<DefaultOrderIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~DefaultOrderIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    sc:boundary-space-policy
+ *  
+ * Author: Zorba Team
+ */
+class BoundarySpacePolicyIterator : public NaryBaseIterator<BoundarySpacePolicyIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(BoundarySpacePolicyIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(BoundarySpacePolicyIterator,
+    NaryBaseIterator<BoundarySpacePolicyIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<BoundarySpacePolicyIterator, PlanIteratorState>*)this);
+  }
+
+  BoundarySpacePolicyIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<BoundarySpacePolicyIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~BoundarySpacePolicyIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    sc:copy-namespaces-mode
+ *  
+ * Author: Zorba Team
+ */
+class CopyNamespacesModeIterator : public NaryBaseIterator<CopyNamespacesModeIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(CopyNamespacesModeIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(CopyNamespacesModeIterator,
+    NaryBaseIterator<CopyNamespacesModeIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<CopyNamespacesModeIterator, PlanIteratorState>*)this);
+  }
+
+  CopyNamespacesModeIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<CopyNamespacesModeIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~CopyNamespacesModeIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    sc:function-names
+ *  
+ * Author: Zorba Team
+ */
+class FunctionNamesIteratorState : public PlanIteratorState
+{
+public:
+  std::auto_ptr<std::vector<xqpString> > keymap; //vector of keys
+  unsigned int position; //current position
+
+  FunctionNamesIteratorState();
+
+  ~FunctionNamesIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class FunctionNamesIterator : public NaryBaseIterator<FunctionNamesIterator, FunctionNamesIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FunctionNamesIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FunctionNamesIterator,
+    NaryBaseIterator<FunctionNamesIterator, FunctionNamesIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FunctionNamesIterator, FunctionNamesIteratorState>*)this);
+  }
+
+  FunctionNamesIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FunctionNamesIterator, FunctionNamesIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FunctionNamesIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    sc:function-arguments-count
+ *  
+ * Author: Zorba Team
+ */
+class FunctionArgumentsCountIteratorState : public PlanIteratorState
+{
+public:
+  std::vector< int > arities; //vector of arities
+  unsigned int position; //current position
+
+  FunctionArgumentsCountIteratorState();
+
+  ~FunctionArgumentsCountIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class FunctionArgumentsCountIterator : public NaryBaseIterator<FunctionArgumentsCountIterator, FunctionArgumentsCountIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FunctionArgumentsCountIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FunctionArgumentsCountIterator,
+    NaryBaseIterator<FunctionArgumentsCountIterator, FunctionArgumentsCountIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FunctionArgumentsCountIterator, FunctionArgumentsCountIteratorState>*)this);
+  }
+
+  FunctionArgumentsCountIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FunctionArgumentsCountIterator, FunctionArgumentsCountIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FunctionArgumentsCountIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    sc:in-scope-schema-types
+ *  
+ * Author: Zorba Team
+ */
+class InScopeSchemaTypesIteratorState : public PlanIteratorState
+{
+public:
+  unsigned int position; //current position
+
+  InScopeSchemaTypesIteratorState();
+
+  ~InScopeSchemaTypesIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class InScopeSchemaTypesIterator : public NaryBaseIterator<InScopeSchemaTypesIterator, InScopeSchemaTypesIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(InScopeSchemaTypesIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(InScopeSchemaTypesIterator,
+    NaryBaseIterator<InScopeSchemaTypesIterator, InScopeSchemaTypesIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<InScopeSchemaTypesIterator, InScopeSchemaTypesIteratorState>*)this);
+  }
+
+  InScopeSchemaTypesIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<InScopeSchemaTypesIterator, InScopeSchemaTypesIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~InScopeSchemaTypesIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
  *      sc:is-declared-integrity-constraint
  *    
  * Author: Zorba Team

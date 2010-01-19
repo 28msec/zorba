@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,11 +19,12 @@
 #include "zorbatypes/xqpstring.h"
 #include "zorbatypes/representations.h"
 
+
 #define ZORBA_HASHMAP_WITH_SERIALIZATION
 #include "util/hashmap.h"
 #undef ZORBA_HASHMAP_WITH_SERIALIZATION
 
-namespace zorba 
+namespace zorba
 {
 
 class expr;
@@ -42,7 +43,7 @@ class ZORBA_DLL_PUBLIC context : public SimpleRCObject
 {
 protected:
 
-  enum ctx_value_type 
+  enum ctx_value_type
   {
     CTX_EXPR, CTX_FUNCTION, CTX_ARITY, CTX_INT, CTX_BOOL, CTX_XQTYPE, CTX_MODULE
   };
@@ -59,11 +60,11 @@ public:
   {
     enum ctx_value_type type;
 
-    union 
-    { 
+    union
+    {
       expr             * exprValue;
       function         * functionValue;
-      ArityFMap        * fmapValue; 
+      ArityFMap        * fmapValue;
       int                intValue;
       bool               boolValue;
 		  const XQType     * typeValue; ///do manual ref counting on this
@@ -74,7 +75,7 @@ public:
     SERIALIZABLE_CLASS_CONSTRUCTOR(ctx_value_t)
     void serialize(::zorba::serialization::Archiver& ar);
 
-    ctx_value_t(enum ctx_value_type type = (enum ctx_value_type)-1) 
+    ctx_value_t(enum ctx_value_type type = (enum ctx_value_type)-1)
     {
       this->type = type;
     }
@@ -100,7 +101,7 @@ public:
 
 
   typedef xqp_string (* str_param_t) ();
-  
+
 protected:
 	context                           * parent;
 	serializable_hashmap<ctx_value_t>   keymap;     // maps strings to ctx_values
@@ -137,34 +138,35 @@ public:
 
 	void set_default_function_ns(const char* ns, const QueryLoc* loc = NULL);
 
+  // Returns all the keys in the str_keymap hashtable, used by instrospection
+  std::vector<xqp_string>* get_all_str_keys() const;
+
+  // Returns all the keys in the keymap hashtable, used by instrospection
+  std::vector<xqp_string>* get_all_keymap_keys() const;
+
 protected:
   bool lookup_once(xqp_string key, xqp_string& val) const
-  { 
-    return str_keymap.get(key, val); 
+  {
+    return str_keymap.get(key, val);
   }
 
   bool lookup_once2(const char* key1, xqp_string key2, xqp_string& val) const
   {
-    return str_keymap.get2(key1, key2, val); 
+    return str_keymap.get2(key1, key2, val);
   }
 
   bool lookup_once (xqp_string key, ctx_value_t &val) const
   {
-    return keymap.get (key, val); 
+    return keymap.get (key, val);
   }
 
   bool lookup_once2 (const char *key1, xqp_string key2, ctx_value_t& val) const
   {
-    return keymap.get2 (key1, key2, val); 
+    return keymap.get2 (key1, key2, val);
   }
 
-	template<class V> bool context_value(xqp_string key, V &val) const
-	{
-		if (lookup_once (key, val))
-      return true;
-    else
-      return parent == NULL ? false : parent->context_value (key, val);
-	}
+	template<class V> bool context_value(xqp_string key, V &val) const; // body moved to .cpp
+
 
 	template<class V> bool context_value2(const char *key1, xqp_string key2, V& val) const
 	{
@@ -183,31 +185,31 @@ protected:
       return parent == NULL ? false : parent->lookup_module (key, val);
   }
 
-  expr* lookup_expr (xqp_string key) const 
+  expr* lookup_expr (xqp_string key) const
   {
     ctx_value_t val(CTX_EXPR);
     return context_value (key, val) ? val.exprValue : NULL;
   }
 
-  expr* lookup_expr2 (const char *key1, xqp_string key2) const 
+  expr* lookup_expr2 (const char *key1, xqp_string key2) const
   {
     ctx_value_t val(CTX_EXPR);
     return context_value2 (key1, key2, val) ? val.exprValue : NULL;
   }
 
-  function* lookup_func (xqp_string key) const 
+  function* lookup_func (xqp_string key) const
   {
     ctx_value_t val(CTX_FUNCTION);
     return (context_value (key, val)) ? val.functionValue : NULL;
   }
 
-  function* lookup_func2 (xqp_string key1, xqp_string key2) const 
+  function* lookup_func2 (xqp_string key1, xqp_string key2) const
   {
     ctx_value_t val(CTX_FUNCTION);
     return (context_value2 (key1.c_str(), key2, val)) ? val.functionValue : NULL;
   }
 
-  ArityFMap* lookup_fmap (xqp_string key) const 
+  ArityFMap* lookup_fmap (xqp_string key) const
   {
     ctx_value_t val(CTX_ARITY);
     return (context_value (key, val)) ? val.fmapValue : NULL;
@@ -239,6 +241,9 @@ protected:
   void set_parent_as_root();
 };
 
+
+/* Debugging purposes */
+std::ostream& operator<<(std::ostream& stream, const context::ctx_value_t& object);
 
 }	/* namespace zorba */
 

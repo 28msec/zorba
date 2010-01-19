@@ -210,6 +210,36 @@ namespace zorba{
 
     class DeclaredIndexesIterator;
 
+    class StaticNamespacesIterator;
+
+    class StaticNamespaceBindingIterator;
+
+    class InscopeVariablesIterator;
+
+    class DefaultCollectionTypeIterator;
+
+    class XPath10CompatModeIterator;
+
+    class StaticallyKnownDocumentsIterator;
+
+    class StaticallyKnownCollationsIterator;
+
+    class ConstructionModeIterator;
+
+    class OrderingModeIterator;
+
+    class DefaultOrderIterator;
+
+    class BoundarySpacePolicyIterator;
+
+    class CopyNamespacesModeIterator;
+
+    class FunctionNamesIterator;
+
+    class FunctionArgumentsCountIterator;
+
+    class InScopeSchemaTypesIterator;
+
     class IsDeclaredICIterator;
 
     class DeclaredICsIterator;
@@ -703,6 +733,51 @@ public:
 
     virtual void beginVisit ( const DeclaredIndexesIterator& ) = 0;
     virtual void endVisit   ( const DeclaredIndexesIterator& ) = 0;
+
+    virtual void beginVisit ( const StaticNamespacesIterator& ) = 0;
+    virtual void endVisit   ( const StaticNamespacesIterator& ) = 0;
+
+    virtual void beginVisit ( const StaticNamespaceBindingIterator& ) = 0;
+    virtual void endVisit   ( const StaticNamespaceBindingIterator& ) = 0;
+
+    virtual void beginVisit ( const InscopeVariablesIterator& ) = 0;
+    virtual void endVisit   ( const InscopeVariablesIterator& ) = 0;
+
+    virtual void beginVisit ( const DefaultCollectionTypeIterator& ) = 0;
+    virtual void endVisit   ( const DefaultCollectionTypeIterator& ) = 0;
+
+    virtual void beginVisit ( const XPath10CompatModeIterator& ) = 0;
+    virtual void endVisit   ( const XPath10CompatModeIterator& ) = 0;
+
+    virtual void beginVisit ( const StaticallyKnownDocumentsIterator& ) = 0;
+    virtual void endVisit   ( const StaticallyKnownDocumentsIterator& ) = 0;
+
+    virtual void beginVisit ( const StaticallyKnownCollationsIterator& ) = 0;
+    virtual void endVisit   ( const StaticallyKnownCollationsIterator& ) = 0;
+
+    virtual void beginVisit ( const ConstructionModeIterator& ) = 0;
+    virtual void endVisit   ( const ConstructionModeIterator& ) = 0;
+
+    virtual void beginVisit ( const OrderingModeIterator& ) = 0;
+    virtual void endVisit   ( const OrderingModeIterator& ) = 0;
+
+    virtual void beginVisit ( const DefaultOrderIterator& ) = 0;
+    virtual void endVisit   ( const DefaultOrderIterator& ) = 0;
+
+    virtual void beginVisit ( const BoundarySpacePolicyIterator& ) = 0;
+    virtual void endVisit   ( const BoundarySpacePolicyIterator& ) = 0;
+
+    virtual void beginVisit ( const CopyNamespacesModeIterator& ) = 0;
+    virtual void endVisit   ( const CopyNamespacesModeIterator& ) = 0;
+
+    virtual void beginVisit ( const FunctionNamesIterator& ) = 0;
+    virtual void endVisit   ( const FunctionNamesIterator& ) = 0;
+
+    virtual void beginVisit ( const FunctionArgumentsCountIterator& ) = 0;
+    virtual void endVisit   ( const FunctionArgumentsCountIterator& ) = 0;
+
+    virtual void beginVisit ( const InScopeSchemaTypesIterator& ) = 0;
+    virtual void endVisit   ( const InScopeSchemaTypesIterator& ) = 0;
 
     virtual void beginVisit ( const IsDeclaredICIterator& ) = 0;
     virtual void endVisit   ( const IsDeclaredICIterator& ) = 0;

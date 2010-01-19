@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -53,10 +53,10 @@
 #include <time.h>
 #endif
 
-namespace zorba 
-{ 
+namespace zorba
+{
 
-namespace simplestore 
+namespace simplestore
 {
 
 typedef rchandle<store::TempSeq> TempSeq_t;
@@ -78,24 +78,24 @@ public:
     theItems = &aItems;
   }
 
-  virtual ~NameIterator() 
+  virtual ~NameIterator()
   {
     close();
   }
 
-  virtual void open() 
+  virtual void open()
   {
-    theIterator = theItems->begin(); 
+    theIterator = theItems->begin();
   }
 
-  virtual bool next(store::Item_t& aResult) 
+  virtual bool next(store::Item_t& aResult)
   {
-    if (theIterator == theItems->end()) 
+    if (theIterator == theItems->end())
     {
        aResult = NULL;
       return false;
     }
-    else 
+    else
     {
       aResult = (*theIterator).first;
       ++theIterator;
@@ -103,7 +103,7 @@ public:
     }
   }
 
-  virtual void reset() 
+  virtual void reset()
   {
     theIterator = theItems->begin();
   }
@@ -313,15 +313,15 @@ void SimpleStore::shutdown()
   }
 
   // do cleanup of the libxml2 library
-  // however, after that, a user will have to call 
+  // however, after that, a user will have to call
   // LIBXML_TEST_VERSION if he wants to use libxml2
   // beyond the lifecycle of zorba
-  xmlCleanupParser(); 
+  xmlCleanupParser();
 
 #ifdef ZORBA_STORE_MSDOM
     CoUninitialize();
 #endif
-  
+
   theIsInitialized = false;
 }
 
@@ -357,8 +357,8 @@ XmlLoader* SimpleStore::getXmlLoader(error::ErrorManager* aErrorManager)
                            store::Properties::instance()->buildDataguide());
 #else
 
-  return new SimpleXmlLoader(theItemFactory, 
-                            aErrorManager, 
+  return new SimpleXmlLoader(theItemFactory,
+                            aErrorManager,
                             (store::Properties::instance())->buildDataguide());
 #endif
 }
@@ -388,7 +388,7 @@ void SimpleStore::populateIndex(
           ZORBA_ERROR_DESC(XQP0019_INTERNAL_ERROR, "Incomplete key during index build");
         }
       }
-      
+
       index->insert(key, domainItem);
 
       key = NULL; // ownership of the key obj passes to the index.
@@ -407,7 +407,7 @@ void SimpleStore::populateIndex(
 }
 
 /*******************************************************************************
-  Create an index with a given URI and return an rchandle to the index object. 
+  Create an index with a given URI and return an rchandle to the index object.
   If an index with the given URI exists already and the index we want to create
   is not a temporary one, raise an error.
 ********************************************************************************/
@@ -470,7 +470,7 @@ store::Index* SimpleStore::getIndex(const store::Item* qname)
 
   return NULL;
 }
-    
+
 
 /*******************************************************************************
 
@@ -497,7 +497,7 @@ store::Iterator_t SimpleStore::listIndexNames()
 
 ********************************************************************************/
 store::IC_t SimpleStore::activateIC(
-    const store::Item_t& icQName, 
+    const store::Item_t& icQName,
     const store::Item_t& collectionQName)
 {
   ZORBA_ASSERT(icQName != NULL);
@@ -522,7 +522,7 @@ store::IC_t SimpleStore::activateIC(
 
 ********************************************************************************/
 store::IC_t SimpleStore::activateForeignKeyIC(
-    const store::Item_t& icQName, 
+    const store::Item_t& icQName,
     const store::Item_t& fromCollectionQName,
     const store::Item_t& toCollectionQName)
 {
@@ -549,7 +549,7 @@ void SimpleStore::deactivateIC(const store::Item* icQName)
   ZORBA_ASSERT(icQName != NULL);
 
   store::IC_t ic;
-  
+
   if (!theICs.get(icQName, ic))
   {
     ZORBA_ERROR_PARAM(STR0016_IC_DOES_NOT_EXIST,
@@ -622,7 +622,7 @@ void SimpleStore::deleteUriCollection(const xqpStringStore_t& uri)
 
   bool deleted = theUriCollections.remove(uri);
 
-  if (!deleted) 
+  if (!deleted)
   {
     ZORBA_ERROR_PARAM(STR0009_COLLECTION_NOT_FOUND, uri->c_str(), "");
   }
@@ -697,7 +697,7 @@ void SimpleStore::deleteCollection(const store::Item* aName)
   if (aName == NULL)
     return;
 
-  if (!theCollections.remove(aName)) 
+  if (!theCollections.remove(aName))
   {
     ZORBA_ERROR_PARAM(STR0009_COLLECTION_NOT_FOUND, aName->getStringValue(), "");
   }
@@ -739,7 +739,7 @@ store::Item_t SimpleStore::loadDocument(
   std::auto_ptr<XmlLoader> loader(getXmlLoader(&lErrorManager));
 
   root = loader->loadXml(uri, stream);
-  if (lErrorManager.hasErrors()) 
+  if (lErrorManager.hasErrors())
   {
     ZORBA_ERROR_PARAM(lErrorManager.getErrors().front().theErrorCode,
                       lErrorManager.getErrors().front().theDescription, "");
@@ -758,7 +758,7 @@ store::Item_t SimpleStore::loadDocument(
   by Zorba.
 ********************************************************************************/
 store::Item_t SimpleStore::loadDocument(
-    const xqpStringStore_t& uri, 
+    const xqpStringStore_t& uri,
     std::istream* stream,
     bool storeDocument)
 {
@@ -778,7 +778,7 @@ store::Item_t SimpleStore::loadDocument(
 
 /*******************************************************************************
   Add the given node with the given uri to the store. Essentially, this method
-  establishes an association between a uri and a node. If the given uri is 
+  establishes an association between a uri and a node. If the given uri is
   already associated to another node, the method raises an error. If the given
   uri is already associated to the given node, this method is a noop.
 ********************************************************************************/
@@ -911,16 +911,16 @@ bool SimpleStore::getReference(store::Item_t& result, const store::Item* node)
 
   if (n->getNodeKind() == store::StoreConsts::attributeNode)
   {
-    stream << "zorba://node_reference/" 
-           << n->getCollectionId() << "/" 
+    stream << "zorba://node_reference/"
+           << n->getCollectionId() << "/"
            << n->getTreeId() << "/"
            << n->getTree()->getPosition() + 1 << "/a/"
            << n->getOrdPath().serialize();
   }
   else
   {
-    stream << "zorba://node_reference/" 
-           << n->getCollectionId() << "/" 
+    stream << "zorba://node_reference/"
+           << n->getCollectionId() << "/"
            << n->getTreeId() << "/"
            << n->getTree()->getPosition() + 1 << "/c/"
            << n->getOrdPath().serialize();
@@ -1086,7 +1086,7 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
     }
   }
 
-  if (rootNode == NULL) 
+  if (rootNode == NULL)
   {
     result = NULL;
     return false;
@@ -1095,10 +1095,10 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
   //
   // Search for node in the tree
   //
-  
+
   OrdPath op((unsigned char*)start, strlen(start));
 
-  if (rootNode->getOrdPath() == op) 
+  if (rootNode->getOrdPath() == op)
   {
     result = rootNode;
     return true;
@@ -1152,7 +1152,7 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
     for (i = 0; i < numChildren; i++)
     {
       XmlNode* child = parent2->getChild(i);
-      
+
       OrdPath::RelativePosition pos =  child->getOrdPath().getRelativePosition(op);
 
       if (pos == OrdPath::SELF)
@@ -1171,7 +1171,7 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
         return false;
       }
     }
-    
+
     if (i == numChildren)
     {
       result = NULL;
@@ -1229,7 +1229,7 @@ TempSeq_t SimpleStore::createTempSeq(
   }else{
     tempSeq = new SimpleTempSeq(iterator, copyNodes);
   }
-  
+
   return tempSeq;
 }
 

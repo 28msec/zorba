@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -44,7 +44,7 @@ ZorbaImpl::ZorbaImpl() : theIsInitialized(false)
 }
 
 
-ZorbaImpl::~ZorbaImpl() 
+ZorbaImpl::~ZorbaImpl()
 {
   shutdown();
 }
@@ -57,7 +57,7 @@ ZorbaImpl::~ZorbaImpl()
  * or implicitly at destruction of the singleton instance.
  */
 void
-ZorbaImpl::shutdown() 
+ZorbaImpl::shutdown()
 {
   if ( ! theIsInitialized )
     return;
@@ -75,7 +75,7 @@ ZorbaImpl::shutdown()
  * when calling getInstance after a former shutdown.
  */
 void
-ZorbaImpl::init(store::Store* store) 
+ZorbaImpl::init(store::Store* store)
 {
   GlobalEnvironment::init(store);
   theIsInitialized = true;
@@ -104,7 +104,7 @@ ZorbaImpl::compileQuery(
 XQuery_t
 ZorbaImpl::compileQuery(
     const String& aQuery,
-    const StaticContext_t& aStaticContext, 
+    const StaticContext_t& aStaticContext,
     ErrorHandler* aErrorHandler)
 {
   Zorba_CompilerHints_t lHints;
@@ -115,7 +115,7 @@ ZorbaImpl::compileQuery(
 XQuery_t
 ZorbaImpl::compileQuery(
     const String& aQuery,
-    const Zorba_CompilerHints_t& aHints, 
+    const Zorba_CompilerHints_t& aHints,
     ErrorHandler* aErrorHandler)
 {
   XQuery_t lXQuery(new XQueryImpl());
@@ -129,8 +129,8 @@ ZorbaImpl::compileQuery(
 XQuery_t
 ZorbaImpl::compileQuery(
     const String& aQuery,
-    const StaticContext_t& aStaticContext, 
-    const Zorba_CompilerHints_t& aHints, 
+    const StaticContext_t& aStaticContext,
+    const Zorba_CompilerHints_t& aHints,
     ErrorHandler* aErrorHandler)
 {
   XQuery_t lXQuery(new XQueryImpl());
@@ -163,7 +163,7 @@ ZorbaImpl::compileQuery(
 XQuery_t
 ZorbaImpl::compileQuery(
     std::istream& aQuery,
-    const Zorba_CompilerHints_t& aHints, 
+    const Zorba_CompilerHints_t& aHints,
     ErrorHandler* aErrorHandler)
 {
   XQuery_t lXQuery(new XQueryImpl());
@@ -177,7 +177,7 @@ ZorbaImpl::compileQuery(
 XQuery_t
 ZorbaImpl::compileQuery(
     std::istream& aQuery,
-    const StaticContext_t& aStaticContext, 
+    const StaticContext_t& aStaticContext,
     const Zorba_CompilerHints_t& aHints,
     ErrorHandler* aErrorHandler)
 {
@@ -247,7 +247,7 @@ ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aError)
                                  lIter);
     aErrorHandler->userError(lUserException);
   }
-  else if (aError.isStaticError()) 
+  else if (aError.isStaticError())
   {
     StaticException lStaticException(aError.theErrorCode,
                                      String(aError.theDescription.theStrStore),
@@ -269,7 +269,7 @@ ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aError)
                                        aError.theQueryColumn);
     aErrorHandler->dynamicError(lDynamicException);
   }
-  else if (aError.isTypeError()) 
+  else if (aError.isTypeError())
   {
     TypeException lTypeException(aError.theErrorCode,
                                  String(aError.theDescription.theStrStore),
@@ -280,7 +280,7 @@ ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aError)
                                  aError.theQueryColumn);
     aErrorHandler->typeError(lTypeException);
   }
-  else if (aError.isSerializationError()) 
+  else if (aError.isSerializationError())
   {
     SerializationException lSerException(
                             aError.theErrorCode,
@@ -289,7 +289,7 @@ ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aError)
                             aError.theLineNumber);
     aErrorHandler->serializationError(lSerException);
   }
-  else if (aError.isInternalError()) 
+  else if (aError.isInternalError())
   {
     SystemException lSystemException(aError.theErrorCode,
                                      String(aError.theDescription.theStrStore),
@@ -297,7 +297,7 @@ ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aError)
                                      aError.theLineNumber);
     aErrorHandler->systemError(lSystemException);
   }
-  else 
+  else
   {
     ZORBA_FATAL(0, "Unexpected type of error");
   }
@@ -307,16 +307,16 @@ ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aError)
 void
 ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, const std::string& aDesc)
 {
-  SystemException lSystemException(XQP0019_INTERNAL_ERROR, 
+  SystemException lSystemException(XQP0019_INTERNAL_ERROR,
                                    String(aDesc), "", 0);
   aErrorHandler->systemError(lSystemException);
 }
 
- 
+
 void
 ZorbaImpl::notifyError(ErrorHandler* aErrorHandler)
 {
-  SystemException lSystemException(XQP0019_INTERNAL_ERROR, 
+  SystemException lSystemException(XQP0019_INTERNAL_ERROR,
                                    "An internal error occured.", "", 0);
   aErrorHandler->systemError(lSystemException);
 }

@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,10 +35,10 @@
 #include "zorbautils/lock.h"
 #include "zorbautils/hashmap_itemp.h"
 
-namespace zorba 
-{ 
+namespace zorba
+{
 
-namespace error 
+namespace error
 {
   class ErrorManager;
 }
@@ -49,7 +49,7 @@ namespace store
   class ValueIndexSpecification;
 }
 
-namespace simplestore 
+namespace simplestore
 {
 
 class SimpleStoreManager;
@@ -69,7 +69,7 @@ typedef ItemPointerHashMap<store::IC_t> ICSet;
 
 
 /*******************************************************************************
-  theSchemaTypeNames   : Maps each enum value from SchemaTypeNames (see 
+  theSchemaTypeNames   : Maps each enum value from SchemaTypeNames (see
                          store_defs.h) to its associated QName item.
 
   theCollectionCounter : Incremented every time a new collection is created. The
@@ -97,7 +97,7 @@ typedef ItemPointerHashMap<store::IC_t> ICSet;
 class SimpleStore : public store::Store
 {
   friend class simplestore::SimpleStoreManager;
- 
+
 public:
   static const char* XS_URI;
   static const char* XML_URI;
@@ -208,11 +208,11 @@ public:
   const IndexSet& getIndices() const { return theIndices; }
 
   store::IC_t activateIC(
-        const store::Item_t& icQName, 
+        const store::Item_t& icQName,
         const store::Item_t& collectionQName);
 
   store::IC_t activateForeignKeyIC(
-        const store::Item_t& icQName, 
+        const store::Item_t& icQName,
         const store::Item_t& fromCollectionQName,
         const store::Item_t& toCollectionQName);
 

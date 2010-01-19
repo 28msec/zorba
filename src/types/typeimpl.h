@@ -101,7 +101,7 @@ namespace zorba {
   4. Simple vs. complex.
 
   1. Built-in datatypes are those which are defined in XMLSchema specification.
-     They can be either primitive or derived. 
+     They can be either primitive or derived.
      They can be either atomic or list.
      There are no union built-in types.
      There are no complex built-in types.
@@ -115,7 +115,7 @@ namespace zorba {
      datatypes; they exist ab initio. Primitive types are always atomic and
      built-in.
 
-     Derived datatypes are those that are defined in terms of other datatypes. 
+     Derived datatypes are those that are defined in terms of other datatypes.
      They may be built-in or user-defined, atomic, list, or union, and simple
      or complex.
 
@@ -123,7 +123,7 @@ namespace zorba {
 
      Every xml schema type T, except from xs:AnyType has a "baseType" P, which
      is the parent of T in the type hierarchy. This is true even for primitive
-     types: their baseType is xs:anyAtomicType. 
+     types: their baseType is xs:anyAtomicType.
 
      If T is a type derived from another type D and it base type is P, then D
      and P may or may not be the same type. For example, list types are derived
@@ -140,10 +140,10 @@ namespace zorba {
      space is composed of finite-length sequences of values from the value
      space of the itemType. List types may be built-in or user-defined. They
      are always derived and simple types.
- 
+
      A union datatype is derived from one or more atomic, list or other union
      datatypes, known as the "memberTypes" of that union datatype. The value
-     space of a union datatype is the union of the value spaces memberTypes. 
+     space of a union datatype is the union of the value spaces memberTypes.
      Union types are always user-defined, derived, simple types.
 
   4. Simple types are all the types that are atomic, list, or union types.
@@ -155,7 +155,7 @@ namespace zorba {
   XMLSchema types have a name, which is a qname and uniquely identifies the
   type among all types in the "database" and the in-scope schema definitions.
 
-  
+
   *******************************************************
   The intersection of SequenceTypes and XMLSchema types:
   *******************************************************
@@ -176,7 +176,7 @@ namespace zorba {
   - xs:anyType*, xs:anySimpleType*, and xs:untyped*
 
   - XML Data Mode and XMLSchema both define 45 atomic, built-in types (including
-    xs:anyAtomicType and xs:untypedAtomic). For each such atomic type T, we 
+    xs:anyAtomicType and xs:untypedAtomic). For each such atomic type T, we
     preallocate 4 XQType objs representing the sequence tyoes T, T?, T*, and T+.
 
   - item(), item()?, item()+, item()*
@@ -210,7 +210,7 @@ namespace zorba {
 
   m_manager    : XQType instances are created via methods provided by TypeManager
                  and its subclasses. m_manager is a pointer back to the specific
-                 TypeManager that created this XQType. 
+                 TypeManager that created this XQType.
   m_type_kind  : The "kind" of this type. One "kind" per each concrete subclass
                  of XQType. See type_kind_t enum below
   m_quantifier : The quantifier of this type.
@@ -226,7 +226,7 @@ public:
   //
   // type_kind_t contains one enum code for each concrete subclass of XQType
   //
-  typedef enum 
+  typedef enum
   {
     EMPTY_KIND,            // empty-sequence() (quanttifier = ?)
 
@@ -256,7 +256,7 @@ public:
   //
   // The content kind of a complex type
   //
-  typedef enum 
+  typedef enum
   {
     MIXED_CONTENT_KIND,         // any kind of children nodes
     ELEMENT_ONLY_CONTENT_KIND,  // no text nodes as children
@@ -289,7 +289,7 @@ public:
 public:
   virtual ~XQType() { }
 
-  void free() 
+  void free()
   {
     if (!theIsBuiltin)
       delete this;
@@ -316,6 +316,9 @@ public:
   virtual std::ostream& serialize_ostream(std::ostream& os) const;
 
   virtual std::string toString() const;
+
+  // Attempt to output the type as a string closer to the xs: representation
+  virtual std::string toStdString() const;
 
 protected:
   XQType(
@@ -455,8 +458,8 @@ public:
         TypeConstants::quantifier_t quantifier,
         bool builtin = false)
     :
-    XQType(manager, ITEM_KIND, quantifier, builtin) 
-  { 
+    XQType(manager, ITEM_KIND, quantifier, builtin)
+  {
   }
  public:
   SERIALIZABLE_CLASS(ItemXQType)
@@ -476,7 +479,7 @@ class AnyXQType : public XQType
 public:
   AnyXQType(const TypeManager* manager, bool builtin = false)
     :
-    XQType(manager, ANY_TYPE_KIND, TypeConstants::QUANT_STAR, builtin) 
+    XQType(manager, ANY_TYPE_KIND, TypeConstants::QUANT_STAR, builtin)
   {
   }
 
@@ -500,7 +503,7 @@ public:
   AnySimpleXQType(const TypeManager* manager, bool builtin = false)
     :
     XQType(manager, ANY_SIMPLE_TYPE_KIND, TypeConstants::QUANT_STAR, builtin)
-  { 
+  {
   }
 
   content_kind_t content_kind() const { return SIMPLE_CONTENT_KIND; };
@@ -547,8 +550,8 @@ class EmptyXQType : public XQType
 public:
   EmptyXQType(const TypeManager* manager, bool builtin = false)
     :
-    XQType(manager, EMPTY_KIND, TypeConstants::QUANT_QUESTION, builtin) 
-  { 
+    XQType(manager, EMPTY_KIND, TypeConstants::QUANT_QUESTION, builtin)
+  {
   }
 
   content_kind_t content_kind() const { return EMPTY_CONTENT_KIND; };
@@ -570,8 +573,8 @@ class NoneXQType : public XQType
 public:
   NoneXQType(const TypeManager* manager, bool builtin = false)
     :
-    XQType(manager, NONE_KIND, TypeConstants::QUANT_ONE, builtin) 
-  { 
+    XQType(manager, NONE_KIND, TypeConstants::QUANT_ONE, builtin)
+  {
   }
 
   content_kind_t content_kind() const { return EMPTY_CONTENT_KIND; };
@@ -589,7 +592,7 @@ public:
   Represents a XMLSchema user-defined type that describes the content of an
   element or attribute node.
 
-  m_qname          : The name of this user-defined type. The actual type 
+  m_qname          : The name of this user-defined type. The actual type
                      definition is stored in the TypeManger that created this
                      type (and is pointed to my m_manager). The TypeManager
                      also stores the mapping from the type name to the type
@@ -598,8 +601,8 @@ public:
   m_typeCategory   : Whether this is an atomic, list, union, or complex type.
   m_contentKind    : This type's content kind, if this is a complex type. One
                      of empty, simple, element-only, or mixed.
-  m_listItemType   : This type's itemType, if this is a list type. 
-  m_unionItemTypes : This type's memberTypes, if this is a union type. 
+  m_listItemType   : This type's itemType, if this is a list type.
+  m_unionItemTypes : This type's memberTypes, if this is a union type.
 ********************************************************************************/
 class UserDefinedXQType : public XQType
 {
@@ -609,7 +612,7 @@ public:
     ATOMIC_TYPE,  // atomic types: ex: int, date, token, string
     LIST_TYPE,    // list of simple types: ex: list of int: "1 2 33"
     UNION_TYPE,   // union of simple types: ShirtSize int or string: "8", "small"
-                  // ATOMIC, LIST and UNION types are all SIMPLE types: i.e. 
+                  // ATOMIC, LIST and UNION types are all SIMPLE types: i.e.
                   // their representation is a text value
     COMPLEX_TYPE  // complex types: they represent structure
   };
@@ -643,11 +646,11 @@ public:
         const TypeManager *manager,
         store::Item_t qname,
         xqtref_t baseType,
-        TypeConstants::quantifier_t quantifier, 
+        TypeConstants::quantifier_t quantifier,
         type_category_t typeCategory,
         content_kind_t contentKind);
 
-  // Constructor for List types 
+  // Constructor for List types
   UserDefinedXQType(
         const TypeManager *manager,
         store::Item_t qname,
@@ -655,7 +658,7 @@ public:
         TypeConstants::quantifier_t quantifier,
         const XQType* listItemType);
 
-  // Constructor for Union types 
+  // Constructor for Union types
   UserDefinedXQType(
         const TypeManager *manager,
         store::Item_t qname,

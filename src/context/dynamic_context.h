@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,7 +34,7 @@ template <class V> class ItemPointerHashMap;
   The dynamic context stores the following info:
 
   - The current date and time, i.e the date and time when the dynamic context
-    was created. 
+    was created.
   - The current time in mili-secs.
   - The local timezone (obtained from the machine where zorba is running)
   - The default collection uri (the one to use when fn:collection is invoked
@@ -52,9 +52,9 @@ class dynamic_context
 
 protected:
 
-  struct dctx_value_t 
+  struct dctx_value_t
   {
-    typedef enum 
+    typedef enum
     {
       no_val,
       var_item_val,
@@ -153,7 +153,7 @@ public:
 
   void unbindIndex(const store::Item* qname);
 
-  void activateIC(const store::Item_t& qname, 
+  void activateIC(const store::Item_t& qname,
                   const store::Item_t& collectionQName);
 
   void activateForeignKeyIC(const store::Item_t& qname,
@@ -175,28 +175,30 @@ public:
 
   bool
   addExternalFunctionParam ( const std::string& aName, void* aValue );
-  
+
   bool
   getExternalFunctionParam ( const std::string& aName, void*& aValue) const;
 
+  std::vector<xqp_string>* get_all_keymap_keys() const;
+
 protected:
-  bool lookup_once(const std::string& key, dctx_value_t& val) const 
+  bool lookup_once(const std::string& key, dctx_value_t& val) const
   {
-    return keymap.get(key, val); 
+    return keymap.get(key, val);
   }
 
-  bool context_value(const std::string& key, dctx_value_t& val) const 
+  bool context_value(const std::string& key, dctx_value_t& val) const
   {
-    if (lookup_once(key, val)) 
+    if (lookup_once(key, val))
     {
       return true;
     }
     return theParent == NULL ? false : theParent->context_value(key, val);
   }
 
-  bool context_value(const std::string& key, dctx_value_t& val, ValueMap **map) 
+  bool context_value(const std::string& key, dctx_value_t& val, ValueMap **map)
   {
-    if (lookup_once (key, val)) 
+    if (lookup_once (key, val))
     {
       if (map != NULL) *map = &keymap;
       return true;
@@ -212,7 +214,7 @@ protected:
         store::Iterator_t& var_iter);
 
 };
-  
+
 
 } /* namespace zorba */
 #endif /* ZORBA_DYNAMIC_CONTEXT_H */

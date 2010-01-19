@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -45,7 +45,7 @@
 
 using namespace std;
 
-namespace zorba 
+namespace zorba
 {
 
 
@@ -70,7 +70,7 @@ xqp_string dynamic_context::expand_varname(
     static_context* sctx,
     xqpString& qname)
 {
-  if(!sctx) 
+  if(!sctx)
   {
     ///actually the whole static context is missing
     ZORBA_ERROR_PARAM( XPST0001, "entire static context", "");
@@ -137,7 +137,7 @@ dynamic_context::dynamic_context(dynamic_context* parent)
     GENV_ITEMFACTORY->createDateTime(current_date_time_item,
                                      gmtm.tm_year + 1900,
                                      gmtm.tm_mon + 1,
-                                     gmtm.tm_mday, 
+                                     gmtm.tm_mday,
                                      gmtm.tm_hour,
                                      gmtm.tm_min,
                                      gmtm.tm_sec + timebuffer.millitm/1000.0,
@@ -154,7 +154,7 @@ dynamic_context::dynamic_context(dynamic_context* parent)
     millis = millis * 1000 + tv.tv_usec/1000;
     GENV_ITEMFACTORY->createLong(current_time_millis, millis);
 #endif
-    
+
 	  ctxt_position = 0;
 	}
 	else
@@ -247,7 +247,7 @@ void dynamic_context::set_context_item(
 }
 
 
-store::Item_t dynamic_context::context_item() const 
+store::Item_t dynamic_context::context_item() const
 {
 	return ctxt_item;
 }
@@ -389,7 +389,6 @@ void dynamic_context::set_variable(
   map->put(key, v);
 }
 
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -410,7 +409,7 @@ bool dynamic_context::lookup_var_value(
     const std::string& key,
     store::Item_t& var_item,
     store::Iterator_t& var_iter)
-{ 
+{
   dctx_value_t val;
 
   if(!keymap.get(key, val))
@@ -438,7 +437,7 @@ bool dynamic_context::lookup_var_value(
 ********************************************************************************/
 void dynamic_context::destroy_dctx_value(dctx_value_t* val) 
 {
-  switch (val->type) 
+  switch (val->type)
   {
   case dynamic_context::dctx_value_t::no_val:
     break;
@@ -530,11 +529,11 @@ void dynamic_context::activateIC(
 
 ********************************************************************************/
 void dynamic_context::activateForeignKeyIC(
-    const store::Item_t& qname, 
+    const store::Item_t& qname,
     const store::Item_t& fromCollectionQName,
     const store::Item_t& toCollectionQName)
 {
-  GENV_STORE.activateForeignKeyIC(qname, fromCollectionQName, 
+  GENV_STORE.activateForeignKeyIC(qname, fromCollectionQName,
                                   toCollectionQName);
 }
 
@@ -561,7 +560,7 @@ store::Iterator_t dynamic_context::listActiveICNames()
 
 ********************************************************************************/
 store::IC* dynamic_context::getIC(const store::Item* qname)
-{ 
+{
   return GENV_STORE.getIC(qname);
 }
 
@@ -577,7 +576,7 @@ dynamic_context::addExternalFunctionParam (
   dctx_value_t val;
   val.type = dynamic_context::dctx_value_t::ext_func_param;
   val.func_param = aValue;
-  
+
   return keymap.put ( aName, val);
 }
 
@@ -606,6 +605,18 @@ dynamic_context::getExternalFunctionParam (
   return true;
 }
 
+std::vector<xqp_string>* dynamic_context::get_all_keymap_keys() const
+{
+  std::auto_ptr<std::vector<xqp_string> > keys;
+  if (theParent != NULL)
+    keys.reset(theParent->get_all_keymap_keys());
+  else
+    keys.reset(new std::vector<xqp_string>);
+
+  for (unsigned int i=0; i<keymap.size(); i++)
+    keys->push_back(keymap.getentryKey(i));
+
+  return keys.release();
+}
 
 }	/* namespace zorba */
-

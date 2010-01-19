@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,7 +24,7 @@
 #include "types/schema/schema.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 //#define DO_TRACE
@@ -166,6 +166,28 @@ std::ostream& XQType::serialize_ostream(std::ostream& os) const
             << TypeOps::decode_quantifier(get_quantifier()) << "]";
 }
 
+// Attempt to output the type as a string closer to the xs: representation
+std::string XQType::toStdString() const
+{
+  std::string result = "";
+
+  switch (type_kind())
+  {
+  case EMPTY_KIND:            result += "empty-sequence()"; break;
+  case ATOMIC_TYPE_KIND:      result += "xs:anyAtomicType()"; break;
+  case ITEM_KIND:             result += "item()"; break;
+  case NODE_TYPE_KIND:        result += "node()"; break;
+  case ANY_TYPE_KIND:         result += "xs:anyType"; break;
+  case ANY_SIMPLE_TYPE_KIND:  result += "xs:anySimpleType"; break;
+  case UNTYPED_KIND:          result += "xs:untyped"; break;
+  default:
+      return toString();
+      break;
+  }
+
+  result += TypeOps::decode_quantifier(get_quantifier());
+  return result;
+}
 
 /*******************************************************************************
 
@@ -341,7 +363,7 @@ bool NodeXQType::is_subtype(const NodeXQType& supertype) const
     return (m_content_type != NULL &&
             m_content_type->type_kind() == XQType::UNTYPED_KIND);
   }
-  
+
   if (m_content_type != NULL && supertype.m_content_type != NULL)
   {
     return TypeOps::is_subtype(*m_content_type, *supertype.m_content_type);
@@ -408,7 +430,7 @@ UserDefinedXQType::UserDefinedXQType(
         << " " << contentKindStr(m_contentKind));
 }
 
- 
+
 // Constructor for List types
 UserDefinedXQType::UserDefinedXQType(
     const TypeManager *manager,
@@ -435,7 +457,7 @@ UserDefinedXQType::UserDefinedXQType(
     xqtref_t baseType,
     TypeConstants::quantifier_t quantifier,
     std::vector<xqtref_t> unionItemTypes)
-  : 
+  :
   XQType(manager, USER_DEFINED_KIND, quantifier, false),
   m_qname(qname),
   m_baseType(baseType),
@@ -457,7 +479,7 @@ bool UserDefinedXQType::isSuperTypeOf(const XQType& subType) const
   {
     if (TypeOps::is_equal(*this, *subtype))
       return true;
-        
+
     if (subtype->type_kind() == XQType::USER_DEFINED_KIND)
     {
       subtype = static_cast<const UserDefinedXQType*>(subtype->getBaseType().getp());
@@ -468,7 +490,7 @@ bool UserDefinedXQType::isSuperTypeOf(const XQType& subType) const
     }
   }
   while(true);
-    
+
   return false;
 }
 
@@ -496,7 +518,7 @@ bool UserDefinedXQType::isSubTypeOf(const XQType& supertype) const
     }
   }
   while(true);
-    
+
   return false;
 }
 
@@ -542,7 +564,7 @@ std::ostream& UserDefinedXQType::serialize_ostream(std::ostream& os) const
   default:
     ZORBA_ASSERT(false);
   }
-  
+
   info << " " << contentKindStr(m_contentKind);
 
   return os << "[UserDefinedXQType " << " "

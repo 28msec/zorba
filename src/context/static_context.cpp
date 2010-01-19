@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -122,9 +122,9 @@ void context::serialize(::zorba::serialization::Archiver& ar)
   ar & module_paths;
   ar & theDefaultFunctionNamespace;
 }
-  
 
-function* context::lookup_fmap_func(xqp_string key, int arity) const 
+
+function* context::lookup_fmap_func(xqp_string key, int arity) const
 {
   ArityFMap *fmap = lookup_fmap (key);
   if (fmap == NULL)
@@ -137,7 +137,7 @@ function* context::lookup_fmap_func(xqp_string key, int arity) const
 void context::bind_str (
     xqp_string key,
     xqp_string v,
-    XQUERY_ERROR err) 
+    XQUERY_ERROR err)
 {
   if (str_keymap.put(key, v))
   {
@@ -151,7 +151,7 @@ void context::bind_str2 (
     const char *key1,
     xqp_string key2,
     xqp_string v,
-    XQUERY_ERROR err) 
+    XQUERY_ERROR err)
 {
   if (str_keymap.put2 (key1, key2, v))
   {
@@ -161,7 +161,7 @@ void context::bind_str2 (
 }
 
 
-bool context::bind_expr (xqp_string key, expr *e) 
+bool context::bind_expr (xqp_string key, expr *e)
 {
   ctx_value_t v(CTX_EXPR);
   v.exprValue = e;
@@ -175,7 +175,7 @@ bool context::bind_expr (xqp_string key, expr *e)
 }
 
 
-bool context::bind_expr2 (const char *key1, xqp_string key2, expr *e) 
+bool context::bind_expr2 (const char *key1, xqp_string key2, expr *e)
 {
   ctx_value_t v(CTX_EXPR);
   v.exprValue = e;
@@ -189,7 +189,7 @@ bool context::bind_expr2 (const char *key1, xqp_string key2, expr *e)
 }
 
 
-bool context::bind_func (xqp_string key, function *f) 
+bool context::bind_func (xqp_string key, function *f)
 {
   ctx_value_t v(CTX_FUNCTION);
   v.functionValue = f;
@@ -203,7 +203,7 @@ bool context::bind_func (xqp_string key, function *f)
 }
 
 
-bool context::bind_func2 (const char *key1, xqp_string key2, function *f) 
+bool context::bind_func2 (const char *key1, xqp_string key2, function *f)
 {
   ctx_value_t v(CTX_FUNCTION);
   v.functionValue = f;
@@ -218,7 +218,7 @@ bool context::bind_func2 (const char *key1, xqp_string key2, function *f)
 
 
 bool context::bind_module(xqp_string uri, ExternalModule* m,
-                          bool dyn_loaded) 
+                          bool dyn_loaded)
 {
   ctx_module_t v;
   v.module = m;
@@ -260,7 +260,7 @@ void context::ctx_module_t::serialize(serialization::Archiver &ar)
     ar & dyn_loaded_module;
 
     if (dyn_loaded_module) {
-      InternalModuleURIResolver* lStandardModuleResolver 
+      InternalModuleURIResolver* lStandardModuleResolver
         = GENV.getModuleURIResolver();
 
       module = lStandardModuleResolver->getExternalModule(
@@ -270,17 +270,17 @@ void context::ctx_module_t::serialize(serialization::Archiver &ar)
       if (!module) {
         ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
                              "Couldn't load pre-compiled query because"
-                             << " the external module " << lURIStore 
-                             << " is not available to be loaded from a" 
+                             << " the external module " << lURIStore
+                             << " is not available to be loaded from a"
                              << " dynamic library.");
       }
-    } else { 
+    } else {
       // class registered by the user
       SerializationCallback* lCallback = ar.getUserCallback();
       if (!lCallback) {
         ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
                              "Couldn't load pre-compiled query because"
-                             << " the external module " << lURIStore 
+                             << " the external module " << lURIStore
                              << " is required but no SerializationCallback is"
                              << " given for retrieving that module.");
       }
@@ -290,7 +290,7 @@ void context::ctx_module_t::serialize(serialization::Archiver &ar)
       if (!module) {
         ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
                              "Couldn't load pre-compiled query because"
-                             << " the external module " << lURIStore 
+                             << " the external module " << lURIStore
                              << " is not available using the registered"
                              << " SerializationCallback");
       }
@@ -391,7 +391,7 @@ static_context::static_context()
   set_entity_retrieval_url ("");
 }
 
-  
+
 static_context::static_context (static_context* parent)
   :
   context(parent),
@@ -433,7 +433,7 @@ static_context::~static_context()
   ///free the pointers from ctx_value_t from keymap
   checked_vector<serializable_hashmap<ctx_value_t>::entry>::const_iterator it;
   const char* keybuff;
-  
+
   //keybuff[sizeof(keybuff)-1] = 0;
   for(it = keymap.begin(); it != keymap.end(); it++)
   {
@@ -488,11 +488,11 @@ static_context::~static_context()
 void static_context::serialize_resolvers(serialization::Archiver& ar)
 {
   bool lUserDocResolver, lUserColResolver;
-  if (ar.is_serializing_out()) 
+  if (ar.is_serializing_out())
   {
     // serialize out: remember whether a doc and collection
     //                resolver was registered by the user
-    lUserDocResolver = ((theDocResolver != NULL) && (dynamic_cast<StandardDocumentURIResolver*>(theDocResolver) == NULL)); 
+    lUserDocResolver = ((theDocResolver != NULL) && (dynamic_cast<StandardDocumentURIResolver*>(theDocResolver) == NULL));
     lUserColResolver = ((theColResolver != NULL) && (dynamic_cast<StandardCollectionURIResolver*>(theColResolver) == NULL));
 
 	  ar.set_is_temp_field_one_level(true);
@@ -525,7 +525,7 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
         ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
                              "Couldn't load pre-compiled query because"
                              " no document URI resolver could be retrieved"
-                             " using the given SerializationCallback"); 
+                             " using the given SerializationCallback");
       }
       set_document_uri_resolver(new DocumentURIResolverWrapper(lDocResolver));
     }
@@ -536,7 +536,7 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
         ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
                              "Couldn't load pre-compiled query because"
                              " no collection URI resolver could be retrieved"
-                             " using the given SerializationCallback"); 
+                             " using the given SerializationCallback");
       }
       set_collection_uri_resolver(new CollectionURIResolverWrapper(lColResolver));
     }
@@ -547,7 +547,7 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
 void static_context::serialize_tracestream(serialization::Archiver& ar)
 {
   bool lUserTraceStream;
-  if (ar.is_serializing_out()) 
+  if (ar.is_serializing_out())
   {
     // serialize out: remember whether the user registered a trace stream
     lUserTraceStream = (theTraceStream != 0);
@@ -579,9 +579,9 @@ void static_context::serialize_tracestream(serialization::Archiver& ar)
         ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
                              "Couldn't load pre-compiled query because"
                              " no trace stream could be retrieved"
-                             " using the given SerializationCallback."); 
+                             " using the given SerializationCallback.");
       }
-    } 
+    }
   }
 }
 
@@ -604,9 +604,9 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-static_context* static_context::create_child_context() 
+static_context* static_context::create_child_context()
 {
-  return new static_context(this); 
+  return new static_context(this);
 }
 
 
@@ -629,21 +629,21 @@ TypeManager* static_context::get_typemanager() const
 }
 
 
-TypeManager* static_context::get_local_typemanager() const 
+TypeManager* static_context::get_local_typemanager() const
 {
-  return theTypemgr.getp(); 
+  return theTypemgr.getp();
 }
 
 /*******************************************************************************
 
 ********************************************************************************/
-expr_t static_context::get_query_expr() const 
+expr_t static_context::get_query_expr() const
 {
   return theQueryExpr;
 }
 
 
-void static_context::set_query_expr(expr_t expr) 
+void static_context::set_query_expr(expr_t expr)
 {
   theQueryExpr = expr;
 }
@@ -659,7 +659,7 @@ void static_context::add_decimal_format(const DecimalFormat_t& decimalFormat)
 
 
 DecimalFormat_t static_context::get_decimal_format(const store::Item_t qname)
-{  
+{
   for (std::vector<DecimalFormat_t>::iterator it = theDecimalFormats.begin();
        it != theDecimalFormats.end();
        it++)
@@ -667,7 +667,7 @@ DecimalFormat_t static_context::get_decimal_format(const store::Item_t qname)
     if ((qname.isNull() && (*it)->isDefaultFormat())
         ||
         (!qname.isNull() &&qname->getStringValue()->compare((*it)->getFormatName()->getStringValue()) == 0))
-      return (*it);    
+      return (*it);
   }
   return NULL;
 }
@@ -702,7 +702,7 @@ DECL_STR_PARAM_TRIGGER (static_context, encapsulating_entity_baseuri, MAX_ZORBA_
 ********************************************************************************/
 void static_context::set_xquery_version(const std::string& v)
 {
-  StaticContextConsts::xquery_version_t lVersion 
+  StaticContextConsts::xquery_version_t lVersion
     = StaticContextConsts::xquery_version_unknown;
   if (v == "1.0")
   {
@@ -736,13 +736,13 @@ void static_context::bind_ns (xqp_string prefix, xqp_string ns, const XQUERY_ERR
   mapping is empty. Otherwise, it returns true and the associated uri.
 
 ********************************************************************************/
-bool static_context::lookup_ns (xqp_string prefix, xqp_string &ns) const 
+bool static_context::lookup_ns (xqp_string prefix, xqp_string &ns) const
 {
   return context_value2 ("ns:", prefix, ns) && ! ns.empty();
 }
 
 
-xqp_string static_context::lookup_ns (xqp_string prefix, const XQUERY_ERROR& err) const 
+xqp_string static_context::lookup_ns (xqp_string prefix, const XQUERY_ERROR& err) const
 {
   xqp_string ns;
   if (! lookup_ns (prefix, ns)) {
@@ -756,7 +756,7 @@ xqp_string static_context::lookup_ns (xqp_string prefix, const XQUERY_ERROR& err
 xqp_string static_context::lookup_ns(
     xqp_string prefix,
     const QueryLoc& loc,
-    const XQUERY_ERROR& err) const 
+    const XQUERY_ERROR& err) const
 {
   xqp_string ns;
   if (! lookup_ns (prefix, ns)) {
@@ -767,7 +767,7 @@ xqp_string static_context::lookup_ns(
 }
 
 
-xqp_string static_context::lookup_ns_or_default (xqp_string prefix, xqp_string default_ns) const 
+xqp_string static_context::lookup_ns_or_default (xqp_string prefix, xqp_string default_ns) const
 {
   xqp_string ns;
   if (! lookup_ns (prefix, ns)) {
@@ -777,18 +777,18 @@ xqp_string static_context::lookup_ns_or_default (xqp_string prefix, xqp_string d
 }
 
 
-bool static_context::lookup_elem_ns(const xqp_string pfx, xqp_string& ns) const 
+bool static_context::lookup_elem_ns(const xqp_string pfx, xqp_string& ns) const
 {
   if (pfx.empty())
   {
-    ns = default_elem_type_ns(); 
+    ns = default_elem_type_ns();
 
     if (ns.empty())
       return false;
     else
       return true;
   }
-  else 
+  else
   {
     return lookup_ns(pfx, ns);
   }
@@ -828,14 +828,14 @@ store::Item_t static_context::lookup_qname (
 store::Item_t static_context::lookup_fn_qname(
     xqp_string pfx,
     xqp_string local,
-    const QueryLoc& loc) const 
+    const QueryLoc& loc) const
 {
   store::Item_t ret;
-  try 
+  try
   {
     ret = lookup_qname(default_function_ns(), pfx, local, loc);
   }
-  catch (error::ZorbaError& e) 
+  catch (error::ZorbaError& e)
   {
     // rethrow with current location
     ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
@@ -867,27 +867,27 @@ pair<xqp_string, xqp_string> parse_qname (xqp_string qname)
 }
 
 
-xqp_string static_context::qname_internal_key (const store::Item *qname) 
+xqp_string static_context::qname_internal_key (const store::Item *qname)
 {
     return qname_internal_key2 (qname->getNamespace (), qname->getLocalName ());
 }
 
 
-xqp_string static_context::qname_internal_key (xqp_string default_ns, xqp_string prefix, xqp_string local) const 
+xqp_string static_context::qname_internal_key (xqp_string default_ns, xqp_string prefix, xqp_string local) const
 {
   return qname_internal_key2(prefix.empty () ? default_ns : lookup_ns (prefix),
                              local);
 }
 
 
-xqp_string static_context::qname_internal_key (xqp_string default_ns, xqp_string qname) const 
+xqp_string static_context::qname_internal_key (xqp_string default_ns, xqp_string qname) const
 {
   pair<xqp_string, xqp_string> rqname = parse_qname(qname);
   return qname_internal_key (default_ns, rqname.first, rqname.second);
 }
 
 
-pair<xqp_string, xqp_string> decode_qname_internal_key (xqp_string key) 
+pair<xqp_string, xqp_string> decode_qname_internal_key (xqp_string key)
 {
   pair<xqp_string, xqp_string> result;
   string skey (key);
@@ -903,7 +903,7 @@ pair<xqp_string, xqp_string> decode_qname_internal_key (xqp_string key)
   Function QName, Arity --> Function Object
 
 ********************************************************************************/
-xqp_string static_context::fn_internal_key () 
+xqp_string static_context::fn_internal_key ()
 {
   static xqp_string fmap_xqpstring("fmap:");
   return fmap_xqpstring;
@@ -914,7 +914,7 @@ bool static_context::bind_fn(
     const store::Item* qname,
     function* f,
     int arity,
-    bool allow_override) 
+    bool allow_override)
 {
   xqp_string key = fn_internal_key () + qname_internal_key (qname);
 
@@ -931,7 +931,7 @@ bool static_context::bind_fn(
 
   (*fmap) [arity] = f;
 
-  if (newMap) 
+  if (newMap)
   {
     v.fmapValue = fmap;
     keymap.put (key, v, false);
@@ -944,7 +944,7 @@ bool static_context::bind_fn(
 function* static_context::lookup_fn(
     xqp_string prefix,
     xqp_string local,
-    int arity) const 
+    int arity) const
 {
   return lookup_fn_int(qname_internal_key(default_function_ns(), prefix, local),
                        arity);
@@ -954,7 +954,7 @@ function* static_context::lookup_fn(
 function* static_context::lookup_resolved_fn(
     xqp_string ns,
     xqp_string local,
-    int arity) const 
+    int arity) const
 {
   return lookup_fn_int(qname_internal_key2(ns, local), arity);
 }
@@ -993,14 +993,17 @@ void static_context::find_functions_int (
 {
   ArityFMap *fmap = lookup_fmap(key);
 
-  for (ArityFMap::iterator i = fmap->begin (); i != fmap->end (); i++) 
+  if (fmap != NULL)
   {
-    int arity = (*i).first;
-
-    if (found.find(arity) == found.end ()) 
+    for (ArityFMap::iterator i = fmap->begin (); i != fmap->end (); i++)
     {
-      found.insert (arity);
-      functions.push_back ((*i).second);
+      int arity = (*i).first;
+
+      if (found.find(arity) == found.end ())
+      {
+        found.insert (arity);
+        functions.push_back ((*i).second);
+      }
     }
   }
 
@@ -1055,8 +1058,8 @@ static_context::lookup_stateless_external_function(
 
 
 /*******************************************************************************
-  
-  Type Management : Entity Name --> Type 
+
+  Type Management : Entity Name --> Type
   where entity may be variable, the context item, function, document, collection
 
 ********************************************************************************/
@@ -1102,7 +1105,7 @@ void static_context::set_document_type(xqp_string docURI, xqtref_t t)
 }
 
 
-xqtref_t static_context::get_document_type(const xqp_string docURI) 
+xqtref_t static_context::get_document_type(const xqp_string docURI)
 {
   return lookup_type2("type:doc:", docURI);
 }
@@ -1131,7 +1134,7 @@ void static_context::set_collection_type(xqp_string collURI, xqtref_t t)
 }
 
 
-xqtref_t static_context::get_collection_type(const xqp_string collURI) 
+xqtref_t static_context::get_collection_type(const xqp_string collURI)
 {
   return lookup_type2("type:collection:", collURI);
 }
@@ -1182,25 +1185,25 @@ public:
 
   virtual ~NameIterator() { close(); }
 
-  virtual void open() 
+  virtual void open()
   {
     if (theItems) {
       theIterator = theItems->begin();
     }
   }
 
-  virtual bool next(store::Item_t& aResult) 
+  virtual bool next(store::Item_t& aResult)
   {
     if (!theItems) {
       return false;
     }
 
-    if (theIterator == theItems->end()) 
+    if (theIterator == theItems->end())
     {
       aResult = NULL;
       return false;
     }
-    else 
+    else
     {
       aResult = (*theIterator).first;
       ++theIterator;
@@ -1208,7 +1211,7 @@ public:
     }
   }
 
-  virtual void reset() 
+  virtual void reset()
   {
     if (theItems) {
       theIterator = theItems->begin();
@@ -1219,7 +1222,7 @@ public:
 };
 
 
-store::Iterator_t static_context::list_collection_names() const 
+store::Iterator_t static_context::list_collection_names() const
 {
   return new NameIterator<StaticallyKnownCollection>(theCollectionMap);
 }
@@ -1257,7 +1260,7 @@ ValueIndex* static_context::lookup_index(const store::Item* qname) const
 }
 
 
-store::Iterator_t static_context::list_index_names() const 
+store::Iterator_t static_context::list_index_names() const
 {
   return new NameIterator<ValueIndex>(theIndexMap);
 }
@@ -1295,7 +1298,7 @@ ValueIC_t static_context::lookup_ic(const store::Item* qname) const
 }
 
 
-store::Iterator_t static_context::list_ic_names() const 
+store::Iterator_t static_context::list_ic_names() const
 {
   return new NameIterator<ValueIC>(theICMap);
 }
@@ -1361,11 +1364,11 @@ void static_context::add_collation(const xqp_string& aURI)
 
 XQPCollator* static_context::create_collator(const xqp_string& aURI)
 {
-  return CollationFactory::createCollator(aURI); 
+  return CollationFactory::createCollator(aURI);
 }
 
 
-CollationCache* static_context::get_collation_cache() 
+CollationCache* static_context::get_collation_cache()
 {
   if (!theCollationCache)
     theCollationCache = new CollationCache(this);
@@ -1416,26 +1419,26 @@ bool static_context::bind_option(
   are set, the from_prolog_baseuri hides the baseuri.
 
   The entity_retrieval_url is set by default to the name of file containing the
-  query we are running. It may also be set explicitly from the C++/C api. 
+  query we are running. It may also be set explicitly from the C++/C api.
 ********************************************************************************/
-xqp_string static_context::final_baseuri () 
+xqp_string static_context::final_baseuri ()
 {
   // cached value
   string abs_base_uri = current_absolute_baseuri();
 
-  if(abs_base_uri.empty()) 
+  if(abs_base_uri.empty())
   {
     compute_current_absolute_baseuri();
     abs_base_uri = current_absolute_baseuri();
   }
 
   // won't happen -- we default to a non-empty URI
-  if(abs_base_uri.empty()) 
+  if(abs_base_uri.empty())
   {
     ZORBA_ERROR_DESC( XPST0001, "empty base URI");
     return "";
   }
-  
+
   return abs_base_uri;
 }
 
@@ -1453,51 +1456,51 @@ void static_context::compute_current_absolute_baseuri()
 
   prolog_baseuri = baseuri();
 
-  if (!prolog_baseuri.empty()) 
+  if (!prolog_baseuri.empty())
   {
-    try 
+    try
     {
       URI lCheckValid(prolog_baseuri);
       // is already absolute baseuri
       set_current_absolute_baseuri(lCheckValid.toString());
       return; // valid (absolute) uri
     }
-    catch (error::ZorbaError&) 
+    catch (error::ZorbaError&)
     {
       // assume it's relative and go on
     }
   }
 
-  if (!prolog_baseuri.empty()) 
+  if (!prolog_baseuri.empty())
   {
     /// is relative, needs to be resolved
     ee_baseuri = encapsulating_entity_baseuri();
-    if(!ee_baseuri.empty()) 
+    if(!ee_baseuri.empty())
     {
       set_current_absolute_baseuri(make_absolute_uri(prolog_baseuri, ee_baseuri));
       return;
     }
 
     loaded_uri = entity_retrieval_url();
-    if(!loaded_uri.empty()) 
+    if(!loaded_uri.empty())
     {
       set_current_absolute_baseuri(make_absolute_uri(prolog_baseuri, loaded_uri));
       return;
     }
-    
+
     set_current_absolute_baseuri (make_absolute_uri(prolog_baseuri, implementation_baseuri()));
     return;
   }
 
   ee_baseuri = encapsulating_entity_baseuri();
-  if(!ee_baseuri.empty()) 
+  if(!ee_baseuri.empty())
   {
     set_current_absolute_baseuri(ee_baseuri);
     return;
   }
 
   loaded_uri = entity_retrieval_url();
-  if(!loaded_uri.empty()) 
+  if(!loaded_uri.empty())
   {
     set_current_absolute_baseuri(loaded_uri);
     return;
@@ -1508,9 +1511,9 @@ void static_context::compute_current_absolute_baseuri()
 }
 
 
-xqp_string static_context::baseuri () const 
+xqp_string static_context::baseuri () const
 {
-  xqp_string val;                                        
+  xqp_string val;
   if(!context_value ("int:" "from_prolog_baseuri", val))  // if not found val remains ""
   {
     context_value("int:" "baseuri", val);
@@ -1519,7 +1522,7 @@ xqp_string static_context::baseuri () const
 }
 
 
-void static_context::set_baseuri (xqp_string val, bool from_prolog) 
+void static_context::set_baseuri (xqp_string val, bool from_prolog)
 {
   if (from_prolog)
     // throw XQST0032 if from_prolog_baseuri is already defined
@@ -1532,17 +1535,17 @@ void static_context::set_baseuri (xqp_string val, bool from_prolog)
 }
 
 
-xqp_string static_context::entity_retrieval_url() const 
-{ 
-  xqp_string val; 
-  GET_CONTEXT_VALUE(entity_retrieval_url, val); 
-  return val;                   
-}                               
-                  
-                
-void static_context::set_entity_retrieval_url(xqp_string val) 
-{ 
-  bind_str ("int:entity_retrieval_url", val, MAX_ZORBA_ERROR_CODE);      
+xqp_string static_context::entity_retrieval_url() const
+{
+  xqp_string val;
+  GET_CONTEXT_VALUE(entity_retrieval_url, val);
+  return val;
+}
+
+
+void static_context::set_entity_retrieval_url(xqp_string val)
+{
+  bind_str ("int:entity_retrieval_url", val, MAX_ZORBA_ERROR_CODE);
   set_current_absolute_baseuri ("");
 }
 
@@ -1550,7 +1553,7 @@ void static_context::set_entity_retrieval_url(xqp_string val)
 xqp_string static_context::resolve_relative_uri(
     xqp_string uri,
     xqp_string abs_base_uri,
-    bool validate) 
+    bool validate)
 {
   return make_absolute_uri (uri,
                             abs_base_uri.empty () ? final_baseuri () : abs_base_uri,
@@ -1561,7 +1564,7 @@ xqp_string static_context::resolve_relative_uri(
 xqp_string static_context::make_absolute_uri(
     xqp_string uri,
     xqp_string base_uri,
-    bool validate) 
+    bool validate)
 {
   URI resolved_uri(base_uri, uri, validate);
   return resolved_uri.toString();
@@ -1574,17 +1577,17 @@ xqp_string static_context::make_absolute_uri(
   a module variable or function already appears in this context, the method
   returns false.
 ********************************************************************************/
-bool static_context::import_module(const static_context* module, const QueryLoc& loc) 
+bool static_context::import_module(const static_context* module, const QueryLoc& loc)
 {
   checked_vector<serializable_hashmap<ctx_value_t>::entry>::const_iterator it;
   const char* keybuff;
-  
-  for(it = module->keymap.begin(); it != module->keymap.end(); ++it) 
+
+  for(it = module->keymap.begin(); it != module->keymap.end(); ++it)
   {
     keybuff = (*it).key.c_str();
     const ctx_value_t *val = &(*it).val;
 
-    if (0 == strncmp(keybuff, "var:", 4) && 0 != strncmp(keybuff, "var:$$", 6)) 
+    if (0 == strncmp(keybuff, "var:", 4) && 0 != strncmp(keybuff, "var:$$", 6))
     {
       if (! bind_expr (keybuff, val->exprValue))
         return false;
@@ -1608,14 +1611,14 @@ bool static_context::import_module(const static_context* module, const QueryLoc&
     CollectionMap::iterator coll_end = module->theCollectionMap->end();
     for (; coll_iter != coll_end; ++ coll_iter)
     {
-      if (theCollectionMap == 0) 
+      if (theCollectionMap == 0)
       {
         theCollectionMap = new CollectionMap(0, 0, 8, false);
       }
 
       std::pair<const store::Item*, StaticallyKnownCollection_t > pair = (*coll_iter);
 
-      if (!theCollectionMap->insert(pair.first, pair.second)) 
+      if (!theCollectionMap->insert(pair.first, pair.second))
       {
         ZORBA_ERROR_LOC_PARAM(XDST0002_COLLECTION_ALREADY_IMPORTED, loc,
                               pair.second->getName()->getStringValue(),
@@ -1640,7 +1643,7 @@ bool static_context::import_module(const static_context* module, const QueryLoc&
       if (!theIndexMap->insert((store::Item*)pair.first, pair.second))
       {
         ZORBA_ERROR_LOC_PARAM(XDST0022_INDEX_ALREADY_IMPORTED, loc,
-                              pair.first->getStringValue(), 
+                              pair.first->getStringValue(),
                               module->get_module_namespace().c_str());
       }
     }
@@ -1746,7 +1749,7 @@ static_context::get_module_uri_resolvers(
 void
 static_context::remove_module_uri_resolver(InternalModuleURIResolver* aResolver)
 {
-  for (std::vector<InternalModuleURIResolver*>::iterator 
+  for (std::vector<InternalModuleURIResolver*>::iterator
         lIter = theModuleResolvers.begin();
        lIter != theModuleResolvers.end(); ++lIter) {
     if (aResolver == *lIter) {

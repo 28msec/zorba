@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -163,7 +163,7 @@ public:
   TypeManager* get_local_typemanager() const;
 
   void set_typemanager(rchandle<TypeManager>);
-  
+
   void add_decimal_format(const DecimalFormat_t& decimal_format);
 
   DecimalFormat_t get_decimal_format(const store::Item_t qname);
@@ -256,19 +256,19 @@ public:
   lookup_fn_qname(xqp_string pfx, xqp_string local, const QueryLoc& loc) const;
 
   store::Item_t
-  lookup_elem_qname(xqp_string qname, const QueryLoc& loc) const 
+  lookup_elem_qname(xqp_string qname, const QueryLoc& loc) const
   {
     return lookup_qname(lookup_ns_or_default("", default_elem_type_ns()), qname, loc);
   }
 
   store::Item_t
-  lookup_elem_qname(xqp_string pfx, xqp_string local, const QueryLoc& loc) const 
+  lookup_elem_qname(xqp_string pfx, xqp_string local, const QueryLoc& loc) const
   {
     return lookup_qname(lookup_ns_or_default("", default_elem_type_ns()), pfx, local, loc);
   }
 
   store::Item_t
-  lookup_var_qname(xqp_string qname, const QueryLoc& loc) const 
+  lookup_var_qname(xqp_string qname, const QueryLoc& loc) const
   {
     return lookup_qname ("", qname, loc);
   }
@@ -293,13 +293,13 @@ public:
   // Var QName --> Var Expr
   //
   bool
-  bind_var(const store::Item* qname, expr* expr) 
+  bind_var(const store::Item* qname, expr* expr)
   {
     return bind_expr2 ("var:", qname_internal_key (qname), expr);
   }
 
   expr*
-  lookup_var(xqp_string qname) const 
+  lookup_var(xqp_string qname) const
   {
     return lookup_expr2("var:", qname_internal_key("", qname));
   }
@@ -317,7 +317,7 @@ public:
   }
 
   expr*
-  lookup_var_nofail (xqp_string qname) const 
+  lookup_var_nofail (xqp_string qname) const
   {
     expr* e = lookup_var(qname);
     ZORBA_ASSERT (e != NULL);
@@ -348,13 +348,13 @@ public:
   // in the namespace of the module
   bool
   bind_external_module(ExternalModule* aModule, bool aDynamicallyLoaded = false);
-  
+
   StatelessExternalFunction *
   lookup_stateless_external_function(const xqp_string& prefix,
                                      const xqp_string& local);
 
   //
-  // Type Management : Entity Name --> Type 
+  // Type Management : Entity Name --> Type
   // where entity may be variable, the context item, function, document, collection
   //
   void
@@ -377,7 +377,7 @@ public:
 
   xqtref_t
   get_document_type(const xqp_string);
-	
+
 	void
   set_default_collection_type(xqtref_t t);
 
@@ -431,7 +431,7 @@ public:
   {
     // TODO better use a hashmap for collation itself
     xqpString lTmp;
-    return context_value2<xqp_string>("coll:", aCollURI, lTmp);  
+    return context_value2<xqp_string>("coll:", aCollURI, lTmp);
   }
 
   void bind_default_collation(const xqp_string& aCollURI)
@@ -582,7 +582,7 @@ protected:
   static_context();
 
   static_context(static_context* parent);
- 
+
   void find_functions_int(
         xqp_string key,
                       std::vector<function *>& functions,

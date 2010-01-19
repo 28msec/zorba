@@ -6,7 +6,7 @@
 /////////////////////////////////////////////////////////////////////////////////
 -->
 <zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
-    
+
 <zorba:source>
     <zorba:include  form="Quoted">store/api/iterator.h</zorba:include>
 </zorba:source>
@@ -16,7 +16,6 @@
 ********************************************************************************/
 -->
 <zorba:iterator name="IsDeclaredCollectionIterator">
-
     <zorba:description author="Zorba Team">
       sc:is-declared-collection
     </zorba:description>
@@ -26,14 +25,13 @@
                     brief="the current iterator"/>
     </zorba:state>
 
-    <zorba:function> 
+    <zorba:function>
       <zorba:signature localname="is-declared-collection"
                        prefix="fn-zorba-introspect-sctx">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>xs:boolean</zorba:output>
       </zorba:signature>
     </zorba:function>
-
 </zorba:iterator>
 
 <!--
@@ -41,7 +39,6 @@
 ********************************************************************************/
 -->
 <zorba:iterator name="DeclaredCollectionsIterator">
-
     <zorba:description author="Zorba Team">
       sc:declared-collections
     </zorba:description>
@@ -51,13 +48,12 @@
                     brief="the current iterator"/>
     </zorba:state>
 
-    <zorba:function> 
+    <zorba:function>
       <zorba:signature localname="declared-collections"
                        prefix="fn-zorba-introspect-sctx">
         <zorba:output>xs:QName*</zorba:output>
       </zorba:signature>
     </zorba:function>
-  
 </zorba:iterator>
 
 <!--
@@ -65,7 +61,6 @@
 ********************************************************************************/
 -->
 <zorba:iterator name="IsDeclaredIndexIterator">
-
     <zorba:description author="Zorba Team">
       sc:is-declared-index
     </zorba:description>
@@ -75,14 +70,13 @@
                     brief="the current iterator"/>
     </zorba:state>
 
-    <zorba:function> 
+    <zorba:function>
       <zorba:signature localname="is-declared-index"
                        prefix="fn-zorba-introspect-sctx">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>xs:boolean</zorba:output>
       </zorba:signature>
     </zorba:function>
-
 </zorba:iterator>
 
 <!--
@@ -90,7 +84,6 @@
 ********************************************************************************/
 -->
 <zorba:iterator name="DeclaredIndexesIterator">
-
     <zorba:description author="Zorba Team">
       sc:declared-indexes
     </zorba:description>
@@ -100,21 +93,313 @@
                     brief="the current iterator"/>
     </zorba:state>
 
-    <zorba:function> 
+    <zorba:function>
       <zorba:signature localname="declared-indexes"
                        prefix="fn-zorba-introspect-sctx">
         <zorba:output>xs:QName*</zorba:output>
       </zorba:signature>
     </zorba:function>
-  
 </zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="StaticNamespacesIterator">
+    <zorba:description author="Zorba Team">
+      sc:statically-known-namespaces
+    </zorba:description>
+
+    <zorba:state generateInit="true" generateReset="false" generateDestructor="false">
+      <zorba:member type="std::auto_ptr&lt;std::vector&lt;xqpString&gt; &gt;" name="string_keys"
+                    brief="vector of string keys"/>
+      <zorba:member type="unsigned int" name="position" brief="current position"/>
+    </zorba:state>
+
+    <zorba:function>
+      <zorba:signature localname="statically-known-namespaces"
+                       prefix="fn-zorba-introspect-sctx">
+        <zorba:output>xs:string*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="StaticNamespaceBindingIterator">
+    <zorba:description author="Zorba Team">
+      sc:statically-known-namespace-binding
+    </zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="statically-known-namespace-binding"
+                       prefix="fn-zorba-introspect-sctx">
+        <zorba:param>xs:string</zorba:param>
+        <zorba:output>xs:string?</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="InscopeVariablesIterator">
+  <zorba:description author="Zorba Team">
+    sc:in-scope-variables
+  </zorba:description>
+
+  <zorba:state generateInit="true" generateReset="false" generateDestructor="false">
+    <zorba:member type="std::auto_ptr&lt;std::vector&lt;xqpString&gt; &gt;" name="keymap"
+                  brief="vector of keys"/>
+    <zorba:member type="unsigned int" name="position" brief="current position"/>
+  </zorba:state>
+
+  <zorba:function>
+    <zorba:signature localname="in-scope-variables"
+                     prefix="fn-zorba-introspect-sctx">
+      <zorba:output>xs:QName*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="DefaultCollectionTypeIterator">
+  <zorba:description author="Zorba Team">
+    sc:default-collection-type
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="default-collection-type"
+                     prefix="fn-zorba-introspect-sctx">
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="XPath10CompatModeIterator">
+  <zorba:description author="Zorba Team">
+    sc:xpath10-compatibility-mode
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="xpath10-compatibility-mode"
+                     prefix="fn-zorba-introspect-sctx">
+      <zorba:output>xs:boolean</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="StaticallyKnownDocumentsIterator">
+  <zorba:description author="Zorba Team">
+    sc:statically-known-documents
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="statically-known-documents"
+                     prefix="fn-zorba-introspect-sctx">
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>xs:QName</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="StaticallyKnownCollationsIterator">
+  <zorba:description author="Zorba Team">
+    sc:statically-known-collations
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="statically-known-collations"
+                     prefix="fn-zorba-introspect-sctx">
+      <zorba:output>xs:anyURI*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+
+  <zorba:state generateInit="true" generateReset="false" generateDestructor="false">
+    <zorba:member type="std::auto_ptr&lt;std::vector&lt;xqpString&gt; &gt;" name="keymap"
+                  brief="vector of keys"/>
+    <zorba:member type="unsigned int" name="position" brief="current position"/>
+  </zorba:state>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="ConstructionModeIterator">
+  <zorba:description author="Zorba Team">
+    sc:construction-mode
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="construction-mode"
+                     prefix="fn-zorba-introspect-sctx">
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="OrderingModeIterator">
+  <zorba:description author="Zorba Team">
+    sc:ordering-mode
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="ordering-mode"
+                     prefix="fn-zorba-introspect-sctx">
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="DefaultOrderIterator">
+  <zorba:description author="Zorba Team">
+    sc:default-order
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="default-order"
+                     prefix="fn-zorba-introspect-sctx">
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="BoundarySpacePolicyIterator">
+  <zorba:description author="Zorba Team">
+    sc:boundary-space-policy
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="boundary-space-policy"
+                     prefix="fn-zorba-introspect-sctx">
+      <zorba:output>xs:string</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="CopyNamespacesModeIterator">
+  <zorba:description author="Zorba Team">
+    sc:copy-namespaces-mode
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="copy-namespaces-mode"
+                     prefix="fn-zorba-introspect-sctx">
+      <zorba:output>xs:string+</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="FunctionNamesIterator">
+  <zorba:description author="Zorba Team">
+    sc:function-names
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="function-names"
+                     prefix="fn-zorba-introspect-sctx">
+      <zorba:output>xs:QName*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+
+  <zorba:state generateInit="true" generateReset="false" generateDestructor="false">
+    <zorba:member type="std::auto_ptr&lt;std::vector&lt;xqpString&gt; &gt;" name="keymap"
+                  brief="vector of keys"/>
+    <zorba:member type="unsigned int" name="position" brief="current position"/>
+  </zorba:state>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="FunctionArgumentsCountIterator">
+  <zorba:description author="Zorba Team">
+    sc:function-arguments-count
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="function-arguments-count"
+                     prefix="fn-zorba-introspect-sctx">
+      <zorba:param>xs:QName</zorba:param>
+      <zorba:output>xs:int*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+
+  <zorba:state generateInit="true" generateReset="false" generateDestructor="false">
+    <zorba:member type="std::vector&lt; int &gt;" name="arities"
+                  brief="vector of arities"/>
+    <zorba:member type="unsigned int" name="position" brief="current position"/>
+  </zorba:state>
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="InScopeSchemaTypesIterator">
+  <zorba:description author="Zorba Team">
+    sc:in-scope-schema-types
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="in-scope-schema-types"
+                     prefix="fn-zorba-introspect-sctx">
+      <zorba:output>xs:QName*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+
+  <zorba:state generateInit="true" generateReset="false" generateDestructor="false">
+    <zorba:member type="unsigned int" name="position" brief="current position"/>
+  </zorba:state>
+</zorba:iterator>
+
 
 <!--
 /*******************************************************************************
 *******************************************************************************/
 -->
 <zorba:iterator name="IsDeclaredICIterator">
-
     <zorba:description author="Zorba Team">
       sc:is-declared-integrity-constraint
     </zorba:description>
@@ -124,14 +409,13 @@
                     brief="the current iterator"/>
     </zorba:state>
 
-    <zorba:function> 
+    <zorba:function>
       <zorba:signature localname="is-declared-integrity-constraint"
                        prefix="fn-zorba-introspect-sctx">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>xs:boolean</zorba:output>
       </zorba:signature>
     </zorba:function>
-
 </zorba:iterator>
 
 <!--
@@ -139,24 +423,22 @@
 *******************************************************************************/
 -->
 <zorba:iterator name="DeclaredICsIterator">
-
     <zorba:description author="Zorba Team">
       sc:declared-integrity-constrints
     </zorba:description>
 
-    <zorba:state generateInit="true" generateReset="false" 
+    <zorba:state generateInit="true" generateReset="false"
 		 generateDestructor="false">
-      <zorba:member type="store::Iterator_t" name="nameItState" 
+      <zorba:member type="store::Iterator_t" name="nameItState"
 		    defaultValue="NULL" brief="the current iterator"/>
     </zorba:state>
 
-    <zorba:function> 
+    <zorba:function>
       <zorba:signature localname="declared-integrity-constraints"
                        prefix="fn-zorba-introspect-sctx">
         <zorba:output>xs:QName*</zorba:output>
       </zorba:signature>
     </zorba:function>
-  
 </zorba:iterator>
 
 </zorba:iterators>

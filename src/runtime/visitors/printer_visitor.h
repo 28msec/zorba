@@ -320,6 +320,51 @@ namespace zorba {
     void beginVisit( const DeclaredIndexesIterator& );
     void endVisit  ( const DeclaredIndexesIterator& );
 
+    void beginVisit( const StaticNamespacesIterator& );
+    void endVisit  ( const StaticNamespacesIterator& );
+
+    void beginVisit( const StaticNamespaceBindingIterator& );
+    void endVisit  ( const StaticNamespaceBindingIterator& );
+
+    void beginVisit( const InscopeVariablesIterator& );
+    void endVisit  ( const InscopeVariablesIterator& );
+
+    void beginVisit( const DefaultCollectionTypeIterator& );
+    void endVisit  ( const DefaultCollectionTypeIterator& );
+
+    void beginVisit( const XPath10CompatModeIterator& );
+    void endVisit  ( const XPath10CompatModeIterator& );
+
+    void beginVisit( const StaticallyKnownDocumentsIterator& );
+    void endVisit  ( const StaticallyKnownDocumentsIterator& );
+
+    void beginVisit( const StaticallyKnownCollationsIterator& );
+    void endVisit  ( const StaticallyKnownCollationsIterator& );
+
+    void beginVisit( const ConstructionModeIterator& );
+    void endVisit  ( const ConstructionModeIterator& );
+
+    void beginVisit( const OrderingModeIterator& );
+    void endVisit  ( const OrderingModeIterator& );
+
+    void beginVisit( const DefaultOrderIterator& );
+    void endVisit  ( const DefaultOrderIterator& );
+
+    void beginVisit( const BoundarySpacePolicyIterator& );
+    void endVisit  ( const BoundarySpacePolicyIterator& );
+
+    void beginVisit( const CopyNamespacesModeIterator& );
+    void endVisit  ( const CopyNamespacesModeIterator& );
+
+    void beginVisit( const FunctionNamesIterator& );
+    void endVisit  ( const FunctionNamesIterator& );
+
+    void beginVisit( const FunctionArgumentsCountIterator& );
+    void endVisit  ( const FunctionArgumentsCountIterator& );
+
+    void beginVisit( const InScopeSchemaTypesIterator& );
+    void endVisit  ( const InScopeSchemaTypesIterator& );
+
     void beginVisit( const IsDeclaredICIterator& );
     void endVisit  ( const IsDeclaredICIterator& );
 
