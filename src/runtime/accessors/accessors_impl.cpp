@@ -20,6 +20,7 @@
 #include "system/globalenv.h"
 
 #include "context/namespace_context.h"
+#include "context/static_context.h"
 
 #include "runtime/accessors/accessors.h"
 
@@ -138,7 +139,19 @@ FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     else
     {
       assert(result->isNode());
-
+      
+      {
+        store::Item* typeName = result->getType();
+        
+        TypeManager* typeMgr = theSctx->get_typemanager();
+        
+        xqtref_t schemaType = typeMgr->create_named_type(typeName);
+        if ( schemaType->content_kind()==XQType::ELEMENT_ONLY_CONTENT_KIND )
+        {
+          ZORBA_ERROR_LOC_DESC(FOTY0012, loc, 
+            "fn:data applied on a complex type with element only content");
+        }
+      }
       itemNode.transfer(result);
       itemNode->getTypedValue(result, state->theTypedValueIter);
 
