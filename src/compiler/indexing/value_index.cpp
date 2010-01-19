@@ -82,6 +82,9 @@ void ValueIndex::serialize(::zorba::serialization::Archiver& ar)
   ar & theKeyExprs;
   ar & theKeyTypes;
   ar & theOrderModifiers;
+
+  ar & theSourceNames;
+  ar & theDomainSourceExprs;
 }
 
 
@@ -246,7 +249,7 @@ void ValueIndex::analyze()
 
 void ValueIndex::analyzeExprInternal(
     expr* e,
-    std::vector<const store::Item*>& sourceNames,
+    std::vector</*const */store::Item*>& sourceNames,
     std::vector<expr*>& sourceExprs,
     std::vector<var_expr*>& varExprs,
     expr* dotVar)
@@ -272,7 +275,7 @@ void ValueIndex::analyzeExprInternal(
 
         if (qname != NULL)
         {
-          sourceNames.push_back(qname);
+          sourceNames.push_back((store::Item*)qname);
           sourceExprs.push_back(foExpr);
         }
         else

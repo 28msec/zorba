@@ -189,7 +189,7 @@ private:
   std::vector<xqtref_t>           theKeyTypes;
   std::vector<OrderModifier>      theOrderModifiers;
 
-  std::vector<const store::Item*> theSourceNames;
+  std::vector</*const*/ store::Item*> theSourceNames;
 
   std::vector<expr*>              theDomainSourceExprs;
 
@@ -275,7 +275,7 @@ public:
 private:
   void analyzeExprInternal(
         expr* e,
-        std::vector<const store::Item*>& sourceNames,
+        std::vector</*const */store::Item*>& sourceNames,
         std::vector<expr*>& sourceExprs,
         std::vector<var_expr*>& varExprs,
         expr* dotVar);
