@@ -1,0 +1,48 @@
+module namespace news-data = "http://www.news.org/data";
+
+import schema namespace news = "http://www.news.org/schemas" at "news-schema.xsd";
+
+import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
+
+declare collection news-data:employees
+  as schema-element(news:employee)*;
+
+declare collection news-data:articles as node()*;
+
+declare const ordered collection news-data:months
+  as schema-element(news:month)* 
+  with read-only nodes;
+
+declare automatically maintained value equality index news-data:CityEmp
+  on nodes xqddf:collection(xs:QName("news-data:employees"))
+  by .//news:station/news:city as xs:string;
+
+declare manually maintained value range index news-data:ArtCountEmp
+  on nodes xqddf:collection(xs:QName("news-data:employees"))[./news:position/@kind eq "journalist"]
+  by count(for $art in xqddf:collection(xs:QName("news-data:articles"))
+           where $art/empid = ./@id
+           return $art) as xs:integer;
+
+declare integrity constraint news-data:UniqueId
+  on collection news-data:employees
+  $id check unique key $id/@id;
+
+declare integrity constraint news-data:AuthorNames
+  on collection news-data:articles
+  foreach node $article check fn:string-length($article/author/name) != 0;
+
+declare integrity constraint news-data:ArticleEmployees
+  foreign key
+    from collection news-data:articles node $x keys $x/empid
+    to   collection news-data:employees node $y keys fn:data($y/@id);
+
+declare variable $news-data:employees := xs:QName("news-data:employees");
+declare variable $news-data:articles := xs:QName("news-data:articles");
+declare variable $news-data:months := xs:QName("news-data:months");
+
+declare variable $news-data:CityEmp := xs:QName("news-data:CityEmp");
+declare variable $news-data:ArtCountEmp := xs:QName("news-data:ArtCountEmp");
+
+declare variable $news-data:UniqueId := xs:QName("news-data:UniqueId");
+declare variable $news-data:AuthorName := xs:QName("news-data:AuthorNames");
+declare variable $news-data:ArticleEmployees := xs:QName("news-data:ArticleEmployees");

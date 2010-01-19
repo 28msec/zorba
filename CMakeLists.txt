@@ -432,7 +432,7 @@ ENDIF( APPLE AND UNIVERSAL )
 INCLUDE(CMakeExportBuildSettings)
 CMAKE_EXPORT_BUILD_SETTINGS(${CMAKE_BINARY_DIR}/ZorbaBuildSettings.cmake)
 EXPORT_LIBRARY_DEPENDENCIES(${CMAKE_BINARY_DIR}/ZorbaLibraryDepends.cmake)
-CONFIGURE_FILE(${ZORBA_SOURCE_DIR}/ZorbaConfig.cmake.in ${ZORBA_SOURCE_DIR}/ZorbaConfig.cmake)
+CONFIGURE_FILE(${ZORBA_SOURCE_DIR}/ZorbaConfig.cmake.in ${ZORBA_BINARY_DIR}/ZorbaConfig.cmake)
 
 # Close expected failures listing
 close_expected_failures ()

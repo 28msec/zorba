@@ -53,7 +53,7 @@ declare function xhtml:parameters($comment) {
                         <table class="parameter"><tr>
                             <td class="parameter"><code>{$name}</code></td>
                             <td class="parameter"> - </td>
-                            <td class="parameter">{$description}</td></tr>
+                            <td class="parameter">{$description/node()}</td></tr>
                         </table> 
                 else
                     ()
