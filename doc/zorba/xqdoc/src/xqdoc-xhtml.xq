@@ -44,11 +44,11 @@ declare function xhtml:parameters($comment) {
         if (exists($params)) then (
             <h4>Parameters:</h4>,
             for $param in $params
-            let $text := data($param)
+            let $text := string($param/node()[1])
             return
                 if (starts-with($text, "$")) then
                     let $name := substring-before($text, " ")
-                    let $description := substring-after($text, " ")
+                    let $description := (substring-after($text, " "), subsequence($param/node(), 2))
                     return
                         <table class="parameter"><tr>
                             <td class="parameter"><code>{$name}</code></td>
@@ -102,8 +102,8 @@ declare function xhtml:return($comment) {
 declare function xhtml:description($comment)
 {
      <p>{
-        if($comment/xqdoc:description) then
-           <span>{$comment/xqdoc:description/node()}</span>
+        if ($comment/xqdoc:description) then
+            <span>{$comment/xqdoc:description/node()}</span>
         else
             "No description available."
      }</p>

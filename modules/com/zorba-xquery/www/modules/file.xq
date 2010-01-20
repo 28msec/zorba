@@ -23,12 +23,12 @@
 module namespace file = "http://www.zorba-xquery.com/modules/file";
 
 (:~
- : Copies a file given a source and a destination paths/uris. The operation
+ : Copies a file given a source and a destination paths/URIs. The operation
  : fails if the source path/URI does not point to a file or the destination
  : path/URI is already used.
  :
  : @param $sourceFile The path/URI of the file to copy.
- : @param $destinationFile The detination path/URI.
+ : @param $destinationFile The detination <tt>path/URI</tt>.
  : @return true if the copy operation was successful.
  : @error An error is thrown if IO or Security problems occur.
  :)
