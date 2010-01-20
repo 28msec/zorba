@@ -418,6 +418,19 @@ int xqpStringStore::compare(const xqpStringStore* src, const XQPCollator* coll) 
   return result;
 }
 
+// Returns true if every single character in the string is a whitespace
+bool xqpStringStore::is_whitespace() const
+{
+  const char* mystr = c_str();
+  std::string::size_type i = 0;
+  std::string::size_type mylen = bytes();
+
+  for (i=0; i<mylen; i++, mystr++)
+    if (*mystr != 0x20 && *mystr != 0x9 && *mystr != 0xD && *mystr != 0xA)
+      return false;
+
+  return true;
+}
 
 /*******************************************************************************
   Locate in "this" the first occurrence of the "pattern" substring. Return the

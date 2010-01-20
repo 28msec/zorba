@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -57,13 +57,13 @@ PlanState::PlanState(uint32_t blockSize, uint32_t aStackDepth)
 }
 
 
-dynamic_context* PlanState::dctx() 
+dynamic_context* PlanState::dctx()
 {
-  return theRuntimeCB->theDynamicContext; 
+  return theRuntimeCB->theDynamicContext;
 }
 
 
-void PlanState::checkDepth (const QueryLoc &loc) 
+void PlanState::checkDepth (const QueryLoc &loc)
 {
   if (theStackDepth > 256)
     ZORBA_ERROR_LOC_PARAM (XQP0019_INTERNAL_ERROR, loc, "stack overflow", "");
@@ -90,16 +90,16 @@ void PlanIterator::serialize(::zorba::serialization::Archiver &ar)
 }
 
 
-CollationCache* PlanIterator::collationCache(PlanState& planState) 
+CollationCache* PlanIterator::collationCache(PlanState& planState)
 {
-  return theSctx->get_collation_cache(); 
+  return theSctx->get_collation_cache();
 }
 
 
 #ifndef NDEBUG
 
 bool PlanIterator::consumeNext(
-    store::Item_t& result, 
+    store::Item_t& result,
     const PlanIterator* iter,
     PlanState& planState)
 {
@@ -108,10 +108,11 @@ bool PlanIterator::consumeNext(
   }
   bool status = iter->produceNext(result, planState);
 
-  if (planState.theCompilerCB->theConfig.print_item_flow) 
+  if (planState.theCompilerCB->theConfig.print_item_flow)
   {
     std::cout << "next (" << iter << " = " << typeid (*iter).name()
-              << ") -> " 
+              << ") -> "
+              << "status: " << status << " -> "
               << ((status && result != NULL) ? result->show() : xqp_string("null"))
               << std::endl;
   }

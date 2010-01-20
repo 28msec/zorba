@@ -37,8 +37,6 @@
 #include "store/api/item.h"
 
 
-using namespace std;
-
 namespace zorba {
 
 
@@ -414,9 +412,12 @@ int serializer::emitter::emit_node_children(
       emit_indentation(depth);
     }
 
-    emit_node(child, depth);
-
-    prev_node_kind = child->getNodeKind();
+    // Ignore whitespace text nodes when doing indentation
+    if (!ser->indent || child->getNodeKind() != store::StoreConsts::textNode || !child->getStringValue()->is_whitespace())
+    {
+      emit_node(child, depth);
+      prev_node_kind = child->getNodeKind();
+    }
   }
 
   if (ser->indent &&
@@ -586,7 +587,8 @@ void serializer::emitter::emit_node(
 	else if (item->getNodeKind() == store::StoreConsts::textNode)
 	{
     emit_text_node(item);
-    previous_item = PREVIOUS_ITEM_WAS_TEXT;
+    if (!item->getStringValue()->is_whitespace()) // ignore whitespace text nodes when doing indentation
+      previous_item = PREVIOUS_ITEM_WAS_TEXT;
 	}
 	else if (item->getNodeKind() == store::StoreConsts::commentNode)
 	{
@@ -702,7 +704,8 @@ void serializer::xml_emitter::emit_declaration()
     }
     tr << "?>";
 
-    tr << END_OF_LINE; // Always output a newline
+    if (!ser->indent) // If we're doing indentation, don't output the newline as it will be output together with identation spaces
+      tr << END_OF_LINE;
   }
 }
 
@@ -1813,7 +1816,7 @@ void serializer::validate_parameters(void)
 }
 
 
-bool serializer::setup(ostream& os)
+bool serializer::setup(std::ostream& os)
 {
   if (encoding == PARAMETER_VALUE_UTF_8)
   {
@@ -1864,7 +1867,7 @@ bool serializer::setup(ostream& os)
 void
 serializer::serialize(
   intern::Serializable* aObject,
-  ostream&      aOStream)
+  std::ostream&      aOStream)
 {
   serialize(aObject, aOStream, 0);
 }
@@ -1872,7 +1875,7 @@ serializer::serialize(
 void
 serializer::serialize(
   intern::Serializable* aObject,
-  ostream&              aOStream,
+  std::ostream&              aOStream,
   SAX2_ContentHandler*  aHandler)
 {
   // used for JSON serialization only

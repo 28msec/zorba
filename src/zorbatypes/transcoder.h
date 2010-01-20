@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,7 +26,7 @@ typedef struct UConverter UConverter;
 
 namespace zorba
 {
-  
+
 ///////////////////////////////////////////////////////////
 //                                                       //
 //  class transcoder                                     //
@@ -59,6 +59,17 @@ public:
     return *this;
   }
 
+  virtual transcoder& flush()
+  {
+    os.flush();
+    return *this;
+  }
+
+  // Support for manipulators (e.g. tr << flush)
+  transcoder& operator<<(transcoder& (*pf)(transcoder&))
+  {
+    return pf(*this);
+  }
 
 protected:
   std::ostream& os;
@@ -74,6 +85,10 @@ public:
 
   virtual utf8_to_utf16_transcoder& operator<<(const char* str);
   virtual utf8_to_utf16_transcoder& operator<<(const char ch);
+  utf8_to_utf16_transcoder& operator<<(utf8_to_utf16_transcoder& (*pf)(utf8_to_utf16_transcoder&))
+  {
+    return pf(*this);
+  }
 
 protected:
   UConverter *conv;
@@ -81,6 +96,12 @@ protected:
   int chars_in_buffer;
   int chars_expected;
 };
+
+// Flush manipulator (e.g. tr << flush)
+template<class T> T& flush(T& tr)
+{
+  return tr.flush();
+}
 
 #endif//#ifndef ZORBA_NO_UNICODE
 

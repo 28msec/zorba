@@ -19,9 +19,9 @@
 #include "common/shared_types.h"
 
 
-namespace zorba 
+namespace zorba
 {
-namespace simplestore 
+namespace simplestore
 {
 
 const uint32_t SimpleLazyTempSeq::MAX_POSITION = std::vector<store::Item_t>().max_size();  //FIXME Is there no better way?
@@ -35,7 +35,7 @@ SimpleLazyTempSeq::SimpleLazyTempSeq ( store::Iterator_t aIter, bool aCopy )
   theIterator(aIter),
   theCopy(aCopy),
   theMatFinished(false),
-  thePurgedUpTo(0) 
+  thePurgedUpTo(0)
 {
 }
 
@@ -43,7 +43,7 @@ SimpleLazyTempSeq::SimpleLazyTempSeq ( store::Iterator_t aIter, bool aCopy )
 /*******************************************************************************
 
 ********************************************************************************/
-SimpleLazyTempSeq::~SimpleLazyTempSeq() 
+SimpleLazyTempSeq::~SimpleLazyTempSeq()
 {
 }
 
@@ -51,15 +51,15 @@ SimpleLazyTempSeq::~SimpleLazyTempSeq()
 /*******************************************************************************
 
 ********************************************************************************/
-bool SimpleLazyTempSeq::empty() 
+bool SimpleLazyTempSeq::empty()
 {
-  if ( theItems.size() > 0 ) 
+  if ( theItems.size() > 0 )
   {
     return false;
   }
   else
   {
-    if ( theMatFinished ) 
+    if ( theMatFinished )
     {
       return true;
     }
@@ -75,9 +75,9 @@ bool SimpleLazyTempSeq::empty()
 /*******************************************************************************
 
 ********************************************************************************/
-void SimpleLazyTempSeq::append ( store::Iterator_t iter, bool copy ) 
+void SimpleLazyTempSeq::append ( store::Iterator_t iter, bool copy )
 {
-  while ( !theMatFinished ) 
+  while ( !theMatFinished )
   {
     matNextItem();
   }
@@ -93,7 +93,7 @@ void SimpleLazyTempSeq::append ( store::Iterator_t iter, bool copy )
 
   @return Iterator which iterates over the complete TempSeq
 ********************************************************************************/
-store::Iterator_t SimpleLazyTempSeq::getIterator() 
+store::Iterator_t SimpleLazyTempSeq::getIterator()
 {
   return new SimpleLazyTempSeqIter ( this, 1,  SimpleLazyTempSeq::MAX_POSITION );
 }
@@ -109,7 +109,7 @@ store::Iterator_t SimpleLazyTempSeq::getIterator()
 store::Iterator_t SimpleLazyTempSeq::getIterator (
     int32_t startPos,
     int32_t endPos,
-    bool streaming ) 
+    bool streaming )
 {
   return new SimpleLazyTempSeqIter ( this, startPos, endPos );
 }
@@ -122,7 +122,7 @@ store::Iterator_t SimpleLazyTempSeq::getIterator (
     int32_t startPos,
     store::Iterator_t function,
     const std::vector<store::Iterator_t>& vars,
-    bool streaming ) 
+    bool streaming )
 {
   assert ( false ); //Not implemented
   return store::Iterator_t ( NULL );
@@ -134,7 +134,7 @@ store::Iterator_t SimpleLazyTempSeq::getIterator (
 ********************************************************************************/
 store::Iterator_t SimpleLazyTempSeq::getIterator (
     const std::vector<int32_t>& positions,
-    bool streaming ) 
+    bool streaming )
 {
   assert ( false ); //Not implemented
   return store::Iterator_t ( NULL );
@@ -146,7 +146,7 @@ store::Iterator_t SimpleLazyTempSeq::getIterator (
 ********************************************************************************/
 store::Iterator_t SimpleLazyTempSeq::getIterator (
     store::Iterator_t positions,
-    bool streaming ) 
+    bool streaming )
 {
   assert ( false ); //Not implemented
   return store::Iterator_t ( NULL );
@@ -156,7 +156,7 @@ store::Iterator_t SimpleLazyTempSeq::getIterator (
 /*******************************************************************************
 
 ********************************************************************************/
-void SimpleLazyTempSeq::purge() 
+void SimpleLazyTempSeq::purge()
 {
   //Not supported
 }
@@ -165,7 +165,7 @@ void SimpleLazyTempSeq::purge()
 /*******************************************************************************
 
 ********************************************************************************/
-void SimpleLazyTempSeq::purgeUpTo ( int32_t upTo ) 
+void SimpleLazyTempSeq::purgeUpTo ( int32_t upTo )
 {
   theItems.erase(theItems.begin(), (theItems.begin() + upTo));
   thePurgedUpTo = upTo;
@@ -175,7 +175,7 @@ void SimpleLazyTempSeq::purgeUpTo ( int32_t upTo )
 /*******************************************************************************
 
 ********************************************************************************/
-void SimpleLazyTempSeq::purgeItem ( const std::vector<int32_t>& positions ) 
+void SimpleLazyTempSeq::purgeItem ( const std::vector<int32_t>& positions )
 {
   //Not supported
 }
@@ -184,7 +184,7 @@ void SimpleLazyTempSeq::purgeItem ( const std::vector<int32_t>& positions )
 /*******************************************************************************
 
 ********************************************************************************/
-void SimpleLazyTempSeq::purgeItem ( int32_t position ) 
+void SimpleLazyTempSeq::purgeItem ( int32_t position )
 {
 }
 
@@ -200,27 +200,27 @@ SimpleLazyTempSeqIter::SimpleLazyTempSeqIter (
   theTempSeq ( aTempSeq ),
   theCurPos ( aStartPos - 1),
   theStartPos ( aStartPos),
-  theEndPos ( aEndPos ) 
+  theEndPos ( aEndPos )
 {
 }
 
 
-SimpleLazyTempSeqIter::~SimpleLazyTempSeqIter() 
+SimpleLazyTempSeqIter::~SimpleLazyTempSeqIter()
 {
 }
-  
 
-void SimpleLazyTempSeqIter::open() 
+
+void SimpleLazyTempSeqIter::open()
 {
   theCurPos = theStartPos - 1;
 }
 
 
-bool SimpleLazyTempSeqIter::next ( store::Item_t& result ) 
+bool SimpleLazyTempSeqIter::next ( store::Item_t& result )
 {
-  if(theCurPos < theEndPos)
+  if(theCurPos < theEndPos && theTempSeq->containsItem(++theCurPos))
   {
-    theTempSeq->getItem(++theCurPos, result);
+    theTempSeq->getItem(theCurPos, result);
     return true;
   }
   else
@@ -230,14 +230,14 @@ bool SimpleLazyTempSeqIter::next ( store::Item_t& result )
   }
 }
 
-  
-void SimpleLazyTempSeqIter::reset() 
+
+void SimpleLazyTempSeqIter::reset()
 {
   theCurPos = theStartPos - 1;
 }
 
 
-void SimpleLazyTempSeqIter::close() 
+void SimpleLazyTempSeqIter::close()
 {
 }
 
