@@ -402,3 +402,40 @@ declare updating function xqddf:delete-index($name as xs:QName) external;
  :       the expanded QName <tt>$name</tt>.
  :)
 declare updating function xqddf:refresh-index($name as xs:QName) external;
+
+(:~
+ : The <tt>activate-integrity-constraint</tt> function is an updating function
+ : that activates the integrity constraint indentified by the expanded QName
+ : <tt>$name</tt> in the dynamic context.
+ :
+ : @param $name The QName of the integrity constraint to activate.
+ : @error <tt></tt> If available integrity constraints in the static context
+ :        does not provide a mapping for the expanded QName <tt>$name</tt>.
+ :)
+declare updating function xqddf:activate-integrity-constraint(
+  $name as xs:QName) external;
+
+(:~
+ : The <tt>deactivate-integrity-constraint</tt> function is an updating function
+ : that deactivates the integrity constraint indentified by the expanded QName
+ : <tt>$name</tt> in the dynamic context.
+ :
+ : @param $name The QName of the integrity constraint to deactivate.
+ : @error <tt></tt> If available integrity constraints in the static context
+ :        does not provide a mapping for the expanded QName <tt>$name</tt>.
+ :)
+declare updating function xqddf:deactivate-integrity-constraint(
+  $name as xs:QName) external;
+
+(:~
+ : The <tt>check-integrity-constraint</tt> function checks if the constraints
+ : specified by the integrity constraints (indentified by the expanded QName
+ : <tt>$name</tt>) are valid in the database.
+ :
+ : @param $name The QName of the integrity constraint to check.
+ : @return true if the constraints are valid in the database, false otherwise.
+ : @error <tt></tt> If available integrity constraints in the static context
+ :        does not provide a mapping for the expanded QName <tt>$name</tt>.
+ :)
+declare function xqddf:check-integrity-constraint(
+  $name as xs:QName) as xs:boolean external;

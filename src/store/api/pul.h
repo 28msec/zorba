@@ -180,6 +180,18 @@ public:
         const Item_t& qname,
         Iterator* sourceIter) = 0;
 
+  virtual void addActivateIC(
+        const Item_t& qname,
+        const Item_t& aCollectionName) = 0;
+
+  virtual void addActivateForeignKeyIC(
+        const Item_t& qname,
+        const Item_t& aFromCollectionName,
+        const Item_t& aToCollectionName) = 0;
+
+  virtual void addDeActivateIC(
+        const Item_t& qname) = 0;
+
   virtual void mergeUpdates(Item* other) = 0;
 
   virtual void applyUpdates() = 0;

@@ -243,6 +243,7 @@ protected:
   std::vector<UpdatePrimitive*>      theRefreshIndexList;
 
   // Integrity constrint
+  std::vector<UpdatePrimitive*>      theICActivationList;
   store::ICChecker                 * theICChecker;
 
   // Revalidation
@@ -378,6 +379,18 @@ public:
   void addRefreshIndex(
         const store::Item_t& qname,
         store::Iterator* sourceIter);
+
+  virtual void addActivateIC(
+        const store::Item_t& qname,
+        const store::Item_t& aCollectionName);
+
+  virtual void addActivateForeignKeyIC(
+        const store::Item_t& qname,
+        const store::Item_t& aFromCollectionName,
+        const store::Item_t& aToCollectionName);
+
+  virtual void addDeActivateIC(
+        const store::Item_t& qname);
 
   // merge
   void mergeUpdates(store::Item* other);

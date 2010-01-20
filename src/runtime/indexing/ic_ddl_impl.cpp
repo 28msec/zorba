@@ -36,22 +36,17 @@ namespace zorba
  Implementation for:
    activate-integrity-constraint($icName as xs:QName) as ()
 ******************************************************************************/
-bool ActivateICIterator::nextImpl(store::Item_t& result, PlanState& planState) 
-  const
+bool
+ActivateICIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t qname;
   ValueIC_t vic;
-  store::IndexSpecification spec;
-  PlanIter_t buildPlan;
-  store::Iterator_t planWrapper;
-
-  dynamic_context* dctx = planState.dctx();
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (!consumeNext(qname, theChild, planState))
-    ZORBA_ASSERT(false);
+    ZORBA_ASSERT(false); // error should already be raised by function call
 
   if ((vic = theSctx->lookup_ic(qname)) == NULL)
   {
@@ -59,18 +54,24 @@ bool ActivateICIterator::nextImpl(store::Item_t& result, PlanState& planState)
                           qname->getStringValue()->c_str(), "");
   }
 
+  // already activated => noop
   if (GENV_STORE.getIC(qname) == NULL)
   {
+    result = GENV_ITEMFACTORY->createPendingUpdateList();
+
     switch ( vic->getICKind() )
     {
     case store::IC::ic_collection:
-      dctx->activateIC(vic->getICName(), vic->getCollectionName());
+      static_cast<store::PUL*>(result.getp())->addActivateIC(
+          vic->getICName(),
+          vic->getCollectionName());
       break;
       
     case store::IC::ic_foreignkey:
-      dctx->activateForeignKeyIC(vic->getICName(), 
-                                 vic->getToCollectionName(),
-                                 vic->getFromCollectionName());
+      static_cast<store::PUL*>(result.getp())->addActivateForeignKeyIC(
+          vic->getICName(),
+          vic->getFromCollectionName(),
+          vic->getToCollectionName());
       break;
       
     default:
@@ -79,7 +80,7 @@ bool ActivateICIterator::nextImpl(store::Item_t& result, PlanState& planState)
     }
   }
 
-  STACK_PUSH(true, state);
+  STACK_PUSH(result!=NULL, state);
 
   STACK_END(state);
 }
@@ -89,8 +90,8 @@ bool ActivateICIterator::nextImpl(store::Item_t& result, PlanState& planState)
  Implementation for:
    deactivate-integrity-constraint($icName as xs:QName) as ()
 ******************************************************************************/
-bool DeactivateICIterator::nextImpl(store::Item_t& result, PlanState& planState)
-  const
+bool
+DeactivateICIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t qname;
 
@@ -110,13 +111,14 @@ bool DeactivateICIterator::nextImpl(store::Item_t& result, PlanState& planState)
   {
     ZORBA_ERROR_LOC_PARAM(XDDY0032_IC_IS_NOT_ACTIVATED, loc,
                           qname->getStringValue()->c_str(), "");
-  } 
+  }
+  else
+  {
+    result = GENV_ITEMFACTORY->createPendingUpdateList();
+    static_cast<store::PUL*>(result.getp())->addDeActivateIC(qname);
+  }
 
-
-  GENV_STORE.deactivateIC(qname);
-
-
-  STACK_PUSH(true, state);
+  STACK_PUSH(result != NULL, state);
 
   STACK_END(state);
 }
@@ -125,8 +127,8 @@ bool DeactivateICIterator::nextImpl(store::Item_t& result, PlanState& planState)
  Implementation for:
    check-integrity-constraint($icName as xs:QName) as xs:boolean
 ******************************************************************************/
-bool CheckICIterator::nextImpl(store::Item_t& result, PlanState& planState)
-  const
+bool
+CheckICIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t qname;
 

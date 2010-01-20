@@ -22,6 +22,7 @@
 #include "store/naive/text_node_content.h"
 
 #include "store/api/index.h" // for index spec obj
+#include "store/api/ic.h" // for index spec obj
 
 
 namespace zorba { namespace simplestore {
@@ -1150,6 +1151,94 @@ public:
 };
 
 
+/*******************************************************************************
+
+********************************************************************************/
+class UpdActivateIC : public  UpdatePrimitive
+{
+  friend class PULImpl;
+
+protected:
+  const store::Item_t  theQName;
+  const store::Item_t  theCollectionName;
+
+public:
+  UpdActivateIC(
+        PULImpl* pul,
+        const store::Item_t& aQName,
+        const store::Item_t& aCollectionName);
+
+  ~UpdActivateIC();
+
+  store::UpdateConsts::UpdPrimKind getKind() const
+  { 
+    return store::UpdateConsts::UP_ACTIVATE_IC;
+  }
+
+  void apply();
+  void undo();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdActivateForeignKeyIC : public  UpdatePrimitive
+{
+  friend class PULImpl;
+
+protected:
+  const store::Item_t  theQName;
+  const store::Item_t  theFromCollectionName;
+  const store::Item_t  theToCollectionName;
+
+public:
+  UpdActivateForeignKeyIC(
+        PULImpl* pul,
+        const store::Item_t& qQName,
+        const store::Item_t& aFromCollectionName,
+        const store::Item_t& aToCollectionName);
+
+  ~UpdActivateForeignKeyIC();
+
+  store::UpdateConsts::UpdPrimKind getKind() const
+  { 
+    return store::UpdateConsts::UP_ACTIVATE_FOREIGN_KEY_IC;
+  }
+
+  void apply();
+  void undo();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class UpdDeActivateIC : public  UpdatePrimitive
+{
+  friend class PULImpl;
+
+protected:
+  const store::Item_t  theQName;
+  store::Item_t  theFromCollectionName;
+  store::Item_t  theToCollectionName;
+  store::IC::ICKind theICKind;
+
+public:
+  UpdDeActivateIC(
+        PULImpl* pul,
+        const store::Item_t& qname);
+
+  ~UpdDeActivateIC();
+
+  store::UpdateConsts::UpdPrimKind getKind() const
+  { 
+    return store::UpdateConsts::UP_DEACTIVATE_IC;
+  }
+
+  void apply();
+  void undo();
+};
 }
 }
 #endif

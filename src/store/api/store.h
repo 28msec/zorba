@@ -296,7 +296,7 @@ public:
   /**
    * Deactivates icQName integrity constraint.
    */
-  virtual void deactivateIC(const Item* icQName) = 0;
+  virtual IC_t deactivateIC(const Item_t& icQName) = 0;
 
   /**
    * Lists all active integrity constraints.

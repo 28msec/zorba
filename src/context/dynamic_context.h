@@ -153,6 +153,7 @@ public:
 
   void unbindIndex(const store::Item* qname);
 
+#if 0
   void activateIC(const store::Item_t& qname,
                   const store::Item_t& collectionQName);
 
@@ -161,6 +162,7 @@ public:
                             const store::Item_t& toCollectionQName);
 
   void deactivateIC(const store::Item* qname);
+#endif
 
   /**
    * Lists all active integrity constraints.

@@ -1125,6 +1125,146 @@ void UpdRefreshIndex::undo()
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
+UpdActivateIC::UpdActivateIC(
+    PULImpl* pul,
+    const store::Item_t& qname,
+    const store::Item_t& aCollectionName)
+  :
+  UpdatePrimitive(pul),
+  theQName(qname),
+  theCollectionName(aCollectionName)
+{
+}
+
+
+UpdActivateIC::~UpdActivateIC()
+{
+}
+
+
+void UpdActivateIC::apply()
+{
+  SimpleStore* store = SimpleStoreManager::getStore();
+  store->activateIC(theQName, theCollectionName);
+  theIsApplied = true;
+}
+
+
+void UpdActivateIC::undo()
+{
+  if (theIsApplied)
+  {
+    SimpleStore* store = SimpleStoreManager::getStore();
+    store->deactivateIC(theQName);
+    theIsApplied = false;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+UpdActivateForeignKeyIC::UpdActivateForeignKeyIC(
+    PULImpl* pul,
+    const store::Item_t& aQName,
+    const store::Item_t& aFromCollection,
+    const store::Item_t& aToCollection)
+  :
+  UpdatePrimitive(pul),
+  theQName(aQName),
+  theFromCollectionName(aFromCollection),
+  theToCollectionName(aToCollection)
+{
+}
+
+
+UpdActivateForeignKeyIC::~UpdActivateForeignKeyIC()
+{
+}
+
+
+void UpdActivateForeignKeyIC::apply()
+{
+  SimpleStore* store = SimpleStoreManager::getStore();
+  store->activateForeignKeyIC(theQName, theFromCollectionName, theToCollectionName);
+  theIsApplied = true;
+}
+
+
+void UpdActivateForeignKeyIC::undo()
+{
+  if (theIsApplied)
+  {
+    SimpleStore* store = SimpleStoreManager::getStore();
+    store->deactivateIC(theQName);
+    theIsApplied = false;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+UpdDeActivateIC::UpdDeActivateIC(
+    PULImpl* pul,
+    const store::Item_t& aQName)
+  :
+  UpdatePrimitive(pul),
+  theQName(aQName)
+{
+}
+
+
+UpdDeActivateIC::~UpdDeActivateIC()
+{
+}
+
+
+void UpdDeActivateIC::apply()
+{
+  SimpleStore* store = SimpleStoreManager::getStore();
+  store::IC_t ic = store->deactivateIC(theQName);
+  theICKind = ic->getICKind();
+  switch (theICKind) {
+    case store::IC::ic_collection:
+      theFromCollectionName = ic->getCollectionName();
+      break;
+    case store::IC::ic_foreignkey:
+      theFromCollectionName = ic->getFromCollectionName();
+      theToCollectionName = ic->getToCollectionName();
+      break;
+    default:
+      ZORBA_ASSERT(false);
+  }
+  theIsApplied = false;
+}
+
+
+void UpdDeActivateIC::undo()
+{
+  if (theIsApplied)
+  {
+    SimpleStore* store = SimpleStoreManager::getStore();
+    switch (theICKind) {
+      case store::IC::ic_collection:
+        store->activateIC(theQName, theFromCollectionName);
+        break;
+      case store::IC::ic_foreignkey:
+        store->activateForeignKeyIC(
+            theQName,
+            theFromCollectionName,
+            theToCollectionName);
+        break;
+      default:
+        ZORBA_ASSERT(false);
+      // TODO
+    }
+  }
+}
+
 }
 }
 

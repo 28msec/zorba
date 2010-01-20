@@ -48,6 +48,8 @@ public:
   {
   }
 
+  expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+
   bool accessesDynCtx() const { return true; }
 
   CODEGEN_DECL();
@@ -63,6 +65,8 @@ public:
     function(sig, FunctionConsts::FN_ZORBA_DDL_DEACTIVATE_INTEGRITY_CONSTRAINT_1)
   {
   }
+
+  expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
   bool accessesDynCtx() const { return true; }
 

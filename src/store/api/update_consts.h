@@ -100,7 +100,12 @@ public:
     // index primitives
     UP_CREATE_INDEX,
     UP_DROP_INDEX,
-    UP_REBUILD_INDEX
+    UP_REBUILD_INDEX,
+
+    // ic primitives
+    UP_ACTIVATE_IC,
+    UP_ACTIVATE_FOREIGN_KEY_IC,
+    UP_DEACTIVATE_IC
   };
 
   static bool isRename(UpdPrimKind k)
@@ -221,6 +226,12 @@ static std::string toString(UpdPrimKind k)
     return "drop index";
   case UP_REBUILD_INDEX:
     return "refresh index";
+  case UP_ACTIVATE_IC:
+    return "activate integrity constraint";
+  case UP_ACTIVATE_FOREIGN_KEY_IC:
+    return "activate foreign key integrity constraint";
+  case UP_DEACTIVATE_IC:
+    return "deactivate integrity constraint";
   default:
     return "<unknown UpdPrimKind>";
   }

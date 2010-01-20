@@ -8,19 +8,9 @@
 -->
 <zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
     
-<zorba:header>
-</zorba:header>
-
 <zorba:source>
   <zorba:include  form="Quoted">store/api/iterator.h</zorba:include>
 </zorba:source>
-
-<zorba:codegen>
-  <zorba:cpp>
-    <!--    <zorba:include form="Quoted">functions/Index.h</zorba:include>-->
-  </zorba:cpp>
-</zorba:codegen>
-
 
 <!--
 /*******************************************************************************
@@ -47,6 +37,7 @@
       </zorba:signature>
 
       <zorba:methods>
+        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
 
@@ -79,6 +70,7 @@
       </zorba:signature>
 
       <zorba:methods>
+        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
 

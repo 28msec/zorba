@@ -544,19 +544,21 @@ store::IC_t SimpleStore::activateForeignKeyIC(
 }
 
 
-void SimpleStore::deactivateIC(const store::Item* icQName)
+store::IC_t
+SimpleStore::deactivateIC(const store::Item_t& icQName)
 {
   ZORBA_ASSERT(icQName != NULL);
 
   store::IC_t ic;
 
-  if (!theICs.get(icQName, ic))
+  if (!theICs.get(icQName.getp(), ic))
   {
     ZORBA_ERROR_PARAM(STR0016_IC_DOES_NOT_EXIST,
                       icQName->getStringValue()->c_str(), "");
   }
 
-  theICs.remove(icQName);
+  theICs.remove(icQName.getp());
+  return ic;
 }
 
 

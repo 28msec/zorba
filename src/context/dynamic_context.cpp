@@ -514,6 +514,7 @@ void dynamic_context::unbindIndex(const store::Item* qname)
 }
 
 
+#if 0
 /*******************************************************************************
 
 ********************************************************************************/
@@ -545,6 +546,7 @@ void dynamic_context::deactivateIC(const store::Item* qname)
 {
   GENV_STORE.deactivateIC(qname);
 }
+#endif
 
 
 /*******************************************************************************

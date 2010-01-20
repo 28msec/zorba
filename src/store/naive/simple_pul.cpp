@@ -122,7 +122,6 @@ PULImpl::PULImpl()
   theNoCollectionPul(NULL),
   theLastPul(NULL),
   theLastCollection(NULL),
-  theICChecker(NULL),
   theValidator(NULL) 
 {
 }
@@ -149,6 +148,7 @@ PULImpl::~PULImpl()
     if ((*ite).second != NULL)
       delete (*ite).second;
   }
+  cleanList(theICActivationList);
 }
 
 
@@ -845,6 +845,37 @@ void PULImpl::addRefreshIndex(
 
 
 /*******************************************************************************
+  Integrity Constraint Primitives
+********************************************************************************/
+void PULImpl::addActivateIC(
+      const store::Item_t& qname,
+      const store::Item_t& aCollectionName)
+{
+  UpdatePrimitive* upd = new UpdActivateIC(this, qname, aCollectionName);
+  theICActivationList.push_back(upd);
+}
+
+void PULImpl::addActivateForeignKeyIC(
+      const store::Item_t& qname,
+      const store::Item_t& aFromCollectionName,
+      const store::Item_t& aToCollectionName)
+{
+  UpdatePrimitive* upd = new UpdActivateForeignKeyIC(this,
+      qname,
+      aFromCollectionName,
+      aToCollectionName);
+  theICActivationList.push_back(upd);
+}
+
+void PULImpl::addDeActivateIC(
+      const store::Item_t& qname)
+{
+  UpdatePrimitive* upd = new UpdDeActivateIC(this, qname);
+  theICActivationList.push_back(upd);
+}
+
+
+/*******************************************************************************
   Merge PULs
 ********************************************************************************/
 void PULImpl::mergeUpdates(store::Item* other)
@@ -971,6 +1002,11 @@ void PULImpl::mergeUpdates(store::Item* other)
   mergeUpdateList(NULL,
                   theRefreshIndexList,
                   otherp->theRefreshIndexList,
+                  UP_LIST_NONE);
+
+  mergeUpdateList(NULL,
+                  theICActivationList,
+                  otherp->theICActivationList,
                   UP_LIST_NONE);
 }
 
@@ -1378,6 +1414,15 @@ void PULImpl::applyUpdates()
   {
     ZORBA_FATAL(0, "Unexpected error during application of revalidation PUL");
   }
+
+  try
+  {
+    applyList(theICActivationList);
+  }
+  catch (...)
+  {
+    ZORBA_FATAL(0, "Unexpected error during application of integrity constraint PUL");
+  }
 }
 
 
@@ -1408,6 +1453,8 @@ void PULImpl::undoUpdates()
       CollectionPul* pul = collIte->second;
       pul->undoUpdates();
     }
+
+    undoList(theICActivationList);
   }
   catch (...)
   {

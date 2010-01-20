@@ -216,7 +216,7 @@ public:
         const store::Item_t& fromCollectionQName,
         const store::Item_t& toCollectionQName);
 
-  void deactivateIC(const store::Item* icQName);
+  store::IC_t deactivateIC(const store::Item_t& icQName);
 
   store::Iterator_t listActiveICNames();
 
