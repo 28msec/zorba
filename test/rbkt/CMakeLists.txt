@@ -222,7 +222,6 @@ ENDFOREACH(TESTFILE)
 # the list of tests that are failing but can be accepted by the commit queue
 # !!! do not abuse this list or you will be prosecuted !!!
 EXPECTED_FAILURE(test/rbkt/zorba/xqdoc/moduleDocumentation 2901298)
-EXPECTED_FAILURE(test/rbkt/zorba/schemas/no-target 2934694)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/admin 2935047)
 SET_TESTS_PROPERTIES (test/rbkt/zorba/xqddf/admin PROPERTIES
   TIMEOUT 2)
