@@ -244,7 +244,9 @@ URI::initialize(const xqpString& uri, bool have_base)
       (lColonIdx > lFragmentIdx && lFragmentIdx != -1)) {
 
     // A standalone base is a valid URI
-    if (valid && (lColonIdx == 0 || (!have_base && lFragmentIdx != 0))) {
+    if (valid && (lColonIdx == 0 || (!have_base && lFragmentIdx != 0)) &&
+        lTrimmedURILength>0 ) 
+    {
       ZORBA_ERROR_DESC_OSS(XQST0046, "URI \"" << lTrimmedURI << "\" doesn't have an URI scheme");
     }
 

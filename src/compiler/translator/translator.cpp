@@ -2567,7 +2567,7 @@ void *begin_visit (const SchemaImport& v)
 
   if (prefix != NULL) 
   {
-    if (target_ns.size() == 0)
+    if (!prefix->get_default_bit() && target_ns.size() == 0)
       ZORBA_ERROR_LOC_PARAM(XQST0057, loc,
                             "(no target namespace uri specified)",
                             target_ns);
