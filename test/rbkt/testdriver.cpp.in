@@ -225,8 +225,14 @@ main(int argc, char** argv)
     zorba::file lSpecFile(rbkt_src_dir + "/Queries/" + lQueryWithoutSuffix + ".spec",
                           path_flags);
 
-    if ( lSpecFile.exists ()) 
-      lSpec.parseFile(lSpecFile.get_path());
+    if ( lSpecFile.exists ()) {
+      bool lParsed = lSpec.parseFile(lSpecFile.get_path());
+      if (!lParsed) {
+        std::cout << "Spec file " << lSpecFile.get_path() << " is malformed!"
+                  << std::endl;
+        return 1;
+      }
+    }
 
     // Get the pathnames of the reference-result files found in the .spec
     // file (if any).
@@ -390,7 +396,8 @@ main(int argc, char** argv)
         Zorba_SerializerOptions lSerOptions;
         lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XML;
         lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
-        lSerOptions.indent = ZORBA_INDENT_NO;
+        lSerOptions.indent = lSpec.getUseIndent() ?
+          ZORBA_INDENT_YES : ZORBA_INDENT_NO;
         
         lQuery->execute(lResFileStream, &lSerOptions);
       }
@@ -462,19 +469,28 @@ main(int argc, char** argv)
         std::cout << "testdriver: non-canonical result for reference result # " 
                   << i << " doesn't match." << std::endl;
 
-        int lCanonicalRes = zorba::canonicalizeAndCompare(lSpec.getComparisonMethod(),
-                                                          lIter->c_str(),
-                                                          lResultFile.c_str(),
-                                                          rbkt_bin_dir);
-        if (lCanonicalRes == 0) 
-        {
-          std::cout << "testdriver: success (canonical result # " << i  
-                    << " matches)" << std::endl;
-          lResultMatches = true;
-          break;
+        // Don't attempt canonical comparison for test cases using --indent;
+        // can lead to false positives
+        if (lSpec.getUseIndent()) {
+          std::cout << "testdriver: skipping canonicalization "
+            "when testing with --indent" << std::endl;
         }
-        std::cout << "testdriver: canonical result for reference result # " << i 
-                  << " doesn't match." << std::endl;
+        else {
+          int lCanonicalRes = zorba::canonicalizeAndCompare(lSpec.getComparisonMethod(),
+            lIter->c_str(),
+            lResultFile.c_str(),
+            rbkt_bin_dir);
+          if (lCanonicalRes == 0) 
+          {
+            std::cout << "testdriver: success (canonical result # " << i  
+                      << " matches)" << std::endl;
+            lResultMatches = true;
+            break;
+          }
+          std::cout << "testdriver: canonical result for reference result # " << i 
+                    << " doesn't match." << std::endl;
+        }
+
         ++i;
       } // for 
 

@@ -37,7 +37,11 @@ public:
     std::string theVarValue;
   };
 
-  Specification() : theInline(false), theComparisonMethod("Fragment") {}
+  Specification()
+    : theInline(false),
+      theComparisonMethod("Fragment"),
+      theUseIndent(false) 
+  {}
 
 private:
   bool                     theInline;
@@ -51,6 +55,7 @@ private:
   std::string              theInputQueryFile;
   std::string              theComparisonMethod; // default is Fragment such that the user doesn't need to care about root tags for sequences etc
   std::string              theDefaultCollection;
+  bool                     theUseIndent;
 
   void setInline() {
     theInline = true;
@@ -82,6 +87,10 @@ private:
   void setTimezone(iterator_t str, iterator_t end) {
     std::string s(str, end);
     theTimezone = s;
+  }
+
+  void setUseIndent() {
+    theUseIndent = true;
   }
 
 public:
@@ -141,6 +150,10 @@ public:
     return theDefaultCollection;
   }
 
+  bool getUseIndent() const {
+    return theUseIndent;
+  }
+
   void tokenize(const std::string& str,
                 std::vector<std::string>& tokens,
                 const std::string& delimiters)
@@ -195,7 +208,7 @@ public:
       {
         if( *lIter == "Args:" )
         {
-          for(++lIter;lIter!=tokens.end(); ++lIter)
+          for(++lIter; lIter!=tokens.end(); ++lIter)
           {
             if(*lIter != "-x"){ return false; }
             ++lIter;
@@ -208,6 +221,20 @@ public:
             }
             setVarValue(lIter->begin()+lIter->find("=")+1, lIter->end());
             addVariable();
+          }
+          break;
+        }
+        else if ( *lIter == "Serialization:" )
+        {
+          for(++lIter; lIter!=tokens.end(); ++lIter)
+          {
+            // Just --indent for now
+            if (*lIter == "--indent") {
+              setUseIndent();
+            }
+            else {
+              return false;
+            }
           }
           break;
         }
