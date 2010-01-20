@@ -195,9 +195,11 @@ bool Validator::effectiveValidationValue(
       //cout << "Validate element" << "\n"; cout.flush();        
       schemaValidator.startDoc();                    
 
-      // ask for the type of the root element to populate the cache with anonymous types
+      // ask for the type of the root element to populate the cache
+      // with anonymous types
       typeManager->getSchema()->
-        createXQTypeFromElementName(typeManager, sourceNode->getNodeName(), false);
+        createXQTypeFromElementName(typeManager, sourceNode->getNodeName(), 
+                                    false);
     }
 
     store::Item_t newElem = processElement(sctx,
@@ -210,7 +212,7 @@ bool Validator::effectiveValidationValue(
     {
       schemaValidator.endType();                
       //cout << "End Validate type: " << typeName->getLocalName()->c_str()
-      //     << " @ " << typeName->getNamespace()->c_str() << "\n"; cout.flush();
+      //     << " @ " << typeName->getNamespace()->c_str() << "\n";cout.flush();
     }
     else
     {
@@ -224,7 +226,7 @@ bool Validator::effectiveValidationValue(
   default:
   {
     ZORBA_ERROR_LOC_DESC(XQTY0030, loc, 
-                         "Argument in validate expression not a document or element node.");
+      "Argument in validate expression not a document or element node.");
     result = NULL;
     return false;
   }
@@ -309,7 +311,8 @@ void Validator::validateAttributes(
     ZORBA_ASSERT(attribute->isNode());
     ZORBA_ASSERT(attribute->getNodeKind() == store::StoreConsts::attributeNode);
             
-    //cout << " v    - attr: " << attribute->getNodeName()->getLocalName()->c_str() << "\n"; cout.flush();
+    //cout << " v    - attr: " << attribute->getNodeName()->getLocalName()->
+    //  c_str() << "\n"; cout.flush();
                         
     store::Item_t attName = attribute->getNodeName();
     schemaValidator.attr(attName, attribute->getStringValue());
@@ -324,13 +327,15 @@ void Validator::processAttributes(
     store::Item *parent,
     store::Iterator_t attributes)
 {
-  std::list<AttributeValidationInfo*>* attList = schemaValidator.getAttributeList();
+  std::list<AttributeValidationInfo*>* attList = 
+    schemaValidator.getAttributeList();
   std::list<AttributeValidationInfo*>::iterator curAtt;
          
   for( curAtt = attList->begin(); curAtt != attList->end(); ++curAtt )
   {
     AttributeValidationInfo* att = *curAtt;
-    //cout << " v    proccessATT2: " << att->theLocalName << " T: " << att->theTypeName << "\n";
+    //cout << " v    proccessATT2: " << att->theLocalName << " T: " << 
+    //  att->theTypeName << "\n";
     
     store::Item_t attQName;
     GENV_ITEMFACTORY->createQName(attQName,
@@ -397,7 +402,9 @@ void Validator::processChildren(
   {
     if ( child->isNode() )
     {
-      //cout << "  > child: " << child->getNodeKind() << " " << (child->getType() != NULL ? child->getType()->getLocalName()->c_str() : "type_NULL" ) << "\n"; cout.flush();
+      //cout << "  > child: " << child->getNodeKind() << " " << 
+      // (child->getType() != NULL ? child->getType()->getLocalName()->c_str() 
+      // : "type_NULL" ) << "\n"; cout.flush();
       
       switch ( child->getNodeKind() )
       { 
@@ -434,15 +441,19 @@ void Validator::processChildren(
         {
           cout << "     - text: '" << childStringValue << "' T: " << 
             typeQName->getLocalName()->c_str() << "\n"; cout.flush();
-          cout << "        xqT: " << xqType->toString() << "  content_kind: " << 
-            xqType->content_kind() << " tKind:" << xqType->type_kind() << " \n"; cout.flush();
+          cout << "        xqT: " << xqType->toString() << "  content_kind: " <<
+            xqType->content_kind() << " tKind:" << xqType->type_kind() << " \n";
+          cout.flush();
         }
         else
-          cout << "     - text2: '" << childStringValue << "' tQN: " << typeQName.getp() << 
-            " xqT:" << xqType.getp() << "\n"; cout.flush();
+          cout << "     - text2: '" << childStringValue << "' tQN: " << 
+            (typeQName ? typeQName->getStringValue()->c_str() : "NULL") <<
+            " xqT:" << ( xqType.getp() ? xqType.getp()->toString() : "NULL" ) 
+               << "\n"; cout.flush();
 #endif
         
-        if ( xqType!=NULL && xqType->content_kind()==XQType::SIMPLE_CONTENT_KIND )
+        if ( xqType!=NULL && 
+             xqType->content_kind()==XQType::SIMPLE_CONTENT_KIND )
         {
           store::NsBindings nsBindings;
           parent->getNamespaceBindings(nsBindings);
@@ -455,15 +466,33 @@ void Validator::processChildren(
                            typedValues );
           
           if ( typedValues.size()==1 ) // hack around serialization bug
-            GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent, typedValues[0]);
+            GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent, 
+                                             typedValues[0]);
           else
-            GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent, typedValues);
+            GENV_ITEMFACTORY->createTextNode(validatedTextNode, parent, 
+                                             typedValues);
         }
-        else /*if ( xqType!=NULL && 
-                  (xqType->content_kind()==XQType::MIXED_CONTENT_KIND || 
-                  xqType->content_kind()==XQType::ELEMENT_ONLY_CONTENT_KIND ))*/
+        else if ( xqType!=NULL && 
+                  (xqType->content_kind()==XQType::ELEMENT_ONLY_CONTENT_KIND ||
+                   xqType->content_kind()==XQType::EMPTY_CONTENT_KIND ))
         {
-          // if text not valid the schemaValidator should have already thrown an error
+          // if text not valid the schemaValidator should have already 
+          // thrown an error
+
+          // XQ XP Datamodel Spec: http://www.w3.org/TR/xpath-datamodel/ 
+          // section 6.7.4 Construction from a PSVI
+          childStringValue = new xqpStringStore("");
+          GENV_ITEMFACTORY->createTextNode(validatedTextNode,
+                                           parent,
+                                           childIndex,
+                                           childStringValue);
+        }
+        else
+          //if ( xqType!=NULL && 
+          //     xqType->content_kind()==XQType::MIXED_CONTENT_KIND )
+        {
+          // if text not valid the schemaValidator should have already 
+          // thrown an error
           GENV_ITEMFACTORY->createTextNode(validatedTextNode,
                                            parent,
                                            childIndex,
@@ -474,27 +503,29 @@ void Validator::processChildren(
       
       case store::StoreConsts::piNode:
       {
-        //cout << "     - pi: " << child->getStringValue() << "\n"; cout.flush();
+        //cout << "     - pi: " << child->getStringValue() << "\n";cout.flush();
         store::Item_t piNode;
         xqpStringStore_t piTarget = child->getTarget();
         xqpStringStore_t childStringValue = child->getStringValue();
         xqpStringStore_t childBaseUri = child->getBaseURI();
-        GENV_ITEMFACTORY->createPiNode(piNode, parent, -1, piTarget, childStringValue, 
-                                       childBaseUri);                    
+        GENV_ITEMFACTORY->createPiNode(piNode, parent, -1, piTarget, 
+                                       childStringValue, childBaseUri);
       }
       break;
       
       case store::StoreConsts::commentNode:
       {
-        //cout << "     - comment: " << child->getStringValue() << "\n"; cout.flush();
+        //cout << "     - comment: " << child->getStringValue() <<
+        //"\n"; cout.flush();
         store::Item_t commentNode;
         xqpStringStore_t childStringValue = child->getStringValue();
-        GENV_ITEMFACTORY->createCommentNode(commentNode, parent, -1, childStringValue); 
+        GENV_ITEMFACTORY->createCommentNode(commentNode, parent, -1, 
+                                            childStringValue); 
       }
       break;
                 
       case store::StoreConsts::anyNode:
-        //cout << "     - any: " << child->getStringValue() << "\n"; cout.flush();
+        //cout << "     - any: " << child->getStringValue() <<"\n";cout.flush();
         ZORBA_ASSERT(false);                    
         break;
                                     
@@ -513,7 +544,8 @@ void Validator::processNamespaces (
     const store::Item_t& item)
 {
   store::NsBindings bindings;
-  item->getNamespaceBindings(bindings, store::StoreConsts::ONLY_LOCAL_NAMESPACES);
+  item->getNamespaceBindings(bindings, 
+                             store::StoreConsts::ONLY_LOCAL_NAMESPACES);
 
   for (unsigned long i = 0; i < bindings.size(); i++)
   {
