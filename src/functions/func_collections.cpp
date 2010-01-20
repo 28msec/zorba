@@ -275,19 +275,6 @@ void populate_context_collections(static_context* sctx)
       GENV_TYPESYSTEM.EMPTY_TYPE));
 
 
-  DECL(sctx, fn_zorba_ddl_delete_node_first,
-      (createQName("http://www.zorba-xquery.com/modules/xqddf","fn-zorba-ddl","delete-nodes-first"),
-      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
-      GENV_TYPESYSTEM.UNSIGNED_LONG_TYPE_ONE,
-      GENV_TYPESYSTEM.EMPTY_TYPE));
-
-
-  DECL(sctx, fn_zorba_ddl_delete_nodes_first,
-      (createQName("http://www.zorba-xquery.com/modules/xqddf","fn-zorba-ddl","delete-node-first"),
-      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
-      GENV_TYPESYSTEM.EMPTY_TYPE));
-
-
   DECL(sctx, fn_zorba_ddl_delete_nodes_first,
       (createQName("http://www.zorba-xquery.com/modules/xqddf","fn-zorba-ddl","delete-nodes-first"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
@@ -296,19 +283,6 @@ void populate_context_collections(static_context* sctx)
 
 
   DECL(sctx, fn_zorba_ddl_delete_node_last,
-      (createQName("http://www.zorba-xquery.com/modules/xqddf","fn-zorba-ddl","delete-node-last"),
-      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
-      GENV_TYPESYSTEM.EMPTY_TYPE));
-
-
-  DECL(sctx, fn_zorba_ddl_delete_node_last,
-      (createQName("http://www.zorba-xquery.com/modules/xqddf","fn-zorba-ddl","delete-nodes-last"),
-      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
-      GENV_TYPESYSTEM.UNSIGNED_LONG_TYPE_ONE,
-      GENV_TYPESYSTEM.EMPTY_TYPE));
-
-
-  DECL(sctx, fn_zorba_ddl_delete_nodes_last,
       (createQName("http://www.zorba-xquery.com/modules/xqddf","fn-zorba-ddl","delete-node-last"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.EMPTY_TYPE));

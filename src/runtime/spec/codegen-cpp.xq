@@ -220,7 +220,7 @@ declare function local:create-context($iter, $function, $mapping) as xs:string?
   then
     ()
   else
-    string-join(for $sig in $iter//zorba:signature
+    string-join(for $sig in $function//zorba:signature
                 return 
                   string-join(($gen:newline,
                                if (exists($iter/@preprocessorGuard))
