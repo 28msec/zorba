@@ -18,6 +18,8 @@
 
 #include <zorba/zorbac.h>
 #include <zorba/dynamic_context.h>
+#include "zorbautils/mutex.h"
+#include "common/common.h"
 
 using namespace zorba;
 
@@ -58,7 +60,8 @@ namespace zorbac {
       static void
       free(XQC_DynamicContext* context);
 
-      CDynamicContext(DynamicContext* ctx, XQC_ErrorHandler* handler);
+      CDynamicContext(DynamicContext* ctx, XQuery_t clone,
+        XQC_ErrorHandler* handler);
 
       ~CDynamicContext();
 
@@ -71,10 +74,23 @@ namespace zorbac {
       XQC_DynamicContext*
       getXQC();
 
+      XQuery_t
+      getClonedXQuery();
+
     private:
       XQC_DynamicContext                  theXQCDynamic;
       DynamicContext*                     theContext;
+
+      /**
+       * Each XQC_DynamicContext represents a *cloned* XQuery object,
+       * since in the Zorba C++ API an XQuery has-a
+       * DynamicContext. See CExpression.create_context() for more
+       * details.
+       */
+      XQuery_t                            theCloneQuery;
       XQC_ErrorHandler*                   theErrorHandler;
+      SYNC_CODE(mutable Mutex theMutex;)
+      SYNC_CODE(friend class CExpression;)
   }; /* class DynamicContext */
 
 } /* namespace zorbac */

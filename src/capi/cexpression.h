@@ -18,6 +18,8 @@
 
 #include <zorba/zorbac.h>
 #include <zorba/xquery.h>
+#include "zorbautils/mutex.h"
+#include "common/common.h"
 
 using namespace zorba;
 
@@ -53,8 +55,9 @@ namespace zorbac {
 
     private:
       XQC_Expression       theXQCExpr;
-      XQuery_t             theQuery;
+      XQuery_t             theMasterQuery;
       XQC_ErrorHandler*    theErrorHandler;
+      SYNC_CODE(mutable Mutex theMutex;)
   };
 
 } /* namespace zorbac */

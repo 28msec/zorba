@@ -33,7 +33,7 @@ using namespace zorba;
 namespace zorbac {
 
   CExpression::CExpression(XQuery_t query, XQC_ErrorHandler* handler)
-    : theQuery(query), theErrorHandler(handler)
+    : theMasterQuery(query), theErrorHandler(handler)
   {
     memset(&theXQCExpr, 0, sizeof (XQC_Expression));
     theXQCExpr.create_context        = CExpression::create_context;
@@ -56,7 +56,7 @@ namespace zorbac {
   XQuery_t
   CExpression::getCPP()
   {
-    return theQuery;
+    return theMasterQuery;
   }
 
   XQC_Expression*
@@ -76,13 +76,20 @@ namespace zorbac {
   (const XQC_Expression* expr, XQC_DynamicContext** context)
   {
     CEXPR_TRY {
-      // Obtain the C++ DynamicContext, wrap in a CDynamicContext,
-      // then return the inner XQC_DynamicContext
-      DynamicContext* lContext = me->theQuery->getDynamicContext();
+      // The Zorba C++ API has different semantics for compiled
+      // queries and dynamic contexts. A Zorba XQuery has-a
+      // DynamicContext. In order to support executing the same
+      // XQC_Expression with different XQC_DynamicContexts, we must
+      // clone() the original XQuery object and get the clone's
+      // DynamicContext here. The CDynamicContext will then keep a
+      // reference to this cloned XQuery so that we may execute that
+      // one later.
+      XQuery_t lClone = me->theMasterQuery->clone();
+      DynamicContext* lContext = lClone->getDynamicContext();
       std::auto_ptr<CDynamicContext> lCCtx
-        (new CDynamicContext(lContext, me->theErrorHandler));
+        (new CDynamicContext(lContext, lClone, me->theErrorHandler));
       (*context) = lCCtx.release()->getXQC();
-    }      
+    }
     CEXPR_CATCH;
   }
 
@@ -176,7 +183,21 @@ namespace zorbac {
     XQC_Sequence** sequence)
   {
     CEXPR_TRY {
-      ResultIterator_t lIter = me->theQuery->iterator();
+      // If we are given an XQC_DynamicContext, we must use that
+      // object's XQuery_t since it is the one which is associated
+      // with the corresponding DynamicContext. If we are not given an
+      // XQC_DynamicContext, we may execute the master XQuery_t.
+      ResultIterator_t lIter;
+      if (context == NULL) {
+        SYNC_CODE(AutoMutex lock(&me->theMutex));
+        lIter = me->theMasterQuery->iterator();
+      }
+      else {
+        CDynamicContext* lCtx = CDynamicContext::get(context);
+        SYNC_CODE(AutoMutex lock(&lCtx->theMutex));
+        lIter = lCtx->getClonedXQuery()->iterator();
+      }
+
       lIter->open();
       XQC_ErrorHandler* lHandler;
       if (context) {

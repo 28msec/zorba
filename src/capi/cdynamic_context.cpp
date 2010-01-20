@@ -32,8 +32,8 @@ using namespace std;
 namespace zorbac {
 
   CDynamicContext::CDynamicContext
-  (DynamicContext* ctx, XQC_ErrorHandler* handler)
-    : theContext(ctx), theErrorHandler(handler)
+  (DynamicContext* ctx, XQuery_t clone, XQC_ErrorHandler* handler)
+    : theContext(ctx), theCloneQuery(clone), theErrorHandler(handler)
   {
     memset(&theXQCDynamic, 0, sizeof (XQC_DynamicContext));
     theXQCDynamic.set_context_item     = CDynamicContext::set_context_item;
@@ -63,6 +63,12 @@ namespace zorbac {
   CDynamicContext::getCPP()
   {
     return theContext;
+  }
+
+  XQuery_t
+  CDynamicContext::getClonedXQuery()
+  {
+    return theCloneQuery;
   }
 
   XQC_DynamicContext*

@@ -23,6 +23,40 @@
 
 #include "helpers.h"
 
+
+/**
+ * Helper routine which verifies the results of a query.  In all
+ * cases, it expects the results to be three xs:string items, each
+ * with the specified value. Returns true value if an error is seen or
+ * the values are wrong.
+ */
+int
+check_triple_sequence(XQC_Sequence* seq, const char* value)
+{
+  XQC_Error lError;
+  int lCount = 0;
+
+  while ( (lError = seq->next(seq)) == XQC_NO_ERROR) {
+    const char* lValue;
+    seq->string_value(seq, &lValue);
+    printf("%s\n", lValue);
+    if ( (strcmp(value, lValue)) != 0 ) {
+      printf("Incorrect value: %s (expecting %s)\n", lValue, value);
+      return 1;
+    }
+    lCount++;
+  }
+  if (lError != XQC_END_OF_SEQUENCE) {
+    printf("Error %d reached before end of sequence\n", lError);
+    return 1;
+  }
+  if (lCount != 3) {
+    printf("Saw %d xs:string values, not 3\n", lCount);
+    return 1;
+  }
+  return 0;
+}
+
 /**
  * An example that shows how to use the dynamic context to set the context item.
  */
@@ -34,7 +68,7 @@ ccontext_example_1(XQC_Implementation* impl)
   XQC_DynamicContext* lContext;
   XQC_Sequence*       lSeq;
   XQC_Sequence*       lResult;
-  const char*         lZorba[] = { "Zorba" };
+  static const char*         lZorba[] = { "Zorba" };
 
   // Create a sequence with a single string item, and advance to that item
   lError = impl->create_string_sequence(impl, lZorba, 1, &lSeq);
@@ -54,15 +88,7 @@ ccontext_example_1(XQC_Implementation* impl)
   // execute the query
   lError = lExpr->execute(lExpr, lContext, &lResult);
   if (check_error("execute", lError)) return 0;
-  while ( (lResult->next(lResult)) == XQC_NO_ERROR) {
-    const char* lValue;
-    lResult->string_value(lResult, &lValue);
-    printf("%s\n", lValue);
-    if ( (strcmp("Zorba", lValue)) != 0 ) {
-      printf("Incorrect value: %s\n", lValue);
-      break;
-    }
-  }
+  if (check_triple_sequence(lResult, lZorba[0])) return 0;
 
   // free all resources
   lResult->free(lResult);
@@ -202,7 +228,7 @@ ccontext_example_5(XQC_Implementation* impl)
   XQC_DynamicContext* lContext;
   XQC_Sequence*       lSeq;
   XQC_Sequence*       lResult;
-  const char*         lZorba[] = { "Zorba" };
+  static const char*  lZorba[] = { "Zorba" };
 
   // Create a sequence with a single string item, and advance to that item
   lError = impl->create_string_sequence(impl, lZorba, 1, &lSeq);
@@ -214,7 +240,7 @@ ccontext_example_5(XQC_Implementation* impl)
     "($ns:foo, $ns:foo, $ns:foo)", NULL, &lExpr);
   if (check_error("prepare", lError)) return 0;
 
-  // get the dynamic context and set the context item
+  // get the dynamic context and set the variable
   lError = lExpr->create_context(lExpr, &lContext);
   if (check_error("create_context", lError)) return 0;
   lError = lContext->set_variable(lContext, "http://www.zorba-xquery.com/",
@@ -224,25 +250,73 @@ ccontext_example_5(XQC_Implementation* impl)
   // execute the query
   lError = lExpr->execute(lExpr, lContext, &lResult);
   if (check_error("execute", lError)) return 0;
-  while ( (lResult->next(lResult)) == XQC_NO_ERROR) {
-    const char* lValue;
-    lResult->string_value(lResult, &lValue);
-    printf("%s\n", lValue);
-    if ( (strcmp("Zorba", lValue)) != 0 ) {
-      printf("Incorrect value: %s\n", lValue);
-      break;
-    }
-  }
+  if (check_triple_sequence(lResult, lZorba[0])) return 0;
 
   // free all resources
   lResult->free(lResult);
   lContext->free(lContext);
   lExpr->free(lExpr);
-  // Must free lSeq also since it was bound to the context item, not a variable
-  lSeq->free(lSeq);
+  // Must not free lSeq since it was bound to a variable, not the context item
   return 1;
 }
 
+/**
+ * Example showing that a query can be executed twice with two
+ * different dynamic contexts to get different results.
+ */
+int
+ccontext_example_6(XQC_Implementation* impl)
+{
+  XQC_Error           lError;
+  XQC_Expression*     lExpr;
+  XQC_DynamicContext* lContext1;
+  XQC_DynamicContext* lContext2;
+  XQC_Sequence*       lSeq1;
+  XQC_Sequence*       lSeq2;
+  XQC_Sequence*       lResult1;
+  XQC_Sequence*       lResult2;
+  static const char*  lZorba[] = { "Zorba" };
+  static const char*  lOther[] = { "Other" };
+
+  // Create simple string sequences for binding to variables
+  impl->create_string_sequence(impl, lZorba, 1, &lSeq1);
+  impl->create_string_sequence(impl, lOther, 1, &lSeq2);
+
+  lError = impl->prepare(impl,
+    "declare namespace ns=\"http://www.zorba-xquery.com/\";\n"
+    "declare variable $ns:foo as xs:string external;\n"
+    "($ns:foo, $ns:foo, $ns:foo)", NULL, &lExpr);
+  if (check_error("prepare", lError)) return 0;
+
+  // get two dynamic context and bind $ns:foo on each to different values
+  lError = lExpr->create_context(lExpr, &lContext1);
+  if (check_error("create_context 1", lError)) return 0;
+  lError = lContext1->set_variable(lContext1, "http://www.zorba-xquery.com/",
+    "foo", lSeq1);
+  if (check_error("set_variable 1", lError)) return 0;
+  lError = lExpr->create_context(lExpr, &lContext2);
+  if (check_error("create_context 2", lError)) return 0;
+  lError = lContext2->set_variable(lContext2, "http://www.zorba-xquery.com/",
+    "foo", lSeq2);
+  if (check_error("set_variable 2", lError)) return 0;
+
+  // execute both queries
+  lError = lExpr->execute(lExpr, lContext1, &lResult1);
+  if (check_error("execute 1", lError)) return 0;
+  lError = lExpr->execute(lExpr, lContext2, &lResult2);
+  if (check_error("execute 2", lError)) return 0;
+  if (check_triple_sequence(lResult1, lZorba[0])) return 0;
+  if (check_triple_sequence(lResult2, lOther[0])) return 0;
+
+  // free all resources
+  lResult1->free(lResult1);
+  lResult2->free(lResult2);
+  lContext1->free(lContext1);
+  lContext2->free(lContext2);
+  lExpr->free(lExpr);
+  // Must not free lSeq1 or lSeq2 since they were bound to variables
+  return 1;
+}
 
 int
 ccontext(int argc, char** argv)
@@ -277,6 +351,11 @@ ccontext(int argc, char** argv)
 
   printf("executing C example 5\n");
   res = ccontext_example_5(impl);
+  if (!res) { impl->free(impl); return 1; };
+  printf("\n");
+
+  printf("executing C example 6\n");
+  res = ccontext_example_6(impl);
   if (!res) { impl->free(impl); return 1; };
   printf("\n");
 
