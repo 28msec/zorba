@@ -25,7 +25,7 @@ declare manually maintained value range index news-data:ArtCountEmp
 
 declare integrity constraint news-data:UniqueId
   on collection news-data:employees
-  $id check unique key $id/@id;
+  node $id check unique key $id/@id;
 
 declare integrity constraint news-data:AuthorNames
   on collection news-data:articles
@@ -33,8 +33,8 @@ declare integrity constraint news-data:AuthorNames
 
 declare integrity constraint news-data:ArticleEmployees
   foreign key
-    from collection news-data:articles node $x keys $x/empid
-    to   collection news-data:employees node $y keys fn:data($y/@id);
+    from collection news-data:articles node $x key $x/empid
+    to   collection news-data:employees node $y key fn:data($y/@id);
 
 declare variable $news-data:employees := xs:QName("news-data:employees");
 declare variable $news-data:articles := xs:QName("news-data:articles");
