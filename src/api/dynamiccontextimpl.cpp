@@ -63,8 +63,6 @@ DynamicContextImpl::DynamicContextImpl(const XQueryImpl* aQuery)
 {
   theCtx = theQuery->theDynamicContext;
   theStaticContext = theQuery->theStaticContext;
-
-  SYNC_CODE(theCloningMutexp = &theQuery->theCloningMutex;)
 }
 
 
@@ -300,8 +298,6 @@ DynamicContextImpl::setContextItem ( const Item& aItem )
     store::Item_t lItem(Unmarshaller::getInternalItem(aItem));
     ZorbaImpl::checkItem(lItem);
 
-    SYNC_CODE(AutoMutex lock(theCloningMutexp);)
-
     theCtx->set_context_item(lItem, 0);
 
     return true;
@@ -387,8 +383,6 @@ DynamicContextImpl::setCurrentDateTime( const Item& aDateTimeItem )
                            << GENV_TYPESYSTEM.DATETIME_TYPE_ONE->toString() << "]");
     }
 
-    SYNC_CODE(AutoMutex lock(theCloningMutexp);)
-
     theCtx->set_current_date_time(lItem);
     return true;
   }
@@ -415,8 +409,6 @@ DynamicContextImpl::setImplicitTimezone( int aTimezoneMinutes )
   ZORBA_DCTX_TRY
   {
     checkNoIterators();
-
-    SYNC_CODE(AutoMutex lock(theCloningMutexp);)
 
     theCtx->set_implicit_timezone(aTimezoneMinutes * 60);
     return true;
@@ -447,8 +439,6 @@ DynamicContextImpl::setDefaultCollection( const Item& aCollectionUri )
 
     store::Item_t lItem = Unmarshaller::getInternalItem(aCollectionUri);
     ZorbaImpl::checkItem(lItem);
-
-    SYNC_CODE(AutoMutex lock(theCloningMutexp);)
 
     theCtx->set_default_collection(lItem);
     return true;

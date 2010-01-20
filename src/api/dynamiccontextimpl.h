@@ -18,8 +18,6 @@
 
 #include <zorba/dynamic_context.h>
 
-#include "zorbautils/mutex.h"
-
 #include "common/shared_types.h"
 
 
@@ -49,9 +47,6 @@ class XQueryImpl;
   Pointer to the error handler of the query (which is owned either by the XQuery
   obj or the application).
 
-  theCloningMutexp :
-  Pointer to the cloning mutex of the query (which is owned by the XQuery obj).
-
 ********************************************************************************/
 class DynamicContextImpl : public DynamicContext
 {
@@ -64,8 +59,6 @@ protected:
   dynamic_context           * theCtx;
 
   static_context            * theStaticContext;
-
-  SYNC_CODE(Mutex           * theCloningMutexp;)
 
 protected:
   DynamicContextImpl(const XQueryImpl* aQuery);
