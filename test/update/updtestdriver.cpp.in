@@ -295,7 +295,7 @@ main(int argc, char** argv)
 
 #ifdef ZORBA_TEST_PLAN_SERIALIZATION
       int save_retval;
-      if((save_retval = save_load_plan(engine, lQuery, lQueryFile.get_path())))
+      if((save_retval = save_load_plan(engine, lQuery, lResultFile.get_path())))
       {
         return save_retval;
       }
