@@ -317,9 +317,9 @@ main(int argc, char** argv)
     try
     {
       clock_t t0, t1;
-      std::string binary_path = lQueryFileString;
-      binary_path = binary_path.substr( 0, binary_path.rfind('.') );
-      binary_path += ".plan";
+      std::string binary_path;
+      binary_path = rbkt_bin_dir + "/QueryResults/" 
+                             + lQueryWithoutSuffix + ".plan";
       t0 = clock();
       std::ofstream fbinary(binary_path.c_str(), std::ios_base::binary);
       if(!lQuery->saveExecutionPlan(fbinary, ZORBA_USE_BINARY_ARCHIVE))
@@ -348,9 +348,9 @@ main(int argc, char** argv)
     try
     {
       clock_t t0, t1;
-      std::string binary_path = lQueryFileString;
-      binary_path = binary_path.substr( 0, binary_path.rfind('.') );
-      binary_path += ".plan";
+      std::string binary_path;
+      binary_path = rbkt_bin_dir + "/QueryResults/" 
+                             + lQueryWithoutSuffix + ".plan";
       lQuery = engine->createQuery (&errHandler);
       t0 = clock();
       std::ifstream   ifbinary(binary_path.c_str(), std::ios_base::binary);
