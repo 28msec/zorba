@@ -16,25 +16,26 @@
 
 (:~
  : This is a library module offering the same set of functions
- : defined by Microsoft Excel.
+ : defined by Microsoft Excel, under Information Functions.
  :
- : @see <a href="http://office.microsoft.com/en-us/excel/CH062528261033.aspx">Excel Documentation</a>
- : @spec XQuery Specification: January 2007
  : @author Sorin Nasoi
- : @version 1.0 
+ : @version 1.0
+ :
+ : @see <a href="http://office.microsoft.com/en-us/excel/CH062528261033.aspx">
+ : Excel Documentation: Information Functions</a>
  :)
 module namespace  excel-information = "http://www.zorba-xquery.com/modules/excel/information" ;
 
 import module namespace excel-err="http://www.zorba-xquery.com/modules/excel/errors";
 import module namespace excel-math = "http://www.zorba-xquery.com/modules/excel/math";
 
-(:  actual requirements :)
 (:~
- : If the value of $arg is the empty sequence, the function returns true; otherwise, the function returns false.
+ : If the value of $arg is the empty sequence, the function returns true;
+ : otherwise, the function returns false.
  :
  : @see     http://www.w3.org/TR/xquery-operators/#func-empty
  : @param   $value the value
- :) 
+ :)
 declare function excel-information:is-blank
   ( $value as xs:anyAtomicType? )  as xs:boolean {
   fn:empty($value)
@@ -46,12 +47,12 @@ declare function excel-information:is-blank
  : @see     http://office.microsoft.com/en-us/excel/HP052091481033.aspx
  : @param   $value the value
  : @error   XQP0021(errValue) if provided value is not a number
- :) 
+ :)
 declare function excel-information:is-even
   ( $value as xs:anyAtomicType? )  as xs:boolean {
 
  if(excel-math:is-a-number($value)) then
-  fn:not(fn:boolean(fn:floor(fn:abs(fn:number($value))) mod 2)) 
+  fn:not(fn:boolean(fn:floor(fn:abs(fn:number($value))) mod 2))
  else
   fn:error($excel-err:errValue, "Provided value is not a number", $value)
  };
@@ -62,7 +63,7 @@ declare function excel-information:is-even
  : @see     http://office.microsoft.com/en-us/excel/HP052091491033.aspx
  : @param   $value the value
  : @error   XQP0021(errValue) if provided value is not a number
- :) 
+ :)
 declare function excel-information:is-odd
   ( $value as xs:anyAtomicType? )  as xs:boolean {
 
@@ -77,20 +78,20 @@ declare function excel-information:is-odd
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052091471033.aspx
  : @param   $value the value
- :)    
+ :)
 declare function excel-information:islogical
   ( $value as xs:anyAtomicType? )  as xs:boolean {
 
   if ($value instance of xs:boolean) then fn:true()
   else fn:false()
  };
- 
+
 (:~
  : Returns TRUE if $value refers to a number.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052091471033.aspx
  : @param   $value the value
- :)    
+ :)
 declare function excel-information:isnumber
   ( $value as xs:anyAtomicType? )  as xs:boolean {
 
@@ -106,20 +107,20 @@ declare function excel-information:isnumber
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052091471033.aspx
  : @param   $value the value
- :)     
+ :)
 declare function excel-information:istext
   ( $value as xs:anyAtomicType? )  as xs:boolean {
 
   if ($value instance of xs:string) then fn:true()
   else fn:false()
  };
- 
+
 (:~
  : Returns a value converted to a number.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052091871033.aspx
  : @param   $value the value
- :)  
+ :)
 declare function excel-information:n
   ( $value as xs:anyAtomicType? )  as xs:anyAtomicType {
 
@@ -132,10 +133,9 @@ declare function excel-information:n
  : Returns the error value #N/A. #N/A is the error value that means "no value is available."
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052091881033.aspx
- :)    
+ :)
 declare function excel-information:na
   ()  as xs:anyAtomicType {
 
   fn:error($excel-err:errNA, "No value is available")
  };
- 

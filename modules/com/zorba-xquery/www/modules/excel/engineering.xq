@@ -16,12 +16,14 @@
 
 (:~
  :  This is a library module offering the same set of functions
- : defined by Microsoft Excel.
+ : defined by Microsoft Excel, under Engineering Functions.
  :
- : @see <a href="http://office.microsoft.com/en-us/excel/CH062528241033.aspx">Excel Documentation</a>
- : @spec XQuery Specification: January 2007
  : @author Sorin Nasoi
- : @version 1.0 
+ : @version 1.0
+ :
+ : @see <a href="http://office.microsoft.com/en-us/excel/CH062528241033.aspx">
+ : Excel Documentation: Engineering Functions </a>
+ :
  :)
 module namespace  excel-engineering = "http://www.zorba-xquery.com/modules/excel/engineering" ;
 
@@ -29,64 +31,63 @@ import module namespace excel-err="http://www.zorba-xquery.com/modules/excel/err
 import module namespace excel-text="http://www.zorba-xquery.com/modules/excel/text";
 import module namespace excel-math="http://www.zorba-xquery.com/modules/excel/math";
 
-(:  helper functions    :)
 (:~
- : Helper function: returns true if the passed $arg is a hexadecimal number, false otherwise.
- : 
- : @param   $arg the string 
- :) 
+ : Returns true if the passed $arg is a hexadecimal number, false otherwise.
+ :
+ : @param   $arg the string
+ :)
 declare function excel-engineering:is-hex
     ($arg as xs:string) as xs:boolean {
-    
+
   let $tmp := fn:upper-case($arg)
   let $hexCP:=(48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 65, 66, 67, 68, 69, 70)
-  
+
   return if (fn:exists(excel-text:value-except(fn:string-to-codepoints($tmp),($hexCP)))) then fn:false()
   else fn:true()
 };
 
 (:~
- : Helper function: returns true if the passed $arg is a octal number, false otherwise.
- : 
- : @param   $arg the string 
- :) 
+ : Returns true if the passed $arg is a octal number, false otherwise.
+ :
+ : @param   $arg the string
+ :)
 declare function excel-engineering:is-oct
     ($arg as xs:string) as xs:boolean {
- 
+
   let $octCP:=(48, 49, 50, 51, 52, 53, 54, 55)
-  
+
   return if (fn:exists(excel-text:value-except(fn:string-to-codepoints($arg),($octCP)))) then fn:false()
   else fn:true()
 };
- 
+
 (:~
- : Helper function: returns true if the passed $arg is a binary number, false otherwise.
- : 
+ : Returns true if the passed $arg is a binary number, false otherwise.
+ :
  : @param   $arg the string 
- :) 
+ :)
 declare function excel-engineering:is-bin
     ($arg as xs:string) as xs:boolean {
- 
+
   let $binCP:=(48, 49)
-  
+
   return if (fn:exists(excel-text:value-except(fn:string-to-codepoints($arg),($binCP)))) then fn:false()
   else fn:true()
 };
 
 (:~
- : Helper function: returns a binary representation of a number.
- : 
+ : Returns a binary representation of a number.
+ :
  : @param   $number the number
  : @error   XQP0021(errValue) if provided value for $number is not numeric
- :) 
+ :)
 declare function excel-engineering:dec2hexUtil
     ($number as xs:anyAtomicType) as xs:string {
-    
+
     if (fn:not(excel-math:is-a-number($number))) then
        fn:error($excel-err:errValue, "Provided value for 'number' is not numeric", $number)
     else
       let $tmpNumber := xs:integer($number) 
-        
+
     let $hexDigits:=('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F')
     return
     if($number < 16) then
@@ -96,19 +97,19 @@ declare function excel-engineering:dec2hexUtil
 };
 
 (:~
- : Helper function: returns an octal representation of a number.
- : 
+ : Returns an octal representation of a number.
+ :
  : @param   $number the number
  : @error   XQP0021(errValue) if provided value for $number is not numeric
- :) 
+ :)
 declare function excel-engineering:dec2octUtil
     ($number as xs:anyAtomicType) as xs:string {
-    
+
     if (fn:not(excel-math:is-a-number($number))) then
        fn:error($excel-err:errValue, "Provided value for 'number' is not numeric", $number)
     else
       let $tmpNumber := xs:integer($number) 
-      
+
     let $octDigits:=('0', '1', '2', '3', '4', '5', '6', '7')
     return
     if($number < 8) then
@@ -118,11 +119,11 @@ declare function excel-engineering:dec2octUtil
 };
 
 (:~
- : Helper function: returns a binary representation of a number.
- : 
+ : Returns a binary representation of a number.
+ :
  : @param   $arg the number
  : @error   XQP0021(errValue) if provided value for $number is not numeric
- :) 
+ :)
 declare function excel-engineering:dec2binUtil
     ($arg as xs:anyAtomicType) as xs:string {
 
@@ -130,7 +131,7 @@ declare function excel-engineering:dec2binUtil
        fn:error($excel-err:errValue, "Provided value for 'number' is not numeric", $arg)
     else
       let $tmpNumber := xs:integer($arg) 
-        
+
     let $binDigits:=('0', '1')
       return
       if($tmpNumber < 2) then
@@ -140,17 +141,17 @@ declare function excel-engineering:dec2binUtil
 };
 
 (:~
- : Helper function: returns a decimal representation of a number given it's hexadecimal representation.
- : 
+ : Returns a decimal representation of a number given it's hexadecimal representation.
+ :
  : @param   $arg the number
  : @error   XQP0021(errValue) if provided $arg is not a hexadecimal representation of a number
  :)
 declare function excel-engineering:hex2decUtil
-    ($arg as xs:string) as xs:integer* {    
-    
-    let $number := fn:upper-case($arg)    
+    ($arg as xs:string) as xs:integer* {
+
+    let $number := fn:upper-case($arg)
     let $hexCP := (48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 65, 66, 67, 68, 69, 70)
-    
+
     return if (fn:not(excel-engineering:is-hex($number))) then
       fn:error($excel-err:errValue, "Provided string is not a hexadecimal representation of a number", $number)
     else
@@ -160,14 +161,14 @@ declare function excel-engineering:hex2decUtil
 };
 
 (:~
- : Helper function: returns a decimal representation of a number given it's octal representation.
- : 
+ : Returns a decimal representation of a number given it's octal representation.
+ :
  : @param   $arg the number
  : @error   XQP0021(errValue) if provided $arg is not an octal representation of a number
  :)
 declare function excel-engineering:oct2decUtil
     ($arg as xs:string) as xs:integer {
-    
+
     if (fn:not(excel-engineering:is-oct($arg))) then
       fn:error($excel-err:errValue, "Provided string is not an octal representation of a number", $arg)
     else
@@ -177,23 +178,22 @@ declare function excel-engineering:oct2decUtil
 };
 
 (:~
- : Helper function: returns a decimal representation of a number given it's binary representation.
- : 
+ : Returns a decimal representation of a number given it's binary representation.
+ :
  : @param   $arg the number
  : @error   XQP0021(errValue) if provided $arg is not an binary representation of a number
  :)
 declare function excel-engineering:bin2decUtil
     ($arg as xs:string) as xs:integer {
-    
+
     if (fn:not(excel-engineering:is-bin($arg))) then
       fn:error($excel-err:errValue, "Provided string is not a binary representation of a number", $arg)
     else
       let $tmp := fn:reverse(fn:string-to-codepoints($arg))
       return fn:sum(for $val in (0 to fn:string-length($arg)-1)
         return xs:integer(fn:codepoints-to-string($tmp[$val + 1])) * excel-math:power(2, $val))
-}; 
+};
 
-(:  actual requirements :)
 (:~
  : Converts a decimal number to hexadecimal.
  :
@@ -201,22 +201,22 @@ declare function excel-engineering:bin2decUtil
  : @param   $arg the number
  : @error   XQP0021(errValue) if provided value for $arg is not numeric
  : @error   XQP0021(errNum) if provided value for $arg is smaller than -549755813888 or bigger than 549755813887
- :) 
+ :)
 declare function excel-engineering:dec2hex
     ($arg as xs:anyAtomicType) as xs:string {
-    
+
     if (fn:not(excel-math:is-a-number($arg))) then
        fn:error($excel-err:errValue, "Provided value for 'number' is not numeric", $arg)
     else
       let $tmpNumber := xs:integer($arg) 
-    
+
       return
       if(($tmpNumber < -549755813888) or ($tmpNumber > 549755813887)) then
         fn:error($excel-err:errNum, "Provided value for 'number' is smaller than -549755813888 or bigger than 549755813887", $tmpNumber)
       else if($tmpNumber < 0) then
           let $tmp := 1 + excel-engineering:hex2decUtil(fn:translate(
-                      excel-text:pad-integer-to-length(excel-engineering:dec2hexUtil(fn:abs($tmpNumber)), "0", 10), 
-                     "0123456789ABCDEF", 
+                      excel-text:pad-integer-to-length(excel-engineering:dec2hexUtil(fn:abs($tmpNumber)), "0", 10),
+                     "0123456789ABCDEF",
                      "FEDCBA9876543210"))
           return excel-engineering:dec2hexUtil($tmp)
         else
@@ -234,11 +234,11 @@ declare function excel-engineering:dec2hex
  : @error   XQP0021(errNum) if provided value for $places is zero or negative
  : @error   XQP0021(errNum) if provided value for $places is too small
  : @error   XQP0021(errNum) if provided value for $arg is smaller than -549755813888 or bigger than 549755813887
- :) 
+ :)
 declare function excel-engineering:dec2hex
     ($arg as xs:anyAtomicType,
      $places as xs:anyAtomicType) as xs:string {
-    
+
     if (fn:not(excel-math:is-a-number($arg))) then
        fn:error($excel-err:errValue, "Provided value for 'number' is not numeric", $arg)
     else if(fn:not(excel-math:is-a-number($places))) then
@@ -246,17 +246,17 @@ declare function excel-engineering:dec2hex
     else
       let $tmpNumber := xs:integer($arg) 
       let $tmpPlaces := xs:integer($places)
-    
-      return 
+
+      return
         if(($tmpNumber < -549755813888) or ($tmpNumber > 549755813887)) then
         fn:error($excel-err:errNum, "Provided value for 'number' is smaller than -549755813888 or bigger than 549755813887", $tmpNumber) 
-        else if($tmpPlaces < 1) then 
+        else if($tmpPlaces < 1) then
           fn:error($excel-err:errNum, "Provided value for 'places' is zero or negative", $tmpPlaces)
-        else        
+        else
           if($tmpNumber < 0) then
             let $tmp := 1 + excel-engineering:hex2decUtil(fn:translate(
-                        excel-text:pad-integer-to-length(excel-engineering:dec2hexUtil(fn:abs($tmpNumber)), "0", 10), 
-                       "0123456789ABCDEF", 
+                        excel-text:pad-integer-to-length(excel-engineering:dec2hexUtil(fn:abs($tmpNumber)), "0", 10),
+                       "0123456789ABCDEF",
                        "FEDCBA9876543210"))
             return excel-engineering:dec2hexUtil($tmp)
           else
@@ -264,7 +264,7 @@ declare function excel-engineering:dec2hex
             return if($tmpPlaces < fn:string-length($tmp)) then
               fn:error($excel-err:errNum, "Provided value for 'places' too small", $tmpPlaces)
             else
-              excel-text:pad-integer-to-length($tmp, "0", $tmpPlaces)            
+              excel-text:pad-integer-to-length($tmp, "0", $tmpPlaces)
 };
 
 (:~
@@ -277,23 +277,23 @@ declare function excel-engineering:dec2hex
  :)
 declare function excel-engineering:dec2oct
     ($arg as xs:anyAtomicType) as xs:string {
-    
+
     if (fn:not(excel-math:is-a-number($arg))) then
        fn:error($excel-err:errValue, "Provided value for 'number' is not numeric", $arg)
     else
       let $tmpNumber := xs:integer($arg) 
-    
+
       return
       if(($tmpNumber < -536870912) or ($tmpNumber > 536870911)) then
         fn:error($excel-err:errNum, "Provided value for 'number' is smaller than -536870912 or bigger than 536870911", $tmpNumber)
       else if($tmpNumber < 0) then
           let $tmp := 1 + excel-engineering:oct2decUtil(fn:translate(
                       excel-text:pad-integer-to-length(excel-engineering:dec2octUtil(fn:abs($tmpNumber)), "0", 10), 
-                     "01234567", 
+                     "01234567",
                      "76543210"))
           return excel-engineering:dec2octUtil($tmp)
         else
-          excel-engineering:dec2octUtil($tmpNumber)            
+          excel-engineering:dec2octUtil($tmpNumber)
 };
 
 (:~
@@ -311,25 +311,25 @@ declare function excel-engineering:dec2oct
 declare function excel-engineering:dec2oct
     ($arg as xs:anyAtomicType,
      $places as xs:anyAtomicType) as xs:string {
-    
+
     if (fn:not(excel-math:is-a-number($arg))) then
        fn:error($excel-err:errValue, "Provided value for 'number' is not numeric", $arg)
     else if(fn:not(excel-math:is-a-number($places))) then
-       fn:error($excel-err:errValue, "Provided value for 'places' is not numeric", $places) 
+       fn:error($excel-err:errValue, "Provided value for 'places' is not numeric", $places)
     else
       let $tmpNumber := xs:integer($arg) 
       let $tmpPlaces := xs:integer($places)
-    
-      return 
+
+      return
         if(($tmpNumber < -536870912) or ($tmpNumber > 536870911)) then
-          fn:error($excel-err:errNum, "Provided value for 'number' is smaller than -536870912 or bigger than 536870911", $tmpNumber) 
-        else if($tmpPlaces < 1) then 
+          fn:error($excel-err:errNum, "Provided value for 'number' is smaller than -536870912 or bigger than 536870911", $tmpNumber)
+        else if($tmpPlaces < 1) then
           fn:error($excel-err:errNum, "Provided value for 'places' is zero or negative", $tmpPlaces)
-        else        
+        else
           if($tmpNumber < 0) then
             let $tmp := 1 + excel-engineering:oct2decUtil(fn:translate(
-                        excel-text:pad-integer-to-length(excel-engineering:dec2octUtil(fn:abs($tmpNumber)), "0", 10), 
-                        "01234567", 
+                        excel-text:pad-integer-to-length(excel-engineering:dec2octUtil(fn:abs($tmpNumber)), "0", 10),
+                        "01234567",
                         "76543210"))
             return excel-engineering:dec2octUtil($tmp)
           else
@@ -337,7 +337,7 @@ declare function excel-engineering:dec2oct
             return if($tmpPlaces < fn:string-length($tmp)) then
               fn:error($excel-err:errNum, "Provided value for 'places' too small", $tmpPlaces)
             else
-              excel-text:pad-integer-to-length($tmp, "0", $tmpPlaces)            
+              excel-text:pad-integer-to-length($tmp, "0", $tmpPlaces)
 };
 
 (:~
@@ -350,24 +350,24 @@ declare function excel-engineering:dec2oct
  :)
 declare function excel-engineering:dec2bin
     ($arg as xs:anyAtomicType) as xs:string {
-    
+
     if (fn:not(excel-math:is-a-number($arg))) then
        fn:error($excel-err:errValue, "Provided value for 'number' is not numeric", $arg)
     else
       let $tmpNumber := xs:integer($arg) 
-    
-      return  
+
+      return
       if(($tmpNumber < -512) or ($tmpNumber > 511)) then
         fn:error($excel-err:errNum, "Provided value for 'number' is smaller than -512 or bigger than 511", $tmpNumber)
       else
         if($tmpNumber < 0) then
           let $tmp := 1 + excel-engineering:bin2decUtil(fn:translate(
-                      excel-text:pad-integer-to-length(excel-engineering:dec2binUtil(fn:abs($tmpNumber)), "0", 10), 
-                     "01", 
+                      excel-text:pad-integer-to-length(excel-engineering:dec2binUtil(fn:abs($tmpNumber)), "0", 10),
+                     "01",
                      "10"))
           return excel-engineering:dec2binUtil($tmp)
         else
-          excel-engineering:dec2binUtil($tmpNumber)            
+          excel-engineering:dec2binUtil($tmpNumber)
 };
 
 (:~
@@ -385,25 +385,25 @@ declare function excel-engineering:dec2bin
 declare function excel-engineering:dec2bin
     ($arg as xs:anyAtomicType,
      $places as xs:anyAtomicType) as xs:string {
-    
+
     if (fn:not(excel-math:is-a-number($arg))) then
        fn:error($excel-err:errValue, "Provided value for 'number' is not numeric", $arg)
     else if(fn:not(excel-math:is-a-number($places))) then
-       fn:error($excel-err:errValue, "Provided value for 'places' is not numeric", $places) 
+       fn:error($excel-err:errValue, "Provided value for 'places' is not numeric", $places)
     else
       let $tmpNumber := xs:integer($arg) 
       let $tmpPlaces := xs:integer($places)
-    
-      return  
+
+      return
       if(($tmpNumber < -512) or ($tmpNumber > 511)) then
         fn:error($excel-err:errNum, "Provided value for 'number' is smaller than -512 or bigger than 511", $tmpNumber)
-      else if($tmpPlaces < 1) then 
+      else if($tmpPlaces < 1) then
         fn:error($excel-err:errNum, "Provided value for 'places' is zero or negative", $tmpPlaces)
       else
         if($tmpNumber < 0) then
           let $tmp := 1 + excel-engineering:bin2decUtil(fn:translate(
-                      excel-text:pad-integer-to-length(excel-engineering:dec2binUtil(fn:abs($tmpNumber)), "0", 10), 
-                     "01", 
+                      excel-text:pad-integer-to-length(excel-engineering:dec2binUtil(fn:abs($tmpNumber)), "0", 10),
+                     "01",
                      "10"))
           return excel-engineering:dec2binUtil($tmp)
         else
@@ -411,7 +411,7 @@ declare function excel-engineering:dec2bin
           return if($tmpPlaces < fn:string-length($tmp)) then
             fn:error($excel-err:errNum, "Provided value for 'places' too small", $tmpPlaces)
           else
-            excel-text:pad-integer-to-length($tmp, "0", $tmpPlaces)            
+            excel-text:pad-integer-to-length($tmp, "0", $tmpPlaces)
 };
 
 (:~
@@ -425,7 +425,7 @@ declare function excel-engineering:dec2bin
 declare function excel-engineering:oct2bin
     ($arg as xs:anyAtomicType) as xs:string {
 
-  excel-engineering:dec2bin(excel-engineering:oct2dec($arg))    
+  excel-engineering:dec2bin(excel-engineering:oct2dec($arg))
 };
 
 (:~
@@ -444,7 +444,7 @@ declare function excel-engineering:oct2bin
     ($arg as xs:anyAtomicType,
      $places as xs:anyAtomicType) as xs:string {
 
-  excel-engineering:dec2bin(excel-engineering:oct2dec($arg),$places)   
+  excel-engineering:dec2bin(excel-engineering:oct2dec($arg),$places)
 };
 
 (:~
@@ -463,11 +463,11 @@ declare function excel-engineering:oct2dec
     fn:error($excel-err:errValue, "Provided string is not an octal representation of a number", $number)
   else if(fn:string-length($number) > 10) then 
     fn:error($excel-err:errValue, "Number contains more than 10 characters", $number)
-  else   
+  else
     if((fn:string-length($number) eq 10) and
               fn:substring($number, 1, 1) eq "7") then
       -(1 + excel-engineering:oct2decUtil(fn:translate($number,"01234567", "76543210")))
-    else     
+    else
       excel-engineering:oct2decUtil($number)
 };
 
@@ -482,16 +482,16 @@ declare function excel-engineering:oct2dec
 declare function excel-engineering:bin2dec
     ($arg as xs:anyAtomicType) as xs:integer {
 
-  let $number := fn:string($arg)  
+  let $number := fn:string($arg)
   return if (fn:not(excel-engineering:is-bin($number))) then
     fn:error($excel-err:errValue, "Provided string is not a binary representation of a number", $number)
-  else if(fn:string-length($number) > 10) then 
+  else if(fn:string-length($number) > 10) then
     fn:error($excel-err:errValue, "Number contains more than 10 characters", $number)
-  else   
+  else
     if((fn:string-length($number) eq 10) and
        (fn:substring($number, 1, 1) eq "1")) then
       -(1 + excel-engineering:bin2decUtil(fn:translate($number,"01", "10")))
-    else     
+    else
       excel-engineering:bin2decUtil ($number)
 };
 
@@ -506,7 +506,7 @@ declare function excel-engineering:bin2dec
 declare function excel-engineering:oct2hex
     ($arg as xs:anyAtomicType) as xs:string {
 
-  excel-engineering:dec2hex(excel-engineering:oct2dec($arg))    
+  excel-engineering:dec2hex(excel-engineering:oct2dec($arg))
 };
 
 (:~
@@ -525,7 +525,7 @@ declare function excel-engineering:oct2hex
     ($arg as xs:anyAtomicType,
      $places as xs:anyAtomicType) as xs:string {
 
-  excel-engineering:dec2hex(excel-engineering:oct2dec($arg),$places)   
+  excel-engineering:dec2hex(excel-engineering:oct2dec($arg),$places)
 };
 
 (:~
@@ -539,7 +539,7 @@ declare function excel-engineering:oct2hex
 declare function excel-engineering:hex2bin
     ($arg as xs:anyAtomicType) as xs:string {
 
-  excel-engineering:dec2bin(excel-engineering:hex2dec($arg))    
+  excel-engineering:dec2bin(excel-engineering:hex2dec($arg))
 };
 
 (:~
@@ -558,7 +558,7 @@ declare function excel-engineering:hex2bin
     ($arg as xs:anyAtomicType,
      $places as xs:anyAtomicType) as xs:string {
 
-  excel-engineering:dec2bin(excel-engineering:hex2dec($arg),$places)    
+  excel-engineering:dec2bin(excel-engineering:hex2dec($arg),$places)
 };
 
 (:~
@@ -572,7 +572,7 @@ declare function excel-engineering:hex2bin
 declare function excel-engineering:hex2oct
     ($arg as xs:anyAtomicType) as xs:string {
 
-  excel-engineering:dec2oct(excel-engineering:hex2dec($arg))    
+  excel-engineering:dec2oct(excel-engineering:hex2dec($arg))
 };
 
 (:~
@@ -591,7 +591,7 @@ declare function excel-engineering:hex2oct
     ($arg as xs:anyAtomicType,
      $places as xs:anyAtomicType) as xs:string {
 
-  excel-engineering:dec2oct(excel-engineering:hex2dec($arg),$places)    
+  excel-engineering:dec2oct(excel-engineering:hex2dec($arg),$places)
 };
 
 (:~
@@ -614,7 +614,7 @@ declare function excel-engineering:hex2dec
     if((fn:string-length($number) eq 10) and
         fn:substring($number, 1, 1) eq "F") then
       -(1 + excel-engineering:hex2decUtil(fn:translate($number,"0123456789ABCDEF", "FEDCBA9876543210")))
-    else     
+    else
       excel-engineering:hex2decUtil($number)
 };
 
@@ -629,7 +629,7 @@ declare function excel-engineering:hex2dec
 declare function excel-engineering:bin2oct
     ($arg as xs:anyAtomicType) as xs:string {
 
-  excel-engineering:dec2oct(excel-engineering:bin2dec($arg))   
+  excel-engineering:dec2oct(excel-engineering:bin2dec($arg))
 };
 
 (:~
@@ -648,7 +648,7 @@ declare function excel-engineering:bin2oct
     ($arg as xs:anyAtomicType,
      $places as xs:anyAtomicType) as xs:string {
 
-  excel-engineering:dec2oct(excel-engineering:bin2dec($arg),$places)    
+  excel-engineering:dec2oct(excel-engineering:bin2dec($arg),$places)
 };
 
 (:~
@@ -662,7 +662,7 @@ declare function excel-engineering:bin2oct
 declare function excel-engineering:bin2hex
     ($arg as xs:anyAtomicType) as xs:string {
 
-  excel-engineering:dec2hex(excel-engineering:bin2dec($arg))   
+  excel-engineering:dec2hex(excel-engineering:bin2dec($arg))
 };
 
 (:~
@@ -681,6 +681,5 @@ declare function excel-engineering:bin2hex
     ($arg as xs:anyAtomicType,
      $places as xs:anyAtomicType) as xs:string {
 
-  excel-engineering:dec2hex(excel-engineering:bin2dec($arg),$places)   
+  excel-engineering:dec2hex(excel-engineering:bin2dec($arg),$places)
 };
- 

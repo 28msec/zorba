@@ -17,6 +17,9 @@
 (:~
  : This is a library module that provides functions for sending emails.
  :
+ : @author Sorin Nasoi
+ : @version 1.0
+ :
  : <ul>
  :   <li>Table of Contents 
  :     <ul>
@@ -123,9 +126,7 @@
  :   <li>smtp.gmail.com:587/tls/novalidate-cert</li>
  :   <li>[209.85.129.111]:587/tls/novalidate-cert</li>
  : </ul>
- : 
- : @author Sorin Nasoi
- : @version 1.0
+ :
  :)
 module namespace smtp = "http://www.zorba-xquery.com/modules/email/smtp";
 

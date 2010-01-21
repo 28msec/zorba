@@ -17,28 +17,29 @@
 (:~
  : XSLT 2.0 and XQuery 1.0 Serialization Module
  :
- : @see <a href="http://www.w3.org/TR/xslt-xquery-serialization/">XSLT 2.0 and XQuery 1.0 Serialization</a>
  : @author Matthias Brantner, Gabriel Petrovay
- : @version 1.0 
+ : @version 1.0
+ :
+ : @see <a href="http://www.w3.org/TR/xslt-xquery-serialization/">XSLT 2.0 and XQuery 1.0 Serialization</a>
  :)
 module namespace ser = "http://www.zorba-xquery.com/modules/serialize";
 
 
 (:~
- : Serialize a sequence of items to a string. 
+ : Serialize a sequence of items to a string.
  :
  : @param $content The content to be serialized to the string.
  : @param $serializer-params Parameters to control the serialization of the
  :        content. This parameter can either be a string (xml, html, xhtml,
  :        text, json, or jsonml) describing the serialization method to
  :        be used or a element node as follows:
- :        &lt;xsl:output  method="xml|html|text|json|jsonml"
+ :        output  method="xml|html|text|json|jsonml"
  :          version="string" encoding="string"
  :          omit-xml-declaration="yes|no"
  :          standalone="yes|no"
  :          doctype-public="string" doctype-system="string"
  :          cdata-section-elements="namelist"
- :          indent="yes|no" media-type="string"/>
+ :          indent="yes|no" media-type="string"
 
  : @error An error is thrown if serialization problems occur.
  :)
