@@ -79,13 +79,16 @@ declare function xhtml:annotations($comment) {
     let $annotations := $comment/xqdoc:*[not((local-name(.) = ("description", "param", "return", "error")))]
     return
         for $annotation in $annotations
-        return (
+        let $annName := local-name($annotation)
+        return ( 
             <div class="subsubsection">{
-                let $annName := local-name($annotation)
-                return
-                    concat(upper-case(substring($annName, 1, 1)), substring($annName, 2), ":")
-            }</div>,
-            <p class="annotationText">{$annotation/node()}</p>
+              concat(upper-case(substring($annName, 1, 1)), substring($annName, 2), ":")
+            }</div>,            
+            (: replace the @see nodes that start with http:// with HTML a tag :)
+            if(($annName = "see") and fn:starts-with(fn:lower-case($annotation/node()), "http://")) then
+              <p class="annotationText">{<a href="{$annotation/node()}" target="_blank">{$annotation/node()}</a>}</p>
+            else
+              <p class="annotationText">{$annotation/node()}</p>
         )
 };
 
