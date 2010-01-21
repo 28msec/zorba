@@ -1,0 +1,1 @@
+module namespace i = "i";

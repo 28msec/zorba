@@ -71,4 +71,9 @@ IF (BUILDING_SIMPLESTORE)
   
   ZORBA_ADD_TEST_SIMPLE(bin/zorba_compilechk2 zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/mymod.xq" -f -l -x)
   SET_TESTS_PROPERTIES(bin/zorba_compilechk2 PROPERTIES PASS_REGULAR_EXPRESSION ".*XPST0008.*mymod.xq' lineStart='6' columnStart='8' lineEnd='6' columnEnd='8'.*")
+
+  # test compile checking to work with library modules that have an invalid target namespace uri
+  # test for bug #2934414
+  ZORBA_ADD_TEST_SIMPLE(bin/zorba_compilechk3 zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/mymod2.xq" -f -l -x)
+  SET_TESTS_PROPERTIES(bin/zorba_compilechk3 PROPERTIES PASS_REGULAR_EXPRESSION ".*XQST0046.*mymod2.xq' lineStart='1' columnStart='1' lineEnd='1' columnEnd='1'.*")
 ENDIF(BUILDING_SIMPLESTORE)

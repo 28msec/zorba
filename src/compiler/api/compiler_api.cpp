@@ -45,6 +45,7 @@
 #endif
 
 #include "runtime/base/plan_iterator.h"
+#include "zorbatypes/URI.h"
 
 
 namespace zorba 
@@ -277,6 +278,18 @@ XQueryCompiler::createMainModule(
   }
 
   std::string lib_namespace = mod_ast->get_decl()->get_target_namespace();
+
+  // bugfix for #2934414
+  // check the library module's URI for validity
+  // raise an error with the location of the module declaration
+  // if the URI is not valid
+  try {
+    URI lURI(lib_namespace);
+  } catch (error::ZorbaError& e) {
+    ZORBA_ERROR_LOC_DESC(XQST0046,
+                         mod_ast->get_decl()->get_location(),
+                         e.theDescription);
+  }
 
   //create a dummy main module
   std::stringstream lDocStream;
