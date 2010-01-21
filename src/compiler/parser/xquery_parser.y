@@ -2090,6 +2090,7 @@ FunctionDecl4 :
                 &* $3->param, &* $3->ret,
 								NULL,
 								ParseConstants::fn_extern_sequential);
+      delete $3;
     }
   ;
 
