@@ -14,6 +14,8 @@
 
 SET(XQDOC_DEPENDS)
 
+# find all files required for xqdoc generation
+# i.e. modules, templates, and xquery generator queries
 FILE(GLOB_RECURSE XQ_MODULES ${CMAKE_SOURCE_DIR}/modules/*.xq)
 LIST(APPEND XQDOC_DEPENDS ${XQ_MODULES})
 
@@ -23,10 +25,16 @@ LIST(APPEND XQDOC_DEPENDS ${XQDOC_TEMPLATES})
 FILE(GLOB_RECURSE XQDOC_GENERATORS ${CMAKE_CURRENT_SOURCE_DIR}/src/*)
 LIST(APPEND XQDOC_DEPENDS ${XQDOC_GENERATORS})
 
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/styles/zorba.css ${CMAKE_CURRENT_BINARY_DIR}/xhtml/css/zorba.css COPYONLY)
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/images/S.gif ${CMAKE_CURRENT_BINARY_DIR}/xhtml/images/S.gif COPYONLY)
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/images/U.gif ${CMAKE_CURRENT_BINARY_DIR}/xhtml/images/U.gif COPYONLY)
+# copy images and stylesheets required by the xqdoc generated xhtml page
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/styles/zorba.css
+               ${CMAKE_CURRENT_BINARY_DIR}/xhtml/css/zorba.css COPYONLY)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/images/S.gif
+               ${CMAKE_CURRENT_BINARY_DIR}/xhtml/images/S.gif COPYONLY)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/images/U.gif
+               ${CMAKE_CURRENT_BINARY_DIR}/xhtml/images/U.gif COPYONLY)
 
+# finally, add the xqdoc command
+# therefore, a working zorba cmd is required
 ADD_CUSTOM_TARGET(xqdoc
   ${ZORBA_RUNTIME_GENERATOR}
     --omit-xml-declaration
@@ -40,5 +48,3 @@ ADD_CUSTOM_TARGET(xqdoc
     ${XQDOC_DEPENDS}
 )
 SET_TARGET_PROPERTIES(xqdoc PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
-  
-ADD_DEPENDENCIES(doc xqdoc)

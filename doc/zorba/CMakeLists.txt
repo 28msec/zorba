@@ -11,16 +11,32 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/CMakeUseDoxygen.cmake)
-IF (DOXYGEN_FOUND)
 
-CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/../style/rtab_b.gif
-${CMAKE_CURRENT_BINARY_DIR}/html/rtab_b.gif COPYONLY)
-CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/../style/rtab_r.gif
-${CMAKE_CURRENT_BINARY_DIR}/html/rtab_r.gif COPYONLY)
-CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/../style/rtab_l.gif
-${CMAKE_CURRENT_BINARY_DIR}/html/rtab_l.gif COPYONLY)
+# generate host language and manually written documentation using doxygen
+# this adds a custom target called "zorbadocs"
+ZORBA_DOXYGEN("${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}" "zorbadocs")
+# make the zorbadocs target as a dependee of the doc target
+ADD_DEPENDENCIES(doc "zorbadocs")
+
+IF (DOXYGEN_FOUND)
+  # if doxygen documentation is generated
+  # we add the target "docs" to the target "doc"
+  # which is used to build all documentation related targets
+  LIST(APPEND ZORBA_DOC_DEPENDENCIES docs)
+
+  # and install all doxygen required styles and images
+  CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/../style/rtab_b.gif
+                  ${CMAKE_CURRENT_BINARY_DIR}/html/rtab_b.gif COPYONLY)
+  CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/../style/rtab_r.gif
+                  ${CMAKE_CURRENT_BINARY_DIR}/html/rtab_r.gif COPYONLY)
+  CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/../style/rtab_l.gif
+                  ${CMAKE_CURRENT_BINARY_DIR}/html/rtab_l.gif COPYONLY)
 
 ENDIF (DOXYGEN_FOUND)
 
+# adding the subdirectory responsible for adding the
+# xqdoc generated API documentation
 ADD_SUBDIRECTORY(xqdoc)
+
+# make the xqdoc target as a dependee of the doc target
+ADD_DEPENDENCIES(doc "xqdoc")
