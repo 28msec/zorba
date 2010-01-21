@@ -28,7 +28,6 @@ XQDocComment::XQDocComment(const std::string& aComment)
   : theDeprecated(false)
 { 
   bool lDescriptionState = true;
-  bool lNewLineAdded = true;
 
   std::string lLine;
   std::string lAnntotation;
@@ -42,25 +41,11 @@ XQDocComment::XQDocComment(const std::string& aComment)
   while(std::getline(lComment, lLine, '\n'))
   {
     // remove the leading and trailing whitespaces, and the leading ':'
-    if (!trimLine(lLine)) {
-      // the line did not start with a ':' preceeded by whitespaces
-      // therefore we ignore these lines
+    if (!trimLine(lLine) || lLine.empty()) {
+      // the line did not start with a ':' preceeded by whitespaces or
+      // if the line is empty, ignore it and proceed to the following
       continue;      
     }
-
-    // only add one new line every time an sequence of empty lines is found
-    if (lLine.empty()) {
-      if (!lNewLineAdded) {
-        if (lDescriptionState) {
-          theDescription += "\n";
-        } else {
-          lAnntotation += "\n";
-        }
-        lNewLineAdded = true;
-      }
-      continue;
-    }
-    lNewLineAdded = false;
 
     // if the line contains an annotation, than we finish the description
     if (lLine.at(0) == '@') {

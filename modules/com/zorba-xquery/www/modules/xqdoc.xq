@@ -23,11 +23,10 @@
  :)
 module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
 
-
 (:~
  : Generated the an XQDoc XML document for the provided module.
  :
- : @param module The module file for which to generate XQDoc.
+ : @param $module The module file for which to generate XQDoc.
  : @return The xqdoc element as specified by www.xqdoc.org.
  : @error An error is thrown if an IO problem occurs.
  :)

@@ -83,9 +83,9 @@ declare sequential function file:files(
  : The order of the result is not defined.
  : The "." and ".." items are not considered for the match.
  : The result of this function is equivalent to the following call:
- : <pre>
- :  file:files($path, $pattern, fn:false)
- : </pre>
+ : <tt>
+ :  file:files($path, $pattern, fn:false())
+ : </tt>
  : 
  : @param $path The path/URI to list the files of.
  : @param $pattern The filename condition to be checked.

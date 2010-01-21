@@ -42,7 +42,7 @@ declare function xhtml:parameters($comment) {
     let $params := $comment/xqdoc:param
     return
         if (exists($params)) then (
-            <h4>Parameters:</h4>,
+            <div class="subsubsection">Parameters:</div>,
             for $param in $params
             let $text := string($param/node()[1])
             return
@@ -64,7 +64,7 @@ declare function xhtml:errors($comment) {
     let $errors := $comment/xqdoc:error
     return
         if (exists($errors)) then (
-            <h4>Errors</h4>,
+            <div class="subsubsection">Errors</div>,
             for $error in $errors
             return
                 <table class="parameter">
@@ -80,11 +80,11 @@ declare function xhtml:annotations($comment) {
     return
         for $annotation in $annotations
         return (
-            <h4>{
+            <div class="subsubsection">{
                 let $annName := local-name($annotation)
                 return
                     concat(upper-case(substring($annName, 1, 1)), substring($annName, 2), ":")
-            }</h4>,
+            }</div>,
             <p class="annotationText">{$annotation/node()}</p>
         )
 };
@@ -94,7 +94,7 @@ declare function xhtml:return($comment) {
     let $return := $comment/xqdoc:return
     return
         if (exists($return)) then (
-            <h4>Returns:</h4>,
+            <div class="subsubsection">Returns:</div>,
             <p class="annotationText">{$return/node()}</p>
         ) else ()
 };
@@ -103,7 +103,7 @@ declare function xhtml:description($comment)
 {
      <p>{
         if ($comment/xqdoc:description) then
-            <span>{$comment/xqdoc:description/node()}</span>
+            $comment/xqdoc:description/node()
         else
             "No description available."
      }</p>
@@ -111,7 +111,7 @@ declare function xhtml:description($comment)
 
 declare function xhtml:module-description($module)
 {
-    (<h2><a name="module_description">Module Description</a></h2>,
+    (<div class="section"><span class="section" id="module_description">Module Description</span></div>,
      xhtml:description($module/xqdoc:comment),
      xhtml:annotations($module/xqdoc:comment))
 };
@@ -119,9 +119,9 @@ declare function xhtml:module-description($module)
 declare function xhtml:module-variables($variables)
 {
     if($variables/xqdoc:variable) then
-        (<h2><a name="variables">Variables</a></h2>,
+        (<div class="section"><span class="section" id="variables">Variables</span></div>,
         for $variable in $variables/xqdoc:variable
-        return (<h3>{$variable/xqdoc:uri}</h3>,
+        return (<div class="subsection">{$variable/xqdoc:uri}</div>,
                 xhtml:description($variable/xqdoc:comment),
                 xhtml:annotations($variable/xqdoc:comment))
         )
@@ -131,7 +131,7 @@ declare function xhtml:module-variables($variables)
 
 declare function xhtml:module-function-summary($functions)
 {
-    <h2><a name="function_summary">Function Summary</a></h2>,
+    <div class="section"><span class="section" id="function_summary">Function Summary</span></div>,
     if(count($functions/xqdoc:function)) then
         <table class="funclist">{
             for $function in $functions/xqdoc:function
@@ -162,14 +162,14 @@ declare function xhtml:module-function-summary($functions)
 
 declare function xhtml:module-functions($functions) {
     if(count($functions/xqdoc:function)) then (
-        <h2><a name="functions">Functions</a></h2>,
+        <div class="section"><span class="section" id="functions">Functions</span></div>,
         for $function in $functions/xqdoc:function
         let $name := $function/xqdoc:name/text(),
             $signature := $function/xqdoc:signature/text(),
             $param-number := count(tokenize($signature, "\$")) - 1,
             $comment := $function/xqdoc:comment
         return (
-            <h3 id="{$name}-{$param-number}">{$name}</h3>,
+            <div class="subsection" id="{$name}-{$param-number}">{$name}</div>,
             <pre class="signature">{xhtml:split-function-signature($signature)}</pre>,
             xhtml:description($comment),
             xhtml:parameters($comment),

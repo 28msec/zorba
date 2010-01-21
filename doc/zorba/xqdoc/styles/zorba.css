@@ -1,14 +1,35 @@
-A {
-	color: #cc0000;
-	background-color: white;
+a {
+    color: #cc0000;
 }
 
-A:link , A:visited { 
-  text-decoration: none;
+div.section {
+    background-color: #B93333;
+    color: #FFFFFF;
+    margin-top: 24px;
+    margin-bottom: 12px;
+    padding-left: 10px;
+    font-size: 16pt;
+	font-weight: bold;
+}
+div.subsection {
+    font-size: 13pt;
+	font-weight: bold;
+    margin-top: 6px;
 }
 
-A:active, A:hover { 
-  text-decoration: underline;
+div.subsubsection {
+    font-size: 11pt;
+    margin-bottom: 6px;
+    margin-top: 6px;
+	font-weight: bold;
+}
+
+a:link , a:visited {
+    text-decoration: none;
+}
+
+a:active, a:hover {
+    text-decoration: underline;
 }
 
 body {
@@ -24,31 +45,18 @@ img {
 h1 {
     font-size: 20pt
 }
+
 h2 {
-    color: #B93333;
     margin-bottom: 12px;
     padding-left: 10px;
-    font-size: 16pt;
+    font-size: 14pt;
 }
 h3 {
-    font-size: 12pt;
+    font-size: 10pt;
 }
 h4 {
     margin-bottom: 5px;
-    font-size: 11pt;
-}
-
-PRE.fragment {
-	border: 1px solid #CCCCCC;
-	background-color: #f5f5f5;
-	margin-top: 4px;
-	margin-bottom: 4px;
-	margin-left: 2px;
-	margin-right: 8px;
-	padding-left: 6px;
-	padding-right: 6px;
-	padding-top: 4px;
-	padding-bottom: 4px;
+    font-size: 10pt;
 }
 
 p.annotationText {
@@ -129,27 +137,23 @@ td.spacer {
     width: 10px
 }
 
-h2.cat a:link { color: #254117; text-decoration: none }
-h2.cat a:visited { color: #254117; text-decoration: none }
-
-table.sitehead a:link { color: #000000; text-decoration: none }
-table.sitehead a:visited { color: #000000; text-decoration: none }
-
-tr.shaded { background-color: #FAF0E6 }
-.adt { border: 2px solid #8FBC8F; }
-.adc { text-align: center; }
-.ad1 { font-size: 16pt }
-.ad2 { font-size: 18pt; font-weight: bold; color: #CC3333 }
-.ad3 { font-size: 8pt; font-weight: bold}
-td.adc a:link { color: #000000; text-decoration: none; }
-td.adc a:visited { color: #000000; text-decoration: none; }
-
 pre {
-  margin-bottom: 0;
+    margin-bottom: 0;
 }
-
 pre.signature {
-	border: 1px solid #CCCCCC;
-	background-color: #f5f5f5;
-  padding: 10px;
+    border: 1px solid #CCCCCC;
+    background-color: #f5f5f5;
+    padding: 10px;
+}
+pre.fragment {
+    border: 1px solid #CCCCCC;
+    background-color: #f5f5f5;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    margin-left: 2px;
+    margin-right: 8px;
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-top: 4px;
+    padding-bottom: 4px;
 }
