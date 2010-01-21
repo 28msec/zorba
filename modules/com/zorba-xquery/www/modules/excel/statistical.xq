@@ -392,9 +392,9 @@ declare function excel:mina($numbers as xs:anyAtomicType*) as xs:anyAtomicType
  : @param $x is the number whose rank you want to find
  : @param $numbers the sequence of numbers or values castable to numbers
  :   The sequence can be of any length
- : @param $order_ascending is boolean and its meaning is:
- :    If false, then rank the number as if the sequence was sorted in descending order. 
- :    If true, then rank the number as if the sequence was sorted in ascending order. 
+ : @param $order_ascending <dl>is boolean and its meaning is:
+ :    <dt>false</dt> <dd>then rank the number as if the sequence was sorted in descending order. </dd>
+ :    <dt>true</dt> <dd>then rank the number as if the sequence was sorted in ascending order. </dd></dl>
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type    
 :)
 declare function excel:rank($x as xs:anyAtomicType, 
@@ -439,9 +439,6 @@ declare function excel:rank($x as xs:anyAtomicType,
  : @param $x is the number whose rank you want to find
  : @param $numbers the sequence of numbers or values castable to numbers
  :   The sequence can be of any length
- : @param $order_ascending is boolean and its meaning is:
- :    If false, then rank the number as if the sequence was sorted in descending order. 
- :    If true, then rank the number as if the sequence was sorted in ascending order. 
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type    
 :)
 declare function excel:rank($x as xs:anyAtomicType, 
@@ -453,8 +450,8 @@ declare function excel:rank($x as xs:anyAtomicType,
 (:~
  : Returns the rank of a value in a data set as a percentage of the data set.
  : If x does not match one of the values in array, 
- :   PERCENTRANK interpolates to return the correct percentage rank. 
- : The formula is uses: (RANK - 1) / (size - 1)
+ :   PERCENTRANK interpolates to return the correct percentage rank. <br/>
+ : The formula is uses: (RANK - 1) / (size - 1) .
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052092121033.aspx
  : @param $numbers the sequence of numbers or values castable to numbers.
@@ -482,12 +479,12 @@ declare function excel:percentrank($numbers as xs:anyAtomicType*, $x as xs:anyAt
  : @see http://office.microsoft.com/en-us/excel/HP052092261033.aspx
  : @param $numbers sequence of numbers or values castable to numbers.
  :      The sequence can be of any length, from 1 up.
- : @param $quart one of the values 0, 1, 2, 3, 4 with meaning:
- :     0 = compute minimum value
- :     1 = compute first quartile (25th percentile)
- :     2 = compute median value (50th percentile)
- :     3 = compute third quartile (75th percentile)
- :     4 = compute maximum value
+ : @param $quart <dl>one of the values 0, 1, 2, 3, 4 with meaning:
+ :     <dt>0</dt> <dd> compute minimum value</dd>
+ :     <dt>1</dt> <dd> compute first quartile (25th percentile)</dd>
+ :     <dt>2</dt> <dd> compute median value (50th percentile)</dd>
+ :     <dt>3</dt> <dd> compute third quartile (75th percentile)</dd>
+ :     <dt>4</dt> <dd> compute maximum value</dd></dl>
  :  @return the computed quartile, as numeric type
  : @error XQP0021(errValue) if the parameters cannot be casted to numeric type 
  : @error XQP0021(errNum) if the sequence is zero length
@@ -594,10 +591,10 @@ declare function excel:sumsq_deviations($numbers as xs:anyAtomicType*, $average 
 };
 
 (:~
- : Estimates variance based on a sample.
- : The formula is sum(x - average_x)^2 / (n - 1)
- : average_x is computed with AVERAGE function.
- : n is the count of numbers from the sequence, excluding empty values
+ : Estimates variance based on a sample.<br/>
+ : The formula is sum(x - average_x)^2 / (n - 1).<br/>
+ : average_x is computed with AVERAGE function.<br/>
+ : n is the count of numbers from the sequence, excluding empty values.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052093301033.aspx
  : @param $numbers the sequence of numbers or values castable to numeric.
@@ -612,10 +609,10 @@ declare function excel:var($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 };
 
 (:~
- : Estimates variance based on a sample.
- : The formula is sum(x - average_x)^2 / (n - 1)
- : average_x is computed with AVERAGE function.
- : n is the size of sequence, including empty values
+ : Estimates variance based on a sample.<br/>
+ : The formula is sum(x - average_x)^2 / (n - 1).<br/>
+ : average_x is computed with AVERAGE function.<br/>
+ : n is the size of sequence, including empty values.<br/>
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052093311033.aspx
  : @param $numbers the sequence of numbers or values castable to numeric.
@@ -630,10 +627,10 @@ declare function excel:vara($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 };
 
 (:~
- : Calculates variance based on the entire population.
- : The formula is sum(x - average_x)^2 / n
- : average_x is computed with AVERAGE function.
- : n is the count of numbers from the sequence, excluding empty values
+ : Calculates variance based on the entire population.<br/>
+ : The formula is sum(x - average_x)^2 / n.<br/>
+ : average_x is computed with AVERAGE function.<br/>
+ : n is the count of numbers from the sequence, excluding empty values.<br/>
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052093321033.aspx
  : @param $numbers the sequence of numbers or values castable to numeric.
@@ -648,10 +645,10 @@ declare function excel:varp($numbers as xs:anyAtomicType+) as xs:anyAtomicType
 };
 
 (:~
- : Calculates variance based on the entire population.
- : The formula is sum(x - average_x)^2 / n
- : average_x is computed with AVERAGE function.
- : n is the size of sequence, including empty values
+ : Calculates variance based on the entire population.<br/>
+ : The formula is sum(x - average_x)^2 / n.<br/>
+ : average_x is computed with AVERAGE function.<br/>
+ : n is the size of sequence, including empty values.<br/>
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052093321033.aspx
  : @param $numbers the sequence of numbers or values castable to numeric.
@@ -671,21 +668,21 @@ declare function excel:varpa($numbers as xs:anyAtomicType+) as xs:anyAtomicType
  : The function applied is given by $function_num.
  :   
  : @see http://office.microsoft.com/en-us/excel/HP052092881033.aspx
- : @param $function_num defines the function to be applied on sequence values.
+ : @param $function_num <dl>defines the function to be applied on sequence values.
  :       The possible values are:
- :       1 or 101 = AVERAGE
- :       2 or 102 = COUNT
- :       3 or 103 = COUNTA
- :       4 or 104 = MAX
- :       5 or 105 = MIN
- :       6 or 106 = PRODUCT
- :       7 or 107 = STDEV
- :       8 or 108 = STDEVP
- :       9 or 109 = SUM
- :       10 or 110 = VAR
- :       11 or 111 = VARP
+ :       <dt>1 or 101</dt> <dd> AVERAGE</dd>
+ :       <dt>2 or 102</dt> <dd> COUNT</dd>
+ :       <dt>3 or 103</dt> <dd> COUNTA</dd>
+ :       <dt>4 or 104</dt> <dd> MAX</dd>
+ :       <dt>5 or 105</dt> <dd> MIN</dd>
+ :       <dt>6 or 106</dt> <dd> PRODUCT</dd>
+ :       <dt>7 or 107</dt> <dd> STDEV</dd>
+ :       <dt>8 or 108</dt> <dd> STDEVP</dd>
+ :       <dt>9 or 109</dt> <dd> SUM</dd>
+ :       <dt>10 or 110</dt> <dd> VAR</dd>
+ :       <dt>11 or 111</dt> <dd> VARP</dd></dl>
  :       
- :       In this implementation there is no difference between x and 10x
+ :       In this implementation there is no difference between x and 10x.<br/>
  : @param %numbers the sequence of numbers or values castable to numeric.
  :     The sequence can be of any length.
  : @return the function result, as numeric type
@@ -847,8 +844,8 @@ declare function excel:prob($x_range as xs:anyAtomicType+,
 
 (:~
  : Helper function for SLOPE function.
- : It computes the formula:
- : sum((x - average_x)(y - average_y))
+ : It computes the formula:<br/>
+ : sum((x - average_x)(y - average_y)) <br/>
  : where average_x and average_y are computed with AVERAGE function.
   
   @param $x_numbers the sequence of x numbers
@@ -883,8 +880,8 @@ declare function excel:sum_x_y_deviations($x_numbers as xs:anyAtomicType*,
  : Returns the slope of the linear regression line through data points in known_y's and known_x's.
  : The slope is the vertical distance divided by the horizontal distance between 
  :   any two points on the line, which is the rate of change along the regression line.
- : It computes the formula:
- : sum((x - average_x)(y - average_y)) / sum((x - average_x)^2)
+ : It computes the formula:<br/>
+ : sum((x - average_x)(y - average_y)) / sum((x - average_x)^2)  <br/>
  : where average_x and average_y are computed with AVERAGE function.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052092641033.aspx
@@ -915,8 +912,8 @@ declare function excel:slope($known_y as xs:anyAtomicType+,
 };
 
 (:~
- : Returns a normalized value from a distribution characterized by mean and standard_dev.
- : The formula is (x - mean) / standard_dev
+ : Returns a normalized value from a distribution characterized by mean and standard_dev.<br/>
+ : The formula is (x - mean) / standard_dev .
  :
  : @see http://office.microsoft.com/en-us/excel/HP052092731033.aspx
  : @param $x is the value you want to normalize

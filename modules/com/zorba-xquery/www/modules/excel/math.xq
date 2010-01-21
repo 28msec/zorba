@@ -32,7 +32,7 @@ import module namespace excel-err="http://www.zorba-xquery.com/modules/excel/err
 
 (:~
  : Checks if the xs:anyAtomicType argument is actually a numeric type
- : or can be converted to numeric
+ : or can be converted to numeric.
  : 
  : @param $value  parameter to be checked
  : @return boolean true if the value can be casted to numeric
@@ -263,7 +263,7 @@ declare function excel:fact( $number_at as xs:anyAtomicType) as xs:integer
  };
  
  (:~
-  : Return the value of PI as decimal with 15 digits
+  : Return the value of PI as decimal with 15 digits.
   : 
   : @see http://office.microsoft.com/en-us/excel/HP052092141033.aspx
   : @return the value of PI with 15 digits
@@ -735,9 +735,9 @@ declare function excel:radians($degree as xs:integer) as xs:decimal
 
 (:~
  : Converts an arabic numeral to roman, as text.
- : Only the clasic format is supported (out of all formats Excel requires).
+ : Only the clasic format is supported (out of all formats Excel requires).<br/>
  : M is the largest digit, it represents 1000.
- : Numbers bigger than 2000 will be represented by a sequence of "M".
+ : Numbers bigger than 2000 will be represented by a sequence of "M".<br/>
  : D = 500, C = 100, L = 50, X = 10, V = 5, I = 1.
  : 
  : @see http://office.microsoft.com/en-us/excel/HP052092381033.aspx

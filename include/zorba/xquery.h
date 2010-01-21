@@ -372,13 +372,23 @@ namespace zorba {
        * @param archive_format Specify which output format to use, either XML or binary.
        *    Possible values are ZORBA_USE_BINARY_ARCHIVE and ZORBA_USE_XML_ARCHIVE.
        *    The binary format is much smaller than XML format, but is not human readable.
-       *
+       * @param save_options Specify some options to the plan serializer.
+       *    <dl>Current possible values are: 
+       *    <dt>DONT_SAVE_UNUSED_FUNCTIONS (default)</dt> 
+       *      <dd>to eliminate unused functions and reduce plan size</dd>
+       *    <dt>SAVE_UNUSED_FUNCTIONS</dt>
+       *      <dd>to save everything, as if the xquery contains an eval instruction.
+       *       This is usefull if you intend to use StaticContext::containsFunction 
+       *       or StaticContext::findFunctions.</dd></dl>
+       * 
        * @return true if success.
        * @throw ZorbaException if the query has not been compiled or there are problems serializing
        *  the execution plan.
        */
       virtual bool
-      saveExecutionPlan(std::ostream &os, Zorba_binary_plan_format_t archive_format) = 0;
+      saveExecutionPlan(std::ostream &os, 
+                        Zorba_binary_plan_format_t archive_format = ZORBA_USE_BINARY_ARCHIVE,
+                        Zorba_save_plan_options_t save_options = DONT_SAVE_UNUSED_FUNCTIONS) = 0;
 
       /** \brief Load execution plan.
        *

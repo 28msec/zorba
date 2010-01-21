@@ -342,27 +342,27 @@ declare function excel:lookup_column(  $lookup_value as xs:anyAtomicType,
 };
 
 (:~
- : <pre>Searches for a value in the top row of an array of values, 
+ : Searches for a value in the top row of an array of values, 
  :   and then returns a value in the same column from a row you specify in the array.  
- : Array is specified with 3 parameters:
- : table_array is a sequence of elements, first row first, then second row and so on
- : table_width specifies the number of elements in a row
- : table_height specifies the number of rows
- : The number of elements in table_array must be equal or more than table_width * table_height
+ : <dl>Array is specified with 3 parameters:
+ : <dt>table_array</dt> <dd>is a sequence of elements, first row first, then second row and so on</dd>
+ : <dt>table_width</dt> <dd>specifies the number of elements in a row</dd>
+ : <dt>table_height</dt> <dd>specifies the number of rows</dd></dl>
+ : The number of elements in table_array must be equal or more than table_width * table_height.<br/>
  : 
  : For wildchar matching, the XQuery regex matcher is used.
- : </pre>
+ :
  : @see http://office.microsoft.com/en-us/excel/HP052091141033.aspx
- : @param $lookup_value <pre>the value to be searched. 
- :       Allowed types are numeric, string, boolean. 
+ : @param $lookup_value the value to be searched. 
+ :       Allowed types are numeric, string, boolean. <br/>
  :       Boolean values are compared only with booleans.
  :       Numbers are compared only with numbers, if range_lookup is not zero.
- :       The other types are converted to string and compared to string value of all values.</pre>
+ :       The other types are converted to string and compared to string value of all values.
  : @param $table_array the sequence of values, row after row
  : @param $table_width the number of values in a row
  : @param $table_height the number of rows
  : @param $row_index_num the row index, 1 based
- : @param $range_lookup <dl>specified the algorithm to use:
+ : @param $range_lookup <dl>specifies the algorithm to use:
  :       <dt>true</dt> <dd>find approximative match. 
  :              First row of array must be sorted in ascending order.</dd>
  :       <dt>false</dt> <dd>find exact match, using xquery regex
@@ -404,11 +404,11 @@ declare function excel:hlookup( $lookup_value as xs:anyAtomicType,
  : That is, this Hlookup looks for the approximate value 
  :   and the first row must be ordered ascending. 
  : @see http://office.microsoft.com/en-us/excel/HP052091141033.aspx
- : @param $lookup_value <pre>the value to be searched. 
- :       Allowed types are numeric, string, boolean. 
+ : @param $lookup_value the value to be searched. 
+ :       Allowed types are numeric, string, boolean. <br/>
  :       Boolean values are compared only with booleans.
  :       Numbers are compared only with numbers, if range_lookup is not zero.
- :       The other types are converted to string and compared to string value of all values.</pre>
+ :       The other types are converted to string and compared to string value of all values.
  : @param $table_array the sequence of values, row after row
  : @param $table_width the number of values in a row
  : @param $table_height the number of rows
@@ -431,15 +431,15 @@ declare function excel:hlookup( $lookup_value as xs:anyAtomicType,
 };
 
 (:~
- : <pre>Returns a value from within an array.
- : This is the Array form of the Excel Index function.
+ : Returns a value from within an array.<br/>
+ : This is the Array form of the Excel Index function.<br/>
  : 
- : Array is specified with 3 parameters:
- : array is a sequence of elements, first row first, then second row and so on
- : array_height specifies the number of rows
- : array_width specifies the number of elements in a row
- : The number of elements in array must be equal or more than array_width * array_height
- : </pre>
+ : <dl>Array is specified with 3 parameters:
+ : <dt>array</dt> <dd>is a sequence of elements, first row first, then second row and so on</dd>
+ : <dt>array_height</dt> <dd>specifies the number of rows</dd>
+ : <dt>array_width</dt> <dd>specifies the number of elements in a row</dd></dl>
+ : The number of elements in array must be equal or more than array_width * array_height.
+ : 
  : @see http://office.microsoft.com/en-us/excel/HP052091381033.aspx
  : @param $array the sequence of values, row after row
  : @param $array_width the number of values in a row
@@ -489,12 +489,12 @@ declare function excel:index($array as xs:anyAtomicType+,
 };
 
 (:~
- : <pre>The Vector form.
- : Look in a sequence for a value 
+ : The Vector form. <br/>
+ : Looks in a sequence for a value 
  :   and return a value from the same position in a second sequence.
  : If the value is not found, then it matches the largest value in lookup_vector 
  :   that is less than or equal to lookup_value.
- : </pre>
+ : 
  : @see http://office.microsoft.com/en-us/excel/HP052091631033.aspx
  : @param $lookup_value the value to be searched
  : @param $lookup_vector the sequence to be searched, in ascending order.
@@ -518,16 +518,16 @@ declare function excel:lookup($lookup_value as xs:anyAtomicType,
 };
 
 (:~
- : <pre>The Array form.
+ : The Array form.<br/>
  : It looks in the first row or column of an array for the specified value 
- :   and returns a value from the same position in the last row or column of the array.
+ :   and returns a value from the same position in the last row or column of the array.<br/>
  : If array covers an area that is wider than it is tall (more columns than rows), 
- :   LOOKUP searches for lookup_value in the first row.
+ :   LOOKUP searches for lookup_value in the first row.<br/>
  : If array is square or is taller than it is wide (more rows than columns), 
- :   LOOKUP searches in the first column.
+ :   LOOKUP searches in the first column.<br/>
  : 
  : The values in the first row or first column must be in ascending order.
- : </pre>
+ : 
  : @see http://office.microsoft.com/en-us/excel/HP052091631033.aspx
  : @param $lookup_value the value to be searched.
  :   If the value is not found, then it matches the largest value in lookup_vector 
@@ -575,17 +575,17 @@ declare function excel:lookup($lookup_value as xs:anyAtomicType,
  : @see http://office.microsoft.com/en-us/excel/HP052091681033.aspx
  : @param $lookup_value value to be searched.
  : @param $sequence the vector where to search the value
- : @param $match_type <pre>specifies the algorithm used for searching.
+ : @param $match_type <dl>specifies the algorithm used for searching.
  :       Possible values:
- :       1  = finds the largest value that is less than or equal to lookup_value.
- :               Sequence must be in ascending order.
- :       0  = finds the first value that is exactly equal to lookup_value. 
- :               Sequence can be in any order.
- :               If lookup_value is boolean, then only booleans are compared.
+ :       <dt>1</dt>  <dd> finds the largest value that is less than or equal to lookup_value.
+ :               Sequence must be in ascending order.</dd>
+ :       <dt>0</dt>  <dd> finds the first value that is exactly equal to lookup_value. <br/>
+ :               Sequence can be in any order.<br/>
+ :               If lookup_value is boolean, then only booleans are compared.<br/>
  :               For other types, they are casted to string and then compared using 
- :               xquery regular expressions. Lookup_value can be a xquery regular expression.
- :       -1 = finds the smallest value that is greater than or equal to lookup_value.
- :               Sequence must be in descending order.</pre>
+ :               xquery regular expressions. Lookup_value can be a xquery regular expression.</dd>
+ :       <dt>-1</dt> <dd> finds the smallest value that is greater than or equal to lookup_value.<br/>
+ :               Sequence must be in descending order.</dd></dl>
  : @return the position of found value
  : @error XQP0021(errNA) for match_type 1 or -1, the lookup_value is smaller or larger than
  :               the first value in sequence
@@ -726,16 +726,16 @@ declare function excel:transpose($array as xs:anyAtomicType+,
  : Searches for a value in the first column of a table array 
  :   and returns a value in the same row from another column in the table array.
  : 
- : Array is specified with 3 parameters:
- : table_array is a sequence of elements, first row first, then second row and so on
- : table_width specifies the number of elements in a row
- : table_height specifies the number of rows
+ : <dl>Array is specified with 3 parameters:
+ : <dt>table_array</dt> <dd>is a sequence of elements, first row first, then second row and so on</dd>
+ : <dt>table_width</dt> <dd>specifies the number of elements in a row</dd>
+ : <dt>table_height</dt> <dd>specifies the number of rows</dd></dl>
  : 
  : For wildchar matching, the XQuery regex matcher is used.
  :  
  : @see http://office.microsoft.com/en-us/excel/HP052093351033.aspx
  : @param $lookup_value the value to be searched. 
- :       Allowed types are numeric, string, boolean. 
+ :       Allowed types are numeric, string, boolean. <br/>
  :       Boolean values are compared only with booleans.
  :       Numbers are compared only with numbers, if range_lookup is not zero.
  :       The other types are converted to string and compared to string value of all values.
@@ -743,11 +743,11 @@ declare function excel:transpose($array as xs:anyAtomicType+,
  : @param $table_width the number of values in a row
  : @param $table_height the number of rows
  : @param $col_index_num the row index, 1 based
- : @param $range_lookup <pre>specified the algorithm to use:
- :       true = find approximative match. 
- :              First column of array must be sorted in ascending order.
- :       false = find exact match, using xquery regex
- :              First column of array can be in any order.</pre>
+ : @param $range_lookup <dl>specified the algorithm to use:
+ :       <dt>true</dt> <dd> find approximative match. 
+ :              First column of array must be sorted in ascending order.</dd>
+ :       <dt>false</dt> <dd> find exact match, using xquery regex.
+ :              First column of array can be in any order.</dd></dl>
  : @return the value found, with original type
  : @error XQP0021(errValue) if the array contains less elements than specified by table_height and table_width
  : @error XQP0021(errValue) if col_index_num is outside the range 1 .. table_height
@@ -787,7 +787,7 @@ declare function excel:vlookup( $lookup_value as xs:anyAtomicType,
  :  
  : @see http://office.microsoft.com/en-us/excel/HP052093351033.aspx
  : @param $lookup_value the value to be searched. 
- :       Allowed types are numeric, string, boolean. 
+ :       Allowed types are numeric, string, boolean. <br/>
  :       Boolean values are compared only with booleans.
  :       Numbers are compared only with numbers, if range_lookup is not zero.
  :       The other types are converted to string and compared to string value of all values.

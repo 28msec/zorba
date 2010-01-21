@@ -122,6 +122,10 @@ typedef enum {
   ZORBA_USE_XML_ARCHIVE
 } Zorba_binary_plan_format_t;
 
+typedef enum {
+  DONT_SAVE_UNUSED_FUNCTIONS = 0,
+  SAVE_UNUSED_FUNCTIONS = 1
+} Zorba_save_plan_options_t;
 /** \brief Options that configure the serialization process of a query result.
 *         See http://www.w3.org/TR/2005/CR-xslt-xquery-serialization-20051103/.
 *

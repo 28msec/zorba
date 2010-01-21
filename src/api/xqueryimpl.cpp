@@ -1011,7 +1011,9 @@ std::ostream& operator<< (std::ostream& os, XQuery* aQuery)
   return os;
 }
 
-bool XQueryImpl::saveExecutionPlan(std::ostream &os, Zorba_binary_plan_format_t archive_format)
+bool XQueryImpl::saveExecutionPlan(std::ostream &os, 
+                                   Zorba_binary_plan_format_t archive_format,
+                                   Zorba_save_plan_options_t save_options)
 {
   ZORBA_TRY
     checkNotClosed();
@@ -1019,12 +1021,16 @@ bool XQueryImpl::saveExecutionPlan(std::ostream &os, Zorba_binary_plan_format_t 
     if(archive_format == ZORBA_USE_XML_ARCHIVE)
     {
       zorba::serialization::XmlArchiver   xmlar(&os);
+      if((save_options & 0x01) != DONT_SAVE_UNUSED_FUNCTIONS)
+        xmlar.xquery_with_eval();
       serialize(xmlar);
       xmlar.serialize_out();
     }
     else//ZORBA_USE_BINARY_ARCHIVE
     {
       zorba::serialization::BinArchiver   bin_ar(&os);
+      if((save_options & 0x01) != DONT_SAVE_UNUSED_FUNCTIONS)
+        bin_ar.xquery_with_eval();
       serialize(bin_ar);
       bin_ar.serialize_out();
     }
