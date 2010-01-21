@@ -17,6 +17,7 @@
 #include "testuriresolver.h"
 
 #include <zorba/zorba.h>
+#include <zorba/zorbastring.h>
 #include <zorbautils/strutil.h>
 #include <cassert>
 
@@ -31,6 +32,9 @@ namespace zorba
 
 
 
+/*******************************************************************************
+
+********************************************************************************/
 TestSchemaURIResolverResult::~TestSchemaURIResolverResult()
 {
 }
@@ -117,10 +121,12 @@ TestSchemaURIResolver::resolve (
 }
 
 
-std::istream *
-TestModuleURIResolverResult::getModule () const
+/*******************************************************************************
+
+********************************************************************************/
+void TestModuleURIResolverResult::getComponentURIs(std::vector<std::string>& uris) const
 {
-  return theModule;
+  uris = theComponentURIs;
 }
 
 
@@ -129,8 +135,8 @@ TestModuleURIResolver::TestModuleURIResolver(
     const std::string& test,
     bool verbose) 
   :
-  map_file (file),
-  theTest (test),
+  theMapFile(file),
+  theTest(test),
   theVerbose(verbose)
 {
 }
@@ -140,7 +146,7 @@ TestModuleURIResolver::TestModuleURIResolver(
     const char* file,
     bool verbose) 
   :
-  map_file (file),
+  theMapFile(file),
   theVerbose(verbose)
 {
   initialize();
@@ -152,7 +158,7 @@ TestModuleURIResolver::~TestModuleURIResolver ()
 }
 
 
-void TestModuleURIResolver::initialize ()
+void TestModuleURIResolver::initialize()
 {
   std::string::size_type pos;
   std::string pfx;
@@ -164,87 +170,131 @@ void TestModuleURIResolver::initialize ()
   else
   {
     pos = theTest.find_first_of ('/');
-    if (pos != std::string::npos && theTest.substr (0, pos) == "w3c_testsuite")
-      pos = theTest.find_first_of ('/', pos + 1);
-    else {
+    if (pos != std::string::npos && theTest.substr(0, pos) == "w3c_testsuite")
+    {
+      pos = theTest.find_first_of('/', pos + 1);
+    }
+    else
+    {
 #ifndef MY_D_WIN32
       return;
 #endif
     }
-    pfx = theTest.substr (0, pos) + "/";
+
+    pfx = theTest.substr(0, pos) + "/";
   }
 
-  std::string path ( map_file );
+  // set "path" to <zorba-root-dir>/test/rbkt/Queries/w3c_testsuite 
+  std::string path(theMapFile);
   std::string::size_type slash = path.find_last_of ( '/' );
-  path.erase ( slash );
-  slash = path.find_last_of ( '/' );
-  path.erase ( slash );
-#ifndef WIN32
-  std::string url ( "file://" );
-#else
-  std::string url ( "file:///" );
-#endif
-  std::ifstream urifile ( map_file.c_str() );
+  path.erase(slash);
+  slash = path.find_last_of('/');
+  path.erase(slash);
+
+  // Process theMapFile
+  std::ifstream urifile(theMapFile.c_str());
   std::string uris;
 
-  while (std::getline ( urifile, uris )) 
+  while (std::getline(urifile, uris)) 
   {
     uris = pfx + uris;
     pos = uris.find_first_of (':');
     assert (pos != std::string::npos);
 
-    if (uris.substr (0, pos) != theTest)
+    if (uris.substr(0, pos) != theTest)
       continue;
 
-    uris = uris.substr (pos + 1);
-    std::string::size_type eq = uris.find ('=');
-    String uri (uris.substr (0, eq));
-    String file ( path );
-    file = file.append ("/");
-    file = file.append (uris.substr (eq+1).c_str());
-    file = file.append (".xqi");
-    uri_map [uri] = file;
+    uris = uris.substr(pos + 1);
+
+    std::string::size_type eq = uris.find('=');
+    std::string uri(uris.substr(0, eq));
+    std::string file("file://");
+    file.append(path);
+    file = file.append("/");
+    file = file.append(uris.substr(eq+1).c_str());
+    file = file.append(".xqi");
+
+    theUriMap.insert(std::pair<std::string, std::string>(uri, file));
   }
 
   urifile.close();
 }
 
 
-std::auto_ptr < ModuleURIResolverResult >
-TestModuleURIResolver::resolve ( const Item & aURI,
-                                StaticContext* aStaticContext,
-                                String* aFileUri )
+std::auto_ptr<ModuleURIResolverResult> TestModuleURIResolver::resolveTargetNamespace(
+    const String& nsURI,
+    const StaticContext& sctx)
 {
-  if ( uri_map.empty () ) {
-    initialize ();
+  if (theUriMap.empty()) 
+  {
+    initialize();
   }
-  std::auto_ptr < TestModuleURIResolverResult >
-    lResult ( new TestModuleURIResolverResult () );
 
-  String request = aURI.getStringValue ();
-  std::map < String, String > :: iterator it = uri_map.find ( request );
-  if ( it != uri_map.end () ) {
-    const String target = uri_map [ request ];
-    const char * file = target.c_str();
+  std::auto_ptr<TestModuleURIResolverResult> result(new TestModuleURIResolverResult());
 
-    if (theVerbose)
-      std::cout << "Resolved module " << aURI.getStringValue() << " -> " 
-                << file << std::endl;
+  std::pair<UriMap::const_iterator, UriMap::const_iterator> range;
 
-    lResult -> theModule = new std::ifstream ( file );
-    lResult -> setError ( URIResolverResult::UR_NOERROR );
-  } else {
-    lResult -> setError ( URIResolverResult::UR_XQST0059 );
+  std::string localNsURI = nsURI.c_str();
+
+  range = theUriMap.equal_range(localNsURI);
+
+  if (range.first == range.second)
+  {
+    result->setError(URIResolverResult::UR_XQST0059);
     std::stringstream lErrorStream;
-    lErrorStream << "Module not found " << aURI.getStringValue();
-    std::cout << "Module not found " << aURI.getStringValue() << std::endl;
-    lResult->setErrorDescription(lErrorStream.str());
+    lErrorStream << "Module not found " << nsURI;
+    std::cout << "Module not found " << nsURI << std::endl;
+    result->setErrorDescription(lErrorStream.str());
   }
-  return std::auto_ptr<ModuleURIResolverResult>(lResult.release());
+
+  UriMap::const_iterator ite;
+  for (ite = range.first; ite != range.second; ++ite)
+  {
+    result->theComponentURIs.push_back(ite->second);
+    if (theVerbose)
+      std::cout << "Resolved module " << nsURI << " -> " << ite->second << std::endl;
+  }
+
+  return std::auto_ptr<ModuleURIResolverResult>(result.release());
 }
 
 
-// Collection Resolver
+std::auto_ptr<ModuleURIResolverResult> TestModuleURIResolver::resolve(
+    const String& uri,
+    const StaticContext& sctx)
+{
+  if (theUriMap.empty()) 
+  {
+    initialize();
+  }
+
+  std::auto_ptr<TestModuleURIResolverResult> result(new TestModuleURIResolverResult());
+
+  std::string filename = uri.c_str(); 
+  filename = filename.substr(7); // strip the "file://" prefix
+
+  result->theModule = new std::ifstream(filename.c_str());
+
+  if (result->theModule->good())
+  {
+    result->setError(URIResolverResult::UR_NOERROR);
+  }
+  else 
+  {
+    result->setError(URIResolverResult::UR_XQST0059);
+    std::stringstream lErrorStream;
+    lErrorStream << "Module file not found " << filename;
+    std::cout << "Module file not found " << filename << std::endl;
+    result->setErrorDescription(lErrorStream.str());
+  }
+
+  return std::auto_ptr<ModuleURIResolverResult>(result.release());
+}
+
+
+/*******************************************************************************
+  Collection Resolver
+********************************************************************************/
 Collection_t
 TestCollectionURIResolverResult::getCollection () const
 {
@@ -266,7 +316,11 @@ TestCollectionURIResolver::~TestCollectionURIResolver ()
 
 
 void
-std_string_tokenize(const std::string& aStr, const std::string& aDelims, std::vector<std::string>& aTokens, const std::string& rbkt_src)
+std_string_tokenize(
+    const std::string& aStr,
+    const std::string& aDelims,
+    std::vector<std::string>& aTokens,
+    const std::string& rbkt_src)
 {
   std::string::size_type lastPos = aStr.find_first_not_of(aDelims, 0); 
   std::string::size_type pos     = aStr.find_first_of(aDelims, lastPos);
@@ -293,7 +347,8 @@ void TestCollectionURIResolver::trim(std::string& str)
   else str.erase(str.begin(), str.end());
 }
 
-void TestCollectionURIResolver::initialize ()
+
+void TestCollectionURIResolver::initialize()
 {
   std::ifstream urifile ( map_file.c_str() );
   if ( urifile.bad() ) return;

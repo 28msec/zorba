@@ -256,8 +256,7 @@ declare updating function xqddf:insert-nodes-after($name as xs:QName,
 
 (:~
  : The <tt>delete-nodes</tt> function is an updating function that deletes zero of more
- : nodes from a collections. The keywords node and nodes may be used
- : interchangeably, regardless of how many nodes are actually deleted.
+ : nodes from a collection. 
  :
  : @param <tt>$name</tt> The name of the collection from which the nodes
  :        should be deleted.
@@ -278,7 +277,7 @@ declare updating function xqddf:insert-nodes-after($name as xs:QName,
  :          is the result of the delete-nodes function.
  :)
 declare updating function xqddf:delete-nodes($name as xs:QName,
-                                           $target as node()*) external;
+                                             $target as node()*) external;
 
 (:~
  : The <tt>delete-node-first</tt> function is an updating function that deletes the
@@ -303,6 +302,28 @@ declare updating function xqddf:delete-nodes($name as xs:QName,
 declare updating function xqddf:delete-node-first($name as xs:QName) external;
 
 (:~
+ : The <tt>delete-nodes-first</tt> function is an updating function that deletes the
+ : first N nodes from an ordered collection, where N is a given number.
+ :
+ : @param <tt>$name</tt> The name of the collection from which the last nodes
+ :        should be deleted.
+ : @param <tt>$number</tt> The number of nodes to delete.
+ : @error <tt></tt> If available collections does not provide a mapping
+ :        for the expaned QName <tt>$name</tt>.
+ : @error <tt></tt> If the modifier property of the collection <tt>$name</tt>
+ :        is <tt>const</tt> or <tt>append-only</tt>.
+ : @error <tt></tt> If the order property of the collection <tt>$name</tt>
+ :        is <tt>unordered</tt>.
+ : @error <tt>XDDY0014</tt> If the collection contains less than $number nodes.
+ : @return Let <tt>$tnodes</tt> be the sequence consisting of the first $number
+ :         nodes in the collection. The result of this function is an empty XDM
+ :         instance and a pending update list containing the
+ :         <tt>upd:deleteNodes($name, $tnodes)</tt> update primitive.
+ :)
+declare updating function xqddf:delete-nodes-first($name as xs:QName,
+                                                   $number as xs:unsignedLong) external;
+
+(:~
  : The <tt>delete-node-last</tt> function is an updating function that deletes the
  : last node from an ordered collection.
  :
@@ -323,6 +344,29 @@ declare updating function xqddf:delete-node-first($name as xs:QName) external;
  :         update primitive.
  :)
 declare updating function xqddf:delete-node-last($name as xs:QName) external;
+
+
+(:~
+ : The <tt>delete-nodes-last</tt> function is an updating function that deletes the
+ : last N nodes from an ordered collection, where N is a given number.
+ :
+ : @param <tt>$name</tt> The name of the collection from which the last nodes
+ :        should be deleted.
+ : @param <tt>$number</tt> The number of nodes to delete.
+ : @error <tt></tt> If available collections does not provide a mapping
+ :        for the expaned QName <tt>$name</tt>.
+ : @error <tt></tt> If the modifier property of the collection <tt>$name</tt>
+ :        is <tt>const</tt>, <tt>append-only</tt>, or <tt>queue</tt>.
+ : @error <tt></tt> If the order property of the collection <tt>$name</tt>
+ :        is <tt>unordered</tt>.
+ : @error <tt>XDDY0014</tt> If the collection contains less than $number nodes.
+ : @return Let <tt>$tnodes</tt> be the sequence consisting of the last $number
+ :         nodes in the collection. The result of this function is an empty XDM
+ :         instance and a pending update list containing the
+ :         <tt>upd:deleteNodes($name, $tnode)</tt> update primitive.
+ :)
+declare updating function xqddf:delete-nodes-last($name as xs:QName,
+                                                  $number as xs:unsignedLong) external;
 
 (:~
  : The <tt>index-of</tt> function is simple function that returns the

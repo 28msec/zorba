@@ -20,75 +20,115 @@
 
 namespace zorba {
 
-  class DocumentURIResolverWrapper : public InternalDocumentURIResolver
-  {
-    public:
-      DocumentURIResolverWrapper(DocumentURIResolver*);
 
-      virtual ~DocumentURIResolverWrapper() {}
+/*******************************************************************************
+  DocumentURIResolverWrapper wraps a user-provided DocumentURIResolver obj.
+  DocumentURIResolver is a c++ API class that offers the same functionality as
+  InternalDocumentURIResolver, but uses c++ API types for the perametes and the
+  results of its methods. So, the purpose of this wrapper class is to do data
+  marshaling and unmarshaling, so that invocations of InternalDocumentURIResolver
+  methods are converted to invocations of the corresponding DocumentURIResolver
+  methods 
+********************************************************************************/
+class DocumentURIResolverWrapper : public InternalDocumentURIResolver
+{
+public:
+  DocumentURIResolverWrapper(DocumentURIResolver*);
 
-      virtual store::Item_t
-      resolve(const store::Item_t& aURI,
-              static_context* aStaticContext,
-              bool validate,
-              bool tidying,
-              const store::Item_t& tidyUserOpt = NULL);
+  virtual ~DocumentURIResolverWrapper() {}
 
-    protected:
-      friend class StaticContextImpl;
-      DocumentURIResolver* theDocResolver;
-  };
+  virtual store::Item_t resolve(
+        const store::Item_t& aURI,
+        static_context* aStaticContext,
+        bool validate,
+        bool tidying,
+        const store::Item_t& tidyUserOpt = NULL);
+  
+protected:
+  friend class StaticContextImpl;
 
-  class CollectionURIResolverWrapper : public InternalCollectionURIResolver
-  {
-    public:
-      CollectionURIResolverWrapper(CollectionURIResolver*);
-      virtual ~CollectionURIResolverWrapper() {}
+  DocumentURIResolver* theDocResolver;
+};
 
-      virtual store::Collection_t 
-      resolve(const store::Item_t& aURI,
-              static_context* aStaticContext);
 
-    protected:
-      friend class StaticContextImpl;
-      CollectionURIResolver* theColResolver;
-  };
+/*******************************************************************************
 
-  class SchemaURIResolverWrapper : public InternalSchemaURIResolver
-  {
-    public:
-      SchemaURIResolverWrapper(SchemaURIResolver*);
-      virtual ~SchemaURIResolverWrapper() {}
+********************************************************************************/
+class CollectionURIResolverWrapper : public InternalCollectionURIResolver
+{
+public:
+  CollectionURIResolverWrapper(CollectionURIResolver*);
+  
+  virtual ~CollectionURIResolverWrapper() {}
+
+  virtual store::Collection_t resolve(
+        const store::Item_t& aURI,
+        static_context* aStaticContext);
+
+protected:
+  friend class StaticContextImpl;
+
+  CollectionURIResolver* theColResolver;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class SchemaURIResolverWrapper : public InternalSchemaURIResolver
+{
+public:
+  SchemaURIResolverWrapper(SchemaURIResolver*);
+  
+  virtual ~SchemaURIResolverWrapper() {}
       
-      virtual std::string
-      resolve(const store::Item_t& aURI,
-              static_context* aStaticContext,
-              std::vector<store::Item_t>& aAtList,
-              xqpStringStore* aFileUri = 0);
+  virtual std::string resolve(
+        const store::Item_t& aURI,
+        static_context* aStaticContext,
+        std::vector<store::Item_t>& aAtList,
+        xqpStringStore* aFileUri = 0);
 
-    protected:
-      friend class StaticContextImpl;
-      SchemaURIResolver* theSchemaResolver;
-  };
+protected:
+  friend class StaticContextImpl;
 
-  class ModuleURIResolverWrapper : public InternalModuleURIResolver
-  {
-    public:
-      ModuleURIResolverWrapper(ModuleURIResolver*);
-      virtual ~ModuleURIResolverWrapper() {}
+  SchemaURIResolver* theSchemaResolver;
+};
 
-      std::istream*
-      resolve(const store::Item_t& aURI,
-              static_context* aStaticContext,
-              xqpStringStore* aFileUri = 0);
 
-    protected:
-      friend class StaticContextImpl;
-      ModuleURIResolver* theModuleResolver;
-  };
+/*******************************************************************************
+
+********************************************************************************/
+class ModuleURIResolverWrapper : public InternalModuleURIResolver
+{
+  friend class StaticContextImpl;
+
+protected:
+  ModuleURIResolver* theModuleResolver;
+
+public:
+  ModuleURIResolverWrapper(ModuleURIResolver*);
+  
+  virtual ~ModuleURIResolverWrapper() {}
+
+  void resolveTargetNamespace(
+        const std::string& nsURI,
+        static_context& sctx,
+        std::vector<std::string>& compURIs);
+
+  std::istream* resolve(
+        const std::string& uri,
+        static_context& sctx,
+        std::string& url);
+};
+
 
 } /* namespace zorba */
 
 #endif
 
 
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

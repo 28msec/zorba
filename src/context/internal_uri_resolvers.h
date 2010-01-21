@@ -23,59 +23,89 @@
 #include "common/shared_types.h"
 #include "store/api/item.h"
 
-namespace zorba {
+namespace zorba 
+{
 
-  class InternalDocumentURIResolver
-  {
-    public:
-      virtual ~InternalDocumentURIResolver() {}
 
-      virtual store::Item_t
-      resolve(const store::Item_t& aURI,
-              static_context* aStaticContext,
-              bool validate,
-              bool tidying,
-              const store::Item_t& tidyUserOpt = NULL) = 0;
-    public:
-  };
+/*******************************************************************************
 
-  class InternalCollectionURIResolver
-  {
-    public:
-      virtual ~InternalCollectionURIResolver() {}
+********************************************************************************/
+class InternalDocumentURIResolver
+{
+public:
+  virtual ~InternalDocumentURIResolver() {}
 
-      virtual store::Collection_t 
-      resolve(const store::Item_t& aURI,
-              static_context* aStaticContext) = 0;
-  };
+  virtual store::Item_t resolve(
+        const store::Item_t& aURI,
+        static_context* aStaticContext,
+        bool validate,
+        bool tidying,
+        const store::Item_t& tidyUserOpt = NULL) = 0;
+};
 
-  class InternalSchemaURIResolver
-  {
-    public:
-      virtual ~InternalSchemaURIResolver() {}
+
+/*******************************************************************************
+
+********************************************************************************/
+class InternalCollectionURIResolver
+{
+public:
+  virtual ~InternalCollectionURIResolver() {}
+  
+  virtual store::Collection_t resolve(
+        const store::Item_t& aURI,
+        static_context* aStaticContext) = 0;
+};
+  
+
+/*******************************************************************************
+
+********************************************************************************/
+class InternalSchemaURIResolver
+{
+public:
+  virtual ~InternalSchemaURIResolver() {}
       
-      virtual std::string
-      resolve(const store::Item_t& aURI,
-              static_context* aStaticContext,
-              std::vector<store::Item_t>& aAtList,
-              xqpStringStore* aFileUri = 0) = 0;
-  };
+  virtual std::string resolve(
+        const store::Item_t& aURI,
+        static_context* aStaticContext,
+        std::vector<store::Item_t>& aAtList,
+        xqpStringStore* aFileUri = 0) = 0;
+};
 
-  class InternalModuleURIResolver
+
+/*******************************************************************************
+
+********************************************************************************/
+class InternalModuleURIResolver
+{
+public:
+  virtual ~InternalModuleURIResolver() {}
+
+  virtual void resolveTargetNamespace(
+        const std::string& nsURI,
+        static_context& sctx,
+        std::vector<std::string>& compURIs) = 0;
+
+  virtual std::istream* resolve(
+        const std::string& uri,
+        static_context& sctx,
+        std::string& url) = 0;
+
+  virtual ExternalModule* getExternalModule(
+        const std::string& aFileUri,
+        static_context& sctx)
   {
-    public:
-      virtual ~InternalModuleURIResolver() {}
-
-      virtual std::istream*
-      resolve(const store::Item_t& aURI,
-              static_context* aStaticContext,
-              xqpStringStore* aFileUri = 0) = 0;
-
-      virtual ExternalModule*
-      getExternalModule(xqpStringStore* aFileUri,
-                        static_context* aStaticContext) { return 0; }
-  };
+    return NULL;
+  }
+};
 
 } /* namespace zorba */
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

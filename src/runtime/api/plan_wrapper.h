@@ -50,8 +50,9 @@ class PlanWrapper : public store::Iterator, public intern::Serializable
 protected:
 
   PlanIter_t        theIterator;
+  dynamic_context * theDynamicContext;
+
   PlanState*        theStateBlock;
-  dynamic_context*  theDynamicContext;
   XQueryImpl*       theQuery;
 #ifndef NDEBUG
   bool		          theIsOpened;

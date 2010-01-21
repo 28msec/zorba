@@ -98,8 +98,10 @@ public:
 
   static xqp_string expand_varname(static_context* sctx, xqpString& qname);
 
-  static xqp_string expand_varname(static_context* sctx, xqpString& ns,
-    xqpString& localname);
+  static xqp_string expand_varname(
+        static_context* sctx,
+        xqpString& ns,
+        xqpString& localname);
 
 public:
   dynamic_context(dynamic_context* parent = NULL);

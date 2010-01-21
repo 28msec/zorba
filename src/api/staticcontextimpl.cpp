@@ -498,6 +498,9 @@ StaticContextImpl::setBaseURI( const String& aBaseURI )
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 String   
 StaticContextImpl::getBaseURI( ) const
 {
@@ -513,6 +516,9 @@ StaticContextImpl::getBaseURI( ) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 validation_mode_t
 StaticContextImpl::getRevalidationMode() const
 {
@@ -520,6 +526,9 @@ StaticContextImpl::getRevalidationMode() const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void
 StaticContextImpl::setRevalidationMode(validation_mode_t aMode)
 {
@@ -534,6 +543,9 @@ StaticContextImpl::setRevalidationMode(validation_mode_t aMode)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool   
 StaticContextImpl::setRevalidationEnabled( bool enabled)
 {
@@ -545,6 +557,9 @@ StaticContextImpl::setRevalidationEnabled( bool enabled)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool
 StaticContextImpl::getRevalidationEnabled( ) const
 {
@@ -559,6 +574,9 @@ StaticContextImpl::getRevalidationEnabled( ) const
 }
   
 
+/*******************************************************************************
+
+********************************************************************************/
 bool 
 StaticContextImpl::registerModule(ExternalModule* aModule)
 {
@@ -577,6 +595,10 @@ StaticContextImpl::registerModule(ExternalModule* aModule)
   return true;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 void
 StaticContextImpl::setDocumentURIResolver(DocumentURIResolver* aDocumentURIResolver)
 {
@@ -588,6 +610,9 @@ StaticContextImpl::setDocumentURIResolver(DocumentURIResolver* aDocumentURIResol
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 DocumentURIResolver*
 StaticContextImpl::getDocumentURIResolver() const
 {
@@ -598,6 +623,10 @@ StaticContextImpl::getDocumentURIResolver() const
   return 0;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 void
 StaticContextImpl::setDocumentType(const String& aDocUri, TypeIdentifier_t type)
 {
@@ -609,6 +638,9 @@ StaticContextImpl::setDocumentType(const String& aDocUri, TypeIdentifier_t type)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 TypeIdentifier_t
 StaticContextImpl::getDocumentType(const String& aDocUri) const
 {
@@ -620,6 +652,10 @@ StaticContextImpl::getDocumentType(const String& aDocUri) const
   return TypeOps::get_type_identifier(*xqType);
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 void
 StaticContextImpl::setCollectionURIResolver(CollectionURIResolver* aCollectionUriResolver)
 {
@@ -630,6 +666,10 @@ StaticContextImpl::setCollectionURIResolver(CollectionURIResolver* aCollectionUr
   }
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 CollectionURIResolver*
 StaticContextImpl::getCollectionURIResolver() const
 {
@@ -640,6 +680,10 @@ StaticContextImpl::getCollectionURIResolver() const
   return 0;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 void
 StaticContextImpl::setCollectionType(const String& aCollectionUri, TypeIdentifier_t type)
 {
@@ -651,6 +695,9 @@ StaticContextImpl::setCollectionType(const String& aCollectionUri, TypeIdentifie
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 TypeIdentifier_t
 StaticContextImpl::getCollectionType(const String& aCollectionUri) const
 {
@@ -662,35 +709,46 @@ StaticContextImpl::getCollectionType(const String& aCollectionUri) const
   return TypeOps::get_type_identifier(*xqType);
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 void
 StaticContextImpl::addModuleURIResolver(ModuleURIResolver* aModuleUriResolver)
 {
-  try {
+  try 
+  {
     // do nothing if the resolver is already registered
-    if (theWrappers[aModuleUriResolver]) {
+    if (theWrappers[aModuleUriResolver]) 
+    {
       return;
     }
 
-    std::auto_ptr<ModuleURIResolverWrapper> lWrapper(
-        new ModuleURIResolverWrapper(aModuleUriResolver));
+    ModuleURIResolverWrapper* lWrapper =
+    new ModuleURIResolverWrapper(aModuleUriResolver);
+
+    // put the wrapper in the map (ownership of the wrapper belongs to "this")
+    theWrappers[aModuleUriResolver] = lWrapper;
 
     // register the wrapper in the internal context
-    theCtx->add_module_uri_resolver(lWrapper.get());
-
-    // put the wrapper in the map and transfer ownership
-    theWrappers[aModuleUriResolver] = lWrapper.release();
-
-  } catch (error::ZorbaError& e) {
+    theCtx->add_module_uri_resolver(lWrapper);
+  }
+  catch (error::ZorbaError& e)
+  {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 std::vector<ModuleURIResolver*>
 StaticContextImpl::getModuleURIResolvers() const
 {
   std::vector<ModuleURIResolver*> lResolvers;
-  try {
+  try 
+  {
     // get all resovlers (from the internal context upwards to its parent)
     std::vector<InternalModuleURIResolver*> lResolverWrappers;
     theCtx->get_module_uri_resolvers(lResolverWrappers);
@@ -699,18 +757,25 @@ StaticContextImpl::getModuleURIResolvers() const
     // owned by the user
     for (std::vector<InternalModuleURIResolver*>::iterator lIter 
           = lResolverWrappers.begin();
-         lIter != lResolverWrappers.end(); ++lIter) {
+         lIter != lResolverWrappers.end(); ++lIter) 
+    {
       ModuleURIResolverWrapper* lWrapper 
         = dynamic_cast<ModuleURIResolverWrapper*>(*lIter);
       assert(lWrapper);
       lResolvers.push_back(lWrapper->theModuleResolver);
     }
-  } catch (error::ZorbaError& e) {
+  }
+  catch (error::ZorbaError& e) 
+  {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
   return lResolvers;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 void
 StaticContextImpl::removeModuleURIResolver(ModuleURIResolver* aModuleUriResolver)
 {
@@ -734,6 +799,9 @@ StaticContextImpl::removeModuleURIResolver(ModuleURIResolver* aModuleUriResolver
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 std::vector<SchemaURIResolver*>
 StaticContextImpl::getSchemaURIResolvers() const
 {
@@ -755,6 +823,10 @@ StaticContextImpl::getSchemaURIResolvers() const
   return lResult;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 void
 StaticContextImpl::addSchemaURIResolver(SchemaURIResolver* aSchemaUriResolver)
 {
@@ -765,6 +837,10 @@ StaticContextImpl::addSchemaURIResolver(SchemaURIResolver* aSchemaUriResolver)
   }
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 bool
 StaticContextImpl::containsFunction(const String& aFnNameUri, const String& aFnNameLocal, int arity) const
 {
@@ -775,6 +851,10 @@ StaticContextImpl::containsFunction(const String& aFnNameUri, const String& aFnN
     return true;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 void
 StaticContextImpl::findFunctions(const Item& aQName, std::vector<Function_t>& aFunctions) const
 {

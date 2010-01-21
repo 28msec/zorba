@@ -35,8 +35,12 @@
 #include "context/dynamic_loader.h"
 #include "context/get_current_lib_suffix.h"
 
-namespace zorba {
+namespace zorba 
+{
 
+/*******************************************************************************
+
+********************************************************************************/
 store::Item_t
 StandardDocumentURIResolver::resolve(
     const store::Item_t& aURI,
@@ -175,6 +179,9 @@ StandardDocumentURIResolver::resolve(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 store::Collection_t 
 StandardCollectionURIResolver::resolve(
     const store::Item_t& aURI,
@@ -212,6 +219,16 @@ StandardCollectionURIResolver::resolve(
 }
 
 
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  StandardSchemaURIResolver                                                  //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+
+********************************************************************************/
 std::string
 StandardSchemaURIResolver::resolve(
     const store::Item_t& aURI,
@@ -268,6 +285,10 @@ StandardSchemaURIResolver::resolve(
   return aURI->getStringValue()->c_str();
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 std::string StandardSchemaURIResolver::checkSchemaPath(
     const std::vector<std::string>& aSchemaPath,
     const store::Item_t& aUri,
@@ -299,60 +320,70 @@ std::string StandardSchemaURIResolver::checkSchemaPath(
   return "";
 }
 
-std::istream*
-StandardModuleURIResolver::checkModulePath(
-    const std::vector<std::string>& aModulePaths,
-    const store::Item_t& aURI,
-    xqpStringStore* aResultFile)
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  StandardModuleURIResolver                                                  //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void StandardModuleURIResolver::resolveTargetNamespace(
+    const std::string& nsURI,
+    static_context& sctx,
+    std::vector<std::string>& compURIs)
 {
-  URI lURI(aURI->getStringValueP());
-  // compute path notation of the uri with a .xq at the end
-  // TODO: we might extend that to other file exentsions
-  xqpString lPathNotation(lURI.toPathNotation());
-  if (!lPathNotation.endsWith(".xq")) {
-    lPathNotation = lPathNotation + ".xq";
+  // check the user's resolvers
+  std::vector<InternalModuleURIResolver*> resolvers;
+  sctx.get_module_uri_resolvers(resolvers);
+
+  std::vector<InternalModuleURIResolver*>::const_iterator ite;
+  for (ite = resolvers.begin(); ite != resolvers.end(); ++ite)
+  {
+    (*ite)->resolveTargetNamespace(nsURI, sctx, compURIs);
+
+    if (!compURIs.empty())
+      return;
   }
 
-  // check all module path in the according order
-  // the higher in the hirarchy the static context is
-  // the higher the priority of its module paths
-  for (std::vector<std::string>::const_iterator lIter = aModulePaths.begin();
-      lIter != aModulePaths.end(); ++lIter) {
-    xqpString lPotentialModuleFile = (*lIter) + lPathNotation;
-    std::auto_ptr<std::istream> modfile(new std::ifstream(lPotentialModuleFile.c_str()));
-    if (modfile->good()) {
-      if (aResultFile) {
-        *aResultFile = *(lPotentialModuleFile.getStore());
-      }
-      return modfile.release();
-    } 
-  }
-  return 0;
+  // If there were no user resolvers, or if none of them new anuthing about the
+  // given target namespace, assume that the module consists of a single component
+  // whose URI is the same as the target namespace.
+  compURIs.push_back(nsURI);
 }
 
-// resolve a logical URI (i.e. target ns or location hint) 
-// to an input stream. resolving is done according to the following rules:
-// (1) all module paths are searched for a file with path and name
-//     of the path notation of the uri
-// (2) a (potential) user's resolver is asked
-// (3) the URI is treated as an URL
-// besides returning an input stream, the function also
-// returns the URL of the file
-std::istream*
-StandardModuleURIResolver::resolve(
-    const store::Item_t& aURI,
-    static_context* aStaticContext,
-    xqpStringStore* aFileUri)
+
+/*******************************************************************************
+  Resolve a logical URI (i.e. target ns or location hint) to an input stream.
+  Resolving is done according to the following rules:
+
+  (1) all module paths are searched for a file with path and name of the path
+      notation of the uri
+  (2) a (potential) user's resolver is asked
+  (3) the URI is treated as an URL
+
+  Besides returning an input stream, the function also returns the URL of the
+  file that the given URI was resolved to.
+********************************************************************************/
+std::istream* StandardModuleURIResolver::resolve(
+    const std::string& uri,
+    static_context& sctx,
+    std::string& url)
 {
   // 1. check using module paths => return if good stream is found
   std::vector<std::string> lModulePaths;
-  aStaticContext->get_full_module_paths(lModulePaths);
+  sctx.get_full_module_paths(lModulePaths);
 
   std::auto_ptr<std::istream> modfile(0); // result file
 
-  if (lModulePaths.size() != 0) {
-    modfile.reset(checkModulePath(lModulePaths, aURI, aFileUri));
-    if (modfile.get() != 0)  {
+  if (lModulePaths.size() != 0) 
+  {
+    modfile.reset(checkModulePath(lModulePaths, uri, url));
+    if (modfile.get() != 0)  
+    {
       assert(modfile->good());
       return modfile.release();
     }
@@ -360,45 +391,135 @@ StandardModuleURIResolver::resolve(
 
   // 2. check the user's resolvers
   std::vector<InternalModuleURIResolver*> lResolvers;
-  aStaticContext->get_module_uri_resolvers(lResolvers);
-  if (modfile.get() == 0) {
-    for (std::vector<InternalModuleURIResolver*>::const_iterator lIter
-          = lResolvers.begin();
-         lIter != lResolvers.end(); ++lIter) {
-      modfile.reset((*lIter)->resolve(aURI, aStaticContext, aFileUri));
-      if (modfile.get()) {
+  sctx.get_module_uri_resolvers(lResolvers);
+
+  if (modfile.get() == 0) 
+  {
+    std::vector<InternalModuleURIResolver*>::const_iterator ite;
+    for (ite = lResolvers.begin(); ite != lResolvers.end(); ++ite)
+    {
+      modfile.reset((*ite)->resolve(uri, sctx, url));
+      if (modfile.get()) 
+      {
         assert(modfile->good());
         return modfile.release();
       }
     }
   }
 
-  // 3. treat the URI as URL and check if a file is in the
-  // filesystem or on the web
+  // 3. treat the URI as URL and check if a file is in the filesystem or on the web
   // TODO register other interal resolvers for each of the tasks
-  xqpStringStore_t  lResolvedURI = aURI->getStringValue();
-  if (aFileUri) {
-    *aFileUri = *lResolvedURI;
-  }
-  if (lResolvedURI->byteStartsWith ("file://")) {
-// maybe we don't want to allow file access for security reasons (e.g. in a webapp)
+  url = uri;
+
+  if (url.compare(0, 7, "file://") == 0) 
+  {
+    // maybe we don't want to allow file access for security reasons (e.g. in a webapp)
 #ifdef ZORBA_WITH_FILE_ACCESS
-    modfile.reset (new std::ifstream(URI::decode_file_URI (lResolvedURI)->c_str()));
+    xqpStringStore_t tmp(new xqpStringStore(uri));
+    modfile.reset(new std::ifstream(URI::decode_file_URI(tmp)->c_str()));
 #endif
-  } else {
+  }
+  else
+  {
     std::auto_ptr<std::stringstream> code(new std::stringstream());
-    if (http_get (lResolvedURI->c_str (), *code) != 0) {
+    if (http_get(url.c_str(), *code) != 0) 
+    {
       return NULL;
     }
-    modfile.reset (code.release());
+    modfile.reset(code.release());
   }
 
   // we transfer ownership to the caller
   return modfile.release();
 }
 
-std::string
-StandardModuleURIResolver::computeLibraryName(const URI aURI)
+
+/*******************************************************************************
+
+********************************************************************************/
+std::istream* StandardModuleURIResolver::checkModulePath(
+    const std::vector<std::string>& modulePaths,
+    const std::string& uri,
+    std::string& fileURL)
+{
+  URI lURI(uri);
+
+  // compute path notation of the uri with a .xq at the end
+  // TODO: we might extend that to other file exentsions
+  xqpString lPathNotation(lURI.toPathNotation());
+  if (!lPathNotation.endsWith(".xq")) 
+  {
+    lPathNotation = lPathNotation + ".xq";
+  }
+
+  // check all module path in the according order
+  // the higher in the hirarchy the static context is
+  // the higher the priority of its module paths
+  for (std::vector<std::string>::const_iterator ite = modulePaths.begin();
+      ite != modulePaths.end(); ++ite)
+  {
+    fileURL = (*ite) + lPathNotation.c_str();
+    std::auto_ptr<std::istream> modfile(new std::ifstream(fileURL.c_str()));
+    if (modfile->good())
+    {
+      return modfile.release();
+    } 
+  }
+  return 0;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+ExternalModule* StandardModuleURIResolver::getExternalModule(
+    const std::string& fileURL,
+    static_context& sctx)
+{
+  std::vector<std::string> lModulePaths;
+  sctx.get_full_module_paths(lModulePaths);
+
+  std::auto_ptr<std::istream> modfile(0); // result file
+
+  if (lModulePaths.size() != 0) 
+  {
+    URI lURI(fileURL);
+    std::string lLibraryName = computeLibraryName(lURI);
+
+    // check all module path in the according order
+    // the higher in the hirarchy the static context is
+    // the higher the priority of its module paths
+    for (std::vector<std::string>::const_iterator ite = lModulePaths.begin();
+        ite != lModulePaths.end(); ++ite) 
+    {
+      std::string potentialModuleFile = (*ite) + lLibraryName;
+      std::auto_ptr<std::istream> modfile(new std::ifstream(potentialModuleFile.c_str()));
+      if (modfile->good()) 
+      {
+        ExternalModule* lModule = DynamicLoader::getInstance()->
+                                  getModule(potentialModuleFile);
+        if (lModule) 
+        {
+          if (!lModule->getURI().equals(fileURL.c_str())) 
+          {
+            ZORBA_ERROR_DESC_OSS(XQP0028_FUNCTION_IMPL_NOT_FOUND,
+                                 "The module loaded from " << potentialModuleFile
+                                 << "doesn't provide the required target namespace "
+                                 << "(" << lURI.toString() << ").");
+          }
+        }
+        return lModule;
+      } 
+    }
+  }
+  return 0;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+std::string StandardModuleURIResolver::computeLibraryName(const URI& aURI)
 {
   xqpString lPathNotation(aURI.toPathNotation());
 
@@ -410,13 +531,19 @@ StandardModuleURIResolver::computeLibraryName(const URI aURI)
   std::string lBranchPath = "";
   
   // is the URI ends in '/'
-  if (lIndexOfLastSlash == lRelativePath.length()) {
+  if (lIndexOfLastSlash == lRelativePath.length()) 
+  {
     lBranchPath = lRelativePath;
-  } else {
+  } 
+  else 
+  {
     // is '/' is not found
-    if (lIndexOfLastSlash == std::string::npos) {
+    if (lIndexOfLastSlash == std::string::npos)
+    {
       lFileName = lRelativePath;
-    } else {
+    }
+    else
+    {
       lFileName = lRelativePath.substr(lIndexOfLastSlash + 1);
       lBranchPath = lRelativePath.substr(0, lIndexOfLastSlash + 1);
     }
@@ -424,7 +551,8 @@ StandardModuleURIResolver::computeLibraryName(const URI aURI)
     // remove .xq from the end of the file if present
     // bugfix: find_last_of didn't do the right thing
     size_t lIndexOfXQ = lFileName.find(".xq");
-    if (lIndexOfXQ == lFileName.size() - 3) {
+    if (lIndexOfXQ == lFileName.size() - 3) 
+    {
       lFileName.erase(lIndexOfXQ );
     }
   }
@@ -448,56 +576,40 @@ StandardModuleURIResolver::computeLibraryName(const URI aURI)
   return lLibraryName.str();
 }
 
-ExternalModule*
-StandardModuleURIResolver::getExternalModule(xqpStringStore* aFileUri,
-                                             static_context* aStaticContext)
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  StandardLibraryModuleURIResolver                                           //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void StandardLibraryModuleURIResolver::resolveTargetNamespace(
+    const std::string& nsURI,
+    static_context& sctx,
+    std::vector<std::string>& compURIs)
 {
-  std::vector<std::string> lModulePaths;
-  aStaticContext->get_full_module_paths(lModulePaths);
-
-  std::auto_ptr<std::istream> modfile(0); // result file
-
-  if (lModulePaths.size() != 0) {
-    URI lURI(aFileUri);
-    std::string lLibraryName = computeLibraryName(lURI);
-
-    // check all module path in the according order
-    // the higher in the hirarchy the static context is
-    // the higher the priority of its module paths
-    for (std::vector<std::string>::const_iterator lIter = lModulePaths.begin();
-        lIter != lModulePaths.end(); ++lIter) {
-      xqpString lPotentialModuleFile = (*lIter) + lLibraryName;
-      std::auto_ptr<std::istream> modfile(new std::ifstream(lPotentialModuleFile.getStore()->str().c_str()));
-      if (modfile->good()) {
-        ExternalModule* lModule 
-          = DynamicLoader::getInstance()->getModule(lPotentialModuleFile);
-        if (lModule) {
-          if (!lModule->getURI().equals(aFileUri->c_str())) {
-            ZORBA_ERROR_DESC_OSS(XQP0028_FUNCTION_IMPL_NOT_FOUND,
-                                 "The module loaded from " << lPotentialModuleFile
-                                 << "doesn't provide the required target namespace "
-                                 << "(" << lURI.toString() << ").");
-          }
-        }
-        return lModule;
-      } 
-    }
-  }
-  return 0;
+  compURIs.push_back(nsURI);
 }
 
-std::istream*
-StandardLibraryModuleURIResolver::resolve(const store::Item_t& aURI,
-                                          static_context* aStaticContext,
-                                          xqpStringStore* aFileUri)
-{
-  xqpStringStore_t lResolvedURI = aURI->getStringValue();
-  if (aFileUri) {
-	  *aFileUri = theFileName;
-  }
 
-  assert( lResolvedURI->str() == theLibraryModuleNamespace );
-  assert( theStream.good() );
+/*******************************************************************************
+
+********************************************************************************/
+std::istream* 
+StandardLibraryModuleURIResolver::resolve(
+    const std::string& uri,
+    static_context& sctx,
+    std::string& url)
+{
+  assert(uri == theLibraryModuleNamespace);
+  assert(theStream.good());
+
+  url = theFileName;
 
   std::auto_ptr<std::istream> modfile(new std::istream(theStream.rdbuf()));
 

@@ -473,6 +473,10 @@
       <zorba:output>xs:boolean</zorba:output>
     </zorba:signature>
 
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+    </zorba:methods>
+
   </zorba:function>
 
 </zorba:iterator>

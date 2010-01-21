@@ -51,20 +51,24 @@ PlanWrapper::PlanWrapper(
   uint32_t lStateSize = theIterator->getStateSizeOfSubtree();
   theStateBlock = new PlanState(lStateSize, aStackDepth);
 
-  // set the compiler cb in the state
-  theStateBlock->theCompilerCB = aCompilerCB;
-
   if (aDynamicContext == NULL)
   {
-    theDynamicContext = aDynamicContext = new dynamic_context();
+    // aDynamicContext is NULL when we try to execute the plan of an expression
+    // that is being folded by the optimizer. 
+    aDynamicContext = new dynamic_context();
+    theDynamicContext = aDynamicContext;
   }
+
+  // set the compiler cb in the state
+  theStateBlock->theCompilerCB = aCompilerCB;
 
   // for the moment, let's keep the runtime cb here
   theStateBlock->theRuntimeCB = new RuntimeCB();
   theStateBlock->theRuntimeCB->theDynamicContext = aDynamicContext;
   theStateBlock->theRuntimeCB->theQuery = theQuery;
   theStateBlock->theDebuggerCommons = aCompilerCB->theDebuggerCommons;
-  if (aTimeout != -1) {
+  if (aTimeout != -1) 
+  {
     StateWrapper lWrapper(*theStateBlock);
     theTimeoutMutex = new Mutex();
     theTimeout = new Timeout(aTimeout, lWrapper, theTimeoutMutex);
@@ -77,7 +81,8 @@ PlanWrapper::~PlanWrapper()
 #ifndef NDEBUG
   assert(!theIsOpened);
 #endif
-  if (theTimeout) {
+  if (theTimeout) 
+  {
     // we wait for the timeout thread to terminate
     // in case the timeout killed us
     theTimeoutMutex->lock();
@@ -95,6 +100,7 @@ PlanWrapper::~PlanWrapper()
   delete theStateBlock; 
   theStateBlock = NULL;
 
+  // De-allocate locally allocated dctx, if any
   if (theDynamicContext != NULL)
   {
     delete theDynamicContext;

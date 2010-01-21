@@ -35,7 +35,7 @@ namespace zorba
 /*******************************************************************************
 
 ********************************************************************************/
-static void propagate_down_nodeid_props(expr* src, expr* target) 
+static void pushdown_ignore_props(expr* src, expr* target) 
 {
   Annotations::Key k;
 
@@ -84,7 +84,7 @@ static void mark_for_vars_ignoring_sort(flwor_expr* flwor)
   Assume all LET var values could ignore sort order and duplicate nodes,
   and allow expressions further down the tree to challenge this assumption.
 ********************************************************************************/
-static void init_let_vars_consumer_props (flwor_expr* flwor) 
+static void init_let_vars_consumer_props(flwor_expr* flwor) 
 {
   for (flwor_expr::clause_list_t::const_iterator it = flwor->clause_begin();
        it != flwor->clause_end();
@@ -98,7 +98,7 @@ static void init_let_vars_consumer_props (flwor_expr* flwor)
     const forletwin_clause* lc = static_cast<const forletwin_clause *>(&c);
 
     int todo = 0;
-    varref_t var = lc->get_var();
+    var_expr_t var = lc->get_var();
     assert(var->get_kind() == var_expr::let_var);
 
     for (int j = 0; j < 2; j++) 
@@ -324,8 +324,8 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
   case if_expr_kind: 
   {
     if_expr* ite = static_cast<if_expr *> (node);
-    propagate_down_nodeid_props(node, ite->get_then_expr(false));
-    propagate_down_nodeid_props(node, ite->get_else_expr(false));
+    pushdown_ignore_props(node, ite->get_then_expr(false));
+    pushdown_ignore_props(node, ite->get_else_expr(false));
     break;
   }
 
@@ -334,26 +334,26 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
     flwor_expr* flwor = static_cast<flwor_expr *> (node);
     init_let_vars_consumer_props(flwor);
     mark_for_vars_ignoring_sort(flwor);
-    propagate_down_nodeid_props(node, flwor->get_return_expr(false));
+    pushdown_ignore_props(node, flwor->get_return_expr(false));
     break;
   }
 
   case relpath_expr_kind: 
   {
     expr_t arg = (*static_cast<relpath_expr *> (node)) [0];
-    TSVAnnotationValue::update_annotation (arg,
-                                           Annotations::IGNORES_SORTED_NODES,
-                                           TSVAnnotationValue::TRUE_VAL);
-    TSVAnnotationValue::update_annotation (arg,
-                                           Annotations::IGNORES_DUP_NODES,
-                                           TSVAnnotationValue::TRUE_VAL);
+    TSVAnnotationValue::update_annotation(arg,
+                                          Annotations::IGNORES_SORTED_NODES,
+                                          TSVAnnotationValue::TRUE_VAL);
+    TSVAnnotationValue::update_annotation(arg,
+                                          Annotations::IGNORES_DUP_NODES,
+                                          TSVAnnotationValue::TRUE_VAL);
     break;
   }
 
   case wrapper_expr_kind: 
   {
     wrapper_expr* we = static_cast<wrapper_expr *> (node);
-    propagate_down_nodeid_props(node, we->get_expr(false));
+    pushdown_ignore_props(node, we->get_expr(false));
     break;
   }    
 
@@ -366,20 +366,21 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
       mark_casts(ce, input, rCtx.getStaticContext(node));
       break;
     }
-  }
-
-  {
-    for(expr_iterator i = node->expr_begin(); !i.done(); ++i) 
+    else
     {
-      TSVAnnotationValue::update_annotation (*i,
-                                             Annotations::IGNORES_SORTED_NODES,
-                                             TSVAnnotationValue::FALSE_VAL);
-      TSVAnnotationValue::update_annotation (*i,
-                                             Annotations::IGNORES_DUP_NODES,
-                                             TSVAnnotationValue::FALSE_VAL);
+      for(expr_iterator i = node->expr_begin(); !i.done(); ++i) 
+      {
+        TSVAnnotationValue::update_annotation(*i,
+                                              Annotations::IGNORES_SORTED_NODES,
+                                              TSVAnnotationValue::FALSE_VAL);
+        TSVAnnotationValue::update_annotation(*i,
+                                              Annotations::IGNORES_DUP_NODES,
+                                              TSVAnnotationValue::FALSE_VAL);
+      }
     }
+
+    break;
   }
-  break;
   }
 
   return NULL;

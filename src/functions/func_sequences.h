@@ -239,6 +239,8 @@ public:
                 FunctionConsts::FN_DEEP_EQUAL_3);
   }
 
+  bool accessesDynCtx() const { return true; }
+
   CODEGEN_DECL();
 };
 

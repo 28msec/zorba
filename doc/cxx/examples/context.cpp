@@ -305,40 +305,68 @@ context_example_10(Zorba* aZorba)
 	return false;
 }
 
+
 class PrologModuleURIResolverResult : public ModuleURIResolverResult
 {
-  public:
-    virtual std::istream*
-    getModule() const
-    {
-      return theModule;
-    }
+  friend class PrologModuleURIResolver;
 
-  protected:
-    friend class PrologModuleURIResolver;
-    std::istream* theModule;
+protected:
+  std::istream             * theModule;
+  std::vector<std::string>   theComponentURIs;
+
+public:
+  std::istream* getModuleStream() const 
+  {
+    return theModule;
+  }
+
+  void getModuleURL(std::string& url) const
+  {
+  }
+
+  void getComponentURIs(std::vector<std::string>& uris) const 
+  {
+    uris = theComponentURIs;
+  }
 };
+
 
 class PrologModuleURIResolver : public ModuleURIResolver
 {
-  public:
-    virtual ~PrologModuleURIResolver() {}
+public:
+  virtual ~PrologModuleURIResolver() {}
 
-    virtual std::auto_ptr<ModuleURIResolverResult>
-    resolve(const Item& aURI,
-            StaticContext* aStaticContext,
-            String* aFileUri = 0)
+  std::auto_ptr<ModuleURIResolverResult> resolveTargetNamespace(
+        const String& aTargetNamespaceURI,
+        const StaticContext& aStaticContext)
+  {
+    std::auto_ptr<PrologModuleURIResolverResult>
+    lResult(new PrologModuleURIResolverResult());
+
+    std::string compURI = aTargetNamespaceURI.c_str();
+    lResult->theComponentURIs.push_back(compURI);
+
+    return std::auto_ptr<ModuleURIResolverResult>(lResult.release());
+  }
+
+  std::auto_ptr<ModuleURIResolverResult> resolve(
+        const String& aURI,
+        const StaticContext& aStaticContext)
+  {
+    std::auto_ptr<PrologModuleURIResolverResult>
+    lResult(new PrologModuleURIResolverResult());
+
+    if (aURI == "http://www.zorba-xquery.com/mymodule") 
     {
-      std::auto_ptr<PrologModuleURIResolverResult> lResult(new PrologModuleURIResolverResult());
-      if (aURI.getStringValue() == "http://www.zorba-xquery.com/mymodule") {
-        // we have only one module
-        lResult->theModule = new std::istringstream(
-                                    "module namespace mymodule = 'http://www.zorba-xquery.com/mymodule'; declare variable $mymodule:var  := 'myvar';");
-        lResult->setError(URIResolverResult::UR_NOERROR);
-      } 
-      return std::auto_ptr<ModuleURIResolverResult>(lResult.release());
-    }
+      // we have only one module
+      lResult->theModule = new std::istringstream("module namespace mymodule = 'http://www.zorba-xquery.com/mymodule'; declare variable $mymodule:var  := 'myvar';");
+      lResult->setError(URIResolverResult::UR_NOERROR);
+    } 
+
+    return std::auto_ptr<ModuleURIResolverResult>(lResult.release());
+  }
 };
+
 
 bool
 context_example_11(Zorba* aZorba)

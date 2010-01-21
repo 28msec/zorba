@@ -2164,12 +2164,33 @@ void end_visit(const Module& v, void* /*visit_state*/)
 void* begin_visit(const VersionDecl& v) 
 {
   TRACE_VISIT();
-  if (! xqp_string (v.get_encoding ()).matches ("^[A-Za-z]([A-Za-z0-9._]|[-])*$", ""))
+  if (! xqp_string(v.get_encoding()).matches ("^[A-Za-z]([A-Za-z0-9._]|[-])*$", ""))
     ZORBA_ERROR_LOC (XQST0087, loc);
 
-  sctx_p->set_xquery_version(v.get_version());
-  if (sctx_p->xquery_version() == StaticContextConsts::xquery_version_unknown)
+  std::string versionStr = v.get_version();
+
+  StaticContextConsts::xquery_version_t version;
+
+  if (versionStr == "1.0")
+  {
+    version = StaticContextConsts::xquery_version_1_0;
+  }
+  else if (versionStr == "1.1")
+  {
+    version = StaticContextConsts::xquery_version_1_1;
+  }
+  else
+  {
+    version = StaticContextConsts::xquery_version_unknown;
+  }
+
+  if (version == StaticContextConsts::xquery_version_unknown)
     ZORBA_ERROR_LOC(XQST0031, loc);
+
+  if (version > sctx_p->xquery_version())
+    ZORBA_ERROR_LOC(XQST0031, loc);
+
+  sctx_p->set_xquery_version(version);
 
   return no_state;
 }
@@ -2694,8 +2715,8 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  string pfx = v.get_prefix();
-  string target_ns = v.get_uri();
+  std::string pfx = v.get_prefix();
+  std::string targetNamespace = v.get_uri();
 
   // The namespace prefix specified in a module import must not be xml or xmlns
   // [err:XQST0070]
@@ -2703,23 +2724,24 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     ZORBA_ERROR_LOC(XQST0070, loc);
 
   // The first URILiteral in a module import must be of nonzero length [err:XQST0088]
-  if (target_ns.empty())
+  if (targetNamespace.empty())
     ZORBA_ERROR_LOC(XQST0088, loc);
 
   // It is a static error [err:XQST0047] if more than one module import in a
   // Prolog specifies the same target namespace
-  if (! theImportedModules.insert(target_ns).second)
+  if (! theImportedModules.insert(targetNamespace).second)
     ZORBA_ERROR_LOC(XQST0047, loc);
 
   // The namespace prefix specified in a module import must not be the same as
-  // any namespace prefix bound  in the same module by another module import, 
+  // any namespace prefix bound in the same module by another module import, 
   // a schema import, a namespace declaration, or a module declaration with a
   // different target namespace [err:XQST0033].
-  if (! (pfx.empty() || (pfx == theModulePrefix && target_ns == theModuleNamespace) ) ) 
+  if (! (pfx.empty() ||
+         (pfx == theModulePrefix && targetNamespace == theModuleNamespace) ) ) 
   {
     try 
     {
-      sctx_p->bind_ns(pfx, target_ns, XQST0033);
+      sctx_p->bind_ns(pfx, targetNamespace, XQST0033);
     }
     catch (error::ZorbaError& e)
     {
@@ -2731,59 +2753,60 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   rchandle<URILiteralList> ats = v.get_uri_list();
 
   // Handle pre-defined modules
-  if (ats == NULL && theBuiltInModules.find(target_ns) != theBuiltInModules.end())
+  if (ats == NULL && theBuiltInModules.find(targetNamespace) != theBuiltInModules.end())
     return;
 
-  // Create a list of absolute uris identifying the locations of modules in
-  // the target ns. If there are no "at" clauses, use the target namespace.
-  vector<xqpStringStore_t> lURIs;
+  InternalModuleURIResolver* standardModuleResolver = GENV.getModuleURIResolver();
+
+  // Create a list of absolute uris identifying the components of the module
+  // being imported. If there are no "at" clauses, try to generate the component
+  // URI from the target namespace. This is done using one or more user-provided
+  // module resolvers. If no such resolvers were provided, or if they don't know
+  // about the target namespace, the target namespace itself will be used as the
+  // (sole) component URI. If there are "at" clauses, then any relative URIs that
+  // are listed there are converted to absolute ones, using the base uri from the
+  // sctx.
+  vector<std::string> compURIs;
   if (ats == NULL || ats->size() == 0)
   {
-    lURIs.push_back(xqp_string(target_ns).getStore());
+    standardModuleResolver->resolveTargetNamespace(targetNamespace, *sctx_p, compURIs);
   }
   else
   {
     for (int i = 0; i < ats->size(); ++i) 
     {
-      // If current uri is relative, turn it to an absolute one, using the
-      // base uri from the sctx.
-      lURIs.push_back(sctx_p->resolve_relative_uri((*ats)[i], xqp_string()).getStore());
+      compURIs.push_back(sctx_p->resolve_relative_uri((*ats)[i], xqp_string()).getStore()->str());
     }
   }
 
-  InternalModuleURIResolver* lStandardModuleResolver = GENV.getModuleURIResolver();
-
   // Take each of the URIs collected above and import the module's functions
   // and variables into the current static context.
-  for (vector<xqpStringStore_t>::iterator lIter = lURIs.begin();
-       lIter != lURIs.end();
-       ++lIter) 
+  for (vector<std::string>::const_iterator ite = compURIs.begin();
+       ite != compURIs.end();
+       ++ite) 
   {
-    // Get the location uri for the module to import and create a uri item
+    // Get the location uri for the module to import.
     // out of it.
-    xqpStringStore_t resolveduri = *lIter; 
-    store::Item_t    aturiitem = NULL;
-    if (!GENV_ITEMFACTORY->createAnyURI(aturiitem, resolveduri))
-      ZORBA_ERROR_LOC_DESC_OSS(XQST0046, loc, "URI is not valid " << resolveduri);
+    const std::string& compURI = *ite;
 
     // Make sure that there are no cycles in a chain of module imports.
     set<string> mod_stk1 = theModulesStack;
-    if (! mod_stk1.insert(resolveduri->str()).second)
+    if (! mod_stk1.insert(compURI).second)
       ZORBA_ERROR_LOC (XQST0073, loc);
     
     string imported_ns; // the target namespace of the imported module
     static_context_t imported_sctx = NULL;
 
-    // Check whether we have already imported a module from the current location
+    // Check whether we have already imported a module component from the current 
     // uri. If so, check that the target ns of what we imported before is the
     // same as what we are trying to import now.
-    if (theModulesInfo->mod_ns_map.get(resolveduri->str(), imported_ns)) 
+    if (theModulesInfo->mod_ns_map.get(compURI, imported_ns)) 
     {
-      bool found = theModulesInfo->mod_sctx_map.get(resolveduri->str(), imported_sctx);
-      ZORBA_ASSERT (found);
+      if (imported_ns != targetNamespace)
+        ZORBA_ERROR_LOC_PARAM (XQST0059, loc, compURI, targetNamespace);
 
-      if (imported_ns != target_ns)
-        ZORBA_ERROR_LOC_PARAM (XQST0059, loc, resolveduri, target_ns);
+      bool found = theModulesInfo->mod_sctx_map.get(compURI, imported_sctx);
+      ZORBA_ASSERT(found);
     } 
 
     // We are importing a module for the 1st time.
@@ -2794,14 +2817,14 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // TODO: we have to find a way to tell user defined resolvers when their
       // input stream can be freed. The current solution might leed to problems
       // on Windows.
-      xqpStringStore lFileUri;
+      std::string compURL;
       auto_ptr<istream> modfile;
       
-      modfile.reset(lStandardModuleResolver->resolve(aturiitem, sctx_p, &lFileUri));
+      modfile.reset(standardModuleResolver->resolve(compURI, *sctx_p, compURL));
 
-      if (modfile.get () == NULL || ! *modfile) 
+      if (modfile.get() == NULL || ! *modfile) 
       {
-        ZORBA_ERROR_LOC_PARAM(XQST0059, loc, resolveduri, target_ns);
+        ZORBA_ERROR_LOC_PARAM(XQST0059, loc, compURI, targetNamespace);
       }
 
       // Get the query-level sctx. This is the user-specified sctx (if any) or
@@ -2812,7 +2835,8 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // Create the root sctx for the imported module as a child of the
       // query-level sctx. Register this sctx in the query-level sctx map.
       static_context* moduleRootSctx = independent_sctx->create_child_context();
-      moduleRootSctx->set_entity_retrieval_url(resolveduri->str());
+      moduleRootSctx->set_entity_retrieval_url(compURI);
+      moduleRootSctx->set_module_namespace(targetNamespace);
       ulong moduleRootSctxId = theCCB->theSctxMap->size() + 1;
       (*theCCB->theSctxMap)[moduleRootSctxId] = moduleRootSctx;
 
@@ -2825,15 +2849,16 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
       // Register the imported_sctx in theModulesInfo->mod_sctx_map so that it is
       // accessible by both the importing and the imported modules.
-      theModulesInfo->mod_sctx_map.put(resolveduri->str(), imported_sctx);
+      theModulesInfo->mod_sctx_map.put(compURI, imported_sctx);
 
       // Parse the imported module
       XQueryCompiler xqc(theCCB);
-      xqpString lFileName(aturiitem->getStringValue());
-      if (lFileUri.size() != 0) 
+      xqpString lFileName(compURI);
+      if (compURL.size() != 0) 
       {
-        lFileName = lFileUri.c_str();
+        lFileName = compURL.c_str();
       }
+
       rchandle<parsenode> ast = xqc.parse(*modfile, lFileName);
 
       // Get the target namespace that appears in the module declaration
@@ -2842,17 +2867,15 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // Also make sure that the imported module is a library module
       LibraryModule* mod_ast = dynamic_cast<LibraryModule *>(&*ast);
       if (mod_ast == NULL)
-        ZORBA_ERROR_LOC_PARAM(XQST0059, loc, resolveduri, target_ns);
+        ZORBA_ERROR_LOC_PARAM(XQST0059, loc, compURI, targetNamespace);
 
       imported_ns = mod_ast->get_decl()->get_target_namespace();
       
       if (imported_ns.empty())
         ZORBA_ERROR_LOC(XQST0088, loc);
 
-      if (imported_ns != target_ns)
-        ZORBA_ERROR_LOC_PARAM(XQST0059, loc, resolveduri, target_ns);
-
-      moduleRootSctx->set_module_namespace(imported_ns);
+      if (imported_ns != targetNamespace)
+        ZORBA_ERROR_LOC_PARAM(XQST0059, loc, compURI, targetNamespace);
 
       // translate the imported module
       translate_aux(*ast,
@@ -2864,7 +2887,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
       // Register the mapping between the current location uri and the
       // target namespace.
-      theModulesInfo->mod_ns_map.put(resolveduri->str(), imported_ns);
+      theModulesInfo->mod_ns_map.put(compURI, imported_ns);
 
       // If we compile in debug mode, we add the namespace uri into a map, that
       // allows the debugger to set breakpoints at a namespace uri and line
@@ -2872,7 +2895,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       if (theCCB->theDebuggerCommons) 
       {
         theCCB->theDebuggerCommons->addModuleUriMapping(imported_ns,
-                                                           lFileUri.c_str());
+                                                        compURL.c_str());
       }
     }
 
@@ -2882,7 +2905,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     // be able to assert() here (not sure though).
     sctx_p->import_module(imported_sctx.getp(), loc);
 
-  } // for (vector<xqpStringStore_t>::iterator lIter = lURIs.begin();
+  } // for (vector<std::string>::iterator ite = lURIs.begin();
 }
 
 
@@ -7987,17 +8010,10 @@ void* begin_visit(const FunctionCall& v)
     if (v.get_arg_list() != NULL)
       numArgs = v.get_arg_list()->size();
 
-    store::Item_t fn_qname = sctx_p->lookup_fn_qname(prefix, fname, loc);
-    const xqpStringStore* fn_ns = fn_qname->getNamespace();
+    function* f = LOOKUP_FN(prefix, fname, numArgs);
 
-    // Some special processing is required for certain "fn" functions
-    if (!fn_ns->byteEqual(XQUERY_FN_NS)) 
-    {
-      function* f = LOOKUP_FN(prefix, fname, numArgs);
-
-      if (f != NULL)
-        thePrologGraph.addEdge(theCurrentPrologVFDecl, f);
-    }
+    if (f != NULL && dynamic_cast<user_function*>(f) != NULL)
+      thePrologGraph.addEdge(theCurrentPrologVFDecl, f);
   }
 
   nodestack.push(NULL);

@@ -22,6 +22,9 @@
 namespace zorba 
 {
 
+/*******************************************************************************
+
+********************************************************************************/
 class TestSchemaURIResolverResult : public SchemaURIResolverResult
 {
 protected:
@@ -36,6 +39,9 @@ public:
 };
 
 
+/*******************************************************************************
+
+********************************************************************************/
 class TestSchemaURIResolver : public SchemaURIResolver 
 {
 private:
@@ -59,48 +65,70 @@ private:
 };
 
 
+/*******************************************************************************
+
+********************************************************************************/
 class TestModuleURIResolver : public ModuleURIResolver
 {
+  typedef std::multimap<std::string, std::string> UriMap;
+
 private:
-  std::string                  map_file;
-    std::string                theTest;
-  std::map < String, String >  uri_map;
-  bool                         theVerbose;
+  std::string    theMapFile;
+  std::string    theTest;
+  bool           theVerbose;
+
+  UriMap         theUriMap;
 
 public :
-  TestModuleURIResolver (
+  TestModuleURIResolver(
         const char* file,
         const std::string& test,
         bool verbode = true);
 
-  TestModuleURIResolver (
+  TestModuleURIResolver(
         const char* file,
         bool verbode = true);
 
-  virtual ~TestModuleURIResolver ();
+  virtual ~TestModuleURIResolver();
 
   void setTest(const std::string& test) { theTest = test; }
 
-  virtual std::auto_ptr< ModuleURIResolverResult >
-  resolve ( const Item &, StaticContext * aStaticContext, String* aFileUri = 0 );
+  std::auto_ptr<ModuleURIResolverResult> resolveTargetNamespace(
+        const String& aTargetNamespaceURI,
+        const StaticContext& aStaticContext);
+
+  std::auto_ptr<ModuleURIResolverResult> resolve(
+        const String&,
+        const StaticContext& aStaticContext);
 
 private:
-  void initialize ();
+  void initialize();
 };
 
 
+/*******************************************************************************
+
+********************************************************************************/
 class TestModuleURIResolverResult : public ModuleURIResolverResult
 {
-protected:
   friend class TestModuleURIResolver;
 
-  std::istream * theModule;
+protected:
+  std::istream             * theModule;
+  std::vector<std::string>   theComponentURIs;
 
 public:
-  virtual std::istream * getModule ( ) const;
+  std::istream* getModuleStream() const { return theModule; }
+
+  void getModuleURL(std::string& url) const { }
+
+  void getComponentURIs(std::vector<std::string>& uris) const;
 };
 
 
+/*******************************************************************************
+
+********************************************************************************/
 class TestCollectionURIResolver : public CollectionURIResolver
 {
 private:
@@ -122,6 +150,9 @@ public :
 };
 
 
+/*******************************************************************************
+
+********************************************************************************/
 class TestCollectionURIResolverResult : public CollectionURIResolverResult
 {
 protected:
@@ -161,3 +192,9 @@ class TestSerializationCallback : public zorba::SerializationCallback
 
 
 } // namespace zorba
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

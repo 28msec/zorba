@@ -237,9 +237,11 @@ void context::set_parent_as_root()
   parent = &GENV_ROOT_STATIC_CONTEXT;
 }
 
+
 void context::ctx_module_t::serialize(serialization::Archiver &ar)
 {
-  if(ar.is_serializing_out()) {
+  if(ar.is_serializing_out()) 
+  {
     // serialize out: the uri of the module that is used in this plan
 
     xqp_string lURI = Unmarshaller::getInternalString(module->getURI());
@@ -249,7 +251,9 @@ void context::ctx_module_t::serialize(serialization::Archiver &ar)
     ar & lURIStore;
 	  ar.set_is_temp_field_one_level(false);
     ar & dyn_loaded_module;
-  } else {
+  }
+  else
+  {
     // serialize in: load the serialized uri of the module and
     //               get the externalmodule from the user's
     //               registered serialization callback
@@ -259,25 +263,30 @@ void context::ctx_module_t::serialize(serialization::Archiver &ar)
 	  ar.set_is_temp_field_one_level(false);
     ar & dyn_loaded_module;
 
-    if (dyn_loaded_module) {
+    if (dyn_loaded_module) 
+    {
       InternalModuleURIResolver* lStandardModuleResolver
         = GENV.getModuleURIResolver();
 
       module = lStandardModuleResolver->getExternalModule(
-                  lURIStore.getp(), &GENV_ROOT_STATIC_CONTEXT);
+                  lURIStore->str(), GENV_ROOT_STATIC_CONTEXT);
 
       // no way to get the module
-      if (!module) {
+      if (!module) 
+      {
         ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
                              "Couldn't load pre-compiled query because"
                              << " the external module " << lURIStore
                              << " is not available to be loaded from a"
                              << " dynamic library.");
       }
-    } else {
+    }
+    else
+    {
       // class registered by the user
       SerializationCallback* lCallback = ar.getUserCallback();
-      if (!lCallback) {
+      if (!lCallback) 
+      {
         ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
                              "Couldn't load pre-compiled query because"
                              << " the external module " << lURIStore
@@ -287,7 +296,8 @@ void context::ctx_module_t::serialize(serialization::Archiver &ar)
 
       // the life-cycle of the module is managed by the user
       module = lCallback->getExternalModule(lURIStore.getp());
-      if (!module) {
+      if (!module) 
+      {
         ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
                              "Couldn't load pre-compiled query because"
                              << " the external module " << lURIStore
@@ -1034,11 +1044,12 @@ static_context::lookup_stateless_external_function(
 
   // if the module is not yet in the static context
   // we try to get it from the URI resolver
-  if (!lRes) {
+  if (!lRes) 
+  {
     InternalModuleURIResolver* lStandardModuleResolver = GENV.getModuleURIResolver();
     lModule = lStandardModuleResolver->getExternalModule(
                 //entity_retrieval_url().getStore(), this);
-                aURI.getStore(), this);
+                                                         aURI.getStore()->str(), *this);
 
     // no way to get the module
     if (!lModule) {
@@ -1047,7 +1058,9 @@ static_context::lookup_stateless_external_function(
 
     // remember the module for future use
     bind_external_module(lModule, true);
-  } else  {
+  }
+  else
+  {
     lModule = v.module;
   }
 
@@ -1545,7 +1558,7 @@ xqp_string static_context::entity_retrieval_url() const
 
 void static_context::set_entity_retrieval_url(xqp_string val)
 {
-  bind_str ("int:entity_retrieval_url", val, MAX_ZORBA_ERROR_CODE);
+  bind_str("int:entity_retrieval_url", val, MAX_ZORBA_ERROR_CODE);
   set_current_absolute_baseuri ("");
 }
 
@@ -1715,48 +1728,54 @@ static_context::add_schema_uri_resolver(InternalSchemaURIResolver* aSchemaResolv
   theSchemaResolvers.push_back(aSchemaResolver);
 }
 
-void
-static_context::get_schema_uri_resolvers(std::vector<InternalSchemaURIResolver*>&
-                                         aResolvers)
+
+void static_context::get_schema_uri_resolvers(
+    std::vector<InternalSchemaURIResolver*>& aResolvers)
 {
-  if (parent!=NULL) {
+  if (parent != NULL) 
+  {
     static_cast<static_context*>(parent)->get_schema_uri_resolvers(aResolvers);
   }
+
   aResolvers.insert(aResolvers.end(),
-    theSchemaResolvers.begin(),
-    theSchemaResolvers.end());
+                    theSchemaResolvers.begin(),
+                    theSchemaResolvers.end());
 }
 
-void
-static_context::add_module_uri_resolver(InternalModuleURIResolver* aModuleResolver)
+
+void static_context::add_module_uri_resolver(
+    InternalModuleURIResolver* aModuleResolver)
 {
   theModuleResolvers.push_back(aModuleResolver);
 }
 
-void
-static_context::get_module_uri_resolvers(
-    std::vector<InternalModuleURIResolver*>& lResolvers
-  )
+
+void static_context::get_module_uri_resolvers(
+    std::vector<InternalModuleURIResolver*>& lResolvers) const
 {
-  if (parent!=NULL) {
+  if (parent!=NULL) 
+  {
     static_cast<static_context*>(parent)->get_module_uri_resolvers(lResolvers);
-}
+  }
+
   lResolvers.insert(lResolvers.end(),
                     theModuleResolvers.begin(),
                     theModuleResolvers.end());
 }
 
-void
-static_context::remove_module_uri_resolver(InternalModuleURIResolver* aResolver)
+
+void static_context::remove_module_uri_resolver(
+    InternalModuleURIResolver* aResolver)
 {
-  for (std::vector<InternalModuleURIResolver*>::iterator
-        lIter = theModuleResolvers.begin();
-       lIter != theModuleResolvers.end(); ++lIter) {
-    if (aResolver == *lIter) {
-      theModuleResolvers.erase(lIter);
+  std::vector<InternalModuleURIResolver*>::iterator ite;
+  for (ite = theModuleResolvers.begin(); ite != theModuleResolvers.end(); ++ite) 
+  {
+    if (aResolver == *ite)
+    {
+      theModuleResolvers.erase(ite);
       return; // no duplicates in the vector
     }
-}
+  }
 }
 
 void

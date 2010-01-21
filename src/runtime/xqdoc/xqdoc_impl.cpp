@@ -44,6 +44,8 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   xqpString lFileName;
   store::Item_t lItem;
   store::Item_t lURIItem = 0;
+  std::string uriStr;
+  std::string fileUrl;
   std::auto_ptr<std::istream> lFile;
   std::stringstream lOutput;
   std::istringstream lInput;
@@ -81,7 +83,8 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   // we get the ownership of the input stream
   // TODO: we have to find a way to tell user defined resolvers when their input stream
   // can be freed. The current solution might leed to problems on Windows.
-  lFile.reset(lModuleResolver->resolve(lURIItem, lSctx));
+  uriStr = lURIItem->getStringValue()->str();
+  lFile.reset(lModuleResolver->resolve(uriStr, *lSctx, fileUrl));
 
   // now, do the real work
   if(lFile.get() && lFile->good())

@@ -228,8 +228,8 @@ void CompareIterator::openImpl(PlanState& planState, uint32_t& offset)
   BinaryBaseIterator<CompareIterator, PlanIteratorState>::openImpl(planState, offset);
 
   theTypeManager = theSctx->get_typemanager();
-  theTimezone = planState.theRuntimeCB->theDynamicContext->get_implicit_timezone();
   theCollation = theSctx->get_collation_cache()->getDefaultCollator();
+  theTimezone = planState.theRuntimeCB->theDynamicContext->get_implicit_timezone();
 }
 
 
@@ -267,10 +267,12 @@ bool CompareIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
           {
             c1Done = true;
             found = CompareIterator::generalComparison(loc,
-                                                       lItem0, lItem1,
+                                                       lItem0,
+                                                       lItem1,
                                                        theCompType,
                                                        theTypeManager,
-                                                       theTimezone, theCollation);
+                                                       theTimezone,
+                                                       theCollation);
             done = true;
           }
         }
@@ -319,10 +321,12 @@ bool CompareIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
           tSeq0->getItem(i0, item0);
           tSeq1->getItem(i1, item1);
           if (CompareIterator::generalComparison(loc,
-                                                 item0, item1,
+                                                 item0,
+                                                 item1,
                                                  theCompType,
                                                  theTypeManager,
-                                                 theTimezone, theCollation)) 
+                                                 theTimezone, 
+                                                 theCollation)) 
           {
             found = true;
           }

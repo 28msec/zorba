@@ -126,13 +126,11 @@ dynamic_context::dynamic_context(dynamic_context* parent)
     localtime_r(&timebuffer.time, &gmtm); //thread safe localtime on Linux
 #endif
 
-    {
-      int lSummerTimeShift = 0;
-      if (gmtm.tm_isdst != 0) {
-        lSummerTimeShift = 3600;
-      }
-      set_implicit_timezone( -timebuffer.timezone * 60 + lSummerTimeShift );//in seconds
-    }
+    int lSummerTimeShift = 0;
+    if (gmtm.tm_isdst != 0)
+      lSummerTimeShift = 3600;
+
+    set_implicit_timezone(-timebuffer.timezone * 60 + lSummerTimeShift);//in seconds
 
     GENV_ITEMFACTORY->createDateTime(current_date_time_item,
                                      gmtm.tm_year + 1900,

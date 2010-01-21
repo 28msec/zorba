@@ -533,7 +533,7 @@ public:
   add_module_uri_resolver(InternalModuleURIResolver*);
 
   void
-  get_module_uri_resolvers(std::vector<InternalModuleURIResolver*>& lResolvers);
+  get_module_uri_resolvers(std::vector<InternalModuleURIResolver*>& lResolvers) const;
 
   void
   remove_module_uri_resolver(InternalModuleURIResolver*);
