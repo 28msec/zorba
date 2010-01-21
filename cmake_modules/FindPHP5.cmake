@@ -51,6 +51,7 @@ IF(APPLE)
   SET(CMAKE_SHARED_MODULE_CREATE_C_FLAGS
    "${CMAKE_SHARED_MODULE_CREATE_C_FLAGS} -Wl,-flat_namespace")
   FOREACH(symbol
+    _convert_to_boolean
     _zend_throw_exception
     _zend_register_long_constant
     _zend_get_constant
