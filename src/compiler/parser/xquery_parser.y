@@ -1,4 +1,4 @@
- /*
+/*
  * Copyright 2006-2008 The FLWOR Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /*
-**	The parser definition file starts by asking for the C++ LALR(1)
-**	skeleton, the creation of the parser header file, and specifies the
-**	name of the parser class.  Because the C++ skeleton changes, it is
-**	safer to require the version.
+**  The parser definition file starts by asking for the C++ LALR(1)
+**  skeleton, the creation of the parser header file, and specifies the
+**  name of the parser class.  Because the C++ skeleton changes, it is
+**  safer to require the version.
 */
 
 %skeleton "lalr1.cc"  /*  -*- C++ -*- */
@@ -31,9 +32,9 @@
 #include "compiler/parsetree/parsenodes.h"
 
 #ifdef __GNUC__
-  // disable a warning in location.hh which comes with bison
-  // position.hh:141: warning: suggest parentheses around && within ||
-#  pragma GCC diagnostic ignored "-Wparentheses"
+    // disable a warning in location.hh which comes with bison
+    // position.hh:141: warning: suggest parentheses around && within ||
+#   pragma GCC diagnostic ignored "-Wparentheses"
 #endif
 
 #include "location.hh"
@@ -49,11 +50,11 @@ class xquery_driver;
 }
 
 /*
-**	Because the parser uses the xquery_driver and reciprocally, both
-**	cannot include the header of the other. Because the driver's header
-**	needs detailed knowledge about the parser class (in particular its
-**	inner types), it is the parser's header which will use a forward
-**	declaration of the driver.
+**  Because the parser uses the xquery_driver and reciprocally, both
+**  cannot include the header of the other. Because the driver's header
+**  needs detailed knowledge about the parser class (in particular its
+**  inner types), it is the parser's header which will use a forward
+**  declaration of the driver.
 */
 
 %{
@@ -90,18 +91,18 @@ namespace parser
 %pure-parser
 
 /*
-**	The driver is passed by reference to the parser and to the scanner.
-**	This provides a simple but effective pure interface, not relying on
-**	global variables.
+**  The driver is passed by reference to the parser and to the scanner.
+**  This provides a simple but effective pure interface, not relying on
+**  global variables.
 */
 %parse-param { xquery_driver& driver }
 
 
 /*
-**	Request the location tracking feature, and initialize the
-**	first location's file name. Afterwards new locations are computed
-**	relatively to the previous locations: the file name will be
-**	automatically propagated.
+**  Request the location tracking feature, and initialize the
+**  first location's file name. Afterwards new locations are computed
+**  relatively to the previous locations: the file name will be
+**  automatically propagated.
 */
 %locations
 %initial-action
@@ -111,8 +112,8 @@ namespace parser
 
 
 /*
-**	The two following directives to enable parser tracing and verbose
-**	error messages.
+**  The two following directives to enable parser tracing and verbose
+**  error messages.
 */
 /*
 %debug
@@ -128,7 +129,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 
 /*
-**	Semantic values cannot use real objects, but only pointers to them.
+**  Semantic values cannot use real objects, but only pointers to them.
 */
 %union
 {
@@ -138,9 +139,9 @@ static void print_token_value(FILE *, int, YYSTYPE);
   zorba::VarNameAndType *varnametype;
   off_t sval;
   const char *strval;
-	xqp_integer* ival;
-	xqp_double* dval;
-	xqp_decimal* decval;
+    xqp_integer* ival;
+    xqp_double* dval;
+    xqp_decimal* decval;
   XQUERY_ERROR err;
   std::vector<std::pair<std::string, std::string> >* pair_vector;
   std::pair<std::string, std::string>* pair;
@@ -150,12 +151,12 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 
 /*
-**	The token numbered as 0 corresponds to end of file; the following line
-**	allows for nicer error messages referring to end of file instead of
-**	$end. Similarly user friendly names are provided for each symbol.
+**  The token numbered as 0 corresponds to end of file; the following line
+**  allows for nicer error messages referring to end of file instead of
+**  $end. Similarly user friendly names are provided for each symbol.
 */
 
-%token	_EOF	0 "end of file"
+%token  _EOF    0 "end of file"
 
 /* constant string tokens */
 %type <strval> WindowType
@@ -176,90 +177,90 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token <sval> CHAR_LITERAL                  "'char literal'"
 %token <sval> CHAR_LITERAL_AND_CDATA_END    "'char literal]]>'"
 %token <sval> CHAR_LITERAL_AND_PI_END       "'char literal and pi end'"
-%token <sval> CHAR_REF_LITERAL				      "'#charref;'"
-%token <sval> ELEMENT_CONTENT					      "'element content'"
-%token <sval> ELEM_WILDCARD						      "'pref:*'"
-%token <sval> ENTITY_REF							      "'&entity;'"
-%token <sval> EXPR_COMMENT_LITERAL		      "'comment literal'"
+%token <sval> CHAR_REF_LITERAL              "'#charref;'"
+%token <sval> ELEMENT_CONTENT               "'element content'"
+%token <sval> ELEM_WILDCARD                 "'pref:*'"
+%token <sval> ENTITY_REF                    "'&entity;'"
+%token <sval> EXPR_COMMENT_LITERAL          "'comment literal'"
 
 %token <sval> PI_NCNAME_LBRACE              "'pi <NCName {>'"
 %token <sval> NCNAME_SVAL                   "'NCName_sval'"
 %token <sval> PRAGMA_LITERAL_AND_END_PRAGMA "'pragma literal'"
 %token <sval> QNAME_SVAL_AND_END_PRAGMA     "'QName #)'"
-%token <sval> PREFIX_WILDCARD					      "'*:QName'"
-%token <sval> QNAME_SVAL							      "'QName_sval'"
-%token <sval> QUOTE_ATTR_CONTENT			      "'quote attribute content'"
-%token <sval> STRING_LITERAL					      "'STRING'"
-%token <sval> XML_COMMENT_LITERAL			      "'XML comment'"
+%token <sval> PREFIX_WILDCARD               "'*:QName'"
+%token <sval> QNAME_SVAL                    "'QName_sval'"
+%token <sval> QUOTE_ATTR_CONTENT            "'quote attribute content'"
+%token <sval> STRING_LITERAL                "'STRING'"
+%token <sval> XML_COMMENT_LITERAL           "'XML comment'"
 
 %type <sval> URI_LITERAL                    "'URI'"
 %type <sval> NCNAME                         "'NCName'"
-  /* %type <sval> NCNAME_NOKW                    "'NCName(non keyword)'" */
+/* %type <sval> NCNAME_NOKW                 "'NCName(non keyword)'" */
 %type <sval> KEYWORD                        "'KEYWORD'"
 
-%token <sval> DECLARE                "'declare'"
-%token <sval> MODULE                 "'module'"
+%token <sval> DECLARE                       "'declare'"
+%token <sval> MODULE                        "'module'"
 
 /* simple tokens */
 /* ------------- */
 
-%token BLANK                      "<blank>"
+%token BLANK                            "<blank>"
 
-%token VALIDATE                   "'validate'"
-%token TYPESWITCH                 "'typeswitch'"
-%token ELEMENT                    "'element'"
-%token DOCUMENT                   "'document'"
-%token TEXT                       "'text'"
-%token COMMENT                    "'comment'"
-%token FUNCTION                   "'function'"
-%token UPDATING                   "'updating'"
-%token SEQUENTIAL                 "'sequential'"
-%token DETERMINISTIC              "'deterministic'"
-%token NONDETERMINISTIC           "'nondeterministic'"
-%token SIMPLE                     "'simple'"
-%token IF                         "'if'"
-%token IMPORT                     "'import'"
-%token PROCESSING_INSTRUCTION     "'processing-instruction'"
-%token MOST                       "'most'"
-%token SOME                       "'some'"
-%token STABLE                     "'stable'"
-%token OPTION                     "'option'"
-%token WORD                       "'word'"
-%token SCHEMA                     "'schema'"
-%token SPACE                      "'space'"
-%token SET                        "'set'"
-%token LET                        "'let'"
-%token CONSTRUCTION               "'construction'"
-%token EVAL                       "'eval'"
-%token FOR                        "'for'"
-%token OUTER                      "'outer'"
-%token SLIDING                    "'sliding'"
-%token TUMBLING                   "'tumbling'"
-%token PREVIOUS                   "'previous'"
-%token NEXT                       "'next'"
-%token ONLY                       "'only'"
-%token WHEN                       "'when'"
-%token COUNT                      "'count'"
-%token ORDERING                   "'ordering'"
-%token BASE_URI                   "'base-uri'"
-%token SCHEMA_ELEMENT             "'schema-element'"
-%token DOCUMENT_NODE              "'document-node'"
-%token COPY_NAMESPACES            "'copy-namespaces'"
-%token INSTANCE                   "'instance'"
-%token SCHEMA_ATTRIBUTE           "'schema-attribute'"
-%token BOUNDARY_SPACE             "'boundary-space'"
+%token VALIDATE                         "'validate'"
+%token TYPESWITCH                       "'typeswitch'"
+%token ELEMENT                          "'element'"
+%token DOCUMENT                         "'document'"
+%token TEXT                             "'text'"
+%token COMMENT                          "'comment'"
+%token FUNCTION                         "'function'"
+%token UPDATING                         "'updating'"
+%token SEQUENTIAL                       "'sequential'"
+%token DETERMINISTIC                    "'deterministic'"
+%token NONDETERMINISTIC                 "'nondeterministic'"
+%token SIMPLE                           "'simple'"
+%token IF                               "'if'"
+%token IMPORT                           "'import'"
+%token PROCESSING_INSTRUCTION           "'processing-instruction'"
+%token MOST                             "'most'"
+%token SOME                             "'some'"
+%token STABLE                           "'stable'"
+%token OPTION                           "'option'"
+%token WORD                             "'word'"
+%token SCHEMA                           "'schema'"
+%token SPACE                            "'space'"
+%token SET                              "'set'"
+%token LET                              "'let'"
+%token CONSTRUCTION                     "'construction'"
+%token EVAL                             "'eval'"
+%token FOR                              "'for'"
+%token OUTER                            "'outer'"
+%token SLIDING                          "'sliding'"
+%token TUMBLING                         "'tumbling'"
+%token PREVIOUS                         "'previous'"
+%token NEXT                             "'next'"
+%token ONLY                             "'only'"
+%token WHEN                             "'when'"
+%token COUNT                            "'count'"
+%token ORDERING                         "'ordering'"
+%token BASE_URI                         "'base-uri'"
+%token SCHEMA_ELEMENT                   "'schema-element'"
+%token DOCUMENT_NODE                    "'document-node'"
+%token COPY_NAMESPACES                  "'copy-namespaces'"
+%token INSTANCE                         "'instance'"
+%token SCHEMA_ATTRIBUTE                 "'schema-attribute'"
+%token BOUNDARY_SPACE                   "'boundary-space'"
 
-%token DECIMAL_FORMAT             "'decimal-format'"
-%token DECIMAL_SEPARATOR          "'decimal-separator'"
-%token GROUPING_SEPARATOR         "'grouping-separator'"
+%token DECIMAL_FORMAT                   "'decimal-format'"
+%token DECIMAL_SEPARATOR                "'decimal-separator'"
+%token GROUPING_SEPARATOR               "'grouping-separator'"
 %token INFINITY_VALUE                   "'infinity'"
-%token MINUS_SIGN                 "'minus-sign'"
-%token NaN                        "'NaN'"
-%token PERCENT                    "'percent'"
-%token PER_MILLE                  "'per-mille'"
-%token ZERO_DIGIT                 "'zero-digit'"
-%token DIGIT                      "'digit'"
-%token PATTERN_SEPARATOR          "'pattern-separator'"
+%token MINUS_SIGN                       "'minus-sign'"
+%token NaN                              "'NaN'"
+%token PERCENT                          "'percent'"
+%token PER_MILLE                        "'per-mille'"
+%token ZERO_DIGIT                       "'zero-digit'"
+%token DIGIT                            "'digit'"
+%token PATTERN_SEPARATOR                "'pattern-separator'"
 
 %type <strval> DecimalFormatParamName
 %type <node> DecimalFormatDecl
@@ -268,254 +269,249 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 %type <name_test_list> NameTestList
 
-%token ANCESTOR_AXIS							"'ancestor::'"
-%token ANCESTOR_OR_SELF_AXIS			"'ancestor-or-self::'"
-%token AND												"'and'"
-%token APOS												"'''"
-%token AS													"'as'"
-%token ASCENDING									"'ascending'"
-%token AT													"'at'"
-%token ATTRIBUTE									"'attribute'"
-%token ATTRIBUTE_AXIS							"'attribute::'"
-%token AT_SIGN										"'@'"
-%token CASE												"'case'"
-%token CASTABLE                   "'castable'"
-%token CAST                       "'cast'"
-%token CDATA_BEGIN								"'CDATA[['"
-%token CDATA_END									"']]'"
-%token CHILD_AXIS									"'child::'"
-%token COLLATION									"'collation'"
-%token COMMA											"','"
-%token COMMENT_BEGIN							"'(:'"
-%token COMMENT_END								"':)'"
-%token <decval> DECIMAL_LITERAL	  "'DECIMAL'"
-
-%token CONTEXT                    "'context'"
-%token VARIABLE                   "'variable'"
-%token DEFAULT										"'default'"
-%token DESCENDANT_AXIS						"'descendant::'"
-%token DESCENDANT_OR_SELF_AXIS		"'descendant-or-self::'"
-%token DESCENDING									"'descending'"
-%token DIV												"'div'"
-%token DOLLAR											"'$'"
-%token DOT												"'.'"
-%token DOT_DOT										"'..'"
-%token DOUBLE_LBRACE							"'{{'"
-%token <dval> DOUBLE_LITERAL			"'DOUBLE'"
-%token DOUBLE_RBRACE							"'<double {>'"
-%token ELSE												"'else'"
-%token _EMPTY                     "'empty'"
-%token GREATEST                   "'greatest'"
-%token LEAST                      "'least'"
-%token EMPTY_TAG_END							"'/>'"
-%token ENCODING										"'encoding'"
-%token EQUALS											"'='"
-%token ESCAPE_APOS								"''''"
-%token ESCAPE_QUOTE								"'\"\"'"
-%token EVERY                      "'every'"
-%token EXCEPT											"'except'"
-%token EXTERNAL										"'external'"
-%token FOLLOWING_AXIS							"'following::'"
-%token FOLLOWING_SIBLING_AXIS			"'following-sibling::'"
-%token FOLLOWS										"'follows'"
-%token GE													"'>='"
-%token GETS												"':='"
-%token GT													"'>'"
-%token HOOK												"'?'"
-%token IDIV												"'idiv'"
-%token _IN                         "'in'"
-%token INHERIT										"'inherit'"
-%token <ival> INTEGER_LITERAL			"'INTEGER'"
-%token INTERSECT									"'intersect'"
-%token IS													"'is'"
-%token ITEM                       "'item'"
-%token LBRACE											"'{'"
-%token LBRACK											"'['"
-%token LE													"'<='"
-%token LPAR												"'('"
-%token LT_OR_START_TAG            "'<'"
-%token MINUS											"'-'"
-%token MOD												"'mod'"
-%token NAMESPACE									"'namespace'"
-%token _NAN												"'nan'"
-%token NE													"'!='"
-%token NODECOMP										"'nodecomp'"
-%token NOT_OPERATOR_KEYWORD				"'??'"
-%token NO_INHERIT									"'<no inherit>'"
-%token NO_PRESERVE								"'<no preserve>'"
-%token OR													"'or'"
-%token ORDERED										"'ordered'"
-%token ORDER                      "'order'"
-%token BY                         "'by'"
-%token GROUP                      "'group'"
-%token PARENT_AXIS								"'parent::'"
-%token PI_BEGIN										"'<?'"
-%token PI_END											"'?>'"
-%token PLUS												"'+'"
-%token PRAGMA_BEGIN								"'PRAGMA BEGIN'"
-%token PRAGMA_END									"'PRAGMA END'"
-%token PRECEDES										"'<<'"
-%token PRECEDING_AXIS							"'preceding::'"
-%token PRECEDING_SIBLING_AXIS			"'preceding-sibling::'"
-%token PRESERVE										"'preserve'"
-%token QUOTE											"'\"'"
-%token RBRACE											"'}'"
-%token RBRACK											"']'"
-%token RETURN											"'return'"
-%token RPAR												"')'"
-%token SATISFIES									"'satisfies'"
-%token SCHEMA_ATTRIBUTE_LPAR			"'<schema attribute ('"
-%token SELF_AXIS									"'self::'"
-%token SEMI												"';'"
-%token SLASH											"'/'"
-%token SLASH_SLASH								"'//'"
-%token STAR												"'*'"
-%token START_TAG_END							"</ (start tag end)"
-%token STRIP											"'strip'"
-%token TAG_END										"> (tag end)"
-%token THEN												"'then'"
-%token TO													"'to'"
-%token TREAT  										"'treat'"
-%token UNION											"'union'"
-%token UNORDERED									"'unordered'"
-%token VAL_EQ											"'eq'"
-%token VAL_GE											"'ge'"
-%token VAL_GT											"'gt'"
-%token VAL_LE											"'le'"
-%token VAL_LT											"'lt'"
-%token VAL_NE											"'ne'"
-%token VALUECOMP									"'VALUECOMP'"
-%token VBAR												"'|'"
-%token EMPTY_SEQUENCE             "'empty-sequence'"
-%token WHERE											"'where'"
-%token XML_COMMENT_BEGIN					"'<!--'"
-%token XML_COMMENT_END						"'-->'"
-%token XQUERY                     "'xquery'"
-%token VERSION                    "'version'"
-%token END_PRAGMA                 "'#)'"
-%token START                      "'start'"
+%token ANCESTOR_AXIS                    "'ancestor::'"
+%token ANCESTOR_OR_SELF_AXIS            "'ancestor-or-self::'"
+%token AND                              "'and'"
+%token APOS                             "'''"
+%token AS                               "'as'"
+%token ASCENDING                        "'ascending'"
+%token AT                               "'at'"
+%token ATTRIBUTE                        "'attribute'"
+%token ATTRIBUTE_AXIS                   "'attribute::'"
+%token AT_SIGN                          "'@'"
+%token CASE                             "'case'"
+%token CASTABLE                         "'castable'"
+%token CAST                             "'cast'"
+%token CDATA_BEGIN                      "'CDATA[['"
+%token CDATA_END                        "']]'"
+%token CHILD_AXIS                       "'child::'"
+%token COLLATION                        "'collation'"
+%token COMMA                            "','"
+%token COMMENT_BEGIN                    "'(:'"
+%token COMMENT_END                      "':)'"
+%token <decval> DECIMAL_LITERAL         "'DECIMAL'"
+%token CONTEXT                          "'context'"
+%token VARIABLE                         "'variable'"
+%token DEFAULT                          "'default'"
+%token DESCENDANT_AXIS                  "'descendant::'"
+%token DESCENDANT_OR_SELF_AXIS          "'descendant-or-self::'"
+%token DESCENDING                       "'descending'"
+%token DIV                              "'div'"
+%token DOLLAR                           "'$'"
+%token DOT                              "'.'"
+%token DOT_DOT                          "'..'"
+%token DOUBLE_LBRACE                    "'{{'"
+%token <dval> DOUBLE_LITERAL            "'DOUBLE'"
+%token DOUBLE_RBRACE                    "'<double {>'"
+%token ELSE                             "'else'"
+%token _EMPTY                           "'empty'"
+%token GREATEST                         "'greatest'"
+%token LEAST                            "'least'"
+%token EMPTY_TAG_END                    "'/>'"
+%token ENCODING                         "'encoding'"
+%token EQUALS                           "'='"
+%token ESCAPE_APOS                      "''''"
+%token ESCAPE_QUOTE                     "'\"\"'"
+%token EVERY                            "'every'"
+%token EXCEPT                           "'except'"
+%token EXTERNAL                         "'external'"
+%token FOLLOWING_AXIS                   "'following::'"
+%token FOLLOWING_SIBLING_AXIS           "'following-sibling::'"
+%token FOLLOWS                          "'follows'"
+%token GE                               "'>='"
+%token GETS                             "':='"
+%token GT                               "'>'"
+%token HOOK                             "'?'"
+%token IDIV                             "'idiv'"
+%token _IN                              "'in'"
+%token INHERIT                          "'inherit'"
+%token <ival> INTEGER_LITERAL           "'INTEGER'"
+%token INTERSECT                        "'intersect'"
+%token IS                               "'is'"
+%token ITEM                             "'item'"
+%token LBRACE                           "'{'"
+%token LBRACK                           "'['"
+%token LE                               "'<='"
+%token LPAR                             "'('"
+%token LT_OR_START_TAG                  "'<'"
+%token MINUS                            "'-'"
+%token MOD                              "'mod'"
+%token NAMESPACE                        "'namespace'"
+%token _NAN                             "'nan'"
+%token NE                               "'!='"
+%token NODECOMP                         "'nodecomp'"
+%token NOT_OPERATOR_KEYWORD             "'??'"
+%token NO_INHERIT                       "'<no inherit>'"
+%token NO_PRESERVE                      "'<no preserve>'"
+%token OR                               "'or'"
+%token ORDER                            "'order'"
+%token ORDERED                          "'ordered'"
+%token BY                               "'by'"
+%token GROUP                            "'group'"
+%token PARENT_AXIS                      "'parent::'"
+%token PI_BEGIN                         "'<?'"
+%token PI_END                           "'?>'"
+%token PLUS                             "'+'"
+%token PRAGMA_BEGIN                     "'PRAGMA BEGIN'"
+%token PRAGMA_END                       "'PRAGMA END'"
+%token PRECEDES                         "'<<'"
+%token PRECEDING_AXIS                   "'preceding::'"
+%token PRECEDING_SIBLING_AXIS           "'preceding-sibling::'"
+%token PRESERVE                         "'preserve'"
+%token QUOTE                            "'\"'"
+%token RBRACE                           "'}'"
+%token RBRACK                           "']'"
+%token RETURN                           "'return'"
+%token RPAR                             "')'"
+%token SATISFIES                        "'satisfies'"
+%token SCHEMA_ATTRIBUTE_LPAR            "'<schema attribute ('"
+%token SELF_AXIS                        "'self::'"
+%token SEMI                             "';'"
+%token SLASH                            "'/'"
+%token SLASH_SLASH                      "'//'"
+%token STAR                             "'*'"
+%token START_TAG_END                    "</ (start tag end)"
+%token STRIP                            "'strip'"
+%token TAG_END                          "> (tag end)"
+%token THEN                             "'then'"
+%token TO                               "'to'"
+%token TREAT                            "'treat'"
+%token UNION                            "'union'"
+%token UNORDERED                        "'unordered'"
+%token VAL_EQ                           "'eq'"
+%token VAL_GE                           "'ge'"
+%token VAL_GT                           "'gt'"
+%token VAL_LE                           "'le'"
+%token VAL_LT                           "'lt'"
+%token VAL_NE                           "'ne'"
+%token VALUECOMP                        "'VALUECOMP'"
+%token VBAR                             "'|'"
+%token EMPTY_SEQUENCE                   "'empty-sequence'"
+%token WHERE                            "'where'"
+%token XML_COMMENT_BEGIN                "'<!--'"
+%token XML_COMMENT_END                  "'-->'"
+%token XQUERY                           "'xquery'"
+%token VERSION                          "'version'"
+%token END_PRAGMA                       "'#)'"
+%token START                            "'start'"
 
 /* update-related */
 /* -------------- */
-%token AFTER											"'after'"
-%token BEFORE											"'before'"
-%token REVALIDATION	              "'revalidation'"
-%token _STRICT                     "'strict'"
-%token LAX                        "'lax'"
-%token SKIP                       "'skip'"
-%token _DELETE                     "'delete'"
-%token NODE                       "'node'"
-%token INSERT                     "'insert'"
-%token NODES                      "'nodes'"
-%token RENAME                     "'rename'"
-%token REPLACE                    "'replace'"
-%token VALUE                      "'value'"
-%token OF                         "'of'"
-%token FIRST                      "'first'"
-%token INTO												"'into'"
-%token LAST                       "'last'"
-%token MODIFY 										"'modify'"
-%token COPY                       "'copy'"
-%token WITH												"'with'"
+%token AFTER                            "'after'"
+%token BEFORE                           "'before'"
+%token REVALIDATION                     "'revalidation'"
+%token _STRICT                          "'strict'"
+%token LAX                              "'lax'"
+%token SKIP                             "'skip'"
+%token _DELETE                          "'delete'"
+%token NODE                             "'node'"
+%token INSERT                           "'insert'"
+%token NODES                            "'nodes'"
+%token RENAME                           "'rename'"
+%token REPLACE                          "'replace'"
+%token VALUE                            "'value'"
+%token OF                               "'of'"
+%token FIRST                            "'first'"
+%token INTO                             "'into'"
+%token LAST                             "'last'"
+%token MODIFY                           "'modify'"
+%token COPY                             "'copy'"
+%token WITH                             "'with'"
 
 /* scripting-related */
 /* ----------------- */
-%token RETURNING	  							"'returning'"
-%token BLOCK                      "'block'"
-%token EXIT                       "'exit'"
-%token BREAK                      "'break'"
-%token LOOP                       "'loop'"
-%token CONTINUE                   "'continue'"
-%token WHILE                      "'while'"
+%token RETURNING                        "'returning'"
+%token BLOCK                            "'block'"
+%token EXIT                             "'exit'"
+%token BREAK                            "'break'"
+%token LOOP                             "'loop'"
+%token CONTINUE                         "'continue'"
+%token WHILE                            "'while'"
 
 /* try-catch-related */
 /* ----------------- */
-%token TRY                        "'try'"
-%token CATCH                      "'catch'"
+%token TRY                              "'try'"
+%token CATCH                            "'catch'"
 
 /* eval-related */
 /* ------------ */
-%token USING                      "'using'"
+%token USING                            "'using'"
 
 /* full-text-related */
 /* ----------------- */
-%token ALL												"'all'"
-%token ANY												"'any'"
-%token SENSITIVE                  "'casesensitive'"
-%token FT_OPTION                  "'ft-option'"
-%token DIACRITICS                 "'diacritics'"
-%token INSENSITIVE                "'insensitive'"
-%token DIFFERENT									"'different'"
-%token DISTANCE										"'distance'"
-%token ENTIRE                     "'entire'"
-%token END                        "'end'"
-%token CONTENT                    "'content'"
-%token EXACTLY										"'exactly'"
-%token FROM												"'from'"
-%token FTAND											"'&&'"
-%token FTCONTAINS 								"'ftcontains'"
-%token FTNOT                      "'not'"
-%token FTOR												"'||'"
-%token LANGUAGE 									"'language'"
-%token LEVELS											"'levels'"
-%token LOWERCASE									"'lowercase'"
-%token OCCURS											"'occurs'"
-%token PARAGRAPH									"'paragraph'"
-%token PHRASE											"'phrase'"
-%token RELATIONSHIP								"'relationship'"
-%token SAME												"'same'"
-%token SCORE											"'score'"
-%token SENTENCE										"'sentence'"
-%token SENTENCES									"'sentences'"
-%token TIMES											"'times'"
-%token UPPERCASE									"'uppercase'"
-%token WEIGHT											"'weight'"
-%token WINDOW											"'window'"
-%token WITHOUT                    "'without'"
-%token STEMMING                   "'stemming'"
-%token STOP                       "'stop'"
-%token WORDS                      "'words'"
-%token THESAURUS                  "'thesaurus'"
-%token WILDCARDS	         				"'wildcards'"
-
+%token ALL                              "'all'"
+%token ANY                              "'any'"
+%token CONTENT                          "'content'"
+%token DIACRITICS                       "'diacritics'"
+%token DIFFERENT                        "'different'"
+%token DISTANCE                         "'distance'"
+%token END                              "'end'"
+%token ENTIRE                           "'entire'"
+%token EXACTLY                          "'exactly'"
+%token FROM                             "'from'"
+%token FTAND                            "'ftand'"
+%token FTCONTAINS                       "'ftcontains'"
+%token FTNOT                            "'not'"
+%token FT_OPTION                        "'ft-option'"
+%token FTOR                             "'ftor'"
+%token INSENSITIVE                      "'insensitive'"
+%token LANGUAGE                         "'language'"
+%token LEVELS                           "'levels'"
+%token LOWERCASE                        "'lowercase'"
+%token OCCURS                           "'occurs'"
+%token PARAGRAPH                        "'paragraph'"
+%token PARAGRAPHS                       "'paragraphs'"
+%token PHRASE                           "'phrase'"
+%token RELATIONSHIP                     "'relationship'"
+%token SAME                             "'same'"
+%token SCORE                            "'score'"
+%token SENSITIVE                        "'sensitive'"
+%token SENTENCE                         "'sentence'"
+%token SENTENCES                        "'sentences'"
+%token STEMMING                         "'stemming'"
+%token STOP                             "'stop'"
+%token THESAURUS                        "'thesaurus'"
+%token TIMES                            "'times'"
+%token UPPERCASE                        "'uppercase'"
+%token WEIGHT                           "'weight'"
+%token WILDCARDS                        "'wildcards'"
+%token WINDOW                           "'window'"
+%token WITHOUT                          "'without'"
+%token WORDS                            "'words'"
 
 /* Data Definition Facility */
 
-%token COLLECTION          "'collection'"
+%token COLLECTION                       "'collection'"
 // Why is it not possible to delete the following two nodes??
-//%token NODE_TYPE           "'node-type'"
-//%token NODE_MODIFIER       "'node-modifier'"
-%token CONSTOPT            "'const'"
-%token APPEND_ONLY         "'append-only'"
-%token QUEUE               "'queue'"
-%token MUTABLE             "'mutable'"
-%token READ_ONLY           "'read-only'"
+//%token NODE_TYPE                      "'node-type'"
+//%token NODE_MODIFIER                  "'node-modifier'"
+%token CONSTOPT                         "'const'"
+%token APPEND_ONLY                      "'append-only'"
+%token QUEUE                            "'queue'"
+%token MUTABLE                          "'mutable'"
+%token READ_ONLY                        "'read-only'"
 
-%token UNIQUE              "'unique'"
-%token NON                 "'non'"
-%token INDEX               "'index'"
-%token MANUALLY            "'manually'"
-%token AUTOMATICALLY       "'automatically'"
-%token MAINTAINED          "'maintained'"
-%token ON                  "'on'"
-%token RANGE               "'range'"
-%token EQUALITY            "'equality'"
+%token UNIQUE                           "'unique'"
+%token NON                              "'non'"
+%token INDEX                            "'index'"
+%token MANUALLY                         "'manually'"
+%token AUTOMATICALLY                    "'automatically'"
+%token MAINTAINED                       "'maintained'"
+%token ON                               "'on'"
+%token RANGE                            "'range'"
+%token EQUALITY                         "'equality'"
 
-%token INTEGRITY           "'integrity'"
-%token CONSTRAINT          "'constraint'"
-%token CHECK               "'check'"
-%token KEY                 "'key'"
-%token FOREACH             "'foreach'"
-%token FOREIGN             "'foreign'"
-%token KEYS                "'keys'"
-
-
-
+%token INTEGRITY                        "'integrity'"
+%token CONSTRAINT                       "'constraint'"
+%token CHECK                            "'check'"
+%token KEY                              "'key'"
+%token FOREACH                          "'foreach'"
+%token FOREIGN                          "'foreign'"
+%token KEYS                             "'keys'"
 
 /* Byte Order Marks                  */
 /* --------------------------------- */
 %token BYTE_ORDER_MARK_UTF8       "'BOM_UTF8'"
-
 
 /* Leading slash handling expression */
 /* --------------------------------- */
@@ -803,7 +799,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %destructor { delete $$; } DECIMAL_LITERAL
 
 // Module must not be destroyed since it is returned by the parser
-// TODO: FT stuff, update stuff
 // HACK to trigger rchandle release: rchandles are freed when refcount == 0
 // (not <= 0); but Bison never increments the refcount, so we do it manually...
 
@@ -904,17 +899,17 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 
 /*
-	To enable memory deallocation during error recovery, use %destructor.
+    To enable memory deallocation during error recovery, use %destructor.
 */
-/*%printer    { debug_stream() << *$$; }	*/
-/*%printer    { debug_stream () << $$; }	*/
+/*%printer    { debug_stream() << *$$; }    */
+/*%printer    { debug_stream () << $$; }    */
 /*%destructor { delete $$; }              */
 
 
 /*
-**	The code between `%{' and `%}' after the introduction of the `%union'
-**	is output in the *.cc file; it needs detailed knowledge about the
-**	driver.
+**  The code between `%{' and `%}' after the introduction of the `%union'
+**  is output in the *.cc file; it needs detailed knowledge about the
+**  driver.
 */
 %{
 #include "compiler/parser/xquery_driver.h"
@@ -924,7 +919,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %}
 
 /*
-	The grammar
+    The grammar
 */
 
 %%
@@ -944,61 +939,61 @@ Module :
 // ----------
 ModuleWithoutBOM :
     MainModule
-		{
-			$$ = $1;
-			driver.set_expr ($$);
-		}
+        {
+            $$ = $1;
+            driver.set_expr ($$);
+        }
   | VersionDecl MainModule
-		{
+        {
       dynamic_cast<MainModule *> ($2)->set_version_decl (static_cast<VersionDecl *> ($1));
-			$$ = $2;
-			driver.set_expr ($$);
-		}
+            $$ = $2;
+            driver.set_expr ($$);
+        }
   | LibraryModule
-		{
+        {
        $$ = $1;
        driver.set_expr ($$);
-		}
+        }
   | VersionDecl LibraryModule
-		{
+        {
        dynamic_cast<LibraryModule *> ($2)->set_version_decl (static_cast<VersionDecl *> ($1));
        $$ = $2;
        driver.set_expr ($$);
-		}
+        }
   ;
 
 
 // [2] VersionDecl
 // ---------------
 VersionDecl :
-		XQUERY VERSION  STRING_LITERAL  SEMI
-		{
+        XQUERY VERSION  STRING_LITERAL  SEMI
+        {
        std::string encoding = "utf-8";
        $$ = new VersionDecl (LOC (@$), SYMTAB ($3), encoding);
-		}
-	|	XQUERY VERSION  STRING_LITERAL  ENCODING  STRING_LITERAL  SEMI
-		{
+        }
+    |   XQUERY VERSION  STRING_LITERAL  ENCODING  STRING_LITERAL  SEMI
+        {
        $$ = new VersionDecl (LOC (@$), SYMTAB ($3), SYMTAB ($5));
     }
-	;
+    ;
 
 
 // [3] MainModule
 // --------------
 MainModule :
     Prolog  QueryBody
-		{
-			$$ = new MainModule(LOC (@$),
-								static_cast<QueryBody*>($2),
-								static_cast<Prolog*>($1));
-		}
-	|
+        {
+            $$ = new MainModule(LOC (@$),
+                                static_cast<QueryBody*>($2),
+                                static_cast<Prolog*>($1));
+        }
+    |
     QueryBody
-		{
-			$$ = new MainModule(LOC (@$),
-								static_cast<QueryBody*>($1),
+        {
+            $$ = new MainModule(LOC (@$),
+                                static_cast<QueryBody*>($1),
                 NULL);
-		}
+        }
   ;
 
 
@@ -1011,107 +1006,107 @@ LibraryModule :
                              static_cast<ModuleDecl*>($1),
                              NULL);
     }
-	|	ModuleDecl  Prolog
-		{
-			$$ = new LibraryModule(LOC (@$),
-								static_cast<ModuleDecl*>($1),
-								static_cast<Prolog*>($2));
-		}
-	;
+    |   ModuleDecl  Prolog
+        {
+            $$ = new LibraryModule(LOC (@$),
+                                static_cast<ModuleDecl*>($1),
+                                static_cast<Prolog*>($2));
+        }
+    ;
 
 
 // [5] ModuleDecl
 // --------------
 ModuleDecl :
-		MODULE NAMESPACE  NCNAME  EQUALS  URI_LITERAL  SEMI
-		{
-			$$ = new ModuleDecl(LOC (@$),
-								SYMTAB ($3),
-								SYMTAB ($5));
+        MODULE NAMESPACE  NCNAME  EQUALS  URI_LITERAL  SEMI
+        {
+            $$ = new ModuleDecl(LOC (@$),
+                                SYMTAB ($3),
+                                SYMTAB ($5));
       dynamic_cast<ModuleDecl *>($$)->setComment(SYMTAB($1));
-		}
+        }
 ;
 
 
 // [6] Prolog
 // ----------
 Prolog :
-		SIND_DeclList  SEMI
-		{
-			$$ = new Prolog(LOC(@$), static_cast<SIND_DeclList*>($1), NULL);
-		}
-	|	VFO_DeclList  SEMI
-		{
-			$$ = new Prolog(LOC(@$), NULL, static_cast<VFO_DeclList*>($1));
-		}
-	|	SIND_DeclList  SEMI  VFO_DeclList  SEMI
-		{
-			$$ = new Prolog(LOC(@$),
+        SIND_DeclList  SEMI
+        {
+            $$ = new Prolog(LOC(@$), static_cast<SIND_DeclList*>($1), NULL);
+        }
+    |   VFO_DeclList  SEMI
+        {
+            $$ = new Prolog(LOC(@$), NULL, static_cast<VFO_DeclList*>($1));
+        }
+    |   SIND_DeclList  SEMI  VFO_DeclList  SEMI
+        {
+            $$ = new Prolog(LOC(@$),
                       static_cast<SIND_DeclList*>($1),
                       static_cast<VFO_DeclList*>($3));
-		}
-	;
+        }
+    ;
 
 
 // [6a] SIDN_DeclList
 // ------------------
 SIND_DeclList :
-		SIND_Decl
-		{
-			SIND_DeclList* sindList_p = new SIND_DeclList(LOC (@$));
-			sindList_p->push_back($1);
-			$$ = sindList_p;
-		}
-	| SIND_DeclList  SEMI  SIND_Decl
-		{
-			SIND_DeclList* sindList_p = static_cast<SIND_DeclList*>($1);
-			if (sindList_p) {
-				sindList_p->push_back($3);
-			}
-			$$ = $1;
-		}
-	;
+        SIND_Decl
+        {
+            SIND_DeclList* sindList_p = new SIND_DeclList(LOC (@$));
+            sindList_p->push_back($1);
+            $$ = sindList_p;
+        }
+    | SIND_DeclList  SEMI  SIND_Decl
+        {
+            SIND_DeclList* sindList_p = static_cast<SIND_DeclList*>($1);
+            if (sindList_p) {
+                sindList_p->push_back($3);
+            }
+            $$ = $1;
+        }
+    ;
 
 
 // [6b] VFO_DeclList
 // -----------------
 VFO_DeclList :
-		VFO_Decl
-		{
-			VFO_DeclList* vfoList_p = new VFO_DeclList(LOC (@$));
-			vfoList_p->push_back($1);
-			$$ = vfoList_p;
-		}
-	| VFO_DeclList  SEMI  VFO_Decl
-		{
-			VFO_DeclList* vfoList_p = dynamic_cast<VFO_DeclList*>($1);
-			if (vfoList_p) {
-				vfoList_p->push_back($3);
-			}
-			$$ = $1;
-		}
-	;
+        VFO_Decl
+        {
+            VFO_DeclList* vfoList_p = new VFO_DeclList(LOC (@$));
+            vfoList_p->push_back($1);
+            $$ = vfoList_p;
+        }
+    | VFO_DeclList  SEMI  VFO_Decl
+        {
+            VFO_DeclList* vfoList_p = dynamic_cast<VFO_DeclList*>($1);
+            if (vfoList_p) {
+                vfoList_p->push_back($3);
+            }
+            $$ = $1;
+        }
+    ;
 
 
 // [6c] SIND_Decl
 // --------------
 SIND_Decl :
-		Setter
-	| Import
-	| NamespaceDecl
-	| DefaultNamespaceDecl
-	;
+        Setter
+    | Import
+    | NamespaceDecl
+    | DefaultNamespaceDecl
+    ;
 
 
 // [6d] VFO_Decl
 VFO_Decl :
-		VarDecl
+        VarDecl
   | CtxItemDecl
-	| FunctionDecl
-	| OptionDecl
+    | FunctionDecl
+    | OptionDecl
 
-	/* full-text extension */
-	| FTOptionDecl
+    /* full-text extension */
+    | FTOptionDecl
 
   /* Collection */
   | CollectionDecl
@@ -1123,7 +1118,7 @@ VFO_Decl :
   | IntegrityConstraintDecl
 
   | DecimalFormatDecl
-	;
+    ;
 
 // [6e] DecimalFormatDecl
 // ----------------------
@@ -1182,25 +1177,25 @@ DecimalFormatParamName :
 // [7] Setter
 // ----------
 Setter :
-		BoundarySpaceDecl
-	| DefaultCollationDecl
-	| BaseURIDecl
-	| ConstructionDecl
-	| OrderingModeDecl
-	| EmptyOrderDecl
-	| CopyNamespacesDecl
+        BoundarySpaceDecl
+    | DefaultCollationDecl
+    | BaseURIDecl
+    | ConstructionDecl
+    | OrderingModeDecl
+    | EmptyOrderDecl
+    | CopyNamespacesDecl
 
-	/* update extension */
-	| RevalidationDecl
-	;
+    /* update extension */
+    | RevalidationDecl
+    ;
 
 
 // [8] Import
 // ----------
 Import :
-		SchemaImport
-	| ModuleImport
-	;
+        SchemaImport
+    | ModuleImport
+    ;
 
 
 // [9] Separator
@@ -1211,134 +1206,134 @@ Import :
 // [10] NamespaceDecl
 // ------------------
 NamespaceDecl :
-		DECLARE NAMESPACE  NCNAME  EQUALS  URI_LITERAL
-		{
+        DECLARE NAMESPACE  NCNAME  EQUALS  URI_LITERAL
+        {
       $$ = new NamespaceDecl(LOC (@$),
-								SYMTAB ($3),
-								SYMTAB ($5));
-		}
-	;
+                                SYMTAB ($3),
+                                SYMTAB ($5));
+        }
+    ;
 
 
 // [11] BoundarySpaceDecl
 // ----------------------
 BoundarySpaceDecl :
-		DECLARE BOUNDARY_SPACE  PRESERVE
-		{
-			$$ = new BoundarySpaceDecl(LOC (@$),
-								StaticContextConsts::preserve_space);
-		}
-	|	DECLARE BOUNDARY_SPACE  STRIP
-		{
-			$$ = new BoundarySpaceDecl(LOC (@$),
-								StaticContextConsts::strip_space);
-		}
-	;
+        DECLARE BOUNDARY_SPACE  PRESERVE
+        {
+            $$ = new BoundarySpaceDecl(LOC (@$),
+                                StaticContextConsts::preserve_space);
+        }
+    |   DECLARE BOUNDARY_SPACE  STRIP
+        {
+            $$ = new BoundarySpaceDecl(LOC (@$),
+                                StaticContextConsts::strip_space);
+        }
+    ;
 
 
 // [12] DefaultNamespaceDecl
 // -------------------------
 DefaultNamespaceDecl :
-		DECLARE DEFAULT ELEMENT  NAMESPACE  URI_LITERAL
-		{
-			$$ = new DefaultNamespaceDecl(LOC (@$),
-								ParseConstants::ns_element_default,
-								SYMTAB ($5));
-		}
-	| DECLARE DEFAULT FUNCTION  NAMESPACE  URI_LITERAL
-		{
-			$$ = new DefaultNamespaceDecl(LOC (@$),
-								ParseConstants::ns_function_default,
-								SYMTAB ($5));
-		}
-	;
+        DECLARE DEFAULT ELEMENT  NAMESPACE  URI_LITERAL
+        {
+            $$ = new DefaultNamespaceDecl(LOC (@$),
+                                ParseConstants::ns_element_default,
+                                SYMTAB ($5));
+        }
+    | DECLARE DEFAULT FUNCTION  NAMESPACE  URI_LITERAL
+        {
+            $$ = new DefaultNamespaceDecl(LOC (@$),
+                                ParseConstants::ns_function_default,
+                                SYMTAB ($5));
+        }
+    ;
 
 
 // [13] OptionDecl
 // ---------------
 OptionDecl :
-		DECLARE OPTION  QNAME  STRING_LITERAL
-		{
-			$$ = new OptionDecl(LOC (@$),
-								static_cast<QName*>($3),
-								SYMTAB($4));
-		}
-	;
+        DECLARE OPTION  QNAME  STRING_LITERAL
+        {
+            $$ = new OptionDecl(LOC (@$),
+                                static_cast<QName*>($3),
+                                SYMTAB($4));
+        }
+    ;
 
 
 /* full-text extension */
 // [13a] FTOptionDecl
 // ------------------
 FTOptionDecl :
-		DECLARE FT_OPTION  FTMatchOption
-		{
-			$$ = new FTOptionDecl(LOC (@$),
-								$3);
-		}
-	;
+        DECLARE FT_OPTION  FTMatchOption
+        {
+            $$ = new FTOptionDecl(LOC (@$),
+                                $3);
+        }
+    ;
 
 
 // [14] OrderingModeDecl
 // ---------------------
 OrderingModeDecl :
-		DECLARE ORDERING  ORDERED
-		{
-			$$ = new OrderingModeDecl(LOC (@$),
-								StaticContextConsts::ordered);
-		}
-	| DECLARE ORDERING  UNORDERED
-		{
-			$$ = new OrderingModeDecl(LOC (@$),
-								StaticContextConsts::unordered);
-		}
-	;
+        DECLARE ORDERING  ORDERED
+        {
+            $$ = new OrderingModeDecl(LOC (@$),
+                                StaticContextConsts::ordered);
+        }
+    | DECLARE ORDERING  UNORDERED
+        {
+            $$ = new OrderingModeDecl(LOC (@$),
+                                StaticContextConsts::unordered);
+        }
+    ;
 
 
 
 // [15] EmptyOrderDecl
 // -------------------
 EmptyOrderDecl :
-		DECLARE DEFAULT ORDER _EMPTY GREATEST
-		{
-			$$ = new EmptyOrderDecl(LOC (@$),
-								StaticContextConsts::empty_greatest);
-		}
-	|	DECLARE DEFAULT ORDER _EMPTY LEAST
-		{
-			$$ = new EmptyOrderDecl(LOC (@$),
-								StaticContextConsts::empty_least);
-		}
-	;
+        DECLARE DEFAULT ORDER _EMPTY GREATEST
+        {
+            $$ = new EmptyOrderDecl(LOC (@$),
+                                StaticContextConsts::empty_greatest);
+        }
+    |   DECLARE DEFAULT ORDER _EMPTY LEAST
+        {
+            $$ = new EmptyOrderDecl(LOC (@$),
+                                StaticContextConsts::empty_least);
+        }
+    ;
 
 
 // [16] CopyNamespacesDecl
 // -----------------------
 CopyNamespacesDecl :
-		DECLARE COPY_NAMESPACES  PRESERVE  COMMA  INHERIT
-		{
-			$$ = new CopyNamespacesDecl(LOC (@$),
-								StaticContextConsts::preserve_ns,
-								StaticContextConsts::inherit_ns);
-		}
-	| DECLARE COPY_NAMESPACES  PRESERVE  COMMA  NO_INHERIT
-		{
-			$$ = new CopyNamespacesDecl(LOC (@$),
-								StaticContextConsts::preserve_ns,
-								StaticContextConsts::no_inherit_ns);
-		}
-	| DECLARE COPY_NAMESPACES  NO_PRESERVE  COMMA  INHERIT
-		{
-			$$ = new CopyNamespacesDecl(LOC (@$),
-								StaticContextConsts::no_preserve_ns,
-								StaticContextConsts::inherit_ns);
-		}
-	| DECLARE COPY_NAMESPACES  NO_PRESERVE  COMMA  NO_INHERIT
-		{
-			$$ = new CopyNamespacesDecl(LOC (@$),
-								StaticContextConsts::no_preserve_ns,
-								StaticContextConsts::no_inherit_ns);
-		}
-	;
+        DECLARE COPY_NAMESPACES  PRESERVE  COMMA  INHERIT
+        {
+            $$ = new CopyNamespacesDecl(LOC (@$),
+                                StaticContextConsts::preserve_ns,
+                                StaticContextConsts::inherit_ns);
+        }
+    | DECLARE COPY_NAMESPACES  PRESERVE  COMMA  NO_INHERIT
+        {
+            $$ = new CopyNamespacesDecl(LOC (@$),
+                                StaticContextConsts::preserve_ns,
+                                StaticContextConsts::no_inherit_ns);
+        }
+    | DECLARE COPY_NAMESPACES  NO_PRESERVE  COMMA  INHERIT
+        {
+            $$ = new CopyNamespacesDecl(LOC (@$),
+                                StaticContextConsts::no_preserve_ns,
+                                StaticContextConsts::inherit_ns);
+        }
+    | DECLARE COPY_NAMESPACES  NO_PRESERVE  COMMA  NO_INHERIT
+        {
+            $$ = new CopyNamespacesDecl(LOC (@$),
+                                StaticContextConsts::no_preserve_ns,
+                                StaticContextConsts::no_inherit_ns);
+        }
+    ;
 
 
 // [17] PreserveMode
@@ -1351,128 +1346,128 @@ CopyNamespacesDecl :
 // [19] DefaultCollationDecl
 // -------------------------
 DefaultCollationDecl :
-		DECLARE DEFAULT COLLATION  URI_LITERAL
-		{
-			$$ = new DefaultCollationDecl(LOC (@$),
-								SYMTAB ($4));
-		}
-	;
+        DECLARE DEFAULT COLLATION  URI_LITERAL
+        {
+            $$ = new DefaultCollationDecl(LOC (@$),
+                                SYMTAB ($4));
+        }
+    ;
 
 
 // [20] BaseURIDecl
 // ----------------
 BaseURIDecl :
-		DECLARE BASE_URI  URI_LITERAL
-		{
-			$$ = new BaseURIDecl(LOC (@$),
-								SYMTAB ($3));
-		}
-	;
+        DECLARE BASE_URI  URI_LITERAL
+        {
+            $$ = new BaseURIDecl(LOC (@$),
+                                SYMTAB ($3));
+        }
+    ;
 
 
 // [21] SchemaImport
 // -----------------
 SchemaImport :
-		IMPORT SCHEMA  URI_LITERAL
-		{
-			$$ = new SchemaImport(LOC (@$),
-								NULL,
-								SYMTAB ($3),
-								NULL);
-		}
-	| IMPORT SCHEMA  SchemaPrefix  URI_LITERAL
-		{
-			$$ = new SchemaImport(LOC (@$),
-								dynamic_cast<SchemaPrefix*>($3),
-								SYMTAB ($4),
-								NULL);
-		}
-	|	IMPORT SCHEMA  URI_LITERAL  AT  URILiteralList
-		{
-			$$ = new SchemaImport(LOC (@$),
-								NULL,
-								SYMTAB ($3),
-								dynamic_cast<URILiteralList*>($5));
-		}
-	|	IMPORT SCHEMA  SchemaPrefix  URI_LITERAL  AT  URILiteralList
-		{
-			$$ = new SchemaImport(LOC (@$),
-								dynamic_cast<SchemaPrefix*>($3),
-								SYMTAB ($4),
-								dynamic_cast<URILiteralList*>($6));
-		}
-	;
+        IMPORT SCHEMA  URI_LITERAL
+        {
+            $$ = new SchemaImport(LOC (@$),
+                                NULL,
+                                SYMTAB ($3),
+                                NULL);
+        }
+    | IMPORT SCHEMA  SchemaPrefix  URI_LITERAL
+        {
+            $$ = new SchemaImport(LOC (@$),
+                                dynamic_cast<SchemaPrefix*>($3),
+                                SYMTAB ($4),
+                                NULL);
+        }
+    |   IMPORT SCHEMA  URI_LITERAL  AT  URILiteralList
+        {
+            $$ = new SchemaImport(LOC (@$),
+                                NULL,
+                                SYMTAB ($3),
+                                dynamic_cast<URILiteralList*>($5));
+        }
+    |   IMPORT SCHEMA  SchemaPrefix  URI_LITERAL  AT  URILiteralList
+        {
+            $$ = new SchemaImport(LOC (@$),
+                                dynamic_cast<SchemaPrefix*>($3),
+                                SYMTAB ($4),
+                                dynamic_cast<URILiteralList*>($6));
+        }
+    ;
 
 
 // [21a] URILiteralList
 // --------------------
 URILiteralList :
-		URI_LITERAL
-		{
-			URILiteralList* uri_list_p = new URILiteralList(LOC (@$));
-			uri_list_p->push_back(SYMTAB ($1));
-			$$ = uri_list_p;
-		}
-	| URILiteralList  COMMA  URI_LITERAL
-		{
-			URILiteralList* uri_list_p = dynamic_cast<URILiteralList*>($1);
-			if (uri_list_p) {
-				uri_list_p->push_back(SYMTAB ($3));
-			}
-			$$ = $1;
-		}
-	;
+        URI_LITERAL
+        {
+            URILiteralList* uri_list_p = new URILiteralList(LOC (@$));
+            uri_list_p->push_back(SYMTAB ($1));
+            $$ = uri_list_p;
+        }
+    | URILiteralList  COMMA  URI_LITERAL
+        {
+            URILiteralList* uri_list_p = dynamic_cast<URILiteralList*>($1);
+            if (uri_list_p) {
+                uri_list_p->push_back(SYMTAB ($3));
+            }
+            $$ = $1;
+        }
+    ;
 
 
 
 // [22] SchemaPrefix
 // -----------------
 SchemaPrefix :
-		NAMESPACE  NCNAME  EQUALS
-		{
-			$$ = new SchemaPrefix(LOC (@$), SYMTAB ($2));
-		}
-	|	DEFAULT ELEMENT NAMESPACE
-		{
-			$$ = new SchemaPrefix(LOC (@$), true);
-		}
-	;
+        NAMESPACE  NCNAME  EQUALS
+        {
+            $$ = new SchemaPrefix(LOC (@$), SYMTAB ($2));
+        }
+    |   DEFAULT ELEMENT NAMESPACE
+        {
+            $$ = new SchemaPrefix(LOC (@$), true);
+        }
+    ;
 
 
 // [23] ModuleImport
 // -----------------
 ModuleImport :
-		IMPORT MODULE  URI_LITERAL
-		{
-			$$ = new ModuleImport(LOC (@$), false,
-								SYMTAB ($3),
-								NULL);
+        IMPORT MODULE  URI_LITERAL
+        {
+            $$ = new ModuleImport(LOC (@$), false,
+                                SYMTAB ($3),
+                                NULL);
       dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
-		}
-	|	IMPORT MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL
-		{
-			$$ = new ModuleImport(LOC (@$), false,
-								SYMTAB ($4),
-								SYMTAB ($6),
-								NULL);
+        }
+    |   IMPORT MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL
+        {
+            $$ = new ModuleImport(LOC (@$), false,
+                                SYMTAB ($4),
+                                SYMTAB ($6),
+                                NULL);
       dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
-		}
-	|	IMPORT MODULE  URI_LITERAL  AT  URILiteralList
-		{
-			$$ = new ModuleImport(LOC (@$), false,
-								SYMTAB ($3),
-								dynamic_cast<URILiteralList*>($5));
+        }
+    |   IMPORT MODULE  URI_LITERAL  AT  URILiteralList
+        {
+            $$ = new ModuleImport(LOC (@$), false,
+                                SYMTAB ($3),
+                                dynamic_cast<URILiteralList*>($5));
       dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
-		}
-	|	IMPORT MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL  AT  URILiteralList
-		{
-			$$ = new ModuleImport(LOC (@$), false,
-								SYMTAB ($4),
-								SYMTAB ($6),
-								dynamic_cast<URILiteralList*>($8));
+        }
+    |   IMPORT MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL  AT  URILiteralList
+        {
+            $$ = new ModuleImport(LOC (@$), false,
+                                SYMTAB ($4),
+                                SYMTAB ($6),
+                                dynamic_cast<URILiteralList*>($8));
       dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
-		}
-	;
+        }
+    ;
 
 // ContextItemDecl
 
@@ -1540,29 +1535,29 @@ VarNameAndType :
 
 VarDecl :
     DECLARE  VARIABLE  VarNameAndType GETS  ExprSingle
-		{
+        {
       std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($3));
-			$$ = new VarDecl(LOC (@$),
-								nt->name,
-								nt->type,
-								$5);
+            $$ = new VarDecl(LOC (@$),
+                                nt->name,
+                                nt->type,
+                                $5);
       dynamic_cast<VarDecl*>($$)->setComment(SYMTAB($1));
-		}
-	|	DECLARE  VARIABLE  VarNameAndType EXTERNAL
-		{
+        }
+    |   DECLARE  VARIABLE  VarNameAndType EXTERNAL
+        {
       std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($3));
-			$$ = new VarDecl(LOC (@$), nt->name, nt->type,
+            $$ = new VarDecl(LOC (@$), nt->name, nt->type,
                        NULL, true);
       dynamic_cast<VarDecl*>($$)->setComment(SYMTAB($1));
-		}
-	|	DECLARE  VARIABLE  VarNameAndType EXTERNAL GETS ExprSingle
-		{
+        }
+    |   DECLARE  VARIABLE  VarNameAndType EXTERNAL GETS ExprSingle
+        {
       std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($3));
-			$$ = new VarDecl(LOC (@$), nt->name, nt->type,
+            $$ = new VarDecl(LOC (@$), nt->name, nt->type,
                        $6, true);
       dynamic_cast<VarDecl*>($$)->setComment(SYMTAB($1));
-		}
-	;
+        }
+    ;
 
 DeclPropertyList :
     DeclProperty
@@ -1700,12 +1695,12 @@ CollectionDecl :
 CollectionTypeDecl :
     KindTest
     {
-			$$ = static_cast<parsenode*>(
+            $$ = static_cast<parsenode*>(
            new SequenceType(LOC(@$), $1, NULL));
     }
   | KindTest OccurrenceIndicator
     {
-			$$ = static_cast<parsenode*>(
+            $$ = static_cast<parsenode*>(
            new SequenceType(LOC(@$), $1, dynamic_cast<OccurrenceIndicator*>($2)));
     }
 ;
@@ -1826,17 +1821,17 @@ IntegrityConstraintDecl :
 // [25] ConstructionDecl
 // ---------------------
 ConstructionDecl :
-		DECLARE  CONSTRUCTION  PRESERVE
-		{
-			$$ = new ConstructionDecl(LOC (@$),
-								StaticContextConsts::cons_preserve);
-		}
-	|	DECLARE  CONSTRUCTION  STRIP
-		{
-			$$ = new ConstructionDecl(LOC (@$),
-								StaticContextConsts::cons_strip);
-		}
-	;
+        DECLARE  CONSTRUCTION  PRESERVE
+        {
+            $$ = new ConstructionDecl(LOC (@$),
+                                StaticContextConsts::cons_preserve);
+        }
+    |   DECLARE  CONSTRUCTION  STRIP
+        {
+            $$ = new ConstructionDecl(LOC (@$),
+                                StaticContextConsts::cons_strip);
+        }
+    ;
 
 
 // [26] FunctionDecl
@@ -1934,7 +1929,7 @@ BlockVarDecl:
                        nt->type,
                        NULL);
       vd->set_global (false);
-			$$ = vd;
+            $$ = vd;
     }
   | VarNameAndType GETS ExprSingle
     {
@@ -1944,7 +1939,7 @@ BlockVarDecl:
                        nt->type,
                        $3);
       vd->set_global (false);
-			$$ = vd;
+            $$ = vd;
     }
   ;
 
@@ -2034,20 +2029,20 @@ FunctionDecl2 :
 FunctionDecl3 :
     FUNCTION QNAME FunctionSig BracedExpr
     {
-			$$ = new FunctionDecl(LOC (@$),
-								static_cast<QName*>($2),
+            $$ = new FunctionDecl(LOC (@$),
+                                static_cast<QName*>($2),
                 &* $3->param, &* $3->ret,
-								$4,
-								ParseConstants::fn_read);
+                                $4,
+                                ParseConstants::fn_read);
       delete $3;
     }
   | FUNCTION QNAME FunctionSig EXTERNAL
     {
-			$$ = new FunctionDecl(LOC (@$),
-								static_cast<QName*>($2),
+            $$ = new FunctionDecl(LOC (@$),
+                                static_cast<QName*>($2),
                 &* $3->param, &* $3->ret,
-								NULL,
-								ParseConstants::fn_extern);
+                                NULL,
+                                ParseConstants::fn_extern);
       delete $3;
     }
   ;
@@ -2076,20 +2071,20 @@ FunctionDeclUpdating :
 FunctionDecl4 :
     FUNCTION QNAME FunctionSig Block
     {
-			$$ = new FunctionDecl(LOC (@$),
-								static_cast<QName*>($2),
+            $$ = new FunctionDecl(LOC (@$),
+                                static_cast<QName*>($2),
                 &* $3->param, &* $3->ret,
-								$4,
-								ParseConstants::fn_sequential);
+                                $4,
+                                ParseConstants::fn_sequential);
       delete $3;
     }
     | FUNCTION QNAME FunctionSig EXTERNAL
     {
-			$$ = new FunctionDecl(LOC (@$),
-								static_cast<QName*>($2),
+            $$ = new FunctionDecl(LOC (@$),
+                                static_cast<QName*>($2),
                 &* $3->param, &* $3->ret,
-								NULL,
-								ParseConstants::fn_extern_sequential);
+                                NULL,
+                                ParseConstants::fn_extern_sequential);
       delete $3;
     }
   ;
@@ -2097,72 +2092,72 @@ FunctionDecl4 :
 // [27] ParamList
 // --------------
 ParamList :
-		Param
-		{
-			ParamList* plist_p = new ParamList(LOC (@$));
-			if (plist_p) {
-				plist_p->push_back(dynamic_cast<Param*>($1));
-			}
-			$$ = plist_p;
-		}
-	|	ParamList  COMMA  Param
-		{
-			ParamList* plist_p = dynamic_cast<ParamList*>($1);
-			if (plist_p) {
-				plist_p->push_back(dynamic_cast<Param*>($3));
-			}
-			$$ = $1;
-		}
-	;
+        Param
+        {
+            ParamList* plist_p = new ParamList(LOC (@$));
+            if (plist_p) {
+                plist_p->push_back(dynamic_cast<Param*>($1));
+            }
+            $$ = plist_p;
+        }
+    |   ParamList  COMMA  Param
+        {
+            ParamList* plist_p = dynamic_cast<ParamList*>($1);
+            if (plist_p) {
+                plist_p->push_back(dynamic_cast<Param*>($3));
+            }
+            $$ = $1;
+        }
+    ;
 
 
 // [28] Param
 // ----------
 Param :
-		DOLLAR  QNAME
-		{
-			$$ = new Param(LOC (@$),
-								static_cast<QName*>($2)->get_qname(),
-								NULL);
+        DOLLAR  QNAME
+        {
+            $$ = new Param(LOC (@$),
+                                static_cast<QName*>($2)->get_qname(),
+                                NULL);
       delete $2;
-		}
-	|	DOLLAR  QNAME  TypeDeclaration
-		{
-			$$ = new Param(LOC (@$),
-								static_cast<QName*>($2)->get_qname(),
-								dynamic_cast<SequenceType *>($3));
+        }
+    |   DOLLAR  QNAME  TypeDeclaration
+        {
+            $$ = new Param(LOC (@$),
+                                static_cast<QName*>($2)->get_qname(),
+                                dynamic_cast<SequenceType *>($3));
       delete $2;
-		}
-	;
+        }
+    ;
 
 
 // [29] EnclosedExpr
 // -----------------
 EnclosedExpr :
-		LBRACE  Expr  RBRACE
-		{
-			$$ = new EnclosedExpr(LOC (@$),
-								$2);
-		}
-	;
+        LBRACE  Expr  RBRACE
+        {
+            $$ = new EnclosedExpr(LOC (@$),
+                                $2);
+        }
+    ;
 
 BracedExpr :
-		LBRACE  Expr  RBRACE
-		{
-			$$ = $2;
-		}
-	;
+        LBRACE  Expr  RBRACE
+        {
+            $$ = $2;
+        }
+    ;
 
 
 
 // [30] QueryBody
 // --------------
 QueryBody :
-		Expr
-		{
-			$$ = new QueryBody(LOC (@$), $1);
-		}
-	;
+        Expr
+        {
+            $$ = new QueryBody(LOC (@$), $1);
+        }
+    ;
 
 
 /*******************************************************************************
@@ -2206,22 +2201,22 @@ ApplyExpr :
   ;
 
 ConcatExpr :
-		ExprSingle
-		{
-			$$ = $1;
-		}
-	|	ConcatExpr COMMA ExprSingle
-		{
-			Expr* expr_p = dynamic_cast<Expr*>($1);
-			if (expr_p == NULL)
+        ExprSingle
+        {
+            $$ = $1;
+        }
+    |   ConcatExpr COMMA ExprSingle
+        {
+            Expr* expr_p = dynamic_cast<Expr*>($1);
+            if (expr_p == NULL)
       {
         expr_p = new Expr(LOC(@$));
         expr_p->push_back($1);
       }
       expr_p->push_back($3);
-			$$ = expr_p;
-		}
-	;
+            $$ = expr_p;
+        }
+    ;
 
 
 // [32] ExprSingle
@@ -2342,10 +2337,10 @@ CountClause :
 // [33b] ForLetWinClause
 // ------------------
 ForLetWinClause :
-		ForClause
-	|	LetClause
+        ForClause
+    |   LetClause
   | WindowClause
-	;
+    ;
 
 FLWORClause :
     ForLetWinClause | WhereClause | OrderByClause | GroupByClause | CountClause;
@@ -2380,251 +2375,251 @@ ForDollar :
 // [34] ForClause
 // --------------
 ForClause :
-		ForDollar VarInDeclList
-		{
-			$$ = new ForClause(LOC (@$),
+        ForDollar VarInDeclList
+        {
+            $$ = new ForClause(LOC (@$),
                          dynamic_cast<VarInDeclList*>($2), $1 != NULL);
-		}
-	;
+        }
+    ;
 
 
 // [34a] VarInDeclList
 // -------------------
 VarInDeclList :
-		VarInDecl
-		{
-			VarInDeclList* vardecl_list_p = new VarInDeclList(LOC (@$));
-			vardecl_list_p->push_back(dynamic_cast<VarInDecl*>($1));
-			$$ = vardecl_list_p;
-		}
-	|	VarInDeclList  COMMA  DOLLAR  VarInDecl
-		{
-			VarInDeclList* vardecl_list_p = dynamic_cast<VarInDeclList*>($1);
-			if (vardecl_list_p) {
-				vardecl_list_p->push_back(dynamic_cast<VarInDecl*>($4));
-			}
-			$$ = $1;
-		}
-	;
+        VarInDecl
+        {
+            VarInDeclList* vardecl_list_p = new VarInDeclList(LOC (@$));
+            vardecl_list_p->push_back(dynamic_cast<VarInDecl*>($1));
+            $$ = vardecl_list_p;
+        }
+    |   VarInDeclList  COMMA  DOLLAR  VarInDecl
+        {
+            VarInDeclList* vardecl_list_p = dynamic_cast<VarInDeclList*>($1);
+            if (vardecl_list_p) {
+                vardecl_list_p->push_back(dynamic_cast<VarInDecl*>($4));
+            }
+            $$ = $1;
+        }
+    ;
 
 
 // [34b] VarInDecl
 // ---------------
 VarInDecl :
-		QNAME  _IN  ExprSingle
-		{
-			$$ = new VarInDecl(LOC (@$),
-								static_cast<QName*>($1)->get_qname(),
-								NULL,NULL,NULL,
-								$3);
+        QNAME  _IN  ExprSingle
+        {
+            $$ = new VarInDecl(LOC (@$),
+                                static_cast<QName*>($1)->get_qname(),
+                                NULL,NULL,NULL,
+                                $3);
       delete $1;
-		}
-	|	QNAME  TypeDeclaration  _IN  ExprSingle
-		{
-			$$ = new VarInDecl(LOC (@$),
-								static_cast<QName*>($1)->get_qname(),
-								dynamic_cast<SequenceType *>($2),
-								NULL,NULL,
-								$4);
+        }
+    |   QNAME  TypeDeclaration  _IN  ExprSingle
+        {
+            $$ = new VarInDecl(LOC (@$),
+                                static_cast<QName*>($1)->get_qname(),
+                                dynamic_cast<SequenceType *>($2),
+                                NULL,NULL,
+                                $4);
       delete $1;
-		}
-	|	QNAME  PositionalVar  _IN  ExprSingle
-		{
-			$$ = new VarInDecl(LOC (@$),
-								static_cast<QName*>($1)->get_qname(),
-								NULL,
-								dynamic_cast<PositionalVar*>($2),
-								NULL,
-								$4);
+        }
+    |   QNAME  PositionalVar  _IN  ExprSingle
+        {
+            $$ = new VarInDecl(LOC (@$),
+                                static_cast<QName*>($1)->get_qname(),
+                                NULL,
+                                dynamic_cast<PositionalVar*>($2),
+                                NULL,
+                                $4);
       delete $1;
-		}
-	|	QNAME  TypeDeclaration  PositionalVar  _IN  ExprSingle
-		{
-			$$ = new VarInDecl(LOC (@$),
-								static_cast<QName*>($1)->get_qname(),
-								dynamic_cast<SequenceType *>($2),
-								dynamic_cast<PositionalVar*>($3),
-								NULL,
-								$5);
+        }
+    |   QNAME  TypeDeclaration  PositionalVar  _IN  ExprSingle
+        {
+            $$ = new VarInDecl(LOC (@$),
+                                static_cast<QName*>($1)->get_qname(),
+                                dynamic_cast<SequenceType *>($2),
+                                dynamic_cast<PositionalVar*>($3),
+                                NULL,
+                                $5);
       delete $1;
-		}
-	/* full-text extensions */
-	| QNAME  FTScoreVar  _IN  ExprSingle
-		{
-			$$ = new VarInDecl(LOC (@$),
-								static_cast<QName*>($1)->get_qname(),
-								NULL,NULL,
-								dynamic_cast<FTScoreVar*>($2),
-								$4);
+        }
+    /* full-text extensions */
+    | QNAME  FTScoreVar  _IN  ExprSingle
+        {
+            $$ = new VarInDecl(LOC (@$),
+                                static_cast<QName*>($1)->get_qname(),
+                                NULL,NULL,
+                                dynamic_cast<FTScoreVar*>($2),
+                                $4);
       delete $1;
-		}
-	| QNAME  TypeDeclaration  FTScoreVar  _IN  ExprSingle
-		{
-			$$ = new VarInDecl(LOC (@$),
-								static_cast<QName*>($1)->get_qname(),
-								dynamic_cast<SequenceType *>($2),
-								NULL,
-								dynamic_cast<FTScoreVar*>($3),
-								$5);
+        }
+    | QNAME  TypeDeclaration  FTScoreVar  _IN  ExprSingle
+        {
+            $$ = new VarInDecl(LOC (@$),
+                                static_cast<QName*>($1)->get_qname(),
+                                dynamic_cast<SequenceType *>($2),
+                                NULL,
+                                dynamic_cast<FTScoreVar*>($3),
+                                $5);
       delete $1;
-		}
-	| QNAME  PositionalVar  FTScoreVar  _IN  ExprSingle
-		{
-			$$ = new VarInDecl(LOC (@$),
-								static_cast<QName*>($1)->get_qname(),
-								NULL,
-								dynamic_cast<PositionalVar*>($2),
-								dynamic_cast<FTScoreVar*>($3),
-								$5);
+        }
+    | QNAME  PositionalVar  FTScoreVar  _IN  ExprSingle
+        {
+            $$ = new VarInDecl(LOC (@$),
+                                static_cast<QName*>($1)->get_qname(),
+                                NULL,
+                                dynamic_cast<PositionalVar*>($2),
+                                dynamic_cast<FTScoreVar*>($3),
+                                $5);
       delete $1;
-		}
-	| QNAME  TypeDeclaration  PositionalVar  FTScoreVar  _IN  ExprSingle
-		{
-			$$ = new VarInDecl(LOC (@$),
-								static_cast<QName*>($1)->get_qname(),
-								dynamic_cast<SequenceType *>($2),
-								dynamic_cast<PositionalVar*>($3),
-								dynamic_cast<FTScoreVar*>($4),
-								$6);
+        }
+    | QNAME  TypeDeclaration  PositionalVar  FTScoreVar  _IN  ExprSingle
+        {
+            $$ = new VarInDecl(LOC (@$),
+                                static_cast<QName*>($1)->get_qname(),
+                                dynamic_cast<SequenceType *>($2),
+                                dynamic_cast<PositionalVar*>($3),
+                                dynamic_cast<FTScoreVar*>($4),
+                                $6);
       delete $1;
-		}
-	;
+        }
+    ;
 
 
 // [35] PositionalVar
 // ------------------
 PositionalVar :
-		AT  DOLLAR  QNAME
-		{
-			$$ = new PositionalVar(LOC (@$),
-								static_cast<QName*>($3)->get_qname());
+        AT  DOLLAR  QNAME
+        {
+            $$ = new PositionalVar(LOC (@$),
+                                static_cast<QName*>($3)->get_qname());
       delete $3;
-		}
-	;
+        }
+    ;
 
 
 /* full-text extension */
 // [35a] FTScoreVar
 // ----------------
 FTScoreVar :
-		SCORE  DOLLAR  QNAME
-		{
-			$$ = new FTScoreVar(LOC (@$),
-								static_cast<QName*>($3)->get_qname());
+        SCORE  DOLLAR  QNAME
+        {
+            $$ = new FTScoreVar(LOC (@$),
+                                static_cast<QName*>($3)->get_qname());
       delete $3;
-		}
-	;
+        }
+    ;
 
 
 // [36] LetClause
 // --------------
 LetClause :
-		LET DOLLAR VarGetsDeclList
-		{
-			$$ = new LetClause(LOC (@$),
-								dynamic_cast<VarGetsDeclList*>($3));
+        LET DOLLAR VarGetsDeclList
+        {
+            $$ = new LetClause(LOC (@$),
+                                dynamic_cast<VarGetsDeclList*>($3));
 
-		}
-	;
+        }
+    ;
 
 
 // [36a] VarGetsDeclList
 // ---------------------
 VarGetsDeclList :
-		VarGetsDecl
-		{
-			VarGetsDeclList* vgdl_p = new VarGetsDeclList(LOC (@$));
-			vgdl_p->push_back(dynamic_cast<VarGetsDecl*>($1));
-			$$ = vgdl_p;
-		}
-	|	VarGetsDeclList  COMMA  DOLLAR  VarGetsDecl
-		{
-			VarGetsDeclList* vgdl_p = dynamic_cast<VarGetsDeclList*>($1);
-			if (vgdl_p) {
-				vgdl_p->push_back(dynamic_cast<VarGetsDecl*>($4));
-			}
-			$$ = $1;
-		}
-	;
+        VarGetsDecl
+        {
+            VarGetsDeclList* vgdl_p = new VarGetsDeclList(LOC (@$));
+            vgdl_p->push_back(dynamic_cast<VarGetsDecl*>($1));
+            $$ = vgdl_p;
+        }
+    |   VarGetsDeclList  COMMA  DOLLAR  VarGetsDecl
+        {
+            VarGetsDeclList* vgdl_p = dynamic_cast<VarGetsDeclList*>($1);
+            if (vgdl_p) {
+                vgdl_p->push_back(dynamic_cast<VarGetsDecl*>($4));
+            }
+            $$ = $1;
+        }
+    ;
 
 
 EvalVarDeclList :
-		EvalVarDecl
-		{
-			VarGetsDeclList* vgdl_p = new VarGetsDeclList(LOC (@$));
-			vgdl_p->push_back(dynamic_cast<VarGetsDecl*>($1));
-			$$ = vgdl_p;
-		}
-	|	EvalVarDeclList  COMMA  DOLLAR  EvalVarDecl
-		{
-			VarGetsDeclList* vgdl_p = dynamic_cast<VarGetsDeclList*>($1);
-			if (vgdl_p) {
-				vgdl_p->push_back(dynamic_cast<VarGetsDecl*>($4));
-			}
-			$$ = $1;
-		}
-	;
+        EvalVarDecl
+        {
+            VarGetsDeclList* vgdl_p = new VarGetsDeclList(LOC (@$));
+            vgdl_p->push_back(dynamic_cast<VarGetsDecl*>($1));
+            $$ = vgdl_p;
+        }
+    |   EvalVarDeclList  COMMA  DOLLAR  EvalVarDecl
+        {
+            VarGetsDeclList* vgdl_p = dynamic_cast<VarGetsDeclList*>($1);
+            if (vgdl_p) {
+                vgdl_p->push_back(dynamic_cast<VarGetsDecl*>($4));
+            }
+            $$ = $1;
+        }
+    ;
 
 
 // [36b] VarGetsDecl
 // ------------------
 VarGetsDecl :
-		QNAME  GETS  ExprSingle
-		{
-			$$ = new VarGetsDecl(LOC (@$),
-								static_cast<QName*>($1)->get_qname(),
-								NULL,
-								NULL,
-								$3);
+        QNAME  GETS  ExprSingle
+        {
+            $$ = new VarGetsDecl(LOC (@$),
+                                static_cast<QName*>($1)->get_qname(),
+                                NULL,
+                                NULL,
+                                $3);
       delete $1;
-		}
-	|	QNAME  TypeDeclaration  GETS  ExprSingle
-		{
-			$$ = new VarGetsDecl(LOC (@$),
-								static_cast<QName*>($1)->get_qname(),
-								dynamic_cast<SequenceType *>($2),
-								NULL,
-								$4);
+        }
+    |   QNAME  TypeDeclaration  GETS  ExprSingle
+        {
+            $$ = new VarGetsDecl(LOC (@$),
+                                static_cast<QName*>($1)->get_qname(),
+                                dynamic_cast<SequenceType *>($2),
+                                NULL,
+                                $4);
       delete $1;
-		}
-	/* full-text extensions */
-	| QNAME  FTScoreVar  GETS  ExprSingle
-		{
-			$$ = new VarGetsDecl(LOC (@$),
-								static_cast<QName*>($1)->get_qname(),
-								NULL,
-								dynamic_cast<FTScoreVar*>($2),
-								$4);
+        }
+    /* full-text extensions */
+    | QNAME  FTScoreVar  GETS  ExprSingle
+        {
+            $$ = new VarGetsDecl(LOC (@$),
+                                static_cast<QName*>($1)->get_qname(),
+                                NULL,
+                                dynamic_cast<FTScoreVar*>($2),
+                                $4);
       delete $1;
-		}
-	| QNAME  TypeDeclaration  FTScoreVar  GETS  ExprSingle
-		{
-			$$ = new VarGetsDecl(LOC (@$),
-								static_cast<QName*>($1)->get_qname(),
-								dynamic_cast<SequenceType *>($2),
-								dynamic_cast<FTScoreVar*>($3),
-								$5);
+        }
+    | QNAME  TypeDeclaration  FTScoreVar  GETS  ExprSingle
+        {
+            $$ = new VarGetsDecl(LOC (@$),
+                                static_cast<QName*>($1)->get_qname(),
+                                dynamic_cast<SequenceType *>($2),
+                                dynamic_cast<FTScoreVar*>($3),
+                                $5);
       delete $1;
-		}
-	;
+        }
+    ;
 
 
 WindowVarDecl :
-		DOLLAR QNAME  _IN  ExprSingle
-		{
-			$$ = new WindowVarDecl(LOC (@$),
-								static_cast<QName*>($2)->get_qname(),
-								NULL, $4);
+        DOLLAR QNAME  _IN  ExprSingle
+        {
+            $$ = new WindowVarDecl(LOC (@$),
+                                static_cast<QName*>($2)->get_qname(),
+                                NULL, $4);
       delete $2;
-		}
-	|	DOLLAR QNAME  TypeDeclaration  _IN  ExprSingle
-		{
-			$$ = new WindowVarDecl(LOC (@$),
-								static_cast<QName*>($2)->get_qname(),
-								dynamic_cast<SequenceType *>($3),
-								$5);
+        }
+    |   DOLLAR QNAME  TypeDeclaration  _IN  ExprSingle
+        {
+            $$ = new WindowVarDecl(LOC (@$),
+                                static_cast<QName*>($2)->get_qname(),
+                                dynamic_cast<SequenceType *>($3),
+                                $5);
       delete $2;
-		}
+        }
 
 
 WindowVars :
@@ -2691,12 +2686,12 @@ EvalVarDecl :
 // [37] WhereClause
 // ----------------
 WhereClause :
-		WHERE  ExprSingle
-		{
-			$$ = new WhereClause(LOC (@$),
-								$2);
-		}
-	;
+        WHERE  ExprSingle
+        {
+            $$ = new WhereClause(LOC (@$),
+                                $2);
+        }
+    ;
 
 GroupByClause :
     GROUP BY GroupSpecList
@@ -2750,336 +2745,328 @@ GroupCollationSpec :
 // [38] OrderByClause
 // ------------------
 OrderByClause :
-		ORDER BY  OrderSpecList
-		{
-			$$ = new OrderByClause(LOC (@$),
-								dynamic_cast<OrderSpecList*>($3));
-		}
-	|	STABLE ORDER BY  OrderSpecList
-		{
-			$$ = new OrderByClause(LOC (@$),
-								dynamic_cast<OrderSpecList*>($4),
-								true);
-		}
-	;
+        ORDER BY  OrderSpecList
+        {
+            $$ = new OrderByClause(LOC (@$),
+                                dynamic_cast<OrderSpecList*>($3));
+        }
+    |   STABLE ORDER BY  OrderSpecList
+        {
+            $$ = new OrderByClause(LOC (@$),
+                                dynamic_cast<OrderSpecList*>($4),
+                                true);
+        }
+    ;
 
 
 // [39] OrderSpecList
 // ------------------
 OrderSpecList :
-		OrderSpec
-		{
-			OrderSpecList* osl_p = new OrderSpecList(LOC (@$));
-			osl_p->push_back(dynamic_cast<OrderSpec*>($1));
-			$$ = osl_p;
-		}
-	|	OrderSpecList  COMMA  OrderSpec
-		{
-			OrderSpecList* osl_p = dynamic_cast<OrderSpecList*>($1);
-			if (osl_p) {
-				osl_p->push_back(dynamic_cast<OrderSpec*>($3));
-			}
-			$$ = $1;
-		}
-	;
+        OrderSpec
+        {
+            OrderSpecList* osl_p = new OrderSpecList(LOC (@$));
+            osl_p->push_back(dynamic_cast<OrderSpec*>($1));
+            $$ = osl_p;
+        }
+    |   OrderSpecList  COMMA  OrderSpec
+        {
+            OrderSpecList* osl_p = dynamic_cast<OrderSpecList*>($1);
+            if (osl_p) {
+                osl_p->push_back(dynamic_cast<OrderSpec*>($3));
+            }
+            $$ = $1;
+        }
+    ;
 
 
 // [40] OrderSpec
 // --------------
 OrderSpec :
     ExprSingle
-		{
-			$$ = new OrderSpec(LOC (@$),
-								$1,
-								NULL);
-		}
-	|	ExprSingle OrderModifier
-		{
-			$$ = new OrderSpec(LOC (@$),
+        {
+            $$ = new OrderSpec(LOC (@$),
+                                $1,
+                                NULL);
+        }
+    |   ExprSingle OrderModifier
+        {
+            $$ = new OrderSpec(LOC (@$),
                          $1,
                          dynamic_cast<OrderModifierPN*>($2));
-		}
-	;
+        }
+    ;
 
 
 // [41] OrderModifier
 // ------------------
 OrderModifier :
-		OrderDirSpec
-		{
-			$$ = new OrderModifierPN(LOC(@$),
+        OrderDirSpec
+        {
+            $$ = new OrderModifierPN(LOC(@$),
                                dynamic_cast<OrderDirSpec*>($1),
                                NULL,
                                NULL);
-		}
-	|	OrderEmptySpec
-		{
-			$$ = new OrderModifierPN(LOC(@$),
+        }
+    |   OrderEmptySpec
+        {
+            $$ = new OrderModifierPN(LOC(@$),
                                NULL,
                                dynamic_cast<OrderEmptySpec*>($1),
                                NULL);
-		}
-	|	OrderCollationSpec
-		{
-			$$ = new OrderModifierPN(LOC(@$),
+        }
+    |   OrderCollationSpec
+        {
+            $$ = new OrderModifierPN(LOC(@$),
                                NULL,
                                NULL,
                                dynamic_cast<OrderCollationSpec*>($1));
-		}
-	|	OrderDirSpec  OrderEmptySpec
-		{
-			$$ = new OrderModifierPN(LOC(@$),
+        }
+    |   OrderDirSpec  OrderEmptySpec
+        {
+            $$ = new OrderModifierPN(LOC(@$),
                                dynamic_cast<OrderDirSpec*>($1),
                                dynamic_cast<OrderEmptySpec*>($2),
                                NULL);
-		}
-	|	OrderDirSpec  OrderCollationSpec
-		{
-			$$ = new OrderModifierPN(LOC(@$),
+        }
+    |   OrderDirSpec  OrderCollationSpec
+        {
+            $$ = new OrderModifierPN(LOC(@$),
                                dynamic_cast<OrderDirSpec*>($1),
                                NULL,
                                dynamic_cast<OrderCollationSpec*>($2));
-		}
-	|	OrderEmptySpec  OrderCollationSpec
-		{
-			$$ = new OrderModifierPN(LOC(@$),
+        }
+    |   OrderEmptySpec  OrderCollationSpec
+        {
+            $$ = new OrderModifierPN(LOC(@$),
                                NULL,
                                dynamic_cast<OrderEmptySpec*>($1),
                                dynamic_cast<OrderCollationSpec*>($2));
-		}
-	|	OrderDirSpec  OrderEmptySpec  OrderCollationSpec
-		{
-			$$ = new OrderModifierPN(LOC(@$),
+        }
+    |   OrderDirSpec  OrderEmptySpec  OrderCollationSpec
+        {
+            $$ = new OrderModifierPN(LOC(@$),
                                dynamic_cast<OrderDirSpec*>($1),
                                dynamic_cast<OrderEmptySpec*>($2),
                                dynamic_cast<OrderCollationSpec*>($3));
-		}
-	;
+        }
+    ;
 
 
 // [41a] OrderDirSpec
 // ------------------
 OrderDirSpec :
-		ASCENDING
-		{
-			$$ = new OrderDirSpec(LOC (@$), ParseConstants::dir_ascending);
-		}
-	|	DESCENDING
-		{
-			$$ = new OrderDirSpec(LOC (@$), ParseConstants::dir_descending);
-		}
-	;
+        ASCENDING
+        {
+            $$ = new OrderDirSpec(LOC (@$), ParseConstants::dir_ascending);
+        }
+    |   DESCENDING
+        {
+            $$ = new OrderDirSpec(LOC (@$), ParseConstants::dir_descending);
+        }
+    ;
 
 
 // [41b] OrderEmptySpec
 // --------------------
 OrderEmptySpec:
-		_EMPTY GREATEST
-		{
-			$$ = new OrderEmptySpec(LOC(@$), StaticContextConsts::empty_greatest);
-		}
-	|	_EMPTY LEAST
-		{
-			$$ = new OrderEmptySpec(LOC(@$), StaticContextConsts::empty_least);
-		}
-	;
+        _EMPTY GREATEST
+        {
+            $$ = new OrderEmptySpec(LOC(@$), StaticContextConsts::empty_greatest);
+        }
+    |   _EMPTY LEAST
+        {
+            $$ = new OrderEmptySpec(LOC(@$), StaticContextConsts::empty_least);
+        }
+    ;
 
 
 // [41c] OrderCollationSpec
 // ------------------------
 OrderCollationSpec :
-		COLLATION  URI_LITERAL
-		{
-			$$ = new OrderCollationSpec(LOC(@$),	SYMTAB($2));
-		}
-	;
+        COLLATION  URI_LITERAL
+        {
+            $$ = new OrderCollationSpec(LOC(@$),    SYMTAB($2));
+        }
+    ;
 
 
 // [42] QuantifiedExpr
 // -------------------
 QuantifiedExpr :
-		SOME DOLLAR  QVarInDeclList  SATISFIES  ExprSingle
-		{
-			$$ = new QuantifiedExpr(LOC(@$),
+        SOME DOLLAR  QVarInDeclList  SATISFIES  ExprSingle
+        {
+            $$ = new QuantifiedExpr(LOC(@$),
                               ParseConstants::quant_some,
                               dynamic_cast<QVarInDeclList*>($3),
                               $5);
-		}
-	|	EVERY DOLLAR  QVarInDeclList  SATISFIES  ExprSingle
-		{
-			$$ = new QuantifiedExpr(LOC(@$),
+        }
+    |   EVERY DOLLAR  QVarInDeclList  SATISFIES  ExprSingle
+        {
+            $$ = new QuantifiedExpr(LOC(@$),
                               ParseConstants::quant_every,
                               dynamic_cast<QVarInDeclList*>($3),
                               $5);
-		}
-	;
+        }
+    ;
 
 
 // [42a] QVarInDeclList
 // --------------------
 QVarInDeclList :
-		QVarInDecl  %prec QVARINDECLLIST_REDUCE
-		{
-			QVarInDeclList* qvid_list_p = new QVarInDeclList(LOC (@$));
-			qvid_list_p->push_back(dynamic_cast<QVarInDecl*>($1));
-			$$ = qvid_list_p;
+        QVarInDecl  %prec QVARINDECLLIST_REDUCE
+        {
+            QVarInDeclList* qvid_list_p = new QVarInDeclList(LOC (@$));
+            qvid_list_p->push_back(dynamic_cast<QVarInDecl*>($1));
+            $$ = qvid_list_p;
 
-		}
-	|	QVarInDeclList  COMMA DOLLAR  QVarInDecl
-		{
-			QVarInDeclList* qvid_list_p = dynamic_cast<QVarInDeclList*>($1);
+        }
+    |   QVarInDeclList  COMMA DOLLAR  QVarInDecl
+        {
+            QVarInDeclList* qvid_list_p = dynamic_cast<QVarInDeclList*>($1);
             qvid_list_p->push_back(dynamic_cast<QVarInDecl*>($4));
-			$$ = $1;
-		}
-	;
+            $$ = $1;
+        }
+    ;
 
 
 // [42b] QVarInDecl
 // ----------------
 QVarInDecl :
-		QNAME  _IN  ExprSingle
-		{
-			$$ = new QVarInDecl(LOC (@$),
-								static_cast<QName*>($1)->get_qname(),
-								$3);
+        QNAME  _IN  ExprSingle
+        {
+            $$ = new QVarInDecl(LOC (@$),
+                                static_cast<QName*>($1)->get_qname(),
+                                $3);
       delete $1;
-		}
-	|	QNAME  TypeDeclaration  _IN  ExprSingle
-		{
-			$$ = new QVarInDecl(LOC (@$),
-								static_cast<QName*>($1)->get_qname(),
-								dynamic_cast<SequenceType *>($2),
-								$4);
+        }
+    |   QNAME  TypeDeclaration  _IN  ExprSingle
+        {
+            $$ = new QVarInDecl(LOC (@$),
+                                static_cast<QName*>($1)->get_qname(),
+                                dynamic_cast<SequenceType *>($2),
+                                $4);
       delete $1;
-		}
-	;
+        }
+    ;
 
 
 // [43] TypeswitchExpr
 // -------------------
 TypeswitchExpr :
-		TYPESWITCH LPAR  Expr  RPAR  CaseClauseList  DEFAULT  RETURN  ExprSingle
-		{
-			$$ = new TypeswitchExpr(LOC (@$),
-								$3,
-								dynamic_cast<CaseClauseList*>($5),
-								$8);
-		}
-	|	TYPESWITCH LPAR  Expr  RPAR  CaseClauseList  DEFAULT  DOLLAR  QNAME  RETURN  ExprSingle
-		{
-			$$ = new TypeswitchExpr(LOC (@$),
-								$3,
-								dynamic_cast<CaseClauseList*>($5),
-								static_cast<QName*>($8)->get_qname(),
-								$10);
+        TYPESWITCH LPAR  Expr  RPAR  CaseClauseList  DEFAULT  RETURN  ExprSingle
+        {
+            $$ = new TypeswitchExpr(LOC (@$),
+                                $3,
+                                dynamic_cast<CaseClauseList*>($5),
+                                $8);
+        }
+    |   TYPESWITCH LPAR  Expr  RPAR  CaseClauseList  DEFAULT  DOLLAR  QNAME  RETURN  ExprSingle
+        {
+            $$ = new TypeswitchExpr(LOC (@$),
+                                $3,
+                                dynamic_cast<CaseClauseList*>($5),
+                                static_cast<QName*>($8)->get_qname(),
+                                $10);
       delete $8;
-		}
-	;
+        }
+    ;
 
 
 // [43a] CaseClauseList
 // --------------------
 CaseClauseList :
-		CaseClause
-		{
-			CaseClauseList* cc_list_p = new CaseClauseList(LOC (@$));
-			cc_list_p->push_back(dynamic_cast<CaseClause*>($1));
-			$$ = cc_list_p;
-		}
-	|	CaseClauseList  CaseClause
-		{
-			CaseClauseList* cc_list_p = dynamic_cast<CaseClauseList*>($1);
-			cc_list_p->push_back(dynamic_cast<CaseClause*>($2));
-			$$ = $1;
-		}
-	;
+        CaseClause
+        {
+            CaseClauseList* cc_list_p = new CaseClauseList(LOC (@$));
+            cc_list_p->push_back(dynamic_cast<CaseClause*>($1));
+            $$ = cc_list_p;
+        }
+    |   CaseClauseList  CaseClause
+        {
+            CaseClauseList* cc_list_p = dynamic_cast<CaseClauseList*>($1);
+            cc_list_p->push_back(dynamic_cast<CaseClause*>($2));
+            $$ = $1;
+        }
+    ;
 
 
 // [44] CaseClause
 // ---------------
 CaseClause :
-		CASE  SequenceType  RETURN  ExprSingle
-		{
-			$$ = new CaseClause(LOC (@$),
-								dynamic_cast<SequenceType*>($2),
-								$4);
-		}
-	|	CASE  DOLLAR  QNAME  AS  SequenceType  RETURN  ExprSingle
-		{
-			$$ = new CaseClause(LOC (@$),
-								static_cast<QName*>($3)->get_qname(),
-								dynamic_cast<SequenceType*>($5),
-								$7);
+        CASE  SequenceType  RETURN  ExprSingle
+        {
+            $$ = new CaseClause(LOC (@$),
+                                dynamic_cast<SequenceType*>($2),
+                                $4);
+        }
+    |   CASE  DOLLAR  QNAME  AS  SequenceType  RETURN  ExprSingle
+        {
+            $$ = new CaseClause(LOC (@$),
+                                static_cast<QName*>($3)->get_qname(),
+                                dynamic_cast<SequenceType*>($5),
+                                $7);
       delete $3;
-		}
-	;
+        }
+    ;
 
 
 // [45] IfExpr
 // -----------
 IfExpr :
-		IF LPAR  Expr  RPAR  THEN  ExprSingle  ELSE  ExprSingle
-		{
-			$$ = new IfExpr(LOC (@$),
-								$3, $6, $8);
-		}
-	;
+        IF LPAR  Expr  RPAR  THEN  ExprSingle  ELSE  ExprSingle
+        {
+            $$ = new IfExpr(LOC (@$),
+                                $3, $6, $8);
+        }
+    ;
 
 
 // [46] OrExpr
 // -----------
 OrExpr :
-		AndExpr
-		{
-			$$ = $1;
-		}
-	|	OrExpr  OR  AndExpr
-		{
-			$$ = new OrExpr(LOC (@$),
-								$1, $3);
-		}
-	;
+        AndExpr
+        {
+            $$ = $1;
+        }
+    |   OrExpr  OR  AndExpr
+        {
+            $$ = new OrExpr(LOC (@$),
+                                $1, $3);
+        }
+    ;
 
 
 // [47] AndExpr
 // ------------
 AndExpr :
-		ComparisonExpr
-		{
-			$$ = $1;
-		}
-	|	AndExpr  AND  ComparisonExpr
-		{
-			$$ = new AndExpr(LOC (@$),
-								$1, $3);
-		}
-	;
+        ComparisonExpr
+        {
+            $$ = $1;
+        }
+    |   AndExpr  AND  ComparisonExpr
+        {
+            $$ = new AndExpr(LOC (@$),
+                                $1, $3);
+        }
+    ;
 
 
-// [48] ComparisonExpr
+// [50] ComparisonExpr
 // -------------------
-/* replaced by full-text extension productions */
-//ComparisonExpr : RangeExpr | ValueCompExpr | GeneralCompExpr | NodeCompExpr
-
-
-
-/* full-text extension */
-//[48] ComparisonExpr
-//-------------------
-ComparisonExpr :
-		FTContainsExpr
-		{
-			$$ = $1;
-		}
-	| FTContainsExpr ValueComp FTContainsExpr
-		{
-			/*  ::=  "eq" | "ne" | "lt" | "le" | "gt" | "ge" */
-			$$ = new ComparisonExpr(LOC (@$),
-								dynamic_cast<ValueComp*>($2),
-								$1,
-								$3);
-		}
-  | FTContainsExpr NodeComp FTContainsExpr
+ComparisonExpr
+    : FTContainsExpr
+        {
+            $$ = $1;
+        }
+    | FTContainsExpr ValueComp FTContainsExpr
+        {
+            /*  ::=  "eq" | "ne" | "lt" | "le" | "gt" | "ge" */
+            $$ = new ComparisonExpr(LOC (@$),
+                                dynamic_cast<ValueComp*>($2),
+                                $1,
+                                $3);
+        }
+    | FTContainsExpr NodeComp FTContainsExpr
     {
       /*  ::=  "is" | "<<" | ">>" */
       $$ = new ComparisonExpr(LOC (@$),
@@ -3087,15 +3074,15 @@ ComparisonExpr :
                 $1,
                 $3);
     }
-	| FTContainsExpr EQUALS FTContainsExpr
-		{
-			/* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
-			$$ = new ComparisonExpr(LOC (@$),
-								new GeneralComp(LOC (@$), ParseConstants::op_eq),
-								$1,
-								$3);
-		}
-  | FTContainsExpr NE FTContainsExpr
+    | FTContainsExpr EQUALS FTContainsExpr
+        {
+            /* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
+            $$ = new ComparisonExpr(LOC (@$),
+                                new GeneralComp(LOC (@$), ParseConstants::op_eq),
+                                $1,
+                                $3);
+        }
+    | FTContainsExpr NE FTContainsExpr
     {
       /* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
       $$ = new ComparisonExpr(LOC (@$),
@@ -3103,7 +3090,10 @@ ComparisonExpr :
                 $1,
                 $3);
     }
-  | FTContainsExpr LT_OR_START_TAG { /* this call is needed */  driver.lexer->interpretAsLessThan(); } FTContainsExpr
+    | FTContainsExpr LT_OR_START_TAG {
+        /* this call is needed */
+        driver.lexer->interpretAsLessThan();
+    } FTContainsExpr
     {
       /* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
       $$ = new ComparisonExpr(LOC (@$),
@@ -3135,307 +3125,306 @@ ComparisonExpr :
                 $1,
                 $3);
     }
-	;
+    ;
 
-
-//[48a] FTContainsExpr
-//-------------------
+// [51] FTContainsExpr
+// -------------------
 FTContainsExpr :
-		RangeExpr  %prec FTCONTAINS_REDUCE
-		{
-			$$ = $1;
-		}
-	|	RangeExpr  FTCONTAINS  FTSelection
-		{
-			$$ = new FTContainsExpr(LOC (@$),
-								$1,
-								dynamic_cast<FTSelection*>($3),
-								NULL);
-		}
-	|	RangeExpr  FTCONTAINS  FTSelection  FTIgnoreOption
-		{
-			$$ = new FTContainsExpr(LOC (@$),
-								$1,
-								dynamic_cast<FTSelection*>($3),
-								dynamic_cast<FTIgnoreOption*>($4));
-		}
-	;
+        RangeExpr  %prec FTCONTAINS_REDUCE
+        {
+            $$ = $1;
+        }
+    |   RangeExpr  FTCONTAINS  FTSelection
+        {
+            $$ = new FTContainsExpr(LOC (@$),
+                                $1,
+                                dynamic_cast<FTSelection*>($3),
+                                NULL);
+        }
+    |   RangeExpr  FTCONTAINS  FTSelection  FTIgnoreOption
+        {
+            $$ = new FTContainsExpr(LOC (@$),
+                                $1,
+                                dynamic_cast<FTSelection*>($3),
+                                dynamic_cast<FTIgnoreOption*>($4));
+        }
+    ;
 
 
 // [49] RangeExpr
 // --------------
 RangeExpr :
-		AdditiveExpr  %prec RANGE_REDUCE
-		{
-			$$ = $1;
-		}
-	|	AdditiveExpr  TO  AdditiveExpr
-		{
-			$$ = new RangeExpr(LOC (@$),
-								$1, $3);
-		}
-	;
+        AdditiveExpr  %prec RANGE_REDUCE
+        {
+            $$ = $1;
+        }
+    |   AdditiveExpr  TO  AdditiveExpr
+        {
+            $$ = new RangeExpr(LOC (@$),
+                                $1, $3);
+        }
+    ;
 
 
 // [50] AdditiveExpr
 // -----------------
 AdditiveExpr :
-		MultiplicativeExpr  %prec ADDITIVE_REDUCE
-		{
-			$$ = $1;
-		}
-	|	AdditiveExpr  PLUS  MultiplicativeExpr
-		{
-			$$ = new AdditiveExpr(LOC (@$), ParseConstants::op_plus, $1, $3);
-		}
-	|	AdditiveExpr  MINUS  MultiplicativeExpr
-		{
-			$$ = new AdditiveExpr(LOC (@$), ParseConstants::op_minus, $1, $3);
-		}
-	;
+        MultiplicativeExpr  %prec ADDITIVE_REDUCE
+        {
+            $$ = $1;
+        }
+    |   AdditiveExpr  PLUS  MultiplicativeExpr
+        {
+            $$ = new AdditiveExpr(LOC (@$), ParseConstants::op_plus, $1, $3);
+        }
+    |   AdditiveExpr  MINUS  MultiplicativeExpr
+        {
+            $$ = new AdditiveExpr(LOC (@$), ParseConstants::op_minus, $1, $3);
+        }
+    ;
 
 
 // [51] MultiplicativeExpr
 // -----------------------
 MultiplicativeExpr :
-		UnionExpr  %prec MULTIPLICATIVE_REDUCE
-		{
+        UnionExpr  %prec MULTIPLICATIVE_REDUCE
+        {
        $$ = $1;
-		}
-	|	MultiplicativeExpr  STAR  UnionExpr
-		{
-			$$ = new MultiplicativeExpr(LOC (@$), ParseConstants::op_mul, $1, $3);
-		}
-	|	MultiplicativeExpr  DIV  UnionExpr
-		{
-			$$ = new MultiplicativeExpr(LOC (@$), ParseConstants::op_div, $1, $3);
-		}
-	|	MultiplicativeExpr  IDIV  UnionExpr
-		{
-			$$ = new MultiplicativeExpr(LOC (@$), ParseConstants::op_idiv, $1, $3);
-		}
-	|	MultiplicativeExpr  MOD  UnionExpr
-		{
-			$$ = new MultiplicativeExpr(LOC (@$), ParseConstants::op_mod, $1, $3);
-		}
-	;
+        }
+    |   MultiplicativeExpr  STAR  UnionExpr
+        {
+            $$ = new MultiplicativeExpr(LOC (@$), ParseConstants::op_mul, $1, $3);
+        }
+    |   MultiplicativeExpr  DIV  UnionExpr
+        {
+            $$ = new MultiplicativeExpr(LOC (@$), ParseConstants::op_div, $1, $3);
+        }
+    |   MultiplicativeExpr  IDIV  UnionExpr
+        {
+            $$ = new MultiplicativeExpr(LOC (@$), ParseConstants::op_idiv, $1, $3);
+        }
+    |   MultiplicativeExpr  MOD  UnionExpr
+        {
+            $$ = new MultiplicativeExpr(LOC (@$), ParseConstants::op_mod, $1, $3);
+        }
+    ;
 
 
 // [52] UnionExpr
 // --------------
 UnionExpr :
-		IntersectExceptExpr  %prec UNION_REDUCE
-		{
-			$$ = $1;
-		}
-	|	UnionExpr  UNION  IntersectExceptExpr
-		{
-			$$ = new UnionExpr(LOC (@$),
-								$1, $3);
-		}
-	|	UnionExpr  VBAR  IntersectExceptExpr
-		{
-			$$ = new UnionExpr(LOC (@$),
-								$1, $3);
-		}
-	;
+        IntersectExceptExpr  %prec UNION_REDUCE
+        {
+            $$ = $1;
+        }
+    |   UnionExpr  UNION  IntersectExceptExpr
+        {
+            $$ = new UnionExpr(LOC (@$),
+                                $1, $3);
+        }
+    |   UnionExpr  VBAR  IntersectExceptExpr
+        {
+            $$ = new UnionExpr(LOC (@$),
+                                $1, $3);
+        }
+    ;
 
 
 // [53] IntersectExceptExpr
 // ------------------------
 IntersectExceptExpr :
-		InstanceofExpr  %prec INTERSECT_EXCEPT_REDUCE
-		{
-			$$ = $1;
-		}
-	|	IntersectExceptExpr  INTERSECT  InstanceofExpr
-		{
-			$$ = new IntersectExceptExpr(LOC (@$), ParseConstants::op_intersect, $1, $3);
-		}
-	|	IntersectExceptExpr  EXCEPT  InstanceofExpr
-		{
-			$$ = new IntersectExceptExpr(LOC (@$), ParseConstants::op_except, $1, $3);
-		}
-	;
+        InstanceofExpr  %prec INTERSECT_EXCEPT_REDUCE
+        {
+            $$ = $1;
+        }
+    |   IntersectExceptExpr  INTERSECT  InstanceofExpr
+        {
+            $$ = new IntersectExceptExpr(LOC (@$), ParseConstants::op_intersect, $1, $3);
+        }
+    |   IntersectExceptExpr  EXCEPT  InstanceofExpr
+        {
+            $$ = new IntersectExceptExpr(LOC (@$), ParseConstants::op_except, $1, $3);
+        }
+    ;
 
 
 // [54] InstanceofExpr
 // -------------------
 InstanceofExpr :
-		TreatExpr
-		{
-			$$ = $1;
-		}
-	|	TreatExpr  INSTANCE OF  SequenceType
-		{
-			$$ = new InstanceofExpr(LOC (@$),
-								$1,
-								dynamic_cast<SequenceType*>($4));
-		}
-	;
+        TreatExpr
+        {
+            $$ = $1;
+        }
+    |   TreatExpr  INSTANCE OF  SequenceType
+        {
+            $$ = new InstanceofExpr(LOC (@$),
+                                $1,
+                                dynamic_cast<SequenceType*>($4));
+        }
+    ;
 
 
 // [55] TreatExpr
 // --------------
 TreatExpr :
-		CastableExpr
-		{
-			$$ = $1;
-		}
-	|	CastableExpr  TREAT AS  SequenceType
-		{
-			$$ = new TreatExpr(LOC (@$),
-								$1,
-								dynamic_cast<SequenceType*>($4));
-		}
-	;
+        CastableExpr
+        {
+            $$ = $1;
+        }
+    |   CastableExpr  TREAT AS  SequenceType
+        {
+            $$ = new TreatExpr(LOC (@$),
+                                $1,
+                                dynamic_cast<SequenceType*>($4));
+        }
+    ;
 
 
 // [56] CastableExpr
 // -----------------
 CastableExpr :
-		CastExpr
-		{
-			$$ = $1;
-		}
-	|	CastExpr  CASTABLE AS  SingleType
-		{
-			$$ = new CastableExpr(LOC (@$),
-								$1,
-								dynamic_cast<SingleType*>($4));
-		}
-	;
+        CastExpr
+        {
+            $$ = $1;
+        }
+    |   CastExpr  CASTABLE AS  SingleType
+        {
+            $$ = new CastableExpr(LOC (@$),
+                                $1,
+                                dynamic_cast<SingleType*>($4));
+        }
+    ;
 
 
 // [57] CastExpr
 // -------------
 CastExpr :
-		UnaryExpr
-		{
-			$$ = $1;
-		}
-	|	UnaryExpr  CAST AS  SingleType
-		{
-			$$ = new CastExpr(LOC (@$),
-								$1,
-								dynamic_cast<SingleType*>($4));
-		}
-	;
+        UnaryExpr
+        {
+            $$ = $1;
+        }
+    |   UnaryExpr  CAST AS  SingleType
+        {
+            $$ = new CastExpr(LOC (@$),
+                                $1,
+                                dynamic_cast<SingleType*>($4));
+        }
+    ;
 
 
 // [58] UnaryExpr
 // --------------
 UnaryExpr :
-		ValueExpr
-		{
-			$$ = $1;
-		}
-	|	SignList  ValueExpr
-		{
-			$$ = new UnaryExpr(LOC (@$),
-								dynamic_cast<SignList*>($1),
-								$2);
-		}
-	;
+        ValueExpr
+        {
+            $$ = $1;
+        }
+    |   SignList  ValueExpr
+        {
+            $$ = new UnaryExpr(LOC (@$),
+                                dynamic_cast<SignList*>($1),
+                                $2);
+        }
+    ;
 
 
 // [58a] SignList
 // --------------
 SignList :
-		PLUS
-		{
-			$$ = new SignList(LOC (@$), true);
-		}
-	|	MINUS
-		{
-			$$ = new SignList(LOC (@$), false);
-		}
-	|	SignList  PLUS
-		{
-			$$ = $1;
-		}
-	|	SignList  MINUS
-		{
-			SignList* slist_p = dynamic_cast<SignList*>($1);
-			if (slist_p) slist_p->negate();
-			$$ = $1;
-		}
-	;
+        PLUS
+        {
+            $$ = new SignList(LOC (@$), true);
+        }
+    |   MINUS
+        {
+            $$ = new SignList(LOC (@$), false);
+        }
+    |   SignList  PLUS
+        {
+            $$ = $1;
+        }
+    |   SignList  MINUS
+        {
+            SignList* slist_p = dynamic_cast<SignList*>($1);
+            if (slist_p) slist_p->negate();
+            $$ = $1;
+        }
+    ;
 
 
 // [59] ValueExpr
 // --------------
 ValueExpr :
-		ValidateExpr
-		{
-			$$ = $1;
-		}
-	|	PathExpr
-		{
-			$$ = $1;
-		}
-	|	ExtensionExpr
-		{
-			$$ = $1;
-		}
-	;
+        ValidateExpr
+        {
+            $$ = $1;
+        }
+    |   PathExpr
+        {
+            $$ = $1;
+        }
+    |   ExtensionExpr
+        {
+            $$ = $1;
+        }
+    ;
 
 
 // [61] ValueComp
 // --------------
 ValueComp :
-		VAL_EQ
-		{
-			$$ = new ValueComp(LOC (@$), ParseConstants::op_val_eq);
-		}
-	| VAL_NE
-		{
-			$$ = new ValueComp(LOC (@$), ParseConstants::op_val_ne);
-		}
-	| VAL_LT
-		{
-			$$ = new ValueComp(LOC (@$), ParseConstants::op_val_lt);
-		}
-	| VAL_LE
-		{
-			$$ = new ValueComp(LOC (@$), ParseConstants::op_val_le);
-		}
-	| VAL_GT
-		{
-			$$ = new ValueComp(LOC (@$), ParseConstants::op_val_gt);
-		}
-	| VAL_GE
-		{
-			$$ = new ValueComp(LOC (@$), ParseConstants::op_val_ge);
-		}
-	;
+        VAL_EQ
+        {
+            $$ = new ValueComp(LOC (@$), ParseConstants::op_val_eq);
+        }
+    | VAL_NE
+        {
+            $$ = new ValueComp(LOC (@$), ParseConstants::op_val_ne);
+        }
+    | VAL_LT
+        {
+            $$ = new ValueComp(LOC (@$), ParseConstants::op_val_lt);
+        }
+    | VAL_LE
+        {
+            $$ = new ValueComp(LOC (@$), ParseConstants::op_val_le);
+        }
+    | VAL_GT
+        {
+            $$ = new ValueComp(LOC (@$), ParseConstants::op_val_gt);
+        }
+    | VAL_GE
+        {
+            $$ = new ValueComp(LOC (@$), ParseConstants::op_val_ge);
+        }
+    ;
 
 
 // [62] NodeComp
 // -------------
 NodeComp :
-		IS
-		{
-			$$ = new NodeComp(LOC (@$), ParseConstants::op_is);
-		}
-	| PRECEDES
-		{
-			$$ = new NodeComp(LOC (@$), ParseConstants::op_precedes);
-		}
-	| FOLLOWS
-		{
-			$$ = new NodeComp(LOC (@$), ParseConstants::op_follows);
-		}
-	;
+        IS
+        {
+            $$ = new NodeComp(LOC (@$), ParseConstants::op_is);
+        }
+    | PRECEDES
+        {
+            $$ = new NodeComp(LOC (@$), ParseConstants::op_precedes);
+        }
+    | FOLLOWS
+        {
+            $$ = new NodeComp(LOC (@$), ParseConstants::op_follows);
+        }
+    ;
 
 
 // [63] ValidateExpr
 // -----------------
 ValidateExpr :
-		VALIDATE LBRACE  Expr  RBRACE
-		{
-			$$ = new ValidateExpr(LOC (@$), "strict", $3);
-		}
+        VALIDATE LBRACE  Expr  RBRACE
+        {
+            $$ = new ValidateExpr(LOC (@$), "strict", $3);
+        }
   | VALIDATE  LAX  LBRACE  Expr  RBRACE
     {
       $$ = new ValidateExpr(LOC (@$), "lax", $4);
@@ -3450,63 +3439,63 @@ ValidateExpr :
                             dynamic_cast<TypeName*>($3)->get_name(),
                             $5);
     }
-	;
+    ;
 
 
 // [64] ExtensionExpr
 // ------------------
 ExtensionExpr :
-		PragmaList  LBRACE  RBRACE
-		{
-			$$ = new ExtensionExpr(LOC (@$),
-								dynamic_cast<PragmaList*>($1),
-								NULL);
-		}
-	|	PragmaList  LBRACE  Expr  RBRACE
-		{
-			$$ = new ExtensionExpr(LOC (@$),
-								dynamic_cast<PragmaList*>($1),
-								$3);
-		}
-	;
+        PragmaList  LBRACE  RBRACE
+        {
+            $$ = new ExtensionExpr(LOC (@$),
+                                dynamic_cast<PragmaList*>($1),
+                                NULL);
+        }
+    |   PragmaList  LBRACE  Expr  RBRACE
+        {
+            $$ = new ExtensionExpr(LOC (@$),
+                                dynamic_cast<PragmaList*>($1),
+                                $3);
+        }
+    ;
 
 
 // [64a] PragmaList
 // ----------------
 PragmaList :
-		Pragma
-		{
-			PragmaList* pragma_list_p = new PragmaList(LOC (@$));
-			pragma_list_p->push_back(dynamic_cast<Pragma*>($1));
-			$$ = pragma_list_p;
-		}
-	|	PragmaList  Pragma
-		{
-			PragmaList* pragma_list_p = dynamic_cast<PragmaList*>($1);
-			if (pragma_list_p) {
-				pragma_list_p->push_back(dynamic_cast<Pragma*>($2));
-			}
-			$$ = $1;
-		}
-	;
+        Pragma
+        {
+            PragmaList* pragma_list_p = new PragmaList(LOC (@$));
+            pragma_list_p->push_back(dynamic_cast<Pragma*>($1));
+            $$ = pragma_list_p;
+        }
+    |   PragmaList  Pragma
+        {
+            PragmaList* pragma_list_p = dynamic_cast<PragmaList*>($1);
+            if (pragma_list_p) {
+                pragma_list_p->push_back(dynamic_cast<Pragma*>($2));
+            }
+            $$ = $1;
+        }
+    ;
 
 
 // [65] Pragma
 // -----------
 Pragma :
-		PRAGMA_BEGIN  QNAME  PRAGMA_LITERAL_AND_END_PRAGMA
-		{
-			$$ = new Pragma(LOC (@$),
-								static_cast<QName*>($2),
-								SYMTAB ($3));
+        PRAGMA_BEGIN  QNAME  PRAGMA_LITERAL_AND_END_PRAGMA
+        {
+            $$ = new Pragma(LOC (@$),
+                                static_cast<QName*>($2),
+                                SYMTAB ($3));
 
-		}
+        }
   | PRAGMA_BEGIN QNAME_SVAL_AND_END_PRAGMA {
-			$$ = new Pragma(LOC (@$),
-								new QName(LOC (@$), SYMTAB($2)),
-								"");
+            $$ = new Pragma(LOC (@$),
+                                new QName(LOC (@$), SYMTAB($2)),
+                                "");
     }
-	;	/* ws: explicit */
+    ;   /* ws: explicit */
 
 
 // [66] PragmaContents
@@ -3517,24 +3506,24 @@ Pragma :
 |
 | Constraint: leading-lone-slash
 |
-|	A single slash may appear either as a complete path expression or as
-|	the first part of a path expression in which it is followed by a
-|	RelativePathExpr, which can take the form of a NameTest ("*" or a
-|	QName). In contexts where operators like "*", "union", etc., can
-|	occur, parsers may have difficulty distinguishing operators from
-|	NameTests. For example, without lookahead the first part of the
-|	expression "/ * 5", for example is easily taken to be a complete
-|	expression, "/ *", which has a very different interpretation (the
-|	child nodes of "/").
+|   A single slash may appear either as a complete path expression or as
+|   the first part of a path expression in which it is followed by a
+|   RelativePathExpr, which can take the form of a NameTest ("*" or a
+|   QName). In contexts where operators like "*", "union", etc., can
+|   occur, parsers may have difficulty distinguishing operators from
+|   NameTests. For example, without lookahead the first part of the
+|   expression "/ * 5", for example is easily taken to be a complete
+|   expression, "/ *", which has a very different interpretation (the
+|   child nodes of "/").
 |
-|	To reduce the need for lookahead, therefore, if the token immediately
-|	following a slash is "*" or a keyword, then the slash must be the
-|	beginning, but not the entirety, of a PathExpr (and the following
-|	token must be a NameTest, not an operator).
+|   To reduce the need for lookahead, therefore, if the token immediately
+|   following a slash is "*" or a keyword, then the slash must be the
+|   beginning, but not the entirety, of a PathExpr (and the following
+|   token must be a NameTest, not an operator).
 |
-|	A single slash may be used as the left-hand argument of an operator by
-|	parenthesizing it: (/) * 5. The expression 5 * /, on the other hand,
-|	is legal without parentheses.
+|   A single slash may be used as the left-hand argument of an operator by
+|   parenthesizing it: (/) * 5. The expression 5 * /, on the other hand,
+|   is legal without parentheses.
 |
 |_______________________________________________________________________*/
 
@@ -3542,26 +3531,26 @@ Pragma :
 // [67] PathExpr
 // -------------
 PathExpr :
-		LeadingSlash
-		{
-			$$ = new PathExpr(LOC (@$), ParseConstants::path_leading_lone_slash, NULL);
-		}
-	|	LeadingSlash RelativePathExpr
-		{
-			$$ = new PathExpr(LOC (@$), ParseConstants::path_leading_slash, $2);
-		}
-	|	SLASH_SLASH  RelativePathExpr
-		{
-			$$ = new PathExpr(LOC (@$), ParseConstants::path_leading_slashslash, $2);
-		}
-	|	RelativePathExpr	 	/* gn: leading-lone-slashXQ */
-		{
+        LeadingSlash
+        {
+            $$ = new PathExpr(LOC (@$), ParseConstants::path_leading_lone_slash, NULL);
+        }
+    |   LeadingSlash RelativePathExpr
+        {
+            $$ = new PathExpr(LOC (@$), ParseConstants::path_leading_slash, $2);
+        }
+    |   SLASH_SLASH  RelativePathExpr
+        {
+            $$ = new PathExpr(LOC (@$), ParseConstants::path_leading_slashslash, $2);
+        }
+    |   RelativePathExpr        /* gn: leading-lone-slashXQ */
+        {
        RelativePathExpr *rpe = dynamic_cast<RelativePathExpr *>($1);
        $$ = (rpe == NULL ?
              $1 :
              new PathExpr(LOC(@$), ParseConstants::path_relative, $1));
-		}
-	;
+        }
+    ;
 
 // Leading slash promotion
 // -----------------------
@@ -3576,8 +3565,8 @@ LeadingSlash :
 // [68] RelativePathExpr
 // ---------------------
 RelativePathExpr :
-		StepExpr  %prec STEP_REDUCE
-		{
+        StepExpr  %prec STEP_REDUCE
+        {
        AxisStep *as = dynamic_cast<AxisStep *>($1);
        $$ = (as != NULL ?
              new RelativePathExpr(LOC (@$),
@@ -3585,168 +3574,168 @@ RelativePathExpr :
                                   new ContextItemExpr(LOC(@$), true),
                                   $1) :
              $1);
-		}
+        }
 
-	|	StepExpr  SLASH  RelativePathExpr
-		{
-			$$ = new RelativePathExpr(LOC(@$), ParseConstants::st_slash, $1, $3);
-		}
+    |   StepExpr  SLASH  RelativePathExpr
+        {
+            $$ = new RelativePathExpr(LOC(@$), ParseConstants::st_slash, $1, $3);
+        }
 
-	|	StepExpr  SLASH_SLASH  RelativePathExpr
-		{
-			$$ = new RelativePathExpr(LOC(@$), ParseConstants::st_slashslash, $1, $3);
-		}
-	;
+    |   StepExpr  SLASH_SLASH  RelativePathExpr
+        {
+            $$ = new RelativePathExpr(LOC(@$), ParseConstants::st_slashslash, $1, $3);
+        }
+    ;
 
 
 // [69] StepExpr
 // -------------
 StepExpr :
-		AxisStep
-		{
-			$$ = $1;
-		}
-	|	FilterExpr
-		{
-			$$ = $1;
-		}
-	;
+        AxisStep
+        {
+            $$ = $1;
+        }
+    |   FilterExpr
+        {
+            $$ = $1;
+        }
+    ;
 
 
 // [70] AxisStep
 // -------------
 AxisStep :
-		ForwardStep
-		{
-			$$ = new AxisStep(LOC (@$),
-								dynamic_cast<ForwardStep*>($1),
-								NULL);
-		}
-	|	ForwardStep  PredicateList
-		{
-			$$ = new AxisStep(LOC (@$),
-								dynamic_cast<ForwardStep*>($1),
-								dynamic_cast<PredicateList*>($2));
-		}
-	|	ReverseStep
-		{
-			$$ = new AxisStep(LOC (@$),
-								dynamic_cast<ReverseStep*>($1),
-								NULL);
-		}
-	|	ReverseStep  PredicateList
-		{
-			$$ = new AxisStep(LOC (@$),
-								dynamic_cast<ReverseStep*>($1),
-								dynamic_cast<PredicateList*>($2));
-		}
-	;
+        ForwardStep
+        {
+            $$ = new AxisStep(LOC (@$),
+                                dynamic_cast<ForwardStep*>($1),
+                                NULL);
+        }
+    |   ForwardStep  PredicateList
+        {
+            $$ = new AxisStep(LOC (@$),
+                                dynamic_cast<ForwardStep*>($1),
+                                dynamic_cast<PredicateList*>($2));
+        }
+    |   ReverseStep
+        {
+            $$ = new AxisStep(LOC (@$),
+                                dynamic_cast<ReverseStep*>($1),
+                                NULL);
+        }
+    |   ReverseStep  PredicateList
+        {
+            $$ = new AxisStep(LOC (@$),
+                                dynamic_cast<ReverseStep*>($1),
+                                dynamic_cast<PredicateList*>($2));
+        }
+    ;
 
 
 // [71] ForwardStep
 // ----------------
 ForwardStep :
-		ForwardAxis  NodeTest
-		{
-			$$ = new ForwardStep(LOC (@$),
-								dynamic_cast<ForwardAxis*>($1),
-								$2);
-		}
-	|	AbbrevForwardStep
-		{
-			$$ = new ForwardStep(LOC (@$),
-								dynamic_cast<AbbrevForwardStep*>($1));
-		}
-	;
+        ForwardAxis  NodeTest
+        {
+            $$ = new ForwardStep(LOC (@$),
+                                dynamic_cast<ForwardAxis*>($1),
+                                $2);
+        }
+    |   AbbrevForwardStep
+        {
+            $$ = new ForwardStep(LOC (@$),
+                                dynamic_cast<AbbrevForwardStep*>($1));
+        }
+    ;
 
 
 // [72] ForwardAxis
 // ----------------
 ForwardAxis :
-		CHILD_AXIS
-		{
-			$$ = new ForwardAxis(LOC (@$), ParseConstants::axis_child);
-		}
-	| DESCENDANT_AXIS
-		{
-			$$ = new ForwardAxis(LOC (@$), ParseConstants::axis_descendant);
-		}
-	| ATTRIBUTE_AXIS
-		{
-			$$ = new ForwardAxis(LOC (@$), ParseConstants::axis_attribute);
-		}
-	| SELF_AXIS
-		{
-			$$ = new ForwardAxis(LOC (@$), ParseConstants::axis_self);
-		}
-	| DESCENDANT_OR_SELF_AXIS
-		{
-			$$ = new ForwardAxis(LOC (@$), ParseConstants::axis_descendant_or_self);
-		}
-	| FOLLOWING_SIBLING_AXIS
-		{
-			$$ = new ForwardAxis(LOC (@$), ParseConstants::axis_following_sibling);
-		}
-	| FOLLOWING_AXIS
-		{
-			$$ = new ForwardAxis(LOC (@$), ParseConstants::axis_following);
-		}
-	;
+        CHILD_AXIS
+        {
+            $$ = new ForwardAxis(LOC (@$), ParseConstants::axis_child);
+        }
+    | DESCENDANT_AXIS
+        {
+            $$ = new ForwardAxis(LOC (@$), ParseConstants::axis_descendant);
+        }
+    | ATTRIBUTE_AXIS
+        {
+            $$ = new ForwardAxis(LOC (@$), ParseConstants::axis_attribute);
+        }
+    | SELF_AXIS
+        {
+            $$ = new ForwardAxis(LOC (@$), ParseConstants::axis_self);
+        }
+    | DESCENDANT_OR_SELF_AXIS
+        {
+            $$ = new ForwardAxis(LOC (@$), ParseConstants::axis_descendant_or_self);
+        }
+    | FOLLOWING_SIBLING_AXIS
+        {
+            $$ = new ForwardAxis(LOC (@$), ParseConstants::axis_following_sibling);
+        }
+    | FOLLOWING_AXIS
+        {
+            $$ = new ForwardAxis(LOC (@$), ParseConstants::axis_following);
+        }
+    ;
 
 
 // [73] AbbrevForwardStep
 // ----------------------
 AbbrevForwardStep :
-		NodeTest
-		{
-			$$ = new AbbrevForwardStep(LOC (@$), $1, false);
-		}
-	|	AT_SIGN  NodeTest
-		{
-			$$ = new AbbrevForwardStep(LOC (@$), $2, true);
-		}
-	;
+        NodeTest
+        {
+            $$ = new AbbrevForwardStep(LOC (@$), $1, false);
+        }
+    |   AT_SIGN  NodeTest
+        {
+            $$ = new AbbrevForwardStep(LOC (@$), $2, true);
+        }
+    ;
 
 
 // [74] ReverseStep
 // ----------------
 ReverseStep :
-		ReverseAxis  NodeTest
-		{
-			$$ = new ReverseStep(LOC(@$), dynamic_cast<ReverseAxis*>($1), $2);
-		}
-	|	DOT_DOT
-		{
-			ReverseAxis* rev_p = new ReverseAxis(LOC (@$), ParseConstants::axis_parent);
-			$$ = new ReverseStep(LOC(@$), rev_p, NULL);
-		}
-	;
+        ReverseAxis  NodeTest
+        {
+            $$ = new ReverseStep(LOC(@$), dynamic_cast<ReverseAxis*>($1), $2);
+        }
+    |   DOT_DOT
+        {
+            ReverseAxis* rev_p = new ReverseAxis(LOC (@$), ParseConstants::axis_parent);
+            $$ = new ReverseStep(LOC(@$), rev_p, NULL);
+        }
+    ;
 
 
 // [75] ReverseAxis
 // ----------------
 ReverseAxis :
-		PARENT_AXIS
-		{
-			$$ = new ReverseAxis(LOC (@$), ParseConstants::axis_parent);
-		}
-	| ANCESTOR_AXIS
-		{
-			$$ = new ReverseAxis(LOC (@$), ParseConstants::axis_ancestor);
-		}
-	| PRECEDING_SIBLING_AXIS
-		{
-			$$ = new ReverseAxis(LOC (@$), ParseConstants::axis_preceding_sibling);
-		}
-	| PRECEDING_AXIS
-		{
-			$$ = new ReverseAxis(LOC (@$), ParseConstants::axis_preceding);
-		}
-	| ANCESTOR_OR_SELF_AXIS
-		{
-			$$ = new ReverseAxis(LOC (@$), ParseConstants::axis_ancestor_or_self);
-		}
-	;
+        PARENT_AXIS
+        {
+            $$ = new ReverseAxis(LOC (@$), ParseConstants::axis_parent);
+        }
+    | ANCESTOR_AXIS
+        {
+            $$ = new ReverseAxis(LOC (@$), ParseConstants::axis_ancestor);
+        }
+    | PRECEDING_SIBLING_AXIS
+        {
+            $$ = new ReverseAxis(LOC (@$), ParseConstants::axis_preceding_sibling);
+        }
+    | PRECEDING_AXIS
+        {
+            $$ = new ReverseAxis(LOC (@$), ParseConstants::axis_preceding);
+        }
+    | ANCESTOR_OR_SELF_AXIS
+        {
+            $$ = new ReverseAxis(LOC (@$), ParseConstants::axis_ancestor_or_self);
+        }
+    ;
 
 
 // [76] AbbrevReverseStep
@@ -3757,451 +3746,451 @@ ReverseAxis :
 // [77] NodeTest
 // -------------
 NodeTest :
-		KindTest
-		{
-			$$ = $1;
-		}
-	|	NameTest
-		{
-			$$ = $1;
-		}
-	;
+        KindTest
+        {
+            $$ = $1;
+        }
+    |   NameTest
+        {
+            $$ = $1;
+        }
+    ;
 
 
 // [78] NameTest
 // -------------
 NameTest :
-		QNAME
-		{
-			$$ = new NameTest(LOC (@$), static_cast<QName*>($1));
-		}
-	|	Wildcard
-		{
-			$$ = new NameTest(LOC (@$), dynamic_cast<Wildcard*>($1));
-		}
-	;
+        QNAME
+        {
+            $$ = new NameTest(LOC (@$), static_cast<QName*>($1));
+        }
+    |   Wildcard
+        {
+            $$ = new NameTest(LOC (@$), dynamic_cast<Wildcard*>($1));
+        }
+    ;
 
 
 // [79] Wildcard
 // -------------
 Wildcard :
-		STAR
-		{
-			$$ = new Wildcard(LOC (@$),
+        STAR
+        {
+            $$ = new Wildcard(LOC (@$),
                         "",
                         "",
                         ParseConstants::wild_all);
-		}
-	|	ELEM_WILDCARD
-		{
-			$$ = new Wildcard(LOC (@$),
+        }
+    |   ELEM_WILDCARD
+        {
+            $$ = new Wildcard(LOC (@$),
                         SYMTAB ($1),
                         "",
                         ParseConstants::wild_elem);
-		}
-	|	PREFIX_WILDCARD   /* ws: explicitXQ */
-		{
-			$$ = new Wildcard(LOC (@$),
+        }
+    |   PREFIX_WILDCARD   /* ws: explicitXQ */
+        {
+            $$ = new Wildcard(LOC (@$),
                         "",
                         SYMTAB ($1),
                         ParseConstants::wild_prefix);
-		}
-	;
+        }
+    ;
 
 
 // [80] FilterExpr
 // ---------------
 FilterExpr :
-		PrimaryExpr
-		{
+        PrimaryExpr
+        {
        $$ = $1;
-		}
-	|	PrimaryExpr  PredicateList
-		{
-			$$ = new FilterExpr(LOC (@$),
+        }
+    |   PrimaryExpr  PredicateList
+        {
+            $$ = new FilterExpr(LOC (@$),
                           $1,
                           dynamic_cast<PredicateList*>($2));
-		}
-	;
+        }
+    ;
 
 
 // [81] PredicateList
 // ------------------
 PredicateList :
-		Predicate
-		{
-			PredicateList* pred_list_p = new PredicateList(LOC (@$));
-			pred_list_p->push_back(dynamic_cast<exprnode*>($1));
-			$$ = pred_list_p;
-		}
-	|	PredicateList  Predicate
-		{
-			PredicateList* pred_list_p = dynamic_cast<PredicateList*>($1);
-			if (pred_list_p) {
-				pred_list_p->push_back(dynamic_cast<exprnode*>($2));
-			}
-			$$ = $1;
-		}
-	;
+        Predicate
+        {
+            PredicateList* pred_list_p = new PredicateList(LOC (@$));
+            pred_list_p->push_back(dynamic_cast<exprnode*>($1));
+            $$ = pred_list_p;
+        }
+    |   PredicateList  Predicate
+        {
+            PredicateList* pred_list_p = dynamic_cast<PredicateList*>($1);
+            if (pred_list_p) {
+                pred_list_p->push_back(dynamic_cast<exprnode*>($2));
+            }
+            $$ = $1;
+        }
+    ;
 
 
 // [82] Predicate
 // --------------
 Predicate :
-		LBRACK  Expr  RBRACK
-		{
-			$$ = $2;
-		}
-	;
+        LBRACK  Expr  RBRACK
+        {
+            $$ = $2;
+        }
+    ;
 
 
 
 // [83] PrimaryExpr
 // ----------------
 PrimaryExpr :
-		Literal
-		{
-			$$ = $1;
-		}
-	|	VarRef
-		{
-			$$ = $1;
-		}
-	|	ParenthesizedExpr
-		{
-			$$ = $1;
-		}
-	|	ContextItemExpr
-		{
-			$$ = $1;
-		}
-	|	FunctionCall
-		{
-			$$ = $1;
-		}
-	|	Constructor
-		{
-			$$ = $1;
-		}
-	|	OrderedExpr
-		{
-			$$ = $1;
-		}
-	|	UnorderedExpr
-		{
-			$$ = $1;
-		}
-	;
+        Literal
+        {
+            $$ = $1;
+        }
+    |   VarRef
+        {
+            $$ = $1;
+        }
+    |   ParenthesizedExpr
+        {
+            $$ = $1;
+        }
+    |   ContextItemExpr
+        {
+            $$ = $1;
+        }
+    |   FunctionCall
+        {
+            $$ = $1;
+        }
+    |   Constructor
+        {
+            $$ = $1;
+        }
+    |   OrderedExpr
+        {
+            $$ = $1;
+        }
+    |   UnorderedExpr
+        {
+            $$ = $1;
+        }
+    ;
 
 
 // [84] Literal
 // ------------
 Literal :
-		NumericLiteral
-		{
-			$$ = $1;
-		}
-	|	StringLiteral
-		{
-			$$ = $1;
-		}
-	;
+        NumericLiteral
+        {
+            $$ = $1;
+        }
+    |   StringLiteral
+        {
+            $$ = $1;
+        }
+    ;
 
 
 // [85] NumericLiteral
 // -------------------
 NumericLiteral :
-		DECIMAL_LITERAL
-		{
-			$$ = NumericLiteral::new_literal(LOC (@$), ParseConstants::num_decimal, *$1);
+        DECIMAL_LITERAL
+        {
+            $$ = NumericLiteral::new_literal(LOC (@$), ParseConstants::num_decimal, *$1);
       delete yylval.decval;
-		}
-	| INTEGER_LITERAL
-		{
-			$$ = NumericLiteral::new_literal(LOC (@$), ParseConstants::num_integer, *$1);
+        }
+    | INTEGER_LITERAL
+        {
+            $$ = NumericLiteral::new_literal(LOC (@$), ParseConstants::num_integer, *$1);
       delete yylval.ival;
-		}
-	|	DOUBLE_LITERAL
-		{
-			$$ = NumericLiteral::new_literal(LOC (@$), ParseConstants::num_double, *$1);
+        }
+    |   DOUBLE_LITERAL
+        {
+            $$ = NumericLiteral::new_literal(LOC (@$), ParseConstants::num_double, *$1);
       delete yylval.dval;
-		}
-	;
+        }
+    ;
 
 
 // [86] VarRef
 // -----------
 VarRef :
-		DOLLAR  QNAME
-		{
-			$$ = new VarRef(LOC (@$), static_cast<QName*>($2)->get_qname());
+        DOLLAR  QNAME
+        {
+            $$ = new VarRef(LOC (@$), static_cast<QName*>($2)->get_qname());
       delete $2;
-		}
-	;
+        }
+    ;
 
 
 // [87] ParenthesizedExpr
 // ----------------------
 ParenthesizedExpr :
-		LPAR  RPAR
-		{
-			$$ = new ParenthesizedExpr(LOC (@$), NULL);
-		}
-	|	LPAR  Expr  RPAR
-		{
-			$$ = new ParenthesizedExpr(LOC (@$),
-								$2);
-		}
-	;
+        LPAR  RPAR
+        {
+            $$ = new ParenthesizedExpr(LOC (@$), NULL);
+        }
+    |   LPAR  Expr  RPAR
+        {
+            $$ = new ParenthesizedExpr(LOC (@$),
+                                $2);
+        }
+    ;
 
 
 // [88] ContextItemExpr
 // --------------------
 ContextItemExpr :
-		DOT
-		{
-			$$ = new ContextItemExpr(LOC (@$));
-		}
-	;
+        DOT
+        {
+            $$ = new ContextItemExpr(LOC (@$));
+        }
+    ;
 
 
 // [89] OrderedExpr
 // ----------------
 OrderedExpr :
-		ORDERED LBRACE  Expr  RBRACE
-		{
-			$$ = new OrderedExpr(LOC (@$),
-								$3);
-		}
-	;
+        ORDERED LBRACE  Expr  RBRACE
+        {
+            $$ = new OrderedExpr(LOC (@$),
+                                $3);
+        }
+    ;
 
 
 // [90] UnorderedExpr
 // ------------------
 UnorderedExpr :
-		UNORDERED LBRACE  Expr  RBRACE
-		{
-			$$ = new UnorderedExpr(LOC (@$),
-								$3);
-		}
-	;
+        UNORDERED LBRACE  Expr  RBRACE
+        {
+            $$ = new UnorderedExpr(LOC (@$),
+                                $3);
+        }
+    ;
 
 
 // [91] FunctionCall
 // -----------------
 /*___________________________________________________________________
-|	gn: reserved-function-namesXQ
-|	Constraint: reserved-function-names
+|   gn: reserved-function-namesXQ
+|   Constraint: reserved-function-names
 |
-|	Unprefixed function names spelled the same way as language keywords
-|	could make the language harder to recognize. For instance, if(foo)
-|	could be taken either as a FunctionCall or as the beginning of an
-|	IfExpr. Therefore it is not legal syntax for a user to invoke
-|	functions with unprefixed names which match any of the names:
-|		attribute
-|		comment
-|		document-node
-|		element
-|		empty-sequence
-|		if
-|		item
-| 	node
-|		processing-instruction
-|		schema-attribute
-|		schema-element
-|		text
-|		typeswitch
+|   Unprefixed function names spelled the same way as language keywords
+|   could make the language harder to recognize. For instance, if(foo)
+|   could be taken either as a FunctionCall or as the beginning of an
+|   IfExpr. Therefore it is not legal syntax for a user to invoke
+|   functions with unprefixed names which match any of the names:
+|       attribute
+|       comment
+|       document-node
+|       element
+|       empty-sequence
+|       if
+|       item
+|   node
+|       processing-instruction
+|       schema-attribute
+|       schema-element
+|       text
+|       typeswitch
 |
-|	A function named "if" can be called by binding its namespace to a
-|	prefix and using the prefixed form: "library:if(foo)" instead of
-|	"if(foo)".
+|   A function named "if" can be called by binding its namespace to a
+|   prefix and using the prefixed form: "library:if(foo)" instead of
+|   "if(foo)".
 |____________________________________________________________________*/
 
 /*___________________________________________________________________
-|	gn: parensXQ
-|	Grammar-note: parens
+|   gn: parensXQ
+|   Grammar-note: parens
 |
-|	Look-ahead is required to distinguish FunctionCall from a QName or
-|	keyword followed by a Pragma or Comment. For example:
+|   Look-ahead is required to distinguish FunctionCall from a QName or
+|   keyword followed by a Pragma or Comment. For example:
 |
-|		address (: this may be empty :)
+|       address (: this may be empty :)
 |
-|	may be mistaken for a call to a function named
-|	"address" unless this lookahead is employed. Another example is
+|   may be mistaken for a call to a function named
+|   "address" unless this lookahead is employed. Another example is
 |
-|		for (: whom the bell :) $tolls in 3 return $tolls,
+|       for (: whom the bell :) $tolls in 3 return $tolls,
 |
-|	where the keyword "for" must not be mistaken for a function name.
+|   where the keyword "for" must not be mistaken for a function name.
 |
 |____________________________________________________________________*/
 FunctionCall :
-		QNAME LPAR  RPAR
-		{
-			$$ = new FunctionCall(LOC (@$),
-								static_cast<QName*>($1),
-								NULL);
-		}
-	|	QNAME LPAR  ArgList  RPAR
-		{
-			$$ = new FunctionCall(LOC (@$),
-								static_cast<QName*>($1),
-								dynamic_cast<ArgList*>($3));
-		}
-	;
+        QNAME LPAR  RPAR
+        {
+            $$ = new FunctionCall(LOC (@$),
+                                static_cast<QName*>($1),
+                                NULL);
+        }
+    |   QNAME LPAR  ArgList  RPAR
+        {
+            $$ = new FunctionCall(LOC (@$),
+                                static_cast<QName*>($1),
+                                dynamic_cast<ArgList*>($3));
+        }
+    ;
 
 
 // [91a] ArgList
 // -------------
 ArgList :
-		ExprSingle
-		{
-			ArgList* a_list_p = new ArgList(LOC (@$));
-			a_list_p->push_back($1);
-			$$ = a_list_p;
-		}
-	|	ArgList  COMMA  ExprSingle
-		{
-			ArgList* a_list_p = dynamic_cast<ArgList*>($1);
-			if (a_list_p) a_list_p->push_back($3);
-			$$ = $1;
-		}
-	;
+        ExprSingle
+        {
+            ArgList* a_list_p = new ArgList(LOC (@$));
+            a_list_p->push_back($1);
+            $$ = a_list_p;
+        }
+    |   ArgList  COMMA  ExprSingle
+        {
+            ArgList* a_list_p = dynamic_cast<ArgList*>($1);
+            if (a_list_p) a_list_p->push_back($3);
+            $$ = $1;
+        }
+    ;
 
 
 // [92] Constructor
 // ----------------
 Constructor :
-		DirectConstructor
-		{
-			$$ = $1;
-		}
-	|	ComputedConstructor
-		{
-			$$ = $1;
-		}
-	;
+        DirectConstructor
+        {
+            $$ = $1;
+        }
+    |   ComputedConstructor
+        {
+            $$ = $1;
+        }
+    ;
 
 
 // [93] DirectConstructor
 // ----------------------
 DirectConstructor :
-		DirElemConstructor
-		{
-			$$ = $1;
-		}
-	|	DirCommentConstructor
-		{
-			$$ = $1;
-		}
-	|	DirPIConstructor
-		{
-			$$ = $1;
-		}
-	;
+        DirElemConstructor
+        {
+            $$ = $1;
+        }
+    |   DirCommentConstructor
+        {
+            $$ = $1;
+        }
+    |   DirPIConstructor
+        {
+            $$ = $1;
+        }
+    ;
 
 
 // [94] DirElemConstructor
 // -----------------------
 DirElemConstructor :
     LT_OR_START_TAG  QNAME  OptionalBlank  EMPTY_TAG_END /* ws: explicitXQ */
-		{
-			$$ = new DirElemConstructor(LOC (@$),
-								static_cast<QName*>($2),
-								NULL,
-								NULL,
-								NULL);
-		}
+        {
+            $$ = new DirElemConstructor(LOC (@$),
+                                static_cast<QName*>($2),
+                                NULL,
+                                NULL,
+                                NULL);
+        }
   | LT_OR_START_TAG  QNAME  DirAttributeList  OptionalBlank  EMPTY_TAG_END /* ws: explicitXQ */
-		{
-			$$ = new DirElemConstructor(LOC (@$),
-								static_cast<QName*>($2),
-								NULL,
-								dynamic_cast<DirAttributeList*>($3),
-								NULL);
-		}
+        {
+            $$ = new DirElemConstructor(LOC (@$),
+                                static_cast<QName*>($2),
+                                NULL,
+                                dynamic_cast<DirAttributeList*>($3),
+                                NULL);
+        }
   | LT_OR_START_TAG  QNAME  OptionalBlank  TAG_END  START_TAG_END  QNAME OptionalBlank TAG_END
-		{
-			$$ = new DirElemConstructor(LOC (@$),
-								static_cast<QName*>($2),
-								static_cast<QName*>($6),
-								NULL,
-								NULL);
-		}
-  |	LT_OR_START_TAG  QNAME  OptionalBlank  TAG_END  DirElemContentList  START_TAG_END  QNAME  OptionalBlank  TAG_END
-		{
-			$$ = new DirElemConstructor(LOC (@$),
-								static_cast<QName*>($2),
-								static_cast<QName*>($7),
-								NULL,
-								dynamic_cast<DirElemContentList*>($5));
-		}
+        {
+            $$ = new DirElemConstructor(LOC (@$),
+                                static_cast<QName*>($2),
+                                static_cast<QName*>($6),
+                                NULL,
+                                NULL);
+        }
+  | LT_OR_START_TAG  QNAME  OptionalBlank  TAG_END  DirElemContentList  START_TAG_END  QNAME  OptionalBlank  TAG_END
+        {
+            $$ = new DirElemConstructor(LOC (@$),
+                                static_cast<QName*>($2),
+                                static_cast<QName*>($7),
+                                NULL,
+                                dynamic_cast<DirElemContentList*>($5));
+        }
   | LT_OR_START_TAG  QNAME  DirAttributeList  OptionalBlank  TAG_END  START_TAG_END  QNAME  OptionalBlank  TAG_END
-		{
-			$$ = new DirElemConstructor(LOC (@$),
-								static_cast<QName*>($2),
-								static_cast<QName*>($7),
-								dynamic_cast<DirAttributeList*>($3),
-								NULL);
-		}
-    |	LT_OR_START_TAG  QNAME  DirAttributeList  OptionalBlank  TAG_END  DirElemContentList  START_TAG_END  QNAME  OptionalBlank  TAG_END
-		{
-			$$ = new DirElemConstructor(LOC (@$),
-								static_cast<QName*>($2),
-								static_cast<QName*>($8),
-								dynamic_cast<DirAttributeList*>($3),
-								dynamic_cast<DirElemContentList*>($6));
-		}
-			/* ws: explicitXQ */
-	;
+        {
+            $$ = new DirElemConstructor(LOC (@$),
+                                static_cast<QName*>($2),
+                                static_cast<QName*>($7),
+                                dynamic_cast<DirAttributeList*>($3),
+                                NULL);
+        }
+    |   LT_OR_START_TAG  QNAME  DirAttributeList  OptionalBlank  TAG_END  DirElemContentList  START_TAG_END  QNAME  OptionalBlank  TAG_END
+        {
+            $$ = new DirElemConstructor(LOC (@$),
+                                static_cast<QName*>($2),
+                                static_cast<QName*>($8),
+                                dynamic_cast<DirAttributeList*>($3),
+                                dynamic_cast<DirElemContentList*>($6));
+        }
+            /* ws: explicitXQ */
+    ;
 
 
 // [94a] DirElemContentList
 // ------------------------
 DirElemContentList :
-	DirElemContent
-		{
-			DirElemContentList* elem_content_list_p = new DirElemContentList(LOC (@$));
-			elem_content_list_p->push_back(dynamic_cast<DirElemContent*>($1));
-			$$ = elem_content_list_p;
-		}
-	|	DirElemContentList  DirElemContent
-		{
-			DirElemContentList* elem_content_list_p = dynamic_cast<DirElemContentList*>($1);
-			if (elem_content_list_p) elem_content_list_p->push_back(dynamic_cast<DirElemContent*>($2));
-			$$ = $1;
-		}
-	;
+    DirElemContent
+        {
+            DirElemContentList* elem_content_list_p = new DirElemContentList(LOC (@$));
+            elem_content_list_p->push_back(dynamic_cast<DirElemContent*>($1));
+            $$ = elem_content_list_p;
+        }
+    |   DirElemContentList  DirElemContent
+        {
+            DirElemContentList* elem_content_list_p = dynamic_cast<DirElemContentList*>($1);
+            if (elem_content_list_p) elem_content_list_p->push_back(dynamic_cast<DirElemContent*>($2));
+            $$ = $1;
+        }
+    ;
 
 
 // [95] DirAttributeList
 // ---------------------
 DirAttributeList :
-		DirAttr
-		{
-			DirAttributeList* at_list_p = new DirAttributeList(LOC (@$));
-			at_list_p->push_back(dynamic_cast<DirAttr*>($1));
-			$$ = at_list_p;
-		}
-	|	DirAttributeList  DirAttr
-		{
-			DirAttributeList* at_list_p = dynamic_cast<DirAttributeList*>($1);
-			if (at_list_p) {
-				at_list_p->push_back(dynamic_cast<DirAttr*>($2));
-			}
-			$$ = $1;
-		}
-	;
+        DirAttr
+        {
+            DirAttributeList* at_list_p = new DirAttributeList(LOC (@$));
+            at_list_p->push_back(dynamic_cast<DirAttr*>($1));
+            $$ = at_list_p;
+        }
+    |   DirAttributeList  DirAttr
+        {
+            DirAttributeList* at_list_p = dynamic_cast<DirAttributeList*>($1);
+            if (at_list_p) {
+                at_list_p->push_back(dynamic_cast<DirAttr*>($2));
+            }
+            $$ = $1;
+        }
+    ;
 
 // [95a] DirAttr
 // -------------
 DirAttr :
-    BLANK  QNAME  OptionalBlank  EQUALS  OptionalBlank  DirAttributeValue 	/* ws: explicitXQ */
-		{
-			$$ = new DirAttr(LOC (@$),
-								static_cast<QName*>($2),
-								dynamic_cast<DirAttributeValue*>($6));
-		}
-	;
+    BLANK  QNAME  OptionalBlank  EQUALS  OptionalBlank  DirAttributeValue   /* ws: explicitXQ */
+        {
+            $$ = new DirAttr(LOC (@$),
+                                static_cast<QName*>($2),
+                                dynamic_cast<DirAttributeValue*>($6));
+        }
+    ;
 
 // OptionaBlank used in the DirElemConstr
 OptionalBlank :
@@ -4212,209 +4201,209 @@ OptionalBlank :
 // [96] DirAttributeValue
 // ----------------------
 DirAttributeValue :
-		QUOTE  Opt_QuoteAttrContentList  QUOTE
-		{
-			$$ = new DirAttributeValue(LOC (@$),
-								dynamic_cast<QuoteAttrContentList*>($2));
-		}
-	|	APOS  Opt_AposAttrContentList  APOS 	/* ws: explicitXQ */
-		{
-			$$ = new DirAttributeValue(LOC (@$),
-								dynamic_cast<AposAttrContentList*>($2));
-		}
-	;
+        QUOTE  Opt_QuoteAttrContentList  QUOTE
+        {
+            $$ = new DirAttributeValue(LOC (@$),
+                                dynamic_cast<QuoteAttrContentList*>($2));
+        }
+    |   APOS  Opt_AposAttrContentList  APOS     /* ws: explicitXQ */
+        {
+            $$ = new DirAttributeValue(LOC (@$),
+                                dynamic_cast<AposAttrContentList*>($2));
+        }
+    ;
 
 
 // [96a] QuoteAttrContentList
 // --------------------------
 Opt_QuoteAttrContentList :
-		/* empty */
-		{
-			$$ = new QuoteAttrContentList(LOC (@$));
-		}
-	|	QuoteAttrContentList
-		{
-			$$ = $1;
-		}
-	;
+        /* empty */
+        {
+            $$ = new QuoteAttrContentList(LOC (@$));
+        }
+    |   QuoteAttrContentList
+        {
+            $$ = $1;
+        }
+    ;
 
 QuoteAttrContentList :
-		ESCAPE_QUOTE
-		{
-			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList(LOC (@$));
-			qo_list_p->push_back(new QuoteAttrValueContent(LOC (@$),std::string("\"")));
-			$$ = qo_list_p;
-		}
-	|	QuoteAttrValueContent
-		{
-			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList(LOC (@$));
-			qo_list_p->push_back(dynamic_cast<QuoteAttrValueContent*>($1));
-			$$ = qo_list_p;
-		}
-	|	QuoteAttrContentList  ESCAPE_QUOTE
-		{
-			QuoteAttrContentList* qo_list_p = dynamic_cast<QuoteAttrContentList*>($1);
-			if (qo_list_p) {
-				qo_list_p->push_back(new QuoteAttrValueContent(LOC (@$),std::string("\"")));
-			}
-			$$ = $1;
-		}
-	|	QuoteAttrContentList  QuoteAttrValueContent
-		{
-			QuoteAttrContentList* qo_list_p = dynamic_cast<QuoteAttrContentList*>($1);
-			if (qo_list_p) {
-				qo_list_p->push_back(dynamic_cast<QuoteAttrValueContent*>($2));
-			}
-			$$ = $1;
-		}
-	;
+        ESCAPE_QUOTE
+        {
+            QuoteAttrContentList* qo_list_p = new QuoteAttrContentList(LOC (@$));
+            qo_list_p->push_back(new QuoteAttrValueContent(LOC (@$),std::string("\"")));
+            $$ = qo_list_p;
+        }
+    |   QuoteAttrValueContent
+        {
+            QuoteAttrContentList* qo_list_p = new QuoteAttrContentList(LOC (@$));
+            qo_list_p->push_back(dynamic_cast<QuoteAttrValueContent*>($1));
+            $$ = qo_list_p;
+        }
+    |   QuoteAttrContentList  ESCAPE_QUOTE
+        {
+            QuoteAttrContentList* qo_list_p = dynamic_cast<QuoteAttrContentList*>($1);
+            if (qo_list_p) {
+                qo_list_p->push_back(new QuoteAttrValueContent(LOC (@$),std::string("\"")));
+            }
+            $$ = $1;
+        }
+    |   QuoteAttrContentList  QuoteAttrValueContent
+        {
+            QuoteAttrContentList* qo_list_p = dynamic_cast<QuoteAttrContentList*>($1);
+            if (qo_list_p) {
+                qo_list_p->push_back(dynamic_cast<QuoteAttrValueContent*>($2));
+            }
+            $$ = $1;
+        }
+    ;
 
 
 // [96b] AposAttrContentList
 // -------------------------
 Opt_AposAttrContentList :
-		/* empty */
-		{
-			$$ = new AposAttrContentList(LOC (@$));
-		}
-	|	AposAttrContentList
-		{
-			$$ = $1;
-		}
-	;
+        /* empty */
+        {
+            $$ = new AposAttrContentList(LOC (@$));
+        }
+    |   AposAttrContentList
+        {
+            $$ = $1;
+        }
+    ;
 
 AposAttrContentList :
-		ESCAPE_APOS
-		{
-			AposAttrContentList* at_list_p = new AposAttrContentList(LOC (@$));
-			at_list_p->push_back(new AposAttrValueContent(LOC (@$),"'"));
-			$$ = at_list_p;
-		}
-	|	AposAttrValueContent
-		{
-			AposAttrContentList* at_list_p = new AposAttrContentList(LOC (@$));
-			at_list_p->push_back(dynamic_cast<AposAttrValueContent*>($1));
-			$$ = at_list_p;
-		}
-	|	AposAttrContentList  ESCAPE_APOS
-		{
-			AposAttrContentList* at_list_p = dynamic_cast<AposAttrContentList*>($1);
-			if (at_list_p) {
-				at_list_p->push_back(new AposAttrValueContent(LOC (@$),"'"));
-			}
-			$$ = $1;
-		}
-	|	AposAttrContentList  AposAttrValueContent
-		{
-			AposAttrContentList* at_list_p = dynamic_cast<AposAttrContentList*>($1);
-			if (at_list_p) {
-				at_list_p->push_back(dynamic_cast<AposAttrValueContent*>($2));
-			}
-			$$ = $1;
-		}
-	;
+        ESCAPE_APOS
+        {
+            AposAttrContentList* at_list_p = new AposAttrContentList(LOC (@$));
+            at_list_p->push_back(new AposAttrValueContent(LOC (@$),"'"));
+            $$ = at_list_p;
+        }
+    |   AposAttrValueContent
+        {
+            AposAttrContentList* at_list_p = new AposAttrContentList(LOC (@$));
+            at_list_p->push_back(dynamic_cast<AposAttrValueContent*>($1));
+            $$ = at_list_p;
+        }
+    |   AposAttrContentList  ESCAPE_APOS
+        {
+            AposAttrContentList* at_list_p = dynamic_cast<AposAttrContentList*>($1);
+            if (at_list_p) {
+                at_list_p->push_back(new AposAttrValueContent(LOC (@$),"'"));
+            }
+            $$ = $1;
+        }
+    |   AposAttrContentList  AposAttrValueContent
+        {
+            AposAttrContentList* at_list_p = dynamic_cast<AposAttrContentList*>($1);
+            if (at_list_p) {
+                at_list_p->push_back(dynamic_cast<AposAttrValueContent*>($2));
+            }
+            $$ = $1;
+        }
+    ;
 
 
 // [97] QuotAttrValueContent
 // -------------------------
 QuoteAttrValueContent :
-		QUOTE_ATTR_CONTENT
-		{
-			$$ = new QuoteAttrValueContent(LOC (@$),
-								SYMTAB ($1));
-		}
-	|	CommonContent
-		{
-			$$ = new QuoteAttrValueContent(LOC (@$),
-								dynamic_cast<CommonContent*>($1));
-		}
-	;
+        QUOTE_ATTR_CONTENT
+        {
+            $$ = new QuoteAttrValueContent(LOC (@$),
+                                SYMTAB ($1));
+        }
+    |   CommonContent
+        {
+            $$ = new QuoteAttrValueContent(LOC (@$),
+                                dynamic_cast<CommonContent*>($1));
+        }
+    ;
 
 
 // [98] AposAttrValueContent
 // -------------------------
 AposAttrValueContent :
-		APOS_ATTR_CONTENT
-		{
-			$$ = new AposAttrValueContent(LOC (@$),
-								SYMTAB ($1));
-		}
-	|	CommonContent
-		{
-			$$ = new AposAttrValueContent(LOC (@$),
-								dynamic_cast<CommonContent*>($1));
-		}
-	;
+        APOS_ATTR_CONTENT
+        {
+            $$ = new AposAttrValueContent(LOC (@$),
+                                SYMTAB ($1));
+        }
+    |   CommonContent
+        {
+            $$ = new AposAttrValueContent(LOC (@$),
+                                dynamic_cast<CommonContent*>($1));
+        }
+    ;
 
 
 // [99] DirElemContent
 // -------------------
 DirElemContent :
-		DirectConstructor
-		{
-			$$ = new DirElemContent(LOC (@$),
-								$1);
-		}
-	|	ELEMENT_CONTENT
-		{
-			$$ = new DirElemContent(LOC (@$),
-								SYMTAB ($1));
-		}
-	|	CDataSection
-		{
-			rchandle<CDataSection> cdata_h = dynamic_cast<CDataSection*>($1);
-			$$ = new DirElemContent(LOC (@$),
-								cdata_h);
-		}
-	|	CommonContent
-		{
-			rchandle<CommonContent> cont_h = dynamic_cast<CommonContent*>($1);
-			$$ = new DirElemContent(LOC (@$),
-								cont_h);
-		}
-	;
+        DirectConstructor
+        {
+            $$ = new DirElemContent(LOC (@$),
+                                $1);
+        }
+    |   ELEMENT_CONTENT
+        {
+            $$ = new DirElemContent(LOC (@$),
+                                SYMTAB ($1));
+        }
+    |   CDataSection
+        {
+            rchandle<CDataSection> cdata_h = dynamic_cast<CDataSection*>($1);
+            $$ = new DirElemContent(LOC (@$),
+                                cdata_h);
+        }
+    |   CommonContent
+        {
+            rchandle<CommonContent> cont_h = dynamic_cast<CommonContent*>($1);
+            $$ = new DirElemContent(LOC (@$),
+                                cont_h);
+        }
+    ;
 
 
 // [100] CommonContent
 // -------------------
 CommonContent :
-	  CHAR_REF_LITERAL
-		{
-			$$ = new CommonContent(LOC (@$),
+      CHAR_REF_LITERAL
+        {
+            $$ = new CommonContent(LOC (@$),
                 ParseConstants::cont_charref,
-								SYMTAB ($1));
-		}
-	|	DOUBLE_LBRACE
-		{
-			$$ = new CommonContent(LOC (@$),
-								ParseConstants::cont_escape_lbrace);
-		}
-	|	DOUBLE_RBRACE
-		{
-			$$ = new CommonContent(LOC (@$),
-								ParseConstants::cont_escape_rbrace);
-		}
-	|	EnclosedExpr
-		{
-			$$ = new CommonContent(LOC (@$),
-								dynamic_cast<EnclosedExpr*>($1));
-		}
-	;
+                                SYMTAB ($1));
+        }
+    |   DOUBLE_LBRACE
+        {
+            $$ = new CommonContent(LOC (@$),
+                                ParseConstants::cont_escape_lbrace);
+        }
+    |   DOUBLE_RBRACE
+        {
+            $$ = new CommonContent(LOC (@$),
+                                ParseConstants::cont_escape_rbrace);
+        }
+    |   EnclosedExpr
+        {
+            $$ = new CommonContent(LOC (@$),
+                                dynamic_cast<EnclosedExpr*>($1));
+        }
+    ;
 
 
 // [101] DirCommentConstructor
 // ---------------------------
 DirCommentConstructor :
-		XML_COMMENT_BEGIN  XML_COMMENT_LITERAL  XML_COMMENT_END 	/* ws: explicitXQ */
-		{
-			$$ = new DirCommentConstructor(LOC (@$),
-								SYMTAB ($2));
-		}
+        XML_COMMENT_BEGIN  XML_COMMENT_LITERAL  XML_COMMENT_END     /* ws: explicitXQ */
+        {
+            $$ = new DirCommentConstructor(LOC (@$),
+                                SYMTAB ($2));
+        }
   | XML_COMMENT_BEGIN  XML_COMMENT_END                        /* ws: explicitXQ */
     {
       $$ = new DirCommentConstructor(LOC (@$), "");
     }
-	;
+    ;
 
 
 // [102] DirCommentContents
@@ -4425,18 +4414,18 @@ DirCommentConstructor :
 // [103] DirPIConstructor
 // ----------------------
 DirPIConstructor :
-		PI_BEGIN  NCNAME  PI_END 								/* ws: explicitXQ */
-		{
-			$$ = new DirPIConstructor(LOC (@$),
-								SYMTAB ($2));
-		}
-    |	PI_BEGIN  NCNAME  CHAR_LITERAL_AND_PI_END 	/* ws: explicitXQ */
-		{
-			$$ = new DirPIConstructor(LOC (@$),
-								SYMTAB ($2),
-								SYMTAB ($3));
-		}
-	;
+        PI_BEGIN  NCNAME  PI_END                                /* ws: explicitXQ */
+        {
+            $$ = new DirPIConstructor(LOC (@$),
+                                SYMTAB ($2));
+        }
+    |   PI_BEGIN  NCNAME  CHAR_LITERAL_AND_PI_END   /* ws: explicitXQ */
+        {
+            $$ = new DirPIConstructor(LOC (@$),
+                                SYMTAB ($2),
+                                SYMTAB ($3));
+        }
+    ;
 
 
 // [104] DirPIContents
@@ -4447,11 +4436,11 @@ DirPIConstructor :
 // [105] CDataSection
 // ------------------
 CDataSection :
-		CDATA_BEGIN  CHAR_LITERAL_AND_CDATA_END 				/* ws: explicitXQ */
-		{
-			$$ = new CDataSection(LOC (@$),SYMTAB ($2));
-		}
-	;
+        CDATA_BEGIN  CHAR_LITERAL_AND_CDATA_END                 /* ws: explicitXQ */
+        {
+            $$ = new CDataSection(LOC (@$),SYMTAB ($2));
+        }
+    ;
 
 
 // [106] CDataSectionContents
@@ -4462,493 +4451,493 @@ CDataSection :
 // [107] ComputedConstructor
 // -------------------------
 ComputedConstructor :
-		CompDocConstructor
-		{
-			$$ = $1;
-		}
-	|	CompElemConstructor
-		{
-			$$ = $1;
-		}
-	|	CompAttrConstructor
-		{
-			$$ = $1;
-		}
-	|	CompTextConstructor
-		{
-			$$ = $1;
-		}
-	|	CompCommentConstructor
-		{
-			$$ = $1;
-		}
-	|	CompPIConstructor
-		{
-			$$ = $1;
-		}
-	;
+        CompDocConstructor
+        {
+            $$ = $1;
+        }
+    |   CompElemConstructor
+        {
+            $$ = $1;
+        }
+    |   CompAttrConstructor
+        {
+            $$ = $1;
+        }
+    |   CompTextConstructor
+        {
+            $$ = $1;
+        }
+    |   CompCommentConstructor
+        {
+            $$ = $1;
+        }
+    |   CompPIConstructor
+        {
+            $$ = $1;
+        }
+    ;
 
 
 // [108] CompDocConstructor
 // ------------------------
 CompDocConstructor :
-		DOCUMENT LBRACE  Expr  RBRACE
-		{
-			$$ = new CompDocConstructor(LOC (@$),
-								$3);
-		}
-	;
+        DOCUMENT LBRACE  Expr  RBRACE
+        {
+            $$ = new CompDocConstructor(LOC (@$),
+                                $3);
+        }
+    ;
 
 
 // [109] CompElemConstructor
 // -------------------------
 CompElemConstructor :
-		ELEMENT QNAME LBRACE  RBRACE
-		{
-			$$ = new CompElemConstructor(LOC (@$),
-								static_cast<QName*>($2),
-								NULL);
-		}
-	|	ELEMENT QNAME LBRACE  Expr  RBRACE
-		{
-			$$ = new CompElemConstructor(LOC (@$),
-								static_cast<QName*>($2),
-								$4);
-		}
-	|	ELEMENT LBRACE  Expr  RBRACE  LBRACE  RBRACE
-		{
-			$$ = new CompElemConstructor(LOC (@$),
-								$3, NULL);
-		}
-	|	ELEMENT LBRACE  Expr  RBRACE  LBRACE  Expr  RBRACE
-		{
-			$$ = new CompElemConstructor(LOC (@$),
-								$3, $6);
-		}
-	;
+        ELEMENT QNAME LBRACE  RBRACE
+        {
+            $$ = new CompElemConstructor(LOC (@$),
+                                static_cast<QName*>($2),
+                                NULL);
+        }
+    |   ELEMENT QNAME LBRACE  Expr  RBRACE
+        {
+            $$ = new CompElemConstructor(LOC (@$),
+                                static_cast<QName*>($2),
+                                $4);
+        }
+    |   ELEMENT LBRACE  Expr  RBRACE  LBRACE  RBRACE
+        {
+            $$ = new CompElemConstructor(LOC (@$),
+                                $3, NULL);
+        }
+    |   ELEMENT LBRACE  Expr  RBRACE  LBRACE  Expr  RBRACE
+        {
+            $$ = new CompElemConstructor(LOC (@$),
+                                $3, $6);
+        }
+    ;
 
 
 // [110] ContentExpr
 // -----------------
 /*
 ContentExpr :
-		Expr
-		{
-		}
-	;
+        Expr
+        {
+        }
+    ;
 */
 
 
 // [111] CompAttrConstructor
 // -------------------------
 CompAttrConstructor :
-		ATTRIBUTE QNAME LBRACE  RBRACE
-		{
-			$$ = new CompAttrConstructor(LOC (@$),
-								$2,
-								NULL);
-		}
-	|	ATTRIBUTE QNAME LBRACE  Expr  RBRACE
-		{
-			$$ = new CompAttrConstructor(LOC (@$),
-								$2,
-								$4);
-		}
-	|	ATTRIBUTE LBRACE  Expr  RBRACE  LBRACE  RBRACE
-		{
-			$$ = new CompAttrConstructor(LOC (@$),
-								$3, NULL);
-		}
-	|	ATTRIBUTE LBRACE  Expr  RBRACE  LBRACE  Expr  RBRACE
-		{
-			$$ = new CompAttrConstructor(LOC (@$),
-								$3, $6);
-		}
-	;
+        ATTRIBUTE QNAME LBRACE  RBRACE
+        {
+            $$ = new CompAttrConstructor(LOC (@$),
+                                $2,
+                                NULL);
+        }
+    |   ATTRIBUTE QNAME LBRACE  Expr  RBRACE
+        {
+            $$ = new CompAttrConstructor(LOC (@$),
+                                $2,
+                                $4);
+        }
+    |   ATTRIBUTE LBRACE  Expr  RBRACE  LBRACE  RBRACE
+        {
+            $$ = new CompAttrConstructor(LOC (@$),
+                                $3, NULL);
+        }
+    |   ATTRIBUTE LBRACE  Expr  RBRACE  LBRACE  Expr  RBRACE
+        {
+            $$ = new CompAttrConstructor(LOC (@$),
+                                $3, $6);
+        }
+    ;
 
 
 // [112] CompTextConstructor
 // -------------------------
 CompTextConstructor :
-		TEXT LBRACE  Expr  RBRACE
-		{
-			$$ = new CompTextConstructor(LOC (@$), $3);
-		}
-	;
+        TEXT LBRACE  Expr  RBRACE
+        {
+            $$ = new CompTextConstructor(LOC (@$), $3);
+        }
+    ;
 
 
 // [113] CompCommentConstructor
 // ----------------------------
 CompCommentConstructor :
-		COMMENT LBRACE  Expr  RBRACE
-		{
-			$$ = new CompCommentConstructor(LOC (@$), $3);
-		}
-	;
+        COMMENT LBRACE  Expr  RBRACE
+        {
+            $$ = new CompCommentConstructor(LOC (@$), $3);
+        }
+    ;
 
 
 // [114] CompPIConstructor
 // -----------------------
 CompPIConstructor :
-		PROCESSING_INSTRUCTION  NCNAME  LBRACE  RBRACE
-		{
-			$$ = new CompPIConstructor(LOC (@$),
-								SYMTAB ($2),
-								NULL);
-		}
-	|	PROCESSING_INSTRUCTION  NCNAME  LBRACE  Expr  RBRACE
-		{
-			$$ = new CompPIConstructor(LOC (@$),
-								SYMTAB ($2),
-								$4);
-		}
-	|	PROCESSING_INSTRUCTION LBRACE  Expr  RBRACE LBRACE  RBRACE
-		{
-			$$ = new CompPIConstructor(LOC (@$),
-								$3, NULL);
-		}
-	|	PROCESSING_INSTRUCTION LBRACE  Expr  RBRACE LBRACE  Expr  RBRACE
-		{
-			$$ = new CompPIConstructor(LOC(@$), $3, $6);
-		}
-	;
+        PROCESSING_INSTRUCTION  NCNAME  LBRACE  RBRACE
+        {
+            $$ = new CompPIConstructor(LOC (@$),
+                                SYMTAB ($2),
+                                NULL);
+        }
+    |   PROCESSING_INSTRUCTION  NCNAME  LBRACE  Expr  RBRACE
+        {
+            $$ = new CompPIConstructor(LOC (@$),
+                                SYMTAB ($2),
+                                $4);
+        }
+    |   PROCESSING_INSTRUCTION LBRACE  Expr  RBRACE LBRACE  RBRACE
+        {
+            $$ = new CompPIConstructor(LOC (@$),
+                                $3, NULL);
+        }
+    |   PROCESSING_INSTRUCTION LBRACE  Expr  RBRACE LBRACE  Expr  RBRACE
+        {
+            $$ = new CompPIConstructor(LOC(@$), $3, $6);
+        }
+    ;
 
 
 // [115] SingleType
 // ----------------
 SingleType :
-		AtomicType
-		{
-			$$ = new SingleType(LOC(@$), dynamic_cast<AtomicType*>($1), false);
-		}
-	|	AtomicType  HOOK
-		{
-			$$ = new SingleType(LOC(@$), dynamic_cast<AtomicType*>($1), true);
-		}
-	;
+        AtomicType
+        {
+            $$ = new SingleType(LOC(@$), dynamic_cast<AtomicType*>($1), false);
+        }
+    |   AtomicType  HOOK
+        {
+            $$ = new SingleType(LOC(@$), dynamic_cast<AtomicType*>($1), true);
+        }
+    ;
 
 
 // [116] TypeDeclaration
 // ---------------------
 TypeDeclaration :
-		AS  SequenceType
-		{
-			$$ = $2;
-		}
-	;
+        AS  SequenceType
+        {
+            $$ = $2;
+        }
+    ;
 
 
 // [117] SequenceType
 // ------------------
 SequenceType :
-		// ItemType  %prec SEQUENCE_TYPE_REDUCE
+        // ItemType  %prec SEQUENCE_TYPE_REDUCE
     ItemType
-		{
-			$$ = new SequenceType(LOC(@$), $1, NULL);
-		}
-	|	ItemType OccurrenceIndicator
-		{
-			$$ = new SequenceType(LOC(@$), $1, dynamic_cast<OccurrenceIndicator*>($2));
-		}
-  |	EMPTY_SEQUENCE LPAR RPAR
-		{
-			$$ = new SequenceType(LOC(@$), NULL, NULL);
-		}
-	;
+        {
+            $$ = new SequenceType(LOC(@$), $1, NULL);
+        }
+    |   ItemType OccurrenceIndicator
+        {
+            $$ = new SequenceType(LOC(@$), $1, dynamic_cast<OccurrenceIndicator*>($2));
+        }
+  | EMPTY_SEQUENCE LPAR RPAR
+        {
+            $$ = new SequenceType(LOC(@$), NULL, NULL);
+        }
+    ;
 
 
 // [118] OccurrenceIndicator
 // -------------------------
 /*________________________________________________________________________
 |
-|	gn: occurrence-indicatorsXQ
+|   gn: occurrence-indicatorsXQ
 |
-|	Constraint: occurrence-indicators
+|   Constraint: occurrence-indicators
 |
-|	As written, the grammar in A XQuery Grammar is ambiguous for some
-|	forms using the '+' and '*' Kleene operators. The ambiguity is
-|	resolved as follows: these operators are tightly bound to the
-|	SequenceType expression, and have higher precedence than other uses of
-|	these symbols. Any occurrence of '+' and '*', as well as '?',
-|	following a sequence type is assumed to be an occurrence indicator.
-|	That is, a "+", "*", or "?" immediately following an ItemType must be
-|	an OccurrenceIndicator. Thus, 4 treat as item() + - 5 must be
-|	interpreted as (4 treat as item()+) - 5, taking the '+' as an
-|	OccurrenceIndicator and the '-' as a subtraction operator. To force
-|	the interpretation of "+" as an addition operator (and the
-|	corresponding interpretation of the "-" as a unary minus), parentheses
-|	may be used: the form (4 treat as item()) + -5 surrounds the
-|	SequenceType expression with parentheses and leads to the desired
-|	interpretation.
+|   As written, the grammar in A XQuery Grammar is ambiguous for some
+|   forms using the '+' and '*' Kleene operators. The ambiguity is
+|   resolved as follows: these operators are tightly bound to the
+|   SequenceType expression, and have higher precedence than other uses of
+|   these symbols. Any occurrence of '+' and '*', as well as '?',
+|   following a sequence type is assumed to be an occurrence indicator.
+|   That is, a "+", "*", or "?" immediately following an ItemType must be
+|   an OccurrenceIndicator. Thus, 4 treat as item() + - 5 must be
+|   interpreted as (4 treat as item()+) - 5, taking the '+' as an
+|   OccurrenceIndicator and the '-' as a subtraction operator. To force
+|   the interpretation of "+" as an addition operator (and the
+|   corresponding interpretation of the "-" as a unary minus), parentheses
+|   may be used: the form (4 treat as item()) + -5 surrounds the
+|   SequenceType expression with parentheses and leads to the desired
+|   interpretation.
 |
-|	This rule has as a consequence that certain forms which would
-|	otherwise be legal and unambiguous are not recognized: in "4 treat as
-|	item() + 5", the "+" is taken as an OccurrenceIndicator, and not as an
-|	operator, which means this is not a legal expression.
+|   This rule has as a consequence that certain forms which would
+|   otherwise be legal and unambiguous are not recognized: in "4 treat as
+|   item() + 5", the "+" is taken as an OccurrenceIndicator, and not as an
+|   operator, which means this is not a legal expression.
 |_________________________________________________________________________*/
 OccurrenceIndicator :
-		HOOK
-		{
-			$$ = new OccurrenceIndicator(LOC(@$), ParseConstants::occurs_optionally);
-		}
-	|	STAR
-		{
-			$$ = new OccurrenceIndicator(LOC(@$),	ParseConstants::occurs_zero_or_more);
-		}
-	|	PLUS 	/* gn: occurrence-indicatorsXQ */
-		{
-			$$ = new OccurrenceIndicator(LOC(@$), ParseConstants::occurs_one_or_more);
-		}
-	;
+        HOOK
+        {
+            $$ = new OccurrenceIndicator(LOC(@$), ParseConstants::occurs_optionally);
+        }
+    |   STAR
+        {
+            $$ = new OccurrenceIndicator(LOC(@$),   ParseConstants::occurs_zero_or_more);
+        }
+    |   PLUS    /* gn: occurrence-indicatorsXQ */
+        {
+            $$ = new OccurrenceIndicator(LOC(@$), ParseConstants::occurs_one_or_more);
+        }
+    ;
 
 
 // [119] ItemType
 // --------------
 ItemType :
-		AtomicType
-		{
-			$$ = $1;
-		}
-	|	KindTest
-		{
-			$$ = $1;
-		}
-	|	ITEM LPAR RPAR
-		{
-			$$ = new ItemType(LOC (@$),true);
-		}
-	;
+        AtomicType
+        {
+            $$ = $1;
+        }
+    |   KindTest
+        {
+            $$ = $1;
+        }
+    |   ITEM LPAR RPAR
+        {
+            $$ = new ItemType(LOC (@$),true);
+        }
+    ;
 
 
 // [120] AtomicType
 // ----------------
 AtomicType :
-		QNAME
-		{
-			$$ = new AtomicType(LOC(@$), static_cast<QName*>($1));
-		}
-	;
+        QNAME
+        {
+            $$ = new AtomicType(LOC(@$), static_cast<QName*>($1));
+        }
+    ;
 
 
 // [121] KindTest
 // --------------
 KindTest :
-		DocumentTest
-		{
-			$$ = $1;
-		}
-	| ElementTest
-		{
-			$$ = $1;
-		}
-	| AttributeTest
-		{
-			$$ = $1;
-		}
-	| SchemaElementTest
-		{
-			$$ = $1;
-		}
-	| SchemaAttributeTest
-		{
-			$$ = $1;
-		}
-	| PITest
-		{
-			$$ = $1;
-		}
-	| CommentTest
-		{
-			$$ = $1;
-		}
-	| TextTest
-		{
-			$$ = $1;
-		}
-	| AnyKindTest
-		{
-			$$ = $1;
-		}
-	;
+        DocumentTest
+        {
+            $$ = $1;
+        }
+    | ElementTest
+        {
+            $$ = $1;
+        }
+    | AttributeTest
+        {
+            $$ = $1;
+        }
+    | SchemaElementTest
+        {
+            $$ = $1;
+        }
+    | SchemaAttributeTest
+        {
+            $$ = $1;
+        }
+    | PITest
+        {
+            $$ = $1;
+        }
+    | CommentTest
+        {
+            $$ = $1;
+        }
+    | TextTest
+        {
+            $$ = $1;
+        }
+    | AnyKindTest
+        {
+            $$ = $1;
+        }
+    ;
 
 
 // [122] AnyKindTest
 // -----------------
 AnyKindTest :
-		NODE LPAR  RPAR
-		{
-			$$ = new AnyKindTest(LOC (@$));
-		}
-	;
+        NODE LPAR  RPAR
+        {
+            $$ = new AnyKindTest(LOC (@$));
+        }
+    ;
 
 
 // [123] DocumentTest
 // ------------------
 DocumentTest :
-		DOCUMENT_NODE LPAR  RPAR
-		{
-			$$ = new DocumentTest(LOC (@$));
-		}
-	|	DOCUMENT_NODE LPAR  ElementTest  RPAR
-		{
-			$$ = new DocumentTest(LOC(@$), dynamic_cast<ElementTest*>($3));
-		}
-	|	DOCUMENT_NODE LPAR  SchemaElementTest  RPAR
-		{
-			$$ = new DocumentTest(LOC(@$), dynamic_cast<SchemaElementTest*>($3));
-		}
-	;
+        DOCUMENT_NODE LPAR  RPAR
+        {
+            $$ = new DocumentTest(LOC (@$));
+        }
+    |   DOCUMENT_NODE LPAR  ElementTest  RPAR
+        {
+            $$ = new DocumentTest(LOC(@$), dynamic_cast<ElementTest*>($3));
+        }
+    |   DOCUMENT_NODE LPAR  SchemaElementTest  RPAR
+        {
+            $$ = new DocumentTest(LOC(@$), dynamic_cast<SchemaElementTest*>($3));
+        }
+    ;
 
 
 // [124] TextTest
 // --------------
 TextTest :
-		TEXT LPAR  RPAR
-		{
-			$$ = new TextTest(LOC (@$));
-		}
-	;
+        TEXT LPAR  RPAR
+        {
+            $$ = new TextTest(LOC (@$));
+        }
+    ;
 
 
 // [125] CommentTest
 // -----------------
 CommentTest :
-		COMMENT LPAR  RPAR
-		{
-			$$ = new CommentTest(LOC (@$));
-		}
-	;
+        COMMENT LPAR  RPAR
+        {
+            $$ = new CommentTest(LOC (@$));
+        }
+    ;
 
 
 // [126] PITest
 // ------------
 PITest :
-		PROCESSING_INSTRUCTION LPAR  RPAR
-		{
-			$$ = new PITest(LOC (@$), "");
-		}
-	|	PROCESSING_INSTRUCTION LPAR  NCNAME  RPAR
-		{
-			$$ = new PITest(LOC (@$), SYMTAB ($3));
-		}
-  |	PROCESSING_INSTRUCTION LPAR  STRING_LITERAL  RPAR
-		{
-			$$ = new PITest(LOC (@$), SYMTAB ($3));
-		}
-	;
+        PROCESSING_INSTRUCTION LPAR  RPAR
+        {
+            $$ = new PITest(LOC (@$), "");
+        }
+    |   PROCESSING_INSTRUCTION LPAR  NCNAME  RPAR
+        {
+            $$ = new PITest(LOC (@$), SYMTAB ($3));
+        }
+  | PROCESSING_INSTRUCTION LPAR  STRING_LITERAL  RPAR
+        {
+            $$ = new PITest(LOC (@$), SYMTAB ($3));
+        }
+    ;
 
 
 // [127] AttributeTest
 // -------------------
 AttributeTest :
-		ATTRIBUTE LPAR  RPAR
-		{
-			$$ = new AttributeTest(LOC (@$),
-								NULL,
-								NULL);
-		}
-	|	ATTRIBUTE LPAR  QNAME  RPAR
-		{
-			$$ = new AttributeTest(LOC (@$),
-								static_cast<QName*>($3),
-								NULL);
-		}
-	|	ATTRIBUTE LPAR  QNAME  COMMA  TypeName  RPAR
-		{
-			$$ = new AttributeTest(LOC (@$),
-								static_cast<QName*>($3),
-								dynamic_cast<TypeName*>($5));
-		}
-	|	ATTRIBUTE LPAR  STAR  RPAR
-		{
-			$$ = new AttributeTest(LOC (@$),
-								NULL,
-								NULL);
-		}
-	|	ATTRIBUTE LPAR  STAR  COMMA  TypeName  RPAR
-		{
-			$$ = new AttributeTest(LOC (@$),
-								NULL,
-								dynamic_cast<TypeName*>($5));
-		}
-	;
+        ATTRIBUTE LPAR  RPAR
+        {
+            $$ = new AttributeTest(LOC (@$),
+                                NULL,
+                                NULL);
+        }
+    |   ATTRIBUTE LPAR  QNAME  RPAR
+        {
+            $$ = new AttributeTest(LOC (@$),
+                                static_cast<QName*>($3),
+                                NULL);
+        }
+    |   ATTRIBUTE LPAR  QNAME  COMMA  TypeName  RPAR
+        {
+            $$ = new AttributeTest(LOC (@$),
+                                static_cast<QName*>($3),
+                                dynamic_cast<TypeName*>($5));
+        }
+    |   ATTRIBUTE LPAR  STAR  RPAR
+        {
+            $$ = new AttributeTest(LOC (@$),
+                                NULL,
+                                NULL);
+        }
+    |   ATTRIBUTE LPAR  STAR  COMMA  TypeName  RPAR
+        {
+            $$ = new AttributeTest(LOC (@$),
+                                NULL,
+                                dynamic_cast<TypeName*>($5));
+        }
+    ;
 
 
 // [129] SchemaAttributeTest
 // -------------------------
 SchemaAttributeTest :
-		SCHEMA_ATTRIBUTE_LPAR  QNAME  RPAR
-		{
-			$$ = new SchemaAttributeTest(LOC (@$),
-								static_cast<QName*>($2));
-		}
-	;
+        SCHEMA_ATTRIBUTE_LPAR  QNAME  RPAR
+        {
+            $$ = new SchemaAttributeTest(LOC (@$),
+                                static_cast<QName*>($2));
+        }
+    ;
 
 
 // [131] ElementTest
 // -----------------
 ElementTest :
-		ELEMENT LPAR  RPAR
-		{
-			$$ = new ElementTest(LOC (@$),
+        ELEMENT LPAR  RPAR
+        {
+            $$ = new ElementTest(LOC (@$),
                            NULL,
                            NULL,
                            true);
-		}
-	|	ELEMENT LPAR  QNAME  RPAR
-		{
-			$$ = new ElementTest(LOC (@$),
+        }
+    |   ELEMENT LPAR  QNAME  RPAR
+        {
+            $$ = new ElementTest(LOC (@$),
                            static_cast<QName*>($3),
                            NULL,
                            true);
-		}
-	|	ELEMENT LPAR  QNAME  COMMA  TypeName  RPAR
-		{
-			$$ = new ElementTest(LOC (@$),
+        }
+    |   ELEMENT LPAR  QNAME  COMMA  TypeName  RPAR
+        {
+            $$ = new ElementTest(LOC (@$),
                            static_cast<QName*>($3),
                            dynamic_cast<TypeName*>($5),
                            false);
-		}
-	|	ELEMENT LPAR  QNAME  COMMA  TypeName_WITH_HOOK RPAR
-		{
-			$$ = new ElementTest(LOC (@$),
+        }
+    |   ELEMENT LPAR  QNAME  COMMA  TypeName_WITH_HOOK RPAR
+        {
+            $$ = new ElementTest(LOC (@$),
                            static_cast<QName*>($3),
                            dynamic_cast<TypeName*>($5),
                            true);
-		}
-	|	ELEMENT LPAR  STAR  RPAR
-		{
-			$$ = new ElementTest(LOC (@$),
-									NULL,
-									NULL,
-									true);
-		}
-	|	ELEMENT LPAR  STAR  COMMA  TypeName  RPAR
-		{
-			$$ = new ElementTest(LOC (@$),
-									NULL,
-									dynamic_cast<TypeName*>($5),
-									false);
-		}
-	|	ELEMENT LPAR  STAR  COMMA  TypeName_WITH_HOOK RPAR
-		{
-			$$ = new ElementTest(LOC (@$),
-									NULL,
-									dynamic_cast<TypeName*>($5),
-									true);
-		}
-	;
+        }
+    |   ELEMENT LPAR  STAR  RPAR
+        {
+            $$ = new ElementTest(LOC (@$),
+                                    NULL,
+                                    NULL,
+                                    true);
+        }
+    |   ELEMENT LPAR  STAR  COMMA  TypeName  RPAR
+        {
+            $$ = new ElementTest(LOC (@$),
+                                    NULL,
+                                    dynamic_cast<TypeName*>($5),
+                                    false);
+        }
+    |   ELEMENT LPAR  STAR  COMMA  TypeName_WITH_HOOK RPAR
+        {
+            $$ = new ElementTest(LOC (@$),
+                                    NULL,
+                                    dynamic_cast<TypeName*>($5),
+                                    true);
+        }
+    ;
 
 
 // [133] SchemaElementTest
 // -----------------------
 SchemaElementTest :
-		SCHEMA_ELEMENT LPAR  QNAME  RPAR
-		{
-			$$ = new SchemaElementTest(LOC (@$),
-									static_cast<QName*>($3));
-		}
-	;
+        SCHEMA_ELEMENT LPAR  QNAME  RPAR
+        {
+            $$ = new SchemaElementTest(LOC (@$),
+                                    static_cast<QName*>($3));
+        }
+    ;
 
 
 /* productions inlined */
@@ -4964,20 +4953,20 @@ SchemaElementTest :
 // [137] TypeName */
 /* -------------- */
 TypeName :
-		QNAME
-		{
-			$$ = new TypeName(LOC (@$),
-								static_cast<QName*>($1));
-		};
+        QNAME
+        {
+            $$ = new TypeName(LOC (@$),
+                                static_cast<QName*>($1));
+        };
 
 TypeName_WITH_HOOK :
-	  QNAME  HOOK
-		{
-			$$ = new TypeName(LOC (@$),
-								static_cast<QName*>($1),
-								true);
-		}
-	;
+      QNAME  HOOK
+        {
+            $$ = new TypeName(LOC (@$),
+                                static_cast<QName*>($1),
+                                true);
+        }
+    ;
 
 
 /* lexical rules, see xquery.l */
@@ -4991,11 +4980,11 @@ TypeName_WITH_HOOK :
 // [142] StringLiteral
 // -------------------
 StringLiteral :
-		STRING_LITERAL
-		{
-			$$ = new StringLiteral(LOC (@$), SYMTAB ($1));
-		}
-	;
+        STRING_LITERAL
+        {
+            $$ = new StringLiteral(LOC (@$), SYMTAB ($1));
+        }
+    ;
 
 
 /* lexical rules, see xquery.l */
@@ -5027,14 +5016,14 @@ StringLiteral :
  *_______________________________________________________________________*/
 
 
-// [241]	RevalidationDecl
+// [241]    RevalidationDecl
 // ----------------------
 // TODO: $$ = something
 RevalidationDecl :
-		DECLARE REVALIDATION _STRICT
-		{
+        DECLARE REVALIDATION _STRICT
+        {
       $$ = new RevalidationDecl (LOC (@$), StaticContextConsts::strict_validation);
-		}
+        }
     | DECLARE REVALIDATION LAX
     {
       $$ = new RevalidationDecl (LOC (@$), StaticContextConsts::lax_validation);
@@ -5043,117 +5032,117 @@ RevalidationDecl :
     {
       $$ = new RevalidationDecl (LOC (@$), StaticContextConsts::skip_validation);
     }
-	;
+    ;
 
-// [242]	InsertExpr
+// [242]    InsertExpr
 // ----------------
 InsertExpr :
-		INSERT NODE ExprSingle INTO ExprSingle
-		{
+        INSERT NODE ExprSingle INTO ExprSingle
+        {
        $$ = new InsertExpr(
                   LOC (@$),
                   store::UpdateConsts::INTO, $3, $5);
-		}
-	|	INSERT NODE ExprSingle AS FIRST INTO ExprSingle
-		{
+        }
+    |   INSERT NODE ExprSingle AS FIRST INTO ExprSingle
+        {
        $$ = new InsertExpr(
                   LOC (@$),
                   store::UpdateConsts::AS_FIRST_INTO, $3, $7);
-		}
-	|	INSERT NODE ExprSingle AS LAST INTO ExprSingle
-		{
+        }
+    |   INSERT NODE ExprSingle AS LAST INTO ExprSingle
+        {
        $$ = new InsertExpr(
                   LOC (@$),
                   store::UpdateConsts::AS_LAST_INTO, $3, $7);
-		}
-	| INSERT NODE ExprSingle AFTER ExprSingle
-		{
+        }
+    | INSERT NODE ExprSingle AFTER ExprSingle
+        {
        $$ = new InsertExpr(
                   LOC (@$),
                   store::UpdateConsts::AFTER, $3, $5);
-		}
-	| INSERT NODE ExprSingle BEFORE ExprSingle
-		{
+        }
+    | INSERT NODE ExprSingle BEFORE ExprSingle
+        {
        $$ = new InsertExpr(
                   LOC (@$),
                   store::UpdateConsts::BEFORE, $3, $5);
-		}
+        }
   |
-		INSERT NODES ExprSingle INTO ExprSingle
-		{
+        INSERT NODES ExprSingle INTO ExprSingle
+        {
        $$ = new InsertExpr(
                   LOC (@$),
                   store::UpdateConsts::INTO, $3, $5);
-		}
-	|	INSERT NODES ExprSingle AS FIRST INTO ExprSingle
-		{
+        }
+    |   INSERT NODES ExprSingle AS FIRST INTO ExprSingle
+        {
        $$ = new InsertExpr(
                   LOC (@$),
                   store::UpdateConsts::AS_FIRST_INTO, $3, $7);
-		}
-	|	INSERT NODES ExprSingle AS LAST INTO ExprSingle
-		{
+        }
+    |   INSERT NODES ExprSingle AS LAST INTO ExprSingle
+        {
        $$ = new InsertExpr(
                   LOC (@$),
                   store::UpdateConsts::AS_LAST_INTO, $3, $7);
-		}
-	| INSERT NODES ExprSingle AFTER ExprSingle
-		{
+        }
+    | INSERT NODES ExprSingle AFTER ExprSingle
+        {
        $$ = new InsertExpr(
                   LOC (@$),
                   store::UpdateConsts::AFTER, $3, $5);
-		}
-	| INSERT NODES ExprSingle BEFORE ExprSingle
-		{
+        }
+    | INSERT NODES ExprSingle BEFORE ExprSingle
+        {
        $$ = new InsertExpr(
                   LOC (@$),
                   store::UpdateConsts::BEFORE, $3, $5);
-		}
-	;
+        }
+    ;
 
 
 // [243] DeleteExpr
 // ----------------
 DeleteExpr:
-		_DELETE NODE ExprSingle
-		{
+        _DELETE NODE ExprSingle
+        {
        $$ = new DeleteExpr( LOC (@$), $3);
-		}
+        }
   |
-		_DELETE NODES ExprSingle
-		{
+        _DELETE NODES ExprSingle
+        {
        $$ = new DeleteExpr( LOC (@$), $3);
-		}
-	;
+        }
+    ;
 
 
 // [244] ReplaceExpr
 // -----------------
 ReplaceExpr :
-		REPLACE NODE ExprSingle WITH ExprSingle
-		{
+        REPLACE NODE ExprSingle WITH ExprSingle
+        {
        $$ = new ReplaceExpr(
                   LOC (@$),
                   store::UpdateConsts::NODE, $3, $5);
-		}
-	|	REPLACE VALUE OF NODE ExprSingle WITH ExprSingle
-		{
+        }
+    |   REPLACE VALUE OF NODE ExprSingle WITH ExprSingle
+        {
        $$ = new ReplaceExpr(
                   LOC (@$),
                   store::UpdateConsts::VALUE_OF_NODE, $5, $7);
-		}
-	;
+        }
+    ;
 
 
 // [245] RenameExpr
 // ----------------
 RenameExpr :
-		RENAME NODE ExprSingle AS ExprSingle
-		{
+        RENAME NODE ExprSingle AS ExprSingle
+        {
        $$ = new RenameExpr(
                   LOC (@$), $3, $5);
-		}
-	;
+        }
+    ;
 
 
 // [246] SourceExpr
@@ -5174,31 +5163,31 @@ RenameExpr :
 // [249] TransformExpr
 // -------------------
 TransformExpr :
-		COPY DOLLAR VarNameList MODIFY ExprSingle RETURN ExprSingle
-		{
+        COPY DOLLAR VarNameList MODIFY ExprSingle RETURN ExprSingle
+        {
       CopyVarList* lList = dynamic_cast<CopyVarList*>($3);
       $$ = new TransformExpr(LOC(@$), lList, $5, $7);
-		}
-	;
+        }
+    ;
 
 
 // [249a] VarNameList
 // ------------------
 VarNameList :
     VarNameDecl
-		{
+        {
        CopyVarList* lList = new CopyVarList(LOC(@$));
        lList->push_back (dynamic_cast<VarBinding*> ($1));
        $$ = lList;
-		}
-	|	VarNameList  COMMA  DOLLAR  VarNameDecl
-		{
+        }
+    |   VarNameList  COMMA  DOLLAR  VarNameDecl
+        {
        CopyVarList* lList = dynamic_cast<CopyVarList*>($1);
        VarBinding* lBinding = dynamic_cast<VarBinding*>($4);
        lList->push_back(lBinding);
        $$ = lList;
-		}
-	;
+        }
+    ;
 
 
 // [249b] VarNameElem
@@ -5223,7 +5212,7 @@ TryExpr :
     TRY LBRACE Expr RBRACE CatchListExpr
     {
        $$ = new TryExpr(LOC (@$),
-								       $3, $5);
+                                       $3, $5);
     }
 
 CatchListExpr:
@@ -5576,527 +5565,525 @@ KEYWORD :
 
 //[344] FTSelection
 //-----------------
-FTSelection :
-		FTOr
-		{
+FTSelection
+    : FTOr
+        {
       $$ = new FTSelection (LOC (@$), static_cast<FTOr *> ($1), NULL, NULL);
-		}
-	|	FTOr  FTMatchOptionProximityList
-		{
+        }
+    | FTOr FTMatchOptionProximityList
+        {
       $$ = new FTSelection (LOC (@$), static_cast<FTOr *> ($1), static_cast<FTMatchOptionProximityList *> ($2), NULL);
-		}
-	|	FTOr  WEIGHT  RangeExpr
-		{
+        }
+    | FTOr  WEIGHT  RangeExpr
+        {
       $$ = new FTSelection (LOC (@$), static_cast<FTOr *> ($1), NULL, static_cast<RangeExpr *> ($3));
-		}
-	|	FTOr  FTMatchOptionProximityList  WEIGHT  RangeExpr
-		{
+        }
+    | FTOr FTMatchOptionProximityList WEIGHT RangeExpr
+        {
       $$ = new FTSelection (LOC (@$), static_cast<FTOr *> ($1), static_cast<FTMatchOptionProximityList *> ($2), static_cast<RangeExpr *> ($4));
-		}
-	;
+        }
+    ;
 
 
 //[344a] FTMatchOptionProximityList
 //---------------------------------
-FTMatchOptionProximityList :
-		FTMatchOption
-		{
-		}
-	| FTProximity
-		{
-		}
-	| FTMatchOptionProximityList  FTMatchOption
-		{
-		}
-	| FTMatchOptionProximityList  FTProximity
-		{
-		}
-	;
+FTMatchOptionProximityList
+    : FTMatchOption
+        {
+        }
+    | FTProximity
+        {
+        }
+    | FTMatchOptionProximityList FTMatchOption
+        {
+        }
+    | FTMatchOptionProximityList FTProximity
+        {
+        }
+    ;
 
 
-//[345]	FTOr
+//[345] FTOr
 //----------
-FTOr :
-		FTAnd
-		{
-		}
-	|	FTOr  FTOR  FTAnd
-		{
-		}
-	;
+FTOr
+    : FTAnd
+        {
+        }
+    | FTOr FTOR FTAnd
+        {
+        }
+    ;
 
 
-//[346]	FTAnd
+//[346] FTAnd
 //-----------
-FTAnd :
-		FTMildnot
-		{
-		}
-	|	FTAnd  FTAND  FTMildnot
-		{
-		}
-	;
+FTAnd
+    : FTMildnot
+        {
+        }
+    | FTAnd FTAND FTMildnot
+        {
+        }
+    ;
 
 
-//[347]	FTMildnot
+//[347] FTMildnot
 //---------------
-FTMildnot :
-		FTUnaryNot
-		{
-		}
-	|	FTMildnot  FTNOT _IN  FTUnaryNot
-		{
-		}
-	;
+FTMildnot
+    : FTUnaryNot
+        {
+        }
+    | FTMildnot FTNOT _IN FTUnaryNot
+        {
+        }
+    ;
 
 
-//[348]	FTUnaryNot
+//[348] FTUnaryNot
 //----------------
-FTUnaryNot :
-		FTWordsSelection
-		{
-		}
-	|	FTNOT  FTWordsSelection
-		{
-		}
-	;
+FTUnaryNot
+    : FTWordsSelection
+        {
+        }
+    | FTNOT FTWordsSelection
+        {
+        }
+    ;
 
 
-//[349]	FTWordsSelection
+//[349] FTWordsSelection
 //----------------------
-FTWordsSelection :
-		FTWords
-		{
-		}
-	|	FTWords FTTimes
-		{
-		}
-	| LPAR  FTSelection  RPAR
-		{
-		}
-	;
+FTWordsSelection
+    : FTWords
+        {
+        }
+    | FTWords FTTimes
+        {
+        }
+    | LPAR FTSelection RPAR
+        {
+        }
+    ;
 
 
-//[350]	FTWords
+//[350] FTWords
 //-------------
-FTWords :
-		FTWordsValue
-		{
-		}
-	|	FTWordsValue  FTAnyallOption
-		{
-		}
-	;
+FTWords
+    : FTWordsValue
+        {
+        }
+    | FTWordsValue FTAnyallOption
+        {
+        }
+    ;
 
 
-//[351]	FTWordsValue
+//[351] FTWordsValue
 //------------------
-FTWordsValue :
-		Literal
-		{
-      $$ = new FTWordsValue (LOC (@$), static_cast<StringLiteral *> ($1), NULL);
-		}
-	| LBRACE  Expr  RBRACE
-		{
-      $$ = new FTWordsValue (LOC (@$), NULL, $2);
-		}
-	;
+FTWordsValue
+    : Literal
+        {
+            $$ = new FTWordsValue (LOC (@$), static_cast<StringLiteral *> ($1), NULL);
+        }
+    | LBRACE Expr RBRACE
+        {
+            $$ = new FTWordsValue (LOC (@$), NULL, $2);
+        }
+    ;
 
 
-//[352]	FTProximity
+//[352] FTProximity
 //-----------------
-FTProximity :
-		FTOrderedIndicator
-		{
-		}
-	| FTWindow
-		{
-		}
-	| FTDistance
-		{
-		}
-	| FTScope
-		{
-		}
-	| FTContent
-		{
-		}
-	;
+FTProximity
+    : FTOrderedIndicator
+        {
+        }
+    | FTWindow
+        {
+        }
+    | FTDistance
+        {
+        }
+    | FTScope
+        {
+        }
+    | FTContent
+        {
+        }
+    ;
 
 
-//[353]	FTOrderedIndicator
+//[353] FTOrderedIndicator
 //------------------------
-FTOrderedIndicator :
-		ORDERED
-		{
-		}
-	;
+FTOrderedIndicator
+    : ORDERED
+        {
+        }
+    ;
 
 
 //[354] FTMatchOption
 //-------------------
-FTMatchOption :
-		FTCaseOption
-		{
-			$$ = $1;
-		}
-	| FTDiacriticsOption
-		{
-			$$ = $1;
-		}
-	| FTStemOption
-		{
-			$$ = $1;
-		}
-	| FTThesaurusOption
-		{
-			$$ = $1;
-		}
-	| FTStopwordOption
-		{
-			$$ = $1;
-		}
-	| FTLanguageOption
-		{
-			$$ = $1;
-		}
-	| FTWildcardOption
-		{
-			$$ = $1;
-		}
-	;
+FTMatchOption
+    : FTCaseOption
+        {
+            $$ = $1;
+        }
+    | FTDiacriticsOption
+        {
+            $$ = $1;
+        }
+    | FTStemOption
+        {
+            $$ = $1;
+        }
+    | FTThesaurusOption
+        {
+            $$ = $1;
+        }
+    | FTStopwordOption
+        {
+            $$ = $1;
+        }
+    | FTLanguageOption
+        {
+            $$ = $1;
+        }
+    | FTWildcardOption
+        {
+            $$ = $1;
+        }
+    ;
 
 
 //[355] FTCaseOption
 //------------------
-FTCaseOption :
-		LOWERCASE
-		{
-		}
-	| UPPERCASE
-		{
-		}
-	| CASE SENSITIVE
-		{
-		}
-	| CASE INSENSITIVE
-		{
-		}
-	;
+FTCaseOption
+    : LOWERCASE
+        {
+        }
+    | UPPERCASE
+        {
+        }
+    | CASE SENSITIVE
+        {
+        }
+    | CASE INSENSITIVE
+        {
+        }
+    ;
 
 
 //[356] FTDiacriticsOption
 //------------------------
-FTDiacriticsOption :
-		WITH DIACRITICS
-		{
-		}
-	| WITHOUT   DIACRITICS
-		{
-		}
-	| DIACRITICS SENSITIVE
-		{
-		}
-	| DIACRITICS INSENSITIVE
-		{
-		}
-	;
+FTDiacriticsOption
+    : WITH DIACRITICS
+        {
+        }
+    | WITHOUT DIACRITICS
+        {
+        }
+    | DIACRITICS SENSITIVE
+        {
+        }
+    | DIACRITICS INSENSITIVE
+        {
+        }
+    ;
 
 
 //[357] FTStemOption
 //------------------
-FTStemOption :
-		WITH STEMMING
-		{
-		}
-	| WITHOUT STEMMING
-		{
-		}
-	;
+FTStemOption
+    : WITH STEMMING
+        {
+        }
+    | WITHOUT STEMMING
+        {
+        }
+    ;
 
 
 //[358] FTThesaurusOption
 //-----------------------
-FTThesaurusOption :
-		WITH THESAURUS  FTThesaurusID
-		{
-		}
-	|	WITH THESAURUS  DEFAULT
-		{
-		}
-	| WITH THESAURUS  LPAR  FTThesaurusID  RPAR
-		{
-		}
-	| WITH THESAURUS  LPAR  FTThesaurusID COMMA  FTThesaurusList  RPAR
-		{
-		}
-	| WITH THESAURUS  LPAR  DEFAULT  RPAR
-		{
-		}
-	| WITH THESAURUS  LPAR  DEFAULT  COMMA  FTThesaurusList  RPAR
-		{
-		}
-	| WITHOUT THESAURUS
-		{
-		}
-	;
+FTThesaurusOption
+    : WITH THESAURUS FTThesaurusID
+        {
+        }
+    | WITH THESAURUS DEFAULT
+        {
+        }
+    | WITH THESAURUS LPAR FTThesaurusID RPAR
+        {
+        }
+    | WITH THESAURUS LPAR FTThesaurusID COMMA FTThesaurusList RPAR
+        {
+        }
+    | WITH THESAURUS LPAR DEFAULT RPAR
+        {
+        }
+    | WITH THESAURUS LPAR DEFAULT COMMA FTThesaurusList RPAR
+        {
+        }
+    | WITHOUT THESAURUS
+        {
+        }
+    ;
 
 
 //[358a] FTThesaurusIDList
 //------------------------
 FTThesaurusList :
-		FTThesaurusID
-		{
-		}
-	| FTThesaurusList  COMMA  FTThesaurusID
-		{
-		}
-	;
+        FTThesaurusID
+        {
+        }
+    | FTThesaurusList  COMMA  FTThesaurusID
+        {
+        }
+    ;
 
 
 //[359] FTThesaurusID
 //-------------------
-FTThesaurusID :
-		AT  STRING_LITERAL
-		{
-		}
-	|	AT  STRING_LITERAL  RELATIONSHIP  STRING_LITERAL
-		{
-		}
-	|	AT  STRING_LITERAL  FTRange  LEVELS
-		{
-		}
-	|	AT  STRING_LITERAL  RELATIONSHIP  STRING_LITERAL  FTRange  LEVELS
-		{
-		}
-	;
+FTThesaurusID
+    : AT STRING_LITERAL
+        {
+        }
+    | AT STRING_LITERAL RELATIONSHIP STRING_LITERAL
+        {
+        }
+    | AT STRING_LITERAL FTRange LEVELS
+        {
+        }
+    | AT STRING_LITERAL RELATIONSHIP STRING_LITERAL FTRange LEVELS
+        {
+        }
+    ;
 
 
 //[360] FTStopwordOption
 //----------------------
-FTStopwordOption :
-		WITH STOP WORDS  FTRefOrList
-		{
-		}
-	|	WITH STOP WORDS  FTRefOrList  FTInclExclStringLiteralList
-		{
-		}
-	| WITH DEFAULT STOP WORDS
-		{
-		}
-	| WITH DEFAULT STOP WORDS  FTInclExclStringLiteralList
-		{
-		}
-	| WITHOUT STOP WORDS
-		{
-		}
-	;
+FTStopwordOption
+    : WITH STOP WORDS FTRefOrList
+        {
+        }
+    | WITH STOP WORDS FTRefOrList FTInclExclStringLiteralList
+        {
+        }
+    | WITH DEFAULT STOP WORDS
+        {
+        }
+    | WITH DEFAULT STOP WORDS FTInclExclStringLiteralList
+        {
+        }
+    | WITHOUT STOP WORDS
+        {
+        }
+    ;
 
 
 //[360a] FTInclExclStringLiteralList
 //----------------------------------
-FTInclExclStringLiteralList :
-		FTInclExclStringLiteral
-		{
-		}
-	| FTInclExclStringLiteralList  FTInclExclStringLiteral
-		{
-		}
-	;
+FTInclExclStringLiteralList
+    : FTInclExclStringLiteral
+        {
+        }
+    | FTInclExclStringLiteralList FTInclExclStringLiteral
+        {
+        }
+    ;
 
 
 //[361] FTRefOrList
 //-----------------
-FTRefOrList :
-		AT  STRING_LITERAL
-		{
-		}
-	| LPAR  FTStringLiteralList  RPAR
-		{
-		}
-	;
+FTRefOrList
+    : AT STRING_LITERAL
+        {
+        }
+    | LPAR FTStringLiteralList RPAR
+        {
+        }
+    ;
 
 
 //[361a] FTStringLiteralList
 //--------------------------
-FTStringLiteralList :
-		STRING_LITERAL
-		{
-		}
-	|	FTStringLiteralList  STRING_LITERAL
-		{
-		}
-	;
+FTStringLiteralList
+    : STRING_LITERAL
+        {
+        }
+    | FTStringLiteralList STRING_LITERAL
+        {
+        }
+    ;
 
 
 //[362] FTInclExclStringLiteral
 //-----------------------------
-FTInclExclStringLiteral :
-		UNION  FTRefOrList
-		{
-		}
-	|	EXCEPT  FTRefOrList
-		{
-		}
-	;
+FTInclExclStringLiteral
+    : UNION FTRefOrList
+        {
+        }
+    | EXCEPT FTRefOrList
+        {
+        }
+    ;
 
 
 //[363] FTLanguageOption
 //----------------------
-FTLanguageOption :
-		LANGUAGE  STRING_LITERAL
-		{
-		}
-	;
+FTLanguageOption
+    : LANGUAGE STRING_LITERAL
+        {
+        }
+    ;
 
 
 //[364] FTWildcardOption
 //----------------------
-FTWildcardOption :
-		WITH WILDCARDS
-		{
-		}
-	| WITHOUT WILDCARDS
-		{
-		}
-	;
+FTWildcardOption
+    : WITH WILDCARDS
+        {
+        }
+    | WITHOUT WILDCARDS
+        {
+        }
+    ;
 
 
-//[365]	FTContent
+//[365] FTContent
 //---------------
-FTContent :
-		AT START
-		{
-		}
-	| AT END
-		{
-		}
-	| ENTIRE CONTENT
-		{
-		}
-	;
+FTContent
+    : AT START
+        {
+        }
+    | AT END
+        {
+        }
+    | ENTIRE CONTENT
+        {
+        }
+    ;
 
 
-//[366]	FTAnyallOption
+//[366] FTAnyallOption
 //--------------------
-FTAnyallOption :
-		ANY
-		{
-		}
-	|	ANY WORD
-		{
-		}
-	| ALL
-		{
-		}
-	| ALL WORDS
-		{
-		}
-	| PHRASE
-		{
-		}
-	;
+FTAnyallOption
+    : ANY
+        {
+        }
+    | ANY WORD
+        {
+        }
+    | ALL
+        {
+        }
+    | ALL WORDS
+        {
+        }
+    | PHRASE
+        {
+        }
+    ;
 
 
-//[367]	FTRange
+//[367] FTRange
 //-------------
-FTRange :
-		EXACTLY  UnionExpr
-		{
+FTRange
+    : EXACTLY UnionExpr
+        {
        $$ = new FTRange (LOC (@$), FTRange::exactly, $2);
-		}
-	| AT LEAST  UnionExpr
-		{
+        }
+    | AT LEAST UnionExpr
+        {
        $$ = new FTRange (LOC (@$), FTRange::at_least, $3);
-		}
-	| AT MOST  UnionExpr
-		{
+        }
+    | AT MOST UnionExpr
+        {
        $$ = new FTRange (LOC (@$), FTRange::at_most, $3);
-		}
-	| FROM  UnionExpr  TO  UnionExpr
-		{
+        }
+    | FROM UnionExpr TO UnionExpr
+        {
        $$ = new FTRange (LOC (@$), FTRange::from_to, $2, $4);
-		}
-	;
+        }
+    ;
 
 
-//[368]	FTDistance
+//[368] FTDistance
 //----------------
-FTDistance :
-		DISTANCE  FTRange  FTUnit
-		{
-		}
-	;
+FTDistance
+    : DISTANCE FTRange FTUnit
+        {
+        }
+    ;
 
 
-//[369]	FTWindow
+//[369] FTWindow
 //--------------
-FTWindow :
-		WINDOW  UnionExpr  FTUnit
-		{
+FTWindow
+    : WINDOW UnionExpr FTUnit
+        {
       $$ = new FTWindow (LOC (@$), static_cast<UnionExpr *> ($2), static_cast<FTUnit *> ($3));
-		}
-	;
+        }
+    ;
 
 
-//[370]	FTTimes
+//[370] FTTimes
 //-------------
-FTTimes :
-		OCCURS  FTRange  TIMES
-		{
-		}
-	;
+FTTimes
+    : OCCURS FTRange TIMES
+        {
+        }
+    ;
 
 
-//[371]	FTScope
+//[371] FTScope
 //-------------
-FTScope :
-		SAME  FTBigUnit
-		{
-		}
-	|	DIFFERENT  FTBigUnit
-		{
-		}
-	;
+FTScope
+    : SAME FTBigUnit
+        {
+        }
+    | DIFFERENT FTBigUnit
+        {
+        }
+    ;
 
 
-//[372]	FTUnit
+//[372] FTUnit
 //------------
-FTUnit :
-		WORDS
-		{
-		}
-	| SENTENCES
-		{
-		}
-	| PARAGRAPH
-		{
-		}
-	;
+FTUnit
+    : WORDS
+        {
+        }
+    | SENTENCES
+        {
+        }
+    | PARAGRAPHS
+        {
+        }
+    ;
 
 
-//[373]	FTBigUnit
+//[373] FTBigUnit
 //---------------
-FTBigUnit :
-		SENTENCE
-		{
-		}
-	| PARAGRAPH
-		{
-		}
-	;
+FTBigUnit
+    : SENTENCE
+        {
+        }
+    | PARAGRAPH
+        {
+        }
+    ;
 
 
-//[374]	FTIgnoreOption
+//[374] FTIgnoreOption
 //--------------------
-FTIgnoreOption :
-		WITHOUT CONTENT  UnionExpr
-		{
+FTIgnoreOption
+    : WITHOUT CONTENT UnionExpr
+        {
       $$ = new FTIgnoreOption (LOC (@$), static_cast<UnionExpr *> ($3));
-		}
-	;
-
-
+        }
+    ;
 
 %%
 
@@ -6111,7 +6098,7 @@ const char *the_tumbling = "tumbling", *the_sliding = "sliding",
 }
 
 /*
-	The error member function registers the errors to the driver.
+    The error member function registers the errors to the driver.
 */
 
 void xquery_parser::error(zorba::xquery_parser::location_type const& loc, std::string const& msg)
@@ -6125,11 +6112,12 @@ void xquery_parser::error(zorba::xquery_parser::location_type const& loc, std::s
 #if 0
 static void print_token_value(FILE *file, int type, YYSTYPE value)
 {
-	if (type==VAR) {
-		fprintf (file, "%s", value.tptr->name);
-	}
-	else if (type==NUM) {
-		fprintf (file, "%d", value.val);
-	}
+    if (type==VAR) {
+        fprintf (file, "%s", value.tptr->name);
+    }
+    else if (type==NUM) {
+        fprintf (file, "%d", value.val);
+    }
 }
 #endif
+/* vim:set et sw=4 ts=4: */
