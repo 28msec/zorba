@@ -770,7 +770,7 @@ DEF_ERR_CODE(XDDY0031_IC_IS_NOT_DECLARED, XDDY0031,
 DEF_ERR_CODE(XDDY0032_IC_IS_NOT_ACTIVATED, XDDY0032,
              "An integrity constraint with URI /s is not declared.")
 
-DEF_ERR_CODE(XDDY0033_IC_NOT_MET, XQP0032,
+DEF_ERR_CODE(XDDY0033_IC_NOT_MET, XDDY0033,
              "Conditions for integrity constraint /s were not met on collection /s.")
 
 

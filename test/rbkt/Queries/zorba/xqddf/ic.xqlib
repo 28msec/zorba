@@ -1,0 +1,27 @@
+module namespace m = 'xqueryzorba.org/test/xqddf/ic';
+
+
+declare variable $m:empc as xs:QName := xs:QName("m:employees");
+declare collection m:employees as node()*;
+
+declare variable $m:trnc as xs:QName := xs:QName("m:transactions");
+declare collection m:transactions as node()*; 
+
+
+(: 1. check simple :)
+declare integrity constraint m:ic_simple 
+  on collection m:employees $emps check sum($emps/salary) gt 1000;
+
+(: 2. check unique key :)
+declare integrity constraint  m:ic_uniqueKey
+  on collection m:employees node $emp check unique key  $emp/id ;
+
+(: 3. foreach node :)
+declare integrity constraint  m:ic_forEachNode
+  on collection m:employees foreach node $emp check $emp/id > 0;
+
+(: 4. foreign key :)
+declare integrity constraint m:ic_foreignKey
+  foreign key 
+    from collection m:transactions node $x key  $x/empid  
+    to collection m:employees node $y key  $y/id ;

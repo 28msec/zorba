@@ -3874,6 +3874,8 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     ZORBA_ERROR_LOC_PARAM(XDST0044_IC_DECL_IN_MAIN_MODULE, v.get_location(), 
                           v.getName()->get_qname(), "");
   }
+  
+  push_scope();
 
   switch( v.getICKind() )
   {
@@ -3907,8 +3909,8 @@ void* begin_visit(const IntegrityConstraintDecl& v)
 
     // dc:collection(xs:QName("example:coll1"))
     function* fn_collection = sctx_p->lookup_resolved_fn(
-                                                         xqp_string("http://www.zorba-xquery.com/modules/xqddf"), 
-                                                         xqp_string("collection"), 1);
+        xqp_string("http://www.zorba-xquery.com/modules/xqddf"), 
+        xqp_string("collection"), 1);
     ZORBA_ASSERT(fn_collection != NULL);
     std::vector<expr_t> argColl;      
     argColl.push_back(qnameExpr.getp());
@@ -3982,9 +3984,9 @@ void* begin_visit(const IntegrityConstraintDecl& v)
 
     // dc:collection(xs:QName("org:employees"))
     function* fn_collection = sctx_p->lookup_resolved_fn(
-                                                         xqp_string("http://www.zorba-xquery.com/modules/xqddf"),
-                                                         xqp_string("collection"),
-                                                         1);
+        xqp_string("http://www.zorba-xquery.com/modules/xqddf"),
+        xqp_string("collection"),
+        1);
     ZORBA_ASSERT(fn_collection != NULL);
     std::vector<expr_t> argColl;
     argColl.push_back(qnameExpr.getp());
@@ -3993,8 +3995,8 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     // $x 
     const QName* varQName = ic.getNodeVarName();
     store::Item_t varItem = sctx_p->lookup_fn_qname(varQName->get_prefix(),
-                                                    varQName->get_localname(), varQName->get_location());
-    
+                                                    varQName->get_localname(), 
+                                                    varQName->get_location());
     
     // every $x_ in $x satisfies exists ...
     // every is implemented as a flowr expr
@@ -4250,9 +4252,9 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
         dynamic_cast<flwor_expr*>(pop_nodestack().getp());
 
       // let ... return ...
-      flworExpr->set_return_expr(icExpr);
+      flworExpr->set_return_expr( wrap_in_atomization(icExpr) );
 
-      body = flworExpr;      
+      body = flworExpr;
     }
     break;
 
@@ -4301,22 +4303,12 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       ////// Set latest details
       
       //fn:data( userExpr )
-      fo_expr_t fnDataExpr = new fo_expr(sctxid(), loc, 
-                                         GET_BUILTIN_FUNCTION(FN_DATA_1), 
-                                         uniKeyExpr);      
-
-      xqp_string coment1Str("#trace fnExistsInput");
-      expr_t coment1Expr = new const_expr(sctxid(), loc, coment1Str);
-      fo_expr_t fnTrace1Expr = new fo_expr(sctxid(),
-                                         loc,
-                                         GET_BUILTIN_FUNCTION(FN_TRACE_2),
-                                         uniKeyExpr, coment1Expr);
-      
+      fo_expr_t atomizedUniKeyExpr = wrap_in_atomization(uniKeyExpr);      
 
       // exists( $x/@id )
       expr_t existsExpr = new fo_expr(sctxid(), loc, 
                                       GET_BUILTIN_FUNCTION(FN_EXISTS_1), 
-                                      fnTrace1Expr /*uniKeyExpr*/);
+                                      uniKeyExpr);
 
       xqp_string commentStr("#trace fnExists");
       expr_t comentExpr = new const_expr(sctxid(), loc, commentStr);
@@ -4344,12 +4336,12 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       //distinct-values($seq)
       fo_expr_t distinctValuesExpr = new fo_expr(sctxid(), loc, 
                                  GET_BUILTIN_FUNCTION(FN_DISTINCT_VALUES_1), 
-                                                 fnDataExpr);      
+                                                 atomizedUniKeyExpr);      
 
       // count($sec)
       fo_expr_t countSecExpr = new fo_expr(sctxid(), loc, 
                                            GET_BUILTIN_FUNCTION(FN_COUNT_1), 
-                                           fnDataExpr /*uniKeyExpr*/);
+                                           atomizedUniKeyExpr);
       // count(distinct-values($sec))
       fo_expr_t countDVExpr = new fo_expr(sctxid(), loc, 
                                           GET_BUILTIN_FUNCTION(FN_COUNT_1), 
@@ -4389,7 +4381,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
 
       //////  Get data from stack
       // $x/sale gt 0
-      expr_t evTestExpr = pop_nodestack();
+      expr_t evTestExpr = wrap_in_atomization(pop_nodestack());
 
       // flwor expr
       flwor_expr_t evFlworExpr = 
@@ -4418,10 +4410,10 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
     {      
       //////  Get data from stack
       // $y/id
-      expr_t toKeyExpr = pop_nodestack();
+      expr_t toKeyExpr = wrap_in_atomization(pop_nodestack());
       
       // $x//sale/empid
-      expr_t fromKeyExpr = pop_nodestack();
+      expr_t fromKeyExpr = wrap_in_atomization(pop_nodestack());
       
       // result expr
       flwor_expr_t evFlworExpr = 
@@ -4476,6 +4468,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
     ZORBA_ASSERT(false);
   }
 
+  pop_scope();
 
 
   std::string msg = "entry-creator expr for integrity constraint " + 
