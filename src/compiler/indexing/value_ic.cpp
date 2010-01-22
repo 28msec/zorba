@@ -136,9 +136,19 @@ void ICCheckerImpl::actualCheck(const store::Item* collName,
     store::Iterator* iter = vic->getIterator();
     
     iter->open();
-    iter->next(partialRes);
-    iter->close(); 
+
+    try
+    {
+      iter->next(partialRes);
+    }
+    catch(...)
+    {
+      iter->close();
+      throw;
+    }
     
+    iter->close();
+
     bool icConditionHolds = partialRes->getBooleanValue();
     //std::cout << "ic check : result = " 
     //          << (icConditionHolds ? "true" : "false")
