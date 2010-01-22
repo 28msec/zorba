@@ -15,9 +15,10 @@
 ADD_SUBDIRECTORY(examples)
 
 ZORBA_DOXYGEN("${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}" "pythondocs")
-ADD_DEPENDENCIES(doc "pythondocs")
 
 IF (DOXYGEN_FOUND)
+  ADD_DEPENDENCIES(doc "pythondocs")
+
   CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/../style/rtab_b.gif
                   ${CMAKE_CURRENT_BINARY_DIR}/html/rtab_b.gif COPYONLY)
   CONFIGURE_FILE (${CMAKE_CURRENT_SOURCE_DIR}/../style/rtab_r.gif

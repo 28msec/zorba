@@ -15,10 +15,11 @@
 # generate host language and manually written documentation using doxygen
 # this adds a custom target called "zorbadocs"
 ZORBA_DOXYGEN("${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}" "zorbadocs")
-# make the zorbadocs target as a dependee of the doc target
-ADD_DEPENDENCIES(doc "zorbadocs")
 
 IF (DOXYGEN_FOUND)
+  # make the zorbadocs target as a dependee of the doc target
+  ADD_DEPENDENCIES(doc "zorbadocs")
+
   # if doxygen documentation is generated
   # we add the target "docs" to the target "doc"
   # which is used to build all documentation related targets
