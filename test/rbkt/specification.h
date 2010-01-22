@@ -228,6 +228,7 @@ public:
         {
           for(++lIter; lIter!=tokens.end(); ++lIter)
           {
+            trim(*lIter);
             // Just --indent for now
             if (*lIter == "--indent") {
               setUseIndent();
