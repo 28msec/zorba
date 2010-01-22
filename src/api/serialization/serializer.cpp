@@ -408,7 +408,8 @@ int serializer::emitter::emit_node_children(
          child->getNodeKind() == store::StoreConsts::commentNode) &&
         (prev_node_kind != store::StoreConsts::textNode))
     {
-      tr << ser->END_OF_LINE;
+      if (depth > 0)
+        tr << ser->END_OF_LINE;
       emit_indentation(depth);
     }
 
@@ -539,6 +540,8 @@ void serializer::emitter::emit_node(
       emit_doctype(qname->getLocalName());
       isFirstElementNode = false;
     }
+    else if (ser->indent && depth == 0)
+      tr << ser->END_OF_LINE;
 
     if (prefix->empty())
       tr << "<" << qname->getLocalName()->c_str();
@@ -704,8 +707,7 @@ void serializer::xml_emitter::emit_declaration()
     }
     tr << "?>";
 
-    if (!ser->indent) // If we're doing indentation, don't output the newline as it will be output together with identation spaces
-      tr << END_OF_LINE;
+    tr << END_OF_LINE; // Always output a newline after the XML declaration, although it's not a very good idea
   }
 }
 
