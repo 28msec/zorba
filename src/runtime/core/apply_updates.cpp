@@ -111,31 +111,38 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       zorbaIndexes[i] = zorbaIndex;
     }
 
-    // Apply updates
-    pul->setValidator(&validator);
-    pul->setICChecker(&icChecker);
-    pul->applyUpdates();
+    try {
+      // Apply updates
+      pul->setValidator(&validator);
+      pul->setICChecker(&icChecker);
+      pul->applyUpdates();
 
-    // Rebuild the indices that must be rebuilt from scratch
-    if (numIndices > 0)
-    {
-      indexPul = GENV_ITEMFACTORY->createPendingUpdateList();
-
-      for (ulong i = 0; i < numIndices; ++i)
+      // Rebuild the indices that must be rebuilt from scratch
+      if (numIndices > 0)
       {
-        ValueIndex* zorbaIndex = zorbaIndexes[i];
-        
-        if (zorbaIndex->getMaintenanceMode() == ValueIndex::REBUILD)
+        indexPul = GENV_ITEMFACTORY->createPendingUpdateList();
+
+        for (ulong i = 0; i < numIndices; ++i)
         {
-          PlanIter_t buildPlan = zorbaIndex->getBuildPlan(ccb, loc);
+          ValueIndex* zorbaIndex = zorbaIndexes[i];
 
-          PlanWrapper_t planWrapper = new PlanWrapper(buildPlan, ccb, dctx, NULL);
+          if (zorbaIndex->getMaintenanceMode() == ValueIndex::REBUILD)
+          {
+            PlanIter_t buildPlan = zorbaIndex->getBuildPlan(ccb, loc);
 
-          indexPul->addRefreshIndex(zorbaIndex->getName(), planWrapper);
+            PlanWrapper_t planWrapper = new PlanWrapper(buildPlan, ccb, dctx, NULL);
+
+            indexPul->addRefreshIndex(zorbaIndex->getName(), planWrapper);
+          }
         }
-      }
 
-      indexPul->applyUpdates();
+        indexPul->applyUpdates();
+      }
+    } catch (error::ZorbaError& e) {
+      // bugfix for bug #2935058
+      // rethrow errors happening during checking ICs
+      // using the error location of the apply expression
+      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
     }
   }
 

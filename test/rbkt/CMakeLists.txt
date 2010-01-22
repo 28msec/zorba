@@ -223,6 +223,4 @@ ENDFOREACH(TESTFILE)
 EXPECTED_FAILURE(test/rbkt/zorba/xqdoc/moduleDocumentation 2901298)
 EXPECTED_FAILURE(test/rbkt/zorba/xqdoc/indentation 2935916)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/admin 2935047)
-SET_TESTS_PROPERTIES (test/rbkt/zorba/xqddf/admin PROPERTIES
-  TIMEOUT 2)
 # --------------------------------------------------------------------------
