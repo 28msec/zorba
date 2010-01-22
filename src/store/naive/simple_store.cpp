@@ -1225,10 +1225,13 @@ TempSeq_t SimpleStore::createTempSeq(
     bool lazy)
 {
   TempSeq_t tempSeq;
-  if(lazy){
+  if(lazy)
+  {
     tempSeq = new SimpleTempSeq(iterator, copyNodes);
     //tempSeq = new SimpleLazyTempSeq(iterator, copyNodes);
-  }else{
+  }
+  else
+  {
     tempSeq = new SimpleTempSeq(iterator, copyNodes);
   }
 

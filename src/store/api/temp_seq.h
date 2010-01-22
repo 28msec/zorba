@@ -36,6 +36,12 @@ class  TempSeq : public SimpleRCObject
 public:
   virtual ~TempSeq(){}
 
+ 
+  /**
+   * Appends the items from the iterator to the temp sequence
+   */
+  virtual void append(Iterator_t iter, bool copy) = 0;
+	
   /**
    * Reads the whole Sequence from beginning to end; it is allowed to have several 
    * concurrent iterators on the same TempSeq.
@@ -44,15 +50,7 @@ public:
    * 
    */
   virtual Iterator_t getIterator() = 0;
-  
-    /**
-   * Appends the items from the iterator to the temp sequence
-   * 
-   * @return Iterator which iterates over the complete TempSeq
-   * 
-     */
-  virtual void append(Iterator_t iter, bool copy) = 0;
-		
+	
   /**
    * Returns an iterator which reads just a part of the underlying TempSeq
    * Starts counting with 1.
@@ -62,51 +60,9 @@ public:
    * @return Iterator
    */
   virtual Iterator_t getIterator(
-        int32_t startPos,
-        int32_t endPos,
+        ulong startPos,
+        ulong endPos,
         bool streaming = false) = 0;
-		
-  /** Info: Tim's territory. Do not touch for the moment!
-   *
-   * Returns an iterator which reads just a part of the underlying XMD instance
-   * Note: Not every store needs to implement this method.
-   * If an store is not implementing it, the iterator should throw an exception;
-   * 
-   * Starts counting with 1.
-   *
-   * @param startPos The first item which the iterator returns
-   * @param endPos HigherOrderedFunction is called for every item in the sequence. If its returns true, the sequence ends
-   * @param var variables which have to be bound for every item
-   * @return Iterator
-   */
-  virtual Iterator_t getIterator(
-        int32_t startPos,
-        Iterator_t function,
-        const std::vector<Iterator_t>& var,
-        bool streaming = false) = 0;
-				
-		
-  /** Info: Tim's territory. Do not touch for the moment!
-   *
-   * Returns an iterator which just returns the positions given by the iterator.
-   * 
-   * Starts counting with 1.
-   *
-   * @param positions Positions to return
-   * @return Iterator
-   */
-  virtual Iterator_t getIterator(
-        const std::vector<int32_t>& positions,
-        bool streaming = false) = 0;
-		
-  /** Info: Tim's territory. Do not touch for the moment!
-   *
-   * Returns an iterator which just returns the positions given by the iterator. 
-   * 
-   * @param positions An iterator which only returns int32_t numbers or null. 
-   *									Each int32_t value corresponds to a position in the XDMInstance. 
-   */
-  virtual Iterator_t getIterator(Iterator_t positions, bool streaming = false) = 0;
 		
   /**
    * Gets an item at a certain position.
@@ -116,7 +72,7 @@ public:
    * @param position (first position in XQuery is 1 and not 0!)
    * @return item
    */
-  virtual void getItem(int32_t position, Item_t& result) = 0;
+  virtual void getItem(ulong position, Item_t& result) = 0;
 		
 		
   /**
@@ -127,7 +83,7 @@ public:
    * @param position 
    * @return 
    */
-  virtual bool containsItem(int32_t position) = 0;
+  virtual bool containsItem(ulong position) = 0;
 		
   /**
    * purge() allows the store to do proper garbage collection. If e.g. a let 
@@ -146,28 +102,7 @@ public:
    * 
    * @param upTo boundary for garbage collector
    */
-  virtual void purgeUpTo(int32_t upTo) = 0;
-		
-  /** Info: Tim's territory. Do not touch for the moment!
-   *
-   * This optimizations gives the store a hint that the caller will never
-   * ask for an iterator again, which might contain those items.
-   * 
-   * Starts counting with 1.
-   *
-   * @param positions
-   */
-  virtual void purgeItem(const std::vector<int32_t>& positions) = 0;
-		
-  /** Info: Tim's territory. Do not touch for the moment!
-   *
-   * This optimizations gives the store a hint that the caller will never
-   * ask for an iterator again, which might contain this item. 
-   * 
-   * Starts counting with 1.
-   */
-  virtual void purgeItem(int32_t position) = 0;
-		
+  virtual void purgeUpTo(ulong upTo) = 0;
 		
   /**
    * @return Does this TempSeq save an empty sequence? 
@@ -179,3 +114,9 @@ public:
 } // namespace zorba
 
 #endif /* ZORBA_STORE_TEMP_SEQ_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

@@ -4,6 +4,7 @@ import schema namespace news = "http://www.news.org/schemas" at "news-schema.xsd
 
 import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
 
+
 declare collection news-data:employees
   as schema-element(news:employee)*;
 
@@ -13,15 +14,18 @@ declare const ordered collection news-data:months
   as schema-element(news:month)* 
   with read-only nodes;
 
+
 declare automatically maintained value equality index news-data:CityEmp
   on nodes xqddf:collection(xs:QName("news-data:employees"))
   by .//news:station/news:city as xs:string;
+
 
 declare manually maintained value range index news-data:ArtCountEmp
   on nodes xqddf:collection(xs:QName("news-data:employees"))[./news:position/@kind eq "journalist"]
   by count(for $art in xqddf:collection(xs:QName("news-data:articles"))
            where $art/empid = ./@id
            return $art) as xs:integer;
+
 
 declare integrity constraint news-data:UniqueId
   on collection news-data:employees
@@ -35,6 +39,7 @@ declare integrity constraint news-data:ArticleEmployees
   foreign key
     from collection news-data:articles node $x key $x/empid
     to   collection news-data:employees node $y key fn:data($y/@id);
+
 
 declare variable $news-data:employees := xs:QName("news-data:employees");
 declare variable $news-data:articles := xs:QName("news-data:articles");

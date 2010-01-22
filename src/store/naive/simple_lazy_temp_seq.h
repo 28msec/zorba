@@ -28,25 +28,33 @@ namespace zorba
 namespace simplestore 
 {
 
-/**
- * Very simple implementation of Temp Sequence. It saves the resulting items
- * of an iterator eager in a vector.
- */
 typedef rchandle<class SimpleLazyTempSeq> SimpleLazyTempSeq_t;
 
-    
+
+/*******************************************************************************
+  theIterator    : The input iterator that produces the items to be buffered by
+                   "this" temp sequence.
+  theCopy        : Whether or not to copy the items returned by theIterator 
+                   before buffering them in "this" temp sequence.
+  theMatFinished : Set to true when theIterator returns its last item.
+  thePurgedUpTo  : The number of items that have been purged from the buffer so
+                   far.
+
+  theItems       : Vector storing the buffered items.
+********************************************************************************/
 class SimpleLazyTempSeq : public store::TempSeq 
 {
  public:
-  static const uint32_t MAX_POSITION;
+  static const ulong MAX_POSITION;
 
  private:
-  std::vector<store::Item_t> theItems;
   store::Iterator_t          theIterator;
   bool                       theCopy;
   bool                       theMatFinished;
-  uint32_t                   thePurgedUpTo;
+  ulong                      thePurgedUpTo;
   
+  std::vector<store::Item_t> theItems;
+
  public:
   SimpleLazyTempSeq() { }
 
@@ -56,106 +64,143 @@ class SimpleLazyTempSeq : public store::TempSeq
 
   bool empty();
 
-  void append ( store::Iterator_t iter, bool copy );
+  void append(store::Iterator_t iter, bool copy);
 
-  void getItem(int32_t position, store::Item_t& result)
-  {
-    if ( this->containsItem ( position ) ) 
-    {
-      result = theItems[position - thePurgedUpTo - 1];
-      //return true;
-    }
-    else 
-    {
-      result = NULL;
-      //return false;
-    }
-  }
+  inline void getItem(ulong position, store::Item_t& result);
 
-
-  inline bool containsItem ( int32_t position ) 
-  {
-    uint32_t maxPos = position - thePurgedUpTo;
-    assert(maxPos > 0); //Otherwise we have a serious problem
-    while ( !theMatFinished && theItems.size() < maxPos ) 
-    {
-      //Need to fix size type
-      matNextItem();
-    }
-    return theItems.size() >= maxPos;
-  }
+  inline bool containsItem(ulong position);
 
   store::Iterator_t getIterator();
 
   store::Iterator_t getIterator(
-        int32_t startPos,
-        int32_t endPos,
-        bool streaming = false );
+        ulong startPos,
+        ulong endPos,
+        bool streaming = false);
 
   store::Iterator_t getIterator(
-        int32_t startPos,
+        ulong startPos,
         store::Iterator_t function,
         const std::vector<store::Iterator_t>& var,
-        bool streaming = false );
+        bool streaming = false);
 
   store::Iterator_t getIterator(
-        const std::vector<int32_t>& positions,
-        bool streaming = false );
+        const std::vector<ulong>& positions,
+        bool streaming = false);
 
   store::Iterator_t getIterator(
         store::Iterator_t positions,
-        bool streaming = false );
+        bool streaming = false);
         
   void purge();
-  void purgeUpTo( int32_t upTo );
-  void purgeItem( const std::vector<int32_t>& positions );
-  void purgeItem( int32_t position );
+
+  void purgeUpTo(ulong upTo);
 
  private:
-  inline void matNextItem() 
-  {
-    theItems.push_back ( NULL );
-    store::Item_t& lLocation = theItems.back();
-    if ( theIterator->next ( lLocation ) ) 
-    {
-      if ( theCopy && lLocation->isNode() ) 
-      {
-        store::CopyMode lCopyMode;
-        lLocation = lLocation->copy ( NULL, 0, lCopyMode );
-      }
-    }
-    else 
-    {
-      //We do not want to have an empty item materialized.
-      theItems.pop_back();
-      theMatFinished = true;
-    }
-  }
+  inline void matNextItem();
 };
  
  
 class SimpleLazyTempSeqIter : public store::Iterator 
 {
  private:
-  SimpleLazyTempSeq_t   theTempSeq;
+  SimpleLazyTempSeq_t  theTempSeq;
 
-  uint32_t              theCurPos;
-  uint32_t              theStartPos;
-  uint32_t              theEndPos;
+  ulong                theCurPos;
+  ulong                theStartPos;
+  ulong                theEndPos;
 
  public:
   SimpleLazyTempSeqIter(
         SimpleLazyTempSeq_t aTempSeq,
-        uint32_t aStartPos,
-        uint32_t aEndPos);
+        ulong aStartPos,
+        ulong aEndPos);
 
   virtual ~SimpleLazyTempSeqIter();
 
   void open();
-  bool next( store::Item_t& result );
+  bool next(store::Item_t& result);
   void reset();
   void close();
 };
+
+
+
+/*******************************************************************************
+
+********************************************************************************/
+inline void SimpleLazyTempSeq::getItem(ulong position, store::Item_t& result)
+{
+  if ( this->containsItem ( position ) ) 
+  {
+    result = theItems[position - thePurgedUpTo - 1];
+  }
+  else 
+  {
+    result = NULL;
+  }
+}
+
+
+/*******************************************************************************
+  This method checks if the i-th item in the result sequences of the input
+  iterator is in the queue or not. In general, the item may be missing from
+  the queue because:
+  (a) it has either been purged, or
+  (b) it has not been computed yet, or
+  (c) the result sequence contains less than i items.
+ 
+  Case (a) should never arise: it is the user of the lazy temp sequence that
+  decided when and how many items to purge, so he shouldn't come back to ask
+  for an item that has been purged.
+
+  In case (c), the method will compute and buffer any input items that have not
+  been computed already and then return false.
+
+  In case (b), the method will compute and buffer all the items starting after
+  the last computed item and up to the i-th item; then it will return true.
+
+  If the i-th item is already in the queue, the method will simply return true. 
+********************************************************************************/
+inline bool SimpleLazyTempSeq::containsItem(ulong position) 
+{
+  assert(position > thePurgedUpTo);
+
+  ulong numItemsToBuffer = position - thePurgedUpTo;
+
+  while (!theMatFinished && theItems.size() <  numItemsToBuffer) 
+  {
+    matNextItem();
+  }
+
+  return theItems.size() >= numItemsToBuffer;
+}
+
+
+/*******************************************************************************
+  Get the next item (if any) from the input iterator and put it at the end of 
+  the queue.  
+********************************************************************************/
+inline void SimpleLazyTempSeq::matNextItem() 
+{
+  theItems.push_back(NULL);
+
+  store::Item_t& lLocation = theItems.back();
+
+  if ( theIterator->next(lLocation)) 
+  {
+    if (theCopy && lLocation->isNode()) 
+    {
+      store::CopyMode lCopyMode;
+      lLocation = lLocation->copy(NULL, 0, lCopyMode);
+    }
+  }
+  else 
+  {
+    // We do not want to have an empty item materialized.
+    theItems.pop_back();
+    theMatFinished = true;
+  }
+}
 
 
 } // namespace store

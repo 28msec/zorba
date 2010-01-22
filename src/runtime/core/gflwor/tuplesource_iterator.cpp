@@ -38,13 +38,14 @@ SERIALIZABLE_CLASS_VERSIONS(TupleSourceIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(TupleSourceIterator)
 
 
-bool TupleSourceIterator::nextImpl ( store::Item_t& aResult, PlanState& aPlanState ) const {
+bool TupleSourceIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
+{
   PlanIteratorState* lState;
-  store::Item_t lTuple;
-  DEFAULT_STACK_INIT ( PlanIteratorState, lState, aPlanState );
-  STACK_PUSH ( true, lState );
-  STACK_PUSH ( false, lState );
-  STACK_END ( lState );
+  DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
+
+  STACK_PUSH(true, lState);
+  STACK_PUSH(false, lState);
+  STACK_END(lState);
 }
 
 

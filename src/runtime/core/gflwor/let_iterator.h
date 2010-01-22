@@ -25,12 +25,28 @@ namespace zorba
 namespace flwor 
 {
 
+
+/***************************************************************************//**
+
+  theChild0    : The input tuple iterator.
+
+  theChild1    : The domain expr iterator.
+
+  theVarName   :
+
+  theVarRefs   : Vector of LetVarIters representing all references to this LET
+                 var. Each LetVarIter holds the current value of the var as an
+                 iterator. The iterator iterates over a temp sequence, whose
+                 input is theChild1. Each temp seq iterator is created and stored
+                 in its associated LetVarIter by the bindVariable() method.
+  theNeedsMat  :
+********************************************************************************/
 class LetIterator : public BinaryBaseIterator<LetIterator, PlanIteratorState> 
 {
 private:
-  store::Item_t theVarName;
+  store::Item_t             theVarName;
   std::vector<LetVarIter_t> theLetVars;
-  bool theNeedsMat;
+  bool                      theNeedsMat;
   
 public:
   SERIALIZABLE_CLASS(LetIterator);

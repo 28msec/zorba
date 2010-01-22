@@ -104,6 +104,13 @@ public:
   virtual std::string
   toString();
 
+  void setQueryLocation(
+        unsigned int line,
+        unsigned int column,
+        const std::string& filename);
+
+  bool hasQueryLocation();
+
   const xqpString&
   localName() const;
 

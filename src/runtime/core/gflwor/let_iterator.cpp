@@ -39,9 +39,9 @@ LetIterator::LetIterator (
     const std::vector<PlanIter_t>& aLetVars,
     bool aNeedsMaterialization ) 
   :
-  BinaryBaseIterator<LetIterator, PlanIteratorState> ( sctx, aLoc, aTupleIter, aInput),
+  BinaryBaseIterator<LetIterator, PlanIteratorState>(sctx, aLoc, aTupleIter, aInput),
   theVarName(aVarName), 
-  theNeedsMat ( aNeedsMaterialization ) 
+  theNeedsMat(aNeedsMaterialization) 
 {
   castIterVector<LetVarIterator>(theLetVars, aLetVars);
 }
@@ -69,18 +69,16 @@ void LetIterator::accept(PlanIterVisitor& v) const
 
 
 
-//theChild0 == TupleIter
-//theChild1 == InputIter
-bool LetIterator::nextImpl ( store::Item_t& aResult, PlanState& aPlanState ) const 
+bool LetIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const 
 {
   PlanIteratorState* lState;
-  DEFAULT_STACK_INIT ( PlanIteratorState, lState, aPlanState );
+  DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
 
-  while ( consumeNext ( aResult, theChild0, aPlanState ) ) 
+  while (consumeNext(aResult, theChild0, aPlanState)) 
   {
-    bindVariables ( theChild1 ,theLetVars,aPlanState,theNeedsMat);
-    STACK_PUSH ( true, lState );
-    theChild1->reset ( aPlanState );
+    bindVariables(theChild1, theLetVars, aPlanState, theNeedsMat);
+    STACK_PUSH(true, lState);
+    theChild1->reset(aPlanState);
   }
   STACK_END ( lState );
 }

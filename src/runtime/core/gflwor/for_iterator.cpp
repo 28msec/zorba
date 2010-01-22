@@ -113,17 +113,19 @@ bool ForIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
   ForState* lState;
   store::Item_t lItem;
       
-  DEFAULT_STACK_INIT ( ForState, lState, aPlanState );
+  DEFAULT_STACK_INIT(ForState, lState, aPlanState);
 
   while (consumeNext(aResult, theChild0, aPlanState)) 
   {
     while (consumeNext(lItem, theChild1, aPlanState)) 
     {
       bindVariables(lItem, theVarRefs, aPlanState);
+
       if (theHasPosVars) 
       {
         store::Item_t lPosItem;
-        GENV_ITEMFACTORY->createInteger(lPosItem, Integer::parseInt(lState->incReturnPosition()));
+        GENV_ITEMFACTORY->createInteger(lPosItem,
+                                        Integer::parseInt(lState->incReturnPosition()));
         bindVariables(lPosItem, thePosVarRefs, aPlanState);
       }
       STACK_PUSH(true, lState);

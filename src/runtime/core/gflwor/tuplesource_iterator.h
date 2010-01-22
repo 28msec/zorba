@@ -23,10 +23,10 @@ namespace zorba
 namespace flwor 
 {
 
-/**
- * The TupleSourceIterator initializes a TupleStream. This iterator is always the first iterator. 
- * 
- */
+/*******************************************************************************
+  The TupleSourceIterator initializes a TupleStream. This iterator is always
+  the first iterator.  
+********************************************************************************/
 NOARY_ITER(TupleSourceIterator);
 
 

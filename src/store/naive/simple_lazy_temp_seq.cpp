@@ -24,13 +24,13 @@ namespace zorba
 namespace simplestore
 {
 
-const uint32_t SimpleLazyTempSeq::MAX_POSITION = std::vector<store::Item_t>().max_size();  //FIXME Is there no better way?
+const ulong SimpleLazyTempSeq::MAX_POSITION = std::vector<store::Item_t>().max_size();  //FIXME Is there no better way?
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-SimpleLazyTempSeq::SimpleLazyTempSeq ( store::Iterator_t aIter, bool aCopy )
+SimpleLazyTempSeq::SimpleLazyTempSeq(store::Iterator_t aIter, bool aCopy)
   :
   theIterator(aIter),
   theCopy(aCopy),
@@ -75,9 +75,9 @@ bool SimpleLazyTempSeq::empty()
 /*******************************************************************************
 
 ********************************************************************************/
-void SimpleLazyTempSeq::append ( store::Iterator_t iter, bool copy )
+void SimpleLazyTempSeq::append(store::Iterator_t iter, bool copy)
 {
-  while ( !theMatFinished )
+  while (!theMatFinished)
   {
     matNextItem();
   }
@@ -95,7 +95,7 @@ void SimpleLazyTempSeq::append ( store::Iterator_t iter, bool copy )
 ********************************************************************************/
 store::Iterator_t SimpleLazyTempSeq::getIterator()
 {
-  return new SimpleLazyTempSeqIter ( this, 1,  SimpleLazyTempSeq::MAX_POSITION );
+  return new SimpleLazyTempSeqIter(this, 1,  SimpleLazyTempSeq::MAX_POSITION);
 }
 
 
@@ -106,49 +106,49 @@ store::Iterator_t SimpleLazyTempSeq::getIterator()
   @param endPos The last item which the iterator returns
   @return Iterator
 ********************************************************************************/
-store::Iterator_t SimpleLazyTempSeq::getIterator (
-    int32_t startPos,
-    int32_t endPos,
-    bool streaming )
+store::Iterator_t SimpleLazyTempSeq::getIterator(
+    ulong startPos,
+    ulong endPos,
+    bool streaming)
 {
-  return new SimpleLazyTempSeqIter ( this, startPos, endPos );
+  return new SimpleLazyTempSeqIter(this, startPos, endPos);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-store::Iterator_t SimpleLazyTempSeq::getIterator (
-    int32_t startPos,
+store::Iterator_t SimpleLazyTempSeq::getIterator(
+    ulong startPos,
     store::Iterator_t function,
     const std::vector<store::Iterator_t>& vars,
-    bool streaming )
+    bool streaming)
 {
-  assert ( false ); //Not implemented
-  return store::Iterator_t ( NULL );
+  assert(false); //Not implemented
+  return store::Iterator_t(NULL);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-store::Iterator_t SimpleLazyTempSeq::getIterator (
-    const std::vector<int32_t>& positions,
-    bool streaming )
+store::Iterator_t SimpleLazyTempSeq::getIterator(
+    const std::vector<ulong>& positions,
+    bool streaming)
 {
-  assert ( false ); //Not implemented
-  return store::Iterator_t ( NULL );
+  assert (false); //Not implemented
+  return store::Iterator_t(NULL);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-store::Iterator_t SimpleLazyTempSeq::getIterator (
+store::Iterator_t SimpleLazyTempSeq::getIterator(
     store::Iterator_t positions,
-    bool streaming )
+    bool streaming)
 {
-  assert ( false ); //Not implemented
+  assert(false); //Not implemented
   return store::Iterator_t ( NULL );
 }
 
@@ -165,7 +165,7 @@ void SimpleLazyTempSeq::purge()
 /*******************************************************************************
 
 ********************************************************************************/
-void SimpleLazyTempSeq::purgeUpTo ( int32_t upTo )
+void SimpleLazyTempSeq::purgeUpTo(ulong upTo)
 {
   theItems.erase(theItems.begin(), (theItems.begin() + upTo));
   thePurgedUpTo = upTo;
@@ -175,32 +175,15 @@ void SimpleLazyTempSeq::purgeUpTo ( int32_t upTo )
 /*******************************************************************************
 
 ********************************************************************************/
-void SimpleLazyTempSeq::purgeItem ( const std::vector<int32_t>& positions )
-{
-  //Not supported
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void SimpleLazyTempSeq::purgeItem ( int32_t position )
-{
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-SimpleLazyTempSeqIter::SimpleLazyTempSeqIter (
+SimpleLazyTempSeqIter::SimpleLazyTempSeqIter(
     SimpleLazyTempSeq_t aTempSeq,
-    uint32_t aStartPos,
-    uint32_t aEndPos )
+    ulong aStartPos,
+    ulong aEndPos )
   :
-  theTempSeq ( aTempSeq ),
-  theCurPos ( aStartPos - 1),
-  theStartPos ( aStartPos),
-  theEndPos ( aEndPos )
+  theTempSeq(aTempSeq),
+  theCurPos(aStartPos - 1),
+  theStartPos(aStartPos),
+  theEndPos(aEndPos)
 {
 }
 
@@ -216,9 +199,9 @@ void SimpleLazyTempSeqIter::open()
 }
 
 
-bool SimpleLazyTempSeqIter::next ( store::Item_t& result )
+bool SimpleLazyTempSeqIter::next(store::Item_t& result)
 {
-  if(theCurPos < theEndPos && theTempSeq->containsItem(++theCurPos))
+  if (theCurPos < theEndPos && theTempSeq->containsItem(++theCurPos))
   {
     theTempSeq->getItem(theCurPos, result);
     return true;

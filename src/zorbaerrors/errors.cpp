@@ -119,6 +119,23 @@ ZorbaError::ZorbaError(const ZorbaError& other)
 }
 
 
+void ZorbaError::setQueryLocation(
+    unsigned int line,
+    unsigned int column,
+    const std::string& filename)
+{
+  theQueryLine = line;
+  theQueryColumn = column;
+  theQueryFileName = filename;
+}
+
+
+bool ZorbaError::hasQueryLocation()
+{
+  return (theQueryFileName.empty() && theQueryLine == 0 && theQueryColumn == 0);
+}
+
+
 std::string ZorbaError::toString() 
 {
   std::ostringstream strstream;

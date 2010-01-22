@@ -33,15 +33,18 @@ namespace flwor
 SERIALIZABLE_CLASS_VERSIONS(TupleStreamIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(TupleStreamIterator)
 
-TupleStreamIterator::TupleStreamIterator (
+TupleStreamIterator::TupleStreamIterator(
     static_context*   sctx,
     const QueryLoc&   aLoc,
     PlanIter_t        aTupleIter,
     PlanIter_t        aReturnIter,
     bool              aIsUpdating) 
   :
-  BinaryBaseIterator<TupleStreamIterator, PlanIteratorState> (sctx, aLoc, aTupleIter, aReturnIter),
-  theIsUpdating (aIsUpdating) 
+  BinaryBaseIterator<TupleStreamIterator, PlanIteratorState>(sctx,
+                                                             aLoc,
+                                                             aTupleIter,
+                                                             aReturnIter),
+  theIsUpdating(aIsUpdating) 
 {
 }
 
@@ -53,7 +56,7 @@ TupleStreamIterator::~TupleStreamIterator()
 
 //theChild0 == TupleClause
 //theChild1 == ReturnClause
-bool TupleStreamIterator::nextImpl (store::Item_t& aResult, PlanState& aPlanState) const 
+bool TupleStreamIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const 
 {
   std::auto_ptr<store::PUL> pul;
   store::Item_t lTuple;
@@ -63,27 +66,34 @@ bool TupleStreamIterator::nextImpl (store::Item_t& aResult, PlanState& aPlanStat
 
   if (theIsUpdating) 
   {
-    pul.reset (GENV_ITEMFACTORY->createPendingUpdateList());
-    while (consumeNext (lTuple, theChild0, aPlanState)) {
-      while (consumeNext (aResult, theChild1, aPlanState)) {
-        ZORBA_FATAL (aResult->isPul(), "");
-        pul->mergeUpdates (aResult);
+    pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
+
+    while (consumeNext (lTuple, theChild0, aPlanState)) 
+    {
+      while (consumeNext (aResult, theChild1, aPlanState)) 
+      {
+        ZORBA_FATAL(aResult->isPul(), "");
+        pul->mergeUpdates(aResult);
       }
     }
+
     aResult = pul.release();
-    STACK_PUSH (true, lState);
+
+    STACK_PUSH(true, lState);
   }
   else 
   {
-    while (consumeNext (lTuple, theChild0, aPlanState)) {
-      while (consumeNext (aResult, theChild1, aPlanState)) {
-        STACK_PUSH (true, lState);
+    while (consumeNext(lTuple, theChild0, aPlanState)) 
+    {
+      while (consumeNext(aResult, theChild1, aPlanState)) 
+      {
+        STACK_PUSH(true, lState);
       }
-      theChild1->reset (aPlanState);
+      theChild1->reset(aPlanState);
     }
   }
-  STACK_PUSH (false, lState);
-  STACK_END (lState);
+  STACK_PUSH(false, lState);
+  STACK_END(lState);
 }
 
 

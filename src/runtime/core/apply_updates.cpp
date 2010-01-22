@@ -111,7 +111,8 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       zorbaIndexes[i] = zorbaIndex;
     }
 
-    try {
+    try 
+    {
       // Apply updates
       pul->setValidator(&validator);
       pul->setICChecker(&icChecker);
@@ -138,11 +139,16 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
         indexPul->applyUpdates();
       }
-    } catch (error::ZorbaError& e) {
-      // bugfix for bug #2935058
-      // rethrow errors happening during checking ICs
-      // using the error location of the apply expression
-      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+    }
+    catch (error::ZorbaError& e)
+    {
+      if (!e.hasQueryLocation())
+      {
+        e.setQueryLocation(loc.getLineBegin(),
+                           loc.getColumnBegin(),
+                           loc.getFilenameBegin());
+      }
+      throw e;
     }
   }
 

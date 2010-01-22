@@ -49,31 +49,31 @@ public:
 
   virtual bool empty();
   
-  int32_t getSize();
+  ulong getSize();
 
   virtual void append(store::Iterator_t iter, bool copy);
 
-  store::Item_t operator[](int32_t aIndex);
+  store::Item_t operator[](ulong aIndex);
 
-  virtual void getItem(int32_t position, store::Item_t& res);
+  virtual void getItem(ulong position, store::Item_t& res);
 
-  virtual bool containsItem(int32_t position);
+  virtual bool containsItem(ulong position);
 
   virtual store::Iterator_t getIterator();
 
   virtual store::Iterator_t getIterator(
-        int32_t startPos,
-        int32_t endPos,
+        ulong startPos,
+        ulong endPos,
         bool streaming = false);
 
   virtual store::Iterator_t getIterator(
-        int32_t startPos,
+        ulong startPos,
         store::Iterator_t function,
         const std::vector<store::Iterator_t>& var,
         bool streaming = false );
 
   virtual store::Iterator_t getIterator(
-        const std::vector<int32_t>& positions,
+        const std::vector<ulong>& positions,
         bool streaming = false);
 
   virtual store::Iterator_t getIterator(
@@ -81,9 +81,7 @@ public:
         bool streaming = false);
   
   virtual void purge();
-  virtual void purgeUpTo(int32_t upTo );
-  virtual void purgeItem(const std::vector<int32_t>& positions );
-  virtual void purgeItem(int32_t position );
+  virtual void purgeUpTo(ulong upTo );
 };
 
 
@@ -100,19 +98,22 @@ class SimpleTempSeqIter : public store::TempSeqIterator
     specificPositions
   };
 
-  SimpleTempSeq_t            theTempSeq;
-  BorderType                 theBorderType;
+  SimpleTempSeq_t          theTempSeq;
+  BorderType               theBorderType;
 
-  int32_t                    theCurPos;
-  int32_t                    theStartPos;
-  int32_t                    theEndPos;
-  std::vector<int32_t>       thePositions;
+  ulong                    theCurPos;
+  ulong                    theStartPos;
+  ulong                    theEndPos;
+  std::vector<ulong>       thePositions;
     
  public:
   SimpleTempSeqIter() {}
+
   SimpleTempSeqIter(SimpleTempSeq_t aTempSeq);
-  SimpleTempSeqIter(SimpleTempSeq_t aTempSeq, int32_t startPos, int32_t endPos);
-  SimpleTempSeqIter(SimpleTempSeq_t aTempSeq, const std::vector<int32_t>& positions);
+
+  SimpleTempSeqIter(SimpleTempSeq_t aTempSeq, ulong startPos, ulong endPos);
+
+  SimpleTempSeqIter(SimpleTempSeq_t aTempSeq, const std::vector<ulong>& positions);
 
   virtual ~SimpleTempSeqIter();
 

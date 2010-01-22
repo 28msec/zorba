@@ -310,10 +310,10 @@ bool CompareIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         tSeq1->append(lIter1, false);
       }
 
-      int i0 = 1;
+      ulong i0 = 1;
       while(!found && tSeq0->containsItem(i0)) 
       {
-        int i1 = 1;
+        ulong i1 = 1;
         while(!found && tSeq1->containsItem(i1)) 
         {
           store::Item_t item0;

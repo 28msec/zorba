@@ -36,6 +36,14 @@ namespace flwor
 {
 
 
+inline void createTempSeq(
+    store::TempSeq_t& aTempSeqResult,
+    const PlanIter_t& aInput,
+    PlanState& aPlanState,
+    const bool aLazyEval);
+
+
+
 /*******************************************************************************
   Holds the value of a tuple in the flwor tuple stream.
 
@@ -404,6 +412,61 @@ template <class T> inline int32_t getStateSizeOfSubtreeVectorPtr(const std::vect
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
+
+inline void createTempSeq(
+    store::TempSeq_t& aTempSeqResult,
+    const PlanIter_t& aInput,
+    PlanState& aPlanState,
+    const bool aLazyEval)
+{
+  store::Iterator_t iterWrapper = new PlanIteratorWrapper(aInput, aPlanState);
+  aTempSeqResult = GENV_STORE.createTempSeq(iterWrapper, false, aLazyEval);
+}
+  
+
+inline void bindVariables(
+    const store::TempSeq_t& aTmpSeq,
+    const std::vector<LetVarIter_t>& aLetVariables,
+    PlanState& aPlanState) 
+{
+  std::vector<LetVarIter_t>::const_iterator letIter = aLetVariables.begin();
+  std::vector<LetVarIter_t>::const_iterator letEnd = aLetVariables.end();
+  for (; letIter != letEnd; ++letIter) 
+  {
+    store::Iterator_t iter = aTmpSeq->getIterator();
+    iter->open();
+    (*letIter)->bind(iter, aPlanState);
+  }
+}
+  
+
+inline void bindVariables (
+    const PlanIter_t& aInput,
+    const std::vector<LetVarIter_t>& aLetVariables,
+    PlanState& aPlanState,
+    const bool aNeedsMaterialization) 
+{
+  if (aNeedsMaterialization) 
+  {
+    store::TempSeq_t lTempSeq;
+    createTempSeq(lTempSeq, aInput, aPlanState, true);
+
+    bindVariables(lTempSeq, aLetVariables, aPlanState);
+  }
+  else
+  {
+    store::Iterator_t iterWrapper = new PlanIteratorWrapper(aInput, aPlanState);
+
+    std::vector<LetVarIter_t>::const_iterator letIter = aLetVariables.begin();
+    std::vector<LetVarIter_t>::const_iterator letEnd = aLetVariables.begin();
+    for (; letIter != letEnd; ++letIter) 
+    {
+      (*letIter)->bind(iterWrapper, aPlanState);
+    }
+  }
+}
+
+
 inline void bindVariables (
     const store::Item_t& aItem,
     const std::vector<ForVarIter_t>& aForVariables,
@@ -413,60 +476,11 @@ inline void bindVariables (
   std::vector<ForVarIter_t>::const_iterator forEnd = aForVariables.end();
   for (; forIter != forEnd; ++forIter) 
   {
-    const ForVarIter_t& variable = ( *forIter );
-    variable->bind ( aItem.getp(), aPlanState );
+    const ForVarIter_t& varRef = (*forIter);
+    varRef->bind(aItem.getp(), aPlanState);
   }
 }
-  
 
-inline void bindVariables (
-    const store::TempSeq_t& aTmpSeq,
-    const std::vector<LetVarIter_t>& aLetVariables,
-    PlanState& aPlanState ) 
-{
-  std::vector<LetVarIter_t>::const_iterator letIter = aLetVariables.begin();
-  std::vector<LetVarIter_t>::const_iterator letEnd = aLetVariables.end();
-  for (; letIter != letEnd; ++letIter) 
-  {
-    store::Iterator_t iter = aTmpSeq->getIterator();
-    iter->open();
-    ( *letIter )->bind(iter, aPlanState);
-  }
-}
-  
-
-inline void createTempSeq(
-    store::TempSeq_t& aTempSeqResult,
-    const PlanIter_t& aInput,
-    PlanState& aPlanState,
-    const bool aLazyEval)
-{
-  store::Iterator_t iterWrapper = new PlanIteratorWrapper ( aInput, aPlanState );
-  aTempSeqResult = GENV_STORE.createTempSeq ( iterWrapper, false, aLazyEval );
-}
-    
-
-inline void bindVariables (
-    const PlanIter_t& aInput,
-    const std::vector<LetVarIter_t>& aLetVariables,
-    PlanState& aPlanState,
-    const bool aNeedsMaterialization) 
-{
-  if ( aNeedsMaterialization ) {
-    store::TempSeq_t lTempSeq;
-    createTempSeq(lTempSeq, aInput, aPlanState, true);
-    bindVariables ( lTempSeq, aLetVariables, aPlanState );
-  } else {
-    store::Iterator_t iterWrapper = new PlanIteratorWrapper ( aInput, aPlanState );
-    std::vector<LetVarIter_t>::const_iterator letIter;
-    for ( letIter = aLetVariables.begin();
-          letIter != aLetVariables.end();
-          ++letIter ) {
-      ( *letIter )->bind ( iterWrapper, aPlanState );
-    }
-  }
-}
-  
     
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //

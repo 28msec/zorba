@@ -32,9 +32,9 @@ private:
   int thePosition;
 
 public:
-  void init ( PlanState& );
+  void init(PlanState&);
 
-  void reset ( PlanState& );
+  void reset(PlanState&);
 
   inline int incReturnPosition() {return ++thePosition;}
 
@@ -54,11 +54,8 @@ public:
                   value is computed and stored in the ForVarIter by the 
                   bindVariable() method.
 
-  thePosVarRefs : Vector of ForVarIters representing all references to the positional
-                  var (if any) associated with this FOR var.
-
-  theInput      : The iterator producing the domain (if FOR var) or the value (if
-                  LET var) of this var.
+  thePosVarRefs : Vector of ForVarIters representing all references to the
+                  positional var (if any) associated with this FOR var.
 ********************************************************************************/
 class ForIterator : public BinaryBaseIterator<ForIterator, ForState> 
 {

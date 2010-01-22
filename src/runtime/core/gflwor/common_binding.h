@@ -38,18 +38,6 @@ namespace flwor
     //                                                                             //
     /////////////////////////////////////////////////////////////////////////////////
 
-    inline void bindVariables ( store::Item_t& aItem,
-                                const std::vector<ForVarIter_t>& aForVariables,
-                                PlanState& aPlanState ) {
-      std::vector<ForVarIter_t>::const_iterator forIter;
-      for ( forIter = aForVariables.begin();
-            forIter != aForVariables.end();
-            ++forIter ) {
-        const ForVarIter_t& variable = ( *forIter );
-        variable->bind ( aItem.getp(), aPlanState );
-      }
-    }
-
     inline void bindVariables ( store::TempSeq_t& aTmpSeq,
                                 const std::vector<LetVarIter_t>& aLetVariables,
                                 PlanState& aPlanState ) {
@@ -62,25 +50,6 @@ namespace flwor
         ( *letIter )->bind ( iter, aPlanState );
       }
     }
-
-    inline void bindVariables ( const PlanIter_t& aInput,
-                                const std::vector<LetVarIter_t>& aLetVariables,
-                                PlanState& aPlanState,
-                                const bool aNeedsMaterialization ) {
-      store::Iterator_t iterWrapper = new PlanIteratorWrapper ( aInput, aPlanState );
-      if ( aNeedsMaterialization ) {
-        store::TempSeq_t tmpSeq = GENV_STORE.createTempSeq ( iterWrapper, false, true );
-        bindVariables ( tmpSeq, aLetVariables, aPlanState );
-      } else {
-        std::vector<LetVarIter_t>::const_iterator letIter;
-        for ( letIter = aLetVariables.begin();
-              letIter != aLetVariables.end();
-              ++letIter ) {
-          ( *letIter )->bind ( iterWrapper, aPlanState );
-        }
-      }
-    }
-
 
 
   }/* namespace gflwor */

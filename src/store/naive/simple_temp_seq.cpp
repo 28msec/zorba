@@ -65,7 +65,7 @@ bool SimpleTempSeq::empty()
 /*******************************************************************************
 
 ********************************************************************************/
-store::Item_t SimpleTempSeq::operator[](int32_t aIndex) 
+store::Item_t SimpleTempSeq::operator[](ulong aIndex) 
 {
   return theItems[aIndex];
 }
@@ -74,7 +74,7 @@ store::Item_t SimpleTempSeq::operator[](int32_t aIndex)
 /*******************************************************************************
 
 ********************************************************************************/
-int32_t SimpleTempSeq::getSize() 
+ulong SimpleTempSeq::getSize() 
 {
   return theItems.size();
 }
@@ -83,9 +83,9 @@ int32_t SimpleTempSeq::getSize()
 /*******************************************************************************
 
 ********************************************************************************/
-void SimpleTempSeq::getItem(int32_t position, store::Item_t& res)
+void SimpleTempSeq::getItem(ulong position, store::Item_t& res)
 {
-  if ( this->containsItem(position))
+  if (containsItem(position))
 	{
     res = theItems[position - 1];
   }
@@ -99,9 +99,9 @@ void SimpleTempSeq::getItem(int32_t position, store::Item_t& res)
 /*******************************************************************************
 
 ********************************************************************************/
-bool SimpleTempSeq::containsItem(int32_t position)
+bool SimpleTempSeq::containsItem(ulong position)
 {
-  return int32_t ( theItems.size() ) >= position;
+  return  theItems.size() >= position;
 }
 
 
@@ -143,8 +143,8 @@ store::Iterator_t SimpleTempSeq::getIterator()
   @return Iterator
 ********************************************************************************/
 store::Iterator_t SimpleTempSeq::getIterator(
-    int32_t startPos,
-    int32_t endPos,
+    ulong startPos,
+    ulong endPos,
     bool streaming)
 {
   return new SimpleTempSeqIter ( this, startPos, endPos );
@@ -155,7 +155,7 @@ store::Iterator_t SimpleTempSeq::getIterator(
 
 ********************************************************************************/
 store::Iterator_t SimpleTempSeq::getIterator(
-    int32_t startPos,
+    ulong startPos,
     store::Iterator_t function,
     const std::vector<store::Iterator_t>& vars,
     bool streaming)
@@ -168,7 +168,7 @@ store::Iterator_t SimpleTempSeq::getIterator(
 
 ********************************************************************************/
 store::Iterator_t SimpleTempSeq::getIterator(
-    const std::vector<int32_t>& positions,
+    const std::vector<ulong>& positions,
     bool streaming)
 {
   return store::Iterator_t ( NULL );
@@ -198,25 +198,7 @@ void SimpleTempSeq::purge()
 /*******************************************************************************
 
 ********************************************************************************/
-void SimpleTempSeq::purgeUpTo(int32_t upTo)
-{
-
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void SimpleTempSeq::purgeItem(const std::vector<int32_t>& positions)
-{
-
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void SimpleTempSeq::purgeItem(int32_t position)
+void SimpleTempSeq::purgeUpTo(ulong upTo)
 {
 
 }
@@ -237,8 +219,8 @@ SimpleTempSeqIter::SimpleTempSeqIter(
 
 SimpleTempSeqIter::SimpleTempSeqIter(
     SimpleTempSeq_t aTempSeq,
-    int32_t startPos,
-    int32_t endPos)
+    ulong startPos,
+    ulong endPos)
 	:
 		theTempSeq(aTempSeq),
     theBorderType(startEnd),
@@ -251,7 +233,7 @@ SimpleTempSeqIter::SimpleTempSeqIter(
 
 SimpleTempSeqIter::SimpleTempSeqIter(
     SimpleTempSeq_t aTempSeq,
-    const std::vector<int32_t>& positions)
+    const std::vector<ulong>& positions)
 	:
 		theTempSeq(aTempSeq),
     theBorderType(specificPositions),
@@ -309,7 +291,7 @@ bool SimpleTempSeqIter::next(store::Item_t& result)
     }
     break;
   case specificPositions:
-    if ( theCurPos < int32_t ( thePositions.size() ) ) 
+    if ( theCurPos < thePositions.size() ) 
     {
       result =  (*theTempSeq)[thePositions[theCurPos]];
       return true;
@@ -335,7 +317,7 @@ store::Item* SimpleTempSeqIter::next()
       return (*theTempSeq)[theCurPos];
     break;
   case specificPositions:
-    if ( theCurPos < int32_t ( thePositions.size() ) ) 
+    if ( theCurPos < thePositions.size() ) 
       return (*theTempSeq)[thePositions[theCurPos]];
     break;
   }

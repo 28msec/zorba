@@ -26,6 +26,10 @@ namespace store { class PUL; }
 namespace flwor 
 {
 
+
+/*******************************************************************************
+
+********************************************************************************/
 class TupleStreamIterator : public BinaryBaseIterator<TupleStreamIterator,
                                                       PlanIteratorState> 
 {

@@ -212,7 +212,7 @@ class WindowState : public PlanIteratorState
   friend class WindowIterator;
 protected:
   store::TempSeq_t theInputSeq;
-  uint32_t theCurInputPos;
+  ulong theCurInputPos;
   std::vector<WindowDef> theOpenWindows;
   std::vector<WindowDef>::iterator theCurWindow;
 
