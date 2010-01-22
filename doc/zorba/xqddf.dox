@@ -14,7 +14,7 @@
       <li> \ref destroying_collections </li>
       <li> \ref w3c_collections </li>
     </ul>
-    <li> \ref indexes_zorba_1_0 </li>
+    <li> \ref indexes</li>
     <ul>
       <li> \ref indexes_in_action </li>
       <li> \ref index_declaration </li>
@@ -22,6 +22,16 @@
       <li> \ref index_deletion </li>
       <li> \ref index_probing </li>
       <li> \ref index_maintenance </li>
+    </ul>
+    <li> \ref integrity_constraints</li>
+    <ul>
+      <li> \ref ic_declaration</li>
+      <ul>
+        <li> \ref ic_entity_integrity</li>
+        <li> \ref ic_domain_integrity</li>
+        <li> \ref ic_referential_integrity</li>
+      </ul>
+      <li> \ref ic_life_cycle</li>
     </ul>
     <li> \ref extensions_xquf_updates_routines </li>
   </ul>
@@ -434,7 +444,7 @@ The update primitive is applied as follows:
 
 \subsection w3c_collections 1.7 W3C Collections
 
-\section indexes_zorba_1_0 2 Indexes in Zorba 1.0
+\section indexes 2 Indexes in Zorba 1.0
 
 Zorba 1.0 introduces support for value indexes. A <strong>value index</strong> is a set whose contents (called <strong>index entries</strong>) are defined by a "domain" expression and a number of "key" expressions. Informally, an index is created by evaluating its domain expression first, resulting in a sequence of nodes (called the index <strong>domain sequence</strong>). Then, for each node D in the domain sequence, the key expressions are evaluated with node D serving as their context node. Each key expression must not return more than one value. If a value returned by a key expression is not atomic, it is converted to an atomic value via atomization. Thus, for each domain node D, an associated <strong>key tuple</strong> K of N atomic values is constructed, where N is the number of key expressions. The purpose of the index is to map key tuples to domain nodes. In general, the relationship from key tuples to domain nodes is 1:N (i.e., a key tuple may be produced from more than one domain nodes). As a result, each index entry is a pair consisting of a key tuple and the set of domain nodes that produced the key tuple.
 
@@ -749,9 +759,139 @@ The index URI passed as an argument to this function must exist in the staticall
 
 How the index is kept up-to-date is implementation dependent, for both manual and automatic indices. In general, index maintenance can be an expensive operation. It is for this reason that the manual mode is provided: programers can choose when it is most convenient to pay the price for maintenance at the expense of having an inconsistent index in between. However, depending on their definition, some indices may be efficiently maintainable, and for such indices, the automatic mode may be preferable.
 
+\section integrity_constraints 3 Integrity Constraints in Zorba 1.0
 
+Analogously to collections and indexes, XQDDF defines an additional extension to
+XQuery library modules which allows the declaration of (static) integrity constraints
+(ICs). Static ICs can be used to ensure that, in every moment in time, all data which is
+stored in collections is accurate and consistent according to the semantics of an
+application.
+Note that XQDDF doesn't define any dynamic integrity constraints which check
+the validity of a particular update.
+As in the relational world, XQDDF defines several types of ICs: Entity,
+Domain, and Referential ICs. Entity ICs check for the accuracy and consistency of all
+nodes in a collection. For instance, a special case of the Entity IC is the IC that
+checks for unique keys among all nodes in a collection. The Domain IC validates that
+each node in a collection satisfies a given expression. The Referential IC is used to
+ensure a foreign key relationship between the nodes in two collections.
 
-\section extensions_xquf_updates_routines 3 Extensions to the XQUF updates routines
+In this section, we describe how such ICs are declared in a library module and how a
+particular IC can be (de-)activated. All ICs are described using examples for the news
+application. Specifically, we declare ICs for the data stored in the news-data:employees
+and the news-data:articles collections.
+
+\subsection ic_declaration 3.1 Declaration
+
+As for collections and indexes, ICs must be declared before the user can activate
+them. An IC declaration specifies (1) the name of the IC for being used by function
+call to (de-)activate it (see next section), (2) the name of the collection(s) whose
+data should be validated, and (3) the expression(s) that guarantee the accuracy and
+consistency of the data. Analogously to indexes, ICs are declared inside the prolog
+of the library module that declares the collection(s) which is/are referenced by the
+IC.
+
+\subsubsection ic_entity_integrity Entity Integrity
+An Entity IC is used to state the uniqueness of a key among all nodes of a
+collection. For example, the IC (named news-data:UniqueId) in the example below
+states that the value of the id attribute of each employee is unique among all
+other nodes in the news-data:employees collection.
+
+\code
+declare integrity constraint news-data:UniqueId
+  on collection news-data:employees
+  node $id check unique key $id/@id;
+\endcode
+
+The name of the collection is specified after the "on collection" keyword. The
+path expression following the "check unique key" keyword returns the value to be
+checked for uniqueness. The result of this path expression must not be empty and
+is wrapped to return an atomic value. The variable $id is successively bound to
+each node of the news-data:employees collection and available in the check
+expression.
+
+\subsubsection ic_domain_integrity Domain Integrity
+The Domain IC allows the user to specify constraints that a particular node in
+a collection must satisfy. Domain ICs can be use in addition to XML Schema types
+or if no XML schema is available.
+
+With the following example, we want to make sure that the name of each author
+of an article is not the zero length string. This can be particularly useful
+since there is no XML schema for articles.
+
+\code
+declare integrity constraint news-data:AuthorNames
+  on collection news-data:article
+  foreach node $article check fn:string-length($article/author/name) != 0;
+\endcode
+
+The name of the IC is news-data:AuthorNames and it is defined on nodes
+belonging to the news-data:articles collection. The "foreach node" expression
+specifies a variable (using a QName) which is bound to each node in the
+collection. For each such node, the check expression is executed. For each node,
+the boolean effective value of the result of this expression must be equal to
+true.
+
+\subsubsection ic_referential_integrity Referential Integrity
+
+The Referential IC requires every value of a node in a collection to exist as
+a value of another node in another collection. For example, in the database of
+the news organization, we want to make sure that each article is maintained by
+an (existing) employee. This can be done by declaring a so called foreign key
+IC. In the following example, this IC is given the name
+news-data:ArticleEmployees.
+
+\code
+declare integrity constraint news-data:ArticleEmployees
+  foreign key
+    from collection news-data:articles node $x key $x/empid
+    to   collection news-data:employees node $y key fn:data($y/@id);
+\endcode
+
+The QName following the "from collection" and "to collection" keywords specify
+the source and destination collections, respectively. Each result of the key
+expressions are wrapped to return an atomic value. For each atomic value in the
+source collection, an atomic value in the sequence returned by the key
+expression on the destination collection must exist. The IC is violated if this
+is not the case for any node in the source collection. This semantics is
+equivalent to the following XQuery expression.
+
+\code
+every $x in xqddf:collection(xs:QName(”news-data:articles”))
+satisfies
+  some $y in xqddf:collection(xs:QName(”news-data:employees”))
+  satisfies $y/id eq $x//sale/empid
+\endcode
+
+\subsection ic_life_cycle 3.2 Life Cycle Management
+
+ICs can be checked manually (if requested by the user) or automatically on updates
+apply time, after validation and indexes are computed. In order to be checked
+automatically, an IC needs to be active. ICs can be (de-)activated using the two
+updating functions xqddf:activate-integrity-constraint and
+xqddf:deactivate-integrity-constraint, respectively. Each function takes the name of
+the IC to (de-)activate as parameter. The flag indicating whether an IC is active or
+not is stored in the dynamic context.
+
+Deactivating an IC might be useful if the corresponding check is expensive and,
+hence, inconsistency of the data might be acceptable and only checked (and fixed
+manually) from time to time. To check an IC manually, the XQDDF defines an updating
+function called check-integrity-constraint which triggers the IC, identified by a
+QName passed as parameter, to be checked.
+
+Similar to collections and indexes, the module declaring the integrity constraints
+(i.e. with namespace http://www.news.org/data) can also declare variables whoes
+values are the QNames of the ICs. This allows their names to be easily referenced by
+subsequent expressions. For example, such a variable can be passed as a parameter to
+the activate-integrity-constraint in the importing admin-script module (see above).
+For the ICs from the section above, those variables are declared as follows:
+
+\code
+declare variable $news-data:UniqueId := xs:QName("news-data:UniqueId");                                              
+declare variable $news-data:AuthorName := xs:QName("news-data:AuthorNames");                                         
+declare variable $news-data:ArticleEmployees := xs:QName("news-data:ArticleEmployees");
+\endcode
+
+\section extensions_xquf_updates_routines 4 Extensions to the XQUF updates routines
 
 
 
