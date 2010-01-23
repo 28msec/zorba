@@ -4252,7 +4252,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
         dynamic_cast<flwor_expr*>(pop_nodestack().getp());
 
       // let ... return ...
-      flworExpr->set_return_expr( wrap_in_atomization(icExpr) );
+      flworExpr->set_return_expr( wrap_in_atomization(icExpr.getp()) );
 
       body = flworExpr;
     }
@@ -4303,26 +4303,26 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       ////// Set latest details
       
       //fn:data( userExpr )
-      fo_expr_t atomizedUniKeyExpr = wrap_in_atomization(uniKeyExpr);      
+      fo_expr_t atomizedUniKeyExpr = wrap_in_atomization(uniKeyExpr.getp());
 
       // exists( $x/@id )
       expr_t existsExpr = new fo_expr(sctxid(), loc, 
                                       GET_BUILTIN_FUNCTION(FN_EXISTS_1), 
-                                      uniKeyExpr);
+                                      uniKeyExpr.getp());
 
       xqp_string commentStr("#trace fnExists");
       expr_t comentExpr = new const_expr(sctxid(), loc, commentStr);
       fo_expr_t fnTraceExpr = new fo_expr(sctxid(),
                                          loc,
                                          GET_BUILTIN_FUNCTION(FN_TRACE_2),
-                                         existsExpr, comentExpr);
+                                         existsExpr.getp(), comentExpr.getp());
       
 
       // every ... satisfies evTestExpr
       fo_expr_t fnNotExpr = new fo_expr(sctxid(),
                                         loc,
                                         GET_BUILTIN_FUNCTION(FN_NOT_1),
-                                        fnTraceExpr /*existsExpr*/);
+                                        fnTraceExpr.getp() /*existsExpr*/);
 
       evFlworExpr->add_where(fnNotExpr.getp());
 
@@ -4336,25 +4336,25 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       //distinct-values($seq)
       fo_expr_t distinctValuesExpr = new fo_expr(sctxid(), loc, 
                                  GET_BUILTIN_FUNCTION(FN_DISTINCT_VALUES_1), 
-                                                 atomizedUniKeyExpr);      
+                                                 atomizedUniKeyExpr.getp());      
 
       // count($sec)
       fo_expr_t countSecExpr = new fo_expr(sctxid(), loc, 
                                            GET_BUILTIN_FUNCTION(FN_COUNT_1), 
-                                           atomizedUniKeyExpr);
+                                           atomizedUniKeyExpr.getp());
       // count(distinct-values($sec))
       fo_expr_t countDVExpr = new fo_expr(sctxid(), loc, 
                                           GET_BUILTIN_FUNCTION(FN_COUNT_1), 
-                                          distinctValuesExpr);
+                                          distinctValuesExpr.getp());
 
       // countDV = countSec
       fo_expr_t equalExpr = new fo_expr(sctxid(), loc, 
                                         GET_BUILTIN_FUNCTION(OP_EQUAL_2), 
-                                        countDVExpr, countSecExpr);      
+                                        countDVExpr.getp(), countSecExpr.getp());      
       // (...) and (...)
       fo_expr_t andExpr = new fo_expr(sctxid(), loc, 
                                       GET_BUILTIN_FUNCTION(OP_AND_2), 
-                                      everyExpr, equalExpr);
+                                      everyExpr.getp(), equalExpr.getp());
 
       flworExpr->set_return_expr(andExpr.getp());
 
@@ -4391,7 +4391,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       fo_expr_t fnNotExpr = new fo_expr(sctxid(),
                                         loc,
                                         GET_BUILTIN_FUNCTION(FN_NOT_1),
-                                        evTestExpr);
+                                        evTestExpr.getp());
 
       // where not( exists($x/sale gt 0) )
       evFlworExpr->add_where(fnNotExpr.getp());
@@ -4429,13 +4429,13 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       fo_expr_t eqExpr = new fo_expr(sctxid(),
                                      loc,
                                      GET_BUILTIN_FUNCTION(OP_VALUE_EQUAL_2),
-                                     toKeyExpr,
-                                     fromKeyExpr);
+                                     toKeyExpr.getp(),
+                                     fromKeyExpr.getp());
       normalize_fo(eqExpr);    
 
-      expr_t someTestExpr = eqExpr;      
-      someTestExpr = wrap_in_bev(someTestExpr);            
-      someFlworExpr->add_where(someTestExpr);
+      expr_t someTestExpr = eqExpr.getp();
+      someTestExpr = wrap_in_bev(someTestExpr.getp());
+      someFlworExpr->add_where(someTestExpr.getp());
 
       // fn:exists
       fo_expr_t fnExistsExpr = new fo_expr(sctxid(), loc,
@@ -4449,7 +4449,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       fo_expr_t evFnNotExpr = new fo_expr(sctxid(),
                                           loc,
                                           GET_BUILTIN_FUNCTION(FN_NOT_1),
-                                          fnExistsExpr);
+                                          fnExistsExpr.getp());
 
       evFlworExpr->add_where(evFnNotExpr.getp());
 
