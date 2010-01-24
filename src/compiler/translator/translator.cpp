@@ -4303,7 +4303,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       ////// Set latest details
       
       //fn:data( userExpr )
-      fo_expr_t atomizedUniKeyExpr = wrap_in_atomization(uniKeyExpr.getp());
+      expr_t atomizedUniKeyExpr = wrap_in_atomization(uniKeyExpr.getp());
 
       // exists( $x/@id )
       expr_t existsExpr = new fo_expr(sctxid(), loc, 
