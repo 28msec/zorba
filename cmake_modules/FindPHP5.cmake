@@ -52,6 +52,7 @@ IF(APPLE)
    "${CMAKE_SHARED_MODULE_CREATE_C_FLAGS} -Wl,-flat_namespace")
   FOREACH(symbol
     _convert_to_boolean
+    _gc_remove_zval_from_buffer 
     _zend_throw_exception
     _zend_register_long_constant
     _zend_get_constant
